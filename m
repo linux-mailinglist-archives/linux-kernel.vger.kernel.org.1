@@ -2,122 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E0F62A6CA1
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 19:26:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 667E02A6CAF
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 19:30:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732354AbgKDS0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 13:26:48 -0500
-Received: from mail-1.ca.inter.net ([208.85.220.69]:38606 "EHLO
-        mail-1.ca.inter.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726801AbgKDS0s (ORCPT
+        id S1732388AbgKDSaX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 13:30:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55444 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726801AbgKDSaW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 13:26:48 -0500
-Received: from localhost (offload-3.ca.inter.net [208.85.220.70])
-        by mail-1.ca.inter.net (Postfix) with ESMTP id 4C6572EA024;
-        Wed,  4 Nov 2020 13:26:46 -0500 (EST)
-Received: from mail-1.ca.inter.net ([208.85.220.69])
-        by localhost (offload-3.ca.inter.net [208.85.220.70]) (amavisd-new, port 10024)
-        with ESMTP id SS5bke63PJDu; Wed,  4 Nov 2020 13:18:12 -0500 (EST)
-Received: from [192.168.48.23] (host-104-157-204-209.dyn.295.ca [104.157.204.209])
-        (using TLSv1 with cipher DHE-RSA-AES128-SHA (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: dgilbert@interlog.com)
-        by mail-1.ca.inter.net (Postfix) with ESMTPSA id 88B352EA043;
-        Wed,  4 Nov 2020 13:26:45 -0500 (EST)
-Reply-To: dgilbert@interlog.com
-Subject: Re: [PATCH v3 1/4] sgl_alloc_order: remove 4 GiB limit, sgl_free()
- warning
-To:     Bodo Stroesser <bostroesser@gmail.com>, linux-scsi@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     martin.petersen@oracle.com, axboe@kernel.dk, bvanassche@acm.org
-References: <20201019191928.77845-1-dgilbert@interlog.com>
- <20201019191928.77845-2-dgilbert@interlog.com>
- <2e94f118-1216-b926-a275-2fb325874b04@gmail.com>
-From:   Douglas Gilbert <dgilbert@interlog.com>
-Message-ID: <b64de9eb-408f-f618-0db9-731f8823525a@interlog.com>
-Date:   Wed, 4 Nov 2020 13:26:45 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 4 Nov 2020 13:30:22 -0500
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C9F2C0613D3
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 10:30:20 -0800 (PST)
+Received: by mail-lj1-x243.google.com with SMTP id 2so24001655ljj.13
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 10:30:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6fKMG6pv6YF1DPpeParNbpC+aNjojYtgbk7dV+Fzj8w=;
+        b=ChEkzV7gse5pgsr+RZcpcU5fG0SW7Yr+3Lbq8JpI/aWGfHyh8r1ThH/4GIMPDiwpo3
+         D2xOFAUbG655/QTLOHuqVgZHLsL10CT1BniKTpbbNtMtqBnl3nPo+KqxRe+0EJsyfXXW
+         yK1L6B2rbPzAJluw0fo9uxI3OWu0hygfsuIew=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6fKMG6pv6YF1DPpeParNbpC+aNjojYtgbk7dV+Fzj8w=;
+        b=qvOIaoosN9ik8qeJazgnM+DYI5qSKAfEvs3KInwFyWZ0MTaIXFpNWJKRGKb696peXZ
+         LfPnBloBS0y9whh0Q/6EcJij9Nqt48STvYhcUI1lJu6UMWGrc84BlV6iIF9SPMa0R8hK
+         8XT0GYeDsTtAeyt6RwujloTCaRs/mCxX0Hy0f+L/zmP9+mGIk4YiV5Q9rRbQ3/NlvNZK
+         p16TrVKHkXFsuSCSFVjlSCay98OER4zMtyPVahOGmx6tzgeMFT6WHWyKifLtEDKof1a+
+         Pol+xfJHDwcPTblROehfVnzXMCdLyhFlxDNjGQvf1Zyn2YD7a03V5D0xVOhozR0hYGV1
+         9MsA==
+X-Gm-Message-State: AOAM531HfuRdyNwwgSYgLFRHnwtqLTn+VwqtwE/Ln8el5sXHsphprNr8
+        8TKCOJ8rhD2uwmylhKl4NW4yDGHnnCkaFg==
+X-Google-Smtp-Source: ABdhPJz27JNJXEd7gmTDKWs7H4zgs9YG6mGKv+1DSKBlh2pBT1DAzhDf5vglMltSjZBdBW180DJ4nA==
+X-Received: by 2002:a2e:89cb:: with SMTP id c11mr10703825ljk.248.1604514618694;
+        Wed, 04 Nov 2020 10:30:18 -0800 (PST)
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com. [209.85.208.182])
+        by smtp.gmail.com with ESMTPSA id y125sm474246lfa.208.2020.11.04.10.30.16
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Nov 2020 10:30:16 -0800 (PST)
+Received: by mail-lj1-f182.google.com with SMTP id o13so15724392ljj.11
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 10:30:16 -0800 (PST)
+X-Received: by 2002:a2e:2202:: with SMTP id i2mr10293805lji.70.1604514616029;
+ Wed, 04 Nov 2020 10:30:16 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <2e94f118-1216-b926-a275-2fb325874b04@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-CA
-Content-Transfer-Encoding: 7bit
+References: <20201102091428.GK31092@shao2-debian>
+In-Reply-To: <20201102091428.GK31092@shao2-debian>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 4 Nov 2020 10:29:59 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wiRnRsS4CqLypK533G2Ho=NVTt_s-e9KXZ=b0ptOSB15A@mail.gmail.com>
+Message-ID: <CAHk-=wiRnRsS4CqLypK533G2Ho=NVTt_s-e9KXZ=b0ptOSB15A@mail.gmail.com>
+Subject: Re: [mm/gup] a308c71bf1: stress-ng.vm-splice.ops_per_sec -95.6% regression
+To:     kernel test robot <rong.a.chen@intel.com>,
+        Jann Horn <jannh@google.com>
+Cc:     Peter Xu <peterx@redhat.com>, LKML <linux-kernel@vger.kernel.org>,
+        lkp@lists.01.org, kernel test robot <lkp@intel.com>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        Feng Tang <feng.tang@intel.com>, zhengjun.xing@intel.com
+Content-Type: multipart/mixed; boundary="000000000000bac91505b34c2b78"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-03 7:54 a.m., Bodo Stroesser wrote:
-> Am 19.10.20 um 21:19 schrieb Douglas Gilbert:
->> This patch removes a check done by sgl_alloc_order() before it starts
->> any allocations. The comment before the removed code says: "Check for
->> integer overflow" arguably gives a false sense of security. The right
->> hand side of the expression in the condition is resolved as u32 so
->> cannot exceed UINT32_MAX (4 GiB) which means 'length' cannot exceed
->> that amount. If that was the intention then the comment above it
->> could be dropped and the condition rewritten more clearly as:
->>        if (length > UINT32_MAX) <<failure path >>;
-> 
-> I think the intention of the check is to reject calls, where length is so high, that calculation of nent overflows unsigned int nent/nalloc.
-> Consistently a similar check is done few lines later before incrementing nalloc due to chainable = true.
-> So I think the code tries to allow length values up to 4G << (PAGE_SHIFT + order).
-> 
-> That said I think instead of removing the check it better should be fixed, e.g. by adding an unsigned long long cast before nent
-> 
-> BTW: I don't know why there are two checks. I think one check after conditionally incrementing nalloc would be enough.
+--000000000000bac91505b34c2b78
+Content-Type: text/plain; charset="UTF-8"
 
-Okay, I'm working on a "v4" patchset. Apart from the above, my plan is
-to extend sgl_compare_sgl() with a helper that additionally yields
-the byte index of the first miscompare.
+On Mon, Nov 2, 2020 at 1:15 AM kernel test robot <rong.a.chen@intel.com> wrote:
+>
+> Greeting,
+>
+> FYI, we noticed a -95.6% regression of stress-ng.vm-splice.ops_per_sec due to commit:
+>
+> commit: a308c71bf1e6e19cc2e4ced31853ee0fc7cb439a ("mm/gup: Remove enfornced COW mechanism")
+> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
 
-Doug Gilbert
+Note that this is just the reverse of the previous 2000% improvement
+reported by the test robot here:
 
->> The author's intention is to use sgl_alloc_order() to replace
->> vmalloc(unsigned long) for a large allocation (debug ramdisk).
->> vmalloc has no limit at 4 GiB so its seems unreasonable that:
->>       sgl_alloc_order(unsigned long long length, ....)
->> does. sgl_s made with sgl_alloc_order(chainable=false) have equally
->> sized segments placed in a scatter gather array. That allows O(1)
->> navigation around a big sgl using some simple integer maths.
->>
->> Having previously sent a patch to fix a memory leak in
->> sg_alloc_order() take the opportunity to put a one line comment above
->> sgl_free()'s declaration that it is not suitable when order > 0 . The
->> mis-use of sgl_free() when order > 0 was the reason for the memory
->> leak. The other users of sgl_alloc_order() in the kernel where
->> checked and found to handle free-ing properly.
->>
->> Signed-off-by: Douglas Gilbert <dgilbert@interlog.com>
->> ---
->>    include/linux/scatterlist.h | 1 +
->>    lib/scatterlist.c           | 3 ---
->>    2 files changed, 1 insertion(+), 3 deletions(-)
->>
->> diff --git a/include/linux/scatterlist.h b/include/linux/scatterlist.h
->> index 45cf7b69d852..80178afc2a4a 100644
->> --- a/include/linux/scatterlist.h
->> +++ b/include/linux/scatterlist.h
->> @@ -302,6 +302,7 @@ struct scatterlist *sgl_alloc(unsigned long long length, gfp_t gfp,
->>    			      unsigned int *nent_p);
->>    void sgl_free_n_order(struct scatterlist *sgl, int nents, int order);
->>    void sgl_free_order(struct scatterlist *sgl, int order);
->> +/* Only use sgl_free() when order is 0 */
->>    void sgl_free(struct scatterlist *sgl);
->>    #endif /* CONFIG_SGL_ALLOC */
->>    
->> diff --git a/lib/scatterlist.c b/lib/scatterlist.c
->> index c448642e0f78..d5770e7f1030 100644
->> --- a/lib/scatterlist.c
->> +++ b/lib/scatterlist.c
->> @@ -493,9 +493,6 @@ struct scatterlist *sgl_alloc_order(unsigned long long length,
->>    	u32 elem_len;
->>    
->>    	nent = round_up(length, PAGE_SIZE << order) >> (PAGE_SHIFT + order);
->> -	/* Check for integer overflow */
->> -	if (length > (nent << (PAGE_SHIFT + order)))
->> -		return NULL;
->>    	nalloc = nent;
->>    	if (chainable) {
->>    		/* Check for integer overflow */
->>
+    https://lore.kernel.org/lkml/20200611040453.GK12456@shao2-debian/
 
+and the explanation seems to remain the same:
+
+    https://lore.kernel.org/lkml/CAG48ez1v1b4X5LgFya6nvi33-TWwqna_dc5jGFVosqQhdn_Nkg@mail.gmail.com/
+
+IOW, this is testing a special case (zero page lookup) that the "force
+COW" patches happened to turn into a regular case (COW creating a
+regular page from the zero page).
+
+The question is whether we should care about the zero page for gup_fast lookup.
+
+If we do care, then the proper fix is likely simply to allow the zero
+page in fast-gup, the same way we already do in slow-gup.
+
+ENTIRELY UNTESTED PATCH ATTACHED.
+
+Rong - mind testing this? I don't think the zero-page _should_ be
+something that real loads care about, but hey, maybe people do want to
+do things like splice zeroes very efficiently..
+
+And note the "untested" part of the patch. It _looks_ fairly obvious,
+but maybe I'm missing something.
+
+            Linus
+
+--000000000000bac91505b34c2b78
+Content-Type: application/octet-stream; name=patch
+Content-Disposition: attachment; filename=patch
+Content-Transfer-Encoding: base64
+Content-ID: <f_kh3qhmzd0>
+X-Attachment-Id: f_kh3qhmzd0
+
+IG1tL2d1cC5jIHwgNyArKysrKy0tCiAxIGZpbGUgY2hhbmdlZCwgNSBpbnNlcnRpb25zKCspLCAy
+IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL21tL2d1cC5jIGIvbW0vZ3VwLmMKaW5kZXggMTAy
+ODc3ZWQ3N2E0Li44OTY2ZDNjODllNWQgMTAwNjQ0Ci0tLSBhL21tL2d1cC5jCisrKyBiL21tL2d1
+cC5jCkBAIC0yMTgyLDggKzIxODIsMTEgQEAgc3RhdGljIGludCBndXBfcHRlX3JhbmdlKHBtZF90
+IHBtZCwgdW5zaWduZWQgbG9uZyBhZGRyLCB1bnNpZ25lZCBsb25nIGVuZCwKIAkJCQl1bmRvX2Rl
+dl9wYWdlbWFwKG5yLCBucl9zdGFydCwgZmxhZ3MsIHBhZ2VzKTsKIAkJCQlnb3RvIHB0ZV91bm1h
+cDsKIAkJCX0KLQkJfSBlbHNlIGlmIChwdGVfc3BlY2lhbChwdGUpKQotCQkJZ290byBwdGVfdW5t
+YXA7CisJCX0gZWxzZSBpZiAocHRlX3NwZWNpYWwocHRlKSkgeworCQkJaWYgKCFpc196ZXJvX3Bm
+bihwdGVfcGZuKHB0ZSkpKQorCQkJCWdvdG8gcHRlX3VubWFwOworCQkJLyogV2UnbGwgYWxsb3cg
+dGhlIHplcm8gcGFnZSAtIGxpa2UgZm9sbG93X3BhZ2VfcHRlKCkgZG9lcyAqLworCQl9CiAKIAkJ
+Vk1fQlVHX09OKCFwZm5fdmFsaWQocHRlX3BmbihwdGUpKSk7CiAJCXBhZ2UgPSBwdGVfcGFnZShw
+dGUpOwo=
+--000000000000bac91505b34c2b78--
