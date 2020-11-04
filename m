@@ -2,85 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ACD42A6C39
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 18:51:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 090502A6C3E
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 18:54:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731234AbgKDRv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 12:51:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49424 "EHLO
+        id S1732124AbgKDRyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 12:54:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726152AbgKDRv0 (ORCPT
+        with ESMTP id S1730865AbgKDRyQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 12:51:26 -0500
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4E31C0613D3;
-        Wed,  4 Nov 2020 09:51:25 -0800 (PST)
-Received: by mail-ot1-x344.google.com with SMTP id n15so20078889otl.8;
-        Wed, 04 Nov 2020 09:51:25 -0800 (PST)
+        Wed, 4 Nov 2020 12:54:16 -0500
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7668CC0613D3
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 09:54:16 -0800 (PST)
+Received: by mail-lj1-x234.google.com with SMTP id p15so23959436ljj.8
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 09:54:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=iWdS73/yAKQZ5Z5ysqFEX3PXbQqUrnRUEbA2Shxv+aY=;
-        b=ooahY6l738Qs9OmU6khtF1Enw0qmqpp+rgMk+5CbBxl9AKTEGkyvYJkp2Plqt6vtdf
-         BGOboF3SvK4P5qdwGX3LnBcxljJDD9QZvYYbtw0rfXd5zmgva6v1mO9P4DZgVXT2gttS
-         UBUVUpkGhcsRcUMW2IHuEZRjk6V+99i4mjnH7eXaY47UDR9Hs8cMiELoZBjKYsNwfTab
-         rdH/ZuZ+zMRD22KdnVnCIbpcTzNUuIzSudauW1sYWI9MYCV/GpcYUkcNjQit4xF8ixhq
-         4uzptI7XJw4t4DHwwM+Go4N/o+EMyV6R+kUJQxI/1u87ocoxflWPUxX3467/W+VLucvU
-         RVTg==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KDF/IVt/yM5vKvfY6fRo0fNzEAF8Z0Cn2GtQDil02vc=;
+        b=hXhtTtO+S8d2VZNihnap8ENkU4okxgo2j5jRC3/VfbThfzLKjoY9rFtASjZkhfK3s3
+         qhVE8hIVQgRDoaRjKV+sJOgqdoZDAN9jHBYe4N0IyHtI1g8IALfcuzpLWg2QZ6LIm8LB
+         c/aLMvqxGizeQKNfljmxCLZHLcPpM+v9Z3VkM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=iWdS73/yAKQZ5Z5ysqFEX3PXbQqUrnRUEbA2Shxv+aY=;
-        b=aHoYQYSEbJjBppB58QyNxINS8VAHyXGMWYDF6/1I/VTAc866im4Fh3kE1ByilgK/++
-         Hk+0rlJJ+mGOTd1IvfU6A1DO9qi8/g1lyvGJzsy1Qmu0QHcuBFoXBD9ypcHPJqoqBYW/
-         +O3kFnr8KXZO6uS6Nyy4PkcQXeSQ7eXtKwX6HYgBlwBNggrosXwh3KiyqiKhkMxs0ZLJ
-         uhzerszodL9X7pEE+Eowxqt3Pl07pAv5rHxzlMFW9SQZmgkqd5gXXOgeksE91EqWIZw2
-         zK5pEuv4YX/1evvDfQKAIX8ykFHycIYIql55LHoo8IzQvBZUifUIe1hLPLoxwJm80GP0
-         XZgA==
-X-Gm-Message-State: AOAM532ULac66uV4n+C9iByjJSrkUQP/LYF4DeDmO428ksaSxg40mX8I
-        YkkQh+3+L2SJnkotCQkwB8g=
-X-Google-Smtp-Source: ABdhPJwUtc813wlWnrRgmI/j5mDmAxQjcq3ogSRc5aj8yoOnE2FjnW0Ea/2/D6UCtw7xKTRmB57bXw==
-X-Received: by 2002:a9d:4588:: with SMTP id x8mr4731459ote.169.1604512285397;
-        Wed, 04 Nov 2020 09:51:25 -0800 (PST)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id o30sm562008otj.47.2020.11.04.09.51.24
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 04 Nov 2020 09:51:25 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 4 Nov 2020 09:51:23 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
-Subject: Re: [PATCH 5.9 000/391] 5.9.4-rc1 review
-Message-ID: <20201104175123.GD225910@roeck-us.net>
-References: <20201103203348.153465465@linuxfoundation.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KDF/IVt/yM5vKvfY6fRo0fNzEAF8Z0Cn2GtQDil02vc=;
+        b=jifiI6Eey37yfU7WuxufPtC/1WI8UBvvUyv6QAAKKN3XfeAduR1XxZOzCJZHJ+2akD
+         fmjZ/0Y77I8dWTfCG9oxOYl4p1IxhXbP7WVTZTEbnLxf6Fe4t3sZYdrctIUDpHg9F6Sf
+         pXUo5ITdHkkB6xkIL+MnfpL15nk6MB8eQB+zKxKtTkaijb5PUsgh/9GK9/QrVDVqaUSo
+         PNbSJ9yc6Lre4eM5qItZghS2dhdFnvHJbK7TEuPKGt9/g2zM1ehtFCx9xEDqxNnFxk0c
+         wdR+wxWwDln8kIaizcGmPOiJnNAQsDZI66mLMWw+mqcO6H1JYq79ajA3VlFla1eiOLbN
+         YYYw==
+X-Gm-Message-State: AOAM533iLWovz/ReIquj7ZhDqusCEJnJQsJSf7d8vZQlt6YOpbhHJmP1
+        4Q6+Au8fGPDMToe0Ot+nFIQchjVDVe/I0Q==
+X-Google-Smtp-Source: ABdhPJzod3vRPg+VrX283hY7qVSvjbw2J2ekPbIMNf/7cB8pB4V76c6uMxu7YNV8l/kBB310v76UgQ==
+X-Received: by 2002:a2e:584e:: with SMTP id x14mr10279725ljd.335.1604512453695;
+        Wed, 04 Nov 2020 09:54:13 -0800 (PST)
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com. [209.85.208.169])
+        by smtp.gmail.com with ESMTPSA id c1sm575344lji.101.2020.11.04.09.54.12
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Nov 2020 09:54:12 -0800 (PST)
+Received: by mail-lj1-f169.google.com with SMTP id 11so4366383ljf.2
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 09:54:12 -0800 (PST)
+X-Received: by 2002:a2e:3e1a:: with SMTP id l26mr11736406lja.285.1604512452220;
+ Wed, 04 Nov 2020 09:54:12 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20201104082738.1054792-1-hch@lst.de>
+In-Reply-To: <20201104082738.1054792-1-hch@lst.de>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 4 Nov 2020 09:53:56 -0800
+X-Gmail-Original-Message-ID: <CAHk-=whzWXASyyzs3veAUZznCT2+EeeBaX3o8w8NsKNL+woarQ@mail.gmail.com>
+Message-ID: <CAHk-=whzWXASyyzs3veAUZznCT2+EeeBaX3o8w8NsKNL+woarQ@mail.gmail.com>
+Subject: Re: support splice reads on seq_file based procfs files v2
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 09:30:51PM +0100, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.9.4 release.
-> There are 391 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Thu, 05 Nov 2020 20:29:58 +0000.
-> Anything received after that time might be too late.
-> 
-Build results:
-	total: 154 pass: 154 fail: 0
-Qemu test results:
-	total: 426 pass: 426 fail: 0
+On Wed, Nov 4, 2020 at 12:29 AM Christoph Hellwig <hch@lst.de> wrote:
+>
+> Greg reported a problem due to the fact that Android tests use procfs
+> files to test splice, which stopped working with 5.10-rc1.  This series
+> adds read_iter support for seq_file, and uses those for various seq_files
+> in procfs to restore splice read support.
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+Ack.
 
-Guenter
+Al, do you want me to take these directly - we'll need this to avoid
+the regression in 5.10?  Or do you have other things pending and I'll
+see them in a pull request.
+
+             Linus
