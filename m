@@ -2,86 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFE1D2A65CC
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 15:03:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 339152A65CE
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 15:03:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726993AbgKDODM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 09:03:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40592 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726527AbgKDODI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 09:03:08 -0500
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9EF0C0613D3
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 06:03:07 -0800 (PST)
-Received: by mail-lj1-x243.google.com with SMTP id m16so23081550ljo.6
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 06:03:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TUOQw0C83wZfEL0vEup/xV0E+W5h+AKs5vycRQsvjmk=;
-        b=raQ1wmnUEl63wrrZsnFBDbMoFPzK5nRNKLILZeo5aYFJrlpJ4EMbKcaVYWlcRqhd5Q
-         9JceN7D81bdsCn7xyrmzL+VPYfZbb38QnZ4DgIPBdRe3NcI/6uuckPM8zoA/ZljFknTo
-         K9Tf6B/DAp/DEPo7pxKHdBZA/1Po7ziPEcFc3PcVFa8UNUISSOAdfNisp3szoifmcJIb
-         r4xNO1pnrDPkQ+GhrPlQU9fksElEUcVDjstOjmVj00hKPrSRFqQqMiD0E+MUmzLXBYAb
-         pWiyWjPzGpbvWPiV4itF5WKkQfygO1I/aE+DP4EaIKqhYEx4YyidhFOXkRT7lfJ6K+NH
-         /1Ww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TUOQw0C83wZfEL0vEup/xV0E+W5h+AKs5vycRQsvjmk=;
-        b=HOTwbsBwRy1IZ9YTuTDZTLH2HI5lsSA3pW2eyIUjUSN3dpfu/x3hX7YRnstHugNi6W
-         hDf92FJ6YX6SnwqGBe1KDcFmmnXO++XAG7OaQd2Us0B/0lV+1Ll9RpMTWY+ZT5IH5/Q5
-         Z/VWj7SQ7hJckPgeGs1IhUQfHvFm3veEWNa4BeHZtlt3sv4ZpZD8jOMlr8/H7X6Mxclz
-         rZ25SObk5aCj68v10G62kfM6XroTMFzbkq42AefA9Gv/cEXxYmSUbTgyFbcf3r4GeHjl
-         f4lOCs/XQlBD8ACnIzfYmwISj0oJAlzzHRejUvLQeW98FuV/FQ8V+7/0wo9x7yMKfNcA
-         FrmQ==
-X-Gm-Message-State: AOAM53250Z4MqrqLr/WPIeDAC0ya6/aXKhD6atr4q4noXkgYvNO1Ur2B
-        oAY3TtaFSZQAEuE9ReCIRU/GNnoG54njkq7TBa5LZSLoxGYBqw==
-X-Google-Smtp-Source: ABdhPJxJfDGybgkcfLyyKPT71AH6IePQ76BjG68XIsddYjhuHabhUDy5nZrfYUIrvly8VjC5PCwy2mTrOMdxwkUl5ug=
-X-Received: by 2002:a2e:80d2:: with SMTP id r18mr11512268ljg.286.1604498585007;
- Wed, 04 Nov 2020 06:03:05 -0800 (PST)
+        id S1729962AbgKDOD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 09:03:28 -0500
+Received: from mga07.intel.com ([134.134.136.100]:27190 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726527AbgKDOD1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 09:03:27 -0500
+IronPort-SDR: DRjbRrghFeyDlJvwjID/0Y0FcCZVzu9Dnfaj+5a7Evbq9W/DDON+1MHqN4Xu9zuma05klU9ENs
+ sq0lqnfufI9g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9794"; a="233380498"
+X-IronPort-AV: E=Sophos;i="5.77,451,1596524400"; 
+   d="scan'208";a="233380498"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2020 06:03:24 -0800
+IronPort-SDR: rNSYeBg7xwZ/RmQ6D1J7PUPyO6aDtmbzWkWVDia5RsxAAG3mLr9zy5NGZtRh1ajg0N+YlhcOgU
+ D6cxX22v6DYg==
+X-IronPort-AV: E=Sophos;i="5.77,451,1596524400"; 
+   d="scan'208";a="306155352"
+Received: from gliakhov-mobl2.ger.corp.intel.com (HELO ubuntu) ([10.249.45.232])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2020 06:03:21 -0800
+Date:   Wed, 4 Nov 2020 15:03:18 +0100
+From:   Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     ohad@wizery.com, bjorn.andersson@linaro.org,
+        arnaud.pouliquen@st.com, linux-remoteproc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 3/8] rpmsg: Move structure rpmsg_ns_msg to header file
+Message-ID: <20201104140317.GB30197@ubuntu>
+References: <20201027175218.1033609-1-mathieu.poirier@linaro.org>
+ <20201027175218.1033609-4-mathieu.poirier@linaro.org>
 MIME-Version: 1.0
-References: <20201030125016.3423d2fe@canb.auug.org.au> <20201104141028.420c9274@canb.auug.org.au>
-In-Reply-To: <20201104141028.420c9274@canb.auug.org.au>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 4 Nov 2020 15:02:53 +0100
-Message-ID: <CACRpkdY0H1Jt2pAgq0hLHjbh2xdezKBYK7kK=ZfyfxFHXsfEOA@mail.gmail.com>
-Subject: Re: linux-next: build failure after merge of the pinctrl tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Jianqun Xu <jay.xu@rock-chips.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201027175218.1033609-4-mathieu.poirier@linaro.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 4, 2020 at 4:10 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> On Fri, 30 Oct 2020 12:50:16 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> >
-> > Hi all,
-> >
-> > After merging the pinctrl tree, today's linux-next build (x86_64
-> > allmodconfig) failed like this:
-> >
-> > ERROR: modpost: "irq_gc_set_wake" [drivers/pinctrl/pinctrl-rockchip.ko] undefined!
-> >
-> > Caused by commit
-> >
-> >   6c684f5e79ea ("pinctrl: rockchip: make driver be tristate module")
-> >
-> > I have reverted that commit for today.
->
-> I am still getting this failure.
+A nitpick to this one:
 
-Sorry for the mess, I dropped this commit now.
+On Tue, Oct 27, 2020 at 11:52:13AM -0600, Mathieu Poirier wrote:
+> Move structure rpmsg_ns_msg to its own header file so that
+> it can be used by other entities.
+> 
+> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Reviewed-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+> ---
 
-I think we need a separate patch to export that call
-before we make Rockchip tristate.
+[snip]
 
-Yours,
-Linus Walleij
+> diff --git a/include/linux/rpmsg_ns.h b/include/linux/rpmsg_ns.h
+> new file mode 100644
+> index 000000000000..bb479f430080
+> --- /dev/null
+> +++ b/include/linux/rpmsg_ns.h
+> @@ -0,0 +1,42 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +
+> +#ifndef _LINUX_RPMSG_NS_H
+> +#define _LINUX_RPMSG_NS_H
+> +
+> +#include <linux/mod_devicetable.h>
+> +#include <linux/types.h>
+> +#include <linux/rpmsg_byteorder.h>
+
+would be good to sort these alphabetically.
+
+Thanks
+Guennadi
