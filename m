@@ -2,75 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3C7D2A63CF
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 13:01:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8C9E2A63D9
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 13:04:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729778AbgKDMBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 07:01:00 -0500
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:36584 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728523AbgKDMBA (ORCPT
+        id S1729584AbgKDMEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 07:04:06 -0500
+Received: from smtprelay0246.hostedemail.com ([216.40.44.246]:32850 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728287AbgKDMEF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 07:01:00 -0500
-Received: by mail-wr1-f67.google.com with SMTP id x7so21774894wrl.3;
-        Wed, 04 Nov 2020 04:00:57 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=QUSmpWIO++p+EaBmzWHWB9j11K6ZCt/BSPj+8TR1MOs=;
-        b=f79KrGMlxesFNUiOai4quZrkJvRhdOFnvzrETivqjHFMtCbXF+7sqSw5i0S2+YOJwJ
-         kCR6BxySGkumQ6dzoW5XcqE5iCWx3Q0ZcYE/36sUWSUs3tbm95Hi+udJDAcwgqZ0jFnV
-         aio1ogK+jqv9C0wn1dx6F4MHTI6zmwIjsLA3HPwj8h9mzpTs6UeQzr5wCAq/o+mJ2dc0
-         jU+wHxEw35yGmUy5ta0dGPKjsG+6kxFFJ8lVNgRMFJYgY3OaSY0F2CV3AhhzFv4PltPP
-         me6GDiwdgTAyDpl1jIjEA1+3Y7QQtBT8E2s+eyNS4hlrOFP1EgW2IQbUo/cRFVXQmHIA
-         rXyw==
-X-Gm-Message-State: AOAM532PAfKpeDsPVCZuYOcj3iwuPInKOZpdc5H7eHG7dMFErKqM2kjD
-        +ukalBdj3VL27kGyXsf8gNM=
-X-Google-Smtp-Source: ABdhPJyP8064AZcp00/CMnWH1Yf6wcBkvvv9giu/iKtPrEyY0N09EFUoBTXsieznUVpGwXIewZnkPQ==
-X-Received: by 2002:a5d:4148:: with SMTP id c8mr31429901wrq.261.1604491256613;
-        Wed, 04 Nov 2020 04:00:56 -0800 (PST)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id t199sm1871437wmt.46.2020.11.04.04.00.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 04:00:56 -0800 (PST)
-Date:   Wed, 4 Nov 2020 12:00:54 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     davem@davemloft.net, kuba@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Wei Liu <wei.liu@kernel.org>, Paul Durrant <paul@xen.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Rusty Russell <rusty@rustcorp.com.au>,
-        xen-devel@lists.xenproject.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH 05/12] net: xen-netback: xenbus: Demote nonconformant
- kernel-doc headers
-Message-ID: <20201104120054.jaukbhblpooi5hwf@liuwe-devbox-debian-v2>
-References: <20201104090610.1446616-1-lee.jones@linaro.org>
- <20201104090610.1446616-6-lee.jones@linaro.org>
+        Wed, 4 Nov 2020 07:04:05 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 66BDE180A7FE2;
+        Wed,  4 Nov 2020 12:04:04 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3350:3622:3865:3866:3867:3868:3870:3871:3872:3874:4321:5007:6691:6742:7903:7974:10004:10400:10848:11232:11658:11914:12043:12297:12740:12760:12895:13069:13255:13311:13357:13439:14181:14659:14721:21080:21325:21433:21451:21627:30003:30054:30055:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: turn90_630e8ab272c1
+X-Filterd-Recvd-Size: 2099
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf15.hostedemail.com (Postfix) with ESMTPA;
+        Wed,  4 Nov 2020 12:04:01 +0000 (UTC)
+Message-ID: <92d39ff1408078a656c43bee24e7e9b3e3815e72.camel@perches.com>
+Subject: Re: get_maintainer.pl bug? (was: Re: [PATCH 0/8] linker-section
+ array fix and clean ups)
+From:   Joe Perches <joe@perches.com>
+To:     Johan Hovold <johan@kernel.org>, linux-kernel@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jessica Yu <jeyu@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Jelinek <jakub@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Kurtz <djkurtz@chromium.org>,
+        linux-arch@vger.kernel.org, linux-m68k@lists.linux-m68k.org
+Date:   Wed, 04 Nov 2020 04:04:00 -0800
+In-Reply-To: <20201104091625.GP4085@localhost>
+References: <20201103175711.10731-1-johan@kernel.org>
+         <20201104091625.GP4085@localhost>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201104090610.1446616-6-lee.jones@linaro.org>
-User-Agent: NeoMutt/20180716
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 09:06:03AM +0000, Lee Jones wrote:
-> Fixes the following W=1 kernel build warning(s):
+On Wed, 2020-11-04 at 10:16 +0100, Johan Hovold wrote:
+> Running scrips/get_maintainer.pl on this series [1] gave the wrong
+> address for Nick Desaulniers:
 > 
->  drivers/net/xen-netback/xenbus.c:419: warning: Function parameter or member 'dev' not described in 'frontend_changed'
->  drivers/net/xen-netback/xenbus.c:419: warning: Function parameter or member 'frontend_state' not described in 'frontend_changed'
->  drivers/net/xen-netback/xenbus.c:1001: warning: Function parameter or member 'dev' not described in 'netback_probe'
->  drivers/net/xen-netback/xenbus.c:1001: warning: Function parameter or member 'id' not described in 'netback_probe'
+> 	Nick Desaulniers <ndesaulniers@gooogle.com> (commit_signer:1/2=50%,commit_signer:1/8=12%)
 > 
-> Cc: Wei Liu <wei.liu@kernel.org>
+> It seems he recently misspelled his address in a reviewed-by tag to
+> commit 33def8498fdd ("treewide: Convert macro and uses of __section(foo)
+> to __section("foo")") and that is now being picked up by the script.
+> 
+> I guess that's to be considered a bug?
 
-If this is ever needed:
+No, that's a feature.  If it's _really_ a problem, (and I don't
+think it really is), that's what .mailmap is for.
 
-Acked-by: Wei Liu <wei.liu@kernel.org>
+
