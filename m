@@ -2,128 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 973532A6C1B
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 18:47:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6182B2A6C25
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 18:49:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732091AbgKDRqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 12:46:31 -0500
-Received: from esa6.microchip.iphmx.com ([216.71.154.253]:61541 "EHLO
-        esa6.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732076AbgKDRq2 (ORCPT
+        id S1732121AbgKDRru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 12:47:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48862 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727851AbgKDRru (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 12:46:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1604511987; x=1636047987;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=cuSF0gSlstTy7/1sjdn75EP/sqA1SN5o3astT2nOOL0=;
-  b=iu1evf7+E4K+VqdBOZ25tK20ajYFEiBEb6a+6/lZCcKhL+GyaSW2uIx8
-   Td3/TWfZi7KBY33YcRtIMUb9/0uPmGsInRQx0XqPfdQRayfgWnDNP9Ylq
-   kgV8b+30NaOYPqJiCIAcfS8syEJWaPRywl7H/OxgVBcHOz5mTsz9My8VV
-   kQ3IcqmyehSLxx5pDi3PnuvMfRHIYt/nBTu//PqYRguwlEhTGqM60zuh0
-   fjrb6O7XlkGkznOPvC6q+XIcs8X59/Ui7AM2OXVzah6X5lVPJo5vRiltG
-   xW1FN7hO5ix0Ggdq7mczhOJCuQ6HY1y6+hkz/pa/VyUOjAsFnso6ud26d
-   A==;
-IronPort-SDR: Xu+jdCajfs21/12Fxg04RNe4pJNiOay7qYpN5lYJCWbw4k69xiGeNSk9YTqZxxx5tnyqE1d9lV
- pPxIIq2ulH2RwOM7hgIOCbPZOx0V4EQDxkHue6mTWVYsbyo2J1jne2lI31Qf0laLaSXgJcdoDq
- 6Rq1dvcZ6CL1RKV+o//RX0NCLecCnGR09XrunpfyxKJgdJdj6WDOLIGTnVZnx5TKwaB7FIhYtF
- LD9ra31Af4/wbp0uDzCXVE5C7lEGqLVNbLFNFpb2ZRXvkaBvQFngnEOpWOn76mDOqYXlJFclcT
- VMI=
-X-IronPort-AV: E=Sophos;i="5.77,451,1596524400"; 
-   d="scan'208";a="32430057"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 04 Nov 2020 10:46:25 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 4 Nov 2020 10:46:22 -0700
-Received: from m18063-ThinkPad-T460p.microchip.com (10.10.115.15) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Wed, 4 Nov 2020 10:46:17 -0700
-From:   Claudiu Beznea <claudiu.beznea@microchip.com>
-To:     <mturquette@baylibre.com>, <sboyd@kernel.org>,
-        <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
-        <ludovic.desroches@microchip.com>, <robh+dt@kernel.org>
-CC:     <linux-clk@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <eugen.hristev@microchip.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>
-Subject: [PATCH v2 8/8] clk: at91: sama7g5: register cpu clock
-Date:   Wed, 4 Nov 2020 19:45:26 +0200
-Message-ID: <1604511926-29516-9-git-send-email-claudiu.beznea@microchip.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1604511926-29516-1-git-send-email-claudiu.beznea@microchip.com>
-References: <1604511926-29516-1-git-send-email-claudiu.beznea@microchip.com>
+        Wed, 4 Nov 2020 12:47:50 -0500
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0638C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 09:47:49 -0800 (PST)
+Received: by mail-qk1-x742.google.com with SMTP id b18so20072673qkc.9
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 09:47:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=7p9nMEZ9CzGNR2nnoc/NmQ6U82GjuP7yX7DwiANzfMc=;
+        b=rli6FwsWHB6cip/0jF9V7BsRWZHrrjIg7apvuKsE1Kge0E1dkDcIwIFohwKtLUNDAk
+         wz/XglDjWFEulLaAfpTOkI/0Uc4V5g+ashXdnCpUU5Y67NkbPnjYcHowLSGV3qpV1sm8
+         PXa4wmOaVMSbRNKZO03cdu+YlTVXPEjInI04LrO59b8qeBsErr+oo5tT/Kqu6AQo2ZRk
+         65sCqy2Xavh+oMTSK1yv/QuMP9HCT8mS1vrN5D4TUL9Ved1CVkPbN6xpb49UcVVNb2VC
+         YNORrzogpHxam/vez2HbOF4GRctTlLzbSWFf3SULmRcwcG/9bFvtEV/CyaxRuImJqqNG
+         bpXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=7p9nMEZ9CzGNR2nnoc/NmQ6U82GjuP7yX7DwiANzfMc=;
+        b=NnLl6OU9etMCTaCDBTOkbm7MgfwJTtvu/yz0Lk6PTizrSV86y/Xm7a+hiDjbA2J4f6
+         h+14iHwoatD2fx8lDsh2GPhzUkW90tKCW1Bm4W5GV95IerlVrrlVTVQlOh31l82N3GMC
+         YiubJoH/BkkJghgV4VHjM0hK+oaRjlMXoEMMUBADTekupopipH06xwbpOeOotL8nT7Ko
+         PjaqpmCmy+atLSfIHLCItTPhK1QJhDVI/vUnthofXOh1hxcViyMiqK7MzPyeEd1L/S93
+         MlYCUQPIvUmpZE7a3LutEr3nuOYznwqFQoFgreVmU4eeiX0Ki7cJiFOHkITsF2S0OQEr
+         sMgw==
+X-Gm-Message-State: AOAM530S+o7M4axlmIX/gR90Dz9RsYs3IDjYhqenRQ9I7jwa/sYa+PUs
+        kZr0z9SDOZOmYCzWCjbCbYBs+g==
+X-Google-Smtp-Source: ABdhPJyMmSWtU9YdDH6PIQ8KMI59p6etR+e16HXhCBMFokoPryGCTptpZglCy4FPpuIv5MAhH7H3vA==
+X-Received: by 2002:a37:8542:: with SMTP id h63mr27249718qkd.102.1604512068975;
+        Wed, 04 Nov 2020 09:47:48 -0800 (PST)
+Received: from localhost ([2620:10d:c091:480::1:9e9e])
+        by smtp.gmail.com with ESMTPSA id d145sm2908052qke.83.2020.11.04.09.47.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Nov 2020 09:47:48 -0800 (PST)
+Date:   Wed, 4 Nov 2020 12:46:03 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     Matthew Wilcox <willy@infradead.org>, akpm@linux-foundation.org,
+        mgorman@techsingularity.net, tj@kernel.org, hughd@google.com,
+        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
+        lkp@intel.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, shakeelb@google.com,
+        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
+        kirill@shutemov.name, alexander.duyck@gmail.com,
+        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
+        shy828301@gmail.com, Vlastimil Babka <vbabka@suse.cz>,
+        Minchan Kim <minchan@kernel.org>
+Subject: Re: [PATCH v20 08/20] mm: page_idle_get_page() does not need lru_lock
+Message-ID: <20201104174603.GB744831@cmpxchg.org>
+References: <1603968305-8026-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1603968305-8026-9-git-send-email-alex.shi@linux.alibaba.com>
+ <20201102144110.GB724984@cmpxchg.org>
+ <20201102144927.GN27442@casper.infradead.org>
+ <20201102202003.GA740958@cmpxchg.org>
+ <b4038b87-cf5a-fcb7-06f4-b98874029615@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <b4038b87-cf5a-fcb7-06f4-b98874029615@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Register CPU clock as being the master clock prescaler. This would
-be used by DVFS. The block schema of SAMA7G5's PMC contains also a divider
-between master clock prescaler and CPU (PMC_CPU_RATIO.RATIO) but the
-frequencies supported by SAMA7G5 could be directly received from
-CPUPLL + master clock prescaler and the extra divider would do no work in
-case it would be enabled.
+On Wed, Nov 04, 2020 at 07:27:21PM +0800, Alex Shi wrote:
+> 在 2020/11/3 上午4:20, Johannes Weiner 写道:
+> > On Mon, Nov 02, 2020 at 02:49:27PM +0000, Matthew Wilcox wrote:
+> >> On Mon, Nov 02, 2020 at 09:41:10AM -0500, Johannes Weiner wrote:
+> >>> On Thu, Oct 29, 2020 at 06:44:53PM +0800, Alex Shi wrote:
+> >>>> From: Hugh Dickins <hughd@google.com>
+> >>>>
+> >>>> It is necessary for page_idle_get_page() to recheck PageLRU() after
+> >>>> get_page_unless_zero(), but holding lru_lock around that serves no
+> >>>> useful purpose, and adds to lru_lock contention: delete it.
+> >>>>
+> >>>> See https://lore.kernel.org/lkml/20150504031722.GA2768@blaptop for the
+> >>>> discussion that led to lru_lock there; but __page_set_anon_rmap() now
+> >>>> uses WRITE_ONCE(),
+> >>>
+> >>> That doesn't seem to be the case in Linus's or Andrew's tree. Am I
+> >>> missing a dependent patch series?
+> >>>
+> >>>> and I see no other risk in page_idle_clear_pte_refs() using
+> >>>> rmap_walk() (beyond the risk of racing PageAnon->PageKsm, mostly but
+> >>>> not entirely prevented by page_count() check in ksm.c's
+> >>>> write_protect_page(): that risk being shared with page_referenced()
+> >>>> and not helped by lru_lock).
+> >>>
+> >>> Isn't it possible, as per Minchan's description, for page->mapping to
+> >>> point to a struct anon_vma without PAGE_MAPPING_ANON set, and rmap
+> >>> thinking it's looking at a struct address_space?
+> >>
+> >> I don't think it can point to an anon_vma without the ANON bit set.
+> >> Minchan's concern in that email was that it might still be NULL.
+> > 
+> > Hm, no, the thread is a lengthy discussion about whether the store
+> > could be split such that page->mapping is actually pointing to
+> > something invalid (anon_vma without the PageAnon bit).
+> > 
+> > From his email:
+> > 
+> >         CPU 0                                                                           CPU 1
+> > 
+> > do_anonymous_page
+> >   __page_set_anon_rmap
+> >   /* out of order happened so SetPageLRU is done ahead */
+> >   SetPageLRU(page)
+> 
+> This SetPageLRU done in __pagevec_lru_add_fn() which under the lru_lock
+> protection, so the original memory barrier or lock concern isn't
+> correct. that means, the SetPageLRU isn't possible to be here.
+> And then no warry on right side 'CPU 1' problem.
 
-Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
----
- drivers/clk/at91/sama7g5.c       | 13 ++++++-------
- include/dt-bindings/clock/at91.h |  1 +
- 2 files changed, 7 insertions(+), 7 deletions(-)
+The SetPageLRU is done under lru_lock, but the store to page->mapping
+is not, so what ensures ordering between them? And what prevents the
+compiler from tearing the store to page->mapping?
 
-diff --git a/drivers/clk/at91/sama7g5.c b/drivers/clk/at91/sama7g5.c
-index d38766c6fc8c..b712dd273a0b 100644
---- a/drivers/clk/at91/sama7g5.c
-+++ b/drivers/clk/at91/sama7g5.c
-@@ -852,7 +852,7 @@ static void __init sama7g5_pmc_setup(struct device_node *np)
- 	if (IS_ERR(regmap))
- 		return;
- 
--	sama7g5_pmc = pmc_data_allocate(PMC_ETHPLL + 1,
-+	sama7g5_pmc = pmc_data_allocate(PMC_CPU + 1,
- 					nck(sama7g5_systemck),
- 					nck(sama7g5_periphck),
- 					nck(sama7g5_gck), 8);
-@@ -929,18 +929,17 @@ static void __init sama7g5_pmc_setup(struct device_node *np)
- 		}
- 	}
- 
--	parent_names[0] = md_slck_name;
--	parent_names[1] = "mainck";
--	parent_names[2] = "cpupll_divpmcck";
--	parent_names[3] = "syspll_divpmcck";
--	hw = at91_clk_register_master_pres(regmap, "mck0_pres", 4, parent_names,
-+	parent_names[0] = "cpupll_divpmcck";
-+	hw = at91_clk_register_master_pres(regmap, "cpuck", 1, parent_names,
- 					   &mck0_layout, &mck0_characteristics,
- 					   &pmc_mck0_lock,
- 					   CLK_SET_RATE_PARENT, 0);
- 	if (IS_ERR(hw))
- 		goto err_free;
- 
--	hw = at91_clk_register_master_div(regmap, "mck0_div", "mck0_pres",
-+	sama7g5_pmc->chws[PMC_CPU] = hw;
-+
-+	hw = at91_clk_register_master_div(regmap, "mck0", "cpuck",
- 					  &mck0_layout, &mck0_characteristics,
- 					  &pmc_mck0_lock, 0);
- 	if (IS_ERR(hw))
-diff --git a/include/dt-bindings/clock/at91.h b/include/dt-bindings/clock/at91.h
-index fab313f62e8f..98e1b2ab6403 100644
---- a/include/dt-bindings/clock/at91.h
-+++ b/include/dt-bindings/clock/at91.h
-@@ -34,6 +34,7 @@
- #define PMC_AUDIOPMCPLL		(PMC_MAIN + 6)
- #define PMC_AUDIOIOPLL		(PMC_MAIN + 7)
- #define PMC_ETHPLL		(PMC_MAIN + 8)
-+#define PMC_CPU			(PMC_MAIN + 9)
- 
- #ifndef AT91_PMC_MOSCS
- #define AT91_PMC_MOSCS		0		/* MOSCS Flag */
--- 
-2.7.4
+The writer does this:
 
+	CPU 0
+	page_add_new_anon_rmap()
+	  page->mapping = anon_vma + PAGE_MAPPING_ANON
+	lru_cache_add_inactive_or_unevictable()
+	  spin_lock(lruvec->lock)
+	  SetPageLRU()
+	  spin_unlock(lruvec->lock)
+
+The concern is what CPU 1 will observe at page->mapping after
+observing PageLRU set on the page.
+
+1. anon_vma + PAGE_MAPPING_ANON
+
+   That's the in-order scenario and is fine.
+
+2. NULL
+
+   That's possible if the page->mapping store gets reordered to occur
+   after SetPageLRU. That's fine too because we check for it.
+
+3. anon_vma without the PAGE_MAPPING_ANON bit
+
+   That would be a problem and could lead to all kinds of undesirable
+   behavior including crashes and data corruption.
+
+   Is it possible? AFAICT the compiler is allowed to tear the store to
+   page->mapping and I don't see anything that would prevent it.
+
+That said, I also don't see how the reader testing PageLRU under the
+lru_lock would prevent that in the first place. AFAICT we need that
+WRITE_ONCE() around the page->mapping assignment that's referenced in
+the changelog of this patch but I cannot find in any tree or patch.
