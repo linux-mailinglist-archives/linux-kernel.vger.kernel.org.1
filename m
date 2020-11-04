@@ -2,93 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C24E92A5FA6
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 09:31:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B650B2A5FAF
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 09:35:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728483AbgKDIbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 03:31:51 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:40280 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725812AbgKDIbv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 03:31:51 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A48TlMT174602;
-        Wed, 4 Nov 2020 08:31:36 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=wOQLF+xJ/7VE4Y0fP7RL7N20/n8UEBSylhe1dmfPQBE=;
- b=m5Al1zUVRnT6KE5dIjwYeLPDlAtF6pphW3zZkSzdDDGL7ZdBTbd+FntZaNEku9lfqpxj
- LTJ6d3Qk56+NPDcl2RAd/nRUxll38d4EaUTxZO8Yfh6PHlQzvpCNJD5FGkzLRc5tc+RA
- Igvl8PdHVOaDd2FzoQMKAdVC6oRlm1zNJXQ3HgQeYFl024q/ao7TD99I1DazqaiZTpDo
- VRRivO4PoAG65qohV2/tJKRvHXMpiv2QX8d/av2gea6tWbHmTDJMXY+22orQxnqV9osW
- z/Y9Bu0pPXCOStImjiLST/coHbW1Mrhu10as0jwzevYXQPkqS3aUjqHiamZsrcJ+71/m iw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 34hhvcdfxa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 04 Nov 2020 08:31:36 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A48OjVt006745;
-        Wed, 4 Nov 2020 08:31:35 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 34hw0f0uhx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 04 Nov 2020 08:31:35 +0000
-Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0A48VWeN026301;
-        Wed, 4 Nov 2020 08:31:32 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 04 Nov 2020 00:31:31 -0800
-Date:   Wed, 4 Nov 2020 11:31:21 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Markus Elfring <Markus.Elfring@web.de>
-Cc:     Souptick Joarder <jrdr.linux@gmail.com>,
-        devel@driverdev.osuosl.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michel Lespinasse <walken@google.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH v2] media: atomisp: Fix error handling path
-Message-ID: <20201104083121.GG18329@kadam>
-References: <1604455331-28031-1-git-send-email-jrdr.linux@gmail.com>
- <65712450-1ee9-2dd3-cd43-f850807ae203@web.de>
+        id S1728334AbgKDIf1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 03:35:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55674 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725812AbgKDIf1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 03:35:27 -0500
+Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A139422264
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 08:35:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604478926;
+        bh=9NEFiKOJMd/gcEFN0QsFwhrwg4OmXEdvT7F7d8Wl+Zs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=HIb5JrL9Ftex70B7LCl1GcBjI4jQlRjolqP+nPejzsx4R5sjcM2+j5iRF4OBjkChv
+         dU2quEuqYPOVFeqtAVitzXKHaPYijN39C0pUTaRMyPVmMvhVVCSP2XiKCK3UGAUi7h
+         115WOsBN3HdFom4SgKVGSPwAEIgIpXPaSzNmLxh0=
+Received: by mail-ot1-f46.google.com with SMTP id n11so18646328ota.2
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 00:35:26 -0800 (PST)
+X-Gm-Message-State: AOAM5304yUfDn+sARY+Sf7n5ek5yFzax4cxN1cHPtUv2Jgs3AeUGQt3j
+        SFp/Jv5FrCncO3dadBhRS97f0yon0aapHpoAho8=
+X-Google-Smtp-Source: ABdhPJxUL4gMf9+E8ahcvPdaqC+CR9QjRycCnGgeuUvQ3U2BK9f2ObPIWl2Pt02dVj/B+2eo2UBRhimi4ko2yzWaWHw=
+X-Received: by 2002:a05:6830:4028:: with SMTP id i8mr17341065ots.90.1604478925845;
+ Wed, 04 Nov 2020 00:35:25 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <65712450-1ee9-2dd3-cd43-f850807ae203@web.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9794 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=999
- phishscore=0 bulkscore=0 spamscore=0 malwarescore=0 mlxscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011040062
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9794 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0
- impostorscore=0 malwarescore=0 priorityscore=1501 mlxlogscore=999
- bulkscore=0 phishscore=0 adultscore=0 mlxscore=0 lowpriorityscore=0
- clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011040062
+References: <20201031094345.6984-1-rppt@kernel.org> <CAMo8BfLCfpZcQC3oqEvExSqZ+dT2sVDjcXoaO_XKALn4rGjoog@mail.gmail.com>
+ <20201031171608.GB14628@kernel.org> <CAMo8BfJ4ai4UHD36JZb2ETiFe9SeqpVQw5tsNLrSF8sUx11ccQ@mail.gmail.com>
+In-Reply-To: <CAMo8BfJ4ai4UHD36JZb2ETiFe9SeqpVQw5tsNLrSF8sUx11ccQ@mail.gmail.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Wed, 4 Nov 2020 09:35:14 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXFmi4+1FmLk-0kSL8sSMDgftLTArwf_6hONLkyMJk+srg@mail.gmail.com>
+Message-ID: <CAMj1kXFmi4+1FmLk-0kSL8sSMDgftLTArwf_6hONLkyMJk+srg@mail.gmail.com>
+Subject: Re: [PATCH] ARM, xtensa: highmem: avoid clobbering non-page aligned
+ memory reservations
+To:     Max Filippov <jcmvbkbc@gmail.com>
+Cc:     Mike Rapoport <rppt@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>, Chris Zankel <chris@zankel.net>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Russell King <linux@armlinux.org.uk>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 08:15:58AM +0100, Markus Elfring wrote:
-> > Fixes: 14a638ab96c5 ("media: atomisp: use pin_user_pages() for memory
-> > allocation")
-> 
-> Please delete a line break for this tag.
+On Sat, 31 Oct 2020 at 18:44, Max Filippov <jcmvbkbc@gmail.com> wrote:
+>
+> On Sat, Oct 31, 2020 at 10:16 AM Mike Rapoport <rppt@kernel.org> wrote:
+> >
+> > On Sat, Oct 31, 2020 at 09:37:09AM -0700, Max Filippov wrote:
+> > > On Sat, Oct 31, 2020 at 2:43 AM Mike Rapoport <rppt@kernel.org> wrote:
+> > > > Please let me know how do you prefer to take it upstream.
+> > > > If needed this can go via memblock tree.
+> > >
+> > > Going through the memblock tree sounds right to me.
+> >
+> > Can I treat this as Ack?
+>
+> Sure, for the xtensa part:
+> Acked-by: Max Filippov <jcmvbkbc@gmail.com>
+>
 
-Markus, the thing is that we all saw the line break and we just thought
-it didn't matter at all...
-
-regards,
-dan carpenter
+Could we get this queued up please?
