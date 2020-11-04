@@ -2,76 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A163A2A6EEB
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 21:37:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C95A2A6EF4
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 21:40:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730345AbgKDUho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 15:37:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47092 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726777AbgKDUho (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 15:37:44 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28BFCC0613D3;
-        Wed,  4 Nov 2020 12:37:44 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id f38so17573762pgm.2;
-        Wed, 04 Nov 2020 12:37:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KqtmvIeCcEE4/0N0FwB4Be0GcMo80VuNERTsRMZmWY8=;
-        b=aXB4kSQJm7gg6cFUbtrYSByfJtj3mF5nBA64oUXvY9DLFZl1xDz1N2hbVH2umtgz+2
-         qZFe7/49PRzpHpMPcKtTsey77QZ6CJgnUyu49LUfyKtBg8NYJ+BqJu/ofvr/LH3oDduf
-         JBo1WfRa87+KTUaOjP0MCZauRUV+vgjg0yWqbTzlWPcrReQcZ/NbbT5loNuE9kdYGomB
-         aFNjzIE5zseztJP9XXJEqcVpP113GtjKVaYsYc/RVubPsEKEZ5Cw1PpQDpN65VARtKTH
-         MMYlJhXELBzSQMrTKSlgVdmANr1XzrH+E6mzRbpgLRi6oJzws+xr5EPYZDCyXP7CdL6E
-         aQqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KqtmvIeCcEE4/0N0FwB4Be0GcMo80VuNERTsRMZmWY8=;
-        b=cSeulsTLswyqRPgtsGEOm55fg99MzS3qeW/vLkiBFCb1rhHUztN1dhEMBG84Gz9/kv
-         vIy2/UPKz+mN9BvIipO67dzpReY2XG192fpiv/LvvACx3WihuqWe8P34+ndT1KQQ6MY0
-         zpVFnaejpSt+cYGgcQ7RmppS6AqWcVgvosjLO2X1FTfTQuAzVLbeit05oUZ1ira1o68U
-         e6tAmKtcwzU+JBfxj01PDc+D5uU3IXHBtyA0T/OIxzPmf8KSONNeXYNs0pJeZ9EWyg3R
-         ECMMZJw5zwzAokKk57bFOL4zQ1G1asRXEw6JiV85P9+vyoFrguWwaC7p5076uyXT6Jzx
-         Julw==
-X-Gm-Message-State: AOAM5307QYOZmeYXf5hN2OAjoEzNYz3Tp7JVSI/1I34JKoyhL6IvdHhe
-        d/Oqw8I9K3ZSz86DCKCHpdXZKLkiLIyRhsRG2FI=
-X-Google-Smtp-Source: ABdhPJzjJQXk1LfOeoT8BLyHAQ5mGIVCdPsCssU1DbU5ljyYDHA3v+4JutMxyMOTt76qlVclDHh0ntuxQd8atHvUB1I=
-X-Received: by 2002:a63:3e05:: with SMTP id l5mr3386282pga.74.1604522263794;
- Wed, 04 Nov 2020 12:37:43 -0800 (PST)
+        id S1730986AbgKDUkI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 15:40:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57714 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730224AbgKDUkI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 15:40:08 -0500
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 70C89204EF;
+        Wed,  4 Nov 2020 20:40:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604522407;
+        bh=VBDu1Nb9K5h2DXXxctVoMtIgdLPRTrWevse84KU65aY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=b7eqjeWb89hca6r+DWkfPJdmVuZVh3ekAQe5S+3q1lMp7tEwLQmk63aAphqtilJ02
+         zXozlYvUxD0NZpWnVaI9A1fq+gSg7zn9Fn/QQr1hx+JsQ/Ifinvsb1DBc6jscaspNO
+         lSfJROfTYkkbwmL1110PzuTe3mF0GAQXw+wbrHys=
+Date:   Wed, 4 Nov 2020 20:39:55 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>
+Cc:     robh+dt@kernel.org, joel@jms.id.au, andrew@aj.id.au, clg@kaod.org,
+        bbrezillon@kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-aspeed@lists.ozlabs.org,
+        linux-spi@vger.kernel.org, BMC-SW@aspeedtech.com
+Subject: Re: [v2 4/4] spi: aspeed: Add ASPEED FMC/SPI memory controller driver
+Message-ID: <20201104203955.GA4795@sirena.org.uk>
+References: <20201103072202.24705-1-chin-ting_kuo@aspeedtech.com>
+ <20201103072202.24705-5-chin-ting_kuo@aspeedtech.com>
 MIME-Version: 1.0
-References: <20201104160344.4929-1-coiby.xu@gmail.com> <20201104160344.4929-2-coiby.xu@gmail.com>
-In-Reply-To: <20201104160344.4929-2-coiby.xu@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 4 Nov 2020 22:38:32 +0200
-Message-ID: <CAHp75Vf8NMWL99Eo5k8gLwYSjUjfU6wjoh97YzVz+M=nwGNfrg@mail.gmail.com>
-Subject: Re: [PATCH 1/4] pinctrl: amd: fix incorrect way to disable debounce filter
-To:     Coiby Xu <coiby.xu@gmail.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        "open list:PIN CONTROL SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="sdtB3X0nJg68CQEu"
+Content-Disposition: inline
+In-Reply-To: <20201103072202.24705-5-chin-ting_kuo@aspeedtech.com>
+X-Cookie: Shake well before using.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 4, 2020 at 6:05 PM Coiby Xu <coiby.xu@gmail.com> wrote:
->
-> The correct way to disable debounce filter is to clear bit 5 and 6
-> of the register.
->
-> Cc: Hans de Goede <hdegoede@redhat.com>
 
-> Message-ID: <df2c008b-e7b5-4fdd-42ea-4d1c62b52139@redhat.com>
+--sdtB3X0nJg68CQEu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Can you use a Link tag with proper lore.kernel.org URL?
+On Tue, Nov 03, 2020 at 03:22:02PM +0800, Chin-Ting Kuo wrote:
+> Add driver for ASPEED BMC FMC/SPI memory controller which
+> supports spi-mem interface.
 
--- 
-With Best Regards,
-Andy Shevchenko
+This breaks the build for me with an x86 allmodconfig:
+
+/mnt/kernel/drivers/spi/spi-aspeed.c: In function 'aspeed_2600_spi_dma_checksum':
+/mnt/kernel/drivers/spi/spi-aspeed.c:195:9: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+  writel((uint32_t)ast_ctrl->chips[cs].ahb_base_phy,
+         ^
+/mnt/kernel/drivers/spi/spi-aspeed.c: In function 'aspeed_spi_decode_range_config':
+/mnt/kernel/drivers/spi/spi-aspeed.c:488:27: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
+   chip[cs].ahb_base_phy = (void __iomem *)start_addr_phy;
+                           ^
+In file included from /mnt/kernel/include/linux/printk.h:409,
+                 from /mnt/kernel/include/linux/kernel.h:16,
+                 from /mnt/kernel/include/linux/clk.h:13,
+                 from /mnt/kernel/drivers/spi/spi-aspeed.c:11:
+/mnt/kernel/drivers/spi/spi-aspeed.c: In function 'aspeed_spi_exec_op':
+/mnt/kernel/drivers/spi/spi-aspeed.c:619:44: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+   ctrl_val, addr_mode_reg, addr_data_mask, (uint32_t)op_addr);
+                                            ^
+/mnt/kernel/include/linux/dynamic_debug.h:129:15: note: in definition of macro '__dynamic_func_call'
+   func(&id, ##__VA_ARGS__);  \
+               ^~~~~~~~~~~
+/mnt/kernel/include/linux/dynamic_debug.h:161:2: note: in expansion of macro '_dynamic_func_call'
+  _dynamic_func_call(fmt,__dynamic_dev_dbg,   \
+  ^~~~~~~~~~~~~~~~~~
+/mnt/kernel/include/linux/dev_printk.h:123:2: note: in expansion of macro 'dynamic_dev_dbg'
+  dynamic_dev_dbg(dev, dev_fmt(fmt), ##__VA_ARGS__)
+  ^~~~~~~~~~~~~~~
+/mnt/kernel/drivers/spi/spi-aspeed.c:618:2: note: in expansion of macro 'dev_dbg'
+  dev_dbg(dev, "ctrl: 0x%08x, addr_mode: 0x%x, mask: 0x%x, addr:0x%08x\n",
+  ^~~~~~~
+/mnt/kernel/drivers/spi/spi-aspeed.c: In function 'aspeed_spi_dirmap_read':
+/mnt/kernel/drivers/spi/spi-aspeed.c:651:25: warning: format '%x' expects argument of type 'unsigned int', but argument 6 has type 'size_t' {aka 'long unsigned int'} [-Wformat=]
+  dev_dbg(ast_ctrl->dev, "read op:0x%x, addr:0x%llx, len:0x%x\n",
+                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/mnt/kernel/include/linux/dynamic_debug.h:129:15: note: in definition of macro '__dynamic_func_call'
+   func(&id, ##__VA_ARGS__);  \
+               ^~~~~~~~~~~
+/mnt/kernel/include/linux/dynamic_debug.h:161:2: note: in expansion of macro '_dynamic_func_call'
+  _dynamic_func_call(fmt,__dynamic_dev_dbg,   \
+  ^~~~~~~~~~~~~~~~~~
+/mnt/kernel/include/linux/dev_printk.h:123:2: note: in expansion of macro 'dynamic_dev_dbg'
+  dynamic_dev_dbg(dev, dev_fmt(fmt), ##__VA_ARGS__)
+  ^~~~~~~~~~~~~~~
+/mnt/kernel/include/linux/dev_printk.h:123:23: note: in expansion of macro 'dev_fmt'
+  dynamic_dev_dbg(dev, dev_fmt(fmt), ##__VA_ARGS__)
+                       ^~~~~~~
+/mnt/kernel/drivers/spi/spi-aspeed.c:651:2: note: in expansion of macro 'dev_dbg'
+  dev_dbg(ast_ctrl->dev, "read op:0x%x, addr:0x%llx, len:0x%x\n",
+  ^~~~~~~
+/mnt/kernel/drivers/spi/spi-aspeed.c: In function 'aspeed_spi_dirmap_write':
+/mnt/kernel/drivers/spi/spi-aspeed.c:676:25: warning: format '%x' expects argument of type 'unsigned int', but argument 6 has type 'size_t' {aka 'long unsigned int'} [-Wformat=]
+  dev_dbg(ast_ctrl->dev, "write op:0x%x, addr:0x%llx, len:0x%x\n",
+                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/mnt/kernel/include/linux/dynamic_debug.h:129:15: note: in definition of macro '__dynamic_func_call'
+   func(&id, ##__VA_ARGS__);  \
+               ^~~~~~~~~~~
+/mnt/kernel/include/linux/dynamic_debug.h:161:2: note: in expansion of macro '_dynamic_func_call'
+  _dynamic_func_call(fmt,__dynamic_dev_dbg,   \
+  ^~~~~~~~~~~~~~~~~~
+/mnt/kernel/include/linux/dev_printk.h:123:2: note: in expansion of macro 'dynamic_dev_dbg'
+  dynamic_dev_dbg(dev, dev_fmt(fmt), ##__VA_ARGS__)
+  ^~~~~~~~~~~~~~~
+/mnt/kernel/include/linux/dev_printk.h:123:23: note: in expansion of macro 'dev_fmt'
+  dynamic_dev_dbg(dev, dev_fmt(fmt), ##__VA_ARGS__)
+                       ^~~~~~~
+/mnt/kernel/drivers/spi/spi-aspeed.c:676:2: note: in expansion of macro 'dev_dbg'
+  dev_dbg(ast_ctrl->dev, "write op:0x%x, addr:0x%llx, len:0x%x\n",
+  ^~~~~~~
+/mnt/kernel/drivers/spi/spi-aspeed.c: At top level:
+/mnt/kernel/drivers/spi/spi-aspeed.c:820:17: error: initialization of 'ssize_t (*)(struct spi_mem_dirmap_desc *, u64,  size_t,  void *)' {aka 'long int (*)(struct spi_mem_dirmap_desc *, long long unsigned int,  long unsigned int,  void *)'} from incompatible pointer type 'int (*)(struct spi_mem_dirmap_desc *, uint64_t,  size_t,  void *)' {aka 'int (*)(struct spi_mem_dirmap_desc *, long long unsigned int,  long unsigned int,  void *)'} [-Werror=incompatible-pointer-types]
+  .dirmap_read = aspeed_spi_dirmap_read,
+                 ^~~~~~~~~~~~~~~~~~~~~~
+/mnt/kernel/drivers/spi/spi-aspeed.c:820:17: note: (near initialization for 'aspeed_spi_mem_ops.dirmap_read')
+/mnt/kernel/drivers/spi/spi-aspeed.c:821:18: error: initialization of 'ssize_t (*)(struct spi_mem_dirmap_desc *, u64,  size_t,  const void *)' {aka 'long int (*)(struct spi_mem_dirmap_desc *, long long unsigned int,  long unsigned int,  const void *)'} from incompatible pointer type 'int (*)(struct spi_mem_dirmap_desc *, uint64_t,  size_t,  const void *)' {aka 'int (*)(struct spi_mem_dirmap_desc *, long long unsigned int,  long unsigned int,  const void *)'} [-Werror=incompatible-pointer-types]
+  .dirmap_write = aspeed_spi_dirmap_write,
+                  ^~~~~~~~~~~~~~~~~~~~~~~
+/mnt/kernel/drivers/spi/spi-aspeed.c:821:18: note: (near initialization for 'aspeed_spi_mem_ops.dirmap_write')
+cc1: some warnings being treated as errors
+
+--sdtB3X0nJg68CQEu
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+jEZsACgkQJNaLcl1U
+h9A64Af6A0oO7eHUA31lFFiQcUOMGH8KmmaRxMguzuA9TLxBmt6wSoZsNbi8Ye2w
+hWj4isvP37KIg6vQbgNdXQs3id3giOu9cfuq82vuRNsBfnwde8J1y94aHlVBog5l
+UH3A1CkuAml8SFNgyy9pL0g123BomTQt0PwaJZqGgQ0wUc7/BFcL/gtkgJ7vF04s
+Fg1kkD+4F5wqaHUCGPebKH3j9J5G5Vjs+4bFZzBxliMGOfNRPUAvGtWMn/UXuhs6
+FA2wfFpbeINSJJ7CwNKJ8RNbcYbiwA0lXDZkJCYud/7o6D16vfs0sc0akm3qOH0n
+XLaOw+WB3xLClyKArqZCQ9TMmuIbXw==
+=y195
+-----END PGP SIGNATURE-----
+
+--sdtB3X0nJg68CQEu--
