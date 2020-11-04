@@ -2,116 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0830D2A6ED0
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 21:34:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D53E92A6EE1
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 21:35:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732194AbgKDUe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 15:34:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46570 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732126AbgKDUeX (ORCPT
+        id S1732273AbgKDUfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 15:35:04 -0500
+Received: from mxout03.lancloud.ru ([89.108.73.187]:33280 "EHLO
+        mxout03.lancloud.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732265AbgKDUfC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 15:34:23 -0500
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CB4BC061A4A;
-        Wed,  4 Nov 2020 12:34:23 -0800 (PST)
-Received: by mail-lf1-x142.google.com with SMTP id 184so28913432lfd.6;
-        Wed, 04 Nov 2020 12:34:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=WKT9yCY9G74xRdzuzOYreE2TSI0A3c590q95kWmR0gE=;
-        b=lqP2jOnXcgZ6lV2k7SBWomSKz8TeVPz1pFaKDBUJm5I/18KOvwsyxHwpjbZ8evWEH8
-         ON/9H9C/B6D6NyubgDCOKi97Bw+fzHN3rqHvbhYgmZ6+eFW5d/A+3N3xc3ciOif9Jc27
-         ENGVDjCemHkSLOZK2SPQymavs6t0eJDA6hQK4cEYyhGy0pNesU2i0YNKtib6JFlkC9vH
-         I0uu67iQv+8e4GwX4emfW3InNs/kXiTquqBmH2qO0yICRnJm+wqbF83s6FS2WNcTFCHb
-         EM42NcwvZSbYEWWqeMhOQSI0l5pFGZe1UU2jIAMecogW0tEZyMdm3OQTkXCleH6h8UEU
-         5/Rg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=WKT9yCY9G74xRdzuzOYreE2TSI0A3c590q95kWmR0gE=;
-        b=FOXjS5EM4SHQCbzbvuCbYzJTYhXtgIfdDhdIHbsfLc6phqUFmZIHBnQtDP2+z0eS2Y
-         Wj+Fr+wgycursTIrx8r/V01nuhTq4/rAy1S8SEBxwAmW1EAqPBkOF1UOWxWiiNbv6JMS
-         k8F+nFeYWCERiapxggAGPHAgRd3qIaDpp48JvqqeF6P9yWq2383P8ZNfNkIAVixtFTKA
-         8vnsiOiFSHTRTTkw+DbAPX9MNyPAMtLJsUtENFSGV4JyGYDiG5d37YIeDzB4BG4fADGY
-         N3LiefQjIQTp5wK2LDPcOnSzXa+pvGlCE76nkTSmVVPIIUs3yH6Ydy9FR84jvxvjcDN5
-         oYkA==
-X-Gm-Message-State: AOAM530XseWZ6TDY/AlkReXI2HXAA4B4xygZikmgacn4LDAjyPK73BLG
-        wGL2EIYlhwI0bo9Rb0X1mkg=
-X-Google-Smtp-Source: ABdhPJzfD7jLtgKzs4Af7JCwmX7xio1vG47w4LofjydiYDgTi8aU+pacgbFhucTbGOw6yRfrID0l2w==
-X-Received: by 2002:a19:f605:: with SMTP id x5mr10315928lfe.39.1604522061646;
-        Wed, 04 Nov 2020 12:34:21 -0800 (PST)
-Received: from localhost.localdomain (109-252-192-83.dynamic.spd-mgts.ru. [109.252.192.83])
-        by smtp.gmail.com with ESMTPSA id u22sm615084ljk.45.2020.11.04.12.34.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 12:34:21 -0800 (PST)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Dan Murphy <dmurphy@ti.com>, Sebastian Reichel <sre@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v5 4/4] ARM: tegra: acer-a500: Add Embedded Controller
-Date:   Wed,  4 Nov 2020 23:34:03 +0300
-Message-Id: <20201104203403.24937-5-digetx@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20201104203403.24937-1-digetx@gmail.com>
-References: <20201104203403.24937-1-digetx@gmail.com>
+        Wed, 4 Nov 2020 15:35:02 -0500
+Received: from LanCloud
+DKIM-Filter: OpenDKIM Filter v2.11.0 mxout03.lancloud.ru 16436206E802
+Received: from LanCloud
+Received: from LanCloud
+Received: from LanCloud
+Subject: [PATCH 1/2] module: fix up 'kernel-doc' comments
+From:   Sergey Shtylyov <s.shtylyov@omprussia.ru>
+To:     Jessica Yu <jeyu@kernel.org>, <linux-kernel@vger.kernel.org>
+References: <8fe9a7be-9f32-6724-a20f-9659b418f184@omprussia.ru>
+Organization: Open Mobile Platform, LLC
+Message-ID: <fdec4161-9bcd-ad10-8f18-ccc22b5c0932@omprussia.ru>
+Date:   Wed, 4 Nov 2020 23:34:59 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <8fe9a7be-9f32-6724-a20f-9659b418f184@omprussia.ru>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [213.87.161.212]
+X-ClientProxiedBy: LFEXT01.lancloud.ru (fd00:f066::141) To
+ LFEX1908.lancloud.ru (fd00:f066::208)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds device-tree node for the Embedded Controller which is
-found on the Picasso board. The Embedded Controller itself is ENE KB930,
-it provides functions like battery-gauge/LED/GPIO/etc and it uses firmware
-that is specifically customized for the Acer A500 device.
+Some 'kernel-doc' function comments do not fully comply with the specified
+format due to:
 
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+- missing () after the function name;
+
+- "RETURNS:"/"Returns:" instead of "Return:" when documenting the function's
+  result.
+
+- empty line before describing the function's arguments.
+
+Signed-off-by: Sergey Shtylyov <s.shtylyov@omprussia.ru>
+
 ---
- arch/arm/boot/dts/tegra20-acer-a500-picasso.dts | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+ kernel/module.c |   10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts b/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts
-index 5ab6872cd84c..3b9ac3324fd5 100644
---- a/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts
-+++ b/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts
-@@ -533,6 +533,16 @@ panel_ddc: i2c@1 {
- 			reg = <1>;
- 			#address-cells = <1>;
- 			#size-cells = <0>;
-+
-+			embedded-controller@58 {
-+				compatible = "acer,a500-iconia-ec", "ene,kb930";
-+				reg = <0x58>;
-+
-+				system-power-controller;
-+
-+				monitored-battery = <&bat1010>;
-+				power-supplies = <&mains>;
-+			};
- 		};
- 	};
+Index: linux/kernel/module.c
+===================================================================
+--- linux.orig/kernel/module.c
++++ linux/kernel/module.c
+@@ -727,13 +727,12 @@ bool __is_module_percpu_address(unsigned
+ }
  
-@@ -820,6 +830,13 @@ backlight: backlight {
- 		default-brightness-level = <20>;
- 	};
+ /**
+- * is_module_percpu_address - test whether address is from module static percpu
++ * is_module_percpu_address() - test whether address is from module static percpu
+  * @addr: address to test
+  *
+  * Test whether @addr belongs to module static percpu area.
+  *
+- * RETURNS:
+- * %true if @addr is from module static percpu area
++ * Return: %true if @addr is from module static percpu area
+  */
+ bool is_module_percpu_address(unsigned long addr)
+ {
+@@ -957,11 +956,10 @@ static int try_stop_module(struct module
+ }
  
-+	bat1010: battery-2s1p {
-+		compatible = "simple-battery";
-+		charge-full-design-microamp-hours = <3260000>;
-+		energy-full-design-microwatt-hours = <24000000>;
-+		operating-range-celsius = <0 40>;
-+	};
-+
- 	/* PMIC has a built-in 32KHz oscillator which is used by PMC */
- 	clk32k_in: clock@0 {
- 		compatible = "fixed-clock";
--- 
-2.27.0
-
+ /**
+- * module_refcount - return the refcount or -1 if unloading
+- *
++ * module_refcount() - return the refcount or -1 if unloading
+  * @mod:	the module we're checking
+  *
+- * Returns:
++ * Return:
+  *	-1 if the module is in the process of unloading
+  *	otherwise the number of references in the kernel to the module
+  */
