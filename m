@@ -2,76 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4040E2A6F65
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 22:10:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B71D2A6F6B
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 22:14:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731794AbgKDVKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 16:10:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37104 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726969AbgKDVKf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 16:10:35 -0500
-Received: from localhost (230.sub-72-107-127.myvzw.com [72.107.127.230])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AB5CA207BB;
-        Wed,  4 Nov 2020 21:10:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604524235;
-        bh=uoWgJtlpalvS/vhvNfOmgOaqD3gAqdPFrgDsuIjX+EA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=k7qknR4YUdOvJ0ZbIlJNJmz5omW9jvtlRZ9NF1dlHzW9aT3qNqPsmIrWeMtPJ8Gsm
-         lQPhYniVE/6ayrWVI/13fTwa/lVstxJLw5krlSqENmb9brY5UI/n/HQp1oPrhQehlE
-         bqOlwioMFTMZm8hrtwnk/+eO4/kvae56GuleKqVs=
-Date:   Wed, 4 Nov 2020 15:10:33 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>, vtolkm@googlemail.com,
-        Vidya Sagar <vidyas@nvidia.com>, Boris V <borisvk@bstnet.org>,
-        Rajat Jain <rajatja@google.com>
-Subject: [GIT PULL] PCI fixes for v5.10
-Message-ID: <20201104211033.GA418499@bjorn-Precision-5520>
+        id S1727711AbgKDVOx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 16:14:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52910 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726434AbgKDVOw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 16:14:52 -0500
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5462CC0613D3;
+        Wed,  4 Nov 2020 13:14:52 -0800 (PST)
+Received: by mail-lf1-x141.google.com with SMTP id y184so27122547lfa.12;
+        Wed, 04 Nov 2020 13:14:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=vIcP7q9UQt158YstCq+OZIif2g9QHgNcw0nmgclkL4w=;
+        b=tChP/moPaZVaLTzz6HxN6ChzDNHozKx3OZQi71Norv8jnlMTrVoyY2p5d+5SFTMA3O
+         FPLd3cw2ve+cjaQCpCCkfuq40T3KGXJ5OSC38HPyYCRyMufhSastjpFISP6q8O344Qa+
+         5RMW7ZYt82kJ8/DLRlOZ4dChJhe0BPwEStpTStPO3MqzDKPkfKBL8JqOL1Czd8Xkwjey
+         qpDzErVKxHQhDYlNw+hCaLKhNFrz2/gxYBXsmhKyMhkjGUVGup2qfBuAenBuev172R7G
+         Jrcco71piHT0kB7DdyFfWJMmAFA3vhQLCLUHsMc6/zy2K9IPDhTf/dlMTCWapcy4F78a
+         D1qg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=vIcP7q9UQt158YstCq+OZIif2g9QHgNcw0nmgclkL4w=;
+        b=OlFF+/zMxE0Z92xdRPsAUVJI9TazAdpMvZIghTYMuCDHznnm0l6DZDJK0sj+dEThkg
+         VCYkgs7UVq8UiLPZa8YddGeyu6rbaB+hZFwxbA12p+81KCHNj6AuFkYAycUemDWET67i
+         vlpLRTVjvca4SllXALWJYn765O7HITD/97tNXvwEWrmD4gVHLyqK/qT6WlBsVfqeedk2
+         7ZsM8mi+fkFpnKm9PvCzAqOBLsEMRdiAz3QWHqohrOF1IQGejdUwUxck+Bqu5Nyg/FTB
+         h+XQn1Kpj5I+Qk0n9FOulKcMqsF3y9oYd5aLyUOL7JRp6d8L6ILcjyhLjOAygDeOQulB
+         lCLA==
+X-Gm-Message-State: AOAM533UrBeq4sQGSXFoj7TfFRjmW7m/UaYQrG7M2RQHs5Z0UoCSkPVK
+        yekEo5RodEFpcgmgz4YJ5wwrRB5hEhs=
+X-Google-Smtp-Source: ABdhPJx/XTxo/21gPGdbGRdUiEcv1vpaApyF7SK6Jyz5hhnCH1q+t1nUZUbP17HTaazEwzgnWhDKuw==
+X-Received: by 2002:a19:c78c:: with SMTP id x134mr1307041lff.319.1604524490565;
+        Wed, 04 Nov 2020 13:14:50 -0800 (PST)
+Received: from ?IPv6:2a02:a315:5445:5300:10:cd12:3307:e8d7? ([2a02:a315:5445:5300:10:cd12:3307:e8d7])
+        by smtp.gmail.com with ESMTPSA id l9sm619423ljc.86.2020.11.04.13.14.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Nov 2020 13:14:49 -0800 (PST)
+Subject: Re: [PATCH] arm64: dts: exynos: Fix reboot/poweroff issues on Exynos7
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     kgene@kernel.org, alim.akhtar@samsung.com, robh+dt@kernel.org,
+        a.kesavan@samsung.com, naveenkrishna.ch@gmail.com,
+        thomas.ab@samsung.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201028210813.49874-1-pawel.mikolaj.chmiel@gmail.com>
+ <20201029175043.GA88508@kozik-lap>
+From:   =?UTF-8?Q?Pawe=c5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>
+Message-ID: <f00edc18-0dc7-f254-3edb-751e606ab857@gmail.com>
+Date:   Wed, 4 Nov 2020 22:14:48 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <20201029175043.GA88508@kozik-lap>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 3650b228f83adda7e5ee532e2b90429c03f7b9ec:
+Hi
 
-  Linux 5.10-rc1 (2020-10-25 15:14:11 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci.git tags/pci-v5.10-fixes-1
-
-for you to fetch changes up to 832ea234277a2465ec6602fa6a4db5cd9ee87ae3:
-
-  PCI: mvebu: Fix duplicate resource requests (2020-11-04 13:55:30 -0600)
-
-----------------------------------------------------------------
-PCI fixes:
-
-  - Fix ACS regression that broke device pass-through (Rajat Jain)
-
-  - Revert DesignWare ATU memory resource to use last entry to fix Tegra194
-    regression (Rob Herring)
-
-  - Remove duplicate mvebu resource requests to fix regression on Turris
-    Omnia (Rob Herring)
-
-----------------------------------------------------------------
-Rajat Jain (1):
-      PCI: Always enable ACS even if no ACS Capability
-
-Rob Herring (2):
-      PCI: dwc: Restore ATU memory resource setup to use last entry
-      PCI: mvebu: Fix duplicate resource requests
-
- drivers/pci/controller/dwc/pcie-designware-host.c |  8 ++++++--
- drivers/pci/controller/pci-mvebu.c                | 23 ++++++++++-------------
- drivers/pci/pci.c                                 |  9 +++++++--
- 3 files changed, 23 insertions(+), 17 deletions(-)
+On 29.10.2020 18:50, Krzysztof Kozlowski wrote:
+> On Wed, Oct 28, 2020 at 10:08:13PM +0100, Paweł Chmiel wrote:
+>> In vendor sources for Exynos 7420, psci is not used to reboot or
+>> poweroff device. Instead we should use syscon reboot/poweroff.
+>> Previously it was not possible to poweroff (no syscon poweroff node) or
+>> reboot (because it was handled by psci and this way is not working for
+>> Exynos).
+> 
+> Do you want to say that PSCI cannot be used to power off or reboot?
+Yes
+> 
+>>
+>> Fixes: fb026cb65247 ("arm64: dts: Add reboot node for exynos7")
+>> Fixes: b9024cbc937d ("arm64: dts: Add initial device tree support for exynos7")
+>> Signed-off-by: Paweł Chmiel <pawel.mikolaj.chmiel@gmail.com>
+>> ---
+>>  arch/arm64/boot/dts/exynos/exynos7.dtsi | 11 ++++++++++-
+>>  1 file changed, 10 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/arch/arm64/boot/dts/exynos/exynos7.dtsi b/arch/arm64/boot/dts/exynos/exynos7.dtsi
+>> index 959918f4ca45..47d54c369d03 100644
+>> --- a/arch/arm64/boot/dts/exynos/exynos7.dtsi
+>> +++ b/arch/arm64/boot/dts/exynos/exynos7.dtsi
+>> @@ -117,8 +117,10 @@ cpu_atlas3: cpu@3 {
+>>  	};
+>>  
+>>  	psci {
+>> -		compatible = "arm,psci-0.2";
+>> +		compatible = "arm,psci";
+> 
+> Please explain how is it related to this issue? You onle mentioned
+> a problem of lacking syscon-reboot node.
+> 
+>>  		method = "smc";
+>> +		cpu_off = <0x84000002>;
+>> +		cpu_on = <0xC4000003>;
+> 
+> The same question.
+Thanks for feedback. I'll split this patch into two - one for inclusion
+of exynos-syscon-restart.dtsi and second one fixing psci compatible (so
+syscon-poweroff/restart will be working).
+> 
+>>  	};
+>>  
+>>  	soc: soc@0 {
+>> @@ -552,6 +554,13 @@ pmu_system_controller: system-controller@105c0000 {
+>>  			compatible = "samsung,exynos7-pmu", "syscon";
+>>  			reg = <0x105c0000 0x5000>;
+>>  
+>> +			poweroff: syscon-poweroff {
+>> +				compatible = "syscon-poweroff";
+>> +				regmap = <&pmu_system_controller>;
+>> +				offset = <0x330C>; /* PS_HOLD_CONTROL */
+>> +				mask = <0x5200>; /* reset value */
+>> +			};
+>> +
+> 
+> Instead, please include arm/exynos-syscon-restart.dtsi.
+Will do this.
+> 
+> Best regards,
+> Krzysztof
+> 
