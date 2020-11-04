@@ -2,133 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E0FF2A70E5
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 00:00:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 286892A70EB
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 00:02:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732391AbgKDXAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 18:00:37 -0500
-Received: from mga03.intel.com ([134.134.136.65]:56873 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730766AbgKDXAg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 18:00:36 -0500
-IronPort-SDR: pmNFUc+vmZA5/CAupVPBo2CGkYqlqRq5R1r7o2KmXI6Mg7wAFjOyQZqMzce6ln92b+Re3e66OA
- I9wNV/DuuWAg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9795"; a="169404364"
-X-IronPort-AV: E=Sophos;i="5.77,451,1596524400"; 
-   d="scan'208";a="169404364"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2020 15:00:35 -0800
-IronPort-SDR: 1ZAvSP+uA/DPn75+cuUFzXSZbyY027P3S4H1+MuPIPfACs0uZudoUTg+MtvVDb2HBVpi8+Fy6+
- VJsCButS9g1A==
-X-IronPort-AV: E=Sophos;i="5.77,451,1596524400"; 
-   d="scan'208";a="529124050"
-Received: from lvasam-pc.amr.corp.intel.com (HELO arch-ashland-svkelley.intel.com) ([10.254.38.163])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2020 15:00:34 -0800
-From:   Sean V Kelley <sean.v.kelley@intel.com>
-To:     bhelgaas@google.com, Jonathan.Cameron@huawei.com,
-        xerces.zhao@gmail.com, rafael.j.wysocki@intel.com,
-        ashok.raj@intel.com, tony.luck@intel.com,
-        sathyanarayanan.kuppuswamy@intel.com, qiuxu.zhuo@intel.com
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sean V Kelley <sean.v.kelley@intel.com>
-Subject: [PATCH V2] AER: aer_root_reset() non-native handling
-Date:   Wed,  4 Nov 2020 15:00:17 -0800
-Message-Id: <20201104230017.303053-1-sean.v.kelley@intel.com>
-X-Mailer: git-send-email 2.29.2
+        id S1732514AbgKDXCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 18:02:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41350 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732488AbgKDXCH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 18:02:07 -0500
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D161EC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 15:02:06 -0800 (PST)
+Received: by mail-oi1-x241.google.com with SMTP id c80so12510854oib.2
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 15:02:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tvsqTI8LLfKPMqaeYKfvkogFyb/YUHI+2NJoDSLrrAg=;
+        b=PyCmWLY6pOrELY4dufEwPYraML4MruAtA1MDYWM8bVceme+2vJWmfZZAxXashzsMdK
+         WxJ/+MNjBrb1kjcJ4CVxVQYgK/4qvB1IqArv1LmTNFMr8mqo2CCDcDkyC3QqTJ/yq07T
+         EA87te7OBfRDwPdwMdJRIADasNkaeMLEgvC3Q=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tvsqTI8LLfKPMqaeYKfvkogFyb/YUHI+2NJoDSLrrAg=;
+        b=MJngF9nsBWjlNKbnY5kK26vl4ha+EFbTNJF3TbJAVeW7aTVbZ7L2Cy6pT/iWZBmoca
+         +JNRRbpzOBCSDoMqiYyrc8oslVk6Lxmvqqw1bWk8KmwBYMtWeG6RMhHodn4Lga2bGCWh
+         YCVtBGgKyi/0vkvlKTW0uBXLoUaMxIn2z1+9QEKO+E0BF/bi12fUmDVHNvYnrVfQ2dun
+         7I8m8ik44SYlKBfH2Gz71eu7OXgJSV07xybfztAF9gfIgPiTmIPNOR9tUmTHiJH7sWZC
+         WgVCFxbGvfnT7X62/TZoPWosmbsHSzATkozMtPnbZ06143mCq5GDKCget7SBTkp/Flgs
+         4GPw==
+X-Gm-Message-State: AOAM532Urh4Nwsoqd4xGXZifz5K9gT81GrTl50xJkgBIEVI0sSw5A9WL
+        sO+M1hEq2y8NkI7o3K0xzBUzdyWf8C4qBt+4
+X-Google-Smtp-Source: ABdhPJyOKIAGLrSfOCSrn8BapZRI6jwtR+e+Vv0EXb6+nprHLIXfBw/vsJLT5LycuvefY1KjOFIFYA==
+X-Received: by 2002:aca:3387:: with SMTP id z129mr46605oiz.123.1604530926027;
+        Wed, 04 Nov 2020 15:02:06 -0800 (PST)
+Received: from mail-oi1-f176.google.com (mail-oi1-f176.google.com. [209.85.167.176])
+        by smtp.gmail.com with ESMTPSA id z126sm821472oiz.41.2020.11.04.15.02.05
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Nov 2020 15:02:05 -0800 (PST)
+Received: by mail-oi1-f176.google.com with SMTP id m17so2732896oie.4
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 15:02:05 -0800 (PST)
+X-Received: by 2002:a05:6808:602:: with SMTP id y2mr61526oih.11.1604530924987;
+ Wed, 04 Nov 2020 15:02:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201104180734.286789-1-ribalda@chromium.org> <20201104180734.286789-2-ribalda@chromium.org>
+ <87769d554b4575bf9371380b013e66d70f1b21c4.camel@perches.com>
+ <20201104214201.GH29958@pendragon.ideasonboard.com> <9d439214e8c83ebf7b93dccca2f848fbaf75b9d4.camel@perches.com>
+ <CANiDSCvwvQUTt1QMQGGyZPag9VeHj4Ugmj8QJdBNtw00UNt6Pg@mail.gmail.com> <a00078e1311c09361e9e3357ba5dca037d7a8bff.camel@perches.com>
+In-Reply-To: <a00078e1311c09361e9e3357ba5dca037d7a8bff.camel@perches.com>
+From:   Ricardo Ribalda <ribalda@chromium.org>
+Date:   Thu, 5 Nov 2020 00:01:53 +0100
+X-Gmail-Original-Message-ID: <CANiDSCteVWin-Yy2ZVSMUJBPvJ-F0Ti+fEpi26apsDW0XXrpwg@mail.gmail.com>
+Message-ID: <CANiDSCteVWin-Yy2ZVSMUJBPvJ-F0Ti+fEpi26apsDW0XXrpwg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/7] media: uvcvideo: Use pr_cont() macro
+To:     Joe Perches <joe@perches.com>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If an OS has not been granted AER control via _OSC, then
-the OS should not make changes to PCI_ERR_ROOT_COMMAND and
-PCI_ERR_ROOT_STATUS related registers. Per section 4.5.1 of
-the System Firmware Intermediary (SFI) _OSC and DPC Updates
-ECN [1], this bit also covers these aspects of the PCI
-Express Advanced Error Reporting. Based on the above and
-earlier discussion [2], make the following changes:
+Hi Joe
 
-Add a check for the native case (i.e., AER control via _OSC)
+On Thu, Nov 5, 2020 at 12:00 AM Joe Perches <joe@perches.com> wrote:
+>
+> On Wed, 2020-11-04 at 23:31 +0100, Ricardo Ribalda wrote:
+>
+> > I have updated my tree with the dev_ variants
+> >
+> > https://github.com/ribalda/linux/commit/b8785fd8efb4f2e5bbf5d0f2df3e0d69a5439015
+>
+> I looked at this link and was confused so you made me look.
+> I think you meant:
+>
+> https://github.com/ribalda/linux/commit/83cb6eb3a9f7bd1954acbfb4fb3d56ddf54bce73
 
-Note that the current "clear, reset, enable" order suggests that the
-reset might cause errors that we should ignore. Lacking historical
-context, these will be retained.
+Yes, thanks :) Sorry about that
 
-[1] System Firmware Intermediary (SFI) _OSC and DPC Updates ECN, Feb 24,
-    2020, affecting PCI Firmware Specification, Rev. 3.2
-    https://members.pcisig.com/wg/PCI-SIG/document/14076
-[2] https://lore.kernel.org/linux-pci/20201020162820.GA370938@bjorn-Precision-5520/
+This is why I should be away from a keyboard after 23:00 :)
+>
+>
 
-Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
----
-Changes since V1 [1]:
 
-Noted lack of historical context on isolation of both the
-pci_bus_error_reset() and the clearing of Root Error Status. In fact,
-the call to aer_enable_rootport() likewise disables system error generation
-in response to error messages around the clearing of the error status. So
-retained the wrapping of the  "clear, reset, enable".
-
-[1] https://lore.kernel.org/linux-pci/20201030223443.165783-1-sean.v.kelley@intel.com/
-
-Thanks,
-
-Sean
----
- drivers/pci/pcie/aer.c | 31 +++++++++++++++++--------------
- 1 file changed, 17 insertions(+), 14 deletions(-)
-
-diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
-index 65dff5f3457a..6d4f70ec8546 100644
---- a/drivers/pci/pcie/aer.c
-+++ b/drivers/pci/pcie/aer.c
-@@ -1358,26 +1358,29 @@ static int aer_probe(struct pcie_device *dev)
- static pci_ers_result_t aer_root_reset(struct pci_dev *dev)
- {
- 	int aer = dev->aer_cap;
-+	int rc = 0;
- 	u32 reg32;
--	int rc;
--
-
--	/* Disable Root's interrupt in response to error messages */
--	pci_read_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, &reg32);
--	reg32 &= ~ROOT_PORT_INTR_ON_MESG_MASK;
--	pci_write_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, reg32);
-+	if (pcie_aer_is_native(dev)) {
-+		/* Disable Root's interrupt in response to error messages */
-+		pci_read_config_dword(root, aer + PCI_ERR_ROOT_COMMAND, &reg32);
-+		reg32 &= ~ROOT_PORT_INTR_ON_MESG_MASK;
-+		pci_write_config_dword(root, aer + PCI_ERR_ROOT_COMMAND, reg32);
-+	}
-
- 	rc = pci_bus_error_reset(dev);
--	pci_info(dev, "Root Port link has been reset\n");
-+	pci_info(dev, "Root Port link has been reset (%d)\n", rc);
-
--	/* Clear Root Error Status */
--	pci_read_config_dword(dev, aer + PCI_ERR_ROOT_STATUS, &reg32);
--	pci_write_config_dword(dev, aer + PCI_ERR_ROOT_STATUS, reg32);
-+	if (pcie_aer_is_native(dev)) {
-+		/* Clear Root Error Status */
-+		pci_read_config_dword(root, aer + PCI_ERR_ROOT_STATUS, &reg32);
-+		pci_write_config_dword(root, aer + PCI_ERR_ROOT_STATUS, reg32);
-
--	/* Enable Root Port's interrupt in response to error messages */
--	pci_read_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, &reg32);
--	reg32 |= ROOT_PORT_INTR_ON_MESG_MASK;
--	pci_write_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, reg32);
-+		/* Enable Root Port's interrupt in response to error messages */
-+		pci_read_config_dword(root, aer + PCI_ERR_ROOT_COMMAND, &reg32);
-+		reg32 |= ROOT_PORT_INTR_ON_MESG_MASK;
-+		pci_write_config_dword(root, aer + PCI_ERR_ROOT_COMMAND, reg32);
-+	}
-
- 	return rc ? PCI_ERS_RESULT_DISCONNECT : PCI_ERS_RESULT_RECOVERED;
- }
---
-2.29.2
-
+-- 
+Ricardo Ribalda
