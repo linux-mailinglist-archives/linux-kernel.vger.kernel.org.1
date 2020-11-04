@@ -2,86 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC8B22A70D8
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 23:54:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7300B2A70DB
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 23:54:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730336AbgKDWyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 17:54:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40148 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728301AbgKDWyY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 17:54:24 -0500
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97B20C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 14:54:23 -0800 (PST)
-Received: by mail-lj1-x244.google.com with SMTP id x6so213574ljd.3
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 14:54:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+JfSC8vfkextKI0CTxdreiJW8D06AVfpIQrednxXpok=;
-        b=OY98b6mIcEkijtWQ3mppvCqE+6cW+WWP+NPcK56NFRgXflP8MdM9tH/VMR8CSHnlw7
-         ZfUbR/6L6toEG0xoduVm4SnsF55sExHnpQp9r40JSzsP/AwR3oJrxMxjwytOADuq1qM9
-         hqccqfLtSS895CkgKBr5+iHFM1Vx8gPUdMN1c=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+JfSC8vfkextKI0CTxdreiJW8D06AVfpIQrednxXpok=;
-        b=U8ELRfV7ZkzwoKHYsZScihFXPPM8Zg5NvlU8zKcqtK4n0Qk31UrhDYD9nZ1P0NgQbl
-         8Da8eZHDC2lvXYdeB3EkTSrvW/oezDNIXfjFsnVOxT6l6+RcbiUZOp7Fl9EC/+E9L4+l
-         75P4hUY0dI73DYWTRrEKvIMd7mXYNskq2b5sIvYzd3lRnskBNh6CycgQCRskex4+Y/z7
-         1uYeuq4zS95TdOIrPJo/IXqKuBHF8ii/VP/pG3OynMYKAUPqSeBu3esWIIyC/8zA0+n4
-         fzxjxqKNeHfKLoShLMsAFJxKq0ZLMeJfj5KmMVj3f9m18bhMdRH8sf7nVIeB61EXxgqm
-         Qp+w==
-X-Gm-Message-State: AOAM5324qf/8cL6FRNVFmq8pAz/WMT58yfIexCdVBiSy8yXIwro0Mu+X
-        bRRTZfWYdOeFbm8xpjwLF8sRgEMXD9KaMcUfwOFTtg==
-X-Google-Smtp-Source: ABdhPJzM25O+m3zcGcPdBWCey9N4TZDrHf083uNAky6PYnYnVMOWY1awerwvELTCyOIRPfZfZyZMHbTO3u0JEPish9o=
-X-Received: by 2002:a2e:97ce:: with SMTP id m14mr75379ljj.49.1604530460480;
- Wed, 04 Nov 2020 14:54:20 -0800 (PST)
+        id S1730704AbgKDWyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 17:54:41 -0500
+Received: from mga01.intel.com ([192.55.52.88]:34988 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728301AbgKDWyk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 17:54:40 -0500
+IronPort-SDR: 4WoQSYiZ0697gYl35K7fAfTopxokDJQITXuHLJKqkMjr1WI3tyKKzSSom7Zdib6EXK9ej5t5Sq
+ Pdtv2AsL411g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9795"; a="187165986"
+X-IronPort-AV: E=Sophos;i="5.77,451,1596524400"; 
+   d="scan'208";a="187165986"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2020 14:54:40 -0800
+IronPort-SDR: laAzFrVJ4b18lJiO5pTuJbaqaj+thHKns+evfRlz6qK4Gx1buM1+VrrUaKOiyle0oLYkYbAqaN
+ w1JYgldLrPPQ==
+X-IronPort-AV: E=Sophos;i="5.77,451,1596524400"; 
+   d="scan'208";a="320972878"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2020 14:54:39 -0800
+Date:   Wed, 4 Nov 2020 14:54:39 -0800
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH V2 00/10] PKS: Add Protection Keys Supervisor (PKS)
+ support
+Message-ID: <20201104225438.GF1531489@iweiny-DESK2.sc.intel.com>
+References: <20201102205320.1458656-1-ira.weiny@intel.com>
+ <871rhb8h73.fsf@nanos.tec.linutronix.de>
+ <20201104174643.GC1531489@iweiny-DESK2.sc.intel.com>
+ <87k0v0lr4r.fsf@nanos.tec.linutronix.de>
+ <20201104224554.GE1531489@iweiny-DESK2.sc.intel.com>
 MIME-Version: 1.0
-References: <20201104164453.74390-1-kpsingh@chromium.org> <20201104164453.74390-2-kpsingh@chromium.org>
- <20201104221526.dv6qfpfp5lk2t7zw@kafai-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20201104221526.dv6qfpfp5lk2t7zw@kafai-mbp.dhcp.thefacebook.com>
-From:   KP Singh <kpsingh@chromium.org>
-Date:   Wed, 4 Nov 2020 23:54:09 +0100
-Message-ID: <CACYkzJ6t12AORyTzAP_P3bZG-_K_01h7DVaUmYTWCd-8U-8-bQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/9] bpf: Implement task local storage
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Song Liu <songliubraving@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
-        Hao Luo <haoluo@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201104224554.GE1531489@iweiny-DESK2.sc.intel.com>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > +     WARN_ON_ONCE(!rcu_read_lock_held());
-> > +     task = pid_task(pid, PIDTYPE_PID);
-> > +     if (!task) {
-> > +             err = -ENOENT;
-> > +             goto out;
-> > +     }
-> > +
-> > +     sdata = bpf_local_storage_update(
-> > +             task, (struct bpf_local_storage_map *)map, value, map_flags);
-> It seems the task is protected by rcu here and the task may be going away.
-> Is it ok?
->
-> or the following comment in the later "BPF_CALL_4(bpf_task_storage_get, ...)"
-> is no longer valid?
->         /* This helper must only called from where the task is guaranteed
->          * to have a refcount and cannot be freed.
->          */
+On Wed, Nov 04, 2020 at 02:45:54PM -0800, 'Ira Weiny' wrote:
+> On Wed, Nov 04, 2020 at 11:00:04PM +0100, Thomas Gleixner wrote:
+> > On Wed, Nov 04 2020 at 09:46, Ira Weiny wrote:
+> > > On Tue, Nov 03, 2020 at 12:36:16AM +0100, Thomas Gleixner wrote:
+> > >> This is the wrong ordering, really.
+> > >> 
+> > >>      x86/entry: Move nmi entry/exit into common code
+> > >> 
+> > >> is a general cleanup and has absolutely nothing to do with PKRS.So this
+> > >> wants to go first.
+> > >
+> > > Sorry, yes this should be a pre-patch.
+> > 
+> > I picked it out of the series and applied it to tip core/entry as I have
+> > other stuff coming up in that area. 
+> 
+> Thanks!  I'll rebase to that tree.
+> 
+> I assume you fixed the spelling error?  Sorry about that.
 
-I reworded this (and the other similar comment) as:
+I'll fix it and send with the other spelling errors I found.
 
-/* This helper must only be called from places where the lifetime of the task
-* is guaranteed. Either by being refcounted or by being protected
-* by an RCU read-side critical section.
-*/
+Ira
