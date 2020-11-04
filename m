@@ -2,73 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 199FD2A6182
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 11:26:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F28C2A618C
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 11:28:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728523AbgKDK0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 05:26:18 -0500
-Received: from wp126.webpack.hosteurope.de ([80.237.132.133]:36704 "EHLO
-        wp126.webpack.hosteurope.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728989AbgKDK0F (ORCPT
+        id S1728066AbgKDK2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 05:28:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729134AbgKDK1F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 05:26:05 -0500
-X-Greylist: delayed 977 seconds by postgrey-1.27 at vger.kernel.org; Wed, 04 Nov 2020 05:26:04 EST
-Received: from [2003:a:659:3f00:1e6f:65ff:fe31:d1d5] (helo=hermes.fivetechno.de); authenticated
-        by wp126.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        id 1kaFzN-0006C6-LU; Wed, 04 Nov 2020 11:26:01 +0100
-X-Virus-Scanned: by amavisd-new 2.11.1 using newest ClamAV at
-        linuxbbg.five-lan.de
-Received: from odroid-x2.fritz.box (pd9e89f04.dip0.t-ipconnect.de [217.232.159.4])
-        (authenticated bits=0)
-        by hermes.fivetechno.de (8.15.2/8.14.5/SuSE Linux 0.8) with ESMTPSA id 0A4APx3r009139
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
-        Wed, 4 Nov 2020 11:26:00 +0100
-From:   Markus Reichl <m.reichl@fivetechno.de>
-To:     Rob Herring <robh+dt@kernel.org>, Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Markus Reichl <m.reichl@fivetechno.de>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ARM: dts: exynos: Assign a fixed index to mmc devices on exynos4412 based ODROID boards
-Date:   Wed,  4 Nov 2020 11:25:56 +0100
-Message-Id: <20201104102558.11070-1-m.reichl@fivetechno.de>
-X-Mailer: git-send-email 2.20.1
+        Wed, 4 Nov 2020 05:27:05 -0500
+Received: from mail-out.m-online.net (mail-out.m-online.net [IPv6:2001:a60:0:28:0:1:25:1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 324CCC0613D3;
+        Wed,  4 Nov 2020 02:27:05 -0800 (PST)
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+        by mail-out.m-online.net (Postfix) with ESMTP id 4CR2rj5mCbz1rvm9;
+        Wed,  4 Nov 2020 11:27:01 +0100 (CET)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
+        by mail.m-online.net (Postfix) with ESMTP id 4CR2rj3Nvpz1qql3;
+        Wed,  4 Nov 2020 11:27:01 +0100 (CET)
+X-Virus-Scanned: amavisd-new at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
+        with ESMTP id gRVeKdWkegUo; Wed,  4 Nov 2020 11:27:00 +0100 (CET)
+X-Auth-Info: Lj8SqlRiGTBPCGQxCibwOes6WJ2XrS8TFi/lhKUSFz0=
+Received: from localhost (dslb-088-074-220-167.088.074.pools.vodafone-ip.de [88.74.220.167])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.mnet-online.de (Postfix) with ESMTPSA;
+        Wed,  4 Nov 2020 11:27:00 +0100 (CET)
+From:   Claudius Heine <ch@denx.de>
+To:     Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Henning Schild <henning.schild@siemens.com>,
+        Johannes Hahn <johannes-hahn@siemens.com>,
+        Claudius Heine <ch@denx.de>
+Subject: [PATCH 0/2]  Adding I2C support to RX6110 RTC
+Date:   Wed,  4 Nov 2020 11:26:27 +0100
+Message-Id: <20201104102629.3422048-1-ch@denx.de>
+X-Mailer: git-send-email 2.29.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;m.reichl@fivetechno.de;1604485565;7ae76e44;
-X-HE-SMSGID: 1kaFzN-0006C6-LU
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Recently introduced async probe on mmc devices can shuffle block IDs.
-Pin them to fixed values to ease booting in evironments where UUIDs ar not practical.
-Use newly introduced aliases for mmcblk devices from [1].
+Hi,
 
-[1]
-https://patchwork.kernel.org/patch/11747669/
+this patch introduces I2C support to the RX6110 RTC driver and also adds
+an ACPI identifier to it.
 
-Signed-off-by: Markus Reichl <m.reichl@fivetechno.de>
----
- arch/arm/boot/dts/exynos4412-odroid-common.dtsi | 5 +++++
- 1 file changed, 5 insertions(+)
+Since we are also pushing the coreboot changes for the ACPI table
+upstream in parallel, we are free to name this ACPI entry however we
+like it seems. So any feedback on that would be welcome ;)
 
-diff --git a/arch/arm/boot/dts/exynos4412-odroid-common.dtsi b/arch/arm/boot/dts/exynos4412-odroid-common.dtsi
-index a5c1ce1e396c..aa10d5bc7e1c 100644
---- a/arch/arm/boot/dts/exynos4412-odroid-common.dtsi
-+++ b/arch/arm/boot/dts/exynos4412-odroid-common.dtsi
-@@ -13,6 +13,11 @@
- #include "exynos-mfc-reserved-memory.dtsi"
- 
- / {
-+	aliases {
-+		mmc0 = &sdhci_2;
-+		mmc1 = &mshc_0;
-+	};
-+
- 	chosen {
- 		stdout-path = &serial_1;
- 	};
+kind regards,
+Claudius
+
+Claudius Heine (1):
+  rtc: rx6110: add i2c support
+
+Johannes Hahn (1):
+  rtc: rx6110: add ACPI bindings to I2C
+
+ drivers/rtc/Kconfig      |  20 ++---
+ drivers/rtc/rtc-rx6110.c | 155 +++++++++++++++++++++++++++++++++++++--
+ 2 files changed, 158 insertions(+), 17 deletions(-)
+
 -- 
 2.20.1
 
