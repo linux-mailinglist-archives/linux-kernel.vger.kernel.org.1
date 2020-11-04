@@ -2,85 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C58D2A64D6
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 14:06:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39F472A64DA
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 14:07:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729841AbgKDNG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 08:06:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59992 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729361AbgKDNG0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 08:06:26 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18C33C0613D3
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 05:06:26 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1604495184;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=lwj0653ZhCm+c4hnkg6amH84SkNmVkCQ+UR7aaQi1ZA=;
-        b=H+SecVXJyafk7xsA9akrMTUT2E16TyiYsRurpYB9ZHXIxWeAvMmwYE6TTsX2P7HQhKahWE
-        8r4Phwk87vXgy+2BXC6OWZtJqfa86LiCyM3IN75zoDXAlfXlD5weNcd4lNDc1JiBAjsoC7
-        /W2/RD+jPhPMlrkmTavrtOE2tKCGGs6k+ASIVSo/TXFI6dsJpFlAkN8O5lAr1PnRmzWWSg
-        4TvjIqq8kPlZG8pl1p5yBrzmRB14e08kqu4MBcSVB54CIpw+ix8bteXC0N0qjMQHE2N4dK
-        nKP09OIV7zd4h/Qxg68qsM6SAcCMX3wCOaQviwEwaQm7xJ14H2FAm2KSim8pHA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1604495184;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=lwj0653ZhCm+c4hnkg6amH84SkNmVkCQ+UR7aaQi1ZA=;
-        b=oglq8hlR7p4wTwmsS+A0FBgGB9yFbJnbHJe04EM3ueS97Ud0nGq2ac5OV8vofuXdeTho4x
-        UkVTCS+te1CLiNBw==
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org
-Subject: entry: Fix the incorrect ordering of lockdep and RCU check
-Date:   Wed, 04 Nov 2020 14:06:23 +0100
-Message-ID: <87y2jhl19s.fsf@nanos.tec.linutronix.de>
+        id S1729871AbgKDNGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 08:06:52 -0500
+Received: from foss.arm.com ([217.140.110.172]:36860 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729183AbgKDNGw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 08:06:52 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1F721139F;
+        Wed,  4 Nov 2020 05:06:51 -0800 (PST)
+Received: from C02TD0UTHF1T.local (unknown [10.57.57.109])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 29D1D3F719;
+        Wed,  4 Nov 2020 05:06:46 -0800 (PST)
+Date:   Wed, 4 Nov 2020 13:06:37 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Marco Elver <elver@google.com>
+Cc:     akpm@linux-foundation.org, glider@google.com, hpa@zytor.com,
+        paulmck@kernel.org, andreyknvl@google.com, aryabinin@virtuozzo.com,
+        luto@kernel.org, bp@alien8.de, catalin.marinas@arm.com,
+        cl@linux.com, dave.hansen@linux.intel.com, rientjes@google.com,
+        dvyukov@google.com, edumazet@google.com,
+        gregkh@linuxfoundation.org, hdanton@sina.com, mingo@redhat.com,
+        jannh@google.com, Jonathan.Cameron@huawei.com, corbet@lwn.net,
+        iamjoonsoo.kim@lge.com, joern@purestorage.com,
+        keescook@chromium.org, penberg@kernel.org, peterz@infradead.org,
+        sjpark@amazon.com, tglx@linutronix.de, vbabka@suse.cz,
+        will@kernel.org, x86@kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org
+Subject: Re: [PATCH v7 3/9] arm64, kfence: enable KFENCE for ARM64
+Message-ID: <20201104130111.GA7577@C02TD0UTHF1T.local>
+References: <20201103175841.3495947-1-elver@google.com>
+ <20201103175841.3495947-4-elver@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201103175841.3495947-4-elver@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When an exception/interrupt hits kernel space and the kernel is not
-currently in the idle task then RCU must be watching.
+On Tue, Nov 03, 2020 at 06:58:35PM +0100, Marco Elver wrote:
+> Add architecture specific implementation details for KFENCE and enable
+> KFENCE for the arm64 architecture. In particular, this implements the
+> required interface in <asm/kfence.h>.
+> 
+> KFENCE requires that attributes for pages from its memory pool can
+> individually be set. Therefore, force the entire linear map to be mapped
+> at page granularity. Doing so may result in extra memory allocated for
+> page tables in case rodata=full is not set; however, currently
+> CONFIG_RODATA_FULL_DEFAULT_ENABLED=y is the default, and the common case
+> is therefore not affected by this change.
+> 
+> Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
+> Co-developed-by: Alexander Potapenko <glider@google.com>
+> Signed-off-by: Alexander Potapenko <glider@google.com>
+> Signed-off-by: Marco Elver <elver@google.com>
 
-irqentry_enter() validates this via rcu_irq_enter_check_tick(), which in
-turn invokes lockdep when taking a lock. But at that point lockdep does not
-yet know about the fact that interrupts have been disabled by the CPU,
-which triggers a lockdep splat complaining about inconsistent state.
+Thanks for dilligently handling all the review feedback. This looks good
+to me now, so FWIW:
 
-Invoking trace_hardirqs_off() before rcu_irq_enter_check_tick() defeats the
-point of rcu_irq_enter_check_tick() because trace_hardirqs_off() uses RCU.
+Reviewed-by: Mark Rutland <mark.rutland@arm.com>
 
-So use the same sequence as for the idle case and tell lockdep about the
-irq state change first, invoke the RCU check and then do the lockdep and
-tracer update.
+There is one thing that I thing we should improve as a subsequent
+cleanup, but I don't think that should block this as-is.
 
-Fixes: a5497bab5f72 ("entry: Provide generic interrupt entry/exit code")
-Reported-by: Mark Rutland <mark.rutland@arm.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: stable@vger.kernel.org
----
- kernel/entry/common.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> +#define KFENCE_SKIP_ARCH_FAULT_HANDLER "el1_sync"
 
---- a/kernel/entry/common.c
-+++ b/kernel/entry/common.c
-@@ -337,10 +337,10 @@ noinstr irqentry_state_t irqentry_enter(
- 	 * already contains a warning when RCU is not watching, so no point
- 	 * in having another one here.
- 	 */
-+	lockdep_hardirqs_off(CALLER_ADDR0);
- 	instrumentation_begin();
- 	rcu_irq_enter_check_tick();
--	/* Use the combo lockdep/tracing function */
--	trace_hardirqs_off();
-+	trace_hardirqs_off_finish();
- 	instrumentation_end();
- 
- 	return ret;
+IIUC, the core kfence code is using this to figure out where to trace
+from when there's a fault taken on an access to a protected page.
+
+It would be better if the arch code passed the exception's pt_regs into
+the kfence fault handler, and the kfence began the trace began from
+there. That would also allow for dumping the exception registers which
+can help with debugging (e.g. figuring out how the address was derived
+when it's calculated from multiple source registers). That would also be
+a bit more robust to changes in an architectures' exception handling
+code.
+
+Thanks,
+Mark.
