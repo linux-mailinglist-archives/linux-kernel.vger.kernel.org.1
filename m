@@ -2,80 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 112022A5B17
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 01:40:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69E262A5B1F
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 01:44:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730055AbgKDAkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 19:40:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58078 "EHLO
+        id S1730087AbgKDAoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 19:44:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725811AbgKDAkT (ORCPT
+        with ESMTP id S1725811AbgKDAoD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 19:40:19 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80285C061A4B;
-        Tue,  3 Nov 2020 16:40:18 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id w13so13668454eju.13;
-        Tue, 03 Nov 2020 16:40:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fHY3vdUl02HFmgjopDfIPsTDOudo77Qk3qlLxz6Bz8c=;
-        b=adOBIz9TTQqWZdrrtyI1SwaaykgICxV5FQoeQVZdDbsYNuvV7vwQuQH0GnFHT7VKCu
-         vQcmutbiuNROmncLnWSrVUJMYCj0NPpbsBAn3b3ZmkD+4AFRxiOVBDy3XSFA7rlo4sGo
-         nklMZZN3pZHfp4bL9sMJ1BQ8ER6ie7DGKrahRZvKE9EtIvWvgM7BuivFOFnPIwwqYol5
-         J6AEtejIVUqMJGJ6q482pnJ/zwuPwFxHxgVqkGaZHfgZ5TA5JFqeQ3QMfgiz/rC8nEqe
-         +IPNjaqhM7oODcNxVuvq133as8+8Y+5qYfBuDUSwI/U/vQeQJD9VqPMCdvcDU1/FmH6k
-         IDTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fHY3vdUl02HFmgjopDfIPsTDOudo77Qk3qlLxz6Bz8c=;
-        b=c2gnOA0Ulj4Lh4TFXioQ8eRO8fY6AGUhWcxaxv4M+kOeiIKBqFx5+a7lZy4wFWgMuW
-         aNbwwNCTVr4C/+Xt9Ht6s00zaCmHFpvjK1tqEa4LpiA9P2zyDB67AX+yxHHjL1ZowYQV
-         TAI2zyIvoQIqFW4tlM2kKr5sx/vTCJ2Wsri0XE4yo79F7EFs0KNKPyxFiD+rNTUbtIac
-         /ZgjrM5Skchcad86puzJGC54uQQab3XU4PtBIFtIst6qnjzAQAi04yEL2XGQSci8y7yh
-         qLG1KqJf0y/P82wI3QQ2RS8IXujbJ59Oo6ocgMBcGonUw2O4IEcmjjYkF2sAHlz/qgQY
-         FvNg==
-X-Gm-Message-State: AOAM531/YBtc07E1zL2t+gNP33N5Su9owVBAYd2ZZTFopaRzrXEu4W1T
-        LYS3yitzZqm0RKCRGmPf6LA=
-X-Google-Smtp-Source: ABdhPJzQmyU2LIelnG4pgJppgbbnsdwItsONEriaIsDFp4tq25FQcLpYs9h9iS6P866TQ6Fk8xi89w==
-X-Received: by 2002:a17:906:16ca:: with SMTP id t10mr23774729ejd.24.1604450417272;
-        Tue, 03 Nov 2020 16:40:17 -0800 (PST)
-Received: from skbuf ([188.25.2.177])
-        by smtp.gmail.com with ESMTPSA id mj17sm122652ejb.59.2020.11.03.16.40.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Nov 2020 16:40:16 -0800 (PST)
-Date:   Wed, 4 Nov 2020 02:40:15 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Qiang Zhao <qiang.zhao@nxp.com>
-Cc:     broonie@kernel.org, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [Patch v2] spi: fsl-dspi: fix wrong pointer in suspend/resume
-Message-ID: <20201104004015.k7mggfzm4rhfamkz@skbuf>
-References: <20201103020546.1822-1-qiang.zhao@nxp.com>
+        Tue, 3 Nov 2020 19:44:03 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEDFFC061A4B;
+        Tue,  3 Nov 2020 16:44:02 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CQnw01ZN4z9sPB;
+        Wed,  4 Nov 2020 11:43:59 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1604450640;
+        bh=w0opC8OEmqjeVqj+i2Je/xg3+AnOLhlxj013J6qVXgk=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Gy4FnBUtYp6/7clc/dPA1/4uatCQIRgfs5PvZPHgcBtC4hqmDsJc644+c/toD2rhs
+         nUcwOAaIfs1vVtDZK+plquYYglYvXTeaQJg/lw93bcCNbhQO4cq401pAcaqCs4gvKz
+         +SD1wddBiKMRmk9ct/cvEG1suZzOcQ1UVb7tlryT3mb/SvorqJq1vMm9Pje0L2dJRu
+         n84RL5XR3ARwlpf8GjG7zXA5nResZnTiwl8iJLo+vlXOQM42BoC/LnaROJGNK+Og04
+         yQVE8e0Syr6JjMVJ6V17kyUOtgtRi7kqWZLO/8hVWVCnoaS+CIkR2cGN+dgUcb45S6
+         ntNCRH/77fcZg==
+Date:   Wed, 4 Nov 2020 11:43:58 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Lijun Pan <ljp@linux.ibm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Sukadev Bhattiprolu <sukadev@linux.ibm.com>
+Subject: linux-next: manual merge of the net-next tree with the net tree
+Message-ID: <20201104114358.37e766a3@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201103020546.1822-1-qiang.zhao@nxp.com>
+Content-Type: multipart/signed; boundary="Sig_/E0wsBmc9+WG6NM_KLPNyZz6";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 10:05:46AM +0800, Qiang Zhao wrote:
-> From: Zhao Qiang <qiang.zhao@nxp.com>
-> 
-> Since commit 530b5affc675 ("spi: fsl-dspi: fix use-after-free in
-> remove path"), this driver causes a "NULL pointer dereference"
-> in dspi_suspend/resume.
-> This is because since this commit, the drivers private data point to
-> "dspi" instead of "ctlr", the codes in suspend and resume func were
-> not modified correspondly.
-> 
-> Fixes: 530b5affc675 ("spi: fsl-dspi: fix use-after-free in remove path")
-> Signed-off-by: Zhao Qiang <qiang.zhao@nxp.com>
-> ---
+--Sig_/E0wsBmc9+WG6NM_KLPNyZz6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+Hi all,
+
+Today's linux-next merge of the net-next tree got a conflict in:
+
+  drivers/net/ethernet/ibm/ibmvnic.c
+
+between commit:
+
+  1d8504937478 ("powerpc/vnic: Extend "failover pending" window")
+
+from the net tree and commit:
+
+  16b5f5ce351f ("ibmvnic: merge do_change_param_reset into do_reset")
+
+from the net-next tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/net/ethernet/ibm/ibmvnic.c
+index da15913879f8,f4167de30461..000000000000
+--- a/drivers/net/ethernet/ibm/ibmvnic.c
++++ b/drivers/net/ethernet/ibm/ibmvnic.c
+@@@ -1930,17 -1841,12 +1850,20 @@@ static int do_reset(struct ibmvnic_adap
+  	netdev_dbg(adapter->netdev, "Re-setting driver (%d)\n",
+  		   rwi->reset_reason);
+ =20
+- 	rtnl_lock();
++ 	adapter->reset_reason =3D rwi->reset_reason;
++ 	/* requestor of VNIC_RESET_CHANGE_PARAM already has the rtnl lock */
++ 	if (!(adapter->reset_reason =3D=3D VNIC_RESET_CHANGE_PARAM))
++ 		rtnl_lock();
++=20
+ +	/*
+ +	 * Now that we have the rtnl lock, clear any pending failover.
+ +	 * This will ensure ibmvnic_open() has either completed or will
+ +	 * block until failover is complete.
+ +	 */
+ +	if (rwi->reset_reason =3D=3D VNIC_RESET_FAILOVER)
+ +		adapter->failover_pending =3D false;
+ +
+  	netif_carrier_off(netdev);
+- 	adapter->reset_reason =3D rwi->reset_reason;
+ =20
+  	old_num_rx_queues =3D adapter->req_rx_queues;
+  	old_num_tx_queues =3D adapter->req_tx_queues;
+@@@ -2214,17 -2140,7 +2157,14 @@@ static void __ibmvnic_reset(struct work
+  		}
+  		spin_unlock_irqrestore(&adapter->state_lock, flags);
+ =20
+- 		if (rwi->reset_reason =3D=3D VNIC_RESET_CHANGE_PARAM) {
+- 			/* CHANGE_PARAM requestor holds rtnl_lock */
+- 			rc =3D do_change_param_reset(adapter, rwi, reset_state);
+- 		} else if (adapter->force_reset_recovery) {
++ 		if (adapter->force_reset_recovery) {
+ +			/*
+ +			 * Since we are doing a hard reset now, clear the
+ +			 * failover_pending flag so we don't ignore any
+ +			 * future MOBILITY or other resets.
+ +			 */
+ +			adapter->failover_pending =3D false;
+ +
+  			/* Transport event occurred during previous reset */
+  			if (adapter->wait_for_reset) {
+  				/* Previous was CHANGE_PARAM; caller locked */
+
+--Sig_/E0wsBmc9+WG6NM_KLPNyZz6
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+h+U4ACgkQAVBC80lX
+0GzU0wgAjjgCooO3kU1QGikDR89Xgb4zqYsvFQscOdl9z1qdlUmCrF8tym6xcFY5
+5lcd9Pcm6wwTz8U3r7jJS7n1vbMI+eyU9UZ20gqh98LTcwMTfMMOWSj+soaJFeWF
+JnR2agugi5Q1BJSSV6A97mTBKpmvsF3L/qqe+WcyH201EatLlVNOrgzz422JUzPa
+yonaZl8Go0KgzR/M9JcP9apdRv0TxrnjTPKRai4JHaWIjS3pAa/MTDnk6RnnlOga
+ZWxG9ffLv8QTYekTtb7sNpAHijGryKmEVTrBM7LVvqpxLoZ3ddh9IMct5xuv03NW
+r9jBLI1aD8ojo7D9h6CwydJ3su4UiQ==
+=nHoi
+-----END PGP SIGNATURE-----
+
+--Sig_/E0wsBmc9+WG6NM_KLPNyZz6--
