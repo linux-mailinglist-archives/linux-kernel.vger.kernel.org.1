@@ -2,124 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3406E2A6FE2
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 22:50:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E99FE2A6FE4
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 22:51:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728416AbgKDVuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 16:50:54 -0500
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:38579 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726777AbgKDVuy (ORCPT
+        id S1730239AbgKDVvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 16:51:33 -0500
+Received: from smtprelay0188.hostedemail.com ([216.40.44.188]:55118 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726777AbgKDVvc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 16:50:54 -0500
-Received: by mail-oi1-f194.google.com with SMTP id 9so23815613oir.5;
-        Wed, 04 Nov 2020 13:50:52 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FNWVwzg63G5BUshuzobQWOcIMNKpfF8Jan6eWjyNIYk=;
-        b=BptcDdh6hUYTqWrxRztvLGJYargy9BaHTYlq9H/pB3km62vfmrhTaN2BTpim5RZTpE
-         m7AOPm900m0BtQ2GS36uBJWP3kAe7bkjPL2805C33E/PFfBaeciS9mi+hfumSpWT5gTk
-         hAayxoyEelrCSs7lFsbwSUD22ZepC/+h/jI0soda/iCkLtL54DNbl+P2I8mcmWtE0//s
-         GpTfNADkapuPT30wEEl5HnmMOY2ShXU1B1fNAlHAesP5zwaHoDyRHJOqxpW+rT+0pk8G
-         rFdcMxIRGSq5jkQKiPe5hZHCO3r0CsoMH4cYWRWjytLESs3gheQiLhTNvRzPX3ahfXI9
-         fZ4Q==
-X-Gm-Message-State: AOAM532mg9f4rkjU3W2wbp35plECJ1F73Satbip1UapynJmvh2N3mUus
-        lWgY/n7FBGQZMZ3NmkXLNVzoNjfi2g==
-X-Google-Smtp-Source: ABdhPJzwvcFvE7h0BVHYnnPw5WN+AERV/+OxNdM09WmWN/PZ2XZI5A0xuksvYRtqA24b2s3PP0ojEg==
-X-Received: by 2002:aca:c084:: with SMTP id q126mr4004947oif.129.1604526651953;
-        Wed, 04 Nov 2020 13:50:51 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id t20sm774378oic.1.2020.11.04.13.50.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 13:50:51 -0800 (PST)
-Received: (nullmailer pid 4183876 invoked by uid 1000);
-        Wed, 04 Nov 2020 21:50:50 -0000
-Date:   Wed, 4 Nov 2020 15:50:50 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Jim Quinlan <james.quinlan@broadcom.com>
-Cc:     sudeep.holla@arm.com, bcm-kernel-feedback-list@broadcom.com,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:BROADCOM BCM7XXX ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 1/2] dt-bindings: Add bindings for BrcmSTB SCMI
- mailbox driver
-Message-ID: <20201104215050.GA4180546@bogus>
-References: <20201029195913.5927-1-james.quinlan@broadcom.com>
- <20201029195913.5927-2-james.quinlan@broadcom.com>
+        Wed, 4 Nov 2020 16:51:32 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 9427C18224D7B;
+        Wed,  4 Nov 2020 21:51:31 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:968:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2110:2393:2553:2559:2562:2828:2895:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3868:3870:3872:3874:4250:4321:4384:5007:6119:7903:8660:10004:10400:10848:11232:11658:11914:12296:12297:12740:12760:12895:13069:13071:13148:13230:13311:13357:13439:14096:14097:14180:14659:14721:14819:21060:21080:21324:21433:21627:21740:21939:30029:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: quilt95_2215801272c4
+X-Filterd-Recvd-Size: 2373
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf10.hostedemail.com (Postfix) with ESMTPA;
+        Wed,  4 Nov 2020 21:51:30 +0000 (UTC)
+Message-ID: <9d439214e8c83ebf7b93dccca2f848fbaf75b9d4.camel@perches.com>
+Subject: Re: [PATCH v2 1/7] media: uvcvideo: Use pr_cont() macro
+From:   Joe Perches <joe@perches.com>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Ricardo Ribalda <ribalda@chromium.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Wed, 04 Nov 2020 13:51:29 -0800
+In-Reply-To: <20201104214201.GH29958@pendragon.ideasonboard.com>
+References: <20201104180734.286789-1-ribalda@chromium.org>
+         <20201104180734.286789-2-ribalda@chromium.org>
+         <87769d554b4575bf9371380b013e66d70f1b21c4.camel@perches.com>
+         <20201104214201.GH29958@pendragon.ideasonboard.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201029195913.5927-2-james.quinlan@broadcom.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 03:59:06PM -0400, Jim Quinlan wrote:
-> Bindings are added.  Only one interrupt is needed because
-> we do not yet employ the SCMI p2a channel.
+On Wed, 2020-11-04 at 23:42 +0200, Laurent Pinchart wrote:
+> Hi Joe,
 
-I still don't understand what this is. To repeat from v1: I thought SCMI 
-was a mailbox consumer, not provider?
+Hi Laurent.
 
+> On Wed, Nov 04, 2020 at 11:29:30AM -0800, Joe Perches wrote:
+> > On Wed, 2020-11-04 at 19:07 +0100, Ricardo Ribalda wrote:
+> > > Replace all the uses of printk(KERN_CONT ... with pr_cont().
+> > 
+> > Perhaps remove the uvc_printk macro and uses and use the more
+> > common pr_fmt and pr_<level> mechanisms.
 > 
-> Signed-off-by: Jim Quinlan <james.quinlan@broadcom.com>
-> ---
->  .../bindings/mailbox/brcm,brcmstb-mbox.yaml   | 39 +++++++++++++++++++
->  1 file changed, 39 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mailbox/brcm,brcmstb-mbox.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/mailbox/brcm,brcmstb-mbox.yaml b/Documentation/devicetree/bindings/mailbox/brcm,brcmstb-mbox.yaml
-> new file mode 100644
-> index 000000000000..797c0cc609a3
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mailbox/brcm,brcmstb-mbox.yaml
-> @@ -0,0 +1,39 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +$id: http://devicetree.org/schemas/mailbox/brcm,brcmstb-mbox.yaml#
-> +
-> +title: Broadcom STB mailbox driver bindings
-> +
-> +maintainers:
-> +  - Jim Quinlan <james.quinlan@broadcom.com>
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - brcm,brcmstb-mbox
-> +
-> +  interrupts:
-> +    items:
-> +      - description: a2p return interrupt, indicates SCMI msg completion.
-> +
-> +  "#mbox-cells":
-> +    const: 1
-> +
-> +required:
-> +  - compatible
-> +  - interrupts
-> +  - "#mbox-cells"
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    mailbox {
-> +      compatible = "brcm,brcmstb-mailbox";
-> +      #mbox-cells = <1>;
-> +      interrupts = <GIC_SPI 0xc6 IRQ_TYPE_LEVEL_HIGH>;
-> +    };
-> +...
-> -- 
-> 2.17.1
-> 
+> I'd actually go for dev_* instead, to give some context. It's fairly
+> common to have multiple UVC devices connected to a system, so printing
+> the device name would be useful. It can still be wrapped with
+> uvc_printk() if we want to wrap the cast from uvc_device to a struct
+> device (we should actually try to get the device corresponding to the
+> USB interface where available, so we should use uvc_streaming->intf->dev
+> where possible, and fallback to uvc_device->udev->dev otherwise), or
+> drop the wrapper completely.
 
+Of course yes.  I was not going to look around and update the existing
+call sites to find whatever controlling uvc_device * or other struct *
+to a real device that exists though.
+
+It's not even clear from the changes that an appropriate pointer to
+some struct exists in all the functions.
+
+That's work for someone that knows the actual subsystem and I do not.
+
+cheers, Joe
 
