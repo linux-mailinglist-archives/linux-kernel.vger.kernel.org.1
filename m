@@ -2,52 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94E3C2A5F03
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 08:58:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B02B62A5F04
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 08:58:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728064AbgKDH56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 02:57:58 -0500
-Received: from depni-mx.sinp.msu.ru ([213.131.7.21]:25 "EHLO
-        depni-mx.sinp.msu.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726152AbgKDH56 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 02:57:58 -0500
-Received: from spider (unknown [176.192.246.239])
-        by depni-mx.sinp.msu.ru (Postfix) with ESMTPSA id CA4711BF43D;
-        Wed,  4 Nov 2020 10:57:58 +0300 (MSK)
-From:   Serge Belyshev <belyshev@depni.sinp.msu.ru>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Andreas Schwab <schwab@linux-m68k.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] powerpc/32s: Setup the early hash table at all time.
-References: <b8f8101c368b8a6451844a58d7bd7d83c14cf2aa.1601566529.git.christophe.leroy@csgroup.eu>
-        <87wnz8vizm.fsf@igel.home> <87y2jouw8k.fsf@mpe.ellerman.id.au>
-        <87v9esaxlv.fsf@igel.home>
-        <20201030140047.Horde.TJJqKGzG9vSGbMRNIj-MPg7@messagerie.c-s.fr>
-        <87pn4zc0zl.fsf@igel.home>
-        <1f8494cd-36db-e3a2-8ea4-28fb976468e7@csgroup.eu>
-        <875z6mmfna.fsf@depni.sinp.msu.ru>
-        <5acd7caf-99e9-9cb5-ed24-578d2e0a5ee1@csgroup.eu>
-Date:   Wed, 04 Nov 2020 10:57:53 +0300
-In-Reply-To: <5acd7caf-99e9-9cb5-ed24-578d2e0a5ee1@csgroup.eu> (Christophe
-        Leroy's message of "Wed, 4 Nov 2020 07:44:32 +0100")
-Message-ID: <871rh9mu4e.fsf@depni.sinp.msu.ru>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
+        id S1728218AbgKDH6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 02:58:21 -0500
+Received: from mx2.suse.de ([195.135.220.15]:38666 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726152AbgKDH6U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 02:58:20 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1604476699;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=o5t73FJL2cIGGLS9sQVQy/L//ynMdEds7tHewABSxig=;
+        b=RAbSDf700bKOzDt8UkoSPQbN/PooV8eIPCyhSAIaGoEOFfEl/rHNu+aYgUyRt/KuDPxN84
+        hKcyQLFCmm8AX27hSzNuZ/nNBnMagGLLrbIymwcaRBqPCwkzIXiHPzdbzwDhj96mKnCjKE
+        h6tGSJemS0+z/9yHcL+ZNGdmsLgQMQM=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C87D7AC24;
+        Wed,  4 Nov 2020 07:58:19 +0000 (UTC)
+Date:   Wed, 4 Nov 2020 08:58:19 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Feng Tang <feng.tang@intel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@suse.de>, dave.hansen@intel.com,
+        ying.huang@intel.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 0/2] mm: fix OOMs for binding workloads to movable
+ zone only node
+Message-ID: <20201104075819.GA10052@dhcp22.suse.cz>
+References: <1604470210-124827-1-git-send-email-feng.tang@intel.com>
+ <20201104071308.GN21990@dhcp22.suse.cz>
+ <20201104073826.GA15700@shbuild999.sh.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201104073826.GA15700@shbuild999.sh.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+On Wed 04-11-20 15:38:26, Feng Tang wrote:
+[...]
+> > Could you be more specific about the usecase here? Why do you need a
+> > binding to a pure movable node? 
+> 
+> One common configuration for a platform is small size of DRAM plus huge
+> size of PMEM (which is slower but cheaper), and my guess of their use
+> is to try to lead the bulk of user space allocation (GFP_HIGHUSER_MOVABLE)
+> to PMEM node, and only let DRAM be used as less as possible. 
 
-> To be sure we are not in front of a long lasting bug, could you try
-> CONFIG_KASAN=y on v5.9 ?
+While this is possible, it is a tricky configuration. It is essentially 
+get us back to 32b and highmem...
 
-Indeed it started to fail somewhere between v5.6 and v5.7.
-
-v5.7 fails early with few messages on the console with reboot, v5.8 and
-later hang right at bootloader.
-
-I'm bisecting now.
+As I've said in reply to your second patch. I think we can make the oom
+killer behavior more sensible in this misconfigured cases but I do not
+think we want break the cpuset isolation for such a configuration.
+-- 
+Michal Hocko
+SUSE Labs
