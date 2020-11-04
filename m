@@ -2,245 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B9DA2A5B7A
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 02:06:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C3542A5B85
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 02:08:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730188AbgKDBGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 20:06:24 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:37652 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730119AbgKDBGY (ORCPT
+        id S1730286AbgKDBIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 20:08:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34230 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729864AbgKDBIW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 20:06:24 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A415KLI051725;
-        Wed, 4 Nov 2020 01:06:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- from : mime-version : to : cc : subject : references : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=4g1Qyk3zIMuI2hc/GK8ov5ul9MZNNMy6Okf5ToOjO0U=;
- b=j7ClPaZUiUuynxb1v/Qez/vyEhY5ETBP+3Kda/LjrXhj/cg692n6tB6u/AaV517IgbT9
- c449eeN9IQF2kugdP1F8dmBi52sHru4Kg1aNxhdJJZOjtktLzGkZAd+HQVnt+AVaMaXb
- r46rkGFMwVls0PRULxy50M0K8bIkdp4SeVMzrZT+87PT618/Tk/FQd86JSXcRrK3cRvF
- Yiu0fi/mWlI8xZZftd3DnuR2E7c1HcPfkIMUo+6HoTY8Urbtx2p505WrKpcQjVHybMZc
- isjJoxT9rvcyf1VHtwnlXCoSDUkShoUK/0ZRWGvLg+sWWdGIqIaNoDWQRalQifGTcRJD FQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 34hhw2ma5r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 04 Nov 2020 01:06:19 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A410omC131300;
-        Wed, 4 Nov 2020 01:06:18 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3030.oracle.com with ESMTP id 34jf499kv5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 04 Nov 2020 01:06:18 +0000
-Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0A416GW7001902;
-        Wed, 4 Nov 2020 01:06:16 GMT
-Received: from [10.159.249.36] (/10.159.249.36)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 03 Nov 2020 17:06:16 -0800
-Message-ID: <5FA1FE87.4050909@oracle.com>
-Date:   Tue, 03 Nov 2020 17:06:15 -0800
-From:   si-wei liu <si-wei.liu@oracle.com>
-Organization: Oracle Corporation
-User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:24.0) Gecko/20100101 Thunderbird/24.2.0
+        Tue, 3 Nov 2020 20:08:22 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD21AC040203
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 17:08:22 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id y14so15870602pfp.13
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 17:08:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XgDpLMdL0ctn8FkV6OAwyNPpcX4s32XQCwmQR7ICMB0=;
+        b=lvA7m4DDUgfjoovfzncxNedjERH1n9fecUi1FvRvrQGPGyN0Y8X/eBJ0gVk0Wkgwyr
+         i47GIA7hY7S2am3aVp5i6BEnRz0inMhyCV7X4fb0LBhbjKEcZDp5cyQJ+7zQ+QXHaMMF
+         3BH1xIi0Ip35KcUHrSMK8JBTWg5SVeSYt+ePWohv48OCwe+64IZz2GCwZxO5w+xQzFte
+         FdB/V2i12zPmW7ubs6yJfcWfGJ+VSSLVPcAdpmyniInLIieaeo+fmZXM72KFFe00qfd7
+         9qTcRmCzCgWIq3fnQOAW4tIsNo+pG4WmAK0cO1d+XMtUE7zE6ca6FPqmhQ508N5jr6q5
+         X4DQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XgDpLMdL0ctn8FkV6OAwyNPpcX4s32XQCwmQR7ICMB0=;
+        b=oB0Wpv1CVYSS9wu76QwlOI72K7IQFypZBpy922TZ4aTEIF3//z9lZ779hZ3EUqLMwl
+         tu8pVv5Z5UHs5T5aWDa4lxZyHyXIUK0tlkF3ObIbfGJKCwV7Y+8fnHk+fsCnew7AohQC
+         c+EEwjDzzu/CFdW5UyfzetmyVrOn70W23E30+nrO/Li+rYUV6QjPIT7oiYNff9je6FzN
+         GKwu9Tfy+/z8/2ttmIjU/d6c8OuR+14x4/0uML+pXk92CLZyBfK8NG4Z2T7clOUC4WkC
+         UygjDWmc2Mj86j/tdQA9+3epfXb+3bAYwnt7dtFoUJIBQPs8JiQvIVOpR1+0aI743SdP
+         M4dA==
+X-Gm-Message-State: AOAM532dpwzb06rBhGjdxNS36Atx858mRCikCTwt4rDX4CJxgSx0mlIQ
+        rPhwxp8Rmxp3qs6NU/YaAn5otPNprpKvHvPD2hLYOz9oaaI=
+X-Google-Smtp-Source: ABdhPJzm5Kacl/j56hBCyyGxtmrwdzn34UZh4TKQKnq3qdy/1g/TLal5FN2oEsgWVik2BdyNDVl3pzb7cy/hkaYmQrk=
+X-Received: by 2002:a62:5e06:0:b029:164:a9ca:b07e with SMTP id
+ s6-20020a625e060000b0290164a9cab07emr27533012pfb.36.1604452101924; Tue, 03
+ Nov 2020 17:08:21 -0800 (PST)
 MIME-Version: 1.0
-To:     Jason Wang <jasowang@redhat.com>, mst@redhat.com,
-        lingshan.zhu@intel.com
-CC:     joao.m.martins@oracle.com, boris.ostrovsky@oracle.com,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH 2/2] vhost-vdpa: fix page pinning leakage in error path
- (rework)
-References: <1604043944-4897-1-git-send-email-si-wei.liu@oracle.com> <1604043944-4897-2-git-send-email-si-wei.liu@oracle.com> <42fe6ef3-90f6-ddb9-f206-e60c1e98c301@redhat.com>
-In-Reply-To: <42fe6ef3-90f6-ddb9-f206-e60c1e98c301@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9794 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=2 mlxscore=0
- bulkscore=0 malwarescore=0 mlxlogscore=999 phishscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011040004
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9794 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0 mlxscore=0
- suspectscore=2 clxscore=1015 priorityscore=1501 impostorscore=0
- spamscore=0 lowpriorityscore=0 mlxlogscore=999 phishscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011040004
+References: <363325b4a85f094ba9cf06301dd022912ec79d03.camel@perches.com> <CANiq72=r6oieZ-Nj-e6e+HriW8kADB75z2pj6W-gg7Cff3nqGw@mail.gmail.com>
+In-Reply-To: <CANiq72=r6oieZ-Nj-e6e+HriW8kADB75z2pj6W-gg7Cff3nqGw@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 3 Nov 2020 17:08:10 -0800
+Message-ID: <CAKwvOdmnz-DJ-hG5FKJZYF7W-ujPrgfMkrb2hMLhmzhk8Hx6dA@mail.gmail.com>
+Subject: Re: [RFC PATCH] .clang-format: Remove conditional comments
+To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Joe Perches <joe@perches.com>
+Cc:     clang-built-linux <clang-built-linux@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Nov 3, 2020 at 1:33 PM Miguel Ojeda
+<miguel.ojeda.sandonis@gmail.com> wrote:
+>
+> Hi Joe,
+>
+> On Tue, Nov 3, 2020 at 7:29 PM Joe Perches <joe@perches.com> wrote:
+> >
+> > Now that the clang minimum supported version is > 10.0, enable the
+> > commented out conditional reformatting key:value lines in the file.
+> >
+> > Signed-off-by: Joe Perches <joe@perches.com>
+> > ---
+> >
+> > Hey Miguel.
+> >
+> > I don't use this, but on its face it seems a reasonable change
+> > if the commented out key:value lines are correct.
 
-On 11/3/2020 5:00 AM, Jason Wang wrote:
->
-> On 2020/10/30 下午3:45, Si-Wei Liu wrote:
->> Pinned pages are not properly accounted particularly when
->> mapping error occurs on IOTLB update. Clean up dangling
->> pinned pages for the error path.
->>
->> The memory usage for bookkeeping pinned pages is reverted
->> to what it was before: only one single free page is needed.
->> This helps reduce the host memory demand for VM with a large
->> amount of memory, or in the situation where host is running
->> short of free memory.
->>
->> Fixes: 4c8cf31885f6 ("vhost: introduce vDPA-based backend")
->> Signed-off-by: Si-Wei Liu <si-wei.liu@oracle.com>
->> ---
->>   drivers/vhost/vdpa.c | 64 
->> +++++++++++++++++++++++++++++++++++++---------------
->>   1 file changed, 46 insertions(+), 18 deletions(-)
->>
->> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
->> index b6d9016..8da8558 100644
->> --- a/drivers/vhost/vdpa.c
->> +++ b/drivers/vhost/vdpa.c
->> @@ -560,6 +560,8 @@ static int vhost_vdpa_map(struct vhost_vdpa *v,
->>         if (r)
->>           vhost_iotlb_del_range(dev->iotlb, iova, iova + size - 1);
->> +    else
->> +        atomic64_add(size >> PAGE_SHIFT, &dev->mm->pinned_vm);
->>         return r;
->>   }
->> @@ -591,14 +593,16 @@ static int 
->> vhost_vdpa_process_iotlb_update(struct vhost_vdpa *v,
->>       unsigned long list_size = PAGE_SIZE / sizeof(struct page *);
->>       unsigned int gup_flags = FOLL_LONGTERM;
->>       unsigned long npages, cur_base, map_pfn, last_pfn = 0;
->> -    unsigned long locked, lock_limit, pinned, i;
->> +    unsigned long lock_limit, sz2pin, nchunks, i;
->>       u64 iova = msg->iova;
->> +    long pinned;
->>       int ret = 0;
->>         if (vhost_iotlb_itree_first(iotlb, msg->iova,
->>                       msg->iova + msg->size - 1))
->>           return -EEXIST;
->>   +    /* Limit the use of memory for bookkeeping */
->>       page_list = (struct page **) __get_free_page(GFP_KERNEL);
->>       if (!page_list)
->>           return -ENOMEM;
->> @@ -607,52 +611,64 @@ static int 
->> vhost_vdpa_process_iotlb_update(struct vhost_vdpa *v,
->>           gup_flags |= FOLL_WRITE;
->>         npages = PAGE_ALIGN(msg->size + (iova & ~PAGE_MASK)) >> 
->> PAGE_SHIFT;
->> -    if (!npages)
->> -        return -EINVAL;
->> +    if (!npages) {
->> +        ret = -EINVAL;
->> +        goto free;
->> +    }
->>         mmap_read_lock(dev->mm);
->>   -    locked = atomic64_add_return(npages, &dev->mm->pinned_vm);
->>       lock_limit = rlimit(RLIMIT_MEMLOCK) >> PAGE_SHIFT;
->> -
->> -    if (locked > lock_limit) {
->> +    if (npages + atomic64_read(&dev->mm->pinned_vm) > lock_limit) {
->>           ret = -ENOMEM;
->> -        goto out;
->> +        goto unlock;
->>       }
->>         cur_base = msg->uaddr & PAGE_MASK;
->>       iova &= PAGE_MASK;
->> +    nchunks = 0;
->>         while (npages) {
->> -        pinned = min_t(unsigned long, npages, list_size);
->> -        ret = pin_user_pages(cur_base, pinned,
->> -                     gup_flags, page_list, NULL);
->> -        if (ret != pinned)
->> +        sz2pin = min_t(unsigned long, npages, list_size);
->> +        pinned = pin_user_pages(cur_base, sz2pin,
->> +                    gup_flags, page_list, NULL);
->> +        if (sz2pin != pinned) {
->> +            if (pinned < 0) {
->> +                ret = pinned;
->> +            } else {
->> +                unpin_user_pages(page_list, pinned);
->> +                ret = -ENOMEM;
->> +            }
->>               goto out;
->> +        }
->> +        nchunks++;
->>             if (!last_pfn)
->>               map_pfn = page_to_pfn(page_list[0]);
->>   -        for (i = 0; i < ret; i++) {
->> +        for (i = 0; i < pinned; i++) {
->>               unsigned long this_pfn = page_to_pfn(page_list[i]);
->>               u64 csize;
->>                 if (last_pfn && (this_pfn != last_pfn + 1)) {
->>                   /* Pin a contiguous chunk of memory */
->>                   csize = (last_pfn - map_pfn + 1) << PAGE_SHIFT;
->> -                if (vhost_vdpa_map(v, iova, csize,
->> -                           map_pfn << PAGE_SHIFT,
->> -                           msg->perm))
->> +                ret = vhost_vdpa_map(v, iova, csize,
->> +                             map_pfn << PAGE_SHIFT,
->> +                             msg->perm);
->> +                if (ret)
->>                       goto out;
->> +
->>                   map_pfn = this_pfn;
->>                   iova += csize;
->> +                nchunks = 0;
->>               }
->>                 last_pfn = this_pfn;
->>           }
->>   -        cur_base += ret << PAGE_SHIFT;
->> -        npages -= ret;
->> +        cur_base += pinned << PAGE_SHIFT;
->> +        npages -= pinned;
->>       }
->>         /* Pin the rest chunk */
->> @@ -660,10 +676,22 @@ static int 
->> vhost_vdpa_process_iotlb_update(struct vhost_vdpa *v,
->>                    map_pfn << PAGE_SHIFT, msg->perm);
->>   out:
->>       if (ret) {
->> +        if (nchunks && last_pfn) {
->> +            unsigned long pfn;
->> +
->> +            /*
->> +             * Unpin the outstanding pages which are unmapped.
->> +             * Mapped pages are accounted in vdpa_map(), thus
->> +             * will be handled by vdpa_unmap().
->> +             */
->> +            for (pfn = map_pfn; pfn <= last_pfn; pfn++)
->> +                unpin_user_page(pfn_to_page(pfn));
->> +        }
->>           vhost_vdpa_unmap(v, msg->iova, msg->size);
->
->
-> I want to know what's wrong with current code.
->
-> We call vhost_vdpa_unmap() on error which calls 
-> vhost_vdpa_iotlb_unmap() that will unpin and reduce the pinned_vm.
-Think about the case where vhost_vdpa_map() fails in the middle after 
-making a few successful ones. In the current code, the 
-vhost_vdpa_iotlb_unmap() unpins what had been mapped, but does not unpin 
-those that have not yet been mapped. These outstanding pinned pages will 
-be leaked after leaving the vhost_vdpa_map() function.
+Joe,
+what would it take to get you to use clang-format, or at least try it?
+ Beers?  Bribes? Dirty deeds, done dirt cheap?
 
-Also, the subtraction accounting at the end of the function is incorrect 
-in that case: @npages is deduced by @pinned in each iteration. That's 
-why I moved the accounting to vhost_vdpa_map() to be symmetric with 
-vhost_vdpa_unmap().
+> It is, yeah; however, the concern is that there may be developers
+> running an old clang-format from their distro (i.e. not using it for
+> compiling the kernel). We need to compare the functionality advantage
+> vs. the inconvenience of installing a current LLVM. The best would be
+> to ask whoever is using it right now, but there is no easy way to do
+> that -- many will only notice when the change is actually pushed :-)
+>
+> So far, I have avoided upgrading the requirement until clang-format
+> could match the kernel style even better (i.e. so that when the
+> upgrade happens, there is a reason for it). Also, the configuration
+> can be overridden in subfolders, thus a maintainer can push things
+> forward in a subsystem meanwhile.
 
+Miguel,
+Really? :P I'd bet if you picked up this patch no one would notice.
 
--Siwei
->
-> Thanks
->
->
->> -        atomic64_sub(npages, &dev->mm->pinned_vm);
->>       }
->> +unlock:
->>       mmap_read_unlock(dev->mm);
->> +free:
->>       free_page((unsigned long)page_list);
->>       return ret;
->>   }
->
+I recommend a simpler approach to multiple version support, which is
+just matching the one version recommended for the rest of LLVM tools.
+Sure, technically you can use older tools, but do so at your own peril
+and don't complain to us if it doesn't work.  Otherwise trying to
+explain different versions and even for different directories gets way
+too complex for anyone to take seriously.  It's not like we backport
+raising the minimum version.
 
+I was very much in denial of committing to a relatively high minimum
+version of LLVM myself, until Linus recommended the simpler approach
+which folks voted in favor of at Plumbers.  Maybe not a perfect
+analogy though.
+-- 
+Thanks,
+~Nick Desaulniers
