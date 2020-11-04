@@ -2,89 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AA482A6EFF
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 21:41:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 719292A6F17
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 21:43:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732106AbgKDUlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 15:41:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47736 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730143AbgKDUlu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 15:41:50 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20135C0613D3;
-        Wed,  4 Nov 2020 12:41:50 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id u4so5752691pgr.9;
-        Wed, 04 Nov 2020 12:41:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sM+nzIGxkHOdgoAI6FNOyuGOwSE82BOd/kFKaU8OJ1g=;
-        b=SfWaStZ1dN9t6Mb8OVMMvCZIJRmYZYqANwTSYpicZs2aH7wUbqoaM2SUm0yNjWfF+f
-         4G7u79nj5EszYtINpbanIufjk1maq4eGZTaA+sS/bfN8kXozi7lbimhKE/0ezaq9EhN2
-         QN65h9K2xERxxRe+y9BLySNLkpPoMPxPoLEQEsYS94ahDVEYldZfh6v07k33N713q+Mn
-         86nhfY0cfQXz81XTyECcREI2nEwSuB0AY8ODXGFyzcHKqIj3MyPv4My9WtCwA65N8rwf
-         TDu2QY9j4Y2QC1jLp5pgrLV9LuthgxeDxmpR43PKFBgocTanfEi3zT3cS/sfgNAttaAl
-         rHLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sM+nzIGxkHOdgoAI6FNOyuGOwSE82BOd/kFKaU8OJ1g=;
-        b=EcCOw12rwTd4ROod0q7nV/2F4FahZmBgRnwweL/UCDeNI8g5y6EwoPnKcypPRj5xSU
-         UxEHGSUWCzdB3IZLAOfqO41hPhMdzD9I+FDDD9dQYdmNsggXRbjQog21S8a4iKvP1ynt
-         EpBFaQWEFjUIf82EV3W23RKre2VwEketptGEL6BdzAjVy1LXOIdiB094GjyLmfA8lMq8
-         EfXstmcBi5n4a0zvXL/5Leg64kKTmpodMqPMMwRpI9HoHxF26s7ysZnQvUWcJIeoL7iO
-         DdrISXxwt4oWsi0GDuG+yHcqEAa62qQm8/Q5XIJiZ9CLpThGX+f4Kbko+1EOnhjI14/H
-         TS6A==
-X-Gm-Message-State: AOAM533tQWTJSo8oHc77B4upfK8/TR0v0zCtoUJm3+jEsFiXePvs+OPN
-        1ikrUy6fz60Z+YDJ6ZRTifljRxVHJPGXvIblbh0=
-X-Google-Smtp-Source: ABdhPJxsd365astWLWiAEbYaM9Y74ThNnaHzk7t1zp2IKhE8eS0pu3ItPwZ6xXT0330S6mP9+HRBPrQk0iQKMCVlMEw=
-X-Received: by 2002:a05:6a00:850:b029:18a:a8ce:d346 with SMTP id
- q16-20020a056a000850b029018aa8ced346mr22646133pfk.73.1604522509683; Wed, 04
- Nov 2020 12:41:49 -0800 (PST)
+        id S1732332AbgKDUnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 15:43:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59040 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727637AbgKDUnL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 15:43:11 -0500
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 95E7420782;
+        Wed,  4 Nov 2020 20:43:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604522591;
+        bh=W9g2xF7W5N0mgEIaNycneqP7yHMgQppBrLRV9HdLquk=;
+        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+        b=S5Mj8Am2PTfs/DciLSBpP+ny5hNyuR3522OCqk6/bsv/4ZfE2ccGyV/UdlYR2mHm1
+         Rl6WelQUkGiN4FpNoFKx6/Rmx+SgXpVPYQLj4l3Wcr3FIR/4K5K9JdW9HMLV7jbADK
+         MzWPfYn1HZ/t9b3sXaOVWNTI8cUDnjjHenBDdu5k=
+Date:   Wed, 04 Nov 2020 20:43:00 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        alsa-devel@alsa-project.org
+Cc:     nicolas.ferre@microchip.com, ludovic.desroches@microchip.com,
+        lgirdwood@gmail.com, alexandre.belloni@bootlin.com
+In-Reply-To: <20201104155738.68403-1-codrin.ciubotariu@microchip.com>
+References: <20201104155738.68403-1-codrin.ciubotariu@microchip.com>
+Subject: Re: [PATCH] ASoC: mchp-spdiftx: Do not set Validity bit(s)
+Message-Id: <160452257412.7226.6443928434973904720.b4-ty@kernel.org>
 MIME-Version: 1.0
-References: <20201104160344.4929-1-coiby.xu@gmail.com> <20201104160344.4929-5-coiby.xu@gmail.com>
-In-Reply-To: <20201104160344.4929-5-coiby.xu@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 4 Nov 2020 22:42:38 +0200
-Message-ID: <CAHp75VcA6vk0dXQ0iOpSM8YdmBBBoU+veqBuK3hur9sbCiwkww@mail.gmail.com>
-Subject: Re: [PATCH 4/4] pinctrl: amd: remove debounce filter setting in irq
- type setting
-To:     Coiby Xu <coiby.xu@gmail.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        1887190@bugs.launchpad.net,
-        "open list:PIN CONTROL SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 4, 2020 at 6:05 PM Coiby Xu <coiby.xu@gmail.com> wrote:
->
-> Debounce filter setting should be independent from irq type setting
-> because according to the ACPI specs, there are separate arguments for
-> specifying debounce timeout and irq type in GpioIo and GpioInt.
->
-> This will fix broken touchpads for Lenovo Legion-5 AMD gaming laptops
-> including 15ARH05 (R7000) and R7000P whose BIOS set the debounce timeout
-> to 124.8ms which led to kernel receiving only ~7 HID reports per second.
+On Wed, 4 Nov 2020 17:57:38 +0200, Codrin Ciubotariu wrote:
+> The Validity bits (bit 28) must not be set in order to have the samples
+> valid. Some controllers look for this bit and ignore the samples if it
+> is set.
 
-to the kernel
+Applied to
 
-> Cc: Hans de Goede <hdegoede@redhat.com>
-> Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Cc: 1887190@bugs.launchpad.net
-> BugLink: https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1887190
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-> Message-Id: <CAHp75VcwiGREBUJ0A06EEw-SyabqYsp+dqs2DpSrhaY-2GVdAA@mail.gmail.com>
+Thanks!
 
-Link: https://lore.kernel.org/...
+[1/1] ASoC: mchp-spdiftx: Do not set Validity bit(s)
+      commit: f9d7c6eb23f7e55e7a0ca5451da06909bdfdd0e4
 
--- 
-With Best Regards,
-Andy Shevchenko
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
