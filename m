@@ -2,61 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A19092A5B57
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 01:56:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A23D2A5B59
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 01:56:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730169AbgKDA4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 19:56:09 -0500
-Received: from smtprelay0093.hostedemail.com ([216.40.44.93]:44658 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729163AbgKDA4J (ORCPT
+        id S1730180AbgKDA4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 19:56:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60588 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729163AbgKDA4N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 19:56:09 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 7140518029121;
-        Wed,  4 Nov 2020 00:56:08 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1730:1747:1777:1792:2194:2199:2393:2553:2559:2562:2689:2693:2828:2919:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3871:3872:3874:4321:5007:6120:6691:7875:9108:10004:10400:10848:11232:11658:11914:12297:12740:12760:12895:13069:13161:13229:13311:13357:13439:14096:14097:14659:14721:21067:21080:21627:21972:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: baby40_1802367272bd
-X-Filterd-Recvd-Size: 1681
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf11.hostedemail.com (Postfix) with ESMTPA;
-        Wed,  4 Nov 2020 00:56:07 +0000 (UTC)
-Message-ID: <f474396f8f47c303e3a3ac90a582c116e38e50e4.camel@perches.com>
-Subject: Re: [RFC PATCH] .clang-format: Remove conditional comments
-From:   Joe Perches <joe@perches.com>
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc:     clang-built-linux <clang-built-linux@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Date:   Tue, 03 Nov 2020 16:56:06 -0800
-In-Reply-To: <CANiq72=r6oieZ-Nj-e6e+HriW8kADB75z2pj6W-gg7Cff3nqGw@mail.gmail.com>
-References: <363325b4a85f094ba9cf06301dd022912ec79d03.camel@perches.com>
-         <CANiq72=r6oieZ-Nj-e6e+HriW8kADB75z2pj6W-gg7Cff3nqGw@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        Tue, 3 Nov 2020 19:56:13 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5DB4C040203
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 16:56:13 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id w4so19888728ybq.21
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 16:56:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=fEgHoEwH/Qn4FmtMQAK1i8tQpW1NQPuJnI+u+2FH2KM=;
+        b=FPor5ao+bC4TgCl1QyGqGMAkqS4F3BnFzzHIHy73yy1gvN3Jzs7nmoLnollXBLFeM/
+         X/DTngmWYrti7gw3skF3RfMr+899UDUFeGiYvO5fMEeJ6cwa6WuXwblz1U4PyAz3V0PV
+         VN9QYVMoaNb7iwwtoZlMPqljXJUpS2NSvyE2F0WQ8JWMvm61lrgzlFemct7gLV8izChC
+         k4+1j2ql4iO/zGW/QIvgw1ksmH5V7X+I0uW8VPvQDlar/pKAk/ghv7U6qv8Bohv+Sddd
+         LhVsjdwavyTOeBeQUJc7HVQmFS4vStNv4tgoo4vywf597CeO9q32VfHbH/baP915sbgD
+         HPdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=fEgHoEwH/Qn4FmtMQAK1i8tQpW1NQPuJnI+u+2FH2KM=;
+        b=g2VcJKhkt2IZIGZDSmYxYm4zN+Dqqu5y8a/4rLbKzhfcNTjQyDR/fRSh+ZMadW/Hxz
+         FPrc66cvXvLxMuOZSiBobTz0DikKJDB/XQoWAbmcIow487Qn4eohJNbO6NoZuUuTRnR9
+         o21+8SioJVjIXMKSplF7wl5on85b9Wxe5jgme0PHQRU6ay69/V1sM2TdN9XMuZDE+KHV
+         9ViYNi+qXWhVUM43uKJJsU2Fjy+uaC+UHWTvWlDLJmRoDxXUOAYYI8m/Q+2ObHfX0G0H
+         QbISGvmtk99qNKr1sGBgWqwmKSeKSzcLY/ujYCY+IOdy9HpoDR5K4e2G6Tr5kvu2TDkO
+         uFbg==
+X-Gm-Message-State: AOAM532dZ0NWQ91g35YzuGIsWROKnXqOAKkpnViLQI2gUxTpUFasd2Eg
+        8nB9K8kzWuZjzEjgbXCRfxWsh6kOrx/1
+X-Google-Smtp-Source: ABdhPJxTDYntbdBa8z/I//1SXC9BqU8aYd/pz62IV7aOFDPluvC5odEUl+fxTAmsj1hFXNn9HHVKCoGqn/WE
+Sender: "maskray via sendgmr" <maskray@maskray1.svl.corp.google.com>
+X-Received: from maskray1.svl.corp.google.com ([2620:15c:2ce:0:a6ae:11ff:fe11:4abb])
+ (user=maskray job=sendgmr) by 2002:a25:57d6:: with SMTP id
+ l205mr31348808ybb.117.1604451372895; Tue, 03 Nov 2020 16:56:12 -0800 (PST)
+Date:   Tue,  3 Nov 2020 16:56:09 -0800
+Message-Id: <20201104005609.1316230-1-maskray@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
+Subject: [PATCH] perf bench: Update arch/x86/lib/mem{cpy,set}_64.S
+From:   Fangrui Song <maskray@google.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>
+Cc:     linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Ian Rogers <irogers@google.com>,
+        Fangrui Song <maskray@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-11-03 at 22:33 +0100, Miguel Ojeda wrote:
-> It is, yeah; however, the concern is that there may be developers
-> running an old clang-format from their distro (i.e. not using it for
-> compiling the kernel).
+In memset_64.S, the macros expand to `.weak MEMSET ... .globl MEMSET`
+which will produce a STB_WEAK MEMSET with GNU as but STB_GLOBAL MEMSET
+with LLVM's integrated assembler before LLVM 12. LLVM 12 (since
+https://reviews.llvm.org/D90108) will error on such an overridden symbol
+binding. memcpy_64.S is similar.
 
-I expect that'd be extremely unusual.
+Port http://lore.kernel.org/r/20201103012358.168682-1-maskray@google.com
+("x86_64: Change .weak to SYM_FUNC_START_WEAK for arch/x86/lib/mem*_64.S")
+to fix the issue. Additionally, port SYM_L_WEAK and SYM_FUNC_START_WEAK
+from include/linux/linkage.h to tools/perf/util/include/linux/linkage.h
 
-> We need to compare the functionality advantage
-> vs. the inconvenience of installing a current LLVM. The best would be
-> to ask whoever is using it right now, but there is no easy way to do
-> that -- many will only notice when the change is actually pushed :-)
+Fixes: 7d7d1bf1d1da ("perf bench: Copy kernel files needed to build mem{cpy,set} x86_64 benchmarks")
+Link: https://lore.kernel.org/r/20201103012358.168682-1-maskray@google.com
+Signed-off-by: Fangrui Song <maskray@google.com>
+---
+ tools/arch/x86/lib/memcpy_64.S          | 4 +---
+ tools/arch/x86/lib/memset_64.S          | 4 +---
+ tools/perf/util/include/linux/linkage.h | 7 +++++++
+ 3 files changed, 9 insertions(+), 6 deletions(-)
 
-Do remember that this patch is for the current kernel and
-not any old version that someone might be compiling.
-
-The current kernel _requires_ clang 10.0+ and that would
-obviously provide clang-format 10+ as well.
-
+diff --git a/tools/arch/x86/lib/memcpy_64.S b/tools/arch/x86/lib/memcpy_64.S
+index 0b5b8ae56bd9..9428f251df0f 100644
+--- a/tools/arch/x86/lib/memcpy_64.S
++++ b/tools/arch/x86/lib/memcpy_64.S
+@@ -16,8 +16,6 @@
+  * to a jmp to memcpy_erms which does the REP; MOVSB mem copy.
+  */
+ 
+-.weak memcpy
+-
+ /*
+  * memcpy - Copy a memory block.
+  *
+@@ -30,7 +28,7 @@
+  * rax original destination
+  */
+ SYM_FUNC_START_ALIAS(__memcpy)
+-SYM_FUNC_START_LOCAL(memcpy)
++SYM_FUNC_START_WEAK(memcpy)
+ 	ALTERNATIVE_2 "jmp memcpy_orig", "", X86_FEATURE_REP_GOOD, \
+ 		      "jmp memcpy_erms", X86_FEATURE_ERMS
+ 
+diff --git a/tools/arch/x86/lib/memset_64.S b/tools/arch/x86/lib/memset_64.S
+index fd5d25a474b7..1f9b11f9244d 100644
+--- a/tools/arch/x86/lib/memset_64.S
++++ b/tools/arch/x86/lib/memset_64.S
+@@ -5,8 +5,6 @@
+ #include <asm/cpufeatures.h>
+ #include <asm/alternative-asm.h>
+ 
+-.weak memset
+-
+ /*
+  * ISO C memset - set a memory block to a byte value. This function uses fast
+  * string to get better performance than the original function. The code is
+@@ -18,7 +16,7 @@
+  *
+  * rax   original destination
+  */
+-SYM_FUNC_START_ALIAS(memset)
++SYM_FUNC_START_WEAK(memset)
+ SYM_FUNC_START(__memset)
+ 	/*
+ 	 * Some CPUs support enhanced REP MOVSB/STOSB feature. It is recommended
+diff --git a/tools/perf/util/include/linux/linkage.h b/tools/perf/util/include/linux/linkage.h
+index b8a5159361b4..0e493bf3151b 100644
+--- a/tools/perf/util/include/linux/linkage.h
++++ b/tools/perf/util/include/linux/linkage.h
+@@ -25,6 +25,7 @@
+ 
+ /* SYM_L_* -- linkage of symbols */
+ #define SYM_L_GLOBAL(name)			.globl name
++#define SYM_L_WEAK(name)			.weak name
+ #define SYM_L_LOCAL(name)			/* nothing */
+ 
+ #define ALIGN __ALIGN
+@@ -78,6 +79,12 @@
+ 	SYM_START(name, SYM_L_LOCAL, SYM_A_ALIGN)
+ #endif
+ 
++/* SYM_FUNC_START_WEAK -- use for weak functions */
++#ifndef SYM_FUNC_START_WEAK
++#define SYM_FUNC_START_WEAK(name)			\
++	SYM_START(name, SYM_L_WEAK, SYM_A_ALIGN)
++#endif
++
+ /* SYM_FUNC_END_ALIAS -- the end of LOCAL_ALIASed or ALIASed function */
+ #ifndef SYM_FUNC_END_ALIAS
+ #define SYM_FUNC_END_ALIAS(name)			\
+-- 
+2.29.1.341.ge80a0c044ae-goog
 
