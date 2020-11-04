@@ -2,110 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CB412A5CD4
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 03:52:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AE402A5CD7
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 03:55:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729722AbgKDCwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 21:52:19 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:7045 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729085AbgKDCwS (ORCPT
+        id S1729715AbgKDCzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 21:55:40 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:37927 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728972AbgKDCzk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 21:52:18 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CQrlx4zPzzhZlN;
-        Wed,  4 Nov 2020 10:52:13 +0800 (CST)
-Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
- (10.3.19.204) with Microsoft SMTP Server (TLS) id 14.3.487.0; Wed, 4 Nov 2020
- 10:52:14 +0800
-Subject: Re: [f2fs-dev] [PATCH RFC] f2fs: fix compat F2FS_IOC_{MOVE,
- GARBAGE_COLLECT}_RANGE
-To:     Eric Biggers <ebiggers@kernel.org>
-CC:     <jaegeuk@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>
-References: <20201104021906.108534-1-yuchao0@huawei.com>
- <20201104022908.GA832@sol.localdomain>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <2d1f5f85-f1a1-edf1-82a4-ee47fd46c349@huawei.com>
-Date:   Wed, 4 Nov 2020 10:52:13 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        Tue, 3 Nov 2020 21:55:40 -0500
+X-UUID: a72b7571c8cc40ff83dfeb60b4dd9d95-20201104
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=MP5e0QhgKIA+MvW5wSngQc0UfzfVuo9vvk7lQqjo+p0=;
+        b=tE5VNKSJ0yUzn3Nj9XvCv/jPM8rG6QGwzj2rEpuqa25B1w45fObTTsdGLsBSaCsBkP+NWEJFjm9VWKc2AsoEcVqAA4JV0799HmrVZMRpnbyG/0PpMPScaAHLcoo0HQWizj3HYEri7Yw+ACWg5rIFHTObqKKOLz0FDapfMh1AlUA=;
+X-UUID: a72b7571c8cc40ff83dfeb60b4dd9d95-20201104
+Received: from mtkcas08.mediatek.inc [(172.21.101.126)] by mailgw02.mediatek.com
+        (envelope-from <stanley.chu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 847137746; Wed, 04 Nov 2020 10:55:34 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 4 Nov 2020 10:55:27 +0800
+Received: from [172.21.77.33] (172.21.77.33) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 4 Nov 2020 10:55:27 +0800
+Message-ID: <1604458527.13152.15.camel@mtkswgap22>
+Subject: Re: [PATCH V4 2/2] scsi: ufs: Allow an error return value from
+ ->device_reset()
+From:   Stanley Chu <stanley.chu@mediatek.com>
+To:     Adrian Hunter <adrian.hunter@intel.com>
+CC:     "Martin K . Petersen" <martin.petersen@oracle.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        "Avri Altman" <avri.altman@wdc.com>, Bean Huo <huobean@gmail.com>,
+        Can Guo <cang@codeaurora.org>
+Date:   Wed, 4 Nov 2020 10:55:27 +0800
+In-Reply-To: <20201103141403.2142-3-adrian.hunter@intel.com>
+References: <20201103141403.2142-1-adrian.hunter@intel.com>
+         <20201103141403.2142-3-adrian.hunter@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-In-Reply-To: <20201104022908.GA832@sol.localdomain>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.114.67]
-X-CFilter-Loop: Reflected
+X-TM-SNTS-SMTP: EF6601121EECEF1499E3C4156E8C9E57BAE39532E39BFBA5EE15079F53CCD5282000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/11/4 10:29, Eric Biggers wrote:
-> On Wed, Nov 04, 2020 at 10:19:06AM +0800, Chao Yu wrote:
->> Eric reported a ioctl bug in below link:
->>
->> https://lore.kernel.org/linux-f2fs-devel/20201103032234.GB2875@sol.localdomain/
->>
->> That said, on some 32-bit architectures, u64 has only 32-bit alignment,
->> notably i386 and x86_32, so that size of struct f2fs_gc_range compiled
->> in x86_32 is 20 bytes, however the size in x86_64 is 24 bytes, binary
->> compiled in x86_32 can not call F2FS_IOC_GARBAGE_COLLECT_RANGE successfully
->> due to mismatched value of ioctl command in betweeen binary and f2fs
->> module, similarly, F2FS_IOC_MOVE_RANGE will fail too.
->>
->> In this patch we introduce two ioctls for compatibility of above special
->> 32-bit binary:
->> - F2FS_IOC32_GARBAGE_COLLECT_RANGE
->> - F2FS_IOC32_MOVE_RANGE
->>
->> Signed-off-by: Chao Yu <yuchao0@huawei.com>
->> ---
->>
->> Jaegeuk, Eric,
->>
->> I have no 32-bit machine now, so I don't run any test on this patch,
->> please take a look at this RFC patch first.
-> 
-> You can test this by running a 32-bit binary on a machine with a 64-bit kernel.
-> E.g. on x86_64, compile a binary with 'gcc -m32'.
+SGkgQWRyaWFuLA0KDQpPbiBUdWUsIDIwMjAtMTEtMDMgYXQgMTY6MTQgKzAyMDAsIEFkcmlhbiBI
+dW50ZXIgd3JvdGU6DQo+IEl0IGlzIHNpbXBsZXIgZm9yIGRyaXZlcnMgdG8gcHJvdmlkZSBhIC0+
+ZGV2aWNlX3Jlc2V0KCkgY2FsbGJhY2sNCj4gaXJyZXNwZWN0aXZlIG9mIHdoZXRoZXIgdGhlIEdQ
+SU8sIG9yIGZpcm13YXJlIGludGVyZmFjZSBuZWNlc3NhcnkgdG8gZG8gdGhlDQo+IHJlc2V0LCBp
+cyBkaXNjb3ZlcmVkIGR1cmluZyBwcm9iZS4NCj4gDQo+IENoYW5nZSAtPmRldmljZV9yZXNldCgp
+IHRvIHJldHVybiBhbiBlcnJvciBjb2RlLiAgRHJpdmVycyB0aGF0IHByb3ZpZGUNCj4gdGhlIGNh
+bGxiYWNrLCBidXQgZG8gbm90IGRvIHRoZSByZXNldCBvcGVyYXRpb24gc2hvdWxkIHJldHVybiAt
+RU9QTk9UU1VQUC4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IEFkcmlhbiBIdW50ZXIgPGFkcmlhbi5o
+dW50ZXJAaW50ZWwuY29tPg0KPiAtLS0NCj4gIGRyaXZlcnMvc2NzaS91ZnMvdWZzLW1lZGlhdGVr
+LmMgfCAgNCArKystDQo+ICBkcml2ZXJzL3Njc2kvdWZzL3Vmcy1xY29tLmMgICAgIHwgIDYgKysr
+Ky0tDQo+ICBkcml2ZXJzL3Njc2kvdWZzL3Vmc2hjZC5oICAgICAgIHwgMTEgKysrKysrKy0tLS0N
+Cj4gIDMgZmlsZXMgY2hhbmdlZCwgMTQgaW5zZXJ0aW9ucygrKSwgNyBkZWxldGlvbnMoLSkNCj4g
+DQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3Njc2kvdWZzL3Vmcy1tZWRpYXRlay5jIGIvZHJpdmVy
+cy9zY3NpL3Vmcy91ZnMtbWVkaWF0ZWsuYw0KPiBpbmRleCA4ZGY3M2JjMmY4Y2IuLjkxNGE4Mjdh
+OTNlZSAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9zY3NpL3Vmcy91ZnMtbWVkaWF0ZWsuYw0KPiAr
+KysgYi9kcml2ZXJzL3Njc2kvdWZzL3Vmcy1tZWRpYXRlay5jDQo+IEBAIC03NDMsNyArNzQzLDcg
+QEAgc3RhdGljIGludCB1ZnNfbXRrX2xpbmtfc3RhcnR1cF9ub3RpZnkoc3RydWN0IHVmc19oYmEg
+KmhiYSwNCj4gIAlyZXR1cm4gcmV0Ow0KPiAgfQ0KPiAgDQo+IC1zdGF0aWMgdm9pZCB1ZnNfbXRr
+X2RldmljZV9yZXNldChzdHJ1Y3QgdWZzX2hiYSAqaGJhKQ0KPiArc3RhdGljIGludCB1ZnNfbXRr
+X2RldmljZV9yZXNldChzdHJ1Y3QgdWZzX2hiYSAqaGJhKQ0KPiAgew0KPiAgCXN0cnVjdCBhcm1f
+c21jY2NfcmVzIHJlczsNCj4gIA0KPiBAQCAtNzY0LDYgKzc2NCw4IEBAIHN0YXRpYyB2b2lkIHVm
+c19tdGtfZGV2aWNlX3Jlc2V0KHN0cnVjdCB1ZnNfaGJhICpoYmEpDQo+ICAJdXNsZWVwX3Jhbmdl
+KDEwMDAwLCAxNTAwMCk7DQo+ICANCj4gIAlkZXZfaW5mbyhoYmEtPmRldiwgImRldmljZSByZXNl
+dCBkb25lXG4iKTsNCj4gKw0KPiArCXJldHVybiAwOw0KPiAgfQ0KPiAgDQo+ICBzdGF0aWMgaW50
+IHVmc19tdGtfbGlua19zZXRfaHBtKHN0cnVjdCB1ZnNfaGJhICpoYmEpDQo+IGRpZmYgLS1naXQg
+YS9kcml2ZXJzL3Njc2kvdWZzL3Vmcy1xY29tLmMgYi9kcml2ZXJzL3Njc2kvdWZzL3Vmcy1xY29t
+LmMNCj4gaW5kZXggOWExOWM2ZDE1ZDNiLi4zNTdjM2I0OTMyMWQgMTAwNjQ0DQo+IC0tLSBhL2Ry
+aXZlcnMvc2NzaS91ZnMvdWZzLXFjb20uYw0KPiArKysgYi9kcml2ZXJzL3Njc2kvdWZzL3Vmcy1x
+Y29tLmMNCj4gQEAgLTE0MjIsMTMgKzE0MjIsMTMgQEAgc3RhdGljIHZvaWQgdWZzX3Fjb21fZHVt
+cF9kYmdfcmVncyhzdHJ1Y3QgdWZzX2hiYSAqaGJhKQ0KPiAgICoNCj4gICAqIFRvZ2dsZXMgdGhl
+IChvcHRpb25hbCkgcmVzZXQgbGluZSB0byByZXNldCB0aGUgYXR0YWNoZWQgZGV2aWNlLg0KPiAg
+ICovDQo+IC1zdGF0aWMgdm9pZCB1ZnNfcWNvbV9kZXZpY2VfcmVzZXQoc3RydWN0IHVmc19oYmEg
+KmhiYSkNCj4gK3N0YXRpYyBpbnQgdWZzX3Fjb21fZGV2aWNlX3Jlc2V0KHN0cnVjdCB1ZnNfaGJh
+ICpoYmEpDQo+ICB7DQo+ICAJc3RydWN0IHVmc19xY29tX2hvc3QgKmhvc3QgPSB1ZnNoY2RfZ2V0
+X3ZhcmlhbnQoaGJhKTsNCj4gIA0KPiAgCS8qIHJlc2V0IGdwaW8gaXMgb3B0aW9uYWwgKi8NCj4g
+IAlpZiAoIWhvc3QtPmRldmljZV9yZXNldCkNCj4gLQkJcmV0dXJuOw0KPiArCQlyZXR1cm4gLUVP
+UE5PVFNVUFA7DQo+ICANCj4gIAkvKg0KPiAgCSAqIFRoZSBVRlMgZGV2aWNlIHNoYWxsIGRldGVj
+dCByZXNldCBwdWxzZXMgb2YgMXVzLCBzbGVlcCBmb3IgMTB1cyB0bw0KPiBAQCAtMTQzOSw2ICsx
+NDM5LDggQEAgc3RhdGljIHZvaWQgdWZzX3Fjb21fZGV2aWNlX3Jlc2V0KHN0cnVjdCB1ZnNfaGJh
+ICpoYmEpDQo+ICANCj4gIAlncGlvZF9zZXRfdmFsdWVfY2Fuc2xlZXAoaG9zdC0+ZGV2aWNlX3Jl
+c2V0LCAwKTsNCj4gIAl1c2xlZXBfcmFuZ2UoMTAsIDE1KTsNCj4gKw0KPiArCXJldHVybiAwOw0K
+PiAgfQ0KPiAgDQo+ICAjaWYgSVNfRU5BQkxFRChDT05GSUdfREVWRlJFUV9HT1ZfU0lNUExFX09O
+REVNQU5EKQ0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9zY3NpL3Vmcy91ZnNoY2QuaCBiL2RyaXZl
+cnMvc2NzaS91ZnMvdWZzaGNkLmgNCj4gaW5kZXggMjEzYmUwNjY3YjU5Li41MTkxZDg3ZjYyNjMg
+MTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvc2NzaS91ZnMvdWZzaGNkLmgNCj4gKysrIGIvZHJpdmVy
+cy9zY3NpL3Vmcy91ZnNoY2QuaA0KPiBAQCAtMzIzLDcgKzMyMyw3IEBAIHN0cnVjdCB1ZnNfaGJh
+X3ZhcmlhbnRfb3BzIHsNCj4gIAlpbnQgICAgICgqcmVzdW1lKShzdHJ1Y3QgdWZzX2hiYSAqLCBl
+bnVtIHVmc19wbV9vcCk7DQo+ICAJdm9pZAkoKmRiZ19yZWdpc3Rlcl9kdW1wKShzdHJ1Y3QgdWZz
+X2hiYSAqaGJhKTsNCj4gIAlpbnQJKCpwaHlfaW5pdGlhbGl6YXRpb24pKHN0cnVjdCB1ZnNfaGJh
+ICopOw0KPiAtCXZvaWQJKCpkZXZpY2VfcmVzZXQpKHN0cnVjdCB1ZnNfaGJhICpoYmEpOw0KPiAr
+CWludAkoKmRldmljZV9yZXNldCkoc3RydWN0IHVmc19oYmEgKmhiYSk7DQo+ICAJdm9pZAkoKmNv
+bmZpZ19zY2FsaW5nX3BhcmFtKShzdHJ1Y3QgdWZzX2hiYSAqaGJhLA0KPiAgCQkJCQlzdHJ1Y3Qg
+ZGV2ZnJlcV9kZXZfcHJvZmlsZSAqcHJvZmlsZSwNCj4gIAkJCQkJdm9pZCAqZGF0YSk7DQo+IEBA
+IC0xMjA3LDkgKzEyMDcsMTIgQEAgc3RhdGljIGlubGluZSB2b2lkIHVmc2hjZF92b3BzX2RiZ19y
+ZWdpc3Rlcl9kdW1wKHN0cnVjdCB1ZnNfaGJhICpoYmEpDQo+ICBzdGF0aWMgaW5saW5lIHZvaWQg
+dWZzaGNkX3ZvcHNfZGV2aWNlX3Jlc2V0KHN0cnVjdCB1ZnNfaGJhICpoYmEpDQo+ICB7DQo+ICAJ
+aWYgKGhiYS0+dm9wcyAmJiBoYmEtPnZvcHMtPmRldmljZV9yZXNldCkgew0KPiAtCQloYmEtPnZv
+cHMtPmRldmljZV9yZXNldChoYmEpOw0KPiAtCQl1ZnNoY2Rfc2V0X3Vmc19kZXZfYWN0aXZlKGhi
+YSk7DQo+IC0JCXVmc2hjZF91cGRhdGVfcmVnX2hpc3QoJmhiYS0+dWZzX3N0YXRzLmRldl9yZXNl
+dCwgMCk7DQo+ICsJCWludCBlcnIgPSBoYmEtPnZvcHMtPmRldmljZV9yZXNldChoYmEpOw0KPiAr
+DQo+ICsJCWlmICghZXJyKQ0KPiArCQkJdWZzaGNkX3NldF91ZnNfZGV2X2FjdGl2ZShoYmEpOw0K
+PiArCQlpZiAoZXJyICE9IC1FT1BOT1RTVVBQKQ0KPiArCQkJdWZzaGNkX3VwZGF0ZV9yZWdfaGlz
+dCgmaGJhLT51ZnNfc3RhdHMuZGV2X3Jlc2V0LCBlcnIpOw0KPiAgCX0NCj4gIH0NCg0KRm9yIHVm
+cy1tZWRpYXRlayBwYXJ0IGFuZCByZWxhdGVkIGZsb3csDQoNClJldmlld2VkLWJ5OiBTdGFubGV5
+IENodSA8c3RhbmxleS5jaHVAbWVkaWF0ZWsuY29tPg0KDQo=
 
-Ah, thanks for providing the option, I can try that.
-
-> 
->>   #ifdef CONFIG_COMPAT
->> +static int f2fs_compat_ioc_gc_range(struct file *file, unsigned long arg)
->> +{
->> +	struct compat_f2fs_gc_range __user *urange;
->> +	struct f2fs_gc_range range;
->> +	int err;
->> +
->> +	urange = compat_ptr(arg);
->> +	err = get_user(range.sync, &urange->sync);
->> +	err |= get_user(range.start, &urange->start);
->> +	err |= get_user(range.len, &urange->len);
->> +	if (err)
->> +		return -EFAULT;
->> +	if (unlikely(f2fs_cp_error(F2FS_I_SB(file_inode(file)))))
->> +		return -EIO;
->> +	if (!f2fs_is_checkpoint_ready(F2FS_I_SB(file_inode(file))))
->> +		return -ENOSPC;
->> +	return f2fs_ioc_gc_range(file, (unsigned long)&range);
->> +}
-> 
-> This won't work because f2fs_ioc_gc_range() expects a user pointer.  You'll need
-> to make the native and compat versions do the copy from user separately, and
-> have them call a helper function that takes a pointer to the argument in kernel
-> memory.
-
-Yes, I need to introduce function like __f2fs_ioc_gc_range() to accepted pointer
-parameter which points kernel memory.
-
-Will do test and resend v2 soon.
-
-Thanks,
-
-> 
-> - Eric
-> .
-> 
