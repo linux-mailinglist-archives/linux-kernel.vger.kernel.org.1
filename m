@@ -2,223 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCD922A7357
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 00:59:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 916762A7362
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 01:00:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387708AbgKDX6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 18:58:34 -0500
-Received: from mga02.intel.com ([134.134.136.20]:5697 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732560AbgKDX63 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 18:58:29 -0500
-IronPort-SDR: FG0h6d4fR0+OMYJA+b50FaP7QXR/uk+yaVptsoHMIF1Yi5lL4PrVuOyjRd7B1PdmKcVVIzFzHa
- GJrZWSZ2V38A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9795"; a="156292553"
-X-IronPort-AV: E=Sophos;i="5.77,451,1596524400"; 
-   d="scan'208";a="156292553"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2020 15:58:28 -0800
-IronPort-SDR: WYcjw0rLUtUIdbg1u3kiz087D2J+joo75Q7nhSNCGoOLtVmPRNhtmiD76jTOvXEKRMDaeL+nje
- v1pgiJAlYXPw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,451,1596524400"; 
-   d="scan'208";a="320994462"
-Received: from lkp-server02.sh.intel.com (HELO e61783667810) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 04 Nov 2020 15:58:27 -0800
-Received: from kbuild by e61783667810 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kaSfa-00018b-FW; Wed, 04 Nov 2020 23:58:26 +0000
-Date:   Thu, 05 Nov 2020 07:58:20 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/urgent] BUILD SUCCESS
- 4d6ffa27b8e5116c0abb318790fd01d4e12d75e6
-Message-ID: <5fa3401c.9yL+omFBbcvO3QaU%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1733143AbgKEAAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 19:00:35 -0500
+Received: from smtprelay0109.hostedemail.com ([216.40.44.109]:59096 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1732923AbgKDX7O (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 18:59:14 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 2A868181D3039;
+        Wed,  4 Nov 2020 23:59:13 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:967:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:1801:2393:2525:2553:2561:2564:2682:2685:2828:2859:2895:2902:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4250:4321:4384:4605:5007:6119:6691:7903:8531:9008:9025:10004:10400:10848:11026:11232:11233:11473:11658:11914:12043:12050:12296:12297:12438:12555:12740:12760:12895:13069:13161:13229:13311:13357:13439:13618:14180:14181:14659:14721:21060:21080:21365:21451:21499:21627:21939:30012:30054:30060:30070:30080:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: rake48_560ecb1272c5
+X-Filterd-Recvd-Size: 2627
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf19.hostedemail.com (Postfix) with ESMTPA;
+        Wed,  4 Nov 2020 23:59:12 +0000 (UTC)
+Message-ID: <79cad1a6a296761e672cfb0d85e7424fcb740032.camel@perches.com>
+Subject: Re: [PATCH v2 1/7] media: uvcvideo: Use pr_cont() macro
+From:   Joe Perches <joe@perches.com>
+To:     Ricardo Ribalda <ribalda@chromium.org>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Wed, 04 Nov 2020 15:59:10 -0800
+In-Reply-To: <CANiDSCteVWin-Yy2ZVSMUJBPvJ-F0Ti+fEpi26apsDW0XXrpwg@mail.gmail.com>
+References: <20201104180734.286789-1-ribalda@chromium.org>
+         <20201104180734.286789-2-ribalda@chromium.org>
+         <87769d554b4575bf9371380b013e66d70f1b21c4.camel@perches.com>
+         <20201104214201.GH29958@pendragon.ideasonboard.com>
+         <9d439214e8c83ebf7b93dccca2f848fbaf75b9d4.camel@perches.com>
+         <CANiDSCvwvQUTt1QMQGGyZPag9VeHj4Ugmj8QJdBNtw00UNt6Pg@mail.gmail.com>
+         <a00078e1311c09361e9e3357ba5dca037d7a8bff.camel@perches.com>
+         <CANiDSCteVWin-Yy2ZVSMUJBPvJ-F0Ti+fEpi26apsDW0XXrpwg@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/urgent
-branch HEAD: 4d6ffa27b8e5116c0abb318790fd01d4e12d75e6  x86/lib: Change .weak to SYM_FUNC_START_WEAK for arch/x86/lib/mem*_64.S
+On Thu, 2020-11-05 at 00:01 +0100, Ricardo Ribalda wrote:
+> Hi Joe
+> 
+> On Thu, Nov 5, 2020 at 12:00 AM Joe Perches <joe@perches.com> wrote:
+> > 
+> > On Wed, 2020-11-04 at 23:31 +0100, Ricardo Ribalda wrote:
+> > 
+> > > I have updated my tree with the dev_ variants
+> > > 
+> > > https://github.com/ribalda/linux/commit/b8785fd8efb4f2e5bbf5d0f2df3e0d69a5439015
+> > 
+> > I looked at this link and was confused so you made me look.
+> > I think you meant:
+> > 
+> > https://github.com/ribalda/linux/commit/83cb6eb3a9f7bd1954acbfb4fb3d56ddf54bce73
+> 
+> Yes, thanks :) Sorry about that
+> 
+> This is why I should be away from a keyboard after 23:00 :)
 
-elapsed time: 721m
+Sleep is good.
+There are lots of sleep deprived people here in the US today though.
 
-configs tested: 159
-configs skipped: 42
+It looks as if all the pr_cont uses in the code are odd and repetitive.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Perhaps it'd be sensible to add something like:
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-sh                           se7206_defconfig
-m68k                       bvme6000_defconfig
-m68k                           sun3_defconfig
-h8300                               defconfig
-arm                        shmobile_defconfig
-sh                           se7751_defconfig
-arm                        vexpress_defconfig
-mips                          ath25_defconfig
-arm                            u300_defconfig
-powerpc                  mpc885_ads_defconfig
-mips                  maltasmvp_eva_defconfig
-sh                   secureedge5410_defconfig
-powerpc                 canyonlands_defconfig
-xtensa                              defconfig
-microblaze                    nommu_defconfig
-arm                           efm32_defconfig
-arm                     davinci_all_defconfig
-riscv                    nommu_k210_defconfig
-sh                               alldefconfig
-arm                          prima2_defconfig
-powerpc                        fsp2_defconfig
-sh                          rsk7269_defconfig
-mips                        maltaup_defconfig
-arm                      pxa255-idp_defconfig
-arm                          tango4_defconfig
-parisc                           alldefconfig
-powerpc               mpc834x_itxgp_defconfig
-arm                           tegra_defconfig
-mips                         cobalt_defconfig
-s390                       zfcpdump_defconfig
-powerpc                 mpc834x_itx_defconfig
-ia64                                defconfig
-m68k                       m5249evb_defconfig
-arm                          pxa910_defconfig
-openrisc                            defconfig
-mips                         tb0226_defconfig
-alpha                            allyesconfig
-powerpc                    sam440ep_defconfig
-mips                         db1xxx_defconfig
-arm                            pleb_defconfig
-arm                        mvebu_v7_defconfig
-sh                        sh7785lcr_defconfig
-arm                        spear3xx_defconfig
-powerpc                      cm5200_defconfig
-arc                            hsdk_defconfig
-mips                        jmr3927_defconfig
-powerpc                      ppc6xx_defconfig
-arm                      integrator_defconfig
-powerpc                 mpc837x_rdb_defconfig
-powerpc                     mpc5200_defconfig
-m68k                       m5475evb_defconfig
-m68k                          atari_defconfig
-sh                            titan_defconfig
-powerpc                  storcenter_defconfig
-arm                        clps711x_defconfig
-sh                        edosk7760_defconfig
-parisc                generic-64bit_defconfig
-powerpc                     tqm8555_defconfig
-sh                ecovec24-romimage_defconfig
-mips                malta_qemu_32r6_defconfig
-arm                          ep93xx_defconfig
-i386                             alldefconfig
-sh                           se7722_defconfig
-powerpc                       holly_defconfig
-mips                        bcm47xx_defconfig
-mips                            gpr_defconfig
-mips                         tb0287_defconfig
-sh                         ap325rxa_defconfig
-powerpc                     stx_gp3_defconfig
-sh                     magicpanelr2_defconfig
-powerpc                     taishan_defconfig
-riscv                    nommu_virt_defconfig
-powerpc                      katmai_defconfig
-sh                     sh7710voipgw_defconfig
-arm                         orion5x_defconfig
-mips                            ar7_defconfig
-powerpc                        cell_defconfig
-sh                  sh7785lcr_32bit_defconfig
-powerpc                  iss476-smp_defconfig
-ia64                        generic_defconfig
-arm                         mv78xx0_defconfig
-sh                            shmin_defconfig
-m68k                          multi_defconfig
-ia64                             allmodconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a004-20201104
-i386                 randconfig-a006-20201104
-i386                 randconfig-a005-20201104
-i386                 randconfig-a001-20201104
-i386                 randconfig-a002-20201104
-i386                 randconfig-a003-20201104
-i386                 randconfig-a004-20201105
-i386                 randconfig-a006-20201105
-i386                 randconfig-a005-20201105
-i386                 randconfig-a001-20201105
-i386                 randconfig-a002-20201105
-i386                 randconfig-a003-20201105
-x86_64               randconfig-a012-20201104
-x86_64               randconfig-a015-20201104
-x86_64               randconfig-a013-20201104
-x86_64               randconfig-a011-20201104
-x86_64               randconfig-a014-20201104
-x86_64               randconfig-a016-20201104
-i386                 randconfig-a015-20201104
-i386                 randconfig-a013-20201104
-i386                 randconfig-a014-20201104
-i386                 randconfig-a016-20201104
-i386                 randconfig-a011-20201104
-i386                 randconfig-a012-20201104
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+#define uvc_trace_cont(flag, fmt, ...)					\
+do {									\
+	if (uvc_trace_param & (flag))					\
+		pr_cont(fmt, ##__VA_ARGS__);				\
+} while (0)
 
-clang tested configs:
-x86_64               randconfig-a004-20201104
-x86_64               randconfig-a003-20201104
-x86_64               randconfig-a005-20201104
-x86_64               randconfig-a002-20201104
-x86_64               randconfig-a006-20201104
-x86_64               randconfig-a001-20201104
+and change all the uses like:
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+-               if (uvc_trace_param & UVC_TRACE_PROBE)
+-                       printk(KERN_CONT " <- SU %d", entity->id);
++               uvc_trace_cont(UVC_TRACE_PROBE, " <- SU %d", entity->id);
+
+
