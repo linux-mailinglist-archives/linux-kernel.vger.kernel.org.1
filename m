@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 090602A71D0
+	by mail.lfdr.de (Postfix) with ESMTP id 7EA662A71D1
 	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 00:32:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732765AbgKDXcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1732722AbgKDXcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 4 Nov 2020 18:32:41 -0500
-Received: from relay06.th.seeweb.it ([5.144.164.167]:51801 "EHLO
-        relay06.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731539AbgKDXck (ORCPT
+Received: from m-r2.th.seeweb.it ([5.144.164.171]:40963 "EHLO
+        m-r2.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727107AbgKDXck (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 4 Nov 2020 18:32:40 -0500
 Received: from localhost.localdomain (abag227.neoplus.adsl.tpnet.pl [83.6.170.227])
-        by m-r2.th.seeweb.it (Postfix) with ESMTPA id F388C4025F;
-        Thu,  5 Nov 2020 00:22:33 +0100 (CET)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPA id E6CE540263;
+        Thu,  5 Nov 2020 00:22:38 +0100 (CET)
 From:   Konrad Dybcio <konrad.dybcio@somainline.org>
 To:     phone-devel@vger.kernel.org
 Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
@@ -34,11 +34,10 @@ Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
         Amit Daniel Kachhap <amit.kachhap@arm.com>,
         Ionela Voinescu <ionela.voinescu@arm.com>,
         Kristina Martsenko <kristina.martsenko@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>
-Subject: [PATCH 2/4] arm64: kpti: Add KRYO2XX gold/silver CPU cores to kpti safelist
-Date:   Thu,  5 Nov 2020 00:22:11 +0100
-Message-Id: <20201104232218.198800-3-konrad.dybcio@somainline.org>
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 3/4] arm64: proton-pack: Add KRYO2XX silver CPUs to spectre-v2 safe-list
+Date:   Thu,  5 Nov 2020 00:22:12 +0100
+Message-Id: <20201104232218.198800-4-konrad.dybcio@somainline.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201104232218.198800-1-konrad.dybcio@somainline.org>
 References: <20201104232218.198800-1-konrad.dybcio@somainline.org>
@@ -48,24 +47,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-QCOM KRYO2XX gold (big) silver (LITTLE) CPU cores are based on
-Cortex-A73 and Cortex-A53 respectively and are meltdown safe,
-hence add them to kpti_safe_list[].
+KRYO2XX silver (LITTLE) CPUs are based on Cortex-A53
+and they are not affected by spectre-v2.
 
 Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
 ---
- arch/arm64/kernel/cpufeature.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/arm64/kernel/proton-pack.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-index dcc165b3fc04..6f36c4f62f69 100644
---- a/arch/arm64/kernel/cpufeature.c
-+++ b/arch/arm64/kernel/cpufeature.c
-@@ -1337,6 +1337,8 @@ static bool unmap_kernel_at_el0(const struct arm64_cpu_capabilities *entry,
- 		MIDR_ALL_VERSIONS(MIDR_CORTEX_A73),
+diff --git a/arch/arm64/kernel/proton-pack.c b/arch/arm64/kernel/proton-pack.c
+index c18eb7d41274..f6e4e3737405 100644
+--- a/arch/arm64/kernel/proton-pack.c
++++ b/arch/arm64/kernel/proton-pack.c
+@@ -118,6 +118,7 @@ static enum mitigation_state spectre_v2_get_cpu_hw_mitigation_state(void)
+ 		MIDR_ALL_VERSIONS(MIDR_CORTEX_A55),
+ 		MIDR_ALL_VERSIONS(MIDR_BRAHMA_B53),
  		MIDR_ALL_VERSIONS(MIDR_HISI_TSV110),
- 		MIDR_ALL_VERSIONS(MIDR_NVIDIA_CARMEL),
-+		MIDR_ALL_VERSIONS(MIDR_QCOM_KRYO_2XX_GOLD),
 +		MIDR_ALL_VERSIONS(MIDR_QCOM_KRYO_2XX_SILVER),
  		MIDR_ALL_VERSIONS(MIDR_QCOM_KRYO_3XX_SILVER),
  		MIDR_ALL_VERSIONS(MIDR_QCOM_KRYO_4XX_SILVER),
