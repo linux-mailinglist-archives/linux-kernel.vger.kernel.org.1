@@ -2,103 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31C982A6314
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 12:15:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E9D52A631A
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 12:16:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729526AbgKDLPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 06:15:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42758 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728969AbgKDLPE (ORCPT
+        id S1729438AbgKDLQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 06:16:08 -0500
+Received: from wp126.webpack.hosteurope.de ([80.237.132.133]:35882 "EHLO
+        wp126.webpack.hosteurope.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728287AbgKDLQI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 06:15:04 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34E29C0613D3
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 03:15:04 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id y12so21600663wrp.6
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 03:15:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=jeMweZUNbUX5xy7afLBKAbFJ+XGDZ/7f4ATvhlknOiE=;
-        b=x4CoBlrHQoxPBxdN3h+ODMWfyWGwYjrXWz7X2xPcvgbZ/E//M2/D+NgZFXzP8x+lTt
-         EGsKemyQLNYnQkOkqr+4gHOi/o5dGtqgCgak3DC6frcZ9Q6rM90Mki8a7jCrbLIbApAd
-         SKBTwEbQ/ndCZw2Yo0nR+Z4poWTtzj6GUb+xS8xDphubPrrtAYSYxwGeBhxyH1H/S5jJ
-         u0MR32nvU6ndWFAe9muRzqA3RtB+X8yZ5zsCPuPrFAtPY3JBClmUI3DPJ/UFtKafTR/a
-         r7UY628knjMmMEKT5o56WqeAptCGvDtuBmXtuYHhPvd909MxGHB0L7SdRaAwuuSRoKTz
-         ctjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=jeMweZUNbUX5xy7afLBKAbFJ+XGDZ/7f4ATvhlknOiE=;
-        b=VW7iLf9JFNsxr+G/C4uL7BoloMRYvsS1/pwEYFTAOxyhp17PCxJKDX3tDpnxMxkS6V
-         mzEp7I1xL8f1UBeDDp1fwQrkrwiXx7y4PVxWvYPAAJKw2Ma0lyYA/NF0Es3LXwyqBuP8
-         zT3GF3g22/kcfh/2kvnC+2MmQ42CIou+A1+PjCPEMK5H4LE7LGUOY4FSW63QV2pjm1X6
-         zwHgGnrKM4vSuQs6ennAcB8PTCP1ITiG5zuGE0AuACQnnvfgrYnoQvBSB4JO47nY4R9O
-         iul3TyyKVvFaK6m+jskW4FBAEPINs5T9R65Rh6bPHAGnsLe2sXm9pqZtZiE2Dfjk8YFV
-         oMEQ==
-X-Gm-Message-State: AOAM531XBazLKfdNg5AoQwRN8vFihTatiaKI4ckY24plvM+ELwE/LTrD
-        pG6B7FnCz7Z4BA/LGc+FymIfng==
-X-Google-Smtp-Source: ABdhPJzRUHCNVTLaeEzmCciwB9DjySmQ+hU7sK+DxC+GZ0/rKmuW13HzVAGT4Shgm0YLTjCiu5pjSA==
-X-Received: by 2002:adf:e447:: with SMTP id t7mr31300398wrm.384.1604488502840;
-        Wed, 04 Nov 2020 03:15:02 -0800 (PST)
-Received: from ?IPv6:2a01:e34:ed2f:f020:9024:99cb:b881:4beb? ([2a01:e34:ed2f:f020:9024:99cb:b881:4beb])
-        by smtp.googlemail.com with ESMTPSA id y11sm1694491wmj.36.2020.11.04.03.15.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Nov 2020 03:15:02 -0800 (PST)
-Subject: Re: [PATCH 4/4] powercap/drivers/dtpm: Add CPU energy model based
- support
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     rafael@kernel.org, srinivas.pandruvada@linux.intel.com,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        rui.zhang@intel.com, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Andrew Jones <drjones@redhat.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Steven Price <steven.price@arm.com>
-References: <20201006122024.14539-1-daniel.lezcano@linaro.org>
- <20201006122024.14539-5-daniel.lezcano@linaro.org>
- <e8feea30-e5d5-9504-a42a-99fde9fdd64a@arm.com>
- <ebdd4728-9105-49ef-e2a6-a17c2a502f34@linaro.org>
- <58408860-1add-c7a3-4c7e-eafb0b6ae16c@arm.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <74ab112e-d465-2e2f-84b6-23f968130998@linaro.org>
-Date:   Wed, 4 Nov 2020 12:15:00 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 4 Nov 2020 06:16:08 -0500
+Received: from [2003:a:659:3f00:1e6f:65ff:fe31:d1d5] (helo=hermes.fivetechno.de); authenticated
+        by wp126.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        id 1kaGlj-0007fJ-NY; Wed, 04 Nov 2020 12:15:59 +0100
+X-Virus-Scanned: by amavisd-new 2.11.1 using newest ClamAV at
+        linuxbbg.five-lan.de
+Received: from [192.168.34.101] (p5098d998.dip0.t-ipconnect.de [80.152.217.152])
+        (authenticated bits=0)
+        by hermes.fivetechno.de (8.15.2/8.14.5/SuSE Linux 0.8) with ESMTPSA id 0A4BFwZR010767
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+        Wed, 4 Nov 2020 12:15:58 +0100
+Subject: Re: [PATCH] arm64: dts: rockchip: Assign a fixed index to mmc devices
+ on rk3399-roc-pc boards.
+To:     =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>,
+        linux-rockchip@lists.infradead.org,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        dianders@chromium.org
+References: <20201104094950.2096-1-m.reichl@fivetechno.de>
+ <4984701.vSXMUKeAfh@diego>
+From:   Markus Reichl <m.reichl@fivetechno.de>
+Organization: five technologies GmbH
+Message-ID: <4f4a83f2-3c9b-9549-0acf-057257b4255d@fivetechno.de>
+Date:   Wed, 4 Nov 2020 12:15:58 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <58408860-1add-c7a3-4c7e-eafb0b6ae16c@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <4984701.vSXMUKeAfh@diego>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: de-DE
 Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;m.reichl@fivetechno.de;1604488568;20de08b6;
+X-HE-SMSGID: 1kaGlj-0007fJ-NY
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/11/2020 11:57, Lukasz Luba wrote:
+Hi Heiko,
 
-[ ... ]
-
-> Let me go again through the patches and then I will add my reviewed by.
+Am 04.11.20 um 11:51 schrieb Heiko Stübner:
+> Hi Markus,
 > 
-> I will also run LTP hotplug or LISA hotplug torture on this tree,
-> just to check it's fine.
+> Am Mittwoch, 4. November 2020, 10:49:45 CET schrieb Markus Reichl:
+>> Recently introduced async probe on mmc devices can shuffle block IDs.
+>> Pin them to fixed values to ease booting in evironments where UUIDs
+>> are not practical. Use newly introduced aliases for mmcblk devices from [1].
+>> 
+>> [1]
+>> https://patchwork.kernel.org/patch/11747669/
+>> 
+>> Signed-off-by: Markus Reichl <m.reichl@fivetechno.de>
+>> ---
+>>  arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi | 5 +++++
+>>  1 file changed, 5 insertions(+)
+>> 
+>> diff --git a/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi
+>> index e7a459fa4322..bc9482b59428 100644
+>> --- a/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi
+>> +++ b/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi
+>> @@ -13,6 +13,11 @@ / {
+>>  	model = "Firefly ROC-RK3399-PC Board";
+>>  	compatible = "firefly,roc-rk3399-pc", "rockchip,rk3399";
+>>  
+>> +	aliases {
+>> +		mmc0 = &sdmmc;
+>> +		mmc1 = &sdhci;
+>> +	};
+>> +
+> 
+> Any reason for this odering?
 
-Ah yes, good idea. Thanks for doing that.
+Without pinning roc-pc mostly booted as
+mmcblk0 = sdmmc = µSD
+mmcblk1 = sdhci = eMMC
+so I kept this behaviour in aliases
 
+roc-pc-mezzanine with populated SDIO-M2-slot booted
+mmc0 = sdio = (no mmcblk)
+mmcblk1 = sdmmc = µSD
+mmcblk2 = sdhci = eMMC
 
+With my aliases both boards behave the same now and the optional SDIO slot
+goes out of the way to mmc2.
+
+> 
+> I.e. some previous incarnations had it ordered as (emmc, mmc, sdio).
+> This is also true for the ChromeOS out-of-tree usage of those, the
+> rk3399 dts in the chromeos-4.4 tree also orders this as sdhci, sdmmc, sdio.
+
+The boards from my zoo (exynos, rk3399) mostly come up with SD-card as mmc0
+and eMMC as mmc1 in mainline as opposed in some vendor kernels.
+but I have no objection to set it the other way round if this is more common
+with rk3399 boards.
+
+> 
+> And I guess a further question would be when we're doing arbitary orderings
+> anyway, why is this not in rk3399.dtsi ;-) ?
+
+I restricted the ordering to the boards I have, not to confuse other established
+use cases, but if a standard ordering is desired this can go to rk3399.dtsi.
+
+> 
+> 
+> Heiko
+> 
+> 
+
+Gruß,
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+Markus Reichl
