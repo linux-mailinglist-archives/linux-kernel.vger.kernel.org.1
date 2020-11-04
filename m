@@ -2,91 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EA6F2A69BD
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 17:29:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D7942A69C0
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 17:29:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730966AbgKDQ2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 11:28:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36298 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727285AbgKDQ2H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 11:28:07 -0500
-Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65C96C0613D3
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 08:28:07 -0800 (PST)
-Received: by mail-vs1-xe44.google.com with SMTP id x11so9183009vsx.12
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 08:28:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LjuXhQKMkVF/DFnAs8lSgplGwULXo7VijpW+tg4xDRo=;
-        b=CYyTnjZ9sT5OzEIgvIcFGZuSxN+Eid8b5mYJi0Nf25q32LAUY54og5lkDHh40Aba16
-         LH63QeOb6L4WxI5TKhvVzq3fugcyltMxwbtRFqilu5XPRVURd3DTemYhTopb7D8fQFWL
-         Xzsdh7fnY7Z9kQZojTdOMe9r9rq7AtR5hF0FQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LjuXhQKMkVF/DFnAs8lSgplGwULXo7VijpW+tg4xDRo=;
-        b=l6/HQTmOxsRffMC55v5Um2V1KN8iHMRTobdzYvsEpEmMXuPoAq5xGRXYto0oN9x//2
-         ApsQOg+qTiIb5q62nnv5Lchfy4MZCJEBXaVr18nWQ0t1p7vhRWxPY6UqpVVTm7LExE6M
-         my7c2fV8MN+IKaSCHZcFMqa/U6RQ4oBK4M2UPl7x35/C5nlCtkJDVy6WugRgKLe8r+3L
-         snr6x7grsAML1QNHH2rXb3pqPmSmhuRThVWrdqsysG3ALb598wc05QD6zv+mvDQ22LrB
-         YMnka/+dDHGCZf/f8NS+78qwcC4wkvkFjqV8EJlJJF8IR1xpL09IsBlqgQn5SBZHcfrz
-         LHyw==
-X-Gm-Message-State: AOAM531rakBqycnGp1IWLkJi9oqZNQEDusQdk5460Ru+4Y37t7FTrO5n
-        mWapl/vwsJDWxZK34ZfH+3avfkuHbjTghw==
-X-Google-Smtp-Source: ABdhPJybEqvXczFVkTZ3PIL3QmEMUjxeutgN2BiqkCC2WXHNE/90m5XhyhE/p/HPyksri0lD3UzWng==
-X-Received: by 2002:a67:c914:: with SMTP id w20mr23003180vsk.15.1604507286056;
-        Wed, 04 Nov 2020 08:28:06 -0800 (PST)
-Received: from mail-ua1-f48.google.com (mail-ua1-f48.google.com. [209.85.222.48])
-        by smtp.gmail.com with ESMTPSA id s20sm330497vkl.8.2020.11.04.08.28.05
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Nov 2020 08:28:05 -0800 (PST)
-Received: by mail-ua1-f48.google.com with SMTP id f15so6212168uaq.9
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 08:28:05 -0800 (PST)
-X-Received: by 2002:a9f:2f15:: with SMTP id x21mr14344167uaj.104.1604507284609;
- Wed, 04 Nov 2020 08:28:04 -0800 (PST)
+        id S1731081AbgKDQ3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 11:29:23 -0500
+Received: from foss.arm.com ([217.140.110.172]:39818 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727285AbgKDQ3X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 11:29:23 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 478D6139F;
+        Wed,  4 Nov 2020 08:29:22 -0800 (PST)
+Received: from C02TD0UTHF1T.local (unknown [10.57.57.109])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E35AE3F718;
+        Wed,  4 Nov 2020 08:29:20 -0800 (PST)
+Date:   Wed, 4 Nov 2020 16:29:18 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org
+Subject: Re: entry: Fix the incorrect ordering of lockdep and RCU check
+Message-ID: <20201104162918.GD7577@C02TD0UTHF1T.local>
+References: <87y2jhl19s.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <20201104162356.1251-1-m.reichl@fivetechno.de>
-In-Reply-To: <20201104162356.1251-1-m.reichl@fivetechno.de>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 4 Nov 2020 08:27:53 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=VdcG_DQs+er5g-p=pX_G79Nzciv=M0MDZDhTr2c4sh8g@mail.gmail.com>
-Message-ID: <CAD=FV=VdcG_DQs+er5g-p=pX_G79Nzciv=M0MDZDhTr2c4sh8g@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: rockchip: Assign a fixed index to mmc devices
- on rk3399 boards.
-To:     Markus Reichl <m.reichl@fivetechno.de>
-Cc:     "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Robin Murphy <robin.murphy@arm.com>, wens@kernel.org,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87y2jhl19s.fsf@nanos.tec.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, Nov 04, 2020 at 02:06:23PM +0100, Thomas Gleixner wrote:
+> When an exception/interrupt hits kernel space and the kernel is not
+> currently in the idle task then RCU must be watching.
+> 
+> irqentry_enter() validates this via rcu_irq_enter_check_tick(), which in
+> turn invokes lockdep when taking a lock. But at that point lockdep does not
+> yet know about the fact that interrupts have been disabled by the CPU,
+> which triggers a lockdep splat complaining about inconsistent state.
+> 
+> Invoking trace_hardirqs_off() before rcu_irq_enter_check_tick() defeats the
+> point of rcu_irq_enter_check_tick() because trace_hardirqs_off() uses RCU.
+> 
+> So use the same sequence as for the idle case and tell lockdep about the
+> irq state change first, invoke the RCU check and then do the lockdep and
+> tracer update.
+> 
+> Fixes: a5497bab5f72 ("entry: Provide generic interrupt entry/exit code")
+> Reported-by: Mark Rutland <mark.rutland@arm.com>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Cc: stable@vger.kernel.org
 
-On Wed, Nov 4, 2020 at 8:24 AM Markus Reichl <m.reichl@fivetechno.de> wrote:
->
-> Recently introduced async probe on mmc devices can shuffle block IDs.
-> Pin them to fixed values to ease booting in environments where UUIDs
-> are not practical. Use newly introduced aliases for mmcblk devices from [1].
->
-> [1]
-> https://patchwork.kernel.org/patch/11747669/
->
-> Signed-off-by: Markus Reichl <m.reichl@fivetechno.de>
+I just gave this a spin on x86_64 defconfig + PROVE_LOCKING +
+DEBUG_LOCKDEP + NO_HZ_FULL + CONTEXT_TRACKING_FORCE, and it gets rid of
+the boot-time splat. So FWIW:
+
+Tested-by: Mark Rutland <mark.rutland@arm.com>
+
+Mark.
+
 > ---
->  arch/arm64/boot/dts/rockchip/rk3399.dtsi | 3 +++
->  1 file changed, 3 insertions(+)
-
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
+>  kernel/entry/common.c |    4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> --- a/kernel/entry/common.c
+> +++ b/kernel/entry/common.c
+> @@ -337,10 +337,10 @@ noinstr irqentry_state_t irqentry_enter(
+>  	 * already contains a warning when RCU is not watching, so no point
+>  	 * in having another one here.
+>  	 */
+> +	lockdep_hardirqs_off(CALLER_ADDR0);
+>  	instrumentation_begin();
+>  	rcu_irq_enter_check_tick();
+> -	/* Use the combo lockdep/tracing function */
+> -	trace_hardirqs_off();
+> +	trace_hardirqs_off_finish();
+>  	instrumentation_end();
+>  
+>  	return ret;
