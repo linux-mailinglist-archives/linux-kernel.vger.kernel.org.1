@@ -2,137 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1396E2A6BCB
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 18:34:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 042BC2A6BD1
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 18:36:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731622AbgKDRe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 12:34:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46778 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726626AbgKDRe1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 12:34:27 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85819C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 09:34:27 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id r10so17146811pgb.10
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 09:34:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Kc8rdkUB9j3735hJINyvhJim2oTO9p7cVkyk+x3P4ZY=;
-        b=QOjocNS82MVZOgfr5Eab2b+gfjmRXkgyNn6OZ7M9vuwkCoWSHorx0dCrnajtk5O8rx
-         dvAl8BR9DjFqfNQLtJDDfn5slieBN6KXahx8ZpKN37ihbrZDvS9IL5rN7hsVBO+UoXK6
-         aCNQ7nBJaijncoaswKvHm/Okz38td4W7HSKpfKpJk5oxKFDckOdnznHCmtulyKp9sKFi
-         Tp78DqHA+VU07XcA94PfrUN55uvbtm3uM63Mbws4mFkLtBHflzSPjMTaaKX41qE448b6
-         +swqNvsQSkhKlZId2vsHPSipUjcFfDueWHmnkbrmRxghIefB/z3PofjWWfhD/FeipybW
-         a+fA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Kc8rdkUB9j3735hJINyvhJim2oTO9p7cVkyk+x3P4ZY=;
-        b=QclM+Dz6P/JFOstRLr7T/uqLiuhdlSWIFMiEWcl8FFCQ7sk6n4hyOQnGNDz+/iItqo
-         hNUz8jPiA+upMRwGuFa9a6IwDNRFdgvF2he/crfTi1phTI9v+NrRZB6PLHI+wFg3pJEu
-         COE57VZuvxPsKOsE/2WeqVXwYjH2wxiPlHgvMJB4oxek1+DoxYZbcax47oM94stbTLMW
-         j/9ZAkxVSddsxl87iQikpgvsYP1EIKdIyUoZAPrMbtAvClSW91hlCpPQhSMyBFm2osRv
-         nMlCiQIXVfRfIb0BT2xrsTZriauPu2oKKJy5TShKqtN14ggs2hFAXjqxDdR18LgrIi50
-         qrmA==
-X-Gm-Message-State: AOAM5334smcZe71S18gli4p/M8Z85vQ0BLB7++RAvAiGlrPEwVo+IWMS
-        nahnvcEDED7t7ME+cmCWhcTtlJ/Vm3asIw==
-X-Google-Smtp-Source: ABdhPJz4kjmLfcN2+P2Oj1pbgTzFh52eu4jPFsbPafkfFcuzANYizJ12B6EGL1UBWfSGoTqu/Q0VfA==
-X-Received: by 2002:a17:90a:a008:: with SMTP id q8mr5286455pjp.211.1604511267066;
-        Wed, 04 Nov 2020 09:34:27 -0800 (PST)
-Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id 9sm3064571pfp.102.2020.11.04.09.34.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 09:34:26 -0800 (PST)
-Date:   Wed, 4 Nov 2020 10:34:24 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Cc:     ohad@wizery.com, bjorn.andersson@linaro.org,
-        arnaud.pouliquen@st.com, linux-remoteproc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 8/8] rpmsg: Turn name service into a stand alone driver
-Message-ID: <20201104173424.GB2893396@xps15>
-References: <20201027175218.1033609-1-mathieu.poirier@linaro.org>
- <20201027175218.1033609-9-mathieu.poirier@linaro.org>
- <20201104140143.GA30197@ubuntu>
+        id S1730418AbgKDRf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 12:35:56 -0500
+Received: from mx2.suse.de ([195.135.220.15]:45490 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729162AbgKDRfz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 12:35:55 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 03279AD64;
+        Wed,  4 Nov 2020 17:35:53 +0000 (UTC)
+Subject: Re: [PATCH v4 1/4] mm: introduce debug_pagealloc_map_pages() helper
+To:     Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Albert Ou <aou@eecs.berkeley.edu>,
+        Andy Lutomirski <luto@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Christoph Lameter <cl@linux.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Len Brown <len.brown@intel.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Pavel Machek <pavel@ucw.cz>, Pekka Enberg <penberg@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-pm@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
+        x86@kernel.org
+References: <20201103162057.22916-1-rppt@kernel.org>
+ <20201103162057.22916-2-rppt@kernel.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <971e9638-2395-daf4-d19e-fe3cf5d34b98@suse.cz>
+Date:   Wed, 4 Nov 2020 18:35:50 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201104140143.GA30197@ubuntu>
+In-Reply-To: <20201103162057.22916-2-rppt@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 03:01:44PM +0100, Guennadi Liakhovetski wrote:
-> Hi Mathieu, Arnaud,
+On 11/3/20 5:20 PM, Mike Rapoport wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
 > 
-> I've tried the patch set with my VirtIO / vhost audio implementation, 
-> in general it worked quite well, 
+> When CONFIG_DEBUG_PAGEALLOC is enabled, it unmaps pages from the kernel
+> direct mapping after free_pages(). The pages than need to be mapped back
+> before they could be used. Theese mapping operations use
+> __kernel_map_pages() guarded with with debug_pagealloc_enabled().
+> 
+> The only place that calls __kernel_map_pages() without checking whether
+> DEBUG_PAGEALLOC is enabled is the hibernation code that presumes
+> availability of this function when ARCH_HAS_SET_DIRECT_MAP is set.
+> Still, on arm64, __kernel_map_pages() will bail out when DEBUG_PAGEALLOC is
+> not enabled but set_direct_map_invalid_noflush() may render some pages not
+> present in the direct map and hibernation code won't be able to save such
+> pages.
+> 
+> To make page allocation debugging and hibernation interaction more robust,
+> the dependency on DEBUG_PAGEALLOC or ARCH_HAS_SET_DIRECT_MAP has to be made
+> more explicit.
+> 
+> Start with combining the guard condition and the call to
+> __kernel_map_pages() into a single debug_pagealloc_map_pages() function to
+> emphasize that __kernel_map_pages() should not be called without
+> DEBUG_PAGEALLOC and use this new function to map/unmap pages when page
+> allocation debug is enabled.
+> 
+> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> Reviewed-by: David Hildenbrand <david@redhat.com>
+> Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 
-Very good - it would be nice if you could add your "Tested-by:" tags.
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
 
-> 
-> On Tue, Oct 27, 2020 at 11:52:18AM -0600, Mathieu Poirier wrote:
-> > From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-> > 
-> > Make the RPMSG name service announcement a stand alone driver so that it
-> > can be reused by other subsystems.  It is also the first step in making the
-> > functionatlity transport independent, i.e that is not tied to virtIO.
-> > 
-> > Co-developed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> > Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-> > ---
-> 
-> [snip]
-> 
-> > diff --git a/include/linux/rpmsg_ns.h b/include/linux/rpmsg_ns.h
-> > index bb479f430080..42786bb759b5 100644
-> > --- a/include/linux/rpmsg_ns.h
-> > +++ b/include/linux/rpmsg_ns.h
-> > @@ -39,4 +39,21 @@ enum rpmsg_ns_flags {
-> >  /* Address 53 is reserved for advertising remote services */
-> >  #define RPMSG_NS_ADDR			(53)
-> >  
-> > +/**
-> > + * rpmsg_ns_register_device() - register name service device based on rpdev
-> > + * @rpdev: prepared rpdev to be used for creating endpoints
-> > + *
-> > + * This function wraps rpmsg_register_device() preparing the rpdev for use as
-> > + * basis for the rpmsg name service device.
-> > + */
-> > +static inline int rpmsg_ns_register_device(struct rpmsg_device *rpdev)
-> > +{
-> > +       strcpy(rpdev->id.name, "rpmsg_ns");
-> 
-> you need to
-> 
-> #include <linux/rpmsg.h>
+But, the "enable" param is hideous. I would rather have map and unmap variants 
+(and just did the same split for page poisoning) and this seems to be a good 
+opportunity. If David didn't propose it already, I'm surprised ;)
 
-Of course yes - I'll simply add the header file.  I plan on having another
-revision addressing your comments out by the end of the week or early next week.
+> ---
+>   include/linux/mm.h  | 10 ++++++++++
+>   mm/memory_hotplug.c |  3 +--
+>   mm/page_alloc.c     |  6 ++----
+>   mm/slab.c           |  8 +++-----
+>   4 files changed, 16 insertions(+), 11 deletions(-)
+> 
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index ef360fe70aaf..1fc0609056dc 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -2936,12 +2936,22 @@ kernel_map_pages(struct page *page, int numpages, int enable)
+>   {
+>   	__kernel_map_pages(page, numpages, enable);
+>   }
+> +
+> +static inline void debug_pagealloc_map_pages(struct page *page,
+> +					     int numpages, int enable)
+> +{
+> +	if (debug_pagealloc_enabled_static())
+> +		__kernel_map_pages(page, numpages, enable);
+> +}
+> +
+>   #ifdef CONFIG_HIBERNATION
+>   extern bool kernel_page_present(struct page *page);
+>   #endif	/* CONFIG_HIBERNATION */
+>   #else	/* CONFIG_DEBUG_PAGEALLOC || CONFIG_ARCH_HAS_SET_DIRECT_MAP */
+>   static inline void
+>   kernel_map_pages(struct page *page, int numpages, int enable) {}
+> +static inline void debug_pagealloc_map_pages(struct page *page,
+> +					     int numpages, int enable) {}
+>   #ifdef CONFIG_HIBERNATION
+>   static inline bool kernel_page_present(struct page *page) { return true; }
+>   #endif	/* CONFIG_HIBERNATION */
+> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+> index b44d4c7ba73b..e2b6043a4428 100644
+> --- a/mm/memory_hotplug.c
+> +++ b/mm/memory_hotplug.c
+> @@ -614,8 +614,7 @@ void generic_online_page(struct page *page, unsigned int order)
+>   	 * so we should map it first. This is better than introducing a special
+>   	 * case in page freeing fast path.
+>   	 */
+> -	if (debug_pagealloc_enabled_static())
+> -		kernel_map_pages(page, 1 << order, 1);
+> +	debug_pagealloc_map_pages(page, 1 << order, 1);
+>   	__free_pages_core(page, order);
+>   	totalram_pages_add(1UL << order);
+>   #ifdef CONFIG_HIGHMEM
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index 23f5066bd4a5..9a66a1ff9193 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -1272,8 +1272,7 @@ static __always_inline bool free_pages_prepare(struct page *page,
+>   	 */
+>   	arch_free_page(page, order);
+>   
+> -	if (debug_pagealloc_enabled_static())
+> -		kernel_map_pages(page, 1 << order, 0);
+> +	debug_pagealloc_map_pages(page, 1 << order, 0);
+>   
+>   	kasan_free_nondeferred_pages(page, order);
+>   
+> @@ -2270,8 +2269,7 @@ inline void post_alloc_hook(struct page *page, unsigned int order,
+>   	set_page_refcounted(page);
+>   
+>   	arch_alloc_page(page, order);
+> -	if (debug_pagealloc_enabled_static())
+> -		kernel_map_pages(page, 1 << order, 1);
+> +	debug_pagealloc_map_pages(page, 1 << order, 1);
+>   	kasan_alloc_pages(page, order);
+>   	kernel_poison_pages(page, 1 << order, 1);
+>   	set_page_owner(page, order, gfp_flags);
+> diff --git a/mm/slab.c b/mm/slab.c
+> index b1113561b98b..340db0ce74c4 100644
+> --- a/mm/slab.c
+> +++ b/mm/slab.c
+> @@ -1431,10 +1431,8 @@ static bool is_debug_pagealloc_cache(struct kmem_cache *cachep)
+>   #ifdef CONFIG_DEBUG_PAGEALLOC
+>   static void slab_kernel_map(struct kmem_cache *cachep, void *objp, int map)
+>   {
+> -	if (!is_debug_pagealloc_cache(cachep))
+> -		return;
+> -
+> -	kernel_map_pages(virt_to_page(objp), cachep->size / PAGE_SIZE, map);
+> +	debug_pagealloc_map_pages(virt_to_page(objp),
+> +				  cachep->size / PAGE_SIZE, map);
+>   }
+>   
+>   #else
+> @@ -2062,7 +2060,7 @@ int __kmem_cache_create(struct kmem_cache *cachep, slab_flags_t flags)
+>   
+>   #if DEBUG
+>   	/*
+> -	 * If we're going to use the generic kernel_map_pages()
+> +	 * If we're going to use the generic debug_pagealloc_map_pages()
+>   	 * poisoning, then it's going to smash the contents of
+>   	 * the redzone and userword anyhow, so switch them off.
+>   	 */
+> 
 
-Thanks,
-Mathieu
-
-> 
-> in this file for rpdev definition. Or you could leave this function in 
-> rpmsg_ns.c, then it's enough to forward-declare struct rpdev here.
-> 
-> Thanks
-> Guennadi
-> 
-> > +       rpdev->driver_override = "rpmsg_ns";
-> > +       rpdev->src = RPMSG_NS_ADDR;
-> > +       rpdev->dst = RPMSG_NS_ADDR;
-> > +
-> > +       return rpmsg_register_device(rpdev);
-> > +}
-> > +
-> >  #endif
-> > -- 
-> > 2.25.1
-> > 
