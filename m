@@ -2,74 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9AF42A5B84
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 02:08:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3CD92A5B77
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 02:06:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730262AbgKDBIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 20:08:16 -0500
-Received: from mga02.intel.com ([134.134.136.20]:23720 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730224AbgKDBIQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 20:08:16 -0500
-IronPort-SDR: hmZyPRz1wrZ4Y2z8UBVk3cl+zjS0tb0gKi/un7n8KPyDKa4si1/UErAGG4XZx8GO58xHgzcszJ
- HMG4UXIUUKYg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9794"; a="156138385"
-X-IronPort-AV: E=Sophos;i="5.77,449,1596524400"; 
-   d="scan'208";a="156138385"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2020 17:08:15 -0800
-IronPort-SDR: 6BDOhAxZNbTJaLs1zswBH9VvB33E9mCxyRQnmqn8lJanXDeBq9qh2Xzq/St4ALkLm6+iLLBUHE
- /gffL0gGUCwg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,449,1596524400"; 
-   d="scan'208";a="426518233"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.139]) ([10.239.159.139])
-  by fmsmga001.fm.intel.com with ESMTP; 03 Nov 2020 17:08:14 -0800
-Cc:     baolu.lu@linux.intel.com, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH 1/1] iommu: Fix deferred domain attachment in
- iommu_probe_device()
-To:     Joerg Roedel <joro@8bytes.org>
-References: <20201026063008.24849-1-baolu.lu@linux.intel.com>
- <20201103132358.GG22888@8bytes.org>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <399fbf3e-e940-d2a3-e0e7-20f4da988184@linux.intel.com>
-Date:   Wed, 4 Nov 2020 09:01:22 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1730082AbgKDBGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 20:06:05 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:7455 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728301AbgKDBGE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 20:06:04 -0500
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4CQpPN0WwHzhgP2;
+        Wed,  4 Nov 2020 09:06:00 +0800 (CST)
+Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server (TLS) id 14.3.487.0; Wed, 4 Nov 2020
+ 09:05:56 +0800
+Subject: Re: [PATCH 1/4] erofs: fix setting up pcluster for temporary pages
+To:     Gao Xiang <hsiangkao@aol.com>, <linux-erofs@lists.ozlabs.org>
+CC:     Chao Yu <chao@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Gao Xiang <hsiangkao@redhat.com>, <stable@vger.kernel.org>
+References: <20201022145724.27284-1-hsiangkao.ref@aol.com>
+ <20201022145724.27284-1-hsiangkao@aol.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <f1f24a38-97f7-e9cf-03c8-2c95814b98a3@huawei.com>
+Date:   Wed, 4 Nov 2020 09:05:56 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-In-Reply-To: <20201103132358.GG22888@8bytes.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20201022145724.27284-1-hsiangkao@aol.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.114.67]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joerg,
-
-On 11/3/20 9:23 PM, Joerg Roedel wrote:
-> Hi Baolu,
+On 2020/10/22 22:57, Gao Xiang wrote:
+> From: Gao Xiang <hsiangkao@redhat.com>
 > 
-> On Mon, Oct 26, 2020 at 02:30:08PM +0800, Lu Baolu wrote:
->> @@ -264,7 +266,8 @@ int iommu_probe_device(struct device *dev)
->>   	 */
->>   	iommu_alloc_default_domain(group, dev);
->>   
->> -	if (group->default_domain)
->> +	if (group->default_domain &&
->> +	    !iommu_is_attach_deferred(group->default_domain, dev))
->>   		ret = __iommu_attach_device(group->default_domain, dev);
+> pcluster should be only set up for all managed pages instead of
+> temporary pages. Since it currently uses page->mapping to identify,
+> the impact is minor for now.
 > 
-> This is the hotplug path, not used for boot-initialization. Have you
-> seen failures from the missing check here?
+> Fixes: 5ddcee1f3a1c ("erofs: get rid of __stagingpage_alloc helper")
+> Cc: <stable@vger.kernel.org> # 5.5+
+> Signed-off-by: Gao Xiang <hsiangkao@redhat.com>
 
-I haven't seen any failure. Just wondered why deferred attaching was not
-checked here. It's fine to me if it's only for hotplug path.
+Reviewed-by: Chao Yu <yuchao0@huawei.com>
 
-Please ignore this change.
-
-Best regards,
-baolu
+Thanks,
