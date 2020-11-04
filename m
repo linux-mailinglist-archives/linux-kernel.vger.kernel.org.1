@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 724442A5E45
+	by mail.lfdr.de (Postfix) with ESMTP id EA5532A5E46
 	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 07:47:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728858AbgKDGrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 01:47:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58094 "EHLO
+        id S1728955AbgKDGry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 01:47:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727089AbgKDGrt (ORCPT
+        with ESMTP id S1727089AbgKDGrw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 01:47:49 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CCFCC061A4D;
-        Tue,  3 Nov 2020 22:47:48 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id o3so15722215pgr.11;
-        Tue, 03 Nov 2020 22:47:48 -0800 (PST)
+        Wed, 4 Nov 2020 01:47:52 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03C91C040203;
+        Tue,  3 Nov 2020 22:47:52 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id x13so16489698pfa.9;
+        Tue, 03 Nov 2020 22:47:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=TSlwhbTV17TkpJXdKDkhYenknX5pNJ6noEIgEUfNOLo=;
-        b=TRRDSpAYA+9b7oCBslKQ1lWAPU2pWq6ePYfuMk7OWIOmCYO2KISt5kjdyQpzts62fb
-         8cZOOiZ2ykFmtNemz4KVrHYmB5z6GLxRGFbyxFu+S+u7pRTCB7fI3B00KMK5p1usfE1i
-         gWD+Zs9HSeMqduwUmrepY0nmP9KgocDkjAKIYSejUn3u2SS6F2Q82WH7+1hbIaozMHr/
-         JDfsWVCSQgojY/XyyC+qQ8nql3/CZ0q3nOa/5CojdFeX33+uhD97CQTGl0HuLjgUTU1v
-         3UldhNgw7eXu6XjfSwDWdpFy/Lqop1JX7nNkHVwJ7Fh3MbqsMCBrZl6EBrXO0NWIhh18
-         RQgQ==
+        bh=XBI1Crl/gsGXbbSC9BdECEbU8Eop484Fu7YnX4s2KCI=;
+        b=m+E6aOegAQX7/eaZA7zz/VkVlNlQU1g1l4KUxB/l05xKwUXlPo91NshtD7iV/dNcP8
+         pUIhatW7I6vplsSlVMkbHyP+Rkw8OqMqkuptDmJK5WgR1tvOrmVH6lehbvz/Z0IJCmeI
+         HvJEBWb7e70+rlWkFwuNT1NrCLkk5p5FoPPKW6x0tCTgmIlLyFoT+FFlbLlcTib1oy1R
+         pn8XwZIFTv6hWjkX++sYVO67pRewBrWKuTci2KPuWF3q5mQZQi68xhRbHQNwN69E9WSn
+         z9exQzlAZglQXOEJbMfgSNmFDj8arz1I/ygfxQa39D/jTd7qYTPwJxpoPckGD+b8rPN7
+         FYYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=TSlwhbTV17TkpJXdKDkhYenknX5pNJ6noEIgEUfNOLo=;
-        b=DzmfmPxbzOOuukG4/jrdhiLOe9AkmEAnzUFzEAK9EI1ErkT+flVo9M0/kOafqM6UuX
-         B0gXcygs0sDdJXf0e2iFZxkWh126UBO1dlpIQx4A08b8sslxqRSwTcLEfpp8wwd0lN58
-         6QbMOBR0Tbz7bCw0FKr0AH+ytz8GTRL0rKtjk3AU5h44CLnAH0dVbz5TswZglpjeFKj2
-         M8V4wz9fAH//vlXsfCPY/heBZ0hvI43T8QwtI1CBh7LzXfTGQRNGqIg38PNF89wOmzIw
-         MiPMLbFZmTJ3807z4XOmEVLRymlm6z0oTb19leP8j2uBY3W4Xs0n4aJrmLQsPbJSHRB5
-         fxZA==
-X-Gm-Message-State: AOAM532EZ+EHuzvsHSPKnscKBA2vo88YQqYHOAfjOJkudEF2imT11ObZ
-        +wgTeUkF3sgRi2H8zkoeGIo=
-X-Google-Smtp-Source: ABdhPJy0TMDgkqBlyzvxX29fFTS8osZu0OWFz7ImWJTXyD7yV/BujyK/XeYXPKrUXl/A7NUMSWAb+g==
-X-Received: by 2002:a17:90a:d3d5:: with SMTP id d21mr2897977pjw.168.1604472468086;
-        Tue, 03 Nov 2020 22:47:48 -0800 (PST)
+        bh=XBI1Crl/gsGXbbSC9BdECEbU8Eop484Fu7YnX4s2KCI=;
+        b=eU2TCtyvuKNnVq3D+SmUDdZufGg523Nz6gI5rWXAbuFYhEN8dhtetGQp8z3KNgdJxk
+         A5GE0LXoXEus+hAULyMxy7w9oCuExRbsVqVxJolu2HVQ79FtpQOK+tu50pVKfl6T96dw
+         Tixvwmvt9Krb1zZABiTr63bxKhi9rLnFdCZkLHVmV4ZwJdJV1dk/50dppFSVW7+PsFsi
+         7ctJqzSPQTkxZoaQGad7o3+PScywDh1Z1BT7TceV5AwguMXoP0xipLINc+gAXpcIAYnp
+         lyZyevJluAKivsHV7mLoCiWxKguxFTVphty3g0370RYP+Or7tp7ibZQlXLB5m13A063q
+         cDjQ==
+X-Gm-Message-State: AOAM530aIyijQHGkCFZJu8FJ45FMGEAJg4c+ZKSKYxYM0N3tevPXtqHX
+        CF+nTB0ATqfZiOVJJtKLz3Q=
+X-Google-Smtp-Source: ABdhPJxyahSG3Vg1L10IOgHREuHBbGgfWEMvNNEfg8kcJOgNP3l4vTYkhWXcdi1L8TDTBk4Blnx9nQ==
+X-Received: by 2002:a63:4825:: with SMTP id v37mr20000208pga.256.1604472471640;
+        Tue, 03 Nov 2020 22:47:51 -0800 (PST)
 Received: from localhost.localdomain ([2402:3a80:16e6:8166:e462:9fba:da9c:beed])
-        by smtp.gmail.com with ESMTPSA id s18sm1036873pgh.60.2020.11.03.22.47.45
+        by smtp.gmail.com with ESMTPSA id s18sm1036873pgh.60.2020.11.03.22.47.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Nov 2020 22:47:47 -0800 (PST)
+        Tue, 03 Nov 2020 22:47:51 -0800 (PST)
 From:   Himadri Pandya <himadrispandya@gmail.com>
 To:     johan@kernel.org, gregkh@linuxfoundation.org,
         linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
         Himadri Pandya <himadrispandya@gmail.com>
-Subject: [PATCH 05/15] usb: serial: cypress_m8: use usb_control_msg_recv() and usb_control_msg_send()
-Date:   Wed,  4 Nov 2020 12:16:53 +0530
-Message-Id: <20201104064703.15123-6-himadrispandya@gmail.com>
+Subject: [PATCH 06/15] usb: serial: f81232: use usb_control_msg_recv() and usb_control_msg_send()
+Date:   Wed,  4 Nov 2020 12:16:54 +0530
+Message-Id: <20201104064703.15123-7-himadrispandya@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201104064703.15123-1-himadrispandya@gmail.com>
 References: <20201104064703.15123-1-himadrispandya@gmail.com>
@@ -68,74 +68,144 @@ instead of calling usb_control_msg() directly.
 
 Signed-off-by: Himadri Pandya <himadrispandya@gmail.com>
 ---
- drivers/usb/serial/cypress_m8.c | 38 +++++++++++++++++----------------
- 1 file changed, 20 insertions(+), 18 deletions(-)
+ drivers/usb/serial/f81232.c | 88 ++++++++-----------------------------
+ 1 file changed, 18 insertions(+), 70 deletions(-)
 
-diff --git a/drivers/usb/serial/cypress_m8.c b/drivers/usb/serial/cypress_m8.c
-index cc028601c388..4d66cab8eece 100644
---- a/drivers/usb/serial/cypress_m8.c
-+++ b/drivers/usb/serial/cypress_m8.c
-@@ -341,20 +341,21 @@ static int cypress_serial_control(struct tty_struct *tty,
- 			feature_buffer[4]);
+diff --git a/drivers/usb/serial/f81232.c b/drivers/usb/serial/f81232.c
+index 0c7eacc630e0..78107feef8a8 100644
+--- a/drivers/usb/serial/f81232.c
++++ b/drivers/usb/serial/f81232.c
+@@ -139,71 +139,36 @@ static int calc_baud_divisor(speed_t baudrate, speed_t clockrate)
+ static int f81232_get_register(struct usb_serial_port *port, u16 reg, u8 *val)
+ {
+ 	int status;
+-	u8 *tmp;
+ 	struct usb_device *dev = port->serial->dev;
  
- 		do {
--			retval = usb_control_msg(port->serial->dev,
--					usb_sndctrlpipe(port->serial->dev, 0),
--					HID_REQ_SET_REPORT,
--					USB_DIR_OUT | USB_RECIP_INTERFACE | USB_TYPE_CLASS,
--					0x0300, 0, feature_buffer,
--					feature_len, 500);
-+			retval = usb_control_msg_send(port->serial->dev, 0,
-+						      HID_REQ_SET_REPORT,
-+						      USB_DIR_OUT |
-+						      USB_RECIP_INTERFACE |
-+						      USB_TYPE_CLASS, 0x0300,
-+						      0, feature_buffer,
-+						      feature_len, 500,
-+						      GFP_KERNEL);
+-	tmp = kmalloc(sizeof(*val), GFP_KERNEL);
+-	if (!tmp)
+-		return -ENOMEM;
+-
+-	status = usb_control_msg(dev,
+-				usb_rcvctrlpipe(dev, 0),
+-				F81232_REGISTER_REQUEST,
+-				F81232_GET_REGISTER,
+-				reg,
+-				0,
+-				tmp,
+-				sizeof(*val),
+-				USB_CTRL_GET_TIMEOUT);
+-	if (status != sizeof(*val)) {
++	status = usb_control_msg_recv(dev, 0, F81232_REGISTER_REQUEST,
++				      F81232_GET_REGISTER, reg, 0, val,
++				      sizeof(*val), USB_CTRL_GET_TIMEOUT,
++				      GFP_KERNEL);
++	if (status) {
+ 		dev_err(&port->dev, "%s failed status: %d\n", __func__, status);
  
- 			if (tries++ >= 3)
- 				break;
+-		if (status < 0)
+-			status = usb_translate_errors(status);
+-		else
+-			status = -EIO;
+-	} else {
+-		status = 0;
+-		*val = *tmp;
++		status = usb_translate_errors(status);
+ 	}
  
--		} while (retval != feature_len &&
--			 retval != -ENODEV);
-+		} while (retval != -ENODEV);
+-	kfree(tmp);
+ 	return status;
+ }
  
--		if (retval != feature_len) {
-+		if (retval) {
- 			dev_err(dev, "%s - failed sending serial line settings - %d\n",
- 				__func__, retval);
- 			cypress_set_dead(port);
-@@ -379,19 +380,20 @@ static int cypress_serial_control(struct tty_struct *tty,
+ static int f81232_set_register(struct usb_serial_port *port, u16 reg, u8 val)
+ {
+ 	int status;
+-	u8 *tmp;
+ 	struct usb_device *dev = port->serial->dev;
+ 
+-	tmp = kmalloc(sizeof(val), GFP_KERNEL);
+-	if (!tmp)
+-		return -ENOMEM;
+-
+-	*tmp = val;
+-
+-	status = usb_control_msg(dev,
+-				usb_sndctrlpipe(dev, 0),
+-				F81232_REGISTER_REQUEST,
+-				F81232_SET_REGISTER,
+-				reg,
+-				0,
+-				tmp,
+-				sizeof(val),
+-				USB_CTRL_SET_TIMEOUT);
+-	if (status != sizeof(val)) {
++	status = usb_control_msg_send(dev, 0,
++				      F81232_REGISTER_REQUEST,
++				      F81232_SET_REGISTER, reg, 0,
++				      &val, sizeof(val), USB_CTRL_SET_TIMEOUT,
++				      GFP_KERNEL);
++	if (status) {
+ 		dev_err(&port->dev, "%s failed status: %d\n", __func__, status);
+ 
+-		if (status < 0)
+-			status = usb_translate_errors(status);
+-		else
+-			status = -EIO;
+-	} else {
+-		status = 0;
++		status = usb_translate_errors(status);
+ 	}
+-
+-	kfree(tmp);
+ 	return status;
+ }
+ 
+@@ -866,32 +831,16 @@ static int f81534a_ctrl_set_register(struct usb_interface *intf, u16 reg,
+ 	struct usb_device *dev = interface_to_usbdev(intf);
+ 	int retry = F81534A_ACCESS_REG_RETRY;
+ 	int status;
+-	u8 *tmp;
+-
+-	tmp = kmemdup(val, size, GFP_KERNEL);
+-	if (!tmp)
+-		return -ENOMEM;
+ 
+ 	while (retry--) {
+-		status = usb_control_msg(dev,
+-					usb_sndctrlpipe(dev, 0),
+-					F81232_REGISTER_REQUEST,
+-					F81232_SET_REGISTER,
+-					reg,
+-					0,
+-					tmp,
+-					size,
+-					USB_CTRL_SET_TIMEOUT);
+-		if (status < 0) {
++		status = usb_control_msg_send(dev, 0, F81232_REGISTER_REQUEST,
++					      F81232_SET_REGISTER, reg, 0, val,
++					      size, USB_CTRL_SET_TIMEOUT, GFP_KERNEL);
++		if (status) {
++			/* Retry on error or short transfers */
+ 			status = usb_translate_errors(status);
+ 			if (status == -EIO)
+ 				continue;
+-		} else if (status != size) {
+-			/* Retry on short transfers */
+-			status = -EIO;
+-			continue;
+-		} else {
+-			status = 0;
  		}
- 		dev_dbg(dev, "%s - retrieving serial line settings\n", __func__);
- 		do {
--			retval = usb_control_msg(port->serial->dev,
--					usb_rcvctrlpipe(port->serial->dev, 0),
--					HID_REQ_GET_REPORT,
--					USB_DIR_IN | USB_RECIP_INTERFACE | USB_TYPE_CLASS,
--					0x0300, 0, feature_buffer,
--					feature_len, 500);
-+			retval = usb_control_msg_recv(port->serial->dev, 0,
-+						      HID_REQ_GET_REPORT,
-+						      USB_DIR_IN |
-+						      USB_RECIP_INTERFACE |
-+						      USB_TYPE_CLASS, 0x0300,
-+						      0, feature_buffer,
-+						      feature_len, 500,
-+						      GFP_KERNEL);
  
- 			if (tries++ >= 3)
- 				break;
--		} while (retval != feature_len
--						&& retval != -ENODEV);
-+		} while (retval != -ENODEV);
+ 		break;
+@@ -902,7 +851,6 @@ static int f81534a_ctrl_set_register(struct usb_interface *intf, u16 reg,
+ 				reg, status);
+ 	}
  
--		if (retval != feature_len) {
-+		if (retval) {
- 			dev_err(dev, "%s - failed to retrieve serial line settings - %d\n",
- 				__func__, retval);
- 			cypress_set_dead(port);
+-	kfree(tmp);
+ 	return status;
+ }
+ 
 -- 
 2.17.1
 
