@@ -2,155 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 809142A7055
+	by mail.lfdr.de (Postfix) with ESMTP id EF6AD2A7056
 	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 23:21:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732051AbgKDWVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1731576AbgKDWVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 4 Nov 2020 17:21:13 -0500
-Received: from mail-il1-f199.google.com ([209.85.166.199]:54728 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730396AbgKDWUR (ORCPT
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:58050 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728565AbgKDWUn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 17:20:17 -0500
-Received: by mail-il1-f199.google.com with SMTP id u129so11252967ilc.21
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 14:20:16 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=Rc46J+LdfOQ971VpgAGBFMDqvkS69w+5fLDQxrrBNZI=;
-        b=S0Y/JLzX7FQpne13cfUMfYyJ8AQdRzfiTSSKiOdR1804E7okJvUGrPqtK+ZkBT79Fw
-         og5mSilrgrssqA8xwfXbl7lVaEp2ekiXxhkQT2zyfcNOpStk/g16stnfnaef127A0o0w
-         AHciz47RhDGFTi1OjPl3kI+O2a1KmajUenOEJ9zpkGKo/VqDn5Q4QbhTomJen15Sd9oQ
-         iH3SXrW44zaYB/BjPVQZ3m4xnvOlmAwxshMEYyoMyyNU9TK4kGLSLV0w41TileCXP3/v
-         z4zPfaa6I4RHPJgP1Vxb8k8AiDuBvDEcwGI6iH8TYE/yfH2q7sKy8b1nWupRIhSDPy3M
-         40Yg==
-X-Gm-Message-State: AOAM531j6sg8cx39p34MBLqhAfGXvZPweDYuubYDoOmd5691jiQGvrCG
-        WJcQmCO9xaczmBc5BStXyqh7A7iWOaYiq127ly0Yi8eLubcZ
-X-Google-Smtp-Source: ABdhPJysSLx4JiHvgheatnMzaJc5jZWPdLcY1C6ZB1HtMGEuhRV8eKCS8O4iBP1vbBx1SD+sXxJZnYMhdFXPZWsl6G2wg85Idl2Q
+        Wed, 4 Nov 2020 17:20:43 -0500
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A4MEZnF001281;
+        Wed, 4 Nov 2020 14:20:26 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=AOQGvFblC50FPhkJ2o2zgBPEf/bpy9Ys40N71XKwc/w=;
+ b=UBAanx8s3a+L/nS1lt1ir/Wok7wC+fWnbp0jG+wYLaxoGtUG+fOZcgmhrqe0fTPtOZtF
+ CX0aYt82gN00gPq660lIPbbfoc2WFXs/7+N0dG+Mhv8kBKnYY5U7FdRyz/SSTh6ILsSr
+ LGHQVaB7fBhYi9NkOlj+jjH5T27rHXiKpMg= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 34kmux53xa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 04 Nov 2020 14:20:25 -0800
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.229) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 4 Nov 2020 14:20:25 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=f5BpVA1kWynQiCWFYqvRrBoMblyHMZ+XmoUP9Ak23wsPnBcHEq8D6uc109icRoMg1T/faFdWee+iwQKJj6l+XSwmR3yesh6/2O5Vor3rxOgUB00hTP4VK9H2YDLwyuKfraE72Rly1Cz70JJqBC1oj4SHAj06/yxPokf/UwvoGTHqn18m4lbx5kGw/vWn1UxyLku9HQFxu31uIH2vzVlpusYeCoPsQCe9UmltQ/tJIkqzFLVLp6gIu7J+HgrR8wCFF+DwvQfEb2jtiWbPkFZJQz0gz3V/JO+Vb2tG5ue3JzRdQFgWn00iS7fd9z41vd/5tLnGFwlPvzfj2t2cIR+HcQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=AOQGvFblC50FPhkJ2o2zgBPEf/bpy9Ys40N71XKwc/w=;
+ b=kKMo6ddXOy3QoQA1G2XGTLIovFz+8Lhh+WvoFpx2ws0POdvRcXAo34nCjmlA7LbWHBbuLOHD+A8Hd1ShbyKV0eLnnh+2FS8gmEOe7Fk7eZ5n9Y+QEH4zZSNof6GZ2++SB4AHBB95r0xVr3mk7mWoKKaEDE4hTqD1GnpTYcaa4KCJv75YXJAaxzxywRu5S2H8wxoYBHiO/5jkRqljG7Pf1MWJv4UFg3c5Bjkr/Pul3ornGD7MtsJBNdxeSLR0xfu+GDWZIhdxVCT5WuEHLOMLZYfPFv9P++juegKMtG5StcpnkwQqlfSBCGMODL24Qg2hhRb5AI8MZB55oOdgfFXTtQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=AOQGvFblC50FPhkJ2o2zgBPEf/bpy9Ys40N71XKwc/w=;
+ b=bdglQBNF4diGZbP+SnjQZyHBYjcNcI18kYgs54NHeeHRL7lzKa7VZIsjI+GggLUvXIklT50pkg3ASNreQ0Y3xOMqJQMiRPyHxV2phX9qz+HkrpqFmxLqIEwLfRpAbWn0+kipBMYBaAd4XBQxxeY9GgqlADIToT0SqibiyP4ELlg=
+Authentication-Results: chromium.org; dkim=none (message not signed)
+ header.d=none;chromium.org; dmarc=none action=none header.from=fb.com;
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
+ by SJ0PR15MB4235.namprd15.prod.outlook.com (2603:10b6:a03:2e3::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.27; Wed, 4 Nov
+ 2020 22:20:23 +0000
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::bc1d:484f:cb1f:78ee]) by BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::bc1d:484f:cb1f:78ee%4]) with mapi id 15.20.3499.032; Wed, 4 Nov 2020
+ 22:20:23 +0000
+Date:   Wed, 4 Nov 2020 14:20:17 -0800
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     KP Singh <kpsingh@chromium.org>
+CC:     <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Song Liu <songliubraving@fb.com>, Paul Turner <pjt@google.com>,
+        Jann Horn <jannh@google.com>, Hao Luo <haoluo@google.com>
+Subject: Re: [PATCH bpf-next v3 2/9] libbpf: Add support for task local
+ storage
+Message-ID: <20201104222017.5ch244akvm4oz42p@kafai-mbp.dhcp.thefacebook.com>
+References: <20201104164453.74390-1-kpsingh@chromium.org>
+ <20201104164453.74390-3-kpsingh@chromium.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201104164453.74390-3-kpsingh@chromium.org>
+X-Originating-IP: [2620:10d:c090:400::5:3041]
+X-ClientProxiedBy: MW3PR05CA0022.namprd05.prod.outlook.com
+ (2603:10b6:303:2b::27) To BY5PR15MB3571.namprd15.prod.outlook.com
+ (2603:10b6:a03:1f6::32)
 MIME-Version: 1.0
-X-Received: by 2002:a02:6342:: with SMTP id j63mr218086jac.41.1604528416474;
- Wed, 04 Nov 2020 14:20:16 -0800 (PST)
-Date:   Wed, 04 Nov 2020 14:20:16 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004bcbf205b34f6294@google.com>
-Subject: KASAN: use-after-free Read in path_init (3)
-From:   syzbot <syzbot+3e565bbd2673747f90c2@syzkaller.appspotmail.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:3041) by MW3PR05CA0022.namprd05.prod.outlook.com (2603:10b6:303:2b::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.10 via Frontend Transport; Wed, 4 Nov 2020 22:20:22 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a171537a-a423-4f0a-abd6-08d8810fd2f1
+X-MS-TrafficTypeDiagnostic: SJ0PR15MB4235:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SJ0PR15MB4235EA1A44DC6CABADCD59D1D5EF0@SJ0PR15MB4235.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:1923;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Cydm7o/iY34IZAFBZ+oZxNWYR+ic7u3LghxWJx3i3PFXY/FGUwF1wRhXNbKz06iewoAG8xxMaJ/ZWoy6II9MB0WfUqgO8fls5S7muWo0W6dundjxiJb3eDh0ir7PpO8DVXy1LxT/qqmw78nb3+aHMBkEt+1oWFneQEIVSku0pf/qs9mqPAAsgM2I93pQY0nljgDVfQnoTS83bxolcn6vVcui2goiy3N4HQF6Q5YXl9wKUHD0pv4YwzNIHIg9ICygkfDZIUSB3EIQ3xNWvbkrsv3bBR5sDjiMULMznco/hfvr6/cRt8Ginf/L6IkbNgI/
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(39860400002)(396003)(376002)(136003)(366004)(9686003)(6666004)(8936002)(8676002)(6916009)(6506007)(4326008)(186003)(55016002)(86362001)(16526019)(66946007)(478600001)(5660300002)(2906002)(7696005)(66476007)(83380400001)(66556008)(1076003)(54906003)(4744005)(316002)(52116002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: djqhDZavkomqmN4ezIN6+aI0x0iC7y/HYiWeb65oIl2/N/dvp48iTZXiUDZu4uKeRVgx2v/ffX+jFLF3G7yYJXsk5Y5hjb2uyUvjSaj3ntdlEOka0+S1RteiulWpxSicDo9NaynoPNYO3tGFzBhNAWtPWtNsJqIAqmpemOpHDwTvXDsq0j/d8SI6+fuEgPHM5Cn5XtyDFr1mcqwqsPk0AdQs4AsQ7vyMvYS0BauIHNVrEy2qXGAF8AHsaEFCWN1bk0fNgDUwGd2eZ9uUEIZ/H/OCFH23/W6VishIqbKxN3UaFAEhx2tP9tmPy5uaDj+cv1QQrohIBpJ8xZxeRx9bN6k5troVCKYeKJCYD/2SjF44WgZ2omykJm8zEc59SCREhaZl/QVHxPzM0F6DH3YEBgVG9B+FjyPEhDnptqapc9vfokMfFgKg9Uerk25h9hTiyNruET/DUccWptyDUq1lBWuP0/WmWHTwV0CK7wzKnfuNV+h01HWsJzOLWhkslFiS7IrMbpO8mlbfzDRjkx2wnADf/uQCVoDEkqAmdZ59qqj8SOTLmAPKvmqYxx9u8VtB8U8smlkjg9wAgCugdJWlwyizuDDdT3rqQujfuCX9wv+x7J3AA6jYPJ3QwgtCHqGeG1Ps5h8VeIBcuayi6bp0BGdk9bh5mrvDTYeGvkPVIhSZgirz4PiGjr8yQZpOVMf1
+X-MS-Exchange-CrossTenant-Network-Message-Id: a171537a-a423-4f0a-abd6-08d8810fd2f1
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Nov 2020 22:20:23.8190
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: wnl6W3OzgNqAyn/E7bhwWgy5vpfPlIGmh2A33/M8fQtJcgnC1snouU+8fVdKFtRC
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR15MB4235
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-04_15:2020-11-04,2020-11-04 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015 bulkscore=0
+ impostorscore=0 malwarescore=0 adultscore=0 suspectscore=1 mlxscore=0
+ mlxlogscore=876 priorityscore=1501 phishscore=0 spamscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011040158
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    4e78c578 Add linux-next specific files for 20201030
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=110d0c92500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=83318758268dc331
-dashboard link: https://syzkaller.appspot.com/bug?extid=3e565bbd2673747f90c2
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+3e565bbd2673747f90c2@syzkaller.appspotmail.com
-
-MINIX-fs: mounting unchecked file system, running fsck is recommended
-MINIX-fs: deleted inode referenced: 6
-==================================================================
-BUG: KASAN: use-after-free in path_init+0x14ba/0x17d0 fs/namei.c:2208
-Read of size 8 at addr ffff8880633cc400 by task syz-executor.3/14486
-
-CPU: 1 PID: 14486 Comm: syz-executor.3 Not tainted 5.10.0-rc1-next-20201030-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:118
- print_address_description.constprop.0.cold+0xae/0x4c8 mm/kasan/report.c:385
- __kasan_report mm/kasan/report.c:545 [inline]
- kasan_report.cold+0x1f/0x37 mm/kasan/report.c:562
- path_init+0x14ba/0x17d0 fs/namei.c:2208
- path_parentat+0x22/0x1b0 fs/namei.c:2385
- filename_parentat+0x188/0x560 fs/namei.c:2408
- do_renameat2+0x16e/0xc00 fs/namei.c:4375
- __do_sys_renameat fs/namei.c:4501 [inline]
- __se_sys_renameat fs/namei.c:4498 [inline]
- __x64_sys_renameat+0xbf/0xf0 fs/namei.c:4498
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45deb9
-Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007fbef8029c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000108
-RAX: ffffffffffffffda RBX: 0000000000027340 RCX: 000000000045deb9
-RDX: 0000000000000006 RSI: 0000000020000500 RDI: 0000000000000003
-RBP: 000000000118bf68 R08: 0000000000000000 R09: 0000000000000000
-R10: 00000000200017c0 R11: 0000000000000246 R12: 000000000118bf2c
-R13: 00007ffe203745cf R14: 00007fbef802a9c0 R15: 000000000118bf2c
-
-Allocated by task 14486:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
- kasan_set_track mm/kasan/common.c:56 [inline]
- __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:461
- slab_post_alloc_hook mm/slab.h:506 [inline]
- slab_alloc_node mm/slub.c:2889 [inline]
- slab_alloc mm/slub.c:2897 [inline]
- kmem_cache_alloc+0x122/0x460 mm/slub.c:2902
- getname_flags.part.0+0x50/0x4f0 fs/namei.c:138
- getname_flags+0x9a/0xe0 include/linux/audit.h:319
- getname fs/namei.c:209 [inline]
- __do_sys_renameat fs/namei.c:4501 [inline]
- __se_sys_renameat fs/namei.c:4498 [inline]
- __x64_sys_renameat+0xad/0xf0 fs/namei.c:4498
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-Freed by task 14486:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
- kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
- kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
- __kasan_slab_free+0x102/0x140 mm/kasan/common.c:422
- slab_free_hook mm/slub.c:1544 [inline]
- slab_free_freelist_hook+0x5d/0x150 mm/slub.c:1577
- slab_free mm/slub.c:3140 [inline]
- kmem_cache_free+0x82/0x350 mm/slub.c:3156
- putname+0xe1/0x120 fs/namei.c:259
- do_renameat2+0x3e6/0xc00 fs/namei.c:4481
- __do_sys_renameat fs/namei.c:4501 [inline]
- __se_sys_renameat fs/namei.c:4498 [inline]
- __x64_sys_renameat+0xbf/0xf0 fs/namei.c:4498
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-The buggy address belongs to the object at ffff8880633cc400
- which belongs to the cache names_cache of size 4096
-The buggy address is located 0 bytes inside of
- 4096-byte region [ffff8880633cc400, ffff8880633cd400)
-The buggy address belongs to the page:
-page:00000000f2c066e0 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x633c8
-head:00000000f2c066e0 order:3 compound_mapcount:0 compound_pincount:0
-flags: 0xfff00000010200(slab|head)
-raw: 00fff00000010200 dead000000000100 dead000000000122 ffff8880101c1280
-raw: 0000000000000000 0000000000070007 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff8880633cc300: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff8880633cc380: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->ffff8880633cc400: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                   ^
- ffff8880633cc480: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff8880633cc500: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+On Wed, Nov 04, 2020 at 05:44:46PM +0100, KP Singh wrote:
+> From: KP Singh <kpsingh@google.com>
+> 
+> Updates the bpf_probe_map_type API to also support
+> BPF_MAP_TYPE_TASK_STORAGE similar to other local storage maps.
+> 
+> Signed-off-by: KP Singh <kpsingh@google.com>
+Acked-by: Martin KaFai Lau <kafai@fb.com>
