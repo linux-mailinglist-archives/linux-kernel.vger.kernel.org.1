@@ -2,128 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E73B22A67B6
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 16:32:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 338852A67B4
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 16:31:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730582AbgKDPbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 10:31:51 -0500
-Received: from mail-40136.protonmail.ch ([185.70.40.136]:23741 "EHLO
-        mail-40136.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730525AbgKDPbv (ORCPT
+        id S1730489AbgKDPbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 10:31:44 -0500
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:38674 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726919AbgKDPbn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 10:31:51 -0500
-Date:   Wed, 04 Nov 2020 15:31:36 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1604503904; bh=BQ2VaKtBiuQCT6Mo5ex46388MTeEB/SnXnxf3lZZ6PE=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=a5WlYYvHMV++OZhuUV+kCl1zVOYrV9Vm7lfn6z9tXWm1JBLZOKa968UzJS/TkbqgN
-         wNwWCW6KdS1ak8qZ/6QtDAY4jIg1mLUy9I3d0BUiMp+cIVYtEQhpqZQERwWejf/+3M
-         acOJPAaBecyzPiUTt2UmUFJ9qDo6qjj9/A7D/mbxah5+R+Bwht3xnGLzlRGohULnKZ
-         Flc9/XySag7zQXjBQgDD6wtPZBqzhVDeqF7KYpFIwmJMcPyO3EujhdbAJVrHwJrABk
-         1NuprOaH0ubjmO/qfNAUKwQ0059p8+wgMwci3pD4PaKgzyJR9dRW+b8uw6EInxBJOV
-         2GH78BvoHl3Ug==
-To:     Amit Shah <amit@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Arnaud Pouliquen <arnaud.pouliquen@st.com>,
-        Suman Anna <s-anna@ti.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Alexander Lobakin <alobakin@pm.me>
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: [PATCH virtio] virtio: virtio_console: fix DMA memory allocation for rproc serial
-Message-ID: <AOKowLclCbOCKxyiJ71WeNyuAAj2q8EUtxrXbyky5E@cp7-web-042.plabs.ch>
+        Wed, 4 Nov 2020 10:31:43 -0500
+Received: by mail-lf1-f68.google.com with SMTP id 141so27682120lfn.5;
+        Wed, 04 Nov 2020 07:31:41 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vZq7exyTzEqn1P9wDu9H4FDGp7zZ83u2lCN0IL6mt0U=;
+        b=izXk+riaWE7HlUtZJ2E1H02QERGtSn8cAVqdQWm4UkB+7ulaEDNS3TaWBPMD/VJpRb
+         v5HmZCwA0KdbFDTr8bI9AvHvehqu2iI4jfsBAi3xVpFgSj3nvdoWMGmEVbhOaARFhOSu
+         2RjhIDivvcgV/e6TnRG3LSMvdd4Njc00UrkkxXMKat1tNburo03+5MMksCz0HV8aHOR9
+         2mvKiswtFgZMuPwhzPl4/VzoW55F1RLyX0CxhSTW+jFJJDmXZbN55Rwe3O1pgXHuDhjO
+         pdGppnHT8xRPtVQw0woFDQRU7y3F38iDQzN/RUYVL7D+ziJXlAd7rLWpB9k5VYfDZP1/
+         p+Pg==
+X-Gm-Message-State: AOAM532+Dx21xH5atMls1PCggolms31erBV4QfOy4m75vI/xJEU3sNrh
+        niaEFAEwaZqMH2Hdy1nMkCI=
+X-Google-Smtp-Source: ABdhPJwRSLiLaRZaSwpogHRkgT/GyKh9pmsBfphW2C12E8rkVbqI3k4ukijHNONY3iNlnHiLVXffAQ==
+X-Received: by 2002:a19:bed7:: with SMTP id o206mr8911457lff.360.1604503900596;
+        Wed, 04 Nov 2020 07:31:40 -0800 (PST)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id e10sm544677ljl.41.2020.11.04.07.31.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Nov 2020 07:31:39 -0800 (PST)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1kaKlE-0004iF-4f; Wed, 04 Nov 2020 16:31:44 +0100
+Date:   Wed, 4 Nov 2020 16:31:44 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Joe Perches <joe@perches.com>
+Cc:     Johan Hovold <johan@kernel.org>, linux-kernel@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jessica Yu <jeyu@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Jelinek <jakub@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Kurtz <djkurtz@chromium.org>,
+        linux-arch@vger.kernel.org, linux-m68k@lists.linux-m68k.org
+Subject: Re: get_maintainer.pl bug? (was: Re: [PATCH 0/8] linker-section
+ array fix and clean ups)
+Message-ID: <20201104153144.GX4085@localhost>
+References: <20201103175711.10731-1-johan@kernel.org>
+ <20201104091625.GP4085@localhost>
+ <92d39ff1408078a656c43bee24e7e9b3e3815e72.camel@perches.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <92d39ff1408078a656c43bee24e7e9b3e3815e72.camel@perches.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit 086d08725d34 ("remoteproc: create vdev subdevice with
-specific dma memory pool"), every remoteproc has a DMA subdevice
-("remoteprocX#vdevYbuffer") for each virtio device, which inherits
-DMA capabilities from the corresponding platform device. This allowed
-to associate different DMA pools with each vdev, and required from
-virtio drivers to perform DMA operations with the parent device
-(vdev->dev.parent) instead of grandparent (vdev->dev.parent->parent).
+On Wed, Nov 04, 2020 at 04:04:00AM -0800, Joe Perches wrote:
+> On Wed, 2020-11-04 at 10:16 +0100, Johan Hovold wrote:
+> > Running scrips/get_maintainer.pl on this series [1] gave the wrong
+> > address for Nick Desaulniers:
+> > 
+> > 	Nick Desaulniers <ndesaulniers@gooogle.com> (commit_signer:1/2=50%,commit_signer:1/8=12%)
+> > 
+> > It seems he recently misspelled his address in a reviewed-by tag to
+> > commit 33def8498fdd ("treewide: Convert macro and uses of __section(foo)
+> > to __section("foo")") and that is now being picked up by the script.
+> > 
+> > I guess that's to be considered a bug?
+> 
+> No, that's a feature.  If it's _really_ a problem, (and I don't
+> think it really is), that's what .mailmap is for.
 
-virtio_rpmsg_bus was already changed in the same merge cycle with
-commit d999b622fcfb ("rpmsg: virtio: allocate buffer from parent"),
-but virtio_console did not. In fact, operations using the grandparent
-worked fine while the grandparent was the platform device, but since
-commit c774ad010873 ("remoteproc: Fix and restore the parenting
-hierarchy for vdev") this was changed, and now the grandparent device
-is the remoteproc device without any DMA capabilities.
-So, starting v5.8-rc1 the following warning is observed:
+Ah, Nick doesn't actually have any commits touching these files; I was
+confused by the "commit_signer" in the script output and didn't expect
+Reviewed-by tags to be considered all (and at least not over SoB).
 
-[    2.483925] ------------[ cut here ]------------
-[    2.489148] WARNING: CPU: 3 PID: 101 at kernel/dma/mapping.c:427 0x80e7e=
-ee8
-[    2.489152] Modules linked in: virtio_console(+)
-[    2.503737]  virtio_rpmsg_bus rpmsg_core
-[    2.508903]
-[    2.528898] <Other modules, stack and call trace here>
-[    2.913043]
-[    2.914907] ---[ end trace 93ac8746beab612c ]---
-[    2.920102] virtio-ports vport1p0: Error allocating inbufs
+Hmm. Guess it's working as intended.
 
-kernel/dma/mapping.c:427 is:
-
-WARN_ON_ONCE(!dev->coherent_dma_mask);
-
-obviously because the grandparent now is remoteproc dev without any
-DMA caps:
-
-[    3.104943] Parent: remoteproc0#vdev1buffer, grandparent: remoteproc0
-
-Fix this the same way as it was for virtio_rpmsg_bus, using just the
-parent device (vdev->dev.parent, "remoteprocX#vdevYbuffer") for DMA
-operations.
-This also allows now to reserve DMA pools/buffers for rproc serial
-via Device Tree.
-
-Fixes: c774ad010873 ("remoteproc: Fix and restore the parenting hierarchy f=
-or vdev")
-Cc: stable@vger.kernel.org # 5.1+
-Signed-off-by: Alexander Lobakin <alobakin@pm.me>
----
- drivers/char/virtio_console.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/char/virtio_console.c b/drivers/char/virtio_console.c
-index a2da8f768b94..1836cc56e357 100644
---- a/drivers/char/virtio_console.c
-+++ b/drivers/char/virtio_console.c
-@@ -435,12 +435,12 @@ static struct port_buffer *alloc_buf(struct virtio_de=
-vice *vdev, size_t buf_size
- =09=09/*
- =09=09 * Allocate DMA memory from ancestor. When a virtio
- =09=09 * device is created by remoteproc, the DMA memory is
--=09=09 * associated with the grandparent device:
--=09=09 * vdev =3D> rproc =3D> platform-dev.
-+=09=09 * associated with the parent device:
-+=09=09 * virtioY =3D> remoteprocX#vdevYbuffer.
- =09=09 */
--=09=09if (!vdev->dev.parent || !vdev->dev.parent->parent)
-+=09=09buf->dev =3D vdev->dev.parent;
-+=09=09if (!buf->dev)
- =09=09=09goto free_buf;
--=09=09buf->dev =3D vdev->dev.parent->parent;
-=20
- =09=09/* Increase device refcnt to avoid freeing it */
- =09=09get_device(buf->dev);
---=20
-2.29.2
-
-
+Johan
