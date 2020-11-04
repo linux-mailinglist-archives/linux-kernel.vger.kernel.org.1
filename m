@@ -2,105 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C9B02A65A8
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 15:00:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B9872A65BD
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 15:01:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730029AbgKDOA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 09:00:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40146 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727012AbgKDOA0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 09:00:26 -0500
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9312FC061A4A
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 06:00:26 -0800 (PST)
-Received: by mail-qk1-x743.google.com with SMTP id a65so17061167qkg.13
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 06:00:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=J6Nw3097qL1FGBO59AefdNEIbSIDtL/HHl1l69CFDp8=;
-        b=Wan5zLNCc03uOg3crmJFeRaNbOEA+qwrbKwCY9LDkg1fZnFvzGEBwk4V+VLFOn5oKx
-         tmcyGIKCw4+CD/juWp2ijPQPLgAyQG0AhFaLumt8mFw7D817cQkKUY2w7oYalFQSRaiQ
-         Vb/ptf8IpP3WfnK3UuZPUxBAXkXY6PqsAqGNVYoZolg0yUEgsR1Di4PcNN7C/aUr2Q/R
-         O0ZcNPr6tO0Ab4yQ9aVnuDw44g3gsPath6hDrZSj4xe9Loas/o/6/OXlQjyqG2MFoi+n
-         R3zy4MV988W7+StxSAydki/+D4rJ/lZx0EB7vwQbsli0N+fpB6onleBpY6HTFL+CpY9E
-         jiFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=J6Nw3097qL1FGBO59AefdNEIbSIDtL/HHl1l69CFDp8=;
-        b=DCaAHKWfZR5s77kO3xCODkHsLLFg9SwOUqZGe2qZSgJ9pkQINB8ubQHwaC7v4eQqNH
-         LPUriiX8JT+TfNo+t4XhH/UsDQl6ml4KjoDYJXhxtW115ev8YujqcS6iILXKCj7k6EKo
-         RCNBrsd3ogbI5jTnhVBv7b78AUwALDJV4rzf41pTDI7MktJohTYx6TDEoDOe0UGvEcbS
-         e8iZ+UrZ3n68L7uGB/bYMl68M/y4qNEkDtMghmuTxWd5ndsoHTR8/vm5x46rZkRf7O5e
-         8AdTC1yAdbDnPITxFE9oWbbNdkFnqhhlidYeN6/ECtDsfC9Wa1MPnMjXY0fOR4gJoLEp
-         ZPVQ==
-X-Gm-Message-State: AOAM531cduTi9rnoqnUWiW1XDo5zuGRwFZKfAlrgnFRK8dpBsS7RHDaA
-        BEXKV15oexI519AhV8xlnBCXDA==
-X-Google-Smtp-Source: ABdhPJz06+PUPTCOD5MO6YcYJfu8e1guRGyarj130cNdAlQFDKce0Oko/G5bRBr5wbl0qK0lrF7Apg==
-X-Received: by 2002:a37:4ccf:: with SMTP id z198mr26929935qka.348.1604498425743;
-        Wed, 04 Nov 2020 06:00:25 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id y3sm131855qto.2.2020.11.04.06.00.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 06:00:24 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kaJKp-00GVgS-9E; Wed, 04 Nov 2020 10:00:23 -0400
-Date:   Wed, 4 Nov 2020 10:00:23 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     John Hubbard <jhubbard@nvidia.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        KVM list <kvm@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Pawel Osciak <pawel@osciak.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
-        Jan Kara <jack@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>
-Subject: Re: [PATCH v5 05/15] mm/frame-vector: Use FOLL_LONGTERM
-Message-ID: <20201104140023.GQ36674@ziepe.ca>
-References: <20201030100815.2269-1-daniel.vetter@ffwll.ch>
- <20201030100815.2269-6-daniel.vetter@ffwll.ch>
- <446b2d5b-a1a1-a408-f884-f17a04b72c18@nvidia.com>
- <CAKMK7uGDW2f0oOvwgryCHxQFHyh3Tsk6ENsMGmtZ-EnH57tMSA@mail.gmail.com>
- <1f7cf690-35e2-c56f-6d3f-94400633edd2@nvidia.com>
- <CAKMK7uFYDSqnNp_xpohzCEidw_iLufNSoX4v55sNZj-nwTckSg@mail.gmail.com>
- <7f29a42a-c408-525d-90b7-ef3c12b5826c@nvidia.com>
- <CAKMK7uEw701AWXNJbRNM8Z+FkyUB5FbWegmSzyWPy9cG4W7OLA@mail.gmail.com>
+        id S1726796AbgKDOBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 09:01:06 -0500
+Received: from gecko.sbs.de ([194.138.37.40]:50023 "EHLO gecko.sbs.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729481AbgKDN6C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 08:58:02 -0500
+Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
+        by gecko.sbs.de (8.15.2/8.15.2) with ESMTPS id 0A4DvuIv013592
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 4 Nov 2020 14:57:56 +0100
+Received: from [167.87.41.231] ([167.87.41.231])
+        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 0A4Dvuhl011779;
+        Wed, 4 Nov 2020 14:57:56 +0100
+Subject: Re: [PATCH 0/7] gpio: exar: refactor the driver
+From:   Jan Kiszka <jan.kiszka@siemens.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+References: <20201026141839.28536-1-brgl@bgdev.pl>
+ <CAHp75Vf07dsUXZ8Dr-KY-NFQv+C2QQVEOH_se7vYMT6hdm-U3Q@mail.gmail.com>
+ <1fd4d69b-4d64-05e5-45a3-b2182fb2d207@siemens.com>
+Message-ID: <0ab04241-4756-873b-980a-572b225c16e9@siemens.com>
+Date:   Wed, 4 Nov 2020 14:57:55 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKMK7uEw701AWXNJbRNM8Z+FkyUB5FbWegmSzyWPy9cG4W7OLA@mail.gmail.com>
+In-Reply-To: <1fd4d69b-4d64-05e5-45a3-b2182fb2d207@siemens.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 01, 2020 at 11:50:39PM +0100, Daniel Vetter wrote:
+On 27.10.20 16:12, Jan Kiszka wrote:
+> On 26.10.20 15:46, Andy Shevchenko wrote:
+>> On Mon, Oct 26, 2020 at 4:22 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+>>>
+>>> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+>>>
+>>> I just wanted to convert the driver to using simpler IDA API but ended up
+>>> quickly converting it to using regmap. Unfortunately I don't have the HW
+>>> to test it so marking the patches that introduce functional change as RFT
+>>> and Cc'ing the original author.
+>>
+>> +Cc: Jan, AFAIR their devices are using Exar UART.
+>>
+> 
+> Thanks for CC'ing. I cannot promise testing this soon, but I will try my
+> best.
+> 
 
-> It's not device drivers, but everyone else. At least my understanding
-> is that VM_IO | VM_PFNMAP means "even if it happens to be backed by a
-> struct page, do not treat it like normal memory". And gup/pup_fast
-> happily break that. I tried to chase the history of that test, didn't
-> turn up anything I understood much:
+Finally tested, unfortunately with bad news:
 
-VM_IO isn't suppose do thave struct pages, so how can gup_fast return
-them?
+...
+at24 i2c-INT3499:00: 1024 byte INT3499:00 EEPROM, writable, 1 bytes/write
+pxa2xx_spi_pci 0000:00:15.0: enabling device (0000 -> 0002)
+pxa2xx_spi_pci 0000:00:15.1: enabling device (0000 -> 0002)
+exar_serial 0000:02:00.0: enabling device (0000 -> 0002)
+0000:02:00.0: ttyS2 at MMIO 0x90000000 (irq = 44, base_baud = 7812500) is a XR17V35X
+0000:02:00.0: ttyS3 at MMIO 0x90000400 (irq = 44, base_baud = 7812500) is a XR17V35X
+BUG: kernel NULL pointer dereference, address: 00000000
+#PF: supervisor instruction fetch in kernel mode
+#PF: error_code(0xc1150010) - not-present page
+*pde = 00000000 
+Oops: 0010 [#1] PREEMPT
+CPU: 0 PID: 5 Comm: kworker/0:0 Not tainted 5.10.0-rc2+ #438
+Hardware name: Intel Corp. QUARK/SIMATIC IOT2000, BIOS V24.02.01 10/30/2018
+Workqueue: events deferred_probe_work_func
+EIP: 0x0
+Code: Unable to access opcode bytes at RIP 0xffffffd6.
+EAX: 00000000 EBX: f7c74000 ECX: 00000004 EDX: 00000099
+ESI: 00000000 EDI: 00000000 EBP: c1157da8 ESP: c1157d90
+DS: 007b ES: 007b FS: 0000 GS: 00e0 SS: 0068 EFLAGS: 00010282
+CR0: 80050033 CR2: ffffffd6 CR3: 03771000 CR4: 00100010
+Call Trace:
+ regmap_update_bits_base+0x22/0x60
+ ? exar_set_value+0x70/0x70 [gpio_exar]
+ ? exar_set_value+0x70/0x70 [gpio_exar]
+ exar_direction_output+0x47/0x50 [gpio_exar]
+ gpiod_direction_output_raw_commit+0x74/0x270
+ ? exar_direction_input+0x50/0x50 [gpio_exar]
+ ? exar_set_value+0x70/0x70 [gpio_exar]
+ gpiod_direction_output+0xf0/0x160
+ create_gpio_led+0xea/0x180
+ gpio_led_probe+0x22c/0x460
+ ? device_pm_check_callbacks+0x4c/0x100
+ platform_drv_probe+0x2d/0x80
+ really_probe+0xcb/0x330
+ driver_probe_device+0x49/0xa0
+ __device_attach_driver+0x61/0x80
+ ? driver_allows_async_probing+0x60/0x60
+ bus_for_each_drv+0x4f/0x90
+ __device_attach+0xbb/0x120
+ ? driver_allows_async_probing+0x60/0x60
+ device_initial_probe+0x12/0x20
+ bus_probe_device+0x6f/0x80
+ deferred_probe_work_func+0x56/0x80
+ process_one_work+0x1ce/0x390
+ worker_thread+0x37/0x420
+ kthread+0x115/0x130
+ ? process_one_work+0x390/0x390
+ ? kthread_create_on_node+0x20/0x20
+ ret_from_fork+0x19/0x30
+Modules linked in: gpio_exar(+) spi_pxa2xx_platform 8250_exar spi_pxa2xx_pci ti_adc108s102 industrialio_triggered_buffer kfifo_buf industrialio at24
+CR2: 0000000000000000
+---[ end trace d982fb210f759304 ]---
+EIP: 0x0
+Code: Unable to access opcode bytes at RIP 0xffffffd6.
+EAX: 00000000 EBX: f7c74000 ECX: 00000004 EDX: 00000099
+ESI: 00000000 EDI: 00000000 EBP: c1157da8 ESP: c1157d90
+DS: 007b ES: 007b FS: 0000 GS: 00e0 SS: 0068 EFLAGS: 00010282
+CR0: 80050033 CR2: ffffffd6 CR3: 03771000 CR4: 00100010
 
-I thought some magic in the PTE flags excluded this?
+Jan
 
-Jason
+-- 
+Siemens AG, T RDA IOT
+Corporate Competence Center Embedded Linux
