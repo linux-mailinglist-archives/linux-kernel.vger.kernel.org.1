@@ -2,64 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD7982A6E34
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 20:40:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6BF02A6E32
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 20:40:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731947AbgKDThs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 14:37:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37568 "EHLO
+        id S1731933AbgKDThn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 14:37:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731188AbgKDTg1 (ORCPT
+        with ESMTP id S1731306AbgKDTg3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 14:36:27 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22C2FC061A4A
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 11:36:27 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id w1so23362151wrm.4
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 11:36:27 -0800 (PST)
+        Wed, 4 Nov 2020 14:36:29 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD0DCC040203
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 11:36:28 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id h62so3434188wme.3
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 11:36:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=sjXTZO3THTknUKc+FF8iaHBvsw+0f6VMadCbFHOAPuM=;
-        b=ms2JX/olfhvXUd5gZU8GpM2AlBUdhsOVTqftJLAZsSd3S6CA4St9e8Z3GVUJOPmBH3
-         Wv+e5VL/yIgilU8EvaWEC11WiXxDDYSZTosDlw9sO3Gem/ACN7zcS+464DoBy798QAcH
-         OPG1s6i1ZL6NhVvbs5YXlsbdqZEHIzc0+LOC4YSprETgdP0IUwxP1HatTFbZr3Q1gVcv
-         i854ry1t+jafdMYbiPc8nv8BT3ro4yc3QyZESN0BlPVfflbvzS0u+2sy5v8ZA98Wm1GT
-         r3s419fmQ+DJ0EwoWS+et3BfGfkP9LbKal++RpqWiA5dqdiTmztKyhwwOy9HGefmTbgE
-         YXXg==
+        bh=G/d/JA64CofWKuwESK8kGZX0uiDeowkGXadKVAnwo0c=;
+        b=p7liMTCG1mLEWq/DKidLWgjNnOJKKwuTWcMv0KT6XCWEQ6mqWorLIKcFwmXjwYSwYR
+         pufeisJvFXX7BesNLGZMehzMFIzDSfamBBW0lash/5ccGK1ZfP3v8EUeIAUIFY5FCIw5
+         nL8CdyXDQNvyOYaDDkvDTI2OrgXsCygs0nhWVKEl7ge7xZuULfHjJX08RBS1Qg2V9JKo
+         hkTHEIKiOl80XiTYG9GAegV5C+V77Nk14gTIDOQrUMhgakn5xLxe/9KqWxKoFrMPvooX
+         l5nGRgrGJ0hgtiqhFZ4hI+xiClHWte29GGYd4mKSFXJLHsacQftIfINr/mY8KbaTWcCq
+         vBrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=sjXTZO3THTknUKc+FF8iaHBvsw+0f6VMadCbFHOAPuM=;
-        b=VuFt1Q4fDayEP5Fhtl+pMVl7CHNvnIT2ehCHpCJvdKvpU1YN6pM3okyPLPvkEz1oxS
-         1MY3tbdCJvv9zQf9y4eYxCCfzJ2L+CTPQWYX+axA9WFPiHHJwpaJfZiR7+2RCy1QVwB2
-         Rss1Ua0gluu/FyAliXmQaTbiQYhH/bKgEkUPFFkOBvgdboeRde7LwfEOaPqzyoiWuDp+
-         b39HD+/96VMGCVTba5/fbf0278Y8YIhGyzw+qAQkwd+evyCoX8ovxheEiWWkmn/3Z53h
-         qvkxNFohULUOA506KnjqICgpMIk1mtioY/DaT/a2+Dw6+YLjx9Hq1WLIvjGYlA/wTZPZ
-         8n9Q==
-X-Gm-Message-State: AOAM533vIO7SMnYSAqFfIvh8iKI+UHCspmzYnvdsG3WHKomL19zQiZcm
-        HyLRMOlsAPb9k404/iTnLoT2rg==
-X-Google-Smtp-Source: ABdhPJwbXgRf846UE4ULzw1UaKkRcnno8eWKOJyQ2YXTMjG5JuMVVZBJynEIcVUKav7QeoqCCWIriw==
-X-Received: by 2002:a5d:4c4f:: with SMTP id n15mr32969818wrt.137.1604518585814;
-        Wed, 04 Nov 2020 11:36:25 -0800 (PST)
+        bh=G/d/JA64CofWKuwESK8kGZX0uiDeowkGXadKVAnwo0c=;
+        b=HDH9K0Va6QZBun7AqzQmsMzeev1W9R9mvCNkwsnWskmqDJBRYO5goLijRxHvxiYh0b
+         cEN6Zrwf0QpO8TLVQSxr2LFxpyYGEf7mFY5TK00+ltbs7lsEJv7zVoOFKEHDWMZBQwgF
+         t5AO5oBglJI7ATWSdPT2WXUar9XQ1t2OjNh+hbxftMpxE6jSmxgA/rqUnPnoP4qs/PE+
+         fuOl9TKiFWYGsAvOEId9fkXfJTdNE8ydC5/xI51DsJvV7z9c+CFRnL18tplhjK/mAsVb
+         5Pu/xfHlxWz/STSOkFu46D0vG4MXn4FW9cMS8P3kTDMxZHqxeEIw+ErdtWoG3fn4im8p
+         oiNQ==
+X-Gm-Message-State: AOAM532emLwJQjMXBODXjG+qExVMHGJXV/cnAUz5kwebnbn/16K44Gjr
+        LCzzvva6m0aZLq9n5rVHAm8buA==
+X-Google-Smtp-Source: ABdhPJwis0JJgtZ+lHi7Jy0xdXZWOM0yCqCPZvE1DmD9xUZV9MOkjgMPToCuLIiSif2j3dhE5XCBhA==
+X-Received: by 2002:a1c:e90e:: with SMTP id q14mr5957290wmc.64.1604518587505;
+        Wed, 04 Nov 2020 11:36:27 -0800 (PST)
 Received: from dell.default ([91.110.221.242])
-        by smtp.gmail.com with ESMTPSA id x10sm4034444wrp.62.2020.11.04.11.36.24
+        by smtp.gmail.com with ESMTPSA id x10sm4034444wrp.62.2020.11.04.11.36.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 11:36:25 -0800 (PST)
+        Wed, 04 Nov 2020 11:36:26 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org,
+Cc:     linux-kernel@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Jiri Slaby <jirislaby@kernel.org>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Sylvain Lemieux <slemieux.tyco@gmail.com>,
-        Kevin Wells <kevin.wells@nxp.com>,
-        Roland Stigge <stigge@antcom.de>, linux-serial@vger.kernel.org
-Subject: [PATCH 19/36] tty: serial: lpc32xx_hs: Remove unused variable 'tmp'
-Date:   Wed,  4 Nov 2020 19:35:32 +0000
-Message-Id: <20201104193549.4026187-20-lee.jones@linaro.org>
+        Robert Love <rlove@google.com>, linux-arm-msm@vger.kernel.org,
+        linux-serial@vger.kernel.org
+Subject: [PATCH 20/36] tty: serial: msm_serial: Remove set but unused variable 'status'
+Date:   Wed,  4 Nov 2020 19:35:33 +0000
+Message-Id: <20201104193549.4026187-21-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201104193549.4026187-1-lee.jones@linaro.org>
 References: <20201104193549.4026187-1-lee.jones@linaro.org>
@@ -72,39 +71,42 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/tty/serial/lpc32xx_hs.c: In function ‘__serial_uart_flush’:
- drivers/tty/serial/lpc32xx_hs.c:244:6: warning: variable ‘tmp’ set but not used [-Wunused-but-set-variable]
+ drivers/tty/serial/msm_serial.c: In function ‘msm_complete_tx_dma’:
+ drivers/tty/serial/msm_serial.c:429:18: warning: variable ‘status’ set but not used [-Wunused-but-set-variable]
 
+Cc: Andy Gross <agross@kernel.org>
+Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc: Jiri Slaby <jirislaby@kernel.org>
-Cc: Vladimir Zapolskiy <vz@mleia.com>
-Cc: Sylvain Lemieux <slemieux.tyco@gmail.com>
-Cc: Kevin Wells <kevin.wells@nxp.com>
-Cc: Roland Stigge <stigge@antcom.de>
+Cc: Robert Love <rlove@google.com>
+Cc: linux-arm-msm@vger.kernel.org
 Cc: linux-serial@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/tty/serial/lpc32xx_hs.c | 3 +--
+ drivers/tty/serial/msm_serial.c | 3 +--
  1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/tty/serial/lpc32xx_hs.c b/drivers/tty/serial/lpc32xx_hs.c
-index b5898c9320361..1fa098d7aec4b 100644
---- a/drivers/tty/serial/lpc32xx_hs.c
-+++ b/drivers/tty/serial/lpc32xx_hs.c
-@@ -241,12 +241,11 @@ static unsigned int __serial_get_clock_div(unsigned long uartclk,
+diff --git a/drivers/tty/serial/msm_serial.c b/drivers/tty/serial/msm_serial.c
+index 87f005e5d2aff..ec31a809644a5 100644
+--- a/drivers/tty/serial/msm_serial.c
++++ b/drivers/tty/serial/msm_serial.c
+@@ -426,7 +426,6 @@ static void msm_complete_tx_dma(void *args)
+ 	struct circ_buf *xmit = &port->state->xmit;
+ 	struct msm_dma *dma = &msm_port->tx_dma;
+ 	struct dma_tx_state state;
+-	enum dma_status status;
+ 	unsigned long flags;
+ 	unsigned int count;
+ 	u32 val;
+@@ -437,7 +436,7 @@ static void msm_complete_tx_dma(void *args)
+ 	if (!dma->count)
+ 		goto done;
  
- static void __serial_uart_flush(struct uart_port *port)
- {
--	u32 tmp;
- 	int cnt = 0;
+-	status = dmaengine_tx_status(dma->chan, dma->cookie, &state);
++	dmaengine_tx_status(dma->chan, dma->cookie, &state);
  
- 	while ((readl(LPC32XX_HSUART_LEVEL(port->membase)) > 0) &&
- 	       (cnt++ < FIFO_READ_LIMIT))
--		tmp = readl(LPC32XX_HSUART_FIFO(port->membase));
-+		readl(LPC32XX_HSUART_FIFO(port->membase));
- }
+ 	dma_unmap_single(port->dev, dma->phys, dma->count, dma->dir);
  
- static void __serial_lpc32xx_rx(struct uart_port *port)
 -- 
 2.25.1
 
