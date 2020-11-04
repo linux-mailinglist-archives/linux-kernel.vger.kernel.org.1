@@ -2,494 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7E552A5BFB
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 02:32:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76B602A5C01
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 02:35:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730214AbgKDBcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 20:32:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37962 "EHLO
+        id S1729876AbgKDBfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 20:35:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725769AbgKDBcR (ORCPT
+        with ESMTP id S1725769AbgKDBfA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 20:32:17 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6552C061A4D
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 17:32:16 -0800 (PST)
-Date:   Wed, 4 Nov 2020 02:32:12 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1604453535;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1AJF4GobDUJTV6t1V44SFSKZKDHDM6AfrFfGbqaBGrE=;
-        b=XwJhrO+V9si+YMFpuFtYQdwVPGGXuLw00/Yqf81pPPHmsMeu+bJtDQe/+SV+ELlLFwDiUQ
-        FslfTsj5HRPnE6U+PV/CuOSXhzFfAe1TjCrdOImUJvGvVLCdDFgHSlxFMVXLv21VAyGFNV
-        l2zzxzHE8ouzxvvlRycmtvUE/0UZBt9HqQ0gcY8T8ZIicqNynecFGwD+0beA47wsnrRiWd
-        vDFwmbF6eKeaNrCFAzVtXSwSDPMXGuseIdZy2HWViG/McEH1kOx/O97mDA5DObFZ658uUD
-        qyGtCCFnF24wLoDtl+54DCcBqcfb1ZVxd55tU8aF7oLPDasopKyBaztC4YaLIQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1604453535;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1AJF4GobDUJTV6t1V44SFSKZKDHDM6AfrFfGbqaBGrE=;
-        b=YroUllR3rn/8rB6gQrk4CKp73GdlO+mTMyI7Kl/IKitA3T5k5SbL0aMPEF+2LRamSmsraV
-        XPGQ5f9Y5uOpKYBg==
-From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     John Hubbard <jhubbard@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>, Peter Xu <peterx@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
+        Tue, 3 Nov 2020 20:35:00 -0500
+Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DC5AC061A4D
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 17:35:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
+         s=20161220; h=In-Reply-To:Content-Transfer-Encoding:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=QralSrBulzxB8NovVwoWh+i/AbrWlvBFhJysCZOTo1w=; b=nmuMK1K+XYR9/jibNq7mVO+JNw
+        b6Q9Tm/covICS3E6nurISruLY/m7Y2D+5FVNZWillUCj8Q33j5h1AA30BkhdA0MIixPlzNi1vXSmV
+        cVcf5zM/19kEZWymJTd1xPAMPNJ2WMM7vlHgrNxiknipsq8F9KhvGf2HNXVqSXxVkJiCwkIZKeHTa
+        5RPhdddrYNua80QphV2gh8wV5A2KdYo5mZ1aPJJY76PsHfpKARuqeeJweoKiL0zJxKJxj4xqfElQK
+        7j/iF71Zpb6/oRuD/0fze9zE7Q7cNYPVQrHgIx+p9VPe/ywQMuGpsE059XvKgStMOj76X0tf5Jc0R
+        /7iGe4PQ==;
+Received: from 83-245-197-237.elisa-laajakaista.fi ([83.245.197.237] helo=kapsi.fi)
+        by mail.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <jarkko.sakkinen@iki.fi>)
+        id 1ka7hJ-0006YA-6e; Wed, 04 Nov 2020 03:34:49 +0200
+Date:   Wed, 4 Nov 2020 03:34:47 +0200
+From:   Jarkko Sakkinen <jarkko.sakkinen@iki.fi>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Hugh Dickins <hughd@google.com>, Jan Kara <jack@suse.cz>,
-        Jann Horn <jannh@google.com>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Linux-MM <linux-mm@kvack.org>, Michal Hocko <mhocko@suse.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Siewior <bigeasy@linutronix.de>
-Subject: Re: [PATCH v2 2/2] mm: prevent gup_fast from racing with COW during
- fork
-Message-ID: <20201104013212.GA82153@lx-t490>
-References: <0-v2-dfe9ecdb6c74+2066-gup_fork_jgg@nvidia.com>
- <2-v2-dfe9ecdb6c74+2066-gup_fork_jgg@nvidia.com>
- <20201030225250.GB6357@xz-x1>
- <20201030235121.GQ2620339@nvidia.com>
- <20201103001712.GB52235@lx-t490>
- <20201103002532.GL2620339@nvidia.com>
- <20201103004133.GD52235@lx-t490>
- <e03dba4e-fd1d-a32c-c99c-fc3fa51419c4@nvidia.com>
- <20201103065225.GA63301@lx-t490>
- <CAHk-=wgB8nyOQufpn0o6a5BpJCJPnXvH+kRxApujhsgG+7qAwQ@mail.gmail.com>
+        Kees Cook <keescook@chromium.org>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Marco Elver <elver@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 1/7] compiler-clang: add build check for clang 10.0.1
+Message-ID: <20201104013447.GA21728@kapsi.fi>
+References: <20200902225911.209899-1-ndesaulniers@google.com>
+ <20200902225911.209899-2-ndesaulniers@google.com>
+ <20201103045521.GA58906@kernel.org>
+ <CAKwvOdk-bMx3Jt6=oN=PHqRv_tx5cF=9cVmumazb4vMNHdj5Ag@mail.gmail.com>
+ <20201104003826.GB19460@kernel.org>
+ <CAKwvOdnZSLP_YF3iFDLTHFE=ORxsrCR06s-B2Hk7khSxdC0+5A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wgB8nyOQufpn0o6a5BpJCJPnXvH+kRxApujhsgG+7qAwQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAKwvOdnZSLP_YF3iFDLTHFE=ORxsrCR06s-B2Hk7khSxdC0+5A@mail.gmail.com>
+X-SA-Exim-Connect-IP: 83.245.197.237
+X-SA-Exim-Mail-From: jarkko.sakkinen@iki.fi
+X-SA-Exim-Scanned: No (on mail.kapsi.fi); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 09:40:22AM -0800, Linus Torvalds wrote:
-> On Mon, Nov 2, 2020 at 10:52 PM Ahmed S. Darwish
-> <a.darwish@linutronix.de> wrote:
+On Tue, Nov 03, 2020 at 05:18:38PM -0800, Nick Desaulniers wrote:
+> On Tue, Nov 3, 2020 at 4:38 PM Jarkko Sakkinen <jarkko@kernel.org> wrote:
 > >
-> > The problem is, I've already documented seqlock.h to death.... There are
-> > more comments than code in there, and there is "seqlock.rst" under
-> > Documentation/ to further describe the big picture.
->
-> Well, honestly, I think the correct thing to do is to get rid of the
-> *_seqcount_t_*() functions entirely.
->
-> They add nothing but confusion, and they are entirely misnamed. That's
-> not the pattern we use for "internal use only" functions, and they are
-> *very* confusing.
->
+> > On Tue, Nov 03, 2020 at 10:48:27AM -0800, Nick Desaulniers wrote:
+> > > On Mon, Nov 2, 2020 at 8:55 PM Jarkko Sakkinen <jarkko@kernel.org> wrote:
+> > > >
+> > > > On Wed, Sep 02, 2020 at 03:59:05PM -0700, Nick Desaulniers wrote:
+> > > > > +#define CLANG_VERSION (__clang_major__ * 10000       \
+> > > > > +                  + __clang_minor__ * 100    \
+> > > > > +                  + __clang_patchlevel__)
+> > > > > +
+> > > > > +#if CLANG_VERSION < 100001
+> > > > > +# error Sorry, your version of Clang is too old - please use 10.0.1 or newer.
+> > > > > +#endif
+> > > >
+> > > >
+> > > > I'm trying to compile a BPF enabled test kernel for a live system and I
+> > > > get this error even though I have much newer clang:
+> > > >
+> > > > ➜  ~ (master) ✔ clang --version
+> > > > Ubuntu clang version 11.0.0-2
+> > > > Target: x86_64-pc-linux-gnu
+> > > > Thread model: posix
+> > > > InstalledDir: /usr/bin
+> > > >
+> > > > Tried to Google for troubleshooter tips but this patch is basically the
+> > > > only hit I get :-)
+> > >
+> > > To check the values of the above preprocessor defines, please run:
+> > > $ clang -dM -E - < /dev/null | grep -e __clang_m -e __clang_p
+> > >
+> > > If you have multiple versions of clang installed, you might not be
+> > > running the version you think you are.  Particularly, if you're using
+> > > bcc, idk if it includes a copy of clang?  If that's the case, we may
+> > > have to work out how we can support older versions of clang for the
+> > > express purposes of bpf.
+> >
+> > ➜  ~ (master) ✔ clang -dM -E - < /dev/null | grep -e __clang_m -e __clang_p
+> > #define __clang_major__ 11
+> > #define __clang_minor__ 0
+> > #define __clang_patchlevel__ 0
+> >
+> > I'm compiling the kernel itself with GCC.
+> >
+> > Here's an example BPF script that fails on me:
+> >
+> > struct sgx_enclave_add_pages {
+> >         unsigned long src;
+> >         unsigned long offset;
+> >         unsigned long length;
+> >         unsigned long secinfo;
+> >         unsigned long flags;
+> >         unsigned long count;
+> > };
+> >
+> > kprobe:sgx_ioctl
+> > {
+> >         if (arg1 == 0xc030a401) {
+> >                 printf("sgx_ioctl: %d, %lu\n", pid, ((struct sgx_enclave_add_pages *)(arg2))->offset);
+> >         }
+> >
+> > }
+> > Note that it relies on code not yet in the mainline.
+> >
+> > If I don't declare structs, things work just fine. E.g. the following
+> > works:
+> >
+> > kprobe:sgx_encl_get_backing
+> > {
+> >         printf("%s\n", func)
+> > }
+> >
+> > BTW, I don't really understand how scripts/clang-version.sh is even
+> > supposed to work, if you compile the kernel itself with GCC. In that
+> > case there would be no output, right? And thus version gets set to
+> > zero...
+> 
+> That script is only used by KBUILD.  include/linux/compiler-clang.h is
+> what's included into include/linux/compiler_types.h and causes the
+> error.  The eBFP tools must be including kernel headers and defining
+> `__clang__`.  Forgive my complete ignorance of eBPF, but how do you
+> build that script?  I assume the tool is using Clang, since eBPF
 
-I see. Would the enclosed patch #1 be OK? It basically uses the "__do_"
-prefix instead, with some rationale.
+Thanks a lot for helping with this :-)
 
->
-> They have other issues too: like raw_write_seqcount_end() not being
-> usable on its own when preemptibility isn't an issue like here. You
-> basically _have_ to use raw_write_seqcount_t_end(), because otherwise
-> it tries to re-enable preemption that was never there.
->
+I'm using bpftrace as the frontend.
 
-Hmmm, raw_write_seqcount_{begin,end}() *never* disable/enable preemption
-for plain seqcount_t. This is why I kept recommending those for this
-patch series instead of internal raw_write_seqcount_*t*_{begin,end}().
+> relies on the LLVM backend (not sure if the GCC eBPF backend is good
+> to go quite yet), and that version of clang is older.
+> 
+> I wonder if we should guard the version check with __BPF_TRACING__
+> similar to arch/x86/include/asm/cpufeature.h? Care to test:
 
-But..... given that multiple people made the exact same remark by now, I
-guess that's due to:
 
-#define raw_write_seqcount_begin(s)		\
-do {						\
-	if (__seqcount_lock_preemptible(s))	\
-		preempt_disable();		\
-						\
-	...					\
-} while (0);
+Before I received this response, I did git revert for this commit
+and things started working again.
 
-#define raw_write_seqcount_end(s)		\
-do {						\
-	...					\
-						\
-	if (__seqcount_lock_preemptible(s))	\
-		preempt_enable();		\
-} while (0);
+> ```
+> diff --git a/include/linux/compiler-clang.h
+> b/include/linux/compiler-clang.h
+> index dd7233c48bf3..98cff1b4b088 100644
+> --- a/include/linux/compiler-clang.h
+> +++ b/include/linux/compiler-clang.h
+> @@ -8,8 +8,10 @@
+>                      + __clang_patchlevel__)
+> 
+>  #if CLANG_VERSION < 100001
+> +#ifndef __BPF_TRACING__
+>  # error Sorry, your version of Clang is too old - please use 10.0.1 or newer.
+>  #endif
+> +#endif
+> 
+>  /* Compiler specific definitions for Clang compiler */
+> ```
+> -- 
 
-The tricky part is that __seqcount_lock_preemptible() is always false
-for plain "seqcount_t".  With that data type, the _Generic() selection
-makes it resolve to __seqprop_preemptible(), which just returns false.
+Shouldn't "#ifndef" be before the whole version check? Otherwise,
+LGTM. Please CC me once there is a properly formed patch to try out.
 
-Originally, __seqcount_lock_preemptible() was called:
+> Thanks,
+> ~Nick Desaulniers
 
-  __seqcount_associated_lock_exists_and_is_preemptible()
-
-but it got transformed to its current short form in the process of some
-pre-mainline refactorings. Looking at it now after all the dust has
-settled, maybe the verbose form was much more clear.
-
-Please see the enclosed patch #2... Would that be OK too?
-
-(I will submit these two patches in their own thread after some common
- ground is reached.)
-
-Patches
--------
-
-====>
-====> patch #1:
-====>
-
-Subject: [RFC][PATCH 1/2] seqlock: Use __do_ prefix instead of non-standed
- _seqcount_t_ marker
-
-The use of "*_seqcount_t_*" as a marker to denote internal seqlock.h
-functions taking only plain seqcount_t instead of the whole
-seqcount_LOCKNAME_t family is confusing users, as it's also not the
-standard kernel pattern for denoting header file internal functions.
-
-Use the __do_ prefix instead.
-
-Note, a plain "__" prefix is not used since seqlock.h already uses it
-for some of its exported functions; e.g. __read_seqcount_begin() and
-__read_seqcount_retry().
-
-Reported-by: Jason Gunthorpe <jgg@nvidia.com>
-Reported-by: John Hubbard <jhubbard@nvidia.com>
-Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
-Link: https://lkml.kernel.org/r/CAHk-=wgB8nyOQufpn0o6a5BpJCJPnXvH+kRxApujhsgG+7qAwQ@mail.gmail.com
-Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
----
- include/linux/seqlock.h | 62 ++++++++++++++++++++---------------------
- 1 file changed, 31 insertions(+), 31 deletions(-)
-
-diff --git a/include/linux/seqlock.h b/include/linux/seqlock.h
-index cbfc78b92b65..5de043841d33 100644
---- a/include/linux/seqlock.h
-+++ b/include/linux/seqlock.h
-@@ -425,9 +425,9 @@ SEQCOUNT_LOCKNAME(ww_mutex,     struct ww_mutex, true,     &s->lock->base, ww_mu
-  * Return: true if a read section retry is required, else false
-  */
- #define __read_seqcount_retry(s, start)					\
--	__read_seqcount_t_retry(__seqcount_ptr(s), start)
-+	__do___read_seqcount_retry(__seqcount_ptr(s), start)
-
--static inline int __read_seqcount_t_retry(const seqcount_t *s, unsigned start)
-+static inline int __do___read_seqcount_retry(const seqcount_t *s, unsigned start)
- {
- 	kcsan_atomic_next(0);
- 	return unlikely(READ_ONCE(s->sequence) != start);
-@@ -445,12 +445,12 @@ static inline int __read_seqcount_t_retry(const seqcount_t *s, unsigned start)
-  * Return: true if a read section retry is required, else false
-  */
- #define read_seqcount_retry(s, start)					\
--	read_seqcount_t_retry(__seqcount_ptr(s), start)
-+	__do_read_seqcount_retry(__seqcount_ptr(s), start)
-
--static inline int read_seqcount_t_retry(const seqcount_t *s, unsigned start)
-+static inline int __do_read_seqcount_retry(const seqcount_t *s, unsigned start)
- {
- 	smp_rmb();
--	return __read_seqcount_t_retry(s, start);
-+	return __do___read_seqcount_retry(s, start);
- }
-
- /**
-@@ -462,10 +462,10 @@ do {									\
- 	if (__seqcount_lock_preemptible(s))				\
- 		preempt_disable();					\
- 									\
--	raw_write_seqcount_t_begin(__seqcount_ptr(s));			\
-+	__do_raw_write_seqcount_begin(__seqcount_ptr(s));		\
- } while (0)
-
--static inline void raw_write_seqcount_t_begin(seqcount_t *s)
-+static inline void __do_raw_write_seqcount_begin(seqcount_t *s)
- {
- 	kcsan_nestable_atomic_begin();
- 	s->sequence++;
-@@ -478,13 +478,13 @@ static inline void raw_write_seqcount_t_begin(seqcount_t *s)
-  */
- #define raw_write_seqcount_end(s)					\
- do {									\
--	raw_write_seqcount_t_end(__seqcount_ptr(s));			\
-+	__do_raw_write_seqcount_end(__seqcount_ptr(s));			\
- 									\
- 	if (__seqcount_lock_preemptible(s))				\
- 		preempt_enable();					\
- } while (0)
-
--static inline void raw_write_seqcount_t_end(seqcount_t *s)
-+static inline void __do_raw_write_seqcount_end(seqcount_t *s)
- {
- 	smp_wmb();
- 	s->sequence++;
-@@ -506,12 +506,12 @@ do {									\
- 	if (__seqcount_lock_preemptible(s))				\
- 		preempt_disable();					\
- 									\
--	write_seqcount_t_begin_nested(__seqcount_ptr(s), subclass);	\
-+	__do_write_seqcount_begin_nested(__seqcount_ptr(s), subclass);	\
- } while (0)
-
--static inline void write_seqcount_t_begin_nested(seqcount_t *s, int subclass)
-+static inline void __do_write_seqcount_begin_nested(seqcount_t *s, int subclass)
- {
--	raw_write_seqcount_t_begin(s);
-+	__do_raw_write_seqcount_begin(s);
- 	seqcount_acquire(&s->dep_map, subclass, 0, _RET_IP_);
- }
-
-@@ -533,12 +533,12 @@ do {									\
- 	if (__seqcount_lock_preemptible(s))				\
- 		preempt_disable();					\
- 									\
--	write_seqcount_t_begin(__seqcount_ptr(s));			\
-+	__do_write_seqcount_begin(__seqcount_ptr(s));			\
- } while (0)
-
--static inline void write_seqcount_t_begin(seqcount_t *s)
-+static inline void __do_write_seqcount_begin(seqcount_t *s)
- {
--	write_seqcount_t_begin_nested(s, 0);
-+	__do_write_seqcount_begin_nested(s, 0);
- }
-
- /**
-@@ -549,16 +549,16 @@ static inline void write_seqcount_t_begin(seqcount_t *s)
-  */
- #define write_seqcount_end(s)						\
- do {									\
--	write_seqcount_t_end(__seqcount_ptr(s));			\
-+	__do_write_seqcount_end(__seqcount_ptr(s));			\
- 									\
- 	if (__seqcount_lock_preemptible(s))				\
- 		preempt_enable();					\
- } while (0)
-
--static inline void write_seqcount_t_end(seqcount_t *s)
-+static inline void __do_write_seqcount_end(seqcount_t *s)
- {
- 	seqcount_release(&s->dep_map, _RET_IP_);
--	raw_write_seqcount_t_end(s);
-+	__do_raw_write_seqcount_end(s);
- }
-
- /**
-@@ -603,9 +603,9 @@ static inline void write_seqcount_t_end(seqcount_t *s)
-  *      }
-  */
- #define raw_write_seqcount_barrier(s)					\
--	raw_write_seqcount_t_barrier(__seqcount_ptr(s))
-+	__do_raw_write_seqcount_barrier(__seqcount_ptr(s))
-
--static inline void raw_write_seqcount_t_barrier(seqcount_t *s)
-+static inline void __do_raw_write_seqcount_barrier(seqcount_t *s)
- {
- 	kcsan_nestable_atomic_begin();
- 	s->sequence++;
-@@ -623,9 +623,9 @@ static inline void raw_write_seqcount_t_barrier(seqcount_t *s)
-  * will complete successfully and see data older than this.
-  */
- #define write_seqcount_invalidate(s)					\
--	write_seqcount_t_invalidate(__seqcount_ptr(s))
-+	__do_write_seqcount_invalidate(__seqcount_ptr(s))
-
--static inline void write_seqcount_t_invalidate(seqcount_t *s)
-+static inline void __do_write_seqcount_invalidate(seqcount_t *s)
- {
- 	smp_wmb();
- 	kcsan_nestable_atomic_begin();
-@@ -865,7 +865,7 @@ static inline unsigned read_seqretry(const seqlock_t *sl, unsigned start)
- }
-
- /*
-- * For all seqlock_t write side functions, use write_seqcount_*t*_begin()
-+ * For all seqlock_t write side functions, use __do_write_seqcount_begin()
-  * instead of the generic write_seqcount_begin(). This way, no redundant
-  * lockdep_assert_held() checks are added.
-  */
-@@ -886,7 +886,7 @@ static inline unsigned read_seqretry(const seqlock_t *sl, unsigned start)
- static inline void write_seqlock(seqlock_t *sl)
- {
- 	spin_lock(&sl->lock);
--	write_seqcount_t_begin(&sl->seqcount.seqcount);
-+	__do_write_seqcount_begin(&sl->seqcount.seqcount);
- }
-
- /**
-@@ -898,7 +898,7 @@ static inline void write_seqlock(seqlock_t *sl)
-  */
- static inline void write_sequnlock(seqlock_t *sl)
- {
--	write_seqcount_t_end(&sl->seqcount.seqcount);
-+	__do_write_seqcount_end(&sl->seqcount.seqcount);
- 	spin_unlock(&sl->lock);
- }
-
-@@ -912,7 +912,7 @@ static inline void write_sequnlock(seqlock_t *sl)
- static inline void write_seqlock_bh(seqlock_t *sl)
- {
- 	spin_lock_bh(&sl->lock);
--	write_seqcount_t_begin(&sl->seqcount.seqcount);
-+	__do_write_seqcount_begin(&sl->seqcount.seqcount);
- }
-
- /**
-@@ -925,7 +925,7 @@ static inline void write_seqlock_bh(seqlock_t *sl)
-  */
- static inline void write_sequnlock_bh(seqlock_t *sl)
- {
--	write_seqcount_t_end(&sl->seqcount.seqcount);
-+	__do_write_seqcount_end(&sl->seqcount.seqcount);
- 	spin_unlock_bh(&sl->lock);
- }
-
-@@ -939,7 +939,7 @@ static inline void write_sequnlock_bh(seqlock_t *sl)
- static inline void write_seqlock_irq(seqlock_t *sl)
- {
- 	spin_lock_irq(&sl->lock);
--	write_seqcount_t_begin(&sl->seqcount.seqcount);
-+	__do_write_seqcount_begin(&sl->seqcount.seqcount);
- }
-
- /**
-@@ -951,7 +951,7 @@ static inline void write_seqlock_irq(seqlock_t *sl)
-  */
- static inline void write_sequnlock_irq(seqlock_t *sl)
- {
--	write_seqcount_t_end(&sl->seqcount.seqcount);
-+	__do_write_seqcount_end(&sl->seqcount.seqcount);
- 	spin_unlock_irq(&sl->lock);
- }
-
-@@ -960,7 +960,7 @@ static inline unsigned long __write_seqlock_irqsave(seqlock_t *sl)
- 	unsigned long flags;
-
- 	spin_lock_irqsave(&sl->lock, flags);
--	write_seqcount_t_begin(&sl->seqcount.seqcount);
-+	__do_write_seqcount_begin(&sl->seqcount.seqcount);
- 	return flags;
- }
-
-@@ -989,7 +989,7 @@ static inline unsigned long __write_seqlock_irqsave(seqlock_t *sl)
- static inline void
- write_sequnlock_irqrestore(seqlock_t *sl, unsigned long flags)
- {
--	write_seqcount_t_end(&sl->seqcount.seqcount);
-+	__do_write_seqcount_end(&sl->seqcount.seqcount);
- 	spin_unlock_irqrestore(&sl->lock, flags);
- }
-
-====>
-====> patch #2:
-====>
-
-Subject: [PATCH 2/2] seqlock: seqcount_LOCKAME_t: Use more verbose macro names
-
-As evidenced by multiple discussions over LKML so far, it's not clear
-that __seqcount_lock_preemptible() is always false for plain seqcount_t.
-For that data type, the _Generic() selection resolves to
-__seqprop_preemptible(), which just returns false.
-
-Use __seqcount_associated_lock_exists_and_is_preemptible() instead,
-which hints that "preemptibility" is for the associated write
-serialization lock (if any), not for the seqcount itself.
-
-Similarly, rename __seqcount_assert_lock_held() to
-__seqcount_assert_associated_lock_held().
-
-Link: https://lkml.kernel.org/r/CAHk-=wgB8nyOQufpn0o6a5BpJCJPnXvH+kRxApujhsgG+7qAwQ@mail.gmail.com
-Link: https://lkml.kernel.org/r/20201030235121.GQ2620339@nvidia.com
-Link: https://lkml.kernel.org/r/20201103170327.GJ20600@xz-x1
-Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
----
- include/linux/seqlock.h | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
-
-diff --git a/include/linux/seqlock.h b/include/linux/seqlock.h
-index 5de043841d33..eb1e5a822e44 100644
---- a/include/linux/seqlock.h
-+++ b/include/linux/seqlock.h
-@@ -307,10 +307,10 @@ SEQCOUNT_LOCKNAME(ww_mutex,     struct ww_mutex, true,     &s->lock->base, ww_mu
- 	__seqprop_case((s),	mutex,		prop),			\
- 	__seqprop_case((s),	ww_mutex,	prop))
-
--#define __seqcount_ptr(s)		__seqprop(s, ptr)
--#define __seqcount_sequence(s)		__seqprop(s, sequence)
--#define __seqcount_lock_preemptible(s)	__seqprop(s, preemptible)
--#define __seqcount_assert_lock_held(s)	__seqprop(s, assert)
-+#define __seqcount_ptr(s)					__seqprop(s, ptr)
-+#define __seqcount_sequence(s)					__seqprop(s, sequence)
-+#define __seqcount_associated_lock_exists_and_is_preemptible(s)	__seqprop(s, preemptible)
-+#define __seqcount_assert_associated_lock_held(s)		__seqprop(s, assert)
-
- /**
-  * __read_seqcount_begin() - begin a seqcount_t read section w/o barrier
-@@ -459,7 +459,7 @@ static inline int __do_read_seqcount_retry(const seqcount_t *s, unsigned start)
-  */
- #define raw_write_seqcount_begin(s)					\
- do {									\
--	if (__seqcount_lock_preemptible(s))				\
-+	if (__seqcount_associated_lock_exists_and_is_preemptible(s))	\
- 		preempt_disable();					\
- 									\
- 	__do_raw_write_seqcount_begin(__seqcount_ptr(s));		\
-@@ -480,7 +480,7 @@ static inline void __do_raw_write_seqcount_begin(seqcount_t *s)
- do {									\
- 	__do_raw_write_seqcount_end(__seqcount_ptr(s));			\
- 									\
--	if (__seqcount_lock_preemptible(s))				\
-+	if (__seqcount_associated_lock_exists_and_is_preemptible(s))	\
- 		preempt_enable();					\
- } while (0)
-
-@@ -501,9 +501,9 @@ static inline void __do_raw_write_seqcount_end(seqcount_t *s)
-  */
- #define write_seqcount_begin_nested(s, subclass)			\
- do {									\
--	__seqcount_assert_lock_held(s);					\
-+	__seqcount_assert_associated_lock_held(s);			\
- 									\
--	if (__seqcount_lock_preemptible(s))				\
-+	if (__seqcount_associated_lock_exists_and_is_preemptible(s))	\
- 		preempt_disable();					\
- 									\
- 	__do_write_seqcount_begin_nested(__seqcount_ptr(s), subclass);	\
-@@ -528,9 +528,9 @@ static inline void __do_write_seqcount_begin_nested(seqcount_t *s, int subclass)
-  */
- #define write_seqcount_begin(s)						\
- do {									\
--	__seqcount_assert_lock_held(s);					\
-+	__seqcount_assert_associated_lock_held(s);			\
- 									\
--	if (__seqcount_lock_preemptible(s))				\
-+	if (__seqcount_associated_lock_exists_and_is_preemptible(s))	\
- 		preempt_disable();					\
- 									\
- 	__do_write_seqcount_begin(__seqcount_ptr(s));			\
-@@ -551,7 +551,7 @@ static inline void __do_write_seqcount_begin(seqcount_t *s)
- do {									\
- 	__do_write_seqcount_end(__seqcount_ptr(s));			\
- 									\
--	if (__seqcount_lock_preemptible(s))				\
-+	if (__seqcount_associated_lock_exists_and_is_preemptible(s))	\
- 		preempt_enable();					\
- } while (0)
-
->                    Linus
-
-Thanks,
-
---
-Ahmed S. Darwish
-Linutronix GmbH
+/Jarkko
