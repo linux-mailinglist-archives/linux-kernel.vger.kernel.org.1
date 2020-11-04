@@ -2,82 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 728912A6983
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 17:26:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17EAB2A69AA
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 17:27:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731091AbgKDQZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 11:25:35 -0500
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:42382 "EHLO
-        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731071AbgKDQZe (ORCPT
+        id S1731223AbgKDQ1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 11:27:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36132 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728999AbgKDQ1M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 11:25:34 -0500
-Received: by mail-lj1-f195.google.com with SMTP id k25so23620545lji.9;
-        Wed, 04 Nov 2020 08:25:32 -0800 (PST)
+        Wed, 4 Nov 2020 11:27:12 -0500
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2825C061A4C
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 08:27:11 -0800 (PST)
+Received: by mail-ot1-x341.google.com with SMTP id h62so19803547oth.9
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 08:27:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+jKBsc1XM8CUKlg3VqmwM4QNdUSjpFH4yWF5dp0NTz8=;
+        b=i+/uTvjsk976DicxcEHtNNkKd5tdb/MRp5JTe2+pAxIGQwwKIuIcHCZ9gIfNuEktop
+         Ir1VcTIHdqTsD4wZdHCdfVujbxPqzBZ00Mm5Mu7qHa2cbwKkBevm00cgHWq320ih38Ge
+         yItaK3iWE/DQC0jvHc3VxVW7uMRTu+v2PtiCM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=b+EfB2mazLpddNSx/VccGpBQ8330DnzhkPloukMDftA=;
-        b=EnfM0I7l1tam6OZZBVPC4yPt4xzDACrAb+6CaN/hHMW02Y1kOoGZafJlF8nuZH1Svs
-         +h+Vpit8CUBnROfsjQaJxbVfUgY5scx527dqP4FTu7s6BACd1gynjLpMeG9uHGBkpoAE
-         7NslVAIGwT90XrsIOJnhLsdF95TtXYAo/X5BeScnrWxPd46Pvdcbh2DNbn02FkcF0s6w
-         WV4D7eAVzse9jsa8EGRBdjjuLh+B6105yuCRKpeQWuDLrYkxKMMoY3Bhhw1w1v1pSqrb
-         /l8I5oVGM2E27mLV88xCpsSG1PRmHvJApD9phBfJYCLYPdUrKbiAgOsgyxY/28ceUvSP
-         b2lA==
-X-Gm-Message-State: AOAM532we39Msk2ZzEQjwq7nUgPU6u2EViY7rcNzW60Ar3uqSoKAj2R+
-        VMh/4nxXaDPQ0PfEY2tYgzQ=
-X-Google-Smtp-Source: ABdhPJyHgvazJ1QqFkibNTyi+hqHRVORG+WigB/uulHqAw36xP07c3dRyY64Mpv/gesAp7PIoqhNjA==
-X-Received: by 2002:a2e:9c84:: with SMTP id x4mr10551517lji.326.1604507131728;
-        Wed, 04 Nov 2020 08:25:31 -0800 (PST)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id u1sm18084lfk.130.2020.11.04.08.25.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 08:25:30 -0800 (PST)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1kaLbK-00050y-Vo; Wed, 04 Nov 2020 17:25:35 +0100
-Date:   Wed, 4 Nov 2020 17:25:34 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Davidlohr Bueso <dave@stgolabs.net>
-Cc:     johan@kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Davidlohr Bueso <dbueso@suse.de>
-Subject: Re: [PATCH] usb/mos7720: process deferred urbs in a workqueue
-Message-ID: <20201104162534.GY4085@localhost>
-References: <20201102211450.5722-1-dave@stgolabs.net>
- <20201103204014.3ue37owcras6cx7p@linux-p48b.lan>
- <20201104110657.GW4085@localhost>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+jKBsc1XM8CUKlg3VqmwM4QNdUSjpFH4yWF5dp0NTz8=;
+        b=tShlFERuxMRdGGFgSgI7oRqiIW/55PK+LXWCf2Jtl+v3i9TJ1xyHrBasMhI4S0JSq3
+         1sT9zrwRNV2gzG9B59IAF7I6Mr4R5e9Ift+gzR/syC89Uz+JQQCpwYfRb11lSD9tLYvO
+         cJPKCYdNjzaHtOnLUZJ4aAkcoGvKAcbj9Cituy64c7V8u3MY3tyU6d3mLKnbPyRKkdv/
+         +2GlvlmQm7KyDUXMCEWVwjTs2arBYwV/R0BK8Hh6XyEh2kZiAWCnqHyAh/oacatTEGWh
+         XqqolnLxGns151jF42sHdSnZVVAlfpvmq8HsnAiD0pmgBFO19pQbO+S/QRArsCX16COZ
+         1xig==
+X-Gm-Message-State: AOAM530G6vx8/GCd/Y6s4GLGxTLtStulaV8XJLaZF2E3IUImLrp+iryv
+        Us95pOcYlIGarsNDht+qTXxE5/hKwtYeZMqSucVfIw==
+X-Google-Smtp-Source: ABdhPJwUkm33VhszJycM92X0W59/Lqj2SzkWRtSj8SP7VfVhLWlLHPhV+pa9uC6mpn9OH9RSQm2eEqL7TT7PFN/zowU=
+X-Received: by 2002:a9d:3b4:: with SMTP id f49mr18948455otf.188.1604507229909;
+ Wed, 04 Nov 2020 08:27:09 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201104110657.GW4085@localhost>
+References: <20201030100815.2269-1-daniel.vetter@ffwll.ch> <20201030100815.2269-6-daniel.vetter@ffwll.ch>
+ <446b2d5b-a1a1-a408-f884-f17a04b72c18@nvidia.com> <CAKMK7uGDW2f0oOvwgryCHxQFHyh3Tsk6ENsMGmtZ-EnH57tMSA@mail.gmail.com>
+ <1f7cf690-35e2-c56f-6d3f-94400633edd2@nvidia.com> <CAKMK7uFYDSqnNp_xpohzCEidw_iLufNSoX4v55sNZj-nwTckSg@mail.gmail.com>
+ <7f29a42a-c408-525d-90b7-ef3c12b5826c@nvidia.com> <CAKMK7uEw701AWXNJbRNM8Z+FkyUB5FbWegmSzyWPy9cG4W7OLA@mail.gmail.com>
+ <20201104140023.GQ36674@ziepe.ca> <CAKMK7uH69hsFjYUkjg1aTh5f=q_3eswMSS5feFs6+ovz586+0A@mail.gmail.com>
+ <20201104162125.GA13007@infradead.org>
+In-Reply-To: <20201104162125.GA13007@infradead.org>
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Wed, 4 Nov 2020 17:26:58 +0100
+Message-ID: <CAKMK7uH=0+3FSR4LxP7bJUB4BsCcnCzfK2=D+2Am9QNmfZEmfw@mail.gmail.com>
+Subject: Re: [PATCH v5 05/15] mm/frame-vector: Use FOLL_LONGTERM
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        "J??r??me Glisse" <jglisse@redhat.com>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        Jan Kara <jack@suse.cz>, Pawel Osciak <pawel@osciak.com>,
+        KVM list <kvm@vger.kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 12:06:57PM +0100, Johan Hovold wrote:
-> On Tue, Nov 03, 2020 at 12:40:14PM -0800, Davidlohr Bueso wrote:
-> > On Mon, 02 Nov 2020, Bueso wrote:
-> > 
-> > >There is
-> > >also no need anymore for atomic allocations.
-> > 
-> > Bleh this is a brain fart - obviously not true as usb_submit_urb() is
-> > called under mos_parport->listlock. I'll send a v2 unless you have
-> > any objections.
-> 
-> The conversion looks good to me otherwise; it's not making this parport
-> mess any worse than it already is...
+On Wed, Nov 4, 2020 at 5:21 PM Christoph Hellwig <hch@infradead.org> wrote:
+>
+> On Wed, Nov 04, 2020 at 04:54:19PM +0100, Daniel Vetter wrote:
+> > I don't really have a box here, but dma_mmap_attrs() and friends to
+> > mmap dma_alloc_coherent memory is set up as VM_IO | VM_PFNMAP (it's
+> > actually enforced since underneath it uses remap_pfn_range), and
+> > usually (except if it's pre-cma carveout) that's just normal struct
+> > page backed memory. Sometimes from a cma region (so will be caught by
+> > the cma page check), but if you have an iommu to make it
+> > device-contiguous, that's not needed.
+>
+> dma_mmap_* memory may or may not be page backed, but it absolutely
+> must not be resolved by get_user_pages and friends as it is special.
+> So yes, not being able to get a struct page back from such an mmap is
+> a feature.
 
-Hmm. I took at closer look at the parport code and it seems the current
-implementation is already racy but that removing the tasklet is going to
-widen that that window.
+Yes, that's clear.
 
-Those register writes in restore() should be submitted before any
-later requests. Perhaps setting a flag and flushing the work in
-parport_prologue() could work?
-
-On the other hand, the restore() implementation looks broken in that it
-doesn't actually restore the provided state. I'll go fix that up.
-
-Johan
+What we're discussing is whether gup_fast and pup_fast also obey this,
+or fall over and can give you the struct page that's backing the
+dma_mmap_* memory. Since the _fast variant doesn't check for
+vma->vm_flags, and afaict that's the only thing which closes this gap.
+And like you restate, that would be a bit a problem. So where's that
+check which Jason&me aren't spotting?
+-Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
