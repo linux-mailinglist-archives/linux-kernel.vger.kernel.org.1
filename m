@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81C222A7157
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 00:20:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D5142A715D
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 00:21:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732926AbgKDXUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 18:20:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44272 "EHLO
+        id S1732964AbgKDXVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 18:21:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732495AbgKDXUk (ORCPT
+        with ESMTP id S1732910AbgKDXUl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 18:20:40 -0500
-Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7E05C0613D2
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 15:20:39 -0800 (PST)
-Received: by mail-wr1-x449.google.com with SMTP id v5so53024wrr.0
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 15:20:39 -0800 (PST)
+        Wed, 4 Nov 2020 18:20:41 -0500
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52AACC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 15:20:41 -0800 (PST)
+Received: by mail-qt1-x84a.google.com with SMTP id h16so67017qtr.8
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 15:20:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=lPY7PJCK16UmR8RN2RBmgmWrbvOdJWJ4hhQCD1C5stE=;
-        b=rqy67E2U7XSTSSdA1kmXbyQ8gR/96UQJz4Ipzhw4VJeEPoL8MhlZ3WdHEncHovCxVK
-         cL0LZHIi5Ze9d17xTlILNXBu2uM+GrLEtOlI1S7RE+fHAmHXq6w6nlzh0yNKD9uAvPcG
-         feIf9k+lwObU99C3fF3ti6N+cyqGZu5OKRStSSg3vZALvVYRDKw+wduIPOVMKyAPmjyo
-         7ELeY8+A1bi0rwDsZvJBlwAs359hqw2QFTBY/TMfHmWkCaloGi7HyLMHG8wVjgel/RYW
-         TVL22sDh94nGz4u0/+tJkQa6N9vsiObv6SHr07L6jsJdoJE0N37Hg931JBovUU94W8Fa
-         m7WQ==
+        bh=35WbJzPGlJ32SG4OmkQQICRjm1+Un7MaGRWzBQ2gFy8=;
+        b=c0vkrlRIsEA2zaSNjedAHzaANOS3KnMfQBq5IN41oqi4DjS7urZr6IPPvJz9UxlmEd
+         lW6pqmtub3Nyd6OWE074wEOgDmu0UT4Wg9dLQq1YfyblzwoMhnpPcJPwhNwUztvQe/+s
+         0qkSYVBHDeocB/8qWuxyOvRYz4+sCZPsYugh312jIOu5bHNCzzWJke/Mc6ofThSTxC0F
+         kHC1EPLi214qaGu9G+uHo4OXCWktBoIvmhhT7MoMSxNbqcFf+PP/FfggLNy6XC2iN0a2
+         zLYJ1VgM1TTpUY5pGPAdOJ8/uoocPxBXoBWvqK0k0KAfoNZvU2Yl3nomO/+QsmiXyG1b
+         sIIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=lPY7PJCK16UmR8RN2RBmgmWrbvOdJWJ4hhQCD1C5stE=;
-        b=Rhvl2IVQP0i0rN1B245R68YPY7OkbGHdl6XB753G94JF9a9CDHuQ1gCd2n6qi6bdeG
-         OqLesDEVeBH+Z2yfSakMg7UrqVU0i2OzWo8JkvGqjyJO1TaNbH7rroVbJk8Yz1L4Pagh
-         Y7Rdyl5qy9AnQYkOkP/V+5A6bOxW4yDrzG+02dMVfy6Pi1f64BpWLSvtkySj2NtMzURk
-         +QCpOLNlWc5JpwmHkV/1JLRj+rvIhaILIS2KVIPlsZ7V8iwVytfRcFt3zm5Nwso3vwmu
-         xsY1v5EbiPSaPSSVPUZHOfAcHLviiG89sf1Ltr4KLFejHFPd9lTdE47/a/Qz3V3jyviH
-         8hMQ==
-X-Gm-Message-State: AOAM531dFXfecYZnLbDtJi0+cWZ+3T9JVz2fBnw+qynGjb1ITW+4RKET
-        UvCdfdHrWEJAenSs7E57ucEiIh+lh//hohNE
-X-Google-Smtp-Source: ABdhPJzISmW6zwqqi0yIwBtgyOjdm/4FOIR5X1xkLi8+ImsaS70EF3os3K+FCCd7Nb2pLrKQtrF0Jv8f9TWu2Dzx
+        bh=35WbJzPGlJ32SG4OmkQQICRjm1+Un7MaGRWzBQ2gFy8=;
+        b=Pfilegdfk9IdKnI9beSv6VzRU/vQVV/cY5+eDIxXTG+CJaO6AkxL+wAJpzghHeZDAO
+         P71aSprzKhPGeHpdXzDCxY9RIW0/matVFaxosGoLy7ahUDU3Pzybn3fyspsQQ/o8bSPU
+         gbSjHryQQJCewYowp8/P6S55uAWm1fcFc2zk6pE/WVyu6G6+Z1iY+IHQRik/fsSvCVDd
+         3XVMH8pqLhQQmeyR7QXhueD0kmPUWindliskFkz7IXf+qRhViB/HQasyhLRhwku+dvSH
+         x9fikX1COK7Abj83j5nLmHp8uJxhehFDgtBxp87FLPdNhxB9gt90Us4Gg5xq4fKzYZku
+         nFcA==
+X-Gm-Message-State: AOAM531FyeeZ70mgzrTq53ydTTvkBRi/r3hpE4jEttQV4g0qtXOi/UTy
+        aE/eirDTU8j9jO/I7NKPrYYcaqfcC6fnXGRc
+X-Google-Smtp-Source: ABdhPJyQywfWKbdX68bSu2ZPlot1uOmCpCTLZwOGAs9Gz57V7Cqqkk2XTA2l7zW1C/0FANx/P7/BsExHxmasuAN6
 Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
 X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
- (user=andreyknvl job=sendgmr) by 2002:a7b:c3d5:: with SMTP id
- t21mr63924wmj.37.1604532038336; Wed, 04 Nov 2020 15:20:38 -0800 (PST)
-Date:   Thu,  5 Nov 2020 00:18:53 +0100
+ (user=andreyknvl job=sendgmr) by 2002:ad4:55ea:: with SMTP id
+ bu10mr283554qvb.28.1604532040493; Wed, 04 Nov 2020 15:20:40 -0800 (PST)
+Date:   Thu,  5 Nov 2020 00:18:54 +0100
 In-Reply-To: <cover.1604531793.git.andreyknvl@google.com>
-Message-Id: <9b0c00ddb76e15cdcd86e12f85ce4f8a5e946299.1604531793.git.andreyknvl@google.com>
+Message-Id: <4bde28cafd5ef30f4caf2bbeca90a9d7ccb73793.1604531793.git.andreyknvl@google.com>
 Mime-Version: 1.0
 References: <cover.1604531793.git.andreyknvl@google.com>
 X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
-Subject: [PATCH v8 38/43] kasan, arm64: implement HW_TAGS runtime
+Subject: [PATCH v8 39/43] kasan, arm64: print report from tag fault handler
 From:   Andrey Konovalov <andreyknvl@google.com>
 To:     Catalin Marinas <catalin.marinas@arm.com>
 Cc:     Will Deacon <will.deacon@arm.com>,
@@ -73,448 +73,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Provide implementation of KASAN functions required for the hardware
-tag-based mode. Those include core functions for memory and pointer
-tagging (tags_hw.c) and bug reporting (report_tags_hw.c). Also adapt
-common KASAN code to support the new mode.
+Add error reporting for hardware tag-based KASAN. When CONFIG_KASAN_HW_TAGS
+is enabled, print KASAN report from the arm64 tag fault handler.
+
+SAS bits aren't set in ESR for all faults reported in EL1, so it's
+impossible to find out the size of the access the caused the fault.
+Adapt KASAN reporting code to handle this case.
 
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Co-developed-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
 ---
-Change-Id: I8a8689ba098174a4d0ef3f1d008178387c80ee1c
+Change-Id: I3780fe7db6e075dff2937d3d8508f55c9322b095
 ---
- arch/arm64/include/asm/memory.h   |  4 +-
- arch/arm64/kernel/cpufeature.c    |  3 ++
- include/linux/kasan.h             | 22 ++++++---
- include/linux/mm.h                |  2 +-
- include/linux/page-flags-layout.h |  2 +-
- mm/kasan/Makefile                 |  5 ++
- mm/kasan/common.c                 | 15 +++---
- mm/kasan/hw_tags.c                | 76 +++++++++++++++++++++++++++++++
- mm/kasan/kasan.h                  | 17 +++++--
- mm/kasan/report_hw_tags.c         | 42 +++++++++++++++++
- mm/kasan/report_sw_tags.c         |  2 +-
- mm/kasan/shadow.c                 |  2 +-
- mm/kasan/sw_tags.c                |  2 +-
- 13 files changed, 169 insertions(+), 25 deletions(-)
- create mode 100644 mm/kasan/hw_tags.c
- create mode 100644 mm/kasan/report_hw_tags.c
+ arch/arm64/mm/fault.c | 14 ++++++++++++++
+ mm/kasan/report.c     | 11 ++++++++---
+ 2 files changed, 22 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
-index 507012ed24f4..b245554984a2 100644
---- a/arch/arm64/include/asm/memory.h
-+++ b/arch/arm64/include/asm/memory.h
-@@ -214,7 +214,7 @@ static inline unsigned long kaslr_offset(void)
- 	(__force __typeof__(addr))__addr;				\
- })
- 
--#ifdef CONFIG_KASAN_SW_TAGS
-+#if defined(CONFIG_KASAN_SW_TAGS) || defined(CONFIG_KASAN_HW_TAGS)
- #define __tag_shifted(tag)	((u64)(tag) << 56)
- #define __tag_reset(addr)	__untagged_addr(addr)
- #define __tag_get(addr)		(__u8)((u64)(addr) >> 56)
-@@ -222,7 +222,7 @@ static inline unsigned long kaslr_offset(void)
- #define __tag_shifted(tag)	0UL
- #define __tag_reset(addr)	(addr)
- #define __tag_get(addr)		0
--#endif /* CONFIG_KASAN_SW_TAGS */
-+#endif /* CONFIG_KASAN_SW_TAGS || CONFIG_KASAN_HW_TAGS */
- 
- static inline const void *__tag_set(const void *addr, u8 tag)
- {
-diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-index dcc165b3fc04..b66a96525a3e 100644
---- a/arch/arm64/kernel/cpufeature.c
-+++ b/arch/arm64/kernel/cpufeature.c
-@@ -70,6 +70,7 @@
- #include <linux/types.h>
+diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
+index fbceb14d93b1..7370e822e588 100644
+--- a/arch/arm64/mm/fault.c
++++ b/arch/arm64/mm/fault.c
+@@ -14,6 +14,7 @@
  #include <linux/mm.h>
- #include <linux/cpu.h>
+ #include <linux/hardirq.h>
+ #include <linux/init.h>
 +#include <linux/kasan.h>
- #include <asm/cpu.h>
- #include <asm/cpufeature.h>
- #include <asm/cpu_ops.h>
-@@ -1704,6 +1705,8 @@ static void cpu_enable_mte(struct arm64_cpu_capabilities const *cap)
- 		cleared_zero_page = true;
- 		mte_clear_page_tags(lm_alias(empty_zero_page));
- 	}
-+
-+	kasan_init_hw_tags();
- }
- #endif /* CONFIG_ARM64_MTE */
- 
-diff --git a/include/linux/kasan.h b/include/linux/kasan.h
-index beb699e90e55..c6bf762eb88c 100644
---- a/include/linux/kasan.h
-+++ b/include/linux/kasan.h
-@@ -187,25 +187,33 @@ static inline void kasan_record_aux_stack(void *ptr) {}
- 
- #endif /* CONFIG_KASAN_GENERIC */
- 
--#ifdef CONFIG_KASAN_SW_TAGS
--
--void __init kasan_init_sw_tags(void);
-+#if defined(CONFIG_KASAN_SW_TAGS) || defined(CONFIG_KASAN_HW_TAGS)
- 
- void *kasan_reset_tag(const void *addr);
- 
- bool kasan_report(unsigned long addr, size_t size,
- 		bool is_write, unsigned long ip);
- 
--#else /* CONFIG_KASAN_SW_TAGS */
--
--static inline void kasan_init_sw_tags(void) { }
-+#else /* CONFIG_KASAN_SW_TAGS || CONFIG_KASAN_HW_TAGS */
- 
- static inline void *kasan_reset_tag(const void *addr)
- {
- 	return (void *)addr;
+ #include <linux/kprobes.h>
+ #include <linux/uaccess.h>
+ #include <linux/page-flags.h>
+@@ -297,10 +298,23 @@ static void die_kernel_fault(const char *msg, unsigned long addr,
+ 	do_exit(SIGKILL);
  }
  
--#endif /* CONFIG_KASAN_SW_TAGS */
-+#endif /* CONFIG_KASAN_SW_TAGS || CONFIG_KASAN_HW_TAGS*/
-+
-+#ifdef CONFIG_KASAN_SW_TAGS
-+void __init kasan_init_sw_tags(void);
-+#else
-+static inline void kasan_init_sw_tags(void) { }
-+#endif
-+
 +#ifdef CONFIG_KASAN_HW_TAGS
-+void __init kasan_init_hw_tags(void);
+ static void report_tag_fault(unsigned long addr, unsigned int esr,
+ 			     struct pt_regs *regs)
+ {
++	bool is_write  = ((esr & ESR_ELx_WNR) >> ESR_ELx_WNR_SHIFT) != 0;
++
++	/*
++	 * SAS bits aren't set for all faults reported in EL1, so we can't
++	 * find out access size.
++	 */
++	kasan_report(addr, 0, is_write, regs->pc);
+ }
 +#else
-+static inline void kasan_init_hw_tags(void) { }
++/* Tag faults aren't enabled without CONFIG_KASAN_HW_TAGS. */
++static inline void report_tag_fault(unsigned long addr, unsigned int esr,
++				    struct pt_regs *regs) { }
 +#endif
  
- #ifdef CONFIG_KASAN_VMALLOC
- 
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index db6ae4d3fb4e..0793d03a4183 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -1413,7 +1413,7 @@ static inline bool cpupid_match_pid(struct task_struct *task, int cpupid)
- }
- #endif /* CONFIG_NUMA_BALANCING */
- 
--#ifdef CONFIG_KASAN_SW_TAGS
-+#if defined(CONFIG_KASAN_SW_TAGS) || defined(CONFIG_KASAN_HW_TAGS)
- static inline u8 page_kasan_tag(const struct page *page)
+ static void do_tag_recovery(unsigned long addr, unsigned int esr,
+ 			   struct pt_regs *regs)
+diff --git a/mm/kasan/report.c b/mm/kasan/report.c
+index 8afc1a6ab202..ce06005d4052 100644
+--- a/mm/kasan/report.c
++++ b/mm/kasan/report.c
+@@ -62,9 +62,14 @@ static void print_error_description(struct kasan_access_info *info)
  {
- 	return (page->flags >> KASAN_TAG_PGSHIFT) & KASAN_TAG_MASK;
-diff --git a/include/linux/page-flags-layout.h b/include/linux/page-flags-layout.h
-index e200eef6a7fd..7d4ec26d8a3e 100644
---- a/include/linux/page-flags-layout.h
-+++ b/include/linux/page-flags-layout.h
-@@ -77,7 +77,7 @@
- #define LAST_CPUPID_SHIFT 0
- #endif
- 
--#ifdef CONFIG_KASAN_SW_TAGS
-+#if defined(CONFIG_KASAN_SW_TAGS) || defined(CONFIG_KASAN_HW_TAGS)
- #define KASAN_TAG_WIDTH 8
- #else
- #define KASAN_TAG_WIDTH 0
-diff --git a/mm/kasan/Makefile b/mm/kasan/Makefile
-index f1d68a34f3c9..9fe39a66388a 100644
---- a/mm/kasan/Makefile
-+++ b/mm/kasan/Makefile
-@@ -10,8 +10,10 @@ CFLAGS_REMOVE_init.o = $(CC_FLAGS_FTRACE)
- CFLAGS_REMOVE_quarantine.o = $(CC_FLAGS_FTRACE)
- CFLAGS_REMOVE_report.o = $(CC_FLAGS_FTRACE)
- CFLAGS_REMOVE_report_generic.o = $(CC_FLAGS_FTRACE)
-+CFLAGS_REMOVE_report_hw_tags.o = $(CC_FLAGS_FTRACE)
- CFLAGS_REMOVE_report_sw_tags.o = $(CC_FLAGS_FTRACE)
- CFLAGS_REMOVE_shadow.o = $(CC_FLAGS_FTRACE)
-+CFLAGS_REMOVE_hw_tags.o = $(CC_FLAGS_FTRACE)
- CFLAGS_REMOVE_sw_tags.o = $(CC_FLAGS_FTRACE)
- 
- # Function splitter causes unnecessary splits in __asan_load1/__asan_store1
-@@ -27,10 +29,13 @@ CFLAGS_init.o := $(CC_FLAGS_KASAN_RUNTIME)
- CFLAGS_quarantine.o := $(CC_FLAGS_KASAN_RUNTIME)
- CFLAGS_report.o := $(CC_FLAGS_KASAN_RUNTIME)
- CFLAGS_report_generic.o := $(CC_FLAGS_KASAN_RUNTIME)
-+CFLAGS_report_hw_tags.o := $(CC_FLAGS_KASAN_RUNTIME)
- CFLAGS_report_sw_tags.o := $(CC_FLAGS_KASAN_RUNTIME)
- CFLAGS_shadow.o := $(CC_FLAGS_KASAN_RUNTIME)
-+CFLAGS_hw_tags.o := $(CC_FLAGS_KASAN_RUNTIME)
- CFLAGS_sw_tags.o := $(CC_FLAGS_KASAN_RUNTIME)
- 
- obj-$(CONFIG_KASAN) := common.o report.o
- obj-$(CONFIG_KASAN_GENERIC) += init.o generic.o report_generic.o shadow.o quarantine.o
-+obj-$(CONFIG_KASAN_HW_TAGS) += hw_tags.o report_hw_tags.o
- obj-$(CONFIG_KASAN_SW_TAGS) += init.o report_sw_tags.o shadow.o sw_tags.o
-diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-index d0b3ff410b0c..2bb0ef6da6bd 100644
---- a/mm/kasan/common.c
-+++ b/mm/kasan/common.c
-@@ -113,7 +113,7 @@ void kasan_free_pages(struct page *page, unsigned int order)
-  */
- static inline unsigned int optimal_redzone(unsigned int object_size)
- {
--	if (IS_ENABLED(CONFIG_KASAN_SW_TAGS))
-+	if (!IS_ENABLED(CONFIG_KASAN_GENERIC))
- 		return 0;
- 
- 	return
-@@ -178,14 +178,14 @@ size_t kasan_metadata_size(struct kmem_cache *cache)
- struct kasan_alloc_meta *get_alloc_info(struct kmem_cache *cache,
- 					const void *object)
- {
--	return (void *)object + cache->kasan_info.alloc_meta_offset;
-+	return (void *)reset_tag(object) + cache->kasan_info.alloc_meta_offset;
+ 	pr_err("BUG: KASAN: %s in %pS\n",
+ 		get_bug_type(info), (void *)info->ip);
+-	pr_err("%s of size %zu at addr %px by task %s/%d\n",
+-		info->is_write ? "Write" : "Read", info->access_size,
+-		info->access_addr, current->comm, task_pid_nr(current));
++	if (info->access_size)
++		pr_err("%s of size %zu at addr %px by task %s/%d\n",
++			info->is_write ? "Write" : "Read", info->access_size,
++			info->access_addr, current->comm, task_pid_nr(current));
++	else
++		pr_err("%s at addr %px by task %s/%d\n",
++			info->is_write ? "Write" : "Read",
++			info->access_addr, current->comm, task_pid_nr(current));
  }
  
- struct kasan_free_meta *get_free_info(struct kmem_cache *cache,
- 				      const void *object)
- {
- 	BUILD_BUG_ON(sizeof(struct kasan_free_meta) > 32);
--	return (void *)object + cache->kasan_info.free_meta_offset;
-+	return (void *)reset_tag(object) + cache->kasan_info.free_meta_offset;
- }
- 
- void kasan_poison_slab(struct page *page)
-@@ -267,9 +267,8 @@ void * __must_check kasan_init_slab_obj(struct kmem_cache *cache,
- 	alloc_info = get_alloc_info(cache, object);
- 	__memset(alloc_info, 0, sizeof(*alloc_info));
- 
--	if (IS_ENABLED(CONFIG_KASAN_SW_TAGS))
--		object = set_tag(object,
--				assign_tag(cache, object, true, false));
-+	if (IS_ENABLED(CONFIG_KASAN_SW_TAGS) || IS_ENABLED(CONFIG_KASAN_HW_TAGS))
-+		object = set_tag(object, assign_tag(cache, object, true, false));
- 
- 	return (void *)object;
- }
-@@ -337,10 +336,10 @@ static void *__kasan_kmalloc(struct kmem_cache *cache, const void *object,
- 	redzone_end = round_up((unsigned long)object + cache->object_size,
- 				KASAN_GRANULE_SIZE);
- 
--	if (IS_ENABLED(CONFIG_KASAN_SW_TAGS))
-+	if (IS_ENABLED(CONFIG_KASAN_SW_TAGS) || IS_ENABLED(CONFIG_KASAN_HW_TAGS))
- 		tag = assign_tag(cache, object, false, keep_tag);
- 
--	/* Tag is ignored in set_tag without CONFIG_KASAN_SW_TAGS */
-+	/* Tag is ignored in set_tag without CONFIG_KASAN_SW/HW_TAGS */
- 	kasan_unpoison_memory(set_tag(object, tag), size);
- 	kasan_poison_memory((void *)redzone_start, redzone_end - redzone_start,
- 		KASAN_KMALLOC_REDZONE);
-diff --git a/mm/kasan/hw_tags.c b/mm/kasan/hw_tags.c
-new file mode 100644
-index 000000000000..bdb684c65561
---- /dev/null
-+++ b/mm/kasan/hw_tags.c
-@@ -0,0 +1,76 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * This file contains core hardware tag-based KASAN code.
-+ *
-+ * Copyright (c) 2020 Google, Inc.
-+ * Author: Andrey Konovalov <andreyknvl@google.com>
-+ */
-+
-+#define pr_fmt(fmt) "kasan: " fmt
-+
-+#include <linux/kasan.h>
-+#include <linux/kernel.h>
-+#include <linux/memory.h>
-+#include <linux/mm.h>
-+#include <linux/string.h>
-+#include <linux/types.h>
-+
-+#include "kasan.h"
-+
-+/* kasan_init_hw_tags() is called for each CPU. */
-+void __init kasan_init_hw_tags(void)
-+{
-+	hw_init_tags(KASAN_TAG_MAX);
-+
-+	if (smp_processor_id() == 0)
-+		pr_info("KernelAddressSanitizer initialized\n");
-+}
-+
-+void *kasan_reset_tag(const void *addr)
-+{
-+	return reset_tag(addr);
-+}
-+
-+void kasan_poison_memory(const void *address, size_t size, u8 value)
-+{
-+	hw_set_mem_tag_range(reset_tag(address),
-+			round_up(size, KASAN_GRANULE_SIZE), value);
-+}
-+
-+void kasan_unpoison_memory(const void *address, size_t size)
-+{
-+	hw_set_mem_tag_range(reset_tag(address),
-+			round_up(size, KASAN_GRANULE_SIZE), get_tag(address));
-+}
-+
-+u8 random_tag(void)
-+{
-+	return hw_get_random_tag();
-+}
-+
-+bool check_invalid_free(void *addr)
-+{
-+	u8 ptr_tag = get_tag(addr);
-+	u8 mem_tag = hw_get_mem_tag(addr);
-+
-+	return (mem_tag == KASAN_TAG_INVALID) ||
-+		(ptr_tag != KASAN_TAG_KERNEL && ptr_tag != mem_tag);
-+}
-+
-+void kasan_set_free_info(struct kmem_cache *cache,
-+				void *object, u8 tag)
-+{
-+	struct kasan_alloc_meta *alloc_meta;
-+
-+	alloc_meta = get_alloc_info(cache, object);
-+	kasan_set_track(&alloc_meta->free_track[0], GFP_NOWAIT);
-+}
-+
-+struct kasan_track *kasan_get_free_track(struct kmem_cache *cache,
-+				void *object, u8 tag)
-+{
-+	struct kasan_alloc_meta *alloc_meta;
-+
-+	alloc_meta = get_alloc_info(cache, object);
-+	return &alloc_meta->free_track[0];
-+}
-diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
-index 618e69d12f61..b0a57d8f9803 100644
---- a/mm/kasan/kasan.h
-+++ b/mm/kasan/kasan.h
-@@ -153,6 +153,10 @@ struct kasan_alloc_meta *get_alloc_info(struct kmem_cache *cache,
- struct kasan_free_meta *get_free_info(struct kmem_cache *cache,
- 					const void *object);
- 
-+void kasan_poison_memory(const void *address, size_t size, u8 value);
-+
-+#if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
-+
- static inline const void *kasan_shadow_to_mem(const void *shadow_addr)
- {
- 	return (void *)(((unsigned long)shadow_addr - KASAN_SHADOW_OFFSET)
-@@ -164,8 +168,6 @@ static inline bool addr_has_metadata(const void *addr)
- 	return (addr >= kasan_shadow_to_mem((void *)KASAN_SHADOW_START));
- }
- 
--void kasan_poison_memory(const void *address, size_t size, u8 value);
--
- /**
-  * check_memory_region - Check memory region, and report if invalid access.
-  * @addr: the accessed address
-@@ -177,6 +179,15 @@ void kasan_poison_memory(const void *address, size_t size, u8 value);
- bool check_memory_region(unsigned long addr, size_t size, bool write,
- 				unsigned long ret_ip);
- 
-+#else /* CONFIG_KASAN_GENERIC || CONFIG_KASAN_SW_TAGS */
-+
-+static inline bool addr_has_metadata(const void *addr)
-+{
-+	return PageSlab(virt_to_head_page(addr));
-+}
-+
-+#endif /* CONFIG_KASAN_GENERIC || CONFIG_KASAN_SW_TAGS */
-+
- bool check_invalid_free(void *addr);
- 
- void *find_first_bad_addr(void *addr, size_t size);
-@@ -213,7 +224,7 @@ static inline void quarantine_reduce(void) { }
- static inline void quarantine_remove_cache(struct kmem_cache *cache) { }
- #endif
- 
--#ifdef CONFIG_KASAN_SW_TAGS
-+#if defined(CONFIG_KASAN_SW_TAGS) || defined(CONFIG_KASAN_HW_TAGS)
- 
- void print_tags(u8 addr_tag, const void *addr);
- 
-diff --git a/mm/kasan/report_hw_tags.c b/mm/kasan/report_hw_tags.c
-new file mode 100644
-index 000000000000..da543eb832cd
---- /dev/null
-+++ b/mm/kasan/report_hw_tags.c
-@@ -0,0 +1,42 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * This file contains hardware tag-based KASAN specific error reporting code.
-+ *
-+ * Copyright (c) 2020 Google, Inc.
-+ * Author: Andrey Konovalov <andreyknvl@google.com>
-+ */
-+
-+#include <linux/kasan.h>
-+#include <linux/kernel.h>
-+#include <linux/memory.h>
-+#include <linux/mm.h>
-+#include <linux/string.h>
-+#include <linux/types.h>
-+
-+#include "kasan.h"
-+
-+const char *get_bug_type(struct kasan_access_info *info)
-+{
-+	return "invalid-access";
-+}
-+
-+void *find_first_bad_addr(void *addr, size_t size)
-+{
-+	return reset_tag(addr);
-+}
-+
-+void metadata_fetch_row(char *buffer, void *row)
-+{
-+	int i;
-+
-+	for (i = 0; i < META_BYTES_PER_ROW; i++)
-+		buffer[i] = hw_get_mem_tag(row + i * KASAN_GRANULE_SIZE);
-+}
-+
-+void print_tags(u8 addr_tag, const void *addr)
-+{
-+	u8 memory_tag = hw_get_mem_tag((void *)addr);
-+
-+	pr_err("Pointer tag: [%02x], memory tag: [%02x]\n",
-+		addr_tag, memory_tag);
-+}
-diff --git a/mm/kasan/report_sw_tags.c b/mm/kasan/report_sw_tags.c
-index add2dfe6169c..aebc44a29e83 100644
---- a/mm/kasan/report_sw_tags.c
-+++ b/mm/kasan/report_sw_tags.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- /*
-- * This file contains tag-based KASAN specific error reporting code.
-+ * This file contains software tag-based KASAN specific error reporting code.
-  *
-  * Copyright (c) 2014 Samsung Electronics Co., Ltd.
-  * Author: Andrey Ryabinin <ryabinin.a.a@gmail.com>
-diff --git a/mm/kasan/shadow.c b/mm/kasan/shadow.c
-index 1fadd4930d54..616ac64c4a21 100644
---- a/mm/kasan/shadow.c
-+++ b/mm/kasan/shadow.c
-@@ -107,7 +107,7 @@ void kasan_unpoison_memory(const void *address, size_t size)
- 
- 		if (IS_ENABLED(CONFIG_KASAN_SW_TAGS))
- 			*shadow = tag;
--		else
-+		else /* CONFIG_KASAN_GENERIC */
- 			*shadow = size & KASAN_GRANULE_MASK;
- 	}
- }
-diff --git a/mm/kasan/sw_tags.c b/mm/kasan/sw_tags.c
-index b09a2c06abad..dfe707dd8d0d 100644
---- a/mm/kasan/sw_tags.c
-+++ b/mm/kasan/sw_tags.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- /*
-- * This file contains core tag-based KASAN code.
-+ * This file contains core software tag-based KASAN code.
-  *
-  * Copyright (c) 2018 Google, Inc.
-  * Author: Andrey Konovalov <andreyknvl@google.com>
+ static DEFINE_SPINLOCK(report_lock);
 -- 
 2.29.1.341.ge80a0c044ae-goog
 
