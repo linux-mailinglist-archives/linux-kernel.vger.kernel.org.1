@@ -2,77 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 339152A65CE
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 15:03:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFC622A65D3
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 15:06:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729962AbgKDOD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 09:03:28 -0500
-Received: from mga07.intel.com ([134.134.136.100]:27190 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726527AbgKDOD1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 09:03:27 -0500
-IronPort-SDR: DRjbRrghFeyDlJvwjID/0Y0FcCZVzu9Dnfaj+5a7Evbq9W/DDON+1MHqN4Xu9zuma05klU9ENs
- sq0lqnfufI9g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9794"; a="233380498"
-X-IronPort-AV: E=Sophos;i="5.77,451,1596524400"; 
-   d="scan'208";a="233380498"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2020 06:03:24 -0800
-IronPort-SDR: rNSYeBg7xwZ/RmQ6D1J7PUPyO6aDtmbzWkWVDia5RsxAAG3mLr9zy5NGZtRh1ajg0N+YlhcOgU
- D6cxX22v6DYg==
-X-IronPort-AV: E=Sophos;i="5.77,451,1596524400"; 
-   d="scan'208";a="306155352"
-Received: from gliakhov-mobl2.ger.corp.intel.com (HELO ubuntu) ([10.249.45.232])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2020 06:03:21 -0800
-Date:   Wed, 4 Nov 2020 15:03:18 +0100
-From:   Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     ohad@wizery.com, bjorn.andersson@linaro.org,
-        arnaud.pouliquen@st.com, linux-remoteproc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 3/8] rpmsg: Move structure rpmsg_ns_msg to header file
-Message-ID: <20201104140317.GB30197@ubuntu>
-References: <20201027175218.1033609-1-mathieu.poirier@linaro.org>
- <20201027175218.1033609-4-mathieu.poirier@linaro.org>
+        id S1726894AbgKDOGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 09:06:22 -0500
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:40414 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726078AbgKDOGW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 09:06:22 -0500
+Received: by mail-wm1-f66.google.com with SMTP id k18so2423915wmj.5;
+        Wed, 04 Nov 2020 06:06:20 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=S41teLRLSZ7isGd7nFyvP35fxvOeeax7aZ66a+ME5Ss=;
+        b=cK1aHpaSQh6BAEvBb0+cEMuC6ob/HqGktSYGqM0a6ChzjoBj17USMkgNj/YXmM0zwf
+         bMWC4hoFiMyzIKIUN8guRldlieXgRnapU2nK9nal7ShhSc6pIaOhOUD49XTLPdEZf9ke
+         3UAWlFzdI5n9pPW7O7T9VYdeG/Np95gjDBXTsJnbIgcTmx0Xp11vcSiEkspMpWVcrsuI
+         7H6F5vVNg03OHB12cvP+pca3gEB9ev84bFsx7UKxN3STCvGlTTk1mqjVPECvYQ1PTMxP
+         0fZOo4Bg4xuGE5T706pO3ceTLS7vhSAVj8E831F52DnfFgYzf5MwMFUk9S3aKGrxJ5kR
+         7sUg==
+X-Gm-Message-State: AOAM530JNMiL6Qnpf8mOvDqWfsxwX9uayvl8PNypn6VUry8J3G6EoRNp
+        a0NkpewYotWOtHHg7qJ/O+W0SAl07QQ=
+X-Google-Smtp-Source: ABdhPJzub2Qdl39XwePCwW5f4Na1s1gFDl9l1dWju07Y2lOINxiR82U83DMQ2PjXZBKrxm2EzbTIJg==
+X-Received: by 2002:a05:600c:2282:: with SMTP id 2mr5089187wmf.154.1604498779470;
+        Wed, 04 Nov 2020 06:06:19 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id g186sm6885889wma.1.2020.11.04.06.06.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Nov 2020 06:06:17 -0800 (PST)
+Date:   Wed, 4 Nov 2020 15:06:16 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc:     georgi.djakov@linaro.org, cw00.choi@samsung.com,
+        devicetree@vger.kernel.org, robh+dt@kernel.org,
+        a.swigon@samsung.com, myungjoo.ham@samsung.com,
+        inki.dae@samsung.com, sw0312.kim@samsung.com,
+        b.zolnierkie@samsung.com, m.szyprowski@samsung.com,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v8 2/7] interconnect: Add generic interconnect driver for
+ Exynos SoCs
+Message-ID: <20201104140616.GA3024@kozik-lap>
+References: <20201104103657.18007-1-s.nawrocki@samsung.com>
+ <CGME20201104103720eucas1p1014217e751a681796ed508af22c6bb12@eucas1p1.samsung.com>
+ <20201104103657.18007-3-s.nawrocki@samsung.com>
+ <20201104123729.GA13371@kozik-lap>
+ <346da718-2340-c862-9a1a-c5f64aae19c2@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201027175218.1033609-4-mathieu.poirier@linaro.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <346da718-2340-c862-9a1a-c5f64aae19c2@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A nitpick to this one:
-
-On Tue, Oct 27, 2020 at 11:52:13AM -0600, Mathieu Poirier wrote:
-> Move structure rpmsg_ns_msg to its own header file so that
-> it can be used by other entities.
+On Wed, Nov 04, 2020 at 02:22:37PM +0100, Sylwester Nawrocki wrote:
+> On 04.11.2020 13:37, Krzysztof Kozlowski wrote:
+> > On Wed, Nov 04, 2020 at 11:36:52AM +0100, Sylwester Nawrocki wrote:
 > 
-> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Reviewed-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-> ---
+> >> diff --git a/drivers/interconnect/Makefile b/drivers/interconnect/Makefile
+> >> index d203520..c2f9e9d 100644
+> >> --- a/drivers/interconnect/Makefile
+> >> +++ b/drivers/interconnect/Makefile
+> >> @@ -6,3 +6,4 @@ icc-core-objs				:= core.o bulk.o
+> >>  obj-$(CONFIG_INTERCONNECT)		+= icc-core.o
+> >>  obj-$(CONFIG_INTERCONNECT_IMX)		+= imx/
+> >>  obj-$(CONFIG_INTERCONNECT_QCOM)		+= qcom/
+> >> +obj-$(CONFIG_INTERCONNECT_SAMSUNG)	+= samsung/
+> >> \ No newline at end of file
+> > 
+> > This needs a fix.
+> 
+> Corrected, thanks for pointing out.
+>  
+> >> diff --git a/drivers/interconnect/samsung/Kconfig b/drivers/interconnect/samsung/Kconfig
+> >> new file mode 100644
+> >> index 0000000..508ed64
+> >> --- /dev/null
+> >> +++ b/drivers/interconnect/samsung/Kconfig
+> >> @@ -0,0 +1,13 @@
+> >> +# SPDX-License-Identifier: GPL-2.0-only
+> >> +config INTERCONNECT_SAMSUNG
+> >> +	bool "Samsung interconnect drivers"
+> > 
+> > "Samsung SoC interconnect drivers"
+> 
+> Changed.
+> 
+> >> +	depends on ARCH_EXYNOS || COMPILE_TEST
+> > 
+> > Don't the depend on INTERCONNECT?
+> 
+> This file gets included only if INTERCONNECT is enabled, see
+> higher level Kconfig file.
 
-[snip]
+I missed the include part, looks good.
 
-> diff --git a/include/linux/rpmsg_ns.h b/include/linux/rpmsg_ns.h
-> new file mode 100644
-> index 000000000000..bb479f430080
-> --- /dev/null
-> +++ b/include/linux/rpmsg_ns.h
-> @@ -0,0 +1,42 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +
-> +#ifndef _LINUX_RPMSG_NS_H
-> +#define _LINUX_RPMSG_NS_H
-> +
-> +#include <linux/mod_devicetable.h>
-> +#include <linux/types.h>
-> +#include <linux/rpmsg_byteorder.h>
+>  
+> >> +	help
+> >> +	  Interconnect drivers for Samsung SoCs.
+> >> +
+> >> +
+> > 
+> > One line break
+> 
+> Fixed.
+> 
+> >> +config INTERCONNECT_EXYNOS
+> >> +	tristate "Exynos generic interconnect driver"
+> >> +	depends on INTERCONNECT_SAMSUNG
+> > 
+> > How about:
+> > default y if ARCH_EXYNOS
+> 
+> OK, added.
+> 
+> >> +	help
+> >> +	  Generic interconnect driver for Exynos SoCs.
+> >> diff --git a/drivers/interconnect/samsung/Makefile b/drivers/interconnect/samsung/Makefile
+> >> new file mode 100644
+> >> index 0000000..e19d1df
+> >> --- /dev/null
+> >> +++ b/drivers/interconnect/samsung/Makefile
+> >> @@ -0,0 +1,4 @@
+> >> +# SPDX-License-Identifier: GPL-2.0
+> >> +exynos-interconnect-objs		:= exynos.o
+> > 
+> > What is this line for?
+>  
+> That allows to change the module name, so it's exynos-interconnect.ko
+> rather than just exynos.c. It's done similarly for other SoCs in 
+> the subsystem.
 
-would be good to sort these alphabetically.
+Thanks, makes sense.
 
-Thanks
-Guennadi
+Best regards,
+Krzysztof
