@@ -2,128 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D34492A64FC
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 14:22:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D91C2A6503
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 14:23:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729972AbgKDNWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 08:22:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34218 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726691AbgKDNWd (ORCPT
+        id S1729992AbgKDNW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 08:22:57 -0500
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:43269 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729976AbgKDNW5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 08:22:33 -0500
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2D84C0613D3;
-        Wed,  4 Nov 2020 05:22:32 -0800 (PST)
-Received: by mail-ej1-x644.google.com with SMTP id cw8so16162040ejb.8;
-        Wed, 04 Nov 2020 05:22:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=umich.edu; s=google-2016-06-03;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=qbJlQYjdsQ7pFp1tga73Zyb8dzNLz6U3izaZiUDMhuY=;
-        b=JCZD3sorqW9uTFYFWZccWJut/oGor4NG6CgBlJVJalYMu8n9NjS0crWJaWLrgrHgtf
-         MT1JKhLxrIFpCOybZpvMAzV4Qf+Mx2LpPKFkOkckz+T4XkdreW7eed79ALV88epkASXu
-         CEplQU/hMCUdVyjIHL/qt5O/mv91MR34pJF3HBRXMvLHtAMclC3O0rF6Bu82Mv2Yv5d5
-         FISos8Ugsvg0JDiRLHlJ0ooKNI3UNtDLK1rVhsHSkT0l3IqcgpQQ5Ke9LwRlhXWgukdY
-         fuBcmEEqA8XgGfAvanFFc4gT4dj7RTynjKgedZsOi9Y+iq9cv5wWhgWLbl4D3clczdTS
-         GLng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=qbJlQYjdsQ7pFp1tga73Zyb8dzNLz6U3izaZiUDMhuY=;
-        b=NTmZjWLFi49OUxD6Z/12p3Y37dYhMgfnLd92ABc8nnR5RV5L8QOcoPO/iCzr7yG3DT
-         6lP5VH4zJ+V/6kZuUYxpBAKDIl48T7qxGSLbCi3KWuL/L2InS6GkcCqqLtZFi72LOfwI
-         dkBuf0A9RMeWi7IfamCf3d/USqZwD7lDx3Ci7BfghH0x6I9bFeg2+nDk6yx2k8K/NINS
-         FPJJniX5EYJelB5pW9GfkX/xwMTj35YfzDJK5GggcLPxsYEcnwKdNw0U7AXJEkqVXCQV
-         BAki3ybbkj0Rq3AoXfzTmxrQcyBjeYPAiUhVR58f679BMphMvZEQ9695R+lcrYsALLrq
-         y+ug==
-X-Gm-Message-State: AOAM533NZJRNAUXW4SWn3ts0xtNmYxLb2oJwvQIiOjhzVSonVvEX8Uuu
-        UcKB1anuFE39N4XnrlUliVdtObC4NhHBP8Wv+vY=
-X-Google-Smtp-Source: ABdhPJxKuXYCXvL/NCF2umwTr7/ap6ZcM2gmwdfodWFcQE0pYek5otQhRDlVF698b4lB2dwhyFZUb3ECIz1eaUtFaW4=
-X-Received: by 2002:a17:906:3899:: with SMTP id q25mr26605468ejd.0.1604496151605;
- Wed, 04 Nov 2020 05:22:31 -0800 (PST)
+        Wed, 4 Nov 2020 08:22:57 -0500
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20201104132245euoutp01a8147912fbdc9d8e5d08207efd128706~EUML0npDi0800308003euoutp01J
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 13:22:45 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20201104132245euoutp01a8147912fbdc9d8e5d08207efd128706~EUML0npDi0800308003euoutp01J
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1604496165;
+        bh=6e+yHFSjCNb3zgBAjutOcDJ/8OJ2PyIi+d969nIus28=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=SqVH094ynfqqpbU5t7UZuTAmV7kWOM61L8LeOPzH4AZqxsK863whls1Ehh1WiuL23
+         aVGCslPJnr8YWSujXlKzl5yV2LF4l/+DKFvL+0WQzTuSWPJa7PDugq83MZ09wdxFnH
+         sRaqaZchDc7azmuWtkXTMxXaeZ6lrDyOmn9VQo3c=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20201104132240eucas1p28d4293ef3b384a6e077f6358c913f27b~EUMGsg42n0968909689eucas1p2V;
+        Wed,  4 Nov 2020 13:22:40 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id 42.5C.05997.F1BA2AF5; Wed,  4
+        Nov 2020 13:22:39 +0000 (GMT)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20201104132239eucas1p1e3fd7e287c0bce62c4e4cc4e19ebcf85~EUMGOvcLu0444304443eucas1p1r;
+        Wed,  4 Nov 2020 13:22:39 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20201104132239eusmtrp13159b002bca4f1b3017eecede6f5c34a~EUMGN7isr1509115091eusmtrp1N;
+        Wed,  4 Nov 2020 13:22:39 +0000 (GMT)
+X-AuditID: cbfec7f4-677ff7000000176d-ee-5fa2ab1f2ae9
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id 7B.10.06017.F1BA2AF5; Wed,  4
+        Nov 2020 13:22:39 +0000 (GMT)
+Received: from [106.210.123.115] (unknown [106.210.123.115]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20201104132238eusmtip1609e7bd67ca234067597a1389990c352~EUMFMIFI40631706317eusmtip1n;
+        Wed,  4 Nov 2020 13:22:38 +0000 (GMT)
+Subject: Re: [PATCH v8 2/7] interconnect: Add generic interconnect driver
+ for Exynos SoCs
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     georgi.djakov@linaro.org, cw00.choi@samsung.com,
+        devicetree@vger.kernel.org, robh+dt@kernel.org,
+        a.swigon@samsung.com, myungjoo.ham@samsung.com,
+        inki.dae@samsung.com, sw0312.kim@samsung.com,
+        b.zolnierkie@samsung.com, m.szyprowski@samsung.com,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org
+From:   Sylwester Nawrocki <s.nawrocki@samsung.com>
+Message-ID: <346da718-2340-c862-9a1a-c5f64aae19c2@samsung.com>
+Date:   Wed, 4 Nov 2020 14:22:37 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+        Thunderbird/68.12.1
 MIME-Version: 1.0
-References: <20201102162438.14034-1-chenwenle@huawei.com> <20201102162438.14034-3-chenwenle@huawei.com>
- <8db50c039cb8b8325bb428c60ff005b899654fb4.camel@hammerspace.com> <ebee08ee-ecbe-c47c-1f7c-799f86b3879c@gmail.com>
-In-Reply-To: <ebee08ee-ecbe-c47c-1f7c-799f86b3879c@gmail.com>
-From:   Olga Kornievskaia <aglo@umich.edu>
-Date:   Wed, 4 Nov 2020 08:22:20 -0500
-Message-ID: <CAN-5tyF-LVzfm2hGmBJhQXUvt_d19tmhk76DFmNuS-SaTZDvDg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] NFS: Limit the number of retries
-To:     Wenle Chen <solomonchenclever@gmail.com>
-Cc:     Trond Myklebust <trondmy@hammerspace.com>,
-        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>,
-        "chenwenle@huawei.com" <chenwenle@huawei.com>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "nixiaoming@huawei.com" <nixiaoming@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201104123729.GA13371@kozik-lap>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA01SbUhTYRjl3b27u44mr9PyaUbG6Icac1kRF4swjRgEEkUEfWgzLya5abtZ
+        KYRWLvxmaOWcUqaBptRyyhQ/YolpMdKGYh8qK9PCxEqcid+5XSX/neec53nPOfDShHRYKKMT
+        tVdZnVadJKfEpLVrrkcRWFcZu3t5eT/jfKhHTL3RLGQ+uH4ImUedPUKmf+Y3xZS0WyimyGkg
+        md7eFyLG8m1AyPS1lFPMdEEnYoy9LwXMs85hETN4q4Zi9O2dIsZYPE5FYJWlNodSDQ20USpn
+        XrdA1fAkQ1XYWItU05btx6kz4oPxbFLiNVanPHRBfOlNwxSRcs/nxvc6kyAT5XnnIi8a8D6o
+        LFoS5iIxLcU1CMrsdoofXAgKTPdF/DCNINvWjtZPLMN3SF6oRlBhnKDcghRPIXAV+7ixLz4L
+        I29fCd3YDwfDh6VZjweBqwhYKbvtESgcBgWvCz2vSvAhmPg8R7oxiXfC2Jdxz6ObcQwY6rNI
+        fscH3paOerAXVkJ+qcNzS2B/+Dz6SMDjQGiaLCfcZoD1NDRX/RXxsY9A7xt+CbAv/OxuXOO3
+        gb04n+QP7iDIbx0U8YMBgbO7Yq30ARjqmV+NRK9aBIO5RcnTh2Hh03vCTQP2ho+TPnwIbyiy
+        lqzREsi+K+W3d8JCbclaBBnkja6QBiQ3bahm2lDHtKGO6b9vBSJrkT+bymkSWG6Plr0eyqk1
+        XKo2IfRissaCVj+dfbnb1YxaFuM6EKaRfJPEZn0cKxWqr3Fpmg4ENCH3k0S+s8dIJfHqtHRW
+        lxyrS01iuQ4UQJNyf8neyvHzUpygvspeZtkUVreuCmgvWSbaH/cgJmSRa9MGKkvPRf2ZTEPZ
+        u/oGnN52kV++lR3nliKN/Vg/X3oi3BHwqb7q68zejOj05eiUqUH5wy4I/RVUOOu6onBknb4Z
+        tMVs0CyMZLaMNGvNT1GO5qUjQpF8tFXWtCOCOhVlq1bZhsx9J4+p6sa2pngpwguVz7+Jc+Uk
+        d0kdFkLoOPU/AcpNJXADAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrHIsWRmVeSWpSXmKPExsVy+t/xu7ryqxfFG3QflLK4P6+V0WLjjPWs
+        Fte/PGe1mH/kHKvFla/v2Sym793EZjHp/gQWi/PnN7BbbHp8jdXi8q45bBafe48wWsw4v4/J
+        Yu2Ru+wWtxtXsFm07j3CbjFj8ks2BwGPTas62TzuXNvD5nG/+ziTx+Yl9R59W1YxenzeJBfA
+        FqVnU5RfWpKqkJFfXGKrFG1oYaRnaGmhZ2RiqWdobB5rZWSqpG9nk5Kak1mWWqRvl6CXcWLz
+        R+aCKYIVz1bPYmpg7ObrYuTkkBAwkdh0t5mli5GLQ0hgKaPE4aWb2bsYOYASUhLzW5QgaoQl
+        /lzrYoOoec8o0brzAAtIQlggWqJv8yw2EFtEQFPi+t/vrCBFzAKLmSUaXi1gAkkICTxjlPj9
+        qxzEZhMwlOg92scIYvMK2Em8vvUTbBCLgIrE0wcvwQaJCsRJ/JjYywZRIyhxcuYTsBpOAX2J
+        npkXwXqZBdQl/sy7xAxhi0vcejKfCcKWl9j+dg7zBEahWUjaZyFpmYWkZRaSlgWMLKsYRVJL
+        i3PTc4uN9IoTc4tL89L1kvNzNzEC43rbsZ9bdjB2vQs+xCjAwajEw3tg28J4IdbEsuLK3EOM
+        EhzMSiK8TmdPxwnxpiRWVqUW5ccXleakFh9iNAV6biKzlGhyPjDl5JXEG5oamltYGpobmxub
+        WSiJ83YIHIwREkhPLEnNTk0tSC2C6WPi4JRqYJzwQXfBf6lF4sW/zl3tP/L9UN3GzWpJ75IV
+        HXkO3hS3/Zku/6v8zX/be5GbJSzOnOTPkzmzKtHz9sVvXzcan/xzWKVbjHW7Uq1OM8dRj3Vh
+        VuElFSy8JhemCNjuDbdf/fuInUGi+++lQYX2W5YK+2nL1D7aOiM7a9OfWzqSsvK3G5X6FFIW
+        HlFiKc5INNRiLipOBACtBHetAQMAAA==
+X-CMS-MailID: 20201104132239eucas1p1e3fd7e287c0bce62c4e4cc4e19ebcf85
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20201104103720eucas1p1014217e751a681796ed508af22c6bb12
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20201104103720eucas1p1014217e751a681796ed508af22c6bb12
+References: <20201104103657.18007-1-s.nawrocki@samsung.com>
+        <CGME20201104103720eucas1p1014217e751a681796ed508af22c6bb12@eucas1p1.samsung.com>
+        <20201104103657.18007-3-s.nawrocki@samsung.com>
+        <20201104123729.GA13371@kozik-lap>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 4, 2020 at 6:36 AM Wenle Chen <solomonchenclever@gmail.com> wro=
-te:
->
->
->
-> Trond Myklebust =E6=96=BC 2020/11/3 =E4=B8=8A=E5=8D=881:45 =E5=AF=AB=E9=
-=81=93:
-> > On Tue, 2020-11-03 at 00:24 +0800, Wenle Chen wrote:
-> >>    We can't wait forever, even if the state
-> >> is always delayed.
-> >>
-> >> Signed-off-by: Wenle Chen <chenwenle@huawei.com>
-> >> ---
-> >>   fs/nfs/nfs4proc.c | 4 +++-
-> >>   1 file changed, 3 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/fs/nfs/nfs4proc.c b/fs/nfs/nfs4proc.c
-> >> index f6b5dc792b33..bb2316bf13f6 100644
-> >> --- a/fs/nfs/nfs4proc.c
-> >> +++ b/fs/nfs/nfs4proc.c
-> >> @@ -7390,15 +7390,17 @@ int nfs4_lock_delegation_recall(struct
-> >> file_lock *fl, struct nfs4_state *state,
-> >>   {
-> >>          struct nfs_server *server =3D NFS_SERVER(state->inode);
-> >>          int err;
-> >> +       int retry =3D 3;
-> >>
-> >>          err =3D nfs4_set_lock_state(state, fl);
-> >>          if (err !=3D 0)
-> >>                  return err;
-> >>          do {
-> >>                  err =3D _nfs4_do_setlk(state, F_SETLK, fl,
-> >> NFS_LOCK_NEW);
-> >> -               if (err !=3D -NFS4ERR_DELAY)
-> >> +               if (err !=3D -NFS4ERR_DELAY || retry =3D=3D 0)
-> >>                          break;
-> >>                  ssleep(1);
-> >> +               --retry;
-> >>          } while (1);
-> >>          return nfs4_handle_delegation_recall_error(server, state,
-> >> stateid, fl, err);
-> >>   }
-> >
-> > This patch will just cause the locks to be silently lost, no?
-> >
-> This loop was introduced in commit 3d7a9520f0c3e to simplify the delay
-> retry loop. Before this, the function nfs4_lock_delegation_recall would
-> return a -EAGAIN to do a whole retry loop.
+On 04.11.2020 13:37, Krzysztof Kozlowski wrote:
+> On Wed, Nov 04, 2020 at 11:36:52AM +0100, Sylwester Nawrocki wrote:
 
-This commit was not simplifying retry but actually handling the error.
-Without it the error isn't handled and client falsely thinks it holds
-the lock. Limiting the number of retries as Trond points out would
-lead to the same problem which in the end is data corruption.
-Alternative would be to fail the application. However ERR_DELAY is a
-transient error and the server would, when ready, return something
-else. If server is broken and continues to do so then the server needs
-to be fix (client isn't coded to the broken server). I don't see a
-good argument for limiting the number of re-tries.
+>> diff --git a/drivers/interconnect/Makefile b/drivers/interconnect/Makefile
+>> index d203520..c2f9e9d 100644
+>> --- a/drivers/interconnect/Makefile
+>> +++ b/drivers/interconnect/Makefile
+>> @@ -6,3 +6,4 @@ icc-core-objs				:= core.o bulk.o
+>>  obj-$(CONFIG_INTERCONNECT)		+= icc-core.o
+>>  obj-$(CONFIG_INTERCONNECT_IMX)		+= imx/
+>>  obj-$(CONFIG_INTERCONNECT_QCOM)		+= qcom/
+>> +obj-$(CONFIG_INTERCONNECT_SAMSUNG)	+= samsung/
+>> \ No newline at end of file
+> 
+> This needs a fix.
 
-> When we retried three times and waited three seconds, it was still in
-> delay. I think we can get a whole loop and check the other points if it
-> was changed or not. It is just a proposal.
+Corrected, thanks for pointing out.
+ 
+>> diff --git a/drivers/interconnect/samsung/Kconfig b/drivers/interconnect/samsung/Kconfig
+>> new file mode 100644
+>> index 0000000..508ed64
+>> --- /dev/null
+>> +++ b/drivers/interconnect/samsung/Kconfig
+>> @@ -0,0 +1,13 @@
+>> +# SPDX-License-Identifier: GPL-2.0-only
+>> +config INTERCONNECT_SAMSUNG
+>> +	bool "Samsung interconnect drivers"
+> 
+> "Samsung SoC interconnect drivers"
+
+Changed.
+
+>> +	depends on ARCH_EXYNOS || COMPILE_TEST
+> 
+> Don't the depend on INTERCONNECT?
+
+This file gets included only if INTERCONNECT is enabled, see
+higher level Kconfig file.
+ 
+>> +	help
+>> +	  Interconnect drivers for Samsung SoCs.
+>> +
+>> +
+> 
+> One line break
+
+Fixed.
+
+>> +config INTERCONNECT_EXYNOS
+>> +	tristate "Exynos generic interconnect driver"
+>> +	depends on INTERCONNECT_SAMSUNG
+> 
+> How about:
+> default y if ARCH_EXYNOS
+
+OK, added.
+
+>> +	help
+>> +	  Generic interconnect driver for Exynos SoCs.
+>> diff --git a/drivers/interconnect/samsung/Makefile b/drivers/interconnect/samsung/Makefile
+>> new file mode 100644
+>> index 0000000..e19d1df
+>> --- /dev/null
+>> +++ b/drivers/interconnect/samsung/Makefile
+>> @@ -0,0 +1,4 @@
+>> +# SPDX-License-Identifier: GPL-2.0
+>> +exynos-interconnect-objs		:= exynos.o
+> 
+> What is this line for?
+ 
+That allows to change the module name, so it's exynos-interconnect.ko
+rather than just exynos.c. It's done similarly for other SoCs in 
+the subsystem.
+
+>> +obj-$(CONFIG_INTERCONNECT_EXYNOS)	+= exynos-interconnect.o
+
+-- 
+Regards,
+Sylwester
