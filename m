@@ -2,116 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3D0D2A635C
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 12:33:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 236C92A635F
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 12:33:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729438AbgKDLd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 06:33:28 -0500
-Received: from perceval.ideasonboard.com ([213.167.242.64]:56970 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728700AbgKDLd1 (ORCPT
+        id S1729536AbgKDLdw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 06:33:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45666 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728700AbgKDLdv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 06:33:27 -0500
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 7F1B5563;
-        Wed,  4 Nov 2020 12:33:25 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1604489605;
-        bh=qzViUK5hol1fctUVlmPguaB97Qe8i4d37GxIVLbu4Ag=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DzyXItOo7m457X/5XsqvQ/1NOEh3X8QwkHrMBEZP0n22hU8tj5BITmg6HQsyLCIpA
-         FJvNliFXgguUxgOtU0TRcx3OdQJoPhDmPx/bxm5+IGOuQIJ9vzi3JD3Fb9zQfY72ge
-         DpFK1KdCcVCu547WsEwU/ykgB9cXmVR0GeW4s8Ms=
-Date:   Wed, 4 Nov 2020 13:32:38 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Ricardo Ribalda <ribalda@chromium.org>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tfiga@chromium.org
-Subject: Re: [PATCH 3/6] media: uvcvideo: Add UVC_GUID_EXT_GPIO_CONTROLLER
-Message-ID: <20201104113238.GI26171@pendragon.ideasonboard.com>
-References: <20201022133753.310506-1-ribalda@chromium.org>
- <20201022133753.310506-4-ribalda@chromium.org>
+        Wed, 4 Nov 2020 06:33:51 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB0E9C0613D3;
+        Wed,  4 Nov 2020 03:33:51 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id r10so16354705pgb.10;
+        Wed, 04 Nov 2020 03:33:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=sHxsYW7dtDokTqOCqyvEtWMH1g82kxcGZGcMhLeJhSU=;
+        b=oYuqdfNizbvNgx8VPH1L01MrjPlZsZtJxceSbmq7LYgdG1+2iy9po61wNSyJPKRdbs
+         2f3sRPHfbyd4Z4T38rGVUg7ZPz3ec8vTVQeFnevtT54eh4dL7JrtSTM8erjbNMyCIPt0
+         PBTrkwCMbI+hl0tm5Q08GOW2wzsG/SWy+3g2Y4wV1NBUO4+xyK86oXRyTI4KikVdP67g
+         aQNHqMmxvJDNaWQZYrlm9IIxVpdcUSxyjT2+/vkszZMwc+6MtvaJOiznu1Lg3xgbxe2w
+         0CWmhOJeQjVMYUUQ7FbWmkoUUPf+16AyezGz2wRMrLf7AU0woCZv5JE8qB4reNbm2OS0
+         gDgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=sHxsYW7dtDokTqOCqyvEtWMH1g82kxcGZGcMhLeJhSU=;
+        b=ZPPfjW9baMO9Jvw5vo2vXR3OoX6LWLAjxiHyGwX33Go5Th1/nsnng2O7Ja/8EY9sdV
+         BiR5TwHZk6m0P/dDT78Jzc8GD7lOQGhqphiST9C5404ojfY0bBQaGgHGKPFQ6MnaK26L
+         cvSJP5WgS0Y6iTUJ76CgJwdJdGPslDU9t48ORHlBTU8ehdMkCjjcbqQyAnbdBvKuuvE4
+         V2nskTPwl47BwVPZdqcTZ5PW/qZusFmOZmV5AQ1ect5kST+z+ussaB3YU92pK21XclYg
+         h4cpZSwPeyykpekeuG6R+MJgvLDTKqdysIEYnZ49hRdLxfnoeSI7AJNr0hKEF1ytze7a
+         qrNQ==
+X-Gm-Message-State: AOAM531H2DsJ46qg0tcKTGj2dkMumwhVcfLpTQAwfNJ3akUuWYW2hDDR
+        MiNmkGvjKWWaYC5OgJspmvk=
+X-Google-Smtp-Source: ABdhPJxOdiul8E+jhKKH45WgaL4MKudEULwBb/xgCz8OIUkXhn35zZpOSufsarqCQCXAWG62WfzgwA==
+X-Received: by 2002:a62:7e14:0:b029:18a:d515:dc47 with SMTP id z20-20020a627e140000b029018ad515dc47mr16809540pfc.78.1604489631399;
+        Wed, 04 Nov 2020 03:33:51 -0800 (PST)
+Received: from soladeMBP.lan (173.28.92.34.bc.googleusercontent.com. [34.92.28.173])
+        by smtp.gmail.com with ESMTPSA id h20sm2061216pgv.23.2020.11.04.03.33.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Nov 2020 03:33:50 -0800 (PST)
+Subject: Re: [PATCH 2/2] NFS: Limit the number of retries
+To:     Trond Myklebust <trondmy@hammerspace.com>,
+        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>
+Cc:     "chenwenle@huawei.com" <chenwenle@huawei.com>,
+        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "nixiaoming@huawei.com" <nixiaoming@huawei.com>
+References: <20201102162438.14034-1-chenwenle@huawei.com>
+ <20201102162438.14034-3-chenwenle@huawei.com>
+ <8db50c039cb8b8325bb428c60ff005b899654fb4.camel@hammerspace.com>
+From:   Wenle Chen <solomonchenclever@gmail.com>
+Message-ID: <ebee08ee-ecbe-c47c-1f7c-799f86b3879c@gmail.com>
+Date:   Wed, 4 Nov 2020 19:33:48 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:78.0)
+ Gecko/20100101 Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201022133753.310506-4-ribalda@chromium.org>
+In-Reply-To: <8db50c039cb8b8325bb428c60ff005b899654fb4.camel@hammerspace.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ricardo,
 
-Thank you for the patch.
 
-On Thu, Oct 22, 2020 at 03:37:50PM +0200, Ricardo Ribalda wrote:
-> Create a new GUID for GPIO controller entities that do not belong to the
-> USB video device.
+Trond Myklebust 於 2020/11/3 上午1:45 寫道:
+> On Tue, 2020-11-03 at 00:24 +0800, Wenle Chen wrote:
+>>    We can't wait forever, even if the state
+>> is always delayed.
+>>
+>> Signed-off-by: Wenle Chen <chenwenle@huawei.com>
+>> ---
+>>   fs/nfs/nfs4proc.c | 4 +++-
+>>   1 file changed, 3 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/fs/nfs/nfs4proc.c b/fs/nfs/nfs4proc.c
+>> index f6b5dc792b33..bb2316bf13f6 100644
+>> --- a/fs/nfs/nfs4proc.c
+>> +++ b/fs/nfs/nfs4proc.c
+>> @@ -7390,15 +7390,17 @@ int nfs4_lock_delegation_recall(struct
+>> file_lock *fl, struct nfs4_state *state,
+>>   {
+>>          struct nfs_server *server = NFS_SERVER(state->inode);
+>>          int err;
+>> +       int retry = 3;
+>>   
+>>          err = nfs4_set_lock_state(state, fl);
+>>          if (err != 0)
+>>                  return err;
+>>          do {
+>>                  err = _nfs4_do_setlk(state, F_SETLK, fl,
+>> NFS_LOCK_NEW);
+>> -               if (err != -NFS4ERR_DELAY)
+>> +               if (err != -NFS4ERR_DELAY || retry == 0)
+>>                          break;
+>>                  ssleep(1);
+>> +               --retry;
+>>          } while (1);
+>>          return nfs4_handle_delegation_recall_error(server, state,
+>> stateid, fl, err);
+>>   }
 > 
-> This GUID is selected on an address range completely different that the
-> UVC standard to avoid collisions.
-
-I'd squash this patch with 5/6.
-
-> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> ---
->  drivers/media/usb/uvc/uvc_ctrl.c | 4 ++++
->  drivers/media/usb/uvc/uvcvideo.h | 3 +++
->  2 files changed, 7 insertions(+)
+> This patch will just cause the locks to be silently lost, no?
 > 
-> diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
-> index 0a8835742d49..913739915863 100644
-> --- a/drivers/media/usb/uvc/uvc_ctrl.c
-> +++ b/drivers/media/usb/uvc/uvc_ctrl.c
-> @@ -830,6 +830,7 @@ static const u8 uvc_processing_guid[16] = UVC_GUID_UVC_PROCESSING;
->  static const u8 uvc_camera_guid[16] = UVC_GUID_UVC_CAMERA;
->  static const u8 uvc_media_transport_input_guid[16] =
->  	UVC_GUID_UVC_MEDIA_TRANSPORT_INPUT;
-> +static const u8 uvc_gpio_guid[16] = UVC_GUID_EXT_GPIO_CONTROLLER;
->  
->  static int uvc_entity_match_guid(const struct uvc_entity *entity,
->  	const u8 guid[16])
-> @@ -848,6 +849,9 @@ static int uvc_entity_match_guid(const struct uvc_entity *entity,
->  		return memcmp(entity->extension.guidExtensionCode,
->  			      guid, 16) == 0;
->  
-> +	case UVC_GPIO_UNIT:
+This loop was introduced in commit 3d7a9520f0c3e to simplify the delay 
+retry loop. Before this, the function nfs4_lock_delegation_recall would 
+return a -EAGAIN to do a whole retry loop.
 
-This won't compile, UVC_GPIO_UNIT is defined in 5/6.
-
-> +		return memcmp(uvc_gpio_guid, guid, 16) == 0;
-
-I wonder if it would make sense to store the GUID in the uvc_entity
-structure instead of adding new entries to this function.
-
-> +
->  	default:
->  		return 0;
->  	}
-> diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
-> index 08922d889bb6..8e5a9fc35820 100644
-> --- a/drivers/media/usb/uvc/uvcvideo.h
-> +++ b/drivers/media/usb/uvc/uvcvideo.h
-> @@ -56,6 +56,9 @@
->  #define UVC_GUID_UVC_SELECTOR \
->  	{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, \
->  	 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x02}
-
-None of the GUIDs above are defined by the UVC specification. You could
-use { 0x00 * 14, 0x01, 0x03 } or { 0x00 * 14, 0x02, 0x01 } instead of
-going for 0xff. Not that it matters much, it's all internal.
-
-> +#define UVC_GUID_EXT_GPIO_CONTROLLER \
-> +	{0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xf, \
-
-I assume the last value was meant to be 0xff ?
-
-> +	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00, 0x01}
->  
->  #define UVC_GUID_FORMAT_MJPEG \
->  	{ 'M',  'J',  'P',  'G', 0x00, 0x00, 0x10, 0x00, \
-
--- 
-Regards,
-
-Laurent Pinchart
+When we retried three times and waited three seconds, it was still in 
+delay. I think we can get a whole loop and check the other points if it 
+was changed or not. It is just a proposal.
