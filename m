@@ -2,275 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98B822A618D
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 11:28:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D2B02A619E
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 11:30:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729345AbgKDK2R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 05:28:17 -0500
-Received: from relay2-d.mail.gandi.net ([217.70.183.194]:39619 "EHLO
-        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729097AbgKDK0s (ORCPT
+        id S1729263AbgKDKaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 05:30:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35642 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728645AbgKDK24 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 05:26:48 -0500
-X-Originating-IP: 93.29.109.196
-Received: from aptenodytes (196.109.29.93.rev.sfr.net [93.29.109.196])
-        (Authenticated sender: paul.kocialkowski@bootlin.com)
-        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 3C79840011;
-        Wed,  4 Nov 2020 10:26:43 +0000 (UTC)
-Date:   Wed, 4 Nov 2020 11:26:43 +0100
-From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Maxime Ripard <mripard@kernel.org>, kevin.lhopital@hotmail.com,
-        =?utf-8?B?S8OpdmluIEwnaMO0cGl0YWw=?= <kevin.lhopital@bootlin.com>
-Subject: Re: [PATCH 1/3] dt-bindings: media: i2c: Add OV8865 bindings
- documentation
-Message-ID: <20201104102643.GH2123@aptenodytes>
-References: <20201023175406.504527-1-paul.kocialkowski@bootlin.com>
- <20201023175406.504527-2-paul.kocialkowski@bootlin.com>
- <20201102232411.GD26150@paasikivi.fi.intel.com>
+        Wed, 4 Nov 2020 05:28:56 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9DF0C0613D3
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 02:28:55 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <a.fatoum@pengutronix.de>)
+        id 1kaG23-0005vg-Ay; Wed, 04 Nov 2020 11:28:47 +0100
+Subject: Re: [BUG] Error applying setting, reverse things back on lot of
+ devices
+To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+Cc:     Corentin Labbe <clabbe.montjoie@gmail.com>, lgirdwood@gmail.com,
+        mripard@kernel.org, linux-kernel@vger.kernel.org, wens@csie.org,
+        broonie@kernel.org, linux-arm-kernel@lists.infradead.org,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>
+References: <20201021183149.GA8436@Red> <20201023134201.GA533@Red>
+ <20201023203943.GA21435@Red> <20201024115307.GA2745@qmqm.qmqm.pl>
+ <8a580d12-fa4a-6cd8-4d82-3e3b784e348b@pengutronix.de>
+ <20201102202727.GA20042@qmqm.qmqm.pl>
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+Message-ID: <124b90a8-72c7-c6cb-790f-7a22ef7510eb@pengutronix.de>
+Date:   Wed, 4 Nov 2020 11:28:45 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="JI+G0+mN8WmwPnOn"
-Content-Disposition: inline
-In-Reply-To: <20201102232411.GD26150@paasikivi.fi.intel.com>
+In-Reply-To: <20201102202727.GA20042@qmqm.qmqm.pl>
+Content-Type: text/plain; charset=iso-8859-2
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
---JI+G0+mN8WmwPnOn
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 11/2/20 9:27 PM, Micha³ Miros³aw wrote:
+> On Mon, Nov 02, 2020 at 01:48:54PM +0100, Ahmad Fatoum wrote:
+>> Hello Micha³,
+>>
+>> CC += linux-stm32
+>>
+>> On 10/24/20 1:53 PM, Micha³ Miros³aw wrote:
+>>> On Fri, Oct 23, 2020 at 10:39:43PM +0200, Corentin Labbe wrote:
+>>>> On Fri, Oct 23, 2020 at 03:42:01PM +0200, Corentin Labbe wrote:
+>>>>> On Wed, Oct 21, 2020 at 08:31:49PM +0200, Corentin Labbe wrote:
+>>>>> I have just saw thoses 3 lines which are probably the real problem.
+>>>>> I have started a new bisect with this error, but it is hitting the same "crash range" the first one.
+>>>>>
+>>>>
+>>>> I have bisected the problem to commit aea6cb99703e17019e025aa71643b4d3e0a24413 ("regulator: resolve supply after creating regulator")
+>>>> Reverting this fix my problem.
+>>
+>> The change broke boot on all the STM32MP1 boards, because the STPMIC driver
+>> has a vref_ddr regulator, which does not have a dedicated supply, but without
+>> a vref_ddr-supply property the system now no longer boots.
+> [...]
+> 
+> Can you catch debug logs for the bootup in question? I'm not sure what's
+> the failure mode in your case. I guess this is not a bypassed regulator?
 
-Hi Sakari and thanks for the review!
+Boot up with v5.10-rc2 + your cf1ad559a2 ("regulator: defer probe when trying
+to get voltage from unresolved supply") hangs:
 
-On Tue 03 Nov 20, 01:24, Sakari Ailus wrote:
-> On Fri, Oct 23, 2020 at 07:54:04PM +0200, Paul Kocialkowski wrote:
-> > This introduces YAML bindings documentation for the OV8865
-> > image sensor.
-> >=20
-> > Co-developed-by: K=C3=A9vin L'h=C3=B4pital <kevin.lhopital@bootlin.com>
-> > Signed-off-by: K=C3=A9vin L'h=C3=B4pital <kevin.lhopital@bootlin.com>
-> > Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-> > ---
-> >  .../bindings/media/i2c/ovti,ov8865.yaml       | 124 ++++++++++++++++++
-> >  1 file changed, 124 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/media/i2c/ovti,ov=
-8865.yaml
-> >=20
-> > diff --git a/Documentation/devicetree/bindings/media/i2c/ovti,ov8865.ya=
-ml b/Documentation/devicetree/bindings/media/i2c/ovti,ov8865.yaml
-> > new file mode 100644
-> > index 000000000000..807f1a94afae
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/media/i2c/ovti,ov8865.yaml
-> > @@ -0,0 +1,124 @@
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/media/i2c/ovti,ov8865.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: OmniVision OV8865 Image Sensor Device Tree Bindings
-> > +
-> > +maintainers:
-> > +  - Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-> > +
-> > +properties:
-> > +  compatible:
-> > +    const: ovti,ov8865
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +  clocks:
-> > +    items:
-> > +      - description: EXTCLK Clock
-> > +
-> > +  clock-names:
-> > +    items:
-> > +      - const: extclk
->=20
-> Is this needed with a single clock?
+[    1.151489] stm32f7-i2c 40015000.i2c: STM32F7 I2C-0 bus adapter
+[    1.180698] stpmic1 1-0033: PMIC Chip Version: 0x10
+[    1.189526] vddcore: supplied by regulator-dummy
+[    1.195633] vdd_ddr: supplied by regulator-dummy
+[    1.201672] vdd: supplied by regulator-dummy
+[    1.207452] v3v3: supplied by 5V2
+[    1.211997] v1v8_audio: supplied by v3v3
+[    1.218036] v3v3_hdmi: supplied by 5V2
+[    1.223626] vtt_ddr: supplied by regulator-dummy
+[    1.227107] vdd_usb: supplied by regulator-dummy
+[    1.234532] vdda: supplied by 5V2
+[    1.239497] v1v2_hdmi: supplied by v3v3
 
-Yes I think so: we grab the clock with devm_clk_get which takes a name stri=
-ng
-that matches the clock-names property.
+Boot up with v5.10-rc2 with aea6cb99 ("regulator: resolve supply after
+creating regulator") reverted boots correctly:
 
-> And... shouldn't this also come with assigned-clock-rates etc., to set the
-> clock frequency?
+[    1.151458] stm32f7-i2c 40015000.i2c: STM32F7 I2C-0 bus adapter
+[    1.180668] stpmic1 1-0033: PMIC Chip Version: 0x10
+[    1.186629] BUCK1: supplied by regulator-dummy
+[    1.192628] BUCK2: supplied by regulator-dummy
+[    1.198667] BUCK3: supplied by regulator-dummy
+[    1.204623] BUCK4: supplied by 5V2
+[    1.209424] LDO1: supplied by v3v3
+[    1.214931] LDO2: supplied by 5V2
+[    1.219897] LDO3: supplied by regulator-dummy
+[    1.225784] LDO4: supplied by regulator-dummy
+[    1.229239] LDO5: supplied by 5V2
+[    1.235097] LDO6: supplied by v3v3
+[    1.240164] VREF_DDR: supplied by regulator-dummy
+[    1.246130] BOOST: supplied by 5V2
+[    1.248617] VBUS_OTG: supplied by bst_out
+[    1.252698] SW_OUT: supplied by bst_out
 
-I'm a bit confused why we would need to do that in the device-tree rather t=
-han
-setting the clock rate with clk_set_rate in the driver, like any other driv=
-er
-does. I think this was discussed before (on the initial ov8865 series) and =
-the
-conclusion was that there is no particular reason for media i2c drivers to
-behave differently. So I believe this is the correct approach.
+Boot up with v5.10-rc2 + your cf1ad559a2 + &pmic { regulators { vref_ddr-supply = <&reg_5v2>; }
+boots correctly as well:
 
-> > +
-> > +  dvdd-supply:
-> > +    description: Digital Domain Power Supply
-> > +
-> > +  avdd-supply:
-> > +    description: Analog Domain Power Supply (internal AVDD is used if =
-missing)
-> > +
-> > +  dovdd-supply:
-> > +    description: I/O Domain Power Supply
-> > +
-> > +  powerdown-gpios:
-> > +    maxItems: 1
-> > +    description: Power Down Pin GPIO Control (active low)
-> > +
-> > +  reset-gpios:
-> > +    maxItems: 1
-> > +    description: Reset Pin GPIO Control (active low)
-> > +
-> > +  port:
-> > +    type: object
-> > +    description: Input port, connect to a MIPI CSI-2 receiver
-> > +
-> > +    properties:
-> > +      endpoint:
-> > +        type: object
-> > +
-> > +        properties:
-> > +          remote-endpoint: true
-> > +
-> > +          bus-type:
-> > +            const: 4
-> > +
-> > +          clock-lanes:
-> > +            maxItems: 1
->=20
-> I believe you can drop clock-lanes and bus-type; these are both constants.
+[    1.151531] stm32f7-i2c 40015000.i2c: STM32F7 I2C-0 bus adapter
+[    1.180759] stpmic1 1-0033: PMIC Chip Version: 0x10
+[    1.189543] vddcore: supplied by regulator-dummy
+[    1.195651] vdd_ddr: supplied by regulator-dummy
+[    1.201687] vdd: supplied by regulator-dummy
+[    1.207470] v3v3: supplied by 5V2
+[    1.212015] v1v8_audio: supplied by v3v3
+[    1.218053] v3v3_hdmi: supplied by 5V2
+[    1.223647] vtt_ddr: supplied by regulator-dummy
+[    1.227128] vdd_usb: supplied by regulator-dummy
+[    1.234553] vdda: supplied by 5V2
+[    1.239510] v1v2_hdmi: supplied by v3v3
+[    1.244932] vref_ddr: supplied by 5V2
+[    1.247397] bst_out: supplied by 5V2
+[    1.251338] vbus_otg: supplied by bst_out
+[    1.255416] vbus_sw: supplied by bst_out
 
-I don't understand why bus-type should be dropped because it is constant:
-if bus-type is set to something else, the driver will definitely not probe
-since we're requesting V4L2_MBUS_CSI2_DPHY for v4l2_fwnode_endpoint_parse.
-So I think it's quite important for the bindings to reflect this.
 
-> I presume the device does not support lane remapping?
+Cheers
+Ahmad
 
-That's correct so this is indeed not something we can configure.
-But shouldn't we instead specift clock-lanes =3D <0> as a const rather than
-getting rid of it?
+> 
+> Best Regards,
+> Micha³ Miros³aw
+> 
+> 
 
-> Could you also add link-frequencies, to list which frequencies are known =
-to
-> be good?
-
-Ah right, I had missed it. I'm a bit unsure about what I should do with the
-information from the driver though: should I refuse to use link frequencies=
- that
-are not in the list?
-
-Cheers,
-
-Paul
-
-> Same comments on the other OV sensor bindings.
->=20
-> > +
-> > +          data-lanes:
-> > +            minItems: 1
-> > +            maxItems: 4
-> > +
-> > +        required:
-> > +          - bus-type
-> > +          - data-lanes
-> > +          - remote-endpoint
-> > +
-> > +        additionalProperties: false
-> > +
-> > +    required:
-> > +      - endpoint
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +  - clocks
-> > +  - clock-names
-> > +  - dvdd-supply
-> > +  - dovdd-supply
-> > +  - port
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    #include <dt-bindings/clock/sun8i-a83t-ccu.h>
-> > +    #include <dt-bindings/gpio/gpio.h>
-> > +
-> > +    i2c2 {
-> > +        #address-cells =3D <1>;
-> > +        #size-cells =3D <0>;
-> > +
-> > +        ov8865: camera@36 {
-> > +            compatible =3D "ovti,ov8865";
-> > +            reg =3D <0x36>;
-> > +
-> > +            pinctrl-names =3D "default";
-> > +            pinctrl-0 =3D <&csi_mclk_pin>;
-> > +
-> > +            clocks =3D <&ccu CLK_CSI_MCLK>;
-> > +            clock-names =3D "extclk";
-> > +
-> > +            avdd-supply =3D <&reg_ov8865_avdd>;
-> > +            dovdd-supply =3D <&reg_ov8865_dovdd>;
-> > +            dvdd-supply =3D <&reg_ov8865_dvdd>;
-> > +
-> > +            powerdown-gpios =3D <&pio 4 17 GPIO_ACTIVE_LOW>; /* PE17 */
-> > +            reset-gpios =3D <&pio 4 16 GPIO_ACTIVE_LOW>; /* PE16 */
-> > +
-> > +            port {
-> > +                ov8865_out_mipi_csi2: endpoint {
-> > +                    bus-type =3D <4>; /* MIPI CSI-2 D-PHY */
-> > +                    clock-lanes =3D <0>;
-> > +                    data-lanes =3D <1 2 3 4>;
-> > +
-> > +                    remote-endpoint =3D <&mipi_csi2_in_ov8865>;
-> > +                };
-> > +            };
-> > +        };
-> > +    };
-> > +
-> > +...
->=20
-> --=20
-> Regards,
->=20
-> Sakari Ailus
-
---=20
-Paul Kocialkowski, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
-
---JI+G0+mN8WmwPnOn
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAl+igeMACgkQ3cLmz3+f
-v9GD4gf/d6zDky1Bc2fNJdjcVgUx18tpFH1w8Ph3txVlRC1B2ct42ap/t54nNnig
-9LmLH689DbU5cpyvmzec/+j/nwdpOybyKKlAWwGeUpl8EU84juQ7G0MSTzBoSVu4
-JUMFQVbo5VBSNWFZzBfBxUMd1/JOxNC9F5fvboVQXRWMQjz+KZbixWItXXw3lwwd
-OVG9usEHThAp1dLU7kPm3lMRqIdfFFor4uR+Ua37nV1oEeuORaimr+d5JI50HCG4
-Do7Q3yWO97DcYdbD9PH+U9ibo9QdDPFCzcKe2g/0U0IoQaXOsfd2Ypz/OBrQPs2o
-xOMSjWxF0sbjVR1edHd/IfKg238n6Q==
-=lx7E
------END PGP SIGNATURE-----
-
---JI+G0+mN8WmwPnOn--
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
