@@ -2,224 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85E652A5D3F
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 04:57:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E56AF2A5D50
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 05:22:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729403AbgKDD5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 22:57:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60254 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728551AbgKDD53 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 22:57:29 -0500
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88CD7C0401C1
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 19:57:29 -0800 (PST)
-Received: by mail-lf1-x144.google.com with SMTP id y184so23303946lfa.12
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 19:57:29 -0800 (PST)
+        id S1729069AbgKDEWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 23:22:11 -0500
+Received: from mail-db8eur05on2088.outbound.protection.outlook.com ([40.107.20.88]:41537
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726008AbgKDEWK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 23:22:10 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UaHy60htxHtKQy2VxuSO6qwggS1Ko9jAJorsMvt6fELpTa0UuwfKqpdj32TabeOUvcPC19eKXbyykmfnkrGJ0xzMcBRbc8KhPSwy3IxlD43xEKLiAczwzCWNfPhi4okL8KJbm5stJ+US1r0CMho8R/h/92h/wurLBy0mksoCO99YBLqR8cI2aOQeirbhBN2ZT78NCw6RSr4BtLpDhLAowR1zaez2SOkWzvmZgudixUuzEosCaN47FiK0RuSAPD3RUDLzROA2skkM8VTURas7AqE7+aotU/UC5wfFJj/dTTYxoRh77paQQKEkOGUWCgZNuNvmc6MIJr4KZsqe/i0cYg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MbuI1pIpv1IPnn3r4S61Nz6DzPBJy7HlhWi58ccW2jc=;
+ b=OmEMybsebxFTrkqu5XX+zZ64jHFzPTk8hA0Z3ZuQcpKIHDTBK0U+fvF4xc1YnlRfSBnjLb2VnTXFcyHLxOW1RoFbcz5Yxge+71GmN5Iw3dKdXTxW/+xN8WgehkjlBzJrlQAWMJMzw6EyoH3c0ITRzYcFfedHik3JYKjvSru1aCzGsMzO8L5CRCuHXTAOy1KXlsFk8D3bTzFlaozyi7t7hYi8MfQ79wdQT7GofT8+CVbi8PCOnWDQRazxTTO0A/oRZL8jJ62vDCd8LWVnnUETWrDCgz6momqmyn68DNdMCmg5dO0HkQsjYZ+4zruw7/hdBsn/T+GoLHR8VRN7lGotZA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=softfail (sender ip
+ is 193.240.239.45) smtp.rcpttodomain=linuxfoundation.org
+ smtp.mailfrom=diasemi.com; dmarc=fail (p=none sp=none pct=100) action=none
+ header.from=diasemi.com; dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=E1VJ7b3W8qM62l1kvWjETzE9rcrSZnPfWF78cZ7XqHc=;
-        b=WQuoUcS/8+RFneJcRcTCkWtO7eY0WffJfcFFmqD+aVegAZnJg3TKGJ97uzSoYkMPXs
-         E8xkxnENpb54yWI0N9EdxBtfDTmA6UWmd9e9K276WJAEW0euhyoGU4tmg52vKl+eFsqT
-         8D1n57DX1mvkCPjwMxmKZTb1sCPoQb9wjM1Rw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=E1VJ7b3W8qM62l1kvWjETzE9rcrSZnPfWF78cZ7XqHc=;
-        b=cUdW1210TdsltbH5g34uteFJhGcvnIBzMBHWTV3oOKlHVPo2kl/Yr8kikjRU7CcU91
-         ziqI4Dk2IUU1Vfi7VSeyM074xW5k1HfIpdQQHD1agXxuAsHa90q9hoEYEtVJ7MarwZmX
-         UsiaVdBIMOdwoUf3tEPeSwjUGTzAZp3uRWNvV+COQFHDiGMtx4db7xtnLNMDxJojwmwg
-         +7jYWD1LLPseMjL79yvz6opgHhPB6JaIKnISZirmqiXWuiv3jnIrP6TFZ/nUxbOsgd4X
-         PEvUmVHhnIaWEpBUZtjRSURyJxk0kGPrfTnqMzJB8LaQp/m3tqt4RmU9WYqT76lB/I0/
-         nYJg==
-X-Gm-Message-State: AOAM5308TSsIjAHzGQ66vO+RBU8rrOgCAslEmQ/2C6HulGbFFvZWC/fE
-        Qsv3qBiUUfUlT4p90WbZpJ82rzBRG4Y5Kwudw/21CA==
-X-Google-Smtp-Source: ABdhPJy0KlKHv7n8jvHCRk3WYvhvUrG7sZqZBvezZPpkVKRsk8FaPsUQId11RTWZfCBQN7zpIKMYs7uTBOzHWlmDcY4=
-X-Received: by 2002:a05:6512:1da:: with SMTP id f26mr9576019lfp.245.1604462247625;
- Tue, 03 Nov 2020 19:57:27 -0800 (PST)
+ d=dialogsemiconductor.onmicrosoft.com;
+ s=selector1-dialogsemiconductor-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MbuI1pIpv1IPnn3r4S61Nz6DzPBJy7HlhWi58ccW2jc=;
+ b=VlzCDisIQfc20jIIUpHaTgGqUIiFD9a1qV4TdR5o1TdwtshLnQ26OeS7rVlCc6JQmpVAQ70E0jNYSCQfvnjGDECbzrnZuS6PsuM+UpEF16YFpfjN5PfD59lymZJqnEueyjZ0ueSgq6X70QSh7LMiJxjHo8hDtGH2vtbRD/B4pfE=
+Received: from AM5PR04CA0023.eurprd04.prod.outlook.com (2603:10a6:206:1::36)
+ by DB7PR10MB2203.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:41::27) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.22; Wed, 4 Nov
+ 2020 04:22:06 +0000
+Received: from HE1EUR02FT057.eop-EUR02.prod.protection.outlook.com
+ (2603:10a6:206:1:cafe::11) by AM5PR04CA0023.outlook.office365.com
+ (2603:10a6:206:1::36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend
+ Transport; Wed, 4 Nov 2020 04:22:06 +0000
+X-MS-Exchange-Authentication-Results: spf=softfail (sender IP is
+ 193.240.239.45) smtp.mailfrom=diasemi.com; linuxfoundation.org; dkim=none
+ (message not signed) header.d=none;linuxfoundation.org; dmarc=fail
+ action=none header.from=diasemi.com;
+Received-SPF: SoftFail (protection.outlook.com: domain of transitioning
+ diasemi.com discourages use of 193.240.239.45 as permitted sender)
+Received: from mailrelay1.diasemi.com (193.240.239.45) by
+ HE1EUR02FT057.mail.protection.outlook.com (10.152.11.220) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.3520.15 via Frontend Transport; Wed, 4 Nov 2020 04:22:04 +0000
+Received: from krsrvapps-03.diasemi.com (10.93.17.2) by
+ NB-EX-CASHUB01.diasemi.com (10.1.16.140) with Microsoft SMTP Server id
+ 14.3.468.0; Wed, 4 Nov 2020 05:22:02 +0100
+Received: by krsrvapps-03.diasemi.com (Postfix, from userid 22266)      id
+ 5EDAE13F671; Wed,  4 Nov 2020 13:22:01 +0900 (KST)
+Message-ID: <cover.1604451966.git.Roy.Im@diasemi.com>
+From:   Roy Im <roy.im.opensource@diasemi.com>
+Date:   Wed, 4 Nov 2020 10:06:06 +0900
+Subject: [RESEND PATCH v20 0/3]  da7280: haptic driver submission
+To:     "David S. Miller" <davem@davemloft.net>,
+        Uwe Kleine-Koenig <u.kleine-koenig@pengutronix.de>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        "Mauro Carvalho Chehab" <mchehab+samsung@kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>
+CC:     Support Opensource <support.opensource@diasemi.com>,
+        <devicetree@vger.kernel.org>, <linux-input@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-References: <20201102035433.6774-6-rayagonda.kokatanur@broadcom.com> <861d734f-c776-f70b-e414-a4b32c0f991e@gmail.com>
-In-Reply-To: <861d734f-c776-f70b-e414-a4b32c0f991e@gmail.com>
-From:   Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
-Date:   Wed, 4 Nov 2020 09:27:16 +0530
-Message-ID: <CAHO=5PGdcN2V8XOKdtTHwUBJW9eB2mjQ-CeMvwK4Rem7KBy5GA@mail.gmail.com>
-Subject: Re: [PATCH v3 5/6] i2c: iproc: handle master read request
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Dhananjay Phadke <dphadke@linux.microsoft.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Lori Hikichi <lori.hikichi@broadcom.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Wolfram Sang <wsa@kernel.org>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000005a6f4305b33ffae3"
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 682de7d0-023f-4662-1f2f-08d880792f7b
+X-MS-TrafficTypeDiagnostic: DB7PR10MB2203:
+X-Microsoft-Antispam-PRVS: <DB7PR10MB22036197A4045E84CF503D78A2EF0@DB7PR10MB2203.EURPRD10.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: NW8rooPo43AhcV5AyaoeJ3tCBpj8xllr7N1PeeEjp1ZkNT7OIXmf1c7YTKG84JNHHB/SmnPz7NOhs1BwIjZTM71zzolhbrcFdyoApqUB+4tWfdlq/WcSQ/SEl1lg2O2xWlFVvFv97aMvmUp8WL/3Bo5DZrp9R57zr4/pkcmBPS1GctlPplEh+UxAj9Tf4xNh/lxYsNEjuXBEk5nTniYfG6umqqOTLauf8+fHGSfUjuiy6HCg61E7O902DvbTaU/o95rx//K38y0oH3GJJdL2zHB4DGLCB9kbhWBT8mjFDfmD3APzmBdwdUmV1sUMPYra5+f3UJJWlq799/aR870uun4NqvxBt4TgLOxBrVLqC96A3eAZR5UhOn+Ag9iI7ppYPetn7zv3BtlqVs8W+i8pE7zNVdB0daniHdAw9KNae39L1j7Vq8/XbKQ3XExuQ1HW
+X-Forefront-Antispam-Report: CIP:193.240.239.45;CTRY:GB;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mailrelay1.diasemi.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(136003)(376002)(346002)(396003)(39850400004)(46966005)(8676002)(4326008)(70586007)(70206006)(54906003)(42186006)(83380400001)(36906005)(478600001)(110136005)(82310400003)(316002)(4744005)(26005)(186003)(82740400003)(5660300002)(2616005)(336012)(426003)(86362001)(36756003)(33310700002)(7416002)(356005)(81166007)(6266002)(2906002)(8936002)(47076004)(921003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: diasemi.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Nov 2020 04:22:04.6052
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 682de7d0-023f-4662-1f2f-08d880792f7b
+X-MS-Exchange-CrossTenant-Id: 511e3c0e-ee96-486e-a2ec-e272ffa37b7c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=511e3c0e-ee96-486e-a2ec-e272ffa37b7c;Ip=[193.240.239.45];Helo=[mailrelay1.diasemi.com]
+X-MS-Exchange-CrossTenant-AuthSource: HE1EUR02FT057.eop-EUR02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR10MB2203
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---0000000000005a6f4305b33ffae3
-Content-Type: text/plain; charset="UTF-8"
+This patch adds support for the Dialog DA7280 Haptic driver IC.
 
-On Wed, Nov 4, 2020 at 9:05 AM Florian Fainelli <f.fainelli@gmail.com> wrote:
->
->
->
-> On 11/2/2020 10:19 PM, Dhananjay Phadke wrote:
-> > On Mon,  2 Nov 2020 09:24:32 +0530, Rayagonda Kokatanur wrote:
-> >
-> >> Handle single or multi byte master read request with or without
-> >> repeated start.
-> >>
-> >> Fixes: c245d94ed106 ("i2c: iproc: Add multi byte read-write support for slave mode")
-> >> Signed-off-by: Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
-> >> ---
-> >>  drivers/i2c/busses/i2c-bcm-iproc.c | 215 +++++++++++++++++++++++------
-> >>  1 file changed, 170 insertions(+), 45 deletions(-)
-> >>
-> >> diff --git a/drivers/i2c/busses/i2c-bcm-iproc.c b/drivers/i2c/busses/i2c-bcm-iproc.c
-> >> index 7a235f9f5884..22e04055b447 100644
-> >> --- a/drivers/i2c/busses/i2c-bcm-iproc.c
-> >> +++ b/drivers/i2c/busses/i2c-bcm-iproc.c
-> >> @@ -160,6 +160,11 @@
-> >>
-> >>  #define IE_S_ALL_INTERRUPT_SHIFT     21
-> >>  #define IE_S_ALL_INTERRUPT_MASK      0x3f
-> >> +/*
-> >> + * It takes ~18us to reading 10bytes of data, hence to keep tasklet
-> >> + * running for less time, max slave read per tasklet is set to 10 bytes.
-> >> + */
-> >> +#define MAX_SLAVE_RX_PER_INT         10
-> >>
-> >
-> > In patch [3/6], you've enabled IS_S_RX_THLD_SHIFT in slave ISR bitmask,
-> > however it's not actually used in processing rx events.
-> >
-> > Instead of hardcoding this threshold here, it's better to add a
-> > device-tree knob for rx threshold, program it in controller and handle
-> > that RX_THLD interrupt. This will give more flexibility to drain the rx
-> > fifo earlier than -
-> > (1) waiting for FIFO_FULL interrupt for transactions > 64B.
-> > (2) waiting for start of read transaction in case of master write-read.
+In this patch set the following is provided:
 
-Yes this is one way to implement.
-But do you see any issue in batching 64 bytes at a time in case of
-transaction > 64 Bytes.
-I feel batching will be more efficient as it avoids more number of
-interrupts and hence context switch.
+[PATCH v20 1/3] MAINTAINERS file update for DA7280
+[PATCH v20 2/3] DA7280 DT Binding
+[PATCH v20 3/3] DA7280 Driver
 
->
-> The Device Tree is really intended to describe the hardware FIFO size,
-> not watermarks, as those tend to be more of a policy/work load decision.
-> Maybe this is something that can be added as a module parameter, or
-> configurable via ioctl() at some point.
+This patch applies against linux-mainline and v5.10-rc2
 
-#define MAX_SLAVE_RX_PER_INT         10
+Thank you,
+Roy Im, Dialog Semiconductor Ltd.
 
-is not hw fifo threshold level, it is a kind of watermark for the
-tasklet to process the max number of packets in single run.
-The intention to add the macro is to make sure the tasklet does not
-run more than 20us.
-If we keep this as a module parameter or dt parameter then there is a
-good possibility that the number can be set to higher value.
-This will make the tasklet run more than 20us and defeat the purpose.
+Roy Im (3):
+  MAINTAINERS: da7280 updates to the Dialog Semiconductor search terms
+  dt-bindings: input: Add document bindings for DA7280
+  Input: new da7280 haptic driver
 
-This number is constant and not variable to change
+ .../devicetree/bindings/input/dlg,da7280.txt       |  109 ++
+ MAINTAINERS                                        |    2 +
+ drivers/input/misc/Kconfig                         |   12 +
+ drivers/input/misc/Makefile                        |    1 +
+ drivers/input/misc/da7280.c                        | 1375 ++++++++++++++++++++
+ 5 files changed, 1499 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/input/dlg,da7280.txt
+ create mode 100644 drivers/input/misc/da7280.c
 
-Please feel free to add your comments.
+-- 
+end-of-patch for RESEND PATCH v20
 
-Best regards,
-Rayagonda
-
-> --
-> Florian
-
---0000000000005a6f4305b33ffae3
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-xVUYGnc0GLrYeHC2X4wJbUsgi+UFM/rVW0RKe5Sg4xmLXWc/rBhXDBVPeFVdN2dYsk5MyDRM/fXj
-cAA+xTX+SQGoND8CAwEAAaOCAdcwggHTMA4GA1UdDwEB/wQEAwIFoDCBngYIKwYBBQUHAQEEgZEw
-gY4wTQYIKwYBBQUHMAKGQWh0dHA6Ly9zZWN1cmUuZ2xvYmFsc2lnbi5jb20vY2FjZXJ0L2dzcGVy
-c29uYWxzaWduMnNoYTJnM29jc3AuY3J0MD0GCCsGAQUFBzABhjFodHRwOi8vb2NzcDIuZ2xvYmFs
-c2lnbi5jb20vZ3NwZXJzb25hbHNpZ24yc2hhMmczME0GA1UdIARGMEQwQgYKKwYBBAGgMgEoCjA0
-MDIGCCsGAQUFBwIBFiZodHRwczovL3d3dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAJBgNV
-HRMEAjAAMEQGA1UdHwQ9MDswOaA3oDWGM2h0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20vZ3NwZXJz
-b25hbHNpZ24yc2hhMmczLmNybDArBgNVHREEJDAigSByYXlhZ29uZGEua29rYXRhbnVyQGJyb2Fk
-Y29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNVHSMEGDAWgBRpcoJiMWeVRIV3kYDEBDZJ
-nXsLYTAdBgNVHQ4EFgQU1rE7oQJ7FiSTADFOqokePoGwIq4wDQYJKoZIhvcNAQELBQADggEBAD8I
-VcITGu1E61LQLR1zygqFw8ByKPgiiprMuQB74Viskl7pAZigzYJB8H3Mpd2ljve+GRo8yvbBC76r
-Gi5WdS06XI5vuImDJ2g6QUt754rj7xEYftM5Gy9ZMslKNvSiPPh1/ACx5w7ecD1ZK0YLMKGATeBD
-XybduRFIEPZBAjgJ5LOYT2ax3ZesfAkan1XJ97yLA93edgTTO2cbUAADTIMFWm4lI/e14wdGmK0I
-FtqJWw6DATg5ePiAAn+S0JoIL1xqKsZi2ioNqm02QMFb7RbB3yEGb/7ZLAGcPW666o5GSLsUnPPq
-YOfL/3X6tVfGeoi3IgfI+z76/lXk8vOQzQQxggJvMIICawIBATBtMF0xCzAJBgNVBAYTAkJFMRkw
-FwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTMwMQYDVQQDEypHbG9iYWxTaWduIFBlcnNvbmFsU2ln
-biAyIENBIC0gU0hBMjU2IC0gRzMCDDw+ri+StHzo6PJZ/DANBglghkgBZQMEAgEFAKCB1DAvBgkq
-hkiG9w0BCQQxIgQguIgJQdoPdON4MJRNk4F8yoCvkyKE0Zah3wDbm3Xu6fcwGAYJKoZIhvcNAQkD
-MQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjAxMTA0MDM1NzI4WjBpBgkqhkiG9w0BCQ8x
-XDBaMAsGCWCGSAFlAwQBKjALBglghkgBZQMEARYwCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMAsG
-CSqGSIb3DQEBCjALBgkqhkiG9w0BAQcwCwYJYIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBAHt1
-4SvmJzLo6BpvQ3LeHXmESkQZS5nS0UW0eZ1djH+86BzYaV8M5BpqCSEzeI05YBJ4/B0dD9U4B9MU
-sHHgMJ4caOPTIzb6Ku0B81Bqlzru8IZD06fKaYN411w9L3c514umqAHCHDe9HKBtt0bQkOl71m2x
-0nu9+vsMBna1VxGmxItLOosiBbhlI3AjXSYrgmz4iutfnru0cVDc4YxeKB2q3VxXlOfjkQMC1jr5
-X7oJEqTdD906DlEA4JxRsyWhSmi/MltYiu6Fa2s/EV0caIkwTPjx6QEQDtQXZNVJvnpy+PO6jqBw
-G3DRV7n5b1MuNNSvridsp+VovXopRNS6yjc=
---0000000000005a6f4305b33ffae3--
