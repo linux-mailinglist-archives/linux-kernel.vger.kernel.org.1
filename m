@@ -2,91 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24ABA2A6E99
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 21:13:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 376EB2A6EBF
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 21:31:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731807AbgKDUNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 15:13:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43322 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731230AbgKDUN3 (ORCPT
+        id S1732017AbgKDUa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 15:30:59 -0500
+Received: from wout1-smtp.messagingengine.com ([64.147.123.24]:53465 "EHLO
+        wout1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731930AbgKDUa7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 15:13:29 -0500
-Received: from hera.aquilenet.fr (hera.aquilenet.fr [IPv6:2a0c:e300::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B170EC0613D3
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 12:13:28 -0800 (PST)
-Received: from localhost (localhost [127.0.0.1])
-        by hera.aquilenet.fr (Postfix) with ESMTP id 45895C1D;
-        Wed,  4 Nov 2020 21:13:25 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at aquilenet.fr
-Received: from hera.aquilenet.fr ([127.0.0.1])
-        by localhost (hera.aquilenet.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id EhNBdKwrLQ_R; Wed,  4 Nov 2020 21:13:24 +0100 (CET)
-Received: from function.youpi.perso.aquilenet.fr (lfbn-bor-1-56-204.w90-50.abo.wanadoo.fr [90.50.148.204])
-        by hera.aquilenet.fr (Postfix) with ESMTPSA id 7B56E9ED;
-        Wed,  4 Nov 2020 21:13:24 +0100 (CET)
-Received: from samy by function.youpi.perso.aquilenet.fr with local (Exim 4.94)
-        (envelope-from <samuel.thibault@ens-lyon.org>)
-        id 1kaP9n-003dhX-Cl; Wed, 04 Nov 2020 21:13:23 +0100
-Date:   Wed, 4 Nov 2020 21:13:23 +0100
-From:   Samuel Thibault <samuel.thibault@ens-lyon.org>
-To:     Matthias Reichl <hias@horus.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>, speakup@linux-speakup.org,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: Crash when specifying non-existent serial port in speakup /
- tty_kopen
-Message-ID: <20201104201323.dzyt73tbd2jykcrt@function>
-Mail-Followup-To: Samuel Thibault <samuel.thibault@ens-lyon.org>,
-        Matthias Reichl <hias@horus.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>, speakup@linux-speakup.org,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201104145737.GA11024@camel2.lan>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201104145737.GA11024@camel2.lan>
-Organization: I am not organized
-User-Agent: NeoMutt/20170609 (1.8.3)
+        Wed, 4 Nov 2020 15:30:59 -0500
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.west.internal (Postfix) with ESMTP id 40541861;
+        Wed,  4 Nov 2020 15:30:58 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Wed, 04 Nov 2020 15:30:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
+        mime-version:content-transfer-encoding:content-type:subject:from
+        :to:cc:date:message-id:in-reply-to; s=fm1; bh=MkLJkdfTsuZq/m6LE9
+        YRQzCBoNH8ynmTEDbZNbvS6iI=; b=g2pMChyJTziDlBcbes8G39qPB6Fl0cFSMS
+        wkJfD48McDRDD5kqQTMLM2V/+krbbOJlf8x3NdfTCPIh7xOT9PxKlR5pGx5Ku+Th
+        zPDe0+0Kdgy9NYMhsWYkuOTNHFpXopAwWZDmSzCkAmMHJpYEh5lkp0L4H05GPHEC
+        LijlX1cnXVjUwg/T2DsWwuIB9HuSVTlfYH9fNjvGbF4JKAT5uSa7tMYzdLtCq1CF
+        88qdB417M7t4HZwlJCog8eEMKKnq3Qa4SJSwZ/vOhaOs6ijnQXN496CZX1fXBOaN
+        UshnWpF93OG6ElWsEfw8DI4Yb6x3W4UNf2UTwpYZKNYprtCP2kcg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm1; bh=MkLJkdfTsuZq/m6LE9YRQzCBoNH8ynmTEDbZNbvS6iI=; b=crfFKnTj
+        vOWrtkInXILdjiDPoKS1wSVYqh0+hwPzy7L2EVsDkStSdhopmM3dspmYIYriy1KS
+        leWsUFouBOwXpdCXwdqn7G6CxJA7E07pLNA8Kg07N8d2AzWZYoTqFpQUCisdBMZA
+        tSlNUJ/SMBbStK33Fht1Zu/3LAHU/+OvJE1qm/T7FX7nzLUFqosmuThKh4x6weWK
+        DTiwPbv6Lk7lZ844G4ru6vagjaPirHRV+opJT9uIyZzFetgJ4buskdQSCyoHFXK6
+        MH5zAWSkSxfZbwNAuRr672++8c/T3UexBM6zxly5UY+qd8vGlUFUu+CLa3WDtpNZ
+        jTXEIdjprPdu+A==
+X-ME-Sender: <xms:gQ-jX_78RHKyPoMffseekO0TYuJn38IoFL0vzMMcRVUT2hnBkMH0dw>
+    <xme:gQ-jX04IymhsW_9Zud7yJJljZhV_g63933OAPOdfsSCX4hOFXvYHmig4yboiltNnY
+    fkVz7f_5mPuut1krw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddthedgudeflecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enfghrlhcuvffnffculdejtddmnecujfgurhepggfgtgfuhffvfffkjgesthhqredttddt
+    jeenucfhrhhomhepfdffrghnihgvlhcuighufdcuoegugihusegugihuuhhurdighiiiqe
+    enucggtffrrghtthgvrhhnpeejfefhudeffefhjedvvefhheduledtueejvedugedvjedv
+    jeeljefggedtjeejveenucfkphepieelrddukedurddutdehrdeigeenucevlhhushhtvg
+    hrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdig
+    hiii
+X-ME-Proxy: <xmx:gQ-jX2f1w2RpYUpXmJfDIK5-I6Ca_OmhZLiqG5cagCHtyLPJxQzQ4A>
+    <xmx:gQ-jXwJzwccQA9RpfW4XUrWF5Whft_i-KbajWsbMoGMG36dx3LnDTQ>
+    <xmx:gQ-jXzKIzdiwdfsmlNOXvp25WczknosU3Ji3Rx6a7JdT87KdSmBHVA>
+    <xmx:gQ-jX6WpGhTcdQZyurBtZz2sUu-F5EEWPm7pEUrOmZ3g-4ictzL2VA>
+Received: from localhost (c-69-181-105-64.hsd1.ca.comcast.net [69.181.105.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 4AE3132800E0;
+        Wed,  4 Nov 2020 15:30:56 -0500 (EST)
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH bpf-next] lib/strncpy_from_user.c: Don't overcopy bytes
+ after NUL terminator
+From:   "Daniel Xu" <dxu@dxuuu.xyz>
+To:     "Daniel Borkmann" <daniel@iogearbox.net>, <bpf@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <ast@kernel.org>
+Cc:     <kernel-team@fb.com>
+Date:   Wed, 04 Nov 2020 12:18:49 -0800
+Message-Id: <C6UR9QUUYXKW.3PHSMQ3EXUYI3@maharaja>
+In-Reply-To: <7831c092-5ab4-033e-8fb3-ad9702332d79@iogearbox.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Daniel,
 
-Matthias Reichl, le mer. 04 nov. 2020 15:57:37 +0100, a ecrit:
-> I initially noticed this oops on x86_64 running kernel 5.4.59 when
-> I accidentally mistyped "ttyS0" as "ttyS9":
-> 
-> modprobe speakup_dummy dev=ttyS9
+On Wed Nov 4, 2020 at 8:24 AM PST, Daniel Borkmann wrote:
+> On 11/4/20 3:29 AM, Daniel Xu wrote:
+> > do_strncpy_from_user() may copy some extra bytes after the NUL
+> > terminator into the destination buffer. This usually does not matter fo=
+r
+> > normal string operations. However, when BPF programs key BPF maps with
+> > strings, this matters a lot.
+> >=20
+> > A BPF program may read strings from user memory by calling the
+> > bpf_probe_read_user_str() helper which eventually calls
+> > do_strncpy_from_user(). The program can then key a map with the
+> > resulting string. BPF map keys are fixed-width and string-agnostic,
+> > meaning that map keys are treated as a set of bytes.
+> >=20
+> > The issue is when do_strncpy_from_user() overcopies bytes after the NUL
+> > terminator, it can result in seemingly identical strings occupying
+> > multiple slots in a BPF map. This behavior is subtle and totally
+> > unexpected by the user.
+> >=20
+> > This commit uses the proper word-at-a-time APIs to avoid overcopying.
+> >=20
+> > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+>
+> It looks like this is a regression from the recent refactoring of the
+> mem probing
+> util functions?
 
-> [   49.978481] tty_init_dev: ttyS driver does not set tty->port. This would crash the kernel. Fix the driver!
+I think it was like this from the beginning, at 6ae08ae3dea2 ("bpf: Add
+probe_read_{user, kernel} and probe_read_{user, kernel}_str helpers").
+The old bpf_probe_read_str() used the kernel's byte-by-byte copying
+routine. bpf_probe_read_user_str() started using strncpy_from_user()
+which has been doing the long-sized strides since ~2012 or earlier.
 
-This looks like only a warning, did it actually crash?
+I tried to build and test the kernel at that commit but it seems my
+compiler is too new to build that old code. Bunch of build failures.
 
-> the missing tty->port is quite fatal.
+I assume the refactor you're referring to is 8d92db5c04d1 ("bpf: rework
+the compat kernel probe handling").
 
-It is fatal for module insertion yes (EINVAL) but IIRC that should be
-getting handled properly, making modprobe return the error?
+> Could we add a Fixes tag and then we'd also need to target the fix
+> against bpf tree instead of bpf-next, no?
 
-> It looks like spk_ttyio or tty_dev_name_to_number() / tty_kopen()
-> should perform some additional validation,
+Sure, will do in v2.
 
-spk_ttyio_initialise_ldisc only has a dev_t so can't do much beyond
-calling tty_kopen.
+>
+> Moreover, a BPF kselftest would help to make sure it doesn't regress in
+> future again.
 
-tty_kopen is getting the index from the tty_lookup_driver call (actually
-get_tty_driver which uses p->minor_start and p->num) and passes it to
-tty_driver_lookup_tty. Perhaps in addition of p->num the driver should
-have another field to set, that tty_init_dev could use to reject with
-ENODEV indexes beyond what the driver actually provides?
+Ditto.
 
-> I couldn't make the kernel warn/crash yet by specifying non-existent
-> ttyUSB ports yet though.
+[..]
 
-That's probably because in the ttyUSB case the device allocation is
-dynamic and made exactly according to the number of actual devices,
-while for ttyS* there is a large overcommit of minor values.
-
-Samuel
+Thanks,
+Daniel
