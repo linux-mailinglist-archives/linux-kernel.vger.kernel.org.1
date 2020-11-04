@@ -2,130 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18E7B2A640F
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 13:18:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9293B2A6412
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 13:18:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728922AbgKDMSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 07:18:00 -0500
-Received: from foss.arm.com ([217.140.110.172]:36108 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729735AbgKDMSA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 07:18:00 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 87CF61474;
-        Wed,  4 Nov 2020 04:17:59 -0800 (PST)
-Received: from [10.57.54.223] (unknown [10.57.54.223])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DE70B3F719;
-        Wed,  4 Nov 2020 04:17:57 -0800 (PST)
-Subject: Re: [PATCH] arm64: dts: rockchip: Assign a fixed index to mmc devices
- on rk3399-roc-pc boards.
-To:     Markus Reichl <m.reichl@fivetechno.de>,
-        =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>,
-        linux-rockchip@lists.infradead.org,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Rob Herring <robh@kernel.org>, dianders@chromium.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        devicetree@vger.kernel.org
-References: <20201104094950.2096-1-m.reichl@fivetechno.de>
- <4984701.vSXMUKeAfh@diego>
- <4f4a83f2-3c9b-9549-0acf-057257b4255d@fivetechno.de>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <a3f0a710-91d8-0c05-35ab-9994fba16c82@arm.com>
-Date:   Wed, 4 Nov 2020 12:17:57 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1729889AbgKDMSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 07:18:12 -0500
+Received: from mail-il1-f197.google.com ([209.85.166.197]:38459 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726344AbgKDMSK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 07:18:10 -0500
+Received: by mail-il1-f197.google.com with SMTP id p17so15231151ilb.5
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 04:18:08 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=+3EjKaDTd8bhaaIGhp9ZVJ/VUs7Zj0b/Msvp2PVH4gg=;
+        b=boGyd2Tp3RnmIjxZd2/ul/63vIwxINJ/3DeNIcix5GX/IXedOganyZf2rgPVO61F2e
+         gJgiIg8yx4sKX3oneOJyFK4PA/bD99ARWoJFZTok3WUfLYFhor2h/xDYtMbSZD0NR81B
+         6CZCnfRxfrEAQdeLvdMRpm1XV4ydb5LShlgqLcVEaV8sd4nuHjTMCcP3VyFZCTr9O+B0
+         zvZxHoeQ58es/jxwIDWMcymCAbuxqZYoXh3cfvUWb2K2PyOkMXZJE48bgUCTmdte9c0B
+         +Z4mdn8CUY7Yhpn08LwCdtC1gR1b/YsKek3UdY8XUMkIhZl17rIicmm6B1sk21XbRWbu
+         l37w==
+X-Gm-Message-State: AOAM530OJ9/p/sc9K33Go/tCO8rpuujnyRuCS14zr5IHEWPOsUOtaxcR
+        TWA7bJT4Q3mevqCthsPIdUsCzhhWaxJGCR9OzbCqcVRYr7TD
+X-Google-Smtp-Source: ABdhPJx43kLEHlPlcB2tF4af+p51UNM9dagQ/w/3EDMbobnb0+j3mIWJht6+ajpgiMpjQbM7TAl0eyXZmtWS3Bt5hZGQs7pYhJLn
 MIME-Version: 1.0
-In-Reply-To: <4f4a83f2-3c9b-9549-0acf-057257b4255d@fivetechno.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a92:ba5c:: with SMTP id o89mr17503306ili.248.1604492288180;
+ Wed, 04 Nov 2020 04:18:08 -0800 (PST)
+Date:   Wed, 04 Nov 2020 04:18:08 -0800
+In-Reply-To: <0000000000009d056805b252e883@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000e1c72705b346f8e6@google.com>
+Subject: Re: possible deadlock in send_sigurg (2)
+From:   syzbot <syzbot+c5e32344981ad9f33750@syzkaller.appspotmail.com>
+To:     bfields@fieldses.org, boqun.feng@gmail.com, jlayton@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mingo@redhat.com, peterz@infradead.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk,
+        will@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-04 11:15, Markus Reichl wrote:
-> Hi Heiko,
-> 
-> Am 04.11.20 um 11:51 schrieb Heiko Stübner:
->> Hi Markus,
->>
->> Am Mittwoch, 4. November 2020, 10:49:45 CET schrieb Markus Reichl:
->>> Recently introduced async probe on mmc devices can shuffle block IDs.
->>> Pin them to fixed values to ease booting in evironments where UUIDs
->>> are not practical. Use newly introduced aliases for mmcblk devices 
->>> from [1].
->>>
->>> [1]
->>> https://patchwork.kernel.org/patch/11747669/
->>>
->>> Signed-off-by: Markus Reichl <m.reichl@fivetechno.de>
->>> ---
->>>  arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi | 5 +++++
->>>  1 file changed, 5 insertions(+)
->>>
->>> diff --git a/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi 
->>> b/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi
->>> index e7a459fa4322..bc9482b59428 100644
->>> --- a/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi
->>> +++ b/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi
->>> @@ -13,6 +13,11 @@ / {
->>>      model = "Firefly ROC-RK3399-PC Board";
->>>      compatible = "firefly,roc-rk3399-pc", "rockchip,rk3399";
->>>
->>> +    aliases {
->>> +        mmc0 = &sdmmc;
->>> +        mmc1 = &sdhci;
->>> +    };
->>> +
->>
->> Any reason for this odering?
-> 
-> Without pinning roc-pc mostly booted as
-> mmcblk0 = sdmmc = µSD
-> mmcblk1 = sdhci = eMMC
-> so I kept this behaviour in aliases
-> 
-> roc-pc-mezzanine with populated SDIO-M2-slot booted
-> mmc0 = sdio = (no mmcblk)
-> mmcblk1 = sdmmc = µSD
-> mmcblk2 = sdhci = eMMC
+syzbot has bisected this issue to:
 
-FWIW that's also how my NanoPC-T4 behaves. Given that it's the order 
-they appear in the DT, not too surprising ;)
+commit e918188611f073063415f40fae568fa4d86d9044
+Author: Boqun Feng <boqun.feng@gmail.com>
+Date:   Fri Aug 7 07:42:20 2020 +0000
 
-Robin.
+    locking: More accurate annotations for read_lock()
 
-> With my aliases both boards behave the same now and the optional SDIO slot
-> goes out of the way to mmc2.
-> 
->>
->> I.e. some previous incarnations had it ordered as (emmc, mmc, sdio).
->> This is also true for the ChromeOS out-of-tree usage of those, the
->> rk3399 dts in the chromeos-4.4 tree also orders this as sdhci, sdmmc, 
->> sdio.
-> 
-> The boards from my zoo (exynos, rk3399) mostly come up with SD-card as mmc0
-> and eMMC as mmc1 in mainline as opposed in some vendor kernels.
-> but I have no objection to set it the other way round if this is more 
-> common
-> with rk3399 boards.
-> 
->>
->> And I guess a further question would be when we're doing arbitary 
->> orderings
->> anyway, why is this not in rk3399.dtsi ;-) ?
-> 
-> I restricted the ordering to the boards I have, not to confuse other 
-> established
-> use cases, but if a standard ordering is desired this can go to 
-> rk3399.dtsi.
-> 
->>
->>
->> Heiko
->>
->>
-> 
-> Gruß,
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14142732500000
+start commit:   4ef8451b Merge tag 'perf-tools-for-v5.10-2020-11-03' of gi..
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=16142732500000
+console output: https://syzkaller.appspot.com/x/log.txt?x=12142732500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=61033507391c77ff
+dashboard link: https://syzkaller.appspot.com/bug?extid=c5e32344981ad9f33750
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15197862500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13c59f6c500000
+
+Reported-by: syzbot+c5e32344981ad9f33750@syzkaller.appspotmail.com
+Fixes: e918188611f0 ("locking: More accurate annotations for read_lock()")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
