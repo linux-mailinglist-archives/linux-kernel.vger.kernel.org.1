@@ -2,143 +2,327 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC8C62A6277
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 11:48:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E72E92A6279
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 11:48:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729584AbgKDKsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 05:48:01 -0500
-Received: from outbound-smtp08.blacknight.com ([46.22.139.13]:42421 "EHLO
-        outbound-smtp08.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727923AbgKDKsB (ORCPT
+        id S1729610AbgKDKsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 05:48:36 -0500
+Received: from relay10.mail.gandi.net ([217.70.178.230]:44623 "EHLO
+        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727923AbgKDKsg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 05:48:01 -0500
-Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
-        by outbound-smtp08.blacknight.com (Postfix) with ESMTPS id A8E901C33CD
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 10:47:58 +0000 (GMT)
-Received: (qmail 4390 invoked from network); 4 Nov 2020 10:47:58 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 4 Nov 2020 10:47:58 -0000
-Date:   Wed, 4 Nov 2020 10:47:56 +0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Mel Gorman <mgorman@suse.de>, Phil Auld <pauld@redhat.com>,
-        Peter Puhov <peter.puhov@linaro.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Robert Foley <robert.foley@linaro.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Jirka Hladky <jhladky@redhat.com>
-Subject: Re: [PATCH v1] sched/fair: update_pick_idlest() Select group with
- lowest group_util when idle_cpus are equal
-Message-ID: <20201104104755.GC3371@techsingularity.net>
-References: <20200714125941.4174-1-peter.puhov@linaro.org>
- <20201102105043.GB3371@techsingularity.net>
- <CAKfTPtB7q8DMQaC=gU+XH92XKcSiuTSBjtMuiRFS67af0gzc6g@mail.gmail.com>
- <20201102144418.GB154641@lorien.usersys.redhat.com>
- <20201104094205.GI3306@suse.de>
- <CAKfTPtAjhv8JafvZFR8_UUfDM2MUzVGMPXVBx1zynhPXJ_oh3w@mail.gmail.com>
+        Wed, 4 Nov 2020 05:48:36 -0500
+X-Greylist: delayed 895 seconds by postgrey-1.27 at vger.kernel.org; Wed, 04 Nov 2020 05:48:33 EST
+Received: from aptenodytes (196.109.29.93.rev.sfr.net [93.29.109.196])
+        (Authenticated sender: paul.kocialkowski@bootlin.com)
+        by relay10.mail.gandi.net (Postfix) with ESMTPSA id BA2FB24000D;
+        Wed,  4 Nov 2020 10:48:27 +0000 (UTC)
+Date:   Wed, 4 Nov 2020 11:48:27 +0100
+From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-sunxi@googlegroups.com,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Yong Deng <yong.deng@magewell.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Helen Koike <helen.koike@collabora.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Hans Verkuil <hans.verkuil@cisco.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>, kevin.lhopital@hotmail.com
+Subject: Re: [PATCH 07/14] dt-bindings: media: i2c: Add A31 MIPI CSI-2
+ bindings documentation
+Message-ID: <20201104104827.GD285779@aptenodytes>
+References: <20201023174546.504028-1-paul.kocialkowski@bootlin.com>
+ <20201023174546.504028-8-paul.kocialkowski@bootlin.com>
+ <20201026161450.gr3dqpltxw2ccc3s@gilmour.lan>
+ <20201027095221.GE168350@aptenodytes>
+ <20201027184459.eberpkr52kay3du6@gilmour.lan>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="JwB53PgKC5A7+0Ej"
 Content-Disposition: inline
-In-Reply-To: <CAKfTPtAjhv8JafvZFR8_UUfDM2MUzVGMPXVBx1zynhPXJ_oh3w@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201027184459.eberpkr52kay3du6@gilmour.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 11:06:06AM +0100, Vincent Guittot wrote:
-> >
-> > Hackbench failed to run because I typo'd the configuration. Kernel build
-> > benchmark and git test suite both were inconclusive for 5.10-rc2
-> > (neutral results) although the showed 10-20% gain for kernbench and 24%
-> > gain in git test suite by reverting in 5.9.
-> >
-> > The gitsource test was interesting for a few reasons. First, the big
-> > difference between 5.9 and 5.10 is that the workload is mostly concentrated
-> > on one NUMA node. mpstat shows that 5.10-rc2 uses all of the CPUs on one
-> > node lightly. Reverting the patch shows that far fewer CPUs are used at
-> > a higher utilisation -- not particularly high utilisation because of the
-> > nature of the workload but noticable. i.e.  gitsource with the revert
-> > packs the workload onto fewer CPUs. The same holds for fork_test --
-> > reverting packs the workload onto fewer CPUs with higher utilisation on
-> > each of them. Generally this plays well with cpufreq without schedutil
-> > using fewer CPUs means the CPU is likely to reach higher frequencies.
-> 
-> Which cpufreq governor are you using ?
-> 
 
-Uhh, intel_pstate with ondemand .... which is surprising, I would have
-expected powersave. I'd have to look closer at what happened there. It
-might be a variation of the Kconfig mess selecting the wrong governors when
-"yes '' | make oldconfig" is used.
+--JwB53PgKC5A7+0Ej
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> >
-> > While it's possible that some other factor masked the impact of the patch,
-> > the fact it's neutral for two workloads in 5.10-rc2 is suspicious as it
-> > indicates that if the patch was implemented against 5.10-rc2, it would
-> > likely not have been merged. I've queued the tests on the remaining
-> > machines to see if something more conclusive falls out.
-> 
-> I don't think that the goal of the patch is stressed by those benchmarks.
-> I typically try to optimize the sequence:
-> 1-fork a lot of threads that immediately wait
-> 2-wake up all threads simultaneously to run in parallel
-> 3-wait the end of all threads
-> 
+Hi,
 
-Out of curiousity, have you a stock benchmark that does this with some
-associated metric?  sysbench-threads wouldn't do it. While I know of at
-least one benchmark that *does* exhibit this pattern, it's a Real Workload
-that cannot be shared (so I can't discuss it) and it's *complex* with a
-minimal kernel footprint so analysing it is non-trivial.
+On Tue 27 Oct 20, 19:44, Maxime Ripard wrote:
+> On Tue, Oct 27, 2020 at 10:52:21AM +0100, Paul Kocialkowski wrote:
+> > Hi,
+> >=20
+> > On Mon 26 Oct 20, 17:14, Maxime Ripard wrote:
+> > > i2c? :)
+> >=20
+> > Oops, good catch!
+> > =20
+> > > On Fri, Oct 23, 2020 at 07:45:39PM +0200, Paul Kocialkowski wrote:
+> > > > This introduces YAML bindings documentation for the A31 MIPI CSI-2
+> > > > controller.
+> > > >=20
+> > > > Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+> > > > ---
+> > > >  .../media/allwinner,sun6i-a31-mipi-csi2.yaml  | 168 ++++++++++++++=
+++++
+> > > >  1 file changed, 168 insertions(+)
+> > > >  create mode 100644 Documentation/devicetree/bindings/media/allwinn=
+er,sun6i-a31-mipi-csi2.yaml
+> > > >=20
+> > > > diff --git a/Documentation/devicetree/bindings/media/allwinner,sun6=
+i-a31-mipi-csi2.yaml b/Documentation/devicetree/bindings/media/allwinner,su=
+n6i-a31-mipi-csi2.yaml
+> > > > new file mode 100644
+> > > > index 000000000000..9adc0bc27033
+> > > > --- /dev/null
+> > > > +++ b/Documentation/devicetree/bindings/media/allwinner,sun6i-a31-m=
+ipi-csi2.yaml
+> > > > @@ -0,0 +1,168 @@
+> > > > +# SPDX-License-Identifier: GPL-2.0
+> > > > +%YAML 1.2
+> > > > +---
+> > > > +$id: http://devicetree.org/schemas/media/allwinner,sun6i-a31-mipi-=
+csi2.yaml#
+> > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > > +
+> > > > +title: Allwinner A31 MIPI CSI-2 Device Tree Bindings
+> > > > +
+> > > > +maintainers:
+> > > > +  - Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+> > > > +
+> > > > +properties:
+> > > > +  compatible:
+> > > > +    oneOf:
+> > > > +      - const: allwinner,sun6i-a31-mipi-csi2
+> > > > +      - items:
+> > > > +          - const: allwinner,sun8i-v3s-mipi-csi2
+> > > > +          - const: allwinner,sun6i-a31-mipi-csi2
+> > > > +
+> > > > +  reg:
+> > > > +    maxItems: 1
+> > > > +
+> > > > +  interrupts:
+> > > > +    maxItems: 1
+> > > > +
+> > > > +  clocks:
+> > > > +    items:
+> > > > +      - description: Bus Clock
+> > > > +      - description: Module Clock
+> > > > +
+> > > > +  clock-names:
+> > > > +    items:
+> > > > +      - const: bus
+> > > > +      - const: mod
+> > > > +
+> > > > +  phys:
+> > > > +    items:
+> > > > +      - description: MIPI D-PHY
+> > > > +
+> > > > +  phy-names:
+> > > > +    items:
+> > > > +      - const: dphy
+> > > > +
+> > > > +  resets:
+> > > > +    maxItems: 1
+> > > > +
+> > > > +  # See ./video-interfaces.txt for details
+> > > > +  ports:
+> > > > +    type: object
+> > > > +
+> > > > +    properties:
+> > > > +      port@0:
+> > > > +        type: object
+> > > > +        description: Input port, connect to a MIPI CSI-2 sensor
+> > > > +
+> > > > +        properties:
+> > > > +          reg:
+> > > > +            const: 0
+> > > > +
+> > > > +          endpoint:
+> > > > +            type: object
+> > > > +
+> > > > +            properties:
+> > > > +              remote-endpoint: true
+> > > > +
+> > > > +              bus-type:
+> > > > +                const: 4
+> > > > +
+> > > > +              clock-lanes:
+> > > > +                maxItems: 1
+> > > > +
+> > > > +              data-lanes:
+> > > > +                minItems: 1
+> > > > +                maxItems: 4
+> > > > +
+> > > > +            required:
+> > > > +              - bus-type
+> > > > +              - data-lanes
+> > > > +              - remote-endpoint
+> > > > +
+> > > > +            additionalProperties: false
+> > > > +
+> > > > +        required:
+> > > > +          - endpoint
+> > > > +
+> > > > +        additionalProperties: false
+> > > > +
+> > > > +      port@1:
+> > > > +        type: object
+> > > > +        description: Output port, connect to a CSI controller
+> > > > +
+> > > > +        properties:
+> > > > +          reg:
+> > > > +            const: 1
+> > > > +
+> > > > +          endpoint:
+> > > > +            type: object
+> > > > +
+> > > > +            properties:
+> > > > +              remote-endpoint: true
+> > > > +
+> > > > +              bus-type:
+> > > > +                const: 4
+> > >=20
+> > > That one seems a bit weird. If the input and output ports are using t=
+he
+> > > same format, what is that "bridge" supposed to be doing?
+> >=20
+> > Fair enough. What this represents is the internal link (likely a FIFO) =
+between
+> > the two controllers. It is definitely not a MIPI CSI-2 bus but there's =
+no
+> > mbus type for an internal link (probably because it's not a bus after a=
+ll).
+> >=20
+> > Note that on the CSI controller side, we need the bus-type to be set to=
+ 4 for it
+> > to properly select the MIPI CSI-2 input. So it just felt more logical t=
+o have
+> > the same on the other side of the endpoint. On the other hand, we can j=
+ust
+> > remove it on the MIPI CSI-2 controller side since it won't check it and=
+ have it
+> > fallback to the unknown mbus type.
+> >=20
+> > But that would make the types inconsistent on the two sides of the link.
+> > I don't think V4L2 will complain about it at the moment, but it would a=
+lso make
+> > sense that it does eventually.
+> >=20
+> > What do you think?
+>=20
+> There's still the same issue though, it doesn't make any sense that a
+> bridge doesn't change the bus type. If it really did, we wouldn't need
+> that in the first place.
 
-I could develop one on my own but if you had one already, I'd wire it into
-mmtests and add it to the stock collection of scheduler loads. schbench
-*might* match what you're talking about but I'd rather not guess.
-schbench is also more of a latency wakeup benchmark than it is a throughput
-one. Latency ones tend to be more important but optimising purely for
-wakeup-latency also tends to kick other workloads into a hole.
+Yes I agreee.
 
-> Without the patch all newly forked threads were packed on few CPUs
-> which were already idle when the next fork happened. Then the spreads
-> were spread on CPUs at wakeup in the LLC but they have to wait for a
-> LB to fill other sched domain
-> 
+> What you want to check in your driver is whether the subdev you're
+> connected to has a sink pad that uses MIPI-CSI
 
-Which is fair enough but it's a tradeoff because there are plenty of
-workloads that fork/exec and do something immediately and this is not
-the first time we've had to tradeoff between workloads.
+I'm not really sure that's possible, but if it is it would indeed be the mo=
+st
+appropriate solution. If it's not, we still need to know that we need to fe=
+ed
+=66rom MIPI CSI-2 so I don't see any other option than report MIPI CSI-2 on=
+ both
+ends of MIPI CSI-2 controller.
 
-The other aspect I find interesting is that we get slightly burned by
-the initial fork path because of this thing;
+But there's still the question of what media bus type should be reported for
+the CSI <-> MIPI CSI-2 link. I'm fine with unknown but we could also add a
+generic internal bus type for this case.
 
-                        /*
-                         * Otherwise, keep the task on this node to stay close
-                         * its wakeup source and improve locality. If there is
-                         * a real need of migration, periodic load balance will
-                         * take care of it.
-                         */
-                        if (local_sgs.idle_cpus)
-                                return NULL;
+Paul
 
-For a workload that creates a lot of new threads that go idle and then
-wakeup (think worker pool threads that receive requests at unpredictable
-times), it packs one node too tightly when the threads wakeup -- it's
-also visible from page fault microbenchmarks that scale the number of
-threads. It's a vaguely similar class of problem but the patches are
-taking very different approaches.
+> Maxime
+>=20
+> > > > +            additionalProperties: false
+> > > > +
+> > > > +        required:
+> > > > +          - endpoint
+> > > > +
+> > > > +        additionalProperties: false
+> > > > +
+> > > > +required:
+> > > > +  - compatible
+> > > > +  - reg
+> > > > +  - interrupts
+> > > > +  - clocks
+> > > > +  - clock-names
+> > > > +  - resets
+> > > > +
+> > > > +additionalProperties: false
+> > > > +
+> > > > +examples:
+> > > > +  - |
+> > > > +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> > > > +    #include <dt-bindings/clock/sun8i-v3s-ccu.h>
+> > > > +    #include <dt-bindings/reset/sun8i-v3s-ccu.h>
+> > > > +
+> > > > +    mipi_csi2: mipi-csi2@1cb1000 {
+> > >=20
+> > > The unit name should be pretty standard, with the list here:
+> > >=20
+> > > https://github.com/devicetree-org/devicetree-specification/blob/maste=
+r/source/chapter2-devicetree-basics.rst#generic-names-recommendation
+> > >=20
+> > > there's nothing really standing out for us in that list, but given th=
+at
+> > > there's dsi, we should stick with csi
+> >=20
+> > Then what really surprises me is that the CSI controllers are called "c=
+amera",
+> > not "csi". If "camera" is supposed to cover both image sensor and camer=
+a sensor
+> > interfaces, it would probably fit MIPI CSI-2 as well.
+> >=20
+> > I see lots of names with -controller for controllers with specific devi=
+ces
+> > attached, like "nand-controller" or "lcd-controller". Maybe using
+> > "camera-controller" for the CSI and MIPI CSI-2 controllers would make t=
+he most
+> > sense, while keeping "camera" for the actual image sensors.
+> >=20
+> > What do you think?
+>=20
+> If you really want to discuss this, feel free to open a PR for the DT
+> spec and add it. However, I still think this csi would be best here:
+> it's neither a camera nor a camera controller
+>=20
+> maxime
 
-It'd been in my mind to consider reconciling that chunk with the
-adjust_numa_imbalance but had not gotten around to seeing how it should
-be reconciled without introducing another regression.
 
-The longer I work on the scheduler, the more I feel it's like juggling
-while someone is firing arrows at you :D .
 
--- 
-Mel Gorman
-SUSE Labs
+--=20
+Paul Kocialkowski, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
+
+--JwB53PgKC5A7+0Ej
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAl+ihvsACgkQ3cLmz3+f
+v9Fongf/XSL+crE1GI4SFbtd8uVX2nhvXCN78RRSKI1fFD3SRaWIIuHRUshscxMo
+dEoZ1GzYSbaZSQMJQRXRnJIWQ4AgLMqlnM33gA6me8FSi8YJ4PuKWHP44luENEHT
+rJLDGv3PV72DypUm+hsi/lHdPMmRsmw0MZhT3AixhO6WPevpIswAxyCXasZsKCtc
+o94Fs6UflwcYjfdy+nho8rTRYoz/A6YIUSvaTUJ2TpxJGa/+kNaqXO6D6SC65k4N
+1eTRyoE42qXVN2TP0DJrURO5Cs1yNrBvzbFJ55+FV2GJR1fzoZIdRu4tNeigXT5q
+UyZgCYQBFJCgNSy2qaScfOBdfTnCNQ==
+=flAo
+-----END PGP SIGNATURE-----
+
+--JwB53PgKC5A7+0Ej--
