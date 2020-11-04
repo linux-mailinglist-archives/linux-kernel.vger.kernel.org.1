@@ -2,88 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B45DC2A5FCE
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 09:44:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CFCB2A5FDA
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 09:49:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728465AbgKDIob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 03:44:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47740 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728130AbgKDIob (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 03:44:31 -0500
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6384C0613D3;
-        Wed,  4 Nov 2020 00:44:30 -0800 (PST)
-Received: by mail-ed1-x542.google.com with SMTP id a10so4376581edt.12;
-        Wed, 04 Nov 2020 00:44:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=bBctKzvczeux6BWZZgQsrhXX2Z5+FC8qYBjVK3QSzVI=;
-        b=tm5fT6N6paoIDlu61WIrpETJH6CnUWROhYoXMfqrKrrTyNnf1vrMWWzbPVVHwq4v2b
-         +14c0FGDFHAWg5SIs0pn8ZNP8vnORlWtxAWyZIuPs9txb0wd9KHvkqcabIrt0t7imUNw
-         2qPx9o7lli5THvU+sZIo7W3vVo2/BccWvQ/1thzYZ9emhW6oIyQ34T6fDrxKj/eY0er1
-         spTKOQG/trBQTEqIxXvtXn34/r+PGYRoNf4Lp6/xsu2g7uQPGYwWkHWuS7teUKZqKMaB
-         /0QVZBxpYPWh1Vwnun+rY82gfshcZA6fa198KqLshQmfE2iNZAD/Si/2Z+VWBY6Ygyvc
-         Gk6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=bBctKzvczeux6BWZZgQsrhXX2Z5+FC8qYBjVK3QSzVI=;
-        b=eZf5TK3/h2A28fMPPLkdzLd8z2BuLD3pMTlfkjp7hlN0tZePUZR9VD/Pc3217IRR01
-         +szk0bq573EVWR2CVNuEfsQC2v/aIyf1CYJFNuzU/S7J+dRBjxmNZVDqx0gNYO1byWqo
-         Iqe6n7pWUGWAOoZYVAXpu2kPOcRmonsAUtkCcX4Xjr/4ES4zkDelLbxC4O2jo8nwPWjM
-         l9Rh/Qp3vMFu68VKEx9dMPcVlt3CNHPToRVwq+w4ktPofrTf5zVZT1ny81cKYwcGYCDm
-         qj97AZK8OY3ozsZrFG8PvMRlwjOOzKoX+P239aRwdJdTtw4pHx/wuUAs27anGcLiRcNb
-         WiiA==
-X-Gm-Message-State: AOAM530jcDo2ZVT6n1iw5MvRbJFdBhGOArmm/OkQAv06GltC9zVyeLEP
-        yCI05ACQx4w7u9ugrgE9VNw=
-X-Google-Smtp-Source: ABdhPJw8oVt0OiCLkME3hNgqWRqT718ku1iiS3h/rVFqEaxUH3yV2PTVbd7OWCyy5SIKwwulTX7/nQ==
-X-Received: by 2002:aa7:d787:: with SMTP id s7mr19586948edq.205.1604479469690;
-        Wed, 04 Nov 2020 00:44:29 -0800 (PST)
-Received: from ubuntu-laptop (ip5f5bee22.dynamic.kabel-deutschland.de. [95.91.238.34])
-        by smtp.googlemail.com with ESMTPSA id j4sm619495ejs.8.2020.11.04.00.44.28
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 04 Nov 2020 00:44:29 -0800 (PST)
-Message-ID: <73d4aff5c11424cf2f18735804a6cffccba07cad.camel@gmail.com>
-Subject: Re: [PATCH V4 2/2] scsi: ufs: Allow an error return value from
- ->device_reset()
-From:   Bean Huo <huobean@gmail.com>
-To:     Adrian Hunter <adrian.hunter@intel.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Can Guo <cang@codeaurora.org>,
-        Stanley Chu <stanley.chu@mediatek.com>
-Date:   Wed, 04 Nov 2020 09:44:27 +0100
-In-Reply-To: <20201103141403.2142-3-adrian.hunter@intel.com>
-References: <20201103141403.2142-1-adrian.hunter@intel.com>
-         <20201103141403.2142-3-adrian.hunter@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S1727672AbgKDIt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 03:49:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39182 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725812AbgKDIt0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 03:49:26 -0500
+Received: from kernel.org (unknown [87.71.17.26])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8205B206DB;
+        Wed,  4 Nov 2020 08:49:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604479766;
+        bh=YjV8drwtbCKLQgPVP1Fm9MmP9SfbtUGj8UOQKGuV/As=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Mdof30MlU5fx/72EQbF4RNf0tmeF2AD2NHfeqJj1/kb3FjG8AGj3Alsl0kyWzErVk
+         VUyuY2siPE+szmVdAyUsMhQHM4cmlSIzzUudLJrWB3DR1osf5izmwIFPe82DDRQ/7t
+         qnjBxvWsmLD8wTGTx/vkTv5VNxiN6N7PiADDeio4=
+Date:   Wed, 4 Nov 2020 10:49:19 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Max Filippov <jcmvbkbc@gmail.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>, Chris Zankel <chris@zankel.net>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Russell King <linux@armlinux.org.uk>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ARM, xtensa: highmem: avoid clobbering non-page aligned
+ memory reservations
+Message-ID: <20201104084919.GM4879@kernel.org>
+References: <20201031094345.6984-1-rppt@kernel.org>
+ <CAMo8BfLCfpZcQC3oqEvExSqZ+dT2sVDjcXoaO_XKALn4rGjoog@mail.gmail.com>
+ <20201031171608.GB14628@kernel.org>
+ <CAMo8BfJ4ai4UHD36JZb2ETiFe9SeqpVQw5tsNLrSF8sUx11ccQ@mail.gmail.com>
+ <CAMj1kXFmi4+1FmLk-0kSL8sSMDgftLTArwf_6hONLkyMJk+srg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMj1kXFmi4+1FmLk-0kSL8sSMDgftLTArwf_6hONLkyMJk+srg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-11-03 at 16:14 +0200, Adrian Hunter wrote:
-> It is simpler for drivers to provide a ->device_reset() callback
-> irrespective of whether the GPIO, or firmware interface necessary to
-> do the
-> reset, is discovered during probe.
+On Wed, Nov 04, 2020 at 09:35:14AM +0100, Ard Biesheuvel wrote:
+> On Sat, 31 Oct 2020 at 18:44, Max Filippov <jcmvbkbc@gmail.com> wrote:
+> >
+> > On Sat, Oct 31, 2020 at 10:16 AM Mike Rapoport <rppt@kernel.org> wrote:
+> > >
+> > > On Sat, Oct 31, 2020 at 09:37:09AM -0700, Max Filippov wrote:
+> > > > On Sat, Oct 31, 2020 at 2:43 AM Mike Rapoport <rppt@kernel.org> wrote:
+> > > > > Please let me know how do you prefer to take it upstream.
+> > > > > If needed this can go via memblock tree.
+> > > >
+> > > > Going through the memblock tree sounds right to me.
+> > >
+> > > Can I treat this as Ack?
+> >
+> > Sure, for the xtensa part:
+> > Acked-by: Max Filippov <jcmvbkbc@gmail.com>
+> >
 > 
-> Change ->device_reset() to return an error code.  Drivers that
-> provide
-> the callback, but do not do the reset operation should return
-> -EOPNOTSUPP.
-> 
-> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-Reviewed-by: Bean huo <beanhuo@micron.com>
+> Could we get this queued up please?
 
+It's in memblock/fixes now, I'd like to have it in next for day or two.
 
+-- 
+Sincerely yours,
+Mike.
