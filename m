@@ -2,101 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CC1D2A6C99
+	by mail.lfdr.de (Postfix) with ESMTP id 9A7512A6C9B
 	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 19:21:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730713AbgKDSVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 13:21:44 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:37342 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729488AbgKDSVn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 13:21:43 -0500
-Received: from zn.tnic (p200300ec2f0ef400317dde2deb3fed11.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:f400:317d:de2d:eb3f:ed11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1F1851EC0324;
-        Wed,  4 Nov 2020 19:21:41 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1604514101;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GpmWgyEf2ElSP4jnHUhAmP7K3AwEb5iwpZy9KQW/2fw=;
-        b=kgRCcN5iQL3yrVMpe6J1MvxgIOk9zsQZFQiqVmReeUAGRwwAnG4vqDRlGiEqCMeo1lJipj
-        dixIQSc9mXOEaflMExAQZXZNDYV2TjGgpOTFYYnK8UNUD3j10wl0C1gdAfaiO69Ml3exMJ
-        Dm7jhq/kwNbSTKXohglMkmVI3UVS48A=
-Date:   Wed, 4 Nov 2020 19:21:29 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        Serge Ayoun <serge.ayoun@intel.com>, akpm@linux-foundation.org,
-        andriy.shevchenko@linux.intel.com, asapek@google.com,
-        cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com, kai.huang@intel.com,
-        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
-        luto@kernel.org, nhorman@redhat.com, npmccallum@redhat.com,
-        puiterwijk@redhat.com, rientjes@google.com, tglx@linutronix.de,
-        yaozhangx@google.com, mikko.ylinen@intel.com
-Subject: Re: [PATCH v40 03/24] x86/sgx: Initialize metadata for Enclave Page
- Cache (EPC) sections
-Message-ID: <20201104182129.GD23298@zn.tnic>
-References: <20201104145430.300542-1-jarkko.sakkinen@linux.intel.com>
- <20201104145430.300542-4-jarkko.sakkinen@linux.intel.com>
+        id S1732336AbgKDSVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 13:21:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54124 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730274AbgKDSVt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 13:21:49 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88B65C0613D3
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 10:21:49 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id i26so17266066pgl.5
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 10:21:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Z8gc6ARs/YzzuiIYGit2cDBKpxrUS5sAZ12IGbVfp4I=;
+        b=mS9aIDQz02BPksqMQmtfWq2bRIfqGdCcrb3TZ8qXpCcucwMkUkXsnRClnS4SlW9Bsc
+         7BJNnaw7i7WOANvIk6NmLJpreM9AlXCICLQDhtF6oWj40nunCVTsiVFQ2MgOsMgp0dZT
+         e94ZVvvSWBcWyRqDjMdvS/B8S2znVU0A+7eShjWgu0NNLbWl5tSfmpYLB160GSEJvbBA
+         Dd6HG7wOuW9ZYLK5A4EmSECwPyxgd4n3ZSqEmVE6IlntJ3LSBrFH+y3UNjHtCwyVV56p
+         nJTniVE6YIbcOL1xuGB1GPwpo6+N2DWAUPigNRnLlvHkxU6NLjDdTy/JboMLapL3k/Z7
+         OVDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Z8gc6ARs/YzzuiIYGit2cDBKpxrUS5sAZ12IGbVfp4I=;
+        b=XkZ9DfqOV7FcejstwJe7izS+U7dLBx2S7Ry+qzfHymbWIgVv/nAASS6762j8Yykj3y
+         Kxdze/tkEetK+/kKA9zHk/YAnTnZBB2QyHswUeg4NtE1jhZntekJsV4ogiVwWHKP2FCu
+         1V0BzKBa4BFrkXNMyMa9/eX/Ohi7OAdQZe+cTE/CXmCcm5sXJJK+2iAuWh7QfKFB++QA
+         2jiQRlBRgUDTpZA/THgHoqSYn8/oOTlVJ6fUiC0jqjn7mdps1e7Zg9LNS3rvZyQSrxPE
+         7anVxEu7BHl+dsEFpNtF4jcfxZZeTQBnfnCf/KGltivFCF//SbGUia/gAUhE6sgqv6y/
+         f0Fg==
+X-Gm-Message-State: AOAM532RS4SzEqDjri8n8R8GnfLp4PNyodyshk1PDlkwaiIHAfm9D7bG
+        hx5t+hVr4pyV1amQEkIRAQS4Nw==
+X-Google-Smtp-Source: ABdhPJxKUPsUDYJlcLkUimYNsligw92mxLn0ooxNeaCj3i3jNbmfb0dEaj/exRRAJYPqif6kUP99Ng==
+X-Received: by 2002:a63:4c51:: with SMTP id m17mr22137626pgl.270.1604514109032;
+        Wed, 04 Nov 2020 10:21:49 -0800 (PST)
+Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
+        by smtp.gmail.com with ESMTPSA id u5sm2785866pjn.15.2020.11.04.10.21.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Nov 2020 10:21:48 -0800 (PST)
+Date:   Wed, 4 Nov 2020 11:21:46 -0700
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Alexander Lobakin <alobakin@pm.me>
+Cc:     Amit Shah <amit@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnaud Pouliquen <arnaud.pouliquen@st.com>,
+        Suman Anna <s-anna@ti.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH virtio] virtio: virtio_console: fix DMA memory allocation
+ for rproc serial
+Message-ID: <20201104182146.GC2893396@xps15>
+References: <AOKowLclCbOCKxyiJ71WeNyuAAj2q8EUtxrXbyky5E@cp7-web-042.plabs.ch>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201104145430.300542-4-jarkko.sakkinen@linux.intel.com>
+In-Reply-To: <AOKowLclCbOCKxyiJ71WeNyuAAj2q8EUtxrXbyky5E@cp7-web-042.plabs.ch>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 04:54:09PM +0200, Jarkko Sakkinen wrote:
-> +static void __init sgx_init(void)
-> +{
-> +	int i;
-> +
-> +	if (!boot_cpu_has(X86_FEATURE_SGX))
+On Wed, Nov 04, 2020 at 03:31:36PM +0000, Alexander Lobakin wrote:
+> Since commit 086d08725d34 ("remoteproc: create vdev subdevice with
+> specific dma memory pool"), every remoteproc has a DMA subdevice
+> ("remoteprocX#vdevYbuffer") for each virtio device, which inherits
+> DMA capabilities from the corresponding platform device. This allowed
+> to associate different DMA pools with each vdev, and required from
+> virtio drivers to perform DMA operations with the parent device
+> (vdev->dev.parent) instead of grandparent (vdev->dev.parent->parent).
+> 
+> virtio_rpmsg_bus was already changed in the same merge cycle with
+> commit d999b622fcfb ("rpmsg: virtio: allocate buffer from parent"),
+> but virtio_console did not. In fact, operations using the grandparent
+> worked fine while the grandparent was the platform device, but since
+> commit c774ad010873 ("remoteproc: Fix and restore the parenting
+> hierarchy for vdev") this was changed, and now the grandparent device
+> is the remoteproc device without any DMA capabilities.
+> So, starting v5.8-rc1 the following warning is observed:
+> 
+> [    2.483925] ------------[ cut here ]------------
+> [    2.489148] WARNING: CPU: 3 PID: 101 at kernel/dma/mapping.c:427 0x80e7eee8
+> [    2.489152] Modules linked in: virtio_console(+)
+> [    2.503737]  virtio_rpmsg_bus rpmsg_core
+> [    2.508903]
+> [    2.528898] <Other modules, stack and call trace here>
+> [    2.913043]
+> [    2.914907] ---[ end trace 93ac8746beab612c ]---
+> [    2.920102] virtio-ports vport1p0: Error allocating inbufs
+> 
+> kernel/dma/mapping.c:427 is:
+> 
+> WARN_ON_ONCE(!dev->coherent_dma_mask);
+> 
+> obviously because the grandparent now is remoteproc dev without any
+> DMA caps:
 
-Guys, you need to build-test *every* *single* patch - otherwise we break
-bisectability and that is a no-no:
+You are correct.
 
-arch/x86/kernel/cpu/sgx/main.c: In function ‘sgx_init’:
-arch/x86/kernel/cpu/sgx/main.c:172:20: error: ‘X86_FEATURE_SGX’ undeclared (first use in this function); did you mean ‘X86_FEATURE_SMX’?
-  172 |  if (!boot_cpu_has(X86_FEATURE_SGX))
-      |                    ^~~~~~~~~~~~~~~
-./arch/x86/include/asm/cpufeature.h:118:24: note: in definition of macro ‘cpu_has’
-  118 |  (__builtin_constant_p(bit) && REQUIRED_MASK_BIT_SET(bit) ? 1 : \
-      |                        ^~~
-arch/x86/kernel/cpu/sgx/main.c:172:7: note: in expansion of macro ‘boot_cpu_has’
-  172 |  if (!boot_cpu_has(X86_FEATURE_SGX))
-      |       ^~~~~~~~~~~~
-arch/x86/kernel/cpu/sgx/main.c:172:20: note: each undeclared identifier is reported only once for each function it appears in
-  172 |  if (!boot_cpu_has(X86_FEATURE_SGX))
-      |                    ^~~~~~~~~~~~~~~
-./arch/x86/include/asm/cpufeature.h:118:24: note: in definition of macro ‘cpu_has’
-  118 |  (__builtin_constant_p(bit) && REQUIRED_MASK_BIT_SET(bit) ? 1 : \
-      |                        ^~~
-arch/x86/kernel/cpu/sgx/main.c:172:7: note: in expansion of macro ‘boot_cpu_has’
-  172 |  if (!boot_cpu_has(X86_FEATURE_SGX))
-      |       ^~~~~~~~~~~~
-make[4]: *** [scripts/Makefile.build:283: arch/x86/kernel/cpu/sgx/main.o] Error 1
-make[3]: *** [scripts/Makefile.build:500: arch/x86/kernel/cpu/sgx] Error 2
-make[2]: *** [scripts/Makefile.build:500: arch/x86/kernel/cpu] Error 2
-make[2]: *** Waiting for unfinished jobs....
-make[1]: *** [scripts/Makefile.build:500: arch/x86/kernel] Error 2
-make[1]: *** Waiting for unfinished jobs....
-make: *** [Makefile:1799: arch/x86] Error 2
-make: *** Waiting for unfinished jobs....
+> 
+> [    3.104943] Parent: remoteproc0#vdev1buffer, grandparent: remoteproc0
+> 
+> Fix this the same way as it was for virtio_rpmsg_bus, using just the
+> parent device (vdev->dev.parent, "remoteprocX#vdevYbuffer") for DMA
+> operations.
+> This also allows now to reserve DMA pools/buffers for rproc serial
+> via Device Tree.
+> 
+> Fixes: c774ad010873 ("remoteproc: Fix and restore the parenting hierarchy for vdev")
+> Cc: stable@vger.kernel.org # 5.1+
+> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+> ---
+>  drivers/char/virtio_console.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/char/virtio_console.c b/drivers/char/virtio_console.c
+> index a2da8f768b94..1836cc56e357 100644
+> --- a/drivers/char/virtio_console.c
+> +++ b/drivers/char/virtio_console.c
+> @@ -435,12 +435,12 @@ static struct port_buffer *alloc_buf(struct virtio_device *vdev, size_t buf_size
+>  		/*
+>  		 * Allocate DMA memory from ancestor. When a virtio
+>  		 * device is created by remoteproc, the DMA memory is
+> -		 * associated with the grandparent device:
+> -		 * vdev => rproc => platform-dev.
+> +		 * associated with the parent device:
+> +		 * virtioY => remoteprocX#vdevYbuffer.
+>  		 */
+> -		if (!vdev->dev.parent || !vdev->dev.parent->parent)
+> +		buf->dev = vdev->dev.parent;
+> +		if (!buf->dev)
+>  			goto free_buf;
+> -		buf->dev = vdev->dev.parent->parent;
 
--- 
-Regards/Gruss,
-    Boris.
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 
-https://people.kernel.org/tglx/notes-about-netiquette
+>  
+>  		/* Increase device refcnt to avoid freeing it */
+>  		get_device(buf->dev);
+> -- 
+> 2.29.2
+> 
+> 
