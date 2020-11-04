@@ -2,144 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFC622A65D3
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 15:06:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A2B32A65D9
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 15:08:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726894AbgKDOGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 09:06:22 -0500
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:40414 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726078AbgKDOGW (ORCPT
+        id S1727006AbgKDOH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 09:07:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726665AbgKDOH6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 09:06:22 -0500
-Received: by mail-wm1-f66.google.com with SMTP id k18so2423915wmj.5;
-        Wed, 04 Nov 2020 06:06:20 -0800 (PST)
+        Wed, 4 Nov 2020 09:07:58 -0500
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 983A0C0613D3;
+        Wed,  4 Nov 2020 06:07:58 -0800 (PST)
+Received: by mail-oi1-x244.google.com with SMTP id t16so4909722oie.11;
+        Wed, 04 Nov 2020 06:07:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=VKQTADKWbwsUwSbsUHgL7+P7gK0ZiXSB4+VvuuMdBSM=;
+        b=jpGEHr+5MJN5vDwibuhO42SDoPqOvGnNgZorP1yPO9/OySDz2V5ZJkHr7o5/J2H3Ai
+         raBbAsgp3xYJORgYKPT0Qdc8qxzpxQf7UU5rQ489Cu8eA1Jh1+dLVHeycB5NQ5Ust73/
+         CQoJVzc5J5co6jS+kjOFjHJL2eekh3BCDWkmHubOBHJXiUlHPKTi8ain2FRLGrMNdL3p
+         JQpceb74yeHEp4FrZOQ/BxtdnrKJHTSUd7DXbwLM5oL1yYTLAFEzcJWrsP4MePxrq4dV
+         y2UnaQhzPIjyCvGjMwFyD8KW6HmqowVkHbkBaksJ+AkZAWry02JY41ueXBtQttOEuCBL
+         lpag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=S41teLRLSZ7isGd7nFyvP35fxvOeeax7aZ66a+ME5Ss=;
-        b=cK1aHpaSQh6BAEvBb0+cEMuC6ob/HqGktSYGqM0a6ChzjoBj17USMkgNj/YXmM0zwf
-         bMWC4hoFiMyzIKIUN8guRldlieXgRnapU2nK9nal7ShhSc6pIaOhOUD49XTLPdEZf9ke
-         3UAWlFzdI5n9pPW7O7T9VYdeG/Np95gjDBXTsJnbIgcTmx0Xp11vcSiEkspMpWVcrsuI
-         7H6F5vVNg03OHB12cvP+pca3gEB9ev84bFsx7UKxN3STCvGlTTk1mqjVPECvYQ1PTMxP
-         0fZOo4Bg4xuGE5T706pO3ceTLS7vhSAVj8E831F52DnfFgYzf5MwMFUk9S3aKGrxJ5kR
-         7sUg==
-X-Gm-Message-State: AOAM530JNMiL6Qnpf8mOvDqWfsxwX9uayvl8PNypn6VUry8J3G6EoRNp
-        a0NkpewYotWOtHHg7qJ/O+W0SAl07QQ=
-X-Google-Smtp-Source: ABdhPJzub2Qdl39XwePCwW5f4Na1s1gFDl9l1dWju07Y2lOINxiR82U83DMQ2PjXZBKrxm2EzbTIJg==
-X-Received: by 2002:a05:600c:2282:: with SMTP id 2mr5089187wmf.154.1604498779470;
-        Wed, 04 Nov 2020 06:06:19 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id g186sm6885889wma.1.2020.11.04.06.06.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 06:06:17 -0800 (PST)
-Date:   Wed, 4 Nov 2020 15:06:16 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc:     georgi.djakov@linaro.org, cw00.choi@samsung.com,
-        devicetree@vger.kernel.org, robh+dt@kernel.org,
-        a.swigon@samsung.com, myungjoo.ham@samsung.com,
-        inki.dae@samsung.com, sw0312.kim@samsung.com,
-        b.zolnierkie@samsung.com, m.szyprowski@samsung.com,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v8 2/7] interconnect: Add generic interconnect driver for
- Exynos SoCs
-Message-ID: <20201104140616.GA3024@kozik-lap>
-References: <20201104103657.18007-1-s.nawrocki@samsung.com>
- <CGME20201104103720eucas1p1014217e751a681796ed508af22c6bb12@eucas1p1.samsung.com>
- <20201104103657.18007-3-s.nawrocki@samsung.com>
- <20201104123729.GA13371@kozik-lap>
- <346da718-2340-c862-9a1a-c5f64aae19c2@samsung.com>
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=VKQTADKWbwsUwSbsUHgL7+P7gK0ZiXSB4+VvuuMdBSM=;
+        b=eKZqMfw+boSlf3rh5go0eEMbQrGi0eVf5I/twNXhGVWsGveeBViAYpD3vR7bCxl3V+
+         Uc88scU4pBo4iqwX5EXTfOQFJLICEVT/hTDSpkBLtcjvZasa9HzNrlm4oD2Ti67qrELa
+         kAZJTP+gzcoiD5KvmNg+KMUVQmQT58/47ZdWtkxwJK0jH+tJ5tfPlVTItr6zCANv3Zbf
+         hPnsLIf6lLQhUNb1WZkszsd3ft1vQRML7YLQEtxLRU+f13aUXcQ3u9dg9CMTAHKcSAYx
+         uB4GQrasOFQbI9yopZyWP9FEUbGheC3dEn/sufeyf5olgV0lvmCGh+h/1Xg/WBs9TVZ4
+         EPYg==
+X-Gm-Message-State: AOAM532joFJG7hLMHznirWmgKsAKsOpwNSopYFcYqmu1Nt3KR1gw1xNg
+        21gtNtx4PCHAhwgSkff/FPlIhfU6UOE=
+X-Google-Smtp-Source: ABdhPJyLXcamT3Lj3lRe1C8J4BVsWH5OjYiutEk2E0DoGlRiQVffdsFt+FVldwVIk7JTG72jG5bGDg==
+X-Received: by 2002:aca:c3d6:: with SMTP id t205mr677887oif.10.1604498877977;
+        Wed, 04 Nov 2020 06:07:57 -0800 (PST)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id l44sm542751ooi.44.2020.11.04.06.07.55
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 04 Nov 2020 06:07:56 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 4 Nov 2020 06:07:54 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
+Subject: Re: [PATCH 5.4 000/214] 5.4.75-rc1 review
+Message-ID: <20201104140754.GA4312@roeck-us.net>
+References: <20201103203249.448706377@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <346da718-2340-c862-9a1a-c5f64aae19c2@samsung.com>
+In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 02:22:37PM +0100, Sylwester Nawrocki wrote:
-> On 04.11.2020 13:37, Krzysztof Kozlowski wrote:
-> > On Wed, Nov 04, 2020 at 11:36:52AM +0100, Sylwester Nawrocki wrote:
+On Tue, Nov 03, 2020 at 09:34:08PM +0100, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.75 release.
+> There are 214 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> >> diff --git a/drivers/interconnect/Makefile b/drivers/interconnect/Makefile
-> >> index d203520..c2f9e9d 100644
-> >> --- a/drivers/interconnect/Makefile
-> >> +++ b/drivers/interconnect/Makefile
-> >> @@ -6,3 +6,4 @@ icc-core-objs				:= core.o bulk.o
-> >>  obj-$(CONFIG_INTERCONNECT)		+= icc-core.o
-> >>  obj-$(CONFIG_INTERCONNECT_IMX)		+= imx/
-> >>  obj-$(CONFIG_INTERCONNECT_QCOM)		+= qcom/
-> >> +obj-$(CONFIG_INTERCONNECT_SAMSUNG)	+= samsung/
-> >> \ No newline at end of file
-> > 
-> > This needs a fix.
+> Responses should be made by Thu, 05 Nov 2020 20:29:58 +0000.
+> Anything received after that time might be too late.
 > 
-> Corrected, thanks for pointing out.
->  
-> >> diff --git a/drivers/interconnect/samsung/Kconfig b/drivers/interconnect/samsung/Kconfig
-> >> new file mode 100644
-> >> index 0000000..508ed64
-> >> --- /dev/null
-> >> +++ b/drivers/interconnect/samsung/Kconfig
-> >> @@ -0,0 +1,13 @@
-> >> +# SPDX-License-Identifier: GPL-2.0-only
-> >> +config INTERCONNECT_SAMSUNG
-> >> +	bool "Samsung interconnect drivers"
-> > 
-> > "Samsung SoC interconnect drivers"
-> 
-> Changed.
-> 
-> >> +	depends on ARCH_EXYNOS || COMPILE_TEST
-> > 
-> > Don't the depend on INTERCONNECT?
-> 
-> This file gets included only if INTERCONNECT is enabled, see
-> higher level Kconfig file.
 
-I missed the include part, looks good.
+All sparc images fail to build.
 
->  
-> >> +	help
-> >> +	  Interconnect drivers for Samsung SoCs.
-> >> +
-> >> +
-> > 
-> > One line break
-> 
-> Fixed.
-> 
-> >> +config INTERCONNECT_EXYNOS
-> >> +	tristate "Exynos generic interconnect driver"
-> >> +	depends on INTERCONNECT_SAMSUNG
-> > 
-> > How about:
-> > default y if ARCH_EXYNOS
-> 
-> OK, added.
-> 
-> >> +	help
-> >> +	  Generic interconnect driver for Exynos SoCs.
-> >> diff --git a/drivers/interconnect/samsung/Makefile b/drivers/interconnect/samsung/Makefile
-> >> new file mode 100644
-> >> index 0000000..e19d1df
-> >> --- /dev/null
-> >> +++ b/drivers/interconnect/samsung/Makefile
-> >> @@ -0,0 +1,4 @@
-> >> +# SPDX-License-Identifier: GPL-2.0
-> >> +exynos-interconnect-objs		:= exynos.o
-> > 
-> > What is this line for?
->  
-> That allows to change the module name, so it's exynos-interconnect.ko
-> rather than just exynos.c. It's done similarly for other SoCs in 
-> the subsystem.
+Building sparc32:defconfig ... failed
+--------------
+Error log:
+<stdin>:1511:2: warning: #warning syscall clone3 not implemented [-Wcpp]
+In file included from arch/sparc/include/asm/io_32.h:14,
+                 from arch/sparc/include/asm/io.h:7,
+                 from include/linux/io.h:13,
+                 from include/linux/irq.h:20,
+                 from include/asm-generic/hardirq.h:13,
+                 from arch/sparc/include/asm/hardirq_32.h:11,
+                 from arch/sparc/include/asm/hardirq.h:7,
+                 from include/linux/hardirq.h:9,
+                 from include/linux/interrupt.h:11,
+                 from include/linux/kernel_stat.h:9,
+                 from arch/sparc/kernel/irq_32.c:15:
+include/asm-generic/io.h: In function '__pci_ioport_unmap':
+include/asm-generic/io.h:1012:2: error: implicit declaration of function 'iounmap'; did you mean 'ioremap'?
 
-Thanks, makes sense.
-
-Best regards,
-Krzysztof
+Guenter
