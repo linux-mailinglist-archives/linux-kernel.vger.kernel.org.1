@@ -2,81 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E93F2A66A3
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 15:46:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CF222A66A5
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 15:46:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730259AbgKDOp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 09:45:58 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39219 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730243AbgKDOp5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 09:45:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604501156;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2/qDMVtos7dYdtcZu5rNmBGlotvjjozf9G0PRDDGQXs=;
-        b=FuehmNZcdrcy7rGZnQ6XxJIDWzKhga0wN8DWf9q9lAn5+h7YMqS/iRfTkVcDYtLce2bqEv
-        rpV8BHUYd8xNdGdP48JbZTM5DM6puvHJbrMDqYBiiEC5BY4k19KWWdwDQlVcWqmpb8BpPz
-        Cs/+yMIC2jWRjTSFP4fauRvai2JRQJE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-202-jgwp6zJgNeGan1kW1fiemg-1; Wed, 04 Nov 2020 09:45:52 -0500
-X-MC-Unique: jgwp6zJgNeGan1kW1fiemg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1730279AbgKDOqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 09:46:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45748 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730262AbgKDOqC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 09:46:02 -0500
+Received: from localhost (searspoint.nvidia.com [216.228.112.21])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5D1931084C80;
-        Wed,  4 Nov 2020 14:45:50 +0000 (UTC)
-Received: from oldenburg2.str.redhat.com (ovpn-113-12.ams2.redhat.com [10.36.113.12])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C3E125B4D8;
-        Wed,  4 Nov 2020 14:45:45 +0000 (UTC)
-From:   Florian Weimer <fweimer@redhat.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Szabolcs Nagy <szabolcs.nagy@arm.com>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Mark Brown <broonie@kernel.org>, libc-alpha@sourceware.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Salvatore Mesoraca <s.mesoraca16@gmail.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        Topi Miettinen <toiwoton@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kernel-hardening@lists.openwall.com,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 0/4] aarch64: avoid mprotect(PROT_BTI|PROT_EXEC) [BZ
- #26831]
-References: <cover.1604393169.git.szabolcs.nagy@arm.com>
-        <20201103173438.GD5545@sirena.org.uk>
-        <8c99cc8e-41af-d066-b786-53ac13c2af8a@arm.com>
-        <20201104085704.GB24704@arm.com> <20201104144120.GD28902@gaia>
-Date:   Wed, 04 Nov 2020 15:45:44 +0100
-In-Reply-To: <20201104144120.GD28902@gaia> (Catalin Marinas's message of "Wed,
-        4 Nov 2020 14:41:21 +0000")
-Message-ID: <87ft5p2naf.fsf@oldenburg2.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8D61920756;
+        Wed,  4 Nov 2020 14:46:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604501162;
+        bh=CYbbCztgkPv73rGNjNK0mcqcOPTC4t+w0Vu80LkOh7Q=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Uxs1Sd0+DibJy0GXWobw8PYv+j60gK7p4XDNkxZhh33XlHL8ffp+VpO8av4N4/Ela
+         0Qfx4R2gCA0TTsDjrDP2TJ/ag79jG1n+suSgYbFShi1ZaxftH2YcxEg5JBSY6txJls
+         Pu9EMIjZJm/YQiNJj4v+gWjfzKGwSh+M9VC8XW3s=
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Subject: [PATCH rdma-next v1 0/2] Cleanup FD destroy
+Date:   Wed,  4 Nov 2020 16:45:54 +0200
+Message-Id: <20201104144556.3809085-1-leon@kernel.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Catalin Marinas:
+From: Leon Romanovsky <leonro@nvidia.com>
 
-> Can the dynamic loader mmap() the main exe again while munmap'ing the
-> original one? (sorry if it was already discussed)
+v1: Added Jason's variant of first patch
+v0: https://lore.kernel.org/lkml/20201012045600.418271-1-leon@kernel.org
 
-No, we don't have a descriptor for that.  /proc may not be mounted, and
-using the path stored there has a race condition anyway.
+Leon Romanovsky (2):
+  RDMA/core: Postpone uobject cleanup on failure till FD close
+  RDMA/core: Make FD destroy callback void
 
-Thanks,
-Florian
--- 
-Red Hat GmbH, https://de.redhat.com/ , Registered seat: Grasbrunn,
-Commercial register: Amtsgericht Muenchen, HRB 153243,
-Managing Directors: Charles Cachera, Brian Klemm, Laurie Krebs, Michael O'Neill
+ drivers/infiniband/core/rdma_core.c           | 50 +++++++------------
+ drivers/infiniband/core/uverbs_cmd.c          |  5 +-
+ drivers/infiniband/core/uverbs_std_types.c    | 18 +++----
+ .../core/uverbs_std_types_async_fd.c          |  5 +-
+ .../core/uverbs_std_types_counters.c          |  5 +-
+ drivers/infiniband/core/uverbs_std_types_cq.c |  4 +-
+ drivers/infiniband/core/uverbs_std_types_dm.c |  6 +--
+ .../core/uverbs_std_types_flow_action.c       |  6 +--
+ drivers/infiniband/core/uverbs_std_types_qp.c |  4 +-
+ .../infiniband/core/uverbs_std_types_srq.c    |  4 +-
+ drivers/infiniband/core/uverbs_std_types_wq.c |  4 +-
+ drivers/infiniband/hw/mlx5/devx.c             | 14 +++---
+ drivers/infiniband/hw/mlx5/fs.c               |  6 +--
+ include/rdma/ib_verbs.h                       | 44 +---------------
+ include/rdma/uverbs_types.h                   |  4 +-
+ 15 files changed, 54 insertions(+), 125 deletions(-)
+
+--
+2.28.0
 
