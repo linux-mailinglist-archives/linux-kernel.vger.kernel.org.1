@@ -2,128 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C24B2A63BA
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 12:57:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2E8B2A63B8
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 12:57:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729746AbgKDL5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 06:57:34 -0500
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:40491 "EHLO
-        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728841AbgKDLzq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 06:55:46 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0UED0xNV_1604490939;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UED0xNV_1604490939)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 04 Nov 2020 19:55:39 +0800
-Subject: Re: [PATCH v20 00/20] per memcg lru lock
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-To:     akpm@linux-foundation.org, mgorman@techsingularity.net,
-        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
-        daniel.m.jordan@oracle.com, willy@infradead.org,
-        hannes@cmpxchg.org, lkp@intel.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        shakeelb@google.com, iamjoonsoo.kim@lge.com,
-        richard.weiyang@gmail.com, kirill@shutemov.name,
-        alexander.duyck@gmail.com, rong.a.chen@intel.com, mhocko@suse.com,
-        vdavydov.dev@gmail.com, shy828301@gmail.com
-References: <1603968305-8026-1-git-send-email-alex.shi@linux.alibaba.com>
-Message-ID: <811216d4-4972-4721-d6b9-1028c02f4290@linux.alibaba.com>
-Date:   Wed, 4 Nov 2020 19:55:39 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
+        id S1729804AbgKDL51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 06:57:27 -0500
+Received: from nautica.notk.org ([91.121.71.147]:59189 "EHLO nautica.notk.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729770AbgKDL50 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 06:57:26 -0500
+Received: by nautica.notk.org (Postfix, from userid 1001)
+        id 653E9C01B; Wed,  4 Nov 2020 12:57:23 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
+        t=1604491043; bh=2t1AiDgkKOtehlJf9ksFzwCpxYWIkcr1ROs3yTQip1Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=syYxOsh8Q/ebgtC4yxsyxN5Qdt0aRu85IZXEBj0oK2AWULlHpCnmAQ4fSVCdLNk6y
+         TWf3jcRX3EoFhpfoQayn3WWQHUDhN7Bz1vQzr9JO8dhht+24YeDSnAKtkJJgeYdUcm
+         yh7uIrZGyCGmmmwzBydG4JQ+KZZfPkteAnWx+t3BObik+OLDUfCSWo8nsJ/uEXJGhm
+         8YfFmi78gmkJiKHaUO+ya5cIEZiLR2599zwWMKiS7Qq9P1wRxPzb2jPAJehWLKlxJb
+         YpJj2c6G45qumFh305/qHSbcRQSiLiQQwCtBDv1iXhtygeYoAoCl4zowiku5xCQmvU
+         YwiqTOtM62Mcg==
+Date:   Wed, 4 Nov 2020 12:57:08 +0100
+From:   Dominique Martinet <asmadeus@codewreck.org>
+To:     Christian Schoenebeck <qemu_oss@crudebyte.com>
+Cc:     Jianyong Wu <jianyong.wu@arm.com>, ericvh@gmail.com,
+        lucho@ionkov.net, groug@kaod.org,
+        v9fs-developer@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        justin.he@arm.com
+Subject: Re: [PATCH RFC v2 4/4] 9p: fix race issue in fid contention.
+Message-ID: <20201104115708.GA30104@nautica>
+References: <20200923141146.90046-1-jianyong.wu@arm.com>
+ <20200923141146.90046-5-jianyong.wu@arm.com>
+ <20201103104116.GA19587@nautica>
+ <1755303.6a88tIVZ8j@silver>
 MIME-Version: 1.0
-In-Reply-To: <1603968305-8026-1-git-send-email-alex.shi@linux.alibaba.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <1755303.6a88tIVZ8j@silver>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Johannes & all,
+Christian Schoenebeck wrote on Wed, Nov 04, 2020:
+> > Greg, Christian - from what I understood (in private, hopefully I'm
+> > allowed to repeat!), he won't be able to contribute to qemu because of
+> > company policies and I'm unlikely to take the time either right now.
+> > I don't think it's a problem to continue as is though, we can land linux
+> > kernel support (it's still useful for non-qemu servers) and if someone
+> > is interested later on they'll just need to finish that bit.
+> 
+> Hmm, no idea what kind of policy that is; there is no GPL3 in qemu at least 
+> that some companies are concerned about, but OK not my business.
+> 
+> I actually thought this would still take a while on kernel side,
 
-Thanks for all comments and suggestions, here is a patch base on v20, as a summary for all you suggested:
-Is this ok?
+To be honest, so did I -- the original patches are so old I had more or
+less given up on it :P
 
-Many thanks!
-Alex
+But I don't see any more problem now and we'll want to get there
+eventually so now's a good time as any... I just want to get fault
+injection to work to test various refcounting cornercases but shouldn't
+be much longer.
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 0c97292834fa..0fe4172c8c14 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -20,6 +20,9 @@
-  * Lockless page tracking & accounting
-  * Unified hierarchy configuration model
-  * Copyright (C) 2015 Red Hat, Inc., Johannes Weiner
-+ *
-+ * Per memcg lru locking
-+ * Copyright (C) 2020 Alibaba, Inc, Alex Shi
-  */
+> so in the 
+> meantime we layed the ground in qemu for resolving this issue independent of 
+> clients and independent of any guest OS installation by introducing test cases 
+> using the 9pfs 'local' filesystem driver:
+> 
+> https://github.com/qemu/qemu/blob/master/tests/qtest/virtio-9p-test.c
+> 
+> So the idea was to resolve that chicken egg problem of this issue that way and 
+> also handle it a bit more systematically. If you now run qemu's 9p tests with 
+> latest git version (or at least with yesterday's QEMU 5.2 rc1 tarball):
+> 
+> cd qemu/build
+> make
+> export QTEST_QEMU_BINARY=x86_64-softmmu/qemu-system-x86_64
+> tests/qtest/qos-test
+> 
+> these tests will now create a test directory qtest-9p-local-XXXXXX under the 
+> current directory (i.e. the build directory) where they are creating real 
+> directories and files like on a production system would do, just without a 
+> guest OS.
+> 
+> As you can see, there are already 9p tests for creating and deleting 
+> directories, files, symlinks and hard links, etc.
+> 
+> Maybe somebody interested to see this issue resolved in qemu might help by 
+> rebasing Greg's old patches and testing it with some test cases this way. 
+> Personally I need to work on some other things in the next couple weeks, but 
+> if somebody needs help, questions, review, etc., I'll be there.
 
- #include <linux/page_counter.h>
-@@ -1380,6 +1383,14 @@ struct lruvec *mem_cgroup_page_lruvec(struct page *page, struct pglist_data *pgd
-        return lruvec;
- }
+Great news, nice work there.
+I see the new tests it doesn't look hard to add new ones reproducing
+open-unlink-fstat for example; I think it's good to have regardless of
+kernel progress.
 
-+/**
-+ * lock_page_lruvec - return lruvec for the locked page.
-+ * @page: the page
-+ *
-+ * This series functions should be used in either conditions:
-+ * PageLRU is cleared or unset
-+ * or, page->_refcount is zero
-+ */
- struct lruvec *lock_page_lruvec(struct page *page)
- {
-        struct lruvec *lruvec;
-diff --git a/mm/swap.c b/mm/swap.c
-index 9fe5ff9a8111..bcc814de35c4 100644
---- a/mm/swap.c
-+++ b/mm/swap.c
-@@ -264,6 +264,13 @@ void lru_note_cost(struct lruvec *lruvec, bool file, unsigned int nr_pages)
-        do {
-                unsigned long lrusize;
-
-+               /*
-+                * Hold lruvec->lru_lock is safe here, since
-+                * 1) The pinned lruvec in reclaim, or
-+                * 2) From a pre-LRU page during refault (which also holds the
-+                *    rcu lock, so would be safe even if the page was on the LRU
-+                *    and could move simultaneously to a new lruvec).
-+                */
-                spin_lock_irq(&lruvec->lru_lock);
-                /* Record cost event */
-                if (file)
-@@ -355,10 +362,12 @@ static void activate_page(struct page *page)
-        struct lruvec *lruvec;
-
-        page = compound_head(page);
--       lruvec = lock_page_lruvec_irq(page);
--       if (PageLRU(page))
-+       if (TestClearPageLRU(page)) {
-+               lruvec = lock_page_lruvec_irq(page);
-                __activate_page(page, lruvec);
--       unlock_page_lruvec_irq(lruvec);
-+               unlock_page_lruvec_irq(lruvec);
-+               SetPageLRU(page);
-+       }
- }
- #endif
-
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 7ed10ade548d..af03a7f2e1b8 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -1868,6 +1868,10 @@ static unsigned noinline_for_stack move_pages_to_lru(struct lruvec *lruvec,
-                        continue;
-                }
-
-+               /*
-+                * All pages were isolated from the same lruvec (and isolation
-+                * inhibits memcg migration).
-+                */
-                VM_BUG_ON_PAGE(!lruvec_holds_page_lru_lock(page, lruvec), page);
-                lru = page_lru(page);
-                nr_pages = thp_nr_pages(page);
-
+We'll get there!
+-- 
+Dominique
