@@ -2,563 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEA512A644B
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 13:28:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 059B32A6451
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 13:29:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728066AbgKDM2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 07:28:33 -0500
-Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:40594 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726344AbgKDM23 (ORCPT
+        id S1729988AbgKDM2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 07:28:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54092 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729583AbgKDM2l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 07:28:29 -0500
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A4CFwtV003132;
-        Wed, 4 Nov 2020 04:28:27 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=pfpt0220;
- bh=TLaeEmh1Mn0c3Y+oobdkmRTN/ZEfCngwdBOiRcHleS8=;
- b=AmC8euA9dgvp4BekUl6kut+PgUOghdHDWHEspboJd0XU958r9Z3iKtKiEBLRngvXRl8J
- 19qVC/wXaprTmywhWaSBrvbSwC7EmxgO0Kk5coYf6XIOxXUVBnZiMA7zLy34zccLek3J
- MAf0OVVL8bvZdUQaNbZygNFJ+0kihhmxmHGKWkjs2Np2pN5lhvVup2OEBXo8YiTbaZba
- JnLlWxv7QNTpFL2NjQECA1E1GL1qc78BGSVuMWtvTTyDmJQAcNKLXHInoTvtpMh1ht6P
- IKvEwZgAfd+hvgLbWd9ugN4kMkC8wP/8ccVbL2U+c/Rp56IB+ZXc34PgHo7uuaVbx2ur XA== 
-Received: from sc-exch02.marvell.com ([199.233.58.182])
-        by mx0a-0016f401.pphosted.com with ESMTP id 34h59n2uej-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Wed, 04 Nov 2020 04:28:27 -0800
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH02.marvell.com
- (10.93.176.82) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 4 Nov
- 2020 04:28:26 -0800
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 4 Nov
- 2020 04:28:26 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 4 Nov 2020 04:28:25 -0800
-Received: from hyd1584.caveonetworks.com (unknown [10.29.37.82])
-        by maili.marvell.com (Postfix) with ESMTP id 9FFA03F7041;
-        Wed,  4 Nov 2020 04:28:19 -0800 (PST)
-From:   George Cherian <george.cherian@marvell.com>
-To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <kuba@kernel.org>, <davem@davemloft.net>, <sgoutham@marvell.com>,
-        <lcherian@marvell.com>, <gakula@marvell.com>,
-        <masahiroy@kernel.org>, <george.cherian@marvell.com>,
-        <willemdebruijn.kernel@gmail.com>
-Subject: [PATCH v2 net-next 3/3] octeontx2-af: Add devlink health reporters for NIX
-Date:   Wed, 4 Nov 2020 17:57:55 +0530
-Message-ID: <20201104122755.753241-4-george.cherian@marvell.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201104122755.753241-1-george.cherian@marvell.com>
-References: <20201104122755.753241-1-george.cherian@marvell.com>
+        Wed, 4 Nov 2020 07:28:41 -0500
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82E25C0613D3;
+        Wed,  4 Nov 2020 04:28:40 -0800 (PST)
+Received: by mail-lf1-x143.google.com with SMTP id h6so26881085lfj.3;
+        Wed, 04 Nov 2020 04:28:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=7RApEAIaUf6wDTnqq0BAlylI/sI1v2LiQccVP7zRzN0=;
+        b=FR9j+plFjwWbPLzQUZmU7h+wKoQHND7B3nJQww2YeAdpJIdffi0Cp9tkRVmtzBOPuv
+         rD1CPUVNeoLi+avI/RQrA8KrpSMnNP+ZpEcrB5HJ7uM4XRvJqElH50scVQ0sWcxbovB6
+         zVjLWVGtfucH4JLljo99LCBx98mutL430pd4H1VLfC1u/aXwk6yWdICe6uLO9GTGU+kM
+         VgqY8RESm9bPbsB5rE1ivoyfvrEBfE1U6iTF906Irt3lia+hJqAJkNRwtQ7nhlW1H1Ys
+         JwMKl2ViTPT5sUOQ7x9xWzFx5I39FgEc38jUfT4n5+pb2nUDAVaS3kAx+iLSaGtCvuJx
+         XJSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=7RApEAIaUf6wDTnqq0BAlylI/sI1v2LiQccVP7zRzN0=;
+        b=fM91XfrdeE0qYU56VqR9YvFP0QnwrDJrbfQibZ8SzjaUJeUahDQnIjfiH50fIJHCOZ
+         jonqhU9PVb04iGVslIy8vsWO9CmV7tTuE5NAQMq9UkJ9zIzMuhvF3nR0cuNWzVe7hVja
+         pGCbddB2Tn1Q6hGvhbqVC6JDY+NsayU7rdQjbYyuoHrChko3oOC295dlm0hyw6ZuYxA3
+         9mVeUqK42KrQAJFnLVE4aacvmhCzL8KLfmTOgPFFLJhJ+yY9scTWvf6JpQd1VV8Y/52k
+         nqys9kXpcUntenT8RoJOHGWOI0v7ev11QKV0IKpmxvj+B1Idme9HV04mP9VcqCj0Ruqb
+         8CaQ==
+X-Gm-Message-State: AOAM5324JVAXhr4OFypXGSUbjSw2Anocg0sVquMENKJBp39T+kust2z1
+        rRb8+a7QNq5loS2lj4p2FTUCUaacU/5aimeR10Yp6FQnXVo=
+X-Google-Smtp-Source: ABdhPJy4KiPl/dXVehNGaS1+QByrntha0Fu99akt2u0EBECzU5EFwsavVXn7hO1T3He7SXXOqdbARbnQM3YiaiLLgBw=
+X-Received: by 2002:a05:6512:322d:: with SMTP id f13mr8976937lfe.571.1604492918961;
+ Wed, 04 Nov 2020 04:28:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-04_08:2020-11-04,2020-11-04 signatures=0
+References: <CGME20201104103718eucas1p1c103f1a96499b03c72e5457ac2542c3d@eucas1p1.samsung.com>
+ <20201104103657.18007-1-s.nawrocki@samsung.com> <20201104103657.18007-2-s.nawrocki@samsung.com>
+In-Reply-To: <20201104103657.18007-2-s.nawrocki@samsung.com>
+Reply-To: cwchoi00@gmail.com
+From:   Chanwoo Choi <cwchoi00@gmail.com>
+Date:   Wed, 4 Nov 2020 21:28:02 +0900
+Message-ID: <CAGTfZH3qf-6bU_vYj_p6PS=hkvAWAmo-PWQVQgN-Ry=sP9u79Q@mail.gmail.com>
+Subject: Re: [PATCH v8 1/7] dt-bindings: devfreq: Add documentation for the
+ interconnect properties
+To:     Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc:     Georgi Djakov <georgi.djakov@linaro.org>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        =?UTF-8?B?QXJ0dXIgxZp3aWdvxYQ=?= <a.swigon@samsung.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add health reporters for RVU NPA block.
-Only reporter dump is supported.
+Hi Sylwester,
 
-Output:
- # ./devlink health
- pci/0002:01:00.0:
-   reporter npa
-     state healthy error 0 recover 0
-   reporter nix
-     state healthy error 0 recover 0
- # ./devlink  health dump show pci/0002:01:00.0 reporter nix
-  NIX_AF_GENERAL:
-         Memory Fault on NIX_AQ_INST_S read: 0
-         Memory Fault on NIX_AQ_RES_S write: 0
-         AQ Doorbell error: 0
-         Rx on unmapped PF_FUNC: 0
-         Rx multicast replication error: 0
-         Memory fault on NIX_RX_MCE_S read: 0
-         Memory fault on multicast WQE read: 0
-         Memory fault on mirror WQE read: 0
-         Memory fault on mirror pkt write: 0
-         Memory fault on multicast pkt write: 0
-   NIX_AF_RAS:
-         Poisoned data on NIX_AQ_INST_S read: 0
-         Poisoned data on NIX_AQ_RES_S write: 0
-         Poisoned data on HW context read: 0
-         Poisoned data on packet read from mirror buffer: 0
-         Poisoned data on packet read from mcast buffer: 0
-         Poisoned data on WQE read from mirror buffer: 0
-         Poisoned data on WQE read from multicast buffer: 0
-         Poisoned data on NIX_RX_MCE_S read: 0
-   NIX_AF_RVU:
-         Unmap Slot Error: 0
+On Wed, Nov 4, 2020 at 7:37 PM Sylwester Nawrocki
+<s.nawrocki@samsung.com> wrote:
+>
+> Add documentation for new optional properties in the exynos bus nodes:
+> interconnects, #interconnect-cells, samsung,data-clock-ratio.
+> These properties allow to specify the SoC interconnect structure which
+> then allows the interconnect consumer devices to request specific
+> bandwidth requirements.
+>
+> Signed-off-by: Artur =C5=9Awigo=C5=84 <a.swigon@samsung.com>
+> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+> ---
+> Changes for v8:
+>  - updated description of the interconnects property,
+>  - fixed typo in samsung,data-clk-ratio property description.
+>
+> Changes for v7:
+>  - bus-width property replaced with samsung,data-clock-ratio,
+>  - the interconnect consumer bindings used instead of vendor specific
+>    properties
+>
+> Changes for v6:
+>  - added dts example of bus hierarchy definition and the interconnect
+>    consumer,
+>  - added new bus-width property.
+>
+> Changes for v5:
+>  - exynos,interconnect-parent-node renamed to samsung,interconnect-parent
+> ---
+>  .../devicetree/bindings/devfreq/exynos-bus.txt     | 71 ++++++++++++++++=
++++++-
+>  1 file changed, 69 insertions(+), 2 deletions(-)
+>
+> diff --git a/Documentation/devicetree/bindings/devfreq/exynos-bus.txt b/D=
+ocumentation/devicetree/bindings/devfreq/exynos-bus.txt
+> index e71f752..bcaa2c0 100644
+> --- a/Documentation/devicetree/bindings/devfreq/exynos-bus.txt
+> +++ b/Documentation/devicetree/bindings/devfreq/exynos-bus.txt
+> @@ -51,6 +51,19 @@ Optional properties only for parent bus device:
+>  - exynos,saturation-ratio: the percentage value which is used to calibra=
+te
+>                         the performance count against total cycle count.
+>
+> +Optional properties for the interconnect functionality (QoS frequency
+> +constraints):
+> +- #interconnect-cells: should be 0.
+> +- interconnects: as documented in ../interconnect.txt, describes a path =
+at the
+> +  higher level interconnects used by this interconnect provider.
+> +  If this interconnect provider is directly linked to a top level interc=
+onnect
+> +  provider the property contains only one phandle. The provider extends
+> +  the interconnect graph by linking its node to a node registered by pro=
+vider
+> +  pointed to by first phandle in the 'interconnects' property.
+> +
+> +- samsung,data-clock-ratio: ratio of the data throughput in B/s to minim=
+um data
+> +   clock frequency in Hz, default value is 8 when this property is missi=
+ng.
+> +
+>  Detailed correlation between sub-blocks and power line according to Exyn=
+os SoC:
+>  - In case of Exynos3250, there are two power line as following:
+>         VDD_MIF |--- DMC
+> @@ -135,7 +148,7 @@ Detailed correlation between sub-blocks and power lin=
+e according to Exynos SoC:
+>                 |--- PERIC (Fixed clock rate)
+>                 |--- FSYS  (Fixed clock rate)
+>
+> -Example1:
+> +Example 1:
+>         Show the AXI buses of Exynos3250 SoC. Exynos3250 divides the buse=
+s to
+>         power line (regulator). The MIF (Memory Interface) AXI bus is use=
+d to
+>         transfer data between DRAM and CPU and uses the VDD_MIF regulator=
+.
+> @@ -184,7 +197,7 @@ Example1:
+>         |L5   |200000 |200000  |400000 |300000 |       ||1000000 |
+>         ----------------------------------------------------------
+>
+> -Example2 :
+> +Example 2:
+>         The bus of DMC (Dynamic Memory Controller) block in exynos3250.dt=
+si
+>         is listed below:
+>
+> @@ -419,3 +432,57 @@ Example2 :
+>                 devfreq =3D <&bus_leftbus>;
+>                 status =3D "okay";
+>         };
+> +
+> +Example 3:
+> +       An interconnect path "bus_display -- bus_leftbus -- bus_dmc" on
+> +       Exynos4412 SoC with video mixer as an interconnect consumer devic=
+e.
+> +
+> +       soc {
+> +               bus_dmc: bus_dmc {
+> +                       compatible =3D "samsung,exynos-bus";
+> +                       clocks =3D <&clock CLK_DIV_DMC>;
+> +                       clock-names =3D "bus";
+> +                       operating-points-v2 =3D <&bus_dmc_opp_table>;
+> +                       samsung,data-clock-ratio =3D <4>;
+> +                       #interconnect-cells =3D <0>;
+> +               };
+> +
+> +               bus_leftbus: bus_leftbus {
+> +                       compatible =3D "samsung,exynos-bus";
+> +                       clocks =3D <&clock CLK_DIV_GDL>;
+> +                       clock-names =3D "bus";
+> +                       operating-points-v2 =3D <&bus_leftbus_opp_table>;
+> +                       #interconnect-cells =3D <0>;
+> +                       interconnects =3D <&bus_dmc>;
+> +               };
+> +
+> +               bus_display: bus_display {
+> +                       compatible =3D "samsung,exynos-bus";
+> +                       clocks =3D <&clock CLK_ACLK160>;
+> +                       clock-names =3D "bus";
+> +                       operating-points-v2 =3D <&bus_display_opp_table>;
+> +                       #interconnect-cells =3D <0>;
+> +                       interconnects =3D <&bus_leftbus &bus_dmc>;
+> +               };
+> +
+> +               bus_dmc_opp_table: opp_table1 {
+> +                       compatible =3D "operating-points-v2";
+> +                       /* ... */
+> +               }
+> +
+> +               bus_leftbus_opp_table: opp_table3 {
+> +                       compatible =3D "operating-points-v2";
+> +                       /* ... */
+> +               };
+> +
+> +               bus_display_opp_table: opp_table4 {
+> +                       compatible =3D "operating-points-v2";
+> +                       /* .. */
+> +               };
+> +
+> +               &mixer {
+> +                       compatible =3D "samsung,exynos4212-mixer";
+> +                       interconnects =3D <&bus_display &bus_dmc>;
+> +                       /* ... */
+> +               };
+> +       };
+> --
+> 2.7.4
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
 
-Signed-off-by: Sunil Kovvuri Goutham <sgoutham@marvell.com>
-Signed-off-by: Jerin Jacob <jerinj@marvell.com>
-Signed-off-by: George Cherian <george.cherian@marvell.com>
----
- .../marvell/octeontx2/af/rvu_devlink.c        | 360 +++++++++++++++++-
- .../marvell/octeontx2/af/rvu_devlink.h        |  24 ++
- .../marvell/octeontx2/af/rvu_struct.h         |  10 +
- 3 files changed, 393 insertions(+), 1 deletion(-)
+Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_devlink.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_devlink.c
-index bf9efe1f6aec..49e51d1bd7d5 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_devlink.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_devlink.c
-@@ -35,6 +35,110 @@ static int rvu_report_pair_end(struct devlink_fmsg *fmsg)
- 	return devlink_fmsg_pair_nest_end(fmsg);
- }
- 
-+static irqreturn_t rvu_nix_af_rvu_intr_handler(int irq, void *rvu_irq)
-+{
-+	struct rvu_nix_event_cnt *nix_event_count;
-+	struct rvu_devlink *rvu_dl = rvu_irq;
-+	struct rvu *rvu;
-+	int blkaddr;
-+	u64 intr;
-+
-+	rvu = rvu_dl->rvu;
-+	blkaddr = rvu_get_blkaddr(rvu, BLKTYPE_NIX, 0);
-+	if (blkaddr < 0)
-+		return IRQ_NONE;
-+
-+	nix_event_count = rvu_dl->nix_event_cnt;
-+	intr = rvu_read64(rvu, blkaddr, NIX_AF_RVU_INT);
-+
-+	if (intr & BIT_ULL(0))
-+		nix_event_count->unmap_slot_count++;
-+
-+	/* Clear interrupts */
-+	rvu_write64(rvu, blkaddr, NIX_AF_RVU_INT, intr);
-+	return IRQ_HANDLED;
-+}
-+
-+static irqreturn_t rvu_nix_af_err_intr_handler(int irq, void *rvu_irq)
-+{
-+	struct rvu_nix_event_cnt *nix_event_count;
-+	struct rvu_devlink *rvu_dl = rvu_irq;
-+	struct rvu *rvu;
-+	int blkaddr;
-+	u64 intr;
-+
-+	rvu = rvu_dl->rvu;
-+	blkaddr = rvu_get_blkaddr(rvu, BLKTYPE_NIX, 0);
-+	if (blkaddr < 0)
-+		return IRQ_NONE;
-+
-+	nix_event_count = rvu_dl->nix_event_cnt;
-+	intr = rvu_read64(rvu, blkaddr, NIX_AF_ERR_INT);
-+
-+	if (intr & BIT_ULL(14))
-+		nix_event_count->aq_inst_count++;
-+	if (intr & BIT_ULL(13))
-+		nix_event_count->aq_res_count++;
-+	if (intr & BIT_ULL(12))
-+		nix_event_count->aq_db_count++;
-+	if (intr & BIT_ULL(6))
-+		nix_event_count->rx_on_unmap_pf_count++;
-+	if (intr & BIT_ULL(5))
-+		nix_event_count->rx_mcast_repl_count++;
-+	if (intr & BIT_ULL(4))
-+		nix_event_count->rx_mcast_memfault_count++;
-+	if (intr & BIT_ULL(3))
-+		nix_event_count->rx_mcast_wqe_memfault_count++;
-+	if (intr & BIT_ULL(2))
-+		nix_event_count->rx_mirror_wqe_memfault_count++;
-+	if (intr & BIT_ULL(1))
-+		nix_event_count->rx_mirror_pktw_memfault_count++;
-+	if (intr & BIT_ULL(0))
-+		nix_event_count->rx_mcast_pktw_memfault_count++;
-+
-+	/* Clear interrupts */
-+	rvu_write64(rvu, blkaddr, NIX_AF_ERR_INT, intr);
-+	return IRQ_HANDLED;
-+}
-+
-+static irqreturn_t rvu_nix_af_ras_intr_handler(int irq, void *rvu_irq)
-+{
-+	struct rvu_nix_event_cnt *nix_event_count;
-+	struct rvu_devlink *rvu_dl = rvu_irq;
-+	struct rvu *rvu;
-+	int blkaddr;
-+	u64 intr;
-+
-+	rvu = rvu_dl->rvu;
-+	blkaddr = rvu_get_blkaddr(rvu, BLKTYPE_NIX, 0);
-+	if (blkaddr < 0)
-+		return IRQ_NONE;
-+
-+	nix_event_count = rvu_dl->nix_event_cnt;
-+	intr = rvu_read64(rvu, blkaddr, NIX_AF_RAS);
-+
-+	if (intr & BIT_ULL(34))
-+		nix_event_count->poison_aq_inst_count++;
-+	if (intr & BIT_ULL(33))
-+		nix_event_count->poison_aq_res_count++;
-+	if (intr & BIT_ULL(32))
-+		nix_event_count->poison_aq_cxt_count++;
-+	if (intr & BIT_ULL(4))
-+		nix_event_count->rx_mirror_data_poison_count++;
-+	if (intr & BIT_ULL(3))
-+		nix_event_count->rx_mcast_data_poison_count++;
-+	if (intr & BIT_ULL(2))
-+		nix_event_count->rx_mirror_wqe_poison_count++;
-+	if (intr & BIT_ULL(1))
-+		nix_event_count->rx_mcast_wqe_poison_count++;
-+	if (intr & BIT_ULL(0))
-+		nix_event_count->rx_mce_poison_count++;
-+
-+	/* Clear interrupts */
-+	rvu_write64(rvu, blkaddr, NIX_AF_RAS, intr);
-+	return IRQ_HANDLED;
-+}
-+
- static bool rvu_common_request_irq(struct rvu *rvu, int offset,
- 				   const char *name, irq_handler_t fn)
- {
-@@ -52,6 +156,254 @@ static bool rvu_common_request_irq(struct rvu *rvu, int offset,
- 	return rvu->irq_allocated[offset];
- }
- 
-+static void rvu_nix_blk_unregister_interrupts(struct rvu *rvu,
-+					      int blkaddr)
-+{
-+	struct rvu_devlink *rvu_dl = rvu->rvu_dl;
-+	int offs, i;
-+
-+	offs = rvu_read64(rvu, blkaddr, NIX_PRIV_AF_INT_CFG) & 0x3ff;
-+	if (!offs)
-+		return;
-+
-+	rvu_write64(rvu, blkaddr, NIX_AF_RVU_INT_ENA_W1C, ~0ULL);
-+	rvu_write64(rvu, blkaddr, NIX_AF_ERR_INT_ENA_W1C, ~0ULL);
-+	rvu_write64(rvu, blkaddr, NIX_AF_RAS_ENA_W1C, ~0ULL);
-+
-+	if (rvu->irq_allocated[offs + NIX_AF_INT_VEC_RVU]) {
-+		free_irq(pci_irq_vector(rvu->pdev, offs + NIX_AF_INT_VEC_RVU),
-+			 rvu_dl);
-+		rvu->irq_allocated[offs + NIX_AF_INT_VEC_RVU] = false;
-+	}
-+
-+	for (i = NIX_AF_INT_VEC_AF_ERR; i < NIX_AF_INT_VEC_CNT; i++)
-+		if (rvu->irq_allocated[offs + i]) {
-+			free_irq(pci_irq_vector(rvu->pdev, offs + i), rvu_dl);
-+			rvu->irq_allocated[offs + i] = false;
-+		}
-+}
-+
-+static void rvu_nix_unregister_interrupts(struct rvu *rvu)
-+{
-+	int blkaddr = 0;
-+
-+	blkaddr = rvu_get_blkaddr(rvu, BLKTYPE_NIX, 0);
-+	if (blkaddr < 0)
-+		return;
-+
-+	rvu_nix_blk_unregister_interrupts(rvu, blkaddr);
-+}
-+
-+static int rvu_nix_blk_register_interrupts(struct rvu *rvu,
-+					   int blkaddr)
-+{
-+	int base;
-+	bool rc;
-+
-+	/* Get NIX AF MSIX vectors offset. */
-+	base = rvu_read64(rvu, blkaddr, NIX_PRIV_AF_INT_CFG) & 0x3ff;
-+	if (!base) {
-+		dev_warn(rvu->dev,
-+			 "Failed to get NIX%d NIX_AF_INT vector offsets\n",
-+			 blkaddr - BLKADDR_NIX0);
-+		return 0;
-+	}
-+	/* Register and enable NIX_AF_RVU_INT interrupt */
-+	rc = rvu_common_request_irq(rvu, base +  NIX_AF_INT_VEC_RVU,
-+				    "NIX_AF_RVU_INT",
-+				    rvu_nix_af_rvu_intr_handler);
-+	if (!rc)
-+		goto err;
-+	rvu_write64(rvu, blkaddr, NIX_AF_RVU_INT_ENA_W1S, ~0ULL);
-+
-+	/* Register and enable NIX_AF_ERR_INT interrupt */
-+	rc = rvu_common_request_irq(rvu, base + NIX_AF_INT_VEC_AF_ERR,
-+				    "NIX_AF_ERR_INT",
-+				    rvu_nix_af_err_intr_handler);
-+	if (!rc)
-+		goto err;
-+	rvu_write64(rvu, blkaddr, NIX_AF_ERR_INT_ENA_W1S, ~0ULL);
-+
-+	/* Register and enable NIX_AF_RAS interrupt */
-+	rc = rvu_common_request_irq(rvu, base + NIX_AF_INT_VEC_POISON,
-+				    "NIX_AF_RAS",
-+				    rvu_nix_af_ras_intr_handler);
-+	if (!rc)
-+		goto err;
-+	rvu_write64(rvu, blkaddr, NIX_AF_RAS_ENA_W1S, ~0ULL);
-+
-+	return 0;
-+err:
-+	rvu_nix_unregister_interrupts(rvu);
-+	return -1;
-+}
-+
-+static int rvu_nix_register_interrupts(struct rvu *rvu)
-+{
-+	int blkaddr = 0;
-+
-+	blkaddr = rvu_get_blkaddr(rvu, blkaddr, 0);
-+	if (blkaddr < 0)
-+		return blkaddr;
-+
-+	rvu_nix_blk_register_interrupts(rvu, blkaddr);
-+
-+	return 0;
-+}
-+
-+static int rvu_nix_report_show(struct devlink_fmsg *fmsg, struct rvu *rvu)
-+{
-+	struct rvu_devlink *rvu_dl = rvu->rvu_dl;
-+	struct rvu_nix_event_cnt *nix_event_count = rvu_dl->nix_event_cnt;
-+	int err;
-+
-+	err = rvu_report_pair_start(fmsg, "NIX_AF_GENERAL");
-+	if (err)
-+		return err;
-+	err = devlink_fmsg_u64_pair_put(fmsg, "\tMemory Fault on NIX_AQ_INST_S read",
-+					nix_event_count->aq_inst_count);
-+	if (err)
-+		return err;
-+	err = devlink_fmsg_u64_pair_put(fmsg, "\n\tMemory Fault on NIX_AQ_RES_S write",
-+					nix_event_count->aq_res_count);
-+	if (err)
-+		return err;
-+	err = devlink_fmsg_u64_pair_put(fmsg, "\n\tAQ Doorbell error",
-+					nix_event_count->aq_db_count);
-+	if (err)
-+		return err;
-+	err = devlink_fmsg_u64_pair_put(fmsg, "\n\tRx on unmapped PF_FUNC",
-+					nix_event_count->rx_on_unmap_pf_count);
-+	if (err)
-+		return err;
-+	err = devlink_fmsg_u64_pair_put(fmsg, "\n\tRx multicast replication error",
-+					nix_event_count->rx_mcast_repl_count);
-+	if (err)
-+		return err;
-+	err = devlink_fmsg_u64_pair_put(fmsg, "\n\tMemory fault on NIX_RX_MCE_S read",
-+					nix_event_count->rx_mcast_memfault_count);
-+	if (err)
-+		return err;
-+	err = devlink_fmsg_u64_pair_put(fmsg, "\n\tMemory fault on multicast WQE read",
-+					nix_event_count->rx_mcast_wqe_memfault_count);
-+	if (err)
-+		return err;
-+	err = devlink_fmsg_u64_pair_put(fmsg, "\n\tMemory fault on mirror WQE read",
-+					nix_event_count->rx_mirror_wqe_memfault_count);
-+	if (err)
-+		return err;
-+	err = devlink_fmsg_u64_pair_put(fmsg, "\n\tMemory fault on mirror pkt write",
-+					nix_event_count->rx_mirror_pktw_memfault_count);
-+	if (err)
-+		return err;
-+	err = devlink_fmsg_u64_pair_put(fmsg, "\n\tMemory fault on multicast pkt write",
-+					nix_event_count->rx_mcast_pktw_memfault_count);
-+	if (err)
-+		return err;
-+	err = rvu_report_pair_end(fmsg);
-+	if (err)
-+		return err;
-+	err = rvu_report_pair_start(fmsg, "NIX_AF_RAS");
-+	if (err)
-+		return err;
-+	err = devlink_fmsg_u64_pair_put(fmsg, "\tPoisoned data on NIX_AQ_INST_S read",
-+					nix_event_count->poison_aq_inst_count);
-+	if (err)
-+		return err;
-+	err = devlink_fmsg_u64_pair_put(fmsg, "\n\tPoisoned data on NIX_AQ_RES_S write",
-+					nix_event_count->poison_aq_res_count);
-+	if (err)
-+		return err;
-+	err = devlink_fmsg_u64_pair_put(fmsg, "\n\tPoisoned data on HW context read",
-+					nix_event_count->poison_aq_cxt_count);
-+	if (err)
-+		return err;
-+	err = devlink_fmsg_u64_pair_put(fmsg, "\n\tPoisoned data on packet read from mirror buffer",
-+					nix_event_count->rx_mirror_data_poison_count);
-+	if (err)
-+		return err;
-+	err = devlink_fmsg_u64_pair_put(fmsg, "\n\tPoisoned data on packet read from mcast buffer",
-+					nix_event_count->rx_mcast_data_poison_count);
-+	if (err)
-+		return err;
-+	err = devlink_fmsg_u64_pair_put(fmsg, "\n\tPoisoned data on WQE read from mirror buffer",
-+					nix_event_count->rx_mirror_wqe_poison_count);
-+	if (err)
-+		return err;
-+	err = devlink_fmsg_u64_pair_put(fmsg, "\n\tPoisoned data on WQE read from multicast buffer",
-+					nix_event_count->rx_mcast_wqe_poison_count);
-+	if (err)
-+		return err;
-+	err = devlink_fmsg_u64_pair_put(fmsg, "\n\tPoisoned data on NIX_RX_MCE_S read",
-+					nix_event_count->rx_mce_poison_count);
-+	if (err)
-+		return err;
-+	err = rvu_report_pair_end(fmsg);
-+	if (err)
-+		return err;
-+	err = rvu_report_pair_start(fmsg, "NIX_AF_RVU");
-+	if (err)
-+		return err;
-+	err = devlink_fmsg_u64_pair_put(fmsg, "\tUnmap Slot Error",
-+					nix_event_count->unmap_slot_count);
-+	if (err)
-+		return err;
-+	err = rvu_report_pair_end(fmsg);
-+	if (err)
-+		return err;
-+	return 0;
-+}
-+
-+static int rvu_nix_reporter_dump(struct devlink_health_reporter *reporter,
-+				 struct devlink_fmsg *fmsg, void *ctx,
-+				 struct netlink_ext_ack *netlink_extack)
-+{
-+	struct rvu *rvu = devlink_health_reporter_priv(reporter);
-+
-+	return rvu_nix_report_show(fmsg, rvu);
-+}
-+
-+static const struct devlink_health_reporter_ops rvu_nix_fault_reporter_ops = {
-+		.name = "nix",
-+		.dump = rvu_nix_reporter_dump,
-+};
-+
-+static int rvu_nix_health_reporters_create(struct rvu_devlink *rvu_dl)
-+{
-+	struct devlink_health_reporter *rvu_nix_health_reporter;
-+	struct rvu_nix_event_cnt *nix_event_count;
-+	struct rvu *rvu = rvu_dl->rvu;
-+
-+	nix_event_count = kzalloc(sizeof(*nix_event_count), GFP_KERNEL);
-+	if (!nix_event_count)
-+		return -ENOMEM;
-+
-+	rvu_dl->nix_event_cnt = nix_event_count;
-+	rvu_nix_health_reporter = devlink_health_reporter_create(rvu_dl->dl,
-+								 &rvu_nix_fault_reporter_ops,
-+								 0, rvu);
-+	if (IS_ERR(rvu_nix_health_reporter)) {
-+		dev_warn(rvu->dev, "Failed to create nix reporter, err = %ld\n",
-+			 PTR_ERR(rvu_nix_health_reporter));
-+		return PTR_ERR(rvu_nix_health_reporter);
-+	}
-+
-+	rvu_dl->rvu_nix_health_reporter = rvu_nix_health_reporter;
-+	rvu_nix_register_interrupts(rvu);
-+	return 0;
-+}
-+
-+static void rvu_nix_health_reporters_destroy(struct rvu_devlink *rvu_dl)
-+{
-+	struct rvu *rvu = rvu_dl->rvu;
-+
-+	if (!rvu_dl->rvu_nix_health_reporter)
-+		return;
-+
-+	devlink_health_reporter_destroy(rvu_dl->rvu_nix_health_reporter);
-+	rvu_nix_unregister_interrupts(rvu);
-+}
-+
- static irqreturn_t rvu_npa_af_rvu_intr_handler(int irq, void *rvu_irq)
- {
- 	struct rvu_npa_event_cnt *npa_event_count;
-@@ -421,9 +773,14 @@ static void rvu_npa_health_reporters_destroy(struct rvu_devlink *rvu_dl)
- static int rvu_health_reporters_create(struct rvu *rvu)
- {
- 	struct rvu_devlink *rvu_dl;
-+	int err;
- 
- 	rvu_dl = rvu->rvu_dl;
--	return rvu_npa_health_reporters_create(rvu_dl);
-+	err = rvu_npa_health_reporters_create(rvu_dl);
-+	if (err)
-+		return err;
-+
-+	return rvu_nix_health_reporters_create(rvu_dl);
- }
- 
- static void rvu_health_reporters_destroy(struct rvu *rvu)
-@@ -435,6 +792,7 @@ static void rvu_health_reporters_destroy(struct rvu *rvu)
- 
- 	rvu_dl = rvu->rvu_dl;
- 	rvu_npa_health_reporters_destroy(rvu_dl);
-+	rvu_nix_health_reporters_destroy(rvu_dl);
- }
- 
- static int rvu_devlink_info_get(struct devlink *devlink, struct devlink_info_req *req,
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_devlink.h b/drivers/net/ethernet/marvell/octeontx2/af/rvu_devlink.h
-index b3ce1a8fff57..15724ad2ed44 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_devlink.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_devlink.h
-@@ -29,11 +29,35 @@ struct rvu_npa_event_cnt {
- 	unsigned long poison_aq_cxt_count;
- };
- 
-+struct rvu_nix_event_cnt {
-+	unsigned long unmap_slot_count;
-+	unsigned long aq_inst_count;
-+	unsigned long aq_res_count;
-+	unsigned long aq_db_count;
-+	unsigned long rx_on_unmap_pf_count;
-+	unsigned long rx_mcast_repl_count;
-+	unsigned long rx_mcast_memfault_count;
-+	unsigned long rx_mcast_wqe_memfault_count;
-+	unsigned long rx_mirror_wqe_memfault_count;
-+	unsigned long rx_mirror_pktw_memfault_count;
-+	unsigned long rx_mcast_pktw_memfault_count;
-+	unsigned long poison_aq_inst_count;
-+	unsigned long poison_aq_res_count;
-+	unsigned long poison_aq_cxt_count;
-+	unsigned long rx_mirror_data_poison_count;
-+	unsigned long rx_mcast_data_poison_count;
-+	unsigned long rx_mirror_wqe_poison_count;
-+	unsigned long rx_mcast_wqe_poison_count;
-+	unsigned long rx_mce_poison_count;
-+};
-+
- struct rvu_devlink {
- 	struct devlink *dl;
- 	struct rvu *rvu;
- 	struct devlink_health_reporter *rvu_npa_health_reporter;
- 	struct rvu_npa_event_cnt *npa_event_cnt;
-+	struct devlink_health_reporter *rvu_nix_health_reporter;
-+	struct rvu_nix_event_cnt *nix_event_cnt;
- };
- 
- /* Devlink APIs */
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_struct.h b/drivers/net/ethernet/marvell/octeontx2/af/rvu_struct.h
-index 995add5d8bff..b5944199faf5 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_struct.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_struct.h
-@@ -74,6 +74,16 @@ enum npa_af_int_vec_e {
- 	NPA_AF_INT_VEC_CNT	= 0x5,
- };
- 
-+/* NIX Admin function Interrupt Vector Enumeration */
-+enum nix_af_int_vec_e {
-+	NIX_AF_INT_VEC_RVU	= 0x0,
-+	NIX_AF_INT_VEC_GEN	= 0x1,
-+	NIX_AF_INT_VEC_AQ_DONE	= 0x2,
-+	NIX_AF_INT_VEC_AF_ERR	= 0x3,
-+	NIX_AF_INT_VEC_POISON	= 0x4,
-+	NIX_AF_INT_VEC_CNT	= 0x5,
-+};
-+
- /**
-  * RVU PF Interrupt Vector Enumeration
-  */
--- 
-2.25.4
+Thanks for your work.
 
+--=20
+Best Regards,
+Chanwoo Choi
