@@ -2,145 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07C4B2A6407
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 13:17:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18E7B2A640F
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 13:18:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729854AbgKDMRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 07:17:07 -0500
-Received: from de-smtp-delivery-102.mimecast.com ([51.163.158.102]:35543 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729842AbgKDMRH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 07:17:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1604492223;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:autocrypt:autocrypt;
-        bh=8RRIZtL5bXpJA2yQh2QblZpcfHMZhebZJOplYIlanSQ=;
-        b=lBYeGdAux5HTfaTBSwVTS5BOzzLb0mDAS0IVFTrgUrwVozUQwq/WdrUYEAALxApOi9Pd3l
-        ANFwUJhieOlnvwg3SJvV95yqKgch8LzIFb/mQxInogd+6JNnFrlxlPnqeKyWhRgosr2QbQ
-        vJSGNJWyARTM/Uq3124i97TbIKnJNY0=
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com
- (mail-am6eur05lp2109.outbound.protection.outlook.com [104.47.18.109])
- (Using TLS) by relay.mimecast.com with ESMTP id
- de-mta-33-QGo8vGyoPI22QFTMnbU-LQ-1; Wed, 04 Nov 2020 13:17:00 +0100
-X-MC-Unique: QGo8vGyoPI22QFTMnbU-LQ-1
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=C69m4zsi4n+4I/eUZjYRj7kjykpQ43EGYEIOt6XgMZqPXHqTUaZfJXCULC7PGd8aor579xRYOS3PsCEHhPggIfxAzEuSFjxqGVUbID9Qr3woa94XS6QmTGNAr0wdkRnlVekQ1YBAU2fkJp4aiLDwMOJUFjlr73IbHUqqMK3dZev4ovfbvvQGuUTXfBV8J/j1xPdDyA794I0v67fdMWPduJhh8pA1+f2l3c1Ik2jGUT+TZt9ReDXSn41GoAwYRuFIHt+coKxgRRUZKPYfoQJ1BtKG8Ft++OV7u8t4VeRqw6K4vjOkZ69qRCwl7b6rPk2rAVRDkId8yQGNeKWI6OTs3A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8RRIZtL5bXpJA2yQh2QblZpcfHMZhebZJOplYIlanSQ=;
- b=mZVBDk9fTo9mMO8tjizUYLle7rBSH0mYzcXFo8P6EheK/naxV23tKnKhZTNE8wmTMI5X5xZ126OzdQyC2PQNvFZXaj5aWf6zmJE/H6BDdulKrOt0Ql4iKdLTVyjBvzy0+qNUDzoEYnoSEioYojIlv8ysc7sGXHl/sLU+ilvAE7wztomYBmfuK6nM+ecG/XOPVNJr+C+1SBpLZdg7gNDiUFVcOrOId9HIXGU6c0wHaB1XkYlS1E/XN1Cl/err5VxbHiTi8F6WAot9+s3PJ4Dt/1GHiOEPbhL7EsR2nSNs93PtLq1pD13wv+kgxNdzV5d5aIEwZf4kZY3xsMmVNmukgA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=suse.com;
-Received: from PA4PR04MB7533.eurprd04.prod.outlook.com (2603:10a6:102:f1::19)
- by PR3PR04MB7323.eurprd04.prod.outlook.com (2603:10a6:102:88::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.27; Wed, 4 Nov
- 2020 12:16:59 +0000
-Received: from PA4PR04MB7533.eurprd04.prod.outlook.com
- ([fe80::545:8a04:2a5c:f4c7]) by PA4PR04MB7533.eurprd04.prod.outlook.com
- ([fe80::545:8a04:2a5c:f4c7%6]) with mapi id 15.20.3499.032; Wed, 4 Nov 2020
- 12:16:58 +0000
-To:     linux-arm-kernel@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-pci@vger.kernel.org
-From:   Qu Wenruo <wqu@suse.com>
-Subject: v5.10-rc2 kernel unable to initialize RK3399 pcie root complex
-Autocrypt: addr=wqu@suse.com; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0GFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPokBTQQTAQgAOAIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJdnDWhAAoJEMI9kfOhJf6oZgoH
- 90uqoGyUh5UWtiT9zjUcvlMTCpd/QSgwagDuY+tEdVPaKlcnTNAvZKWSit8VuocjrOFbTLwb
- vZ43n5f/l/1QtwMgQei/RMY2XhW+totimzlHVuxVaIDwkF+zc+pUI6lDPnULZHS3mWhbVr9N
- vZAAYVV7GesyyFpZiNm7GLvLmtEdYbc9OnIAOZb3eKfY3mWEs0eU0MxikcZSOYy3EWY3JES7
- J9pFgBrCn4hF83tPH2sphh1GUFii+AUGBMY/dC6VgMKbCugg+u/dTZEcBXxD17m+UcbucB/k
- F2oxqZBEQrb5SogdIq7Y9dZdlf1m3GRRJTX7eWefZw10HhFhs1mwx7kBDQRZ1YGvAQgAqlPr
- YeBLMv3PAZ75YhQIwH6c4SNcB++hQ9TCT5gIQNw51+SQzkXIGgmzxMIS49cZcE4KXk/kHw5h
- ieQeQZa60BWVRNXwoRI4ib8okgDuMkD5Kz1WEyO149+BZ7HD4/yK0VFJGuvDJR8T7RZwB69u
- VSLjkuNZZmCmDcDzS0c/SJOg5nkxt1iTtgUETb1wNKV6yR9XzRkrEW/qShChyrS9fNN8e9c0
- MQsC4fsyz9Ylx1TOY/IF/c6rqYoEEfwnpdlz0uOM1nA1vK+wdKtXluCa79MdfaeD/dt76Kp/
- o6CAKLLcjU1Iwnkq1HSrYfY3HZWpvV9g84gPwxwxX0uXquHxLwARAQABiQE8BBgBCAAmAhsM
- FiEELd9y5aWlW6idqkLhwj2R86El/qgFAl2cNa4FCQlqTn8ACgkQwj2R86El/qhXBAf/eXLP
- HDNTkHRPxoDnwhscIHJDHlsszke25AFltJQ1adoaYCbsQVv4Mn5rQZ1Gon54IMdxBN3r/B08
- rGVPatIfkycMCShr+rFHPKnExhQ7Wr555fq+sQ1GOwOhr1xLEqAhBMp28u9m8hnkqL36v+AF
- hjTwRtS+tRMZfoG6n72xAj984l56G9NPfs/SOKl6HR0mCDXwJGZAOdtyRmqddi53SXi5N4H1
- jWX1xFshp7nIkRm6hEpISEWr/KKLbAiKKbP0ql5tP5PinJeIBlDv4g/0+aGoGg4dELTnfEVk
- jMC8cJ/LiIaR/OEOF9S2nSeTQoBmusTz+aqkbogvvYGam6uDYw==
-Message-ID: <ff0d9bba-3c24-56e1-b598-ae8dd07cfa10@suse.com>
-Date:   Wed, 4 Nov 2020 20:16:49 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Originating-IP: [149.28.201.231]
-X-ClientProxiedBy: BYAPR08CA0059.namprd08.prod.outlook.com
- (2603:10b6:a03:117::36) To PA4PR04MB7533.eurprd04.prod.outlook.com
- (2603:10a6:102:f1::19)
+        id S1728922AbgKDMSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 07:18:00 -0500
+Received: from foss.arm.com ([217.140.110.172]:36108 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729735AbgKDMSA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 07:18:00 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 87CF61474;
+        Wed,  4 Nov 2020 04:17:59 -0800 (PST)
+Received: from [10.57.54.223] (unknown [10.57.54.223])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DE70B3F719;
+        Wed,  4 Nov 2020 04:17:57 -0800 (PST)
+Subject: Re: [PATCH] arm64: dts: rockchip: Assign a fixed index to mmc devices
+ on rk3399-roc-pc boards.
+To:     Markus Reichl <m.reichl@fivetechno.de>,
+        =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>,
+        linux-rockchip@lists.infradead.org,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Rob Herring <robh@kernel.org>, dianders@chromium.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org
+References: <20201104094950.2096-1-m.reichl@fivetechno.de>
+ <4984701.vSXMUKeAfh@diego>
+ <4f4a83f2-3c9b-9549-0acf-057257b4255d@fivetechno.de>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <a3f0a710-91d8-0c05-35ab-9994fba16c82@arm.com>
+Date:   Wed, 4 Nov 2020 12:17:57 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [0.0.0.0] (149.28.201.231) by BYAPR08CA0059.namprd08.prod.outlook.com (2603:10b6:a03:117::36) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend Transport; Wed, 4 Nov 2020 12:16:56 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 2148666b-fa43-4f77-155f-08d880bb870e
-X-MS-TrafficTypeDiagnostic: PR3PR04MB7323:
-X-Microsoft-Antispam-PRVS: <PR3PR04MB7323E4D75E3E5EF6CAF2B2C6D6EF0@PR3PR04MB7323.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Q96GyeLCo7HZkIYDeiu12wmNM1Pfuw9zL9XObkDXt1Ws4VvJgfyHlwUXKjRLZb7KnFw+txqaGO/3DATYA4Ap46nytpzMnoJaVVtHfAp8T+nMs4V98xDOtr3oL7aiOD4xyIj+ii+QynEiS1C7uFyMKRO2sgey/f/hPxt10vLRkVM67VtghV+RY/regWYKlKUOaLTMrcuxpaB8DxIntvpvF/vMK62x4gXlcQ8QNQ00Jfq8/FvItnwVBS1QVyed8UlA/7HKYINwTEGDH7tfl9DORZxUC/MhUJgN3A1mf26spDzuVskbEM5lzknrynvwf25RH+sWIJ9AOsLOndGN3pi79aY0vJrARSLWhUwiBKKOlwakf2pszho4jm/tmwzQckCaQNalPcDCPmAQc569aThz/Cd9SMQR7fFD1GEWDp/2YCn73v8ici2qgRjh8Z8lIB184DYyy5nVyzowb9MSshtxXdaHfYCNxR0O/11ht2W+Q7A=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR04MB7533.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(39860400002)(366004)(346002)(136003)(396003)(4744005)(8676002)(31686004)(316002)(52116002)(5660300002)(66946007)(66476007)(2906002)(83380400001)(16576012)(6486002)(66556008)(8936002)(6706004)(86362001)(956004)(478600001)(16526019)(186003)(966005)(2616005)(31696002)(36756003)(26005)(6666004)(78286007)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: 3ji7bxg2eNwtS1BbgmgKSRVN4rqF1hPeredJojE3UdtD9yjlyyX5TJiY6j+/XSt/y/OEvRGNu4jgYkncytMZfTq2tTvQQHWdrMMVn7fAsiXCiLyA3FwvcdUIVSZDGkdNDbs4V6lFhCpRntkFaIq2wJc2IBlEA5HQylXPUBDC+sKATCfcZ9SVvpYp5CmMxM78Eng6XsZKM6av/HXfkI1y/2yaLKGVA/nlaBO7YkRO6GeHPUvGmR8cAZaxwZagEOJi7kyvY2AkrCA4tPcBxzSPqTNII8hhyoWPDEoCJvGK+oNdzaT+Hcvx+04C6WnG5BQPM8tmEZj/BLKXFnkyxrRY9HD7iJy7SnMvuopkN4H6+WjLvZ2PgV2XNbnKssKIFpfVkoU1bIhusnXIx7HXw/3u3+ge96knDYV6MzdJok+dXIrSGVSetNvtxDWpHmSQPDOwqRmN+10g6uN8c86L1wplARk/KqviYFnq1QM4LFSK5Yazsl9mUzzkXkFfc0/Gi7RQqLgYwQFX4sLH5VaxsZhB30a7IAb/sYu+oMPzXhFlar+wY49bEWZ15jaIxxpBO3U8VvyBLMA2eXEdx5GOCEUNaGWG8BfL+keJ+qS65l0/VEhOe2glKldbd6zZMeOzaik0CpfjrgaJ8GdspJNY8/ulSQ==
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2148666b-fa43-4f77-155f-08d880bb870e
-X-MS-Exchange-CrossTenant-AuthSource: PA4PR04MB7533.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Nov 2020 12:16:58.8809
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: PVTaaVHHSk/EeWZ8aH7nr+XtylbGPCoJEvS/mn0PNYaW8KxeqHNQMiumkzFvKkKQ
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR3PR04MB7323
+In-Reply-To: <4f4a83f2-3c9b-9549-0acf-057257b4255d@fivetechno.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 2020-11-04 11:15, Markus Reichl wrote:
+> Hi Heiko,
+> 
+> Am 04.11.20 um 11:51 schrieb Heiko Stübner:
+>> Hi Markus,
+>>
+>> Am Mittwoch, 4. November 2020, 10:49:45 CET schrieb Markus Reichl:
+>>> Recently introduced async probe on mmc devices can shuffle block IDs.
+>>> Pin them to fixed values to ease booting in evironments where UUIDs
+>>> are not practical. Use newly introduced aliases for mmcblk devices 
+>>> from [1].
+>>>
+>>> [1]
+>>> https://patchwork.kernel.org/patch/11747669/
+>>>
+>>> Signed-off-by: Markus Reichl <m.reichl@fivetechno.de>
+>>> ---
+>>>  arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi | 5 +++++
+>>>  1 file changed, 5 insertions(+)
+>>>
+>>> diff --git a/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi 
+>>> b/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi
+>>> index e7a459fa4322..bc9482b59428 100644
+>>> --- a/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi
+>>> +++ b/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi
+>>> @@ -13,6 +13,11 @@ / {
+>>>      model = "Firefly ROC-RK3399-PC Board";
+>>>      compatible = "firefly,roc-rk3399-pc", "rockchip,rk3399";
+>>>
+>>> +    aliases {
+>>> +        mmc0 = &sdmmc;
+>>> +        mmc1 = &sdhci;
+>>> +    };
+>>> +
+>>
+>> Any reason for this odering?
+> 
+> Without pinning roc-pc mostly booted as
+> mmcblk0 = sdmmc = µSD
+> mmcblk1 = sdhci = eMMC
+> so I kept this behaviour in aliases
+> 
+> roc-pc-mezzanine with populated SDIO-M2-slot booted
+> mmc0 = sdio = (no mmcblk)
+> mmcblk1 = sdmmc = µSD
+> mmcblk2 = sdhci = eMMC
 
-Recently I tried to run v5.10-rc2 kernel on my RK3399 board (Rock Pi 4B,
-4G ram version), most drivers work, but the PCIE RC of the board fails
-to register, without obvious dmesg error.
+FWIW that's also how my NanoPC-T4 behaves. Given that it's the order 
+they appear in the DT, not too surprising ;)
 
+Robin.
 
-My previous v5.9 kernel runs pretty fine on that board, and can boot
-from root on LVM on NVME device without any problem.
-
-But for v5.10-rc2 kernel, the root complex just refuses to initialize.
-Although the rockchip pcie seems to be detected, but no PCIE bus added
-at all.
-
-Also tried to add CONFIG_PCI_DEBUG, but still no pci related dmesg
-except the rockchip pcie controller trying to initialize.
-
-Manjaro ARM's linux-rc kernel has the same problem too, so it doesn't
-seem to be a bug in my kernel config.
-
-For the dmesg extracted from initramfs:
-https://gist.github.com/adam900710/0415c1f19c07f65f892eeb848fd8dfbe
-
-
-Is there any known bug related to pci to cause such problem?
-
-Thanks,
-Qu
-
+> With my aliases both boards behave the same now and the optional SDIO slot
+> goes out of the way to mmc2.
+> 
+>>
+>> I.e. some previous incarnations had it ordered as (emmc, mmc, sdio).
+>> This is also true for the ChromeOS out-of-tree usage of those, the
+>> rk3399 dts in the chromeos-4.4 tree also orders this as sdhci, sdmmc, 
+>> sdio.
+> 
+> The boards from my zoo (exynos, rk3399) mostly come up with SD-card as mmc0
+> and eMMC as mmc1 in mainline as opposed in some vendor kernels.
+> but I have no objection to set it the other way round if this is more 
+> common
+> with rk3399 boards.
+> 
+>>
+>> And I guess a further question would be when we're doing arbitary 
+>> orderings
+>> anyway, why is this not in rk3399.dtsi ;-) ?
+> 
+> I restricted the ordering to the boards I have, not to confuse other 
+> established
+> use cases, but if a standard ordering is desired this can go to 
+> rk3399.dtsi.
+> 
+>>
+>>
+>> Heiko
+>>
+>>
+> 
+> Gruß,
