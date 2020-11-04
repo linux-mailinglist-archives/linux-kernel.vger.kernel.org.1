@@ -2,113 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1C202A6883
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 16:54:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FD8B2A68E0
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 16:58:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731276AbgKDPym convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 4 Nov 2020 10:54:42 -0500
-Received: from gloria.sntech.de ([185.11.138.130]:43498 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730429AbgKDPyl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 10:54:41 -0500
-Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1kaL7K-0000Fl-3J; Wed, 04 Nov 2020 16:54:34 +0100
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Markus Reichl <m.reichl@fivetechno.de>,
-        Rob Herring <robh@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH] arm64: dts: rockchip: Assign a fixed index to mmc devices on rk3399-roc-pc boards.
-Date:   Wed, 04 Nov 2020 16:54:33 +0100
-Message-ID: <10029979.JCShpOL5JR@diego>
-In-Reply-To: <CAD=FV=V2Vv0bv-exiZ6VrOtfMM5TVpjATO04qaXeGWDRu+6vyw@mail.gmail.com>
-References: <20201104094950.2096-1-m.reichl@fivetechno.de> <4984701.vSXMUKeAfh@diego> <CAD=FV=V2Vv0bv-exiZ6VrOtfMM5TVpjATO04qaXeGWDRu+6vyw@mail.gmail.com>
+        id S1730795AbgKDP5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 10:57:46 -0500
+Received: from esa6.microchip.iphmx.com ([216.71.154.253]:49005 "EHLO
+        esa6.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730029AbgKDP5p (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 10:57:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1604505464; x=1636041464;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=1IXMDBOSCtaUZtiq9izDv17V26Pq9aWYb9Tw2O2fSxs=;
+  b=DrjjstWEPmaf1C3NsZIb/ZUVi/GeBkN+FEndaX/j8MCKNQqVjY97ewO3
+   5kPHGGDLEV+hcLK8y77s1iEHm7wUmy1+5RzOj26vtdhVQqJi5Q/SF2yRY
+   KdwECorro4nuSVYH15+gAsi/+0HAHki14GM1StQ397mbKL31yEJY2Phoz
+   IwyT3jcdDPYk/MA0ZmJqlLVcuZF/o6EJdt+EclGacDkO04iFSkt/iuCMG
+   glhGkcOSoLPJMUJnHyaUrIBUWS9/EdxPJmNHduPulYj2etGzerqZmx1XK
+   HrZSf3k3Y84nFaVxj1SB4BgQ25uzfQN2m1nkIZV7KWKWn1Xjp1fUiKovf
+   w==;
+IronPort-SDR: xmQk0RwZowrJeY6M1qYOR3nH7hBq/SFUF+bH3yXO4jsDjxPIRtmeRLh7IyMcx7f6vJBgDyTWtZ
+ RL+ojKFAhSPa9MMv9a5RpWmut69xdcwpz2KEwJKNIZPIJ7Xg2uHhsB+bkwtBjZmvS7GGN/MyZI
+ jcBtIJdLz50OLYiZ8D9JLvgHJzmXrsrnGhGoIVNhhbiNe5TdtWZgP+HMRPIaE0P4hkjyawhySB
+ Cms0meRnCremStsCaNiNIIoqHTRHw477jNBZQG58GwARmfW2C3d/N3/5py9k74aHAtlsQzF7LY
+ F40=
+X-IronPort-AV: E=Sophos;i="5.77,451,1596524400"; 
+   d="scan'208";a="32405234"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 04 Nov 2020 08:57:44 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 4 Nov 2020 08:57:43 -0700
+Received: from rob-ult-m19940.amer.actel.com (10.10.115.15) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Wed, 4 Nov 2020 08:57:40 -0700
+From:   Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+To:     <alsa-devel@alsa-project.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <lgirdwood@gmail.com>, <broonie@kernel.org>,
+        <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
+        <ludovic.desroches@microchip.com>,
+        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Subject: [PATCH] ASoC: mchp-spdiftx: Do not set Validity bit(s)
+Date:   Wed, 4 Nov 2020 17:57:38 +0200
+Message-ID: <20201104155738.68403-1-codrin.ciubotariu@microchip.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Mittwoch, 4. November 2020, 16:42:01 CET schrieb Doug Anderson:
-> Hi,
-> 
-> On Wed, Nov 4, 2020 at 2:51 AM Heiko Stübner <heiko@sntech.de> wrote:
-> >
-> > Hi Markus,
-> >
-> > Am Mittwoch, 4. November 2020, 10:49:45 CET schrieb Markus Reichl:
-> > > Recently introduced async probe on mmc devices can shuffle block IDs.
-> > > Pin them to fixed values to ease booting in evironments where UUIDs
-> > > are not practical. Use newly introduced aliases for mmcblk devices from [1].
-> > >
-> > > [1]
-> > > https://patchwork.kernel.org/patch/11747669/
-> > >
-> > > Signed-off-by: Markus Reichl <m.reichl@fivetechno.de>
-> > > ---
-> > >  arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi | 5 +++++
-> > >  1 file changed, 5 insertions(+)
-> > >
-> > > diff --git a/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi
-> > > index e7a459fa4322..bc9482b59428 100644
-> > > --- a/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi
-> > > +++ b/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi
-> > > @@ -13,6 +13,11 @@ / {
-> > >       model = "Firefly ROC-RK3399-PC Board";
-> > >       compatible = "firefly,roc-rk3399-pc", "rockchip,rk3399";
-> > >
-> > > +     aliases {
-> > > +             mmc0 = &sdmmc;
-> > > +             mmc1 = &sdhci;
-> > > +     };
-> > > +
-> >
-> > Any reason for this odering?
-> >
-> > I.e. some previous incarnations had it ordered as (emmc, mmc, sdio).
-> > This is also true for the ChromeOS out-of-tree usage of those, the
-> > rk3399 dts in the chromeos-4.4 tree also orders this as sdhci, sdmmc, sdio.
-> >
-> > And I guess a further question would be when we're doing arbitary orderings
-> > anyway, why is this not in rk3399.dtsi ;-) ?
-> 
-> Though I personally like the idea of eMMC, which is typically
-> built-in, as being the "0" number, I'm personally happy with any
-> numbering scheme that's consistent.  Ordering them by base address is
-> OK w/ me and seems less controversial.  That seems like it could go in
-> rk3399.dtsi and then if a particular board wanted a different order
-> they could override it in their board file. 
+The Validity bits (bit 28) must not be set in order to have the samples
+valid. Some controllers look for this bit and ignore the samples if it
+is set.
 
-Yep that sounds sensible and ordering by base address at least is one
-"simple" type of order without too much explanation needed.
+Fixes: 06ca24e98e6b ("ASoC: mchp-spdiftx: add driver for S/PDIF TX Controller")
+Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+---
+ sound/soc/atmel/mchp-spdiftx.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-So I guess we'd get a sdio + sdmmc + sdhci ordering
-
-
-@Markus: if nobody else complains, can you do a "simple" rk3399.dtsi
-change with that please?
-
-
-> The downside of putting
-> in rk3399 is that boards that don't have all SD/MMC interfaces enabled
-> would definitely get a new number compared to old kernels, but
-> hopefully this is the last time?
-
-With that new asynchronous mmc-probe-thingy in 5.10 that "caused" this,
-it sounds like everything gets a new number anyway ;-) .
-
-
-Heiko
-
+diff --git a/sound/soc/atmel/mchp-spdiftx.c b/sound/soc/atmel/mchp-spdiftx.c
+index 82c1eecd2528..3bd350afb743 100644
+--- a/sound/soc/atmel/mchp-spdiftx.c
++++ b/sound/soc/atmel/mchp-spdiftx.c
+@@ -487,7 +487,6 @@ static int mchp_spdiftx_hw_params(struct snd_pcm_substream *substream,
+ 	}
+ 	mchp_spdiftx_channel_status_write(dev);
+ 	spin_unlock_irqrestore(&ctrl->lock, flags);
+-	mr |= SPDIFTX_MR_VALID1 | SPDIFTX_MR_VALID2;
+ 
+ 	if (dev->gclk_enabled) {
+ 		clk_disable_unprepare(dev->gclk);
+-- 
+2.27.0
 
