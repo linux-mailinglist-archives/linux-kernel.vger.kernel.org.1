@@ -2,226 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D0EF2A67EF
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 16:41:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B9A32A67F3
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 16:42:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730822AbgKDPl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 10:41:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57024 "EHLO
+        id S1730834AbgKDPmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 10:42:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730779AbgKDPlS (ORCPT
+        with ESMTP id S1730810AbgKDPmR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 10:41:18 -0500
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F44FC0613D3;
-        Wed,  4 Nov 2020 07:41:18 -0800 (PST)
-Received: by mail-ej1-x641.google.com with SMTP id gn41so13115097ejc.4;
-        Wed, 04 Nov 2020 07:41:18 -0800 (PST)
+        Wed, 4 Nov 2020 10:42:17 -0500
+Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16DDAC0613D3
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 07:42:16 -0800 (PST)
+Received: by mail-vs1-xe43.google.com with SMTP id b3so11705697vsc.5
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 07:42:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=qadYEw4f88iMqf9NZfFq/w79JvooImvkUmo2CAlsihM=;
-        b=cfD5JC3WofoX3OiuSq0f1VJs/7pcqzBk68V99c/pzY9LliCFCP646vwv/BVjqOnKr8
-         HsR8xEr6/JwVT4OE2huyDKd8dcrvaZt0VjFubGN6pAIDGHU+ZbO8jo1N6+XRTeQ+ZIAa
-         FQWrBqzGTF7xBoUOwU91FdArqsK3aIrI117vxk9fnXPUS/xltaJFa3wkBE4C59cIVxDd
-         qPeietDSca/by8Abu+sOKHCg+FLjcHz5lKkP0D13RA7QOCBrN6RahU46u3FaMbS2hMBa
-         YyuBr3JsktxH5dbwCqLI45blwh+4yl82M5miHD/Xa2xVA/ZJuzK92amzaxz4fiqxyjTH
-         EeNA==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=/FtdeSUhs74nhRFArqfFNBt0MhUao+F2IwHVVHi0aS0=;
+        b=R2E/Db42MGI+YnyGlaOGsgu2dpWlTR02Cg/FLj+Kp3JW23/91+RSpJo6HIb2Vd2OxD
+         UhNWS7AO+DC76rP5D8KfB+CIk1uhYDJJ6pcTAwzO6R7MNOTDwKRNW11SbspmVk4xCsEn
+         47OyYvCfBw3qGLbqq+IDebwZRM8ydfmrcxmdE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=qadYEw4f88iMqf9NZfFq/w79JvooImvkUmo2CAlsihM=;
-        b=VlNwhp/pP02qylEmEKyj+LPAdYFkxpgkL/9txoUKwlrzfOtnXkzvJMd1X73nGKTGH7
-         PhXp0E6DyooBsiKEZMKhzuz7fxCjI6p0sQArcGa9/VGcad0WIHRuzZ7sElPBae4Hug6l
-         0VL/LDjNpGeJykNsioFI+RuUoPCQRSG81fxPpEhMfbxlq+KFGLBnh8JM3tZlDplOhxxY
-         dt+7smfx6tuBatqTfY0uRw73gLCFHqB70xdIS8lh2AGPao3RfmxBrHi/KJRBLw8J0rvo
-         QvHURX6MnfLp1u/DWqO1LFEiEw+/XICi8VAK64woGX1D0PwPuqix8sBgJZP5yU8P8e9a
-         kH0w==
-X-Gm-Message-State: AOAM532GLt3aO2BCUlfiQO4IqUFFu1MVVK9dfjxQXrDLyKhquUwd8xI7
-        AIbAK2LzLOTQhDsJCqgywb+let79HqhKZ90h
-X-Google-Smtp-Source: ABdhPJzZU2arLaEfYLjVSoHpOYa4fqGx0QoIWoHrrLXywbkUBLBXUu6Tr27ZDJ+dXwvitinr1lhs1g==
-X-Received: by 2002:a17:906:3e08:: with SMTP id k8mr26242825eji.478.1604504476623;
-        Wed, 04 Nov 2020 07:41:16 -0800 (PST)
-Received: from localhost.localdomain (host-87-7-71-164.retail.telecomitalia.it. [87.7.71.164])
-        by smtp.gmail.com with ESMTPSA id y14sm1218548edo.69.2020.11.04.07.41.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 07:41:16 -0800 (PST)
-From:   "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     "K . Y . Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, linux-hyperv@vger.kernel.org,
-        Andres Beltran <lkmlabelt@gmail.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Saruhan Karademir <skarade@microsoft.com>,
-        Juan Vazquez <juvazq@microsoft.com>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
-Subject: [PATCH v8 3/3] hv_netvsc: Use vmbus_requestor to generate transaction IDs for VMBus hardening
-Date:   Wed,  4 Nov 2020 16:40:27 +0100
-Message-Id: <20201104154027.319432-4-parri.andrea@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201104154027.319432-1-parri.andrea@gmail.com>
-References: <20201104154027.319432-1-parri.andrea@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=/FtdeSUhs74nhRFArqfFNBt0MhUao+F2IwHVVHi0aS0=;
+        b=UiWouJ2lACzDLuMYZP30PxRUidOoxZaRzo4bUS/4qOXDqkMevKjhQdnSObcWRq/RAZ
+         /gWuljGMVNpiV/DL1L3vQef/jNN47kFmVt+QgcpKB3XrtdDXc5QXP2tHj29wlKliHdWF
+         Qm1ZklP/NyDd1WsAZeOekXqcSjo7IBX+2+gGg9ioryEqCxQWpo8RXIpxTHIVbS6bK7IT
+         wVGHu6fDaBWCC4C3zAe35D/hCUxQi4a/tkEqxRjv7swXGOCJ8CK47XJ4ss4qMT17fnTn
+         tslkYdueorW8/dzx74nc7G8plS+V/4Az78gnPsXAqu1UBLaE98C0wBHNpFcotmuRRWih
+         VqMA==
+X-Gm-Message-State: AOAM532XLBURN1Ep1NoQaSYgTUAhZsqluX9yN1ZqJfQVFU3XZK4O8CHa
+        jw/Ut8mOpsRbWuWvR5n6hmoLBriqcwxI0Q==
+X-Google-Smtp-Source: ABdhPJx/LF/XcGeh61tconqfDSKAnbKM5lXL4Ryek2GP5DLpBjX9Ya/Fz7EQMFMs26DeCLzpd9d/yg==
+X-Received: by 2002:a67:f8d3:: with SMTP id c19mr15467438vsp.36.1604504534916;
+        Wed, 04 Nov 2020 07:42:14 -0800 (PST)
+Received: from mail-vs1-f49.google.com (mail-vs1-f49.google.com. [209.85.217.49])
+        by smtp.gmail.com with ESMTPSA id i3sm307140vkp.6.2020.11.04.07.42.14
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Nov 2020 07:42:14 -0800 (PST)
+Received: by mail-vs1-f49.google.com with SMTP id b3so11705631vsc.5
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 07:42:14 -0800 (PST)
+X-Received: by 2002:a67:ef98:: with SMTP id r24mr8004994vsp.37.1604504533670;
+ Wed, 04 Nov 2020 07:42:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201104094950.2096-1-m.reichl@fivetechno.de> <4984701.vSXMUKeAfh@diego>
+In-Reply-To: <4984701.vSXMUKeAfh@diego>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Wed, 4 Nov 2020 07:42:01 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=V2Vv0bv-exiZ6VrOtfMM5TVpjATO04qaXeGWDRu+6vyw@mail.gmail.com>
+Message-ID: <CAD=FV=V2Vv0bv-exiZ6VrOtfMM5TVpjATO04qaXeGWDRu+6vyw@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: rockchip: Assign a fixed index to mmc devices
+ on rk3399-roc-pc boards.
+To:     =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>
+Cc:     "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Markus Reichl <m.reichl@fivetechno.de>,
+        Rob Herring <robh@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andres Beltran <lkmlabelt@gmail.com>
+Hi,
 
-Currently, pointers to guest memory are passed to Hyper-V as
-transaction IDs in netvsc. In the face of errors or malicious
-behavior in Hyper-V, netvsc should not expose or trust the transaction
-IDs returned by Hyper-V to be valid guest memory addresses. Instead,
-use small integers generated by vmbus_requestor as requests
-(transaction) IDs.
+On Wed, Nov 4, 2020 at 2:51 AM Heiko St=C3=BCbner <heiko@sntech.de> wrote:
+>
+> Hi Markus,
+>
+> Am Mittwoch, 4. November 2020, 10:49:45 CET schrieb Markus Reichl:
+> > Recently introduced async probe on mmc devices can shuffle block IDs.
+> > Pin them to fixed values to ease booting in evironments where UUIDs
+> > are not practical. Use newly introduced aliases for mmcblk devices from=
+ [1].
+> >
+> > [1]
+> > https://patchwork.kernel.org/patch/11747669/
+> >
+> > Signed-off-by: Markus Reichl <m.reichl@fivetechno.de>
+> > ---
+> >  arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi | 5 +++++
+> >  1 file changed, 5 insertions(+)
+> >
+> > diff --git a/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi b/arch/arm=
+64/boot/dts/rockchip/rk3399-roc-pc.dtsi
+> > index e7a459fa4322..bc9482b59428 100644
+> > --- a/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi
+> > +++ b/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi
+> > @@ -13,6 +13,11 @@ / {
+> >       model =3D "Firefly ROC-RK3399-PC Board";
+> >       compatible =3D "firefly,roc-rk3399-pc", "rockchip,rk3399";
+> >
+> > +     aliases {
+> > +             mmc0 =3D &sdmmc;
+> > +             mmc1 =3D &sdhci;
+> > +     };
+> > +
+>
+> Any reason for this odering?
+>
+> I.e. some previous incarnations had it ordered as (emmc, mmc, sdio).
+> This is also true for the ChromeOS out-of-tree usage of those, the
+> rk3399 dts in the chromeos-4.4 tree also orders this as sdhci, sdmmc, sdi=
+o.
+>
+> And I guess a further question would be when we're doing arbitary orderin=
+gs
+> anyway, why is this not in rk3399.dtsi ;-) ?
 
-Signed-off-by: Andres Beltran <lkmlabelt@gmail.com>
-Co-developed-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
-Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
-Reviewed-by: Michael Kelley <mikelley@microsoft.com>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: netdev@vger.kernel.org
----
- drivers/net/hyperv/hyperv_net.h   | 13 +++++++++++++
- drivers/net/hyperv/netvsc.c       | 22 ++++++++++++++++------
- drivers/net/hyperv/rndis_filter.c |  1 +
- include/linux/hyperv.h            |  1 +
- 4 files changed, 31 insertions(+), 6 deletions(-)
+Though I personally like the idea of eMMC, which is typically
+built-in, as being the "0" number, I'm personally happy with any
+numbering scheme that's consistent.  Ordering them by base address is
+OK w/ me and seems less controversial.  That seems like it could go in
+rk3399.dtsi and then if a particular board wanted a different order
+they could override it in their board file.  The downside of putting
+in rk3399 is that boards that don't have all SD/MMC interfaces enabled
+would definitely get a new number compared to old kernels, but
+hopefully this is the last time?
 
-diff --git a/drivers/net/hyperv/hyperv_net.h b/drivers/net/hyperv/hyperv_net.h
-index a0f338cf14247..2a87cfa27ac02 100644
---- a/drivers/net/hyperv/hyperv_net.h
-+++ b/drivers/net/hyperv/hyperv_net.h
-@@ -847,6 +847,19 @@ struct nvsp_message {
- 
- #define NETVSC_XDP_HDRM 256
- 
-+#define NETVSC_MIN_OUT_MSG_SIZE (sizeof(struct vmpacket_descriptor) + \
-+				 sizeof(struct nvsp_message))
-+#define NETVSC_MIN_IN_MSG_SIZE sizeof(struct vmpacket_descriptor)
-+
-+/* Estimated requestor size:
-+ * out_ring_size/min_out_msg_size + in_ring_size/min_in_msg_size
-+ */
-+static inline u32 netvsc_rqstor_size(unsigned long ringbytes)
-+{
-+	return ringbytes / NETVSC_MIN_OUT_MSG_SIZE +
-+		ringbytes / NETVSC_MIN_IN_MSG_SIZE;
-+}
-+
- #define NETVSC_XFER_HEADER_SIZE(rng_cnt) \
- 		(offsetof(struct vmtransfer_page_packet_header, ranges) + \
- 		(rng_cnt) * sizeof(struct vmtransfer_page_range))
-diff --git a/drivers/net/hyperv/netvsc.c b/drivers/net/hyperv/netvsc.c
-index 0c3de94b51787..f74ee8b90b84d 100644
---- a/drivers/net/hyperv/netvsc.c
-+++ b/drivers/net/hyperv/netvsc.c
-@@ -50,7 +50,7 @@ void netvsc_switch_datapath(struct net_device *ndev, bool vf)
- 
- 	vmbus_sendpacket(dev->channel, init_pkt,
- 			       sizeof(struct nvsp_message),
--			       (unsigned long)init_pkt,
-+			       VMBUS_RQST_ID_NO_RESPONSE,
- 			       VM_PKT_DATA_INBAND, 0);
- }
- 
-@@ -163,7 +163,7 @@ static void netvsc_revoke_recv_buf(struct hv_device *device,
- 		ret = vmbus_sendpacket(device->channel,
- 				       revoke_packet,
- 				       sizeof(struct nvsp_message),
--				       (unsigned long)revoke_packet,
-+				       VMBUS_RQST_ID_NO_RESPONSE,
- 				       VM_PKT_DATA_INBAND, 0);
- 		/* If the failure is because the channel is rescinded;
- 		 * ignore the failure since we cannot send on a rescinded
-@@ -213,7 +213,7 @@ static void netvsc_revoke_send_buf(struct hv_device *device,
- 		ret = vmbus_sendpacket(device->channel,
- 				       revoke_packet,
- 				       sizeof(struct nvsp_message),
--				       (unsigned long)revoke_packet,
-+				       VMBUS_RQST_ID_NO_RESPONSE,
- 				       VM_PKT_DATA_INBAND, 0);
- 
- 		/* If the failure is because the channel is rescinded;
-@@ -557,7 +557,7 @@ static int negotiate_nvsp_ver(struct hv_device *device,
- 
- 	ret = vmbus_sendpacket(device->channel, init_packet,
- 				sizeof(struct nvsp_message),
--				(unsigned long)init_packet,
-+				VMBUS_RQST_ID_NO_RESPONSE,
- 				VM_PKT_DATA_INBAND, 0);
- 
- 	return ret;
-@@ -614,7 +614,7 @@ static int netvsc_connect_vsp(struct hv_device *device,
- 	/* Send the init request */
- 	ret = vmbus_sendpacket(device->channel, init_packet,
- 				sizeof(struct nvsp_message),
--				(unsigned long)init_packet,
-+				VMBUS_RQST_ID_NO_RESPONSE,
- 				VM_PKT_DATA_INBAND, 0);
- 	if (ret != 0)
- 		goto cleanup;
-@@ -695,10 +695,19 @@ static void netvsc_send_tx_complete(struct net_device *ndev,
- 				    const struct vmpacket_descriptor *desc,
- 				    int budget)
- {
--	struct sk_buff *skb = (struct sk_buff *)(unsigned long)desc->trans_id;
-+	struct sk_buff *skb;
- 	struct net_device_context *ndev_ctx = netdev_priv(ndev);
- 	u16 q_idx = 0;
- 	int queue_sends;
-+	u64 cmd_rqst;
-+
-+	cmd_rqst = vmbus_request_addr(&channel->requestor, (u64)desc->trans_id);
-+	if (cmd_rqst == VMBUS_RQST_ERROR) {
-+		netdev_err(ndev, "Incorrect transaction id\n");
-+		return;
-+	}
-+
-+	skb = (struct sk_buff *)(unsigned long)cmd_rqst;
- 
- 	/* Notify the layer above us */
- 	if (likely(skb)) {
-@@ -1520,6 +1529,7 @@ struct netvsc_device *netvsc_device_add(struct hv_device *device,
- 		       netvsc_poll, NAPI_POLL_WEIGHT);
- 
- 	/* Open the channel */
-+	device->channel->rqstor_size = netvsc_rqstor_size(netvsc_ring_bytes);
- 	ret = vmbus_open(device->channel, netvsc_ring_bytes,
- 			 netvsc_ring_bytes,  NULL, 0,
- 			 netvsc_channel_cb, net_device->chan_table);
-diff --git a/drivers/net/hyperv/rndis_filter.c b/drivers/net/hyperv/rndis_filter.c
-index b22e47bcfeca1..6ae43319ece68 100644
---- a/drivers/net/hyperv/rndis_filter.c
-+++ b/drivers/net/hyperv/rndis_filter.c
-@@ -1172,6 +1172,7 @@ static void netvsc_sc_open(struct vmbus_channel *new_sc)
- 	/* Set the channel before opening.*/
- 	nvchan->channel = new_sc;
- 
-+	new_sc->rqstor_size = netvsc_rqstor_size(netvsc_ring_bytes);
- 	ret = vmbus_open(new_sc, netvsc_ring_bytes,
- 			 netvsc_ring_bytes, NULL, 0,
- 			 netvsc_channel_cb, nvchan);
-diff --git a/include/linux/hyperv.h b/include/linux/hyperv.h
-index 5b6d5c4e37110..5ddb479c4d4cb 100644
---- a/include/linux/hyperv.h
-+++ b/include/linux/hyperv.h
-@@ -779,6 +779,7 @@ struct vmbus_requestor {
- 
- #define VMBUS_NO_RQSTOR U64_MAX
- #define VMBUS_RQST_ERROR (U64_MAX - 1)
-+#define VMBUS_RQST_ID_NO_RESPONSE (U64_MAX - 2)
- 
- struct vmbus_device {
- 	u16  dev_type;
--- 
-2.25.1
-
+-Doug
