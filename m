@@ -2,91 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A40A02A668F
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 15:41:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 129F72A6692
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 15:41:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730117AbgKDOl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 09:41:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44774 "EHLO mail.kernel.org"
+        id S1730129AbgKDOlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 09:41:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44844 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726564AbgKDOl2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 09:41:28 -0500
-Received: from gaia (unknown [2.26.170.190])
+        id S1728522AbgKDOlg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 09:41:36 -0500
+Received: from linux-8ccs (p57a236d4.dip0.t-ipconnect.de [87.162.54.212])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E5960206DB;
-        Wed,  4 Nov 2020 14:41:23 +0000 (UTC)
-Date:   Wed, 4 Nov 2020 14:41:21 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Szabolcs Nagy <szabolcs.nagy@arm.com>
-Cc:     Jeremy Linton <jeremy.linton@arm.com>,
-        Mark Brown <broonie@kernel.org>, libc-alpha@sourceware.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        Salvatore Mesoraca <s.mesoraca16@gmail.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        Topi Miettinen <toiwoton@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kernel-hardening@lists.openwall.com,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 0/4] aarch64: avoid mprotect(PROT_BTI|PROT_EXEC) [BZ
- #26831]
-Message-ID: <20201104144120.GD28902@gaia>
-References: <cover.1604393169.git.szabolcs.nagy@arm.com>
- <20201103173438.GD5545@sirena.org.uk>
- <8c99cc8e-41af-d066-b786-53ac13c2af8a@arm.com>
- <20201104085704.GB24704@arm.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id DA8BD20739;
+        Wed,  4 Nov 2020 14:41:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604500896;
+        bh=iAoAP6oWMQNP6J7FU2Y8AJTsRi/1fWUHdR19uI71nwU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VFVjJiZhNjYbxqCSbu+PlNgUvLScpWe7UMqVs1fvbXFddtWjlGb+5DQUC6F3n23Pm
+         Bd5CbKAtpHYgKuFS2k543Ugu2SqiZrU/oA01+PC0pkSl2hqsw9kKdkZTgQDPdJcDFy
+         rXv4AG2oCgfI6m9DQe8zqJUu1zI01yw8shlEjiOA=
+Date:   Wed, 4 Nov 2020 15:41:31 +0100
+From:   Jessica Yu <jeyu@kernel.org>
+To:     Sergey Shtylyov <s.shtylyov@omprussia.ru>
+Cc:     linux-kernel@vger.kernel.org, Joe Perches <joe@perches.com>,
+        Miroslav Benes <mbenes@suse.cz>
+Subject: Re: [PATCH v2 0/3] module: refactor module_sig_check()
+Message-ID: <20201104144130.GA14910@linux-8ccs>
+References: <22e48a3d-06ee-5b8e-6e56-3694871a7c2f@omprussia.ru>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20201104085704.GB24704@arm.com>
+In-Reply-To: <22e48a3d-06ee-5b8e-6e56-3694871a7c2f@omprussia.ru>
+X-OS:   Linux linux-8ccs 4.12.14-lp150.12.61-default x86_64
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 08:57:05AM +0000, Szabolcs Nagy wrote:
-> The 11/03/2020 23:41, Jeremy Linton wrote:
-> > On 11/3/20 11:34 AM, Mark Brown wrote:
-> > > On Tue, Nov 03, 2020 at 10:25:37AM +0000, Szabolcs Nagy wrote:
-> > > 
-> > > > Re-mmap executable segments instead of mprotecting them in
-> > > > case mprotect is seccomp filtered.
-> > > 
-> > > > For the kernel mapped main executable we don't have the fd
-> > > > for re-mmap so linux needs to be updated to add BTI. (In the
-> > > > presence of seccomp filters for mprotect(PROT_EXEC) the libc
-> > > > cannot change BTI protection at runtime based on user space
-> > > > policy so it is better if the kernel maps BTI compatible
-> > > > binaries with PROT_BTI by default.)
-> > > 
-> > > Given that there were still some ongoing discussions on a more robust
-> > > kernel interface here and there seem to be a few concerns with this
-> > > series should we perhaps just take a step back and disable this seccomp
-> > > filter in systemd on arm64, at least for the time being?  That seems
-> > > safer than rolling out things that set ABI quickly, a big part of the
-> > 
-> > So, that's a bigger hammer than I think is needed and punishes !BTI
-> > machines. I'm going to suggest that if we need to carry a temp patch its
-> > more like the glibc patch I mentioned in the Fedora defect. That patch
-> > simply logs a message, on the mprotect failures rather than aborting. Its
-> > fairly non-intrusive.
-> > 
-> > That leaves seccomp functional, and BTI generally functional except when
-> > seccomp is restricting it. I've also been asked that if a patch like that is
-> > needed, its (temporary?) merged to the glibc trunk, rather than just being
-> > carried by the distro's.
-> 
-> note that changing mprotect into mmap in glibc works
-> even if the kernel or systemd decides to do things
-> differently: currently the only wart is that on the
-> main exe we have to use mprotect and silently ignore
-> the failures.
++++ Sergey Shtylyov [31/10/20 23:05 +0300]:
+>Here are 3 patches against the 'modules-next' branch of Jessica Yu's 'linux.git' repo.
+>I'm doing some refactoring in module_sig_check()...
+>
+>[1/3] module: merge repetitive strings in module_sig_check()
+>[2/3] module: avoid *goto*s in module_sig_check()
+>[3/3] module: only handle errors with the *switch* statement in module_sig_check()
 
-Can the dynamic loader mmap() the main exe again while munmap'ing the
-original one? (sorry if it was already discussed)
+Applied to modules-next. Thanks Sergey for the cleanups!
 
--- 
-Catalin
+Jessica
