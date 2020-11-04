@@ -2,141 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4B502A5B5F
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 01:58:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A916A2A5B61
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 01:58:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730016AbgKDA5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 19:57:10 -0500
-Received: from mout.gmx.net ([212.227.15.19]:51067 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728157AbgKDA5J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 19:57:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1604451402;
-        bh=UxyVQWzssxV5RUGWqHvr9JlZinMf8THDw2VxtHoZX30=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=NFDqKFK3P9fVjC7SH4Ups9cehCcU+VPgX5WYsgpuL8iCPjaJFfXXKob+52sRTUT6T
-         psHW9VNZUBDlU0hzT4L0exl56iX3O9K/zG73Tq4q8BWJnDbeEafd816l/86L1hpy0l
-         W8qbnv8iZSvyrph1K7jGmlBVpj4rQzeO5G3Jd5yY=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.221.148.80]) by mail.gmx.com (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1N8GQs-1kDrEf3UZM-014CCW; Wed, 04
- Nov 2020 01:56:41 +0100
-Message-ID: <2376f4e71c638aee215a4911e5efed14c5adf56e.camel@gmx.de>
-Subject: Re: BUG_ON(!newowner) in fixup_pi_state_owner()
-From:   Mike Galbraith <efault@gmx.de>
-To:     Gratian Crisan <gratian.crisan@ni.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org,
-        Brandon Streiff <brandon.streiff@ni.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Darren Hart <dvhart@infradead.org>,
-        James Minor <james.minor@ni.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Date:   Wed, 04 Nov 2020 01:56:40 +0100
-In-Reply-To: <878sbixbk4.fsf@ni.com>
-References: <87a6w6x7bb.fsf@ni.com> <878sbixbk4.fsf@ni.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.34.4 
+        id S1730200AbgKDA5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 19:57:13 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:6741 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728157AbgKDA5M (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 19:57:12 -0500
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CQpC56dJqzkdqR;
+        Wed,  4 Nov 2020 08:57:05 +0800 (CST)
+Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server (TLS) id 14.3.487.0; Wed, 4 Nov 2020
+ 08:57:07 +0800
+Subject: Re: [PATCH] erofs: derive atime instead of leaving it empty
+To:     Gao Xiang <hsiangkao@aol.com>, <linux-erofs@lists.ozlabs.org>,
+        Chao Yu <chao@kernel.org>
+CC:     LKML <linux-kernel@vger.kernel.org>,
+        Gao Xiang <hsiangkao@redhat.com>, nl6720 <nl6720@gmail.com>,
+        stable <stable@vger.kernel.org>
+References: <20201031195102.21221-1-hsiangkao.ref@aol.com>
+ <20201031195102.21221-1-hsiangkao@aol.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <bf522e01-97c6-e9b7-6f28-f88b64233aaf@huawei.com>
+Date:   Wed, 4 Nov 2020 08:57:07 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:sBC4XIHnp+NqNeu8kMp7ODZCa1bw9FoOWdAUlWe2i20LX6iq+da
- k+DSMpwALO7lbxpMdz3pmbKp9gWNBTgz65WdxSt89pMV1sTbfyoXzuSNi2YQRpcmpnM23bP
- H7/JRR+1cviEmj1k+fevOFmGk8XjwFa4/zFFT5soa10hD9MXUfRAlMQKS11UZjR8f8Nc5M4
- 2lUxfwx3rf6I/ZIMb8HNA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:EVgi3QojbdM=:STFWUNpyxMXTpqVZtq3O6W
- r4MV4U5CWxT2C98QOeSNALSgshSXKQmaM1G+oUVJse8IXxwMNCIqsKSYD4zFCcHJICZg49GUd
- 30r8IohrxP2Kk8psZUzxCQt3FvMHfFaPBUoxbX3ytG+mYDyJO39lvyIHMZt7FUF11vnbszeEW
- 3K7P/EGhUBQ+vNiItF5YKWgqxvIbfnJ/SOLdqAWRVM1XR8AiqSSzutxbYEjvxg8pqj6yaVXkZ
- Tc5pJ7U00uiPzfcQbN5SWlkDE3/BX47am0CjNlkVhsJGJpEDP0OaxqCKLzrGWk5K4TfbKHiKw
- adrdRkUH60wMUP+3PjokT5hzfZhr2YNHQnJb81b+fQXse1/I9x16lZNsF8w0NXrFDXW+BEfgj
- 1+yju/ui5osAUv1N9XgYUHeSN/P0uSwAK0fX29eoI5SbjqE0KeVnKNGPrNeWc40Ns7XXNBqTk
- K1Y7N43VW7CygQyptFXXZuwdtYcpuTs5Iml3452nsCl02Dc/TVArYTu2raN54/ug3lTawsoKi
- aQsSE4nrp4bgidyMw4dbpBeI3F9rYEFYKPlS6v9cazjBzhiWSWsTDcn8d+Ks0p25gPmtEyYtS
- jUyNzFbFC0XNwJcwFm3AsdpvMGmf+EzTfI6bBQEOb/6xrNVasuSQoqh9ithI7ppPqfSdtETyg
- eq+HzeM2mfGpOuJ81eODzslOg3w+JDeQ64/3BzRTLQYZZuPjFLIwE/omC40xnKiuBeN9q8r6O
- Ubzj2VZRAwIgNI4nUpEGyD3Cm4r7bru9+tTjvBHWRFq3LTUIxf2xCGKhDU44TFHKZ4bkGt4X/
- iQDEpujpDiJGu5lhISl+E8oU+jMhJ1xiUbraSpxQKp/+f22oqR4pNDJSBMMRoRlhdl0gyatyT
- 9Qf/t0UODZG64qkPdOyQ==
+In-Reply-To: <20201031195102.21221-1-hsiangkao@aol.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.114.67]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-11-03 at 17:31 -0600, Gratian Crisan wrote:
-> Hi all,
->
-> I apologize for waking up the futex demons (and replying to my own
-> email), but ...
->
-> Gratian Crisan writes:
-> >
-> > Brandon and I have been debugging a nasty race that leads to
-> > BUG_ON(!newowner) in fixup_pi_state_owner() in futex.c. So far
-> > we've only been able to reproduce the issue on 4.9.y-rt kernels.
-> > We are still testing if this is a problem for later RT branches.
->
-> I was able to reproduce the BUG_ON(!newowner) in fixup_pi_state_owner()
-> with a 5.10.0-rc1-rt1 kernel (currently testing 5.10.0-rc2-rt4).
+On 2020/11/1 3:51, Gao Xiang wrote:
+> From: Gao Xiang <hsiangkao@redhat.com>
+> 
+> EROFS has _only one_ ondisk timestamp (ctime is currently
+> documented and recorded, we might also record mtime instead
+> with a new compat feature if needed) for each extended inode
+> since EROFS isn't mainly for archival purposes so no need to
+> keep all timestamps on disk especially for Android scenarios
+> due to security concerns. Also, romfs/cramfs don't have their
+> own on-disk timestamp, and squashfs only records mtime instead.
+> 
+> Let's also derive access time from ondisk timestamp rather than
+> leaving it empty, and if mtime/atime for each file are really
+> needed for specific scenarios as well, we can also use xattrs
+> to record them then.
+> 
+> Reported-by: nl6720 <nl6720@gmail.com>
+> [ Gao Xiang: It'd be better to backport for user-friendly concern. ]
+> Fixes: 431339ba9042 ("staging: erofs: add inode operations")
+> Cc: stable <stable@vger.kernel.org> # 4.19+
+> Signed-off-by: Gao Xiang <hsiangkao@redhat.com>
 
-My box says it's generic.
+Looks good to me. :)
 
-      KERNEL: vmlinux-5.10.0.gb7cbaf5-master.gz
-    DUMPFILE: vmcore
-        CPUS: 8
-        DATE: Wed Nov  4 01:46:56 2020
-      UPTIME: 00:02:06
-LOAD AVERAGE: 0.25, 0.15, 0.06
-       TASKS: 726
-    NODENAME: homer
-     RELEASE: 5.10.0.gb7cbaf5-master
-     VERSION: #26 SMP Tue Nov 3 14:10:35 CET 2020
-     MACHINE: x86_64  (3591 Mhz)
-      MEMORY: 16 GB
-       PANIC: ""
-         PID: 4631
-     COMMAND: "f_waiter"
-        TASK: ffff88818a1fb900  [THREAD_INFO: ffff88818a1fb900]
-         CPU: 1
-       STATE: TASK_RUNNING (PANIC)
+Reviewed-by: Chao Yu <yuchao0@huawei.com>
 
-crash.rt> bt
-PID: 4631   TASK: ffff88818a1fb900  CPU: 1   COMMAND: "f_waiter"
- #0 [ffff88816a0b3a58] machine_kexec at ffffffff8104b2dc
- #1 [ffff88816a0b3aa0] __crash_kexec at ffffffff810fc97a
- #2 [ffff88816a0b3b60] crash_kexec at ffffffff810fda55
- #3 [ffff88816a0b3b70] oops_end at ffffffff81021813
- #4 [ffff88816a0b3b90] do_trap at ffffffff8101eaec
- #5 [ffff88816a0b3be0] do_error_trap at ffffffff8101ebd5
- #6 [ffff88816a0b3c20] exc_invalid_op at ffffffff816d8bdb
- #7 [ffff88816a0b3c40] asm_exc_invalid_op at ffffffff81800a62
- #8 [ffff88816a0b3cc8] fixup_pi_state_owner at ffffffff810f065c
- #9 [ffff88816a0b3d58] futex_wait_requeue_pi.constprop.0 at ffffffff810f1f=
-cb
-#10 [ffff88816a0b3ec8] do_futex at ffffffff810f2482
-#11 [ffff88816a0b3ed8] __x64_sys_futex at ffffffff810f2ab5
-#12 [ffff88816a0b3f40] do_syscall_64 at ffffffff816d88c3
-#13 [ffff88816a0b3f50] entry_SYSCALL_64_after_hwframe at ffffffff8180007c
-    RIP: 00007f665b94f839  RSP: 00007f665b056e88  RFLAGS: 00000212
-    RAX: ffffffffffffffda  RBX: 0000000000000000  RCX: 00007f665b94f839
-    RDX: 0000000000000509  RSI: 000000000000008b  RDI: 00000000006020c0
-    RBP: 00007f665b056ed0   R8: 00000000006020c4   R9: 0000000000000000
-    R10: 00007f665b056ef0  R11: 0000000000000212  R12: 00007ffd42284c3e
-    R13: 00007ffd42284c3f  R14: 0000000000000000  R15: 00007ffd42284c40
-    ORIG_RAX: 00000000000000ca  CS: 0033  SS: 002b
-crash.rt> gdb list *0xffffffff810f065c
-0xffffffff810f065c is in fixup_pi_state_owner (kernel/futex.c:2386).
-2381
-2382                    /*
-2383                     * Since we just failed the trylock; there must be=
- an owner.
-2384                     */
-2385                    newowner =3D rt_mutex_owner(&pi_state->pi_mutex);
-2386                    BUG_ON(!newowner);
-2387            } else {
-2388                    WARN_ON_ONCE(argowner !=3D current);
-2389                    if (oldowner =3D=3D current) {
-2390                            /*
-crash.rt>
-
+Thanks,
