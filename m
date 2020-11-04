@@ -2,84 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF3E42A6955
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 17:21:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5892E2A6958
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 17:21:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730362AbgKDQVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 11:21:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35144 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726225AbgKDQVc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 11:21:32 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9CABC0613D3;
-        Wed,  4 Nov 2020 08:21:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=NKY4RDSn0UBs859d6dPsXhdr5/nXdulWdtU5Y3NVcbE=; b=ccwuKEZCoNEkv5u0gTSIw+pJX8
-        GT6KMUMxyruFGsU7wlJvS/WPodwWNZqxvg+84Sboy0HwzpX9tkhxGvs0ukVEtonnVLGNX4L+TsETw
-        7wuJuhvHfNsH9gQBWUEUvbbQ3Bw6e1qlG+jFDR2zV7Za/E0HImdeRZfq6Fe4uoWI5lrvLJjJ/Jvzr
-        OgDGamj+LKQhBKh7CRWXw5xX/dvW98Gp+/kCmP0kdExERxfGBUdU6nkdmgK9PO8HpE4QF/uYJ6vJ3
-        ENmjBaeTVq7dnmKi4EfK3YgMruDfg6F4931eIXPJFu0VNYNegZZLGLRKqVb/QVl7tSb/r4511e6Kb
-        DtZTsKjA==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kaLXJ-0003Vy-2U; Wed, 04 Nov 2020 16:21:25 +0000
-Date:   Wed, 4 Nov 2020 16:21:25 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        J??r??me Glisse <jglisse@redhat.com>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        Jan Kara <jack@suse.cz>, Pawel Osciak <pawel@osciak.com>,
-        KVM list <kvm@vger.kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>
-Subject: Re: [PATCH v5 05/15] mm/frame-vector: Use FOLL_LONGTERM
-Message-ID: <20201104162125.GA13007@infradead.org>
-References: <20201030100815.2269-1-daniel.vetter@ffwll.ch>
- <20201030100815.2269-6-daniel.vetter@ffwll.ch>
- <446b2d5b-a1a1-a408-f884-f17a04b72c18@nvidia.com>
- <CAKMK7uGDW2f0oOvwgryCHxQFHyh3Tsk6ENsMGmtZ-EnH57tMSA@mail.gmail.com>
- <1f7cf690-35e2-c56f-6d3f-94400633edd2@nvidia.com>
- <CAKMK7uFYDSqnNp_xpohzCEidw_iLufNSoX4v55sNZj-nwTckSg@mail.gmail.com>
- <7f29a42a-c408-525d-90b7-ef3c12b5826c@nvidia.com>
- <CAKMK7uEw701AWXNJbRNM8Z+FkyUB5FbWegmSzyWPy9cG4W7OLA@mail.gmail.com>
- <20201104140023.GQ36674@ziepe.ca>
- <CAKMK7uH69hsFjYUkjg1aTh5f=q_3eswMSS5feFs6+ovz586+0A@mail.gmail.com>
+        id S1730660AbgKDQVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 11:21:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56126 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730424AbgKDQVx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 11:21:53 -0500
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 56771206A5;
+        Wed,  4 Nov 2020 16:21:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604506912;
+        bh=eT2NJA9afDcwktVjFhTZsUfZxwO9cq/JXQY22XhO57I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nbe/AGKM+lG3aE/eZAu4E52brujrNOrch4fb+oczCDr9MiquhJX5Tjf12fq3+yykG
+         TXPJxbWtPD9p6g2SJ5XfzWPtedxukLTeuLp3KU/p83E6MZjcE0q5PVRdiq8tX/LlJG
+         +etCpuwAFB1guiwU5q3EZgoO5xXZTAuu9d3f8bwc=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 58C96411D1; Wed,  4 Nov 2020 13:21:50 -0300 (-03)
+Date:   Wed, 4 Nov 2020 13:21:50 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Frederic Weisbecker <fweisbec@gmail.com>,
+        Hitoshi Mitake <mitake@dcl.info.waseda.ac.jp>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] perf lock: Correct field name "flags"
+Message-ID: <20201104162150.GA191991@kernel.org>
+References: <20201104094229.17509-1-leo.yan@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAKMK7uH69hsFjYUkjg1aTh5f=q_3eswMSS5feFs6+ovz586+0A@mail.gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20201104094229.17509-1-leo.yan@linaro.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 04:54:19PM +0100, Daniel Vetter wrote:
-> I don't really have a box here, but dma_mmap_attrs() and friends to
-> mmap dma_alloc_coherent memory is set up as VM_IO | VM_PFNMAP (it's
-> actually enforced since underneath it uses remap_pfn_range), and
-> usually (except if it's pre-cma carveout) that's just normal struct
-> page backed memory. Sometimes from a cma region (so will be caught by
-> the cma page check), but if you have an iommu to make it
-> device-contiguous, that's not needed.
+Em Wed, Nov 04, 2020 at 05:42:28PM +0800, Leo Yan escreveu:
+> The tracepoint "lock:lock_acquire" contains field "flags" but not
+> "flag".  Current code wrongly retrieves value from field "flag" and it
+> always gets zero for the value, thus "perf lock" doesn't report the
+> correct result.
+> 
+> This patch replaces the field name "flag" with "flags", so can read out
+> the correct flags for locking.
 
-dma_mmap_* memory may or may not be page backed, but it absolutely
-must not be resolved by get_user_pages and friends as it is special.
-So yes, not being able to get a struct page back from such an mmap is
-a feature.
+
+Thanks, applied both patches.
+
+- Arnaldo
+
+ 
+> Fixes: e4cef1f65061 ("perf lock: Fix state machine to recognize lock sequence")
+> Signed-off-by: Leo Yan <leo.yan@linaro.org>
+> Acked-by: Jiri Olsa <jolsa@redhat.com>
+> ---
+>  tools/perf/builtin-lock.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/perf/builtin-lock.c b/tools/perf/builtin-lock.c
+> index f0a1dbacb46c..5cecc1ad78e1 100644
+> --- a/tools/perf/builtin-lock.c
+> +++ b/tools/perf/builtin-lock.c
+> @@ -406,7 +406,7 @@ static int report_lock_acquire_event(struct evsel *evsel,
+>  	struct lock_seq_stat *seq;
+>  	const char *name = evsel__strval(evsel, sample, "name");
+>  	u64 tmp	 = evsel__intval(evsel, sample, "lockdep_addr");
+> -	int flag = evsel__intval(evsel, sample, "flag");
+> +	int flag = evsel__intval(evsel, sample, "flags");
+>  
+>  	memcpy(&addr, &tmp, sizeof(void *));
+>  
+> -- 
+> 2.17.1
+> 
+
+-- 
+
+- Arnaldo
