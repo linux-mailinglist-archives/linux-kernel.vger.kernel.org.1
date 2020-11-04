@@ -2,84 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61E0F2A6EF1
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 21:39:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBDB22A6EFB
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 21:41:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730775AbgKDUjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 15:39:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47328 "EHLO
+        id S1731252AbgKDUk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 15:40:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727250AbgKDUjO (ORCPT
+        with ESMTP id S1730407AbgKDUk5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 15:39:14 -0500
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80C82C0613D3;
-        Wed,  4 Nov 2020 12:39:14 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id e21so548889pgr.11;
-        Wed, 04 Nov 2020 12:39:14 -0800 (PST)
+        Wed, 4 Nov 2020 15:40:57 -0500
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F11FC0613D3;
+        Wed,  4 Nov 2020 12:40:56 -0800 (PST)
+Received: by mail-pg1-x533.google.com with SMTP id t14so17581436pgg.1;
+        Wed, 04 Nov 2020 12:40:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7n7kbvMfZ+6Ywj6s/wWI5B8cbjzCbqK0nfahWl63980=;
-        b=GPHQXfwqQ0GGp/bjcYYtfuNvT/zHuhqqQyNrrKvfxRVm3OKRlFlUW4iWX2ldnlIPEg
-         1X5XXEqpAWcR+zwEzlY7RnNLEMHawqmwSLo5c5uk1yRnuQYGGbtuZKDnqAl4d3etW7U6
-         Pdiz++ThqAkgi6MF9ECvB7tE96z2FVjSjBPoPZlQlJT9lKMC+Wl0RsFBYbjNfDjo1q0k
-         AHuRLoOm/UffFJzTrddAEtjjwffiYgeoWj6wPonSPQlS8Quhu8qR+XEVcgpewQIJeZjS
-         vK2XHu2IqMUcyd00hxriAhl+VzbKa8UfnP8ImX00BY2C4fwlZx31f2zv8o8AyhTb2ZIa
-         QSFA==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=vKEi14cNRFouABmJsM8FD4P756MUI2SVDsa+n1MVR14=;
+        b=EtrGdebgHFk/4A89uzUGpcfqE27DscZj2SO2F1xgL63Ji+x6NgEPxP5RlyxX9kbI1E
+         zUbq5h22iTFruYNhwjZctYqQ2znC5lWkUUfa/DSJBGBoRcRn/HU3641hahqVcx4zmizX
+         KVn+vKBbH3s2fvTzgkC4gpQIHQZkDpzjvR7vo8hRlBv8ElWDSqbxansPvBSMubiS4FQ1
+         YpTUKiEVZ7ivF9wUyQdmWGkWT7NszMtDsmzV1IjcYznLfubNXjJZkixhwT6EH2u277MD
+         Xk38BgfuNGJIAyoaqSgUMTSTM1r8ItMRPimZWijNohkbZ+qNWgQ48CkIqXx0BJw//Bfq
+         RyTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7n7kbvMfZ+6Ywj6s/wWI5B8cbjzCbqK0nfahWl63980=;
-        b=J80Gu9js1Kz3X0P8F7s/VK8fCyAg3UzRASpyqUxCZ7xRyxPK1eSL7cJrCbDCqwIGl6
-         fS/3ZQP5MQqKxzR/CirtrfWQilbEpHM/b60Fl2DLFWHGtS+Z+CClA831X+i4NZpOWOTu
-         pDiPNjOlvvBeJyc+dT7Ramqu+JNkIYt0qyH8lH0sMFKpssG1Wb1rvk+xYj0YFUhMMZq3
-         758TkAkFhxJSK6WrLUqNiZtJixQ+QxRYwuYrzqR/RzRA1MwNQpRGeHf6vTM0dBFgsneH
-         x+9HS9mLy10fQm0D+sonroKcKP+0tvr9XI16coafXS0bCGaM3pZbEJ5oTcNI5KZk+lEu
-         UyGQ==
-X-Gm-Message-State: AOAM5334OifPUBX+nb5BPxezvzSHklAif+8zU/IHINKxs/K87d8PfvVg
-        DowuPp22G2RCDUojPbv4Aw2hXzgBHT4r4foJYGY=
-X-Google-Smtp-Source: ABdhPJxpWuyOfXp0nb13aP7XvXHwULbNsMK19gGs43JZDPDUdqGu+lwGyFq5HIgIRpfiijooFeBIqrgvR9SH3xmigYk=
-X-Received: by 2002:a17:90b:1107:: with SMTP id gi7mr447405pjb.181.1604522354094;
- Wed, 04 Nov 2020 12:39:14 -0800 (PST)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=vKEi14cNRFouABmJsM8FD4P756MUI2SVDsa+n1MVR14=;
+        b=oxaBE2wccoJpThJ4VeJcWrgJAP8fQ730621eHj/S4+5d0eQwJ/P6c9oPB60jyiPAli
+         eiLnSH7AVihsm/13gSeo3YktZBHJSI+GfWbGG0P9hOEd6xtxOxgr1HLZgcu4RqNn1iX6
+         DYlpULVNYzCkEFMTelmh8a0Z8kg4llK7GHJJb2N6A5pUyzlcIr/DOTKy9J3QQu+k3MZQ
+         FlS+3e9XUTT4x3ZesjJ2qpFEVqt21PpVn4Z0daTn+Xg8BHcQsCywOkopu+Pc49iXxZZ0
+         6xff4DZvbzKPnvEZ3ZGWvyXCoHPS+QPsBkiHzo9R/NW/lPJBfMDVpH/2m52Vo/dDzuXe
+         WHQw==
+X-Gm-Message-State: AOAM532wu2rAXEfogIXo85/E9RevV3n7g2nXRvZ1ja29DDNmLi258Ect
+        O48HRLUIa37do/oB38irGjw=
+X-Google-Smtp-Source: ABdhPJwr8ecu1sp3XOsCzhebLAX6Zfm5DmkXXS5hFKQLJqcIb3MA/SqmiUwhd7ha5GfeEFk0/0LMKA==
+X-Received: by 2002:a17:90a:182:: with SMTP id 2mr5651967pjc.21.1604522455968;
+        Wed, 04 Nov 2020 12:40:55 -0800 (PST)
+Received: from google.com ([2620:15c:211:201:7220:84ff:fe09:5e58])
+        by smtp.gmail.com with ESMTPSA id 16sm3265066pfp.163.2020.11.04.12.40.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Nov 2020 12:40:54 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Wed, 4 Nov 2020 12:40:51 -0800
+From:   Minchan Kim <minchan@kernel.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Suren Baghdasaryan <surenb@google.com>, linux-api@vger.kernel.org,
+        linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Christian Brauner <christian@brauner.io>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Tim Murray <timmurray@google.com>,
+        kernel-team <kernel-team@android.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>
+Subject: Re: [RFC]: userspace memory reaping
+Message-ID: <20201104204051.GA3544305@google.com>
+References: <CAJuCfpGz1kPM3G1gZH+09Z7aoWKg05QSAMMisJ7H5MdmRrRhNQ@mail.gmail.com>
+ <CAJuCfpGjuUz5FPpR5iQ7oURJAhnP1ffBAnERuTUp9uPxQCRhDg@mail.gmail.com>
+ <20201014120937.GC4440@dhcp22.suse.cz>
+ <CAJuCfpEQ_ADYsMrF_zjfAeQ3d-FALSP+CeYsvgH2H1-FSoGGqg@mail.gmail.com>
+ <20201015092030.GB22589@dhcp22.suse.cz>
+ <CAJuCfpHwXcq1PfzHgqyYBR3N53TtV2WMt_Oubz0JZkvJHbFKGw@mail.gmail.com>
+ <CAJuCfpH9iUt0cs1GBQppgdcD8chojCNXk22S+PeSgQ-bA7iitQ@mail.gmail.com>
+ <20201103093550.GE21990@dhcp22.suse.cz>
+ <20201103213228.GB1631979@google.com>
+ <20201104065844.GM21990@dhcp22.suse.cz>
 MIME-Version: 1.0
-References: <20201104160344.4929-1-coiby.xu@gmail.com> <20201104160344.4929-3-coiby.xu@gmail.com>
-In-Reply-To: <20201104160344.4929-3-coiby.xu@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 4 Nov 2020 22:40:03 +0200
-Message-ID: <CAHp75VfsP1iJW4shNcSUecFtMaK+GK3dcN2T0_0=gQ+GXAZN-g@mail.gmail.com>
-Subject: Re: [PATCH 2/4] pinctrl: amd: use higher precision for 512 RtcClk
-To:     Coiby Xu <coiby.xu@gmail.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        "open list:PIN CONTROL SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201104065844.GM21990@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 4, 2020 at 6:04 PM Coiby Xu <coiby.xu@gmail.com> wrote:
->
-> RTC is 32.768kHz thus 512 RtcClk equals to 15625 usec.
+On Wed, Nov 04, 2020 at 07:58:44AM +0100, Michal Hocko wrote:
+> On Tue 03-11-20 13:32:28, Minchan Kim wrote:
+> > On Tue, Nov 03, 2020 at 10:35:50AM +0100, Michal Hocko wrote:
+> > > On Mon 02-11-20 12:29:24, Suren Baghdasaryan wrote:
+> > > [...]
+> > > > To follow up on this. Should I post an RFC implementing SIGKILL_SYNC
+> > > > which in addition to sending a kill signal would also reap the
+> > > > victim's mm in the context of the caller? Maybe having some code will
+> > > > get the discussion moving forward?
+> > > 
+> > > Yeah, having a code, even preliminary, might help here. This definitely
+> > > needs a good to go from process management people as that proper is land
+> > > full of surprises...
+> > 
+> > Just to remind a idea I suggested to reuse existing concept
+> > 
+> >     fd = pidfd_open(victim process)
+> >     fdatasync(fd);
+> >     close(fd);
+> 
+> I must have missed this proposal. Anyway, are you suggesting fdatasync
+> to act as a destructive operation?
 
-equals 15625
+write(fd) && fdatasync(fd) are already destructive operation if the file
+is shared.
 
-> Reported-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-
-One of them is enough.
-
-> Suggested-by: Hans de Goede <hdegoede@redhat.com>
-> Message-ID: <2f4706a1-502f-75f0-9596-cc25b4933b6c@redhat.com>
-> Message-ID: <CAHp75VdYhe4YEAzULMNkhihTQwHAP3fC2F6iD=datqzyzd=4fQ@mail.gmail.com>
-
-Link: https://lore.kernel.org/...
-
-And I guess one link to a head of discussion is enough.
-
--- 
-With Best Regards,
-Andy Shevchenko
+You don't need to reaping as destruptive operation. Rather than, just
+commit on the asynchrnous status "write file into page cache and commit
+with fsync" and "killing process and commit with fsync".
