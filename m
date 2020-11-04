@@ -2,91 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B2CE2A627D
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 11:49:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC7A72A6281
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 11:49:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729632AbgKDKtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 05:49:11 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:36544 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727923AbgKDKtK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 05:49:10 -0500
-Received: from bogon.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxD9MXh6JfwaIFAA--.14438S2;
-        Wed, 04 Nov 2020 18:48:56 +0800 (CST)
-From:   Youling Tang <tangyouling@loongson.cn>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, tangyouling@loongson.cn
-Subject: [PATCH] arm64: Change the location of DISCARDS
-Date:   Wed,  4 Nov 2020 18:48:52 +0800
-Message-Id: <1604486932-18889-1-git-send-email-tangyouling@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9DxD9MXh6JfwaIFAA--.14438S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7Jr1kZF4xCr1UXF4rGrW5trb_yoWkGrcE9a
-        1aqwnrGr10vF4ava4rKa93Wasaqa18G348Zr1DAr40gF9xXrs8J393JF47W3W5ArW2krn5
-        AF1DJ3s3Zw12gjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbcxFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
-        Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
-        0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
-        jxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr
-        1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8twCF
-        04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r
-        18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vI
-        r41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr
-        1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAI
-        cVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUb8hL5UUUUU==
-X-CM-SenderInfo: 5wdqw5prxox03j6o00pqjv00gofq/
+        id S1729679AbgKDKtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 05:49:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38778 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728287AbgKDKtV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 05:49:21 -0500
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32FDAC0613D3;
+        Wed,  4 Nov 2020 02:49:19 -0800 (PST)
+Received: by mail-lj1-x243.google.com with SMTP id 23so22418174ljv.7;
+        Wed, 04 Nov 2020 02:49:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=hW9JciFa2DMWNwaN8kCGLx85t5PIMbOk3IaZH3qou+A=;
+        b=Q5pwsc4CIjBxOiXbSFkw5Dl/kuHxM5HDSgOHCjpUtbrGAALGo8K1fD7gOTqLKFCAmm
+         MFVeiKOG2tUB8iv2hhg8ZSBaDI5vPNfissEl0aXiKtostfXerKPvm5ob2PyCeotWCmL3
+         dkTHzG8ZkgpbrBy7umJzKVIHdWfPAKm3bf03idMqvClQvPIYDAjySacuItkuc4KZ/BJA
+         8hlFWHpYVsyodU/dI4b9KCPK+WKN6ZaQXfZ1ci9LfAwLo4qYgLSY5DirgxoK1w97IMbB
+         NToV3J/yOgd7+bgodp1FZ43G7KVWke5dpIUfZekhdAjrMg/++BIhjSQRy1bcrbTMAJWy
+         BSOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=hW9JciFa2DMWNwaN8kCGLx85t5PIMbOk3IaZH3qou+A=;
+        b=GNJ0W+Ev8RkkJBySB8ptOr/y/dG7TyDT+834/Lz3U9FZMmXb/PK3Ozil5DCuZfRG+q
+         SXujH4OZp6k0mbYs07sWhIGscAXG3GfrH5R5IfyOB4D/oSxCuSdkgcUKEYmM7MQiLzmB
+         w6+bfcqjWMjNYcbfbx703gcyEzzgrG4MU32NmaXuYLxez7Y4w2FHIr6suvJcRTbc9yX1
+         MsM1v/+Hk3EWU+e0HyIvHbkaiNw2Fg0Lgc4Gx/WPRQDtK5n1hbF5I/+e0HFpTo4CpNFQ
+         YKj0pq2F8aK9+5jM0/hi4cJwGdo4vs8pY+0bk2y27naAskWZeY/D6wF9mNUV5RCBiIzi
+         fOCA==
+X-Gm-Message-State: AOAM531DGKK5YnDs1ABDZqgPqqdjj8DmmH60F2kYmFysYm5Hem9o32a6
+        lapsdbCQNB8nPRrcYLCurXUoGQUU1Nw=
+X-Google-Smtp-Source: ABdhPJzzLUKlILds5RKowUnpmArH4wHItQ9txy25FaUm1y8574Xkf4n6JLnrEn8ms7n5JDphgTdq0Q==
+X-Received: by 2002:a2e:9cc9:: with SMTP id g9mr10866780ljj.20.1604486957372;
+        Wed, 04 Nov 2020 02:49:17 -0800 (PST)
+Received: from [192.168.2.145] (109-252-192-83.dynamic.spd-mgts.ru. [109.252.192.83])
+        by smtp.googlemail.com with ESMTPSA id w29sm19857lfc.49.2020.11.04.02.49.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Nov 2020 02:49:16 -0800 (PST)
+Subject: Re: [PATCH V2] drm/tegra: sor: Don't warn on probe deferral
+To:     Jon Hunter <jonathanh@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>
+Cc:     David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org
+References: <20201104092328.659169-1-jonathanh@nvidia.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <420d8e9e-47d5-0d46-a774-a47bcb52bdeb@gmail.com>
+Date:   Wed, 4 Nov 2020 13:49:15 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20201104092328.659169-1-jonathanh@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the include/asm-generic/vmlinux.lds.h file, the "must be the last"
-comment indicates that DISCARDS should be placed in the last position
-of SECTIONS, like x86, mips, riscv, etc.
+04.11.2020 12:23, Jon Hunter пишет:
+> Deferred probe is an expected return value for tegra_output_probe().
+> Given that the driver deals with it properly, there's no need to output
+> a warning that may potentially confuse users.
+> 
+> Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
+> ---
+> 
+> Changes since V1:
+> - This time, I actually validated it!
+> 
+>  drivers/gpu/drm/tegra/sor.c | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/tegra/sor.c b/drivers/gpu/drm/tegra/sor.c
+> index e88a17c2937f..898a80ca37fa 100644
+> --- a/drivers/gpu/drm/tegra/sor.c
+> +++ b/drivers/gpu/drm/tegra/sor.c
+> @@ -3764,10 +3764,9 @@ static int tegra_sor_probe(struct platform_device *pdev)
+>  		return err;
+>  
+>  	err = tegra_output_probe(&sor->output);
+> -	if (err < 0) {
+> -		dev_err(&pdev->dev, "failed to probe output: %d\n", err);
+> -		return err;
+> -	}
+> +	if (err < 0)
+> +		return dev_err_probe(&pdev->dev, err,
+> +				     "failed to probe output: %d\n", err);
 
-Signed-off-by: Youling Tang <tangyouling@loongson.cn>
----
- arch/arm64/kernel/vmlinux.lds.S | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+Hello Jon,
 
-diff --git a/arch/arm64/kernel/vmlinux.lds.S b/arch/arm64/kernel/vmlinux.lds.S
-index 1bda604..bf31074 100644
---- a/arch/arm64/kernel/vmlinux.lds.S
-+++ b/arch/arm64/kernel/vmlinux.lds.S
-@@ -109,12 +109,6 @@ SECTIONS
- 	 * matching the same input section name.  There is no documented
- 	 * order of matching.
- 	 */
--	DISCARDS
--	/DISCARD/ : {
--		*(.interp .dynamic)
--		*(.dynsym .dynstr .hash .gnu.hash)
--	}
--
- 	. = KIMAGE_VADDR;
- 
- 	.head.text : {
-@@ -284,6 +278,13 @@ SECTIONS
- 
- 	.data.rel.ro : { *(.data.rel.ro) }
- 	ASSERT(SIZEOF(.data.rel.ro) == 0, "Unexpected RELRO detected!")
-+
-+	/* Sections to be discarded */
-+	DISCARDS
-+	/DISCARD/ : {
-+		*(.interp .dynamic)
-+		*(.dynsym .dynstr .hash .gnu.hash)
-+	}
- }
- 
- #include "image-vars.h"
--- 
-2.1.0
+There is no need to duplicate the error code in the message [1]. Perhaps
+worth making a v3? :)
 
+[1]
+https://elixir.bootlin.com/linux/v5.10-rc2/source/drivers/base/core.c#L4240
