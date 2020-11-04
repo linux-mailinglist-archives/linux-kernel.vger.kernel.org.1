@@ -2,99 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B1332A666B
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 15:31:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A23D42A6670
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 15:32:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730074AbgKDObw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 09:31:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730000AbgKDObo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 09:31:44 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7D1EC061A4C
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 06:31:43 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id e6so5021289wro.1
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 06:31:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=JzET7Jlv2jmxts2RjmfLSE+ugQqnI/OJZGsydNl/hiQ=;
-        b=XVduVZ4WIbPCg68dNfG7zMB9KvvYx2zIKcmFVH2smYgXUc9lpTHnxYr7gYN1sg4ctR
-         SQ5JVmnsvQTgYGJ/gK/3UlEpQ8qv3xSWDirRNoxToUkD/J5X0Juy1XcCbscFNz6cCi8M
-         Fxtj5zYA5b7eVvq2r1/K1Ul0y4FVLz8tWszrlH4gPwG+goPm5zMheXSrZok73VWCTODp
-         mb+fi8FfCdilZTsQgT0EQ9DxJBZBPzn8+lRI0/+ZPhNqSu138HpXjbG8EzTjf2renSTn
-         idFDXeh3wflQRS1C6h1e4FcfLb9os9kJ7i5A1/kh6+n/nBVIShalEbRDtzkaKvQ6k1Wc
-         Oakw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=JzET7Jlv2jmxts2RjmfLSE+ugQqnI/OJZGsydNl/hiQ=;
-        b=nQWsvxg11Gltyao05RHjuCyLGxk6Mq6rq/SP2gk9iGKqRxPj9uIvTy4fSL2IpBrvvi
-         GKQx0BSgHqysk5rRiBssszhDkKI6o/6x3p8Cj9By3WeTZPHPC1Bvv21PwkZtcfedIEvJ
-         QKeCu7VUUyFCer5kLlDguGRusHp9zdrnz+xMb4PfTEJj+Tyb/UiJC3pjCsmT3KRwLrgK
-         kd8kxpv/e1OJcRzM8ZI0GdBA+fAxF43NgEBP8H3rAvHQqjeWMtzOcIfQ3BYDLfeNjokO
-         dSP7qaHkmAsrrxKDzAIwgXRSLxP3jKHGS6rGyPicPpgvoP2kNBj7w8OA0OoTBt8xLEyT
-         znFg==
-X-Gm-Message-State: AOAM533kYDnnEpUlgvOum/8+lAMljGIJgRqU21Yq6UVAHEB1OjdXCKFb
-        Zuxy/oi9/t4matutXYQPVnxTeA==
-X-Google-Smtp-Source: ABdhPJwSesSTNRgKVguedg8+wTQ02tqZOuutPWhVXdm2jZTyaTQhO8YfIvGuGSNwOVQyr76Ixk6G5A==
-X-Received: by 2002:adf:eb4c:: with SMTP id u12mr30907421wrn.73.1604500302647;
-        Wed, 04 Nov 2020 06:31:42 -0800 (PST)
-Received: from dell ([91.110.221.242])
-        by smtp.gmail.com with ESMTPSA id v14sm2659853wrq.46.2020.11.04.06.31.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 06:31:41 -0800 (PST)
-Date:   Wed, 4 Nov 2020 14:31:40 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     davem@davemloft.net, kuba@kernel.org,
-        Dustin McIntire <dustin@sensoria.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH 02/12] net: ethernet: smsc: smc911x: Mark 'status' as
- __maybe_unused
-Message-ID: <20201104143140.GE4488@dell>
-References: <20201104090610.1446616-1-lee.jones@linaro.org>
- <20201104090610.1446616-3-lee.jones@linaro.org>
- <20201104132200.GW933237@lunn.ch>
+        id S1730139AbgKDOc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 09:32:27 -0500
+Received: from mga06.intel.com ([134.134.136.31]:52189 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728473AbgKDOc0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 09:32:26 -0500
+IronPort-SDR: 3FEQ862xJJwexgA1TXZMGg2C+gUC3NgBXz5zL9JZNNQfQyMi5zp0SRX/r+wRTi3Rv3G+uw5PHP
+ nNd4dSfBZT2w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9794"; a="230853906"
+X-IronPort-AV: E=Sophos;i="5.77,451,1596524400"; 
+   d="scan'208";a="230853906"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2020 06:32:22 -0800
+IronPort-SDR: dgPb2V4LKbxWwLJT9JDWWW+71bH+S2I8n4y14fLOT5P7lUAoEXmfZzfB1Xt9hhwZ3YLtL9hhQf
+ MJjiuJbp5YFg==
+X-IronPort-AV: E=Sophos;i="5.77,451,1596524400"; 
+   d="scan'208";a="396918766"
+Received: from msridhar-mobl1.amr.corp.intel.com (HELO [10.254.96.252]) ([10.254.96.252])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2020 06:32:21 -0800
+Subject: Re: [PATCH] soundwire: Fix DEBUG_LOCKS_WARN_ON for uninitialized
+ attribute
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        vkoul@kernel.org, yung-chuan.liao@linux.intel.com
+Cc:     sanyog.r.kale@intel.com, gregkh@linuxfoundation.org,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+References: <20201104112941.1134-1-srinivas.kandagatla@linaro.org>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <8f875634-a145-650b-17b2-a738ca7e99f3@linux.intel.com>
+Date:   Wed, 4 Nov 2020 08:32:19 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201104132200.GW933237@lunn.ch>
+In-Reply-To: <20201104112941.1134-1-srinivas.kandagatla@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 04 Nov 2020, Andrew Lunn wrote:
 
-> On Wed, Nov 04, 2020 at 09:06:00AM +0000, Lee Jones wrote:
-> > 'status' is used to interact with a hardware register.  It might not
-> > be safe to remove it entirely.  Mark it as __maybe_unused instead.
+
+On 11/4/20 5:29 AM, Srinivas Kandagatla wrote:
+> running kernel with CONFIG_DEBUG_LOCKS_ALLOC enabled will below warning:
 > 
-> Hi Lee
+> BUG: key ffff502e09807098 has not been registered!
+> DEBUG_LOCKS_WARN_ON(1)
+> WARNING: CPU: 5 PID: 129 at kernel/locking/lockdep.c:4623
+> 	lockdep_init_map_waits+0xe8/0x250
+> Modules linked in:
+> CPU: 5 PID: 129 Comm: kworker/5:1 Tainted: G
+>         W         5.10.0-rc1-00277-ged49f224ca3f-dirty #1210
+> Hardware name: Qualcomm Technologies, Inc. Robotics RB5 (DT)
+> Workqueue: events deferred_probe_work_func
+> pstate: 80c00005 (Nzcv daif +PAN +UAO -TCO BTYPE=--)
+> pc : lockdep_init_map_waits+0xe8/0x250
+> lr : lockdep_init_map_waits+0xe8/0x250
+>   [ Trimmed ]
 > 
-> https://www.mail-archive.com/netdev@vger.kernel.org/msg365875.html
+> Call trace:
+>   lockdep_init_map_waits+0xe8/0x250
+>   __kernfs_create_file+0x78/0x180
+>   sysfs_add_file_mode_ns+0x94/0x1c8
+>   internal_create_group+0x110/0x3e0
+>   sysfs_create_group+0x18/0x28
+>   devm_device_add_group+0x4c/0xb0
+>   add_all_attributes+0x438/0x490
+>   sdw_slave_sysfs_dpn_init+0x128/0x138
+>   sdw_slave_sysfs_init+0x80/0xa0
+>   sdw_drv_probe+0x94/0x170
+>   really_probe+0x118/0x3e0
+>   driver_probe_device+0x5c/0xc0
 > 
-> I'm working on driver/net/ethernet and net to make it w=1 clean.  I
-> suggest you hang out on the netdev mailing list so you don't waste
-> your time reproducing what i am doing.
+>   [ Trimmed ]
+> 
+> CPU: 5 PID: 129 Comm: kworker/5:1 Tainted: G
+>       W         5.10.0-rc1-00277-ged49f224ca3f-dirty #1210
+> Hardware name: Qualcomm Technologies, Inc. Robotics RB5 (DT)
+> Workqueue: events deferred_probe_work_func
+> Call trace:
+>   dump_backtrace+0x0/0x1c0
+>   show_stack+0x18/0x68
+>   dump_stack+0xd8/0x134
+>   __warn+0xa0/0x158
+>   report_bug+0xc8/0x178
+>   bug_handler+0x20/0x78
+>   brk_handler+0x70/0xc8
+> 
+> [ Trimmed ]
+> 
+> Fix this by initializing dynamically allocated sysfs attribute to keep lockdep happy!
+> 
+> Fixes: bcac59029955 ("soundwire: add Slave sysfs support")
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-I believe that ship has sailed.  Net should be clean now.
+I added the exact same fix last Friday but you beat me to it.
 
-It was it pretty good shape considering.  Only 2 sets.
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-Wireless alone was more like 4.  And SCSI, well ... :D
+My commit message was a bit more self-explanatory though, maybe you 
+could add the explanation at the end and possibly trim the logs?
 
-Maybe that was down to some of your previous efforts? 
+"
+when CONFIG_DEBUG_LOCK_ALLOC is enabled, a warning is thrown, e.g.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+kernel: [ 4.078863] BUG: key ffff8a9203c92dc0 has not been registered!
+kernel: [ 4.078865] ------------[ cut here ]------------
+kernel: [ 4.078866] DEBUG_LOCKS_WARN_ON(1)
+kernel: [ 4.078871] WARNING: CPU: 0 PID: 280 at
+kernel/locking/lockdep.c:4623 lockdep_init_map_waits+0x177/0x200
+kernel: [ 4.078902] Call Trace:
+kernel: [ 4.078906] __kernfs_create_file+0x76/0x100
+kernel: [ 4.078908] sysfs_add_file_mode_ns+0x9f/0x190
+kernel: [ 4.078909] internal_create_group+0x112/0x380
+kernel: [ 4.078912] devm_device_add_group+0x41/0x80
+kernel: [ 4.078915] add_all_attributes+0x4bf/0x4e0 [soundwire_bus]
+kernel: [ 4.078918] sdw_slave_sysfs_dpn_init+0x68/0xe0 [soundwire_bus]
+kernel: [ 4.078920] sdw_slave_sysfs_init+0x6b/0x80 [soundwire_bus]
+
+For DPn ports, the attributes are allocated dynamically and it's
+required to use the macro sysfs_attr_init(), whose behavior is
+precisely dependent on CONFIG_DEBUG_LOCK_ALLOC. See details in
+linux/sysfs.h.
+"
+
+Thanks Srinivas!
+
+
+> ---
+>   drivers/soundwire/sysfs_slave_dpn.c | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/soundwire/sysfs_slave_dpn.c b/drivers/soundwire/sysfs_slave_dpn.c
+> index 05a721ea9830..c4b6543c09fd 100644
+> --- a/drivers/soundwire/sysfs_slave_dpn.c
+> +++ b/drivers/soundwire/sysfs_slave_dpn.c
+> @@ -37,6 +37,7 @@ static int field##_attribute_alloc(struct device *dev,			\
+>   		return -ENOMEM;						\
+>   	dpn_attr->N = N;						\
+>   	dpn_attr->dir = dir;						\
+> +	sysfs_attr_init(&dpn_attr->dev_attr.attr);			\
+>   	dpn_attr->format_string = format_string;			\
+>   	dpn_attr->dev_attr.attr.name = __stringify(field);		\
+>   	dpn_attr->dev_attr.attr.mode = 0444;				\
+> 
