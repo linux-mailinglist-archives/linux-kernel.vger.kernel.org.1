@@ -2,123 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B4462A5CB4
+	by mail.lfdr.de (Postfix) with ESMTP id E6C332A5CB6
 	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 03:30:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730588AbgKDCaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 21:30:46 -0500
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:60075 "EHLO
-        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729188AbgKDCap (ORCPT
+        id S1730634AbgKDCav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 21:30:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46924 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729188AbgKDCau (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 21:30:45 -0500
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id 64B6B5C00CC;
-        Tue,  3 Nov 2020 21:30:44 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Tue, 03 Nov 2020 21:30:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=fm1; bh=WE7yAH2aWA3fpPsJ2XJxmxiCEv
-        3IiFflvFYkvVNFDuQ=; b=H4Wk1mVfzFJCSyX9lNHb20rXl9RDucaXdEQwfD9toY
-        K56XkJANQhatj1b0723ffSKBoWmz+FsmPSDLtAUjnyWx0Yq45rzoH4gLZlirmdnk
-        gx2CBlux45P0XiIQt20worGPYPyHDjtPDNn275e7EJ8G+5c0oa9xISXuNkOdVhKn
-        E50fD52uQTEDzqr546PntIiCkn50wcJZiK+vl39lHVKVbi3eEqTcPrlBmD3hp2i4
-        Mr3wtDwleuxyDcNVgav1rcmDe4f9zMo6Gu5HjnrUmHkJiMrpfxdErpV1tUx8tLDZ
-        937YLNgxJg6EeQtNhv7LdGu5OfgDQV3kTH0E8z+UywkA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=WE7yAH2aWA3fpPsJ2
-        XJxmxiCEv3IiFflvFYkvVNFDuQ=; b=Rb7WTGEEavUFi1ld6gc9+wCoTe+pPrZKg
-        jPKgaJNW5m/C1/RSM+jrRT/xdCJQ+Q7cpzDYNteaoYfE+Us1fN8HRaNVAMgsxUrD
-        hxQGhWSaFA6eyyklm0PA8gd+LGPKcSw7G3DvQVL3g3uasB2z80FOLs/JiJPmB7bw
-        1f13/lVDP20Fnk6DulUl8qdho5QvYmGlhdEJ/pHs7ZU5xu7X28zbpbBq3jvkRSnu
-        2ZEqTHv1QPAdxeVXWpm/7nVeSQq3XbMvdZ9vRIj80kvgXxC8BbSaQxpe7iGiETq+
-        9g+lywL7L0HPuWFVYFD/j8pHJwp99tqfTQsclMoeAbT2fKLViehrg==
-X-ME-Sender: <xms:UxKiX1r8s8NvGSWgtdgteEil4xsUnV-zKQJvRxIuwXxx8b5WMNDHJQ>
-    <xme:UxKiX3pqSf8KYK5QrS5Ri09g1LA5xb5s3sAu3N3w1PyYDG3qfzlsu6Bp-SsNK_sYQ
-    FQkQ7MTxGJdXPzVqA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddtgedggeehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdljedtmdenucfjughrpefhvf
-    fufffkofgggfestdekredtredttdenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihu
-    segugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpeeifffgledvffeitdeljedvte
-    effeeivdefheeiveevjeduieeigfetieevieffffenucfkphepieelrddukedurddutdeh
-    rdeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    gugihusegugihuuhhurdighiii
-X-ME-Proxy: <xmx:UxKiXyNKxJNTe52tze373PLkoVhd9MsdjU7yatjbH8ZsaLyS_yFxNQ>
-    <xmx:UxKiXw5vVjzMHrSaSHZlCYlVSnrNAOWY1JU9sIhgV12aUczQq48l0g>
-    <xmx:UxKiX06hvxn9YXPm3YD3G5mWcgklw3zhom1y0IehvtU7BeJpJ9o-OQ>
-    <xmx:VBKiX0FK9NVJQHc5qrgMFwxdbRSC-jCmERmvZuKHfIFq4PTmcV1sVQ>
-Received: from localhost.localdomain (c-69-181-105-64.hsd1.ca.comcast.net [69.181.105.64])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 1C67B3064687;
-        Tue,  3 Nov 2020 21:30:43 -0500 (EST)
-From:   Daniel Xu <dxu@dxuuu.xyz>
-To:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org, ast@kernel.org
-Cc:     Daniel Xu <dxu@dxuuu.xyz>, kernel-team@fb.com
-Subject: [PATCH bpf-next] lib/strncpy_from_user.c: Don't overcopy bytes after NUL terminator
-Date:   Tue,  3 Nov 2020 18:29:43 -0800
-Message-Id: <eb78270e61e4d2e8ece047430d8397e000ef8569.1604456921.git.dxu@dxuuu.xyz>
-X-Mailer: git-send-email 2.28.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Tue, 3 Nov 2020 21:30:50 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3113CC061A4D;
+        Tue,  3 Nov 2020 18:30:50 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id r10so15240409pgb.10;
+        Tue, 03 Nov 2020 18:30:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id;
+        bh=04L8R9f2Gx+AmkCjZy4qEyOdrMXDoh2NWWiRBE44Otc=;
+        b=mJnN2UfYqY43eDrfQsbEZORdEow/OoODbX1+v6J5gNSu9F+4sB5ZmrZ8SSvXWlPqiv
+         sN9difDihc4Whks/Prj/zwfZ9AzoOcViXSLL/757PMKauOTutMyAPgrqizaIQjmdUsq5
+         0mtJvAbFjoOOLF+nRDXZxlVgLuMXngtHxxPs/zGRHueTwsPuI5tdZzBNPmQXfDXfuynf
+         09fYvmMRCbXVzi/uWXUqGe7u2LBxkaio/1bHPHuJdqfYBX16PRZCjCGzM8X0E0ghrxIJ
+         PG5/AZh6D7WDwy4I231AaygTy3Q8DljIUd7VDrOn/r9yf1iro4d7lz3/PLVmJxoJ/pYo
+         T1yA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id;
+        bh=04L8R9f2Gx+AmkCjZy4qEyOdrMXDoh2NWWiRBE44Otc=;
+        b=mmHH3BCKYiQzRuTpNYyeUrRQTXUsTo3FBtNpj/bbVXgeXsny5hRxGaLnvf/I6Wb9lQ
+         rgTzVbkV726aXngoAlXAnBO1jKIhInLlROj8Aa85r+NNJxVIyNJajJPg9cOuBk8guyh6
+         iQsDLlAO1tKm28w+r3T7pEygESKxznhKQ0dkxEvNZz5N7JcyWMOs4qXlI7VocG5B0cU1
+         dEZbh7ibnQyPO1c5Wj/av3TwfEJhc3PkPlVISLIfGnrV58Y9T90xKTVAsHeeLy81WDLg
+         Ndmc41wk9fAie2Y8wa3ubnLRn6rT/BHen0T4krvk3QYUZbw0PROE0NRhwVbESTxfbL6j
+         9IdA==
+X-Gm-Message-State: AOAM533k/XhVrlHeWr27msXDtNkCyTG10D8Inl0dlG3sUjRYkFUdudtn
+        0Xty/E6iqF0GEdDC3uJAjbA=
+X-Google-Smtp-Source: ABdhPJxHLzphM1sp2oCBLcKx8rtkXtUAoybxScZnRXrGbyrhl4rFwCRO69HvQisX+eFlOV2XgOF21g==
+X-Received: by 2002:a17:90a:ea93:: with SMTP id h19mr2209512pjz.107.1604457049852;
+        Tue, 03 Nov 2020 18:30:49 -0800 (PST)
+Received: from ZB-PF11LQ25.360buyad.local ([137.116.162.235])
+        by smtp.gmail.com with ESMTPSA id j19sm443238pfn.107.2020.11.03.18.30.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Nov 2020 18:30:49 -0800 (PST)
+From:   "xiaofeng.yan" <xiaofeng.yan2012@gmail.com>
+To:     willy@infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dledford@redhat.com, jgg@ziepe.ca,
+        oulijun@huawei.com, yanxiaofeng7@jd.com, xiaofeng.yan2012@gmail.com
+Subject: [PATCH 1/2] [xarry]:Fixed an issue with memory allocated using the GFP_KERNEL flag in spinlocks
+Date:   Wed,  4 Nov 2020 10:32:12 +0800
+Message-Id: <20201104023213.760-1-xiaofeng.yan2012@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-do_strncpy_from_user() may copy some extra bytes after the NUL
-terminator into the destination buffer. This usually does not matter for
-normal string operations. However, when BPF programs key BPF maps with
-strings, this matters a lot.
+From: "xiaofeng.yan" <yanxiaofeng7@jd.com>
 
-A BPF program may read strings from user memory by calling the
-bpf_probe_read_user_str() helper which eventually calls
-do_strncpy_from_user(). The program can then key a map with the
-resulting string. BPF map keys are fixed-width and string-agnostic,
-meaning that map keys are treated as a set of bytes.
+function xa_store_irq() has a spinlock as follows:
+ xa_lock_irq()
+   -->spin_lock_irq(&(xa)->xa_lock)
+GFP_KERNEL flag could cause sleep.
+So change GFP_KERNEL to  GFP_ATOMIC and Romve "gfp_t gfp" in function
+static inline void *xa_store_irq(struct xarray *xa, unsigned long index,
+                void *entry, gfp_t gfp)
 
-The issue is when do_strncpy_from_user() overcopies bytes after the NUL
-terminator, it can result in seemingly identical strings occupying
-multiple slots in a BPF map. This behavior is subtle and totally
-unexpected by the user.
-
-This commit uses the proper word-at-a-time APIs to avoid overcopying.
-
-Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+Signed-off-by: xiaofeng.yan <yanxiaofeng7@jd.com>
 ---
- lib/strncpy_from_user.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ include/linux/xarray.h | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/lib/strncpy_from_user.c b/lib/strncpy_from_user.c
-index e6d5fcc2cdf3..d084189eb05c 100644
---- a/lib/strncpy_from_user.c
-+++ b/lib/strncpy_from_user.c
-@@ -35,17 +35,22 @@ static inline long do_strncpy_from_user(char *dst, const char __user *src,
- 		goto byte_at_a_time;
+diff --git a/include/linux/xarray.h b/include/linux/xarray.h
+index 92c0160b3352..aeaf97d5642f 100644
+--- a/include/linux/xarray.h
++++ b/include/linux/xarray.h
+@@ -595,7 +595,6 @@ static inline void *xa_store_bh(struct xarray *xa, unsigned long index,
+  * @xa: XArray.
+  * @index: Index into array.
+  * @entry: New entry.
+- * @gfp: Memory allocation flags.
+  *
+  * This function is like calling xa_store() except it disables interrupts
+  * while holding the array lock.
+@@ -605,12 +604,12 @@ static inline void *xa_store_bh(struct xarray *xa, unsigned long index,
+  * Return: The old entry at this index or xa_err() if an error happened.
+  */
+ static inline void *xa_store_irq(struct xarray *xa, unsigned long index,
+-		void *entry, gfp_t gfp)
++		void *entry)
+ {
+ 	void *curr;
  
- 	while (max >= sizeof(unsigned long)) {
--		unsigned long c, data;
-+		unsigned long c, data, mask, *out;
+ 	xa_lock_irq(xa);
+-	curr = __xa_store(xa, index, entry, gfp);
++	curr = __xa_store(xa, index, entry, GFP_ATOMIC);
+ 	xa_unlock_irq(xa);
  
- 		/* Fall back to byte-at-a-time if we get a page fault */
- 		unsafe_get_user(c, (unsigned long __user *)(src+res), byte_at_a_time);
- 
--		*(unsigned long *)(dst+res) = c;
- 		if (has_zero(c, &data, &constants)) {
- 			data = prep_zero_mask(c, data, &constants);
- 			data = create_zero_mask(data);
-+			mask = zero_bytemask(data);
-+			out = (unsigned long *)(dst+res);
-+			*out = (*out & ~mask) | (c & mask);
- 			return res + find_zero(data);
-+		} else  {
-+			*(unsigned long *)(dst+res) = c;
- 		}
-+
- 		res += sizeof(unsigned long);
- 		max -= sizeof(unsigned long);
- 	}
+ 	return curr;
 -- 
-2.28.0
+2.17.1
 
