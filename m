@@ -2,188 +2,312 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 014D42A630E
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 12:14:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25E582A6311
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 12:14:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729436AbgKDLOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 06:14:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42616 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729263AbgKDLOJ (ORCPT
+        id S1729421AbgKDLOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 06:14:55 -0500
+Received: from relay1-d.mail.gandi.net ([217.70.183.193]:48975 "EHLO
+        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728345AbgKDLOz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 06:14:09 -0500
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 233BFC061A4A
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 03:14:08 -0800 (PST)
-Received: by mail-ed1-x544.google.com with SMTP id v4so22045736edi.0
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 03:14:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=AHN6dcB+x7JmTySm6Da2brK4RLL/Z+0Yk0lOnUmP3LE=;
-        b=aKAvQTZqnfzfXla01T2u1ZzL9zYxmifM0cln3k0RO/RHYnJMZQpLuO30EEMpGzcdOA
-         wIe/hFBWEHlvoJMif1vaaS5Ta1jh2CnbaVcLdd8d9JJ1sbu0+8yC9Z2/s5rJazixrcFk
-         fANfEbXMDAS7hiD+akOp8XBrsQJf/p4BvNZ8LZrAwFl+xeILlPjwzT9JGrjp8RM8gI99
-         Bj36q4Csw2v3OjzNFAH66xQB6+NQ0mS17mboz747TGrEXT47oMifPW0Dq5AaEHULPVkv
-         BLSa+LPnIAl6PolFyjGXtbpNFlL2JXDSs5vi/HqjPFNHRZ8+3mQrhyfPPqAJES1Wn4b9
-         MpdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=AHN6dcB+x7JmTySm6Da2brK4RLL/Z+0Yk0lOnUmP3LE=;
-        b=T+YgqNDm4Pf45HdVzIxX5AyZUruDuneOmbfG3KxIDM+H0Qwrm3j1I2CJKATa/rNN2f
-         wmD/cwRDjddhdyaO+xJK+05sSjX7rNpt2mGdiFeMYQjEw2KDeyCi++5smqW3z4JmC/tf
-         6phhdADi9QIs79U8YnwDYEgJo7JB+kzJ1ep2XIhT6w3BlgSAaC6xkRiE7cW19cdhoeTN
-         YFSG2TbadjzCfrTz76RKp84bspFIWqWIHOYv0GZWbEGD6Qce3CRInhy1opuE4+ovAxwM
-         4IC4p25RpLk8N+mQ6MBi0V8pw1Fsb3OIolPyKzSulSfDqhD8zgEL5KSpvm404I0MB6+Q
-         +4IA==
-X-Gm-Message-State: AOAM533vVM3zDwKQv3vp1CDfHOJG4RDuBHqWCRpphszvO4K+nXfsKKVH
-        I9CmUKGw3dpN9+arEtJ7qDVwl7s+LzhGY008Vv7aaw==
-X-Google-Smtp-Source: ABdhPJxCx19XRBtvgRipWPFDJIDLsr1NIrDBE8K9OQewpneKbyZR9j8jNJJ3I9tNrBov6V7/XIViQxJchy2FrOxP20A=
-X-Received: by 2002:aa7:d54f:: with SMTP id u15mr26719279edr.239.1604488446703;
- Wed, 04 Nov 2020 03:14:06 -0800 (PST)
+        Wed, 4 Nov 2020 06:14:55 -0500
+X-Originating-IP: 93.29.109.196
+Received: from aptenodytes (196.109.29.93.rev.sfr.net [93.29.109.196])
+        (Authenticated sender: paul.kocialkowski@bootlin.com)
+        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id C124724000D;
+        Wed,  4 Nov 2020 11:14:46 +0000 (UTC)
+Date:   Wed, 4 Nov 2020 12:14:46 +0100
+From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+To:     Helen Koike <helen.koike@collabora.com>
+Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-sunxi@googlegroups.com,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Yong Deng <yong.deng@magewell.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Hans Verkuil <hans.verkuil@cisco.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>, kevin.lhopital@hotmail.com
+Subject: Re: [PATCH 00/14] Allwinner MIPI CSI-2 support for A31/V3s/A83T
+Message-ID: <20201104111446.GA287014@aptenodytes>
+References: <20201023174546.504028-1-paul.kocialkowski@bootlin.com>
+ <d15d724b-6af7-3e51-1316-7bdde5a42c60@collabora.com>
+ <20201104111137.GH285779@aptenodytes>
 MIME-Version: 1.0
-References: <20201103203156.372184213@linuxfoundation.org>
-In-Reply-To: <20201103203156.372184213@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 4 Nov 2020 16:43:55 +0530
-Message-ID: <CA+G9fYtgux3o=nmN8ty8S=b+1zd87wmSUBCnhtYwmf=6qbi6zA@mail.gmail.com>
-Subject: Re: [PATCH 4.14 000/125] 4.14.204-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de,
-        linux- stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="BXVAT5kNtrzKuDFl"
+Content-Disposition: inline
+In-Reply-To: <20201104111137.GH285779@aptenodytes>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 4 Nov 2020 at 02:39, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.14.204 release.
-> There are 125 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Thu, 05 Nov 2020 20:29:58 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.14.204-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.14.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+--BXVAT5kNtrzKuDFl
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Hi again,
 
-NOTE:
-LTP syscalls test shmctl04 test modified in latest LTP release and this tes=
-t
-reported as fail. so reporting to LTP mailig list.
-Failed on 4.14, 4.9 and 4.4 branches But
-Passed on 4.19, 5.4 and 5.9 branches,
+On Wed 04 Nov 20, 12:11, Paul Kocialkowski wrote:
+> Hi Helen,
+>=20
+> On Fri 30 Oct 20, 19:44, Helen Koike wrote:
+> > Hi Paul,
+> >=20
+> > I have some comments through the series, I hope this helps.
+>=20
+> Thanks for your comments :)
+>=20
+> > On 10/23/20 2:45 PM, Paul Kocialkowski wrote:
+> > > This series introduces support for MIPI CSI-2, with the A31 controlle=
+r that is
+> > > found on most SoCs (A31, V3s and probably V5) as well as the A83T-spe=
+cific
+> > > controller. While the former uses the same MIPI D-PHY that is already=
+ supported
+> > > for DSI, the latter embeds its own D-PHY.
+> > >=20
+> > > In order to distinguish the use of the D-PHY between Rx mode (for MIP=
+I CSI-2)
+> > > and Tx mode (for MIPI DSI), a submode is introduced for D-PHY in the =
+PHY API.
+> > > This allows adding Rx support in the A31 D-PHY driver.
+> > >=20
+> > > A few changes and fixes are applied to the A31 CSI controller driver,=
+ in order
+> > > to support the MIPI CSI-2 use-case.
+> > >=20
+> > > Follows is the V4L2 device topology representing the interactions bet=
+ween
+> > > the MIPI CSI-2 sensor, the MIPI CSI-2 controller (which controls the =
+D-PHY)
+> > > and the CSI controller:
+> > > - entity 1: sun6i-csi (1 pad, 1 link)
+> > >             type Node subtype V4L flags 0
+> > >             device node name /dev/video0
+> > > 	pad0: Sink
+> > > 		<- "sun6i-mipi-csi2":1 [ENABLED,IMMUTABLE]
+> > >=20
+> > > - entity 5: sun6i-mipi-csi2 (2 pads, 2 links)
+> > >             type V4L2 subdev subtype Unknown flags 0
+> > > 	pad0: Sink
+> > > 		<- "ov5648 0-0036":0 [ENABLED,IMMUTABLE]
+> > > 	pad1: Source
+> > > 		-> "sun6i-csi":0 [ENABLED,IMMUTABLE]
+> > >=20
+> > > - entity 8: ov5648 0-0036 (1 pad, 1 link)
+> > >             type V4L2 subdev subtype Sensor flags 0
+> > >             device node name /dev/v4l-subdev0
+> >=20
+> > Question: I noticed is that sun6i-mipi-csi2 doesn't expose a node under=
+ /dev/, but the sensor
+> > exposes it. Probably because it uses V4L2_SUBDEV_FL_HAS_DEVNODE and sun=
+6i-csi() calls
+> > v4l2_device_register_subdev_nodes().
+> >=20
+> > I find this weird from a userspace pov, since usually we don't mix manu=
+al and auto propagation
+> > of the configs, so I started wondering if sun6i-csi driver should be ca=
+lling
+> > v4l2_device_register_subdev_nodes() in the first place.
+>=20
+> I must admit that I didn't really pay attention to that, but since
+> sun6i-mipi-csi2 is basically a bridge driver, it doesn't make sense to ap=
+ply
+> manual configuration to it. It is actually designed to forward most subde=
+v ops
+> to its own subdev so configuring it manually would actually result in
+> configuring the sensor.
+>=20
+> XXX
 
-shmctl04.c:115: TFAIL: SHM_INFO haven't returned a valid index: SUCCESS (0)
-shmctl04.c:131: TFAIL: Counted used =3D 0, used_ids =3D 1
-shmctl04.c:72: TPASS: used_ids =3D 1
-shmctl04.c:79: TPASS: shm_rss =3D 0
-shmctl04.c:86: TPASS: shm_swp =3D 0
-shmctl04.c:93: TPASS: shm_tot =3D 1
+Hum, I meant to add something here and then forgot. I'm pretty new to auto =
+vs
+manual propagation so I don't really have a clear opinion on this and wheth=
+er
+we should consider removing the sensor /dev node as well.
 
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.14.y/build/v4.14=
-.203-126-g8c25e7a92b2f/testrun/3392140/suite/ltp-syscalls-tests/test/shmctl=
-04/log
+I'm satisfied with the way things are currently, but it might be due to
+my own ignorance.
 
-Summary
-------------------------------------------------------------------------
+Paul
 
-kernel: 4.14.204-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-4.14.y
-git commit: 8c25e7a92b2f1688d46addf84ba6e3ec6f8d7d52
-git describe: v4.14.203-126-g8c25e7a92b2f
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.14=
-.y/build/v4.14.203-126-g8c25e7a92b2f
+> > Also, sun6i-csi doesn't seem to be used by any board dts (it's declared=
+ on the dtsi, but I
+> > didn't find any dts enabling it), so I wonder if it would be a bad thin=
+g if we update it.
+> >
+> > > 	pad0: Source
+> > > 		[fmt:SBGGR8_1X8/640x480@1/30 field:none colorspace:raw xfer:none yc=
+bcr:601 quantization:full-range]
+> > > 		-> "sun6i-mipi-csi2":0 [ENABLED,IMMUTABLE]
+> >=20
+> > If I understand correctly, this is very similar to ipu3:
+> >     sensor->bus->dma_engine
+> >=20
+> > in the case of ipu3-cio2:
+> >     sensor->ipu3-csi2->ipu3-cio2
+> >=20
+> > in this case:
+> >     ov5648->sun6i-mipi-csi2->sun6i-csi
+>=20
+> Yes this is the correct picture.
+>=20
+> > On thing that is confusing me is the name csi2 with csi (that makes me =
+think of csi
+> > version one, which is not the case), I would rename it to sun6i-video (=
+or maybe
+> > it is just me who gets confused).
+>=20
+> So the CSI name comes from the Allwinner litterature and implementation f=
+or that
+> controller. Since it supports parallel input on its own, it does in fact =
+support
+> parallel CSI. The DMA engine part alone from that controller is also used=
+ for
+> MIPI CSI-2, so in this case the name looses its relevance.
+>=20
+> > I know this driver is already upstream and not part of this series, but=
+ on the other hand it
+> > doesn't seem to be used.
+>=20
+> Personally I don't find a rename to be necessary and while I agree that
+> nothing would apparently prevent us from renaming it, I would prefer to k=
+eep
+> the naming in line with Allwinner's litterature.
+>=20
+> > On another note, I always wonder if we should expose the bus in the top=
+ology, I'm not
+> > sure if it provides any useful API or information for userspace, and yo=
+u could have
+> > a cleaner code (maybe code could be under phy subsystem). But at the sa=
+me time, it
+> > seems this is a pattern on v4l2.
+> >=20
+> > I'd like to hear what others think on the above.
+>=20
+> My view on this is that we are dealing with two distinct controllers here,
+> one that acts as a DMA engine and one that acts as a bridge. As a result,=
+ two
+> chained subdevs looks like the most appropriate representation to me.
+>=20
+> Using the PHY subsystem would probably be abusing the framework since the
+> MIPI CSI-2 controller is not a PHY (and we do have a D-PHY driver for the=
+ D-PHY
+> part that uses the PHY API already).
+>=20
+> So tl;dr I don't agree that it would be cleaner.
+>=20
+> Cheers,
+>=20
+> Paul
+>=20
+> > > Happy reviewing!
+> > >=20
+> > > Paul Kocialkowski (14):
+> > >   phy: Distinguish between Rx and Tx for MIPI D-PHY with submodes
+> > >   phy: allwinner: phy-sun6i-mipi-dphy: Support D-PHY Rx mode for MIPI
+> > >     CSI-2
+> > >   media: sun6i-csi: Support an optional dedicated memory pool
+> > >   media: sun6i-csi: Fix the image storage bpp for 10/12-bit Bayer
+> > >     formats
+> > >   media: sun6i-csi: Only configure the interface data width for paral=
+lel
+> > >   media: sun6i-csi: Support feeding from the MIPI CSI-2 controller
+> > >   dt-bindings: media: i2c: Add A31 MIPI CSI-2 bindings documentation
+> > >   media: sunxi: Add support for the A31 MIPI CSI-2 controller
+> > >   ARM: dts: sun8i: v3s: Add CSI0 camera interface node
+> > >   ARM: dts: sun8i: v3s: Add MIPI D-PHY and MIPI CSI-2 interface nodes
+> > >   dt-bindings: media: i2c: Add A83T MIPI CSI-2 bindings documentation
+> > >   media: sunxi: Add support for the A83T MIPI CSI-2 controller
+> > >   ARM: dts: sun8i: a83t: Add MIPI CSI-2 controller node
+> > >   media: sunxi: sun8i-a83t-mipi-csi2: Avoid using the (unsolicited)
+> > >     interrupt
+> > >=20
+> > >  .../media/allwinner,sun6i-a31-mipi-csi2.yaml  | 168 +++++
+> > >  .../media/allwinner,sun8i-a83t-mipi-csi2.yaml | 158 +++++
+> > >  arch/arm/boot/dts/sun8i-a83t.dtsi             |  26 +
+> > >  arch/arm/boot/dts/sun8i-v3s.dtsi              |  62 ++
+> > >  drivers/media/platform/sunxi/Kconfig          |   2 +
+> > >  drivers/media/platform/sunxi/Makefile         |   2 +
+> > >  .../platform/sunxi/sun6i-csi/sun6i_csi.c      |  54 +-
+> > >  .../platform/sunxi/sun6i-csi/sun6i_csi.h      |  20 +-
+> > >  .../platform/sunxi/sun6i-mipi-csi2/Kconfig    |  11 +
+> > >  .../platform/sunxi/sun6i-mipi-csi2/Makefile   |   4 +
+> > >  .../sunxi/sun6i-mipi-csi2/sun6i_mipi_csi2.c   | 635 +++++++++++++++++
+> > >  .../sunxi/sun6i-mipi-csi2/sun6i_mipi_csi2.h   | 116 +++
+> > >  .../sunxi/sun8i-a83t-mipi-csi2/Kconfig        |  11 +
+> > >  .../sunxi/sun8i-a83t-mipi-csi2/Makefile       |   4 +
+> > >  .../sun8i-a83t-mipi-csi2/sun8i_a83t_dphy.c    |  92 +++
+> > >  .../sun8i-a83t-mipi-csi2/sun8i_a83t_dphy.h    |  39 ++
+> > >  .../sun8i_a83t_mipi_csi2.c                    | 660 ++++++++++++++++=
+++
+> > >  .../sun8i_a83t_mipi_csi2.h                    | 196 ++++++
+> > >  drivers/phy/allwinner/phy-sun6i-mipi-dphy.c   | 164 ++++-
+> > >  drivers/staging/media/rkisp1/rkisp1-isp.c     |   3 +-
+> > >  include/linux/phy/phy-mipi-dphy.h             |  13 +
+> > >  21 files changed, 2408 insertions(+), 32 deletions(-)
+> > >  create mode 100644 Documentation/devicetree/bindings/media/allwinner=
+,sun6i-a31-mipi-csi2.yaml
+> > >  create mode 100644 Documentation/devicetree/bindings/media/allwinner=
+,sun8i-a83t-mipi-csi2.yaml
+> > >  create mode 100644 drivers/media/platform/sunxi/sun6i-mipi-csi2/Kcon=
+fig
+> > >  create mode 100644 drivers/media/platform/sunxi/sun6i-mipi-csi2/Make=
+file
+> > >  create mode 100644 drivers/media/platform/sunxi/sun6i-mipi-csi2/sun6=
+i_mipi_csi2.c
+> > >  create mode 100644 drivers/media/platform/sunxi/sun6i-mipi-csi2/sun6=
+i_mipi_csi2.h
+> > >  create mode 100644 drivers/media/platform/sunxi/sun8i-a83t-mipi-csi2=
+/Kconfig
+> > >  create mode 100644 drivers/media/platform/sunxi/sun8i-a83t-mipi-csi2=
+/Makefile
+> > >  create mode 100644 drivers/media/platform/sunxi/sun8i-a83t-mipi-csi2=
+/sun8i_a83t_dphy.c
+> > >  create mode 100644 drivers/media/platform/sunxi/sun8i-a83t-mipi-csi2=
+/sun8i_a83t_dphy.h
+> > >  create mode 100644 drivers/media/platform/sunxi/sun8i-a83t-mipi-csi2=
+/sun8i_a83t_mipi_csi2.c
+> > >  create mode 100644 drivers/media/platform/sunxi/sun8i-a83t-mipi-csi2=
+/sun8i_a83t_mipi_csi2.h
+> > >=20
+>=20
+> --=20
+> Paul Kocialkowski, Bootlin
+> Embedded Linux and kernel engineering
+> https://bootlin.com
 
-No regressions (compared to build v4.14.203)
 
-No fixes (compared to build v4.14.203)
-
-Ran 35206 total tests in the following environments and test suites.
-
-Environments
---------------
-- dragonboard-410c - arm64
-- hi6220-hikey - arm64
-- i386
-- juno-r2 - arm64
-- juno-r2-compat
-- juno-r2-kasan
-- qemu-arm64-kasan
-- qemu-x86_64-kasan
-- qemu_arm
-- qemu_arm64
-- qemu_i386
-- qemu_x86_64
-- x15 - arm
-- x86_64
-- x86-kasan
-
-Test Suites
------------
-* build
-* install-android-platform-tools-r2600
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-securebits-tests
-* perf
-* v4l2-compliance
-* ltp-controllers-tests
-* ltp-fs-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* ltp-open-posix-tests
-* ltp-sched-tests
-* kvm-unit-tests
 
 --=20
-Linaro LKFT
-https://lkft.linaro.org
+Paul Kocialkowski, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
+
+--BXVAT5kNtrzKuDFl
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAl+ijSYACgkQ3cLmz3+f
+v9EP8gf/ep3ZT/jxOwRIeLC9QlQttVayezv2icEW1vWtW039XYjXl/Lz8Mkk/PIG
+KGhH3YVqbCxE2TH2LYpwn+RgVEDuUV/RW/lASfU8uHzKhe6hvZWGmL88qveAViPA
+E5h/lQtrItJluIkDgYv3ESNNG+R18HChsHVqzAcSgzvesrSnmW38XhWi1H68OBt9
+NDsgIBIvObFX9aX6jzhCPigk7h8fhFjw//FxGQzCtU6BRX/7Rn4lMDmjMqdarZzV
+vORjKHaTfAbuS5sjuV6d4zXBRZhlJXsSTw3CssMtxeNEjgIxr2C63crhcqrkDixw
+RO/uBigt2IRNLEC8ssCrz/eowA7Zng==
+=yIar
+-----END PGP SIGNATURE-----
+
+--BXVAT5kNtrzKuDFl--
