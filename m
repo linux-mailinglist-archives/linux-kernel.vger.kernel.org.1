@@ -2,115 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBDB22A6EFB
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 21:41:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8049F2A6EFD
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 21:41:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731252AbgKDUk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 15:40:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47594 "EHLO
+        id S1731629AbgKDUlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 15:41:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730407AbgKDUk5 (ORCPT
+        with ESMTP id S1730407AbgKDUlV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 15:40:57 -0500
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F11FC0613D3;
-        Wed,  4 Nov 2020 12:40:56 -0800 (PST)
-Received: by mail-pg1-x533.google.com with SMTP id t14so17581436pgg.1;
-        Wed, 04 Nov 2020 12:40:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vKEi14cNRFouABmJsM8FD4P756MUI2SVDsa+n1MVR14=;
-        b=EtrGdebgHFk/4A89uzUGpcfqE27DscZj2SO2F1xgL63Ji+x6NgEPxP5RlyxX9kbI1E
-         zUbq5h22iTFruYNhwjZctYqQ2znC5lWkUUfa/DSJBGBoRcRn/HU3641hahqVcx4zmizX
-         KVn+vKBbH3s2fvTzgkC4gpQIHQZkDpzjvR7vo8hRlBv8ElWDSqbxansPvBSMubiS4FQ1
-         YpTUKiEVZ7ivF9wUyQdmWGkWT7NszMtDsmzV1IjcYznLfubNXjJZkixhwT6EH2u277MD
-         Xk38BgfuNGJIAyoaqSgUMTSTM1r8ItMRPimZWijNohkbZ+qNWgQ48CkIqXx0BJw//Bfq
-         RyTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=vKEi14cNRFouABmJsM8FD4P756MUI2SVDsa+n1MVR14=;
-        b=oxaBE2wccoJpThJ4VeJcWrgJAP8fQ730621eHj/S4+5d0eQwJ/P6c9oPB60jyiPAli
-         eiLnSH7AVihsm/13gSeo3YktZBHJSI+GfWbGG0P9hOEd6xtxOxgr1HLZgcu4RqNn1iX6
-         DYlpULVNYzCkEFMTelmh8a0Z8kg4llK7GHJJb2N6A5pUyzlcIr/DOTKy9J3QQu+k3MZQ
-         FlS+3e9XUTT4x3ZesjJ2qpFEVqt21PpVn4Z0daTn+Xg8BHcQsCywOkopu+Pc49iXxZZ0
-         6xff4DZvbzKPnvEZ3ZGWvyXCoHPS+QPsBkiHzo9R/NW/lPJBfMDVpH/2m52Vo/dDzuXe
-         WHQw==
-X-Gm-Message-State: AOAM532wu2rAXEfogIXo85/E9RevV3n7g2nXRvZ1ja29DDNmLi258Ect
-        O48HRLUIa37do/oB38irGjw=
-X-Google-Smtp-Source: ABdhPJwr8ecu1sp3XOsCzhebLAX6Zfm5DmkXXS5hFKQLJqcIb3MA/SqmiUwhd7ha5GfeEFk0/0LMKA==
-X-Received: by 2002:a17:90a:182:: with SMTP id 2mr5651967pjc.21.1604522455968;
-        Wed, 04 Nov 2020 12:40:55 -0800 (PST)
-Received: from google.com ([2620:15c:211:201:7220:84ff:fe09:5e58])
-        by smtp.gmail.com with ESMTPSA id 16sm3265066pfp.163.2020.11.04.12.40.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 12:40:54 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Wed, 4 Nov 2020 12:40:51 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Suren Baghdasaryan <surenb@google.com>, linux-api@vger.kernel.org,
-        linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
-        Christian Brauner <christian@brauner.io>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Tim Murray <timmurray@google.com>,
-        kernel-team <kernel-team@android.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>
-Subject: Re: [RFC]: userspace memory reaping
-Message-ID: <20201104204051.GA3544305@google.com>
-References: <CAJuCfpGz1kPM3G1gZH+09Z7aoWKg05QSAMMisJ7H5MdmRrRhNQ@mail.gmail.com>
- <CAJuCfpGjuUz5FPpR5iQ7oURJAhnP1ffBAnERuTUp9uPxQCRhDg@mail.gmail.com>
- <20201014120937.GC4440@dhcp22.suse.cz>
- <CAJuCfpEQ_ADYsMrF_zjfAeQ3d-FALSP+CeYsvgH2H1-FSoGGqg@mail.gmail.com>
- <20201015092030.GB22589@dhcp22.suse.cz>
- <CAJuCfpHwXcq1PfzHgqyYBR3N53TtV2WMt_Oubz0JZkvJHbFKGw@mail.gmail.com>
- <CAJuCfpH9iUt0cs1GBQppgdcD8chojCNXk22S+PeSgQ-bA7iitQ@mail.gmail.com>
- <20201103093550.GE21990@dhcp22.suse.cz>
- <20201103213228.GB1631979@google.com>
- <20201104065844.GM21990@dhcp22.suse.cz>
+        Wed, 4 Nov 2020 15:41:21 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1954EC0613D3;
+        Wed,  4 Nov 2020 12:41:21 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CRJTS5cXHz9sTL;
+        Thu,  5 Nov 2020 07:41:16 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1604522477;
+        bh=9tuejbhlNYVpm6DtiIZCOBp12CXoMw3K9gLO/QNrOh8=;
+        h=Date:From:To:Cc:Subject:From;
+        b=dE92vS8HXbE1C08kuEt+733w4MG9NG3/76bAm6ijP4xFp3w1XCq2setEaEfKA9U0O
+         aFZTbjIEzi8i0ddi+TsF9AKIhby2hm3RY2O9t/Lv4AY1LdEV71Z7NfCjxXjeTkqRWR
+         XdCJZ0DL7C5GxEeQcxaAkGBhmbHXsPxtHsYdmS/TYzmirhjeIBY22EBlGjqooS+AtJ
+         /CP0yU9U5XXw8MGFF8ST1HC5dTdIGSp501oOuqJvbSYK9DFYZ5mCT7fJ7A7ugI99Zr
+         +Bx035fvUAUhEZuJiBd+3RWWXWFhB0FPrUOaoYsEZa3EJ/WeJTG88K5zMeTDDEbpZp
+         I7K6v769Fqnrw==
+Date:   Thu, 5 Nov 2020 07:41:16 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Rob Clark <robdclark@gmail.com>, Sean Paul <seanpaul@chromium.org>
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the drm-msm tree
+Message-ID: <20201105074116.3bd4e927@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201104065844.GM21990@dhcp22.suse.cz>
+Content-Type: multipart/signed; boundary="Sig_/gamacw1epmQc=d6EORWqEvt";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 07:58:44AM +0100, Michal Hocko wrote:
-> On Tue 03-11-20 13:32:28, Minchan Kim wrote:
-> > On Tue, Nov 03, 2020 at 10:35:50AM +0100, Michal Hocko wrote:
-> > > On Mon 02-11-20 12:29:24, Suren Baghdasaryan wrote:
-> > > [...]
-> > > > To follow up on this. Should I post an RFC implementing SIGKILL_SYNC
-> > > > which in addition to sending a kill signal would also reap the
-> > > > victim's mm in the context of the caller? Maybe having some code will
-> > > > get the discussion moving forward?
-> > > 
-> > > Yeah, having a code, even preliminary, might help here. This definitely
-> > > needs a good to go from process management people as that proper is land
-> > > full of surprises...
-> > 
-> > Just to remind a idea I suggested to reuse existing concept
-> > 
-> >     fd = pidfd_open(victim process)
-> >     fdatasync(fd);
-> >     close(fd);
-> 
-> I must have missed this proposal. Anyway, are you suggesting fdatasync
-> to act as a destructive operation?
+--Sig_/gamacw1epmQc=d6EORWqEvt
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-write(fd) && fdatasync(fd) are already destructive operation if the file
-is shared.
+Hi all,
 
-You don't need to reaping as destruptive operation. Rather than, just
-commit on the asynchrnous status "write file into page cache and commit
-with fsync" and "killing process and commit with fsync".
+In commit
+
+  a0b21e0ad294 ("drm/msm: Add missing stub definition")
+
+Fixes tag
+
+  Fixes: 8ede2ecc3e5e ("drm/msm/dp: Add DP compliance tests on
+
+has these problem(s):
+
+  - Subject has leading but no trailing parentheses
+  - Subject has leading but no trailing quotes
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/gamacw1epmQc=d6EORWqEvt
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+jEewACgkQAVBC80lX
+0Gxuewf+ITqspJwfcA/YOThxH0hZLW5HO+FS2vBrDyUWJAO7Bsf5o+RecS2YToxc
+Xw4gMnKM7s452IA4nN+hXF2JBNbDZDy5NLmbKdaTUpQOd253fKpc76dlxTA+saiK
+E6bdJVmQtXasHnaiuY1erFkOihfNOijwIe3nbz/EbhC2G0pVI64J/K6JUYxbRbBe
+LS9SbrIE1dxbDicplbRNbhfO9vvroFiC+jv1HDBBulk6u8BMA/PRIxitIBPAovub
+Wor6zRPwAZEJRfK7Fo4b7VAnR/OlKbhWhrsX2N3PA0Lhld4XMdYZ5JJXv1/vlxVm
+ddPLd7vfkXKvgFZmuRxUMex+1oaxrA==
+=/CBQ
+-----END PGP SIGNATURE-----
+
+--Sig_/gamacw1epmQc=d6EORWqEvt--
