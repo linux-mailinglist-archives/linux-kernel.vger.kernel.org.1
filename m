@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 719292A6F17
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 21:43:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E0932A6F1D
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 21:44:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732332AbgKDUnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 15:43:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59040 "EHLO mail.kernel.org"
+        id S1732401AbgKDUoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 15:44:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59338 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727637AbgKDUnL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 15:43:11 -0500
+        id S1730347AbgKDUoJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 15:44:09 -0500
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 95E7420782;
-        Wed,  4 Nov 2020 20:43:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4FA4B20825;
+        Wed,  4 Nov 2020 20:44:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604522591;
-        bh=W9g2xF7W5N0mgEIaNycneqP7yHMgQppBrLRV9HdLquk=;
+        s=default; t=1604522648;
+        bh=o0QfSMczmLnJsCOVHz/PGb8+Vm1UfQlMxw1Aki4kxtU=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=S5Mj8Am2PTfs/DciLSBpP+ny5hNyuR3522OCqk6/bsv/4ZfE2ccGyV/UdlYR2mHm1
-         Rl6WelQUkGiN4FpNoFKx6/Rmx+SgXpVPYQLj4l3Wcr3FIR/4K5K9JdW9HMLV7jbADK
-         MzWPfYn1HZ/t9b3sXaOVWNTI8cUDnjjHenBDdu5k=
-Date:   Wed, 04 Nov 2020 20:43:00 +0000
+        b=EQOQQ/g98gnWCiFIkLLDHI8qDZB75K2ty9pLDmYDttBvNd9DFjFCubURZd+VK0N7U
+         rBrAW/SaPknRuUBCfhzg5JUNE1QLO7HrDkl2j0tH5dlv01/D8G9XLaubodysi50FqA
+         mQ0XEsBEQpzXqQz8HVnoJ+wYPnz0doPaQwso6WXE=
+Date:   Wed, 04 Nov 2020 20:43:58 +0000
 From:   Mark Brown <broonie@kernel.org>
-To:     Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        alsa-devel@alsa-project.org
-Cc:     nicolas.ferre@microchip.com, ludovic.desroches@microchip.com,
-        lgirdwood@gmail.com, alexandre.belloni@bootlin.com
-In-Reply-To: <20201104155738.68403-1-codrin.ciubotariu@microchip.com>
-References: <20201104155738.68403-1-codrin.ciubotariu@microchip.com>
-Subject: Re: [PATCH] ASoC: mchp-spdiftx: Do not set Validity bit(s)
-Message-Id: <160452257412.7226.6443928434973904720.b4-ty@kernel.org>
+To:     Qiang Zhao <qiang.zhao@nxp.com>, olteanv@gmail.com
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20201029084035.19604-1-qiang.zhao@nxp.com>
+References: <20201029084035.19604-1-qiang.zhao@nxp.com>
+Subject: Re: [PATCH] spi: fsl-dspi: fix NULL pointer dereference
+Message-Id: <160452263224.7406.18149040308248180970.b4-ty@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -41,19 +38,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 4 Nov 2020 17:57:38 +0200, Codrin Ciubotariu wrote:
-> The Validity bits (bit 28) must not be set in order to have the samples
-> valid. Some controllers look for this bit and ignore the samples if it
-> is set.
+On Thu, 29 Oct 2020 16:40:35 +0800, Qiang Zhao wrote:
+> Since commit 530b5affc675 ("spi: fsl-dspi: fix use-after-free in
+> remove path"), this driver causes a kernel oops:
+> 
+> [   64.587431] Unable to handle kernel NULL pointer dereference at
+> virtual address 0000000000000020
+> [..]
+> [   64.756080] Call trace:
+> [   64.758526]  dspi_suspend+0x30/0x78
+> [   64.762012]  platform_pm_suspend+0x28/0x70
+> [   64.766107]  dpm_run_callback.isra.19+0x24/0x70
+> [   64.770635]  __device_suspend+0xf4/0x2f0
+> [   64.774553]  dpm_suspend+0xec/0x1e0
+> [   64.778036]  dpm_suspend_start+0x80/0xa0
+> [   64.781957]  suspend_devices_and_enter+0x118/0x4f0
+> [   64.786743]  pm_suspend+0x1e0/0x260
+> [   64.790227]  state_store+0x8c/0x118
+> [   64.793712]  kobj_attr_store+0x18/0x30
+> [   64.797459]  sysfs_kf_write+0x40/0x58
+> [   64.801118]  kernfs_fop_write+0x148/0x240
+> [   64.805126]  vfs_write+0xc0/0x230
+> [   64.808436]  ksys_write+0x6c/0x100
+> [   64.811833]  __arm64_sys_write+0x1c/0x28
+> [   64.815753]  el0_svc_common.constprop.3+0x68/0x170
+> [   64.820541]  do_el0_svc+0x24/0x90
+> [   64.823853]  el0_sync_handler+0x118/0x168
+> [   64.827858]  el0_sync+0x158/0x180
+> 
+> [...]
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
 Thanks!
 
-[1/1] ASoC: mchp-spdiftx: Do not set Validity bit(s)
-      commit: f9d7c6eb23f7e55e7a0ca5451da06909bdfdd0e4
+[1/1] spi: fsl-dspi: fix wrong pointer in suspend/resume
+      commit: 9bd77a9ce31dd242fece27219d14fbee5068dd85
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
