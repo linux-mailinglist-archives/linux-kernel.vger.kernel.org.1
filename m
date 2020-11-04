@@ -2,70 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE0E72A607F
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 10:30:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 821982A602E
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 10:07:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728465AbgKDJaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 04:30:00 -0500
-Received: from smtp21.cstnet.cn ([159.226.251.21]:52166 "EHLO cstnet.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726690AbgKDJaA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 04:30:00 -0500
-Received: from localhost.localdomain (unknown [124.16.141.241])
-        by APP-01 (Coremail) with SMTP id qwCowACnrYmPdKJfA2MUAQ--.61871S2;
-        Wed, 04 Nov 2020 17:29:51 +0800 (CST)
-From:   Xu Wang <vulab@iscas.ac.cn>
-To:     laurent.pinchart@ideasonboard.com, mchehab@kernel.org,
-        linux-media@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] media: i2c: mt9p031: Remove redundant null check before clk_disable_unprepare
-Date:   Wed,  4 Nov 2020 09:29:48 +0000
-Message-Id: <20201104092948.8560-1-vulab@iscas.ac.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: qwCowACnrYmPdKJfA2MUAQ--.61871S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrZFy8CFy8Aw1xGry7Ww4DJwb_yoW3Krg_Cr
-        n8Xr17WFWjvr90y348GFs5Ar9rtay8ZFW8Xa48t39akFWjv3Z8ZF4qvry3Aw1DtF4jkF15
-        AryUur4fArn7ujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb2kYjsxI4VW3JwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4
-        A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
-        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jw0_WrylYx0Ex4A2jsIE14v26r4UJVWxJr
-        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkIecxEwVAFwVW8uwCF04k2
-        0xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI
-        8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41l
-        IxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIx
-        AIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2
-        z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0enmtUUUUU==
-X-Originating-IP: [124.16.141.241]
-X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCwYKA1z4jjNnQgAAs4
+        id S1729229AbgKDJHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 04:07:18 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:7141 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729182AbgKDJHD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 04:07:03 -0500
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CR14H2dyYz15PbD;
+        Wed,  4 Nov 2020 17:06:55 +0800 (CST)
+Received: from huawei.com (10.175.113.32) by DGGEMS403-HUB.china.huawei.com
+ (10.3.19.203) with Microsoft SMTP Server id 14.3.487.0; Wed, 4 Nov 2020
+ 17:06:47 +0800
+From:   Liu Shixin <liushixin2@huawei.com>
+To:     Markus Elfring <Markus.Elfring@web.de>,
+        <linux-fsdevel@vger.kernel.org>
+CC:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>,
+        Liu Shixin <liushixin2@huawei.com>
+Subject: [PATCH] fs/binfmt_elf: free interpreter in load_elf_binary
+Date:   Wed, 4 Nov 2020 17:33:39 +0800
+Message-ID: <20201104093339.178724-1-liushixin2@huawei.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <5bfc1c45-668d-9070-fddc-d15dbe39d12e@web.de>
+References: <5bfc1c45-668d-9070-fddc-d15dbe39d12e@web.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.175.113.32]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Because clk_disable_unprepare() already checked NULL clock parameter,
-so the additional check is unnecessary, just remove it.
+The file interpreter is allocated in load_elf_binary, but not freed
+in the case interp_elf_ex is NULL.
+Add a label “out_allow_write_access” so that the interpreter
+will be appropriately released in this case.
 
-Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+This memory leak is catched when kmemleak is enabled in kernel,
+the report looks like below:
+
+unreferenced object 0xffff8b6e9fd41400 (size 488):
+  comm "service", pid 4095, jiffies 4300970844 (age 49.618s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    e0 08 be b9 6e 8b ff ff 00 13 04 b7 6e 8b ff ff  ....n.......n...
+  backtrace:
+    [<00000000eacadaa2>] kmem_cache_alloc+0x164/0x320
+    [<0000000090fb7bf2>] __alloc_file+0x2a/0x140
+    [<00000000ff8fab86>] alloc_empty_file+0x4b/0x100
+    [<000000003ab9b00d>] path_openat+0x4a/0xe20
+    [<0000000027e3a067>] do_filp_open+0xb9/0x150
+    [<000000000edebcac>] do_open_execat+0xa6/0x250
+    [<000000008845564e>] open_exec+0x31/0x60
+    [<00000000e6e6e1ca>] load_elf_binary+0x1dd/0x1b60
+    [<000000004515d8f0>] do_execveat_common.isra.39+0xaa0/0x1000
+    [<000000002ca5e83f>] __x64_sys_execve+0x37/0x40
+    [<00000000beb519e4>] do_syscall_64+0x56/0xa0
+    [<000000009cf54d51>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Fixes: 0693ffebcfe5 ("fs/binfmt_elf.c: allocate less for static executable")
+Signed-off-by: Liu Shixin <liushixin2@huawei.com>
 ---
- drivers/media/i2c/mt9p031.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ fs/binfmt_elf.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/media/i2c/mt9p031.c b/drivers/media/i2c/mt9p031.c
-index dc23b9ed510a..a633b934d93e 100644
---- a/drivers/media/i2c/mt9p031.c
-+++ b/drivers/media/i2c/mt9p031.c
-@@ -346,8 +346,7 @@ static void mt9p031_power_off(struct mt9p031 *mt9p031)
- 	regulator_bulk_disable(ARRAY_SIZE(mt9p031->regulators),
- 			       mt9p031->regulators);
+diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
+index fa50e8936f5f..28e75cb45b26 100644
+--- a/fs/binfmt_elf.c
++++ b/fs/binfmt_elf.c
+@@ -907,7 +907,7 @@ static int load_elf_binary(struct linux_binprm *bprm)
+ 		interp_elf_ex = kmalloc(sizeof(*interp_elf_ex), GFP_KERNEL);
+ 		if (!interp_elf_ex) {
+ 			retval = -ENOMEM;
+-			goto out_free_ph;
++			goto out_allow_write_access;
+ 		}
  
--	if (mt9p031->clk)
--		clk_disable_unprepare(mt9p031->clk);
-+	clk_disable_unprepare(mt9p031->clk);
- }
- 
- static int __mt9p031_set_power(struct mt9p031 *mt9p031, bool on)
+ 		/* Get the exec headers */
+@@ -1316,6 +1316,7 @@ static int load_elf_binary(struct linux_binprm *bprm)
+ out_free_dentry:
+ 	kfree(interp_elf_ex);
+ 	kfree(interp_elf_phdata);
++out_allow_write_access:
+ 	allow_write_access(interpreter);
+ 	if (interpreter)
+ 		fput(interpreter);
 -- 
-2.17.1
+2.25.1
 
