@@ -2,129 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA6402A61E7
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 11:38:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C176B2A61FD
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 11:38:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729553AbgKDKhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 05:37:41 -0500
-Received: from relay2-d.mail.gandi.net ([217.70.183.194]:36253 "EHLO
-        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729473AbgKDKhi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 05:37:38 -0500
-X-Originating-IP: 93.29.109.196
-Received: from aptenodytes (196.109.29.93.rev.sfr.net [93.29.109.196])
-        (Authenticated sender: paul.kocialkowski@bootlin.com)
-        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 42D764000A;
-        Wed,  4 Nov 2020 10:37:32 +0000 (UTC)
-Date:   Wed, 4 Nov 2020 11:37:31 +0100
-From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-sunxi@googlegroups.com,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Yong Deng <yong.deng@magewell.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Helen Koike <helen.koike@collabora.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Hans Verkuil <hverkuil@xs4all.nl>, kevin.lhopital@hotmail.com
-Subject: Re: [PATCH 12/14] media: sunxi: Add support for the A83T MIPI CSI-2
- controller
-Message-ID: <20201104103731.GC285779@aptenodytes>
-References: <20201023174546.504028-1-paul.kocialkowski@bootlin.com>
- <20201023174546.504028-13-paul.kocialkowski@bootlin.com>
- <20201026170041.qsjzxlurufuuhcsq@gilmour.lan>
+        id S1729748AbgKDKiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 05:38:15 -0500
+Received: from mail.monom.org ([188.138.9.77]:34606 "EHLO mail.monom.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729568AbgKDKiN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 05:38:13 -0500
+Received: from mail.monom.org (localhost [127.0.0.1])
+        by filter.mynetwork.local (Postfix) with ESMTP id 76987500609;
+        Wed,  4 Nov 2020 11:38:10 +0100 (CET)
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.monom.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.5 required=5.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=ham autolearn_force=no version=3.4.2
+Received: from localhost (unknown [94.31.100.251])
+        by mail.monom.org (Postfix) with ESMTPSA id 18F2F500596;
+        Wed,  4 Nov 2020 11:38:10 +0100 (CET)
+Date:   Wed, 4 Nov 2020 11:38:09 +0100
+From:   Daniel Wagner <wagi@monom.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [ANNOUNCE] v5.10-rc2-rt4
+Message-ID: <20201104103809.bhl2iorbwv6xowtw@beryllium.lan>
+References: <20201103195731.erjkgyzxzzjylhui@linutronix.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="KN5l+BnMqAQyZLvT"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201026170041.qsjzxlurufuuhcsq@gilmour.lan>
+In-Reply-To: <20201103195731.erjkgyzxzzjylhui@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Nov 03, 2020 at 08:57:31PM +0100, Sebastian Andrzej Siewior wrote:
+> I'm pleased to announce the v5.10-rc2-rt4 patch set.
 
---KN5l+BnMqAQyZLvT
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+All tests on passed in my lab. On arm64 and arm I saw slightly higher
+max latency values for signaltest and sigwaittest. Usually they are
+below 200us but currently I see up to 350us.
 
-Hi,
-
-On Mon 26 Oct 20, 18:00, Maxime Ripard wrote:
-> On Fri, Oct 23, 2020 at 07:45:44PM +0200, Paul Kocialkowski wrote:
-> > The A83T supports MIPI CSI-2 with a composite controller, covering both=
- the
-> > protocol logic and the D-PHY implementation. This controller seems to b=
-e found
-> > on the A83T only and probably was abandonned since.
-> >=20
-> > This implementation splits the protocol and D-PHY registers and uses th=
-e PHY
-> > framework internally. The D-PHY is not registered as a standalone PHY d=
-river
-> > since it cannot be used with any other controller.
-> >=20
-> > There are a few notable points about the controller:
-> > - The initialisation sequence involes writing specific magic init value=
-s that
-> >   do not seem to make any particular sense given the concerned register=
- fields.
-> > - Interrupts appear to be hitting regardless of the interrupt mask regi=
-sters,
-> >   which can cause a serious flood when transmission errors occur.
->=20
-> Ah, so it's a separate driver too.
->=20
-> > This work is based on the first version of the driver submitted by
-> > K=C3=A9vin L'h=C3=B4pital, which was adapted to mainline from the Allwi=
-nner BSP.
-> > This version integrates MIPI CSI-2 support as a standalone V4L2 subdev
-> > instead of merging it in the sun6i-csi driver.
-> >=20
-> > It was tested on a Banana Pi M3 board with an OV8865 sensor in a 4-lane
-> > configuration.
->=20
-> Co-developped-by and SoB from Kevin?
-
-Not really. I wrote this driver from scratch and even significantly reworked
-the register descriptions to the point that I don't think it makes sense to
-consider that he's an author. For parts that can be considered a derivative
-work, copyright attribution was given in the header.
-
-Cheers,
-
-Paul
-
-> Looking at the driver, the same comments from the v3s apply there
->=20
-> Maxime
-
---=20
-Paul Kocialkowski, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
-
---KN5l+BnMqAQyZLvT
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAl+ihGcACgkQ3cLmz3+f
-v9HKqAf+OuoO0165XskKVuTp2nDVtSSL8D+0v2Fji8v+foCHk2qq8v2otrqY5Ey+
-ptEefRqzPa/VFRm5ZShzliEzeFK1vE+0/NE/n9QU4KdkhNUNnMGUIYGtEIvQr+Qo
-QOqecdSX0SR0qy/CMHbuNQJRRSzZ1AkYjq6g/023m3VMUOvGajq+2cwWYpYE0SC/
-Ngjd/deVC3yvosBdjwUfzyB2zj6pNOM8PQrUnIpiO2pBsZcXqqQ4QgLmi1UgtSrz
-RsTW9bMwsz7IRyogs4dCrb6s3ooCuK+Ox3v7bqng99Eqe/n6oIveLzRNS5QnlKMa
-rDjvmpkshuvTgPMU/kQlaGL1k20Lxw==
-=i052
------END PGP SIGNATURE-----
-
---KN5l+BnMqAQyZLvT--
+BTW, x86_64 also showed slightly higher numbers for signaltest for the
+v5.10-rc1-rt1 release. These are gone now.
