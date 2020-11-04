@@ -2,252 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E9E72A655C
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 14:40:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 017CA2A6562
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 14:42:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730060AbgKDNk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 08:40:27 -0500
-Received: from z5.mailgun.us ([104.130.96.5]:43200 "EHLO z5.mailgun.us"
+        id S1730109AbgKDNl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 08:41:58 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:34940 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729677AbgKDNk1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 08:40:27 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1604497226; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=RpVoMAO7pE7bPDbOQefCI2LLXeTHBoEF7ybXZpUMBOc=; b=jrd/Ketx/nfQEW/XZ0wuHoH2VcFAnqmZvxMMXkqAtl5xNeckbVwF09f76Xa/7ey0bPkwAEZs
- JjyArGlijg2DXRWU3XRZksTT2xBr2ooJ8lg/60i1RR16Vy1Ms8I8i3Vw6O4wgdQg17mLBYh+
- M70j3dyjh/4vvLD8Smlyn3q00Yc=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 5fa2af4ac4a50c2467527410 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 04 Nov 2020 13:40:26
- GMT
-Sender: neeraju=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 226BAC433C9; Wed,  4 Nov 2020 13:40:25 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.0.103] (unknown [124.123.167.211])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: neeraju)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id AC7B7C433C8;
-        Wed,  4 Nov 2020 13:40:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org AC7B7C433C8
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=neeraju@codeaurora.org
-Subject: Re: [PATCH v9 4/7] rcu/trace: Add tracing for how segcb list changes
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        linux-kernel@vger.kernel.org
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Marco Elver <elver@google.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>, fweisbec@gmail.com,
-        neeraj.iitr10@gmail.com
-References: <20201103142603.1302207-1-joel@joelfernandes.org>
- <20201103142603.1302207-5-joel@joelfernandes.org>
-From:   Neeraj Upadhyay <neeraju@codeaurora.org>
-Message-ID: <58c89893-1bf7-29bb-7f97-2e48755e8dd7@codeaurora.org>
-Date:   Wed, 4 Nov 2020 19:10:17 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1729768AbgKDNl5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 08:41:57 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kaJ2q-005DGp-9D; Wed, 04 Nov 2020 14:41:48 +0100
+Date:   Wed, 4 Nov 2020 14:41:48 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     davem@davemloft.net, kuba@kernel.org,
+        Geoff Levand <geoff@infradead.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Jens Osterkamp <Jens.Osterkamp@de.ibm.com>,
+        netdev@vger.kernel.org, Paul Mackerras <paulus@samba.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Utz Bacher <utz.bacher@de.ibm.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 10/12] net: ethernet: toshiba: ps3_gelic_net: Fix some
+ kernel-doc misdemeanours
+Message-ID: <20201104134148.GD933237@lunn.ch>
+References: <20201104090610.1446616-1-lee.jones@linaro.org>
+ <20201104090610.1446616-11-lee.jones@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <20201103142603.1302207-5-joel@joelfernandes.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201104090610.1446616-11-lee.jones@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 11/3/2020 7:56 PM, Joel Fernandes (Google) wrote:
-> Track how the segcb list changes before/after acceleration, during
-> queuing and during dequeuing.
+On Wed, Nov 04, 2020 at 09:06:08AM +0000, Lee Jones wrote:
+> Fixes the following W=1 kernel build warning(s):
 > 
-> This has proved useful to discover an optimization to avoid unwanted GP
-> requests when there are no callbacks accelerated. The overhead is minimal as
-> each segment's length is now stored in the respective segment.
+>  drivers/net/ethernet/toshiba/ps3_gelic_net.c:1107: warning: Function parameter or member 'irq' not described in 'gelic_card_interrupt'
+>  drivers/net/ethernet/toshiba/ps3_gelic_net.c:1107: warning: Function parameter or member 'ptr' not described in 'gelic_card_interrupt'
+>  drivers/net/ethernet/toshiba/ps3_gelic_net.c:1407: warning: Function parameter or member 'txqueue' not described in 'gelic_net_tx_timeout'
+>  drivers/net/ethernet/toshiba/ps3_gelic_net.c:1439: warning: Function parameter or member 'napi' not described in 'gelic_ether_setup_netdev_ops'
+>  drivers/net/ethernet/toshiba/ps3_gelic_net.c:1639: warning: Function parameter or member 'dev' not described in 'ps3_gelic_driver_probe'
+>  drivers/net/ethernet/toshiba/ps3_gelic_net.c:1795: warning: Function parameter or member 'dev' not described in 'ps3_gelic_driver_remove'
 > 
-> Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
-> Reviewed-by: Neeraj Upadhyay <neeraju@codeaurora.org>
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> ---
->   include/trace/events/rcu.h | 25 +++++++++++++++++++++++++
->   kernel/rcu/rcu_segcblist.c | 34 ++++++++++++++++++++++++++++++++++
->   kernel/rcu/rcu_segcblist.h |  5 +++++
->   kernel/rcu/tree.c          |  9 +++++++++
->   4 files changed, 73 insertions(+)
-> 
-> diff --git a/include/trace/events/rcu.h b/include/trace/events/rcu.h
-> index 155b5cb43cfd..5f8f2ee1a936 100644
-> --- a/include/trace/events/rcu.h
-> +++ b/include/trace/events/rcu.h
-> @@ -505,6 +505,31 @@ TRACE_EVENT_RCU(rcu_callback,
->   		  __entry->qlen)
->   );
->   
-> +TRACE_EVENT_RCU(rcu_segcb_stats,
-> +
-> +		TP_PROTO(const char *ctx, int *cb_count, unsigned long *gp_seq),
+> Cc: Geoff Levand <geoff@infradead.org>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+> Cc: Paul Mackerras <paulus@samba.org>
+> Cc: Utz Bacher <utz.bacher@de.ibm.com>
+> Cc: Jens Osterkamp <Jens.Osterkamp@de.ibm.com>
+> Cc: netdev@vger.kernel.org
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-I think we need to use long[] instead of int[] for cb_count everywhere 
-in this patch?
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-
-Thanks
-Neeraj
-
-> +
-> +		TP_ARGS(ctx, cb_count, gp_seq),
-> +
-> +		TP_STRUCT__entry(
-> +			__field(const char *, ctx)
-> +			__array(int, cb_count, RCU_CBLIST_NSEGS)
-> +			__array(unsigned long, gp_seq, RCU_CBLIST_NSEGS)
-> +		),
-> +
-> +		TP_fast_assign(
-> +			__entry->ctx = ctx;
-> +			memcpy(__entry->cb_count, cb_count, RCU_CBLIST_NSEGS * sizeof(int));
-> +			memcpy(__entry->gp_seq, gp_seq, RCU_CBLIST_NSEGS * sizeof(unsigned long));
-> +		),
-> +
-> +		TP_printk("%s cb_count: (DONE=%d, WAIT=%d, NEXT_READY=%d, NEXT=%d) "
-> +			  "gp_seq: (DONE=%lu, WAIT=%lu, NEXT_READY=%lu, NEXT=%lu)", __entry->ctx,
-> +			  __entry->cb_count[0], __entry->cb_count[1], __entry->cb_count[2], __entry->cb_count[3],
-> +			  __entry->gp_seq[0], __entry->gp_seq[1], __entry->gp_seq[2], __entry->gp_seq[3])
-> +
-> +);
-> +
->   /*
->    * Tracepoint for the registration of a single RCU callback of the special
->    * kvfree() form.  The first argument is the RCU type, the second argument
-> diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
-> index 357c19bbcb00..2a03949d0b82 100644
-> --- a/kernel/rcu/rcu_segcblist.c
-> +++ b/kernel/rcu/rcu_segcblist.c
-> @@ -14,6 +14,7 @@
->   #include <linux/types.h>
->   
->   #include "rcu_segcblist.h"
-> +#include "rcu.h"
->   
->   /* Initialize simple callback list. */
->   void rcu_cblist_init(struct rcu_cblist *rclp)
-> @@ -328,6 +329,39 @@ void rcu_segcblist_extract_done_cbs(struct rcu_segcblist *rsclp,
->   	rcu_segcblist_set_seglen(rsclp, RCU_DONE_TAIL, 0);
->   }
->   
-> +/*
-> + * Return how many CBs each segment along with their gp_seq values.
-> + *
-> + * This function is O(N) where N is the number of segments. Only used from
-> + * tracing code which is usually disabled in production.
-> + */
-> +#ifdef CONFIG_RCU_TRACE
-> +static void rcu_segcblist_countseq(struct rcu_segcblist *rsclp,
-> +			 int cbcount[RCU_CBLIST_NSEGS],
-> +			 unsigned long gpseq[RCU_CBLIST_NSEGS])
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < RCU_CBLIST_NSEGS; i++) {
-> +		cbcount[i] = rcu_segcblist_get_seglen(rsclp, i);
-> +		gpseq[i] = rsclp->gp_seq[i];
-> +	}
-> +}
-> +
-> +void __trace_rcu_segcb_stats(struct rcu_segcblist *rsclp, const char *context)
-> +{
-> +	int cbs[RCU_CBLIST_NSEGS];
-> +	unsigned long gps[RCU_CBLIST_NSEGS];
-> +
-> +	if (!trace_rcu_segcb_stats_enabled())
-> +		return;
-> +
-> +	rcu_segcblist_countseq(rsclp, cbs, gps);
-> +
-> +	trace_rcu_segcb_stats(context, cbs, gps);
-> +}
-> +#endif
-> +
->   /*
->    * Extract only those callbacks still pending (not yet ready to be
->    * invoked) from the specified rcu_segcblist structure and place them in
-> diff --git a/kernel/rcu/rcu_segcblist.h b/kernel/rcu/rcu_segcblist.h
-> index cd35c9faaf51..7750734fa116 100644
-> --- a/kernel/rcu/rcu_segcblist.h
-> +++ b/kernel/rcu/rcu_segcblist.h
-> @@ -103,3 +103,8 @@ void rcu_segcblist_advance(struct rcu_segcblist *rsclp, unsigned long seq);
->   bool rcu_segcblist_accelerate(struct rcu_segcblist *rsclp, unsigned long seq);
->   void rcu_segcblist_merge(struct rcu_segcblist *dst_rsclp,
->   			 struct rcu_segcblist *src_rsclp);
-> +#ifdef CONFIG_RCU_TRACE
-> +void __trace_rcu_segcb_stats(struct rcu_segcblist *rsclp, const char *context);
-> +#else
-> +#define __trace_rcu_segcb_stats(...)
-> +#endif
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 24c00020ab83..f6c6653b3ec2 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -1497,6 +1497,8 @@ static bool rcu_accelerate_cbs(struct rcu_node *rnp, struct rcu_data *rdp)
->   	if (!rcu_segcblist_pend_cbs(&rdp->cblist))
->   		return false;
->   
-> +	__trace_rcu_segcb_stats(&rdp->cblist, TPS("SegCbPreAcc"));
-> +
->   	/*
->   	 * Callbacks are often registered with incomplete grace-period
->   	 * information.  Something about the fact that getting exact
-> @@ -1517,6 +1519,8 @@ static bool rcu_accelerate_cbs(struct rcu_node *rnp, struct rcu_data *rdp)
->   	else
->   		trace_rcu_grace_period(rcu_state.name, gp_seq_req, TPS("AccReadyCB"));
->   
-> +	__trace_rcu_segcb_stats(&rdp->cblist, TPS("SegCbPostAcc"));
-> +
->   	return ret;
->   }
->   
-> @@ -2466,11 +2470,14 @@ static void rcu_do_batch(struct rcu_data *rdp)
->   	rcu_segcblist_extract_done_cbs(&rdp->cblist, &rcl);
->   	if (offloaded)
->   		rdp->qlen_last_fqs_check = rcu_segcblist_n_cbs(&rdp->cblist);
-> +
-> +	__trace_rcu_segcb_stats(&rdp->cblist, TPS("SegCbDequeued"));
->   	rcu_nocb_unlock_irqrestore(rdp, flags);
->   
->   	/* Invoke callbacks. */
->   	tick_dep_set_task(current, TICK_DEP_BIT_RCU);
->   	rhp = rcu_cblist_dequeue(&rcl);
-> +
->   	for (; rhp; rhp = rcu_cblist_dequeue(&rcl)) {
->   		rcu_callback_t f;
->   
-> @@ -2983,6 +2990,8 @@ __call_rcu(struct rcu_head *head, rcu_callback_t func)
->   		trace_rcu_callback(rcu_state.name, head,
->   				   rcu_segcblist_n_cbs(&rdp->cblist));
->   
-> +	__trace_rcu_segcb_stats(&rdp->cblist, TPS("SegCBQueued"));
-> +
->   	/* Go handle any RCU core processing required. */
->   	if (unlikely(rcu_segcblist_is_offloaded(&rdp->cblist))) {
->   		__call_rcu_nocb_wake(rdp, was_alldone, flags); /* unlocks */
-> 
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member of the Code Aurora Forum, hosted by The Linux Foundation
+    Andrew
