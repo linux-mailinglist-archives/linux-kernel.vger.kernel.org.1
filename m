@@ -2,65 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9FF72A613A
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 11:10:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 827022A614A
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 11:13:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728523AbgKDKJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 05:09:59 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:58219 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728229AbgKDKJ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 05:09:57 -0500
-Received: by ozlabs.org (Postfix, from userid 1034)
-        id 4CR2Sx6FHYz9sVN; Wed,  4 Nov 2020 21:09:53 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1604484593;
-        bh=3kFSwF+mKTTL4Iah+YZCWoNxgZ901GzljCfDkfAwxW0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FSawxRlJDKo9uROKSB32k4Z/z3AOVHuT31P2LG+Q0cjSKQGpr2nSAG6pvPu7/gEP4
-         0SM90Lhy9WtXeH8oOycfvYv2DW3zzD+r/t3A7xiMybhWJqzAbB+iju8EdTrqreDOt0
-         97BAe99otfYwzOWIA+XXmDOlV0XV96p4ouMz2skY0iylXTuFuajisA6V5EGesfvN2S
-         EnWIKPp5gbDjHjv8pbw5zMIdkaEOipWJDjbISEl1XoZDWp2Ygwg5zrDyDsVAUn9lbe
-         RbBE9DjUCZ4sJ3xUIGrL2VBBtoIDzPsnA0PohN7BLvFPe7xFJoTQwXf9YDXHrZFwvd
-         2ryOz6wRJb6ww==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org
-Subject: [PATCH 4/4] selftests/gpio: Add to CLEAN rule rather than overriding
-Date:   Wed,  4 Nov 2020 21:08:43 +1100
-Message-Id: <20201104100843.660407-4-mpe@ellerman.id.au>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201104100843.660407-1-mpe@ellerman.id.au>
-References: <20201104100843.660407-1-mpe@ellerman.id.au>
+        id S1728817AbgKDKNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 05:13:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33300 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728508AbgKDKNk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 05:13:40 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E8E4C0613D3;
+        Wed,  4 Nov 2020 02:13:40 -0800 (PST)
+Date:   Wed, 04 Nov 2020 10:13:37 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1604484818;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tQP19svj7zoZI5FQx6Ol/pT+zPjAIX339Dbz0Fjqlqo=;
+        b=HDNpjvEpHyW/ZL5egeogmpFeA05cle8PHqezNYJmrhidROgTDRFC3YL3QMgsIAMoSxyMSN
+        ODMJIvUH4/pRdO35W05iqO5w4zGLBnNt1S4qJf3roTFYogjOHF5X+qw2IjN9BJmgrNVGQ/
+        iJIHMWvEg2AshP9Sunp7oh/tLtLa8MEN1YZNAKwzLADN6Pi7Hpf3b8vSS1n/hMVW6OG8RU
+        MSFt6M2OFwbVyTYhENS0QkMeDjP4QbELPiPns5i4SAk2X+td74kUo132iotM6bOYIJoYm+
+        hzBi6BRfApHqx3TYORPL+FdViUQ2W3YF0Takz/+FWBAQVWnYmA+BDcysJzgtBQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1604484818;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tQP19svj7zoZI5FQx6Ol/pT+zPjAIX339Dbz0Fjqlqo=;
+        b=pB2K5RV4FNE6as+du1B+t5HhIaG3TdBVB2uS1iyZ/HvVCVaPDyjctZCu9ySBphSX291rv5
+        2M4uh2rQMpc7RLAg==
+From:   "tip-bot2 for David Woodhouse" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/apic] x86/ioapic: Use I/O-APIC ID for finding irqdomain, not index
+Cc:     lkp <oliver.sang@intel.com>, David Woodhouse <dwmw@amazon.co.uk>,
+        Thomas Gleixner <tglx@linutronix.de>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <57adf2c305cd0c5e9d860b2f3007a7e676fd0f9f.camel@infradead.org>
+References: <57adf2c305cd0c5e9d860b2f3007a7e676fd0f9f.camel@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <160448481750.397.15987267180792702259.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rather than overriding the CLEAN rule we can just append to it.
+The following commit has been merged into the x86/apic branch of tip:
 
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Commit-ID:     f36a74b9345aebaf5d325380df87a54720229d18
+Gitweb:        https://git.kernel.org/tip/f36a74b9345aebaf5d325380df87a54720229d18
+Author:        David Woodhouse <dwmw@amazon.co.uk>
+AuthorDate:    Tue, 03 Nov 2020 16:36:22 
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Wed, 04 Nov 2020 11:11:35 +01:00
+
+x86/ioapic: Use I/O-APIC ID for finding irqdomain, not index
+
+In commit b643128b917 ("x86/ioapic: Use irq_find_matching_fwspec() to
+find remapping irqdomain") the I/O-APIC code was changed to find its
+parent irqdomain using irq_find_matching_fwspec(), but the key used
+for the lookup was wrong. It shouldn't use 'ioapic' which is the index
+into its own ioapics[] array. It should use the actual arbitration
+ID of the I/O-APIC in question, which is mpc_ioapic_id(ioapic).
+
+Fixes: b643128b917 ("x86/ioapic: Use irq_find_matching_fwspec() to find remapping irqdomain")
+Reported-by: lkp <oliver.sang@intel.com>
+Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/57adf2c305cd0c5e9d860b2f3007a7e676fd0f9f.camel@infradead.org
+
 ---
- tools/testing/selftests/gpio/Makefile | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ arch/x86/kernel/apic/io_apic.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/gpio/Makefile b/tools/testing/selftests/gpio/Makefile
-index acf4088a9891..41582fe485ee 100644
---- a/tools/testing/selftests/gpio/Makefile
-+++ b/tools/testing/selftests/gpio/Makefile
-@@ -20,10 +20,7 @@ GPIODIR := $(realpath ../../../gpio)
- GPIOOUT := $(OUTPUT)/tools-gpio/
- GPIOOBJ := $(GPIOOUT)/gpio-utils.o
+diff --git a/arch/x86/kernel/apic/io_apic.c b/arch/x86/kernel/apic/io_apic.c
+index 1cfd65e..0602c95 100644
+--- a/arch/x86/kernel/apic/io_apic.c
++++ b/arch/x86/kernel/apic/io_apic.c
+@@ -2345,14 +2345,14 @@ static int mp_irqdomain_create(int ioapic)
+ 	if (cfg->dev) {
+ 		fn = of_node_to_fwnode(cfg->dev);
+ 	} else {
+-		fn = irq_domain_alloc_named_id_fwnode("IO-APIC", ioapic);
++		fn = irq_domain_alloc_named_id_fwnode("IO-APIC", mpc_ioapic_id(ioapic));
+ 		if (!fn)
+ 			return -ENOMEM;
+ 	}
  
--override define CLEAN
--	$(RM) $(TEST_GEN_PROGS_EXTENDED)
--	$(RM) -rf $(GPIOOUT)
--endef
-+CLEAN += ; $(RM) -rf $(GPIOOUT)
+ 	fwspec.fwnode = fn;
+ 	fwspec.param_count = 1;
+-	fwspec.param[0] = ioapic;
++	fwspec.param[0] = mpc_ioapic_id(ioapic);
  
- $(TEST_GEN_PROGS_EXTENDED): $(GPIOOBJ)
- 
--- 
-2.25.1
-
+ 	parent = irq_find_matching_fwspec(&fwspec, DOMAIN_BUS_ANY);
+ 	if (!parent) {
