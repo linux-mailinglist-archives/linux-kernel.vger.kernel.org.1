@@ -2,115 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D838D2A6D1B
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 19:47:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 463EF2A6CFC
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 19:40:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731450AbgKDSqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 13:46:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58064 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726737AbgKDSqv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 13:46:51 -0500
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD4FCC0613D3
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 10:46:50 -0800 (PST)
-Received: by mail-ej1-x643.google.com with SMTP id gn41so13953973ejc.4
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 10:46:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rJ0JSJD7YhQrtyyxZarPnMZ/Oz0Aar8DucY8lFMMvvc=;
-        b=SH4kivALZPyu6z8Te1ke0S4tmokB361FaCC0AzDfHKGoHsDC9uO+0aTOFZsLDwisKr
-         pWKOHAviOTaTLQEOEvik45JL9KgUGyK7BJTfllyxetUS/K8q/MHYet9UNjFcYRYchZsF
-         7yUEWICEhOTLfStxey617QMvYLuKg2c7ML7e4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rJ0JSJD7YhQrtyyxZarPnMZ/Oz0Aar8DucY8lFMMvvc=;
-        b=hizUKIzonyKIaK69t9MAWXm9TutRyEyRykLPrLAinegomgWnkOPH6lcdhVC7dxiW04
-         //SS4BvMIbcqCfW55m9CPnHQrhbYj1ySZ9yHLJit8EWpuy5ElI/9CNbLZYsMl5foVI/w
-         9CFBxHrOusURm5QPLCJQ7hIJOL83SYnMVMxlR2KOxH7+dYwAQHSbmb6zFa58p9Z25yRb
-         CSLhFCJFpOEgf4W/TX1X0idKik+e/Z8CaOO4N9YWwkNPeG0m7wUJbbs+kjLOshByiNmM
-         6ymYlrliG7Sj+/QaQUkh7TDTQCKB5Mb8Z/9WNK4ZtpEoL0OBgcvx6eqMCKV32vHrATZg
-         fBAw==
-X-Gm-Message-State: AOAM5321RNHr/1PAEv6kmBG+piTv5y8UowUmsW8tCSLu9GZ3EANaev+t
-        kn8WQUTkU/FeKbIhgI7lVTmA98qvQxm++Q==
-X-Google-Smtp-Source: ABdhPJxXoADVJeenTJO6bK1ll7mULIV67ZJ0i2BM7ZnBKBLjBCx3xOFjiqY+uNAkx6X9p4qdwrkWkA==
-X-Received: by 2002:a17:906:b312:: with SMTP id n18mr17168509ejz.353.1604515609239;
-        Wed, 04 Nov 2020 10:46:49 -0800 (PST)
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com. [209.85.218.45])
-        by smtp.gmail.com with ESMTPSA id t8sm1411586ejc.45.2020.11.04.10.46.48
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Nov 2020 10:46:49 -0800 (PST)
-Received: by mail-ej1-f45.google.com with SMTP id p5so31246064ejj.2
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 10:46:48 -0800 (PST)
-X-Received: by 2002:a2e:868b:: with SMTP id l11mr10743770lji.102.1604515153445;
- Wed, 04 Nov 2020 10:39:13 -0800 (PST)
+        id S1732640AbgKDSjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 13:39:24 -0500
+Received: from mga09.intel.com ([134.134.136.24]:27943 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730821AbgKDSjW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 13:39:22 -0500
+IronPort-SDR: wjVPy/YGzPxFhulFWjpLBYVRkFmUgbMfJySLb9ggRd3WFysnU7FY+EcUUilmLbLQpu/JU7ZSBv
+ FTv4ZuyGQtHQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9795"; a="169412349"
+X-IronPort-AV: E=Sophos;i="5.77,451,1596524400"; 
+   d="scan'208";a="169412349"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2020 10:39:19 -0800
+IronPort-SDR: TRz0ZAf1iIHhuMzYgUtUvFiTygJH/RMSNOFivvgfiA1YLcp106Gd+M+uEiDKzhK9ghV2X94iV0
+ akU6sXa02c3Q==
+X-IronPort-AV: E=Sophos;i="5.77,451,1596524400"; 
+   d="scan'208";a="539016839"
+Received: from gliakhov-mobl2.ger.corp.intel.com (HELO ubuntu) ([10.249.45.232])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2020 10:39:17 -0800
+Date:   Wed, 4 Nov 2020 19:39:04 +0100
+From:   Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     ohad@wizery.com, bjorn.andersson@linaro.org,
+        arnaud.pouliquen@st.com, linux-remoteproc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 8/8] rpmsg: Turn name service into a stand alone driver
+Message-ID: <20201104183904.GA31822@ubuntu>
+References: <20201027175218.1033609-1-mathieu.poirier@linaro.org>
+ <20201027175218.1033609-9-mathieu.poirier@linaro.org>
+ <20201104140143.GA30197@ubuntu>
+ <20201104173424.GB2893396@xps15>
 MIME-Version: 1.0
-References: <20201030225250.GB6357@xz-x1> <20201030235121.GQ2620339@nvidia.com>
- <20201103001712.GB52235@lx-t490> <20201103002532.GL2620339@nvidia.com>
- <20201103004133.GD52235@lx-t490> <e03dba4e-fd1d-a32c-c99c-fc3fa51419c4@nvidia.com>
- <20201103065225.GA63301@lx-t490> <CAHk-=wgB8nyOQufpn0o6a5BpJCJPnXvH+kRxApujhsgG+7qAwQ@mail.gmail.com>
- <20201104013212.GA82153@lx-t490> <29e4f7f7-5774-7d8f-694b-75eb55ae1b2e@nvidia.com>
- <20201104031711.GA227990@lx-t490>
-In-Reply-To: <20201104031711.GA227990@lx-t490>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 4 Nov 2020 10:38:57 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wikhGExmprXgaW+MVXG1zsGpztBbVwOb23vetk41EtTBQ@mail.gmail.com>
-Message-ID: <CAHk-=wikhGExmprXgaW+MVXG1zsGpztBbVwOb23vetk41EtTBQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] mm: prevent gup_fast from racing with COW during fork
-To:     "Ahmed S. Darwish" <a.darwish@linutronix.de>
-Cc:     John Hubbard <jhubbard@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>, Peter Xu <peterx@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Hugh Dickins <hughd@google.com>, Jan Kara <jack@suse.cz>,
-        Jann Horn <jannh@google.com>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Linux-MM <linux-mm@kvack.org>, Michal Hocko <mhocko@suse.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Siewior <bigeasy@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201104173424.GB2893396@xps15>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 3, 2020 at 7:17 PM Ahmed S. Darwish <a.darwish@linutronix.de> wrote:
->
-> Nonetheless, as you mentioned in the later (dropped) part of your
-> message, I think do_ is better than __do_, so the final result will be:
->
->   do___read_seqcount_retry()
->   do_read_seqcount_retry()
->   do_raw_write_seqcount_begin()
->   do_raw_write_seqcount_end()
->   do_write_seqcount_begin()
->   ...
->
-> and so on.
+On Wed, Nov 04, 2020 at 10:34:24AM -0700, Mathieu Poirier wrote:
+> On Wed, Nov 04, 2020 at 03:01:44PM +0100, Guennadi Liakhovetski wrote:
+> > Hi Mathieu, Arnaud,
+> > 
+> > I've tried the patch set with my VirtIO / vhost audio implementation, 
+> > in general it worked quite well, 
+> 
+> Very good - it would be nice if you could add your "Tested-by:" tags.
 
-Looks reasonable to me.
+Sure, I guess it would be better if I reply with both "Tested-by" and 
+"Reviewed-by" to your next version?
 
-And can you add a few comments to the magic type macros, so that it's
-a lot more obvious what the end result was. I clearly wasn't able to
-follow all the _Generic() cases from the seqcount_t to the final end
-result. It's a really odd combination of subtle _GENERIC() macro and
-token pasting to get from zeqcount_t to "false" in
-__seqcount_lock_preemptible().
+Thanks
+Guennadi
 
-I can see it when I really look, but when looking at the actual use,
-it's very non-obvious indeed.
-
-                 Linus
+> > On Tue, Oct 27, 2020 at 11:52:18AM -0600, Mathieu Poirier wrote:
+> > > From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+> > > 
+> > > Make the RPMSG name service announcement a stand alone driver so that it
+> > > can be reused by other subsystems.  It is also the first step in making the
+> > > functionatlity transport independent, i.e that is not tied to virtIO.
+> > > 
+> > > Co-developed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> > > Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+> > > ---
+> > 
+> > [snip]
+> > 
+> > > diff --git a/include/linux/rpmsg_ns.h b/include/linux/rpmsg_ns.h
+> > > index bb479f430080..42786bb759b5 100644
+> > > --- a/include/linux/rpmsg_ns.h
+> > > +++ b/include/linux/rpmsg_ns.h
+> > > @@ -39,4 +39,21 @@ enum rpmsg_ns_flags {
+> > >  /* Address 53 is reserved for advertising remote services */
+> > >  #define RPMSG_NS_ADDR			(53)
+> > >  
+> > > +/**
+> > > + * rpmsg_ns_register_device() - register name service device based on rpdev
+> > > + * @rpdev: prepared rpdev to be used for creating endpoints
+> > > + *
+> > > + * This function wraps rpmsg_register_device() preparing the rpdev for use as
+> > > + * basis for the rpmsg name service device.
+> > > + */
+> > > +static inline int rpmsg_ns_register_device(struct rpmsg_device *rpdev)
+> > > +{
+> > > +       strcpy(rpdev->id.name, "rpmsg_ns");
+> > 
+> > you need to
+> > 
+> > #include <linux/rpmsg.h>
+> 
+> Of course yes - I'll simply add the header file.  I plan on having another
+> revision addressing your comments out by the end of the week or early next week.
+> 
+> Thanks,
+> Mathieu
+> 
+> > 
+> > in this file for rpdev definition. Or you could leave this function in 
+> > rpmsg_ns.c, then it's enough to forward-declare struct rpdev here.
+> > 
+> > Thanks
+> > Guennadi
+> > 
+> > > +       rpdev->driver_override = "rpmsg_ns";
+> > > +       rpdev->src = RPMSG_NS_ADDR;
+> > > +       rpdev->dst = RPMSG_NS_ADDR;
+> > > +
+> > > +       return rpmsg_register_device(rpdev);
+> > > +}
+> > > +
+> > >  #endif
+> > > -- 
+> > > 2.25.1
+> > > 
