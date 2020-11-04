@@ -2,90 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D23992A6246
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 11:40:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 729242A6266
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 11:43:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729343AbgKDKkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 05:40:37 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:59162 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729889AbgKDKkf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 05:40:35 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id F359A1F458F3
-Subject: Re: [PATCH] drm/mediatek: mtk_dpi: Fix unused variable
- 'mtk_dpi_encoder_funcs'
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Collabora Kernel ML <kernel@collabora.com>, matthias.bgg@gmail.com,
-        drinkcat@chromium.org, hsinyi@chromium.org,
-        kernel test robot <lkp@intel.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-References: <20201005162241.172912-1-enric.balletbo@collabora.com>
-Message-ID: <9752ce85-a3e3-1e2f-c9d8-eae729364fee@collabora.com>
-Date:   Wed, 4 Nov 2020 11:40:29 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1729487AbgKDKm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 05:42:59 -0500
+Received: from foss.arm.com ([217.140.110.172]:34728 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727923AbgKDKm6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 05:42:58 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C0E9813D5;
+        Wed,  4 Nov 2020 02:42:57 -0800 (PST)
+Received: from [10.57.20.162] (unknown [10.57.20.162])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BAEEE3F66E;
+        Wed,  4 Nov 2020 02:42:56 -0800 (PST)
+Subject: Re: [PATCH v3 09/26] coresight: Convert coresight_timeout to use
+ access abstraction
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     linux-arm-kernel@lists.infradead.org, mike.leach@linaro.org,
+        coresight@lists.linaro.org, linux-kernel@vger.kernel.org
+References: <20201028220945.3826358-1-suzuki.poulose@arm.com>
+ <20201028220945.3826358-11-suzuki.poulose@arm.com>
+ <20201103180329.GB2855763@xps15>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <b1323f88-d6b8-5525-4d2f-d001236f8860@arm.com>
+Date:   Wed, 4 Nov 2020 10:42:56 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <20201005162241.172912-1-enric.balletbo@collabora.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <20201103180329.GB2855763@xps15>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+On 11/3/20 6:03 PM, Mathieu Poirier wrote:
+> On Wed, Oct 28, 2020 at 10:09:28PM +0000, Suzuki K Poulose wrote:
+>> Convert the generic routines to use the new access abstraction layer
+>> gradually, starting with coresigth_timeout.
+>>
+>> Cc: Mike Leach <mike.leach@linaro.org>
+>> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+>> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+>> ---
 
-On 5/10/20 18:22, Enric Balletbo i Serra wrote:
-> Commit f89c696e7f63 ("drm/mediatek: mtk_dpi: Convert to bridge driver")
-> introduced the following build warning with W=1
-> 
->  drivers/gpu/drm/mediatek/mtk_dpi.c:530:39: warning: unused variable 'mtk_dpi_encoder_funcs' [-Wunused-const-variable]
->  static const struct drm_encoder_funcs mtk_dpi_encoder_funcs = {
-> 
-> This struct is and the 'mtk_dpi_encoder_destroy()' are not needed
-> anymore, so remove them.
-> 
-> Fixes: f89c696e7f63 ("drm/mediatek: mtk_dpi: Convert to bridge driver")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-> ---
 
-A gentle ping on this small fix. Thanks,
 
-  Enric
+>> diff --git a/drivers/hwtracing/coresight/coresight-catu.c b/drivers/hwtracing/coresight/coresight-catu.c
+>> index 5baf29510f1b..34c74b05c542 100644
+>> --- a/drivers/hwtracing/coresight/coresight-catu.c
+>> +++ b/drivers/hwtracing/coresight/coresight-catu.c
+>> @@ -401,8 +401,9 @@ static const struct attribute_group *catu_groups[] = {
+>>   
+>>   static inline int catu_wait_for_ready(struct catu_drvdata *drvdata)
+>>   {
+>> -	return coresight_timeout(drvdata->base,
+>> -				 CATU_STATUS, CATU_STATUS_READY, 1);
+>> +	struct csdev_access *csa = &drvdata->csdev->access;
+>> +
+>> +	return coresight_timeout(csa, CATU_STATUS, CATU_STATUS_READY, 1);
+>>   }
+>>   
+>>   static int catu_enable_hw(struct catu_drvdata *drvdata, void *data)
+>> diff --git a/drivers/hwtracing/coresight/coresight-core.c b/drivers/hwtracing/coresight/coresight-core.c
+>> index e96deaca8cab..42ba989a6b5e 100644
+>> --- a/drivers/hwtracing/coresight/coresight-core.c
+>> +++ b/drivers/hwtracing/coresight/coresight-core.c
+>> @@ -1412,23 +1412,26 @@ static void coresight_remove_conns(struct coresight_device *csdev)
+>>   }
+>>   
+>>   /**
+>> - * coresight_timeout - loop until a bit has changed to a specific state.
+>> - * @addr: base address of the area of interest.
+>> - * @offset: address of a register, starting from @addr.
+>> + * coresight_timeout - loop until a bit has changed to a specific register
+>> + *			state.
+>> + * @csa: coresight device access for the device
+>> + * @offset: Offset of the register from the base of the device.
+>>    * @position: the position of the bit of interest.
+>>    * @value: the value the bit should have.
+>>    *
+>>    * Return: 0 as soon as the bit has taken the desired state or -EAGAIN if
+>>    * TIMEOUT_US has elapsed, which ever happens first.
+>>    */
+>> -
+>> -int coresight_timeout(void __iomem *addr, u32 offset, int position, int value)
+>> +int coresight_timeout(struct csdev_access *csa,
+>> +		      u32 offset,
+>> +		      int position,
+>> +		      int value)
+> 
+> There is no need for stacking, please maximise the 80 characters.  The function
+> stubs in coresight.h should also be revised.
+> 
+>>   {
+>>   	int i;
+>>   	u32 val;
+>>   
+>>   	for (i = TIMEOUT_US; i > 0; i--) {
+>> -		val = __raw_readl(addr + offset);
+>> +		val = csdev_access_read32(csa, offset);
+> 
+> I vaguely remember commenting on this, or perhaps it was on some othe patch you
+> wrote...  Anyways, I think it is a good thing to go from an unordered access to
+> an ordered access for the timeout function.
+
+Yes, you did mention it in the v1.
 
 > 
->  drivers/gpu/drm/mediatek/mtk_dpi.c | 9 ---------
->  1 file changed, 9 deletions(-)
+> With the above:
 > 
-> diff --git a/drivers/gpu/drm/mediatek/mtk_dpi.c b/drivers/gpu/drm/mediatek/mtk_dpi.c
-> index 589ef33a1780..2609d917e3f9 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_dpi.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_dpi.c
-> @@ -522,15 +522,6 @@ static int mtk_dpi_set_display_mode(struct mtk_dpi *dpi,
->  	return 0;
->  }
->  
-> -static void mtk_dpi_encoder_destroy(struct drm_encoder *encoder)
-> -{
-> -	drm_encoder_cleanup(encoder);
-> -}
-> -
-> -static const struct drm_encoder_funcs mtk_dpi_encoder_funcs = {
-> -	.destroy = mtk_dpi_encoder_destroy,
-> -};
-> -
->  static int mtk_dpi_bridge_attach(struct drm_bridge *bridge,
->  				 enum drm_bridge_attach_flags flags)
->  {
-> 
+> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+
+Thanks, will address the comments.
+
+Suzuki
