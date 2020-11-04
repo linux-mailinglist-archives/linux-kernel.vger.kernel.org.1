@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FE0A2A7167
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 00:22:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F072C2A711A
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 00:19:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732591AbgKDXTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 18:19:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43986 "EHLO
+        id S1732607AbgKDXTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 18:19:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732544AbgKDXTP (ORCPT
+        with ESMTP id S1732559AbgKDXTR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 18:19:15 -0500
-Received: from mail-ej1-x64a.google.com (mail-ej1-x64a.google.com [IPv6:2a00:1450:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13246C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 15:19:15 -0800 (PST)
-Received: by mail-ej1-x64a.google.com with SMTP id t1so49317ejb.21
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 15:19:15 -0800 (PST)
+        Wed, 4 Nov 2020 18:19:17 -0500
+Received: from mail-wm1-x349.google.com (mail-wm1-x349.google.com [IPv6:2a00:1450:4864:20::349])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80B95C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 15:19:17 -0800 (PST)
+Received: by mail-wm1-x349.google.com with SMTP id 8so9122wmg.6
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 15:19:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=RYRi/FAOTZ78lCIR1B7o4Jmj2D/EUC7lc1NuI1GE5uU=;
-        b=Nde54gFHWGOEqAyyuWq2rQzVJXRx/KDeTCAuAH/MdTHSRmk54Ggx/wnYNjjxYyGICS
-         QZ1hTnIISQEY75MaSlxAnZPzPwfIQVxzeoiosPkms4fPNH9q+CTb1rQH6glIJzqDJZI1
-         JrbdKodfU4o+lHUgzHmMlGYpbHunS4DZUaZwQYLCMQsqVupABBc1W2AuOcNlvLIkP0AL
-         98JpGhChCAMAtiuGlhd8DdLEgPTCa85WnuRA4naQLqoFN5pSnmEm7bxlGrIW3L76vp1x
-         Zg0HSD3pAj0Kvo/H0XS9uJaabK620FuUwAt+30SYKd2MmLJ2ocM4gQ+2QRngVduomxAP
-         Xgxw==
+        bh=Z3coWAI2tcKTBrlblI3/IYJAWnH07Z1QBuIRVdtXJnY=;
+        b=XQOwaLsjIcVG6su3AN+CYUdsA5WUuBobYe8xvDWSId42JpjafUyuC5mkuGD9M7cJEO
+         IRBpNjzWtQCQhoCS+AwXFlU/pJfHm4LUhojUCMSB5U7R+GQbyxixrZ3kmDIUuyHLxmiw
+         D9JlmNxbc3wdURiVDE9fVjAUeid0zK0zFixaEt2UXw7Z2kx6Tc1s2UsqJfbLEYFJsNVX
+         +FT5O6bxqlJZRiXsdHIY57GSre77QLnVThkrJu0ASjZCNtLRSexnsbU2gvQItwdvP3B8
+         xPC3JjiYAn62Q8QZ8HIQB1chVyCv4Q6GeZmmhIutTOV6zEgaFUeNhwKcV0fFQmGB7sFh
+         5iDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=RYRi/FAOTZ78lCIR1B7o4Jmj2D/EUC7lc1NuI1GE5uU=;
-        b=d1FOYiI0ER5DlQzqDi3GUY1p5SB6XV8sPWp1J4GUq6jZLtqZGI+5S0MJuZIhkcibNm
-         yffGBunomoecY1XvcHh/O35XR1Wa/EuHDS8MfbEROieUXniwnU04ENoo8PLZqurvKozH
-         xpy5TAhF0jXd0YpY9nCMyKJAl8a2e6D1wKJHBU+nAlkzNsDP5c/HBA9L3VGdQ4DBtUM2
-         kcGpimI1L1mKfHl/UD9ZXGm3pYrVNpXAps4kxVc7UzeFAfWe2px7pG9ldYOz8Tf04ill
-         vkcYQ2nEvHI0Xs0XbRtSIusgUiZJStfEr0QXp3XUcBrbLrKUtEUICQ+CtGc2kB2F3T9a
-         +86g==
-X-Gm-Message-State: AOAM530Pogii2WFsDyapjcb5okbc5ORl2M0RPygKX7h5x6qCGU4aSPlI
-        jKYKcWRO6gUQIVxKHP7DeeG3n2aMt4ARNPVW
-X-Google-Smtp-Source: ABdhPJzTbWEvaInDgCzi2OXp9Zq7P4vPYNbIjbyt1XtVnSDN5wV+5yh08HFfB0bdtVYiy9srehxVAVjiUxnZsQHu
+        bh=Z3coWAI2tcKTBrlblI3/IYJAWnH07Z1QBuIRVdtXJnY=;
+        b=ldIdTL4MdqpXtdUlLFDgDjXP+ZtnWXqMFecVg1PyL5PofUOGdzPPeuOo3cLDHgjva2
+         XoTHN+n3pyjriXWc4qA09JjhDggqPT3U/My0aoKpNR9vxtpUlqlFLsYYHU+oHxiTnHgp
+         YP4qbz9yAN/G4zZtQlWjZdL/K2rXh827zRuzzH/e9Bunq/GkYQDp5jkg2pIF94hYmqXm
+         mbLKS5GtpAaKQgmjUPhw+KBdlPdKRqSFn8z+XWJgKWneV9fDYiv2gNh6C/zzXLTM5S8M
+         BMjodrsC3FVecvfrnIOcSwEEelPPNAQ64r4RMmVBwnR5KwpRCUM8RyV5DlsNDhCQHVj6
+         y/VQ==
+X-Gm-Message-State: AOAM5306Snbbv3okvw8OItNoWt5vGpvtJPctsmWmJMYJ7D+sssqsn5mR
+        ZRH54UXu/rnZmmi9WjM8dTg9iUfvSslSxLYJ
+X-Google-Smtp-Source: ABdhPJwNrhTgbZprL0G3S2ieCLesniBqAGqR/k9jY6mA8OpBniFVTsIN+owzPS7pLTwiZuVt4MXWlGO+IR55i+eQ
 Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
 X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
- (user=andreyknvl job=sendgmr) by 2002:a50:fe98:: with SMTP id
- d24mr157767edt.223.1604531953601; Wed, 04 Nov 2020 15:19:13 -0800 (PST)
-Date:   Thu,  5 Nov 2020 00:18:18 +0100
+ (user=andreyknvl job=sendgmr) by 2002:a1c:a752:: with SMTP id
+ q79mr97594wme.24.1604531956154; Wed, 04 Nov 2020 15:19:16 -0800 (PST)
+Date:   Thu,  5 Nov 2020 00:18:19 +0100
 In-Reply-To: <cover.1604531793.git.andreyknvl@google.com>
-Message-Id: <7762ae3696d59e0e38ed69d0a98930aea883be82.1604531793.git.andreyknvl@google.com>
+Message-Id: <f105f0703bd0c80a538f0f1f78a8edd342b81a1a.1604531793.git.andreyknvl@google.com>
 Mime-Version: 1.0
 References: <cover.1604531793.git.andreyknvl@google.com>
 X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
-Subject: [PATCH v8 03/43] kasan: group vmalloc code
+Subject: [PATCH v8 04/43] s390/kasan: include asm/page.h from asm/kasan.h
 From:   Andrey Konovalov <andreyknvl@google.com>
 To:     Catalin Marinas <catalin.marinas@arm.com>
 Cc:     Will Deacon <will.deacon@arm.com>,
@@ -67,210 +67,37 @@ Cc:     Will Deacon <will.deacon@arm.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
         linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andrey Konovalov <andreyknvl@google.com>
+        Andrey Konovalov <andreyknvl@google.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a preparatory commit for the upcoming addition of a new hardware
-tag-based (MTE-based) KASAN mode.
-
-Group all vmalloc-related function declarations in include/linux/kasan.h,
-and their implementations in mm/kasan/common.c.
-
-No functional changes.
+asm/kasan.h relies on pgd_t and _REGION1_SHIFT definitions and therefore
+requires asm/pgtable.h include. Include asm/pgtable.h from asm/kasan.h.
 
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-Reviewed-by: Marco Elver <elver@google.com>
+Acked-by: Vasily Gorbik <gor@linux.ibm.com>
 ---
-Change-Id: Ie20b6c689203cd6de4fd7f2c465ec081c00c5f15
+Change-Id: I369a8f9beb442b9d05733892232345c3f4120e0a
 ---
- include/linux/kasan.h | 41 +++++++++++++----------
- mm/kasan/common.c     | 78 ++++++++++++++++++++++---------------------
- 2 files changed, 63 insertions(+), 56 deletions(-)
+ arch/s390/include/asm/kasan.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/include/linux/kasan.h b/include/linux/kasan.h
-index 30d343b4a40a..59538e795df4 100644
---- a/include/linux/kasan.h
-+++ b/include/linux/kasan.h
-@@ -75,19 +75,6 @@ struct kasan_cache {
- 	int free_meta_offset;
- };
+diff --git a/arch/s390/include/asm/kasan.h b/arch/s390/include/asm/kasan.h
+index e9bf486de136..4753ad0c3cba 100644
+--- a/arch/s390/include/asm/kasan.h
++++ b/arch/s390/include/asm/kasan.h
+@@ -2,6 +2,8 @@
+ #ifndef __ASM_KASAN_H
+ #define __ASM_KASAN_H
  
--/*
-- * These functions provide a special case to support backing module
-- * allocations with real shadow memory. With KASAN vmalloc, the special
-- * case is unnecessary, as the work is handled in the generic case.
-- */
--#ifndef CONFIG_KASAN_VMALLOC
--int kasan_module_alloc(void *addr, size_t size);
--void kasan_free_shadow(const struct vm_struct *vm);
--#else
--static inline int kasan_module_alloc(void *addr, size_t size) { return 0; }
--static inline void kasan_free_shadow(const struct vm_struct *vm) {}
--#endif
--
- int kasan_add_zero_shadow(void *start, unsigned long size);
- void kasan_remove_zero_shadow(void *start, unsigned long size);
++#include <asm/pgtable.h>
++
+ #ifdef CONFIG_KASAN
  
-@@ -156,9 +143,6 @@ static inline bool kasan_slab_free(struct kmem_cache *s, void *object,
- 	return false;
- }
- 
--static inline int kasan_module_alloc(void *addr, size_t size) { return 0; }
--static inline void kasan_free_shadow(const struct vm_struct *vm) {}
--
- static inline int kasan_add_zero_shadow(void *start, unsigned long size)
- {
- 	return 0;
-@@ -211,13 +195,16 @@ static inline void *kasan_reset_tag(const void *addr)
- #endif /* CONFIG_KASAN_SW_TAGS */
- 
- #ifdef CONFIG_KASAN_VMALLOC
-+
- int kasan_populate_vmalloc(unsigned long addr, unsigned long size);
- void kasan_poison_vmalloc(const void *start, unsigned long size);
- void kasan_unpoison_vmalloc(const void *start, unsigned long size);
- void kasan_release_vmalloc(unsigned long start, unsigned long end,
- 			   unsigned long free_region_start,
- 			   unsigned long free_region_end);
--#else
-+
-+#else /* CONFIG_KASAN_VMALLOC */
-+
- static inline int kasan_populate_vmalloc(unsigned long start,
- 					unsigned long size)
- {
-@@ -232,7 +219,25 @@ static inline void kasan_release_vmalloc(unsigned long start,
- 					 unsigned long end,
- 					 unsigned long free_region_start,
- 					 unsigned long free_region_end) {}
--#endif
-+
-+#endif /* CONFIG_KASAN_VMALLOC */
-+
-+#if defined(CONFIG_KASAN) && !defined(CONFIG_KASAN_VMALLOC)
-+
-+/*
-+ * These functions provide a special case to support backing module
-+ * allocations with real shadow memory. With KASAN vmalloc, the special
-+ * case is unnecessary, as the work is handled in the generic case.
-+ */
-+int kasan_module_alloc(void *addr, size_t size);
-+void kasan_free_shadow(const struct vm_struct *vm);
-+
-+#else /* CONFIG_KASAN && !CONFIG_KASAN_VMALLOC */
-+
-+static inline int kasan_module_alloc(void *addr, size_t size) { return 0; }
-+static inline void kasan_free_shadow(const struct vm_struct *vm) {}
-+
-+#endif /* CONFIG_KASAN && !CONFIG_KASAN_VMALLOC */
- 
- #ifdef CONFIG_KASAN_INLINE
- void kasan_non_canonical_hook(unsigned long addr);
-diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-index 33d863f55db1..89e5ef9417a7 100644
---- a/mm/kasan/common.c
-+++ b/mm/kasan/common.c
-@@ -536,44 +536,6 @@ void kasan_kfree_large(void *ptr, unsigned long ip)
- 	/* The object will be poisoned by page_alloc. */
- }
- 
--#ifndef CONFIG_KASAN_VMALLOC
--int kasan_module_alloc(void *addr, size_t size)
--{
--	void *ret;
--	size_t scaled_size;
--	size_t shadow_size;
--	unsigned long shadow_start;
--
--	shadow_start = (unsigned long)kasan_mem_to_shadow(addr);
--	scaled_size = (size + KASAN_SHADOW_MASK) >> KASAN_SHADOW_SCALE_SHIFT;
--	shadow_size = round_up(scaled_size, PAGE_SIZE);
--
--	if (WARN_ON(!PAGE_ALIGNED(shadow_start)))
--		return -EINVAL;
--
--	ret = __vmalloc_node_range(shadow_size, 1, shadow_start,
--			shadow_start + shadow_size,
--			GFP_KERNEL,
--			PAGE_KERNEL, VM_NO_GUARD, NUMA_NO_NODE,
--			__builtin_return_address(0));
--
--	if (ret) {
--		__memset(ret, KASAN_SHADOW_INIT, shadow_size);
--		find_vm_area(addr)->flags |= VM_KASAN;
--		kmemleak_ignore(ret);
--		return 0;
--	}
--
--	return -ENOMEM;
--}
--
--void kasan_free_shadow(const struct vm_struct *vm)
--{
--	if (vm->flags & VM_KASAN)
--		vfree(kasan_mem_to_shadow(vm->addr));
--}
--#endif
--
- #ifdef CONFIG_MEMORY_HOTPLUG
- static bool shadow_mapped(unsigned long addr)
- {
-@@ -685,6 +647,7 @@ core_initcall(kasan_memhotplug_init);
- #endif
- 
- #ifdef CONFIG_KASAN_VMALLOC
-+
- static int kasan_populate_vmalloc_pte(pte_t *ptep, unsigned long addr,
- 				      void *unused)
- {
-@@ -923,4 +886,43 @@ void kasan_release_vmalloc(unsigned long start, unsigned long end,
- 				       (unsigned long)shadow_end);
- 	}
- }
-+
-+#else /* CONFIG_KASAN_VMALLOC */
-+
-+int kasan_module_alloc(void *addr, size_t size)
-+{
-+	void *ret;
-+	size_t scaled_size;
-+	size_t shadow_size;
-+	unsigned long shadow_start;
-+
-+	shadow_start = (unsigned long)kasan_mem_to_shadow(addr);
-+	scaled_size = (size + KASAN_SHADOW_MASK) >> KASAN_SHADOW_SCALE_SHIFT;
-+	shadow_size = round_up(scaled_size, PAGE_SIZE);
-+
-+	if (WARN_ON(!PAGE_ALIGNED(shadow_start)))
-+		return -EINVAL;
-+
-+	ret = __vmalloc_node_range(shadow_size, 1, shadow_start,
-+			shadow_start + shadow_size,
-+			GFP_KERNEL,
-+			PAGE_KERNEL, VM_NO_GUARD, NUMA_NO_NODE,
-+			__builtin_return_address(0));
-+
-+	if (ret) {
-+		__memset(ret, KASAN_SHADOW_INIT, shadow_size);
-+		find_vm_area(addr)->flags |= VM_KASAN;
-+		kmemleak_ignore(ret);
-+		return 0;
-+	}
-+
-+	return -ENOMEM;
-+}
-+
-+void kasan_free_shadow(const struct vm_struct *vm)
-+{
-+	if (vm->flags & VM_KASAN)
-+		vfree(kasan_mem_to_shadow(vm->addr));
-+}
-+
- #endif
+ #define KASAN_SHADOW_SCALE_SHIFT 3
 -- 
 2.29.1.341.ge80a0c044ae-goog
 
