@@ -2,101 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42FAC2A5F2B
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 09:15:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D1862A5F2D
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 09:15:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728256AbgKDIPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 03:15:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725896AbgKDIPH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 03:15:07 -0500
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64FECC0613D3
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 00:15:07 -0800 (PST)
-Received: by mail-pl1-x644.google.com with SMTP id t6so9917843plq.11
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 00:15:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rXpZj9JEbKY4eaJISBKEtY6mg37iINmNheRvWpDXMms=;
-        b=mBIF++twAozP6cDRdtp0uDdxaaaMGEnQgmAALvspsxzLLXxZc1Gjr7ZptfxzzRNFiV
-         j7zWuljPMQT3rltcIz96394euUdSBIIoB9hx6oR3icOj5fI2lpaV77uU+n4SbOt/M+P4
-         cQgbinZFYjASF1Qh2OoWauTtcJx58M+azyFPi0UlMjcHXf5t0S4t1yiySzh2m3F5WPfv
-         z01NAJCYi1WN5WrBPe7T7BDs5H3pn94q9ZYvhi+4JPYByVJiT1CGMeMq80Qk81UqXmEy
-         mrJjWOnPvdMN2p1C6sFJNHyuCMvG1AXyHKES3+1XV0uGM4fHHQxhLkayTb4qQPkpBBhD
-         sC5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rXpZj9JEbKY4eaJISBKEtY6mg37iINmNheRvWpDXMms=;
-        b=hJ3U4JuMRaA0sHgTOjTZS6fU8WrdB3HKiDO1l9Tml409ONVRDLVV0RIWClYal9qJFA
-         p5g9iqPhKQfIzO9sPDCr4lJpmrsob6E2Y90wAXpCtkQHXjAzHJnf9wFYuyZa+s9Yjy7i
-         tlChpIgCZ9dvQ7mOHxqNS6pIVIYu3alnV/qYLKQZjAJIylmgSjRUyzruQyUIhyyaQBLm
-         aGHf3927RdjffhlcZTbr41LYw2vPn6NRdwPKTa7At7s24Lj1YV6LPth5HV81wm7s1WOO
-         LuHfAojKbY9Ag9nN9oT0GOisgwRzm2wXs+xblG6gfZMQOHLa9DsIbmD/wj+xNuJ3RDF7
-         14RQ==
-X-Gm-Message-State: AOAM530xiz/cSbxv8VHIcqheyLaElFyExPYezZ9Ce4NLhTWExA3F19p1
-        e9Vm30wPHco0rcJbY6lMOz7GaeEFekg=
-X-Google-Smtp-Source: ABdhPJxp6SYKXh78t5jW48OsYnMC46cUl8/HoaKRhgBKgm9SQlvWxQJL8/WBBRNZfF2IlhOoegL7Ng==
-X-Received: by 2002:a17:902:143:b029:d2:564a:5de8 with SMTP id 61-20020a1709020143b02900d2564a5de8mr28680943plb.74.1604477706645;
-        Wed, 04 Nov 2020 00:15:06 -0800 (PST)
-Received: from ZB-PF0YQ8ZU.360buyad.local ([137.116.162.235])
-        by smtp.gmail.com with ESMTPSA id 136sm1493505pfa.132.2020.11.04.00.15.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 00:15:05 -0800 (PST)
-From:   Zhenzhong Duan <zhenzhong.duan@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     ning.sun@intel.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, jroedel@suse.de,
-        tboot-devel@lists.sourceforge.net,
-        Zhenzhong Duan <zhenzhong.duan@gmail.com>
-Subject: [PATCH] iommu/vt-d: avoid unnecessory panic if iommu init fail in tboot
-Date:   Wed,  4 Nov 2020 16:14:38 +0800
-Message-Id: <20201104081438.2075-1-zhenzhong.duan@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S1728476AbgKDIPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 03:15:49 -0500
+Received: from mx2.suse.de ([195.135.220.15]:60474 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726232AbgKDIPt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 03:15:49 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1604477747;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pu9nDlElO36818d6c492u/kEii7j/MmIxPyMpMKROnw=;
+        b=M560DL4Lx3O469FViCozhx+pg+wAT6bhy87LkS0daF7UpbL2pSwdQb0qgQjOjuaQEY+ZgE
+        QfrD1GZRJV6VZsMjWN1korL9SoGHicDqo0UanIqWyiAOiZ8M7QMbtYKtGE6DjHjLGMueYb
+        fZH8iTV79Qulw6LTGp9j1eM+BKwi4w8=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 2A284ACE0;
+        Wed,  4 Nov 2020 08:15:47 +0000 (UTC)
+Date:   Wed, 4 Nov 2020 09:15:46 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Xing Zhengjun <zhengjun.xing@linux.intel.com>
+Cc:     Rong Chen <rong.a.chen@intel.com>,
+        Waiman Long <longman@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Chris Down <chris@chrisdown.name>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Tejun Heo <tj@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        lkp@intel.com, zhengjun.xing@intel.com
+Subject: Re: [LKP] Re: [mm/memcg] bd0b230fe1: will-it-scale.per_process_ops
+ -22.7% regression
+Message-ID: <20201104081546.GB10052@dhcp22.suse.cz>
+References: <20201102091543.GM31092@shao2-debian>
+ <20201102092754.GD22613@dhcp22.suse.cz>
+ <82d73ebb-a31e-4766-35b8-82afa85aa047@intel.com>
+ <20201102100247.GF22613@dhcp22.suse.cz>
+ <bd87e8bd-c918-3f41-0cc5-e2927d91625f@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bd87e8bd-c918-3f41-0cc5-e2927d91625f@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"intel_iommu=off" command line is used to disable iommu and iommu is force
-enabled in a tboot system. Meanwhile "intel_iommu=tboot_noforce,off"
-could be used to force disable iommu in tboot for better performance.
+On Wed 04-11-20 09:20:04, Xing Zhengjun wrote:
+> 
+> 
+> On 11/2/2020 6:02 PM, Michal Hocko wrote:
+> > On Mon 02-11-20 17:53:14, Rong Chen wrote:
+> > > 
+> > > 
+> > > On 11/2/20 5:27 PM, Michal Hocko wrote:
+> > > > On Mon 02-11-20 17:15:43, kernel test robot wrote:
+> > > > > Greeting,
+> > > > > 
+> > > > > FYI, we noticed a -22.7% regression of will-it-scale.per_process_ops due to commit:
+> > > > > 
+> > > > > 
+> > > > > commit: bd0b230fe14554bfffbae54e19038716f96f5a41 ("mm/memcg: unify swap and memsw page counters")
+> > > > > https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+> > > > I really fail to see how this can be anything else than a data structure
+> > > > layout change. There is one counter less.
+> > > > 
+> > > > btw. are cgroups configured at all? What would be the configuration?
+> > > 
+> > > Hi Michal,
+> > > 
+> > > We used the default configure of cgroups, not sure what configuration you
+> > > want,
+> > > could you give me more details? and here is the cgroup info of will-it-scale
+> > > process:
+> > > 
+> > > $ cat /proc/3042/cgroup
+> > > 12:hugetlb:/
+> > > 11:memory:/system.slice/lkp-bootstrap.service
+> > 
+> > OK, this means that memory controler is enabled and in use. Btw. do you
+> > get the original performance if you add one phony page_counter after the
+> > union?
+> > 
+> I add one phony page_counter after the union and re-test, the regression
+> reduced to -1.2%. It looks like the regression caused by the data structure
+> layout change.
 
-By default kernel should panic if iommu init fail in tboot for security
-reason, but it's unnecessory if we use "intel_iommu=tboot_noforce,off".
+Thanks for double checking. Could you try to cache align the
+page_counter struct? If that helps then we should figure which counters
+acks against each other by adding the alignement between the respective
+counters. 
 
-Fix it by return 0 in tboot_force_iommu() so that force_on is not set.
+> =========================================================================================
+> tbox_group/testcase/rootfs/kconfig/compiler/nr_task/mode/test/cpufreq_governor/ucode/debug-setup:
+> 
+> lkp-hsw-4ex1/will-it-scale/debian-10.4-x86_64-20200603.cgz/x86_64-rhel-8.3/gcc-9/50%/process/page_fault2/performance/0x16/test1
+> 
+> commit:
+>   8d387a5f172f26ff8c76096d5876b881dec6b7ce
+>   bd0b230fe14554bfffbae54e19038716f96f5a41
+>   b3233916ab0a883e1117397e28b723bd0e4ac1eb (debug patch add one phony
+> page_counter after the union)
+> 
+> 8d387a5f172f26ff bd0b230fe14554bfffbae54e190 b3233916ab0a883e1117397e28b
+> ---------------- --------------------------- ---------------------------
+>          %stddev     %change         %stddev     %change         %stddev
+>              \          |                \          |                \
+>     187632           -22.8%     144931            -1.2%     185391
+> will-it-scale.per_process_ops
+>   13509525           -22.8%   10435073            -1.2%   13348181
+> will-it-scale.workload
+> 
+> 
+> 
+> -- 
+> Zhengjun Xing
 
-Fixes: 7304e8f28bb2 ("iommu/vt-d: Correctly disable Intel IOMMU force on")
-Signed-off-by: Zhenzhong Duan <zhenzhong.duan@gmail.com>
----
- arch/x86/kernel/tboot.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
-
-diff --git a/arch/x86/kernel/tboot.c b/arch/x86/kernel/tboot.c
-index 992fb1415c0f..9fd4d162b331 100644
---- a/arch/x86/kernel/tboot.c
-+++ b/arch/x86/kernel/tboot.c
-@@ -511,12 +511,9 @@ struct acpi_table_header *tboot_get_dmar_table(struct acpi_table_header *dmar_tb
- 
- int tboot_force_iommu(void)
- {
--	if (!tboot_enabled())
-+	if (!tboot_enabled() || intel_iommu_tboot_noforce)
- 		return 0;
- 
--	if (intel_iommu_tboot_noforce)
--		return 1;
--
- 	if (no_iommu || swiotlb || dmar_disabled)
- 		pr_warn("Forcing Intel-IOMMU to enabled\n");
- 
 -- 
-2.25.1
-
+Michal Hocko
+SUSE Labs
