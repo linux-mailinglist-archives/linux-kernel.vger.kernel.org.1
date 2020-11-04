@@ -2,95 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1C682A6062
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 10:16:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 706C02A605F
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 10:15:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728715AbgKDJQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 04:16:27 -0500
-Received: from mail-lf1-f65.google.com ([209.85.167.65]:39662 "EHLO
-        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728522AbgKDJQZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 04:16:25 -0500
-Received: by mail-lf1-f65.google.com with SMTP id 184so26156390lfd.6;
-        Wed, 04 Nov 2020 01:16:23 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vHa0L9hPqIKNAA8VZg6vgJc8/SLe3NLGnVvTvkVfkVk=;
-        b=emPlNl4PXYWZuPLDlVflH6rmh0Wimswi29hzRmuDGyWLxzpfqaBGrhQB1AyuAwQHxt
-         rbqj9uMZlRZd4gOu5t9HCd/F5gwZ9xsPeK2ieGvERtTynLOMfsHvnZCIGoMMvHYmM2mz
-         w43KX6iXXzZF9V1hqzlSian58sjNokxmTpshwuQXQAUglXKtN1NlbHiWlzcV1v3pr7Iu
-         ZB1oDz1QrXA4i6VtxFAs/awGFLvxWtZ9t3VvmHyxN4052ctQuqBUHBu2J0pX0vmQs45P
-         E787o/NrJkCClWojMhR+9Pdac9iSWttLl+JdYUEAlHT29kgd19XWJnscem2LHHvFYOdA
-         SVMQ==
-X-Gm-Message-State: AOAM532Rhzvx0E2yBJ8AB4RQ7CeMr1L6S4jslcZt0PEhQEaKcLyHs6lb
-        J2s1vsi4C802I81H9p/AF6iLfqTcFeFmzQ==
-X-Google-Smtp-Source: ABdhPJyu4jVC2hNfwNvwHRHvA7YNIxF/+i0Bqm82VLSdvNlk5MP4CQ76Sg9I3zwWhGKTSZOnvPOHhg==
-X-Received: by 2002:ac2:5cb2:: with SMTP id e18mr8763204lfq.155.1604481382664;
-        Wed, 04 Nov 2020 01:16:22 -0800 (PST)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id q4sm345432lfn.44.2020.11.04.01.16.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 01:16:21 -0800 (PST)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1kaEu1-0005oY-AD; Wed, 04 Nov 2020 10:16:25 +0100
-Date:   Wed, 4 Nov 2020 10:16:25 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     linux-kernel@vger.kernel.org, Joe Perches <joe@perches.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jessica Yu <jeyu@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Jelinek <jakub@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Kurtz <djkurtz@chromium.org>,
-        linux-arch@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        Johan Hovold <johan@kernel.org>
-Subject: get_maintainer.pl bug? (was: Re: [PATCH 0/8] linker-section array
- fix and clean ups)
-Message-ID: <20201104091625.GP4085@localhost>
-References: <20201103175711.10731-1-johan@kernel.org>
+        id S1728465AbgKDJPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 04:15:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33680 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726232AbgKDJPu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 04:15:50 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 06FF62225B;
+        Wed,  4 Nov 2020 09:15:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604481349;
+        bh=N+KQ3BtxICyHpD34Ph9UwQE4Sa2F+ASu5tyf+dLtnog=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oWFF7rC/DiIkvnOxjJBdjwkINIg5wqneG0x3WCDGn8EDYJ6vPF9JzZ6L0CAYVaVmE
+         Z0EORkj8gKoyTvauk3dxnskdgmhjI/m0pvmd/2bof5h/tZYueJYSBvCO8Kw+4hFJjh
+         5pyR/46V8P+PKtDde3pNi70QXxl6OsvGqjaDg9vQ=
+Date:   Wed, 4 Nov 2020 10:16:35 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Oded Gabbay <ogabbay@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [git pull] habanalabs fixes for 5.10-rc3
+Message-ID: <20201104091635.GA1648092@kroah.com>
+References: <20201104073701.GA9683@ogabbay-VM.habana-labs.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201103175711.10731-1-johan@kernel.org>
+In-Reply-To: <20201104073701.GA9683@ogabbay-VM.habana-labs.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joe,
+On Wed, Nov 04, 2020 at 09:37:01AM +0200, Oded Gabbay wrote:
+> Hello Greg,
+> 
+> This pull request contains three small fixes for 5.10-rc3. Details are in
+> the tag.
+> 
+> Thanks,
+> Oded
+> 
+> The following changes since commit bcbc0b2e275f0a797de11a10eff495b4571863fc:
+> 
+>   mei: protect mei_cl_mtu from null dereference (2020-11-03 10:13:48 +0100)
+> 
+> are available in the Git repository at:
+> 
+>   ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/ogabbay/linux.git tags/misc-habanalabs-fixes-2020-11-04
 
-Running scrips/get_maintainer.pl on this series [1] gave the wrong
-address for Nick Desaulniers:
+Pulled and pushed out, thanks!
 
-	Nick Desaulniers <ndesaulniers@gooogle.com> (commit_signer:1/2=50%,commit_signer:1/8=12%)
-
-It seems he recently misspelled his address in a reviewed-by tag to
-commit 33def8498fdd ("treewide: Convert macro and uses of __section(foo)
-to __section("foo")") and that is now being picked up by the script.
-
-I guess that's to be considered a bug?
-
-> Johan Hovold (8):
->   of: fix linker-section match-table corruption
->   earlycon: simplify earlycon-table implementation
->   module: drop version-attribute alignment
->   module: simplify version-attribute handling
->   init: use type alignment for kernel parameters
->   params: drop redundant "unused" attributes
->   params: use type alignment for kernel parameters
->   params: clean up module-param macros
-
-[1] https://lore.kernel.org/lkml/20201103175711.10731-1-johan@kernel.org/
-
-Johan
+greg k-h
