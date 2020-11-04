@@ -2,81 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA6762A5FDD
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 09:51:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42E202A5FDB
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 09:50:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728052AbgKDIvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 03:51:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48742 "EHLO
+        id S1727923AbgKDIug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 03:50:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725812AbgKDIvC (ORCPT
+        with ESMTP id S1725812AbgKDIug (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 03:51:02 -0500
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC8B9C0613D3
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 00:51:01 -0800 (PST)
-Received: by mail-lj1-x241.google.com with SMTP id 23so22063482ljv.7
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 00:51:01 -0800 (PST)
+        Wed, 4 Nov 2020 03:50:36 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44360C0613D3;
+        Wed,  4 Nov 2020 00:50:34 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id p1so1975778wrf.12;
+        Wed, 04 Nov 2020 00:50:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sDsafJWCwrLrG2/+xFl5bOz8OxK+Pcz3yiEjIfibRFA=;
-        b=uN5cwPl/OnTA3voNDn3l/4URDFS0cUGOnuPXpne0LKuyX5D3iJJl6kG8HMdXcW6pEZ
-         2nzn6hYLdRWuyBKlHPxLT59ZlRM7/2l0nw5a8Z2DP3IqN24PjvqytnCSlTOWaZSdCZpJ
-         OmSl+YHynt+wsMrEyRk22ahNeJP2pDeoE0eRhM3hUs2tdrx/WCtnWNCaR3Hc0NF8gddm
-         1vd1zoukS3qIz4/EofMiIjdqMUxYCC4AN35xSAu23MCNsGMdzVAlD3TJg9w2w9RrCQv6
-         bMtArNH8BH1t/fuYvAIEB3QiU44UVTsy59bZotjLFWov50hqtl4FYRNDJVWbAS+tvYMw
-         uwhA==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=rb5+9Uu5Pextlzz28MhD13qyqn/S8yH6ObfjNiHXu9M=;
+        b=OsMZKWk6API99ut4fdwjboNr+6mH122uBWsHSEeLEzBJ2/JHKBZMheoHwcEmiaCJ+a
+         6zgXIKL5hWM/tTnynAFcCrYAShQ/EV11D+LvWEGbBCKmiTx1zMRI1eIfyBEtnztem5MZ
+         KeZ1qR3O4HRdg7PPkdSMUuxhlCukI711ZtwwGEnvOSyawakesItvR57naIzLJ7IWSSZQ
+         7rUQ3l61niHRazUr0u93egm8VpkEtNsvTRmos4TzPDIFWr2OQxXSUOThBqUoBNV3qVmH
+         M33dtj14JicyN31dudzygBMkchcX2rGnt3KVma9k5e6G4EN89c04Xi3SxWLi2Mh+3Lh5
+         I05A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sDsafJWCwrLrG2/+xFl5bOz8OxK+Pcz3yiEjIfibRFA=;
-        b=jmgQijJhnGfC4w1jm6z8dVFOWpVILi7KIf2vBOMBoHArJ8UxvjuM3LfE4+FdZzzB+v
-         KVMT07ejZPMRM5+rResIQm3f8wA7WaQXj1urGrnLuyDnFJNlmITmplIqXafnHQAPd7Hp
-         TPYNB3s+QanJ3sdLENYPnRM7/+93hKOcT6FdK9lkvyehLdnvphbXWwkjDMZ5WJNOVVyg
-         aLMrWi/2x9oFg8/O1ycr0PyugH829BKFbn3ZZHpD6vksGlXR812PVOPmYYRGN+hvRi/z
-         3MdvHlp8Mt6a9uLXTUpzqrtah2jD7xSXDdOeNfgsYnLz+Qhx10Bw1Y/fh/7F2u8aYUhD
-         Ndmg==
-X-Gm-Message-State: AOAM530juzG76JoGVsiU+uyrf747gTg17VFQkxoQhWjz/WnvB4smGugK
-        pVgW/RJYfH+7jr5tvinJ6KLfgFzXkL4MltkxhHs=
-X-Google-Smtp-Source: ABdhPJziqXgF98ch4Eh+EBdlSP4tqXFrka/+pgo8zsXxwkvQRX74u7Rayj94zlqgj2b0RdAawjn4OPjOEA4ILtb4gc4=
-X-Received: by 2002:a2e:8116:: with SMTP id d22mr9644010ljg.331.1604479860115;
- Wed, 04 Nov 2020 00:51:00 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=rb5+9Uu5Pextlzz28MhD13qyqn/S8yH6ObfjNiHXu9M=;
+        b=cdKu5MT273Ud3SBTt+532OphaQNdQ9Fe5+rgQZinZieHran+5bBS9eKwEZBE9V8Ja1
+         sulrssdcYSA9n+S89z45jpSXmttB8TGzaH3L0sxIg2zoSbLngrXTk/VzUeuU1vtYTuud
+         4lrYL7sluAlpzU6L9bozYHmGmyBRQHL5nEC/oLQp51WyuEzV/tZKRHZjVuAhkyUyTH9E
+         zilftptPLTzc555PNqRkT4lSZmMVb8yzQ/ECxmWefhY4buwPtysJuzrFYKuxpjf+ys5O
+         HCH1LQp/v7+XwN6Uwl36DSQetUFgz4jGIkb5zzpifRrngFx2x/AN1pyvO6zbsxldTGQ/
+         8gIw==
+X-Gm-Message-State: AOAM533dV3unCW0CfPujazcn5X/yZiuzmt6aQkqW0O0l3DU/eKkPwOg4
+        Cwku99RQnUFkxdBot6pw7Yw=
+X-Google-Smtp-Source: ABdhPJwIaJwaDd5dlm6XkBJ424PxxvIm7rtGoOuLm192Wv1qUSuLJ3vrfQjzeQLqxYUXNvHGOAC9FA==
+X-Received: by 2002:adf:ebc6:: with SMTP id v6mr29596142wrn.427.1604479833095;
+        Wed, 04 Nov 2020 00:50:33 -0800 (PST)
+Received: from [192.168.212.98] (104.160.185.81.rev.sfr.net. [81.185.160.104])
+        by smtp.gmail.com with ESMTPSA id k18sm1608302wrx.96.2020.11.04.00.50.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Nov 2020 00:50:32 -0800 (PST)
+Subject: Re: [PATCH 1/1] mm: avoid re-using pfmemalloc page in
+ page_frag_alloc()
+To:     Rama Nichanamatlu <rama.nichanamatlu@oracle.com>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     Dongli Zhang <dongli.zhang@oracle.com>, linux-mm@kvack.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        akpm@linux-foundation.org, davem@davemloft.net, kuba@kernel.org,
+        aruna.ramakrishna@oracle.com, bert.barbe@oracle.com,
+        venkat.x.venkatsubra@oracle.com, manjunath.b.patil@oracle.com,
+        joe.jin@oracle.com, srinivas.eeda@oracle.com
+References: <20201103193239.1807-1-dongli.zhang@oracle.com>
+ <20201103203500.GG27442@casper.infradead.org>
+ <7141038d-af06-70b2-9f50-bf9fdf252e22@oracle.com>
+ <20201103211541.GH27442@casper.infradead.org>
+ <20201104011640.GE2445@rnichana-ThinkPad-T480>
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Message-ID: <2bce996a-0a62-9d14-4310-a4c5cb1ddeae@gmail.com>
+Date:   Wed, 4 Nov 2020 09:50:30 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-References: <20201103054810.21978-1-dwaipayanray1@gmail.com>
- <CABJPP5DkJ3gwZDW+FBShs3Yo8z6GfP4LSMRW4hO5hL+fVXjShQ@mail.gmail.com>
- <e9d540c35ac04f0bb69e26d29c76c7cbd5693df8.camel@perches.com>
- <CAKXUXMwH+tEBSV6xA952xQQFe+HvdJ5ew6V=n63sk89enj6p7Q@mail.gmail.com>
- <6c275d95c3033422addfc256a30e6ae3dd37941d.camel@perches.com> <alpine.DEB.2.21.2011040848420.21917@felia>
-In-Reply-To: <alpine.DEB.2.21.2011040848420.21917@felia>
-From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
-Date:   Wed, 4 Nov 2020 14:20:29 +0530
-Message-ID: <CABJPP5AFd-i+haMCis7EUAht7hfRqB3sqCp34S=AUUsZ2aRjCg@mail.gmail.com>
-Subject: Re: [PATCH v2] checkpatch: improve email parsing
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Joe Perches <joe@perches.com>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Aditya Srivastava <yashsri421@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201104011640.GE2445@rnichana-ThinkPad-T480>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> I agree with them as well. Let us try to establish one common way from
-> comments.
->
-> Dwaipayan, if you code this into checkpatch.pl, maybe you can also add
-> some hints on conventions for tags in the kernel (process) documentation
-> to explain the rules and conventions we think make sense.
->
 
-Sure, I will do that.
-Maybe I will start afresh on this patch with all of the above views into
-consideration. Once accepted, I will try to go for the documentation
-part.
 
-Thanks,
-Dwaipayan.
+On 11/4/20 2:16 AM, Rama Nichanamatlu wrote:
+>> Thanks for providing the numbers.  Do you think that dropping (up to)
+>> 7 packets is acceptable?
+> 
+> net.ipv4.tcp_syn_retries = 6
+> 
+> tcp clients wouldn't even get that far leading to connect establish issues.
+
+This does not really matter. If host was under memory pressure,
+dropping a few packets is really not an issue.
+
+Please do not add expensive checks in fast path, just to "not drop a packet"
+even if the world is collapsing.
+
+Also consider that NIC typically have thousands of pre-allocated page/frags
+for their RX ring buffers, they might all have pfmemalloc set, so we are speaking
+of thousands of packet drops before the RX-ring can be refilled with normal (non pfmemalloc) page/frags.
+
+If we want to solve this issue more generically, we would have to try
+to copy data into a non pfmemalloc frag instead of dropping skb that
+had frags allocated minutes ago under memory pressure.
+
+This copy could happen in core networking stack, but this seems adding
+more pressure to mm layer under pressure.
+
