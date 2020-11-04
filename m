@@ -2,97 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EB602A6DB0
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 20:16:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB5472A6DB9
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 20:18:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731540AbgKDTP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 14:15:57 -0500
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:45408 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726564AbgKDTP5 (ORCPT
+        id S1730883AbgKDTR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 14:17:58 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:47492 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726564AbgKDTR5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 14:15:57 -0500
-Received: by mail-ot1-f67.google.com with SMTP id k3so8488354otp.12;
-        Wed, 04 Nov 2020 11:15:56 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=xUeu7OjzCkWfl0q9Q0C25b2gAmYnfpfRf6sdmrxWckA=;
-        b=rRM4TTTc4LvENo1QxdeVaqhJBEYUiMMzLaGf/8Ex7eFnhAr1o8Vndeqetms8/n8UQn
-         8NO806T8W0IvwzeEQTMO1uO3z1E71vDcFtxZGJFrAiyLz3WxD+3KCwZiToQwLDLc/V4q
-         0/rVXl02ls7xivvjx9102Bhl2G3XW98WpxUnDLYJWvQeAD66AAqZyq5u0z6L6Ruhi39i
-         UhPGR6vVpkdG79F5C4oZiuSKXYJxwZnLosVUzwF4LGGLZSKS9zAnNjX+OsTAAe+AFiRE
-         8qSHAtakSgfzmYoZrphQ0SvvkcJWaczwEjtaXqjBQugFeEfoT0ZdYxvfRn8maAibphWe
-         znUQ==
-X-Gm-Message-State: AOAM532ovnEl3SOShAV1uAZImHcpsoDCC93Ruw36Vdi0NEB/7vwOR5MB
-        JvrMXBqx9sbAeaqQJZz9Fw==
-X-Google-Smtp-Source: ABdhPJwyVB6Vxpun9Hwox5/cSocl9xkTao6ENUk5Rm2F/NY+qCi/4EYMETnsGog5AJNAArHDE5FN3w==
-X-Received: by 2002:a9d:2283:: with SMTP id y3mr18865146ota.164.1604517355878;
-        Wed, 04 Nov 2020 11:15:55 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id x21sm660177otk.39.2020.11.04.11.15.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 11:15:55 -0800 (PST)
-Received: (nullmailer pid 3972960 invoked by uid 1000);
-        Wed, 04 Nov 2020 19:15:54 -0000
-Date:   Wed, 4 Nov 2020 13:15:54 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Jerome Pouiller <Jerome.Pouiller@silabs.com>
-Cc:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
-        linux-mmc@vger.kernel.org, Kalle Valo <kvalo@codeaurora.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
-        devicetree@vger.kernel.org,
-        "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH v3 02/24] dt-bindings: introduce silabs,wfx.yaml
-Message-ID: <20201104191554.GA3972736@bogus>
-References: <20201104155207.128076-1-Jerome.Pouiller@silabs.com>
- <20201104155207.128076-3-Jerome.Pouiller@silabs.com>
+        Wed, 4 Nov 2020 14:17:57 -0500
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A4J2RRX006370;
+        Wed, 4 Nov 2020 14:17:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=fdOGxWPYu/5JHKOXeU4bs0lQc/pjEQxcAHUKgqGUprs=;
+ b=ovWSDkZjod958HqXy+qHFL3W7H0m0Am9TuVPIqE8IFtQwXm5NtQnZmquk2Km0vJzXCA1
+ xhLwMo0RBLqgg3lAbF8wwenODP544v9AO6wrwb5xFBkNFu8DkYZM2mK2HJJDz9SSyzfc
+ 5IZLI0L4LaWWBNlK5NB1LQIqG23x9941ftSQ+6yPC0USyTBv1oSb4vqFixQ473xOLa15
+ AGB2lYSlKxs5a5PeyTha8CUOS+yj6rRqdpTU7/LhhFES7MnB3aJKutX4G2g7yuoMdCch
+ HHyj2T0/nlseeseK+0obGWQZ5pGVLuISZ0OGxUOPQ/CZsHg3fJgmNNagOYzCBt0B0RHH 9Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34m1v40u82-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 04 Nov 2020 14:17:49 -0500
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0A4J2Z84006711;
+        Wed, 4 Nov 2020 14:17:41 -0500
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34m1v40u75-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 04 Nov 2020 14:17:40 -0500
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0A4J7Jgb021441;
+        Wed, 4 Nov 2020 19:17:38 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma06ams.nl.ibm.com with ESMTP id 34h0fcvn7s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 04 Nov 2020 19:17:38 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0A4JHaoC3539506
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 4 Nov 2020 19:17:36 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 24EAE4C040;
+        Wed,  4 Nov 2020 19:17:36 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F10C64C044;
+        Wed,  4 Nov 2020 19:17:34 +0000 (GMT)
+Received: from localhost (unknown [9.145.163.252])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Wed,  4 Nov 2020 19:17:34 +0000 (GMT)
+Date:   Wed, 4 Nov 2020 20:17:33 +0100
+From:   Vasily Gorbik <gor@linux.ibm.com>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        kasan-dev@googlegroups.com, Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 34/41] kasan, x86, s390: update undef CONFIG_KASAN
+Message-ID: <your-ad-here.call-01604517453-ext-4014@work.hours>
+References: <cover.1604333009.git.andreyknvl@google.com>
+ <bd64e051e8e36ac25751debc071887af3d7f663f.1604333009.git.andreyknvl@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201104155207.128076-3-Jerome.Pouiller@silabs.com>
+In-Reply-To: <bd64e051e8e36ac25751debc071887af3d7f663f.1604333009.git.andreyknvl@google.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-04_12:2020-11-04,2020-11-04 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=1 adultscore=0
+ mlxlogscore=999 clxscore=1015 phishscore=0 spamscore=0 priorityscore=1501
+ mlxscore=0 malwarescore=0 impostorscore=0 bulkscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011040135
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 04 Nov 2020 16:51:45 +0100, Jerome Pouiller wrote:
-> From: Jérôme Pouiller <jerome.pouiller@silabs.com>
+On Mon, Nov 02, 2020 at 05:04:14PM +0100, Andrey Konovalov wrote:
+> With the intoduction of hardware tag-based KASAN some kernel checks of
+> this kind:
 > 
-> Signed-off-by: Jérôme Pouiller <jerome.pouiller@silabs.com>
+>   ifdef CONFIG_KASAN
+> 
+> will be updated to:
+> 
+>   if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
+> 
+> x86 and s390 use a trick to #undef CONFIG_KASAN for some of the code
+> that isn't linked with KASAN runtime and shouldn't have any KASAN
+> annotations.
+> 
+> Also #undef CONFIG_KASAN_GENERIC with CONFIG_KASAN.
+> 
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+> Reviewed-by: Marco Elver <elver@google.com>
 > ---
->  .../bindings/net/wireless/silabs,wfx.yaml     | 131 ++++++++++++++++++
->  1 file changed, 131 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/net/wireless/silabs,wfx.yaml
+> Change-Id: I2a622db0cb86a8feb60c30d8cb09190075be2a90
+> ---
+>  arch/s390/boot/string.c         | 1 +
+>  arch/x86/boot/compressed/misc.h | 1 +
+>  2 files changed, 2 insertions(+)
 > 
+> diff --git a/arch/s390/boot/string.c b/arch/s390/boot/string.c
+> index b11e8108773a..faccb33b462c 100644
+> --- a/arch/s390/boot/string.c
+> +++ b/arch/s390/boot/string.c
+> @@ -3,6 +3,7 @@
+>  #include <linux/kernel.h>
+>  #include <linux/errno.h>
+>  #undef CONFIG_KASAN
+> +#undef CONFIG_KASAN_GENERIC
+>  #include "../lib/string.c"
 
-
-My bot found errors running 'make dt_binding_check' on your patch:
-
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/net/wireless/silabs,wfx.yaml: 'additionalProperties' is a required property
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/net/wireless/silabs,wfx.yaml: ignoring, error in schema: 
-warning: no schema found in file: ./Documentation/devicetree/bindings/net/wireless/silabs,wfx.yaml
-
-
-See https://patchwork.ozlabs.org/patch/1394182
-
-The base for the patch is generally the last rc1. Any dependencies
-should be noted.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+for s390 part
+Acked-by: Vasily Gorbik <gor@linux.ibm.com>
