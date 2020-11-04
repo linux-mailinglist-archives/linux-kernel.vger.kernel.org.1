@@ -2,127 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54DB72A6D85
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 20:06:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 343402A6D88
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 20:07:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731226AbgKDTGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 14:06:31 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:48130 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726539AbgKDTGb (ORCPT
+        id S1731234AbgKDTHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 14:07:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32982 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729784AbgKDTHU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 14:06:31 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 817261C0B7C; Wed,  4 Nov 2020 20:06:27 +0100 (CET)
-Date:   Wed, 4 Nov 2020 20:06:27 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     "Gerecke, Jason" <Jason.Gerecke@wacom.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jason Gerecke <killertofu@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "Cheng, Ping" <Ping.Cheng@wacom.com>, Jiri Kosina <jkosina@suse.cz>
-Subject: Re: [PATCH 4.19 146/191] HID: wacom: Avoid entering
- wacom_wac_pen_report for pad / battery
-Message-ID: <20201104190627.GA1850@duo.ucw.cz>
-References: <20201103203232.656475008@linuxfoundation.org>
- <20201103203246.442871831@linuxfoundation.org>
- <20201104075221.GA4338@amd>
- <VI1PR07MB5821A87A8B0133C606C9911CEDEF0@VI1PR07MB5821.eurprd07.prod.outlook.com>
+        Wed, 4 Nov 2020 14:07:20 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ECF7C0613D3
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 11:07:18 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id 133so18078602pfx.11
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 11:07:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=hjSSC3tt8p/75sU4HCBAJWqPHKqxgfCJ1FmAe9+VYac=;
+        b=KnWHT2OUy4hMo9/BmVfv0xknGutGjNJ1KtmGKB+R/+1gSRWjJNxBtjVAvtVQfzIh5G
+         JDe2tB4aSHDYX5mLG0PLq4KT/1vXTgoaSE1ql5aTgcDsGe+65bK13hzvdJChBMbcfExj
+         sm4VIxu6QtBbMh2Kj2JucY/OIavcb4Bgbis/M=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hjSSC3tt8p/75sU4HCBAJWqPHKqxgfCJ1FmAe9+VYac=;
+        b=B/X4hMOC8QiGNyVcjcGkB0L/yAOm970eLgKUx4lSfoSTJ/4UxJ+4Kv1zZSMH2fl+qS
+         CF02i8HVFDIDSnOn+HEuBb8uh4jvIImfshnfhP4B0nVghMq4zhRP8zGEGxtDA8AmCG6y
+         YI9MrWx1J7XPl8TAjh12mVWEzWruPFtcgAbet5RiAc4bZ8A7JK+z2H7P7amgU4ax3o4q
+         Dv7M3pGcfEG+fDoVe6PVj+u4pykkd3x198TaaUbhklxTSd0gW9CLf6lkJNsWXMmnUhAf
+         ppVndzG/TsejmjjWIJkVehkRNYyUvCFSIq/4dphp4qkRERCbfTjQUZRoMN7zBMioIHvc
+         JU1A==
+X-Gm-Message-State: AOAM531Cwa/KixPPFkcWWgCwd51phz53VoQHYR5JYGq3umrw7Tfuk3Mw
+        2qFe2zU1sc4/c+nZ+EPBx9xA9w==
+X-Google-Smtp-Source: ABdhPJzIv2cvySmYjFFmSkxxCZUKe/o/tqZdhtwdvmiPabaMXC3F2FzHiw6gBfeyzHAOjN+2/F22eQ==
+X-Received: by 2002:a65:56cd:: with SMTP id w13mr22554369pgs.132.1604516838025;
+        Wed, 04 Nov 2020 11:07:18 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id w143sm3245488pfc.31.2020.11.04.11.07.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Nov 2020 11:07:17 -0800 (PST)
+Date:   Wed, 4 Nov 2020 11:07:16 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] selftests/exec: Fix building of exec test
+Message-ID: <202011041105.5A2D9D1F@keescook>
+References: <20201104100706.659089-1-mpe@ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="sdtB3X0nJg68CQEu"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <VI1PR07MB5821A87A8B0133C606C9911CEDEF0@VI1PR07MB5821.eurprd07.prod.outlook.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201104100706.659089-1-mpe@ellerman.id.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Nov 04, 2020 at 09:07:06PM +1100, Michael Ellerman wrote:
+> Currently the exec test does not build:
+> 
+>   make[1]: Entering directory '/linux/tools/testing/selftests/exec'
+>   ...
+>   make[1]: *** No rule to make target '/output/kselftest/exec/pipe', needed by 'all'.
+> 
+> This is because pipe is listed in TEST_GEN_FILES, but pipe is not
+> generated by the Makefile, it's created at runtime. So drop pipe from
+> TEST_GEN_FILES.
 
---sdtB3X0nJg68CQEu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Ah, yes, shouldn't it be added to EXTRA_CLEAN though?
 
-Hi!
+Fixes: 61016db15b8e ("selftests/exec: Verify execve of non-regular files fail")
 
-> > > To correct this, we restore a version of the `WACOM_PAD_FIELD` check
-> > > in `wacom_wac_collection()` and return early. This effectively preven=
-ts
-> > > pad / battery collections from being reported until the very end of t=
-he
-> > > report as originally intended.
-> >=20
-> > Okay... but code is either wrong or very confusing:
-> >=20
-> > > +++ b/drivers/hid/wacom_wac.c
-> > > @@ -2729,7 +2729,9 @@ static int wacom_wac_collection(struct h
-> > >        if (report->type !=3D HID_INPUT_REPORT)
-> > >                return -1;
-> > > =20
-> > > -     if (WACOM_PEN_FIELD(field) && wacom->wacom_wac.pen_input)
-> > > +     if (WACOM_PAD_FIELD(field))
-> > > +             return 0;
-> > > +     else if (WACOM_PEN_FIELD(field) && wacom->wacom_wac.pen_input)
-> > >                wacom_wac_pen_report(hdev, report);
-> >=20
-> > wacom_wac_pen_report() can never be called, because WACOM_PEN_FIELD()
-> > can not be true here; if it was we'd return in the line above.
->=20
-> For reference, here's the definition for WACOM_PAD_FIELD() and WACOM_PEN_=
-FIELD():
->=20
-> > #define WACOM_PAD_FIELD(f)	(((f)->physical =3D=3D HID_DG_TABLETFUNCTION=
-KEY) || \
-> > 				 ((f)->physical =3D=3D WACOM_HID_WD_DIGITIZERFNKEYS) || \
-> > 				 ((f)->physical =3D=3D WACOM_HID_WD_DIGITIZERINFO))
-> >=20
-> > #define WACOM_PEN_FIELD(f)	(((f)->logical =3D=3D HID_DG_STYLUS) || \
-> > 				 ((f)->physical =3D=3D HID_DG_STYLUS) || \
-> > 				 ((f)->physical =3D=3D HID_DG_PEN) || \
-> > 				 ((f)->application =3D=3D HID_DG_PEN) || \
-> > 				 ((f)->application =3D=3D HID_DG_DIGITIZER) || \
-> > 				 ((f)->application =3D=3D WACOM_HID_WD_PEN) || \
-> > 				 ((f)->application =3D=3D WACOM_HID_WD_DIGITIZER) || \
-> > 				 ((f)->application =3D=3D WACOM_HID_G9_PEN) || \
-> > 				 ((f)->application =3D=3D WACOM_HID_G11_PEN))
->=20
-> WACOM_PAD_FIELD() evaluates to `true` for pad data *not* pen data because=
- pen data is not inside any of the 3 physical collections its looks for.
->=20
-> WACOM_PEN_FIELD() evaluates to `true` for pad data *and* pen data because=
- both types of data are inside of the Digitizer application collection.
->
+> 
+> With that fixed, then install fails:
+> 
+>   make[1]: Entering directory '/linux/tools/testing/selftests/exec'
+>   rsync -a binfmt_script non-regular /output/install/exec/
+>   rsync: link_stat "/linux/tools/testing/selftests/exec/non-regular" failed: No such file or directory (2)
+> 
+> That's because non-regular hasn't been built, because it's in
+> TEST_PROGS, it should be part of TEST_GEN_PROGS to indicate that it
+> needs to be built.
 
-> Without the WACOM_PAD_FIELD() check in place at the very beginning, both =
-pad and pen data would trigger a call to wacom_wac_pen_report(). This is un=
-desired: only pen data should result in that function being called. Adding =
-the check causes the function to return early for pad data while pen data f=
-alls into the "else if" and is processed as before. Pad data is only report=
-ed once the entire report has been valuated by making a call to wacom_wac_p=
-ad_report() at the very end of wacom_wac_report().
->
+Yes, thanks again!
 
-Yep, you are right. I failed to notice the difference between _PAD_
-and _PEN_ macros, and so the code did not make sense.
+Fixes: 0f71241a8e32 ("selftests/exec: add file type errno tests")
 
-Sorry for the noise.
+for both:
 
-Best regards,
-								Pavel
-							=09
---=20
-http://www.livejournal.com/~pavelmachek
+Acked-by: Kees Cook <keescook@chromium.org>
 
---sdtB3X0nJg68CQEu
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX6L7swAKCRAw5/Bqldv6
-8nc0AKCjCKJtNXaXeOhS+GtePsSmvUZ8agCfS9Jlqtj60H2oEsUkg+Ve9EOlJJA=
-=v1xk
------END PGP SIGNATURE-----
-
---sdtB3X0nJg68CQEu--
+-- 
+Kees Cook
