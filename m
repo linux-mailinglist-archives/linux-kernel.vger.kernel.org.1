@@ -2,236 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 071782A5FE6
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 09:52:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAF7D2A5FF9
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 09:53:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728586AbgKDIwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 03:52:17 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:2612 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726029AbgKDIwQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 03:52:16 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fa26bc10001>; Wed, 04 Nov 2020 00:52:17 -0800
-Received: from [10.40.203.207] (172.20.13.39) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 4 Nov
- 2020 08:52:04 +0000
-Subject: Re: [PATCH V2 4/4] PCI: tegra: Handle error conditions properly
-To:     Bjorn Helgaas <helgaas@kernel.org>
-CC:     <lorenzo.pieralisi@arm.com>, <robh+dt@kernel.org>,
-        <bhelgaas@google.com>, <thierry.reding@gmail.com>,
-        <jonathanh@nvidia.com>, <amanharitsh123@gmail.com>,
-        <dinghao.liu@zju.edu.cn>, <kw@linux.com>,
-        <linux-pci@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kthota@nvidia.com>,
-        <mmaddireddy@nvidia.com>, <sagar.tv@gmail.com>
-References: <20201103204835.GA262610@bjorn-Precision-5520>
-From:   Vidya Sagar <vidyas@nvidia.com>
-Message-ID: <2a0536d2-8603-0e55-ac61-c21ef36847c2@nvidia.com>
-Date:   Wed, 4 Nov 2020 14:21:58 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        id S1727851AbgKDIxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 03:53:47 -0500
+Received: from mx2.suse.de ([195.135.220.15]:45290 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725946AbgKDIxq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 03:53:46 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1604480024;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0tI7i3bJI9yEwkwLPy7YSUUeg1XKxRAeji3wTJwSxLc=;
+        b=FB/xJAqlHsEtLX36bNKe+pCPMAijb1hAL+BI7JAZKeaMi24kuS43xaPLzyw+hSssPnIkSi
+        zDXPTRydCx4J+419E1fDAz2M0e9qxtIXTDXwaMWldjwwgmLA3TgB5OUnqFPI/hY63SoCg0
+        yyypzd08FMiJh68MVCvF1VS0zF4oWkY=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 9230AAECB;
+        Wed,  4 Nov 2020 08:53:44 +0000 (UTC)
+Date:   Wed, 4 Nov 2020 09:53:43 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Feng Tang <feng.tang@intel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@suse.de>, dave.hansen@intel.com,
+        ying.huang@intel.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 0/2] mm: fix OOMs for binding workloads to movable
+ zone only node
+Message-ID: <20201104085343.GA18718@dhcp22.suse.cz>
+References: <1604470210-124827-1-git-send-email-feng.tang@intel.com>
+ <20201104071308.GN21990@dhcp22.suse.cz>
+ <20201104073826.GA15700@shbuild999.sh.intel.com>
+ <20201104075819.GA10052@dhcp22.suse.cz>
+ <20201104084021.GB15700@shbuild999.sh.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20201103204835.GA262610@bjorn-Precision-5520>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1604479937; bh=rTCjxtFbP1G+cJExsSQw1wyNpkdSCr2zADoKrVTQuUg=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=L4jV1RBQN2+oJ6ztTd4GuS91gM6vZRNvnmHbd8xU8v5pPvpbrqb/wnkVNI95Y9txH
-         +t+EH+KxPaBF3j6r2/bCOGNxcWiobJRP+9/bOOdIc7wcYp+sFQ4o+rMN/vLlxJnQ3d
-         EVKEH9rZgMFCBe2ysucC+yvb6g+JncvWwWvJB/gTnnd3R0MtcON7ny2v6kfrq8Oe54
-         POWOy5qSrcfcUJBocRTuB4ADSihYoF9yac0COdUUQJkcqu4dSRLrbJx1Pv7lftpyKL
-         53raUbIOWiIU3+x7R7fm7Q3YAsQTjGjoJuRlHGcN308uPZmMjxYDOU3D4HSavGPuXL
-         7fU+7o1JNzupw==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201104084021.GB15700@shbuild999.sh.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed 04-11-20 16:40:21, Feng Tang wrote:
+> On Wed, Nov 04, 2020 at 08:58:19AM +0100, Michal Hocko wrote:
+> > On Wed 04-11-20 15:38:26, Feng Tang wrote:
+> > [...]
+> > > > Could you be more specific about the usecase here? Why do you need a
+> > > > binding to a pure movable node? 
+> > > 
+> > > One common configuration for a platform is small size of DRAM plus huge
+> > > size of PMEM (which is slower but cheaper), and my guess of their use
+> > > is to try to lead the bulk of user space allocation (GFP_HIGHUSER_MOVABLE)
+> > > to PMEM node, and only let DRAM be used as less as possible. 
+> > 
+> > While this is possible, it is a tricky configuration. It is essentially 
+> > get us back to 32b and highmem...
+> 
+> :) Another possible case is similar binding on a memory hotplugable
+> platform, which has one unplugable node and several other nodes configured
+> as movable only to be hot removable when needed
 
+Yes, another way to shoot your foot ;)
 
-On 11/4/2020 2:18 AM, Bjorn Helgaas wrote:
-> External email: Use caution opening links or attachments
+> > As I've said in reply to your second patch. I think we can make the oom
+> > killer behavior more sensible in this misconfigured cases but I do not
+> > think we want break the cpuset isolation for such a configuration.
 > 
-> 
-> Hi Vidya,
-> 
-> Can you update the subject to replace "properly" with more details
-> about what the patch is doing?  "Properly" is really meaningless in
-> usages like this -- nobody writes patches to do the *wrong* thing, so
-> it goes without saying that every patch is intended to things
-> "properly".
-> 
-> It would also help to have some context.  My first thought was that
-> "error conditions" referred to PCIe errors like completion timeouts,
-> completer abort, etc.
-> 
-> Maybe something like:
-> 
->    PCI: tegra: Continue unconfig sequence even if parts fail
-Thanks for reviewing the change.
-Sure. I'll go with the above subject line.
+> Do you mean we skip the killing and just let the allocation fail? We've
+> checked the oom killer code first, when the oom happens, both DRAM
+> node and unmovable node have lots of free memory, and killing process
+> won't improve the situation.
 
->    PCI: tegra: Return init error (not unconfig error) on init failure
-> 
-> On Thu, Oct 29, 2020 at 10:48:39AM +0530, Vidya Sagar wrote:
->> Currently the driver checks for error value of different APIs during the
->> uninitialization sequence. It just returns from there if there is any error
->> observed for one of those calls. Comparatively it is better to continue the
->> uninitialization sequence irrespective of whether some of them are
->> returning error. That way, it is more closer to complete uninitialization.
->> It also adds checking return value for error for a cleaner exit path.
-> 
-> This paragraph uses "it" to refer to both "the driver" (second
-> sentence) and "this patch" (last sentence).  That's confusing.
-> There's no reason to refer to "this patch" at all.  I'd rather have
-> "Add checking ..." than "It adds checking ..."
-> 
-> I think that last sentence must be referring to the
-> tegra_pcie_init_controller() change to return the initialization error
-> rather than the error from __deinit_controller().  That seems right,
-> but should be a separate patch.
-Sure. I'll push a new patch for this.
+We already do skip oom killer and fail for lowmem allocation requests already.
+This is similar in some sense. Another option would be to kill the
+allocating context which will have less corner cases potentially because
+some allocation failures might be unexpected.
 
+> (Folloing is copied from your comments for 2/2) 
+> > This allows to spill memory allocations over to any other node which
+> > has Normal (or other lower) zones and as such it breaks cpuset isolation.
+> > As I've pointed out in the reply to your cover letter it seems that
+> > this is more of a misconfiguration than a bug.
 > 
->> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
->> ---
->> V2:
->> * None
->>
->>   drivers/pci/controller/dwc/pcie-tegra194.c | 45 ++++++++++------------
->>   1 file changed, 20 insertions(+), 25 deletions(-)
->>
->> diff --git a/drivers/pci/controller/dwc/pcie-tegra194.c b/drivers/pci/controller/dwc/pcie-tegra194.c
->> index 253d91033bc3..8c08998b9ce1 100644
->> --- a/drivers/pci/controller/dwc/pcie-tegra194.c
->> +++ b/drivers/pci/controller/dwc/pcie-tegra194.c
->> @@ -1422,43 +1422,32 @@ static int tegra_pcie_config_controller(struct tegra_pcie_dw *pcie,
->>        return ret;
->>   }
->>
->> -static int __deinit_controller(struct tegra_pcie_dw *pcie)
->> +static void tegra_pcie_unconfig_controller(struct tegra_pcie_dw *pcie)
->>   {
->>        int ret;
->>
->>        ret = reset_control_assert(pcie->core_rst);
->> -     if (ret) {
->> -             dev_err(pcie->dev, "Failed to assert \"core\" reset: %d\n",
->> -                     ret);
->> -             return ret;
->> -     }
->> +     if (ret)
->> +             dev_err(pcie->dev, "Failed to assert \"core\" reset: %d\n", ret);
->>
->>        tegra_pcie_disable_phy(pcie);
->>
->>        ret = reset_control_assert(pcie->core_apb_rst);
->> -     if (ret) {
->> +     if (ret)
->>                dev_err(pcie->dev, "Failed to assert APB reset: %d\n", ret);
->> -             return ret;
->> -     }
->>
->>        clk_disable_unprepare(pcie->core_clk);
->>
->>        ret = regulator_disable(pcie->pex_ctl_supply);
->> -     if (ret) {
->> +     if (ret)
->>                dev_err(pcie->dev, "Failed to disable regulator: %d\n", ret);
->> -             return ret;
->> -     }
->>
->>        tegra_pcie_disable_slot_regulators(pcie);
->>
->>        ret = tegra_pcie_bpmp_set_ctrl_state(pcie, false);
->> -     if (ret) {
->> +     if (ret)
->>                dev_err(pcie->dev, "Failed to disable controller %d: %d\n",
->>                        pcie->cid, ret);
->> -             return ret;
->> -     }
->> -
->> -     return ret;
->>   }
->>
->>   static int tegra_pcie_init_controller(struct tegra_pcie_dw *pcie)
->> @@ -1482,7 +1471,8 @@ static int tegra_pcie_init_controller(struct tegra_pcie_dw *pcie)
->>        return 0;
->>
->>   fail_host_init:
->> -     return __deinit_controller(pcie);
->> +     tegra_pcie_unconfig_controller(pcie);
->> +     return ret;
->>   }
->>
->>   static int tegra_pcie_try_link_l2(struct tegra_pcie_dw *pcie)
->> @@ -1551,13 +1541,12 @@ static void tegra_pcie_dw_pme_turnoff(struct tegra_pcie_dw *pcie)
->>        appl_writel(pcie, data, APPL_PINMUX);
->>   }
->>
->> -static int tegra_pcie_deinit_controller(struct tegra_pcie_dw *pcie)
->> +static void tegra_pcie_deinit_controller(struct tegra_pcie_dw *pcie)
->>   {
->>        tegra_pcie_downstream_dev_to_D0(pcie);
->>        dw_pcie_host_deinit(&pcie->pci.pp);
->>        tegra_pcie_dw_pme_turnoff(pcie);
->> -
->> -     return __deinit_controller(pcie);
->> +     tegra_pcie_unconfig_controller(pcie);
->>   }
->>
->>   static int tegra_pcie_config_rp(struct tegra_pcie_dw *pcie)
->> @@ -1590,7 +1579,11 @@ static int tegra_pcie_config_rp(struct tegra_pcie_dw *pcie)
->>                goto fail_pm_get_sync;
->>        }
->>
->> -     tegra_pcie_init_controller(pcie);
->> +     ret = tegra_pcie_init_controller(pcie);
->> +     if (ret < 0) {
->> +             dev_err(dev, "Failed to initialize controller: %d\n", ret);
->> +             goto fail_pm_get_sync;
->> +     }
->>
->>        pcie->link_state = tegra_pcie_dw_link_up(&pcie->pci);
->>        if (!pcie->link_state) {
->> @@ -2238,8 +2231,9 @@ static int tegra_pcie_dw_suspend_noirq(struct device *dev)
->>                                               PORT_LOGIC_MSI_CTRL_INT_0_EN);
->>        tegra_pcie_downstream_dev_to_D0(pcie);
->>        tegra_pcie_dw_pme_turnoff(pcie);
->> +     tegra_pcie_unconfig_controller(pcie);
->>
->> -     return __deinit_controller(pcie);
->> +     return 0;
->>   }
->>
->>   static int tegra_pcie_dw_resume_noirq(struct device *dev)
->> @@ -2267,7 +2261,8 @@ static int tegra_pcie_dw_resume_noirq(struct device *dev)
->>        return 0;
->>
->>   fail_host_init:
->> -     return __deinit_controller(pcie);
->> +     tegra_pcie_unconfig_controller(pcie);
->> +     return ret;
->>   }
->>
->>   static int tegra_pcie_dw_resume_early(struct device *dev)
->> @@ -2305,7 +2300,7 @@ static void tegra_pcie_dw_shutdown(struct platform_device *pdev)
->>                disable_irq(pcie->pci.pp.msi_irq);
->>
->>        tegra_pcie_dw_pme_turnoff(pcie);
->> -     __deinit_controller(pcie);
->> +     tegra_pcie_unconfig_controller(pcie);
->>   }
->>
->>   static const struct tegra_pcie_dw_of_data tegra_pcie_dw_rc_of_data = {
->> --
->> 2.17.1
->>
+> For the usage case (docker container running), the spilling is already
+> happening, I traced its memory allocation requests, many of them are
+> movable, and got fallback to the normal node naturally with current
+
+Could you be more specific? This sounds like a bug. Allocations
+shouldn't spill over to a node which is not in the cpuset. There are few
+exceptions like IRQ context but that shouldn't happen regurarly.
+
+> code, only a few got blocked, as many of __alloc_pages_nodemask are
+> called witih 'NULL' nodemask parameter.
+> 
+> And I made this RFC patch inspired by code in __alloc_pages_may_oom():
+> 
+> 	if (gfp_mask & __GFP_NOFAIL)
+> 		page = __alloc_pages_cpuset_fallback(gfp_mask, order,
+> 				ALLOC_NO_WATERMARKS, ac);
+
+I am not really sure I follow here. __GFP_NOFAIL is a special beast
+because such an allocation must not fail. Breaking node affinity is the
+only option left. This shouldn't be something used for regular
+allocation requests.
+-- 
+Michal Hocko
+SUSE Labs
