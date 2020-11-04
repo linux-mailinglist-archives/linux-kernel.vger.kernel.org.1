@@ -2,377 +2,316 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A3962A5FB6
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 09:36:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21DB62A5FBC
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 09:38:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728865AbgKDIgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 03:36:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56478 "EHLO mail.kernel.org"
+        id S1728522AbgKDIht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 03:37:49 -0500
+Received: from mx2.suse.de ([195.135.220.15]:35730 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728522AbgKDIgt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 03:36:49 -0500
-Received: from ogabbay-VM.habana-labs.com (unknown [213.57.90.10])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BD3A62074B;
-        Wed,  4 Nov 2020 08:36:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604479006;
-        bh=C15askM/B/PYmczrHoBo4uBCalTn3fArQtY+4UgVNBA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GbP8n8gPZqRk/dQwzbMI3w04dSM7xYKCBlYmsTSQvXWgZcCZw7XzmTdPO+WHkIMIX
-         HC8wTcEInsnnDO6H1NId8Ssqe2HpIEqUJwG69kNWXD0oj+yWD4dVYhtLeY3adnLtbU
-         2jbEx8Ri6q1XN4Nw6MW4UHWRhmu1TuSVSXqwbAUc=
-From:   Oded Gabbay <ogabbay@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     SW_Drivers@habana.ai, Ofir Bitton <obitton@habana.ai>
-Subject: [PATCH 2/2] habanalabs/gaudi: add support for FW security
-Date:   Wed,  4 Nov 2020 10:36:30 +0200
-Message-Id: <20201104083630.28402-8-ogabbay@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201104083630.28402-1-ogabbay@kernel.org>
-References: <20201104083630.28402-1-ogabbay@kernel.org>
+        id S1725891AbgKDIht (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 03:37:49 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1604479067;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BXrxwtWFFGW7i/sPKc1/C4GjAg2pI7UBPBtCX2IYUyE=;
+        b=MYvVUJnm+tNlx3UXq+8sbVOeL2l73sBl73vL9fypAofxexuto3g5+dYsmPK4uUW9JUxW/R
+        fSZrKwc/dTm6iMShibichmjZgf3MQNAhO+QkKeSNsG2dkiNfJyi4gV7Jq0XjxLQXB0NTnv
+        ILWkNzB/DEQlbrKQUPQtrzDyeFM+KSI=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 6B7E9ACBF;
+        Wed,  4 Nov 2020 08:37:47 +0000 (UTC)
+Date:   Wed, 4 Nov 2020 09:37:46 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Roman Gushchin <guro@fb.com>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Tejun Heo <tj@kernel.org>, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH rfc 1/3] mm: memcg: deprecate the non-hierarchical mode
+Message-ID: <20201104083746.GC10052@dhcp22.suse.cz>
+References: <20201103212725.3716088-1-guro@fb.com>
+ <20201103212725.3716088-2-guro@fb.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201103212725.3716088-2-guro@fb.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ofir Bitton <obitton@habana.ai>
+On Tue 03-11-20 13:27:23, Roman Gushchin wrote:
+> The non-hierarchical cgroup v1 mode is a legacy of early days
+> of the memory controller and doesn't bring any value today.
 
-Skip relevant HW configurations once FW security is enabled
-because these configurations are being performed by FW.
+This is a bold statement ;)
+All that we know today is that we have a warning in place to complain
+loudly when somebody relies on use_hierarchy=0 with a deeper
+hierarchy. For all those years we have seen _zero_ reports that would
+describe a sensible usecase.
+Moreover we (SUSE) have backported this warning into old distribution
+kernels (since 3.0 based kernels) to extend the coverage and didn't hear
+even for users who adopt new kernels only very slowly. The only report
+we have seen so far was a LTP test suite which doesn't really reflect
+any real life usecase.
 
-Signed-off-by: Ofir Bitton <obitton@habana.ai>
-Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
-Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
----
- drivers/misc/habanalabs/gaudi/gaudi.c         | 123 ++++++++++++------
- .../misc/habanalabs/gaudi/gaudi_security.c    |  83 ++++++------
- 2 files changed, 128 insertions(+), 78 deletions(-)
+Feel free to reuse the above in the changelog.
 
-diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
-index e874c1765922..9017c712766c 100644
---- a/drivers/misc/habanalabs/gaudi/gaudi.c
-+++ b/drivers/misc/habanalabs/gaudi/gaudi.c
-@@ -1410,7 +1410,8 @@ static int gaudi_alloc_cpu_accessible_dma_mem(struct hl_device *hdev)
- 	hdev->cpu_pci_msb_addr =
- 		GAUDI_CPU_PCI_MSB_ADDR(hdev->cpu_accessible_dma_address);
+> However, it complicates the code and creates many edge cases
+> all over the memory controller code.
+> 
+> It's a good time to deprecate it completely.
+> 
+> Functionally this patch enabled is by default for all cgroups
+> and forbids switching it off. Nothing changes if cgroup v2 is used:
+> hierarchical mode was enforced from scratch.
+> 
+> To protect the ABI memory.use_hierarchy interface is preserved
+> with a limited functionality: reading always returns "1", writing
+> of "1" passes silently, writing of any other value fails with
+> -EINVAL and a warning to dmesg (on the first occasion).
+
+Yes, that makes sense.
  
--	GAUDI_PCI_TO_CPU_ADDR(hdev->cpu_accessible_dma_address);
-+	if (hdev->asic_prop.fw_security_disabled)
-+		GAUDI_PCI_TO_CPU_ADDR(hdev->cpu_accessible_dma_address);
- 
- free_dma_mem_arr:
- 	for (j = 0 ; j < i ; j++)
-@@ -1564,8 +1565,9 @@ static int gaudi_sw_init(struct hl_device *hdev)
- free_cpu_accessible_dma_pool:
- 	gen_pool_destroy(hdev->cpu_accessible_dma_pool);
- free_cpu_dma_mem:
--	GAUDI_CPU_TO_PCI_ADDR(hdev->cpu_accessible_dma_address,
--				hdev->cpu_pci_msb_addr);
-+	if (hdev->asic_prop.fw_security_disabled)
-+		GAUDI_CPU_TO_PCI_ADDR(hdev->cpu_accessible_dma_address,
-+					hdev->cpu_pci_msb_addr);
- 	hdev->asic_funcs->asic_dma_free_coherent(hdev,
- 			HL_CPU_ACCESSIBLE_MEM_SIZE,
- 			hdev->cpu_accessible_dma_mem,
-@@ -1585,8 +1587,10 @@ static int gaudi_sw_fini(struct hl_device *hdev)
- 
- 	gen_pool_destroy(hdev->cpu_accessible_dma_pool);
- 
--	GAUDI_CPU_TO_PCI_ADDR(hdev->cpu_accessible_dma_address,
-+	if (hdev->asic_prop.fw_security_disabled)
-+		GAUDI_CPU_TO_PCI_ADDR(hdev->cpu_accessible_dma_address,
- 					hdev->cpu_pci_msb_addr);
-+
- 	hdev->asic_funcs->asic_dma_free_coherent(hdev,
- 			HL_CPU_ACCESSIBLE_MEM_SIZE,
- 			hdev->cpu_accessible_dma_mem,
-@@ -1772,6 +1776,14 @@ static void gaudi_init_scrambler_sram(struct hl_device *hdev)
- {
- 	struct gaudi_device *gaudi = hdev->asic_specific;
- 
-+	if (!hdev->asic_prop.fw_security_disabled)
-+		return;
-+
-+	if (hdev->asic_prop.fw_security_status_valid &&
-+			(hdev->asic_prop.fw_app_security_map &
-+					CPU_BOOT_DEV_STS0_SRAM_SCR_EN))
-+		return;
-+
- 	if (gaudi->hw_cap_initialized & HW_CAP_SRAM_SCRAMBLER)
- 		return;
- 
-@@ -1836,6 +1848,14 @@ static void gaudi_init_scrambler_hbm(struct hl_device *hdev)
- {
- 	struct gaudi_device *gaudi = hdev->asic_specific;
- 
-+	if (!hdev->asic_prop.fw_security_disabled)
-+		return;
-+
-+	if (hdev->asic_prop.fw_security_status_valid &&
-+			(hdev->asic_prop.fw_boot_cpu_security_map &
-+					CPU_BOOT_DEV_STS0_DRAM_SCR_EN))
-+		return;
-+
- 	if (gaudi->hw_cap_initialized & HW_CAP_HBM_SCRAMBLER)
- 		return;
- 
-@@ -1898,6 +1918,14 @@ static void gaudi_init_scrambler_hbm(struct hl_device *hdev)
- 
- static void gaudi_init_e2e(struct hl_device *hdev)
- {
-+	if (!hdev->asic_prop.fw_security_disabled)
-+		return;
-+
-+	if (hdev->asic_prop.fw_security_status_valid &&
-+			(hdev->asic_prop.fw_boot_cpu_security_map &
-+					CPU_BOOT_DEV_STS0_E2E_CRED_EN))
-+		return;
-+
- 	WREG32(mmSIF_RTR_CTRL_0_E2E_HBM_WR_SIZE, 247 >> 3);
- 	WREG32(mmSIF_RTR_CTRL_0_E2E_HBM_RD_SIZE, 785 >> 3);
- 	WREG32(mmSIF_RTR_CTRL_0_E2E_PCI_WR_SIZE, 49);
-@@ -2265,6 +2293,14 @@ static void gaudi_init_hbm_cred(struct hl_device *hdev)
- {
- 	uint32_t hbm0_wr, hbm1_wr, hbm0_rd, hbm1_rd;
- 
-+	if (!hdev->asic_prop.fw_security_disabled)
-+		return;
-+
-+	if (hdev->asic_prop.fw_security_status_valid &&
-+			(hdev->asic_prop.fw_boot_cpu_security_map &
-+					CPU_BOOT_DEV_STS0_HBM_CRED_EN))
-+		return;
-+
- 	hbm0_wr = 0x33333333;
- 	hbm0_rd = 0x77777777;
- 	hbm1_wr = 0x55555555;
-@@ -3606,7 +3642,8 @@ static int gaudi_init_cpu(struct hl_device *hdev)
- 	 * The device CPU works with 40 bits addresses.
- 	 * This register sets the extension to 50 bits.
- 	 */
--	WREG32(mmCPU_IF_CPU_MSB_ADDR, hdev->cpu_pci_msb_addr);
-+	if (hdev->asic_prop.fw_security_disabled)
-+		WREG32(mmCPU_IF_CPU_MSB_ADDR, hdev->cpu_pci_msb_addr);
- 
- 	rc = hl_fw_init_cpu(hdev, mmPSOC_GLOBAL_CONF_CPU_BOOT_STATUS,
- 			mmPSOC_GLOBAL_CONF_KMD_MSG_TO_CPU,
-@@ -3691,17 +3728,19 @@ static void gaudi_pre_hw_init(struct hl_device *hdev)
- 	/* Perform read from the device to make sure device is up */
- 	RREG32(mmPCIE_DBI_DEVICE_ID_VENDOR_ID_REG);
- 
--	/* Set the access through PCI bars (Linux driver only) as
--	 * secured
--	 */
--	WREG32(mmPCIE_WRAP_LBW_PROT_OVR,
--			(PCIE_WRAP_LBW_PROT_OVR_RD_EN_MASK |
--			PCIE_WRAP_LBW_PROT_OVR_WR_EN_MASK));
-+	if (hdev->asic_prop.fw_security_disabled) {
-+		/* Set the access through PCI bars (Linux driver only) as
-+		 * secured
-+		 */
-+		WREG32(mmPCIE_WRAP_LBW_PROT_OVR,
-+				(PCIE_WRAP_LBW_PROT_OVR_RD_EN_MASK |
-+				PCIE_WRAP_LBW_PROT_OVR_WR_EN_MASK));
- 
--	/* Perform read to flush the waiting writes to ensure
--	 * configuration was set in the device
--	 */
--	RREG32(mmPCIE_WRAP_LBW_PROT_OVR);
-+		/* Perform read to flush the waiting writes to ensure
-+		 * configuration was set in the device
-+		 */
-+		RREG32(mmPCIE_WRAP_LBW_PROT_OVR);
-+	}
- 
- 	/*
- 	 * Let's mark in the H/W that we have reached this point. We check
-@@ -3710,32 +3749,33 @@ static void gaudi_pre_hw_init(struct hl_device *hdev)
- 	 * cleared by the H/W upon H/W reset
- 	 */
- 	WREG32(mmHW_STATE, HL_DEVICE_HW_STATE_DIRTY);
-+	if (hdev->asic_prop.fw_security_disabled) {
-+		/* Configure the reset registers. Must be done as early as
-+		 * possible in case we fail during H/W initialization
-+		 */
-+		WREG32(mmPSOC_GLOBAL_CONF_SOFT_RST_CFG_H,
-+						(CFG_RST_H_DMA_MASK |
-+						CFG_RST_H_MME_MASK |
-+						CFG_RST_H_SM_MASK |
-+						CFG_RST_H_TPC_7_MASK));
- 
--	/* Configure the reset registers. Must be done as early as possible
--	 * in case we fail during H/W initialization
--	 */
--	WREG32(mmPSOC_GLOBAL_CONF_SOFT_RST_CFG_H,
--					(CFG_RST_H_DMA_MASK |
--					CFG_RST_H_MME_MASK |
--					CFG_RST_H_SM_MASK |
--					CFG_RST_H_TPC_7_MASK));
--
--	WREG32(mmPSOC_GLOBAL_CONF_SOFT_RST_CFG_L, CFG_RST_L_TPC_MASK);
--
--	WREG32(mmPSOC_GLOBAL_CONF_SW_ALL_RST_CFG_H,
--					(CFG_RST_H_HBM_MASK |
--					CFG_RST_H_TPC_7_MASK |
--					CFG_RST_H_NIC_MASK |
--					CFG_RST_H_SM_MASK |
--					CFG_RST_H_DMA_MASK |
--					CFG_RST_H_MME_MASK |
--					CFG_RST_H_CPU_MASK |
--					CFG_RST_H_MMU_MASK));
--
--	WREG32(mmPSOC_GLOBAL_CONF_SW_ALL_RST_CFG_L,
--					(CFG_RST_L_IF_MASK |
--					CFG_RST_L_PSOC_MASK |
--					CFG_RST_L_TPC_MASK));
-+		WREG32(mmPSOC_GLOBAL_CONF_SOFT_RST_CFG_L, CFG_RST_L_TPC_MASK);
-+
-+		WREG32(mmPSOC_GLOBAL_CONF_SW_ALL_RST_CFG_H,
-+						(CFG_RST_H_HBM_MASK |
-+						CFG_RST_H_TPC_7_MASK |
-+						CFG_RST_H_NIC_MASK |
-+						CFG_RST_H_SM_MASK |
-+						CFG_RST_H_DMA_MASK |
-+						CFG_RST_H_MME_MASK |
-+						CFG_RST_H_CPU_MASK |
-+						CFG_RST_H_MMU_MASK));
-+
-+		WREG32(mmPSOC_GLOBAL_CONF_SW_ALL_RST_CFG_L,
-+						(CFG_RST_L_IF_MASK |
-+						CFG_RST_L_PSOC_MASK |
-+						CFG_RST_L_TPC_MASK));
-+	}
- }
- 
- static int gaudi_hw_init(struct hl_device *hdev)
-@@ -3851,7 +3891,8 @@ static void gaudi_hw_fini(struct hl_device *hdev, bool hard_reset)
- 	WREG32(mmPSOC_GLOBAL_CONF_BOOT_STRAP_PINS, boot_strap & ~0x2);
- 
- 	/* Restart BTL/BLR upon hard-reset */
--	WREG32(mmPSOC_GLOBAL_CONF_BOOT_SEQ_RE_START, 1);
-+	if (hdev->asic_prop.fw_security_disabled)
-+		WREG32(mmPSOC_GLOBAL_CONF_BOOT_SEQ_RE_START, 1);
- 
- 	WREG32(mmPSOC_GLOBAL_CONF_SW_ALL_RST,
- 			1 << PSOC_GLOBAL_CONF_SW_ALL_RST_IND_SHIFT);
-diff --git a/drivers/misc/habanalabs/gaudi/gaudi_security.c b/drivers/misc/habanalabs/gaudi/gaudi_security.c
-index 8a921ab56557..e10181692d0b 100644
---- a/drivers/misc/habanalabs/gaudi/gaudi_security.c
-+++ b/drivers/misc/habanalabs/gaudi/gaudi_security.c
-@@ -1448,21 +1448,23 @@ static void gaudi_init_dma_protection_bits(struct hl_device *hdev)
- 	u32 pb_addr, mask;
- 	u8 word_offset;
- 
--	gaudi_pb_set_block(hdev, mmDMA_IF_E_S_BASE);
--	gaudi_pb_set_block(hdev, mmDMA_IF_E_S_DOWN_CH0_BASE);
--	gaudi_pb_set_block(hdev, mmDMA_IF_E_S_DOWN_CH1_BASE);
--	gaudi_pb_set_block(hdev, mmDMA_E_PLL_BASE);
--	gaudi_pb_set_block(hdev, mmDMA_IF_E_S_DOWN_BASE);
--
--	gaudi_pb_set_block(hdev, mmDMA_IF_W_N_BASE);
--	gaudi_pb_set_block(hdev, mmDMA_IF_W_N_DOWN_CH0_BASE);
--	gaudi_pb_set_block(hdev, mmDMA_IF_W_N_DOWN_CH1_BASE);
--	gaudi_pb_set_block(hdev, mmDMA_IF_W_N_DOWN_BASE);
--
--	gaudi_pb_set_block(hdev, mmDMA_IF_E_N_BASE);
--	gaudi_pb_set_block(hdev, mmDMA_IF_E_N_DOWN_CH0_BASE);
--	gaudi_pb_set_block(hdev, mmDMA_IF_E_N_DOWN_CH1_BASE);
--	gaudi_pb_set_block(hdev, mmDMA_IF_E_N_DOWN_BASE);
-+	if (hdev->asic_prop.fw_security_disabled) {
-+		gaudi_pb_set_block(hdev, mmDMA_IF_E_S_BASE);
-+		gaudi_pb_set_block(hdev, mmDMA_IF_E_S_DOWN_CH0_BASE);
-+		gaudi_pb_set_block(hdev, mmDMA_IF_E_S_DOWN_CH1_BASE);
-+		gaudi_pb_set_block(hdev, mmDMA_E_PLL_BASE);
-+		gaudi_pb_set_block(hdev, mmDMA_IF_E_S_DOWN_BASE);
-+
-+		gaudi_pb_set_block(hdev, mmDMA_IF_W_N_BASE);
-+		gaudi_pb_set_block(hdev, mmDMA_IF_W_N_DOWN_CH0_BASE);
-+		gaudi_pb_set_block(hdev, mmDMA_IF_W_N_DOWN_CH1_BASE);
-+		gaudi_pb_set_block(hdev, mmDMA_IF_W_N_DOWN_BASE);
-+
-+		gaudi_pb_set_block(hdev, mmDMA_IF_E_N_BASE);
-+		gaudi_pb_set_block(hdev, mmDMA_IF_E_N_DOWN_CH0_BASE);
-+		gaudi_pb_set_block(hdev, mmDMA_IF_E_N_DOWN_CH1_BASE);
-+		gaudi_pb_set_block(hdev, mmDMA_IF_E_N_DOWN_BASE);
-+	}
- 
- 	WREG32(mmDMA0_QM_BASE - CFG_BASE + PROT_BITS_OFFS + 0x7C, 0);
- 	WREG32(mmDMA1_QM_BASE - CFG_BASE + PROT_BITS_OFFS + 0x7C, 0);
-@@ -9133,14 +9135,16 @@ static void gaudi_init_tpc_protection_bits(struct hl_device *hdev)
- 	u32 pb_addr, mask;
- 	u8 word_offset;
- 
--	gaudi_pb_set_block(hdev, mmTPC0_E2E_CRED_BASE);
--	gaudi_pb_set_block(hdev, mmTPC1_E2E_CRED_BASE);
--	gaudi_pb_set_block(hdev, mmTPC2_E2E_CRED_BASE);
--	gaudi_pb_set_block(hdev, mmTPC3_E2E_CRED_BASE);
--	gaudi_pb_set_block(hdev, mmTPC4_E2E_CRED_BASE);
--	gaudi_pb_set_block(hdev, mmTPC5_E2E_CRED_BASE);
--	gaudi_pb_set_block(hdev, mmTPC6_E2E_CRED_BASE);
--	gaudi_pb_set_block(hdev, mmTPC7_E2E_CRED_BASE);
-+	if (hdev->asic_prop.fw_security_disabled) {
-+		gaudi_pb_set_block(hdev, mmTPC0_E2E_CRED_BASE);
-+		gaudi_pb_set_block(hdev, mmTPC1_E2E_CRED_BASE);
-+		gaudi_pb_set_block(hdev, mmTPC2_E2E_CRED_BASE);
-+		gaudi_pb_set_block(hdev, mmTPC3_E2E_CRED_BASE);
-+		gaudi_pb_set_block(hdev, mmTPC4_E2E_CRED_BASE);
-+		gaudi_pb_set_block(hdev, mmTPC5_E2E_CRED_BASE);
-+		gaudi_pb_set_block(hdev, mmTPC6_E2E_CRED_BASE);
-+		gaudi_pb_set_block(hdev, mmTPC7_E2E_CRED_BASE);
-+	}
- 
- 	WREG32(mmTPC0_QM_BASE - CFG_BASE + PROT_BITS_OFFS + 0x7C, 0);
- 	WREG32(mmTPC0_CFG_BASE - CFG_BASE + PROT_BITS_OFFS + 0x7C, 0);
-@@ -12822,11 +12826,13 @@ static void gaudi_init_protection_bits(struct hl_device *hdev)
- 	 * secured
- 	 */
- 
--	gaudi_pb_set_block(hdev, mmIF_E_PLL_BASE);
--	gaudi_pb_set_block(hdev, mmMESH_W_PLL_BASE);
--	gaudi_pb_set_block(hdev, mmSRAM_W_PLL_BASE);
--	gaudi_pb_set_block(hdev, mmMESH_E_PLL_BASE);
--	gaudi_pb_set_block(hdev, mmSRAM_E_PLL_BASE);
-+	if (hdev->asic_prop.fw_security_disabled) {
-+		gaudi_pb_set_block(hdev, mmIF_E_PLL_BASE);
-+		gaudi_pb_set_block(hdev, mmMESH_W_PLL_BASE);
-+		gaudi_pb_set_block(hdev, mmSRAM_W_PLL_BASE);
-+		gaudi_pb_set_block(hdev, mmMESH_E_PLL_BASE);
-+		gaudi_pb_set_block(hdev, mmSRAM_E_PLL_BASE);
-+	}
- 
- 	gaudi_init_dma_protection_bits(hdev);
- 
-@@ -13025,17 +13031,20 @@ void gaudi_init_security(struct hl_device *hdev)
- 	 * property configuration of MME SBAB and ACC to be non-privileged and
- 	 * non-secured
- 	 */
--	WREG32(mmMME0_SBAB_PROT, 0x2);
--	WREG32(mmMME0_ACC_PROT, 0x2);
--	WREG32(mmMME1_SBAB_PROT, 0x2);
--	WREG32(mmMME1_ACC_PROT, 0x2);
--	WREG32(mmMME2_SBAB_PROT, 0x2);
--	WREG32(mmMME2_ACC_PROT, 0x2);
--	WREG32(mmMME3_SBAB_PROT, 0x2);
--	WREG32(mmMME3_ACC_PROT, 0x2);
-+	if (hdev->asic_prop.fw_security_disabled) {
-+		WREG32(mmMME0_SBAB_PROT, 0x2);
-+		WREG32(mmMME0_ACC_PROT, 0x2);
-+		WREG32(mmMME1_SBAB_PROT, 0x2);
-+		WREG32(mmMME1_ACC_PROT, 0x2);
-+		WREG32(mmMME2_SBAB_PROT, 0x2);
-+		WREG32(mmMME2_ACC_PROT, 0x2);
-+		WREG32(mmMME3_SBAB_PROT, 0x2);
-+		WREG32(mmMME3_ACC_PROT, 0x2);
-+	}
- 
- 	/* On RAZWI, 0 will be returned from RR and 0xBABA0BAD from PB */
--	WREG32(0xC01B28, 0x1);
-+	if (hdev->asic_prop.fw_security_disabled)
-+		WREG32(0xC01B28, 0x1);
- 
- 	gaudi_init_range_registers_lbw(hdev);
- 
+> Signed-off-by: Roman Gushchin <guro@fb.com>
+
+I do not see any problems with the patch or any left overs behind
+(except for the documentation which you handle in the follow up
+patches).
+
+Acked-by: Michal Hocko <mhocko@suse.com>
+
+Thanks and let's see whether some last minute usecase show up.
+
+> ---
+>  include/linux/memcontrol.h |  7 ---
+>  kernel/cgroup/cgroup.c     |  5 ---
+>  mm/memcontrol.c            | 90 ++++++--------------------------------
+>  3 files changed, 13 insertions(+), 89 deletions(-)
+> 
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index 0f4dd7829fb2..31000929db4b 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -234,11 +234,6 @@ struct mem_cgroup {
+>  	/* vmpressure notifications */
+>  	struct vmpressure vmpressure;
+>  
+> -	/*
+> -	 * Should the accounting and control be hierarchical, per subtree?
+> -	 */
+> -	bool use_hierarchy;
+> -
+>  	/*
+>  	 * Should the OOM killer kill all belonging tasks, had it kill one?
+>  	 */
+> @@ -758,8 +753,6 @@ static inline bool mem_cgroup_is_descendant(struct mem_cgroup *memcg,
+>  {
+>  	if (root == memcg)
+>  		return true;
+> -	if (!root->use_hierarchy)
+> -		return false;
+>  	return cgroup_is_descendant(memcg->css.cgroup, root->css.cgroup);
+>  }
+>  
+> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+> index f2eeff74d713..621a586e3529 100644
+> --- a/kernel/cgroup/cgroup.c
+> +++ b/kernel/cgroup/cgroup.c
+> @@ -281,9 +281,6 @@ bool cgroup_ssid_enabled(int ssid)
+>   * - cpuset: a task can be moved into an empty cpuset, and again it takes
+>   *   masks of ancestors.
+>   *
+> - * - memcg: use_hierarchy is on by default and the cgroup file for the flag
+> - *   is not created.
+> - *
+>   * - blkcg: blk-throttle becomes properly hierarchical.
+>   *
+>   * - debug: disallowed on the default hierarchy.
+> @@ -5156,8 +5153,6 @@ static struct cgroup_subsys_state *css_create(struct cgroup *cgrp,
+>  	    cgroup_parent(parent)) {
+>  		pr_warn("%s (%d) created nested cgroup for controller \"%s\" which has incomplete hierarchy support. Nested cgroups may change behavior in the future.\n",
+>  			current->comm, current->pid, ss->name);
+> -		if (!strcmp(ss->name, "memory"))
+> -			pr_warn("\"memory\" requires setting use_hierarchy to 1 on the root\n");
+>  		ss->warned_broken_hierarchy = true;
+>  	}
+>  
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 4b0cd4b78d47..2a37785e9abd 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -1127,12 +1127,6 @@ struct mem_cgroup *mem_cgroup_iter(struct mem_cgroup *root,
+>  	if (prev && !reclaim)
+>  		pos = prev;
+>  
+> -	if (!root->use_hierarchy && root != root_mem_cgroup) {
+> -		if (prev)
+> -			goto out;
+> -		return root;
+> -	}
+> -
+>  	rcu_read_lock();
+>  
+>  	if (reclaim) {
+> @@ -1212,7 +1206,6 @@ struct mem_cgroup *mem_cgroup_iter(struct mem_cgroup *root,
+>  
+>  out_unlock:
+>  	rcu_read_unlock();
+> -out:
+>  	if (prev && prev != root)
+>  		css_put(&prev->css);
+>  
+> @@ -3440,10 +3433,7 @@ unsigned long mem_cgroup_soft_limit_reclaim(pg_data_t *pgdat, int order,
+>  }
+>  
+>  /*
+> - * Test whether @memcg has children, dead or alive.  Note that this
+> - * function doesn't care whether @memcg has use_hierarchy enabled and
+> - * returns %true if there are child csses according to the cgroup
+> - * hierarchy.  Testing use_hierarchy is the caller's responsibility.
+> + * Test whether @memcg has children, dead or alive.
+>   */
+>  static inline bool memcg_has_children(struct mem_cgroup *memcg)
+>  {
+> @@ -3503,37 +3493,20 @@ static ssize_t mem_cgroup_force_empty_write(struct kernfs_open_file *of,
+>  static u64 mem_cgroup_hierarchy_read(struct cgroup_subsys_state *css,
+>  				     struct cftype *cft)
+>  {
+> -	return mem_cgroup_from_css(css)->use_hierarchy;
+> +	return 1;
+>  }
+>  
+>  static int mem_cgroup_hierarchy_write(struct cgroup_subsys_state *css,
+>  				      struct cftype *cft, u64 val)
+>  {
+> -	int retval = 0;
+> -	struct mem_cgroup *memcg = mem_cgroup_from_css(css);
+> -	struct mem_cgroup *parent_memcg = mem_cgroup_from_css(memcg->css.parent);
+> -
+> -	if (memcg->use_hierarchy == val)
+> +	if (val == 1)
+>  		return 0;
+>  
+> -	/*
+> -	 * If parent's use_hierarchy is set, we can't make any modifications
+> -	 * in the child subtrees. If it is unset, then the change can
+> -	 * occur, provided the current cgroup has no children.
+> -	 *
+> -	 * For the root cgroup, parent_mem is NULL, we allow value to be
+> -	 * set if there are no children.
+> -	 */
+> -	if ((!parent_memcg || !parent_memcg->use_hierarchy) &&
+> -				(val == 1 || val == 0)) {
+> -		if (!memcg_has_children(memcg))
+> -			memcg->use_hierarchy = val;
+> -		else
+> -			retval = -EBUSY;
+> -	} else
+> -		retval = -EINVAL;
+> +	pr_warn_once("Non-hierarchical mode is deprecated. "
+> +		     "Please report your usecase to linux-mm@kvack.org if you "
+> +		     "depend on this functionality.\n");
+>  
+> -	return retval;
+> +	return -EINVAL;
+>  }
+>  
+>  static unsigned long mem_cgroup_usage(struct mem_cgroup *memcg, bool swap)
+> @@ -3727,8 +3700,6 @@ static void memcg_offline_kmem(struct mem_cgroup *memcg)
+>  		child = mem_cgroup_from_css(css);
+>  		BUG_ON(child->kmemcg_id != kmemcg_id);
+>  		child->kmemcg_id = parent->kmemcg_id;
+> -		if (!memcg->use_hierarchy)
+> -			break;
+>  	}
+>  	rcu_read_unlock();
+>  
+> @@ -5319,38 +5290,22 @@ mem_cgroup_css_alloc(struct cgroup_subsys_state *parent_css)
+>  	if (parent) {
+>  		memcg->swappiness = mem_cgroup_swappiness(parent);
+>  		memcg->oom_kill_disable = parent->oom_kill_disable;
+> -	}
+> -	if (!parent) {
+> -		page_counter_init(&memcg->memory, NULL);
+> -		page_counter_init(&memcg->swap, NULL);
+> -		page_counter_init(&memcg->kmem, NULL);
+> -		page_counter_init(&memcg->tcpmem, NULL);
+> -	} else if (parent->use_hierarchy) {
+> -		memcg->use_hierarchy = true;
+> +
+>  		page_counter_init(&memcg->memory, &parent->memory);
+>  		page_counter_init(&memcg->swap, &parent->swap);
+>  		page_counter_init(&memcg->kmem, &parent->kmem);
+>  		page_counter_init(&memcg->tcpmem, &parent->tcpmem);
+>  	} else {
+> -		page_counter_init(&memcg->memory, &root_mem_cgroup->memory);
+> -		page_counter_init(&memcg->swap, &root_mem_cgroup->swap);
+> -		page_counter_init(&memcg->kmem, &root_mem_cgroup->kmem);
+> -		page_counter_init(&memcg->tcpmem, &root_mem_cgroup->tcpmem);
+> -		/*
+> -		 * Deeper hierachy with use_hierarchy == false doesn't make
+> -		 * much sense so let cgroup subsystem know about this
+> -		 * unfortunate state in our controller.
+> -		 */
+> -		if (parent != root_mem_cgroup)
+> -			memory_cgrp_subsys.broken_hierarchy = true;
+> -	}
+> +		page_counter_init(&memcg->memory, NULL);
+> +		page_counter_init(&memcg->swap, NULL);
+> +		page_counter_init(&memcg->kmem, NULL);
+> +		page_counter_init(&memcg->tcpmem, NULL);
+>  
+> -	/* The following stuff does not apply to the root */
+> -	if (!parent) {
+>  		root_mem_cgroup = memcg;
+>  		return &memcg->css;
+>  	}
+>  
+> +	/* The following stuff does not apply to the root */
+>  	error = memcg_online_kmem(memcg);
+>  	if (error)
+>  		goto fail;
+> @@ -6187,24 +6142,6 @@ static void mem_cgroup_move_task(void)
+>  }
+>  #endif
+>  
+> -/*
+> - * Cgroup retains root cgroups across [un]mount cycles making it necessary
+> - * to verify whether we're attached to the default hierarchy on each mount
+> - * attempt.
+> - */
+> -static void mem_cgroup_bind(struct cgroup_subsys_state *root_css)
+> -{
+> -	/*
+> -	 * use_hierarchy is forced on the default hierarchy.  cgroup core
+> -	 * guarantees that @root doesn't have any children, so turning it
+> -	 * on for the root memcg is enough.
+> -	 */
+> -	if (cgroup_subsys_on_dfl(memory_cgrp_subsys))
+> -		root_mem_cgroup->use_hierarchy = true;
+> -	else
+> -		root_mem_cgroup->use_hierarchy = false;
+> -}
+> -
+>  static int seq_puts_memcg_tunable(struct seq_file *m, unsigned long value)
+>  {
+>  	if (value == PAGE_COUNTER_MAX)
+> @@ -6542,7 +6479,6 @@ struct cgroup_subsys memory_cgrp_subsys = {
+>  	.can_attach = mem_cgroup_can_attach,
+>  	.cancel_attach = mem_cgroup_cancel_attach,
+>  	.post_attach = mem_cgroup_move_task,
+> -	.bind = mem_cgroup_bind,
+>  	.dfl_cftypes = memory_files,
+>  	.legacy_cftypes = mem_cgroup_legacy_files,
+>  	.early_init = 0,
+> -- 
+> 2.26.2
+
 -- 
-2.17.1
-
+Michal Hocko
+SUSE Labs
