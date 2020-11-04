@@ -2,99 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A2B32A65D9
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 15:08:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 116462A65DA
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 15:08:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727006AbgKDOH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 09:07:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41336 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726665AbgKDOH6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 09:07:58 -0500
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 983A0C0613D3;
-        Wed,  4 Nov 2020 06:07:58 -0800 (PST)
-Received: by mail-oi1-x244.google.com with SMTP id t16so4909722oie.11;
-        Wed, 04 Nov 2020 06:07:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=VKQTADKWbwsUwSbsUHgL7+P7gK0ZiXSB4+VvuuMdBSM=;
-        b=jpGEHr+5MJN5vDwibuhO42SDoPqOvGnNgZorP1yPO9/OySDz2V5ZJkHr7o5/J2H3Ai
-         raBbAsgp3xYJORgYKPT0Qdc8qxzpxQf7UU5rQ489Cu8eA1Jh1+dLVHeycB5NQ5Ust73/
-         CQoJVzc5J5co6jS+kjOFjHJL2eekh3BCDWkmHubOBHJXiUlHPKTi8ain2FRLGrMNdL3p
-         JQpceb74yeHEp4FrZOQ/BxtdnrKJHTSUd7DXbwLM5oL1yYTLAFEzcJWrsP4MePxrq4dV
-         y2UnaQhzPIjyCvGjMwFyD8KW6HmqowVkHbkBaksJ+AkZAWry02JY41ueXBtQttOEuCBL
-         lpag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=VKQTADKWbwsUwSbsUHgL7+P7gK0ZiXSB4+VvuuMdBSM=;
-        b=eKZqMfw+boSlf3rh5go0eEMbQrGi0eVf5I/twNXhGVWsGveeBViAYpD3vR7bCxl3V+
-         Uc88scU4pBo4iqwX5EXTfOQFJLICEVT/hTDSpkBLtcjvZasa9HzNrlm4oD2Ti67qrELa
-         kAZJTP+gzcoiD5KvmNg+KMUVQmQT58/47ZdWtkxwJK0jH+tJ5tfPlVTItr6zCANv3Zbf
-         hPnsLIf6lLQhUNb1WZkszsd3ft1vQRML7YLQEtxLRU+f13aUXcQ3u9dg9CMTAHKcSAYx
-         uB4GQrasOFQbI9yopZyWP9FEUbGheC3dEn/sufeyf5olgV0lvmCGh+h/1Xg/WBs9TVZ4
-         EPYg==
-X-Gm-Message-State: AOAM532joFJG7hLMHznirWmgKsAKsOpwNSopYFcYqmu1Nt3KR1gw1xNg
-        21gtNtx4PCHAhwgSkff/FPlIhfU6UOE=
-X-Google-Smtp-Source: ABdhPJyLXcamT3Lj3lRe1C8J4BVsWH5OjYiutEk2E0DoGlRiQVffdsFt+FVldwVIk7JTG72jG5bGDg==
-X-Received: by 2002:aca:c3d6:: with SMTP id t205mr677887oif.10.1604498877977;
-        Wed, 04 Nov 2020 06:07:57 -0800 (PST)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id l44sm542751ooi.44.2020.11.04.06.07.55
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 04 Nov 2020 06:07:56 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 4 Nov 2020 06:07:54 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
-Subject: Re: [PATCH 5.4 000/214] 5.4.75-rc1 review
-Message-ID: <20201104140754.GA4312@roeck-us.net>
-References: <20201103203249.448706377@linuxfoundation.org>
+        id S1729662AbgKDOIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 09:08:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36964 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727012AbgKDOII (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 09:08:08 -0500
+Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1E23821734;
+        Wed,  4 Nov 2020 14:08:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604498888;
+        bh=Yvx2fvQyrz3qOckMm40aznFs4/Y5f0uOs+ZW1GEZBEA=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=wW6kBfrVC3gwxm3yJ6vQj6FKNi/EiXR4kQ1OS51RNJexL9W0MwcRrpDUa77WCvX7Z
+         zVERx2xtJLZBsDjhSpRdRLxG3X1lPqNhtlnMv7kecWMl2NBb3cuHYnDtYJ1aTZFz3k
+         xZc/xTSl/BMLmExpz3LfIt956Y/SB8v5gGVG3/M0=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id B5A823523170; Wed,  4 Nov 2020 06:08:07 -0800 (PST)
+Date:   Wed, 4 Nov 2020 06:08:07 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        linux-kernel@vger.kernel.org,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Marco Elver <elver@google.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>, fweisbec@gmail.com,
+        neeraj.iitr10@gmail.com
+Subject: Re: [PATCH v9 4/7] rcu/trace: Add tracing for how segcb list changes
+Message-ID: <20201104140807.GG3249@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20201103142603.1302207-1-joel@joelfernandes.org>
+ <20201103142603.1302207-5-joel@joelfernandes.org>
+ <20201103151731.GB432431@lothringen>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
+In-Reply-To: <20201103151731.GB432431@lothringen>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 09:34:08PM +0100, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.75 release.
-> There are 214 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Tue, Nov 03, 2020 at 04:17:31PM +0100, Frederic Weisbecker wrote:
+> On Tue, Nov 03, 2020 at 09:26:00AM -0500, Joel Fernandes (Google) wrote:
+> > +/*
+> > + * Return how many CBs each segment along with their gp_seq values.
+> > + *
+> > + * This function is O(N) where N is the number of segments. Only used from
+> > + * tracing code which is usually disabled in production.
+> > + */
+> > +#ifdef CONFIG_RCU_TRACE
+> > +static void rcu_segcblist_countseq(struct rcu_segcblist *rsclp,
+> > +			 int cbcount[RCU_CBLIST_NSEGS],
+> > +			 unsigned long gpseq[RCU_CBLIST_NSEGS])
+> > +{
+> > +	int i;
+> > +
+> > +	for (i = 0; i < RCU_CBLIST_NSEGS; i++) {
+> > +		cbcount[i] = rcu_segcblist_get_seglen(rsclp, i);
+> > +		gpseq[i] = rsclp->gp_seq[i];
+> > +	}
+> > +}
+> > +
+> > +void __trace_rcu_segcb_stats(struct rcu_segcblist *rsclp, const char *context)
+> > +{
+> > +	int cbs[RCU_CBLIST_NSEGS];
+> > +	unsigned long gps[RCU_CBLIST_NSEGS];
+> > +
+> > +	if (!trace_rcu_segcb_stats_enabled())
+> > +		return;
 > 
-> Responses should be made by Thu, 05 Nov 2020 20:29:58 +0000.
-> Anything received after that time might be too late.
+> Yes, very good!
 > 
+> Paul just told me that RCU_TRACE can be used in production so that confirms that we
+> wanted to avoid this loop of 8 iterations when tracing is disabled.
 
-All sparc images fail to build.
+RCU's "don't try this in production" Kconfig option is PROVE_RCU.
 
-Building sparc32:defconfig ... failed
---------------
-Error log:
-<stdin>:1511:2: warning: #warning syscall clone3 not implemented [-Wcpp]
-In file included from arch/sparc/include/asm/io_32.h:14,
-                 from arch/sparc/include/asm/io.h:7,
-                 from include/linux/io.h:13,
-                 from include/linux/irq.h:20,
-                 from include/asm-generic/hardirq.h:13,
-                 from arch/sparc/include/asm/hardirq_32.h:11,
-                 from arch/sparc/include/asm/hardirq.h:7,
-                 from include/linux/hardirq.h:9,
-                 from include/linux/interrupt.h:11,
-                 from include/linux/kernel_stat.h:9,
-                 from arch/sparc/kernel/irq_32.c:15:
-include/asm-generic/io.h: In function '__pci_ioport_unmap':
-include/asm-generic/io.h:1012:2: error: implicit declaration of function 'iounmap'; did you mean 'ioremap'?
+I would be looking for checks that the sum of the segment lengths
+match the overall ->len or checks that all of the segment lengths
+are zero when ->cblist is empty to be guarded by something like
+IS_ENABLED(CONFIG_PROVE_RCU).  Of course, checks of this sort need to
+be confined to those portions of rcu_do_batch() that are excluding other
+accesses to ->cblist.
 
-Guenter
+But if rcu_segcblist_countseq() is invoked only when a specific trace
+event is enabled, it should be OK to have it guarded only by RCU_TRACE.
+
+							Thanx, Paul
