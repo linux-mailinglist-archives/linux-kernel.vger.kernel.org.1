@@ -2,117 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC6912A6785
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 16:22:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C1502A6792
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 16:25:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730793AbgKDPWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 10:22:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53988 "EHLO
+        id S1730029AbgKDPZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 10:25:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730770AbgKDPWb (ORCPT
+        with ESMTP id S1730245AbgKDPZQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 10:22:31 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42BB6C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 07:22:31 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id y12so22454936wrp.6
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 07:22:31 -0800 (PST)
+        Wed, 4 Nov 2020 10:25:16 -0500
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39D22C0613D4;
+        Wed,  4 Nov 2020 07:25:15 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id c18so2742365wme.2;
+        Wed, 04 Nov 2020 07:25:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=q6hdviCMUNDpB25Riq30Bi5OEfr4eLtHUB6k7K/aZvY=;
-        b=N+ZQkza/J4iL2cPwAzJDzR2TDBxa/ygHQqtkEBsQnPxwe0lwLCJ8zkeWrONmUupLVt
-         I36bZ9MmN+isW9a3PipNRr7HFmQLJXRYh3h2jTx5SvCwWBbqSoCWaKhrJDzeS1c8lxbj
-         OKmo7GVKj1pCYRoW+pfE9quncDqfpUNXwxo8Q2FtwwzdSmRMBc3NCc75nuZwKSQzHyyQ
-         4WDnGDutraDZSK8aS66n6whaSUdnPCLbFK33gX8TbyWB6CALiLEyO2iruwRyI8YW2SCH
-         So/W0SKiq7vaa1AB+AVJUXO2DrMpjHR1Sly/IPzksIBFuIEzyH7jloN6kk2A5it9d8Ag
-         hsuA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hQuHwpO9W6EfVdvEexDpXK2yxO3fyCBXGcRXbSH1WmI=;
+        b=c38nYRy676SWec7f0EgQa52uS8Ebi+3J8uKzCJQDk9gB5bpQhQ4e5F2bGhFHdPfjf0
+         xBEYxSsef4gaiiPl2cYqP0AfmUpoyzU8eJfRIepZqsFPxO+O4D1eEK9FyHXYOHz128cl
+         9YYlLHiLwX5G31vpL9fcDVxPPGBkR0Rn8EUSm7bzwBH8u2vhf/2XEO3Qh77nybmF85Wy
+         Zz+7L9LeU9oXaJ2MVTR0ajbe8+O3g2dB5x8EM3NwHq539FkQtZ5rfgqdLwB2EE0up2rb
+         1kDiiJn2uHvSbP58nUQhwI51TykfBq9Suj0Wcz9VoEewhIhii6OkIdecwLSX+NPhGkIp
+         zzhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=q6hdviCMUNDpB25Riq30Bi5OEfr4eLtHUB6k7K/aZvY=;
-        b=o+qpAtc1uA27Xd1uxZ7pfGqrNDEeX6wGuN/dVC7DE5cICxxzBgjHSth67/LOxSmq0q
-         VsysyOCTwfMq6nVcMeH+i2gA55szAged7wE7kl4dJ0lhNAFHvkOdzo00E731ZoA40Acx
-         er3O3nFGses4Z2SLWHmIq+wsRlnY7dm3xbhdyOLfvfON4CPO15SDD/N9ig6AGGv719Dh
-         uH3fcBO1N/SXzq8we7yx8DArSeElbWmAxDUlA7Bc15it4fDgliz7GWR1VJloRXTAQadZ
-         arDzJoOPrncR9/NSglxZbdZ1xYSDHHV39mET254oRIPESSe9qWKZEPlOh6CyFY4A1feQ
-         awWQ==
-X-Gm-Message-State: AOAM531oBIlPg0SCvLeMPoqtHs3xMrNWzamOkPK+yQSZ1UTxVyy+9ly4
-        TX0FI4iW2xbzsd5hoZLMgWOTpw==
-X-Google-Smtp-Source: ABdhPJxQzdXyGNDCkYY6//Qtcy3N7vuWJ5LfVvcTG8og0tM/Z01cSnk7BnqMscR9XtB5I8c4B16htw==
-X-Received: by 2002:a5d:63cb:: with SMTP id c11mr30926563wrw.243.1604503349944;
-        Wed, 04 Nov 2020 07:22:29 -0800 (PST)
-Received: from dell ([91.110.221.242])
-        by smtp.gmail.com with ESMTPSA id y201sm2893312wmd.27.2020.11.04.07.22.28
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hQuHwpO9W6EfVdvEexDpXK2yxO3fyCBXGcRXbSH1WmI=;
+        b=iOu9guYMNhSCXvNd2UJZfqxHWjGVBzImQqrFgbW4BZfsQ8VqqCCy8Lq2Hngofw8I6d
+         onbaDZMKnwiyiuSJMDJjQMmi9m2IX5hnA6MvQRPyMLHqeBYa8R1M0XEfl8yVhvwY8jJr
+         eozgfbhAIFdVp8/s0X8EYgIvejo1nSPHYj4Bftq9BfotqvpEg7E6QbrchMZ45y4GQ7Uw
+         XihA5R4Nrsjrzkt4IvejU7YfcRQU5o3OaAWKWq02Qg7VSL3zxqMGQAf4gEWcKuZi2AF9
+         lzLtv58ZKmiVD5Zq+edbEIiTpvvxElm90vdDax9rtuzk+NeBqDJ4bP+pLpP2pJAf+Dnl
+         TgMA==
+X-Gm-Message-State: AOAM531dKlv5GEM2DngNY51bJRMXVe/Z0SsICyUDxGVBCjoxfo/fPo25
+        WRshAHu8uFXUqk4L9log/Dk=
+X-Google-Smtp-Source: ABdhPJxvk8OnLYlJgX/MwAUVTAxCCGztXI7d3X1he06S/VWdeVwaH2YrOHL14r573YdVy4NfEQSKBw==
+X-Received: by 2002:a7b:cb46:: with SMTP id v6mr5142035wmj.146.1604503513917;
+        Wed, 04 Nov 2020 07:25:13 -0800 (PST)
+Received: from srv-dev.mgt.openheadend.tv (aob-ovh-4.easytools.tv. [51.210.1.153])
+        by smtp.gmail.com with ESMTPSA id t2sm3050077wrw.95.2020.11.04.07.25.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 07:22:29 -0800 (PST)
-Date:   Wed, 4 Nov 2020 15:22:27 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     kernel test robot <lkp@intel.com>
-Cc:     Luka Kovacic <luka.kovacic@sartura.hr>,
-        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
-        kbuild-all@lists.01.org, pavel@ucw.cz, dmurphy@ti.com,
-        robh+dt@kernel.org, jdelvare@suse.com, linux@roeck-us.net
-Subject: Re: [PATCH v6 2/6] drivers: mfd: Add a driver for iEi WT61P803
- PUZZLE MCU
-Message-ID: <20201104152227.GM4488@dell>
-References: <20201019221859.56680-3-luka.kovacic@sartura.hr>
- <202010201049.3V7m9mtx-lkp@intel.com>
+        Wed, 04 Nov 2020 07:25:13 -0800 (PST)
+From:   Arnaud de Turckheim <quarium@gmail.com>
+To:     linus.walleij@linaro.org
+Cc:     bgolaszewski@baylibre.com, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org, vilhelm.gray@gmail.com,
+        Arnaud de Turckheim <quarium@gmail.com>
+Subject: [PATCH 0/3] gpio: pcie-idio-24: Fix IRQ handling
+Date:   Wed,  4 Nov 2020 16:24:52 +0100
+Message-Id: <20201104152455.40627-1-quarium@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <202010201049.3V7m9mtx-lkp@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 20 Oct 2020, kernel test robot wrote:
+This patch set fixes the irq_mask/irq_unmask functions and enables the
+PLX PEX8311 local interrupts.
 
-> Hi Luka,
-> 
-> Thank you for the patch! Perhaps something to improve:
-> 
-> [auto build test WARNING on hwmon/hwmon-next]
-> [also build test WARNING on v5.9]
-> [cannot apply to pavel-linux-leds/for-next lee-mfd/for-mfd-next next-20201016]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch]
-> 
-> url:    https://github.com/0day-ci/linux/commits/Luka-Kovacic/Add-support-for-the-iEi-WT61P803-PUZZLE-MCU/20201020-062048
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git hwmon-next
-> config: ia64-randconfig-r002-20201020 (attached as .config)
-> compiler: ia64-linux-gcc (GCC) 9.3.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://github.com/0day-ci/linux/commit/855e7cca9db335136d09555f9983d7245fca1f4b
->         git remote add linux-review https://github.com/0day-ci/linux
->         git fetch --no-tags linux-review Luka-Kovacic/Add-support-for-the-iEi-WT61P803-PUZZLE-MCU/20201020-062048
->         git checkout 855e7cca9db335136d09555f9983d7245fca1f4b
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=ia64 
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All warnings (new ones prefixed by >>):
-> 
-> >> drivers/mfd/iei-wt61p803-puzzle.c:311:5: warning: no previous prototype for 'iei_wt61p803_puzzle_buzzer' [-Wmissing-prototypes]
->      311 | int iei_wt61p803_puzzle_buzzer(struct iei_wt61p803_puzzle *mcu, bool long_beep)
->          |     ^~~~~~~~~~~~~~~~~~~~~~~~~~
+With the current version of the driver, gpiomon (from libgpiod) or a
+poll(2) on the sysfs value are not working. According to
+/proc/interrupts, there is no interruption triggered.
+The main issue is that the local interrupts are not forwarded by the
+PEX8311 to the PCI.
 
-This bot has been complaining about this patch since at least v3.
+There is also two bugs:
+    - The IRQ mask is not correctly updated when unmasking an
+      interruption.
+    - The COS Enable Register value is not correctly updated when
+      masking/unmasking an interruption.
 
-Are you going to fix the issue?  Or is it moot?
+It seems this problems exist since the initial commit.
+
+Arnaud de Turckheim (3):
+  gpio: pcie-idio-24: Fix irq mask when masking
+  gpio: pcie-idio-24: Fix IRQ Enable Register value
+  gpio: pcie-idio-24: Enable PEX8311 interrupts
+
+ drivers/gpio/gpio-pcie-idio-24.c | 62 ++++++++++++++++++++++++++++----
+ 1 file changed, 56 insertions(+), 6 deletions(-)
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.25.1
+
