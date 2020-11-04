@@ -2,90 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 706832A5ADF
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 01:05:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B6CE2A5AE1
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 01:06:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729527AbgKDAFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 19:05:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52706 "EHLO
+        id S1729816AbgKDAFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 19:05:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729021AbgKDAFs (ORCPT
+        with ESMTP id S1729385AbgKDAFu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 19:05:48 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6E0CC061A48
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 16:05:48 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id r186so15034430pgr.0
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 16:05:48 -0800 (PST)
+        Tue, 3 Nov 2020 19:05:50 -0500
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEF32C061A48
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 16:05:49 -0800 (PST)
+Received: by mail-lf1-x141.google.com with SMTP id b1so24645543lfp.11
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 16:05:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=IDPVpMjjQxmT8T6bAuv5nGEF9Cscu1+LLKKWzkBSO0s=;
-        b=R0wn1eCKGkIpdF7qPMDWF5Y9Lb9R6jSyf6aZRAPk7alVldWDSe6WLYFH7QJcvpVRpm
-         D7Uh6sXlkwLfIzghi5mWA+Z/7XrrJT0Iq6QAIEDLibW6egy5U6Ee128wcKtYdNd9JlMM
-         yRQgCt0QRnApGeusxYpJwHkb1DMFCIkH4SLvv/WD3WZEtYvurV6XVNpBEgG10mpABTgq
-         5v4Sj5nZlvuQcLpjc0t76D6IsFMNUzqy4K2wKNK21U5z9DARW8Lgg+zxgDkrl5HhPMhp
-         Y3NEOMCnJVFsVM8I4IT/y4mZiMratvIMIvIwtJA3qu5gDI5ILmOlQrA1A37nVxAO5wEz
-         yyGA==
+        bh=Eq/hKMyLgdp/QXXnQV5r6IWOxg03mEPCZUhhSNnW7WQ=;
+        b=kGbCaylyi3k1edOqC9ql7Ui7JoWXWXg6MNLPnsqRDCSqzBsrZ0+FWoh1oZ9OUo8SbC
+         wm654Ccbvp3ZTzDnAtEoYjzR5/5Ho9Nrayfi4QGYwRueZ/YErdfLFzGXCWNWsOJCHpK8
+         UPppa7VdIAXGPMtTUU1c6bV/Onokcw6tn8Sg0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=IDPVpMjjQxmT8T6bAuv5nGEF9Cscu1+LLKKWzkBSO0s=;
-        b=LQb3XVlqi8Hqq383cJRgIWZH9JHeSthhiA1jnc0LDhSH9E0Y/o3RzDsDPSlqw8W/ue
-         Mh8uwPd6WqGANBgHlOxAvTIdpcsuLn4vhV6k3ju5TxkJ+P6rP8KgKLQd3R9Qvja+pT+J
-         +GKRjArvhtLC96X8IF8VBsQ3BBvI53W9jFe8NcYesCvMp+cSp8liKuvShNEeiY+soBU9
-         y1TMR7bYF+2YhrB/jItFD67aBolldqU4SPW+h7sRuJN+wKokCjpmjr+r3TzIqh9Uo38R
-         ishZSZ6o7FMba3znABLDeo5ALKWFiCQ9MJ+iBw/6k2/k+BOQu+4iVPnkelJU+oF7lyTO
-         +cqg==
-X-Gm-Message-State: AOAM533mvyI7Q1WlKLk58WjWJ0X7X2VF2dIcunFSkWda+J6vriAgiUH2
-        ccRRi+Dp6JJW+6WhoeUBiTOcLzfX6ZlMdqeI000ixA==
-X-Google-Smtp-Source: ABdhPJx0JWeFLR32JFqyWMucOaCuuoT6BwNLjsxdj20SI+yVYY/HHcBG6kAPgHnBrdZbPJLKe90CxK/dZv7AsQA7ooA=
-X-Received: by 2002:a17:90a:6b04:: with SMTP id v4mr1725520pjj.101.1604448347880;
- Tue, 03 Nov 2020 16:05:47 -0800 (PST)
+        bh=Eq/hKMyLgdp/QXXnQV5r6IWOxg03mEPCZUhhSNnW7WQ=;
+        b=tTsm4c46Rbc1zOg7X9pbjIXh+1VP9U/HMWDp0dcydK/gq8sP28owTFwBkH7ccV08S5
+         sw9rMXw5kDHkcjk4Cs67C7FW5pFn06DCUXTE9y2qPh+p/yO6YAE0h5qgP8mdLg1MtF37
+         USv++zufE2e+HviI7N9FHlipozUr9xZ8wwLAkYsk5NygvpYyYkryIyqNDE2D5cTF2zzc
+         V0TFhw+dFCLaz2h+BM6rdb8/ro0DMZVbLtm/U45e8Wwd/h9otJIMXjd/RNYLGR6UpMC9
+         tONnW+G5fJOX6CvKmPrA7a1nBTTTGQnWpNl4oWXRGXj0ODggVCET8vt+NiAeWNTMe57S
+         S4Fw==
+X-Gm-Message-State: AOAM530ipDfVbeLvU/ttc0wMLHUAgX34aCgVtzRPBt9c35aN5wZ6NAOz
+        efP3WADEYWbx/qz3XAOU56g7GLA//WBX5lIn2WQ7HQ==
+X-Google-Smtp-Source: ABdhPJyaQiAijXHPV9yeVkPh8oqSfakHStF6zz7Ot5pXha23zseqo/DSuoaYALXBcHKNlHfshHPlApWX9Z2AFXr6E70=
+X-Received: by 2002:ac2:44a4:: with SMTP id c4mr9029079lfm.365.1604448348193;
+ Tue, 03 Nov 2020 16:05:48 -0800 (PST)
 MIME-Version: 1.0
-References: <20201022012106.1875129-1-ndesaulniers@google.com> <20201104000016.GA2399651@rani.riverdale.lan>
-In-Reply-To: <20201104000016.GA2399651@rani.riverdale.lan>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 3 Nov 2020 16:05:36 -0800
-Message-ID: <CAKwvOdnFstgMa3c+=Vo=QtFYsABDekVeddcPmP=8Pn2bqWfxpg@mail.gmail.com>
-Subject: Re: [PATCH] Kbuild: implement support for DWARF5
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        linux-toolchains@vger.kernel.org
+References: <20201103153132.2717326-1-kpsingh@chromium.org>
+ <20201103153132.2717326-8-kpsingh@chromium.org> <20201103184714.iukuqfw2byls3s4k@ast-mbp.dhcp.thefacebook.com>
+ <CACYkzJ6A5GrQhBhv7GC8aeeLpoc7bnN=6Rn2UoM1P90odLZZ=g@mail.gmail.com>
+In-Reply-To: <CACYkzJ6A5GrQhBhv7GC8aeeLpoc7bnN=6Rn2UoM1P90odLZZ=g@mail.gmail.com>
+From:   KP Singh <kpsingh@chromium.org>
+Date:   Wed, 4 Nov 2020 01:05:37 +0100
+Message-ID: <CACYkzJ6D=vwaEhgaB2vevOo0186m=yfxeKBQ8eWWck8xjtczNA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 7/8] bpf: Add tests for task_local_storage
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Paul Turner <pjt@google.com>,
+        Jann Horn <jannh@google.com>, Hao Luo <haoluo@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 3, 2020 at 4:00 PM Arvind Sankar <nivedita@alum.mit.edu> wrote:
+On Tue, Nov 3, 2020 at 7:59 PM KP Singh <kpsingh@chromium.org> wrote:
 >
-> On Wed, Oct 21, 2020 at 06:21:06PM -0700, Nick Desaulniers wrote:
-> > Further -gdwarf-X where X is an unsupported value doesn't
-> > produce an error in $(CC).
+> On Tue, Nov 3, 2020 at 7:47 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Tue, Nov 03, 2020 at 04:31:31PM +0100, KP Singh wrote:
+> > > +
+> > > +struct storage {
+> > > +     void *inode;
+> > > +     unsigned int value;
+> > > +     /* Lock ensures that spin locked versions of local stoage operations
+> > > +      * also work, most operations in this tests are still single threaded
+> > > +      */
+> > > +     struct bpf_spin_lock lock;
+> > > +};
+> >
+> > I think it's a good idea to test spin_lock in local_storage,
+> > but it seems the test is not doing it fully.
+> > It's only adding it to the storage, but the program is not accessing it.
 >
-> Do you have more details here? On godbolt.org, gcc does report an error
-> for unsupported dwarf versions.
+> I added it here just to check if the offset calculations (map->spin_lock_off)
+> are correctly happening for these new maps.
 >
-> https://godbolt.org/z/G35798
+> As mentioned in the updates, I do intend to generalize
+> tools/testing/selftests/bpf/map_tests/sk_storage_map.c which already has
+>  the threading logic to exercise bpf_spin_lock in storage maps.
 >
-> gcc does not seem to pass the -gdwarf-* options to the assembler when
-> compiling C source. For assembler, gcc will pass an appropriate option
-> depending on the version of binutils it was configured with: if the
-> assembler doesn't support dwarf-5 it can call it with --gdwarf2 for eg.
->
-> If the user is using a properly configured toolchain it doesn't look
-> like it should be an issue to just use cc-option?
 
-I wrote the base patch back in May, and didn't revisit until recently.
-I could have sworn the cc-option silently failed for the check
-cc-option does, which is /dev/null input.  I need to recheck that, but
-it doesn't hurt to simply include it for now, which I've done in a v2
-I'm about to send.
--- 
-Thanks,
-~Nick Desaulniers
+Actually, after I added simple bpf_spin_{lock, unlock} to the test programs, I
+ended up realizing that we have not exposed spin locks to LSM programs
+for now, this is because they inherit the tracing helpers.
+
+I saw the docs mention that these are not exposed to tracing programs due to
+insufficient preemption checks. Do you think it would be okay to allow them
+for LSM programs?
+
+
+- KP
+
+> Hope this is an okay plan?
