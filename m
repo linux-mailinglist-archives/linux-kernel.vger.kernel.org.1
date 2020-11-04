@@ -2,58 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFF6D2A63E6
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 13:08:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8363C2A63EA
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 13:09:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729697AbgKDMIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 07:08:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37204 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729520AbgKDMIS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 07:08:18 -0500
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 41D3D21734;
-        Wed,  4 Nov 2020 12:08:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604491697;
-        bh=J9jQ94Kh0nfwpFB+1SReiHKtznl4Xosc5X/PYpyQhuI=;
+        id S1729725AbgKDMJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 07:09:21 -0500
+Received: from perceval.ideasonboard.com ([213.167.242.64]:57226 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728523AbgKDMJU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 07:09:20 -0500
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id DB7CD563;
+        Wed,  4 Nov 2020 13:09:17 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1604491758;
+        bh=l+MSBTjndby1RX7HJX7yl70OnVOk8NJVoXyjYM5aO68=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tPXai+z5eiF95Xeim8hbCMSKtdpYpbs7eDKVyKPKqDOgmBMO4zl+C7xPVY5oRWPsv
-         GwEK0wT4xR59MHcFyKPpiRWEr6Yz8bF7LGLhpFQLEHL0svFtnrKWq46hrfsfEdJCGT
-         D3wCgITxfJr9SepPdqvNSaVs0TuHGZVDmx3tFf38=
-Date:   Wed, 4 Nov 2020 12:08:12 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Tyler Hicks <tyhicks@linux.microsoft.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] arm64: Implement CONFIG_CMDLINE_EXTEND
-Message-ID: <20201104120812.GA6632@willie-the-truck>
-References: <20200921191557.350256-1-tyhicks@linux.microsoft.com>
- <20201103155952.GA4335@sequoia>
+        b=Z7VkQK9ljdACMRljZHRx4yEmvWZs45/f6Tis74JAtGsseRY2kPlR/9KlRnoRHjvWo
+         Ynvhqg4eOGN4nelP4Qi6ZsUOsRFJo10HK6kcLI8nHJClo8ivaxg5aNhDNj94ylVVe1
+         /iL+firLTLrH4V1UUjQ+MTNkMYnko31RC48GtW1Y=
+Date:   Wed, 4 Nov 2020 14:08:30 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Ricardo Ribalda <ribalda@chromium.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        tfiga@chromium.org
+Subject: Re: [PATCH 1/6] media: uvcvideo: Add UVC_CTRL_FLAG_ENTITY_GET_INFO
+Message-ID: <20201104120830.GB6196@pendragon.ideasonboard.com>
+References: <20201022133753.310506-1-ribalda@chromium.org>
+ <20201022133753.310506-2-ribalda@chromium.org>
+ <20201104110937.GH26171@pendragon.ideasonboard.com>
+ <CANiDSCuCJigJ293pMnXT9wALUn3D2=RTKtzVcrD+Hr+u2uCWPA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201103155952.GA4335@sequoia>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CANiDSCuCJigJ293pMnXT9wALUn3D2=RTKtzVcrD+Hr+u2uCWPA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 09:59:52AM -0600, Tyler Hicks wrote:
-> On 2020-09-21 14:15:55, Tyler Hicks wrote:
-> > Provide the CONFIG_CMDLINE_EXTEND config option for arm64 kernels. This
-> > config option can be used to extend the kernel command line parameters,
-> > specified by the bootloader, with additional command line parameters
-> > specified in the kernel configuration.
+Hi Ricardo,
+
+On Wed, Nov 04, 2020 at 12:48:25PM +0100, Ricardo Ribalda wrote:
+> On Wed, Nov 4, 2020 at 12:10 PM Laurent Pinchart wrote:
+> > On Thu, Oct 22, 2020 at 03:37:48PM +0200, Ricardo Ribalda wrote:
+> > > This flag allows controls to get their properties from an entity defined
+> >
+> > s/entity defined/entity-defined/
+> >
+> > > function instead of via a query to the USB device.
+> > >
+> > > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> > > ---
+> > >  drivers/media/usb/uvc/uvc_ctrl.c | 9 +++++++--
+> > >  drivers/media/usb/uvc/uvcvideo.h | 3 +++
+> > >  include/uapi/linux/uvcvideo.h    | 2 ++
+> > >  3 files changed, 12 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
+> > > index f479d8971dfb..7acdc055613b 100644
+> > > --- a/drivers/media/usb/uvc/uvc_ctrl.c
+> > > +++ b/drivers/media/usb/uvc/uvc_ctrl.c
+> > > @@ -1708,8 +1708,13 @@ static int uvc_ctrl_get_flags(struct uvc_device *dev,
+> > >       if (data == NULL)
+> > >               return -ENOMEM;
+> > >
+> > > -     ret = uvc_query_ctrl(dev, UVC_GET_INFO, ctrl->entity->id, dev->intfnum,
+> > > -                          info->selector, data, 1);
+> > > +     if (ctrl->info.flags & UVC_CTRL_FLAG_ENTITY_GET_INFO)
+> >
+> > Do we need the flag, couldn't we use entity->get_info if it is non-null,
+> > and call uvc_query_ctrl() otherwise ?
 > 
-> Hi Catalin and Will - Friendly ping on this series now that we're
-> on the other side of the 5.10 merge window. I hope it can be considered
-> for 5.10+1. Let me know if I need to rebase/resubmit. Thanks!
+> The idea behind the flag is to support in the same entity controls
+> that are uvc_query_ctrl() based
+> and "entity private functions".
+> 
+> As this moment, there is only the " GPIO entity"  that has has private
+> functions, and does not require it.
+> 
+> So I can simply remove the flag and add it later (if needed).
 
-Can you use bootconfig to achieve what you need?
+I hope we won't need more hacks of this kind ;-)
 
-Will
+(It's a pretty clever hack I have to say)
+
+> > > +             ret = ctrl->entity->get_info ?
+> > > +                     ctrl->entity->get_info(ctrl->entity, ctrl->info.selector, data) :
+> > > +                     -EINVAL;
+> > > +     else
+> > > +             ret = uvc_query_ctrl(dev, UVC_GET_INFO, ctrl->entity->id, dev->intfnum,
+> > > +                                  info->selector, data, 1);
+> > >       if (!ret)
+> > >               info->flags |= (data[0] & UVC_CONTROL_CAP_GET ?
+> > >                               UVC_CTRL_FLAG_GET_CUR : 0)
+> > > diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
+> > > index a3dfacf069c4..08922d889bb6 100644
+> > > --- a/drivers/media/usb/uvc/uvcvideo.h
+> > > +++ b/drivers/media/usb/uvc/uvcvideo.h
+> > > @@ -353,6 +353,9 @@ struct uvc_entity {
+> > >       u8 bNrInPins;
+> > >       u8 *baSourceID;
+> > >
+> > > +     int (*get_info)(struct uvc_entity *entity, u8 cs, u8 *caps);
+> > > +     int (*get_cur)(struct uvc_entity *entity, u8 cs, void *data, u16 size);
+> >
+> > Looks like the second function should be part of patch 2/6 instead. I
+> > would however squash 1/6 and 2/6.
+> >
+> > > +
+> > >       unsigned int ncontrols;
+> > >       struct uvc_control *controls;
+> > >  };
+> > > diff --git a/include/uapi/linux/uvcvideo.h b/include/uapi/linux/uvcvideo.h
+> > > index f80f05b3c423..69b636290c31 100644
+> > > --- a/include/uapi/linux/uvcvideo.h
+> > > +++ b/include/uapi/linux/uvcvideo.h
+> > > @@ -30,6 +30,8 @@
+> > >  #define UVC_CTRL_FLAG_AUTO_UPDATE    (1 << 7)
+> > >  /* Control supports asynchronous reporting */
+> > >  #define UVC_CTRL_FLAG_ASYNCHRONOUS   (1 << 8)
+> > > +/* Entity queries */
+> > > +#define UVC_CTRL_FLAG_ENTITY_GET_INFO        (1 << 9)
+> > >
+> > >  #define UVC_CTRL_FLAG_GET_RANGE \
+> > >       (UVC_CTRL_FLAG_GET_CUR | UVC_CTRL_FLAG_GET_MIN | \
+
+-- 
+Regards,
+
+Laurent Pinchart
