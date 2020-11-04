@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36E102A5E08
+	by mail.lfdr.de (Postfix) with ESMTP id AFD3C2A5E09
 	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 07:10:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728241AbgKDGKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 01:10:17 -0500
+        id S1728483AbgKDGKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 01:10:19 -0500
 Received: from mga01.intel.com ([192.55.52.88]:9224 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725775AbgKDGKQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 01:10:16 -0500
-IronPort-SDR: Hr5whkKZVbrjr7+nzmet1m/bypHlOZ7zqezUeSuUyVD5oW0TppoyL4aKQfxjTNNrU5SlN4DQZu
- nf1Q5XBF2sHQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9794"; a="187029561"
+        id S1728340AbgKDGKS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 01:10:18 -0500
+IronPort-SDR: CSKCgdR/dUqqSlkfb7wObhMnjOZGP8S5QUtl3BXh5bp1Z+sD5aAzJgdgqyx1OWI+vpJMmrK4Ul
+ dz6wGVWiDxmA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9794"; a="187029564"
 X-IronPort-AV: E=Sophos;i="5.77,450,1596524400"; 
-   d="scan'208";a="187029561"
+   d="scan'208";a="187029564"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2020 22:10:15 -0800
-IronPort-SDR: txYcJcMOluOi+dwb9fPJCb8Z7iIMmkGOc1fntRQlHry7dsQAOZGxoM4G7PIyX3HW6xn/XIJDIC
- h7BsqmIcpR+w==
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2020 22:10:18 -0800
+IronPort-SDR: zOuneZdDbqM4h715AhIH0LDXMw042nHyaL2bxskRPRrvh/GuIrjKmtWTcJli3mb824/JDTUcyf
+ C54cIOQsWl2g==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.77,450,1596524400"; 
-   d="scan'208";a="325489774"
+   d="scan'208";a="325489782"
 Received: from shbuild999.sh.intel.com ([10.239.147.98])
-  by orsmga006.jf.intel.com with ESMTP; 03 Nov 2020 22:10:13 -0800
+  by orsmga006.jf.intel.com with ESMTP; 03 Nov 2020 22:10:16 -0800
 From:   Feng Tang <feng.tang@intel.com>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         Michal Hocko <mhocko@suse.com>,
@@ -36,9 +36,9 @@ To:     Andrew Morton <akpm@linux-foundation.org>,
         ying.huang@intel.com, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
 Cc:     Feng Tang <feng.tang@intel.com>
-Subject: [RFC PATCH 1/2] mm, oom: dump meminfo for all memory nodes
-Date:   Wed,  4 Nov 2020 14:10:09 +0800
-Message-Id: <1604470210-124827-2-git-send-email-feng.tang@intel.com>
+Subject: [RFC PATCH 2/2] mm, page_alloc: loose the node binding check to avoid helpless oom killing
+Date:   Wed,  4 Nov 2020 14:10:10 +0800
+Message-Id: <1604470210-124827-3-git-send-email-feng.tang@intel.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1604470210-124827-1-git-send-email-feng.tang@intel.com>
 References: <1604470210-124827-1-git-send-email-feng.tang@intel.com>
@@ -46,37 +46,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In some OOM cases, if there is memory node binding(current->mems_allowed
-is not NULL), system may only print the meminfo for these bound nodes,
-while other nodes' info could still be important for debugging.
+With the incoming of memory hotplug feature and persitent memory, in
+some platform there are memory nodes which only have movable zone.
 
-For example on a platform with one normal node (has DMA/DMA32/NORMAL...
-zones) and one node which only has movable zone (either for memory hotplug
-case or a persistent memory node), some user will run docker while binding
-memory to the movable node. many memory allocations originated from the
-docker instance will fall back to the other node, and when a OOM happens,
-meminfo for both nodes are needed.
+Users may bind some of their workload(like docker/container) to
+these nodes, and there are many reports of OOM and page allocation
+failures, one callstack is:
 
-So extend the show_mem() to cover all memory nodes.
+	[ 1387.877565] runc:[2:INIT] invoked oom-killer: gfp_mask=0x500cc2(GFP_HIGHUSER|__GFP_ACCOUNT), order=0, oom_score_adj=0
+	[ 1387.877568] CPU: 8 PID: 8291 Comm: runc:[2:INIT] Tainted: G        W I E     5.8.2-0.g71b519a-default #1 openSUSE Tumbleweed (unreleased)
+	[ 1387.877569] Hardware name: Dell Inc. PowerEdge R640/0PHYDR, BIOS 2.6.4 04/09/2020
+	[ 1387.877570] Call Trace:
+	[ 1387.877579]  dump_stack+0x6b/0x88
+	[ 1387.877584]  dump_header+0x4a/0x1e2
+	[ 1387.877586]  oom_kill_process.cold+0xb/0x10
+	[ 1387.877588]  out_of_memory.part.0+0xaf/0x230
+	[ 1387.877591]  out_of_memory+0x3d/0x80
+	[ 1387.877595]  __alloc_pages_slowpath.constprop.0+0x954/0xa20
+	[ 1387.877599]  __alloc_pages_nodemask+0x2d3/0x300
+	[ 1387.877602]  pipe_write+0x322/0x590
+	[ 1387.877607]  new_sync_write+0x196/0x1b0
+	[ 1387.877609]  vfs_write+0x1c3/0x1f0
+	[ 1387.877611]  ksys_write+0xa7/0xe0
+	[ 1387.877617]  do_syscall_64+0x52/0xd0
+	[ 1387.877621]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+In a full container run, like installing and running the stress tool
+"stress-ng", there are many different kinds of page requests (gfp_masks),
+many of which only allow non-movable zones. Some of them can fall back
+to other nodes with NORMAL/DMA32/DMA zones, but others are blocked by
+the __GFP_HARDWALL or ALLOC_CPUSET check, and cause OOM killing. But
+OOM killing won't do any help here, as this is not an issue of lack of
+free memory, but simply blocked by the node binding policy check.
+
+So loose the policy check for this case.
 
 Signed-off-by: Feng Tang <feng.tang@intel.com>
 ---
- mm/oom_kill.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ mm/page_alloc.c | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
-diff --git a/mm/oom_kill.c b/mm/oom_kill.c
-index 8b84661..601476cc 100644
---- a/mm/oom_kill.c
-+++ b/mm/oom_kill.c
-@@ -462,7 +462,7 @@ static void dump_header(struct oom_control *oc, struct task_struct *p)
- 	if (is_memcg_oom(oc))
- 		mem_cgroup_print_oom_meminfo(oc->memcg);
- 	else {
--		show_mem(SHOW_MEM_FILTER_NODES, oc->nodemask);
-+		show_mem(SHOW_MEM_FILTER_NODES, &node_states[N_MEMORY]);
- 		if (is_dump_unreclaim_slabs())
- 			dump_unreclaimable_slab();
- 	}
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index d772206..efd49a9 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -4669,6 +4669,28 @@ __alloc_pages_slowpath(gfp_t gfp_mask, unsigned int order,
+ 	if (!ac->preferred_zoneref->zone)
+ 		goto nopage;
+ 
++	/*
++	 * If the task's target memory nodes only has movable zones, while the
++	 * gfp_mask allowed zone is lower than ZONE_MOVABLE, loose the check
++	 * for __GFP_HARDWALL and ALLOC_CPUSET, otherwise it could trigger OOM
++	 * killing, which still can not solve this policy check.
++	 */
++	if (ac->highest_zoneidx <= ZONE_NORMAL) {
++		int nid;
++		unsigned long unmovable = 0;
++
++		/* FIXME: this could be a separate function */
++		for_each_node_mask(nid, cpuset_current_mems_allowed) {
++			unmovable += NODE_DATA(nid)->node_present_pages -
++				NODE_DATA(nid)->node_zones[ZONE_MOVABLE].present_pages;
++		}
++
++		if (!unmovable) {
++			gfp_mask &= ~(__GFP_HARDWALL);
++			alloc_flags &= ~ALLOC_CPUSET;
++		}
++	}
++
+ 	if (alloc_flags & ALLOC_KSWAPD)
+ 		wake_all_kswapds(order, gfp_mask, ac);
+ 
 -- 
 2.7.4
 
