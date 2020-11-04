@@ -2,109 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE8C32A6B75
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 18:13:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D83202A6B79
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 18:13:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731405AbgKDRM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 12:12:59 -0500
-Received: from smtprelay0137.hostedemail.com ([216.40.44.137]:53192 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726746AbgKDRM6 (ORCPT
+        id S1731420AbgKDRNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 12:13:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43608 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730362AbgKDRNy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 12:12:58 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 59C52100E7B4A;
-        Wed,  4 Nov 2020 17:12:57 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 10,1,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:69:355:379:421:599:967:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:1801:2110:2198:2199:2393:2525:2560:2563:2682:2685:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3354:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:4470:4605:4823:5007:7903:7974:8829:8985:9025:10007:10400:10848:11026:11232:11233:11658:11783:11914:12043:12296:12297:12438:12663:12683:12740:12895:13439:13894:14096:14097:14181:14659:14721:21067:21080:21324:21433:21451:21627:21939:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:1:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: corn41_551230a272c2
-X-Filterd-Recvd-Size: 3173
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf16.hostedemail.com (Postfix) with ESMTPA;
-        Wed,  4 Nov 2020 17:12:55 +0000 (UTC)
-Message-ID: <57b77f3a36f56e2ae7ab8fe367865b5412d4e11f.camel@perches.com>
-Subject: Re: [PATCH] ACPI: Remove trailing whitespace
-From:   Joe Perches <joe@perches.com>
-To:     Maximilian Luz <luzmaximilian@gmail.com>,
-        Bjorn Helgaas <helgaas@kernel.org>
-Cc:     linux-acpi@vger.kernel.org,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Wed, 04 Nov 2020 09:12:54 -0800
-In-Reply-To: <6d888eb0-bfc5-28ff-c62f-9e769f77bc1f@gmail.com>
-References: <20201103211259.GA265488@bjorn-Precision-5520>
-         <c92703e3-c964-b4a6-e3df-c4c0c28b44c1@gmail.com>
-         <6e392d099bd8aaba14223aa770361dbdeeab271b.camel@perches.com>
-         <6d888eb0-bfc5-28ff-c62f-9e769f77bc1f@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Wed, 4 Nov 2020 12:13:54 -0500
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE765C0613D3;
+        Wed,  4 Nov 2020 09:13:52 -0800 (PST)
+Received: by mail-ot1-x344.google.com with SMTP id z16so14811732otq.6;
+        Wed, 04 Nov 2020 09:13:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=5LBE+JYAg1FMao9hDSNR2rR/Xnyuu7Kx1Nw4Aylqvuo=;
+        b=FuH/YcBOkVgfFQCpmyWHXNs+ZKUF5WiOQWDQHkVLoDt6nc5LWXoWngQYvqonLc8SXy
+         wL0TIF4lufy5aPW+leQnS982s7cVBU4PORcFXdwIM8jCZ5RxJKHhq+s+js6tTkfR1jVq
+         w3Zv82LT1JVBcTeoykJasgFv39bPvUsGHOXDKQ6egofXFp7/bebUW9hpYKs4Hu1d5Fuy
+         /VEM5p++xOz2hjvU1eApg518JjuDXGvnEOWb8hhEaQkq5Xj/Bp5G4JQ3+ZoUj/PppfjG
+         fpbro8DzLrzmNwvxARiaIb1gEQjLl6NehbWaqSIa/ufctub3HqaHFjWn+Oyp9UUZGkIg
+         vJoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=5LBE+JYAg1FMao9hDSNR2rR/Xnyuu7Kx1Nw4Aylqvuo=;
+        b=RIcDQ2rMxQr9pa54DC/j3HPuFRya5s8EKMK7AZz2vR4ZuOlSpkNH8PA4VR9Jqf0Kge
+         QnCoo7kzgF7/U/69+MkJ8ZWAgU9Mksup73nKBTsOe+iuLn8MayfDyqXCckOVRIbntSx9
+         Fx40nUJomnZRFBKB2BY9e6oai1fLjTTFCF8u5Q6EDwtMtZtSzaUHia380J5ueB6aQ84j
+         PQvlaU7imBO6T46AjlFXlgPbwmdSd5bBtk7PmopslN5EJP3j4zONaj7CJCzLqhcO5/pW
+         RlO6PbOaHpQotASEpOetr7IZEkSFaBsfJIVLtVNxp6ljZA+T2wYO+OXqyn9f1urSHW+m
+         LgtQ==
+X-Gm-Message-State: AOAM530EV3kpRtECgx72rwbraaBTVvuSD+nFgcRRx2HU/f0lUobUiEn9
+        8J0AiRNB3fw+XLOHn9TBCyp6uwjEwJEsMRtq
+X-Google-Smtp-Source: ABdhPJxWfHOdKpuAoVyh9eKyY4bNewXcAgMq4q61VWgMeT7YRcBPLUxquxDt+Kh+vlGv8a381CSM9A==
+X-Received: by 2002:a9d:6d19:: with SMTP id o25mr19778108otp.85.1604510032069;
+        Wed, 04 Nov 2020 09:13:52 -0800 (PST)
+Received: from ?IPv6:2600:1700:4a30:eaf0::21? ([2600:1700:4a30:eaf0::21])
+        by smtp.gmail.com with ESMTPSA id g8sm579513oia.16.2020.11.04.09.13.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Nov 2020 09:13:51 -0800 (PST)
+Subject: Re: [PATCH v2] Input: Fix the HID usage of DPAD input event
+ generation.
+To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc:     Chris Ye <lzye@google.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>, trivial@kernel.org,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>
+References: <20201101193504.679934-1-lzye@google.com>
+ <CAO-hwJJVKOM7Om8E+kmYXTrA7SiOFgFt46BHfv+0j+ORhepbaQ@mail.gmail.com>
+ <7505bbc6-9f76-0875-c1c1-95d611a980bb@gmail.com>
+ <CAO-hwJK3EzeQbiPMy=8YAVp91nN6bMcAqqfzff+-6mti9PFMHQ@mail.gmail.com>
+From:   Chris Ye <linzhao.ye@gmail.com>
+Message-ID: <62b486c3-6cbe-495e-7843-1cffb010a685@gmail.com>
+Date:   Wed, 4 Nov 2020 09:13:50 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
+In-Reply-To: <CAO-hwJK3EzeQbiPMy=8YAVp91nN6bMcAqqfzff+-6mti9PFMHQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-11-04 at 16:48 +0100, Maximilian Luz wrote:
-> On 11/4/20 6:13 AM, Joe Perches wrote:
-> 
-> [...]
-> 
-> > > Yes. I scanned drivers/acpi for trailing whitespaces after I noticed a
-> > > couple of them. I did not explicitly scan for other stuff like spaces
-> > > where there should be tabs, mostly because I haven't found a quick and
-> > > reliable solution for that. I only noticed an inconsistent indentation
-> > > when committing, so I fixed that too.
-> > 
-> > You could try:
-> > 
-> > $ git ls-files -- 'drivers/acpi/*.[ch]' | \
-> >    xargs ./scripts/checkpatch.pl -f --fix-inplace --types=CODE_INDENT
-> 
-> Thanks, that indeed looks like a decent solution.
-> 
-> > Right now that produces:
-> > ---
-> 
-> [...]
-> 
-> > diff --git a/drivers/acpi/ac.c b/drivers/acpi/ac.c
-[]
-> > @@ -89,7 +89,7 @@ struct acpi_ac {
-> >   #define to_acpi_ac(x) power_supply_get_drvdata(x)
-> >   
-> > 
-> >   /* --------------------------------------------------------------------------
-> > -                               AC Adapter Management
-> > +			       AC Adapter Management
-> >      -------------------------------------------------------------------------- */
-> 
-> I'm not too sure about the comments, but I can find the time to look
-> over the output and adjust that if that's something you'd want me to do.
+Hi Benjamin,
 
-Up to you.  I hardly looked at the output.
+ Â Â  We are using hid driver to inject hid report for D-Pad and Hat 
+switch events, like:
 
-I'd generally prefer to use a single line comment like
+ Â Â Â Â Â  [0x00, 0x00, 0x00, 0x00, 0x01, 0x80, 0x00, 0x00, 0x00, 0x00, 
+0x00, 0x00],
 
-/* AC Adapter Management */
+Check the HID format dump from kernel, this will send a 0x1 on HID usage 
+GenericDesktop.HatSwitch.
 
-but I don't know how often that dashed block is used in ACPI.
-
-grep seems to show the texts are not correctly centered so it seems like
-it was done by hand and not that some automation tool was used to create
-those blocks.
-
-Maybe a separate patch could be done to change those if desired.
-But not by me.
-
-As far as I know, acpi was once autogenerated from a common source tree
-and whitespace changes were once frowned on, but maybe that's changed or
-or perhaps that's only for files in drivers/acpi/acpica/.  I don't know.
-
-https://acpica.org/downloads/linux
-
-cheers, Joe
+Do you need me to help write the gamevice tests? I've not observed any 
+regression from my side, as this patch is very specific to usage 
+D-PadUp/Down/Left/Right.
 
 
+Thanks!
+
+Chris
+
+
+On 11/3/20 9:36 AM, Benjamin Tissoires wrote:
+>   I can emulate events for X,Y,
+> buttons,... but I am not sure how the gamepad sends the events for the
+> Hat switch and the D-Pad together.
