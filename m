@@ -2,83 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4906F2A6D1C
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 19:47:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10D852A6D2E
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 19:52:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731610AbgKDSrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 13:47:14 -0500
-Received: from foss.arm.com ([217.140.110.172]:42154 "EHLO foss.arm.com"
+        id S1730406AbgKDSwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 13:52:11 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:43174 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726737AbgKDSrM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 13:47:12 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 40FF114BF;
-        Wed,  4 Nov 2020 10:47:11 -0800 (PST)
-Received: from [192.168.122.166] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 77B623F718;
-        Wed,  4 Nov 2020 10:47:10 -0800 (PST)
-Subject: Re: [PATCH 0/4] aarch64: avoid mprotect(PROT_BTI|PROT_EXEC) [BZ
- #26831]
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Szabolcs Nagy <szabolcs.nagy@arm.com>, libc-alpha@sourceware.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        Salvatore Mesoraca <s.mesoraca16@gmail.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        Topi Miettinen <toiwoton@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kernel-hardening@lists.openwall.com,
-        linux-hardening@vger.kernel.org
-References: <cover.1604393169.git.szabolcs.nagy@arm.com>
- <20201103173438.GD5545@sirena.org.uk>
- <8c99cc8e-41af-d066-b786-53ac13c2af8a@arm.com>
- <20201104105058.GA4812@sirena.org.uk>
-From:   Jeremy Linton <jeremy.linton@arm.com>
-Message-ID: <8c2d08a7-5595-6221-8da8-a7cbf6e1d493@arm.com>
-Date:   Wed, 4 Nov 2020 12:47:09 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        id S1729755AbgKDSwL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 13:52:11 -0500
+Received: from zn.tnic (p200300ec2f0ef400317dde2deb3fed11.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:f400:317d:de2d:eb3f:ed11])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E5CBD1EC0179;
+        Wed,  4 Nov 2020 19:52:09 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1604515930;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=j35nNUv7vFKPZCAWGuXz8ekUUIF51j9Annk7NSuaxBA=;
+        b=CCBUBlunPd2Wfa6m5DSTGXAr7/w4HCLTmNA4aAn0gHiWqbEYtl9VXfWeULS/z5fKyvjTep
+        BxSMyAg0xzOwlIfhwitqAmqPONucjkw0Ev9sFuEO9NjkuGhVbmCN6meBveQMWQ6SaMfa/g
+        MrzmgVD4XIW4ZpwQcnme1EoLDji8L7A=
+Date:   Wed, 4 Nov 2020 19:51:57 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Shuo A Liu <shuo.a.liu@intel.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Yu Wang <yu1.wang@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>
+Subject: Re: [PATCH v5 03/17] x86/acrn: Introduce an API to check if a VM is
+ privileged
+Message-ID: <20201104185157.GE23298@zn.tnic>
+References: <20201019061803.13298-1-shuo.a.liu@intel.com>
+ <20201019061803.13298-4-shuo.a.liu@intel.com>
+ <20201102143707.GC15392@zn.tnic>
+ <20201103062718.GD12408@shuo-intel.sh.intel.com>
+ <20201103102538.GB6310@zn.tnic>
+ <20201104035027.GA17702@shuo-intel.sh.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20201104105058.GA4812@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201104035027.GA17702@shuo-intel.sh.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, Nov 04, 2020 at 11:50:27AM +0800, Shuo A Liu wrote:
+> On Tue  3.Nov'20 at 11:25:38 +0100, Borislav Petkov wrote:
+> > On Tue, Nov 03, 2020 at 02:27:18PM +0800, Shuo A Liu wrote:
+> > > The code just followed KVM style (see kvm_arch_para_features()).
+> > 
+> > Do you see Documentation/virt/kvm/cpuid.rst?
+> 
+> OK. It documents the leaf number.
 
-On 11/4/20 4:50 AM, Mark Brown wrote:
-> On Tue, Nov 03, 2020 at 11:41:42PM -0600, Jeremy Linton wrote:
->> On 11/3/20 11:34 AM, Mark Brown wrote:
-> 
->>> Given that there were still some ongoing discussions on a more robust
->>> kernel interface here and there seem to be a few concerns with this
->>> series should we perhaps just take a step back and disable this seccomp
->>> filter in systemd on arm64, at least for the time being?  That seems
->>> safer than rolling out things that set ABI quickly, a big part of the
-> 
->> So, that's a bigger hammer than I think is needed and punishes !BTI
->> machines. I'm going to suggest that if we need to carry a temp patch its
->> more like the glibc patch I mentioned in the Fedora defect. That patch
->> simply logs a message, on the mprotect failures rather than aborting. Its
->> fairly non-intrusive.
-> 
->> That leaves seccomp functional, and BTI generally functional except when
->> seccomp is restricting it. I've also been asked that if a patch like that is
->> needed, its (temporary?) merged to the glibc trunk, rather than just being
->> carried by the distro's.
-> 
-> The effect on pre-BTI hardware is an issue, another option would be for
-> systemd to disable this seccomp usage but only after checking for BTI
-> support in the system rather than just doing so purely based on the
-> architecture.
-> 
+It also says
 
-That works, but your also losing seccomp in the case where the machine 
-is BTI capable, but the service isn't. So it should really be checking 
-the elf notes, but at that point you might just as well patch glibc.
+"Note also that old hosts set eax value to 0x0. This should be
+interpreted as if the value was 0x40000001."
+
+Does this hold true for the acrn HV? The fact that I'm asking about
+all those things should give you a hint that documenting the API is
+important.
+
+> > Now where is yours explaining what your hypervisor is doing?
+> 
+> Currently, it is in arch/x86/include/asm/acrn.h.
+
+Yeah, you can't expect people to go scrape it from headers though - it
+should be concentrated in a doc file.
+
+> If the leaf numbers be documented explicitly (like kvm), i think i can
+> use them as eax of cpuid_eax() directly (back to your first comment).
+
+Which means, you don't need to do the logical OR-ing which kvm does
+because of what I pasted above about eax being 0 on old hosts. Now we're
+getting somewhere...
+
+> 	cpuid_eax(ACRN_CPUID_FEATURES)...
+> 
+> If you looking at implementation of acrn-hypervisor, you will found the
+> leaf number is hardcoded in the hypervisor. So, they also can be
+> documented explicitly.
+
+Ok.
+
+> OK. I can add a similar cpuid.rst for acrn.
+
+Yes please.
+
+> Yes. Fix patches are always welcome.
+
+Ok, good, the thing is open. You could put that in the doc too, along
+with the link so that people can find it.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
