@@ -2,106 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 146032A7031
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 23:07:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D1782A7037
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 23:08:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732225AbgKDWHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 17:07:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32876 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727098AbgKDWHD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 17:07:03 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9DCAC0613D3;
-        Wed,  4 Nov 2020 14:07:02 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CRLNF0XJ9z9sVD;
-        Thu,  5 Nov 2020 09:06:53 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1604527618;
-        bh=XNrDkiWCKc4iCIZ3KeqYm4bkz+Kp3eURpmIVbbP0CmQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Qi4eAzLwSgoTvmNevqeXAknL/UDcy6E14Sx3nkthZre3VjBBqULpmHX5j+wAKKGLT
-         ipqLXT4Jb0qBDsr3At11FLGpGh0JDSUe/uPB3iLFjBy5l23rWHExudPiiQ6AtF//BQ
-         G/zkRA/Xcqnk2mJVWh73NeFpCJDxm5RH3W8RhMvV5zG08EmxY2ENbgmaHL8jEaM/EB
-         DxrGKF8OBz6weRyovbSBQLncMAWu4uJht1RjG2tjf9WGpSXhLmCZKwK0GJLZPSTtA1
-         ew6oQyjjxVYQwYQ+Z1N/brHOVQp03w2Urz0gYil7+97SmZ/Ry32EcFpLprwbZCEWTq
-         gmy8ZlEa0p+aQ==
-Date:   Thu, 5 Nov 2020 09:06:52 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Subject: Re: [GIT PULL] Docs-build warning fixes for 5.10-rc3
-Message-ID: <20201105090652.003eb7bf@canb.auug.org.au>
-In-Reply-To: <CAHk-=wghhw0SpqSKKUqt5eum=UfLD3Qa0suoRxLy_cJc4hChug@mail.gmail.com>
-References: <20201103124420.46bf5a37@lwn.net>
-        <CAHk-=wghhw0SpqSKKUqt5eum=UfLD3Qa0suoRxLy_cJc4hChug@mail.gmail.com>
+        id S1732319AbgKDWIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 17:08:22 -0500
+Received: from mail-dm6nam10on2055.outbound.protection.outlook.com ([40.107.93.55]:46560
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1732289AbgKDWIV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 17:08:21 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dGZusuDMHxwnjYXe3EEH0nySvV7bAWtouYdhugP3I93BnD1qhW9E7pFknmN3uTlxv/DColAxXfoFlbaHbWzr5IIHwI7dn4SoD07QFNzSPMCUEzhXyfPk90hcT8imLRXs6jYT78ncDZk6RYEwH0z0E5S4uwze710LLpMLi1Wymh/3drYFsC5ldYSD+GkI7vd4Uwwnx9V8Tf8h3uTtYYnxGr+Zgrv73VtO1tBBgDvzvda/bCywpdaI0jQGwlCiwR/Pb+/MJefdN8uOrVCKQl1Vg1U/lPsI0S6dsDnE2pxKWiqXl/k92jU/G/jaDsNip24/ZfyDiiqC9RBLQPbosP87ww==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WK2JBDbJqbI4m+s6yKBaN6WaHbSe29+HIlp/WbaceEg=;
+ b=UveM4AJC72mVnb3igkH4N+sBH1x39hRVzDTiukku1wLtfvnDTe2r8RRP425zoXRvcg5JuVMYt4ZrvTn9wAx+KNKyNHLxDikvwZALLtbt4lHJgiB0dvT3D+Flo0Njy2+6kio7NSlKepNTciPUlMmFY26vvao6CD942MAKyJfNumZicmV2A4J4FRQVAGA4ZoQHB1Kg8BYIknsWA2CjNvXcIGGWIrmMgYGq8N2qpx6wdCOxGJpyjYHJeVFV3dZdSmlBs+Zu7RRr9P57DoBzIAYoNHkcs2lvzYq6iA/pAXApuW0ZMb9iGssTTgK6H5ro1vrKmEe/JW37rOrVVpFt45k35Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WK2JBDbJqbI4m+s6yKBaN6WaHbSe29+HIlp/WbaceEg=;
+ b=lP096EXEZtN4WcM0/UN1eQj5KB7VUx0vVqh17A07q9vPvc/yj2PEB2zWMZt0fVxB4URvfvyB3HIo3AIeOaahnnpGAyH/FpNOhzjILb9zb7/HlqO7rvVmI6UkQW16TQEsIpnufM6zMWZgZ4n6vYlIvGo/ntVhqkZmeYwooJ71x5o=
+Authentication-Results: oracle.com; dkim=none (message not signed)
+ header.d=none;oracle.com; dmarc=none action=none header.from=amd.com;
+Received: from SN6PR12MB2767.namprd12.prod.outlook.com (2603:10b6:805:75::23)
+ by SN6PR12MB2782.namprd12.prod.outlook.com (2603:10b6:805:73::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.19; Wed, 4 Nov
+ 2020 22:08:16 +0000
+Received: from SN6PR12MB2767.namprd12.prod.outlook.com
+ ([fe80::d8f2:fde4:5e1d:afec]) by SN6PR12MB2767.namprd12.prod.outlook.com
+ ([fe80::d8f2:fde4:5e1d:afec%3]) with mapi id 15.20.3499.032; Wed, 4 Nov 2020
+ 22:08:16 +0000
+From:   Ashish Kalra <Ashish.Kalra@amd.com>
+To:     konrad.wilk@oracle.com
+Cc:     hch@lst.de, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        hpa@zytor.com, x86@kernel.org, luto@kernel.org,
+        peterz@infradead.org, dave.hansen@linux-intel.com,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        brijesh.singh@amd.com, Thomas.Lendacky@amd.com,
+        ssg.sos.patches@amd.com
+Subject: [PATCH v3] swiotlb: Adjust SWIOTBL bounce buffer size for SEV guests.
+Date:   Wed,  4 Nov 2020 22:08:04 +0000
+Message-Id: <20201104220804.21026-1-Ashish.Kalra@amd.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-Originating-IP: [165.204.77.1]
+X-ClientProxiedBy: DM5PR20CA0027.namprd20.prod.outlook.com
+ (2603:10b6:3:13d::13) To SN6PR12MB2767.namprd12.prod.outlook.com
+ (2603:10b6:805:75::23)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/ecORw=5CeK5vORwvDFwXsH+";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ashkalra_ubuntu_server.amd.com (165.204.77.1) by DM5PR20CA0027.namprd20.prod.outlook.com (2603:10b6:3:13d::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.22 via Frontend Transport; Wed, 4 Nov 2020 22:08:15 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 4d38e972-27fb-4022-95f5-08d8810e2141
+X-MS-TrafficTypeDiagnostic: SN6PR12MB2782:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SN6PR12MB27822BEEA46D590AF84D8BF68EEF0@SN6PR12MB2782.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 7Re81fDX9irvJ9gLt7hpxKSjQ9tcnOwxIq92Cs39kVbsYpQ5ORKZBXGE0NLHiCVLs+uuxP1k06H9RmlEJDPEqEyXx7r/qrdanuYnv1/S0Ul0LPaKME5j9Hdl9lZyKS75eBfe/OqqvBM5QyAvlw10nuOGB4jiza2ooCT+YRufRIxh8MGTG1mBXJFtVbztrW6ngFwCTPSoV+DnIv0B/+Mpd9MfLf08v+eAk84njIvYAtKROGhXc1od6elMVLW9pQBbXJHzNFkbrk7IB9XGoeOfRsouZ6Kz/jYdgEiUsdxBYhQK/r2VPDfu+bNrPBOLT8E8T2uSDWgP04dxaRooSn5QRA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2767.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(396003)(39860400002)(366004)(376002)(52116002)(66946007)(8936002)(66556008)(66476007)(186003)(16526019)(316002)(4326008)(8676002)(5660300002)(6666004)(7696005)(1076003)(478600001)(86362001)(956004)(2616005)(26005)(7416002)(36756003)(6486002)(6916009)(2906002)(83380400001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: iymlKGrTdBVeAGPiv8i6xK9YwSV+yjUrwIsiq1i/XPl+Q1hGwxC6LR4Y/3NpFy8+3ZbQK1s/BxmNJeME4Mjb1tMs5j/lcqcPYXWHkXjwZgBSzU46+iWCN9wROvzWO8blhrjMUmYuoND926wNUV1oXSxW6eu59ea0Mpn1jbuS2XGRWMy/IjW6zdSobskWTNeyZRMv6IulIldpj45lo2emucYWXSfTOm3iQO85ZkGeSO7yuGDEeGw870XD1V8o3FXM6SW9SAF5sG5+jA6e8xoEDrblOHbK7XrT/1R7wtj5QAtCVLdjPrkhJAPQncxXpJduQbZ6stMBntp0DscbEGlkLuX22jE5h6oFeE+XOqN3TO6VKgAcdPxln7NHRyCGxQ4t9Jq4KtrWna1UVUrwmCeWabFu6MQpiJepLbVClXzweyeTQsVASuBejWg9rcuEaia4Qw62YHrQA1Voa70cpcthbCafuret+3jIGG9SARG8hSgPeBhw9pLbWa8CwZd7J5Wv9xtl+JJkWsw9zelPyBW9Wv8ZeuL2P26HT90kchIaXNxnvH9swscRIMP3rxcq4YLtn0QRC1Uo3tGKt2OKdz3srJ00GNAc6HnMs9amvVqynoNP9cvCaoZmW66YD1GpcV+XNE4f4yHciLYMO+DO9Uu8Og==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4d38e972-27fb-4022-95f5-08d8810e2141
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2767.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Nov 2020 22:08:16.1885
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 59hRNI0UD3k7GQ2pDU6BjwA5nZuKJ98X6pP6rQXDn0pLH+4Tf7LNQ7Bosgf7Tqhls/c5x47B3lZoUKrWAlSFPQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR12MB2782
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/ecORw=5CeK5vORwvDFwXsH+
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+From: Ashish Kalra <ashish.kalra@amd.com>
 
-Hi Linus,
+For SEV, all DMA to and from guest has to use shared
+(un-encrypted) pages. SEV uses SWIOTLB to make this
+happen without requiring changes to device drivers.
+However, depending on workload being run, the default
+64MB of SWIOTLB might not be enough and SWIOTLB
+may run out of buffers to use for DMA, resulting
+in I/O errors and/or performance degradation for
+high I/O workloads.
 
-On Tue, 3 Nov 2020 13:18:27 -0800 Linus Torvalds <torvalds@linux-foundation=
-.org> wrote:
->
-> On Tue, Nov 3, 2020 at 11:44 AM Jonathan Corbet <corbet@lwn.net> wrote:
-> >
-> > This pull contains a series of warning fixes from Mauro; once applied, =
-the
-> > number of warnings from the once-noisy docs build process is nearly zer=
-o.
-> > Getting to this point has required a lot of work; once there, hopefully=
- we
-> > can keep things that way. =20
->=20
-> I wonder if it is quiet enough that we could make new doc build noise
-> trigger some kind of linux-next warning?
->=20
-> I know Stephen was at least looking at doc build warnings justding by
-> the thread a couple of weeks ago.
+Increase the default size of SWIOTLB for SEV guests
+using a minimum value of 128MB and a maximum value
+of 512MB, determining on amount of provisioned guest
+memory.
 
-What I am currently doing is a "make htmldocs" on your tree and then again
-on the whole linux-next release and reporting changes.
+Using late_initcall() interface to invoke
+swiotlb_adjust() does not work as the size
+adjustment needs to be done before mem_encrypt_init()
+and reserve_crashkernel() which use the allocated
+SWIOTLB buffer size, hence calling it explicitly
+from setup_arch().
 
-There is currently one message produced in your tree (after I add all
-the "pending fixes") and I have reported that this morning.  So things
-are looking pretty good now - a lot of good work over the past couple
-of releases.
+The SWIOTLB default size adjustment is added as an
+architecture specific interface/callback to allow
+architectures such as those supporting memory
+encryption to adjust/expand SWIOTLB size for their
+use.
 
---=20
-Cheers,
-Stephen Rothwell
+Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+---
+ arch/x86/kernel/setup.c   |  2 ++
+ arch/x86/mm/mem_encrypt.c | 42 +++++++++++++++++++++++++++++++++++++++
+ include/linux/swiotlb.h   |  1 +
+ kernel/dma/swiotlb.c      | 27 +++++++++++++++++++++++++
+ 4 files changed, 72 insertions(+)
 
---Sig_/ecORw=5CeK5vORwvDFwXsH+
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+index 3511736fbc74..b073d58dd4a3 100644
+--- a/arch/x86/kernel/setup.c
++++ b/arch/x86/kernel/setup.c
+@@ -1166,6 +1166,8 @@ void __init setup_arch(char **cmdline_p)
+ 	if (boot_cpu_has(X86_FEATURE_GBPAGES))
+ 		hugetlb_cma_reserve(PUD_SHIFT - PAGE_SHIFT);
+ 
++	swiotlb_adjust();
++
+ 	/*
+ 	 * Reserve memory for crash kernel after SRAT is parsed so that it
+ 	 * won't consume hotpluggable memory.
+diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
+index 3f248f0d0e07..e0deb157cddd 100644
+--- a/arch/x86/mm/mem_encrypt.c
++++ b/arch/x86/mm/mem_encrypt.c
+@@ -489,7 +489,49 @@ static void print_mem_encrypt_feature_info(void)
+ 	pr_cont("\n");
+ }
+ 
++#define TOTAL_MEM_1G	0x40000000UL
++#define TOTAL_MEM_4G	0x100000000UL
++
++#define SIZE_128M (128UL<<20)
++#define SIZE_256M (256UL<<20)
++#define SIZE_512M (512UL<<20)
++
+ /* Architecture __weak replacement functions */
++unsigned long __init arch_swiotlb_adjust(unsigned long iotlb_default_size)
++{
++	unsigned long size = 0;
++
++	/*
++	 * For SEV, all DMA has to occur via shared/unencrypted pages.
++	 * SEV uses SWOTLB to make this happen without changing device
++	 * drivers. However, depending on the workload being run, the
++	 * default 64MB of SWIOTLB may not be enough & SWIOTLB may
++	 * run out of buffers for DMA, resulting in I/O errors and/or
++	 * performance degradation especially with high I/O workloads.
++	 * Increase the default size of SWIOTLB for SEV guests using
++	 * a minimum value of 128MB and a maximum value of 512MB,
++	 * depending on amount of provisioned guest memory.
++	 */
++	if (sev_active()) {
++		phys_addr_t total_mem = memblock_phys_mem_size();
++
++		if (total_mem <= TOTAL_MEM_1G)
++			size = clamp(iotlb_default_size * 2, SIZE_128M,
++				     SIZE_128M);
++		else if (total_mem <= TOTAL_MEM_4G)
++			size = clamp(iotlb_default_size * 4, SIZE_256M,
++				     SIZE_256M);
++		else
++			size = clamp(iotlb_default_size * 8, SIZE_512M,
++				     SIZE_512M);
++
++		pr_info("SEV adjusted max SWIOTLB size = %luMB",
++			size >> 20);
++	}
++
++	return size;
++}
++
+ void __init mem_encrypt_init(void)
+ {
+ 	if (!sme_me_mask)
+diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
+index 046bb94bd4d6..01ae6d891327 100644
+--- a/include/linux/swiotlb.h
++++ b/include/linux/swiotlb.h
+@@ -33,6 +33,7 @@ extern void swiotlb_init(int verbose);
+ int swiotlb_init_with_tbl(char *tlb, unsigned long nslabs, int verbose);
+ extern unsigned long swiotlb_nr_tbl(void);
+ unsigned long swiotlb_size_or_default(void);
++extern void __init swiotlb_adjust(void);
+ extern int swiotlb_late_init_with_tbl(char *tlb, unsigned long nslabs);
+ extern void __init swiotlb_update_mem_attributes(void);
+ 
+diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+index c19379fabd20..66a9e627bb51 100644
+--- a/kernel/dma/swiotlb.c
++++ b/kernel/dma/swiotlb.c
+@@ -163,6 +163,33 @@ unsigned long swiotlb_size_or_default(void)
+ 	return size ? size : (IO_TLB_DEFAULT_SIZE);
+ }
+ 
++unsigned long __init __weak arch_swiotlb_adjust(unsigned long size)
++{
++	return 0;
++}
++
++void __init swiotlb_adjust(void)
++{
++	unsigned long size;
++
++	/*
++	 * If swiotlb parameter has not been specified, give a chance to
++	 * architectures such as those supporting memory encryption to
++	 * adjust/expand SWIOTLB size for their use.
++	 */
++	if (!io_tlb_nslabs) {
++		size = arch_swiotlb_adjust(IO_TLB_DEFAULT_SIZE);
++		if (size) {
++			size = ALIGN(size, 1 << IO_TLB_SHIFT);
++			io_tlb_nslabs = size >> IO_TLB_SHIFT;
++			io_tlb_nslabs = ALIGN(io_tlb_nslabs, IO_TLB_SEGSIZE);
++
++			pr_info("architecture adjusted SWIOTLB slabs = %lu\n",
++				io_tlb_nslabs);
++		}
++	}
++}
++
+ void swiotlb_print_info(void)
+ {
+ 	unsigned long bytes = io_tlb_nslabs << IO_TLB_SHIFT;
+-- 
+2.17.1
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+jJfwACgkQAVBC80lX
-0Gzxuwf+JpGXNXFZbWpCRtB04o2eTjMf+hFrlK3ZDRJ4Q+ADrAf9N5/q4/cryqsZ
-GoV4Mjh6eJe3tsAgAStL3D6uRs7VVGQLrCfsEiarMkCofyqnAglxsGrZh+3XptyQ
-SzIV7G3SlLkMEaVSbXlQaFjaRVBKbyTHdNV3O/iGaiN6tkv+WBAsoRO1bgO+gCyv
-3qzaZAbLETHubnEWEX1WWQ/7tV4rQsrhzHdrLNIvCVNt7p/W6b3pI5mMULe9NN+T
-ZjNPtwJhMi89t5RxyIn+slzkNcFUYeqPDD0IJoQ/3/wyWmh+o747W6Ilni0fj8Tz
-klftHvgE11NNOZpYXyL+jr5WHooLqA==
-=UprJ
------END PGP SIGNATURE-----
-
---Sig_/ecORw=5CeK5vORwvDFwXsH+--
