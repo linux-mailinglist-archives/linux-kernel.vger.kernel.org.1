@@ -2,144 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 931082A6E8E
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 21:12:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24ABA2A6E99
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 21:13:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731698AbgKDUM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 15:12:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43154 "EHLO
+        id S1731807AbgKDUNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 15:13:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727245AbgKDUM2 (ORCPT
+        with ESMTP id S1731230AbgKDUN3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 15:12:28 -0500
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F53FC0613D4
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 12:12:28 -0800 (PST)
-Received: by mail-qt1-x841.google.com with SMTP id n63so7597635qte.4
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 12:12:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rEEEXt1os4uvlr5FpRnmuBcc7L7msKpqjcsUXwjQF/c=;
-        b=DLnfeD9J1ORdQ1bfs5+3AntXSfjpW/03OlgMKpfMczcb0Yo31gAQmfKmU/MxwQ17Tz
-         p8ZagfXHFsC1dHS6FW5fSkhChMKNOPBoZuaf0P1ssilDHMYkmfYcvMK/N4bu0vQXK3wy
-         c2tGk1nId5n4tetbAX3T+IoXKixnSiRJU2P+RgF0i9/MzM9vLJQC4pR4SHkQIDhJjOCm
-         nI9uYdoL8DUDIOHzXzueS+XUGj/Xv/0E4OLEq6oqPKUHmkx/sfooqnKn5e06EiNpsCvu
-         pIeS4Ja9kfYHVEpTmDFGZ6rRJqSaQZ+CUMbWPT9DrPeXAPhB8c08+nN3zrd9Xy424Dsr
-         vK5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rEEEXt1os4uvlr5FpRnmuBcc7L7msKpqjcsUXwjQF/c=;
-        b=VJYcjPkwPYdP+oXbyTO6IypFTVY1QA2Hs1wLvsJ9OL4w8/aGHtAsXVAufr7B6zkyEJ
-         4KvLgnuRayMfDwRolMO3579YZ+Ivh8VQP60StsVn2Y1HTKAJNl+SDMaByrY5tKebdeZK
-         z7GrncyX5DgkbIOL+1XQQybxVgQVqH/1ZsGRMR2g90Gom9LYbsRD6ZPEPpveh6tV5d2M
-         R0c4L0Ur1p4SSt932jdc7lku/UYosjlLTDwkh1k9+GT6WioDDZl9RiQPqlNDfE1xnW+N
-         DppiObV9XxAESgNyRsi4d/4pUzwR2DYVud6kTrTxFoulTFqY01LdtcBgXj4xEwxQyvVI
-         CeHg==
-X-Gm-Message-State: AOAM531iVJcubd6MtoRpB40FQKWJypqVtFCUS8NVUEdA56ydBXPD08IB
-        cjWf4SF+UbzVPKZ3Zio12eLU+IvAFyAebZnNctExYA==
-X-Google-Smtp-Source: ABdhPJyImQ0VMkgJ13gDdAbq5pEtNIjA5jffxfB/P+jRlJioL0jIF2z8jDtJ1zF31+FQiHcdLBXSWIzDRip6n19HrNg=
-X-Received: by 2002:ac8:4b79:: with SMTP id g25mr21823130qts.19.1604520747497;
- Wed, 04 Nov 2020 12:12:27 -0800 (PST)
+        Wed, 4 Nov 2020 15:13:29 -0500
+Received: from hera.aquilenet.fr (hera.aquilenet.fr [IPv6:2a0c:e300::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B170EC0613D3
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 12:13:28 -0800 (PST)
+Received: from localhost (localhost [127.0.0.1])
+        by hera.aquilenet.fr (Postfix) with ESMTP id 45895C1D;
+        Wed,  4 Nov 2020 21:13:25 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at aquilenet.fr
+Received: from hera.aquilenet.fr ([127.0.0.1])
+        by localhost (hera.aquilenet.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id EhNBdKwrLQ_R; Wed,  4 Nov 2020 21:13:24 +0100 (CET)
+Received: from function.youpi.perso.aquilenet.fr (lfbn-bor-1-56-204.w90-50.abo.wanadoo.fr [90.50.148.204])
+        by hera.aquilenet.fr (Postfix) with ESMTPSA id 7B56E9ED;
+        Wed,  4 Nov 2020 21:13:24 +0100 (CET)
+Received: from samy by function.youpi.perso.aquilenet.fr with local (Exim 4.94)
+        (envelope-from <samuel.thibault@ens-lyon.org>)
+        id 1kaP9n-003dhX-Cl; Wed, 04 Nov 2020 21:13:23 +0100
+Date:   Wed, 4 Nov 2020 21:13:23 +0100
+From:   Samuel Thibault <samuel.thibault@ens-lyon.org>
+To:     Matthias Reichl <hias@horus.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>, speakup@linux-speakup.org,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: Crash when specifying non-existent serial port in speakup /
+ tty_kopen
+Message-ID: <20201104201323.dzyt73tbd2jykcrt@function>
+Mail-Followup-To: Samuel Thibault <samuel.thibault@ens-lyon.org>,
+        Matthias Reichl <hias@horus.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>, speakup@linux-speakup.org,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201104145737.GA11024@camel2.lan>
 MIME-Version: 1.0
-References: <CAKMK7uF0QjesaNs97N-G8cZkXuAmFgcmTfHvoCP94br_WVcV6Q@mail.gmail.com>
- <20201104165017.GA352206@bjorn-Precision-5520>
-In-Reply-To: <20201104165017.GA352206@bjorn-Precision-5520>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Wed, 4 Nov 2020 12:12:15 -0800
-Message-ID: <CAPcyv4idORJzHVD2vCOnO3REqWHKVn_-otOzTBf0HhcWq4iJRQ@mail.gmail.com>
-Subject: Re: [PATCH v5 11/15] PCI: Obey iomem restrictions for procfs mmap
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        KVM list <kvm@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        "Linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Jan Kara <jack@suse.cz>, Bjorn Helgaas <bhelgaas@google.com>,
-        Linux PCI <linux-pci@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201104145737.GA11024@camel2.lan>
+Organization: I am not organized
+User-Agent: NeoMutt/20170609 (1.8.3)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 4, 2020 at 8:50 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
->
-> On Wed, Nov 04, 2020 at 09:44:04AM +0100, Daniel Vetter wrote:
-> > On Tue, Nov 3, 2020 at 11:09 PM Dan Williams <dan.j.williams@intel.com> wrote:
-> > > On Tue, Nov 3, 2020 at 1:28 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > > > On Fri, Oct 30, 2020 at 11:08:11AM +0100, Daniel Vetter wrote:
-> > > > > There's three ways to access PCI BARs from userspace: /dev/mem, sysfs
-> > > > > files, and the old proc interface. Two check against
-> > > > > iomem_is_exclusive, proc never did. And with CONFIG_IO_STRICT_DEVMEM,
-> > > > > this starts to matter, since we don't want random userspace having
-> > > > > access to PCI BARs while a driver is loaded and using it.
-> > > > >
-> > > > > Fix this by adding the same iomem_is_exclusive() check we already have
-> > > > > on the sysfs side in pci_mmap_resource().
-> > > > >
-> > > > > References: 90a545e98126 ("restrict /dev/mem to idle io memory ranges")
-> > > > > Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-> > > >
-> > > > This is OK with me but it looks like IORESOURCE_EXCLUSIVE is currently
-> > > > only used in a few places:
-> > > >
-> > > >   e1000_probe() calls pci_request_selected_regions_exclusive(),
-> > > >   ne_pci_probe() calls pci_request_regions_exclusive(),
-> > > >   vmbus_allocate_mmio() calls request_mem_region_exclusive()
-> > > >
-> > > > which raises the question of whether it's worth keeping
-> > > > IORESOURCE_EXCLUSIVE at all.  I'm totally fine with removing it
-> > > > completely.
-> > >
-> > > Now that CONFIG_IO_STRICT_DEVMEM upgrades IORESOURCE_BUSY to
-> > > IORESOURCE_EXCLUSIVE semantics the latter has lost its meaning so I'd
-> > > be in favor of removing it as well.
-> >
-> > Still has some value since it enforces exclusive access even if the
-> > config isn't enabled, and iirc e1000 had some fun with userspace tools
-> > clobbering the firmware and bricking the chip.
->
-> There's *some* value; I'm just skeptical since only three drivers use
-> it.
->
-> IORESOURCE_EXCLUSIVE is from e8de1481fd71 ("resource: allow MMIO
-> exclusivity for device drivers"), and the commit message says this is
-> only active when CONFIG_STRICT_DEVMEM is set.  I didn't check to see
-> whether that's still true.
->
-> That commit adds a bunch of wrappers and "__"-prefixed functions to
-> pass the IORESOURCE_EXCLUSIVE flag around.  That's a fair bit of
-> uglification for three drivers.
->
-> > Another thing I kinda wondered, since pci maintainer is here: At least
-> > in drivers/gpu I see very few drivers explicitly requestion regions
-> > (this might be a historical artifact due to the shadow attach stuff
-> > before we had real modesetting drivers). And pci core doesn't do that
-> > either, even when a driver is bound. Is this intentional, or
-> > should/could we do better? Since drivers work happily without
-> > reserving regions I don't think "the drivers need to remember to do
-> > this" will ever really work out well.
->
-> You're right, many drivers don't call pci_request_regions().  Maybe we
-> could do better, but I haven't looked into that recently.  There is a
-> related note in Documentation/PCI/pci.rst that's been there for a long
-> time (it refers to "pci_request_resources()", which has never existed
-> AFAICT).  I'm certainly open to proposals.
+Hello,
 
-It seems a bug that the kernel permits MMIO regions with side effects
-to be ioremap()'ed without request_mem_region() on the resource. I
-wonder how much log spam would happen if ioremap() reported whenever a
-non-IORESOURE_BUSY range was passed to it? The current state of
-affairs to trust *remap users to have claimed their remap target seems
-too ingrained to unwind now.
+Matthias Reichl, le mer. 04 nov. 2020 15:57:37 +0100, a ecrit:
+> I initially noticed this oops on x86_64 running kernel 5.4.59 when
+> I accidentally mistyped "ttyS0" as "ttyS9":
+> 
+> modprobe speakup_dummy dev=ttyS9
+
+> [   49.978481] tty_init_dev: ttyS driver does not set tty->port. This would crash the kernel. Fix the driver!
+
+This looks like only a warning, did it actually crash?
+
+> the missing tty->port is quite fatal.
+
+It is fatal for module insertion yes (EINVAL) but IIRC that should be
+getting handled properly, making modprobe return the error?
+
+> It looks like spk_ttyio or tty_dev_name_to_number() / tty_kopen()
+> should perform some additional validation,
+
+spk_ttyio_initialise_ldisc only has a dev_t so can't do much beyond
+calling tty_kopen.
+
+tty_kopen is getting the index from the tty_lookup_driver call (actually
+get_tty_driver which uses p->minor_start and p->num) and passes it to
+tty_driver_lookup_tty. Perhaps in addition of p->num the driver should
+have another field to set, that tty_init_dev could use to reject with
+ENODEV indexes beyond what the driver actually provides?
+
+> I couldn't make the kernel warn/crash yet by specifying non-existent
+> ttyUSB ports yet though.
+
+That's probably because in the ttyUSB case the device allocation is
+dynamic and made exactly according to the number of actual devices,
+while for ttyS* there is a large overcommit of minor values.
+
+Samuel
