@@ -2,115 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10D852A6D2E
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 19:52:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DC2F2A6D30
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 19:53:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730406AbgKDSwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 13:52:11 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:43174 "EHLO mail.skyhub.de"
+        id S1731594AbgKDSxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 13:53:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60972 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729755AbgKDSwL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 13:52:11 -0500
-Received: from zn.tnic (p200300ec2f0ef400317dde2deb3fed11.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:f400:317d:de2d:eb3f:ed11])
+        id S1726626AbgKDSxP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 13:53:15 -0500
+Received: from google.com (unknown [104.132.1.66])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E5CBD1EC0179;
-        Wed,  4 Nov 2020 19:52:09 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1604515930;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=j35nNUv7vFKPZCAWGuXz8ekUUIF51j9Annk7NSuaxBA=;
-        b=CCBUBlunPd2Wfa6m5DSTGXAr7/w4HCLTmNA4aAn0gHiWqbEYtl9VXfWeULS/z5fKyvjTep
-        BxSMyAg0xzOwlIfhwitqAmqPONucjkw0Ev9sFuEO9NjkuGhVbmCN6meBveQMWQ6SaMfa/g
-        MrzmgVD4XIW4ZpwQcnme1EoLDji8L7A=
-Date:   Wed, 4 Nov 2020 19:51:57 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Shuo A Liu <shuo.a.liu@intel.com>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Yu Wang <yu1.wang@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>
-Subject: Re: [PATCH v5 03/17] x86/acrn: Introduce an API to check if a VM is
- privileged
-Message-ID: <20201104185157.GE23298@zn.tnic>
-References: <20201019061803.13298-1-shuo.a.liu@intel.com>
- <20201019061803.13298-4-shuo.a.liu@intel.com>
- <20201102143707.GC15392@zn.tnic>
- <20201103062718.GD12408@shuo-intel.sh.intel.com>
- <20201103102538.GB6310@zn.tnic>
- <20201104035027.GA17702@shuo-intel.sh.intel.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 6FA6320782;
+        Wed,  4 Nov 2020 18:53:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604515994;
+        bh=gmgwXt+wYX0tzEd4eikIaskpTiv2GPG3uhFSrn8iPa0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=q24jLDweh2NM6hfE1ZDGJZmSgFQtFBUHeCWTOyKy2wCxzd2okKBB826gYkGDpJ5i7
+         nyW2NRXYEONX+uznTSpTpBJxfBoEUyHhzyxVXDc1/Yf9wR9RWYJFj3J0PRhkh8X6Wl
+         A9+OR6DyHKfLwhgovtxd9o+wZUYYkEZ0GxUXztNY=
+Date:   Wed, 4 Nov 2020 10:53:12 -0800
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Robin Hsu <robinhsu@google.com>
+Cc:     Eric Biggers <ebiggers@kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net, chao@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [f2fs-dev] [PATCH 1/1] f2fs-toos:fsck.f2fs Fix bad return value
+Message-ID: <20201104185312.GA134770@google.com>
+References: <20201026094000.1500425-1-robinhsu@google.com>
+ <20201103025247.GA2875@sol.localdomain>
+ <20201103032327.GA3655802@google.com>
+ <CAH7-xNRd1QBJUaxajijjrMbWdKKO1AKS2-1Q5HAAkHSUF628ug@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201104035027.GA17702@shuo-intel.sh.intel.com>
+In-Reply-To: <CAH7-xNRd1QBJUaxajijjrMbWdKKO1AKS2-1Q5HAAkHSUF628ug@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 11:50:27AM +0800, Shuo A Liu wrote:
-> On Tue  3.Nov'20 at 11:25:38 +0100, Borislav Petkov wrote:
-> > On Tue, Nov 03, 2020 at 02:27:18PM +0800, Shuo A Liu wrote:
-> > > The code just followed KVM style (see kvm_arch_para_features()).
-> > 
-> > Do you see Documentation/virt/kvm/cpuid.rst?
+On 11/04, Robin Hsu wrote:
+> The root cause is the ASSERT() marco,  In fact, I already fixed it in one
+> of my recent work.
+> I separate it as an independent commit here:
 > 
-> OK. It documents the leaf number.
-
-It also says
-
-"Note also that old hosts set eax value to 0x0. This should be
-interpreted as if the value was 0x40000001."
-
-Does this hold true for the acrn HV? The fact that I'm asking about
-all those things should give you a hint that documenting the API is
-important.
-
-> > Now where is yours explaining what your hypervisor is doing?
+> >From 5359588b1804c5e555e9fad92203d76041ef09eb Mon Sep 17 00:00:00 2001
 > 
-> Currently, it is in arch/x86/include/asm/acrn.h.
-
-Yeah, you can't expect people to go scrape it from headers though - it
-should be concentrated in a doc file.
-
-> If the leaf numbers be documented explicitly (like kvm), i think i can
-> use them as eax of cpuid_eax() directly (back to your first comment).
-
-Which means, you don't need to do the logical OR-ing which kvm does
-because of what I pasted above about eax being 0 on old hosts. Now we're
-getting somewhere...
-
-> 	cpuid_eax(ACRN_CPUID_FEATURES)...
+> From: Robin Hsu <robinhsu@google.com>
 > 
-> If you looking at implementation of acrn-hypervisor, you will found the
-> leaf number is hardcoded in the hypervisor. So, they also can be
-> documented explicitly.
+> Date: Wed, 4 Nov 2020 10:50:28 +0800
+> 
+> Subject: [PATCH] Fix ASSERT() macro with '%' in the expression
+> 
+> 
+> 
+> Fix a compiling error triggered by ASSERT(exp), when exp contains '%'
+> 
+> (e.g. integer modular operator)
+> 
+> 
+> 
+> Signed-off-by: Robin Hsu <robinhsu@google.com>
+> 
+> Change-Id: I84708dbaf10c675b9950926c9b6ded5b5a3fbd59
 
-Ok.
+Thanks, applied as well. :)
 
-> OK. I can add a similar cpuid.rst for acrn.
-
-Yes please.
-
-> Yes. Fix patches are always welcome.
-
-Ok, good, the thing is open. You could put that in the doc too, along
-with the link so that people can find it.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+> 
+> ---
+> 
+>  include/f2fs_fs.h | 4 ++--
+> 
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> 
+> 
+> diff --git a/include/f2fs_fs.h b/include/f2fs_fs.h
+> 
+> index b5bda13..1348e39 100644
+> 
+> --- a/include/f2fs_fs.h
+> 
+> +++ b/include/f2fs_fs.h
+> 
+> @@ -194,8 +194,8 @@ static inline uint64_t bswap_64(uint64_t val)
+> 
+>  #define ASSERT(exp)                                                    \
+> 
+>         do {                                                            \
+> 
+>                 if (!(exp)) {                                           \
+> 
+> -                       printf("[ASSERT] (%s:%4d) " #exp"\n",           \
+> 
+> -                                       __func__, __LINE__);            \
+> 
+> +                       printf("[ASSERT] (%s:%4d) %s\n",                \
+> 
+> +                                       __func__, __LINE__, #exp);      \
+> 
+>                         exit(-1);                                       \
+> 
+>                 }                                                       \
+> 
+>         } while (0)
+> 
+> --
+> 
+> 2.29.1.341.ge80a0c044ae-goog
+> 
+> 
+> On Tue, Nov 3, 2020 at 11:23 AM Jaegeuk Kim <jaegeuk@kernel.org> wrote:
+> 
+> > On 11/02, Eric Biggers wrote:
+> > > On Mon, Oct 26, 2020 at 05:40:00PM +0800, Robin Hsu via Linux-f2fs-devel
+> > wrote:
+> > > > 'ret' should not have been used here: otherwise, it would be wrongly
+> > used
+> > > > as the error code and then be returned from main().
+> > > >
+> > > > Signed-off-by: Robin Hsu <robinhsu@google.com>
+> > > > ---
+> > > >  fsck/fsck.c | 3 +--
+> > > >  1 file changed, 1 insertion(+), 2 deletions(-)
+> > > >
+> > > > diff --git a/fsck/fsck.c b/fsck/fsck.c
+> > > > index f97e9fb..66e4e3f 100644
+> > > > --- a/fsck/fsck.c
+> > > > +++ b/fsck/fsck.c
+> > > > @@ -3137,8 +3137,7 @@ int fsck_verify(struct f2fs_sb_info *sbi)
+> > > >             char ans[255] = {0};
+> > > >
+> > > >             printf("\nDo you want to restore lost files into
+> > ./lost_found/? [Y/N] ");
+> > > > -           ret = scanf("%s", ans);
+> > > > -           ASSERT(ret >= 0);
+> > > > +           ASSERT(scanf("%s", ans) >= 0);
+> > > >             if (!strcasecmp(ans, "y")) {
+> > > >                     for (i = 0; i < fsck->nr_nat_entries; i++) {
+> > > >                             if (f2fs_test_bit(i,
+> > fsck->nat_area_bitmap))
+> > >
+> > > This patch causes a compiler warning:
+> > >
+> > >       In file included from f2fs.h:33,
+> > >                        from fsck.h:14,
+> > >                        from fsck.c:11:
+> > >       fsck.c: In function 'fsck_verify':
+> > >       ../include/f2fs_fs.h:197:11: warning: format '%s' expects a
+> > matching 'char *' argument [-Wformat=]
+> > >           printf("[ASSERT] (%s:%4d) " #exp"\n",  \
+> > >                  ^~~~~~~~~~~~~~~~~~~~
+> > >       fsck.c:3151:3: note: in expansion of macro 'ASSERT'
+> > >          ASSERT(scanf("%s", ans) >= 0);
+> > >          ^~~~~~
+> >
+> > Urg. Fixed by this.
+> >
+> > From c986140e3c5abb9eb7a08928a88acb8273f1bd52 Mon Sep 17 00:00:00 2001
+> > From: Robin Hsu <robinhsu@google.com>
+> > Date: Mon, 26 Oct 2020 17:40:00 +0800
+> > Subject: [PATCH] f2fs-toos: fsck.f2fs Fix bad return value
+> >
+> > 'ret' should not have been used here: otherwise, it would be wrongly used
+> > as the error code and then be returned from main().
+> >
+> > Signed-off-by: Robin Hsu <robinhsu@google.com>
+> > Reviewed-by: Chao Yu <yuchao0@huawei.com>
+> > Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+> > ---
+> >  fsck/fsck.c | 5 +++--
+> >  1 file changed, 3 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/fsck/fsck.c b/fsck/fsck.c
+> > index 647523397f3e..e52672032d2c 100644
+> > --- a/fsck/fsck.c
+> > +++ b/fsck/fsck.c
+> > @@ -3146,10 +3146,11 @@ int fsck_verify(struct f2fs_sb_info *sbi)
+> >  #ifndef WITH_ANDROID
+> >         if (nr_unref_nid && !c.ro) {
+> >                 char ans[255] = {0};
+> > +               int res;
+> >
+> >                 printf("\nDo you want to restore lost files into
+> > ./lost_found/? [Y/N] ");
+> > -               ret = scanf("%s", ans);
+> > -               ASSERT(ret >= 0);
+> > +               res = scanf("%s", ans);
+> > +               ASSERT(res >= 0);
+> >                 if (!strcasecmp(ans, "y")) {
+> >                         for (i = 0; i < fsck->nr_nat_entries; i++) {
+> >                                 if (f2fs_test_bit(i,
+> > fsck->nat_area_bitmap))
+> > --
+> > 2.29.1.341.ge80a0c044ae-goog
+> >
+> >
