@@ -2,91 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8D652A6BA8
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 18:30:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FB2C2A6BBB
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 18:33:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731078AbgKDRaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 12:30:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46134 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726979AbgKDRaQ (ORCPT
+        id S1731609AbgKDRcs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 12:32:48 -0500
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:44664 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727006AbgKDRcn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 12:30:16 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 636D1C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 09:30:15 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id i26so17149784pgl.5
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 09:30:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=KBs253keL2FVLGE94Xuwy8wDxZWiR3xwTBVRKfiGZfU=;
-        b=Uu+amMxsUOe2kcdjXNs+sOVilfNh4IdJnJqBY4TjoskwdZfdlMU6DVqQA69H4EgHab
-         dtYkUWJk/b1LHEeWjdJnrHVON2V2y+0wlVFyZrkjH7+w7OowCur9Rhs5GQkudPg8CAwu
-         i/49iYC9hyhihkzsJR9Rvq700LB5uvgX8VQbeaqDT9kDuEhmw6mn/RM2KT96HHrccjAl
-         /qwrXF+6MaIdY7wujheOifjpXYpTAZ+ZCI+0IIfHJQjix2I1lo3Xru55TgHNtPzo4XhY
-         6vRUxorGxvqLYz41cyeshi2XprpvK06p2hRwBgMz9fEOpECARatt9nQljrtvY6jEHaZv
-         teWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KBs253keL2FVLGE94Xuwy8wDxZWiR3xwTBVRKfiGZfU=;
-        b=MkjGknWvy/dSH3nj0/yLt/WvFOXEvonlJEiHuswoytKjYiEvUXeb2hvcA9/t3//Nbb
-         maWy5X8Te2j79SBX2YKhpMm3yxQqPq2mgGFpzw3znQByj1iDw9XNx8HRvz6DRJt/z9KN
-         NAMhAWR7nZieuSL3QfNJCAAMu17hxWBDo7b4JjctUwEyKV9RkhX1t2h/uWZHXoNnojYf
-         t1pYQJ4++8uc+7pvj3CBgOnJ/Sa5J+mvRHhkf5WwoJj52gdCl/L7MEemeP9PAfyPgQlt
-         L5jpperYCseP8EMRsblMAiDNKTiiLZlI/hUfxKqSLTqHj4OAzC0ccM4khhsqw4Qi7oAO
-         GZ/A==
-X-Gm-Message-State: AOAM531X5MqrlxeFCYcKAIF785nfJD8XlhiVFA637oHkZ/eUMLyajv1B
-        siTx/rjLhrdb+jUQd/b+8CUIVw==
-X-Google-Smtp-Source: ABdhPJz9dViIzwyCsD5c2JZ6e/TuNnDpUCLXjZh2tYdCGDaexykCkGG7TLl4dmVn0IL8MOiDdVxTdg==
-X-Received: by 2002:a63:194a:: with SMTP id 10mr7114141pgz.68.1604511014774;
-        Wed, 04 Nov 2020 09:30:14 -0800 (PST)
-Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id 199sm3055083pgg.18.2020.11.04.09.30.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 09:30:13 -0800 (PST)
-Date:   Wed, 4 Nov 2020 10:30:11 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Cc:     ohad@wizery.com, bjorn.andersson@linaro.org,
-        arnaud.pouliquen@st.com, linux-remoteproc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 3/8] rpmsg: Move structure rpmsg_ns_msg to header file
-Message-ID: <20201104173011.GA2893396@xps15>
-References: <20201027175218.1033609-1-mathieu.poirier@linaro.org>
- <20201027175218.1033609-4-mathieu.poirier@linaro.org>
- <20201103163225.GA19947@ubuntu>
+        Wed, 4 Nov 2020 12:32:43 -0500
+Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A4HWDPo031393;
+        Wed, 4 Nov 2020 18:32:26 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=STMicroelectronics;
+ bh=0dGU7EjDFLfbmr+icg3Fbkz2c9T0BmmFtSmomDOPn/8=;
+ b=r32wWw0ILSyyemrPcRcdQkBs2p/wHEoF0ErSHQ1Tu3f2H0m8Y0OWsMatCqJET75jaB0y
+ 7tDQmlKwlW5GpTYWyByfPTz+N7GG7sWq9Wq2D0jCfSMmynFnLU0XyJ6Qoc/73y/BAqOg
+ 5NjyASLRVEzmaJhRL02F4lJDApMwIqPY3Bv3HdiCgPn8+4VjLd/sbxFYcFevpL288NMf
+ 1yxcXATEdf98acbeZuiKm+P8zAVNPoYR/dV5DSpo54tzgxQqlvQrQWV+yLVcLOa/Soei
+ qqRLqOymu9oKKTiNYNN+Rt5OZ0K+JHT2bhjXQ8hvIUqEgnvx5D1+d2cRt/NA1OzHbcVE nQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 34h00egtyd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 04 Nov 2020 18:32:26 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 7038410002A;
+        Wed,  4 Nov 2020 18:32:25 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag1node1.st.com [10.75.127.1])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id F24F5225C2A;
+        Wed,  4 Nov 2020 18:32:24 +0100 (CET)
+Received: from localhost (10.75.127.47) by SFHDAG1NODE1.st.com (10.75.127.1)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 4 Nov 2020 18:32:24
+ +0100
+From:   Hugues Fruchet <hugues.fruchet@st.com>
+To:     Alexandre Torgue <alexandre.torgue@st.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        Hugues Fruchet <hugues.fruchet@st.com>,
+        Alain Volmat <alain.volmat@st.com>,
+        Yannick Fertre <yannick.fertre@st.com>,
+        Philippe CORNU <philippe.cornu@st.com>
+Subject: [PATCH v5 0/4] DCMI BT656 parallel bus mode support
+Date:   Wed, 4 Nov 2020 18:32:08 +0100
+Message-ID: <1604511132-4014-1-git-send-email-hugues.fruchet@st.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201103163225.GA19947@ubuntu>
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.47]
+X-ClientProxiedBy: SFHDAG7NODE1.st.com (10.75.127.19) To SFHDAG1NODE1.st.com
+ (10.75.127.1)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-04_12:2020-11-04,2020-11-04 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 05:32:26PM +0100, Guennadi Liakhovetski wrote:
-> Hi Mathieu,
-> 
-> On Tue, Oct 27, 2020 at 11:52:13AM -0600, Mathieu Poirier wrote:
-> > Move structure rpmsg_ns_msg to its own header file so that
-> > it can be used by other entities.
-> > 
-> > Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> > Reviewed-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-> > ---
-> >  drivers/rpmsg/virtio_rpmsg_bus.c | 32 +-----------------------
-> >  include/linux/rpmsg_ns.h         | 42 ++++++++++++++++++++++++++++++++
-> 
-> Sorry for a delayed comment, it just occurred to me: there is a 
-> include/linux/rpmsg directory already, so, perhaps it would be 
-> better to place the new headers there as include/linux/rpmsg/ns.h 
-> and include/linux/rpmsg/byteorder.h?
+Add support of BT656 embedded synchronization bus.
+This mode allows to save hardware synchro lines hsync & vsync
+by replacing them with synchro codes embedded in data stream.
+Add "bus-type" property and make it required so that there is no
+ambiguity between parallel mode (bus-type=5) and BT656 mode (bus-type=6).
 
-Yes - I think that's a good suggestion.
+===========
+= history =
+===========
+version 5:
+  - Add revisited bindings and devicetree with explicit use of "bus-type"
 
-> 
-> Thanks
-> Guennadi
+version 4:
+  - Fix typo in commit message
+
+version 3:
+  - Fix bus_width print to %u as per Sakari comment
+
+version 2:
+  - As per Sakari remark, revisit commit message and document
+    BT656 parallel bus mode in bindings
+
+version 1:
+  - Initial submission
+
+Hugues Fruchet (4):
+  media: stm32-dcmi: add support of BT656 bus
+  media: dt-bindings: media: st,stm32-dcmi: add support of BT656 bus
+  ARM: dts: stm32: set bus-type in DCMI endpoint for stm32mp157c-ev1
+    board
+  ARM: dts: stm32: set bus-type in DCMI endpoint for stm32429i-eval
+    board
+
+ .../devicetree/bindings/media/st,stm32-dcmi.yaml   | 38 ++++++++++++++++++++++
+ arch/arm/boot/dts/stm32429i-eval.dts               |  1 +
+ arch/arm/boot/dts/stm32mp157c-ev1.dts              |  1 +
+ drivers/media/platform/stm32/stm32-dcmi.c          | 37 +++++++++++++++++++--
+ 4 files changed, 75 insertions(+), 2 deletions(-)
+
+-- 
+2.7.4
+
