@@ -2,88 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3EAA2A5AFA
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 01:22:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D48E2A5AFE
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 01:23:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729980AbgKDAWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 19:22:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54954 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729021AbgKDAUZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 19:20:25 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B775DC0613D1;
-        Tue,  3 Nov 2020 16:20:25 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CQnNk40jsz9sT6;
-        Wed,  4 Nov 2020 11:20:22 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1604449222;
-        bh=VC+f+ZkJ1S1VxK7q1l35M+IDDfBanUc/kXYdpGzih90=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=MOMRL1jgFBdsMZewwd+uVHelnLRMk+W3GE3jbHfafKAZoB6EK3TxyyP1jzowjSVuC
-         EeLK+n/2Cy4NRCxid55Vrh2Fb8xTZSRrKk4/uBL4akbGdnSvv6ut/ONKxII4lAFtt8
-         sKwAXlTM4H4Jfrjfa4FUnchZR7YYmwSfh2Oub5A+w29z5LkqZSK5llEWs4U6iccZtJ
-         VKYF1iL66OAK/KKH4CpMGOmy+8ot+QhXzgL6r+LkRduzIMp8/IV5T536jT1yFf8pPN
-         UN2Cp+BxF/UOO5QLR7kzwHNhJSJj5iEemkVNv/i4TfFGd6aTUj580eMaWrphbwWV2N
-         4cW3d9I6XmPwQ==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 4.19 056/191] powerpc: select ARCH_WANT_IRQS_OFF_ACTIVATE_MM
-In-Reply-To: <20201103203239.940977599@linuxfoundation.org>
-References: <20201103203232.656475008@linuxfoundation.org> <20201103203239.940977599@linuxfoundation.org>
-Date:   Wed, 04 Nov 2020 11:20:17 +1100
-Message-ID: <87361qug5a.fsf@mpe.ellerman.id.au>
+        id S1729926AbgKDAXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 19:23:45 -0500
+Received: from mga18.intel.com ([134.134.136.126]:8008 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727385AbgKDAXp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 19:23:45 -0500
+IronPort-SDR: seCcHLDLOITHkpd7Ky/Y0exdNAvBdzQutTPFIPDdLjbc0qs2NBOHDNh9MAsj20WQIaq0NdYK59
+ ePZsWszlXpIQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9794"; a="156920785"
+X-IronPort-AV: E=Sophos;i="5.77,449,1596524400"; 
+   d="scan'208";a="156920785"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2020 16:23:44 -0800
+IronPort-SDR: Jff7IlV79j1jQMkLh8k4p93F+1d+yFxSliiIUcZ8FDi862LIN4rimgC7/+CQJyDIYYqiuOhgqh
+ lYdPC5Llv4yA==
+X-IronPort-AV: E=Sophos;i="5.77,449,1596524400"; 
+   d="scan'208";a="538691531"
+Received: from rdvivi-losangeles.jf.intel.com (HELO intel.com) ([10.165.21.201])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2020 16:23:44 -0800
+Date:   Tue, 3 Nov 2020 19:25:08 -0500
+From:   Rodrigo Vivi <rodrigo.vivi@intel.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Chris Wilson <chris@chris-wilson.co.uk>
+Subject: Re: linux-next: build failure after merge of the drm-intel-fixes tree
+Message-ID: <20201104002508.GG30349@intel.com>
+References: <20201104093705.10b43959@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201104093705.10b43959@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
-> From: Nicholas Piggin <npiggin@gmail.com>
->
-> [ Upstream commit 66acd46080bd9e5ad2be4b0eb1d498d5145d058e ]
->
-> powerpc uses IPIs in some situations to switch a kernel thread away
-> from a lazy tlb mm, which is subject to the TLB flushing race
-> described in the changelog introducing ARCH_WANT_IRQS_OFF_ACTIVATE_MM.
->
-> Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
-> Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-> Link: https://lore.kernel.org/r/20200914045219.3736466-3-npiggin@gmail.com
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->  arch/powerpc/Kconfig                   | 1 +
->  arch/powerpc/include/asm/mmu_context.h | 2 +-
->  2 files changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-> index f38d153d25861..0bc53f0e37c0f 100644
-> --- a/arch/powerpc/Kconfig
-> +++ b/arch/powerpc/Kconfig
-> @@ -152,6 +152,7 @@ config PPC
->  	select ARCH_USE_BUILTIN_BSWAP
->  	select ARCH_USE_CMPXCHG_LOCKREF		if PPC64
->  	select ARCH_WANT_IPC_PARSE_VERSION
-> +	select ARCH_WANT_IRQS_OFF_ACTIVATE_MM
+On Wed, Nov 04, 2020 at 09:37:05AM +1100, Stephen Rothwell wrote:
+> Hi all,
+> 
+> After merging the drm-intel-fixes tree, today's linux-next build (x86_64
+> allmodconfig) failed like this:
+> 
+> drivers/gpu/drm/i915/gt/intel_lrc.c: In function 'gen12_emit_fini_breadcrumb':
+> drivers/gpu/drm/i915/gt/intel_lrc.c:4998:31: error: implicit declaration of function '__gen8_emit_flush_dw'; did you mean 'gen8_emit_flush'? [-Werror=implicit-function-declaration]
+>  4998 |  cs = emit_xcs_breadcrumb(rq, __gen8_emit_flush_dw(cs, 0, 0, 0));
+>       |                               ^~~~~~~~~~~~~~~~~~~~
+>       |                               gen8_emit_flush
+> drivers/gpu/drm/i915/gt/intel_lrc.c:4998:31: warning: passing argument 2 of 'emit_xcs_breadcrumb' makes pointer from integer without a cast [-Wint-conversion]
+>  4998 |  cs = emit_xcs_breadcrumb(rq, __gen8_emit_flush_dw(cs, 0, 0, 0));
+>       |                               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>       |                               |
+>       |                               int
+> drivers/gpu/drm/i915/gt/intel_lrc.c:4902:63: note: expected 'u32 *' {aka 'unsigned int *'} but argument is of type 'int'
+>  4902 | static u32 *emit_xcs_breadcrumb(struct i915_request *rq, u32 *cs)
+>       |                                                          ~~~~~^~
+> 
+> Caused by commit
+> 
+>   c94d65d2ff6d ("drm/i915/gt: Flush xcs before tgl breadcrumbs")
+> 
+> I have reverted that commit for today.
 
-This depends on upstream commit:
+Sorry for the trouble. Dependency picked to drm-intel-fixes now.
 
-  d53c3dfb23c4 ("mm: fix exec activate_mm vs TLB shootdown and lazy tlb switching race")
+Thanks for reporting,
+Rodrigo.
+
+> 
+> -- 
+> Cheers,
+> Stephen Rothwell
 
 
-Which I don't see in 4.19 stable, or in the email thread here.
 
-So this shouldn't be backported to 4.19 unless that commit is also
-backported.
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
 
-cheers
