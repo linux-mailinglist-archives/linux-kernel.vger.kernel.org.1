@@ -2,120 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18DBD2A615C
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 11:16:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 127BD2A6163
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 11:17:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729117AbgKDKPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 05:15:53 -0500
-Received: from foss.arm.com ([217.140.110.172]:34306 "EHLO foss.arm.com"
+        id S1728817AbgKDKRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 05:17:42 -0500
+Received: from mail.vivotek.com ([60.248.39.150]:34998 "EHLO mail.vivotek.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727001AbgKDKPx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 05:15:53 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F301A13D5;
-        Wed,  4 Nov 2020 02:15:51 -0800 (PST)
-Received: from [10.57.54.223] (unknown [10.57.54.223])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4BDDB3F66E;
-        Wed,  4 Nov 2020 02:15:50 -0800 (PST)
-Subject: Re: use of dma_direct_set_offset in (allwinner) drivers
-To:     Maxime Ripard <maxime@cerno.tech>, Christoph Hellwig <hch@lst.de>
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        Chen-Yu Tsai <wens@csie.org>, iommu@lists.linux-foundation.org,
-        Yong Deng <yong.deng@magewell.com>,
-        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
-References: <20201103095538.GA19136@lst.de>
- <20201104081411.bnt5kixgunaczbzj@gilmour.lan>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <9623c346-c86c-e3ce-332b-95492576a859@arm.com>
-Date:   Wed, 4 Nov 2020 10:15:49 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1726410AbgKDKRm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 05:17:42 -0500
+Received: from pps.filterd (vivotekpps.vivotek.com [127.0.0.1])
+        by vivotekpps.vivotek.com (8.16.0.42/8.16.0.42) with SMTP id 0A4AEqtN016487;
+        Wed, 4 Nov 2020 18:17:30 +0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivotek.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=dkim;
+ bh=OxCP/q6SKiXzG28NQs4PGiRSEJVVo7+TKVgKwuSTDc4=;
+ b=Eu4+rfkU5PJmjmeXYAzwHPQ0z2pSLEk8bTxS8uAvLFal3gh5zkZPuf0WJM/WegIV9/HB
+ 6YWKdlVvyxOrN1qT6r9R/sfQKyUHNoHXBDTLz5zeJHmTPRsoJS8VX8zRCGI/vf8+YBMP
+ uvl+51dSgsKcnEWTEamOSn2uqqk+a6L9V1c= 
+Received: from cas01.vivotek.tw ([192.168.0.58])
+        by vivotekpps.vivotek.com with ESMTP id 34gtc344wx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Wed, 04 Nov 2020 18:17:30 +0800
+Received: from MBS07.vivotek.tw ([fe80::2027:4d67:6c01:78d8]) by
+ CAS01.vivotek.tw ([::1]) with mapi id 14.03.0487.000; Wed, 4 Nov 2020
+ 18:17:29 +0800
+From:   <Michael.Wu@vatics.com>
+To:     <wsa@kernel.org>
+CC:     <jarkko.nikula@linux.intel.com>,
+        <andriy.shevchenko@linux.intel.com>,
+        <mika.westerberg@linux.intel.com>, <linux-i2c@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <morgan.chang@vatics.com>
+Subject: RE: [PATCH 2/2] i2c: designware: slave should do WRITE_REQUESTED
+ before WRITE_RECEIVED
+Thread-Topic: [PATCH 2/2] i2c: designware: slave should do WRITE_REQUESTED
+ before WRITE_RECEIVED
+Thread-Index: AQHWrpNb9HMFwrLvFkOeW57CDSt2oKm2ZmOAgAFYIoA=
+Date:   Wed, 4 Nov 2020 10:17:29 +0000
+Message-ID: <5DB475451BAA174CB158B5E897FC1525B1295560@MBS07.vivotek.tw>
+References: <20201030080420.28016-1-michael.wu@vatics.com>
+ <20201030080420.28016-3-michael.wu@vatics.com> <20201103210349.GE1583@kunai>
+In-Reply-To: <20201103210349.GE1583@kunai>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [192.168.17.134]
+Content-Type: text/plain; charset="big5"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <20201104081411.bnt5kixgunaczbzj@gilmour.lan>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-04_06:2020-11-04,2020-11-04 signatures=0
+X-Proofpoint-Spam-Reason: safe
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-04 08:14, Maxime Ripard wrote:
-> Hi Christoph,
-> 
-> On Tue, Nov 03, 2020 at 10:55:38AM +0100, Christoph Hellwig wrote:
->> Linux 5.10-rc1 switched from having a single dma offset in struct device
->> to a set of DMA ranges, and introduced a new helper to set them,
->> dma_direct_set_offset.
->>
->> This in fact surfaced that a bunch of drivers that violate our layering
->> and set the offset from drivers, which meant we had to reluctantly
->> export the symbol to set up the DMA range.
->>
->> The drivers are:
->>
->> drivers/gpu/drm/sun4i/sun4i_backend.c
->>
->>    This just use dma_direct_set_offset as a fallback.  Is there any good
->>    reason to not just kill off the fallback?
->>
->> drivers/media/platform/sunxi/sun4i-csi/sun4i_csi.c
->>
->>    Same as above.
-> 
-> So, the history of this is:
-> 
->    - We initially introduced the support for those two controllers
->      assuming that there was a direct mapping between the physical and
->      DMA addresses. It turns out it didn't and the DMA accesses were
->      going through a secondary, dedicated, bus that didn't have the same
->      mapping of the RAM than the CPU.
-> 
->      4690803b09c6 ("drm/sun4i: backend: Offset layer buffer address by DRAM starting address")
-> 
->    - This dedicated bus is undocumented and barely used in the vendor
->      kernel so this was overlooked, and it's fairly hard to get infos on
->      it for all the SoCs we support. We added the DT support for it
->      though on some SoCs we had enough infos to do so:
-> 
->      c43a4469402f ("dt-bindings: interconnect: Add a dma interconnect name")
->      22f88e311399 ("ARM: dts: sun5i: Add the MBUS controller")
-> 
->      This explains the check on the interconnect property
-> 
->    - However, due to the stable DT rule, we still need to operate without
->      regressions on older DTs that wouldn't have that property (and for
->      SoCs we haven't figured out). Hence the fallback.
-
-How about having something in the platform code that keys off the 
-top-level SoC compatible and uses a bus notifier to create offsets for 
-the relevant devices if an MBUS description is missing? At least that 
-way the workaround could be confined to a single dedicated place and 
-look somewhat similar to other special cases like sta2x11, rather than 
-being duplicated all over the place.
-
-Robin.
-
->> drivers/media/platform/sunxi/sun6i-csi/sun6i_csi.c
->>
->>    This driver unconditionally sets the offset.  Why can't we do this
->>    in the device tree?
->>
->> drivers/staging/media/sunxi/cedrus/cedrus_hw.c
->>
->>    Same as above.
->>
-> 
-> We should make those two match the previous ones, but we'll have the
-> same issue here eventually. Most likely they were never ran on an SoC
-> for which we have the MBUS figured out.
-> 
-> Maxime
-> 
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-> 
+SGkgV29sZnJhbSwNCg0KPiA+IGRldi0+c3RhdHVzIGNhbiBiZSB1c2VkIHRvIHJlY29yZCB0aGUg
+Y3VycmVudCBzdGF0ZSwgZXNwZWNpYWxseSBEZXNpZ253YXJlDQo+ID4gSTJDIGNvbnRyb2xsZXIg
+aGFzIG5vIGludGVycnVwdHMgdG8gaWRlbnRpZnkgYSB3cml0ZS1yZXF1ZXN0LiBUaGlzIHBhdGNo
+DQo+IA0KPiBKdXN0IGRvdWJsZS1jaGVja2luZzogdGhlIGRlc2lnbndhcmUgSFcgZG9lcyBub3Qg
+cmFpc2UgYW4gaW50ZXJydXB0IHdoZW4NCj4gaXRzIG93biBhZGRyZXNzICsgUlcgYml0IGhhcyBi
+ZWVuIHJlY2VpdmVkPw0KDQpOb3QgZXhhY3RseS4gVGhlcmUncmUgYW4gaW50ZXJydXB0IHN0YXRl
+IG5hbWUgIlJEX1JFUSIgYnV0IG5vIG9uZSBuYW1lZA0KbGlrZSAiV1JfUkVRIi4NCg0KRm9yIHJl
+YWQtcmVxdWVzdCwgdGhlIHNsYXZlIHdpbGwgZ2V0IGEgUkRfUkVRIGludGVycnVwdC4gDQpGb3Ig
+d3JpdGUtcmVxdWVzdCwgdGhlIHNsYXZlIHdvbid0IGJlIGludGVycnVwdGVkIHVudGlsIGRhdGEg
+YXJyaXZlZCB0bw0KdHJpZ2dlciBpbnRlcnJ1cHQgIlJYX0ZVTEwiLg0KDQpJIHRyaWVkIHRvIHVz
+ZSBHUElPIHRvIHNpbXVsYXRlIGFuIEkyQyBtYXN0ZXIuIEkgb25seSBzZW50IGl0cyBvd24NCmFk
+ZHJlc3MgKyBXIGJpdCB3aXRob3V0IGFueSBkYXRhIGFuZCB0aGVuIEkgZ290IG9ubHkgYSBTVE9Q
+X0RFVCBpbnRlcnJ1cHQuDQpJZiBJIHNlbnQgaXRzIG93biBhZGRyZXNzICsgVyBiaXQgKyBvbmUg
+Ynl0ZSBkYXRhIGFuZCB0aGVuIEkgZ290IG9uZQ0KUlhfRlVMTCBhbmQgYSBTVE9QX0RFVC4NCg0K
+SXQgc2VlbXMgdGhlIGNvbnRyb2xsZXIgZG9lc24ndCBpbnRlcnJ1cHQgd2hlbiBSVyBiaXQgaXMg
+VywgYnV0IFIgZG9lcy4NCldoYXQgZG8geW91IHRoaW5rLCBKYXJra28/DQoNClNpbmNlcmVseSwN
+Cg0KTWljaGFlbCBXdQ0K
