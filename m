@@ -2,158 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 530C22A5F27
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 09:14:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42FAC2A5F2B
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 09:15:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727923AbgKDIOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 03:14:18 -0500
-Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:41657 "EHLO
-        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725896AbgKDIOS (ORCPT
+        id S1728256AbgKDIPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 03:15:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43202 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725896AbgKDIPH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 03:14:18 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id A455BFDD;
-        Wed,  4 Nov 2020 03:14:16 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Wed, 04 Nov 2020 03:14:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=XXFAaRSb32pxervJ1Zv7TKZ0W1s
-        w+VVFPoX3IFt124k=; b=iCwoYVLLUuVNNTENXSZz+PtAZLQH0NKPIcbefvT6PAz
-        8tNPUABoqO+CJOiPRKxLT77evcmvx99BOPBIVjGOlUnMc2ahCWKNczXUMNhN1Qy1
-        6WLapO/of98Ad3Y5qA0R0QuxhGJss8NWIdpN2yIoCetNyZ4W5GlO3sf1RhBlGPpd
-        L7fOWZDcMH00O6m9ZkuW02wWh+jm1eCkVAB4uLXOV0991EDg9x6rEwE2LasMz2D1
-        mzFmFDXzdZ4DOBt0TfuGpqNACvWEefe3T4ta178S7CSXR6g8tGx772bOSvIBh3pk
-        X63RPUU9PmFv5GTiH5jWMSm6zYnwMV1zzhk4JqkvqQw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=XXFAaR
-        Sb32pxervJ1Zv7TKZ0W1sw+VVFPoX3IFt124k=; b=paXXPDf3g4w2iHpy7gvEr+
-        WWbQX+cocXbs7LnYqP7myPSy9nGA2kWSgaoH3ExVLATUNre/rDp/eVzzWw5kmA6M
-        xsIXpAYV4C/ja7niS/cqY2FARy5nQksloiNyA4hwoDyHwwQ4xtLDZrB+3XTZuahw
-        t+bSL4JaBeIdKgCjZ2tbiS72uVSk7IS3yysiY/75OJfW+IrSIwD0Vht8QfJBTXNq
-        OGrLs/N+9jSiXf/jCGMhqFbsB/J8yMdUZecKW58h9h9IhK618if6bktxR/NlFHpk
-        brV+Jw09uzy2XJS+3QcqTS19CNhGnN3fhPcV4MAV6GRMSR6UQMfbEX5ar45KetWQ
-        ==
-X-ME-Sender: <xms:1mKiX9Uw7IzIEenw8GEh7Bxgnf68CeebqvVMP6DXsP8SIwOfA_FNcQ>
-    <xme:1mKiX9lEwja08z2fB_8rYkMXpeBD7OUQeWBugc8CE-SmCSKFfTzeShMJeoA790gyx
-    1GKXcwAgfhDClQ_jdc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddtgedguddugecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihi
-    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
-    htthgvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheei
-    heegudenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtne
-    curfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:1mKiX5ae_ncy_0iLL_K73gy0kfa6uzRxio7UfwfhB0QcC_NGb9PBdg>
-    <xmx:1mKiXwW2D2UVSmXop5Vr6IM_Q_Q4HzsadzAwj-ZzTN_tzDm1_ZGyxA>
-    <xmx:1mKiX3nCGITQ660Ht2PtiifK258kb2m8rUY6OPWDIih-t34sHfHtjQ>
-    <xmx:2GKiX1W3mvCko0ApKlkI6NDW5jRTTxv-cEEqAhfUsb-yXNDsSgxF3A>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id D3DE3328037B;
-        Wed,  4 Nov 2020 03:14:13 -0500 (EST)
-Date:   Wed, 4 Nov 2020 09:14:11 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Chen-Yu Tsai <wens@csie.org>, Yong Deng <yong.deng@magewell.com>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-media@vger.kernel.org,
-        devel@driverdev.osuosl.org
-Subject: Re: use of dma_direct_set_offset in (allwinner) drivers
-Message-ID: <20201104081411.bnt5kixgunaczbzj@gilmour.lan>
-References: <20201103095538.GA19136@lst.de>
+        Wed, 4 Nov 2020 03:15:07 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64FECC0613D3
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 00:15:07 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id t6so9917843plq.11
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 00:15:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rXpZj9JEbKY4eaJISBKEtY6mg37iINmNheRvWpDXMms=;
+        b=mBIF++twAozP6cDRdtp0uDdxaaaMGEnQgmAALvspsxzLLXxZc1Gjr7ZptfxzzRNFiV
+         j7zWuljPMQT3rltcIz96394euUdSBIIoB9hx6oR3icOj5fI2lpaV77uU+n4SbOt/M+P4
+         cQgbinZFYjASF1Qh2OoWauTtcJx58M+azyFPi0UlMjcHXf5t0S4t1yiySzh2m3F5WPfv
+         z01NAJCYi1WN5WrBPe7T7BDs5H3pn94q9ZYvhi+4JPYByVJiT1CGMeMq80Qk81UqXmEy
+         mrJjWOnPvdMN2p1C6sFJNHyuCMvG1AXyHKES3+1XV0uGM4fHHQxhLkayTb4qQPkpBBhD
+         sC5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rXpZj9JEbKY4eaJISBKEtY6mg37iINmNheRvWpDXMms=;
+        b=hJ3U4JuMRaA0sHgTOjTZS6fU8WrdB3HKiDO1l9Tml409ONVRDLVV0RIWClYal9qJFA
+         p5g9iqPhKQfIzO9sPDCr4lJpmrsob6E2Y90wAXpCtkQHXjAzHJnf9wFYuyZa+s9Yjy7i
+         tlChpIgCZ9dvQ7mOHxqNS6pIVIYu3alnV/qYLKQZjAJIylmgSjRUyzruQyUIhyyaQBLm
+         aGHf3927RdjffhlcZTbr41LYw2vPn6NRdwPKTa7At7s24Lj1YV6LPth5HV81wm7s1WOO
+         LuHfAojKbY9Ag9nN9oT0GOisgwRzm2wXs+xblG6gfZMQOHLa9DsIbmD/wj+xNuJ3RDF7
+         14RQ==
+X-Gm-Message-State: AOAM530xiz/cSbxv8VHIcqheyLaElFyExPYezZ9Ce4NLhTWExA3F19p1
+        e9Vm30wPHco0rcJbY6lMOz7GaeEFekg=
+X-Google-Smtp-Source: ABdhPJxp6SYKXh78t5jW48OsYnMC46cUl8/HoaKRhgBKgm9SQlvWxQJL8/WBBRNZfF2IlhOoegL7Ng==
+X-Received: by 2002:a17:902:143:b029:d2:564a:5de8 with SMTP id 61-20020a1709020143b02900d2564a5de8mr28680943plb.74.1604477706645;
+        Wed, 04 Nov 2020 00:15:06 -0800 (PST)
+Received: from ZB-PF0YQ8ZU.360buyad.local ([137.116.162.235])
+        by smtp.gmail.com with ESMTPSA id 136sm1493505pfa.132.2020.11.04.00.15.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Nov 2020 00:15:05 -0800 (PST)
+From:   Zhenzhong Duan <zhenzhong.duan@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     ning.sun@intel.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, jroedel@suse.de,
+        tboot-devel@lists.sourceforge.net,
+        Zhenzhong Duan <zhenzhong.duan@gmail.com>
+Subject: [PATCH] iommu/vt-d: avoid unnecessory panic if iommu init fail in tboot
+Date:   Wed,  4 Nov 2020 16:14:38 +0800
+Message-Id: <20201104081438.2075-1-zhenzhong.duan@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="dpottggxee74tnew"
-Content-Disposition: inline
-In-Reply-To: <20201103095538.GA19136@lst.de>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+"intel_iommu=off" command line is used to disable iommu and iommu is force
+enabled in a tboot system. Meanwhile "intel_iommu=tboot_noforce,off"
+could be used to force disable iommu in tboot for better performance.
 
---dpottggxee74tnew
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+By default kernel should panic if iommu init fail in tboot for security
+reason, but it's unnecessory if we use "intel_iommu=tboot_noforce,off".
 
-Hi Christoph,
+Fix it by return 0 in tboot_force_iommu() so that force_on is not set.
 
-On Tue, Nov 03, 2020 at 10:55:38AM +0100, Christoph Hellwig wrote:
-> Linux 5.10-rc1 switched from having a single dma offset in struct device
-> to a set of DMA ranges, and introduced a new helper to set them,
-> dma_direct_set_offset.
->=20
-> This in fact surfaced that a bunch of drivers that violate our layering
-> and set the offset from drivers, which meant we had to reluctantly
-> export the symbol to set up the DMA range.
->=20
-> The drivers are:
->=20
-> drivers/gpu/drm/sun4i/sun4i_backend.c
->=20
->   This just use dma_direct_set_offset as a fallback.  Is there any good
->   reason to not just kill off the fallback?
->=20
-> drivers/media/platform/sunxi/sun4i-csi/sun4i_csi.c
->=20
->   Same as above.
+Fixes: 7304e8f28bb2 ("iommu/vt-d: Correctly disable Intel IOMMU force on")
+Signed-off-by: Zhenzhong Duan <zhenzhong.duan@gmail.com>
+---
+ arch/x86/kernel/tboot.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-So, the history of this is:
+diff --git a/arch/x86/kernel/tboot.c b/arch/x86/kernel/tboot.c
+index 992fb1415c0f..9fd4d162b331 100644
+--- a/arch/x86/kernel/tboot.c
++++ b/arch/x86/kernel/tboot.c
+@@ -511,12 +511,9 @@ struct acpi_table_header *tboot_get_dmar_table(struct acpi_table_header *dmar_tb
+ 
+ int tboot_force_iommu(void)
+ {
+-	if (!tboot_enabled())
++	if (!tboot_enabled() || intel_iommu_tboot_noforce)
+ 		return 0;
+ 
+-	if (intel_iommu_tboot_noforce)
+-		return 1;
+-
+ 	if (no_iommu || swiotlb || dmar_disabled)
+ 		pr_warn("Forcing Intel-IOMMU to enabled\n");
+ 
+-- 
+2.25.1
 
-  - We initially introduced the support for those two controllers
-    assuming that there was a direct mapping between the physical and
-    DMA addresses. It turns out it didn't and the DMA accesses were
-    going through a secondary, dedicated, bus that didn't have the same
-    mapping of the RAM than the CPU.
-
-    4690803b09c6 ("drm/sun4i: backend: Offset layer buffer address by DRAM =
-starting address")
-
-  - This dedicated bus is undocumented and barely used in the vendor
-    kernel so this was overlooked, and it's fairly hard to get infos on
-    it for all the SoCs we support. We added the DT support for it
-    though on some SoCs we had enough infos to do so:
-
-    c43a4469402f ("dt-bindings: interconnect: Add a dma interconnect name")
-    22f88e311399 ("ARM: dts: sun5i: Add the MBUS controller")
-
-    This explains the check on the interconnect property
-
-  - However, due to the stable DT rule, we still need to operate without
-    regressions on older DTs that wouldn't have that property (and for
-    SoCs we haven't figured out). Hence the fallback.
-
-> drivers/media/platform/sunxi/sun6i-csi/sun6i_csi.c
->=20
->   This driver unconditionally sets the offset.  Why can't we do this
->   in the device tree?
->=20
-> drivers/staging/media/sunxi/cedrus/cedrus_hw.c
->=20
->   Same as above.
->
-
-We should make those two match the previous ones, but we'll have the
-same issue here eventually. Most likely they were never ran on an SoC
-for which we have the MBUS figured out.
-
-Maxime
-
---dpottggxee74tnew
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX6Ji0wAKCRDj7w1vZxhR
-xfhqAQCGVXPQjuqueGxzvosMw+xeQPBqXhmwv85fYyeue+LdyAEA32seUuD5LvjK
-NYOXbQBiz2tBS6ESieNJ73KOZrgtHgs=
-=h/j1
------END PGP SIGNATURE-----
-
---dpottggxee74tnew--
