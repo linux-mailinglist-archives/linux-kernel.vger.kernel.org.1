@@ -2,84 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F91A2A6131
+	by mail.lfdr.de (Postfix) with ESMTP id DEC5B2A6132
 	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 11:07:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729179AbgKDKHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 05:07:14 -0500
-Received: from ozlabs.org ([203.11.71.1]:35273 "EHLO ozlabs.org"
+        id S1729213AbgKDKHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 05:07:17 -0500
+Received: from foss.arm.com ([217.140.110.172]:34216 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727389AbgKDKHN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 05:07:13 -0500
-Received: by ozlabs.org (Postfix, from userid 1034)
-        id 4CR2Pr0TM2z9sTK; Wed,  4 Nov 2020 21:07:12 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1604484432;
-        bh=MLycki1ORc3U1v+8blutc4vn9QHgJZyKlcel6wN5aHA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=iJ3sjZA1RKSE4YhM7Qp8jPm5udAQqT1QItAbUZrD+F9DXYfOca1Jy2Z2rwZcyDWiK
-         DqK56QgE44JnpDBqz+fYEcXvbWt4HM5Pypjy/TzUrTt4yWsnPGUctbvFZRKCxgWL4F
-         rQ0exUcn6wulnlrJjamg6eK5r4XSApY5BnZOn2UMbo80cc7maJPEJAs6A2wQxlm7dp
-         iaFgfBBIUpc/wUiox4o6A4GLBCMOdrjby91lzQks6hqb7unTRtaG1hipO2FbOlvQ1o
-         Lx0Z3JUMV7P/epCGxmFT/1US9wQzIrUlLC/pUxuHfKZJIpKJmGNRiDEpjpz9EGdYt3
-         lmNsSjMt7Iw4Q==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, keescook@chromium.org
-Subject: [PATCH] selftests/exec: Fix building of exec test
-Date:   Wed,  4 Nov 2020 21:07:06 +1100
-Message-Id: <20201104100706.659089-1-mpe@ellerman.id.au>
-X-Mailer: git-send-email 2.25.1
+        id S1728586AbgKDKHO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 05:07:14 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6FF311474;
+        Wed,  4 Nov 2020 02:07:13 -0800 (PST)
+Received: from [10.57.20.162] (unknown [10.57.20.162])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 37B203F66E;
+        Wed,  4 Nov 2020 02:07:12 -0800 (PST)
+Subject: Re: [PATCH v3 07/26] coresight: Introduce device access abstraction
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     linux-arm-kernel@lists.infradead.org, mike.leach@linaro.org,
+        coresight@lists.linaro.org, linux-kernel@vger.kernel.org
+References: <20201028220945.3826358-1-suzuki.poulose@arm.com>
+ <20201028220945.3826358-9-suzuki.poulose@arm.com>
+ <20201103171417.GA2854467@xps15> <20201103172544.GA2855763@xps15>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <5e322dc6-de2b-8e24-2aad-b7f7a3fbe172@arm.com>
+Date:   Wed, 4 Nov 2020 10:07:11 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201103172544.GA2855763@xps15>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently the exec test does not build:
+On 11/3/20 5:25 PM, Mathieu Poirier wrote:
+> On Tue, Nov 03, 2020 at 10:14:17AM -0700, Mathieu Poirier wrote:
+>> Hi Suzuki,
+>>
+>> On Wed, Oct 28, 2020 at 10:09:26PM +0000, Suzuki K Poulose wrote:
+>>> We are about to introduce support for sysreg access to ETMv4.4+
+>>> component. Since there are generic routines that access the
+>>> registers (e.g, CS_LOCK/UNLOCK , claim/disclaim operations, timeout)
+>>> and in order to preserve the logic of these operations at a
+>>> single place we introduce an abstraction layer for the accesses
+>>> to a given device.
+>>>
+>>> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+>>> Cc: Mike Leach <mike.leach@linaro.org>
+>>> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+>>> ---
+>>>   drivers/hwtracing/coresight/coresight-catu.c  |   1 +
+>>>   drivers/hwtracing/coresight/coresight-core.c  |  49 +++++
+>>>   .../hwtracing/coresight/coresight-cti-core.c  |   1 +
+>>>   drivers/hwtracing/coresight/coresight-etb10.c |   1 +
+>>>   .../coresight/coresight-etm3x-core.c          |   1 +
+>>>   .../coresight/coresight-etm4x-core.c          |   1 +
+>>>   .../hwtracing/coresight/coresight-funnel.c    |   1 +
+>>>   .../coresight/coresight-replicator.c          |   1 +
+>>>   drivers/hwtracing/coresight/coresight-stm.c   |   1 +
+>>>   .../hwtracing/coresight/coresight-tmc-core.c  |   1 +
+>>>   drivers/hwtracing/coresight/coresight-tpiu.c  |   1 +
+>>>   include/linux/coresight.h                     | 197 ++++++++++++++++++
+>>>   12 files changed, 256 insertions(+)
+>>>
+>>> diff --git a/drivers/hwtracing/coresight/coresight-catu.c b/drivers/hwtracing/coresight/coresight-catu.c
+>>> index 99430f6cf5a5..5baf29510f1b 100644
+>>> --- a/drivers/hwtracing/coresight/coresight-catu.c
+>>> +++ b/drivers/hwtracing/coresight/coresight-catu.c
+>>> @@ -551,6 +551,7 @@ static int catu_probe(struct amba_device *adev, const struct amba_id *id)
+>>>   	dev->platform_data = pdata;
+>>>   
+>>>   	drvdata->base = base;
+>>> +	catu_desc.access = CSDEV_ACCESS_IOMEM(base);
+>>
+>> Ok for those
+>>
+>>>   	catu_desc.pdata = pdata;
+>>>   	catu_desc.dev = dev;
+>>>   	catu_desc.groups = catu_groups;
+>>> diff --git a/drivers/hwtracing/coresight/coresight-core.c b/drivers/hwtracing/coresight/coresight-core.c
+>>> index cc9e8025c533..e96deaca8cab 100644
+>>> --- a/drivers/hwtracing/coresight/coresight-core.c
+>>> +++ b/drivers/hwtracing/coresight/coresight-core.c
+>>> @@ -1452,6 +1452,54 @@ int coresight_timeout(void __iomem *addr, u32 offset, int position, int value)
+>>>   }
+>>>   EXPORT_SYMBOL_GPL(coresight_timeout);
+>>>   
+>>> +u32 coresight_relaxed_read32(struct coresight_device *csdev, u32 offset)
+>>> +{
+>>> +	return csdev_access_relaxed_read32(&csdev->access, offset);
+>>
+>> This really doesn't give us much other than another jump.  I would give function
+>> csdev_access_relaxed_read32() a coresight_device argument instead of a csdev_access
+>> and rename it to coresight_relaxed_read32().  The same for the other access functions.
+>>
+> 
+> Ignore the above, TPIU just gave me the logic behind what you did.
 
-  make[1]: Entering directory '/linux/tools/testing/selftests/exec'
-  ...
-  make[1]: *** No rule to make target '/output/kselftest/exec/pipe', needed by 'all'.
+Thanks Mathieu, will address your comments in the next version.
 
-This is because pipe is listed in TEST_GEN_FILES, but pipe is not
-generated by the Makefile, it's created at runtime. So drop pipe from
-TEST_GEN_FILES.
-
-With that fixed, then install fails:
-
-  make[1]: Entering directory '/linux/tools/testing/selftests/exec'
-  rsync -a binfmt_script non-regular /output/install/exec/
-  rsync: link_stat "/linux/tools/testing/selftests/exec/non-regular" failed: No such file or directory (2)
-
-That's because non-regular hasn't been built, because it's in
-TEST_PROGS, it should be part of TEST_GEN_PROGS to indicate that it
-needs to be built.
-
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
----
- tools/testing/selftests/exec/Makefile | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/tools/testing/selftests/exec/Makefile b/tools/testing/selftests/exec/Makefile
-index cf69b2fcce59..a1e8a7abf576 100644
---- a/tools/testing/selftests/exec/Makefile
-+++ b/tools/testing/selftests/exec/Makefile
-@@ -3,9 +3,9 @@ CFLAGS = -Wall
- CFLAGS += -Wno-nonnull
- CFLAGS += -D_GNU_SOURCE
- 
--TEST_PROGS := binfmt_script non-regular
--TEST_GEN_PROGS := execveat load_address_4096 load_address_2097152 load_address_16777216
--TEST_GEN_FILES := execveat.symlink execveat.denatured script subdir pipe
-+TEST_PROGS := binfmt_script
-+TEST_GEN_PROGS := execveat non-regular load_address_4096 load_address_2097152 load_address_16777216
-+TEST_GEN_FILES := execveat.symlink execveat.denatured script subdir
- # Makefile is a run-time dependency, since it's accessed by the execveat test
- TEST_FILES := Makefile
- 
-
-base-commit: cf7cd542d1b538f6e9e83490bc090dd773f4266d
--- 
-2.25.1
-
+Suzuki
