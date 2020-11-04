@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 655862A6E3C
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 20:40:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F4532A6E0A
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 20:37:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732077AbgKDTiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 14:38:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37482 "EHLO
+        id S1730796AbgKDTgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 14:36:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730385AbgKDTgL (ORCPT
+        with ESMTP id S1730426AbgKDTgM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 14:36:11 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4C86C061A4A
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 11:36:10 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id c9so3498811wml.5
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 11:36:10 -0800 (PST)
+        Wed, 4 Nov 2020 14:36:12 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24F3FC0613D3
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 11:36:12 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id n18so23308571wrs.5
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 11:36:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=gIlPaNy8+6SVoJoO4ZVb88BpkxEebVHAZHuNRUrqyUw=;
-        b=Jhqqa2LzDSukPj9LW74QxWz9s/ZxSkic1kQDmHtf6J+/wT+EvuKE5GiM3/FUZYYUA/
-         B65Rk9z8HCY0qALSkuFJzBx2GSF7z74YaxsiqN0D4Dvj5FHotOO0LXuVS/9/CSHmfstg
-         PMp5Lx1ZxhgrTWfwjmsHVTdXjfo32kajvGnUiKMbig7IayIE3pJjy+Hjds0R+SmCypDV
-         FvmwIXgDuGYMAFuzB81DjZPXz5CPVbv9fa2ZbMG/tD+Sy0gTW/m9vA/xQJAW/SjkX5Dz
-         cpws0LFWeqdjEKCOkPUzG1frh+eO7hCt1grT5OIq+72untM9vozIaij5jFKrzbF1L2tH
-         T60A==
+        bh=JjBxGFjQOACKcEPH71GqcBHfM0FSXHr4VPO3b9djiEU=;
+        b=rV/SPypZHb9//eJSr8Tjv610oy3JEwpGgWOP6Lt+65kRrYKtWcfAa4IpYUHwDrfwJ0
+         7gUxWdi/g7LLKEJrLpvSye5yu3crV5eqDg+HJm6SZfkSBmQdzIckhKJ95ufpPNlbSe0p
+         BZelrdz9aSmHUQUmn5YSiZGbcKKlAJ2jJ+Ad8Jr+IKfJjSAPy0Lg/cKOaa5Fk0yUhpFW
+         Oh+6cgudeQ+t+VkecEgkLAMQ91TaFTUnaUhKmTcAz9y6LwW+q4SFmarHMJECy1Flg0I2
+         FPe4Hl5oZSWhaQl4AXQopwu4WPbRjl6DJU39WhCwo1WB3Gb21qzs8a3GLJqzYWFEcg7+
+         zrOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=gIlPaNy8+6SVoJoO4ZVb88BpkxEebVHAZHuNRUrqyUw=;
-        b=Du2hd5Clv7l2AzwSV8mB4g9gL4GUVZ2cVwu/WGU8vsge7twrhuNTR+A6YOI2Ep1Fum
-         lbwFvSCXk4Zd3xMFbGazHVc64IfuNJKQU+RQM+fuhfFENg2x1IjIfY3FidwQZkfcTIlm
-         O0IoCtYPCY1Rx3L3FKDkdakhqV9y9rdlChkVzaJ2h0SxmRGkdZl/PP8b2zXAmGGoC15s
-         NERyUKpBFHDuTFGKj7RQCju3N1MxNfGfYKsbB5eDkvlDfghXq+LUTawcsIkqr6R14DAa
-         rsDtHTvrRNzLmjLcCT8WTBLlLve8+d814Y1mBO+0EzTEcCB1bYw+I0Ur9aTNkglGgNbf
-         zBkA==
-X-Gm-Message-State: AOAM532T7J/s8UwwYrqKEtlFzQVGBEGnL/Fob/Yf6QmffCcEPSy1kyyj
-        sy3JN2Tz30GDB7Zvys9vcZVwsg==
-X-Google-Smtp-Source: ABdhPJwpY/hfw7mfgA6zAbuTaa1w+/DKNnEbH9/YUlYajtlgI1G1zJsIYHUdpgYlYnVqKIkqG1z/hg==
-X-Received: by 2002:a1c:6043:: with SMTP id u64mr6069151wmb.166.1604518569469;
-        Wed, 04 Nov 2020 11:36:09 -0800 (PST)
+        bh=JjBxGFjQOACKcEPH71GqcBHfM0FSXHr4VPO3b9djiEU=;
+        b=dd14WwJJ8yUqz94LW9z4rwY2rs3xGw2HYii472p63nA3VWrtz7ETs9rrgj3CuI9aHa
+         KBtkwMN2qC7u0Lms6lEHX+IymYeBgJf7hHNPfZptIMLR4VZbUgrf82iJzgZ1rDaMpNeX
+         E7haWCl/1BGwyxl5W5ar3O8EylNE9HPgJ4XjFifWFlAe0MXpOFjh9AlyFsZPYTPVtsuV
+         pwYlO4eJ+1w2ETW0/QfFVaO83kF0lLYykPWCj0coe1auzb5ZnytYJaU9NTpJrft7Ken2
+         HdB7slEvtyFsYYmXugIy/ViZiMt/34f1Ogcf10VmtFByOL9PqtcESUH1OI41T3cnF/VK
+         mM/A==
+X-Gm-Message-State: AOAM533YHscryFT7cIDN3ZYjRJqHtldQlGH7Rx1taTQSNCNADINuTuWS
+        abwnDSqNPNiemMGyq7pfWwM0Zum6wu5dyjbQ
+X-Google-Smtp-Source: ABdhPJyEGj6iuDEjo9diFKAvSOXtZ68ik2y5ve+fEOipOrF2xgWPU+sVXuSjxmd78dbJzBmDMzquxA==
+X-Received: by 2002:adf:a29e:: with SMTP id s30mr36335757wra.29.1604518570841;
+        Wed, 04 Nov 2020 11:36:10 -0800 (PST)
 Received: from dell.default ([91.110.221.242])
-        by smtp.gmail.com with ESMTPSA id x10sm4034444wrp.62.2020.11.04.11.36.07
+        by smtp.gmail.com with ESMTPSA id x10sm4034444wrp.62.2020.11.04.11.36.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 11:36:08 -0800 (PST)
+        Wed, 04 Nov 2020 11:36:10 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Jiri Slaby <jirislaby@kernel.org>
-Subject: [PATCH 07/36] tty: tty_jobctrl: Add missing function parameter descriptions
-Date:   Wed,  4 Nov 2020 19:35:20 +0000
-Message-Id: <20201104193549.4026187-8-lee.jones@linaro.org>
+Subject: [PATCH 08/36] tty: tty_ldisc: Fix some kernel-doc related misdemeanours
+Date:   Wed,  4 Nov 2020 19:35:21 +0000
+Message-Id: <20201104193549.4026187-9-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201104193549.4026187-1-lee.jones@linaro.org>
 References: <20201104193549.4026187-1-lee.jones@linaro.org>
@@ -65,47 +65,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+ - Functions must follow directly on from their headers
+ - Demote non-conforming kernel-doc header
+ - Ensure notes have unique section names
+ - Provide missing description for 'reinit'
+
 Fixes the following W=1 kernel build warning(s):
 
- drivers/tty/tty_jobctrl.c:32: warning: Function parameter or member 'sig' not described in '__tty_check_change'
- drivers/tty/tty_jobctrl.c:95: warning: Function parameter or member 'tty' not described in '__proc_set_tty'
- drivers/tty/tty_jobctrl.c:344: warning: Function parameter or member 'file' not described in 'tiocsctty'
+ drivers/tty/tty_ldisc.c:158: warning: cannot understand function prototype: 'int tty_ldisc_autoload = IS_BUILTIN(CONFIG_LDISC_AUTOLOAD); '
+ drivers/tty/tty_ldisc.c:199: warning: Function parameter or member 'ld' not described in 'tty_ldisc_put'
+ drivers/tty/tty_ldisc.c:260: warning: duplicate section name 'Note'
+ drivers/tty/tty_ldisc.c:717: warning: Function parameter or member 'reinit' not described in 'tty_ldisc_hangup'
 
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc: Jiri Slaby <jirislaby@kernel.org>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/tty/tty_jobctrl.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/tty/tty_ldisc.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/tty/tty_jobctrl.c b/drivers/tty/tty_jobctrl.c
-index 28a23a0fef21c..2054e4164c660 100644
---- a/drivers/tty/tty_jobctrl.c
-+++ b/drivers/tty/tty_jobctrl.c
-@@ -21,6 +21,7 @@ static int is_ignored(int sig)
- /**
-  *	tty_check_change	-	check for POSIX terminal changes
-  *	@tty: tty to check
-+ *	@sig: signal to send
-  *
-  *	If we try to write to, or set the state of, a terminal and we're
-  *	not in the foreground, send a SIGTTOU.  If the signal is blocked or
-@@ -83,6 +84,7 @@ void proc_clear_tty(struct task_struct *p)
+diff --git a/drivers/tty/tty_ldisc.c b/drivers/tty/tty_ldisc.c
+index fe37ec331289b..aced2bf6173be 100644
+--- a/drivers/tty/tty_ldisc.c
++++ b/drivers/tty/tty_ldisc.c
+@@ -135,6 +135,7 @@ static void put_ldops(struct tty_ldisc_ops *ldops)
+ 	raw_spin_unlock_irqrestore(&tty_ldiscs_lock, flags);
+ }
  
++static int tty_ldisc_autoload = IS_BUILTIN(CONFIG_LDISC_AUTOLOAD);
  /**
-  * proc_set_tty -  set the controlling terminal
-+ *	@tty: tty structure
+  *	tty_ldisc_get		-	take a reference to an ldisc
+  *	@disc: ldisc number
+@@ -155,8 +156,6 @@ static void put_ldops(struct tty_ldisc_ops *ldops)
+  *		takes tty_ldiscs_lock to guard against ldisc races
+  */
+ 
+-static int tty_ldisc_autoload = IS_BUILTIN(CONFIG_LDISC_AUTOLOAD);
+-
+ static struct tty_ldisc *tty_ldisc_get(struct tty_struct *tty, int disc)
+ {
+ 	struct tty_ldisc *ld;
+@@ -190,7 +189,7 @@ static struct tty_ldisc *tty_ldisc_get(struct tty_struct *tty, int disc)
+ 	return ld;
+ }
+ 
+-/**
++/*
+  *	tty_ldisc_put		-	release the ldisc
   *
-  * Only callable by the session leader and only if it does not already have
-  * a controlling terminal.
-@@ -330,6 +332,7 @@ void no_tty(void)
+  *	Complement of tty_ldisc_get().
+@@ -250,12 +249,12 @@ const struct seq_operations tty_ldiscs_seq_ops = {
+  *	Returns: NULL if the tty has been hungup and not re-opened with
+  *		 a new file descriptor, otherwise valid ldisc reference
+  *
+- *	Note: Must not be called from an IRQ/timer context. The caller
++ *	Note 1: Must not be called from an IRQ/timer context. The caller
+  *	must also be careful not to hold other locks that will deadlock
+  *	against a discipline change, such as an existing ldisc reference
+  *	(which we check for)
+  *
+- *	Note: a file_operations routine (read/poll/write) should use this
++ *	Note 2: a file_operations routine (read/poll/write) should use this
+  *	function to wait for any ldisc lifetime events to finish.
+  */
+ 
+@@ -701,6 +700,7 @@ int tty_ldisc_reinit(struct tty_struct *tty, int disc)
  /**
-  *	tiocsctty	-	set controlling tty
-  *	@tty: tty structure
-+ *	@file: file structure used to check permissions
-  *	@arg: user argument
+  *	tty_ldisc_hangup		-	hangup ldisc reset
+  *	@tty: tty being hung up
++ *	@reinit: whether to re-initialise the tty
   *
-  *	This ioctl is used to manage job control. It permits a session
+  *	Some tty devices reset their termios when they receive a hangup
+  *	event. In that situation we must also switch back to N_TTY properly
 -- 
 2.25.1
 
