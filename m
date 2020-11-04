@@ -2,81 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2335E2A5C20
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 02:45:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE51D2A5C23
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 02:46:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730535AbgKDBpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 20:45:02 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7138 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728567AbgKDBpB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 20:45:01 -0500
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CQqGJ6pKyz15Qjc;
-        Wed,  4 Nov 2020 09:44:56 +0800 (CST)
-Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
- (10.3.19.205) with Microsoft SMTP Server (TLS) id 14.3.487.0; Wed, 4 Nov 2020
- 09:44:56 +0800
-Subject: Re: [PATCH 1/4] erofs: fix setting up pcluster for temporary pages
-To:     Gao Xiang <hsiangkao@redhat.com>
-CC:     Gao Xiang <hsiangkao@aol.com>, <linux-erofs@lists.ozlabs.org>,
-        Chao Yu <chao@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        <stable@vger.kernel.org>
-References: <20201022145724.27284-1-hsiangkao.ref@aol.com>
- <20201022145724.27284-1-hsiangkao@aol.com>
- <f1f24a38-97f7-e9cf-03c8-2c95814b98a3@huawei.com>
- <20201104011130.GA982972@xiangao.remote.csb>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <e4cbe373-ca69-5f95-99c7-422375c58e4e@huawei.com>
-Date:   Wed, 4 Nov 2020 09:44:56 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S1730545AbgKDBqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 20:46:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37358 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728534AbgKDBqH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 20:46:07 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AD9E420870;
+        Wed,  4 Nov 2020 01:46:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604454366;
+        bh=FnKoisWTX/ee1bsgKatEBjM+73m01swI7uYjuGuSuPM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=juR9jqLpgi9tBQoGxmks2rJ7sxh0OChrS5hjSfqtNvKcOoKX4ktKQOP7R/gXlgZwX
+         9p/g5aoHzkeVP7MGU/BvqOPLN9HRUAajDGKQdx5GUmBri7WU/Af3DvmUR8u2hMvEpy
+         tRBxzy+ZjIBiK+DU4VV5KkQAPcMkGroUAZJEeaBI=
+Date:   Tue, 3 Nov 2020 17:46:04 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Willy Liu <willy.liu@realtek.com>
+Cc:     <andrew@lunn.ch>, <hkallweit1@gmail.com>, <linux@armlinux.org.uk>,
+        <davem@davemloft.net>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <ryankao@realtek.com>
+Subject: Re: [PATCH net-next v2] net: phy: realtek: Add support for
+ RTL8221B-CG series
+Message-ID: <20201103174604.59debf73@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <1604281927-9874-1-git-send-email-willy.liu@realtek.com>
+References: <1604281927-9874-1-git-send-email-willy.liu@realtek.com>
 MIME-Version: 1.0
-In-Reply-To: <20201104011130.GA982972@xiangao.remote.csb>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.114.67]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/11/4 9:11, Gao Xiang wrote:
-> On Wed, Nov 04, 2020 at 09:05:56AM +0800, Chao Yu wrote:
->> On 2020/10/22 22:57, Gao Xiang wrote:
->>> From: Gao Xiang <hsiangkao@redhat.com>
->>>
->>> pcluster should be only set up for all managed pages instead of
->>> temporary pages. Since it currently uses page->mapping to identify,
->>> the impact is minor for now.
->>>
->>> Fixes: 5ddcee1f3a1c ("erofs: get rid of __stagingpage_alloc helper")
->>> Cc: <stable@vger.kernel.org> # 5.5+
->>> Signed-off-by: Gao Xiang <hsiangkao@redhat.com>
->>
->> Reviewed-by: Chao Yu <yuchao0@huawei.com>
+On Mon, 2 Nov 2020 09:52:07 +0800 Willy Liu wrote:
+> Realtek single-port 2.5Gbps Ethernet PHYs are list as below:
+> RTL8226-CG: the 1st generation 2.5Gbps single port PHY
+> RTL8226B-CG/RTL8221B-CG: the 2nd generation 2.5Gbps single port PHY
+> RTL8221B-VB-CG: the 3rd generation 2.5Gbps single port PHY
+> RTL8221B-VM-CG: the 2.5Gbps single port PHY with MACsec feature
 > 
-> Thanks, I've also added a note to the commit message like this,
-> "
-> [ Update: Vladimir reported the kernel log becomes polluted
->    because PAGE_FLAGS_CHECK_AT_FREE flag(s) set if the page
->    allocation debug option is enabled. ]
-> "
-> Will apply all of this to -fixes branch.
+> This patch adds the minimal drivers to manage these transceivers.
+> 
+> Signed-off-by: Willy Liu <willy.liu@realtek.com>
+> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-Thanks for noticing that, looks fine to me.
-
-Thanks,
-
-> 
-> Thanks,
-> Gao Xiang
-> 
->>
->> Thanks,
->>
-> 
-> .
-> 
+Applied, thanks!
