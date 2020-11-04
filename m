@@ -2,116 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BBE22A66DC
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 15:56:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B9DB2A66E1
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 15:56:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730513AbgKDO4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 09:56:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49704 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730484AbgKDO4F (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 09:56:05 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29139C0613D3
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 06:56:04 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id b8so22381739wrn.0
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 06:56:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=O/B/F4kbVTR+G5SaHVwDeKIS2eZqdbc0hyyi5Ghppq4=;
-        b=bcv6gJT8f5Rt1YXxQoWFef3+70kJkUVEWJwVluu2QBBXgmTeEn85dZ3LQX4vJEMHw9
-         5QXC8bgT/rIKytuDrk1Hlu/hq7bluXXY2MPegyPT9aOObOWqIMRW9qzbfciKpLSOG34N
-         UfXUCIJ98rPPZOmLFeQjIaFSH+co8X/Nr9HF+2KID5aDgVeHoBFYcPg2cN8kauv7QYCJ
-         k6LLcJRBwhmaWCuPmLa+1WIQaRV9YuWsMbCkKkTT6u4FN+dQJbvnXKXWp4pO2K1/mDoH
-         K7IXGVG5vDe8B6MaxYnS8QrKr/Yhj6M5/KpO2Vn4UeSLcJDPrquslw+G7cCklL6Ngawm
-         PM2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=O/B/F4kbVTR+G5SaHVwDeKIS2eZqdbc0hyyi5Ghppq4=;
-        b=BX9GDEhCRufTRT13Ct1qhIL3fr8AGm+a6DwkbKVLQa+UzLkinNpLp6HYfHLTmMBjLQ
-         F0VMcLt/aiYRlYnbx7xeQw10MsFxzTzm+tEreQqPYoTqT7f2HCcf6h2garR1mz7opCBv
-         qbeSVoDxboP2dtgnITkwngzFxp+S9/IzNlbF4blQ3X8/saUxjnxkEOZVasenFRkWGkZ6
-         i2oPClD7Sodwxss3P97toUfNKBRzha7IGhiVuUo+SvyFVgS+ObNVr9JDIMXm4Hj5tqfK
-         wRV7wrnh8bd7HEoz7mRRrGaBOfyyGfxqopi6Fajl0L9c9ammhdFXAM0ErXv7PKT8g5/u
-         G9xQ==
-X-Gm-Message-State: AOAM530NxBUBGFliuCFR1iTIsMI1jc3u8KIRAKUB7mb0/4yvp/saAD1O
-        G2C+T+wmqZ7OsFMLIGnu82TuMg==
-X-Google-Smtp-Source: ABdhPJybfGNV5XWVSE49VuqFlUPCA5BjJkQBmsjhU//r3CNsRokIseYc+yA/3sMffQS83X/3BXwq/Q==
-X-Received: by 2002:adf:e50b:: with SMTP id j11mr33424001wrm.263.1604501762860;
-        Wed, 04 Nov 2020 06:56:02 -0800 (PST)
-Received: from dell ([91.110.221.242])
-        by smtp.gmail.com with ESMTPSA id 109sm3004976wra.29.2020.11.04.06.56.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 06:56:02 -0800 (PST)
-Date:   Wed, 4 Nov 2020 14:56:00 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Dustin McIntire <dustin@sensoria.com>, kuba@kernel.org,
-        davem@davemloft.net, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 02/12] net: ethernet: smsc: smc911x: Mark 'status' as
- __maybe_unused
-Message-ID: <20201104145600.GJ4488@dell>
-References: <20201104090610.1446616-1-lee.jones@linaro.org>
- <20201104090610.1446616-3-lee.jones@linaro.org>
- <20201104132200.GW933237@lunn.ch>
- <20201104143140.GE4488@dell>
- <20201104144510.GE1213539@lunn.ch>
+        id S1730555AbgKDO42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 09:56:28 -0500
+Received: from foss.arm.com ([217.140.110.172]:38406 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730485AbgKDO4K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 09:56:10 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C1F0E139F;
+        Wed,  4 Nov 2020 06:56:09 -0800 (PST)
+Received: from C02TD0UTHF1T.local (unknown [10.57.57.109])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DBD8C3F719;
+        Wed,  4 Nov 2020 06:56:03 -0800 (PST)
+Date:   Wed, 4 Nov 2020 14:56:01 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Marco Elver <elver@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Potapenko <glider@google.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Lameter <cl@linux.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hillf Danton <hdanton@sina.com>,
+        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        =?utf-8?B?SsO2cm4=?= Engel <joern@purestorage.com>,
+        Kees Cook <keescook@chromium.org>,
+        Pekka Enberg <penberg@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        SeongJae Park <sjpark@amazon.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Will Deacon <will@kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: Re: [PATCH v7 3/9] arm64, kfence: enable KFENCE for ARM64
+Message-ID: <20201104145601.GB7577@C02TD0UTHF1T.local>
+References: <20201103175841.3495947-1-elver@google.com>
+ <20201103175841.3495947-4-elver@google.com>
+ <20201104130111.GA7577@C02TD0UTHF1T.local>
+ <CANpmjNNyY+Myv12P-iou80LhQ0aG5UFudLbVWmRBcM3V=G540A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201104144510.GE1213539@lunn.ch>
+In-Reply-To: <CANpmjNNyY+Myv12P-iou80LhQ0aG5UFudLbVWmRBcM3V=G540A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 04 Nov 2020, Andrew Lunn wrote:
-
-> On Wed, Nov 04, 2020 at 02:31:40PM +0000, Lee Jones wrote:
-> > On Wed, 04 Nov 2020, Andrew Lunn wrote:
-> > 
-> > > On Wed, Nov 04, 2020 at 09:06:00AM +0000, Lee Jones wrote:
-> > > > 'status' is used to interact with a hardware register.  It might not
-> > > > be safe to remove it entirely.  Mark it as __maybe_unused instead.
-> > > 
-> > > Hi Lee
-> > > 
-> > > https://www.mail-archive.com/netdev@vger.kernel.org/msg365875.html
-> > > 
-> > > I'm working on driver/net/ethernet and net to make it w=1 clean.  I
-> > > suggest you hang out on the netdev mailing list so you don't waste
-> > > your time reproducing what i am doing.
-> > 
-> > I believe that ship has sailed.  Net should be clean now.
+On Wed, Nov 04, 2020 at 03:23:48PM +0100, Marco Elver wrote:
+> On Wed, 4 Nov 2020 at 14:06, Mark Rutland <mark.rutland@arm.com> wrote:
+> > On Tue, Nov 03, 2020 at 06:58:35PM +0100, Marco Elver wrote:
+> > There is one thing that I thing we should improve as a subsequent
+> > cleanup, but I don't think that should block this as-is.
+> >
+> > > +#define KFENCE_SKIP_ARCH_FAULT_HANDLER "el1_sync"
+> >
+> > IIUC, the core kfence code is using this to figure out where to trace
+> > from when there's a fault taken on an access to a protected page.
 > 
-> drivers/net is getting better, but is not clean. I have some patches
-> from Arnd which allow W=1 to be enabled by default for subdirectories,
-> and i have to skip a few. Also net, not driver/net has problems, which
-> i'm working on. I hope Arnd will post his patches soon, so we can get
-> them merged and prevent regressions with W=1.
-
-That's odd.  I wonder why I'm not seeing any more issues?
-
-> > Maybe that was down to some of your previous efforts? 
+> Correct.
 > 
-> And Jakub running a bot which compile tests all new patches with W=1.
+> > It would be better if the arch code passed the exception's pt_regs into
+> > the kfence fault handler, and the kfence began the trace began from
+> > there. That would also allow for dumping the exception registers which
+> > can help with debugging (e.g. figuring out how the address was derived
+> > when it's calculated from multiple source registers). That would also be
+> > a bit more robust to changes in an architectures' exception handling
+> > code.
+> 
+> Good idea, thanks. I guess there's no reason to not want to always
+> skip to instruction_pointer(regs)?
 
-That's great!  My aim is for all maintainers to be doing that.
+I don't think we need the exception handling gunk in the trace, but note
+that you'd need to use stack_trace_save_regs(regs, ...) directly, rather
+than using stack_trace_save() and skipping based on
+instruction_pointer(regs). Otherwise, if the fault was somewhere in an
+exception handler, and we invoked the same function on the path to the
+kfence fault handler we might cut the trace at the wrong point.
 
-> No, not really. I'm a networking guy, so will look mostly at
-> drivers/net and the core net code.
+> In which case I can prepare a patch to make this change. If this
+> should go into a v8, please let me know. But it'd be easier as a
+> subsequent patch as you say, given it'll be easier to review and these
+> patches are in -mm now.
 
-Duly noted.  I'll leave 'net' alone then.
+I think it'd make more sense as a subsequent change, since it's liable
+to need a cycle or two of review, and I don't think it should block the
+rest of the series.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Thanks,
+Mark.
