@@ -2,122 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16A552A62F1
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 12:10:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FF7B2A62F4
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 12:10:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729309AbgKDLK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 06:10:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42042 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728029AbgKDLK1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 06:10:27 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 847DBC0613D3;
-        Wed,  4 Nov 2020 03:10:27 -0800 (PST)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 8C189563;
-        Wed,  4 Nov 2020 12:10:24 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1604488224;
-        bh=k+WfqD6rAC0tEPcf43fIMwn4DUUhbQPKSlAan/1LvYg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OmvYPBJkphHDJdLs3bRI6q7lKyTX0tiv6hCK9ObXu5I0oJrZzC7WKCZoaUyTIsHac
-         FgUHunTb302MXH7hI8JJLB9Vmtlim/BflQz3pw9eQg3LYzlHNFKe/Txa6Iew/zdKOm
-         ItLatugWKLeizDG6sf7dzK1R9n9aznSmSykfR2/g=
-Date:   Wed, 4 Nov 2020 13:09:37 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Ricardo Ribalda <ribalda@chromium.org>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tfiga@chromium.org
-Subject: Re: [PATCH 1/6] media: uvcvideo: Add UVC_CTRL_FLAG_ENTITY_GET_INFO
-Message-ID: <20201104110937.GH26171@pendragon.ideasonboard.com>
-References: <20201022133753.310506-1-ribalda@chromium.org>
- <20201022133753.310506-2-ribalda@chromium.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201022133753.310506-2-ribalda@chromium.org>
+        id S1729391AbgKDLKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 06:10:48 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:40506 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726344AbgKDLKr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 06:10:47 -0500
+Received: from bogon.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxr9MzjKJfnKYFAA--.14736S2;
+        Wed, 04 Nov 2020 19:10:43 +0800 (CST)
+From:   Youling Tang <tangyouling@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] mips: Use the common RW_DATA macro in vmlinux.lds.S
+Date:   Wed,  4 Nov 2020 19:10:43 +0800
+Message-Id: <1604488243-21327-1-git-send-email-tangyouling@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9Dxr9MzjKJfnKYFAA--.14736S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrZFW8KF13CFyrWw4DGrW3Wrg_yoWDCrb_WF
+        4ag3WxGr4kCr15WrWUX34fXr98tas5GFySkr1vvrs2qFZIgrs0qaykXFW7ZwsYqw4Uur4r
+        ZFy5GF9Fyw4IvjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb7AYjsxI4VWDJwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4
+        A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
+        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r4j6F4UMc
+        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_Gw4l42xK82IY
+        c2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s
+        026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1Y6r17MIIYrxkI7VAKI48JMIIF
+        0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0x
+        vE42xK8VAvwI8IcIk0rVW3JVWrJr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280
+        aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0rgA5UUUUU==
+X-CM-SenderInfo: 5wdqw5prxox03j6o00pqjv00gofq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ricardo,
+Use the common RW_DATA rule for the linker script in an effort to
+regularize the linker script.
 
-Thank you for the patch.
+Signed-off-by: Youling Tang <tangyouling@loongson.cn>
+---
+ arch/mips/kernel/vmlinux.lds.S | 15 +++------------
+ 1 file changed, 3 insertions(+), 12 deletions(-)
 
-On Thu, Oct 22, 2020 at 03:37:48PM +0200, Ricardo Ribalda wrote:
-> This flag allows controls to get their properties from an entity defined
-
-s/entity defined/entity-defined/
-
-> function instead of via a query to the USB device.
-> 
-> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> ---
->  drivers/media/usb/uvc/uvc_ctrl.c | 9 +++++++--
->  drivers/media/usb/uvc/uvcvideo.h | 3 +++
->  include/uapi/linux/uvcvideo.h    | 2 ++
->  3 files changed, 12 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
-> index f479d8971dfb..7acdc055613b 100644
-> --- a/drivers/media/usb/uvc/uvc_ctrl.c
-> +++ b/drivers/media/usb/uvc/uvc_ctrl.c
-> @@ -1708,8 +1708,13 @@ static int uvc_ctrl_get_flags(struct uvc_device *dev,
->  	if (data == NULL)
->  		return -ENOMEM;
->  
-> -	ret = uvc_query_ctrl(dev, UVC_GET_INFO, ctrl->entity->id, dev->intfnum,
-> -			     info->selector, data, 1);
-> +	if (ctrl->info.flags & UVC_CTRL_FLAG_ENTITY_GET_INFO)
-
-Do we need the flag, couldn't we use entity->get_info if it is non-null,
-and call uvc_query_ctrl() otherwise ?
-
-> +		ret = ctrl->entity->get_info ?
-> +			ctrl->entity->get_info(ctrl->entity, ctrl->info.selector, data) :
-> +			-EINVAL;
-> +	else
-> +		ret = uvc_query_ctrl(dev, UVC_GET_INFO, ctrl->entity->id, dev->intfnum,
-> +				     info->selector, data, 1);
->  	if (!ret)
->  		info->flags |= (data[0] & UVC_CONTROL_CAP_GET ?
->  				UVC_CTRL_FLAG_GET_CUR : 0)
-> diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
-> index a3dfacf069c4..08922d889bb6 100644
-> --- a/drivers/media/usb/uvc/uvcvideo.h
-> +++ b/drivers/media/usb/uvc/uvcvideo.h
-> @@ -353,6 +353,9 @@ struct uvc_entity {
->  	u8 bNrInPins;
->  	u8 *baSourceID;
->  
-> +	int (*get_info)(struct uvc_entity *entity, u8 cs, u8 *caps);
-> +	int (*get_cur)(struct uvc_entity *entity, u8 cs, void *data, u16 size);
-
-Looks like the second function should be part of patch 2/6 instead. I
-would however squash 1/6 and 2/6.
-
-> +
->  	unsigned int ncontrols;
->  	struct uvc_control *controls;
->  };
-> diff --git a/include/uapi/linux/uvcvideo.h b/include/uapi/linux/uvcvideo.h
-> index f80f05b3c423..69b636290c31 100644
-> --- a/include/uapi/linux/uvcvideo.h
-> +++ b/include/uapi/linux/uvcvideo.h
-> @@ -30,6 +30,8 @@
->  #define UVC_CTRL_FLAG_AUTO_UPDATE	(1 << 7)
->  /* Control supports asynchronous reporting */
->  #define UVC_CTRL_FLAG_ASYNCHRONOUS	(1 << 8)
-> +/* Entity queries */
-> +#define UVC_CTRL_FLAG_ENTITY_GET_INFO	(1 << 9)
->  
->  #define UVC_CTRL_FLAG_GET_RANGE \
->  	(UVC_CTRL_FLAG_GET_CUR | UVC_CTRL_FLAG_GET_MIN | \
-
+diff --git a/arch/mips/kernel/vmlinux.lds.S b/arch/mips/kernel/vmlinux.lds.S
+index 5e97e9d..e2fa07e 100644
+--- a/arch/mips/kernel/vmlinux.lds.S
++++ b/arch/mips/kernel/vmlinux.lds.S
+@@ -84,18 +84,9 @@ SECTIONS
+ 	_sdata = .;			/* Start of data section */
+ 	RO_DATA(4096)
+ 
+-	/* writeable */
+-	.data : {	/* Data */
+-		. = . + DATAOFFSET;		/* for CONFIG_MAPPED_KERNEL */
+-
+-		INIT_TASK_DATA(THREAD_SIZE)
+-		NOSAVE_DATA
+-		CACHELINE_ALIGNED_DATA(1 << CONFIG_MIPS_L1_CACHE_SHIFT)
+-		READ_MOSTLY_DATA(1 << CONFIG_MIPS_L1_CACHE_SHIFT)
+-		DATA_DATA
+-		CONSTRUCTORS
+-	}
+-	BUG_TABLE
++	. = . + DATAOFFSET;             /* for CONFIG_MAPPED_KERNEL */
++	RW_DATA(1 << CONFIG_MIPS_L1_CACHE_SHIFT, PAGE_SIZE, THREAD_SIZE)
++
+ 	_gp = . + 0x8000;
+ 	.lit8 : {
+ 		*(.lit8)
 -- 
-Regards,
+2.1.0
 
-Laurent Pinchart
