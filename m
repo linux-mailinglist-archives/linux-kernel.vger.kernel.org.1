@@ -2,91 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64BB42A6BBA
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 18:33:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EC702A6BAC
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 18:31:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731565AbgKDRcq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 12:32:46 -0500
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:1605 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730019AbgKDRco (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 12:32:44 -0500
-Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A4HVs49031157;
-        Wed, 4 Nov 2020 18:32:30 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=STMicroelectronics;
- bh=RD8lxnzr5dJzto5A8fvjT1RmhG9atPIVNFqjK/v2cWg=;
- b=kz8KlySfDguwtPPwhOD30PU3rDNhSV/NXwCtuIhCvppuvER2jeNFvlEb/O3LkXJzQ5P2
- XUhYEiHJpISju4c38waQztEtjQaJGwcUZNCw57UyBRmaT/wI9QAT+T51G5+qB+qlvDZJ
- S1hvucJglJ5p843bJZwT48undVQziDWBI2bIO92/B6abI7Yj8O1hoXrMhqTAs7NgSAd7
- RResEqnt0n7DIDQm7JfZg7sQ+uK99G3S/qfbr6DYRP8klppXd3KxCvfYm8W3B5Rb4Lph
- lIook+BMjh6z8aRAQbNKaDkBkIqyX2lnjOVYZc4w7eCqrZVv6Qx4P24pIXlyryb9xflJ Zg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 34h00egtyr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 04 Nov 2020 18:32:30 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id E007510002A;
-        Wed,  4 Nov 2020 18:32:29 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag1node1.st.com [10.75.127.1])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id CD52F225C2A;
-        Wed,  4 Nov 2020 18:32:29 +0100 (CET)
-Received: from localhost (10.75.127.47) by SFHDAG1NODE1.st.com (10.75.127.1)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 4 Nov 2020 18:32:29
- +0100
-From:   Hugues Fruchet <hugues.fruchet@st.com>
-To:     Alexandre Torgue <alexandre.torgue@st.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        Hugues Fruchet <hugues.fruchet@st.com>,
-        Alain Volmat <alain.volmat@st.com>,
-        Yannick Fertre <yannick.fertre@st.com>,
-        Philippe CORNU <philippe.cornu@st.com>
-Subject: [PATCH v5 4/4] ARM: dts: stm32: set bus-type in DCMI endpoint for stm32429i-eval board
-Date:   Wed, 4 Nov 2020 18:32:12 +0100
-Message-ID: <1604511132-4014-5-git-send-email-hugues.fruchet@st.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1604511132-4014-1-git-send-email-hugues.fruchet@st.com>
-References: <1604511132-4014-1-git-send-email-hugues.fruchet@st.com>
+        id S1731142AbgKDRbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 12:31:18 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:6104 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727001AbgKDRbS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 12:31:18 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4CRDG95Fqvz9txtn;
+        Wed,  4 Nov 2020 18:31:13 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id NutH99vC5nLa; Wed,  4 Nov 2020 18:31:13 +0100 (CET)
+Received: from vm-hermes.si.c-s.fr (vm-hermes.si.c-s.fr [192.168.25.253])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4CRDG85cqJz9twgy;
+        Wed,  4 Nov 2020 18:31:12 +0100 (CET)
+Received: by vm-hermes.si.c-s.fr (Postfix, from userid 33)
+        id 11349264F; Wed,  4 Nov 2020 18:33:53 +0100 (CET)
+Received: from 192.168.4.90 ([192.168.4.90]) by messagerie.c-s.fr (Horde
+ Framework) with HTTP; Wed, 04 Nov 2020 18:33:53 +0100
+Date:   Wed, 04 Nov 2020 18:33:53 +0100
+Message-ID: <20201104183353.Horde.FyqZycHkfr5KHDjPaOEBpQ7@messagerie.c-s.fr>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-mtd@lists.infradead.org
+Subject: Kernel 5.10-rc1 not mounting NAND flash (Bisected to d7157ff49a5b
+ ("mtd: rawnand: Use the ECC framework user input parsing bits"))
+User-Agent: Internet Messaging Program (IMP) H5 (6.2.3)
+Content-Type: text/plain; charset=UTF-8; format=flowed; DelSp=Yes
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.47]
-X-ClientProxiedBy: SFHDAG6NODE2.st.com (10.75.127.17) To SFHDAG1NODE1.st.com
- (10.75.127.1)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-04_12:2020-11-04,2020-11-04 signatures=0
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Explicitly set bus-type to parallel mode in DCMI endpoint (bus-type=5).
+Hi Miquel,
 
-Signed-off-by: Hugues Fruchet <hugues.fruchet@st.com>
+I'm unable to boot 5.10-rc1 on my boards. I get the following error:
+
+[    4.125811] nand: device found, Manufacturer ID: 0xad, Chip ID: 0x76
+[    4.131992] nand: Hynix NAND 64MiB 3,3V 8-bit
+[    4.136173] nand: 64 MiB, SLC, erase size: 16 KiB, page size: 512,  
+OOB size: 16
+[    4.143534] ------------[ cut here ]------------
+[    4.147934] Unsupported ECC algorithm!
+[    4.152142] WARNING: CPU: 0 PID: 1 at  
+drivers/mtd/nand/raw/nand_base.c:5244 nand_scan_with_ids+0x1260/0x1640
+...
+[    4.332052] ---[ end trace e3a36f62cae4ac56 ]---
+[    4.336882] gpio-nand: probe of c0000000.nand failed with error -22
+
+Bisected to commit d7157ff49a5b ("mtd: rawnand: Use the ECC framework  
+user input parsing bits")
+
+My first impression is that with that change, the value set in chip->ecc.algo
+by gpio_nand_probe() in drivers/mtd/nand/raw/gpio.c gets overwritten  
+in rawnand_dt_init()
+
+The following change fixes the problem, though I'm not sure it is the  
+right fix. Can you have a look ?
+
+diff --git a/drivers/mtd/nand/raw/nand_base.c  
+b/drivers/mtd/nand/raw/nand_base.c
+index 1f0d542d5923..aa74797cf2da 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -5032,7 +5032,8 @@ static int rawnand_dt_init(struct nand_chip *chip)
+  		chip->ecc.engine_type = nand->ecc.defaults.engine_type;
+
+  	chip->ecc.placement = nand->ecc.user_conf.placement;
+-	chip->ecc.algo = nand->ecc.user_conf.algo;
++	if (chip->ecc.algo == NAND_ECC_ALGO_UNKNOWN)
++		chip->ecc.algo = nand->ecc.user_conf.algo;
+  	chip->ecc.strength = nand->ecc.user_conf.strength;
+  	chip->ecc.size = nand->ecc.user_conf.step_size;
+
 ---
- arch/arm/boot/dts/stm32429i-eval.dts | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm/boot/dts/stm32429i-eval.dts b/arch/arm/boot/dts/stm32429i-eval.dts
-index 67e7648..7e10ae7 100644
---- a/arch/arm/boot/dts/stm32429i-eval.dts
-+++ b/arch/arm/boot/dts/stm32429i-eval.dts
-@@ -188,6 +188,7 @@
- 	port {
- 		dcmi_0: endpoint {
- 			remote-endpoint = <&ov2640_0>;
-+			bus-type = <5>;
- 			bus-width = <8>;
- 			hsync-active = <0>;
- 			vsync-active = <0>;
--- 
-2.7.4
-
+Thanks
+Christophe
