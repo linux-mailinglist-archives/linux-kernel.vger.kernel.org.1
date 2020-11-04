@@ -2,159 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 358E02A5FA2
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 09:31:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 568DF2A5FA8
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 09:32:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727246AbgKDIbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 03:31:33 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2049 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725812AbgKDIbc (ORCPT
+        id S1728523AbgKDIcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 03:32:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45830 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725812AbgKDIcL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 03:31:32 -0500
-X-Greylist: delayed 940 seconds by postgrey-1.27 at vger.kernel.org; Wed, 04 Nov 2020 03:31:32 EST
-Received: from fraeml711-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CQzvp6CMhz67HRq;
-        Wed,  4 Nov 2020 16:14:30 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml711-chm.china.huawei.com (10.206.15.60) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Wed, 4 Nov 2020 09:15:50 +0100
-Received: from [10.210.165.147] (10.210.165.147) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Wed, 4 Nov 2020 08:15:49 +0000
-Subject: Re: [PATCH v2 3/4] iommu/iova: Flush CPU rcache for when a depot
- fills
-To:     Robin Murphy <robin.murphy@arm.com>,
-        "joro@8bytes.org" <joro@8bytes.org>
-CC:     "xiyou.wangcong@gmail.com" <xiyou.wangcong@gmail.com>,
-        Linuxarm <linuxarm@huawei.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "chenxiang (M)" <chenxiang66@hisilicon.com>,
-        "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-References: <1603733501-211004-1-git-send-email-john.garry@huawei.com>
- <1603733501-211004-4-git-send-email-john.garry@huawei.com>
- <65b568ef-ff2a-0993-e6f5-b6414b3b19f8@arm.com>
- <d36fc7ec-cefa-0805-8036-3aea1c44fba2@huawei.com>
- <d7611b01-ea16-bbaa-fcd1-d11dc872ce5d@arm.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <c409594a-0ae1-d8cd-ddee-226d739eed5b@huawei.com>
-Date:   Wed, 4 Nov 2020 08:15:46 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        Wed, 4 Nov 2020 03:32:11 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4869C0613D3;
+        Wed,  4 Nov 2020 00:32:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-Type:Content-ID:Content-Description;
+        bh=qwoS/ldP8oxvQDl6Sqqe37ZwIbpdpdCdtB8HHVc24Ec=; b=mW2BzPoSpKXihmEZAjG+QFYUSq
+        FxvVTagg1vofgsm8BF/7KkBQ7l3d1jmMQgczWlH7qDchs9jHxDpZnICXCzTnTJGggq9w3CswT6OxL
+        fhH++/i9oPy6VwJF0pAHTnwmN3LDlq3XhU0LkJhXLGqLSUaOW1sCu2wnkkQr6U+lwtMOsOiYsOlts
+        C1ii/AwUYNxdaBrQkOmIUkL5PvqmfubpmufolrbHgY1KW6SEgZYGTwnK2zalqoRef7Yz31oiOQH7c
+        ED6dX+dUDMZ3+zTUGfZmsX/wDvAWd0dyhnitn4t2L1VwS6y03itn4h6EIphfVpprP5N8jI6pUjgm0
+        7a9DmqbQ==;
+Received: from 089144208145.atnat0017.highway.a1.net ([89.144.208.145] helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kaED5-0004OC-Qx; Wed, 04 Nov 2020 08:32:07 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/6] seq_file: add seq_read_iter
+Date:   Wed,  4 Nov 2020 09:27:33 +0100
+Message-Id: <20201104082738.1054792-2-hch@lst.de>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20201104082738.1054792-1-hch@lst.de>
+References: <20201104082738.1054792-1-hch@lst.de>
 MIME-Version: 1.0
-In-Reply-To: <d7611b01-ea16-bbaa-fcd1-d11dc872ce5d@arm.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.210.165.147]
-X-ClientProxiedBy: lhreml730-chm.china.huawei.com (10.201.108.81) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Robin,
+iov_iter based variant for reading a seq_file.  seq_read is
+reimplemented on top of the iter variant.
 
->> - then cpu3, cpu4, and so on.
->> - We can do this for all CPUs in the system, so total CPU rcache grows 
->> from zero -> #CPUs * 128 * 2. Yet no DMA mapping leaks.
-> 
-> I get that. That's the initial warm-up phase I alluded to below. In an 
-> even simpler example, allocating on CPU A and freeing on CPU B will 
-> indeed move IOVAs from the tree into magazines without reuse, but only 
-> up to a point. Eventually, CPU B's cache fills up and pushes a magazine 
-> into the depot, and at *that* point things reach a steady state, since 
-> the next allocation on CPU A will then pull that magazine from the depot 
-> and proceed to allocate from there. If allocs and frees stay perfectly 
-> balanced, the working set is then 3 magazines. Yes, the depot can fill 
-> up if the number of IOVAs that CPU B frees at once before CPU A 
-> reallocates them is comparable to the total depot capacity, but it can't 
-> reasonably *stay* full unless CPU A stops allocating altogether.
-> 
->> Something similar can happen in normal use, where the scheduler 
->> relocates processes all over the CPUs in the system as time goes by, 
->> which causes the total rcache size to continue to grow. And in 
->> addition to this, the global depot continues to grow very slowly as 
->> well. But when it does fill (the global depot, that is), and we start 
->> to free magazines to make space – as is current policy - that's very 
->> slow and causes the performance drop.
-> 
-> Sure, but how does it then consistently *remain* in that state? And 
-> *why* does the depot slowly and steadily grow in the first place if 
-> alloc and free are ultimately balanced? 
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Tested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ fs/seq_file.c            | 45 ++++++++++++++++++++++++++++------------
+ include/linux/seq_file.h |  1 +
+ 2 files changed, 33 insertions(+), 13 deletions(-)
 
-So some key info I missed sharing was that we only see this issue for 
-non-strict mode. For strict mode, the rcache occupancy stays quite 
-compact, and does not grow like we see for non-strict mode.
+diff --git a/fs/seq_file.c b/fs/seq_file.c
+index 31219c1db17de3..3b20e21604e74a 100644
+--- a/fs/seq_file.c
++++ b/fs/seq_file.c
+@@ -18,6 +18,7 @@
+ #include <linux/mm.h>
+ #include <linux/printk.h>
+ #include <linux/string_helpers.h>
++#include <linux/uio.h>
+ 
+ #include <linux/uaccess.h>
+ #include <asm/page.h>
+@@ -146,7 +147,28 @@ static int traverse(struct seq_file *m, loff_t offset)
+  */
+ ssize_t seq_read(struct file *file, char __user *buf, size_t size, loff_t *ppos)
+ {
+-	struct seq_file *m = file->private_data;
++	struct iovec iov = { .iov_base = buf, .iov_len = size};
++	struct kiocb kiocb;
++	struct iov_iter iter;
++	ssize_t ret;
++
++	init_sync_kiocb(&kiocb, file);
++	iov_iter_init(&iter, READ, &iov, 1, size);
++
++	kiocb.ki_pos = *ppos;
++	ret = seq_read_iter(&kiocb, &iter);
++	*ppos = kiocb.ki_pos;
++	return ret;
++}
++EXPORT_SYMBOL(seq_read);
++
++/*
++ * Ready-made ->f_op->read_iter()
++ */
++ssize_t seq_read_iter(struct kiocb *iocb, struct iov_iter *iter)
++{
++	struct seq_file *m = iocb->ki_filp->private_data;
++	size_t size = iov_iter_count(iter);
+ 	size_t copied = 0;
+ 	size_t n;
+ 	void *p;
+@@ -158,14 +180,14 @@ ssize_t seq_read(struct file *file, char __user *buf, size_t size, loff_t *ppos)
+ 	 * if request is to read from zero offset, reset iterator to first
+ 	 * record as it might have been already advanced by previous requests
+ 	 */
+-	if (*ppos == 0) {
++	if (iocb->ki_pos == 0) {
+ 		m->index = 0;
+ 		m->count = 0;
+ 	}
+ 
+-	/* Don't assume *ppos is where we left it */
+-	if (unlikely(*ppos != m->read_pos)) {
+-		while ((err = traverse(m, *ppos)) == -EAGAIN)
++	/* Don't assume ki_pos is where we left it */
++	if (unlikely(iocb->ki_pos != m->read_pos)) {
++		while ((err = traverse(m, iocb->ki_pos)) == -EAGAIN)
+ 			;
+ 		if (err) {
+ 			/* With prejudice... */
+@@ -174,7 +196,7 @@ ssize_t seq_read(struct file *file, char __user *buf, size_t size, loff_t *ppos)
+ 			m->count = 0;
+ 			goto Done;
+ 		} else {
+-			m->read_pos = *ppos;
++			m->read_pos = iocb->ki_pos;
+ 		}
+ 	}
+ 
+@@ -187,13 +209,11 @@ ssize_t seq_read(struct file *file, char __user *buf, size_t size, loff_t *ppos)
+ 	/* if not empty - flush it first */
+ 	if (m->count) {
+ 		n = min(m->count, size);
+-		err = copy_to_user(buf, m->buf + m->from, n);
+-		if (err)
++		if (copy_to_iter(m->buf + m->from, n, iter) != n)
+ 			goto Efault;
+ 		m->count -= n;
+ 		m->from += n;
+ 		size -= n;
+-		buf += n;
+ 		copied += n;
+ 		if (!size)
+ 			goto Done;
+@@ -254,8 +274,7 @@ ssize_t seq_read(struct file *file, char __user *buf, size_t size, loff_t *ppos)
+ 	}
+ 	m->op->stop(m, p);
+ 	n = min(m->count, size);
+-	err = copy_to_user(buf, m->buf, n);
+-	if (err)
++	if (copy_to_iter(m->buf, n, iter) != n)
+ 		goto Efault;
+ 	copied += n;
+ 	m->count -= n;
+@@ -264,7 +283,7 @@ ssize_t seq_read(struct file *file, char __user *buf, size_t size, loff_t *ppos)
+ 	if (!copied)
+ 		copied = err;
+ 	else {
+-		*ppos += copied;
++		iocb->ki_pos += copied;
+ 		m->read_pos += copied;
+ 	}
+ 	mutex_unlock(&m->lock);
+@@ -276,7 +295,7 @@ ssize_t seq_read(struct file *file, char __user *buf, size_t size, loff_t *ppos)
+ 	err = -EFAULT;
+ 	goto Done;
+ }
+-EXPORT_SYMBOL(seq_read);
++EXPORT_SYMBOL(seq_read_iter);
+ 
+ /**
+  *	seq_lseek -	->llseek() method for sequential files.
+diff --git a/include/linux/seq_file.h b/include/linux/seq_file.h
+index 813614d4b71fbc..b83b3ae3c877f3 100644
+--- a/include/linux/seq_file.h
++++ b/include/linux/seq_file.h
+@@ -107,6 +107,7 @@ void seq_pad(struct seq_file *m, char c);
+ char *mangle_path(char *s, const char *p, const char *esc);
+ int seq_open(struct file *, const struct seq_operations *);
+ ssize_t seq_read(struct file *, char __user *, size_t, loff_t *);
++ssize_t seq_read_iter(struct kiocb *iocb, struct iov_iter *iter);
+ loff_t seq_lseek(struct file *, loff_t, int);
+ int seq_release(struct inode *, struct file *);
+ int seq_write(struct seq_file *seq, const void *data, size_t len);
+-- 
+2.28.0
 
-I have some (very large) kernel logs in which all the CPU and depot 
-rcache occupancy levels are periodically dumped, and where you can get 
-an idea of the trend.
-
-I'm on vacation today, so I can share them tomorrow.
-
-> I can get the depot swinging 
-> between full and empty if it's simply too small to bounce magazines 
-> between a large number of "CPU A"s and "CPU B"s, but again, that's 
-> surely going to show as repeated performance swings between bad at each 
-> end and good in the middle, not a steady degradation.
-
-Yeah, so I see the depot max size (32) is adequate in size, such that 
-this does not happen.
-
-> 
->>> Now indeed that could happen over the short term if IOVAs are allocated
->>> and freed again in giant batches larger than the total global cache
->>> capacity, but that would show a cyclic behaviour - when activity starts,
->>> everything is first allocated straight from the tree, then when it ends
->>> the caches would get overwhelmed by the large burst of freeing and start
->>> having to release things back to the tree, but eventually that would
->>> stop once everything *is* freed, then when activity begins again the
->>> next round of allocating would inherently clear out all the caches
->>> before going anywhere near the tree. 
->>
->> But there is no clearing. A CPU will keep the IOVA cached 
->> indefinitely, even when there is no active DMA mapping present at all.
-> 
-> Sure, the percpu caches can buffer IOVAs for an indefinite amount of 
-> time depending on how many CPUs are active, but the depot usage is still 
-> absolutely representative of the total working set for whichever CPUs 
-> *are* active. In this whole discussion I'm basically just considering 
-> the percpu caches as pipeline stages for serialising IOVAs into and out 
-> of magazines. It's the motion of magazines that's the interesting part.
-> 
-> If the depot keeps continually filling up, *some* CPUs are freeing 
-> enough IOVAs to push out full magazines, and those IOVAs have to come 
-> from somewhere, so *some* CPUs are allocating, and those CPUs can't 
-> allocate forever without taking magazines back out of the depot (that's 
-> the "clearing out" I meant). Something about a steady degradation that 
-> never shows any sign of recovery (even periodically) just doesn't seem 
-> to add up.
-> 
-> Anyway, by now I think it would be most interesting to get rid of this 
-> bottleneck completely rather than dance around bodging it, and see what 
-> happens if we simply let the depot grow to fit the maximum working set, 
-> so I did this:
-> 
-> https://gitlab.arm.com/linux-arm/linux-rm/-/commits/iommu/iova
-> 
-> Only compile-tested, so probably full of trivial bugs, but I'm curious 
-> to see if the slight extra overhead to depot management is noticeable in 
-> normal cases.
-
-So allowing the depot size to grow unbounded should solve that immediate 
-issue.
-
-However, I'd like to see a move in the opposite direction, that is to 
-trim the rcaches at some intervals. Indeed, with an appreciable 
-frequency, IOVA rcache allocation requests may not be satisfied due to 
-size limit - we see this for our same storage scenario, where some IOVA 
-requests are > 200K in size, and must use the tree. So allowing the 
-rcaches to grow further just makes handling these requests slower.
-
-Thanks,
-John
