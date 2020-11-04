@@ -2,152 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 770C12A612D
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 11:06:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2A482A612E
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 11:07:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729097AbgKDKGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 05:06:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60466 "EHLO
+        id S1729164AbgKDKGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 05:06:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727389AbgKDKGp (ORCPT
+        with ESMTP id S1729117AbgKDKGv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 05:06:45 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62C1FC0613D3
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 02:06:43 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id x7so21396686wrl.3
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 02:06:43 -0800 (PST)
+        Wed, 4 Nov 2020 05:06:51 -0500
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5A0CC0613D3
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 02:06:50 -0800 (PST)
+Received: by mail-ej1-x641.google.com with SMTP id oq3so27088750ejb.7
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 02:06:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=LyLd5+wtt+rcFTZV9I8i0DwEVeOUvh0R/U6n/R8AAug=;
-        b=z0wjBvh2Mypqk54j9BwP1mMUE1+V6CzKdPuQ6rh/2ZjOrYtZy6HtnkDhD4ESro3taU
-         k5Ljc1jprhSrZ2C7vJw+pNVy/kYroFLMXMy6vzvUDTKKj41KVUEa0eeCLKEJNXs2/1vI
-         nZjJK6pPxA4Wazmcm1rkRYaFlEWK87NA8OJFaESKRPsLd533+3TTfikoSvrh/cai9r1V
-         cSn/cgJmI1UvEa81g8WMsQpv/aNhUakVKWocsS7VMfA9RfnBajPbcSANerbwyviaRjvz
-         j32Om2qbDWsic0LRwM9n+1BOOKjUtIZcTkY/Aksc1ZDG2R2JuJCM0X9/7Ktxu9pddZ47
-         IfFA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=3TaXtXs3xZiP56tEU01ifiqy3+is8ac1K/K3ycqOg/s=;
+        b=QHWqh3ajJg6ht/+Vf1g7tm0KtRQJKXWUhj9EamxC8Yj9d52zYfGg6WtWjyJfXBAzkN
+         59zlMIPDlK/zjoGUPe0Uid0tJY4YjQsL9Aq16p4WJeVKT+j4BsFUopoazcC3/fBsoJ5I
+         /VCWPaxBFOHNlOi6G4KBstagoowRdcElEUt6k67bqtKJ47cLEBkvXHSKmjA14ehnuw4d
+         RJguqSF6uke/lzFm5n5zCzCGKqJasqZYYKvCRuPjpCq/aVG6jgOKRsN8NPQ5Cq6ftW9e
+         5t+hYXf1SLA56Ci+PQ0/HxUiOkmzDS2NlEi93krTg4O8oj2AApnI219wpqnnZw7BM8D/
+         q3gA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=LyLd5+wtt+rcFTZV9I8i0DwEVeOUvh0R/U6n/R8AAug=;
-        b=XsL3uv8sybMMI0r1OHpmDUhxPRrlCtsstHv0MIv2AnnDngHhogCVeYO3bd5wuapv9Q
-         VOCq6wa8EYbVGPDYBOMPQFyQhRJzBC54oC5wKkJoLcKEf+qwqorcVWAPeZUrDnT+e3XG
-         zJmyl8z7450Ls8WnWT8B9/5LH0HLMRJksJ75W1djDyawosNyg1vGWe33+NgjbhxUztbE
-         yhs2pq/rFklc5nq6+4rPAUCeFlNz+faU2OFCu7tCHOtFzReKRGnx2xdi0FSAA/eX6HLB
-         A+XLk5anHUvHZuLEGcGytGJ2WplkmU0x0L9wEXIHEG9AVRMMkBEtcWlVODOOkpYM5o8S
-         SODA==
-X-Gm-Message-State: AOAM532BfEgcXGbsWnYyJafqniaqqY25DrYT8SThglXPBSt0DFcHfmgT
-        prZHoTwIk4FfjZ03Dq3lBtXkaA==
-X-Google-Smtp-Source: ABdhPJxaJlG6ldDgzj9uuZlD2all63aztwPnauBhwS5a3dBATE0btFS+Mn2YVNS+M8WvAtqXN1qW0g==
-X-Received: by 2002:a5d:688c:: with SMTP id h12mr32049471wru.92.1604484402063;
-        Wed, 04 Nov 2020 02:06:42 -0800 (PST)
-Received: from holly.lan (82-132-214-54.dab.02.net. [82.132.214.54])
-        by smtp.gmail.com with ESMTPSA id u10sm1914775wrw.36.2020.11.04.02.06.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 02:06:40 -0800 (PST)
-Date:   Wed, 4 Nov 2020 10:06:34 +0000
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Tabot Kevin <tabot.kevin@gmail.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Replaced hard coded function names in debug messages
- with __func__ macro.
-Message-ID: <20201104100634.4badc2mmau2tk5ct@holly.lan>
-References: <20201031164059.GA5534@tabot>
- <20201102093324.dz5es32yhmga34hs@holly.lan>
- <20201102121556.GA37670@crucifix.local>
- <20201103100440.wo2wkkyr5rs4qhhl@holly.lan>
- <20201103203652.GA1685@tabot>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=3TaXtXs3xZiP56tEU01ifiqy3+is8ac1K/K3ycqOg/s=;
+        b=StJ2RP8BCcy4cDlwsnoMV+XZ5ueLYbzVkZ5rLjPyAbgZHhkRde6PX8XG1iQZ9FOuvl
+         0MndIqn/+69OL/JHwFbby/MPXGnzsA/X7VlMKVOW5h/lsk9xptkg4Sxq/taW3x0PMvaZ
+         b2PPKhV2Cpz5Nv4fTXxnb6fy0PMD7YUQYotjimy9mRgE/vwoFaHntImsd/0Bh2Qa9kDR
+         NEOTNEebXSjMG3dPShnaUbrjI8O9tz2N0cav9hPsFWh9BPpCG93f5H2TS5obSQjh9W8F
+         XmSASDnU1xU+W/BI84XMCILbGp48fcUrEm5uyjOz/+WWLMLjlchpZuqrIL3+774AIY66
+         bAag==
+X-Gm-Message-State: AOAM530wPtz03/7/LNMZpvuK10TlqxJfn3AqmrpZ5b5PuvPtjfMobfzb
+        oeHKR0WOwuY99uAtKYHnj2x+pOHkbxvUadoIW6ENlw==
+X-Google-Smtp-Source: ABdhPJxPoMES71jQZ6OqHxJNlK05yFiYsV3+2PFb8Vc0qvP6AnDYzz6onuSfPWIN7aeugK90GcvNzhc6cPC3G82ZHXw=
+X-Received: by 2002:a17:906:39ce:: with SMTP id i14mr25129695eje.170.1604484409335;
+ Wed, 04 Nov 2020 02:06:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201103203652.GA1685@tabot>
+References: <20201103203249.448706377@linuxfoundation.org>
+In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 4 Nov 2020 15:36:38 +0530
+Message-ID: <CA+G9fYs_LAk-vXYHeNxWGMHPYVi4DH=oZyJTcC=ioDNUR-C+4w@mail.gmail.com>
+Subject: Re: [PATCH 5.4 000/214] 5.4.75-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de,
+        linux- stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 09:36:54PM +0100, Tabot Kevin wrote:
-> On Tue, Nov 03, 2020 at 10:04:40AM +0000, Daniel Thompson wrote:
-> > On Mon, Nov 02, 2020 at 01:15:56PM +0100, Tabot Kevin wrote:
-> > > On Mon, Nov 02, 2020 at 09:33:24AM +0000, Daniel Thompson wrote:
-> > > > > @@ -146,7 +146,7 @@ static int ov2680_g_bin_factor_x(struct v4l2_subdev *sd, s32 *val)
-> > > > >  	struct ov2680_device *dev = to_ov2680_sensor(sd);
-> > > > >  	struct i2c_client *client = v4l2_get_subdevdata(sd);
-> > > > >  
-> > > > > -	dev_dbg(&client->dev,  "++++ov2680_g_bin_factor_x\n");
-> > > > > +	dev_dbg(&client->dev,  "++++%s\n", __func__);
-> > > > 
-> > > > It might be better just to remove this sort of message.
-> > > > 
-> > > > They are not "wrong wrong" but are they actually useful one a
-> > > > driver's basic functions work? Even where they are useful
-> > > > dynamic techniques (ftrace, tracepoints, etc) arguably provide a
-> > > > better way to support "did my function actually run" debug
-> > > > approaches anyway.
-> > >
-> > > Thank you very much for the response. So, should I just revert back to
-> > > the original all the changes in places where I replace hard coded
-> > > functions names with  __func__?
-> > 
-> > Personally I think it is better to remove them completely from the
-> > driver rather than revert to the original form. Naturally if Mauro or
-> > Sakari have strong views on this kind of printed message then you
-> > need to take that into account but, in general, messages like this
-> > add little or no value to the driver and can be removed.
-> > 
-> I went through the code in an attempt to completely remove all "dev_dbg"
-> messages,
+On Wed, 4 Nov 2020 at 02:24, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.4.75 release.
+> There are 214 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 05 Nov 2020 20:29:58 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.4.75-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
+>
 
-The goal should not be to remove all dev_dbg() messages. I have only
-suggested removing dev_dbg() that print things that are not useful or
-redundantly duplicate what can be achieved with ftrace or tracepoints.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Maybe that will remove the dev_dbg() messages and maybe it won't. That
-depends entirely what the function actually prints when executed.
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
+Summary
+------------------------------------------------------------------------
 
-> but I noticed not only are there many "dev_dbg" messages, there
-> are also many such messages like (dev_info, dev_err, etc). Should I
-> remove them all too?
+kernel: 5.4.75-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-5.4.y
+git commit: 1b513bf286096f9c66fc386cdc5e038980db8863
+git describe: v5.4.74-215-g1b513bf28609
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.=
+y/build/v5.4.74-215-g1b513bf28609
 
-The resulting patch will have your name on it rather than mine. That
-means it is you that must make the decisions here.
+No regressions (compared to build v5.4.74)
 
-Firstly you can review each message output to decide if it is useful.
-Only remove message whose output is not useful (same as for dev_dbg() ).
+No fixes (compared to build v5.4.74)
 
-If it is useful then you should think about whether the log level
-matches the importance of the message. For example, are the dev_err()
-message really covering error conditions? are there warnings for normal"
-conditions? is the dev_info() useful to someone who is not the driver
-author?).
+Ran 37086 total tests in the following environments and test suites.
 
+Environments
+--------------
+- dragonboard-410c
+- hi6220-hikey
+- i386
+- juno-r2
+- juno-r2-compat
+- nxp-ls2088-kasan
+- qemu-arm64-kasan
+- qemu-x86_64-kasan
+- qemu_arm
+- qemu_arm64
+- qemu_i386
+- qemu_x86_64
+- x15
+- x86
+- x86-kasan
 
-Daniel.
+Test Suites
+-----------
+* build
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-sched-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* perf
+* v4l2-compliance
+* ltp-cve-tests
+* ltp-hugetlb-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-securebits-tests
+* network-basic-tests
+* ltp-open-posix-tests
+* kvm-unit-tests
+* kselftest-vsyscall-mode-native
+* kselftest-vsyscall-mode-none
 
-
-
-
-> > 
-> > > > > @@ -251,8 +251,8 @@ static long __ov2680_set_exposure(struct v4l2_subdev *sd, int coarse_itg,
-> > > > >  	int ret, exp_val;
-> > > > >  
-> > > > >  	dev_dbg(&client->dev,
-> > > > > -		"+++++++__ov2680_set_exposure coarse_itg %d, gain %d, digitgain %d++\n",
-> > > > > -		coarse_itg, gain, digitgain);
-> > > > > +		"+++++++%s coarse_itg %d, gain %d, digitgain %d++\n",
-> > > > > +		__func__, coarse_itg, gain, digitgain);
-> > 
-> > This case is a little less clear cut since the printed message does show
-> > some elements of internal state. However AFAICT this function just writes
-> > some state to the hardware so I still take the view that dynamic
-> > tools (I2C tracepoints for example) provide a better way to debug the
-> > driver.
-> > 
-> > 
-> > Daniel.
+--=20
+Linaro LKFT
+https://lkft.linaro.org
