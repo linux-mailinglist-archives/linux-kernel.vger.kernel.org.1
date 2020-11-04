@@ -2,63 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D2C82A6E30
+	by mail.lfdr.de (Postfix) with ESMTP id 79AF32A6E31
 	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 20:40:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731613AbgKDThe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 14:37:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37622 "EHLO
+        id S1731901AbgKDThh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 14:37:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731480AbgKDTgj (ORCPT
+        with ESMTP id S1731505AbgKDTgj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 4 Nov 2020 14:36:39 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 354C5C061A4A
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 11:36:38 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id s9so23306811wro.8
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 11:36:38 -0800 (PST)
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64B3FC061A4D
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 11:36:39 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id 23so2545913wmg.1
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 11:36:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=qxIwRMD6TNBg9udmxGZqLaXn9yYcY9lwNa4w1OOgomY=;
-        b=jOvIce5Y8cX6tbhY9L9KsU+MZChw1k/jcW944Xh2LDWfP2jwxOiW4gq2+Bawg47x9z
-         bNE4CHODRlR5URrZecp9S23e5lzUQfpT3inK47e3MR7A9u2JyHP1M5Nu+flMLBMovr4X
-         4XuSxNmW2Ig982I82J5WyB5huHaeXoOCGUxU/+C0hOeCouFqYCUOSu7VHvBDKs4Hyycg
-         ydDhqoQ9Bav7qws0Xzs9/iSiy3k+R6NSlYZ2rseiR47s64hWEF0pq5Zjd7FLYVnRCdDR
-         NHSrZIOa5qvgwc3XTM+5JX8tmYoA3cGjK5D4IcJjYCNa5MRZmHCdUnAD/e4dR4spsuN2
-         e3+Q==
+        bh=hyvsnfUXA5wL3VS7284wUBGl33iwK2rOFX1sfrCau1o=;
+        b=BcDz6Wv7qTDHhJWQD7Ml2oXJ6KRBgOZjSiA5UZa+voInnfCWKMg9ZlwFD6hGlaALlE
+         hOsEV+jbJiTRQuEpWUA8wMBDhKAUuEFH8D2lnWmlJhS2lATs1QPO3jwVyfyzgap/xdaJ
+         D2MEJGUttAjb5aIOumAmSmaB3pokrGGIyxa/VanSwgklfwflxLuRnMWXa8IumEssJ0XJ
+         k3CrnVcOBo7LMeaSET3KVdy0kc4E0Mx5O+HUGfbPn+ZDZakrG8eeiaYd/Qxx8UYPZ4+k
+         lb/cmfUbXZTOUK8W0gEkNv1BMuZ/YrgkNZhWCv52qs8KYThQWGA6CxAJpVmvCjgbl/vk
+         XBXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=qxIwRMD6TNBg9udmxGZqLaXn9yYcY9lwNa4w1OOgomY=;
-        b=pxFsuWgWssQcyyzGZvid0pRTcAP5JlRsq0IzBaqcZal7L9UE51hlisQnOg2oBpQCXg
-         l2Sjz+BnT4XQgzCL9HES6cuAffiS8nX/RCPnO8Sf5tFZDchJR5gl5Qu0vZltX+QBNgv3
-         fshWbwcXc/27V+cZ3f18K2WFsz4Dt2lqn7knJwLF/+NAomdZ8gzpbDLkR49sPhvkghhW
-         HvciaP0+kNLZey77RVT4+PfqIRqpTUYMofSCgL/26hbzt1yiyt6ooVPuea+bvnz754AL
-         XQDGKT1StgTyHcChmQWMhsoZV50LeMusyGIacGJAwhz8MsL5gvSQKUQFqvw3T4gep+0N
-         mYiw==
-X-Gm-Message-State: AOAM531Obv2rBWvGh8lM5pt8uNneIRkNXY2h0KdTVo/kTFk2MzCg1uu6
-        1eXna6vg5l9i3rylH0PAEI0q5g==
-X-Google-Smtp-Source: ABdhPJxku7Y3Kg5JTrtXlnam3qROwaJDh/c2CuIvjzLZI/zWTYPrraJ+G80GnqYixVTfkfiagatmeA==
-X-Received: by 2002:a5d:490c:: with SMTP id x12mr33601906wrq.193.1604518596915;
-        Wed, 04 Nov 2020 11:36:36 -0800 (PST)
+        bh=hyvsnfUXA5wL3VS7284wUBGl33iwK2rOFX1sfrCau1o=;
+        b=IONSR4j2sMqqVHchxy+Js0AJL9qNy+ty1t4z3BiBaqg71WqNzwk7RYbABHIF8oJZTl
+         ZdsOMrpg5IOz4/d4bSgpUFL2EKds7ZTVjwFxamOcBoXE6eC4VfIKHnkBo7jXWUQ3I6Ag
+         uvNl4KOSPAIQgmtUsh+l7sXZ98E/1AZ2HzlP9yqKcXIiel1s8rcr23Sx6T5p3kBD0ZgC
+         2Knz+IQSrPfRfBbd6rfPTn03pY7i6QEb3UhQQ5OuUS8hWzE89iSwCjEOXhmUbjy3CQeU
+         brIeQs/VzSufUaUg4b3VpUhqicViblP7yOrNthemHEKFVVelVlKkrC/ncoLMiTiwzDh+
+         ZU2Q==
+X-Gm-Message-State: AOAM532x/Xe03YA5wRhJD28JZRY/a94m53LLgLXTjdqWcXixiXfoP3Yc
+        Ud2/1Tm5j/I3e9W4mkrUQ4kNgg==
+X-Google-Smtp-Source: ABdhPJy9HUUwETfC+QPVZBpvrQ7UozvGpxaYg0iBy7t0mUkyuWoU1cqqDjuzcM44RmUMR9n+1LX2WQ==
+X-Received: by 2002:a1c:103:: with SMTP id 3mr6130944wmb.81.1604518598136;
+        Wed, 04 Nov 2020 11:36:38 -0800 (PST)
 Received: from dell.default ([91.110.221.242])
-        by smtp.gmail.com with ESMTPSA id x10sm4034444wrp.62.2020.11.04.11.36.35
+        by smtp.gmail.com with ESMTPSA id x10sm4034444wrp.62.2020.11.04.11.36.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 11:36:36 -0800 (PST)
+        Wed, 04 Nov 2020 11:36:37 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        linux-serial@vger.kernel.org, linux-riscv@lists.infradead.org
-Subject: [PATCH 25/36] tty: serial: sifive: Struct headers should start with 'struct <name>'
-Date:   Wed,  4 Nov 2020 19:35:38 +0000
-Message-Id: <20201104193549.4026187-26-lee.jones@linaro.org>
+        Jiri Slaby <jirislaby@kernel.org>, paulkf@microgate.com
+Subject: [PATCH 26/36] tty: synclinkmp: Add missing description for function param 'txqueue'
+Date:   Wed,  4 Nov 2020 19:35:39 +0000
+Message-Id: <20201104193549.4026187-27-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201104193549.4026187-1-lee.jones@linaro.org>
 References: <20201104193549.4026187-1-lee.jones@linaro.org>
@@ -68,42 +65,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Also supply a missing member description.
-
 Fixes the following W=1 kernel build warning(s):
 
- drivers/tty/serial/sifive.c:157: warning: cannot understand function prototype: 'struct sifive_serial_port '
+ drivers/tty/synclinkmp.c:1808: warning: Function parameter or member 'txqueue' not described in 'hdlcdev_tx_timeout'
 
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc: Jiri Slaby <jirislaby@kernel.org>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>
-Cc: linux-serial@vger.kernel.org
-Cc: linux-riscv@lists.infradead.org
+Cc: paulkf@microgate.com
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/tty/serial/sifive.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/tty/synclinkmp.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/tty/serial/sifive.c b/drivers/tty/serial/sifive.c
-index 13eadcb8aec4e..1066eebe3b28b 100644
---- a/drivers/tty/serial/sifive.c
-+++ b/drivers/tty/serial/sifive.c
-@@ -144,12 +144,13 @@
-  */
- 
+diff --git a/drivers/tty/synclinkmp.c b/drivers/tty/synclinkmp.c
+index ce08c5ec331cc..0ca738f61a35b 100644
+--- a/drivers/tty/synclinkmp.c
++++ b/drivers/tty/synclinkmp.c
+@@ -1803,6 +1803,7 @@ static int hdlcdev_ioctl(struct net_device *dev, struct ifreq *ifr, int cmd)
  /**
-- * sifive_serial_port - driver-specific data extension to struct uart_port
-+ * struct sifive_serial_port - driver-specific data extension to struct uart_port
-  * @port: struct uart_port embedded in this struct
-  * @dev: struct device *
-  * @ier: shadowed copy of the interrupt enable register
-  * @clkin_rate: input clock to the UART IP block.
-  * @baud_rate: UART serial line rate (e.g., 115200 baud)
-+ * @clk: reference to this device's clock
-  * @clk_notifier: clock rate change notifier for upstream clock changes
-  *
-  * Configuration data specific to this SiFive UART.
+  * hdlcdev_tx_timeout - called by network layer when transmit timeout is detected
+  * @dev: pointer to network device structure
++ * @txqueue: unused
+  */
+ static void hdlcdev_tx_timeout(struct net_device *dev, unsigned int txqueue)
+ {
 -- 
 2.25.1
 
