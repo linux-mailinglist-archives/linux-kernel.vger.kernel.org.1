@@ -2,82 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04EE42A6FF5
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 22:55:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00BBF2A6FF9
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 22:55:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731861AbgKDVzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 16:55:02 -0500
-Received: from ozlabs.org ([203.11.71.1]:52639 "EHLO ozlabs.org"
+        id S1731919AbgKDVzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 16:55:23 -0500
+Received: from gloria.sntech.de ([185.11.138.130]:45790 "EHLO gloria.sntech.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726777AbgKDVzC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 16:55:02 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CRL6W5bpPz9sVD;
-        Thu,  5 Nov 2020 08:54:59 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1604526900;
-        bh=1fDuX7HphIO6IZ4atzF22WnH+v+pV7wkqaHbchy7UFk=;
-        h=Date:From:To:Cc:Subject:From;
-        b=SweN6oxjTtmZqW2E2+9sfu3iPB7J2XzOrkllVMEMAh+/mZVMiMKGk5OmfELvGjjkG
-         +Q6Q3JvOxAaLRMTHj3e0gWBcGiQhOdglZU2IIoS+U/FEz9UYEbohqkyQw8hx0QAwe5
-         YaA4Fz7j0/Vl8hpk3GwiluceO0ybTvFgK41uRih+ElHqSvW3x6XZNxQMkn22mzD4tC
-         Yhi2Dfo47jtAxxKl58sAPcagnuEPR2LxdLS83ulHiPXaCwU2KcwGoK3EXx8zqkj4Pw
-         SGtm2yFooHYNhwXgGO50u9vkDxs1mWjDNwWo0ByCZCR4jM6vcPNqWgI1m+Dc6e9Gka
-         N4y120ov59v4Q==
-Date:   Thu, 5 Nov 2020 08:54:58 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Leon Romanovsky <leonro@nvidia.com>,
-        Maor Gottlieb <maorg@nvidia.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the rdma-fixes tree
-Message-ID: <20201105085458.5addbe44@canb.auug.org.au>
+        id S1727098AbgKDVzX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 16:55:23 -0500
+Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1kaQkK-0004Zn-T8; Wed, 04 Nov 2020 22:55:12 +0100
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Jagan Teki <jagan@amarulasolutions.com>
+Cc:     Suniel Mahesh <sunil@amarulasolutions.com>,
+        Michael Trimarchi <michael@amarulasolutions.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-amarula <linux-amarula@amarulasolutions.com>
+Subject: Re: [PATCH v4 0/7] arm64: dts: rockchip: Add Engicam PX30.Core
+Date:   Wed, 04 Nov 2020 22:55:10 +0100
+Message-ID: <3599415.KCJOEREoO8@diego>
+In-Reply-To: <CAMty3ZCib5TiQdzU95WS1Xiq1tAQ7FHEQcbf5JhUZYYvofb_MQ@mail.gmail.com>
+References: <20200929083217.25406-1-jagan@amarulasolutions.com> <CAMty3ZDHDC5TMF=8HJRmZd7HijOM6RP-k4y9JkdWVQGgPKyGvg@mail.gmail.com> <CAMty3ZCib5TiQdzU95WS1Xiq1tAQ7FHEQcbf5JhUZYYvofb_MQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Jzu/OvMJgbBMpg2gAz3p+E7";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Jzu/OvMJgbBMpg2gAz3p+E7
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Am Mittwoch, 4. November 2020, 20:54:40 CET schrieb Jagan Teki:
+> On Thu, Oct 22, 2020 at 12:27 AM Jagan Teki <jagan@amarulasolutions.com> wrote:
+> >
+> > Hi Heiko,
+> >
+> > On Tue, Sep 29, 2020 at 2:02 PM Jagan Teki <jagan@amarulasolutions.com> wrote:
+> > >
+> > > PX30.Core is an EDIMM SOM based on Rockchip PX30 from Engicam.
+> > >
+> > > PX30.Core needs to mount on top of Engicam baseboards for creating
+> > > complete platform boards.
+> > >
+> > > Possible baseboards are,
+> > > - EDIMM2.2 Starter Kit
+> > > - C.TOUCH 2.0 Carrier Board
+> > >
+> > > Changes for v4:
+> > > - collect Rob A-b
+> > > Changes for v3:
+> > > - resolved Johan comments about sorting node properties
+> > > - add copyright to Amarula Solutions
+> > > - update px30 dtsi author
+> > > Changes for v2:
+> > > - include C.TOUCH 2.0 carrier board
+> > > - skip 10" OF LCD as it requires separate dts with panel support.
+> > >
+> > > Note: These baseboards can be used for i.MX8 SOM's as well. So having
+> > > baseboard on respective SoC seems to be easy rather than making it
+> > > common across all.
+> > >
+> > > Any inputs?
+> > > Jagan.
+> > >
+> > > Jagan Teki (6):
+> > >   dt-bindings: arm: rockchip: Add Engicam PX30.Core EDIMM2.2 Starter Kit
+> > >   arm64: dts: rockchip: px30: Add Engicam EDIMM2.2 Starter Kit
+> > >   arm64: dts: rockchip: Add Engicam PX30.Core EDIMM2.2 Starter Kit
+> > >   dt-bindings: arm: rockchip: Add Engicam PX30.Core C.TOUCH 2.0
+> > >   arm64: dts: rockchip: px30: Add Engicam C.TOUCH 2.0
+> > >   arm64: dts: rockchip: Add Engicam PX30.Core C.TOUCH 2.0
+> > >
+> > > Michael Trimarchi (1):
+> > >   arm64: dts: rockchip: Add Engicam PX30.Core SOM
+> > >
+> > >  .../devicetree/bindings/arm/rockchip.yaml     |  12 +
+> > >  arch/arm64/boot/dts/rockchip/Makefile         |   2 +
+> > >  .../dts/rockchip/px30-engicam-common.dtsi     |  39 +++
+> > >  .../dts/rockchip/px30-engicam-ctouch2.dtsi    |   8 +
+> > >  .../dts/rockchip/px30-engicam-edimm2.2.dtsi   |   7 +
+> > >  .../dts/rockchip/px30-px30-core-ctouch2.dts   |  22 ++
+> > >  .../dts/rockchip/px30-px30-core-edimm2.2.dts  |  21 ++
+> > >  .../boot/dts/rockchip/px30-px30-core.dtsi     | 232 ++++++++++++++++++
+> > >  8 files changed, 343 insertions(+)
+> > >  create mode 100644 arch/arm64/boot/dts/rockchip/px30-engicam-common.dtsi
+> > >  create mode 100644 arch/arm64/boot/dts/rockchip/px30-engicam-ctouch2.dtsi
+> > >  create mode 100644 arch/arm64/boot/dts/rockchip/px30-engicam-edimm2.2.dtsi
+> > >  create mode 100644 arch/arm64/boot/dts/rockchip/px30-px30-core-ctouch2.dts
+> > >  create mode 100644 arch/arm64/boot/dts/rockchip/px30-px30-core-edimm2.2.dts
+> > >  create mode 100644 arch/arm64/boot/dts/rockchip/px30-px30-core.dtsi
+> >
+> > Any further comments?
+> 
+> Gentle ping.
 
-Hi all,
+on my list to untangle :-)
 
-After merging the rdma-fixes tree, today's linux-next build (htmldocs)
-produced this warning:
 
-drivers/infiniband/ulp/srpt/ib_srpt.c:630: warning: Function parameter or m=
-ember 'port_cnt' not described in 'srpt_unregister_mad_agent'
+Heiko
 
-Introduced by commit
 
-  372a1786283e ("IB/srpt: Fix memory leak in srpt_add_one")
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/Jzu/OvMJgbBMpg2gAz3p+E7
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+jIzIACgkQAVBC80lX
-0Gz7IAf8DYszXuNICe4EZ5WJl9/zbisWiJ5Cj/sPRYNGW3HzgUcmJbVGBn7Ihxp1
-a9OMOD5WLBqjtshvChTQKGYb2xPSUtR3pQUmJNVR3AZTWcjVvSZ4QegwGAhNu6kI
-FwJC8+o5qcJC17IKPJivZzEgdwhqvdPBA3ELnTApQe/SQNsG06JIF1EiBJhYsceb
-ZfiiJCX70vgZOMowyjOHQcrhbi9A6E3KKTvWCBSfOeRhxFz3D8T8wzJbZIPWfyNY
-V5jwXw/XkAY5RNRl+cvArmBC50O99zQkGxK2WcrsTUD3l4NyXJGhCRyJRyeMq0FD
-LMqWbNp+7eaDwLHnQSKjwxkXJ0co5Q==
-=Q7Ae
------END PGP SIGNATURE-----
-
---Sig_/Jzu/OvMJgbBMpg2gAz3p+E7--
