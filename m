@@ -2,181 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ED222A638A
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 12:44:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A897A2A6389
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 12:44:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729591AbgKDLoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 06:44:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47092 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728999AbgKDLnA (ORCPT
+        id S1729520AbgKDLob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 06:44:31 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:3430 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729263AbgKDLnV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 06:43:00 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03B3AC0613D3
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 03:42:59 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id s9so21681009wro.8
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 03:42:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=wAWLmJb5c6PW7CmF9VvfIIPie2QKXBj5NneKuryEerU=;
-        b=iH0UsKHHNviBiltJEGJKnH3EoL3Kojr7PDwJich1KOWqumHNPW0vp4rnoA4yK2Rosj
-         Sc0CukLKJ2Q7FFbMuLD1fKV/M3KAOfUCJoqTMZm2dtuVymCcrqrDSzpeCPYg3qHvZi9W
-         lgI1zDWRWRhFHxXwBoH6f38N4X4LNk3h2AJtlljWsHboHMbHrhAtXj/zCM315nqleimm
-         JkY19aLxPtpxHvyoMXHKHR+J1ay3/8IZgtaa4CWInwG2hZO5FMIp70RQnNJj3z4of8p/
-         e0ZoRXwTh920iNS6bZE8YQS/DQhhMRDKSQMv5WrXh8ct8ZcUGxN8hRbXwVjDpIWvdX4o
-         l3zQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=wAWLmJb5c6PW7CmF9VvfIIPie2QKXBj5NneKuryEerU=;
-        b=bxIP8pd1iCXWKqBBL63TGVie/pCFCqW3A4JYEZ4KhLuWiUR4tBh7LtprZooXgWrAYA
-         Z2s3By/YC3cQMakqcC/4p4eqhXgpJlwZQk56UEqFvn3/gcZm6KO9efklEc4JdK4ePsDA
-         JwbwCEGFcxW7FoAr9QPxZIAWNnqqsjlLPvgGD+xvyCRfuHADxwZL82NYnwx/mCevhUZA
-         1/cbGql169cEyTa6HDxZDE1cn83lT9KUUDTw7OnFRiKQ6JLxhdamrzbcMiF+DLM7CUME
-         24qUNGyQF+9c+ykV+vinWBwjEtnT3ItcxxJhIL88cS1OoKqjl9kjxo77nvQe14NMijkI
-         Ncxw==
-X-Gm-Message-State: AOAM531Sq3VWDDab4porMJgLWIRlqjvVLaAz9NcbJ1l1QtY0dArPLGh7
-        9KavdLnMLQHKsAPXqcFxL+jAIFS5Tv0=
-X-Google-Smtp-Source: ABdhPJwSHeVG9HR9oVv+oJpzCJjH79PGGQNbbiK5S1c7cVQp6PkLn8HKpPk47H5kxTt2B/rppMPd9w==
-X-Received: by 2002:a5d:6ac6:: with SMTP id u6mr22560145wrw.145.1604490178574;
-        Wed, 04 Nov 2020 03:42:58 -0800 (PST)
-Received: from tabot ([154.72.150.236])
-        by smtp.gmail.com with ESMTPSA id v6sm1801370wmj.6.2020.11.04.03.42.57
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 04 Nov 2020 03:42:58 -0800 (PST)
-Date:   Wed, 4 Nov 2020 12:42:54 +0100
-From:   Tabot Kevin <tabot.kevin@gmail.com>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] Took out unuseful dev_dbg messages.
-Message-ID: <20201104114249.GA1786@tabot>
+        Wed, 4 Nov 2020 06:43:21 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fa293da0002>; Wed, 04 Nov 2020 03:43:22 -0800
+Received: from [10.40.203.207] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 4 Nov
+ 2020 11:43:11 +0000
+Subject: Re: [PATCH V3 2/2] PCI: dwc: Add support to configure for ECRC
+To:     Bjorn Helgaas <helgaas@kernel.org>
+CC:     <jingoohan1@gmail.com>, <gustavo.pimentel@synopsys.com>,
+        <lorenzo.pieralisi@arm.com>, <bhelgaas@google.com>,
+        <amurray@thegoodpenguin.co.uk>, <robh@kernel.org>,
+        <treding@nvidia.com>, <jonathanh@nvidia.com>,
+        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kthota@nvidia.com>, <mmaddireddy@nvidia.com>, <sagar.tv@gmail.com>
+References: <20201103210753.GA264744@bjorn-Precision-5520>
+From:   Vidya Sagar <vidyas@nvidia.com>
+Message-ID: <eea9b090-b938-b5eb-e8da-0bf9d15238a3@nvidia.com>
+Date:   Wed, 4 Nov 2020 17:13:07 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20201103210753.GA264744@bjorn-Precision-5520>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1604490202; bh=66l6IaSt2EQzvuhWgskE//8Zl/d1V1j9JoZAPdzM7TU=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=HRmI0ItTSKnsR5hHPxknTCgnKaukni5GqHJcrO1JtXoWTZrzZsMUG4RVJ6nTRGmIm
+         ygzC2e6EKgvM5ZsWeWOSZk+I0qbG0ApXsShQ1ZfQbvJ5wnFXs9CgXT9wV8gbjb7U4b
+         Su2sSs7yWemwlgox4hdmU6CzGHyCnbkvSVFbGvozg6QWQ12c/3M1dsVtIxfl4JtoiL
+         4d6ybzyqkbKj54kX7I+u2wXQjI6cFS1pKubdhk+rwrszHkahvveltT2OmsJELPWO6G
+         ktcOD/cl/u0DOvSVKS2U483+He5IfbV400K1tAZmkqEGy6oRowxvhyHranMbBb9luJ
+         gQEtGOj7Ls+OQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes the following:
-- Got rid of unnecessary braces around single line if statements.
-- End of block comments on a seperate line.
-- A spelling mistake of the word "on".
 
-Signed-off-by: Tabot Kevin <tabot.kevin@gmail.com>
+
+On 11/4/2020 2:37 AM, Bjorn Helgaas wrote:
+> External email: Use caution opening links or attachments
+> 
+> 
+> On Tue, Nov 03, 2020 at 08:57:01AM +0530, Vidya Sagar wrote:
+>> On 11/3/2020 4:32 AM, Bjorn Helgaas wrote:
+>>> On Thu, Oct 29, 2020 at 11:09:59AM +0530, Vidya Sagar wrote:
+>>>> DesignWare core has a TLP digest (TD) override bit in one of the control
+>>>> registers of ATU. This bit also needs to be programmed for proper ECRC
+>>>> functionality. This is currently identified as an issue with DesignWare
+>>>> IP version 4.90a. This patch does the required programming in ATU upon
+>>>> querying the system policy for ECRC.
+>>>
+>>> I guess this is a hardware defect, right?
+>> Yes. This is common across all DWC implementations (version 4.90 precisely)
+>>
+>>> How much of a problem would it be if we instead added a "no_ecrc"
+>>> quirk for this hardware so we never enabled ECRC?
+>> Well, on Tegra for some of the high fidelity use cases, ECRC is required to
+>> be turned on and if it can be done safely with these patches, why shouldn't
+>> we not enable ECRC at all?
+>>
+>>> IIUC, the current Linux support of ECRC is a single choice at
+>>> boot-time: by default ECRC is not enabled, but if you boot with
+>>> "pci=ecrc=on", we turn on ECRC for every device.
+>>>
+>>> That seems like the minimal support, but I think the spec allows ECRC
+>>> to be enabled selectively, on individual devices.  I can imagine a
+>>> sysfs knob that would allow us to enable/disable ECRC per-device at
+>>> run-time.
+>>>
+>>> If we had such a sysfs knob, it would be pretty ugly and maybe
+>>> impractical to work around this hardware issue.  So I'm a little bit
+>>> hesitant to add functionality that might have to be removed in the
+>>> future.
+>>
+>> Agree with this. But since it is a boot-time choice at this point, I think
+>> we can still go ahead with this approach to have a working ECRC mechanism
+>> right? I don't see any sysfs knob for AER controlling at this point.
+> 
+> I don't want to do anything that will prevent us from adding
+> per-device ECRC control in the future.
+> 
+> My concern is that if we add a run-time sysfs knob in the future, the
+> user experience on this hardware will be poor because there's no
+> convenient path to twiddle the PCIE_ATU_TD bit when the generic code
+> changes the AER Control bit.
+Agree.
+Can we add it to the documentation that run time changing of ECRC 
+settings are not supported on this (i.e. Tegra194) platform (or for that 
+matter on any SoC with PCIe based on DesignWare core version 4.90A). By 
+'not supported', I meant that the ECRC digest part may not work but the 
+normal functionality will continue to work without reporting any AER 
+errors. I tried to emulate the following scenarios on Tegra194 silicon 
+and here are my observations.
+FWIW, I'm referring to the PCIe spec Rev 5.0 Ver 1.0 (22 May 2019)
+
+> 
+> What is the failure mode in these scenarios:
+> 
+>    - User boots with defaults, ECRC is disabled.
+>    - User enables ECRC via sysfs.
+>    - What happens here?  ECRC is enabled via AER Control but not via
+>      DWC TD bit.  I assume ECRC doesn't work.  Does it cause PCIe
+>      errors (malformed TLP, etc)?
+Since DWC TD bit is not programmed, for all the transactions that go 
+through ATU, TLP Digest won't get generated (although AER registers 
+indicate that ECRC should get generated).
+As per the spec section "2.7.1 ECRC Rules"
+
 ---
- drivers/staging/media/atomisp/i2c/atomisp-ov2680.c | 25 +++-------------------
- 1 file changed, 3 insertions(+), 22 deletions(-)
+If a device Function is enabled to generate ECRC, it must calculate and 
+apply ECRC for all TLPs originated by the Function
+---
 
-diff --git a/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c b/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c
-index 1396a33..b70979d 100644
---- a/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c
-+++ b/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c
-@@ -146,7 +146,6 @@ static int ov2680_g_bin_factor_x(struct v4l2_subdev *sd, s32 *val)
- 	struct ov2680_device *dev = to_ov2680_sensor(sd);
- 	struct i2c_client *client = v4l2_get_subdevdata(sd);
- 
--	dev_dbg(&client->dev,  "++++%s\n", __func__);
- 	*val = ov2680_res[dev->fmt_idx].bin_factor_x;
- 
- 	return 0;
-@@ -158,7 +157,7 @@ static int ov2680_g_bin_factor_y(struct v4l2_subdev *sd, s32 *val)
- 	struct i2c_client *client = v4l2_get_subdevdata(sd);
- 
- 	*val = ov2680_res[dev->fmt_idx].bin_factor_y;
--	dev_dbg(&client->dev,  "++++%s\n", __func__);
-+
- 	return 0;
- }
- 
-@@ -173,7 +172,6 @@ static int ov2680_get_intg_factor(struct i2c_client *client,
- 	u16 reg_val;
- 	int ret;
- 
--	dev_dbg(&client->dev,  "++++%s\n", __func__);
- 	if (!info)
- 		return -EINVAL;
- 
-@@ -250,10 +248,6 @@ static long __ov2680_set_exposure(struct v4l2_subdev *sd, int coarse_itg,
- 	u16 vts;
- 	int ret, exp_val;
- 
--	dev_dbg(&client->dev,
--		"+++++++%s coarse_itg %d, gain %d, digitgain %d++\n",
--		__func__, coarse_itg, gain, digitgain);
--
- 	vts = ov2680_res[dev->fmt_idx].lines_per_frame;
- 
- 	/* group hold */
-@@ -457,7 +451,6 @@ static int ov2680_v_flip(struct v4l2_subdev *sd, s32 value)
- 	u16 val;
- 	u8 index;
- 
--	dev_dbg(&client->dev, "@%s: value:%d\n", __func__, value);
- 	ret = ov2680_read_reg(client, 1, OV2680_FLIP_REG, &val);
- 	if (ret)
- 		return ret;
-@@ -490,8 +483,6 @@ static int ov2680_h_flip(struct v4l2_subdev *sd, s32 value)
- 	u16 val;
- 	u8 index;
- 
--	dev_dbg(&client->dev, "@%s: value:%d\n", __func__, value);
--
- 	ret = ov2680_read_reg(client, 1, OV2680_MIRROR_REG, &val);
- 	if (ret)
- 		return ret;
-@@ -524,13 +515,9 @@ static int ov2680_s_ctrl(struct v4l2_ctrl *ctrl)
- 
- 	switch (ctrl->id) {
- 	case V4L2_CID_VFLIP:
--		dev_dbg(&client->dev, "%s: CID_VFLIP:%d.\n",
--			__func__, ctrl->val);
- 		ret = ov2680_v_flip(&dev->sd, ctrl->val);
- 		break;
- 	case V4L2_CID_HFLIP:
--		dev_dbg(&client->dev, "%s: CID_HFLIP:%d.\n",
--			__func__, ctrl->val);
- 		ret = ov2680_h_flip(&dev->sd, ctrl->val);
- 		break;
- 	default:
-@@ -704,8 +691,6 @@ static int power_ctrl(struct v4l2_subdev *sd, bool flag)
- 	if (!dev || !dev->platform_data)
- 		return -ENODEV;
- 
--	dev_dbg(&client->dev, "%s: %s", __func__, flag ? "on" : "off");
--
- 	if (flag) {
- 		ret |= dev->platform_data->v1p8_ctrl(sd, 1);
- 		ret |= dev->platform_data->v2p8_ctrl(sd, 1);
-@@ -1227,8 +1212,6 @@ static int ov2680_remove(struct i2c_client *client)
- 	struct v4l2_subdev *sd = i2c_get_clientdata(client);
- 	struct ov2680_device *dev = to_ov2680_sensor(sd);
- 
--	dev_dbg(&client->dev, "%s...\n", __func__);
--
- 	dev->platform_data->csi_cfg(sd, 0);
- 
- 	v4l2_device_unregister_subdev(sd);
-@@ -1297,13 +1280,11 @@ static int ov2680_probe(struct i2c_client *client)
- 	dev->sd.ctrl_handler = &dev->ctrl_handler;
- 
- 	ret = media_entity_pads_init(&dev->sd.entity, 1, &dev->pad);
--	if (ret) {
-+	if (ret)
- 		ov2680_remove(client);
--		dev_dbg(&client->dev, "+++ remove ov2680\n");
--	}
-+
- 	return ret;
- out_free:
--	dev_dbg(&client->dev, "+++ out free\n");
- 	v4l2_device_unregister_subdev(&dev->sd);
- 	kfree(dev);
- 	return ret;
--- 
-2.7.4
+So the RP would be violating the PCIe spec, but it doesn't result in any 
+error because the same section has the following rule as well
 
+---
+If a device Function is enabled to check ECRC, it must do so for all 
+TLPs with ECRC where the device is the ultimate PCI Express Receiver
+	Note that it is still possible for the Function to receive TLPs without 
+ECRC, and these are processed normally - this is not an error
+---
+
+so, even if the EP has ECRC check enabled, because of the above rule, it 
+just processes those packets without ECRC as normal packets.
+Basically, whoever is enabling ECRC run time gets cheated as 
+transactions routed through ATU don't really have ECRC digest
+
+> 
+> Or this one:
+> 
+>    - User boots with "pci=ecrc=on", ECRC is enabled.
+>    - ECRC works fine.
+>    - User disables ECRC via sysfs.
+>    - What happens here?  ECRC is disabled via AER Control, but DWC TD
+>      bit thinks it's still enabled.
+In this case, the EP doesn't have ECRC check enabled but receives TLPs 
+with ECRC digest. This again won't result in any error because of the 
+section "2.2.3 TLP Digest Rules" which says
+
+---
+If an intermediate or ultimate PCI Express Receiver of the TLP does not 
+support ECRC checking, the Receiver must ignore the TLP Digest
+---
+
+So the EP just ignores the TLP Digest and process the TLP normally.
+Although functionality wise there is no issue here, there could be some 
+impact on the perf because of the extra DWord data. This is again 
+debatable as the perf/data path is typically from EP's DMA engine to 
+host system memory and not config/BAR accesses.
+> 
+> If you enabled ECRC unconditionally on DWC and the sysfs knob had no
+> effect, I'd be OK with that.  I'm more worried about what happens when
+> the AER bit and the DWC TD bit are set so they don't match.  What is
+> the failure mode there?
+Based on the above experiments, we can as well keep the DWC TD bit 
+programmed unconditionally and it won't lead to any errors. As mentioned 
+before, the only downside of it is the extra DWord in each ATU routed 
+TLP which may load the bus (in downstream direction) with no real 
+benefit as such.
+
+Please let me know where can we go from here.
+I can push a different patch to keep DWC TD bit always programmed if 
+that is the best approach to take at this point.
+> 
+>>>> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
+>>>> Reviewed-by: Jingoo Han <jingoohan1@gmail.com>
+>>>> ---
+>>>> V3:
+>>>> * Added 'Reviewed-by: Jingoo Han <jingoohan1@gmail.com>'
+>>>>
+>>>> V2:
+>>>> * Addressed Jingoo's review comment
+>>>> * Removed saving 'td' bit information in 'dw_pcie' structure
+>>>>
+>>>>    drivers/pci/controller/dwc/pcie-designware.c | 8 ++++++--
+>>>>    drivers/pci/controller/dwc/pcie-designware.h | 1 +
+>>>>    2 files changed, 7 insertions(+), 2 deletions(-)
+>>>>
+>>>> diff --git a/drivers/pci/controller/dwc/pcie-designware.c b/drivers/pci/controller/dwc/pcie-designware.c
+>>>> index b5e438b70cd5..cbd651b219d2 100644
+>>>> --- a/drivers/pci/controller/dwc/pcie-designware.c
+>>>> +++ b/drivers/pci/controller/dwc/pcie-designware.c
+>>>> @@ -246,6 +246,8 @@ static void dw_pcie_prog_outbound_atu_unroll(struct dw_pcie *pci, u8 func_no,
+>>>>         dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_UPPER_TARGET,
+>>>>                                  upper_32_bits(pci_addr));
+>>>>         val = type | PCIE_ATU_FUNC_NUM(func_no);
+>>>> +     if (pci->version == 0x490A)
+>>>> +             val = val | pcie_is_ecrc_enabled() << PCIE_ATU_TD_SHIFT;
+>>>>         val = upper_32_bits(size - 1) ?
+>>>>                 val | PCIE_ATU_INCREASE_REGION_SIZE : val;
+>>>>         dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_REGION_CTRL1, val);
+>>>> @@ -294,8 +296,10 @@ static void __dw_pcie_prog_outbound_atu(struct dw_pcie *pci, u8 func_no,
+>>>>                            lower_32_bits(pci_addr));
+>>>>         dw_pcie_writel_dbi(pci, PCIE_ATU_UPPER_TARGET,
+>>>>                            upper_32_bits(pci_addr));
+>>>> -     dw_pcie_writel_dbi(pci, PCIE_ATU_CR1, type |
+>>>> -                        PCIE_ATU_FUNC_NUM(func_no));
+>>>> +     val = type | PCIE_ATU_FUNC_NUM(func_no);
+>>>> +     if (pci->version == 0x490A)
+>>>> +             val = val | pcie_is_ecrc_enabled() << PCIE_ATU_TD_SHIFT;
+>>>> +     dw_pcie_writel_dbi(pci, PCIE_ATU_CR1, val);
+>>>>         dw_pcie_writel_dbi(pci, PCIE_ATU_CR2, PCIE_ATU_ENABLE);
+>>>>
+>>>>         /*
+>>>> diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
+>>>> index e7f441441db2..b01ef407fd52 100644
+>>>> --- a/drivers/pci/controller/dwc/pcie-designware.h
+>>>> +++ b/drivers/pci/controller/dwc/pcie-designware.h
+>>>> @@ -89,6 +89,7 @@
+>>>>    #define PCIE_ATU_TYPE_IO             0x2
+>>>>    #define PCIE_ATU_TYPE_CFG0           0x4
+>>>>    #define PCIE_ATU_TYPE_CFG1           0x5
+>>>> +#define PCIE_ATU_TD_SHIFT            8
+>>>>    #define PCIE_ATU_FUNC_NUM(pf)           ((pf) << 20)
+>>>>    #define PCIE_ATU_CR2                 0x908
+>>>>    #define PCIE_ATU_ENABLE                      BIT(31)
+>>>> --
+>>>> 2.17.1
+>>>>
