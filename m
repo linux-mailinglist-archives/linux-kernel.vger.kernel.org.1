@@ -2,162 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16CEB2A612B
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 11:06:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 770C12A612D
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 11:06:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729081AbgKDKGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 05:06:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60404 "EHLO
+        id S1729097AbgKDKGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 05:06:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728741AbgKDKGT (ORCPT
+        with ESMTP id S1727389AbgKDKGp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 05:06:19 -0500
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82E69C0613D3
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 02:06:19 -0800 (PST)
-Received: by mail-lf1-x142.google.com with SMTP id i6so26390380lfd.1
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 02:06:19 -0800 (PST)
+        Wed, 4 Nov 2020 05:06:45 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62C1FC0613D3
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 02:06:43 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id x7so21396686wrl.3
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 02:06:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=A+6slmqhI0KPkbC0bfUw3wn9wbVOlEYA0Q68HLtl+DA=;
-        b=ErulmyB0YNZYXf45CFiLYHW1UVpS5zNSsug0hnot5TuVIoXRnpKVyAwnX00JFcAt5F
-         utRVT1dtwgdrJck6qbZwuH0qztPuAZLqGUVXAs8pow89jy8k5+AtlcFQvJCD5nC505zI
-         Sfx+0ks5YCfm2zdd04AofdmnjLti8JAqnBepRQ8DxneXArU8IzW44GfAib5a6gvY0win
-         eMsnJlNPPvauYWXKzPdr0U3lj8Tqw0WaRT1yFbgP0TMO40CkxkQM60xO632/JIO/IOeK
-         zbGt397x0UojiuVwgfcOpCUrDNwUUUYKA4RCY527vNHnF70hLqmvHHp/2M0r4fNSQ2de
-         AKHA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=LyLd5+wtt+rcFTZV9I8i0DwEVeOUvh0R/U6n/R8AAug=;
+        b=z0wjBvh2Mypqk54j9BwP1mMUE1+V6CzKdPuQ6rh/2ZjOrYtZy6HtnkDhD4ESro3taU
+         k5Ljc1jprhSrZ2C7vJw+pNVy/kYroFLMXMy6vzvUDTKKj41KVUEa0eeCLKEJNXs2/1vI
+         nZjJK6pPxA4Wazmcm1rkRYaFlEWK87NA8OJFaESKRPsLd533+3TTfikoSvrh/cai9r1V
+         cSn/cgJmI1UvEa81g8WMsQpv/aNhUakVKWocsS7VMfA9RfnBajPbcSANerbwyviaRjvz
+         j32Om2qbDWsic0LRwM9n+1BOOKjUtIZcTkY/Aksc1ZDG2R2JuJCM0X9/7Ktxu9pddZ47
+         IfFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=A+6slmqhI0KPkbC0bfUw3wn9wbVOlEYA0Q68HLtl+DA=;
-        b=U/QVwegYgvTkgz0JM1cWou/wgA9MZyXKVTo6S+huYPZIspm8VuuOXcQ8dJ5NkQ6AFk
-         7TgMlqk4M1uVCdRxPOqUVGc9MV+tUVOoWRvvoh0/ynnee43K7k7kM+hu+OD97Qeca9U+
-         6HTOz8MwDredsxs1OxBfTLuCyDcqAI8t8pJCLSNzvF1oP3Q7f5qRirbBRBuWyI7MXDzm
-         VBus+1kYu7+QhuONoWoEQTtikHHh3mDfxebk+fPyrXR70Zb70sh5/PxxpDR9OgnfcvX5
-         J1TDmVWmflBZ0/PjUGp4jE8FaZHwv8gU5cQZMZ3ASQnUO9sdQo3aNMZI0+jofviRlF3l
-         mMcQ==
-X-Gm-Message-State: AOAM531RE7nXTIIub3+ye+mqH8frCx5kWPt78F7XWHwHtAn6HHnPCaxx
-        xxsYFfASwfrnonVfZ6rCxsjpF1oXwizik9VZeNdGgg==
-X-Google-Smtp-Source: ABdhPJw/m/S1rl4AwlRuwkAV8NYz5tApTPpHXIKOTN9wA0JpNAjn57G/JPq/U0hbBHYkk8cFhEaLzD3Bw48gm46Oupc=
-X-Received: by 2002:a05:6512:314c:: with SMTP id s12mr2672230lfi.31.1604484377830;
- Wed, 04 Nov 2020 02:06:17 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=LyLd5+wtt+rcFTZV9I8i0DwEVeOUvh0R/U6n/R8AAug=;
+        b=XsL3uv8sybMMI0r1OHpmDUhxPRrlCtsstHv0MIv2AnnDngHhogCVeYO3bd5wuapv9Q
+         VOCq6wa8EYbVGPDYBOMPQFyQhRJzBC54oC5wKkJoLcKEf+qwqorcVWAPeZUrDnT+e3XG
+         zJmyl8z7450Ls8WnWT8B9/5LH0HLMRJksJ75W1djDyawosNyg1vGWe33+NgjbhxUztbE
+         yhs2pq/rFklc5nq6+4rPAUCeFlNz+faU2OFCu7tCHOtFzReKRGnx2xdi0FSAA/eX6HLB
+         A+XLk5anHUvHZuLEGcGytGJ2WplkmU0x0L9wEXIHEG9AVRMMkBEtcWlVODOOkpYM5o8S
+         SODA==
+X-Gm-Message-State: AOAM532BfEgcXGbsWnYyJafqniaqqY25DrYT8SThglXPBSt0DFcHfmgT
+        prZHoTwIk4FfjZ03Dq3lBtXkaA==
+X-Google-Smtp-Source: ABdhPJxaJlG6ldDgzj9uuZlD2all63aztwPnauBhwS5a3dBATE0btFS+Mn2YVNS+M8WvAtqXN1qW0g==
+X-Received: by 2002:a5d:688c:: with SMTP id h12mr32049471wru.92.1604484402063;
+        Wed, 04 Nov 2020 02:06:42 -0800 (PST)
+Received: from holly.lan (82-132-214-54.dab.02.net. [82.132.214.54])
+        by smtp.gmail.com with ESMTPSA id u10sm1914775wrw.36.2020.11.04.02.06.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Nov 2020 02:06:40 -0800 (PST)
+Date:   Wed, 4 Nov 2020 10:06:34 +0000
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Tabot Kevin <tabot.kevin@gmail.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Replaced hard coded function names in debug messages
+ with __func__ macro.
+Message-ID: <20201104100634.4badc2mmau2tk5ct@holly.lan>
+References: <20201031164059.GA5534@tabot>
+ <20201102093324.dz5es32yhmga34hs@holly.lan>
+ <20201102121556.GA37670@crucifix.local>
+ <20201103100440.wo2wkkyr5rs4qhhl@holly.lan>
+ <20201103203652.GA1685@tabot>
 MIME-Version: 1.0
-References: <20200714125941.4174-1-peter.puhov@linaro.org> <20201102105043.GB3371@techsingularity.net>
- <CAKfTPtB7q8DMQaC=gU+XH92XKcSiuTSBjtMuiRFS67af0gzc6g@mail.gmail.com>
- <20201102144418.GB154641@lorien.usersys.redhat.com> <20201104094205.GI3306@suse.de>
-In-Reply-To: <20201104094205.GI3306@suse.de>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Wed, 4 Nov 2020 11:06:06 +0100
-Message-ID: <CAKfTPtAjhv8JafvZFR8_UUfDM2MUzVGMPXVBx1zynhPXJ_oh3w@mail.gmail.com>
-Subject: Re: [PATCH v1] sched/fair: update_pick_idlest() Select group with
- lowest group_util when idle_cpus are equal
-To:     Mel Gorman <mgorman@suse.de>
-Cc:     Phil Auld <pauld@redhat.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Peter Puhov <peter.puhov@linaro.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Robert Foley <robert.foley@linaro.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Jirka Hladky <jhladky@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201103203652.GA1685@tabot>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 4 Nov 2020 at 10:42, Mel Gorman <mgorman@suse.de> wrote:
->
-> On Mon, Nov 02, 2020 at 09:44:18AM -0500, Phil Auld wrote:
-> > > > I have not investigated why because I do not have the bandwidth
-> > > > to do a detailed study (I was off for a few days and my backlog is
-> > > > severe). However, I recommend in before v5.10 this be reverted and retried.
-> > > > If I'm cc'd on v2, I'll run the same tests through the grid and see what
-> > > > falls out.
+On Tue, Nov 03, 2020 at 09:36:54PM +0100, Tabot Kevin wrote:
+> On Tue, Nov 03, 2020 at 10:04:40AM +0000, Daniel Thompson wrote:
+> > On Mon, Nov 02, 2020 at 01:15:56PM +0100, Tabot Kevin wrote:
+> > > On Mon, Nov 02, 2020 at 09:33:24AM +0000, Daniel Thompson wrote:
+> > > > > @@ -146,7 +146,7 @@ static int ov2680_g_bin_factor_x(struct v4l2_subdev *sd, s32 *val)
+> > > > >  	struct ov2680_device *dev = to_ov2680_sensor(sd);
+> > > > >  	struct i2c_client *client = v4l2_get_subdevdata(sd);
+> > > > >  
+> > > > > -	dev_dbg(&client->dev,  "++++ov2680_g_bin_factor_x\n");
+> > > > > +	dev_dbg(&client->dev,  "++++%s\n", __func__);
+> > > > 
+> > > > It might be better just to remove this sort of message.
+> > > > 
+> > > > They are not "wrong wrong" but are they actually useful one a
+> > > > driver's basic functions work? Even where they are useful
+> > > > dynamic techniques (ftrace, tracepoints, etc) arguably provide a
+> > > > better way to support "did my function actually run" debug
+> > > > approaches anyway.
 > > >
-> > > I'm going to have a look at the regressions and see if  patches that
-> > > have been queued for v5.10 or even more recent patch can help or if
-> > > the patch should be adjusted
-> > >
-> >
-> > Fwiw, we have pulled this in, along with some of the 5.10-rc1 fixes in this
-> > area and in the load balancing code.
-> >
-> > We found some load balancing improvements and some minor overall perf
-> > gains in a few places, but generally did not see any difference from before
-> > the commit mentioned here.
-> >
-> > I'm wondering, Mel, if you have compared 5.10-rc1?
-> >
->
-> The results indicate that reverting on 5.9 would have been the right
-> decision. It's less clear for 5.10-rc2 so I'm only showing the 5.10-rc2
-> comparison. Bear in mind that this is one machine only so I'll be
-> rerunning against all the affected machines according to the bisections
-> run against 5.9.
->
-> aim9
->                                 5.10.0-rc2             5.10.0-rc2
->                                    vanilla        5.10-rc2-revert
-> Hmean     page_test   510863.13 (   0.00%)   517673.91 *   1.33%*
-> Hmean     brk_test   1807400.76 (   0.00%)  1814815.29 *   0.41%*
-> Hmean     exec_test      821.41 (   0.00%)      841.05 *   2.39%*
-> Hmean     fork_test     4399.71 (   0.00%)     5124.86 *  16.48%*
->
-> Reverting shows a 16.48% gain for fork_test and minor gains for others.
-> To be fair, I don't generally consider the fork_test to be particularly
-> important because fork microbenchmarks that do no real work are rarely
-> representative of anything useful. It tends to go up and down a lot and
-> it's rare a regression in fork_test correlates to anything else.
+> > > Thank you very much for the response. So, should I just revert back to
+> > > the original all the changes in places where I replace hard coded
+> > > functions names with  __func__?
+> > 
+> > Personally I think it is better to remove them completely from the
+> > driver rather than revert to the original form. Naturally if Mauro or
+> > Sakari have strong views on this kind of printed message then you
+> > need to take that into account but, in general, messages like this
+> > add little or no value to the driver and can be removed.
+> > 
+> I went through the code in an attempt to completely remove all "dev_dbg"
+> messages,
 
-The patch makes a difference only when most of CPUs are already idle
-because it will select the one with lowest utilization: which could be
-translated by the LRU one.
+The goal should not be to remove all dev_dbg() messages. I have only
+suggested removing dev_dbg() that print things that are not useful or
+redundantly duplicate what can be achieved with ftrace or tracepoints.
 
->
-> Hackbench failed to run because I typo'd the configuration. Kernel build
-> benchmark and git test suite both were inconclusive for 5.10-rc2
-> (neutral results) although the showed 10-20% gain for kernbench and 24%
-> gain in git test suite by reverting in 5.9.
->
-> The gitsource test was interesting for a few reasons. First, the big
-> difference between 5.9 and 5.10 is that the workload is mostly concentrated
-> on one NUMA node. mpstat shows that 5.10-rc2 uses all of the CPUs on one
-> node lightly. Reverting the patch shows that far fewer CPUs are used at
-> a higher utilisation -- not particularly high utilisation because of the
-> nature of the workload but noticable. i.e.  gitsource with the revert
-> packs the workload onto fewer CPUs. The same holds for fork_test --
-> reverting packs the workload onto fewer CPUs with higher utilisation on
-> each of them. Generally this plays well with cpufreq without schedutil
-> using fewer CPUs means the CPU is likely to reach higher frequencies.
+Maybe that will remove the dev_dbg() messages and maybe it won't. That
+depends entirely what the function actually prints when executed.
 
-Which cpufreq governor are you using ?
 
->
-> While it's possible that some other factor masked the impact of the patch,
-> the fact it's neutral for two workloads in 5.10-rc2 is suspicious as it
-> indicates that if the patch was implemented against 5.10-rc2, it would
-> likely not have been merged. I've queued the tests on the remaining
-> machines to see if something more conclusive falls out.
+> but I noticed not only are there many "dev_dbg" messages, there
+> are also many such messages like (dev_info, dev_err, etc). Should I
+> remove them all too?
 
-I don't think that the goal of the patch is stressed by those benchmarks.
-I typically try to optimize the sequence:
-1-fork a lot of threads that immediately wait
-2-wake up all threads simultaneously to run in parallel
-3-wait the end of all threads
+The resulting patch will have your name on it rather than mine. That
+means it is you that must make the decisions here.
 
-Without the patch all newly forked threads were packed on few CPUs
-which were already idle when the next fork happened. Then the spreads
-were spread on CPUs at wakeup in the LLC but they have to wait for a
-LB to fill other sched domain
+Firstly you can review each message output to decide if it is useful.
+Only remove message whose output is not useful (same as for dev_dbg() ).
 
->
-> --
-> Mel Gorman
-> SUSE Labs
+If it is useful then you should think about whether the log level
+matches the importance of the message. For example, are the dev_err()
+message really covering error conditions? are there warnings for normal"
+conditions? is the dev_info() useful to someone who is not the driver
+author?).
+
+
+Daniel.
+
+
+
+
+> > 
+> > > > > @@ -251,8 +251,8 @@ static long __ov2680_set_exposure(struct v4l2_subdev *sd, int coarse_itg,
+> > > > >  	int ret, exp_val;
+> > > > >  
+> > > > >  	dev_dbg(&client->dev,
+> > > > > -		"+++++++__ov2680_set_exposure coarse_itg %d, gain %d, digitgain %d++\n",
+> > > > > -		coarse_itg, gain, digitgain);
+> > > > > +		"+++++++%s coarse_itg %d, gain %d, digitgain %d++\n",
+> > > > > +		__func__, coarse_itg, gain, digitgain);
+> > 
+> > This case is a little less clear cut since the printed message does show
+> > some elements of internal state. However AFAICT this function just writes
+> > some state to the hardware so I still take the view that dynamic
+> > tools (I2C tracepoints for example) provide a better way to debug the
+> > driver.
+> > 
+> > 
+> > Daniel.
