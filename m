@@ -2,63 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2E0C2A649E
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 13:47:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B72802A64A1
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 13:47:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729436AbgKDMqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 07:46:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45416 "EHLO mail.kernel.org"
+        id S1729647AbgKDMru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 07:47:50 -0500
+Received: from mail.monom.org ([188.138.9.77]:35638 "EHLO mail.monom.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726527AbgKDMqx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 07:46:53 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 112A4206A4;
-        Wed,  4 Nov 2020 12:46:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604494012;
-        bh=bVjpYOcSIHR8c7qCYo2/k+Dz0ysenQ3/fX3gxOZOh5k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rAL1rHODREBJks4WHF0+L6EENawAOtfM5z9NIEMs8CAtq7FbypFD7bY01NnSdn0/k
-         lOjFdOCQuZvvDoAwwkdjwGIoV8rIkfnrwwDBMZ/TS9Dhc1MmGu/gT5/VBlDSn2mplx
-         Tw8KU3/fuR0MN5NJP1EtAoA9V5FsB87NyQ3nX0QU=
-Date:   Wed, 4 Nov 2020 13:47:43 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Rui Feng <rui_feng@realsil.com.cn>, Arnd Bergmann <arnd@arndb.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>
-Subject: Re: [PATCH 1/8] mmc: rtsx: Add test mode for RTS5261
-Message-ID: <20201104124743.GA2188000@kroah.com>
-References: <1604397269-2780-1-git-send-email-rui_feng@realsil.com.cn>
- <CAPDyKFru7TbT-rFMr+BsaqcahOo1K2Lk_DFtLOpSy-QuEVpmFg@mail.gmail.com>
+        id S1726527AbgKDMrt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 07:47:49 -0500
+Received: from mail.monom.org (localhost [127.0.0.1])
+        by filter.mynetwork.local (Postfix) with ESMTP id 3CAF4500609;
+        Wed,  4 Nov 2020 13:47:47 +0100 (CET)
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.monom.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.5 required=5.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=ham autolearn_force=no version=3.4.2
+Received: from localhost (unknown [94.31.100.251])
+        by mail.monom.org (Postfix) with ESMTPSA id EA25B500596;
+        Wed,  4 Nov 2020 13:47:46 +0100 (CET)
+Date:   Wed, 4 Nov 2020 13:47:46 +0100
+From:   Daniel Wagner <wagi@monom.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [ANNOUNCE] v5.10-rc2-rt4
+Message-ID: <20201104124746.74jdsig3dffomv3k@beryllium.lan>
+References: <20201103195731.erjkgyzxzzjylhui@linutronix.de>
+ <20201104103809.bhl2iorbwv6xowtw@beryllium.lan>
+ <20201104104617.ueefmpdou4t3t2ce@linutronix.de>
+ <20201104111948.vpykh3ptmysqhmve@beryllium.lan>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAPDyKFru7TbT-rFMr+BsaqcahOo1K2Lk_DFtLOpSy-QuEVpmFg@mail.gmail.com>
+In-Reply-To: <20201104111948.vpykh3ptmysqhmve@beryllium.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 01:37:57PM +0100, Ulf Hansson wrote:
-> On Tue, 3 Nov 2020 at 10:54, <rui_feng@realsil.com.cn> wrote:
-> >
-> > From: Rui Feng <rui_feng@realsil.com.cn>
-> >
-> > This patch add test mode for RTS5261.
-> > If test mode is set, reader will switch to SD Express mode
-> > mandatorily, and this mode is used by factory testing only.
-> >
-> > Signed-off-by: Rui Feng <rui_feng@realsil.com.cn>
-> 
-> Greg,
-> 
-> It seems this series is best funneld via my mmc tree, due to
-> dependency to recent changes I have queued.
-> 
-> I am fine to pick this as well, but awaiting an ack from you before I go ahead.
+On Wed, Nov 04, 2020 at 12:19:48PM +0100, Daniel Wagner wrote:
+> Yes, Just fired up signaltest 5 times for arm64 and x86_64 with the
+> latest release. Keep you posted.
 
-No objection from me at all, for all of these:
+arm64
+  1184  0_signaltest         t0-max-latency      : fail     386.00
+  1185  0_signaltest         t0-max-latency      : fail     417.00
+  1186  0_signaltest         t0-max-latency      : fail     350.00
+  1187  0_signaltest         t0-max-latency      : fail     360.00
+  1188  0_signaltest         t0-max-latency      : fail     339.00
 
-	Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+I noticed that also the last view 5.9-rt releases have higher values.
+For example, version 5.9.0-rc8-rt12 has only 217us.
+
+x86_64
+  1189  0_signaltest         t0-max-latency      : fail      50.00
+  1190  0_signaltest         t0-max-latency      : pass      46.00
+  1191  0_signaltest         t0-max-latency      : pass      45.00
+  1192  0_signaltest         t0-max-latency      : pass      47.00
+  1193  0_signaltest         t0-max-latency      : fail      52.00
+
+Same thing for version 5.9.0-rc8-rt12, the max value was 40us.
+
+I'll work on getting these reports more useful, the performance trend
+seems to be an interesting metric.
