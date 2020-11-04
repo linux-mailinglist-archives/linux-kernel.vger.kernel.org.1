@@ -2,176 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E1A22A6470
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 13:36:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C90AA2A6472
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 13:36:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729309AbgKDMgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 07:36:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55224 "EHLO
+        id S1729484AbgKDMge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 07:36:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728066AbgKDMgA (ORCPT
+        with ESMTP id S1728066AbgKDMgd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 07:36:00 -0500
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9E8DC0613D3;
-        Wed,  4 Nov 2020 04:35:58 -0800 (PST)
-Received: by mail-lj1-x244.google.com with SMTP id 2so22747348ljj.13;
-        Wed, 04 Nov 2020 04:35:58 -0800 (PST)
+        Wed, 4 Nov 2020 07:36:33 -0500
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 011B6C0613D3
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 04:36:33 -0800 (PST)
+Received: by mail-ot1-x342.google.com with SMTP id m26so19129760otk.11
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 04:36:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Z6+j9tZLtpQLaTDBQI6ActN2/cApocl/GI9BQLERU+4=;
-        b=lrUE2RTO9U4hGXLY3Z16h9jWJiIMavk+5POdOM3f7FoDZo8+gp72BU2Pmszf+aOkOm
-         q9qKWMyZmvRiknaR6ufzXo+HhSr/q0k3rbYYu0X8MelyZlmafudTfIf0IDxm/OyQrTx2
-         WhKM27t31A55Ds8Zmh3Okr338R+xo50eIC+CSOg3cODLVj+DWPS14GpOSZWOU/NNTKEk
-         V19qxp1DQibsnL3/1VLS2mogrQcLN6KJH926rzyftcxx97VSg5HuJderlkJ64SXkdcje
-         gWz3TVmWaB+GsT9ZtT0vA3+2oz1XnoU7UpT//TsDwNleV3die8CXSN8nM/HA988WAcxA
-         eh9Q==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wVb8/RbNDJYhkorSN6bimCxe79UOkbAUrQdoTOawrjk=;
+        b=LFGjSoCfJkkqDGZvbx8OXBBNkxgfAedNqXIo07FnoMCHg2jlNSYzGAfU6c+xbdBL4l
+         qDpDG1VSEc4Zi3iAO2WvytnftCJ/jmlPQVpb0zIAUDAuWFZ6HOxe1I9XgJfh4gIYomGY
+         AcSClw4IrgDZDBGuBQbBfwdHekhheK/geQXcTnKgpwyonV3rwx2YEknxiMbtf3fZRcdV
+         YH0ASf9BzP1CKZDamaq+wusNG13okoekcnqs3fusVijhsMMVdxHcW5jDzry9asdpdBY7
+         TI2lmEPXsZndrsgJDSfKG+zmdDlgyCpPm/V2fMx5mim6cBrNcQ75GR9kdPsuS9A9n/gp
+         GNrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Z6+j9tZLtpQLaTDBQI6ActN2/cApocl/GI9BQLERU+4=;
-        b=h14tHXAP30SYCklz1BACPylXIbuvHwePGtfIboeWgyb1WfzLHkudCL2e1Fy53DXbdm
-         MXD311w5d62Kbc/PPkw+IXA6nHa8FvwaLF/YrMH554ouiB6yW2S+/breuIVKx01KDIF8
-         EpMejJ/1R97Qxv1EMAB2tK5T1TJMqaCjqJhOgkuxlFvsqEjfBMhjG/NXEGzFse+mNJMR
-         YDSlOoyxzdXv/n9NwiAf9w2mMXrXNpBjHsob1iPe8qb7X47AUMJLomylitHhdIfmq8dp
-         lQGndGMAcJtcAnkEG1gtnTraYl7Lj2NbGt/dGSVZJrUTy6GG9J3NG2Z1kWLFrNpwIcMX
-         jFpg==
-X-Gm-Message-State: AOAM530+lGadZTy8IIXAeguVzkUrF1coor8SumEdDHupEKoc6n3A8cND
-        RbE11azssKXBGHVf3zEhfq8=
-X-Google-Smtp-Source: ABdhPJzCJoC6JU+MU248watxu3IwCbGxOtbPSEjIjpBQQVep9WhcbqFC46O0YfJMBSbDgFPTEFTXlA==
-X-Received: by 2002:a2e:b54a:: with SMTP id a10mr1040491ljn.139.1604493357122;
-        Wed, 04 Nov 2020 04:35:57 -0800 (PST)
-Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
-        by smtp.gmail.com with ESMTPSA id l6sm392258lfk.267.2020.11.04.04.35.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 04:35:55 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Wed, 4 Nov 2020 13:35:53 +0100
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        willy@infradead.org
-Subject: Re: [PATCH 01/16] rcu/tree: Add a work to allocate pages from
- regular context
-Message-ID: <20201104123553.GC17782@pc636>
-References: <20201029165019.14218-1-urezki@gmail.com>
- <20201103154723.GA1310511@google.com>
- <20201103163350.GA10665@pc636>
- <20201103191822.GC3249@paulmck-ThinkPad-P72>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wVb8/RbNDJYhkorSN6bimCxe79UOkbAUrQdoTOawrjk=;
+        b=pEyxLEj3+Nb6/6F3vKvWmq1xSAoIWxGOHufH5MpAWenGVzU3/KOrwbpKBTJpTfkgIJ
+         NpRRK9d01y1IfRHrsdmIz3i2v0ZFP9dHR4s7iyKbT46MKkeJusAkGOW5w2DmHwQd/zlP
+         MXYrwwwnh707Z/V8xtubkCZM9+7hDxTLJaTNXL5IkodgKq0U8NThpBg/fTrTSwFCLX3E
+         9GRb27BIpgXLyXChzr8VPvDEg2FgycCruNBk7uphWW2mw8GCr+Klaq92Z4t62XBBnPLo
+         1GYGtJyEAhkAHyeQX66aVApEIRd0X/Gfz2ILEveMbe6X6SPDtjh/SaiHjPEKRGQHZhus
+         n5Jg==
+X-Gm-Message-State: AOAM532xr2/1foAJ/d2Gx4hVA4nH4NA2LVh3Bw77UNE2tLuyTtS8YRn9
+        5JEN6zFax25ande/rhpAzhwIqqqBV+RAN8ofe/DcVw==
+X-Google-Smtp-Source: ABdhPJyK2zY+C07iD8w6EBRYLDu02PjG20qra3SjpRaESNCnGnN2KfqIUAfzeWA5l49kGRBzEiiu5UOzLl+vbNhsR+8=
+X-Received: by 2002:a9d:649:: with SMTP id 67mr19396919otn.233.1604493392047;
+ Wed, 04 Nov 2020 04:36:32 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201103191822.GC3249@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201103175841.3495947-1-elver@google.com> <20201103163103.109deb9d49a140032d67434f@linux-foundation.org>
+In-Reply-To: <20201103163103.109deb9d49a140032d67434f@linux-foundation.org>
+From:   Marco Elver <elver@google.com>
+Date:   Wed, 4 Nov 2020 13:36:20 +0100
+Message-ID: <CANpmjNM1HQ_TwqJ6Ad=Mr=oKVnud-qzD=-LhchPAouu1RDHLqw@mail.gmail.com>
+Subject: Re: [PATCH v7 0/9] KFENCE: A low-overhead sampling-based memory
+ safety error detector
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Alexander Potapenko <glider@google.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Lameter <cl@linux.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hillf Danton <hdanton@sina.com>,
+        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        =?UTF-8?Q?J=C3=B6rn_Engel?= <joern@purestorage.com>,
+        Kees Cook <keescook@chromium.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        SeongJae Park <sjpark@amazon.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Will Deacon <will@kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 11:18:22AM -0800, Paul E. McKenney wrote:
-> On Tue, Nov 03, 2020 at 05:33:50PM +0100, Uladzislau Rezki wrote:
-> > On Tue, Nov 03, 2020 at 10:47:23AM -0500, Joel Fernandes wrote:
-> > > On Thu, Oct 29, 2020 at 05:50:04PM +0100, Uladzislau Rezki (Sony) wrote:
-> > > > The current memmory-allocation interface presents to following
-> > > > difficulties that this patch is designed to overcome:
-> > > > 
-> > > > a) If built with CONFIG_PROVE_RAW_LOCK_NESTING, the lockdep will
-> > > >    complain about violation("BUG: Invalid wait context") of the
-> > > >    nesting rules. It does the raw_spinlock vs. spinlock nesting
-> > > >    checks, i.e. it is not legal to acquire a spinlock_t while
-> > > >    holding a raw_spinlock_t.
-> > > > 
-> > > >    Internally the kfree_rcu() uses raw_spinlock_t whereas the
-> > > >    "page allocator" internally deals with spinlock_t to access
-> > > >    to its zones. The code also can be broken from higher level
-> > > >    of view:
-> > > >    <snip>
-> > > >        raw_spin_lock(&some_lock);
-> > > >        kfree_rcu(some_pointer, some_field_offset);
-> > > >    <snip>
-> > > > 
-> > > > b) If built with CONFIG_PREEMPT_RT. Please note, in that case spinlock_t
-> > > >    is converted into sleepable variant. Invoking the page allocator from
-> > > >    atomic contexts leads to "BUG: scheduling while atomic".
-> > > > 
-> > > > c) call_rcu() is invoked from raw atomic context and kfree_rcu()
-> > > >    and kvfree_rcu() are expected to be called from atomic raw context
-> > > >    as well.
-> > > > 
-> > > > Move out a page allocation from contexts which trigger kvfree_rcu()
-> > > > function to the separate worker. When a k[v]free_rcu() per-cpu page
-> > > > cache is empty a fallback mechanism is used and a special job is
-> > > > scheduled to refill the per-cpu cache.
-> > > 
-> > > Looks good, still reviewing here. BTW just for my education, I was wondering
-> > > about Thomas's email:
-> > > https://lkml.org/lkml/2020/8/11/939
-> > > 
-> > > If slab allocations in pure raw-atomic context on RT is not allowed or
-> > > recommended, should kfree_rcu() be allowed?
-> > >
-> > Thanks for reviewing, Joel :)
-> > 
-> > The decision was made that we need to support kfree_rcu() from "real atomic contexts",
-> > to align with how it used to be before. We can go and just convert our local locks
-> > to the spinlock_t variant but that was not Paul goal, it can be that some users need
-> > kfree_rcu() for raw atomics.
-> 
-> People invoke call_rcu() from raw atomics, and so we should provide
-> the same for kfree_rcu().  Yes, people could work around a raw-atomic
-> prohibition, but such prohibitions incur constant costs over time in
-> terms of development effort, increased bug rate, and increased complexity.
-> Yes, this does increase all of those for RCU, but the relative increase
-> is negligible, RCU being what it is.
-> 
-I see your point.
+On Wed, 4 Nov 2020 at 01:31, Andrew Morton <akpm@linux-foundation.org> wrote:
+> On Tue,  3 Nov 2020 18:58:32 +0100 Marco Elver <elver@google.com> wrote:
+>
+> > This adds the Kernel Electric-Fence (KFENCE) infrastructure. KFENCE is a
+> > low-overhead sampling-based memory safety error detector of heap
+> > use-after-free, invalid-free, and out-of-bounds access errors.  This
+> > series enables KFENCE for the x86 and arm64 architectures, and adds
+> > KFENCE hooks to the SLAB and SLUB allocators.
+> >
+> > KFENCE is designed to be enabled in production kernels, and has near
+> > zero performance overhead. Compared to KASAN, KFENCE trades performance
+> > for precision. The main motivation behind KFENCE's design, is that with
+> > enough total uptime KFENCE will detect bugs in code paths not typically
+> > exercised by non-production test workloads. One way to quickly achieve a
+> > large enough total uptime is when the tool is deployed across a large
+> > fleet of machines.
+>
+> Has kfence detected any kernel bugs yet?  What is its track record?
 
-> > > slab can have same issue right? If per-cpu cache is drained, it has to
-> > > allocate page from buddy allocator and there's no GFP flag to tell it about
-> > > context where alloc is happening from.
-> > > 
-> > Sounds like that. Apart of that, it might turn out soon that we or somebody
-> > else will rise a question one more time about something GFP_RAW or GFP_NOLOCKS.
-> > So who knows..
-> 
-> I would prefer that slab provide some way of dealing with raw atomic
-> context, but the maintainers are thus far unconvinced.
-> 
-I think, when preempt_rt is fully integrated to the kernel, we might get
-new users with such demand. So, it is not a closed topic so far, IMHO.
+Not yet, but once we deploy in various production kernels, we expect
+to find new bugs (we'll report back with results once deployed).
+Especially in drivers or subsystems that syzkaller+KASAN can't touch,
+e.g. where real devices are required to get coverage. We expect to
+have first results on this within 3 months, and can start backports
+now that KFENCE for mainline is being finalized. This will likely also
+make it into Android, but deployment there will take much longer.
 
-> > > Or are we saying that we want to support kfree on RT from raw atomic atomic
-> > > context, even though kmalloc is not supported? I hate to bring up this
-> > > elephant in the room, but since I am a part of the people maintaining this
-> > > code, I believe I would rather set some rules than supporting unsupported
-> > > usages. :-\ (Once I know what is supported and what isn't that is). If indeed
-> > > raw atomic kfree_rcu() is a bogus use case because of -RT, then we ought to
-> > > put a giant warning than supporting it :-(.
-> > > 
-> > We discussed it several times, the conclusion was that we need to support 
-> > kfree_rcu() from raw contexts. At least that was a clear signal from Paul 
-> > to me. I think, if we obtain the preemtable(), so it becomes versatile, we
-> > can drop the patch that is in question later on in the future.
-> 
-> Given a universally meaningful preemptible(), we could directly call
-> the allocator in some cases.  It might (or might not) still make sense
-> to defer the allocation when preemptible() indicated that a direct call
-> to the allocator was unsafe.
-> 
-I do not have a strong opinion here. Giving the fact that maintaining of
-such "deferring" is not considered as a big effort, i think, we can live
-with it.
+The story is similar with the user space version of the tool
+(GWP-ASan), where results started to materialize once it was deployed
+across the fleet.
 
---
-Vlad Rezki
+> Will a kfence merge permit us to remove some other memory debugging
+> subsystem?  We seem to have rather a lot of them.
+
+Nothing obvious I think. KFENCE is unique in that it is meant for
+production fleets of machines (with ~zero overhead and no new HW
+features), with the caveat that due to it being sampling based, it's
+not so suitable for single machine testing. The other debugging tools
+are suitable for the latter, but not former.
+
+Thanks,
+-- Marco
