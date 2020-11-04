@@ -2,64 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D06C02A6E66
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 20:58:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BFE22A6E70
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 21:01:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730913AbgKDT6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 14:58:17 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:48048 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727013AbgKDT6R (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 14:58:17 -0500
-Received: from mail-qv1-f41.google.com (mail-qv1-f41.google.com [209.85.219.41])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 98F6620BE4BC
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 11:58:16 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 98F6620BE4BC
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1604519896;
-        bh=uZrUpx0ezj073Sw3cdaOE2LEpaHDc19xq9VTUAz7ZmE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=mZdHOnZCairN+zku98+LatzUP3LmP35C07cxaSN/K/npciEb5X69A7CuLKCEKRji/
-         FpLlESngm/M+ucs3ZYJmNetzGWBRMT71iiNb/FrEEPUp5Y9XjrBfpHAooWUxPCW6LJ
-         /dUwLaeXNTFzRTm8pddAMthIHFrnsPpaDAJX/1ko=
-Received: by mail-qv1-f41.google.com with SMTP id bl9so10514989qvb.10
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 11:58:16 -0800 (PST)
-X-Gm-Message-State: AOAM532tQyrUHnwAFLXiTYv8rjrfaP6d0vMm08XoTaGy1t2P0Loe65au
-        QbR5VCRXOCqJLdEZgEdI0ruYNy9TvH0HUMLAmII=
-X-Google-Smtp-Source: ABdhPJxnuK3c8xVgc4tG9EcoXlGa7nMcpFGmCt0H1uiCcAJN/kZMzKV6QBYQFJKLoCVNY7haFpjzB6FYI5w/Oog5aQs=
-X-Received: by 2002:ad4:58d3:: with SMTP id dh19mr35064427qvb.14.1604519895686;
- Wed, 04 Nov 2020 11:58:15 -0800 (PST)
+        id S1731141AbgKDUBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 15:01:23 -0500
+Received: from mail-mw2nam12on2071.outbound.protection.outlook.com ([40.107.244.71]:53204
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727013AbgKDUBW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 15:01:22 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=W//rMV3xEIfylgw3YuG6H5NjKaXvYRu283cHFguibZv7EHi18UwJTO7gC73hbLBn1INguTUvrRTAhJKa+HzL02lKmWBWhREyWpxiddDZ+8jVHXVrwyCl8XmT5KwBVJOuu3DQ38DzdXzXOaymUnryQlhXVFGaymmeP39GsyqWs2ggYsAViEq0JknJFpeGnK+exjUWJ8eva3yD/wFq8x17iisahyA/57w24N3/LXnlDJRuedg7vWZDRFKiz0gycQHaZNLhGwZNET08SvxdPlSq5UCFhYfaYRkmN4aH20BLYZNVIG5PeE8pU2F3XjUtu6x3azjondRlva+i+eC6EisiSA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4BeO/g2d2dsKbgp4a7ffnEyxGjaYJRjlPwHOCGkvVxM=;
+ b=GhUmTCp4eq8OJ37zQklMMr4QqUcqr6a0cO+AfYZF5eW5/rA5jDzFso9sfhyoE3pz9PAioLwvHN3JoSsAyw3QoQ12X4MRQEYEwftxHV4hXED9J1AzBWTLGxiOUCKQoATPf/OSj9Nm9iGFxTu6nCXbza4fhu8jjEZLdxZZxtu9cy722M8GsaTSvWdPo0LFy7VS5X6mLY58eBDmLwZN6Pp8DZniW7dZNuwoHiEIrmv6xPAzOf+3LvLW54xfe9g89dI8XByBFMs/KcXDT7PrzSr71j+N1prVjKehO7EUoJrknxqzCsnzC8IxVEmoTUiHJWQVdp4XgmhjDBx7p07ImI8kjw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4BeO/g2d2dsKbgp4a7ffnEyxGjaYJRjlPwHOCGkvVxM=;
+ b=G9VORrLSNpv7bGmlz9GF8A4lolNVDyRRzwkd2Vcu/yjx0fserA907Tsyq+MFjO2a8LVUkAtmsVQwL7Z9p7+OtISQMYQ7zABKU4QZsnUCaE6uzYWnGBjAbmhWYc6s54sDEqbQT0zmcpHgBIL/gvsbbe5nW/N3ZW9pZfrG6KK18/g=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from BL0PR12MB4948.namprd12.prod.outlook.com (2603:10b6:208:1cc::20)
+ by MN2PR12MB3792.namprd12.prod.outlook.com (2603:10b6:208:16e::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18; Wed, 4 Nov
+ 2020 20:01:19 +0000
+Received: from BL0PR12MB4948.namprd12.prod.outlook.com
+ ([fe80::b07d:ede5:2f45:5de8]) by BL0PR12MB4948.namprd12.prod.outlook.com
+ ([fe80::b07d:ede5:2f45:5de8%9]) with mapi id 15.20.3499.032; Wed, 4 Nov 2020
+ 20:01:19 +0000
+Subject: Re: [PATCH] drm/amdkfd: replace idr_init() by idr_init_base()
+To:     Deepak R Varma <mh12gx2825@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20201104151359.GA69034@localhost>
+From:   Felix Kuehling <felix.kuehling@amd.com>
+Organization: AMD Inc.
+Message-ID: <91ebae30-c75c-5485-8de5-36464e97ed7e@amd.com>
+Date:   Wed, 4 Nov 2020 15:01:17 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <20201104151359.GA69034@localhost>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [165.204.55.251]
+X-ClientProxiedBy: YTXPR0101CA0008.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b00::21) To BL0PR12MB4948.namprd12.prod.outlook.com
+ (2603:10b6:208:1cc::20)
 MIME-Version: 1.0
-References: <20201104194156.105814-1-mcroce@linux.microsoft.com>
-In-Reply-To: <20201104194156.105814-1-mcroce@linux.microsoft.com>
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-Date:   Wed, 4 Nov 2020 20:57:39 +0100
-X-Gmail-Original-Message-ID: <CAFnufp3GFaQ2qJE2kwXHUqyTd1NZhkvAdcbr+D2kqsv=Vs=Xww@mail.gmail.com>
-Message-ID: <CAFnufp3GFaQ2qJE2kwXHUqyTd1NZhkvAdcbr+D2kqsv=Vs=Xww@mail.gmail.com>
-Subject: Re: [PATCH] reboot: allow to specify reboot mode via sysfs
-To:     linux-kernel@vger.kernel.org
-Cc:     Mike Rapoport <rppt@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Arnd Bergmann <arnd@arndb.de>, Petr Mladek <pmladek@suse.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [172.27.226.80] (165.204.55.251) by YTXPR0101CA0008.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b00::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend Transport; Wed, 4 Nov 2020 20:01:18 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: efe50ebd-f241-43e1-4355-08d880fc6549
+X-MS-TrafficTypeDiagnostic: MN2PR12MB3792:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MN2PR12MB37922588A7CB655C8F57926192EF0@MN2PR12MB3792.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:332;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: pA4ZJjxO2fROYYg9bI1Vsi3bvJUdsZFp5k5j6QPHEYVlXWoZvrxngdv6k+X744/6b6xVc/NXd9COhNZGLaK/d9kZHQbq8r5AM5ixHX9K82GDswqEeY6ppMlWqsUpuETtbRZ5wVbRxwqo7o3QfCzp3zUiJVfSi4wV0S6AYXg1Q9YoaYf1LjpJi2q+fAHC5f5DR0emN46pYA3Maq6+1akgDTC4n2mu0PBvBs6wHrXEmzBRqUk659WxcYnAUXy30dZRGg8NnXZOKF5yCvfBe7u4yIlR80D57qmljtQIf7PZQ1j2SQwm46xJI/3miNW30lIHL2uD3rQPdzd3NTid4B5mJg/2ekKQIC3XuiSqL1sp2R3nvw1YY0IIcQ9GbxF/fYI8
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB4948.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(376002)(366004)(346002)(39860400002)(52116002)(16576012)(110136005)(36916002)(2616005)(956004)(66946007)(36756003)(66476007)(66556008)(316002)(8936002)(6486002)(31696002)(83380400001)(53546011)(86362001)(186003)(8676002)(478600001)(44832011)(2906002)(31686004)(16526019)(26005)(5660300002)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: zbVlu4C4JMDFkMktNrB2IyPXxSVQj6MPmtYCu/BsEDY7z4e8kt7HUeEJRKMVam5XGGzCvqDRoUSsfVWAsSkAuBskOkfAU167kzICafO70+lORTECLyKnraXkBhnt38iYTJXhXn2R6nDsko+uf15q9rdvpDbYl6SYuYRXZSErLCDcxL3V4fkKNQdsHs1NMln/YGPLaR1YtfMxSZNlj4IQ3rmRCphtreThO48Zi0x/A81b8T3Qnzdx9M29yEX8FbuVs6tRot/rEuy1uCrDWESSkxvjIgmQsWspynFE68xboSn12oamcjNes1SVF9Jd7ewZPgWWdlZs8fECSaAER0dgZpqx/6u/ecMRILBi+HdKwTXz6Igd3h6ORPcMMzUW4Q+bDUdtQKWk8RgJLkJzVDIyDKX7KyWJ3A1Lcqj35sYUDoPUmooLzC+jKllBfbWVyb7jRq/52w7b0cgFtb6Wr8vW2TZbBrnj36li9SU5DLY6JyUQyTnEoiqAF7oGdOfqlgwlRmN4xgjeYHUH4kIJXAdc/T4V+V2XDn8Nb0hydR/a7+oZxx1FmD3g+vh7E4RrOzjAF4rl5wFY9qwVdv4yeNZJOXFSUUT6gyBJnkiU0NrX9IpjLqKo7cxKbm1+BmW14rXi5KyCpPobaujTyAN6mYvQCQ==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: efe50ebd-f241-43e1-4355-08d880fc6549
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB4948.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Nov 2020 20:01:19.4051
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: lvjlxftwG0BNedu8vUE/iZM0Ta6BCQcb1PjSNRtqAJW6IofFTKeh5OUQ3UF9+vGeXScuohOrCXtcLs1eiLdPQA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB3792
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 4, 2020 at 8:42 PM Matteo Croce <mcroce@linux.microsoft.com> wrote:
-> +#ifdef CONFIG_SYSFS
-> +
-> +#define STARTS_WITH(s, sc) (!strncmp(s, sc, sizeof(sc)))
-> +
+On 2020-11-04 10:13 a.m., Deepak R Varma wrote:
+> idr_init() uses base 0 which is an invalid identifier. The new function
+> idr_init_base allows IDR to set the ID lookup from base 1. This avoids
+> all lookups that otherwise starts from 0 since 0 is always unused.
 
-Just noticed an off-by-one here, it should be sizeof(sc)-1 because of
-the null terminator.
-This way, the CR usually added by echo will be skipped.
+I disagree. We call idr_alloc with start=0 for both these IDRs. That 
+means 0 seems to be a valid handle.
 
 Regards,
--- 
-per aspera ad upstream
+   Felix
+
+
+>
+> References: commit 6ce711f27500 ("idr: Make 1-based IDRs more efficient")
+>
+> Signed-off-by: Deepak R Varma <mh12gx2825@gmail.com>
+> ---
+>   drivers/gpu/drm/amd/amdkfd/kfd_events.c  | 2 +-
+>   drivers/gpu/drm/amd/amdkfd/kfd_process.c | 2 +-
+>   2 files changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_events.c b/drivers/gpu/drm/amd/amdkfd/kfd_events.c
+> index ba2c2ce0c55a..b3339b53c8ad 100644
+> --- a/drivers/gpu/drm/amd/amdkfd/kfd_events.c
+> +++ b/drivers/gpu/drm/amd/amdkfd/kfd_events.c
+> @@ -230,7 +230,7 @@ static int create_other_event(struct kfd_process *p, struct kfd_event *ev)
+>   void kfd_event_init_process(struct kfd_process *p)
+>   {
+>   	mutex_init(&p->event_mutex);
+> -	idr_init(&p->event_idr);
+> +	idr_init_base(&p->event_idr, 1);
+>   	p->signal_page = NULL;
+>   	p->signal_event_count = 0;
+>   }
+> diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_process.c b/drivers/gpu/drm/amd/amdkfd/kfd_process.c
+> index 65803e153a22..022e61babe30 100644
+> --- a/drivers/gpu/drm/amd/amdkfd/kfd_process.c
+> +++ b/drivers/gpu/drm/amd/amdkfd/kfd_process.c
+> @@ -1289,7 +1289,7 @@ struct kfd_process_device *kfd_create_process_device_data(struct kfd_dev *dev,
+>   	list_add(&pdd->per_device_list, &p->per_device_data);
+>   
+>   	/* Init idr used for memory handle translation */
+> -	idr_init(&pdd->alloc_idr);
+> +	idr_init_base(&pdd->alloc_idr, 1);
+>   
+>   	return pdd;
+>   
