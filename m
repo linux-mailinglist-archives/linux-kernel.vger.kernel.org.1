@@ -2,113 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 110002A6D78
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 20:06:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 700382A6D7C
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 20:06:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731043AbgKDTFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 14:05:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730008AbgKDTFu (ORCPT
+        id S1731188AbgKDTGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 14:06:17 -0500
+Received: from mail-oi1-f173.google.com ([209.85.167.173]:33081 "EHLO
+        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729946AbgKDTGQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 14:05:50 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8642BC0613D3
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 11:05:50 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id v12so2050915pfm.13
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 11:05:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=e3RgBMCNd6sKZVbOqvGd6J+ApVrztDEwtVCn4pPL4cY=;
-        b=WffJI4fYp4FmcCF8nhmDGr00/Y8B8NnS9ajFsJns0MLqg4gebReZE6TRQPBIoh6Etu
-         9qykh1g3rHXSVsje8HrlVgj1qIOwf2hJReWpMctR7Ua12XZIKKmWYJraVxLPIXx8mx1C
-         PwlFC4Lx6B5D8B5nKMn+YVEZt8Yqx3diDzr6LPjXkuxxkR78nDntu3DZaqWsYp1RQomk
-         aAYcB333lTvasR1WznLCjCwPcgBiwA06BjuZf/0iNa/pmvyQ3tFD8stopS600nXWYQFk
-         FgQhVtTHZAlNesMYo+BKuIFzp+Afoky5/qQv3GOlCdBK6jMzY2x63MQKQ/s8nOTvFy2l
-         vtkg==
+        Wed, 4 Nov 2020 14:06:16 -0500
+Received: by mail-oi1-f173.google.com with SMTP id k26so17738oiw.0;
+        Wed, 04 Nov 2020 11:06:15 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=e3RgBMCNd6sKZVbOqvGd6J+ApVrztDEwtVCn4pPL4cY=;
-        b=VoZPVsreNHXp1mv61dDYt94YNz9Uz5FYyt7vXiS4ysw0Vw6ag9pQY04XvAQNSXz8Ww
-         DKyLVEglc/jbTEwDJutJoTyg/jpOcc/qztco/C99bDMLUToTfNoMxQ3/n9EzsbT7av5p
-         HzqhARPDqxj0qusg+k3NPLH7slvXqSL11gOyKjtK2ZEMmgPLsfFPbQEorA8Vq+Pks8Yl
-         GYYx8zBuD7ali6lX7q+cN6b2h2eDt7HSge4fsOn7NGZSUWKKL77qFB0ztFR26C7+qgEC
-         +Bgpvg4wgbr7g/k2s0o7cQztWCgUOvzLyGdtUxxEvatTv/E9ZitzcMAHx+WGg3sapsgX
-         N/9w==
-X-Gm-Message-State: AOAM531ZBN28Y4RJbrG/2++9jOxhjxfMk+rBWFdcMIhgFyKsg8TOhnh7
-        1pG4MHOnedhQ3lMEBlbzmQNP+w==
-X-Google-Smtp-Source: ABdhPJwSb7Xs5JU7LvSxnxDJzTwVF5qjpqXYY4TsO/ILSHq1xQbXdfVIMJi3nS5qDmjPiCZ98ePPXg==
-X-Received: by 2002:a17:90a:5310:: with SMTP id x16mr5606218pjh.62.1604516750131;
-        Wed, 04 Nov 2020 11:05:50 -0800 (PST)
-Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id m129sm3210275pfd.177.2020.11.04.11.05.48
+        bh=cFN5h9yGsHsZOKXv8QOHIY58GxPhGQOkwRhjB/ZiBHY=;
+        b=FbgnidgIt7VLNJxNMEbNFFm3S6Chuc1G5n+V3jGI0MuARAkpiyEI7DJ5nrwuyKBV+1
+         +b/CeVSjHeQTcahov28fS48DD66ZAH45QhIvynqnHNcTWf/C3Z1xoNO39Dqmmp/IDbP5
+         m78PeMkk9jNAD/YWAl5++rdd53RYRW/PoICBxwiKSV2IdcbJR0r6eqYoEawlYgJQQe+T
+         NkDIhhN2OFtaNrXYFdLUEwc9ajb+WliISCgIZQfg7nS8z6AIZp6fEXUmA2hOD8Qhf9wb
+         CvjPal0ojb2LFyHc4uVW94NaKThwCkwS8Gyr3fOxuOb6zWV+dT5Gl5fZDiVKO0Db3Qwq
+         me6w==
+X-Gm-Message-State: AOAM531ZkwxqpnjizheeyfySpTfR6RiqNtQFqeYWdMpnPuvmmshrhMQW
+        SiuGu4Evcud2upH65DPiHw==
+X-Google-Smtp-Source: ABdhPJxg0zwV09ldz2969D3HBuxab6u1/Ts/gJbn+JECdctdgUFKh5ZxAEiWT0cSOANiSBHnw3BhhA==
+X-Received: by 2002:aca:a951:: with SMTP id s78mr3577208oie.114.1604516775469;
+        Wed, 04 Nov 2020 11:06:15 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id r188sm658438oia.13.2020.11.04.11.06.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 11:05:49 -0800 (PST)
-Date:   Wed, 4 Nov 2020 12:05:47 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Alexandre Courbot <acourbot@chromium.org>
-Cc:     Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-remoteproc@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] remoteproc/mtk_scp: surround DT device IDs with CONFIG_OF
-Message-ID: <20201104190547.GD2893396@xps15>
-References: <20201102074007.299222-1-acourbot@chromium.org>
+        Wed, 04 Nov 2020 11:06:14 -0800 (PST)
+Received: (nullmailer pid 3960013 invoked by uid 1000);
+        Wed, 04 Nov 2020 19:06:12 -0000
+Date:   Wed, 4 Nov 2020 13:06:12 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        linux-kernel@vger.kernel.org, Stefan Wahren <wahrenst@gmx.net>,
+        Ray Jui <rjui@broadcom.com>, u.kleine-koenig@pengutronix.de,
+        devicetree@vger.kernel.org, Eric Anholt <eric@anholt.net>,
+        dmitry.torokhov@gmail.com, Rob Herring <robh+dt@kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com, p.zabel@pengutronix.de,
+        linux-rpi-kernel@lists.infradead.org, gregkh@linuxfoundation.org,
+        linux-input@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-arm-kernel@lists.infradead.org, linux-pwm@vger.kernel.org,
+        bgolaszewski@baylibre.com, sboyd@kernel.org,
+        linux-gpio@vger.kernel.org, Scott Branden <sbranden@broadcom.com>,
+        linus.walleij@linaro.org, linux-clk@vger.kernel.org,
+        andy.shevchenko@gmail.com
+Subject: Re: [PATCH v3 09/11] dt-bindings: pwm: Add binding for RPi firmware
+ PWM bus
+Message-ID: <20201104190612.GA3959462@bogus>
+References: <20201104103938.1286-1-nsaenzjulienne@suse.de>
+ <20201104103938.1286-10-nsaenzjulienne@suse.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201102074007.299222-1-acourbot@chromium.org>
+In-Reply-To: <20201104103938.1286-10-nsaenzjulienne@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alexander,
-
-On Mon, Nov 02, 2020 at 04:40:07PM +0900, Alexandre Courbot wrote:
-> Now that this driver can be compiled with COMPILE_TEST, we have no
-> guarantee that CONFIG_OF will also be defined. When that happens, a
-> warning about mtk_scp_of_match being defined but unused will be reported
-> so make sure this variable is only defined if of_match_ptr() actually
-> uses it.
+On Wed, 04 Nov 2020 11:39:35 +0100, Nicolas Saenz Julienne wrote:
+> The PWM bus controlling the fan in RPi's official PoE hat can only be
+> controlled by the board's co-processor.
 > 
-> Fixes: cbd2dca74926c0e4610c40923cc786b732c9e8ef remoteproc: scp: add COMPILE_TEST dependency
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
+> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> 
 > ---
->  drivers/remoteproc/mtk_scp.c | 2 ++
->  1 file changed, 2 insertions(+)
 > 
-> diff --git a/drivers/remoteproc/mtk_scp.c b/drivers/remoteproc/mtk_scp.c
-> index 577cbd5d421e..f74f22d4d1ff 100644
-> --- a/drivers/remoteproc/mtk_scp.c
-> +++ b/drivers/remoteproc/mtk_scp.c
-> @@ -772,12 +772,14 @@ static const struct mtk_scp_of_data mt8192_of_data = {
->  	.host_to_scp_int_bit = MT8192_HOST_IPC_INT_BIT,
->  };
->  
-> +#if defined(CONFIG_OF)
->  static const struct of_device_id mtk_scp_of_match[] = {
->  	{ .compatible = "mediatek,mt8183-scp", .data = &mt8183_of_data },
->  	{ .compatible = "mediatek,mt8192-scp", .data = &mt8192_of_data },
->  	{},
->  };
->  MODULE_DEVICE_TABLE(of, mtk_scp_of_match);
-> +#endif
-
-I think it is better to add a "depends on OF" in the Kconfig.
-
-Thanks,
-Mathieu
-
->  
->  static struct platform_driver mtk_scp_driver = {
->  	.probe = scp_probe,
-> -- 
-> 2.29.1.341.ge80a0c044ae-goog
+> Changes since v1:
+>  - Update bindings to use 2 #pwm-cells
 > 
+>  .../arm/bcm/raspberrypi,bcm2835-firmware.yaml | 20 +++++++++++++++++++
+>  .../pwm/raspberrypi,firmware-pwm.h            | 13 ++++++++++++
+>  2 files changed, 33 insertions(+)
+>  create mode 100644 include/dt-bindings/pwm/raspberrypi,firmware-pwm.h
+> 
+
+
+My bot found errors running 'make dt_binding_check' on your patch:
+
+yamllint warnings/errors:
+
+dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/arm/bcm/raspberrypi,bcm2835-firmware.example.dt.yaml: firmware: pwm:#pwm-cells:0:0: 2 was expected
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/arm/bcm/raspberrypi,bcm2835-firmware.yaml
+
+
+See https://patchwork.ozlabs.org/patch/1393804
+
+The base for the patch is generally the last rc1. Any dependencies
+should be noted.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
+
