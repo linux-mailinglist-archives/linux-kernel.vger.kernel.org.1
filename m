@@ -2,98 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3395C2A66A0
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 15:45:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E93F2A66A3
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 15:46:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730246AbgKDOp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 09:45:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45522 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730243AbgKDOpZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 09:45:25 -0500
-Received: from localhost (bag30-h01-176-173-247-136.dsl.sta.abo.bbox.fr [176.173.247.136])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1730259AbgKDOp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 09:45:58 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39219 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730243AbgKDOp5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 09:45:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604501156;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2/qDMVtos7dYdtcZu5rNmBGlotvjjozf9G0PRDDGQXs=;
+        b=FuehmNZcdrcy7rGZnQ6XxJIDWzKhga0wN8DWf9q9lAn5+h7YMqS/iRfTkVcDYtLce2bqEv
+        rpV8BHUYd8xNdGdP48JbZTM5DM6puvHJbrMDqYBiiEC5BY4k19KWWdwDQlVcWqmpb8BpPz
+        Cs/+yMIC2jWRjTSFP4fauRvai2JRQJE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-202-jgwp6zJgNeGan1kW1fiemg-1; Wed, 04 Nov 2020 09:45:52 -0500
+X-MC-Unique: jgwp6zJgNeGan1kW1fiemg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D36B22074B;
-        Wed,  4 Nov 2020 14:45:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604501124;
-        bh=8TcJJOeVYQ+GDNNIiJiZDhzBACLQibcif/NnVi8cl4Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0gJJf+WvE8SB/vXz47At22PG2b4xbNqLVhnoQwMt2kYiR40GPzh1WaqyYOejDJK1k
-         axGC0A7pDhDZFUwv4eEzv7HXDKkjRiW1IjrT1gXlk+2Xp/9UwKspp4GB6vFt7FRwxH
-         3WvtE3y5MmTES6CL3P7ao4LBPggo8M47wuTykF30=
-Date:   Wed, 4 Nov 2020 15:45:21 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Boqun Feng <boqun.feng@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>
-Subject: Re: [PATCH 05/16] rcu: De-offloading CB kthread
-Message-ID: <20201104144521.GD467220@lothringen>
-References: <20201023144649.53046-1-frederic@kernel.org>
- <20201023144649.53046-6-frederic@kernel.org>
- <20201102133824.GA2661878@boqun-archlinux>
- <20201104143135.GB467220@lothringen>
- <20201104144209.GA2748545@boqun-archlinux>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5D1931084C80;
+        Wed,  4 Nov 2020 14:45:50 +0000 (UTC)
+Received: from oldenburg2.str.redhat.com (ovpn-113-12.ams2.redhat.com [10.36.113.12])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id C3E125B4D8;
+        Wed,  4 Nov 2020 14:45:45 +0000 (UTC)
+From:   Florian Weimer <fweimer@redhat.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Szabolcs Nagy <szabolcs.nagy@arm.com>,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        Mark Brown <broonie@kernel.org>, libc-alpha@sourceware.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Salvatore Mesoraca <s.mesoraca16@gmail.com>,
+        Lennart Poettering <mzxreary@0pointer.de>,
+        Topi Miettinen <toiwoton@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kernel-hardening@lists.openwall.com,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH 0/4] aarch64: avoid mprotect(PROT_BTI|PROT_EXEC) [BZ
+ #26831]
+References: <cover.1604393169.git.szabolcs.nagy@arm.com>
+        <20201103173438.GD5545@sirena.org.uk>
+        <8c99cc8e-41af-d066-b786-53ac13c2af8a@arm.com>
+        <20201104085704.GB24704@arm.com> <20201104144120.GD28902@gaia>
+Date:   Wed, 04 Nov 2020 15:45:44 +0100
+In-Reply-To: <20201104144120.GD28902@gaia> (Catalin Marinas's message of "Wed,
+        4 Nov 2020 14:41:21 +0000")
+Message-ID: <87ft5p2naf.fsf@oldenburg2.str.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201104144209.GA2748545@boqun-archlinux>
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 10:42:09PM +0800, Boqun Feng wrote:
-> On Wed, Nov 04, 2020 at 03:31:35PM +0100, Frederic Weisbecker wrote:
-> [...]
-> > > 
-> > > > +	rcu_segcblist_offload(cblist, false);
-> > > > +	raw_spin_unlock_rcu_node(rnp);
-> > > > +
-> > > > +	if (rdp->nocb_cb_sleep) {
-> > > > +		rdp->nocb_cb_sleep = false;
-> > > > +		wake_cb = true;
-> > > > +	}
-> > > > +	rcu_nocb_unlock_irqrestore(rdp, flags);
-> > > > +
-> > > > +	if (wake_cb)
-> > > > +		swake_up_one(&rdp->nocb_cb_wq);
-> > > > +
-> > > > +	swait_event_exclusive(rdp->nocb_state_wq,
-> > > > +			      !rcu_segcblist_test_flags(cblist, SEGCBLIST_KTHREAD_CB));
-> > > > +
-> > > > +	return 0;
-> > > > +}
-> > > > +
-> > > > +static long rcu_nocb_rdp_deoffload(void *arg)
-> > > > +{
-> > > > +	struct rcu_data *rdp = arg;
-> > > > +
-> > > > +	WARN_ON_ONCE(rdp->cpu != raw_smp_processor_id());
-> > > 
-> > > I think this warning can actually happen, if I understand how workqueue
-> > > works correctly. Consider that the corresponding cpu gets offlined right
-> > > after the rcu_nocb_cpu_deoffloaed(), and the workqueue of that cpu
-> > > becomes unbound, and IIUC, workqueues don't do migration during
-> > > cpu-offlining, which means the worker can be scheduled to other CPUs,
-> > > and the work gets executed on another cpu. Am I missing something here?.
-> > 
-> > We are holding cpus_read_lock() in rcu_nocb_cpu_offload(), this should
-> > prevent from that.
-> > 
-> 
-> But what if the work doesn't get executed until we cpus_read_unlock()
-> and someone offlines that CPU?
+* Catalin Marinas:
 
-work_on_cpu() waits for completion before returning.
+> Can the dynamic loader mmap() the main exe again while munmap'ing the
+> original one? (sorry if it was already discussed)
 
-> Regards,
-> Boqun
-> 
-> > Thanks!
+No, we don't have a descriptor for that.  /proc may not be mounted, and
+using the path stored there has a race condition anyway.
+
+Thanks,
+Florian
+-- 
+Red Hat GmbH, https://de.redhat.com/ , Registered seat: Grasbrunn,
+Commercial register: Amtsgericht Muenchen, HRB 153243,
+Managing Directors: Charles Cachera, Brian Klemm, Laurie Krebs, Michael O'Neill
+
