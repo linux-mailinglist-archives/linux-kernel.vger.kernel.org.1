@@ -2,287 +2,333 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BF792A6BEB
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 18:41:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1BC22A6BF3
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 18:44:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731772AbgKDRlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 12:41:00 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:13306 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728052AbgKDRk7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 12:40:59 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fa2e7ae0002>; Wed, 04 Nov 2020 09:41:02 -0800
-Received: from [10.40.203.207] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 4 Nov
- 2020 17:40:50 +0000
-Subject: Re: [PATCH V3 2/2] PCI: dwc: Add support to configure for ECRC
-To:     Bjorn Helgaas <helgaas@kernel.org>
-CC:     <jingoohan1@gmail.com>, <gustavo.pimentel@synopsys.com>,
-        <lorenzo.pieralisi@arm.com>, <bhelgaas@google.com>,
-        <amurray@thegoodpenguin.co.uk>, <robh@kernel.org>,
-        <treding@nvidia.com>, <jonathanh@nvidia.com>,
-        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kthota@nvidia.com>, <mmaddireddy@nvidia.com>, <sagar.tv@gmail.com>
-References: <20201104162233.GA341405@bjorn-Precision-5520>
-From:   Vidya Sagar <vidyas@nvidia.com>
-Message-ID: <91b92687-3bb5-7d87-548b-00485dcad63e@nvidia.com>
-Date:   Wed, 4 Nov 2020 23:10:45 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        id S1731791AbgKDRoc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 12:44:32 -0500
+Received: from foss.arm.com ([217.140.110.172]:40988 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728675AbgKDRoc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 12:44:32 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0DEDC139F;
+        Wed,  4 Nov 2020 09:44:31 -0800 (PST)
+Received: from e120937-lin (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8AB123F718;
+        Wed,  4 Nov 2020 09:44:29 -0800 (PST)
+Date:   Wed, 4 Nov 2020 17:44:27 +0000
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     Thara Gopinath <thara.gopinath@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        sudeep.holla@arm.com, lukasz.luba@arm.com,
+        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
+        f.fainelli@gmail.com, etienne.carriere@linaro.org,
+        vincent.guittot@linaro.org, souvik.chakravarty@arm.com
+Subject: Re: [PATCH v2 2/8] firmware: arm_scmi: introduce protocol handles
+Message-ID: <20201104174427.GB24640@e120937-lin>
+References: <20201028202914.43662-1-cristian.marussi@arm.com>
+ <20201028202914.43662-3-cristian.marussi@arm.com>
+ <ceda764f-6cd9-9e47-edc7-2e915c920301@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <20201104162233.GA341405@bjorn-Precision-5520>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1604511662; bh=oXF3Xbr4C3pvhjEagfA4EbQ6TloAtP1P52tSoeV6zaw=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=Bj5v0oz5sXQxyWtg1tpld9qQ8uT0EwRnslhS2KRVgktz+yuu5d+88fDHqXCtgNJr/
-         BQgnf7MzwHjMjbiwRzeiOLVW5WrS5aLU/JqjlZ+xSxLJDc9/GBwD2Ei2AFoaiKsTJh
-         S7V0TsmpgFuKIcI6nOM6Wwgj2SyK04jW7VQKYhbNTNm6zI7OQJVcYZNHbkSo2NliBQ
-         DRwoSm12qI6uKMfBdLd+CLZujvFVpc8mRvF1c63LYfPD/ZdiivsDQEYz1YmCo1/kfK
-         iHGP1XUDcMsnbT0+vNdEFgTKbMpZBVUUua5oB6uFCZQap9ox8HFJuGIxQTeatJXADx
-         gqdXhXf2Zk7gg==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ceda764f-6cd9-9e47-edc7-2e915c920301@linaro.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi
 
+On Wed, Nov 04, 2020 at 11:16:18AM -0500, Thara Gopinath wrote:
+> 
+> Hi Cristian,
+> 
+> On 10/28/20 4:29 PM, Cristian Marussi wrote:
+> > Add basic protocol handles definitions and helpers support.
+> > All protocols initialization code and SCMI drivers probing is still
+> > performed using the handle based interface.
+> > 
+> > Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+> > ---
+> >   drivers/firmware/arm_scmi/common.h | 61 ++++++++++++++++++++++++++++
+> >   drivers/firmware/arm_scmi/driver.c | 64 ++++++++++++++++++++++++++++++
+> >   2 files changed, 125 insertions(+)
+> > 
+> > diff --git a/drivers/firmware/arm_scmi/common.h b/drivers/firmware/arm_scmi/common.h
+> > index b08a8ddbc22a..f0678be02a09 100644
+> > --- a/drivers/firmware/arm_scmi/common.h
+> > +++ b/drivers/firmware/arm_scmi/common.h
+> > @@ -151,6 +151,67 @@ int scmi_xfer_get_init(const struct scmi_handle *h, u8 msg_id, u8 prot_id,
+> >   		       size_t tx_size, size_t rx_size, struct scmi_xfer **p);
+> >   void scmi_reset_rx_to_maxsz(const struct scmi_handle *handle,
+> >   			    struct scmi_xfer *xfer);
+> > +
+> > +struct scmi_xfer_ops;
+> > +
+> > +/**
+> > + * struct scmi_protocol_handle  - Reference to an initialized protocol instance
+> > + *
+> > + * @dev: A reference to the associated SCMI instance device (handle->dev).
+> > + * @xops: A reference to a struct holding refs to the core xfer operations that
+> > + *	  can be used by the protocol implementation to generate SCMI messages.
+> > + * @set_priv: A method to set protocol private data for this instance.
+> > + * @get_priv: A method to get protocol private data previously set.
+> > + *
+> > + * This structure represents a protocol initialized against specific SCMI
+> > + * instance and it will be used as follows:
+> > + * - as a parameter fed from the core to the protocol initialization code so
+> > + *   that it can access the core xfer operations to build and generate SCMI
+> > + *   messages exclusively for the specific underlying protocol instance.
+> > + * - as an opaque handle fed by an SCMI driver user when it tries to access
+> > + *   this protocol through its own protocol operations.
+> > + *   In this case this handle will be returned as an opaque object together
+> > + *   with the related protocol operations when the SCMI driver tries to access
+> > + *   the protocol.
+> > + */
+> > +struct scmi_protocol_handle {
+> > +	struct device *dev;
+> > +	const struct scmi_xfer_ops *xops;
+> > +	int (*set_priv)(const struct scmi_protocol_handle *ph, void *priv);
+> > +	void *(*get_priv)(const struct scmi_protocol_handle *ph);
+> > +};
+> 
+> So scmi_xfer_ops are the ops that actually talks with the scmi firmware on
+> the other end , right ? IIUC, these ops are the same for all the protocols
+> of a scmi instance. Imho, this struct is not the right place for these ops
+> to reside.You are inadvertently exposing scmi internal details to the client
+> drivers. There is no reason why this should be part of scmi_handle. The
+> protocols can extract it from the handle during protocol_reigster, right?
+> 
+> So, now to the second part, why do you need a scmi_protocol_handle? Again
+> IIUC, if you have set_priv and get_priv hooks and get_ops and put_ops hooks,
+> there is nothing that scmi_protocol_handle is providing extra, right? As
+> mentioned in the comments for last patch any reason all of this cannot be
+> rolled into scmi_protocol?
 
-On 11/4/2020 9:52 PM, Bjorn Helgaas wrote:
-> External email: Use caution opening links or attachments
-> 
-> 
-> On Wed, Nov 04, 2020 at 05:13:07PM +0530, Vidya Sagar wrote:
->> On 11/4/2020 2:37 AM, Bjorn Helgaas wrote:
->>> On Tue, Nov 03, 2020 at 08:57:01AM +0530, Vidya Sagar wrote:
->>>> On 11/3/2020 4:32 AM, Bjorn Helgaas wrote:
->>>>> On Thu, Oct 29, 2020 at 11:09:59AM +0530, Vidya Sagar wrote:
->>>>>> DesignWare core has a TLP digest (TD) override bit in one of the control
->>>>>> registers of ATU. This bit also needs to be programmed for proper ECRC
->>>>>> functionality. This is currently identified as an issue with DesignWare
->>>>>> IP version 4.90a. This patch does the required programming in ATU upon
->>>>>> querying the system policy for ECRC.
->>>>>
->>>>> I guess this is a hardware defect, right?
->>>> Yes. This is common across all DWC implementations (version 4.90 precisely)
->>>>
->>>>> How much of a problem would it be if we instead added a "no_ecrc"
->>>>> quirk for this hardware so we never enabled ECRC?
->>>> Well, on Tegra for some of the high fidelity use cases, ECRC is required to
->>>> be turned on and if it can be done safely with these patches, why shouldn't
->>>> we not enable ECRC at all?
->>>>
->>>>> IIUC, the current Linux support of ECRC is a single choice at
->>>>> boot-time: by default ECRC is not enabled, but if you boot with
->>>>> "pci=ecrc=on", we turn on ECRC for every device.
->>>>>
->>>>> That seems like the minimal support, but I think the spec allows ECRC
->>>>> to be enabled selectively, on individual devices.  I can imagine a
->>>>> sysfs knob that would allow us to enable/disable ECRC per-device at
->>>>> run-time.
->>>>>
->>>>> If we had such a sysfs knob, it would be pretty ugly and maybe
->>>>> impractical to work around this hardware issue.  So I'm a little bit
->>>>> hesitant to add functionality that might have to be removed in the
->>>>> future.
->>>>
->>>> Agree with this. But since it is a boot-time choice at this point, I think
->>>> we can still go ahead with this approach to have a working ECRC mechanism
->>>> right? I don't see any sysfs knob for AER controlling at this point.
->>>
->>> I don't want to do anything that will prevent us from adding
->>> per-device ECRC control in the future.
->>>
->>> My concern is that if we add a run-time sysfs knob in the future, the
->>> user experience on this hardware will be poor because there's no
->>> convenient path to twiddle the PCIE_ATU_TD bit when the generic code
->>> changes the AER Control bit.
->>
->> Agree.
->> Can we add it to the documentation that run time changing of ECRC settings
->> are not supported on this (i.e. Tegra194) platform (or for that matter on
->> any SoC with PCIe based on DesignWare core version 4.90A). By 'not
->> supported', I meant that the ECRC digest part may not work but the normal
->> functionality will continue to work without reporting any AER errors. I
->> tried to emulate the following scenarios on Tegra194 silicon and here are my
->> observations.
->> FWIW, I'm referring to the PCIe spec Rev 5.0 Ver 1.0 (22 May 2019)
->>
->>> What is the failure mode in these scenarios:
->>>
->>>     - User boots with defaults, ECRC is disabled.
->>>     - User enables ECRC via sysfs.
->>>     - What happens here?  ECRC is enabled via AER Control but not via
->>>       DWC TD bit.  I assume ECRC doesn't work.  Does it cause PCIe
->>>       errors (malformed TLP, etc)?
->>
->> Since DWC TD bit is not programmed, for all the transactions that go through
->> ATU, TLP Digest won't get generated (although AER registers indicate that
->> ECRC should get generated).
->> As per the spec section "2.7.1 ECRC Rules"
->>
->> ---
->> If a device Function is enabled to generate ECRC, it must calculate and
->> apply ECRC for all TLPs originated by the Function
->> ---
->>
->> So the RP would be violating the PCIe spec, but it doesn't result in any
->> error because the same section has the following rule as well
->>
->> ---
->> If a device Function is enabled to check ECRC, it must do so for all TLPs
->> with ECRC where the device is the ultimate PCI Express Receiver
->>        Note that it is still possible for the Function to receive TLPs without
->> ECRC, and these are processed normally - this is not an error
->> ---
->>
->> so, even if the EP has ECRC check enabled, because of the above rule, it
->> just processes those packets without ECRC as normal packets.
->> Basically, whoever is enabling ECRC run time gets cheated as transactions
->> routed through ATU don't really have ECRC digest
->>
->>> Or this one:
->>>
->>>     - User boots with "pci=ecrc=on", ECRC is enabled.
->>>     - ECRC works fine.
->>>     - User disables ECRC via sysfs.
->>>     - What happens here?  ECRC is disabled via AER Control, but DWC TD
->>>       bit thinks it's still enabled.
->>
->> In this case, the EP doesn't have ECRC check enabled but receives TLPs with
->> ECRC digest. This again won't result in any error because of the section
->> "2.2.3 TLP Digest Rules" which says
->>
->> ---
->> If an intermediate or ultimate PCI Express Receiver of the TLP does not
->> support ECRC checking, the Receiver must ignore the TLP Digest
->> ---
->>
->> So the EP just ignores the TLP Digest and process the TLP normally.
->> Although functionality wise there is no issue here, there could be some
->> impact on the perf because of the extra DWord data. This is again debatable
->> as the perf/data path is typically from EP's DMA engine to host system
->> memory and not config/BAR accesses.
->>>
->>> If you enabled ECRC unconditionally on DWC and the sysfs knob had no
->>> effect, I'd be OK with that.  I'm more worried about what happens when
->>> the AER bit and the DWC TD bit are set so they don't match.  What is
->>> the failure mode there?
->>
->> Based on the above experiments, we can as well keep the DWC TD bit
->> programmed unconditionally and it won't lead to any errors. As mentioned
->> before, the only downside of it is the extra DWord in each ATU routed TLP
->> which may load the bus (in downstream direction) with no real benefit as
->> such.
-> 
-> IIUC the issue only affects traffic from the Root Port to the
-> Endpoint, and traffic going upstream is unaffected.  Here's what I
-> think happens based on the RP and EP settings, please correct me if
-> wrong:
-> 
->    1)  RP TD+ ECRC_gen+       generates ECRC
->        EP     ECRC_check-     ignores ECRC
->        EP     ECRC_check+     checks ECRC
-> 
->    2)  RP TD+ ECRC_gen-       generates ECRC when it shouldn't (defect)
->        EP     ECRC_check-     ignores ECRC
->        EP     ECRC_check+     checks ECRC (may signal errors)
-> 
->    3)  RP TD- ECRC_gen+       fails to generate ECRC (defect)
->        EP     ECRC_check-     ignores ECRC
->        EP     ECRC_check+     handles TLPs without ECRC normally,
->                               but cannot detect ECRC errors
-> 
->    4)  RP TD- ECRC_gen-       no ECRC generated (as expected)
->        EP     ECRC_check-     ignores ECRC
->        EP     ECRC_check+     handles TLPs without ECRC normally
-> 
-> If my assumptions above are correct, this defect never causes extra
-> errors like Malformed TLP, etc, to be signaled regardless of the AER
-> ECRC_check settings.
-Yes.
-> 
-> The only functional problem is that in case 3, the EP *should* be able
-> to check and signal ECRC errors, but it cannot because the RP doesn't
-> generate ECRC.
-Yes. Thats correct
-> 
-> Case 2 is a performance issue because we add the extra dword in every
-> TLP going downstream.  That doesn't seem unreasonable since this is
-> just config and BAR accesses.  The EP may detect ECRC errors when we
-> don't think the RP is even generating ECRC, but in general we won't
-> enable checking in the EP unless we also enable generation in the RP.
-> 
-> So I think setting the DWC TD bit unconditionally seems like a pretty
-> good solution.
-Ok. Sure. I'll push a patch to program DWC TD bit unconditionally then.
-Thanks for your insights and guidance.
+The basic idea for protocol_hande existence is that the protocol code
+should be able to access the core xfer ops (without EXPORTing all
+scmi_xfer ops) but protoX should NOT be allowed to mistakenly or
+maliciously build and send protoY messages: since the protocol_handle
+for protoX is embedded in a specific protocol_instance in this way you
+can call from your protocol code something like:
+
+ph->xops->xfer_get_init(ph, ...)
+
+and the core will transparently (and forcibly) call for you an xfer_get_init()
+for protcolX.
+
+Same goes for the get_priv/set_priv you can set and get only your protoX
+private data.
+
+This also avoids error prone repetitions of the protocol ID params all
+over the protocol code (as pointed out previously by Florian).
+
+At this point the problem is that I have to pass such protocol_handle
+also as param into all the protocols_ops in order to avoid to reintroduce
+some form of repetition inside the protocol code to derive the ph from the
+handle with some helper like
+
+	ph = scmi_map_protocol_handle(handle, SCMI_PERF_PROTOCOL)
+
+which also indeed would have re-introduce the capability for protocolX
+to maliciosuly or mistakenly build/send protoY messages.
+
+At the same time, you're right, the xops should NOT be exposed instead
+to the SCMI drivers, which must not be able to build tehir own rogue
+messaes, and here the trick is indeed that scmi_protocol_handle is an
+opaque object for SCMI drivers: it is NOT defined in scmi_protocol.h BUT
+only declared so the SCMI drivers are not able to dereference it and
+access the xops, nor anything else in fact.
+
+In fact I could also have declared it as a void * all across the
+protocols ops in scmi_protocol.h, but I thought some sort of type
+checking was better (maybe I'm wrong)
+
+So basically now, when an SCMI driver wants to use protoX, it issues a
+	get_ops(handle, X)
+	
+and it gets back:
+
+- a void * to be cast back to protoX_ops
+- and an scmi_protocol_handle *ph which represents protoX for that specific
+  SCMI instance (handle) which it has use all over the protoX_ops
+  invocations:
+  	
+	protoX_ops->oper1->(ph, ...)
+
+  with such ph being completely opaque for the SCMI driver calling oper1(ph,...),
+  but acting as a well defined protocol_handle inside protocolX code.
 
 > 
->> Please let me know where can we go from here.
->> I can push a different patch to keep DWC TD bit always programmed if that is
->> the best approach to take at this point.
->>>
->>>>>> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
->>>>>> Reviewed-by: Jingoo Han <jingoohan1@gmail.com>
->>>>>> ---
->>>>>> V3:
->>>>>> * Added 'Reviewed-by: Jingoo Han <jingoohan1@gmail.com>'
->>>>>>
->>>>>> V2:
->>>>>> * Addressed Jingoo's review comment
->>>>>> * Removed saving 'td' bit information in 'dw_pcie' structure
->>>>>>
->>>>>>     drivers/pci/controller/dwc/pcie-designware.c | 8 ++++++--
->>>>>>     drivers/pci/controller/dwc/pcie-designware.h | 1 +
->>>>>>     2 files changed, 7 insertions(+), 2 deletions(-)
->>>>>>
->>>>>> diff --git a/drivers/pci/controller/dwc/pcie-designware.c b/drivers/pci/controller/dwc/pcie-designware.c
->>>>>> index b5e438b70cd5..cbd651b219d2 100644
->>>>>> --- a/drivers/pci/controller/dwc/pcie-designware.c
->>>>>> +++ b/drivers/pci/controller/dwc/pcie-designware.c
->>>>>> @@ -246,6 +246,8 @@ static void dw_pcie_prog_outbound_atu_unroll(struct dw_pcie *pci, u8 func_no,
->>>>>>          dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_UPPER_TARGET,
->>>>>>                                   upper_32_bits(pci_addr));
->>>>>>          val = type | PCIE_ATU_FUNC_NUM(func_no);
->>>>>> +     if (pci->version == 0x490A)
->>>>>> +             val = val | pcie_is_ecrc_enabled() << PCIE_ATU_TD_SHIFT;
->>>>>>          val = upper_32_bits(size - 1) ?
->>>>>>                  val | PCIE_ATU_INCREASE_REGION_SIZE : val;
->>>>>>          dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_REGION_CTRL1, val);
->>>>>> @@ -294,8 +296,10 @@ static void __dw_pcie_prog_outbound_atu(struct dw_pcie *pci, u8 func_no,
->>>>>>                             lower_32_bits(pci_addr));
->>>>>>          dw_pcie_writel_dbi(pci, PCIE_ATU_UPPER_TARGET,
->>>>>>                             upper_32_bits(pci_addr));
->>>>>> -     dw_pcie_writel_dbi(pci, PCIE_ATU_CR1, type |
->>>>>> -                        PCIE_ATU_FUNC_NUM(func_no));
->>>>>> +     val = type | PCIE_ATU_FUNC_NUM(func_no);
->>>>>> +     if (pci->version == 0x490A)
->>>>>> +             val = val | pcie_is_ecrc_enabled() << PCIE_ATU_TD_SHIFT;
->>>>>> +     dw_pcie_writel_dbi(pci, PCIE_ATU_CR1, val);
->>>>>>          dw_pcie_writel_dbi(pci, PCIE_ATU_CR2, PCIE_ATU_ENABLE);
->>>>>>
->>>>>>          /*
->>>>>> diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
->>>>>> index e7f441441db2..b01ef407fd52 100644
->>>>>> --- a/drivers/pci/controller/dwc/pcie-designware.h
->>>>>> +++ b/drivers/pci/controller/dwc/pcie-designware.h
->>>>>> @@ -89,6 +89,7 @@
->>>>>>     #define PCIE_ATU_TYPE_IO             0x2
->>>>>>     #define PCIE_ATU_TYPE_CFG0           0x4
->>>>>>     #define PCIE_ATU_TYPE_CFG1           0x5
->>>>>> +#define PCIE_ATU_TD_SHIFT            8
->>>>>>     #define PCIE_ATU_FUNC_NUM(pf)           ((pf) << 20)
->>>>>>     #define PCIE_ATU_CR2                 0x908
->>>>>>     #define PCIE_ATU_ENABLE                      BIT(31)
->>>>>> --
->>>>>> 2.17.1
->>>>>>
+> As long as you are not supporting multiple scmi_protocol_instance and
+> scmi_protocol_handle for a protocol, I don't think having separate structs
+> make sense. And you need to do this only if you think there can be multiple
+> versions/instances of a protocol in the same scmi instance.
+> Or am I missing something here ?
+> 
+
+What really protocol_handle brings in is the fact that is embedded in a
+specific protocol_instance which in turn is associated to a specific
+SCMI server instance: so the SCMI drivers can refer to a very specific
+SCMI instance when using that protocol, and at the same time the protocol
+code instead can use the xops ONLY to build/send messages for the
+protocol number for which they are supposed to send them.
+
+So the separation of the structures is indeed wanted so that the
+protocol code receive only the bare minimum access to the data it needs,
+while the core processing the protocol xops requests can derive the
+containing specific protocol_instance to act upon, so that
+ - protocolX can send ONLY protoX messages
+ - messageX are sennt to the proper protocol instance associated to that
+   handle, which identifies one specific SCMI server amomgst possible
+   multiple choices: an SCMI driver instance indeed operates on a very
+   specific handle and use that to get hold a specific protocol_handle
+   and proto_ops when calling something like:
+   
+      perf_ops = get_ops(handle, SCMI_PROTOCOL_PERF, &ph)
+      perf_ops->ferq_get(ph, ...);
+
+Regards
+
+Cristian
+
+> > +
+> > +/**
+> > + * struct scmi_xfer_ops  - References to the core SCMI xfer operations.
+> > + * @version_get: Get this version protocol.
+> > + * @xfer_get_init: Initialize one struct xfer if any xfer slot is free.
+> > + * @reset_rx_to_maxsz: Reset rx size to max transport size.
+> > + * @do_xfer: Do the SCMI transfer.
+> > + * @do_xfer_with_response: Do the SCMI transfer waiting for a response.
+> > + * @xfer_put: Free the xfer slot.
+> > + *
+> > + * Note that all this operations expect a protocol handle as first parameter;
+> > + * they then internally use it to infer the underlying protocol number: this
+> > + * way is not possible for a protocol implementation to forge messages for
+> > + * another protocol.
+> > + */
+> > +struct scmi_xfer_ops {
+> > +	int (*version_get)(const struct scmi_protocol_handle *ph, u32 *version);
+> > +	int (*xfer_get_init)(const struct scmi_protocol_handle *ph, u8 msg_id,
+> > +			     size_t tx_size, size_t rx_size,
+> > +			     struct scmi_xfer **p);
+> > +	void (*reset_rx_to_maxsz)(const struct scmi_protocol_handle *ph,
+> > +				  struct scmi_xfer *xfer);
+> > +	int (*do_xfer)(const struct scmi_protocol_handle *ph,
+> > +		       struct scmi_xfer *xfer);
+> > +	int (*do_xfer_with_response)(const struct scmi_protocol_handle *ph,
+> > +				     struct scmi_xfer *xfer);
+> > +	void (*xfer_put)(const struct scmi_protocol_handle *ph,
+> > +			 struct scmi_xfer *xfer);
+> > +};
+> > +
+> > +struct scmi_revision_info *
+> > +scmi_get_revision_area(const struct scmi_protocol_handle *ph);
+> >   int scmi_handle_put(const struct scmi_handle *handle);
+> >   struct scmi_handle *scmi_handle_get(struct device *dev);
+> >   void scmi_set_handle(struct scmi_device *scmi_dev);
+> > diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
+> > index beae8991422d..8ca04acb6abb 100644
+> > --- a/drivers/firmware/arm_scmi/driver.c
+> > +++ b/drivers/firmware/arm_scmi/driver.c
+> > @@ -72,19 +72,28 @@ struct scmi_xfers_info {
+> >   /**
+> >    * struct scmi_protocol_instance  - Describe an initialized protocol instance.
+> > + * @handle: Reference to the SCMI handle associated to this protocol instance.
+> >    * @proto: A reference to the protocol descriptor.
+> >    * @gid: A reference for per-protocol devres management.
+> >    * @users: A refcount to track effective users of this protocol.
+> > + * @priv: Reference for optional protocol private data.
+> > + * @ph: An embedded protocol handle that will be passed down to protocol
+> > + *	initialization code to identify this instance.
+> >    *
+> >    * Each protocol is initialized independently once for each SCMI platform in
+> >    * which is defined by DT and implemented by the SCMI server fw.
+> >    */
+> >   struct scmi_protocol_instance {
+> > +	const struct scmi_handle	*handle;
+> >   	const struct scmi_protocol	*proto;
+> >   	void				*gid;
+> >   	refcount_t			users;
+> > +	void				*priv;
+> > +	struct scmi_protocol_handle	ph;
+> >   };
+> > +#define ph_to_pi(h)	container_of(h, struct scmi_protocol_instance, ph)
+> > +
+> >   /**
+> >    * struct scmi_info - Structure representing a SCMI instance
+> >    *
+> > @@ -543,6 +552,57 @@ int scmi_version_get(const struct scmi_handle *handle, u8 protocol,
+> >   	return ret;
+> >   }
+> > +/**
+> > + * scmi_set_protocol_priv  - Set protocol specific data at init time
+> > + *
+> > + * @ph: A reference to the protocol handle.
+> > + * @priv: The private data to set.
+> > + *
+> > + * Return: 0 on Success
+> > + */
+> > +static int scmi_set_protocol_priv(const struct scmi_protocol_handle *ph,
+> > +				  void *priv)
+> > +{
+> > +	struct scmi_protocol_instance *pi = ph_to_pi(ph);
+> > +
+> > +	pi->priv = priv;
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +/**
+> > + * scmi_get_protocol_priv  - Set protocol specific data at init time
+> > + *
+> > + * @ph: A reference to the protocol handle.
+> > + *
+> > + * Return: Protocol private data if any was set.
+> > + */
+> > +static void *scmi_get_protocol_priv(const struct scmi_protocol_handle *ph)
+> > +{
+> > +	const struct scmi_protocol_instance *pi = ph_to_pi(ph);
+> > +
+> > +	return pi->priv;
+> > +}
+> > +
+> > +/**
+> > + * scmi_get_revision_area  - Retrieve version memory area.
+> > + *
+> > + * @ph: A reference to the protocol handle.
+> > + *
+> > + * A helper to grab the version memory area reference during SCMI Base protocol
+> > + * initialization.
+> > + *
+> > + * Return: A reference to the version memory area associated to the SCMI
+> > + *	   instance underlying this protocol handle.
+> > + */
+> > +struct scmi_revision_info *
+> > +scmi_get_revision_area(const struct scmi_protocol_handle *ph)
+> > +{
+> > +	const struct scmi_protocol_instance *pi = ph_to_pi(ph);
+> > +
+> > +	return pi->handle->version;
+> > +}
+> > +
+> >   /**
+> >    * scmi_get_protocol_instance  - Protocol initialization helper.
+> >    * @handle: A reference to the SCMI platform instance.
+> > @@ -588,6 +648,10 @@ scmi_get_protocol_instance(struct scmi_handle *handle, u8 protocol_id)
+> >   		pi->gid = gid;
+> >   		pi->proto = proto;
+> > +		pi->handle = handle;
+> > +		pi->ph.dev = handle->dev;
+> > +		pi->ph.set_priv = scmi_set_protocol_priv;
+> > +		pi->ph.get_priv = scmi_get_protocol_priv;
+> >   		refcount_set(&pi->users, 1);
+> >   		/* proto->init is assured NON NULL by scmi_protocol_register */
+> >   		ret = pi->proto->init(handle);
+> > 
+> 
+> -- 
+> Warm Regards
+> Thara
