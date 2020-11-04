@@ -2,129 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 376EB2A6EBF
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 21:31:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A8E82A6EA8
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 21:22:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732017AbgKDUa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 15:30:59 -0500
-Received: from wout1-smtp.messagingengine.com ([64.147.123.24]:53465 "EHLO
-        wout1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731930AbgKDUa7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 15:30:59 -0500
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id 40541861;
-        Wed,  4 Nov 2020 15:30:58 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Wed, 04 Nov 2020 15:30:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
-        mime-version:content-transfer-encoding:content-type:subject:from
-        :to:cc:date:message-id:in-reply-to; s=fm1; bh=MkLJkdfTsuZq/m6LE9
-        YRQzCBoNH8ynmTEDbZNbvS6iI=; b=g2pMChyJTziDlBcbes8G39qPB6Fl0cFSMS
-        wkJfD48McDRDD5kqQTMLM2V/+krbbOJlf8x3NdfTCPIh7xOT9PxKlR5pGx5Ku+Th
-        zPDe0+0Kdgy9NYMhsWYkuOTNHFpXopAwWZDmSzCkAmMHJpYEh5lkp0L4H05GPHEC
-        LijlX1cnXVjUwg/T2DsWwuIB9HuSVTlfYH9fNjvGbF4JKAT5uSa7tMYzdLtCq1CF
-        88qdB417M7t4HZwlJCog8eEMKKnq3Qa4SJSwZ/vOhaOs6ijnQXN496CZX1fXBOaN
-        UshnWpF93OG6ElWsEfw8DI4Yb6x3W4UNf2UTwpYZKNYprtCP2kcg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; bh=MkLJkdfTsuZq/m6LE9YRQzCBoNH8ynmTEDbZNbvS6iI=; b=crfFKnTj
-        vOWrtkInXILdjiDPoKS1wSVYqh0+hwPzy7L2EVsDkStSdhopmM3dspmYIYriy1KS
-        leWsUFouBOwXpdCXwdqn7G6CxJA7E07pLNA8Kg07N8d2AzWZYoTqFpQUCisdBMZA
-        tSlNUJ/SMBbStK33Fht1Zu/3LAHU/+OvJE1qm/T7FX7nzLUFqosmuThKh4x6weWK
-        DTiwPbv6Lk7lZ844G4ru6vagjaPirHRV+opJT9uIyZzFetgJ4buskdQSCyoHFXK6
-        MH5zAWSkSxfZbwNAuRr672++8c/T3UexBM6zxly5UY+qd8vGlUFUu+CLa3WDtpNZ
-        jTXEIdjprPdu+A==
-X-ME-Sender: <xms:gQ-jX_78RHKyPoMffseekO0TYuJn38IoFL0vzMMcRVUT2hnBkMH0dw>
-    <xme:gQ-jX04IymhsW_9Zud7yJJljZhV_g63933OAPOdfsSCX4hOFXvYHmig4yboiltNnY
-    fkVz7f_5mPuut1krw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddthedgudeflecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enfghrlhcuvffnffculdejtddmnecujfgurhepggfgtgfuhffvfffkjgesthhqredttddt
-    jeenucfhrhhomhepfdffrghnihgvlhcuighufdcuoegugihusegugihuuhhurdighiiiqe
-    enucggtffrrghtthgvrhhnpeejfefhudeffefhjedvvefhheduledtueejvedugedvjedv
-    jeeljefggedtjeejveenucfkphepieelrddukedurddutdehrdeigeenucevlhhushhtvg
-    hrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdig
-    hiii
-X-ME-Proxy: <xmx:gQ-jX2f1w2RpYUpXmJfDIK5-I6Ca_OmhZLiqG5cagCHtyLPJxQzQ4A>
-    <xmx:gQ-jXwJzwccQA9RpfW4XUrWF5Whft_i-KbajWsbMoGMG36dx3LnDTQ>
-    <xmx:gQ-jXzKIzdiwdfsmlNOXvp25WczknosU3Ji3Rx6a7JdT87KdSmBHVA>
-    <xmx:gQ-jX6WpGhTcdQZyurBtZz2sUu-F5EEWPm7pEUrOmZ3g-4ictzL2VA>
-Received: from localhost (c-69-181-105-64.hsd1.ca.comcast.net [69.181.105.64])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 4AE3132800E0;
-        Wed,  4 Nov 2020 15:30:56 -0500 (EST)
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Subject: Re: [PATCH bpf-next] lib/strncpy_from_user.c: Don't overcopy bytes
- after NUL terminator
-From:   "Daniel Xu" <dxu@dxuuu.xyz>
-To:     "Daniel Borkmann" <daniel@iogearbox.net>, <bpf@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <ast@kernel.org>
-Cc:     <kernel-team@fb.com>
-Date:   Wed, 04 Nov 2020 12:18:49 -0800
-Message-Id: <C6UR9QUUYXKW.3PHSMQ3EXUYI3@maharaja>
-In-Reply-To: <7831c092-5ab4-033e-8fb3-ad9702332d79@iogearbox.net>
+        id S1731225AbgKDUW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 15:22:28 -0500
+Received: from ozlabs.org ([203.11.71.1]:56905 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729633AbgKDUW2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 15:22:28 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CRJ3g6clJz9sSn;
+        Thu,  5 Nov 2020 07:22:23 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1604521345;
+        bh=+j9mEvVr4mCgMEg34UE7JK5NKxOWWvAgh3bnb/GSG5I=;
+        h=Date:From:To:Cc:Subject:From;
+        b=uFIHKPRZQGniT+ByUqeYT1mVSnVmLW+ZQFHHA6j3bkaB4erDWfOd3eK1P1ZnseVXB
+         +Edh9j3S7kuKzTtfUVLZ1APndnlvaM8+YNLfyHAMXdGvUgKAiFE6iMbFThw2kCqNd9
+         HGGBBREZITYalK/y1b7zPH3vy/sIwbHRP9n/fJIXThoHM6bGqi4mCPKT+yR9/Md83d
+         bN5hFaNQEgy1HTTQQkVf58Mdrc+Qsmt55meI0P75zUcoXN092qx2hMh78hsxotPMJY
+         TbInd6PNUcEbkCWBeHryCSLuPAMvcBEc+jhsq6R7u6WyK47UvRaT7BNDEUzfI28Q9e
+         CRU97YmzkXSyw==
+Date:   Thu, 5 Nov 2020 07:22:22 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Guo Ren <ren_guo@c-sky.com>
+Cc:     Lin Lei <linlei@linux.alibaba.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the csky tree
+Message-ID: <20201105072222.10bd99dc@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/tLiJ=ETq7xejtIRDiRBUo0=";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+--Sig_/tLiJ=ETq7xejtIRDiRBUo0=
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On Wed Nov 4, 2020 at 8:24 AM PST, Daniel Borkmann wrote:
-> On 11/4/20 3:29 AM, Daniel Xu wrote:
-> > do_strncpy_from_user() may copy some extra bytes after the NUL
-> > terminator into the destination buffer. This usually does not matter fo=
-r
-> > normal string operations. However, when BPF programs key BPF maps with
-> > strings, this matters a lot.
-> >=20
-> > A BPF program may read strings from user memory by calling the
-> > bpf_probe_read_user_str() helper which eventually calls
-> > do_strncpy_from_user(). The program can then key a map with the
-> > resulting string. BPF map keys are fixed-width and string-agnostic,
-> > meaning that map keys are treated as a set of bytes.
-> >=20
-> > The issue is when do_strncpy_from_user() overcopies bytes after the NUL
-> > terminator, it can result in seemingly identical strings occupying
-> > multiple slots in a BPF map. This behavior is subtle and totally
-> > unexpected by the user.
-> >=20
-> > This commit uses the proper word-at-a-time APIs to avoid overcopying.
-> >=20
-> > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
->
-> It looks like this is a regression from the recent refactoring of the
-> mem probing
-> util functions?
+Hi all,
 
-I think it was like this from the beginning, at 6ae08ae3dea2 ("bpf: Add
-probe_read_{user, kernel} and probe_read_{user, kernel}_str helpers").
-The old bpf_probe_read_str() used the kernel's byte-by-byte copying
-routine. bpf_probe_read_user_str() started using strncpy_from_user()
-which has been doing the long-sized strides since ~2012 or earlier.
+Commit
 
-I tried to build and test the kernel at that commit but it seems my
-compiler is too new to build that old code. Bunch of build failures.
+  6257c1904d00 ("drivers/net: Add dwmac-thead added.")
 
-I assume the refactor you're referring to is 8d92db5c04d1 ("bpf: rework
-the compat kernel probe handling").
+is missing a Signed-off-by from its author.
 
-> Could we add a Fixes tag and then we'd also need to target the fix
-> against bpf tree instead of bpf-next, no?
+--=20
+Cheers,
+Stephen Rothwell
 
-Sure, will do in v2.
+--Sig_/tLiJ=ETq7xejtIRDiRBUo0=
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
->
-> Moreover, a BPF kselftest would help to make sure it doesn't regress in
-> future again.
+-----BEGIN PGP SIGNATURE-----
 
-Ditto.
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+jDX4ACgkQAVBC80lX
+0GzwvQf+PxoInjPtu3c2v8uSjSJ5lb8saZQ66A25T3VZTNqAMwIpi6pEQuW54Ci8
+7t0FIwQ10NXsyF9vE7BFQdF+W6eV7UtHgTNEAmnU4ASMowmbMZnVLs6s2D7JHd+J
+EtoV2eQFAEnHbpNrn6ghoso2IzH64kG8e8JyDU6wGJH9wLUv8e3YHl2+MQlHWMY7
+ifi9il7FwYMv/np2zMZNOcLtilu2BtHawqrCE8QyT/yFeBcnZxF1ONpsPYeju86o
+q+YeH4H0TawSwrTO0XY5oEBjBUUX2hXUwnJWDylb4u7Esz1/5xw/Lnus1FTBwjTe
+nMd8RdysbE6B+icqAanxrcqe/NDPcA==
+=oC3/
+-----END PGP SIGNATURE-----
 
-[..]
-
-Thanks,
-Daniel
+--Sig_/tLiJ=ETq7xejtIRDiRBUo0=--
