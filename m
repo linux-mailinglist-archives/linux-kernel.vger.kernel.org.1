@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C878C2A6C64
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 19:07:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C2172A6C75
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 19:09:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732218AbgKDSHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 13:07:49 -0500
+        id S1732284AbgKDSIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 13:08:22 -0500
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732204AbgKDSHs (ORCPT
+        with ESMTP id S1732221AbgKDSHt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 13:07:48 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 347D4C061A4A
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 10:07:48 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id h62so3211524wme.3
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 10:07:48 -0800 (PST)
+        Wed, 4 Nov 2020 13:07:49 -0500
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 175B2C061A4A
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 10:07:49 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id h2so651028wmm.0
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 10:07:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=KBJdPJKhHMcEG3i3MssFQOTFq5qAUMX15kP0Cu1fqHY=;
-        b=aah+dx1Av5pM+VYV1e9dWE3ehzZ6Vmsu1Py6GgjJk9e/aROc4f5UfmfHeDQljhQN0T
-         CPV7o4E/YzYf8QX6LU01ji019CT/C7s/u1/H4j2x4vCoxvoYL22c2SbuoIr14llnow1u
-         y8+QEf5Ij4uChguyvnyIkeaDyb7U0V0gYQyfY=
+        bh=09aDl4ZmShm7ZTcFx/xGgLsr6c/hfG/TYOh2Eo8wu1E=;
+        b=ZK73jgWMRs9RG//Hq3zS8gfLp23l99spVZhcpaaoAXOjTW+xZ8wZjyZcUxU4kXftJe
+         JSqMUJizqIo9rK/tcCf5qBDuIpvM40+seOC6/Bd38VSbwb3AfZHWiqvsOYcLamrh67io
+         pfMl7ZXyWX+9ybint8oh1Owvz1ikKCh+4IC2I=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=KBJdPJKhHMcEG3i3MssFQOTFq5qAUMX15kP0Cu1fqHY=;
-        b=e9Upeq3Pbia0jZ/z/PhAhoL46+savIjkRC9AdbGblJ58JFHmOgRnjAxBJPUuUZARXv
-         4aoPJkZNNtoXaXk1mgsPfRDdBz8msS8Mhbvi7Io9SMjihSQ1+28Ln1uyxlB1pzKwJd8x
-         TMr1JRy4n1xKsaN19I+MkjIhka4oSQrB/8nUofb/ngv9CLQET0Xvfx3dcfGTVHRrUevd
-         8reJofGXJZk9qkB9WjfeNN2+GUcHdfSLVNthOhLdHjnRCr/xL0PHJFFFv849HJoWwfyj
-         U6kdfWmfBgyObVDDLeNxcUZIdIp9eoGAaBxf6FI5EgViov5cpnUD4NKjwK0tgmRcjTRg
-         cThA==
-X-Gm-Message-State: AOAM5315Rj+jc/EghswDOT+0Pgy8oV6//IpdJmY1orm9SFeHHM8YZ8kX
-        paeX6PFUBq6Y1XRPazWfdpHVBw==
-X-Google-Smtp-Source: ABdhPJyBKEK/HrrERt5hZuIKNep/zDOG7j7Egm92CqgQtPbFdEAPD53XzUWv6ghn9iwHxfvKVG9DRA==
-X-Received: by 2002:a1c:4b04:: with SMTP id y4mr5985826wma.93.1604513266866;
-        Wed, 04 Nov 2020 10:07:46 -0800 (PST)
+        bh=09aDl4ZmShm7ZTcFx/xGgLsr6c/hfG/TYOh2Eo8wu1E=;
+        b=jbMtAlc4pRuBS47JGGW1S54J5Dfr6VFzyDAD5N9qw+6QrNYGorjxA3q/TCAvbdv7U1
+         GTwpeG6V6BJHOcGmdvZuQEkp8u1Ugd0UkegBzyYnG8sGeTQ+1p/gzRoBT3eXUV8DveaL
+         8bp9n2QIMUZc98AQQJN7jHeC069DcnXV7rzhpqBC/cz5Ne9TllduJzB+lLxsnvmzfwan
+         a45Qno0ivvR1cYIQc6Xkxws/BAIrlMipdYKj5AwDxdIHJ8uHjv95yNTYAwa+yLpkVnn/
+         +uGYcHGOp+6Y7EYMI/5jFdwhfdjOV1I6hjplU5uBUNNKPBid1bFZcboA0NWItUBNLUDg
+         WTIg==
+X-Gm-Message-State: AOAM5308LbwB99bdkx8x0XXqnrWvIYD0aRFpRSTj5OvHaZAmVc/9YKCa
+        F3PrTR6bTj2sqox2oHggNwWLDg==
+X-Google-Smtp-Source: ABdhPJzufMPX2mGMtpxpxncJqaX/J71zkjGVYhYI2ZnRmXcsLl80pCF7ixko3HUzhQbKqT8p0EoYOQ==
+X-Received: by 2002:a05:600c:210:: with SMTP id 16mr5794857wmi.122.1604513267660;
+        Wed, 04 Nov 2020 10:07:47 -0800 (PST)
 Received: from alco.lan ([80.71.134.83])
         by smtp.gmail.com with ESMTPSA id y10sm3801841wru.94.2020.11.04.10.07.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 10:07:46 -0800 (PST)
+        Wed, 04 Nov 2020 10:07:47 -0800 (PST)
 From:   Ricardo Ribalda <ribalda@chromium.org>
 To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
         Mauro Carvalho Chehab <mchehab@kernel.org>,
         linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     Ricardo Ribalda <ribalda@chromium.org>
-Subject: [PATCH v2 1/7] media: uvcvideo: Use pr_cont() macro
-Date:   Wed,  4 Nov 2020 19:07:28 +0100
-Message-Id: <20201104180734.286789-2-ribalda@chromium.org>
+Subject: [PATCH v2 2/7] media: uvcvideo: Move guid to entity
+Date:   Wed,  4 Nov 2020 19:07:29 +0100
+Message-Id: <20201104180734.286789-3-ribalda@chromium.org>
 X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
 In-Reply-To: <20201104180734.286789-1-ribalda@chromium.org>
 References: <20201104180734.286789-1-ribalda@chromium.org>
@@ -62,132 +62,146 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace all the uses of printk(KERN_CONT ... with pr_cont().
+Instead of having multiple copies of the entity guid on the code, move
+it to the entity structure.
 
 Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 ---
- drivers/media/usb/uvc/uvc_driver.c | 30 +++++++++++++++---------------
- 1 file changed, 15 insertions(+), 15 deletions(-)
+ drivers/media/usb/uvc/uvc_ctrl.c   | 30 ++++--------------------------
+ drivers/media/usb/uvc/uvc_driver.c | 21 +++++++++++++++++++--
+ drivers/media/usb/uvc/uvcvideo.h   |  2 +-
+ 3 files changed, 24 insertions(+), 29 deletions(-)
 
+diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
+index f479d8971dfb..0e480b75e724 100644
+--- a/drivers/media/usb/uvc/uvc_ctrl.c
++++ b/drivers/media/usb/uvc/uvc_ctrl.c
+@@ -826,31 +826,10 @@ static void uvc_set_le_value(struct uvc_control_mapping *mapping,
+  * Terminal and unit management
+  */
+ 
+-static const u8 uvc_processing_guid[16] = UVC_GUID_UVC_PROCESSING;
+-static const u8 uvc_camera_guid[16] = UVC_GUID_UVC_CAMERA;
+-static const u8 uvc_media_transport_input_guid[16] =
+-	UVC_GUID_UVC_MEDIA_TRANSPORT_INPUT;
+-
+ static int uvc_entity_match_guid(const struct uvc_entity *entity,
+-	const u8 guid[16])
++				 const u8 guid[16])
+ {
+-	switch (UVC_ENTITY_TYPE(entity)) {
+-	case UVC_ITT_CAMERA:
+-		return memcmp(uvc_camera_guid, guid, 16) == 0;
+-
+-	case UVC_ITT_MEDIA_TRANSPORT_INPUT:
+-		return memcmp(uvc_media_transport_input_guid, guid, 16) == 0;
+-
+-	case UVC_VC_PROCESSING_UNIT:
+-		return memcmp(uvc_processing_guid, guid, 16) == 0;
+-
+-	case UVC_VC_EXTENSION_UNIT:
+-		return memcmp(entity->extension.guidExtensionCode,
+-			      guid, 16) == 0;
+-
+-	default:
+-		return 0;
+-	}
++	return memcmp(entity->guid, guid, sizeof(entity->guid)) == 0;
+ }
+ 
+ /* ------------------------------------------------------------------------
+@@ -1776,8 +1755,7 @@ static int uvc_ctrl_fill_xu_info(struct uvc_device *dev,
+ 	if (data == NULL)
+ 		return -ENOMEM;
+ 
+-	memcpy(info->entity, ctrl->entity->extension.guidExtensionCode,
+-	       sizeof(info->entity));
++	memcpy(info->entity, ctrl->entity->guid, sizeof(info->entity));
+ 	info->index = ctrl->index;
+ 	info->selector = ctrl->index + 1;
+ 
+@@ -1883,7 +1861,7 @@ int uvc_xu_ctrl_query(struct uvc_video_chain *chain,
+ 
+ 	if (!found) {
+ 		uvc_trace(UVC_TRACE_CONTROL, "Control %pUl/%u not found.\n",
+-			entity->extension.guidExtensionCode, xqry->selector);
++			entity->guid, xqry->selector);
+ 		return -ENOENT;
+ 	}
+ 
 diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
-index ddb9eaa11be7..9fc0b600eab1 100644
+index 9fc0b600eab1..77fea26faa9a 100644
 --- a/drivers/media/usb/uvc/uvc_driver.c
 +++ b/drivers/media/usb/uvc/uvc_driver.c
-@@ -1476,7 +1476,7 @@ static int uvc_scan_chain_entity(struct uvc_video_chain *chain,
- 	switch (UVC_ENTITY_TYPE(entity)) {
- 	case UVC_VC_EXTENSION_UNIT:
- 		if (uvc_trace_param & UVC_TRACE_PROBE)
--			printk(KERN_CONT " <- XU %d", entity->id);
-+			pr_cont(" <- XU %d", entity->id);
- 
- 		if (entity->bNrInPins != 1) {
- 			uvc_trace(UVC_TRACE_DESCR, "Extension unit %d has more "
-@@ -1488,7 +1488,7 @@ static int uvc_scan_chain_entity(struct uvc_video_chain *chain,
- 
- 	case UVC_VC_PROCESSING_UNIT:
- 		if (uvc_trace_param & UVC_TRACE_PROBE)
--			printk(KERN_CONT " <- PU %d", entity->id);
-+			pr_cont(" <- PU %d", entity->id);
- 
- 		if (chain->processing != NULL) {
- 			uvc_trace(UVC_TRACE_DESCR, "Found multiple "
-@@ -1501,7 +1501,7 @@ static int uvc_scan_chain_entity(struct uvc_video_chain *chain,
- 
- 	case UVC_VC_SELECTOR_UNIT:
- 		if (uvc_trace_param & UVC_TRACE_PROBE)
--			printk(KERN_CONT " <- SU %d", entity->id);
-+			pr_cont(" <- SU %d", entity->id);
- 
- 		/* Single-input selector units are ignored. */
- 		if (entity->bNrInPins == 1)
-@@ -1520,7 +1520,7 @@ static int uvc_scan_chain_entity(struct uvc_video_chain *chain,
- 	case UVC_ITT_CAMERA:
- 	case UVC_ITT_MEDIA_TRANSPORT_INPUT:
- 		if (uvc_trace_param & UVC_TRACE_PROBE)
--			printk(KERN_CONT " <- IT %d\n", entity->id);
-+			pr_cont(" <- IT %d\n", entity->id);
- 
- 		break;
- 
-@@ -1528,17 +1528,17 @@ static int uvc_scan_chain_entity(struct uvc_video_chain *chain,
- 	case UVC_OTT_DISPLAY:
- 	case UVC_OTT_MEDIA_TRANSPORT_OUTPUT:
- 		if (uvc_trace_param & UVC_TRACE_PROBE)
--			printk(KERN_CONT " OT %d", entity->id);
-+			pr_cont(" OT %d", entity->id);
- 
- 		break;
- 
- 	case UVC_TT_STREAMING:
- 		if (UVC_ENTITY_IS_ITERM(entity)) {
- 			if (uvc_trace_param & UVC_TRACE_PROBE)
--				printk(KERN_CONT " <- IT %d\n", entity->id);
-+				pr_cont(" <- IT %d\n", entity->id);
- 		} else {
- 			if (uvc_trace_param & UVC_TRACE_PROBE)
--				printk(KERN_CONT " OT %d", entity->id);
-+				pr_cont(" OT %d", entity->id);
- 		}
- 
- 		break;
-@@ -1588,9 +1588,9 @@ static int uvc_scan_chain_forward(struct uvc_video_chain *chain,
- 			list_add_tail(&forward->chain, &chain->entities);
- 			if (uvc_trace_param & UVC_TRACE_PROBE) {
- 				if (!found)
--					printk(KERN_CONT " (->");
-+					pr_cont(" (->");
- 
--				printk(KERN_CONT " XU %d", forward->id);
-+				pr_cont(" XU %d", forward->id);
- 				found = 1;
- 			}
- 			break;
-@@ -1608,16 +1608,16 @@ static int uvc_scan_chain_forward(struct uvc_video_chain *chain,
- 			list_add_tail(&forward->chain, &chain->entities);
- 			if (uvc_trace_param & UVC_TRACE_PROBE) {
- 				if (!found)
--					printk(KERN_CONT " (->");
-+					pr_cont(" (->");
- 
--				printk(KERN_CONT " OT %d", forward->id);
-+				pr_cont(" OT %d", forward->id);
- 				found = 1;
- 			}
- 			break;
- 		}
- 	}
- 	if (found)
--		printk(KERN_CONT ")");
-+		pr_cont(")");
- 
- 	return 0;
+@@ -1019,6 +1019,11 @@ static int uvc_parse_streaming(struct uvc_device *dev,
+ 	return ret;
  }
-@@ -1643,7 +1643,7 @@ static int uvc_scan_chain_backward(struct uvc_video_chain *chain,
- 		}
  
- 		if (uvc_trace_param & UVC_TRACE_PROBE)
--			printk(KERN_CONT " <- IT");
-+			pr_cont(" <- IT");
++static const u8 uvc_camera_guid[16] = UVC_GUID_UVC_CAMERA;
++static const u8 uvc_media_transport_input_guid[16] =
++	UVC_GUID_UVC_MEDIA_TRANSPORT_INPUT;
++static const u8 uvc_processing_guid[16] = UVC_GUID_UVC_PROCESSING;
++
+ static struct uvc_entity *uvc_alloc_entity(u16 type, u8 id,
+ 		unsigned int num_pads, unsigned int extra_size)
+ {
+@@ -1038,6 +1043,18 @@ static struct uvc_entity *uvc_alloc_entity(u16 type, u8 id,
+ 	entity->id = id;
+ 	entity->type = type;
  
- 		chain->selector = entity;
- 		for (i = 0; i < entity->bNrInPins; ++i) {
-@@ -1664,14 +1664,14 @@ static int uvc_scan_chain_backward(struct uvc_video_chain *chain,
- 			}
++	switch (type) {
++	case UVC_ITT_CAMERA:
++		memcpy(entity->guid, uvc_camera_guid, 16);
++		break;
++	case UVC_ITT_MEDIA_TRANSPORT_INPUT:
++		memcpy(entity->guid, uvc_media_transport_input_guid, 16);
++		break;
++	case UVC_VC_PROCESSING_UNIT:
++		memcpy(entity->guid, uvc_processing_guid, 16);
++		break;
++	}
++
+ 	entity->num_links = 0;
+ 	entity->num_pads = num_pads;
+ 	entity->pads = ((void *)(entity + 1)) + extra_size;
+@@ -1109,7 +1126,7 @@ static int uvc_parse_vendor_control(struct uvc_device *dev,
+ 		if (unit == NULL)
+ 			return -ENOMEM;
  
- 			if (uvc_trace_param & UVC_TRACE_PROBE)
--				printk(KERN_CONT " %d", term->id);
-+				pr_cont(" %d", term->id);
+-		memcpy(unit->extension.guidExtensionCode, &buffer[4], 16);
++		memcpy(unit->guid, &buffer[4], 16);
+ 		unit->extension.bNumControls = buffer[20];
+ 		memcpy(unit->baSourceID, &buffer[22], p);
+ 		unit->extension.bControlSize = buffer[22+p];
+@@ -1368,7 +1385,7 @@ static int uvc_parse_standard_control(struct uvc_device *dev,
+ 		if (unit == NULL)
+ 			return -ENOMEM;
  
- 			list_add_tail(&term->chain, &chain->entities);
- 			uvc_scan_chain_forward(chain, term, entity);
- 		}
+-		memcpy(unit->extension.guidExtensionCode, &buffer[4], 16);
++		memcpy(unit->guid, &buffer[4], 16);
+ 		unit->extension.bNumControls = buffer[20];
+ 		memcpy(unit->baSourceID, &buffer[22], p);
+ 		unit->extension.bControlSize = buffer[22+p];
+diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
+index a3dfacf069c4..df7bf2d104a3 100644
+--- a/drivers/media/usb/uvc/uvcvideo.h
++++ b/drivers/media/usb/uvc/uvcvideo.h
+@@ -304,6 +304,7 @@ struct uvc_entity {
+ 	u8 id;
+ 	u16 type;
+ 	char name[64];
++	u8 guid[16];
  
- 		if (uvc_trace_param & UVC_TRACE_PROBE)
--			printk(KERN_CONT "\n");
-+			pr_cont("\n");
+ 	/* Media controller-related fields. */
+ 	struct video_device *vdev;
+@@ -342,7 +343,6 @@ struct uvc_entity {
+ 		} selector;
  
- 		id = 0;
- 		break;
+ 		struct {
+-			u8  guidExtensionCode[16];
+ 			u8  bNumControls;
+ 			u8  bControlSize;
+ 			u8  *bmControls;
 -- 
 2.29.1.341.ge80a0c044ae-goog
 
