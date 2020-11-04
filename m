@@ -2,387 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6F852A69E6
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 17:36:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4A912A69EB
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 17:37:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730160AbgKDQgL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 11:36:11 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:25458 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729081AbgKDQgL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 11:36:11 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1604507770; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=KJcjNSy+rGSFd77pcnOBonXC6LYFSC7xpcs45CIwLRo=; b=KqaqHJC53FaizkMkyoP5nLRTQvAawGtfD7OZtTVu7ZUmmWF5dKCetTWCezqEmM1RUlGpeFSz
- MnLTqvvldG3wdkgBEJA1MOsbiGPsTCP1+KPpLYUvBc91upVcbPEMtZKq68XaiJqGNURV+BhI
- VQj8MQZULQ0PbaNJ8z3kqnDl4UQ=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 5fa2d85f292589544c6bb1df (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 04 Nov 2020 16:35:43
- GMT
-Sender: asutoshd=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 5F387C433FF; Wed,  4 Nov 2020 16:35:43 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.8.168] (cpe-70-95-149-85.san.res.rr.com [70.95.149.85])
+        id S1730873AbgKDQhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 11:37:01 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:34814 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726944AbgKDQhB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 11:37:01 -0500
+Received: from [IPv6:2804:14c:483:7e3e::1003] (unknown [IPv6:2804:14c:483:7e3e::1003])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        (Authenticated sender: asutoshd)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id CA235C433C6;
-        Wed,  4 Nov 2020 16:35:40 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org CA235C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=asutoshd@codeaurora.org
-Subject: Re: [PATCH V4 1/2] scsi: ufs: Add DeepSleep feature
-To:     Adrian Hunter <adrian.hunter@intel.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Bean Huo <huobean@gmail.com>, Can Guo <cang@codeaurora.org>,
-        Stanley Chu <stanley.chu@mediatek.com>
-References: <20201103141403.2142-1-adrian.hunter@intel.com>
- <20201103141403.2142-2-adrian.hunter@intel.com>
-From:   "Asutosh Das (asd)" <asutoshd@codeaurora.org>
-Message-ID: <189c0b95-8b49-ab66-470f-d355c95904ae@codeaurora.org>
-Date:   Wed, 4 Nov 2020 08:35:40 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        (Authenticated sender: koike)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 3B23C1F45AA5;
+        Wed,  4 Nov 2020 16:36:54 +0000 (GMT)
+Subject: Re: [PATCH 00/14] Allwinner MIPI CSI-2 support for A31/V3s/A83T
+To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-sunxi@googlegroups.com,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Yong Deng <yong.deng@magewell.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Hans Verkuil <hans.verkuil@cisco.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>, kevin.lhopital@hotmail.com
+References: <20201023174546.504028-1-paul.kocialkowski@bootlin.com>
+ <d15d724b-6af7-3e51-1316-7bdde5a42c60@collabora.com>
+ <20201104111137.GH285779@aptenodytes>
+From:   Helen Koike <helen.koike@collabora.com>
+Message-ID: <fd2fb44e-1814-1589-216d-78eb96b39c3a@collabora.com>
+Date:   Wed, 4 Nov 2020 13:36:49 -0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <20201103141403.2142-2-adrian.hunter@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20201104111137.GH285779@aptenodytes>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/3/2020 6:14 AM, Adrian Hunter wrote:
-> DeepSleep is a UFS v3.1 feature that achieves the lowest power consumption
-> of the device, apart from power off.
-> 
-> In DeepSleep mode, no commands are accepted, and the only way to exit is
-> using a hardware reset or power cycle.
-> 
-> This patch assumes that if a power cycle was an option, then power off
-> would be preferable, so only exit via a hardware reset is supported.
-> 
-> Drivers that wish to support DeepSleep need to set a new capability flag
-> UFSHCD_CAP_DEEPSLEEP and provide a hardware reset via the existing
->   ->device_reset() callback.
-> 
-> It is assumed that UFS devices with wspecversion >= 0x310 support
-> DeepSleep.
-> 
-> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-> ---
+Hi Paul,
 
-Reviewed-by: Asutosh Das <asutoshd@codeaurora.org>
-
-
->   Documentation/ABI/testing/sysfs-driver-ufs | 34 +++++++++++--------
->   drivers/scsi/ufs/ufs-sysfs.c               |  7 ++++
->   drivers/scsi/ufs/ufs.h                     |  1 +
->   drivers/scsi/ufs/ufshcd.c                  | 39 ++++++++++++++++++++--
->   drivers/scsi/ufs/ufshcd.h                  | 17 +++++++++-
->   include/trace/events/ufs.h                 |  3 +-
->   6 files changed, 83 insertions(+), 18 deletions(-)
+On 11/4/20 8:11 AM, Paul Kocialkowski wrote:
+> Hi Helen,
 > 
-> diff --git a/Documentation/ABI/testing/sysfs-driver-ufs b/Documentation/ABI/testing/sysfs-driver-ufs
-> index adc0d0e91607..e77fa784d6d8 100644
-> --- a/Documentation/ABI/testing/sysfs-driver-ufs
-> +++ b/Documentation/ABI/testing/sysfs-driver-ufs
-> @@ -916,21 +916,24 @@ Date:		September 2014
->   Contact:	Subhash Jadavani <subhashj@codeaurora.org>
->   Description:	This entry could be used to set or show the UFS device
->   		runtime power management level. The current driver
-> -		implementation supports 6 levels with next target states:
-> +		implementation supports 7 levels with next target states:
->   
->   		==  ====================================================
-> -		0   an UFS device will stay active, an UIC link will
-> +		0   UFS device will stay active, UIC link will
->   		    stay active
-> -		1   an UFS device will stay active, an UIC link will
-> +		1   UFS device will stay active, UIC link will
->   		    hibernate
-> -		2   an UFS device will moved to sleep, an UIC link will
-> +		2   UFS device will be moved to sleep, UIC link will
->   		    stay active
-> -		3   an UFS device will moved to sleep, an UIC link will
-> +		3   UFS device will be moved to sleep, UIC link will
->   		    hibernate
-> -		4   an UFS device will be powered off, an UIC link will
-> +		4   UFS device will be powered off, UIC link will
->   		    hibernate
-> -		5   an UFS device will be powered off, an UIC link will
-> +		5   UFS device will be powered off, UIC link will
->   		    be powered off
-> +		6   UFS device will be moved to deep sleep, UIC link
-> +		will be powered off. Note, deep sleep might not be
-> +		supported in which case this value will not be accepted
->   		==  ====================================================
->   
->   What:		/sys/bus/platform/drivers/ufshcd/*/rpm_target_dev_state
-> @@ -954,21 +957,24 @@ Date:		September 2014
->   Contact:	Subhash Jadavani <subhashj@codeaurora.org>
->   Description:	This entry could be used to set or show the UFS device
->   		system power management level. The current driver
-> -		implementation supports 6 levels with next target states:
-> +		implementation supports 7 levels with next target states:
->   
->   		==  ====================================================
-> -		0   an UFS device will stay active, an UIC link will
-> +		0   UFS device will stay active, UIC link will
->   		    stay active
-> -		1   an UFS device will stay active, an UIC link will
-> +		1   UFS device will stay active, UIC link will
->   		    hibernate
-> -		2   an UFS device will moved to sleep, an UIC link will
-> +		2   UFS device will be moved to sleep, UIC link will
->   		    stay active
-> -		3   an UFS device will moved to sleep, an UIC link will
-> +		3   UFS device will be moved to sleep, UIC link will
->   		    hibernate
-> -		4   an UFS device will be powered off, an UIC link will
-> +		4   UFS device will be powered off, UIC link will
->   		    hibernate
-> -		5   an UFS device will be powered off, an UIC link will
-> +		5   UFS device will be powered off, UIC link will
->   		    be powered off
-> +		6   UFS device will be moved to deep sleep, UIC link
-> +		will be powered off. Note, deep sleep might not be
-> +		supported in which case this value will not be accepted
->   		==  ====================================================
->   
->   What:		/sys/bus/platform/drivers/ufshcd/*/spm_target_dev_state
-> diff --git a/drivers/scsi/ufs/ufs-sysfs.c b/drivers/scsi/ufs/ufs-sysfs.c
-> index bdcd27faa054..08e72b7eef6a 100644
-> --- a/drivers/scsi/ufs/ufs-sysfs.c
-> +++ b/drivers/scsi/ufs/ufs-sysfs.c
-> @@ -28,6 +28,7 @@ static const char *ufschd_ufs_dev_pwr_mode_to_string(
->   	case UFS_ACTIVE_PWR_MODE:	return "ACTIVE";
->   	case UFS_SLEEP_PWR_MODE:	return "SLEEP";
->   	case UFS_POWERDOWN_PWR_MODE:	return "POWERDOWN";
-> +	case UFS_DEEPSLEEP_PWR_MODE:	return "DEEPSLEEP";
->   	default:			return "UNKNOWN";
->   	}
->   }
-> @@ -38,6 +39,7 @@ static inline ssize_t ufs_sysfs_pm_lvl_store(struct device *dev,
->   					     bool rpm)
->   {
->   	struct ufs_hba *hba = dev_get_drvdata(dev);
-> +	struct ufs_dev_info *dev_info = &hba->dev_info;
->   	unsigned long flags, value;
->   
->   	if (kstrtoul(buf, 0, &value))
-> @@ -46,6 +48,11 @@ static inline ssize_t ufs_sysfs_pm_lvl_store(struct device *dev,
->   	if (value >= UFS_PM_LVL_MAX)
->   		return -EINVAL;
->   
-> +	if (ufs_pm_lvl_states[value].dev_state == UFS_DEEPSLEEP_PWR_MODE &&
-> +	    (!(hba->caps & UFSHCD_CAP_DEEPSLEEP) ||
-> +	     !(dev_info->wspecversion >= 0x310)))
-> +		return -EINVAL;
-> +
->   	spin_lock_irqsave(hba->host->host_lock, flags);
->   	if (rpm)
->   		hba->rpm_lvl = value;
-> diff --git a/drivers/scsi/ufs/ufs.h b/drivers/scsi/ufs/ufs.h
-> index f8ab16f30fdc..d593edb48767 100644
-> --- a/drivers/scsi/ufs/ufs.h
-> +++ b/drivers/scsi/ufs/ufs.h
-> @@ -442,6 +442,7 @@ enum ufs_dev_pwr_mode {
->   	UFS_ACTIVE_PWR_MODE	= 1,
->   	UFS_SLEEP_PWR_MODE	= 2,
->   	UFS_POWERDOWN_PWR_MODE	= 3,
-> +	UFS_DEEPSLEEP_PWR_MODE	= 4,
->   };
->   
->   #define UFS_WB_BUF_REMAIN_PERCENT(val) ((val) / 10)
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index 2309253d3101..ee083b96e405 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -163,6 +163,11 @@ struct ufs_pm_lvl_states ufs_pm_lvl_states[] = {
->   	{UFS_SLEEP_PWR_MODE, UIC_LINK_HIBERN8_STATE},
->   	{UFS_POWERDOWN_PWR_MODE, UIC_LINK_HIBERN8_STATE},
->   	{UFS_POWERDOWN_PWR_MODE, UIC_LINK_OFF_STATE},
-> +	/*
-> +	 * For DeepSleep, the link is first put in hibern8 and then off.
-> +	 * Leaving the link in hibern8 is not supported.
-> +	 */
-> +	{UFS_DEEPSLEEP_PWR_MODE, UIC_LINK_OFF_STATE},
->   };
->   
->   static inline enum ufs_dev_pwr_mode
-> @@ -8297,7 +8302,8 @@ static int ufshcd_link_state_transition(struct ufs_hba *hba,
->   	}
->   	/*
->   	 * If autobkops is enabled, link can't be turned off because
-> -	 * turning off the link would also turn off the device.
-> +	 * turning off the link would also turn off the device, except in the
-> +	 * case of DeepSleep where the device is expected to remain powered.
->   	 */
->   	else if ((req_link_state == UIC_LINK_OFF_STATE) &&
->   		 (!check_for_bkops || !hba->auto_bkops_enabled)) {
-> @@ -8307,6 +8313,9 @@ static int ufshcd_link_state_transition(struct ufs_hba *hba,
->   		 * put the link in low power mode is to send the DME end point
->   		 * to device and then send the DME reset command to local
->   		 * unipro. But putting the link in hibern8 is much faster.
-> +		 *
-> +		 * Note also that putting the link in Hibern8 is a requirement
-> +		 * for entering DeepSleep.
->   		 */
->   		ret = ufshcd_uic_hibern8_enter(hba);
->   		if (ret) {
-> @@ -8439,6 +8448,7 @@ static void ufshcd_hba_vreg_set_hpm(struct ufs_hba *hba)
->   static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
->   {
->   	int ret = 0;
-> +	int check_for_bkops;
->   	enum ufs_pm_level pm_lvl;
->   	enum ufs_dev_pwr_mode req_dev_pwr_mode;
->   	enum uic_link_state req_link_state;
-> @@ -8524,7 +8534,13 @@ static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
->   	}
->   
->   	flush_work(&hba->eeh_work);
-> -	ret = ufshcd_link_state_transition(hba, req_link_state, 1);
-> +
-> +	/*
-> +	 * In the case of DeepSleep, the device is expected to remain powered
-> +	 * with the link off, so do not check for bkops.
-> +	 */
-> +	check_for_bkops = !ufshcd_is_ufs_dev_deepsleep(hba);
-> +	ret = ufshcd_link_state_transition(hba, req_link_state, check_for_bkops);
->   	if (ret)
->   		goto set_dev_active;
->   
-> @@ -8565,11 +8581,25 @@ static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
->   	if (hba->clk_scaling.is_allowed)
->   		ufshcd_resume_clkscaling(hba);
->   	ufshcd_vreg_set_hpm(hba);
-> +	/*
-> +	 * Device hardware reset is required to exit DeepSleep. Also, for
-> +	 * DeepSleep, the link is off so host reset and restore will be done
-> +	 * further below.
-> +	 */
-> +	if (ufshcd_is_ufs_dev_deepsleep(hba)) {
-> +		ufshcd_vops_device_reset(hba);
-> +		WARN_ON(!ufshcd_is_link_off(hba));
-> +	}
->   	if (ufshcd_is_link_hibern8(hba) && !ufshcd_uic_hibern8_exit(hba))
->   		ufshcd_set_link_active(hba);
->   	else if (ufshcd_is_link_off(hba))
->   		ufshcd_host_reset_and_restore(hba);
->   set_dev_active:
-> +	/* Can also get here needing to exit DeepSleep */
-> +	if (ufshcd_is_ufs_dev_deepsleep(hba)) {
-> +		ufshcd_vops_device_reset(hba);
-> +		ufshcd_host_reset_and_restore(hba);
-> +	}
->   	if (!ufshcd_set_dev_pwr_mode(hba, UFS_ACTIVE_PWR_MODE))
->   		ufshcd_disable_auto_bkops(hba);
->   enable_gating:
-> @@ -8631,6 +8661,9 @@ static int ufshcd_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
->   	if (ret)
->   		goto disable_vreg;
->   
-> +	/* For DeepSleep, the only supported option is to have the link off */
-> +	WARN_ON(ufshcd_is_ufs_dev_deepsleep(hba) && !ufshcd_is_link_off(hba));
-> +
->   	if (ufshcd_is_link_hibern8(hba)) {
->   		ret = ufshcd_uic_hibern8_exit(hba);
->   		if (!ret) {
-> @@ -8644,6 +8677,8 @@ static int ufshcd_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
->   		/*
->   		 * A full initialization of the host and the device is
->   		 * required since the link was put to off during suspend.
-> +		 * Note, in the case of DeepSleep, the device will exit
-> +		 * DeepSleep due to device reset.
->   		 */
->   		ret = ufshcd_reset_and_restore(hba);
->   		/*
-> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
-> index 0fbb735bb70c..213be0667b59 100644
-> --- a/drivers/scsi/ufs/ufshcd.h
-> +++ b/drivers/scsi/ufs/ufshcd.h
-> @@ -114,16 +114,22 @@ enum uic_link_state {
->   	((h)->curr_dev_pwr_mode = UFS_SLEEP_PWR_MODE)
->   #define ufshcd_set_ufs_dev_poweroff(h) \
->   	((h)->curr_dev_pwr_mode = UFS_POWERDOWN_PWR_MODE)
-> +#define ufshcd_set_ufs_dev_deepsleep(h) \
-> +	((h)->curr_dev_pwr_mode = UFS_DEEPSLEEP_PWR_MODE)
->   #define ufshcd_is_ufs_dev_active(h) \
->   	((h)->curr_dev_pwr_mode == UFS_ACTIVE_PWR_MODE)
->   #define ufshcd_is_ufs_dev_sleep(h) \
->   	((h)->curr_dev_pwr_mode == UFS_SLEEP_PWR_MODE)
->   #define ufshcd_is_ufs_dev_poweroff(h) \
->   	((h)->curr_dev_pwr_mode == UFS_POWERDOWN_PWR_MODE)
-> +#define ufshcd_is_ufs_dev_deepsleep(h) \
-> +	((h)->curr_dev_pwr_mode == UFS_DEEPSLEEP_PWR_MODE)
->   
->   /*
->    * UFS Power management levels.
-> - * Each level is in increasing order of power savings.
-> + * Each level is in increasing order of power savings, except DeepSleep
-> + * which is lower than PowerDown with power on but not PowerDown with
-> + * power off.
->    */
->   enum ufs_pm_level {
->   	UFS_PM_LVL_0, /* UFS_ACTIVE_PWR_MODE, UIC_LINK_ACTIVE_STATE */
-> @@ -132,6 +138,7 @@ enum ufs_pm_level {
->   	UFS_PM_LVL_3, /* UFS_SLEEP_PWR_MODE, UIC_LINK_HIBERN8_STATE */
->   	UFS_PM_LVL_4, /* UFS_POWERDOWN_PWR_MODE, UIC_LINK_HIBERN8_STATE */
->   	UFS_PM_LVL_5, /* UFS_POWERDOWN_PWR_MODE, UIC_LINK_OFF_STATE */
-> +	UFS_PM_LVL_6, /* UFS_DEEPSLEEP_PWR_MODE, UIC_LINK_OFF_STATE */
->   	UFS_PM_LVL_MAX
->   };
->   
-> @@ -599,6 +606,14 @@ enum ufshcd_caps {
->   	 * This would increase power savings.
->   	 */
->   	UFSHCD_CAP_AGGR_POWER_COLLAPSE			= 1 << 9,
-> +
-> +	/*
-> +	 * This capability allows the host controller driver to use DeepSleep,
-> +	 * if it is supported by the UFS device. The host controller driver must
-> +	 * support device hardware reset via the hba->device_reset() callback,
-> +	 * in order to exit DeepSleep state.
-> +	 */
-> +	UFSHCD_CAP_DEEPSLEEP				= 1 << 10,
->   };
->   
->   struct ufs_hba_variant_params {
-> diff --git a/include/trace/events/ufs.h b/include/trace/events/ufs.h
-> index 84841b3a7ffd..2362244c2a9e 100644
-> --- a/include/trace/events/ufs.h
-> +++ b/include/trace/events/ufs.h
-> @@ -19,7 +19,8 @@
->   #define UFS_PWR_MODES			\
->   	EM(UFS_ACTIVE_PWR_MODE)		\
->   	EM(UFS_SLEEP_PWR_MODE)		\
-> -	EMe(UFS_POWERDOWN_PWR_MODE)
-> +	EM(UFS_POWERDOWN_PWR_MODE)	\
-> +	EMe(UFS_DEEPSLEEP_PWR_MODE)
->   
->   #define UFSCHD_CLK_GATING_STATES	\
->   	EM(CLKS_OFF)			\
+> On Fri 30 Oct 20, 19:44, Helen Koike wrote:
+>> Hi Paul,
+>>
+>> I have some comments through the series, I hope this helps.
 > 
+> Thanks for your comments :)
+> 
+>> On 10/23/20 2:45 PM, Paul Kocialkowski wrote:
+>>> This series introduces support for MIPI CSI-2, with the A31 controller that is
+>>> found on most SoCs (A31, V3s and probably V5) as well as the A83T-specific
+>>> controller. While the former uses the same MIPI D-PHY that is already supported
+>>> for DSI, the latter embeds its own D-PHY.
+>>>
+>>> In order to distinguish the use of the D-PHY between Rx mode (for MIPI CSI-2)
+>>> and Tx mode (for MIPI DSI), a submode is introduced for D-PHY in the PHY API.
+>>> This allows adding Rx support in the A31 D-PHY driver.
+>>>
+>>> A few changes and fixes are applied to the A31 CSI controller driver, in order
+>>> to support the MIPI CSI-2 use-case.
+>>>
+>>> Follows is the V4L2 device topology representing the interactions between
+>>> the MIPI CSI-2 sensor, the MIPI CSI-2 controller (which controls the D-PHY)
+>>> and the CSI controller:
+>>> - entity 1: sun6i-csi (1 pad, 1 link)
+>>>             type Node subtype V4L flags 0
+>>>             device node name /dev/video0
+>>> 	pad0: Sink
+>>> 		<- "sun6i-mipi-csi2":1 [ENABLED,IMMUTABLE]
+>>>
+>>> - entity 5: sun6i-mipi-csi2 (2 pads, 2 links)
+>>>             type V4L2 subdev subtype Unknown flags 0
+>>> 	pad0: Sink
+>>> 		<- "ov5648 0-0036":0 [ENABLED,IMMUTABLE]
+>>> 	pad1: Source
+>>> 		-> "sun6i-csi":0 [ENABLED,IMMUTABLE]
+>>>
+>>> - entity 8: ov5648 0-0036 (1 pad, 1 link)
+>>>             type V4L2 subdev subtype Sensor flags 0
+>>>             device node name /dev/v4l-subdev0
+>>
+>> Question: I noticed is that sun6i-mipi-csi2 doesn't expose a node under /dev/, but the sensor
+>> exposes it. Probably because it uses V4L2_SUBDEV_FL_HAS_DEVNODE and sun6i-csi() calls
+>> v4l2_device_register_subdev_nodes().
+>>
+>> I find this weird from a userspace pov, since usually we don't mix manual and auto propagation
+>> of the configs, so I started wondering if sun6i-csi driver should be calling
+>> v4l2_device_register_subdev_nodes() in the first place.
+> 
+> I must admit that I didn't really pay attention to that, but since
+> sun6i-mipi-csi2 is basically a bridge driver, it doesn't make sense to apply
+> manual configuration to it. It is actually designed to forward most subdev ops
+> to its own subdev so configuring it manually would actually result in
+> configuring the sensor.
+
+Ack, then maybe sun6i-csi needs a patch removing the call to v4l2_device_register_subdev_nodes()
+
+> 
+> XXX
+> 
+>> Also, sun6i-csi doesn't seem to be used by any board dts (it's declared on the dtsi, but I
+>> didn't find any dts enabling it), so I wonder if it would be a bad thing if we update it.
+>>
+>>> 	pad0: Source
+>>> 		[fmt:SBGGR8_1X8/640x480@1/30 field:none colorspace:raw xfer:none ycbcr:601 quantization:full-range]
+>>> 		-> "sun6i-mipi-csi2":0 [ENABLED,IMMUTABLE]
+>>
+>> If I understand correctly, this is very similar to ipu3:
+>>     sensor->bus->dma_engine
+>>
+>> in the case of ipu3-cio2:
+>>     sensor->ipu3-csi2->ipu3-cio2
+>>
+>> in this case:
+>>     ov5648->sun6i-mipi-csi2->sun6i-csi
+> 
+> Yes this is the correct picture.
+> 
+>> On thing that is confusing me is the name csi2 with csi (that makes me think of csi
+>> version one, which is not the case), I would rename it to sun6i-video (or maybe
+>> it is just me who gets confused).
+> 
+> So the CSI name comes from the Allwinner litterature and implementation for that
+> controller. Since it supports parallel input on its own, it does in fact support
+> parallel CSI. The DMA engine part alone from that controller is also used for
+> MIPI CSI-2, so in this case the name looses its relevance.
+> 
+>> I know this driver is already upstream and not part of this series, but on the other hand it
+>> doesn't seem to be used.
+> 
+> Personally I don't find a rename to be necessary and while I agree that
+> nothing would apparently prevent us from renaming it, I would prefer to keep
+> the naming in line with Allwinner's litterature.
+
+Ok, I didn't know it was from Allwinner's litterature, I don't mind keeping the name.
+
+> 
+>> On another note, I always wonder if we should expose the bus in the topology, I'm not
+>> sure if it provides any useful API or information for userspace, and you could have
+>> a cleaner code (maybe code could be under phy subsystem). But at the same time, it
+>> seems this is a pattern on v4l2.
+>>
+>> I'd like to hear what others think on the above.
+> 
+> My view on this is that we are dealing with two distinct controllers here,
+> one that acts as a DMA engine and one that acts as a bridge. As a result, two
+> chained subdevs looks like the most appropriate representation to me.
+> 
+> Using the PHY subsystem would probably be abusing the framework since the
+> MIPI CSI-2 controller is not a PHY (and we do have a D-PHY driver for the D-PHY
+> part that uses the PHY API already).
+> 
+> So tl;dr I don't agree that it would be cleaner.
 
 
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-Linux Foundation Collaborative Project
+My point is, this is a "dummy" subdevice in userspace pov,
+but if it is only used with auto-propagation of the configurations, then
+it doesn't matter (since userspace won't interact with that node).
+And in the kernel space you need to implement media boilerplate code.
+So I was trying to think in another alternative, but tbh I don't mind
+keeping it in the media topology.
+
+Regards,
+Helen
+
+> 
+> Cheers,
+> 
+> Paul
+> 
+>>> Happy reviewing!
+>>>
+>>> Paul Kocialkowski (14):
+>>>   phy: Distinguish between Rx and Tx for MIPI D-PHY with submodes
+>>>   phy: allwinner: phy-sun6i-mipi-dphy: Support D-PHY Rx mode for MIPI
+>>>     CSI-2
+>>>   media: sun6i-csi: Support an optional dedicated memory pool
+>>>   media: sun6i-csi: Fix the image storage bpp for 10/12-bit Bayer
+>>>     formats
+>>>   media: sun6i-csi: Only configure the interface data width for parallel
+>>>   media: sun6i-csi: Support feeding from the MIPI CSI-2 controller
+>>>   dt-bindings: media: i2c: Add A31 MIPI CSI-2 bindings documentation
+>>>   media: sunxi: Add support for the A31 MIPI CSI-2 controller
+>>>   ARM: dts: sun8i: v3s: Add CSI0 camera interface node
+>>>   ARM: dts: sun8i: v3s: Add MIPI D-PHY and MIPI CSI-2 interface nodes
+>>>   dt-bindings: media: i2c: Add A83T MIPI CSI-2 bindings documentation
+>>>   media: sunxi: Add support for the A83T MIPI CSI-2 controller
+>>>   ARM: dts: sun8i: a83t: Add MIPI CSI-2 controller node
+>>>   media: sunxi: sun8i-a83t-mipi-csi2: Avoid using the (unsolicited)
+>>>     interrupt
+>>>
+>>>  .../media/allwinner,sun6i-a31-mipi-csi2.yaml  | 168 +++++
+>>>  .../media/allwinner,sun8i-a83t-mipi-csi2.yaml | 158 +++++
+>>>  arch/arm/boot/dts/sun8i-a83t.dtsi             |  26 +
+>>>  arch/arm/boot/dts/sun8i-v3s.dtsi              |  62 ++
+>>>  drivers/media/platform/sunxi/Kconfig          |   2 +
+>>>  drivers/media/platform/sunxi/Makefile         |   2 +
+>>>  .../platform/sunxi/sun6i-csi/sun6i_csi.c      |  54 +-
+>>>  .../platform/sunxi/sun6i-csi/sun6i_csi.h      |  20 +-
+>>>  .../platform/sunxi/sun6i-mipi-csi2/Kconfig    |  11 +
+>>>  .../platform/sunxi/sun6i-mipi-csi2/Makefile   |   4 +
+>>>  .../sunxi/sun6i-mipi-csi2/sun6i_mipi_csi2.c   | 635 +++++++++++++++++
+>>>  .../sunxi/sun6i-mipi-csi2/sun6i_mipi_csi2.h   | 116 +++
+>>>  .../sunxi/sun8i-a83t-mipi-csi2/Kconfig        |  11 +
+>>>  .../sunxi/sun8i-a83t-mipi-csi2/Makefile       |   4 +
+>>>  .../sun8i-a83t-mipi-csi2/sun8i_a83t_dphy.c    |  92 +++
+>>>  .../sun8i-a83t-mipi-csi2/sun8i_a83t_dphy.h    |  39 ++
+>>>  .../sun8i_a83t_mipi_csi2.c                    | 660 ++++++++++++++++++
+>>>  .../sun8i_a83t_mipi_csi2.h                    | 196 ++++++
+>>>  drivers/phy/allwinner/phy-sun6i-mipi-dphy.c   | 164 ++++-
+>>>  drivers/staging/media/rkisp1/rkisp1-isp.c     |   3 +-
+>>>  include/linux/phy/phy-mipi-dphy.h             |  13 +
+>>>  21 files changed, 2408 insertions(+), 32 deletions(-)
+>>>  create mode 100644 Documentation/devicetree/bindings/media/allwinner,sun6i-a31-mipi-csi2.yaml
+>>>  create mode 100644 Documentation/devicetree/bindings/media/allwinner,sun8i-a83t-mipi-csi2.yaml
+>>>  create mode 100644 drivers/media/platform/sunxi/sun6i-mipi-csi2/Kconfig
+>>>  create mode 100644 drivers/media/platform/sunxi/sun6i-mipi-csi2/Makefile
+>>>  create mode 100644 drivers/media/platform/sunxi/sun6i-mipi-csi2/sun6i_mipi_csi2.c
+>>>  create mode 100644 drivers/media/platform/sunxi/sun6i-mipi-csi2/sun6i_mipi_csi2.h
+>>>  create mode 100644 drivers/media/platform/sunxi/sun8i-a83t-mipi-csi2/Kconfig
+>>>  create mode 100644 drivers/media/platform/sunxi/sun8i-a83t-mipi-csi2/Makefile
+>>>  create mode 100644 drivers/media/platform/sunxi/sun8i-a83t-mipi-csi2/sun8i_a83t_dphy.c
+>>>  create mode 100644 drivers/media/platform/sunxi/sun8i-a83t-mipi-csi2/sun8i_a83t_dphy.h
+>>>  create mode 100644 drivers/media/platform/sunxi/sun8i-a83t-mipi-csi2/sun8i_a83t_mipi_csi2.c
+>>>  create mode 100644 drivers/media/platform/sunxi/sun8i-a83t-mipi-csi2/sun8i_a83t_mipi_csi2.h
+>>>
+> 
