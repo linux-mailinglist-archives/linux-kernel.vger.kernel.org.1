@@ -2,101 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6342B2A6F3F
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 21:54:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28C8C2A6F45
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 21:56:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732439AbgKDUyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 15:54:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49766 "EHLO
+        id S1731931AbgKDU43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 15:56:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727013AbgKDUyj (ORCPT
+        with ESMTP id S1727013AbgKDU43 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 15:54:39 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7F8DC0613D3
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 12:54:38 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id z4so33840ybk.15
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 12:54:38 -0800 (PST)
+        Wed, 4 Nov 2020 15:56:29 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FB1AC0613D3;
+        Wed,  4 Nov 2020 12:56:29 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id p22so3704284wmg.3;
+        Wed, 04 Nov 2020 12:56:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=ydU8MqNb5ODaxL3+Z2DSyH1qiAoSfviF3VEkdiIDKBY=;
-        b=Mi+nN8QIQ7x63V+TG/eYb4r6c6UacmC9riV2b3bPg3sSUVtnALhVnovndw/IexzccJ
-         nx8Les/RmPNDQZDpqqytrNU82vpIYrJEEOw/MlSsV4hCS6sIDVhvOvXWlTszMpvrP1nl
-         iSdNI7J0W6i3+3z87KzdLwSTQr6AEw+LipxCCs1IocG+9tkFWO6epStStoDcqwxzSDsY
-         i5MBM4tspoQnVHGlZ4PAtsEecXczCzCKWjA2c/WonpQkECU5wL8woPGrIAmt5fxWFCmY
-         hWwsXUMHpeyhOtvxkHcgqCZ8SUsTQTBZdHayWNXal4DLYAwiiH1LLtDiqi6SOXBP7d70
-         gX3Q==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QMz5XuaiSl2y5K3brn4ts6zliBq11tCQumna2ZD9gwg=;
+        b=SJZCCPmggjEI3WSwrNv12XAc3V0t974Tjot8SwxaA5JGO+QOStpAbOhFhtiOnvu3+b
+         yDmvlIEjwUlHMqAk6tS7kx2Qn/mqVpTUdCuw5s3eGDyx7Vb24Qw2cFAfifbhXvThB0ZM
+         BkWEexz8mfawPufJKrMmmu/9sSa/MRKxNzi89UxCf4muNRFC4TCnUGWO8tNRMdmsC8pg
+         or8u3PCTPuOksBmF7KDKEUr48DlKDlLhC7Lh8g1wgErBO7P+nwB9Du48eX7kwvB8Xfmo
+         vuVoztUap4U9Xp6HUDM0NntBsB2YTmI3MTxTeP6eeIIi68YzsWMwgNkaDJQqVN1B9jl2
+         cznQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=ydU8MqNb5ODaxL3+Z2DSyH1qiAoSfviF3VEkdiIDKBY=;
-        b=F6g8M2wDu1yiYXlOVtuKLoOzsH7pF/nyoukaZhoRfa4QbjQwLcvFrUODsyjqsQp7LT
-         GVEwEJ8Jbg+Dh+2QDCgLVgHJkho08407on9UAqSCAZ/GgQ49Nc9ujRAUlSnBWH7V7DKV
-         4H6ZluCdJpHOQD6yH2hqZwG4MvMQzPL88QJ02brf5yX0cg4JecLtlQMnhtVluM+QyiRQ
-         VHhgzG/ijEdUjFqwRHavrFpdDiUKUy6SwRVWzziLHKvIDC4856Q6jl3VVl3MMOvGClrZ
-         J9VTepYAwVJ/tZhdnINQ38nwm+xUUPXTw5VxkeAclolm/XUdi0/TnVmylIKDO5JYB0jF
-         8JHg==
-X-Gm-Message-State: AOAM531QkAUtmwpqAKeV6wllParaTHvBf1QSJXwccG68U9fgy2kAMhRE
-        Qhci0V08uIC45aHDUayK1g/vmXhQmDwefkU=
-X-Google-Smtp-Source: ABdhPJw5zVtQunGCPIAfu7fOW9XCFg0q3VsIcMowV4//GgSeDsTJfw4AS5PE/RJBihvUIcjkmYJH4b+ocO86DZg=
-Sender: "saravanak via sendgmr" <saravanak@saravanak.san.corp.google.com>
-X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:7220:84ff:fe09:fedc])
- (user=saravanak job=sendgmr) by 2002:a25:8709:: with SMTP id
- a9mr36737716ybl.208.1604523278064; Wed, 04 Nov 2020 12:54:38 -0800 (PST)
-Date:   Wed,  4 Nov 2020 12:54:31 -0800
-In-Reply-To: <20201104205431.3795207-1-saravanak@google.com>
-Message-Id: <20201104205431.3795207-2-saravanak@google.com>
-Mime-Version: 1.0
-References: <20201104205431.3795207-1-saravanak@google.com>
-X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
-Subject: [PATCH v1 2/2] spi: Populate fwnode in of_register_spi_device()
-From:   Saravana Kannan <saravanak@google.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     Saravana Kannan <saravanak@google.com>,
-        Cheng-Jui.Wang@mediatek.com, kernel-team@android.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        clang-built-linux@googlegroups.com,
-        Daniel Mentz <danielmentz@google.com>,
-        linux-spi@vger.kernel.org
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QMz5XuaiSl2y5K3brn4ts6zliBq11tCQumna2ZD9gwg=;
+        b=TQrrN0Vxh+v+Q5rF+5rgPq20uFwHHSbEEMSR0v5+fSPY5gxYKi36kYvxsxfewKmnrN
+         gEIexoIQlkRNjFwxC9cBXt0tF98EA5F3BXpqiWTyVDkNCA3/me/S8ZvhuPzmrO9d7O4d
+         AxnZQvwOHhGhUb54pKasm6A4F59GbRHQe/N5fFzKsCCSZokAXJVBObKk7jwiU2umRbMY
+         Jv+l9WToxwtbABCtqHZAAYShgAVTDujEqSTH4xb6KwfV/9RvSlvoTvIR00bRmpf89aoZ
+         nUJCGU+ZmreF/4msH6xnQxSDcbNajoanxgDm48rvlw6S42RCsoAI4ziblxr3g9FS9+sw
+         Vmng==
+X-Gm-Message-State: AOAM533xw+NKklIlMfPvc85uiPepmmNo9wDYWNQRIGefLQBrJ7chyFFh
+        wTKgn18Q2BuTM7mN9pUh5zvWXt9XyjI8+gpQM5o=
+X-Google-Smtp-Source: ABdhPJwZj9HwapeVTBuX6MbvmCI10ccxfb2V7iPfEujOr2zcUHGnUhcVOI4/pc/YpbPMBdEWvizQ7MVVagmsgcK7PJE=
+X-Received: by 2002:a7b:c145:: with SMTP id z5mr2246798wmi.164.1604523387717;
+ Wed, 04 Nov 2020 12:56:27 -0800 (PST)
+MIME-Version: 1.0
+References: <1604054832-3114-1-git-send-email-akhilpo@codeaurora.org>
+ <1604054832-3114-3-git-send-email-akhilpo@codeaurora.org> <20201104200300.GA4036650@bogus>
+In-Reply-To: <20201104200300.GA4036650@bogus>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Wed, 4 Nov 2020 12:58:02 -0800
+Message-ID: <CAF6AEGvj34MbnRS+A432AhOwMuL2BtTXJ+AD+zQ9w0_meV_-gw@mail.gmail.com>
+Subject: Re: [Freedreno] [PATCH v5 3/3] dt-bindings: drm/msm/gpu: Add cooling
+ device support
+To:     Rob Herring <robh@kernel.org>
+Cc:     Akhil P Oommen <akhilpo@codeaurora.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        dri-devel@freedesktop.org,
+        freedreno <freedreno@lists.freedesktop.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Mentz <danielmentz@google.com>
+On Wed, Nov 4, 2020 at 12:03 PM Rob Herring <robh@kernel.org> wrote:
+>
+> On Fri, 30 Oct 2020 16:17:12 +0530, Akhil P Oommen wrote:
+> > Add cooling device support to gpu. A cooling device is bound to a
+> > thermal zone to allow thermal mitigation.
+> >
+> > Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
+> > Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+> > ---
+> >  Documentation/devicetree/bindings/display/msm/gpu.txt | 7 +++++++
+> >  1 file changed, 7 insertions(+)
+> >
+>
+>
+> Please add Acked-by/Reviewed-by tags when posting new versions. However,
+> there's no need to repost patches *only* to add the tags. The upstream
+> maintainer will do that for acks received on the version they apply.
+>
+> If a tag was not added on purpose, please state why and what changed.
+>
 
-This allows the fw_devlink feature to work for spi devices
-too.  This avoids unnecessary probe deferrals related to spi devices and
-improves suspend/resume ordering for spi devices when fw_devlink=on.
 
-Signed-off-by: Daniel Mentz <danielmentz@google.com>
-[saravanak: Minor commit text cleanup]
-Signed-off-by: Saravana Kannan <saravanak@google.com>
----
- drivers/spi/spi.c | 1 +
- 1 file changed, 1 insertion(+)
+Thanks Rob
 
-diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
-index 0cab239d8e7f..d533aa939cca 100644
---- a/drivers/spi/spi.c
-+++ b/drivers/spi/spi.c
-@@ -2037,6 +2037,7 @@ of_register_spi_device(struct spi_controller *ctlr, struct device_node *nc)
- 	/* Store a pointer to the node in the device structure */
- 	of_node_get(nc);
- 	spi->dev.of_node = nc;
-+	spi->dev.fwnode = of_fwnode_handle(nc);
- 
- 	/* Register the new device */
- 	rc = spi_add_device(spi);
--- 
-2.29.1.341.ge80a0c044ae-goog
+I've copied over your ack from the previous version.. but yes, it
+definitely makes my life easier when patch senders do this for me ;-)
 
+BR,
+-R
