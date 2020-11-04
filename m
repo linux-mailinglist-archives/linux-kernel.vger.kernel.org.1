@@ -2,348 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D40262A63A2
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 12:53:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E8B12A63A6
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 12:53:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729421AbgKDLxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 06:53:16 -0500
-Received: from lb2-smtp-cloud9.xs4all.net ([194.109.24.26]:50433 "EHLO
-        lb2-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728700AbgKDLwa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 06:52:30 -0500
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud9.xs4all.net with ESMTPA
-        id aHKtkUfLD1R0xaHKwkHfqO; Wed, 04 Nov 2020 12:52:23 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
-        t=1604490743; bh=toNJ5TT0JPby3+Tl2rMCfmEOox/rzcuEcDGj7MXUk8Q=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=jKxNZlDMuc7RB6mOPhjajO/AP0b6TJc0Fo1kDtyc3uU05hNn73A4HngCxuFog9TcR
-         QJHnKb76hSKxqWtWZmfwWDRz8WjqSq73kogpQ7BwTub8Sgu1PxRDrstVXVUVLuUNH+
-         pNrY1abm0xu/f3HDSNjsEjQxHLDJUc5DCBXZ7ZcSXO0Ptl07NLkhwGPh6IOqUeIjoz
-         Jx22QwhXf0k1cNxakn7XlalEzMe81yxJg0JX3zWKkF6iCvUUiXqSfeNU5cWEmE3zMg
-         j4ii647kErwnqB5JgcKfjmE266NUsRlu8woJP7ZSgOfA0YGfutPJDKVm9a7EiZN8F+
-         3K+YGMKuftvpQ==
-Subject: Re: [PATCH v4 00/11] Add V4L2 driver for i.MX8 JPEG Encoder/Decoder
-To:     "Mirela Rabulea (OSS)" <mirela.rabulea@oss.nxp.com>,
-        mchehab@kernel.org, shawnguo@kernel.org, robh+dt@kernel.org
-Cc:     paul.kocialkowski@bootlin.com, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-imx@nxp.com,
-        s.hauer@pengutronix.de, aisheng.dong@nxp.com,
-        daniel.baluta@nxp.com, robert.chiras@nxp.com,
-        laurentiu.palcu@nxp.com, mark.rutland@arm.com,
-        devicetree@vger.kernel.org, p.zabel@pengutronix.de,
-        ezequiel@collabora.com, laurent.pinchart+renesas@ideasonboard.com,
-        niklas.soderlund+renesas@ragnatech.se,
-        dafna.hirschfeld@collabora.com,
-        Mirela Rabulea <mirela.rabulea@nxp.com>
-References: <20201102030821.3049-1-mirela.rabulea@oss.nxp.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <9c6cf9bf-f6d8-78f5-5f31-d7ea9e25da0d@xs4all.nl>
-Date:   Wed, 4 Nov 2020 12:52:19 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1729488AbgKDLx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 06:53:27 -0500
+Received: from mga04.intel.com ([192.55.52.120]:2014 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726344AbgKDLw1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 06:52:27 -0500
+IronPort-SDR: eqx+g7s30Wc/9Nau371tKlz/Ud92KiV/aJtZSyG3BkTYwyCzc18ZOFzQ0aZ5Y6+ViLayXKbDTE
+ hsPkNRTFkNvw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9794"; a="166613756"
+X-IronPort-AV: E=Sophos;i="5.77,450,1596524400"; 
+   d="scan'208";a="166613756"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2020 03:52:27 -0800
+IronPort-SDR: 7ncpuVVDPmthK2Ha1LadJKAMOHcImbcuboUuE4AURtqTe9gQE2BM4dhers92R1uWpSlza7/xg0
+ RuI9MaIW+xtQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,450,1596524400"; 
+   d="scan'208";a="363957787"
+Received: from cli6-desk1.ccr.corp.intel.com (HELO [10.239.161.135]) ([10.239.161.135])
+  by orsmga007.jf.intel.com with ESMTP; 04 Nov 2020 03:52:23 -0800
+Subject: Re: [RFC PATCH v3] sched/fair: select idle cpu from idle cpumask for
+ task wakeup
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        tim.c.chen@linux.intel.com, linux-kernel@vger.kernel.org,
+        Aubrey Li <aubrey.li@intel.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Jiang Biao <benbjiang@gmail.com>
+References: <20201021150335.1103231-1-aubrey.li@linux.intel.com>
+ <jhjimamz1dv.mognet@arm.com>
+From:   "Li, Aubrey" <aubrey.li@linux.intel.com>
+Message-ID: <27f88d6a-302e-2c28-c936-22ac233fe175@linux.intel.com>
+Date:   Wed, 4 Nov 2020 19:52:22 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <20201102030821.3049-1-mirela.rabulea@oss.nxp.com>
+In-Reply-To: <jhjimamz1dv.mognet@arm.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfEUWeBmrHKObsUsH9Y2REA2s9GY16a1AnauCpf88xRQ5Q7TIh3i3B5Tp83UDHeo1Yz1CAWxoVZqhKmzQNJKzShXQKjUqr2luai0az0E4o0/ij8ZBdGrt
- T720HDEwVqEbwQo5MbEqSkYVlJPmo1Blx7LXJhZSckP7m89lf1Jp9+qnKgb0OK2YcvjiAYhqaC+C+dePkFhMC4l15eHbMYOMc7il4oTWb4XMVx/+mrXzXX3m
- 2PZyo2ZwI4e3jYpu2v3cO12TqexbaXTygGoejvE7bovCAuo1RbLx8DVvsne9cpy/yaIExQbPmgBUrCeTq5arW0O6nuPQ4slUYJu7rNRYOWhWNKBCYxxMZKzP
- xc2aQoi7Vug19IwHqhOXhdGkqKA/u/IiBi83WFOfxRzwvGfruvMydAZp2Ni4nYJusOKyDICwmpthUasAMUnHU7tNtJ9y/tfXvbSmTJCOVDbdx53KJdE6y1IL
- t9/3u95JMC5auTLSsd42YJ9Yd99J9/MiBNwl6v4x7uunj32PHU0EDuyrmGEhpLjXa/eXv1x2Mj2n3+lKsN3FBsZxR5BDaeY+El1TckCQlVvi0/gr0RJv9J4G
- 17cP6JQMvzkQ5g49gzKne4a/9ge3fD1YQpPAKn3xmjwJpveh63xmut1I6vgx1EbPH7vHfV/bnlFw17466CPjWKiDZ7XQJjHcfRUMrLwByfXBYMjk9X1yDpUU
- nPtwY/RzNtdiwYj/I99jrj98+NXxHmiNSKIZBrK9VMvi8n4fn8KfwoOO8CtmgKvLb8rUQditqzzQ1N4znr6U93GGI7bFC4kHM4/kPMZKyCIZSTjpyg6BYLpF
- VHB5JFGvhJRAvOc9IpmAxOscL31y6CwC01bq1Ys1AJXrmuu0SlEQljG39bNag1uS3TmT6sOO/F1LviM9lCJ18sF7RslSYdyzqqDaWRWHMfH36Vm7gVBjycGM
- 5T2hHw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/11/2020 04:08, Mirela Rabulea (OSS) wrote:
-> From: Mirela Rabulea <mirela.rabulea@nxp.com>
-> 
-> Changes in v4:
-> The main change is using the common jpeg helpers in imx-jpeg
-> Summary of changes:
-> Patch 1, 2, 3, 5, 6 - no change
-> Patch 4 - small update: VFL_TYPE_VIDEO-> VFL_TYPE_GRABBER and 2 typos
-> Patch 7 - new, fixed a problem with v4l2-compliance streaming tests on decoder
-> Patch 8,9,10 - new, changes in jpeg helpers.
-> Patch 11- new, use jpeg helpers in imx-jpeg, as requested during review, requires patch 8
-> 
-> This patch set adds the V4L2 driver for i.MX8QXP/QM JPEG encoder/decoder
-> and it's dependencies.
-> The driver was tested on i.MX8QXP, using a unit test application and
-> the v4l2-compliance tool, including the  streaming tests for decoder & encoder.
-> 
-> The output of v4l2-compliance (stable-1.20) on i.MX8QXP, decoder & encoder:
-> 
-> root@imx8qxpmek:/unit_tests/JPEG# ./v4l2-compliance-stable-1.20 -d /dev/video0 -s
-> v4l2-compliance SHA: 6c415a11fceb32067cdb5c2e33f90dbf018182a4, 64 bits, 64-bit time_t
+Hi Valentin,
 
-This is much too old. Always compile v4l2-compliance from the v4l-utils git
-repository (https://git.linuxtv.org/v4l-utils.git/) to ensure you use the
-latest version and the latest compliance checks.
+Thanks for your reply.
 
-I.e., the reported SHA should match that of HEAD.
+On 2020/11/4 3:27, Valentin Schneider wrote:
+> 
+> Hi,
+> 
+> On 21/10/20 16:03, Aubrey Li wrote:
+>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+>> index 6b3b59cc51d6..088d1995594f 100644
+>> --- a/kernel/sched/fair.c
+>> +++ b/kernel/sched/fair.c
+>> @@ -6023,6 +6023,38 @@ void __update_idle_core(struct rq *rq)
+>>       rcu_read_unlock();
+>>  }
+>>
+>> +static DEFINE_PER_CPU(bool, cpu_idle_state);
+> 
+> I would've expected this to be far less compact than a cpumask, but that's
+> not the story readelf is telling me. Objdump tells me this is recouping
+> some of the padding in .data..percpu, at least with the arm64 defconfig.
+> 
+> In any case this ought to be better wrt cacheline bouncing, which I suppose
+> is what we ultimately want here.
 
-Regards,
-
-	Hans
+Yes, every CPU has a byte, so it may not be less than a cpumask. Probably I can
+put it into struct rq, do you have any better suggestions?
 
 > 
-> Compliance test for mxc-jpeg decode device /dev/video0:
+> Also, see rambling about init value below.
 > 
-> Driver Info:
-> 	Driver name      : mxc-jpeg decode
-> 	Card type        : mxc-jpeg decoder
-> 	Bus info         : platform:58400000.jpegdec
-> 	Driver version   : 5.10.0
-> 	Capabilities     : 0x84204000
-> 		Video Memory-to-Memory Multiplanar
-> 		Streaming
-> 		Extended Pix Format
-> 		Device Capabilities
-> 	Device Caps      : 0x04204000
-> 		Video Memory-to-Memory Multiplanar
-> 		Streaming
-> 		Extended Pix Format
-> 	Detected JPEG Decoder
+>> @@ -10070,6 +10107,12 @@ static void nohz_balancer_kick(struct rq *rq)
+>>       if (unlikely(rq->idle_balance))
+>>               return;
+>>
+>> +	/* The CPU is not in idle, update idle cpumask */
+>> +	if (unlikely(sched_idle_cpu(cpu))) {
+>> +		/* Allow SCHED_IDLE cpu as a wakeup target */
+>> +		update_idle_cpumask(rq, true);
+>> +	} else
+>> +		update_idle_cpumask(rq, false);
 > 
-> Required ioctls:
-> 	test VIDIOC_QUERYCAP: OK
+> This means that without CONFIG_NO_HZ_COMMON, a CPU going into idle will
+> never be accounted as going out of it, right? Eventually the cpumask
+> should end up full, which conceptually implements the previous behaviour of
+> select_idle_cpu() but in a fairly roundabout way...
+
+Maybe I can move it to scheduler_tick().
+
 > 
-> Allow for multiple opens:
-> 	test second /dev/video0 open: OK
-> 	test VIDIOC_QUERYCAP: OK
-> 	test VIDIOC_G/S_PRIORITY: OK
-> 	test for unlimited opens: OK
+>> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+>> index 9079d865a935..f14a6ef4de57 100644
+>> --- a/kernel/sched/topology.c
+>> +++ b/kernel/sched/topology.c
+>> @@ -1407,6 +1407,7 @@ sd_init(struct sched_domain_topology_level *tl,
+>>               sd->shared = *per_cpu_ptr(sdd->sds, sd_id);
+>>               atomic_inc(&sd->shared->ref);
+>>               atomic_set(&sd->shared->nr_busy_cpus, sd_weight);
+>> +		cpumask_copy(sds_idle_cpus(sd->shared), sched_domain_span(sd));
 > 
-> 	test invalid ioctls: OK
-> Debug ioctls:
-> 	test VIDIOC_DBG_G/S_REGISTER: OK (Not Supported)
-> 	test VIDIOC_LOG_STATUS: OK (Not Supported)
+> So at init you would have (single LLC for sake of simplicity):
 > 
-> Input ioctls:
-> 	test VIDIOC_G/S_TUNER/ENUM_FREQ_BANDS: OK (Not Supported)
-> 	test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
-> 	test VIDIOC_S_HW_FREQ_SEEK: OK (Not Supported)
-> 	test VIDIOC_ENUMAUDIO: OK (Not Supported)
-> 	test VIDIOC_G/S/ENUMINPUT: OK (Not Supported)
-> 	test VIDIOC_G/S_AUDIO: OK (Not Supported)
-> 	Inputs: 0 Audio Inputs: 0 Tuners: 0
+>   \all cpu : cpu_idle_state[cpu]  == false
+>   cpumask_full(sds_idle_cpus)     == true
 > 
-> Output ioctls:
-> 	test VIDIOC_G/S_MODULATOR: OK (Not Supported)
-> 	test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
-> 	test VIDIOC_ENUMAUDOUT: OK (Not Supported)
-> 	test VIDIOC_G/S/ENUMOUTPUT: OK (Not Supported)
-> 	test VIDIOC_G/S_AUDOUT: OK (Not Supported)
-> 	Outputs: 0 Audio Outputs: 0 Modulators: 0
+> IOW it'll require all CPUs to go idle at some point for these two states to
+> be properly aligned. Should cpu_idle_state not then be init'd to 1?
 > 
-> Input/Output configuration ioctls:
-> 	test VIDIOC_ENUM/G/S/QUERY_STD: OK (Not Supported)
-> 	test VIDIOC_ENUM/G/S/QUERY_DV_TIMINGS: OK (Not Supported)
-> 	test VIDIOC_DV_TIMINGS_CAP: OK (Not Supported)
-> 	test VIDIOC_G/S_EDID: OK (Not Supported)
-> 
-> Control ioctls:
-> 	test VIDIOC_QUERY_EXT_CTRL/QUERYMENU: OK (Not Supported)
-> 	test VIDIOC_QUERYCTRL: OK (Not Supported)
-> 	test VIDIOC_G/S_CTRL: OK (Not Supported)
-> 	test VIDIOC_G/S/TRY_EXT_CTRLS: OK (Not Supported)
-> 	test VIDIOC_(UN)SUBSCRIBE_EVENT/DQEVENT: OK (Not Supported)
-> 	test VIDIOC_G/S_JPEGCOMP: OK (Not Supported)
-> 	Standard Controls: 0 Private Controls: 0
-> 
-> Format ioctls:
-> 	test VIDIOC_ENUM_FMT/FRAMESIZES/FRAMEINTERVALS: OK
-> 	test VIDIOC_G/S_PARM: OK (Not Supported)
-> 	test VIDIOC_G_FBUF: OK (Not Supported)
-> 	test VIDIOC_G_FMT: OK
-> 	test VIDIOC_TRY_FMT: OK
-> 	test VIDIOC_S_FMT: OK
-> 	test VIDIOC_G_SLICED_VBI_CAP: OK (Not Supported)
-> 	test Cropping: OK (Not Supported)
-> 	test Composing: OK (Not Supported)
-> 	test Scaling: OK
-> 
-> Codec ioctls:
-> 	test VIDIOC_(TRY_)ENCODER_CMD: OK
-> 	test VIDIOC_G_ENC_INDEX: OK (Not Supported)
-> 	test VIDIOC_(TRY_)DECODER_CMD: OK
-> 
-> Buffer ioctls:
-> 	test VIDIOC_REQBUFS/CREATE_BUFS/QUERYBUF: OK
-> 	test VIDIOC_EXPBUF: OK
-> 	test Requests: OK (Not Supported)
-> 
-> Test input 0:
-> 
-> Streaming ioctls:
-> 	test read/write: OK (Not Supported)
-> 	test blocking wait: OK
-> 	Video Capture Multiplanar: Captured 58 buffers    
-> 	test MMAP (no poll): OK
-> 	Video Capture Multiplanar: Captured 58 buffers    
-> 	test MMAP (select): OK
-> 	Video Capture Multiplanar: Captured 58 buffers    
-> 	test MMAP (epoll): OK
-> 	test USERPTR (no poll): OK (Not Supported)
-> 	test USERPTR (select): OK (Not Supported)
-> 	test DMABUF: Cannot test, specify --expbuf-device
-> 
-> Total for mxc-jpeg decode device /dev/video0: 52, Succeeded: 52, Failed: 0, Warnings: 0
->  
-> root@imx8qxpmek:/unit_tests/JPEG# ./v4l2-compliance-stable-1.20 -d /dev/video1 -s
-> v4l2-compliance SHA: 6c415a11fceb32067cdb5c2e33f90dbf018182a4, 64 bits, 64-bit time_t
-> 
-> Compliance test for mxc-jpeg decode device /dev/video1:
-> 
-> Driver Info:
-> 	Driver name      : mxc-jpeg decode
-> 	Card type        : mxc-jpeg decoder
-> 	Bus info         : platform:58450000.jpegenc
-> 	Driver version   : 5.10.0
-> 	Capabilities     : 0x84204000
-> 		Video Memory-to-Memory Multiplanar
-> 		Streaming
-> 		Extended Pix Format
-> 		Device Capabilities
-> 	Device Caps      : 0x04204000
-> 		Video Memory-to-Memory Multiplanar
-> 		Streaming
-> 		Extended Pix Format
-> 	Detected JPEG Encoder
-> 
-> Required ioctls:
-> 	test VIDIOC_QUERYCAP: OK
-> 
-> Allow for multiple opens:
-> 	test second /dev/video1 open: OK
-> 	test VIDIOC_QUERYCAP: OK
-> 	test VIDIOC_G/S_PRIORITY: OK
-> 	test for unlimited opens: OK
-> 
-> 	test invalid ioctls: OK
-> Debug ioctls:
-> 	test VIDIOC_DBG_G/S_REGISTER: OK (Not Supported)
-> 	test VIDIOC_LOG_STATUS: OK (Not Supported)
-> 
-> Input ioctls:
-> 	test VIDIOC_G/S_TUNER/ENUM_FREQ_BANDS: OK (Not Supported)
-> 	test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
-> 	test VIDIOC_S_HW_FREQ_SEEK: OK (Not Supported)
-> 	test VIDIOC_ENUMAUDIO: OK (Not Supported)
-> 	test VIDIOC_G/S/ENUMINPUT: OK (Not Supported)
-> 	test VIDIOC_G/S_AUDIO: OK (Not Supported)
-> 	Inputs: 0 Audio Inputs: 0 Tuners: 0
-> 
-> Output ioctls:
-> 	test VIDIOC_G/S_MODULATOR: OK (Not Supported)
-> 	test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
-> 	test VIDIOC_ENUMAUDOUT: OK (Not Supported)
-> 	test VIDIOC_G/S/ENUMOUTPUT: OK (Not Supported)
-> 	test VIDIOC_G/S_AUDOUT: OK (Not Supported)
-> 	Outputs: 0 Audio Outputs: 0 Modulators: 0
-> 
-> Input/Output configuration ioctls:
-> 	test VIDIOC_ENUM/G/S/QUERY_STD: OK (Not Supported)
-> 	test VIDIOC_ENUM/G/S/QUERY_DV_TIMINGS: OK (Not Supported)
-> 	test VIDIOC_DV_TIMINGS_CAP: OK (Not Supported)
-> 	test VIDIOC_G/S_EDID: OK (Not Supported)
-> 
-> Control ioctls:
-> 	test VIDIOC_QUERY_EXT_CTRL/QUERYMENU: OK (Not Supported)
-> 	test VIDIOC_QUERYCTRL: OK (Not Supported)
-> 	test VIDIOC_G/S_CTRL: OK (Not Supported)
-> 	test VIDIOC_G/S/TRY_EXT_CTRLS: OK (Not Supported)
-> 	test VIDIOC_(UN)SUBSCRIBE_EVENT/DQEVENT: OK (Not Supported)
-> 	test VIDIOC_G/S_JPEGCOMP: OK (Not Supported)
-> 	Standard Controls: 0 Private Controls: 0
-> 
-> Format ioctls:
-> 	test VIDIOC_ENUM_FMT/FRAMESIZES/FRAMEINTERVALS: OK
-> 	test VIDIOC_G/S_PARM: OK (Not Supported)
-> 	test VIDIOC_G_FBUF: OK (Not Supported)
-> 	test VIDIOC_G_FMT: OK
-> 	test VIDIOC_TRY_FMT: OK
-> 	test VIDIOC_S_FMT: OK
-> 	test VIDIOC_G_SLICED_VBI_CAP: OK (Not Supported)
-> 	test Cropping: OK (Not Supported)
-> 	test Composing: OK (Not Supported)
-> 	test Scaling: OK (Not Supported)
-> 
-> Codec ioctls:
-> 	test VIDIOC_(TRY_)ENCODER_CMD: OK
-> 	test VIDIOC_G_ENC_INDEX: OK (Not Supported)
-> 	test VIDIOC_(TRY_)DECODER_CMD: OK
-> 
-> Buffer ioctls:
-> 	test VIDIOC_REQBUFS/CREATE_BUFS/QUERYBUF: OK
-> 	test VIDIOC_EXPBUF: OK
-> 	test Requests: OK (Not Supported)
-> 
-> Test input 0:
-> 
-> Streaming ioctls:
-> 	test read/write: OK (Not Supported)
-> 	test blocking wait: OK
-> 	Video Capture Multiplanar: Captured 58 buffers    
-> 	test MMAP (no poll): OK
-> 	Video Capture Multiplanar: Captured 58 buffers    
-> 	test MMAP (select): OK
-> 	Video Capture Multiplanar: Captured 58 buffers    
-> 	test MMAP (epoll): OK
-> 	test USERPTR (no poll): OK (Not Supported)
-> 	test USERPTR (select): OK (Not Supported)
-> 	test DMABUF: Cannot test, specify --expbuf-device
-> 
-> Total for mxc-jpeg decode device /dev/video1: 52, Succeeded: 52, Failed: 0, Warnings: 0
-> root@imx8qxpmek:/unit_tests/JPEG# 
-> 
-> 
-> Mirela Rabulea (11):
->   media: v4l: Add packed YUV444 24bpp pixel format
->   firmware: imx: scu-pd: Add power domains for imx-jpeg
->   media: dt-bindings: Add bindings for i.MX8QXP/QM JPEG driver
->   media: imx-jpeg: Add V4L2 driver for i.MX8 JPEG Encoder/Decoder
->   arm64: dts: imx8qxp: Add jpeg encoder/decoder nodes
->   Add maintainer for IMX jpeg v4l2 driver
->   media: imx-jpeg: Fix v4l2-compliance streaming tests on decoder
->   media: Add parsing for APP14 data segment in jpeg helpers
->   media: Quit parsing stream if doesn't start with SOI
->   media: Avoid parsing quantization and huffman tables
->   media: imx-jpeg: Use v4l2 jpeg helpers in mxc-jpeg
-> 
->  .../devicetree/bindings/media/imx8-jpeg.yaml  |   83 +
->  .../media/v4l/pixfmt-packed-yuv.rst           |   37 +-
->  MAINTAINERS                                   |    8 +
->  arch/arm64/boot/dts/freescale/imx8qxp-mek.dts |    8 +
->  arch/arm64/boot/dts/freescale/imx8qxp.dtsi    |   37 +
->  drivers/firmware/imx/scu-pd.c                 |    6 +
->  drivers/media/platform/Kconfig                |    2 +
->  drivers/media/platform/Makefile               |    1 +
->  drivers/media/platform/imx-jpeg/Kconfig       |   11 +
->  drivers/media/platform/imx-jpeg/Makefile      |    3 +
->  drivers/media/platform/imx-jpeg/mxc-jpeg-hw.c |  168 ++
->  drivers/media/platform/imx-jpeg/mxc-jpeg-hw.h |  140 ++
->  drivers/media/platform/imx-jpeg/mxc-jpeg.c    | 2185 +++++++++++++++++
->  drivers/media/platform/imx-jpeg/mxc-jpeg.h    |  184 ++
->  drivers/media/v4l2-core/v4l2-ioctl.c          |    1 +
->  drivers/media/v4l2-core/v4l2-jpeg.c           |   52 +-
->  include/media/v4l2-jpeg.h                     |   16 +-
->  include/uapi/linux/videodev2.h                |    1 +
->  18 files changed, 2933 insertions(+), 10 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/media/imx8-jpeg.yaml
->  create mode 100644 drivers/media/platform/imx-jpeg/Kconfig
->  create mode 100644 drivers/media/platform/imx-jpeg/Makefile
->  create mode 100644 drivers/media/platform/imx-jpeg/mxc-jpeg-hw.c
->  create mode 100644 drivers/media/platform/imx-jpeg/mxc-jpeg-hw.h
->  create mode 100644 drivers/media/platform/imx-jpeg/mxc-jpeg.c
->  create mode 100644 drivers/media/platform/imx-jpeg/mxc-jpeg.h
+> This then happens again for hotplug, except that cpu_idle_state[cpu] may be
+> either true or false when the sds_idle_cpus mask is reset to 1's.
 > 
 
+okay, will refine this in the next version.
+
+Thanks,
+-Aubrey
