@@ -2,76 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E96552A6FAD
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 22:30:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3C8B2A6FB4
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 22:34:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730713AbgKDVaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 16:30:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55396 "EHLO
+        id S1730019AbgKDVeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 16:34:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728045AbgKDVaJ (ORCPT
+        with ESMTP id S1727098AbgKDVeD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 16:30:09 -0500
-X-Greylist: delayed 4601 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 04 Nov 2020 13:30:09 PST
-Received: from hera.aquilenet.fr (hera.aquilenet.fr [IPv6:2a0c:e300::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 877C8C0613D3;
-        Wed,  4 Nov 2020 13:30:09 -0800 (PST)
-Received: from localhost (localhost [127.0.0.1])
-        by hera.aquilenet.fr (Postfix) with ESMTP id 16C7DC21;
-        Wed,  4 Nov 2020 22:30:08 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at aquilenet.fr
-Received: from hera.aquilenet.fr ([127.0.0.1])
-        by localhost (hera.aquilenet.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 7gAZfkZ-VP_y; Wed,  4 Nov 2020 22:30:07 +0100 (CET)
-Received: from function.youpi.perso.aquilenet.fr (unknown [IPv6:2a01:cb19:956:1b00:9eb6:d0ff:fe88:c3c7])
-        by hera.aquilenet.fr (Postfix) with ESMTPSA id 2977D29E;
-        Wed,  4 Nov 2020 22:30:07 +0100 (CET)
-Received: from samy by function.youpi.perso.aquilenet.fr with local (Exim 4.94)
-        (envelope-from <samuel.thibault@ens-lyon.org>)
-        id 1kaQM1-003eHu-Ok; Wed, 04 Nov 2020 22:30:05 +0100
-Date:   Wed, 4 Nov 2020 22:30:05 +0100
-From:   Samuel Thibault <samuel.thibault@ens-lyon.org>
-To:     Matthias Reichl <hias@horus.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>, speakup@linux-speakup.org,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: Crash when specifying non-existent serial port in speakup /
- tty_kopen
-Message-ID: <20201104213005.khivjvcwkaz7kz4g@function>
-Mail-Followup-To: Samuel Thibault <samuel.thibault@ens-lyon.org>,
-        Matthias Reichl <hias@horus.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>, speakup@linux-speakup.org,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201104145737.GA11024@camel2.lan>
- <20201104201323.dzyt73tbd2jykcrt@function>
- <20201104211504.GA20012@lenny.lan>
+        Wed, 4 Nov 2020 16:34:03 -0500
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28BFAC0613D3
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 13:34:03 -0800 (PST)
+Received: by mail-qt1-x844.google.com with SMTP id p12so75407qtp.7
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 13:34:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=iHZD2JCK/HDwhsMu1vVM7AOnv1j/wL3L6uGfwT70qHM=;
+        b=RiGKLvkM2fI0f2pGevdBjuq9lVHh/vlXQ7+9n8MQUEi1onyiCrP0EKjXY2h75Z80xO
+         wV3f//kC2Tn2LreECFmnDJ+oHMuc2plxlFVGJ3tpgy4hcPZwwfs7ou39g9v9um14BTtz
+         76IcG6Oezj4e+gauSRVps1jR9Qz14KhTsQwfrGnXPkVwSOQqTi6R3I09C+fXIvjccroX
+         /ExJUrTbv9xs6mOwbqERUNoPKt+aejJEnpN07U6GpHQszPfC3cyN058H52mVmMMH6EEM
+         97I51UuGImTa1vpOvm/+hqiuXTrlm5rKWQQL/y+jpIzNCsR5q4nTWiJQaxYv2J9NqMBh
+         kt4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=iHZD2JCK/HDwhsMu1vVM7AOnv1j/wL3L6uGfwT70qHM=;
+        b=IVvH6kG5tPpJZ68Q8sDHTj9ASLjRUsSKHAzVeher8tp+MWm3pivJ20oaFrJWYmBx74
+         Wp3vov9eMnzBKOyWh5X+ggXcEBKT6rAISIKt0e9T0i5I6i9pNPazuvSJZnmDhhU//sfy
+         MiYpV2g4u9fzfAKexT0FNUvSfb6VBbhr2ezUSfmScUsvaay0C/5mnX+YUjsQ/um60uwi
+         ReGS8jZs+/f2IsqaXSXtxfYUl494iJ0UnUM1srnCCyjuM4h6k8khD7aGbM6lHIubbwkX
+         3XMKZJWdgJ/Gnv1NZ8s0Ir8Vv9Tr9sWLFC6nxElCTRH+5T73UrkaKN1h+yy/TlziyDCk
+         ZFkA==
+X-Gm-Message-State: AOAM532Vl/8oiFn7RWrOt+13AC81xwB4vOcRGUVbCVnW0zBfQ/8U8tXp
+        jmg0aegZI2bssKMNmYPBJVf8Lw==
+X-Google-Smtp-Source: ABdhPJz1lZC0hQdq+/Z+Gg9PunT4MgTgJeE8do4JSq8mGR99B6PprmXnUqIAQZ2hfu2RtSa36rAYWg==
+X-Received: by 2002:ac8:5307:: with SMTP id t7mr52090qtn.273.1604525642181;
+        Wed, 04 Nov 2020 13:34:02 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id l30sm1193806qta.73.2020.11.04.13.34.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Nov 2020 13:34:01 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kaQPo-00Giar-AC; Wed, 04 Nov 2020 17:34:00 -0400
+Date:   Wed, 4 Nov 2020 17:34:00 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     "xiaofeng.yan" <xiaofeng.yan2012@gmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dledford@redhat.com, oulijun@huawei.com, yanxiaofeng7@jd.com
+Subject: Re: [PATCH 2/2] infiniband: Modify the reference to xa_store_irq()
+ because the parameter of this function  has changed
+Message-ID: <20201104213400.GX36674@ziepe.ca>
+References: <20201104023213.760-1-xiaofeng.yan2012@gmail.com>
+ <20201104023213.760-2-xiaofeng.yan2012@gmail.com>
+ <20201104185843.GV36674@ziepe.ca>
+ <20201104193036.GD17076@casper.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201104211504.GA20012@lenny.lan>
-Organization: I am not organized
-User-Agent: NeoMutt/20170609 (1.8.3)
+In-Reply-To: <20201104193036.GD17076@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthias Reichl, le mer. 04 nov. 2020 22:15:05 +0100, a ecrit:
-> > This looks like only a warning, did it actually crash?
+On Wed, Nov 04, 2020 at 07:30:36PM +0000, Matthew Wilcox wrote:
+> On Wed, Nov 04, 2020 at 02:58:43PM -0400, Jason Gunthorpe wrote:
+> > >  static void cm_finalize_id(struct cm_id_private *cm_id_priv)
+> > >  {
+> > >  	xa_store_irq(&cm.local_id_table, cm_local_id(cm_id_priv->id.local_id),
+> > > -		     cm_id_priv, GFP_KERNEL);
+> > > +		     cm_id_priv);
+> > >  }
+> > 
+> > This one is almost a bug, the entry is preallocated with NULL though:
+> > 
+> > 	ret = xa_alloc_cyclic_irq(&cm.local_id_table, &id, NULL, xa_limit_32b,
+> > 				  &cm.local_id_next, GFP_KERNEL);
+> > 
+> > so it should never allocate here:
+> > 
+> > static int cm_req_handler(struct cm_work *work)
+> > {
+> > 	spin_lock_irq(&cm_id_priv->lock);
+> > 	cm_finalize_id(cm_id_priv);
 > 
-> Yes, scroll down a bit, the null pointer oops followed almost
-> immediately after that
+> Uhm.  I think you want a different debugging check from this.  The actual
+> bug here is that you'll get back from calling cm_finalize_id() with
+> interrupts enabled. 
+
+Ooh, that is just no fun too :\
+
+Again surprised some lockdep didn't catch wrongly nesting irq locks
+
+> Can you switch to xa_store(), or do we need an
+> xa_store_irqsave()?
+
+Yes, it looks like there is no reason for this, all users of the
+xarray are from sleeping contexts, so it shouldn't need the IRQ
+version.. I made a patch for this thanks
+
+The cm_id_priv->lock is probably also not needing to be irq either,
+but that is much harder to tell for sure
+
+> > Still, woops.
+> > 
+> > Matt, maybe a might_sleep is deserved in here someplace?
+> >
+> > @@ -1534,6 +1534,8 @@ void *__xa_store(struct xarray *xa, unsigned long index, void *entry, gfp_t gfp)
+> >         XA_STATE(xas, xa, index);
+> >         void *curr;
+> >  
+> > +       might_sleep_if(gfpflags_allow_blocking(gfp));
+> > +
+> >         if (WARN_ON_ONCE(xa_is_advanced(entry)))
+> >                 return XA_ERROR(-EINVAL);
+> >         if (xa_track_free(xa) && !entry)
+> > 
+> > And similar in the other places that conditionally call __xas_nomem()
+> > ?
+
+But this debugging would still catch the wrong nesting of a GFP_KERNEL
+inside a spinlock, you don't like it?
+
+> > I also still wish there was a proper 'xa store in already allocated
+> > but null' idiom - I remember you thought about using gfp flags == 0 at
+> > one point.
 > 
-> [   49.979043] BUG: kernel NULL pointer dereference, address: 0000000000000090
+> An xa_replace(), perhaps?
 
-Ah, [   50.102938]  tty_init_dev+0xb5/0x1d0
+Make sense.. But I've also done this with cmpxchg. A magic GFP flag,
+as you tried to do with 0, is appealing in many ways
 
-probably the trailing release_tty call that does
-
-tty->port->itty = NULL;
-(itty is after a struct tty_bufhead + the tty pointer, that looks
-plausible).
-
-so probably an if (tty->port) in release_tty could help?
-
-Samuel
+Jason
