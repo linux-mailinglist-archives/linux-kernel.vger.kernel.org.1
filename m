@@ -2,87 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11DF62A5BCA
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 02:19:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CE162A5BCE
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 02:20:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730473AbgKDBTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 20:19:48 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:42465 "EHLO ozlabs.org"
+        id S1730497AbgKDBUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 20:20:11 -0500
+Received: from mga07.intel.com ([134.134.136.100]:35041 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729246AbgKDBTs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 20:19:48 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CQpjG2wKPz9sTK;
-        Wed,  4 Nov 2020 12:19:46 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1604452786;
-        bh=Pnxsopz9uW6zKe3C5IY9MA7QaAelW0hEbYa9LsvaFoc=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=BvlYY1ddLg/HgYELt5uLxAYE9rqFlO4BWVf1RSRRsdXCPf5PBsrw1XniMtXFxgejg
-         r3urJGMGuOAeP20m+8T6ZvNKu2gvdJ1wXE07xkfWWAVJ5KEzKOOG9Bg4FOxVN5rgPw
-         NA0eo5TlYEl3swtjwD8RsWQ9u3kwep1VXcklwkpqjVtbIfZPltXPwQcBZGpJfyY1oj
-         6Ll0E/m6o0Vor396c4uS7bK9P74QBfUAsCwR4kuN6gaLLTJ+Jror/l3Fiv8jRLNVfH
-         Me6MSmjU3+gTzjBKe5yvzmBnQdikl7LSKiMj3WysoKn99VoqHkGdkVcKHfF+Vv0Pte
-         soulluRH5vtXA==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 4.19 056/191] powerpc: select ARCH_WANT_IRQS_OFF_ACTIVATE_MM
-In-Reply-To: <87361qug5a.fsf@mpe.ellerman.id.au>
-References: <20201103203232.656475008@linuxfoundation.org> <20201103203239.940977599@linuxfoundation.org> <87361qug5a.fsf@mpe.ellerman.id.au>
-Date:   Wed, 04 Nov 2020 12:19:45 +1100
-Message-ID: <87zh3xude6.fsf@mpe.ellerman.id.au>
+        id S1729246AbgKDBUL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 20:20:11 -0500
+IronPort-SDR: cyMiIHyyTdQH4G5DF9L1HaJjxx/NOyccr7EcQQdilFN8p9NeppqhvzN+SR85naq+gtCXypFD2j
+ ykjMB3KaREXQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9794"; a="233315191"
+X-IronPort-AV: E=Sophos;i="5.77,449,1596524400"; 
+   d="scan'208";a="233315191"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2020 17:20:10 -0800
+IronPort-SDR: 4pY2+a1DIwkXToZ9q2M6653+q/Wz3pGfS2jTa8wHOA1K1563ntTuBtzjeNksNQax5UIErewMw8
+ 4rB+PLuCbtqw==
+X-IronPort-AV: E=Sophos;i="5.77,449,1596524400"; 
+   d="scan'208";a="471016005"
+Received: from xingzhen-mobl.ccr.corp.intel.com (HELO [10.238.4.68]) ([10.238.4.68])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2020 17:20:06 -0800
+Subject: Re: [LKP] Re: [mm/memcg] bd0b230fe1: will-it-scale.per_process_ops
+ -22.7% regression
+To:     Michal Hocko <mhocko@suse.com>, Rong Chen <rong.a.chen@intel.com>
+Cc:     Waiman Long <longman@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Chris Down <chris@chrisdown.name>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Tejun Heo <tj@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        lkp@intel.com, zhengjun.xing@intel.com
+References: <20201102091543.GM31092@shao2-debian>
+ <20201102092754.GD22613@dhcp22.suse.cz>
+ <82d73ebb-a31e-4766-35b8-82afa85aa047@intel.com>
+ <20201102100247.GF22613@dhcp22.suse.cz>
+From:   Xing Zhengjun <zhengjun.xing@linux.intel.com>
+Message-ID: <bd87e8bd-c918-3f41-0cc5-e2927d91625f@linux.intel.com>
+Date:   Wed, 4 Nov 2020 09:20:04 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20201102100247.GF22613@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Michael Ellerman <mpe@ellerman.id.au> writes:
-> Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
->> From: Nicholas Piggin <npiggin@gmail.com>
->>
->> [ Upstream commit 66acd46080bd9e5ad2be4b0eb1d498d5145d058e ]
->>
->> powerpc uses IPIs in some situations to switch a kernel thread away
->> from a lazy tlb mm, which is subject to the TLB flushing race
->> described in the changelog introducing ARCH_WANT_IRQS_OFF_ACTIVATE_MM.
->>
->> Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
->> Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
->> Link: https://lore.kernel.org/r/20200914045219.3736466-3-npiggin@gmail.com
->> Signed-off-by: Sasha Levin <sashal@kernel.org>
->> ---
->>  arch/powerpc/Kconfig                   | 1 +
->>  arch/powerpc/include/asm/mmu_context.h | 2 +-
->>  2 files changed, 2 insertions(+), 1 deletion(-)
->>
->> diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
->> index f38d153d25861..0bc53f0e37c0f 100644
->> --- a/arch/powerpc/Kconfig
->> +++ b/arch/powerpc/Kconfig
->> @@ -152,6 +152,7 @@ config PPC
->>  	select ARCH_USE_BUILTIN_BSWAP
->>  	select ARCH_USE_CMPXCHG_LOCKREF		if PPC64
->>  	select ARCH_WANT_IPC_PARSE_VERSION
->> +	select ARCH_WANT_IRQS_OFF_ACTIVATE_MM
->
-> This depends on upstream commit:
->
->   d53c3dfb23c4 ("mm: fix exec activate_mm vs TLB shootdown and lazy tlb switching race")
->
->
-> Which I don't see in 4.19 stable, or in the email thread here.
->
-> So this shouldn't be backported to 4.19 unless that commit is also
-> backported.
 
-I just sent you a backport of d53c3dfb23c4 for 4.19.
 
-cheers
+On 11/2/2020 6:02 PM, Michal Hocko wrote:
+> On Mon 02-11-20 17:53:14, Rong Chen wrote:
+>>
+>>
+>> On 11/2/20 5:27 PM, Michal Hocko wrote:
+>>> On Mon 02-11-20 17:15:43, kernel test robot wrote:
+>>>> Greeting,
+>>>>
+>>>> FYI, we noticed a -22.7% regression of will-it-scale.per_process_ops due to commit:
+>>>>
+>>>>
+>>>> commit: bd0b230fe14554bfffbae54e19038716f96f5a41 ("mm/memcg: unify swap and memsw page counters")
+>>>> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+>>> I really fail to see how this can be anything else than a data structure
+>>> layout change. There is one counter less.
+>>>
+>>> btw. are cgroups configured at all? What would be the configuration?
+>>
+>> Hi Michal,
+>>
+>> We used the default configure of cgroups, not sure what configuration you
+>> want,
+>> could you give me more details? and here is the cgroup info of will-it-scale
+>> process:
+>>
+>> $ cat /proc/3042/cgroup
+>> 12:hugetlb:/
+>> 11:memory:/system.slice/lkp-bootstrap.service
+> 
+> OK, this means that memory controler is enabled and in use. Btw. do you
+> get the original performance if you add one phony page_counter after the
+> union?
+> 
+I add one phony page_counter after the union and re-test, the regression 
+reduced to -1.2%. It looks like the regression caused by the data 
+structure layout change.
+
+=========================================================================================
+tbox_group/testcase/rootfs/kconfig/compiler/nr_task/mode/test/cpufreq_governor/ucode/debug-setup:
+ 
+lkp-hsw-4ex1/will-it-scale/debian-10.4-x86_64-20200603.cgz/x86_64-rhel-8.3/gcc-9/50%/process/page_fault2/performance/0x16/test1
+
+commit:
+   8d387a5f172f26ff8c76096d5876b881dec6b7ce
+   bd0b230fe14554bfffbae54e19038716f96f5a41
+   b3233916ab0a883e1117397e28b723bd0e4ac1eb (debug patch add one phony 
+page_counter after the union)
+
+8d387a5f172f26ff bd0b230fe14554bfffbae54e190 b3233916ab0a883e1117397e28b
+---------------- --------------------------- ---------------------------
+          %stddev     %change         %stddev     %change         %stddev
+              \          |                \          |                \
+     187632           -22.8%     144931            -1.2%     185391 
+    will-it-scale.per_process_ops
+   13509525           -22.8%   10435073            -1.2%   13348181 
+    will-it-scale.workload
+
+
+
+-- 
+Zhengjun Xing
