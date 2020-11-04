@@ -2,117 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35AD92A6BDE
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 18:37:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C679A2A6BE4
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 18:39:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731688AbgKDRhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 12:37:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47206 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729297AbgKDRhN (ORCPT
+        id S1731699AbgKDRjF convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 4 Nov 2020 12:39:05 -0500
+Received: from relay12.mail.gandi.net ([217.70.178.232]:56221 "EHLO
+        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729297AbgKDRjF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 12:37:13 -0500
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B3E9C0613D3;
-        Wed,  4 Nov 2020 09:37:12 -0800 (PST)
-Received: by mail-ej1-x62b.google.com with SMTP id dk16so30321262ejb.12;
-        Wed, 04 Nov 2020 09:37:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=1jUCo3qsGMmYf4isHasTOhehT8pNB9XWrj2LM2ACKFU=;
-        b=lBZxHWOuzf8o/ZJb1D8C8gGEf/iMab87JUEzptpHqxR9asnBXXaquqcB6M1z2+AocV
-         a0ON5FbhPEFNJIQCUOirWtbJl3jQl4y9+SQa6oEmRIE5a2PDa/gSfVTmWYZKeb2oKW8r
-         rVaNIuZOCNQy28QgMBFUGTscPb70FLX8Wtu8nAe+qr5Ib+jDA3Ux9K1jOgAmy2gOhGPU
-         CGASkDBhQF06XCprNCUJQK/1sJv0VqkZytccCi9DJt78YAaKnv6iKB2XEimQ8C5VoV/G
-         0na7LwFwcJT8b2t35nOjEjtZP6ACCHgUznADenUZ1Pq+eEqRw5Fvu9WE5AF/mVlqC+RK
-         5Yzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=1jUCo3qsGMmYf4isHasTOhehT8pNB9XWrj2LM2ACKFU=;
-        b=gmfKR/Hmq75R1SgHUXwquhGCGlpUrJ+Q7K5liovcVUeLASNsVakAqIAXCN/dw8UKyd
-         MIINNyWCunbIqkSS1La/f/zb56YTOnZ83YD1agAJMPQS5yniCtAK1xdzuA7bfOhAcQr5
-         daYdYf9f+tAxP6F53JhcTlGS8Dww/FjKdfAkkh6vLxO/xWfIJygA7ZbNkL2Zvk8lgIEm
-         sZ2W4FCxoWezCM5psSkQ35seh9esY7DNJUo9e7GBfQ2d9jx8a0QYp5d/TinQlMphYBQm
-         BnQtkFQAFKozp/DSe7sWCiuUkAkz9eJWjKx27og5YFJBRfxho26D3rHhYCfx0jaujVHk
-         hWvQ==
-X-Gm-Message-State: AOAM532Zn8vpvn3zbhsZ18WEAqgG6hDL7gJwrtSkx814C4jf06EYGsCz
-        /xMuvoV+dAYcZK54o4UNrFM/6Q4lT0k=
-X-Google-Smtp-Source: ABdhPJxj4WRvrnY0lJfYQCokZRcGMpmXBd3gevBfjJegys1C+AC7mtt7lJZx/FlxaVBRHZ0+yUG8Ug==
-X-Received: by 2002:a17:906:b294:: with SMTP id q20mr9047175ejz.234.1604511430561;
-        Wed, 04 Nov 2020 09:37:10 -0800 (PST)
-Received: from [192.168.2.202] (pd9e5a482.dip0.t-ipconnect.de. [217.229.164.130])
-        by smtp.gmail.com with ESMTPSA id p4sm1317138ejw.101.2020.11.04.09.37.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Nov 2020 09:37:09 -0800 (PST)
-Subject: Re: [PATCH] ACPI: Remove trailing whitespace
-To:     Joe Perches <joe@perches.com>, Bjorn Helgaas <helgaas@kernel.org>
-Cc:     linux-acpi@vger.kernel.org,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20201103211259.GA265488@bjorn-Precision-5520>
- <c92703e3-c964-b4a6-e3df-c4c0c28b44c1@gmail.com>
- <6e392d099bd8aaba14223aa770361dbdeeab271b.camel@perches.com>
- <6d888eb0-bfc5-28ff-c62f-9e769f77bc1f@gmail.com>
- <57b77f3a36f56e2ae7ab8fe367865b5412d4e11f.camel@perches.com>
-From:   Maximilian Luz <luzmaximilian@gmail.com>
-Message-ID: <0ec60af0-4ff2-a4ab-c904-96b149250f11@gmail.com>
-Date:   Wed, 4 Nov 2020 18:37:08 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Wed, 4 Nov 2020 12:39:05 -0500
+Received: from xps13 (unknown [91.224.148.103])
+        (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay12.mail.gandi.net (Postfix) with ESMTPSA id 99DDE200008;
+        Wed,  4 Nov 2020 17:39:00 +0000 (UTC)
+Date:   Wed, 4 Nov 2020 18:38:59 +0100
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-mtd@lists.infradead.org
+Subject: Re: Kernel 5.10-rc1 not mounting NAND flash (Bisected to
+ d7157ff49a5b ("mtd: rawnand: Use the ECC framework user input parsing
+ bits"))
+Message-ID: <20201104183859.590f0806@xps13>
+In-Reply-To: <20201104183353.Horde.FyqZycHkfr5KHDjPaOEBpQ7@messagerie.c-s.fr>
+References: <20201104183353.Horde.FyqZycHkfr5KHDjPaOEBpQ7@messagerie.c-s.fr>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <57b77f3a36f56e2ae7ab8fe367865b5412d4e11f.camel@perches.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/4/20 6:12 PM, Joe Perches wrote:
+Hi Christophe,
 
-[...]
+Christophe Leroy <christophe.leroy@csgroup.eu> wrote on Wed, 04 Nov
+2020 18:33:53 +0100:
 
->> I'm not too sure about the comments, but I can find the time to look
->> over the output and adjust that if that's something you'd want me to do.
+> Hi Miquel,
 > 
-> Up to you.  I hardly looked at the output.
+> I'm unable to boot 5.10-rc1 on my boards. I get the following error:
 > 
-> I'd generally prefer to use a single line comment like
+> [    4.125811] nand: device found, Manufacturer ID: 0xad, Chip ID: 0x76
+> [    4.131992] nand: Hynix NAND 64MiB 3,3V 8-bit
+> [    4.136173] nand: 64 MiB, SLC, erase size: 16 KiB, page size: 512, OOB size: 16
+> [    4.143534] ------------[ cut here ]------------
+> [    4.147934] Unsupported ECC algorithm!
+> [    4.152142] WARNING: CPU: 0 PID: 1 at drivers/mtd/nand/raw/nand_base.c:5244 nand_scan_with_ids+0x1260/0x1640
+> ...
+> [    4.332052] ---[ end trace e3a36f62cae4ac56 ]---
+> [    4.336882] gpio-nand: probe of c0000000.nand failed with error -22
 > 
-> /* AC Adapter Management */
+> Bisected to commit d7157ff49a5b ("mtd: rawnand: Use the ECC framework user input parsing bits")
 > 
-> but I don't know how often that dashed block is used in ACPI.
+> My first impression is that with that change, the value set in chip->ecc.algo
+> by gpio_nand_probe() in drivers/mtd/nand/raw/gpio.c gets overwritten in rawnand_dt_init()
 > 
-> grep seems to show the texts are not correctly centered so it seems like
-> it was done by hand and not that some automation tool was used to create
-> those blocks.
+> The following change fixes the problem, though I'm not sure it is the right fix. Can you have a look ?
 > 
-> Maybe a separate patch could be done to change those if desired.
-> But not by me.
+> diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+> index 1f0d542d5923..aa74797cf2da 100644
+> --- a/drivers/mtd/nand/raw/nand_base.c
+> +++ b/drivers/mtd/nand/raw/nand_base.c
+> @@ -5032,7 +5032,8 @@ static int rawnand_dt_init(struct nand_chip *chip)
+>   		chip->ecc.engine_type = nand->ecc.defaults.engine_type;
+> 
+>   	chip->ecc.placement = nand->ecc.user_conf.placement;
+> -	chip->ecc.algo = nand->ecc.user_conf.algo;
+> +	if (chip->ecc.algo == NAND_ECC_ALGO_UNKNOWN)
+> +		chip->ecc.algo = nand->ecc.user_conf.algo;
+>   	chip->ecc.strength = nand->ecc.user_conf.strength;
+>   	chip->ecc.size = nand->ecc.user_conf.step_size;
+> 
+> ---
+> 
+> Thanks
+> Christophe
 
-I'm hesitant to touch those, mostly as you said because they're
-subjective (and I don't really see any big issues with them). Seems to
-be the prevalent style in the drivers/acpi, although there are other
-block-like separator comments at least in drivers/acpi/dock.c.
+Sorry for introducing this issue, I didn't had the time to send the
+Fixes PR yet but I think this issue has been solved already. Could
+you please try with a recent linux-next?
 
-> As far as I know, acpi was once autogenerated from a common source tree
-> and whitespace changes were once frowned on, but maybe that's changed or
-> or perhaps that's only for files in drivers/acpi/acpica/.  I don't know.
-> 
-> https://acpica.org/downloads/linux
-
-Yeah, any changes to drivers/acpi/acpica would have to go through their
-repo.
-
-I'll go over the checkpatch output later and prepare a v2 that doesn't
-touch the comments, unless anyone has any issues with that.
-
-Regards,
-Max
+Thanks,
+Miquèl
