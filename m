@@ -2,103 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B46DB2A665B
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 15:28:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D62D82A665A
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 15:28:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729862AbgKDO2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 09:28:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44600 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726636AbgKDO2k (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 09:28:40 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53173C061A4A
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 06:28:39 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id e2so2525469wme.1
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 06:28:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=uS1Dwg1aYslTIaBFyfj8BDPGNhq8ESzxJRnXjOw6Owo=;
-        b=F+n8eKOv1dsO6cWpkSpoiT/VytYZppb9uCV8KPO/NGrX4wDp/1iOrI9CwdHmqLO5dm
-         hBwxF4OeXFRgbF0/9H8m8YCEajYc1Wdux2wvF7AcDsqvZYlPeVtwo9Qm8i2CcNUHBrlz
-         kzUJsN3t9PrO05TXRVz42qKOZYISyOvuCUsVYI3a09YmrndVzyFIUMJLcpAebZrozQKx
-         RlqKbnGwgQugSRn5NcBc93xPFh2OGMC8/xSc0L26Ouu4eWHZyo1TSVJVfFeTBWzNpm3E
-         Sc328XYGo3AaYCPaGXflcYbzlaR5qxjFAI7mk6WbtkPznZQS4EpExgZQ/cV7Jqo6zJQC
-         D4Hw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=uS1Dwg1aYslTIaBFyfj8BDPGNhq8ESzxJRnXjOw6Owo=;
-        b=cfFndrtVo3XdkpgP2N87SmkbjuEMeyJRD0UmWqpGE/8KH/JP2vpsygj1f7bLoa769e
-         UyFbDoAKGopzJhrco5gTDUDbhDLldWxt2GuNp9xjUzPjDSGCFR2pyjVQmstyGSHfnuBc
-         kiIxsFqlkqeor2CVkJznI5m4vdzdrEPSW6iYSMSj8MPB7qdCdMyAAWonqcNhYt+Y4JT+
-         KWlJPKJ5zgxRYsCXfdg7grqrvjjTmpycIn3tMm6MoZ9ETcNn1NYP/whbFK6Pvg4I+3eQ
-         LaEhlb2RHerBYYqLgQxFBP5bAYBsdZ+QZQp0x67+BVvqq1VsIBjY4FOeoeM5qxXGG5tI
-         a/uw==
-X-Gm-Message-State: AOAM532w1+SNLbeth9nrT0jl2u8ClUu20dnJMDYUxlvl4A2pqelbEWd3
-        HEor7EDC24qcpiFHi3eF/NUzog==
-X-Google-Smtp-Source: ABdhPJwUWy2efD8bbASTzJwu6IghpqMmjIBqiho40nOEnruO2uYCdXF9F9tBxbqZjYuOhTpp06v3nQ==
-X-Received: by 2002:a1c:6508:: with SMTP id z8mr3354105wmb.80.1604500118057;
-        Wed, 04 Nov 2020 06:28:38 -0800 (PST)
-Received: from dell ([91.110.221.242])
-        by smtp.gmail.com with ESMTPSA id e25sm2857736wrc.76.2020.11.04.06.28.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 06:28:37 -0800 (PST)
-Date:   Wed, 4 Nov 2020 14:28:35 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     davem@davemloft.net, kuba@kernel.org,
-        Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 06/12] net: ethernet: ti: am65-cpsw-qos: Demote
- non-conformant function header
-Message-ID: <20201104142835.GD4488@dell>
-References: <20201104090610.1446616-1-lee.jones@linaro.org>
- <20201104090610.1446616-7-lee.jones@linaro.org>
- <20201104133354.GA933237@lunn.ch>
+        id S1729832AbgKDO2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 09:28:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41918 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726636AbgKDO2I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 09:28:08 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DDE85206E3;
+        Wed,  4 Nov 2020 14:28:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604500087;
+        bh=VK01esNG6Gi3qrzThiZjiJRVQlJVdU/tFUBbGdDni1s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IhZ6/JAcmdSJTOcuvSUYlWChLXI8DNAl4R8WycU8DOQhKYnb15UAi9bnopXHPOpLQ
+         /sg9n135oV6vaV3Oz9E+exvrafw0jbJCWVKRS+XlyKR/uqu4obeJtmvGM29dS/muSi
+         wYlhdYRX2se0IDOAPhPwkQlJ3pmoDpwd+DLH1NJ8=
+Date:   Wed, 4 Nov 2020 15:28:58 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
+Subject: Re: [PATCH 5.4 000/214] 5.4.75-rc1 review
+Message-ID: <20201104142858.GA2202359@kroah.com>
+References: <20201103203249.448706377@linuxfoundation.org>
+ <20201104140754.GA4312@roeck-us.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201104133354.GA933237@lunn.ch>
+In-Reply-To: <20201104140754.GA4312@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 04 Nov 2020, Andrew Lunn wrote:
-
-> On Wed, Nov 04, 2020 at 09:06:04AM +0000, Lee Jones wrote:
-> > Fixes the following W=1 kernel build warning(s):
+On Wed, Nov 04, 2020 at 06:07:54AM -0800, Guenter Roeck wrote:
+> On Tue, Nov 03, 2020 at 09:34:08PM +0100, Greg Kroah-Hartman wrote:
+> > This is the start of the stable review cycle for the 5.4.75 release.
+> > There are 214 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
 > > 
-> >  drivers/net/ethernet/ti/am65-cpsw-qos.c:364: warning: Function parameter or member 'ndev' not described in 'am65_cpsw_timer_set'
-> >  drivers/net/ethernet/ti/am65-cpsw-qos.c:364: warning: Function parameter or member 'est_new' not described in 'am65_cpsw_timer_set'
+> > Responses should be made by Thu, 05 Nov 2020 20:29:58 +0000.
+> > Anything received after that time might be too late.
 > > 
-> > Cc: "David S. Miller" <davem@davemloft.net>
-> > Cc: Jakub Kicinski <kuba@kernel.org>
-> > Cc: Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
-> > Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-> > Cc: netdev@vger.kernel.org
-> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
 > 
-> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+> All sparc images fail to build.
 > 
-> I _think_ these have got missed so far in the various cleanup passes
-> because of missing COMPILE_TEST. I've been adding that as part of
-> fixing these warnings. When your respin, could you add that as well?
+> Building sparc32:defconfig ... failed
+> --------------
+> Error log:
+> <stdin>:1511:2: warning: #warning syscall clone3 not implemented [-Wcpp]
+> In file included from arch/sparc/include/asm/io_32.h:14,
+>                  from arch/sparc/include/asm/io.h:7,
+>                  from include/linux/io.h:13,
+>                  from include/linux/irq.h:20,
+>                  from include/asm-generic/hardirq.h:13,
+>                  from arch/sparc/include/asm/hardirq_32.h:11,
+>                  from arch/sparc/include/asm/hardirq.h:7,
+>                  from include/linux/hardirq.h:9,
+>                  from include/linux/interrupt.h:11,
+>                  from include/linux/kernel_stat.h:9,
+>                  from arch/sparc/kernel/irq_32.c:15:
+> include/asm-generic/io.h: In function '__pci_ioport_unmap':
+> include/asm-generic/io.h:1012:2: error: implicit declaration of function 'iounmap'; did you mean 'ioremap'?
 
-Yes, no problem.
+Thanks, I'll go drop f5810e5c3292 ("asm-generic/io.h: Fix
+!CONFIG_GENERIC_IOMAP pci_iounmap() implementation") which seems to be
+causing this.
 
-Just for this symbol?
+Sasha, any reason you only added it to the 5.4 and 4.14 queues and not
+5.9 and 4.19?
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+thanks,
+
+greg k-h
