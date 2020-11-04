@@ -2,105 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFE822A65C7
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 15:02:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFE1D2A65CC
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 15:03:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726969AbgKDOCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 09:02:08 -0500
-Received: from mga05.intel.com ([192.55.52.43]:11257 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726527AbgKDOCI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 09:02:08 -0500
-IronPort-SDR: Ck6oRT/9GSj30lwG4HgwlreZV33r5fowkYM1IfMsCEkLQoeolukgpEPNzKMmes71BQl1xTPlsm
- vKXPfWwaYkIw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9794"; a="253928618"
-X-IronPort-AV: E=Sophos;i="5.77,451,1596524400"; 
-   d="scan'208";a="253928618"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2020 06:01:56 -0800
-IronPort-SDR: hXnJiNdbkWZLoYrlaTGLrYXR7Cn2+3f0uU0yDyEEepyNgeSNYWJ0I5TiXuj6LWli6jMDY3AIcM
- edHa46A1/tOg==
-X-IronPort-AV: E=Sophos;i="5.77,451,1596524400"; 
-   d="scan'208";a="538932865"
-Received: from gliakhov-mobl2.ger.corp.intel.com (HELO ubuntu) ([10.249.45.232])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2020 06:01:54 -0800
-Date:   Wed, 4 Nov 2020 15:01:44 +0100
-From:   Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     ohad@wizery.com, bjorn.andersson@linaro.org,
-        arnaud.pouliquen@st.com, linux-remoteproc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 8/8] rpmsg: Turn name service into a stand alone driver
-Message-ID: <20201104140143.GA30197@ubuntu>
-References: <20201027175218.1033609-1-mathieu.poirier@linaro.org>
- <20201027175218.1033609-9-mathieu.poirier@linaro.org>
+        id S1726993AbgKDODM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 09:03:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40592 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726527AbgKDODI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 09:03:08 -0500
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9EF0C0613D3
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 06:03:07 -0800 (PST)
+Received: by mail-lj1-x243.google.com with SMTP id m16so23081550ljo.6
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 06:03:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TUOQw0C83wZfEL0vEup/xV0E+W5h+AKs5vycRQsvjmk=;
+        b=raQ1wmnUEl63wrrZsnFBDbMoFPzK5nRNKLILZeo5aYFJrlpJ4EMbKcaVYWlcRqhd5Q
+         9JceN7D81bdsCn7xyrmzL+VPYfZbb38QnZ4DgIPBdRe3NcI/6uuckPM8zoA/ZljFknTo
+         K9Tf6B/DAp/DEPo7pxKHdBZA/1Po7ziPEcFc3PcVFa8UNUISSOAdfNisp3szoifmcJIb
+         r4xNO1pnrDPkQ+GhrPlQU9fksElEUcVDjstOjmVj00hKPrSRFqQqMiD0E+MUmzLXBYAb
+         pWiyWjPzGpbvWPiV4itF5WKkQfygO1I/aE+DP4EaIKqhYEx4YyidhFOXkRT7lfJ6K+NH
+         /1Ww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TUOQw0C83wZfEL0vEup/xV0E+W5h+AKs5vycRQsvjmk=;
+        b=HOTwbsBwRy1IZ9YTuTDZTLH2HI5lsSA3pW2eyIUjUSN3dpfu/x3hX7YRnstHugNi6W
+         hDf92FJ6YX6SnwqGBe1KDcFmmnXO++XAG7OaQd2Us0B/0lV+1Ll9RpMTWY+ZT5IH5/Q5
+         Z/VWj7SQ7hJckPgeGs1IhUQfHvFm3veEWNa4BeHZtlt3sv4ZpZD8jOMlr8/H7X6Mxclz
+         rZ25SObk5aCj68v10G62kfM6XroTMFzbkq42AefA9Gv/cEXxYmSUbTgyFbcf3r4GeHjl
+         f4lOCs/XQlBD8ACnIzfYmwISj0oJAlzzHRejUvLQeW98FuV/FQ8V+7/0wo9x7yMKfNcA
+         FrmQ==
+X-Gm-Message-State: AOAM53250Z4MqrqLr/WPIeDAC0ya6/aXKhD6atr4q4noXkgYvNO1Ur2B
+        oAY3TtaFSZQAEuE9ReCIRU/GNnoG54njkq7TBa5LZSLoxGYBqw==
+X-Google-Smtp-Source: ABdhPJxJfDGybgkcfLyyKPT71AH6IePQ76BjG68XIsddYjhuHabhUDy5nZrfYUIrvly8VjC5PCwy2mTrOMdxwkUl5ug=
+X-Received: by 2002:a2e:80d2:: with SMTP id r18mr11512268ljg.286.1604498585007;
+ Wed, 04 Nov 2020 06:03:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201027175218.1033609-9-mathieu.poirier@linaro.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201030125016.3423d2fe@canb.auug.org.au> <20201104141028.420c9274@canb.auug.org.au>
+In-Reply-To: <20201104141028.420c9274@canb.auug.org.au>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 4 Nov 2020 15:02:53 +0100
+Message-ID: <CACRpkdY0H1Jt2pAgq0hLHjbh2xdezKBYK7kK=ZfyfxFHXsfEOA@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the pinctrl tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Jianqun Xu <jay.xu@rock-chips.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mathieu, Arnaud,
+On Wed, Nov 4, 2020 at 4:10 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> On Fri, 30 Oct 2020 12:50:16 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> >
+> > Hi all,
+> >
+> > After merging the pinctrl tree, today's linux-next build (x86_64
+> > allmodconfig) failed like this:
+> >
+> > ERROR: modpost: "irq_gc_set_wake" [drivers/pinctrl/pinctrl-rockchip.ko] undefined!
+> >
+> > Caused by commit
+> >
+> >   6c684f5e79ea ("pinctrl: rockchip: make driver be tristate module")
+> >
+> > I have reverted that commit for today.
+>
+> I am still getting this failure.
 
-I've tried the patch set with my VirtIO / vhost audio implementation, 
-in general it worked quite well, but I did need one chamge, which 
-should be improved in this patch:
+Sorry for the mess, I dropped this commit now.
 
-On Tue, Oct 27, 2020 at 11:52:18AM -0600, Mathieu Poirier wrote:
-> From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-> 
-> Make the RPMSG name service announcement a stand alone driver so that it
-> can be reused by other subsystems.  It is also the first step in making the
-> functionatlity transport independent, i.e that is not tied to virtIO.
-> 
-> Co-developed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-> ---
+I think we need a separate patch to export that call
+before we make Rockchip tristate.
 
-[snip]
-
-> diff --git a/include/linux/rpmsg_ns.h b/include/linux/rpmsg_ns.h
-> index bb479f430080..42786bb759b5 100644
-> --- a/include/linux/rpmsg_ns.h
-> +++ b/include/linux/rpmsg_ns.h
-> @@ -39,4 +39,21 @@ enum rpmsg_ns_flags {
->  /* Address 53 is reserved for advertising remote services */
->  #define RPMSG_NS_ADDR			(53)
->  
-> +/**
-> + * rpmsg_ns_register_device() - register name service device based on rpdev
-> + * @rpdev: prepared rpdev to be used for creating endpoints
-> + *
-> + * This function wraps rpmsg_register_device() preparing the rpdev for use as
-> + * basis for the rpmsg name service device.
-> + */
-> +static inline int rpmsg_ns_register_device(struct rpmsg_device *rpdev)
-> +{
-> +       strcpy(rpdev->id.name, "rpmsg_ns");
-
-you need to
-
-#include <linux/rpmsg.h>
-
-in this file for rpdev definition. Or you could leave this function in 
-rpmsg_ns.c, then it's enough to forward-declare struct rpdev here.
-
-Thanks
-Guennadi
-
-> +       rpdev->driver_override = "rpmsg_ns";
-> +       rpdev->src = RPMSG_NS_ADDR;
-> +       rpdev->dst = RPMSG_NS_ADDR;
-> +
-> +       return rpmsg_register_device(rpdev);
-> +}
-> +
->  #endif
-> -- 
-> 2.25.1
-> 
+Yours,
+Linus Walleij
