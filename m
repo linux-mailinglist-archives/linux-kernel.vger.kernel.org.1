@@ -2,142 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D3CC2A71DF
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 00:37:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3C142A720B
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 00:45:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732751AbgKDXht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 18:37:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726033AbgKDXht (ORCPT
+        id S1732702AbgKDXlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 18:41:01 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46485 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732517AbgKDXlB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 18:37:49 -0500
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AA0EC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 15:37:49 -0800 (PST)
-Received: by mail-io1-xd43.google.com with SMTP id s10so373225ioe.1
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 15:37:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atishpatra.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=a0nZYDo+CB6TegF98IJWvC66Pi+L/HwyZcY9j3Daq1w=;
-        b=LVGPZfXnEEe0PxuGVdeEhrmM549qsPkmNywLDOHuGXHLa9ITAjuP0e0LQcdiN2qINs
-         8Wat9PYnLvO2P+CCIWwaewexubKRK04XKlsykS5EQ4lpNU4xFUvCJRp16Iaq0Uouh1/y
-         bhL5ia+m/XYcqspf6hohb4I8QjY71vnEaUJ6c=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=a0nZYDo+CB6TegF98IJWvC66Pi+L/HwyZcY9j3Daq1w=;
-        b=BxBJcsnD25MLg43vLpGULmaRZ9r/0GqJtvO6OlhYDfjNlFbk42kzakJIKBcvzU2GUt
-         7UFHof51NBHNqxBIqHhGXArGTacNIiBib/n/rOi/FIp7JqRHUs2vWzddRu9QMeNu7XJz
-         pImzCX8apNCkNoMgBru0HO4sQmrh2xdBRIqhlvfKwfY94EvoGZkpX0z/jJgeAx4/Y/pU
-         LKvmVAqdR5whZBcrow+YiDSz9MNpw7USS3kwGcKv6oDPNBHOM6dWhuzDu6N0zSfmRZmj
-         TooqQwpUxf8iQTS/+C469FAYMQAbyxwtsKaI1+qHWhWabMBhgWCUjmugGYdok8fbK+ns
-         EDoA==
-X-Gm-Message-State: AOAM530M94hLsrkexLAs8J5RkKMUEUurj9QWdOqsrAFgzx6tRSbQyB44
-        +K4U8cQth2g3KK9PjumD4FLEOfazOIbfzwbPMM9W
-X-Google-Smtp-Source: ABdhPJxxfSuP85Z67d1ZPevhNWGC7WnEj5kO3osENOwbpcPDMXVGob2vWq1q34QpbmRT0XgpjcRbLjzTYs+C8MLzlGc=
-X-Received: by 2002:a05:6602:2d93:: with SMTP id k19mr312922iow.51.1604533068376;
- Wed, 04 Nov 2020 15:37:48 -0800 (PST)
+        Wed, 4 Nov 2020 18:41:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604533260;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=DVN/srVaTrtu/WkLV+++W+fY4MNzdX1yaxCwzWUhMIo=;
+        b=fY6PP1osgx2pXKvcYDQt4doFfAOblYc8ZmGWJNsrQ/n7gaDeu7qEi9iTI5wuJ0IzTPh1D5
+        5olDF4Kp1wGSWYtWACHPN6ddZepJYVAQ/haAKeRGMR3D5IdI5ls5S7acDT/RvrT1wjkQp/
+        oZSkhKyVLeu2sv5P0gYDR0Ak03sZnmc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-463-99fzgGGpOVS8qgAqTj97sg-1; Wed, 04 Nov 2020 18:40:56 -0500
+X-MC-Unique: 99fzgGGpOVS8qgAqTj97sg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4255F8015FB;
+        Wed,  4 Nov 2020 23:40:52 +0000 (UTC)
+Received: from mail (ovpn-116-241.rdu2.redhat.com [10.10.116.241])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5593310013D7;
+        Wed,  4 Nov 2020 23:40:48 +0000 (UTC)
+Date:   Wed, 4 Nov 2020 18:40:47 -0500
+From:   Andrea Arcangeli <aarcange@redhat.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Kees Cook <keescook@chromium.org>,
+        YiFei Zhu <zhuyifei1999@gmail.com>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        David Laight <David.Laight@aculab.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Jann Horn <jannh@google.com>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>, Jiri Kosina <jikos@kernel.org>,
+        Waiman Long <longman@redhat.com>
+Subject: Re: RFC: default to spec_store_bypass_disable=prctl
+ spectre_v2_user=prctl
+Message-ID: <20201104234047.GA18850@redhat.com>
+References: <20201104215702.GG24993@redhat.com>
+ <87eel8lnbe.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <20201104063713.3039035-1-anup.patel@wdc.com>
-In-Reply-To: <20201104063713.3039035-1-anup.patel@wdc.com>
-From:   Atish Patra <atishp@atishpatra.org>
-Date:   Wed, 4 Nov 2020 15:37:37 -0800
-Message-ID: <CAOnJCUL0-j+rvii65y67Vkp9Th1b_msz4P3eD4DR+qGn+yMdRQ@mail.gmail.com>
-Subject: Re: [PATCH] RISC-V: Use non-PGD mappings for early DTB access
-To:     Anup Patel <anup.patel@wdc.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     Palmer Dabbelt <palmerdabbelt@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Anup Patel <anup@brainfault.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        Atish Patra <atish.patra@wdc.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87eel8lnbe.fsf@nanos.tec.linutronix.de>
+User-Agent: Mutt/1.14.7 (2020-08-29)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 3, 2020 at 10:37 PM Anup Patel <anup.patel@wdc.com> wrote:
->
-> Currently, we use PGD mappings for early DTB mapping in early_pgd
-> but this breaks Linux kernel on SiFive Unleashed because on SiFive
-> Unleashed PMP checks don't work correctly for PGD mappings.
->
+On Thu, Nov 05, 2020 at 12:22:29AM +0100, Thomas Gleixner wrote:
+> On Wed, Nov 04 2020 at 16:57, Andrea Arcangeli wrote:
+> > ---
+> >  Documentation/admin-guide/kernel-parameters.txt | 5 ++---
+> 
+> Is Documentation/admin-guide/hw-vuln/* still correct? If not, please
+> fix that as well.
 
-Not sure why this is an issue with Unleashed only. Microchip Polarfire
-SoC seems to work fine with early DTB pa as 0x88000000.
-However, unleashed fails to boot if the DTB is loaded any address
-below 0xC0000000 and it is mapped via PGD.
+Right, I missed two seccomp mention that needed removing there too.
 
-> To fix early DTB mappings on SiFive Unleashed, we use non-PGD
-> mappings (i.e. PMD) for early DTB access.
->
-> Fixes: 8f3a2b4a96dc ("RISC-V: Move DT mapping outof fixmap")
-> Signed-off-by: Anup Patel <anup.patel@wdc.com>
-> ---
->  arch/riscv/mm/init.c | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
->
-> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-> index ea933b789a88..0d13d0c36a7d 100644
-> --- a/arch/riscv/mm/init.c
-> +++ b/arch/riscv/mm/init.c
-> @@ -297,6 +297,7 @@ pmd_t fixmap_pmd[PTRS_PER_PMD] __page_aligned_bss;
->  #define NUM_EARLY_PMDS         (1UL + MAX_EARLY_MAPPING_SIZE / PGDIR_SIZE)
->  #endif
->  pmd_t early_pmd[PTRS_PER_PMD * NUM_EARLY_PMDS] __initdata __aligned(PAGE_SIZE);
-> +pmd_t early_dtb_pmd[PTRS_PER_PMD] __initdata __aligned(PAGE_SIZE);
->
->  static pmd_t *__init get_pmd_virt_early(phys_addr_t pa)
->  {
-> @@ -494,6 +495,18 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
->                                    load_pa + (va - PAGE_OFFSET),
->                                    map_size, PAGE_KERNEL_EXEC);
->
-> +#ifndef __PAGETABLE_PMD_FOLDED
-> +       /* Setup early PMD for DTB */
-> +       create_pgd_mapping(early_pg_dir, DTB_EARLY_BASE_VA,
-> +                          (uintptr_t)early_dtb_pmd, PGDIR_SIZE, PAGE_TABLE);
-> +       /* Create two consecutive PMD mappings for FDT early scan */
-> +       pa = dtb_pa & ~(PMD_SIZE - 1);
-> +       create_pmd_mapping(early_dtb_pmd, DTB_EARLY_BASE_VA,
-> +                          pa, PMD_SIZE, PAGE_KERNEL);
-> +       create_pmd_mapping(early_dtb_pmd, DTB_EARLY_BASE_VA + PMD_SIZE,
-> +                          pa + PMD_SIZE, PMD_SIZE, PAGE_KERNEL);
-> +       dtb_early_va = (void *)DTB_EARLY_BASE_VA + (dtb_pa & (PMD_SIZE - 1));
-> +#else
->         /* Create two consecutive PGD mappings for FDT early scan */
->         pa = dtb_pa & ~(PGDIR_SIZE - 1);
->         create_pgd_mapping(early_pg_dir, DTB_EARLY_BASE_VA,
-> @@ -501,6 +514,7 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
->         create_pgd_mapping(early_pg_dir, DTB_EARLY_BASE_VA + PGDIR_SIZE,
->                            pa + PGDIR_SIZE, PGDIR_SIZE, PAGE_KERNEL);
->         dtb_early_va = (void *)DTB_EARLY_BASE_VA + (dtb_pa & (PGDIR_SIZE - 1));
-> +#endif
->         dtb_early_pa = dtb_pa;
->
->         /*
-> --
-> 2.25.1
->
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+Also I noticed below I intended PR_SPEC_INDIRECT_BRANCH
+(PR_SPEC_STORE_BYPASS there is no point to even mention it as a
+possibility to be considered), so I corrected it.
 
-FWIW: Tested on Unleashed & Polarfire SoC.
-Tested-by: Atish Patra <atish.patra@wdc.com>
-Reviewed-by: Atish Patra <atish.patra@wdc.com>
+==
+uses no JIT. If sshd prefers to keep doing the STIBP window dressing
+exercise, it still can even after this change of defaults by opting-in
+with PR_SPEC_STORE_BYPASS.
+==
 
-@palmer: Can you consider this patch in next rcX PR ?
+> > >with PR_SPEC_INDIRECT_BRANCH.
 
--- 
-Regards,
-Atish
+> Aside of that please send patches in the proper format so they do not
+> need manual interaction when picking them up.
+
+This was a RFC per subject since I expected it wouldn't be final, but
+I added Kees' Acked-by and I'll submit it now.
+
+Thanks,
+Andrea
+
