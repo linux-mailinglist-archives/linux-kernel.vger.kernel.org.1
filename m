@@ -2,62 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE2CC2A673D
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 16:16:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B5692A673F
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 16:16:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730582AbgKDPQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 10:16:10 -0500
-Received: from mx2.suse.de ([195.135.220.15]:45442 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726796AbgKDPQH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 10:16:07 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 44500ABA2;
-        Wed,  4 Nov 2020 15:16:05 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 0C1FC1E130F; Wed,  4 Nov 2020 16:16:05 +0100 (CET)
-Date:   Wed, 4 Nov 2020 16:16:05 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Qian Cai <cai@redhat.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, Matthew Wilcox <willy@infradead.org>,
-        Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: kernel BUG at mm/page-writeback.c:2241 [
- BUG_ON(PageWriteback(page); ]
-Message-ID: <20201104151605.GG5600@quack2.suse.cz>
-References: <645a3f332f37e09057c10bc32f4f298ce56049bb.camel@lca.pw>
- <20201022004906.GQ20115@casper.infradead.org>
- <20201026094948.GA29758@quack2.suse.cz>
- <20201026131353.GP20115@casper.infradead.org>
- <d06d3d2a-7032-91da-35fa-a9dee4440a14@kernel.dk>
- <aa3dfe1f9705f02197f9a75b60d4c28cc97ddff4.camel@redhat.com>
+        id S1730274AbgKDPQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 10:16:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52910 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726796AbgKDPQh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 10:16:37 -0500
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE1E4C0613D3
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 07:16:37 -0800 (PST)
+Received: by mail-pl1-x643.google.com with SMTP id j5so10425968plk.7
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 07:16:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=jZIKcnyDJMb2Z8G5pgpKh49kTld/Nll0bzWeN8l4jNQ=;
+        b=hnWWJzMkF2yndz8YqhuGUTd472AwV4s9pbS4n8KZHEEYEQdvoHfgtQLOic7YE5h2oZ
+         NuWHUNfGD1zkHtuR+CiyHeMH6N9cTVaW7fCP/mzwYK4sPfCGoT1Ui0yWhdb4hIC7sz0k
+         +FTStpnPx066EFde120lFLisWxT9D7kQOO+m2jNXXDtFIZldrBUyoivWTbego231h881
+         z1FSXvs/8yHIqwRx1Gyud5i1RVJZrP20sUsygsxTyzSfcF5wzmfPY5iffzDI1dshwbIH
+         9Ja04jc28rgxAFKUtKW8hWfwC5B2PvSYvzOTGweePmq1zY3hC1t9QCXduV1oivvB9zIH
+         qhwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=jZIKcnyDJMb2Z8G5pgpKh49kTld/Nll0bzWeN8l4jNQ=;
+        b=mrsH4hE7WaiRclD7320LC7Kf2qv9iMqOBq26U6RwjiN6ez5P6JC795QmFKKQjhocoL
+         7DpvHpdSMpCfEL6e1IgSR2dA+ucZun+VCN5xLUtI1g7ZXSs8X4bx1Vu4soh1RS9DZSCE
+         7H+2NZRky2iubTuxDFt/dkzKQtn+hpXDcCTQh2rM1BhwHbY9eLOfI3nAw8P4rumVW4C3
+         L3Twv+rRwwKuMQ6G8UTXZGsiYR3nJK/rbN4zFwMyKVxV4FVcpBnDD37F+yzO63AjhoJF
+         kmszTH7zeGo32LgPgxiM9G8/0AhIV79cD3HO6pvjDo42PxbldaDjHIjys9k14Vp/PPlI
+         +/Vg==
+X-Gm-Message-State: AOAM533xsZ9tZ7eK1YMxuTaFqJwiOMarOWtwA/DGM9R11fTIGmXpS2pW
+        DcIbZDI+by3JJTKiillfeuM=
+X-Google-Smtp-Source: ABdhPJx1rKZCXb7hbPr95pSBrP8o4EH+puDIZ597cuNsU5hu5bc0AJchL8+5o9bWPmTxWchp1kMh+A==
+X-Received: by 2002:a17:902:c14b:b029:d6:ab18:108d with SMTP id 11-20020a170902c14bb02900d6ab18108dmr22903239plj.20.1604502997249;
+        Wed, 04 Nov 2020 07:16:37 -0800 (PST)
+Received: from localhost ([160.202.157.3])
+        by smtp.gmail.com with ESMTPSA id a8sm2501377pgt.1.2020.11.04.07.16.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Nov 2020 07:16:36 -0800 (PST)
+Date:   Wed, 4 Nov 2020 20:46:30 +0530
+From:   Deepak R Varma <mh12gx2825@gmail.com>
+To:     Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     mh12gx2825@gmail.com
+Subject: [PATCH] drm/amdgpu: replace idr_init() by idr_init_base()
+Message-ID: <20201104151630.GA69221@localhost>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aa3dfe1f9705f02197f9a75b60d4c28cc97ddff4.camel@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 26-10-20 10:26:26, Qian Cai wrote:
-> On Mon, 2020-10-26 at 07:55 -0600, Jens Axboe wrote:
-> > I've tried to reproduce this as well, to no avail. Qian, could you perhaps
-> > detail the setup? What kind of storage, kernel config, compiler, etc.
-> > 
-> 
-> So far I have only been able to reproduce on this Intel platform:
-> 
-> HPE DL560 gen10
-> Intel(R) Xeon(R) Gold 6154 CPU @ 3.00GHz
-> 131072 MB memory, 1000 GB disk space (smartpqi nvme)
+idr_init() uses base 0 which is an invalid identifier. The new function
+idr_init_base allows IDR to set the ID lookup from base 1. This avoids
+all lookups that otherwise starts from 0 since 0 is always unused.
 
-Did you try running with the debug patch Matthew sent? Any results?
+References: commit 6ce711f27500 ("idr: Make 1-based IDRs more efficient")
 
-								Honza
+Signed-off-by: Deepak R Varma <mh12gx2825@gmail.com>
+---
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ctx.c | 2 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c | 2 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c  | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ctx.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ctx.c
+index c80d8339f58c..b98ae173a9de 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ctx.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ctx.c
+@@ -576,7 +576,7 @@ int amdgpu_ctx_wait_prev_fence(struct amdgpu_ctx *ctx,
+ void amdgpu_ctx_mgr_init(struct amdgpu_ctx_mgr *mgr)
+ {
+ 	mutex_init(&mgr->lock);
+-	idr_init(&mgr->ctx_handles);
++	idr_init_base(&mgr->ctx_handles, 1);
+ }
+ 
+ long amdgpu_ctx_mgr_entity_flush(struct amdgpu_ctx_mgr *mgr, long timeout)
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
+index efda38349a03..d65a1888683b 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
+@@ -1052,7 +1052,7 @@ int amdgpu_driver_open_kms(struct drm_device *dev, struct drm_file *file_priv)
+ 	}
+ 
+ 	mutex_init(&fpriv->bo_list_lock);
+-	idr_init(&fpriv->bo_list_handles);
++	idr_init_base(&fpriv->bo_list_handles, 1);
+ 
+ 	amdgpu_ctx_mgr_init(&fpriv->ctx_mgr);
+ 
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
+index df110afa97bf..0154282771c7 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
+@@ -3199,7 +3199,7 @@ void amdgpu_vm_manager_init(struct amdgpu_device *adev)
+ 	adev->vm_manager.vm_update_mode = 0;
+ #endif
+ 
+-	idr_init(&adev->vm_manager.pasid_idr);
++	idr_init_base(&adev->vm_manager.pasid_idr, 1);
+ 	spin_lock_init(&adev->vm_manager.pasid_lock);
+ }
+ 
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.25.1
+
