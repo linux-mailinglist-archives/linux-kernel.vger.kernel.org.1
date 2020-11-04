@@ -2,79 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB2E32A7080
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 23:30:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FDA72A70AB
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 23:39:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732367AbgKDWaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 17:30:03 -0500
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:42232 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727711AbgKDWaD (ORCPT
+        id S1732401AbgKDWjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 17:39:08 -0500
+Received: from mslow2.mail.gandi.net ([217.70.178.242]:33450 "EHLO
+        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728085AbgKDWjI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 17:30:03 -0500
-Received: by mail-ot1-f65.google.com with SMTP id h62so260658oth.9;
-        Wed, 04 Nov 2020 14:30:02 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9ZkVCQbSXTNZ9Qi1DnAuirobnBBpCwpdqEzoZru1nj4=;
-        b=Fj5fWXNx/+0eNZZtIy0bHpMqGurM39D/VxOFC6d/A+UyjjEOHd3hUo2MyYarvANZ9i
-         7z9u0bEdGdA+PVCQgJU5jUY1KvRqbXdQ5Am3Z9/EIhep2HVCYSYPOVDt79Gvi2LDwqyL
-         wWX5cLT0HMRdGCObHsAvoGe48eFR65gyclPVPQqMQ5VLb+ISRCo+3et7qMsKSR8Vj3u+
-         +PnwlFKRogmCF+vMcwurCxCLcoYeC9FriO3t0Ejk93v1B3cMgpRXFKbtRc/zrdjD+IyN
-         btFEp0RFHn8QuXvH2dkieCgH++uRw0hIIUjEYdRyg28qfTPabtj+dCMO+URzmoZfGpIB
-         w52Q==
-X-Gm-Message-State: AOAM5301j3RfbeUJukzLHJaggEzPcIiSAkqGwSVsB30o59H0XALeipqQ
-        3XG6ypCq67rI3Ww2wh0MPlmShCSyew==
-X-Google-Smtp-Source: ABdhPJz+4MjZAIDXSqmWPn0xChkuuMaBHm1yjjCVVmO699h/BlUMoUFpSwjTCKqed72Y6otnOC14SQ==
-X-Received: by 2002:a9d:27e8:: with SMTP id c95mr2025257otb.262.1604529001977;
-        Wed, 04 Nov 2020 14:30:01 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id s189sm793792oig.46.2020.11.04.14.30.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 14:30:01 -0800 (PST)
-Received: (nullmailer pid 42132 invoked by uid 1000);
-        Wed, 04 Nov 2020 22:30:00 -0000
-Date:   Wed, 4 Nov 2020 16:30:00 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-pwm@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/4] dt-bindings: microchip: atmel, at91rm9200-tcb:
- add atmel, tcb-pwm
-Message-ID: <20201104223000.GA42098@bogus>
-References: <20201030183658.1007395-1-alexandre.belloni@bootlin.com>
- <20201030183658.1007395-2-alexandre.belloni@bootlin.com>
+        Wed, 4 Nov 2020 17:39:08 -0500
+Received: from relay4-d.mail.gandi.net (unknown [217.70.183.196])
+        by mslow2.mail.gandi.net (Postfix) with ESMTP id EE4E53A6964;
+        Wed,  4 Nov 2020 22:30:20 +0000 (UTC)
+Received: from webmail.gandi.net (webmail15.sd4.0x35.net [10.200.201.15])
+        (Authenticated sender: contact@artur-rojek.eu)
+        by relay4-d.mail.gandi.net (Postfix) with ESMTPA id 983E1E0006;
+        Wed,  4 Nov 2020 22:29:58 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201030183658.1007395-2-alexandre.belloni@bootlin.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 04 Nov 2020 23:29:58 +0100
+From:   Artur Rojek <contact@artur-rojek.eu>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>, od@zcrc.me,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] iio/adc: ingenic: Fix battery VREF for JZ4770 SoC
+In-Reply-To: <20201104192843.67187-1-paul@crapouillou.net>
+References: <20201104192843.67187-1-paul@crapouillou.net>
+Message-ID: <cb8b8ff426500db61c61b51413f3746c@artur-rojek.eu>
+X-Sender: contact@artur-rojek.eu
+User-Agent: Roundcube Webmail/1.3.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 30 Oct 2020 19:36:55 +0100, Alexandre Belloni wrote:
-> Move the TCB pwm nodes under their parent. This removes the need for the
-> tc-block property as there is now a child-parent relationship between the
-> TC channel and the TC block.
-> 
-> Move the documentation to the main file.
-> 
-> Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> ---
-> Changes in v2:
->  - rework commit message
->  - use enum for the pwm node reg values as suggested by Rob.
-> 
->  .../devicetree/bindings/pwm/atmel-tcb-pwm.txt | 16 ---------
->  .../soc/microchip/atmel,at91rm9200-tcb.yaml   | 34 ++++++++++++++++++-
->  2 files changed, 33 insertions(+), 17 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/pwm/atmel-tcb-pwm.txt
-> 
+Hi Paul,
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+On 2020-11-04 20:28, Paul Cercueil wrote:
+> The reference voltage for the battery is clearly marked as 1.2V in the
+> programming manual. With this fixed, the battery channel now returns
+> correct values.
+> 
+> Fixes: a515d6488505 ("IIO: Ingenic JZ47xx: Add support for JZ4770 SoC 
+> ADC.")
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> ---
+>  drivers/iio/adc/ingenic-adc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/iio/adc/ingenic-adc.c 
+> b/drivers/iio/adc/ingenic-adc.c
+> index ecaff6a9b716..19b95905a45c 100644
+> --- a/drivers/iio/adc/ingenic-adc.c
+> +++ b/drivers/iio/adc/ingenic-adc.c
+> @@ -71,7 +71,7 @@
+>  #define JZ4725B_ADC_BATTERY_HIGH_VREF_BITS	10
+>  #define JZ4740_ADC_BATTERY_HIGH_VREF		(7500 * 0.986)
+>  #define JZ4740_ADC_BATTERY_HIGH_VREF_BITS	12
+> -#define JZ4770_ADC_BATTERY_VREF			6600
+> +#define JZ4770_ADC_BATTERY_VREF			1200
+>  #define JZ4770_ADC_BATTERY_VREF_BITS		12
+> 
+>  #define JZ_ADC_IRQ_AUX			BIT(0)
+
+I thought we set it to 6600 because GCW Zero was not showing correct 
+battery values at 1200.
+But if you verified that 1200 works with JZ4770, then:
+Acked-by: Artur Rojek <contact@artur-rojek.eu>
