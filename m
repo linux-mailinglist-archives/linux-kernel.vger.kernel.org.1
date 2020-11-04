@@ -2,93 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49EBC2A69C5
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 17:31:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A63E42A69D1
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 17:32:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730870AbgKDQax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 11:30:53 -0500
-Received: from pbmsgap02.intersil.com ([192.157.179.202]:38392 "EHLO
-        pbmsgap02.intersil.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727285AbgKDQax (ORCPT
+        id S1730831AbgKDQcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 11:32:04 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49865 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726944AbgKDQcE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 11:30:53 -0500
-Received: from pps.filterd (pbmsgap02.intersil.com [127.0.0.1])
-        by pbmsgap02.intersil.com (8.16.0.42/8.16.0.42) with SMTP id 0A4G1vmC028830;
-        Wed, 4 Nov 2020 11:02:36 -0500
-Received: from pbmxdp03.intersil.corp (pbmxdp03.pb.intersil.com [132.158.200.224])
-        by pbmsgap02.intersil.com with ESMTP id 34h23fa02t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Wed, 04 Nov 2020 11:02:36 -0500
-Received: from pbmxdp02.intersil.corp (132.158.200.223) by
- pbmxdp03.intersil.corp (132.158.200.224) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id
- 15.1.1979.3; Wed, 4 Nov 2020 11:02:35 -0500
-Received: from localhost (132.158.202.109) by pbmxdp02.intersil.corp
- (132.158.200.223) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Wed, 4 Nov 2020 11:02:34 -0500
-From:   <min.li.xe@renesas.com>
-To:     <richardcochran@gmail.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Min Li <min.li.xe@renesas.com>
-Subject: [PATCH net-next 3/3] ptp: idt82p33: optimize _idt82p33_adjfine
-Date:   Wed, 4 Nov 2020 11:01:49 -0500
-Message-ID: <1604505709-5483-3-git-send-email-min.li.xe@renesas.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1604505709-5483-1-git-send-email-min.li.xe@renesas.com>
-References: <1604505709-5483-1-git-send-email-min.li.xe@renesas.com>
-X-TM-AS-MML: disable
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-04_11:2020-11-04,2020-11-04 signatures=0
-X-Proofpoint-Spam-Details: rule=junk_notspam policy=junk score=0 mlxscore=0 adultscore=0
- malwarescore=0 bulkscore=0 spamscore=0 mlxlogscore=792 phishscore=0
- suspectscore=4 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011040117
-X-Proofpoint-Spam-Reason: mlx
+        Wed, 4 Nov 2020 11:32:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604507522;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sYaj2UXtsTt0xHMWJvAK4qSBAxg5IaDjFNjZ783AMQs=;
+        b=hS5PzTx/qTiMzegT1no5+0zx7JIHm/E9O1i5+/F2GuLVp6NlSochRhb0yTMUKnlhWBkwwX
+        4JY7nAUnImzVH4FKDN5Ps8AJVv0ifTx8ckA24mVVI0siDEoTtfFu1EieD3Bwt/XLKUtRDM
+        U3M/e1Zb0faxfe1xOeNNv342GKWsBZg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-455-JbqCzlhHMgqZWGBdniYdUQ-1; Wed, 04 Nov 2020 11:32:01 -0500
+X-MC-Unique: JbqCzlhHMgqZWGBdniYdUQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 802551084C9E;
+        Wed,  4 Nov 2020 16:31:57 +0000 (UTC)
+Received: from ovpn-112-92.rdu2.redhat.com (ovpn-112-92.rdu2.redhat.com [10.10.112.92])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5D2994DA35;
+        Wed,  4 Nov 2020 16:31:55 +0000 (UTC)
+Message-ID: <247d36e9a0f2b06c8a4008c634d008ef4403c579.camel@redhat.com>
+Subject: Re: [PATCH] KVM: x86: use positive error values for msr emulation
+ that causes #GP
+From:   Qian Cai <cai@redhat.com>
+To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Borislav Petkov <bp@alien8.de>,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Ingo Molnar <mingo@redhat.com>
+Date:   Wed, 04 Nov 2020 11:31:54 -0500
+In-Reply-To: <20201101115523.115780-1-mlevitsk@redhat.com>
+References: <20201101115523.115780-1-mlevitsk@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Min Li <min.li.xe@renesas.com>
-
-Use div_s64 so that the neg_adj is not needed.
-
-Signed-off-by: Min Li <min.li.xe@renesas.com>
----
- drivers/ptp/ptp_idt82p33.c | 10 +---------
- 1 file changed, 1 insertion(+), 9 deletions(-)
-
-diff --git a/drivers/ptp/ptp_idt82p33.c b/drivers/ptp/ptp_idt82p33.c
-index b1528a0..e970379d 100644
---- a/drivers/ptp/ptp_idt82p33.c
-+++ b/drivers/ptp/ptp_idt82p33.c
-@@ -320,7 +320,6 @@ static int _idt82p33_adjfine(struct idt82p33_channel *channel, long scaled_ppm)
- {
- 	struct idt82p33 *idt82p33 = channel->idt82p33;
- 	unsigned char buf[5] = {0};
--	int neg_adj = 0;
- 	int err, i;
- 	s64 fcw;
- 
-@@ -340,16 +339,9 @@ static int _idt82p33_adjfine(struct idt82p33_channel *channel, long scaled_ppm)
- 	 * FCW = -------------
- 	 *         168 * 2^4
- 	 */
--	if (scaled_ppm < 0) {
--		neg_adj = 1;
--		scaled_ppm = -scaled_ppm;
--	}
- 
- 	fcw = scaled_ppm * 244140625ULL;
--	fcw = div_u64(fcw, 2688);
--
--	if (neg_adj)
--		fcw = -fcw;
-+	fcw = div_s64(fcw, 2688);
- 
- 	for (i = 0; i < 5; i++) {
- 		buf[i] = fcw & 0xff;
--- 
-2.7.4
+On Sun, 2020-11-01 at 13:55 +0200, Maxim Levitsky wrote:
+> Recent introduction of the userspace msr filtering added code that uses
+> negative error codes for cases that result in either #GP delivery to
+> the guest, or handled by the userspace msr filtering.
+> 
+> This breaks an assumption that a negative error code returned from the
+> msr emulation code is a semi-fatal error which should be returned
+> to userspace via KVM_RUN ioctl and usually kill the guest.
+> 
+> Fix this by reusing the already existing KVM_MSR_RET_INVALID error code,
+> and by adding a new KVM_MSR_RET_FILTERED error code for the
+> userspace filtered msrs.
+> 
+> Fixes: 291f35fb2c1d1 ("KVM: x86: report negative values from wrmsr emulation
+> to userspace")
+> Reported-by: Qian Cai <cai@redhat.com>
+> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+Apparently, it does not apply cleanly on today's linux-next. Paolo, is it
+possible to toss this into -next soon, so our CI won't be blocked because of
+this bug?
 
