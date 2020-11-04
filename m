@@ -2,109 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D79F62A6FE6
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 22:52:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04EE42A6FF5
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 22:55:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731457AbgKDVwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 16:52:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58876 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727098AbgKDVwk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 16:52:40 -0500
-Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6325C0613D3;
-        Wed,  4 Nov 2020 13:52:40 -0800 (PST)
-Received: by mail-vs1-xe43.google.com with SMTP id u7so12323751vsq.11;
-        Wed, 04 Nov 2020 13:52:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Omb49H4MO6BunFJn4vIvDeBWor2sMHkkOLj5HAipglA=;
-        b=HvlVLi9LGAmXZ7aiEHBTtsfEMiwgGdw8OM9xHzyZhDzZQuoohsGb5P+3qwYeQywe7z
-         tx9S9Jjqd0bjA8YrwmpZnSOf/Rc+OBaV4DwFAt7SPbYlbd/yvUM3mN9PhwwWjE89VLc8
-         S03yhSmAaIaFSHUg1X1IeBfrSmPO1gQIPXxSthPRAEymaHwMOohsp3TLaNo1g/NKSyMr
-         U/j/blE8NNDKJo5jj7FbO8BnbD8wc7QApYk3s9QYxvXAd7/E+HSAwoNvFECzS3ne7Dej
-         OtYa1aD6cSFT4L3rH1rLpzXctB7405orLx372LWvB7856Nit6P3z9s4yR5f5h2OJNoNP
-         144w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Omb49H4MO6BunFJn4vIvDeBWor2sMHkkOLj5HAipglA=;
-        b=dlQcVaYV8OrXlJo7NtoSPC+SnEbOyoP6Tm/p7X6UKue3+kXbWRtdC/6Hp5Y1izWk9C
-         UrjeufjJGm9rqP2eTfF5tbtpsWFmMjGycP+ljKgH0oO2vKk68BaGpv5sqxDm7q0ZZGWt
-         dpEdQbAVO+kKMXU9JIrKTbWtsdeZo8yQ7He29ZqM1JXwPvXfQNPfquM82wF3yyTH6ja+
-         buw39thQLomO2jQOWrfgbiJkUkhNg0cwJr+t4df1KeFuK8SU61UkTz5fXAc19u5ln18w
-         qBytQXZotW3Pmt56pEjRej/Y5uuHgiQy2znMRctHqFTANVbOFA1CDzpyDW59z7EjkTBH
-         smIw==
-X-Gm-Message-State: AOAM530zZNIT1Dtal4eOhS3kRmS/tjYN4DmH89Znj08t2ahI54iIIj85
-        djVcET/Ig2oCdxSLIewSm8kYIUEZwDFu2NkAlOA=
-X-Google-Smtp-Source: ABdhPJxFa2fnF3xcv0VOkdiuUCU7CGPlM4XKihMMqZN7EIH616JJUSgru7lE+yJVPHuA01g9il2TsKwjzmDwml27E90=
-X-Received: by 2002:a67:2ac1:: with SMTP id q184mr127757vsq.57.1604526759766;
- Wed, 04 Nov 2020 13:52:39 -0800 (PST)
+        id S1731861AbgKDVzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 16:55:02 -0500
+Received: from ozlabs.org ([203.11.71.1]:52639 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726777AbgKDVzC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 16:55:02 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CRL6W5bpPz9sVD;
+        Thu,  5 Nov 2020 08:54:59 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1604526900;
+        bh=1fDuX7HphIO6IZ4atzF22WnH+v+pV7wkqaHbchy7UFk=;
+        h=Date:From:To:Cc:Subject:From;
+        b=SweN6oxjTtmZqW2E2+9sfu3iPB7J2XzOrkllVMEMAh+/mZVMiMKGk5OmfELvGjjkG
+         +Q6Q3JvOxAaLRMTHj3e0gWBcGiQhOdglZU2IIoS+U/FEz9UYEbohqkyQw8hx0QAwe5
+         YaA4Fz7j0/Vl8hpk3GwiluceO0ybTvFgK41uRih+ElHqSvW3x6XZNxQMkn22mzD4tC
+         Yhi2Dfo47jtAxxKl58sAPcagnuEPR2LxdLS83ulHiPXaCwU2KcwGoK3EXx8zqkj4Pw
+         SGtm2yFooHYNhwXgGO50u9vkDxs1mWjDNwWo0ByCZCR4jM6vcPNqWgI1m+Dc6e9Gka
+         N4y120ov59v4Q==
+Date:   Thu, 5 Nov 2020 08:54:58 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        Maor Gottlieb <maorg@nvidia.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the rdma-fixes tree
+Message-ID: <20201105085458.5addbe44@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20201104160847.30049-1-TheSven73@gmail.com> <20201104162734.GA1249360@lunn.ch>
- <CAGngYiUtMN0nOV+wZC-4ycwOAvU=BqhdP7Z3PUPh2GX8Fvo3jg@mail.gmail.com> <20201104165509.GB1249360@lunn.ch>
-In-Reply-To: <20201104165509.GB1249360@lunn.ch>
-From:   Sven Van Asbroeck <thesven73@gmail.com>
-Date:   Wed, 4 Nov 2020 16:52:28 -0500
-Message-ID: <CAGngYiWfHhyPLKi9Znf_aXNvU_HEEdKBAxbc8wfCGTdrbEhvHw@mail.gmail.com>
-Subject: Re: [PATCH v1] lan743x: correctly handle chips with internal PHY
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Bryan Whitehead <bryan.whitehead@microchip.com>,
-        David S Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        Roelof Berg <rberg@berg-solutions.de>,
-        netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/Jzu/OvMJgbBMpg2gAz3p+E7";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andrew,
+--Sig_/Jzu/OvMJgbBMpg2gAz3p+E7
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Nov 4, 2020 at 11:55 AM Andrew Lunn <andrew@lunn.ch> wrote:
-> If you look at that patch, you see:
->
-> -       ret = phy_connect_direct(netdev, phydev,
-> -                                lan743x_phy_link_status_change,
-> -                                PHY_INTERFACE_MODE_GMII);
-> -       if (ret)
-> -               goto return_error;
->
->
-> That was added as part of the first commit for the lan743x
-> driver. Changing that now seems dangerous.
+Hi all,
 
-I think there's a misunderstanding on my part, and it flows from the
-following bit of the commit message in 6f197fb63850
-("lan743x: Added fixed link and RGMII support"):
+After merging the rdma-fixes tree, today's linux-next build (htmldocs)
+produced this warning:
 
->   . The device tree entry phy-connection-type is supported now with
->     the modes RGMII or (G)MII (default).
+drivers/infiniband/ulp/srpt/ib_srpt.c:630: warning: Function parameter or m=
+ember 'port_cnt' not described in 'srpt_unregister_mad_agent'
 
-I interpreted that to mean "if phy-connection-type is omitted, it will default
-to G(MII)". However I now notice that the code in that patch does no such
-thing: if that prop is omitted, the mode is actually silently set to
-PHY_INTERFACE_MODE_NA, which is probably not great.
+Introduced by commit
 
-In summary, 6f197fb63850 behaves as follows:
-1. if a devnode is present, attempts to configure the phy from devicetree,
-   but silently breaks if phy-connection-type is omitted
-2. if no devicetree node present, tries to connect to an internal phy using
-  (G)MII (which silently breaks if an internal phy chip has a devicenode)
+  372a1786283e ("IB/srpt: Fix memory leak in srpt_add_one")
 
-This proposed patch replaces this with:
-1. attempts to configure the phy from devicetree, fails if no correct devicetree
-   description present (phy-connection-type is required)
-2. if (1) fails, tries to connect to an internal phy using (G)MII
+--=20
+Cheers,
+Stephen Rothwell
 
-As far as I can see, this doesn't appear to introduce any breaking changes?
-It's of course quite possible that I've overlooked something, I am definitely
-not a netdev/phy expert.
+--Sig_/Jzu/OvMJgbBMpg2gAz3p+E7
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-Sven
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+jIzIACgkQAVBC80lX
+0Gz7IAf8DYszXuNICe4EZ5WJl9/zbisWiJ5Cj/sPRYNGW3HzgUcmJbVGBn7Ihxp1
+a9OMOD5WLBqjtshvChTQKGYb2xPSUtR3pQUmJNVR3AZTWcjVvSZ4QegwGAhNu6kI
+FwJC8+o5qcJC17IKPJivZzEgdwhqvdPBA3ELnTApQe/SQNsG06JIF1EiBJhYsceb
+ZfiiJCX70vgZOMowyjOHQcrhbi9A6E3KKTvWCBSfOeRhxFz3D8T8wzJbZIPWfyNY
+V5jwXw/XkAY5RNRl+cvArmBC50O99zQkGxK2WcrsTUD3l4NyXJGhCRyJRyeMq0FD
+LMqWbNp+7eaDwLHnQSKjwxkXJ0co5Q==
+=Q7Ae
+-----END PGP SIGNATURE-----
+
+--Sig_/Jzu/OvMJgbBMpg2gAz3p+E7--
