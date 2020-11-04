@@ -2,152 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9B432A5EA7
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 08:18:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3D1D2A5EA9
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 08:18:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728348AbgKDHSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 02:18:17 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:49648 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727651AbgKDHSR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 02:18:17 -0500
-Received: from [10.130.0.60] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxutCwVaJfH4AFAA--.5797S3;
-        Wed, 04 Nov 2020 15:18:09 +0800 (CST)
-Subject: Re: [PATCH v3 5/6] MIPS: Loongson64: SMP: Fix up play_dead jump
- indicator
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Huacai Chen <chenhc@lemote.com>
-References: <1604387525-23400-1-git-send-email-yangtiezhu@loongson.cn>
- <1604387525-23400-6-git-send-email-yangtiezhu@loongson.cn>
- <e534bc91-a946-fde7-a411-bf200abbe6a5@loongson.cn>
- <85ce1b63-1c39-d567-1bb1-8a6431c9c895@flygoat.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>,
-        Lu Zeng <zenglu@loongson.cn>, Jun Yi <yijun@loongson.cn>
-From:   Jinyang He <hejinyang@loongson.cn>
-Message-ID: <cf187478-8f9d-b321-3ea2-4fbaf70ed330@loongson.cn>
-Date:   Wed, 4 Nov 2020 15:18:08 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        id S1729032AbgKDHSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 02:18:31 -0500
+Received: from mx2.suse.de ([195.135.220.15]:60470 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728494AbgKDHSb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 02:18:31 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1604474309;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=k+x5KwHlLohxp0Hlr5WDb5Law8fHA93CulDDqpCr6sM=;
+        b=bisJcfYCgVZPvfi9lk2wCaGLnM2dpk6rGZl2paTg63tB0cQKo4RWbXVlxdG5uHEIzZs6S2
+        3NghJ/Qfj/3I/ru0CSSI1f6zB07DBJaSukMo0PFJPlmlw4Zab5MqPEZM3BYXz/W1p4mEfi
+        Yw3NYvASG6cDCsppOpBYcIwUzOzGbms=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id ACE70AC65;
+        Wed,  4 Nov 2020 07:18:29 +0000 (UTC)
+Date:   Wed, 4 Nov 2020 08:18:28 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Feng Tang <feng.tang@intel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@suse.de>, dave.hansen@intel.com,
+        ying.huang@intel.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 1/2] mm, oom: dump meminfo for all memory nodes
+Message-ID: <20201104071828.GO21990@dhcp22.suse.cz>
+References: <1604470210-124827-1-git-send-email-feng.tang@intel.com>
+ <1604470210-124827-2-git-send-email-feng.tang@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <85ce1b63-1c39-d567-1bb1-8a6431c9c895@flygoat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9AxutCwVaJfH4AFAA--.5797S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxJFWxuryrKw18Cw17tFyxXwb_yoW5Xw4rp3
-        yDAay2kan8Wr1jk3Wktw18XFWUJrZIqFy5XFWqgr1ru3s09w1S9Fyakr4rWFy7Zr18Ka4U
-        Zr1DCas7uFW5AFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvK14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26F
-        4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv
-        7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r
-        1j6r4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCYjI0SjxkI62AI1cAE
-        67vIY487MxkIecxEwVAFwVW8CwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJV
-        W8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF
-        1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6x
-        IIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF
-        0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxh
-        VjvjDU0xZFpf9x0JUffHUUUUUU=
-X-CM-SenderInfo: pkhmx0p1dqwqxorr0wxvrqhubq/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1604470210-124827-2-git-send-email-feng.tang@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/04/2020 03:04 PM, Jiaxun Yang wrote:
+On Wed 04-11-20 14:10:09, Feng Tang wrote:
+> In some OOM cases, if there is memory node binding(current->mems_allowed
+> is not NULL), system may only print the meminfo for these bound nodes,
+> while other nodes' info could still be important for debugging.
+> 
+> For example on a platform with one normal node (has DMA/DMA32/NORMAL...
+> zones) and one node which only has movable zone (either for memory hotplug
+> case or a persistent memory node), some user will run docker while binding
+> memory to the movable node. many memory allocations originated from the
+> docker instance will fall back to the other node, and when a OOM happens,
+> meminfo for both nodes are needed.
+> 
+> So extend the show_mem() to cover all memory nodes.
 
->
->
-> 在 2020/11/4 14:31, Jinyang He 写道:
->> Hi, all,
->>
->> On 11/03/2020 03:12 PM, Tiezhu Yang wrote:
->>> In play_dead function, the whole 64-bit PC mailbox was used as a 
->>> indicator
->>> to determine if the master core had written boot jump information.
->>>
->>> However, after we introduced CSR mailsend, the hardware will not 
->>> guarante
->>> an atomic write for the 64-bit PC mailbox. Thus we have to use the 
->>> lower
->>> 32-bit which is written at the last as the jump indicator instead.
->>>
->>> Signed-off-by: Lu Zeng <zenglu@loongson.cn>
->>> Signed-off-by: Jun Yi <yijun@loongson.cn>
->>> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
->>> ---
->>>
->>> v2: No changes
->>> v3: Update the commit message and comment
->>>
->>>   arch/mips/loongson64/smp.c | 3 ++-
->>>   1 file changed, 2 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/arch/mips/loongson64/smp.c b/arch/mips/loongson64/smp.c
->>> index 736e98d..aa0cd72 100644
->>> --- a/arch/mips/loongson64/smp.c
->>> +++ b/arch/mips/loongson64/smp.c
->>> @@ -764,9 +764,10 @@ static void loongson3_type3_play_dead(int 
->>> *state_addr)
->>>           "1: li    %[count], 0x100             \n" /* wait for init 
->>> loop */
->>>           "2: bnez  %[count], 2b                \n" /* limit mailbox 
->>> access */
->>>           "   addiu %[count], -1                \n"
->>> -        "   ld    %[initfunc], 0x20(%[base])  \n" /* get PC via 
->>> mailbox */
->> I have some confusion here. Play_dead CPUs is always brought up by 
->> cpu_up().
->> On Loongson64, it calls loongson3_boot_secondary(). The value of 
->> startargs[0]
->> is the address of smp_bootstrap() which is in CKSEG0 and a constant 
->> after the
->> kernel is compiled. That means its value likes 0xffffffff8... and 
->> only the low
->> 32bit is useful. As "lw" is sign-extended, could we replace "ld" with 
->> "lw" simply?
->
-> Hi Jinyang,
->
-> I'd prefer not to do so. In future we may have kernel running in other 
-> spaces,
-> (e.g. xkphys), and there is no reason to add a barrier on that without 
-> actual benefit.
-> I had check PMON firmware and it's also loading the full 64-bit address.
->
-> Also to keep consistent, mailbox writing part needs to be refined to 
-> match the
-> behavior of reading. Otherwise other readers will be confused.
->
-> Thus leaving it as is looks much more reasonable.
+I do not like this change. The reason why we print only relevant numa
+nodes is the size of the oom report. Also all other numa nodes are not
+really relevant to the allocation so there is no real reason to print
+their info. We used to do that in the past and decided that this is more
+than suboptimal.
 
-OK, the current code looks better,
-please ignore my comment, sorry for the noise.
+I do understand that this is a preliminary work for your later patch
+which tweaks the node binding and so more numa nodes are eligible but
+then I would propose to merge the two patches.
+ 
+> Signed-off-by: Feng Tang <feng.tang@intel.com>
+> ---
+>  mm/oom_kill.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+> index 8b84661..601476cc 100644
+> --- a/mm/oom_kill.c
+> +++ b/mm/oom_kill.c
+> @@ -462,7 +462,7 @@ static void dump_header(struct oom_control *oc, struct task_struct *p)
+>  	if (is_memcg_oom(oc))
+>  		mem_cgroup_print_oom_meminfo(oc->memcg);
+>  	else {
+> -		show_mem(SHOW_MEM_FILTER_NODES, oc->nodemask);
+> +		show_mem(SHOW_MEM_FILTER_NODES, &node_states[N_MEMORY]);
+>  		if (is_dump_unreclaim_slabs())
+>  			dump_unreclaimable_slab();
+>  	}
+> -- 
+> 2.7.4
 
-Thanks,
-Jinyang
-
->
-> Thanks.
->
-> - Jiaxun
->
->>
->> Thanks,
->> Jinyang
->>> +        "   lw    %[initfunc], 0x20(%[base])  \n" /* check lower 
->>> 32-bit as jump indicator */
->>>           "   beqz  %[initfunc], 1b             \n"
->>>           "   nop                               \n"
->>> +        "   ld    %[initfunc], 0x20(%[base])  \n" /* get PC (whole 
->>> 64-bit) via mailbox */
->>>           "   ld    $sp, 0x28(%[base])          \n" /* get SP via 
->>> mailbox */
->>>           "   ld    $gp, 0x30(%[base])          \n" /* get GP via 
->>> mailbox */
->>>           "   ld    $a1, 0x38(%[base])          \n"
-
+-- 
+Michal Hocko
+SUSE Labs
