@@ -2,76 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19A0F2A610C
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 11:00:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8ED62A6115
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 11:03:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728387AbgKDKAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 05:00:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59540 "EHLO
+        id S1728889AbgKDKDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 05:03:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726434AbgKDKAv (ORCPT
+        with ESMTP id S1727923AbgKDKDO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 05:00:51 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C04FC0613D3;
-        Wed,  4 Nov 2020 02:00:51 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1604484049;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Q22pwsM6Tj1e0wp7DHmM0yF6sfQnnx66IYQwrUyKPjs=;
-        b=nhnktz3P0gZM+rjMsMcZ5kltHAUM1F/6Dr0BKbAhD98nRv8KkAk9f5fITxx9tES7cDs7Zo
-        0HVDtox5v/Ax0X/+zpDYO4a+52EFP+79sPTLAdgXaZrrCf0lHxWNCV9KFPN0P3//0CgVJ5
-        0pLWEgWC091auw2dWcqKwSBN3XLoBBNrbL2Y4oLc7DGtIgmehR8AiRj2nvVMiP/moTCzKf
-        CsfhBJztAqM705AR9We4UzIxpOJJSWDDsMhSi3cYWwObOysrOVAGpPXmfoPoi797El2H5l
-        dpUqVrIQF6ynua8arqZz9THL6wHGQd+L/9NNKPNof6IYMt97ratAOInnVCGsDw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1604484049;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Q22pwsM6Tj1e0wp7DHmM0yF6sfQnnx66IYQwrUyKPjs=;
-        b=82Ck8bCSuZedBxpRO91qHX94plmSW0hsbkBVa9zsfns3HU/kYX6O035x5SGqQmTGGqcFfc
-        DUjrle6GW7oODMBQ==
-To:     Gratian Crisan <gratian.crisan@ni.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org,
-        Brandon Streiff <brandon.streiff@ni.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Darren Hart <dvhart@infradead.org>,
-        James Minor <james.minor@ni.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: Re: BUG_ON(!newowner) in fixup_pi_state_owner()
-In-Reply-To: <878sbixbk4.fsf@ni.com>
-References: <87a6w6x7bb.fsf@ni.com> <878sbixbk4.fsf@ni.com>
-Date:   Wed, 04 Nov 2020 11:00:49 +0100
-Message-ID: <877dr1mofi.fsf@nanos.tec.linutronix.de>
+        Wed, 4 Nov 2020 05:03:14 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D79B8C0613D3;
+        Wed,  4 Nov 2020 02:03:13 -0800 (PST)
+Received: by ozlabs.org (Postfix, from userid 1034)
+        id 4CR2KB2hxfz9sTK; Wed,  4 Nov 2020 21:03:10 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1604484190;
+        bh=L1GBv73QytYJI/5pzM+dKFeWgUQ+ltUjUa2+CVaFVAA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=X9jZQphOB1UPN3HBNOr0E3kt5wR++jemdLWJg+ewe+oEr6OA27EsdygKIZZ4an8ip
+         qvc8NMnPjQ1M0WbWPctZ1iZqB7ZCR3GAzos4hEsiAHbVrhH/J5HFtlWoL6nUtoB23e
+         e23UkDJuvP8sNXMemw+ePXNweNlhiYuTTP1AOiEfVRb5cfKzJzln2tzY5Z5b5s+zmN
+         73voxdlh++o3QcVz0MjjVRXBnBV+ApGDu1TSTXj9KrfGb/t3lhoTRXdxHpNALQlxSq
+         PfyfBbLUEIg5HskJf/kXi67V+foEjw4XsAAEK6CqYf4ebF9Kp5s3messxHZInhThtm
+         EqrJZJE8WZL+Q==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] selftests/memfd: Fix implicit declaration warnings
+Date:   Wed,  4 Nov 2020 21:03:05 +1100
+Message-Id: <20201104100305.655720-1-mpe@ellerman.id.au>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 03 2020 at 17:31, Gratian Crisan wrote:
-> I apologize for waking up the futex demons (and replying to my own
-> email), but ...
+The memfd tests emit several warnings:
 
-I was staring at it already but couldn't wrap my head around it.
+  fuse_test.c:261:7: warning: implicit declaration of function 'open'
+  fuse_test.c:67:6: warning: implicit declaration of function 'fcntl'
+  memfd_test.c:397:6: warning: implicit declaration of function 'fallocate'
+  memfd_test.c:64:7: warning: implicit declaration of function 'open'
+  memfd_test.c:90:6: warning: implicit declaration of function 'fcntl'
 
-> Gratian Crisan writes:
-> I was able to reproduce the BUG_ON(!newowner) in fixup_pi_state_owner()
-> with a 5.10.0-rc1-rt1 kernel (currently testing 5.10.0-rc2-rt4).
->
-> I've captured the reproducer, boot messages, OOPS, full event ftrace
-> dump and some kgdb info here: https://github.com/gratian/traces
->
-> The abbreviated OOPS (w/o the ftrace dump since it's too large to
-> include inline; see link[1]):
+These are all caused by the test not including fcntl.h.
 
-Let me start at that then.
+Instead of including linux/fcntl.h, include fcntl.h, which should
+eventually cause the former to be included as well.
 
-Thanks,
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+---
+ tools/testing/selftests/memfd/fuse_test.c  | 2 +-
+ tools/testing/selftests/memfd/memfd_test.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-        tglx
+diff --git a/tools/testing/selftests/memfd/fuse_test.c b/tools/testing/selftests/memfd/fuse_test.c
+index b018e835737d..be675002f918 100644
+--- a/tools/testing/selftests/memfd/fuse_test.c
++++ b/tools/testing/selftests/memfd/fuse_test.c
+@@ -20,7 +20,7 @@
+ #include <inttypes.h>
+ #include <limits.h>
+ #include <linux/falloc.h>
+-#include <linux/fcntl.h>
++#include <fcntl.h>
+ #include <linux/memfd.h>
+ #include <sched.h>
+ #include <stdio.h>
+diff --git a/tools/testing/selftests/memfd/memfd_test.c b/tools/testing/selftests/memfd/memfd_test.c
+index 334a7eea2004..74baab83fec3 100644
+--- a/tools/testing/selftests/memfd/memfd_test.c
++++ b/tools/testing/selftests/memfd/memfd_test.c
+@@ -6,7 +6,7 @@
+ #include <inttypes.h>
+ #include <limits.h>
+ #include <linux/falloc.h>
+-#include <linux/fcntl.h>
++#include <fcntl.h>
+ #include <linux/memfd.h>
+ #include <sched.h>
+ #include <stdio.h>
+
+base-commit: cf7cd542d1b538f6e9e83490bc090dd773f4266d
+-- 
+2.25.1
+
