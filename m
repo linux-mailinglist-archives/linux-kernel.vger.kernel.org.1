@@ -2,127 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 665242A6C8E
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 19:17:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CC1D2A6C99
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 19:21:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732326AbgKDSRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 13:17:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53410 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732239AbgKDSRK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 13:17:10 -0500
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7713EC061A4C
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 10:17:10 -0800 (PST)
-Received: by mail-qt1-x841.google.com with SMTP id c5so12874809qtw.3
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 10:17:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=0IlAXzxWFTQTUuhmHtEVnKs2xhR6KwI7WPZxiLpUe5M=;
-        b=nBv9S+jwc5JdfLlq4RL/YRGMRQsYfNmjawGrU9GxIfERfAzcpQgZP7hrv69Mesc6M+
-         quTXVEbUxyGRkpm9rbsP8azSm9DhVnbhxJgRfZltG0yrlTEb9tUc276PX/VzeI4+sRFb
-         4r/IU25uiRBU2ueg3BK2D1b5dzTlQrhsuR29PTFyGpgIBwSarkIUR8LSQBS70hi2P/nX
-         3m9r9pQVhoUF1DKe/otBAG1Rv7Kcrglv3VfUI2ehd7bNrMEt5ljYuJ0XfoYPWDc7w4EG
-         xr2aRwLmdjA9s+hlno1U0yOoQqyB/mpuAfQuUyKvK6M+DNWEL6fkUm6gwdGKM5MFyxPD
-         3ciQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0IlAXzxWFTQTUuhmHtEVnKs2xhR6KwI7WPZxiLpUe5M=;
-        b=dD/wCoPOxX8wnPkacRjndr4H92k5xJ4LywLemLOp5C+TME6tcwIPgfrocqcuDXUbaZ
-         1qgggu4YrtOzB2xUJMMDWJMjb6fSxSsF5VyapYDBy/eI+biiAuJ//u8pjqjPH3hVTuia
-         c4oMXBeyfFNN3nZBZ+h7BT50z5CtklPmExR1qHq1fARFTlduFDj41GT+bkP1r3IM/luG
-         /oErvASLFQkqgJXlILzKMQ6AmFFqyUlYt3b3tLuZlu41Jeq9twbvBebiCIqv1YMv1eJD
-         Uwkps7xy0sFKOHh54GLWOrf0levJdZbPbsi4OUwwhfCbSKM51uWqZlFSmXrZhnDEWjmR
-         hzjw==
-X-Gm-Message-State: AOAM531l4L4ZF4wtBewJA1Ia5a94GtGC2ydM4UsMwGmZVZ+DYtyDQT8y
-        fVDDYOhqUbSKNUXD1vdmFtYUOw==
-X-Google-Smtp-Source: ABdhPJzbeLbokY3xWw1ad4Wlq96Bw2Ur+AXtnppBcNVDAcKLM++yGsaQXPWFUe04HeoITS7ilZQ2EA==
-X-Received: by 2002:ac8:590c:: with SMTP id 12mr12840139qty.28.1604513829572;
-        Wed, 04 Nov 2020 10:17:09 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id a30sm701698qtn.55.2020.11.04.10.17.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 10:17:08 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kaNLI-00GaUi-BN; Wed, 04 Nov 2020 14:17:08 -0400
-Date:   Wed, 4 Nov 2020 14:17:08 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        J??r??me Glisse <jglisse@redhat.com>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        Jan Kara <jack@suse.cz>, Pawel Osciak <pawel@osciak.com>,
-        KVM list <kvm@vger.kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>
-Subject: Re: [PATCH v5 05/15] mm/frame-vector: Use FOLL_LONGTERM
-Message-ID: <20201104181708.GU36674@ziepe.ca>
-References: <1f7cf690-35e2-c56f-6d3f-94400633edd2@nvidia.com>
- <CAKMK7uFYDSqnNp_xpohzCEidw_iLufNSoX4v55sNZj-nwTckSg@mail.gmail.com>
- <7f29a42a-c408-525d-90b7-ef3c12b5826c@nvidia.com>
- <CAKMK7uEw701AWXNJbRNM8Z+FkyUB5FbWegmSzyWPy9cG4W7OLA@mail.gmail.com>
- <20201104140023.GQ36674@ziepe.ca>
- <CAKMK7uH69hsFjYUkjg1aTh5f=q_3eswMSS5feFs6+ovz586+0A@mail.gmail.com>
- <20201104162125.GA13007@infradead.org>
- <CAKMK7uH=0+3FSR4LxP7bJUB4BsCcnCzfK2=D+2Am9QNmfZEmfw@mail.gmail.com>
- <20201104163758.GA17425@infradead.org>
- <20201104164119.GA18218@infradead.org>
+        id S1730713AbgKDSVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 13:21:44 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:37342 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729488AbgKDSVn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 13:21:43 -0500
+Received: from zn.tnic (p200300ec2f0ef400317dde2deb3fed11.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:f400:317d:de2d:eb3f:ed11])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1F1851EC0324;
+        Wed,  4 Nov 2020 19:21:41 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1604514101;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GpmWgyEf2ElSP4jnHUhAmP7K3AwEb5iwpZy9KQW/2fw=;
+        b=kgRCcN5iQL3yrVMpe6J1MvxgIOk9zsQZFQiqVmReeUAGRwwAnG4vqDRlGiEqCMeo1lJipj
+        dixIQSc9mXOEaflMExAQZXZNDYV2TjGgpOTFYYnK8UNUD3j10wl0C1gdAfaiO69Ml3exMJ
+        Dm7jhq/kwNbSTKXohglMkmVI3UVS48A=
+Date:   Wed, 4 Nov 2020 19:21:29 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Serge Ayoun <serge.ayoun@intel.com>, akpm@linux-foundation.org,
+        andriy.shevchenko@linux.intel.com, asapek@google.com,
+        cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com, kai.huang@intel.com,
+        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
+        luto@kernel.org, nhorman@redhat.com, npmccallum@redhat.com,
+        puiterwijk@redhat.com, rientjes@google.com, tglx@linutronix.de,
+        yaozhangx@google.com, mikko.ylinen@intel.com
+Subject: Re: [PATCH v40 03/24] x86/sgx: Initialize metadata for Enclave Page
+ Cache (EPC) sections
+Message-ID: <20201104182129.GD23298@zn.tnic>
+References: <20201104145430.300542-1-jarkko.sakkinen@linux.intel.com>
+ <20201104145430.300542-4-jarkko.sakkinen@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201104164119.GA18218@infradead.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201104145430.300542-4-jarkko.sakkinen@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 04:41:19PM +0000, Christoph Hellwig wrote:
-> On Wed, Nov 04, 2020 at 04:37:58PM +0000, Christoph Hellwig wrote:
-> > On Wed, Nov 04, 2020 at 05:26:58PM +0100, Daniel Vetter wrote:
-> > > What we're discussing is whether gup_fast and pup_fast also obey this,
-> > > or fall over and can give you the struct page that's backing the
-> > > dma_mmap_* memory. Since the _fast variant doesn't check for
-> > > vma->vm_flags, and afaict that's the only thing which closes this gap.
-> > > And like you restate, that would be a bit a problem. So where's that
-> > > check which Jason&me aren't spotting?
-> > 
-> > remap_pte_range uses pte_mkspecial to set up the PTEs, and gup_pte_range
-> > errors out on pte_special.  Of course this only works for the
-> > CONFIG_ARCH_HAS_PTE_SPECIAL case, for other architectures we do have
-> > a real problem.
-> 
-> Except that we don't really support pte-level gup-fast without
-> CONFIG_ARCH_HAS_PTE_SPECIAL, and in fact all architectures selecting
-> HAVE_FAST_GUP also select ARCH_HAS_PTE_SPECIAL, so we should be fine.
+On Wed, Nov 04, 2020 at 04:54:09PM +0200, Jarkko Sakkinen wrote:
+> +static void __init sgx_init(void)
+> +{
+> +	int i;
+> +
+> +	if (!boot_cpu_has(X86_FEATURE_SGX))
 
-Mm, I thought it was probably the special flag..
+Guys, you need to build-test *every* *single* patch - otherwise we break
+bisectability and that is a no-no:
 
-Knowing that CONFIG_HAVE_FAST_GUP can't be set without
-CONFIG_ARCH_HAS_PTE_SPECIAL is pretty insightful, can we put that in
-the Kconfig?
+arch/x86/kernel/cpu/sgx/main.c: In function ‘sgx_init’:
+arch/x86/kernel/cpu/sgx/main.c:172:20: error: ‘X86_FEATURE_SGX’ undeclared (first use in this function); did you mean ‘X86_FEATURE_SMX’?
+  172 |  if (!boot_cpu_has(X86_FEATURE_SGX))
+      |                    ^~~~~~~~~~~~~~~
+./arch/x86/include/asm/cpufeature.h:118:24: note: in definition of macro ‘cpu_has’
+  118 |  (__builtin_constant_p(bit) && REQUIRED_MASK_BIT_SET(bit) ? 1 : \
+      |                        ^~~
+arch/x86/kernel/cpu/sgx/main.c:172:7: note: in expansion of macro ‘boot_cpu_has’
+  172 |  if (!boot_cpu_has(X86_FEATURE_SGX))
+      |       ^~~~~~~~~~~~
+arch/x86/kernel/cpu/sgx/main.c:172:20: note: each undeclared identifier is reported only once for each function it appears in
+  172 |  if (!boot_cpu_has(X86_FEATURE_SGX))
+      |                    ^~~~~~~~~~~~~~~
+./arch/x86/include/asm/cpufeature.h:118:24: note: in definition of macro ‘cpu_has’
+  118 |  (__builtin_constant_p(bit) && REQUIRED_MASK_BIT_SET(bit) ? 1 : \
+      |                        ^~~
+arch/x86/kernel/cpu/sgx/main.c:172:7: note: in expansion of macro ‘boot_cpu_has’
+  172 |  if (!boot_cpu_has(X86_FEATURE_SGX))
+      |       ^~~~~~~~~~~~
+make[4]: *** [scripts/Makefile.build:283: arch/x86/kernel/cpu/sgx/main.o] Error 1
+make[3]: *** [scripts/Makefile.build:500: arch/x86/kernel/cpu/sgx] Error 2
+make[2]: *** [scripts/Makefile.build:500: arch/x86/kernel/cpu] Error 2
+make[2]: *** Waiting for unfinished jobs....
+make[1]: *** [scripts/Makefile.build:500: arch/x86/kernel] Error 2
+make[1]: *** Waiting for unfinished jobs....
+make: *** [Makefile:1799: arch/x86] Error 2
+make: *** Waiting for unfinished jobs....
 
-config HAVE_FAST_GUP
-        depends on MMU
-        depends on ARCH_HAS_PTE_SPECIAL
-        bool
+-- 
+Regards/Gruss,
+    Boris.
 
-?
-
-Jason
+https://people.kernel.org/tglx/notes-about-netiquette
