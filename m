@@ -2,184 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F29252A6CF6
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 19:38:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D838D2A6D1B
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 19:47:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731510AbgKDSix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 13:38:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56802 "EHLO
+        id S1731450AbgKDSqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 13:46:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729600AbgKDSiw (ORCPT
+        with ESMTP id S1726737AbgKDSqv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 13:38:52 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 390CDC0613D3;
-        Wed,  4 Nov 2020 10:38:52 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id v144so696427lfa.13;
-        Wed, 04 Nov 2020 10:38:52 -0800 (PST)
+        Wed, 4 Nov 2020 13:46:51 -0500
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD4FCC0613D3
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 10:46:50 -0800 (PST)
+Received: by mail-ej1-x643.google.com with SMTP id gn41so13953973ejc.4
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 10:46:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=xfi4qxxkzLVx6Fda8dTuV56C6Q45OB8JjOkkvYWDxcA=;
-        b=qKHti6FFatoAvB6uvUNrOsTcqB0oQwEvC/PyqDBjC3skECHacFwxRe/91ZSgMzORHR
-         N/Ot8nmikv7BKbEoND3ssvjEJV1tQTL3Llm/bBele5OAEsF3Eh3wHnMBuj725XA97sKd
-         CICulThfZxHH0r2UJjTjAWY61OGcnIKR2UpxTPVpj0AfD+AzkQG1QrHdQ2VRphe3dVrZ
-         3AxzYecDZvl+4qIKw5gZoUgw74y4HIjMeIuDC375OeTjyydBKpDo20pxRAgJhiyEUyE+
-         G3da9h5zvx7nLbDAWQdxjYfS8RqWLccw9k9lMPvowZccn00WGptt05mN5FRPT/JqEMTa
-         EOKA==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rJ0JSJD7YhQrtyyxZarPnMZ/Oz0Aar8DucY8lFMMvvc=;
+        b=SH4kivALZPyu6z8Te1ke0S4tmokB361FaCC0AzDfHKGoHsDC9uO+0aTOFZsLDwisKr
+         pWKOHAviOTaTLQEOEvik45JL9KgUGyK7BJTfllyxetUS/K8q/MHYet9UNjFcYRYchZsF
+         7yUEWICEhOTLfStxey617QMvYLuKg2c7ML7e4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=xfi4qxxkzLVx6Fda8dTuV56C6Q45OB8JjOkkvYWDxcA=;
-        b=meh8RR/raktqGaO24RWnAU9ljZ/HBH2lX97dkVqqia/NvM2R0jyRFUGBPZzM2mXsRv
-         fUEocgCi05vkmpZF4EzxRidpPF+fcjbIGujDZemEh4PaKoAtXU8hIDtUOyTo3HjKQOMU
-         2C2pBVwNtV7uk9jvM5jWP7I1VzP1bbnI7AuNck4B8iYSSHr9byVEEiDO+WuRhYyvtT0V
-         osmbPwotINhSr/4LO+wVe9kQ6nV4wjdCKXmI7bcW49iINZKvrqQhynvqFmHERl1F1qk+
-         FmjckDCtaUrCaBM/jMZ0gQM7I2bP+eVt0aTeydFssNauJk3ud51fQTmCYy3IUBPGUCa1
-         7dSw==
-X-Gm-Message-State: AOAM530N1/zLBqn8hpQUU/AnPsngwuRVxHnja6m2g2xAryr/TQ1D1jgZ
-        Q0A0iz0AhyowkcWyM90L4iY=
-X-Google-Smtp-Source: ABdhPJyz4uPm+H1FdYufmvJr76WXfsCBJaTGjPhdvjwasZpI8rf+f4VXHNR33JijOFFTjRFsn7WnUA==
-X-Received: by 2002:a19:4f5e:: with SMTP id a30mr1242847lfk.64.1604515130698;
-        Wed, 04 Nov 2020 10:38:50 -0800 (PST)
-Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
-        by smtp.gmail.com with ESMTPSA id u22sm591592ljk.45.2020.11.04.10.38.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 10:38:49 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Wed, 4 Nov 2020 19:38:47 +0100
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH 01/16] rcu/tree: Add a work to allocate pages from
- regular context
-Message-ID: <20201104183847.GA22933@pc636>
-References: <20201029165019.14218-1-urezki@gmail.com>
- <20201103175422.GB1310511@google.com>
- <20201104121203.GB17782@pc636>
- <20201104150143.GB2313912@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rJ0JSJD7YhQrtyyxZarPnMZ/Oz0Aar8DucY8lFMMvvc=;
+        b=hizUKIzonyKIaK69t9MAWXm9TutRyEyRykLPrLAinegomgWnkOPH6lcdhVC7dxiW04
+         //SS4BvMIbcqCfW55m9CPnHQrhbYj1ySZ9yHLJit8EWpuy5ElI/9CNbLZYsMl5foVI/w
+         9CFBxHrOusURm5QPLCJQ7hIJOL83SYnMVMxlR2KOxH7+dYwAQHSbmb6zFa58p9Z25yRb
+         CSLhFCJFpOEgf4W/TX1X0idKik+e/Z8CaOO4N9YWwkNPeG0m7wUJbbs+kjLOshByiNmM
+         6ymYlrliG7Sj+/QaQUkh7TDTQCKB5Mb8Z/9WNK4ZtpEoL0OBgcvx6eqMCKV32vHrATZg
+         fBAw==
+X-Gm-Message-State: AOAM5321RNHr/1PAEv6kmBG+piTv5y8UowUmsW8tCSLu9GZ3EANaev+t
+        kn8WQUTkU/FeKbIhgI7lVTmA98qvQxm++Q==
+X-Google-Smtp-Source: ABdhPJxXoADVJeenTJO6bK1ll7mULIV67ZJ0i2BM7ZnBKBLjBCx3xOFjiqY+uNAkx6X9p4qdwrkWkA==
+X-Received: by 2002:a17:906:b312:: with SMTP id n18mr17168509ejz.353.1604515609239;
+        Wed, 04 Nov 2020 10:46:49 -0800 (PST)
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com. [209.85.218.45])
+        by smtp.gmail.com with ESMTPSA id t8sm1411586ejc.45.2020.11.04.10.46.48
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Nov 2020 10:46:49 -0800 (PST)
+Received: by mail-ej1-f45.google.com with SMTP id p5so31246064ejj.2
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 10:46:48 -0800 (PST)
+X-Received: by 2002:a2e:868b:: with SMTP id l11mr10743770lji.102.1604515153445;
+ Wed, 04 Nov 2020 10:39:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201104150143.GB2313912@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201030225250.GB6357@xz-x1> <20201030235121.GQ2620339@nvidia.com>
+ <20201103001712.GB52235@lx-t490> <20201103002532.GL2620339@nvidia.com>
+ <20201103004133.GD52235@lx-t490> <e03dba4e-fd1d-a32c-c99c-fc3fa51419c4@nvidia.com>
+ <20201103065225.GA63301@lx-t490> <CAHk-=wgB8nyOQufpn0o6a5BpJCJPnXvH+kRxApujhsgG+7qAwQ@mail.gmail.com>
+ <20201104013212.GA82153@lx-t490> <29e4f7f7-5774-7d8f-694b-75eb55ae1b2e@nvidia.com>
+ <20201104031711.GA227990@lx-t490>
+In-Reply-To: <20201104031711.GA227990@lx-t490>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 4 Nov 2020 10:38:57 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wikhGExmprXgaW+MVXG1zsGpztBbVwOb23vetk41EtTBQ@mail.gmail.com>
+Message-ID: <CAHk-=wikhGExmprXgaW+MVXG1zsGpztBbVwOb23vetk41EtTBQ@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] mm: prevent gup_fast from racing with COW during fork
+To:     "Ahmed S. Darwish" <a.darwish@linutronix.de>
+Cc:     John Hubbard <jhubbard@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>, Peter Xu <peterx@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Hugh Dickins <hughd@google.com>, Jan Kara <jack@suse.cz>,
+        Jann Horn <jannh@google.com>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Linux-MM <linux-mm@kvack.org>, Michal Hocko <mhocko@suse.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Siewior <bigeasy@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > > >   * This is a per-CPU structure.  The reason that it is not included in
-> > > > @@ -3100,6 +3103,11 @@ struct kfree_rcu_cpu {
-> > > >  	bool monitor_todo;
-> > > >  	bool initialized;
-> > > >  	int count;
-> > > > +
-> > > > +	struct work_struct page_cache_work;
-> > > > +	atomic_t work_in_progress;
-> > > 
-> > > Does it need to be atomic? run_page_cache_work() is only called under a lock.
-> > > You can use xchg() there. And when you do the atomic_set, you can use
-> > > WRITE_ONCE as it is a data-race.
-> > > 
-> > We can use xchg together with *_ONCE() macro. Could you please clarify what
-> > is your concern about using atomic_t? Both xchg() and atomic_xchg() guarantee
-> > atamarity. Same as WRITE_ONCE() or atomic_set().
-> 
-> Right, whether there's lock or not does not matter as xchg() is also
-> atomic-swap.
-> 
-> atomic_t is a more complex type though, I would directly use int since
-> atomic_t is not needed here and there's no lost-update issue here. It could
-> be matter of style as well.
-> 
-> BTW I did think atomic_xchg() adds additional memory barriers
-> but I could not find that to be the case in the implementation. Is that not
-> the case? Docs says "atomic_xchg must provide explicit memory barriers around
-> the operation.".
-> 
-In most of the systems atmoc_xchg() is same as xchg() and atomic_set()
-is same as WRITE_ONCE(). But there are exceptions, for example "parisc"
+On Tue, Nov 3, 2020 at 7:17 PM Ahmed S. Darwish <a.darwish@linutronix.de> wrote:
+>
+> Nonetheless, as you mentioned in the later (dropped) part of your
+> message, I think do_ is better than __do_, so the final result will be:
+>
+>   do___read_seqcount_retry()
+>   do_read_seqcount_retry()
+>   do_raw_write_seqcount_begin()
+>   do_raw_write_seqcount_end()
+>   do_write_seqcount_begin()
+>   ...
+>
+> and so on.
 
-*** arch/parisc/include/asm/atomic.h:
-<snip>
-...
-#define _atomic_spin_lock_irqsave(l,f) do { \
-    arch_spinlock_t *s = ATOMIC_HASH(l); \
-    local_irq_save(f);   \
-    arch_spin_lock(s);   \
-} while(0)
-...
-static __inline__ void atomic_set(atomic_t *v, int i)
-{
-     unsigned long flags;
-     _atomic_spin_lock_irqsave(v, flags);
+Looks reasonable to me.
 
-     v->counter = i;
+And can you add a few comments to the magic type macros, so that it's
+a lot more obvious what the end result was. I clearly wasn't able to
+follow all the _Generic() cases from the seqcount_t to the final end
+result. It's a really odd combination of subtle _GENERIC() macro and
+token pasting to get from zeqcount_t to "false" in
+__seqcount_lock_preemptible().
 
-     _atomic_spin_unlock_irqrestore(v, flags);
-}
-<snip>
+I can see it when I really look, but when looking at the actual use,
+it's very non-obvious indeed.
 
-I will switch to xchg() and WRITE_ONCE(), because of such specific ARCHs.
-
-> > > > @@ -4449,24 +4482,14 @@ static void __init kfree_rcu_batch_init(void)
-> > > >  
-> > > >  	for_each_possible_cpu(cpu) {
-> > > >  		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
-> > > > -		struct kvfree_rcu_bulk_data *bnode;
-> > > >  
-> > > >  		for (i = 0; i < KFREE_N_BATCHES; i++) {
-> > > >  			INIT_RCU_WORK(&krcp->krw_arr[i].rcu_work, kfree_rcu_work);
-> > > >  			krcp->krw_arr[i].krcp = krcp;
-> > > >  		}
-> > > >  
-> > > > -		for (i = 0; i < rcu_min_cached_objs; i++) {
-> > > > -			bnode = (struct kvfree_rcu_bulk_data *)
-> > > > -				__get_free_page(GFP_NOWAIT | __GFP_NOWARN);
-> > > > -
-> > > > -			if (bnode)
-> > > > -				put_cached_bnode(krcp, bnode);
-> > > > -			else
-> > > > -				pr_err("Failed to preallocate for %d CPU!\n", cpu);
-> > > > -		}
-> > > > -
-> > > >  		INIT_DELAYED_WORK(&krcp->monitor_work, kfree_rcu_monitor);
-> > > > +		INIT_WORK(&krcp->page_cache_work, fill_page_cache_func);
-> > > >  		krcp->initialized = true;
-> > > 
-> > > During initialization, is it not better to still pre-allocate? That way you
-> > > don't have to wait to get into a situation where you need to initially
-> > > allocate.
-> > > 
-> > Since we have a worker that does it when a cache is empty there is no
-> > a high need in doing it during initialization phase. If we can reduce
-> > an amount of code it is always good :)
-> 
-> I am all for not having more code than needed. But you would hit
-> synchronize_rcu() slow path immediately on first headless kfree_rcu() right?
-> That seems like a step back from the current code :)
-> 
-As for slow path and hitting the synchronize_rcu() immediately. Yes, a slow 
-hit "counter" will be increased by 1, the difference between two variants
-will be N and N + 1 times. I do not consider N + 1 as a big difference and
-impact on performance.
-
-Should we guarantee that a first user does not hit a fallback path that
-invokes synchronize_rcu()? If not, i would rather remove redundant code.
-
-Any thoughts here?
-
-Thanks!
-
---
-Vlad Rezki
+                 Linus
