@@ -2,90 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 916762A7362
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 01:00:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E546C2A73AE
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 01:19:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733143AbgKEAAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 19:00:35 -0500
-Received: from smtprelay0109.hostedemail.com ([216.40.44.109]:59096 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1732923AbgKDX7O (ORCPT
+        id S1732003AbgKEARk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 19:17:40 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:46252 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732719AbgKEAQp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 18:59:14 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 2A868181D3039;
-        Wed,  4 Nov 2020 23:59:13 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:967:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:1801:2393:2525:2553:2561:2564:2682:2685:2828:2859:2895:2902:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4250:4321:4384:4605:5007:6119:6691:7903:8531:9008:9025:10004:10400:10848:11026:11232:11233:11473:11658:11914:12043:12050:12296:12297:12438:12555:12740:12760:12895:13069:13161:13229:13311:13357:13439:13618:14180:14181:14659:14721:21060:21080:21365:21451:21499:21627:21939:30012:30054:30060:30070:30080:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: rake48_560ecb1272c5
-X-Filterd-Recvd-Size: 2627
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf19.hostedemail.com (Postfix) with ESMTPA;
-        Wed,  4 Nov 2020 23:59:12 +0000 (UTC)
-Message-ID: <79cad1a6a296761e672cfb0d85e7424fcb740032.camel@perches.com>
-Subject: Re: [PATCH v2 1/7] media: uvcvideo: Use pr_cont() macro
-From:   Joe Perches <joe@perches.com>
-To:     Ricardo Ribalda <ribalda@chromium.org>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Wed, 04 Nov 2020 15:59:10 -0800
-In-Reply-To: <CANiDSCteVWin-Yy2ZVSMUJBPvJ-F0Ti+fEpi26apsDW0XXrpwg@mail.gmail.com>
-References: <20201104180734.286789-1-ribalda@chromium.org>
-         <20201104180734.286789-2-ribalda@chromium.org>
-         <87769d554b4575bf9371380b013e66d70f1b21c4.camel@perches.com>
-         <20201104214201.GH29958@pendragon.ideasonboard.com>
-         <9d439214e8c83ebf7b93dccca2f848fbaf75b9d4.camel@perches.com>
-         <CANiDSCvwvQUTt1QMQGGyZPag9VeHj4Ugmj8QJdBNtw00UNt6Pg@mail.gmail.com>
-         <a00078e1311c09361e9e3357ba5dca037d7a8bff.camel@perches.com>
-         <CANiDSCteVWin-Yy2ZVSMUJBPvJ-F0Ti+fEpi26apsDW0XXrpwg@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        Wed, 4 Nov 2020 19:16:45 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A50FJ0F010171;
+        Thu, 5 Nov 2020 00:16:39 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id; s=corp-2020-01-29;
+ bh=4gHQPbN/0tDjMdMDA26bnyjKuCCik+N8tgyOPGF/nYc=;
+ b=SvqrCprg0QNoONrEdCtwCDq+6xuEVykvJh+/u2BgeS0uj4d/iM6rLTVYvASm0qHM/DN2
+ 12kyYHjVxKlT2HoYviN4WmJrZRtNgjp16KP5V8beMmjqFcjf5nU7tHgMj4xGtOm3RGY8
+ NY0YTCUkuQOGOy9TsTjKoFf4hAHJNdEuoXtsYzHqWZINTqYGjBjUZ/Fqvt/aUjnTLWRy
+ ENtlRbgGUT9X8wiwbh7wqpN5g8j//wk/HDSotan+wKbllfGbml8k10jN+129fskTqm31
+ L6UfmAKKjTYu+2I0gts80ZtOVt1Vy6P+nZaGfSk3p3gTyvJs+4/fh6bZ6Ldy1+p4j28G Jw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 34hhw2sh0j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 05 Nov 2020 00:16:38 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A505nnq155950;
+        Thu, 5 Nov 2020 00:14:38 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 34hvryp8qw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 05 Nov 2020 00:14:38 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0A50EbYn026226;
+        Thu, 5 Nov 2020 00:14:37 GMT
+Received: from ban25x6uut24.us.oracle.com (/10.153.73.24)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 04 Nov 2020 16:14:36 -0800
+From:   Si-Wei Liu <si-wei.liu@oracle.com>
+To:     mst@redhat.com, jasowang@redhat.com, lingshan.zhu@intel.com
+Cc:     joao.m.martins@oracle.com, boris.ostrovsky@oracle.com,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, si-wei.liu@oracle.com
+Subject: [PATCH v2] vhost-vdpa: fix page pinning leakage in error path (rework)
+Date:   Wed,  4 Nov 2020 18:33:16 -0500
+Message-Id: <1604532796-12757-1-git-send-email-si-wei.liu@oracle.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9795 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0 mlxscore=0
+ malwarescore=0 mlxlogscore=999 suspectscore=2 spamscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011040172
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9795 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0 mlxscore=0
+ suspectscore=2 clxscore=1015 priorityscore=1501 impostorscore=0
+ spamscore=0 lowpriorityscore=0 mlxlogscore=999 phishscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011050000
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-11-05 at 00:01 +0100, Ricardo Ribalda wrote:
-> Hi Joe
-> 
-> On Thu, Nov 5, 2020 at 12:00 AM Joe Perches <joe@perches.com> wrote:
-> > 
-> > On Wed, 2020-11-04 at 23:31 +0100, Ricardo Ribalda wrote:
-> > 
-> > > I have updated my tree with the dev_ variants
-> > > 
-> > > https://github.com/ribalda/linux/commit/b8785fd8efb4f2e5bbf5d0f2df3e0d69a5439015
-> > 
-> > I looked at this link and was confused so you made me look.
-> > I think you meant:
-> > 
-> > https://github.com/ribalda/linux/commit/83cb6eb3a9f7bd1954acbfb4fb3d56ddf54bce73
-> 
-> Yes, thanks :) Sorry about that
-> 
-> This is why I should be away from a keyboard after 23:00 :)
+Pinned pages are not properly accounted particularly when
+mapping error occurs on IOTLB update. Clean up dangling
+pinned pages for the error path.
 
-Sleep is good.
-There are lots of sleep deprived people here in the US today though.
+The memory usage for bookkeeping pinned pages is reverted
+to what it was before: only one single free page is needed.
+This helps reduce the host memory demand for VM with a large
+amount of memory, or in the situation where host is running
+short of free memory.
 
-It looks as if all the pr_cont uses in the code are odd and repetitive.
+Fixes: 4c8cf31885f6 ("vhost: introduce vDPA-based backend")
+Signed-off-by: Si-Wei Liu <si-wei.liu@oracle.com>
+---
+Changes in v2:
+- Drop the reversion patch
+- Fix unhandled page leak towards the end of page_list
 
-Perhaps it'd be sensible to add something like:
+ drivers/vhost/vdpa.c | 79 ++++++++++++++++++++++++++++++++++++++++------------
+ 1 file changed, 61 insertions(+), 18 deletions(-)
 
-#define uvc_trace_cont(flag, fmt, ...)					\
-do {									\
-	if (uvc_trace_param & (flag))					\
-		pr_cont(fmt, ##__VA_ARGS__);				\
-} while (0)
-
-and change all the uses like:
-
--               if (uvc_trace_param & UVC_TRACE_PROBE)
--                       printk(KERN_CONT " <- SU %d", entity->id);
-+               uvc_trace_cont(UVC_TRACE_PROBE, " <- SU %d", entity->id);
-
+diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+index b6d9016..e112854 100644
+--- a/drivers/vhost/vdpa.c
++++ b/drivers/vhost/vdpa.c
+@@ -560,6 +560,8 @@ static int vhost_vdpa_map(struct vhost_vdpa *v,
+ 
+ 	if (r)
+ 		vhost_iotlb_del_range(dev->iotlb, iova, iova + size - 1);
++	else
++		atomic64_add(size >> PAGE_SHIFT, &dev->mm->pinned_vm);
+ 
+ 	return r;
+ }
+@@ -591,14 +593,16 @@ static int vhost_vdpa_process_iotlb_update(struct vhost_vdpa *v,
+ 	unsigned long list_size = PAGE_SIZE / sizeof(struct page *);
+ 	unsigned int gup_flags = FOLL_LONGTERM;
+ 	unsigned long npages, cur_base, map_pfn, last_pfn = 0;
+-	unsigned long locked, lock_limit, pinned, i;
++	unsigned long lock_limit, sz2pin, nchunks, i;
+ 	u64 iova = msg->iova;
++	long pinned;
+ 	int ret = 0;
+ 
+ 	if (vhost_iotlb_itree_first(iotlb, msg->iova,
+ 				    msg->iova + msg->size - 1))
+ 		return -EEXIST;
+ 
++	/* Limit the use of memory for bookkeeping */
+ 	page_list = (struct page **) __get_free_page(GFP_KERNEL);
+ 	if (!page_list)
+ 		return -ENOMEM;
+@@ -607,52 +611,75 @@ static int vhost_vdpa_process_iotlb_update(struct vhost_vdpa *v,
+ 		gup_flags |= FOLL_WRITE;
+ 
+ 	npages = PAGE_ALIGN(msg->size + (iova & ~PAGE_MASK)) >> PAGE_SHIFT;
+-	if (!npages)
+-		return -EINVAL;
++	if (!npages) {
++		ret = -EINVAL;
++		goto free;
++	}
+ 
+ 	mmap_read_lock(dev->mm);
+ 
+-	locked = atomic64_add_return(npages, &dev->mm->pinned_vm);
+ 	lock_limit = rlimit(RLIMIT_MEMLOCK) >> PAGE_SHIFT;
+-
+-	if (locked > lock_limit) {
++	if (npages + atomic64_read(&dev->mm->pinned_vm) > lock_limit) {
+ 		ret = -ENOMEM;
+-		goto out;
++		goto unlock;
+ 	}
+ 
+ 	cur_base = msg->uaddr & PAGE_MASK;
+ 	iova &= PAGE_MASK;
++	nchunks = 0;
+ 
+ 	while (npages) {
+-		pinned = min_t(unsigned long, npages, list_size);
+-		ret = pin_user_pages(cur_base, pinned,
+-				     gup_flags, page_list, NULL);
+-		if (ret != pinned)
++		sz2pin = min_t(unsigned long, npages, list_size);
++		pinned = pin_user_pages(cur_base, sz2pin,
++					gup_flags, page_list, NULL);
++		if (sz2pin != pinned) {
++			if (pinned < 0) {
++				ret = pinned;
++			} else {
++				unpin_user_pages(page_list, pinned);
++				ret = -ENOMEM;
++			}
+ 			goto out;
++		}
++		nchunks++;
+ 
+ 		if (!last_pfn)
+ 			map_pfn = page_to_pfn(page_list[0]);
+ 
+-		for (i = 0; i < ret; i++) {
++		for (i = 0; i < pinned; i++) {
+ 			unsigned long this_pfn = page_to_pfn(page_list[i]);
+ 			u64 csize;
+ 
+ 			if (last_pfn && (this_pfn != last_pfn + 1)) {
+ 				/* Pin a contiguous chunk of memory */
+ 				csize = (last_pfn - map_pfn + 1) << PAGE_SHIFT;
+-				if (vhost_vdpa_map(v, iova, csize,
+-						   map_pfn << PAGE_SHIFT,
+-						   msg->perm))
++				ret = vhost_vdpa_map(v, iova, csize,
++						     map_pfn << PAGE_SHIFT,
++						     msg->perm);
++				if (ret) {
++					/*
++					 * Unpin the pages that are left unmapped
++					 * from this point on in the current
++					 * page_list. The remaining outstanding
++					 * ones which may stride across several
++					 * chunks will be covered in the common
++					 * error path subsequently.
++					 */
++					unpin_user_pages(&page_list[i],
++							 pinned - i);
+ 					goto out;
++				}
++
+ 				map_pfn = this_pfn;
+ 				iova += csize;
++				nchunks = 0;
+ 			}
+ 
+ 			last_pfn = this_pfn;
+ 		}
+ 
+-		cur_base += ret << PAGE_SHIFT;
+-		npages -= ret;
++		cur_base += pinned << PAGE_SHIFT;
++		npages -= pinned;
+ 	}
+ 
+ 	/* Pin the rest chunk */
+@@ -660,10 +687,26 @@ static int vhost_vdpa_process_iotlb_update(struct vhost_vdpa *v,
+ 			     map_pfn << PAGE_SHIFT, msg->perm);
+ out:
+ 	if (ret) {
++		if (nchunks && last_pfn) {
++			unsigned long pfn;
++
++			/*
++			 * Unpin the outstanding pages which are yet to be
++			 * mapped but haven't due to vdpa_map() or
++			 * pin_user_pages() failure.
++			 *
++			 * Mapped pages are accounted in vdpa_map(), hence
++			 * the corresponding unpinning will be handled by
++			 * vdpa_unmap().
++			 */
++			for (pfn = map_pfn; pfn <= last_pfn; pfn++)
++				unpin_user_page(pfn_to_page(pfn));
++		}
+ 		vhost_vdpa_unmap(v, msg->iova, msg->size);
+-		atomic64_sub(npages, &dev->mm->pinned_vm);
+ 	}
++unlock:
+ 	mmap_read_unlock(dev->mm);
++free:
+ 	free_page((unsigned long)page_list);
+ 	return ret;
+ }
+-- 
+1.8.3.1
 
