@@ -2,108 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 392062A6D91
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 20:11:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 262A32A6D97
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 20:12:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731057AbgKDTLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 14:11:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33592 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730505AbgKDTLO (ORCPT
+        id S1731297AbgKDTLV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 14:11:21 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:11782 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731243AbgKDTLU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 14:11:14 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45A75C0613D4;
-        Wed,  4 Nov 2020 11:11:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=tL7XJijJaQjwTxWIpvyG0Z04LWofXKLSq0OiO7y+/KA=; b=NPG7qtUMlTa1nWx/dCiRtjrzAm
-        uvzvL11rz1BkIY9c3sFCvwoAyhFSgnKDU6wYsP4jtzxXvHAHRcThjSR0QdGNZxURF5/Mnv6jv9A6j
-        rZFIt3dys+tq3zDRu9IWpCB3VIPl4XqTlerWjLqykkYXKSq/1Iwb8njh4S3bKbHlIkuajXoZqXzXN
-        lxPIETsCwT6aD/XHXbgyolg4DLvnRF59IVxRmDyfMyBCPMkU+qPasSUP83dld7ZXkjefdZWM+3dht
-        MLZq0SxVmAJ5A0wpbvSVKCeIY22GHZrGMo4GZpbiQ+DFONzc3IP3h9R5ozJwnoOhH5w3slCDvbMWC
-        NV+PGvFQ==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kaOBQ-00074n-Ui; Wed, 04 Nov 2020 19:11:00 +0000
-Date:   Wed, 4 Nov 2020 19:11:00 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     John Hubbard <jhubbard@nvidia.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        J??r??me Glisse <jglisse@redhat.com>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        Jan Kara <jack@suse.cz>, Pawel Osciak <pawel@osciak.com>,
-        KVM list <kvm@vger.kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
+        Wed, 4 Nov 2020 14:11:20 -0500
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A4J1IjH073873;
+        Wed, 4 Nov 2020 14:11:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=DqOTob3AwioDey1KiiTHJajU7QOQhnFPsLrIyrA03QM=;
+ b=RvC4QqbrScz4QENf1PHdPxBcKDU5n2FIBj2ssUmQuBrpucJrF/EC6f+gqJ0IqWwiTzF+
+ IYjQ6oT18g5PmH3TPwAFGr3sSrJgToDdYoVtBa+uzfSj5lK1S0Ln9hLJOTI58ExrpG4c
+ 0jyOLIMdcy91tw1nPiUREjZno2/YNUZNJDhWo6SxPOiImv916k1wcthWEjBraK3U5saF
+ OxMxMBtUZ5E/IdVHrsIc9eiSSneD7vg3nb3Vy26wZaQE25LpYesJn8EGo+6xM3SiIsx5
+ /6IgeYntkwPvKFhOggYS5epVszKViInzMUOr0qDrnHFANLd6r+jBzftbtQFRNld6R/WJ 2g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34kga5sp22-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 04 Nov 2020 14:11:13 -0500
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0A4J1daw075836;
+        Wed, 4 Nov 2020 14:11:13 -0500
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34kga5sp14-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 04 Nov 2020 14:11:12 -0500
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0A4J7FfV021411;
+        Wed, 4 Nov 2020 19:11:10 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma06ams.nl.ibm.com with ESMTP id 34h0fcvn3v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 04 Nov 2020 19:11:10 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0A4JB8vK7209622
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 4 Nov 2020 19:11:08 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3B5764C044;
+        Wed,  4 Nov 2020 19:11:08 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 17A034C040;
+        Wed,  4 Nov 2020 19:11:07 +0000 (GMT)
+Received: from localhost (unknown [9.145.163.252])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Wed,  4 Nov 2020 19:11:06 +0000 (GMT)
+Date:   Wed, 4 Nov 2020 20:11:05 +0100
+From:   Vasily Gorbik <gor@linux.ibm.com>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        kasan-dev@googlegroups.com, Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Subject: Re: [PATCH v5 05/15] mm/frame-vector: Use FOLL_LONGTERM
-Message-ID: <20201104191100.GA25011@infradead.org>
-References: <CAKMK7uEw701AWXNJbRNM8Z+FkyUB5FbWegmSzyWPy9cG4W7OLA@mail.gmail.com>
- <20201104140023.GQ36674@ziepe.ca>
- <CAKMK7uH69hsFjYUkjg1aTh5f=q_3eswMSS5feFs6+ovz586+0A@mail.gmail.com>
- <20201104162125.GA13007@infradead.org>
- <CAKMK7uH=0+3FSR4LxP7bJUB4BsCcnCzfK2=D+2Am9QNmfZEmfw@mail.gmail.com>
- <20201104163758.GA17425@infradead.org>
- <20201104164119.GA18218@infradead.org>
- <20201104181708.GU36674@ziepe.ca>
- <d3497583-2338-596e-c764-8c571b7d22cf@nvidia.com>
- <20201104190214.GW36674@ziepe.ca>
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 16/41] kasan: rename KASAN_SHADOW_* to KASAN_GRANULE_*
+Message-ID: <your-ad-here.call-01604517065-ext-2603@work.hours>
+References: <cover.1604333009.git.andreyknvl@google.com>
+ <4dee872cf377e011290bbe2e90c7e7fd24e789dd.1604333009.git.andreyknvl@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201104190214.GW36674@ziepe.ca>
-L:      linux-mips@vger.kernel.org
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <4dee872cf377e011290bbe2e90c7e7fd24e789dd.1604333009.git.andreyknvl@google.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-04_12:2020-11-04,2020-11-04 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxscore=0
+ malwarescore=0 clxscore=1011 impostorscore=0 mlxlogscore=999 adultscore=0
+ bulkscore=0 priorityscore=1501 suspectscore=1 phishscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011040135
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 03:02:14PM -0400, Jason Gunthorpe wrote:
-> I saw that once and I really couldn't make sense of it..
-> What use is having futex's that only work on THP pages? Confused
+On Mon, Nov 02, 2020 at 05:03:56PM +0100, Andrey Konovalov wrote:
+> This is a preparatory commit for the upcoming addition of a new hardware
+> tag-based (MTE-based) KASAN mode.
 > 
-> CH said there was no case of HAVE_FAST_GUP !ARCH_HAS_PTE_SPECIAL, is
-> one hidden someplace then?
+> The new mode won't be using shadow memory, but will still use the concept
+> of memory granules. Each memory granule maps to a single metadata entry:
+> 8 bytes per one shadow byte for generic mode, 16 bytes per one shadow byte
+> for software tag-based mode, and 16 bytes per one allocation tag for
+> hardware tag-based mode.
+> 
+> Rename KASAN_SHADOW_SCALE_SIZE to KASAN_GRANULE_SIZE, and KASAN_SHADOW_MASK
+> to KASAN_GRANULE_MASK.
+> 
+> Also use MASK when used as a mask, otherwise use SIZE.
+> 
+> No functional changes.
+> 
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+> Reviewed-by: Marco Elver <elver@google.com>
+> ---
+> Change-Id: Iac733e2248aa9d29f6fc425d8946ba07cca73ecf
+> ---
+>  Documentation/dev-tools/kasan.rst |  2 +-
+>  lib/test_kasan.c                  |  2 +-
+>  mm/kasan/common.c                 | 39 ++++++++++++++++---------------
+>  mm/kasan/generic.c                | 14 +++++------
+>  mm/kasan/generic_report.c         |  8 +++----
+>  mm/kasan/init.c                   |  8 +++----
+>  mm/kasan/kasan.h                  |  4 ++--
+>  mm/kasan/report.c                 | 10 ++++----
+>  mm/kasan/tags_report.c            |  2 +-
+>  9 files changed, 45 insertions(+), 44 deletions(-)
 
-ARCH_HAS_PTE_SPECIAL is selected by:
+hm, this one got escaped somehow
 
-arc
-arm		(if LPAE)
-arm64
-mips		(if !(32BIT && CPU_HAS_RIXI))
-powerpc
-riscv
-s390
-sh
-sparc		(if SPARC64)
-x86
-
-HAVE_FAST_GUP is supported by:
-
-arm		(if LPAE)
-arm64
-mips
-powerpc
-s390
-sh
-x86
-
-so mips would be a candidate.  But I think only in theory, as
-the options selecting CPU_HAS_RIXI do not select
-CPU_SUPPORTS_HUGEPAGES.  Adding the mips maintainer to double check
-my logic.
+lib/test_kasan_module.c:
+18 #define OOB_TAG_OFF (IS_ENABLED(CONFIG_KASAN_GENERIC) ? 0 : KASAN_SHADOW_SCALE_SIZE)
