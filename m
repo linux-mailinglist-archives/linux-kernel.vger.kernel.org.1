@@ -2,271 +2,296 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67D002A6B35
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 17:58:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7BD12A6B3F
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 17:59:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731863AbgKDQ54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 11:57:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41054 "EHLO
+        id S1731697AbgKDQ7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 11:59:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731737AbgKDQ5m (ORCPT
+        with ESMTP id S1731040AbgKDQ7N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 11:57:42 -0500
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68B41C0613D3;
-        Wed,  4 Nov 2020 08:57:41 -0800 (PST)
-Received: by mail-ed1-x532.google.com with SMTP id o18so23223174edq.4;
-        Wed, 04 Nov 2020 08:57:41 -0800 (PST)
+        Wed, 4 Nov 2020 11:59:13 -0500
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 240D8C0613D3
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 08:59:12 -0800 (PST)
+Received: by mail-ej1-x644.google.com with SMTP id o21so23706408ejb.3
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 08:59:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=o9FF9knZ/AggymzgxAUUP5RVqKNvcccbw6oC4UAV1qA=;
-        b=VVYHkG+R6ftkEAWlKpME0l9FaKfC0FsYNBeWc5UtF+LI9Srv7fg33+osciTSkxQICP
-         vdU4RrzMEGTTcWfWEeq2CDjj16+s0biMairmrtryva5jBFIsJuHQr9VTgUZpGC0K3Hw9
-         is5nzXaAIIBux8votMt4HAY7XXupFQY4jMN8DQ4YswMRjUs/QfFYcPfWj530YXmbIkQl
-         mj5eZDGAlewGwiuXBG0TxsHj6XSBC9NJtM1S57PE0h7lc7SN5/dDCVsJKMxFlYPGX09O
-         S/b9GI8j0TrmEuwF7jbhxNMIqn5xSfut5PwYfWAp/QHTcCWYJlZGAL9pOoynq0k2JlHa
-         Mjsw==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mftyifZnpKdOWk/376HIkq1y1NvCM2FOrXcQ+8nmIn8=;
+        b=ss9RFghQAWMqQE6K4urNU3V+2EH21WonPbe5aZD3EPuXhNudjJB0iMvpU6IbWcMPkd
+         ql7HVJDn295nAcNWs05cD+1KFzRNaKqADXVB8DO6ivTnY1woTImI6ecJ/13gkrW09gUx
+         m0bj2aVrj2v3TWAfNr6CX6CTzlmb76aK1EfyuEy3B7lOajOOVr8ul9qJC2LWM8z7cdTm
+         od6tS9cpS996CnTG6y719pj9iJATgUFXMF1ZPCnRagvgUsKd38a0n5VkuP516H0ynyDB
+         NlInsnF9F5KqDo7uG6BnKLmYTNyHb9jSlbxeaqDRHZpA3oMcQPDtcsKUBLOFulMd/leV
+         KMfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=o9FF9knZ/AggymzgxAUUP5RVqKNvcccbw6oC4UAV1qA=;
-        b=jaesq2xTcnCZIh1QY5F86+AfAqjlACcQkBqC2KVprShfY7q8PUHaaOEErw46m0cKpN
-         jGN/z4MYrUR8VQkoc302NPUKDPURL+tqRjtQP3ircqRE7qEONC27R5YULWpT1J9xeFAf
-         v+Jv2A4UFZ5O0JDPtGUqhajN7f4ZGkpW2CnK3aVFT5JN6C9fxcDpcZ03kJM0Z5kWEnLv
-         V+T1cRtTImcJ8peY18mbmoiX0uLJ5SjxmSMMa/arcUnMB0bbmYYz1UIV0EnYOGwEL+Dm
-         ZmQVUsNFxoAYSWL+OV8FsR50v2HkSu8IxKyV6xbSpIxVoma8iU4OOND2kkbAJKPOmzUe
-         namA==
-X-Gm-Message-State: AOAM531dEcsqoEGPhYzJbed23bWhDag9ZeNxgC2Q/avvu7TISlQ75Pvy
-        XFkyP4OW6SB0ukgpuJVS+XpOfS7OQUvVfA==
-X-Google-Smtp-Source: ABdhPJy4FInzJrbBWst/EwXhpAc2yvY3C1dS/ppDLQ1IuTJE/zoAAQAPwNH9sHfr4RMuNHncCWHzxQ==
-X-Received: by 2002:aa7:c955:: with SMTP id h21mr28375473edt.315.1604509059994;
-        Wed, 04 Nov 2020 08:57:39 -0800 (PST)
-Received: from yoga-910.localhost ([188.25.2.177])
-        by smtp.gmail.com with ESMTPSA id l12sm1354748edt.46.2020.11.04.08.57.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 08:57:39 -0800 (PST)
-From:   Ioana Ciornei <ciorneiioana@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Lunn <andrew@lunn.ch>
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Ioana Ciornei <ioana.ciornei@nxp.com>
-Subject: [RFC 9/9] staging: dpaa2-switch: accept only vlan-aware upper devices
-Date:   Wed,  4 Nov 2020 18:57:20 +0200
-Message-Id: <20201104165720.2566399-10-ciorneiioana@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201104165720.2566399-1-ciorneiioana@gmail.com>
-References: <20201104165720.2566399-1-ciorneiioana@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mftyifZnpKdOWk/376HIkq1y1NvCM2FOrXcQ+8nmIn8=;
+        b=FzjbeD9bBGCT9zJlVXcfcSoCUbQflp7LeUikzbG8pxBZUJwx2F6Xcmy8AErFABJyWU
+         qdD1qp7SD9cIXb+9jJ6V1izUziQUUziazON3gakrDlTRTokdsQNB3WXLW/pJd/uIQP8k
+         8TyboYzC33aJBVsJjpRfY8awixHpgE9WulL6W/qjYg3bZolumone2xSESdpLEzf0LdOZ
+         MwM/aCXPFhxpOJqyW2POOb2lIQ4lOMrHdYqu6KUjBiFwdogl3PQyupo952Gu+ENrry2+
+         Tei9sEWeiOpLK8pmvHkUP0SDBtpj6D9AE+NEhyL2XEoHXa8aBdrkeyCZDnxqZD0U0+Js
+         wOnQ==
+X-Gm-Message-State: AOAM533x4cSvYFRN4lv+lQ7gRBkUjuYuo0ERRfyg4PgQFDiQpSKSTGYA
+        vebQYQliO4O9xYMKefzv3G6rLyCWF/vS9YWo9Nt8oVpatSbXwgEe
+X-Google-Smtp-Source: ABdhPJzoMQXnKkMC1tfe37liPvXP3GxKFDy0thOvWxtXHZi1KTwOcipacu9/QWbfjYab8zikz0mWelassp75RvctEnc=
+X-Received: by 2002:a17:906:f1d8:: with SMTP id gx24mr13979222ejb.73.1604509150766;
+ Wed, 04 Nov 2020 08:59:10 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201028202914.43662-1-cristian.marussi@arm.com>
+ <20201028202914.43662-3-cristian.marussi@arm.com> <ceda764f-6cd9-9e47-edc7-2e915c920301@linaro.org>
+In-Reply-To: <ceda764f-6cd9-9e47-edc7-2e915c920301@linaro.org>
+From:   Etienne Carriere <etienne.carriere@linaro.org>
+Date:   Wed, 4 Nov 2020 17:58:59 +0100
+Message-ID: <CAN5uoS8O9B1siykCFrnj=B+TZwmDBqPW5gOr1CkXk0wGmmwjjQ@mail.gmail.com>
+Subject: Re: [PATCH v2 2/8] firmware: arm_scmi: introduce protocol handles
+To:     Thara Gopinath <thara.gopinath@linaro.org>
+Cc:     Cristian Marussi <cristian.marussi@arm.com>,
+        linux-kernel@vger.kernel.org,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Sudeep Holla <sudeep.holla@arm.com>, lukasz.luba@arm.com,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        Jonathan.Cameron@huawei.com, f.fainelli@gmail.com,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Souvik Chakravarty <souvik.chakravarty@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ioana Ciornei <ioana.ciornei@nxp.com>
+Hello Thara,
 
-The DPAA2 Switch is not capable to handle traffic in a VLAN unaware
-fashion, thus the previous handling of both the accepted upper devices
-and the SWITCHDEV_ATTR_ID_BRIDGE_VLAN_FILTERING flag was wrong.
+On Wed, 4 Nov 2020 at 17:16, Thara Gopinath <thara.gopinath@linaro.org> wrote:
+>
+>
+> Hi Cristian,
+>
+> On 10/28/20 4:29 PM, Cristian Marussi wrote:
+> > Add basic protocol handles definitions and helpers support.
+> > All protocols initialization code and SCMI drivers probing is still
+> > performed using the handle based interface.
+> >
+> > Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+> > ---
+> >   drivers/firmware/arm_scmi/common.h | 61 ++++++++++++++++++++++++++++
+> >   drivers/firmware/arm_scmi/driver.c | 64 ++++++++++++++++++++++++++++++
+> >   2 files changed, 125 insertions(+)
+> >
+> > diff --git a/drivers/firmware/arm_scmi/common.h b/drivers/firmware/arm_scmi/common.h
+> > index b08a8ddbc22a..f0678be02a09 100644
+> > --- a/drivers/firmware/arm_scmi/common.h
+> > +++ b/drivers/firmware/arm_scmi/common.h
+> > @@ -151,6 +151,67 @@ int scmi_xfer_get_init(const struct scmi_handle *h, u8 msg_id, u8 prot_id,
+> >                      size_t tx_size, size_t rx_size, struct scmi_xfer **p);
+> >   void scmi_reset_rx_to_maxsz(const struct scmi_handle *handle,
+> >                           struct scmi_xfer *xfer);
+> > +
+> > +struct scmi_xfer_ops;
+> > +
+> > +/**
+> > + * struct scmi_protocol_handle  - Reference to an initialized protocol instance
+> > + *
+> > + * @dev: A reference to the associated SCMI instance device (handle->dev).
+> > + * @xops: A reference to a struct holding refs to the core xfer operations that
+> > + *     can be used by the protocol implementation to generate SCMI messages.
+> > + * @set_priv: A method to set protocol private data for this instance.
+> > + * @get_priv: A method to get protocol private data previously set.
+> > + *
+> > + * This structure represents a protocol initialized against specific SCMI
+> > + * instance and it will be used as follows:
+> > + * - as a parameter fed from the core to the protocol initialization code so
+> > + *   that it can access the core xfer operations to build and generate SCMI
+> > + *   messages exclusively for the specific underlying protocol instance.
+> > + * - as an opaque handle fed by an SCMI driver user when it tries to access
+> > + *   this protocol through its own protocol operations.
+> > + *   In this case this handle will be returned as an opaque object together
+> > + *   with the related protocol operations when the SCMI driver tries to access
+> > + *   the protocol.
+> > + */
+> > +struct scmi_protocol_handle {
+> > +     struct device *dev;
+> > +     const struct scmi_xfer_ops *xops;
+> > +     int (*set_priv)(const struct scmi_protocol_handle *ph, void *priv);
+> > +     void *(*get_priv)(const struct scmi_protocol_handle *ph);
+> > +};
+>
+> So scmi_xfer_ops are the ops that actually talks with the scmi firmware
+> on the other end , right ? IIUC, these ops are the same for all the
+> protocols of a scmi instance. Imho, this struct is not the right place
+> for these ops to reside.You are inadvertently exposing scmi internal
+> details to the client drivers. There is no reason why this should be
+> part of scmi_handle. The protocols can extract it from the handle during
+> protocol_reigster, right?
+>
+> So, now to the second part, why do you need a scmi_protocol_handle?
+> Again IIUC, if you have set_priv and get_priv hooks and get_ops and
+> put_ops hooks, there is nothing that scmi_protocol_handle is providing
+> extra, right? As mentioned in the comments for last patch any reason all
+> of this cannot be rolled into scmi_protocol?
+>
+> As long as you are not supporting multiple scmi_protocol_instance and
+> scmi_protocol_handle for a protocol, I don't think having separate
+> structs make sense.
 
-Fix this by checking if the bridge that we are joining is indeed VLAN
-aware, if not return an error. Also, the RX VLAN filtering feature is
-defined as 'on [fixed]' and the .ndo_vlan_rx_add_vid() and
-.ndo_vlan_rx_kill_vid() callbacks are implemented just by recreating a
-switchdev_obj_port_vlan object and then calling the same functions used
-on the switchdev notifier path.
-In addition, changing the vlan_filtering flag to 0 on a bridge under
-which a DPAA2 switch interface is present is not supported, thus
-rejected when SWITCHDEV_ATTR_ID_BRIDGE_VLAN_FILTERING is received with
-such a request.
+This is a scenario SCMI can face. Consider system with several
+contained firmwares
+(multi-coprocs) each can expose SCMI services hence multi protocol instances.
+I.e 2 coproc each exposing some of their clocks to Linux that registers them.
 
-Signed-off-by: Ioana Ciornei <ioana.ciornei@nxp.com>
----
- drivers/staging/fsl-dpaa2/Kconfig       |  1 +
- drivers/staging/fsl-dpaa2/ethsw/ethsw.c | 80 ++++++++++++++++++++++---
- drivers/staging/fsl-dpaa2/ethsw/ethsw.h |  7 +++
- 3 files changed, 79 insertions(+), 9 deletions(-)
+Regards,
+Etienne
 
-diff --git a/drivers/staging/fsl-dpaa2/Kconfig b/drivers/staging/fsl-dpaa2/Kconfig
-index 244237bb068a..7cb005b6e7ab 100644
---- a/drivers/staging/fsl-dpaa2/Kconfig
-+++ b/drivers/staging/fsl-dpaa2/Kconfig
-@@ -12,6 +12,7 @@ config FSL_DPAA2
- 
- config FSL_DPAA2_ETHSW
- 	tristate "Freescale DPAA2 Ethernet Switch"
-+	depends on BRIDGE || BRIDGE=n
- 	depends on FSL_DPAA2
- 	depends on NET_SWITCHDEV
- 	help
-diff --git a/drivers/staging/fsl-dpaa2/ethsw/ethsw.c b/drivers/staging/fsl-dpaa2/ethsw/ethsw.c
-index 7a0d9a178cdc..4327c432a39f 100644
---- a/drivers/staging/fsl-dpaa2/ethsw/ethsw.c
-+++ b/drivers/staging/fsl-dpaa2/ethsw/ethsw.c
-@@ -814,6 +814,50 @@ static int dpaa2_switch_port_fdb_dump(struct sk_buff *skb, struct netlink_callba
- 	return err;
- }
- 
-+static int dpaa2_switch_port_vlan_add(struct net_device *netdev, __be16 proto,
-+				      u16 vid)
-+{
-+	struct switchdev_obj_port_vlan vlan = {
-+		.obj.id = SWITCHDEV_OBJ_ID_PORT_VLAN,
-+		.vid_begin = vid,
-+		.vid_end = vid,
-+		/* This API only allows programming tagged, non-PVID VIDs */
-+		.flags = 0,
-+	};
-+	struct switchdev_trans trans;
-+	int err;
-+
-+	trans.ph_prepare = true;
-+	err = dpaa2_switch_port_vlans_add(netdev, &vlan, &trans);
-+	if (err)
-+		return err;
-+
-+	trans.ph_prepare = false;
-+	err = dpaa2_switch_port_vlans_add(netdev, &vlan, &trans);
-+	if (err)
-+		return err;
-+
-+	return 0;
-+}
-+
-+static int dpaa2_switch_port_vlan_kill(struct net_device *netdev, __be16 proto,
-+				       u16 vid)
-+{
-+	struct switchdev_obj_port_vlan vlan = {
-+		.vid_begin = vid,
-+		.vid_end = vid,
-+		/* This API only allows programming tagged, non-PVID VIDs */
-+		.flags = 0,
-+	};
-+	int err;
-+
-+	err = dpaa2_switch_port_vlans_del(netdev, &vlan);
-+	if (err)
-+		return err;
-+
-+	return 0;
-+}
-+
- static int dpaa2_switch_port_set_mac_addr(struct ethsw_port_priv *port_priv)
- {
- 	struct ethsw_core *ethsw = port_priv->ethsw_data;
-@@ -996,6 +1040,8 @@ static const struct net_device_ops dpaa2_switch_port_ops = {
- 	.ndo_fdb_add		= dpaa2_switch_port_fdb_add,
- 	.ndo_fdb_del		= dpaa2_switch_port_fdb_del,
- 	.ndo_fdb_dump		= dpaa2_switch_port_fdb_dump,
-+	.ndo_vlan_rx_add_vid	= dpaa2_switch_port_vlan_add,
-+	.ndo_vlan_rx_kill_vid	= dpaa2_switch_port_vlan_kill,
- 
- 	.ndo_start_xmit		= dpaa2_switch_port_tx,
- 	.ndo_get_port_parent_id	= dpaa2_switch_port_parent_id,
-@@ -1195,7 +1241,8 @@ static int dpaa2_switch_port_attr_set(struct net_device *netdev,
- 							  attr->u.brport_flags);
- 		break;
- 	case SWITCHDEV_ATTR_ID_BRIDGE_VLAN_FILTERING:
--		/* VLANs are supported by default  */
-+		if (!attr->u.vlan_filtering)
-+			return -EOPNOTSUPP;
- 		break;
- 	default:
- 		err = -EOPNOTSUPP;
-@@ -1205,9 +1252,9 @@ static int dpaa2_switch_port_attr_set(struct net_device *netdev,
- 	return err;
- }
- 
--static int dpaa2_switch_port_vlans_add(struct net_device *netdev,
--				       const struct switchdev_obj_port_vlan *vlan,
--				       struct switchdev_trans *trans)
-+int dpaa2_switch_port_vlans_add(struct net_device *netdev,
-+				const struct switchdev_obj_port_vlan *vlan,
-+				struct switchdev_trans *trans)
- {
- 	struct ethsw_port_priv *port_priv = netdev_priv(netdev);
- 	struct ethsw_core *ethsw = port_priv->ethsw_data;
-@@ -1375,13 +1422,13 @@ static int dpaa2_switch_port_del_vlan(struct ethsw_port_priv *port_priv, u16 vid
- 	return 0;
- }
- 
--static int dpaa2_switch_port_vlans_del(struct net_device *netdev,
--				       const struct switchdev_obj_port_vlan *vlan)
-+int dpaa2_switch_port_vlans_del(struct net_device *netdev,
-+				const struct switchdev_obj_port_vlan *vlan)
- {
- 	struct ethsw_port_priv *port_priv = netdev_priv(netdev);
- 	int vid, err = 0;
- 
--	if (netif_is_bridge_master(vlan->obj.orig_dev))
-+	if (vlan->obj.orig_dev && netif_is_bridge_master(vlan->obj.orig_dev))
- 		return -EOPNOTSUPP;
- 
- 	for (vid = vlan->vid_begin; vid <= vlan->vid_end; vid++) {
-@@ -1575,14 +1622,23 @@ static int dpaa2_switch_port_netdevice_event(struct notifier_block *nb,
- {
- 	struct net_device *netdev = netdev_notifier_info_to_dev(ptr);
- 	struct netdev_notifier_changeupper_info *info = ptr;
-+	struct netlink_ext_ack *extack;
- 	struct net_device *upper_dev;
- 	int err = 0;
- 
- 	if (!dpaa2_switch_port_dev_check(netdev, nb))
- 		return NOTIFY_DONE;
- 
--	/* Handle just upper dev link/unlink for the moment */
--	if (event == NETDEV_CHANGEUPPER) {
-+	extack = netdev_notifier_info_to_extack(&info->info);
-+	switch (event) {
-+	case NETDEV_PRECHANGEUPPER:
-+		upper_dev = info->upper_dev;
-+		if (netif_is_bridge_master(upper_dev) && !br_vlan_enabled(upper_dev)) {
-+			NL_SET_ERR_MSG_MOD(extack, "Cannot join a vlan-unaware bridge");
-+			err = -EOPNOTSUPP;
-+		}
-+		break;
-+	case NETDEV_CHANGEUPPER:
- 		upper_dev = info->upper_dev;
- 		if (netif_is_bridge_master(upper_dev)) {
- 			if (info->linking)
-@@ -1590,6 +1646,7 @@ static int dpaa2_switch_port_netdevice_event(struct notifier_block *nb,
- 			else
- 				err = dpaa2_switch_port_bridge_leave(netdev);
- 		}
-+		break;
- 	}
- 
- 	return notifier_from_errno(err);
-@@ -2646,6 +2703,11 @@ static int dpaa2_switch_probe_port(struct ethsw_core *ethsw,
- 	port_netdev->min_mtu = ETH_MIN_MTU;
- 	port_netdev->max_mtu = ETHSW_MAX_FRAME_LENGTH;
- 
-+	/* The DPAA2 Switch's ingress path depends on the VLAN table,
-+	 * thus we are not able to disable VLAN filtering.
-+	 */
-+	port_netdev->features = NETIF_F_HW_VLAN_CTAG_FILTER | NETIF_F_HW_VLAN_STAG_FILTER;
-+
- 	err = dpaa2_switch_port_init(port_priv, port_idx);
- 	if (err)
- 		goto err_port_probe;
-diff --git a/drivers/staging/fsl-dpaa2/ethsw/ethsw.h b/drivers/staging/fsl-dpaa2/ethsw/ethsw.h
-index f905acd18c67..3163dd2ab2ab 100644
---- a/drivers/staging/fsl-dpaa2/ethsw/ethsw.h
-+++ b/drivers/staging/fsl-dpaa2/ethsw/ethsw.h
-@@ -143,4 +143,11 @@ static inline bool dpaa2_switch_has_ctrl_if(struct ethsw_core *ethsw)
- bool dpaa2_switch_port_dev_check(const struct net_device *netdev,
- 				 struct notifier_block *nb);
- 
-+int dpaa2_switch_port_vlans_add(struct net_device *netdev,
-+				const struct switchdev_obj_port_vlan *vlan,
-+				struct switchdev_trans *trans);
-+
-+int dpaa2_switch_port_vlans_del(struct net_device *netdev,
-+				const struct switchdev_obj_port_vlan *vlan);
-+
- #endif	/* __ETHSW_H */
--- 
-2.28.0
-
+> And you need to do this only if you think there can
+> be multiple versions/instances of a protocol in the same scmi instance.
+> Or am I missing something here ?
+>
+> > +
+> > +/**
+> > + * struct scmi_xfer_ops  - References to the core SCMI xfer operations.
+> > + * @version_get: Get this version protocol.
+> > + * @xfer_get_init: Initialize one struct xfer if any xfer slot is free.
+> > + * @reset_rx_to_maxsz: Reset rx size to max transport size.
+> > + * @do_xfer: Do the SCMI transfer.
+> > + * @do_xfer_with_response: Do the SCMI transfer waiting for a response.
+> > + * @xfer_put: Free the xfer slot.
+> > + *
+> > + * Note that all this operations expect a protocol handle as first parameter;
+> > + * they then internally use it to infer the underlying protocol number: this
+> > + * way is not possible for a protocol implementation to forge messages for
+> > + * another protocol.
+> > + */
+> > +struct scmi_xfer_ops {
+> > +     int (*version_get)(const struct scmi_protocol_handle *ph, u32 *version);
+> > +     int (*xfer_get_init)(const struct scmi_protocol_handle *ph, u8 msg_id,
+> > +                          size_t tx_size, size_t rx_size,
+> > +                          struct scmi_xfer **p);
+> > +     void (*reset_rx_to_maxsz)(const struct scmi_protocol_handle *ph,
+> > +                               struct scmi_xfer *xfer);
+> > +     int (*do_xfer)(const struct scmi_protocol_handle *ph,
+> > +                    struct scmi_xfer *xfer);
+> > +     int (*do_xfer_with_response)(const struct scmi_protocol_handle *ph,
+> > +                                  struct scmi_xfer *xfer);
+> > +     void (*xfer_put)(const struct scmi_protocol_handle *ph,
+> > +                      struct scmi_xfer *xfer);
+> > +};
+> > +
+> > +struct scmi_revision_info *
+> > +scmi_get_revision_area(const struct scmi_protocol_handle *ph);
+> >   int scmi_handle_put(const struct scmi_handle *handle);
+> >   struct scmi_handle *scmi_handle_get(struct device *dev);
+> >   void scmi_set_handle(struct scmi_device *scmi_dev);
+> > diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
+> > index beae8991422d..8ca04acb6abb 100644
+> > --- a/drivers/firmware/arm_scmi/driver.c
+> > +++ b/drivers/firmware/arm_scmi/driver.c
+> > @@ -72,19 +72,28 @@ struct scmi_xfers_info {
+> >
+> >   /**
+> >    * struct scmi_protocol_instance  - Describe an initialized protocol instance.
+> > + * @handle: Reference to the SCMI handle associated to this protocol instance.
+> >    * @proto: A reference to the protocol descriptor.
+> >    * @gid: A reference for per-protocol devres management.
+> >    * @users: A refcount to track effective users of this protocol.
+> > + * @priv: Reference for optional protocol private data.
+> > + * @ph: An embedded protocol handle that will be passed down to protocol
+> > + *   initialization code to identify this instance.
+> >    *
+> >    * Each protocol is initialized independently once for each SCMI platform in
+> >    * which is defined by DT and implemented by the SCMI server fw.
+> >    */
+> >   struct scmi_protocol_instance {
+> > +     const struct scmi_handle        *handle;
+> >       const struct scmi_protocol      *proto;
+> >       void                            *gid;
+> >       refcount_t                      users;
+> > +     void                            *priv;
+> > +     struct scmi_protocol_handle     ph;
+> >   };
+> >
+> > +#define ph_to_pi(h)  container_of(h, struct scmi_protocol_instance, ph)
+> > +
+> >   /**
+> >    * struct scmi_info - Structure representing a SCMI instance
+> >    *
+> > @@ -543,6 +552,57 @@ int scmi_version_get(const struct scmi_handle *handle, u8 protocol,
+> >       return ret;
+> >   }
+> >
+> > +/**
+> > + * scmi_set_protocol_priv  - Set protocol specific data at init time
+> > + *
+> > + * @ph: A reference to the protocol handle.
+> > + * @priv: The private data to set.
+> > + *
+> > + * Return: 0 on Success
+> > + */
+> > +static int scmi_set_protocol_priv(const struct scmi_protocol_handle *ph,
+> > +                               void *priv)
+> > +{
+> > +     struct scmi_protocol_instance *pi = ph_to_pi(ph);
+> > +
+> > +     pi->priv = priv;
+> > +
+> > +     return 0;
+> > +}
+> > +
+> > +/**
+> > + * scmi_get_protocol_priv  - Set protocol specific data at init time
+> > + *
+> > + * @ph: A reference to the protocol handle.
+> > + *
+> > + * Return: Protocol private data if any was set.
+> > + */
+> > +static void *scmi_get_protocol_priv(const struct scmi_protocol_handle *ph)
+> > +{
+> > +     const struct scmi_protocol_instance *pi = ph_to_pi(ph);
+> > +
+> > +     return pi->priv;
+> > +}
+> > +
+> > +/**
+> > + * scmi_get_revision_area  - Retrieve version memory area.
+> > + *
+> > + * @ph: A reference to the protocol handle.
+> > + *
+> > + * A helper to grab the version memory area reference during SCMI Base protocol
+> > + * initialization.
+> > + *
+> > + * Return: A reference to the version memory area associated to the SCMI
+> > + *      instance underlying this protocol handle.
+> > + */
+> > +struct scmi_revision_info *
+> > +scmi_get_revision_area(const struct scmi_protocol_handle *ph)
+> > +{
+> > +     const struct scmi_protocol_instance *pi = ph_to_pi(ph);
+> > +
+> > +     return pi->handle->version;
+> > +}
+> > +
+> >   /**
+> >    * scmi_get_protocol_instance  - Protocol initialization helper.
+> >    * @handle: A reference to the SCMI platform instance.
+> > @@ -588,6 +648,10 @@ scmi_get_protocol_instance(struct scmi_handle *handle, u8 protocol_id)
+> >
+> >               pi->gid = gid;
+> >               pi->proto = proto;
+> > +             pi->handle = handle;
+> > +             pi->ph.dev = handle->dev;
+> > +             pi->ph.set_priv = scmi_set_protocol_priv;
+> > +             pi->ph.get_priv = scmi_get_protocol_priv;
+> >               refcount_set(&pi->users, 1);
+> >               /* proto->init is assured NON NULL by scmi_protocol_register */
+> >               ret = pi->proto->init(handle);
+> >
+>
+> --
+> Warm Regards
+> Thara
