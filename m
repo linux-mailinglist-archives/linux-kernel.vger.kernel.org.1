@@ -2,106 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEC5B2A6132
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 11:07:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE6162A6136
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 11:09:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729213AbgKDKHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 05:07:17 -0500
-Received: from foss.arm.com ([217.140.110.172]:34216 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728586AbgKDKHO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 05:07:14 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6FF311474;
-        Wed,  4 Nov 2020 02:07:13 -0800 (PST)
-Received: from [10.57.20.162] (unknown [10.57.20.162])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 37B203F66E;
-        Wed,  4 Nov 2020 02:07:12 -0800 (PST)
-Subject: Re: [PATCH v3 07/26] coresight: Introduce device access abstraction
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     linux-arm-kernel@lists.infradead.org, mike.leach@linaro.org,
-        coresight@lists.linaro.org, linux-kernel@vger.kernel.org
-References: <20201028220945.3826358-1-suzuki.poulose@arm.com>
- <20201028220945.3826358-9-suzuki.poulose@arm.com>
- <20201103171417.GA2854467@xps15> <20201103172544.GA2855763@xps15>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <5e322dc6-de2b-8e24-2aad-b7f7a3fbe172@arm.com>
-Date:   Wed, 4 Nov 2020 10:07:11 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1728889AbgKDKJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 05:09:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60950 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728029AbgKDKJz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 05:09:55 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EB37C0613D3;
+        Wed,  4 Nov 2020 02:09:54 -0800 (PST)
+Received: by ozlabs.org (Postfix, from userid 1034)
+        id 4CR2Sw2w6lz9sTK; Wed,  4 Nov 2020 21:09:52 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1604484592;
+        bh=j+i1lX1PsZW/0GrkODpnzYhaB1+/DX2TTEqP93CyZjI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=DzhLBdo2KgZz80mcMGk3llfgVqTCaBVr10DO2EwY/P9aygfMyHCNLOHYNR90M69XF
+         XAWuLjk1+t0h+SQ2EQwqt8+bYpeF3DaWII6L8QXAU8hn9MBDqNIugLo+pQ2qYjhG5l
+         HoYtUB/lC252+1TNIks5Nodvyz0CenE1aH6MPMSqWH8Ss2BVeeHRvuXDi/glFutY8+
+         Sz6lZH2kd/Zdy5dgS5jiWNbS2yVjWMV00BysQ6VZaIb2fHz2IBoPPC9MvT+YACEEUi
+         l1DmVB+epgTAzmEydaTpQXMgHcsRyTGlBdz1/e0LobiMG0YuS3qBWzf+TK/CCPf9Wp
+         HC87f2yY/SmaA==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org
+Subject: [PATCH 1/4] selftests/gpio: Use TEST_GEN_PROGS_EXTENDED
+Date:   Wed,  4 Nov 2020 21:08:40 +1100
+Message-Id: <20201104100843.660407-1-mpe@ellerman.id.au>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20201103172544.GA2855763@xps15>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/3/20 5:25 PM, Mathieu Poirier wrote:
-> On Tue, Nov 03, 2020 at 10:14:17AM -0700, Mathieu Poirier wrote:
->> Hi Suzuki,
->>
->> On Wed, Oct 28, 2020 at 10:09:26PM +0000, Suzuki K Poulose wrote:
->>> We are about to introduce support for sysreg access to ETMv4.4+
->>> component. Since there are generic routines that access the
->>> registers (e.g, CS_LOCK/UNLOCK , claim/disclaim operations, timeout)
->>> and in order to preserve the logic of these operations at a
->>> single place we introduce an abstraction layer for the accesses
->>> to a given device.
->>>
->>> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
->>> Cc: Mike Leach <mike.leach@linaro.org>
->>> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
->>> ---
->>>   drivers/hwtracing/coresight/coresight-catu.c  |   1 +
->>>   drivers/hwtracing/coresight/coresight-core.c  |  49 +++++
->>>   .../hwtracing/coresight/coresight-cti-core.c  |   1 +
->>>   drivers/hwtracing/coresight/coresight-etb10.c |   1 +
->>>   .../coresight/coresight-etm3x-core.c          |   1 +
->>>   .../coresight/coresight-etm4x-core.c          |   1 +
->>>   .../hwtracing/coresight/coresight-funnel.c    |   1 +
->>>   .../coresight/coresight-replicator.c          |   1 +
->>>   drivers/hwtracing/coresight/coresight-stm.c   |   1 +
->>>   .../hwtracing/coresight/coresight-tmc-core.c  |   1 +
->>>   drivers/hwtracing/coresight/coresight-tpiu.c  |   1 +
->>>   include/linux/coresight.h                     | 197 ++++++++++++++++++
->>>   12 files changed, 256 insertions(+)
->>>
->>> diff --git a/drivers/hwtracing/coresight/coresight-catu.c b/drivers/hwtracing/coresight/coresight-catu.c
->>> index 99430f6cf5a5..5baf29510f1b 100644
->>> --- a/drivers/hwtracing/coresight/coresight-catu.c
->>> +++ b/drivers/hwtracing/coresight/coresight-catu.c
->>> @@ -551,6 +551,7 @@ static int catu_probe(struct amba_device *adev, const struct amba_id *id)
->>>   	dev->platform_data = pdata;
->>>   
->>>   	drvdata->base = base;
->>> +	catu_desc.access = CSDEV_ACCESS_IOMEM(base);
->>
->> Ok for those
->>
->>>   	catu_desc.pdata = pdata;
->>>   	catu_desc.dev = dev;
->>>   	catu_desc.groups = catu_groups;
->>> diff --git a/drivers/hwtracing/coresight/coresight-core.c b/drivers/hwtracing/coresight/coresight-core.c
->>> index cc9e8025c533..e96deaca8cab 100644
->>> --- a/drivers/hwtracing/coresight/coresight-core.c
->>> +++ b/drivers/hwtracing/coresight/coresight-core.c
->>> @@ -1452,6 +1452,54 @@ int coresight_timeout(void __iomem *addr, u32 offset, int position, int value)
->>>   }
->>>   EXPORT_SYMBOL_GPL(coresight_timeout);
->>>   
->>> +u32 coresight_relaxed_read32(struct coresight_device *csdev, u32 offset)
->>> +{
->>> +	return csdev_access_relaxed_read32(&csdev->access, offset);
->>
->> This really doesn't give us much other than another jump.  I would give function
->> csdev_access_relaxed_read32() a coresight_device argument instead of a csdev_access
->> and rename it to coresight_relaxed_read32().  The same for the other access functions.
->>
-> 
-> Ignore the above, TPIU just gave me the logic behind what you did.
+Use TEST_GEN_PROGS_EXTENDED rather than TEST_PROGS_EXTENDED.
 
-Thanks Mathieu, will address your comments in the next version.
+That tells the lib.mk logic that the files it references are to be
+generated by the Makefile.
 
-Suzuki
+Having done that we don't need to override the all rule.
+
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+---
+ tools/testing/selftests/gpio/Makefile | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
+
+diff --git a/tools/testing/selftests/gpio/Makefile b/tools/testing/selftests/gpio/Makefile
+index 32bdc978a711..c85fb5acf5f4 100644
+--- a/tools/testing/selftests/gpio/Makefile
++++ b/tools/testing/selftests/gpio/Makefile
+@@ -11,22 +11,20 @@ LDLIBS += $(VAR_LDLIBS)
+ 
+ TEST_PROGS := gpio-mockup.sh
+ TEST_FILES := gpio-mockup-sysfs.sh
+-TEST_PROGS_EXTENDED := gpio-mockup-chardev
++TEST_GEN_PROGS_EXTENDED := gpio-mockup-chardev
+ 
+ GPIODIR := $(realpath ../../../gpio)
+ GPIOOBJ := gpio-utils.o
+ 
+-all: $(TEST_PROGS_EXTENDED)
+-
+ override define CLEAN
+-	$(RM) $(TEST_PROGS_EXTENDED)
++	$(RM) $(TEST_GEN_PROGS_EXTENDED)
+ 	$(MAKE) -C $(GPIODIR) OUTPUT=$(GPIODIR)/ clean
+ endef
+ 
+ KSFT_KHDR_INSTALL := 1
+ include ../lib.mk
+ 
+-$(TEST_PROGS_EXTENDED): $(GPIODIR)/$(GPIOOBJ)
++$(TEST_GEN_PROGS_EXTENDED): $(GPIODIR)/$(GPIOOBJ)
+ 
+ $(GPIODIR)/$(GPIOOBJ):
+ 	$(MAKE) OUTPUT=$(GPIODIR)/ -C $(GPIODIR)
+
+base-commit: cf7cd542d1b538f6e9e83490bc090dd773f4266d
+-- 
+2.25.1
+
