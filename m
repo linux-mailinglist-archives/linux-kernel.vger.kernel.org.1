@@ -2,160 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B02C22A6A6A
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 17:50:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 931DB2A6AC7
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 17:53:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731810AbgKDQus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 11:50:48 -0500
-Received: from mout.gmx.net ([212.227.15.19]:40677 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731764AbgKDQuh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 11:50:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1604508621;
-        bh=a8xcy7k7OAoCLMxIFLMY6hOiExRZJifNzzJndA+GmOg=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=JWmfABcV59BaobLbCSH/Ii7sY46VaI7tVGY2o/FtObofBnaRvkzoFKpENp48SAeXG
-         tcmuGuo3Ch/sHxxjozD5zOxe3Wt07KkY86watpLWCrbpdwhfkf51uJBhms5z4fvINH
-         hv3+4M7yhmc8S32LIG6M6mmxjkfXQRejX3xmUWXk=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.221.148.80]) by mail.gmx.com (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1Mqb1W-1jwdSu3FhY-00mfL7; Wed, 04
- Nov 2020 17:50:20 +0100
-Message-ID: <3fa8a9a3e447b7216610b01a31310ef1f9f7cd69.camel@gmx.de>
-Subject: Re: [PATCH] futex: Handle transient "ownerless" rtmutex state
- correctly
-From:   Mike Galbraith <efault@gmx.de>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Gratian Crisan <gratian.crisan@ni.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org,
-        Brandon Streiff <brandon.streiff@ni.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Darren Hart <dvhart@infradead.org>,
-        James Minor <james.minor@ni.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Date:   Wed, 04 Nov 2020 17:50:20 +0100
-In-Reply-To: <87sg9pkvf7.fsf@nanos.tec.linutronix.de>
-References: <87a6w6x7bb.fsf@ni.com> <878sbixbk4.fsf@ni.com>
-         <2376f4e71c638aee215a4911e5efed14c5adf56e.camel@gmx.de>
-         <5f536491708682fc3b86cb5b7bc1e05ffa3521e7.camel@gmx.de>
-         <874km5mnbf.fsf@nanos.tec.linutronix.de>
-         <871rh9mkvr.fsf@nanos.tec.linutronix.de>
-         <87v9ell0cn.fsf@nanos.tec.linutronix.de>
-         <a9e88887c027b11596cd7fb96c425011c36e5d29.camel@gmx.de>
-         <87sg9pkvf7.fsf@nanos.tec.linutronix.de>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.34.4 
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:3Be43IoHgozZduYyg8KHi8muOQYyFkuTJRKr0i/RHPxKSKfSoBf
- m3bTBvVKMjmNhYhf3/3d7S1DDc0rlrHwghYLNkKJDbF8851wFMB1gZPJvbGjycsYhwVJg28
- wtRp+ydPeJFbCVp8u0kiEfAQ/srw4AKlBDbRKO6aIdYC6N7c51590qV0EE5L918oYaWEQW1
- jnC+a4rG8LiGCz2+JUkSg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:1H9IYpapMlk=:q6FZXjlHWnMei6TxINLLPF
- bpAu6HzneXJvdcb7wW1XXvpwFazNSZOHk0aUFpPJ/IrPyAzLn9vCmxBDtO6KbyMq++xmAoMr8
- c3k4ldRo38tTppJJ5685OgVes3wH7IeLLo7NCHQDknDTffJl2gryIqlpvz7ArN8EHVO/fAf7K
- RQ5nwav0x5/3AeurGEHusPenvdUFDq5jctyTZnKZyzuQ48nXLgZriaeIfvti9vqLvKA0q1JU/
- R8OuXWUPvVxsxuLN6278n7ODqDrupuRG7hQ0rKSOLHI3gxsk7zcXChx1aY+4Jm2AhMxVIngq5
- 7zFsUPhvjd6Zi5J30VcS7ok+3Bmr+vZeSgeqQFx9SiCNKqdFxTmbYFX/FqHk7KmLBR0c2wCDw
- gyRpJ5FN6pLXPQn02wPW3izgqLl71X7HYDDMvpAkFXbb+QojbMTtHv8eagmx1oc4jlkwvHHbn
- qczMlMOOVM0F3OYkqxyQKXc7ynzzOB27dAdpNMd11Kh+jGUMt2Sp1oRAq14tnR0sZjK/2MiWm
- arI647YNbElWmWxtXFSew4uCtoXsdyz8BkD/eBelbQzy36GNJ+BAv4TerQbN2gNVoWxo8L9Gm
- 5qlAqww4OGKal0Zq8YPwCqXDcMnOO4CRVLjbufJOciyHFtDrxuKv0Bvhurwp/zNlu5d+depjH
- YdoZDiPAqah4/Dql8L5Zz5VcdSn9ghB8fMSEpx4Zsmr89YlgVIMh4etDavXA8rh2YLQ2iG37B
- aequYpmWzCNYV5A/AU8a7VraCz2U2aFezD9q2DqSHLBNKlDlgOXsn5cmdt/naH7osQcHOR4Yw
- jXtSFhp5iYZKBlmrA0OiHODX7hT7HfHK86qAPh2Ialt9zodurU93B0N2I1DRdo1JeDt4RAB6U
- xfYQXiPLkzOYD+aKL4og==
+        id S1731561AbgKDQwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 11:52:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731365AbgKDQwo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 11:52:44 -0500
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35EEEC0613D3
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 08:52:43 -0800 (PST)
+Received: by mail-io1-xd44.google.com with SMTP id u62so22887534iod.8
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 08:52:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=Ete0w7OwwAo9K9sCTazD4Lhb1CP7WOqpnU3tycCjBtY=;
+        b=eNDtigO6Xsb6qmSJfAC688RmSmLZlxjb7sMlqr3xO3lpzjb/tCAecKcVAI9Vjcc7Fc
+         4H0lfvD6PDy1PbOdLDhI/RaCfzZjnH2uBTbtzV562y+E8lyegIqp+rqH0qROk67iRqg/
+         biO6D5mBiZ6yUFzqufIKugZGgpFSN3IO9eDj5vb7K/o5d2r88+t/pUAVqEK/KeXXVdci
+         5yzDNEICSDouMf7fdElttnJPYdQEDRLoe8MjP+4o5prZH7G3rEt3T2skDRFC9z0MvW4d
+         w1anbrz0LKmLNjMUp1sIFoNtVIK6p2KaZbZ7umpXYA/mcUFngcwILoG4wui6ZweYX8aW
+         HBUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Ete0w7OwwAo9K9sCTazD4Lhb1CP7WOqpnU3tycCjBtY=;
+        b=GKwyLKb/czzA7+IBgzXV0t45+uNwvBIz37Ss0rHkme9d+AcjWEJRT5LexEpXN27WA4
+         yhMFArJ/VuabGwoqz3ehBTTTPe+CKCFKVGtm6HxsYQC/bI/h8STVU39N4XN3VVTJWwht
+         O3fZWJjkBOQdoq9+S4vEDnRehyXpJ1aVGC8l2o8xRKdQYrfC+kr3aGah/2GWBC/QVbRP
+         rsJyeigzY2zFqn0iuGNs5ZQdhtcyVrjSoMKIL4hyTjKKDml+bY9qgEHStw9QQmQwyFGA
+         DUKDEEpTdQGU7+Qx6fSpfIrv+pSADJraidIZacBvPeRG2l/oVdSm2KVaIbO/3Z0pjcur
+         Ao0A==
+X-Gm-Message-State: AOAM531q4qEy5AWvvU0z0io3Jku3VTTKYDw9rhU4zib+MXIK6RBR0DA3
+        8zfFqruT6WACwK1FGfEvRvA=
+X-Google-Smtp-Source: ABdhPJxwr/sJB8QTM0k36oDjJV4HlXHTxM7jEXkIYgw70AvfMmx5iHFRZQDihuCdEXUkfTCr6fmuwg==
+X-Received: by 2002:a5d:894d:: with SMTP id b13mr1794120iot.52.1604508762603;
+        Wed, 04 Nov 2020 08:52:42 -0800 (PST)
+Received: from localhost.localdomain ([198.52.185.246])
+        by smtp.gmail.com with ESMTPSA id n4sm1416097iox.6.2020.11.04.08.52.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Nov 2020 08:52:42 -0800 (PST)
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+X-Google-Original-From: Sven Van Asbroeck <TheSven73@gmail.com>
+To:     Shawn Guo <shawnguo@kernel.org>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Anson Huang <Anson.Huang@nxp.com>, Peng Fan <peng.fan@nxp.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v1] ARM: imx: mach-imx6q: correctly identify i.MX6QP SoCs
+Date:   Wed,  4 Nov 2020 11:52:39 -0500
+Message-Id: <20201104165239.4738-1-TheSven73@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-11-04 at 16:12 +0100, Thomas Gleixner wrote:
-> From: Mike Galbraith <efault@gmx.de>
+The i.MX6QP rev 1.1 SoC on my board is mis-identified by Linux:
+the log (incorrectly) shows "i.MX6Q rev 2.1".
 
-Hrmph.  How about a suggested-by, or just take it.  That dinky diag hit
-the mark (not _entirely_ by accident, but..;) is irrelevant, you did
-all of the work to make it a patch.
+Correct this by assuming that every SoC that identifies as
+i.MX6Q with rev >= 2.0 is really an i.MX6QP.
 
-	-Mike
+Signed-off-by: Sven Van Asbroeck <TheSven73@gmail.com>
+---
 
-> Gratian managed to trigger the BUG_ON(!newowner) in fixup_pi_state_owner=
-().
-> This is one possible chain of events leading to this:
->
-> Task Prio       Operation
-> T1   120	lock(F)
-> T2   120	lock(F)   -> blocks (top waiter)
-> T3   50 (RT)	lock(F)   -> boosts T3 and blocks (new top waiter)
-> XX   		timeout/  -> wakes T2
-> 		signal
-> T1   50		unlock(F) -> wakes T3 (rtmutex->owner =3D=3D NULL, waiter bit i=
-s set)
-> T2   120	cleanup   -> try_to_take_mutex() fails because T3 is the top wa=
-iter
->      			     and the lower priority T2 cannot steal the lock.
->      			  -> fixup_pi_state_owner() sees newowner =3D=3D NULL -> BUG_ON(=
-)
->
-> The comment states that this is invalid and rt_mutex_real_owner() must
-> return a non NULL owner when the trylock failed, but in case of a queued
-> and woken up waiter rt_mutex_real_owner() =3D=3D NULL is a valid transie=
-nt
-> state. The higher priority waiter has simply not yet managed to take ove=
-r
-> the rtmutex.
->
-> The BUG_ON() is therefore wrong and this is just another retry condition=
- in
-> fixup_pi_state_owner().
->
-> Drop the locks, so that T3 can make progress, and then try the fixup aga=
-in.
->
-> Gratian provided a great analysis, traces and a reproducer. The analysis=
- is
-> to the point, but it confused the hell out of that tglx dude who had to
-> page in all the futex horrors again. Condensed version is above.
->
-> [ tglx: Wrote comment and changelog ]
->
-> Fixes: c1e2f0eaf015 ("futex: Avoid violating the 10th rule of futex")
-> Reported-by: Gratian Crisan <gratian.crisan@ni.com>
-> Signed-off-by: Mike Galbraith <efault@gmx.de>
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Cc: stable@vger.kernel.org
-> Link: https://lore.kernel.org/r/87a6w6x7bb.fsf@ni.com
-> ---
->  kernel/futex.c |   16 ++++++++++++++--
->  1 file changed, 14 insertions(+), 2 deletions(-)
->
-> --- a/kernel/futex.c
-> +++ b/kernel/futex.c
-> @@ -2380,10 +2380,22 @@ static int fixup_pi_state_owner(u32 __us
->  		}
->
->  		/*
-> -		 * Since we just failed the trylock; there must be an owner.
-> +		 * The trylock just failed, so either there is an owner or
-> +		 * there is a higher priority waiter than this one.
->  		 */
->  		newowner =3D rt_mutex_owner(&pi_state->pi_mutex);
-> -		BUG_ON(!newowner);
-> +		/*
-> +		 * If the higher priority waiter has not yet taken over the
-> +		 * rtmutex then newowner is NULL. We can't return here with
-> +		 * that state because it's inconsistent vs. the user space
-> +		 * state. So drop the locks and try again. It's a valid
-> +		 * situation and not any different from the other retry
-> +		 * conditions.
-> +		 */
-> +		if (unlikely(!newowner)) {
-> +			ret =3D -EAGAIN;
-> +			goto handle_err;
-> +		}
->  	} else {
->  		WARN_ON_ONCE(argowner !=3D current);
->  		if (oldowner =3D=3D current) {
+Tree: v5.10-rc2
+
+To: Shawn Guo <shawnguo@kernel.org>
+Cc: Russell King <linux@armlinux.org.uk>
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: Pengutronix Kernel Team <kernel@pengutronix.de>
+Cc: Fabio Estevam <festevam@gmail.com>
+Cc: NXP Linux Team <linux-imx@nxp.com>
+Cc: Anson Huang <Anson.Huang@nxp.com>
+Cc: Peng Fan <peng.fan@nxp.com>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+
+ arch/arm/mach-imx/mach-imx6q.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm/mach-imx/mach-imx6q.c b/arch/arm/mach-imx/mach-imx6q.c
+index 85c084a716ab..703998ebb52e 100644
+--- a/arch/arm/mach-imx/mach-imx6q.c
++++ b/arch/arm/mach-imx/mach-imx6q.c
+@@ -245,8 +245,13 @@ static void __init imx6q_axi_init(void)
+ 
+ static void __init imx6q_init_machine(void)
+ {
+-	if (cpu_is_imx6q() && imx_get_soc_revision() == IMX_CHIP_REVISION_2_0)
+-		imx_print_silicon_rev("i.MX6QP", IMX_CHIP_REVISION_1_0);
++	if (cpu_is_imx6q() && imx_get_soc_revision() >= IMX_CHIP_REVISION_2_0)
++		/*
++		 * SoCs that identify as i.MX6Q >= rev 2.0 are really i.MX6QP.
++		 * Quirk: i.MX6QP revision = i.MX6Q revision - (1, 0),
++		 * e.g. i.MX6QP rev 1.1 identifies as i.MX6Q rev 2.1.
++		 */
++		imx_print_silicon_rev("i.MX6QP", imx_get_soc_revision() - 0x10);
+ 	else
+ 		imx_print_silicon_rev(cpu_is_imx6dl() ? "i.MX6DL" : "i.MX6Q",
+ 				imx_get_soc_revision());
+-- 
+2.17.1
 
