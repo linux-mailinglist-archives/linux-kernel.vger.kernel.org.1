@@ -2,270 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 456BF2A5C9F
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 03:16:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20B6B2A5CA2
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 03:17:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730411AbgKDCQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 21:16:21 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:52214 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729764AbgKDCQV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 21:16:21 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A42GFRp007942;
-        Wed, 4 Nov 2020 02:16:15 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- from : mime-version : to : cc : subject : references : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=erw7u5MM+etiNHAQKzo2tCxLDNXM9ykEwYhYCNlVB/4=;
- b=SyDg1iOIFWEHEfRfgRYAm2TQ1DsgCDtyloqPH1zPOfSeDls2XsyYz005VBv3qQl6Obvj
- yXyJManYbMbCbjCSctmCso6cNRofdQLzMD5FvodrTVEtaUChbqECc8PldtSkvTyW9sXl
- lffdKdlirOwPO/V6SPyaQX6HeDd8MHNhO6dZDjnZLofLJGOHQrprAuDQCEgS8tix7Ua+
- MJWeKjImQ2bkWP9g3NYNq1hrg2Rr2n8BmeKQ9LFE9sTOI3uU46nfcaXwsbmwehR8pA1+
- ORJBqzgJDRriuQz5pzG5WDuEjfNQvUp/0uL8Jl/7S4AcHg622lSxrC4EaRn7rHKYA2cw LQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2130.oracle.com with ESMTP id 34hhb24etr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 04 Nov 2020 02:16:15 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A42Ah8l148155;
-        Wed, 4 Nov 2020 02:14:14 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 34hw0efjxv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 04 Nov 2020 02:14:14 +0000
-Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0A42EAtu013024;
-        Wed, 4 Nov 2020 02:14:11 GMT
-Received: from [10.159.249.36] (/10.159.249.36)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 03 Nov 2020 18:14:09 -0800
-Message-ID: <5FA20E70.9010606@oracle.com>
-Date:   Tue, 03 Nov 2020 18:14:08 -0800
-From:   si-wei liu <si-wei.liu@oracle.com>
-Organization: Oracle Corporation
-User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:24.0) Gecko/20100101 Thunderbird/24.2.0
+        id S1730579AbgKDCRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 21:17:02 -0500
+Received: from mga12.intel.com ([192.55.52.136]:18248 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730431AbgKDCRC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 21:17:02 -0500
+IronPort-SDR: 1RuCwOuOXtxH4q/0ngaH3qxp8tBTd6lX6BJy03X4RTvxs2Jx2hSxj3uPC0kIe2wzP4Yn8ltPZ2
+ YhKkGamltS/w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9794"; a="148431366"
+X-IronPort-AV: E=Sophos;i="5.77,449,1596524400"; 
+   d="scan'208";a="148431366"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2020 18:17:01 -0800
+IronPort-SDR: uKijlyfD5bxTxSucYWQ2LkNaN3FFds2bwMNETScE8+dEqSUTE8a4TI4aB/lZAT6ig9jB9Z8ATJ
+ ozUsiz/igIFg==
+X-IronPort-AV: E=Sophos;i="5.77,449,1596524400"; 
+   d="scan'208";a="306240386"
+Received: from spandruv-mobl.amr.corp.intel.com ([10.209.1.131])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2020 18:17:00 -0800
+Message-ID: <180b54c84179429af3f09ff38e92e642928a2fdb.camel@linux.intel.com>
+Subject: Re: [PATCH v3 3/4] powercap: Add AMD Fam17h RAPL support
+From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     Victor Ding <victording@google.com>
+Cc:     Zhang Rui <rui.zhang@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Kim Phillips <kim.phillips@amd.com>, linux-pm@vger.kernel.org,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tony Luck <tony.luck@intel.com>,
+        Vineela Tummalapalli <vineela.tummalapalli@intel.com>,
+        x86@kernel.org
+Date:   Tue, 03 Nov 2020 18:16:57 -0800
+In-Reply-To: <CANqTbdaePLt-kYdihFzZ1Bjns=OfKwWxiYp5-JwfONm7Ujqi+Q@mail.gmail.com>
+References: <20201027072358.13725-1-victording@google.com>
+         <20201027072358.13725-4-victording@google.com>
+         <82f3070691438d3f651d2e5e5fb5499131cdbd15.camel@intel.com>
+         <CANqTbdaB8Mv+ij2rdprC_=JUt49A_V12-T5TbyidNktah575rw@mail.gmail.com>
+         <f7562a2492aa83afa8a3a511428ed1959b8e8c72.camel@linux.intel.com>
+         <CANqTbdaePLt-kYdihFzZ1Bjns=OfKwWxiYp5-JwfONm7Ujqi+Q@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-To:     Jason Wang <jasowang@redhat.com>, mst@redhat.com,
-        lingshan.zhu@intel.com
-CC:     joao.m.martins@oracle.com, boris.ostrovsky@oracle.com,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH 2/2] vhost-vdpa: fix page pinning leakage in error path
- (rework)
-References: <1604043944-4897-1-git-send-email-si-wei.liu@oracle.com> <1604043944-4897-2-git-send-email-si-wei.liu@oracle.com> <42fe6ef3-90f6-ddb9-f206-e60c1e98c301@redhat.com> <5FA1FE87.4050909@oracle.com> <5FA1FF1B.1000303@oracle.com> <328b6e09-7393-00d8-54d9-aac508b3016e@redhat.com>
-In-Reply-To: <328b6e09-7393-00d8-54d9-aac508b3016e@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9794 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 mlxlogscore=999
- phishscore=0 bulkscore=0 spamscore=0 malwarescore=0 mlxscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011040014
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9794 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0 suspectscore=2
- clxscore=1015 mlxlogscore=999 impostorscore=0 malwarescore=0
- lowpriorityscore=0 adultscore=0 spamscore=0 priorityscore=1501 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011040014
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 2020-11-04 at 12:43 +1100, Victor Ding wrote:
+> On Wed, Nov 4, 2020 at 4:09 AM Srinivas Pandruvada
+> <srinivas.pandruvada@linux.intel.com> wrote:
+> > On Tue, 2020-11-03 at 17:10 +1100, Victor Ding wrote:
+> > > On Mon, Nov 2, 2020 at 12:39 PM Zhang Rui <rui.zhang@intel.com>
+> > > wrote:
+> > > > On Tue, 2020-10-27 at 07:23 +0000, Victor Ding wrote:
+> > > > > This patch enables AMD Fam17h RAPL support for the power
+> > > > > capping
+> > > > > framework. The support is as per AMD Fam17h Model31h (Zen2)
+> > > > > and
+> > > > > model 00-ffh (Zen1) PPR.
+> > > > > 
+> > > > > Tested by comparing the results of following two sysfs
+> > > > > entries
+> > > > > and
+> > > > > the
+> > > > > values directly read from corresponding MSRs via
+> > > > > /dev/cpu/[x]/msr:
+> > > > >   /sys/class/powercap/intel-rapl/intel-rapl:0/energy_uj
+> > > > >   /sys/class/powercap/intel-rapl/intel-rapl:0/intel-
+> > > > > rapl:0:0/energy_uj
+> > 
+> > Is this for just energy reporting? No capping of power?
+> Correct, the hardware does not support capping of power.
+I wonder if there is no capping, is this the right interface?
+Do you have specific user space, which cares about this?
 
-On 11/3/2020 5:58 PM, Jason Wang wrote:
->
-> On 2020/11/4 上午9:08, si-wei liu wrote:
->>
->> On 11/3/2020 5:06 PM, si-wei liu wrote:
->>>
->>> On 11/3/2020 5:00 AM, Jason Wang wrote:
->>>>
->>>> On 2020/10/30 下午3:45, Si-Wei Liu wrote:
->>>>> Pinned pages are not properly accounted particularly when
->>>>> mapping error occurs on IOTLB update. Clean up dangling
->>>>> pinned pages for the error path.
->>>>>
->>>>> The memory usage for bookkeeping pinned pages is reverted
->>>>> to what it was before: only one single free page is needed.
->>>>> This helps reduce the host memory demand for VM with a large
->>>>> amount of memory, or in the situation where host is running
->>>>> short of free memory.
->>>>>
->>>>> Fixes: 4c8cf31885f6 ("vhost: introduce vDPA-based backend")
->>>>> Signed-off-by: Si-Wei Liu <si-wei.liu@oracle.com>
->>>>> ---
->>>>>   drivers/vhost/vdpa.c | 64 
->>>>> +++++++++++++++++++++++++++++++++++++---------------
->>>>>   1 file changed, 46 insertions(+), 18 deletions(-)
->>>>>
->>>>> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
->>>>> index b6d9016..8da8558 100644
->>>>> --- a/drivers/vhost/vdpa.c
->>>>> +++ b/drivers/vhost/vdpa.c
->>>>> @@ -560,6 +560,8 @@ static int vhost_vdpa_map(struct vhost_vdpa *v,
->>>>>         if (r)
->>>>>           vhost_iotlb_del_range(dev->iotlb, iova, iova + size - 1);
->>>>> +    else
->>>>> +        atomic64_add(size >> PAGE_SHIFT, &dev->mm->pinned_vm);
->>>>>         return r;
->>>>>   }
->>>>> @@ -591,14 +593,16 @@ static int 
->>>>> vhost_vdpa_process_iotlb_update(struct vhost_vdpa *v,
->>>>>       unsigned long list_size = PAGE_SIZE / sizeof(struct page *);
->>>>>       unsigned int gup_flags = FOLL_LONGTERM;
->>>>>       unsigned long npages, cur_base, map_pfn, last_pfn = 0;
->>>>> -    unsigned long locked, lock_limit, pinned, i;
->>>>> +    unsigned long lock_limit, sz2pin, nchunks, i;
->>>>>       u64 iova = msg->iova;
->>>>> +    long pinned;
->>>>>       int ret = 0;
->>>>>         if (vhost_iotlb_itree_first(iotlb, msg->iova,
->>>>>                       msg->iova + msg->size - 1))
->>>>>           return -EEXIST;
->>>>>   +    /* Limit the use of memory for bookkeeping */
->>>>>       page_list = (struct page **) __get_free_page(GFP_KERNEL);
->>>>>       if (!page_list)
->>>>>           return -ENOMEM;
->>>>> @@ -607,52 +611,64 @@ static int 
->>>>> vhost_vdpa_process_iotlb_update(struct vhost_vdpa *v,
->>>>>           gup_flags |= FOLL_WRITE;
->>>>>         npages = PAGE_ALIGN(msg->size + (iova & ~PAGE_MASK)) >> 
->>>>> PAGE_SHIFT;
->>>>> -    if (!npages)
->>>>> -        return -EINVAL;
->>>>> +    if (!npages) {
->>>>> +        ret = -EINVAL;
->>>>> +        goto free;
->>>>> +    }
->>>>>         mmap_read_lock(dev->mm);
->>>>>   -    locked = atomic64_add_return(npages, &dev->mm->pinned_vm);
->>>>>       lock_limit = rlimit(RLIMIT_MEMLOCK) >> PAGE_SHIFT;
->>>>> -
->>>>> -    if (locked > lock_limit) {
->>>>> +    if (npages + atomic64_read(&dev->mm->pinned_vm) > lock_limit) {
->>>>>           ret = -ENOMEM;
->>>>> -        goto out;
->>>>> +        goto unlock;
->>>>>       }
->>>>>         cur_base = msg->uaddr & PAGE_MASK;
->>>>>       iova &= PAGE_MASK;
->>>>> +    nchunks = 0;
->>>>>         while (npages) {
->>>>> -        pinned = min_t(unsigned long, npages, list_size);
->>>>> -        ret = pin_user_pages(cur_base, pinned,
->>>>> -                     gup_flags, page_list, NULL);
->>>>> -        if (ret != pinned)
->>>>> +        sz2pin = min_t(unsigned long, npages, list_size);
->>>>> +        pinned = pin_user_pages(cur_base, sz2pin,
->>>>> +                    gup_flags, page_list, NULL);
->>>>> +        if (sz2pin != pinned) {
->>>>> +            if (pinned < 0) {
->>>>> +                ret = pinned;
->>>>> +            } else {
->>>>> +                unpin_user_pages(page_list, pinned);
->>>>> +                ret = -ENOMEM;
->>>>> +            }
->>>>>               goto out;
->>>>> +        }
->>>>> +        nchunks++;
->>>>>             if (!last_pfn)
->>>>>               map_pfn = page_to_pfn(page_list[0]);
->>>>>   -        for (i = 0; i < ret; i++) {
->>>>> +        for (i = 0; i < pinned; i++) {
->>>>>               unsigned long this_pfn = page_to_pfn(page_list[i]);
->>>>>               u64 csize;
->>>>>                 if (last_pfn && (this_pfn != last_pfn + 1)) {
->>>>>                   /* Pin a contiguous chunk of memory */
->>>>>                   csize = (last_pfn - map_pfn + 1) << PAGE_SHIFT;
->>>>> -                if (vhost_vdpa_map(v, iova, csize,
->>>>> -                           map_pfn << PAGE_SHIFT,
->>>>> -                           msg->perm))
->>>>> +                ret = vhost_vdpa_map(v, iova, csize,
->>>>> +                             map_pfn << PAGE_SHIFT,
->>>>> +                             msg->perm);
->>>>> +                if (ret)
->>>>>                       goto out;
->>>>> +
->>>>>                   map_pfn = this_pfn;
->>>>>                   iova += csize;
->>>>> +                nchunks = 0;
->>>>>               }
->>>>>                 last_pfn = this_pfn;
->>>>>           }
->>>>>   -        cur_base += ret << PAGE_SHIFT;
->>>>> -        npages -= ret;
->>>>> +        cur_base += pinned << PAGE_SHIFT;
->>>>> +        npages -= pinned;
->>>>>       }
->>>>>         /* Pin the rest chunk */
->>>>> @@ -660,10 +676,22 @@ static int 
->>>>> vhost_vdpa_process_iotlb_update(struct vhost_vdpa *v,
->>>>>                    map_pfn << PAGE_SHIFT, msg->perm);
->>>>>   out:
->>>>>       if (ret) {
->>>>> +        if (nchunks && last_pfn) {
->>>>> +            unsigned long pfn;
->>>>> +
->>>>> +            /*
->>>>> +             * Unpin the outstanding pages which are unmapped.
->>>>> +             * Mapped pages are accounted in vdpa_map(), thus
->>>>> +             * will be handled by vdpa_unmap().
->>>>> +             */
->>>>> +            for (pfn = map_pfn; pfn <= last_pfn; pfn++)
->>>>> +                unpin_user_page(pfn_to_page(pfn));
->>>>> +        }
->>>>>           vhost_vdpa_unmap(v, msg->iova, msg->size);
->>>>
->>>>
->>>> I want to know what's wrong with current code.
->>>>
->>>> We call vhost_vdpa_unmap() on error which calls 
->>>> vhost_vdpa_iotlb_unmap() that will unpin and reduce the pinned_vm.
->>> Think about the case where vhost_vdpa_map() fails in the middle 
->>> after making a few successful ones. In the current code, the 
->>> vhost_vdpa_iotlb_unmap() unpins what had been mapped, but does not 
->>> unpin those that have not yet been mapped. These outstanding pinned 
->>> pages will be leaked after leaving the vhost_vdpa_map() function.
->> Typo: ... leaving the vhost_vdpa_process_iotlb_update() function.
->>>
->>> Also, the subtraction accounting at the end of the function is 
->>> incorrect in that case: @npages is deduced by @pinned in each 
->>> iteration. That's why I moved the accounting to vhost_vdpa_map() to 
->>> be symmetric with vhost_vdpa_unmap().
->>>
->
-> I see, then I wonder if it would have more easy to read code if we do 
-> (un)pinning/accouting only in vhost_vdpa_map()/vhost_vdpa_unmap()?
+I think these counters are already exposed via hwmon sysf.
 
-Yes. That's what I've done in my new code. Though, the caller still has 
-to unpin the outstanding pages that aren't accounted for in 
-vhost_vdpa_map().
+Thanks,
+Srinivas
 
--Siwei
-
-
->
-> Thanks
->
->
->>>
->>> -Siwei
->>>>
->>>> Thanks
->>>>
->>>>
->>>>> -        atomic64_sub(npages, &dev->mm->pinned_vm);
->>>>>       }
->>>>> +unlock:
->>>>>       mmap_read_unlock(dev->mm);
->>>>> +free:
->>>>>       free_page((unsigned long)page_list);
->>>>>       return ret;
->>>>>   }
->>>>
->>>
->>
->
+> > Thanks,
+> > Srinivas
+> > 
+> > 
+> > > > > Signed-off-by: Victor Ding <victording@google.com>
+> > > > > Acked-by: Kim Phillips <kim.phillips@amd.com>
+> > > > > 
+> > > > > 
+> > > > > ---
+> > > > > 
+> > > > > Changes in v3:
+> > > > > By Victor Ding <victording@google.com>
+> > > > >  - Rebased to the latest code.
+> > > > >  - Created a new rapl_defaults for AMD CPUs.
+> > > > >  - Removed redundant setting to zeros.
+> > > > >  - Stopped using the fake power limit domain 1.
+> > > > > 
+> > > > > Changes in v2:
+> > > > > By Kim Phillips <kim.phillips@amd.com>:
+> > > > >  - Added Kim's Acked-by.
+> > > > >  - Added Daniel Lezcano to Cc.
+> > > > >  - (No code change).
+> > > > > 
+> > > > >  arch/x86/include/asm/msr-index.h     |  1 +
+> > > > >  drivers/powercap/intel_rapl_common.c |  6 ++++++
+> > > > >  drivers/powercap/intel_rapl_msr.c    | 20
+> > > > > +++++++++++++++++++-
+> > > > >  3 files changed, 26 insertions(+), 1 deletion(-)
+> > > > > 
+> > > > > diff --git a/arch/x86/include/asm/msr-index.h
+> > > > > b/arch/x86/include/asm/msr-index.h
+> > > > > index 21917e134ad4..c36a083c8ec0 100644
+> > > > > --- a/arch/x86/include/asm/msr-index.h
+> > > > > +++ b/arch/x86/include/asm/msr-index.h
+> > > > > @@ -327,6 +327,7 @@
+> > > > >  #define MSR_PP1_POLICY                       0x00000642
+> > > > > 
+> > > > >  #define MSR_AMD_RAPL_POWER_UNIT              0xc0010299
+> > > > > +#define MSR_AMD_CORE_ENERGY_STATUS           0xc001029a
+> > > > >  #define MSR_AMD_PKG_ENERGY_STATUS    0xc001029b
+> > > > > 
+> > > > >  /* Config TDP MSRs */
+> > > > > diff --git a/drivers/powercap/intel_rapl_common.c
+> > > > > b/drivers/powercap/intel_rapl_common.c
+> > > > > index 0b2830efc574..bedd780bed12 100644
+> > > > > --- a/drivers/powercap/intel_rapl_common.c
+> > > > > +++ b/drivers/powercap/intel_rapl_common.c
+> > > > > @@ -1011,6 +1011,10 @@ static const struct rapl_defaults
+> > > > > rapl_defaults_cht = {
+> > > > >       .compute_time_window = rapl_compute_time_window_atom,
+> > > > >  };
+> > > > > 
+> > > > > +static const struct rapl_defaults rapl_defaults_amd = {
+> > > > > +     .check_unit = rapl_check_unit_core,
+> > > > > +};
+> > > > > +
+> > > > 
+> > > > why do we need power_unit and time_unit if we only want to
+> > > > expose
+> > > > the
+> > > > energy counter?
+> > > AMD's Power Unit MSR provides identical information as Intel's,
+> > > including
+> > > time units, power units, and energy status units. By reusing the
+> > > check unit
+> > > method, we could avoid code duplication as well as easing future
+> > > enhance-
+> > > ment when AMD starts to support power limits.
+> > > > Plus, in rapl_init_domains(), PL1 is enabled for every RAPL
+> > > > Domain
+> > > > blindly, I'm not sure how this is handled on the AMD CPUs.
+> > > > Is PL1 invalidated by rapl_detect_powerlimit()? or is it still
+> > > > registered as a valid constraint into powercap sysfs I/F?
+> > > AMD's CORE_ENERGY_STAT MSR is like Intel's PP0_ENERGY_STATUS;
+> > > therefore, PL1 also always exists on AMD.
+> > > rapl_detect_powerlimit()
+> > > correctly
+> > > markes the domain as monitoring-only after finding power limit
+> > > MSRs
+> > > do not
+> > > exist.
+> > > > Currently, the code makes the assumption that there is only on
+> > > > power
+> > > > limit if priv->limits[domain_id] not set, we probably need to
+> > > > change
+> > > > this if we want to support RAPL domains with no power limit.
+> > > The existing code already supports RAPL domains with no power
+> > > limit:
+> > > PL1 is
+> > > enabled when there is zero or one power limit,
+> > > rapl_detect_powerlimit() will then
+> > > mark if PL1 is monitoring-only if power limit MSRs do not exist.
+> > > Both
+> > > AMD's RAPL
+> > > domains are monitoring-only and are correctly marked and handled.
+> > > > thanks,
+> > > > rui
+> > > > >  static const struct x86_cpu_id rapl_ids[] __initconst = {
+> > > > >       X86_MATCH_INTEL_FAM6_MODEL(SANDYBRIDGE,         &rapl_d
+> > > > > efau
+> > > > > lt
+> > > > > s_core),
+> > > > >       X86_MATCH_INTEL_FAM6_MODEL(SANDYBRIDGE_X,       &rapl_d
+> > > > > efau
+> > > > > lts_core),
+> > > > > @@ -1061,6 +1065,8 @@ static const struct x86_cpu_id
+> > > > > rapl_ids[]
+> > > > > __initconst = {
+> > > > > 
+> > > > >       X86_MATCH_INTEL_FAM6_MODEL(XEON_PHI_KNL,        &rapl_d
+> > > > > efau
+> > > > > lts_hsw_se
+> > > > > rver),
+> > > > >       X86_MATCH_INTEL_FAM6_MODEL(XEON_PHI_KNM,        &rapl_d
+> > > > > efau
+> > > > > lts_hsw_se
+> > > > > rver),
+> > > > > +
+> > > > > +     X86_MATCH_VENDOR_FAM(AMD, 0x17, &rapl_defaults_amd),
+> > > > >       {}
+> > > > >  };
+> > > > >  MODULE_DEVICE_TABLE(x86cpu, rapl_ids);
+> > > > > diff --git a/drivers/powercap/intel_rapl_msr.c
+> > > > > b/drivers/powercap/intel_rapl_msr.c
+> > > > > index a819b3b89b2f..78213d4b5b16 100644
+> > > > > --- a/drivers/powercap/intel_rapl_msr.c
+> > > > > +++ b/drivers/powercap/intel_rapl_msr.c
+> > > > > @@ -49,6 +49,14 @@ static struct rapl_if_priv
+> > > > > rapl_msr_priv_intel
+> > > > > = {
+> > > > >       .limits[RAPL_DOMAIN_PLATFORM] = 2,
+> > > > >  };
+> > > > > 
+> > > > > +static struct rapl_if_priv rapl_msr_priv_amd = {
+> > > > > +     .reg_unit = MSR_AMD_RAPL_POWER_UNIT,
+> > > > > +     .regs[RAPL_DOMAIN_PACKAGE] = {
+> > > > > +             0, MSR_AMD_PKG_ENERGY_STATUS, 0, 0, 0 },
+> > > > > +     .regs[RAPL_DOMAIN_PP0] = {
+> > > > > +             0, MSR_AMD_CORE_ENERGY_STATUS, 0, 0, 0 },
+> > > > > +};
+> > > > > +
+> > > > >  /* Handles CPU hotplug on multi-socket systems.
+> > > > >   * If a CPU goes online as the first CPU of the physical
+> > > > > package
+> > > > >   * we add the RAPL package to the system. Similarly, when
+> > > > > the
+> > > > > last
+> > > > > @@ -138,7 +146,17 @@ static int rapl_msr_probe(struct
+> > > > > platform_device
+> > > > > *pdev)
+> > > > >       const struct x86_cpu_id *id =
+> > > > > x86_match_cpu(pl4_support_ids);
+> > > > >       int ret;
+> > > > > 
+> > > > > -     rapl_msr_priv = &rapl_msr_priv_intel;
+> > > > > +     switch (boot_cpu_data.x86_vendor) {
+> > > > > +     case X86_VENDOR_INTEL:
+> > > > > +             rapl_msr_priv = &rapl_msr_priv_intel;
+> > > > > +             break;
+> > > > > +     case X86_VENDOR_AMD:
+> > > > > +             rapl_msr_priv = &rapl_msr_priv_amd;
+> > > > > +             break;
+> > > > > +     default:
+> > > > > +             pr_err("intel-rapl does not support CPU vendor
+> > > > > %d\n",
+> > > > > boot_cpu_data.x86_vendor);
+> > > > > +             return -ENODEV;
+> > > > > +     }
+> > > > >       rapl_msr_priv->read_raw = rapl_msr_read_raw;
+> > > > >       rapl_msr_priv->write_raw = rapl_msr_write_raw;
+> > > > > 
+> > > Best regards,
+> > > Victor Ding
+> Best regards,
+> Victor Ding
 
