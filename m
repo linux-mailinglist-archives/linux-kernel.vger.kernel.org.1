@@ -2,271 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F9212A715C
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 00:21:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 985B52A7169
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 00:22:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732548AbgKDXU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 18:20:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44310 "EHLO
+        id S1732680AbgKDXTl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 18:19:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732942AbgKDXUx (ORCPT
+        with ESMTP id S1732650AbgKDXTi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 18:20:53 -0500
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55C1AC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 15:20:51 -0800 (PST)
-Received: by mail-qv1-xf4a.google.com with SMTP id t13so13849797qvm.14
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 15:20:51 -0800 (PST)
+        Wed, 4 Nov 2020 18:19:38 -0500
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C96A2C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 15:19:38 -0800 (PST)
+Received: by mail-pf1-x449.google.com with SMTP id a24so254550pfo.3
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 15:19:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=DyRPETqC+6C7nrnJCiEiYsvRb/HkPFaD35372QKa3Vk=;
-        b=coUp8usPwG3tRaZT/czB4IwaENO70bhZYwpPOVmFVE31+gzzFM1eQ4UTkXv5n/Cwx6
-         HmmXHf7e2Yv2iQl0c/eFCV0eDtFdt+aqYiFbij4bDazub10zadMUBMScNBApOgX2VA2M
-         1uhVz8MklwM7+riUMg/8+0j7Fi4Bh2qM9bLhWUK6ReMxodoSEFswpWi2kMmZ8Q87CHGp
-         2BTpkFvNtZjQ22eIAl9d9nUIQU3k/nacre7WR207ivGr7AWJqhJkTyuSxyS+Sa/AD+x3
-         fzw6/03tLAgh2Aj81Rl+TvGN20JUQneZ9H8VrtmnLsTSYR+SxpV+/eBt1Vr/7rs8v+p0
-         KW5A==
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=hjRBqBGf8x5Qs+jA3dkL4OK4h5TdyZ7tlkBRl04gbfY=;
+        b=BXWnLrRRDqhkMGkluTxks0XVzkwBWMv5YQsrYCOz4b3YDAZ31scxR/LrT518JEznri
+         WI9Ly5zGl0hwPE6s0haEhzwzq3Hg6YQIz3xtKu1aWCllzZu77Lqs52YJf862HXRgyCS/
+         HZ1RF+C+uxOaivzDp3XthWuYNxcANPBpySrGiehhyqUm3jp5aJLzSlgPfyjpNwl6g6e/
+         wupZfWC2BPi3u7IDnW6LuPeUUZSGxPmhQztF6zlxsuLdPeaTSe4NpPBFaSOle/z3BHTA
+         K34IRfusy/VAS/4t8sKcsRoJHl4YvXS9pHsofy6iSrNrspKt1C6Jdsotk0BSDxtcz+N4
+         4CCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=DyRPETqC+6C7nrnJCiEiYsvRb/HkPFaD35372QKa3Vk=;
-        b=VRXcWgbfFtOa7whAl4+V+9/Z3TNA0glAyFtOiLDhrVECyyuyhmtt/dibQ9dgt3GL6C
-         avyA+qhfk+mV8VfV2X/BpvL++dNFCT1cAOtzcdJnvc1vWDfKZpnIB6uFWLTQlnn1JyjV
-         K/NE/zcos8kYQA5sXsfzuVyToUay5UB+2KvGr9O+n7+L/D+AgVgNyutkq3o+fXCHS1Ic
-         abE1Hg0kYdxRKERDunJJYa6zmJPjn2TpoR0S4jQFw2NpkdqiJha3kBV/RV2tPtoSUcN2
-         cxQuMku9GUmLXk0BUIGiNl8DZZVjpwEyxKnUKjtJKrxWAKFLEgc37A9jUkh6fuhn+ZAF
-         G79Q==
-X-Gm-Message-State: AOAM530MpklqimGSHmPa91aPP0SnveK+t6fDzSdVTFWQXGn7qEQmZ9UJ
-        2YRDax5uQ9CnlTYNXTHSM/1w8ObxS/tDVrO0
-X-Google-Smtp-Source: ABdhPJyr9TEssBPzFhk+PU6o+mtfwvl9/Tja+M6tO9w1ZHDXSL5HAtdDJPKKiiOU0eso9TeO61RiAye7zBP4ft8k
-Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
-X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
- (user=andreyknvl job=sendgmr) by 2002:a0c:9bda:: with SMTP id
- g26mr294283qvf.14.1604532050508; Wed, 04 Nov 2020 15:20:50 -0800 (PST)
-Date:   Thu,  5 Nov 2020 00:18:58 +0100
-In-Reply-To: <cover.1604531793.git.andreyknvl@google.com>
-Message-Id: <e31d3b892ec0e206f5940c3d67a6fdb1e0416d38.1604531793.git.andreyknvl@google.com>
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=hjRBqBGf8x5Qs+jA3dkL4OK4h5TdyZ7tlkBRl04gbfY=;
+        b=ABD6ZcgihSYV87nsqKPUinQaO+exzAQCuxEXC8t55jtjQPpU9RcLcn0RDXX0MDY3Ve
+         A1jwOG47FP2UoBWqKXxHZJuqLnblWTqb/55KnQKwJwTnAroONT4t3L4TIMB2yJU0M0XX
+         JrIXUuGvu0/gaYitmV8x2ASnA4RWMy0IxAXtmcxsoUt/70KSoSSxUcfBxxxqmS+v36SY
+         xSMKRE0J+qXzemEL0kjz+RWqD7HDXvIxoi5afkMgNjSvZQdPadfbJltZEJd9rKlytKcc
+         gvjwfS+V8D6Yu1kkTdL3/Fw+9mpwjV4Hq/5/kDsFzFgMVaOq4BIZU0jSQLhYg1CO/wtE
+         e2/w==
+X-Gm-Message-State: AOAM5325PyGYSCZsJclVU8ohFA4hlZ/WdzbvFt5pVYjkWwtSMbT/Oj+s
+        9n/tYTBztpaNCXdMwPrJP7YaUa2UZvBOGA==
+X-Google-Smtp-Source: ABdhPJxxRN7YByv4qt7VLaU3yPQNFBlA3Gm6vSkahlVMzv9Ykw3Du0DrHnfrkuhXtxyyz2MHKN0GA8kEhj04FA==
+Sender: "shakeelb via sendgmr" <shakeelb@shakeelb.svl.corp.google.com>
+X-Received: from shakeelb.svl.corp.google.com ([2620:15c:2cd:202:a28c:fdff:fee8:36f0])
+ (user=shakeelb job=sendgmr) by 2002:a17:90a:4684:: with SMTP id
+ z4mr219067pjf.97.1604531978117; Wed, 04 Nov 2020 15:19:38 -0800 (PST)
+Date:   Wed,  4 Nov 2020 15:19:28 -0800
+Message-Id: <20201104231928.1494083-1-shakeelb@google.com>
 Mime-Version: 1.0
-References: <cover.1604531793.git.andreyknvl@google.com>
 X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
-Subject: [PATCH v8 43/43] kselftest/arm64: Check GCR_EL1 after context switch
-From:   Andrey Konovalov <andreyknvl@google.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Will Deacon <will.deacon@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
+Subject: [PATCH] mm/rmap: always do TTU_IGNORE_ACCESS
+From:   Shakeel Butt <shakeelb@google.com>
+To:     Hugh Dickins <hughd@google.com>, Jerome Glisse <jglisse@redhat.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andrey Konovalov <andreyknvl@google.com>
+        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Shakeel Butt <shakeelb@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Since the commit 369ea8242c0f ("mm/rmap: update to new mmu_notifier
+semantic v2"), the code to check the secondary MMU's page table access
+bit is broken for !(TTU_IGNORE_ACCESS) because the page is unmapped from
+the secondary MMU's page table before the check. More specifically for
+those secondary MMUs which unmap the memory in
+mmu_notifier_invalidate_range_start() like kvm.
 
-This test is specific to MTE and verifies that the GCR_EL1 register
-is context switched correctly.
+However memory reclaim is the only user of !(TTU_IGNORE_ACCESS) or the
+absence of TTU_IGNORE_ACCESS and it explicitly performs the page table
+access check before trying to unmap the page. So, at worst the reclaim
+will miss accesses in a very short window if we remove page table access
+check in unmapping code.
 
-It spawn 1024 processes and each process spawns 5 threads. Each thread
-writes a random setting of GCR_EL1 through the prctl() system call and
-reads it back verifying that it is the same. If the values are not the
-same it reports a failure.
+There is an unintented consequence of !(TTU_IGNORE_ACCESS) for the memcg
+reclaim. From memcg reclaim the page_referenced() only account the
+accesses from the processes which are in the same memcg of the target
+page but the unmapping code is considering accesses from all the
+processes, so, decreasing the effectiveness of memcg reclaim.
 
-Note: The test has been extended to verify that even SYNC and ASYNC mode
-setting is preserved correctly over context switching.
+The simplest solution is to always assume TTU_IGNORE_ACCESS in unmapping
+code.
 
-Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Signed-off-by: Shakeel Butt <shakeelb@google.com>
 ---
-Change-Id: Ia917684a2b8e5f29e705ca5cbf360b010df6f61e
----
- tools/testing/selftests/arm64/mte/Makefile    |   2 +-
- .../arm64/mte/check_gcr_el1_cswitch.c         | 152 ++++++++++++++++++
- 2 files changed, 153 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/arm64/mte/check_gcr_el1_cswitch.c
+ include/linux/rmap.h |  1 -
+ mm/huge_memory.c     |  2 +-
+ mm/memory-failure.c  |  2 +-
+ mm/memory_hotplug.c  |  2 +-
+ mm/migrate.c         |  8 +++-----
+ mm/rmap.c            |  9 ---------
+ mm/vmscan.c          | 14 +++++---------
+ 7 files changed, 11 insertions(+), 27 deletions(-)
 
-diff --git a/tools/testing/selftests/arm64/mte/Makefile b/tools/testing/selftests/arm64/mte/Makefile
-index 2480226dfe57..0b3af552632a 100644
---- a/tools/testing/selftests/arm64/mte/Makefile
-+++ b/tools/testing/selftests/arm64/mte/Makefile
-@@ -1,7 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0
- # Copyright (C) 2020 ARM Limited
+diff --git a/include/linux/rmap.h b/include/linux/rmap.h
+index 3a6adfa70fb0..70085ca1a3fc 100644
+--- a/include/linux/rmap.h
++++ b/include/linux/rmap.h
+@@ -91,7 +91,6 @@ enum ttu_flags {
  
--CFLAGS += -std=gnu99 -I.
-+CFLAGS += -std=gnu99 -I. -lpthread
- SRCS := $(filter-out mte_common_util.c,$(wildcard *.c))
- PROGS := $(patsubst %.c,%,$(SRCS))
+ 	TTU_SPLIT_HUGE_PMD	= 0x4,	/* split huge PMD if any */
+ 	TTU_IGNORE_MLOCK	= 0x8,	/* ignore mlock */
+-	TTU_IGNORE_ACCESS	= 0x10,	/* don't age */
+ 	TTU_IGNORE_HWPOISON	= 0x20,	/* corrupted page is recoverable */
+ 	TTU_BATCH_FLUSH		= 0x40,	/* Batch TLB flushes where possible
+ 					 * and caller guarantees they will
+diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+index 08a183f6c3ab..8b235b4abf73 100644
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -2324,7 +2324,7 @@ void vma_adjust_trans_huge(struct vm_area_struct *vma,
  
-diff --git a/tools/testing/selftests/arm64/mte/check_gcr_el1_cswitch.c b/tools/testing/selftests/arm64/mte/check_gcr_el1_cswitch.c
-new file mode 100644
-index 000000000000..55e33d96794c
---- /dev/null
-+++ b/tools/testing/selftests/arm64/mte/check_gcr_el1_cswitch.c
-@@ -0,0 +1,152 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (C) 2020 ARM Limited
-+
-+#define _GNU_SOURCE
-+
-+#include <errno.h>
-+#include <pthread.h>
-+#include <stdint.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <time.h>
-+#include <unistd.h>
-+#include <sys/auxv.h>
-+#include <sys/mman.h>
-+#include <sys/prctl.h>
-+#include <sys/types.h>
-+#include <sys/wait.h>
-+
-+#include "kselftest.h"
-+#include "mte_common_util.h"
-+
-+#define PR_SET_TAGGED_ADDR_CTRL 55
-+#define PR_GET_TAGGED_ADDR_CTRL 56
-+# define PR_TAGGED_ADDR_ENABLE  (1UL << 0)
-+# define PR_MTE_TCF_SHIFT	1
-+# define PR_MTE_TCF_NONE	(0UL << PR_MTE_TCF_SHIFT)
-+# define PR_MTE_TCF_SYNC	(1UL << PR_MTE_TCF_SHIFT)
-+# define PR_MTE_TCF_ASYNC	(2UL << PR_MTE_TCF_SHIFT)
-+# define PR_MTE_TCF_MASK	(3UL << PR_MTE_TCF_SHIFT)
-+# define PR_MTE_TAG_SHIFT	3
-+# define PR_MTE_TAG_MASK	(0xffffUL << PR_MTE_TAG_SHIFT)
-+
-+#include "mte_def.h"
-+
-+#define NUM_ITERATIONS		1024
-+#define MAX_THREADS		5
-+#define THREAD_ITERATIONS	1000
-+
-+void *execute_thread(void *x)
-+{
-+	pid_t pid = *((pid_t *)x);
-+	pid_t tid = gettid();
-+	uint64_t prctl_tag_mask;
-+	uint64_t prctl_set;
-+	uint64_t prctl_get;
-+	uint64_t prctl_tcf;
-+
-+	srand(time(NULL) ^ (pid << 16) ^ (tid << 16));
-+
-+	prctl_tag_mask = rand() % 0xffff;
-+
-+	if (prctl_tag_mask % 2)
-+		prctl_tcf = PR_MTE_TCF_SYNC;
-+	else
-+		prctl_tcf = PR_MTE_TCF_ASYNC;
-+
-+	prctl_set = PR_TAGGED_ADDR_ENABLE | prctl_tcf | (prctl_tag_mask << PR_MTE_TAG_SHIFT);
-+
-+	for (int j = 0; j < THREAD_ITERATIONS; j++) {
-+		if (prctl(PR_SET_TAGGED_ADDR_CTRL, prctl_set, 0, 0, 0)) {
-+			perror("prctl() failed");
-+			goto fail;
-+		}
-+
-+		prctl_get = prctl(PR_GET_TAGGED_ADDR_CTRL, 0, 0, 0, 0);
-+
-+		if (prctl_set != prctl_get) {
-+			ksft_print_msg("Error: prctl_set: 0x%lx != prctl_get: 0x%lx\n",
-+						prctl_set, prctl_get);
-+			goto fail;
-+		}
-+	}
-+
-+	return (void *)KSFT_PASS;
-+
-+fail:
-+	return (void *)KSFT_FAIL;
-+}
-+
-+int execute_test(pid_t pid)
-+{
-+	pthread_t thread_id[MAX_THREADS];
-+	int thread_data[MAX_THREADS];
-+
-+	for (int i = 0; i < MAX_THREADS; i++)
-+		pthread_create(&thread_id[i], NULL,
-+			       execute_thread, (void *)&pid);
-+
-+	for (int i = 0; i < MAX_THREADS; i++)
-+		pthread_join(thread_id[i], (void *)&thread_data[i]);
-+
-+	for (int i = 0; i < MAX_THREADS; i++)
-+		if (thread_data[i] == KSFT_FAIL)
-+			return KSFT_FAIL;
-+
-+	return KSFT_PASS;
-+}
-+
-+int mte_gcr_fork_test()
-+{
-+	pid_t pid[NUM_ITERATIONS];
-+	int results[NUM_ITERATIONS];
-+	pid_t cpid;
-+	int res;
-+
-+	for (int i = 0; i < NUM_ITERATIONS; i++) {
-+		pid[i] = fork();
-+
-+		if (pid[i] == 0) {
-+			cpid = getpid();
-+
-+			res = execute_test(cpid);
-+
-+			exit(res);
-+		}
-+	}
-+
-+	for (int i = 0; i < NUM_ITERATIONS; i++) {
-+		wait(&res);
-+
-+		if(WIFEXITED(res))
-+			results[i] = WEXITSTATUS(res);
-+		else
-+			--i;
-+	}
-+
-+	for (int i = 0; i < NUM_ITERATIONS; i++)
-+		if (results[i] == KSFT_FAIL)
-+			return KSFT_FAIL;
-+
-+	return KSFT_PASS;
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	int err;
-+
-+	err = mte_default_setup();
-+	if (err)
-+		return err;
-+
-+	ksft_set_plan(1);
-+
-+	evaluate_test(mte_gcr_fork_test(),
-+		"Verify that GCR_EL1 is set correctly on context switch\n");
-+
-+	mte_restore_setup();
-+	ksft_print_cnts();
-+
-+	return ksft_get_fail_cnt() == 0 ? KSFT_PASS : KSFT_FAIL;
-+}
-+
+ static void unmap_page(struct page *page)
+ {
+-	enum ttu_flags ttu_flags = TTU_IGNORE_MLOCK | TTU_IGNORE_ACCESS |
++	enum ttu_flags ttu_flags = TTU_IGNORE_MLOCK |
+ 		TTU_RMAP_LOCKED | TTU_SPLIT_HUGE_PMD;
+ 	bool unmap_success;
+ 
+diff --git a/mm/memory-failure.c b/mm/memory-failure.c
+index c0bb186bba62..b6d6d5cdb435 100644
+--- a/mm/memory-failure.c
++++ b/mm/memory-failure.c
+@@ -989,7 +989,7 @@ static int get_hwpoison_page(struct page *page)
+ static bool hwpoison_user_mappings(struct page *p, unsigned long pfn,
+ 				  int flags, struct page **hpagep)
+ {
+-	enum ttu_flags ttu = TTU_IGNORE_MLOCK | TTU_IGNORE_ACCESS;
++	enum ttu_flags ttu = TTU_IGNORE_MLOCK;
+ 	struct address_space *mapping;
+ 	LIST_HEAD(tokill);
+ 	bool unmap_success = true;
+diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+index 8c1b7182bb08..968e6916d297 100644
+--- a/mm/memory_hotplug.c
++++ b/mm/memory_hotplug.c
+@@ -1303,7 +1303,7 @@ do_migrate_range(unsigned long start_pfn, unsigned long end_pfn)
+ 			if (WARN_ON(PageLRU(page)))
+ 				isolate_lru_page(page);
+ 			if (page_mapped(page))
+-				try_to_unmap(page, TTU_IGNORE_MLOCK | TTU_IGNORE_ACCESS);
++				try_to_unmap(page, TTU_IGNORE_MLOCK);
+ 			continue;
+ 		}
+ 
+diff --git a/mm/migrate.c b/mm/migrate.c
+index c1585ec29827..e434d49fd428 100644
+--- a/mm/migrate.c
++++ b/mm/migrate.c
+@@ -1122,8 +1122,7 @@ static int __unmap_and_move(struct page *page, struct page *newpage,
+ 		/* Establish migration ptes */
+ 		VM_BUG_ON_PAGE(PageAnon(page) && !PageKsm(page) && !anon_vma,
+ 				page);
+-		try_to_unmap(page,
+-			TTU_MIGRATION|TTU_IGNORE_MLOCK|TTU_IGNORE_ACCESS);
++		try_to_unmap(page, TTU_MIGRATION|TTU_IGNORE_MLOCK);
+ 		page_was_mapped = 1;
+ 	}
+ 
+@@ -1339,8 +1338,7 @@ static int unmap_and_move_huge_page(new_page_t get_new_page,
+ 			goto unlock_put_anon;
+ 
+ 		try_to_unmap(hpage,
+-			TTU_MIGRATION|TTU_IGNORE_MLOCK|TTU_IGNORE_ACCESS|
+-			TTU_RMAP_LOCKED);
++			TTU_MIGRATION|TTU_IGNORE_MLOCK|TTU_RMAP_LOCKED);
+ 		page_was_mapped = 1;
+ 		/*
+ 		 * Leave mapping locked until after subsequent call to
+@@ -2684,7 +2682,7 @@ static void migrate_vma_prepare(struct migrate_vma *migrate)
+  */
+ static void migrate_vma_unmap(struct migrate_vma *migrate)
+ {
+-	int flags = TTU_MIGRATION | TTU_IGNORE_MLOCK | TTU_IGNORE_ACCESS;
++	int flags = TTU_MIGRATION | TTU_IGNORE_MLOCK;
+ 	const unsigned long npages = migrate->npages;
+ 	const unsigned long start = migrate->start;
+ 	unsigned long addr, i, restore = 0;
+diff --git a/mm/rmap.c b/mm/rmap.c
+index 1b84945d655c..6cd9d4512117 100644
+--- a/mm/rmap.c
++++ b/mm/rmap.c
+@@ -1536,15 +1536,6 @@ static bool try_to_unmap_one(struct page *page, struct vm_area_struct *vma,
+ 			goto discard;
+ 		}
+ 
+-		if (!(flags & TTU_IGNORE_ACCESS)) {
+-			if (ptep_clear_flush_young_notify(vma, address,
+-						pvmw.pte)) {
+-				ret = false;
+-				page_vma_mapped_walk_done(&pvmw);
+-				break;
+-			}
+-		}
+-
+ 		/* Nuke the page table entry. */
+ 		flush_cache_page(vma, address, pte_pfn(*pvmw.pte));
+ 		if (should_defer_flush(mm, flags)) {
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index a8611dce7a95..e71b563cda7b 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -1072,7 +1072,6 @@ static void page_check_dirty_writeback(struct page *page,
+ static unsigned int shrink_page_list(struct list_head *page_list,
+ 				     struct pglist_data *pgdat,
+ 				     struct scan_control *sc,
+-				     enum ttu_flags ttu_flags,
+ 				     struct reclaim_stat *stat,
+ 				     bool ignore_references)
+ {
+@@ -1297,7 +1296,7 @@ static unsigned int shrink_page_list(struct list_head *page_list,
+ 		 * processes. Try to unmap it here.
+ 		 */
+ 		if (page_mapped(page)) {
+-			enum ttu_flags flags = ttu_flags | TTU_BATCH_FLUSH;
++			enum ttu_flags flags = TTU_BATCH_FLUSH;
+ 			bool was_swapbacked = PageSwapBacked(page);
+ 
+ 			if (unlikely(PageTransHuge(page)))
+@@ -1514,7 +1513,7 @@ unsigned int reclaim_clean_pages_from_list(struct zone *zone,
+ 	}
+ 
+ 	nr_reclaimed = shrink_page_list(&clean_pages, zone->zone_pgdat, &sc,
+-			TTU_IGNORE_ACCESS, &stat, true);
++					&stat, true);
+ 	list_splice(&clean_pages, page_list);
+ 	mod_node_page_state(zone->zone_pgdat, NR_ISOLATED_FILE,
+ 			    -(long)nr_reclaimed);
+@@ -1958,8 +1957,7 @@ shrink_inactive_list(unsigned long nr_to_scan, struct lruvec *lruvec,
+ 	if (nr_taken == 0)
+ 		return 0;
+ 
+-	nr_reclaimed = shrink_page_list(&page_list, pgdat, sc, 0,
+-				&stat, false);
++	nr_reclaimed = shrink_page_list(&page_list, pgdat, sc, &stat, false);
+ 
+ 	spin_lock_irq(&pgdat->lru_lock);
+ 
+@@ -2131,8 +2129,7 @@ unsigned long reclaim_pages(struct list_head *page_list)
+ 
+ 		nr_reclaimed += shrink_page_list(&node_page_list,
+ 						NODE_DATA(nid),
+-						&sc, 0,
+-						&dummy_stat, false);
++						&sc, &dummy_stat, false);
+ 		while (!list_empty(&node_page_list)) {
+ 			page = lru_to_page(&node_page_list);
+ 			list_del(&page->lru);
+@@ -2145,8 +2142,7 @@ unsigned long reclaim_pages(struct list_head *page_list)
+ 	if (!list_empty(&node_page_list)) {
+ 		nr_reclaimed += shrink_page_list(&node_page_list,
+ 						NODE_DATA(nid),
+-						&sc, 0,
+-						&dummy_stat, false);
++						&sc, &dummy_stat, false);
+ 		while (!list_empty(&node_page_list)) {
+ 			page = lru_to_page(&node_page_list);
+ 			list_del(&page->lru);
 -- 
 2.29.1.341.ge80a0c044ae-goog
 
