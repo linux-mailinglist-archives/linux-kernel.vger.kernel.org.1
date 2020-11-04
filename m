@@ -2,165 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 116572A606A
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 10:18:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35FB12A6070
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 10:20:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727389AbgKDJSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 04:18:50 -0500
-Received: from mga06.intel.com ([134.134.136.31]:27735 "EHLO mga06.intel.com"
+        id S1728287AbgKDJUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 04:20:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35938 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725812AbgKDJSt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 04:18:49 -0500
-IronPort-SDR: WoXpQJ/c4O1pQpzBB9+xcxJuT4iS4emhfkHiYY+TNRgWD2EFuG4PZHemLCvOowTJLvYwtgkSxm
- 5/I0rzexX5og==
-X-IronPort-AV: E=McAfee;i="6000,8403,9794"; a="230815503"
-X-IronPort-AV: E=Sophos;i="5.77,450,1596524400"; 
-   d="scan'208";a="230815503"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2020 01:18:48 -0800
-IronPort-SDR: Qg5NkxJR6Sb2VvuMKumPTpwpKQLAjz/5LF7HgXr00lSx63Czw9RqGNHrtCdlG0jtgfoRkHqQYm
- InIj1Lr7+WXw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,450,1596524400"; 
-   d="scan'208";a="396837779"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga001.jf.intel.com with ESMTP; 04 Nov 2020 01:18:48 -0800
-Received: from [10.226.38.22] (vramuthx-MOBL1.gar.corp.intel.com [10.226.38.22])
-        by linux.intel.com (Postfix) with ESMTP id 5E88C580342;
-        Wed,  4 Nov 2020 01:18:45 -0800 (PST)
-Reply-To: vadivel.muruganx.ramuthevar@linux.intel.com
-Subject: Re: [PATCH v6 2/6] spi: cadence-quadspi: Disable the DAC for Intel
- LGM SoC
-To:     Pratyush Yadav <p.yadav@ti.com>
-Cc:     broonie@kernel.org, vigneshr@ti.com, tudor.ambarus@microchip.com,
-        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
-        robh+dt@kernel.org, devicetree@vger.kernel.org,
-        miquel.raynal@bootlin.com, simon.k.r.goldschmidt@gmail.com,
-        dinguyen@kernel.org, richard@nod.at, cheol.yong.kim@intel.com,
-        qi-ming.wu@intel.com
-References: <20201030053153.5319-1-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20201030053153.5319-3-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20201103160834.mfbasmmlgsptnl5l@ti.com>
-From:   "Ramuthevar, Vadivel MuruganX" 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
-Message-ID: <7551da02-06c6-92d7-3a2b-0199fa026cf7@linux.intel.com>
-Date:   Wed, 4 Nov 2020 17:18:44 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1725812AbgKDJUT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 04:20:19 -0500
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4689E20715;
+        Wed,  4 Nov 2020 09:20:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604481619;
+        bh=OB2pEHAq3eSy9zEaaBXh+kvuQPObkvMCdwCMUwzw1JY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=npUyaTWCrnrKnzUraBfak+xsfoK1LtFuckl7rhvbc/h3cxA+6xI9w8UKKlUbQZNVw
+         6tPD9MtchgCKOFA4wTe1S6ViePXtxYkmspUGsrF98MhWwKvTEjSpk2CTB/9TRa+tfT
+         3muQirkvuEYhnX6JeB8x0V62+X5I7KfSOSR0tBHE=
+Date:   Wed, 4 Nov 2020 09:20:12 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Szabolcs Nagy <szabolcs.nagy@arm.com>, libc-alpha@sourceware.org,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Salvatore Mesoraca <s.mesoraca16@gmail.com>,
+        Lennart Poettering <mzxreary@0pointer.de>,
+        Topi Miettinen <toiwoton@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kernel-hardening@lists.openwall.com,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH 0/4] aarch64: avoid mprotect(PROT_BTI|PROT_EXEC) [BZ
+ #26831]
+Message-ID: <20201104092012.GA6439@willie-the-truck>
+References: <cover.1604393169.git.szabolcs.nagy@arm.com>
+ <20201103173438.GD5545@sirena.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <20201103160834.mfbasmmlgsptnl5l@ti.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201103173438.GD5545@sirena.org.uk>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pratyush,
+On Tue, Nov 03, 2020 at 05:34:38PM +0000, Mark Brown wrote:
+> On Tue, Nov 03, 2020 at 10:25:37AM +0000, Szabolcs Nagy wrote:
+> 
+> > Re-mmap executable segments instead of mprotecting them in
+> > case mprotect is seccomp filtered.
+> 
+> > For the kernel mapped main executable we don't have the fd
+> > for re-mmap so linux needs to be updated to add BTI. (In the
+> > presence of seccomp filters for mprotect(PROT_EXEC) the libc
+> > cannot change BTI protection at runtime based on user space
+> > policy so it is better if the kernel maps BTI compatible
+> > binaries with PROT_BTI by default.)
+> 
+> Given that there were still some ongoing discussions on a more robust
+> kernel interface here and there seem to be a few concerns with this
+> series should we perhaps just take a step back and disable this seccomp
+> filter in systemd on arm64, at least for the time being?  That seems
+> safer than rolling out things that set ABI quickly, a big part of the
+> reason we went with having the dynamic linker enable PROT_BTI in the
+> first place was to give us more flexibility to handle any unforseen
+> consequences of enabling BTI that we run into.  We are going to have
+> similar issues with other features like MTE so we need to make sure that
+> whatever we're doing works with them too.
+> 
+> Also updated to Will's current e-mail address - Will, do you have
+> thoughts on what we should do here?
 
-Thank you for the review comments...
+Changing the kernel to map the main executable with PROT_BTI by default is a
+user-visible change in behaviour and not without risk, so if we're going to
+do that then it needs to be opt-in because the current behaviour has been
+there since 5.8. I suppose we could shoe-horn in a cmdline option for 5.10
+(which will be the first LTS with BTI) but it would be better to put up with
+the current ABI if possible.
 
-On 4/11/2020 12:09 am, Pratyush Yadav wrote:
-> On 30/10/20 01:31PM, Ramuthevar,Vadivel MuruganX wrote:
->> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
->>
->> On Intel Lightning Mountain(LGM) SoCs QSPI controller do not use
->> Direct Access Controller(DAC).
->>
->> This patch adds a quirk to disable the Direct Access Controller
->> for data transfer instead it uses indirect data transfer.
->>
->> Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
->> ---
->>   drivers/spi/spi-cadence-quadspi.c | 12 ++++++++++++
->>   1 file changed, 12 insertions(+)
->>
->> diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
->> index d7b10c46fa70..6d6f7c440ece 100644
->> --- a/drivers/spi/spi-cadence-quadspi.c
->> +++ b/drivers/spi/spi-cadence-quadspi.c
->> @@ -1107,6 +1107,13 @@ static void cqspi_controller_init(struct cqspi_st *cqspi)
->>   	writel(reg, cqspi->iobase + CQSPI_REG_CONFIG);
->>   
->>   	cqspi_controller_enable(cqspi, 1);
->> +
->> +	/* Disable direct access controller */
->> +	if (!cqspi->use_direct_mode) {
->> +		reg = readl(cqspi->iobase + CQSPI_REG_CONFIG);
->> +		reg &= ~CQSPI_REG_CONFIG_ENB_DIR_ACC_CTRL;
->> +		writel(reg, cqspi->iobase + CQSPI_REG_CONFIG);
->> +	}
-> 
-> You did not address my comment here from last time around [0]. Please
-> replace this hunk with the one below and test it. Also mention in the
-> commit message that the DAC bit resets to 1 so there is no need to
-> explicitly set it.
-Really sorry for that, I will add the below patch as you have suggested 
-and test & confirm , thanks!
-> 
-> --- 8< ---
-> diff --git a/drivers/spi/spi-cadence-quadspi.c
-> b/drivers/spi/spi-cadence-quadspi.c
-> index d7ad8b198a11..d2c5d448a944 100644
-> --- a/drivers/spi/spi-cadence-quadspi.c
-> +++ b/drivers/spi/spi-cadence-quadspi.c
-> @@ -2156,10 +2156,12 @@ static void cqspi_controller_init(struct cqspi_st *cqspi)
->   	writel(cqspi->fifo_depth * cqspi->fifo_width / 8,
->   	       cqspi->iobase + CQSPI_REG_INDIRECTWRWATERMARK);
->   
-> -	/* Enable Direct Access Controller */
-> -	reg = readl(cqspi->iobase + CQSPI_REG_CONFIG);
-> -	reg |= CQSPI_REG_CONFIG_ENB_DIR_ACC_CTRL;
-> -	writel(reg, cqspi->iobase + CQSPI_REG_CONFIG);
-> +	/* Disable Direct Access Controller */
-> +	if (!cqspi->use_dac_mode) {
-> +		reg = readl(cqspi->iobase + CQSPI_REG_CONFIG);
-> +		reg &= ~CQSPI_REG_CONFIG_ENB_DIR_ACC_CTRL;
-> +		writel(reg, cqspi->iobase + CQSPI_REG_CONFIG);
-> +	}
->   
->   	cqspi_controller_enable(cqspi, 1);
->   }
-> --- >8 ---
-> 
-> Same disclaimer as last time: not tested at all.
-> 
-> [0] https://lore.kernel.org/linux-spi/20201022090146.2uj5gfx73dsfumjl@ti.com/
-> 
-> PS: Please Cc me in the next revision. I missed 3 revisions in between
-> because I'm not subscribed to this list. Otherwise I would have sent
-> this much sooner :-)
-Sure, I will add you in cc, btw last 3 revisions I did only Rob's review 
-comments update w.r.t dt_schema.
+Is there real value in this seccomp filter if it only looks at mprotect(),
+or was it just implemented because it's easy to do and sounds like a good
+idea?
 
-Regards
-Vadivel
-> 
->>   }
->>   
->>   static int cqspi_request_mmap_dma(struct cqspi_st *cqspi)
->> @@ -1388,6 +1395,10 @@ static const struct cqspi_driver_platdata am654_ospi = {
->>   	.quirks = CQSPI_NEEDS_WR_DELAY,
->>   };
->>   
->> +static const struct cqspi_driver_platdata intel_lgm_qspi = {
->> +	.quirks = CQSPI_DISABLE_DAC_MODE,
->> +};
->> +
->>   static const struct of_device_id cqspi_dt_ids[] = {
->>   	{
->>   		.compatible = "cdns,qspi-nor",
->> @@ -1403,6 +1414,7 @@ static const struct of_device_id cqspi_dt_ids[] = {
->>   	},
->>   	{
->>   		.compatible = "intel,lgm-qspi",
->> +		.data = &intel_lgm_qspi,
->>   	},
->>   	{ /* end of table */ }
->>   };
->> -- 
->> 2.11.0
->>
-> 
+Will
