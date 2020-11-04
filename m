@@ -2,118 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8D812A6B6F
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 18:10:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 740202A6B70
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 18:10:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731240AbgKDRK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 12:10:28 -0500
-Received: from mga06.intel.com ([134.134.136.31]:4192 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731090AbgKDRK1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 12:10:27 -0500
-IronPort-SDR: 2XE+wsBvwbOz50QR8WpcRYoLYIC1AI2oAJnF2zHEBuPmOZNXkXf/MaOmyU7MqzHh7RwjgWeTl2
- SkthUNKr+s+g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9795"; a="230881964"
-X-IronPort-AV: E=Sophos;i="5.77,451,1596524400"; 
-   d="scan'208";a="230881964"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2020 09:10:24 -0800
-IronPort-SDR: jwiQpi1ObuYxAb+wBA2q+guATDxmobmCi2MBRmYN9SluTeekXy/BIfKQK4FPwLWW0NBSErmeW5
- zdAVX6W3BWpA==
-X-IronPort-AV: E=Sophos;i="5.77,451,1596524400"; 
-   d="scan'208";a="538988928"
-Received: from msridhar-mobl1.amr.corp.intel.com (HELO [10.254.96.252]) ([10.254.96.252])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2020 09:10:23 -0800
-Subject: Re: sound/soc/intel/skylake/skl-topology.c:3642:1: warning: the frame
- size of 1256 bytes is larger than 1024 bytes
-To:     kernel test robot <lkp@intel.com>,
-        Mateusz Gorski <mateusz.gorski@linux.intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>,
-        Cezary Rojewski <cezary.rojewski@intel.com>
-References: <202011041516.a6zglw24-lkp@intel.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <471bf009-0930-4a06-3f74-9f1414db56ef@linux.intel.com>
-Date:   Wed, 4 Nov 2020 11:10:22 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1731363AbgKDRKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 12:10:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43122 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731090AbgKDRKp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 12:10:45 -0500
+Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0390EC0613D3;
+        Wed,  4 Nov 2020 09:10:45 -0800 (PST)
+Received: by mail-vs1-xe42.google.com with SMTP id b3so11882331vsc.5;
+        Wed, 04 Nov 2020 09:10:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=w/TI0h5kA8xnp2MjFDz/KpTULt58Y87+u3TWyNSEhKc=;
+        b=H6Clz4e2VWSAxLuKi2tOcipA/qGCKHVG65DtJMaFFLXk58sqM012pYTe46jC46fjc/
+         ObSZ9QDUu2RQivtaTXfNlu5Y9Ee2h6Wi1/4pr8WjxtHJhQ4Qw9o2cpFt76U0PfL41ua8
+         Oaf6hdc+yhsJx8F8ewYx0t16090aVPgZl/pG0xt0UV4Ta/IqKEtnN8+UiqAMHddKs05O
+         Mu8J1rSH5239IMNtdWOf3UIYWfe48+AF6flu5yVD5YKVf/qwFZs0GFCMVag1XM6ryRjR
+         X/unG2egbg4oG7xRdOq35XoTb/lQoIAfmK9SVlqDP4nNE06mNBnc7prZNIfeU8OY2okk
+         Ie5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=w/TI0h5kA8xnp2MjFDz/KpTULt58Y87+u3TWyNSEhKc=;
+        b=EGoUmcsCIgNp+INer6WeLyBILGF1RegFXmSzMlss92LTulT5DjKbmC89QvfUhQ402U
+         f5sr0ASyp0XQDCUJuo9ncmV/LJwXhIOrX7/PEUL/FuX/89wMjPQxJayc75sa46XJmHw2
+         nD/lcQVJRUqrAMUmK2AZIOlhJJ3RpydUfwPJ63fW0oylYHDJ2zHtE4+rOF8t4tVtTE+J
+         O+LYSLWYQAKdZn9AgM6WX87KD7dwInpajXUSu67KrXmjl2K2gt4mBV+CEk76MoSvXRzw
+         7Nkmcsd2pQuYbHnzcl6/WGh/oVGRzKNNxb5eg0PUmTXTabURyPTYgD4n3LEV5k6ywWQ2
+         Sj3A==
+X-Gm-Message-State: AOAM5300lj2uO/vVheA7TaL6H7NY74+y/mUkV/78GHE7gDGG6vKQl8gb
+        7Ul6N2Q46VzfMSvNX1qOxucnKLzHIxgjuQ9rP+w=
+X-Google-Smtp-Source: ABdhPJyiJ37qGglMEBL44iH5BJg3IiyTTKrCL3OzzSbhx2K5W/eJGZzpyXnKzk66PNjTIFP7kiyMEXMAl/4h1fzYwcw=
+X-Received: by 2002:a67:2c53:: with SMTP id s80mr11474066vss.12.1604509844212;
+ Wed, 04 Nov 2020 09:10:44 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <202011041516.a6zglw24-lkp@intel.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201104160847.30049-1-TheSven73@gmail.com> <20201104162734.GA1249360@lunn.ch>
+ <CAGngYiUtMN0nOV+wZC-4ycwOAvU=BqhdP7Z3PUPh2GX8Fvo3jg@mail.gmail.com> <20201104165509.GB1249360@lunn.ch>
+In-Reply-To: <20201104165509.GB1249360@lunn.ch>
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+Date:   Wed, 4 Nov 2020 12:10:33 -0500
+Message-ID: <CAGngYiWmVr4hVEQgZ74NEbonVnoJjsci7U+bBGFF5v2gg9HpdA@mail.gmail.com>
+Subject: Re: [PATCH v1] lan743x: correctly handle chips with internal PHY
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Bryan Whitehead <bryan.whitehead@microchip.com>,
+        David S Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Roelof Berg <rberg@berg-solutions.de>,
+        netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Nov 4, 2020 at 11:55 AM Andrew Lunn <andrew@lunn.ch> wrote:
+>
+> > https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/drivers/net/ethernet/microchip/lan743x_main.c?h=v5.9.3&id=6f197fb63850b26ef8f70f1bfe5900e377910a5a
+>
+> If you look at that patch, you see:
+>
+> -       ret = phy_connect_direct(netdev, phydev,
+> -                                lan743x_phy_link_status_change,
+> -                                PHY_INTERFACE_MODE_GMII);
+> -       if (ret)
+> -               goto return_error;
+>
+>
+> That was added as part of the first commit for the lan743x
+> driver. Changing that now seems dangerous.
 
->     sound/soc/intel/skylake/skl-topology.c: In function 'skl_tplg_complete':
->>> sound/soc/intel/skylake/skl-topology.c:3642:1: warning: the frame size of 1256 bytes is larger than 1024 bytes [-Wframe-larger-than=]
->      3642 | }
->           | ^
-> 
-> vim +3642 sound/soc/intel/skylake/skl-topology.c
-> 
->    3612	
->    3613	static void skl_tplg_complete(struct snd_soc_component *component)
->    3614	{
->    3615		struct snd_soc_dobj *dobj;
->    3616		struct snd_soc_acpi_mach *mach =
->    3617			dev_get_platdata(component->card->dev);
->    3618		int i;
->    3619	
->    3620		list_for_each_entry(dobj, &component->dobj_list, list) {
->    3621			struct snd_kcontrol *kcontrol = dobj->control.kcontrol;
->    3622			struct soc_enum *se =
->    3623				(struct soc_enum *)kcontrol->private_value;
->    3624			char **texts = dobj->control.dtexts;
->    3625			char chan_text[4];
->    3626	
->    3627			if (dobj->type != SND_SOC_DOBJ_ENUM ||
->    3628			    dobj->control.kcontrol->put !=
->    3629			    skl_tplg_multi_config_set_dmic)
->    3630				continue;
->    3631			sprintf(chan_text, "c%d", mach->mach_params.dmic_num);
->    3632	
->    3633			for (i = 0; i < se->items; i++) {
->    3634				struct snd_ctl_elem_value val;
+My knowledge of netdev/phy is extremely limited, so bear with me.
 
-that structure seems to be the root-cause of this warning. This can take 
-512+128 bytes and probably does not belong on the stack.
+The code quoted above (the first commit for lan743x) has been reinstated
+in my patch. It's literally identical - in the case the kernel can't find any
+available/sensible devicetree phy description.
 
-struct snd_ctl_elem_value {
-	struct snd_ctl_elem_id id;	/* W: element ID */
-	unsigned int indirect: 1;	/* W: indirect access - obsoleted */
-	union {
-		union {
-			long value[128];
-			long *value_ptr;	/* obsoleted */
-		} integer;
-		union {
-			long long value[64];
-			long long *value_ptr;	/* obsoleted */
-		} integer64;
-		union {
-			unsigned int item[128];
-			unsigned int *item_ptr;	/* obsoleted */
-		} enumerated;
-		union {
-			unsigned char data[512];
-			unsigned char *data_ptr;	/* obsoleted */
-		} bytes;
-		struct snd_aes_iec958 iec958;
-	} value;		/* RO */
-	unsigned char reserved[128];
-};
+In the case of devicetree phys, which have been added recently,
+the 'phy-connection-type' prop appeared to have been optional,
+defaulting to (G)MII. My patch removes that devicetree default.
 
->    3635	
->    3636				if (strstr(texts[i], chan_text)) {
->    3637					val.value.enumerated.item[0] = i;
->    3638					kcontrol->put(kcontrol, &val);
->    3639				}
->    3640			}
->    3641		}
->> 3642	}
-
+So I guess my question is this - is there really a need for a
+devicetree default for 'phy-connection-type'? If not, no code
+duplication or mdio refactoring is required.
