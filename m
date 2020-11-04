@@ -2,77 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 422592A648B
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 13:39:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ABD12A6493
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 13:42:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730005AbgKDMiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 07:38:52 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7144 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729827AbgKDMiU (ORCPT
+        id S1729662AbgKDMmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 07:42:25 -0500
+Received: from wp126.webpack.hosteurope.de ([80.237.132.133]:56112 "EHLO
+        wp126.webpack.hosteurope.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726527AbgKDMmZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 07:38:20 -0500
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CR5m63xJDz15RY4;
-        Wed,  4 Nov 2020 20:38:14 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by DGGEMS403-HUB.china.huawei.com
- (10.3.19.203) with Microsoft SMTP Server id 14.3.487.0; Wed, 4 Nov 2020
- 20:38:07 +0800
-From:   Yu Kuai <yukuai3@huawei.com>
-To:     <rick.chang@mediatek.com>, <bin.liu@mediatek.com>,
-        <mchehab@kernel.org>, <matthias.bgg@gmail.com>,
-        <tiffany.lin@mediatek.com>, <andrew-ct.chen@mediatek.com>,
-        <xia.jiang@mediatek.com>, <hverkuil-cisco@xs4all.nl>,
-        <tfiga@chromium.org>, <minghsiu.tsai@mediatek.com>,
-        <jcliang@chromium.org>
-CC:     <linux-media@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <yukuai3@huawei.com>,
-        <yi.zhang@huawei.com>
-Subject: [patch V3 6/6] media: mtk-vcodec: add missing put_device() call in mtk_vcodec_release_enc_pm()
-Date:   Wed, 4 Nov 2020 20:41:40 +0800
-Message-ID: <20201104124140.3443309-7-yukuai3@huawei.com>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20201104124140.3443309-1-yukuai3@huawei.com>
-References: <20201104124140.3443309-1-yukuai3@huawei.com>
+        Wed, 4 Nov 2020 07:42:25 -0500
+Received: from [2003:a:659:3f00:1e6f:65ff:fe31:d1d5] (helo=hermes.fivetechno.de); authenticated
+        by wp126.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        id 1kaI7G-0007Zz-II; Wed, 04 Nov 2020 13:42:18 +0100
+X-Virus-Scanned: by amavisd-new 2.11.1 using newest ClamAV at
+        linuxbbg.five-lan.de
+Received: from [192.168.34.101] (p5098d998.dip0.t-ipconnect.de [80.152.217.152])
+        (authenticated bits=0)
+        by hermes.fivetechno.de (8.15.2/8.14.5/SuSE Linux 0.8) with ESMTPSA id 0A4CgHFC013236
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+        Wed, 4 Nov 2020 13:42:17 +0100
+Subject: Re: [PATCH] ARM: dts: exynos: Assign a fixed index to mmc devices on
+ ODROID XU3/4 boards
+To:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <CGME20201104105152eucas1p28eb6ca629a685f24a2463c72898fdbc5@eucas1p2.samsung.com>
+ <20201104100855.2337-1-m.reichl@fivetechno.de>
+ <4ac01b71-e806-18c8-13ce-6acdcc1a3b41@samsung.com>
+From:   Markus Reichl <m.reichl@fivetechno.de>
+Organization: five technologies GmbH
+Message-ID: <28660119-ffe3-cd01-0daa-8c0994e29571@fivetechno.de>
+Date:   Wed, 4 Nov 2020 13:42:17 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-CFilter-Loop: Reflected
+In-Reply-To: <4ac01b71-e806-18c8-13ce-6acdcc1a3b41@samsung.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: de-DE
+Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;m.reichl@fivetechno.de;1604493744;183e66c4;
+X-HE-SMSGID: 1kaI7G-0007Zz-II
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-mtk_vcodec_release_enc_pm() will be called in two places:
+Hi Marek,
 
-a. mtk_vcodec_init_enc_pm() succeed while mtk_vcodec_probe() return error.
-b. mtk_vcodec_enc_remove().
+Am 04.11.20 um 13:24 schrieb Marek Szyprowski:
+> Hi Markus,
+> 
+> On 04.11.2020 11:08, Markus Reichl wrote:
+>> Recently introduced async probe on mmc devices can shuffle block IDs.
+>> Pin them to fixed values to ease booting in evironments where UUIDs
+>> are not practical. Use newly introduced aliases for mmcblk devices from [1].
+>>
+>> [1]
+>> https://patchwork.kernel.org/patch/11747669/
+> 
+> Wow, this is a long standing issue, called by others 'a feature'. Good
+> that this has been finally solved.
+> 
+>> Signed-off-by: Markus Reichl <m.reichl@fivetechno.de>
+>> ---
+>>   arch/arm/boot/dts/exynos5422-odroidxu3-common.dtsi | 5 +++++
+>>   1 file changed, 5 insertions(+)
+>>
+>> diff --git a/arch/arm/boot/dts/exynos5422-odroidxu3-common.dtsi b/arch/arm/boot/dts/exynos5422-odroidxu3-common.dtsi
+>> index e35af40a55cb..91d2840ac8ca 100644
+>> --- a/arch/arm/boot/dts/exynos5422-odroidxu3-common.dtsi
+>> +++ b/arch/arm/boot/dts/exynos5422-odroidxu3-common.dtsi
+>> @@ -13,6 +13,11 @@
+>>   #include "exynos5422-odroid-core.dtsi"
+>>   
+>>   / {
+>> +	aliases {
+>> +		mmc0 = &mmc_2;
+>> +		mmc1 = &mmc_0;
+> 
+> Frankly, I would keep the MMC numbers the same as in u-boot and
+> datasheets. 0 for the build-in eMMC and 2 for the SD-card. This would be
+> much more natural. On the other hand, I would agree to do it differently
+> only on Odroid HC1/HD2/MC1, which don't have build-in eMMC - just use 0
+> there for the SD-card.
 
-In both cases put_device() call is needed, since of_find_device_by_node()
-was called in mtk_vcodec_init_enc_pm() previously.
+This would break present and long standing  boot ordering in mainline, which is
+mmcblk0 = SD-card and
+mmcblk1 = eMMC
 
-Thus add put_devices() call in mtk_vcodec_release_enc_pm()
+Still desired?
+> 
+>> +	};
+>> +
+>>   	gpio-keys {
+>>   		compatible = "gpio-keys";
+>>   		pinctrl-names = "default";
+> 
+> Best regards
+> 
 
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
----
- drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_pm.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_pm.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_pm.c
-index 1a047c25679f..3b7c54d6aa8f 100644
---- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_pm.c
-+++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_pm.c
-@@ -108,6 +108,8 @@ int mtk_vcodec_init_enc_pm(struct mtk_vcodec_dev *mtkdev)
- 
- void mtk_vcodec_release_enc_pm(struct mtk_vcodec_dev *mtkdev)
- {
-+	put_device(mtkdev->pm.larbvenclt);
-+	put_device(mtkdev->pm.larbvenc);
- }
- 
- 
+Gruß,
 -- 
-2.25.4
-
+Markus Reichl
