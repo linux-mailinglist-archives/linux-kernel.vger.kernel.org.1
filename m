@@ -2,77 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B33D82A6A15
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 17:43:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F8A32A6A1A
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 17:45:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731237AbgKDQnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 11:43:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38640 "EHLO
+        id S1730913AbgKDQo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 11:44:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731210AbgKDQnF (ORCPT
+        with ESMTP id S1729679AbgKDQo6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 11:43:05 -0500
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C77C7C0613D3;
-        Wed,  4 Nov 2020 08:43:05 -0800 (PST)
-Received: by mail-pl1-x644.google.com with SMTP id w11so10538276pll.8;
-        Wed, 04 Nov 2020 08:43:05 -0800 (PST)
+        Wed, 4 Nov 2020 11:44:58 -0500
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0ED0C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 08:44:58 -0800 (PST)
+Received: by mail-ed1-x542.google.com with SMTP id a10so5922565edt.12
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 08:44:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=bH66Ulkk+HNzi+h3l2238xPbIOr76DAq74H0dqLHkJE=;
-        b=i3hIQiTfi6MwakQg00IBO0+XxpQet27JULd1t67pA8emnMB9MmNlOrE3Jpxt63nlfI
-         Dr9OYTkFKKvAlXg9g3yVV4mte+dUvi/QtiXiH6iPWAePcOa8mwf7fVwPs+cfm7sEXy3a
-         uuSYytEnOlDOzwMFFRPSrjv7u816Dx9tUO98ZFTpjUs0/+mukX9CPkWKTMpstVInyfDn
-         FprOcdSFpKOaqqWaEdboluVP08yQClePYPx5jpx4rBeG9I20BORAKBSbV8IlJnypvuol
-         VGRiReFGm6wySqtrYwbR9W9d7f20UDe7vqFCMZXkT5H8LeUF3Rzcm4R9CtNWm8eOMQ43
-         5kPw==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rGwZ4U2Yk94HbjWECDt3ZSEO8BgGsm3yANWJZznJVlE=;
+        b=SKypcSJq5Q6k60k9+zKvKMbvC4/mYkkGRNBl7hNNZGDnVCCmxbSynCz14nMmMe6+oA
+         nHAsVIiIuk1jY34qSoxGvxeje1+NUCFO0WDNK95TU7m04UYEx0Wb4srpx5ztwBP5pgIq
+         B9IM4QVUDbWlDbmPJMm458KQBunavjl5+UWfo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=bH66Ulkk+HNzi+h3l2238xPbIOr76DAq74H0dqLHkJE=;
-        b=dZarTqWytNSJ+DCGLG8RsZfQQHohY95J/Ch4bTdAamdGbR3KxV9pHvEu9ro/peyErD
-         EmuwlCgNu2dBR2XlJYPKa5VzwA3BndJzuPwADT+wFcRnhI4LzLgIF/gH7BsQzgdW+e1h
-         iMXhyl4wrkK5VPiP8jKI2vhn4tsyNPGKDKzdG2E1npKt+DXGDbM4nYSO16ycRTBawX+W
-         cDvkiK0w+Rl2rWzJYIXlH4Dqu07tNVcuykbsU5E7pVSDtcXjsUO8Sg26jn305JvWlq7j
-         xBHV3RHMAiy7Tf5n4ZEHppjYHhbRhkSq59TstK2tdSCs8pQ5boifNQ4+RKhSpZMz/TLi
-         X6Vw==
-X-Gm-Message-State: AOAM533tEe5QQL3U1/nmUxanYYqMv7n5gRtJJzYneH2kpIkKffouXpxS
-        Pgl0PkPuwLR4UW63U6yP32xTtl1RrUQ=
-X-Google-Smtp-Source: ABdhPJxu7Ium/wh2eBLH4ViiefTKA/mHeeQp7x3AeB7Y1ivlnwb+fsE3A4Gp+o1oZvHG0ftYsdCTbQ==
-X-Received: by 2002:a17:902:7402:b029:d6:8558:7920 with SMTP id g2-20020a1709027402b02900d685587920mr29612126pll.8.1604508184718;
-        Wed, 04 Nov 2020 08:43:04 -0800 (PST)
-Received: from hoboy.vegasvil.org (c-73-241-114-122.hsd1.ca.comcast.net. [73.241.114.122])
-        by smtp.gmail.com with ESMTPSA id s6sm2903548pgo.8.2020.11.04.08.43.03
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rGwZ4U2Yk94HbjWECDt3ZSEO8BgGsm3yANWJZznJVlE=;
+        b=D+4WzbzeqT3ug0dd4UR36N0CUvrZT4w/ggtXHEjyJWBdJ639ZIrXaBEnGplZZZIIv6
+         pA6wLxOS1zJT2aPw1R4jYu57csYrbuZ7dFcG+cmlhbT0Klvzl70BWqsmG14jX6cN/tKa
+         ybkQkKTl3QNp58vxgeP3Rcna6QCk31LhgiA9rmBYKfZP1Df2AQb5xY5nIKQlAGSFt6Zt
+         ilq2MnNZ8AiQEWY0QDGm0j15/Ap/+q0w1H4bUNcCCMGkzw3bF+i+WkKe14HCWy7J9w/l
+         3qwEq0dKOKJGqIpCUbj7ww/WWEnPSEwSkgrWy63RgXjw74RlshHXPGLvUwi74fShSfIn
+         e86A==
+X-Gm-Message-State: AOAM5311DgCOm3babk1QjUL/Teb4k8f/Ze/eJegibf2KO1rfKKR8ZrKX
+        Jkl3Dcy1CBZks3B2WQDbidVaA3dth/rMsFjV
+X-Google-Smtp-Source: ABdhPJx32REKyxbt2tVWS3Rsm648Cf2c14z6rQY2cwLF8aINR+bqpbGo8T9QFhDKXw1puYcdh/VrAg==
+X-Received: by 2002:a50:fe98:: with SMTP id d24mr27534696edt.223.1604508297130;
+        Wed, 04 Nov 2020 08:44:57 -0800 (PST)
+Received: from kpsingh.zrh.corp.google.com ([81.6.44.51])
+        by smtp.gmail.com with ESMTPSA id g20sm1283551ejz.88.2020.11.04.08.44.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 08:43:04 -0800 (PST)
-Date:   Wed, 4 Nov 2020 08:43:01 -0800
-From:   Richard Cochran <richardcochran@gmail.com>
-To:     min.li.xe@renesas.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 2/3] ptp: idt82p33: use i2c_master_send for bus
- write
-Message-ID: <20201104164301.GD16105@hoboy.vegasvil.org>
-References: <1604505709-5483-1-git-send-email-min.li.xe@renesas.com>
- <1604505709-5483-2-git-send-email-min.li.xe@renesas.com>
+        Wed, 04 Nov 2020 08:44:56 -0800 (PST)
+From:   KP Singh <kpsingh@chromium.org>
+To:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Paul Turner <pjt@google.com>,
+        Jann Horn <jannh@google.com>, Hao Luo <haoluo@google.com>
+Subject: [PATCH bpf-next v3 0/9] Implement task_local_storage
+Date:   Wed,  4 Nov 2020 17:44:44 +0100
+Message-Id: <20201104164453.74390-1-kpsingh@chromium.org>
+X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1604505709-5483-2-git-send-email-min.li.xe@renesas.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 11:01:48AM -0500, min.li.xe@renesas.com wrote:
-> From: Min Li <min.li.xe@renesas.com>
-> 
-> Refactor idt82p33_xfer and use i2c_master_send for write operation.
-> Because some I2C controllers are only working with single-burst write
-> transaction.
-> 
-> Signed-off-by: Min Li <min.li.xe@renesas.com>
+From: KP Singh <kpsingh@google.com>
 
-Acked-by: Richard Cochran <richardcochran@gmail.com>
+# v2 -> v3
+
+- Added bpf_spin_locks to the selftests for local storage, found that
+  these are not available for LSM programs.
+- Made spin lock helpers available for LSM programs (except sleepable
+  programs which need more work).
+- Minor fixes for includes and added short commit messages for patches
+  that were split up for libbpf and bpftool.
+- Added Song's acks.
+
+# v1 -> v2
+
+- Updated the refcounting for task_struct and simplified conversion
+  of fd -> struct pid.
+- Some fixes suggested by Martin and Andrii, notably:
+   * long return type for the bpf_task_storage_delete helper (update
+     for bpf_inode_storage_delete will be sent separately).
+   * Remove extra nullness check to task_storage_ptr in map syscall
+     ops.
+   * Changed the argument signature of the BPF helpers to use
+     task_struct pointer in uapi headers.
+   * Remove unnecessary verifier logic for the bpf_get_current_task_btf
+     helper.
+   * Split the changes for bpftool and libbpf.
+- Exercised syscall operations for local storage (kept a simpler verison
+  in test_local_storage.c, the eventual goal will be to update
+  sk_storage_map.c for all local storage types).
+- Formatting fixes + Rebase.
+
+We already have socket and inode local storage since [1]
+
+This patch series:
+
+* Implements bpf_local_storage for task_struct.
+* Implements the bpf_get_current_task_btf helper which returns a BTF
+  pointer to the current task. Not only is this generally cleaner
+  (reading from the task_struct currently requires BPF_CORE_READ), it
+  also allows the BTF pointer to be used in task_local_storage helpers.
+* In order to implement this helper, a RET_PTR_TO_BTF_ID is introduced
+  which works similar to RET_PTR_TO_BTF_ID_OR_NULL but does not require
+  a nullness check.
+* Implements a detection in selftests which uses the
+  task local storage to deny a running executable from unlinking itself.
+
+[1]: https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/commit/?id=f836a56e84ffc9f1a1cd73f77e10404ca46a4616
+
+KP Singh (9):
+  bpf: Implement task local storage
+  libbpf: Add support for task local storage
+  bpftool: Add support for task local storage
+  bpf: Implement get_current_task_btf and RET_PTR_TO_BTF_ID
+  bpf: Allow LSM programs to use bpf spin locks
+  bpf: Fix tests for local_storage
+  bpf: Update selftests for local_storage to use vmlinux.h
+  bpf: Add tests for task_local_storage
+  bpf: Exercise syscall operations for inode and sk storage
+
+ include/linux/bpf.h                           |   1 +
+ include/linux/bpf_lsm.h                       |  23 ++
+ include/linux/bpf_types.h                     |   1 +
+ include/uapi/linux/bpf.h                      |  48 +++
+ kernel/bpf/Makefile                           |   1 +
+ kernel/bpf/bpf_lsm.c                          |   8 +
+ kernel/bpf/bpf_task_storage.c                 | 313 ++++++++++++++++++
+ kernel/bpf/syscall.c                          |   3 +-
+ kernel/bpf/verifier.c                         |  34 +-
+ kernel/trace/bpf_trace.c                      |  16 +
+ security/bpf/hooks.c                          |   2 +
+ .../bpf/bpftool/Documentation/bpftool-map.rst |   3 +-
+ tools/bpf/bpftool/bash-completion/bpftool     |   2 +-
+ tools/bpf/bpftool/map.c                       |   4 +-
+ tools/include/uapi/linux/bpf.h                |  48 +++
+ tools/lib/bpf/libbpf_probes.c                 |   1 +
+ .../bpf/prog_tests/test_local_storage.c       | 182 +++++++++-
+ .../selftests/bpf/progs/local_storage.c       | 103 ++++--
+ 18 files changed, 741 insertions(+), 52 deletions(-)
+ create mode 100644 kernel/bpf/bpf_task_storage.c
+
+-- 
+2.29.1.341.ge80a0c044ae-goog
+
