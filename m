@@ -2,126 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B98C2A6320
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 12:17:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C4D42A6324
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 12:18:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729597AbgKDLRW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 06:17:22 -0500
-Received: from relay10.mail.gandi.net ([217.70.178.230]:57685 "EHLO
-        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728287AbgKDLRR (ORCPT
+        id S1726344AbgKDLRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 06:17:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729589AbgKDLR1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 06:17:17 -0500
-Received: from aptenodytes (196.109.29.93.rev.sfr.net [93.29.109.196])
-        (Authenticated sender: paul.kocialkowski@bootlin.com)
-        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 4CBB8240011;
-        Wed,  4 Nov 2020 11:17:11 +0000 (UTC)
-Date:   Wed, 4 Nov 2020 12:17:10 +0100
-From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Helen Koike <helen.koike@collabora.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-sunxi@googlegroups.com,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Yong Deng <yong.deng@magewell.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Hans Verkuil <hverkuil@xs4all.nl>, kevin.lhopital@hotmail.com
-Subject: Re: [PATCH 08/14] media: sunxi: Add support for the A31 MIPI CSI-2
- controller
-Message-ID: <20201104111710.GB287014@aptenodytes>
-References: <20201023174546.504028-1-paul.kocialkowski@bootlin.com>
- <20201023174546.504028-9-paul.kocialkowski@bootlin.com>
- <1a3a615c-a058-e282-2dbb-c99dfa98be68@collabora.com>
- <20201102092110.ro6a456lvbrktwoz@gilmour.lan>
+        Wed, 4 Nov 2020 06:17:27 -0500
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 158D2C061A4C
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 03:17:27 -0800 (PST)
+Received: by mail-wr1-x42b.google.com with SMTP id w14so21578832wrs.9
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 03:17:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=QwJRAenGdZ42PlyVXV73a6SJR/jbxK4qTgDqEtZcRKI=;
+        b=ZwFav17UiX7OB2VG0aiFLtzFz3I529oV9cElzmWVaa4Fki3EDEYq0iPllVsQgQPmMw
+         aepxl/tm88EQ8J5edcxCC1EiBmzWci/DkiJhpUumCiIJq8R4DJGzQubVQBE3eH0oURE1
+         zfmemkUAL9P7oo4gnjl3/646srMNRa7nnbkInjO0TAi+FLDq5li9Sf3S+GTbrw4k/jJx
+         vNotE/y0ZNZZ6GlIjGOK/LVX0YRmu52LwKEErEcevsAMZRgmtN5JVvEeJU1I6VROaMwH
+         Yo9XFaAhz+Ja2x8ENv8aRDaUMCMuVExWvUdKRGk/ONxGSw6p4Z1qS8yrr5ucY+rci7xv
+         /rig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=QwJRAenGdZ42PlyVXV73a6SJR/jbxK4qTgDqEtZcRKI=;
+        b=aMDevO5mKj2CAWGcSAkVXq/TLlF4gJz0BJFg1VU+QxzXKTFNTc/bOXpiC4n35sLGQH
+         feTXsbOT5ra5nu6YOsVdpinV/QtcMK5+ii/28l1cPwjDTlyVYwXuwcY1Vhj/QglAtzOJ
+         jyPRYewduM/1Hr7MQD1wcDK1ZUvYBdSyyH1Z/XX48sVWchIBXHLg5J7LkD93tbPy4AWx
+         UstFuUDtPsLCKhwyzB5WYX9leIeC+5lQ2Zflwn+C2aFaCz3+auNLAHLOAaD1dEvpwZXX
+         +FhfViLZwiTWRpZxxFF+4h7JuRlxTs4hiR3HSdB6BdAaLomy2txaDKr6bENkBV+ktuyK
+         5L4w==
+X-Gm-Message-State: AOAM533Ppls7rnMih2yEu5HHzwq2sutoE/gK9oFKluRDAxNnTSOIDBzx
+        4vQbttni1TKwt4KcP6UzvOwEkw==
+X-Google-Smtp-Source: ABdhPJylDyszvDYbcQVFZaKGr+c5qdRrKrG+v/xQYoBbfvNo7aVuD4qNL1hMyV3EIru6EViw62tYGQ==
+X-Received: by 2002:a05:6000:4c:: with SMTP id k12mr30555969wrx.278.1604488645803;
+        Wed, 04 Nov 2020 03:17:25 -0800 (PST)
+Received: from dell ([91.110.221.242])
+        by smtp.gmail.com with ESMTPSA id m14sm2090453wro.43.2020.11.04.03.17.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Nov 2020 03:17:25 -0800 (PST)
+Date:   Wed, 4 Nov 2020 11:17:23 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     "David E. Box" <david.e.box@linux.intel.com>
+Cc:     hdegoede@redhat.com, mgross@linux.intel.com, bhelgaas@google.com,
+        alexey.budankov@linux.intel.com, linux-kernel@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, linux-pci@vger.kernel.org
+Subject: [GIT PULL] Immutable branch between MFD and x86 due for the v5.11
+ merge window
+Message-ID: <20201104111723.GC4488@dell>
+References: <20201029014449.14955-1-david.e.box@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="WYTEVAkct0FjGQmd"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201102092110.ro6a456lvbrktwoz@gilmour.lan>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201029014449.14955-1-david.e.box@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Enjoy!
 
---WYTEVAkct0FjGQmd
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The following changes since commit 3650b228f83adda7e5ee532e2b90429c03f7b9ec:
 
-Hi,
+  Linux 5.10-rc1 (2020-10-25 15:14:11 -0700)
 
-On Mon 02 Nov 20, 10:21, Maxime Ripard wrote:
-> On Fri, Oct 30, 2020 at 07:45:18PM -0300, Helen Koike wrote:
-> > On 10/23/20 2:45 PM, Paul Kocialkowski wrote:
-> > > The A31 MIPI CSI-2 controller is a dedicated MIPI CSI-2 controller
-> > > found on Allwinner SoCs such as the A31 and V3/V3s.
-> > >=20
-> > > It is a standalone block, connected to the CSI controller on one side
-> > > and to the MIPI D-PHY block on the other. It has a dedicated address
-> > > space, interrupt line and clock.
-> > >=20
-> > > Currently, the MIPI CSI-2 controller is hard-tied to a specific CSI
-> > > controller (CSI0) but newer SoCs (such as the V5) may allow switching
-> > > MIPI CSI-2 controllers between CSI controllers.
-> > >=20
-> > > It is represented as a V4L2 subdev to the CSI controller and takes a
-> > > MIPI CSI-2 sensor as its own subdev, all using the fwnode graph and
-> > > media controller API.
-> >=20
-> > Maybe this is a bad idea, but I was thinking:
-> > This driver basically just turn on/off and catch some interrupts for er=
-rors,
-> > and all the rest of v4l2 config you just forward to the next subdevice
-> > on the pipeline.
-> >=20
-> > So instead of exposing it as a subdevice, I was wondering if modeling
-> > this driver also through the phy subsystem wouldn't be cleaner, so
-> > you won't need all the v4l2 subdevice/topology boilerplate code that
-> > it seems you are not using (unless you have plans to add controls or
-> > some specific configuration on this node later).
-> >=20
-> > But this would require changes on the sun6i-csi driver.
-> >=20
-> > What do you think?
->=20
-> Eventually we'll need to filter the virtual channels / datatypes I
-> guess, so it's definitely valuable to have it in v4l2
+are available in the Git repository at:
 
-Agreed and like I mentionned in the discussion on 00/14 I don't think it
-would be a cleaner way to expose things.
+  git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git ib-mfd-x86-v5.11
 
-There's also the fact that newer SoCs like the V5 seem to allow connecting
-any MIPI CSI-2 controller to any CSI controller, so the graph representation
-is definitely welcome here.
+for you to fetch changes up to 5ef9998c96b0c99c49c202054586967e609286d2:
 
-Paul
+  platform/x86: Intel PMT Crashlog capability driver (2020-11-04 11:14:38 +0000)
 
---=20
-Paul Kocialkowski, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
+----------------------------------------------------------------
+Immutable branch between MFD and x86 due for the v5.11 merge window
 
---WYTEVAkct0FjGQmd
-Content-Type: application/pgp-signature; name="signature.asc"
+----------------------------------------------------------------
+Alexander Duyck (3):
+      platform/x86: Intel PMT class driver
+      platform/x86: Intel PMT Telemetry capability driver
+      platform/x86: Intel PMT Crashlog capability driver
 
------BEGIN PGP SIGNATURE-----
+David E. Box (2):
+      PCI: Add defines for Designated Vendor-Specific Extended Capability
+      mfd: Intel Platform Monitoring Technology support
 
-iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAl+ijbYACgkQ3cLmz3+f
-v9Fb1wgAh9Q8P4R5upBbkO+og7cJgFf/zB+D0ht5gGmg/DnFyx7Qbu0URcwTm99o
-SS9l3PciZ2grf+J12pMOxobiIh2GuNQOXEOCdJkIDz7w6hw1IF9WQqBrY4anGsof
-EYDHm4dRNr7dZHQl2vQwvSYZRsk4Kotd43w5JzSW/cU3+aAkMU/4O5DyO39JS92B
-UOsBaw8r09Vp50SAEBRvmluXDo90m8Wi+LNT2qmXTo+aShRNYeS2vmBqiFg4YpgO
-6kcdCDup8CHGi18b3ak4o8AGq8BJjAkjKpBVeJxWbF96eaxaQgKZ7JbgRxFCcmmL
-tI6VBvxl6ULRZ3ws5QeQ9kq9EZjbBg==
-=aT0d
------END PGP SIGNATURE-----
+ Documentation/ABI/testing/sysfs-class-intel_pmt | 119 +++++++++
+ MAINTAINERS                                     |   6 +
+ drivers/mfd/Kconfig                             |  10 +
+ drivers/mfd/Makefile                            |   1 +
+ drivers/mfd/intel_pmt.c                         | 223 ++++++++++++++++
+ drivers/platform/x86/Kconfig                    |  34 +++
+ drivers/platform/x86/Makefile                   |   3 +
+ drivers/platform/x86/intel_pmt_class.c          | 297 +++++++++++++++++++++
+ drivers/platform/x86/intel_pmt_class.h          |  52 ++++
+ drivers/platform/x86/intel_pmt_crashlog.c       | 328 ++++++++++++++++++++++++
+ drivers/platform/x86/intel_pmt_telemetry.c      | 160 ++++++++++++
+ include/uapi/linux/pci_regs.h                   |   5 +
+ 12 files changed, 1238 insertions(+)
+ create mode 100644 Documentation/ABI/testing/sysfs-class-intel_pmt
+ create mode 100644 drivers/mfd/intel_pmt.c
+ create mode 100644 drivers/platform/x86/intel_pmt_class.c
+ create mode 100644 drivers/platform/x86/intel_pmt_class.h
+ create mode 100644 drivers/platform/x86/intel_pmt_crashlog.c
+ create mode 100644 drivers/platform/x86/intel_pmt_telemetry.c
 
---WYTEVAkct0FjGQmd--
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
