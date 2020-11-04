@@ -2,314 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDCE02A7016
+	by mail.lfdr.de (Postfix) with ESMTP id D8B5D2A7014
 	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 23:02:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732039AbgKDV5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 16:57:15 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:56995 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728416AbgKDV5O (ORCPT
+        id S1732175AbgKDWCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 17:02:42 -0500
+Received: from esa6.microchip.iphmx.com ([216.71.154.253]:5083 "EHLO
+        esa6.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731198AbgKDWCf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 16:57:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604527032;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=xLd9UIzjawre+4pDsoByOIIICry9R8qSsVwWyLpC9EE=;
-        b=CgUtqdFDWfdHPqWTiSHZLXummUxLpZg7ONWhDAdY2AEnuI9T4w5e6fm7qI0ufEmr4FHK4I
-        TzeXB0qSHf90ImhG361Q28NzOENvNzQKPKe5Ik6iduaPt/bdtWnBi3hl87SsTm1+qcldqK
-        Z2N9RQN21DDLbgAv0yY+BivO+xuxA3M=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-324-tl20Fq8cNliFsTh3atdMzA-1; Wed, 04 Nov 2020 16:57:11 -0500
-X-MC-Unique: tl20Fq8cNliFsTh3atdMzA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E3C51803652;
-        Wed,  4 Nov 2020 21:57:06 +0000 (UTC)
-Received: from mail (ovpn-116-241.rdu2.redhat.com [10.10.116.241])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 59A125578B;
-        Wed,  4 Nov 2020 21:57:03 +0000 (UTC)
-Date:   Wed, 4 Nov 2020 16:57:02 -0500
-From:   Andrea Arcangeli <aarcange@redhat.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     YiFei Zhu <zhuyifei1999@gmail.com>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        David Laight <David.Laight@aculab.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Jann Horn <jannh@google.com>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Will Drewry <wad@chromium.org>, Jiri Kosina <jikos@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Waiman Long <longman@redhat.com>
-Subject: RFC: default to spec_store_bypass_disable=prctl spectre_v2_user=prctl
-Message-ID: <20201104215702.GG24993@redhat.com>
+        Wed, 4 Nov 2020 17:02:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1604527354; x=1636063354;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=GNGAiShu/8brycAcsYXEC6wJgzf/foiuvxYEUaQxlh8=;
+  b=DTJJb0ojDaPxeQPltrO4mgZlfyoprJQb/DLX/bJE9xn2nBawpH/nrE3y
+   Zm63/wQGkxgemst6yXdaut+/CaIhBSoyqz8DW0zVXIQKngGfwJd2wPC4y
+   6xLqvYm8odmj5yrKl7iyWNirniuZ/1J06JaEb3BPUsnvYmfaTeyCzhPdJ
+   khShK2Gf9rtF2CE0gZIig2KFgPRSrDCnshy8c897qJvISqs2RVH32uwkI
+   psrxTIVDLrgiblc8umgnBQSmpt6DoYGlkIww4oDfL8mXPsYYG9IUy4y9d
+   jNI+GAjiFTf2KX9CFtycLE5wCuq6LDPPk3NhmLJwxisugosASmpxY3YGr
+   A==;
+IronPort-SDR: S9qNVmM+hchmvZ+/mJO8y9EB+5GGlk2QLrVa7s3yygptQ1IskvsXHWJFN4k47pGysJYU2+UQqt
+ 0dQsftMJbVKNW07z31zZsUGSxdAg9Y2yHFsqxbFGoef8/5/IHMgc/PNR4nPGaHH9OfRZ8Htjn3
+ 1PQ6P7EDG7xErdrAICryC++FvgYNkkgBAVO5VfBqtZmaC4iphL06Cg9217kMMltVUBDozx9G18
+ 4bgbjeleOnRC2IBDQYNDE+lgRYVnf/c2lwHT7DVmzo0UnsRCoE04BbcXp+MnCMXyQfN6NHVgYX
+ wX4=
+X-IronPort-AV: E=Sophos;i="5.77,451,1596524400"; 
+   d="scan'208";a="32465680"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 04 Nov 2020 15:02:33 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 4 Nov 2020 15:02:33 -0700
+Received: from soft-dev10.microsemi.net (10.10.115.15) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Wed, 4 Nov 2020 15:02:31 -0700
+From:   Lars Povlsen <lars.povlsen@microchip.com>
+To:     Rishi Gupta <gupt21@gmail.com>, Jiri Kosina <jikos@kernel.org>,
+        "Benjamin Tissoires" <benjamin.tissoires@redhat.com>,
+        UNGLinuxDriver <UNGLinuxDriver@microchip.com>
+CC:     Lars Povlsen <lars.povlsen@microchip.com>,
+        <linux-i2c@vger.kernel.org>, <linux-input@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] HID: mcp2221: Fix GPIO output handling
+Date:   Wed, 4 Nov 2020 23:02:23 +0100
+Message-ID: <20201104220223.293253-1-lars.povlsen@microchip.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.14.7 (2020-08-29)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+The mcp2221 driver GPIO output handling has has several issues.
 
-[ Given the CC list and your mention of spectre_v2_user=prctl is spot
-  on to show the badness... I spawned a new thread to suggest another
-  thing related to seccomp that I've been intending to suggest for
-  a while ]
+* A wrong value is used for the GPIO direction.
 
-On Tue, Nov 03, 2020 at 04:29:38PM -0800, Kees Cook wrote:
-> I assume this is from Indirect Branch Prediction Barrier (IBPB) and
-> Single Threaded Indirect Branch Prediction (STIBP) (which get enabled
-> for threads under seccomp by default).
-> 
-> Try booting with "spectre_v2_user=prctl"
+* Wrong offsets are calculated for some GPIO set value/set direction
+  operations, when offset is larger than 0.
 
-We need to change the kernel default to
-"spec_store_bypass_disable=prctl spectre_v2_user=prctl".
+This has been fixed by introducing proper manifest constants for the
+direction encoding, and using 'offsetof' when calculating GPIO
+register offsets.
 
-I've been recommending to everyone to use
-"spec_store_bypass_disable=prctl spectre_v2_user=prctl" for a while
-now. I already recommend to Yifei too a few months ago when he first
-found out of the huge seccomp regression when he upgraded his codebase
-to the upstream kernel with both STIBP/SSBD enabled in seccomp jails.
+The updated driver has been tested with the Sparx5 pcb134/pcb135
+board, which has the mcp2221 device with several (output) GPIO's.
 
-Here's below a tentative RFC, the code is actually trivial, if you
-could help reviewing/improving the commit header it would be great.
-
-Thanks,
-Andrea
-
-From 3f7adb783262dc7f4e71cdbf07b4ef9f6b8d3ed9 Mon Sep 17 00:00:00 2001
-From: Andrea Arcangeli <aarcange@redhat.com>
-Date: Wed, 4 Nov 2020 15:20:33 -0500
-Subject: [PATCH 1/1] x86: change default to spec_store_bypass_disable=prctl
- spectre_v2_user=prctl
-
-Switch the kernel default of SSBD and STIBP to the ones with
-CONFIG_SECCOMP=n (i.e. spec_store_bypass_disable=prctl
-spectre_v2_user=prctl) even if CONFIG_SECCOMP=y.
-
-Several motivations listed below:
-
-- If SMT is enabled the seccomp jail can still attack the rest of the
-  system even with spectre_v2_user=seccomp by using MDS-HT (except on
-  XEON PHI where MDS can be tamed with SMT left enabled, but that's a
-  special case). Setting STIBP become a very expensive window dressing
-  after MDS-HT was discovered.
-
-- The seccomp jail cannot attack the kernel with spectre-v2-HT
-  regardless (even if STIBP is not set), but with MDS-HT the seccomp
-  jail can attack the kernel too.
-
-- With spec_store_bypass_disable=prctl the seccomp jail can attack the
-  other userland (guest or host mode) using spectre-v2-HT, but the
-  userland attack is already mitigated by both ASLR and pid namespaces
-  for host userland and through virt isolation with libkrun or
-  kata. (if something if somebody is worried about spectre-v2-HT it's
-  best to mount proc with hidepid=2,gid=proc on workstations where not
-  all apps may run under container runtimes, rather than slowing down
-  all seccomp jails, but the best is to add pid namespaces to the
-  seccomp jail). As opposed MDS-HT is not mitigated and the seccomp
-  jail can still attack all other host and guest userland if SMT is
-  enabled even with spec_store_bypass_disable=seccomp.
-
-- If full security is required then MDS-HT must also be mitigated with
-  nosmt and then spectre_v2_user=prctl and spectre_v2_user=seccomp
-  would become identical.
-
-- Setting spectre_v2_user=seccomp is overall lower priority than to
-  setting javascript.options.wasm false in about:config to protect
-  against remote wasm MDS-HT, instead of worrying about Spectre-v2-HT
-  and STIBP which again is already statistically well mitigated by
-  other means in userland and it's fully mitigated in kernel with
-  retpolines (unlike the wasm assist call with MDS-HT).
-
-- SSBD is needed to prevent reading the JIT memory and the primary
-  user being the OpenJDK. However the primary user of SSBD wouldn't be
-  covered by spec_store_bypass_disable=seccomp because it doesn't use
-  seccomp and the primary user also explicitly declined to set
-  PR_SET_SPECULATION_CTRL+PR_SPEC_STORE_BYPASS despite it easily
-  could. In fact it would need to set it only when the sandboxing
-  mechanism is enabled for javaws applets, but it still declined it by
-  declaring security within the same user address space as an
-  untenable objective for their JIT, even in the sandboxing case where
-  performance would be a lesser concern (for the record: I kind of
-  disagree in not setting PR_SPEC_STORE_BYPASS in the sandbox case and
-  I prefer to run javaws through a wrapper that sets
-  PR_SPEC_STORE_BYPASS if I need). In turn it can be inferred that
-  even if the primary user of SSBD would use seccomp, they would
-  invoke it with SECCOMP_FILTER_FLAG_SPEC_ALLOW by now.
-
-- runc/crun already set SECCOMP_FILTER_FLAG_SPEC_ALLOW by default, k8s
-  and podman have a default json seccomp allowlist that cannot be
-  slowed down, so for the #1 seccomp user this change is already a
-  noop.
-
-- systemd/sshd or other apps that use seccomp, if they really need
-  STIBP or SSBD, they need to explicitly set the
-  PR_SET_SPECULATION_CTRL by now. The stibp/ssbd seccomp blind
-  catch-all approach was done probably initially with a wishful
-  thinking objective to pretend to have a peace of mind that it could
-  magically fix it all. That was wishful thinking before MDS-HT was
-  discovered, but after MDS-HT has been discovered it become just
-  window dressing.
-
-- For qemu "-sandbox" seccomp jail it wouldn't make sense to set STIBP
-  or SSBD. SSBD doesn't help with KVM because there's no JIT (if it's
-  needed with TCG it should be an opt-in with
-  PR_SET_SPECULATION_CTRL+PR_SPEC_STORE_BYPASS and it shouldn't
-  slowdown KVM for nothing). For qemu+KVM STIBP would be even more
-  window dressing than it is for all other apps, because in the
-  qemu+KVM case there's not only the MDS attack to worry about with
-  SMT enabled. Even after disabling SMT, there's still a theoretical
-  spectre-v2 attack possible within the same thread context from guest
-  mode to host ring3 that the host kernel retpoline mitigation has no
-  theoretical chance to mitigate. On some kernels a
-  ibrs-always/ibrs-retpoline opt-in model is provided that will
-  enabled IBRS in the qemu host ring3 userland which fixes this
-  theoretical concern. Only after enabling IBRS in the host userland
-  it would then make sense to proceed and worry about STIBP and an
-  attack on the other host userland, but then again SMT would need to
-  be disabled for full security anyway, so that would render STIBP
-  again a noop.
-
-- last but not the least: the lack of "spec_store_bypass_disable=prctl
-  spectre_v2_user=prctl" means the moment a guest boots and
-  sshd/systemd runs, the guest kernel will write to SPEC_CTRL MSR
-  which will make the guest vmexit forever slower, forcing KVM to
-  issue a very slow rdmsr instruction at every vmexit. So the end
-  result is that SPEC_CTRL MSR is only available in GCE. Most other
-  public cloud providers don't expose SPEC_CTRL, which means that not
-  only STIBP/SSBD isn't available, but IBPB isn't available either
-  (which would cause no overhead to the guest or the hypervisor
-  because it's write only and requires no reading during vmexit). So
-  the current default already net loss in security (missing IBPB)
-  which means most public cloud providers cannot achieve a fully
-  secure guest with nosmt (and nosmt is enough to fully mitigate
-  MDS-HT). It also means GCE and is unfairly penalized in performance
-  because it provides the option to enable full security in the guest
-  as an opt-in (i.e. nosmt and IBPB). So this change will allow all
-  cloud providers to expose SPEC_CTRL without incurring into any
-  hypervisor slowdown and at the same time it will remove the unfair
-  penalization of GCE performance for doing the right thing and it'll
-  allow to get full security with nosmt with IBPB being available (and
-  STIBP becoming meaningless).
-
-Example to put things in prospective: the STIBP enabled in seccomp has
-never been about protecting apps using seccomp like sshd from an
-attack from a malicious userland, but to the contrary it has always
-been about protecting the system from an attack from sshd, after a
-successful remote network exploit against sshd. In fact initially it
-wasn't obvious STIBP would work both ways (STIBP was about preventing
-the task that runs with STIBP to be attacked with spectre-v2-HT, but
-accidentally in the STIBP case it also prevents the attack in the
-other direction). In the hypothetical case that sshd has been remotely
-exploited the last concern should be STIBP being set, because it'll be
-still possible to obtain info even from the kernel by using MDS if
-nosmt wasn't set (and if it was set, STIBP is a noop in the first
-place). As opposed kernel cannot leak anything with spectre-v2 HT
-because of retpolines and the userland is mitigated by ASLR already
-and ideally PID namespaces too. If something it'd be worth checking if
-sshd run the seccomp thread under pid namespaces too if available in
-the running kernel. SSBD also would be a noop for sshd, since sshd
-uses no JIT. If sshd prefers to keep doing the STIBP window dressing
-exercise, it still can even after this change of defaults by opting-in
-with PR_SPEC_STORE_BYPASS.
-
-Ultimately setting SSBD and STIBP by default for all seccomp jails is
-a bad sweet spot and bad default with more cons than pros that end up
-reducing security in the public cloud (by giving an huge incentive to
-not expose SPEC_CTRL which would be needed to get full security with
-IBPB after setting nosmt in the guest) and by excessively hurting
-performance to more secure apps using seccomp that end up having to
-opt out with SECCOMP_FILTER_FLAG_SPEC_ALLOW.
-
-The following is the verified result of the new default with SMT
-enabled:
-
-(gdb) print spectre_v2_user_stibp
-$1 = SPECTRE_V2_USER_PRCTL
-(gdb) print spectre_v2_user_ibpb
-$2 = SPECTRE_V2_USER_PRCTL
-(gdb) print ssb_mode
-$3 = SPEC_STORE_BYPASS_PRCTL
-
-Signed-off-by: Andrea Arcangeli <aarcange@redhat.com>
+Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
 ---
- Documentation/admin-guide/kernel-parameters.txt | 5 ++---
- arch/x86/kernel/cpu/bugs.c                      | 4 ++--
- 2 files changed, 4 insertions(+), 5 deletions(-)
+ drivers/hid/hid-mcp2221.c | 48 +++++++++++++++++++++++++++++++--------
+ 1 file changed, 39 insertions(+), 9 deletions(-)
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 526d65d8573a..105401a3582f 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -4980,8 +4980,7 @@
- 			auto    - Kernel selects the mitigation depending on
- 				  the available CPU features and vulnerability.
+diff --git a/drivers/hid/hid-mcp2221.c b/drivers/hid/hid-mcp2221.c
+index 0d27ccb55dd9..4211b9839209 100644
+--- a/drivers/hid/hid-mcp2221.c
++++ b/drivers/hid/hid-mcp2221.c
+@@ -49,6 +49,36 @@ enum {
+ 	MCP2221_ALT_F_NOT_GPIOD = 0xEF,
+ };
  
--			Default mitigation:
--			If CONFIG_SECCOMP=y then "seccomp", otherwise "prctl"
-+			Default mitigation: "prctl"
++/* MCP GPIO direction encoding */
++enum {
++	MCP2221_DIR_OUT = 0x00,
++	MCP2221_DIR_IN = 0x01,
++};
++
++#define MCP_NGPIO	4
++
++/* MCP GPIO set command layout */
++struct mcp_set_gpio {
++	u8 cmd;
++	u8 dummy;
++	struct {
++		u8 change_value;
++		u8 value;
++		u8 change_direction;
++		u8 direction;
++	} gpio[MCP_NGPIO];
++} __packed;
++
++/* MCP GPIO get command layout */
++struct mcp_get_gpio {
++	u8 cmd;
++	u8 dummy;
++	struct {
++		u8 direction;
++		u8 value;
++	} gpio[MCP_NGPIO];
++} __packed;
++
+ /*
+  * There is no way to distinguish responses. Therefore next command
+  * is sent only after response to previous has been received. Mutex
+@@ -542,7 +572,7 @@ static int mcp_gpio_get(struct gpio_chip *gc,
  
- 			Not specifying this option is equivalent to
- 			spectre_v2_user=auto.
-@@ -5025,7 +5024,7 @@
- 				  will disable SSB unless they explicitly opt out.
+ 	mcp->txbuf[0] = MCP2221_GPIO_GET;
  
- 			Default mitigations:
--			X86:	If CONFIG_SECCOMP=y "seccomp", otherwise "prctl"
-+			X86:	"prctl"
+-	mcp->gp_idx = (offset + 1) * 2;
++	mcp->gp_idx = offsetof(struct mcp_get_gpio, gpio[offset].value);
  
- 			On powerpc the options are:
+ 	mutex_lock(&mcp->lock);
+ 	ret = mcp_send_data_req_status(mcp, mcp->txbuf, 1);
+@@ -559,7 +589,7 @@ static void mcp_gpio_set(struct gpio_chip *gc,
+ 	memset(mcp->txbuf, 0, 18);
+ 	mcp->txbuf[0] = MCP2221_GPIO_SET;
  
-diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
-index d3f0db463f96..5ec39397fe9c 100644
---- a/arch/x86/kernel/cpu/bugs.c
-+++ b/arch/x86/kernel/cpu/bugs.c
-@@ -721,11 +721,11 @@ spectre_v2_user_select_mitigation(enum spectre_v2_mitigation_cmd v2_cmd)
- 	case SPECTRE_V2_USER_CMD_FORCE:
- 		mode = SPECTRE_V2_USER_STRICT;
- 		break;
-+	case SPECTRE_V2_USER_CMD_AUTO:
- 	case SPECTRE_V2_USER_CMD_PRCTL:
- 	case SPECTRE_V2_USER_CMD_PRCTL_IBPB:
- 		mode = SPECTRE_V2_USER_PRCTL;
- 		break;
--	case SPECTRE_V2_USER_CMD_AUTO:
- 	case SPECTRE_V2_USER_CMD_SECCOMP:
- 	case SPECTRE_V2_USER_CMD_SECCOMP_IBPB:
- 		if (IS_ENABLED(CONFIG_SECCOMP))
-@@ -1132,7 +1132,6 @@ static enum ssb_mitigation __init __ssb_select_mitigation(void)
- 		return mode;
+-	mcp->gp_idx = ((offset + 1) * 4) - 1;
++	mcp->gp_idx = offsetof(struct mcp_set_gpio, gpio[offset].value);
  
- 	switch (cmd) {
--	case SPEC_STORE_BYPASS_CMD_AUTO:
- 	case SPEC_STORE_BYPASS_CMD_SECCOMP:
- 		/*
- 		 * Choose prctl+seccomp as the default mode if seccomp is
-@@ -1146,6 +1145,7 @@ static enum ssb_mitigation __init __ssb_select_mitigation(void)
- 	case SPEC_STORE_BYPASS_CMD_ON:
- 		mode = SPEC_STORE_BYPASS_DISABLE;
- 		break;
-+	case SPEC_STORE_BYPASS_CMD_AUTO:
- 	case SPEC_STORE_BYPASS_CMD_PRCTL:
- 		mode = SPEC_STORE_BYPASS_PRCTL;
- 		break;
+ 	mcp->txbuf[mcp->gp_idx - 1] = 1;
+ 	mcp->txbuf[mcp->gp_idx] = !!value;
+@@ -575,7 +605,7 @@ static int mcp_gpio_dir_set(struct mcp2221 *mcp,
+ 	memset(mcp->txbuf, 0, 18);
+ 	mcp->txbuf[0] = MCP2221_GPIO_SET;
+ 
+-	mcp->gp_idx = (offset + 1) * 5;
++	mcp->gp_idx = offsetof(struct mcp_set_gpio, gpio[offset].direction);
+ 
+ 	mcp->txbuf[mcp->gp_idx - 1] = 1;
+ 	mcp->txbuf[mcp->gp_idx] = val;
+@@ -590,7 +620,7 @@ static int mcp_gpio_direction_input(struct gpio_chip *gc,
+ 	struct mcp2221 *mcp = gpiochip_get_data(gc);
+ 
+ 	mutex_lock(&mcp->lock);
+-	ret = mcp_gpio_dir_set(mcp, offset, 0);
++	ret = mcp_gpio_dir_set(mcp, offset, MCP2221_DIR_IN);
+ 	mutex_unlock(&mcp->lock);
+ 
+ 	return ret;
+@@ -603,7 +633,7 @@ static int mcp_gpio_direction_output(struct gpio_chip *gc,
+ 	struct mcp2221 *mcp = gpiochip_get_data(gc);
+ 
+ 	mutex_lock(&mcp->lock);
+-	ret = mcp_gpio_dir_set(mcp, offset, 1);
++	ret = mcp_gpio_dir_set(mcp, offset, MCP2221_DIR_OUT);
+ 	mutex_unlock(&mcp->lock);
+ 
+ 	/* Can't configure as output, bailout early */
+@@ -623,7 +653,7 @@ static int mcp_gpio_get_direction(struct gpio_chip *gc,
+ 
+ 	mcp->txbuf[0] = MCP2221_GPIO_GET;
+ 
+-	mcp->gp_idx = (offset + 1) * 2;
++	mcp->gp_idx = offsetof(struct mcp_get_gpio, gpio[offset].direction);
+ 
+ 	mutex_lock(&mcp->lock);
+ 	ret = mcp_send_data_req_status(mcp, mcp->txbuf, 1);
+@@ -632,7 +662,7 @@ static int mcp_gpio_get_direction(struct gpio_chip *gc,
+ 	if (ret)
+ 		return ret;
+ 
+-	if (mcp->gpio_dir)
++	if (mcp->gpio_dir == MCP2221_DIR_IN)
+ 		return GPIO_LINE_DIRECTION_IN;
+ 
+ 	return GPIO_LINE_DIRECTION_OUT;
+@@ -758,7 +788,7 @@ static int mcp2221_raw_event(struct hid_device *hdev,
+ 				mcp->status = -ENOENT;
+ 			} else {
+ 				mcp->status = !!data[mcp->gp_idx];
+-				mcp->gpio_dir = !!data[mcp->gp_idx + 1];
++				mcp->gpio_dir = data[mcp->gp_idx + 1];
+ 			}
+ 			break;
+ 		default:
+@@ -860,7 +890,7 @@ static int mcp2221_probe(struct hid_device *hdev,
+ 	mcp->gc->get_direction = mcp_gpio_get_direction;
+ 	mcp->gc->set = mcp_gpio_set;
+ 	mcp->gc->get = mcp_gpio_get;
+-	mcp->gc->ngpio = 4;
++	mcp->gc->ngpio = MCP_NGPIO;
+ 	mcp->gc->base = -1;
+ 	mcp->gc->can_sleep = 1;
+ 	mcp->gc->parent = &hdev->dev;
+-- 
+2.25.1
 
