@@ -2,93 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87FD42A67DE
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 16:40:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 951842A67E5
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 16:41:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730589AbgKDPkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 10:40:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56840 "EHLO
+        id S1730744AbgKDPlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 10:41:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729992AbgKDPkJ (ORCPT
+        with ESMTP id S1728380AbgKDPlG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 10:40:09 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E208CC0613D3
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 07:40:08 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id h22so2762553wmb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 07:40:08 -0800 (PST)
+        Wed, 4 Nov 2020 10:41:06 -0500
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 023CDC0613D3;
+        Wed,  4 Nov 2020 07:41:06 -0800 (PST)
+Received: by mail-ed1-x543.google.com with SMTP id v4so22933218edi.0;
+        Wed, 04 Nov 2020 07:41:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=wep9eHIlHmt9345GeonA3mlm93DwH2S4gpNglLx7w/I=;
-        b=MxLEJVVqf/UWjuxQqDE7m/MC1xrKr/vmmDW7S2f4+oE4dqHNfSTeiVwhu2LvHCyqSg
-         cIQovCeOxuYkjFDnU38UiZbpq9mLg1FaMCyClaL8xAbQLIldhy/TdU5/AMdcSuTreYht
-         zWvrGGotrXjF5i3vNEFNYHemFmLncCiBAn37cqTRUXfShys9k2NWUcBEIFAVSVQcq3nd
-         0CPfUxC1O5Osk+06teqg8aE6/Os33n+3XG6+IbCDL67+vXLfZ+pNWI2RofrTWLTUr5Sa
-         9G5CIdHdPHyaLCIBBhJdehSN5PZFyBxiBsYjCc2eWaQUYxm+s1/wyXa398lONNNz7dYt
-         QtwA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SCsF/FbSj6nbVShumTDk6izo4ej98gBDvIxnGN9oxUw=;
+        b=U/LuFwxZFBEzOLjq6xLBLgKo3e2n5Bw+X9W4UQrsEqm1UTW8KMniJThIR45B2O7dwz
+         +awA0MNGZEDa7Al+nLWZeA6OznVqZ+Ly/Jw17SDSP6t0Ae/LtpICpzDfpJF8hp/Sds1z
+         IyWFMCtpAgZP8Jw9mteObF3PJP9NM2Tx6FAQ8O9avA3OpVjOeAw/uqmdJkZVPdXm6ENK
+         MIgVN4/RFC3H3UbJ5vkBJ7iYMxgtvMnCfoTVTezCsoBAOoHAnpWRFPTIiLeGk2P5f2pd
+         VYW9R6qW6T3/owyzF2z1DfAg2jVJr0VU7ezLEURGgEJpBy/ePvX9YpcsuytPoPfhSq9V
+         GEnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=wep9eHIlHmt9345GeonA3mlm93DwH2S4gpNglLx7w/I=;
-        b=uCxCqWXi3qMHl17SiUlJFipvODBsk29ZZ9i6UuvbMzYjfcXyTP2cdRvLhK69CKFepW
-         r2Wl9yBOjiboACqvgRFmHNFrlz72xv4JYoX2pk7pwHAzc+DIHeLg6CEXJMqjd2KDAhTO
-         Q+ihnOKe7bleUq21kUM6+LLcoI9gm0oTk+xhIv8opUSZCrP4XcLEiuQ0+FU24jO6UsPZ
-         1kH1cNmPv00evOw9lylWghyo+0c7wqqOZVG9F0Az5J2Xoj5BPCTKG9j0da8c3IuhyqYv
-         3IdoxcrT00jVdIzzOcgdbPCFYPt3Ix2d89I6BopzrLYdPyIjvenfT4vBWRoRp2HzSRRR
-         Za2g==
-X-Gm-Message-State: AOAM531auOYtZx6cJ+6s/ZvUdjw//E5qTkNKNDbhCncReIN9bK6NLWEs
-        DECDuKAKU8Wb7M7G8l8u1XN/6EF82TbY4iyR
-X-Google-Smtp-Source: ABdhPJxlOHljiEnt3GDydsV/OEjm43XGIwK18G3+FSOhlvM6g73pTtGZhTVIW3rJaRcdqYOaq1+KNQ==
-X-Received: by 2002:a7b:c157:: with SMTP id z23mr5214407wmi.70.1604504407665;
-        Wed, 04 Nov 2020 07:40:07 -0800 (PST)
-Received: from dell ([91.110.221.242])
-        by smtp.gmail.com with ESMTPSA id j71sm2807895wmj.10.2020.11.04.07.40.06
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SCsF/FbSj6nbVShumTDk6izo4ej98gBDvIxnGN9oxUw=;
+        b=hgg+9nHVcFtfQrwxOtvGMastTJTmjYB/pnl74CdMKBanB9YslxfyVnhAj+s6E7CHjV
+         vBbONvL1R2VHRN4n8UEqsb3gz8irEjcxq5APg579kleE3YGRla/kUaYL9YnIonxjGq+M
+         PAUlLTP6Qdnto9mEYOU1Ukgz6mhSGwLIWu/1rv6nw5et9O+gQ7WMKufWVjS3RoFcBN6L
+         WKdY6PSFNcycFqLsGuEJp7nicKpUwkuptAx4Z1RAuGLP8rPe0F/b9EyMfmhEjZKCi3V1
+         EbRP+Z4GVu6vFqD9Uh66f+2goFCatKVcrNqLW88vEBPS8+kP7RTQSjTBLHyl+QhfdSWy
+         YxBw==
+X-Gm-Message-State: AOAM532MH8gMeGmI2HSFq4Vqkrpph/MpjhoNLjl6bp0+NDYN95cuNKkY
+        woQsn/LfmdSrBig2XY0TVAuJl5f58cBCfg==
+X-Google-Smtp-Source: ABdhPJwSF+RY7HvwiVlmSYFlbNkfYZrvqSShAQSNDXYNvegOAC4bBugbPym4oP63itwWgiJ2gvZaeg==
+X-Received: by 2002:aa7:ce8c:: with SMTP id y12mr28633429edv.185.1604504463857;
+        Wed, 04 Nov 2020 07:41:03 -0800 (PST)
+Received: from localhost.localdomain (host-87-7-71-164.retail.telecomitalia.it. [87.7.71.164])
+        by smtp.gmail.com with ESMTPSA id y14sm1218548edo.69.2020.11.04.07.41.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 07:40:06 -0800 (PST)
-Date:   Wed, 4 Nov 2020 15:40:05 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc:     linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
-Subject: Re: [PATCH RESEND 1/2] mfd: madera: Add reset as part of resume
-Message-ID: <20201104154005.GO4488@dell>
-References: <20201027094132.16472-1-ckeepax@opensource.cirrus.com>
+        Wed, 04 Nov 2020 07:41:02 -0800 (PST)
+From:   "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     "K . Y . Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, linux-hyperv@vger.kernel.org,
+        Andres Beltran <lkmlabelt@gmail.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Saruhan Karademir <skarade@microsoft.com>,
+        Juan Vazquez <juvazq@microsoft.com>,
+        "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-scsi@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH v8 0/3] Drivers: hv: vmbus: vmbus_requestor data structure for VMBus hardening
+Date:   Wed,  4 Nov 2020 16:40:24 +0100
+Message-Id: <20201104154027.319432-1-parri.andrea@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201027094132.16472-1-ckeepax@opensource.cirrus.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 27 Oct 2020, Charles Keepax wrote:
+Hi all,
 
-> The DCVDD supply does not always power down when the CODEC enters
-> suspend, for example shared regulators or always-on regulators. In
-> these cases if a register is written back to the default value whilst
-> the CODEC is in suspend that register will retain the previous value.
-> As DCVDD never powered down, the register retains its old value and
-> as the cache sync only synchronises registers that differ from the
-> default the new value is never written out.
-> 
-> Ensure the registers are in the expected state after suspend by always
-> resetting the CODEC on resume. This also has the benefit of being
-> recommended by the datasheet for DCVDD supplies that take longer than
-> 2mS to rise.
-> 
-> Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-> ---
->  drivers/mfd/madera-core.c | 16 +++++++++++++++-
->  1 file changed, 15 insertions(+), 1 deletion(-)
+This is a resubmission of:
 
-Applied, thanks.
+  https://lkml.kernel.org/r/20200907161920.71460-1-parri.andrea@gmail.com
+
+based on 5.10-rc2.
+
+  Andrea
+
+Cc: James E.J. Bottomley <jejb@linux.ibm.com>
+Cc: Martin K. Petersen <martin.petersen@oracle.com>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: linux-scsi@vger.kernel.org
+Cc: netdev@vger.kernel.org
+
+Andres Beltran (3):
+  Drivers: hv: vmbus: Add vmbus_requestor data structure for VMBus
+    hardening
+  scsi: storvsc: Use vmbus_requestor to generate transaction IDs for
+    VMBus hardening
+  hv_netvsc: Use vmbus_requestor to generate transaction IDs for VMBus
+    hardening
+
+ drivers/hv/channel.c              | 174 ++++++++++++++++++++++++++++--
+ drivers/hv/hyperv_vmbus.h         |   3 +-
+ drivers/hv/ring_buffer.c          |  28 ++++-
+ drivers/net/hyperv/hyperv_net.h   |  13 +++
+ drivers/net/hyperv/netvsc.c       |  22 ++--
+ drivers/net/hyperv/rndis_filter.c |   1 +
+ drivers/scsi/storvsc_drv.c        |  26 ++++-
+ include/linux/hyperv.h            |  23 ++++
+ 8 files changed, 272 insertions(+), 18 deletions(-)
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.25.1
+
