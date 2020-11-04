@@ -2,135 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A29BD2A6907
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 17:05:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09B832A68FE
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 17:04:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729600AbgKDQFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 11:05:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60792 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725889AbgKDQFF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 11:05:05 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82BD3C0613D3;
-        Wed,  4 Nov 2020 08:05:05 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id w65so17656555pfd.3;
-        Wed, 04 Nov 2020 08:05:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=17bQwt1/CHFr+rvttXZHNZmk0KRRHS1qTXGwZaU+GuE=;
-        b=jQLzuRcorFq38M86xnwJ0sx65rplVegCppZ21q5jDIXtZXyvqamY1i/bABFWvr9V45
-         co2ZzLPxrCcOyrY+ylw69kogOmnVwEezVJ9P8EfUZHZE4uZVKggM05Wa4JAWxV7satZJ
-         ho31I4Zb727Ux61j29PnF0kigy8w7AHRPFVSKsq3cbVdk2vqYpIpE9HgRb/iL5MSyBsy
-         upkx/pJdmftNNUqlsrZLLwLQYYNXrPRooTs02xfYzAbAW5QTv8U1hpj7W+44NxIj67sq
-         Tf+1CRfhY/Wj0nW6w0G4tkPHLjId+GAfY34uE2sXu39Ngd/XRqwqgTy4uqsFGMYvgcfp
-         PtMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=17bQwt1/CHFr+rvttXZHNZmk0KRRHS1qTXGwZaU+GuE=;
-        b=kqqtCLaPi/AELlI0bDIKeNwiBzBsatlMRTUmvYwUpa09dUdTExLvkUv9+STQLBwxgA
-         cz3iquwyoJhO1cJji08cRYIS1W+/wbBGQQZmT7xcCMHQweef8M/c/OXrk9swYqv3xgJ8
-         8a8iZQzCZF0J6FYcnkKpox4FvG28U+vfC/NMOONN86qbRkSmMQzxhk4xt88YXLIKgyYY
-         MkJjeXVKdcShqh5SArGdVHs/aCUBMfedTw5LA6O0KkoqqH5KHb9hWy9vb+qwz8wOTeM5
-         Sdb79TEgtlRkmHIbJJmk3lrwvd1cj23tOdjkQO9oQ6fWQnZpH2I6Gld0pco8ZgwlfZ6q
-         uwNw==
-X-Gm-Message-State: AOAM530UMYtOTsfNZnPWnpe52+vbnpS4GWx5CgK7KZjpYAZYIx2RMxXK
-        7waZ7zP5RluqoM7mESez1oxp7wLjw9QhYQ==
-X-Google-Smtp-Source: ABdhPJwke5QuZfBeeGsOFxKGASksaNFwpOIRsjtVfECYs0lUdMk5e9Ad+rWyBotQWI5sM8I77xOYZg==
-X-Received: by 2002:a17:90b:391:: with SMTP id ga17mr5151361pjb.54.1604505905154;
-        Wed, 04 Nov 2020 08:05:05 -0800 (PST)
-Received: from localhost ([2001:e42:102:1532:160:16:113:140])
-        by smtp.gmail.com with ESMTPSA id e9sm2944030pgi.5.2020.11.04.08.05.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 08:05:04 -0800 (PST)
-From:   Coiby Xu <coiby.xu@gmail.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        1887190@bugs.launchpad.net,
-        linux-gpio@vger.kernel.org (open list:PIN CONTROL SUBSYSTEM),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 4/4] pinctrl: amd: remove debounce filter setting in irq type setting
-Date:   Thu,  5 Nov 2020 00:03:44 +0800
-Message-Id: <20201104160344.4929-5-coiby.xu@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201104160344.4929-1-coiby.xu@gmail.com>
-References: <20201104160344.4929-1-coiby.xu@gmail.com>
+        id S1728683AbgKDQEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 11:04:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51108 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727923AbgKDQEH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 11:04:07 -0500
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3B66420825;
+        Wed,  4 Nov 2020 16:04:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604505846;
+        bh=klujtJzoAVLGeYfBOBO4813dr7WdQLbjskQZ2NSHj3A=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=QaFTc11yiA3U8bPPwrgKRnbwnuScfUtM5Z24GLXsz/cZi1Gm1ENLCiwBV6d0vvKPw
+         RFkQHU99fsZKJ/SyqdV/LhBgxf3UKRSvLT66HWgxRq0FElpkY1mw/ICglV9FoxHK2Z
+         QLlTQcsgJdN7e59d/mttzoAMb2xe18OzkHlBvnWI=
+Received: by mail-lf1-f53.google.com with SMTP id i6so27848899lfd.1;
+        Wed, 04 Nov 2020 08:04:06 -0800 (PST)
+X-Gm-Message-State: AOAM5310XOjxNi9EzCIQqJDeFPnYxDSGzhMVEmw1KgWL/7HprFootb3a
+        z1CSnqYKilDPkruR70q7EzapksQut8GxfXBFj+8=
+X-Google-Smtp-Source: ABdhPJx0L1STVkLnDpZqex5+MrAPhy2B7AEicH4fxVDlqcsdu3VIoCKFnepTQq3TSjtMNeySUtaDJ17dVHRT6sRVjhY=
+X-Received: by 2002:a19:4281:: with SMTP id p123mr9303368lfa.398.1604505844386;
+ Wed, 04 Nov 2020 08:04:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201104094950.2096-1-m.reichl@fivetechno.de> <4984701.vSXMUKeAfh@diego>
+ <CAD=FV=V2Vv0bv-exiZ6VrOtfMM5TVpjATO04qaXeGWDRu+6vyw@mail.gmail.com> <10029979.JCShpOL5JR@diego>
+In-Reply-To: <10029979.JCShpOL5JR@diego>
+From:   Chen-Yu Tsai <wens@kernel.org>
+Date:   Thu, 5 Nov 2020 00:03:54 +0800
+X-Gmail-Original-Message-ID: <CAGb2v65_uxjRWygd=ACr0KTCF7yqqk5crvkeKkNp28+qk_cByA@mail.gmail.com>
+Message-ID: <CAGb2v65_uxjRWygd=ACr0KTCF7yqqk5crvkeKkNp28+qk_cByA@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: rockchip: Assign a fixed index to mmc devices
+ on rk3399-roc-pc boards.
+To:     =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>
+Cc:     Doug Anderson <dianders@chromium.org>,
+        Rob Herring <robh@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Markus Reichl <m.reichl@fivetechno.de>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        Mark Brown <broonie@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Debounce filter setting should be independent from irq type setting
-because according to the ACPI specs, there are separate arguments for
-specifying debounce timeout and irq type in GpioIo and GpioInt.
+On Wed, Nov 4, 2020 at 11:55 PM Heiko St=C3=BCbner <heiko@sntech.de> wrote:
+>
+> Am Mittwoch, 4. November 2020, 16:42:01 CET schrieb Doug Anderson:
+> > Hi,
+> >
+> > On Wed, Nov 4, 2020 at 2:51 AM Heiko St=C3=BCbner <heiko@sntech.de> wro=
+te:
+> > >
+> > > Hi Markus,
+> > >
+> > > Am Mittwoch, 4. November 2020, 10:49:45 CET schrieb Markus Reichl:
+> > > > Recently introduced async probe on mmc devices can shuffle block ID=
+s.
+> > > > Pin them to fixed values to ease booting in evironments where UUIDs
+> > > > are not practical. Use newly introduced aliases for mmcblk devices =
+from [1].
+> > > >
+> > > > [1]
+> > > > https://patchwork.kernel.org/patch/11747669/
+> > > >
+> > > > Signed-off-by: Markus Reichl <m.reichl@fivetechno.de>
+> > > > ---
+> > > >  arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi | 5 +++++
+> > > >  1 file changed, 5 insertions(+)
+> > > >
+> > > > diff --git a/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi b/arch=
+/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi
+> > > > index e7a459fa4322..bc9482b59428 100644
+> > > > --- a/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi
+> > > > +++ b/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi
+> > > > @@ -13,6 +13,11 @@ / {
+> > > >       model =3D "Firefly ROC-RK3399-PC Board";
+> > > >       compatible =3D "firefly,roc-rk3399-pc", "rockchip,rk3399";
+> > > >
+> > > > +     aliases {
+> > > > +             mmc0 =3D &sdmmc;
+> > > > +             mmc1 =3D &sdhci;
+> > > > +     };
+> > > > +
+> > >
+> > > Any reason for this odering?
+> > >
+> > > I.e. some previous incarnations had it ordered as (emmc, mmc, sdio).
+> > > This is also true for the ChromeOS out-of-tree usage of those, the
+> > > rk3399 dts in the chromeos-4.4 tree also orders this as sdhci, sdmmc,=
+ sdio.
+> > >
+> > > And I guess a further question would be when we're doing arbitary ord=
+erings
+> > > anyway, why is this not in rk3399.dtsi ;-) ?
+> >
+> > Though I personally like the idea of eMMC, which is typically
+> > built-in, as being the "0" number, I'm personally happy with any
+> > numbering scheme that's consistent.  Ordering them by base address is
+> > OK w/ me and seems less controversial.  That seems like it could go in
+> > rk3399.dtsi and then if a particular board wanted a different order
+> > they could override it in their board file.
+>
+> Yep that sounds sensible and ordering by base address at least is one
+> "simple" type of order without too much explanation needed.
+>
+> So I guess we'd get a sdio + sdmmc + sdhci ordering
+>
+>
+> @Markus: if nobody else complains, can you do a "simple" rk3399.dtsi
+> change with that please?
 
-This will fix broken touchpads for Lenovo Legion-5 AMD gaming laptops
-including 15ARH05 (R7000) and R7000P whose BIOS set the debounce timeout
-to 124.8ms which led to kernel receiving only ~7 HID reports per second.
+Please also fix the LED triggers. :)
 
-Cc: Hans de Goede <hdegoede@redhat.com>
-Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: 1887190@bugs.launchpad.net
-BugLink: https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1887190
-Message-Id: <CAHp75VcwiGREBUJ0A06EEw-SyabqYsp+dqs2DpSrhaY-2GVdAA@mail.gmail.com>
-Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
----
- drivers/pinctrl/pinctrl-amd.c | 7 -------
- 1 file changed, 7 deletions(-)
+> > The downside of putting
+> > in rk3399 is that boards that don't have all SD/MMC interfaces enabled
+> > would definitely get a new number compared to old kernels, but
+> > hopefully this is the last time?
+>
+> With that new asynchronous mmc-probe-thingy in 5.10 that "caused" this,
+> it sounds like everything gets a new number anyway ;-) .
 
-diff --git a/drivers/pinctrl/pinctrl-amd.c b/drivers/pinctrl/pinctrl-amd.c
-index 524d55546b61..5a1d518b563e 100644
---- a/drivers/pinctrl/pinctrl-amd.c
-+++ b/drivers/pinctrl/pinctrl-amd.c
-@@ -468,7 +468,6 @@ static int amd_gpio_irq_set_type(struct irq_data *d, unsigned int type)
- 		pin_reg &= ~BIT(LEVEL_TRIG_OFF);
- 		pin_reg &= ~(ACTIVE_LEVEL_MASK << ACTIVE_LEVEL_OFF);
- 		pin_reg |= ACTIVE_HIGH << ACTIVE_LEVEL_OFF;
--		pin_reg |= DB_TYPE_REMOVE_GLITCH << DB_CNTRL_OFF;
- 		irq_set_handler_locked(d, handle_edge_irq);
- 		break;
-
-@@ -476,7 +475,6 @@ static int amd_gpio_irq_set_type(struct irq_data *d, unsigned int type)
- 		pin_reg &= ~BIT(LEVEL_TRIG_OFF);
- 		pin_reg &= ~(ACTIVE_LEVEL_MASK << ACTIVE_LEVEL_OFF);
- 		pin_reg |= ACTIVE_LOW << ACTIVE_LEVEL_OFF;
--		pin_reg |= DB_TYPE_REMOVE_GLITCH << DB_CNTRL_OFF;
- 		irq_set_handler_locked(d, handle_edge_irq);
- 		break;
-
-@@ -484,7 +482,6 @@ static int amd_gpio_irq_set_type(struct irq_data *d, unsigned int type)
- 		pin_reg &= ~BIT(LEVEL_TRIG_OFF);
- 		pin_reg &= ~(ACTIVE_LEVEL_MASK << ACTIVE_LEVEL_OFF);
- 		pin_reg |= BOTH_EADGE << ACTIVE_LEVEL_OFF;
--		pin_reg |= DB_TYPE_REMOVE_GLITCH << DB_CNTRL_OFF;
- 		irq_set_handler_locked(d, handle_edge_irq);
- 		break;
-
-@@ -492,8 +489,6 @@ static int amd_gpio_irq_set_type(struct irq_data *d, unsigned int type)
- 		pin_reg |= LEVEL_TRIGGER << LEVEL_TRIG_OFF;
- 		pin_reg &= ~(ACTIVE_LEVEL_MASK << ACTIVE_LEVEL_OFF);
- 		pin_reg |= ACTIVE_HIGH << ACTIVE_LEVEL_OFF;
--		pin_reg &= ~(DB_CNTRl_MASK << DB_CNTRL_OFF);
--		pin_reg |= DB_TYPE_PRESERVE_LOW_GLITCH << DB_CNTRL_OFF;
- 		irq_set_handler_locked(d, handle_level_irq);
- 		break;
-
-@@ -501,8 +496,6 @@ static int amd_gpio_irq_set_type(struct irq_data *d, unsigned int type)
- 		pin_reg |= LEVEL_TRIGGER << LEVEL_TRIG_OFF;
- 		pin_reg &= ~(ACTIVE_LEVEL_MASK << ACTIVE_LEVEL_OFF);
- 		pin_reg |= ACTIVE_LOW << ACTIVE_LEVEL_OFF;
--		pin_reg &= ~(DB_CNTRl_MASK << DB_CNTRL_OFF);
--		pin_reg |= DB_TYPE_PRESERVE_HIGH_GLITCH << DB_CNTRL_OFF;
- 		irq_set_handler_locked(d, handle_level_irq);
- 		break;
-
---
-2.28.0
-
+Yup.
