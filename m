@@ -2,163 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96D322A6C3F
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 18:55:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7AF82A6C3B
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 18:53:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732137AbgKDRyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 12:54:53 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:23054 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726152AbgKDRyx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 12:54:53 -0500
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A4HXnx0018078;
-        Wed, 4 Nov 2020 12:54:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=mime-version : date :
- from : to : cc : subject : in-reply-to : references : message-id :
- content-type : content-transfer-encoding; s=pp1;
- bh=uoGKHjVI9qCmgMT7Z13+wCWlgoPk1FdTmCEv9WQfshk=;
- b=aeEWS0hb1HQX8G0wD6qXlogTejASPSaHGEYeXKnii7xoNkWjNlXDIXRiqCvxxiS0mQ3F
- lwoh/SjoFBfEXjGySionVF5nw7I0zJ5JLnFe1TsMbb44wWY8GQBc5Q1fFAlP630tya2X
- S2vhuMKZwSOelDOU4e8OdJ7iYZiZ4arCegcl2uLy9G6Sr1SFVlEzYIiRHmSWWnfMUWZ5
- TO+WuxZfSx/yFJKLiJ9TcfAvxWsmmnCB5CPEvuisU/gCpwBhKNtqMhg/sqzCWIvpbejP
- ND1HO3uU+PY0D/DYeehu4sF3Ab5w7/HWuJJexawo8rf2wb7vefBYXx2rDCcl/jyCqF4w lA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 34kxep5vcv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 04 Nov 2020 12:54:15 -0500
-Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0A4HXxCZ019183;
-        Wed, 4 Nov 2020 12:54:15 -0500
-Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 34kxep5vcm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 04 Nov 2020 12:54:15 -0500
-Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
-        by ppma04wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0A4HppCV001558;
-        Wed, 4 Nov 2020 17:54:14 GMT
-Received: from b01cxnp23034.gho.pok.ibm.com (b01cxnp23034.gho.pok.ibm.com [9.57.198.29])
-        by ppma04wdc.us.ibm.com with ESMTP id 34h0ej06xw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 04 Nov 2020 17:54:14 +0000
-Received: from b01ledav002.gho.pok.ibm.com (b01ledav002.gho.pok.ibm.com [9.57.199.107])
-        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0A4HsEkb4260454
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 4 Nov 2020 17:54:14 GMT
-Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 35A59124054;
-        Wed,  4 Nov 2020 17:54:14 +0000 (GMT)
-Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BF419124052;
-        Wed,  4 Nov 2020 17:54:12 +0000 (GMT)
-Received: from ltc.linux.ibm.com (unknown [9.16.170.189])
-        by b01ledav002.gho.pok.ibm.com (Postfix) with ESMTP;
-        Wed,  4 Nov 2020 17:54:12 +0000 (GMT)
+        id S1731132AbgKDRxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 12:53:01 -0500
+Received: from foss.arm.com ([217.140.110.172]:41210 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726152AbgKDRxB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 12:53:01 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 16965139F;
+        Wed,  4 Nov 2020 09:53:00 -0800 (PST)
+Received: from [192.168.0.11] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 01BAC3F718;
+        Wed,  4 Nov 2020 09:52:57 -0800 (PST)
+Subject: Re: [PATCH v3 2/3] opp/of: Allow empty opp-table with opp-shared
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        sudeep.holla@arm.com, rjw@rjwysocki.net, vireshk@kernel.org,
+        robh+dt@kernel.org, sboyd@kernel.org, nm@ti.com,
+        daniel.lezcano@linaro.org, morten.rasmussen@arm.com,
+        chris.redpath@arm.com
+References: <20201102120115.29993-1-nicola.mazzucato@arm.com>
+ <20201102120115.29993-3-nicola.mazzucato@arm.com>
+ <20201103050141.kiuyotzt4brisch7@vireshk-i7>
+From:   Nicola Mazzucato <nicola.mazzucato@arm.com>
+Message-ID: <9f442724-df13-d582-717d-535cc9c9c9f1@arm.com>
+Date:   Wed, 4 Nov 2020 17:54:31 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Date:   Wed, 04 Nov 2020 09:54:12 -0800
-From:   drt <drt@linux.vnet.ibm.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Lee Jones <lee.jones@linaro.org>, davem@davemloft.net,
-        kuba@kernel.org, Thomas Falcon <tlfalcon@linux.vnet.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Santiago Leon <santi_leon@yahoo.com>,
-        John Allen <jallen@linux.vnet.ibm.com>, netdev@vger.kernel.org,
-        Lijun Pan <ljp@linux.ibm.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Dany Madden <drt@linux.ibm.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Sukadev Bhattiprolu <sukadev@linux.ibm.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 09/12] net: ethernet: ibm: ibmvnic: Fix some kernel-doc
- misdemeanours
-In-Reply-To: <20201104133815.GC933237@lunn.ch>
-References: <20201104090610.1446616-1-lee.jones@linaro.org>
- <20201104090610.1446616-10-lee.jones@linaro.org>
- <20201104133815.GC933237@lunn.ch>
-Message-ID: <85bc60fb363b95bc87627607d20b3616@linux.vnet.ibm.com>
-X-Sender: drt@linux.vnet.ibm.com
-User-Agent: Roundcube Webmail/1.0.1
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-04_11:2020-11-04,2020-11-04 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxlogscore=999
- impostorscore=0 malwarescore=0 suspectscore=0 adultscore=0 clxscore=1011
- phishscore=0 priorityscore=1501 lowpriorityscore=0 bulkscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011040126
+In-Reply-To: <20201103050141.kiuyotzt4brisch7@vireshk-i7>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-04 05:38, Andrew Lunn wrote:
-> On Wed, Nov 04, 2020 at 09:06:07AM +0000, Lee Jones wrote:
->> Fixes the following W=1 kernel build warning(s):
->> 
->>  from drivers/net/ethernet/ibm/ibmvnic.c:35:
->>  inlined from ‘handle_vpd_rsp’ at 
->> drivers/net/ethernet/ibm/ibmvnic.c:4124:3:
->>  drivers/net/ethernet/ibm/ibmvnic.c:1362: warning: Function parameter 
->> or member 'hdr_field' not described in 'build_hdr_data'
->>  drivers/net/ethernet/ibm/ibmvnic.c:1362: warning: Function parameter 
->> or member 'skb' not described in 'build_hdr_data'
->>  drivers/net/ethernet/ibm/ibmvnic.c:1362: warning: Function parameter 
->> or member 'hdr_len' not described in 'build_hdr_data'
->>  drivers/net/ethernet/ibm/ibmvnic.c:1362: warning: Function parameter 
->> or member 'hdr_data' not described in 'build_hdr_data'
->>  drivers/net/ethernet/ibm/ibmvnic.c:1423: warning: Function parameter 
->> or member 'hdr_field' not described in 'create_hdr_descs'
->>  drivers/net/ethernet/ibm/ibmvnic.c:1423: warning: Function parameter 
->> or member 'hdr_data' not described in 'create_hdr_descs'
->>  drivers/net/ethernet/ibm/ibmvnic.c:1423: warning: Function parameter 
->> or member 'len' not described in 'create_hdr_descs'
->>  drivers/net/ethernet/ibm/ibmvnic.c:1423: warning: Function parameter 
->> or member 'hdr_len' not described in 'create_hdr_descs'
->>  drivers/net/ethernet/ibm/ibmvnic.c:1423: warning: Function parameter 
->> or member 'scrq_arr' not described in 'create_hdr_descs'
->>  drivers/net/ethernet/ibm/ibmvnic.c:1474: warning: Function parameter 
->> or member 'txbuff' not described in 'build_hdr_descs_arr'
->>  drivers/net/ethernet/ibm/ibmvnic.c:1474: warning: Function parameter 
->> or member 'num_entries' not described in 'build_hdr_descs_arr'
->>  drivers/net/ethernet/ibm/ibmvnic.c:1474: warning: Function parameter 
->> or member 'hdr_field' not described in 'build_hdr_descs_arr'
->>  drivers/net/ethernet/ibm/ibmvnic.c:1832: warning: Function parameter 
->> or member 'adapter' not described in 'do_change_param_reset'
->>  drivers/net/ethernet/ibm/ibmvnic.c:1832: warning: Function parameter 
->> or member 'rwi' not described in 'do_change_param_reset'
->>  drivers/net/ethernet/ibm/ibmvnic.c:1832: warning: Function parameter 
->> or member 'reset_state' not described in 'do_change_param_reset'
->>  drivers/net/ethernet/ibm/ibmvnic.c:1911: warning: Function parameter 
->> or member 'adapter' not described in 'do_reset'
->>  drivers/net/ethernet/ibm/ibmvnic.c:1911: warning: Function parameter 
->> or member 'rwi' not described in 'do_reset'
->>  drivers/net/ethernet/ibm/ibmvnic.c:1911: warning: Function parameter 
->> or member 'reset_state' not described in 'do_reset'
->> 
->> Cc: Dany Madden <drt@linux.ibm.com>
->> Cc: Lijun Pan <ljp@linux.ibm.com>
->> Cc: Sukadev Bhattiprolu <sukadev@linux.ibm.com>
->> Cc: Michael Ellerman <mpe@ellerman.id.au>
->> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
->> Cc: Paul Mackerras <paulus@samba.org>
->> Cc: "David S. Miller" <davem@davemloft.net>
->> Cc: Jakub Kicinski <kuba@kernel.org>
->> Cc: Santiago Leon <santi_leon@yahoo.com>
->> Cc: Thomas Falcon <tlfalcon@linux.vnet.ibm.com>
->> Cc: John Allen <jallen@linux.vnet.ibm.com>
->> Cc: netdev@vger.kernel.org
->> Cc: linuxppc-dev@lists.ozlabs.org
->> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> 
-> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Hi Viresh, thanks for looking into this.
 
-Reviewed-by: Dany Madden <drt@linux.ibm.com>
-
-Thanks, Lee.
-Dany
+On 11/3/20 5:01 AM, Viresh Kumar wrote:
+> On 02-11-20, 12:01, Nicola Mazzucato wrote:
+>> The opp binding now allows to have an empty opp table and shared-opp to
+>> merely describe a hw connection among devices (f/v lines).
+>>
+>> When initialising an opp table, allow such case by:
+>> - treating some errors as warnings
+>> - do not mark empty tables as shared
+>> - don't fail on empty table
+>>
+>> Signed-off-by: Nicola Mazzucato <nicola.mazzucato@arm.com>
+>> ---
+>>  drivers/opp/of.c | 13 +++++++++++--
+>>  1 file changed, 11 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/opp/of.c b/drivers/opp/of.c
+>> index 874b58756220..b0230490bb31 100644
+>> --- a/drivers/opp/of.c
+>> +++ b/drivers/opp/of.c
+>> @@ -157,6 +157,11 @@ static void _opp_table_free_required_tables(struct opp_table *opp_table)
+>>  /*
+>>   * Populate all devices and opp tables which are part of "required-opps" list.
+>>   * Checking only the first OPP node should be enough.
+>> + *
+>> + * Corner case: empty opp table and opp-shared found. In this case we set
+>> + * unconditionally the opp table access to exclusive, as the opp-shared property
+>> + * is used purely to describe hw connections. Such information will be retrieved
+>> + * via dev_pm_opp_of_get_sharing_cpus().
+>>   */
+>>  static void _opp_table_alloc_required_tables(struct opp_table *opp_table,
+>>  					     struct device *dev,
+>> @@ -169,7 +174,9 @@ static void _opp_table_alloc_required_tables(struct opp_table *opp_table,
+>>  	/* Traversing the first OPP node is all we need */
+>>  	np = of_get_next_available_child(opp_np, NULL);
+>>  	if (!np) {
+>> -		dev_err(dev, "Empty OPP table\n");
+>> +		dev_warn(dev, "Empty OPP table\n");
+>> +
+>> +		opp_table->shared_opp = OPP_TABLE_ACCESS_EXCLUSIVE;
 > 
->     Andrew
+> I am not sure I understand the reasoning behind this.
+
+Initially I thought to place a comment right there but I ended up with an
+explanation of this case at the top of this function (the corner-case). It
+probably also needs more details..
+Basically, on this case - empty opp table & opp-shared - we limit the scope of
+opp-shared to *only* tell us about hw description, and not marking the opp
+points as shared, since they are not present in DT. It would be the equivalent
+of describing that devices share clock/voltage lines, but we can't tell anything
+about opp points cause they are not there (in DT).
+OTOH If we don't set shared_opp to OPP_TABLE_ACCESS_EXCLUSIVE for that specific
+case, we won't be able to add opps for the remaining cpus as the opp core
+will find the opps as duplicated. This is a corner case, really.
+
+Please let me know if it's not clear.
+
+Many thanks
+Nicola
+
+> 
+>>  		return;
+>>  	}
+>>  
+>> @@ -377,7 +384,9 @@ int dev_pm_opp_of_find_icc_paths(struct device *dev,
+>>  	struct icc_path **paths;
+>>  
+>>  	ret = _bandwidth_supported(dev, opp_table);
+>> -	if (ret <= 0)
+>> +	if (ret == -EINVAL)
+>> +		return 0; /* Empty OPP table is a valid corner-case, let's not fail */
+>> +	else if (ret <= 0)
+>>  		return ret;
+>>  
+>>  	ret = 0;
+>> -- 
+>> 2.27.0
+> 
