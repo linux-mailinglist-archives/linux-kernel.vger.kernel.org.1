@@ -2,118 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE9EB2A5FCD
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 09:44:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B45DC2A5FCE
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 09:44:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728243AbgKDIoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 03:44:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47696 "EHLO
+        id S1728465AbgKDIob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 03:44:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727812AbgKDIoT (ORCPT
+        with ESMTP id S1728130AbgKDIob (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 03:44:19 -0500
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9A89C061A4D
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 00:44:15 -0800 (PST)
-Received: by mail-oi1-x244.google.com with SMTP id m13so12330220oih.8
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 00:44:15 -0800 (PST)
+        Wed, 4 Nov 2020 03:44:31 -0500
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6384C0613D3;
+        Wed,  4 Nov 2020 00:44:30 -0800 (PST)
+Received: by mail-ed1-x542.google.com with SMTP id a10so4376581edt.12;
+        Wed, 04 Nov 2020 00:44:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ycqoIkcF9lPtiJBVMgjq7zwCX8Gyu6JCtVXT12jKTV8=;
-        b=SO6a9eIH6r+EzFThZ6MTARjwHEtx6LFHOpOvFgwKmnw7LjZXHcgycyhZfUmdSwXoni
-         9VPCbgc6ODqmZSPJVN4eXwn3IqpRr3uXKNjrMKGfBOBHLutZLHhso+mS3OiPqxM7Q6/l
-         K5a5NNqZWoxju2yJSN+OURI61y0XID3dk0Roo=
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=bBctKzvczeux6BWZZgQsrhXX2Z5+FC8qYBjVK3QSzVI=;
+        b=tm5fT6N6paoIDlu61WIrpETJH6CnUWROhYoXMfqrKrrTyNnf1vrMWWzbPVVHwq4v2b
+         +14c0FGDFHAWg5SIs0pn8ZNP8vnORlWtxAWyZIuPs9txb0wd9KHvkqcabIrt0t7imUNw
+         2qPx9o7lli5THvU+sZIo7W3vVo2/BccWvQ/1thzYZ9emhW6oIyQ34T6fDrxKj/eY0er1
+         spTKOQG/trBQTEqIxXvtXn34/r+PGYRoNf4Lp6/xsu2g7uQPGYwWkHWuS7teUKZqKMaB
+         /0QVZBxpYPWh1Vwnun+rY82gfshcZA6fa198KqLshQmfE2iNZAD/Si/2Z+VWBY6Ygyvc
+         Gk6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ycqoIkcF9lPtiJBVMgjq7zwCX8Gyu6JCtVXT12jKTV8=;
-        b=S8bCfPK0wQxdm37ulmQZGO0dGuJAcNZmiUcdEJTKLXw+NpY8QlJ0MlVAyLWghs1Tes
-         rf3OjsMA/IS5cY9hp0QBm2kdGISo8+Qbj/AAlR6koOZSh/PesDnuZkkZ34rG2i3IaAEY
-         qGlb98TpVcv5hny0B43TRg4WyOCpZzZlfe0/oWUHWqkIhZ7T6AAwIUj/BLsYMyh3Z+Cy
-         HfrERmEgoj+5uZd6ds4NdoT/yYDLIwdgkaBgRsk6xTJelclePT575xq27RjmFdyYJB7M
-         oK8aTYIdf5Obe7ntQdnhxpzexJQxHeEY3jshsBN96mIteWkqpC0PxQUaTsrw7iUZqzzw
-         N3kA==
-X-Gm-Message-State: AOAM532RRWUDL6nt5A4psTeK9mDzrntrToob8qFzhTBpkBfaOTHUqQ5I
-        sOgAgqsvRfEfsKNegap7tKpjMRhAQRQXM7C9MJ5Z+A==
-X-Google-Smtp-Source: ABdhPJzFeuCQlV5NJZ+3HUxdvXgtCAFGX/0rEF7qnn1uI6qUI3Z5/MsHqFAcH2CxUPAQE20CBPAAF7SeJ5phPHzYaRc=
-X-Received: by 2002:aca:b141:: with SMTP id a62mr1813813oif.101.1604479455139;
- Wed, 04 Nov 2020 00:44:15 -0800 (PST)
-MIME-Version: 1.0
-References: <20201030100815.2269-12-daniel.vetter@ffwll.ch>
- <20201103212840.GA266427@bjorn-Precision-5520> <CAPcyv4jCGxWG0opLv4VzBRk5iLwu6CRse4DwF-otWkfXoGWe6A@mail.gmail.com>
-In-Reply-To: <CAPcyv4jCGxWG0opLv4VzBRk5iLwu6CRse4DwF-otWkfXoGWe6A@mail.gmail.com>
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Wed, 4 Nov 2020 09:44:04 +0100
-Message-ID: <CAKMK7uF0QjesaNs97N-G8cZkXuAmFgcmTfHvoCP94br_WVcV6Q@mail.gmail.com>
-Subject: Re: [PATCH v5 11/15] PCI: Obey iomem restrictions for procfs mmap
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        KVM list <kvm@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        "Linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Jan Kara <jack@suse.cz>, Bjorn Helgaas <bhelgaas@google.com>,
-        Linux PCI <linux-pci@vger.kernel.org>
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=bBctKzvczeux6BWZZgQsrhXX2Z5+FC8qYBjVK3QSzVI=;
+        b=eZf5TK3/h2A28fMPPLkdzLd8z2BuLD3pMTlfkjp7hlN0tZePUZR9VD/Pc3217IRR01
+         +szk0bq573EVWR2CVNuEfsQC2v/aIyf1CYJFNuzU/S7J+dRBjxmNZVDqx0gNYO1byWqo
+         Iqe6n7pWUGWAOoZYVAXpu2kPOcRmonsAUtkCcX4Xjr/4ES4zkDelLbxC4O2jo8nwPWjM
+         l9Rh/Qp3vMFu68VKEx9dMPcVlt3CNHPToRVwq+w4ktPofrTf5zVZT1ny81cKYwcGYCDm
+         qj97AZK8OY3ozsZrFG8PvMRlwjOOzKoX+P239aRwdJdTtw4pHx/wuUAs27anGcLiRcNb
+         WiiA==
+X-Gm-Message-State: AOAM530jcDo2ZVT6n1iw5MvRbJFdBhGOArmm/OkQAv06GltC9zVyeLEP
+        yCI05ACQx4w7u9ugrgE9VNw=
+X-Google-Smtp-Source: ABdhPJw8oVt0OiCLkME3hNgqWRqT718ku1iiS3h/rVFqEaxUH3yV2PTVbd7OWCyy5SIKwwulTX7/nQ==
+X-Received: by 2002:aa7:d787:: with SMTP id s7mr19586948edq.205.1604479469690;
+        Wed, 04 Nov 2020 00:44:29 -0800 (PST)
+Received: from ubuntu-laptop (ip5f5bee22.dynamic.kabel-deutschland.de. [95.91.238.34])
+        by smtp.googlemail.com with ESMTPSA id j4sm619495ejs.8.2020.11.04.00.44.28
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 04 Nov 2020 00:44:29 -0800 (PST)
+Message-ID: <73d4aff5c11424cf2f18735804a6cffccba07cad.camel@gmail.com>
+Subject: Re: [PATCH V4 2/2] scsi: ufs: Allow an error return value from
+ ->device_reset()
+From:   Bean Huo <huobean@gmail.com>
+To:     Adrian Hunter <adrian.hunter@intel.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        Can Guo <cang@codeaurora.org>,
+        Stanley Chu <stanley.chu@mediatek.com>
+Date:   Wed, 04 Nov 2020 09:44:27 +0100
+In-Reply-To: <20201103141403.2142-3-adrian.hunter@intel.com>
+References: <20201103141403.2142-1-adrian.hunter@intel.com>
+         <20201103141403.2142-3-adrian.hunter@intel.com>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 3, 2020 at 11:09 PM Dan Williams <dan.j.williams@intel.com> wrote:
-> On Tue, Nov 3, 2020 at 1:28 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > On Fri, Oct 30, 2020 at 11:08:11AM +0100, Daniel Vetter wrote:
-> > > There's three ways to access PCI BARs from userspace: /dev/mem, sysfs
-> > > files, and the old proc interface. Two check against
-> > > iomem_is_exclusive, proc never did. And with CONFIG_IO_STRICT_DEVMEM,
-> > > this starts to matter, since we don't want random userspace having
-> > > access to PCI BARs while a driver is loaded and using it.
-> > >
-> > > Fix this by adding the same iomem_is_exclusive() check we already have
-> > > on the sysfs side in pci_mmap_resource().
-> > >
-> > > References: 90a545e98126 ("restrict /dev/mem to idle io memory ranges")
-> > > Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-> >
-> > This is OK with me but it looks like IORESOURCE_EXCLUSIVE is currently
-> > only used in a few places:
-> >
-> >   e1000_probe() calls pci_request_selected_regions_exclusive(),
-> >   ne_pci_probe() calls pci_request_regions_exclusive(),
-> >   vmbus_allocate_mmio() calls request_mem_region_exclusive()
-> >
-> > which raises the question of whether it's worth keeping
-> > IORESOURCE_EXCLUSIVE at all.  I'm totally fine with removing it
-> > completely.
->
-> Now that CONFIG_IO_STRICT_DEVMEM upgrades IORESOURCE_BUSY to
-> IORESOURCE_EXCLUSIVE semantics the latter has lost its meaning so I'd
-> be in favor of removing it as well.
+On Tue, 2020-11-03 at 16:14 +0200, Adrian Hunter wrote:
+> It is simpler for drivers to provide a ->device_reset() callback
+> irrespective of whether the GPIO, or firmware interface necessary to
+> do the
+> reset, is discovered during probe.
+> 
+> Change ->device_reset() to return an error code.  Drivers that
+> provide
+> the callback, but do not do the reset operation should return
+> -EOPNOTSUPP.
+> 
+> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+Reviewed-by: Bean huo <beanhuo@micron.com>
 
-Still has some value since it enforces exclusive access even if the
-config isn't enabled, and iirc e1000 had some fun with userspace tools
-clobbering the firmware and bricking the chip.
 
-Another thing I kinda wondered, since pci maintainer is here: At least
-in drivers/gpu I see very few drivers explicitly requestion regions
-(this might be a historical artifact due to the shadow attach stuff
-before we had real modesetting drivers). And pci core doesn't do that
-either, even when a driver is bound. Is this intentional, or
-should/could we do better? Since drivers work happily without
-reserving regions I don't think "the drivers need to remember to do
-this" will ever really work out well.
--Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
