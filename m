@@ -2,101 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D2C32A636A
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 12:37:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3B4B2A636D
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 12:38:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729536AbgKDLha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 06:37:30 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:59316 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728999AbgKDLh3 (ORCPT
+        id S1729658AbgKDLiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 06:38:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728999AbgKDLiS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 06:37:29 -0500
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0A4Bb078112623;
-        Wed, 4 Nov 2020 05:37:00 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1604489820;
-        bh=AwkvLhaXrghbbWxPBS9gIMMUxlhuwRQE4R6mRTlyB9o=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=QTFiYGerDk7a4WxT3V88okZt7XVcgbDyg0GbDnVdxLdCZqBa6MEsbAT4AiPv6apPV
-         7qJk7FJ0phcnU6QUAh1PmhpDNu8fM0zQmW+IYnNzKO/MeTjHhF4ScHS67mOqtE2MjD
-         4cBFEasPU4S27u9gV//CX5B7yNFmLsiXCYdFwUlA=
-Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0A4Bb02r013556
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 4 Nov 2020 05:37:00 -0600
-Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 4 Nov
- 2020 05:37:00 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 4 Nov 2020 05:37:00 -0600
-Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0A4Baw08092005;
-        Wed, 4 Nov 2020 05:36:58 -0600
-Subject: Re: [PATCH 07/12] net: ethernet: ti: am65-cpts: Document
- am65_cpts_rx_enable()'s 'en' parameter
-To:     Lee Jones <lee.jones@linaro.org>, <davem@davemloft.net>,
-        <kuba@kernel.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Kurt Kanzenbach <kurt@linutronix.de>, <netdev@vger.kernel.org>
-References: <20201104090610.1446616-1-lee.jones@linaro.org>
- <20201104090610.1446616-8-lee.jones@linaro.org>
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-Message-ID: <dfddd6d2-6e71-775e-c121-981a21f97950@ti.com>
-Date:   Wed, 4 Nov 2020 13:37:08 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 4 Nov 2020 06:38:18 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07151C0613D3;
+        Wed,  4 Nov 2020 03:38:18 -0800 (PST)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 60A50563;
+        Wed,  4 Nov 2020 12:38:16 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1604489896;
+        bh=pEQzNBUxGPc25cbcL4wjrjMrKAPMzXaQ8Y5lD+VVScE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=wmzvU9F+suYRMfVRVUGMVU1SdZtT0rvLgGZooQhF3pyQSzdVNhStiM4LkfedeS+B/
+         a+c4knXJyh9xwdTDLX2izXN/9iuc2TPmW18aDYonnPExxglK3DkOimPdv/5QwpF0uE
+         2uNGM2mzs7RVQ/PEXu59I2nYgTSaRutQbgNW7QLI=
+Date:   Wed, 4 Nov 2020 13:37:29 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Ricardo Ribalda <ribalda@chromium.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tfiga@chromium.org
+Subject: Re: [PATCH 4/6] media: uvcvideo: Add Privacy control based on
+ EXT_GPIO
+Message-ID: <20201104113729.GJ26171@pendragon.ideasonboard.com>
+References: <20201022133753.310506-1-ribalda@chromium.org>
+ <20201022133753.310506-5-ribalda@chromium.org>
 MIME-Version: 1.0
-In-Reply-To: <20201104090610.1446616-8-lee.jones@linaro.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201022133753.310506-5-ribalda@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Ricardo,
 
+Thank you for the patch.
 
-On 04/11/2020 11:06, Lee Jones wrote:
-> Fixes the following W=1 kernel build warning(s):
+On Thu, Oct 22, 2020 at 03:37:51PM +0200, Ricardo Ribalda wrote:
+> Add a new control and mapping for Privacy controls connected to
+> UVC_GUID_EXT_GPIO_CONTROLLERs.
 > 
->   drivers/net/ethernet/ti/am65-cpts.c:736: warning: Function parameter or member 'en' not described in 'am65_cpts_rx_enable'
->   drivers/net/ethernet/ti/am65-cpts.c:736: warning: Excess function parameter 'skb' description in 'am65_cpts_rx_enable'
-> 
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Grygorii Strashko <grygorii.strashko@ti.com>
-> Cc: Kurt Kanzenbach <kurt@linutronix.de>
-> Cc: netdev@vger.kernel.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 > ---
->   drivers/net/ethernet/ti/am65-cpts.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/media/usb/uvc/uvc_ctrl.c | 20 ++++++++++++++++++++
+>  drivers/media/usb/uvc/uvcvideo.h |  2 +-
+>  2 files changed, 21 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/net/ethernet/ti/am65-cpts.c b/drivers/net/ethernet/ti/am65-cpts.c
-> index 75056c14b161b..bb2b8e4919feb 100644
-> --- a/drivers/net/ethernet/ti/am65-cpts.c
-> +++ b/drivers/net/ethernet/ti/am65-cpts.c
-> @@ -727,7 +727,7 @@ static long am65_cpts_ts_work(struct ptp_clock_info *ptp)
->   /**
->    * am65_cpts_rx_enable - enable rx timestamping
->    * @cpts: cpts handle
-> - * @skb: packet
-> + * @en: enable
->    *
->    * This functions enables rx packets timestamping. The CPTS can timestamp all
->    * rx packets.
-> 
+> diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
+> index 913739915863..786498e66646 100644
+> --- a/drivers/media/usb/uvc/uvc_ctrl.c
+> +++ b/drivers/media/usb/uvc/uvc_ctrl.c
+> @@ -347,6 +347,16 @@ static const struct uvc_control_info uvc_ctrls[] = {
+>  				| UVC_CTRL_FLAG_RESTORE
+>  				| UVC_CTRL_FLAG_AUTO_UPDATE,
+>  	},
+> +	{
+> +		.entity		= UVC_GUID_EXT_GPIO_CONTROLLER,
+> +		.selector	= UVC_CT_PRIVACY_CONTROL,
+> +		.index		= 0,
+> +		.size		= 1,
+> +		.flags		= UVC_CTRL_FLAG_GET_CUR
+> +				| UVC_CTRL_FLAG_AUTO_UPDATE
+> +				| UVC_CTRL_FLAG_ENTITY_GET_INFO
+> +				| UVC_CTRL_FLAG_ENTITY_GET_CUR,
+> +	},
+>  };
+>  
+>  static const struct uvc_menu_info power_line_frequency_controls[] = {
+> @@ -735,6 +745,16 @@ static const struct uvc_control_mapping uvc_ctrl_mappings[] = {
+>  		.v4l2_type	= V4L2_CTRL_TYPE_BOOLEAN,
+>  		.data_type	= UVC_CTRL_DATA_TYPE_BOOLEAN,
+>  	},
+> +	{
+> +		.id		= V4L2_CID_PRIVACY,
+> +		.name		= "Privacy",
+> +		.entity		= UVC_GUID_EXT_GPIO_CONTROLLER,
+> +		.selector	= UVC_CT_PRIVACY_CONTROL,
+> +		.size		= 1,
+> +		.offset		= 0,
+> +		.v4l2_type	= V4L2_CTRL_TYPE_BOOLEAN,
+> +		.data_type	= UVC_CTRL_DATA_TYPE_BOOLEAN,
+> +	},
+>  };
+>  
+>  /* ------------------------------------------------------------------------
+> diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
+> index 8e5a9fc35820..a493bc383d3e 100644
+> --- a/drivers/media/usb/uvc/uvcvideo.h
+> +++ b/drivers/media/usb/uvc/uvcvideo.h
+> @@ -58,7 +58,7 @@
+>  	 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x02}
+>  #define UVC_GUID_EXT_GPIO_CONTROLLER \
+>  	{0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xf, \
+> -	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00, 0x01}
+> +	 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00, 0x01}
 
-Thank you.
-Reviewed-by: Grygorii Strashko <grygorii.strashko@ti.com>
+This belongs to the previous patch.
+
+>  
+>  #define UVC_GUID_FORMAT_MJPEG \
+>  	{ 'M',  'J',  'P',  'G', 0x00, 0x00, 0x10, 0x00, \
 
 -- 
-Best regards,
-grygorii
+Regards,
+
+Laurent Pinchart
