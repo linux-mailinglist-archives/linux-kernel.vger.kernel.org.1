@@ -2,86 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 391612A6557
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 14:38:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12BE92A655A
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 14:40:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730080AbgKDNie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 08:38:34 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:34898 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729584AbgKDNid (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 08:38:33 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1kaIzP-005DCl-S7; Wed, 04 Nov 2020 14:38:15 +0100
-Date:   Wed, 4 Nov 2020 14:38:15 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     davem@davemloft.net, kuba@kernel.org,
-        Thomas Falcon <tlfalcon@linux.vnet.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Santiago Leon <santi_leon@yahoo.com>,
-        John Allen <jallen@linux.vnet.ibm.com>, netdev@vger.kernel.org,
-        Lijun Pan <ljp@linux.ibm.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Dany Madden <drt@linux.ibm.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Sukadev Bhattiprolu <sukadev@linux.ibm.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 09/12] net: ethernet: ibm: ibmvnic: Fix some kernel-doc
- misdemeanours
-Message-ID: <20201104133815.GC933237@lunn.ch>
-References: <20201104090610.1446616-1-lee.jones@linaro.org>
- <20201104090610.1446616-10-lee.jones@linaro.org>
+        id S1729918AbgKDNj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 08:39:56 -0500
+Received: from mail1.protonmail.ch ([185.70.40.18]:42398 "EHLO
+        mail1.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726527AbgKDNjz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 08:39:55 -0500
+Date:   Wed, 04 Nov 2020 13:39:50 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1604497192; bh=WdLBXEtTB5n+fQsb0z3+UyBitWtDwfM7q0BL1uG5J+4=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=fdNyEqnONVsoXGG9bpasjovquWUEtyw3bjAP49H6fTMBFJA6Y55fCeh316i7tPguh
+         g3oJV0oltLhOhgaDGTWiazuisjbwI2gkRVuCcZovJYyFWdH6O5pHnpcZdMN/wiRU8W
+         gNv3ul9dSOB90b3loNPij/nnh1Fy+4iAXNVMtrId4sJWRkHV6ByJpbOC6vGqaf0D80
+         orzGe/oPhKkoRPE9VAq0MI8zIO4ZOFjtslL+lsOGimpkLDtJlulvv5JyPrdGIt+cf9
+         Xxs+R6eZWhYX3tR0pA9zRRMu3U+t4zmpKckxvPFakL1R2PpaVR3w4CPI33RnFtNay4
+         uhEotKIfwJStg==
+To:     Paul Cercueil <paul@crapouillou.net>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: Re: [PATCH mips-next 0/2] mips: boot: add support for self-extracting FIT images (vmlinuz.itb)
+Message-ID: <eUfiHt8RGTIlXhRVg9xYtvUalUyxmikudUShCIFKWoo@cp7-web-039.plabs.ch>
+In-Reply-To: <LRR9JQ.VHLICAJG4L2X1@crapouillou.net>
+References: <WnsVNeMB9c330hqKGdZ32JHsKO2ZbTM1BOGv74ZSJ9o@cp4-web-014.plabs.ch> <LRR9JQ.VHLICAJG4L2X1@crapouillou.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201104090610.1446616-10-lee.jones@linaro.org>
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=0.8 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,PDS_OTHER_BAD_TLD
+        shortcircuit=no autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 09:06:07AM +0000, Lee Jones wrote:
-> Fixes the following W=1 kernel build warning(s):
-> 
->  from drivers/net/ethernet/ibm/ibmvnic.c:35:
->  inlined from ‘handle_vpd_rsp’ at drivers/net/ethernet/ibm/ibmvnic.c:4124:3:
->  drivers/net/ethernet/ibm/ibmvnic.c:1362: warning: Function parameter or member 'hdr_field' not described in 'build_hdr_data'
->  drivers/net/ethernet/ibm/ibmvnic.c:1362: warning: Function parameter or member 'skb' not described in 'build_hdr_data'
->  drivers/net/ethernet/ibm/ibmvnic.c:1362: warning: Function parameter or member 'hdr_len' not described in 'build_hdr_data'
->  drivers/net/ethernet/ibm/ibmvnic.c:1362: warning: Function parameter or member 'hdr_data' not described in 'build_hdr_data'
->  drivers/net/ethernet/ibm/ibmvnic.c:1423: warning: Function parameter or member 'hdr_field' not described in 'create_hdr_descs'
->  drivers/net/ethernet/ibm/ibmvnic.c:1423: warning: Function parameter or member 'hdr_data' not described in 'create_hdr_descs'
->  drivers/net/ethernet/ibm/ibmvnic.c:1423: warning: Function parameter or member 'len' not described in 'create_hdr_descs'
->  drivers/net/ethernet/ibm/ibmvnic.c:1423: warning: Function parameter or member 'hdr_len' not described in 'create_hdr_descs'
->  drivers/net/ethernet/ibm/ibmvnic.c:1423: warning: Function parameter or member 'scrq_arr' not described in 'create_hdr_descs'
->  drivers/net/ethernet/ibm/ibmvnic.c:1474: warning: Function parameter or member 'txbuff' not described in 'build_hdr_descs_arr'
->  drivers/net/ethernet/ibm/ibmvnic.c:1474: warning: Function parameter or member 'num_entries' not described in 'build_hdr_descs_arr'
->  drivers/net/ethernet/ibm/ibmvnic.c:1474: warning: Function parameter or member 'hdr_field' not described in 'build_hdr_descs_arr'
->  drivers/net/ethernet/ibm/ibmvnic.c:1832: warning: Function parameter or member 'adapter' not described in 'do_change_param_reset'
->  drivers/net/ethernet/ibm/ibmvnic.c:1832: warning: Function parameter or member 'rwi' not described in 'do_change_param_reset'
->  drivers/net/ethernet/ibm/ibmvnic.c:1832: warning: Function parameter or member 'reset_state' not described in 'do_change_param_reset'
->  drivers/net/ethernet/ibm/ibmvnic.c:1911: warning: Function parameter or member 'adapter' not described in 'do_reset'
->  drivers/net/ethernet/ibm/ibmvnic.c:1911: warning: Function parameter or member 'rwi' not described in 'do_reset'
->  drivers/net/ethernet/ibm/ibmvnic.c:1911: warning: Function parameter or member 'reset_state' not described in 'do_reset'
-> 
-> Cc: Dany Madden <drt@linux.ibm.com>
-> Cc: Lijun Pan <ljp@linux.ibm.com>
-> Cc: Sukadev Bhattiprolu <sukadev@linux.ibm.com>
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-> Cc: Paul Mackerras <paulus@samba.org>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Santiago Leon <santi_leon@yahoo.com>
-> Cc: Thomas Falcon <tlfalcon@linux.vnet.ibm.com>
-> Cc: John Allen <jallen@linux.vnet.ibm.com>
-> Cc: netdev@vger.kernel.org
-> Cc: linuxppc-dev@lists.ozlabs.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+From: Paul Cercueil <paul@crapouillou.net>
+Date: Wed, 04 Nov 2020 11:26:09 +0000
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+> Hi Alexander,
 
-    Andrew
+Hi Paul!
+
+> Le dim. 1 nov. 2020 =EF=BF=BD 15:11, Alexander Lobakin <alobakin@pm.me> a
+> =C3=A9crit :
+>> Commit c3e2ee657418 ("MIPS: generic: Add support for zboot") added
+>> support for self-extracting images to Generic MIPS. However, the
+>> intended way to boot Generic MIPS kernels is using FIT Images and
+>> UHI boot protocol, but currently there's no way to make
+>> self-extracting
+>> FIT Image (only legacy uzImages).
+>>
+>> This set consists of two parts:
+>> 1) various cleanups in arch/mips/boot/compressed/Makefile as a
+>>    prerequisite;
+>> 2) a new target named "vmlinuz.itb" for composing self-extracting
+>>    FIT Images, which allows to have the advantages of both UHI and
+>>    vmlinuz.
+>>
+>> The second part involves some scenarios duplication, but I think it
+>> can be a subject for another series (for constifying and unifying
+>> FIT Images rules across the architectures).
+>>
+>> Alexander Lobakin (2):
+>>   mips: boot: clean up self-extracting targets scenarios
+>>   mips: boot: add support for self-extracting FIT images (vmlinuz.itb)
+>
+> It doesn't break anything on my end, so:
+>
+> Acked-by: Paul Cercueil <paul@crapouillou.net>
+>
+> for the series.
+
+Thanks!
+
+> Why vmlinuz.itb and not vmlinuz.fit or vmlinuz.uhi? Is the .itb suffix
+> already a thing?
+
+As far as I know -- yes, ITB stands for Image Tree Blob (reference
+to Device Tree Blob) and it's a standartized extension for FIT Images
+(you can see that all variants for MIPS have ".itb" at the bottom of
+arch/mips/boot/Makefile).
+
+> Cheers,
+> -Paul
+
+Al
+
+>>  arch/mips/Makefile                 |  3 +-
+>>  arch/mips/boot/.gitignore          |  1 +
+>>  arch/mips/boot/compressed/Makefile | 96
+>> +++++++++++++++++++++++++-----
+>>  3 files changed, 85 insertions(+), 15 deletions(-)
+>>
+>> --
+>> 2.29.2
+
