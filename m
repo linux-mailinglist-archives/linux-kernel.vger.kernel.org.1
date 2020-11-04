@@ -2,144 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8AA92A6C1E
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 18:47:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 637FB2A6C10
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 18:46:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732094AbgKDRqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 12:46:51 -0500
-Received: from mga14.intel.com ([192.55.52.115]:16659 "EHLO mga14.intel.com"
+        id S1732055AbgKDRqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 12:46:15 -0500
+Received: from foss.arm.com ([217.140.110.172]:41026 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730524AbgKDRqv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 12:46:51 -0500
-IronPort-SDR: uy+PlSWFo2zvFzWa5TjSeUTD8XVCezG1JQ40JUuexWym8X027IaCDenSNSYqBa6/apYGqr200u
- pV0+DP0YjeZQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9795"; a="168476165"
-X-IronPort-AV: E=Sophos;i="5.77,451,1596524400"; 
-   d="scan'208";a="168476165"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2020 09:46:46 -0800
-IronPort-SDR: Q9Bmv6A8hLY7c8TvyszzEw9vj0W25YTLM3HEfYG4mwCufaGsYgJuK+k0r2131jolfBeCTxgYes
- GJ1Yb9QiFgjQ==
-X-IronPort-AV: E=Sophos;i="5.77,451,1596524400"; 
-   d="scan'208";a="471304692"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2020 09:46:44 -0800
-Date:   Wed, 4 Nov 2020 09:46:44 -0800
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        Dan Williams <dan.j.williams@intel.com>,
+        id S1731989AbgKDRqN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 12:46:13 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8B93A139F;
+        Wed,  4 Nov 2020 09:46:12 -0800 (PST)
+Received: from [10.37.12.41] (unknown [10.37.12.41])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A09DC3F718;
+        Wed,  4 Nov 2020 09:46:09 -0800 (PST)
+Subject: Re: [PATCH v5 02/40] arm64: mte: Add in-kernel MTE helpers
+To:     Andrey Konovalov <andreyknvl@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Will Deacon <will.deacon@arm.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH V2 00/10] PKS: Add Protection Keys Supervisor (PKS)
- support
-Message-ID: <20201104174643.GC1531489@iweiny-DESK2.sc.intel.com>
-References: <20201102205320.1458656-1-ira.weiny@intel.com>
- <871rhb8h73.fsf@nanos.tec.linutronix.de>
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <cover.1602535397.git.andreyknvl@google.com>
+ <94dfda607f7f7a28a5df9ee68703922aa9a52a1e.1602535397.git.andreyknvl@google.com>
+ <CACT4Y+YhWM0MhS8wVsAmFmpBf4A8yDTLuV-JXtFYr79FJ9GGrQ@mail.gmail.com>
+ <CAAeHK+wCO+J7D1_T89DG+jJrPLk3X9RsGFKxJGd0ZcUFjQT-9Q@mail.gmail.com>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <03d63c72-52fa-70e1-ecb9-657b2f300acd@arm.com>
+Date:   Wed, 4 Nov 2020 17:49:10 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <871rhb8h73.fsf@nanos.tec.linutronix.de>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+In-Reply-To: <CAAeHK+wCO+J7D1_T89DG+jJrPLk3X9RsGFKxJGd0ZcUFjQT-9Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 12:36:16AM +0100, Thomas Gleixner wrote:
-> On Mon, Nov 02 2020 at 12:53, ira weiny wrote:
-> > Fenghua Yu (2):
-> >   x86/pks: Enable Protection Keys Supervisor (PKS)
-> >   x86/pks: Add PKS kernel API
-> >
-> > Ira Weiny (7):
-> >   x86/pkeys: Create pkeys_common.h
-> >   x86/fpu: Refactor arch_set_user_pkey_access() for PKS support
-> >   x86/pks: Preserve the PKRS MSR on context switch
-> >   x86/entry: Pass irqentry_state_t by reference
-> >   x86/entry: Preserve PKRS MSR across exceptions
-> >   x86/fault: Report the PKRS state on fault
-> >   x86/pks: Add PKS test code
-> >
-> > Thomas Gleixner (1):
-> >   x86/entry: Move nmi entry/exit into common code
+Hi Andrey/Dmitry,
+
+sorry I missed this one.
+
+On 10/29/20 4:50 PM, Andrey Konovalov wrote:
+> On Wed, Oct 28, 2020 at 12:28 PM Dmitry Vyukov <dvyukov@google.com> wrote:
+>>
 > 
-> So the actual patch ordering is:
+> [...]
 > 
->    x86/pkeys: Create pkeys_common.h
->    x86/fpu: Refactor arch_set_user_pkey_access() for PKS support
->    x86/pks: Enable Protection Keys Supervisor (PKS)
->    x86/pks: Preserve the PKRS MSR on context switch
->    x86/pks: Add PKS kernel API
+>>> +void *mte_set_mem_tag_range(void *addr, size_t size, u8 tag)
+>>> +{
+>>> +       void *ptr = addr;
+>>> +
+>>> +       if ((!system_supports_mte()) || (size == 0))
+>>> +               return addr;
+>>> +
+>>> +       /* Make sure that size is MTE granule aligned. */
+>>> +       WARN_ON(size & (MTE_GRANULE_SIZE - 1));
+>>> +
+>>> +       /* Make sure that the address is MTE granule aligned. */
+>>> +       WARN_ON((u64)addr & (MTE_GRANULE_SIZE - 1));
+>>> +
+>>> +       tag = 0xF0 | tag;
+>>> +       ptr = (void *)__tag_set(ptr, tag);
+>>> +
+>>> +       mte_assign_mem_tag_range(ptr, size);
+>>
+>> This function will be called on production hot paths. I think it makes
+>> sense to shave off some overheads here.
+>>
+>> The additional debug checks may be useful, so maybe we need an
+>> additional debug mode (debug of MTE/KASAN itself)?
+>>
+>> Do we ever call this when !system_supports_mte()? I think we wanted to
+>> have static_if's higher up the stack. Having additional checks
+>> scattered across lower-level functions is overhead for every
+>> malloc/free.
+>>
+>> Looking at how this is called from KASAN code.
+>> KASAN code already ensures addr/size are properly aligned. I think we
+>> should either remove the duplicate alignment checks, or do them only
+>> in the additional debugging mode.
+>> Does KASAN also ensure proper tag value (0xF0 mask)?
+>>
+>> KASAN wrapper is inlined in this patch:
+>> https://linux-review.googlesource.com/c/linux/kernel/git/torvalds/linux/+/3699
+>> but here we still have 2 non-inlined calls. The
+>> mte_assign_mem_tag_range is kinda inherent since it's in .S. But then
+>> I think this wrapper should be inlinable.
+>>
+>> Also, can we move mte_assign_mem_tag_range into inline asm in the
+>> header? This would avoid register spills around the call in
+>> malloc/free.
+>>
+>> The asm code seems to do the rounding of the size up at no additional
+>> cost (checks remaining size > 0, right?). I think it makes sense to
+>> document that as the contract and remove the additional round_up(size,
+>> KASAN_GRANULE_SIZE) in KASAN code.
 > 
->    x86/entry: Move nmi entry/exit into common code
->    x86/entry: Pass irqentry_state_t by reference
+> These are all valid concerns. It would be great to have inline asm
+> mte_assign_mem_tag_range() implementation. We can also call it
+> directly from KASAN code without all these additional checks.
 > 
->    x86/entry: Preserve PKRS MSR across exceptions
->    x86/fault: Report the PKRS state on fault
->    x86/pks: Add PKS test code
+> Perhaps it makes sense to include this change into the other series
+> that adds the production mode. And then squash if we decide to put
+> both changes into a single one.
 > 
-> This is the wrong ordering, really.
-> 
->      x86/entry: Move nmi entry/exit into common code
-> 
-> is a general cleanup and has absolutely nothing to do with PKRS.So this
-> wants to go first.
+> Vincenzo, could you write a patch that adds inline asm
+> mte_assign_mem_tag_range() implementation?
 > 
 
-Sorry, yes this should be a pre-patch.
+As Andrey said those are valid concerns, this function was originally thought
+for the debugging version of kasan, but since we are planning to use it in
+production the inline optimization sounds a good approach.
 
-> Also:
-> 
->     x86/entry: Move nmi entry/exit into common code
-> [from other email]
->    >      x86/entry: Pass irqentry_state_t by reference
->    >      > 
->    >      >
-> 
-> is a prerequisite for the rest. So why is it in the middle of the
-> series?
-
-It is in the middle because passing by reference is not needed until additional
-information is added to irqentry_state_t which is done immediately after this
-patch by:
-
-    x86/entry: Preserve PKRS MSR across exceptions
-
-I debated squashing the 2 but it made review harder IMO.  But I thought keeping
-them in order together made a lot of sense.
-
-> 
-> And then you enable all that muck _before_ it is usable:
-> 
-
-Strictly speaking you are correct, sorry.  I will reorder the series.
-
-> 
-> Bisectability is overrrated, right?
-
-Agreed, bisectability is important.  I thought I had it covered but I was
-wrong.
-
-> 
-> Once again: Read an understand Documentation/process/*
-> 
-> Aside of that using a spell checker is not optional.
-
-Agreed.
-
-In looking closer at the entry code I've found a couple of other instances I'll
-add another precursor patch.
-
-I've also found other errors with the series which I should have caught.  My
-apologies I made some last minute changes which I should have checked more
-thoroughly.
-
-Thanks,
-Ira
+-- 
+Regards,
+Vincenzo
