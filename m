@@ -2,104 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8A932A70E8
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 00:02:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 278182A70F0
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 00:07:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732477AbgKDXCE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 18:02:04 -0500
-Received: from mga14.intel.com ([192.55.52.115]:43329 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728579AbgKDXCD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 18:02:03 -0500
-IronPort-SDR: 8a6Me5KAuiSQzYFaWr6De6Op3faT2YVoH20FhpR04VlTCGN/sy97+YosImLIYGblbEMKHHAGRY
- x/acQgQ+YE+Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9795"; a="168515879"
-X-IronPort-AV: E=Sophos;i="5.77,451,1596524400"; 
-   d="scan'208";a="168515879"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2020 15:02:03 -0800
-IronPort-SDR: RcQ8wOdDMqUzKMR+2dFiho6BkaIj9363eDrmCkK26tEM4EQGbYXHZwWyDsYjqDoqUdNd2TgUI8
- JRr2OWw36eiw==
-X-IronPort-AV: E=Sophos;i="5.77,451,1596524400"; 
-   d="scan'208";a="539117083"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2020 15:01:59 -0800
-From:   ira.weiny@intel.com
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Ira Weiny <ira.weiny@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] entry: Fix spelling/typo errors in irq entry code
-Date:   Wed,  4 Nov 2020 15:01:57 -0800
-Message-Id: <20201104230157.3378023-1-ira.weiny@intel.com>
-X-Mailer: git-send-email 2.28.0.rc0.12.gb6a658bd00c9
+        id S1730366AbgKDXHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 18:07:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42180 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728301AbgKDXHa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 18:07:30 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 120B9C0613CF;
+        Wed,  4 Nov 2020 15:07:30 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id 10so18602695pfp.5;
+        Wed, 04 Nov 2020 15:07:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=5wFU/mPUt5bnAn1NYJxaqVm9bqWLQ5tB7/uIHYHp0HQ=;
+        b=b5MvlJWke83QbIoTA7AN/OK3LwdPyAjP45qdztR6fnfZhNhuZ/yniQQtrOmO6vWjlQ
+         6DJz2xY+ESN/R2uZvQUi8DDfEySyFk65kati9kdpnG6yYUQFDBNptmqpa5k2PwqfYPIW
+         HCLO5/XeMw4V3F4C0dPgtdvUe4EW3jKq8BDk3JoX46VPfJe0bpRNLS+fb6Q77weiB0C6
+         IJSCEv7FBI2rFR/YfdFQb/5SDYFrDfz06HDr5X5w4mJiJbXp2MZx+MkezKmTwSbjxMyW
+         OlA4lAHRg83At7utOYDWkVM8Df0KxCMNDazQotcpjAppt7/FdzWDVPm6bbpqutWFd7fN
+         yZhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=5wFU/mPUt5bnAn1NYJxaqVm9bqWLQ5tB7/uIHYHp0HQ=;
+        b=ZGJ982n4k+bJ+7zJvtKAGlxQ8qqtImTXpUqnV/b10oyAcLIKBIAd2v0N0U8BkHnQtk
+         o3P43sa72Shp4+/ZUbNbUDtdown4JRMHPSK4f+rsvxqh2AuDGT3GEiYmeiABDteyvTMX
+         h2gW8hkGGK3tiu8DW2IB9Jo+7prD6PLSMgcq4Y+PKwkJYZrJgB2sH7WBRtZA+TDkyaIq
+         AXxjLBvOxTUhwrm0HIYlZe25ZKrErnfTCj8bWK+BXsNPfKSQXUblwr3CkIL3+YMR7DxQ
+         VyDeB7g3OCrJDAkqPyaMuaYNtKqK+Oa3Gj83dBCqNyO3L9K2YAivb9uD8Qwati0B5WlX
+         4rrw==
+X-Gm-Message-State: AOAM531x3KYzbH4xdGouW61Q2cxi7xqgqy/j1qcGSJPZCmHnOy1WRUOF
+        ghU8eO6enmhgZ9ukr6V37JQ=
+X-Google-Smtp-Source: ABdhPJw9E9hqV27H7b7OfYUd72iM7FdbdnHf4qOTfDJhSmjibd+a412HkrfiITS+l5re7E4+/GcleQ==
+X-Received: by 2002:a62:26c1:0:b029:18a:e262:b6dc with SMTP id m184-20020a6226c10000b029018ae262b6dcmr135680pfm.28.1604531249674;
+        Wed, 04 Nov 2020 15:07:29 -0800 (PST)
+Received: from localhost ([2001:e42:102:1532:160:16:113:140])
+        by smtp.gmail.com with ESMTPSA id b3sm3418930pfd.66.2020.11.04.15.07.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Nov 2020 15:07:29 -0800 (PST)
+From:   Coiby Xu <coiby.xu@gmail.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        linux-gpio@vger.kernel.org (open list:PIN CONTROL SUBSYSTEM),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2 1/4] pinctrl: amd: fix incorrect way to disable debounce filter
+Date:   Thu,  5 Nov 2020 07:07:00 +0800
+Message-Id: <20201104230703.21466-2-coiby.xu@gmail.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20201104230703.21466-1-coiby.xu@gmail.com>
+References: <20201104230703.21466-1-coiby.xu@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ira Weiny <ira.weiny@intel.com>
+The correct way to disable debounce filter is to clear bit 5 and 6
+of the register.
 
-s/reguired/required/
-s/Interupts/Interrupts/
-s/quiescient/quiescent/
-s/assemenbly/assembly/
-
-Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+Cc: Hans de Goede <hdegoede@redhat.com>
+Link: https://lore.kernel.org/linux-gpio/df2c008b-e7b5-4fdd-42ea-4d1c62b52139@redhat.com/
+Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
 ---
- include/linux/entry-common.h | 4 ++--
- kernel/entry/common.c        | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ drivers/pinctrl/pinctrl-amd.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/entry-common.h b/include/linux/entry-common.h
-index 1a128baf3628..66938121c4b1 100644
---- a/include/linux/entry-common.h
-+++ b/include/linux/entry-common.h
-@@ -415,7 +415,7 @@ void irqentry_exit_cond_resched(void);
-  * @state:	Return value from matching call to irqentry_enter()
-  *
-  * Depending on the return target (kernel/user) this runs the necessary
-- * preemption and work checks if possible and reguired and returns to
-+ * preemption and work checks if possible and required and returns to
-  * the caller with interrupts disabled and no further work pending.
-  *
-  * This is the last action before returning to the low level ASM code which
-@@ -438,7 +438,7 @@ irqentry_state_t noinstr irqentry_nmi_enter(struct pt_regs *regs);
-  * @regs:	Pointer to pt_regs (NMI entry regs)
-  * @irq_state:	Return value from matching call to irqentry_nmi_enter()
-  *
-- * Last action before returning to the low level assmenbly code.
-+ * Last action before returning to the low level assmebly code.
-  *
-  * Counterpart to irqentry_nmi_enter().
-  */
-diff --git a/kernel/entry/common.c b/kernel/entry/common.c
-index bc75c114c1b3..fa17baadf63e 100644
---- a/kernel/entry/common.c
-+++ b/kernel/entry/common.c
-@@ -304,7 +304,7 @@ noinstr irqentry_state_t irqentry_enter(struct pt_regs *regs)
- 	 * If this entry hit the idle task invoke rcu_irq_enter() whether
- 	 * RCU is watching or not.
- 	 *
--	 * Interupts can nest when the first interrupt invokes softirq
-+	 * Interrupts can nest when the first interrupt invokes softirq
- 	 * processing on return which enables interrupts.
- 	 *
- 	 * Scheduler ticks in the idle task can mark quiescent state and
-@@ -315,7 +315,7 @@ noinstr irqentry_state_t irqentry_enter(struct pt_regs *regs)
- 	 * interrupt to invoke rcu_irq_enter(). If that nested interrupt is
- 	 * the tick then rcu_flavor_sched_clock_irq() would wrongfully
- 	 * assume that it is the first interupt and eventually claim
--	 * quiescient state and end grace periods prematurely.
-+	 * quiescent state and end grace periods prematurely.
- 	 *
- 	 * Unconditionally invoke rcu_irq_enter() so RCU state stays
- 	 * consistent.
+diff --git a/drivers/pinctrl/pinctrl-amd.c b/drivers/pinctrl/pinctrl-amd.c
+index 9a760f5cd7ed..d6b2b4bd337c 100644
+--- a/drivers/pinctrl/pinctrl-amd.c
++++ b/drivers/pinctrl/pinctrl-amd.c
+@@ -166,14 +166,14 @@ static int amd_gpio_set_debounce(struct gpio_chip *gc, unsigned offset,
+ 			pin_reg |= BIT(DB_TMR_OUT_UNIT_OFF);
+ 			pin_reg |= BIT(DB_TMR_LARGE_OFF);
+ 		} else {
+-			pin_reg &= ~DB_CNTRl_MASK;
++			pin_reg &= ~(DB_CNTRl_MASK << DB_CNTRL_OFF);
+ 			ret = -EINVAL;
+ 		}
+ 	} else {
+ 		pin_reg &= ~BIT(DB_TMR_OUT_UNIT_OFF);
+ 		pin_reg &= ~BIT(DB_TMR_LARGE_OFF);
+ 		pin_reg &= ~DB_TMR_OUT_MASK;
+-		pin_reg &= ~DB_CNTRl_MASK;
++		pin_reg &= ~(DB_CNTRl_MASK << DB_CNTRL_OFF);
+ 	}
+ 	writel(pin_reg, gpio_dev->base + offset * 4);
+ 	raw_spin_unlock_irqrestore(&gpio_dev->lock, flags);
 -- 
-2.28.0.rc0.12.gb6a658bd00c9
+2.28.0
 
