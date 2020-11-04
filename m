@@ -2,120 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9053A2A6D55
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 20:00:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17B732A6D50
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 19:59:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730535AbgKDS5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 13:57:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59624 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729297AbgKDS5G (ORCPT
+        id S1730524AbgKDS6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 13:58:50 -0500
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:41098 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726626AbgKDS56 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 13:57:06 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D10D0C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 10:57:05 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id t22so10708306plr.9
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 10:57:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=eFbEFkCwKJ1hR3ookQi/7V8Itg1IPtT/zHbmeIxSz6g=;
-        b=M8V29X75bdxqtjcKywJmnyr1FqzkhvieUPrJY63jv4RFhMimKu9+P3nJ1F+HndPJsh
-         QzfeuWZuKcE8FrwefX0HGV1DUScWByoTiabA2VGBkCDVtSUXskkYKZXjTs191p7kBgsy
-         q5yRcPFcVQ+sw3CiP8F/EyXbTycT5ga0dpB7M=
+        Wed, 4 Nov 2020 13:57:58 -0500
+Received: by mail-oi1-f196.google.com with SMTP id m13so14191581oih.8;
+        Wed, 04 Nov 2020 10:57:57 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=eFbEFkCwKJ1hR3ookQi/7V8Itg1IPtT/zHbmeIxSz6g=;
-        b=fT1IGodtksnYgpt75sIVvAkEfHs4UaLH4IPvkiSi+oE9OQ+tHM6XZNvqmv8e1uf9Jz
-         jwvC0Zwjh3iRWd2jWg41JuIoL8S+3KbcDk5Y144NVwWLEC8+ZVmz4/SxMznc8TX5RdfZ
-         I0c8UABvhWiwO7B04NmrYB/MhsUsknydcCaU3o+WpMoHNFcAgE1aTMuPTOAtlXetlgKJ
-         OzLU3iki8CFVs4rRQvazndv43qsLrdKTjcG8B1GHaQr3B6z1j7p6nPEPURc2CkMBkkB/
-         UjSavuK0QSlvty3biM8McTnHi3ER0/Tsx3bfKOYBNuQEP7fDII2exdRklYIkn9Og/Fc7
-         igFg==
-X-Gm-Message-State: AOAM5307uy9s8j7s37J1uAp01OPkfJQxsiRyOayxcx/lMWUlq+637PKN
-        Fi+jYCHb/UhQBOoa4g+HqfmN9g==
-X-Google-Smtp-Source: ABdhPJyu2rjAfEpo9PsZku1g5A6IasXMm5exN3bYVxllgILGsUnNv/NS1FwRd/sfhdORw2FuF5f16w==
-X-Received: by 2002:a17:902:ff0e:b029:d6:820d:cb81 with SMTP id f14-20020a170902ff0eb02900d6820dcb81mr31394012plj.47.1604516225344;
-        Wed, 04 Nov 2020 10:57:05 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id q16sm3066965pff.114.2020.11.04.10.57.03
+        bh=D5nJCWrjLgvJLOiVLXj8dcQZ+LEC4p94v1WKcqs0NR0=;
+        b=Hny0QiT8QBLN5t76pCJKjPKupGM/UB4dEUAiPeCOq1QsUMXq3c0Z7qmvXKM5Z8ogkt
+         OKgSWQbjqYkOmd3bKFVrPSpbp7/y5t6abKe9gARblxQ38ivGbaJAEZlZzJJQQiHmZXYL
+         72RnNS3dfbeuXOwqpdYI3b+2pAXE6PsRAF7Q6Fsdq/cHxoQUrj+ESF/pHjYJY1bs5djm
+         9qWm4E/M7D9ziwvo1bYytz9cZ9BS4hPCO/tS4UKAeNQqPty+ytSwCjiy64k7EQ2RiTb8
+         SCN1EjkjFgs76Cq4t8BZW8pqkRdUhQRsa+No8JB463qlhLDLwePksLTw78TT2GEvWJ/8
+         pKiQ==
+X-Gm-Message-State: AOAM53329037lbMVn8IDhbycwtR21S628WMRWpWzastP8b9u7MnHOTJX
+        8aAgfN07FI2yhEejUGSl/g==
+X-Google-Smtp-Source: ABdhPJyhqCu+Trf+max1jMJtRFh0rWYsf0hk0dBZaQe1VhWS5v4jYK/wm7wrL8WPai77xPv0eAqHVg==
+X-Received: by 2002:aca:c4c3:: with SMTP id u186mr3574115oif.4.1604516277206;
+        Wed, 04 Nov 2020 10:57:57 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id 64sm660896otq.26.2020.11.04.10.57.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 10:57:04 -0800 (PST)
-Date:   Wed, 4 Nov 2020 10:57:03 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     YiFei Zhu <zhuyifei1999@gmail.com>
-Cc:     Linux Containers <containers@lists.linux-foundation.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        David Laight <David.Laight@aculab.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Jann Horn <jannh@google.com>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Will Drewry <wad@chromium.org>
-Subject: Re: [PATCH v4 seccomp 5/5] seccomp/cache: Report cache data through
- /proc/pid/seccomp_cache
-Message-ID: <202011041052.0D14CD6@keescook>
-References: <202010121556.1110776B83@keescook>
- <CABqSeAT2-vNVUrXSWiGp=cXCvz8LbOrTBo1GbSZP2Z+CKdegJA@mail.gmail.com>
- <CABqSeASc-3n_LXpYhb+PYkeAOsfSjih4qLMZ5t=q5yckv3w0nQ@mail.gmail.com>
- <202010221520.44C5A7833E@keescook>
- <CABqSeAT4L65_uS=45uxPZALKaDSDocMviMginLOV2N0h-e1AzA@mail.gmail.com>
- <202010231945.90FA4A4AA@keescook>
- <CABqSeAQ4cCwiPuXEeaGdErMmLDCGxJ-RgweAbUqdrdm+XJXxeg@mail.gmail.com>
- <CABqSeATiV0sQvqpvCuqkOXNbjetY=1=6ry_SciMVmo63W9A88A@mail.gmail.com>
- <202011031612.6AA505157@keescook>
- <CABqSeASFkTFn8ix8-5D0vdZ_FR9bR1PpU3j5eQPYOMshK6FuNA@mail.gmail.com>
+        Wed, 04 Nov 2020 10:57:56 -0800 (PST)
+Received: (nullmailer pid 3948698 invoked by uid 1000);
+        Wed, 04 Nov 2020 18:57:55 -0000
+Date:   Wed, 4 Nov 2020 12:57:55 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Vincent Whitchurch <vincent.whitchurch@axis.com>
+Cc:     lgirdwood@gmail.com, broonie@kernel.org, kernel@axis.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        robh+dt@kernel.org, support.opensource@diasemi.com
+Subject: Re: [PATCH v2 1/2] dt-bindings: regulator: Add DA9121
+Message-ID: <20201104185755.GA3948381@bogus>
+References: <20201103100021.19603-1-vincent.whitchurch@axis.com>
+ <20201103100021.19603-2-vincent.whitchurch@axis.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CABqSeASFkTFn8ix8-5D0vdZ_FR9bR1PpU3j5eQPYOMshK6FuNA@mail.gmail.com>
+In-Reply-To: <20201103100021.19603-2-vincent.whitchurch@axis.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 05:40:51AM -0600, YiFei Zhu wrote:
-> On Tue, Nov 3, 2020 at 6:29 PM Kees Cook <keescook@chromium.org> wrote:
-> > Yeah, this is very interesting. That there is anything measurably _slower_
-> > with the cache is surprising. Though with only 4 runs, I wonder if it's
-> > still noisy? What happens at 10 runs -- more importantly what is the
-> > standard deviation?
+On Tue, 03 Nov 2020 11:00:20 +0100, Vincent Whitchurch wrote:
+> Add bindings for the Dialog Semiconductor DA9121 voltage regulator.
 > 
-> I could do that. it just takes such a long time. Each run takes about
-> 20 minutes so with 10 runs per environment, 3 environments (native + 2
-> docker) per boot, and 4 boots (2 bootparam * 2 compile config), it's
-> 27 hours of compilation. I should probably script it at that point.
-
-Yeah, I was facing the same issues. Though perhaps hackbench (with
-multiple CPUs) would be a better test (and it's much faster):
-
-https://lore.kernel.org/lkml/7723ae8d-8333-ba17-6983-a45ec8b11c54@redhat.com/
-
-(I usually run this with a CNT of 20 to get quick results.)
-
-> > I assume this is from Indirect Branch Prediction Barrier (IBPB) and
-> > Single Threaded Indirect Branch Prediction (STIBP) (which get enabled
-> > for threads under seccomp by default).
-> >
-> > Try booting with "spectre_v2_user=prctl"
+> Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+> ---
+>  .../bindings/regulator/dlg,da9121.yaml        | 47 +++++++++++++++++++
+>  1 file changed, 47 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/regulator/dlg,da9121.yaml
 > 
-> Hmm, to make sure, boot with just "spectre_v2_user=prctl" on the
-> command line and test the performance of that?
 
-Right, see if that eliminates the 3 minute jump seen for seccomp.
 
--- 
-Kees Cook
+My bot found errors running 'make dt_binding_check' on your patch:
+
+yamllint warnings/errors:
+
+dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/regulator/dlg,da9121.yaml: 'additionalProperties' is a required property
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/regulator/dlg,da9121.yaml: ignoring, error in schema: 
+warning: no schema found in file: ./Documentation/devicetree/bindings/regulator/dlg,da9121.yaml
+
+
+See https://patchwork.ozlabs.org/patch/1392753
+
+The base for the patch is generally the last rc1. Any dependencies
+should be noted.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
+
