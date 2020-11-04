@@ -2,91 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18DAE2A7337
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 00:53:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03D5D2A7335
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 00:53:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733200AbgKDXxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 18:53:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49278 "EHLO
+        id S2387597AbgKDXwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 18:52:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387548AbgKDXvn (ORCPT
+        with ESMTP id S1733200AbgKDXwM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 18:51:43 -0500
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97150C0613CF;
-        Wed,  4 Nov 2020 15:51:42 -0800 (PST)
-Received: by mail-lj1-x241.google.com with SMTP id p15so310112ljj.8;
-        Wed, 04 Nov 2020 15:51:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=036o7Gwi84M0Z4FunrHSfNJICQ3sZhXNjVSeaAv5Ias=;
-        b=aS3QSfBGy3b0UHi2bGJmW9bgRnhj4QCXyj8tXs/SXrXX5xfyEFir9lNKrlNu6t5A0C
-         3BPzMrMIqzhNYdPSaRdfL6bgw9uLSjpw7RvYk20XwPrA43FdNbe5G9blGDnIB163AyOV
-         rLPSXhSms9AXI6poVCO4uZySysiVUFXCsgzcCt0B/Et2pCDcQuGeXu+H1MMGgKz3DnyP
-         RXvJGSQ8YYobfHfFDDcwZOeXDp0HDBXpXFpVPz7eSAdyxgXa3nJK65axe0juqQ6QSnmm
-         BI5gR6XdQ+Fw6fba52GCqzpS/x9rEJcInNEN9gDFXoV0xyQvEqTOUZtPG13cVgdekQna
-         WJuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=036o7Gwi84M0Z4FunrHSfNJICQ3sZhXNjVSeaAv5Ias=;
-        b=lVQAvOnPmY8LczFrWUo/fHpkuhKGhFRcv/vG80XXyjeC0e7ZiFuxLKTuCLpjrS1r8L
-         qYdkxpQZSqQect+5kjmVarG2DIZt3WxkbwwiIZkxn+KRDvZWr4UdkCrsKlNl4PuckKCa
-         xhuoIxH6qRQ8mRItSeS4T4gJ2lLa2CwzbqqwF9L2DuTvBiNU/kRIqkQfelKEKeL6tb22
-         +0qZN/EegZptAT9XoolaCnPjJF9hlXpv5Nn0xqzcUf8rzrH9KJtuaXQbfKJ2akyTfsMc
-         B0EdQ9r6ZtoReF/qBQax3XkpysnWk4Kl09hnPCSYFl7vFq3Clz4oho3ZCznQAy3wXAOP
-         4YUw==
-X-Gm-Message-State: AOAM5335XnAPeVRhtZcT86y7nmaS3HOMMPihXymC9R5fgPtdjFbZXsBj
-        9iQ6YjbJ/ynh9OT2XQBGK3c=
-X-Google-Smtp-Source: ABdhPJy0vPhoLasuJDPnL4K153tfvEZGMvyQUN4ZYrjAir0MLYG4+9CxVYCwnjTKbRbQLQ44sSnJOw==
-X-Received: by 2002:a05:651c:cc:: with SMTP id 12mr143422ljr.191.1604533901162;
-        Wed, 04 Nov 2020 15:51:41 -0800 (PST)
-Received: from localhost.localdomain (h-155-4-221-112.NA.cust.bahnhof.se. [155.4.221.112])
-        by smtp.gmail.com with ESMTPSA id 65sm540782lfe.96.2020.11.04.15.51.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 15:51:40 -0800 (PST)
-From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Jiri Slaby <jirislaby@kernel.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-serial@vger.kernel.org,
+        Wed, 4 Nov 2020 18:52:12 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CDAAC0613CF;
+        Wed,  4 Nov 2020 15:52:12 -0800 (PST)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 9C1CEB04;
+        Thu,  5 Nov 2020 00:52:10 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1604533930;
+        bh=HeBPtwkKfdCuw+ixNJWWKnwgqcZWXRhxdmFr/Zdn46I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vCvoXPnPA5yySy2dFyBpPfZ3Pjp/Yagl2Cl3xrGwwR0EFabUCK2LSDaUnK8xlS2+s
+         NcyzcadWZ7qMBzZDOz+sciLZBUnYTv0FGG80Bn884iEodWmD1pt2aylEG/IFmN9Fzl
+         ewPkB8Ft8rFMO8QGfxj+Q8lqEbpOSc2ZfM96XZM4=
+Date:   Thu, 5 Nov 2020 01:52:09 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Xu Wang <vulab@iscas.ac.cn>
+Cc:     mchehab@kernel.org, linux-media@vger.kernel.org,
         linux-kernel@vger.kernel.org,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Subject: [PATCH] tty: serial: msm_serial: Constify msm_uart_pops
-Date:   Thu,  5 Nov 2020 00:51:34 +0100
-Message-Id: <20201104235134.17793-1-rikard.falkeborn@gmail.com>
-X-Mailer: git-send-email 2.29.2
+        Sakari Ailus <sakari.ailus@linux.intel.com>
+Subject: Re: [PATCH] media: i2c: mt9p031: Remove redundant null check before
+ clk_disable_unprepare
+Message-ID: <20201104235209.GP29958@pendragon.ideasonboard.com>
+References: <20201104092948.8560-1-vulab@iscas.ac.cn>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201104092948.8560-1-vulab@iscas.ac.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The only usage of msm_uart_pops is to assign its address to the ops
-field in the uart_port struct, which is a pointer to const. Make it
-const to allow the compiler to put it in read-only memory.
+Hi Xu Wang,
 
-Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
----
- drivers/tty/serial/msm_serial.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thank you for the patch.
 
-diff --git a/drivers/tty/serial/msm_serial.c b/drivers/tty/serial/msm_serial.c
-index 87f005e5d2af..18e16159aabb 100644
---- a/drivers/tty/serial/msm_serial.c
-+++ b/drivers/tty/serial/msm_serial.c
-@@ -1525,7 +1525,7 @@ static void msm_poll_put_char(struct uart_port *port, unsigned char c)
- }
- #endif
- 
--static struct uart_ops msm_uart_pops = {
-+static const struct uart_ops msm_uart_pops = {
- 	.tx_empty = msm_tx_empty,
- 	.set_mctrl = msm_set_mctrl,
- 	.get_mctrl = msm_get_mctrl,
+On Wed, Nov 04, 2020 at 09:29:48AM +0000, Xu Wang wrote:
+> Because clk_disable_unprepare() already checked NULL clock parameter,
+> so the additional check is unnecessary, just remove it.
+> 
+> Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+I expect Sakari will pick this patch.
+
+> ---
+>  drivers/media/i2c/mt9p031.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/media/i2c/mt9p031.c b/drivers/media/i2c/mt9p031.c
+> index dc23b9ed510a..a633b934d93e 100644
+> --- a/drivers/media/i2c/mt9p031.c
+> +++ b/drivers/media/i2c/mt9p031.c
+> @@ -346,8 +346,7 @@ static void mt9p031_power_off(struct mt9p031 *mt9p031)
+>  	regulator_bulk_disable(ARRAY_SIZE(mt9p031->regulators),
+>  			       mt9p031->regulators);
+>  
+> -	if (mt9p031->clk)
+> -		clk_disable_unprepare(mt9p031->clk);
+> +	clk_disable_unprepare(mt9p031->clk);
+>  }
+>  
+>  static int __mt9p031_set_power(struct mt9p031 *mt9p031, bool on)
+
 -- 
-2.29.2
+Regards,
 
+Laurent Pinchart
