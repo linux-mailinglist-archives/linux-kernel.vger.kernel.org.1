@@ -2,123 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84E902A5DB7
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 06:24:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 854862A5DE5
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 06:37:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729662AbgKDFYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 00:24:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45336 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725535AbgKDFYg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 00:24:36 -0500
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA0AAC061A4D
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 21:24:36 -0800 (PST)
-Received: by mail-yb1-xb43.google.com with SMTP id m188so16989495ybf.2
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 21:24:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=buN3yjcDVw2EqJ25Tq35AKInemBS4RdgzKO0/bnuCV0=;
-        b=vGQK7djcDS/vNaV/RFygyk6BcAPnZeGUiJr98CqLcH+RYPVJ/yBESFnCxIjeuEWOW1
-         LGYlitQ43kLbGBTGE61hNppZSYY8ODnBz4EBlgDJQoYb3lXFefTwuyBD+qWUEWA20kY/
-         mKU5OzRX3PafYBJhTaI9c2HztUi/ouQUKGSt/IEadXPaVlHyqWL3DnXFx+UWE3FJN3zF
-         xpaJBxuwpdjVluNGaBFPLflssP44NTFHs+H2AdJ20Q/11WOo3CaRANK2IX+hDJo9pgNA
-         peatOEWjxQqOqoQTlHe3FaB4qytV3Psl3ZN8yCUunlA9lGE4j/aH5x/c2+cGkerqrg5o
-         Bvww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=buN3yjcDVw2EqJ25Tq35AKInemBS4RdgzKO0/bnuCV0=;
-        b=l7XwA77ezckzwjfh8ysS2okN8H3VTisfSJEb978qt52h5A7JU6ZxAhUVwVKMAEhosd
-         ead8fdbeIIbd92BfBa+gDxc5oniKWUoYZFe5ALlZDa1rECrXFo/nbU2eOfelfTkh+why
-         zhxq7H0I3e4rjwfpHf4o2OvCkmnEeGddoH3NYGKVL9MpZi3xGyH23aHuIuxhbbaN7tP3
-         fWPVhiPPvCPV33YpgjbZQnnqp8n2bXkviQbs7Xgqx/gCMKImZ8jy7HYh5H7/HJztpg3j
-         V67zTKWE6/K1kGTE4I87VESylU4Hn6byr3E/7qvAaAKXyuhdWNb0WQNgazHjp1gaOlhP
-         IpUQ==
-X-Gm-Message-State: AOAM532UKNfZASHe1kCGGYi1eQ2FK9lsoAVxFrMo9YcnZAN6p+1yI6m3
-        ATwhUGFECWnDQ+YglyfRxWESrkNcDhvKOSzYGddJUISe
-X-Google-Smtp-Source: ABdhPJw4X2EBy/BQHRpdZVm/uRRy4mcbX1p8iCmDTcWFjekoSJMzV7O+PEmPMEB3ZtzQZllP8TXOHZJGepiAiFfsN+A=
-X-Received: by 2002:a25:338b:: with SMTP id z133mr36026198ybz.33.1604467476017;
- Tue, 03 Nov 2020 21:24:36 -0800 (PST)
+        id S1727986AbgKDFhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 00:37:03 -0500
+Received: from mga07.intel.com ([134.134.136.100]:51983 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726018AbgKDFhD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 00:37:03 -0500
+IronPort-SDR: S14LxW9kl/ud/k6P+9qrWMA+s2o/9vIbVSrLK2XZWNud04PzfrXna4xDbKUkswdPoH6TxDQ9wq
+ 86KHDYS8Xihw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9794"; a="233332657"
+X-IronPort-AV: E=Sophos;i="5.77,450,1596524400"; 
+   d="scan'208";a="233332657"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2020 21:37:02 -0800
+IronPort-SDR: JBmoy5Ga3Tv7yI/iYiNFRnrmamXSlr95HUuxW8mrShOJ9hOCP5H+/0OLKwJYCiCQuy+9dQD5Si
+ T/ABmZUIAaIw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,450,1596524400"; 
+   d="scan'208";a="325484137"
+Received: from yhuang-dev.sh.intel.com (HELO yhuang-dev) ([10.239.159.65])
+  by orsmga006.jf.intel.com with ESMTP; 03 Nov 2020 21:36:59 -0800
+From:   "Huang\, Ying" <ying.huang@intel.com>
+To:     Mel Gorman <mgorman@suse.de>
+Cc:     Peter Zijlstra <peterz@infradead.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ingo Molnar <mingo@redhat.com>, Rik van Riel <riel@redhat.com>,
+        "Johannes Weiner" <hannes@cmpxchg.org>,
+        "Matthew Wilcox \(Oracle\)" <willy@infradead.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        David Rientjes <rientjes@google.com>
+Subject: Re: [PATCH -V2 2/2] autonuma: Migrate on fault among multiple bound nodes
+References: <20201028023411.15045-1-ying.huang@intel.com>
+        <20201028023411.15045-3-ying.huang@intel.com>
+        <20201102111717.GB3306@suse.de>
+Date:   Wed, 04 Nov 2020 13:36:58 +0800
+In-Reply-To: <20201102111717.GB3306@suse.de> (Mel Gorman's message of "Mon, 2
+        Nov 2020 11:17:17 +0000")
+Message-ID: <87eel9wumd.fsf@yhuang-dev.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
 MIME-Version: 1.0
-References: <363325b4a85f094ba9cf06301dd022912ec79d03.camel@perches.com>
- <CANiq72=r6oieZ-Nj-e6e+HriW8kADB75z2pj6W-gg7Cff3nqGw@mail.gmail.com>
- <f474396f8f47c303e3a3ac90a582c116e38e50e4.camel@perches.com>
- <CANiq72nnpdPSngjoOf=imLxZ2g0A7ZXe5nRjF0qf5AG1UCfXyw@mail.gmail.com>
- <8d02497f4565c3154d3f7bcf2968b56ccd945ab4.camel@perches.com>
- <CANiq72k11+VO-igyHRakJEGuSmsDJyQCpYDVeNxZwRt62yCFXQ@mail.gmail.com> <1de8953aba13bcd4c9643bae61af2081e33f071f.camel@perches.com>
-In-Reply-To: <1de8953aba13bcd4c9643bae61af2081e33f071f.camel@perches.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Wed, 4 Nov 2020 06:24:25 +0100
-Message-ID: <CANiq72nsOOdRxVYNo7KetNKOD+8xZEsn3v8d1iOydvVRoTqOHA@mail.gmail.com>
-Subject: Re: [RFC PATCH] .clang-format: Remove conditional comments
-To:     Joe Perches <joe@perches.com>
-Cc:     clang-built-linux <clang-built-linux@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joe,
+Hi, Mel,
 
-First of all, thanks for taking the time to write your reasoning.
+Thanks for comments!
 
-On Wed, Nov 4, 2020 at 5:17 AM Joe Perches <joe@perches.com> wrote:
+Mel Gorman <mgorman@suse.de> writes:
+
+> On Wed, Oct 28, 2020 at 10:34:11AM +0800, Huang Ying wrote:
+>> Now, AutoNUMA can only optimize the page placement among the NUMA nodes if the
+>> default memory policy is used.  Because the memory policy specified explicitly
+>> should take precedence.  But this seems too strict in some situations.  For
+>> example, on a system with 4 NUMA nodes, if the memory of an application is bound
+>> to the node 0 and 1, AutoNUMA can potentially migrate the pages between the node
+>> 0 and 1 to reduce cross-node accessing without breaking the explicit memory
+>> binding policy.
+>> 
+>> So in this patch, if mbind(.mode=MPOL_BIND, .flags=MPOL_MF_LAZY) is used to bind
+>> the memory of the application to multiple nodes, and in the hint page fault
+>> handler both the faulting page node and the accessing node are in the policy
+>> nodemask, the page will be tried to be migrated to the accessing node to reduce
+>> the cross-node accessing.
+>> 
+>> [Peter Zijlstra: provided the simplified implementation method.]
+>> 
+>> Questions:
+>> 
+>> Sysctl knob kernel.numa_balancing can enable/disable AutoNUMA optimizing
+>> globally.  But for the memory areas that are bound to multiple NUMA nodes, even
+>> if the AutoNUMA is enabled globally via the sysctl knob, we still need to enable
+>> AutoNUMA again with a special flag.  Why not just optimize the page placement if
+>> possible as long as AutoNUMA is enabled globally?  The interface would look
+>> simpler with that.
+>> 
+>> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
 >
-> The current kernel is v5.10 which requires clang 10.0 or higher.
-
-For building, yes.
-
-> This patch is not to be applied or backported to old kernels so no
-> person is going to use this patch on any old or backported kernel.
-
-Agreed (see my answer to Nick).
-
-> If a person is going to use clang-format on the current kernel sources
-> unless they are developing for the current kernel.
+> I've no specific objection to the patch or the name change. I can't
+> remember exactly why I picked the name, it was 8 years ago but I think it
+> was because the policy represented the most basic possible approach that
+> could be done without any attempt at being intelligent and established
+> a baseline. The intent was that anything built on top had to be better
+> than the most basic policy imaginable. The name reflected the dictionary
+> definition at the time and happened to match the acronym closely enough
+> and I wanted to make it absolutely clear to reviewers that the policy
+> was not good enough (ruling out MPOL_BASIC or variants thereof) even if
+> it happened to work for some workload and there was no intent to report
+> it to the userspace API.
 >
-> They are going to have to be using clang 10.0 or higher and therefore
-> also will have and be using clang-format 10.0 or higher.
+> The only hazard with the patch is that applications that use MPOL_BIND
+> on multiple nodes may now incur some NUMA balancing overhead due to
+> trapping faults and migrations.
 
-No, they might be using GCC as usual and installed clang-format from
-their distro. In fact, I'd expect most developers accustomed to GCC to
-try it out that way, and also most of them to install compilers from
-their distro, not from the webpage, unless they need a newer version
-for some reason (e.g. new warnings, new debugging features in the
-kernel, etc.).
+For this specific version of patch, I don't think this will happen.
+Because now, MPOL_F_MOF need to be set in struct mempolicy, for
+MPOL_BIND, only if mbind() syscall is called with MPOL_MF_LAZY, that
+will be the case.  So I think most workloads will not be affected by
+this patch.  The feature is opt-in.
 
-In principle, clang-format (as a tool) is not related to building the
-kernel. We may call it "x-format" and think about it as a statically
-linked binary. What I am saying is that aligning clang-format to LLVM
-(now that LLVM has a minimum supported version) is not a necessity.
+But from another point of view, I suggest to remove the constraints of
+MPOL_F_MOF in the future.  If the overhead of AutoNUMA isn't acceptable,
+why not just disable AutoNUMA globally via sysctl knob?
 
-We can still do it, of course, since there are new features for
-everyone and anybody that complains can install a newer version from
-the webpage. But there is nothing that forces us to require it. It is
-a decision that we balance w.r.t. new features. To put it concretely:
-if there were 0 new features or big fixes in clang-format 10 compared
-to 4, there would be no reason whatsoever to require users to download
-a new version.
+> It might still end up being better but I was not aware of a
+> *realistic* workload that binds to multiple nodes
+> deliberately. Generally I expect if an application is binding, it's
+> binding to one local node.
 
-On the other side of the spectrum, some projects require a concrete
-version (not just a minimum), because they automatically format their
-entire codebase and want to avoid differences in output between
-clang-format versions. But we are far from automatically formatting
-the entire codebase.
+Yes.  It's not popular configuration for now.  But for the memory
+tiering system with both DRAM and PMEM, the DRAM and PMEM in one socket
+will become 2 NUMA nodes.  To avoid too much cross-socket memory
+accessing, but take advantage of both the DRAM and PMEM, the workload
+can be bound to 2 NUMA nodes (DRAM and PMEM).
 
-> Take it or not, apply it or not.  I don't use clang-format and unless
-> there are improvements to it, I imagine I'll continue to use emacs
-> indent-region and a few other reformatting tools instead.
+> If it shows up in regressions, it'll be interesting to get a detailed
+> description of the workload. Pay particular attention to if THP is
+> disabled as I learned relatively recently that NUMA balancing with THP
+> disabled has higher overhead (which is hardly surprising).
 
-Again, I am not opposed to the change. In fact, I am eager to improve
-the output of clang-format so that more people get engaged with it. I
-was just surprised you asserted so strongly that nobody is using
-clang-format from their distro.
+Got it!
 
-Cheers,
-Miguel
+> Lacking data or a specific objection
+>
+> Acked-by: Mel Gorman <mgorman@suse.de>
+
+Thanks!
+
+Best Regards,
+Huang, Ying
