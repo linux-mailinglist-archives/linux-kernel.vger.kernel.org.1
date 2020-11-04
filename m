@@ -2,179 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE2852A6B58
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 18:03:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A5E42A6B5C
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 18:04:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731874AbgKDRDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 12:03:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42028 "EHLO
+        id S1731470AbgKDREv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 12:04:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731607AbgKDRDj (ORCPT
+        with ESMTP id S1729679AbgKDREv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 12:03:39 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB3FEC0613D3
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 09:03:38 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id r186so17125919pgr.0
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 09:03:38 -0800 (PST)
+        Wed, 4 Nov 2020 12:04:51 -0500
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6197C0613D3;
+        Wed,  4 Nov 2020 09:04:50 -0800 (PST)
+Received: by mail-lf1-x144.google.com with SMTP id v144so296629lfa.13;
+        Wed, 04 Nov 2020 09:04:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=cMu7ftuJKYWofdDf+mw7KOC/o+bzARuC9bdbjIr2veY=;
-        b=kIBCBW3l5LWCuLMq9XBIuuGqIIdYwn6PYTcQ1exPNdySkR2xoelVFIaBHnUZ9KoSem
-         jYPmc4SdHgZDzMmlmpNcbJO+2aOcixon7EzVQfu1Qqdmv/PZn2tRj+IWyWGjACD0GWGp
-         9mfhbvZI0/yUhFKn/eS4uf0RUj1GhYWw7X+nM3QUajXkVyPIHl5ojpW07kM709dLhHtw
-         DWwiCKzmk59qXjFwP3alt5h3WD11dgrtSyzsZ1G+Ddx++fQw8cZ+2Vy04TWX1h0ms0pd
-         gP3SNFSMmD0W7dhnMDUJWDsC9km6r43JrS+Sl+QWgtX68ciUCevjSIbzqYIMfGT7D6dE
-         JnLA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PM+5bKcMSZ46q1jbOvyiMjCDhehFrvPVMAJTjDaj6n4=;
+        b=moRvfq8ZkG8t5Kg9Ano7uqKBCHtYd+6/Dh9L3ch0s37yOSHy4Qbkc8V1xCgHUKe9x7
+         FUSpFbY9v/CxFJxXI/WcDDxAWD9eD6d3dq2b/stFKC+3nSUJ7r8YPxVHHrirlaLCnmVB
+         8r2JzG3/3rzRX4aPuDw9cgumrsuyWu1kBsN/TuEdXLkPy2zYO/ewiZ/tUj0Copxl2eb0
+         oy/l7U3epqG7FVcjj7skclXAFYb1V714SHELKvFWEqAky3QJijTy6k76hBZYKjXZ+Vja
+         2njW0tWN17zYJIK1DQSRm4xMU7lT1KfI8h6iT5dCkcL7j8wuzNpU2HA/r5omBI7fUjV4
+         kEpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=cMu7ftuJKYWofdDf+mw7KOC/o+bzARuC9bdbjIr2veY=;
-        b=NhNlIjBLXXmUOB0gClkNtsfVjbrio+Ibnc+5tq+goN/n8Ojx33D7fEnBkMqIYUvCnR
-         ROuPBQuIHhvT+K1DkW9dAFATrw2LkGePXN3wqIGqdQFb7i4Rda61JZJrPX6MbQsNwggq
-         bDhbDRO8lGkSmPY0/xT1oe2UHbxwhqijtwefbexyAQBww6FQVpglP89JsuYLlptjRtZT
-         /PLcA62agAYbwBEHkJ3ynseBiylvKHlCB4Uya3qb/KBgkLBfItHRMZSrp2ClVIGo/wWl
-         bWQDBu5pQiqUJwmAZ4suuz4a+tQ+pDVq0maUpzRIBX32QEj68IQ4oU0Jmia9tIbFq5QV
-         gGhQ==
-X-Gm-Message-State: AOAM533fZjY5OrD3/ss8EkOzSNPjhgLQ+QwrKhkFdx4uOx58Z3kLSSjY
-        Z2hlsm8Stnkzgr3FA+QJCKEx8A==
-X-Google-Smtp-Source: ABdhPJzzT3/ryOHyRUm9RNGwSYrm4NGLAOBXZVt3aH0Z/RdpUipHDPneULJNKdYZhn7JaOeU8xIWUQ==
-X-Received: by 2002:a17:90a:b94a:: with SMTP id f10mr5148918pjw.164.1604509418496;
-        Wed, 04 Nov 2020 09:03:38 -0800 (PST)
-Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id z22sm3056775pfa.220.2020.11.04.09.03.36
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PM+5bKcMSZ46q1jbOvyiMjCDhehFrvPVMAJTjDaj6n4=;
+        b=eel5+0UHqgD7MdCi6FXWU1WwHLjrjEhRI55vgfWahE8U/VN6Do74qz2SqxboIxfw5D
+         LL+ZNEBmrkbONnum/fe0IEmTvjBmioM5/taeELZgEzJ+5ZClgmh5o8Hy+y9MAxzndI/D
+         wOph2vtdyA2grba4CN9m1AAYGW/Mvt24a9VKjtwcEaAHoHZguj2+bObbMbuOrkTkIaMJ
+         9zTu6VvzPs2jGEmoPFKTNit77hi/NoHa5cnpIucynuWivKXm8BYkXy8y10WIBQeygpAL
+         iulXMzkkfhY15tfCP1VkEsiNmfrtlh+LyzeMMEqTi/yEX0u82F9F8NrHobRNc/PsMpWn
+         pW8Q==
+X-Gm-Message-State: AOAM530Zu9d8gvt8omK9bbf/ueJiE9jT/PEaDieS46iI+786t8+rLati
+        zCyJxstGH5wP2+ICHluedSc=
+X-Google-Smtp-Source: ABdhPJy98s4TXSinPs8ZXdUei0YQUzzDQ+3g2Spn1Am3ie9HfUhnzekmjUi6vDUFCaCiP4WKrNSgNQ==
+X-Received: by 2002:ac2:47f3:: with SMTP id b19mr10509958lfp.192.1604509489374;
+        Wed, 04 Nov 2020 09:04:49 -0800 (PST)
+Received: from localhost.localdomain (109-252-192-83.dynamic.spd-mgts.ru. [109.252.192.83])
+        by smtp.gmail.com with ESMTPSA id c4sm457931lfh.60.2020.11.04.09.04.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 09:03:37 -0800 (PST)
-Date:   Wed, 4 Nov 2020 10:03:35 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Suzuki Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>, coresight@lists.linaro.org,
-        Stephen Boyd <swboyd@chromium.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCHv2 2/4] coresight: tmc-etf: Fix NULL ptr dereference in
- tmc_enable_etf_sink_perf()
-Message-ID: <20201104170335.GA2892592@xps15>
-References: <bd8c136d-9dfa-a760-31f9-eb8d6698aced@arm.com>
- <20201023105431.GM2594@hirez.programming.kicks-ass.net>
- <2457de8f-8bc3-b350-fdc7-61276da31ce6@arm.com>
- <20201023131628.GY2628@hirez.programming.kicks-ass.net>
- <728fd89c-78f2-0c5c-0443-c91c62b02f0e@arm.com>
- <20201023134416.GA2628@hirez.programming.kicks-ass.net>
- <20201023203729.GA819775@xps15>
- <70e3a508af119be481c8f0a0acf0a44d@codeaurora.org>
- <20201030164806.GB1301231@xps15>
- <85c285361ce1c71b1a8274493aab9ca7@codeaurora.org>
+        Wed, 04 Nov 2020 09:04:48 -0800 (PST)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Peter Geis <pgwipeout@gmail.com>
+Cc:     linux-tegra@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/2] gpio: tegra: Add lockdep class
+Date:   Wed,  4 Nov 2020 20:04:22 +0300
+Message-Id: <20201104170423.23436-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <85c285361ce1c71b1a8274493aab9ca7@codeaurora.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 10:56:09PM +0530, Sai Prakash Ranjan wrote:
-> Hi Mathieu,
-> 
-> On 2020-10-30 22:18, Mathieu Poirier wrote:
-> > On Fri, Oct 30, 2020 at 01:29:56PM +0530, Sai Prakash Ranjan wrote:
-> > > Hello guys,
-> > > 
-> > > On 2020-10-24 02:07, Mathieu Poirier wrote:
-> > > > On Fri, Oct 23, 2020 at 03:44:16PM +0200, Peter Zijlstra wrote:
-> > > > > On Fri, Oct 23, 2020 at 02:29:54PM +0100, Suzuki Poulose wrote:
-> > > > > > On 10/23/20 2:16 PM, Peter Zijlstra wrote:
-> > > > > > > On Fri, Oct 23, 2020 at 01:56:47PM +0100, Suzuki Poulose wrote:
-> > > > >
-> > > > > > > > That way another session could use the same sink if it is free. i.e
-> > > > > > > >
-> > > > > > > > perf record -e cs_etm/@sink0/u --per-thread app1
-> > > > > > > >
-> > > > > > > > and
-> > > > > > > >
-> > > > > > > > perf record -e cs_etm/@sink0/u --per-thread app2
-> > > > > > > >
-> > > > > > > > both can work as long as the sink is not used by the other session.
-> > > > > > >
-> > > > > > > Like said above, if sink is shared between CPUs, that's going to be a
-> > > > > > > trainwreck :/ Why do you want that?
-> > > > > >
-> > > > > > That ship has sailed. That is how the current generation of systems are,
-> > > > > > unfortunately. But as I said, this is changing and there are guidelines
-> > > > > > in place to avoid these kind of topologies. With the future
-> > > > > > technologies, this will be completely gone.
-> > > > >
-> > > > > I understand that the hardware is like that, but why do you want to
-> > > > > support this insanity in software?
-> > > > >
-> > > > > If you only allow a single sink user (group) at the same time, your
-> > > > > problem goes away. Simply disallow the above scenario, do not allow
-> > > > > concurrent sink users if sinks are shared like this.
-> > > > >
-> > > > > Have the perf-record of app2 above fail because the sink is in-user
-> > > > > already.
-> > > >
-> > > > I agree with you that --per-thread scenarios are easy to deal with, but
-> > > > to
-> > > > support cpu-wide scenarios events must share a sink (because there is
-> > > > one event
-> > > > per CPU).  CPU-wide support can't be removed because it has been around
-> > > > for close to a couple of years and heavily used. I also think using the
-> > > > pid of
-> > > > the process that created the events, i.e perf, is a good idea.  We just
-> > > > need to
-> > > > agree on how to gain access to it.
-> > > >
-> > > > In Sai's patch you objected to the following:
-> > > >
-> > > > > +     struct task_struct *task = READ_ONCE(event->owner);
-> > > > > +
-> > > > > +     if (!task || is_kernel_event(event))
-> > > >
-> > > > Would it be better to use task_nr_pid(current) instead of event->owner?
-> > > > The end
-> > > > result will be exactly the same.  There is also no need to check the
-> > > > validity of
-> > > > @current since it is a user process.
-> > > >
-> > > 
-> > > We have devices deployed where these crashes are seen consistently,
-> > > so for some immediate relief, could we atleast get some fix in this
-> > > cycle without major design overhaul which would likely take more time.
-> > > Perhaps my first patch [1] without any check for owner or
-> > > I can post a new version as Suzuki suggested [2] dropping the export
-> > > of is_kernel_event(). Then we can always work on top of it based on
-> > > the
-> > > conclusion of this discussion, we will atleast not have the systems
-> > > crash in the meantime, thoughts?
-> > 
-> > For the time being I think [1], exactly the way it is, is a reasonable
-> > way
-> > forward.
-> > 
-> 
-> Sure, I just checked now and [1] still applies neatly on top of coresight
-> next branch.
-> 
-> [1] https://lore.kernel.org/patchwork/patch/1318098/
+Add lockdep class in order to fix debug warnings that are coming from a
+legit nested use of irq_set_irq_wake() by the Tegra GPIO driver.
 
-I have applied both patches that were part of the set.
+ WARNING: possible recursive locking detected
+ ...
+  (irq_set_irq_wake) from (tegra_gpio_irq_set_wake)
+  (tegra_gpio_irq_set_wake) from (irq_set_irq_wake)
+  (irq_set_irq_wake) from (brcmf_sdiod_intr_register [brcmfmac])
+ ...
 
-> 
-> Thanks,
-> Sai
-> 
-> -- 
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-> of Code Aurora Forum, hosted by The Linux Foundation
+Tested-by: Peter Geis <pgwipeout@gmail.com>
+Reported-by: Peter Geis <pgwipeout@gmail.com>
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+---
+
+Changelog:
+
+v2: - No changes.
+
+ drivers/gpio/gpio-tegra.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/drivers/gpio/gpio-tegra.c b/drivers/gpio/gpio-tegra.c
+index 86568154cdb3..98fc78739ebf 100644
+--- a/drivers/gpio/gpio-tegra.c
++++ b/drivers/gpio/gpio-tegra.c
+@@ -560,6 +560,9 @@ static const struct dev_pm_ops tegra_gpio_pm_ops = {
+ 	SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(tegra_gpio_suspend, tegra_gpio_resume)
+ };
+ 
++static struct lock_class_key gpio_lock_class;
++static struct lock_class_key gpio_request_class;
++
+ static int tegra_gpio_probe(struct platform_device *pdev)
+ {
+ 	struct tegra_gpio_info *tgi;
+@@ -661,6 +664,7 @@ static int tegra_gpio_probe(struct platform_device *pdev)
+ 		bank = &tgi->bank_info[GPIO_BANK(gpio)];
+ 
+ 		irq_set_chip_data(irq, bank);
++		irq_set_lockdep_class(irq, &gpio_lock_class, &gpio_request_class);
+ 		irq_set_chip_and_handler(irq, &tgi->ic, handle_simple_irq);
+ 	}
+ 
+-- 
+2.27.0
+
