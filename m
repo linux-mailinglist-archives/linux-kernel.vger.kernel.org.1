@@ -2,74 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 696982A637E
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 12:40:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2BD32A6383
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 12:41:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729700AbgKDLk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 06:40:27 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:59720 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728508AbgKDLkR (ORCPT
+        id S1729488AbgKDLkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 06:40:51 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:40296 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729508AbgKDLks (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 06:40:17 -0500
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0A4Be8gU113375;
-        Wed, 4 Nov 2020 05:40:08 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1604490008;
-        bh=u+EmaCcZGZfOS7Kpjqe/4peuPvaBmXgfP0TZ1evlUoE=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=Req7LZhdNEp43QOcjZYef0Yu+acx212Z+Kn45iVwidd+0MzCYWYLM6+dM+Ui92/hk
-         24RJTiIs55B7EsvgzfNFvaOozfFteTXraupY4mQD4o/X/6PtP5ZMq7K4ahaIzd33oL
-         p9GQQL0flYKhR9ZjCMF1vW8LCoY5XSxqI51ey+iI=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0A4Be8JW085269
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 4 Nov 2020 05:40:08 -0600
-Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 4 Nov
- 2020 05:40:08 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 4 Nov 2020 05:40:08 -0600
-Received: from [10.24.69.20] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0A4Be5sV097994;
-        Wed, 4 Nov 2020 05:40:06 -0600
-Subject: Re: [PATCH 0/3] Add gpio support for TI's J7200 platform
-To:     Faiz Abbas <faiz_abbas@ti.com>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-CC:     <nm@ti.com>, <t-kristo@ti.com>, <robh+dt@kernel.org>
-References: <20201102191120.20380-1-faiz_abbas@ti.com>
-From:   Lokesh Vutla <lokeshvutla@ti.com>
-Message-ID: <f6f7c9ee-46b6-e2f5-0762-0a264a3bb2e9@ti.com>
-Date:   Wed, 4 Nov 2020 17:10:04 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Wed, 4 Nov 2020 06:40:48 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A4BdhVI144676;
+        Wed, 4 Nov 2020 11:40:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=rma02KPg1kKHnISzToa1qVrQU80lIknQ5aS0+dySMKA=;
+ b=TWNQt4gM3JaDdDUBHnnI8fj7mB9KLjO0Dqdc4Gc9FdAZO6XAddNNmq0tZ6PQof0OQLa6
+ Vy8cUdzaMjJ/YytnkcFaBwkJZQ0Z9amMx0ipfD9jWf1FgfYgSRIrv0Gw/rfydzJ1V2BD
+ Db1n+3FapFp6g1GMEeSpQxwx2mUOYgfg3LVgdWlTI7+ncg9uaosCqMAOfDmYVLBSVydk
+ MdRV/AjXmfWKRjFrS43tmOAJldgKMpT4EvSj5a8yTmhmVVzHaXjQKlz0H5Y/g3KaGS2v
+ rDSnDYZX9j+kInn40q9A2CdTN7KCrz+of1qUemMkeHHWtQayEWydjmdsZzcaUrMfmFhl rw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 34hhvceae2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 04 Nov 2020 11:40:32 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A4BaV4r019096;
+        Wed, 4 Nov 2020 11:40:32 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 34hw0jruqb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 04 Nov 2020 11:40:32 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0A4BePp2017833;
+        Wed, 4 Nov 2020 11:40:25 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 04 Nov 2020 03:40:25 -0800
+Date:   Wed, 4 Nov 2020 14:40:15 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Markus Elfring <Markus.Elfring@web.de>
+Cc:     linux-kernel@vger.kernel.org,
+        Souptick Joarder <jrdr.linux@gmail.com>,
+        devel@driverdev.osuosl.org, linux-media@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michel Lespinasse <walken@google.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [v2] media: atomisp: Fix error handling path
+Message-ID: <20201104114015.GH18329@kadam>
+References: <1604455331-28031-1-git-send-email-jrdr.linux@gmail.com>
+ <65712450-1ee9-2dd3-cd43-f850807ae203@web.de>
+ <20201104083121.GG18329@kadam>
+ <85ff17ad-8aa7-a457-6e23-4f5c1c5152f2@web.de>
 MIME-Version: 1.0
-In-Reply-To: <20201102191120.20380-1-faiz_abbas@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <85ff17ad-8aa7-a457-6e23-4f5c1c5152f2@web.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9794 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 adultscore=0 bulkscore=0
+ mlxscore=0 suspectscore=0 spamscore=0 mlxlogscore=999 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011040087
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9794 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0
+ impostorscore=0 malwarescore=0 priorityscore=1501 mlxlogscore=999
+ bulkscore=0 phishscore=0 adultscore=0 mlxscore=0 lowpriorityscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011040087
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 03/11/20 12:41 am, Faiz Abbas wrote:
-> The following patches add gpio support for TI's J7200 platform.
+On Wed, Nov 04, 2020 at 11:30:29AM +0100, Markus Elfring wrote:
+> >>> Fixes: 14a638ab96c5 ("media: atomisp: use pin_user_pages() for memory
+> >>> allocation")
+> >>
+> >> Please delete a line break for this tag.
+> >
+> > Markus, the thing is that we all saw the line break and we just thought
+> > it didn't matter at all...
 > 
-> These patches were posted as a part of an older series but have now
-> been split into three parts. The 3 parts add configs, gpios and MMC/SD
-> related dts patches respectively.
+> Do you disagree to the known documentation then?
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst?id=4ef8451b332662d004df269d4cdeb7d9f31419b5#n123 
 
-Series looks good to me.
+The documentation is correct but no one wants you to constantly be
+nagging developers about minor stuff...
 
-Reviewed-by: Lokesh Vutla <lokeshvutla@ti.com>
+One thing that I do is I start to write an email and then if I realize
+it's not worth complaining about and I save it to my postponed messages
+folder.  Then I never send it and I forget about it completely.  I have
+currently have 740 messages in my postponed messages folder.  :P
 
-Thanks and regards,
-Lokesh
+That's a lot of whining and complaining which I never sent and the world
+is the more beautiful for it.
+
+regards,
+dan carpenter
+
