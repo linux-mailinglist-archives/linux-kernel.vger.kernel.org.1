@@ -2,151 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 387932A6D74
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 20:05:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D10132A6D76
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 20:05:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730713AbgKDTEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 14:04:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37556 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727098AbgKDTEy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 14:04:54 -0500
-Received: from kernel.org (83-245-197-237.elisa-laajakaista.fi [83.245.197.237])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E1F71206D9;
-        Wed,  4 Nov 2020 19:04:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604516692;
-        bh=fyUM4moJMRF9g5/7ofZBd/q6w2cVQ6ALWSxN7yCG0yI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KsRiZ5o/+GRPMFkvMxbe8KgqmtDlnz3kagsNjQ5/fA89FCjg0AoTX8p6KuHXcEQRd
-         3M3J0wMjgzNPnREWUZa6x9n4VPaVopCcy4Sx66wYUGhkGjMLXqH804isPMNcQEAJTX
-         1yrc4waLOpV7//9Xpy4PElK1JpZLmFKPTNIO6WDQ=
-Date:   Wed, 4 Nov 2020 21:04:43 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        Serge Ayoun <serge.ayoun@intel.com>, akpm@linux-foundation.org,
-        andriy.shevchenko@linux.intel.com, asapek@google.com,
-        cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com, kai.huang@intel.com,
-        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
-        luto@kernel.org, nhorman@redhat.com, npmccallum@redhat.com,
-        puiterwijk@redhat.com, rientjes@google.com, tglx@linutronix.de,
-        yaozhangx@google.com, mikko.ylinen@intel.com
-Subject: Re: [PATCH v40 03/24] x86/sgx: Initialize metadata for Enclave Page
- Cache (EPC) sections
-Message-ID: <20201104190443.GA318315@kernel.org>
-References: <20201104145430.300542-1-jarkko.sakkinen@linux.intel.com>
- <20201104145430.300542-4-jarkko.sakkinen@linux.intel.com>
- <20201104182129.GD23298@zn.tnic>
+        id S1730883AbgKDTFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 14:05:21 -0500
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:34925 "EHLO
+        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727098AbgKDTFT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 14:05:19 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id 36E82970;
+        Wed,  4 Nov 2020 14:05:18 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Wed, 04 Nov 2020 14:05:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=jjy2HccS9l9hIwU+k7ne7oMpM36
+        YPjEC76Zvpd5ZrLs=; b=IVVHr4HsO1gqpwqTnMBEJhLDXloh8lr8FNs/k0wXfws
+        4rqkw33p59s+4/2SHWAAN3nThKGQ5PWhKXPXVM3AtKh9ifSD9pS50UBKL2n3Kd20
+        TqtJP1Fwu9Wawpme++FwjajD861b26NxRaCV2Q9QJLMm/e9H8N5jdl76/RPNZOI0
+        Nqr9G/8M6yKEffYo+3ztbjv2PMgzZbwPCX0x9E9gQSJuHUoOCxcJJVsPhze97Hoo
+        BOu3IaR2lKNROpGya6XNfaO1hxqtVcUTeubt+mQCQmzfqKDcbxSeSYw3gNN6gMyz
+        VFG088aef62O5O6sF0DbJAp5kbLMED+HPBr1JYF28tA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=jjy2Hc
+        cS9l9hIwU+k7ne7oMpM36YPjEC76Zvpd5ZrLs=; b=EnXIIu8JQgJLOZfFbkPmD0
+        X7RIGdUBolkGycUlq86ENoewwfZdGA2Qzu5kY0iRYUoS/8xGkMWPc+zOwXArhsX2
+        r8b66EauK59KwpCmcANZ2cS52IhgwRoeSsCIkAruQYUz0Wy/N5HQhukRUSZFRR7V
+        YxlB0RFIalE6EO0m/olRSRXJ3vycLGSIJVTbRCzypgPS2yoXO0WgYhLp9EjHGtFV
+        /VDmsesYAdDruLLAUwOLv8Uz+PasI2DQITisw6aLJPdwr35R0xHAqq/WQH+ayyvq
+        QhhdasVED3hg9TeCm4JL8Znxs3oAOk6QJGkoiheDaxO4LwfqkQCITPEz50JfNIOA
+        ==
+X-ME-Sender: <xms:bfuiX6wmQknUB1BorG0Vy6ofTmjvS3DsAQXfCzP4dsXSh0_4EaT_Hg>
+    <xme:bfuiX2Qbb7Y6aa2wP69qO5DGqcOGKr69C4L10KOJ2x36FDx9SL0hjnIvLQYQwyS8g
+    LyQGjhyk6Yo2qODmUY>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddthedguddvudcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihi
+    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
+    htthgvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheei
+    heegudenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedune
+    curfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:bfuiX8XZem_eeColnQ-71j1yTg108eULw8RO4Xs3f-m7nQVylg1XWA>
+    <xmx:bfuiXwgjdbP38KIKUukV4C0iLGY9xr-tmZzar9PyhnuebqOtfD9XBg>
+    <xmx:bfuiX8De_B1-kVbJ96BSKLZl2NbaYNfhgQNU5yxCr0P5Ev4l71OBLQ>
+    <xmx:bfuiX_MDfRrC-Z8kED_uFA0q-37ylNWYNXaWa3FlD0C0kwtMhwnqNA>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id D7D74306467E;
+        Wed,  4 Nov 2020 14:05:16 -0500 (EST)
+Date:   Wed, 4 Nov 2020 20:05:15 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Matteo Scordino <matteo.scordino@gmail.com>
+Cc:     wens@csie.org, robh+dt@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 5/6] ARM: dts: sun8i: s3: Add dts for the Elimo
+ Initium SBC
+Message-ID: <20201104190515.nppp633zkn2s4j73@gilmour.lan>
+References: <20201029022000.601913-1-matteo.scordino@gmail.com>
+ <20201030234325.5865-6-matteo.scordino@gmail.com>
+ <20201102100632.g5tozkzfjzzch4ny@gilmour.lan>
+ <5064a1921b0ba98289c13f325e11347b09cd3672.camel@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="r442x3op4ovhkptd"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201104182129.GD23298@zn.tnic>
+In-Reply-To: <5064a1921b0ba98289c13f325e11347b09cd3672.camel@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 07:21:29PM +0100, Borislav Petkov wrote:
-> On Wed, Nov 04, 2020 at 04:54:09PM +0200, Jarkko Sakkinen wrote:
-> > +static void __init sgx_init(void)
-> > +{
-> > +	int i;
-> > +
-> > +	if (!boot_cpu_has(X86_FEATURE_SGX))
-> 
-> Guys, you need to build-test *every* *single* patch - otherwise we break
-> bisectability and that is a no-no:
 
-I've done it quite a few times (every time I've rebased my tree).  I did
-today too before sending but forgot to redo git format-patch again (was
-the very last thing). In my tree the order is:
+--r442x3op4ovhkptd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-e987eb0c95dd (HEAD -> master, origin/master, origin/HEAD) x86/sgx: Update MAINTAINERS
-90dc0ee37f44 docs: x86/sgx: Document SGX kernel architecture
-1c2e9bdab128 x86/sgx: Add ptrace() support for the SGX driver
-05ce4345fb5f x86/sgx: Add a page reclaimer
-94c1f778fa09 selftests/x86: Add a selftest for SGX
-741b631d197b x86/vdso: Implement a vDSO for Intel SGX enclave call
-5744b02641ff x86/traps: Attempt to fixup exceptions in vDSO before signaling
-e957c7e79dd0 x86/fault: Add helper function to sanitize error code
-96cc520b2bc9 x86/vdso: Add support for exception fixup in vDSO functions
-4aff9d81b2fe x86/sgx: Add SGX_IOC_ENCLAVE_PROVISION
-ea9bc917c469 x86/sgx: Add SGX_IOC_ENCLAVE_INIT
-6e61e843291d x86/sgx: Add SGX_IOC_ENCLAVE_ADD_PAGES
-4235ce22235e x86/sgx: Add SGX_IOC_ENCLAVE_CREATE
-681299401c91 x86/sgx: Add SGX misc driver interface
-fbd69fd9acf4 mm: Add 'mprotect' hook to struct vm_operations_struct
-93b27a8908aa x86/sgx: Add SGX page allocator functions
-5984a2ca130c x86/cpu/intel: Add nosgx kernel parameter
-e131efe5ba06 x86/cpu/intel: Detect SGX support
-b0bacb54d36c x86/mm: x86/sgx: Signal SIGSEGV with PF_SGX
-0c64b4c07298 x86/sgx: Initialize metadata for Enclave Page Cache (EPC) sections
-358d17098c4c x86/cpufeatures: x86/msr: Add Intel SGX Launch Control hardware bits
-8f7ab60e5458 x86/cpufeatures: x86/msr: Add Intel SGX hardware bits
-0fb18ca935cf x86/sgx: Add wrappers for ENCLS functions
-3dbc95582baf x86/sgx: Add SGX architectural data structures
+On Tue, Nov 03, 2020 at 04:33:26PM +0000, Matteo Scordino wrote:
+> >=20
+> > >  	sun8i-t3-cqa3t-bv3.dtb \
+> > >  	sun8i-v3s-licheepi-zero.dtb \
+> > >  	sun8i-v3s-licheepi-zero-dock.dtb \
+> > > diff --git a/arch/arm/boot/dts/sun8i-s3-elimo-initium.dts b/arch/arm/=
+boot/dts/sun8i-s3-elimo-initium.dts
+> > > new file mode 100644
+> > > index 000000000000..7677ddc07bf9
+> > > --- /dev/null
+> > > +++ b/arch/arm/boot/dts/sun8i-s3-elimo-initium.dts
+> > > @@ -0,0 +1,28 @@
+> > > +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> > > +/*
+> > > + * Copyright (C) 2020 Matteo Scordino <matteo@elimo.io>
+> > > + */
+> > > +
+> > > +/dts-v1/;
+> > > +#include "sun8i-s3-elimo-impetus.dtsi"
+> > > +
+> > > +/ {
+> > > +	model =3D "Elimo Initium";
+> > > +	compatible =3D "elimo,initium", "elimo,impetus", "sochip,s3",
+> > > +    "allwinner,sun8i-v3";
+> >=20
+> > You should indent that properly
+>=20
+> Double ouch.=20
+> However, how is a multiline dt property supposed to be indented?=20
+> I have tried a few combinations but nothing seemed to make checkpatch.pl =
+happy,
+> except leaving no space at all at the beginning of the line. But I think =
+makes it
+> quite unreadable?
 
-I always do this before I send the patch set (or rebase my tree):
+We usually pad with tabs, then spaces to match the opening quotes, like
 
-for x in {23..0}
-do
-git checkout master~$x
-git clean -f -d -x
-make tinyconfig && cat >> .config <<EOF
-CONFIG_64BIT=y   
-CONFIG_CRYPTO=y
-CONFIG_CRYPTO_SHA256=y
-CONFIG_X86_SGX=y
-CONFIG_DEBUG_INFO=y
-EOF
-yes '' | make oldconfig && make CC="ccache gcc" -j$(nproc) || break
-git --no-pager log --oneline -1 >> success.txt
-done
+compatible =3D "elimo,initium", "elimo,impetus", "sochip,s3",
+	     "allwinner,sun8i-v3";
 
-The order is the only difference between the patch set and my tree (i.e.
-diff's do not conflict between the orderings).
+Maxime
 
-> arch/x86/kernel/cpu/sgx/main.c: In function ‘sgx_init’:
-> arch/x86/kernel/cpu/sgx/main.c:172:20: error: ‘X86_FEATURE_SGX’ undeclared (first use in this function); did you mean ‘X86_FEATURE_SMX’?
->   172 |  if (!boot_cpu_has(X86_FEATURE_SGX))
->       |                    ^~~~~~~~~~~~~~~
-> ./arch/x86/include/asm/cpufeature.h:118:24: note: in definition of macro ‘cpu_has’
->   118 |  (__builtin_constant_p(bit) && REQUIRED_MASK_BIT_SET(bit) ? 1 : \
->       |                        ^~~
-> arch/x86/kernel/cpu/sgx/main.c:172:7: note: in expansion of macro ‘boot_cpu_has’
->   172 |  if (!boot_cpu_has(X86_FEATURE_SGX))
->       |       ^~~~~~~~~~~~
-> arch/x86/kernel/cpu/sgx/main.c:172:20: note: each undeclared identifier is reported only once for each function it appears in
->   172 |  if (!boot_cpu_has(X86_FEATURE_SGX))
->       |                    ^~~~~~~~~~~~~~~
-> ./arch/x86/include/asm/cpufeature.h:118:24: note: in definition of macro ‘cpu_has’
->   118 |  (__builtin_constant_p(bit) && REQUIRED_MASK_BIT_SET(bit) ? 1 : \
->       |                        ^~~
-> arch/x86/kernel/cpu/sgx/main.c:172:7: note: in expansion of macro ‘boot_cpu_has’
->   172 |  if (!boot_cpu_has(X86_FEATURE_SGX))
->       |       ^~~~~~~~~~~~
-> make[4]: *** [scripts/Makefile.build:283: arch/x86/kernel/cpu/sgx/main.o] Error 1
-> make[3]: *** [scripts/Makefile.build:500: arch/x86/kernel/cpu/sgx] Error 2
-> make[2]: *** [scripts/Makefile.build:500: arch/x86/kernel/cpu] Error 2
-> make[2]: *** Waiting for unfinished jobs....
-> make[1]: *** [scripts/Makefile.build:500: arch/x86/kernel] Error 2
-> make[1]: *** Waiting for unfinished jobs....
-> make: *** [Makefile:1799: arch/x86] Error 2
-> make: *** Waiting for unfinished jobs....
-> 
-> -- 
-> Regards/Gruss,
->     Boris.
-> 
-> https://people.kernel.org/tglx/notes-about-netiquette
+--r442x3op4ovhkptd
+Content-Type: application/pgp-signature; name="signature.asc"
 
-/Jarkko
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX6L7awAKCRDj7w1vZxhR
+xWXwAQCgVVnhs9mVZlxOlDXTEoPwetnavVYbqxop9mWCp6ts4gD/aA4Gu7KLB+xO
+ol188G9HW2NOOY+jGk+wJY2EN/KHxg0=
+=+zfh
+-----END PGP SIGNATURE-----
+
+--r442x3op4ovhkptd--
