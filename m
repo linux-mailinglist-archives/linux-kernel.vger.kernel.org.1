@@ -2,126 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E9372A6732
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 16:12:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3883E2A6734
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 16:14:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730545AbgKDPMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 10:12:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52306 "EHLO
+        id S1730279AbgKDPOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 10:14:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726801AbgKDPMt (ORCPT
+        with ESMTP id S1726796AbgKDPOG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 10:12:49 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9A98C0613D3;
-        Wed,  4 Nov 2020 07:12:48 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1604502765;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=SHy+znafm/VyROcHvLpycULzJCGKvQvcCR6rmrfdldQ=;
-        b=e6U8IuJxtG+Q+uz7AeunWosCEZjyHrzQPNRHrfw60TfFZl9Fq44C2WMnk0kWXuPiT+FMHB
-        +86HzLSQuhEFRo7B9OaGDu4QjmOrU+PVT7nt8AIaMai6tEcNAJIKzjlT0ZEitPk5OpUKAs
-        AdzaeW7vnR14gRag9mouf6v/hq4m33IjlkDNBp/wrQ7OcbJnHcQQoqUROhrc6X7ScE4uT+
-        pRxcbKBCqPCRDhATA99z1H97mgJaiHIJzbdoTA49eLUf1vTW6qxu6XDegiTa0dDXHJqde+
-        NrYMdH9cqbso6flrWubT6ztoZxNYddBYJiCic/etk/uUsHAHBMCRuoX9+IPvJQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1604502765;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=SHy+znafm/VyROcHvLpycULzJCGKvQvcCR6rmrfdldQ=;
-        b=IF9+NXuFztp+x16ZEFmqfhirR3N2axqAA1SitxW4k5Am6sms24TnYzKRehJ06bQm9++OjY
-        HF/z/NVBiFTio7Dg==
-To:     Mike Galbraith <efault@gmx.de>,
-        Gratian Crisan <gratian.crisan@ni.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org,
-        Brandon Streiff <brandon.streiff@ni.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Darren Hart <dvhart@infradead.org>,
-        James Minor <james.minor@ni.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [PATCH] futex: Handle transient "ownerless" rtmutex state correctly
-In-Reply-To: <a9e88887c027b11596cd7fb96c425011c36e5d29.camel@gmx.de>
-References: <87a6w6x7bb.fsf@ni.com> <878sbixbk4.fsf@ni.com> <2376f4e71c638aee215a4911e5efed14c5adf56e.camel@gmx.de> <5f536491708682fc3b86cb5b7bc1e05ffa3521e7.camel@gmx.de> <874km5mnbf.fsf@nanos.tec.linutronix.de> <871rh9mkvr.fsf@nanos.tec.linutronix.de> <87v9ell0cn.fsf@nanos.tec.linutronix.de> <a9e88887c027b11596cd7fb96c425011c36e5d29.camel@gmx.de>
-Date:   Wed, 04 Nov 2020 16:12:44 +0100
-Message-ID: <87sg9pkvf7.fsf@nanos.tec.linutronix.de>
+        Wed, 4 Nov 2020 10:14:06 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CDB5C0613D3
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 07:14:06 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id x13so16833719pgp.7
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 07:14:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=ZNNounMQIMRz8K10oG/OB7lWGgxV/OEsHEiMQfK/Lv8=;
+        b=C/P/mZbeUHdxW56yw6dSDbVuQsqw1gkds/wYzRuOe2oRN6NyBlmL3+CqoHKnnp+HnH
+         T19nKeaxHK+tfJ6tLfbXguZEMjaJHo3Bk47KrcdsnNnVa0ue3V2Tl8PkwnDezoGrTbWA
+         jKdiWDlFUnE6XliZpn58za66usgob8wv1LgqX772mLLzYIWbNLnNR6WlzmwlODeZV1JZ
+         +LNL7mzJvjxOkdcmG67P1WJx9ltZmi5SXM1Z1ytZTDM+Hz4XPaZ5fS1h7uyP9nkhkU66
+         w2QrjOEsRFw5TL1rRBZb43tEQTuXJX3wkF0uEyhM2sY7fjG352+yOdl+VlytMIS/jRvO
+         +WFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=ZNNounMQIMRz8K10oG/OB7lWGgxV/OEsHEiMQfK/Lv8=;
+        b=EV/n87dCBtJ7OWCz2L8iW9oBD3u64DBxGjjfAeTP5Fkgc6y9JwJZlLbZ2wydi4rwsc
+         HJc0UfGiPT0cWI74dCvWscyxcjodc05GinZGt/5QZfcCRflBUjOPdxDLJcpMMItcsmfa
+         jeAFbi3puLUvehLX3dQbbABHc/uYoUjCjHYQD1qcrfqterP7CcXPJuSwxQtcsfVSRk+T
+         8WH/XQRBkzYJf/6Hayi31iKB9ahezvrHmDOkSsvnZVxNOSiNKRdvqllbdkRFfonNStc/
+         9xFti14FWPTNMBWiN+pnW7Whb/UzUr1K+0/y0dH8gZu313VVHqCosU3RZDYXC1iVKxm3
+         0TLw==
+X-Gm-Message-State: AOAM530YOXbwKRoMl3vG+nLYxXpZk9Wcp9C/1bUJQcE5W/rV51USept+
+        kjHdwUcDl5QZLcxL/RMPPUU=
+X-Google-Smtp-Source: ABdhPJwqYTp5o+8CbcyUaE1B/F7rurtuzNjVeMUlFiaH2AP7l1ZV54Rnfv02uM64/jAslPkDIW5S2A==
+X-Received: by 2002:a62:2ec7:0:b029:164:4811:e1d6 with SMTP id u190-20020a622ec70000b02901644811e1d6mr31715059pfu.12.1604502845856;
+        Wed, 04 Nov 2020 07:14:05 -0800 (PST)
+Received: from localhost ([160.202.157.3])
+        by smtp.gmail.com with ESMTPSA id t32sm2900277pgl.0.2020.11.04.07.14.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Nov 2020 07:14:05 -0800 (PST)
+Date:   Wed, 4 Nov 2020 20:43:59 +0530
+From:   Deepak R Varma <mh12gx2825@gmail.com>
+To:     Felix Kuehling <Felix.Kuehling@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     mh12gx2825@gmail.com
+Subject: [PATCH] drm/amdkfd: replace idr_init() by idr_init_base()
+Message-ID: <20201104151359.GA69034@localhost>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Galbraith <efault@gmx.de>
+idr_init() uses base 0 which is an invalid identifier. The new function
+idr_init_base allows IDR to set the ID lookup from base 1. This avoids
+all lookups that otherwise starts from 0 since 0 is always unused.
 
-Gratian managed to trigger the BUG_ON(!newowner) in fixup_pi_state_owner().
-This is one possible chain of events leading to this:
+References: commit 6ce711f27500 ("idr: Make 1-based IDRs more efficient")
 
-Task Prio       Operation
-T1   120	lock(F)
-T2   120	lock(F)   -> blocks (top waiter)
-T3   50 (RT)	lock(F)   -> boosts T3 and blocks (new top waiter)
-XX   		timeout/  -> wakes T2
-		signal
-T1   50		unlock(F) -> wakes T3 (rtmutex->owner == NULL, waiter bit is set)
-T2   120	cleanup   -> try_to_take_mutex() fails because T3 is the top waiter
-     			     and the lower priority T2 cannot steal the lock.
-     			  -> fixup_pi_state_owner() sees newowner == NULL -> BUG_ON()
-
-The comment states that this is invalid and rt_mutex_real_owner() must
-return a non NULL owner when the trylock failed, but in case of a queued
-and woken up waiter rt_mutex_real_owner() == NULL is a valid transient
-state. The higher priority waiter has simply not yet managed to take over
-the rtmutex.
-
-The BUG_ON() is therefore wrong and this is just another retry condition in
-fixup_pi_state_owner().
-
-Drop the locks, so that T3 can make progress, and then try the fixup again.
-
-Gratian provided a great analysis, traces and a reproducer. The analysis is
-to the point, but it confused the hell out of that tglx dude who had to
-page in all the futex horrors again. Condensed version is above. 
-
-[ tglx: Wrote comment and changelog ]
-
-Fixes: c1e2f0eaf015 ("futex: Avoid violating the 10th rule of futex")
-Reported-by: Gratian Crisan <gratian.crisan@ni.com>
-Signed-off-by: Mike Galbraith <efault@gmx.de>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/87a6w6x7bb.fsf@ni.com
+Signed-off-by: Deepak R Varma <mh12gx2825@gmail.com>
 ---
- kernel/futex.c |   16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/amd/amdkfd/kfd_events.c  | 2 +-
+ drivers/gpu/drm/amd/amdkfd/kfd_process.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
---- a/kernel/futex.c
-+++ b/kernel/futex.c
-@@ -2380,10 +2380,22 @@ static int fixup_pi_state_owner(u32 __us
- 		}
+diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_events.c b/drivers/gpu/drm/amd/amdkfd/kfd_events.c
+index ba2c2ce0c55a..b3339b53c8ad 100644
+--- a/drivers/gpu/drm/amd/amdkfd/kfd_events.c
++++ b/drivers/gpu/drm/amd/amdkfd/kfd_events.c
+@@ -230,7 +230,7 @@ static int create_other_event(struct kfd_process *p, struct kfd_event *ev)
+ void kfd_event_init_process(struct kfd_process *p)
+ {
+ 	mutex_init(&p->event_mutex);
+-	idr_init(&p->event_idr);
++	idr_init_base(&p->event_idr, 1);
+ 	p->signal_page = NULL;
+ 	p->signal_event_count = 0;
+ }
+diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_process.c b/drivers/gpu/drm/amd/amdkfd/kfd_process.c
+index 65803e153a22..022e61babe30 100644
+--- a/drivers/gpu/drm/amd/amdkfd/kfd_process.c
++++ b/drivers/gpu/drm/amd/amdkfd/kfd_process.c
+@@ -1289,7 +1289,7 @@ struct kfd_process_device *kfd_create_process_device_data(struct kfd_dev *dev,
+ 	list_add(&pdd->per_device_list, &p->per_device_data);
  
- 		/*
--		 * Since we just failed the trylock; there must be an owner.
-+		 * The trylock just failed, so either there is an owner or
-+		 * there is a higher priority waiter than this one.
- 		 */
- 		newowner = rt_mutex_owner(&pi_state->pi_mutex);
--		BUG_ON(!newowner);
-+		/*
-+		 * If the higher priority waiter has not yet taken over the
-+		 * rtmutex then newowner is NULL. We can't return here with
-+		 * that state because it's inconsistent vs. the user space
-+		 * state. So drop the locks and try again. It's a valid
-+		 * situation and not any different from the other retry
-+		 * conditions.
-+		 */
-+		if (unlikely(!newowner)) {
-+			ret = -EAGAIN;
-+			goto handle_err;
-+		}
- 	} else {
- 		WARN_ON_ONCE(argowner != current);
- 		if (oldowner == current) {
+ 	/* Init idr used for memory handle translation */
+-	idr_init(&pdd->alloc_idr);
++	idr_init_base(&pdd->alloc_idr, 1);
+ 
+ 	return pdd;
+ 
+-- 
+2.25.1
+
