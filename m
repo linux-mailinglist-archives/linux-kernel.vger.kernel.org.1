@@ -2,117 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E25F02A5C89
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 03:00:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B91D2A5C0D
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 02:39:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729883AbgKDCAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 21:00:24 -0500
-Received: from mail-io1-f65.google.com ([209.85.166.65]:39434 "EHLO
-        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725765AbgKDCAY (ORCPT
+        id S1730443AbgKDBj6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 20:39:58 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:7044 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728567AbgKDBj5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 21:00:24 -0500
-Received: by mail-io1-f65.google.com with SMTP id p7so20634616ioo.6;
-        Tue, 03 Nov 2020 18:00:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=q7LFjEeJrDM+Fx+leScIeW6KxbYUSuFa1TzeyDsXSiA=;
-        b=YtVU1aqch+v9kSIpUxRVjsCVTLFGGpZ8gBcQ+k02JITJStbpI+jeRdIdxejVKtFp0H
-         qrvSNli06QigfAOhLQJ/2ObK+LhHPTXIuZwlQv30eHb7kKU9njVwLx+MpHUOw2oKf0rS
-         K9etz/N28ULhl3Cq0/7SON67t3B/672qILI5Gaf3Ys1yHzPe3ZxCM0zbtVGa3BAjLpsv
-         GlhdeNBrlFlFay01s/nO7BVxq0S6MLUsCJSJ41u+dIyslt1Z17QMPxgTjfAkN/V6gYko
-         0GxhCXdQ0nSM9IOkoBwcFbpgrb1G8XHJpx9ixL5KFP3HtXGHY+u5vAaoXfitHnWlYTuJ
-         kI9A==
-X-Gm-Message-State: AOAM531vNZDfWlL+tOj612UdeaY4h2s6/bi1GdPWrMDNKan5qcoa/9h8
-        qBcSGIYegPnlUvn7qX54ulJUX6qt2hxW84eQqW9Kee4D8Z0qKw==
-X-Google-Smtp-Source: ABdhPJxeigkHoKzdirZZzu0ZiPn/fWy8le1kZl9BwU/cad6newK3owJHQ7FnCSbKbHRWFyT2GOJDKmMuJBOtmzwPzNs=
-X-Received: by 2002:a6b:dc0f:: with SMTP id s15mr15979794ioc.180.1604455222049;
- Tue, 03 Nov 2020 18:00:22 -0800 (PST)
+        Tue, 3 Nov 2020 20:39:57 -0500
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CQq8R6N6pzhgNS;
+        Wed,  4 Nov 2020 09:39:51 +0800 (CST)
+Received: from huawei.com (10.175.113.32) by DGGEMS407-HUB.china.huawei.com
+ (10.3.19.207) with Microsoft SMTP Server id 14.3.487.0; Wed, 4 Nov 2020
+ 09:39:44 +0800
+From:   Liu Shixin <liushixin2@huawei.com>
+To:     Alexander Viro <viro@zeniv.linux.org.uk>
+CC:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        "Liu Shixin" <liushixin2@huawei.com>
+Subject: [PATCH] fs/binfmt_elf: free interpreter in load_elf_binary
+Date:   Wed, 4 Nov 2020 10:06:35 +0800
+Message-ID: <20201104020635.1906023-1-liushixin2@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <1604387525-23400-1-git-send-email-yangtiezhu@loongson.cn> <1604387525-23400-2-git-send-email-yangtiezhu@loongson.cn>
-In-Reply-To: <1604387525-23400-2-git-send-email-yangtiezhu@loongson.cn>
-From:   Huacai Chen <chenhc@lemote.com>
-Date:   Wed, 4 Nov 2020 10:00:10 +0800
-Message-ID: <CAAhV-H4WfaCLuCzvCJx-UriqgPAz2b0H6LGwMhyhRaxvuSAMwQ@mail.gmail.com>
-Subject: Re: [PATCH v3 1/6] MIPS: Loongson64: Do not write the read only field
- LPA of CP0_CONFIG3
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.32]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Tiezhu,
+The file interpreter is allocated in load_elf_binary, but not freed
+in the case interp_elf_ex is NULL.
+We add a new mark out_free_file for this case to free interpreter.
 
-On Tue, Nov 3, 2020 at 3:13 PM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
->
-> The field LPA of CP0_CONFIG3 register is read only for Loongson64, so the
-> write operations are meaningless, remove them.
->
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> ---
->
-> v2: No changes
-> v3: No changes
->
->  arch/mips/include/asm/mach-loongson64/kernel-entry-init.h | 8 --------
->  arch/mips/loongson64/numa.c                               | 3 ---
->  2 files changed, 11 deletions(-)
->
-> diff --git a/arch/mips/include/asm/mach-loongson64/kernel-entry-init.h b/arch/mips/include/asm/mach-loongson64/kernel-entry-init.h
-> index 87a5bfb..e4d77f4 100644
-> --- a/arch/mips/include/asm/mach-loongson64/kernel-entry-init.h
-> +++ b/arch/mips/include/asm/mach-loongson64/kernel-entry-init.h
-> @@ -19,10 +19,6 @@
->         .macro  kernel_entry_setup
->         .set    push
->         .set    mips64
-> -       /* Set LPA on LOONGSON3 config3 */
-> -       mfc0    t0, CP0_CONFIG3
-> -       or      t0, (0x1 << 7)
-> -       mtc0    t0, CP0_CONFIG3
-Sorry for the late response, I have the same worry as Jiaxun. As you
-know, Loongson's user manuals are not always correct, but the original
-code comes from Loongson are usually better. So, my opinion is "Don't
-change it if it doesn't break anything".
+This memory leak is catched when kmemleak is enabled in kernel,
+the report looks like below:
 
-Huacai
+unreferenced object 0xffff8b6e9fd41400 (size 488):
+  comm "service", pid 4095, jiffies 4300970844 (age 49.618s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    e0 08 be b9 6e 8b ff ff 00 13 04 b7 6e 8b ff ff  ....n.......n...
+  backtrace:
+    [<00000000eacadaa2>] kmem_cache_alloc+0x164/0x320
+    [<0000000090fb7bf2>] __alloc_file+0x2a/0x140
+    [<00000000ff8fab86>] alloc_empty_file+0x4b/0x100
+    [<000000003ab9b00d>] path_openat+0x4a/0xe20
+    [<0000000027e3a067>] do_filp_open+0xb9/0x150
+    [<000000000edebcac>] do_open_execat+0xa6/0x250
+    [<000000008845564e>] open_exec+0x31/0x60
+    [<00000000e6e6e1ca>] load_elf_binary+0x1dd/0x1b60
+    [<000000004515d8f0>] do_execveat_common.isra.39+0xaa0/0x1000
+    [<000000002ca5e83f>] __x64_sys_execve+0x37/0x40
+    [<00000000beb519e4>] do_syscall_64+0x56/0xa0
+    [<000000009cf54d51>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
->         /* Set ELPA on LOONGSON3 pagegrain */
->         mfc0    t0, CP0_PAGEGRAIN
->         or      t0, (0x1 << 29)
-> @@ -54,10 +50,6 @@
->         .macro  smp_slave_setup
->         .set    push
->         .set    mips64
-> -       /* Set LPA on LOONGSON3 config3 */
-> -       mfc0    t0, CP0_CONFIG3
-> -       or      t0, (0x1 << 7)
-> -       mtc0    t0, CP0_CONFIG3
->         /* Set ELPA on LOONGSON3 pagegrain */
->         mfc0    t0, CP0_PAGEGRAIN
->         or      t0, (0x1 << 29)
-> diff --git a/arch/mips/loongson64/numa.c b/arch/mips/loongson64/numa.c
-> index cf9459f..c7e3cced 100644
-> --- a/arch/mips/loongson64/numa.c
-> +++ b/arch/mips/loongson64/numa.c
-> @@ -40,9 +40,6 @@ static void enable_lpa(void)
->         unsigned long value;
->
->         value = __read_32bit_c0_register($16, 3);
-> -       value |= 0x00000080;
-> -       __write_32bit_c0_register($16, 3, value);
-> -       value = __read_32bit_c0_register($16, 3);
->         pr_info("CP0_Config3: CP0 16.3 (0x%lx)\n", value);
->
->         value = __read_32bit_c0_register($5, 1);
-> --
-> 2.1.0
->
+Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+---
+ fs/binfmt_elf.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
+index fa50e8936f5f..e223d798e5d8 100644
+--- a/fs/binfmt_elf.c
++++ b/fs/binfmt_elf.c
+@@ -907,7 +907,7 @@ static int load_elf_binary(struct linux_binprm *bprm)
+ 		interp_elf_ex = kmalloc(sizeof(*interp_elf_ex), GFP_KERNEL);
+ 		if (!interp_elf_ex) {
+ 			retval = -ENOMEM;
+-			goto out_free_ph;
++			goto out_free_file;
+ 		}
+ 
+ 		/* Get the exec headers */
+@@ -1316,6 +1316,7 @@ static int load_elf_binary(struct linux_binprm *bprm)
+ out_free_dentry:
+ 	kfree(interp_elf_ex);
+ 	kfree(interp_elf_phdata);
++out_free_file:
+ 	allow_write_access(interpreter);
+ 	if (interpreter)
+ 		fput(interpreter);
+-- 
+2.25.1
+
