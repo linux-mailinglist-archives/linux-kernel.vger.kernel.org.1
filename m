@@ -2,121 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 729242A6266
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 11:43:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 129A62A6269
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 11:44:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729487AbgKDKm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 05:42:59 -0500
-Received: from foss.arm.com ([217.140.110.172]:34728 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727923AbgKDKm6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 05:42:58 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C0E9813D5;
-        Wed,  4 Nov 2020 02:42:57 -0800 (PST)
-Received: from [10.57.20.162] (unknown [10.57.20.162])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BAEEE3F66E;
-        Wed,  4 Nov 2020 02:42:56 -0800 (PST)
-Subject: Re: [PATCH v3 09/26] coresight: Convert coresight_timeout to use
- access abstraction
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     linux-arm-kernel@lists.infradead.org, mike.leach@linaro.org,
-        coresight@lists.linaro.org, linux-kernel@vger.kernel.org
-References: <20201028220945.3826358-1-suzuki.poulose@arm.com>
- <20201028220945.3826358-11-suzuki.poulose@arm.com>
- <20201103180329.GB2855763@xps15>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <b1323f88-d6b8-5525-4d2f-d001236f8860@arm.com>
-Date:   Wed, 4 Nov 2020 10:42:56 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1729508AbgKDKnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 05:43:51 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:59190 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727923AbgKDKnu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 05:43:50 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: eballetbo)
+        with ESMTPSA id 923391F45919
+Subject: Re: [PATCH 0/4] soc: mediatek: Prepare MMSYS for DDP routing using
+ tables
+From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Collabora Kernel ML <kernel@collabora.com>,
+        yongqiang.niu@mediatek.com, matthias.bgg@gmail.com,
+        drinkcat@chromium.org, hsinyi@chromium.org,
+        chunkuang.hu@kernel.org, CK Hu <ck.hu@mediatek.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+References: <20201006193320.405529-1-enric.balletbo@collabora.com>
+Message-ID: <e8f42689-4c5f-b5ab-8b4c-ac6b8eafc1d3@collabora.com>
+Date:   Wed, 4 Nov 2020 11:43:46 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20201103180329.GB2855763@xps15>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+In-Reply-To: <20201006193320.405529-1-enric.balletbo@collabora.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/3/20 6:03 PM, Mathieu Poirier wrote:
-> On Wed, Oct 28, 2020 at 10:09:28PM +0000, Suzuki K Poulose wrote:
->> Convert the generic routines to use the new access abstraction layer
->> gradually, starting with coresigth_timeout.
->>
->> Cc: Mike Leach <mike.leach@linaro.org>
->> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
->> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
->> ---
+Hi Matthias,
 
-
-
->> diff --git a/drivers/hwtracing/coresight/coresight-catu.c b/drivers/hwtracing/coresight/coresight-catu.c
->> index 5baf29510f1b..34c74b05c542 100644
->> --- a/drivers/hwtracing/coresight/coresight-catu.c
->> +++ b/drivers/hwtracing/coresight/coresight-catu.c
->> @@ -401,8 +401,9 @@ static const struct attribute_group *catu_groups[] = {
->>   
->>   static inline int catu_wait_for_ready(struct catu_drvdata *drvdata)
->>   {
->> -	return coresight_timeout(drvdata->base,
->> -				 CATU_STATUS, CATU_STATUS_READY, 1);
->> +	struct csdev_access *csa = &drvdata->csdev->access;
->> +
->> +	return coresight_timeout(csa, CATU_STATUS, CATU_STATUS_READY, 1);
->>   }
->>   
->>   static int catu_enable_hw(struct catu_drvdata *drvdata, void *data)
->> diff --git a/drivers/hwtracing/coresight/coresight-core.c b/drivers/hwtracing/coresight/coresight-core.c
->> index e96deaca8cab..42ba989a6b5e 100644
->> --- a/drivers/hwtracing/coresight/coresight-core.c
->> +++ b/drivers/hwtracing/coresight/coresight-core.c
->> @@ -1412,23 +1412,26 @@ static void coresight_remove_conns(struct coresight_device *csdev)
->>   }
->>   
->>   /**
->> - * coresight_timeout - loop until a bit has changed to a specific state.
->> - * @addr: base address of the area of interest.
->> - * @offset: address of a register, starting from @addr.
->> + * coresight_timeout - loop until a bit has changed to a specific register
->> + *			state.
->> + * @csa: coresight device access for the device
->> + * @offset: Offset of the register from the base of the device.
->>    * @position: the position of the bit of interest.
->>    * @value: the value the bit should have.
->>    *
->>    * Return: 0 as soon as the bit has taken the desired state or -EAGAIN if
->>    * TIMEOUT_US has elapsed, which ever happens first.
->>    */
->> -
->> -int coresight_timeout(void __iomem *addr, u32 offset, int position, int value)
->> +int coresight_timeout(struct csdev_access *csa,
->> +		      u32 offset,
->> +		      int position,
->> +		      int value)
+On 6/10/20 21:33, Enric Balletbo i Serra wrote:
+> Dear all,
 > 
-> There is no need for stacking, please maximise the 80 characters.  The function
-> stubs in coresight.h should also be revised.
+> The following series are intended to prepare the mtk-mmsys driver to
+> allow different DDP (Data Display Path) routing tables per SoC. Note
+> that the series has been tested only on MT8173 platform and could break
+> the display on MT2701 and MT2712 based devices. I kindly ask for someone
+> having these devices to provide a tested routing table (unfortunately I
+> didn't have enough documentation to figure out this myself).
 > 
->>   {
->>   	int i;
->>   	u32 val;
->>   
->>   	for (i = TIMEOUT_US; i > 0; i--) {
->> -		val = __raw_readl(addr + offset);
->> +		val = csdev_access_read32(csa, offset);
+> For the other devices (MT8183, MT6779 and MT6797) DRM support is not in
+> mainline yet so nothing will break.
 > 
-> I vaguely remember commenting on this, or perhaps it was on some othe patch you
-> wrote...  Anyways, I think it is a good thing to go from an unordered access to
-> an ordered access for the timeout function.
-
-Yes, you did mention it in the v1.
-
+> Thanks,
+>   Enric
 > 
-> With the above:
 > 
-> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> CK Hu (2):
+>   soc: mediatek: mmsys: Create struct mtk_mmsys to store context data
+>   soc: mediatek: mmsys: Use an array for setting the routing registers
+> 
+> Enric Balletbo i Serra (1):
+>   soc: mediatek: mmsys: Use devm_platform_ioremap_resource()
+> 
+> Yongqiang Niu (1):
+>   soc / drm: mediatek: Move DDP component defines into mtk-mmsys.h
+> 
+>  drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h |  34 +-
+>  drivers/soc/mediatek/mtk-mmsys.c            | 429 +++++++++++---------
+>  include/linux/soc/mediatek/mtk-mmsys.h      |  33 ++
+>  3 files changed, 263 insertions(+), 233 deletions(-)
+> 
 
-Thanks, will address the comments.
+Although the patches 3 and 4 are controversial, and I'll work on it, I am
+wondering if 1 and 2 are ready to be picked, as they are independent, so I can
+send next version without these two patches.
 
-Suzuki
+Thanks,
+  Enric
+
+
