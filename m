@@ -2,249 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20EF02A5B90
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 02:12:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16ECA2A5B97
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 02:12:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730243AbgKDBKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 20:10:54 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:58392 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729144AbgKDBKx (ORCPT
+        id S1730362AbgKDBLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 20:11:53 -0500
+Received: from mx0a-00154904.pphosted.com ([148.163.133.20]:1752 "EHLO
+        mx0a-00154904.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729144AbgKDBLt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 20:10:53 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A419Vn2145963;
-        Wed, 4 Nov 2020 01:10:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- from : mime-version : to : cc : subject : references : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=DtwzgX6oGsGfwgrfaqE3rZ3ObrVUFSjNerNak6tY0aI=;
- b=MGl0F6OwLFCfi67CW/WLXR39Sq26rMzAM+f64OExcZ9eU4JczOfzIdxA47W4biOhQuWs
- 6oOcWejbGkKeXtAGe/PW5e6fAftBuTctsSgF19p/GaYBtoObE/77ETXgkuFOA610t1j3
- 2T6QgzTnVViVvKDdDFAkqexGpYkhMQqOClDfyHzpsFxzofs4OMWy8909jo3f1NkgYo4h
- bPDBvxH3ieez7vA1nB2RauZGDC9cb0sGnmpSEGgq/fM/u1UJzEvZfTnRgIBTBC2CR4xA
- Us/dLDnCgXVHlqcVQcQJE3I+AnNZQAdQ2jnm5XPybVIlrlTHoYVc/PiJCoEVH5T3Dwwu yQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 34hhvccb6s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 04 Nov 2020 01:10:48 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A410hYV175032;
-        Wed, 4 Nov 2020 01:08:47 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 34hw0edtj0-1
+        Tue, 3 Nov 2020 20:11:49 -0500
+Received: from pps.filterd (m0170390.ppops.net [127.0.0.1])
+        by mx0a-00154904.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A416qCv004421;
+        Tue, 3 Nov 2020 20:11:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dell.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=smtpout1;
+ bh=FdWPKPs7jTL5MX+NXOp7Lac1QCmh20EkO5eAQtQATS4=;
+ b=XHdUUt9Hj6jGY8hvLai4U67iUU0DDvQ5yWCeRUlwehV9f65jvzRHW5A76Eyr+LulE5Ah
+ FncQxFfxgQPSVlKfCg08bBOgFOkU5r05/MFgk3u3axnPORJuxb+TI8S1a+fdYWDSajUR
+ nrQkEz6VPlWV+SLmYo7spIXOWTPWSLYC3TDG064ZGyhYA4JnmOIH21Z4Qsj1gnrFUBMo
+ EjNQ0kvfwRzdAPn5hMC+c7Npt+t1KC+hWz90uFO2BvTQ1jyWnbtCpY+C1q3ASjlvcxnI
+ a5dYpJppcdjRUJVonF9F/fKCbo+fHkMnFcpvU1MQy7wpUiu+GVzCKa32Kc3+G72v6mnp Ng== 
+Received: from mx0a-00154901.pphosted.com (mx0a-00154901.pphosted.com [67.231.149.39])
+        by mx0a-00154904.pphosted.com with ESMTP id 34h302vyvj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 03 Nov 2020 20:11:43 -0500
+Received: from pps.filterd (m0142699.ppops.net [127.0.0.1])
+        by mx0a-00154901.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A41BeRE093142;
+        Tue, 3 Nov 2020 20:11:43 -0500
+Received: from nam02-sn1-obe.outbound.protection.outlook.com (mail-sn1nam02lp2053.outbound.protection.outlook.com [104.47.36.53])
+        by mx0a-00154901.pphosted.com with ESMTP id 34k9jaymby-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 04 Nov 2020 01:08:47 +0000
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0A418iiH016358;
-        Wed, 4 Nov 2020 01:08:44 GMT
-Received: from [10.159.249.36] (/10.159.249.36)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 03 Nov 2020 17:08:44 -0800
-Message-ID: <5FA1FF1B.1000303@oracle.com>
-Date:   Tue, 03 Nov 2020 17:08:43 -0800
-From:   si-wei liu <si-wei.liu@oracle.com>
-Organization: Oracle Corporation
-User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:24.0) Gecko/20100101 Thunderbird/24.2.0
+        Tue, 03 Nov 2020 20:11:43 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=l3UsoNKumpU6Tjk6Pjo9BJ5YC/cJQmP43m8S58XnGeVnowBsG7DQ4XfAs36DXtYs75NaB/ZeQ/KaZzpF5Az2JnPH32uhEmcTwHK6vBxeAHPDFhyGhVPwdJFg1GAqe7TEc2Y/9ZvqqoPzTRwhqzNz2OHNW0kPlsu84aAA9VKeGOLXXB4wiC5s/mceMwPzRSF9DIhyQPMk0YKPphJtDVwdZ8fagGcjV2NClUrF3HoEjm3PP7T4ULeylcdeMPBF3TAlk42xRcVAiEpGJj77w2jQUPWfjhs1OHX2DupyXsV0RzBMmtuc+cXvltCcYXd9XrOGvR7gey5GJGC/ZISnXXMqSA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FdWPKPs7jTL5MX+NXOp7Lac1QCmh20EkO5eAQtQATS4=;
+ b=D/FdzNOGGPp/Gkb7e/Z0S3acSNa9jDtrrfIzbf412tdJMC6EmgYfCb1tGrSIdwMD5zuO5J3QgxiBjmNfLvp++ojuqkSVr5X2nzNzkHCgLBBKiE+QulTra2putLRvnVXJm7zgFIK2OzweaWBblr3qY2x+flU3QfBhcW8NrRCdgOB5+9Txl2RAYn6a7d7ZbAyixWe0RySo+dwfYhn0vHd/3Wels2EkrwOdz2uLUztL9DvRzZSYbi58zqSjMT9MFu6TRO7XPa+RihQ9T8TQDJfKU7Q/edEb0JjxLta9x3ghHo/XK1SUTP4Zji1Rs1Yt/x0fbAeP6gy+vW7Kdewz6UtOXQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=dell.com; dmarc=pass action=none header.from=dell.com;
+ dkim=pass header.d=dell.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Dell.onmicrosoft.com;
+ s=selector1-Dell-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FdWPKPs7jTL5MX+NXOp7Lac1QCmh20EkO5eAQtQATS4=;
+ b=DVkqWLXIoTiNLBB9WiJE9eDcO9jPsR9phV0ZkQDr6a7hEWuCvvcZVBInxyMNoYx8ma0i2AY178djNfgHaZs4wbE/YL7vcW2Ztvdf1rEdfDPeDU9PJD6tpVL7sR7PoaezNCbxrj6+1/baopI7qOdrm0nknh10fALnFWYzMLbp1z8=
+Received: from DM6PR19MB2636.namprd19.prod.outlook.com (2603:10b6:5:15f::15)
+ by DM5PR19MB1161.namprd19.prod.outlook.com (2603:10b6:3:bd::9) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3499.28; Wed, 4 Nov 2020 01:09:57 +0000
+Received: from DM6PR19MB2636.namprd19.prod.outlook.com
+ ([fe80::a8ff:e803:ee80:e59a]) by DM6PR19MB2636.namprd19.prod.outlook.com
+ ([fe80::a8ff:e803:ee80:e59a%3]) with mapi id 15.20.3499.032; Wed, 4 Nov 2020
+ 01:09:57 +0000
+From:   "Limonciello, Mario" <Mario.Limonciello@dell.com>
+To:     Christian Kujau <lists@nerdbynature.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: acpi PNP0C14:02: duplicate WMI GUID
+ 05901221-D566-11D1-B2F0-00A0C9062910
+Thread-Topic: acpi PNP0C14:02: duplicate WMI GUID
+ 05901221-D566-11D1-B2F0-00A0C9062910
+Thread-Index: AQHWsjrgmruNKS9zREG2cNpTPr/AS6m3KP7A
+Date:   Wed, 4 Nov 2020 01:09:57 +0000
+Message-ID: <DM6PR19MB263616900AA4EFA2EAD22AB6FAEF0@DM6PR19MB2636.namprd19.prod.outlook.com>
+References: <88716562-a1c3-c8e2-655c-e41cff5f8aec@trent.utfs.org>
+In-Reply-To: <88716562-a1c3-c8e2-655c-e41cff5f8aec@trent.utfs.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Enabled=True;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_SiteId=945c199a-83a2-4e80-9f8c-5a91be5752dd;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Owner=Mario_Limonciello@Dell.com;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_SetDate=2020-11-04T01:09:55.8993380Z;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Name=External Public;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Application=Microsoft Azure
+ Information Protection;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_ActionId=acc00204-1441-455a-91e8-d920ad4f178e;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Extended_MSFT_Method=Manual
+authentication-results: nerdbynature.de; dkim=none (message not signed)
+ header.d=none;nerdbynature.de; dmarc=none action=none header.from=Dell.com;
+x-originating-ip: [76.251.167.31]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 8d6bff60-ab89-4392-6063-08d8805e58b9
+x-ms-traffictypediagnostic: DM5PR19MB1161:
+x-microsoft-antispam-prvs: <DM5PR19MB1161EBB691AE50F6E3AC2441FAEF0@DM5PR19MB1161.namprd19.prod.outlook.com>
+x-exotenant: 2khUwGVqB6N9v58KS13ncyUmMJd8q4
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: OeAk/dqcmPvG6rkil8r/khH6nxoXA3hVuBSOad5e4BoPfaV0ZkUvPGRPh2KYcf1VEzfRH8fy8SUdXXuXKrHDJw1bExtucdRZOkAvE2u49WShsdoO2+jn9j2a1VT7vEmQa8lhEOjLPxmPBPUlX856X7H08DpkDltacNfkVsDIMPg9KATCfsjPxF3H3WL6lzZ1A3DYdkCLmtSI0TiKCPxUGQkTb12paHuKWhuSwD8TOahaa2fyHeuafSZdStYva0YysTv7RzxNoKWKjH77tpmmdPMWCzHMg/eUGMVZADPQCnQFqlB90xoEoui5QF05qbSEG3mFAmHjv5Yho+IQ55gky7aOFCOIqzl+7Luv7yWPTagjStCdlKprLK6ogXfEbAafXTgix13GYBTWFUx1QmK0cg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR19MB2636.namprd19.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(110136005)(8936002)(498600001)(26005)(8676002)(4326008)(186003)(966005)(86362001)(71200400001)(9686003)(76116006)(66476007)(7696005)(33656002)(83380400001)(2906002)(5660300002)(66446008)(66556008)(64756008)(53546011)(6506007)(66946007)(55016002)(52536014);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: lgeFQ+Y+cqMdgi3O7GVJkb0ljJ2AQt0wMFqam6r7gVFAw97XLOGydj4FXN0x8tff6O2Ut6NiIYJf84wBfNoZZ0gdn/5W9GKdUqc9h9wG29gUnNonOTa4Kew9rP8Wrdz6BGsKt3HVFgyyX7BrIqQ8JD04uebzDRx5LRlXLOzkC5y3jGj0h+B/kOkVJGTSH6CnL8DULbaGGUQn31fTl6xLWFWS4wDQ3ZXm8H4uFMjd441IaKeG6ZypXpW88SuudlHghh5W61pWRc8v0OnuBhLo7oyqKFNuV2CmSHuyQveEVhvTlhNw1RxqOVhDcMnq+o5WTLBHmBMlPSMNHgh3QR/yeV3Aff/oPORPMNV/lvhl78ZGf9olPq2VkLXke0yD0CevNQPoIvSb/XM6xiqzFHjtsyVU4GaG7GxNqgPYYWtUeRjpRRHG+F2ycYWF788bQvyURL5c5KcoHTQhO0eEvU9Xo2wP9LEFrWXE7pECv3Mm9rO+39Yex+CaYB9cY7EtbUZ0AslyTk3AHsQYWUAXHUBMBcRk9iuuoLolGjKRltCMQWH7NMjL5ChhfGiDC+t6AwU6m7ZCLCKTFLMsddDs7OeQsLGcoMtwUynBCzsq964EYlGgoP2KtOhDZWDmQCvN6y38hsS37RyP62mWCQHEL/rmdA==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-To:     Jason Wang <jasowang@redhat.com>, mst@redhat.com,
-        lingshan.zhu@intel.com
-CC:     joao.m.martins@oracle.com, boris.ostrovsky@oracle.com,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH 2/2] vhost-vdpa: fix page pinning leakage in error path
- (rework)
-References: <1604043944-4897-1-git-send-email-si-wei.liu@oracle.com> <1604043944-4897-2-git-send-email-si-wei.liu@oracle.com> <42fe6ef3-90f6-ddb9-f206-e60c1e98c301@redhat.com> <5FA1FE87.4050909@oracle.com>
-In-Reply-To: <5FA1FE87.4050909@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9794 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 mlxlogscore=999
- phishscore=0 bulkscore=0 spamscore=0 malwarescore=0 mlxscore=0
+X-OriginatorOrg: Dell.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR19MB2636.namprd19.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8d6bff60-ab89-4392-6063-08d8805e58b9
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Nov 2020 01:09:57.6180
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 945c199a-83a2-4e80-9f8c-5a91be5752dd
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ZCzIjkW1shZimNQmh6wLyr/MHoTKgsGpIf4HxEgeyP6kdkM6a9DUurJhAuUtqX/9S24e9KFsFFCkAay652lMQ06Wl/s8beX+nWIpkA0UC7I=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR19MB1161
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-03_17:2020-11-03,2020-11-03 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ mlxlogscore=987 lowpriorityscore=0 bulkscore=0 impostorscore=0 mlxscore=0
+ suspectscore=0 spamscore=0 phishscore=0 clxscore=1011 malwarescore=0
  adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011040004
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9794 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=2
- impostorscore=0 malwarescore=0 priorityscore=1501 mlxlogscore=999
- bulkscore=0 phishscore=0 adultscore=0 mlxscore=0 lowpriorityscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2009150000 definitions=main-2011040005
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxscore=0 phishscore=0
+ adultscore=0 bulkscore=0 mlxlogscore=999 malwarescore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011040005
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> -----Original Message-----
+> From: Christian Kujau <lists@nerdbynature.de>
+> Sent: Tuesday, November 3, 2020 17:41
+> To: Limonciello, Mario; Andy Lutomirski; platform-driver-x86@vger.kernel.=
+org
+> Cc: linux-kernel@vger.kernel.org
+> Subject: acpi PNP0C14:02: duplicate WMI GUID 05901221-D566-11D1-B2F0-
+> 00A0C9062910
+>=20
+>=20
+> [EXTERNAL EMAIL]
+>=20
+> Hi,
+>=20
+> while looking through boot messages I came across the following on a
+> Lenovo T470 laptop with Linux 5.8:
+>=20
+>   acpi PNP0C14:02: duplicate WMI GUID 05901221-D566-11D1-B2F0-00A0C906291=
+0
+> (first instance was on PNP0C14:01)
+>   acpi PNP0C14:03: duplicate WMI GUID 05901221-D566-11D1-B2F0-00A0C906291=
+0
+> (first instance was on PNP0C14:01)
+>=20
+> Searching the interwebs brought me to an old patch proposal:
+>=20
+>  > https://lkml.org/lkml/2017/12/8/914
+>  > Fri, 8 Dec 2017 20:34:21 -0600
+>  > [PATCH 2/2] platform/x86: wmi: Allow creating WMI devices with the sam=
+e
+> GUID
+>=20
+> The patch was proposed, but never made it into mainline. It's not really =
+a
+> big deal, booting continues and all devices appear to work, only these tw=
+o
+> messages get logged during boot. I'm just wondering if this needs to be
+> fixed or if it's really just a cosmetic issue.
+>=20
+> Full dmesg: https://pastebin.ubuntu.com/p/2pPv3hywPF/
+>=20
 
-On 11/3/2020 5:06 PM, si-wei liu wrote:
->
-> On 11/3/2020 5:00 AM, Jason Wang wrote:
->>
->> On 2020/10/30 下午3:45, Si-Wei Liu wrote:
->>> Pinned pages are not properly accounted particularly when
->>> mapping error occurs on IOTLB update. Clean up dangling
->>> pinned pages for the error path.
->>>
->>> The memory usage for bookkeeping pinned pages is reverted
->>> to what it was before: only one single free page is needed.
->>> This helps reduce the host memory demand for VM with a large
->>> amount of memory, or in the situation where host is running
->>> short of free memory.
->>>
->>> Fixes: 4c8cf31885f6 ("vhost: introduce vDPA-based backend")
->>> Signed-off-by: Si-Wei Liu <si-wei.liu@oracle.com>
->>> ---
->>>   drivers/vhost/vdpa.c | 64 
->>> +++++++++++++++++++++++++++++++++++++---------------
->>>   1 file changed, 46 insertions(+), 18 deletions(-)
->>>
->>> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
->>> index b6d9016..8da8558 100644
->>> --- a/drivers/vhost/vdpa.c
->>> +++ b/drivers/vhost/vdpa.c
->>> @@ -560,6 +560,8 @@ static int vhost_vdpa_map(struct vhost_vdpa *v,
->>>         if (r)
->>>           vhost_iotlb_del_range(dev->iotlb, iova, iova + size - 1);
->>> +    else
->>> +        atomic64_add(size >> PAGE_SHIFT, &dev->mm->pinned_vm);
->>>         return r;
->>>   }
->>> @@ -591,14 +593,16 @@ static int 
->>> vhost_vdpa_process_iotlb_update(struct vhost_vdpa *v,
->>>       unsigned long list_size = PAGE_SIZE / sizeof(struct page *);
->>>       unsigned int gup_flags = FOLL_LONGTERM;
->>>       unsigned long npages, cur_base, map_pfn, last_pfn = 0;
->>> -    unsigned long locked, lock_limit, pinned, i;
->>> +    unsigned long lock_limit, sz2pin, nchunks, i;
->>>       u64 iova = msg->iova;
->>> +    long pinned;
->>>       int ret = 0;
->>>         if (vhost_iotlb_itree_first(iotlb, msg->iova,
->>>                       msg->iova + msg->size - 1))
->>>           return -EEXIST;
->>>   +    /* Limit the use of memory for bookkeeping */
->>>       page_list = (struct page **) __get_free_page(GFP_KERNEL);
->>>       if (!page_list)
->>>           return -ENOMEM;
->>> @@ -607,52 +611,64 @@ static int 
->>> vhost_vdpa_process_iotlb_update(struct vhost_vdpa *v,
->>>           gup_flags |= FOLL_WRITE;
->>>         npages = PAGE_ALIGN(msg->size + (iova & ~PAGE_MASK)) >> 
->>> PAGE_SHIFT;
->>> -    if (!npages)
->>> -        return -EINVAL;
->>> +    if (!npages) {
->>> +        ret = -EINVAL;
->>> +        goto free;
->>> +    }
->>>         mmap_read_lock(dev->mm);
->>>   -    locked = atomic64_add_return(npages, &dev->mm->pinned_vm);
->>>       lock_limit = rlimit(RLIMIT_MEMLOCK) >> PAGE_SHIFT;
->>> -
->>> -    if (locked > lock_limit) {
->>> +    if (npages + atomic64_read(&dev->mm->pinned_vm) > lock_limit) {
->>>           ret = -ENOMEM;
->>> -        goto out;
->>> +        goto unlock;
->>>       }
->>>         cur_base = msg->uaddr & PAGE_MASK;
->>>       iova &= PAGE_MASK;
->>> +    nchunks = 0;
->>>         while (npages) {
->>> -        pinned = min_t(unsigned long, npages, list_size);
->>> -        ret = pin_user_pages(cur_base, pinned,
->>> -                     gup_flags, page_list, NULL);
->>> -        if (ret != pinned)
->>> +        sz2pin = min_t(unsigned long, npages, list_size);
->>> +        pinned = pin_user_pages(cur_base, sz2pin,
->>> +                    gup_flags, page_list, NULL);
->>> +        if (sz2pin != pinned) {
->>> +            if (pinned < 0) {
->>> +                ret = pinned;
->>> +            } else {
->>> +                unpin_user_pages(page_list, pinned);
->>> +                ret = -ENOMEM;
->>> +            }
->>>               goto out;
->>> +        }
->>> +        nchunks++;
->>>             if (!last_pfn)
->>>               map_pfn = page_to_pfn(page_list[0]);
->>>   -        for (i = 0; i < ret; i++) {
->>> +        for (i = 0; i < pinned; i++) {
->>>               unsigned long this_pfn = page_to_pfn(page_list[i]);
->>>               u64 csize;
->>>                 if (last_pfn && (this_pfn != last_pfn + 1)) {
->>>                   /* Pin a contiguous chunk of memory */
->>>                   csize = (last_pfn - map_pfn + 1) << PAGE_SHIFT;
->>> -                if (vhost_vdpa_map(v, iova, csize,
->>> -                           map_pfn << PAGE_SHIFT,
->>> -                           msg->perm))
->>> +                ret = vhost_vdpa_map(v, iova, csize,
->>> +                             map_pfn << PAGE_SHIFT,
->>> +                             msg->perm);
->>> +                if (ret)
->>>                       goto out;
->>> +
->>>                   map_pfn = this_pfn;
->>>                   iova += csize;
->>> +                nchunks = 0;
->>>               }
->>>                 last_pfn = this_pfn;
->>>           }
->>>   -        cur_base += ret << PAGE_SHIFT;
->>> -        npages -= ret;
->>> +        cur_base += pinned << PAGE_SHIFT;
->>> +        npages -= pinned;
->>>       }
->>>         /* Pin the rest chunk */
->>> @@ -660,10 +676,22 @@ static int 
->>> vhost_vdpa_process_iotlb_update(struct vhost_vdpa *v,
->>>                    map_pfn << PAGE_SHIFT, msg->perm);
->>>   out:
->>>       if (ret) {
->>> +        if (nchunks && last_pfn) {
->>> +            unsigned long pfn;
->>> +
->>> +            /*
->>> +             * Unpin the outstanding pages which are unmapped.
->>> +             * Mapped pages are accounted in vdpa_map(), thus
->>> +             * will be handled by vdpa_unmap().
->>> +             */
->>> +            for (pfn = map_pfn; pfn <= last_pfn; pfn++)
->>> +                unpin_user_page(pfn_to_page(pfn));
->>> +        }
->>>           vhost_vdpa_unmap(v, msg->iova, msg->size);
->>
->>
->> I want to know what's wrong with current code.
->>
->> We call vhost_vdpa_unmap() on error which calls 
->> vhost_vdpa_iotlb_unmap() that will unpin and reduce the pinned_vm.
-> Think about the case where vhost_vdpa_map() fails in the middle after 
-> making a few successful ones. In the current code, the 
-> vhost_vdpa_iotlb_unmap() unpins what had been mapped, but does not 
-> unpin those that have not yet been mapped. These outstanding pinned 
-> pages will be leaked after leaving the vhost_vdpa_map() function.
-Typo: ... leaving the vhost_vdpa_process_iotlb_update() function.
->
-> Also, the subtraction accounting at the end of the function is 
-> incorrect in that case: @npages is deduced by @pinned in each 
-> iteration. That's why I moved the accounting to vhost_vdpa_map() to be 
-> symmetric with vhost_vdpa_unmap().
->
->
-> -Siwei
->>
->> Thanks
->>
->>
->>> -        atomic64_sub(npages, &dev->mm->pinned_vm);
->>>       }
->>> +unlock:
->>>       mmap_read_unlock(dev->mm);
->>> +free:
->>>       free_page((unsigned long)page_list);
->>>       return ret;
->>>   }
->>
->
+The message is correct.  An assumption has been made that two devices can't
+provide the same GUID in the kernel early on, but this is an incorrect assu=
+mption.
 
+We haven't had a situation that we actually need to bind to devices that bo=
+th provide
+the same GUID so this has never been a priority to solve.
