@@ -2,100 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74E742A6440
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 13:27:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CDEE2A6444
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 13:28:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729847AbgKDM10 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 4 Nov 2020 07:27:26 -0500
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:36774 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726344AbgKDM1Z (ORCPT
+        id S1729902AbgKDM2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 07:28:09 -0500
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:30662 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726344AbgKDM2I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 07:27:25 -0500
-Received: by mail-wr1-f67.google.com with SMTP id x7so21862357wrl.3;
-        Wed, 04 Nov 2020 04:27:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=uinOFoWWChkPcAueiWNTIshof8R8Mb7vQCYYpe5kHl0=;
-        b=Lizi1hWslTzDY6sVSwAJPwW7Luo6VJlqs+Ow5i5Sgo9qQCW5SFKa333KF8Ss7o5LnZ
-         oq/0pNkHVQ92XAtj1N8ddcO/E/8Z5MfBns7AR81M93Zg67vemmr5wEASOLSSsAMqBCMx
-         2UyqcyAaOQxTLRFA6oeYFAhDAjumUm5sFCqqor1osztFjkGkI3gCAU9a1cCOiDdj21oz
-         IA7MVhNwEprhSbFlBoVX0J9V+eg4RcoZTpyuej9Ss0GxTbEnSDNeKvBD3iHtSQhTBf7c
-         ne7aKCMSvpmpAPKXO8BVA4t8jFYnlCikbW4oInzBjvqNzhKxzIYC1Wg44g4ScacJEaFX
-         IfHQ==
-X-Gm-Message-State: AOAM530+AxWMjvMxk5WUjmifFJIqBsvWfvGZD6UhtR9PaXG5xpZtHedX
-        5SkHuSYXfyHNm+IZCnwNmc0rb6A4ksk=
-X-Google-Smtp-Source: ABdhPJwjAFrO9uAL9rPXfY/qcv0uliGPwbkLgq1LCBJhudXfsT1rau74Fov3WvKgPByU94BxgJ/pXw==
-X-Received: by 2002:adf:f245:: with SMTP id b5mr4513573wrp.389.1604492842233;
-        Wed, 04 Nov 2020 04:27:22 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id c9sm2269890wrp.65.2020.11.04.04.27.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 04:27:21 -0800 (PST)
-Date:   Wed, 4 Nov 2020 13:27:19 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc:     georgi.djakov@linaro.org, cw00.choi@samsung.com,
-        devicetree@vger.kernel.org, robh+dt@kernel.org,
-        a.swigon@samsung.com, myungjoo.ham@samsung.com,
-        inki.dae@samsung.com, sw0312.kim@samsung.com,
-        b.zolnierkie@samsung.com, m.szyprowski@samsung.com,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v8 3/7] MAINTAINERS: Add entry for Samsung interconnect
- drivers
-Message-ID: <20201104122719.GB10157@kozik-lap>
-References: <20201104103657.18007-1-s.nawrocki@samsung.com>
- <CGME20201104103722eucas1p1db939995e60d0bf2cd581070c14379f5@eucas1p1.samsung.com>
- <20201104103657.18007-4-s.nawrocki@samsung.com>
+        Wed, 4 Nov 2020 07:28:08 -0500
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A4CFYdF003064;
+        Wed, 4 Nov 2020 04:28:05 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=pfpt0220; bh=06ZFklaZlFlEyXXVGhlAwXoIGkGPWoumDBv6Dc62Z2w=;
+ b=KIOamuWlitMlCZ4W1ip46yXA5jcFWXWwt1kwM8KTaAj2VRfIIKmrxfCD47LhN+06jQ3k
+ Heb3lA+GqzvfP8+emr5PSvmtJl6oihtqPGdkhynoOe9PQmyeo2cULRbXfLqou/+sn9i2
+ FOmk3zyVpm8FoKkoJK03PpxKHHMcfWfWvxSUN3kLuy49M+1yiTO/dHTf6jGjfh8fJBdV
+ yadhtv7hdj1tpHfQhujem3sxQ1py3/4dui2hSv5gzNWcRFzRpnkb7g9T6W98YlkXPimY
+ FucsPgL9IOfW9bSwONSx1se2P8cS8AT6Lw0l8Kt35x5AKllT2RdaEpcblVc23zvS+qum qA== 
+Received: from sc-exch03.marvell.com ([199.233.58.183])
+        by mx0a-0016f401.pphosted.com with ESMTP id 34h59n2udg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Wed, 04 Nov 2020 04:28:05 -0800
+Received: from SC-EXCH04.marvell.com (10.93.176.84) by SC-EXCH03.marvell.com
+ (10.93.176.83) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 4 Nov
+ 2020 04:28:04 -0800
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH04.marvell.com
+ (10.93.176.84) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 4 Nov
+ 2020 04:28:04 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 4 Nov 2020 04:28:04 -0800
+Received: from hyd1584.caveonetworks.com (unknown [10.29.37.82])
+        by maili.marvell.com (Postfix) with ESMTP id 29CF23F703F;
+        Wed,  4 Nov 2020 04:27:57 -0800 (PST)
+From:   George Cherian <george.cherian@marvell.com>
+To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <kuba@kernel.org>, <davem@davemloft.net>, <sgoutham@marvell.com>,
+        <lcherian@marvell.com>, <gakula@marvell.com>,
+        <masahiroy@kernel.org>, <george.cherian@marvell.com>,
+        <willemdebruijn.kernel@gmail.com>
+Subject: [PATCH v2 net-next 0/3] Add devlink and devlink health reporters to
+Date:   Wed, 4 Nov 2020 17:57:52 +0530
+Message-ID: <20201104122755.753241-1-george.cherian@marvell.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <20201104103657.18007-4-s.nawrocki@samsung.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-04_08:2020-11-04,2020-11-04 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 11:36:53AM +0100, Sylwester Nawrocki wrote:
-> Add maintainers entry for the Samsung interconnect drivers, this currently
-> includes Exynos SoC generic interconnect driver.
-> 
-> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-> ---
-> Changes since v7:
->  - new patch.
-> ---
->  MAINTAINERS | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index e73636b..4bbafef 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -9156,6 +9156,13 @@ F:	include/dt-bindings/interconnect/
->  F:	include/linux/interconnect-provider.h
->  F:	include/linux/interconnect.h
->  
-> +SAMSUNG INTERCONNECT DRIVERS
+Add basic devlink and devlink health reporters.
+Devlink health reporters are added for NPA and NIX blocks.
+These reporters report the error count in respective blocks.
 
-Does not look like ordered alphabetically.
+Address Jakub's comment to add devlink support for error reporting.
+https://www.spinics.net/lists/netdev/msg670712.html
 
-> +M:	Sylwester Nawrocki <s.nawrocki@samsung.com>
-> +M:	Artur Swigoń <a.swigon@samsung.com>
-> +L:	linux-pm@vger.kernel.org
+Change-log:
+- Address Willem's comments on v1.
+- Fixed the sparse issues, reported by Jakub.
 
-Also:
-L: linux-samsung-soc@vger.kernel.org
+George Cherian (3):
+  octeontx2-af: Add devlink suppoort to af driver
+  octeontx2-af: Add devlink health reporters for NPA
+  octeontx2-af: Add devlink health reporters for NIX
 
-> +S:	Supported
-> +F:	drivers/interconnect/samsung
+ .../net/ethernet/marvell/octeontx2/Kconfig    |   1 +
+ .../ethernet/marvell/octeontx2/af/Makefile    |   3 +-
+ .../net/ethernet/marvell/octeontx2/af/rvu.c   |   9 +-
+ .../net/ethernet/marvell/octeontx2/af/rvu.h   |   4 +
+ .../marvell/octeontx2/af/rvu_devlink.c        | 860 ++++++++++++++++++
+ .../marvell/octeontx2/af/rvu_devlink.h        |  67 ++
+ .../marvell/octeontx2/af/rvu_struct.h         |  33 +
+ 7 files changed, 975 insertions(+), 2 deletions(-)
+ create mode 100644 drivers/net/ethernet/marvell/octeontx2/af/rvu_devlink.c
+ create mode 100644 drivers/net/ethernet/marvell/octeontx2/af/rvu_devlink.h
 
-Add trailing /.
+-- 
+2.25.4
 
-Best regards,
-Krzysztof
