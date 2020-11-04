@@ -2,174 +2,360 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 970402A63AD
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 12:55:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1260E2A63AE
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 12:55:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729768AbgKDLz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 06:55:28 -0500
-Received: from mga07.intel.com ([134.134.136.100]:16707 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726344AbgKDLzX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 06:55:23 -0500
-IronPort-SDR: xe5bITMnjVENrTZf90+AISoNj2c1bN9GSGozrbnRZX89AsS5rwX3NEgltRHTR5HQzHH0raOdMa
- 1k1k6U1LJJkg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9794"; a="233367094"
-X-IronPort-AV: E=Sophos;i="5.77,450,1596524400"; 
-   d="scan'208";a="233367094"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2020 03:55:21 -0800
-IronPort-SDR: n3DiUsFOb2vBYKhrbpImWAcUlbSMM64+uh8Fc3xzbfkHbG7DKDMGYGoYpYfuwn6/fKJXdICuUG
- Dlh/BO/wCrgw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,450,1596524400"; 
-   d="scan'208";a="538893851"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.94]) ([10.237.72.94])
-  by orsmga005.jf.intel.com with ESMTP; 04 Nov 2020 03:55:19 -0800
-Subject: Re: [PATCH V4 1/2] scsi: ufs: Add DeepSleep feature
-To:     Bean Huo <huobean@gmail.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Can Guo <cang@codeaurora.org>,
-        Stanley Chu <stanley.chu@mediatek.com>
-References: <20201103141403.2142-1-adrian.hunter@intel.com>
- <20201103141403.2142-2-adrian.hunter@intel.com>
- <d00acd2cef07c50de3e19e1b8517c996d67795b2.camel@gmail.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <b4178f30-f956-5f33-fd3e-f38b2d99dc1e@intel.com>
-Date:   Wed, 4 Nov 2020 13:55:05 +0200
+        id S1729801AbgKDLzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 06:55:32 -0500
+Received: from lb2-smtp-cloud9.xs4all.net ([194.109.24.26]:53475 "EHLO
+        lb2-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729772AbgKDLz3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 06:55:29 -0500
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud9.xs4all.net with ESMTPA
+        id aHNpkUghq1R0xaHNskHgpB; Wed, 04 Nov 2020 12:55:25 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
+        t=1604490925; bh=Y2EV04bpCT5yLDOBK59QpjQPIFoMdyTPUddKGuNHl1U=;
+        h=Subject:From:To:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=ZmhxhfJNp0pobFmuZ/WUHgCZP7UkumUYG1xA5JX5ZFtSGzj9xNOuXJdozNOifvazl
+         eoekWOzdgCbaOlpb6GddDwskRulbvapFQsa4XGPpRRQCT6tUCTlSXZEEBqJa11y2Yv
+         MGJsm5ZJZN/0Xep13V+ihUtl6p/89zv2vGOPaYEBUr63KzZeghJSicb4lqj5JaJ34G
+         RBAWQIFQBaHSyORKmuaAVDmAh8mMUTivR/SEEli0sc9cZS66hXs3OYIxP16LM2r9td
+         zcwJdZVvOnEGF0sIWbhgeYwo3EZijf1+lgaRBbpdOKKoLINMtELZJRN8R96q5Ne7xK
+         fMJpN8bOMgcnA==
+Subject: Re: [PATCH v4 00/11] Add V4L2 driver for i.MX8 JPEG Encoder/Decoder
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+To:     "Mirela Rabulea (OSS)" <mirela.rabulea@oss.nxp.com>,
+        mchehab@kernel.org, shawnguo@kernel.org, robh+dt@kernel.org
+Cc:     paul.kocialkowski@bootlin.com, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-imx@nxp.com,
+        s.hauer@pengutronix.de, aisheng.dong@nxp.com,
+        daniel.baluta@nxp.com, robert.chiras@nxp.com,
+        laurentiu.palcu@nxp.com, mark.rutland@arm.com,
+        devicetree@vger.kernel.org, p.zabel@pengutronix.de,
+        ezequiel@collabora.com, laurent.pinchart+renesas@ideasonboard.com,
+        niklas.soderlund+renesas@ragnatech.se,
+        dafna.hirschfeld@collabora.com,
+        Mirela Rabulea <mirela.rabulea@nxp.com>
+References: <20201102030821.3049-1-mirela.rabulea@oss.nxp.com>
+ <9c6cf9bf-f6d8-78f5-5f31-d7ea9e25da0d@xs4all.nl>
+Message-ID: <ca7a395a-68ea-33a3-1216-0adf225fce7b@xs4all.nl>
+Date:   Wed, 4 Nov 2020 12:55:21 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <d00acd2cef07c50de3e19e1b8517c996d67795b2.camel@gmail.com>
+In-Reply-To: <9c6cf9bf-f6d8-78f5-5f31-d7ea9e25da0d@xs4all.nl>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfFscgRkqbff8Bk80vb+RwblFnXBEbmsjVBskctWxmspWSZ0UVpHncmK/DJtm7CWsMhmrv3H6YxjUed/uVJYbSFwziIWP72XOj4VVSCyteUX//shTsY5k
+ 2KEjRhUXRk+0ZqLR5cdIPE8LFA4VFMIDAC9Rt/H40e0GCwU/7Eo1oTFUKWtfQNyzIhgA8avi0CESslcXMRSlJH97do3VFgLqqNAtakmJJXW4p9Sg088bX4Ib
+ 1VmRWc0qjJ/RL642KMjYfN1lHEh1vdShe5FJaH4u7IXYKcAXQiaKrhXTvSPniPgAXQsVfGn9xaQcVJ/+49FlkhiPrsgBKj9WAdZzIQ1+nfni43+ehHUfcZYN
+ CYY8SOWJ7FfbL4S3nyNa+mP8/iWJrzYmOtXV/WWaOTnw026wjVQo/tiPLPUfigLA4BViAXfznXpuXTQaDu519h7GBfbowyD5FgIsTk4UBSNvRkMELMJHisBI
+ sJTALCwkAVza3t4t+DElawHQiJBbmcNDsqJVPVdtjRh/E/cLsoS7TdbnBiPooihVBZv3QTh63ndoJ7euII9Jynx/C/A0Ke6dJR82sBVKxVnTP+RYVzPC+xHC
+ 9TGn2GOjdjvbo0MVXdGO1IhjnnZoXTcg6YlC9GzN9S2QEidCY2GtAxbWC3EOlFyhF2/wCk3Qzs0H7nZIDxRzz0OlT71au/RwE7Oja8DU3ZcAg8h1EBFkKks5
+ rqaWVKyTp0/CstNFjGBz7weWWKeJ4WkRc35gbOLj2+Kt+AqRzoHvC+K9VQJYzmvw+dvo6/KzsrkonMpn8ItXIoxfQhoH7zx6wozHWutWCp0Doq4kWoCkFMvO
+ HfaEpHs8LAm9ohYbEBqWqbOq33+d/npJNnC+a5fWPVXgqZJ+TK8WZqRE8k/I/dmpmjoJo7qjmcynWJo0tesgdRifcYYI2BOG9nL1H2MM6+UgS4ETwouNfF0T
+ cNJXog==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/11/20 12:57 pm, Bean Huo wrote:
-> On Tue, 2020-11-03 at 16:14 +0200, Adrian Hunter wrote:
->> DeepSleep is a UFS v3.1 feature that achieves the lowest power
->> consumption
->> of the device, apart from power off.
+On 04/11/2020 12:52, Hans Verkuil wrote:
+> On 02/11/2020 04:08, Mirela Rabulea (OSS) wrote:
+>> From: Mirela Rabulea <mirela.rabulea@nxp.com>
 >>
->> In DeepSleep mode, no commands are accepted, and the only way to exit
->> is
->> using a hardware reset or power cycle.
+>> Changes in v4:
+>> The main change is using the common jpeg helpers in imx-jpeg
+>> Summary of changes:
+>> Patch 1, 2, 3, 5, 6 - no change
+>> Patch 4 - small update: VFL_TYPE_VIDEO-> VFL_TYPE_GRABBER and 2 typos
+>> Patch 7 - new, fixed a problem with v4l2-compliance streaming tests on decoder
+>> Patch 8,9,10 - new, changes in jpeg helpers.
+>> Patch 11- new, use jpeg helpers in imx-jpeg, as requested during review, requires patch 8
 >>
->> This patch assumes that if a power cycle was an option, then power
->> off
->> would be preferable, so only exit via a hardware reset is supported.
+>> This patch set adds the V4L2 driver for i.MX8QXP/QM JPEG encoder/decoder
+>> and it's dependencies.
+>> The driver was tested on i.MX8QXP, using a unit test application and
+>> the v4l2-compliance tool, including the  streaming tests for decoder & encoder.
 >>
->> Drivers that wish to support DeepSleep need to set a new capability
->> flag
->> UFSHCD_CAP_DEEPSLEEP and provide a hardware reset via the existing
->>  ->device_reset() callback.
+>> The output of v4l2-compliance (stable-1.20) on i.MX8QXP, decoder & encoder:
 >>
->> It is assumed that UFS devices with wspecversion >= 0x310 support
->> DeepSleep.
->>
->> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
->> ---
->>  Documentation/ABI/testing/sysfs-driver-ufs | 34 +++++++++++--------
->>  drivers/scsi/ufs/ufs-sysfs.c               |  7 ++++
->>  drivers/scsi/ufs/ufs.h                     |  1 +
->>  drivers/scsi/ufs/ufshcd.c                  | 39
->> ++++++++++++++++++++--
->>  drivers/scsi/ufs/ufshcd.h                  | 17 +++++++++-
->>  include/trace/events/ufs.h                 |  3 +-
->>  6 files changed, 83 insertions(+), 18 deletions(-)
->>
->> diff --git a/Documentation/ABI/testing/sysfs-driver-ufs
->> b/Documentation/ABI/testing/sysfs-driver-ufs
->> index adc0d0e91607..e77fa784d6d8 100644
->> --- a/Documentation/ABI/testing/sysfs-driver-ufs
->> +++ b/Documentation/ABI/testing/sysfs-driver-ufs
->> @@ -916,21 +916,24 @@ Date:		September 2014
->>  Contact:	Subhash Jadavani <subhashj@codeaurora.org>
->>  Description:	This entry could be used to set or show the UFS device
->>  		runtime power management level. The current driver
->> -		implementation supports 6 levels with next target
->> states:
->> +		implementation supports 7 levels with next target
->> states:
->>  
->>  		==  ===================================================
->> =
->> -		0   an UFS device will stay active, an UIC link will
->> +		0   UFS device will stay active, UIC link will
->>  		    stay active
->> -		1   an UFS device will stay active, an UIC link will
->> +		1   UFS device will stay active, UIC link will
->>  		    hibernate
->> -		2   an UFS device will moved to sleep, an UIC link will
->> +		2   UFS device will be moved to sleep, UIC link will
->>  		    stay active
->> -		3   an UFS device will moved to sleep, an UIC link will
->> +		3   UFS device will be moved to sleep, UIC link will
->>  		    hibernate
->> -		4   an UFS device will be powered off, an UIC link will
->> +		4   UFS device will be powered off, UIC link will
->>  		    hibernate
->> -		5   an UFS device will be powered off, an UIC link will
->> +		5   UFS device will be powered off, UIC link will
->>  		    be powered off
->> +		6   UFS device will be moved to deep sleep, UIC link
->> +		will be powered off. Note, deep sleep might not be
->> +		supported in which case this value will not be accepted
->>  		==  ===================================================
->> =
->>  
->>  What:		/sys/bus/platform/drivers/ufshcd/*/rpm_target_d
->> ev_state
->> @@ -954,21 +957,24 @@ Date:		September 2014
->>  Contact:	Subhash Jadavani <subhashj@codeaurora.org>
->>  Description:	This entry could be used to set or show the UFS device
->>  		system power management level. The current driver
->> -		implementation supports 6 levels with next target
->> states:
->> +		implementation supports 7 levels with next target
->> states:
->>  
->>  		==  ===================================================
->> =
+>> root@imx8qxpmek:/unit_tests/JPEG# ./v4l2-compliance-stable-1.20 -d /dev/video0 -s
+>> v4l2-compliance SHA: 6c415a11fceb32067cdb5c2e33f90dbf018182a4, 64 bits, 64-bit time_t
 > 
-> Hi Adrian
-> There doesn't have these equal sign lines in the sysfs-driver-ufs.
-> maybe you should remove these. or add + prefix.
+> This is much too old. Always compile v4l2-compliance from the v4l-utils git
+> repository (https://git.linuxtv.org/v4l-utils.git/) to ensure you use the
+> latest version and the latest compliance checks.
+> 
+> I.e., the reported SHA should match that of HEAD.
 
-The "=" are from the patch below which is in v5.10-rc2
+So please recompile v4l2-compliance from the git repo and retest. If
+you find new failures, then you probably need to post a v5, otherwise
+it is enough to reply to this with the output of the updated v4l2-compliance.
 
-commit 54a19b4d3fe0fa0a31b46cd60951e8177cac25fa
-Author: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Date:   Fri Oct 30 08:40:50 2020 +0100
+Regards,
 
-    docs: ABI: cleanup several ABI documents
-    
-    There are some ABI documents that, while they don't generate
-    any warnings, they have issues when parsed by get_abi.pl script
-    on its output result.
-    
-    Address them, in order to provide a clean output.
-    
-    Reviewed-by: Tom Rix <trix@redhat.com> # for fpga-manager
-    Reviewed-By: Kajol Jain<kjain@linux.ibm.com> # for sysfs-bus-event_source-devices-hv_gpci and sysfs-bus-event_source-devices-hv_24x7
-    Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com> #for IIO                                                                                                                             
-    Acked-by: Oded Gabbay <oded.gabbay@gmail.com> # for Habanalabs                                                                                                                                
-    Acked-by: Vaibhav Jain <vaibhav@linux.ibm.com> # for sysfs-bus-papr-pmem                                                                                                                      
-    Acked-by: Cezary Rojewski <cezary.rojewski@intel.com> # for catpt                                                                                                                             
-    Acked-by: Suzuki K Poulose <suzuki.poulose@arm.com>                                                                                                                                           
-    Acked-by: Ilya Dryomov <idryomov@gmail.com> # for rbd                                                                                                                                         
-    Acked-by: Jonathan Corbet <corbet@lwn.net>                                                                                                                                                    
-    Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>                                                                                                                              
-    Link: https://lore.kernel.org/r/5bc78e5b68ed1e9e39135173857cb2e753be868f.1604042072.git.mchehab+huawei@kernel.org                                                                             
-    Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>               
+	Hans
+
+> 
+> Regards,
+> 
+> 	Hans
+> 
+>>
+>> Compliance test for mxc-jpeg decode device /dev/video0:
+>>
+>> Driver Info:
+>> 	Driver name      : mxc-jpeg decode
+>> 	Card type        : mxc-jpeg decoder
+>> 	Bus info         : platform:58400000.jpegdec
+>> 	Driver version   : 5.10.0
+>> 	Capabilities     : 0x84204000
+>> 		Video Memory-to-Memory Multiplanar
+>> 		Streaming
+>> 		Extended Pix Format
+>> 		Device Capabilities
+>> 	Device Caps      : 0x04204000
+>> 		Video Memory-to-Memory Multiplanar
+>> 		Streaming
+>> 		Extended Pix Format
+>> 	Detected JPEG Decoder
+>>
+>> Required ioctls:
+>> 	test VIDIOC_QUERYCAP: OK
+>>
+>> Allow for multiple opens:
+>> 	test second /dev/video0 open: OK
+>> 	test VIDIOC_QUERYCAP: OK
+>> 	test VIDIOC_G/S_PRIORITY: OK
+>> 	test for unlimited opens: OK
+>>
+>> 	test invalid ioctls: OK
+>> Debug ioctls:
+>> 	test VIDIOC_DBG_G/S_REGISTER: OK (Not Supported)
+>> 	test VIDIOC_LOG_STATUS: OK (Not Supported)
+>>
+>> Input ioctls:
+>> 	test VIDIOC_G/S_TUNER/ENUM_FREQ_BANDS: OK (Not Supported)
+>> 	test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
+>> 	test VIDIOC_S_HW_FREQ_SEEK: OK (Not Supported)
+>> 	test VIDIOC_ENUMAUDIO: OK (Not Supported)
+>> 	test VIDIOC_G/S/ENUMINPUT: OK (Not Supported)
+>> 	test VIDIOC_G/S_AUDIO: OK (Not Supported)
+>> 	Inputs: 0 Audio Inputs: 0 Tuners: 0
+>>
+>> Output ioctls:
+>> 	test VIDIOC_G/S_MODULATOR: OK (Not Supported)
+>> 	test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
+>> 	test VIDIOC_ENUMAUDOUT: OK (Not Supported)
+>> 	test VIDIOC_G/S/ENUMOUTPUT: OK (Not Supported)
+>> 	test VIDIOC_G/S_AUDOUT: OK (Not Supported)
+>> 	Outputs: 0 Audio Outputs: 0 Modulators: 0
+>>
+>> Input/Output configuration ioctls:
+>> 	test VIDIOC_ENUM/G/S/QUERY_STD: OK (Not Supported)
+>> 	test VIDIOC_ENUM/G/S/QUERY_DV_TIMINGS: OK (Not Supported)
+>> 	test VIDIOC_DV_TIMINGS_CAP: OK (Not Supported)
+>> 	test VIDIOC_G/S_EDID: OK (Not Supported)
+>>
+>> Control ioctls:
+>> 	test VIDIOC_QUERY_EXT_CTRL/QUERYMENU: OK (Not Supported)
+>> 	test VIDIOC_QUERYCTRL: OK (Not Supported)
+>> 	test VIDIOC_G/S_CTRL: OK (Not Supported)
+>> 	test VIDIOC_G/S/TRY_EXT_CTRLS: OK (Not Supported)
+>> 	test VIDIOC_(UN)SUBSCRIBE_EVENT/DQEVENT: OK (Not Supported)
+>> 	test VIDIOC_G/S_JPEGCOMP: OK (Not Supported)
+>> 	Standard Controls: 0 Private Controls: 0
+>>
+>> Format ioctls:
+>> 	test VIDIOC_ENUM_FMT/FRAMESIZES/FRAMEINTERVALS: OK
+>> 	test VIDIOC_G/S_PARM: OK (Not Supported)
+>> 	test VIDIOC_G_FBUF: OK (Not Supported)
+>> 	test VIDIOC_G_FMT: OK
+>> 	test VIDIOC_TRY_FMT: OK
+>> 	test VIDIOC_S_FMT: OK
+>> 	test VIDIOC_G_SLICED_VBI_CAP: OK (Not Supported)
+>> 	test Cropping: OK (Not Supported)
+>> 	test Composing: OK (Not Supported)
+>> 	test Scaling: OK
+>>
+>> Codec ioctls:
+>> 	test VIDIOC_(TRY_)ENCODER_CMD: OK
+>> 	test VIDIOC_G_ENC_INDEX: OK (Not Supported)
+>> 	test VIDIOC_(TRY_)DECODER_CMD: OK
+>>
+>> Buffer ioctls:
+>> 	test VIDIOC_REQBUFS/CREATE_BUFS/QUERYBUF: OK
+>> 	test VIDIOC_EXPBUF: OK
+>> 	test Requests: OK (Not Supported)
+>>
+>> Test input 0:
+>>
+>> Streaming ioctls:
+>> 	test read/write: OK (Not Supported)
+>> 	test blocking wait: OK
+>> 	Video Capture Multiplanar: Captured 58 buffers    
+>> 	test MMAP (no poll): OK
+>> 	Video Capture Multiplanar: Captured 58 buffers    
+>> 	test MMAP (select): OK
+>> 	Video Capture Multiplanar: Captured 58 buffers    
+>> 	test MMAP (epoll): OK
+>> 	test USERPTR (no poll): OK (Not Supported)
+>> 	test USERPTR (select): OK (Not Supported)
+>> 	test DMABUF: Cannot test, specify --expbuf-device
+>>
+>> Total for mxc-jpeg decode device /dev/video0: 52, Succeeded: 52, Failed: 0, Warnings: 0
+>>  
+>> root@imx8qxpmek:/unit_tests/JPEG# ./v4l2-compliance-stable-1.20 -d /dev/video1 -s
+>> v4l2-compliance SHA: 6c415a11fceb32067cdb5c2e33f90dbf018182a4, 64 bits, 64-bit time_t
+>>
+>> Compliance test for mxc-jpeg decode device /dev/video1:
+>>
+>> Driver Info:
+>> 	Driver name      : mxc-jpeg decode
+>> 	Card type        : mxc-jpeg decoder
+>> 	Bus info         : platform:58450000.jpegenc
+>> 	Driver version   : 5.10.0
+>> 	Capabilities     : 0x84204000
+>> 		Video Memory-to-Memory Multiplanar
+>> 		Streaming
+>> 		Extended Pix Format
+>> 		Device Capabilities
+>> 	Device Caps      : 0x04204000
+>> 		Video Memory-to-Memory Multiplanar
+>> 		Streaming
+>> 		Extended Pix Format
+>> 	Detected JPEG Encoder
+>>
+>> Required ioctls:
+>> 	test VIDIOC_QUERYCAP: OK
+>>
+>> Allow for multiple opens:
+>> 	test second /dev/video1 open: OK
+>> 	test VIDIOC_QUERYCAP: OK
+>> 	test VIDIOC_G/S_PRIORITY: OK
+>> 	test for unlimited opens: OK
+>>
+>> 	test invalid ioctls: OK
+>> Debug ioctls:
+>> 	test VIDIOC_DBG_G/S_REGISTER: OK (Not Supported)
+>> 	test VIDIOC_LOG_STATUS: OK (Not Supported)
+>>
+>> Input ioctls:
+>> 	test VIDIOC_G/S_TUNER/ENUM_FREQ_BANDS: OK (Not Supported)
+>> 	test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
+>> 	test VIDIOC_S_HW_FREQ_SEEK: OK (Not Supported)
+>> 	test VIDIOC_ENUMAUDIO: OK (Not Supported)
+>> 	test VIDIOC_G/S/ENUMINPUT: OK (Not Supported)
+>> 	test VIDIOC_G/S_AUDIO: OK (Not Supported)
+>> 	Inputs: 0 Audio Inputs: 0 Tuners: 0
+>>
+>> Output ioctls:
+>> 	test VIDIOC_G/S_MODULATOR: OK (Not Supported)
+>> 	test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
+>> 	test VIDIOC_ENUMAUDOUT: OK (Not Supported)
+>> 	test VIDIOC_G/S/ENUMOUTPUT: OK (Not Supported)
+>> 	test VIDIOC_G/S_AUDOUT: OK (Not Supported)
+>> 	Outputs: 0 Audio Outputs: 0 Modulators: 0
+>>
+>> Input/Output configuration ioctls:
+>> 	test VIDIOC_ENUM/G/S/QUERY_STD: OK (Not Supported)
+>> 	test VIDIOC_ENUM/G/S/QUERY_DV_TIMINGS: OK (Not Supported)
+>> 	test VIDIOC_DV_TIMINGS_CAP: OK (Not Supported)
+>> 	test VIDIOC_G/S_EDID: OK (Not Supported)
+>>
+>> Control ioctls:
+>> 	test VIDIOC_QUERY_EXT_CTRL/QUERYMENU: OK (Not Supported)
+>> 	test VIDIOC_QUERYCTRL: OK (Not Supported)
+>> 	test VIDIOC_G/S_CTRL: OK (Not Supported)
+>> 	test VIDIOC_G/S/TRY_EXT_CTRLS: OK (Not Supported)
+>> 	test VIDIOC_(UN)SUBSCRIBE_EVENT/DQEVENT: OK (Not Supported)
+>> 	test VIDIOC_G/S_JPEGCOMP: OK (Not Supported)
+>> 	Standard Controls: 0 Private Controls: 0
+>>
+>> Format ioctls:
+>> 	test VIDIOC_ENUM_FMT/FRAMESIZES/FRAMEINTERVALS: OK
+>> 	test VIDIOC_G/S_PARM: OK (Not Supported)
+>> 	test VIDIOC_G_FBUF: OK (Not Supported)
+>> 	test VIDIOC_G_FMT: OK
+>> 	test VIDIOC_TRY_FMT: OK
+>> 	test VIDIOC_S_FMT: OK
+>> 	test VIDIOC_G_SLICED_VBI_CAP: OK (Not Supported)
+>> 	test Cropping: OK (Not Supported)
+>> 	test Composing: OK (Not Supported)
+>> 	test Scaling: OK (Not Supported)
+>>
+>> Codec ioctls:
+>> 	test VIDIOC_(TRY_)ENCODER_CMD: OK
+>> 	test VIDIOC_G_ENC_INDEX: OK (Not Supported)
+>> 	test VIDIOC_(TRY_)DECODER_CMD: OK
+>>
+>> Buffer ioctls:
+>> 	test VIDIOC_REQBUFS/CREATE_BUFS/QUERYBUF: OK
+>> 	test VIDIOC_EXPBUF: OK
+>> 	test Requests: OK (Not Supported)
+>>
+>> Test input 0:
+>>
+>> Streaming ioctls:
+>> 	test read/write: OK (Not Supported)
+>> 	test blocking wait: OK
+>> 	Video Capture Multiplanar: Captured 58 buffers    
+>> 	test MMAP (no poll): OK
+>> 	Video Capture Multiplanar: Captured 58 buffers    
+>> 	test MMAP (select): OK
+>> 	Video Capture Multiplanar: Captured 58 buffers    
+>> 	test MMAP (epoll): OK
+>> 	test USERPTR (no poll): OK (Not Supported)
+>> 	test USERPTR (select): OK (Not Supported)
+>> 	test DMABUF: Cannot test, specify --expbuf-device
+>>
+>> Total for mxc-jpeg decode device /dev/video1: 52, Succeeded: 52, Failed: 0, Warnings: 0
+>> root@imx8qxpmek:/unit_tests/JPEG# 
+>>
+>>
+>> Mirela Rabulea (11):
+>>   media: v4l: Add packed YUV444 24bpp pixel format
+>>   firmware: imx: scu-pd: Add power domains for imx-jpeg
+>>   media: dt-bindings: Add bindings for i.MX8QXP/QM JPEG driver
+>>   media: imx-jpeg: Add V4L2 driver for i.MX8 JPEG Encoder/Decoder
+>>   arm64: dts: imx8qxp: Add jpeg encoder/decoder nodes
+>>   Add maintainer for IMX jpeg v4l2 driver
+>>   media: imx-jpeg: Fix v4l2-compliance streaming tests on decoder
+>>   media: Add parsing for APP14 data segment in jpeg helpers
+>>   media: Quit parsing stream if doesn't start with SOI
+>>   media: Avoid parsing quantization and huffman tables
+>>   media: imx-jpeg: Use v4l2 jpeg helpers in mxc-jpeg
+>>
+>>  .../devicetree/bindings/media/imx8-jpeg.yaml  |   83 +
+>>  .../media/v4l/pixfmt-packed-yuv.rst           |   37 +-
+>>  MAINTAINERS                                   |    8 +
+>>  arch/arm64/boot/dts/freescale/imx8qxp-mek.dts |    8 +
+>>  arch/arm64/boot/dts/freescale/imx8qxp.dtsi    |   37 +
+>>  drivers/firmware/imx/scu-pd.c                 |    6 +
+>>  drivers/media/platform/Kconfig                |    2 +
+>>  drivers/media/platform/Makefile               |    1 +
+>>  drivers/media/platform/imx-jpeg/Kconfig       |   11 +
+>>  drivers/media/platform/imx-jpeg/Makefile      |    3 +
+>>  drivers/media/platform/imx-jpeg/mxc-jpeg-hw.c |  168 ++
+>>  drivers/media/platform/imx-jpeg/mxc-jpeg-hw.h |  140 ++
+>>  drivers/media/platform/imx-jpeg/mxc-jpeg.c    | 2185 +++++++++++++++++
+>>  drivers/media/platform/imx-jpeg/mxc-jpeg.h    |  184 ++
+>>  drivers/media/v4l2-core/v4l2-ioctl.c          |    1 +
+>>  drivers/media/v4l2-core/v4l2-jpeg.c           |   52 +-
+>>  include/media/v4l2-jpeg.h                     |   16 +-
+>>  include/uapi/linux/videodev2.h                |    1 +
+>>  18 files changed, 2933 insertions(+), 10 deletions(-)
+>>  create mode 100644 Documentation/devicetree/bindings/media/imx8-jpeg.yaml
+>>  create mode 100644 drivers/media/platform/imx-jpeg/Kconfig
+>>  create mode 100644 drivers/media/platform/imx-jpeg/Makefile
+>>  create mode 100644 drivers/media/platform/imx-jpeg/mxc-jpeg-hw.c
+>>  create mode 100644 drivers/media/platform/imx-jpeg/mxc-jpeg-hw.h
+>>  create mode 100644 drivers/media/platform/imx-jpeg/mxc-jpeg.c
+>>  create mode 100644 drivers/media/platform/imx-jpeg/mxc-jpeg.h
+>>
+> 
 
