@@ -2,60 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F97F2A70E2
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 00:00:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E0FF2A70E5
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 00:00:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732089AbgKDXAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 18:00:08 -0500
-Received: from smtprelay0156.hostedemail.com ([216.40.44.156]:34276 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727107AbgKDXAH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 18:00:07 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id DE13B12EE;
-        Wed,  4 Nov 2020 23:00:06 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:967:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1537:1560:1593:1594:1711:1714:1730:1747:1777:1792:2393:2525:2561:2564:2682:2685:2828:2859:2895:2902:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3622:3865:3868:3873:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:4384:5007:6691:7903:9025:10004:10400:10848:11232:11658:11914:12043:12296:12297:12438:12555:12679:12740:12760:12895:13069:13311:13357:13439:13618:13845:14181:14659:14721:21080:21365:21451:21627:21939:30054:30060:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: grade15_04123b1272c5
-X-Filterd-Recvd-Size: 1594
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf13.hostedemail.com (Postfix) with ESMTPA;
-        Wed,  4 Nov 2020 23:00:05 +0000 (UTC)
-Message-ID: <a00078e1311c09361e9e3357ba5dca037d7a8bff.camel@perches.com>
-Subject: Re: [PATCH v2 1/7] media: uvcvideo: Use pr_cont() macro
-From:   Joe Perches <joe@perches.com>
-To:     Ricardo Ribalda <ribalda@chromium.org>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Wed, 04 Nov 2020 15:00:04 -0800
-In-Reply-To: <CANiDSCvwvQUTt1QMQGGyZPag9VeHj4Ugmj8QJdBNtw00UNt6Pg@mail.gmail.com>
-References: <20201104180734.286789-1-ribalda@chromium.org>
-         <20201104180734.286789-2-ribalda@chromium.org>
-         <87769d554b4575bf9371380b013e66d70f1b21c4.camel@perches.com>
-         <20201104214201.GH29958@pendragon.ideasonboard.com>
-         <9d439214e8c83ebf7b93dccca2f848fbaf75b9d4.camel@perches.com>
-         <CANiDSCvwvQUTt1QMQGGyZPag9VeHj4Ugmj8QJdBNtw00UNt6Pg@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        id S1732391AbgKDXAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 18:00:37 -0500
+Received: from mga03.intel.com ([134.134.136.65]:56873 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730766AbgKDXAg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 18:00:36 -0500
+IronPort-SDR: pmNFUc+vmZA5/CAupVPBo2CGkYqlqRq5R1r7o2KmXI6Mg7wAFjOyQZqMzce6ln92b+Re3e66OA
+ I9wNV/DuuWAg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9795"; a="169404364"
+X-IronPort-AV: E=Sophos;i="5.77,451,1596524400"; 
+   d="scan'208";a="169404364"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2020 15:00:35 -0800
+IronPort-SDR: 1ZAvSP+uA/DPn75+cuUFzXSZbyY027P3S4H1+MuPIPfACs0uZudoUTg+MtvVDb2HBVpi8+Fy6+
+ VJsCButS9g1A==
+X-IronPort-AV: E=Sophos;i="5.77,451,1596524400"; 
+   d="scan'208";a="529124050"
+Received: from lvasam-pc.amr.corp.intel.com (HELO arch-ashland-svkelley.intel.com) ([10.254.38.163])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2020 15:00:34 -0800
+From:   Sean V Kelley <sean.v.kelley@intel.com>
+To:     bhelgaas@google.com, Jonathan.Cameron@huawei.com,
+        xerces.zhao@gmail.com, rafael.j.wysocki@intel.com,
+        ashok.raj@intel.com, tony.luck@intel.com,
+        sathyanarayanan.kuppuswamy@intel.com, qiuxu.zhuo@intel.com
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sean V Kelley <sean.v.kelley@intel.com>
+Subject: [PATCH V2] AER: aer_root_reset() non-native handling
+Date:   Wed,  4 Nov 2020 15:00:17 -0800
+Message-Id: <20201104230017.303053-1-sean.v.kelley@intel.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-11-04 at 23:31 +0100, Ricardo Ribalda wrote:
+If an OS has not been granted AER control via _OSC, then
+the OS should not make changes to PCI_ERR_ROOT_COMMAND and
+PCI_ERR_ROOT_STATUS related registers. Per section 4.5.1 of
+the System Firmware Intermediary (SFI) _OSC and DPC Updates
+ECN [1], this bit also covers these aspects of the PCI
+Express Advanced Error Reporting. Based on the above and
+earlier discussion [2], make the following changes:
 
-> I have updated my tree with the dev_ variants
-> 
-> https://github.com/ribalda/linux/commit/b8785fd8efb4f2e5bbf5d0f2df3e0d69a5439015
+Add a check for the native case (i.e., AER control via _OSC)
 
-I looked at this link and was confused so you made me look.
-I think you meant:
+Note that the current "clear, reset, enable" order suggests that the
+reset might cause errors that we should ignore. Lacking historical
+context, these will be retained.
 
-https://github.com/ribalda/linux/commit/83cb6eb3a9f7bd1954acbfb4fb3d56ddf54bce73
+[1] System Firmware Intermediary (SFI) _OSC and DPC Updates ECN, Feb 24,
+    2020, affecting PCI Firmware Specification, Rev. 3.2
+    https://members.pcisig.com/wg/PCI-SIG/document/14076
+[2] https://lore.kernel.org/linux-pci/20201020162820.GA370938@bjorn-Precision-5520/
 
+Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
+---
+Changes since V1 [1]:
+
+Noted lack of historical context on isolation of both the
+pci_bus_error_reset() and the clearing of Root Error Status. In fact,
+the call to aer_enable_rootport() likewise disables system error generation
+in response to error messages around the clearing of the error status. So
+retained the wrapping of the  "clear, reset, enable".
+
+[1] https://lore.kernel.org/linux-pci/20201030223443.165783-1-sean.v.kelley@intel.com/
+
+Thanks,
+
+Sean
+---
+ drivers/pci/pcie/aer.c | 31 +++++++++++++++++--------------
+ 1 file changed, 17 insertions(+), 14 deletions(-)
+
+diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
+index 65dff5f3457a..6d4f70ec8546 100644
+--- a/drivers/pci/pcie/aer.c
++++ b/drivers/pci/pcie/aer.c
+@@ -1358,26 +1358,29 @@ static int aer_probe(struct pcie_device *dev)
+ static pci_ers_result_t aer_root_reset(struct pci_dev *dev)
+ {
+ 	int aer = dev->aer_cap;
++	int rc = 0;
+ 	u32 reg32;
+-	int rc;
+-
+
+-	/* Disable Root's interrupt in response to error messages */
+-	pci_read_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, &reg32);
+-	reg32 &= ~ROOT_PORT_INTR_ON_MESG_MASK;
+-	pci_write_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, reg32);
++	if (pcie_aer_is_native(dev)) {
++		/* Disable Root's interrupt in response to error messages */
++		pci_read_config_dword(root, aer + PCI_ERR_ROOT_COMMAND, &reg32);
++		reg32 &= ~ROOT_PORT_INTR_ON_MESG_MASK;
++		pci_write_config_dword(root, aer + PCI_ERR_ROOT_COMMAND, reg32);
++	}
+
+ 	rc = pci_bus_error_reset(dev);
+-	pci_info(dev, "Root Port link has been reset\n");
++	pci_info(dev, "Root Port link has been reset (%d)\n", rc);
+
+-	/* Clear Root Error Status */
+-	pci_read_config_dword(dev, aer + PCI_ERR_ROOT_STATUS, &reg32);
+-	pci_write_config_dword(dev, aer + PCI_ERR_ROOT_STATUS, reg32);
++	if (pcie_aer_is_native(dev)) {
++		/* Clear Root Error Status */
++		pci_read_config_dword(root, aer + PCI_ERR_ROOT_STATUS, &reg32);
++		pci_write_config_dword(root, aer + PCI_ERR_ROOT_STATUS, reg32);
+
+-	/* Enable Root Port's interrupt in response to error messages */
+-	pci_read_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, &reg32);
+-	reg32 |= ROOT_PORT_INTR_ON_MESG_MASK;
+-	pci_write_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, reg32);
++		/* Enable Root Port's interrupt in response to error messages */
++		pci_read_config_dword(root, aer + PCI_ERR_ROOT_COMMAND, &reg32);
++		reg32 |= ROOT_PORT_INTR_ON_MESG_MASK;
++		pci_write_config_dword(root, aer + PCI_ERR_ROOT_COMMAND, reg32);
++	}
+
+ 	return rc ? PCI_ERS_RESULT_DISCONNECT : PCI_ERS_RESULT_RECOVERED;
+ }
+--
+2.29.2
 
