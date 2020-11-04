@@ -2,183 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E299C2A6780
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 16:22:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 167D72A677B
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 16:22:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730796AbgKDPWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 10:22:08 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:43176 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730760AbgKDPWD (ORCPT
+        id S1730805AbgKDPWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 10:22:09 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:50108 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730779AbgKDPWH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 10:22:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604503320;
+        Wed, 4 Nov 2020 10:22:07 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1604503324;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=SfSzvhTtTH+9bzRDCyoDIT7iEx2M0ywu+3UJYVSiXF8=;
-        b=iiIBVcuAVq88BXZuNGMlswQKcM2KB5hDbdv26VvTTuNiZEdPsJNYH73wVnFKhElEaPg+gO
-        TMcs7QQPU0/NggOZHDyWRPQbJWRI/iSaPd5aFYBCFccFUKzx6fZyisdnSw2Y2OLUogIPEO
-        nPPhemrPulA4tL+nGQ440ee8unhhQYg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-148-Lg02yo_zMsC-8n1SZgYKuA-1; Wed, 04 Nov 2020 10:21:56 -0500
-X-MC-Unique: Lg02yo_zMsC-8n1SZgYKuA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 30DB71099F69;
-        Wed,  4 Nov 2020 15:21:54 +0000 (UTC)
-Received: from ovpn-112-92.rdu2.redhat.com (ovpn-112-92.rdu2.redhat.com [10.10.112.92])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5EAB610021AA;
-        Wed,  4 Nov 2020 15:21:48 +0000 (UTC)
-Message-ID: <d4f86cccccc3bffccc4eda39500ce1e1fee2109a.camel@redhat.com>
-Subject: Re: [PATCH v8 17/18] scsi: megaraid_sas: Added support for shared
- host tagset for cpuhotplug
-From:   Qian Cai <cai@redhat.com>
-To:     John Garry <john.garry@huawei.com>, axboe@kernel.dk,
-        jejb@linux.ibm.com, martin.petersen@oracle.com,
-        don.brace@microsemi.com, kashyap.desai@broadcom.com,
-        ming.lei@redhat.com, bvanassche@acm.org, dgilbert@interlog.com,
-        paolo.valente@linaro.org, hare@suse.de, hch@lst.de
-Cc:     sumit.saxena@broadcom.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        esc.storagedev@microsemi.com, megaraidlinux.pdl@broadcom.com,
-        chenxiang66@hisilicon.com, luojiaxing@huawei.com,
-        Hannes Reinecke <hare@suse.com>
-Date:   Wed, 04 Nov 2020 10:21:47 -0500
-In-Reply-To: <d8fd51b11d5d54e6ec7e4e9a4f7dcc83f1215cd3.camel@redhat.com>
-References: <1597850436-116171-1-git-send-email-john.garry@huawei.com>
-         <1597850436-116171-18-git-send-email-john.garry@huawei.com>
-         <fe3dff7dae4494e5a88caffbb4d877bbf472dceb.camel@redhat.com>
-         <385d5408-6ba2-6bb6-52d3-b59c9aa9c5e5@huawei.com>
-         <193a0440eed447209c48bda042f0e4db102355e7.camel@redhat.com>
-         <519e0d58-e73e-22ce-0ddb-1be71487ba6d@huawei.com>
-         <d8fd51b11d5d54e6ec7e4e9a4f7dcc83f1215cd3.camel@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+        bh=BVd2BFkWc5of5VjVKoE7YuBvmfMgyY8s0e7wNvJzc9Y=;
+        b=aUe4S6Xr/tG5JNcVOCup5DkipBY4q7JofDrO/mndYO+T6YC9O+auQQkrhFMehNInuj8/DW
+        Q/CNSDGmi75+X7GGeEGS4m0IAHindGcYt7DG3XIKZEQfucFmHR2nXx9WjZpb/AMIEccZIs
+        A6t+CdR6tY3OchTgP2/JXXz6c/7HOfhtgqXN/sqBmyIyHAZt+nxkUH8jRmREaKpxH1Gfux
+        CJD6rJ29eHGmflGduQ5KGRoCr8O1n5nJy4HoY2/PlGi2jhN/J6e7GMIxgwmKUdCjiKld/w
+        5h3nlZPb6+RBodvOomMm0ktrQUYa+x76jCUUEQDuLS3n1jtD+8SKgsPmlfYfaw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1604503324;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BVd2BFkWc5of5VjVKoE7YuBvmfMgyY8s0e7wNvJzc9Y=;
+        b=qmWGkWn/9p1JskciaKaDF2eqiSRvs3Ba4ns8B5M/WqSbvsVhb0JPoMAGV6qXKC9EYgmFTy
+        BZ14/chYLMqCc2Cw==
+To:     Mike Galbraith <efault@gmx.de>,
+        Gratian Crisan <gratian.crisan@ni.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org,
+        Brandon Streiff <brandon.streiff@ni.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Darren Hart <dvhart@infradead.org>,
+        James Minor <james.minor@ni.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: Re: [PATCH] futex: Handle transient "ownerless" rtmutex state correctly
+In-Reply-To: <87sg9pkvf7.fsf@nanos.tec.linutronix.de>
+References: <87a6w6x7bb.fsf@ni.com> <878sbixbk4.fsf@ni.com> <2376f4e71c638aee215a4911e5efed14c5adf56e.camel@gmx.de> <5f536491708682fc3b86cb5b7bc1e05ffa3521e7.camel@gmx.de> <874km5mnbf.fsf@nanos.tec.linutronix.de> <871rh9mkvr.fsf@nanos.tec.linutronix.de> <87v9ell0cn.fsf@nanos.tec.linutronix.de> <a9e88887c027b11596cd7fb96c425011c36e5d29.camel@gmx.de> <87sg9pkvf7.fsf@nanos.tec.linutronix.de>
+Date:   Wed, 04 Nov 2020 16:22:04 +0100
+Message-ID: <87pn4tkuzn.fsf@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-11-03 at 08:04 -0500, Qian Cai wrote:
-> On Tue, 2020-11-03 at 10:54 +0000, John Garry wrote:
-> > I have no x86 system to test that x86 config, though. How about 
-> > v5.10-rc2 for this issue?
-> 
-> v5.10-rc2 is also broken here.
+On Wed, Nov 04 2020 at 16:12, Thomas Gleixner wrote:
 
-John, Kashyap, any update on this? If this is going to take a while to fix it
-proper, should I send a patch to revert this or at least disable the feature by
-default for megaraid_sas in the meantime, so it no longer breaks the existing
-systems out there?
+> From: Mike Galbraith <efault@gmx.de>
+>
+> Gratian managed to trigger the BUG_ON(!newowner) in fixup_pi_state_owner().
+> This is one possible chain of events leading to this:
+>
+> Task Prio       Operation
+> T1   120	lock(F)
+> T2   120	lock(F)   -> blocks (top waiter)
+> T3   50 (RT)	lock(F)   -> boosts T3 and blocks (new top waiter)
 
-> 
-> [  251.941451][  T330] INFO: task systemd-udevd:551 blocked for more than 122
-> seconds.
-> [  251.949176][  T330]       Not tainted 5.10.0-rc2 #3
-> [  251.954094][  T330] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
-> disables this message.
-> [  251.962633][  T330] task:systemd-udevd   state:D stack:27160 pid:  551
-> ppid:   506 flags:0x00000324
-> [  251.971707][  T330] Call Trace:
-> [  251.974871][  T330]  __schedule+0x71d/0x1b50
-> [  251.979155][  T330]  ? kcore_callback+0x1d/0x1d
-> [  251.983709][  T330]  schedule+0xbf/0x270
-> [  251.987640][  T330]  schedule_timeout+0x3fc/0x590
-> [  251.992370][  T330]  ? usleep_range+0x120/0x120
-> [  251.996910][  T330]  ? wait_for_completion+0x156/0x250
-> [  252.002080][  T330]  ? lock_downgrade+0x700/0x700
-> [  252.006792][  T330]  ? rcu_read_unlock+0x40/0x40
-> [  252.011435][  T330]  ? do_raw_spin_lock+0x121/0x290
-> [  252.016324][  T330]  ? lockdep_hardirqs_on_prepare+0x27c/0x3d0
-> [  252.022178][  T330]  ? _raw_spin_unlock_irq+0x1f/0x30
-> [  252.027235][  T330]  wait_for_completion+0x15e/0x250
-> [  252.032226][  T330]  ? wait_for_completion_interruptible+0x2f0/0x2f0
-> [  252.038590][  T330]  ? lockdep_hardirqs_on_prepare+0x27c/0x3d0
-> [  252.044443][  T330]  ? _raw_spin_unlock_irq+0x1f/0x30
-> [  252.049502][  T330]  __flush_work+0x42a/0x900
-> [  252.053882][  T330]  ? queue_delayed_work_on+0x90/0x90
-> [  252.059025][  T330]  ? __queue_work+0x463/0xf40
-> [  252.063583][  T330]  ? init_pwq+0x320/0x320
-> [  252.067777][  T330]  ? queue_work_on+0x5e/0x80
-> [  252.072249][  T330]  ? trace_hardirqs_on+0x1c/0x150
-> [  252.077138][  T330]  work_on_cpu+0xe7/0x130
-> [  252.081347][  T330]  ? flush_delayed_work+0xc0/0xc0
-> [  252.086231][  T330]  ? __mutex_unlock_slowpath+0xd4/0x670
-> [  252.091655][  T330]  ? work_debug_hint+0x30/0x30
-> [  252.096284][  T330]  ? pci_device_shutdown+0x80/0x80
-> [  252.101274][  T330]  ? cpumask_next_and+0x57/0x80
-> [  252.105990][  T330]  pci_device_probe+0x500/0x5c0
-> [  252.110703][  T330]  ? pci_device_remove+0x1f0/0x1f0
-> [  252.115697][  T330]  really_probe+0x207/0xad0
-> [  252.120065][  T330]  ? device_driver_attach+0x120/0x120
-> [  252.125317][  T330]  driver_probe_device+0x1f1/0x370
-> [  252.130291][  T330]  device_driver_attach+0xe5/0x120
-> [  252.135281][  T330]  __driver_attach+0xf0/0x260
-> [  252.139827][  T330]  bus_for_each_dev+0x117/0x1a0
-> [  252.144552][  T330]  ? subsys_dev_iter_exit+0x10/0x10
-> [  252.149609][  T330]  bus_add_driver+0x399/0x560
-> [  252.154166][  T330]  driver_register+0x189/0x310
-> [  252.158795][  T330]  ? 0xffffffffc05c5000
-> [  252.162838][  T330]  megasas_init+0x117/0x1000 [megaraid_sas]
-> [  252.168593][  T330]  do_one_initcall+0xf6/0x510
-> [  252.173143][  T330]  ? perf_trace_initcall_level+0x490/0x490
-> [  252.178809][  T330]  ? kasan_unpoison_shadow+0x30/0x40
-> [  252.183973][  T330]  ? __kasan_kmalloc.constprop.11+0xc1/0xd0
-> [  252.189728][  T330]  ? do_init_module+0x49/0x6c0
-> [  252.194370][  T330]  ? kmem_cache_alloc_trace+0x12e/0x2a0
-> [  252.199780][  T330]  ? kasan_unpoison_shadow+0x30/0x40
-> [  252.204942][  T330]  do_init_module+0x1ed/0x6c0
-> [  252.209479][  T330]  load_module+0x4a25/0x5cf0
-> [  252.213950][  T330]  ? layout_and_allocate+0x2770/0x2770
-> [  252.219271][  T330]  ? __vmalloc_node+0x8d/0x100
-> [  252.223913][  T330]  ? kernel_read_file+0x485/0x5a0
-> [  252.228796][  T330]  ? kernel_read_file+0x305/0x5a0
-> [  252.233696][  T330]  ? __ia32_sys_fsconfig+0x6a0/0x6a0
-> [  252.238841][  T330]  ? __do_sys_finit_module+0xff/0x180
-> [  252.244093][  T330]  __do_sys_finit_module+0xff/0x180
-> [  252.249155][  T330]  ? __do_sys_init_module+0x1d0/0x1d0
-> [  252.254403][  T330]  ? __fget_files+0x1c3/0x2e0
-> [  252.258940][  T330]  do_syscall_64+0x33/0x40
-> [  252.263234][  T330]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> [  252.268984][  T330] RIP: 0033:0x7f7cf6a4878d
-> [  252.273276][  T330] Code: Unable to access opcode bytes at RIP
-> 0x7f7cf6a48763.
-> [  252.280499][  T330] RSP: 002b:00007ffcfa94b978 EFLAGS: 00000246 ORIG_RAX:
-> 0000000000000139
-> [  252.288781][  T330] RAX: ffffffffffffffda RBX: 000055e01f48b730 RCX:
-> 00007f7cf6a4878d
-> [  252.296628][  T330] RDX: 0000000000000000 RSI: 00007f7cf75ba82d RDI:
-> 0000000000000006
-> [  252.304482][  T330] RBP: 00007f7cf75ba82d R08: 0000000000000000 R09:
-> 00007ffcfa94baa0
-> [  252.312331][  T330] R10: 0000000000000006 R11: 0000000000000246 R12:
-> 0000000000000000
-> [  252.320167][  T330] R13: 000055e01f433530 R14: 0000000000020000 R15:
-> 0000000000000000
-> [  252.328052][  T330] 
-> [  252.328052][  T330] Showing all locks held in the system:
-> [  252.335722][  T330] 3 locks held by kworker/3:1/289:
-> [  252.340697][  T330]  #0: ffff8881001eb338 ((wq_completion)events){+.+.}-
-> {0:0}, at: process_one_work+0x7ec/0x1610
-> [  252.350906][  T330]  #1: ffffc90004ef7e00
-> ((work_completion)(&wfc.work)){+.+.}-{0:0}, at: process_one_work+0x820/0x1610
-> [  252.361725][  T330]  #2: ffff88810dc600e0 (&shost->scan_mutex){+.+.}-{3:3}, 
-> at: scsi_scan_host_selected+0xde/0x260
-> [  252.372132][  T330] 1 lock held by khungtaskd/330:
-> [  252.376933][  T330]  #0: ffffffffb42d2de0 (rcu_read_lock){....}-{1:2}, at:
-> rcu_lock_acquire.constprop.52+0x0/0x30
-> [  252.387234][  T330] 1 lock held by systemd-journal/398:
-> [  252.392489][  T330] 1 lock held by systemd-udevd/551:
-> [  252.397550][  T330]  #0: ffff888109a49218 (&dev->mutex){....}-{3:3}, at:
-> device_driver_attach+0x37/0x120
-> [  252.407085][  T330] 
-> [  252.409285][  T330] =============================================
-> [  252.409285][  T330] 
-> 
+boosts T1 obviously as Sebastian just pointed out to me. /me pulls the
+futex induced brain damage excuse ...
 
