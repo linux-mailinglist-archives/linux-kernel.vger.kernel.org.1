@@ -2,183 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 090802A5E93
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 08:09:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EB332A5E9E
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 08:13:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727651AbgKDHJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 02:09:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33196 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725926AbgKDHJg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 02:09:36 -0500
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4736AC061A4D;
-        Tue,  3 Nov 2020 23:09:35 -0800 (PST)
-Received: by mail-il1-x143.google.com with SMTP id z2so18412745ilh.11;
-        Tue, 03 Nov 2020 23:09:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=KP9/fjUPS6sBq9156U7ipqEJlCjWJHRAiLQlK2DjSj8=;
-        b=ceSCYs+hRGJatnkVPmaj6b5UcrmM2mw16E7xupX4He4iwiUDaLx1YztdC1jaQW78OJ
-         RkTRfjrsONiVMCNAuqnCJjFN4S2UnmlE4bo91HNN82B5LtRLPLR+HSHS4tlJP4C8zZB3
-         CC+EkGLOW+gd5ikPzohB0A/RR2kmMpC0UsHX6FmCbdrPOyWuJR6XOjkl0tSNV8PPs2od
-         8YGD7tS+3HYREe9M4bPXZu56XuX05kzdT0osl1GjXpSGK3ZTSSPlU6OsvR79/EHg5gNB
-         DZyjw+fdDqSKcrZ8nrYylrm/hTQtnZXF2t44/sdepPy6U/t0wITHTJIT869y2J53Rtjg
-         Je0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=KP9/fjUPS6sBq9156U7ipqEJlCjWJHRAiLQlK2DjSj8=;
-        b=qUnI80CTpNZqVdfDvd5qQBXu5kZ6NtG3KdOpxgEvmv+nKGrIW7C/MbwAyRB5RPSWtj
-         3gcWcy05WYs4Wp/66LYl0akh5LeLVrT9Er0kQKnFE24Y/rEyskq/yQMi3CaeGfedT2vX
-         EkkUwAGbIKvHJs7fQwLPj/h5Azbtwsv+28uefmJJKYgDN6+3OPXMfpXEw7P4sg9EdLZJ
-         HFYW+appKOV7w5CJNuWxCdYKf/sL04nuIcES721qt+ISn7jUYIEpujTMOXpOMofYzz+W
-         4kkUJBBHFQGtGADempfA9MaUhDCQ73OLS8yvIzXLWHtuOziLxpw4WdMhnljFByKz8/8Z
-         kYzA==
-X-Gm-Message-State: AOAM530x+wIJlB1ljNkwj3nvsURuJpcipKt4aN/L6uxjPR9ZMCv6aNLZ
-        FGm4sgBQWRc9Qk3nqRORpu0YdUnjiBFMJ6eCJRBZQn62
-X-Google-Smtp-Source: ABdhPJwgqT9+2HFOX8NwQCdqXeH7sVeRpbo96RSarvxknfpjGXy5gxwtEdqLg4KEAzHPPtRaBTCdRcwj5zUzIk5G0Eg=
-X-Received: by 2002:a05:6e02:4b1:: with SMTP id e17mr17323590ils.80.1604473774368;
- Tue, 03 Nov 2020 23:09:34 -0800 (PST)
-MIME-Version: 1.0
-From:   Yungteng Hsu <hsu.yungteng@gmail.com>
-Date:   Wed, 4 Nov 2020 15:09:23 +0800
-Message-ID: <CAFT9tymDmeBoAsESyMqE=woZMcUookJ3RgEJD4F6kKeFJJaPiw@mail.gmail.com>
-Subject: [PATCH] hwmon: (pmbus) Add driver for STMicroelectronics PM6764
- Voltage Regulator
-To:     linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org
-Cc:     Yungteng Hsu <hsu.yungteng@gmail.com>, alan@redhat.com
-Content-Type: text/plain; charset="UTF-8"
+        id S1728766AbgKDHNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 02:13:31 -0500
+Received: from smtp25.cstnet.cn ([159.226.251.25]:47908 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725926AbgKDHNb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 02:13:31 -0500
+Received: from localhost.localdomain (unknown [124.16.141.241])
+        by APP-05 (Coremail) with SMTP id zQCowACHj8MUVKJfePP7AA--.26397S2;
+        Wed, 04 Nov 2020 15:11:16 +0800 (CST)
+From:   Xu Wang <vulab@iscas.ac.cn>
+To:     paul@crapouillou.net, mturquette@baylibre.com, sboyd@kernel.org,
+        linux-clk@vger.kernel.or
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] clk: ingenic/TCU: Remove NULL pointer check before clk_enable/disable
+Date:   Wed,  4 Nov 2020 07:11:14 +0000
+Message-Id: <20201104071114.6322-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: zQCowACHj8MUVKJfePP7AA--.26397S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7Xr1fCFy5uF1UXr4fGw15urg_yoWfZrgEkF
+        40qr4SkF4rCrn7Ar1UAwn5AFyI9F1xZ3Z5Z34ft3Zay3srAw1Yv3yjqF15Cwn8JFWrCayI
+        qFnrAryxZr4xCjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbcxYjsxI4VWDJwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwV
+        C2z280aVCY1x0267AKxVWxJr0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
+        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JF0_Jw1lYx0Ex4A2jsIE14v26r4UJV
+        WxJr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkIecxEwVAFwVW8CwCF
+        04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r
+        18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vI
+        r41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr
+        1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF
+        0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU8BbytUUUUU==
+X-Originating-IP: [124.16.141.241]
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCgUKA1z4jHSv5QAAsQ
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the pmbus driver for the STMicroelectronics pm6764 voltage regulator.
+Because clk_enable and clk_disable already checked NULL clock parameter,
+so the additional checks are unnecessary, just remove them.
 
-the output voltage use the MFR_READ_VOUT 0xD4
-vout value returned is linear11
-
-Signed-off-by: Charles Hsu <hsu.yungteng@gmail.com>
+Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
 ---
- drivers/hwmon/pmbus/Kconfig    |  8 ++++
- drivers/hwmon/pmbus/Makefile   |  1 +
- drivers/hwmon/pmbus/pm6764tr.c | 74 ++++++++++++++++++++++++++++++++++
- 3 files changed, 83 insertions(+)
- create mode 100644 drivers/hwmon/pmbus/pm6764tr.c
+ drivers/clk/ingenic/tcu.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/hwmon/pmbus/Kconfig b/drivers/hwmon/pmbus/Kconfig
-index a25faf69fce3..2b487c401a4e 100644
---- a/drivers/hwmon/pmbus/Kconfig
-+++ b/drivers/hwmon/pmbus/Kconfig
-@@ -220,6 +220,14 @@ config SENSORS_MP2975
-   This driver can also be built as a module. If so, the module will
-   be called mp2975.
+diff --git a/drivers/clk/ingenic/tcu.c b/drivers/clk/ingenic/tcu.c
+index 9382dc3aa27e..ffcb3667fd2b 100644
+--- a/drivers/clk/ingenic/tcu.c
++++ b/drivers/clk/ingenic/tcu.c
+@@ -445,8 +445,7 @@ static int __maybe_unused tcu_pm_suspend(void)
+ {
+ 	struct ingenic_tcu *tcu = ingenic_tcu;
+ 
+-	if (tcu->clk)
+-		clk_disable(tcu->clk);
++	clk_disable(tcu->clk);
+ 
+ 	return 0;
+ }
+@@ -455,8 +454,7 @@ static void __maybe_unused tcu_pm_resume(void)
+ {
+ 	struct ingenic_tcu *tcu = ingenic_tcu;
+ 
+-	if (tcu->clk)
+-		clk_enable(tcu->clk);
++	clk_enable(tcu->clk);
+ }
+ 
+ static struct syscore_ops __maybe_unused tcu_pm_ops = {
+-- 
+2.17.1
 
-+config SENSORS_PM6764TR
-+ tristate "PM6764TR"
-+ help
-+  If you say yes here you get hardware monitoring support for PM6764TR.
-+
-+  This driver can also be built as a module. If so, the module will
-+  be called pm6764tr.
-+
- config SENSORS_PXE1610
-  tristate "Infineon PXE1610"
-  help
-diff --git a/drivers/hwmon/pmbus/Makefile b/drivers/hwmon/pmbus/Makefile
-index 4c97ad0bd791..31ebdef5d4a6 100644
---- a/drivers/hwmon/pmbus/Makefile
-+++ b/drivers/hwmon/pmbus/Makefile
-@@ -25,6 +25,7 @@ obj-$(CONFIG_SENSORS_MAX31785) += max31785.o
- obj-$(CONFIG_SENSORS_MAX34440) += max34440.o
- obj-$(CONFIG_SENSORS_MAX8688) += max8688.o
- obj-$(CONFIG_SENSORS_MP2975) += mp2975.o
-+obj-$(CONFIG_SENSORS_PM6764TR) += pm6764tr.o
- obj-$(CONFIG_SENSORS_PXE1610) += pxe1610.o
- obj-$(CONFIG_SENSORS_TPS40422) += tps40422.o
- obj-$(CONFIG_SENSORS_TPS53679) += tps53679.o
-diff --git a/drivers/hwmon/pmbus/pm6764tr.c b/drivers/hwmon/pmbus/pm6764tr.c
-new file mode 100644
-index 000000000000..b125a1cbfea5
---- /dev/null
-+++ b/drivers/hwmon/pmbus/pm6764tr.c
-@@ -0,0 +1,74 @@
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/init.h>
-+#include <linux/err.h>
-+#include <linux/slab.h>
-+#include <linux/mutex.h>
-+#include <linux/i2c.h>
-+#include <linux/pmbus.h>
-+#include "pmbus.h"
-+
-+#define PM6764TR_PMBUS_READ_VOUT 0xD4
-+
-+static int pm6764tr_read_word_data(struct i2c_client *client, int
-page, int reg)
-+{
-+ int ret;
-+
-+ switch (reg) {
-+ case PMBUS_VIRT_READ_VMON:
-+ ret = pmbus_read_word_data(client, page,
-+   PM6764TR_PMBUS_READ_VOUT);
-+ break;
-+ default:
-+ ret = -ENODATA;
-+ break;
-+ }
-+ return ret;
-+}
-+
-+static struct pmbus_driver_info pm6764tr_info = {
-+ .pages = 1,
-+ .format[PSC_VOLTAGE_IN] = linear,
-+ .format[PSC_VOLTAGE_OUT] = vid,
-+ .format[PSC_TEMPERATURE] = linear,
-+ .format[PSC_CURRENT_OUT] = linear,
-+ .format[PSC_POWER] = linear,
-+ .func[0] = PMBUS_HAVE_VIN | PMBUS_HAVE_IIN |  PMBUS_HAVE_PIN |
-+    PMBUS_HAVE_IOUT | PMBUS_HAVE_POUT | PMBUS_HAVE_VMON |
-+ PMBUS_HAVE_STATUS_IOUT | PMBUS_HAVE_STATUS_VOUT |
-+ PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP,
-+    .read_word_data = pm6764tr_read_word_data,
-+};
-+
-+static int pm6764tr_probe(struct i2c_client *client,
-+  const struct i2c_device_id *id)
-+{
-+ return pmbus_do_probe(client, id, &pm6764tr_info);
-+}
-+
-+static const struct i2c_device_id pm6764tr_id[] = {
-+ {"pm6764tr", 0},
-+ {}
-+};
-+MODULE_DEVICE_TABLE(i2c, pm6764tr_id);
-+
-+static const struct of_device_id pm6764tr_of_match[] = {
-+ {.compatible = "pm6764tr"},
-+ {}
-+};
-+/* This is the driver that will be inserted */
-+static struct i2c_driver pm6764tr_driver = {
-+ .driver = {
-+   .name = "pm6764tr",
-+   .of_match_table = of_match_ptr(pm6764tr_of_match),
-+   },
-+ .probe = pm6764tr_probe,
-+ .remove = pmbus_do_remove,
-+ .id_table = pm6764tr_id,
-+};
-+
-+module_i2c_driver(pm6764tr_driver);
-+
-+MODULE_AUTHOR("Charles Hsu");
-+MODULE_DESCRIPTION("PMBus driver for  ST PM6764TR");
-+MODULE_LICENSE("GPL");
---
-2.25.1
