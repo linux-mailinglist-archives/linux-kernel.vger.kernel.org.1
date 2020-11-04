@@ -2,141 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18C362A5BBF
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 02:19:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B02E72A5BB5
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 02:18:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730432AbgKDBTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 20:19:10 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:35868 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730381AbgKDBTK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 20:19:10 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A41GC9u166601;
-        Wed, 4 Nov 2020 01:18:51 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=gJQLTwlXCcujwtSP+cbUgq0oYqCQI1AU9Frvz2gh8FI=;
- b=PJnONpOgcYuW+XADb68dFOF3/T0ODsobWtBqJEicKZLyVKYPkucTryXWrVuQcbe862eT
- e4P/ptmibWR9I8TBCf8MttYcKeVdutK5KLkgesBvay+kXLZnxNClSnFooRrZKhCHFPvu
- 5dH+i0MIbYtUwJQRDTIlq7HqcdZ9+yU0b37Ex7lRlaZeHuRgIixhIHIdsXnK9cMYvOI+
- 98qp1OdVFkqgmgQyDNkRsG5vY1xKRssQOvAkoFHQ4hZPrBo6W0tQBIo7x5+bGJV4sbbA
- IKeyayG8526XPPNc+JYs6ecxL/FNeIBJjZiUaZg5ShLrYnnqN2uFoQi2ZCHknHfVuDqw Og== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 34hhvccbky-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 04 Nov 2020 01:18:51 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A41Egji013517;
-        Wed, 4 Nov 2020 01:16:50 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 34hw0ee1g7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 04 Nov 2020 01:16:50 +0000
-Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0A41GmI1009435;
-        Wed, 4 Nov 2020 01:16:49 GMT
-Received: from rnichana-ThinkPad-T480 (/10.159.241.204)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 03 Nov 2020 17:16:48 -0800
-Date:   Tue, 3 Nov 2020 17:16:40 -0800
-From:   Rama Nichanamatlu <rama.nichanamatlu@oracle.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Dongli Zhang <dongli.zhang@oracle.com>, linux-mm@kvack.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        akpm@linux-foundation.org, davem@davemloft.net, kuba@kernel.org,
-        aruna.ramakrishna@oracle.com, bert.barbe@oracle.com,
-        venkat.x.venkatsubra@oracle.com, manjunath.b.patil@oracle.com,
-        joe.jin@oracle.com, srinivas.eeda@oracle.com
-Subject: Re: [PATCH 1/1] mm: avoid re-using pfmemalloc page in
- page_frag_alloc()
-Message-ID: <20201104011640.GE2445@rnichana-ThinkPad-T480>
-References: <20201103193239.1807-1-dongli.zhang@oracle.com>
- <20201103203500.GG27442@casper.infradead.org>
- <7141038d-af06-70b2-9f50-bf9fdf252e22@oracle.com>
- <20201103211541.GH27442@casper.infradead.org>
+        id S1730351AbgKDBSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 20:18:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49732 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728157AbgKDBSY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 20:18:24 -0500
+Received: from kernel.org (83-245-197-237.elisa-laajakaista.fi [83.245.197.237])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7D068223EA;
+        Wed,  4 Nov 2020 01:18:20 +0000 (UTC)
+Date:   Wed, 4 Nov 2020 03:18:17 +0200
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     linux-integrity@vger.kernel.org
+Cc:     David Howells <dhowells@redhat.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        stable@vger.kernel.org,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Kent Yoder <key@linux.vnet.ibm.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        "H. Peter Anvin" <hpa@linux.intel.com>,
+        David Safford <safford@linux.vnet.ibm.com>,
+        "open list:KEYS-TRUSTED" <keyrings@vger.kernel.org>,
+        "open list:SECURITY SUBSYSTEM" 
+        <linux-security-module@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: [PATCH v4 1/3,RESEND 2] KEYS: trusted: Fix incorrect handling of
+ tpm_get_random()
+Message-ID: <20201104011817.GB20387@kernel.org>
+References: <20201013025156.111305-1-jarkko.sakkinen@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201103211541.GH27442@casper.infradead.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9794 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 mlxlogscore=999
- phishscore=0 bulkscore=0 spamscore=0 malwarescore=0 mlxscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011040006
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9794 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=2
- impostorscore=0 malwarescore=0 priorityscore=1501 mlxlogscore=999
- bulkscore=0 phishscore=0 adultscore=0 mlxscore=0 lowpriorityscore=0
- clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011040006
+In-Reply-To: <20201013025156.111305-1-jarkko.sakkinen@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->Thanks for providing the numbers.  Do you think that dropping (up to)
->7 packets is acceptable?
+When tpm_get_random() was introduced, it defined the following API for the
+return value:
 
-net.ipv4.tcp_syn_retries = 6
+1. A positive value tells how many bytes of random data was generated.
+2. A negative value on error.
 
-tcp clients wouldn't even get that far leading to connect establish issues.
+However, in the call sites the API was used incorrectly, i.e. as it would
+only return negative values and otherwise zero. Returning he positive read
+counts to the user space does not make any possible sense.
 
--rama
-On Tue, Nov 03, 2020 at 09:15:41PM +0000, Matthew Wilcox wrote:
->On Tue, Nov 03, 2020 at 12:57:33PM -0800, Dongli Zhang wrote:
->> On 11/3/20 12:35 PM, Matthew Wilcox wrote:
->> > On Tue, Nov 03, 2020 at 11:32:39AM -0800, Dongli Zhang wrote:
->> >> However, once kernel is not under memory pressure any longer (suppose large
->> >> amount of memory pages are just reclaimed), the page_frag_alloc() may still
->> >> re-use the prior pfmemalloc page_frag_cache->va to allocate skb->data. As a
->> >> result, the skb->pfmemalloc is always true unless page_frag_cache->va is
->> >> re-allocated, even the kernel is not under memory pressure any longer.
->> >> +	/*
->> >> +	 * Try to avoid re-using pfmemalloc page because kernel may already
->> >> +	 * run out of the memory pressure situation at any time.
->> >> +	 */
->> >> +	if (unlikely(nc->va && nc->pfmemalloc)) {
->> >> +		page = virt_to_page(nc->va);
->> >> +		__page_frag_cache_drain(page, nc->pagecnt_bias);
->> >> +		nc->va = NULL;
->> >> +	}
->> >
->> > I think this is the wrong way to solve this problem.  Instead, we should
->> > use up this page, but refuse to recycle it.  How about something like this (not even compile tested):
->>
->> Thank you very much for the feedback. Yes, the option is to use the same page
->> until it is used up (offset < 0). Instead of recycling it, the kernel free it
->> and allocate new one.
->>
->> This depends on whether we will tolerate the packet drop until this page is used up.
->>
->> For virtio-net, the payload (skb->data) is of size 128-byte. The padding and
->> alignment will finally make it as 512-byte.
->>
->> Therefore, for virtio-net, we will have at most 4096/512-1=7 packets dropped
->> before the page is used up.
->
->My thinking is that if the kernel is under memory pressure then freeing
->the page and allocating a new one is likely to put even more strain
->on the memory allocator, so we want to do this "soon", rather than at
->each allocation.
->
->Thanks for providing the numbers.  Do you think that dropping (up to)
->7 packets is acceptable?
->
->We could also do something like ...
->
->        if (unlikely(nc->pfmemalloc)) {
->                page = alloc_page(GFP_NOWAIT | __GFP_NOWARN);
->                if (page)
->                        nc->pfmemalloc = 0;
->                put_page(page);
->        }
->
->to test if the memory allocator has free pages at the moment.  Not sure
->whether that's a good idea or not -- hopefully you have a test environment
->set up where you can reproduce this condition on demand and determine
->which of these three approaches is best!
+Fix this by returning -EIO when tpm_get_random() returns a positive value.
+
+Fixes: 41ab999c80f1 ("tpm: Move tpm_get_random api into the TPM device driver")
+Cc: stable@vger.kernel.org
+Cc: Mimi Zohar <zohar@linux.ibm.com>
+Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Kent Yoder <key@linux.vnet.ibm.com>
+Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+---
+ security/keys/trusted-keys/trusted_tpm1.c | 20 +++++++++++++++++---
+ 1 file changed, 17 insertions(+), 3 deletions(-)
+
+diff --git a/security/keys/trusted-keys/trusted_tpm1.c b/security/keys/trusted-keys/trusted_tpm1.c
+index b9fe02e5f84f..c7b1701cdac5 100644
+--- a/security/keys/trusted-keys/trusted_tpm1.c
++++ b/security/keys/trusted-keys/trusted_tpm1.c
+@@ -403,9 +403,12 @@ static int osap(struct tpm_buf *tb, struct osapsess *s,
+ 	int ret;
+ 
+ 	ret = tpm_get_random(chip, ononce, TPM_NONCE_SIZE);
+-	if (ret != TPM_NONCE_SIZE)
++	if (ret < 0)
+ 		return ret;
+ 
++	if (ret != TPM_NONCE_SIZE)
++		return -EIO;
++
+ 	tpm_buf_reset(tb, TPM_TAG_RQU_COMMAND, TPM_ORD_OSAP);
+ 	tpm_buf_append_u16(tb, type);
+ 	tpm_buf_append_u32(tb, handle);
+@@ -496,8 +499,12 @@ static int tpm_seal(struct tpm_buf *tb, uint16_t keytype,
+ 		goto out;
+ 
+ 	ret = tpm_get_random(chip, td->nonceodd, TPM_NONCE_SIZE);
++	if (ret < 0)
++		return ret;
++
+ 	if (ret != TPM_NONCE_SIZE)
+-		goto out;
++		return -EIO;
++
+ 	ordinal = htonl(TPM_ORD_SEAL);
+ 	datsize = htonl(datalen);
+ 	pcrsize = htonl(pcrinfosize);
+@@ -601,9 +608,12 @@ static int tpm_unseal(struct tpm_buf *tb,
+ 
+ 	ordinal = htonl(TPM_ORD_UNSEAL);
+ 	ret = tpm_get_random(chip, nonceodd, TPM_NONCE_SIZE);
++	if (ret < 0)
++		return ret;
++
+ 	if (ret != TPM_NONCE_SIZE) {
+ 		pr_info("trusted_key: tpm_get_random failed (%d)\n", ret);
+-		return ret;
++		return -EIO;
+ 	}
+ 	ret = TSS_authhmac(authdata1, keyauth, TPM_NONCE_SIZE,
+ 			   enonce1, nonceodd, cont, sizeof(uint32_t),
+@@ -1013,8 +1023,12 @@ static int trusted_instantiate(struct key *key,
+ 	case Opt_new:
+ 		key_len = payload->key_len;
+ 		ret = tpm_get_random(chip, payload->key, key_len);
++		if (ret < 0)
++			goto out;
++
+ 		if (ret != key_len) {
+ 			pr_info("trusted_key: key_create failed (%d)\n", ret);
++			ret = -EIO;
+ 			goto out;
+ 		}
+ 		if (tpm2)
+-- 
+2.25.1
+
