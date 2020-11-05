@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80EE32A8162
+	by mail.lfdr.de (Postfix) with ESMTP id 1409E2A8161
 	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 15:50:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731360AbgKEOt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 09:49:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47730 "EHLO
+        id S1731154AbgKEOtz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 09:49:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730775AbgKEOtz (ORCPT
+        with ESMTP id S1730660AbgKEOtz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 5 Nov 2020 09:49:55 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEABAC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 06:49:53 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id n18so2085925wrs.5
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 06:49:53 -0800 (PST)
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDB2DC0613D2
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 06:49:54 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id x12so2074503wrm.8
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 06:49:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=atTzCWPPlahrYZ6oaD6a/eMQRrb+6N0sjW08hjWOzVc=;
-        b=HkMQhjKMqiOTmH6iKAEQHVMKYFBnek8NxAqQLJKOzxXjz3o2zr5ws0iM5xBW3dIMml
-         89wAaPYzb1201n7JJEJ8a4Sm6uk4eyjIwxccNFKHl/Og2BSCwTOdXFi6tqOub/otsBIf
-         7qat7sSS2+y/WhcFf3+5o52obwcr6yl5piYYT0SJDvIrX2KnKwCNBU92NT8O7+pKks0z
-         0rshZl2oeCJ40VZj4nSd6e3ui8dj7a2qBc2i8ztWMzTthg2/DDpAVlVQmdqoA8tLYZbR
-         reTe7ENA1j1O9/3WFKbNdjlB1IAJi22XqQvokkUAxoNR/EoYWgK1KrBKO+6ZVQga1SRp
-         PJtQ==
+        bh=GrmcKAlls5FheZRNQHIiGXV6iEbsW7+WdRcNPsA3rPY=;
+        b=kxiycmINXTJFMhqjrjqXez51q2+2eLkvUSx1vx5XDKTaChHJBs+5qpJUvMc/bUc2aL
+         2opMS/7Um0GcQ4Hj03wlvXmqZfOvHyGBQKH5bZPcKpa6GDrCLt+0eyVy/KStwrlmooNG
+         KPYGH9Qzwo3JByWUNvGi2iL7VGO1lubDzibyFjoiI+NYLYA44GbnHQzOg+nlhywh63vA
+         0tjEqlANuz2EcpPAJYH4LMGsvCib8nikY4JeKrR4mAvRXZ/XcrmXqDUxU5HRCtgHDGXG
+         QYO5o2W8tsVrWduKx6zY9z1C+zNPHVetc5tjuwVhMxUZmbIJDnRiXzfnzqV1TE5m0Wgu
+         bcKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=atTzCWPPlahrYZ6oaD6a/eMQRrb+6N0sjW08hjWOzVc=;
-        b=o/aZXigQsmMexQDHFL0pa0yRvxsS+1NSf7HAL+56CFZh2AfpqS5f7TvuvpCjzD9tEU
-         1LgRi0Z5agFAn+gcV+kGIAycI4FWc+mp5Vvn4STzq0qUVFpbXl/Kqi9bEQ3/Y8wb+iWl
-         o6N/uqeJXyUiXOst1G+bv7To3aPsmA/bmKpYKn2YpO2oLGnbKUx43doANQHdwT39ah6+
-         CHfUYJyFfcnsmfg1PrvcqtBrODCtYJUDLhOI8KD7044Af9Z+QmHNdTg5aNfGOkgMygY/
-         2+ItsyZGz6sexThq+kQhsYF3xZSUgSqwX3HGO87oaHykLX5e/nl15hJBqryz/M6EOuJO
-         LchQ==
-X-Gm-Message-State: AOAM532lWdsUxIcGiJJvlt9jNQuiVErAqsIIinHUrXf7MaTXFwLzAwHI
-        OdxzRkIcwqQr6tfGhLw6qbY=
-X-Google-Smtp-Source: ABdhPJycFxukL6YmcsvmqtnfVEqh2FZUWevL8kW5bsAdKvWtwzl3BMo+RE9hI2sl3+9aZarQ7El73A==
-X-Received: by 2002:a5d:4148:: with SMTP id c8mr3330544wrq.261.1604587792651;
-        Thu, 05 Nov 2020 06:49:52 -0800 (PST)
+        bh=GrmcKAlls5FheZRNQHIiGXV6iEbsW7+WdRcNPsA3rPY=;
+        b=ooXd7yWe9m4+y4BAF16Us6gRqpOQTFzCKxoDBRnhG+AeCg52hoHDZCGB1njDXfg02N
+         IAAFxRoxKCb+hgRF84c5+Fkz5dIJO3DGZm3B2R+fkUy0x0G9L2cx9KoiMB5xKK9KjaFE
+         rwIdxdWEMygkgB5pHOEuDUq/wT9LsH+aQJOj3ye2ASyUydUlbRb4rzUhCuBIF3VERLwL
+         T9urlpVuIHAgkynZ/vAhZ60wOlori4rM/QqD6EiKe8fpx9e1A5Ej5us17h0Pqbf7FPlK
+         Axe5/CiLIGA/OMPk3TNxSh16nrHNZHi0A9szjxAF2OtrU/A4eL0fQn6Vh+Zv6LGkm9oh
+         ktEw==
+X-Gm-Message-State: AOAM531143a5deMI48MZbHvy+kXciPKwoFRG6sg0+pPi4fg1hHXqFEDp
+        qNGA8ENL4hEgKj7ThG42gLc=
+X-Google-Smtp-Source: ABdhPJxQxq4bggcrMpnMfUMpOCblRZBfQdcDxjpwukRvGgrsp9MmtugLrl9BUk1XANQ+uyoYxXrTjg==
+X-Received: by 2002:adf:b30c:: with SMTP id j12mr3416322wrd.82.1604587793678;
+        Thu, 05 Nov 2020 06:49:53 -0800 (PST)
 Received: from matteo-xps-15-9560.lan ([2a01:4b00:a40c:9900::14e])
-        by smtp.gmail.com with ESMTPSA id z11sm3055512wrr.66.2020.11.05.06.49.51
+        by smtp.gmail.com with ESMTPSA id z11sm3055512wrr.66.2020.11.05.06.49.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 06:49:51 -0800 (PST)
+        Thu, 05 Nov 2020 06:49:52 -0800 (PST)
 From:   Matteo Scordino <matteo.scordino@gmail.com>
 To:     mripard@kernel.org, wens@csie.org, robh+dt@kernel.org,
         linux-arm-kernel@lists.infradead.org
 Cc:     linux-kernel@vger.kernel.org,
         Matteo Scordino <matteo.scordino@gmail.com>
-Subject: [PATCH v3 0/3] Elimo Impetus and Initium support
-Date:   Thu,  5 Nov 2020 14:49:42 +0000
-Message-Id: <20201105144945.484592-1-matteo.scordino@gmail.com>
+Subject: [PATCH v3 1/3] ARM: dts: sun8i: s3: Add dtsi for the Elimo Impetus SoM
+Date:   Thu,  5 Nov 2020 14:49:43 +0000
+Message-Id: <20201105144945.484592-2-matteo.scordino@gmail.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201029022000.601913-1-matteo.scordino@gmail.com>
 References: <20201029022000.601913-1-matteo.scordino@gmail.com>
@@ -65,29 +65,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+The Elimo Engineering Impetus is an Open Source Hardware System-on-Module
+based on the SoChip S3 SoC.
 
-I removed the patches that were accepted from V2 and applied the lastest 
-suggestions from V2, i.e.:
+It is meant for integration into carrier boards or, more generally,
+larger designs, and uses an M2 connector to facilitate that.
 
-- moved UART1 definition from dtsi to dts of the carrier board
-- correct sorting of the dtb in the Makefile
-- fixed indentation of compatible property
+Interfaces on the M.2/NGFF 42mm connector:
+WiFi IEEE 802. 11abgn (on-module Realtek)
+Bluetooth 4.2/BLE (on-module Realtek)
+RGB LCD Interface (on-module connector)
+MIPI Camera Interface (on-module connector)
+IEEE 802. 3u Ethernet MAC (external connecto)
+USB2.0 (Host, Device, OTG) (external connector)
+Audio Line In/Out (external connector)
 
-
-Matteo Scordino (3):
-  ARM: dts: sun8i: s3: Add dtsi for the Elimo Impetus SoM
-  dt-bindings: arm: sunxi: add Elimo bindings
-  ARM: dts: sun8i: s3: Add dts for the Elimo Initium SBC
-
- .../devicetree/bindings/arm/sunxi.yaml        | 13 ++++++
- arch/arm/boot/dts/Makefile                    |  1 +
+Signed-off-by: Matteo Scordino <matteo.scordino@gmail.com>
+---
  arch/arm/boot/dts/sun8i-s3-elimo-impetus.dtsi | 44 +++++++++++++++++++
- arch/arm/boot/dts/sun8i-s3-elimo-initium.dts  | 34 ++++++++++++++
- 4 files changed, 92 insertions(+)
+ 1 file changed, 44 insertions(+)
  create mode 100644 arch/arm/boot/dts/sun8i-s3-elimo-impetus.dtsi
- create mode 100644 arch/arm/boot/dts/sun8i-s3-elimo-initium.dts
 
+diff --git a/arch/arm/boot/dts/sun8i-s3-elimo-impetus.dtsi b/arch/arm/boot/dts/sun8i-s3-elimo-impetus.dtsi
+new file mode 100644
+index 000000000000..24d507cdbcf9
+--- /dev/null
++++ b/arch/arm/boot/dts/sun8i-s3-elimo-impetus.dtsi
+@@ -0,0 +1,44 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Copyright (C) 2020 Matteo Scordino <matteo@elimo.io>
++ */
++
++/dts-v1/;
++#include "sun8i-v3.dtsi"
++#include "sunxi-common-regulators.dtsi"
++
++/ {
++	model = "Elimo Impetus SoM";
++	compatible = "elimo,impetus", "sochip,s3", "allwinner,sun8i-v3";
++
++	aliases {
++		serial0 = &uart0;
++	};
++
++	chosen {
++		stdout-path = "serial0:115200n8";
++	};
++};
++
++&mmc0 {
++	broken-cd;
++	bus-width = <4>;
++	vmmc-supply = <&reg_vcc3v3>;
++	status = "okay";
++};
++
++&uart0 {
++	pinctrl-0 = <&uart0_pb_pins>;
++	pinctrl-names = "default";
++	status = "okay";
++};
++
++&usb_otg {
++	dr_mode = "otg";
++	status = "okay";
++};
++
++&usbphy {
++	usb0_id_det-gpio = <&pio 5 6 GPIO_ACTIVE_HIGH>;
++	status = "okay";
++};
 -- 
 2.20.1
 
