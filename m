@@ -2,155 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF4EF2A876B
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 20:37:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 622432A876D
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 20:37:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731901AbgKEThj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 14:37:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36604 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727017AbgKEThi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 14:37:38 -0500
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B40CC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 11:37:37 -0800 (PST)
-Received: by mail-oi1-x244.google.com with SMTP id w145so2883511oie.9
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 11:37:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0IeuWIyuaS2pCWkh8SM9vIHTk3Z9xKMgQga1epoP3ng=;
-        b=KhyQlJxDU6io8FVXlTraVtbTy3bQuNC6sKWSQlCJoDV3eVUN8R8qBKymBN5FpTznBJ
-         4MhBYMa2IuKyTowiy9/fZZPa8rYN0sdd7tu4P2gSHcjnay4/Ewu7Fnkn90lA7bFKqFwU
-         yb6Ge7spA+x/jLS4G8ilTQ0oIFhVBUcg0IOm74/C4jRoKRtkmLSh/gFsNOSLkaQvAvkX
-         LhSfYwfDvUD2o+ek/F5TywPUJ/TNO/UTLQPZ5VTC7cDsFWpESDgcORcU32pa8PnSWqnO
-         98vNzQjj6t5oS5WFavOU9azcEjKsPpiPdpnK/9hEeczBP+OekrcPzv7NotIFDIo4DCVj
-         gLig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0IeuWIyuaS2pCWkh8SM9vIHTk3Z9xKMgQga1epoP3ng=;
-        b=Ewv0kPiebWtHCP5ZSOlr9uCSWFd8a4k+IKECAZh/bwojP1N57EEAp9fKcR+eIQDpcQ
-         tVF/U+n2w8x7HVJOpRMm7fe751pDkeZsi2IHdeoeOZwta8JM67+/IG1+AQ17K5y/B0kA
-         4QvRM/GPPwk7qmVffw9KhqdrqLjMwrwX3Gp+fWwZAWsxAnf30hHKkSxvWbH49CcAju1x
-         UIsezR/w96ilF9Moo2RNU48oqFH+Al4ERp5S5uZkzwTXCSTj1rLpLnhNikHIro8yPL3o
-         d17jOoaGg5C2uH0nuTrIddvtUH0pIAjqsZPBKDN1Z8yS0cUG0qRJ96nkR+nlNEedwHD5
-         T2DA==
-X-Gm-Message-State: AOAM530VXs/XPt3TziBU1mjtk2OQSmLIyiqBGDKKuyz3cWRQHLFAThU/
-        CZTpif5XvXZ/f5c7uGrWurjh+v76VZFgfFHFyT/rog==
-X-Google-Smtp-Source: ABdhPJy6EmV/kijD0O5lYgC/y/tG7BvaOubM7LfjvxCX96j17pkf6e0nRm/f++LPHQRFDQ7t06YdyL9HKphcyBMRX3A=
-X-Received: by 2002:aca:1a07:: with SMTP id a7mr587040oia.169.1604605056727;
- Thu, 05 Nov 2020 11:37:36 -0800 (PST)
+        id S1732196AbgKEThq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 14:37:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46618 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732020AbgKEThq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 14:37:46 -0500
+Received: from localhost (searspoint.nvidia.com [216.228.112.21])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A51B320704;
+        Thu,  5 Nov 2020 19:37:44 +0000 (UTC)
+Date:   Thu, 5 Nov 2020 21:37:41 +0200
+From:   Leon Romanovsky <leonro@nvidia.com>
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc:     "Ertman, David M" <david.m.ertman@intel.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Netdev <netdev@vger.kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Fred Oh <fred.oh@linux.intel.com>,
+        Parav Pandit <parav@mellanox.com>,
+        "Saleem, Shiraz" <shiraz.saleem@intel.com>,
+        "Patil, Kiran" <kiran.patil@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 01/10] Add auxiliary bus support
+Message-ID: <20201105193741.GC5475@unreal>
+References: <20201023003338.1285642-1-david.m.ertman@intel.com>
+ <20201023003338.1285642-2-david.m.ertman@intel.com>
+ <CAPcyv4i9s=CsO5VJOhPnS77K=bD0LTQ8TUAbhLd+0OmyU8YQ3g@mail.gmail.com>
+ <DM6PR11MB284191BAA817540E52E4E2C4DDEE0@DM6PR11MB2841.namprd11.prod.outlook.com>
+ <f37a2b37-2fda-948d-1b8f-617395d43a08@linux.intel.com>
 MIME-Version: 1.0
-References: <20201031003845.41137-1-john.stultz@linaro.org> <CACRpkda1MV2=0MOMk3t4mr1RczdvfeiNTdbYXX6Jig+6p3TABA@mail.gmail.com>
-In-Reply-To: <CACRpkda1MV2=0MOMk3t4mr1RczdvfeiNTdbYXX6Jig+6p3TABA@mail.gmail.com>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Thu, 5 Nov 2020 11:37:26 -0800
-Message-ID: <CALAqxLV_GG1tPf9NEHhQN0dtL6DJmOvENVvzdnS-4_o3pNOzoA@mail.gmail.com>
-Subject: Re: [PATCH v5 1/2] pinctrl: qcom: Allow pinctrl-msm code to be
- loadable as a module
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Andy Gross <agross@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Maulik Shah <mkshah@codeaurora.org>,
-        Lina Iyer <ilina@codeaurora.org>,
-        Saravana Kannan <saravanak@google.com>,
-        Todd Kjos <tkjos@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        MSM <linux-arm-msm@vger.kernel.org>,
-        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
-        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <f37a2b37-2fda-948d-1b8f-617395d43a08@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 5, 2020 at 6:17 AM Linus Walleij <linus.walleij@linaro.org> wrote:
-> On Sat, Oct 31, 2020 at 1:38 AM John Stultz <john.stultz@linaro.org> wrote:
+On Thu, Nov 05, 2020 at 01:32:40PM -0600, Pierre-Louis Bossart wrote:
 >
-> > Tweaks to allow pinctrl-msm code to be loadable as a module.
+> > > > +module_init(auxiliary_bus_init);
+> > > > +module_exit(auxiliary_bus_exit);
+> > > > +
+> > > > +MODULE_LICENSE("GPL");
+> > >
+> > > Per above SPDX is v2 only, so...
+> > >
+> > > MODULE_LICENSE("GPL v2");
+> > >
 > >
-> > This is needed in order to support having the qcom-scm driver,
-> > which pinctrl-msm calls into, configured as a module.
-> >
-> > This requires that we tweak Kconfigs selecting PINCTRL_MSM to
-> > also depend on QCOM_SCM || QCOM_SCM=n so that we match the
-> > module setting of QCOM_SCM.
-> >
-> > Unlike the previous revision of this patch:
-> >   https://lore.kernel.org/lkml/20200625001039.56174-5-john.stultz@linaro.org/
-> > this version reworks PINCTRL_MSM to be a visible option and
-> > instead of having the various SoC specific drivers select
-> > PINCTRL_MSM, this switches those configs to depend on
-> > PINCTRL_MSM. This avoids adding the oddish looking:
-> >   "depend on QCOM_SCM || QCOM_SCM=n"
-> > to every SoC specific driver, as that becomes a maintenance
-> > headache.
-> >
-> > We also add PINCTRL_MSM to the arm64 defconfig to avoid
-> > surprises as otherwise PINCTRL_MSM/IPQ* options previously
-> > enabled, will be off.
-> >
-> > Cc: Catalin Marinas <catalin.marinas@arm.com>
-> > Cc: Will Deacon <will@kernel.org>
-> > Cc: Andy Gross <agross@kernel.org>
-> > Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > Cc: Joerg Roedel <joro@8bytes.org>
-> > Cc: Thomas Gleixner <tglx@linutronix.de>
-> > Cc: Jason Cooper <jason@lakedaemon.net>
-> > Cc: Marc Zyngier <maz@kernel.org>
-> > Cc: Linus Walleij <linus.walleij@linaro.org>
-> > Cc: Vinod Koul <vkoul@kernel.org>
-> > Cc: Kalle Valo <kvalo@codeaurora.org>
-> > Cc: Maulik Shah <mkshah@codeaurora.org>
-> > Cc: Lina Iyer <ilina@codeaurora.org>
-> > Cc: Saravana Kannan <saravanak@google.com>
-> > Cc: Todd Kjos <tkjos@google.com>
-> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Cc: linux-arm-msm@vger.kernel.org
-> > Cc: iommu@lists.linux-foundation.org
-> > Cc: linux-gpio@vger.kernel.org
-> > Signed-off-by: John Stultz <john.stultz@linaro.org>
-> > ---
-> > v2:
-> > * Module description and whitespace fixes suggested by Bjorn
-> > * Added QCOM_SCM || QCOM_SCM=n bits on Kconfigs selecting
-> >   PINCTRL_MSM. Reported by both Todd and Bjorn.
-> > v3:
-> > * Make sure the QCOM_SCM || QCOM_SCM=n trick is commented
-> > v4:
-> > * Rework "select PINCTRL_MSM" to "depends on PINCTRL_MSM"
-> >   to consolidate the QCOM_SCM dependency.
-> > v5:
-> > * Add PINCTRL_MSM to arm64 defconfig
+> > added v2.
 >
-> Bjorn can you have a look at this series?
+> "GPL v2" is the same as "GPL" here, it does not have any additional meaning.
 >
-> BTW John  I'm afraid I just merged a new QCOM subdriver so we might
-> need to respin this to cover all.
+> https://www.kernel.org/doc/html/latest/process/license-rules.html
 >
-> It's an important patch so I'll help out in rebasing it if the only problem is
-> that my tree is moving under your feet.
+> “GPL”	Module is licensed under GPL version 2. This does not express any
+> distinction between GPL-2.0-only or GPL-2.0-or-later. The exact license
+> information can only be determined via the license information in the
+> corresponding source files.
 
-No worries. I'm mostly wanting to make sure there are no objections
-with switching PINCTRL_MSM from a selected config to a depended
-config.
++1,
+https://lore.kernel.org/lkml/20201105193009.GA5475@unreal
 
-If that seems ok, I can redo it on whatever point you would like.
-
-I realize I can also split that change out separately from the module
-enablement bits as well if its helpful.
-
-thanks
--john
+>
+> “GPL v2”	Same as “GPL”. It exists for historic reasons.
+>
