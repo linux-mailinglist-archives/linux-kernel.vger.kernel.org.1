@@ -2,208 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71A0E2A7409
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 01:52:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 199C92A741B
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 01:56:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387844AbgKEAwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 19:52:46 -0500
-Received: from sonic309-22.consmr.mail.gq1.yahoo.com ([98.137.65.148]:34743
-        "EHLO sonic309-22.consmr.mail.gq1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726225AbgKEAwp (ORCPT
+        id S2387918AbgKEA4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 19:56:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59312 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727923AbgKEA4S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 19:52:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1604537564; bh=Fx8TY7wwmN2EEF5GINVD3Jv+b3zpmyaiCDKGyoCkxPQ=; h=Date:From:Reply-To:Subject:References:From:Subject; b=Bs0TMvLKwRE5FCZYjuzCWJj19AyV4fZtGhl5DAxXqwMR4oh1gEugO6N9i2IPqRcXqzxPIwc4SmuR7qG8BUzd3N/3CPNURVqpxLQwNo3R6Qa9Fep1bkztmcKpItlN9YyhLwFiM2E9xBOhmFiw2f81VOU7spPsyRdxuRrnm6Q28mgI4nKzC0roKjvKfbACGzWNDciu1H5UUsJxLN2Son53STvGGn9/ibX3D8KzSdDXQvEmf/JrSZNLS9w7Uhm/Td4HGqGnie2TNvZFs6xoHY3OtpuTV6xhN6T2dLQZQoVAhWZHRpj/lWwhW8YHM4Ml7A4MwowNT/RKC0mAnxRW/2N1SQ==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1604537564; bh=jeck7KZQ+JB79tTGcLuOcBrh0XL7BsH5Geta1tdeE1D=; h=Date:From:Subject; b=EusYsy01G9Brc4EfA+qsveWfd6GXYuY1p9S8gqq2zStt1+5jtqGIu33cgNVRgJXIUfFkfVdPqQduHmI7QBzbslD2BY6dLFAP57ImdFffQfRiHNc12I8A+i2LAoBBqA+gPWIzcUANELT6NFBwalyQWBcJ3dFyQ3TkVN+4ZmwOBNrvK3YMAHmaKH6+AkQj60R0w0CNeQwuJwn9ftZW1nQQ+Xs2HT1e8AUB3Utux9V0E1MaHrodWdbbYegPbc8DB/i9v2bRO63DLB1RNGPNl7+/6sv4STb+jUr+8CmwepMIqIO5jT0DjdNk1J6VFTowkZp2xn19M91gXlOQnM9j/3Wt7w==
-X-YMail-OSG: V5b4avgVM1mBG76T.NXnab1ELok2zxe0aIHSnqneU5EHCtPRH421wOynRIAyPfF
- XV94bqJP4dm6z8076BPXplLveIRLgjbZbr_9dq4JD0pDh0uz7AU1lbKOB3gEMya2dHguHfK3Z4A8
- t6B2e0g7S3Fr0tJfuuolmlAMARR9l8iWFGoaFP._sNLEIuob7c2VTWK6NQvMCsntTztrE2.v0pxO
- sZ6weB7m9o2SmgnGZJnOppQ3wOZQnV69N6G7k_tlX45tS2xK8elHOvAOA1psZZpf1VRBgajNxDRZ
- J5oUBGnBArtZnqCdtdvpEp5DJN3WBBY_Vz.S6cJ9FztSHLgJ7j0VbZmSRF5SJzdsyGFOiicK5krN
- WdnZSpxZVNjPVjoxx4sh6PdxRJ2c1hJM2qKu2amqZfPidlGibsOaeCLNPVSzmZgzqM9FjVEKcJ.8
- LXO.AZuhnvcw2eOIKSO4dVCQXFhUMj4j2n_w2S1wGzUgQVb0HJyOkKYm06Czuyg3rRy82W6grVH4
- Tj7aVdpNDMyDPfF8KgXpDlMyhBEYWK1Eyna47OHrTiAIm9QV1J8.Lp4IUYh48OkCIjwM1eV83M94
- V1l7IzfdirrdZDZiOfM3MzKEQ7npd496n8p45gyQa4F5i7f1jVDMLe2rRTBwLNNf5rQcmIgU.h8D
- mNEpIYhJOVYvxrqYDtMsoFqt25bNyQVfSzbaDCf5PUpEI3oTI1DFFmsBiOmYq2FEdvNU2MV7aYaR
- iezPOiN6_M6C.13hOs3220GsiGaemOPHB1tfRzLhF3Ngue6yI5iULlTr.nPblhY7JW0IeCL55bWr
- I2wEHmrDTpbOByZoTIXjssfv1r5k2jwHHYR8ZbJ_nsUiuIGUdbC6kvGdmBagd71X6YdsK0zmEgaV
- Q6rGjJG0Ca0dDFivshddI_ML3s2lmQ49fO4q8X2WcOIWC2sNNqKG1HjWj6P.KU7ajUvYAfDs48X7
- ZK4BJn0dJ9TLYYj23h9NaZR0QtzGKlwgt4vP8Dxr35xG5Pf8W_dj_LYshpMvD7KItXkY4z4O1GzQ
- mIUcAonJELLk9PG3oMFvMTrsi2pTIaldeVjI4ngKfMn1bFsvW1U0grSsEcR7rXvNYGcgMPr908xz
- CuaKi5NHaoOMOm1Rh4QqsJ.YvXNvXyOhpishpQQVCuk1RQxfeTj52p2yFP0W2v7Udy4BC6c1FIt8
- zvUHZFyY3aGnp.O65hrz6EY3cXhcujg6Z1ZhmFYpeaGXmdj.vL0wi.uc0rTuAJ4TMHU.MYtHLrMR
- _SlaB7xuxiLn7zZbnOIm8.IdKUiaWGb7t5I4OK4LSTZrDeRjh_XixBJLA2joWi.USuKzji2D_ml6
- 8tOG3XjHdyqwcexa0OmoUegq.OW2_waXyEeL0bJtDzhgX3VDWnuhOe.Zu8Ig3fTe.LurrgdjMGK2
- 9xoxtzWj79iYoYjXdenioN81gE_rb8_cz3Ymd1COPITwzBCn5qCGHPrfhMwIx5e_8uj5BZauYpBf
- iC4mHDfqq69X1kIR75G9xS4IIzfU.cJbFrSAu6pu2tg4bOYCThrrr6WpCd2RZmS4exuEeAUJsab8
- 8szDsHR.3ZfBb8s7dXH1TsAhohhSnpg8dw7IVSLB1wk6Ypu5twlZnRF0Tr9xWRsM6xauWoMiKvD7
- YD7.ShJj4Hb0.zAERkWXsTURQnpcqY34PT7etUz65bIMwKqyzY.LOAFUfQc9kbEfqOMn2Q6VHCbQ
- f5CVTZSNREddgk5tNTcei0EWrgDq3_RJpEhTWO3xgsCYl116vpfe17oLbtjf1vuQUMp6_CiSHQAJ
- biC1_BvmGvoQbHJYgRe9UM0.XgH0e3pobrxKMrKyEOZiTs8UgdvqRVB2bZB3gZ6ijtyJfg6pC348
- dMlay2wYD9T727caykroynjbP1VCFq9_MoK3aGF0TT69hUQHuHmE0wY5VdC0yMpMPP1ujtgjZPhE
- UjnpVdCc6ZHviAbD3JZBngknSoh0bDJIvnAzL_VsvpIn5s9XK_vv7HPSNWWz6AtHj8zsbEQDdpJN
- ENjHDTxWfXVNPGzplqcsz6985ld8351tGPtqVVYRTP4hXWRpnkAzznqKQgxjlEEgkmLTg9DNIJ2m
- 5oJzPhFxAqsyuxBlN7kS.9l3IlEJCA_9RtmxRe.OTehNgej2gaIS.3sRulCAehTkrQyQFN9X2bJw
- _gAWJhlsnontvvpBUPrnydQR8.j5yqv1fNTdK_UnA5J_roM7jn04H0jRYmA4BzzB_eOqFRk8l3.3
- 8taFQrCoLp.gjYFvGz_PlPZLCgZoOj.XTU39Yu8izwPJiXhqC7lUNyJX_Sco9D4Or3sO15UcCrPE
- 3AwsiMnMPstSy84g5yvDjzC_3PRYgblnQMIoMQY6X0dgUP5RpglOzqdexOODU7wkgFZlvD.i7sta
- Y9dZnbWfMu9kjYMEmLjjnn2ZZC_9S7a339EATzIBBGBbxc.44MOvDZ3a2S9je0PlwRDRbRzCbuWv
- AR.jLBeCx33QrkQlhUjypZQjSJDk0Pt9DgtQJdWblyh6qB0OmoJrZDIkXHzekuK_MLZE3DcdBGDf
- o11gDTeyTxf03Da7B3Azria8.pXc4fcUiof0q6SA2cAUHpAxtJaUt1nr6tc65jILbYXkMV4KLGdx
- pKttMDsliZZ4eF5wSfgAOg4d2nfDjEJomd5g9A_kN0QgdmxxLzsq6FTFGaZaLWl2q5AVReVGwT_R
- 6zkVjN.iIizysLD8abODXwGXYiXmUp4Vk0shrq1ZBlA7ZioUyzmpASRsJbKRVCVc76yON5n_yQ5O
- 3klGo0eARu5UPeJS.3LEhASfnzfRnvb4TfRGMn_a0K4MR_OGGexrSa2hxB0kuajI824jG9T02IzY
- eg1MMtbHkuox21rI9CF8UXbjscdvhYk7CzG1OfS3YUuWJT6Th6bS2RkixAPb2HjsJ8D4eI0sg.Po
- ypKd8UivBGXKvh9JY0iydMIJqIKuhJsRT2vDg.0uVLl9XjUXvnGde6_BvR5JQJl4h58iP8UsBAbj
- XOualRym3raykk94ZcFhlKML9ptpA2pah2fxw2mDYIK_n_vr700FJmmfbdnQ0FPguJv2viiY3NkU
- pG0ZqFQAKubxdQVwR0FIWT7Gb7loO8M7b6_uGNP1YCqNSr1e.LFJ1AouGdmb6UJxBC.NqhcDDTXu
- prJwupET29Ud57YQSroSpvGwQjm2O5ukORt1SKYEBZ_unqVtak7cSxsALIvVmIWJLSs3wdHaagjN
- z.7D5MABtIilUqyAYTxpE2DHMfU1uT6X..mRgqHAtsDx.fLxp64D_iHXWqXR01ElqwHhwQe7MLjA
- HVte84M_E8ATqMSwawV2t7DS1.lJjAINMjrZ7OhtVw_Hm_.E.wIUg1w8Y5pvoJs3gSUyrS79FtoE
- B0yyk6y2PNwN78HfkCEl6t7df1_t3i1py0VHforOgvwKCZp61sumXPMCsWuNmgfahNXuzC3yBSVv
- CPUCIvyOlzZR8loC0fBKwN8s5R8BdNbgcxt5rcn4eFEqXx43SMEk9p019zTTA9tnTksayS.seDKV
- 948JxS3KrAWilvnTLF2fl4EKVbZInyvwRFHUe_PmFMSO_5RvymOvBjVqEWrvh9bPZeia4oScQWXI
- ELcMkH8go4asZTzJZhCoLz5tqz2DDEiZn_QZvkvWIyDg2jiJ3veM3PazKccs2oI0N4Z9FIHNgaQK
- 0P_BZrUtnC_vqIBEi6CP31L1Aq_DZakv3g1ReLOM5uVb.pdx5ftaOIQ66AX4UF1FDx.0f2zNcYBd
- rnZmp3oztcJfIKGzGqYt1URMI2E7NLmm49yU3Uv.1gew6pGv1FKCH3jTDEdavKXHFaXtNKyj4OVl
- SPlDd4r_P0agCRYdxfUWrU7KruD9BqQ02aVqoLJ_D_jj3DQmGW3lBjg4sJzJ1rRJntqeQ_SijsZB
- 2vhrY6L1FVPDHSmeQQMX2OWMIwJQt6a7y4W549_kRmOmotrm7JQreCpZA4Vn3rjhX483F7LlOKnl
- TqGWa67IkVNWkUHqIASD5rWuLIqMXel3iPSbWI_Ek9UV9_1P17hBWweaGHaYtDc8PE9fISVIYq56
- vbQd4aXeQOso.47_eXdXyMcp2WUBhGK1irORoPKMoO198BKpTeIVkt507f_cenuWYMAvjmJJuPWZ
- 8yNM2b7cJpcwa748La778Quj5DpwV3.D_NNnGTEmt1VnaK7AjGDP8zLbUAQsymbro35DW1.Fmm71
- FVN_FVc5tsSYDWqZj51.REB.Vf9Ha5yYxe_K86TFT8.Q3gt9H2diQ5a5MR_SEGIAEklZ3Om.e92v
- NgsD_wIDJnpCJM1eFt4ls4Wdy2qS1N0Qkf6GwWdvjqobXjqTFs.3kGysNbKzRHeiwBp9d.QRtxtl
- ywkEtpddZJRThobOwF8MMN_nNMlJ0PBgRNmpowtDOLR5k0WTV1QIi__ZRk_hLgO7ZFytIVsQXyga
- Dw.L5_I3NLuj45hpHHKD5jaw0mBH4_IYPszxfXfKPoy6jc5aXhvtkbVXCHzEi6ZOGN1JE966zlpu
- RCxhcE1E50QfUDpXX4hqrsSr1dg5mzy643hYxP1QKvG0eHQB4H1p9j6L2tHAGqtk2d0wrbiJR8gf
- TLX453AjTheR5QwbhwxyYt4zTicccxHDW_Dj8LJbMpkbTVrhRUiWTN9iaTliAmCR7TOvXhEhtdoj
- HGLHfLbtjsQzLHjk.ERGX7YXPpXED0A_3O6zIZ1GwMy9GpsyNNOEoO0VWnGd.AQbHskYl.u14l_b
- fXf8f8ba2P5_wNlVWbUSKRT9WAq0qerZo455vAwOMFQa0ke3CRWKmW4qwM9cWGOIECRgVKCumOC4
- HR49Ndl2BiMApQGeIIY31Q6mV2FF4dLlLvv4rore59p.qDoGpGhWxZKS2nKTmwYqsjnhsPGqbR..
- mK.dZrwYKDpBWsWRYX2u3_kIeE7J1jBQy9M_cdjfbZ.uVJyWB62AKMdLKEhAFUGrAB7kkvPkIBd6
- aD7OsDsSEc9VL9rq.gg81NLfpDyWPaWU6rlaepCnAfjorQjl2n2Cl9LJ4tjfQ1qEUASrl3PScCfh
- RnpngezJxBfCPrz1AkXibR5.4jYdTJnu3jJxxZpz2gRIewqvw5iKuQLRv3_.NSHRfHjw2dDnGSul
- 8bB_TI8GYrYS_NombBgQlcH2n6_VN_Xh3_kk.DRyOMvTqOi0sW89n_9LTBmDxlAHCLwqpOXdCohY
- v9MEEL7V8ejtxoheDizOMEIr1J6h3.9Yv7plx2ZRlAkNpBqg4wZvJ996bS06tY7eljji7mTvpzeg
- hYPC5EThXPX4HvF57ttAFTD24jbCY0NN7mdafCZnkk2KHls2Be8_njIUrEDQ_DztLJOF_QSIgIeO
- cr4uTogOujg_MpfK1plaZT0X59ZPvw39CXltK8u8QSKKr.bNTKvCiHE6BguCrQqOPuXFbhkIyVxi
- huFCd2_BbyrkhNwP9yQzCNjjAjGT7f1OF2i3lv7FOiMFO_7ke0UbMAJtM1monqUBcmEU6lD0Og1l
- 4F46Yffpvf3Mq3VtW_aTY.b9LE.BHB1TLlXL.q4FqAuLabtIYGZPgpl6uwsTxFH7IHGwzHFG57A4
- 6QJDPyTmUQiIFzYqxkfEKOJMIjmSHjvUcecuBT0htUElJw68Rb.PP8LhgW46xC8Xz9rTQXW44rCt
- 5e0vo3RyByMdH0QWLkntUHZn4moSjJqtWD7e8nI7HDA5HJMQuTxHzuJ_51kTbFEv4WiBJcBWpRCD
- MtJldrUmF3UXQWnnD4Ip8xjL2yoz3.sjwoDf0nBcAWGU49nZS6J08vfh4TvKzoYdR5XMV5UM.eJB
- k5NXdhA1c.e6cX2EAMZE.PVUNXLI62LOEUtFEagzi9Jtc1fJuAX8AbWISpcfObMJrylLzENsQmbn
- M.AHEVCHMY7Crk3mGLPSOV7DPP_rgVIMormg9kSNN0i5JyYwhxJ80D1iIRArH8gQsfqeps6hcT2e
- H5H9XVAQMyB26T.IRlFWsaSzhkwIslrLs4V1oVxsRbeNURw6RLy5T0AgAS.kdVQUfQloIKHnZgzH
- PCcMWV1nbvvtdgJlj__yAG9aQOmjsp9nV97le3vkm6l1NhtIbfdETpMlksdeWdaJpIxuWr0kDbIb
- MHAVIT7.yB7h5lHiytWBeVZnrtPTO1S2N8OJ.riRDpHDXYlzxQkhBtgDc.Wf7SL6NoJovnsfGnnl
- jbulrxeqlg709DaUdsN0L28kVTrahSft8YMH3sRK7iVF6QVZ.UPOqbXD9LkikTU.HJEJID_0U23v
- 09sDx7quA2_pUstmtERhtOCEE2_ZJxJPPHPPEFwWcFdX9Z1xzc7FfCbQ2Ny6M2gLqIh.e_G9339j
- ov0UsLQVDIS8_KuMsD9JIrrMT3r.9i5iu0g96ZQs8bIvwjOvK9FYzWSjQly2fnfLWS1Xk2_8O_9R
- nlOcnb66iwLEGtiU81i3Sp3_sNTPGzoBLxeohbGnkWkep_D148Mz7N8qbDuhZpOLWdEYkCZU8nTP
- 9BO7O48Lfx_MB2bZK.XW2Hca0CCIV4tgusZhmoKuwYpdHroKSkHgbpxFegwNpuTsUlUkU8rtESqG
- yUFBEscet8Pd_Z5xD7tzXZGzZDFTRBZxN19ITkQ3CFlNlYpO0afvMldtYz2dDDQcegZpECuRqnLy
- zuBGaF_t.KU1Ulk5e3MJdi0uIeQHbnGiCxPBmxNwzjW.CuHSyiuvn77n8l0v.pppI4F63ym60XeZ
- cTg8UGilxBdYLHGzVDwnNm1KU4JKuWineGZ4uXyzUOLa.87N.nKFtPMAr5fDfmOazuXUhe8em6X.
- GYMy2xPgiXagVdCkUdGQO85zGUx7Xwd3_yjOn_mWqich_CAZGjb.MElh6RJlve4RdbC4RTmyvKRL
- E.oZGuYQCvDcXVgkF8gu.UtJP5O7pGP8zcRYOSa5crfftrAf1zx6RU8VWaWviyXWlVUan9pu2RCz
- N0TXZrWlB1oy8M045ktjRrp_5JY7lF_WgGKe6OCWFSed5RUwwJPTIQFPBw6NOXutJa_J3KNiXF3J
- NQCnhwVrQ0BWI2.vaICSXdIEJS6.lzethu4tW8Wcew1r_z.dCj.3HpmfXijRlPnrrl1IJ3FgDZds
- e9UQpyOC4ZzoWHh47cA8VsuADu61uzN3yRhcl9zwIsKG2tCcRE1C6MpoZtZKPev8ouIn_7fi7gMk
- 6kVhTnrdvgGPHnMMcdTz9FauQp3Qni0R7D72Xd.mSRTvjDxf4O2hgqwopMNbT9hQn4X_HKGu2jXV
- YzdL4slg4MVe2iQAvV.Au.aM4c.4aWPdM4HRscg.y6z0Kbh552KcspCkusYa8HgaAYtz_40.T3oV
- 4qMmZR_92m7sv5l8C_iDmyRG41V3aesQPj32hlkmqSIHJj9DYvxOMWHREsfscp3_mgWkDDQDapaT
- O9uWokQc.j6KK4IHykK.0Y_8ajKuwvfVEfn6TJ941V1GEa5spkPL89y1GUb_s0LZtz1NwpyzfTA_
- mjbvWfKnT3RMFMqLvKEi260j5UWVfVwxja82ZWtsJkR9U1wuxNZztTeQRaytcNa9ObpRUx7xZ3IN
- X2sZXX3EClgcDjXZ0DQJ23ipm1WPd35l2jjPUJmWfVru9CWpI1ScItHInUtpxS.pzblpWIq4dyqD
- M3wfmAdfJsBmrLpsokWCA6UU4wp43wDvWQhCafB9jHQX3hzGXeQaVG6kX6HTkQYLOVAwQVCf4yUi
- dap6ATWUXgm1bWLWHckO14tvJC0j44WirPDK65FdsM0cpFDq4yTTc7C0bWt2QWLorhduUShQKvsy
- zh2X4YTve7y1BpqpfDDQvgwer6rkYgWmFEtWRFFPwr3X_QWX0sQEX64YozRUkRHmGZnK6mYhLigy
- 7CRkQQAjYOSpW0cXMx6zpQ1KJlRLvrwkpAn7H5M_xpnhazTLQVOCglKX5d2ydMFN0NtTssgXVxDc
- 5hHMH_jg2uUqaNf8DmMqp9MtN1gDZqhLWZu2W.nunDvC3mrAC_AOyRiXDwGlXAIdtdUnln0D9R5V
- vpw2b5kerF4TTBUPLY7mG.9SDcYAWJqPD8FWj2r5kTWsQTtCu9KPX_VDfLEcs.LHVdu4wyQom9yP
- AXXnFAHO0DEAiNMCH0PcGfnuQ2.Qk.vtAxNjy8W0uQlF.GUo0P3.RnRYcMWp8NHC5PYpLL14NCWu
- hwaA90sGRHVWQgPBRj2VkGJSugSvQ7DqMiIEq1pTsWgow89mTcxQRSKH0_vb05h5WEAjRaEc73uD
- Y1uDhmo8VV4o0yr2j3NzIFcQXBsz1vYLXDNEjpDiQl1Dkpfz29w8JlZ287ZAsV9Uq5qF0Tupiux9
- 2kJfv6u0fiwepZB3wpzeNPaPD9KEqptGNtGuAk6zR152MDf1CrwY2gb1v46irbHOeBKOIS2SM6az
- kIMs2L14MuOzGb0JtxIL75.EDjSolCaOJGanuIdsMCbqQ8SJBp7jC.8n8XAQcGIjAbUyRDGE2ihT
- e0ZfeXTK6K.YNbgm3_GKER6b.TWIuC1m5wbOKPeBua.wyez9a1gzj0.bJgzN.GlkTgRDxQtgaDyQ
- ViYWYDWSGwxEkgjLmXI2gUzrmUvHjrBQJ.lMdnl9CdJarwaSu2KQmmcqKywnXW.fRKbBjGNgFaGu
- mgCdphWdNKOOxskElizMnU1sLEW38i5b_4h69VfXczCan576ei35YkwoJqfaH_SltGU6UedC86FB
- f6KSyhJhtupUURXYuriH_loI.kTbpIi90PKvGQBSl2LTPW4g4MyxtKkXvXxBKOeLvQ8AweIbLgFt
- rkr9snhReItpqPZVDQASh6h1kOSJFvt2AvXej5uh.SP7s2QpqnrEB5dGAqqEP7SgfRnV_cbSjYrq
- ewitcsSrCNVAbDjnSBqRAD.0RN2XVRb_wrhrNfJcgYVpEApN.lo5wCVEnHUvUDUFDXb_hcVTE7DF
- Nrfwk3q8jbtiOG9WkGq2QfLMjXu6psirY5yKG1qHuKKPM9L_OLQkd52cpYyCNxuiwtfIaPjMSUAr
- T73ClWH7rKcBfENJeiJwmXDapBjwGkyN1h8MLwj2N6AfkPbNhIq3_T6MxBd.Oo6go2_yKIQ7tOFR
- DKm31.J1bdeU.l.LgCF_d85fPSXuafcEd.d1maUEIGqc9Uwem20.e1MQADV9l6_cjWBjjW_jQO2D
- 1LxB9KdO26E7fjWtHpFHsJz4gj7G5le5jTOsFBMukbIKKluWHeShLw6tRITRD26dO.gh3VWzMcXE
- OIhhuPgvS_ep_np5R7fGrypW2AoVnKeweA6mK1oc560XZskvls4_npB4RWFqJb82fjn2JhTkHrwl
- DvJ_PRpYae692eqEHBo4.P.kbGl7HY8apkKL6NX6Jvyg_sylSaDwrYsswdmWkBDgq1NhoN2_t5gh
- goHAq8BoJKXm.1TEWe6lYd_P6tRvvKFtmjUxkqTbjwhDaUaInxT6mer.24AC5.9cYpccZcrkQcTF
- 1mG8sfLDA2dS55l6OqKTgQK7vEbHzWhQjSVAbFTfo0Hr8n6YeSI3KGO4DjkoPeDdk4LtNxv4gStA
- n5nmXHJ6OHSY7B7Z.LXyNd0_N_EKOwXw5aHXO7AWev2rGVp40EKuLbBbzeXCXGXplXRDHHcUojRv
- BJIaKCCW3woIX68m2i9VxLXIOZCMt6.GrQo8XKNgHY7ndGJOzJamCUjfDTBceavcsk7874biK6LG
- .PDqGw5cjiMWqPMl9ItAlsIk4noc1qe2gKSld27YYyv7G.LP0GKK5TKHaaOzxqvVWfX8VxO9mjtJ
- bosjvRRLXbvHa1erHpiPNCn3iCNHziWMIv38r9f.jdCylHnUuPZwbAPFAyU8k_6qIXrYoxqK6plX
- CxljAI1U0w52bMFsHXi1x8mzf19ErYkfZvT43BIJskj_690ko4_fuxVjD8oMQm7HL3u_2ZSmtEMa
- nYaWW_ceoGaEj6He3vFAVOLJ.rRc2uWKuI0tEBjx8a4HH4xSosHBVdL4SdKVwH2saaPkHgOIQhYD
- IVOnS7dl2JZalV9ae.APam0ZAC.qi3m5g7ckHJQ4PNKrJR2UT695Vy9xxVX0AGt4RuA23zVdaD6q
- MGzmLeUwi_G9J2BUFQCV1QlrsVfak4KKmHTSmeMvYIL67V4_k2mmzSZV3PTrC20rU3CbFVge.y60
- fZMHqO7ITnPuAmZ_r8lFGxYfh9Tpg6q9xWJYxkgPBXDzAnbtkFfDAQvkwT00__1pBGsvHlN3Wb6i
- nlrFhBvFFcadA2bwFeOUERMB2HgL_yZS1Vgnu7pYPQWL1MtIwSEjr95EJRUcP6DYBAn6dkMgkz54
- 4k3KNcPkPWlvrBOnn19av6KzVSi_NTrSslGAIG5K1Dg5UT39fJQw2wCTMUXqC.iViCvQllCbFPr9
- mQGoYG8G656b14oGYXIv1YSPu.Wx8PknEb3p3eY1WNZg9QLT18fbqBOnABAHE71j.TO3LOhrCYmC
- J8yoE0daP3Tul9G9TOzrH0UWaCTmWwxUzBSwU9zJL8ED1Ns82oYmhk2gz2FSCnkq7MD48.LL84Pw
- xTz_7zBuEt07aFG9pG9xgFN1EMupH49bUhgSK.ApjA4CFi_mroi_yzNT44UireYg1njmrCVmjgqX
- JvJ79e.v0mzf5flgOz7yMBICDvZmf8BaCbrgfwDw3TjjreJqguz9ddPbVKoT4PuUig5nWKX.udVm
- Tx7vWnOJsS2qsiF6hTKN64m7FSfk14jhF4cWP
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic309.consmr.mail.gq1.yahoo.com with HTTP; Thu, 5 Nov 2020 00:52:44 +0000
-Date:   Thu, 5 Nov 2020 00:52:43 +0000 (UTC)
-From:   "Ms. Milla" <millasth77@gmail.com>
-Reply-To: millasmith7010@gmail.com
-Message-ID: <1312792024.2343459.1604537563581@mail.yahoo.com>
-Subject: compensation
+        Wed, 4 Nov 2020 19:56:18 -0500
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDD86C0613CF;
+        Wed,  4 Nov 2020 16:56:16 -0800 (PST)
+Received: by mail-qk1-x742.google.com with SMTP id 12so319910qkl.8;
+        Wed, 04 Nov 2020 16:56:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=76+46/j8d+HhUpqLdqtrqj06kMZC9lIAszaftzrzrbA=;
+        b=cCzrPQyEWo7u8s7NeF891HqdMDHyzf30LEvc6NJiR74N7Hs6dWqvJGrOKhOBI5E4/o
+         IIUiN+USEvzVZcuT+LuG8quJqG0c6bJpx0QJaDl05Dd8fwPA6WnvMM4b1yAOeeup2pCj
+         +M8RTZxT6A78NHzsxgDgyDWu4lITnyjl3CYrG0OQvrnQ7cDp+68oTtLyGfdpcn+NqzDt
+         X/wQztuwyCPax/iPQEDlJMhHLJEWNAvvwqMaZE+xQwxF+wKhL/uAJXmKHPAAkYJidmxg
+         KEnMvs1YJpHgZw9E30xt1obeFvWAEptcvnT8JS+hZ7ugkoRRcP1eoh/dWQVHam2VEVdH
+         zkTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=76+46/j8d+HhUpqLdqtrqj06kMZC9lIAszaftzrzrbA=;
+        b=cmpH3hmSqB9WB6471wzSKqYw0H0MFXE1szZnP4g928hw8F0pPK16yAAXZUoYaf8ZeB
+         ZI79qvyXqDzpTTWXjEU5VZgtjw/NDuAH3WDYJztsfyazAJ70gbJaTI8uFEOfonoyH7Mm
+         4IkUthwjp6ei22zSwXmU3/QAA8GROrhAPNOpzyyrBIf9VMYL64pENtzTkdU1t28t3L3L
+         Yydi5DYsP21T2f6KA79UD/Ua5fS7QoWIdFHjqo2/GZo9vSySGe3xuHmHPXsPvcYokgso
+         x4VJhdMyJuhsYAgAX7uKV6ctWH3BxpR4QTy+pEn6qhN7dCpnihKxA6ovewTW8EnfjjtR
+         W5Jg==
+X-Gm-Message-State: AOAM531jxqUHWGGaJb1NkMmFJYhaIVxFdjyqvXmn4dqYOtJc+K7At/Lj
+        E7bak8v85eMwJ67QmDe6/DI=
+X-Google-Smtp-Source: ABdhPJxVkmSiQ9WCIF/VhMI7BfIsXAtPjTGcBrfOpLZax/EaPn7jdHV8n3BSlkhf+0NXyyPzpLJ21Q==
+X-Received: by 2002:a37:e0e:: with SMTP id 14mr859793qko.455.1604537775951;
+        Wed, 04 Nov 2020 16:56:15 -0800 (PST)
+Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
+        by smtp.gmail.com with ESMTPSA id n3sm1403764qta.10.2020.11.04.16.56.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Nov 2020 16:56:15 -0800 (PST)
+Date:   Wed, 4 Nov 2020 17:56:13 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, stable@vger.kernel.org,
+        Chen Yu <yu.chen.surf@gmail.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Marco Elver <elver@google.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] compiler-clang: remove version check for BPF Tracing
+Message-ID: <20201105005613.GA1840301@ubuntu-m3-large-x86>
+References: <20201104191052.390657-1-ndesaulniers@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-References: <1312792024.2343459.1604537563581.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16944 YMailNodin Mozilla/5.0 (Windows NT 6.1; rv:82.0) Gecko/20100101 Firefox/82.0
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201104191052.390657-1-ndesaulniers@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Nov 04, 2020 at 11:10:51AM -0800, Nick Desaulniers wrote:
+> bpftrace parses the kernel headers and uses Clang under the hood. Remove
+> the version check when __BPF_TRACING__ is defined (as bpftrace does) so
+> that this tool can continue to parse kernel headers, even with older
+> clang sources.
+> 
+> Cc: <stable@vger.kernel.org>
+> Fixes: commit 1f7a44f63e6c ("compiler-clang: add build check for clang 10.0.1")
+> Reported-by: Chen Yu <yu.chen.surf@gmail.com>
+> Reported-by: Jarkko Sakkinen <jarkko@kernel.org>
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
 
+Acked-by: Nathan Chancellor <natechancellor@gmail.com>
 
-Dear Friend,
-
-I am sorry, but happy to inform you about my success in getting those funds=
- transferred under the cooperation of a new partner from Vietnam. Though, I=
- I tried my best to involve you in the business, but everything changed com=
-pletely. Presently, I am in Vietnam for investment projects with my own sha=
-re of the total sum. Meanwhile, I didn't forget your past efforts and attem=
-pts to assist me in transferring those funds despite that it failed us some=
-how.
-
-Now contact my secretary in Burkina Faso. Her name is Ms. Milla Smith. Her =
-email address is millasmith7010@gmail.com
-
-Ask her to send you the total sum of $450,000.00 which I kept for your comp=
-ensation over the past efforts and attempts to assist me in this matter. I =
-appreciated your efforts at that time very much. So feel free and contact m=
-y secretary Ms. Milla Smith and instruct her where to send the amount to yo=
-u. Please, do let me know immediately you receive it so that we
-can share joy after all the sufferings at that time.
-
-At the moment, I=E2=80=99m very busy here. Because of the investment projec=
-ts which I and my new partner are having at hand. Finally, remember that I =
-had forwarded instructions to the secretary on your behalf to receive that =
-money. So, feel free and get in touch with Ms. Milla Smith.
-
-Extend my greetings to your family.
-
-
-Best regards,
-
-Yours brother
-Mr. Abu Salam
-Greetings from Vietnam
+> ---
+>  include/linux/compiler-clang.h | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/include/linux/compiler-clang.h b/include/linux/compiler-clang.h
+> index dd7233c48bf3..98cff1b4b088 100644
+> --- a/include/linux/compiler-clang.h
+> +++ b/include/linux/compiler-clang.h
+> @@ -8,8 +8,10 @@
+>  		     + __clang_patchlevel__)
+>  
+>  #if CLANG_VERSION < 100001
+> +#ifndef __BPF_TRACING__
+>  # error Sorry, your version of Clang is too old - please use 10.0.1 or newer.
+>  #endif
+> +#endif
+>  
+>  /* Compiler specific definitions for Clang compiler */
+>  
+> -- 
+> 2.29.1.341.ge80a0c044ae-goog
+> 
