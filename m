@@ -2,198 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03B562A7D0C
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 12:34:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFA822A7D1C
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 12:34:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730378AbgKELd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 06:33:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54232 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730342AbgKELdz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 06:33:55 -0500
-Received: from kernel.org (unknown [2.55.183.164])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1730317AbgKELeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 06:34:37 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:50268 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729887AbgKELee (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 06:34:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604576073;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BqAyd5oPIZ6twy3M+P8m2ePirTM3ef9UMxPbSLSvBUQ=;
+        b=H1Ji/SSRLepPs593QvmPTFjBbLbFlS7MR3Ob4Dx5DKDHjzAXgua8ZV2YDUgnKxxtGU/FA5
+        PPC9Y0zixfoGYhAmOQyOM00VS0i6gYd+3416d4CPZXksxjmL4/vFABGF8QNPZA7sfl78nI
+        CkPmg6YuSTolP1yzWCFShYLB0hENryc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-2-CKDof9iRPs6yY3cC_MY5pQ-1; Thu, 05 Nov 2020 06:34:29 -0500
+X-MC-Unique: CKDof9iRPs6yY3cC_MY5pQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B88CD2078E;
-        Thu,  5 Nov 2020 11:33:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604576034;
-        bh=XF8AFYO6bCr4yR/xfLGLwsLQBboi2XjYzZ3lYdi07mQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=O5NamY7Z8bpeRF5e27pgfGmymIeBQK9j8XG2gMXDjk8aw+eMLitnhVpAzHAcLwHhk
-         Sau6clNChqmtpHyfG8qukI1nlUaCTcmwOyX21+Rglf3ECyVc+/suIMbLHw9rP9no/V
-         w2/7NKEKvUcFmM9Q4PjHmX+gHCO2wRPhSdhuvRyw=
-Date:   Thu, 5 Nov 2020 13:33:33 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Andy Lutomirski <luto@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Christoph Lameter <cl@linux.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Len Brown <len.brown@intel.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Pavel Machek <pavel@ucw.cz>, Pekka Enberg <penberg@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-pm@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
-        x86@kernel.org, "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
-Subject: Re: [PATCH v4 2/4] PM: hibernate: make direct map manipulations more
- explicit
-Message-ID: <20201105113333.GY4879@kernel.org>
-References: <20201103162057.22916-1-rppt@kernel.org>
- <20201103162057.22916-3-rppt@kernel.org>
- <9a0780b4-35f8-0ded-c473-d8ab4a26ade5@suse.cz>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 84B22186841A;
+        Thu,  5 Nov 2020 11:34:27 +0000 (UTC)
+Received: from sirius.home.kraxel.org (ovpn-114-66.ams2.redhat.com [10.36.114.66])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C210C6266E;
+        Thu,  5 Nov 2020 11:34:26 +0000 (UTC)
+Received: by sirius.home.kraxel.org (Postfix, from userid 1000)
+        id D61CE9D0F; Thu,  5 Nov 2020 12:34:25 +0100 (CET)
+Date:   Thu, 5 Nov 2020 12:34:25 +0100
+From:   Gerd Hoffmann <kraxel@redhat.com>
+To:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Suleiman Souhlal <suleiman@google.com>,
+        dri-devel@lists.freedesktop.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/virtio: use kvmalloc for large allocations
+Message-ID: <20201105113425.q45omct7eb44eraq@sirius.home.kraxel.org>
+References: <20201105014744.1662226-1-senozhatsky@chromium.org>
+ <20201105065233.3td3zuyfmbypjtvq@sirius.home.kraxel.org>
+ <20201105070054.GD128655@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9a0780b4-35f8-0ded-c473-d8ab4a26ade5@suse.cz>
+In-Reply-To: <20201105070054.GD128655@google.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 06:40:28PM +0100, Vlastimil Babka wrote:
-> On 11/3/20 5:20 PM, Mike Rapoport wrote:
-> > From: Mike Rapoport <rppt@linux.ibm.com>
-> > 
-> > When DEBUG_PAGEALLOC or ARCH_HAS_SET_DIRECT_MAP is enabled a page may be
-> > not present in the direct map and has to be explicitly mapped before it
-> > could be copied.
-> > 
-> > Introduce hibernate_map_page() that will explicitly use
-> > set_direct_map_{default,invalid}_noflush() for ARCH_HAS_SET_DIRECT_MAP case
-> > and debug_pagealloc_map_pages() for DEBUG_PAGEALLOC case.
-> > 
-> > The remapping of the pages in safe_copy_page() presumes that it only
-> > changes protection bits in an existing PTE and so it is safe to ignore
-> > return value of set_direct_map_{default,invalid}_noflush().
-> > 
-> > Still, add a pr_warn() so that future changes in set_memory APIs will not
-> > silently break hibernation.
-> > 
-> > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> > Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > Reviewed-by: David Hildenbrand <david@redhat.com>
-> > Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+On Thu, Nov 05, 2020 at 04:00:54PM +0900, Sergey Senozhatsky wrote:
+> Hi,
 > 
-> Acked-by: Vlastimil Babka <vbabka@suse.cz>
-> 
-> The bool param is a bit more acceptable here, being a private API. But if
-> debug_pagealloc_map_pages() becomes split, then it might be easier to split
-> this one too...
-
-Let's split here as well.
-
-> > ---
-> >   include/linux/mm.h      | 12 ------------
-> >   kernel/power/snapshot.c | 32 ++++++++++++++++++++++++++++++--
-> >   2 files changed, 30 insertions(+), 14 deletions(-)
+> On (20/11/05 07:52), Gerd Hoffmann wrote:
+> > > -	*ents = kmalloc_array(*nents, sizeof(struct virtio_gpu_mem_entry),
+> > > -			      GFP_KERNEL);
+> > > +	*ents = kvmalloc_array(*nents,
+> > > +			       sizeof(struct virtio_gpu_mem_entry),
+> > > +			       GFP_KERNEL);
 > > 
-> > diff --git a/include/linux/mm.h b/include/linux/mm.h
-> > index 1fc0609056dc..14e397f3752c 100644
-> > --- a/include/linux/mm.h
-> > +++ b/include/linux/mm.h
-> > @@ -2927,16 +2927,6 @@ static inline bool debug_pagealloc_enabled_static(void)
-> >   #if defined(CONFIG_DEBUG_PAGEALLOC) || defined(CONFIG_ARCH_HAS_SET_DIRECT_MAP)
-> >   extern void __kernel_map_pages(struct page *page, int numpages, int enable);
-> > -/*
-> > - * When called in DEBUG_PAGEALLOC context, the call should most likely be
-> > - * guarded by debug_pagealloc_enabled() or debug_pagealloc_enabled_static()
-> > - */
-> > -static inline void
-> > -kernel_map_pages(struct page *page, int numpages, int enable)
-> > -{
-> > -	__kernel_map_pages(page, numpages, enable);
-> > -}
-> > -
-> >   static inline void debug_pagealloc_map_pages(struct page *page,
-> >   					     int numpages, int enable)
-> >   {
-> > @@ -2948,8 +2938,6 @@ static inline void debug_pagealloc_map_pages(struct page *page,
-> >   extern bool kernel_page_present(struct page *page);
-> >   #endif	/* CONFIG_HIBERNATION */
-> >   #else	/* CONFIG_DEBUG_PAGEALLOC || CONFIG_ARCH_HAS_SET_DIRECT_MAP */
-> > -static inline void
-> > -kernel_map_pages(struct page *page, int numpages, int enable) {}
-> >   static inline void debug_pagealloc_map_pages(struct page *page,
-> >   					     int numpages, int enable) {}
-> >   #ifdef CONFIG_HIBERNATION
-> > diff --git a/kernel/power/snapshot.c b/kernel/power/snapshot.c
-> > index 46b1804c1ddf..57d54b9d84bb 100644
-> > --- a/kernel/power/snapshot.c
-> > +++ b/kernel/power/snapshot.c
-> > @@ -76,6 +76,34 @@ static inline void hibernate_restore_protect_page(void *page_address) {}
-> >   static inline void hibernate_restore_unprotect_page(void *page_address) {}
-> >   #endif /* CONFIG_STRICT_KERNEL_RWX  && CONFIG_ARCH_HAS_SET_MEMORY */
-> > +static inline void hibernate_map_page(struct page *page, int enable)
-> > +{
-> > +	if (IS_ENABLED(CONFIG_ARCH_HAS_SET_DIRECT_MAP)) {
-> > +		unsigned long addr = (unsigned long)page_address(page);
-> > +		int ret;
-> > +
-> > +		/*
-> > +		 * This should not fail because remapping a page here means
-> > +		 * that we only update protection bits in an existing PTE.
-> > +		 * It is still worth to have a warning here if something
-> > +		 * changes and this will no longer be the case.
-> > +		 */
-> > +		if (enable)
-> > +			ret = set_direct_map_default_noflush(page);
-> > +		else
-> > +			ret = set_direct_map_invalid_noflush(page);
-> > +
-> > +		if (ret) {
-> > +			pr_warn_once("Failed to remap page\n");
-> > +			return;
-> > +		}
-> > +
-> > +		flush_tlb_kernel_range(addr, addr + PAGE_SIZE);
-> > +	} else {
-> > +		debug_pagealloc_map_pages(page, 1, enable);
-> > +	}
-> > +}
-> > +
-> >   static int swsusp_page_is_free(struct page *);
-> >   static void swsusp_set_page_forbidden(struct page *);
-> >   static void swsusp_unset_page_forbidden(struct page *);
-> > @@ -1355,9 +1383,9 @@ static void safe_copy_page(void *dst, struct page *s_page)
-> >   	if (kernel_page_present(s_page)) {
-> >   		do_copy_page(dst, page_address(s_page));
-> >   	} else {
-> > -		kernel_map_pages(s_page, 1, 1);
-> > +		hibernate_map_page(s_page, 1);
-> >   		do_copy_page(dst, page_address(s_page));
-> > -		kernel_map_pages(s_page, 1, 0);
-> > +		hibernate_map_page(s_page, 0);
-> >   	}
-> >   }
-> > 
+> > Shouldn't that be balanced with a kvfree() elsewhere?
 > 
+> I think it already is. ents pointer is assigned to vbuf->data_buf,
+> and free_vbuf() already uses kvfree(vbuf->data_buf) to free it.
 
--- 
-Sincerely yours,
-Mike.
+Ah, right, we needed that before elsewhere.
+Ok then, pushed to drm-misc-next.
+
+thanks,
+  Gerd
+
