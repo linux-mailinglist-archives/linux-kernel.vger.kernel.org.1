@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B55D92A880E
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 21:26:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC7472A8814
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 21:28:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731867AbgKEU0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 15:26:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44186 "EHLO
+        id S1732091AbgKEU17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 15:27:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726996AbgKEU0O (ORCPT
+        with ESMTP id S1726729AbgKEU17 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 15:26:14 -0500
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 597EBC0613D2
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 12:26:14 -0800 (PST)
-Received: by mail-ej1-x643.google.com with SMTP id k3so4513158ejj.10
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 12:26:14 -0800 (PST)
+        Thu, 5 Nov 2020 15:27:59 -0500
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B77FDC0613D2
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 12:27:58 -0800 (PST)
+Received: by mail-ed1-x544.google.com with SMTP id o18so2977950edq.4
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 12:27:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=intel-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ElB/rrPxCKnXR5px8y5SyvZ9UfH3zJvG6zS/OQ+aa24=;
-        b=ErZLZUBe+5C6NSiNMqIo5UgF39YypMZidWcizu6bHEdkOO+DrfY6zfclQDJcK+rvLF
-         HZDRGBB9K0Zde2XPVSCZEZ9mBa4VuYO63KCeKx0l6J/UEFamr2GHa8ZSFPaa+iJ+B7Fy
-         XJtzsHBD3yDKVHRtOTSQ+O1IAExokiNCyI1If+tR9MXH+rn+AMxXk8Ushw91ELhDnd6K
-         kXzJZL4I8dwisUTNONoPoQj5feVRVi84c9hmRQnT5w7szohcp1r3hU5eRBd5GN9OygRm
-         qpo0NuFIU1irs4jDeLH8gYxr+CNm7oWBvFfY/N91TkgyAdPfmdp6D5HRcaJOope9vCVe
-         Juag==
+        bh=4tO08g/mdJrUnRp5xmIkC4E/sM1L+cB4NfZ88sr/eLY=;
+        b=0Gexu+U6183ptqb2s+FG8/LMY6pXKXn7N3ue80u0iYvQLt+J1c2jziWIJNZODieL9I
+         fjudyFeW2Y8vrOoj/uVLGT946g16HQe9FL8wBkxCdGiWweZU2yE2/V2gb4Bqcm8BYY+/
+         ns6dNvrguGQ8l6UlwQ19zwKV0nsKkWa27hj/znxgNjAWTwoklQ1nLt+8YIkOsZdmkPvC
+         3q3H5/w0tJ3ggiRN/S0VmI7w6ofXq+u9NWrITHIzdaNW9JjSbueu3JGkhuCe0FDdmPbB
+         99034gC0Dhmp0LfcxNOoxcJnDRGv8mIiyor9veTUHkdTOiqrRpVnSG0GX3EAWjathtJi
+         9AwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ElB/rrPxCKnXR5px8y5SyvZ9UfH3zJvG6zS/OQ+aa24=;
-        b=SIawXt8GpZJBrIB+8V2SkzAVRdOTlDDc3TYpiAFKdCZY8ZDHDU9qWjwH8R2a+wgIm3
-         NnW6NdyipRmGXc0MGdoWPpPWC+OhsXJs+/nwP0WhWIs3d0Yu//I6gH1UCbUAiYqgB4H1
-         3cfFx5H1AUmgjcLBjafVjfG09DO9eS73ttRDlFELsAoPwFRgJEO5LB+IkOySkodtr1g+
-         I8n/eGfMK5Oqt/2DA1/FNFzADNw197o9SC2u9lrB3sEAeZcyU3k/8ORTAY2bmkX8O4/0
-         ZQoKANqef0flxXYZq+k5jHbCnCs8SjY6pwRu2FxCRUZchewhSRlHRv0adbUsFQPEeFoM
-         6seg==
-X-Gm-Message-State: AOAM530CkY2+hegsoej6J/PI3QRztcEwyvP+LNjJsdVby+2MgpJWufH/
-        gml04SawTBV2cPD0lMecA/rTrEg4JFyYXYrzSg2EFw==
-X-Google-Smtp-Source: ABdhPJzqBNoVTeYN8+fPRiK4rwFU6h5BHef17j5dFRZ5eF3FqBCbrAbUQXxKzQoJ0Ost2YWcFgbyrXrclIZGpF61MFA=
-X-Received: by 2002:a17:906:70cf:: with SMTP id g15mr4009626ejk.323.1604607973094;
- Thu, 05 Nov 2020 12:26:13 -0800 (PST)
+        bh=4tO08g/mdJrUnRp5xmIkC4E/sM1L+cB4NfZ88sr/eLY=;
+        b=GHUL1KWJso8+FDjblLjViKPhNcxwLsoVPcmtHChGM58CuCXe5obvn9Zm5H63GNdJIK
+         jEMP+irPkFKDll6OfZAJuRGUrUpWYnFWjabwVAGgHdsIj08hT0IfWd5esn1TjCKKb1zb
+         s7EnN3WtoD9eeh6rM1q6dOnfX2tbKR+UYfxKKqYlkL05/iqWRSzxrbvYOo0PSCAWSbA8
+         EO88OJBAJmBCZYvJuhVQvlxbg6IGypxDZWz4ooK5LM59sFHCuBMltHi6bsUjxu2z/yTF
+         5gPy57rPqZ3kjB1zOb97On/Us6rs8iRIs93ee3JTEHdQ/b3aaC+4u13hiCej3BsCEjzG
+         jNFA==
+X-Gm-Message-State: AOAM532DbXQ0qkw6xkSl1F1xqpAh/PhCcOyLj1C0TxlDLr1W4nHsq2XR
+        rflg0XAbYrlAc+zMY22JpiaQB9UetcjRm8nI3nLyYg==
+X-Google-Smtp-Source: ABdhPJxZyMj5TW7rvvLgOn3hpEvUsDtY61IBF+U1P3Dju0RxQi9OL2cMh7kULFE2kxodEX2WW11HNleHVODps7fifRk=
+X-Received: by 2002:a05:6402:b35:: with SMTP id bo21mr4691836edb.52.1604608077519;
+ Thu, 05 Nov 2020 12:27:57 -0800 (PST)
 MIME-Version: 1.0
 References: <20201023003338.1285642-1-david.m.ertman@intel.com>
  <20201023003338.1285642-2-david.m.ertman@intel.com> <CAPcyv4i9s=CsO5VJOhPnS77K=bD0LTQ8TUAbhLd+0OmyU8YQ3g@mail.gmail.com>
- <DM6PR11MB284191BAA817540E52E4E2C4DDEE0@DM6PR11MB2841.namprd11.prod.outlook.com>
- <BY5PR12MB43228923300FDE8B087DC4E9DCEE0@BY5PR12MB4322.namprd12.prod.outlook.com>
-In-Reply-To: <BY5PR12MB43228923300FDE8B087DC4E9DCEE0@BY5PR12MB4322.namprd12.prod.outlook.com>
+ <20201105094719.GQ5429@unreal> <CAPcyv4hmBhkFjSA2Q_p=Ss40CLFs86N7FugJOpq=sZ-NigoSRw@mail.gmail.com>
+ <20201105193009.GA5475@unreal>
+In-Reply-To: <20201105193009.GA5475@unreal>
 From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Thu, 5 Nov 2020 12:26:02 -0800
-Message-ID: <CAPcyv4h1LH+ojRGqvh_R6mfuBbsibGa8DNMG5M1sN5G1BgwiHw@mail.gmail.com>
+Date:   Thu, 5 Nov 2020 12:27:46 -0800
+Message-ID: <CAPcyv4j9CiOnxpzcpje-AvdX=EbzUVTGBqiC2AyhLv8rP12sVg@mail.gmail.com>
 Subject: Re: [PATCH v3 01/10] Add auxiliary bus support
-To:     Parav Pandit <parav@nvidia.com>
-Cc:     "Ertman, David M" <david.m.ertman@intel.com>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>,
+To:     Leon Romanovsky <leonro@nvidia.com>
+Cc:     Dave Ertman <david.m.ertman@intel.com>,
+        alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>,
+        Mark Brown <broonie@kernel.org>,
         linux-rdma <linux-rdma@vger.kernel.org>,
         Jason Gunthorpe <jgg@nvidia.com>,
         Doug Ledford <dledford@redhat.com>,
@@ -71,50 +71,60 @@ Cc:     "Ertman, David M" <david.m.ertman@intel.com>,
         Parav Pandit <parav@mellanox.com>,
         "Saleem, Shiraz" <shiraz.saleem@intel.com>,
         "Patil, Kiran" <kiran.patil@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Leon Romanovsky <leonro@nvidia.com>
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 5, 2020 at 11:40 AM Parav Pandit <parav@nvidia.com> wrote:
+On Thu, Nov 5, 2020 at 11:30 AM Leon Romanovsky <leonro@nvidia.com> wrote:
 >
->
->
-> > From: Ertman, David M <david.m.ertman@intel.com>
-> > Sent: Friday, November 6, 2020 12:58 AM
-> > Subject: RE: [PATCH v3 01/10] Add auxiliary bus support
-> >
-> > > -----Original Message-----
-> > > From: Dan Williams <dan.j.williams@intel.com>
-> > > Sent: Thursday, November 5, 2020 1:19 AM
+> On Thu, Nov 05, 2020 at 09:12:51AM -0800, Dan Williams wrote:
+> > On Thu, Nov 5, 2020 at 1:47 AM Leon Romanovsky <leonro@nvidia.com> wrote:
 > > >
+> > > On Thu, Nov 05, 2020 at 01:19:09AM -0800, Dan Williams wrote:
+> > > > Some doc fixups, and minor code feedback. Otherwise looks good to me.
+> > > >
+> > > > On Thu, Oct 22, 2020 at 5:35 PM Dave Ertman <david.m.ertman@intel.com> wrote:
+> > > > >
+> > >
+> > > <...>
+> > >
+> > > > >
+> > > > > +config AUXILIARY_BUS
+> > > > > +       bool
+> > > >
+> > > > tristate? Unless you need non-exported symbols, might as well let this
+> > > > be a module.
+> > >
+> > > I asked it to be "bool", because bus as a module is an invitation for
+> > > a disaster. For example if I compile-in mlx5 which is based on this bus,
+> > > and won't add auxiliary_bus as a module to initramfs, the system won't boot.
+> >
+> > Something is broken if module dependencies don't arrange for
+> > auxiliary_bus.ko to be added to the initramfs automatically, but yes,
+> > it is another degree of freedom for something to go wrong if you build
+> > the initramfs by hand.
 >
-> [..]
-> > > > +
-> > > > +Another use case is for the PCI device to be split out into
-> > > > +multiple sub functions.  For each sub function an auxiliary_device
-> > > > +will be created.  A PCI sub function driver will bind to such
-> > > > +devices that will create its own one or more class devices.  A PCI
-> > > > +sub function auxiliary device will likely be contained in a struct
-> > > > +with additional attributes such as user defined sub function number
-> > > > +and optional attributes such as resources and a link to
-> > > the
-> > > > +parent device.  These attributes could be used by systemd/udev; and
-> > > hence should
-> > > > +be initialized before a driver binds to an auxiliary_device.
-> > >
-> > > This does not read like an explicit example like the previous 2. Did
-> > > you have something specific in mind?
-> > >
-> >
-> > This was added by request of Parav.
-> >
-> This example describes the mlx5 PCI subfunction use case.
-> I didn't follow your question about 'explicit example'.
-> What part is missing to identify it as explicit example?
+> And this is something that I would like to avoid for now.
 
-Specifically listing "mlx5" so if someone reading this document thinks
-to themselves "hey mlx5 sounds like my use case" they can go grep for
-that.
+Fair enough.
+
+>
+> >
+> > >
+> > > <...>
+> > >
+> > > >
+> > > > Per above SPDX is v2 only, so...
+> > >
+> > > Isn't it default for the Linux kernel?
+> >
+> > SPDX eliminated the need to guess a default, and MODULE_LICENSE("GPL")
+> > implies the "or later" language. The only default assumption is that
+> > the license is GPL v2 compatible, those possibilities are myriad, but
+> > v2-only is the first preference.
+>
+> I mean that plain GPL == GPL v2 in the kernel.
+
+You are right, I was wrong.
