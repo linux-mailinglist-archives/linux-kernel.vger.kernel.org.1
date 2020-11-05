@@ -2,100 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A251F2A837C
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 17:26:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 292372A8380
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 17:27:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731546AbgKEQ0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 11:26:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45464 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731224AbgKEQ0G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 11:26:06 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 27C8A20936;
-        Thu,  5 Nov 2020 16:26:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604593565;
-        bh=AleGPPaZ8rEKySOugD/QIrmAVOp6hLxKjVliIx3SA1k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pa2PmxQ9T6IeimCw5dpnnWrZizlGhbWr81133S383TN+SFKztcN8641X7zueWZpj7
-         OKJqgHhec9UruwRMggW8iWeVAIIuEdmmrjXOWGD7vmUm3uB1T5thudu8N0yISHaUcp
-         k/1zniHVzgYdGbpKmuWlNv49DGSi3b8CyuPjKoV0=
-Date:   Thu, 5 Nov 2020 17:26:53 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc:     Sasha Levin <sashal@kernel.org>, Paul Bolle <pebolle@tiscali.nl>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Rander Wang <rander.wang@intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 5.9 080/391] ASoC: SOF: fix a runtime pm issue in SOF
- when HDMI codec doesnt work
-Message-ID: <20201105162653.GA1175591@kroah.com>
-References: <20201103203348.153465465@linuxfoundation.org>
- <20201103203352.505472614@linuxfoundation.org>
- <64a618a3cc00de4a1c3887b57447906351db77b9.camel@tiscali.nl>
- <20201105143551.GH2092@sasha-vm>
- <1f0c6a62-5208-801d-d7c2-725ee8da19b2@linux.intel.com>
- <20201105154426.GI2092@sasha-vm>
- <e13d8fb6-4f69-23ad-22f6-499bffbf03d6@linux.intel.com>
+        id S1731571AbgKEQ1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 11:27:08 -0500
+Received: from mail-40134.protonmail.ch ([185.70.40.134]:42163 "EHLO
+        mail-40134.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725998AbgKEQ1H (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 11:27:07 -0500
+Date:   Thu, 05 Nov 2020 16:26:58 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1604593625; bh=wWkNAI1Z1OaM+ZJ+K4dO4VThjwMCnYu1qVLQHIn0wWs=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=Jwb1FMO45jI45B5GrPFDa6vMScyppgwnPJuMnMEqeMYkgjZRzsZSb5cpP9R/uOJmJ
+         HsYcwAnoToosWY1mxiouNhegBJPsjxAeAsxN5a/T50Zg/H3a5Ozk7xiTLVgVx2n4cg
+         fPMfu4lwX5faxcSQ14c287tyxxdERNZ/zG8C/CK898ktA+ePzamVJTVllTO401Hqxc
+         SM75mEAEU8DwLFLw2XsNTEi8sTTsVRC72+AAl6vGoQ5kfpW3Vd2pUkelimmryWfZ1+
+         ba0cozxn6I9O8/UrAx6LFBl1gIh9czUeHqMg1CAM0iHe/yzsFUOPmqpp5wR6RhZKho
+         Ddh62QLj8EsfQ==
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Michal Kubecek <mkubecek@suse.cz>,
+        Maxim Mikityanskiy <maximmi@mellanox.com>,
+        Alexander Lobakin <alobakin@pm.me>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: [PATCH net] ethtool: netlink: add missing netdev_features_change() call
+Message-ID: <AlZXQ2o5uuTVHCfNGOiGgJ8vJ3KgO5YIWAnQjH0cDE@cp3-web-009.plabs.ch>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <e13d8fb6-4f69-23ad-22f6-499bffbf03d6@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 10:17:57AM -0600, Pierre-Louis Bossart wrote:
-> 
-> > > > > My local build of v5.9.5 broke on this patch.
-> > > > > 
-> > > > > sound/soc/sof/intel/hda-codec.c: In function 'hda_codec_probe':
-> > > > > sound/soc/sof/intel/hda-codec.c:177:4: error: label 'error'
-> > > > > used but not defined
-> > > > >  177 |    goto error;
-> > > > >      |    ^~~~
-> > > > > make[4]: *** [scripts/Makefile.build:283:
-> > > > > sound/soc/sof/intel/hda-codec.o] Error 1
-> > > > > make[3]: *** [scripts/Makefile.build:500: sound/soc/sof/intel] Error 2
-> > > > > make[2]: *** [scripts/Makefile.build:500: sound/soc/sof] Error 2
-> > > > > make[1]: *** [scripts/Makefile.build:500: sound/soc] Error 2
-> > > > > make: *** [Makefile:1778: sound] Error 2
-> > > > > 
-> > > > > There's indeed no error label in v5.9.5. (There is one in
-> > > > > v5.10-rc2, I just
-> > > > > checked.) Is no-one else running into this?
-> > > > 
-> > > > It seems that setting CONFIG_SND_SOC_SOF_HDA_AUDIO_CODEC=y is very
-> > > > "difficult", it's not being set by allmodconfig nor is it easy to
-> > > > manually set it up.
-> > > > 
-> > > > I'll revert the patch, but it would be nice to make sure it's easier to
-> > > > test this out too.
-> > > 
-> > > this issue comes from out-of-order patches, give me a couple of
-> > > hours to look into this before reverting. thanks!
-> > 
-> > Sure! Thanks for looking into this.
-> 
-> I would recommend adding this commit to 5.9-stable:
-> 
-> 11ec0edc6408a ('ASOC: SOF: Intel: hda-codec: move unused label to correct
-> position')
-> 
-> I just tried with 5.9.5 and the compilation error is solved with this
-> commit.
-> 
-> It was initially intended to solve a minor 'defined but not used' issue,
-> which somehow became a bad 'used but not defined' one. Probably a bad git
-> merge I did, sorry about that.
+After updating userspace Ethtool from 5.7 to 5.9, I noticed that
+NETDEV_FEAT_CHANGE is no more raised when changing netdev features
+through Ethtool.
+That's because the old Ethtool ioctl interface always calls
+netdev_features_change() at the end of user request processing to
+inform the kernel that our netdevice has some features changed, but
+the new Netlink interface does not. Instead, it just notifies itself
+with ETHTOOL_MSG_FEATURES_NTF.
+Replace this ethtool_notify() call with netdev_features_change(), so
+the kernel will be aware of any features changes, just like in case
+with the ioctl interface. This does not omit Ethtool notifications,
+as Ethtool itself listens to NETDEV_FEAT_CHANGE and drops
+ETHTOOL_MSG_FEATURES_NTF on it
+(net/ethtool/netlink.c:ethnl_netdev_event()).
 
-Will go do that now and push out a new release, thanks!
+Fixes: 0980bfcd6954 ("ethtool: set netdev features with FEATURES_SET reques=
+t")
+Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+---
+ net/ethtool/features.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-greg k-h
+diff --git a/net/ethtool/features.c b/net/ethtool/features.c
+index 8ee4cdbd6b82..38f526f2125d 100644
+--- a/net/ethtool/features.c
++++ b/net/ethtool/features.c
+@@ -279,8 +279,9 @@ int ethnl_set_features(struct sk_buff *skb, struct genl=
+_info *info)
+ =09=09=09=09=09  wanted_diff_mask, new_active,
+ =09=09=09=09=09  active_diff_mask, compact);
+ =09}
++
+ =09if (mod)
+-=09=09ethtool_notify(dev, ETHTOOL_MSG_FEATURES_NTF, NULL);
++=09=09netdev_features_change(dev);
+=20
+ out_rtnl:
+ =09rtnl_unlock();
+--=20
+2.29.2
+
+
