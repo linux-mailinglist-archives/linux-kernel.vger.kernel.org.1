@@ -2,137 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58C7C2A85CB
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 19:12:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC6A82A85EB
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 19:15:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731836AbgKESMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 13:12:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51494 "EHLO
+        id S1726777AbgKESOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 13:14:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725998AbgKESMb (ORCPT
+        with ESMTP id S1726801AbgKESOO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 13:12:31 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 578D3C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 10:12:29 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id x7so2871449wrl.3
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 10:12:29 -0800 (PST)
+        Thu, 5 Nov 2020 13:14:14 -0500
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91FE5C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 10:14:12 -0800 (PST)
+Received: by mail-il1-x141.google.com with SMTP id e16so2234109ile.0
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 10:14:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=ic+OQ+6OsCx7cFXr4JAm3oNxN2Q6/gjUkT+ZKV1Hdn8=;
-        b=z7PPYcDnQviEoc/NsFlZZbqRuYfpjYIygazPCOrkSgHhTI2t+ZgLTpPzO3Zl8poseB
-         0rZqhEErwPkjLRMiEaevcCKADxlaiGS0QHxhYz6fV+wLpLfina9I0+F3jr2OSBSj+k5W
-         SeqXNp0L+q2rgHZsfM9EmRUTPBi8upchSzrxXPOh9POtBeBFsOHeJyobHvKMeX7WP91k
-         5HIkeJVdb32QoUO6rO+DBO7yBqn35/4s5G6uYQRkUqNie8K5vk0tuYMXCr9PZy3Hadxc
-         VUmKB/NkmFLZDX1EdjK52aYAb4gkUdWu5L3I1ddLvzodlid/pTO69skeMQk4zG8pK5Zg
-         oNCg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8fUu2nSRz/rQdKPD/n7O1Q6q1SAGSyes98Tm7yI3SBM=;
+        b=BLAJm2ZsjEld2uw0/svOVf7hWTZnSLqt8ZRThDTVJz+n7r8ye/EGkj/7FccKP18OjR
+         gnNqeJ/r+q2c7tG23y3bqMd6Y4SoiTesKM+xkTP+ICMYSS9pBw2ZC6mvYOXjzifvw3uL
+         N+0c33H4OkI0PxY1voOMVnYkC6iTBUzDR3yawNyhwQJ8gXBz4Ri/PRu8NyTpW9iXAJXF
+         XmmH13CXteHxEnHkCApQLkS+xlenZaZ80UEa/kaPTFtWLiwrhHmdLut5rYqdkysp790Y
+         DGbb6Emxh9ZZwygaxxYRPVFCkgrELn5ZrzzbMHGsLG3d2z2vpqD949wGClwzdHvzJbOA
+         GN+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=ic+OQ+6OsCx7cFXr4JAm3oNxN2Q6/gjUkT+ZKV1Hdn8=;
-        b=LpiOWZ948AKnft7qbLA+/E/a3CIVlZeIrl8EXxh2etslJQrbKT8mu5PrnSnO8vH+jP
-         JhISZFdyH6lYbP+TGR4dulJT3PtRtqydpMhHAOBBxX+0vA1kVOSMisn+J/ZuXxIz5Q8k
-         kNtL3xhcdJ3/jO8UGoCHVlPx75eOMbyUwdZsFXV6U70d2g8r+JDor94UrB4e08t616oV
-         MXsQomU9XWlrVYxlFbSeMM2W5MFTLuREy52zKSM5Te8k7pCaYUWI9q0tqBQbdjKsbbES
-         5N8UKMmAugI/63MHcF8JLGwcncaAO4lSu96FYM0zaHQKkvgcilkdsy0rtGBNSh/jxPb3
-         47tw==
-X-Gm-Message-State: AOAM533GSms6kbzc+oaV4ztEgnO43J0DeyZRB0o1aYH+EFc3eVZWlCvL
-        //KqSSgSJ+j5X60cCuL/f3Hdbw==
-X-Google-Smtp-Source: ABdhPJwTA5RTYhIiZWN3Q1b8BKggEpACTRVotMVkDJ/e+Bs6VZmMVWLdr8tXiLM5Q6NXEuVyXn6Zbw==
-X-Received: by 2002:a5d:498a:: with SMTP id r10mr4571549wrq.106.1604599948074;
-        Thu, 05 Nov 2020 10:12:28 -0800 (PST)
-Received: from dell ([91.110.221.242])
-        by smtp.gmail.com with ESMTPSA id s12sm3394261wmc.6.2020.11.05.10.12.25
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8fUu2nSRz/rQdKPD/n7O1Q6q1SAGSyes98Tm7yI3SBM=;
+        b=Xi1YRcBskHeCbrRVXMAUm2OILMTn0py7STRoYVk6SgaIU++C7DOjoOka6VRI19nhrG
+         kHS4toUx/P4UV6L/x0mY57xN9cIaX0tTMoJnOH25vctHHzFtk3pTUE3XUcGex5EauKlS
+         USN4fAMmorf6OCCbxBpHOn+xkr/KzeDNwwWdXp/cxWUUey1dBraWyZkT+DaX/dM5OVLx
+         MId5tOGNJTt6bdrcDqk2+nx4dhzssuxifivZEOHvEqi36h9a/TxF4FAs4IgyvTIAeHTP
+         AbBsOJs+q8CPxuuPdybF09CUpf6uQz1FkNVWG2O9Hs/OkjfkuX76LHPaSq8fV+2XBYcy
+         6RDA==
+X-Gm-Message-State: AOAM530tnBLpeverwg3u7gSaYOyHPUd/A3VEe1W0Do1sND3mpPihpjkc
+        OUGMus0VpAI6o6qVFHHH8m+B4Q==
+X-Google-Smtp-Source: ABdhPJwfPfeclJ6Osaq8WyAre/vaZ8nlCm2Fy6ydBB9gjro2ggyY3g+kGjyjXjkSlJ8odvN/omSIhw==
+X-Received: by 2002:a92:a182:: with SMTP id b2mr2779229ill.148.1604600051791;
+        Thu, 05 Nov 2020 10:14:11 -0800 (PST)
+Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id o19sm1554136ilt.24.2020.11.05.10.14.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 10:12:27 -0800 (PST)
-Date:   Thu, 5 Nov 2020 18:12:23 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Sam Ravnborg <sam@ravnborg.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        amd-gfx@lists.freedesktop.org, Andrzej Hajda <a.hajda@samsung.com>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        David Francis <David.Francis@amd.com>,
-        dri-devel@lists.freedesktop.org,
-        Fabio Estevam <festevam@gmail.com>,
-        Gareth Hughes <gareth@valinux.com>,
-        Huang Rui <ray.huang@amd.com>, Jason Yan <yanaijie@huawei.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Jingoo Han <jg1.han@samsung.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        linaro-mm-sig@lists.linaro.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-media@vger.kernel.org, linux-tegra@vger.kernel.org,
-        Lyude Paul <lyude@redhat.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Nirmoy Das <nirmoy.aiemd@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Rob Clark <rob.clark@linaro.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>
-Subject: Re: [PATCH 00/19] [Set 1] Rid W=1 warnings from GPU
-Message-ID: <20201105181223.GQ4488@dell>
-References: <20201105144517.1826692-1-lee.jones@linaro.org>
- <20201105163831.GA86540@ravnborg.org>
+        Thu, 05 Nov 2020 10:14:10 -0800 (PST)
+From:   Alex Elder <elder@linaro.org>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     evgreen@chromium.org, subashab@codeaurora.org,
+        cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next 00/13] net: ipa: constrain GSI interrupts
+Date:   Thu,  5 Nov 2020 12:13:54 -0600
+Message-Id: <20201105181407.8006-1-elder@linaro.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201105163831.GA86540@ravnborg.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 05 Nov 2020, Sam Ravnborg wrote:
+The goal of this series is to more tightly control when GSI
+interrupts are enabled.  This is a long-ish series, so I'll
+describe it in parts.
 
-> Hi Lee.
-> 
-> On Thu, Nov 05, 2020 at 02:44:58PM +0000, Lee Jones wrote:
-> > This set is part of a larger effort attempting to clean-up W=1
-> > kernel builds, which are currently overwhelmingly riddled with
-> > niggly little warnings.
-> 
-> Thanks for looking into this.
-> 
-> > There are 5000 warnings to work through.
-> > 
-> > It will take a couple more sets.
-> :-)
-> 
-> >   gpu: drm: panel: panel-simple: Fix 'struct panel_desc's header
-> I have a patch here that inline the comments - and fix the warning as a
-> side effect. I will get it posted tonight as this is better.
-> 
-> >   gpu: drm: bridge: analogix: analogix_dp_reg: Remove unused function
-> >     'analogix_dp_write_byte_to_dpcd'
-> When I looked at his I had another unused function after removing the
-> first.
-> 
-> >   gpu: drm: panel: panel-ilitek-ili9322: Demote non-conformant
-> >     kernel-doc header
-> Agree on this simple approch, will apply.
-> 
-> >   gpu: drm: bridge: analogix: analogix_dp_reg: Remove unused function
-> >     'analogix_dp_start_aux_transaction'
-> OK, this was the one I referred to above. They should be squashed into
-> one patch.
+The first patch is actually unrelated...  I forgot to include
+it in my previous series (which exposed the GSI layer to the
+IPA version).  It is a trivial comments-only update patch.
 
-I can squash them if you prefer.
+The second patch defers registering the GSI interrupt handler
+until *after* all of the resources that handler touches have
+been initialized.  In practice, we don't see this interrupt
+that early, but this precludes an obvious problem.
+
+The next two patches are simple changes.  The first just
+trivially renames a field.  The second switches from using
+constant mask values to using an enumerated type of bit
+positions to represent each GSI interrupt type.
+
+The rest implement the "real work."  First, all interrupts
+are disabled at initialization time.  Next, we keep track of
+a bitmask of enabled GSI interrupt types, updating it each
+time we enable or disable one of them.  From there we have
+a set of patches that one-by-one enable each interrupt type
+only during the period it is required.  This includes allowing
+a channel to generate IEOB interrupts only when it has been
+enabled.  And finally, the last patch simplifies some code
+now that all GSI interrupt types are handled uniformly.
+
+					-Alex
+
+Alex Elder (13):
+  net: ipa: refer to IPA versions, not GSI
+
+  net: ipa: request GSI IRQ later
+
+  net: ipa: rename gsi->event_enable_bitmap
+  net: ipa: define GSI interrupt types with an enum
+
+  net: ipa: disable all GSI interrupt types initially
+  net: ipa: cache last-saved GSI IRQ enabled type
+  net: ipa: only enable GSI channel control IRQs when needed
+  net: ipa: only enable GSI event control IRQs when needed
+  net: ipa: only enable generic command completion IRQ when needed
+  net: ipa: only enable GSI IEOB IRQs when needed
+  net: ipa: explicitly disallow inter-EE interrupts
+  net: ipa: only enable GSI general IRQs when needed
+  net: ipa: pass a value to gsi_irq_type_update()
+
+ drivers/net/ipa/gsi.c     | 257 +++++++++++++++++++++++++++-----------
+ drivers/net/ipa/gsi.h     |   7 +-
+ drivers/net/ipa/gsi_reg.h |  31 +++--
+ 3 files changed, 205 insertions(+), 90 deletions(-)
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.20.1
+
