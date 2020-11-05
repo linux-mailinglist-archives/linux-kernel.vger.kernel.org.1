@@ -2,134 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 504522A8090
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 15:15:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19BE92A8094
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 15:15:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731036AbgKEOPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 09:15:00 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:48482 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729113AbgKEOO7 (ORCPT
+        id S1731067AbgKEOPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 09:15:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730922AbgKEOPw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 09:14:59 -0500
-Received: from [IPv6:2804:14c:483:7e3e::1003] (unknown [IPv6:2804:14c:483:7e3e::1003])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: koike)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 2E3581F4644C;
-        Thu,  5 Nov 2020 14:14:51 +0000 (GMT)
-Subject: Re: [PATCH 08/14] media: sunxi: Add support for the A31 MIPI CSI-2
- controller
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-sunxi@googlegroups.com,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Yong Deng <yong.deng@magewell.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Hans Verkuil <hverkuil@xs4all.nl>, kevin.lhopital@hotmail.com
-References: <20201023174546.504028-1-paul.kocialkowski@bootlin.com>
- <20201023174546.504028-9-paul.kocialkowski@bootlin.com>
- <1a3a615c-a058-e282-2dbb-c99dfa98be68@collabora.com>
- <20201102092110.ro6a456lvbrktwoz@gilmour.lan>
- <20201104111710.GB287014@aptenodytes>
- <f74e4d59-a391-36ab-74aa-8e02aca1b0bc@collabora.com>
- <20201104184538.f6qagsmjdoijbzmv@gilmour.lan>
-From:   Helen Koike <helen.koike@collabora.com>
-Message-ID: <3b99b055-ff53-c873-19b2-fd2ccc86956d@collabora.com>
-Date:   Thu, 5 Nov 2020 11:14:47 -0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Thu, 5 Nov 2020 09:15:52 -0500
+Received: from mail-oo1-xc42.google.com (mail-oo1-xc42.google.com [IPv6:2607:f8b0:4864:20::c42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 078CEC0613CF;
+        Thu,  5 Nov 2020 06:15:52 -0800 (PST)
+Received: by mail-oo1-xc42.google.com with SMTP id n16so458936ooj.2;
+        Thu, 05 Nov 2020 06:15:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=y++wwA2trwoLTeidmcO6HyXS/KDcURbyY/O4LhQQQ6M=;
+        b=ha1QZSeeAlAiTnjwS63lsPoRvbfSsQWqdLQ2EGZjZBRoudlDSqohQgFDSuR0xtuj+U
+         xyY75x/1lUo9RaZOfMPjtFwXZso4SNSE83B9Yu9pqIQij8XCIWx1S3lHNVymVsUXoU1U
+         KuXjpdbOY+rFru/M89FZ5/vt5uoFgXrGCjTQQ7lQgiAo0tNuyA5YW0iAhX/9smMKEfNW
+         7R3frLknjvlimjnqUMRgzwGu+RgqLOHzNF3RYhnVEiABY/4K0mZPkVqYtWVh0ZAEgVSX
+         QsNF5ikBNYngO93BU3vozWy5Qpr4DJSVAybU2GAPW14CYUS3ciP57EtgUy2tP/5RH5ls
+         qmVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=y++wwA2trwoLTeidmcO6HyXS/KDcURbyY/O4LhQQQ6M=;
+        b=AGqebtsEOSksDwCEQ8XeMslWP55mzl9cI97HKNCKCmLQRhBtBP6KDwhoevi5YKBPWQ
+         EbBBG+BaKxS9piddC6WhcSAjSk4eRoghIRQECFbMj0cd1PmCR5VB4EXktrUdXFZH6tog
+         HB4rAIP/UilLpbJoamVXpUUTS3RdDZqdILKiQfEVG35bLv34TSyRBJS5iEHeDT3t5VOg
+         Pb8WK7cA86fEgfmLbRdScgeC0DcqYeyP9vS199xDulmZOLwFecWGkU6jjgImEKUyN0/5
+         PDs2yGRUYd9V76ZSVjCwF3UZmNIHflFrMgWqXHlWCI+816lpNIT2CajKboe3Aea7eZsE
+         /V0A==
+X-Gm-Message-State: AOAM530zCjjc2S/iNC3jcNWMuFzYTA7wllWIrCy6SF6QiVbJp6EH+H8R
+        85ucHxMnAPajFwLt65WAaQUT9lSYHdU=
+X-Google-Smtp-Source: ABdhPJxbVW5EMauDC4fb3QXE0Z5KS/uYP+xGsu5usDkf7xMtKhy4T/g/tl9bfb7eojbjgiAFpTS6FA==
+X-Received: by 2002:a4a:cf09:: with SMTP id l9mr1987400oos.30.1604585751422;
+        Thu, 05 Nov 2020 06:15:51 -0800 (PST)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id m11sm358655oop.6.2020.11.05.06.15.50
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 05 Nov 2020 06:15:50 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Thu, 5 Nov 2020 06:15:49 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Wilken Gottwalt <wilken.gottwalt@posteo.net>
+Cc:     Colin King <colin.king@canonical.com>,
+        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] hwmon: corsair-psu: fix unintentional sign
+ extension issue
+Message-ID: <20201105141549.GA1389@roeck-us.net>
+References: <20201105115019.41735-1-colin.king@canonical.com>
+ <20201105133233.10edda5b@monster.powergraphx.local>
 MIME-Version: 1.0
-In-Reply-To: <20201104184538.f6qagsmjdoijbzmv@gilmour.lan>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201105133233.10edda5b@monster.powergraphx.local>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 11/4/20 3:45 PM, Maxime Ripard wrote:
-> On Wed, Nov 04, 2020 at 01:38:08PM -0300, Helen Koike wrote:
->>
->>
->> On 11/4/20 8:17 AM, Paul Kocialkowski wrote:
->>> Hi,
->>>
->>> On Mon 02 Nov 20, 10:21, Maxime Ripard wrote:
->>>> On Fri, Oct 30, 2020 at 07:45:18PM -0300, Helen Koike wrote:
->>>>> On 10/23/20 2:45 PM, Paul Kocialkowski wrote:
->>>>>> The A31 MIPI CSI-2 controller is a dedicated MIPI CSI-2 controller
->>>>>> found on Allwinner SoCs such as the A31 and V3/V3s.
->>>>>>
->>>>>> It is a standalone block, connected to the CSI controller on one side
->>>>>> and to the MIPI D-PHY block on the other. It has a dedicated address
->>>>>> space, interrupt line and clock.
->>>>>>
->>>>>> Currently, the MIPI CSI-2 controller is hard-tied to a specific CSI
->>>>>> controller (CSI0) but newer SoCs (such as the V5) may allow switching
->>>>>> MIPI CSI-2 controllers between CSI controllers.
->>>>>>
->>>>>> It is represented as a V4L2 subdev to the CSI controller and takes a
->>>>>> MIPI CSI-2 sensor as its own subdev, all using the fwnode graph and
->>>>>> media controller API.
->>>>>
->>>>> Maybe this is a bad idea, but I was thinking:
->>>>> This driver basically just turn on/off and catch some interrupts for errors,
->>>>> and all the rest of v4l2 config you just forward to the next subdevice
->>>>> on the pipeline.
->>>>>
->>>>> So instead of exposing it as a subdevice, I was wondering if modeling
->>>>> this driver also through the phy subsystem wouldn't be cleaner, so
->>>>> you won't need all the v4l2 subdevice/topology boilerplate code that
->>>>> it seems you are not using (unless you have plans to add controls or
->>>>> some specific configuration on this node later).
->>>>>
->>>>> But this would require changes on the sun6i-csi driver.
->>>>>
->>>>> What do you think?
->>>>
->>>> Eventually we'll need to filter the virtual channels / datatypes I
->>>> guess, so it's definitely valuable to have it in v4l2
->>
->> Which kind of datatypes? 
+On Thu, Nov 05, 2020 at 01:32:33PM +0100, Wilken Gottwalt wrote:
+> On Thu,  5 Nov 2020 11:50:19 +0000
+> Colin King <colin.king@canonical.com> wrote:
 > 
-> MIPI-CSI datatypes. Each packet on the MIPI-CSI bus is assigned a
-> virtual channel and data type so that you can multiplex multiple streams
-> (like a 3d camera would send for example, through the virtual channels)
-> and data types (like frames and metadata) and MIPI-CSI controllers
-> usually allow to filter them based on what you want.
+> > From: Colin Ian King <colin.king@canonical.com>
+> > 
+> > The shifting of the u8 integer data[3] by 24 bits to the left will
+> > be promoted to a 32 bit signed int and then sign-extended to a
+> > long. In the event that the top bit of data[3] is set then all
+> > then all the upper 32 bits of a 64 bit long end up as also being
+> > set because of the sign-extension. Fix this by casting data[3] to
+> > a long before the shift.
+> > 
+> > Addresses-Coverity: ("Unintended sign extension")
+> > Fixes: ce15cd2cee8b ("hwmon: add Corsair PSU HID controller driver")
+> > Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> > ---
+> >  drivers/hwmon/corsair-psu.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/hwmon/corsair-psu.c b/drivers/hwmon/corsair-psu.c
+> > index e92d0376e7ac..5d19a888231a 100644
+> > --- a/drivers/hwmon/corsair-psu.c
+> > +++ b/drivers/hwmon/corsair-psu.c
+> > @@ -241,7 +241,7 @@ static int corsairpsu_get_value(struct corsairpsu_data *priv, u8 cmd, u8
+> > rail, l
+> >  	 * the LINEAR11 conversion are the watts values which are about 1200 for the strongest
+> > psu
+> >  	 * supported (HX1200i)
+> >  	 */
+> > -	tmp = (data[3] << 24) + (data[2] << 16) + (data[1] << 8) + data[0];
+> > +	tmp = ((long)data[3] << 24) + (data[2] << 16) + (data[1] << 8) + data[0];
+> >  	switch (cmd) {
+> >  	case PSU_CMD_IN_VOLTS:
+> >  	case PSU_CMD_IN_AMPS:
 > 
->> I ask to know if this shouldn't be configured through the video node
->> instead of subdevice.
-> 
-> Not really, some setups have a mux that can split the multiple virtual
-> channels to multiple video nodes for example.
-> 
->> Regarding channels, we had a discussion to implement it through the video
->> node (and not subdevice) [1]. But we discussed about blitters and multi-scalers,
->> so now I'm wondering if we could use the same API for mipi-csi virtual channels
->> in the video entity device, or if it doesn't apply and we need another API
->> for that in a subdevice instead.
->>
->> [1] https://patchwork.linuxtv.org/project/linux-media/cover/20200717115435.2632623-1-helen.koike@collabora.com/
-> 
-> There's already an API to deal with MIPI-CSI virtual channels:
-> https://patchwork.kernel.org/project/linux-renesas-soc/cover/20190328200608.9463-1-jacopo+renesas@jmondi.org/
-> 
-> Maxime
+> Yeah, this could happen if the uptime value in the micro-controller gets bigger
+> than 68 years (in seconds), and it is the only value which actually uses more
+> than 2 bytes for the representation. So what about architectures which are 32 bit
+> wide and where a long has 32 bits? I guess this simple cast is not enough.
 > 
 
-Thanks for the explanation :)
+The hwmon subsystem uses 'long' to pass values back to the core.
+While that may be a bit unfortunate as it doesn't support uptimes
+of more than 68 years in seconds, we are not going to change the
+hwmon core to accommodate it. If the incoming data is always
+expected to be positive, and you don't want to risk the overflow,
+feel free to either use "data[3] & 0x7f" instead, or max out the
+result at INT_MAX (from <linux/limits.h>).
 
-Helen
+Thanks,
+Guenter
