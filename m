@@ -2,113 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AC002A7641
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 04:57:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61D3E2A7645
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 05:07:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729546AbgKED5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 22:57:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43818 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725856AbgKED5O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 22:57:14 -0500
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5742F20786;
-        Thu,  5 Nov 2020 03:57:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604548634;
-        bh=qIk9u05EWbRNA4eKZJAdxo+1qirS9mO9h6wHQ8e1bcY=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=hFEcJZXTgiWX3DxNomAa86O2q4gKtQmVlmgTeI/mNcbxC1rJhj833Zt/b4/Wq0bgI
-         GFjZ4fJSwoSk7ww2OkQdvr2hjv2e3oiJu02hO9q4k6nmw04C1iz9FdK5kgAw0/oJiW
-         glhV9B1R9OKJOydhWAS2UOlOc2P9df21wYP1SrxQ=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id F3E423522683; Wed,  4 Nov 2020 19:57:13 -0800 (PST)
-Date:   Wed, 4 Nov 2020 19:57:13 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Marco Elver <elver@google.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>, fweisbec@gmail.com,
-        neeraj.iitr10@gmail.com
-Subject: Re: [PATCH v9 6/7] rcu/tree: segcblist: Remove redundant smp_mb()s
-Message-ID: <20201105035713.GL3249@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201103142603.1302207-1-joel@joelfernandes.org>
- <20201103142603.1302207-7-joel@joelfernandes.org>
+        id S1729985AbgKEEHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 23:07:08 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:48886 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726849AbgKEEHI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 23:07:08 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A5445V0118685;
+        Thu, 5 Nov 2020 04:06:49 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=kMbN2kpaKfntm7KUUJPSWq8VIF6nFPZVtwRet+WNbmA=;
+ b=i9X5ysvtzGEKzA/DaqZD7mkS3RlLMr2hf4PlF4x44ZTfPJTgoKMoPTuo3XJ9EuBJXW29
+ yV21T/RXsER1EzM8boU3Wio6zCZqa9Xb6S8ysEW7DMlYZDn3TLA2Z92x1gtkikVLaYbt
+ WTzs1ITxOsa3/YgGx+2tlPKrPlAoLiTxwG7IpfqK6w8fvgh3E5Uq4JKaRc4ecReH1yEK
+ QPVocY0LnoEQEBRYPodD7oWaILwyh8Wr7OqVDaayB4bruf6uZS9iCiHxrwvZNyvt5u92
+ 5u1Dv8Rpbe1jDkSzSREPSE494oInEAvkUap6Ochc/Pm+8mbLzqdnknnKOaJo7HbG36Gc SQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 34hhvchxfb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 05 Nov 2020 04:06:49 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A540aMj169771;
+        Thu, 5 Nov 2020 04:06:49 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 34hw0kyp7s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 05 Nov 2020 04:06:49 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0A546kA4030020;
+        Thu, 5 Nov 2020 04:06:46 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 04 Nov 2020 20:06:46 -0800
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        Bean Huo <huobean@gmail.com>, Can Guo <cang@codeaurora.org>,
+        Stanley Chu <stanley.chu@mediatek.com>
+Subject: Re: [PATCH V4 0/2] scsi: ufs: Add DeepSleep feature
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1imaksb3g.fsf@ca-mkp.ca.oracle.com>
+References: <20201103141403.2142-1-adrian.hunter@intel.com>
+Date:   Wed, 04 Nov 2020 23:06:43 -0500
+In-Reply-To: <20201103141403.2142-1-adrian.hunter@intel.com> (Adrian Hunter's
+        message of "Tue, 3 Nov 2020 16:14:01 +0200")
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201103142603.1302207-7-joel@joelfernandes.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9795 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 adultscore=0 bulkscore=0
+ mlxscore=0 suspectscore=1 spamscore=0 mlxlogscore=988 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011050029
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9795 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=1
+ impostorscore=0 malwarescore=0 priorityscore=1501 mlxlogscore=999
+ bulkscore=0 phishscore=0 adultscore=0 mlxscore=0 lowpriorityscore=0
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011050029
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 09:26:02AM -0500, Joel Fernandes (Google) wrote:
-> This memory barrier is not needed as rcu_segcblist_add_len() already
-> includes a memory barrier *before* and *after* the length of the list is
-> updated.
-> 
-> Same reasoning for rcu_segcblist_enqueue().
 
-I suggest a commit log like the following:
+Adrian,
 
-------------------------------------------------------------------------
+> Here is V4 of the DeepSleep feature patches.
 
-The full memory barriers in rcu_segcblist_enqueue() and in rcu_do_batch()
-are not needed because rcu_segcblist_add_len(), and thus also
-rcu_segcblist_inc_len(), already includes a memory barrier *before*
-and *after* the length of the list is updated.
+Applied to 5.11/scsi-staging, thanks!
 
-This commit therefore removes these redundant smp_mb() invocations.
+I left out the sysfs ABI piece due to the conflicts. I suggest you send
+that piece through the doc tree.
 
-------------------------------------------------------------------------
-
-Other than that, looks good!  I could hand-apply it, but that
-would just cause more churn with the addition of the call to
-rcu_segcblist_inc_seglen().  So could you please update the commit log
-when you repost, whether to the mailing list or from your git tree?
-
-							Thanx, Paul
-
-> Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> ---
->  kernel/rcu/rcu_segcblist.c | 1 -
->  kernel/rcu/tree.c          | 1 -
->  2 files changed, 2 deletions(-)
-> 
-> diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
-> index e9e72d72f7a6..d96272e8d604 100644
-> --- a/kernel/rcu/rcu_segcblist.c
-> +++ b/kernel/rcu/rcu_segcblist.c
-> @@ -268,7 +268,6 @@ void rcu_segcblist_enqueue(struct rcu_segcblist *rsclp,
->  			   struct rcu_head *rhp)
->  {
->  	rcu_segcblist_inc_len(rsclp);
-> -	smp_mb(); /* Ensure counts are updated before callback is enqueued. */
->  	rcu_segcblist_inc_seglen(rsclp, RCU_NEXT_TAIL);
->  	rhp->next = NULL;
->  	WRITE_ONCE(*rsclp->tails[RCU_NEXT_TAIL], rhp);
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index f6c6653b3ec2..fb2a5ac4a59c 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -2525,7 +2525,6 @@ static void rcu_do_batch(struct rcu_data *rdp)
->  
->  	/* Update counts and requeue any remaining callbacks. */
->  	rcu_segcblist_insert_done_cbs(&rdp->cblist, &rcl);
-> -	smp_mb(); /* List handling before counting for rcu_barrier(). */
->  	rcu_segcblist_add_len(&rdp->cblist, -count);
->  
->  	/* Reinstate batch limit if we have worked down the excess. */
-> -- 
-> 2.29.1.341.ge80a0c044ae-goog
-> 
+-- 
+Martin K. Petersen	Oracle Linux Engineering
