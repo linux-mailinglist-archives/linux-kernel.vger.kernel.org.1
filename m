@@ -2,135 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACBEE2A7B00
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 10:51:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C45FE2A7B06
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 10:53:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726428AbgKEJu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 04:50:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57426 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725468AbgKEJu7 (ORCPT
+        id S1726698AbgKEJxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 04:53:02 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:45160 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725308AbgKEJxB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 04:50:59 -0500
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E3EAC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 01:50:59 -0800 (PST)
-Received: by mail-ot1-x341.google.com with SMTP id f16so779570otl.11
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 01:50:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dX0vDqom8ha6YU5ZReUcsQtcVPHPjeNXiBGF2ngLEnw=;
-        b=FQiVrGaLODrUUaqHrd8MUV+2jfG4zXyZcp645Hz8Hi2Z2Eh0gNkwuONW1bano0KYSf
-         OUPgJ7K0ia9zwh2Ic5E5yR+0sJQsounbGX5x1hedn1xg0hN/GKElRrLU+WMF8mU6AgWF
-         3oeLNr8r2BYpCFPbh4qyNmGJGpVGif0bCmE+g=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dX0vDqom8ha6YU5ZReUcsQtcVPHPjeNXiBGF2ngLEnw=;
-        b=cgT++qGN6kodN31iLeMq3js+4z8dxocj35mBFh/fAt8k0w2RB/zTSvhpVf0ZReRfOQ
-         fW5L/oNH+Wu+RCw5mWzj10+mulCNeEub/0ah9NQatTN/WQ62Zo0wHIf7c8ggjXpBAKIO
-         nZ9D9iPjSvO7yAPRdUz29Yo/fnwfJNlwNM4He+nPA9EqjyBlocRwF1KJMRdTXFFakw+W
-         kf2ELCA+AA+1GJWupUkRki+GKmKGh84xTsp+fsHLuGfe/NYfwIsxjYSykLLMxLTEncRj
-         Eoa9GID0vfOHlHTaNyjz2gdZbMLxLV+quH6Y9oCb1IewL4Z4BLhnRwElf68Kwr21IOLO
-         h6zg==
-X-Gm-Message-State: AOAM530Grwm6RcJhijxQrzXI3DVSGZJWEjI5yn043+1MWcaLvW5lFLSM
-        Z2Y3U3ckvmIczTOiiPXnYTCoIzEcYMwt0ljI
-X-Google-Smtp-Source: ABdhPJw1m2B2252+PmsEJdfyldG9uyfU3QgLdoqERSCuApg8LX+BZoBXin92mQGGwdr52wwIqhXwzQ==
-X-Received: by 2002:a05:6830:11a:: with SMTP id i26mr1054241otp.87.1604569858363;
-        Thu, 05 Nov 2020 01:50:58 -0800 (PST)
-Received: from mail-oo1-f46.google.com (mail-oo1-f46.google.com. [209.85.161.46])
-        by smtp.gmail.com with ESMTPSA id m23sm234947otk.10.2020.11.05.01.50.57
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Nov 2020 01:50:57 -0800 (PST)
-Received: by mail-oo1-f46.google.com with SMTP id j41so271106oof.12
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 01:50:57 -0800 (PST)
-X-Received: by 2002:a4a:6251:: with SMTP id y17mr837922oog.17.1604569856931;
- Thu, 05 Nov 2020 01:50:56 -0800 (PST)
+        Thu, 5 Nov 2020 04:53:01 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 6A8D11C0B82; Thu,  5 Nov 2020 10:52:58 +0100 (CET)
+Date:   Thu, 5 Nov 2020 10:52:57 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Amireddy Mallikarjuna reddy <mallikarjunax.reddy@linux.intel.com>
+Cc:     linux-leds@vger.kernel.org, dmurphy@ti.com,
+        devicetree@vger.kernel.org, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org, cheol.yong.kim@intel.com,
+        qi-ming.wu@intel.com, malliamireddy009@gmail.com,
+        yixin.zhu@intel.com
+Subject: Re: [PATCH v1 1/2] dt-bindings: leds: Add bindings for intel LGM SOC
+Message-ID: <20201105095257.GA7994@amd>
+References: <c9c963a2d03fbd03bd21f71f3d776ac5800cf6cc.1604331498.git.mallikarjunax.reddy@linux.intel.com>
 MIME-Version: 1.0
-References: <20201104180734.286789-1-ribalda@chromium.org> <20201104180734.286789-2-ribalda@chromium.org>
- <87769d554b4575bf9371380b013e66d70f1b21c4.camel@perches.com>
- <20201104214201.GH29958@pendragon.ideasonboard.com> <9d439214e8c83ebf7b93dccca2f848fbaf75b9d4.camel@perches.com>
- <CANiDSCvwvQUTt1QMQGGyZPag9VeHj4Ugmj8QJdBNtw00UNt6Pg@mail.gmail.com>
- <a00078e1311c09361e9e3357ba5dca037d7a8bff.camel@perches.com>
- <CANiDSCteVWin-Yy2ZVSMUJBPvJ-F0Ti+fEpi26apsDW0XXrpwg@mail.gmail.com> <79cad1a6a296761e672cfb0d85e7424fcb740032.camel@perches.com>
-In-Reply-To: <79cad1a6a296761e672cfb0d85e7424fcb740032.camel@perches.com>
-From:   Ricardo Ribalda <ribalda@chromium.org>
-Date:   Thu, 5 Nov 2020 10:50:45 +0100
-X-Gmail-Original-Message-ID: <CANiDSCt8twP=JTkGjSVKdDwRhuHb7Jkv+=08U6oFdGtAjtrELw@mail.gmail.com>
-Message-ID: <CANiDSCt8twP=JTkGjSVKdDwRhuHb7Jkv+=08U6oFdGtAjtrELw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/7] media: uvcvideo: Use pr_cont() macro
-To:     Joe Perches <joe@perches.com>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="qDbXVdCdHGoSgWSk"
+Content-Disposition: inline
+In-Reply-To: <c9c963a2d03fbd03bd21f71f3d776ac5800cf6cc.1604331498.git.mallikarjunax.reddy@linux.intel.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joe
 
-On Thu, Nov 5, 2020 at 12:59 AM Joe Perches <joe@perches.com> wrote:
->
-> On Thu, 2020-11-05 at 00:01 +0100, Ricardo Ribalda wrote:
-> > Hi Joe
-> >
-> > On Thu, Nov 5, 2020 at 12:00 AM Joe Perches <joe@perches.com> wrote:
-> > >
-> > > On Wed, 2020-11-04 at 23:31 +0100, Ricardo Ribalda wrote:
-> > >
-> > > > I have updated my tree with the dev_ variants
-> > > >
-> > > > https://github.com/ribalda/linux/commit/b8785fd8efb4f2e5bbf5d0f2df3e0d69a5439015
-> > >
-> > > I looked at this link and was confused so you made me look.
-> > > I think you meant:
-> > >
-> > > https://github.com/ribalda/linux/commit/83cb6eb3a9f7bd1954acbfb4fb3d56ddf54bce73
-> >
-> > Yes, thanks :) Sorry about that
-> >
-> > This is why I should be away from a keyboard after 23:00 :)
->
-> Sleep is good.
-> There are lots of sleep deprived people here in the US today though.
+--qDbXVdCdHGoSgWSk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Today and tomorrow and the day after. Seems like you are not going to
-sleep for a week if you want a final result.
-
->
-> It looks as if all the pr_cont uses in the code are odd and repetitive.
->
-> Perhaps it'd be sensible to add something like:
-
-Looks like a great idea. Queued for my v3
-
-https://github.com/ribalda/linux/commit/1623b648331d7f69c8a9f6b199e119f6c8ee61c6
-
-I let Laurent decide if we should squash with the previous patch or not.
-
-Thanks!
-
->
-> #define uvc_trace_cont(flag, fmt, ...)                                  \
-> do {                                                                    \
->         if (uvc_trace_param & (flag))                                   \
->                 pr_cont(fmt, ##__VA_ARGS__);                            \
-> } while (0)
->
-> and change all the uses like:
->
-> -               if (uvc_trace_param & UVC_TRACE_PROBE)
-> -                       printk(KERN_CONT " <- SU %d", entity->id);
-> +               uvc_trace_cont(UVC_TRACE_PROBE, " <- SU %d", entity->id);
->
+On Thu 2020-11-05 17:43:50, Amireddy Mallikarjuna reddy wrote:
+> Add DT bindings YAML schema for SSO controller driver
+> of Lightning Mountain(LGM) SoC.
 >
 
+intel -> Intel in the title.
+"Lightning Mountain(LGM)" -> 'Lightning Mountain (LGM)"
 
--- 
-Ricardo Ribalda
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/leds/leds-lgm.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Intel LGM Soc LED SSO driver
+
+Please spell out LGM and SSO here. Soc -> SoC?
+
+
+> +          intel,sso-brightness:
+> +            $ref: /schemas/types.yaml#/definitions/uint32
+> +            description: brightness level of the LED.
+> +            minimum: 0
+> +            maximum: 255
+
+?
+
+> +          intel,sso-hw-trigger:
+> +            type: boolean
+> +            description: This property indicates Hardware driven/control=
+ LED.
+
+Why is this intel specific?
+
+> +          intel,sso-hw-blink:
+> +            type: boolean
+> +            description: This property indicates Enable LED blink by Har=
+dware.
+
+?
+
+> +          intel,sso-blink-rate:
+> +            $ref: /schemas/types.yaml#/definitions/uint32
+> +            description: LED HW blink frequency.
+
+?
+
+Best regards,
+						Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--qDbXVdCdHGoSgWSk
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAl+jy3kACgkQMOfwapXb+vItswCdHK/rBjUuX8XXr4kRgKyZnhDA
+BcAAoMRvUm2kKvgPmc4PKgqdfoK1Z4/N
+=SlwM
+-----END PGP SIGNATURE-----
+
+--qDbXVdCdHGoSgWSk--
