@@ -2,176 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE24C2A7ADB
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 10:44:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DDAB2A7AD1
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 10:43:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727107AbgKEJoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 04:44:01 -0500
-Received: from mga09.intel.com ([134.134.136.24]:33602 "EHLO mga09.intel.com"
+        id S1726934AbgKEJnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 04:43:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33572 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725468AbgKEJoA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 04:44:00 -0500
-IronPort-SDR: +2VlLOwP1p23HIyz47RPZrXHhWEcY7AdUQ1SJccvp6s2+PAV3clPWxYaTO6g9TFhwfYEPoZ2yl
- k8BlcgWgof/A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9795"; a="169498711"
-X-IronPort-AV: E=Sophos;i="5.77,453,1596524400"; 
-   d="scan'208";a="169498711"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2020 01:43:59 -0800
-IronPort-SDR: pE9UuVIndlimvwkB72VNabhAXd/FqGcBZObmaBwyHY15DMDeMHAoaQakKYtlV36JAvfOs45bCr
- +A04c/EJNZ5A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,453,1596524400"; 
-   d="scan'208";a="397197968"
-Received: from sgsxdev004.isng.intel.com (HELO localhost) ([10.226.88.13])
-  by orsmga001.jf.intel.com with ESMTP; 05 Nov 2020 01:43:57 -0800
-From:   Amireddy Mallikarjuna reddy <mallikarjunax.reddy@linux.intel.com>
-To:     linux-leds@vger.kernel.org, pavel@ucw.cz, dmurphy@ti.com,
-        devicetree@vger.kernel.org, robh+dt@kernel.org
-Cc:     linux-kernel@vger.kernel.org, cheol.yong.kim@intel.com,
-        qi-ming.wu@intel.com, mallikarjunax.reddy@linux.intel.com,
-        malliamireddy009@gmail.com, yixin.zhu@intel.com
-Subject: [PATCH v1 1/2] dt-bindings: leds: Add bindings for intel LGM SOC
-Date:   Thu,  5 Nov 2020 17:43:50 +0800
-Message-Id: <c9c963a2d03fbd03bd21f71f3d776ac5800cf6cc.1604331498.git.mallikarjunax.reddy@linux.intel.com>
-X-Mailer: git-send-email 2.11.0
+        id S1725308AbgKEJnC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 04:43:02 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 26DF52080D;
+        Thu,  5 Nov 2020 09:43:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604569381;
+        bh=Pw8x6wof7/hdOOYVanQAZZ6gdVYkVA+IEc86z5O8qrc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kpOlXevlFAmJCREcTFKRfD5uhjvLTSYj+Ves5DKdo86GMUD3CVRVuWr0+OSzjT6zk
+         HsgdWXClSqMcLwNu71VPnjT6eQckO9YY5I6x7/Q9LYmHFyixMBjw3WicOqLDoHzH6P
+         IjT7I/4ewgFB0wAtEIY+2k1FCdt4ggYIQEjta1+0=
+Date:   Thu, 5 Nov 2020 10:43:50 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        kernel-team@android.com, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-efi@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v1 17/18] driver core: Add helper functions to convert
+ fwnode links to device links
+Message-ID: <20201105094350.GG3439341@kroah.com>
+References: <20201104232356.4038506-1-saravanak@google.com>
+ <20201104232356.4038506-18-saravanak@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201104232356.4038506-18-saravanak@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add DT bindings YAML schema for SSO controller driver
-of Lightning Mountain(LGM) SoC.
+On Wed, Nov 04, 2020 at 03:23:54PM -0800, Saravana Kannan wrote:
+> Add helper functions __fw_devlink_link_to_consumers() and
+> __fw_devlink_link_to_suppliers() that convert fwnode links to device
+> links.
+> 
+> __fw_devlink_link_to_consumers() is for creating:
+> - Device links between a newly added device and all its consumer devices
+>   that have been added to driver core.
+> - Proxy SYNC_STATE_ONLY device links between the newly added device and
+>   the parent devices of all its consumers that have not been added to
+>   driver core yet.
+> 
+> __fw_devlink_link_to_suppliers() is for creating:
+> - Device links between a newly added device and all its supplier devices
+> - Proxy SYNC_STATE_ONLY device links between the newly added device and
+>   all the supplier devices of its child device nodes.
+> 
+> Signed-off-by: Saravana Kannan <saravanak@google.com>
 
-Signed-off-by: Amireddy Mallikarjuna reddy <mallikarjunax.reddy@linux.intel.com>
----
- .../devicetree/bindings/leds/leds-lgm.yaml         | 116 +++++++++++++++++++++
- 1 file changed, 116 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/leds/leds-lgm.yaml
+Did you just add build warnings with these static functions that no one
+calls?
 
-diff --git a/Documentation/devicetree/bindings/leds/leds-lgm.yaml b/Documentation/devicetree/bindings/leds/leds-lgm.yaml
-new file mode 100644
-index 000000000000..1acf1fa9643b
---- /dev/null
-+++ b/Documentation/devicetree/bindings/leds/leds-lgm.yaml
-@@ -0,0 +1,116 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/leds/leds-lgm.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Intel LGM Soc LED SSO driver
-+
-+maintainers:
-+  - Yixin.zhu@intel.com
-+  - mallikarjunax.reddy@intel.com
-+
-+properties:
-+ compatible:
-+   const: intel,sso-led
-+
-+ reg:
-+  maxItems: 1
-+
-+ clocks:
-+  maxItems: 2
-+
-+ gpio-controller: true
-+
-+ '#gpio-cells':
-+   const: 2
-+
-+ intel,sso-gpio-base:
-+  $ref: /schemas/types.yaml#definitions/uint32
-+  description:
-+    Identifies the first gpio handled.
-+
-+ ngpios:
-+  minimum: 0
-+  maximum: 32
-+  description:
-+    Number of GPIOs this controller provides.
-+
-+ intel,sso-update-rate:
-+  $ref: /schemas/types.yaml#definitions/uint32
-+  description:
-+    Blink frequency for SOUTs in Hz.
-+
-+ ssoled:
-+    type: object
-+    description:
-+       This sub-node must contain a sub-node for each leds.
-+
-+    patternProperties:
-+      "^led@[0-23]$":
-+        type: object
-+
-+        properties:
-+          intel,led-pin:
-+            $ref: /schemas/types.yaml#/definitions/uint32
-+            description:
-+               This indicates the LED pin number.
-+
-+          intel,sso-brightness:
-+            $ref: /schemas/types.yaml#/definitions/uint32
-+            description: brightness level of the LED.
-+            minimum: 0
-+            maximum: 255
-+
-+          intel,sso-hw-trigger:
-+            type: boolean
-+            description: This property indicates Hardware driven/control LED.
-+
-+          intel,sso-hw-blink:
-+            type: boolean
-+            description: This property indicates Enable LED blink by Hardware.
-+
-+          intel,sso-blink-rate:
-+            $ref: /schemas/types.yaml#/definitions/uint32
-+            description: LED HW blink frequency.
-+
-+required:
-+ - compatible
-+ - reg
-+ - clocks
-+ - "#gpio-cells"
-+ - gpio-controller
-+
-+additionalProperties: false
-+
-+examples:
-+ - |
-+   #include <dt-bindings/clock/intel,lgm-clk.h>
-+
-+   ssogpio: ssogpio@E0D40000 {
-+     compatible = "intel,sso-led";
-+     reg = <0xE0D40000 0x2E4>;
-+     gpio-controller;
-+     #gpio-cells = <2>;
-+     ngpios = <32>;
-+     pinctrl-names = "default";
-+     pinctrl-0 = <&pinctrl_ledc>;
-+     clocks = <&cgu0 LGM_GCLK_LEDC0>, <&afeclk>;
-+     clock-names = "sso", "fpid";
-+     intel,sso-update-rate = <250000>;
-+
-+     ssoled {
-+        led0 {
-+          label = "led0:green:gphy";
-+          led-gpio = <&ssogpio 0 0>;
-+          intel,led-pin = <0>;
-+        };
-+
-+        led23 {
-+          label = "led23:green:power_led";
-+          led-gpio = <&ssogpio 23 0>;
-+          intel,led-pin = <23>;
-+          intel,sso-brightness = <0x255>;
-+        };
-+     };
-+   };
--- 
-2.11.0
+thanks,
 
+greg k-h
