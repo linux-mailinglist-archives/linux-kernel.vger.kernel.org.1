@@ -2,119 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C461C2A77C6
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 08:10:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D09C72A77CD
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 08:11:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728092AbgKEHKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 02:10:37 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:57641 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725861AbgKEHKg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 02:10:36 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4CRZRY3PwRz9v117;
-        Thu,  5 Nov 2020 08:10:33 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id PuUCBQNMDmSo; Thu,  5 Nov 2020 08:10:33 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4CRZRY17TXz9v116;
-        Thu,  5 Nov 2020 08:10:33 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 115AD8B819;
-        Thu,  5 Nov 2020 08:10:34 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id P1iQ9jSrgLaD; Thu,  5 Nov 2020 08:10:34 +0100 (CET)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id AAD948B764;
-        Thu,  5 Nov 2020 08:10:33 +0100 (CET)
-Subject: Re: [PATCH 31/36] powerpc: asm: hvconsole: Move 'hvc_vio_init_early's
- prototype to shared location
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linuxppc-dev@lists.ozlabs.org, Paul Mackerras <paulus@samba.org>,
-        linux-kernel@vger.kernel.org
-References: <20201104193549.4026187-1-lee.jones@linaro.org>
- <20201104193549.4026187-32-lee.jones@linaro.org>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <d2a23842-631e-cd5e-84ec-48485328ba52@csgroup.eu>
-Date:   Thu, 5 Nov 2020 08:10:22 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S1727019AbgKEHL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 02:11:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725861AbgKEHL4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 02:11:56 -0500
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30EB5C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 23:11:54 -0800 (PST)
+Received: by mail-lj1-x243.google.com with SMTP id p15so440553ljj.8
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 23:11:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WNBLtQhx0lIFZsfU2449a/+PzoBFm8WIuwQ69CU7rMc=;
+        b=ZQT1WmbXOd3h+w+nHhJ1Vt1wtFDtE/mjJXAk3jAt2FGb0tLGDkEZJA9vr0UOxMJish
+         8ii1IbOpAn0cbLZ9pCu4GcErW25ODUZam+oFxBZJvQ0UxoSB69UopiAj4o8l5CrAlTsY
+         2gI+iNB8RUd8Pm3qH9WXxldgchh2IC3D/8tc5FWen4NyKWHmXWVP7ClT29/K8YeMoUbF
+         YRear4W1ywXxsn8x2uJCzjPu5UcrZ7P26pW+AR9wohFxpS1uy/M16oooCzBNDITBJRNg
+         AgJtZN3qVpdKC5FCW3i6N1ag2HjSXsjUqwcgUnWsoim4ZpYYvORCcaDMntQQjr4eV4Yt
+         b11A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WNBLtQhx0lIFZsfU2449a/+PzoBFm8WIuwQ69CU7rMc=;
+        b=kLH4wz2R/xFKHIQscdzShBdWY6ZXZQJ5IRwwZFxOGlYzMupOSMvzw38RlOBc8CwCUY
+         E88Whc59sBMUXMgFPfIGH7F/lAi0erCB2riQLKrSbo0hOZEeTCgSaiYfTQ0HUsQIUnrX
+         LQ6+zMLq5D7HoFUTjDwioPB1uDwz1FDtPD0WosxJioG0O4qVgbGpiKLVAI3bJmJC1w66
+         EgkD7oAZ+3RgPMkT+MWnoG7jmvuJqM4hLi8AtujV4y0QE3+99ykG2jGqNmCAHEhg9s/8
+         82Fq6NixZ/T0r12V/QeYQdBtlQkQK5VW+JkaNWyMajIpwfHdZrr47mbi1OYBZx7lxF7E
+         BydA==
+X-Gm-Message-State: AOAM532byRU/BBYrqekdq+SRUmat+KhQYQDUQR39mb2feLhpaDr3eiph
+        xrgEejCmu7sQdj9Kb/pZGxb2Fjr/VJZROj7aW46UHg==
+X-Google-Smtp-Source: ABdhPJwYr72s3R4wIoyLlWiPnehmVLojv0mw4p7dpc7yNaYK2lfaYqyj0E3H340JMs3ERbhuf3MCk8LH9YBkbX7UVaQ=
+X-Received: by 2002:a05:651c:1050:: with SMTP id x16mr388615ljm.100.1604560312669;
+ Wed, 04 Nov 2020 23:11:52 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201104193549.4026187-32-lee.jones@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+References: <20201030053153.5319-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+ <20201030053153.5319-4-vadivel.muruganx.ramuthevar@linux.intel.com>
+In-Reply-To: <20201030053153.5319-4-vadivel.muruganx.ramuthevar@linux.intel.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 5 Nov 2020 08:11:41 +0100
+Message-ID: <CACRpkdZnAfogewQt83wDMmkhb4kZD=qdbq26nHcam3401WGiOA@mail.gmail.com>
+Subject: Re: [PATCH v6 3/6] spi: cadence-quadspi: Add multi-chipselect support
+ for Intel LGM SoC
+To:     "Ramuthevar,Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+Cc:     Mark Brown <broonie@kernel.org>, Vignesh R <vigneshr@ti.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        =?UTF-8?Q?Miqu=C3=A8l_Raynal?= <miquel.raynal@bootlin.com>,
+        Simon Goldschmidt <simon.k.r.goldschmidt@gmail.com>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Richard Weinberger <richard@nod.at>, cheol.yong.kim@intel.com,
+        qi-ming.wu@intel.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Oct 30, 2020 at 6:32 AM Ramuthevar,Vadivel MuruganX
+<vadivel.muruganx.ramuthevar@linux.intel.com> wrote:
 
+> +       ddata  = of_device_get_match_data(dev);
+> +       if (ddata->hwcaps_mask & CQSPI_SUPPORTS_MULTI_CHIPSELECT) {
+> +               if (of_property_read_u32(np, "num-chipselect",
 
-Le 04/11/2020 à 20:35, Lee Jones a écrit :
-> Fixes the following W=1 kernel build warning(s):
-> 
->   drivers/tty/hvc/hvc_vio.c:385:13: warning: no previous prototype for ‘hvc_vio_init_early’ [-Wmissing-prototypes]
->   385 | void __init hvc_vio_init_early(void)
->   | ^~~~~~~~~~~~~~~~~~
-> 
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-> Cc: Paul Mackerras <paulus@samba.org>
-> Cc: linuxppc-dev@lists.ozlabs.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->   arch/powerpc/include/asm/hvconsole.h     | 3 +++
->   arch/powerpc/platforms/pseries/pseries.h | 3 ---
->   arch/powerpc/platforms/pseries/setup.c   | 1 +
->   3 files changed, 4 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/powerpc/include/asm/hvconsole.h b/arch/powerpc/include/asm/hvconsole.h
-> index 999ed5ac90531..936a1ee1ac786 100644
-> --- a/arch/powerpc/include/asm/hvconsole.h
-> +++ b/arch/powerpc/include/asm/hvconsole.h
-> @@ -24,5 +24,8 @@
->   extern int hvc_get_chars(uint32_t vtermno, char *buf, int count);
->   extern int hvc_put_chars(uint32_t vtermno, const char *buf, int count);
->   
-> +/* Provided by HVC VIO */
-> +extern void hvc_vio_init_early(void);
-> +
+The standard SPI bindings in spi-controller.yaml already has a binding
+for this "num-cs" so please use that. It is also what your device tree
+binding is referencing, so if you were using "num-chipselect" the
+YAML check should give a warning?
 
-Declaring a prototype 'extern' is pointless. Don't add new misuse of 'extern' keyword.
-
-
->   #endif /* __KERNEL__ */
->   #endif /* _PPC64_HVCONSOLE_H */
-> diff --git a/arch/powerpc/platforms/pseries/pseries.h b/arch/powerpc/platforms/pseries/pseries.h
-> index 13fa370a87e4e..7be5b054dfc36 100644
-> --- a/arch/powerpc/platforms/pseries/pseries.h
-> +++ b/arch/powerpc/platforms/pseries/pseries.h
-> @@ -43,9 +43,6 @@ extern void pSeries_final_fixup(void);
->   /* Poweron flag used for enabling auto ups restart */
->   extern unsigned long rtas_poweron_auto;
->   
-> -/* Provided by HVC VIO */
-> -extern void hvc_vio_init_early(void);
-> -
->   /* Dynamic logical Partitioning/Mobility */
->   extern void dlpar_free_cc_nodes(struct device_node *);
->   extern void dlpar_free_cc_property(struct property *);
-> diff --git a/arch/powerpc/platforms/pseries/setup.c b/arch/powerpc/platforms/pseries/setup.c
-> index 633c45ec406da..6999b83f06612 100644
-> --- a/arch/powerpc/platforms/pseries/setup.c
-> +++ b/arch/powerpc/platforms/pseries/setup.c
-> @@ -71,6 +71,7 @@
->   #include <asm/swiotlb.h>
->   #include <asm/svm.h>
->   #include <asm/dtl.h>
-> +#include <asm/hvconsole.h>
->   
->   #include "pseries.h"
->   #include "../../../../drivers/pci/pci.h"
-> 
-
-Christophe
+Yours,
+Linus Walleij
