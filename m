@@ -2,176 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C9972A860D
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 19:25:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3388E2A860F
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 19:25:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731609AbgKESY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 13:24:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53496 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726214AbgKESY4 (ORCPT
+        id S1731677AbgKESZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 13:25:20 -0500
+Received: from cloudserver094114.home.pl ([79.96.170.134]:65252 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726214AbgKESZU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 13:24:56 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BE8FC0613D3
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 10:24:54 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id s13so2554352wmh.4
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 10:24:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=7e8j21DIlVBcunOHbbwXMePhmrXVH5+IQyI8wkPXuKI=;
-        b=zbOOCp73xw34Lh9ZE9TmMA17YqxGcG/n++dEYWrXi9dqE1MOd0lEYj1vvi+UNj9QUQ
-         90lixqIWlw9UB6wc0PrwkjTCKT1+fi4eU5o9FOJa/uxXVDX4fXv6frcTQ0mf/t0UsWkd
-         0EN+1xr8MAL6U/VtZ+d7h8NNR/glGlfmPFguvEacM6hMsXANML7oKQ6BSp02R7Lp5C3V
-         MWHYT9DB3OhymND7jnk6G68pw69bodQQf/HsG/77bvSA3n47x2JVL9J1TH4tAs0ErvBk
-         runK6vWTCca3VQCIQVr/ARVEAdg4c3GzpSYqYbVg+b3R0XPgJ+et8BXxm/gMGiActXg2
-         A7Gg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=7e8j21DIlVBcunOHbbwXMePhmrXVH5+IQyI8wkPXuKI=;
-        b=INE5STq4irQwKyiHMxft16d5DP3HDy3fdiL7Ct1imrtKU3EMvK6FaNB6IG3pYN0ock
-         y0pZLTQk6/x0/ohBJAttQE2Lryd1//bq4J9DAx7FtpteNFdj8lzFiyVpgtxezbtVpIMb
-         NjXj2BxnVZ3wwB2dHZTlJ8YISRIiJPGhzb5tvXcrfpbANnqdnko19cp6sGoLEgVvf9tr
-         D0ncfBTRw4YSHDX1OUKV7VSKmiBirX1HIJV5k9WRvCJCfaTB2KaVEV7EaTJrL9/4h95Z
-         /it4ypucoATT+uIPpALsOjf5AizSOjbx7bh3uG3WNPNSkchuDPAPBQDQHSlDojSSJtnA
-         98JQ==
-X-Gm-Message-State: AOAM530J7+PudRhB15eVUjyIWsdne6WHmGbA7zLjIOD6WBevvC9uZCPw
-        2mZHMTTmesc8ExVl2oHAt20yzA==
-X-Google-Smtp-Source: ABdhPJwYVvq6FoC+0cr98mQMZnvjXjAJewz6nP8jiRlkwCTioWlJ7DNR13bFrLL5RbyIiktf3wZlPw==
-X-Received: by 2002:a1c:61d4:: with SMTP id v203mr4062598wmb.1.1604600692803;
-        Thu, 05 Nov 2020 10:24:52 -0800 (PST)
-Received: from dell ([91.110.221.242])
-        by smtp.gmail.com with ESMTPSA id z191sm3751615wme.30.2020.11.05.10.24.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 10:24:51 -0800 (PST)
-Date:   Thu, 5 Nov 2020 18:24:49 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Daniel Vetter <daniel@ffwll.ch>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Christian Koenig <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        David Francis <David.Francis@amd.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Fabio Estevam <festevam@gmail.com>,
-        Gareth Hughes <gareth@valinux.com>,
-        Huang Rui <ray.huang@amd.com>, Jason Yan <yanaijie@huawei.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Jingoo Han <jg1.han@samsung.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Lyude Paul <lyude@redhat.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Nirmoy Das <nirmoy.aiemd@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Rob Clark <rob.clark@linaro.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>
-Subject: Re: [PATCH 00/19] [Set 1] Rid W=1 warnings from GPU
-Message-ID: <20201105182449.GR4488@dell>
-References: <20201105144517.1826692-1-lee.jones@linaro.org>
- <20201105164841.GH485884@ulmo>
- <20201105181053.GP4488@dell>
- <CAKMK7uEyW_KJ1qC3gLASDe4Qyk_5UMr+yCu7VVVdAq+Z0J6RwQ@mail.gmail.com>
+        Thu, 5 Nov 2020 13:25:20 -0500
+Received: from 89-64-88-191.dynamic.chello.pl (89.64.88.191) (HELO kreacher.localnet)
+ by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.514)
+ id 4ff6dc8dccf7dc57; Thu, 5 Nov 2020 19:25:18 +0100
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux PM <linux-pm@vger.kernel.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH 2/2] cpufreq: intel_pstate: Take target_min and target_max into account
+Date:   Thu, 05 Nov 2020 19:25:10 +0100
+Message-ID: <3200924.ySlC381xRO@kreacher>
+In-Reply-To: <7417968.Ghue05m4RV@kreacher>
+References: <7417968.Ghue05m4RV@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAKMK7uEyW_KJ1qC3gLASDe4Qyk_5UMr+yCu7VVVdAq+Z0J6RwQ@mail.gmail.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 05 Nov 2020, Daniel Vetter wrote:
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-> On Thu, Nov 5, 2020 at 7:10 PM Lee Jones <lee.jones@linaro.org> wrote:
-> >
-> > On Thu, 05 Nov 2020, Thierry Reding wrote:
-> >
-> > > On Thu, Nov 05, 2020 at 02:44:58PM +0000, Lee Jones wrote:
-> > > > This set is part of a larger effort attempting to clean-up W=1
-> > > > kernel builds, which are currently overwhelmingly riddled with
-> > > > niggly little warnings.
-> > > >
-> > > > There are 5000 warnings to work through.
-> > > >
-> > > > It will take a couple more sets.
-> > > >
-> > > > Lee Jones (19):
-> > > >   gpu: host1x: bus: Add missing description for 'driver'
-> > > >   gpu: ipu-v3: ipu-di: Strip out 2 unused 'di_sync_config' entries
-> > > >   gpu: drm: imx: ipuv3-plane: Mark 'crtc_state' as __always_unused
-> > > >   gpu: drm: omapdrm: omap_irq: Fix a couple of doc-rot issues
-> > > >   gpu: drm: selftests: test-drm_mm: Mark 'hole_end' as always_unused
-> > > >   gpu: drm: scheduler: sched_main: Provide missing description for
-> > > >     'sched' paramter
-> > > >   gpu: drm: scheduler: sched_entity: Demote non-conformant kernel-doc
-> > > >     headers
-> > > >   gpu: drm: omapdrm: dss: dsi: Rework and remove a few unused variables
-> > > >   gpu: drm: selftests: test-drm_framebuffer: Remove set but unused
-> > > >     variable 'fb'
-> > > >   gpu: drm: ttm: ttm_bo: Fix one function header - demote lots of
-> > > >     kernel-doc abuses
-> > > >   gpu: drm: panel: panel-simple: Fix 'struct panel_desc's header
-> > > >   gpu: drm: bridge: analogix: analogix_dp_reg: Remove unused function
-> > > >     'analogix_dp_write_byte_to_dpcd'
-> > > >   gpu: drm: ttm: ttm_tt: Demote kernel-doc header format abuses
-> > > >   gpu: drm: selftests: test-drm_dp_mst_helper: Place 'struct
-> > > >     drm_dp_sideband_msg_req_body' onto the heap
-> > > >   gpu: drm: radeon: radeon_drv: Remove unused variable 'ret'
-> > > >   gpu: drm: panel: panel-ilitek-ili9322: Demote non-conformant
-> > > >     kernel-doc header
-> > > >   gpu: drm: radeon: radeon_device: Fix a bunch of kernel-doc
-> > > >     misdemeanours
-> > > >   gpu: drm: amd: amdgpu: amdgpu: Mark global variables as __maybe_unused
-> > > >   gpu: drm: bridge: analogix: analogix_dp_reg: Remove unused function
-> > > >     'analogix_dp_start_aux_transaction'
-> > >
-> > > As commented on the other patches, the subject prefixes on most of these
-> > > look wrong, but it's generally a nice cleanup.
-> >
-> > The prefixes are automated.  I'll add this to my list of awkward
-> > subsystems and go through them all manually again tomorrow. :D
-> 
-> tbh for autmoation they look really good :-)
+Make the intel_pstate driver take the new target_min and target_max
+cpufreq policy parameters into accout when it operates in the passive
+mode with HWP enabled, so as to fix the "powersave" governor behavior
+in that case (currently, HWP is allowed to scale the performance all
+the way up to the policy max limit when the "powersave" governor is
+used, but it should be contrained to the policy min limit then).
 
-Only the prefixes are automated unfortunately. :)
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/cpufreq/intel_pstate.c |   32 ++++++++++++++++++++++----------
+ 1 file changed, 22 insertions(+), 10 deletions(-)
 
-> I'd say if you replace the intermediate ": " with just a / you'll be
-> perfectly in style for drivers/gpu. But really I think it's ok as-is,
+Index: linux-pm/drivers/cpufreq/intel_pstate.c
+===================================================================
+--- linux-pm.orig/drivers/cpufreq/intel_pstate.c
++++ linux-pm/drivers/cpufreq/intel_pstate.c
+@@ -2527,7 +2527,7 @@ static void intel_cpufreq_trace(struct c
+ }
+ 
+ static void intel_cpufreq_adjust_hwp(struct cpudata *cpu, u32 target_pstate,
+-				     bool fast_switch)
++				     u32 target_max, bool fast_switch)
+ {
+ 	u64 prev = READ_ONCE(cpu->hwp_req_cached), value = prev;
+ 
+@@ -2539,7 +2539,7 @@ static void intel_cpufreq_adjust_hwp(str
+ 	 * field in it, so opportunistically update the max too if needed.
+ 	 */
+ 	value &= ~HWP_MAX_PERF(~0L);
+-	value |= HWP_MAX_PERF(cpu->max_perf_ratio);
++	value |= HWP_MAX_PERF(target_max);
+ 
+ 	if (value == prev)
+ 		return;
+@@ -2562,19 +2562,31 @@ static void intel_cpufreq_adjust_perf_ct
+ 			      pstate_funcs.get_val(cpu, target_pstate));
+ }
+ 
+-static int intel_cpufreq_update_pstate(struct cpudata *cpu, int target_pstate,
+-				       bool fast_switch)
++static int intel_cpufreq_update_pstate(struct cpufreq_policy *policy,
++				       int target_pstate, bool fast_switch)
+ {
++	struct cpudata *cpu = all_cpu_data[policy->cpu];
+ 	int old_pstate = cpu->pstate.current_pstate;
+ 
+-	target_pstate = intel_pstate_prepare_request(cpu, target_pstate);
+ 	if (hwp_active) {
+-		intel_cpufreq_adjust_hwp(cpu, target_pstate, fast_switch);
+-		cpu->pstate.current_pstate = target_pstate;
++		int min_pstate = max(cpu->pstate.min_pstate, cpu->min_perf_ratio);
++		int max_pstate = max(min_pstate, cpu->max_perf_ratio);
++		int target_min = DIV_ROUND_UP(policy->target_min,
++					      cpu->pstate.scaling);
++		int target_max = policy->target_max / cpu->pstate.scaling;
++
++		target_min = clamp_t(int, target_min, min_pstate, max_pstate);
++		target_max = clamp_t(int, target_max, min_pstate, max_pstate);
++
++		target_pstate = clamp_t(int, target_pstate, target_min, target_max);
++
++		intel_cpufreq_adjust_hwp(cpu, target_pstate, target_max, fast_switch);
+ 	} else if (target_pstate != old_pstate) {
++		target_pstate = intel_pstate_prepare_request(cpu, target_pstate);
++
+ 		intel_cpufreq_adjust_perf_ctl(cpu, target_pstate, fast_switch);
+-		cpu->pstate.current_pstate = target_pstate;
+ 	}
++	cpu->pstate.current_pstate = target_pstate;
+ 
+ 	intel_cpufreq_trace(cpu, fast_switch ? INTEL_PSTATE_TRACE_FAST_SWITCH :
+ 			    INTEL_PSTATE_TRACE_TARGET, old_pstate);
+@@ -2609,7 +2621,7 @@ static int intel_cpufreq_target(struct c
+ 		break;
+ 	}
+ 
+-	target_pstate = intel_cpufreq_update_pstate(cpu, target_pstate, false);
++	target_pstate = intel_cpufreq_update_pstate(policy, target_pstate, false);
+ 
+ 	freqs.new = target_pstate * cpu->pstate.scaling;
+ 
+@@ -2628,7 +2640,7 @@ static unsigned int intel_cpufreq_fast_s
+ 
+ 	target_pstate = DIV_ROUND_UP(target_freq, cpu->pstate.scaling);
+ 
+-	target_pstate = intel_cpufreq_update_pstate(cpu, target_pstate, true);
++	target_pstate = intel_cpufreq_update_pstate(policy, target_pstate, true);
+ 
+ 	return target_pstate * cpu->pstate.scaling;
+ }
 
-It's up to you.  Make the call and I'll abide.
 
-> imo no need to change since this is a giantic tree wide effort.
 
-Yes, you're not kidding, and thanks for noticing.
-
-Only 10,000 (from 18,000) more to go though. :D
-
-GPU is a biggy (5,000), although one patch in [Set 2] fixes 2,000 in
-one hit, which is great!  I'll probably submit that tomorrow.
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
