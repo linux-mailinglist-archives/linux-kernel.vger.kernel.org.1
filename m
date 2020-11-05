@@ -2,75 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F9D12A79AB
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 09:53:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 595FD2A79AC
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 09:54:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729962AbgKEIxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 03:53:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48324 "EHLO
+        id S1729867AbgKEIyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 03:54:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726400AbgKEIxT (ORCPT
+        with ESMTP id S1726400AbgKEIyx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 03:53:19 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79E97C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 00:53:19 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id c16so757040wmd.2
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 00:53:19 -0800 (PST)
+        Thu, 5 Nov 2020 03:54:53 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB984C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 00:54:52 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id h62so758963wme.3
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 00:54:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=WpbbC60jA8vbXB1BII+d/WIO26oOwmqU8T35Zpa5f7c=;
-        b=kKsH8yPF3VunpoDOaD8BENd9pyU0Ual13erj/sQR31jv+GDFWA9pclNrwxmn/WtC+9
-         lSSE3k/BLKEDq5JogMrrtnmIeb2LJKIu4qQOsaAQdgJoGbmvuNSt8XbHyjeQP+jGLFk2
-         MHvCjNoAgegIuUDVqvl8R2lVSwIQuN/AAX9WHVIF2qsT5dkgowHFz4u9N0VB9PiWGIpm
-         7AfIjN+wodrP1Jk9kyBqkFPEq8KyKG9Slym0TMSSRZb/zY3ot2+HjQc7+9Yjmm5sMp1I
-         hchAY0hXvW6Dyr7YgXs9Og6PoC7FyV0MHi0WuAgYC+Ed0Fpu6YUYIxdE9ZSjIgRJ6m6b
-         2WWQ==
+        bh=DHpmdT6XWTyxBCx6QGRcwoEMVDpPPePkLjV0ySKwsHI=;
+        b=daoS9fpqZXYiO3Dhbgu9BWYoa41Pk5I23GxWeEqlzGVrZZ3jxsH01Bufc1ANDK50rq
+         wCRbIjiiBgA/xA3RoYKoPc0yfKipXIMgsrZgEXgonKohzla6+buO2MT49Um72hhWPZFO
+         vJFweEGXFyOPiEvIo2dvQBheKENpvqrL0GEXE87e0lEqgXD8fqv0RjULeoqVqDWJyemN
+         Y2Z/CaYsoPBE53F8zR0+wlFmXzxlPGx+KoMzZRhluARy7TiOc5hEqxVvCjs4pkz8uBBI
+         dWuGhMYk3HVIBBWkaX+3/BeWfQAhQYgGcVwP91jeb+j86XMBy3rEHr+l4ptghkJl7cA9
+         lvZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:content-transfer-encoding
          :in-reply-to;
-        bh=WpbbC60jA8vbXB1BII+d/WIO26oOwmqU8T35Zpa5f7c=;
-        b=l3a9FKkaPYr/qEMyvI9UoCx5R+HyZUlbyaQq0iiQZcS5UVTg18Td6hafKgycsO+cVc
-         mkImUQbyhnZ4YIpSvvXNve2gy+eHFKGgV21Y5llYMybiPQaZw9eGjZrVpSqpzsmcodkm
-         Z4/4FEuWCjNijWr0fLcH/a6FcLxKr1KSMGe5PalRR/S+YMump0vbM7f+5vPVrmZ0EDDP
-         AckZUX7941orGtG8NHhYBhGe3RmqNn6gb+1cSO0k72vEEjBM7yp1ckaC/D8aTCFWrZzj
-         I0tHSRIgdlf942niRMzUf44quvLvaurYn0ihcpViw9H3UtZbA9E8eMt4Ml6IsvrXreOV
-         s/9A==
-X-Gm-Message-State: AOAM531cgxgRXiw/uopoGP8/2pbb4dnjqtqiogJPQkgIHpytLQ7MtDZ7
-        ixj9HND/hmPEgagRGygTYrSKisS7IDJdpWaV
-X-Google-Smtp-Source: ABdhPJw4ZFoiRPslz0DMxzR/My7gY74YfgyH4UuFCtofGhvsdvrtEK2v9/xvkdaTAwsJdcS5nLroVQ==
-X-Received: by 2002:a1c:7e87:: with SMTP id z129mr1514050wmc.176.1604566398176;
-        Thu, 05 Nov 2020 00:53:18 -0800 (PST)
+        bh=DHpmdT6XWTyxBCx6QGRcwoEMVDpPPePkLjV0ySKwsHI=;
+        b=q8/gwlmKrF6QhFzZx4XmtIRSk2JiiwHnL/Hzm+p9zR08ir6vT6L6YXo3xsqLOI4RoO
+         wCQI2mgyCu6cMCQX08lbN8O3Y/X+NrDF/j3PzJnmaS2jH5LPg0VRIb2drI9Iy1wKX0cj
+         upgMkERmCdg96k23X/dKtFKzh4CbuzWdeFKCQ7neDbo3T0Qwq59lZYlEJf0rtnQNH2Gr
+         /lTNS5mJcgiu/zeX1jmH1rYY4+zdcf5jQvsGHMqq+IL4eI22dRn2wLax9axQbt+Ix8J6
+         u176rps5NkpQe9ZxuceE1cbTUxo0ubdQ5SnpsY+PKzajZfp7iT1eBBoF56nFDgN1iZfQ
+         alqw==
+X-Gm-Message-State: AOAM532VVDJShNipOJFeTA3x3n4rkqmQSYkszJcIJ9kKPHTO6OnCzDOd
+        x3U0njewYZYBoW0zzRSBFz46Ow==
+X-Google-Smtp-Source: ABdhPJzySUbdyBiMqmsWFYSIfQMhGDRle1bYAwQJUvPs5Klko56DSPtzZz2OjwSZewM21nPumfUibg==
+X-Received: by 2002:a1c:55c1:: with SMTP id j184mr1545560wmb.180.1604566491469;
+        Thu, 05 Nov 2020 00:54:51 -0800 (PST)
 Received: from dell ([91.110.221.242])
-        by smtp.gmail.com with ESMTPSA id d63sm95828wmd.12.2020.11.05.00.53.16
+        by smtp.gmail.com with ESMTPSA id f23sm1516359wmb.43.2020.11.05.00.54.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 00:53:17 -0800 (PST)
-Date:   Thu, 5 Nov 2020 08:53:15 +0000
+        Thu, 05 Nov 2020 00:54:50 -0800 (PST)
+Date:   Thu, 5 Nov 2020 08:54:49 +0000
 From:   Lee Jones <lee.jones@linaro.org>
 To:     Jiri Slaby <jirislaby@kernel.org>
 Cc:     linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nick Holloway <alfie@dcs.warwick.ac.uk>,
-        -- <julian@uhunix.uhcc.hawaii.edu>,
-        Marko Kohtala <Marko.Kohtala@hut.fi>,
-        Bill Hawes <whawes@star.net>,
-        "C. Scott Ananian" <cananian@alumni.princeton.edu>,
-        Russell King <rmk@arm.linux.org.uk>,
-        Andrew Morton <andrewm@uow.edu.eu>
-Subject: Re: [PATCH 12/36] tty: tty_io: Fix some kernel-doc issues
-Message-ID: <20201105085315.GA4488@dell>
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH 08/36] tty: tty_ldisc: Fix some kernel-doc related
+ misdemeanours
+Message-ID: <20201105085449.GB4488@dell>
 References: <20201104193549.4026187-1-lee.jones@linaro.org>
- <20201104193549.4026187-13-lee.jones@linaro.org>
- <715cfe26-18d3-a035-0cf8-958f1235b4f7@kernel.org>
+ <20201104193549.4026187-9-lee.jones@linaro.org>
+ <8f07fa1e-d81f-fd43-9dfa-bfb9f9171619@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <715cfe26-18d3-a035-0cf8-958f1235b4f7@kernel.org>
+In-Reply-To: <8f07fa1e-d81f-fd43-9dfa-bfb9f9171619@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -78,69 +72,40 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On Thu, 05 Nov 2020, Jiri Slaby wrote:
 
 > On 04. 11. 20, 20:35, Lee Jones wrote:
-> > Demote non-conformant headers and supply some missing descriptions.
+> >   - Functions must follow directly on from their headers
+> >   - Demote non-conforming kernel-doc header
+> >   - Ensure notes have unique section names
+> >   - Provide missing description for 'reinit'
 > > 
 > > Fixes the following W=1 kernel build warning(s):
 > > 
-> >   drivers/tty/tty_io.c:218: warning: Function parameter or member 'file' not described in 'tty_free_file'
-> >   drivers/tty/tty_io.c:566: warning: Function parameter or member 'exit_session' not described in '__tty_hangup'
-> >   drivers/tty/tty_io.c:1077: warning: Function parameter or member 'tty' not described in 'tty_send_xchar'
-> >   drivers/tty/tty_io.c:1077: warning: Function parameter or member 'ch' not described in 'tty_send_xchar'
-> >   drivers/tty/tty_io.c:1155: warning: Function parameter or member 'file' not described in 'tty_driver_lookup_tty'
-> >   drivers/tty/tty_io.c:1508: warning: Function parameter or member 'tty' not described in 'release_tty'
-> >   drivers/tty/tty_io.c:1508: warning: Function parameter or member 'idx' not described in 'release_tty'
-> >   drivers/tty/tty_io.c:2973: warning: Function parameter or member 'driver' not described in 'alloc_tty_struct'
-> >   drivers/tty/tty_io.c:2973: warning: Function parameter or member 'idx' not described in 'alloc_tty_struct'
+> >   drivers/tty/tty_ldisc.c:158: warning: cannot understand function prototype: 'int tty_ldisc_autoload = IS_BUILTIN(CONFIG_LDISC_AUTOLOAD); '
+> >   drivers/tty/tty_ldisc.c:199: warning: Function parameter or member 'ld' not described in 'tty_ldisc_put'
+> >   drivers/tty/tty_ldisc.c:260: warning: duplicate section name 'Note'
+> >   drivers/tty/tty_ldisc.c:717: warning: Function parameter or member 'reinit' not described in 'tty_ldisc_hangup'
 > > 
 > > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 > > Cc: Jiri Slaby <jirislaby@kernel.org>
-> > Cc: Nick Holloway <alfie@dcs.warwick.ac.uk>
-> > Cc: -- <julian@uhunix.uhcc.hawaii.edu>
-> > Cc: Marko Kohtala <Marko.Kohtala@hut.fi>
-> > Cc: Bill Hawes <whawes@star.net>
-> > Cc: "C. Scott Ananian" <cananian@alumni.princeton.edu>
-> > Cc: Russell King <rmk@arm.linux.org.uk>
-> > Cc: Andrew Morton <andrewm@uow.edu.eu>
 > > Signed-off-by: Lee Jones <lee.jones@linaro.org>
 > > ---
-> >   drivers/tty/tty_io.c | 10 +++++++---
-> >   1 file changed, 7 insertions(+), 3 deletions(-)
+> >   drivers/tty/tty_ldisc.c | 10 +++++-----
+> >   1 file changed, 5 insertions(+), 5 deletions(-)
 > > 
-> > diff --git a/drivers/tty/tty_io.c b/drivers/tty/tty_io.c
-> > index 88b00c47b606e..f50286fb080da 100644
-> > --- a/drivers/tty/tty_io.c
-> > +++ b/drivers/tty/tty_io.c
-> > @@ -2961,7 +2965,7 @@ static struct device *tty_get_device(struct tty_struct *tty)
+> > diff --git a/drivers/tty/tty_ldisc.c b/drivers/tty/tty_ldisc.c
+> > index fe37ec331289b..aced2bf6173be 100644
+> > --- a/drivers/tty/tty_ldisc.c
+> > +++ b/drivers/tty/tty_ldisc.c
+> > @@ -190,7 +189,7 @@ static struct tty_ldisc *tty_ldisc_get(struct tty_struct *tty, int disc)
+> >   	return ld;
 > >   }
 > > -/**
 > > +/*
-> >    *	alloc_tty_struct
-> >    *
-> >    *	This subroutine allocates and initializes a tty structure.
+> >    *	tty_ldisc_put		-	release the ldisc
 > 
-> Why do you randomly sometimes fix kernel-doc and sometimes remove functions
-> from kernel-doc? What's the rule?
+> Having tty_ldisc_get in kernel-doc, while tty_ldisc_put not doesn't make
+> much sense. What's missing to tty_ldisc_put to conform to kernel-doc?
 
-The decision is made quickly (I am fixing literally 1000's of these),
-but the process is definitely not random.
-
-If there has been little or no attempt to document the function, it
-gets demoted.  If the developer has had a good crack at providing
-descriptions and/or the header is just suffering with a little
-incompleteness/doc-rot, then I'll fix it up.
-
-Here for example, no attempt was made to provide any proper
-documentation.
-
-> For example, alloc_tty_struct is among the
-> ones, I would like to see fixed instead of removed from kernel-doc.
-
-There is nothing stopping anyone from providing said descriptions and
-promoting it back up to kernel-doc.  If you have good reasons for it
-to be properly documented with kernel-doc, then it should also be
-referenced from /Documentation using the kernel-doc:: notation.
-
-Also see: scripts/find-unused-docs.sh
+Where are they in kernel-doc?  I don't see any references.
 
 -- 
 Lee Jones [李琼斯]
