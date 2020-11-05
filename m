@@ -2,95 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E1CE2A73DA
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 01:34:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8AAC2A73CD
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 01:31:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732290AbgKEAec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 19:34:32 -0500
-Received: from pbmsgap01.intersil.com ([192.157.179.201]:58278 "EHLO
-        pbmsgap01.intersil.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726608AbgKEAeb (ORCPT
+        id S1732288AbgKEAbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 19:31:36 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:47334 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726608AbgKEAbg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 19:34:31 -0500
-Received: from pps.filterd (pbmsgap01.intersil.com [127.0.0.1])
-        by pbmsgap01.intersil.com (8.16.0.42/8.16.0.42) with SMTP id 0A50MdEX026637;
-        Wed, 4 Nov 2020 19:22:42 -0500
-Received: from pbmxdp01.intersil.corp (pbmxdp01.pb.intersil.com [132.158.200.222])
-        by pbmsgap01.intersil.com with ESMTP id 34h3f1a9me-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Wed, 04 Nov 2020 19:22:42 -0500
-Received: from pbmxdp03.intersil.corp (132.158.200.224) by
- pbmxdp01.intersil.corp (132.158.200.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id
- 15.1.1979.3; Wed, 4 Nov 2020 19:22:41 -0500
-Received: from localhost (132.158.202.109) by pbmxdp03.intersil.corp
- (132.158.200.224) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Wed, 4 Nov 2020 19:22:41 -0500
-From:   <min.li.xe@renesas.com>
-To:     <richardcochran@gmail.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Min Li <min.li.xe@renesas.com>
-Subject: [PATCH v3 net-next 3/3] ptp: idt82p33: optimize _idt82p33_adjfine
-Date:   Wed, 4 Nov 2020 19:22:15 -0500
-Message-ID: <1604535735-19180-3-git-send-email-min.li.xe@renesas.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1604535735-19180-1-git-send-email-min.li.xe@renesas.com>
-References: <1604535735-19180-1-git-send-email-min.li.xe@renesas.com>
-X-TM-AS-MML: disable
-MIME-Version: 1.0
-Content-Type: text/plain
+        Wed, 4 Nov 2020 19:31:36 -0500
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A502iGx158963;
+        Wed, 4 Nov 2020 19:31:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=yivi4zlLHJOmQkJ8XdvyMwcE+ckYUunTAHKNhQqH+8g=;
+ b=TDHeMx/CqCLpyk6SwlWTb36CYRYLC3672MmKlSQkhEo2YUzAOhTqYPg0nnrXjIOiXDXb
+ AsjfVwPFb+AkV8saJ1W0VacgExviQ3s4LeBDWL9H+5Y/60gzoMN8itnEJ9EEpsw4tbI1
+ bngRCX+j5L4iJNfnJ8K1itkFMK6Vsl1a+Jl4U1Wnh9k/x29TB/4LDyXxYWfc8dsiisP+
+ QwyQtYDQT1j2TCY53EJdVW9W6CvJ/0oG6V/fa3EydoMaO997okQz6k4+7tdnqFmwxVPN
+ TmT05mOsx5zEgcywZIkKypEu8jpv1EejTG9w+qLmElLO+Y5MokWZnYi5RxT/pdFu2Swq 7w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 34m5db1w17-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 04 Nov 2020 19:31:28 -0500
+Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0A50MOuk033654;
+        Wed, 4 Nov 2020 19:31:28 -0500
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 34m5db1w0h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 04 Nov 2020 19:31:28 -0500
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0A50SmCG017451;
+        Thu, 5 Nov 2020 00:31:26 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma04ams.nl.ibm.com with ESMTP id 34h01ucnp4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 05 Nov 2020 00:31:26 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0A50VN499962206
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 5 Nov 2020 00:31:24 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D44434C04A;
+        Thu,  5 Nov 2020 00:31:23 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3EAF34C04E;
+        Thu,  5 Nov 2020 00:31:20 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.13.183])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu,  5 Nov 2020 00:31:20 +0000 (GMT)
+Message-ID: <c840953db2937296c8d77d5d3b4e1274bf990e46.camel@linux.ibm.com>
+Subject: Re: [PATCH v5 0/7] IMA: Infrastructure for measurement of critical
+ kernel data
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Tushar Sugandhi <tusharsu@linux.microsoft.com>,
+        stephen.smalley.work@gmail.com, casey@schaufler-ca.com,
+        agk@redhat.com, snitzer@redhat.com, gmazyland@gmail.com,
+        paul@paul-moore.com
+Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
+        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
+        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dm-devel@redhat.com
+Date:   Wed, 04 Nov 2020 19:31:19 -0500
+In-Reply-To: <20201101222626.6111-1-tusharsu@linux.microsoft.com>
+References: <20201101222626.6111-1-tusharsu@linux.microsoft.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
  definitions=2020-11-04_17:2020-11-04,2020-11-04 signatures=0
-X-Proofpoint-Spam-Details: rule=junk_notspam policy=junk score=0 adultscore=0 mlxscore=0
- mlxlogscore=741 suspectscore=4 spamscore=0 phishscore=0 malwarescore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011050000
-X-Proofpoint-Spam-Reason: mlx
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=999
+ clxscore=1011 phishscore=0 lowpriorityscore=0 suspectscore=0 spamscore=0
+ priorityscore=1501 bulkscore=0 mlxscore=0 impostorscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011040171
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Min Li <min.li.xe@renesas.com>
+Hi Tushar,
 
-Use div_s64 so that the neg_adj is not needed.
+Measuring "critical kernel data" is not a new infrastructure, simply a
+new IMA hook.   Please update the above Subject line to "support for
+measuring critical kernel data".
 
-Signed-off-by: Min Li <min.li.xe@renesas.com>
+On Sun, 2020-11-01 at 14:26 -0800, Tushar Sugandhi wrote:
+> There are several kernel subsystems that contain critical data which if
+> accidentally or maliciously altered, can compromise the integrity of the
+> system. Examples of such subsystems would include LSMs like SELinux, or
+> AppArmor; or device-mapper targets like dm-crypt, dm-verity etc. 
+> "critical data" in this context is kernel subsystem specific information
+> that is stored in kernel memory. Examples of critical data could be
+> kernel in-memory r/o structures, hash of the memory structures, or
+> data that represents a linux kernel subsystem state.
 
-Acked-by: Richard Cochran <richardcochran@gmail.com>
----
- drivers/ptp/ptp_idt82p33.c | 10 +---------
- 1 file changed, 1 insertion(+), 9 deletions(-)
+This is a bit better, but needs to be much clearer.  Please define
+"critical data", not by example, but by describing "what" critical
+kernel data is.  "There are several kernel subsystems ...."  is an
+example of "how" it would be used, not a definition.  Without a clear
+definition it will become a dumping ground for measuring anything
+anyone wants to measure.  As a result, it may be abused.
 
-diff --git a/drivers/ptp/ptp_idt82p33.c b/drivers/ptp/ptp_idt82p33.c
-index b1528a0..e970379d 100644
---- a/drivers/ptp/ptp_idt82p33.c
-+++ b/drivers/ptp/ptp_idt82p33.c
-@@ -320,7 +320,6 @@ static int _idt82p33_adjfine(struct idt82p33_channel *channel, long scaled_ppm)
- {
- 	struct idt82p33 *idt82p33 = channel->idt82p33;
- 	unsigned char buf[5] = {0};
--	int neg_adj = 0;
- 	int err, i;
- 	s64 fcw;
- 
-@@ -340,16 +339,9 @@ static int _idt82p33_adjfine(struct idt82p33_channel *channel, long scaled_ppm)
- 	 * FCW = -------------
- 	 *         168 * 2^4
- 	 */
--	if (scaled_ppm < 0) {
--		neg_adj = 1;
--		scaled_ppm = -scaled_ppm;
--	}
- 
- 	fcw = scaled_ppm * 244140625ULL;
--	fcw = div_u64(fcw, 2688);
--
--	if (neg_adj)
--		fcw = -fcw;
-+	fcw = div_s64(fcw, 2688);
- 
- 	for (i = 0; i < 5; i++) {
- 		buf[i] = fcw & 0xff;
--- 
-2.7.4
+> 
+> This patch set defines a new IMA hook namely CRITICAL_DATA, and a
+> function ima_measure_critical_data() - to measure the critical data. 
+
+The name of the IMA hook is ima_measure_critical_data.  This is similar
+to the LSM hooks, which are prefixed with "security_".  (For a full
+list of LSM hooks, refer to lsm_hook_defs.h.)
+
+> Kernel subsystems can use this functionality, to take advantage of IMA's
+> measuring and quoting abilities - thus ultimately enabling remote
+> attestation for the subsystem specific information stored in the kernel
+> memory.
+> 
+> The functionality is generic enough to measure the data of any kernel
+> subsystem at run-time. To ensure that only data from supported sources
+> are measured, the kernel subsystem needs to be added to a compile-time
+> list of supported sources (an "allowed list of components"). IMA
+> validates the source passed to ima_measure_critical_data() against this
+> allowed list at run-time.
+
+Yes, this new feature is generic, but one of the main goals of IMA is
+to measure and attest to the integrity of the system, not to measure
+and attest to random things.
+
+> 
+> System administrators may want to pick and choose which kernel
+> subsystem information they would want to enable for measurements,
+> quoting, and remote attestation. To enable that, a new IMA policy is
+> introduced.
+
+^may want to limit the critical data being measured, quoted and
+attested.
+^ a new IMA policy condition is defined.
+
+> 
+> This patch set also addresses the need for the kernel subsystems to
+> measure their data before a custom IMA policy is loaded - by providing
+> a builtin IMA policy.
+
+^for measuring kernel critical data early, before a custom IMA policy
+...
+
+> 
+> And lastly, the use of the overall functionality is demonstrated by
+> measuring the kernel in-memory data for one such subsystem - SeLinux.
+
+The purpose isn't to demonstrate the "overall functionality", but to
+provide an initial caller of the new IMA hook.
+
+thanks,
+
+Mimi
 
