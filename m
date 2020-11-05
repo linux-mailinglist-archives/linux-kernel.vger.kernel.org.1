@@ -2,110 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F36822A7A13
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 10:09:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B049B2A7A0F
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 10:09:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730234AbgKEJJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 04:09:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50784 "EHLO
+        id S1729722AbgKEJJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 04:09:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726756AbgKEJJJ (ORCPT
+        with ESMTP id S1726756AbgKEJJH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 04:09:09 -0500
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBA60C0613D6
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 01:09:08 -0800 (PST)
-Received: by mail-ed1-x542.google.com with SMTP id j20so722889edt.8
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 01:09:08 -0800 (PST)
+        Thu, 5 Nov 2020 04:09:07 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15AEAC0613D2
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 01:09:07 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id h2so799809wmm.0
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 01:09:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DAVVTcqOtshkqa//jG0tMqJnAZn8lkJ/jC3ZQlpD4iI=;
-        b=gnCWxb3A2YT1XunheHSuiLH9SajfLtYxFoSSt/SMRqAjsx1al/ZDjdmGmdcaRCgATD
-         VjIP7kiSbjNExGEXiLiKkUKac6IoHWJ/Fimd03ck22Y3TV8a4rMz01X4WGQkmlH9oyFA
-         9esubFwVfP/2m1vKPl5C03O/MKjH3usvIu/M/u1jCtkmZsVaRlPUI4GOMG2G25yqE1WE
-         FkwCiZzuIp80ijwg2sDMrq/aDxArFsCDn2GSr7ejg4GkjzXoXRmPg7sE+KMD8rfx5UT2
-         P0rDV2vx/4uXjrJDE1VHH5s96ArZURV9t0QiVse/pLv22O/+my2jfZQspbaaigUdqAgS
-         xSDg==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=qg/zApnm3BiblnpdSeO9YRsP34oz7tFZxKxHQKdua88=;
+        b=rC2ubKktpY3ET2FFwX+lU13mPvP9Nhcu2aznqQnIZb503oxdqmp48wHTrUMS6mFmI6
+         NJJcP5ZrboVL3teeBu9SXili7ZLpCsszGoHtNQI3M0joQKpTFLGZzANp+ZTwwN9BFAHy
+         Ns5JWw3ZWA/NBkDiGBMcZ3p243uGP8SNurcmiv6zthnyqByLnERc4esm+rILLObaPcCP
+         kIAZG1bY3HWsdmOTwrw7IR9hHaCwQ5lUVdvrJWTyj5419SjDTcNpCOU0R4648XS8IxlS
+         KOovAhj34oV2bU38v5DGt6/o3YQg1ddmTjltP5tGkLrX8Ensj8JOC7PUPeUBkdCdstO5
+         kXyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DAVVTcqOtshkqa//jG0tMqJnAZn8lkJ/jC3ZQlpD4iI=;
-        b=QCScl6E2orEUMK7d+GDsND/40acOO+uxt6D+h8PTDlj3HjIw9J9KCFsWGC7Dys2LA9
-         i9lVd707nhNhKW/iNnUh+xrH+s6CZuuSZ6OLjmXJSkqZ0fR+tfhyZ1CB4RHZ/v8gUOId
-         ZXfl4BFJ25hyhn1divR31R8N/JxKLg2SJMKViFhQiECQVGc0yiZU7VBOXyGAmgvNXAn0
-         Q3lZh6cO2s+jyEVyl4k48hYdE3e+OEQ2jhUShicz8MLeb3TCRe29DU8yT60U6MCvwI5d
-         xIhMObiYM7wRFHyZ0Allg0MQarvdNLvlGP+bb0Bg0pQL8VNwsOxXksbkNn31kLR+vucO
-         Fc6w==
-X-Gm-Message-State: AOAM530Z/m8BCzEZH4aT0qFQNklVTTVHzY/BoxbiipfY2akqClPMJwPN
-        Xb2Ey9z/hxCiSIbyxqy6TNRMaZRmTlycjSBiS74kww==
-X-Google-Smtp-Source: ABdhPJyqANWyJ3aSTbJtEhMCIaR58Dz9yl2OLSrIAItWEawq6opjRvdm8/eux/hxk+LAgMAS7EPN7dAVW7T2X8+w+iU=
-X-Received: by 2002:a05:6402:283:: with SMTP id l3mr1593849edv.232.1604567347374;
- Thu, 05 Nov 2020 01:09:07 -0800 (PST)
-MIME-Version: 1.0
-References: <20201104103938.1286-1-nsaenzjulienne@suse.de> <20201104103938.1286-4-nsaenzjulienne@suse.de>
-In-Reply-To: <20201104103938.1286-4-nsaenzjulienne@suse.de>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Thu, 5 Nov 2020 10:08:56 +0100
-Message-ID: <CAMpxmJWv3nfD2xpS4jEq+vJvr=+cD7BV3AFDnsRjCG5qB60c-A@mail.gmail.com>
-Subject: Re: [PATCH v3 03/11] gpio: raspberrypi-exp: Release firmware handle
- on unbind
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=qg/zApnm3BiblnpdSeO9YRsP34oz7tFZxKxHQKdua88=;
+        b=WXi9y9Dt6f2uHn41BofB3/xjI/tzOiuHv4ZaSmAvGFK6gQm+XNm40pzYYRfAI8NJbt
+         NaSqjWazDlGpeWfYy23se14ouJkchPO4aB7CriYhktNvxXV/3RoS29XMs8SjtlpdffMw
+         KflOmo86k+y9+BoO6yM3CDjtpwqc0h4491Zjj7x6A3FCarn5/0tNZWAqvKMlaUq1jFhP
+         C6Rf0pTUpw+0fYRxLz3TpWHQpxfzrTiJq5LwOr8Ry6V9mhA+wH/q2pAVlTNclydcyUiz
+         mrCV+CqR0/OMTzi6FtWQCXjN2q/I8NEJEYbjcrRyHkRO62JXNOxHRnY3iPv3gZiicViG
+         gOOQ==
+X-Gm-Message-State: AOAM530WfrcM+55r9KTNgVboKpz9vKsLXPODClpR6gBQ72zezfIylycH
+        0bqf6YhclLAkPdKRCSxHnCAztw==
+X-Google-Smtp-Source: ABdhPJyje9D6+L2Xcs5hOEMbiZq2bAUd5nSH13POCaewhvoa2q9NYsaT2I/d8uxvm1YtFmDrlvYyxA==
+X-Received: by 2002:a1c:6782:: with SMTP id b124mr1690866wmc.117.1604567345642;
+        Thu, 05 Nov 2020 01:09:05 -0800 (PST)
+Received: from dell ([91.110.221.242])
+        by smtp.gmail.com with ESMTPSA id g17sm1496195wrw.37.2020.11.05.01.09.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Nov 2020 01:09:04 -0800 (PST)
+Date:   Thu, 5 Nov 2020 09:09:03 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
         Linus Walleij <linus.walleij@linaro.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-pwm@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
-        arm-soc <linux-arm-kernel@lists.infradead.org>,
-        linux-devicetree <devicetree@vger.kernel.org>, wahrenst@gmx.net,
-        Linux Input <linux-input@vger.kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        devel@driverdev.osuosl.org, Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        linux-rpi-kernel@lists.infradead.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the mfd tree
+Message-ID: <20201105090903.GG4488@dell>
+References: <20201105014728.GC17266@qmqm.qmqm.pl>
+ <20201105125027.1f4b6886@canb.auug.org.au>
+ <20201105015718.GD17266@qmqm.qmqm.pl>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201105015718.GD17266@qmqm.qmqm.pl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 4, 2020 at 11:39 AM Nicolas Saenz Julienne
-<nsaenzjulienne@suse.de> wrote:
->
-> Use devm_rpi_firmware_get() so as to make sure we release RPi's firmware
-> interface when unbinding the device.
->
-> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
->
-> ---
->
-> Changes since v2:
->  - Use devm_rpi_firmware_get(), instead of remove function
->
->  drivers/gpio/gpio-raspberrypi-exp.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpio/gpio-raspberrypi-exp.c b/drivers/gpio/gpio-raspberrypi-exp.c
-> index bb100e0124e6..64a552ecc2ad 100644
-> --- a/drivers/gpio/gpio-raspberrypi-exp.c
-> +++ b/drivers/gpio/gpio-raspberrypi-exp.c
-> @@ -208,7 +208,7 @@ static int rpi_exp_gpio_probe(struct platform_device *pdev)
->                 return -ENOENT;
->         }
->
-> -       fw = rpi_firmware_get(fw_node);
-> +       fw = devm_rpi_firmware_get(&pdev->dev, fw_node);
->         of_node_put(fw_node);
->         if (!fw)
->                 return -EPROBE_DEFER;
-> --
-> 2.29.1
->
+On Thu, 05 Nov 2020, Michał Mirosław wrote:
 
-Acked-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> On Thu, Nov 05, 2020 at 12:50:27PM +1100, Stephen Rothwell wrote:
+> > Hi all,
+> > 
+> > After merging the mfd tree, today's linux-next build (arm
+> > multi_v7_defconfig) failed like this:
+> > 
+> > drivers/gpio/gpio-tps65910.c: In function 'tps65910_gpio_get':
+> > drivers/gpio/gpio-tps65910.c:31:2: error: implicit declaration of function 'tps65910_reg_read' [-Werror=implicit-function-declaration]
+> >    31 |  tps65910_reg_read(tps65910, TPS65910_GPIO0 + offset, &val);
+> >       |  ^~~~~~~~~~~~~~~~~
+> > drivers/gpio/gpio-tps65910.c: In function 'tps65910_gpio_set':
+> > drivers/gpio/gpio-tps65910.c:46:3: error: implicit declaration of function 'tps65910_reg_set_bits' [-Werror=implicit-function-declaration]
+> >    46 |   tps65910_reg_set_bits(tps65910, TPS65910_GPIO0 + offset,
+> >       |   ^~~~~~~~~~~~~~~~~~~~~
+> > drivers/gpio/gpio-tps65910.c:49:3: error: implicit declaration of function 'tps65910_reg_clear_bits' [-Werror=implicit-function-declaration]
+> >    49 |   tps65910_reg_clear_bits(tps65910, TPS65910_GPIO0 + offset,
+> >       |   ^~~~~~~~~~~~~~~~~~~~~~~
+> > 
+> > Caused by commit
+> > 
+> >   23feb2c3367c ("mfd: tps65910: Clean up after switching to regmap")
+> > 
+> > I have used the version of the mfd tree from next-20201104 for today.
+> 
+> Hi,
+> 
+> It's missing a patch for gpio part [1].
+> 
+> [1] https://lkml.org/lkml/2020/9/26/398
+
+I'm aware of it.  Just waiting for Linus' reply.
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
