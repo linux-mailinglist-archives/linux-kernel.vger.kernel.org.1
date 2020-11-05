@@ -2,113 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5954D2A7EF2
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 13:49:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 723B42A7EF8
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 13:50:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730258AbgKEMtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 07:49:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57002 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725468AbgKEMtw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 07:49:52 -0500
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C814C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 04:49:52 -0800 (PST)
-Received: by mail-qt1-x841.google.com with SMTP id h12so942980qtu.1
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 04:49:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=c/75nGkQrQ26C3oLWTOAYAjfB1zI6lLeh7OxDvBkYU4=;
-        b=ey9/JXPqLzTLqSC0JUXYcVxUXf6bgAVzYD4I4rO+pMYwL+MZhAaGFEUE/+P8Locz8v
-         LJ+RhibI0qf9gLCV/mRJ83hORIvqSMnJCg5JZJzCh+xHF7VIlIbjuRPAp0C63CSZuqsG
-         vYgc5f9BkYulbWJWSx8NN3DJBDW1+TKWxoIWvVybUSqXDpV2fkacRRICo8Tgpy2bpeGk
-         Ltiq/5WP3OM3AF7WaYqeeBRq6dKQGJ/PL2Qyomfzz0Quj8y3hj/F49F0vpFao5oEjJKE
-         yviSyey2jqX+EBs1TWKrdjoCX5L1qgaPHh/4yTZi2biI/4T2G6/5ZjvS2T05bvZ3lDtu
-         PdhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=c/75nGkQrQ26C3oLWTOAYAjfB1zI6lLeh7OxDvBkYU4=;
-        b=IKp1ZgvakRpYqPX885IEtgyqJl7Do734VlTQthOOXpiDrJLLBV4xHraQmTPr2rFdW4
-         sEOC4FusyH14cynUpaxPJKjXpZ2dSOoEYT6B3vwR3HUoajwfhTmbyMTsI6opC2fKvLOz
-         pD2XoF2UvRgyMu5UAQVqSQMgb3NMBpiachsr+nQF8ml1o02JtknJNRqah8AQust5Bq6W
-         zOXkMJ5l95KODsurTifCkiOJvs7Z3vpk2HBQrMx95zIdAnJL1NFRd88YTgi+taKPOsuf
-         WLvM/PUoptJvpTx3sk1kLxvbPMPaDZwDqb3/Wjr418lK3DCvnbsPil8wcYaYrTOZwe2O
-         6g1Q==
-X-Gm-Message-State: AOAM531/M3CU5jQaBq2Eg/chB/0ejswbcLN35ubsdoOKxH9QetEb1kOj
-        Q7HXqVeWdLOWt8XJTU48P94LdQ==
-X-Google-Smtp-Source: ABdhPJyp3xdvhiGf3T//L8CChJ12FUSiNzGQbei5PswIE841BlFiQ3KzgYdb3JVW6KR7+PP7QIWQow==
-X-Received: by 2002:ac8:46c1:: with SMTP id h1mr1733189qto.361.1604580591377;
-        Thu, 05 Nov 2020 04:49:51 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id u31sm763588qtu.87.2020.11.05.04.49.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 04:49:50 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kaei6-00H0yJ-2m; Thu, 05 Nov 2020 08:49:50 -0400
-Date:   Thu, 5 Nov 2020 08:49:50 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     John Hubbard <jhubbard@nvidia.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        J??r??me Glisse <jglisse@redhat.com>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        Jan Kara <jack@suse.cz>, Pawel Osciak <pawel@osciak.com>,
-        KVM list <kvm@vger.kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>
-Subject: Re: [PATCH v5 05/15] mm/frame-vector: Use FOLL_LONGTERM
-Message-ID: <20201105124950.GZ36674@ziepe.ca>
-References: <CAKMK7uEw701AWXNJbRNM8Z+FkyUB5FbWegmSzyWPy9cG4W7OLA@mail.gmail.com>
- <20201104140023.GQ36674@ziepe.ca>
- <CAKMK7uH69hsFjYUkjg1aTh5f=q_3eswMSS5feFs6+ovz586+0A@mail.gmail.com>
- <20201104162125.GA13007@infradead.org>
- <CAKMK7uH=0+3FSR4LxP7bJUB4BsCcnCzfK2=D+2Am9QNmfZEmfw@mail.gmail.com>
- <20201104163758.GA17425@infradead.org>
- <20201104164119.GA18218@infradead.org>
- <20201104181708.GU36674@ziepe.ca>
- <d3497583-2338-596e-c764-8c571b7d22cf@nvidia.com>
- <20201105092524.GQ401619@phenom.ffwll.local>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201105092524.GQ401619@phenom.ffwll.local>
+        id S1730650AbgKEMuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 07:50:18 -0500
+Received: from foss.arm.com ([217.140.110.172]:59802 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730501AbgKEMuR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 07:50:17 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0E8B3142F;
+        Thu,  5 Nov 2020 04:50:17 -0800 (PST)
+Received: from e123648.arm.com (unknown [10.57.22.37])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 9BC8E3F719;
+        Thu,  5 Nov 2020 04:50:12 -0800 (PST)
+From:   Lukasz Luba <lukasz.luba@arm.com>
+To:     linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Cc:     lukasz.luba@arm.com, Dietmar.Eggemann@arm.com, amitk@kernel.org,
+        corbet@lwn.net, daniel.lezcano@linaro.org,
+        devicetree@vger.kernel.org, dianders@chromium.org,
+        mka@chromium.org, morten.rasmussen@arm.com, nm@ti.com,
+        qperret@google.com, rafael@kernel.org, rnayak@codeaurora.org,
+        robh+dt@kernel.org, sboyd@kernel.org, sudeep.holla@arm.com,
+        viresh.kumar@linaro.org
+Subject: [RESEND][PATCH v4 1/4] PM / EM: Add a flag indicating units of power values in Energy Model
+Date:   Thu,  5 Nov 2020 12:50:01 +0000
+Message-Id: <20201105125001.32473-1-lukasz.luba@arm.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201103090600.29053-1-lukasz.luba@arm.com>
+References: <20201103090600.29053-1-lukasz.luba@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 10:25:24AM +0100, Daniel Vetter wrote:
-> > /*
-> >  * If we can't determine whether or not a pte is special, then fail immediately
-> >  * for ptes. Note, we can still pin HugeTLB and THP as these are guaranteed not
-> >  * to be special.
-> >  *
-> >  * For a futex to be placed on a THP tail page, get_futex_key requires a
-> >  * get_user_pages_fast_only implementation that can pin pages. Thus it's still
-> >  * useful to have gup_huge_pmd even if we can't operate on ptes.
-> >  */
-> 
-> We support hugepage faults in gpu drivers since recently, and I'm not
-> seeing a pud_mkhugespecial anywhere. So not sure this works, but probably
-> just me missing something again.
+There are different platforms and devices which might use different scale
+for the power values. Kernel sub-systems might need to check if all
+Energy Model (EM) devices are using the same scale. Address that issue and
+store the information inside EM for each device. Thanks to that they can
+be easily compared and proper action triggered.
 
-It means ioremap can't create an IO page PUD, it has to be broken up.
+Suggested-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Reviewed-by: Quentin Perret <qperret@google.com>
+Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+---
 
-Does ioremap even create anything larger than PTEs?
+This is a just a small change which addresses typo
+in function argument name (s/spani/span) pointed by Morten [1].
 
-Jason
+Regards,
+Lukasz
+
+[1] https://lore.kernel.org/linux-pm/20201105091759.GA8237@e123083-lin/
+
+ drivers/cpufreq/scmi-cpufreq.c |  3 ++-
+ drivers/opp/of.c               |  2 +-
+ include/linux/energy_model.h   |  9 +++++++--
+ kernel/power/energy_model.c    | 24 +++++++++++++++++++++++-
+ 4 files changed, 33 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/cpufreq/scmi-cpufreq.c b/drivers/cpufreq/scmi-cpufreq.c
+index e855e8612a67..3714a4cd07fa 100644
+--- a/drivers/cpufreq/scmi-cpufreq.c
++++ b/drivers/cpufreq/scmi-cpufreq.c
+@@ -188,7 +188,8 @@ static int scmi_cpufreq_init(struct cpufreq_policy *policy)
+ 	policy->fast_switch_possible =
+ 		handle->perf_ops->fast_switch_possible(handle, cpu_dev);
+ 
+-	em_dev_register_perf_domain(cpu_dev, nr_opp, &em_cb, policy->cpus);
++	em_dev_register_perf_domain(cpu_dev, nr_opp, &em_cb, policy->cpus,
++				    false);
+ 
+ 	return 0;
+ 
+diff --git a/drivers/opp/of.c b/drivers/opp/of.c
+index 9faeb83e4b32..16f39e2127a5 100644
+--- a/drivers/opp/of.c
++++ b/drivers/opp/of.c
+@@ -1335,7 +1335,7 @@ int dev_pm_opp_of_register_em(struct device *dev, struct cpumask *cpus)
+ 		goto failed;
+ 	}
+ 
+-	ret = em_dev_register_perf_domain(dev, nr_opp, &em_cb, cpus);
++	ret = em_dev_register_perf_domain(dev, nr_opp, &em_cb, cpus, true);
+ 	if (ret)
+ 		goto failed;
+ 
+diff --git a/include/linux/energy_model.h b/include/linux/energy_model.h
+index b67a51c574b9..3a33c738d876 100644
+--- a/include/linux/energy_model.h
++++ b/include/linux/energy_model.h
+@@ -29,6 +29,8 @@ struct em_perf_state {
+  * em_perf_domain - Performance domain
+  * @table:		List of performance states, in ascending order
+  * @nr_perf_states:	Number of performance states
++ * @milliwatts:		Flag indicating the power values are in milli-Watts
++ *			or some other scale.
+  * @cpus:		Cpumask covering the CPUs of the domain. It's here
+  *			for performance reasons to avoid potential cache
+  *			misses during energy calculations in the scheduler
+@@ -43,6 +45,7 @@ struct em_perf_state {
+ struct em_perf_domain {
+ 	struct em_perf_state *table;
+ 	int nr_perf_states;
++	int milliwatts;
+ 	unsigned long cpus[];
+ };
+ 
+@@ -79,7 +82,8 @@ struct em_data_callback {
+ struct em_perf_domain *em_cpu_get(int cpu);
+ struct em_perf_domain *em_pd_get(struct device *dev);
+ int em_dev_register_perf_domain(struct device *dev, unsigned int nr_states,
+-				struct em_data_callback *cb, cpumask_t *span);
++				struct em_data_callback *cb, cpumask_t *span,
++				bool milliwatts);
+ void em_dev_unregister_perf_domain(struct device *dev);
+ 
+ /**
+@@ -186,7 +190,8 @@ struct em_data_callback {};
+ 
+ static inline
+ int em_dev_register_perf_domain(struct device *dev, unsigned int nr_states,
+-				struct em_data_callback *cb, cpumask_t *span)
++				struct em_data_callback *cb, cpumask_t *span,
++				bool milliwatts)
+ {
+ 	return -EINVAL;
+ }
+diff --git a/kernel/power/energy_model.c b/kernel/power/energy_model.c
+index c1ff7fa030ab..efe2a595988e 100644
+--- a/kernel/power/energy_model.c
++++ b/kernel/power/energy_model.c
+@@ -52,6 +52,17 @@ static int em_debug_cpus_show(struct seq_file *s, void *unused)
+ }
+ DEFINE_SHOW_ATTRIBUTE(em_debug_cpus);
+ 
++static int em_debug_units_show(struct seq_file *s, void *unused)
++{
++	struct em_perf_domain *pd = s->private;
++	char *units = pd->milliwatts ? "milliWatts" : "bogoWatts";
++
++	seq_printf(s, "%s\n", units);
++
++	return 0;
++}
++DEFINE_SHOW_ATTRIBUTE(em_debug_units);
++
+ static void em_debug_create_pd(struct device *dev)
+ {
+ 	struct dentry *d;
+@@ -64,6 +75,8 @@ static void em_debug_create_pd(struct device *dev)
+ 		debugfs_create_file("cpus", 0444, d, dev->em_pd->cpus,
+ 				    &em_debug_cpus_fops);
+ 
++	debugfs_create_file("units", 0444, d, dev->em_pd, &em_debug_units_fops);
++
+ 	/* Create a sub-directory for each performance state */
+ 	for (i = 0; i < dev->em_pd->nr_perf_states; i++)
+ 		em_debug_create_ps(&dev->em_pd->table[i], d);
+@@ -250,17 +263,24 @@ EXPORT_SYMBOL_GPL(em_cpu_get);
+  * @cpus	: Pointer to cpumask_t, which in case of a CPU device is
+  *		obligatory. It can be taken from i.e. 'policy->cpus'. For other
+  *		type of devices this should be set to NULL.
++ * @milliwatts	: Flag indicating that the power values are in milliWatts or
++ *		in some other scale. It must be set properly.
+  *
+  * Create Energy Model tables for a performance domain using the callbacks
+  * defined in cb.
+  *
++ * The @milliwatts is important to set with correct value. Some kernel
++ * sub-systems might rely on this flag and check if all devices in the EM are
++ * using the same scale.
++ *
+  * If multiple clients register the same performance domain, all but the first
+  * registration will be ignored.
+  *
+  * Return 0 on success
+  */
+ int em_dev_register_perf_domain(struct device *dev, unsigned int nr_states,
+-				struct em_data_callback *cb, cpumask_t *cpus)
++				struct em_data_callback *cb, cpumask_t *cpus,
++				bool milliwatts)
+ {
+ 	unsigned long cap, prev_cap = 0;
+ 	int cpu, ret;
+@@ -313,6 +333,8 @@ int em_dev_register_perf_domain(struct device *dev, unsigned int nr_states,
+ 	if (ret)
+ 		goto unlock;
+ 
++	dev->em_pd->milliwatts = milliwatts;
++
+ 	em_debug_create_pd(dev);
+ 	dev_info(dev, "EM: created perf domain\n");
+ 
+-- 
+2.17.1
+
