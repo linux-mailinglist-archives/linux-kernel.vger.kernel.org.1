@@ -2,637 +2,761 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06DAA2A82A2
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 16:50:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10A472A82A7
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 16:52:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731373AbgKEPuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 10:50:39 -0500
-Received: from foss.arm.com ([217.140.110.172]:36034 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730660AbgKEPui (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 10:50:38 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 250AD14BF;
-        Thu,  5 Nov 2020 07:50:37 -0800 (PST)
-Received: from [192.168.122.166] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5F8C93F718;
-        Thu,  5 Nov 2020 07:50:34 -0800 (PST)
-Subject: Re: [PATCH 4/8] cppc_cpufreq: replace per-cpu structures with lists
-To:     Ionela Voinescu <ionela.voinescu@arm.com>, rjw@rjwysocki.net,
-        viresh.kumar@linaro.org, lenb@kernel.org, sudeep.holla@arm.com
-Cc:     morten.rasmussen@arm.com, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20201105125524.4409-1-ionela.voinescu@arm.com>
- <20201105125524.4409-5-ionela.voinescu@arm.com>
-From:   Jeremy Linton <jeremy.linton@arm.com>
-Message-ID: <e568847d-b15c-970c-6ad5-b431c81c811c@arm.com>
-Date:   Thu, 5 Nov 2020 09:50:30 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        id S1731212AbgKEPvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 10:51:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57434 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730660AbgKEPvt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 10:51:49 -0500
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9B28C0613CF;
+        Thu,  5 Nov 2020 07:51:48 -0800 (PST)
+Received: by mail-oi1-x244.google.com with SMTP id m13so2120381oih.8;
+        Thu, 05 Nov 2020 07:51:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zVDBpA4pJP6gyCV2Lu6Ba2zQAg/I5af95fNgot9wSQs=;
+        b=oRWzBa+UDIpufaKKi/PbO/KQU87a4c4Riwdd2/ZuVBj41iKTXE9VLDlx5qHMIdT5H+
+         6dKFZPcaPx5Bnb8AvRWooNL23bp1+rgdnW8hzksOvoxbufzNXP8iyw54I2nLfBGVylgp
+         /fSey4Atum9up1qstzvIx7CwAV/OUGli6SBlmrqExr63zLELH2759IiQyptu26jFpliO
+         vwRooPjjDd9ZWi+w3HXshtlBQXQk1d3f10m3PJArsCtNSlU+oAsvnm/O69FwGt8QYBHd
+         DtaMxzlaJzY3LiOzbbqcGaYxLde4eoEKSTriPkPdWy1YNIhSl7RSDV9KdIBz/N9StVj9
+         I3TQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=zVDBpA4pJP6gyCV2Lu6Ba2zQAg/I5af95fNgot9wSQs=;
+        b=iP6zwQDucdM+y7wl/kSl6L0txxCFXFwD5GG0NQG6vTMOyXdS5WrLmRhSf8fGglU5Xz
+         ScpMxTEg3jXQC+rWX1ve7VBBidtCj+YaJJS8KWqUQPlZwpwOZbwS1T1Hpv/MQoV+hZU8
+         HoSSJzDqYST7P4yuamVnzqeebtDomypYjdaSQRrZGWrnJURKNrmlSAnKwfXYEQ7epLIa
+         FY+XqKRKV1pYLrQgUmL6UPKyia+XjyJ+BCTE5GCpeCFM692o0MRrO47Mr5jGhlziopFu
+         89c5QzKZPvsVwz+c4CZLDh/Hg4sMl72hOH+oXwrUux9Ay7denx+aGSdKZctufRa7tPdn
+         HRyQ==
+X-Gm-Message-State: AOAM531xus1xrVDpUdWxogmIxEYS16fUZDCutz0r6vWkESryg60KHMen
+        yHbcwsMkAOOhpQoYQ+T+HE70qLSaZ1c=
+X-Google-Smtp-Source: ABdhPJxozVe0v4z9I3pTjauJZV2nTfTTfOyRs/kgQnb5Ba0ULRgg5kF35xCFN8XuFQ0gtxYCKM4//Q==
+X-Received: by 2002:aca:ef56:: with SMTP id n83mr40144oih.30.1604591508186;
+        Thu, 05 Nov 2020 07:51:48 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id w70sm445330oiw.29.2020.11.05.07.51.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Nov 2020 07:51:47 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH v7] hwmon:Driver for Delta power supplies Q54SJ108A2
+To:     "xiao.mx.ma" <734056705@qq.com>, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org, xiao.mx.ma@deltaww.com,
+        jiajia.feng@deltaww.com
+References: <tencent_7B0E2D4FB415F442C4AC487FB38AEE193D06@qq.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <bf745a0b-e69d-dfdc-c7cd-27defd8906fe@roeck-us.net>
+Date:   Thu, 5 Nov 2020 07:51:45 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201105125524.4409-5-ionela.voinescu@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <tencent_7B0E2D4FB415F442C4AC487FB38AEE193D06@qq.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 11/5/20 1:35 AM, xiao.mx.ma wrote:
+> From: "xiao.ma" <xiao.mx.ma@deltaww.com>
+> 
+> The <drivers/hwmon/pmbus/q54sj108a2.c> provides a driver for Delta's modules.
 
-On 11/5/20 6:55 AM, Ionela Voinescu wrote:
-> The cppc_cpudata per-cpu storage was inefficient (1) additional to causing
-> functional issues (2) when CPUs are hotplugged out, due to per-cpu data
-> being improperly initialised.
-> 
-> (1) The amount of information needed for CPPC performance control in its
->      cpufreq driver depends on the domain (PSD) coordination type:
-> 
->      ANY:    One set of CPPC control and capability data (e.g desired
->              performance, highest/lowest performance, etc) applies to all
->              CPUs in the domain.
-> 
->      ALL:    Same as ANY. To be noted that this type is not currently
->              supported. When supported, information about which CPUs
->              belong to a domain is needed in order for frequency change
->              requests to be sent to each of them.
-> 
->      HW:     It's necessary to store CPPC control and capability
->              information for all the CPUs. HW will then coordinate the
->              performance state based on their limitations and requests.
-> 
->      NONE:   Same as HW. No HW coordination is expected.
-> 
->      Despite this, the previous initialisation code would indiscriminately
->      allocate memory for all CPUs (all_cpu_data) and unnecessarily
->      duplicate performance capabilities and the domain sharing mask and type
->      for each possible CPU.
+"This driver supports ..." or similar is sufficient. We don't need a reference
+to the file name in the commit message.
 
-I should have mentioned this on the last set.
+> Currently supports Q54SJ108A2 series and other series will continue to be
+> added in the future.
+> 
+> Signed-off-by: xiao.ma <xiao.mx.ma@deltaww.com>
 
-If the common case on arm/acpi machines is a single core per _PSD (which 
-I believe it is), then you are actually increasing the overhead doing this.
+I still can't figure out why your patches don't make it to any mailing lists.
+Are you sending them encoded ? I see the patch is really sent from
 
-> 
-> (2) With the current per-cpu structure, when having ANY coordination,
->      the cppc_cpudata cpu information is not initialised (will remain 0)
->      for all CPUs in a policy, other than policy->cpu. When policy->cpu is
->      hotplugged out, the driver will incorrectly use the uninitialised (0)
->      value of the other CPUs when making frequency changes. Additionally,
->      the previous values stored in the perf_ctrls.desired_perf will be
->      lost when policy->cpu changes.
-> 
-> Due to the current storage of driver data not being fit for purpose,
-> replace the per-cpu CPPC/PSD data with a list of domains which in turn
-> will point to a list of CPUs with their controls and capabilities,
-> belonging to the domain.
-> 
-> This new structure has the following benefits:
->   - Clearly separates PSD (domain) data from CPPC (performance monitoring
->     and control) data and stores one mask of CPUs belonging to a domain
->     and its type in a single structure, for each domain.
-> 
->   - For ANY domain coordination, a single cppc_cpudata set of capabilities
->     and controls are stored, for policy->cpu, and used for describing
->     performance controls and capabilities even when policy->cpu changes as
->     a result of hotplug. All the CPUs in the domain will belong to the
->     same policy.
-> 
->   - For HW or lack of coordination, a full map of domains and CPUs is
->     obtained. Each CPU will have its own policy, but for HW, as a result
->     of PSD information, a shared_cpu_map mask could be used to identify
->     the domain CPU content.
-> 
-> Additional changes:
-> 
->   - A pointer to the policy's cppc_cpudata is stored in policy->driver_data
-> 
->   - All data allocation is done from the driver's init function. At that
->     point the domain is either created or retrieved. For this purpose
->     acpi_get_psd_map() was changed to create a map of the domain of a
->     single CPU, rather than the full system domain map.
-> 
->   - When CPU's are hotplugged out and in, old information can be retrieved.
-> 
-> Signed-off-by: Ionela Voinescu <ionela.voinescu@arm.com>
-> Cc: Rafael J. Wysocki <rjw@rjwysocki.net>
-> Cc: Len Brown <lenb@kernel.org>
-> Cc: Viresh Kumar <viresh.kumar@linaro.org>
+From: "xiao.mx.ma" <734056705@qq.com>
+
+No idea if that is the reason. Is that Fom address rejected for some reason ?
+
+Either case, you'll need to send your patch in a way that it is listed in patchwork,
+and received by mailing lists. I won't be able to accept it otherwise.
+
 > ---
->   drivers/acpi/cppc_acpi.c       | 126 +++++++------------
->   drivers/cpufreq/cppc_cpufreq.c | 217 ++++++++++++++++++++-------------
->   include/acpi/cppc_acpi.h       |  14 ++-
->   3 files changed, 190 insertions(+), 167 deletions(-)
 > 
-> diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
-> index 7a99b19bb893..75e36b909ae6 100644
-> --- a/drivers/acpi/cppc_acpi.c
-> +++ b/drivers/acpi/cppc_acpi.c
-> @@ -414,108 +414,72 @@ static int acpi_get_psd(struct cpc_desc *cpc_ptr, acpi_handle handle)
->   }
->   
->   /**
-> - * acpi_get_psd_map - Map the CPUs in a common freq domain.
-> - * @all_cpu_data: Ptrs to CPU specific CPPC data including PSD info.
-> + * acpi_get_psd_map - Map the CPUs in the freq domain of a given cpu
-> + * @cpu: Find all CPUs that share a domain with cpu.
-> + * @domain: Pointer to given domain data storage
->    *
->    *	Return: 0 for success or negative value for err.
->    */
-> -int acpi_get_psd_map(struct cppc_cpudata **all_cpu_data)
-> +int acpi_get_psd_map(unsigned int cpu, struct psd_data *domain)
->   {
-> -	int count_target;
-> -	int retval = 0;
-> -	unsigned int i, j;
-> -	cpumask_var_t covered_cpus;
-> -	struct cppc_cpudata *pr, *match_pr;
-> -	struct acpi_psd_package *pdomain;
-> -	struct acpi_psd_package *match_pdomain;
->   	struct cpc_desc *cpc_ptr, *match_cpc_ptr;
-> -
-> -	if (!zalloc_cpumask_var(&covered_cpus, GFP_KERNEL))
-> -		return -ENOMEM;
-> +	struct acpi_psd_package *match_pdomain;
-> +	struct acpi_psd_package *pdomain;
-> +	int count_target, i;
->   
->   	/*
->   	 * Now that we have _PSD data from all CPUs, let's setup P-state
->   	 * domain info.
->   	 */
-> -	for_each_possible_cpu(i) {
-> -		if (cpumask_test_cpu(i, covered_cpus))
-> -			continue;
-> +	cpc_ptr = per_cpu(cpc_desc_ptr, cpu);
-> +	if (!cpc_ptr)
-> +		return -EFAULT;
->   
-> -		pr = all_cpu_data[i];
-> -		cpc_ptr = per_cpu(cpc_desc_ptr, i);
-> -		if (!cpc_ptr) {
-> -			retval = -EFAULT;
-> -			goto err_ret;
-> -		}
-> +	pdomain = &(cpc_ptr->domain_info);
-> +	cpumask_set_cpu(cpu, domain->shared_cpu_map);
-> +	if (pdomain->num_processors <= 1)
-> +		return 0;
->   
-> -		pdomain = &(cpc_ptr->domain_info);
-> -		cpumask_set_cpu(i, pr->shared_cpu_map);
-> -		cpumask_set_cpu(i, covered_cpus);
-> -		if (pdomain->num_processors <= 1)
-> -			continue;
-> +	/* Validate the Domain info */
-> +	count_target = pdomain->num_processors;
-> +	if (pdomain->coord_type == DOMAIN_COORD_TYPE_SW_ALL)
-> +		domain->shared_type = CPUFREQ_SHARED_TYPE_ALL;
-> +	else if (pdomain->coord_type == DOMAIN_COORD_TYPE_HW_ALL)
-> +		domain->shared_type = CPUFREQ_SHARED_TYPE_HW;
-> +	else if (pdomain->coord_type == DOMAIN_COORD_TYPE_SW_ANY)
-> +		domain->shared_type = CPUFREQ_SHARED_TYPE_ANY;
->   
-> -		/* Validate the Domain info */
-> -		count_target = pdomain->num_processors;
-> -		if (pdomain->coord_type == DOMAIN_COORD_TYPE_SW_ALL)
-> -			pr->shared_type = CPUFREQ_SHARED_TYPE_ALL;
-> -		else if (pdomain->coord_type == DOMAIN_COORD_TYPE_HW_ALL)
-> -			pr->shared_type = CPUFREQ_SHARED_TYPE_HW;
-> -		else if (pdomain->coord_type == DOMAIN_COORD_TYPE_SW_ANY)
-> -			pr->shared_type = CPUFREQ_SHARED_TYPE_ANY;
-> -
-> -		for_each_possible_cpu(j) {
-> -			if (i == j)
-> -				continue;
-> -
-> -			match_cpc_ptr = per_cpu(cpc_desc_ptr, j);
-> -			if (!match_cpc_ptr) {
-> -				retval = -EFAULT;
-> -				goto err_ret;
-> -			}
-> -
-> -			match_pdomain = &(match_cpc_ptr->domain_info);
-> -			if (match_pdomain->domain != pdomain->domain)
-> -				continue;
-> +	for_each_possible_cpu(i) {
-> +		if (i == cpu)
-> +			continue;
->   
-> -			/* Here i and j are in the same domain */
-> -			if (match_pdomain->num_processors != count_target) {
-> -				retval = -EFAULT;
-> -				goto err_ret;
-> -			}
-> +		match_cpc_ptr = per_cpu(cpc_desc_ptr, i);
-> +		if (!match_cpc_ptr)
-> +			goto err_fault;
->   
-> -			if (pdomain->coord_type != match_pdomain->coord_type) {
-> -				retval = -EFAULT;
-> -				goto err_ret;
-> -			}
-> +		match_pdomain = &(match_cpc_ptr->domain_info);
-> +		if (match_pdomain->domain != pdomain->domain)
-> +			continue;
->   
-> -			cpumask_set_cpu(j, covered_cpus);
-> -			cpumask_set_cpu(j, pr->shared_cpu_map);
-> -		}
-> +		/* Here i and cpu are in the same domain */
-> +		if (match_pdomain->num_processors != count_target)
-> +			goto err_fault;
->   
-> -		for_each_cpu(j, pr->shared_cpu_map) {
-> -			if (i == j)
-> -				continue;
-> +		if (pdomain->coord_type != match_pdomain->coord_type)
-> +			goto err_fault;
->   
-> -			match_pr = all_cpu_data[j];
-> -			match_pr->shared_type = pr->shared_type;
-> -			cpumask_copy(match_pr->shared_cpu_map,
-> -				     pr->shared_cpu_map);
-> -		}
-> +		cpumask_set_cpu(i, domain->shared_cpu_map);
->   	}
-> -	goto out;
->   
-> -err_ret:
-> -	for_each_possible_cpu(i) {
-> -		pr = all_cpu_data[i];
-> +	return 0;
->   
-> -		/* Assume no coordination on any error parsing domain info */
-> -		cpumask_clear(pr->shared_cpu_map);
-> -		cpumask_set_cpu(i, pr->shared_cpu_map);
-> -		pr->shared_type = CPUFREQ_SHARED_TYPE_ALL;
-> -	}
-> -out:
-> -	free_cpumask_var(covered_cpus);
-> -	return retval;
-> +err_fault:
-> +	/* Assume no coordination on any error parsing domain info */
-> +	cpumask_clear(domain->shared_cpu_map);
-> +	cpumask_set_cpu(cpu, domain->shared_cpu_map);
-> +	domain->shared_type = CPUFREQ_SHARED_TYPE_ALL;
+> Notes:
+>     Patch v2 changelog:
+>     	Add delta.rst in Documentation/hwmon.
+>     	Tristate "DELTA" in Kconfig is changed to "DELTA_POWER_SUPPLIED".
+>     	Modify code: drop the excessive empty lines, correct the comment content, adjust indent, remove extra brackets.
+>     Patch v3 changelog:
+>     	Add delta.rst to Documentation/hwmon/index.rst.
+>     	Tristate "DELTA_POWER_SUPPLIES" in Kconfig is changed to "Delta Power Supplies".
+>     Patch v4 changelog:
+>     	Correct the spelling "Temperature" in the delta.rst.
+>     	Add Write_protect when write command VOUT_OV_RESPONSE and IOUT_OC_FAULT_RESPONSE.
+>     Patch v5 changelog:
+>     	Add some non-standard attributes in sysfs system.
+>     Patch v6 changelog:
+>     	delta.c and delta.rst are renamed to q54sj108a2.c and q54sj108a2.rst.
+>     	Add q54sj108a2 to index.rst.
+>     	Tristate in Kconfig is changed to "Delta Power Supplies Q54SJ108A2".
+>     	The non-standard attributes are added to debugfs.
+>     Patch v7 changelog:
+>     	Use standard fuctions bin2hex and hex2bin.
+>     	The return of debugfs write is changed to count.
+>     	Drop the error checking of debugfs functions.
+>     	Use probe_new fuction.
+>     	Remove the .remove fuction.
+> 
+>  Documentation/hwmon/index.rst      |   1 +
+>  Documentation/hwmon/q54sj108a2.rst |  52 ++++
+>  drivers/hwmon/pmbus/Kconfig        |   9 +
+>  drivers/hwmon/pmbus/Makefile       |   1 +
+>  drivers/hwmon/pmbus/q54sj108a2.c   | 437 +++++++++++++++++++++++++++++
+>  5 files changed, 500 insertions(+)
+>  create mode 100644 Documentation/hwmon/q54sj108a2.rst
+>  create mode 100755 drivers/hwmon/pmbus/q54sj108a2.c
+> 
+> diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
+> index b797db738225..4bb680b3c7ea 100644
+> --- a/Documentation/hwmon/index.rst
+> +++ b/Documentation/hwmon/index.rst
+> @@ -148,6 +148,7 @@ Hardware Monitoring Kernel Drivers
+>     powr1220
+>     pxe1610
+>     pwm-fan
+> +   q54sj108a2
+>     raspberrypi-hwmon
+>     sch5627
+>     sch5636
+> diff --git a/Documentation/hwmon/q54sj108a2.rst b/Documentation/hwmon/q54sj108a2.rst
+> new file mode 100644
+> index 000000000000..a575bdfa7c18
+> --- /dev/null
+> +++ b/Documentation/hwmon/q54sj108a2.rst
+> @@ -0,0 +1,52 @@
+> +Kernel driver q54sj108a2
+> +=====================
 > +
-> +	return -EFAULT;
->   }
->   EXPORT_SYMBOL_GPL(acpi_get_psd_map);
->   
-> diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
-> index 7cc9bd8568de..ac95b4424a2e 100644
-> --- a/drivers/cpufreq/cppc_cpufreq.c
-> +++ b/drivers/cpufreq/cppc_cpufreq.c
-> @@ -30,13 +30,12 @@
->   #define DMI_PROCESSOR_MAX_SPEED		0x14
->   
->   /*
-> - * These structs contain information parsed from per CPU
-> - * ACPI _CPC structures.
-> - * e.g. For each CPU the highest, lowest supported
-> - * performance capabilities, desired performance level
-> - * requested etc.
-> + * This list contains information parsed from per CPU ACPI _CPC and _PSD
-> + * structures: this is a list of domain data which in turn contains a list
-> + * of cpus with their controls and capabilities, belonging to the domain.
->    */
-> -static struct cppc_cpudata **all_cpu_data;
-> +static LIST_HEAD(domain_list);
+> +Supported chips:
 > +
->   static bool boost_supported;
->   
->   struct cppc_workaround_oem_info {
-> @@ -148,8 +147,9 @@ static unsigned int cppc_cpufreq_khz_to_perf(struct cppc_cpudata *cpu_data,
->   static int cppc_cpufreq_set_target(struct cpufreq_policy *policy,
->   				   unsigned int target_freq,
->   				   unsigned int relation)
+> +  * DELTA Q54SJ108A2NCAH, Q54SJ108A2NCDH, Q54SJ108A2NCPG, Q54SJ108A2NCPH
 > +
->   {
-> -	struct cppc_cpudata *cpu_data = all_cpu_data[policy->cpu];
-> +	struct cppc_cpudata *cpu_data = policy->driver_data;
->   	struct cpufreq_freqs freqs;
->   	u32 desired_perf;
->   	int ret = 0;
-> @@ -182,7 +182,7 @@ static int cppc_verify_policy(struct cpufreq_policy_data *policy)
->   
->   static void cppc_cpufreq_stop_cpu(struct cpufreq_policy *policy)
->   {
-> -	struct cppc_cpudata *cpu_data = all_cpu_data[policy->cpu];
-> +	struct cppc_cpudata *cpu_data = policy->driver_data;
->   	struct cppc_perf_caps *caps = &cpu_data->perf_caps;
->   	unsigned int cpu = policy->cpu;
->   	int ret;
-> @@ -238,25 +238,107 @@ static unsigned int cppc_cpufreq_get_transition_delay_us(unsigned int cpu)
->   }
->   #endif
->   
-> -static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
-> +static struct psd_data *cppc_cpufreq_get_domain(unsigned int cpu)
->   {
-> -	struct cppc_cpudata *cpu_data = all_cpu_data[policy->cpu];
-> -	struct cppc_perf_caps *caps = &cpu_data->perf_caps;
-> -	unsigned int cpu = policy->cpu;
-> -	int ret = 0;
-> +	struct psd_data *domain;
-> +	int ret;
->   
-> -	cpu_data->cpu = cpu;
-> -	ret = cppc_get_perf_caps(cpu, caps);
-> +	list_for_each_entry(domain, &domain_list, node) {
-> +		if (cpumask_test_cpu(cpu, domain->shared_cpu_map))
-> +			return domain;
+> +    Prefix: 'Q54SJ108A2'
+> +
+> +    Addresses scanned: -
+> +
+> +    Datasheet: https://filecenter.delta-china.com.cn/products/download/01/0102/datasheet/DS_Q54SJ108A2.pdf
+> +
+> +Authors:
+> +    Xiao.ma <xiao.mx.ma@deltaww.com>
+> +
+> +
+> +Description
+> +-----------
+> +
+> +This driver implements support for DELTA Q54SJ108A2NCAH, Q54SJ108A2NCDH, 
+> +Q54SJ108A2NCPG, and Q54SJ108A2NCPH 1/4 Brick DC/DC Regulated Power Module 
+> +with PMBus support.
+> +
+> +The driver is a client driver to the core PMBus driver.
+> +Please see Documentation/hwmon/pmbus.rst for details on PMBus client drivers.
+> +
+> +
+> +Usage Notes
+> +-----------
+> +
+> +This driver does not auto-detect devices. You will have to instantiate the
+> +devices explicitly. Please see Documentation/i2c/instantiating-devices.rst for
+> +details.
+> +
+> +
+> +Sysfs entries
+> +-------------
+> +
+> +===================== ===== ==================================================
+> +curr1_alarm           RO    Output current alarm
+> +curr1_input           RO    Output current
+> +curr1_label           RO    'iout1'
+> +in1_alarm             RO    Input voltage alarm
+> +in1_input             RO    Input voltage
+> +in1_label             RO    'vin'
+> +in2_alarm             RO    Output voltage alarm
+> +in2_input             RO    Output voltage
+> +in2_label             RO    'vout1'
+> +temp1_alarm           RO    Temperature alarm
+> +temp1_input           RO    Chip temperature
+> +===================== ===== ==================================================
+> diff --git a/drivers/hwmon/pmbus/Kconfig b/drivers/hwmon/pmbus/Kconfig
+> index a25faf69fce3..01de280820ee 100644
+> --- a/drivers/hwmon/pmbus/Kconfig
+> +++ b/drivers/hwmon/pmbus/Kconfig
+> @@ -229,6 +229,15 @@ config SENSORS_PXE1610
+>  	  This driver can also be built as a module. If so, the module will
+>  	  be called pxe1610.
+>  
+> +config SENSORS_Q54SJ108A2
+> +	tristate "Delta Power Supplies Q54SJ108A2"
+> +	help
+> +	  If you say yes here you get hardware monitoring support for Delta
+> +	  Q54SJ108A2 series Power Supplies.
+> +
+> +	  This driver can also be built as a module. If so, the module will
+> +	  be called q54sj108a2.
+> +
+>  config SENSORS_TPS40422
+>  	tristate "TI TPS40422"
+>  	help
+> diff --git a/drivers/hwmon/pmbus/Makefile b/drivers/hwmon/pmbus/Makefile
+> index 4c97ad0bd791..a50122cd455b 100644
+> --- a/drivers/hwmon/pmbus/Makefile
+> +++ b/drivers/hwmon/pmbus/Makefile
+> @@ -26,6 +26,7 @@ obj-$(CONFIG_SENSORS_MAX34440)	+= max34440.o
+>  obj-$(CONFIG_SENSORS_MAX8688)	+= max8688.o
+>  obj-$(CONFIG_SENSORS_MP2975)	+= mp2975.o
+>  obj-$(CONFIG_SENSORS_PXE1610)	+= pxe1610.o
+> +obj-$(CONFIG_SENSORS_Q54SJ108A2)	+= q54sj108a2.o
+>  obj-$(CONFIG_SENSORS_TPS40422)	+= tps40422.o
+>  obj-$(CONFIG_SENSORS_TPS53679)	+= tps53679.o
+>  obj-$(CONFIG_SENSORS_UCD9000)	+= ucd9000.o
+> diff --git a/drivers/hwmon/pmbus/q54sj108a2.c b/drivers/hwmon/pmbus/q54sj108a2.c
+> new file mode 100755
+> index 000000000000..8ab322347015
+> --- /dev/null
+> +++ b/drivers/hwmon/pmbus/q54sj108a2.c
+> @@ -0,0 +1,437 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Driver for Delta modules, Q54SJ108A2 series 1/4 Brick DC/DC
+> + * Regulated Power Module
+> + *
+> + * Copyright 2020 Delta LLC.
+> + */
+> +
+> +#include <linux/bits.h>
+
+Is this include needed ?
+
+> +#include <linux/debugfs.h>
+> +#include <linux/err.h>
+> +#include <linux/fs.h>
+
+What is this include needed for ?
+
+> +#include <linux/i2c.h>
+> +#include <linux/init.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/mutex.h>
+
+No mutexes used by this driver.
+
+> +#include <linux/of_device.h>
+> +#include <linux/pmbus.h>
+> +#include <linux/util_macros.h>
+
+I can't see any functions used from this include.
+
+Please make sure that the include files are indeed all needed.
+
+> +#include "pmbus.h"
+> +
+> +#define STORE_DEFAULT_ALL         0x11
+> +#define ERASE_BLACKBOX_DATA       0xD1
+> +#define READ_HISTORY_EVENT_NUMBER 0xD2
+> +#define READ_HISTORY_EVENTS       0xE0
+> +#define SET_HISTORY_EVENT_OFFSET  0xE1
+> +#define PMBUS_CMD_FLASH_KEY_WRITE 0xEC
+> +
+> +enum chips {
+> +	Q54SJ108A2
+> +};
+> +
+> +enum {
+> +	Q54SJ108A2_DEBUGFS_OPERATION = 0,
+> +	Q54SJ108A2_DEBUGFS_CLEARFAULT,
+> +	Q54SJ108A2_DEBUGFS_WRITEPROTECT,
+> +	Q54SJ108A2_DEBUGFS_STOREDEFAULT,
+> +	Q54SJ108A2_DEBUGFS_VOOV_RESPONSE,
+> +	Q54SJ108A2_DEBUGFS_IOOC_RESPONSE,
+> +	Q54SJ108A2_DEBUGFS_PMBUS_VERSION,
+> +	Q54SJ108A2_DEBUGFS_MFR_ID,
+> +	Q54SJ108A2_DEBUGFS_MFR_MODEL,
+> +	Q54SJ108A2_DEBUGFS_MFR_REVISION,
+> +	Q54SJ108A2_DEBUGFS_MFR_LOCATION,
+> +	Q54SJ108A2_DEBUGFS_BLACKBOX_ERASE,
+> +	Q54SJ108A2_DEBUGFS_BLACKBOX_READ_OFFSET,
+> +	Q54SJ108A2_DEBUGFS_BLACKBOX_SET_OFFSET,
+> +	Q54SJ108A2_DEBUGFS_BLACKBOX_READ,
+> +	Q54SJ108A2_DEBUGFS_FLASH_KEY,
+> +	Q54SJ108A2_DEBUGFS_NUM_ENTRIES
+> +};
+> +
+> +struct q54sj108a2_data {
+> +	enum chips chip;
+> +	struct i2c_client *client;
+> +
+> +	int debugfs_entries[Q54SJ108A2_DEBUGFS_NUM_ENTRIES];
+> +};
+> +
+> +#define to_psu(x, y) container_of((x), struct q54sj108a2_data, debugfs_entries[(y)])
+> +
+> +static struct pmbus_driver_info q54sj108a2_info[] = {
+> +	[Q54SJ108A2] = {
+> +		.pages = 1,
+> +
+> +		/* Source : Delta Q54SJ108A2 */
+> +		.format[PSC_TEMPERATURE] = linear,
+> +		.format[PSC_VOLTAGE_IN] = linear,
+> +		.format[PSC_CURRENT_OUT] = linear,
+> +
+> +		.func[0] = PMBUS_HAVE_VIN |
+> +		PMBUS_HAVE_VOUT | PMBUS_HAVE_STATUS_VOUT |
+> +		PMBUS_HAVE_IOUT | PMBUS_HAVE_STATUS_IOUT |
+> +		PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP |
+> +		PMBUS_HAVE_STATUS_INPUT,
+> +	},
+> +};
+> +
+> +static ssize_t q54sj108a2_debugfs_read(struct file *file, char __user *buf,
+> +				      size_t count, loff_t *ppos)
+> +{
+> +	int rc;
+> +	int *idxp = file->private_data;
+> +	int idx = *idxp;
+> +	struct q54sj108a2_data *psu = to_psu(idxp, idx);
+> +	char data[I2C_SMBUS_BLOCK_MAX + 2] = { 0 };
+> +	char data_char[I2C_SMBUS_BLOCK_MAX + 2] = { 0 };
+> +	char *res;
+> +
+> +	switch (idx) {
+> +	case Q54SJ108A2_DEBUGFS_OPERATION:
+> +		rc = i2c_smbus_read_byte_data(psu->client, PMBUS_OPERATION);
+> +		if (rc < 0)
+> +			return rc;
+> +
+> +		rc = snprintf(data, 3, "%02x", rc);
+> +		goto done;
+> +	case Q54SJ108A2_DEBUGFS_WRITEPROTECT:
+> +		rc = i2c_smbus_read_byte_data(psu->client, PMBUS_WRITE_PROTECT);
+> +		if (rc < 0)
+> +			return rc;
+> +
+> +		rc = snprintf(data, 3, "%02x", rc);
+> +		goto done;
+> +	case Q54SJ108A2_DEBUGFS_VOOV_RESPONSE:
+> +		rc = i2c_smbus_read_byte_data(psu->client, PMBUS_VOUT_OV_FAULT_RESPONSE);
+> +		if (rc < 0)
+> +			return rc;
+> +
+> +		rc = snprintf(data, 3, "%02x", rc);
+> +		goto done;
+> +	case Q54SJ108A2_DEBUGFS_IOOC_RESPONSE:
+> +		rc = i2c_smbus_read_byte_data(psu->client, PMBUS_IOUT_OC_FAULT_RESPONSE);
+> +		if (rc < 0)
+> +			return rc;
+> +
+> +		rc = snprintf(data, 3, "%02x", rc);
+> +		goto done;
+> +	case Q54SJ108A2_DEBUGFS_PMBUS_VERSION:
+> +		rc = i2c_smbus_read_byte_data(psu->client, PMBUS_REVISION);
+> +		if (rc < 0)
+> +			return rc;
+> +
+> +		rc = snprintf(data, 3, "%02x", rc);
+> +		goto done;
+> +	case Q54SJ108A2_DEBUGFS_MFR_ID:
+> +		rc = i2c_smbus_read_block_data(psu->client, PMBUS_MFR_ID, data);
+> +		if (rc < 0)
+> +			return rc;
+> +		break;
+> +	case Q54SJ108A2_DEBUGFS_MFR_MODEL:
+> +		rc = i2c_smbus_read_block_data(psu->client, PMBUS_MFR_MODEL, data);
+> +		if (rc < 0)
+> +			return rc;
+> +		break;
+> +	case Q54SJ108A2_DEBUGFS_MFR_REVISION:
+> +		rc = i2c_smbus_read_block_data(psu->client, PMBUS_MFR_REVISION, data);
+> +		if (rc < 0)
+> +			return rc;
+> +		break;
+> +	case Q54SJ108A2_DEBUGFS_MFR_LOCATION:
+> +		rc = i2c_smbus_read_block_data(psu->client, PMBUS_MFR_LOCATION, data);
+> +		if (rc < 0)
+> +			return rc;
+> +		break;
+> +	case Q54SJ108A2_DEBUGFS_BLACKBOX_READ_OFFSET:
+> +		rc = i2c_smbus_read_byte_data(psu->client, READ_HISTORY_EVENT_NUMBER);
+> +		if (rc < 0)
+> +			return rc;
+> +
+> +		rc = snprintf(data, 3, "%02x", rc);
+> +		goto done;
+
+The 'done' label is unnecessary.
+
+> +	case Q54SJ108A2_DEBUGFS_BLACKBOX_READ:
+> +		rc = i2c_smbus_read_block_data(psu->client, READ_HISTORY_EVENTS, data);
+> +		if (rc < 0)
+> +			return rc;
+> +
+> +		res = bin2hex(data, data_char, 32);
+> +		rc = res - data;
+> +
+> +		break;
+> +	case Q54SJ108A2_DEBUGFS_FLASH_KEY:
+> +		rc = i2c_smbus_read_block_data(psu->client, PMBUS_CMD_FLASH_KEY_WRITE, data);
+> +		if (rc < 0)
+> +			return rc;
+> +
+> +		res = bin2hex(data, data_char, 4);
+> +		rc = res - data;
+> +
+> +		break;
+> +	default:
+> +		return -EINVAL;
 > +	}
->   
-> +	domain = kzalloc(sizeof(struct psd_data), GFP_KERNEL);
-> +	if (!domain)
-> +		return NULL;
-> +	if (!zalloc_cpumask_var(&domain->shared_cpu_map, GFP_KERNEL))
-> +		goto free_domain;
-> +	INIT_LIST_HEAD(&domain->cpu_list);
 > +
-> +	ret = acpi_get_psd_map(cpu, domain);
->   	if (ret) {
-> -		pr_debug("Err reading CPU%d perf capabilities. ret:%d\n",
-> -			 cpu, ret);
-> -		return ret;
-> +		pr_err("Error parsing PSD data for CPU%d.\n", cpu);
-> +		goto free_mask;
-> +	}
+> +done:
+> +	data[rc] = '\n';
+> +	rc += 2;
 > +
-> +	list_add(&domain->node, &domain_list);
-> +
-> +	return domain;
-> +
-> +free_mask:
-> +	free_cpumask_var(domain->shared_cpu_map);
-> +free_domain:
-> +	kfree(domain);
-> +
-> +	return NULL;
+> +	return simple_read_from_buffer(buf, count, ppos, data, rc);
 > +}
 > +
-> +static struct cppc_cpudata *cppc_cpufreq_get_cpu_data(unsigned int cpu)
+> +static ssize_t q54sj108a2_debugfs_write(struct file *file, const char __user *buf,
+> +					size_t count, loff_t *ppos)
 > +{
-> +	struct cppc_cpudata *cpu_data;
-> +	struct psd_data *domain;
-> +	int ret;
+> +	u8 flash_key[4];
+> +	u8 dst_data;
+> +	ssize_t rc;
+> +	int *idxp = file->private_data;
+> +	int idx = *idxp;
+> +	int res;
+> +	struct q54sj108a2_data *psu = to_psu(idxp, idx);
 > +
-> +	domain = cppc_cpufreq_get_domain(cpu);
-> +	if (!domain) {
-> +		pr_err("Error acquiring domain for CPU.\n");
-> +		return NULL;
->   	}
->   
-> +	list_for_each_entry(cpu_data, &domain->cpu_list, node) {
-> +		if (cpu_data->cpu == cpu)
-> +			return cpu_data;
+> +	rc = i2c_smbus_write_byte_data(psu->client, PMBUS_WRITE_PROTECT, 0);
+> +	if (rc)
+> +		return rc;
+> +
+> +	switch (idx) {
+> +	case Q54SJ108A2_DEBUGFS_OPERATION:
+> +		res = hex2bin(&dst_data, buf, 1);
+> +		if (res != 0)
+> +			return res;
+> +
+
+I don't see the point of the 'res' variable (in addition to rc).
+It should just be
+		rc = ...
+		if (rc)
+			return rc;
+
+Also, using hex2bin for a 1-byte conversion is not what it is supposed
+to be used for, and it is confusing. It is supposed to be used for buffer
+conversions, not for 1-byte conversions. What is the problem with kstrtoint()
+or, if you don't want to use that, kstrtou8() ?
+
+> +		rc = i2c_smbus_write_byte_data(psu->client, PMBUS_OPERATION, dst_data);
+> +		if (rc)
+> +			return rc;
+> +
+> +		break;
+> +	case Q54SJ108A2_DEBUGFS_CLEARFAULT:
+> +		rc = i2c_smbus_write_byte(psu->client, PMBUS_CLEAR_FAULTS);
+> +		if (rc)
+> +			return rc;
+> +
+> +		break;
+> +	case Q54SJ108A2_DEBUGFS_STOREDEFAULT:
+> +		flash_key[0] = 0x7E;
+> +		flash_key[1] = 0x15;
+> +		flash_key[2] = 0xDC;
+> +		flash_key[3] = 0x42;
+> +		rc = i2c_smbus_write_block_data(psu->client, PMBUS_CMD_FLASH_KEY_WRITE, 4, flash_key);
+> +		if (rc < 0)
+> +			return rc;
+> +
+> +		rc = i2c_smbus_write_byte(psu->client, STORE_DEFAULT_ALL);
+> +		if (rc)
+> +			return rc;
+
+You are using
+		if (rc)
+and
+		if (rc < 0)
+and
+		if (res != 0)
+
+Please make the code consistent.
+
+> +
+> +		break;
+> +	case Q54SJ108A2_DEBUGFS_VOOV_RESPONSE:
+> +		res = hex2bin(&dst_data, buf, 1);
+> +		if (res != 0)
+> +			return res;
+> +
+> +		rc = i2c_smbus_write_byte_data(psu->client, PMBUS_VOUT_OV_FAULT_RESPONSE, dst_data);
+> +		if (rc)
+> +			return rc;
+> +
+> +		break;
+> +	case Q54SJ108A2_DEBUGFS_IOOC_RESPONSE:
+> +		res = hex2bin(&dst_data, buf, 1);
+> +		if (res != 0)
+> +			return res;
+> +
+> +		rc = i2c_smbus_write_byte_data(psu->client, PMBUS_IOUT_OC_FAULT_RESPONSE, dst_data);
+> +		if (rc)
+> +			return rc;
+> +
+> +		break;
+> +	case Q54SJ108A2_DEBUGFS_BLACKBOX_ERASE:
+> +		rc = i2c_smbus_write_byte(psu->client, ERASE_BLACKBOX_DATA);
+> +		if (rc)
+> +			return rc;
+> +
+> +		break;
+> +	case Q54SJ108A2_DEBUGFS_BLACKBOX_SET_OFFSET:
+> +		res = hex2bin(&dst_data, buf, 1);
+> +		if (res != 0)
+> +			return res;
+> +
+> +		rc = i2c_smbus_write_byte_data(psu->client, SET_HISTORY_EVENT_OFFSET, dst_data);
+> +		if (rc)
+> +			return rc;
+> +
+> +		break;
+> +	default:
+> +		return -EINVAL;
 > +	}
 > +
-> +	if ((domain->shared_type == CPUFREQ_SHARED_TYPE_ANY) &&
-> +	    !list_empty(&domain->cpu_list))
-> +		return list_first_entry(&domain->cpu_list,
-> +					struct cppc_cpudata,
-> +					node);
-> +
-> +	cpu_data = kzalloc(sizeof(struct cppc_cpudata), GFP_KERNEL);
-> +	if (!cpu_data)
-> +		return NULL;
-> +
-> +	cpu_data->cpu = cpu;
-> +	cpu_data->domain = domain;
-> +
-> +	ret = cppc_get_perf_caps(cpu, &cpu_data->perf_caps);
-> +	if (ret) {
-> +		pr_err("Err reading CPU%d perf capabilities. ret:%d\n",
-> +			cpu, ret);
-> +		goto free;
-> +	}
->   	/* Convert the lowest and nominal freq from MHz to KHz */
-> -	caps->lowest_freq *= 1000;
-> -	caps->nominal_freq *= 1000;
-> +	cpu_data->perf_caps.lowest_freq *= 1000;
-> +	cpu_data->perf_caps.nominal_freq *= 1000;
-> +
-> +	list_add(&cpu_data->node, &domain->cpu_list);
-> +
-> +	return cpu_data;
-> +free:
-> +	kfree(cpu_data);
-> +
-> +	return NULL;
+> +	return count;
 > +}
 > +
-> +static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
-> +{
-> +	struct cppc_cpudata *cpu_data = NULL;
-> +	struct psd_data *domain = NULL;
-> +	unsigned int cpu = policy->cpu;
-> +	struct cppc_perf_caps *caps;
-> +	int ret = 0;
+> +static const struct file_operations q54sj108a2_fops = {
+> +	.llseek = noop_llseek,
+> +	.read = q54sj108a2_debugfs_read,
+> +	.write = q54sj108a2_debugfs_write,
+> +	.open = simple_open,
+> +};
 > +
-> +	cpu_data = cppc_cpufreq_get_cpu_data(cpu);
-> +	if (!cpu_data) {
-> +		pr_err("Error in acquiring _CPC/_PSD data for CPU.\n");
+> +static const struct i2c_device_id q54sj108a2_id[] = {
+> +	{ "Q54SJ108A2", Q54SJ108A2 },
+> +	{ },
+> +};
+> +
+> +MODULE_DEVICE_TABLE(i2c, q54sj108a2_id);
+> +
+> +static int q54sj108a2_probe(struct i2c_client *client)
+> +{
+> +	struct device *dev = &client->dev;
+> +	u8 buf[I2C_SMBUS_BLOCK_MAX + 1];
+> +	struct pmbus_driver_info *info;
+> +	enum chips chip_id;
+> +	int ret, i;
+> +	struct dentry *debugfs;
+> +	struct dentry *q54sj108a2_dir;
+> +	struct q54sj108a2_data *psu;
+> +
+> +	if (!i2c_check_functionality(client->adapter,
+> +				     I2C_FUNC_SMBUS_BYTE_DATA |
+> +				     I2C_FUNC_SMBUS_WORD_DATA |
+> +				     I2C_FUNC_SMBUS_BLOCK_DATA))
+> +		return -ENODEV;
+> +
+> +	if (client->dev.of_node)
+> +		chip_id = (enum chips)of_device_get_match_data(dev);
+> +	else
+> +		chip_id = i2c_match_id(q54sj108a2_id, client)->driver_data;
+> +
+> +	ret = i2c_smbus_read_block_data(client, PMBUS_MFR_ID, buf);
+> +	if (ret < 0) {
+> +		dev_err(&client->dev, "Failed to read Manufacturer ID\n");
+> +		return ret;
+> +	}
+> +	if (ret != 5 || strncmp(buf, "DELTA", 5)) {
+> +		buf[ret] = '\0';
+> +		dev_err(dev, "Unsupported Manufacturer ID '%s'\n", buf);
 > +		return -ENODEV;
 > +	}
 > +
-> +	domain = cpu_data->domain;
-> +	caps = &cpu_data->perf_caps;
-> +	policy->driver_data = cpu_data;
->   
->   	/*
->   	 * Set min to lowest nonlinear perf to avoid any efficiency penalty (see
-> @@ -278,20 +360,10 @@ static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
->   							    caps->nominal_perf);
->   
->   	policy->transition_delay_us = cppc_cpufreq_get_transition_delay_us(cpu);
-> -	policy->shared_type = cpu_data->shared_type;
-> +	policy->shared_type = domain->shared_type;
->   
->   	if (policy->shared_type == CPUFREQ_SHARED_TYPE_ANY) {
-> -		int i;
-> -
-> -		cpumask_copy(policy->cpus, cpu_data->shared_cpu_map);
-> -
-> -		for_each_cpu(i, policy->cpus) {
-> -			if (unlikely(i == cpu))
-> -				continue;
-> -
-> -			memcpy(&all_cpu_data[i]->perf_caps, caps,
-> -			       sizeof(cpu_data->perf_caps));
-> -		}
-> +		cpumask_copy(policy->cpus, domain->shared_cpu_map);
->   	} else if (policy->shared_type == CPUFREQ_SHARED_TYPE_ALL) {
->   		/* Support only SW_ANY for now. */
->   		pr_debug("Unsupported CPU co-ord type\n");
-> @@ -354,9 +426,12 @@ static int cppc_get_rate_from_fbctrs(struct cppc_cpudata *cpu_data,
->   static unsigned int cppc_cpufreq_get_rate(unsigned int cpu)
->   {
->   	struct cppc_perf_fb_ctrs fb_ctrs_t0 = {0}, fb_ctrs_t1 = {0};
-> -	struct cppc_cpudata *cpu_data = all_cpu_data[cpu];
-> +	struct cpufreq_policy *policy = cpufreq_cpu_get(cpu);
-> +	struct cppc_cpudata *cpu_data = policy->driver_data;
->   	int ret;
->   
-> +	cpufreq_cpu_put(policy);
-> +
->   	ret = cppc_get_perf_ctrs(cpu, &fb_ctrs_t0);
->   	if (ret)
->   		return ret;
-> @@ -372,7 +447,7 @@ static unsigned int cppc_cpufreq_get_rate(unsigned int cpu)
->   
->   static int cppc_cpufreq_set_boost(struct cpufreq_policy *policy, int state)
->   {
-> -	struct cppc_cpudata *cpu_data = all_cpu_data[policy->cpu];
-> +	struct cppc_cpudata *cpu_data = policy->driver_data;
->   	struct cppc_perf_caps *caps = &cpu_data->perf_caps;
->   	int ret;
->   
-> @@ -415,10 +490,13 @@ static struct cpufreq_driver cppc_cpufreq_driver = {
->    */
->   static unsigned int hisi_cppc_cpufreq_get_rate(unsigned int cpu)
->   {
-> -	struct cppc_cpudata *cpu_data = all_cpu_data[cpu];
-> +	struct cpufreq_policy *policy = cpufreq_cpu_get(cpu);
-> +	struct cppc_cpudata *cpu_data = policy->driver_data;
->   	u64 desired_perf;
->   	int ret;
->   
-> +	cpufreq_cpu_put(policy);
-> +
->   	ret = cppc_get_desired_perf(cpu, &desired_perf);
->   	if (ret < 0)
->   		return -EIO;
-> @@ -451,68 +529,41 @@ static void cppc_check_hisi_workaround(void)
->   
->   static int __init cppc_cpufreq_init(void)
->   {
-> -	struct cppc_cpudata *cpu_data;
-> -	int i, ret = 0;
-> -
->   	if (acpi_disabled)
->   		return -ENODEV;
->   
-> -	all_cpu_data = kcalloc(num_possible_cpus(), sizeof(void *),
-> -			       GFP_KERNEL);
-> -	if (!all_cpu_data)
-> -		return -ENOMEM;
-> -
-> -	for_each_possible_cpu(i) {
-> -		all_cpu_data[i] = kzalloc(sizeof(struct cppc_cpudata), GFP_KERNEL);
-> -		if (!all_cpu_data[i])
-> -			goto out;
-> -
-> -		cpu_data = all_cpu_data[i];
-> -		if (!zalloc_cpumask_var(&cpu_data->shared_cpu_map, GFP_KERNEL))
-> -			goto out;
-> -	}
-> -
-> -	ret = acpi_get_psd_map(all_cpu_data);
-> -	if (ret) {
-> -		pr_debug("Error parsing PSD data. Aborting cpufreq registration.\n");
-> -		goto out;
-> -	}
-> -
->   	cppc_check_hisi_workaround();
->   
-> -	ret = cpufreq_register_driver(&cppc_cpufreq_driver);
-> -	if (ret)
-> -		goto out;
-> +	return cpufreq_register_driver(&cppc_cpufreq_driver);
-> +}
->   
-> -	return ret;
-> +static inline void free_cpu_data(struct psd_data *domain)
-> +{
-> +	struct cppc_cpudata *iter, *tmp;
->   
-> -out:
-> -	for_each_possible_cpu(i) {
-> -		cpu_data = all_cpu_data[i];
-> -		if (!cpu_data)
-> -			break;
-> -		free_cpumask_var(cpu_data->shared_cpu_map);
-> -		kfree(cpu_data);
-> +	list_for_each_entry_safe(iter, tmp, &domain->cpu_list, node) {
-> +		list_del(&iter->node);
-> +		kfree(iter);
->   	}
-> -
-> -	kfree(all_cpu_data);
-> -	return -ENODEV;
->   }
->   
-> +static inline void free_domain_data(void)
-> +{
-> +	struct psd_data *iter, *tmp;
-> +
-> +	list_for_each_entry_safe(iter, tmp, &domain_list, node) {
-> +		list_del(&iter->node);
-> +		if (!list_empty(&iter->cpu_list))
-> +			free_cpu_data(iter);
-> +		free_cpumask_var(iter->shared_cpu_map);
-> +		kfree(iter);
+> +	/*
+> +	 * The chips support reading PMBUS_MFR_MODEL.
+> +	 */
+> +	ret = i2c_smbus_read_block_data(client, PMBUS_MFR_MODEL, buf);
+> +	if (ret < 0) {
+> +		dev_err(dev, "Failed to read Manufacturer Model\n");
+> +		return ret;
 > +	}
+> +	if (ret != 14 || strncmp(buf, "Q54SJ108A2", 10)) {
+> +		buf[ret] = '\0';
+> +		dev_err(dev, "Unsupported Manufacturer Model '%s'\n", buf);
+> +		return -ENODEV;
+> +	}
+> +
+> +	ret = i2c_smbus_read_block_data(client, PMBUS_MFR_REVISION, buf);
+> +	if (ret < 0) {
+> +		dev_err(dev, "Failed to read Manufacturer Revision\n");
+> +		return ret;
+> +	}
+> +	if (ret != 4 || buf[0] != 'S') {
+> +		buf[ret] = '\0';
+> +		dev_err(dev, "Unsupported Manufacturer Revision '%s'\n", buf);
+> +		return -ENODEV;
+> +	}
+> +
+> +	info = devm_kzalloc(dev, sizeof(*info), GFP_KERNEL);
+> +	if (!info)
+> +		return -ENOMEM;
+> +
+info isn't used anywhere and thus pointless.
+
+> +	ret = pmbus_do_probe(client, &q54sj108a2_id[chip_id], &q54sj108a2_info[chip_id]);
+> +	if (ret)
+> +		return ret;
+> +
+> +	psu = devm_kzalloc(&client->dev, sizeof(*psu), GFP_KERNEL);
+> +	if (!psu)
+> +		return 0;
+> +
+> +	psu->client = client;
+> +
+> +	debugfs = pmbus_get_debugfs_dir(client);
+> +
+> +	q54sj108a2_dir = debugfs_create_dir(client->name, debugfs);
+> +
+> +	for (i = 0; i < Q54SJ108A2_DEBUGFS_NUM_ENTRIES; ++i)
+> +		psu->debugfs_entries[i] = i;
+> +
+> +	debugfs_create_file("operation", 0644, q54sj108a2_dir,
+> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_OPERATION],
+> +			    &q54sj108a2_fops);
+> +	debugfs_create_file("clear_fault", 0200, q54sj108a2_dir,
+> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_CLEARFAULT],
+> +			    &q54sj108a2_fops);
+> +	debugfs_create_file("write_protect", 0444, q54sj108a2_dir,
+> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_WRITEPROTECT],
+> +			    &q54sj108a2_fops);
+> +	debugfs_create_file("store_default", 0200, q54sj108a2_dir,
+> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_STOREDEFAULT],
+> +			    &q54sj108a2_fops);
+> +	debugfs_create_file("vo_ov_response", 0644, q54sj108a2_dir,
+> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_VOOV_RESPONSE],
+> +			    &q54sj108a2_fops);
+> +	debugfs_create_file("io_oc_response", 0644, q54sj108a2_dir,
+> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_IOOC_RESPONSE],
+> +			    &q54sj108a2_fops);
+> +	debugfs_create_file("pmbus_revision", 0444, q54sj108a2_dir,
+> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_PMBUS_VERSION],
+> +			    &q54sj108a2_fops);
+> +	debugfs_create_file("mfr_id", 0444, q54sj108a2_dir,
+> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_MFR_ID],
+> +			    &q54sj108a2_fops);
+> +	debugfs_create_file("mfr_model", 0444, q54sj108a2_dir,
+> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_MFR_MODEL],
+> +			    &q54sj108a2_fops);
+> +	debugfs_create_file("mfr_revision", 0444, q54sj108a2_dir,
+> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_MFR_REVISION],
+> +			    &q54sj108a2_fops);
+> +	debugfs_create_file("mfr_location", 0444, q54sj108a2_dir,
+> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_MFR_LOCATION],
+> +			    &q54sj108a2_fops);
+> +	debugfs_create_file("blackbox_erase", 0200, q54sj108a2_dir,
+> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_BLACKBOX_ERASE],
+> +			    &q54sj108a2_fops);
+> +	debugfs_create_file("blackbox_read_offset", 0444, q54sj108a2_dir,
+> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_BLACKBOX_READ_OFFSET],
+> +			    &q54sj108a2_fops);
+> +	debugfs_create_file("blackbox_set_offset", 0200, q54sj108a2_dir,
+> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_BLACKBOX_SET_OFFSET],
+> +			    &q54sj108a2_fops);
+> +	debugfs_create_file("blackbox_read", 0444, q54sj108a2_dir,
+> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_BLACKBOX_READ],
+> +			    &q54sj108a2_fops);
+> +	debugfs_create_file("flash_key", 0444, q54sj108a2_dir,
+> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_FLASH_KEY],
+> +			    &q54sj108a2_fops);
+> +
+> +	return 0;
 > +}
->   static void __exit cppc_cpufreq_exit(void)
->   {
-> -	struct cppc_cpudata *cpu_data;
-> -	int i;
-> -
->   	cpufreq_unregister_driver(&cppc_cpufreq_driver);
->   
-> -	for_each_possible_cpu(i) {
-> -		cpu_data = all_cpu_data[i];
-> -		free_cpumask_var(cpu_data->shared_cpu_map);
-> -		kfree(cpu_data);
-> -	}
-> -
-> -	kfree(all_cpu_data);
-> +	free_domain_data();
->   }
->   
->   module_exit(cppc_cpufreq_exit);
-> diff --git a/include/acpi/cppc_acpi.h b/include/acpi/cppc_acpi.h
-> index a6a9373ab863..c0081fb6032e 100644
-> --- a/include/acpi/cppc_acpi.h
-> +++ b/include/acpi/cppc_acpi.h
-> @@ -122,22 +122,30 @@ struct cppc_perf_fb_ctrs {
->   	u64 wraparound_time;
->   };
->   
-> +/* Container of performance state domain data */
-> +struct psd_data {
-> +	struct list_head node;
-> +	unsigned int shared_type;
-> +	struct list_head cpu_list;
-> +	cpumask_var_t shared_cpu_map;
+> +
+> +static const struct of_device_id q54sj108a2_of_match[] = {
+> +	{ .compatible = "delta,Q54SJ108A2", .data = (void *)Q54SJ108A2 },
+> +	{ },
 > +};
 > +
->   /* Per CPU container for runtime CPPC management. */
->   struct cppc_cpudata {
->   	int cpu;
-> +	struct list_head node;
-> +	struct psd_data *domain;
->   	struct cppc_perf_caps perf_caps;
->   	struct cppc_perf_ctrls perf_ctrls;
->   	struct cppc_perf_fb_ctrs perf_fb_ctrs;
->   	struct cpufreq_policy *cur_policy;
-> -	unsigned int shared_type;
-> -	cpumask_var_t shared_cpu_map;
->   };
->   
->   extern int cppc_get_desired_perf(int cpunum, u64 *desired_perf);
->   extern int cppc_get_perf_ctrs(int cpu, struct cppc_perf_fb_ctrs *perf_fb_ctrs);
->   extern int cppc_set_perf(int cpu, struct cppc_perf_ctrls *perf_ctrls);
->   extern int cppc_get_perf_caps(int cpu, struct cppc_perf_caps *caps);
-> -extern int acpi_get_psd_map(struct cppc_cpudata **);
-> +extern int acpi_get_psd_map(unsigned int cpu, struct psd_data *domain);
->   extern unsigned int cppc_get_transition_latency(int cpu);
->   extern bool cpc_ffh_supported(void);
->   extern int cpc_read_ffh(int cpunum, struct cpc_reg *reg, u64 *val);
+> +MODULE_DEVICE_TABLE(of, q54sj108a2_of_match);
+> +
+> +static struct i2c_driver q54sj108a2_driver = {
+> +	.driver = {
+> +		.name = "Q54SJ108A2",
+> +		.of_match_table = q54sj108a2_of_match,
+> +	},
+> +	.probe_new = q54sj108a2_probe,
+> +	.id_table = q54sj108a2_id,
+> +};
+> +
+> +module_i2c_driver(q54sj108a2_driver);
+> +
+> +MODULE_AUTHOR("Xiao.Ma <xiao.mx.ma@deltaww.com>");
+> +MODULE_DESCRIPTION("PMBus driver for Delta Q54SJ108A2 series modules");
+> +MODULE_LICENSE("GPL");
 > 
 
