@@ -2,197 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DC292A873A
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 20:30:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3C252A8732
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 20:29:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732313AbgKETaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 14:30:09 -0500
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:42139 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732221AbgKETaC (ORCPT
+        id S1732169AbgKET3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 14:29:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35372 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727851AbgKET3s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 14:30:02 -0500
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id 584F75C00EE;
-        Thu,  5 Nov 2020 14:30:01 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Thu, 05 Nov 2020 14:30:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm1; bh=UaRy2DWi1Qyi7
-        0CmV76MDvFDVaBQWoSa3U4IeMYvayk=; b=VPiHMAX8AxaRcDsnYJuMYh6LJ8OmO
-        tJlAFYbBdcKOC30FEd8RlfQeBTUCo10ognGTdCcfdF7nBDqhOUXUx63uA/0Hgny3
-        cwHx4LUfyHkB3FMLy2RzumApgQNl7hnPqmir61iF3nyX3Uyko/fnNGBvkSXQDj0u
-        NOvYgu0apKy4efOLWG/4wM9dAAfNQMOqRhISUQktZfTtk0waLjZUgp+Um+7wq+rU
-        3juRJP9zS0p46cn2jSiKiyr72DO7SLrshGvRYHwGwJbg1Gsi1eaDxhBHxEOpeFQi
-        0FQEsNPfptj7V5spo9E0+kzsxK4gWZVsyae/zTETokUMcDINeVeTFwjfw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; bh=UaRy2DWi1Qyi70CmV76MDvFDVaBQWoSa3U4IeMYvayk=; b=VNo5c8pL
-        Ti21zzMd69rfdSckNc74sNZtRjD3nj0AvNVZW4jlEkaxCG1fHhroyP+bcOLkyBHk
-        UWszZ2DvP1oYWs/Hg2UmMt/kPLit1oBsQDN8yGGeFoCRIFgq8MBCOdz4w7e71E+N
-        yMg82nXTITzEJB4ViUjzkeIqUtpW1FHrnO3NYmG4RIOSaEuwMnZ7pBo6BqYyzCtE
-        bB0D56E42HT0lR1bKyJclWsabVQh7ScojjEGpRwxBSs/dQbIX7IDr3lpeCqDajYc
-        JM5O/svObJQxL4xArS7GrLkz4LsfJ86kzrT5vdgh13uH3WF9zsRJKmv2DlpFl8I/
-        DJQBKFzw8pTKoA==
-X-ME-Sender: <xms:uVKkX_vBd-G8Ckdtp9bFOHnGQ79fipBt3Lp66SwlMpo_QNxI_jiIkA>
-    <xme:uVKkXwc2n12KsnYTdBMQ9Jt1QBDireb8v7KpryQ5ILVLLOMA0BwTXH-LYZgdjxTy5
-    B0KGWRaM9BYk56ZBQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddtjedguddvhecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecufghrlhcuvffnffculdejtddmnecujfgurhephf
-    fvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeffrghnihgvlhcuighuuceo
-    ugiguhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepgfekudelkefhteevhf
-    eggfdvgeefjeefgfeuvddutdfhgffghfehtdeuueetfeeinecukfhppeeiledrudekuddr
-    uddthedrieegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
-    homhepugiguhesugiguhhuuhdrgiihii
-X-ME-Proxy: <xmx:uVKkXyyjKL_MBKPZZjX89dvJElQXw2maP3iZB5gcASd_CF79sJ_Xew>
-    <xmx:uVKkX-NtWsDB2jLSIuoEQaphTDkyazXgUSwBf2EZ5KiOA9ijUv6xmA>
-    <xmx:uVKkX_9_woi_dHSsgq7Z-qY2wjxFwzX78Ea75MfBAJoIHu7xsh47fQ>
-    <xmx:uVKkX7Zq_cT0jMGcUKBbOSDeFzH2pAABDGakSnttviHvBRRFoDS_-g>
-Received: from localhost.localdomain (c-69-181-105-64.hsd1.ca.comcast.net [69.181.105.64])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 578A53280394;
-        Thu,  5 Nov 2020 14:30:00 -0500 (EST)
-From:   Daniel Xu <dxu@dxuuu.xyz>
-To:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, songliubraving@fb.com
-Cc:     Daniel Xu <dxu@dxuuu.xyz>, kernel-team@fb.com
-Subject: [PATCH bpf v3 2/2] selftest/bpf: Test bpf_probe_read_user_str() strips trailing bytes after NUL
-Date:   Thu,  5 Nov 2020 11:29:22 -0800
-Message-Id: <1d76e240e7b4fa264b3a50ebd391c4f0cc814919.1604604240.git.dxu@dxuuu.xyz>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <cover.1604604240.git.dxu@dxuuu.xyz>
-References: <cover.1604604240.git.dxu@dxuuu.xyz>
+        Thu, 5 Nov 2020 14:29:48 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C565C0613CF;
+        Thu,  5 Nov 2020 11:29:48 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id x12so3090517wrm.8;
+        Thu, 05 Nov 2020 11:29:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IEZ9p00rgiSdsobZZ6m51z0iGJli/xa8uAws+u4wKLQ=;
+        b=pR25c4Gjdxn3KSfWyePOQ6ruq3VkG2NHIhiqrNJy8zP5HslzioHDvj/w/W1aKHI6gl
+         A2flWc3BgGLK/cN/StRNPl6Ba8cCOqMcwtCp5YyhsDboYqqeTm+wCz2+ex59nNHVl4md
+         iFotiVRORYZpQ0Et4zRa2UXkw94bIYCXRRJgIyJhnR1HJWbvZShHQrPk8O89ZQ1e+cyF
+         llY20KCt7fBGUQ7rXDDToKIg2fsk9Csmd0MckjsaRt09OnL/CEOEYTJjrLiRiGn283oy
+         L7mLoAGcL6yDWS/xrTAS/L1yREcZTkt0FZj3VMYI0lu5z29dbIPZh+fkq1xGusBsPvXy
+         qLsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IEZ9p00rgiSdsobZZ6m51z0iGJli/xa8uAws+u4wKLQ=;
+        b=LL08HAjr3trBPExJ84kbyyhXoCLEEmC5IEJfIjxythEMMPTCUD5zichV6OKBeVCDL6
+         VH5eV7yn62Z404oUgwgt5qgN5uBylt7WXNP+NRe5+LT27kgS/B8SlSQFe1tqjRg9VV4h
+         wPI3VKDkPCGH8or02J1cQiy1/dbijCBbIsbppXZNv9xm/xw7YghLaNcmGmDtTtMx/hXH
+         a5r8M0fBXUUdjfN7xMzb7EYZukjSQU2yfYkgOGw9kucTgCNMkfIo21fME2y0u4W+TEfI
+         uld7DD2OmPRF92EDloHGSufL0FrJcIc7ycfHtetBLqcOs3REKGZ/BUPIStUFgYSNLPpl
+         6D8w==
+X-Gm-Message-State: AOAM530hP0oKtVC1yATHQ3+lxKCWGjiqZa8uxocOOvXydm+3U3dzYG+W
+        zZveX8qwxd2f2bg3fsZ4l0tkTr4+ohpKTEsdct8=
+X-Google-Smtp-Source: ABdhPJxQy42cWOWUrSyWEQkumWJ45TSM56KVWwRab8GksSRCau0dT3WxtbMv8ACbvaTPEunRhRzCyfnAEoF9o8gj2iQ=
+X-Received: by 2002:a5d:4c4f:: with SMTP id n15mr4601176wrt.137.1604604587134;
+ Thu, 05 Nov 2020 11:29:47 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <BYAPR18MB2679EC3507BD90B93B37A3F8C5EE0@BYAPR18MB2679.namprd18.prod.outlook.com>
+ <1dd085b9f7013e9a28057f3080ee7b920bfbc9fc.camel@kernel.org>
+In-Reply-To: <1dd085b9f7013e9a28057f3080ee7b920bfbc9fc.camel@kernel.org>
+From:   Sunil Kovvuri <sunil.kovvuri@gmail.com>
+Date:   Fri, 6 Nov 2020 00:59:35 +0530
+Message-ID: <CA+sq2Cc9-vvF8K_FASca5FGYyFc_53QWqyEtoHAx6xVCs41LiQ@mail.gmail.com>
+Subject: Re: [PATCH v2 net-next 3/3] octeontx2-af: Add devlink health
+ reporters for NIX
+To:     Saeed Mahameed <saeed@kernel.org>
+Cc:     George Cherian <gcherian@marvell.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jiri Pirko <jiri@nvidia.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
+        Linu Cherian <lcherian@marvell.com>,
+        Geethasowjanya Akula <gakula@marvell.com>,
+        "masahiroy@kernel.org" <masahiroy@kernel.org>,
+        "willemdebruijn.kernel@gmail.com" <willemdebruijn.kernel@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Previously, bpf_probe_read_user_str() could potentially overcopy the
-trailing bytes after the NUL due to how do_strncpy_from_user() does the
-copy in long-sized strides. The issue has been fixed in the previous
-commit.
+> > > > Output:
+> > > >  # ./devlink health
+> > > >  pci/0002:01:00.0:
+> > > >    reporter npa
+> > > >      state healthy error 0 recover 0
+> > > >    reporter nix
+> > > >      state healthy error 0 recover 0
+> > > >  # ./devlink  health dump show pci/0002:01:00.0 reporter nix
+> > > >   NIX_AF_GENERAL:
+> > > >          Memory Fault on NIX_AQ_INST_S read: 0
+> > > >          Memory Fault on NIX_AQ_RES_S write: 0
+> > > >          AQ Doorbell error: 0
+> > > >          Rx on unmapped PF_FUNC: 0
+> > > >          Rx multicast replication error: 0
+> > > >          Memory fault on NIX_RX_MCE_S read: 0
+> > > >          Memory fault on multicast WQE read: 0
+> > > >          Memory fault on mirror WQE read: 0
+> > > >          Memory fault on mirror pkt write: 0
+> > > >          Memory fault on multicast pkt write: 0
+> > > >    NIX_AF_RAS:
+> > > >          Poisoned data on NIX_AQ_INST_S read: 0
+> > > >          Poisoned data on NIX_AQ_RES_S write: 0
+> > > >          Poisoned data on HW context read: 0
+> > > >          Poisoned data on packet read from mirror buffer: 0
+> > > >          Poisoned data on packet read from mcast buffer: 0
+> > > >          Poisoned data on WQE read from mirror buffer: 0
+> > > >          Poisoned data on WQE read from multicast buffer: 0
+> > > >          Poisoned data on NIX_RX_MCE_S read: 0
+> > > >    NIX_AF_RVU:
+> > > >          Unmap Slot Error: 0
+> > > >
+> > >
+> > > Now i am a little bit skeptic here, devlink health reporter
+> > > infrastructure was
+> > > never meant to deal with dump op only, the main purpose is to
+> > > diagnose/dump and recover.
+> > >
+> > > especially in your use case where you only report counters, i don't
+> > > believe
+> > > devlink health dump is a proper interface for this.
+> > These are not counters. These are error interrupts raised by HW
+> > blocks.
+> > The count is provided to understand on how frequently the errors are
+> > seen.
+> > Error recovery for some of the blocks happen internally. That is the
+> > reason,
+> > Currently only dump op is added.
+>
+> So you are counting these events in driver, sounds like a counter to
+> me, i really think this shouldn't belong to devlink, unless you really
+> utilize devlink health ops for actual reporting and recovery.
+>
+> what's wrong with just dumping these counters to ethtool ?
 
-This commit adds a selftest that ensures we don't regress
-bpf_probe_read_user_str() again.
+This driver is a administrative driver which handles all the resources
+in the system and doesn't do any IO.
+NIX and NPA are key co-processor blocks which this driver handles.
+With NIX and NPA, there are pieces
+which gets attached to a PCI device to make it a networking device. We
+have netdev drivers registered to this
+networking device. Some more information about the drivers is available at
+https://www.kernel.org/doc/html/latest/networking/device_drivers/ethernet/marvell/octeontx2.html
 
-Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
----
- .../bpf/prog_tests/probe_read_user_str.c      | 60 +++++++++++++++++++
- .../bpf/progs/test_probe_read_user_str.c      | 34 +++++++++++
- 2 files changed, 94 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_probe_read_user_str.c
+So we don't have a netdev here to report these co-processor block
+level errors over ethtool.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c b/tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c
-new file mode 100644
-index 000000000000..7c6422901b78
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c
-@@ -0,0 +1,60 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <test_progs.h>
-+#include "test_probe_read_user_str.skel.h"
-+
-+static const char str[] = "mestring";
-+
-+void test_probe_read_user_str(void)
-+{
-+	struct test_probe_read_user_str *skel;
-+	int fd, err, duration = 0;
-+	char buf[256];
-+	ssize_t n;
-+
-+	skel = test_probe_read_user_str__open_and_load();
-+	if (CHECK(!skel, "test_probe_read_user_str__open_and_load",
-+		  "skeleton open and load failed\n"))
-+		return;
-+
-+	/* Give pid to bpf prog so it doesn't read from anyone else */
-+	skel->bss->pid = getpid();
-+
-+	err = test_probe_read_user_str__attach(skel);
-+	if (CHECK(err, "test_probe_read_user_str__attach",
-+		  "skeleton attach failed: %d\n", err))
-+		goto out;
-+
-+	fd = open("/dev/null", O_WRONLY);
-+	if (CHECK(fd < 0, "open", "open /dev/null failed: %d\n", fd))
-+		goto out;
-+
-+	/* Ensure bytes after string are ones */
-+	memset(buf, 1, sizeof(buf));
-+	memcpy(buf, str, sizeof(str));
-+
-+	/* Trigger tracepoint */
-+	n = write(fd, buf, sizeof(buf));
-+	if (CHECK(n != sizeof(buf), "write", "write failed: %ld\n", n))
-+		goto fd_out;
-+
-+	/* Did helper fail? */
-+	if (CHECK(skel->bss->ret < 0, "prog_ret", "prog returned: %ld\n",
-+		  skel->bss->ret))
-+		goto fd_out;
-+
-+	/* Check that string was copied correctly */
-+	err = memcmp(skel->bss->buf, str, sizeof(str));
-+	if (CHECK(err, "memcmp", "prog copied wrong string"))
-+		goto fd_out;
-+
-+	/* Now check that no extra trailing bytes were copied */
-+	memset(buf, 0, sizeof(buf));
-+	err = memcmp(skel->bss->buf + sizeof(str), buf, sizeof(buf) - sizeof(str));
-+	if (CHECK(err, "memcmp", "trailing bytes were not stripped"))
-+		goto fd_out;
-+
-+fd_out:
-+	close(fd);
-+out:
-+	test_probe_read_user_str__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_probe_read_user_str.c b/tools/testing/selftests/bpf/progs/test_probe_read_user_str.c
-new file mode 100644
-index 000000000000..5da764a8bf85
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_probe_read_user_str.c
-@@ -0,0 +1,34 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+#include <sys/types.h>
-+
-+struct sys_enter_write_args {
-+	unsigned long long pad;
-+	int syscall_nr;
-+	int pad1; /* 4 byte hole */
-+	unsigned int fd;
-+	int pad2; /* 4 byte hole */
-+	const char *buf;
-+	size_t count;
-+};
-+
-+pid_t pid = 0;
-+long ret = 0;
-+char buf[256] = {};
-+
-+SEC("tracepoint/syscalls/sys_enter_write")
-+int on_write(struct sys_enter_write_args *ctx)
-+{
-+	if (pid != (bpf_get_current_pid_tgid() >> 32))
-+		return 0;
-+
-+	ret = bpf_probe_read_user_str(buf, sizeof(buf), ctx->buf);
-+
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.28.0
-
+Thanks,
+Sunil.
