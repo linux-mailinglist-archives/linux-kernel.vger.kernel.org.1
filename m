@@ -2,138 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB5882A7A2E
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 10:13:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DE732A7A2D
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 10:13:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730864AbgKEJNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 04:13:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51442 "EHLO
+        id S1729909AbgKEJNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 04:13:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730511AbgKEJNR (ORCPT
+        with ESMTP id S1725320AbgKEJNJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 04:13:17 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BE87C0613CF;
-        Thu,  5 Nov 2020 01:13:17 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id z24so979676pgk.3;
-        Thu, 05 Nov 2020 01:13:17 -0800 (PST)
+        Thu, 5 Nov 2020 04:13:09 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F955C0613D2
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 01:13:09 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id d142so802722wmd.4
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 01:13:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=it/aUNucb+eS7C5uHmvXlw2AU+ivxXZX3tKWa1g129A=;
-        b=Aj4bInwyaphGTX6fTa2ceBsFKzIuLADKM48JtK+GTW6s03bSUhcT6dBpMLVZp3iAvS
-         XyTm/nYnhLFJ9H3vCEiwBGDg0QEhJE3dmKanNa8jF2yDP8QYHRIVB//qBO2WtLYDl8/w
-         NcWFjqHQF3Rrch8TI5tHGDufElraqHO17JRm5Cphcy/m0a1n8R4FA6JQWHldJJtG3a/J
-         2tlOWIM5wvEnF/akzKDvDFGt8Tyk63oubn2F+WN8OvugTYql/iI1ixpcvka6B709xdja
-         yiA93bI4V/JAjE8ri1NcxzDezknNqhj/mdmsxh3XOJil2/AJwb3mbvX3+syCtFFYXU2f
-         9iCw==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=ppYF0PlErbRwfu8mEHF7wqc9jdX4m5kx1kPLbT7peag=;
+        b=IttUDjlTiYiGPb0c5L/usFI9KKlI5FGGTYkpqXQRVcDYOmEHfwHcdcpHZHXlj/CUmd
+         mI1zRNsW15M6Ga+fV2uIBZAabTC4bS8o6ifnFzbK2r2JDvSaBnpFXH8eTgWUkhgeg9yC
+         CUGAiYM+cZUrTy879BMVrpxQMa/sVLAqVLmaKjN9lOnK6v/AuTkDT027AqrfF8otY8y2
+         1jgLd9zYccP0nT43isgCkcIcVjYrKBgayW+iCMX87a41BtPzuyl+E1VUrWjFFQsW9hs+
+         k8q6/6lDlD1VSNaHrrcyw/k7zXv4Eusjh4gHumas/7Hcz7zH5sJGIwo8fIWnYlewFlkI
+         pP4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=it/aUNucb+eS7C5uHmvXlw2AU+ivxXZX3tKWa1g129A=;
-        b=Pc/0Z6tAyOBP+vF593AVyhgx8laO8AeS4YajCrKmR3TdW1AnyqO25myQE42Lp/PEIH
-         WOC21zxqTif/m0LATX/Axx0fTc6Lirpe1DvOAkCEW5gtJByQxv4K1x18FpWYC0epfzZY
-         eKB+DVKX0DEtCBcPTDhzoLnLCaOEi2PdxJEyBqA183VocQ0d6wBDYVMnR66xKbSJXpzQ
-         GhAtc52vOM3pK+w603arJAW4g2Iz6kGwfsPn9W/OVMXqRoJ/ICo3sKg8VmtFk/4NpGq1
-         u6DlVuISe+WlBC14BS0BCDvmwh9xeNkXEGRC5prAyucbiHZXLIV4rbzdubOGtTMSytKE
-         4k4g==
-X-Gm-Message-State: AOAM531CikEP4s2Vyf4rdAc8P37qqSeKDmo/LOBWpWQMflo7R9tp1hZ3
-        6Pw3RBe63jK1Jj7uAQ+WbDhURfg8RIWTVQ==
-X-Google-Smtp-Source: ABdhPJxOCFM30PXg4bz3cULiea6le6eGSaNWAP6cq6k9a4aWDii32DyXTILEprpgOQ63l8V3nwm7Xg==
-X-Received: by 2002:a05:6a00:44:b029:155:18ee:a71e with SMTP id i4-20020a056a000044b029015518eea71emr1573317pfk.1.1604567596694;
-        Thu, 05 Nov 2020 01:13:16 -0800 (PST)
-Received: from VM-16-39-centos.localdomain ([124.156.183.47])
-        by smtp.gmail.com with ESMTPSA id g3sm1551789pgl.55.2020.11.05.01.13.14
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 05 Nov 2020 01:13:15 -0800 (PST)
-From:   junjiehua0xff@gmail.com
-X-Google-Original-From: junjiehua@tencent.com
-To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Andrey Smetanin <asmetanin@virtuozzo.com>,
-        Junjie Hua <junjiehua@tencent.com>
-Subject: [PATCH] x86/kvm/hyper-v: Don't deactivate APICv unconditionally when Hyper-V SynIC enabled
-Date:   Thu,  5 Nov 2020 17:12:17 +0800
-Message-Id: <1604567537-909-1-git-send-email-junjiehua@tencent.com>
-X-Mailer: git-send-email 1.8.3.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=ppYF0PlErbRwfu8mEHF7wqc9jdX4m5kx1kPLbT7peag=;
+        b=EC8/MvZLXx86uisjGuPvtDB+xa2lAgTV4wgz9MVRn0mjP1t/TVJRUkjDIZaLVWS1tU
+         ptzA5MWXmnhthq8ZGnyZ+Zn+uBpuN7mNo9cKKIG3GLse+b3AvgB99ppRvMJGy3WDeepI
+         9vftad1gvyMPrri4enDCENPUmzuBLMLUutpl3WUqxwT1CVks2x6V8v9o8jEX0k5Z8UDm
+         1jyO3rXB/5/ha7g0+04BYATAfTi2yrpE1VjTt2s4DRiMfsLT3cdLBDeiEuFF3z603W30
+         ejecMBJIX1080QHsjpwZ9ikfJyt17FKxpnbdQ4SmxBePC0uPMhp1tlZCqWXzcmcYk2VL
+         NAxQ==
+X-Gm-Message-State: AOAM533lZZNK849AyF8lhcoKby2uRChWr6g4wkAEn/0aBJi1lznlI3vt
+        nRc0zQVQEhijCFogYMLePToRhjjvIYMFmKFj
+X-Google-Smtp-Source: ABdhPJzwvxvC55mfhNxs1rZhTHZFiQyUhDp2eRPI3OFsmvNmIkibkr1lXvdEhVgU6KPpcLyTBYaaeA==
+X-Received: by 2002:a1c:9a0e:: with SMTP id c14mr1603242wme.35.1604567587575;
+        Thu, 05 Nov 2020 01:13:07 -0800 (PST)
+Received: from dell ([91.110.221.242])
+        by smtp.gmail.com with ESMTPSA id y10sm1453811wru.94.2020.11.05.01.13.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Nov 2020 01:13:06 -0800 (PST)
+Date:   Thu, 5 Nov 2020 09:13:05 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, dusonlin@emc.com.tw,
+        KT Liao <kt.liao@emc.com.tw>, linux-input@vger.kernel.org
+Subject: Re: [PATCH 06/20] include: input: elan-i2c-ids: Mark 'elan_acpi_id'
+ as __maybe_unused
+Message-ID: <20201105091305.GH4488@dell>
+References: <20201104162427.2984742-1-lee.jones@linaro.org>
+ <20201104162427.2984742-7-lee.jones@linaro.org>
+ <20201104225054.GC1003057@dtor-ws>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201104225054.GC1003057@dtor-ws>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Junjie Hua <junjiehua@tencent.com>
+On Wed, 04 Nov 2020, Dmitry Torokhov wrote:
 
-The current implementation of Hyper-V SynIC[1] request to deactivate 
-APICv when SynIC is enabled, since the AutoEOI feature of SynIC is not 
-compatible with APICv[2].
+> Hi Lee,
+> 
+> On Wed, Nov 04, 2020 at 04:24:13PM +0000, Lee Jones wrote:
+> > Some drivers which include 'elan-i2c-ids.h' make use of
+> > 'elan_acpi_id', but not all do.  Tell the compiler that this is
+> > expected behaviour.
+> > 
+> > Fixes the following W=1 kernel build warning(s):
+> > 
+> >  include/linux/input/elan-i2c-ids.h:26:36: warning: ‘elan_acpi_id’ defined but not used [-Wunused-const-variable=]
+> > 
+> > Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> > Cc: dusonlin@emc.com.tw
+> > Cc: KT Liao <kt.liao@emc.com.tw>
+> > Cc: linux-input@vger.kernel.org
+> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> > ---
+> >  include/linux/input/elan-i2c-ids.h | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/include/linux/input/elan-i2c-ids.h b/include/linux/input/elan-i2c-ids.h
+> > index 520858d126808..b6976d99b6b75 100644
+> > --- a/include/linux/input/elan-i2c-ids.h
+> > +++ b/include/linux/input/elan-i2c-ids.h
+> > @@ -23,7 +23,7 @@
+> >  
+> >  #include <linux/mod_devicetable.h>
+> >  
+> > -static const struct acpi_device_id elan_acpi_id[] = {
+> > +static const struct acpi_device_id __maybe_unused elan_acpi_id[] = {
+> >  	{ "ELAN0000", 0 },
+> >  	{ "ELAN0100", 0 },
+> >  	{ "ELAN0600", 0 },
+> 
+> I think I'd prefer something like this instead:
+> 
+> diff --git a/drivers/input/mouse/elan_i2c_core.c
+> b/drivers/input/mouse/elan_i2c_core.c
+> index c599e21a8478..65d21a050cea 100644
+> --- a/drivers/input/mouse/elan_i2c_core.c
+> +++ b/drivers/input/mouse/elan_i2c_core.c
+> @@ -34,7 +34,6 @@
+>  #include <linux/completion.h>
+>  #include <linux/of.h>
+>  #include <linux/property.h>
+> -#include <linux/input/elan-i2c-ids.h>
+>  #include <linux/regulator/consumer.h>
+>  #include <asm/unaligned.h>
+> 
+> @@ -1413,6 +1412,7 @@ static const struct i2c_device_id elan_id[] = {
+>  MODULE_DEVICE_TABLE(i2c, elan_id);
+> 
+>  #ifdef CONFIG_ACPI
+> +#include <linux/input/elan-i2c-ids.h>
+>  MODULE_DEVICE_TABLE(acpi, elan_acpi_id);
+>  #endif
 
-Actually, windows doesn't use AutoEOI if deprecating AutoEOI bit is set 
-(CPUID.40000004H:EAX[bit 9], HyperV-TLFS v6.0b section 2.4.5), we don't 
-need to disable APICv in this case.
+Moving an #include file to the bottom of a source file, really?
 
-[1] commit 5c919412fe61 ("kvm/x86: Hyper-V synthetic interrupt controller")
-[2] https://patchwork.kernel.org/patch/7486761/
+I can do as you wish, but it's a pretty 'interesting' solution. :)
 
-Signed-off-by: Junjie Hua <junjiehua@tencent.com>
----
- arch/x86/kvm/hyperv.c | 18 +++++++++++++++++-
- arch/x86/kvm/lapic.c  |  3 +++
- 2 files changed, 20 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
-index 5c7c406..9eee2da 100644
---- a/arch/x86/kvm/hyperv.c
-+++ b/arch/x86/kvm/hyperv.c
-@@ -899,6 +899,19 @@ void kvm_hv_vcpu_postcreate(struct kvm_vcpu *vcpu)
- 	hv_vcpu->vp_index = kvm_vcpu_get_idx(vcpu);
- }
- 
-+static bool kvm_hv_is_synic_autoeoi_deprecated(struct kvm_vcpu *vcpu)
-+{
-+	struct kvm_cpuid_entry2 *entry;
-+
-+	entry = kvm_find_cpuid_entry(vcpu,
-+				HYPERV_CPUID_ENLIGHTMENT_INFO,
-+				0);
-+	if (!entry)
-+		return false;
-+
-+	return entry->eax & HV_DEPRECATING_AEOI_RECOMMENDED;
-+}
-+
- int kvm_hv_activate_synic(struct kvm_vcpu *vcpu, bool dont_zero_synic_pages)
- {
- 	struct kvm_vcpu_hv_synic *synic = vcpu_to_synic(vcpu);
-@@ -908,7 +921,10 @@ int kvm_hv_activate_synic(struct kvm_vcpu *vcpu, bool dont_zero_synic_pages)
- 	 * not compatible with APICV, so request
- 	 * to deactivate APICV permanently.
- 	 */
--	kvm_request_apicv_update(vcpu->kvm, false, APICV_INHIBIT_REASON_HYPERV);
-+	if (!kvm_hv_is_synic_autoeoi_deprecated(vcpu))
-+		kvm_request_apicv_update(vcpu->kvm,
-+					false, APICV_INHIBIT_REASON_HYPERV);
-+
- 	synic->active = true;
- 	synic->dont_zero_synic_pages = dont_zero_synic_pages;
- 	synic->control = HV_SYNIC_CONTROL_ENABLE;
-diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-index 105e785..0bb431f 100644
---- a/arch/x86/kvm/lapic.c
-+++ b/arch/x86/kvm/lapic.c
-@@ -1263,6 +1263,9 @@ void kvm_apic_set_eoi_accelerated(struct kvm_vcpu *vcpu, int vector)
- 
- 	trace_kvm_eoi(apic, vector);
- 
-+	if (test_bit(vector, vcpu_to_synic(apic->vcpu)->vec_bitmap))
-+		kvm_hv_synic_send_eoi(apic->vcpu, vector);
-+
- 	kvm_ioapic_send_eoi(apic, vector);
- 	kvm_make_request(KVM_REQ_EVENT, apic->vcpu);
- }
 -- 
-1.8.3.1
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
