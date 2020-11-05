@@ -2,71 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 897932A844A
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 17:59:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 327782A845A
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 18:00:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731713AbgKEQ60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 11:58:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52452 "EHLO mail.kernel.org"
+        id S1731120AbgKERAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 12:00:46 -0500
+Received: from foss.arm.com ([217.140.110.172]:37504 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730862AbgKEQ6U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 11:58:20 -0500
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5683A2073A;
-        Thu,  5 Nov 2020 16:58:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604595500;
-        bh=WPfKbYRANsaYY5+y24dfY+e9RC7MfQyTqEBf6L+3aEU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ZH2FZ7NzGwDzL2Er6PUXZVBDRy83tC97s/FO6GPnUd/nmdTIXGPib4KGpPYhAEB6t
-         qegoWzpJgUEUXW7lz3lnfMtK3ZPE0ZVOhz8xiBliQeK8B08zvX4+6gK4u2WQvj4MgQ
-         wB/htahwttIct/GH6qQWrodaV+WODv+klzsRNeRM=
-Date:   Thu, 5 Nov 2020 08:58:18 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, ast@fb.com, daniel@iogearbox.net,
-        kernel-team@fb.com, Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Jessica Yu <jeyu@kernel.org>, linux-kernel@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: Re: [RFC PATCH bpf-next 4/5] bpf: load and verify kernel module
- BTFs
-Message-ID: <20201105085818.4f20f3ed@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201105164616.GA1201462@kroah.com>
-References: <20201105045140.2589346-1-andrii@kernel.org>
-        <20201105045140.2589346-5-andrii@kernel.org>
-        <20201105083925.68433e51@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <20201105164616.GA1201462@kroah.com>
+        id S1727836AbgKERAp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 12:00:45 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1EC5D142F;
+        Thu,  5 Nov 2020 09:00:45 -0800 (PST)
+Received: from localhost (unknown [10.1.198.32])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A80833F719;
+        Thu,  5 Nov 2020 09:00:44 -0800 (PST)
+Date:   Thu, 5 Nov 2020 17:00:43 +0000
+From:   Ionela Voinescu <ionela.voinescu@arm.com>
+To:     Jeremy Linton <jeremy.linton@arm.com>
+Cc:     rjw@rjwysocki.net, viresh.kumar@linaro.org, lenb@kernel.org,
+        sudeep.holla@arm.com, morten.rasmussen@arm.com,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/8] cppc_cpufreq: replace per-cpu structures with lists
+Message-ID: <20201105170043.GA28398@arm.com>
+References: <20201105125524.4409-1-ionela.voinescu@arm.com>
+ <20201105125524.4409-5-ionela.voinescu@arm.com>
+ <e568847d-b15c-970c-6ad5-b431c81c811c@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e568847d-b15c-970c-6ad5-b431c81c811c@arm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 5 Nov 2020 17:46:16 +0100 Greg Kroah-Hartman wrote:
-> On Thu, Nov 05, 2020 at 08:39:25AM -0800, Jakub Kicinski wrote:
-> > On Wed, 4 Nov 2020 20:51:39 -0800 Andrii Nakryiko wrote:  
-> > > Add kernel module listener that will load/validate and unload module BTF.
-> > > Module BTFs gets ID generated for them, which makes it possible to iterate
-> > > them with existing BTF iteration API. They are given their respective module's
-> > > names, which will get reported through GET_OBJ_INFO API. They are also marked
-> > > as in-kernel BTFs for tooling to distinguish them from user-provided BTFs.
-> > > 
-> > > Also, similarly to vmlinux BTF, kernel module BTFs are exposed through
-> > > sysfs as /sys/kernel/btf/<module-name>. This is convenient for user-space
-> > > tools to inspect module BTF contents and dump their types with existing tools:  
-> > 
-> > Is there any precedent for creating per-module files under a new
-> > sysfs directory structure? My intuition would be that these files 
-> > belong under /sys/module/  
+Hi Jeremy,
+
+On Thursday 05 Nov 2020 at 09:50:30 (-0600), Jeremy Linton wrote:
+> Hi,
 > 
-> Ick, why?  What's wrong with them under btf?  The module core code
-> "owns" the /sys/modules/ tree.  If you want others to mess with that, 
-> it will get tricky.
+> On 11/5/20 6:55 AM, Ionela Voinescu wrote:
+> > The cppc_cpudata per-cpu storage was inefficient (1) additional to causing
+> > functional issues (2) when CPUs are hotplugged out, due to per-cpu data
+> > being improperly initialised.
+> > 
+> > (1) The amount of information needed for CPPC performance control in its
+> >      cpufreq driver depends on the domain (PSD) coordination type:
+> > 
+> >      ANY:    One set of CPPC control and capability data (e.g desired
+> >              performance, highest/lowest performance, etc) applies to all
+> >              CPUs in the domain.
+> > 
+> >      ALL:    Same as ANY. To be noted that this type is not currently
+> >              supported. When supported, information about which CPUs
+> >              belong to a domain is needed in order for frequency change
+> >              requests to be sent to each of them.
+> > 
+> >      HW:     It's necessary to store CPPC control and capability
+> >              information for all the CPUs. HW will then coordinate the
+> >              performance state based on their limitations and requests.
+> > 
+> >      NONE:   Same as HW. No HW coordination is expected.
+> > 
+> >      Despite this, the previous initialisation code would indiscriminately
+> >      allocate memory for all CPUs (all_cpu_data) and unnecessarily
+> >      duplicate performance capabilities and the domain sharing mask and type
+> >      for each possible CPU.
+> 
+> I should have mentioned this on the last set.
+> 
+> If the common case on arm/acpi machines is a single core per _PSD (which I
+> believe it is), then you are actually increasing the overhead doing this.
+> 
 
-It's debug info, that's where I would look for it. 
+Thanks for taking another look and pointing this out.
 
-Clearly I'd be wrong to do so :)
+Yes, that would be quite inefficient as I'd be holding both CPU and domain
+information uselessly, for that case. I could drop the domain
+information without actually losing anything (shared type and shared cpu
+map have no purpose for single CPUs in a domain).
+
+Also, I don't actually need a list of CPUs in the domain, an array will
+work just as well, as I know the number of CPUs when I allocate the
+domain - that will allow me to remove the node from cppc_cpudata and
+save me some pointers.
+
+Also, I now remember I wanted to get rid of cpu and cur_policy from
+cppc_cpudata as well, as they serve no purpose. Let me know if you guys
+see a reason against this.
+
+All of this should at least bring things on par for HW and NONE types,
+while improving ANY and ALL types. Thanks again for bringing this up.
+
+Regards,
+Ionela.
