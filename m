@@ -2,104 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2D522A7E74
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 13:20:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63FAD2A7E75
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 13:21:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730326AbgKEMUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 07:20:16 -0500
-Received: from mx2.suse.de ([195.135.220.15]:42912 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726067AbgKEMUQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 07:20:16 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1604578814;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zAalCmlaw5gt6qaYGg/SkfDxPMz4WugwTR4CNIKb4/M=;
-        b=nJtG71fIrES/wWk19/b0TNtzMp0GYL4mG9jGhux4cgV90Sx93jfJazOuWtaz+IJ3O5ttgB
-        Ujac7+coApKgRfsIvqcFR0sz1v60X+ctUtpvk8uJD5OI1QWi9i9yPTvpiJtuabyoOOEeM0
-        aZUNQF2Q73borxClfG2NmZNsffg/uak=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 452C2AB95;
-        Thu,  5 Nov 2020 12:20:14 +0000 (UTC)
-Date:   Thu, 5 Nov 2020 13:20:12 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     Suren Baghdasaryan <surenb@google.com>, linux-api@vger.kernel.org,
-        linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
-        Christian Brauner <christian@brauner.io>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Tim Murray <timmurray@google.com>,
-        kernel-team <kernel-team@android.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>
-Subject: Re: [RFC]: userspace memory reaping
-Message-ID: <20201105122012.GD21348@dhcp22.suse.cz>
-References: <CAJuCfpGjuUz5FPpR5iQ7oURJAhnP1ffBAnERuTUp9uPxQCRhDg@mail.gmail.com>
- <20201014120937.GC4440@dhcp22.suse.cz>
- <CAJuCfpEQ_ADYsMrF_zjfAeQ3d-FALSP+CeYsvgH2H1-FSoGGqg@mail.gmail.com>
- <20201015092030.GB22589@dhcp22.suse.cz>
- <CAJuCfpHwXcq1PfzHgqyYBR3N53TtV2WMt_Oubz0JZkvJHbFKGw@mail.gmail.com>
- <CAJuCfpH9iUt0cs1GBQppgdcD8chojCNXk22S+PeSgQ-bA7iitQ@mail.gmail.com>
- <20201103093550.GE21990@dhcp22.suse.cz>
- <20201103213228.GB1631979@google.com>
- <20201104065844.GM21990@dhcp22.suse.cz>
- <20201104204051.GA3544305@google.com>
+        id S1730391AbgKEMV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 07:21:27 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:45822 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726067AbgKEMV0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 07:21:26 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0A5CL7NJ062582;
+        Thu, 5 Nov 2020 06:21:07 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1604578867;
+        bh=Z4RRec5l05SjKlPI6lwgZrSpZa5Ph7B/vgfrZlgH4EA=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=V8jjEVSrFmvlfWWmuz3412aUGmrlgd35gOcW7Ewo2woR8zFtS+QQpOt+S8yfDWKOa
+         29JaHlAJCjJDlP/YjVH6JPswMaJRBTP6uP0Jr88md9/y2FJxyLTgNvZSqRx0s9hrOa
+         CaynBYj5X5xdiSz+VLY43Vi3j0FC8Jw8ziiA80NU=
+Received: from DLEE106.ent.ti.com (dlee106.ent.ti.com [157.170.170.36])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0A5CL7K8016114
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 5 Nov 2020 06:21:07 -0600
+Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 5 Nov
+ 2020 06:21:07 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 5 Nov 2020 06:21:06 -0600
+Received: from [10.250.233.179] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0A5CL4LN045327;
+        Thu, 5 Nov 2020 06:21:04 -0600
+Subject: Re: [PATCH 0/3] mtd: Make sure UBIFS does not do multi-pass page
+ programming on flashes that don't support it
+To:     Pratyush Yadav <p.yadav@ti.com>
+CC:     Richard Weinberger <richard.weinberger@gmail.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        <linux-mtd@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20201012180404.6476-1-p.yadav@ti.com>
+ <20201027111804.e27pyvf62eksngmp@ti.com>
+ <CAFLxGvxc=EqBStzLz3ApwYDomKMe=WeK22ohfPQs1WrMCsaVQg@mail.gmail.com>
+ <fa578bda-132a-320a-264c-d973bae194dd@ti.com>
+ <20201103124527.x6mp6slck44aotzn@ti.com>
+From:   Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <4c0e3207-72a4-8c1a-5fca-e9f30cc60828@ti.com>
+Date:   Thu, 5 Nov 2020 17:51:03 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201104204051.GA3544305@google.com>
+In-Reply-To: <20201103124527.x6mp6slck44aotzn@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 04-11-20 12:40:51, Minchan Kim wrote:
-> On Wed, Nov 04, 2020 at 07:58:44AM +0100, Michal Hocko wrote:
-> > On Tue 03-11-20 13:32:28, Minchan Kim wrote:
-> > > On Tue, Nov 03, 2020 at 10:35:50AM +0100, Michal Hocko wrote:
-> > > > On Mon 02-11-20 12:29:24, Suren Baghdasaryan wrote:
-> > > > [...]
-> > > > > To follow up on this. Should I post an RFC implementing SIGKILL_SYNC
-> > > > > which in addition to sending a kill signal would also reap the
-> > > > > victim's mm in the context of the caller? Maybe having some code will
-> > > > > get the discussion moving forward?
-> > > > 
-> > > > Yeah, having a code, even preliminary, might help here. This definitely
-> > > > needs a good to go from process management people as that proper is land
-> > > > full of surprises...
-> > > 
-> > > Just to remind a idea I suggested to reuse existing concept
-> > > 
-> > >     fd = pidfd_open(victim process)
-> > >     fdatasync(fd);
-> > >     close(fd);
-> > 
-> > I must have missed this proposal. Anyway, are you suggesting fdatasync
-> > to act as a destructive operation?
+
+
+On 11/3/20 6:15 PM, Pratyush Yadav wrote:
+> On 03/11/20 05:05PM, Vignesh Raghavendra wrote:
+>>
+>>
+>> On 11/1/20 3:14 AM, Richard Weinberger wrote:
+>>> On Tue, Oct 27, 2020 at 12:24 PM Pratyush Yadav <p.yadav@ti.com> wrote:
+>>>>> [0] https://lore.kernel.org/linux-mtd/20201005153138.6437-1-p.yadav@ti.com/
+>>>>
+>>>> Ping. Any comments on the series?
+>>>
+>>> From the UBIFS point of view I'd like to avoid as many device specific
+>>> settings as possible.
+>>> We check already for NOR flash, checking for NOR *and* SPI_NOR_NO_MULTI_PASS_PP
+>>> feels a bit clumsy.
+>>>
+>>> Tudor, what do you think about SPI_NOR_NO_MULTI_PASS_PP?
+>>> This kind of NOR seems to be a little NAND'ish. Maybe we can hide this detail
+>>> in the mtd framework?
+>>>
+>>
+>> Agree with Richard. I don't see need for SPI_NOR_NO_MULTI_PASS_PP. From
+>> MTD point of view setting mtd->writesize to be equal to pagesize should
+>> be enough. Its upto clients of MTD devices to ensure there is no multi
+>> pass programming within a "writesize" block.
 > 
-> write(fd) && fdatasync(fd) are already destructive operation if the file
-> is shared.
+> That is what I initially thought too but then I realized that multi-pass 
+> programming is completely different from page-size programming. Instead 
+> of writing 4 bytes twice, you can zero out the entire page in one single 
+> operation. You would be compliant with the write size requirement but 
+> you still do multi-pass programming because you did not erase the page 
+> before this operation.
+> 
 
-I am likely missing something because fdatasync will not destroy any
-underlying data. It will sync
+Right...
 
-> You don't need to reaping as destruptive operation. Rather than, just
-> commit on the asynchrnous status "write file into page cache and commit
-> with fsync" and "killing process and commit with fsync".
+> It is also not completely correct to say the Cypress S28 flash has a 
+> write size of 256. You _can_ write one byte if you want. You just can't 
+> write to that page again without erasing it first. For example, if a 
+> file system only wants to write 128 bytes on a page, it can do so 
+> without having to write the whole page. It just needs to make sure it 
+> doesn't write to it again without erasing first.
+> 
 
-I am sorry but I do not follow. The result of the memory reaping is a
-data loss. Any private mapping will simply lose it's content. The caller
-will get EFAULT when trying to access it but there is no way to
-reconstruct the data. This is everything but not resembling what I see
-f{data}sync is used for.
+As per documentation:
+mtd_info::writesize: "In case of ECC-ed NOR it is of ECC block size"
 
--- 
-Michal Hocko
-SUSE Labs
+This means, it is block on which ECC is calculated on ECC-ed NOR and
+thus needs to be erased every time before being updated.
+
+Looking at flash datasheet, this seems to be 16 bytes.
+
+So mtd->writesize = 16 and not 256 (or pagesize)
+
+
+Also, It does not imply length of data being written has to be multiple
+of it. At least NAND subsystem does not seem to care that during  writes
+len < mtd->writesize[1].
+
+> nor_erase_prepare() was written to handle quirks of some specific 
+> devices. Not every device starts filling zeroes from the end of a page. 
+> So we have device-specific code in UBIFS already. You will obviously 
+> need device-specific settings to have control over that code.
+> 
+
+UBIFS intends to be robust against rogue power cuts and therefore would
+need to ensure some consistency during erase which explains flash
+specific quirk here.
+
+> One might argue that we should move nor_erase_prepare() out of UBIFS. 
+> But requiring a flash to start erasing from the start of the page is a 
+> UBIFS-specific requirement. Other users of a flash might not care about 
+> it at all.
+> 
+
+Yes. But I don't see much harm done.
+
+> And so we have ourselves a bit of a conundrum. Adding 
+> SPI_NOR_NO_MULTI_PASS_PP is IMHO the least disruptive answer. If the 
+> file system wants to do multi-pass page programming on NOR flashes, how 
+> else do we tell it not to do it for this specific flash?
+> 
+
+I see don't see need for SPI_NOR_NO_MULTI_PASS_PP as
+SPI_NOR_NO_MULTI_PASS_PP is implied within a ECC block and writesize is
+supposed to represent the same.
+
+>> If this is not clear in the current documentation of struct mtd, then
+>> that can be updated.
+> 
+
+[1]
+https://elixir.bootlin.com/linux/latest/source/drivers/mtd/nand/raw/nand_base.c#L4166
