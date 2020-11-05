@@ -2,152 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28EDB2A8183
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 15:52:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D8392A8138
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 15:45:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731568AbgKEOwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 09:52:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48196 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731478AbgKEOwj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 09:52:39 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8063FC061A4A
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 06:52:39 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id b8so2104847wrn.0
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 06:52:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=/ohyBbiMl4QAk0hhVQhX7OOzIoCPrYd9chXW0LdTWwg=;
-        b=XBW8xFz25wrZDDaO9F9vfOL8x0OhOhpJq3zGD2BEffVr94ia5p8vCiGc1dDvydPk8G
-         NDrGwM8qHJIWF+YyN3+pqM04QpTovwtHRwYaY+CB0lm71Gm7e96ItZi/WAkO9B1ijRbJ
-         D3zSToxMNbprGNAI1QfIFaElECUMP9+zGdyTDLypSReTAwazDqv05F15HG1XUa+Dn15J
-         cMuSKGY3lupgIXoi2hTrHUZpaqPt6dZAhP+Pq/Rx2olZZEtgk11RkFZCZLK2f05T1Vk0
-         8wHSBFUOFm63LhPsJnl9L2OhDl4kuTp5kTmGF7uaGIC/XEBoHlD+C41OVq0tg4j7E+K+
-         CcbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=/ohyBbiMl4QAk0hhVQhX7OOzIoCPrYd9chXW0LdTWwg=;
-        b=jHJp/tBoaJ+tPWWQsFnA2Tgto8zLHfKh7bcyRralFtgpZ6t6ax7hadl7GuPMAoBv+k
-         3h0iYW7jaAIt/wdYoHxrWqvkCiB+Va3NVAkU/FgXSZtnPPX5d9Cobhf2Dq0+Khc8IoSS
-         lQrBp4YLa44OAtj8Av4bCPOhL2Jrs/jWPAn9KGEPWHP7ozGdKmjJ08Ip3/BhDJWGZPiv
-         UtVL2Qh+3MZJfMN/BQmBKEQDw8PDzfhPeKbQe1MPlzUyjcTiwxn78SSB79T/ktHLwtOi
-         mZ70VIHgglDo857hSNGJv/5VJzs+C0pCkHDG/n7QxLJXMoJiIvGkPFAoHB/WYDh6ZS3M
-         1QYA==
-X-Gm-Message-State: AOAM53156UDa0YPaZL2uF4AnT89AeYS6t+oV0ajWHjscZ12v8et8qe3l
-        cW/3k4jc9Q6pkSH4/mjdTbKnVA==
-X-Google-Smtp-Source: ABdhPJy1zJUpgVBLvXfGwyfP/DxiTdsE/xHFzIPHRB2Y83e58sQ2ACFhophmTpm4Om/fUXHn2r43dQ==
-X-Received: by 2002:adf:fe46:: with SMTP id m6mr3113804wrs.254.1604587958250;
-        Thu, 05 Nov 2020 06:52:38 -0800 (PST)
-Received: from dell.default ([91.110.221.242])
-        by smtp.gmail.com with ESMTPSA id f5sm2631243wmh.16.2020.11.05.06.52.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 06:52:37 -0800 (PST)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org, Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jason Yan <yanaijie@huawei.com>,
-        Jingoo Han <jg1.han@samsung.com>,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH 19/19] gpu: drm: bridge: analogix: analogix_dp_reg: Remove unused function 'analogix_dp_start_aux_transaction'
-Date:   Thu,  5 Nov 2020 14:45:17 +0000
-Message-Id: <20201105144517.1826692-20-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201105144517.1826692-1-lee.jones@linaro.org>
-References: <20201105144517.1826692-1-lee.jones@linaro.org>
+        id S1731191AbgKEOph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 09:45:37 -0500
+Received: from foss.arm.com ([217.140.110.172]:34554 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731089AbgKEOph (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 09:45:37 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7557D14BF;
+        Thu,  5 Nov 2020 06:45:36 -0800 (PST)
+Received: from C02TD0UTHF1T.local (unknown [10.57.58.72])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A86743F718;
+        Thu,  5 Nov 2020 06:45:33 -0800 (PST)
+Date:   Thu, 5 Nov 2020 14:45:30 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Marc Zyngier <maz@kernel.org>, Mark Brown <broonie@kernel.org>,
+        Andre Przywara <andre.przywara@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        kvmarm <kvmarm@lists.cs.columbia.edu>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH v2 4/5] arm64: Add support for SMCCC TRNG entropy source
+Message-ID: <20201105144530.GK82102@C02TD0UTHF1T.local>
+References: <20201105125656.25259-1-andre.przywara@arm.com>
+ <20201105125656.25259-5-andre.przywara@arm.com>
+ <20201105134142.GA4856@sirena.org.uk>
+ <20201105140322.GH82102@C02TD0UTHF1T.local>
+ <CAMj1kXEsaZAGT0jnPNyj_K1Q4W7E1+WP=tQf3bTPQi=KOCUv4g@mail.gmail.com>
+ <20201105143023.GI82102@C02TD0UTHF1T.local>
+ <CAMj1kXEoot13bFKywPRVf4BFhA5tSp+Nate=+Z+JsQdLW1oRrg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMj1kXEoot13bFKywPRVf4BFhA5tSp+Nate=+Z+JsQdLW1oRrg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following W=1 kernel build warning(s):
+On Thu, Nov 05, 2020 at 03:34:01PM +0100, Ard Biesheuvel wrote:
+> On Thu, 5 Nov 2020 at 15:30, Mark Rutland <mark.rutland@arm.com> wrote:
+> > On Thu, Nov 05, 2020 at 03:04:57PM +0100, Ard Biesheuvel wrote:
+> > > On Thu, 5 Nov 2020 at 15:03, Mark Rutland <mark.rutland@arm.com> wrote:
+> >
+> > > > That said, I'm not sure it's great to plumb this under the
+> > > > arch_get_random*() interfaces, e.g. given this measn that
+> > > > add_interrupt_randomness() will end up trapping to the host all the time
+> > > > when it calls arch_get_random_seed_long().
+> > >
+> > > As it turns out, add_interrupt_randomness() isn't actually used on ARM.
+> >
+> > It's certainly called on arm64, per a warning I just hacked in:
 
- drivers/gpu/drm/bridge/analogix/analogix_dp_reg.c:527:12: warning: ‘analogix_dp_start_aux_transaction’ defined but not used [-Wunused-function]
+[...]
 
-Cc: Andrzej Hajda <a.hajda@samsung.com>
-Cc: Neil Armstrong <narmstrong@baylibre.com>
-Cc: Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
-Cc: Jonas Karlman <jonas@kwiboo.se>
-Cc: Jernej Skrabec <jernej.skrabec@siol.net>
-Cc: David Airlie <airlied@linux.ie>
-Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Jason Yan <yanaijie@huawei.com>
-Cc: Lee Jones <lee.jones@linaro.org>
-Cc: Jingoo Han <jg1.han@samsung.com>
-Cc: dri-devel@lists.freedesktop.org
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- .../gpu/drm/bridge/analogix/analogix_dp_reg.c | 44 -------------------
- 1 file changed, 44 deletions(-)
+> > ... and I couldn't immediately spot why 32-bit arm  would be different.
+> 
+> Hmm, I actually meant both arm64 and ARM.
+> 
+> Marc looked into this at my request a while ago, and I had a look
+> myself as well at the time, and IIRC, we both concluded that we don't
+> hit that code path. Darn.
+> 
+> In any case, the way add_interrupt_randomness() calls
+> arch_get_random_seed_long() is absolutely insane, so we should try to
+> fix that in any case.
 
-diff --git a/drivers/gpu/drm/bridge/analogix/analogix_dp_reg.c b/drivers/gpu/drm/bridge/analogix/analogix_dp_reg.c
-index 9ce45c757f8c8..cab6c8b92efd4 100644
---- a/drivers/gpu/drm/bridge/analogix/analogix_dp_reg.c
-+++ b/drivers/gpu/drm/bridge/analogix/analogix_dp_reg.c
-@@ -524,50 +524,6 @@ void analogix_dp_enable_sw_function(struct analogix_dp_device *dp)
- 	writel(reg, dp->reg_base + ANALOGIX_DP_FUNC_EN_1);
- }
- 
--static int analogix_dp_start_aux_transaction(struct analogix_dp_device *dp)
--{
--	int reg;
--	int retval = 0;
--	int timeout_loop = 0;
--
--	/* Enable AUX CH operation */
--	reg = readl(dp->reg_base + ANALOGIX_DP_AUX_CH_CTL_2);
--	reg |= AUX_EN;
--	writel(reg, dp->reg_base + ANALOGIX_DP_AUX_CH_CTL_2);
--
--	/* Is AUX CH command reply received? */
--	reg = readl(dp->reg_base + ANALOGIX_DP_INT_STA);
--	while (!(reg & RPLY_RECEIV)) {
--		timeout_loop++;
--		if (DP_TIMEOUT_LOOP_COUNT < timeout_loop) {
--			dev_err(dp->dev, "AUX CH command reply failed!\n");
--			return -ETIMEDOUT;
--		}
--		reg = readl(dp->reg_base + ANALOGIX_DP_INT_STA);
--		usleep_range(10, 11);
--	}
--
--	/* Clear interrupt source for AUX CH command reply */
--	writel(RPLY_RECEIV, dp->reg_base + ANALOGIX_DP_INT_STA);
--
--	/* Clear interrupt source for AUX CH access error */
--	reg = readl(dp->reg_base + ANALOGIX_DP_INT_STA);
--	if (reg & AUX_ERR) {
--		writel(AUX_ERR, dp->reg_base + ANALOGIX_DP_INT_STA);
--		return -EREMOTEIO;
--	}
--
--	/* Check AUX CH error access status */
--	reg = readl(dp->reg_base + ANALOGIX_DP_AUX_CH_STA);
--	if ((reg & AUX_STATUS_MASK) != 0) {
--		dev_err(dp->dev, "AUX CH error happens: %d\n\n",
--			reg & AUX_STATUS_MASK);
--		return -EREMOTEIO;
--	}
--
--	return retval;
--}
--
- void analogix_dp_set_link_bandwidth(struct analogix_dp_device *dp, u32 bwtype)
- {
- 	u32 reg;
--- 
-2.25.1
+I have no strong opinion there, and I'm happy with that getting cleaned
+up.
 
+Regardless, I do think it's reasonable for the common code to expect
+that arch_get_random_*() to be roughly as expensive as "most other
+instructions" (since even RNDR* is expensive the CPU might be able to do
+useful speculative work in the mean time), whereas a trap to the host is
+always liable to be expensive as no useful work can be done while the
+host is handling it, so I think it makes sense to distinguish the two.
+
+Thanks,
+Mark.
