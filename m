@@ -2,123 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FD082A83E4
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 17:47:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2281D2A83E6
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 17:47:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731668AbgKEQrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 11:47:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38098 "EHLO
+        id S1731696AbgKEQrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 11:47:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729980AbgKEQrl (ORCPT
+        with ESMTP id S1729980AbgKEQrp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 11:47:41 -0500
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A11C8C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 08:47:40 -0800 (PST)
-Received: by mail-qk1-x743.google.com with SMTP id k9so1757013qki.6
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 08:47:40 -0800 (PST)
+        Thu, 5 Nov 2020 11:47:45 -0500
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4192CC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 08:47:44 -0800 (PST)
+Received: by mail-ej1-x642.google.com with SMTP id p5so3593328ejj.2
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 08:47:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=zhqw6nXW7an1sciymnqR0tpduOyD+zat59s5GBmVtbM=;
-        b=T/9h4B64oiALMfc42uebDeGSEyGeD0JwaqBLLTEWSdW7X4iF0nNQTGD8ItXWOPi1xM
-         DOvW9K/135GnWww5roe4BdwNCigRiUCwRDf4zxYgylBvKtGQ0y4XU2iCE2XUZ07ICn3L
-         rTXg0XPkpw/UUFWbC8Cig/5dZdORb0CzNbOAohUH2HvpxEPnNWIhHQhklANJ/hAkg8H3
-         MKb/DtGr/YW1Na1efMq3URRzjr/gbNFdmBokrf0ljC1HCRvWFNeTvkJMTB7Vdi6j+NUo
-         8K7nKdD6xanzOWR6UK32MPYw28AHa+zQYvDZXAfI7cRkoGcIsjwKs0OHgVNNYy/123gh
-         Xm9w==
+         :content-disposition:in-reply-to:user-agent;
+        bh=KTrM17LaE3eRnXRmmf0/lRu9nMHN1CBl40QfrrxpBNY=;
+        b=hHybng4WEtcZxHNWh6mlbWhH1415hVUIZHRfQwhwOksDeBgZBCx9tos9IXIVBt0Wog
+         +UOIUgdB5oDqnD08cbnQV7CHAd7h798SgHSSm5BdSaNNfZGrLE7h3Y+O0AaczmRr0l/t
+         ik8qY/CCX402NHiGjo/0kTQ535uF1043ZKzUD3UetAft8DKnL03Bj1kooXQ2fvpdEQjk
+         K4bwTEesmS/ijllySN0QQSx+pOSBJwi3YToevwY8i+xSj2A6gIAGoU1cMvB9lGbB+nID
+         pvZdknEWXvXMvy4YDXHKqTflUCLl6UwTRudiWfKSFfGA8eLoth95VBYM1iV0dQ7nJpJJ
+         XTpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zhqw6nXW7an1sciymnqR0tpduOyD+zat59s5GBmVtbM=;
-        b=qLuk48y9jcIMS0WpavsFyXTbxfb8ZNKLvujlAVAoFGYQ9d8Z4idUbaPpLo9FlN3Zi8
-         9MUsyU4di7eQtNLl+DMgg+yZEaLx4FtJ+UIh1KJL6qcC/g3bPQUvrrc9+8+KaaHZgrXs
-         Zd3sCb5C4TgNSCerD08XTrQsDu1LJ4Imy8W2u/6YpNOG+b1mZUsLVsRXweEqnh1jwdqU
-         GAwYMv+yjaNAKh0CwR2BLkW9WAF5xLOYXqhduVIFLI09oxBNzmtUdrd5x8uR0wveIVNe
-         aFnGITEmNCldny9VOZN079z+AMU/hYOtETCPD60yW06J7h9Hzb46bdtiQWb/Thm5aVXE
-         Uy0w==
-X-Gm-Message-State: AOAM532l87uo1UG+akMslz7VJcqPJBI0qd5Q0n8C22UzkeGdXqo0AcwU
-        ztGHcj0eWc9qmKVnzTjL9Ck51w==
-X-Google-Smtp-Source: ABdhPJwzljYxFoBvKq1VFYeruz7gb+7H6oGN3WPy1j1HdsQNZAjc4YfzOlkNglv0PQR1cXTjqGzkUA==
-X-Received: by 2002:a05:620a:697:: with SMTP id f23mr2825760qkh.374.1604594859867;
-        Thu, 05 Nov 2020 08:47:39 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id g20sm1208553qtq.51.2020.11.05.08.47.38
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=KTrM17LaE3eRnXRmmf0/lRu9nMHN1CBl40QfrrxpBNY=;
+        b=iJHs/S6Yae7n55kF5EiJuVLkHPKBXArrttCU2y/Mkdi2TCR0uPQfekXmOyAMd7CSdE
+         v9UlA4sSF1XcuOH7kYpLtknHtBwQtPNwN5UiUwpZ6ofTH+kAYvmrUnw4gwMC5f/E4RQ3
+         MP9XCqQPq7ZpZL4JpTmzQrj3lAsQGAjDi8SffsAKMovQG3/CjWAetrsX+kaVz0QP6bQu
+         OokbQuxQ1ekSCBIcUK4tF5znLlbS5wR9Sl5N9M2MIIPkTWoeLh13VxkO0VGJftEotC1H
+         k7oi4vshn1bCTkWf/v32szvHE/WfVAJ2oE2JDGng6XyJE1BvRhr3TjRDznJTHliHzjNr
+         QBlQ==
+X-Gm-Message-State: AOAM531fM1+VpVqZHoXCGExL8VnHMCzvzaCgzf/EJd5Blb26V5UzkeP/
+        4iR40wnFBQszNWUd4qVEg9c=
+X-Google-Smtp-Source: ABdhPJwfC8uPR2uvawZdxTifaAYqgR1RHreUAqyPxO+5utXztVkevqTadscf5EjE8nYcrS2HlVHGDQ==
+X-Received: by 2002:a17:906:a098:: with SMTP id q24mr3061994ejy.191.1604594863017;
+        Thu, 05 Nov 2020 08:47:43 -0800 (PST)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id f16sm1210281edw.15.2020.11.05.08.47.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 08:47:39 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kaiQE-0007e8-Gm; Thu, 05 Nov 2020 12:47:38 -0400
-Date:   Thu, 5 Nov 2020 12:47:38 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     gregkh <gregkh@linuxfoundation.org>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jason Wang <jasowang@redhat.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Netdev <netdev@vger.kernel.org>, Parav Pandit <parav@nvidia.com>,
-        Roi Dayan <roid@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        virtualization@lists.linux-foundation.org,
-        alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>,
-        Mark Brown <broonie@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Fred Oh <fred.oh@linux.intel.com>,
-        "Saleem, Shiraz" <shiraz.saleem@intel.com>,
-        "Patil, Kiran" <kiran.patil@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        David M Ertman <david.m.ertman@intel.com>
-Subject: Re: [PATCH mlx5-next v1 06/11] vdpa/mlx5: Connect mlx5_vdpa to
- auxiliary bus
-Message-ID: <20201105164738.GD36674@ziepe.ca>
-References: <20201101201542.2027568-1-leon@kernel.org>
- <20201101201542.2027568-7-leon@kernel.org>
- <20201103154525.GO36674@ziepe.ca>
- <CAPcyv4jP9nFAGdvB7agg3x7Y7moHGcxLd5=f5=5CXnJRUf3n9w@mail.gmail.com>
- <20201105073302.GA3415673@kroah.com>
+        Thu, 05 Nov 2020 08:47:41 -0800 (PST)
+Date:   Thu, 5 Nov 2020 17:47:40 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH 16/19] gpu: drm: panel: panel-ilitek-ili9322: Demote
+ non-conformant kernel-doc header
+Message-ID: <20201105164740.GG485884@ulmo>
+References: <20201105144517.1826692-1-lee.jones@linaro.org>
+ <20201105144517.1826692-17-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="df+09Je9rNq3P+GE"
 Content-Disposition: inline
-In-Reply-To: <20201105073302.GA3415673@kroah.com>
+In-Reply-To: <20201105144517.1826692-17-lee.jones@linaro.org>
+User-Agent: Mutt/1.14.7 (2020-08-29)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 08:33:02AM +0100, gregkh wrote:
-> > Were there any additional changes you wanted to see happen? I'll go
-> > give the final set another once over, but David has been diligently
-> > fixing up all the declared major issues so I expect to find at most
-> > minor incremental fixups.
-> 
-> This is in my to-review pile, along with a load of other stuff at the
-> moment:
-> 	$ ~/bin/mdfrm -c ~/mail/todo/
-> 	1709 messages in /home/gregkh/mail/todo/
-> 
-> So give me a chance.  There is no rush on my side for this given the
-> huge delays that have happened here on the authorship side many times in
-> the past :)
 
-On the other hand Leon and his team did invest alot of time and
-effort, very quickly, to build and QA this large mlx5 series here to
-give a better/second example as you requested only a few weeks ago.
+--df+09Je9rNq3P+GE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> If you can review it, or anyone else, that is always most appreciated.
+On Thu, Nov 05, 2020 at 02:45:14PM +0000, Lee Jones wrote:
+> Fixes the following W=3D1 kernel build warning(s):
+>=20
+>  drivers/gpu/drm/panel/panel-ilitek-ili9322.c:177: warning: Enum value 'I=
+LI9322_INPUT_SRGB_THROUGH' not described in enum 'ili9322_input'
+>  drivers/gpu/drm/panel/panel-ilitek-ili9322.c:177: warning: Enum value 'I=
+LI9322_INPUT_SRGB_ALIGNED' not described in enum 'ili9322_input'
+>  drivers/gpu/drm/panel/panel-ilitek-ili9322.c:177: warning: Enum value 'I=
+LI9322_INPUT_SRGB_DUMMY_320X240' not described in enum 'ili9322_input'
+>  drivers/gpu/drm/panel/panel-ilitek-ili9322.c:177: warning: Enum value 'I=
+LI9322_INPUT_SRGB_DUMMY_360X240' not described in enum 'ili9322_input'
+>  drivers/gpu/drm/panel/panel-ilitek-ili9322.c:177: warning: Enum value 'I=
+LI9322_INPUT_DISABLED_1' not described in enum 'ili9322_input'
+>  drivers/gpu/drm/panel/panel-ilitek-ili9322.c:177: warning: Enum value 'I=
+LI9322_INPUT_PRGB_THROUGH' not described in enum 'ili9322_input'
+>  drivers/gpu/drm/panel/panel-ilitek-ili9322.c:177: warning: Enum value 'I=
+LI9322_INPUT_PRGB_ALIGNED' not described in enum 'ili9322_input'
+>  drivers/gpu/drm/panel/panel-ilitek-ili9322.c:177: warning: Enum value 'I=
+LI9322_INPUT_YUV_640X320_YCBCR' not described in enum 'ili9322_input'
+>  drivers/gpu/drm/panel/panel-ilitek-ili9322.c:177: warning: Enum value 'I=
+LI9322_INPUT_YUV_720X360_YCBCR' not described in enum 'ili9322_input'
+>  drivers/gpu/drm/panel/panel-ilitek-ili9322.c:177: warning: Enum value 'I=
+LI9322_INPUT_DISABLED_2' not described in enum 'ili9322_input'
+>  drivers/gpu/drm/panel/panel-ilitek-ili9322.c:177: warning: Enum value 'I=
+LI9322_INPUT_ITU_R_BT656_720X360_YCBCR' not described in enum 'ili9322_inpu=
+t'
+>  drivers/gpu/drm/panel/panel-ilitek-ili9322.c:177: warning: Enum value 'I=
+LI9322_INPUT_ITU_R_BT656_640X320_YCBCR' not described in enum 'ili9322_inpu=
+t'
+>  drivers/gpu/drm/panel/panel-ilitek-ili9322.c:177: warning: Enum value 'I=
+LI9322_INPUT_UNKNOWN' not described in enum 'ili9322_input'
+>=20
+> Cc: Thierry Reding <thierry.reding@gmail.com>
+> Cc: Sam Ravnborg <sam@ravnborg.org>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> ---
+>  drivers/gpu/drm/panel/panel-ilitek-ili9322.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Dan, Leon, Myself and others have looked at the auxiliary bus patch a
-more than a few times now. Leon in particular went over it very
-carefully and a number of bugs were fixed while he developed this
-series.
+Again, for the subject prefix, this should probably be:
 
-There seems to be nothing fundamentally wrong with it, so long as
-people are fine with the colour of the shed...
+	drm/panel: ili9322:
 
-Jason
+but otherwise this seems okay:
+
+Acked-by: Thierry Reding <treding@nvidia.com>
+
+--df+09Je9rNq3P+GE
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl+kLKwACgkQ3SOs138+
+s6HGQg//QkgHbc3TJbLwEy4mxRTrjYNfzt1lk9oH16BLdotyt6riD0K/bOlNq8wX
+AR7YRFjlaAr89UosEyZ7YhQzY5wDcCGoAAANBqUQodK2chv9AmeRmmKfLDOxqZ7x
+KrnvKdU8pKi7hxHflZBEZci29zzG/JO4iu+HQhSLkD6bShn+5WzZuCPTNotz+hr9
+QGSRqJSWNeIk0IPmsIDaWDaZBLRQN7ct0HxOZSTbyy+KluUuXE7rPLEEPuLH+1Z8
+AubtbihjLCAwjD/JwzbeSCJ1M4qkFsN2iBkGNG1ybbu/1R7o4XGKQkExepeW3Ccc
+epNP9X7ZMZpkT77LOvEc3Zy/Mut8gy1AF787VPyIkpHcAeK7pWFXRUgj8GHZc18W
+6LINDgB2aWUSCWpf76ayUyz4ZtpyNjd56vCLW8yhLdBLmkRqe3laeZCzKCJwHUtC
+Tg4NWCWKIvQdmHuJ7GY/yoTAHLufpgXhHWGtWDeH+ihde3BAyk/Ye20uV8iyu9xc
+Po07itNDfSKB68QkzfZSwZIYWRr8Vuj/CMIAGxLvWiiHVWr24csYt3Yv3I6aEKCg
+E89LpPvNo7RYX10dpx0PNsE26gcA3lpI+L3m+q+w+VIZuEO+AgABuWW/h3wteqzG
+AkzfbYDBOOtuU26mYXPiYWm4vLkDBO+pTacckyPJbK3bstzLiw0=
+=eVAB
+-----END PGP SIGNATURE-----
+
+--df+09Je9rNq3P+GE--
