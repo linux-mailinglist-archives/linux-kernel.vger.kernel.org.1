@@ -2,129 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 294342A738E
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 01:03:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6AF22A7394
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 01:06:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387840AbgKEADp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 19:03:45 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:24722 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731343AbgKEADm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 19:03:42 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1604534621; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=+0WnlWc0h6ylWdn3v/K8WxY0ja4ryNOQxixoZcWIBvQ=;
- b=my7fkLi53OPPYtbr8pX7tldLgtAvUQs7U1HGA7jbH0RwJXAGo4JlhLlMBtSFv64d2yxV2Qki
- 2hC/4GPRVgTu8HFvOI9o7KIkrGJ4dtlgk1zGYy3Ytyz0GcQBwHN/swQ0Di1FXIiL2+6yPwbt
- xjPe7NRPVJMXl8L0/eHsD1OOpxU=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 5fa3415c77d543c3c7c86714 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 05 Nov 2020 00:03:40
- GMT
-Sender: sudaraja=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 363ACC43382; Thu,  5 Nov 2020 00:03:39 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: sudaraja)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 52C2DC433FE;
-        Thu,  5 Nov 2020 00:03:37 +0000 (UTC)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 04 Nov 2020 16:03:36 -0800
-From:   Sudarshan Rajagopalan <sudaraja@codeaurora.org>
-To:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Gavin Shan <gshan@redhat.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Logan Gunthorpe <logang@deltatee.com>,
-        David Hildenbrand <david@redhat.com>,
+        id S1733125AbgKEAE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 19:04:59 -0500
+Received: from esa5.hgst.iphmx.com ([216.71.153.144]:35631 "EHLO
+        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730241AbgKEAE7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 19:04:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1604534699; x=1636070699;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=+Jbu9mlrWPt2lhI04EDYr8YcAwZ3WGSkZpcHFvGSqPg=;
+  b=D2CvsYwJ4a2qqmS2Jma3RIm9XsZaqfBPI3JdbHvEbt+ep5mMQY60E9OK
+   PT2P+/noZGofxmTUwG7FuWhoFdf5cN4fTAicxzh1RVeeJPyqpA6rpvQo2
+   mpMyQ4IU/lBA4SpxViKDGYMsRyJjjMsuCoff1mn+zNdkQbhmYuw8W1Goc
+   pRkNTGbvbB+8/k/xSurmM5ieQUX9QNYfNimatq+Kc42V2yus9g4iER6x0
+   Ps238/dokEOSxKyL5KiVVViI7RaB+9QEccSa1jipqR/jhJl73VvYkp95K
+   4EDFVcsNapHUYWX0KyzPuh1P2VOG09wJ/ag+KFxnBDMdvTgG2IHvi2+JO
+   A==;
+IronPort-SDR: v8yk5jxi6B0ecfr0KNOAtQGQeq6mv0ezbXY5fx1HbkdsdFluiJ4Z+8vP4kOt4ZyRVH4EtCbikB
+ +ZFFutCySlh4iDBndDPC6gRFFZJb6iy8Ej96WqGVyKtTbBFqGHuT1sghk8d7+8as5IJtQ8jTU1
+ kTPB6d1k8yMcqXRZp19k1qf4ZNVg/AW2bIihyTzBlcfgdAmB9DuT2JkRj4vBxYAG4CCBIFnqNF
+ ZnlJqjP2bI7OLDx63hrRu5ZzX33QuWRT5cwHPWw4P3s/7QRxdano1oLse7PswbjGvdViF1jI2t
+ wug=
+X-IronPort-AV: E=Sophos;i="5.77,451,1596470400"; 
+   d="scan'208";a="151945098"
+Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 05 Nov 2020 08:04:58 +0800
+IronPort-SDR: HXO9+qbhngTRcb9Ffl8Rz66htlad1cwDfukGBqaspgM7BUXL1KlRuj8m743q0Zv2SwMdgy44oC
+ nQAFRbWBQv3tDAXBeFeJXM2JXI4xNlweBeYVOx7++VK6HiEsSyuATGpUW8AXSQsNPKLON5Bfu2
+ LCoJwRFf7GaXciKucpD6cRo9f8DeXkzgn1Gt47BmdHPjTJAMX4OIdqt6q6XTSKXX9qndTOCpu/
+ Dx+G4BSk3Y5Vqbrmd1DEGTvxFVAZDDTsfCf6ZQXx7pQ0pJLl7lWgeAIpbfaxK5nyjuZUimKdX7
+ EG9+1tLc2jS4uL9mBGQFBwqn
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2020 15:51:06 -0800
+IronPort-SDR: jpIGTmzFazPZ0xjmhFi/wus5jV/kNztNLCqrZRgxI/wQvzDR7evQnf4B1FeEhOl2YY1/2ICEL5
+ T5a46wNcWPxWHm/TLZ2bHJ4BjT6j3Hp3VoGhOv2O5ev8WmZtMzSbnqqrZM3VO1tSCtdlI3942q
+ VfnUlEjwPjPVu0HIqYKGBXk1vQFufffA4x3Zb0mlhUwBlhnZmY9eJ9YGN8VwwBS9SGGEPoPHkx
+ jKDSXNxrN8pjw+QAMysS/M3tsZVNWuDhRxNZbFbVg2eLXzg5spCwNL54a8+vB+whDuMoisy89o
+ lkY=
+WDCIronportException: Internal
+Received: from 6hj08h2.ad.shared (HELO jedi-01.hgst.com) ([10.86.60.117])
+  by uls-op-cesaip02.wdc.com with ESMTP; 04 Nov 2020 16:04:59 -0800
+From:   Atish Patra <atish.patra@wdc.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Atish Patra <atish.patra@wdc.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Steven Price <steven.price@arm.com>
-Subject: Re: [PATCH v4] arm64/mm: add fallback option to allocate virtually
- contiguous memory
-In-Reply-To: <d6c06f2ef39bbe6c715b2f6db76eb16155fdcee6.1602722808.git.sudaraja@codeaurora.org>
-References: <cover.1602722808.git.sudaraja@codeaurora.org>
- <d6c06f2ef39bbe6c715b2f6db76eb16155fdcee6.1602722808.git.sudaraja@codeaurora.org>
-Message-ID: <4ca1e695f81b368a5487bdaa9b421a95@codeaurora.org>
-X-Sender: sudaraja@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+        Anup Patel <anup@brainfault.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Greentime Hu <greentime.hu@sifive.com>,
+        Guo Ren <ren_guo@c-sky.com>, linux-riscv@lists.infradead.org,
+        Michel Lespinasse <walken@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Zong Li <zong.li@sifive.com>
+Subject: [PATCH v3 0/5] Improve kernel section protections
+Date:   Wed,  4 Nov 2020 16:04:34 -0800
+Message-Id: <20201105000439.1491243-1-atish.patra@wdc.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-16 11:56, Sudarshan Rajagopalan wrote:
+This series aims at improving kernel permissions by doing following things.
 
-Hello Will, Catalin,
+1. Protect kernel sections early instead of after /init.
+2. Protect .init.text & .init.data sections with appropriate permissions.
+3. Move dynamic relocation section to _init.
+4. Moved .init sections after .text. This is what most of the other archs
+   are also doing.
 
-Did you have a chance to review this patch? It is reviewed by others and 
-haven't seen any Nacks. This patch will be useful to have so that memory 
-hotremove doesn't fail when such PMD_SIZE pages aren't available.. which 
-is usually the case in low RAM devices.
+After applying this patch, here are the linear mapped sections with non-uefi boot.
 
-> When section mappings are enabled, we allocate vmemmap pages from
-> physically continuous memory of size PMD_SIZE using
-> vmemmap_alloc_block_buf(). Section mappings are good to reduce TLB
-> pressure. But when system is highly fragmented and memory blocks are
-> being hot-added at runtime, its possible that such physically 
-> continuous
-> memory allocations can fail. Rather than failing the memory hot-add
-> procedure, add a fallback option to allocate vmemmap pages from
-> discontinuous pages using vmemmap_populate_basepages().
-> 
-> Signed-off-by: Sudarshan Rajagopalan <sudaraja@codeaurora.org>
-> Reviewed-by: Gavin Shan <gshan@redhat.com>
-> Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Logan Gunthorpe <logang@deltatee.com>
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Steven Price <steven.price@arm.com>
-> ---
->  arch/arm64/mm/mmu.c | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
-> index 75df62fea1b6..44486fd0e883 100644
-> --- a/arch/arm64/mm/mmu.c
-> +++ b/arch/arm64/mm/mmu.c
-> @@ -1121,8 +1121,11 @@ int __meminit vmemmap_populate(unsigned long
-> start, unsigned long end, int node,
->  			void *p = NULL;
-> 
->  			p = vmemmap_alloc_block_buf(PMD_SIZE, node, altmap);
-> -			if (!p)
-> -				return -ENOMEM;
-> +			if (!p) {
-> +				if (vmemmap_populate_basepages(addr, next, node, altmap))
-> +					return -ENOMEM;
-> +				continue;
-> +			}
-> 
->  			pmd_set_huge(pmdp, __pa(p), __pgprot(PROT_SECT_NORMAL));
->  		} else
+---[ Linear mapping ]---
+0xffffffe000000000-0xffffffe000800000    0x0000000080200000         8M PMD     D A . . X . R V
+0xffffffe000800000-0xffffffe000c00000    0x0000000080a00000         4M PMD     D A . . . W R V
+0xffffffe000c00000-0xffffffe001200000    0x0000000080e00000         6M PMD     D A . . . . R V
+0xffffffe001200000-0xffffffe03fe00000    0x0000000081400000      1004M PMD     D A . . . W R V
 
--- 
-Sudarshan
+Linear mapping with uefi boot.
+
+---[ Linear mapping ]---
+0xffffffe000000000-0xffffffe000800000    0x0000000080200000         8M PTE     D A . . X . R V
+0xffffffe000800000-0xffffffe000c00000    0x0000000080a00000         4M PTE     D A . . . W R V
+0xffffffe000c00000-0xffffffe001200000    0x0000000080e00000         6M PTE     D A . . . . R V
+0xffffffe001200000-0xffffffe03e534000    0x0000000081400000   1002704K PTE     D A . . . W R V
+0xffffffe03e538000-0xffffffe03e539000    0x00000000be738000         4K PTE     D A . . . W R V
+0xffffffe03e53a000-0xffffffe03e53c000    0x00000000be73a000         8K PTE     D A . . . W R V
+0xffffffe03e540000-0xffffffe03e541000    0x00000000be740000         4K PTE     D A . . . W R V
+0xffffffe03e545000-0xffffffe03e546000    0x00000000be745000         4K PTE     D A . . . W R V
+0xffffffe03e549000-0xffffffe03e54a000    0x00000000be749000         4K PTE     D A . . . W R V
+0xffffffe03e54b000-0xffffffe03fd6d000    0x00000000be74b000     24712K PTE     D A . . . W R V
+0xffffffe03fd6e000-0xffffffe03fdee000    0x00000000bff6e000       512K PTE     D A . . . W R V
+
+
+Changes from v2->v3:
+1. Added few extra comments to clarify rodata permissions.
+2. Changed the name of the functions set_memory_default to set_memory_rw_nx.
+3. Squashed patch 3&5 together as they depend on each other to allow
+   bisectability.
+4. Removed redundant arguments in protect_kernel_text_data.
+
+Changes from v1->v2:
+1. .init.text section is aligned with SECTION_ALIGN.
+2. .init.text is moved to below of .text so that .head.text & .text are in
+   one section.
+3. We don't need Guo's fix for static object issue.
+4. Rebased on 5.10-rc1.
+
+Atish Patra (5):
+RISC-V: Move __start_kernel to .head.text
+RISC-V: Initialize SBI early
+RISC-V: Align the .init.text section
+RISC-V: Protect all kernel sections including init early
+RISC-V: Move dynamic relocation section under __init
+
+arch/riscv/include/asm/sections.h   |  2 +
+arch/riscv/include/asm/set_memory.h |  4 ++
+arch/riscv/kernel/head.S            |  1 -
+arch/riscv/kernel/setup.c           | 19 +++++++--
+arch/riscv/kernel/vmlinux.lds.S     | 63 +++++++++++++++++------------
+arch/riscv/mm/init.c                | 21 +++++++---
+arch/riscv/mm/pageattr.c            |  6 +++
+7 files changed, 80 insertions(+), 36 deletions(-)
 
 --
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a 
-Linux Foundation Collaborative Project
+2.25.1
+
