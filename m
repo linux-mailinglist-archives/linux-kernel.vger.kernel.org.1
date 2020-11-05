@@ -2,81 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D05E12A7556
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 03:20:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE9372A7554
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 03:20:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387517AbgKECUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 21:20:01 -0500
-Received: from ns3.fnarfbargle.com ([103.4.19.87]:54536 "EHLO
-        ns3.fnarfbargle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730668AbgKECT6 (ORCPT
+        id S2387449AbgKECT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 21:19:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43982 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387421AbgKECT5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 21:19:58 -0500
-Received: from srv.home ([10.8.0.1] ident=heh15339)
-        by ns3.fnarfbargle.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.84_2)
-        (envelope-from <brad@fnarfbargle.com>)
-        id 1kaUqj-0008Oh-5u; Thu, 05 Nov 2020 10:18:05 +0800
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=fnarfbargle.com; s=mail;
-        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject; bh=vXqxBfoqZAruzaZDVKhWxMWIKn/cNae40lgzEG5AYdI=;
-        b=I2gzvtYgS0dBsqCOVu97nC8RsEGrPO3biP95W0L9CulixFvuN7pzF5EvcJ6FpFoan/WNB3D//0pbbC3MLbvczoAaLSY8Dov6EjBF4EtU5BJ69Rak+l4d5tT0bds13UeGE1FZdkWV+ocpY+Mj/LnfXzZX7vPQxXTLBAwPBgA6xZA=;
-Subject: Re: [REGRESSION] hwmon: (applesmc) avoid overlong udelay()
-To:     Andreas Kemnade <andreas@kemnade.info>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, rydberg@bitmath.org,
-        linux-hwmon@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        hns@goldelico.com
-References: <20200930105442.3f642f6c@aktux>
- <20200930164446.GB219887@roeck-us.net>
- <CAK8P3a2CbhJT+B-F+cnX+uiJep9oiLM28n045-ATaVaU41u2hw@mail.gmail.com>
- <20201002002251.28462e64@aktux>
- <7543ef85-727d-96c3-947e-5b18e9e6c44d@roeck-us.net>
- <20201006090226.4275c824@kemnade.info>
- <db042e9b-be41-11b1-7059-3881b1da5c8b@fnarfbargle.com>
- <68467f1b-cea1-47ea-a4d4-8319214b072a@fnarfbargle.com>
- <20201104142057.62493c12@aktux>
-From:   Brad Campbell <brad@fnarfbargle.com>
-Message-ID: <2436afef-99c6-c352-936d-567bf553388c@fnarfbargle.com>
-Date:   Thu, 5 Nov 2020 13:18:03 +1100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.2
+        Wed, 4 Nov 2020 21:19:57 -0500
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9959BC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 18:19:55 -0800 (PST)
+Received: by mail-lj1-x244.google.com with SMTP id m16so590942ljo.6
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 18:19:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7skSxIX4H4ERr2KWMBBNL6BPLI6dS/H7sqa5OXUDuu0=;
+        b=QNv/w7aH0oP53J3Y59bUHS48Xks3iYgOQfXV54369dx1Z6kHPJDwCpizgx06CCZ4kn
+         Tel6OfCmM9bunMFLvXtfH/QP7HzUoUIz+d02Fi3t+zfEgl5Ti6i8emrafuPWQ2TWowWV
+         ihxcezBfT4TUDzZIcjP+IIfbbV15tJEP0gKwg6KL05QNOvgUCmAreZrxlGJAyGA9KtLV
+         k3uc3fWqbOMMGbGCUi/eA8wTUZiPXWYJ+uUCFw4w8cna6uaf79YmbZ7iikDRCpBKUCXe
+         KPPIsh7JPw+DludHrM6XU8uSwH2VdigxiALfsLR9CwBI/NI9ZKT2vI0LPbNgxV3dz8Cz
+         ibNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7skSxIX4H4ERr2KWMBBNL6BPLI6dS/H7sqa5OXUDuu0=;
+        b=ta/GwAlUcAIdCMHdfNP5T7Yl3pfkys65DiztGNVVHYQ7nY0Cy/NxHNI+OburEMcg4a
+         Xqlkp8ZNmKB48tBt9MTgg40wcaUXyNxhD4rkCtmULdB2dVMJl6F8lo0xVo22x9HdLLic
+         Nm1tQGT9BtlBWpIIEnG3vz0ZLfsRGJGHPtnFyDI0E6aNPAPfwu7zYwgncqEvOVFoGVgI
+         RNwiK0lqGMbm3hkVAXgGMrbd+Y87JBn8FrMolYOxTtU1DjQ8N3GrdCR8Y0SaEekhD9xO
+         4Xrda7Zo2Wp1t9W7DJmk1yo9Z0A3fcnZdIkcl60MPdMKxkkgaTHBKF/eKo8FUE2pm8ut
+         jJKw==
+X-Gm-Message-State: AOAM532CN46vH2PkbFxDVfpEC2t37IA5kRmBBloehmj8NtQPz4G6yKBT
+        TrJYg+jb2DrM/Yy3G6lwtHhXPOdTo+6vEWhplgFCa2KD
+X-Google-Smtp-Source: ABdhPJyusyBDGoC19aOti8XmQ85ELZMMzFwcU3LfkkNwF9bElNSWBL+4PwUw8N/q+Q1F9BeNRBHR6dTfuNASqM7FnsA=
+X-Received: by 2002:a2e:6c11:: with SMTP id h17mr40022ljc.432.1604542794148;
+ Wed, 04 Nov 2020 18:19:54 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201104142057.62493c12@aktux>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201104081936.2128-1-zhenzhong.duan@gmail.com> <67fd98a2-23a9-b69a-4d60-a0698e243a85@linux.intel.com>
+In-Reply-To: <67fd98a2-23a9-b69a-4d60-a0698e243a85@linux.intel.com>
+From:   Zhenzhong Duan <zhenzhong.duan@gmail.com>
+Date:   Thu, 5 Nov 2020 10:19:36 +0800
+Message-ID: <CAFH1YnO4xas=YnUSYR3MjxRkFPvezHe7Rt4cdgZU4knvvQqzEA@mail.gmail.com>
+Subject: Re: [PATCH] iommu/vt-d: remove redundant variable no_platform_optin
+To:     Lu Baolu <baolu.lu@linux.intel.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        iommu@lists.linux-foundation.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/11/20 12:20 am, Andreas Kemnade wrote:
-> On Tue, 3 Nov 2020 16:56:32 +1100
-> Brad Campbell <brad@fnarfbargle.com> wrote:
+Hi Baolu,
 
->> If anyone with a Mac having a conventional SMC and seeing issues on 5.9 could test this it'd be appreciated. I'm not saying this code is "correct", but it "works for me".
->>
-> Seems to work here.
->   dmesg  | grep applesmc
-> 
-> [    1.350782] applesmc: key=561 fan=1 temp=33 index=33 acc=0 lux=2 kbd=1
-> [    1.350922] applesmc applesmc.768: hwmon_device_register() is deprecated. Please convert the driver to use hwmon_device_register_with_info().
-> [   17.748504] applesmc: wait_status looping 2: 0x4a, 0x4c, 0x4f
-> [  212.008952] applesmc: wait_status looping 2: 0x44, 0x40, 0x4e
-> [  213.033930] applesmc: wait_status looping 2: 0x44, 0x40, 0x4e
-> [  213.167908] applesmc: wait_status looping 2: 0x44, 0x40, 0x4e
-> [  219.087854] applesmc: wait_status looping 2: 0x44, 0x40, 0x4e
-> 
-> Tested it on top of 5.9
+On Thu, Nov 5, 2020 at 9:47 AM Lu Baolu <baolu.lu@linux.intel.com> wrote:
+>
+> Hi Zhenzhong,
+>
+> On 11/4/20 4:19 PM, Zhenzhong Duan wrote:
+> > no_platform_optin is redundant with dmar_disabled and it's only used in
+> > platform_optin_force_iommu(), remove it and use dmar_disabled instead.
+>
+> It's actually not.
+>
+> If CONFIG_INTEL_IOMMU_DEFAULT_ON is not set, we will get "dmar_disable =
+> 1" and "no_platform_optin = 0". In this case, we must force the iommu on
+> and set dmar_disable = 0.
+>
+> The real use case: if a kernel built with [CONFIG_INTEL_IOMMU_DEFAULT_ON
+> = n] running on a platform with thunderbolt ports, we must force IOMMU
+> on so that the system could be protected from possible malicious
+> peripherals.
 
-Much appreciated Andreas.
+Thanks for your explanation, clear now and sorry for the noise.
 
-I'm not entirely sure where to go from here. I'd really like some wider testing before cleaning this up and submitting it. It puts extra checks & constraints on the comms with the SMC that weren't there previously.
-
-I guess given there doesn't appear to have been a major outcry that the driver broke in 5.9 might indicate that nobody is using it, or that it only broke on certain machines?
-
-Can we get some guidance from the hwmon maintainers on what direction they'd like to take? I don't really want to push this forward without broader testing only to find it breaks a whole heap of machines on the basis that it fixes mine.
-
-Regards,
-Brad
+Regards
+Zhenzhong
