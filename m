@@ -2,88 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E1F42A84F8
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 18:33:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41B992A84F9
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 18:34:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731613AbgKERd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 12:33:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45418 "EHLO
+        id S1731687AbgKEReC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 12:34:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726729AbgKERd6 (ORCPT
+        with ESMTP id S1731648AbgKEReB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 12:33:58 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0838C0613CF;
-        Thu,  5 Nov 2020 09:33:57 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id r186so1850860pgr.0;
-        Thu, 05 Nov 2020 09:33:57 -0800 (PST)
+        Thu, 5 Nov 2020 12:34:01 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B959C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 09:34:00 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id p4so1123021plr.1
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 09:34:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=AUFgPvv6rFgfWp8DArPv00GwKNR+UKOLg+uDf2rhEHc=;
-        b=JCS92kQTECAAa7cDKcOEZyVg1HDPCOM18Lc/ZmZ4okFITjl+71gi3Sk9AUr4QpltYK
-         YWy0skAWf+ehpUvWrlA6S5Zt7HkflK13LhEQNmYW2aU+laan+fREW9BmXeM6ZYl9EN4A
-         k/0FJMDalzkC4I4uz1ceBQNeOCrfU1txTtb73gPx3a5QbMMyuyuGpfNQZmbct7OAn7To
-         EzGe9ewcpYo1d+R7TumcejL9X9HTi5ZQsupWUsGAtcFbp73SvKJ9qRNZ3bMA3RG+bmXY
-         ++c9h5K/SIrVN/ePzoSLb9xsZ2i7df5oTbTkEly/+OTL56Hro7IDQEetkVCSn9Iq8f+/
-         k8cA==
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bXK3jEO2zIpAnRvRC4dY7e8rL0kXVixnI/E7VIB9j4U=;
+        b=y7P19SKn2el77vCjC8Zi5jhTeHuNO1vf+R4w/I4lIr1Fcr1RnLf/J5JMJlJOwxEc05
+         S+2KbUj8SV5wmt3fbRwbo4gG3rp9Uk2PVM8BFH8sLzuRymXpEf4+zsZZey+Z6RRLqpyG
+         NzkCyZakbpyOB48Yk37enTbuRnQeF8wi2a7kFkGczVEBJBpybxqiqRHxp7RDKtQ66bcY
+         GwOB0wfZxuo/0ivYLgc1wdb6ABpFy0q6G2/DyCI1OwEB45Fuek32V9GFSphmS+/kJQaH
+         HIZZApZ1DoHrqZDnty2ZxUe62tu66CfFjQ0p3qX7q+drFTmj14c7NPYdHGVUSwML6pLH
+         +FzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=AUFgPvv6rFgfWp8DArPv00GwKNR+UKOLg+uDf2rhEHc=;
-        b=QExEY0zjSIHlr3vB7pcx/8Sh+eTl9kQ4wmRltcsvpm+LdMtk34Pb9nPUDeQRriTbz/
-         XWhcJ3NIEpRqy4IN7/wRlfzikU5ieQeW3dg1azJW68/zTfthXNvuo6gXvPpkm/OCRTou
-         /Piy6TndfgnUzKnsk3wMHG/51HKJuM2PVMOe5Ay5p2RDB5o7hXNyNvQ17dN1Q97zluvw
-         +Ibg2l6BENoMQZeY0ZD8WTV4gounvhZicwAl5lo3MRTpm1NFrRD4TQa4bzD/Ulrt5ans
-         cZeDxA2voE1+20MA7pqZOKHFAMrosqiUaCf9Y9m1BkSuoIXvlETyLNhT9B3yi1DMybrT
-         rseQ==
-X-Gm-Message-State: AOAM533SS3larEpASvI3F0YChizAI4HUVFRP4nz5belBxrJyJDp20lkz
-        02gzewQzhbG4YccJl7OVzGCB9XCCG2Y=
-X-Google-Smtp-Source: ABdhPJwDUNyet8V+rYqybZMW4aewS6nXoTRbi5Gko1Sgw0E1zV4Kok8rYlEFd2TRnec9qik6ZS3sVQ==
-X-Received: by 2002:a62:5382:0:b029:155:6333:ce4f with SMTP id h124-20020a6253820000b02901556333ce4fmr3444030pfb.28.1604597637374;
-        Thu, 05 Nov 2020 09:33:57 -0800 (PST)
-Received: from google.com ([2620:15c:211:201:7220:84ff:fe09:5e58])
-        by smtp.gmail.com with ESMTPSA id h26sm3229500pfq.139.2020.11.05.09.33.55
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=bXK3jEO2zIpAnRvRC4dY7e8rL0kXVixnI/E7VIB9j4U=;
+        b=oMDw8gxzITgPnmHqFh3uQKKIp97zipEvXLqAdUgJbUXJPTeoQ1qfmoMbn1Q1o0kkAv
+         n5ZwsbfM2BdP3B+yrCIZWuU1CW7j4+TGrgF74a9QdW5MOr1bkf+72y2BKY/ojzq6of5Z
+         LedSBKKGCoXR1vSJpsXiVXVzysgvkJtxiURHdhgRLQgN62wMiPW58sEOq5o0q9lbxZO6
+         JiCZobaCyq/+9awaRWuJk8lXym8iCnmeXv6Wzmqz40PtTxDA2X67YW5XUwUOm8uTBaCJ
+         M//z++KzCgx+fu5TKIlot3nPzg5hp+YCRCyKYUDdpOeHEONyx//EmfRdpftW1e64AzFC
+         n2rA==
+X-Gm-Message-State: AOAM5338uJzcXkGiiWt1ld6WbQe/ZIHkrbHG4XeztiXgjPXNzKLpYZ/o
+        FP/Jx7FsRUWlBW1/xF6bSYE1Rg==
+X-Google-Smtp-Source: ABdhPJzHOvTRbzaRy9XAdwgGhXwcAkSxq3p3MAxWFwaFCnmoGFFYGFWOpx4CbhYVVGhTPaItUenZkg==
+X-Received: by 2002:a17:90b:1942:: with SMTP id nk2mr3445495pjb.168.1604597639530;
+        Thu, 05 Nov 2020 09:33:59 -0800 (PST)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id 192sm3407429pfz.200.2020.11.05.09.33.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 09:33:56 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Thu, 5 Nov 2020 09:33:54 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-mm <linux-mm@kvack.org>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Harish Sriram <harish@linux.ibm.com>, stable@vger.kernel.org
-Subject: Re: [PATCH] Revert "mm/vunmap: add cond_resched() in
- vunmap_pmd_range"
-Message-ID: <20201105173354.GB387236@google.com>
-References: <20201105170249.387069-1-minchan@kernel.org>
- <20201105171602.GP17076@casper.infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201105171602.GP17076@casper.infradead.org>
+        Thu, 05 Nov 2020 09:33:58 -0800 (PST)
+Date:   Thu, 05 Nov 2020 09:33:58 -0800 (PST)
+X-Google-Original-Date: Wed, 04 Nov 2020 13:29:05 PST (-0800)
+Subject:     Re: [PATCH] risc-v: kernel: ftrace: Fixes improper SPDX comment style
+In-Reply-To: <20201011030351.4619-1-ryanpkosta@gmail.com>
+CC:     rostedt@goodmis.org, mingo@redhat.com,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, ryanpkosta@gmail.com
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     ryanpkosta@gmail.com
+Message-ID: <mhng-f7c021fe-0eab-497f-8eb5-7daf0f3b7799@palmerdabbelt-glaptop1>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 05:16:02PM +0000, Matthew Wilcox wrote:
-> On Thu, Nov 05, 2020 at 09:02:49AM -0800, Minchan Kim wrote:
-> > This reverts commit e47110e90584a22e9980510b00d0dfad3a83354e.
-> > 
-> > While I was doing zram testing, I found sometimes decompression failed
-> > since the compression buffer was corrupted. With investigation,
-> > I found below commit calls cond_resched unconditionally so it could
-> > make a problem in atomic context if the task is reschedule.
-> 
-> I don't think you're supposed to call unmap_kernel_range() from
-> atomic context.  At least vfree() punts to __vfree_deferred() if
-> in_interrupt() is true.  I forget the original reason for why that is.
+On Sat, 10 Oct 2020 20:03:51 PDT (-0700), ryanpkosta@gmail.com wrote:
+> Signed-off-by: Ryan Kosta <ryanpkosta@gmail.com>
+> ---
+>  arch/riscv/kernel/ftrace.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/riscv/kernel/ftrace.c b/arch/riscv/kernel/ftrace.c
+> index 99e12faa549..765b62434f3 100644
+> --- a/arch/riscv/kernel/ftrace.c
+> +++ b/arch/riscv/kernel/ftrace.c
+> @@ -1,4 +1,4 @@
+> -/* SPDX-License-Identifier: GPL-2.0 */
+> +// SPDX-License-Identifier: GPL-2.0
+>  /*
+>   * Copyright (C) 2013 Linaro Limited
+>   * Author: AKASHI Takahiro <takahiro.akashi@linaro.org>
 
-It would be desirable, However, the logic was there for several years
-and made regression from the commit in stable kernel for now.
-
-Can't we have graceful shutdown if we want to deprecate the API usecase
-in atomic context?
+Thanks, this is on fixes.
