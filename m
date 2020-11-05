@@ -2,136 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AC0C2A8628
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 19:32:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B0402A862C
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 19:37:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731837AbgKEScq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 13:32:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54726 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731644AbgKEScm (ORCPT
+        id S1728523AbgKEShI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 13:37:08 -0500
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:43538 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726214AbgKEShH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 13:32:42 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67B7CC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 10:32:42 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id d142so2567031wmd.4
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 10:32:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=8b4XLqKb/1b64uw1dkOkNBT0GLZVNL4KDpKck2q/HjA=;
-        b=SblMka5WRWreu2LISg37/lmEVngqr+72OlIXfsEC174dAPRdusVqcyDqtBN0cIxEyC
-         3l06JwdQeFVt9OsW+GmvS9DnewvHTgbgPvmqNDcjhwBJZb2rEkurGmKO/SeHiG0IWOmn
-         Hefb6oSS1DDqfU5fBHc0kaDZa1PIZ8xn58npKJmdPRtrZ2eQdRTcw/PbJ2uFYoN6Sp7F
-         YIhyH2Ua/onieZKQgwE9zbh2uAbb24QyrWaR1x6iCxDt+fgSjMuavt+stefiRyo+P/FN
-         jcwn6I5++fR2edQEoql3d43RItJcmoejI2KobiDiqtJNsVXW0+Fl9d/jqk39C4MoEYYl
-         8uOQ==
+        Thu, 5 Nov 2020 13:37:07 -0500
+Received: by mail-oi1-f195.google.com with SMTP id t143so2691606oif.10;
+        Thu, 05 Nov 2020 10:37:07 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=8b4XLqKb/1b64uw1dkOkNBT0GLZVNL4KDpKck2q/HjA=;
-        b=tylCh3IWSxfzuOvR0qb2AIDYSqE0HtSHTr9anQaOQcTlCx6aqcjwWL6F5AjqTpn/TM
-         QuYMxtQ4Wi+2gcXx2Vckv95s3CfRiffM246OVuil2EBMqGtEx1hBncbxg1maAqUkuk5X
-         A7LqBvQncosokJF0YlIOn3JXgRXaI1Mor9t+IhmUjvDdyB1N4IUyw/BrQCx8x0II0xQb
-         Vn12VmUHK2SrG0/JivC/47aEsJsbxHtJDqtWzZUIcJhs1ESiwMjA43dUhAgVcVSZ2gwE
-         c/s4KiGiQ3fL36I5PaX3fYS/LMPhX24qYWq+D9q5Q8pAPd0IhTDaC+oIn0KJI58mjrvZ
-         mZEA==
-X-Gm-Message-State: AOAM5304029kAoqAETHTi6wHUJtRnCOe5aSVOHjldedMbReISy58pIuR
-        jBrh+VciuCVYYVwpvtogP24=
-X-Google-Smtp-Source: ABdhPJyA5LMPZbeW2AKUuyQfFd2B+AnsG8nYmNj5aFUaYLQ1ceiwIRgb8tBgJDuXZr9Ihl+JjpNnDQ==
-X-Received: by 2002:a1c:5a06:: with SMTP id o6mr4231660wmb.181.1604601161105;
-        Thu, 05 Nov 2020 10:32:41 -0800 (PST)
-Received: from matteo-xps-15-9560.lan ([2a01:4b00:a40c:9900::14e])
-        by smtp.gmail.com with ESMTPSA id h8sm3569601wro.14.2020.11.05.10.32.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 10:32:40 -0800 (PST)
-From:   Matteo Scordino <matteo.scordino@gmail.com>
-To:     mripard@kernel.org, wens@csie.org, robh+dt@kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org,
-        Matteo Scordino <matteo.scordino@gmail.com>
-Subject: [PATCH v4 3/3] ARM: dts: sun8i: s3: Add dts for the Elimo Initium SBC
-Date:   Thu,  5 Nov 2020 18:32:31 +0000
-Message-Id: <20201105183231.12952-4-matteo.scordino@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201029022000.601913-1-matteo.scordino@gmail.com>
-References: <20201029022000.601913-1-matteo.scordino@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ToiqyHC98V7qJGXGI3S9IRKhf9is/zBp1DfmWd5kGWg=;
+        b=KRV3VYQO0kAbCRjvHkCR5T7GAvlEQt9tY7dHrvVuzC/AXgYDJ/eDRTvKZaBVCWoovZ
+         gJs+F/7GKfCpqd4P+n4ubltz03nAUs5v+9wDdWFfdGmo3hmKo0ZFyyUmf9x7B/AP3H9W
+         FxKUTKUni/7IJUCdfLwHDSCGRe7P3mk8TjGarq1SzKQAjFllMrPzbkQseCXnMM43OPa9
+         lqwct3l8suT26YtVkVXKPhWMPYQrudQYO+r9h9m55DfHSXNXVb/w53Tn/40cpeRlTsM/
+         vknOI2alNaFhB2O2wG4XTAAsRPZz/4+ea65uXfltbjk1CCGJKYtzIsQ4s8OYkQALkwRa
+         x6cw==
+X-Gm-Message-State: AOAM533zrjc8wiG6UjTuNu/Q+vmd6+LKflPJdxd1JKvWz+35XszgmAyC
+        2+Da+aWrd5j5fEIC3jF+KuzAI0AOFo+oAOZQh7I=
+X-Google-Smtp-Source: ABdhPJz4uNPUjtKlZk2wbluSksg5I2qyo5E7gmodreeqAef91jIlkMg3nkaf8gfEYmXNX+S0lBA+9ek4ROeId0nsGqc=
+X-Received: by 2002:aca:30d7:: with SMTP id w206mr482818oiw.69.1604601426735;
+ Thu, 05 Nov 2020 10:37:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201103152237.9853-1-vbabka@suse.cz> <20201103152237.9853-4-vbabka@suse.cz>
+In-Reply-To: <20201103152237.9853-4-vbabka@suse.cz>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 5 Nov 2020 19:36:55 +0100
+Message-ID: <CAJZ5v0imRT9eXKg=Ucery3C8a=eVOLssB+e60vFBdA1YyAaj7g@mail.gmail.com>
+Subject: Re: [PATCH v2 3/5] kernel/power: allow hibernation with page_poison
+ sanity checking
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alexander Potapenko <glider@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        David Hildenbrand <david@redhat.com>,
+        Mateusz Nosek <mateusznosek0@gmail.com>,
+        Laura Abbott <labbott@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+        Linux PM <linux-pm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Elimo Engineering Initium is an Open Source Hardware Single Board
-Computer based on the Elimo Impetus SoM.
+On Tue, Nov 3, 2020 at 4:24 PM Vlastimil Babka <vbabka@suse.cz> wrote:
+>
+> Page poisoning used to be incompatible with hibernation, as the state of
+> poisoned pages was lost after resume, thus enabling CONFIG_HIBERNATION forces
+> CONFIG_PAGE_POISONING_NO_SANITY. For the same reason, the poisoning with zeroes
+> variant CONFIG_PAGE_POISONING_ZERO used to disable hibernation. The latter
+> restriction was removed by commit 1ad1410f632d ("PM / Hibernate: allow
+> hibernation with PAGE_POISONING_ZERO") and similarly for init_on_free by commit
+> 18451f9f9e58 ("PM: hibernate: fix crashes with init_on_free=1") by making sure
+> free pages are cleared after resume.
+>
+> We can use the same mechanism to instead poison free pages with PAGE_POISON
+> after resume. This covers both zero and 0xAA patterns. Thus we can remove the
+> Kconfig restriction that disables page poison sanity checking when hibernation
+> is enabled.
+>
+> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+> Cc: Len Brown <len.brown@intel.com>
+> Cc: Pavel Machek <pavel@ucw.cz>
+> Cc: <linux-pm@vger.kernel.org>
 
-It is meant as the first development platform for the Impetus, providing
-convenient access to the peripherals on the Impetus.
+Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-It provides:
-USB-C power input
-UART-to-USB bridge on the USB-C connector, connected to UART1
-USB-A connector for USB2.0 (Host, Device, OTG)
-Audio Line In/Out
-Pin header to access all signals on the M2 connector of the SoM
+for the hibernation part and I'm assuming that this patch will be
+routed through the mm tree.
 
-Signed-off-by: Matteo Scordino <matteo.scordino@gmail.com>
----
- arch/arm/boot/dts/Makefile                   |  1 +
- arch/arm/boot/dts/sun8i-s3-elimo-initium.dts | 29 ++++++++++++++++++++
- 2 files changed, 30 insertions(+)
- create mode 100644 arch/arm/boot/dts/sun8i-s3-elimo-initium.dts
-
-diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-index 4f0adfead547..50e438ab8a00 100644
---- a/arch/arm/boot/dts/Makefile
-+++ b/arch/arm/boot/dts/Makefile
-@@ -1208,6 +1208,7 @@ dtb-$(CONFIG_MACH_SUN8I) += \
- 	sun8i-r16-nintendo-super-nes-classic.dtb \
- 	sun8i-r16-parrot.dtb \
- 	sun8i-r40-bananapi-m2-ultra.dtb \
-+	sun8i-s3-elimo-initium.dtb \
- 	sun8i-s3-lichee-zero-plus.dtb \
- 	sun8i-s3-pinecube.dtb \
- 	sun8i-t3-cqa3t-bv3.dtb \
-diff --git a/arch/arm/boot/dts/sun8i-s3-elimo-initium.dts b/arch/arm/boot/dts/sun8i-s3-elimo-initium.dts
-new file mode 100644
-index 000000000000..039677c2cc65
---- /dev/null
-+++ b/arch/arm/boot/dts/sun8i-s3-elimo-initium.dts
-@@ -0,0 +1,29 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright (C) 2020 Matteo Scordino <matteo@elimo.io>
-+ */
-+
-+/dts-v1/;
-+#include "sun8i-s3-elimo-impetus.dtsi"
-+
-+/ {
-+	model = "Elimo Initium";
-+	compatible = "elimo,initium", "elimo,impetus", "sochip,s3",
-+		     "allwinner,sun8i-v3";
-+
-+	aliases {
-+		serial1 = &uart1;
-+	};
-+};
-+
-+&uart1 {
-+	pinctrl-0 = <&uart1_pg_pins>;
-+	pinctrl-names = "default";
-+	status = "okay";
-+};
-+
-+&emac {
-+	phy-handle = <&int_mii_phy>;
-+	phy-mode = "mii";
-+	status = "okay";
-+};
--- 
-2.20.1
-
+> ---
+>  kernel/power/hibernate.c |  2 +-
+>  kernel/power/power.h     |  2 +-
+>  kernel/power/snapshot.c  | 14 ++++++++++----
+>  mm/Kconfig.debug         |  1 -
+>  4 files changed, 12 insertions(+), 7 deletions(-)
+>
+> diff --git a/kernel/power/hibernate.c b/kernel/power/hibernate.c
+> index 2fc7d509a34f..da0b41914177 100644
+> --- a/kernel/power/hibernate.c
+> +++ b/kernel/power/hibernate.c
+> @@ -326,7 +326,7 @@ static int create_image(int platform_mode)
+>
+>         if (!in_suspend) {
+>                 events_check_enabled = false;
+> -               clear_free_pages();
+> +               clear_or_poison_free_pages();
+>         }
+>
+>         platform_leave(platform_mode);
+> diff --git a/kernel/power/power.h b/kernel/power/power.h
+> index 24f12d534515..778bf431ec02 100644
+> --- a/kernel/power/power.h
+> +++ b/kernel/power/power.h
+> @@ -106,7 +106,7 @@ extern int create_basic_memory_bitmaps(void);
+>  extern void free_basic_memory_bitmaps(void);
+>  extern int hibernate_preallocate_memory(void);
+>
+> -extern void clear_free_pages(void);
+> +extern void clear_or_poison_free_pages(void);
+>
+>  /**
+>   *     Auxiliary structure used for reading the snapshot image data and
+> diff --git a/kernel/power/snapshot.c b/kernel/power/snapshot.c
+> index 46b1804c1ddf..6b1c84afa891 100644
+> --- a/kernel/power/snapshot.c
+> +++ b/kernel/power/snapshot.c
+> @@ -1144,7 +1144,7 @@ void free_basic_memory_bitmaps(void)
+>         pr_debug("Basic memory bitmaps freed\n");
+>  }
+>
+> -void clear_free_pages(void)
+> +void clear_or_poison_free_pages(void)
+>  {
+>         struct memory_bitmap *bm = free_pages_map;
+>         unsigned long pfn;
+> @@ -1152,12 +1152,18 @@ void clear_free_pages(void)
+>         if (WARN_ON(!(free_pages_map)))
+>                 return;
+>
+> -       if (IS_ENABLED(CONFIG_PAGE_POISONING_ZERO) || want_init_on_free()) {
+> +       if (page_poisoning_enabled() || want_init_on_free()) {
+>                 memory_bm_position_reset(bm);
+>                 pfn = memory_bm_next_pfn(bm);
+>                 while (pfn != BM_END_OF_MAP) {
+> -                       if (pfn_valid(pfn))
+> -                               clear_highpage(pfn_to_page(pfn));
+> +                       if (pfn_valid(pfn)) {
+> +                               struct page *page = pfn_to_page(pfn);
+> +                               if (page_poisoning_enabled_static())
+> +                                       kernel_poison_pages(page, 1);
+> +                               else if (want_init_on_free())
+> +                                       clear_highpage(page);
+> +
+> +                       }
+>
+>                         pfn = memory_bm_next_pfn(bm);
+>                 }
+> diff --git a/mm/Kconfig.debug b/mm/Kconfig.debug
+> index 864f129f1937..c57786ad5be9 100644
+> --- a/mm/Kconfig.debug
+> +++ b/mm/Kconfig.debug
+> @@ -64,7 +64,6 @@ config PAGE_OWNER
+>
+>  config PAGE_POISONING
+>         bool "Poison pages after freeing"
+> -       select PAGE_POISONING_NO_SANITY if HIBERNATION
+>         help
+>           Fill the pages with poison patterns after free_pages() and verify
+>           the patterns before alloc_pages. The filling of the memory helps
+> --
+> 2.29.1
+>
