@@ -2,79 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ED8A2A85E4
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 19:15:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFBCC2A85E8
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 19:15:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732077AbgKESPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 13:15:08 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:43408 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731620AbgKESPH (ORCPT
+        id S1732247AbgKESPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 13:15:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51980 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731620AbgKESPI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 13:15:07 -0500
-Received: from mail-qk1-f170.google.com (mail-qk1-f170.google.com [209.85.222.170])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 5820E20A0887
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 10:15:06 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5820E20A0887
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1604600106;
-        bh=myfjJwCcX1D4ApFPT3d9XhfE3lJtFyKEiC5FINGvA1s=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=szwTj/W7S9MHujOxyxKVfsaIOVemHgTU9mHkQKkAocVnKkDhvWldE0VcIBcNHUW6O
-         YJyP86zDRVfgq4pjJYWe5yo+vYguSn6JTl/pAZBPXOzLB3laNX8IJQ3XIw0ln++Yb/
-         zREpIk6npzOAkKqKURduuzHN75buUlipm5dbNUl8=
-Received: by mail-qk1-f170.google.com with SMTP id b18so2045944qkc.9
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 10:15:06 -0800 (PST)
-X-Gm-Message-State: AOAM5331bZq3ADsbfC0wNQr85TKbGR3inlUIvDT+nHrLsdJxqGDpeMfh
-        7srtzNKZYyE2p/EaCcTb7Z/fMjnr61uR7V6ryYw=
-X-Google-Smtp-Source: ABdhPJw9u0xDuP+g7YyDJ4atUegsWUYnfAbIolCC99wW2sXJ2AbWnlLlMPpq/k4ObLFQYMgYEO7lJHHJlSxsigpveVc=
-X-Received: by 2002:ae9:dcc1:: with SMTP id q184mr3456786qkf.436.1604600105353;
+        Thu, 5 Nov 2020 13:15:08 -0500
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9FB9C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 10:15:07 -0800 (PST)
+Received: by mail-ot1-x344.google.com with SMTP id g19so2268676otp.13
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 10:15:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2lVJy0oZJ1HKj/RNi/yGkNbXnVBFsYr/3+ED5ZMQfKw=;
+        b=IyWaPau7ZYEzIkgrk5Vh4h4G9HhBgXbnf18iSExSSwD8Va8GOuKADUz4CytksalbiW
+         MzScsBKf5oiY2HuZ1YhHj0f7X2yZf4RR6/ROIepItR8F8D/GCz6dcRvPz2s9Pv5dXK3q
+         wNxzRh7wgI7g0lSub9uEkZLBBMgnB7KSZ/94o=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2lVJy0oZJ1HKj/RNi/yGkNbXnVBFsYr/3+ED5ZMQfKw=;
+        b=ugD/tQGYTlvrc9PJqkGHhO6NNaEzyLcd9/r5w5gf5vsCTEpW0ezJVbHO1u/Q3BztDa
+         KOKoeAkINzcokTWWcoADYtX1zPHp7zdiRaufDiREoEEHMJ7idTsNO+nRW8E5YRVOAU1R
+         rVvGS1ZJfKcCtA8pP5xqsVRFG9EiatGum/EROJq8fEWxhDVuAwg30NhPZMXjPy8vul6l
+         6lfNw3z18TkimmVI1ASGIx3Qc0sphaotc92uz5xc9hmtbdsdmsTV8/3Y+I1Qz3ZH2Bq1
+         hdMLOD8hbOlt5i20SWNNnMOz3fAGxiiL34o5SdTzga/EGilqfZX1sg73647cinWTTUJ+
+         g2zA==
+X-Gm-Message-State: AOAM532RPykII6/e4+uHh3nLjGYuUpY1a7H6CK0dAXGFGw6sWLO0nYCt
+        sIenl9JS5GOCRTIPpqrtlWjEYi2LXN7g7WXLFa4dIw==
+X-Google-Smtp-Source: ABdhPJz6LySZvQ0VpbbSmLJZyloCrKQbelizcXBsEwRVJaITj+vGbbcw3XfkOTnXZG1mD1JdtddL+vEJaCj1UVIENNw=
+X-Received: by 2002:a9d:3b4:: with SMTP id f49mr2710790otf.188.1604600105882;
  Thu, 05 Nov 2020 10:15:05 -0800 (PST)
 MIME-Version: 1.0
-References: <20201103214025.116799-1-mcroce@linux.microsoft.com>
- <20201103214025.116799-3-mcroce@linux.microsoft.com> <20201105180900.GH1602@alley>
-In-Reply-To: <20201105180900.GH1602@alley>
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-Date:   Thu, 5 Nov 2020 19:14:27 +0100
-X-Gmail-Original-Message-ID: <CAFnufp3O5GHPdAuY8tm3jGWfSJXnziinTkiKV5ak7nAYWEnOdw@mail.gmail.com>
-Message-ID: <CAFnufp3O5GHPdAuY8tm3jGWfSJXnziinTkiKV5ak7nAYWEnOdw@mail.gmail.com>
-Subject: Re: [PATCH v3 2/3] reboot: fix overflow parsing reboot cpu number
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        Arnd Bergmann <arnd@arndb.de>, Mike Rapoport <rppt@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Robin Holt <robinmholt@gmail.com>,
-        Fabian Frederick <fabf@skynet.be>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <20201105144517.1826692-1-lee.jones@linaro.org>
+ <20201105164841.GH485884@ulmo> <20201105181053.GP4488@dell>
+In-Reply-To: <20201105181053.GP4488@dell>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Thu, 5 Nov 2020 19:14:54 +0100
+Message-ID: <CAKMK7uEyW_KJ1qC3gLASDe4Qyk_5UMr+yCu7VVVdAq+Z0J6RwQ@mail.gmail.com>
+Subject: Re: [PATCH 00/19] [Set 1] Rid W=1 warnings from GPU
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Christian Koenig <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        David Francis <David.Francis@amd.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Fabio Estevam <festevam@gmail.com>,
+        Gareth Hughes <gareth@valinux.com>,
+        Huang Rui <ray.huang@amd.com>, Jason Yan <yanaijie@huawei.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Jingoo Han <jg1.han@samsung.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Lyude Paul <lyude@redhat.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Nirmoy Das <nirmoy.aiemd@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Rob Clark <rob.clark@linaro.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 5, 2020 at 7:09 PM Petr Mladek <pmladek@suse.com> wrote:
-> > +                     if (reboot_cpu >= num_possible_cpus()) {
-> > +                             pr_err("Ignoring the CPU number in reboot= option. "
-> > +                                    "CPU %d exceeds possible cpu number %d\n",
+On Thu, Nov 5, 2020 at 7:10 PM Lee Jones <lee.jones@linaro.org> wrote:
 >
-> ./scripts/checkpatch.pl used to complain that printk() format parameter should stay
-> on a single line (ignoring 80 char limit). It helps when people are
-> trying to find which code printed a particular message.
+> On Thu, 05 Nov 2020, Thierry Reding wrote:
 >
-> It is not a big deal here because %d does not allow to search the
-> entire message anyway.
+> > On Thu, Nov 05, 2020 at 02:44:58PM +0000, Lee Jones wrote:
+> > > This set is part of a larger effort attempting to clean-up W=1
+> > > kernel builds, which are currently overwhelmingly riddled with
+> > > niggly little warnings.
+> > >
+> > > There are 5000 warnings to work through.
+> > >
+> > > It will take a couple more sets.
+> > >
+> > > Lee Jones (19):
+> > >   gpu: host1x: bus: Add missing description for 'driver'
+> > >   gpu: ipu-v3: ipu-di: Strip out 2 unused 'di_sync_config' entries
+> > >   gpu: drm: imx: ipuv3-plane: Mark 'crtc_state' as __always_unused
+> > >   gpu: drm: omapdrm: omap_irq: Fix a couple of doc-rot issues
+> > >   gpu: drm: selftests: test-drm_mm: Mark 'hole_end' as always_unused
+> > >   gpu: drm: scheduler: sched_main: Provide missing description for
+> > >     'sched' paramter
+> > >   gpu: drm: scheduler: sched_entity: Demote non-conformant kernel-doc
+> > >     headers
+> > >   gpu: drm: omapdrm: dss: dsi: Rework and remove a few unused variables
+> > >   gpu: drm: selftests: test-drm_framebuffer: Remove set but unused
+> > >     variable 'fb'
+> > >   gpu: drm: ttm: ttm_bo: Fix one function header - demote lots of
+> > >     kernel-doc abuses
+> > >   gpu: drm: panel: panel-simple: Fix 'struct panel_desc's header
+> > >   gpu: drm: bridge: analogix: analogix_dp_reg: Remove unused function
+> > >     'analogix_dp_write_byte_to_dpcd'
+> > >   gpu: drm: ttm: ttm_tt: Demote kernel-doc header format abuses
+> > >   gpu: drm: selftests: test-drm_dp_mst_helper: Place 'struct
+> > >     drm_dp_sideband_msg_req_body' onto the heap
+> > >   gpu: drm: radeon: radeon_drv: Remove unused variable 'ret'
+> > >   gpu: drm: panel: panel-ilitek-ili9322: Demote non-conformant
+> > >     kernel-doc header
+> > >   gpu: drm: radeon: radeon_device: Fix a bunch of kernel-doc
+> > >     misdemeanours
+> > >   gpu: drm: amd: amdgpu: amdgpu: Mark global variables as __maybe_unused
+> > >   gpu: drm: bridge: analogix: analogix_dp_reg: Remove unused function
+> > >     'analogix_dp_start_aux_transaction'
+> >
+> > As commented on the other patches, the subject prefixes on most of these
+> > look wrong, but it's generally a nice cleanup.
 >
-> I am not sure if Andrew would like to get this fixed. In both cases:
->
-> Reviewed-by: Petr Mladek <pmladek@suse.com>
->
+> The prefixes are automated.  I'll add this to my list of awkward
+> subsystems and go through them all manually again tomorrow. :D
 
-Yes, I saw this warning, but to suppress it I had to write a 133 char
-line, much beyond even the new 100 char limit.
-I expect a smart user to just grep the first half of the string, like
-"Ignoring the CPU number in reboot="
+tbh for autmoation they look really good :-)
 
-Regards,
+I'd say if you replace the intermediate ": " with just a / you'll be
+perfectly in style for drivers/gpu. But really I think it's ok as-is,
+imo no need to change since this is a giantic tree wide effort.
+-Daniel
 -- 
-per aspera ad upstream
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
