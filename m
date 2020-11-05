@@ -2,83 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99C122A8050
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 15:03:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D8252A8054
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 15:03:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730829AbgKEOD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 09:03:28 -0500
-Received: from foss.arm.com ([217.140.110.172]:33388 "EHLO foss.arm.com"
+        id S1731030AbgKEODi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 09:03:38 -0500
+Received: from foss.arm.com ([217.140.110.172]:33408 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729990AbgKEOD2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 09:03:28 -0500
+        id S1729990AbgKEODh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 09:03:37 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id ED82614BF;
-        Thu,  5 Nov 2020 06:03:27 -0800 (PST)
-Received: from C02TD0UTHF1T.local (unknown [10.57.58.72])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 78F9C3F719;
-        Thu,  5 Nov 2020 06:03:25 -0800 (PST)
-Date:   Thu, 5 Nov 2020 14:03:22 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Andre Przywara <andre.przywara@arm.com>,
-        Will Deacon <will@kernel.org>,
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 07E511509;
+        Thu,  5 Nov 2020 06:03:37 -0800 (PST)
+Received: from localhost (e108754-lin.cambridge.arm.com [10.1.198.32])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9D5763F719;
+        Thu,  5 Nov 2020 06:03:36 -0800 (PST)
+Date:   Thu, 5 Nov 2020 14:03:35 +0000
+From:   Ionela Voinescu <ionela.voinescu@arm.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
         Catalin Marinas <catalin.marinas@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, Sudeep Holla <sudeep.holla@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH v2 4/5] arm64: Add support for SMCCC TRNG entropy source
-Message-ID: <20201105140322.GH82102@C02TD0UTHF1T.local>
-References: <20201105125656.25259-1-andre.przywara@arm.com>
- <20201105125656.25259-5-andre.przywara@arm.com>
- <20201105134142.GA4856@sirena.org.uk>
+        Will Deacon <will@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH RESEND v2 1/3] sched/topology,schedutil: wrap sched
+ domains rebuild
+Message-ID: <20201105140335.GA22244@arm.com>
+References: <20201027180713.7642-1-ionela.voinescu@arm.com>
+ <20201027180713.7642-2-ionela.voinescu@arm.com>
+ <CAJZ5v0gg7dz44s_fjtJKm8Sv87RZypxYe3EwXX74oAuk31GW1Q@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201105134142.GA4856@sirena.org.uk>
+In-Reply-To: <CAJZ5v0gg7dz44s_fjtJKm8Sv87RZypxYe3EwXX74oAuk31GW1Q@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 01:41:42PM +0000, Mark Brown wrote:
-> On Thu, Nov 05, 2020 at 12:56:55PM +0000, Andre Przywara wrote:
+Hi Rafael,
+
+On Friday 30 Oct 2020 at 16:26:32 (+0100), Rafael J. Wysocki wrote:
+> On Tue, Oct 27, 2020 at 7:08 PM Ionela Voinescu <ionela.voinescu@arm.com> wrote:
+> >
+> > Add the rebuild_sched_domains_energy() function to wrap the functionality
+> > that rebuilds the scheduling domains if any of the Energy Aware Scheduling
+> > (EAS) initialisation conditions change. This functionality is used when
+> > schedutil is added or removed or when EAS is enabled or disabled
+> > through the sched_energy_aware sysctl.
+> >
+> > Therefore, create a single function that is used in both these cases and
+> > that can be later reused.
+> >
+> > Signed-off-by: Ionela Voinescu <ionela.voinescu@arm.com>
+> > Acked-by: Quentin Perret <qperret@google.com>
+> > Cc: Ingo Molnar <mingo@redhat.com>
+> > Cc: Peter Zijlstra <peterz@infradead.org>
+> > Cc: Rafael J. Wysocki <rjw@rjwysocki.net>
+> > Cc: Viresh Kumar <viresh.kumar@linaro.org>
 > 
-> >  static inline bool __must_check arch_get_random_seed_int(unsigned int *v)
-> >  {
-> > +	struct arm_smccc_res res;
-> >  	unsigned long val;
-> > -	bool ok = arch_get_random_seed_long(&val);
-> >  
-> > -	*v = val;
-> > -	return ok;
-> > +	if (cpus_have_const_cap(ARM64_HAS_RNG)) {
-> > +		if (arch_get_random_seed_long(&val)) {
-> > +			*v = val;
-> > +			return true;
-> > +		}
-> > +		return false;
-> > +	}
+> For the schedutil part:
 > 
-> It isn't obvious to me why we don't fall through to trying the SMCCC
-> TRNG here if for some reason the v8.5-RNG didn't give us something.
-> Definitely an obscure possibility but still...
+> Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> 
 
-I think it's better to assume that if we have a HW RNG and it's not
-giving us entropy, it's not worthwhile trapping to the host, which might
-encounter the exact same issue.
+Thank you for taking a look!
 
-I'd rather we have one RNG source that we trust works, and use that
-exclusively.
+> and I'm assuming the patch to be taken care of by Peter.
 
-That said, I'm not sure it's great to plumb this under the
-arch_get_random*() interfaces, e.g. given this measn that
-add_interrupt_randomness() will end up trapping to the host all the time
-when it calls arch_get_random_seed_long().
+I'm hoping that as well. I'll ask some of the arm64 folk to take another
+look over 2/3 to make sure that's covered.
 
-Is there an existing interface for "slow" runtime entropy that we can
-plumb this into instead?
-
-Thanks,
-Mark.
+Many thanks,
+Ionela.
