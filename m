@@ -2,110 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 809E52A87A6
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 20:58:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E69D02A87AB
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 21:02:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731847AbgKET6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 14:58:08 -0500
-Received: from smtprelay0093.hostedemail.com ([216.40.44.93]:43244 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726729AbgKET6I (ORCPT
+        id S1731897AbgKEUCE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 15:02:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40390 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726214AbgKEUCE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 14:58:08 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 4A045100E7B47;
-        Thu,  5 Nov 2020 19:58:07 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:69:355:379:599:800:960:968:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2194:2199:2393:2559:2562:2828:2895:3138:3139:3140:3141:3142:3354:3622:3865:3867:3868:3872:3874:4225:4321:4605:5007:6119:7514:7576:7903:7904:10004:10400:10848:11026:11232:11657:11658:11914:12043:12048:12295:12296:12297:12555:12679:12740:12895:13439:13894:14181:14659:14721:21080:21451:21627:21660:21990:30054:30056:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: cake94_5d0fadf272cc
-X-Filterd-Recvd-Size: 3092
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf09.hostedemail.com (Postfix) with ESMTPA;
-        Thu,  5 Nov 2020 19:58:05 +0000 (UTC)
-Message-ID: <31e5ce025694049ab6b21fe8f688131ac07b8abf.camel@perches.com>
-Subject: Re: [PATCH] cxgb4: Fix the -Wmisleading-indentation warning
-From:   Joe Perches <joe@perches.com>
-To:     xiakaixu1987@gmail.com, vishal@chelsio.com, davem@davemloft.net,
-        kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kaixu Xia <kaixuxia@tencent.com>
-Date:   Thu, 05 Nov 2020 11:58:04 -0800
-In-Reply-To: <1604467444-23043-1-git-send-email-kaixuxia@tencent.com>
-References: <1604467444-23043-1-git-send-email-kaixuxia@tencent.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Thu, 5 Nov 2020 15:02:04 -0500
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 322FEC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 12:02:04 -0800 (PST)
+Received: by mail-io1-xd42.google.com with SMTP id n12so3082749ioc.2
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 12:02:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fv9PbM0mWbGs3SJ8rmspBCaTVm4/mWO5xuXCNEgpydE=;
+        b=hexKqQ2q848VizzUcSockEbXIkhZ5tok06Bg5Eh9kA8qTUX6G0DLzNVQ9j40/XYFIx
+         kuHsf774oSPSg1DYqlcy+E7NMln/1ZmB3IORdm1WeYrrMGMCrvPZzzLwdIK4Yrt20fuc
+         1OtKjBkKNVcf2P0hTW0N/z/GqGCbQw/CHJPo/qwNQbPsKkVsHMEbHoly8fe4JSn0mZQ2
+         4933pt+a6uGxnVlLgtxXMI/yXWieNk7LAKWankbE6Kjm4k81+T806826B6lK25jsjFg7
+         /SmyK4Z2y+iNKB14s2m2ZOTOLxkIlNJBvj7RL+dmuSvKHI2YTXHb/t3DFNuELBKqle73
+         4o2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fv9PbM0mWbGs3SJ8rmspBCaTVm4/mWO5xuXCNEgpydE=;
+        b=LOyhs1vg5Ue5ZUlBbrKBoIV+PJuSWUIiS7+jFPAmU1QbCEwNMRcpByX0JjU7vAk876
+         plxoUWUw2itjnWg3ZgvSGeQm9yFoeQTfWhB3Ts/3vd8OQO5lEw73lQS1A5wA3vTtLX5P
+         kaSgjT0TKPw0vw7f9GMXHTwXqXTSAJGOGL1qjm5wetHoQ8EemKg0ZSM9GxVI4AjqJZsI
+         II8HVStpyLT8LLfeUs4es9DDnIXMHiWPl17kSqNzgmZ8fWDeXnZgOV718Xyi1IlqV1r9
+         uvYLGcpmrdwGldMo/dAlXiPacOMaAFUwm2E9Ji6YyNexSANfiqEWqPBpgBQ5WO6XxrF7
+         T3nQ==
+X-Gm-Message-State: AOAM531qI2FokNuB8KSrMrPoBtBOElo07PrQ4k+1NrzFiunbrjk6Ew1b
+        8XQRa0IjBSKqdgADfoxMQOcKiiOp7EA5L8hV5Wc=
+X-Google-Smtp-Source: ABdhPJyKeYgxsW4c9LKIVlqqAShH9/7iBhFlymfcyy26q67aq0itxDHrk1+eip7nduuU8d/qLK7xCrbBKV55AnjuA3w=
+X-Received: by 2002:a02:ac09:: with SMTP id a9mr3584797jao.60.1604606523511;
+ Thu, 05 Nov 2020 12:02:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201004032536.1229030-1-krisman@collabora.com> <20201004032536.1229030-11-krisman@collabora.com>
+In-Reply-To: <20201004032536.1229030-11-krisman@collabora.com>
+From:   Dmitry Safonov <0x7f454c46@gmail.com>
+Date:   Thu, 5 Nov 2020 20:01:52 +0000
+Message-ID: <CAJwJo6a8O+BF6T55V94YEFNxbx7pdUsX-Y9fqC5szVpJhwQEzQ@mail.gmail.com>
+Subject: Re: [PATCH v3 10/10] x86: Reclaim TIF_IA32 and TIF_X32
+To:     Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>, hch@lst.de,
+        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
+        rric@kernel.org, Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, X86 ML <x86@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        sean.j.christopherson@intel.com, kernel@collabora.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-11-04 at 13:24 +0800, xiakaixu1987@gmail.com wrote:
-> From: Kaixu Xia <kaixuxia@tencent.com>
-> 
-> Fix the gcc warning:
-> 
-> drivers/net/ethernet/chelsio/cxgb4/cxgb4_debugfs.c:2673:9: warning: this 'for' clause does not guard... [-Wmisleading-indentation]
->  2673 |         for (i = 0; i < n; ++i) \
+On Sun, 4 Oct 2020 at 04:31, Gabriel Krisman Bertazi
+<krisman@collabora.com> wrote:
+>
+> Now that these flags are no longer used, reclaim those TI bits.
+>
+> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
 
-true, the defined macros though aren't pretty and depend on
-externally defined i and n.
+Oh wow!
+I've just started rebasing patches that do essentially the same on linux-next
+and found that it's already done and merged.
 
-It'd be good to show that and to update the slightly difficult to read
-helpers below that and remove the unnecessary T3 and R3 macros too.
+Thanks for doing this! :-)
 
-Perhaps:
----
- drivers/net/ethernet/chelsio/cxgb4/cxgb4_debugfs.c | 28 ++++++++++------------
- 1 file changed, 13 insertions(+), 15 deletions(-)
-
-diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_debugfs.c b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_debugfs.c
-index 0273f40b85f7..a7fddcdf4eac 100644
---- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_debugfs.c
-+++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_debugfs.c
-@@ -2666,20 +2666,20 @@ static int sge_qinfo_show(struct seq_file *seq, void *v)
- 	if (r)
- 		seq_putc(seq, '\n');
- 
--#define S3(fmt_spec, s, v) \
--do { \
--	seq_printf(seq, "%-12s", s); \
--	for (i = 0; i < n; ++i) \
--		seq_printf(seq, " %16" fmt_spec, v); \
--		seq_putc(seq, '\n'); \
-+/* These macros are dependent on locally scoped i and n variables */
-+#define S3(fmt_spec, s, v)						\
-+do {									\
-+	seq_printf(seq, "%-12s", s);					\
-+	for (i = 0; i < n; ++i)						\
-+		seq_printf(seq, " %16" fmt_spec, v);			\
-+	seq_putc(seq, '\n');						\
- } while (0)
--#define S(s, v) S3("s", s, v)
--#define T3(fmt_spec, s, v) S3(fmt_spec, s, tx[i].v)
--#define T(s, v) S3("u", s, tx[i].v)
--#define TL(s, v) T3("lu", s, v)
--#define R3(fmt_spec, s, v) S3(fmt_spec, s, rx[i].v)
--#define R(s, v) S3("u", s, rx[i].v)
--#define RL(s, v) R3("lu", s, v)
-+
-+#define S(s, v)			S3("s", s, v)
-+#define T(s, v)			S3("u", s, tx[i].v)
-+#define TL(s, v)		S3("lu", s, tx[i].v)
-+#define R(s, v)			S3("u", s, rx[i].v)
-+#define RL(s, v)		S3("lu", s, rx[i].v)
- 
- 	if (r < eth_entries) {
- 		int base_qset = r * 4;
-@@ -3139,8 +3139,6 @@ do { \
- #undef T
- #undef TL
- #undef S
--#undef R3
--#undef T3
- #undef S3
- out:
- 	return 0;
-
-
+-- 
+             Dmitry
