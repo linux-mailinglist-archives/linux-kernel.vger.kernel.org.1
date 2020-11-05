@@ -2,117 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BDE82A8300
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 17:06:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2E742A8303
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 17:06:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730232AbgKEQGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 11:06:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59760 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725998AbgKEQGF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 11:06:05 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76319C0613D2
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 08:06:05 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id c20so1740118pfr.8
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 08:06:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=tcIkgTJPLpkhdZacr76tfOm6rgrkfw7s2ZkhH1Tbzc8=;
-        b=W9VHwEqFaK+4slIwWgFXll7jB05SQCRdmvTbzySiv1j6aI0MybAxZDNAil2cFMVBEI
-         7aijcZncXdxSbatagESRThbtqIy7l7WIe1Rj5uh+zzUsCHrMujQtzNL9QzpAEGb9s2uZ
-         MDhCe7EDPjwGlOlFPq+FPkdh+olRsVw8CykcOjv/RnBx+taTHNUaSgD28y1LFOTyUabY
-         AJDoB63n8++vbe+2cSA0nuwdlx01ibBXDIqGKu60dk6tJu8Ee+c30Dt4ZpDFv6nhgyeY
-         D8RzHlcUj+IocM7NN9yOt+InHbH85NJYk0Jm6TZTq3DrZ/ctfHQOa1SMmw9+F7EsJF8T
-         Sp+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=tcIkgTJPLpkhdZacr76tfOm6rgrkfw7s2ZkhH1Tbzc8=;
-        b=PokHnp8qe7zamR62nY3Ihc8po4BMspluEPjUsOpN0fegeK7TeRZWe5owpIpIO75Y8r
-         v8/bognKx06l9sVCjYhM8ETaeYhS0nvJXGwAUCJNDISBMldOnqLzZ5UYywv2j/+AUv4g
-         RPxrWq7PTU8HUpDsslpVqNZjLnYDTlKtKgvJZWLrDeofVzl6+acu4pdIdzTkYw+cIEQ0
-         3FZflh7MXycTJbuzCf+ngIaGGX0kqbSxzoIKq8cakX57sXIYj5bokXY7zb9gfELjVPwo
-         gtJZy8eJgN1wNl6cujAYqHBM5ResnzJABEc8ioNHG7gQKZJSa4WyZsO14P+5WfPPXL93
-         4+xQ==
-X-Gm-Message-State: AOAM533mvs+PJG1DFXrj5IC8Lm+qwgpGhE1ERAp3yzpsP3EiXPmfX+Ej
-        M3b0+wgrBETSZ8bBVh7se2uA
-X-Google-Smtp-Source: ABdhPJyRTLxTPLx6zU9LgPxazZRz9dkRYeXzbkVOT1LqB4A3lkF93+NNb7+yx75OIzFaD9qlaBbyIw==
-X-Received: by 2002:a62:19c8:0:b029:18a:ec5e:e68e with SMTP id 191-20020a6219c80000b029018aec5ee68emr2830119pfz.9.1604592364817;
-        Thu, 05 Nov 2020 08:06:04 -0800 (PST)
-Received: from work ([103.59.133.81])
-        by smtp.gmail.com with ESMTPSA id v12sm2842394pfu.193.2020.11.05.08.06.02
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 05 Nov 2020 08:06:03 -0800 (PST)
-Date:   Thu, 5 Nov 2020 21:35:58 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     carl.yin@quectel.com
-Cc:     hemantk@codeaurora.org, sfr@canb.auug.org.au,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        naveen.kumar@quectel.com
-Subject: Re: [PATCH v2] bus: mhi: core: Fix null pointer access when parsing
- MHI configuration
-Message-ID: <20201105160558.GG7308@work>
-References: <20201102122710.23406-1-carl.yin@quectel.com>
+        id S1729016AbgKEQGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 11:06:12 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:34110 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725998AbgKEQGK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 11:06:10 -0500
+Received: from zn.tnic (p200300ec2f0ee5006c78cd15f1739a31.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:e500:6c78:cd15:f173:9a31])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id ABBEB1EC03A0;
+        Thu,  5 Nov 2020 17:06:07 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1604592367;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=S5boF4B6TAHFPlvlgDFEEapIEvWayFlRDB/oT9Qr6eY=;
+        b=MgIWWTeGmdGbWivhsxWZDTo5EI6CY70hB1Bn0ZQ3R8NToCxQEr4NRSgbPZf4eQa9qkVR0k
+        TEMGRxDApvtqS+glbggqJ3hz5H3xcSvCpFf+bffafn89ZZgjDoSqUcO4JPlIdb/wmUCwXr
+        aIez9StDLSstQ2wsnG9IPtMPnwmaDxc=
+Date:   Thu, 5 Nov 2020 17:05:59 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Haitao Huang <haitao.huang@linux.intel.com>,
+        Chunyang Hui <sanqian.hcy@antfin.com>,
+        Jordan Hand <jorhand@linux.microsoft.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Seth Moore <sethmo@google.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Suresh Siddha <suresh.b.siddha@intel.com>,
+        andriy.shevchenko@linux.intel.com, asapek@google.com,
+        cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com, kai.huang@intel.com,
+        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
+        luto@kernel.org, nhorman@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com,
+        mikko.ylinen@intel.com
+Subject: Re: [PATCH v40 11/24] x86/sgx: Add SGX misc driver interface
+Message-ID: <20201105160559.GD25636@zn.tnic>
+References: <20201104145430.300542-1-jarkko.sakkinen@linux.intel.com>
+ <20201104145430.300542-12-jarkko.sakkinen@linux.intel.com>
+ <20201105011043.GA700495@kernel.org>
+ <20201105011615.GA701257@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201102122710.23406-1-carl.yin@quectel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201105011615.GA701257@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 02, 2020 at 08:27:10PM +0800, carl.yin@quectel.com wrote:
-> From: "carl.yin" <carl.yin@quectel.com>
+On Thu, Nov 05, 2020 at 03:16:15AM +0200, Jarkko Sakkinen wrote:
+> Further, I'd declare this as an inline function given how trivial it
+> turn into.
 > 
-> Functions parse_ev_cfg() and parse_ch_cfg() access mhi_cntrl->mhi_dev
-> before it is set in function mhi_register_controller(),
-> use cntrl_dev instead of mhi_dev.
-> 
-> Fixes: 0cbf260820fa ("bus: mhi: core: Add support for registering MHI controllers")
-> Signed-off-by: carl.yin <carl.yin@quectel.com>
-> Reviewed-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+...
 
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+So are you sending a new version of only this patch as a reply to this
+subthread?
 
-Nit: Your name in the Signed-off-by tag should be in a proper format
-like "Carl Yin". I'll fix it up while applying. But please fix it in
-future patches.
+-- 
+Regards/Gruss,
+    Boris.
 
-Thanks,
-Mani
-
-> ---
->  drivers/bus/mhi/core/init.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
-> index 0ffdebd..c6b43e9 100644
-> --- a/drivers/bus/mhi/core/init.c
-> +++ b/drivers/bus/mhi/core/init.c
-> @@ -610,7 +610,7 @@ static int parse_ev_cfg(struct mhi_controller *mhi_cntrl,
->  {
->  	struct mhi_event *mhi_event;
->  	const struct mhi_event_config *event_cfg;
-> -	struct device *dev = &mhi_cntrl->mhi_dev->dev;
-> +	struct device *dev = mhi_cntrl->cntrl_dev;
->  	int i, num;
->  
->  	num = config->num_events;
-> @@ -692,7 +692,7 @@ static int parse_ch_cfg(struct mhi_controller *mhi_cntrl,
->  			const struct mhi_controller_config *config)
->  {
->  	const struct mhi_channel_config *ch_cfg;
-> -	struct device *dev = &mhi_cntrl->mhi_dev->dev;
-> +	struct device *dev = mhi_cntrl->cntrl_dev;
->  	int i;
->  	u32 chan;
->  
-> -- 
-> 2.25.1
-> 
+https://people.kernel.org/tglx/notes-about-netiquette
