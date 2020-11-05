@@ -2,122 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87E132A7944
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 09:29:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 747B32A7947
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 09:29:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729653AbgKEI3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 03:29:01 -0500
-Received: from mga09.intel.com ([134.134.136.24]:27512 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725827AbgKEI3B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 03:29:01 -0500
-IronPort-SDR: Tzg6rNHMPvE8s3uQs/2RMtgl6l1pGgEl/nFoEn3Fm9x962so/lkI3JmBmu2KpaDoq5WMuwwbAe
- avjvlbyVsGnQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9795"; a="169490978"
-X-IronPort-AV: E=Sophos;i="5.77,453,1596524400"; 
-   d="scan'208";a="169490978"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2020 00:28:59 -0800
-IronPort-SDR: nUp/+X//aM/SYwFrMlZRSVMFyjVB+CltZDanTK50mC5M7+c7kJSW+CJpNolPwd/GVCX9TvTc6J
- c0NRomAH2n7g==
-X-IronPort-AV: E=Sophos;i="5.77,453,1596524400"; 
-   d="scan'208";a="539293116"
-Received: from xingzhen-mobl.ccr.corp.intel.com (HELO [10.238.4.68]) ([10.238.4.68])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2020 00:28:57 -0800
-Subject: Re: [LKP] Re: [mm/gup] a308c71bf1: stress-ng.vm-splice.ops_per_sec
- -95.6% regression
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        kernel test robot <rong.a.chen@intel.com>,
-        Jann Horn <jannh@google.com>
-Cc:     Peter Xu <peterx@redhat.com>, LKML <linux-kernel@vger.kernel.org>,
-        lkp@lists.01.org, kernel test robot <lkp@intel.com>,
-        zhengjun.xing@intel.com
-References: <20201102091428.GK31092@shao2-debian>
- <CAHk-=wiRnRsS4CqLypK533G2Ho=NVTt_s-e9KXZ=b0ptOSB15A@mail.gmail.com>
-From:   Xing Zhengjun <zhengjun.xing@linux.intel.com>
-Message-ID: <dd22f78e-764b-4896-e2d0-5f4e4cf178af@linux.intel.com>
-Date:   Thu, 5 Nov 2020 16:28:54 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
-MIME-Version: 1.0
-In-Reply-To: <CAHk-=wiRnRsS4CqLypK533G2Ho=NVTt_s-e9KXZ=b0ptOSB15A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1730094AbgKEI3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 03:29:36 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52655 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725827AbgKEI3g (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 03:29:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604564974;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=adPaZhsg9rSI30Nv3OJs5JJH153rGjOkRFJFWWaQFmA=;
+        b=F4t49gzO2fGjlG7GxaQsy9n+52gF76H1x1s60Bi6s464qQCidV5eCSRe0FRUAvS//4vsAl
+        vA603zpiWKcBllH7xlaRIgTh3ERe3oRFn6iZdadi+oYzCqB5oIYa2m1VpgKeKDh16Lr1uw
+        cl9MhtRus7n5I1WiLzBrcRJUn7DGiSU=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-531-CtK-yL04MyeOSEuzIQi0Pg-1; Thu, 05 Nov 2020 03:29:32 -0500
+X-MC-Unique: CtK-yL04MyeOSEuzIQi0Pg-1
+Received: by mail-wm1-f69.google.com with SMTP id o19so316029wme.2
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 00:29:32 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:content-transfer-encoding:mime-version:subject
+         :from:in-reply-to:cc:date:message-id:references:to;
+        bh=adPaZhsg9rSI30Nv3OJs5JJH153rGjOkRFJFWWaQFmA=;
+        b=iyYM2X2LA6gDRhHpsDdZCT4eAtvwJTxlK/yZAII5uwVVeImNuTrkS7KdlzJof536dq
+         /hfEB0+flYMDIvXfkaTFhLweeg4BC+cjsolRTBlBqxBYbV6tTyQftbk56i79zU7vjMDk
+         FVFN15F6JiMTef/6dCBnTLJR4oUFAVbi+CCEDLZz7kTFZM4yjB29mO8friqXm8xHyFyF
+         WQUEFEgF0EUGCJWeE9mblkgqCZJ0dhwoULXLzmBGQyM2afy2Q6W4Ci4mHrbovLQE46yO
+         pp8BYFDKaC9qF8yw4bIOJGlxKnwoTRBPZuYOEX4RgAjLwQqZeAA997GSFmEyd8en31Wv
+         xUMA==
+X-Gm-Message-State: AOAM5304IHEydqfoWWcR3AN9pX9mF622eiEUQyIUBtTNcRmejOvpNFMN
+        gn0ZQgJi5sHW9K1yCRlnodfRiV8ij2t2Zy77BXOK9F5dBvhH8UDLSG+uT1/KHyfaxN9YDzE0HP7
+        znXc2Tc8Cq3MCdAGT/GA7iRH8
+X-Received: by 2002:a5d:688c:: with SMTP id h12mr1528843wru.92.1604564970816;
+        Thu, 05 Nov 2020 00:29:30 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwa2txjVKqbSfl58jHdphu7Qv2zDJxMqnz9YHvcTy6jiI+C7kFhAWNcUEsLj0a4rpiZiHQbAQ==
+X-Received: by 2002:a5d:688c:: with SMTP id h12mr1528817wru.92.1604564970537;
+        Thu, 05 Nov 2020 00:29:30 -0800 (PST)
+Received: from ?IPv6:2003:d8:2f34:7900:7495:eb9e:985d:aaa0? (p200300d82f3479007495eb9e985daaa0.dip0.t-ipconnect.de. [2003:d8:2f34:7900:7495:eb9e:985d:aaa0])
+        by smtp.gmail.com with ESMTPSA id e25sm1381379wrc.76.2020.11.05.00.29.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Nov 2020 00:29:30 -0800 (PST)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH v1 4/4] powernv/memtrace: don't abuse memory hot(un)plug infrastructure for memory allocations
+From:   David Hildenbrand <david@redhat.com>
+In-Reply-To: <87o8kcttjp.fsf@mpe.ellerman.id.au>
+Cc:     David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
+        Michal Hocko <mhocko@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Rashmica Gupta <rashmica.g@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>
+Date:   Thu, 5 Nov 2020 09:29:29 +0100
+Message-Id: <1D39DC0E-C07A-4B9E-B811-67684A4A0FE9@redhat.com>
+References: <87o8kcttjp.fsf@mpe.ellerman.id.au>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+X-Mailer: iPhone Mail (18A8395)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+> Am 05.11.2020 um 03:53 schrieb Michael Ellerman <mpe@ellerman.id.au>:
+>=20
+> =EF=BB=BFDavid Hildenbrand <david@redhat.com> writes:
+>> Let's use alloc_contig_pages() for allocating memory and remove the
+>> linear mapping manually via arch_remove_linear_mapping(). Mark all pages
+>> PG_offline, such that they will definitely not get touched - e.g.,
+>> when hibernating. When freeing memory, try to revert what we did.
+>> The original idea was discussed in:
+>> https://lkml.kernel.org/r/48340e96-7e6b-736f-9e23-d3111b915b6e@redhat.com=
 
-On 11/5/2020 2:29 AM, Linus Torvalds wrote:
-> On Mon, Nov 2, 2020 at 1:15 AM kernel test robot <rong.a.chen@intel.com> wrote:
->>
->> Greeting,
->>
->> FYI, we noticed a -95.6% regression of stress-ng.vm-splice.ops_per_sec due to commit:
->>
->> commit: a308c71bf1e6e19cc2e4ced31853ee0fc7cb439a ("mm/gup: Remove enfornced COW mechanism")
->> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
-> 
-> Note that this is just the reverse of the previous 2000% improvement
-> reported by the test robot here:
-> 
->      https://lore.kernel.org/lkml/20200611040453.GK12456@shao2-debian/
-> 
-> and the explanation seems to remain the same:
-> 
->      https://lore.kernel.org/lkml/CAG48ez1v1b4X5LgFya6nvi33-TWwqna_dc5jGFVosqQhdn_Nkg@mail.gmail.com/
-> 
-> IOW, this is testing a special case (zero page lookup) that the "force
-> COW" patches happened to turn into a regular case (COW creating a
-> regular page from the zero page).
-> 
-> The question is whether we should care about the zero page for gup_fast lookup.
-> 
-> If we do care, then the proper fix is likely simply to allow the zero
-> page in fast-gup, the same way we already do in slow-gup.
-> 
-> ENTIRELY UNTESTED PATCH ATTACHED.
-> 
-> Rong - mind testing this? I don't think the zero-page _should_ be
-> something that real loads care about, but hey, maybe people do want to
-> do things like splice zeroes very efficiently..
+>> This is similar to CONFIG_DEBUG_PAGEALLOC handling on other
+>> architectures, whereby only single pages are unmapped from the linear
+>> mapping. Let's mimic what memory hot(un)plug would do with the linear
+>> mapping.
+>> We now need MEMORY_HOTPLUG and CONTIG_ALLOC as dependencies.
+>> Simple test under QEMU TCG (10GB RAM, single NUMA node):
+>> sh-5.0# mount -t debugfs none /sys/kernel/debug/
+>> sh-5.0# cat /sys/devices/system/memory/block_size_bytes
+>> 40000000
+>> sh-5.0# echo 0x40000000 > /sys/kernel/debug/powerpc/memtrace/enable
+>> [   71.052836][  T356] memtrace: Allocated trace memory on node 0 at 0x00=
+00000080000000
+>> sh-5.0# echo 0x80000000 > /sys/kernel/debug/powerpc/memtrace/enable
+>> [   75.424302][  T356] radix-mmu: Mapped 0x0000000080000000-0x00000000c00=
+00000 with 64.0 KiB pages
+>> [   75.430549][  T356] memtrace: Freed trace memory back on node 0
+>> [   75.604520][  T356] memtrace: Allocated trace memory on node 0 at 0x00=
+00000080000000
+>> sh-5.0# echo 0x100000000 > /sys/kernel/debug/powerpc/memtrace/enable
+>> [   80.418835][  T356] radix-mmu: Mapped 0x0000000080000000-0x00000001000=
+00000 with 64.0 KiB pages
+>> [   80.430493][  T356] memtrace: Freed trace memory back on node 0
+>> [   80.433882][  T356] memtrace: Failed to allocate trace memory on node 0=
 
-I test the patch, the regression still existed.
+>> sh-5.0# echo 0x40000000 > /sys/kernel/debug/powerpc/memtrace/enable
+>> [   91.920158][  T356] memtrace: Allocated trace memory on node 0 at 0x00=
+00000080000000
+>=20
+> I gave this a quick spin on a real machine, seems to work OK.
+>=20
+> I don't have the actual memtrace tools setup to do an actual trace, will
+> try and get someone to test that also.
+>=20
+> One observation is that previously the memory was zeroed when enabling
+> the memtrace, whereas now it's not.
+>=20
+> eg, before:
+>=20
+> # hexdump -C /sys/kernel/debug/powerpc/memtrace/00000000/trace=20
+> 00000000  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |.............=
+...|
+> *
+> 10000000
+>=20
+> whereas after:
+>=20
+> # hexdump -C /sys/kernel/debug/powerpc/memtrace/00000000/trace
+> 00000000  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |.............=
+...|
+> *
+> 00000080  e0 fd 43 00 00 00 00 00  e0 fd 43 00 00 00 00 00  |..C.......C..=
+...|
+> 00000090  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |.............=
+...|
+> *
+> 00000830  98 bf 39 00 00 00 00 00  98 bf 39 00 00 00 00 00  |..9.......9..=
+...|
+> 00000840  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |.............=
+...|
+> *
+> 000008a0  b0 c8 47 00 00 00 00 00  b0 c8 47 00 00 00 00 00  |..G.......G..=
+...|
+> 000008b0  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |.............=
+...|
+> ...
+> 0fffff70  78 53 49 7d 00 00 29 2e  88 00 92 41 01 00 49 39  |xSI}..)....A.=
+.I9|
+> 0fffff80  b4 07 4a 7d 28 f8 00 7d  00 48 08 7c 0c 00 c2 40  |..J}(..}.H.|.=
+..@|
+> 0fffff90  2d f9 40 7d f0 ff c2 40  b4 07 0a 7d 00 48 8a 7f  |-.@}...@...}.=
+H..|
+> 0fffffa0  70 fe 9e 41 cc ff ff 4b  00 00 00 60 00 00 00 60  |p..A...K...`.=
+..`|
+> 0fffffb0  01 00 00 48 00 00 00 60  00 00 a3 2f 0c fd 9e 40  |...H...`.../.=
+..@|
+> 0fffffc0  00 00 a2 3c 00 00 a5 e8  00 00 62 3c 00 00 63 e8  |...<......b<.=
+.c.|
+> 0fffffd0  01 00 20 39 83 02 80 38  00 00 3c 99 01 00 00 48  |.. 9...8..<..=
+..H|
+> 0fffffe0  00 00 00 60 e4 fc ff 4b  00 00 80 38 78 fb e3 7f  |...`...K...8x=
+...|
+> 0ffffff0  01 00 00 48 00 00 00 60  2c fe ff 4b 00 00 00 60  |...H...`,..K.=
+..`|
+> 10000000
+>=20
+>=20
+> That's a nice way for root to read kernel memory, so we should probably
+> add a __GFP_ZERO or memset in there somewhere.
 
-=========================================================================================
-tbox_group/testcase/rootfs/kconfig/compiler/nr_threads/disk/testtime/class/cpufreq_governor/ucode:
- 
-lkp-csl-2sp5/stress-ng/debian-10.4-x86_64-20200603.cgz/x86_64-rhel-8.3/gcc-9/100%/1HDD/30s/pipe/performance/0x5002f01
+Thanks for catching that! Will have a look on Monday if alloc_contig_pages()=
+ already properly handled __GFP_ZERO so we can use it, otherwise I=E2=80=98l=
+l fix that.
 
-commit:
-   1a0cf26323c80e2f1c58fc04f15686de61bfab0c
-   a308c71bf1e6e19cc2e4ced31853ee0fc7cb439a
-   da5ba9980aa2211c1e2a89fc814abab2fea6f69d (debug patch)
+I don=E2=80=98t recall that memory hotunplug does any zeroing - that=E2=80=98=
+s why I didn=E2=80=98t add any explicit zeroing. Could be you were just luck=
+y in your experiment - I assume we=E2=80=98ll leak kernel memory already.
 
-1a0cf26323c80e2f a308c71bf1e6e19cc2e4ced3185 da5ba9980aa2211c1e2a89fc814
----------------- --------------------------- ---------------------------
-          %stddev     %change         %stddev     %change         %stddev
-              \          |                \          |                \
-  3.406e+09           -95.6%   1.49e+08           -96.4%  1.213e+08 
-    stress-ng.vm-splice.ops
-  1.135e+08           -95.6%    4965911           -96.4%    4041777 
-    stress-ng.vm-splice.ops_per_sec
+Thank!
 
-> 
-> And note the "untested" part of the patch. It _looks_ fairly obvious,
-> but maybe I'm missing something.
-> 
->              Linus
-> 
-> 
-> _______________________________________________
-> LKP mailing list -- lkp@lists.01.org
-> To unsubscribe send an email to lkp-leave@lists.01.org
-> 
+> cheers
 
--- 
-Zhengjun Xing
