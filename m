@@ -2,68 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF9BC2A75B8
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 03:45:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38FC52A75BA
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 03:46:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388402AbgKECpq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 21:45:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56800 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729344AbgKECpq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 21:45:46 -0500
-Received: from kernel.org (unknown [104.132.1.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 944272074B;
-        Thu,  5 Nov 2020 02:45:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604544344;
-        bh=ZND+etKvo9cOoumubJj8jAyx7zVBF0vSY5DA1VtbySY=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=vToYG6rik7/vw09/YnScFZDKwVW3nkERgEDEL8Yf27KpbBKY5P/Ne4vovyhUQYFqY
-         ciLFlMCU6d5LuUAGnh9afyXRgmEjB2DaVPKu8XUYAQADGo3d8EuXA6wH9DPToqMjvB
-         +KKewqJce9mQktXfsCl34SICmOwIPwpJJUmqlr2E=
-Content-Type: text/plain; charset="utf-8"
+        id S2388413AbgKECq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 21:46:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48082 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729344AbgKECq1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 21:46:27 -0500
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23365C0613CF;
+        Wed,  4 Nov 2020 18:46:27 -0800 (PST)
+Received: by mail-qv1-xf42.google.com with SMTP id r12so52075qvq.13;
+        Wed, 04 Nov 2020 18:46:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zH+kMb2mDjz1gX5zpF0a3PDNXVCGzlWx/K6lQCiKGKc=;
+        b=YGoL8RA8xNYLHqY3S/Pow7ScfXhZ+NHg3KG2sFDp1vrk69nTzdZjnZEgyVcEa23DP3
+         5AVqAHdxRhqohKQnk/orxSmSkdjsZz/msU4FvR0av5kh4orWJOKNiUPoVojECaqfpdLV
+         USunAfpGmA6asrCShm7HKBG1kFdEifnz8nWX2XM/JKr/aaWm77yk8hxpD6HrnIHue+Iz
+         3bFfVVHjIqFwG/7QiABgW4kjszOmgw2LyvPgZ+kN3Y7DQX8UcyaU3bAAYS87OaG/REVo
+         YaQiv/WXI6/laHsz0fd5kRdxMwAgBfUwUhj8QypurIyohzQYYAZ96lvqJEWjGGdG5iUd
+         yGAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zH+kMb2mDjz1gX5zpF0a3PDNXVCGzlWx/K6lQCiKGKc=;
+        b=fNvNE4JTvpHMKGk1alIXX3WXzA8zwJTdPssK3xENP+elCJs6tQizDB1YdqqIs5i54h
+         3vMQTpE/T+vLiPcUUQSA+byEjBgC/hUABQqWc5JxmtkkKuqeg668O6aQLVponr1v7rd6
+         FJstAfmlMjyLaZ6pUbo0hgZyGLD3cNnsO72MR1NDzt0Apwh6OHtr/pgvjufZchCAGJzc
+         jEGOPrkAOMw0djrR6bwbpNVUhOD2b1Y6cIfwvISgl6+5i+beWXaA2oUmF1O9lJ+J7HpK
+         2wU48o9oja2ULic7/AHjcWtTVZYHp6/JQp5fEh28aIDT+UiCHm6cPPmKXyzZYCgroZh/
+         JYKA==
+X-Gm-Message-State: AOAM531XLHw77s4Jv/9S9HHlGyM/yYRXIHpSEK7IvcDjnWVcUoVL4OGC
+        bJWF6IPM3R3ucZ95RUdrReLqoSs76epu0M+zBmU=
+X-Google-Smtp-Source: ABdhPJyJqZy48DS1EOiXhFl59rFvwoXHhy/yx5I4o8AoD1t6Y2MFUL3MWcUeZtJ+h/P3/ZJ4wWGTdy+YHqy+fKC0Rds=
+X-Received: by 2002:ad4:5345:: with SMTP id v5mr177080qvs.15.1604544386360;
+ Wed, 04 Nov 2020 18:46:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <b10784643665ad56ca41ea6754c7f28f8be1c7ca.1602838910.git.zong.li@sifive.com>
-References: <cover.1602838910.git.zong.li@sifive.com> <b10784643665ad56ca41ea6754c7f28f8be1c7ca.1602838910.git.zong.li@sifive.com>
-Subject: Re: [PATCH 1/4] clk: sifive: Extract prci core to common base
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Zong Li <zong.li@sifive.com>
-To:     Zong Li <zong.li@sifive.com>, aou@eecs.berkeley.edu,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, mturquette@baylibre.com,
-        palmer@dabbelt.com, paul.walmsley@sifive.com, yash.shah@sifive.com
-Date:   Wed, 04 Nov 2020 18:45:42 -0800
-Message-ID: <160454434294.3965362.6100009498384462585@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+References: <20201104220223.293253-1-lars.povlsen@microchip.com>
+In-Reply-To: <20201104220223.293253-1-lars.povlsen@microchip.com>
+From:   rishi gupta <gupt21@gmail.com>
+Date:   Thu, 5 Nov 2020 08:16:14 +0530
+Message-ID: <CALUj-gvDurdVdH3aKeAojay3AR5RL85iHw7Gq13HdFzGrd91DQ@mail.gmail.com>
+Subject: Re: [PATCH] HID: mcp2221: Fix GPIO output handling
+To:     Lars Povlsen <lars.povlsen@microchip.com>
+Cc:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        UNGLinuxDriver <UNGLinuxDriver@microchip.com>,
+        Linux I2C <linux-i2c@vger.kernel.org>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Zong Li (2020-10-16 02:18:23)
-> Extract common core of prci driver to an independent file, it could
-> allow other chips to reuse it. Separate SoCs-dependent code 'fu540'
-> from prci core, then we can easily add 'fu740' later.
-
-Please indicate if there are any functional changes or this is just code
-movement.
-
->=20
-> Signed-off-by: Zong Li <zong.li@sifive.com>
-> ---
->  drivers/clk/sifive/Makefile      |   2 +
->  drivers/clk/sifive/fu540-prci.c  | 586 +------------------------------
->  drivers/clk/sifive/fu540-prci.h  |  21 ++
->  drivers/clk/sifive/sifive-prci.c | 409 +++++++++++++++++++++
->  drivers/clk/sifive/sifive-prci.h | 201 +++++++++++
-
-How much of this is a copy/pastes? Can you generate patches with
-format-patch -M -C to try to find copies and renames?
-
->  5 files changed, 652 insertions(+), 567 deletions(-)
->  create mode 100644 drivers/clk/sifive/fu540-prci.h
->  create mode 100644 drivers/clk/sifive/sifive-prci.c
->  create mode 100644 drivers/clk/sifive/sifive-prci.h
+On Thu, Nov 5, 2020 at 3:32 AM Lars Povlsen <lars.povlsen@microchip.com> wrote:
 >
+> The mcp2221 driver GPIO output handling has has several issues.
+>
+> * A wrong value is used for the GPIO direction.
+>
+> * Wrong offsets are calculated for some GPIO set value/set direction
+>   operations, when offset is larger than 0.
+>
+> This has been fixed by introducing proper manifest constants for the
+> direction encoding, and using 'offsetof' when calculating GPIO
+> register offsets.
+>
+> The updated driver has been tested with the Sparx5 pcb134/pcb135
+> board, which has the mcp2221 device with several (output) GPIO's.
+>
+> Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
+> ---
+>  drivers/hid/hid-mcp2221.c | 48 +++++++++++++++++++++++++++++++--------
+>  1 file changed, 39 insertions(+), 9 deletions(-)
+>
+> diff --git a/drivers/hid/hid-mcp2221.c b/drivers/hid/hid-mcp2221.c
+> index 0d27ccb55dd9..4211b9839209 100644
+> --- a/drivers/hid/hid-mcp2221.c
+> +++ b/drivers/hid/hid-mcp2221.c
+> @@ -49,6 +49,36 @@ enum {
+>         MCP2221_ALT_F_NOT_GPIOD = 0xEF,
+>  };
+>
+> +/* MCP GPIO direction encoding */
+> +enum {
+> +       MCP2221_DIR_OUT = 0x00,
+> +       MCP2221_DIR_IN = 0x01,
+> +};
+> +
+> +#define MCP_NGPIO      4
+> +
+> +/* MCP GPIO set command layout */
+> +struct mcp_set_gpio {
+> +       u8 cmd;
+> +       u8 dummy;
+> +       struct {
+> +               u8 change_value;
+> +               u8 value;
+> +               u8 change_direction;
+> +               u8 direction;
+> +       } gpio[MCP_NGPIO];
+> +} __packed;
+> +
+> +/* MCP GPIO get command layout */
+> +struct mcp_get_gpio {
+> +       u8 cmd;
+> +       u8 dummy;
+> +       struct {
+> +               u8 direction;
+> +               u8 value;
+> +       } gpio[MCP_NGPIO];
+> +} __packed;
+> +
+>  /*
+>   * There is no way to distinguish responses. Therefore next command
+>   * is sent only after response to previous has been received. Mutex
+> @@ -542,7 +572,7 @@ static int mcp_gpio_get(struct gpio_chip *gc,
+>
+>         mcp->txbuf[0] = MCP2221_GPIO_GET;
+>
+> -       mcp->gp_idx = (offset + 1) * 2;
+> +       mcp->gp_idx = offsetof(struct mcp_get_gpio, gpio[offset].value);
+>
+>         mutex_lock(&mcp->lock);
+>         ret = mcp_send_data_req_status(mcp, mcp->txbuf, 1);
+> @@ -559,7 +589,7 @@ static void mcp_gpio_set(struct gpio_chip *gc,
+>         memset(mcp->txbuf, 0, 18);
+>         mcp->txbuf[0] = MCP2221_GPIO_SET;
+>
+> -       mcp->gp_idx = ((offset + 1) * 4) - 1;
+> +       mcp->gp_idx = offsetof(struct mcp_set_gpio, gpio[offset].value);
+>
+>         mcp->txbuf[mcp->gp_idx - 1] = 1;
+>         mcp->txbuf[mcp->gp_idx] = !!value;
+> @@ -575,7 +605,7 @@ static int mcp_gpio_dir_set(struct mcp2221 *mcp,
+>         memset(mcp->txbuf, 0, 18);
+>         mcp->txbuf[0] = MCP2221_GPIO_SET;
+>
+> -       mcp->gp_idx = (offset + 1) * 5;
+> +       mcp->gp_idx = offsetof(struct mcp_set_gpio, gpio[offset].direction);
+>
+>         mcp->txbuf[mcp->gp_idx - 1] = 1;
+>         mcp->txbuf[mcp->gp_idx] = val;
+> @@ -590,7 +620,7 @@ static int mcp_gpio_direction_input(struct gpio_chip *gc,
+>         struct mcp2221 *mcp = gpiochip_get_data(gc);
+>
+>         mutex_lock(&mcp->lock);
+> -       ret = mcp_gpio_dir_set(mcp, offset, 0);
+> +       ret = mcp_gpio_dir_set(mcp, offset, MCP2221_DIR_IN);
+>         mutex_unlock(&mcp->lock);
+>
+>         return ret;
+> @@ -603,7 +633,7 @@ static int mcp_gpio_direction_output(struct gpio_chip *gc,
+>         struct mcp2221 *mcp = gpiochip_get_data(gc);
+>
+>         mutex_lock(&mcp->lock);
+> -       ret = mcp_gpio_dir_set(mcp, offset, 1);
+> +       ret = mcp_gpio_dir_set(mcp, offset, MCP2221_DIR_OUT);
+>         mutex_unlock(&mcp->lock);
+>
+>         /* Can't configure as output, bailout early */
+> @@ -623,7 +653,7 @@ static int mcp_gpio_get_direction(struct gpio_chip *gc,
+>
+>         mcp->txbuf[0] = MCP2221_GPIO_GET;
+>
+> -       mcp->gp_idx = (offset + 1) * 2;
+> +       mcp->gp_idx = offsetof(struct mcp_get_gpio, gpio[offset].direction);
+>
+>         mutex_lock(&mcp->lock);
+>         ret = mcp_send_data_req_status(mcp, mcp->txbuf, 1);
+> @@ -632,7 +662,7 @@ static int mcp_gpio_get_direction(struct gpio_chip *gc,
+>         if (ret)
+>                 return ret;
+>
+> -       if (mcp->gpio_dir)
+> +       if (mcp->gpio_dir == MCP2221_DIR_IN)
+>                 return GPIO_LINE_DIRECTION_IN;
+>
+>         return GPIO_LINE_DIRECTION_OUT;
+> @@ -758,7 +788,7 @@ static int mcp2221_raw_event(struct hid_device *hdev,
+>                                 mcp->status = -ENOENT;
+>                         } else {
+>                                 mcp->status = !!data[mcp->gp_idx];
+> -                               mcp->gpio_dir = !!data[mcp->gp_idx + 1];
+> +                               mcp->gpio_dir = data[mcp->gp_idx + 1];
+>                         }
+>                         break;
+>                 default:
+> @@ -860,7 +890,7 @@ static int mcp2221_probe(struct hid_device *hdev,
+>         mcp->gc->get_direction = mcp_gpio_get_direction;
+>         mcp->gc->set = mcp_gpio_set;
+>         mcp->gc->get = mcp_gpio_get;
+> -       mcp->gc->ngpio = 4;
+> +       mcp->gc->ngpio = MCP_NGPIO;
+>         mcp->gc->base = -1;
+>         mcp->gc->can_sleep = 1;
+>         mcp->gc->parent = &hdev->dev;
+> --
+> 2.25.1
+>
+
+Reviewed-by: Rishi Gupta <gupt21@gmail.com>
+
+Regards,
+Rishi
