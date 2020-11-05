@@ -2,64 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83E592A7B4B
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 11:09:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 175D72A7B50
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 11:10:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726861AbgKEKJM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 05:09:12 -0500
-Received: from foss.arm.com ([217.140.110.172]:56514 "EHLO foss.arm.com"
+        id S1727651AbgKEKKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 05:10:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38352 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725308AbgKEKJL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 05:09:11 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2C492142F;
-        Thu,  5 Nov 2020 02:09:11 -0800 (PST)
-Received: from [10.57.22.37] (unknown [10.57.22.37])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0FF1F3F718;
-        Thu,  5 Nov 2020 02:09:06 -0800 (PST)
-Subject: Re: [PATCH v4 1/4] PM / EM: Add a flag indicating units of power
- values in Energy Model
-To:     Morten Rasmussen <morten.rasmussen@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-doc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, robh+dt@kernel.org,
-        amitk@kernel.org, corbet@lwn.net, daniel.lezcano@linaro.org,
-        Dietmar.Eggemann@arm.com, qperret@google.com,
-        dianders@chromium.org, mka@chromium.org, rnayak@codeaurora.org,
-        rafael@kernel.org, sudeep.holla@arm.com, viresh.kumar@linaro.org,
-        sboyd@kernel.org, nm@ti.com
-References: <20201103090600.29053-1-lukasz.luba@arm.com>
- <20201103090600.29053-2-lukasz.luba@arm.com>
- <20201105091759.GA8237@e123083-lin>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <876ca521-1576-63c5-9af5-b000f52cc17b@arm.com>
-Date:   Thu, 5 Nov 2020 10:09:05 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1725827AbgKEKKB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 05:10:01 -0500
+Received: from pobox.suse.cz (nat1.prg.suse.com [195.250.132.148])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D61C52087D;
+        Thu,  5 Nov 2020 10:09:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604571000;
+        bh=e43ACLiVYQ1Ky7TXvo0FuFcYIPUjkV4Wu4xAqv0GG0k=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=zAlqXIRZwXtAkg5sz4m0NxeUq0913n0GkEVZAhdoArsrXMNochB9HMCSZ1IvWm+vt
+         g02d7RFEuc/coS2s5hTrOv78vwAYkPrIB4T0Pc5g5de18R070hSKd5QKM7oZPXuqSV
+         3jh9kYDKhPfjRQRyTbzH/wJY/fCwLJpV11IJWBOo=
+Date:   Thu, 5 Nov 2020 11:09:56 +0100 (CET)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Pablo Ceballos <pceballos@google.com>
+cc:     Jonathan Cameron <jic23@kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-input@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] HID: hid-sensor-hub: Fix issue with devices with no
+ report ID
+In-Reply-To: <20201103002939.688690-1-pceballos@google.com>
+Message-ID: <nycvar.YFH.7.76.2011051109490.18859@cbobk.fhfr.pm>
+References: <20201103002939.688690-1-pceballos@google.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-In-Reply-To: <20201105091759.GA8237@e123083-lin>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 2 Nov 2020, Pablo Ceballos wrote:
 
-
-On 11/5/20 9:18 AM, Morten Rasmussen wrote:
-> On Tue, Nov 03, 2020 at 09:05:57AM +0000, Lukasz Luba wrote:
->> @@ -79,7 +82,8 @@ struct em_data_callback {
->>   struct em_perf_domain *em_cpu_get(int cpu);
->>   struct em_perf_domain *em_pd_get(struct device *dev);
->>   int em_dev_register_perf_domain(struct device *dev, unsigned int nr_states,
->> -				struct em_data_callback *cb, cpumask_t *span);
->> +				struct em_data_callback *cb, cpumask_t *spani,
+> Some HID devices don't use a report ID because they only have a single
+> report. In those cases, the report ID in struct hid_report will be zero
+> and the data for the report will start at the first byte, so don't skip
+> over the first byte.
 > 
-> "spani" looks like a typo?
+> Signed-off-by: Pablo Ceballos <pceballos@google.com>
+> ---
+>  drivers/hid/hid-sensor-hub.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
+> diff --git a/drivers/hid/hid-sensor-hub.c b/drivers/hid/hid-sensor-hub.c
+> index 94c7398b5c27..3dd7d3246737 100644
+> --- a/drivers/hid/hid-sensor-hub.c
+> +++ b/drivers/hid/hid-sensor-hub.c
+> @@ -483,7 +483,8 @@ static int sensor_hub_raw_event(struct hid_device *hdev,
+>  		return 1;
+>  
+>  	ptr = raw_data;
+> -	ptr++; /* Skip report id */
+> +	if (report->id)
+> +		ptr++; /* Skip report id */
+>  
 
-Good catch, yes, the vim 'i'.
+Applied, thank you.
 
-Thank you Morten. I will resend this patch when you don't
-find other issues in the rest of patches.
+-- 
+Jiri Kosina
+SUSE Labs
+
