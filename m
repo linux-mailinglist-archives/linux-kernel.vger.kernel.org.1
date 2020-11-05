@@ -2,104 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B22A62A76CD
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 06:09:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 842DB2A76CF
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 06:10:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731926AbgKEFIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 00:08:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45866 "EHLO mail.kernel.org"
+        id S1730120AbgKEFJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 00:09:56 -0500
+Received: from mga04.intel.com ([192.55.52.120]:25718 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728323AbgKEFIz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 00:08:55 -0500
-Received: from lt-jalone-7480.mtl.com (c-24-6-56-119.hsd1.ca.comcast.net [24.6.56.119])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0ED2C2151B;
-        Thu,  5 Nov 2020 05:08:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604552934;
-        bh=2fDf/4eOcS58i6OdJt85sYJPX6k0y8XIJFYjfdPR8Dk=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=X9venhU5bS4LAN52ohfpWH+eg9B0sV/lN4xuHJgmfxDpV5fjT1u6J0Oj4caT2aPga
-         n776QFyTpqhbWm1zgn+PjHVGcxuhV9YDKtyexjWcjJUqcS7VYs2B3XX9fW/gXWTx3f
-         DLG6x06AyW+Tf/SxgbtfIXKk7QHsAwiZNCWmosSE=
-Message-ID: <1627a52089f421c8594c9a99fd9137caa6485572.camel@kernel.org>
-Subject: Re: [PATCH v2 net-next 3/3] octeontx2-af: Add devlink health
- reporters for NIX
-From:   Saeed Mahameed <saeed@kernel.org>
-To:     George Cherian <george.cherian@marvell.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jiri Pirko <jiri@nvidia.com>
-Cc:     kuba@kernel.org, davem@davemloft.net, sgoutham@marvell.com,
-        lcherian@marvell.com, gakula@marvell.com, masahiroy@kernel.org,
-        willemdebruijn.kernel@gmail.com
-Date:   Wed, 04 Nov 2020 21:08:52 -0800
-In-Reply-To: <20201104122755.753241-4-george.cherian@marvell.com>
-References: <20201104122755.753241-1-george.cherian@marvell.com>
-         <20201104122755.753241-4-george.cherian@marvell.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+        id S1726539AbgKEFJz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 00:09:55 -0500
+IronPort-SDR: ZzWnrsexU1y1iILmLNbUhV6CMCHXLkIYDFCDEOYhe1dw7EZ7bJRvGGlLXcOvH5RyJbqpYsSdFO
+ IQz+QvMdcKJQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9795"; a="166739396"
+X-IronPort-AV: E=Sophos;i="5.77,452,1596524400"; 
+   d="scan'208";a="166739396"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2020 21:09:54 -0800
+IronPort-SDR: gwZ9C3vCDoj9VQISQYg3t34R95Vz81Fl8OTizuN6/+e+Gr6NfQAl4e9tnyh6cNVOy+shzIojXW
+ sLrCUyDrmrcw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,452,1596524400"; 
+   d="scan'208";a="325883145"
+Received: from lkp-server02.sh.intel.com (HELO e61783667810) ([10.239.97.151])
+  by orsmga006.jf.intel.com with ESMTP; 04 Nov 2020 21:09:53 -0800
+Received: from kbuild by e61783667810 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kaXWy-0001FE-CL; Thu, 05 Nov 2020 05:09:52 +0000
+Date:   Thu, 05 Nov 2020 13:09:40 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:core/urgent] BUILD SUCCESS
+ 9d820f68b2bdba5b2e7bf135123c3f57c5051d05
+Message-ID: <5fa38914.7rzSGvwgLPv1Ji3b%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-11-04 at 17:57 +0530, George Cherian wrote:
-> Add health reporters for RVU NPA block.
-                               ^^^ NIX ?
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  core/urgent
+branch HEAD: 9d820f68b2bdba5b2e7bf135123c3f57c5051d05  entry: Fix the incorrect ordering of lockdep and RCU check
 
-Cc: Jiri 
+elapsed time: 721m
 
-Anyway, could you please spare some words on what is NPA and what is
-NIX?
+configs tested: 155
+configs skipped: 2
 
-Regarding the reporters names, all drivers register well known generic
-names such as (fw,hw,rx,tx), I don't know if it is a good idea to use
-vendor specific names, if you are reporting for hw/fw units then just
-use "hw" or "fw" as the reporter name and append the unit NPA/NIX to
-the counter/error names.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> Only reporter dump is supported.
-> 
-> Output:
->  # ./devlink health
->  pci/0002:01:00.0:
->    reporter npa
->      state healthy error 0 recover 0
->    reporter nix
->      state healthy error 0 recover 0
->  # ./devlink  health dump show pci/0002:01:00.0 reporter nix
->   NIX_AF_GENERAL:
->          Memory Fault on NIX_AQ_INST_S read: 0
->          Memory Fault on NIX_AQ_RES_S write: 0
->          AQ Doorbell error: 0
->          Rx on unmapped PF_FUNC: 0
->          Rx multicast replication error: 0
->          Memory fault on NIX_RX_MCE_S read: 0
->          Memory fault on multicast WQE read: 0
->          Memory fault on mirror WQE read: 0
->          Memory fault on mirror pkt write: 0
->          Memory fault on multicast pkt write: 0
->    NIX_AF_RAS:
->          Poisoned data on NIX_AQ_INST_S read: 0
->          Poisoned data on NIX_AQ_RES_S write: 0
->          Poisoned data on HW context read: 0
->          Poisoned data on packet read from mirror buffer: 0
->          Poisoned data on packet read from mcast buffer: 0
->          Poisoned data on WQE read from mirror buffer: 0
->          Poisoned data on WQE read from multicast buffer: 0
->          Poisoned data on NIX_RX_MCE_S read: 0
->    NIX_AF_RVU:
->          Unmap Slot Error: 0
-> 
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                        shmobile_defconfig
+sh                           se7751_defconfig
+arm                        vexpress_defconfig
+mips                          ath25_defconfig
+arm                            u300_defconfig
+powerpc                  mpc885_ads_defconfig
+mips                  maltasmvp_eva_defconfig
+sh                   secureedge5410_defconfig
+powerpc                 canyonlands_defconfig
+xtensa                              defconfig
+microblaze                    nommu_defconfig
+arm                           efm32_defconfig
+arm                     davinci_all_defconfig
+riscv                    nommu_k210_defconfig
+sh                               alldefconfig
+arm                          prima2_defconfig
+powerpc                        fsp2_defconfig
+sh                          rsk7269_defconfig
+mips                        maltaup_defconfig
+arm                      pxa255-idp_defconfig
+arm                          tango4_defconfig
+parisc                           alldefconfig
+powerpc               mpc834x_itxgp_defconfig
+arm                           tegra_defconfig
+mips                         cobalt_defconfig
+openrisc                            defconfig
+mips                         tb0226_defconfig
+alpha                            allyesconfig
+powerpc                 mpc834x_itx_defconfig
+ia64                                defconfig
+mips                       capcella_defconfig
+mips                       rbtx49xx_defconfig
+arc                              alldefconfig
+um                            kunit_defconfig
+powerpc                      cm5200_defconfig
+arc                            hsdk_defconfig
+mips                        jmr3927_defconfig
+powerpc                      ppc6xx_defconfig
+arm                      integrator_defconfig
+powerpc                 mpc837x_rdb_defconfig
+powerpc                     mpc5200_defconfig
+m68k                       m5475evb_defconfig
+m68k                          atari_defconfig
+sh                            titan_defconfig
+powerpc                  storcenter_defconfig
+sh                        sh7785lcr_defconfig
+arm                        clps711x_defconfig
+sh                        edosk7760_defconfig
+parisc                generic-64bit_defconfig
+powerpc                     tqm8555_defconfig
+i386                             alldefconfig
+sh                           se7722_defconfig
+powerpc                       holly_defconfig
+arm                        mvebu_v7_defconfig
+mips                        bcm47xx_defconfig
+mips                            gpr_defconfig
+arm                             pxa_defconfig
+xtensa                         virt_defconfig
+powerpc                          allyesconfig
+c6x                        evmc6678_defconfig
+sh                        apsh4ad0a_defconfig
+mips                           ip22_defconfig
+powerpc                     taishan_defconfig
+arm                          ep93xx_defconfig
+mips                            ar7_defconfig
+riscv                    nommu_virt_defconfig
+powerpc                        cell_defconfig
+sh                  sh7785lcr_32bit_defconfig
+powerpc                  iss476-smp_defconfig
+arm                            pleb_defconfig
+ia64                        generic_defconfig
+arm                         mv78xx0_defconfig
+sh                            shmin_defconfig
+m68k                          multi_defconfig
+arm                          gemini_defconfig
+powerpc                     asp8347_defconfig
+powerpc                      ppc64e_defconfig
+powerpc                     tqm8548_defconfig
+powerpc                     ksi8560_defconfig
+arc                     nsimosci_hs_defconfig
+ia64                             allmodconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a004-20201104
+i386                 randconfig-a006-20201104
+i386                 randconfig-a005-20201104
+i386                 randconfig-a001-20201104
+i386                 randconfig-a002-20201104
+i386                 randconfig-a003-20201104
+i386                 randconfig-a004-20201105
+i386                 randconfig-a006-20201105
+i386                 randconfig-a005-20201105
+i386                 randconfig-a001-20201105
+i386                 randconfig-a002-20201105
+i386                 randconfig-a003-20201105
+x86_64               randconfig-a012-20201104
+x86_64               randconfig-a015-20201104
+x86_64               randconfig-a013-20201104
+x86_64               randconfig-a011-20201104
+x86_64               randconfig-a014-20201104
+x86_64               randconfig-a016-20201104
+i386                 randconfig-a015-20201104
+i386                 randconfig-a013-20201104
+i386                 randconfig-a014-20201104
+i386                 randconfig-a016-20201104
+i386                 randconfig-a011-20201104
+i386                 randconfig-a012-20201104
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-Now i am a little bit skeptic here, devlink health reporter
-infrastructure was never meant to deal with dump op only, the main
-purpose is to diagnose/dump and recover.
+clang tested configs:
+x86_64               randconfig-a004-20201104
+x86_64               randconfig-a003-20201104
+x86_64               randconfig-a005-20201104
+x86_64               randconfig-a002-20201104
+x86_64               randconfig-a006-20201104
+x86_64               randconfig-a001-20201104
 
-especially in your use case where you only report counters, i don't
-believe devlink health dump is a proper interface for this.
-Many of these counters if not most are data path packet based and maybe
-they should belong to ethtool.
-
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
