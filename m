@@ -2,96 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BA5E2A8521
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 18:41:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62F7E2A8523
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 18:41:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731735AbgKERlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 12:41:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35046 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731609AbgKERlQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 12:41:16 -0500
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E5086206CA;
-        Thu,  5 Nov 2020 17:41:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604598075;
-        bh=jLceanMH05KdG86WkZBB6n6wTXzxintlHLTl9Cs/5ZE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cbEuNZ2rjfnqX1xKGJXGMDXzxmT7fxPcoV/YtU73CqDCr/Dqws1EeZVfWvcc1pGRG
-         1UZ2+AVjdWl4UzsN736Yie4uS9+9FN7eGlgjM2mrnG/6uVTGfeDyyCQPy2jiEGHhpz
-         Fk9hnXI4kXV3o9kjArRYY7MpxP4YqsDrZm+X+vwk=
-Date:   Thu, 5 Nov 2020 17:40:57 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        David Laight <David.Laight@aculab.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: Re: [RFT PATCH v2 7/8] gpio: exar: switch to using regmap
-Message-ID: <20201105174057.GG4856@sirena.org.uk>
-References: <20201104193051.32236-1-brgl@bgdev.pl>
- <20201104193051.32236-8-brgl@bgdev.pl>
+        id S1731759AbgKERlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 12:41:21 -0500
+Received: from smtprelay0200.hostedemail.com ([216.40.44.200]:47470 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1731609AbgKERlV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 12:41:21 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id A4EDD182233F3;
+        Thu,  5 Nov 2020 17:41:18 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:2:41:355:379:599:800:960:968:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1431:1437:1515:1516:1518:1535:1593:1594:1605:1606:1712:1730:1747:1777:1792:2393:2559:2562:2691:2828:2829:2911:3138:3139:3140:3141:3142:3653:3865:3866:3867:3868:3870:3871:3872:3873:3874:4250:4321:4425:4605:4823:5007:7875:9010:10004:10848:11026:11232:11473:11658:11783:11914:12043:12295:12297:12438:12663:12679:12740:12895:13161:13229:13439:13846:13894:14659:21080:21433:21451:21627:21660:21819:30003:30022:30026:30029:30030:30041:30054:30070:30075:30083:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: vase31_190ca99272cb
+X-Filterd-Recvd-Size: 5912
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf05.hostedemail.com (Postfix) with ESMTPA;
+        Thu,  5 Nov 2020 17:41:17 +0000 (UTC)
+Message-ID: <f83c2eeafdebc6307ee6e515e4d6652b2606a068.camel@perches.com>
+Subject: Re: [PATCH v3] checkpatch: improve email parsing
+From:   Joe Perches <joe@perches.com>
+To:     Dwaipayan Ray <dwaipayanray1@gmail.com>, stable@vger.kernel.org,
+        Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com,
+        yashsri421@gmail.com
+Date:   Thu, 05 Nov 2020 09:41:15 -0800
+In-Reply-To: <20201105115949.39474-1-dwaipayanray1@gmail.com>
+References: <20201105115949.39474-1-dwaipayanray1@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="df+09Je9rNq3P+GE"
-Content-Disposition: inline
-In-Reply-To: <20201104193051.32236-8-brgl@bgdev.pl>
-X-Cookie: It's the thought, if any, that counts!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+(adding stable and Greg KH for additional review)
+On Thu, 2020-11-05 at 17:29 +0530, Dwaipayan Ray wrote:
+> checkpatch doesn't report warnings for many common mistakes
+> in emails. Some of which are trailing commas and incorrect
+> use of email comments.
 
---df+09Je9rNq3P+GE
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I presume you've tested this against the git tree.
 
-On Wed, Nov 04, 2020 at 08:30:50PM +0100, Bartosz Golaszewski wrote:
+Can you send me a file with the BAD_SIGN_OFF messages generated
+and if possible the git SHA-1s of the commits?
 
-> @@ -119,21 +81,39 @@ static void exar_set_value(struct gpio_chip *chip, u=
-nsigned int offset,
->  	unsigned int addr =3D exar_offset_to_lvl_addr(exar_gpio, offset);
->  	unsigned int bit =3D exar_offset_to_bit(exar_gpio, offset);
-> =20
-> -	exar_update(chip, addr, value, bit);
-> +	regmap_assign_bits(exar_gpio->regs, addr, BIT(bit), value);
->  }
+> At the same time several false positives are reported due to
+> incorrect handling of mail comments. The most common of which
+> is due to the pattern:
+> 
+> <stable@vger.kernel.org> # X.X
+> 
+> Improve email parsing in checkpatch.
+> 
+> Some general comment rules are defined:
+> 
+> - Multiple name comments should not be allowed.
+> - Comments inside address should not be allowed.
+> - In general comments should be enclosed within parentheses.
+>   Exception for stable@vger.kernel.org # X.X
 
-This appears to be the use of _assign_bits() and TBH I'm still both
-having a hard time understanding the motivation for it and liking the
-name, especially since AFAICT it's only setting a single bit here.  The
-above is just
+not just vger.kernel.org, but this should also allow stable@kernel.org
+and only allow cc: and not any other -by: type for that email address.
 
-	regmap_update_bits(exar_gpio->regs, addr, 1 << bit, value << bit);
+A process preference question for Greg and the stable team:
 
-AFAICT (and indeed now I dig around assign_bit() only works on a single
-bit and does both shifts which makes the correspondance with that
-interface super unclear, we're not mirroring that interface here).  If
-you're trying to clone the bitops function it should probably be an
-actual clone of the bitops function not something different, that would
-be clearer and it'd be easier to understand why someone would want the
-API in the first place.  But perhaps I'm missing something here?
+The most common stable forms are
 
---df+09Je9rNq3P+GE
-Content-Type: application/pgp-signature; name="signature.asc"
+	stable@vger.kernel.org # version info
+then
+	stable@vger.kernel.org [ version info ]
 
------BEGIN PGP SIGNATURE-----
+with some other relatively infrequently used outlier styles, some
+that use parentheses, but this is not frequent.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+kOSgACgkQJNaLcl1U
-h9BvTwf+JQnDErho/812fHKBe67LfZpu8fAQk/xgihUH1umVooHQgLbD/pHnM/XZ
-OM4CudCboMHcmPl4fLi/g21VXUMuFOOiHmB7GQnQfK73AJXU6VK0+lLCWjZeMy7h
-pv1TQFMrdB6rIV4tbu0b0uFmh3rSpwefkdkhCnzh0N+ZihDrmLamleqcrRkjraoy
-Jdn+LNKqie9Y9eS0ZyuMv0InlR4oYFCMzd/l/VAtAE7fZ8CWXhxOk5dAP7T+XYKe
-FulE4B+YXf/7OpHAv4uXYJ1CdUV/4+gDcAfg4BWwqxMKH0xQgMofhDzipa59eAS1
-FExJ9R/kSpLGGW+E8C0ootOJMohteQ==
-=zR8C
------END PGP SIGNATURE-----
+It might be sensible to standardize on the "# version info" trailer
+comment version info style and warn on any other form.
 
---df+09Je9rNq3P+GE--
+A somewhat common style for the stable address is to use a name
+before the stable address which describes the version info:
+
+Perhaps any name before stable should be warned and the version
+should be a comment.
+
+Here's a list of the stable addresses with "version name" then
+stable address in the git tree and other outlier styles.
+
+     24 linux-stable <stable@vger.kernel.org>
+     21 5.4+ <stable@vger.kernel.org>
+     14 All applicable <stable@vger.kernel.org>
+      6 3.10+ <stable@vger.kernel.org>
+      5 5.9+ <stable@vger.kernel.org>
+      5 5.3+ <stable@vger.kernel.org>
+      5 5.1+ <stable@vger.kernel.org>
+      4 5.6+ <stable@vger.kernel.org>
+      4 4.20+ <stable@vger.kernel.org>
+      3 Stable Team <stable@vger.kernel.org>
+      3 4.19+ <stable@vger.kernel.org>
+      3 4.15+ <stable@vger.kernel.org>
+      3 4.10+ <stable@vger.kernel.org>
+      2 stable@vger.kernel.org (v2.6.12+)
+      2 5.2+ <stable@vger.kernel.org>
+      2 4.16+ <stable@vger.kernel.org>
+      1 v5.8+ <stable@vger.kernel.org>
+      1 v5.7+ <stable@vger.kernel.org>
+      1 v5.6+ <stable@vger.kernel.org>
+      1 v5.3+ <stable@vger.kernel.org>
+      1 v5.0+ <stable@vger.kernel.org>
+      1 v4.9+ <stable@vger.kernel.org>
+      1 <stable@vger.kernel.org> v5.0+
+      1 <stable@vger.kernel.org> +v4.18
+      1 stable@vger.kernel.org (3.14+)
+      1 5.8+ <stable@vger.kernel.org>
+      1 5.5+ <stable@vger.kernel.org>
+      1 5.0+ <stable@vger.kernel.org>
+      1 4.18+ <stable@vger.kernel.org>
+      1 4.14+ <stable@vger.kernel.org>
+      1 4.13+ <stable@vger.kernel.org>
+      1 4.0+ <stable@vger.kernel.org>
+      1 3.15+ <stable@vger.kernel.org>
+      1 3.11+ <stable@vger.kernel.org>
+
+> Improvements to parsing:
+> 
+> - Detect and report unexpected content after email.
+> - Quoted names are excluded from comment parsing.
+> - Trailing dots or commas in email are removed during
+>   formatting. Correspondingly a BAD_SIGN_OFF warning
+>   is emitted.
+> - Improperly quoted email like '"name <address>"' are now
+>   warned about.
+
+All of the above seems right but perhaps the comment style for any
+<foo>-by: lines should also allow # comments.
+
+The below is just comments on the patch itself.
+
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+[]
+> @@ -2800,9 +2806,57 @@ sub process {
+>  				$dequoted =~ s/" </ </;
+>  				# Don't force email to have quotes
+>  				# Allow just an angle bracketed address
+> -				if (!same_email_addresses($email, $suggested_email, 0)) {
+> +				if (!same_email_addresses($email, $suggested_email)) {
+> +					if (WARN("BAD_SIGN_OFF",
+> +					    "email address '$email' might be better as '$suggested_email'\n" . $herecurr) &&
+> +						$fix) {
+
+trivia:
+
+Please always align $fix with tabs to the if and then 4 spaces to the
+open parenthesis.
+
+> +				# Comments must begin only with (
+> +				# or # in case of stable@vger.kernel.org
+> +				if ($email =~ /^.*stable\@vger/) {
+
+I believe this should be
+
+				if ($email =~ /^stable\@(?:vger\.)?kernel.org$/) {
+
+> +					if ($comment ne "" && $comment !~ /^#.+/) {
+> +						if (WARN("BAD_SIGN_OFF",
+> +						    "Invalid comment format for stable: '$email', prefer parentheses\n" . $herecurr) &&
+
+Prefer #
+
+> +							$fix) {
+> +							my $new_comment = $comment;
+> +							$new_comment =~ s/^[ \(\[]+|[ \)\]]+$//g;
+
+Does the comment include any leading whitespace here?
+I presumed not given the $comment !~ /^#/ test above.
+
+
