@@ -2,175 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A8672A8310
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 17:07:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 102BC2A831C
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 17:09:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730943AbgKEQHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 11:07:46 -0500
-Received: from netrider.rowland.org ([192.131.102.5]:45355 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1728523AbgKEQHo (ORCPT
+        id S1731050AbgKEQJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 11:09:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60212 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730977AbgKEQJD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 11:07:44 -0500
-Received: (qmail 1615519 invoked by uid 1000); 5 Nov 2020 11:07:43 -0500
-Date:   Thu, 5 Nov 2020 11:07:43 -0500
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Peter Chen <Peter.Chen@nxp.com>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        linux-samsung-soc@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-usb@vger.kernel.org, linux-pwm@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-media@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: Re: [PATCH v1 21/30] usb: host: ehci-tegra: Support OPP and SoC core
- voltage scaling
-Message-ID: <20201105160743.GA1613614@rowland.harvard.edu>
-References: <20201104234427.26477-1-digetx@gmail.com>
- <20201104234427.26477-22-digetx@gmail.com>
+        Thu, 5 Nov 2020 11:09:03 -0500
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FD4FC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 08:09:02 -0800 (PST)
+Received: by mail-pj1-x1041.google.com with SMTP id ie6so305501pjb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 08:09:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DNv8EosKffE1C3jvJ0rJJftgCHCwNxl7hTu0xBgm/Zs=;
+        b=pThxNC2iJ8WFGX/CGhbMOz/uQOkRR402aJuKaha93Pq/6th/4+9b3EQxZYmYMja8bt
+         JGNVYLyczLTg2hqy5qZBWT3Qlql1DyFTk1DUA3WPaJxLhLn+HdXlsk1pmfYlKC32a0Ki
+         zHxNATnnT6UY5TqJcf94WHtNHakHxKdieBbEnx3OasXX7Q21307PjKgIZSG5WzPjd5Ha
+         nMA1b85jwYf6oFl3eUW1PUHpKY341qDdil2h3EQX+oGvUp1GvL6FUtzf5k9K2pB3+nAc
+         RahaqWpJdCTC5R7p6o0Pm5Sl5Wsj+YZmm+yJOrvelDAt2iswhlHggy22P1C3OpaM7QAB
+         friA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DNv8EosKffE1C3jvJ0rJJftgCHCwNxl7hTu0xBgm/Zs=;
+        b=LICmPlej8gxpBD/jsh9Sj+fNGw13ZIJWVNLqiCj/womqzPXhsR8AqnUL2ZH+oytZTg
+         ub4kwLkTFemSyUY2/PNfBRORRRM6UW8rxNsrp0W4owlcxwx81TzOVq+n0HJy3QOpvq64
+         5fHSI8Q8RfhQh0VjZpHIae6cBgXJ0sYSKudYoPzn9J3bJJtMWbjR0FS67AOjdoVMC59L
+         FuewTJJJFQ6bUjc/vO+V7LxsWg1ueJ2dSAL2mnju/kf+WLNgi2Mrn2aqX+rvesKdJLHo
+         GXypk0elLd+aHKZnq3018wENPiPTVSZ64/FEy4q6beJxpPluWlY6IG8Lc9HJ7Z278mBG
+         K5tg==
+X-Gm-Message-State: AOAM532jTkdu/SRiYsDM8qsrVgNZw5i5/gNFWc45khxwjl3XUZMvn9DL
+        xOsDpSa7JaQed8/L6gp138YjnaWY6G1lmlhtPjccp4bRGtWvfYniDpk=
+X-Google-Smtp-Source: ABdhPJyfkwi9gxSQB/Njp7wQRtuErG+nc9B9XUg+PiBnL0eCmyKFJMhKuJYI9/DMyjHpnFYTEqRY9c+gEThQzv17YF8=
+X-Received: by 2002:a17:902:aa86:b029:d6:99d8:3fff with SMTP id
+ d6-20020a170902aa86b02900d699d83fffmr2954337plr.34.1604592541785; Thu, 05 Nov
+ 2020 08:09:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201104234427.26477-22-digetx@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201026145114.59424-1-songmuchun@bytedance.com>
+ <20201026145114.59424-6-songmuchun@bytedance.com> <20201105132337.GA7552@linux>
+In-Reply-To: <20201105132337.GA7552@linux>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Fri, 6 Nov 2020 00:08:22 +0800
+Message-ID: <CAMZfGtXwKJ3uCuNC3mxHQLNJqTcUzj7Gd2-JRuOWEjZ1C7Oh=A@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v2 05/19] mm/hugetlb: Introduce pgtable
+ allocation/freeing helpers
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 02:44:18AM +0300, Dmitry Osipenko wrote:
-> Add initial OPP and SoC core voltage scaling support to the Tegra EHCI
-> driver. This is required for enabling system-wide DVFS on older Tegra
-> SoCs.
-> 
-> Tested-by: Peter Geis <pgwipeout@gmail.com>
-> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
+On Thu, Nov 5, 2020 at 9:23 PM Oscar Salvador <osalvador@suse.de> wrote:
+>
+> On Mon, Oct 26, 2020 at 10:51:00PM +0800, Muchun Song wrote:
+> > +#ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
+> > +#define VMEMMAP_HPAGE_SHIFT                  PMD_SHIFT
+> > +#define arch_vmemmap_support_huge_mapping()  boot_cpu_has(X86_FEATURE_PSE)
+>
+> I do not think you need this.
+> We already have hugepages_supported().
 
-I'm no expert on OPP stuff, but some of what you have done here looks 
-peculiar.
+Maybe some architectures support hugepage, but the vmemmap do not
+use the hugepage map. In  this case, we need it. But I am not sure if it
+exists in the real world. At least, x86 can reuse hugepages_supported.
 
-> diff --git a/drivers/usb/host/ehci-tegra.c b/drivers/usb/host/ehci-tegra.c
-> index 869d9c4de5fc..0976577f54b4 100644
-> --- a/drivers/usb/host/ehci-tegra.c
-> +++ b/drivers/usb/host/ehci-tegra.c
-> @@ -17,6 +17,7 @@
->  #include <linux/of_device.h>
->  #include <linux/of_gpio.h>
->  #include <linux/platform_device.h>
-> +#include <linux/pm_opp.h>
->  #include <linux/pm_runtime.h>
->  #include <linux/reset.h>
->  #include <linux/slab.h>
-> @@ -364,6 +365,79 @@ static void tegra_ehci_unmap_urb_for_dma(struct usb_hcd *hcd, struct urb *urb)
->  	free_dma_aligned_buffer(urb);
->  }
->  
-> +static void tegra_ehci_deinit_opp_table(void *data)
-> +{
-> +	struct device *dev = data;
-> +	struct opp_table *opp_table;
-> +
-> +	opp_table = dev_pm_opp_get_opp_table(dev);
-> +	dev_pm_opp_of_remove_table(dev);
-> +	dev_pm_opp_put_regulators(opp_table);
-> +	dev_pm_opp_put_opp_table(opp_table);
-> +}
-> +
-> +static int devm_tegra_ehci_init_opp_table(struct device *dev)
-> +{
-> +	unsigned long rate = ULONG_MAX;
-> +	struct opp_table *opp_table;
-> +	const char *rname = "core";
-> +	struct dev_pm_opp *opp;
-> +	int err;
-> +
-> +	/* legacy device-trees don't have OPP table */
-> +	if (!device_property_present(dev, "operating-points-v2"))
-> +		return 0;
-> +
-> +	/* voltage scaling is optional */
-> +	if (device_property_present(dev, "core-supply"))
-> +		opp_table = dev_pm_opp_set_regulators(dev, &rname, 1);
-> +	else
-> +		opp_table = dev_pm_opp_get_opp_table(dev);
-> +
-> +	if (IS_ERR(opp_table))
-> +		return dev_err_probe(dev, PTR_ERR(opp_table),
-> +				     "failed to prepare OPP table\n");
-> +
-> +	err = dev_pm_opp_of_add_table(dev);
-> +	if (err) {
-> +		dev_err(dev, "failed to add OPP table: %d\n", err);
-> +		goto put_table;
-> +	}
-> +
-> +	/* find suitable OPP for the maximum clock rate */
-> +	opp = dev_pm_opp_find_freq_floor(dev, &rate);
-> +	err = PTR_ERR_OR_ZERO(opp);
-> +	if (err) {
-> +		dev_err(dev, "failed to get OPP: %d\n", err);
-> +		goto remove_table;
-> +	}
-> +
-> +	dev_pm_opp_put(opp);
-> +
-> +	/*
-> +	 * First dummy rate-set initializes voltage vote by setting voltage
-> +	 * in accordance to the clock rate.
-> +	 */
-> +	err = dev_pm_opp_set_rate(dev, rate);
-> +	if (err) {
-> +		dev_err(dev, "failed to initialize OPP clock: %d\n", err);
-> +		goto remove_table;
-> +	}
-> +
-> +	err = devm_add_action(dev, tegra_ehci_deinit_opp_table, dev);
-> +	if (err)
-> +		goto remove_table;
-> +
-> +	return 0;
-> +
-> +remove_table:
-> +	dev_pm_opp_of_remove_table(dev);
-> +put_table:
-> +	dev_pm_opp_put_regulators(opp_table);
+>
+> > +#ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
+> > +#ifndef arch_vmemmap_support_huge_mapping
+> > +static inline bool arch_vmemmap_support_huge_mapping(void)
+> > +{
+> > +     return false;
+> > +}
+>
+> Same as above
+>
+> >  static inline unsigned int nr_free_vmemmap(struct hstate *h)
+> >  {
+> >       return h->nr_free_vmemmap_pages;
+> >  }
+> >
+> > +static inline unsigned int nr_vmemmap(struct hstate *h)
+> > +{
+> > +     return nr_free_vmemmap(h) + RESERVE_VMEMMAP_NR;
+> > +}
+> > +
+> > +static inline unsigned long nr_vmemmap_size(struct hstate *h)
+> > +{
+> > +     return (unsigned long)nr_vmemmap(h) << PAGE_SHIFT;
+> > +}
+> > +
+> > +static inline unsigned int nr_pgtable(struct hstate *h)
+> > +{
+> > +     unsigned long vmemmap_size = nr_vmemmap_size(h);
+> > +
+> > +     if (!arch_vmemmap_support_huge_mapping())
+> > +             return 0;
+> > +
+> > +     /*
+> > +      * No need pre-allocate page tabels when there is no vmemmap pages
+> > +      * to free.
+> > +      */
+> > +     if (!nr_free_vmemmap(h))
+> > +             return 0;
+> > +
+> > +     return ALIGN(vmemmap_size, VMEMMAP_HPAGE_SIZE) >> VMEMMAP_HPAGE_SHIFT;
+> > +}
+>
+> IMHO, Mike's naming suggestion fit much better.
 
-Do you really want to use the same error unwinding for opp_table values 
-obtained from dev_pm_opp_set_regulators() as from 
-dev_pm_opp_get_opp_table()?
+I will do that.
 
-> +
-> +	return err;
-> +}
-> +
->  static const struct tegra_ehci_soc_config tegra30_soc_config = {
->  	.has_hostpc = true,
->  };
-> @@ -431,6 +505,11 @@ static int tegra_ehci_probe(struct platform_device *pdev)
->  		goto cleanup_hcd_create;
->  	}
->  
-> +	err = devm_tegra_ehci_init_opp_table(&pdev->dev);
-> +	if (err)
-> +		return dev_err_probe(&pdev->dev, err,
-> +				     "Failed to initialize OPP\n");
+>
+> > +static void vmemmap_pgtable_deposit(struct page *page, pte_t *pte_p)
+> > +{
+> > +     pgtable_t pgtable = virt_to_page(pte_p);
+> > +
+> > +     /* FIFO */
+> > +     if (!page_huge_pte(page))
+> > +             INIT_LIST_HEAD(&pgtable->lru);
+> > +     else
+> > +             list_add(&pgtable->lru, &page_huge_pte(page)->lru);
+> > +     page_huge_pte(page) = pgtable;
+> > +}
+>
+> I think it would make more sense if this took a pgtable argument
+> instead of a pte_t *.
 
-Why log a second error message?  Just return err.
+Will do. Thanks for your suggestions.
 
-Alan Stern
+>
+> > +static pte_t *vmemmap_pgtable_withdraw(struct page *page)
+> > +{
+> > +     pgtable_t pgtable;
+> > +
+> > +     /* FIFO */
+> > +     pgtable = page_huge_pte(page);
+> > +     if (unlikely(!pgtable))
+> > +             return NULL;
+>
+> AFAICS, above check only needs to be run once.
+> It think we can move it to vmemmap_pgtable_free, can't we?
+
+Yeah, we can. Thanks.
+
+>
+> > +     page_huge_pte(page) = list_first_entry_or_null(&pgtable->lru,
+> > +                                                    struct page, lru);
+> > +     if (page_huge_pte(page))
+> > +             list_del(&pgtable->lru);
+> > +     return page_to_virt(pgtable);
+> > +}
+>
+> At the risk of adding more code, I think it would be nice to return a
+> pagetable_t?
+> So it is more coherent with the name of the function and with what
+> we are doing.
+
+Yeah.
+
+>
+> It is a pity we cannot converge these and pgtable_trans_huge_*.
+> They share some code but it is different enough.
+>
+> > +static int vmemmap_pgtable_prealloc(struct hstate *h, struct page *page)
+> > +{
+> > +     int i;
+> > +     pte_t *pte_p;
+> > +     unsigned int nr = nr_pgtable(h);
+> > +
+> > +     if (!nr)
+> > +             return 0;
+> > +
+> > +     vmemmap_pgtable_init(page);
+>
+> Maybe just open code this one?
+
+Sorry. I don't quite understand what it means. Could you explain?
+
+
+>
+> > +static inline void vmemmap_pgtable_free(struct hstate *h, struct page *page)
+> > +{
+> > +     pte_t *pte_p;
+> > +
+> > +     if (!nr_pgtable(h))
+> > +             return;
+> > +
+> > +     while ((pte_p = vmemmap_pgtable_withdraw(page)))
+> > +             pte_free_kernel(&init_mm, pte_p);
+>
+> As mentioned above, move the pgtable_t check from vmemmap_pgtable_withdraw
+> in here.
+
+OK.
+
+>
+>
+> >  static void prep_new_huge_page(struct hstate *h, struct page *page, int nid)
+> >  {
+> > +     /* Must be called before the initialization of @page->lru */
+> > +     vmemmap_pgtable_free(h, page);
+> > +
+> >       INIT_LIST_HEAD(&page->lru);
+> >       set_compound_page_dtor(page, HUGETLB_PAGE_DTOR);
+> >       set_hugetlb_cgroup(page, NULL);
+> > @@ -1783,6 +1892,14 @@ static struct page *alloc_fresh_huge_page(struct hstate *h,
+> >       if (!page)
+> >               return NULL;
+> >
+> > +     if (vmemmap_pgtable_prealloc(h, page)) {
+> > +             if (hstate_is_gigantic(h))
+> > +                     free_gigantic_page(page, huge_page_order(h));
+> > +             else
+> > +                     put_page(page);
+> > +             return NULL;
+> > +     }
+> > +
+>
+> I must confess I am bit puzzled.
+>
+> IIUC, in this patch we are just adding the helpers to create/tear the page
+> tables.
+> I do not think we actually need to call vmemmap_pgtable_prealloc/vmemmap_pgtable_free, do we?
+> In the end, we are just allocating pages for pagetables and then free them shortly.
+>
+> I think it would make more sense to add the calls when they need to be?
+
+OK,  will do. Thanks very much.
+
+>
+>
+> --
+> Oscar Salvador
+> SUSE L3
+
+
+
+--
+Yours,
+Muchun
