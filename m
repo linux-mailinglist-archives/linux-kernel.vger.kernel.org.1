@@ -2,87 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCA772A808D
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 15:14:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 504522A8090
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 15:15:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730981AbgKEOOs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 09:14:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42180 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729113AbgKEOOr (ORCPT
+        id S1731036AbgKEOPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 09:15:00 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:48482 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729113AbgKEOO7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 09:14:47 -0500
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD3B5C0613D4
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 06:14:45 -0800 (PST)
-Received: by mail-lj1-x242.google.com with SMTP id p15so1722314ljj.8
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 06:14:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6nXYKuVORP7B94wEmyN1Arob0akGuTVDIGeIsrS6OGI=;
-        b=Qex3rj+m8mIgn2EpmZZ/VWG5tqcDqUORzE2db7lmddvvvCZzDymGaZhVjmJEgNV2U9
-         W08NfcBE0aCGSmdKT2Hf7mXdOthV6IyePH8AqwqGW2Oid+liVcGnIhHdSf/G9SfJXNEb
-         Ytve7y2RRfVfPk0Q46sZX0NxuLhtfkOLQL7MLlQ+vXTkInEDZehR5REZC1CCAcbVp7BP
-         jZVI2Fn+As/dfJvdr+pKjm88Kr1RRgg10zuVL8Sw2gz2Os9krFunCV2sv5f9VSVpR8Bm
-         rGVXcrA5sbTs6JafwE9GEgkScGdykRws/V3qQmEbNr3VRQRxDbtjntKiVm9eio+JB3NN
-         MQBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6nXYKuVORP7B94wEmyN1Arob0akGuTVDIGeIsrS6OGI=;
-        b=FT2kG4EMPdCIkD+oRj+lrhrzgEiTNHtFe6i1vGlHHCS2CYG48RbGXoXhX+bdx1RzFP
-         ZayG21z4Uk8roOohf2GPBkzdMBWoQuYS4L0fJJUH1k+SgrugCLcNqA57NErGXk34IIrU
-         T7F8nXpzx0TJYAiQr9N2shExKYQFhgxO8s94C8ANwkz3arlOzjm4u4JtmNakgpHHmwLX
-         oEBjRvvIO/YwHrCrrQwtYibHjMaEvKWLq5yzGt+gDj9H0eIGfxOtG6ZXOvwXBI5Aldve
-         d0ld8sIoW5UedXcyP7kCcvQHLd0GTN/xvGDlodYA+Np2PvNxEG7MmsER4J1NoonHtHCH
-         RV/A==
-X-Gm-Message-State: AOAM531X2zOq6mGNY4cNFNl0TACktoDajWLQnZeFgayFOIZWPLZ+ylPR
-        sE8a1hmIi+6g7Ycq1GJI1JCHINlQZBQ4X6wWEc9IYQ==
-X-Google-Smtp-Source: ABdhPJyPhM/gZvET1UQAiPayaB6I2Xc5LLn46i8OY9lmoJZuw/DORHMUXLUUGOa9CeOcUAeZ7OZHCI3PRgklFHEhXrY=
-X-Received: by 2002:a2e:9b0c:: with SMTP id u12mr889261lji.338.1604585684224;
- Thu, 05 Nov 2020 06:14:44 -0800 (PST)
+        Thu, 5 Nov 2020 09:14:59 -0500
+Received: from [IPv6:2804:14c:483:7e3e::1003] (unknown [IPv6:2804:14c:483:7e3e::1003])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: koike)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 2E3581F4644C;
+        Thu,  5 Nov 2020 14:14:51 +0000 (GMT)
+Subject: Re: [PATCH 08/14] media: sunxi: Add support for the A31 MIPI CSI-2
+ controller
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-sunxi@googlegroups.com,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Yong Deng <yong.deng@magewell.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Hans Verkuil <hans.verkuil@cisco.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>, kevin.lhopital@hotmail.com
+References: <20201023174546.504028-1-paul.kocialkowski@bootlin.com>
+ <20201023174546.504028-9-paul.kocialkowski@bootlin.com>
+ <1a3a615c-a058-e282-2dbb-c99dfa98be68@collabora.com>
+ <20201102092110.ro6a456lvbrktwoz@gilmour.lan>
+ <20201104111710.GB287014@aptenodytes>
+ <f74e4d59-a391-36ab-74aa-8e02aca1b0bc@collabora.com>
+ <20201104184538.f6qagsmjdoijbzmv@gilmour.lan>
+From:   Helen Koike <helen.koike@collabora.com>
+Message-ID: <3b99b055-ff53-c873-19b2-fd2ccc86956d@collabora.com>
+Date:   Thu, 5 Nov 2020 11:14:47 -0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <20201103055801.472736-1-vkoul@kernel.org> <20201103055801.472736-2-vkoul@kernel.org>
-In-Reply-To: <20201103055801.472736-2-vkoul@kernel.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 5 Nov 2020 15:14:33 +0100
-Message-ID: <CACRpkdYWC_Sn3k0Mk4Dh_ZkkTr0D5f6RYVj0VjZG_6hmNX6_=Q@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] pinctrl: qcom: Add SDX55 pincontrol driver
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     MSM <linux-arm-msm@vger.kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Jeevan Shriram <jshriram@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201104184538.f6qagsmjdoijbzmv@gilmour.lan>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 3, 2020 at 6:58 AM Vinod Koul <vkoul@kernel.org> wrote:
 
-> From: Jeevan Shriram <jshriram@codeaurora.org>
->
-> Add initial Qualcomm SDX55 pinctrl driver to support pin configuration
-> with pinctrl framewor for SDX55 SoC.
->
-> Signed-off-by: Jeevan Shriram <jshriram@codeaurora.org>
-> [ported from downstream and tidy up]
-> Signed-off-by: Vinod Koul <vkoul@kernel.org>
 
-The v2 version looks nice, but Rob's bot is complaining about the YAML
-bindings?
+On 11/4/20 3:45 PM, Maxime Ripard wrote:
+> On Wed, Nov 04, 2020 at 01:38:08PM -0300, Helen Koike wrote:
+>>
+>>
+>> On 11/4/20 8:17 AM, Paul Kocialkowski wrote:
+>>> Hi,
+>>>
+>>> On Mon 02 Nov 20, 10:21, Maxime Ripard wrote:
+>>>> On Fri, Oct 30, 2020 at 07:45:18PM -0300, Helen Koike wrote:
+>>>>> On 10/23/20 2:45 PM, Paul Kocialkowski wrote:
+>>>>>> The A31 MIPI CSI-2 controller is a dedicated MIPI CSI-2 controller
+>>>>>> found on Allwinner SoCs such as the A31 and V3/V3s.
+>>>>>>
+>>>>>> It is a standalone block, connected to the CSI controller on one side
+>>>>>> and to the MIPI D-PHY block on the other. It has a dedicated address
+>>>>>> space, interrupt line and clock.
+>>>>>>
+>>>>>> Currently, the MIPI CSI-2 controller is hard-tied to a specific CSI
+>>>>>> controller (CSI0) but newer SoCs (such as the V5) may allow switching
+>>>>>> MIPI CSI-2 controllers between CSI controllers.
+>>>>>>
+>>>>>> It is represented as a V4L2 subdev to the CSI controller and takes a
+>>>>>> MIPI CSI-2 sensor as its own subdev, all using the fwnode graph and
+>>>>>> media controller API.
+>>>>>
+>>>>> Maybe this is a bad idea, but I was thinking:
+>>>>> This driver basically just turn on/off and catch some interrupts for errors,
+>>>>> and all the rest of v4l2 config you just forward to the next subdevice
+>>>>> on the pipeline.
+>>>>>
+>>>>> So instead of exposing it as a subdevice, I was wondering if modeling
+>>>>> this driver also through the phy subsystem wouldn't be cleaner, so
+>>>>> you won't need all the v4l2 subdevice/topology boilerplate code that
+>>>>> it seems you are not using (unless you have plans to add controls or
+>>>>> some specific configuration on this node later).
+>>>>>
+>>>>> But this would require changes on the sun6i-csi driver.
+>>>>>
+>>>>> What do you think?
+>>>>
+>>>> Eventually we'll need to filter the virtual channels / datatypes I
+>>>> guess, so it's definitely valuable to have it in v4l2
+>>
+>> Which kind of datatypes? 
+> 
+> MIPI-CSI datatypes. Each packet on the MIPI-CSI bus is assigned a
+> virtual channel and data type so that you can multiplex multiple streams
+> (like a 3d camera would send for example, through the virtual channels)
+> and data types (like frames and metadata) and MIPI-CSI controllers
+> usually allow to filter them based on what you want.
+> 
+>> I ask to know if this shouldn't be configured through the video node
+>> instead of subdevice.
+> 
+> Not really, some setups have a mux that can split the multiple virtual
+> channels to multiple video nodes for example.
+> 
+>> Regarding channels, we had a discussion to implement it through the video
+>> node (and not subdevice) [1]. But we discussed about blitters and multi-scalers,
+>> so now I'm wondering if we could use the same API for mipi-csi virtual channels
+>> in the video entity device, or if it doesn't apply and we need another API
+>> for that in a subdevice instead.
+>>
+>> [1] https://patchwork.linuxtv.org/project/linux-media/cover/20200717115435.2632623-1-helen.koike@collabora.com/
+> 
+> There's already an API to deal with MIPI-CSI virtual channels:
+> https://patchwork.kernel.org/project/linux-renesas-soc/cover/20190328200608.9463-1-jacopo+renesas@jmondi.org/
+> 
+> Maxime
+> 
 
-Please look into it when you have time, apart from this the patch
-set seems complete, include Bjorn's ACKs on reposts please.
+Thanks for the explanation :)
 
-Yours,
-Linus Walleij
+Helen
