@@ -2,90 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FD792A820C
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 16:21:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E8C32A8213
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 16:22:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731006AbgKEPVI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 10:21:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58670 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730660AbgKEPVI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 10:21:08 -0500
-Received: from coco.lan (ip5f5ad5d8.dynamic.kabel-deutschland.de [95.90.213.216])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0771F20715;
-        Thu,  5 Nov 2020 15:21:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604589667;
-        bh=PVzV8RSCyjsTW4bwO+dadmNCZfv25T3pDwXzNyWa+98=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=FyNfatrWi96kOs7jsmCKdPDyXVhzlnyUcdxWjpVXwPoz/7Xc1Is16CsqAbFzFlQtd
-         z/0jqdiIh6zljv63zHsrbdO53wcxDXq0zK02+XwIS5hRi7Kl7AMgO6StSlVvndZlVe
-         h+DmWv62FN83RHu0TBdugjzD8oc08H25KRdsbNBc=
-Date:   Thu, 5 Nov 2020 16:20:59 +0100
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 56/56] scrpits: kernel-doc: validate kernel-doc
- markup with the actual names
-Message-ID: <20201105162059.366b44bc@coco.lan>
-In-Reply-To: <20201105150017.GL17076@casper.infradead.org>
-References: <cover.1603469755.git.mchehab+huawei@kernel.org>
-        <a21343a7012c87391c4850bf3151ebd82add8d1c.1603469755.git.mchehab+huawei@kernel.org>
-        <20201105150017.GL17076@casper.infradead.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S1731201AbgKEPWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 10:22:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52754 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730660AbgKEPWQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 10:22:16 -0500
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5261BC0613CF;
+        Thu,  5 Nov 2020 07:22:14 -0800 (PST)
+Received: by mail-lj1-x242.google.com with SMTP id l10so1979097lji.4;
+        Thu, 05 Nov 2020 07:22:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=L7OVsr5m178XbCaCzAWNkdQoFi3/3zu9mN+yPgl2DUs=;
+        b=ZUE+lII34sxgdJMzK2yn/f7sQCJw/4+mRXBdMBq1/bhBQWtfS/PtExzwYtktIoAWgY
+         SU7g93lwJ2c7NK0CDwzeo+RytY043NhbabYKjJOBr7tIMP5wlLP/u6h82rzBRDjVxP9j
+         EdnAYAZOpmyMs1GUR/kcd37x1kAewnXFex0wqQUKK37hfYXxUIOMvhuhv9Kkm4bWWj03
+         NYOfuJLDcjhyyGqGtJNpIUWkJQCG6veMjv1sZZ5dae38lEVIkii3wjlD54ZKITpqpnKX
+         8VoeiDhs1BxqGTAhX5SPmAP4HQXgACk2ac5ePAi3NeEKCHu2erytV3AEJlNMrsBJq5S8
+         bmSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=L7OVsr5m178XbCaCzAWNkdQoFi3/3zu9mN+yPgl2DUs=;
+        b=twh5NJEnuJ62dpTxoXovRD4gCmY0BG4D9sS+edVQQaMZPACU1iuomMN04SrNwtNh22
+         xGgIaIIGj3vyBZ9oADNuwuwDVf+fnX79IRtDyPVBi0M7BStghUDNZRkAK7Of7dOgEVq2
+         SIFpM8RU39rOH0UKaL6zhX5IarWKE5o/lAJs701DcXrY8D5qmZXojcDNMiGQbuL4vFlv
+         8D9WQ5rOyXrCiJFoIgj2thbGswp7134dZ+pdmXKUUX7/i80MgJ+K3pCsyLmzkqt0AXue
+         PI8v+6G9SRCSt0uBy0cXjRGyCVaq8m9rxGnt7vnEEBfr03P1sJFKGC2UktRMnFqD8Kr0
+         RDQw==
+X-Gm-Message-State: AOAM533I23gWFQ5iK/2hzADTQc84tAIocMgvEeppzzNkLTtmlUB8KQgy
+        KSeJV8Z1IXgIGjbGxm2PEqKG+a1OJ9E=
+X-Google-Smtp-Source: ABdhPJwC5ZQ/5zYH2nUFCy93HeDhVeV9bcOjajKeeVZadnE++shSnXPj1s2oA0r6x39bDtt0cphAoQ==
+X-Received: by 2002:a2e:9a0e:: with SMTP id o14mr1127768lji.340.1604589731407;
+        Thu, 05 Nov 2020 07:22:11 -0800 (PST)
+Received: from [192.168.2.145] (109-252-192-83.dynamic.spd-mgts.ru. [109.252.192.83])
+        by smtp.googlemail.com with ESMTPSA id 144sm176642ljj.48.2020.11.05.07.22.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Nov 2020 07:22:10 -0800 (PST)
+Subject: Re: [PATCH v1 00/30] Introduce core voltage scaling for NVIDIA
+ Tegra20/30 SoCs
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Peter Chen <Peter.Chen@nxp.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        driverdevel <devel@driverdev.osuosl.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        linux-pwm@vger.kernel.org,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>
+References: <20201104234427.26477-1-digetx@gmail.com>
+ <CAPDyKFr7qTU2RPhA_ZrbCayoTTNUEno1zdmvmv+8HBe-Owrfeg@mail.gmail.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <cd147ab0-1304-a491-7a56-ee6199c02d32@gmail.com>
+Date:   Thu, 5 Nov 2020 18:22:09 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CAPDyKFr7qTU2RPhA_ZrbCayoTTNUEno1zdmvmv+8HBe-Owrfeg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, 5 Nov 2020 15:00:17 +0000
-Matthew Wilcox <willy@infradead.org> escreveu:
+05.11.2020 12:45, Ulf Hansson пишет:
+...
+> I need some more time to review this, but just a quick check found a
+> few potential issues...
 
-> On Fri, Oct 23, 2020 at 06:33:43PM +0200, Mauro Carvalho Chehab wrote:
-> > Kernel-doc currently expects that the kernel-doc markup to come
-> > just before the function/enum/struct/union/typedef prototype.
-> > 
-> > Yet, if it find things like:
-> > 
-> > 	/**
-> > 	 * refcount_add - add a value to a refcount
-> > 	 * @i: the value to add to the refcount
-> > 	 * @r: the refcount
-> > 	 */
-> > 	static inline void __refcount_add(int i, refcount_t *r, int *oldp);
-> > 	static inline void refcount_add(int i, refcount_t *r);
-> > 
-> > Kernel-doc will do the wrong thing:  
+Thank you for starting the review! I'm pretty sure it will take a couple
+revisions until all the questions will be resolved :)
+
+> The "core-supply", that you specify as a regulator for each
+> controller's device node, is not the way we describe power domains.
+> Instead, it seems like you should register a power-domain provider
+> (with the help of genpd) and implement the ->set_performance_state()
+> callback for it. Each device node should then be hooked up to this
+> power-domain, rather than to a "core-supply". For DT bindings, please
+> have a look at Documentation/devicetree/bindings/power/power-domain.yaml
+> and Documentation/devicetree/bindings/power/power_domain.txt.
 > 
-> I wonder if we could change kernel-doc to be (optionally) less verbose.
-> If we allowed people to write:
-> 
-> /**
->  * Add a value to a refcount.
->  * @i: The value to add to the refcount
->  * @r: The refcount
->  */
-> 
-> and had the kernel-doc script pick up the name of the following function
-> automatically, would that be an improvement we could all agree on?
+> In regards to the "sync state" problem (preventing to change
+> performance states until all consumers have been attached), this can
+> then be managed by the genpd provider driver instead.
 
-Matthew,
+I'll need to take a closer look at GENPD, thank you for the suggestion.
 
-As patches are usually generated with -U3, the context lines are
-not enough to show if a comment preceding a function is a kernel-doc
-markup or a normal comment.
-
-In practice, on some patches at this series, I found real issues
-because something else was added between the kernel-doc markup 
-and the documented function. 
-
-So, for me, it sounds a bad idea to remove the function name, as
-this can be used to detect such issues.
-
-Thanks,
-Mauro
+Sounds like a software GENPD driver which manages clocks and voltages
+could be a good idea, but it also could be an unnecessary
+over-engineering. Let's see..
