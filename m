@@ -2,154 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB9EA2A7AAF
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 10:35:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7415B2A7AB4
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 10:39:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730679AbgKEJfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 04:35:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60666 "EHLO mail.kernel.org"
+        id S1726219AbgKEJj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 04:39:29 -0500
+Received: from smtp1.axis.com ([195.60.68.17]:19129 "EHLO smtp1.axis.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726756AbgKEJfQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 04:35:16 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 71C572080D;
-        Thu,  5 Nov 2020 09:35:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604568915;
-        bh=bASPlTaQ67dRFUqsBoKIOD+05XQnomuuiHur3vOvvqU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EqJXHLDyayT35P82XeUnk/0Zgo7844vWyzad+aqx7DIX9pn/vZQzv3owttNMODQ3F
-         4Wd1uXk3+hU2zuoVTb0FWAzHcHeAbSq/fxJ1VsIks1NTLKjlipKaZxftL6EpS/J1ng
-         JxV4WbVxgEkWvMjQ74wD77hqdpPY+tCKBXAvDI+s=
-Date:   Thu, 5 Nov 2020 10:36:04 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        kernel-team@android.com, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-efi@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v1 07/18] driver core: Add fwnode_init()
-Message-ID: <20201105093604.GD3439341@kroah.com>
-References: <20201104232356.4038506-1-saravanak@google.com>
- <20201104232356.4038506-8-saravanak@google.com>
+        id S1725308AbgKEJj3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 04:39:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=axis.com; l=2502; q=dns/txt; s=axis-central1;
+  t=1604569168; x=1636105168;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=HSvvC/bGSx+YFPB9J4IP3fSFAJxSJxXYvlKXo9Oj/zY=;
+  b=pd687Ie1jZ8ZXpX1dFNhif7UPNfUoOjXInM3h6ZIYb1CUzPqW0Ogz/cE
+   W7VBiDFZfbxmZaGO+BmauzD4AkVvZkD4O7dRxtAV71gFwIEZjePGAcQKb
+   e746z6wH+YeQODe1AzTAPCOoYlQNsWWbpo25lGf248jYR579Fk7K9ArFs
+   URYDuEMcMAoNVBvZRFESjkgKgx4ix3MyQ+oaNdbFTlNdzwSvleA51Ch42
+   anM1TUrgqD0Y0HdPziOurLY0YjwglMf9Z2Q0DxkTgykQ0Nu82twMdWEfD
+   QYA7+RjDgKWFxAdNTiM81FZ7Mc/5ci8VfvSiPUdKVHzdgx1vOZX0JxldD
+   A==;
+IronPort-SDR: lqb3Jeep7wHhHB6IlB06W+65EILSZ7xAypJ75jEygN5Z5JkKU6TM7dzpbNlcEPaDhldBR29CEL
+ p20z0uB1CZ81PMhzpOuTQMV/+hNZtUsC2wzAiuUsxJBmaPuZslyaBIUrrgxJUZ151dYI3f3U49
+ CBtiTJA+B2zUTdaq/O9N0m9q6wxGNAEzrRI45S2MLjaGQZE7pRt5QdNuha7qn7LRsjxuJyRNvp
+ tSl9car+/wj1MC3HOM2rXN8Rr7kfXOtHOJQAg+qGJdhPZOLcYtqeWcgin2CnsH9+aRlmP4FwrB
+ 7jM=
+X-IronPort-AV: E=Sophos;i="5.77,453,1596492000"; 
+   d="scan'208";a="14760859"
+Date:   Thu, 5 Nov 2020 10:39:26 +0100
+From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        kernel <kernel@axis.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "support.opensource@diasemi.com" <support.opensource@diasemi.com>
+Subject: Re: [PATCH v2 1/2] dt-bindings: regulator: Add DA9121
+Message-ID: <20201105093926.msls7vgl42z7cpjy@axis.com>
+References: <20201103100021.19603-1-vincent.whitchurch@axis.com>
+ <20201103100021.19603-2-vincent.whitchurch@axis.com>
+ <20201104185755.GA3948381@bogus>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20201104232356.4038506-8-saravanak@google.com>
+In-Reply-To: <20201104185755.GA3948381@bogus>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 03:23:44PM -0800, Saravana Kannan wrote:
-> There are multiple locations in the kernel where a struct fwnode_handle
-> is initialized. Add fwnode_init() so that we have one way of
-> initializing a fwnode_handle.
+On Wed, Nov 04, 2020 at 07:57:55PM +0100, Rob Herring wrote:
+> On Tue, 03 Nov 2020 11:00:20 +0100, Vincent Whitchurch wrote:
+> > Add bindings for the Dialog Semiconductor DA9121 voltage regulator.
+> > 
+> > Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+> > ---
+> >  .../bindings/regulator/dlg,da9121.yaml        | 47 +++++++++++++++++++
+> >  1 file changed, 47 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/regulator/dlg,da9121.yaml
+> > 
 > 
-> Signed-off-by: Saravana Kannan <saravanak@google.com>
-> ---
->  drivers/acpi/property.c         | 2 +-
->  drivers/acpi/scan.c             | 2 +-
->  drivers/base/swnode.c           | 2 +-
->  drivers/firmware/efi/efi-init.c | 8 ++++----
->  include/linux/fwnode.h          | 5 +++++
->  include/linux/of.h              | 2 +-
->  kernel/irq/irqdomain.c          | 2 +-
->  7 files changed, 14 insertions(+), 9 deletions(-)
+> My bot found errors running 'make dt_binding_check' on your patch:
 > 
-> diff --git a/drivers/acpi/property.c b/drivers/acpi/property.c
-> index d04de10a63e4..24e87b630573 100644
-> --- a/drivers/acpi/property.c
-> +++ b/drivers/acpi/property.c
-> @@ -76,7 +76,7 @@ static bool acpi_nondev_subnode_extract(const union acpi_object *desc,
->  		return false;
->  
->  	dn->name = link->package.elements[0].string.pointer;
-> -	dn->fwnode.ops = &acpi_data_fwnode_ops;
-> +	fwnode_init(&dn->fwnode, &acpi_data_fwnode_ops);
->  	dn->parent = parent;
->  	INIT_LIST_HEAD(&dn->data.properties);
->  	INIT_LIST_HEAD(&dn->data.subnodes);
-> diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
-> index a896e5e87c93..0ac19f9274b8 100644
-> --- a/drivers/acpi/scan.c
-> +++ b/drivers/acpi/scan.c
-> @@ -1589,7 +1589,7 @@ void acpi_init_device_object(struct acpi_device *device, acpi_handle handle,
->  	device->device_type = type;
->  	device->handle = handle;
->  	device->parent = acpi_bus_get_parent(handle);
-> -	device->fwnode.ops = &acpi_device_fwnode_ops;
-> +	fwnode_init(&device->fwnode, &acpi_device_fwnode_ops);
->  	acpi_set_device_status(device, sta);
->  	acpi_device_get_busid(device);
->  	acpi_set_pnp_ids(handle, &device->pnp, type);
-> diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
-> index 010828fc785b..4a4b2008fbc2 100644
-> --- a/drivers/base/swnode.c
-> +++ b/drivers/base/swnode.c
-> @@ -653,7 +653,7 @@ swnode_register(const struct software_node *node, struct swnode *parent,
->  	swnode->parent = parent;
->  	swnode->allocated = allocated;
->  	swnode->kobj.kset = swnode_kset;
-> -	swnode->fwnode.ops = &software_node_ops;
-> +	fwnode_init(&swnode->fwnode, &software_node_ops);
->  
->  	ida_init(&swnode->child_ids);
->  	INIT_LIST_HEAD(&swnode->entry);
-> diff --git a/drivers/firmware/efi/efi-init.c b/drivers/firmware/efi/efi-init.c
-> index f55a92ff12c0..b148f1459fb3 100644
-> --- a/drivers/firmware/efi/efi-init.c
-> +++ b/drivers/firmware/efi/efi-init.c
-> @@ -359,9 +359,7 @@ static const struct fwnode_operations efifb_fwnode_ops = {
->  	.add_links = efifb_add_links,
->  };
->  
-> -static struct fwnode_handle efifb_fwnode = {
-> -	.ops = &efifb_fwnode_ops,
-> -};
-> +static struct fwnode_handle efifb_fwnode;
->  
->  static int __init register_gop_device(void)
->  {
-> @@ -375,8 +373,10 @@ static int __init register_gop_device(void)
->  	if (!pd)
->  		return -ENOMEM;
->  
-> -	if (IS_ENABLED(CONFIG_PCI))
-> +	if (IS_ENABLED(CONFIG_PCI)) {
-> +		fwnode_init(&efifb_fwnode, &efifb_fwnode_ops);
->  		pd->dev.fwnode = &efifb_fwnode;
-> +	}
->  
->  	err = platform_device_add_data(pd, &screen_info, sizeof(screen_info));
->  	if (err)
-> diff --git a/include/linux/fwnode.h b/include/linux/fwnode.h
-> index e0abafbb17f8..593fb8e58f21 100644
-> --- a/include/linux/fwnode.h
-> +++ b/include/linux/fwnode.h
-> @@ -169,6 +169,11 @@ struct fwnode_operations {
->  			(fwnode)->ops->op(fwnode, ## __VA_ARGS__);	\
->  	} while (false)
->  #define get_dev_from_fwnode(fwnode)	get_device((fwnode)->dev)
-> +static inline void fwnode_init(struct fwnode_handle *fwnode,
-> +			       const struct fwnode_operations *ops)
-> +{
-> +	fwnode->ops = ops;
-> +}
->  
+> yamllint warnings/errors:
+> 
+> dtschema/dtc warnings/errors:
+> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/regulator/dlg,da9121.yaml: 'additionalProperties' is a required property
+> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/regulator/dlg,da9121.yaml: ignoring, error in schema: 
+> warning: no schema found in file: ./Documentation/devicetree/bindings/regulator/dlg,da9121.yaml
+> 
+> See https://patchwork.ozlabs.org/patch/1392753
 
-A blank line before a new inline function is always nice to have :)
+OK, thanks.  I'll fix it by changing the unevaluatedProperties to an
+additionalProperties (since the $ref has moved).  
 
-thanks,
+I think I should also move the unevaluatedProperties to the buck1 level
+instead of removing it completely, because I see a bunch of other
+regulator bindings doing it, but the checks don't complain about that
+being missing and I can't see that making any difference for the
+validation.
 
-greg k-h
+For example, I was hoping that this:
+
+  buck1:
+    description:
+      Initial data for the Buck1 regulator.
+    $ref: "regulator.yaml#"
+    type: object
+    unevaluatedProperties: false
+
+would complain about something like:
+
+        buck1 {
+	  not-a-real-property;
+          regulator-min-microvolt = <680000>;
+          regulator-max-microvolt = <820000>;
+        };
+
+but it doesn't, so I don't quite understand what "unevaluatedProperties:
+false" prevents.
+
+> 
+> The base for the patch is generally the last rc1. Any dependencies
+> should be noted.
+> 
+> If you already ran 'make dt_binding_check' and didn't see the above
+> error(s), then make sure 'yamllint' is installed and dt-schema is up to
+> date:
+> 
+> pip3 install dtschema --upgrade
+
+Not sure if it's just something wrong in my setup, but I had dtschema
+installed from master a while ago, and the above command didn't upgrade
+it for me.  I had to explicitly upgrade it with the full URL again to
+get the latest version:
+
+ pip3 install --upgrade git+https://github.com/devicetree-org/dt-schema.git@master
