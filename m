@@ -2,114 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF1D32A77FE
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 08:26:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0DB22A7801
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 08:27:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729979AbgKEH0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 02:26:55 -0500
-Received: from mx2.suse.de ([195.135.220.15]:47630 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729676AbgKEH0z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 02:26:55 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1604561213;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7u8WU2glLXwmDXGmWhq8HEE0VcTO5euQA0K+KFX8imM=;
-        b=CKGlAZyPZ4aTYZUlXLHpQXRt2TISR1HhHVdLGTH0ns+IR/vvZeP4nXAmF7xQs8Gcm3mcAT
-        364yvAObtYTkvBCbY5jTa9rz2u287WqQHDXs7j6mvVgx2r6trkHfmAr8j8LmivMGE5LPb/
-        lN+iKojPT5oJ3DBCBVRt+vpDOFUb9eU=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 40690AB95;
-        Thu,  5 Nov 2020 07:26:53 +0000 (UTC)
-Date:   Thu, 5 Nov 2020 08:26:52 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Hui Su <sh_def@163.com>, hannes@cmpxchg.org,
-        vdavydov.dev@gmail.com, akpm@linux-foundation.org,
-        shakeelb@google.com, laoar.shao@gmail.com, chris@chrisdown.name,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH] mm/memcontrol:rewrite mem_cgroup_page_lruvec()
-Message-ID: <20201105072652.GA21348@dhcp22.suse.cz>
-References: <20201104142516.GA106571@rlk>
- <20201104223800.GD1938922@carbon.dhcp.thefacebook.com>
+        id S1730168AbgKEH1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 02:27:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34894 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730124AbgKEH06 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 02:26:58 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F1E5C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 23:26:58 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id x13so727034pfa.9
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 23:26:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=V0nJfAeq3JFSY5yN0H+uBOSwyjDPQ9GUT0hanP1k660=;
+        b=RuVHQPKxtxfoOThH7XJOEGi1n7OVLxAPwQYgZRxGhPQgxOnXmn1dIAteRQtMOQkLLn
+         XZqPtUxh2to3RTU3k942+Al6R3nEwBf6t3sOBz9jdoXjI/+6JH/MrDEYXAPDRuY+SqPT
+         wfPKsy2RwFFR6P4RpzhBg9gAj5KxGHpOghashFYJPLnU8aq4oaldLoCkPfx9wL9EH0eI
+         JkG++ejRWc6PNDyhBd6aQzOGAJtZzIyPfMBs1Z8sJUhK0LL3uZntt7pwdPTqyPxWogx3
+         wPY9djxtgRhVoUuPKMLJFVhF8u+imdmRU2S6qzfla+OlMI7TCoVQhwkh2/ev+4ogkAz1
+         Ny8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=V0nJfAeq3JFSY5yN0H+uBOSwyjDPQ9GUT0hanP1k660=;
+        b=fwf+1JyAoTyelgG/lospS5DjP/1pOUqmJIVSWyHd6a08F5hXpy8Q7h4CTXTUFLm2ut
+         i+RseModRXlpzK053diqsth0lrtxlBlfeEySm341mWFJoI9GtDE5JKpfx2oAydOv2nBG
+         B/xHnozsq4bugNsoAiy9W/k8YW9KQDCz8B72UJ+Tgq220JKB678dMNVxl3XFTXCa+iXt
+         jQAdTECpPYNWpg92vrqVS3N3L2ThKQ9WJqhZLn2VZgfHjWcJFydFU1iKe2+xLRe5yQZL
+         lOEGWf6jhl0d9Qvc9HU/+0rcOyv664tlRk3nEtESpDMBpjbVTYEb4XHy5/Ne6ZRLFbx5
+         aP0A==
+X-Gm-Message-State: AOAM531wOgIJda4elH3YNENnYKKCtExMyDRA5WRp+f9fYD2K0qhpwKLN
+        wtBza8RBgEE8tT/pA7nCIzUEWg==
+X-Google-Smtp-Source: ABdhPJyAivdWoqD2MH6Gviecrs0Vhv4SxB4eoXeM1V0XYNSmIJ6yy5L13PjNLelkEKgRJGMMUvOrCg==
+X-Received: by 2002:a63:f445:: with SMTP id p5mr1200747pgk.293.1604561217561;
+        Wed, 04 Nov 2020 23:26:57 -0800 (PST)
+Received: from google.com ([2620:15c:2ce:0:a6ae:11ff:fe11:4abb])
+        by smtp.gmail.com with ESMTPSA id j11sm1203750pfh.143.2020.11.04.23.26.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Nov 2020 23:26:56 -0800 (PST)
+Date:   Wed, 4 Nov 2020 23:26:53 -0800
+From:   Fangrui Song <maskray@google.com>
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Jakub Jelinek <jakub@redhat.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-toolchains@vger.kernel.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Dmitry Golovin <dima@golovin.in>,
+        Alistair Delva <adelva@google.com>, stable@vger.kernel.org
+Subject: Re: [PATCH v2 2/4] Kbuild: do not emit debug info for assembly with
+ LLVM_IAS=1
+Message-ID: <20201105072653.wxlzat5azj7h4ttj@google.com>
+References: <CAK7LNAST0Ma4bGGOA_HATzYAmRhZG=x_X=8p_9dKGX7bYc2FMA@mail.gmail.com>
+ <20201104005343.4192504-1-ndesaulniers@google.com>
+ <20201104005343.4192504-3-ndesaulniers@google.com>
+ <20201105065844.GA3243074@ubuntu-m3-large-x86>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20201104223800.GD1938922@carbon.dhcp.thefacebook.com>
+In-Reply-To: <20201105065844.GA3243074@ubuntu-m3-large-x86>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 04-11-20 14:38:00, Roman Gushchin wrote:
-> On Wed, Nov 04, 2020 at 10:25:16PM +0800, Hui Su wrote:
-> > mem_cgroup_page_lruvec() in memcontrol.c and
-> > mem_cgroup_lruvec() in memcontrol.h is very similar
-> > except for the param(page and memcg) which also can be
-> > convert to each other.
-> > 
-> > So rewrite mem_cgroup_page_lruvec() with mem_cgroup_lruvec().
-> > 
-> > Signed-off-by: Hui Su <sh_def@163.com>
-> > ---
-> >  include/linux/memcontrol.h | 18 +++++++++++++++--
-> >  mm/memcontrol.c            | 40 --------------------------------------
-> >  2 files changed, 16 insertions(+), 42 deletions(-)
-> > 
-> > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> > index e391e3c56de5..a586363fb766 100644
-> > --- a/include/linux/memcontrol.h
-> > +++ b/include/linux/memcontrol.h
-> > @@ -457,9 +457,10 @@ mem_cgroup_nodeinfo(struct mem_cgroup *memcg, int nid)
-> >  /**
-> >   * mem_cgroup_lruvec - get the lru list vector for a memcg & node
-> >   * @memcg: memcg of the wanted lruvec
-> > + * @pgdat: pglist_data
-> >   *
-> >   * Returns the lru list vector holding pages for a given @memcg &
-> > - * @node combination. This can be the node lruvec, if the memory
-> > + * @pgdat combination. This can be the node lruvec, if the memory
-> >   * controller is disabled.
-> >   */
-> >  static inline struct lruvec *mem_cgroup_lruvec(struct mem_cgroup *memcg,
-> > @@ -489,7 +490,20 @@ static inline struct lruvec *mem_cgroup_lruvec(struct mem_cgroup *memcg,
-> >  	return lruvec;
-> >  }
-> 
-> Hi Hui,
-> 
-> >  
-> > -struct lruvec *mem_cgroup_page_lruvec(struct page *, struct pglist_data *);
-> > +/**
-> > + * mem_cgroup_page_lruvec - return lruvec for isolating/putting an LRU page
-> > + * @page: the page
-> > + * @pgdat: pgdat of the page
-> > + *
-> > + * This function relies on page->mem_cgroup being stable.
-> > + */
-> > +static inline struct lruvec *mem_cgroup_page_lruvec(struct page *page,
-> > +						struct pglist_data *pgdat)
-> 
-> Hm, do we need to pass page and pgdat?
 
-Not really because page already knows its node so pgdat can be easily
-taken from there. I suspect the only reason for having pgdat here is
-that many callers already know it and we optimize for memcg disable
-case. Hard to tell whether this actually matters because most of those
-paths are not really hot but something that would require a deeper
-investigation. Hint hint...
+On 2020-11-04, Nathan Chancellor wrote:
+>On Tue, Nov 03, 2020 at 04:53:41PM -0800, Nick Desaulniers wrote:
+>> Clang's integrated assembler produces the warning for assembly files:
+>>
+>> warning: DWARF2 only supports one section per compilation unit
+>>
+>> If -Wa,-gdwarf-* is unspecified, then debug info is not emitted.  This
+>
+>Is this something that should be called out somewhere? If I understand
+>this correctly, LLVM_IAS=1 + CONFIG_DEBUG_INFO=y won't work? Maybe this
+>should be handled in Kconfig?
+>
+>> will be re-enabled for new DWARF versions in a follow up patch.
+>>
+>> Enables defconfig+CONFIG_DEBUG_INFO to build cleanly with
+>> LLVM=1 LLVM_IAS=1 for x86_64 and arm64.
+>>
+>> Cc: <stable@vger.kernel.org>
+>> Link: https://github.com/ClangBuiltLinux/linux/issues/716
+>> Reported-by: Nathan Chancellor <natechancellor@gmail.com>
+>> Suggested-by: Dmitry Golovin <dima@golovin.in>
+>
+>If you happen to respin, Dmitry deserves a Reported-by tag too :)
+>
+>> Suggested-by: Sedat Dilek <sedat.dilek@gmail.com>
+>> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+>
+>Regardless of the other two comments, this is fine as is as a fix for
+>stable to unblock Android + CrOS since we have been running something
+>similar to it in CI:
+>
+>Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+>
+>> ---
+>>  Makefile | 2 ++
+>>  1 file changed, 2 insertions(+)
+>>
+>> diff --git a/Makefile b/Makefile
+>> index f353886dbf44..75b1a3dcbf30 100644
+>> --- a/Makefile
+>> +++ b/Makefile
+>> @@ -826,7 +826,9 @@ else
+>>  DEBUG_CFLAGS	+= -g
+>>  endif
+>>
+>> +ifndef LLVM_IAS
+>
+>Nit: this should probably match the existing LLVM_IAS check
+>
+>ifneq ($(LLVM_IAS),1)
+>
+>>  KBUILD_AFLAGS	+= -Wa,-gdwarf-2
+>> +endif
+>>
+>>  ifdef CONFIG_DEBUG_INFO_DWARF4
+>>  DEBUG_CFLAGS	+= -gdwarf-4
+>> --
+>> 2.29.1.341.ge80a0c044ae-goog
+>>
 
-Anyway, this looks like a nice simplification already. There were some
-attempts to do similar thing recently but they were adding nodeid as an
-additional argument and I really disliked those.
+The root cause is that DWARF v2 has no DW_AT_ranges, so it cannot
+represent non-contiguous address ranges. It seems that GNU as -gdwarf-3
+emits DW_AT_ranges as well and emits an entry for a non-executable section.
+In any case, the option is of very low value, at least for LLVM.
 
-Acked-by: Michal Hocko <mhocko@suse.com>
 
-Thanks!
-
--- 
-Michal Hocko
-SUSE Labs
+Reviewed-by: Fangrui Song <maskray@google.com>
