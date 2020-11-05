@@ -2,117 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CEAD2A8ACC
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 00:32:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CCA52A8AD0
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 00:33:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732445AbgKEXcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 18:32:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45012 "EHLO
+        id S1732573AbgKEXc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 18:32:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731060AbgKEXcm (ORCPT
+        with ESMTP id S1731060AbgKEXc4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 18:32:42 -0500
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79360C0613D3
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 15:32:42 -0800 (PST)
-Received: by mail-yb1-xb41.google.com with SMTP id f6so2889971ybr.0
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 15:32:42 -0800 (PST)
+        Thu, 5 Nov 2020 18:32:56 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 551C9C0613CF;
+        Thu,  5 Nov 2020 15:32:55 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id g7so2313351pfc.2;
+        Thu, 05 Nov 2020 15:32:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZlNXU8L3sc+m7lobXj6lchl7ijTptw1kaCcOIcaSPgI=;
-        b=R+M6ljMb9p4EF+j7hVsSP50JIlCK4OhEmIi3kc0Oh9OJR5LX1PxyfNuxHV7xoDEaYE
-         YdpO4m2sYjOBPMJz6KzYkTcEoROM/DNnXLCHIfFI/SmCDRg/sEqQVeXbtbEBup48wOxi
-         Aohr3p8VnAHrN05tjYwRRNOQWEbjpjZNas1UOYx/fXIKTv5CY4SZDEpu7crHEP/b/RZp
-         7cQlnjQgz2Fmpom7VisiX7UsijfBXNZT6Nlx68P+BvmK4p8szYCBc65XhRXujuBf4vm0
-         arAC3YN02XoSO+Z01CbvIYBuFPshAZgA8jhXGU4p6aK6qD2dAI9kMysBuLdftf+BSuh6
-         bqSg==
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=pibkzdTjV68+ZVyJNDC0M5RL/qSDH5KT3MGSB0PSjCA=;
+        b=U3WDNJfKYahYQRO5ADhBHaQ3evR0sBikDSlasQkRs7jOm1zemannkYJizQPO4cj1PR
+         7U4cJiLRC2lDw0CXG27m3Kdw3gQYksbJb1l4+WKJ95NSIAKqjUW55ytePG+ogTlBTi3e
+         ODoj1tCLIFVqZc+bEYkMAAlFx5p6o3wYTTv7Lb4qNa8I4WQNv7VUorg3Y/t/8nkcXlAv
+         wLuPbkrToWBawMjqDiDnIuPvuJGDmkuKlvKjrJyEULm7jTgFIlq8yaHrGH21hO62wZ1r
+         bia7moaIYGbtygjIQnxSzZJNXYq7dbKlKaWHZL/aAG3tbY6pqutAPbgDQ4cqV066e6fL
+         8zkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZlNXU8L3sc+m7lobXj6lchl7ijTptw1kaCcOIcaSPgI=;
-        b=PYtkN3WkL+62rJAvVyKu+Yt8YHjWtT1m2+UXyeTiDZlmDzg9s9eFdzUcsAasA5dD5d
-         kELn9y4lhwytKUGRQ8KQmb0MkymjbPtQjgGHQaMbvEjZfN8oRUZ7hIw2cz3P7nKEcf3G
-         wyWOa/cRagaxz4eVQexqyc/aKGO9zXpa33Eu1lkIGV9lOlIUGGZq9MgaoeDWdGhOc6sG
-         RbHOnhLhE3NsraWhiWbDGaYg36UFSOi1S3wmRlaSwYjRzC+pIvIrzU9zvYy9lb65ZZQ5
-         o28afrceTtyPwiOqE8QSLHQao87E71OwEROjByIRj2knbqQap+vmE1Zp6z82GQ9q4Q2P
-         jGEg==
-X-Gm-Message-State: AOAM531CH3k5NetFynM8HBh1sOIblucyck4OfXyRFZ2fYWh3E2veRLoO
-        Xchdi0HqjS/xK7kWTR0JrgXSE1yNs9ASvozhQZhdDQ==
-X-Google-Smtp-Source: ABdhPJzzCr4BmURLVuAhnOzfU3X5o0Y4eA3x9j/YnSiCup69qb3WT2w/EdMw5wqJ7dawJsOTC6R4sqZFiyjNF8xV/bc=
-X-Received: by 2002:a25:f817:: with SMTP id u23mr7312436ybd.466.1604619161422;
- Thu, 05 Nov 2020 15:32:41 -0800 (PST)
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pibkzdTjV68+ZVyJNDC0M5RL/qSDH5KT3MGSB0PSjCA=;
+        b=SEu0YIUnrhrOrtTq6T3rnsYmid2AZmv9ugb3XBEW0firnLzIGRJLTs3r3cTAYkfvL4
+         oQnss4/B8HD187OV1S5KWw/t5/3/nJ8qs9slPh97dIhSP09+ixQTiZjKtJs73+JX03dE
+         udejxP9lS3C0J5N8ezfPTltA490Rtv1EVUPmVmuB6JkSWbxl4kzpgqIOFVC9m8QC3T98
+         98XZUQXkFrkVz4p9GF59TptdVMSMTwcd3r6icOYExFyxgDi+1gl87ArS+6lKQZbZuOjh
+         Vy6+q0W2JfvgGKGYYIVmBUcYX4QSAiJlCCdWpixgYFxtwtckWTrjpED3jKXZva+XnM0U
+         LExw==
+X-Gm-Message-State: AOAM533L39ldu0K20GaZqXvxqC7GsmpYU90oYJQAY+8urqwfbD3Aqglf
+        X9hBnD1GrCge9j47DJ1Ec64=
+X-Google-Smtp-Source: ABdhPJw0e/N3xE8sqIAud4VjSvM7GPp/3k1I201Ii87bLYebs9enrWYz7vuaFWPg62MQQUqpk1B8iw==
+X-Received: by 2002:a65:6a46:: with SMTP id o6mr4552169pgu.36.1604619174930;
+        Thu, 05 Nov 2020 15:32:54 -0800 (PST)
+Received: from localhost ([160.16.113.140])
+        by smtp.gmail.com with ESMTPSA id b23sm3830055pfo.21.2020.11.05.15.32.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Nov 2020 15:32:54 -0800 (PST)
+From:   Coiby Xu <coiby.xu@gmail.com>
+X-Google-Original-From: Coiby Xu <Coiby.Xu@gmail.com>
+Date:   Fri, 6 Nov 2020 07:32:31 +0800
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        "open list:PIN CONTROL SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 2/4] pinctrl: amd: use higher precision for 512 RtcClk
+Message-ID: <20201105233231.xva2zjxnmpwy5tmy@Rk>
+References: <20201104230703.21466-1-coiby.xu@gmail.com>
+ <20201104230703.21466-3-coiby.xu@gmail.com>
+ <CAHp75Vf=78VdQPGERb-x1ucsT=SAbt2UV9ANB=vU0S7H+BLQRw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201104232356.4038506-1-saravanak@google.com>
- <20201104232356.4038506-18-saravanak@google.com> <20201105094350.GG3439341@kroah.com>
-In-Reply-To: <20201105094350.GG3439341@kroah.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Thu, 5 Nov 2020 15:32:05 -0800
-Message-ID: <CAGETcx--D_KCpvK3b9NAQbMgWxzYT6MGEav1h2M8V7f=wK5L6A@mail.gmail.com>
-Subject: Re: [PATCH v1 17/18] driver core: Add helper functions to convert
- fwnode links to device links
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <CAHp75Vf=78VdQPGERb-x1ucsT=SAbt2UV9ANB=vU0S7H+BLQRw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 5, 2020 at 1:43 AM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+On Thu, Nov 05, 2020 at 01:13:07PM +0200, Andy Shevchenko wrote:
+>On Thu, Nov 5, 2020 at 1:07 AM Coiby Xu <coiby.xu@gmail.com> wrote:
+>>
+>> RTC is 32.768kHz thus 512 RtcClk equals 15625 usec.
 >
-> On Wed, Nov 04, 2020 at 03:23:54PM -0800, Saravana Kannan wrote:
-> > Add helper functions __fw_devlink_link_to_consumers() and
-> > __fw_devlink_link_to_suppliers() that convert fwnode links to device
-> > links.
-> >
-> > __fw_devlink_link_to_consumers() is for creating:
-> > - Device links between a newly added device and all its consumer devices
-> >   that have been added to driver core.
-> > - Proxy SYNC_STATE_ONLY device links between the newly added device and
-> >   the parent devices of all its consumers that have not been added to
-> >   driver core yet.
-> >
-> > __fw_devlink_link_to_suppliers() is for creating:
-> > - Device links between a newly added device and all its supplier devices
-> > - Proxy SYNC_STATE_ONLY device links between the newly added device and
-> >   all the supplier devices of its child device nodes.
-> >
-> > Signed-off-by: Saravana Kannan <saravanak@google.com>
+>I could add that the documentation likely has dropped precision and
+>that's why the driver mistakenly took the slightly deviated value.
 >
-> Did you just add build warnings with these static functions that no one
-> calls?
+Thank you for the suggestion and other fixes in patch 4/4. Applied in v3.
 
-The next patch in this series uses it. I'm just splitting it up into a
-separate patch so that it's digestible and I can provide more details
-in the commit text.
+>Anyway.
+>Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+>
+>> Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+>> Suggested-by: Hans de Goede <hdegoede@redhat.com>
+>> Link: https://lore.kernel.org/linux-gpio/2f4706a1-502f-75f0-9596-cc25b4933b6c@redhat.com/
+>> Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
+>> ---
+>>  drivers/pinctrl/pinctrl-amd.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/pinctrl/pinctrl-amd.c b/drivers/pinctrl/pinctrl-amd.c
+>> index d6b2b4bd337c..4aea3e05e8c6 100644
+>> --- a/drivers/pinctrl/pinctrl-amd.c
+>> +++ b/drivers/pinctrl/pinctrl-amd.c
+>> @@ -156,7 +156,7 @@ static int amd_gpio_set_debounce(struct gpio_chip *gc, unsigned offset,
+>>                         pin_reg |= BIT(DB_TMR_OUT_UNIT_OFF);
+>>                         pin_reg &= ~BIT(DB_TMR_LARGE_OFF);
+>>                 } else if (debounce < 250000) {
+>> -                       time = debounce / 15600;
+>> +                       time = debounce / 15625;
+>>                         pin_reg |= time & DB_TMR_OUT_MASK;
+>>                         pin_reg &= ~BIT(DB_TMR_OUT_UNIT_OFF);
+>>                         pin_reg |= BIT(DB_TMR_LARGE_OFF);
+>> --
+>> 2.28.0
+>>
+>
+>
+>--
+>With Best Regards,
+>Andy Shevchenko
 
-Couple of options:
-1. Drop the static in this patch and add it back when it's used in patch 18/18.
-2. Drop the commit text and squash this with 18/18 if you think the
-function documentation is clear enough and it won't make patch 18/18
-too hard to review.
-
-Please let me know which one you'd prefer or if you have other
-options. I don't have a strong opinion on how the patches are split up
-as long as it's easy for the reviewers and future folks who look at
-git log to understand stuff.
-
--Saravana
+--
+Best regards,
+Coiby
