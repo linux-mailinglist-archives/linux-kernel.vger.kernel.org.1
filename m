@@ -2,95 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1CD92A7CCE
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 12:19:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FD3F2A7CD2
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 12:23:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729922AbgKELTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 06:19:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43096 "EHLO
+        id S1730018AbgKELXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 06:23:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726777AbgKELTt (ORCPT
+        with ESMTP id S1726665AbgKELXB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 06:19:49 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 969C0C0613CF;
-        Thu,  5 Nov 2020 03:19:49 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id f38so1232293pgm.2;
-        Thu, 05 Nov 2020 03:19:49 -0800 (PST)
+        Thu, 5 Nov 2020 06:23:01 -0500
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 124F3C0613CF;
+        Thu,  5 Nov 2020 03:23:01 -0800 (PST)
+Received: by mail-ej1-x643.google.com with SMTP id 7so2107812ejm.0;
+        Thu, 05 Nov 2020 03:23:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=6LlDxVopvTXrZYYwDpHLRIcnyqCk1QP6hWaB4YmXDAA=;
-        b=GioMw7Qm8dt/8OrRBSfFZcZij1xGKpijpxDX/rNUGH2jXMCEFlGKkOO/9VZm7Q7OpV
-         vf1jlPButpWSR/f3tQKeNnyeaO7VIKVvmHBYLszKQiEI9FUw8UCxbH5HkuQZ5G7NG8RC
-         zacmnv1IZi4ZSmIGH1t9ryoc5bz4pmSpOdOqwajgY3vB8O6EnFBL3+I7Cm/L8RIoUWoN
-         0l9k54AnhZS3EYqnLD0Mg+HTa3fJIh3GgaOyHJEKbiImvD0KLA0TBIuH+1Hu1R4ZGbuh
-         y5/KGn97iLlFyuh9vUcVNhM7c4ACKW1DkTajPJgyXSZ/bl6cfre1WqMKeNvjT3At7+At
-         Imow==
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=wNkTbLtgTkgkkwaoSGq4NvVRmI6B4VMBCAOlXrDC7QI=;
+        b=Qd7hxCdbA5cftuIXF4iuhYJNaqsn+6RmN4/oEpjdIWdXF/axEOKcwizmcG+rSGvRvn
+         fwlKPAlaMZoX+ct0lGfDGMS+oTRESZ1miFc8Xs8UpPe8Kg3SnCQEhvT52wev+BYSK6g9
+         l/fnp7z1UBUHKbaqLEXaMgOKg/dYQJnV3j84tncM7I6nV2dvcotW9UZI0BB3LL9PynYC
+         4yMR2gauRFCLp8uKbmD9maQEqANqP+KnkY29b5kyk26yqIdNOlTnqljSQu1WPMT+m9zs
+         boOAQ6p9Lov3ScSmUiYFEJUSoYeVYw0dvIKyShpxal8U9Q0BSzAtlYG79XvYoH+ZHWAh
+         ppjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=6LlDxVopvTXrZYYwDpHLRIcnyqCk1QP6hWaB4YmXDAA=;
-        b=mY4S0yvdv+pynggv75c+QYEWTeljlu0/7akX91uO2m/hnXZAC13N5LL1kn29TXsTIz
-         PIQH+TwgwGNVRxpBrZlsWmUl1tTplNK0FOw5o1TkHfBkNMFEHS10gRWAgShNHQvsj+AR
-         p7NFxKbC5QpxVso5zhyWjiGWBn42Z+VQqUG0Zh3lVdjwKwtiuaLLZ3Q6nDOK9PFwixQC
-         qIfh+IGbiIKVo9f8jZq83PZPLkXoiNjKU8w81BJ+FEPPPxlLaqfMGSZg2IRpV9tjwlSp
-         4ki/ACFQQlkdB/uv0MRijEwWLJAflfSDHcL/TYXXEmO6vREE2fSzIQK3vcHnIsb6snvO
-         uk6w==
-X-Gm-Message-State: AOAM531xzzograKMCIqhjvIccVR/YFC7KOuJ9edeBL+RaCGSnSAa7gq9
-        bR9EHCAWoy/zXrM/BkKH4IU=
-X-Google-Smtp-Source: ABdhPJwk+TpXZaS0XUcMx81Tj+dEYl+/2uiSGrGIMLNt42cLWXgtYqMJfpmDk6AZgW2BP1FCGDs9Zg==
-X-Received: by 2002:a17:90a:f2cd:: with SMTP id gt13mr1956116pjb.179.1604575189185;
-        Thu, 05 Nov 2020 03:19:49 -0800 (PST)
-Received: from mi-OptiPlex-7060.mioffice.cn ([209.9.72.215])
-        by smtp.gmail.com with ESMTPSA id n64sm2203486pfn.134.2020.11.05.03.19.46
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wNkTbLtgTkgkkwaoSGq4NvVRmI6B4VMBCAOlXrDC7QI=;
+        b=EboXoapp2aiRPIqgUALW4gFluSGSvAGJsJKDJwLVKbwrAsnOoxiB7bFqi2wkohFn9K
+         jP5otdNepOGmdoJAILak6biSnc4zBk+Y/ZktSvQ5TjZHLESaZr4vxeydzpOXkj+qe1pP
+         F91NTy7rRV2qd+SYoM6eB1YpILrHVQxbDFd2y2J43LjGcg/4OgdIiMNnZ7nGp8PeZlul
+         fzOxT4jdiqie0gDrP/UEhMaYKighumhB+f8D3D4mig4mQEDSw5tzTZ1MpiLoyU3ehsMV
+         9LDSj3gmCH4QqsWN1Hx3Pgs8Y82XM/dMuWg0t99UEaMJOXArce4Xu1MuUhl6HT2Hq3kX
+         rxBw==
+X-Gm-Message-State: AOAM530rsUOFZL/CGfFieH9epD2fCwoieOBqeFjgceThZKUjrc7cGiq/
+        I+Utlq3tNp1WYHitO51svjE=
+X-Google-Smtp-Source: ABdhPJxp3DxDOEGh9l3/p1vbrMhDkbEnqT6kfRg6eISqxHGZD+4xtRD2vHMPIWH2Ln5BWUL/cBNOKA==
+X-Received: by 2002:a17:906:c206:: with SMTP id d6mr1684783ejz.239.1604575379746;
+        Thu, 05 Nov 2020 03:22:59 -0800 (PST)
+Received: from skbuf ([188.25.2.177])
+        by smtp.gmail.com with ESMTPSA id e9sm685614edn.30.2020.11.05.03.22.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 03:19:48 -0800 (PST)
-From:   zhuguangqing83@gmail.com
-To:     amit.kachhap@gmail.com, daniel.lezcano@linaro.org,
-        viresh.kumar@linaro.org, javi.merino@kernel.org,
-        rui.zhang@intel.com, amitk@kernel.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zhuguangqing <zhuguangqing@xiaomi.com>
-Subject: [PATCH] thermal/drivers/cpufreq_cooling: Update cpufreq_state only if state has changed
-Date:   Thu,  5 Nov 2020 19:19:14 +0800
-Message-Id: <20201105111914.9324-1-zhuguangqing83@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 05 Nov 2020 03:22:59 -0800 (PST)
+From:   Ioana Ciornei <ciorneiioana@gmail.com>
+X-Google-Original-From: Ioana Ciornei <ciornei.ioana@gmail.com>
+Date:   Thu, 5 Nov 2020 13:22:58 +0200
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Ioana Ciornei <ciorneiioana@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Ioana Ciornei <ioana.ciornei@nxp.com>
+Subject: Re: [RFC 5/9] staging: dpaa2-switch: handle Rx path on control
+ interface
+Message-ID: <20201105112258.sgbr2fq66u47vokr@skbuf>
+References: <20201104165720.2566399-1-ciorneiioana@gmail.com>
+ <20201104165720.2566399-6-ciorneiioana@gmail.com>
+ <20201105004516.GG933237@lunn.ch>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201105004516.GG933237@lunn.ch>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zhuguangqing <zhuguangqing@xiaomi.com>
+On Thu, Nov 05, 2020 at 01:45:16AM +0100, Andrew Lunn wrote:
+> > +/* Manage all NAPI instances for the control interface.
+> > + *
+> > + * We only have one RX queue and one Tx Conf queue for all
+> > + * switch ports. Therefore, we only need to enable the NAPI instance once, the
+> > + * first time one of the switch ports runs .dev_open().
+> > + */
+> > +
+> > +static void dpaa2_switch_enable_ctrl_if_napi(struct ethsw_core *ethsw)
+> > +{
+> > +	int i;
+> > +
+> > +	/* a new interface is using the NAPI instance */
+> > +	ethsw->napi_users++;
+> > +
+> > +	/* if there is already a user of the instance, return */
+> > +	if (ethsw->napi_users > 1)
+> > +		return;
+> 
+> Does there need to be any locking here? Or does it rely on RTNL?
+> Maybe a comment would be nice, or a check that RTNL is actually held.
+> 
 
-If state has not changed successfully and we updated cpufreq_state,
-next time when the new state is equal to cpufreq_state (not changed
-successfully last time), we will return directly and miss a
-freq_qos_update_request() that should have been.
+It relies on the RTNL. I'll add an assert on the RTNL lock and a comment
+to go with that.
 
-Signed-off-by: zhuguangqing <zhuguangqing@xiaomi.com>
----
- drivers/thermal/cpufreq_cooling.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+> > +
+> > +	if (!dpaa2_switch_has_ctrl_if(ethsw))
+> > +		return;
+> > +
+> > +	for (i = 0; i < DPAA2_SWITCH_RX_NUM_FQS; i++)
+> > +		napi_enable(&ethsw->fq[i].napi);
+> > +}
+> 
+> > +static void dpaa2_switch_rx(struct dpaa2_switch_fq *fq,
+> > +			    const struct dpaa2_fd *fd)
+> > +{
+> > +	struct ethsw_core *ethsw = fq->ethsw;
+> > +	struct ethsw_port_priv *port_priv;
+> > +	struct net_device *netdev;
+> > +	struct vlan_ethhdr *hdr;
+> > +	struct sk_buff *skb;
+> > +	u16 vlan_tci, vid;
+> > +	int if_id = -1;
+> > +	int err;
+> > +
+> > +	/* prefetch the frame descriptor */
+> > +	prefetch(fd);
+> 
+> Does this actually do any good, given that the next call:
+> 
+> > +
+> > +	/* get switch ingress interface ID */
+> > +	if_id = upper_32_bits(dpaa2_fd_get_flc(fd)) & 0x0000FFFF;
+> 
+> is accessing the frame descriptor? The idea of prefetch is to let it
+> bring it into the cache while you are busy doing something else,
+> hopefully with something which is already cache hot.
+> 
 
-diff --git a/drivers/thermal/cpufreq_cooling.c b/drivers/thermal/cpufreq_cooling.c
-index cc2959f22f01..00dc26c33899 100644
---- a/drivers/thermal/cpufreq_cooling.c
-+++ b/drivers/thermal/cpufreq_cooling.c
-@@ -438,13 +438,12 @@ static int cpufreq_set_cur_state(struct thermal_cooling_device *cdev,
- 	if (cpufreq_cdev->cpufreq_state == state)
- 		return 0;
- 
--	cpufreq_cdev->cpufreq_state = state;
--
- 	frequency = get_state_freq(cpufreq_cdev, state);
- 
- 	ret = freq_qos_update_request(&cpufreq_cdev->qos_req, frequency);
- 
- 	if (ret > 0) {
-+		cpufreq_cdev->cpufreq_state = state;
- 		cpus = cpufreq_cdev->policy->cpus;
- 		max_capacity = arch_scale_cpu_capacity(cpumask_first(cpus));
- 		capacity = frequency * max_capacity;
--- 
-2.17.1
+I'll check w and w/o the prefetch but, most probably, it doesn't help.
+Thanks.
 
+Ioana
