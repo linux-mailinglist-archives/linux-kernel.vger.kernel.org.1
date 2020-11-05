@@ -2,139 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA5A32A8487
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 18:15:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B72F2A8489
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 18:15:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731499AbgKERO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 12:14:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42380 "EHLO
+        id S1731618AbgKERO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 12:14:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727851AbgKERO4 (ORCPT
+        with ESMTP id S1731560AbgKERO6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 12:14:56 -0500
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D3E9C0613CF;
+        Thu, 5 Nov 2020 12:14:58 -0500
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FE0BC0613CF;
         Thu,  5 Nov 2020 09:14:56 -0800 (PST)
-Received: by mail-pl1-x642.google.com with SMTP id t18so1098275plo.0;
+Received: by mail-oi1-x243.google.com with SMTP id c80so2436308oib.2;
         Thu, 05 Nov 2020 09:14:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:thread-topic:thread-index:date:message-id
-         :references:in-reply-to:accept-language:content-language
-         :content-transfer-encoding:mime-version;
-        bh=XwV+aW6cGJGYI4Hbmxr8mO8vep5QW19zw8MT/QMQ6J4=;
-        b=DG1/lsxD23Zu+0xI8p/fT1yZLzBJNXRnYUDHkUck+eLYeRFbk4eXtEmsz7xBKo2Ubn
-         Hu6yCzfK8qI6JviVQz93AubOVaYEPuH1fZ6sPAyc/ZkquR6ezD1qFjK4krRwCLW0A8af
-         lg+SP8gLg0Sz/WO8279RyUkHSPBmmK/pofiry13zeLJfedyE2BN66A91HScPYRfLXZaQ
-         kHMSztIL7quITa0DoQJMbipKMz/bySBpD48UDr042jBR7ByVY0/1mZTTMChSWxWY3UAE
-         99QZ++p4KP3eJkOw4Rgde0tAk0NP7OeMBH4S6ejdFDE58pUkHBtnX8d+g/g0mzoPLgw7
-         VJRQ==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=EzuCScXK34H+yxMS/8Khr1NXq0vtwjjjyKo8k88A88I=;
+        b=SVzamyMb3BPqjuS8baLIgcy380+Kw/1UHngn/C6O5AUtKkyEG5lHNNV7WhoNeOumGk
+         xfubRfWRwA9JqdNuoSEAthQfctwbNTVxQfFBY8nnzMWBJTspAwMVO+6V5Ow9wt9T1RHY
+         pEgauAbO1Ao00Vn22llgU0QH+1r0rcLfThyvaJf0pec+6Xz1FAqUc5WRvz/3dOTpHyhs
+         IJ8cq2OINcjt0A0hWXUb41uSZpHmcDVhLNQtXx/RxmA0JSRRvv1e+aagOV+1UInEtPJU
+         L0URWSncR5vtoDB4KZwlYtILENl4/SvVA2132+f8aBUf6giKkLSZPeIAjDUMxGqaXMKt
+         kuaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:thread-topic:thread-index
-         :date:message-id:references:in-reply-to:accept-language
-         :content-language:content-transfer-encoding:mime-version;
-        bh=XwV+aW6cGJGYI4Hbmxr8mO8vep5QW19zw8MT/QMQ6J4=;
-        b=NHlEVamGaB3Hep5J5u+8zwjanu64T+++iHMjub3h+XLQjIsp2shxWfqqzcxVA23SGV
-         bISldDNMZvaurACD7XlxipmUijAYii3su+J6TM2/8rHJroEXFPuwUymr9tpALtL4Vfu1
-         nknkT++SIaA20HTQ4/UU+hIxF/hUzkfQJZvYo0BtyDbg3XdQ1H2afnQVXKu9MQXoM0YC
-         UwIAzHbwKx0qYCZaH9V7h+5RTfmjrUYJ805IA3Hg/pLPikjnSvshjWFcF+OvI8ShXY6+
-         /JaKkOl88h9QPZDbbvxpGzzmsv/XrRky0emaUlPweKiNW2BLZOGKviabPGy/2aD4VRN0
-         bMzA==
-X-Gm-Message-State: AOAM5313PI7z1NDvy5EznGUbvch3/oXmVOgVXXFZQ4DY1qi1aeJ/ePxw
-        JRKAlul3RxrNa2vaS2khffs=
-X-Google-Smtp-Source: ABdhPJxizlMCIeICyyJrLiuwB6GA88j9xik3qp0bMTx1JoaNIFQ0rtun87LTzJD3xGIYvUKTpGB7EQ==
-X-Received: by 2002:a17:902:c383:b029:d6:991c:671b with SMTP id g3-20020a170902c383b02900d6991c671bmr3058728plg.51.1604596495770;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=EzuCScXK34H+yxMS/8Khr1NXq0vtwjjjyKo8k88A88I=;
+        b=HYoezcLKvd9pRhU/3MU4u5htLuZxGp/abW/EBmj+OeXsh3DjewiUuSHXBrorw+DIaD
+         0w4lzAi/2rYcTzya/JJgkdJRnHVgDuIZR6lwZywMFhwN7abHxr7yGSMykN6q3QafF9zd
+         7xE3FpmLAmxUkTemjHJi8GJ//pO8/9KiCbeomSJ0meMp7f73zsJDhAh2ZOUKjoUEt5lu
+         b6F89pWf38iHtagRzRn9eTQvr7hDx805fCnKNKZPjolqMYzcuNl/GBfeqnmkQgEC3iL4
+         L0RUCUR5UH2dJcMcq+YbKih1fjyvp6f4AvhdHqj8ongqMhyfVgC0iHjS7xglvYcOruwy
+         70ng==
+X-Gm-Message-State: AOAM531jF7nSf1OiJJD9pVnYk6mkbcRADWqNwGgesCecwk/D2wzK92B4
+        100eErXMIXmZtDiYcbNDK0lmXBZnj6UJB0cN
+X-Google-Smtp-Source: ABdhPJwDYYft5XnQSGlXxCKn494KFWg020g+/5Ipo5J+kie3czUmtsRjvn6EkemPdixMNA2is5YvKQ==
+X-Received: by 2002:a05:6808:496:: with SMTP id z22mr296547oid.2.1604596495674;
         Thu, 05 Nov 2020 09:14:55 -0800 (PST)
-Received: from SLXP216MB0477.KORP216.PROD.OUTLOOK.COM ([2603:1046:100:9::5])
-        by smtp.gmail.com with ESMTPSA id w131sm3236826pfd.14.2020.11.05.09.14.51
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+Received: from ?IPv6:2600:1700:4a30:eaf0::21? ([2600:1700:4a30:eaf0::21])
+        by smtp.gmail.com with ESMTPSA id h4sm464985oot.45.2020.11.05.09.14.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
         Thu, 05 Nov 2020 09:14:54 -0800 (PST)
-From:   Jingoo Han <jingoohan1@gmail.com>
-To:     Rob Herring <robh@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-CC:     linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jaehoon Chung <jh80.chung@samsung.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Han Jingoo <jingoohan1@gmail.com>
-Subject: Re: [PATCH v3 2/6] dt-bindings: pci: add the samsung,exynos-pcie
- binding
-Thread-Topic: [PATCH v3 2/6] dt-bindings: pci: add the samsung,exynos-pcie
- binding
-Thread-Index: AQHWrfkxmqu5u2BfXUOgfEcMUhWpwKm4iO6AgAC3vwCAAHO+AIAAHfWn
-X-MS-Exchange-MessageSentRepresentingType: 1
-Date:   Thu, 5 Nov 2020 17:14:49 +0000
-Message-ID: <SLXP216MB0477D362203645C619958647AAEE0@SLXP216MB0477.KORP216.PROD.OUTLOOK.COM>
-References: <20201029134017.27400-1-m.szyprowski@samsung.com>
- <CGME20201029134038eucas1p28d9bd33bc9e36b960b021a40ef299b47@eucas1p2.samsung.com>
- <20201029134017.27400-3-m.szyprowski@samsung.com>
- <20201104213539.GA4144654@bogus>
- <d89f5f0a-c45e-0bda-4db7-7b0cf9cd49fe@samsung.com>
- <CAL_JsqKQstKa7_0pjcODyyLCwMiGF9zB4_+x=GhcSUOyvuLRmw@mail.gmail.com>
-In-Reply-To: <CAL_JsqKQstKa7_0pjcODyyLCwMiGF9zB4_+x=GhcSUOyvuLRmw@mail.gmail.com>
-Accept-Language: ko-KR, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-Exchange-Organization-SCL: -1
-X-MS-TNEF-Correlator: 
-X-MS-Exchange-Organization-RecordReviewCfmType: 0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v2] Input: Add devices for
+ HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE
+To:     Chris Ye <lzye@google.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, trivial@kernel.org,
+        linux-input@vger.kernel.org, stable@vger.kernel.org
+References: <20201101193452.678628-1-lzye@google.com>
+From:   Chris Ye <linzhao.ye@gmail.com>
+Message-ID: <8578ec06-34f5-1cf4-5f62-9cb05a0b6c08@gmail.com>
+Date:   Thu, 5 Nov 2020 09:14:53 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
+In-Reply-To: <20201101193452.678628-1-lzye@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/5/20, 10:27 AM, Rob Herring wrote:
->=20
-> On Thu, Nov 5, 2020 at 2:33 AM Marek Szyprowski
-> <m.szyprowski@samsung.com> wrote:
-> >
-> > Hi Rob,
-> >
-> > On 04.11.2020 22:35, Rob Herring wrote:
-> > > On Thu, Oct 29, 2020 at 02:40:13PM +0100, Marek Szyprowski wrote:
-> > >> Add dt-bindings for the Samsung Exynos PCIe controller (Exynos5433
-> > >> variant). Based on the text dt-binding posted by Jaehoon Chung.
-> > >>
-> > >> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> > >> Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
-> > >> ---
-> > >>   .../bindings/pci/samsung,exynos-pcie.yaml     | 119 ++++++++++++++=
-++++
-> > >>   1 file changed, 119 insertions(+)
-> > >>   create mode 100644 Documentation/devicetree/bindings/pci/samsung,e=
-xynos-pcie.yaml
-> >
-> > >> ...
-> >
-> > >> +  num-viewport:
-> > >> +    const: 3
-> > > I'm confused why you need this. This is only used with the iATU excep=
-t
-> > > for keystone. Platforms like Exynos with their own child bus config
-> > > space accessors don't have an iATU.
-> >
-> > Frankly I have no idea, I don't know much about the PCI internals.
->
-> Sorry, I was confused. It's fine.
++stable@vger.kernel.org
 
-I was confused, too. But, as far as I remember, I also think that viewpoint=
--related
-setting was necessary for Exynos PCIe.
-Thank you.
-
-Best regards,
-Jingoo Han
-
+On 11/1/20 11:34 AM, Chris Ye wrote:
+> Kernel 5.4 introduces HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE, devices
+> need to be set explicitly with this flag.
 >
-> Reviewed-by: Rob Herring <robh@kernel.org>
+> Signed-off-by: Chris Ye <lzye@google.com>
+> ---
+>   drivers/hid/hid-ids.h    | 4 ++++
+>   drivers/hid/hid-quirks.c | 4 ++++
+>   2 files changed, 8 insertions(+)
 >
-> Rob
+> diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
+> index 74be76e848bf..cf55dca494f3 100644
+> --- a/drivers/hid/hid-ids.h
+> +++ b/drivers/hid/hid-ids.h
+> @@ -449,6 +449,10 @@
+>   #define USB_VENDOR_ID_FRUCTEL	0x25B6
+>   #define USB_DEVICE_ID_GAMETEL_MT_MODE	0x0002
+>   
+> +#define USB_VENDOR_ID_GAMEVICE	0x27F8
+> +#define USB_DEVICE_ID_GAMEVICE_GV186	0x0BBE
+> +#define USB_DEVICE_ID_GAMEVICE_KISHI	0x0BBF
+> +
+>   #define USB_VENDOR_ID_GAMERON		0x0810
+>   #define USB_DEVICE_ID_GAMERON_DUAL_PSX_ADAPTOR	0x0001
+>   #define USB_DEVICE_ID_GAMERON_DUAL_PCS_ADAPTOR	0x0002
+> diff --git a/drivers/hid/hid-quirks.c b/drivers/hid/hid-quirks.c
+> index 0440e2f6e8a3..36d94e3485e3 100644
+> --- a/drivers/hid/hid-quirks.c
+> +++ b/drivers/hid/hid-quirks.c
+> @@ -84,6 +84,10 @@ static const struct hid_device_id hid_quirks[] = {
+>   	{ HID_USB_DEVICE(USB_VENDOR_ID_FREESCALE, USB_DEVICE_ID_FREESCALE_MX28), HID_QUIRK_NOGET },
+>   	{ HID_USB_DEVICE(USB_VENDOR_ID_FUTABA, USB_DEVICE_ID_LED_DISPLAY), HID_QUIRK_NO_INIT_REPORTS },
+>   	{ HID_USB_DEVICE(USB_VENDOR_ID_GREENASIA, USB_DEVICE_ID_GREENASIA_DUAL_USB_JOYPAD), HID_QUIRK_MULTI_INPUT },
+> +	{ HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_GAMEVICE, USB_DEVICE_ID_GAMEVICE_GV186),
+> +		HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE },
+> +	{ HID_USB_DEVICE(USB_VENDOR_ID_GAMEVICE, USB_DEVICE_ID_GAMEVICE_KISHI),
+> +		HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE },
+>   	{ HID_USB_DEVICE(USB_VENDOR_ID_HAPP, USB_DEVICE_ID_UGCI_DRIVING), HID_QUIRK_BADPAD | HID_QUIRK_MULTI_INPUT },
+>   	{ HID_USB_DEVICE(USB_VENDOR_ID_HAPP, USB_DEVICE_ID_UGCI_FIGHTING), HID_QUIRK_BADPAD | HID_QUIRK_MULTI_INPUT },
+>   	{ HID_USB_DEVICE(USB_VENDOR_ID_HAPP, USB_DEVICE_ID_UGCI_FLYING), HID_QUIRK_BADPAD | HID_QUIRK_MULTI_INPUT },
