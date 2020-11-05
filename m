@@ -2,109 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC5C72A792D
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 09:25:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 807B32A7930
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 09:26:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729275AbgKEIZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 03:25:48 -0500
-Received: from mail-ed1-f67.google.com ([209.85.208.67]:43561 "EHLO
-        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725287AbgKEIZs (ORCPT
+        id S1729981AbgKEI0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 03:26:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44106 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729386AbgKEI0B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 03:25:48 -0500
-Received: by mail-ed1-f67.google.com with SMTP id b9so598123edu.10;
-        Thu, 05 Nov 2020 00:25:46 -0800 (PST)
+        Thu, 5 Nov 2020 03:26:01 -0500
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0408C0613CF;
+        Thu,  5 Nov 2020 00:26:00 -0800 (PST)
+Received: by mail-ed1-x541.google.com with SMTP id t11so585271edj.13;
+        Thu, 05 Nov 2020 00:26:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=CUJEr0lyZ2FU4AN5m4PBTXwWLzjC0fib3G/YnJPxjZc=;
+        b=Gfcc7sle2V8J9m3BUZ/qf3oGxYR7rIeXP1pRNWULj9rrdMrNYfJZKrZ9WCGeYnw6pL
+         NVr7QM7sfUbKgGKxIM5eDdF3L6zlVH2n7F6iuntm7DmWruV55U/dYvLCODinjoZMqjpd
+         HFh7qai07AD66Uh96zY3eMP4gPYNPQBIhM8SI7bsMYKWtZRqeY/wQDcQYIqYe6EOBqqp
+         w7h9b2YkZSJI6F1V766LaQ9S0ZvWf3il+vOhqihPkt5ADGFmTcX40zjItdMuzCUdDTtC
+         Qpm4VB42MyhkwxE0Cg5GlZ19FhD9WlLNdCSli8emjBdLUo+oOYTyRCgztM+lKwUYtXtk
+         a+1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=BynuZQ4IcnE7iQujs9AoYeaOaUtAjpLHhcdFHAx92NU=;
-        b=KsfvtKhUqlHfJKdbL+R7bwLAvlK/PVwicE7CoswcKOw8v4F50c5EPseD1C9Gk4wk16
-         9nF8VUbtKuzu0O+yTY6eKZsDPY7odm0vgoRkgXxe24VkzgtWEczNzm3VHtgrR9eQ8XRI
-         RIKUr7MYlxrms4wDtGkSD8sILgtkhOjokStvRKiM2oiOAFBfAY431uFaSol1xWl+culx
-         MdvSooGSe+Hse0EBOi+G2m9P3Anc9aXSWIk3QmB7VbREPH7OX1uexhqcsP7Gbz/cDkA7
-         iaMIL/T5KjW0DeIYZ9gN20lheYgMShBMo71qWG8xLqk3QBEF2suzG0hViRzRUZqZ+SE9
-         uOPg==
-X-Gm-Message-State: AOAM530pc+ZgsxRLrXAFzrIdIID1IlWtjhwUU2Pp7BSM9sryusfQKF82
-        izipVNPmMJOST6G/nOlSR18=
-X-Google-Smtp-Source: ABdhPJxkpUg1Mul8x6cVLkyTVYz10e4c3t5chhkLiHgDZkp8bbZfVtyDie7JQU7x4d52LbYCid3dFg==
-X-Received: by 2002:aa7:cdd3:: with SMTP id h19mr1411156edw.330.1604564746185;
-        Thu, 05 Nov 2020 00:25:46 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id k26sm447082edf.85.2020.11.05.00.25.44
+        bh=CUJEr0lyZ2FU4AN5m4PBTXwWLzjC0fib3G/YnJPxjZc=;
+        b=ONWihz/4bUUX2e1ddSCG6/qXFAnZxCWDjT8CkyOk7nvaMhnFrIFj9wcKl/I633XuY+
+         STJm4RM0Hzsx8nluNL8Wtw0R3BBrMGK8xOd5p5ZR5bzPjq0358lnkA4qpncuzYIylY9w
+         NeuZXvWiHE3s6uKzZPEaZ0JuZvxZaf2LXxn6KezvsFWr2NaLbf33hcVA2UCyEwbN5ZwX
+         Ahe/cBGAa90YGrmhMOwelvRB1sbIqWMmAJO4njTKEtOnX+QJU2YKCqY88VQALNun6v1U
+         hDuXRbfaljFzsxvxApGJXeLW8l8uHIAh0zZ+HZKqxJ1z54ABmUXSyFlwNf5Ocg54MjqP
+         8XrA==
+X-Gm-Message-State: AOAM533rRh7eAQ++LV7fe58PNZqRmupqqIWtEuuQfWMt+fjRB1s8b5XB
+        zUX7oEXlvgrk/BCT2zNcQXfFA7ooKfn9Zw==
+X-Google-Smtp-Source: ABdhPJzMIjaLTPqJeLzp2kDIQJwyVf4nqD63/R0gI+iZ3Gva8aCAGAqgWtxmeC9XpzI9QhQDMbPpEA==
+X-Received: by 2002:a50:9e86:: with SMTP id a6mr1393953edf.238.1604564759329;
+        Thu, 05 Nov 2020 00:25:59 -0800 (PST)
+Received: from skbuf ([188.25.2.177])
+        by smtp.gmail.com with ESMTPSA id f19sm489095ejk.116.2020.11.05.00.25.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 00:25:45 -0800 (PST)
-Date:   Thu, 5 Nov 2020 09:25:43 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Alice Guo <alice.guo@nxp.com>
-Cc:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        linux-imx@nxp.com, peng.fan@nxp.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 1/4] dt-bindings: soc: imx8m: add DT Binding doc for
- soc unique ID
-Message-ID: <20201105082543.GA17569@kozik-lap>
-References: <20201105072629.24175-1-alice.guo@nxp.com>
+        Thu, 05 Nov 2020 00:25:58 -0800 (PST)
+From:   Ioana Ciornei <ciorneiioana@gmail.com>
+X-Google-Original-From: Ioana Ciornei <ciornei.ioana@gmail.com>
+Date:   Thu, 5 Nov 2020 10:25:57 +0200
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Ioana Ciornei <ciorneiioana@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Ioana Ciornei <ioana.ciornei@nxp.com>
+Subject: Re: [RFC 6/9] staging: dpaa2-switch: add .ndo_start_xmit() callback
+Message-ID: <20201105082557.c43odnzis35y7khj@skbuf>
+References: <20201104165720.2566399-1-ciorneiioana@gmail.com>
+ <20201104165720.2566399-7-ciorneiioana@gmail.com>
+ <20201105010439.GH933237@lunn.ch>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201105072629.24175-1-alice.guo@nxp.com>
+In-Reply-To: <20201105010439.GH933237@lunn.ch>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 03:26:26PM +0800, Alice Guo wrote:
-> Add DT Binding doc for the Unique ID of i.MX 8M series.
+On Thu, Nov 05, 2020 at 02:04:39AM +0100, Andrew Lunn wrote:
+> > +static int dpaa2_switch_build_single_fd(struct ethsw_core *ethsw,
+> > +					struct sk_buff *skb,
+> > +					struct dpaa2_fd *fd)
+> > +{
+> > +	struct device *dev = ethsw->dev;
+> > +	struct sk_buff **skbh;
+> > +	dma_addr_t addr;
+> > +	u8 *buff_start;
+> > +	void *hwa;
+> > +
+> > +	buff_start = PTR_ALIGN(skb->data - DPAA2_SWITCH_TX_DATA_OFFSET -
+> > +			       DPAA2_SWITCH_TX_BUF_ALIGN,
+> > +			       DPAA2_SWITCH_TX_BUF_ALIGN);
+> > +
+> > +	/* Clear FAS to have consistent values for TX confirmation. It is
+> > +	 * located in the first 8 bytes of the buffer's hardware annotation
+> > +	 * area
+> > +	 */
+> > +	hwa = buff_start + DPAA2_SWITCH_SWA_SIZE;
+> > +	memset(hwa, 0, 8);
+> > +
+> > +	/* Store a backpointer to the skb at the beginning of the buffer
+> > +	 * (in the private data area) such that we can release it
+> > +	 * on Tx confirm
+> > +	 */
+> > +	skbh = (struct sk_buff **)buff_start;
+> > +	*skbh = skb;
 > 
-> Signed-off-by: Alice Guo <alice.guo@nxp.com>
-> ---
->  .../devicetree/bindings/arm/fsl.yaml          | 33 +++++++++++++++++++
->  1 file changed, 33 insertions(+)
+> Where is the TX confirm which uses this stored pointer. I don't see it
+> in this file.
 > 
-> diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
-> index e4db0f9ed664..0419f078502b 100644
-> --- a/Documentation/devicetree/bindings/arm/fsl.yaml
-> +++ b/Documentation/devicetree/bindings/arm/fsl.yaml
-> @@ -901,6 +901,39 @@ properties:
->                - fsl,s32v234-evb           # S32V234-EVB2 Customer Evaluation Board
->            - const: fsl,s32v234
-> 
-> +  soc:
-> +    description:
-> +      i.MX8M Family SoC must provide a soc node in the root of the device tree,
-> +      representing the System-on-Chip since these test chips are rather complex.
-> +    type: object
-> +    properties:
-> +      compatible:
-> +        oneOf:
-> +          - items:
-> +              - const: fsl,imx8mm-soc
-> +              - const: simple-bus
-> +          - items:
-> +              - const: fsl,imx8mn-soc
-> +              - const: simple-bus
-> +          - items:
-> +              - const: fsl,imx8mp-soc
-> +              - const: simple-bus
-> +          - items:
-> +              - const: fsl,imx8mq-soc
-> +              - const: simple-bus
-> +
-> +      nvmem-cells:
-> +        maxItems: 1
-> +        description: Phandle to the SOC Unique ID provided by a nvmem node
-> +
-> +      nvmem-cells-names:
-> +        const: soc_unique_id
-> +
-> +    required:
-> +      - compatible
-> +      - nvmem-cells
-> +      - nvmem-cell-names
-> +
 
-Did you actually test it? I see multiple errors with this patch.
-fsl-ls1012a-frdm.dt.yaml: /: soc:compatible: ['simple-bus'] is not valid under any of the given schemas
+The Tx confirm - dpaa2_switch_tx_conf() - is added in patch 5/9.
 
-Best regards,
-Krzysztof
+> It can be expensive to store pointer like this in buffers used for
+> DMA.
+
+Yes, it is. But the hardware does not give us any other indication that
+a packet was actually sent so that we can move ahead with consuming the
+initial skb.
+
+> It has to be flushed out of the cache here as part of the
+> send. Then the TX complete needs to invalidate and then read it back
+> into the cache. Or you use coherent memory which is just slow.
+> 
+> It can be cheaper to keep a parallel ring in cacheable memory which
+> never gets flushed.
+
+I'm afraid I don't really understand your suggestion. In this parallel
+ring I would keep the skb pointers of all frames which are in-flight?
+Then, when a packet is received on the Tx confirmation queue I would
+have to loop over the parallel ring and determine somehow which skb was
+this packet initially associated to. Isn't this even more expensive?
+
+Ioana
 
