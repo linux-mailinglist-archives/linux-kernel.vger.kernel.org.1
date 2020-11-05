@@ -2,81 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 886582A7E77
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 13:21:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B9FC2A7E7B
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 13:22:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730435AbgKEMVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 07:21:38 -0500
-Received: from mail.horus.com ([78.46.148.228]:50629 "EHLO mail.horus.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725468AbgKEMVh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 07:21:37 -0500
-Received: from [192.168.1.20] (178-190-199-171.adsl.highway.telekom.at [178.190.199.171])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256
-         client-signature RSA-PSS (2048 bits) client-digest SHA256)
-        (Client CN "E-Mail Matthias Reichl", Issuer "HiassofT CA 2014" (not verified))
-        by mail.horus.com (Postfix) with ESMTPSA id 6C1C16409C;
-        Thu,  5 Nov 2020 13:21:35 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=horus.com;
-        s=20180324; t=1604578895;
-        bh=m7TWDGR/XOwMZ6PC2+scU+HaRp+UnMcyShuqW8iBPVY=;
-        h=Date:From:To:Subject:References:In-Reply-To:From;
-        b=A235DEjC61KEVIjZCxaUffmEsyZ9XE+w4H/xuX2tsmoWz8a7guhi0K4BgdlIelvil
-         eIeWOIJ5vfojwn/MZO4QgI2T1oHDC0AplV54D2PtD6h/Q6Jcp3Sh/s8gLpYw0h5PFG
-         /XPAMn4XiCMIKDb9LZHe8qOS01cZYZ0edUqWPnDA=
-Received: by camel2.lan (Postfix, from userid 1000)
-        id 6DFEB1C75C3; Thu,  5 Nov 2020 13:21:34 +0100 (CET)
-Date:   Thu, 5 Nov 2020 13:21:34 +0100
-From:   Matthias Reichl <hias@horus.com>
-To:     Samuel Thibault <samuel.thibault@ens-lyon.org>,
+        id S1730489AbgKEMWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 07:22:31 -0500
+Received: from mail-40133.protonmail.ch ([185.70.40.133]:28664 "EHLO
+        mail-40133.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725468AbgKEMWb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 07:22:31 -0500
+Date:   Thu, 05 Nov 2020 12:22:26 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1604578948; bh=0nJYS+gLcbGAg8faV3yhKQST5RGSsRVlarw3xnFKf0w=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=lxTpiM3R1RrlQ+Nje7lDzS1LL7Oj2UD1NwDWMZFVVvvWjnK6TmFvAqor8pqv9pLON
+         On99SDlA0PZSGavBfuxhCbZRf0nhMX6jQvHOELgGjdUz/wfuMbM0Ahkv9O3Bev8TEa
+         uDrc9piQvaGlnMsFQmL8VMiAvGicMReSIOA8YEImk+08/56HTrsx0tmGnPKQbeKTSM
+         qy1G+dufn8a4SNY49uzzNPwMIbFps0TEsAgEAHuLUVKnrwpbVmzo1BwOiaGjgKodJj
+         pwQXRyx4CZNq4NgPP16Fuxa7AQwFiwe9yzwFClIPWuiti49S/juZAtoVPxlZYDijJG
+         KTnxpeVVQA7Ug==
+To:     Jason Wang <jasowang@redhat.com>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexander Lobakin <alobakin@pm.me>, Amit Shah <amit@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>, speakup@linux-speakup.org,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: Crash when specifying non-existent serial port in speakup /
- tty_kopen
-Message-ID: <20201105122134.GA6084@camel2.lan>
-Mail-Followup-To: Matthias Reichl <hias@horus.com>,
-        Samuel Thibault <samuel.thibault@ens-lyon.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>, speakup@linux-speakup.org,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201104145737.GA11024@camel2.lan>
- <20201104201323.dzyt73tbd2jykcrt@function>
- <20201104211504.GA20012@lenny.lan>
- <20201104213005.khivjvcwkaz7kz4g@function>
+        Arnaud Pouliquen <arnaud.pouliquen@st.com>,
+        Suman Anna <s-anna@ti.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: Re: [PATCH virtio] virtio: virtio_console: fix DMA memory allocation for rproc serial
+Message-ID: <aXBO8lWEART2MNuWacIKln3qh6wttCtF2oUd7vthkNU@cp3-web-012.plabs.ch>
+In-Reply-To: <004da56d-aad2-3b69-3428-02a14263289b@redhat.com>
+References: <AOKowLclCbOCKxyiJ71WeNyuAAj2q8EUtxrXbyky5E@cp7-web-042.plabs.ch> <004da56d-aad2-3b69-3428-02a14263289b@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201104213005.khivjvcwkaz7kz4g@function>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 10:30:05PM +0100, Samuel Thibault wrote:
-> Matthias Reichl, le mer. 04 nov. 2020 22:15:05 +0100, a ecrit:
-> > > This looks like only a warning, did it actually crash?
-> > 
-> > Yes, scroll down a bit, the null pointer oops followed almost
-> > immediately after that
-> > 
-> > [   49.979043] BUG: kernel NULL pointer dereference, address: 0000000000000090
-> 
-> Ah, [   50.102938]  tty_init_dev+0xb5/0x1d0
-> 
-> probably the trailing release_tty call that does
-> 
-> tty->port->itty = NULL;
-> (itty is after a struct tty_bufhead + the tty pointer, that looks
-> plausible).
-> 
-> so probably an if (tty->port) in release_tty could help?
+From: Jason Wang <jasowang@redhat.com>
+Date: Thu, 5 Nov 2020 11:10:24 +0800
 
-Thanks a lot, good catch! This is indeed where the crash happens
-and checking for tty->port in release_tty() prevents that.
-I'll send a patch.
+Hi Jason,
 
-so long,
+> On 2020/11/4 =E4=B8=8B=E5=8D=8811:31, Alexander Lobakin wrote:
+>> Since commit 086d08725d34 ("remoteproc: create vdev subdevice with
+>> specific dma memory pool"), every remoteproc has a DMA subdevice
+>> ("remoteprocX#vdevYbuffer") for each virtio device, which inherits
+>> DMA capabilities from the corresponding platform device. This allowed
+>> to associate different DMA pools with each vdev, and required from
+>> virtio drivers to perform DMA operations with the parent device
+>> (vdev->dev.parent) instead of grandparent (vdev->dev.parent->parent).
+>>
+>> virtio_rpmsg_bus was already changed in the same merge cycle with
+>> commit d999b622fcfb ("rpmsg: virtio: allocate buffer from parent"),
+>> but virtio_console did not. In fact, operations using the grandparent
+>> worked fine while the grandparent was the platform device, but since
+>> commit c774ad010873 ("remoteproc: Fix and restore the parenting
+>> hierarchy for vdev") this was changed, and now the grandparent device
+>> is the remoteproc device without any DMA capabilities.
+>> So, starting v5.8-rc1 the following warning is observed:
+>>
+>> [    2.483925] ------------[ cut here ]------------
+>> [    2.489148] WARNING: CPU: 3 PID: 101 at kernel/dma/mapping.c:427 0x80=
+e7eee8
+>> [    2.489152] Modules linked in: virtio_console(+)
+>> [    2.503737]  virtio_rpmsg_bus rpmsg_core
+>> [    2.508903]
+>> [    2.528898] <Other modules, stack and call trace here>
+>> [    2.913043]
+>> [    2.914907] ---[ end trace 93ac8746beab612c ]---
+>> [    2.920102] virtio-ports vport1p0: Error allocating inbufs
+>>
+>> kernel/dma/mapping.c:427 is:
+>>
+>> WARN_ON_ONCE(!dev->coherent_dma_mask);
+>>
+>> obviously because the grandparent now is remoteproc dev without any
+>> DMA caps:
+>>
+>> [    3.104943] Parent: remoteproc0#vdev1buffer, grandparent: remoteproc0
+>>
+>> Fix this the same way as it was for virtio_rpmsg_bus, using just the
+>> parent device (vdev->dev.parent, "remoteprocX#vdevYbuffer") for DMA
+>> operations.
+>> This also allows now to reserve DMA pools/buffers for rproc serial
+>> via Device Tree.
+>>
+>> Fixes: c774ad010873 ("remoteproc: Fix and restore the parenting hierarch=
+y for vdev")
+>> Cc: stable@vger.kernel.org # 5.1+
+>> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+>> ---
+>>   drivers/char/virtio_console.c | 8 ++++----
+>>   1 file changed, 4 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/char/virtio_console.c b/drivers/char/virtio_console=
+.c
+>> index a2da8f768b94..1836cc56e357 100644
+>> --- a/drivers/char/virtio_console.c
+>> +++ b/drivers/char/virtio_console.c
+>> @@ -435,12 +435,12 @@ static struct port_buffer *alloc_buf(struct virtio=
+_device *vdev, size_t buf_size
+>>   =09=09/*
+>>   =09=09 * Allocate DMA memory from ancestor. When a virtio
+>>   =09=09 * device is created by remoteproc, the DMA memory is
+>> -=09=09 * associated with the grandparent device:
+>> -=09=09 * vdev =3D> rproc =3D> platform-dev.
+>> +=09=09 * associated with the parent device:
+>> +=09=09 * virtioY =3D> remoteprocX#vdevYbuffer.
+>>   =09=09 */
+>> -=09=09if (!vdev->dev.parent || !vdev->dev.parent->parent)
+>> +=09=09buf->dev =3D vdev->dev.parent;
+>> +=09=09if (!buf->dev)
+>>   =09=09=09goto free_buf;
+>> -=09=09buf->dev =3D vdev->dev.parent->parent;
+>
+>
+> I wonder it could be the right time to introduce dma_dev for virtio
+> instead of depending on something magic via parent.
 
-Hias
+This patch are meant to hit RC window and stable trees as a fix of
+the bug that is present since v5.8-rc1. So any new features are out
+of scope of this particular fix.
+
+The idea of DMAing through "dev->parent" is that "virtioX" itself is a
+logical dev, not the real one, but its parent *is*. This logic is used
+across the whole tree -- every subsystem creates its own logical device,
+but drivers should always use the backing PCI/platform/etc. devices for
+DMA operations, which represent the real hardware.
+
+> (Btw I don't even notice that there's transport specific code in virtio
+> console, it's better to avoid it)
+>
+> Thanks
+
+Thanks,
+Al
+
+>>
+>>   =09=09/* Increase device refcnt to avoid freeing it */
+>>   =09=09get_device(buf->dev);
+
