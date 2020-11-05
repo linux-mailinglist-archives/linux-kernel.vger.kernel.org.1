@@ -2,185 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F6282A7A2F
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 10:13:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FDB02A7A39
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 10:14:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730774AbgKEJN1 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 5 Nov 2020 04:13:27 -0500
-Received: from relay8-d.mail.gandi.net ([217.70.183.201]:53479 "EHLO
-        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730679AbgKEJNY (ORCPT
+        id S1731114AbgKEJOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 04:14:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51554 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731017AbgKEJN6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 04:13:24 -0500
-X-Originating-IP: 91.224.148.103
-Received: from xps13 (unknown [91.224.148.103])
-        (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 3954B1BF221;
-        Thu,  5 Nov 2020 09:13:21 +0000 (UTC)
-Date:   Thu, 5 Nov 2020 10:13:19 +0100
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-mtd@lists.infradead.org
-Subject: Re: Kernel 5.10-rc1 not mounting NAND flash (Bisected to
- d7157ff49a5b ("mtd: rawnand: Use the ECC framework user input parsing
- bits"))
-Message-ID: <20201105101319.644782a6@xps13>
-In-Reply-To: <20201105100651.Horde.jOAklfLApjH2WjmauwW9Gg1@messagerie.c-s.fr>
-References: <20201104183353.Horde.FyqZycHkfr5KHDjPaOEBpQ7@messagerie.c-s.fr>
-        <20201104183859.590f0806@xps13>
-        <a04de8a0-4e3b-d9c6-139e-c25d9d5423d1@csgroup.eu>
-        <20201105084939.72ea6bfd@xps13>
-        <20201105100651.Horde.jOAklfLApjH2WjmauwW9Gg1@messagerie.c-s.fr>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Thu, 5 Nov 2020 04:13:58 -0500
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFA84C0613D3
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 01:13:57 -0800 (PST)
+Received: by mail-ej1-x644.google.com with SMTP id o21so1572536ejb.3
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 01:13:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=cosNbBc+pGCwoieZsWO9CcMsgFAi+qgVJh6/ZaKe1v0=;
+        b=h2AbCJ6xtX9calmobLzMDdUmOt4016ZAljqf+kWZm3SpJ5dyWf5xX8QV+8uAKO7KzB
+         whVd90vtF4kEq0FjKmV2eXJCusoVmf8b1ZXm4g19A6c9d3zpTGecCZcl0xPaOrSMnUzM
+         OGxi6KTPLoJsWq0pzXzySThLXXe1GQN0O9JNP7hJsN0mTV3NqA97jL96kLNinAgMKhRQ
+         8LQz93+7bzMlzUxaAtidPL1DLIRzbOEahVB/7cnJeyFT+Us2VOVrMCBQcnomz5KE/6GC
+         gF+l6kEcCMCIt86RD/mLxN3qSNhWZV0UIk0wGcZ/d2v9DKiSjhWGarH/Lc5p3RkZiIJ/
+         zceA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=cosNbBc+pGCwoieZsWO9CcMsgFAi+qgVJh6/ZaKe1v0=;
+        b=syp90sb9hcszNk4qrj5pa8KfP9BrpXSN240b3WpnoOrLQOD7TqGzOkuTbU9JhG12Tz
+         Hj6MpHB040FAVBHbHwrFU547s5/qH+LDOdSy+XdaGQSSvEhDjgV1gs/ktJ679zUN2fak
+         nOJoGhYPNacsUTd91xBDuvVurKLmSwp7M9WnbBU50ssA7Smol9H2Jmkw53ZwmbC05edT
+         ew+GZxMgQRg/kkucACsadOJ+PHe74LnM4sjasqJHsP02lJSzOFfywK3ljylcedKrYG/T
+         JbGYcrsKzSLJTwpeNfCynpekl3VFskgCOyjGkeWTaMcKNWNBWHuM7RQqaE/4MfycVLAy
+         LiKw==
+X-Gm-Message-State: AOAM530zJ46EmdESaeHy9UabMfi66glyj4GuY9Lv3rCnD6lc+A7OZCDj
+        vcuPkthHvy0Lxz/MdvltD3/SyHRqZShlspprOdh3sw==
+X-Google-Smtp-Source: ABdhPJyFgzr6/OtoGqHbIjxgJayFJFC6ooeiWsm56YhTmEcoAALq1JBufGgUh3laISQqZelpAaKQMgQ7rYi7EiPI/xk=
+X-Received: by 2002:a17:907:420d:: with SMTP id oh21mr1350987ejb.429.1604567636515;
+ Thu, 05 Nov 2020 01:13:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+References: <20201104103938.1286-1-nsaenzjulienne@suse.de> <20201104103938.1286-2-nsaenzjulienne@suse.de>
+In-Reply-To: <20201104103938.1286-2-nsaenzjulienne@suse.de>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Thu, 5 Nov 2020 10:13:45 +0100
+Message-ID: <CAMpxmJWJRcQQiLitJCLWKmhQVQWr3bMDY=td5FEn5uy2YZfwkA@mail.gmail.com>
+Subject: Re: [PATCH v3 01/11] firmware: raspberrypi: Introduce devm_rpi_firmware_get()
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Cc:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com, linux-pwm@vger.kernel.org,
+        arm-soc <linux-arm-kernel@lists.infradead.org>,
+        linux-devicetree <devicetree@vger.kernel.org>, wahrenst@gmx.net,
+        Linux Input <linux-input@vger.kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        devel@driverdev.osuosl.org, Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        linux-rpi-kernel@lists.infradead.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christophe,
-
-Christophe Leroy <christophe.leroy@csgroup.eu> wrote on Thu, 05 Nov
-2020 10:06:51 +0100:
-
-> Quoting Miquel Raynal <miquel.raynal@bootlin.com>:
-> 
-> > Hi Christophe,
-> >
-> > Christophe Leroy <christophe.leroy@csgroup.eu> wrote on Wed, 4 Nov 2020
-> > 19:37:57 +0100:
-> >  
-> >> Hi Miquel,
-> >>
-> >> Le 04/11/2020 à 18:38, Miquel Raynal a écrit :  
-> >> > Hi Christophe,
-> >> >
-> >> > Christophe Leroy <christophe.leroy@csgroup.eu> wrote on Wed, 04 Nov
-> >> > 2020 18:33:53 +0100:
-> >> >  
-> >> >> Hi Miquel,
-> >> >>
-> >> >> I'm unable to boot 5.10-rc1 on my boards. I get the following error:
-> >> >>
-> >> >> [    4.125811] nand: device found, Manufacturer ID: 0xad, Chip ID: 0x  
-> 76
-> >> >> [    4.131992] nand: Hynix NAND 64MiB 3,3V 8-bit
-> >> >> [    4.136173] nand: 64 MiB, SLC, erase size: 16 KiB, page size:>> 512, OOB size: 16
-> >> >> [    4.143534] ------------[ cut here ]------------
-> >> >> [    4.147934] Unsupported ECC algorithm!
-> >> >> [    4.152142] WARNING: CPU: 0 PID: 1 at >> drivers/mtd/nand/raw/nand_base.c:5244 >> nand_scan_with_ids+0x1260/0x1640
-> >> >> ...
-> >> >> [    4.332052] ---[ end trace e3a36f62cae4ac56 ]---
-> >> >> [    4.336882] gpio-nand: probe of c0000000.nand failed with error -2  
-> 2
-> >> >>
-> >> >> Bisected to commit d7157ff49a5b ("mtd: rawnand: Use the ECC >> framework user input parsing bits")
-> >> >>
-> >> >> My first impression is that with that change, the value set in >> chip->ecc.algo
-> >> >> by gpio_nand_probe() in drivers/mtd/nand/raw/gpio.c gets >> overwritten in rawnand_dt_init()
-> >> >>
-> >> >> The following change fixes the problem, though I'm not sure it >> is the right fix. Can you have a look ?
-> >> >>
-> >> >> diff --git a/drivers/mtd/nand/raw/nand_base.c >> b/drivers/mtd/nand/raw/nand_base.c
-> >> >> index 1f0d542d5923..aa74797cf2da 100644
-> >> >> --- a/drivers/mtd/nand/raw/nand_base.c
-> >> >> +++ b/drivers/mtd/nand/raw/nand_base.c
-> >> >> @@ -5032,7 +5032,8 @@ static int rawnand_dt_init(struct nand_chip *ch  
-> ip)
-> >> >>    		chip->ecc.engine_type = nand->ecc.defaults.engine_type;
-> >> >>
-> >> >>    	chip->ecc.placement = nand->ecc.user_conf.placement;
-> >> >> -	chip->ecc.algo = nand->ecc.user_conf.algo;
-> >> >> +	if (chip->ecc.algo == NAND_ECC_ALGO_UNKNOWN)
-> >> >> +		chip->ecc.algo = nand->ecc.user_conf.algo;
-> >> >>    	chip->ecc.strength = nand->ecc.user_conf.strength;
-> >> >>    	chip->ecc.size = nand->ecc.user_conf.step_size;
-> >> >>
-> >> >> ---
-> >> >>
-> >> >> Thanks
-> >> >> Christophe  
-> >> >
-> >> > Sorry for introducing this issue, I didn't had the time to send the
-> >> > Fixes PR yet but I think this issue has been solved already. Could
-> >> > you please try with a recent linux-next?
-> >> >  
-> >>
-> >> Sorry, same problem with "Linux version 5.10.0-rc2-next-20201104"  
-> >
-> > Can you please give this patch a try, please?
-> >
-> > ---8<---
-> >
-> > Author: Miquel Raynal <miquel.raynal@bootlin.com>
-> > Date:   Thu Nov 5 08:44:48 2020 +0100
-> >
-> >     mtd: rawnand: gpio: Move the ECC initialization to ->attach_chip()
-> >
-> >     While forcing a Hamming software ECC looks clearly wrong, let's just
-> >     fix the situation for now and move these lines to the ->attach_chip()
-> >     hook which gets executed after the user input parsing and NAND chip
-> >     discovery.
-> >
-> >     Fixes: d7157ff49a5b ("mtd: rawnand: Use the ECC framework user > input parsing bits")
-> >     Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> >
-> > diff --git a/drivers/mtd/nand/raw/gpio.c b/drivers/mtd/nand/raw/gpio.c
-> > index 3bd847ccc3f3..6feab847f5e0 100644
-> > --- a/drivers/mtd/nand/raw/gpio.c
-> > +++ b/drivers/mtd/nand/raw/gpio.c
-> > @@ -161,8 +161,15 @@ static int gpio_nand_exec_op(struct nand_chip *chip,
-> >         return ret;
-> >  }
-> >
-> > +static int gpio_nand_attach_chip(struct nand_chip *chip)
-> > +{
-> > +       chip->ecc.mode = NAND_ECC_SOFT;
-> > +       chip->ecc.algo = NAND_ECC_HAMMING;
-> > +}
-> > +
-> >  static const struct nand_controller_ops gpio_nand_ops = {
-> >         .exec_op = gpio_nand_exec_op,
-> > +       .attach_chip = gpio_nand_attach_chip,
-> >  };
-> >
-> >  #ifdef CONFIG_OF
-> > @@ -342,8 +349,6 @@ static int gpio_nand_probe(struct platform_device *pd  
-> ev)
-> >         gpiomtd->base.ops = &gpio_nand_ops;
-> >
-> >         nand_set_flash_node(chip, pdev->dev.of_node);
-> > -       chip->ecc.mode          = NAND_ECC_SOFT;
-> > -       chip->ecc.algo          = NAND_ECC_HAMMING;
-> >         chip->options           = gpiomtd->plat.options;
-> >         chip->controller        = &gpiomtd->base;  
-> 
-> 
-> Works with the following:
-> 
-> diff --git a/drivers/mtd/nand/raw/gpio.c b/drivers/mtd/nand/raw/gpio.c
-> index 4ec0a1e10867..66d3f1eb788c 100644
-> --- a/drivers/mtd/nand/raw/gpio.c
-> +++ b/drivers/mtd/nand/raw/gpio.c
-> @@ -161,8 +161,17 @@ static int gpio_nand_exec_op(struct nand_chip *chip,
->   	return ret;
->   }
-> 
-> +static int gpio_nand_attach_chip(struct nand_chip *chip)
-> +{
-> +	chip->ecc.engine_type	= NAND_ECC_ENGINE_TYPE_SOFT;
-> +	chip->ecc.algo		= NAND_ECC_ALGO_HAMMING;
+On Wed, Nov 4, 2020 at 11:39 AM Nicolas Saenz Julienne
+<nsaenzjulienne@suse.de> wrote:
+>
+> When unbinding the firmware device we need to make sure it has no
+> consumers left. Otherwise we'd leave them with a firmware handle
+> pointing at freed memory.
+>
+> Keep a reference count of all consumers and introduce
+> devm_rpi_firmware_get() which will automatically decrease the reference
+> count upon unbinding consumer drivers.
+>
+> Suggested-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
+> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+>
+> ---
+>
+> Changes since v2:
+>  - Create devm_rpi_firmware_get()
+>
+>  drivers/firmware/raspberrypi.c             | 46 ++++++++++++++++++++++
+>  include/soc/bcm2835/raspberrypi-firmware.h |  8 ++++
+>  2 files changed, 54 insertions(+)
+>
+> diff --git a/drivers/firmware/raspberrypi.c b/drivers/firmware/raspberryp=
+i.c
+> index 2371d08bdd17..74bdb3bde9dc 100644
+> --- a/drivers/firmware/raspberrypi.c
+> +++ b/drivers/firmware/raspberrypi.c
+> @@ -11,7 +11,9 @@
+>  #include <linux/module.h>
+>  #include <linux/of_platform.h>
+>  #include <linux/platform_device.h>
+> +#include <linux/refcount.h>
+>  #include <linux/slab.h>
+> +#include <linux/wait.h>
+>  #include <soc/bcm2835/raspberrypi-firmware.h>
+>
+>  #define MBOX_MSG(chan, data28)         (((data28) & ~0xf) | ((chan) & 0x=
+f))
+> @@ -27,6 +29,9 @@ struct rpi_firmware {
+>         struct mbox_chan *chan; /* The property channel. */
+>         struct completion c;
+>         u32 enabled;
 > +
-> +	return 0;
+> +       refcount_t consumers;
+> +       wait_queue_head_t wait;
+>  };
+>
+>  static DEFINE_MUTEX(transaction_lock);
+> @@ -247,6 +252,8 @@ static int rpi_firmware_probe(struct platform_device =
+*pdev)
+>         }
+>
+>         init_completion(&fw->c);
+> +       refcount_set(&fw->consumers, 1);
+> +       init_waitqueue_head(&fw->wait);
+>
+>         platform_set_drvdata(pdev, fw);
+>
+> @@ -275,11 +282,21 @@ static int rpi_firmware_remove(struct platform_devi=
+ce *pdev)
+>         rpi_hwmon =3D NULL;
+>         platform_device_unregister(rpi_clk);
+>         rpi_clk =3D NULL;
+> +
+> +       wait_event(fw->wait, refcount_dec_if_one(&fw->consumers));
+>         mbox_free_channel(fw->chan);
+>
+>         return 0;
+>  }
+>
+> +static void rpi_firmware_put(void *data)
+> +{
+> +       struct rpi_firmware *fw =3D data;
+> +
+> +       refcount_dec(&fw->consumers);
+> +       wake_up(&fw->wait);
 > +}
+> +
+>  /**
+>   * rpi_firmware_get - Get pointer to rpi_firmware structure.
+>   * @firmware_node:    Pointer to the firmware Device Tree node.
+> @@ -297,6 +314,35 @@ struct rpi_firmware *rpi_firmware_get(struct device_=
+node *firmware_node)
+>  }
+>  EXPORT_SYMBOL_GPL(rpi_firmware_get);
+>
+> +/**
+> + * devm_rpi_firmware_get - Get pointer to rpi_firmware structure.
+> + * @firmware_node:    Pointer to the firmware Device Tree node.
+> + *
+> + * Returns NULL is the firmware device is not ready.
+> + */
+> +struct rpi_firmware *devm_rpi_firmware_get(struct device *dev,
+> +                                          struct device_node *firmware_n=
+ode)
+> +{
+> +       struct platform_device *pdev =3D of_find_device_by_node(firmware_=
+node);
+> +       struct rpi_firmware *fw;
+> +
+> +       if (!pdev)
+> +               return NULL;
+> +
+> +       fw =3D platform_get_drvdata(pdev);
+> +       if (!fw)
+> +               return NULL;
+> +
+> +       if (!refcount_inc_not_zero(&fw->consumers))
+> +               return NULL;
+> +
+> +       if (devm_add_action_or_reset(dev, rpi_firmware_put, fw))
+> +               return NULL;
+> +
+> +       return fw;
+> +}
+> +EXPORT_SYMBOL_GPL(devm_rpi_firmware_get);
 
+Usually I'd expect the devres variant to simply call
+rpi_firmware_get() and then schedule a release callback which would
+call whatever function is the release counterpart for it currently.
+Devres actions are for drivers which want to schedule some more
+unusual tasks at driver detach. Any reason for designing it this way?
 
-Yup indeed it was not even compile tested. Good to know, I'll check
-the other drivers and send the patch soon.
+Bartosz
 
-
-Thanks,
-Miquèl
+> +
+>  static const struct of_device_id rpi_firmware_of_match[] =3D {
+>         { .compatible =3D "raspberrypi,bcm2835-firmware", },
+>         {},
+> diff --git a/include/soc/bcm2835/raspberrypi-firmware.h b/include/soc/bcm=
+2835/raspberrypi-firmware.h
+> index cc9cdbc66403..8fe64f53a394 100644
+> --- a/include/soc/bcm2835/raspberrypi-firmware.h
+> +++ b/include/soc/bcm2835/raspberrypi-firmware.h
+> @@ -141,6 +141,8 @@ int rpi_firmware_property(struct rpi_firmware *fw,
+>  int rpi_firmware_property_list(struct rpi_firmware *fw,
+>                                void *data, size_t tag_size);
+>  struct rpi_firmware *rpi_firmware_get(struct device_node *firmware_node)=
+;
+> +struct rpi_firmware *devm_rpi_firmware_get(struct device *dev,
+> +                                          struct device_node *firmware_n=
+ode);
+>  #else
+>  static inline int rpi_firmware_property(struct rpi_firmware *fw, u32 tag=
+,
+>                                         void *data, size_t len)
+> @@ -158,6 +160,12 @@ static inline struct rpi_firmware *rpi_firmware_get(=
+struct device_node *firmware
+>  {
+>         return NULL;
+>  }
+> +
+> +static inline struct rpi_firmware *devm_rpi_firmware_get(struct device *=
+dev,
+> +                                       struct device_node *firmware_node=
+)
+> +{
+> +       return NULL;
+> +}
+>  #endif
+>
+>  #endif /* __SOC_RASPBERRY_FIRMWARE_H__ */
+> --
+> 2.29.1
+>
