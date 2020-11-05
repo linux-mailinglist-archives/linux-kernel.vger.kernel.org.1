@@ -2,78 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8CE02A803D
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 15:00:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24A792A80C1
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 15:22:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730865AbgKEOAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 09:00:14 -0500
-Received: from mout.gmx.net ([212.227.17.20]:56087 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726067AbgKEOAN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 09:00:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1604584786;
-        bh=voomDKjD1D7OFb6dvnpVpguZn8+/Bj7qz4MAi/lSVa8=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=MFZUPIDDrlAcNE6Rc1XottMcZR3BIl3VWMREoMZVBWH0IsvMeS9A+16vnKKAYvUiq
-         23Qhhc8hKaF0iet+XuY9/U/VyVIAmmsN2+i9Np5S6HiW6Z6nZCs4ySVrk29xTHab2X
-         ZJbISFJre4VhSipDkcc77yxe7vVfV6aowBO+aoyw=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [217.61.147.34] ([217.61.147.34]) by web-mail.gmx.net
- (3c-app-gmx-bap66.server.lan [172.19.172.66]) (via HTTP); Thu, 5 Nov 2020
- 14:59:46 +0100
+        id S1730999AbgKEOV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 09:21:59 -0500
+Received: from wp530.webpack.hosteurope.de ([80.237.130.52]:56322 "EHLO
+        wp530.webpack.hosteurope.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728371AbgKEOV6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 09:21:58 -0500
+X-Greylist: delayed 1989 seconds by postgrey-1.27 at vger.kernel.org; Thu, 05 Nov 2020 09:21:57 EST
+Received: from ip4d145e30.dynamic.kabel-deutschland.de ([77.20.94.48] helo=[192.168.66.101]); authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1kafcw-0004jl-Bi; Thu, 05 Nov 2020 14:48:34 +0100
+To:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Cc:     Rander Wang <rander.wang@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        sound-open-firmware@alsa-project.org, alsa-devel@alsa-project.org
+References: <20201026234905.1022767-1-sashal@kernel.org>
+ <20201026234905.1022767-39-sashal@kernel.org>
+From:   Thorsten Leemhuis <linux@leemhuis.info>
+Subject: Build error with 5.9.5 in sound/soc/sof/intel/hda-codec.c (was:
+ [PATCH AUTOSEL 5.9 039/147] ASoC: SOF: fix a runtime pm issue in SOF when
+ HDMI codec doesn't work)
+Message-ID: <f254331d-7ae2-e26f-3e1b-33a870349126@leemhuis.info>
+Date:   Thu, 5 Nov 2020 14:48:33 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Message-ID: <trinity-6e877df5-d3f5-434c-9723-20a1257ec1ca-1604584786441@3c-app-gmx-bap66>
-From:   Frank Wunderlich <frank-w@public-files.de>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        linux-mediatek@lists.infradead.org,
-        Frank Wunderlich <linux@fw-web.de>,
-        linux-kernel@vger.kernel.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>
-Subject: Aw: Re:  Re:  Re: [PATCH] pci: mediatek: fix warning in msi.h
-Content-Type: text/plain; charset=UTF-8
-Date:   Thu, 5 Nov 2020 14:59:46 +0100
-Importance: normal
-Sensitivity: Normal
-In-Reply-To: <074d057910c3e834f4bd58821e8583b1@kernel.org>
-References: <20201031140330.83768-1-linux@fw-web.de>
- <EC02022C-64CF-4F4B-A0A2-215A0A49E826@public-files.de>
- <87lfflti8q.wl-maz@kernel.org> <1604253261.22363.0.camel@mtkswgap22>
- <trinity-9eb2a213-f877-4af3-87df-f76a9c093073-1604255233122@3c-app-gmx-bap08>
- <87k0v4u4uq.wl-maz@kernel.org> <87pn4w90hm.fsf@nanos.tec.linutronix.de>
- <df5565a2f1e821041c7c531ad52a3344@kernel.org>
- <87h7q791j8.fsf@nanos.tec.linutronix.de>
- <877dr38kt8.fsf@nanos.tec.linutronix.de>
- <901c5eb8bbaa3fe53ddc8f65917e48ef@kernel.org>
- <87o8ke7njb.fsf@nanos.tec.linutronix.de>
- <trinity-1d7f8900-10db-40c0-a0aa-47bb99ed84cd-1604508571909@3c-app-gmx-bs02>
- <87h7q4lnoz.fsf@nanos.tec.linutronix.de>
- <074d057910c3e834f4bd58821e8583b1@kernel.org>
-X-UI-Message-Type: mail
-X-Priority: 3
-X-Provags-ID: V03:K1:GLUO7D/wO+tb37W5SZ5xe0Eu0qDFWwHPzFWW24p1mEWACj/z/qcwnTSCcoEwSXaB+14Nk
- 7wDTbnUHHVNZo6VPxDewR2/8VXujIgH030nqAs/Itv5DX4F5F0sSMTblaQKV7qZQ8z/VLkSrU7e8
- 3eDKoY//ms/KCmlzkD+IylD/pK5tSaw41J7P22MIif12lj2dpYAuAua3/Z0S4bUv1phFS/DP/vKa
- +1NLuzhw2pmKKW4I1R2ohLzqWDqKm/hfzeBr7nqZ6H5QYJaIH8GFl3tfh8d8j+vvVI9Acu0rAWfn
- rs=
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Va1155uyhes=:jW7Xw99631EbAyN4YqXhUt
- A6kc1A3xBXmyhPvQWp5gTojcxYr+l9OKQaAa6F6hSGlKGJKK3IjsbWH/E4QFrfO8QuZYk5l3t
- KTckb1BlI5CA64ULsOAzDQSjvA1Iq14Yvnj/U3gHVRqfy0xd1ZmGLAjOqw8Rh/Ut+p8dSC0bh
- ZFm+70EIqZxK0ifwlN8kAyedXD4dV7mycTDGSFEqcun7sFngFoILQkeMKuks53AbRv6WdnA6l
- 78v7pJp5nFIUP1iEMDIMA9YhIfUOwac5OQyhlLzEKEnHjoVp6aLKazAGVJPMy2N9DmO/7PaSX
- 8RHlg1YR14kS5H0x0Np6TcD19t6hopBGofdD7xrPwYFvAt61482BexBT1cBAZtnJ7ha0AZe77
- Mmb28JhVBD811f1D9N7Aq4N2s+jFI0NwU+zn/RexHbps4OQNDxAL60qD3xtznq0r3Y1NB9LBz
- M7Tqyomhxm1g7+3GskBthMsw3b9PfOH6d7YwiL5ZHJ3Q0gqCj1dwmTnY6oE62YPN+RxJZfa5x
- ynPITwwdy66fJyUtD0r5EK1IskA3LonAq1xWuVmM6Yd1NFW0g3Aihhopfl4CzmAEypjTM8Vjq
- MZfbHhvwEBs0w=
+In-Reply-To: <20201026234905.1022767-39-sashal@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1604586117;170aacbe;
+X-HE-SMSGID: 1kafcw-0004jl-Bi
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Marc's Patch based on thomas' last one also seems to work well for r2, again no warning, PCI and AHCI (connected to pcie bus) working
+Lo! I just tried to compile 5.9.5 and ran into a build error with below 
+patch. I only did a quick look (I have to leave the keyboard soon), but 
+seems the patch quoted below that was added to 5.9.5 depends on 
+11ec0edc6408 (git.kernel.org/linus/11ec0edc6408) which wasn't backported.
 
-regards Frank
+The build error can be found here:
+https://kojipkgs.fedoraproject.org//work/tasks/8246/54978246/build.log
+
+Relevant part:
+
++ make -s 'HOSTCFLAGS=-O2 -flto=auto -ffat-lto-objects -fexceptions -g 
+-grecord-gcc-switches -pipe -Wall -Werror=format-security 
+-Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS 
+-specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong 
+-specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -fcommon -m64 
+-mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection' 
+'HOSTLDFLAGS=-Wl,-z,relro -Wl,--as-needed  -Wl,-z,now 
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld ' ARCH=x86_64 'KCFLAGS= ' 
+WITH_GCOV=0 -j48 modules
+sound/soc/sof/intel/hda-codec.c: In function 'hda_codec_probe':
+sound/soc/sof/intel/hda-codec.c:177:4: error: label 'error' used but not 
+defined
+   177 |    goto error;
+       |    ^~~~
+make[4]: *** [scripts/Makefile.build:283: 
+sound/soc/sof/intel/hda-codec.o] Error 1
+make[3]: *** [scripts/Makefile.build:500: sound/soc/sof/intel] Error 2
+make[3]: *** Waiting for unfinished jobs....
+make[2]: *** [scripts/Makefile.build:500: sound/soc/sof] Error 2
+make[2]: *** Waiting for unfinished jobs....
+make[1]: *** [scripts/Makefile.build:500: sound/soc] Error 2
+make: *** [Makefile:1784: sound] Error 2
+make: *** Waiting for unfinished jobs....
++ exit 1
+
+Looks like the compiler is right from a quick look at
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/sound/soc/sof/intel/hda-codec.c?h=linux-5.9.y&id=43836fdc9e318a11233cf19c5ee7ffb04e8e5d8f
+
+But as I said, I lack the time for a closer look.
+
+Ciao, Thorsten
+
+Am 27.10.20 um 00:47 schrieb Sasha Levin:
+> From: Rander Wang <rander.wang@intel.com>
+> 
+> [ Upstream commit 6c63c954e1c52f1262f986f36d95f557c6f8fa94 ]
+> 
+> When hda_codec_probe() doesn't initialize audio component, we disable
+> the codec and keep going. However,the resources are not released. The
+> child_count of SOF device is increased in snd_hdac_ext_bus_device_init
+> but is not decrease in error case, so SOF can't get suspended.
+> 
+> snd_hdac_ext_bus_device_exit will be invoked in HDA framework if it
+> gets a error. Now copy this behavior to release resources and decrease
+> SOF device child_count to release SOF device.
+> 
+> Signed-off-by: Rander Wang <rander.wang@intel.com>
+> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+> Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+> Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> Link: https://lore.kernel.org/r/20200825235040.1586478-3-ranjani.sridharan@linux.intel.com
+> Signed-off-by: Mark Brown <broonie@kernel.org>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
+>   sound/soc/sof/intel/hda-codec.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/sound/soc/sof/intel/hda-codec.c b/sound/soc/sof/intel/hda-codec.c
+> index 2c5c451fa19d7..c475955c6eeba 100644
+> --- a/sound/soc/sof/intel/hda-codec.c
+> +++ b/sound/soc/sof/intel/hda-codec.c
+> @@ -151,7 +151,7 @@ static int hda_codec_probe(struct snd_sof_dev *sdev, int address,
+>   		if (!hdev->bus->audio_component) {
+>   			dev_dbg(sdev->dev,
+>   				"iDisp hw present but no driver\n");
+> -			return -ENOENT;
+> +			goto error;
+>   		}
+>   		hda_priv->need_display_power = true;
+>   	}
+> @@ -174,7 +174,7 @@ static int hda_codec_probe(struct snd_sof_dev *sdev, int address,
+>   		 * other return codes without modification
+>   		 */
+>   		if (ret == 0)
+> -			ret = -ENOENT;
+> +			goto error;
+>   	}
+>   
+>   	return ret;
+> 
+
