@@ -2,212 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB7902A7A55
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 10:20:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A836D2A7A59
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 10:21:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730651AbgKEJUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 04:20:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56580 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725827AbgKEJUP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 04:20:15 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 026F62071A;
-        Thu,  5 Nov 2020 09:20:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604568014;
-        bh=vG/q08mrtLO2gtgc71xNwaKrcP0h6Ke4lfzwwZebEmc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=AizFHPUT+/8spelBt47bhLEK1RpLhRh3Y3KY85KCZsd6XlHvcO2B+F+Xgq2AHCNXQ
-         d9JrAkYC9bizE/R9I8f//2h+bd4nRuTJgJvrYyAEc4YFcevr5fVM3Y/OFNmcjq7Yfy
-         NjC1lvcaPJCGy9UEvGVNsPxGnscV95Ysew59zPP8=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kabRD-007mhX-Pc; Thu, 05 Nov 2020 09:20:11 +0000
+        id S1730386AbgKEJVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 04:21:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726849AbgKEJVk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 04:21:40 -0500
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16BEAC0613D3
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 01:21:40 -0800 (PST)
+Received: by mail-lf1-x142.google.com with SMTP id v144so1226786lfa.13
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 01:21:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MLqSXCNezt+6aLqOTtVwOIFeRl7Xe1AvGFzo3fYe1IY=;
+        b=Jgn4flcDwaM4mzljPuY4s4pB7iP2cuTWB5VKgui315qkRuy92cPfVJ/shvssIW9x54
+         ot3qVvePuzmxXvqWwA9M1JCEWi58AHdtLSTwHA8QV/5i1MmA27VBu9rus5CeT/CaOZV8
+         6A+F8/YOOm+6m2YzWCu5jnOZWbHIj7S46XpDNGyQYH5CxLEiu2+M9jmw3lnBcs8hnmwV
+         /yYVTHgHb6O2DZIQxxp12BQZLIG2M9n00OKf3BYP+g+tj+PbS4wHlOsaF/ocmoCThCJb
+         z9m5vcykgPY2noV1am3wjgeLAJJOYclMBzpvO6QAlprivTLPtOaK24UYWrrJ2FIFol32
+         0JuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MLqSXCNezt+6aLqOTtVwOIFeRl7Xe1AvGFzo3fYe1IY=;
+        b=QFvThmhgsyKv2fyKaHBul8Ve3Zel4ErWaFIj6Pi+ZNyvdXoYOY0eI87YP4ZpgmnqqX
+         kilAIyny+4f2qRkScPgV6gZ6D/Bso3YvF7iHK1SxlOrXpgK1fGZPMYxXD72CY0Q3YEGz
+         Hgyg4PEaLSacTJlkeGB8CnlVP9ReQlL9NMBrivUaIPz1WyJscVecvE6LOajYGqVdJ1FO
+         1coPk5X+klaKlpKUk6NFgQeaiUY6l8AiPR3WtEhrIqrvMKtHKUjhfPIvJdvdEshLJ4x+
+         66vChzEl5QXshBFNkgTFBMH8qjGtQsgc/n8G9Axzr/VKQaFuFFghU7P3TaMNH0mxKuwR
+         IqXw==
+X-Gm-Message-State: AOAM532B1dEtRhr7OfVWWTDgncoKMrCnl8VCvDlR/44BJ9sB6RRZ1qhh
+        cQHx8M7Be57UUYuQ7ff3UkybSfpxRVZCcHdQNlGXxA==
+X-Google-Smtp-Source: ABdhPJyIx15IqdB1NPA4Sazq74uSIewpcq3AMgBd0y4Lv2GKOeKDnGro5f8DkvKwJhJ7plUKGIKFbEhFk80IWVCFJr8=
+X-Received: by 2002:a05:6512:322d:: with SMTP id f13mr567603lfe.571.1604568098468;
+ Thu, 05 Nov 2020 01:21:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 05 Nov 2020 09:20:11 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Frank Wunderlich <frank-w@public-files.de>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        linux-mediatek@lists.infradead.org,
-        Frank Wunderlich <linux@fw-web.de>,
-        linux-kernel@vger.kernel.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: Aw: Re:  Re: [PATCH] pci: mediatek: fix warning in msi.h
-In-Reply-To: <87h7q4lnoz.fsf@nanos.tec.linutronix.de>
-References: <20201031140330.83768-1-linux@fw-web.de>
- <878sbm9icl.fsf@nanos.tec.linutronix.de>
- <EC02022C-64CF-4F4B-A0A2-215A0A49E826@public-files.de>
- <87lfflti8q.wl-maz@kernel.org> <1604253261.22363.0.camel@mtkswgap22>
- <trinity-9eb2a213-f877-4af3-87df-f76a9c093073-1604255233122@3c-app-gmx-bap08>
- <87k0v4u4uq.wl-maz@kernel.org> <87pn4w90hm.fsf@nanos.tec.linutronix.de>
- <df5565a2f1e821041c7c531ad52a3344@kernel.org>
- <87h7q791j8.fsf@nanos.tec.linutronix.de>
- <877dr38kt8.fsf@nanos.tec.linutronix.de>
- <901c5eb8bbaa3fe53ddc8f65917e48ef@kernel.org>
- <87o8ke7njb.fsf@nanos.tec.linutronix.de>
- <trinity-1d7f8900-10db-40c0-a0aa-47bb99ed84cd-1604508571909@3c-app-gmx-bs02>
- <87h7q4lnoz.fsf@nanos.tec.linutronix.de>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <074d057910c3e834f4bd58821e8583b1@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: tglx@linutronix.de, frank-w@public-files.de, ryder.lee@mediatek.com, linux-mediatek@lists.infradead.org, linux@fw-web.de, linux-kernel@vger.kernel.org, matthias.bgg@gmail.com, linux-pci@vger.kernel.org, bhelgaas@google.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+References: <20201011024831.3868571-1-daniel@0x0f.com> <20201011024831.3868571-4-daniel@0x0f.com>
+ <CACRpkdYmdZ81q_tsXRQ56aFjGsvV3AwJ8_hiu31mD14DGiK84A@mail.gmail.com> <CAFr9PXnX7QyM0VUmosFYueSe4ewA7uT2VZMfxFPaFt6-jUhoSw@mail.gmail.com>
+In-Reply-To: <CAFr9PXnX7QyM0VUmosFYueSe4ewA7uT2VZMfxFPaFt6-jUhoSw@mail.gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 5 Nov 2020 10:21:27 +0100
+Message-ID: <CACRpkdbx+T3uX9taZNjsURHGc6qVLvGGC2boEC4=NaOi4_uZTQ@mail.gmail.com>
+Subject: Re: [PATCH 3/5] gpio: msc313: MStar MSC313 GPIO driver
+To:     Daniel Palmer <daniel@0x0f.com>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-04 23:14, Thomas Gleixner wrote:
+On Wed, Oct 21, 2020 at 1:07 PM Daniel Palmer <daniel@0x0f.com> wrote:
 
-[...]
+> Sorry to pester you again...
 
-> TBH, that's butt ugly. So after staring long enough into the PCI code I
-> came up with a way to transport that information to the probe code.
-> 
-> That allows a particular device to say 'I can't do MSI' and at the same
-> time keeps the warning machinery intact which tells us that a 
-> particular
-> host controller driver is broken.
-> 
-> Uncompiled and untested as usual :)
-> 
-> Thanks,
-> 
->         tglx
-> ---
->  drivers/pci/controller/pcie-mediatek.c |    4 ++++
->  drivers/pci/probe.c                    |    3 +++
->  include/linux/pci.h                    |    1 +
->  3 files changed, 8 insertions(+)
-> 
-> --- a/drivers/pci/controller/pcie-mediatek.c
-> +++ b/drivers/pci/controller/pcie-mediatek.c
-> @@ -143,6 +143,7 @@ struct mtk_pcie_port;
->   * struct mtk_pcie_soc - differentiate between host generations
->   * @need_fix_class_id: whether this host's class ID needed to be fixed 
-> or not
->   * @need_fix_device_id: whether this host's device ID needed to be 
-> fixed or not
-> + * @no_msi: Bridge has no MSI support
->   * @device_id: device ID which this host need to be fixed
->   * @ops: pointer to configuration access functions
->   * @startup: pointer to controller setting functions
-> @@ -151,6 +152,7 @@ struct mtk_pcie_port;
->  struct mtk_pcie_soc {
->  	bool need_fix_class_id;
->  	bool need_fix_device_id;
-> +	bool no_msi;
->  	unsigned int device_id;
->  	struct pci_ops *ops;
->  	int (*startup)(struct mtk_pcie_port *port);
-> @@ -1084,6 +1086,7 @@ static int mtk_pcie_probe(struct platfor
-> 
->  	host->ops = pcie->soc->ops;
->  	host->sysdata = pcie;
-> +	host->no_msi = pcie->soc->no_msi;
-> 
->  	err = pci_host_probe(host);
->  	if (err)
-> @@ -1173,6 +1176,7 @@ static const struct dev_pm_ops mtk_pcie_
->  };
-> 
->  static const struct mtk_pcie_soc mtk_pcie_soc_v1 = {
-> +	.no_msi = true,
->  	.ops = &mtk_pcie_ops,
->  	.startup = mtk_pcie_startup_port,
->  };
-> --- a/drivers/pci/probe.c
-> +++ b/drivers/pci/probe.c
-> @@ -889,6 +889,9 @@ static int pci_register_host_bridge(stru
->  	if (!bus)
->  		return -ENOMEM;
-> 
-> +	if (bridge->no_msi)
-> +		bus->bus_flags |= PCI_BUS_FLAGS_NO_MSI;
-> +
->  	bridge->bus = bus;
-> 
->  	/* Temporarily move resources off the list */
-> --- a/include/linux/pci.h
-> +++ b/include/linux/pci.h
-> @@ -545,6 +545,7 @@ struct pci_host_bridge {
->  	unsigned int	native_dpc:1;		/* OS may use PCIe DPC */
->  	unsigned int	preserve_config:1;	/* Preserve FW resource setup */
->  	unsigned int	size_windows:1;		/* Enable root bus sizing */
-> +	unsigned int	no_msi:1;		/* Bridge has no MSI support */
-> 
->  	/* Resource alignment requirements */
->  	resource_size_t (*align_resource)(struct pci_dev *dev,
+Don't worry. I'm more worried that my replies are slow.
 
-If that's the direction of travel, we also need something like this
-for configuration where the host bridge relies on an external MSI block
-that uses MSI domains (boot-tested in a GICv3 guest).
+> Before I do that I have a question that maybe you could help me with:
+> Andy noted a few times that I have this driver as a built in driver
+> and not a module.
+> The gpio-ixp4xx.c driver is also a built in driver. Is there a reason
+> why it's ok there but not this driver?
 
-         M.
+Not that I know of. There is a lot of push for modularization right
+now because Android (and other distributions) likes it, so if your
+SoC could be used by Android or Fedora or Debian etc it is
+generally a good idea to modularize.
 
-diff --git a/drivers/pci/controller/pci-host-common.c 
-b/drivers/pci/controller/pci-host-common.c
-index 6ce34a1deecb..603f6fbbe68a 100644
---- a/drivers/pci/controller/pci-host-common.c
-+++ b/drivers/pci/controller/pci-host-common.c
-@@ -77,6 +77,7 @@ int pci_host_common_probe(struct platform_device 
-*pdev)
+These distributions use the generic ARM (etc) kernel and try
+to load as many drivers as possible as modules.
 
-  	bridge->sysdata = cfg;
-  	bridge->ops = (struct pci_ops *)&ops->pci_ops;
-+	bridge->msi_domain = true;
+It is not always possible because some GPIOs might be needed
+very early, such as on-chip GPIO. So you better make sure
+that the platform can get to userspace also without this driver
+compiled in, otherwise it *MUST* be bool so people don't get
+ammunition to shoot themselves in the foot and configure a
+non-bootable kernel just because they could modularize this
+driver.
 
-  	platform_set_drvdata(pdev, bridge);
+If your SoC is only used by OpenWrt (like ixp4xx) then it is fine
+to just use bool because that distribution is always built with an
+image for a specific hardware, whereas distributions are generic.
 
-diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
-index 16fb150fbb8d..f421b2869bca 100644
---- a/drivers/pci/probe.c
-+++ b/drivers/pci/probe.c
-@@ -889,9 +889,6 @@ static int pci_register_host_bridge(struct 
-pci_host_bridge *bridge)
-  	if (!bus)
-  		return -ENOMEM;
+So it actually depends a bit on the usecase of the SoC.
 
--	if (bridge->no_msi)
--		bus->bus_flags |= PCI_BUS_FLAGS_NO_MSI;
--
-  	bridge->bus = bus;
-
-  	/* Temporarily move resources off the list */
-@@ -928,6 +925,9 @@ static int pci_register_host_bridge(struct 
-pci_host_bridge *bridge)
-  	device_enable_async_suspend(bus->bridge);
-  	pci_set_bus_of_node(bus);
-  	pci_set_bus_msi_domain(bus);
-+	if (bridge->no_msi ||
-+	    (bridge->msi_domain && !bus->dev.msi_domain))
-+		bus->bus_flags |= PCI_BUS_FLAGS_NO_MSI;
-
-  	if (!parent)
-  		set_dev_node(bus->bridge, pcibus_to_node(bus));
-diff --git a/include/linux/pci.h b/include/linux/pci.h
-index c2a0c1d471d6..81f72fd46e06 100644
---- a/include/linux/pci.h
-+++ b/include/linux/pci.h
-@@ -546,6 +546,7 @@ struct pci_host_bridge {
-  	unsigned int	preserve_config:1;	/* Preserve FW resource setup */
-  	unsigned int	size_windows:1;		/* Enable root bus sizing */
-  	unsigned int	no_msi:1;		/* Bridge has no MSI support */
-+	unsigned int	msi_domain:1;		/* Bridge wants MSI domain */
-
-  	/* Resource alignment requirements */
-  	resource_size_t (*align_resource)(struct pci_dev *dev,
-
--- 
-Jazz is not dead. It just smells funny...
+Yours,
+Linus Walleij
