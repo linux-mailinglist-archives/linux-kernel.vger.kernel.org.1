@@ -2,189 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5C602A812E
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 15:44:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA49E2A816C
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 15:52:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731123AbgKEOoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 09:44:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49618 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730461AbgKEOox (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 09:44:53 -0500
-Received: from localhost (230.sub-72-107-127.myvzw.com [72.107.127.230])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6F9A720936;
-        Thu,  5 Nov 2020 14:44:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604587492;
-        bh=5FiNUpBTWnS1+JvY0Wfv3Bkzj003q4PW+FPEf75maAM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=fX9IGv8JC7Dgu3NaU2ko8n+eNJaA5s/NHK3pK5EX3h7SZrhcdkW+KT2H8X2MKeNRH
-         7PfKTrappw4QILDVRJ8PYcYaXtavJc8uwSP47KFdLP6+dSaqoe0Gvj7EEdRA+rfOOI
-         mE2kZDtNx1T1eLhWrEgU9FSmTUXdFLI4pUZVdLPA=
-Date:   Thu, 5 Nov 2020 08:44:51 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: Re: [PATCH v3 23/56] PCI: fix kernel-doc markups
-Message-ID: <20201105144451.GA496849@bjorn-Precision-5520>
+        id S1731200AbgKEOwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 09:52:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48098 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731074AbgKEOwQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 09:52:16 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05805C0613D3
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 06:52:15 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id h2so1874389wmm.0
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 06:52:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0KKycVwNcN4IWLbGSyRzWYkLNsHKS3R2bLFdIm3mqe8=;
+        b=WSfGiLj1AtIr3Mr5iw/J8/JMfzybNz781V7wTogkME2iCY5pRK2wWg8HlsZzIOtkKq
+         ki8wRPLECzRJASu7rk0b9PjAenZiRTjua9ICZPJr3zEiPWj9eU6rW7eeQ8gn4kE7QmLd
+         OUuXIAsL3nHS/0kw0QQxS9RtHovm/+2FAajjJ6RnVPCQoCOm9kUje1d6B0A3OuCABiO4
+         1HGZh+RJgtcoPMqxtU+8zAIiTxumn+ZHI/bp4XSajjur0ftLr49rsOzF3E5xPcB4FRI2
+         oa+NugSZZR1XLISINFrM3XCDcp7LlzxFloSAGS0DmgRFC5ruF56/olBaYTLmwJj532ea
+         NHwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0KKycVwNcN4IWLbGSyRzWYkLNsHKS3R2bLFdIm3mqe8=;
+        b=NWjBhfKydBXxHamV35CXJgAOj1z0jLyUZkbVBOI1xFgOhxIc6cnQf224dY+eUyajjC
+         2bhLGCSqv0ubW/lWlqHIzPPUWFTOPfNe0X9KM+V3bBOUED14149VDPIIQGNbiKXWg/Q4
+         JPSdXk6zAGxsKwVRdAZbur0pK47L4JItcMend1SmxPSZX/fzK5xuZk1347QAgaGEuwep
+         3u2zSo/3jDejRwMGNY6RPKO2Tq5fb0E6So+RdrWdxtajp+2N0vSyEuQCXZtH5mYiDzjd
+         wVEyymb2lBFwgss2EYyb+AytwXjywzkXDhGAe8pfaWDADgSlfI/+iZH9D+Mzu25oru+D
+         2HbQ==
+X-Gm-Message-State: AOAM532nALuPCn3Aq/f6yEv6lZgupSmj/UPpH0fi874++qKnAvuxznxt
+        VbnDiVzuEceVZDMQBM6aNNrt/A==
+X-Google-Smtp-Source: ABdhPJwv3vBJOFuk/npzxyZAo4HZ1+ZwOqI3+/ois9rIDQtSy2R+EWO6d4lgC3qrR1jiNCMNVeB9BA==
+X-Received: by 2002:a1c:2ec6:: with SMTP id u189mr3234684wmu.85.1604587934709;
+        Thu, 05 Nov 2020 06:52:14 -0800 (PST)
+Received: from dell.default ([91.110.221.242])
+        by smtp.gmail.com with ESMTPSA id f5sm2631243wmh.16.2020.11.05.06.52.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Nov 2020 06:52:13 -0800 (PST)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     lee.jones@linaro.org
+Cc:     linux-kernel@vger.kernel.org,
+        Alex Deucher <alexander.deucher@amd.com>,
+        amd-gfx@lists.freedesktop.org, Andrzej Hajda <a.hajda@samsung.com>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        David Francis <David.Francis@amd.com>,
+        dri-devel@lists.freedesktop.org,
+        Fabio Estevam <festevam@gmail.com>,
+        Gareth Hughes <gareth@valinux.com>,
+        Huang Rui <ray.huang@amd.com>, Jason Yan <yanaijie@huawei.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Jingoo Han <jg1.han@samsung.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        linaro-mm-sig@lists.linaro.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-media@vger.kernel.org, linux-tegra@vger.kernel.org,
+        Lyude Paul <lyude@redhat.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Nirmoy Das <nirmoy.aiemd@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Rob Clark <rob.clark@linaro.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>
+Subject: [PATCH 00/19] [Set 1] Rid W=1 warnings from GPU
+Date:   Thu,  5 Nov 2020 14:44:58 +0000
+Message-Id: <20201105144517.1826692-1-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f19caf7a68f8365c8b573a42b4ac89ec21925c73.1603469755.git.mchehab+huawei@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 06:33:10PM +0200, Mauro Carvalho Chehab wrote:
-> Some identifiers have different names between their prototypes
-> and the kernel-doc markup.
-> 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+This set is part of a larger effort attempting to clean-up W=1
+kernel builds, which are currently overwhelmingly riddled with
+niggly little warnings.
 
-Applied to pci/misc for v5.11, thanks!
+There are 5000 warnings to work through.
 
-> ---
->  drivers/pci/p2pdma.c     | 10 +++++-----
->  drivers/pci/pci-driver.c |  4 ++--
->  drivers/pci/pci.c        |  2 +-
->  drivers/pci/probe.c      |  4 ++--
->  drivers/pci/slot.c       |  5 +++--
->  5 files changed, 13 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/pci/p2pdma.c b/drivers/pci/p2pdma.c
-> index de1c331dbed4..bace04145c5f 100644
-> --- a/drivers/pci/p2pdma.c
-> +++ b/drivers/pci/p2pdma.c
-> @@ -609,7 +609,7 @@ bool pci_has_p2pmem(struct pci_dev *pdev)
->  EXPORT_SYMBOL_GPL(pci_has_p2pmem);
->  
->  /**
-> - * pci_p2pmem_find - find a peer-to-peer DMA memory device compatible with
-> + * pci_p2pmem_find_many - find a peer-to-peer DMA memory device compatible with
->   *	the specified list of clients and shortest distance (as determined
->   *	by pci_p2pmem_dma())
->   * @clients: array of devices to check (NULL-terminated)
-> @@ -674,7 +674,7 @@ struct pci_dev *pci_p2pmem_find_many(struct device **clients, int num_clients)
->  EXPORT_SYMBOL_GPL(pci_p2pmem_find_many);
->  
->  /**
-> - * pci_alloc_p2p_mem - allocate peer-to-peer DMA memory
-> + * pci_alloc_p2pmem - allocate peer-to-peer DMA memory
->   * @pdev: the device to allocate memory from
->   * @size: number of bytes to allocate
->   *
-> @@ -727,7 +727,7 @@ void pci_free_p2pmem(struct pci_dev *pdev, void *addr, size_t size)
->  EXPORT_SYMBOL_GPL(pci_free_p2pmem);
->  
->  /**
-> - * pci_virt_to_bus - return the PCI bus address for a given virtual
-> + * pci_p2pmem_virt_to_bus - return the PCI bus address for a given virtual
->   *	address obtained with pci_alloc_p2pmem()
->   * @pdev: the device the memory was allocated from
->   * @addr: address of the memory that was allocated
-> @@ -859,7 +859,7 @@ static int __pci_p2pdma_map_sg(struct pci_p2pdma_pagemap *p2p_pgmap,
->  }
->  
->  /**
-> - * pci_p2pdma_map_sg - map a PCI peer-to-peer scatterlist for DMA
-> + * pci_p2pdma_map_sg_attrs - map a PCI peer-to-peer scatterlist for DMA
->   * @dev: device doing the DMA request
->   * @sg: scatter list to map
->   * @nents: elements in the scatterlist
-> @@ -896,7 +896,7 @@ int pci_p2pdma_map_sg_attrs(struct device *dev, struct scatterlist *sg,
->  EXPORT_SYMBOL_GPL(pci_p2pdma_map_sg_attrs);
->  
->  /**
-> - * pci_p2pdma_unmap_sg - unmap a PCI peer-to-peer scatterlist that was
-> + * pci_p2pdma_unmap_sg_attrs - unmap a PCI peer-to-peer scatterlist that was
->   *	mapped with pci_p2pdma_map_sg()
->   * @dev: device doing the DMA request
->   * @sg: scatter list to map
-> diff --git a/drivers/pci/pci-driver.c b/drivers/pci/pci-driver.c
-> index 8b587fc97f7b..591ab353844a 100644
-> --- a/drivers/pci/pci-driver.c
-> +++ b/drivers/pci/pci-driver.c
-> @@ -90,7 +90,7 @@ static void pci_free_dynids(struct pci_driver *drv)
->  }
->  
->  /**
-> - * store_new_id - sysfs frontend to pci_add_dynid()
-> + * new_id_store - sysfs frontend to pci_add_dynid()
->   * @driver: target device driver
->   * @buf: buffer for scanning device ID data
->   * @count: input size
-> @@ -158,7 +158,7 @@ static ssize_t new_id_store(struct device_driver *driver, const char *buf,
->  static DRIVER_ATTR_WO(new_id);
->  
->  /**
-> - * store_remove_id - remove a PCI device ID from this driver
-> + * remove_id_store - remove a PCI device ID from this driver
->   * @driver: target device driver
->   * @buf: buffer for scanning device ID data
->   * @count: input size
-> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> index 6d4d5a2f923d..8b9bea8ba751 100644
-> --- a/drivers/pci/pci.c
-> +++ b/drivers/pci/pci.c
-> @@ -3480,7 +3480,7 @@ bool pci_acs_enabled(struct pci_dev *pdev, u16 acs_flags)
->  }
->  
->  /**
-> - * pci_acs_path_enable - test ACS flags from start to end in a hierarchy
-> + * pci_acs_path_enabled - test ACS flags from start to end in a hierarchy
->   * @start: starting downstream device
->   * @end: ending upstream device or NULL to search to the root bus
->   * @acs_flags: required flags
-> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
-> index 4289030b0fff..eb1ec037f9e7 100644
-> --- a/drivers/pci/probe.c
-> +++ b/drivers/pci/probe.c
-> @@ -165,7 +165,7 @@ static inline unsigned long decode_bar(struct pci_dev *dev, u32 bar)
->  #define PCI_COMMAND_DECODE_ENABLE	(PCI_COMMAND_MEMORY | PCI_COMMAND_IO)
->  
->  /**
-> - * pci_read_base - Read a PCI BAR
-> + * __pci_read_base - Read a PCI BAR
->   * @dev: the PCI device
->   * @type: type of the BAR
->   * @res: resource buffer to be filled in
-> @@ -1612,7 +1612,7 @@ static bool pci_ext_cfg_is_aliased(struct pci_dev *dev)
->  }
->  
->  /**
-> - * pci_cfg_space_size - Get the configuration space size of the PCI device
-> + * pci_cfg_space_size_ext - Get the configuration space size of the PCI device
->   * @dev: PCI device
->   *
->   * Regular PCI devices have 256 bytes, but PCI-X 2 and PCI Express devices
-> diff --git a/drivers/pci/slot.c b/drivers/pci/slot.c
-> index 3861505741e6..bcc8b12ce5da 100644
-> --- a/drivers/pci/slot.c
-> +++ b/drivers/pci/slot.c
-> @@ -323,7 +323,7 @@ EXPORT_SYMBOL_GPL(pci_destroy_slot);
->  #if defined(CONFIG_HOTPLUG_PCI) || defined(CONFIG_HOTPLUG_PCI_MODULE)
->  #include <linux/pci_hotplug.h>
->  /**
-> - * pci_hp_create_link - create symbolic link to the hotplug driver module.
-> + * pci_hp_create_module_link - create symbolic link to the hotplug driver module.
->   * @pci_slot: struct pci_slot
->   *
->   * Helper function for pci_hotplug_core.c to create symbolic link to
-> @@ -349,7 +349,8 @@ void pci_hp_create_module_link(struct pci_slot *pci_slot)
->  EXPORT_SYMBOL_GPL(pci_hp_create_module_link);
->  
->  /**
-> - * pci_hp_remove_link - remove symbolic link to the hotplug driver module.
-> + * pci_hp_remove_module_link - remove symbolic link to the hotplug driver
-> + * 	module.
->   * @pci_slot: struct pci_slot
->   *
->   * Helper function for pci_hotplug_core.c to remove symbolic link to
-> -- 
-> 2.26.2
-> 
+It will take a couple more sets.
+
+Lee Jones (19):
+  gpu: host1x: bus: Add missing description for 'driver'
+  gpu: ipu-v3: ipu-di: Strip out 2 unused 'di_sync_config' entries
+  gpu: drm: imx: ipuv3-plane: Mark 'crtc_state' as __always_unused
+  gpu: drm: omapdrm: omap_irq: Fix a couple of doc-rot issues
+  gpu: drm: selftests: test-drm_mm: Mark 'hole_end' as always_unused
+  gpu: drm: scheduler: sched_main: Provide missing description for
+    'sched' paramter
+  gpu: drm: scheduler: sched_entity: Demote non-conformant kernel-doc
+    headers
+  gpu: drm: omapdrm: dss: dsi: Rework and remove a few unused variables
+  gpu: drm: selftests: test-drm_framebuffer: Remove set but unused
+    variable 'fb'
+  gpu: drm: ttm: ttm_bo: Fix one function header - demote lots of
+    kernel-doc abuses
+  gpu: drm: panel: panel-simple: Fix 'struct panel_desc's header
+  gpu: drm: bridge: analogix: analogix_dp_reg: Remove unused function
+    'analogix_dp_write_byte_to_dpcd'
+  gpu: drm: ttm: ttm_tt: Demote kernel-doc header format abuses
+  gpu: drm: selftests: test-drm_dp_mst_helper: Place 'struct
+    drm_dp_sideband_msg_req_body' onto the heap
+  gpu: drm: radeon: radeon_drv: Remove unused variable 'ret'
+  gpu: drm: panel: panel-ilitek-ili9322: Demote non-conformant
+    kernel-doc header
+  gpu: drm: radeon: radeon_device: Fix a bunch of kernel-doc
+    misdemeanours
+  gpu: drm: amd: amdgpu: amdgpu: Mark global variables as __maybe_unused
+  gpu: drm: bridge: analogix: analogix_dp_reg: Remove unused function
+    'analogix_dp_start_aux_transaction'
+
+ drivers/gpu/drm/amd/amdgpu/amdgpu.h           |  6 +-
+ .../gpu/drm/bridge/analogix/analogix_dp_reg.c | 88 -------------------
+ drivers/gpu/drm/imx/ipuv3-plane.c             |  2 +-
+ drivers/gpu/drm/omapdrm/dss/dsi.c             |  9 +-
+ drivers/gpu/drm/omapdrm/omap_irq.c            |  6 +-
+ drivers/gpu/drm/panel/panel-ilitek-ili9322.c  |  2 +-
+ drivers/gpu/drm/panel/panel-simple.c          |  2 +
+ drivers/gpu/drm/radeon/radeon_device.c        | 23 ++---
+ drivers/gpu/drm/radeon/radeon_drv.c           |  3 +-
+ drivers/gpu/drm/scheduler/sched_entity.c      |  4 +-
+ drivers/gpu/drm/scheduler/sched_main.c        |  1 +
+ .../drm/selftests/test-drm_dp_mst_helper.c    | 29 +++---
+ .../gpu/drm/selftests/test-drm_framebuffer.c  |  3 +-
+ drivers/gpu/drm/selftests/test-drm_mm.c       |  2 +-
+ drivers/gpu/drm/ttm/ttm_bo.c                  | 23 ++---
+ drivers/gpu/drm/ttm/ttm_tt.c                  |  4 +-
+ drivers/gpu/host1x/bus.c                      |  1 +
+ drivers/gpu/ipu-v3/ipu-di.c                   |  4 -
+ 18 files changed, 59 insertions(+), 153 deletions(-)
+
+Cc: Alex Deucher <alexander.deucher@amd.com>
+Cc: amd-gfx@lists.freedesktop.org
+Cc: Andrzej Hajda <a.hajda@samsung.com>
+Cc: Christian Koenig <christian.koenig@amd.com>
+Cc: "Christian König" <christian.koenig@amd.com>
+Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: David Airlie <airlied@linux.ie>
+Cc: David Francis <David.Francis@amd.com>
+Cc: dri-devel@lists.freedesktop.org
+Cc: Fabio Estevam <festevam@gmail.com>
+Cc: Gareth Hughes <gareth@valinux.com>
+Cc: Huang Rui <ray.huang@amd.com>
+Cc: Jason Yan <yanaijie@huawei.com>
+Cc: Jernej Skrabec <jernej.skrabec@siol.net>
+Cc: Jingoo Han <jg1.han@samsung.com>
+Cc: Jonas Karlman <jonas@kwiboo.se>
+Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
+Cc: Lee Jones <lee.jones@linaro.org>
+Cc: linaro-mm-sig@lists.linaro.org
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Cc: linux-media@vger.kernel.org
+Cc: linux-tegra@vger.kernel.org
+Cc: Lyude Paul <lyude@redhat.com>
+Cc: Neil Armstrong <narmstrong@baylibre.com>
+Cc: Nirmoy Das <nirmoy.aiemd@gmail.com>
+Cc: NXP Linux Team <linux-imx@nxp.com>
+Cc: Pengutronix Kernel Team <kernel@pengutronix.de>
+Cc: Philipp Zabel <p.zabel@pengutronix.de>
+Cc: Rob Clark <rob.clark@linaro.org>
+Cc: Sam Ravnborg <sam@ravnborg.org>
+Cc: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: Shawn Guo <shawnguo@kernel.org>
+Cc: Sumit Semwal <sumit.semwal@linaro.org>
+Cc: Thierry Reding <thierry.reding@gmail.com>
+Cc: Tomi Valkeinen <tomi.valkeinen@ti.com>
+-- 
+2.25.1
+
