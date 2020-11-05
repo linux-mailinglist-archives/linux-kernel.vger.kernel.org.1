@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ED7D2A8AFA
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 00:48:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED0922A8AE5
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 00:47:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732767AbgKEXr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 18:47:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46062 "EHLO mail.kernel.org"
+        id S1732721AbgKEXr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 18:47:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46124 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732625AbgKEXrZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1732636AbgKEXrZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 5 Nov 2020 18:47:25 -0500
 Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1380C2083B;
+        by mail.kernel.org (Postfix) with ESMTPSA id 87367221FA;
         Thu,  5 Nov 2020 23:47:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1604620044;
-        bh=y/nQUu7DftXrkz9/3qhWkgwN3KtlVyLbRYefFO0/Wwo=;
+        bh=cwCXmKgp/mfMgVtuaXwya+QgwONDg9inMtv9VLEd/ZU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=x6xLovhunqDOPYx3+fRcU2Em2PPStLlAZu899D98hGrTQH3dEAraeErs9fhQUj884
-         nIWqgtl8Rx+6bgtFV+AIQ+GLNj3uCLrYlS8oSvrgNazzvwBCdMkdHn6+T08x1zxazm
-         kysg1jGYFTMiK+nsB6WjOpN38FjUE6gNKpvUdpvs=
+        b=EiWkwcCKWuY7YCpbDn1EbF5S2k+RVWOSfuj2uCPjxqA6sE4GKE+jBstdEoZ7KJNoM
+         YkjewLziscooQfBZlXBz8pRl87ufH0kYiEg9yYRc/D6cjujgSLLsPmeW7jAtMOY2Gv
+         ygxtZ9HeBj2JgMqtMZVvdJImB1HS3celG+eLcq8E=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -32,9 +32,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 06/28] scftorture: Add an alternative IPI vector
-Date:   Thu,  5 Nov 2020 15:46:57 -0800
-Message-Id: <20201105234719.23307-6-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 07/28] rcuscale: Add RCU Tasks Trace
+Date:   Thu,  5 Nov 2020 15:46:58 -0800
+Message-Id: <20201105234719.23307-7-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20201105234658.GA23142@paulmck-ThinkPad-P72>
 References: <20201105234658.GA23142@paulmck-ThinkPad-P72>
@@ -44,153 +44,115 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-The scftorture tests currently use only smp_call_function() and
-friends, which means that these tests cannot locate bugs caused by
-interactions between different IPI vectors.  This commit therefore adds
-the rescheduling IPI to the mix.
+This commit adds the ability to test performance and scalability of RCU
+Tasks Trace updaters.
 
-Note that this commit permits resched_cpus() only when scftorture is
-built in.  This is a workaround.  Longer term, this will use real wakeups
-rather than resched_cpu().
-
+Reported-by: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/scftorture.c | 41 ++++++++++++++++++++++++++++++++---------
- 1 file changed, 32 insertions(+), 9 deletions(-)
+ kernel/rcu/rcuscale.c                              | 32 +++++++++++++++++++++-
+ .../selftests/rcutorture/configs/rcuscale/CFcommon |  3 ++
+ .../selftests/rcutorture/configs/rcuscale/TRACE01  | 15 ++++++++++
+ .../rcutorture/configs/rcuscale/TRACE01.boot       |  1 +
+ 4 files changed, 50 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/rcutorture/configs/rcuscale/TRACE01
+ create mode 100644 tools/testing/selftests/rcutorture/configs/rcuscale/TRACE01.boot
 
-diff --git a/kernel/scftorture.c b/kernel/scftorture.c
-index 554a521..3fbb7a7 100644
---- a/kernel/scftorture.c
-+++ b/kernel/scftorture.c
-@@ -62,6 +62,7 @@ torture_param(int, stat_interval, 60, "Number of seconds between stats printk()s
- torture_param(int, stutter_cpus, 5, "Number of jiffies to change CPUs under test, 0=disable");
- torture_param(bool, use_cpus_read_lock, 0, "Use cpus_read_lock() to exclude CPU hotplug.");
- torture_param(int, verbose, 0, "Enable verbose debugging printk()s");
-+torture_param(int, weight_resched, -1, "Testing weight for resched_cpu() operations.");
- torture_param(int, weight_single, -1, "Testing weight for single-CPU no-wait operations.");
- torture_param(int, weight_single_wait, -1, "Testing weight for single-CPU operations.");
- torture_param(int, weight_many, -1, "Testing weight for multi-CPU no-wait operations.");
-@@ -82,6 +83,7 @@ torture_param(bool, shutdown, SCFTORT_SHUTDOWN, "Shutdown at end of torture test
- struct scf_statistics {
- 	struct task_struct *task;
- 	int cpu;
-+	long long n_resched;
- 	long long n_single;
- 	long long n_single_ofl;
- 	long long n_single_wait;
-@@ -97,12 +99,15 @@ static struct task_struct *scf_torture_stats_task;
- static DEFINE_PER_CPU(long long, scf_invoked_count);
+diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
+index 2819b95..c42f240 100644
+--- a/kernel/rcu/rcuscale.c
++++ b/kernel/rcu/rcuscale.c
+@@ -38,6 +38,7 @@
+ #include <asm/byteorder.h>
+ #include <linux/torture.h>
+ #include <linux/vmalloc.h>
++#include <linux/rcupdate_trace.h>
  
- // Data for random primitive selection
--#define SCF_PRIM_SINGLE		0
--#define SCF_PRIM_MANY		1
--#define SCF_PRIM_ALL		2
--#define SCF_NPRIMS		(2 * 3) // Need wait and no-wait versions of each.
-+#define SCF_PRIM_RESCHED	0
-+#define SCF_PRIM_SINGLE		1
-+#define SCF_PRIM_MANY		2
-+#define SCF_PRIM_ALL		3
-+#define SCF_NPRIMS		7 // Need wait and no-wait versions of each,
-+				  //  except for SCF_PRIM_RESCHED.
+ #include "rcu.h"
  
- static char *scf_prim_name[] = {
-+	"resched_cpu",
- 	"smp_call_function_single",
- 	"smp_call_function_many",
- 	"smp_call_function",
-@@ -136,6 +141,8 @@ static char *bangstr = "";
+@@ -294,6 +295,35 @@ static struct rcu_scale_ops tasks_ops = {
+ 	.name		= "tasks"
+ };
  
- static DEFINE_TORTURE_RANDOM_PERCPU(scf_torture_rand);
- 
-+extern void resched_cpu(int cpu); // An alternative IPI vector.
++/*
++ * Definitions for RCU-tasks-trace scalability testing.
++ */
 +
- // Print torture statistics.  Caller must ensure serialization.
- static void scf_torture_stats_print(void)
++static int tasks_trace_scale_read_lock(void)
++{
++	rcu_read_lock_trace();
++	return 0;
++}
++
++static void tasks_trace_scale_read_unlock(int idx)
++{
++	rcu_read_unlock_trace();
++}
++
++static struct rcu_scale_ops tasks_tracing_ops = {
++	.ptype		= RCU_TASKS_FLAVOR,
++	.init		= rcu_sync_scale_init,
++	.readlock	= tasks_trace_scale_read_lock,
++	.readunlock	= tasks_trace_scale_read_unlock,
++	.get_gp_seq	= rcu_no_completed,
++	.gp_diff	= rcu_seq_diff,
++	.async		= call_rcu_tasks_trace,
++	.gp_barrier	= rcu_barrier_tasks_trace,
++	.sync		= synchronize_rcu_tasks_trace,
++	.exp_sync	= synchronize_rcu_tasks_trace,
++	.name		= "tasks-tracing"
++};
++
+ static unsigned long rcuscale_seq_diff(unsigned long new, unsigned long old)
  {
-@@ -148,6 +155,7 @@ static void scf_torture_stats_print(void)
- 	for_each_possible_cpu(cpu)
- 		invoked_count += data_race(per_cpu(scf_invoked_count, cpu));
- 	for (i = 0; i < nthreads; i++) {
-+		scfs.n_resched += scf_stats_p[i].n_resched;
- 		scfs.n_single += scf_stats_p[i].n_single;
- 		scfs.n_single_ofl += scf_stats_p[i].n_single_ofl;
- 		scfs.n_single_wait += scf_stats_p[i].n_single_wait;
-@@ -160,8 +168,8 @@ static void scf_torture_stats_print(void)
- 	if (atomic_read(&n_errs) || atomic_read(&n_mb_in_errs) ||
- 	    atomic_read(&n_mb_out_errs) || atomic_read(&n_alloc_errs))
- 		bangstr = "!!! ";
--	pr_alert("%s %sscf_invoked_count %s: %lld single: %lld/%lld single_ofl: %lld/%lld many: %lld/%lld all: %lld/%lld ",
--		 SCFTORT_FLAG, bangstr, isdone ? "VER" : "ver", invoked_count,
-+	pr_alert("%s %sscf_invoked_count %s: %lld resched: %lld single: %lld/%lld single_ofl: %lld/%lld many: %lld/%lld all: %lld/%lld ",
-+		 SCFTORT_FLAG, bangstr, isdone ? "VER" : "ver", invoked_count, scfs.n_resched,
- 		 scfs.n_single, scfs.n_single_wait, scfs.n_single_ofl, scfs.n_single_wait_ofl,
- 		 scfs.n_many, scfs.n_many_wait, scfs.n_all, scfs.n_all_wait);
- 	torture_onoff_stats();
-@@ -314,6 +322,13 @@ static void scftorture_invoke_one(struct scf_statistics *scfp, struct torture_ra
- 		}
- 	}
- 	switch (scfsp->scfs_prim) {
-+	case SCF_PRIM_RESCHED:
-+		if (IS_BUILTIN(CONFIG_SCF_TORTURE_TEST)) {
-+			cpu = torture_random(trsp) % nr_cpu_ids;
-+			scfp->n_resched++;
-+			resched_cpu(cpu);
-+		}
-+		break;
- 	case SCF_PRIM_SINGLE:
- 		cpu = torture_random(trsp) % nr_cpu_ids;
- 		if (scfsp->scfs_wait)
-@@ -433,8 +448,8 @@ static void
- scftorture_print_module_parms(const char *tag)
- {
- 	pr_alert(SCFTORT_FLAG
--		 "--- %s:  verbose=%d holdoff=%d longwait=%d nthreads=%d onoff_holdoff=%d onoff_interval=%d shutdown_secs=%d stat_interval=%d stutter_cpus=%d use_cpus_read_lock=%d, weight_single=%d, weight_single_wait=%d, weight_many=%d, weight_many_wait=%d, weight_all=%d, weight_all_wait=%d\n", tag,
--		 verbose, holdoff, longwait, nthreads, onoff_holdoff, onoff_interval, shutdown, stat_interval, stutter_cpus, use_cpus_read_lock, weight_single, weight_single_wait, weight_many, weight_many_wait, weight_all, weight_all_wait);
-+		 "--- %s:  verbose=%d holdoff=%d longwait=%d nthreads=%d onoff_holdoff=%d onoff_interval=%d shutdown_secs=%d stat_interval=%d stutter_cpus=%d use_cpus_read_lock=%d, weight_resched=%d, weight_single=%d, weight_single_wait=%d, weight_many=%d, weight_many_wait=%d, weight_all=%d, weight_all_wait=%d\n", tag,
-+		 verbose, holdoff, longwait, nthreads, onoff_holdoff, onoff_interval, shutdown, stat_interval, stutter_cpus, use_cpus_read_lock, weight_resched, weight_single, weight_single_wait, weight_many, weight_many_wait, weight_all, weight_all_wait);
- }
- 
- static void scf_cleanup_handler(void *unused)
-@@ -475,6 +490,7 @@ static int __init scf_torture_init(void)
- {
+ 	if (!cur_ops->gp_diff)
+@@ -754,7 +784,7 @@ rcu_scale_init(void)
  	long i;
  	int firsterr = 0;
-+	unsigned long weight_resched1 = weight_resched;
- 	unsigned long weight_single1 = weight_single;
- 	unsigned long weight_single_wait1 = weight_single_wait;
- 	unsigned long weight_many1 = weight_many;
-@@ -487,9 +503,10 @@ static int __init scf_torture_init(void)
+ 	static struct rcu_scale_ops *scale_ops[] = {
+-		&rcu_ops, &srcu_ops, &srcud_ops, &tasks_ops,
++		&rcu_ops, &srcu_ops, &srcud_ops, &tasks_ops, &tasks_tracing_ops
+ 	};
  
- 	scftorture_print_module_parms("Start of test");
- 
--	if (weight_single == -1 && weight_single_wait == -1 &&
-+	if (weight_resched == -1 && weight_single == -1 && weight_single_wait == -1 &&
- 	    weight_many == -1 && weight_many_wait == -1 &&
- 	    weight_all == -1 && weight_all_wait == -1) {
-+		weight_resched1 = 2 * nr_cpu_ids;
- 		weight_single1 = 2 * nr_cpu_ids;
- 		weight_single_wait1 = 2 * nr_cpu_ids;
- 		weight_many1 = 2;
-@@ -497,6 +514,8 @@ static int __init scf_torture_init(void)
- 		weight_all1 = 1;
- 		weight_all_wait1 = 1;
- 	} else {
-+		if (weight_resched == -1)
-+			weight_resched1 = 0;
- 		if (weight_single == -1)
- 			weight_single1 = 0;
- 		if (weight_single_wait == -1)
-@@ -517,6 +536,10 @@ static int __init scf_torture_init(void)
- 		firsterr = -EINVAL;
- 		goto unwind;
- 	}
-+	if (IS_BUILTIN(CONFIG_SCF_TORTURE_TEST))
-+		scf_sel_add(weight_resched1, SCF_PRIM_RESCHED, false);
-+	else if (weight_resched1)
-+		VERBOSE_SCFTORTOUT_ERRSTRING("built as module, weight_resched ignored");
- 	scf_sel_add(weight_single1, SCF_PRIM_SINGLE, false);
- 	scf_sel_add(weight_single_wait1, SCF_PRIM_SINGLE, true);
- 	scf_sel_add(weight_many1, SCF_PRIM_MANY, false);
+ 	if (!torture_init_begin(scale_type, verbose))
+diff --git a/tools/testing/selftests/rcutorture/configs/rcuscale/CFcommon b/tools/testing/selftests/rcutorture/configs/rcuscale/CFcommon
+index 87caa0e..90942bb 100644
+--- a/tools/testing/selftests/rcutorture/configs/rcuscale/CFcommon
++++ b/tools/testing/selftests/rcutorture/configs/rcuscale/CFcommon
+@@ -1,2 +1,5 @@
+ CONFIG_RCU_SCALE_TEST=y
+ CONFIG_PRINTK_TIME=y
++CONFIG_TASKS_RCU_GENERIC=y
++CONFIG_TASKS_RCU=y
++CONFIG_TASKS_TRACE_RCU=y
+diff --git a/tools/testing/selftests/rcutorture/configs/rcuscale/TRACE01 b/tools/testing/selftests/rcutorture/configs/rcuscale/TRACE01
+new file mode 100644
+index 0000000..e6baa2f
+--- /dev/null
++++ b/tools/testing/selftests/rcutorture/configs/rcuscale/TRACE01
+@@ -0,0 +1,15 @@
++CONFIG_SMP=y
++CONFIG_PREEMPT_NONE=y
++CONFIG_PREEMPT_VOLUNTARY=n
++CONFIG_PREEMPT=n
++CONFIG_HZ_PERIODIC=n
++CONFIG_NO_HZ_IDLE=y
++CONFIG_NO_HZ_FULL=n
++CONFIG_RCU_FAST_NO_HZ=n
++CONFIG_RCU_NOCB_CPU=n
++CONFIG_DEBUG_LOCK_ALLOC=n
++CONFIG_PROVE_LOCKING=n
++CONFIG_RCU_BOOST=n
++CONFIG_DEBUG_OBJECTS_RCU_HEAD=n
++CONFIG_RCU_EXPERT=y
++CONFIG_RCU_TRACE=y
+diff --git a/tools/testing/selftests/rcutorture/configs/rcuscale/TRACE01.boot b/tools/testing/selftests/rcutorture/configs/rcuscale/TRACE01.boot
+new file mode 100644
+index 0000000..af0aff1
+--- /dev/null
++++ b/tools/testing/selftests/rcutorture/configs/rcuscale/TRACE01.boot
+@@ -0,0 +1 @@
++rcuscale.scale_type=tasks-tracing
 -- 
 2.9.5
 
