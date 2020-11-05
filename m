@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D8C42A8AF8
+	by mail.lfdr.de (Postfix) with ESMTP id 8DDA12A8AF9
 	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 00:48:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733042AbgKEXs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 18:48:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46062 "EHLO mail.kernel.org"
+        id S1733057AbgKEXs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 18:48:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45970 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732778AbgKEXra (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1732785AbgKEXra (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 5 Nov 2020 18:47:30 -0500
 Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 96DC222244;
+        by mail.kernel.org (Postfix) with ESMTPSA id E7A4C22248;
         Thu,  5 Nov 2020 23:47:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604620049;
-        bh=9AGY6DA5OVMpS1095TpRRCpJtZFekTi8ozI5Zdqjq68=;
+        s=default; t=1604620050;
+        bh=hF1NO7KIDMcNTZmIydXOIBUoL7ZkScx98CT2WtMiwYg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OS4ZqLS8J45wnrbG1GyCM02HwfxJvlA6gGkDEz6VO4voH0esOnq3un38U5QCEBBJS
-         OkrE1zQUBT4oOyiFNBoBF7O0mW5drZYDvDNZMqlnbyBGtnPWq0HM+If3Uy2gRgkcOv
-         3NIjFfka8cwlhyx26Lc6Nm63sQbgc43eo+VCYME8=
+        b=RzkERnkvyEhi4ad2sfHWHIfC526ZtjrMWsHqYC3H0esW8d5F3jXF29gJZC9fvC9FH
+         ZQ/Pw8AfTdgj/nrJv1JI/dOwI41Yc8vwCAHcCr2GYAQLWAqEVn1OYfS+OE6X0k09zT
+         3mnpGgWqnM0TIu/dt21gXSYqFDaYhSuDtL8ptdFI=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -31,10 +31,11 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 22/28] scftorture: Add full-test stutter capability
-Date:   Thu,  5 Nov 2020 15:47:13 -0800
-Message-Id: <20201105234719.23307-22-paulmck@kernel.org>
+        Hou Tao <houtao1@huawei.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 23/28] locktorture: Invoke percpu_free_rwsem() to do percpu-rwsem cleanup
+Date:   Thu,  5 Nov 2020 15:47:14 -0800
+Message-Id: <20201105234719.23307-23-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20201105234658.GA23142@paulmck-ThinkPad-P72>
 References: <20201105234658.GA23142@paulmck-ThinkPad-P72>
@@ -42,63 +43,131 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+From: Hou Tao <houtao1@huawei.com>
 
-In virtual environments on systems with hardware assist, inter-processor
-interrupts must do very different things based on whether the target
-vCPU is running or not.  This commit therefore enables torture-test
-stuttering to better test these running/not-running transitions.
+When executing the LOCK06 locktorture scenario featuring percpu-rwsem,
+the RCU callback rcu_sync_func() may still be pending after locktorture
+module is removed.  This can in turn lead to the following Oops:
 
-Suggested-by: Chris Mason <clm@fb.com>
+  BUG: unable to handle page fault for address: ffffffffc00eb920
+  #PF: supervisor read access in kernel mode
+  #PF: error_code(0x0000) - not-present page
+  PGD 6500a067 P4D 6500a067 PUD 6500c067 PMD 13a36c067 PTE 800000013691c163
+  Oops: 0000 [#1] PREEMPT SMP
+  CPU: 1 PID: 0 Comm: swapper/1 Not tainted 5.9.0-rc5+ #4
+  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996)
+  RIP: 0010:rcu_cblist_dequeue+0x12/0x30
+  Call Trace:
+   <IRQ>
+   rcu_core+0x1b1/0x860
+   __do_softirq+0xfe/0x326
+   asm_call_on_stack+0x12/0x20
+   </IRQ>
+   do_softirq_own_stack+0x5f/0x80
+   irq_exit_rcu+0xaf/0xc0
+   sysvec_apic_timer_interrupt+0x2e/0xb0
+   asm_sysvec_apic_timer_interrupt+0x12/0x20
+
+This commit avoids tis problem by adding an exit hook in lock_torture_ops
+and using it to call percpu_free_rwsem() for percpu rwsem torture during
+the module-cleanup function, thus ensuring that rcu_sync_func() completes
+before module exits.
+
+It is also necessary to call the exit hook if lock_torture_init()
+fails half-way, so this commit also adds an ->init_called field in
+lock_torture_cxt to indicate that exit hook, if present, must be called.
+
+Signed-off-by: Hou Tao <houtao1@huawei.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/scftorture.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ kernel/locking/locktorture.c | 26 +++++++++++++++++++++-----
+ 1 file changed, 21 insertions(+), 5 deletions(-)
 
-diff --git a/kernel/scftorture.c b/kernel/scftorture.c
-index 3fbb7a7..d55a9f8 100644
---- a/kernel/scftorture.c
-+++ b/kernel/scftorture.c
-@@ -59,7 +59,7 @@ torture_param(int, onoff_holdoff, 0, "Time after boot before CPU hotplugs (s)");
- torture_param(int, onoff_interval, 0, "Time between CPU hotplugs (s), 0=disable");
- torture_param(int, shutdown_secs, 0, "Shutdown time (ms), <= zero to disable.");
- torture_param(int, stat_interval, 60, "Number of seconds between stats printk()s.");
--torture_param(int, stutter_cpus, 5, "Number of jiffies to change CPUs under test, 0=disable");
-+torture_param(int, stutter, 5, "Number of jiffies to run/halt test, 0=disable");
- torture_param(bool, use_cpus_read_lock, 0, "Use cpus_read_lock() to exclude CPU hotplug.");
- torture_param(int, verbose, 0, "Enable verbose debugging printk()s");
- torture_param(int, weight_resched, -1, "Testing weight for resched_cpu() operations.");
-@@ -436,6 +436,7 @@ static int scftorture_invoker(void *arg)
- 			was_offline = false;
- 		}
- 		cond_resched();
-+		stutter_wait("scftorture_invoker");
- 	} while (!torture_must_stop());
- 
- 	VERBOSE_SCFTORTOUT("scftorture_invoker %d ended", scfp->cpu);
-@@ -448,8 +449,8 @@ static void
- scftorture_print_module_parms(const char *tag)
- {
- 	pr_alert(SCFTORT_FLAG
--		 "--- %s:  verbose=%d holdoff=%d longwait=%d nthreads=%d onoff_holdoff=%d onoff_interval=%d shutdown_secs=%d stat_interval=%d stutter_cpus=%d use_cpus_read_lock=%d, weight_resched=%d, weight_single=%d, weight_single_wait=%d, weight_many=%d, weight_many_wait=%d, weight_all=%d, weight_all_wait=%d\n", tag,
--		 verbose, holdoff, longwait, nthreads, onoff_holdoff, onoff_interval, shutdown, stat_interval, stutter_cpus, use_cpus_read_lock, weight_resched, weight_single, weight_single_wait, weight_many, weight_many_wait, weight_all, weight_all_wait);
-+		 "--- %s:  verbose=%d holdoff=%d longwait=%d nthreads=%d onoff_holdoff=%d onoff_interval=%d shutdown_secs=%d stat_interval=%d stutter=%d use_cpus_read_lock=%d, weight_resched=%d, weight_single=%d, weight_single_wait=%d, weight_many=%d, weight_many_wait=%d, weight_all=%d, weight_all_wait=%d\n", tag,
-+		 verbose, holdoff, longwait, nthreads, onoff_holdoff, onoff_interval, shutdown, stat_interval, stutter, use_cpus_read_lock, weight_resched, weight_single, weight_single_wait, weight_many, weight_many_wait, weight_all, weight_all_wait);
+diff --git a/kernel/locking/locktorture.c b/kernel/locking/locktorture.c
+index 79fbd97..fd838ce 100644
+--- a/kernel/locking/locktorture.c
++++ b/kernel/locking/locktorture.c
+@@ -76,6 +76,7 @@ static void lock_torture_cleanup(void);
+  */
+ struct lock_torture_ops {
+ 	void (*init)(void);
++	void (*exit)(void);
+ 	int (*writelock)(void);
+ 	void (*write_delay)(struct torture_random_state *trsp);
+ 	void (*task_boost)(struct torture_random_state *trsp);
+@@ -92,12 +93,13 @@ struct lock_torture_cxt {
+ 	int nrealwriters_stress;
+ 	int nrealreaders_stress;
+ 	bool debug_lock;
++	bool init_called;
+ 	atomic_t n_lock_torture_errors;
+ 	struct lock_torture_ops *cur_ops;
+ 	struct lock_stress_stats *lwsa; /* writer statistics */
+ 	struct lock_stress_stats *lrsa; /* reader statistics */
+ };
+-static struct lock_torture_cxt cxt = { 0, 0, false,
++static struct lock_torture_cxt cxt = { 0, 0, false, false,
+ 				       ATOMIC_INIT(0),
+ 				       NULL, NULL};
+ /*
+@@ -573,6 +575,11 @@ static void torture_percpu_rwsem_init(void)
+ 	BUG_ON(percpu_init_rwsem(&pcpu_rwsem));
  }
  
- static void scf_cleanup_handler(void *unused)
-@@ -558,6 +559,11 @@ static int __init scf_torture_init(void)
- 		if (firsterr)
- 			goto unwind;
++static void torture_percpu_rwsem_exit(void)
++{
++	percpu_free_rwsem(&pcpu_rwsem);
++}
++
+ static int torture_percpu_rwsem_down_write(void) __acquires(pcpu_rwsem)
+ {
+ 	percpu_down_write(&pcpu_rwsem);
+@@ -597,6 +604,7 @@ static void torture_percpu_rwsem_up_read(void) __releases(pcpu_rwsem)
+ 
+ static struct lock_torture_ops percpu_rwsem_lock_ops = {
+ 	.init		= torture_percpu_rwsem_init,
++	.exit		= torture_percpu_rwsem_exit,
+ 	.writelock	= torture_percpu_rwsem_down_write,
+ 	.write_delay	= torture_rwsem_write_delay,
+ 	.task_boost     = torture_boost_dummy,
+@@ -789,9 +797,10 @@ static void lock_torture_cleanup(void)
+ 
+ 	/*
+ 	 * Indicates early cleanup, meaning that the test has not run,
+-	 * such as when passing bogus args when loading the module. As
+-	 * such, only perform the underlying torture-specific cleanups,
+-	 * and avoid anything related to locktorture.
++	 * such as when passing bogus args when loading the module.
++	 * However cxt->cur_ops.init() may have been invoked, so beside
++	 * perform the underlying torture-specific cleanups, cur_ops.exit()
++	 * will be invoked if needed.
+ 	 */
+ 	if (!cxt.lwsa && !cxt.lrsa)
+ 		goto end;
+@@ -831,6 +840,11 @@ static void lock_torture_cleanup(void)
+ 	cxt.lrsa = NULL;
+ 
+ end:
++	if (cxt.init_called) {
++		if (cxt.cur_ops->exit)
++			cxt.cur_ops->exit();
++		cxt.init_called = false;
++	}
+ 	torture_cleanup_end();
+ }
+ 
+@@ -878,8 +892,10 @@ static int __init lock_torture_init(void)
+ 		goto unwind;
  	}
-+	if (stutter > 0) {
-+		firsterr = torture_stutter_init(stutter, stutter);
-+		if (firsterr)
-+			goto unwind;
+ 
+-	if (cxt.cur_ops->init)
++	if (cxt.cur_ops->init) {
+ 		cxt.cur_ops->init();
++		cxt.init_called = true;
 +	}
  
- 	// Worker tasks invoking smp_call_function().
- 	if (nthreads < 0)
+ 	if (nwriters_stress >= 0)
+ 		cxt.nrealwriters_stress = nwriters_stress;
 -- 
 2.9.5
 
