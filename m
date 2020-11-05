@@ -2,102 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BCE12A7CE9
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 12:25:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 783522A7CEE
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 12:26:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730368AbgKELZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 06:25:29 -0500
-Received: from mx2.suse.de ([195.135.220.15]:33860 "EHLO mx2.suse.de"
+        id S1730133AbgKEL0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 06:26:07 -0500
+Received: from foss.arm.com ([217.140.110.172]:57968 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729113AbgKELZ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 06:25:28 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 57CE9AB95;
-        Thu,  5 Nov 2020 11:25:26 +0000 (UTC)
-Date:   Thu, 5 Nov 2020 11:25:23 +0000
-From:   Mel Gorman <mgorman@suse.de>
-To:     "Huang, Ying" <ying.huang@intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ingo Molnar <mingo@redhat.com>, Rik van Riel <riel@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        David Rientjes <rientjes@google.com>
-Subject: Re: [PATCH -V2 2/2] autonuma: Migrate on fault among multiple bound
- nodes
-Message-ID: <20201105112523.GQ3306@suse.de>
-References: <20201028023411.15045-1-ying.huang@intel.com>
- <20201028023411.15045-3-ying.huang@intel.com>
- <20201102111717.GB3306@suse.de>
- <87eel9wumd.fsf@yhuang-dev.intel.com>
+        id S1726715AbgKEL0D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 06:26:03 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9A1C7142F;
+        Thu,  5 Nov 2020 03:26:02 -0800 (PST)
+Received: from [10.57.54.223] (unknown [10.57.54.223])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 221F63F719;
+        Thu,  5 Nov 2020 03:26:00 -0800 (PST)
+Subject: Re: [PATCH] ARM: dts: exynos: Assign a fixed index to mmc devices on
+ exynos4412 based ODROID boards
+To:     Markus Reichl <m.reichl@fivetechno.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <CGME20201104102634eucas1p2ec7b705dd5092afa25d9877d1014f46a@eucas1p2.samsung.com>
+ <20201104102558.11070-1-m.reichl@fivetechno.de>
+ <efe8a911-6072-59fb-8a8e-d5cdb4352cab@samsung.com>
+ <5800260a-5332-f627-eb36-32df4fbf05e3@fivetechno.de>
+ <c1040872-0ae1-3988-29d0-60c8a711cdb1@samsung.com>
+ <71e4ecca-b980-e224-0fbe-b30330e490fb@samsung.com>
+ <2ddf7343-799b-418b-bb00-a926f1030db7@fivetechno.de>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <be911d41-c707-f482-4966-476b9330bde7@arm.com>
+Date:   Thu, 5 Nov 2020 11:26:00 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <87eel9wumd.fsf@yhuang-dev.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <2ddf7343-799b-418b-bb00-a926f1030db7@fivetechno.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 01:36:58PM +0800, Huang, Ying wrote:
-> > I've no specific objection to the patch or the name change. I can't
-> > remember exactly why I picked the name, it was 8 years ago but I think it
-> > was because the policy represented the most basic possible approach that
-> > could be done without any attempt at being intelligent and established
-> > a baseline. The intent was that anything built on top had to be better
-> > than the most basic policy imaginable. The name reflected the dictionary
-> > definition at the time and happened to match the acronym closely enough
-> > and I wanted to make it absolutely clear to reviewers that the policy
-> > was not good enough (ruling out MPOL_BASIC or variants thereof) even if
-> > it happened to work for some workload and there was no intent to report
-> > it to the userspace API.
-> >
-> > The only hazard with the patch is that applications that use MPOL_BIND
-> > on multiple nodes may now incur some NUMA balancing overhead due to
-> > trapping faults and migrations.
+On 2020-11-05 08:31, Markus Reichl wrote:
+> Hi Marek,
 > 
-> For this specific version of patch, I don't think this will happen.
-> Because now, MPOL_F_MOF need to be set in struct mempolicy, for
-> MPOL_BIND, only if mbind() syscall is called with MPOL_MF_LAZY, that
-> will be the case.  So I think most workloads will not be affected by
-> this patch.  The feature is opt-in.
+> on rk3399 the proposed ordering [1] is according to base address in DT.
+
+FWIW, note that in RK3399's case the SoC itself provides no logical 
+numbering to follow - the pin groups are named "EMMC", "SDIO0" and 
+"SDMMC0" in the datasheet, while the TRM uses "emmc", "sdio" and "sdmmc" 
+in signal and register names.
+
+If the SoC *does* have an inherent notion of numbered interfaces, I 
+would agree that following that numbering is the most logical thing to do.
+
+Robin.
+
 > 
-
-Ok.
-
-> But from another point of view, I suggest to remove the constraints of
-> MPOL_F_MOF in the future.  If the overhead of AutoNUMA isn't acceptable,
-> why not just disable AutoNUMA globally via sysctl knob?
+> [1]
+> https://patchwork.kernel.org/patch/11881427
 > 
-
-Because it's a double edged sword. NUMA Balancing can make a workload
-faster while still incurring more overhead than it should -- particularly
-when threads are involved rescanning the same or unrelated regions.
-Global disabling only really should happen when an application is running
-that is the only application on the machine and has full NUMA awareness.
-
-> > It might still end up being better but I was not aware of a
-> > *realistic* workload that binds to multiple nodes
-> > deliberately. Generally I expect if an application is binding, it's
-> > binding to one local node.
+> Am 04.11.20 um 14:44 schrieb Marek Szyprowski:
+>> On 04.11.2020 14:13, Marek Szyprowski wrote:
+>>> On 04.11.2020 14:06, Markus Reichl wrote:
+>>>> Am 04.11.20 um 13:25 schrieb Marek Szyprowski:
+>>>>> On 04.11.2020 11:25, Markus Reichl wrote:
+>>>>>> Recently introduced async probe on mmc devices can shuffle block IDs.
+>>>>>> Pin them to fixed values to ease booting in evironments where UUIDs
+>>>>>> ar not practical.
+>>>>>> Use newly introduced aliases for mmcblk devices from [1].
+>>>>>>
+>>>>>> [1]
+>>>>>> https://patchwork.kernel.org/patch/11747669/
+>>>>>>
+>>>>>> Signed-off-by: Markus Reichl <m.reichl@fivetechno.de>
+>>>>>> ---
+>>>>>>    arch/arm/boot/dts/exynos4412-odroid-common.dtsi | 5 +++++
+>>>>>>    1 file changed, 5 insertions(+)
+>>>>>>
+>>>>>> diff --git a/arch/arm/boot/dts/exynos4412-odroid-common.dtsi
+>>>>>> b/arch/arm/boot/dts/exynos4412-odroid-common.dtsi
+>>>>>> index a5c1ce1e396c..aa10d5bc7e1c 100644
+>>>>>> --- a/arch/arm/boot/dts/exynos4412-odroid-common.dtsi
+>>>>>> +++ b/arch/arm/boot/dts/exynos4412-odroid-common.dtsi
+>>>>>> @@ -13,6 +13,11 @@
+>>>>>>    #include "exynos-mfc-reserved-memory.dtsi"
+>>>>>>      / {
+>>>>>> +    aliases {
+>>>>>> +        mmc0 = &sdhci_2;
+>>>>>> +        mmc1 = &mshc_0;
+>>>>> Like in the OdroidXU3-family patch, I would use 0 for the eMMC 
+>>>>> (mshc_0)
+>>>>> and 2 for the SD-card (sdhci_2).
+>>>> How to deal then with sdhci_0 (from exynos4.dtsi) vc. mshc_0 (from
+>>>> exynos4412.dts)?
+>>> sdhci_0 and mshc_0 both operate on the same physical MMC0 bus, so this
+>>> is not an issue. They cannot be used simultaneously. The latter is just
+>>> faster, the first one has been left there mainly for the software
+>>> compatibility.
+>>
+>> I've thought a bit more on this and I would simply prefer to add generic
+>> MMC aliases to the top-level Exynos dtsi files (3250, 4210, 4412, 5250,
+>> 5410, 5420) to keep Linux logical MMC bus numbers in sync with the HW
+>> bus numbers on all boards.
+>>
+>> Best regards
+>>
 > 
-> Yes.  It's not popular configuration for now.  But for the memory
-> tiering system with both DRAM and PMEM, the DRAM and PMEM in one socket
-> will become 2 NUMA nodes.  To avoid too much cross-socket memory
-> accessing, but take advantage of both the DRAM and PMEM, the workload
-> can be bound to 2 NUMA nodes (DRAM and PMEM).
+> Gruß,
 > 
-
-Ok, that may lead to unpredictable performance as it'll have variable
-performance with limited control of the "important" applications that
-should use DRAM over PMEM. That's a long road but the step is not
-incompatible with the long-term goal.
-
--- 
-Mel Gorman
-SUSE Labs
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> 
