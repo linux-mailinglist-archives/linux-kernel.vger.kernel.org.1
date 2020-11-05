@@ -2,181 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 574172A8A9C
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 00:20:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FF742A8AA0
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 00:21:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732475AbgKEXUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 18:20:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43166 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731060AbgKEXUx (ORCPT
+        id S1732504AbgKEXVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 18:21:50 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:20272 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726801AbgKEXVu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 18:20:53 -0500
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57812C0613D2
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 15:20:53 -0800 (PST)
-Received: by mail-yb1-xb43.google.com with SMTP id c129so2842295yba.8
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 15:20:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8wFZyYqtSK1R4m/q7QRLFzt9lunj5huoU2docdk+JL4=;
-        b=VQr5C/I+TFiFZ5SGKU1BeWphObfdjJTDj5xi0jFRSsliyimc1RaZmy7UsImMxmeFwx
-         /h64JqNojRtsW8BCZc5+H+0Lkvcfr+JQiygd+PXcKPeHs07sxkiiMwMJ6ofbAHcgLlui
-         eQO9PSZ4XzjFSiEPmAHbJ6IP8032bP54RzqZQzoyw4KK+2fBBP6/qiemKmzS9lXEe48G
-         98wXlcIhrJ2gawyLq7TEOaqZxP4IwKgwzodTpxxlY3vQbdEJsZ3ZhemZ1Cwq8J1cxUPI
-         fvBIp8I6iZo5winR1KYZJN/o0I79n+h1fVGga1PX3HmfvT8Xj6x9RquXOd1wwzSazJ1I
-         32NA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8wFZyYqtSK1R4m/q7QRLFzt9lunj5huoU2docdk+JL4=;
-        b=QvSuEPGUIscQZZEpIli3Hi1fKyHmo7rFprSBe6V1vASpuSR7cnISFcjJFi1p/GoxI6
-         1zK9+o52CS8hU2IW7ckh7O/3tW8Eku/VS9G+sUn+XX9G7x9c/y1m9xP7jAaLCm79in4b
-         HFm6/CvHoK6VyJ2fRV5tOQISURVySnAVjH7VfcjPxICkH371N/EL+IhaWEhm7yjbQB3U
-         /5BMme9vkK8p9nSOGWafUv02Yo3ZfiuGaD9nucv8P9pGN9M2XzTeB0SyvG8crkct7Ycv
-         m7strExgN89PJIM3d49ty3jQpi1TyxYQOE5lUAGXzsNxiJtfyishxfzgisWjaMXH4tz3
-         nPCg==
-X-Gm-Message-State: AOAM5325ZMGH5LEFMdsimymmFDZO1rEdQM1Li1JmkoaeJT3/iFpNT+ZY
-        w4L0ubQ6+o1NAXI5NvulfkJ9kM1uSg8Bs6bITHXuFA==
-X-Google-Smtp-Source: ABdhPJwI8PTuLr/THqyxcoxyPhiBcXvDcwi5nHO4ERWE9lM50eQ300SCgVr+U1Wi7ljrzOM7oFCREm+TDa0BnbK69Y4=
-X-Received: by 2002:a25:268e:: with SMTP id m136mr6904500ybm.346.1604618452430;
- Thu, 05 Nov 2020 15:20:52 -0800 (PST)
+        Thu, 5 Nov 2020 18:21:50 -0500
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 0A5NCXNE009718;
+        Thu, 5 Nov 2020 15:21:31 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=Vbnt7SnS7m7VuYo2BtskuTUlwRF8f90Pgoq3WT669YA=;
+ b=pOb008k40+yV5yhArEaCRn7kX+MmjuLBHAk3floTh7BHT6K0hCvgQjDuFF/LgYUQSkZc
+ RhmBZQNyI8K3ruu1xw85xKh07gxCs7jL2adag8R8LH7FcP/8Yg2FGoGO1yrOz2m3Ehly
+ 9p2siad2YhPKNuT4WcoZp6N1wLzuBC0yt4s= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0001303.ppops.net with ESMTP id 34mek34fsx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 05 Nov 2020 15:21:31 -0800
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.101) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 5 Nov 2020 15:21:27 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=P8wtXltCcUceBEduKYH1yNHiawHYyOzYfVACyG5NbHxiYdRFx5nOYsTw46augqjGFkKKMngz4x5DkqAJCCv8GQqvlHzNTclN2j+zDUPhsoBS0uv7eQ3gKvzPM+sRqYY8b/gLZYsymzrEsmT5zhibDIUsdtWUT5a53aeyzQ8xC1KQaXuz7CSozIbc8nSe1ZWXKEuIwcvhTDjoLX7PcR4ujd+T5OR/bkpGo8EJFDELlnypkeY5QGvUQxUydquGyILF39HbRNTpRV+QciieUbpX7/jxXhMKWdSswqGEEnWvKQPj+t5MoPN9PpwML3pOSXd4ysPYVgnBWJhN5B10ITelaA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Vbnt7SnS7m7VuYo2BtskuTUlwRF8f90Pgoq3WT669YA=;
+ b=HyoeRgdoAFBT/FP8Flvw9vbgfRiyHmJLmJkvemVw8u5eLTxl2RVqgURwki3ps4Lp+tVPn2td14zy8kF+5Mqw2pdtBkG0F+L0Hr2x1iMjXu+5Ph/gyVA5R70Hr8xYWsgwQvBnC3QpMBQS2m9uJoAv3n1FzjVcVtXIiBUD9j6HxNYQFErvvXxmt11VQNBuSQp2BudmEnwYNhhEuv6IdMOj14TgULaM1iJynBXEyvzsn5MN93Vv8aK0eN/K0UXG9rfH6OngcK3YLkmo5kUGUwlY4lJrLBbvnJqIViDOS/GdAN5VE7UGU87pFWUwWTaCYz18Yt+o54GnRsE+UwIxeKxMuw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Vbnt7SnS7m7VuYo2BtskuTUlwRF8f90Pgoq3WT669YA=;
+ b=PrdywoiKXL0U7Ip30c+xuyXB1qPtpnK2oxrHlIZqaDyTMmh2M87BkmWz41BTvr9k4Xe/Jz00zcz58gE3ccOYPG3NXYbFMOs+ZpPJJK5ALvqT6mN1bz9Jm8CcZvVdlV1n64EtPlHVkTUY4QpbqTwi4tNbGvsmip8mrDkuoaUE+zc=
+Authentication-Results: chromium.org; dkim=none (message not signed)
+ header.d=none;chromium.org; dmarc=none action=none header.from=fb.com;
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
+ by BY5PR15MB3665.namprd15.prod.outlook.com (2603:10b6:a03:1f7::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.29; Thu, 5 Nov
+ 2020 23:21:26 +0000
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::bc1d:484f:cb1f:78ee]) by BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::bc1d:484f:cb1f:78ee%4]) with mapi id 15.20.3499.032; Thu, 5 Nov 2020
+ 23:21:25 +0000
+Date:   Thu, 5 Nov 2020 15:21:17 -0800
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     KP Singh <kpsingh@chromium.org>
+CC:     <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Song Liu <songliubraving@fb.com>, Paul Turner <pjt@google.com>,
+        Jann Horn <jannh@google.com>, Hao Luo <haoluo@google.com>
+Subject: Re: [PATCH bpf-next v5 8/9] bpf: Add tests for task_local_storage
+Message-ID: <20201105232117.wxjt66r7okihgbcf@kafai-mbp.dhcp.thefacebook.com>
+References: <20201105225827.2619773-1-kpsingh@chromium.org>
+ <20201105225827.2619773-9-kpsingh@chromium.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201105225827.2619773-9-kpsingh@chromium.org>
+X-Originating-IP: [2620:10d:c090:400::5:3041]
+X-ClientProxiedBy: MWHPR01CA0038.prod.exchangelabs.com (2603:10b6:300:101::24)
+ To BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
 MIME-Version: 1.0
-References: <20201104232356.4038506-1-saravanak@google.com>
- <20201104232356.4038506-8-saravanak@google.com> <20201105093604.GD3439341@kroah.com>
-In-Reply-To: <20201105093604.GD3439341@kroah.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Thu, 5 Nov 2020 15:20:16 -0800
-Message-ID: <CAGETcx-ShEUaFzL_1oExk8KeVn+cnXLnYSz7vKxphHbnGERrhQ@mail.gmail.com>
-Subject: Re: [PATCH v1 07/18] driver core: Add fwnode_init()
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:3041) by MWHPR01CA0038.prod.exchangelabs.com (2603:10b6:300:101::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.19 via Frontend Transport; Thu, 5 Nov 2020 23:21:24 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 12bc0957-1a77-4926-2828-08d881e1840e
+X-MS-TrafficTypeDiagnostic: BY5PR15MB3665:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BY5PR15MB366553DAA82C649EE598A6E9D5EE0@BY5PR15MB3665.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: XBURs7GVt7o5dLNptyyjCc8XO3Znr5xrL2AZCMoXSRZfqarLCiZIb0JxSyTUJhH/0PfKfRWDunX2Sp7px3Wz1qe7ncf3UIKV54Xrp8PvkHRpwRgOKizG9dKepN0Twkd5l44Mid6dpbACX/tLdTPpHzwqJzaJhK+CNIetoPay1Hb9DKeWJhG4gAm8yBDCRJlohMP1hJvXOfbiTj4TSeYltBJo24EJOYAPX/E/zpmoXuLwI2Yhts6tThgWpw203snF4Em/Jj+itorbnStXX/HPYDpIsl/Qgj3HXwmSBljI0zqKdjnHrbfkVKH8/Bnm+1Eg9ObaSZkBkeT6C64loGyKwA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(376002)(346002)(396003)(39860400002)(366004)(2906002)(83380400001)(4744005)(8936002)(66556008)(1076003)(8676002)(6666004)(316002)(4326008)(6916009)(5660300002)(66946007)(66476007)(55016002)(54906003)(9686003)(52116002)(7696005)(6506007)(16526019)(186003)(478600001)(86362001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: qe2Cwj4mg746Cuj2kgodnAHQEhG/XjapB3NmKe7tudh3m3GiTGjY6hNErSmrsjeaoRZM8QGLtAaMLPk6WsUYOgg4Al+DJk1Zw8HrFeNtZ7RDoQtXqbjFZQdmylieKANZDNRUxfFacmusSbVrSuchX1BN99DJmnveU6kG19HjR1omVuI+rZq0lKZuS/KYHw+zva+R3bZbKQC6JS+jbTBePdG0BZ8vHszxhyT6tnULnp+Bhiw9+YWJ+21sUI3pgU5UHBcxwdVAtciNUT37KVSqXYOgKe9dY0y8ecN2rVQB1Bp9/NrIRh43jCUSeelboG/T8P67tll8U1ggwVDotAwIMqt9VnItAQQ5r6jqDX5DGmIQiGeX6/mvFsunny4SkBV/qnlv3Wd/468fRvLty3ycrL5ahlu+qpCWspQ7xuPtzPddjBjXPYz6bRLCOOOqT1YEnPa/Mz4tiYt9/7Ztf25MYqporq8j/inMHe/XskvXnpO+sc9r2/gytBMf38W+DUtKE7+oPM5h3VlrB9zWyuTR9B86ZZe/KtDHT3eNbmn9jwsR4rZpmQ+v+JbRC3ZgPKaic1isqeUiJTmOJvQRy2SocgQPMu2MeEOW5kVRMrQfivl60h0IP0rBrs4oyLhxVrVElLYVmrcBfKg7Gle0qNYz4i4wGriUmt+Wg0+YLTsrwlw1qI7CKt0vmSd/khCtBVcq
+X-MS-Exchange-CrossTenant-Network-Message-Id: 12bc0957-1a77-4926-2828-08d881e1840e
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Nov 2020 23:21:25.8738
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: V47BgDrZ6pVNgHTWQQE4+/YACN91YRs3tPQg3IOtgI+57o8yHLhkplXpgm8z7M7v
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR15MB3665
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-05_16:2020-11-05,2020-11-05 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ phishscore=0 mlxscore=0 adultscore=0 clxscore=1015 spamscore=0
+ priorityscore=1501 suspectscore=1 bulkscore=0 mlxlogscore=443
+ lowpriorityscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2011050151
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 5, 2020 at 1:35 AM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Wed, Nov 04, 2020 at 03:23:44PM -0800, Saravana Kannan wrote:
-> > There are multiple locations in the kernel where a struct fwnode_handle
-> > is initialized. Add fwnode_init() so that we have one way of
-> > initializing a fwnode_handle.
-> >
-> > Signed-off-by: Saravana Kannan <saravanak@google.com>
-> > ---
-> >  drivers/acpi/property.c         | 2 +-
-> >  drivers/acpi/scan.c             | 2 +-
-> >  drivers/base/swnode.c           | 2 +-
-> >  drivers/firmware/efi/efi-init.c | 8 ++++----
-> >  include/linux/fwnode.h          | 5 +++++
-> >  include/linux/of.h              | 2 +-
-> >  kernel/irq/irqdomain.c          | 2 +-
-> >  7 files changed, 14 insertions(+), 9 deletions(-)
-> >
-> > diff --git a/drivers/acpi/property.c b/drivers/acpi/property.c
-> > index d04de10a63e4..24e87b630573 100644
-> > --- a/drivers/acpi/property.c
-> > +++ b/drivers/acpi/property.c
-> > @@ -76,7 +76,7 @@ static bool acpi_nondev_subnode_extract(const union acpi_object *desc,
-> >               return false;
-> >
-> >       dn->name = link->package.elements[0].string.pointer;
-> > -     dn->fwnode.ops = &acpi_data_fwnode_ops;
-> > +     fwnode_init(&dn->fwnode, &acpi_data_fwnode_ops);
-> >       dn->parent = parent;
-> >       INIT_LIST_HEAD(&dn->data.properties);
-> >       INIT_LIST_HEAD(&dn->data.subnodes);
-> > diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
-> > index a896e5e87c93..0ac19f9274b8 100644
-> > --- a/drivers/acpi/scan.c
-> > +++ b/drivers/acpi/scan.c
-> > @@ -1589,7 +1589,7 @@ void acpi_init_device_object(struct acpi_device *device, acpi_handle handle,
-> >       device->device_type = type;
-> >       device->handle = handle;
-> >       device->parent = acpi_bus_get_parent(handle);
-> > -     device->fwnode.ops = &acpi_device_fwnode_ops;
-> > +     fwnode_init(&device->fwnode, &acpi_device_fwnode_ops);
-> >       acpi_set_device_status(device, sta);
-> >       acpi_device_get_busid(device);
-> >       acpi_set_pnp_ids(handle, &device->pnp, type);
-> > diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
-> > index 010828fc785b..4a4b2008fbc2 100644
-> > --- a/drivers/base/swnode.c
-> > +++ b/drivers/base/swnode.c
-> > @@ -653,7 +653,7 @@ swnode_register(const struct software_node *node, struct swnode *parent,
-> >       swnode->parent = parent;
-> >       swnode->allocated = allocated;
-> >       swnode->kobj.kset = swnode_kset;
-> > -     swnode->fwnode.ops = &software_node_ops;
-> > +     fwnode_init(&swnode->fwnode, &software_node_ops);
-> >
-> >       ida_init(&swnode->child_ids);
-> >       INIT_LIST_HEAD(&swnode->entry);
-> > diff --git a/drivers/firmware/efi/efi-init.c b/drivers/firmware/efi/efi-init.c
-> > index f55a92ff12c0..b148f1459fb3 100644
-> > --- a/drivers/firmware/efi/efi-init.c
-> > +++ b/drivers/firmware/efi/efi-init.c
-> > @@ -359,9 +359,7 @@ static const struct fwnode_operations efifb_fwnode_ops = {
-> >       .add_links = efifb_add_links,
-> >  };
-> >
-> > -static struct fwnode_handle efifb_fwnode = {
-> > -     .ops = &efifb_fwnode_ops,
-> > -};
-> > +static struct fwnode_handle efifb_fwnode;
-> >
-> >  static int __init register_gop_device(void)
-> >  {
-> > @@ -375,8 +373,10 @@ static int __init register_gop_device(void)
-> >       if (!pd)
-> >               return -ENOMEM;
-> >
-> > -     if (IS_ENABLED(CONFIG_PCI))
-> > +     if (IS_ENABLED(CONFIG_PCI)) {
-> > +             fwnode_init(&efifb_fwnode, &efifb_fwnode_ops);
-> >               pd->dev.fwnode = &efifb_fwnode;
-> > +     }
-> >
-> >       err = platform_device_add_data(pd, &screen_info, sizeof(screen_info));
-> >       if (err)
-> > diff --git a/include/linux/fwnode.h b/include/linux/fwnode.h
-> > index e0abafbb17f8..593fb8e58f21 100644
-> > --- a/include/linux/fwnode.h
-> > +++ b/include/linux/fwnode.h
-> > @@ -169,6 +169,11 @@ struct fwnode_operations {
-> >                       (fwnode)->ops->op(fwnode, ## __VA_ARGS__);      \
-> >       } while (false)
-> >  #define get_dev_from_fwnode(fwnode)  get_device((fwnode)->dev)
-> > +static inline void fwnode_init(struct fwnode_handle *fwnode,
-> > +                            const struct fwnode_operations *ops)
-> > +{
-> > +     fwnode->ops = ops;
-> > +}
-> >
->
-> A blank line before a new inline function is always nice to have :)
->
-
-Ack
-
--Saravana
+On Thu, Nov 05, 2020 at 10:58:26PM +0000, KP Singh wrote:
+> From: KP Singh <kpsingh@google.com>
+> 
+> The test exercises the syscall based map operations by creating a pidfd
+> for the current process.
+> 
+> For verifying kernel / LSM functionality, the test implements a simple
+> MAC policy which denies an executable from unlinking itself. The LSM
+> program bprm_committed_creds sets a task_local_storage with a pointer to
+> the inode. This is then used to detect if the task is trying to unlink
+> itself in the inode_unlink LSM hook.
+> 
+> The test copies /bin/rm to /tmp and executes it in a child thread with
+> the intention of deleting itself. A successful test should prevent the
+> the running executable from deleting itself.
+> 
+> The bpf programs are also updated to call bpf_spin_{lock, unlock} to
+> trigger the verfier checks for spin locks.
+> 
+> The temporary file is cleaned up later in the test.
+> 
+> Signed-off-by: KP Singh <kpsingh@google.com>
+Acked-by: Martin KaFai Lau <kafai@fb.com>
