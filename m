@@ -2,94 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 410F52A7514
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 02:50:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4B462A751A
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 02:54:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731087AbgKEBub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 20:50:31 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:48793 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726152AbgKEBub (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 20:50:31 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CRRLF0LVPz9sTv;
-        Thu,  5 Nov 2020 12:50:28 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1604541029;
-        bh=Mnxa79fuSL3tbrhtyzo4azkG4okB3ssiobq0b38MV4k=;
-        h=Date:From:To:Cc:Subject:From;
-        b=DlfWIKhXKN804nuaPjLyYsEP2Ni0rFRQtGRUHF0ziV0/AP8moUJsJzbCFy4T9WfNT
-         bCVVIUdNhi1pEza3kqnMwibj9ENmVHt25Bs7Q4gw5FjSlTBN+EJGF8hVoMPdzJrTLp
-         3UvUXKBU24b2/Me81GA4kMhTKQra+p9F1YF8wAwpz28C2h8i9QZDjkAL8HpXKBqxXM
-         p9LKpKHYab3I1eVO9XKcXzRp24Fk1uLIZmc1ywLWMyIQtr0+srtGOA7gKNd6HMtnr5
-         ZYjhSrXbm15Ej7SXG+PabDW+CDILjMrKTQE3y4/QTgzsQrjHBrLU07c4ESzm3ZbpE+
-         pDNuekOrcFqAA==
-Date:   Thu, 5 Nov 2020 12:50:27 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the mfd tree
-Message-ID: <20201105125027.1f4b6886@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/8KlPu4B/pU0Y9AFAERItKqh";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        id S1732923AbgKEByo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 20:54:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40110 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726152AbgKEByn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 20:54:43 -0500
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7A63C0613CF;
+        Wed,  4 Nov 2020 17:54:42 -0800 (PST)
+Received: by mail-pl1-x641.google.com with SMTP id k7so4725plk.3;
+        Wed, 04 Nov 2020 17:54:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=MoRDkYbSmmfL4fW1DuwGucYPQIYt/1BQrIe70jztWfg=;
+        b=olkhqDVQyfSX+tNsHVJ1jhZ1Y4LWHsJN3A4Tj4GUyfvWQybxvIhNejCvOLIPbOGlEb
+         XeHZC8Nj2O3V8785hlvNd2YwpG1e4qWf0qRzAPGuJjNCzkPPqOtmMDm2qdISnbs/hNh6
+         kvrTAhjRiJIHM3GLW1b0EWI9C3VwXyyxh7+MSltPh0h6e7YEnUbvuKGb2tdgwEXMWN49
+         H/Xah66SEQO1/6IYldqH05ZaSSU0W9xFqaSfDeGqjnVqNIbqDkphCaK8+ZaRiBnBCb1Y
+         dNzpZdGynpoHxdaco9Rw7mZmKw01WipoiAdaaDQ3H+LiNUFJOjJ9NTazsrmwdAZPzXK6
+         oEHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=MoRDkYbSmmfL4fW1DuwGucYPQIYt/1BQrIe70jztWfg=;
+        b=VM6b8uZsxG1bhhb+njV9ez/JABtBZd/+r5QhOC+DJGPTBKpSkGmt39dHaAdZBjdxwo
+         GK9+8aDQLECrO2ykQhxwjWL8oeNo6/mdsAmOXS5x6kNjluZrKx80nV5jNUXdrBKGGpl0
+         BGmKdHB6Zri/UdBNLn14C3U1NlcM7cJCDlaDYL3qJGbBaiHxhCW4f7b21lgmntxz+0zB
+         x/Y2BvO9XBAouWuFAekCCsjLbvcI2YhX8sJZK/odbkc5Yknja9tyfCqRV9Z4/h9C/zFF
+         ibyxm397FFat1Y86wZpRXOMdsbUqF5CSDMQAOoqwfVHzgQ4qFjmXRLwAdNOejWitMh0J
+         i1fw==
+X-Gm-Message-State: AOAM531sOTK/3Oggq/wqi9TmsHibG5xHrpaRUgnqq0xGvqHYfh+QFSIL
+        n+3a1TEsuNl0PfDvzX2CnW8=
+X-Google-Smtp-Source: ABdhPJxpUvGVxQXb3TFxZR5nuGXu25j8c97cnCBvdXOOBjjkY3/Q8S9LZx3MdjiiIMDa5lk8UqcXYQ==
+X-Received: by 2002:a17:902:9a46:b029:d6:f20a:83e1 with SMTP id x6-20020a1709029a46b02900d6f20a83e1mr37293plv.49.1604541282551;
+        Wed, 04 Nov 2020 17:54:42 -0800 (PST)
+Received: from localhost.localdomain ([154.93.3.113])
+        by smtp.gmail.com with ESMTPSA id t26sm153008pfl.72.2020.11.04.17.54.41
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 04 Nov 2020 17:54:41 -0800 (PST)
+From:   menglong8.dong@gmail.com
+X-Google-Original-From: dong.menglong@zte.com.cn
+To:     kuba@kernel.org
+Cc:     davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dingtianhong@huawei.com,
+        Menglong Dong <dong.menglong@zte.com.cn>
+Subject: [PATCH v2] net: macvlan: remove redundant initialization in macvlan_dev_netpoll_setup
+Date:   Wed,  4 Nov 2020 20:54:04 -0500
+Message-Id: <1604541244-3241-1-git-send-email-dong.menglong@zte.com.cn>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/8KlPu4B/pU0Y9AFAERItKqh
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+From: Menglong Dong <dong.menglong@zte.com.cn>
 
-Hi all,
+The initialization for err with 0 seems useless, as it is soon updated
+with -ENOMEM. So, we can remove it.
 
-After merging the mfd tree, today's linux-next build (arm
-multi_v7_defconfig) failed like this:
+Changes since v1:
+-Keep -ENOMEM still.
 
-drivers/gpio/gpio-tps65910.c: In function 'tps65910_gpio_get':
-drivers/gpio/gpio-tps65910.c:31:2: error: implicit declaration of function =
-'tps65910_reg_read' [-Werror=3Dimplicit-function-declaration]
-   31 |  tps65910_reg_read(tps65910, TPS65910_GPIO0 + offset, &val);
-      |  ^~~~~~~~~~~~~~~~~
-drivers/gpio/gpio-tps65910.c: In function 'tps65910_gpio_set':
-drivers/gpio/gpio-tps65910.c:46:3: error: implicit declaration of function =
-'tps65910_reg_set_bits' [-Werror=3Dimplicit-function-declaration]
-   46 |   tps65910_reg_set_bits(tps65910, TPS65910_GPIO0 + offset,
-      |   ^~~~~~~~~~~~~~~~~~~~~
-drivers/gpio/gpio-tps65910.c:49:3: error: implicit declaration of function =
-'tps65910_reg_clear_bits' [-Werror=3Dimplicit-function-declaration]
-   49 |   tps65910_reg_clear_bits(tps65910, TPS65910_GPIO0 + offset,
-      |   ^~~~~~~~~~~~~~~~~~~~~~~
+Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
+---
+ drivers/net/macvlan.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Caused by commit
+diff --git a/drivers/net/macvlan.c b/drivers/net/macvlan.c
+index dd96020..d9b6c44 100644
+--- a/drivers/net/macvlan.c
++++ b/drivers/net/macvlan.c
+@@ -1096,7 +1096,7 @@ static int macvlan_dev_netpoll_setup(struct net_device *dev, struct netpoll_info
+ 	struct macvlan_dev *vlan = netdev_priv(dev);
+ 	struct net_device *real_dev = vlan->lowerdev;
+ 	struct netpoll *netpoll;
+-	int err = 0;
++	int err;
+ 
+ 	netpoll = kzalloc(sizeof(*netpoll), GFP_KERNEL);
+ 	err = -ENOMEM;
+-- 
+2.7.4
 
-  23feb2c3367c ("mfd: tps65910: Clean up after switching to regmap")
-
-I have used the version of the mfd tree from next-20201104 for today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/8KlPu4B/pU0Y9AFAERItKqh
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+jWmMACgkQAVBC80lX
-0GzXZQf/fEXP067ExoAHA93d552vwdHoWE/lTC62qersbjuLm0Cd3Lj00h6rhHo0
-xDJW6OeUjoVPStPwrScCFuI07WAuPfGjIVSK20xOh2OABOjjvlvZwwDl8+VQ3AmY
-HiIO8N42ofd1LdhdhU3qGzzZil8A37ur3grX1iujiyr1iluBShPgXqOsB4sxV1oB
-pRW2lrmUVsTEx5vM2BgAqjsg50Zh3dJJWj8+YpDFXbWHjNLhjULDT+3oTbl1G2Kq
-zv1zjvzSmL7+y3/n80NI6AWVqbzplgr72bMlQQ8u9u5mHiWzJ9HeyhchE/6Wjhut
-oJdJCIrEo/NUaePOOguHHy48+9E6Aw==
-=1YxB
------END PGP SIGNATURE-----
-
---Sig_/8KlPu4B/pU0Y9AFAERItKqh--
