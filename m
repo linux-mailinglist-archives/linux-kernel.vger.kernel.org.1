@@ -2,135 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 112822A88C6
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 22:17:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F2442A88CB
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 22:17:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732210AbgKEVRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 16:17:14 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:55914 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726729AbgKEVRO (ORCPT
+        id S1732314AbgKEVRu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 16:17:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52218 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726729AbgKEVRr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 16:17:14 -0500
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A5LDpDp018468;
-        Thu, 5 Nov 2020 13:16:55 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=4vHsk7NmuZBUqea4IHFtpIkqUEGXf61XVUV6V6/7Ze0=;
- b=aLwiNexOMKSGXPj9vxXj27caB7YChcPbIfMcALvWxNd7MM4Z2qJikGPnRJXGULAmnytI
- f/ZbSvNMzMyK8kuEMvfOXiBYCIjQuLKeREweDWesQbLWIZDVN2hcZL1Bl+rXMOzTxiOF
- +QT7WXD2hs1KeKwFSy3ns4ETHnWSfPHAc5Q= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 34kg7m4eet-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 05 Nov 2020 13:16:55 -0800
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 5 Nov 2020 13:16:54 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=n0RmGd2F3Tk2aGchmf0st8OChiDJnUN8aj1xfFGOBH74dlfrlQ7oCjx9PQ7fdqWKEwJBwwqoCE2FTrHeM71w5xdo/T6AMUCsEn0fQ4mxlSmxE6bvyxu0sGmqdHnCK7jUN5My3QOi5yxv6LSwrHrzbB24lP34bfgINamLCrpKAtJ82Cj/oJvkQmVXdIPJDHRA3RY1GQOKuPCwKKo18t0s0g5QK7Dpt6On51mV5T0GrErMvjO1YKMDTmKKcWNLVFLjoq/lKKL9eDo5i9TrdS3F1GAC0Hh4iAKWbE2itb+TgkYHfbDFukMzPyOWtyXDFXHSXx8tgujKqTfVCKrTZeciKw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4vHsk7NmuZBUqea4IHFtpIkqUEGXf61XVUV6V6/7Ze0=;
- b=Qlx965Az7CuORK0tWDtD/OdV7v33+2R4HD3oDcKvit4x4KG8xNzY6/jF9pbA6MIe2NNCJ6/isiPZS0yEIg+NV9YFQO69BpxGeMoqAZ6LhdZbSm2inpeCQEk7FuMkxc0/pVV37mzYDq6I0H3e4XOtYMA3djmmge6EoqHDFiv5SWiSYm8tMgAvQqj8L59ZnzYEvDI1DzBt+oV6n+iD3eeqr6Zz7Dpo0SOWHh3LgavjOP0coX/KRKrqrY8+XzTwuUjgefc0QRJTPtEZLekunM85YOSSkPIfcd1Q3vAu7lW0vElQSi6ekCWuzoMTxHq5ZSCsvrk8YHst8LPoXLvbEbCr7g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4vHsk7NmuZBUqea4IHFtpIkqUEGXf61XVUV6V6/7Ze0=;
- b=L6ndOaBJJgfkXA/XxuRAb0neEzAUUstqYKetnN6QGgx6VG6w63K6R/WWFk75X8/ro9IRu2TbPeOgEI7Y/rlrswOfS2915psDxk3nKneCX50Gf2IQma1EiQRlViceXSLwv6SpDFG0xdpmnhkq/S8h3a3qbEvX0DY/AVxuU6DlENE=
-Authentication-Results: chromium.org; dkim=none (message not signed)
- header.d=none;chromium.org; dmarc=none action=none header.from=fb.com;
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
- by BYAPR15MB2454.namprd15.prod.outlook.com (2603:10b6:a02:89::33) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.29; Thu, 5 Nov
- 2020 21:16:54 +0000
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::bc1d:484f:cb1f:78ee]) by BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::bc1d:484f:cb1f:78ee%4]) with mapi id 15.20.3499.032; Thu, 5 Nov 2020
- 21:16:54 +0000
-Date:   Thu, 5 Nov 2020 13:16:44 -0800
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     KP Singh <kpsingh@chromium.org>
-CC:     <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
-        Hao Luo <haoluo@google.com>
-Subject: Re: [PATCH bpf-next v4 2/9] bpf: Implement task local storage
-Message-ID: <20201105211644.onspyd6cytrskiw3@kafai-mbp.dhcp.thefacebook.com>
-References: <20201105144755.214341-1-kpsingh@chromium.org>
- <20201105144755.214341-3-kpsingh@chromium.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201105144755.214341-3-kpsingh@chromium.org>
-X-Originating-IP: [2620:10d:c090:400::5:3041]
-X-ClientProxiedBy: MWHPR14CA0057.namprd14.prod.outlook.com
- (2603:10b6:300:81::19) To BY5PR15MB3571.namprd15.prod.outlook.com
- (2603:10b6:a03:1f6::32)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:3041) by MWHPR14CA0057.namprd14.prod.outlook.com (2603:10b6:300:81::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.19 via Frontend Transport; Thu, 5 Nov 2020 21:16:52 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: fdf136f8-84e4-4bc9-a959-08d881d01e63
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2454:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB24547B8B74DB5616D97F83E7D5EE0@BYAPR15MB2454.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: XLen14Rq4fW54mM795UmpBqWOO+f/ZG1fxYwqWcee+/OQbiYUT0AJrMj0iRqeLV73/UhXUIX2307Xq0LYqBlu6Jmag2RdMPfcDn4SsjibTiok8i9RLSLh+EELBTiwv9NmEGsJ5Q8aNPV9+wqRQhqPcEqJIu6KGV67dukXkpvCAgjvSIrY9FU1h012AynbA/No6NjDI+KT+7agf/MbYvP6u+0Te8gPfui/z4FrQV48WN5zkgEKLo56GDYLgN3R782kU1isDXk4uRntjzFG8qFkMDMkB5q7eWa6qE7CB3d5luFNxVF0/ZIslEhvO+7//CjWVQlr7AJYjRp2isWcthDGA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(136003)(366004)(346002)(396003)(376002)(66946007)(4326008)(7696005)(66476007)(52116002)(55016002)(5660300002)(66556008)(2906002)(16526019)(9686003)(186003)(86362001)(478600001)(6916009)(54906003)(8676002)(316002)(6506007)(1076003)(6666004)(4744005)(8936002)(83380400001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: WI6kTQMpgFC7PjMFcqc0GRO2vzdI0KxV3ukoYWSPDnywjiB38comOzdBKAGfVSvLyMkYtAiKl9xyC0vE0f8o8KcFrR9N4lanzJiOf8wWkmejMVvUWCEWkZZNHABxEekL4S0xmGzuAmmJOYzXNGSebMz/XxrskYGDm3S6T6TRLT3otc3kU4BDYct1TxvrvbN9cox8+bvPykVrDRwGKrVoUKGneb8YfBDNU5Pwyhv7iPg1aouBwZl9XBvpz292y8yir86q4PR/fhJ1aUf9bNOWdMVFPIbWR/zDJk9hY6cnlhFDuc4hmCYGgPU46G9f6F/IP+7ZuTJrVmE/8zMTa/xw9t3vuQTO/5p5KMuBlywc5ytSn/AsDgD0Mn4ogkAIy1pMBdx0xn7djBR4LsCu/60UlrbR3SrkLtgVe3+1Mx3jFfsFTOIseiW0qbln4H2w1hkG8C+NivtQxt10n+DQwhuNEtNBl0P+NcxUlCo6qTtD7NacXhGry+7MFzO8L4ej9tOypbf7g/fXOpK1RAiO63FuK7aFKRb4oXbYKBdNXD7R0O5AlyhG8e89gOGE3vjIVZYFZfFCA0Igub6q0tyHFGM/C7hzd4IN4T0NRQ4AtsmLe/EkNt/SlYUz58BouUs9KSJnFAIDFXiB9XxsUDcMAYZG4kQ7gOWqCPYHvJq3AKcnoA3os4Sa32kMvIERVki/MKWn
-X-MS-Exchange-CrossTenant-Network-Message-Id: fdf136f8-84e4-4bc9-a959-08d881d01e63
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Nov 2020 21:16:53.9681
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: XEG7vnH+Ehm7xZUz+mxYY2ZO1FC2ikjGzH73ErX59nXZiqLUhlH6pR6om8Do0c5D
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2454
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-05_15:2020-11-05,2020-11-05 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0
- priorityscore=1501 phishscore=0 suspectscore=5 impostorscore=0
- lowpriorityscore=0 adultscore=0 malwarescore=0 spamscore=0 mlxscore=0
- mlxlogscore=509 clxscore=1015 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2011050138
-X-FB-Internal: deliver
+        Thu, 5 Nov 2020 16:17:47 -0500
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70F1FC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 13:17:47 -0800 (PST)
+Received: by mail-qt1-x84a.google.com with SMTP id d21so1773129qtp.2
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 13:17:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=CWQ9UWAzLNf25Gm+QM5JO9SZkGZbnesBYaj1Ii23SGw=;
+        b=ntxuuYSIC//Ipv5nwAlhlbI0u2ggda1uKlvsAZpzhngQvdJ5Euw0QzjPIzMUnqk711
+         xPRn/iciXDVVRfKK+PBec4MFO87PHwxvg0uMnVYNNVa3jSMq6YyuRmjhHHglUk1Exnxe
+         iB6/5Ctz+2u/X1VxprIqJeLyV/G/968LJ16ay5VUty5Br/gG1FDTWEQUT8xWe2Lgnc21
+         9ZOCpcgjpEAjGVQ2g+e5vAO0FCz2eCrdVp/VzKWtTEnaCXxReKaJ7A6kULLy2l3VlUA0
+         9jjqv5XxPm4Qp7Ix5Dk7as94TeIo+0G0gIfqTT6nyNB0M5iRtbov7p8qLpcijJzqeGdD
+         Nz6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=CWQ9UWAzLNf25Gm+QM5JO9SZkGZbnesBYaj1Ii23SGw=;
+        b=tT8JMTcVNMZ7wrdq+TNBdCjQyMK4Wz/UJK0PV7V3EG4y5FnH5SnlrHDyOHmaduRoRK
+         jCNPvSfT4BgFNuy/hUJh3MkfwT6U5vr4676pqNU1Tp7scMqcTKlaRfPY6egMdhSGObl8
+         k4xBb7jsdbpO12R0EiS/cfVA1J1s1rGriuTq3jrTiP1cQrFsfVw7mnadoMfrNygHfG/t
+         YS+zsycAA/u8J0TSCvUEu6V8ZH/TrQHH46kECvaLoZPVC3g+TfSZHR0UOxnxbmxtWWmr
+         +fRhAFi98wfp02jGAtZonFOp1v/ARDBbXo3HlBmM8L4rZpyiLwZyk1EcdfzTLoozL8DM
+         Yl+A==
+X-Gm-Message-State: AOAM530OrKWjhWiTY4oSdRj6JsdoQyw58tQyTKyFLI4OeUpzn0gI2XKQ
+        GSbHDe5gLwAxxQiNxve5mausCVBA5ITsiDtcQaok
+X-Google-Smtp-Source: ABdhPJxpCI0j/7GQ1w8tNdmeM3i5b0/jhF/8/xh2whMjpj6P07qokJapGr3eV5NRC9G5uhsSSWqiOoVRYrNepOwWYpLj
+Sender: "axelrasmussen via sendgmr" <axelrasmussen@ajr0.svl.corp.google.com>
+X-Received: from ajr0.svl.corp.google.com ([2620:15c:2cd:203:f693:9fff:feef:c8f8])
+ (user=axelrasmussen job=sendgmr) by 2002:ad4:4041:: with SMTP id
+ r1mr2103637qvp.49.1604611066573; Thu, 05 Nov 2020 13:17:46 -0800 (PST)
+Date:   Thu,  5 Nov 2020 13:17:38 -0800
+Message-Id: <20201105211739.568279-1-axelrasmussen@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
+Subject: [PATCH v6 0/1] mmap_lock: add tracepoints around lock acquisition
+From:   Axel Rasmussen <axelrasmussen@google.com>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michel Lespinasse <walken@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Jann Horn <jannh@google.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Davidlohr Bueso <dbueso@suse.de>,
+        David Rientjes <rientjes@google.com>,
+        Laurent Dufour <ldufour@linux.ibm.com>
+Cc:     Yafang Shao <laoar.shao@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Axel Rasmussen <axelrasmussen@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 03:47:48PM +0100, KP Singh wrote:
-> From: KP Singh <kpsingh@google.com>
-> 
-> Similar to bpf_local_storage for sockets and inodes add local storage
-> for task_struct.
-> 
-> The life-cycle of storage is managed with the life-cycle of the
-> task_struct.  i.e. the storage is destroyed along with the owning task
-> with a callback to the bpf_task_storage_free from the task_free LSM
-> hook.
-> 
-> The BPF LSM allocates an __rcu pointer to the bpf_local_storage in
-> the security blob which are now stackable and can co-exist with other
-> LSMs.
-> 
-> The userspace map operations can be done by using a pid fd as a key
-> passed to the lookup, update and delete operations.
-> 
-> Acked-by: Song Liu <songliubraving@fb.com>
-> Signed-off-by: KP Singh <kpsingh@google.com>
-Acked-by: Martin KaFai Lau <kafai@fb.com>
+This patchset adds tracepoints around mmap_lock acquisition. This is useful so
+we can measure the latency of lock acquisition, in order to detect contention.
+
+This version is based on v5.10-rc2.
+
+Changes since v5:
+
+- Michel pointed out that rwsem_release in mmap_read_trylock_non_owner doesn't
+  actually release the lock, it just releases lockdep's ownership tracking. So,
+  it's incorrect to call __mmap_lock_trace_released there, so the call has been
+  removed.
+
+Changes since v4:
+
+- Redesigned buffer allocation to deal with the fact that a trace event might be
+  interrupted by e.g. an IRQ, for which a per-cpu buffer is insufficient. Now we
+  allocate one buffer per CPU * one buffer per context we might be called in
+  (currently 4: normal, irq, softirq, NMI). We have three trace events which can
+  potentially all be enabled, and all of which need a buffer; to avoid further
+  multiplying the number of buffers by 3, they share the same set of buffers,
+  which requires a spinlock + counter setup so we only allocate the buffers
+  once, and then free them only when *all* of the trace events are _unreg()-ed.
+
+Changes since v3:
+
+- Switched EXPORT_SYMBOL to EXPORT_TRACEPOINT_SYMBOL, removed comment.
+
+- Removed redundant trace_..._enabled() check.
+
+- Defined the three TRACE_EVENTs separately, instead of sharing an event class.
+  The tradeoff is 524 more bytes in .text, but the start_locking and released
+  events no longer have a vestigial "success" field, so they're simpler +
+  faster.
+
+Changes since v2:
+
+- Refactored tracing helper functions so the helpers are simper, but the locking
+  functinos are slightly more verbose. Overall, this decreased the delta to
+  mmap_lock.h slightly.
+
+- Fixed a typo in a comment. :)
+
+Changes since v1:
+
+- Functions renamed to reserve the "trace_" prefix for actual tracepoints.
+
+- We no longer measure the duration directly. Instead, users are expected to
+  construct a synthetic event which computes the interval between "start
+  locking" and "acquire returned".
+
+- The new helper for checking if tracepoints are enabled in a header is used to
+  avoid un-inlining any of the lock wrappers. This yields ~zero overhead if the
+  tracepoints aren't enabled, and therefore obviates the need for a Kconfig for
+  this change.
+
+[1] https://lore.kernel.org/patchwork/patch/1316922/
+[2] https://lore.kernel.org/patchwork/patch/1311996/
+
+Axel Rasmussen (1):
+  mmap_lock: add tracepoints around lock acquisition
+
+ include/linux/mmap_lock.h        |  94 +++++++++++++++-
+ include/trace/events/mmap_lock.h | 107 ++++++++++++++++++
+ mm/Makefile                      |   2 +-
+ mm/mmap_lock.c                   | 187 +++++++++++++++++++++++++++++++
+ 4 files changed, 384 insertions(+), 6 deletions(-)
+ create mode 100644 include/trace/events/mmap_lock.h
+ create mode 100644 mm/mmap_lock.c
+
+--
+2.29.1.341.ge80a0c044ae-goog
+
