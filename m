@@ -2,144 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 014D32A879C
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 20:52:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6C2A2A879A
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 20:52:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732207AbgKETwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 14:52:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38932 "EHLO
+        id S1732165AbgKETwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 14:52:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726996AbgKETwl (ORCPT
+        with ESMTP id S1726729AbgKETwi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 14:52:41 -0500
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89CE4C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 11:52:39 -0800 (PST)
-Received: by mail-oi1-x244.google.com with SMTP id k26so2960435oiw.0
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 11:52:39 -0800 (PST)
+        Thu, 5 Nov 2020 14:52:38 -0500
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54162C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 11:52:37 -0800 (PST)
+Received: by mail-qt1-x842.google.com with SMTP id n63so2002978qte.4
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 11:52:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2fYz8aC7HmU4RPQ9E3HZGpGRuATg2yAKc0UIFwqines=;
-        b=EyekuhPCdaUoyLZW3VaT9wjMJVHHKROZZrfHbqNDap7kYHxc8yqoAvBmyM5PmFAEqz
-         gMA3M41RIQQ7bRUsV0rUExPqD8wvkOJClI0sHF3wLpH2XvtqPlQKmf1FGHaLE69PkfVK
-         Lu0TgnW6bBDs1U8+yEYzgvbDq1ZSq1U34kDqs=
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=D3FDe8UgpelV/PGX9SMOeLG5mjEbJxZHhY57CHNG72Q=;
+        b=DnWyN+J6UKOatH9kcqext9yg/T0HnwNvZKOXMY6rrpb1vtwc86xZ7CZ4MzoC97qloL
+         +9yhZueWtt5TtaViz+Gn1A4qJCCnUjyKZp+gjn88/641Ny+dzmIPHvbL5j6QY5karlmC
+         HEcMMGirXcMppiX96wQYSgGtE0a/FdsUVfCka9eDnnJKfN/fMqNZuVQ4Pjp/RQD1GAvD
+         S034unryiLDBDlPxzfL2LnksLN2bECHndaGSymP0yA2bySOXlKN8/d0AEeqnswu+AIR7
+         sgImnD8TcCdaTDFfcnxCAGx9Xk/odgmlkJR+lAhUb0V17Y1qfHZBK5ckW382x5mvU4Yt
+         ++wA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2fYz8aC7HmU4RPQ9E3HZGpGRuATg2yAKc0UIFwqines=;
-        b=HC3nqOwEV+VAsl1G6xgdA3S2XqVy4pSBKVKI4SWUMsNuUCRhXye9nGsqQ7SIrP3+8q
-         NmQNferagVO31Qo+f5T6ZfE0ZiyTTMHkjph1bOxyEA1GBtuNSNVqXqbMXw2BVztpwWVa
-         AyjOQnxdPKEEDeW4zSJEldfa6NtqbrpR/AKHiiInT8DAqkI8ewBtmOAZhEycmvAd9lRS
-         /8p/FWE840BkAT20D13rR+1sG6oOvsiO+9KXq3lo8mtOgj+N4mhk9vg7WQhLHV6sUHcV
-         pErixwdwopY5LFjIn8fI9D4ZxMW8B7mp3EIsKKXahfc5OK0hImN2YauAjJQeEcobMUOx
-         lo0A==
-X-Gm-Message-State: AOAM533hNtQhq5qMqZRHrapiX4m85TLH/YvGiI5wrqMZOwxp7JcZYkNe
-        LJzGlay9mJzc/oOWfethOp2RpoWYN+YYdqWY
-X-Google-Smtp-Source: ABdhPJx4mt/uylc9mRqR7CkJSZnNuFJ0tbYmoO0SbP08XorWzhDep4cjie1753C2FleEl6mu+8bc/Q==
-X-Received: by 2002:aca:450a:: with SMTP id s10mr654402oia.104.1604605958775;
-        Thu, 05 Nov 2020 11:52:38 -0800 (PST)
-Received: from mail-oi1-f172.google.com (mail-oi1-f172.google.com. [209.85.167.172])
-        by smtp.gmail.com with ESMTPSA id j3sm601602oij.9.2020.11.05.11.52.37
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Nov 2020 11:52:38 -0800 (PST)
-Received: by mail-oi1-f172.google.com with SMTP id u127so2928188oib.6
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 11:52:37 -0800 (PST)
-X-Received: by 2002:aca:d07:: with SMTP id 7mr642992oin.15.1604605957416; Thu,
- 05 Nov 2020 11:52:37 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=D3FDe8UgpelV/PGX9SMOeLG5mjEbJxZHhY57CHNG72Q=;
+        b=ghGJoCpzBjUoyfX8RG4ZyAJyn2CFBJJZ+qiYBLXcHOwMSMFhlUqo4HRutAwCIGKk6h
+         Rd4dRxutfynPKqKFj0Rjh9eof7kxMXtBve4llM1NDLTmNiu2moXHOPxZErGNOy3RcP2D
+         Oe79gpGxDfuLyRVsrNr97KNTYtXt5ciPPKEWjIsItLAFY5Ecy1lCfZgKwuEXXa5c/4iN
+         3SIiGh0rhw6XFESfU2lJRQHwFH0EvJ8Y4xoZtScWOVcaw+HD6Sz97ammq1ejp+klnAuP
+         OewT7DghazJzmrdUYNGMHo/s9lQ6689SCNbrWvwQ+o7DG+nL5UZg3d1vaZy/FFiF3g8R
+         iBdA==
+X-Gm-Message-State: AOAM530efKyxWsmWOGSxhl6HO8BC3qOydqOZ83kZ/lIZgoM/Bl+2+spC
+        ezQw+Mz5x+/QaTUj/IgZVOSA5A==
+X-Google-Smtp-Source: ABdhPJzoo5ik4k55cSFQOg+psdZVvhFwyadZWQMIeDT78AYi13BNFOzssApa4HejRcRx/naX7+eEoQ==
+X-Received: by 2002:ac8:5ccf:: with SMTP id s15mr3697060qta.375.1604605956558;
+        Thu, 05 Nov 2020 11:52:36 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id r16sm1730106qkm.1.2020.11.05.11.52.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Nov 2020 11:52:35 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kalJD-000MwV-B2; Thu, 05 Nov 2020 15:52:35 -0400
+Date:   Thu, 5 Nov 2020 15:52:35 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Barry Song <song.bao.hua@hisilicon.com>
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linuxarm@huawei.com,
+        John Hubbard <jhubbard@nvidia.com>, Jan Kara <jack@suse.cz>,
+        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Shuah Khan <shuah@kernel.org>, Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH] mm/gup_benchmark: mark gup_benchmark_init as __init
+ function
+Message-ID: <20201105195235.GI36674@ziepe.ca>
+References: <20201103081016.16532-1-song.bao.hua@hisilicon.com>
 MIME-Version: 1.0
-References: <20201104180734.286789-1-ribalda@chromium.org> <20201104180734.286789-2-ribalda@chromium.org>
- <87769d554b4575bf9371380b013e66d70f1b21c4.camel@perches.com>
- <20201104214201.GH29958@pendragon.ideasonboard.com> <9d439214e8c83ebf7b93dccca2f848fbaf75b9d4.camel@perches.com>
- <CANiDSCvwvQUTt1QMQGGyZPag9VeHj4Ugmj8QJdBNtw00UNt6Pg@mail.gmail.com>
- <a00078e1311c09361e9e3357ba5dca037d7a8bff.camel@perches.com>
- <CANiDSCteVWin-Yy2ZVSMUJBPvJ-F0Ti+fEpi26apsDW0XXrpwg@mail.gmail.com>
- <79cad1a6a296761e672cfb0d85e7424fcb740032.camel@perches.com>
- <CANiDSCt8twP=JTkGjSVKdDwRhuHb7Jkv+=08U6oFdGtAjtrELw@mail.gmail.com> <92c85080ad6e1ded9c15479efe79a7eb7b0c7ee2.camel@perches.com>
-In-Reply-To: <92c85080ad6e1ded9c15479efe79a7eb7b0c7ee2.camel@perches.com>
-From:   Ricardo Ribalda <ribalda@chromium.org>
-Date:   Thu, 5 Nov 2020 20:52:26 +0100
-X-Gmail-Original-Message-ID: <CANiDSCsgOYod3gMnL6VNM4FAQyjU3V3CLw5scPi-aZ9HMmfcOQ@mail.gmail.com>
-Message-ID: <CANiDSCsgOYod3gMnL6VNM4FAQyjU3V3CLw5scPi-aZ9HMmfcOQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/7] media: uvcvideo: Use pr_cont() macro
-To:     Joe Perches <joe@perches.com>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201103081016.16532-1-song.bao.hua@hisilicon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joe
+On Tue, Nov 03, 2020 at 09:10:16PM +1300, Barry Song wrote:
+> gup_benchmark_init() is only called during initialization, mark it as
+> __init to save some memory.
+> 
+> Cc: John Hubbard <jhubbard@nvidia.com>
+> Cc: Jan Kara <jack@suse.cz>
+> Cc: Jérôme Glisse <jglisse@redhat.com>
+> Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+> Cc: Al Viro <viro@zeniv.linux.org.uk>
+> Cc: Christoph Hellwig <hch@infradead.org>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: Dave Chinner <david@fromorbit.com>
+> Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> Cc: Michal Hocko <mhocko@suse.com>
+> Cc: Mike Kravetz <mike.kravetz@oracle.com>
+> Cc: Shuah Khan <shuah@kernel.org>
+> Cc: Vlastimil Babka <vbabka@suse.cz>
+> Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
+> ---
+>  mm/gup_benchmark.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-On Thu, Nov 5, 2020 at 7:58 PM Joe Perches <joe@perches.com> wrote:
->
-> On Thu, 2020-11-05 at 10:50 +0100, Ricardo Ribalda wrote:
-> > Hi Joe
->
-> Rehi Ricardo.
->
-> > On Thu, Nov 5, 2020 at 12:59 AM Joe Perches <joe@perches.com> wrote:
-> > > It looks as if all the pr_cont uses in the code are odd and repetitive.
-> > >
-> > > Perhaps it'd be sensible to add something like:
-> >
-> > Looks like a great idea. Queued for my v3
-> >
-> > https://github.com/ribalda/linux/commit/1623b648331d7f69c8a9f6b199e119f6c8ee61c6
-> >
-> > I let Laurent decide if we should squash with the previous patch or not.
-> >
-> > Thanks!
-> >
-> > >
-> > > #define uvc_trace_cont(flag, fmt, ...)                                  \
-> > > do {                                                                    \
-> > >         if (uvc_trace_param & (flag))                                   \
-> > >                 pr_cont(fmt, ##__VA_ARGS__);                            \
-> > > } while (0)
-> > >
-> > > and change all the uses like:
-> > >
-> > > -               if (uvc_trace_param & UVC_TRACE_PROBE)
-> > > -                       printk(KERN_CONT " <- SU %d", entity->id);
-> > > +               uvc_trace_cont(UVC_TRACE_PROBE, " <- SU %d", entity->id);
-> > >
->
-> While I know the only uses of uvc_trace_cont are with UVC_TRACE_PROBE,
-> there are other existing uvc_trace(flag, ...) uses.
->
-> I think the uvc_trace_cont mechanism should require a flag and not
-> assume UVC_TRACE_PROBE so it's possible, even though currently unused,
-> for other uvc_trace calls to be continued.
->
-> $ git grep -Poh '\buvc_trace\(\w+' drivers/media | sort | uniq -c
->       1 uvc_trace(flag
->       6 uvc_trace(UVC_TRACE_CALLS
->       1 uvc_trace(UVC_TRACE_CAPTURE
->       2 uvc_trace(UVC_TRACE_CLOCK
->      15 uvc_trace(UVC_TRACE_CONTROL
->      42 uvc_trace(UVC_TRACE_DESCR
->       6 uvc_trace(UVC_TRACE_FORMAT
->      12 uvc_trace(UVC_TRACE_FRAME
->       7 uvc_trace(UVC_TRACE_PROBE
->       1 uvc_trace(UVC_TRACE_STATS
->       6 uvc_trace(UVC_TRACE_STATUS
->       4 uvc_trace(UVC_TRACE_SUSPEND
->       6 uvc_trace(UVC_TRACE_VIDEO
->
->
+Hardly seems worthwhile, but looks correct
 
-There you are:
+Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
 
-https://github.com/ribalda/linux/commit/7b3e2214dde38dc4534eec7399a4053881c2589e
-
-Thanks!
-
--- 
-Ricardo Ribalda
+Jason
