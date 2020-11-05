@@ -2,206 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BC582A7FAF
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 14:28:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A97E2A7FB7
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 14:32:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730677AbgKEN2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 08:28:30 -0500
-Received: from foss.arm.com ([217.140.110.172]:60898 "EHLO foss.arm.com"
+        id S1730445AbgKENc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 08:32:57 -0500
+Received: from mout.gmx.net ([212.227.17.21]:33151 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726874AbgKEN23 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 08:28:29 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3A994142F;
-        Thu,  5 Nov 2020 05:28:29 -0800 (PST)
-Received: from C02TD0UTHF1T.local (unknown [10.57.58.72])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D27643F719;
-        Thu,  5 Nov 2020 05:28:26 -0800 (PST)
-Date:   Thu, 5 Nov 2020 13:28:23 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Ionela Voinescu <ionela.voinescu@arm.com>
-Cc:     catalin.marinas@arm.com, sudeep.holla@arm.com, will@kernel.org,
-        souvik.chakravarty@arm.com, viresh.kumar@linaro.org,
-        valentin.schneider@arm.com, dietmar.eggemann@arm.com,
-        morten.rasmussen@arm.com, linux-arm-kernel@lists.infradead.org,
+        id S1726874AbgKENc5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 08:32:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1604583172;
+        bh=WXWqVPBjfnkHgVdtqc5dpKUrZCQoFGqzf6HcefboL6A=;
+        h=X-UI-Sender-Class:Date:From:To:Subject;
+        b=ltizhNKw2TpjPCiO5ZzXgJLYCSEg3GLYaVXCregAcLaKOHbTJTP2Jfjd1vJ2zNP3i
+         gdFfLn6k7CesLgZOfpHBeZr0paQTcSaBNTdSjtTHhDSUjK34qYkxoCnrBqcQgakfaj
+         JO1lLKpVXyiQs1we/JS4bLEwQ9zzAqjmFGsCEEDs=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from ls3530.fritz.box ([92.116.156.55]) by mail.gmx.com (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MpDJX-1jzL6h1Ahr-00qgWE; Thu, 05
+ Nov 2020 14:32:52 +0100
+Date:   Thu, 5 Nov 2020 14:32:50 +0100
+From:   Helge Deller <deller@gmx.de>
+To:     Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/3] arm64: implement CPPC FFH support using AMUs
-Message-ID: <20201105132823.GG82102@C02TD0UTHF1T.local>
-References: <20201105122702.13916-1-ionela.voinescu@arm.com>
- <20201105122702.13916-4-ionela.voinescu@arm.com>
+Subject: [PATCH] power: reset: Use printk format symbol resolver
+Message-ID: <20201105133250.GA26205@ls3530.fritz.box>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201105122702.13916-4-ionela.voinescu@arm.com>
+X-Provags-ID: V03:K1:S0kLow3uJ4eZPClWFH/wfLiJn+vLhrXnvk9I2mmBzSlSYvNvLQh
+ qzUd0IGY8sRGvy0fo6SnPvNiRx3ijPK/3HIbKyNfiRCsK9lQZr+GIea7ixvjSYWwyve7lYi
+ cIuSmJwV8z6N5lAZcJA+0s6KtezATpTYDVXQRWXKX6queMztzkuOzgXHZZoHekZ0q+BtPxt
+ Px5b1Vg8tUslOglcuzcwQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:oDPAsaUk6aw=:y7CFXBLNOvYYmSTJDZuyZ0
+ +b13BklFuX7SyIjA/dU3lLzS7ruybY9NKY3XJAtXVMQPm/dkiYUzzRdqLmU0HKlmSlZa2GWLr
+ ekoZxVfHKbwI9jOK8Cf1Nca7s3soM8kBEOLt03s4+dbzNb0yMZu7ut+4n8na7ij2qg/9UzCrv
+ pnRtA9kTcK19ljps/qN7Fq+/WJeJrz1l5K9SRSTbeEt46fwYkGhJJRBCQFCm2UeuHFLA747ED
+ PUEF/okTr/+QFQUzZa6mqofYHgo6yKyouHGXAFgGgbcfpziz8JJA9n5VJS8sLIEV/JOPY49mQ
+ KqXLtw7n9o3TZls86myOk9gKMJ0Jkp/AQoOU90FDtZ2bbgGPS2p98nVcSTcP0QZ1/gfneF+i6
+ tpdrQ8ibmUWwNoq+f1wU0wbMbKDz1R1nFxxRl+ZH8c3ZgA/BsFykqvR9GKG8sS37UNrw3W5rl
+ 3UomUp5BOwh58LKTOBZxV3IcCW7cMDIOj7h7b3aRamhKntCxeUu9dsK+fmI2uw1qLobkyxd+3
+ d5i73LIjNu0vjtZUjooC6ohWRVwhJSFUTKgE9RW3hK7JlrAA4KDuObT55YdiOYeTMV6hiIp5D
+ UIfzO9CqcyjpRENdl3tljhgPrDE53LXo9/uL0h4KdiFhCMGjyeul6sGQTplz3bW0SJF7ptMxf
+ ETwxiw5QrSV7TJQ1UNOi87b1nSBi2tbPNJXeRhyBm0V3YvnZzceCkqPUvLMDTc8cQXp7vluiK
+ dar+0ONrFkayG3jm357jYfwBqeHzAHVWStXqMJxaK9bYVokfQMN5//pvSQdCS4B5nFCltv0WA
+ 3IFL7KhHtGP3o9irLnnNgvAeZ1Q1LPu1h+54qqcx0klLUqaKDvaEqj7uQ0EmBhlsfIhznH2fr
+ te16iohuRluJ5eYgPUaQ==
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 12:27:02PM +0000, Ionela Voinescu wrote:
-> If Activity Monitors (AMUs) are present, two of the counters can be used
-> to implement support for CPPC's (Collaborative Processor Performance
-> Control) delivered and reference performance monitoring functionality
-> using FFH (Functional Fixed Hardware).
-> 
-> Given that counters for a certain CPU can only be read from that CPU,
-> while FFH operations can be called from any CPU for any of the CPUs, use
-> smp_call_function_single() to provide the requested values.
-> 
-> Therefore, depending on the register addresses, the following values
-> are returned:
->  - 0x0 (DeliveredPerformanceCounterRegister): AMU core counter
->  - 0x1 (ReferencePerformanceCounterRegister): AMU constant counter
-> 
-> The use of Activity Monitors is hidden behind the generic
-> {read,store}_{corecnt,constcnt}() functions.
-> 
-> Read functionality for these two registers represents the only current
-> FFH support for CPPC. Read operations for other register values or write
-> operation for all registers are unsupported. Therefore, keep CPPC's FFH
-> unsupported if no CPUs have valid AMU frequency counters. For this
-> purpose, the get_cpu_with_amu_feat() is introduced.
-> 
-> Signed-off-by: Ionela Voinescu <ionela.voinescu@arm.com>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> ---
->  arch/arm64/include/asm/cpufeature.h |  3 ++
->  arch/arm64/kernel/cpufeature.c      | 10 ++++++
->  arch/arm64/kernel/topology.c        | 54 +++++++++++++++++++++++++++++
->  3 files changed, 67 insertions(+)
-> 
-> diff --git a/arch/arm64/include/asm/cpufeature.h b/arch/arm64/include/asm/cpufeature.h
-> index 751bd9d3376b..f5b44ac354dc 100644
-> --- a/arch/arm64/include/asm/cpufeature.h
-> +++ b/arch/arm64/include/asm/cpufeature.h
-> @@ -772,6 +772,9 @@ static inline bool cpu_has_amu_feat(int cpu)
->  }
->  #endif
->  
-> +/* Get a cpu that supports the Activity Monitors Unit (AMU) */
-> +extern int get_cpu_with_amu_feat(void);
-> +
->  static inline unsigned int get_vmid_bits(u64 mmfr1)
->  {
->  	int vmid_bits;
-> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-> index 1142970e985b..6b08ae74ad0a 100644
-> --- a/arch/arm64/kernel/cpufeature.c
-> +++ b/arch/arm64/kernel/cpufeature.c
-> @@ -1526,6 +1526,11 @@ bool cpu_has_amu_feat(int cpu)
->  	return cpumask_test_cpu(cpu, &amu_cpus);
->  }
->  
-> +int get_cpu_with_amu_feat(void)
-> +{
-> +	return cpumask_any(&amu_cpus);
-> +}
-> +
->  static void cpu_amu_enable(struct arm64_cpu_capabilities const *cap)
->  {
->  	if (has_cpuid_feature(cap, SCOPE_LOCAL_CPU)) {
-> @@ -1554,6 +1559,11 @@ static bool has_amu(const struct arm64_cpu_capabilities *cap,
->  
->  	return true;
->  }
-> +#else
-> +int get_cpu_with_amu_feat(void)
-> +{
-> +	return nr_cpu_ids;
-> +}
->  #endif
->  
->  #ifdef CONFIG_ARM64_VHE
-> diff --git a/arch/arm64/kernel/topology.c b/arch/arm64/kernel/topology.c
-> index 764fdb0f947b..7d25087deaa5 100644
-> --- a/arch/arm64/kernel/topology.c
-> +++ b/arch/arm64/kernel/topology.c
-> @@ -154,6 +154,9 @@ void update_freq_counters_refs(void)
->  
->  static inline bool freq_counters_valid(int cpu)
->  {
-> +	if ((cpu >= nr_cpu_ids) || !cpumask_test_cpu(cpu, cpu_present_mask))
-> +		return false;
-> +
->  	if (!cpu_has_amu_feat(cpu)) {
->  		pr_debug("CPU%d: counters are not supported.\n", cpu);
->  		return false;
-> @@ -330,3 +333,54 @@ void topology_scale_freq_tick(void)
->  	this_cpu_write(arch_core_cycles_prev, core_cnt);
->  	this_cpu_write(arch_const_cycles_prev, const_cnt);
->  }
-> +
-> +#ifdef CONFIG_ACPI_CPPC_LIB
-> +#include <acpi/cppc_acpi.h>
+Instead of looking up a symbol name by hand, use the %ps printk format
+specifier.
 
-As mentioned on patch 1, I think it'd be better to open-code the smp
-call functions here, e.g.
+Signed-off-by: Helge Deller <deller@gmx.de>
 
-static void cpu_read_corecnt(void *val)
-{
-	*(u64 *)val = read_corecnt()
-}
+diff --git a/drivers/power/reset/qnap-poweroff.c b/drivers/power/reset/qna=
+p-poweroff.c
+index 52b7dc61d870..0ddf7f25f7b8 100644
+=2D-- a/drivers/power/reset/qnap-poweroff.c
++++ b/drivers/power/reset/qnap-poweroff.c
+@@ -14,7 +14,6 @@
+ #include <linux/module.h>
+ #include <linux/platform_device.h>
+ #include <linux/serial_reg.h>
+-#include <linux/kallsyms.h>
+ #include <linux/of.h>
+ #include <linux/io.h>
+ #include <linux/clk.h>
+@@ -75,7 +74,6 @@ static int qnap_power_off_probe(struct platform_device *=
+pdev)
+ 	struct device_node *np =3D pdev->dev.of_node;
+ 	struct resource *res;
+ 	struct clk *clk;
+-	char symname[KSYM_NAME_LEN];
 
-static void cpu_read_constcnt(void *val)
-{
-	*(u64 *)val = read_constcnt()
-}
+ 	const struct of_device_id *match =3D
+ 		of_match_node(qnap_power_off_of_match_table, np);
+@@ -104,10 +102,8 @@ static int qnap_power_off_probe(struct platform_devic=
+e *pdev)
 
-... as they're only needed here and it's much clearer what they're
-doing in-context. I think that would als oget rid of the warning you
-mention in the cover letter.
+ 	/* Check that nothing else has already setup a handler */
+ 	if (pm_power_off) {
+-		lookup_symbol_name((ulong)pm_power_off, symname);
+-		dev_err(&pdev->dev,
+-			"pm_power_off already claimed %p %s",
+-			pm_power_off, symname);
++		dev_err(&pdev->dev, "pm_power_off already claimed for %ps",
++			pm_power_off);
+ 		return -EBUSY;
+ 	}
+ 	pm_power_off =3D qnap_power_off;
+diff --git a/drivers/power/reset/syscon-poweroff.c b/drivers/power/reset/s=
+yscon-poweroff.c
+index 4d6923b102b6..ed58bdf41e27 100644
+=2D-- a/drivers/power/reset/syscon-poweroff.c
++++ b/drivers/power/reset/syscon-poweroff.c
+@@ -6,7 +6,6 @@
+  * Author: Moritz Fischer <moritz.fischer@ettus.com>
+  */
 
-Thanks,
-Mark.
+-#include <linux/kallsyms.h>
+ #include <linux/delay.h>
+ #include <linux/io.h>
+ #include <linux/notifier.h>
+@@ -34,7 +33,6 @@ static void syscon_poweroff(void)
 
-> +
-> +static inline
-> +int counters_read_on_cpu(int cpu, smp_call_func_t func, u64 *val)
-> +{
-> +	if (!cpu_has_amu_feat(cpu))
-> +		return -EOPNOTSUPP;
-> +
-> +	smp_call_function_single(cpu, func, val, 1);
-> +
-> +	return 0;
-> +}
-> +
-> +/*
-> + * Refer to drivers/acpi/cppc_acpi.c for the description of the functions
-> + * below.
-> + */
-> +bool cpc_ffh_supported(void)
-> +{
-> +	return freq_counters_valid(get_cpu_with_amu_feat());
-> +}
-> +
-> +int cpc_read_ffh(int cpu, struct cpc_reg *reg, u64 *val)
-> +{
-> +	int ret = -EOPNOTSUPP;
-> +
-> +	switch ((u64)reg->address) {
-> +	case 0x0:
-> +		ret = counters_read_on_cpu(cpu, store_corecnt, val);
-> +		break;
-> +	case 0x1:
-> +		ret = counters_read_on_cpu(cpu, store_constcnt, val);
-> +		break;
-> +	}
-> +
-> +	if (!ret) {
-> +		*val &= GENMASK_ULL(reg->bit_offset + reg->bit_width - 1,
-> +				    reg->bit_offset);
-> +		*val >>= reg->bit_offset;
-> +	}
-> +
-> +	return ret;
-> +}
-> +
-> +int cpc_write_ffh(int cpunum, struct cpc_reg *reg, u64 val)
-> +{
-> +	return -EOPNOTSUPP;
-> +}
-> +#endif /* CONFIG_ACPI_CPPC_LIB */
-> -- 
-> 2.17.1
-> 
+ static int syscon_poweroff_probe(struct platform_device *pdev)
+ {
+-	char symname[KSYM_NAME_LEN];
+ 	int mask_err, value_err;
+
+ 	map =3D syscon_regmap_lookup_by_phandle(pdev->dev.of_node, "regmap");
+@@ -65,10 +63,8 @@ static int syscon_poweroff_probe(struct platform_device=
+ *pdev)
+ 	}
+
+ 	if (pm_power_off) {
+-		lookup_symbol_name((ulong)pm_power_off, symname);
+-		dev_err(&pdev->dev,
+-		"pm_power_off already claimed %p %s",
+-		pm_power_off, symname);
++		dev_err(&pdev->dev, "pm_power_off already claimed for %ps",
++			pm_power_off);
+ 		return -EBUSY;
+ 	}
+
