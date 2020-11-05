@@ -2,130 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3388E2A860F
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 19:25:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CA362A8616
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 19:27:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731677AbgKESZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 13:25:20 -0500
-Received: from cloudserver094114.home.pl ([79.96.170.134]:65252 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726214AbgKESZU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 13:25:20 -0500
-Received: from 89-64-88-191.dynamic.chello.pl (89.64.88.191) (HELO kreacher.localnet)
- by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.514)
- id 4ff6dc8dccf7dc57; Thu, 5 Nov 2020 19:25:18 +0100
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux PM <linux-pm@vger.kernel.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: [PATCH 2/2] cpufreq: intel_pstate: Take target_min and target_max into account
-Date:   Thu, 05 Nov 2020 19:25:10 +0100
-Message-ID: <3200924.ySlC381xRO@kreacher>
-In-Reply-To: <7417968.Ghue05m4RV@kreacher>
-References: <7417968.Ghue05m4RV@kreacher>
+        id S1731591AbgKES1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 13:27:16 -0500
+Received: from foss.arm.com ([217.140.110.172]:39630 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726214AbgKES1Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 13:27:16 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 02CC01474;
+        Thu,  5 Nov 2020 10:27:15 -0800 (PST)
+Received: from bogus (unknown [10.57.22.191])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BEDDE3F719;
+        Thu,  5 Nov 2020 10:27:13 -0800 (PST)
+Date:   Thu, 5 Nov 2020 18:27:07 +0000
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Jim Quinlan <james.quinlan@broadcom.com>
+Cc:     Rob Herring <robh@kernel.org>,
+        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 1/2] dt-bindings: Add bindings for BrcmSTB SCMI
+ mailbox driver
+Message-ID: <20201105182707.l4xx3wu2ch22qysi@bogus>
+References: <20201029195913.5927-1-james.quinlan@broadcom.com>
+ <20201029195913.5927-2-james.quinlan@broadcom.com>
+ <20201104215050.GA4180546@bogus>
+ <CA+-6iNw1Z1dj8oFn8DdyVPuMUP-3+n9sKXuWYWo2rfPo5j4dkA@mail.gmail.com>
+ <CAL_JsqJQA_VLhez8y6HVCdFB2DZ85KoDZ1=RtbU4Mw98aQRSxA@mail.gmail.com>
+ <CA+-6iNznMY78tJBeNrtyOy58DTKKPGxfgA0Pu2Rxx42YDJWV1w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+-6iNznMY78tJBeNrtyOy58DTKKPGxfgA0Pu2Rxx42YDJWV1w@mail.gmail.com>
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Thu, Nov 05, 2020 at 10:28:25AM -0500, Jim Quinlan wrote:
+> On Thu, Nov 5, 2020 at 10:13 AM Rob Herring <robh@kernel.org> wrote:
+> >
+> > On Wed, Nov 4, 2020 at 4:04 PM Jim Quinlan <james.quinlan@broadcom.com> wrote:
+> > >
+> > > On Wed, Nov 4, 2020 at 4:50 PM Rob Herring <robh@kernel.org> wrote:
+> > > >
+> > > > On Thu, Oct 29, 2020 at 03:59:06PM -0400, Jim Quinlan wrote:
+> > > > > Bindings are added.  Only one interrupt is needed because
+> > > > > we do not yet employ the SCMI p2a channel.
+> > > >
+> > > > I still don't understand what this is. To repeat from v1: I thought SCMI
+> > > > was a mailbox consumer, not provider?
+> > >
+> > > Hi Rob,
+> > >
+> > > I'm not sure where I am implying that SCMI is a mailbox provider?
+> > > Should I not mention "SCMI" in the subject line?
+> > >
+> > > This is just a mailbox driver, "consumed" by SCMI.    Our SCMI DT node
+> > > looks like this:
+> > >
+> > > brcm_scmi_mailbox: brcm_scmi_mailbox@0 {
+> > >         #mbox-cells = <1>;
+> > >         compatible = "brcm,brcmstb-mbox";
+> > > };
+> > >
+> > > brcm_scmi@0 {
+> > >         compatible = "arm,scmi";
+> > >         mboxes = <&brcm_scmi_mailbox 0>;;
+> > >         mbox-names = "tx";
+> > >         shmem = <&NWMBOX>;
+> > >         /* ... */
+> > > };
+> >
+> > Okay, that makes more sense. Though it seems like this is just adding
+> > a pointless level of indirection to turn an interrupt into a mailbox.
+> > There's nothing more to 'the mailbox' is there?
+>
+> Correct.  Although you can see that it uses both interrupts and SMC
+> calls to get the job done.
+>
 
-Make the intel_pstate driver take the new target_min and target_max
-cpufreq policy parameters into accout when it operates in the passive
-mode with HWP enabled, so as to fix the "powersave" governor behavior
-in that case (currently, HWP is allowed to scale the performance all
-the way up to the policy max limit when the "powersave" governor is
-used, but it should be contrained to the policy min limit then).
+I was against having 2 separate solutions and would have raised my concern
+again. As I mentioned earlier, either extend what we have or move the
+existing SMC solution into this mailbox driver. Having 2 different solution
+for this just because you have extra interrupt to deal with is definite
+NACK from me as I had previously mentioned.
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/cpufreq/intel_pstate.c |   32 ++++++++++++++++++++++----------
- 1 file changed, 22 insertions(+), 10 deletions(-)
+> > So why not either
+> > allow SCMI to have an interrupt directly
+> Not sure here -- perhaps the SCMI folks have an answer?
+>
 
-Index: linux-pm/drivers/cpufreq/intel_pstate.c
-===================================================================
---- linux-pm.orig/drivers/cpufreq/intel_pstate.c
-+++ linux-pm/drivers/cpufreq/intel_pstate.c
-@@ -2527,7 +2527,7 @@ static void intel_cpufreq_trace(struct c
- }
- 
- static void intel_cpufreq_adjust_hwp(struct cpudata *cpu, u32 target_pstate,
--				     bool fast_switch)
-+				     u32 target_max, bool fast_switch)
- {
- 	u64 prev = READ_ONCE(cpu->hwp_req_cached), value = prev;
- 
-@@ -2539,7 +2539,7 @@ static void intel_cpufreq_adjust_hwp(str
- 	 * field in it, so opportunistically update the max too if needed.
- 	 */
- 	value &= ~HWP_MAX_PERF(~0L);
--	value |= HWP_MAX_PERF(cpu->max_perf_ratio);
-+	value |= HWP_MAX_PERF(target_max);
- 
- 	if (value == prev)
- 		return;
-@@ -2562,19 +2562,31 @@ static void intel_cpufreq_adjust_perf_ct
- 			      pstate_funcs.get_val(cpu, target_pstate));
- }
- 
--static int intel_cpufreq_update_pstate(struct cpudata *cpu, int target_pstate,
--				       bool fast_switch)
-+static int intel_cpufreq_update_pstate(struct cpufreq_policy *policy,
-+				       int target_pstate, bool fast_switch)
- {
-+	struct cpudata *cpu = all_cpu_data[policy->cpu];
- 	int old_pstate = cpu->pstate.current_pstate;
- 
--	target_pstate = intel_pstate_prepare_request(cpu, target_pstate);
- 	if (hwp_active) {
--		intel_cpufreq_adjust_hwp(cpu, target_pstate, fast_switch);
--		cpu->pstate.current_pstate = target_pstate;
-+		int min_pstate = max(cpu->pstate.min_pstate, cpu->min_perf_ratio);
-+		int max_pstate = max(min_pstate, cpu->max_perf_ratio);
-+		int target_min = DIV_ROUND_UP(policy->target_min,
-+					      cpu->pstate.scaling);
-+		int target_max = policy->target_max / cpu->pstate.scaling;
-+
-+		target_min = clamp_t(int, target_min, min_pstate, max_pstate);
-+		target_max = clamp_t(int, target_max, min_pstate, max_pstate);
-+
-+		target_pstate = clamp_t(int, target_pstate, target_min, target_max);
-+
-+		intel_cpufreq_adjust_hwp(cpu, target_pstate, target_max, fast_switch);
- 	} else if (target_pstate != old_pstate) {
-+		target_pstate = intel_pstate_prepare_request(cpu, target_pstate);
-+
- 		intel_cpufreq_adjust_perf_ctl(cpu, target_pstate, fast_switch);
--		cpu->pstate.current_pstate = target_pstate;
- 	}
-+	cpu->pstate.current_pstate = target_pstate;
- 
- 	intel_cpufreq_trace(cpu, fast_switch ? INTEL_PSTATE_TRACE_FAST_SWITCH :
- 			    INTEL_PSTATE_TRACE_TARGET, old_pstate);
-@@ -2609,7 +2621,7 @@ static int intel_cpufreq_target(struct c
- 		break;
- 	}
- 
--	target_pstate = intel_cpufreq_update_pstate(cpu, target_pstate, false);
-+	target_pstate = intel_cpufreq_update_pstate(policy, target_pstate, false);
- 
- 	freqs.new = target_pstate * cpu->pstate.scaling;
- 
-@@ -2628,7 +2640,7 @@ static unsigned int intel_cpufreq_fast_s
- 
- 	target_pstate = DIV_ROUND_UP(target_freq, cpu->pstate.scaling);
- 
--	target_pstate = intel_cpufreq_update_pstate(cpu, target_pstate, true);
-+	target_pstate = intel_cpufreq_update_pstate(policy, target_pstate, true);
- 
- 	return target_pstate * cpu->pstate.scaling;
- }
+I did ask why can't you extend the existing SCMI/SMC binding to add this
+as optional feature ?
 
+> > or have a generic irq mailbox driver?
 
+Fine with this too.
 
+> The SCMI implementation doesn't offer a generic irq mailbox driver
+> AFAICT.  The SCMI folks recently provided  an "smc transport" driver
+> in "drivers/firmware/arm_scmi/smc.c" -- it is close to what we need
+> but is missing interrupts.
+
+IIRC, you were using SGIs and it can't be represented and use today as
+is ? Am  I missing something or anything has changed ?
+
+--
+Regards,
+Sudeep
