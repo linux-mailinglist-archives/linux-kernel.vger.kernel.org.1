@@ -2,107 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 372692A7AB5
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 10:39:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B029E2A7AB8
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 10:40:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726706AbgKEJjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 04:39:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55604 "EHLO
+        id S1726779AbgKEJke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 04:40:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725308AbgKEJji (ORCPT
+        with ESMTP id S1725308AbgKEJke (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 04:39:38 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AA89C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 01:39:38 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id x13so1019273pfa.9
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 01:39:38 -0800 (PST)
+        Thu, 5 Nov 2020 04:40:34 -0500
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0836C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 01:40:33 -0800 (PST)
+Received: by mail-lf1-x143.google.com with SMTP id l2so1364410lfk.0
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 01:40:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=microgate-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=oWc2JpKVx8F8Nkb3UQGZG1Q/MGfCQA65/EO0uJuKYUk=;
-        b=H/nfvoy5/2pegQCbmtLoKeHnSqT2rHlUCeU456TMKEHsC3q09uoulnrpqzTdWBtm43
-         mZtJ9AMTg2kEctsXGd9jW9cyywao/9vr3bd7ZaHbHB17bljvEakYxt0ozyFTo7Oly3SE
-         GpPcHEKg1DgDn2LKuigaHTlaDp+gSg8B2Vf4tZyy1t/VbU3TAwkbjuFvdNVaNBanVuAZ
-         fUnau2tchnXu3T5q/wg8YcviUUmB9+eVqNTl1AFWMJ7t339OEQqB33olr6PxiPxXmCEH
-         GCPEvhJL2GzuAlPbNx3NL+8pgx+D1VEYoZWA8AqrKUzgECucX+oL1CM7VLrSTinHY+Zc
-         sMew==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3hWsdnqZNjQDKpL2B785A/d5X3xt4A0wwW61OXRwY/c=;
+        b=vazstrmuUGxShFcPSjK99UNszN8ebLO9vYsswJWPOI0ji007BIxdt1z8ZOgCPtgL0U
+         8fQ+lGVXy9yNBtPo6ecTCGNpM6ApZsTBHHdnJ8K78acvaIz7HvPnXP+fGAmNVv1/072v
+         FzDEx07N1z7LiNMI50uDbiVBjR0upi+6Ch0pMOzuqWaqp5o0mZeoBaFBcJXGQ5AtgOGH
+         vL2clxCTwdTJQvI79Ir21mh82m26V9sgmgn6fnvm611SmhTl/DFZiAT2XFhInpof2WZg
+         VsLekC5EGBhggYbUYjBqVVL9zXyIIvOUBjU636//1r9gbQZHt6QM3GnOym2A0tBfXRFU
+         25OQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=oWc2JpKVx8F8Nkb3UQGZG1Q/MGfCQA65/EO0uJuKYUk=;
-        b=tQ9MqqVKQ3ORrkpoaSH+SI6C7VtjxJEVJVP9eCoykSH+BuXLa7pr0jzYY+5lVC/nSg
-         UHC3Wj+erpjVYfeijhUpTNocpmC0H0XabALfJCi9BiWR7tOlRXp4MPSVYOy88qOPUhRo
-         7LTpc27c7oLRvlIbCgug3d2Cpljrx+c0f8qna7gqzzsQK88JHKJkmOhYw0A671FBta27
-         gX9B9AFfspHfW6pPSD5TTAyH2Ei+XFYYNxqslGnghY9lkuI8vCiAtjzgRtOCKiYxr1tR
-         kgGnTQ98mXjLwdpQLkxxenFYLaG1yonsJLiibunNFpQe5+jO+068GmvHwvNkMA7oFeTY
-         CChw==
-X-Gm-Message-State: AOAM532IPXhzCbiQIqicQo+8/a849HkWk1qmEXfuEfeDfWI+Cg3jDvjN
-        6LbIEspbuCy4eP92tzCsmG88VQ==
-X-Google-Smtp-Source: ABdhPJzaKR47DT0UpoeoRWqcm5CjST9B3zAKqI+5lwBm/08wEpJskZVFrja8eJ1Ca5LiIZ2/DUHMHA==
-X-Received: by 2002:a17:90a:8d81:: with SMTP id d1mr1598317pjo.174.1604569178187;
-        Thu, 05 Nov 2020 01:39:38 -0800 (PST)
-Received: from [192.168.1.77] (c-208-53-111-167.customer.broadstripe.net. [208.53.111.167])
-        by smtp.gmail.com with ESMTPSA id l5sm992562pjm.22.2020.11.05.01.39.37
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 05 Nov 2020 01:39:37 -0800 (PST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.15\))
-Subject: Re: [PATCH 27/36] tty: synclinkmp: Mark never checked 'readval' as
- __always_unused
-From:   Paul Fulghum <paulkf@microgate.com>
-In-Reply-To: <a95f8d0d-28ef-7351-cdbb-7da5ad8aa9ad@kernel.org>
-Date:   Thu, 5 Nov 2020 01:39:36 -0800
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        "linux-kernel@vger.kernel.org Mailing List" 
-        <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <69E3975E-A4D0-4472-80F0-9FAB2E0024FA@microgate.com>
-References: <20201104193549.4026187-1-lee.jones@linaro.org>
- <20201104193549.4026187-28-lee.jones@linaro.org>
- <0a4043ee-dad5-7691-8c67-db73d3c12f52@kernel.org>
- <20201105084341.GZ4488@dell>
- <a95f8d0d-28ef-7351-cdbb-7da5ad8aa9ad@kernel.org>
-To:     Jiri Slaby <jirislaby@kernel.org>
-X-Mailer: Apple Mail (2.3445.104.15)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3hWsdnqZNjQDKpL2B785A/d5X3xt4A0wwW61OXRwY/c=;
+        b=hrq4ohUyqR+q12cnXtXk6qN2vi1JfyipI7mWPnQ/8SlqZMxYcVao95VupQWeDejdKo
+         iL8PDhwCya7IvDPFTXKbXvhHhoDmI1t3cuI54ABC9DV53rf1sFjksjGcIYTaFqd3nJc9
+         zpDQ6JwIWdup6Ol9FRVw+i5lr1ZZlRxHkWlWBhq3QLbuK7+JiHP7j0lJGEg3LGuH8jTl
+         OkJ9zO0nC4CSO3BnLFu3weaR+eT3L4ZGegHtVxk3fKeWRh1fDGyTM35tV5D6h+tPhLIg
+         srHimxxsIY56P8+ufue3oK3auAuMlSu3JSi6tQJVt+t6Hn1aZ3pTazIOl4vzHSO8JXxc
+         hwKg==
+X-Gm-Message-State: AOAM5315GXVvRr058b8BRM0yrOC6YpB3uxjQclFZbej1dmPR4en4kvEd
+        C8R0QVHfv9Ga9Sc8EQDXeoYymeTh5Pac7wpdXJYPRzyFVI4d9A==
+X-Google-Smtp-Source: ABdhPJyICsojisuhbFFVcr5m6NwN6GBYE+M1nU/kA+i4WxJTNQcL76qloXWk05dLRYrco2B48Gb7uez07HDSSCe9VMs=
+X-Received: by 2002:a05:6512:3225:: with SMTP id f5mr605124lfe.441.1604569232429;
+ Thu, 05 Nov 2020 01:40:32 -0800 (PST)
+MIME-Version: 1.0
+References: <20201019141008.871177-1-daniel@0x0f.com> <20201019141008.871177-4-daniel@0x0f.com>
+In-Reply-To: <20201019141008.871177-4-daniel@0x0f.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 5 Nov 2020 10:40:21 +0100
+Message-ID: <CACRpkdZNr6sDqJhg3KcX0bCbcd8fh2gXFYbS1r2H2Sq+vGqjUw@mail.gmail.com>
+Subject: Re: [PATCH v2 3/5] gpio: msc313: MStar MSC313 GPIO driver
+To:     Daniel Palmer <daniel@0x0f.com>, Marc Zyngier <maz@kernel.org>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, arm-kernel@lists.infradead.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Oct 19, 2020 at 4:10 PM Daniel Palmer <daniel@0x0f.com> wrote:
 
+> This adds a driver that supports the GPIO block found in
+> MStar/SigmaStar ARMv7 SoCs.
+>
+> The controller seems to support 128 lines but where they
+> are wired up differs between chips and no currently known
+> chip uses anywhere near 128 lines so there needs to be some
+> per-chip data to collect together what lines actually have
+> physical pins attached and map the right names to them.
+>
+> The core peripherals seem to use the same lines on the
+> currently known chips but the lines used for the sensor
+> interface, lcd controller etc pins seem to be totally
+> different between the infinity and mercury chips
+>
+> The code tries to collect all of the re-usable names,
+> offsets etc together so that it's easy to build the extra
+> per-chip data for other chips in the future.
+>
+> So far this only supports the MSC313 and MSC313E chips.
+>
+> Support for the SSC8336N (mercury5) is trivial to add once
+> all of the lines have been mapped out.
+>
+> Signed-off-by: Daniel Palmer <daniel@0x0f.com>
 
-> On Nov 5, 2020, at 1:10 AM, Jiri Slaby <jirislaby@kernel.org> wrote:
->=20
-> OK, let the loop alone. I would bet a half a pig that noone is able to =
-test this driver. But one has to write this for someone to raise and =
-admit they are still using it. In fact, there are _4_ google replies to =
-"Microgate Corporation" "SyncLink Multiport Adapter" "lspci".
+This looks really nice, the generic hierarchical IRQchip does
+its job very well here.
 
+I saw you would send another version but this already looks
+like merge material.
 
+Certainly any remaining issues can be ironed out in-tree.
 
-The hardware used with synclink.c and synclinkmp.c has not been =
-manufactured for 15 years and was low volume. The chances of either =
-driver still being in use is very low. Not even Microgate (me) has the =
-ability to test either anymore (no hardware). I don=E2=80=99t know the =
-policy about driver removal, but I think both could be removed without =
-upsetting anyone.
+> +config GPIO_MSC313
+> +       bool "MStar MSC313 GPIO support"
+> +       default y if ARCH_MSTARV7
+> +       depends on ARCH_MSTARV7
+> +       select GPIOLIB_IRQCHIP
 
-synclink_gt.c is still in production and the driver still actively used.
+select IRQ_DOMAIN_HIERARCHY
 
-If there are no objections to removing the the old drivers =
-(synclink.c/synclink_mp.c) I could make a patch to do so tomorrow (it is =
-1:30am here now). Nothing eliminates niggling warnings like removing =
-dead code.
+since you are dependent on this.
 
+(Else people will soon report problems with randconfig...)
 
+> +/* The parent interrupt controller needs the GIC interrupt type set to GIC_SPI
+> + * so we need to provide the fwspec. Essentially gpiochip_populate_parent_fwspec_twocell
+> + * that puts GIC_SPI into the first cell.
+> + */
+> +static void *msc313_gpio_populate_parent_fwspec(struct gpio_chip *gc,
+> +                                            unsigned int parent_hwirq,
+> +                                            unsigned int parent_type)
+> +{
+> +       struct irq_fwspec *fwspec;
+> +
+> +       fwspec = kmalloc(sizeof(*fwspec), GFP_KERNEL);
+> +       if (!fwspec)
+> +               return NULL;
+> +
+> +       fwspec->fwnode = gc->irq.parent_domain->fwnode;
+> +       fwspec->param_count = 3;
+> +       fwspec->param[0] = GIC_SPI;
+> +       fwspec->param[1] = parent_hwirq;
+> +       fwspec->param[2] = parent_type;
+> +
+> +       return fwspec;
+> +}
 
+Clever. Looping in Marc Z so he can say if this looks allright to him.
 
+> +static int msc313e_gpio_child_to_parent_hwirq(struct gpio_chip *chip,
+> +                                            unsigned int child,
+> +                                            unsigned int child_type,
+> +                                            unsigned int *parent,
+> +                                            unsigned int *parent_type)
+> +{
+> +       struct msc313_gpio *priv = gpiochip_get_data(chip);
+> +       unsigned int offset = priv->gpio_data->offsets[child];
+> +       int ret = -EINVAL;
+> +
+> +       /* only the spi0 pins have interrupts on the parent
+> +        * on all of the known chips and so far they are all
+> +        * mapped to the same place
+> +        */
+> +       if (offset >= OFF_SPI0_CZ && offset <= OFF_SPI0_DO) {
+> +               *parent_type = child_type;
+> +               *parent = ((offset - OFF_SPI0_CZ) >> 2) + 28;
+> +               ret = 0;
+> +       }
+> +
+> +       return ret;
+> +}
 
+Neat!
 
+> +static int msc313_gpio_probe(struct platform_device *pdev)
+> +{
+> +       const struct msc313_gpio_data *match_data;
+> +       struct msc313_gpio *gpio;
+> +       struct gpio_chip *gpiochip;
+> +       struct gpio_irq_chip *gpioirqchip;
+> +       struct resource *res;
+> +       struct irq_domain *parent_domain;
+> +       struct device_node *parent_node;
+> +       int ret;
+> +
+> +       match_data = of_device_get_match_data(&pdev->dev);
 
+There is a lot of referencing &pdev->dev.
 
+I would add a local variable like this:
 
+struct device *dev = &pdev->dev
+
+and replace all &pdev->dev with that. It will make the code more
+compact and easier to read.
+
+Yours,
+Linus Walleij
