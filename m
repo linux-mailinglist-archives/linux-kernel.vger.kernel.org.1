@@ -2,142 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15F292A7CA3
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 12:11:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 925F52A7CB0
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 12:13:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729787AbgKELLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 06:11:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41816 "EHLO
+        id S1730070AbgKELNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 06:13:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726400AbgKELLb (ORCPT
+        with ESMTP id S1730073AbgKELNF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 06:11:31 -0500
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B867DC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 03:11:31 -0800 (PST)
-Received: by mail-oi1-x243.google.com with SMTP id w145so1255814oie.9
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 03:11:31 -0800 (PST)
+        Thu, 5 Nov 2020 06:13:05 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F430C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 03:13:05 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id t14so1219474pgg.1
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 03:13:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=p0c7rtJJXojaI2Rh6wYkHrsZ57LiUlQdb8npxhv/hGc=;
-        b=UgAG4I4ReO+wn1wDSqRbyoCy/IJUjdK11POtyqZqUfpFft8GE5GL+OCgDZNIMC2ShI
-         Ak0T5FghDwJA9fsgRUMCNqvCZ5ROdofuxkSrFoWhSKgehoYNxd8xAA0kUt+88ZgFMdBX
-         xgsxR0H5vGTRnPChZLgASs3o9ItRAZ6/W6Y7TEIlhnSDqu8jPyq7LyRZbke4U7dM6iLN
-         FxDmcUCC8Kcmtvm2sajgAxr+hcGGJFTTEjTiXHHgQS9xy5QRr9+mozw1suvBw1OUxCTE
-         m5zOLb1SNNObTwE/7RoI99npnj5OJ7hGTDK75JI2+K70tGiaVWVeWGxAC90Z4pKny19h
-         p+Xg==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=BcYYFtNRltYDE4hy/KAkGjdjtprJ1Trm7OKV+MnN8cU=;
+        b=u8YwcS6hVr8BwxXTTAlNESEmEgsS3lF6OTr1XaUbam4I/edC3qndBdjg6Uy8iz2Q4Q
+         hYlNAs1/XTw3soHv/si3tXmCczuo3mNDte6nlbwM878k4WF91kDK1iYVRDtibkoROSKj
+         yjfCZIqB3MO3ncbEJATqL58LXrnls4IqwABwbbGOdNIV9RGTDrMZptXqbnjj+V1N6WqI
+         HBRHng10F8RPuKJ6CJ1uCINPNb6xUgsC8CsubJFIRFcKAf9XUt6Zu0y7tcW3MCJO9JyS
+         huRJpus5BnMDQprBpyeMBR2Zh8O7Sqy9/tsu93YAUw3ok0YtILTEkI4ZmB3ZgeuvMkLC
+         Ze4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=p0c7rtJJXojaI2Rh6wYkHrsZ57LiUlQdb8npxhv/hGc=;
-        b=WaL70P6ALQ0jbg9Elwn8gifdhiW40YztNtVfdyYiYzGrZC4zOo4ah4nPW6vjEncgED
-         N6U+6vl5qJrCvHoGbRUtuYnUNWZBqjMwWoCgI7sJ4UPYRWD2+uS9dipaNhNzXP6mXS55
-         Iu+XVV4hqt8VBzM0sgGxeBFAoVJbVw3u+N2/AIQx+QU5xWzSC4YoYUNbakBPfGpWb4Rn
-         FrRiQoJsTz6KwywtxhhGZtDRUj/57bk6Sn1rg9mcU87Jnmi4NKV4V7Xh3jY1GJSSFUmT
-         Pb7p71Mt/gDy2DEP10tZpI12pv2fBYsKLVyN46ZTT8cTkPx4XqmVkqg9DLovI5zCOMGl
-         Cmag==
-X-Gm-Message-State: AOAM5300jToZqzk5FekvreTecvKKkXMT+G9AR1Qnq+r8XA3jV/DbjBE/
-        UfG0dN/sYlq2aDOVdHTPYpMJAQgcMkfiffLYme9oDg==
-X-Google-Smtp-Source: ABdhPJw/bKjx3NB4HnHeMfp7dUNwz337/g01wK6iBNiTZauyMStIy5uzOAY0RMwaytsPEAZJM2mVackSG5B6M6pOREs=
-X-Received: by 2002:aca:a988:: with SMTP id s130mr1214512oie.172.1604574690901;
- Thu, 05 Nov 2020 03:11:30 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=BcYYFtNRltYDE4hy/KAkGjdjtprJ1Trm7OKV+MnN8cU=;
+        b=cmnMyEbTRcjcU/lX3wO41gaZ0X4dJ+7xmHbiLMKxc/DZ4QtcYJltvTNgBxIYoxMCBH
+         j9HXJWxHNxmuZyGoqrpkkQuNK/g+JApzUq3TEH8/qQgUv/aEWr0dBduCSzqRELIbGOIS
+         domtplaBuJy32E/TSiA3DtAqBLeOWJGbN2CdnEOc9dqdtZpsQmB+rf6YHebYU/Cj6WAo
+         ytmc2n4BbxIqgZNInt3S5/97iDyQcgl/lkmfzSZrVWMEO4JjEU2R7I8uSlx86lJ9Amd0
+         3d7Hh3hx8amZNEP35kvEuENIJXpBzDkFKLXignU8HxeB5SS/cUFHCwnlJd8Ukia56i9Z
+         a/BA==
+X-Gm-Message-State: AOAM5313kGqBlbkzXqKnYGCGmkHq1MqHSLjWYWiZDUfX1K0KzhprgWhV
+        tgcQBbMLxg2DiVWWg3Q0nMvXeQ==
+X-Google-Smtp-Source: ABdhPJwnuuk4daHbZCdYn/aCWQKiS7cX8bO0eWv5v6ODss+cRR8E8lvUDPwS9VwogQBWTDgNXP1wow==
+X-Received: by 2002:a17:90a:e391:: with SMTP id b17mr1925329pjz.209.1604574784247;
+        Thu, 05 Nov 2020 03:13:04 -0800 (PST)
+Received: from localhost ([122.172.12.172])
+        by smtp.gmail.com with ESMTPSA id f204sm2296698pfa.189.2020.11.05.03.13.02
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 05 Nov 2020 03:13:03 -0800 (PST)
+Date:   Thu, 5 Nov 2020 16:43:01 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Peter Chen <Peter.Chen@nxp.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        driverdevel <devel@driverdev.osuosl.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        linux-pwm@vger.kernel.org,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>
+Subject: Re: [PATCH v1 00/30] Introduce core voltage scaling for NVIDIA
+ Tegra20/30 SoCs
+Message-ID: <20201105111301.2hxfx2tnmf2saakp@vireshk-i7>
+References: <20201104234427.26477-1-digetx@gmail.com>
+ <CAPDyKFr7qTU2RPhA_ZrbCayoTTNUEno1zdmvmv+8HBe-Owrfeg@mail.gmail.com>
+ <20201105100603.skrirm7uke4s2xyl@vireshk-i7>
+ <CAPDyKFoCJt5MBSKBJ8n1OAMdVsWHdwXTx0zFEcZw_F_gQ6Ug0w@mail.gmail.com>
+ <20201105104009.oo4dc6a2gdcwduhk@vireshk-i7>
+ <CAPDyKFpQG98d6foc1U6fp3YEBdZ1vLqY9cmWxpUwXoKgDn+ojQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201105092133.2075331-1-elver@google.com> <20201105105241.GC82102@C02TD0UTHF1T.local>
-In-Reply-To: <20201105105241.GC82102@C02TD0UTHF1T.local>
-From:   Marco Elver <elver@google.com>
-Date:   Thu, 5 Nov 2020 12:11:19 +0100
-Message-ID: <CANpmjNP+QOJrfJHC2P-9gFfB6wdnr9c9gPDgVFdgzbrCcG-nog@mail.gmail.com>
-Subject: Re: [PATCH] kfence: Use pt_regs to generate stack trace on faults
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Jann Horn <jannh@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPDyKFpQG98d6foc1U6fp3YEBdZ1vLqY9cmWxpUwXoKgDn+ojQ@mail.gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 5 Nov 2020 at 11:52, Mark Rutland <mark.rutland@arm.com> wrote:
-> On Thu, Nov 05, 2020 at 10:21:33AM +0100, Marco Elver wrote:
-> > Instead of removing the fault handling portion of the stack trace based
-> > on the fault handler's name, just use struct pt_regs directly.
-> >
-> > Change kfence_handle_page_fault() to take a struct pt_regs, and plumb it
-> > through to kfence_report_error() for out-of-bounds, use-after-free, or
-> > invalid access errors, where pt_regs is used to generate the stack
-> > trace.
-> >
-> > If the kernel is a DEBUG_KERNEL, also show registers for more
-> > information.
-> >
-> > Suggested-by: Mark Rutland <mark.rutland@arm.com>
-> > Signed-off-by: Marco Elver <elver@google.com>
->
-> Wow; I wasn't expecting this to be put together so quickly, thanks for
-> doing this!
->
-> From a scan, this looks good to me -- just one question below.
->
-> > diff --git a/include/linux/kfence.h b/include/linux/kfence.h
-> > index ed2d48acdafe..98a97f9d43cd 100644
-> > --- a/include/linux/kfence.h
-> > +++ b/include/linux/kfence.h
-> > @@ -171,6 +171,7 @@ static __always_inline __must_check bool kfence_free(void *addr)
-> >  /**
-> >   * kfence_handle_page_fault() - perform page fault handling for KFENCE pages
-> >   * @addr: faulting address
-> > + * @regs: current struct pt_regs (can be NULL, but shows full stack trace)
-> >   *
-> >   * Return:
-> >   * * false - address outside KFENCE pool,
->
-> > @@ -44,8 +44,12 @@ static int get_stack_skipnr(const unsigned long stack_entries[], int num_entries
-> >               case KFENCE_ERROR_UAF:
-> >               case KFENCE_ERROR_OOB:
-> >               case KFENCE_ERROR_INVALID:
-> > -                     is_access_fault = true;
-> > -                     break;
-> > +                     /*
-> > +                      * kfence_handle_page_fault() may be called with pt_regs
-> > +                      * set to NULL; in that case we'll simply show the full
-> > +                      * stack trace.
-> > +                      */
-> > +                     return 0;
->
-> For both the above comments, when/where is kfence_handle_page_fault()
-> called with regs set to NULL? I couldn't spot that in this patch, so
-> unless I mised it I'm guessing that's somewhere outside of the patch
-> context?
+On 05-11-20, 11:56, Ulf Hansson wrote:
+> On Thu, 5 Nov 2020 at 11:40, Viresh Kumar <viresh.kumar@linaro.org> wrote:
+> > Btw, how do we identify if it is a power domain or a regulator ?
 
-Right, currently it's not expected to happen, but I'd like to permit
-this function being called not from fault handlers, for use-cases like
-this:
+To be honest, I was a bit afraid and embarrassed to ask this question,
+and was hoping people to make fun of me in return :)
 
- https://lkml.kernel.org/r/CANpmjNNxAvembOetv15FfZ=04mpj0Qwx+1tnn22tABaHHRRv=Q@mail.gmail.com
+> Good question. It's not a crystal clear line in between them, I think.
 
-The revised recommendation when trying to get KFENCE to give us more
-information about allocation/free stacks after refcount underflow
-(like what Paul was trying to do) would be to call
-kfence_handle_page_fault(addr, NULL).
+And I was relieved after reading this :)
 
-> If this is a case we don't expect to happen, maybe add a WARN_ON_ONCE()?
+> A power domain to me, means that some part of a silicon (a group of
+> controllers or just a single piece, for example) needs some kind of
+> resource (typically a power rail) to be enabled to be functional, to
+> start with.
 
-While it's currently not expected, I don't see why we should make this
-WARN and limit the potential uses of the API if it works just fine if
-we pass regs set to NULL. Although arguably the name
-kfence_handle_page_fault() might be confusing for such uses, for now,
-until more widespread use is evident (if at all) I'd say let's keep
-as-is, but simply not prevent such use-cases.
+Isn't this what a part of regulator does as well ? i.e.
+enabling/disabling of the regulator or power to a group of
+controllers.
 
-Thanks,
--- Marco
+Over that the regulator does voltage/current scaling as well, which
+normally the power domains don't do (though we did that in
+performance-state case).
+
+> If there are operating points involved, that's also a
+> clear indication to me, that it's not a regular regulator.
+
+Is there any example of that? I hope by OPP you meant both freq and
+voltage here. I am not sure if I know of a case where a power domain
+handles both of them.
+
+> Maybe we should try to specify this more exactly in some
+> documentation, somewhere.
+
+I think yes, it is very much required. And in absence of that I think,
+many (or most) of the platforms that also need to scale the voltage
+would have modeled their hardware as a regulator and not a PM domain.
+
+What I always thought was:
+
+- Module that can just enable/disable power to a block of SoC is a
+  power domain.
+
+- Module that can enable/disable as well as scale voltage is a
+  regulator.
+
+And so I thought that this patchset has done the right thing. This
+changed a bit with the qcom stuff where the IP to be configured was in
+control of RPM and not Linux and so we couldn't add it as a regulator.
+If it was controlled by Linux, it would have been a regulator in
+kernel for sure :)
+
+-- 
+viresh
