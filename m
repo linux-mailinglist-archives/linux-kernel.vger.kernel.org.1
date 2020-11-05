@@ -2,761 +2,1073 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10A472A82A7
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 16:52:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 954952A82A9
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 16:52:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731212AbgKEPvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 10:51:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57434 "EHLO
+        id S1731411AbgKEPvx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 10:51:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730660AbgKEPvt (ORCPT
+        with ESMTP id S1731282AbgKEPvv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 10:51:49 -0500
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9B28C0613CF;
-        Thu,  5 Nov 2020 07:51:48 -0800 (PST)
-Received: by mail-oi1-x244.google.com with SMTP id m13so2120381oih.8;
-        Thu, 05 Nov 2020 07:51:48 -0800 (PST)
+        Thu, 5 Nov 2020 10:51:51 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9ECFC0613D3
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 07:51:50 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id 62so1644559pgg.12
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 07:51:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=zVDBpA4pJP6gyCV2Lu6Ba2zQAg/I5af95fNgot9wSQs=;
-        b=oRWzBa+UDIpufaKKi/PbO/KQU87a4c4Riwdd2/ZuVBj41iKTXE9VLDlx5qHMIdT5H+
-         6dKFZPcaPx5Bnb8AvRWooNL23bp1+rgdnW8hzksOvoxbufzNXP8iyw54I2nLfBGVylgp
-         /fSey4Atum9up1qstzvIx7CwAV/OUGli6SBlmrqExr63zLELH2759IiQyptu26jFpliO
-         vwRooPjjDd9ZWi+w3HXshtlBQXQk1d3f10m3PJArsCtNSlU+oAsvnm/O69FwGt8QYBHd
-         DtaMxzlaJzY3LiOzbbqcGaYxLde4eoEKSTriPkPdWy1YNIhSl7RSDV9KdIBz/N9StVj9
-         I3TQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=t0MgSjOn/wGmrTl4Q24Qg05xjgvYesJjDU1n0uv/eYY=;
+        b=M0OiRzgcryU1Z3MUHbbC8PcM+/VJR9Q3Z+JwhQyUqGaBYrQ1Nm4YbxH4+CboTH41xI
+         u02ZgIOT4fWscXrxj4sVZeFpJMHvp8TnAd0hb2g1sIUN7EgJNnmUZZLnOARbUs2WJuNT
+         r4STB/PGNBmQuYmbq3LCDLoStvLNBV7/DVXwfMQrGSqX5dVRkGcvujB2qmHu7w3k26Lr
+         u5bv62CFv9RWwRDOeGMTvjcdtAHjih+M4gQCHB0e1Wak3bedXmy/lPssFzn/g/srYMxj
+         J8ZGCD8mXlTyhq5E/Llh57FyPgrl+xous0fuusXCzxMdi7O4cjOAu6erVfV+fJGFFPVo
+         G+cQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=zVDBpA4pJP6gyCV2Lu6Ba2zQAg/I5af95fNgot9wSQs=;
-        b=iP6zwQDucdM+y7wl/kSl6L0txxCFXFwD5GG0NQG6vTMOyXdS5WrLmRhSf8fGglU5Xz
-         ScpMxTEg3jXQC+rWX1ve7VBBidtCj+YaJJS8KWqUQPlZwpwOZbwS1T1Hpv/MQoV+hZU8
-         HoSSJzDqYST7P4yuamVnzqeebtDomypYjdaSQRrZGWrnJURKNrmlSAnKwfXYEQ7epLIa
-         FY+XqKRKV1pYLrQgUmL6UPKyia+XjyJ+BCTE5GCpeCFM692o0MRrO47Mr5jGhlziopFu
-         89c5QzKZPvsVwz+c4CZLDh/Hg4sMl72hOH+oXwrUux9Ay7denx+aGSdKZctufRa7tPdn
-         HRyQ==
-X-Gm-Message-State: AOAM531xus1xrVDpUdWxogmIxEYS16fUZDCutz0r6vWkESryg60KHMen
-        yHbcwsMkAOOhpQoYQ+T+HE70qLSaZ1c=
-X-Google-Smtp-Source: ABdhPJxozVe0v4z9I3pTjauJZV2nTfTTfOyRs/kgQnb5Ba0ULRgg5kF35xCFN8XuFQ0gtxYCKM4//Q==
-X-Received: by 2002:aca:ef56:: with SMTP id n83mr40144oih.30.1604591508186;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=t0MgSjOn/wGmrTl4Q24Qg05xjgvYesJjDU1n0uv/eYY=;
+        b=Du0uiRlQ/uMOakIiP/F9kK0EgZW1sCV6I7gz7tWQQI2ac+JqHXWRQkUDoWzyXfRFnE
+         EAnw2Skk+q0Ew3L3A3QFiUQwmX5RrcSD9pPu0bEH8a4gzENK3E/J3DJfqW+frLUWIsO/
+         9RqC05VbO/TcojW8nDQ1/ym5xXO1awj7WO7iY90a/ZhBIr3bEj2I7NKp/Sw/qKDfjo7k
+         wY7M/L/jCodu5Hyf8eSdQqB1MW9uK2VSx/McvloIUDDb/Dc4HgJ/oNLQ73BiGgHeoyoV
+         WfclBdjZT+NQJK7GRqMLtK3uccRAz4kwLXy7Nt/vKHIUsJCOI9TyIbxe6fUfAgLG7io8
+         tDsw==
+X-Gm-Message-State: AOAM5301h5nYh9MdDpzzNJT11wkd845DNPvwn8RPXIkNDhRO1m0HgiSp
+        8NL8Mdi5XpOMN6W0f/V4WFC3vw==
+X-Google-Smtp-Source: ABdhPJzVBfUMajgszUG3VuYAb7oBNLYf/WAIZxrPFqPSd2/uHCGheBTeHKNHbaAO/+HjR74PhxQ+pQ==
+X-Received: by 2002:a62:1d10:0:b029:163:deb3:5df2 with SMTP id d16-20020a621d100000b0290163deb35df2mr3223926pfd.68.1604591510181;
+        Thu, 05 Nov 2020 07:51:50 -0800 (PST)
+Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
+        by smtp.gmail.com with ESMTPSA id i17sm3095707pfa.183.2020.11.05.07.51.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Thu, 05 Nov 2020 07:51:48 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id w70sm445330oiw.29.2020.11.05.07.51.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Nov 2020 07:51:47 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH v7] hwmon:Driver for Delta power supplies Q54SJ108A2
-To:     "xiao.mx.ma" <734056705@qq.com>, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org, xiao.mx.ma@deltaww.com,
-        jiajia.feng@deltaww.com
-References: <tencent_7B0E2D4FB415F442C4AC487FB38AEE193D06@qq.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <bf745a0b-e69d-dfdc-c7cd-27defd8906fe@roeck-us.net>
-Date:   Thu, 5 Nov 2020 07:51:45 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+Date:   Thu, 5 Nov 2020 08:51:47 -0700
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Ben Levinsky <BLEVINSK@xilinx.com>
+Cc:     "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v22 5/5] remoteproc: Add initial zynqmp R5 remoteproc
+ driver
+Message-ID: <20201105155147.GA3038632@xps15>
+References: <20201103182339.14286-1-ben.levinsky@xilinx.com>
+ <20201103182339.14286-6-ben.levinsky@xilinx.com>
+ <20201104212938.GE2893396@xps15>
+ <BYAPR02MB4407B09EA377A5DB4DC7330EB5EF0@BYAPR02MB4407.namprd02.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <tencent_7B0E2D4FB415F442C4AC487FB38AEE193D06@qq.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BYAPR02MB4407B09EA377A5DB4DC7330EB5EF0@BYAPR02MB4407.namprd02.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/5/20 1:35 AM, xiao.mx.ma wrote:
-> From: "xiao.ma" <xiao.mx.ma@deltaww.com>
+Hi,
+
+On Wed, Nov 04, 2020 at 09:57:40PM +0000, Ben Levinsky wrote:
+> Hi Mathieu,
 > 
-> The <drivers/hwmon/pmbus/q54sj108a2.c> provides a driver for Delta's modules.
-
-"This driver supports ..." or similar is sufficient. We don't need a reference
-to the file name in the commit message.
-
-> Currently supports Q54SJ108A2 series and other series will continue to be
-> added in the future.
+> > -----Original Message-----
+> > From: Mathieu Poirier <mathieu.poirier@linaro.org>
+> > Sent: Wednesday, November 4, 2020 1:30 PM
+> > To: Ben Levinsky <BLEVINSK@xilinx.com>
+> > Cc: michael.auchter@ni.com; Stefano Stabellini <stefanos@xilinx.com>;
+> > devicetree@vger.kernel.org; linux-remoteproc@vger.kernel.org; linux-
+> > kernel@vger.kernel.org; linux-arm-kernel@lists.infradead.org
+> > Subject: Re: [PATCH v22 5/5] remoteproc: Add initial zynqmp R5 remoteproc
+> > driver
+> > 
+> > On Tue, Nov 03, 2020 at 10:23:39AM -0800, Ben Levinsky wrote:
+> > > R5 is included in Xilinx Zynq UltraScale MPSoC so by adding this
+> > > remotproc driver, we can boot the R5 sub-system in different 2
+> > > configurations -
+> > > 	* split
+> > > 	* lock-step
+> > >
+> > > The Xilinx R5 Remoteproc Driver boots the R5's via calls to the Xilinx
+> > > Platform Management Unit that handles the R5 configuration, memory
+> > access
+> > > and R5 lifecycle management. The interface to this manager is done in this
+> > > driver via zynqmp_pm_* function calls.
+> > >
+> > > Signed-off-by: Wendy Liang <wendy.liang@xilinx.com>
+> > > Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+> > > Signed-off-by: Ed Mooring <ed.mooring@xilinx.com>
+> > > Signed-off-by: Jason Wu <j.wu@xilinx.com>
+> > > Signed-off-by: Ben Levinsky <ben.levinsky@xilinx.com>
+> > > ---
+> > > - update documented param list for zynqmp_r5_probe
+> > > - remove use-after-free lines in zynqmp_r5_probe,
+> > >   zynqmp_r5_remoteproc_probe, and zynqmp_r5_remoteproc_remove
+> > > - update path for error handling in zynqmp_r5_probe and
+> > >   zynqmp_r5_remoteproc_probe
+> > > - as the mbox properties are optional, update zynqmp_r5_rproc_kick
+> > >   so that the mailbox functionality only occurs if these
+> > >   properties are provided
+> > > ---
+> > >  drivers/remoteproc/Kconfig                |   8 +
+> > >  drivers/remoteproc/Makefile               |   1 +
+> > >  drivers/remoteproc/zynqmp_r5_remoteproc.c | 778
+> > ++++++++++++++++++++++
+> > 
+> > Many of my comments from V19 have not been addressed and as such I will
+> > not move
+> > foward with this set.  Moreover I will not consider a new revision before
+> > November 18th.
+> > 
 > 
-> Signed-off-by: xiao.ma <xiao.mx.ma@deltaww.com>
-
-I still can't figure out why your patches don't make it to any mailing lists.
-Are you sending them encoded ? I see the patch is really sent from
-
-From: "xiao.mx.ma" <734056705@qq.com>
-
-No idea if that is the reason. Is that Fom address rejected for some reason ?
-
-Either case, you'll need to send your patch in a way that it is listed in patchwork,
-and received by mailing lists. I won't be able to accept it otherwise.
-
-> ---
+> Thank you for the advance notice. 
 > 
-> Notes:
->     Patch v2 changelog:
->     	Add delta.rst in Documentation/hwmon.
->     	Tristate "DELTA" in Kconfig is changed to "DELTA_POWER_SUPPLIED".
->     	Modify code: drop the excessive empty lines, correct the comment content, adjust indent, remove extra brackets.
->     Patch v3 changelog:
->     	Add delta.rst to Documentation/hwmon/index.rst.
->     	Tristate "DELTA_POWER_SUPPLIES" in Kconfig is changed to "Delta Power Supplies".
->     Patch v4 changelog:
->     	Correct the spelling "Temperature" in the delta.rst.
->     	Add Write_protect when write command VOUT_OV_RESPONSE and IOUT_OC_FAULT_RESPONSE.
->     Patch v5 changelog:
->     	Add some non-standard attributes in sysfs system.
->     Patch v6 changelog:
->     	delta.c and delta.rst are renamed to q54sj108a2.c and q54sj108a2.rst.
->     	Add q54sj108a2 to index.rst.
->     	Tristate in Kconfig is changed to "Delta Power Supplies Q54SJ108A2".
->     	The non-standard attributes are added to debugfs.
->     Patch v7 changelog:
->     	Use standard fuctions bin2hex and hex2bin.
->     	The return of debugfs write is changed to count.
->     	Drop the error checking of debugfs functions.
->     	Use probe_new fuction.
->     	Remove the .remove fuction.
+> As for V19 comments that are unresolved, can you expand on which ones?
+> From the v19 review here is a list of the comments with your comments surrounded by quotes
+> and how I had thought these were addressed. 
 > 
->  Documentation/hwmon/index.rst      |   1 +
->  Documentation/hwmon/q54sj108a2.rst |  52 ++++
->  drivers/hwmon/pmbus/Kconfig        |   9 +
->  drivers/hwmon/pmbus/Makefile       |   1 +
->  drivers/hwmon/pmbus/q54sj108a2.c   | 437 +++++++++++++++++++++++++++++
->  5 files changed, 500 insertions(+)
->  create mode 100644 Documentation/hwmon/q54sj108a2.rst
->  create mode 100755 drivers/hwmon/pmbus/q54sj108a2.c
+> "
+> As far as I can see zynqmp_r5_rproc::dt_node is not needed
+> " 
 > 
-> diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
-> index b797db738225..4bb680b3c7ea 100644
-> --- a/Documentation/hwmon/index.rst
-> +++ b/Documentation/hwmon/index.rst
-> @@ -148,6 +148,7 @@ Hardware Monitoring Kernel Drivers
->     powr1220
->     pxe1610
->     pwm-fan
-> +   q54sj108a2
->     raspberrypi-hwmon
->     sch5627
->     sch5636
-> diff --git a/Documentation/hwmon/q54sj108a2.rst b/Documentation/hwmon/q54sj108a2.rst
-> new file mode 100644
-> index 000000000000..a575bdfa7c18
-> --- /dev/null
-> +++ b/Documentation/hwmon/q54sj108a2.rst
-> @@ -0,0 +1,52 @@
-> +Kernel driver q54sj108a2
-> +=====================
-> +
-> +Supported chips:
-> +
-> +  * DELTA Q54SJ108A2NCAH, Q54SJ108A2NCDH, Q54SJ108A2NCPG, Q54SJ108A2NCPH
-> +
-> +    Prefix: 'Q54SJ108A2'
-> +
-> +    Addresses scanned: -
-> +
-> +    Datasheet: https://filecenter.delta-china.com.cn/products/download/01/0102/datasheet/DS_Q54SJ108A2.pdf
-> +
-> +Authors:
-> +    Xiao.ma <xiao.mx.ma@deltaww.com>
-> +
-> +
-> +Description
-> +-----------
-> +
-> +This driver implements support for DELTA Q54SJ108A2NCAH, Q54SJ108A2NCDH, 
-> +Q54SJ108A2NCPG, and Q54SJ108A2NCPH 1/4 Brick DC/DC Regulated Power Module 
-> +with PMBus support.
-> +
-> +The driver is a client driver to the core PMBus driver.
-> +Please see Documentation/hwmon/pmbus.rst for details on PMBus client drivers.
-> +
-> +
-> +Usage Notes
-> +-----------
-> +
-> +This driver does not auto-detect devices. You will have to instantiate the
-> +devices explicitly. Please see Documentation/i2c/instantiating-devices.rst for
-> +details.
-> +
-> +
-> +Sysfs entries
-> +-------------
-> +
-> +===================== ===== ==================================================
-> +curr1_alarm           RO    Output current alarm
-> +curr1_input           RO    Output current
-> +curr1_label           RO    'iout1'
-> +in1_alarm             RO    Input voltage alarm
-> +in1_input             RO    Input voltage
-> +in1_label             RO    'vin'
-> +in2_alarm             RO    Output voltage alarm
-> +in2_input             RO    Output voltage
-> +in2_label             RO    'vout1'
-> +temp1_alarm           RO    Temperature alarm
-> +temp1_input           RO    Chip temperature
-> +===================== ===== ==================================================
-> diff --git a/drivers/hwmon/pmbus/Kconfig b/drivers/hwmon/pmbus/Kconfig
-> index a25faf69fce3..01de280820ee 100644
-> --- a/drivers/hwmon/pmbus/Kconfig
-> +++ b/drivers/hwmon/pmbus/Kconfig
-> @@ -229,6 +229,15 @@ config SENSORS_PXE1610
->  	  This driver can also be built as a module. If so, the module will
->  	  be called pxe1610.
->  
-> +config SENSORS_Q54SJ108A2
-> +	tristate "Delta Power Supplies Q54SJ108A2"
-> +	help
-> +	  If you say yes here you get hardware monitoring support for Delta
-> +	  Q54SJ108A2 series Power Supplies.
-> +
-> +	  This driver can also be built as a module. If so, the module will
-> +	  be called q54sj108a2.
-> +
->  config SENSORS_TPS40422
->  	tristate "TI TPS40422"
->  	help
-> diff --git a/drivers/hwmon/pmbus/Makefile b/drivers/hwmon/pmbus/Makefile
-> index 4c97ad0bd791..a50122cd455b 100644
-> --- a/drivers/hwmon/pmbus/Makefile
-> +++ b/drivers/hwmon/pmbus/Makefile
-> @@ -26,6 +26,7 @@ obj-$(CONFIG_SENSORS_MAX34440)	+= max34440.o
->  obj-$(CONFIG_SENSORS_MAX8688)	+= max8688.o
->  obj-$(CONFIG_SENSORS_MP2975)	+= mp2975.o
->  obj-$(CONFIG_SENSORS_PXE1610)	+= pxe1610.o
-> +obj-$(CONFIG_SENSORS_Q54SJ108A2)	+= q54sj108a2.o
->  obj-$(CONFIG_SENSORS_TPS40422)	+= tps40422.o
->  obj-$(CONFIG_SENSORS_TPS53679)	+= tps53679.o
->  obj-$(CONFIG_SENSORS_UCD9000)	+= ucd9000.o
-> diff --git a/drivers/hwmon/pmbus/q54sj108a2.c b/drivers/hwmon/pmbus/q54sj108a2.c
-> new file mode 100755
-> index 000000000000..8ab322347015
-> --- /dev/null
-> +++ b/drivers/hwmon/pmbus/q54sj108a2.c
-> @@ -0,0 +1,437 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Driver for Delta modules, Q54SJ108A2 series 1/4 Brick DC/DC
-> + * Regulated Power Module
-> + *
-> + * Copyright 2020 Delta LLC.
-> + */
-> +
-> +#include <linux/bits.h>
-
-Is this include needed ?
-
-> +#include <linux/debugfs.h>
-> +#include <linux/err.h>
-> +#include <linux/fs.h>
-
-What is this include needed for ?
-
-> +#include <linux/i2c.h>
-> +#include <linux/init.h>
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/mutex.h>
-
-No mutexes used by this driver.
-
-> +#include <linux/of_device.h>
-> +#include <linux/pmbus.h>
-> +#include <linux/util_macros.h>
-
-I can't see any functions used from this include.
-
-Please make sure that the include files are indeed all needed.
-
-> +#include "pmbus.h"
-> +
-> +#define STORE_DEFAULT_ALL         0x11
-> +#define ERASE_BLACKBOX_DATA       0xD1
-> +#define READ_HISTORY_EVENT_NUMBER 0xD2
-> +#define READ_HISTORY_EVENTS       0xE0
-> +#define SET_HISTORY_EVENT_OFFSET  0xE1
-> +#define PMBUS_CMD_FLASH_KEY_WRITE 0xEC
-> +
-> +enum chips {
-> +	Q54SJ108A2
-> +};
-> +
-> +enum {
-> +	Q54SJ108A2_DEBUGFS_OPERATION = 0,
-> +	Q54SJ108A2_DEBUGFS_CLEARFAULT,
-> +	Q54SJ108A2_DEBUGFS_WRITEPROTECT,
-> +	Q54SJ108A2_DEBUGFS_STOREDEFAULT,
-> +	Q54SJ108A2_DEBUGFS_VOOV_RESPONSE,
-> +	Q54SJ108A2_DEBUGFS_IOOC_RESPONSE,
-> +	Q54SJ108A2_DEBUGFS_PMBUS_VERSION,
-> +	Q54SJ108A2_DEBUGFS_MFR_ID,
-> +	Q54SJ108A2_DEBUGFS_MFR_MODEL,
-> +	Q54SJ108A2_DEBUGFS_MFR_REVISION,
-> +	Q54SJ108A2_DEBUGFS_MFR_LOCATION,
-> +	Q54SJ108A2_DEBUGFS_BLACKBOX_ERASE,
-> +	Q54SJ108A2_DEBUGFS_BLACKBOX_READ_OFFSET,
-> +	Q54SJ108A2_DEBUGFS_BLACKBOX_SET_OFFSET,
-> +	Q54SJ108A2_DEBUGFS_BLACKBOX_READ,
-> +	Q54SJ108A2_DEBUGFS_FLASH_KEY,
-> +	Q54SJ108A2_DEBUGFS_NUM_ENTRIES
-> +};
-> +
-> +struct q54sj108a2_data {
-> +	enum chips chip;
-> +	struct i2c_client *client;
-> +
-> +	int debugfs_entries[Q54SJ108A2_DEBUGFS_NUM_ENTRIES];
-> +};
-> +
-> +#define to_psu(x, y) container_of((x), struct q54sj108a2_data, debugfs_entries[(y)])
-> +
-> +static struct pmbus_driver_info q54sj108a2_info[] = {
-> +	[Q54SJ108A2] = {
-> +		.pages = 1,
-> +
-> +		/* Source : Delta Q54SJ108A2 */
-> +		.format[PSC_TEMPERATURE] = linear,
-> +		.format[PSC_VOLTAGE_IN] = linear,
-> +		.format[PSC_CURRENT_OUT] = linear,
-> +
-> +		.func[0] = PMBUS_HAVE_VIN |
-> +		PMBUS_HAVE_VOUT | PMBUS_HAVE_STATUS_VOUT |
-> +		PMBUS_HAVE_IOUT | PMBUS_HAVE_STATUS_IOUT |
-> +		PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP |
-> +		PMBUS_HAVE_STATUS_INPUT,
-> +	},
-> +};
-> +
-> +static ssize_t q54sj108a2_debugfs_read(struct file *file, char __user *buf,
-> +				      size_t count, loff_t *ppos)
-> +{
-> +	int rc;
-> +	int *idxp = file->private_data;
-> +	int idx = *idxp;
-> +	struct q54sj108a2_data *psu = to_psu(idxp, idx);
-> +	char data[I2C_SMBUS_BLOCK_MAX + 2] = { 0 };
-> +	char data_char[I2C_SMBUS_BLOCK_MAX + 2] = { 0 };
-> +	char *res;
-> +
-> +	switch (idx) {
-> +	case Q54SJ108A2_DEBUGFS_OPERATION:
-> +		rc = i2c_smbus_read_byte_data(psu->client, PMBUS_OPERATION);
-> +		if (rc < 0)
-> +			return rc;
-> +
-> +		rc = snprintf(data, 3, "%02x", rc);
-> +		goto done;
-> +	case Q54SJ108A2_DEBUGFS_WRITEPROTECT:
-> +		rc = i2c_smbus_read_byte_data(psu->client, PMBUS_WRITE_PROTECT);
-> +		if (rc < 0)
-> +			return rc;
-> +
-> +		rc = snprintf(data, 3, "%02x", rc);
-> +		goto done;
-> +	case Q54SJ108A2_DEBUGFS_VOOV_RESPONSE:
-> +		rc = i2c_smbus_read_byte_data(psu->client, PMBUS_VOUT_OV_FAULT_RESPONSE);
-> +		if (rc < 0)
-> +			return rc;
-> +
-> +		rc = snprintf(data, 3, "%02x", rc);
-> +		goto done;
-> +	case Q54SJ108A2_DEBUGFS_IOOC_RESPONSE:
-> +		rc = i2c_smbus_read_byte_data(psu->client, PMBUS_IOUT_OC_FAULT_RESPONSE);
-> +		if (rc < 0)
-> +			return rc;
-> +
-> +		rc = snprintf(data, 3, "%02x", rc);
-> +		goto done;
-> +	case Q54SJ108A2_DEBUGFS_PMBUS_VERSION:
-> +		rc = i2c_smbus_read_byte_data(psu->client, PMBUS_REVISION);
-> +		if (rc < 0)
-> +			return rc;
-> +
-> +		rc = snprintf(data, 3, "%02x", rc);
-> +		goto done;
-> +	case Q54SJ108A2_DEBUGFS_MFR_ID:
-> +		rc = i2c_smbus_read_block_data(psu->client, PMBUS_MFR_ID, data);
-> +		if (rc < 0)
-> +			return rc;
-> +		break;
-> +	case Q54SJ108A2_DEBUGFS_MFR_MODEL:
-> +		rc = i2c_smbus_read_block_data(psu->client, PMBUS_MFR_MODEL, data);
-> +		if (rc < 0)
-> +			return rc;
-> +		break;
-> +	case Q54SJ108A2_DEBUGFS_MFR_REVISION:
-> +		rc = i2c_smbus_read_block_data(psu->client, PMBUS_MFR_REVISION, data);
-> +		if (rc < 0)
-> +			return rc;
-> +		break;
-> +	case Q54SJ108A2_DEBUGFS_MFR_LOCATION:
-> +		rc = i2c_smbus_read_block_data(psu->client, PMBUS_MFR_LOCATION, data);
-> +		if (rc < 0)
-> +			return rc;
-> +		break;
-> +	case Q54SJ108A2_DEBUGFS_BLACKBOX_READ_OFFSET:
-> +		rc = i2c_smbus_read_byte_data(psu->client, READ_HISTORY_EVENT_NUMBER);
-> +		if (rc < 0)
-> +			return rc;
-> +
-> +		rc = snprintf(data, 3, "%02x", rc);
-> +		goto done;
-
-The 'done' label is unnecessary.
-
-> +	case Q54SJ108A2_DEBUGFS_BLACKBOX_READ:
-> +		rc = i2c_smbus_read_block_data(psu->client, READ_HISTORY_EVENTS, data);
-> +		if (rc < 0)
-> +			return rc;
-> +
-> +		res = bin2hex(data, data_char, 32);
-> +		rc = res - data;
-> +
-> +		break;
-> +	case Q54SJ108A2_DEBUGFS_FLASH_KEY:
-> +		rc = i2c_smbus_read_block_data(psu->client, PMBUS_CMD_FLASH_KEY_WRITE, data);
-> +		if (rc < 0)
-> +			return rc;
-> +
-> +		res = bin2hex(data, data_char, 4);
-> +		rc = res - data;
-> +
-> +		break;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +
-> +done:
-> +	data[rc] = '\n';
-> +	rc += 2;
-> +
-> +	return simple_read_from_buffer(buf, count, ppos, data, rc);
-> +}
-> +
-> +static ssize_t q54sj108a2_debugfs_write(struct file *file, const char __user *buf,
-> +					size_t count, loff_t *ppos)
-> +{
-> +	u8 flash_key[4];
-> +	u8 dst_data;
-> +	ssize_t rc;
-> +	int *idxp = file->private_data;
-> +	int idx = *idxp;
-> +	int res;
-> +	struct q54sj108a2_data *psu = to_psu(idxp, idx);
-> +
-> +	rc = i2c_smbus_write_byte_data(psu->client, PMBUS_WRITE_PROTECT, 0);
-> +	if (rc)
-> +		return rc;
-> +
-> +	switch (idx) {
-> +	case Q54SJ108A2_DEBUGFS_OPERATION:
-> +		res = hex2bin(&dst_data, buf, 1);
-> +		if (res != 0)
-> +			return res;
-> +
-
-I don't see the point of the 'res' variable (in addition to rc).
-It should just be
-		rc = ...
-		if (rc)
-			return rc;
-
-Also, using hex2bin for a 1-byte conversion is not what it is supposed
-to be used for, and it is confusing. It is supposed to be used for buffer
-conversions, not for 1-byte conversions. What is the problem with kstrtoint()
-or, if you don't want to use that, kstrtou8() ?
-
-> +		rc = i2c_smbus_write_byte_data(psu->client, PMBUS_OPERATION, dst_data);
-> +		if (rc)
-> +			return rc;
-> +
-> +		break;
-> +	case Q54SJ108A2_DEBUGFS_CLEARFAULT:
-> +		rc = i2c_smbus_write_byte(psu->client, PMBUS_CLEAR_FAULTS);
-> +		if (rc)
-> +			return rc;
-> +
-> +		break;
-> +	case Q54SJ108A2_DEBUGFS_STOREDEFAULT:
-> +		flash_key[0] = 0x7E;
-> +		flash_key[1] = 0x15;
-> +		flash_key[2] = 0xDC;
-> +		flash_key[3] = 0x42;
-> +		rc = i2c_smbus_write_block_data(psu->client, PMBUS_CMD_FLASH_KEY_WRITE, 4, flash_key);
-> +		if (rc < 0)
-> +			return rc;
-> +
-> +		rc = i2c_smbus_write_byte(psu->client, STORE_DEFAULT_ALL);
-> +		if (rc)
-> +			return rc;
-
-You are using
-		if (rc)
-and
-		if (rc < 0)
-and
-		if (res != 0)
-
-Please make the code consistent.
-
-> +
-> +		break;
-> +	case Q54SJ108A2_DEBUGFS_VOOV_RESPONSE:
-> +		res = hex2bin(&dst_data, buf, 1);
-> +		if (res != 0)
-> +			return res;
-> +
-> +		rc = i2c_smbus_write_byte_data(psu->client, PMBUS_VOUT_OV_FAULT_RESPONSE, dst_data);
-> +		if (rc)
-> +			return rc;
-> +
-> +		break;
-> +	case Q54SJ108A2_DEBUGFS_IOOC_RESPONSE:
-> +		res = hex2bin(&dst_data, buf, 1);
-> +		if (res != 0)
-> +			return res;
-> +
-> +		rc = i2c_smbus_write_byte_data(psu->client, PMBUS_IOUT_OC_FAULT_RESPONSE, dst_data);
-> +		if (rc)
-> +			return rc;
-> +
-> +		break;
-> +	case Q54SJ108A2_DEBUGFS_BLACKBOX_ERASE:
-> +		rc = i2c_smbus_write_byte(psu->client, ERASE_BLACKBOX_DATA);
-> +		if (rc)
-> +			return rc;
-> +
-> +		break;
-> +	case Q54SJ108A2_DEBUGFS_BLACKBOX_SET_OFFSET:
-> +		res = hex2bin(&dst_data, buf, 1);
-> +		if (res != 0)
-> +			return res;
-> +
-> +		rc = i2c_smbus_write_byte_data(psu->client, SET_HISTORY_EVENT_OFFSET, dst_data);
-> +		if (rc)
-> +			return rc;
-> +
-> +		break;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +
-> +	return count;
-> +}
-> +
-> +static const struct file_operations q54sj108a2_fops = {
-> +	.llseek = noop_llseek,
-> +	.read = q54sj108a2_debugfs_read,
-> +	.write = q54sj108a2_debugfs_write,
-> +	.open = simple_open,
-> +};
-> +
-> +static const struct i2c_device_id q54sj108a2_id[] = {
-> +	{ "Q54SJ108A2", Q54SJ108A2 },
-> +	{ },
-> +};
-> +
-> +MODULE_DEVICE_TABLE(i2c, q54sj108a2_id);
-> +
-> +static int q54sj108a2_probe(struct i2c_client *client)
-> +{
-> +	struct device *dev = &client->dev;
-> +	u8 buf[I2C_SMBUS_BLOCK_MAX + 1];
-> +	struct pmbus_driver_info *info;
-> +	enum chips chip_id;
-> +	int ret, i;
-> +	struct dentry *debugfs;
-> +	struct dentry *q54sj108a2_dir;
-> +	struct q54sj108a2_data *psu;
-> +
-> +	if (!i2c_check_functionality(client->adapter,
-> +				     I2C_FUNC_SMBUS_BYTE_DATA |
-> +				     I2C_FUNC_SMBUS_WORD_DATA |
-> +				     I2C_FUNC_SMBUS_BLOCK_DATA))
-> +		return -ENODEV;
-> +
-> +	if (client->dev.of_node)
-> +		chip_id = (enum chips)of_device_get_match_data(dev);
-> +	else
-> +		chip_id = i2c_match_id(q54sj108a2_id, client)->driver_data;
-> +
-> +	ret = i2c_smbus_read_block_data(client, PMBUS_MFR_ID, buf);
-> +	if (ret < 0) {
-> +		dev_err(&client->dev, "Failed to read Manufacturer ID\n");
-> +		return ret;
-> +	}
-> +	if (ret != 5 || strncmp(buf, "DELTA", 5)) {
-> +		buf[ret] = '\0';
-> +		dev_err(dev, "Unsupported Manufacturer ID '%s'\n", buf);
-> +		return -ENODEV;
-> +	}
-> +
-> +	/*
-> +	 * The chips support reading PMBUS_MFR_MODEL.
-> +	 */
-> +	ret = i2c_smbus_read_block_data(client, PMBUS_MFR_MODEL, buf);
-> +	if (ret < 0) {
-> +		dev_err(dev, "Failed to read Manufacturer Model\n");
-> +		return ret;
-> +	}
-> +	if (ret != 14 || strncmp(buf, "Q54SJ108A2", 10)) {
-> +		buf[ret] = '\0';
-> +		dev_err(dev, "Unsupported Manufacturer Model '%s'\n", buf);
-> +		return -ENODEV;
-> +	}
-> +
-> +	ret = i2c_smbus_read_block_data(client, PMBUS_MFR_REVISION, buf);
-> +	if (ret < 0) {
-> +		dev_err(dev, "Failed to read Manufacturer Revision\n");
-> +		return ret;
-> +	}
-> +	if (ret != 4 || buf[0] != 'S') {
-> +		buf[ret] = '\0';
-> +		dev_err(dev, "Unsupported Manufacturer Revision '%s'\n", buf);
-> +		return -ENODEV;
-> +	}
-> +
-> +	info = devm_kzalloc(dev, sizeof(*info), GFP_KERNEL);
-> +	if (!info)
-> +		return -ENOMEM;
-> +
-info isn't used anywhere and thus pointless.
-
-> +	ret = pmbus_do_probe(client, &q54sj108a2_id[chip_id], &q54sj108a2_info[chip_id]);
-> +	if (ret)
-> +		return ret;
-> +
-> +	psu = devm_kzalloc(&client->dev, sizeof(*psu), GFP_KERNEL);
-> +	if (!psu)
-> +		return 0;
-> +
-> +	psu->client = client;
-> +
-> +	debugfs = pmbus_get_debugfs_dir(client);
-> +
-> +	q54sj108a2_dir = debugfs_create_dir(client->name, debugfs);
-> +
-> +	for (i = 0; i < Q54SJ108A2_DEBUGFS_NUM_ENTRIES; ++i)
-> +		psu->debugfs_entries[i] = i;
-> +
-> +	debugfs_create_file("operation", 0644, q54sj108a2_dir,
-> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_OPERATION],
-> +			    &q54sj108a2_fops);
-> +	debugfs_create_file("clear_fault", 0200, q54sj108a2_dir,
-> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_CLEARFAULT],
-> +			    &q54sj108a2_fops);
-> +	debugfs_create_file("write_protect", 0444, q54sj108a2_dir,
-> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_WRITEPROTECT],
-> +			    &q54sj108a2_fops);
-> +	debugfs_create_file("store_default", 0200, q54sj108a2_dir,
-> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_STOREDEFAULT],
-> +			    &q54sj108a2_fops);
-> +	debugfs_create_file("vo_ov_response", 0644, q54sj108a2_dir,
-> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_VOOV_RESPONSE],
-> +			    &q54sj108a2_fops);
-> +	debugfs_create_file("io_oc_response", 0644, q54sj108a2_dir,
-> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_IOOC_RESPONSE],
-> +			    &q54sj108a2_fops);
-> +	debugfs_create_file("pmbus_revision", 0444, q54sj108a2_dir,
-> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_PMBUS_VERSION],
-> +			    &q54sj108a2_fops);
-> +	debugfs_create_file("mfr_id", 0444, q54sj108a2_dir,
-> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_MFR_ID],
-> +			    &q54sj108a2_fops);
-> +	debugfs_create_file("mfr_model", 0444, q54sj108a2_dir,
-> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_MFR_MODEL],
-> +			    &q54sj108a2_fops);
-> +	debugfs_create_file("mfr_revision", 0444, q54sj108a2_dir,
-> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_MFR_REVISION],
-> +			    &q54sj108a2_fops);
-> +	debugfs_create_file("mfr_location", 0444, q54sj108a2_dir,
-> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_MFR_LOCATION],
-> +			    &q54sj108a2_fops);
-> +	debugfs_create_file("blackbox_erase", 0200, q54sj108a2_dir,
-> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_BLACKBOX_ERASE],
-> +			    &q54sj108a2_fops);
-> +	debugfs_create_file("blackbox_read_offset", 0444, q54sj108a2_dir,
-> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_BLACKBOX_READ_OFFSET],
-> +			    &q54sj108a2_fops);
-> +	debugfs_create_file("blackbox_set_offset", 0200, q54sj108a2_dir,
-> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_BLACKBOX_SET_OFFSET],
-> +			    &q54sj108a2_fops);
-> +	debugfs_create_file("blackbox_read", 0444, q54sj108a2_dir,
-> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_BLACKBOX_READ],
-> +			    &q54sj108a2_fops);
-> +	debugfs_create_file("flash_key", 0444, q54sj108a2_dir,
-> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_FLASH_KEY],
-> +			    &q54sj108a2_fops);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct of_device_id q54sj108a2_of_match[] = {
-> +	{ .compatible = "delta,Q54SJ108A2", .data = (void *)Q54SJ108A2 },
-> +	{ },
-> +};
-> +
-> +MODULE_DEVICE_TABLE(of, q54sj108a2_of_match);
-> +
-> +static struct i2c_driver q54sj108a2_driver = {
-> +	.driver = {
-> +		.name = "Q54SJ108A2",
-> +		.of_match_table = q54sj108a2_of_match,
-> +	},
-> +	.probe_new = q54sj108a2_probe,
-> +	.id_table = q54sj108a2_id,
-> +};
-> +
-> +module_i2c_driver(q54sj108a2_driver);
-> +
-> +MODULE_AUTHOR("Xiao.Ma <xiao.mx.ma@deltaww.com>");
-> +MODULE_DESCRIPTION("PMBus driver for Delta Q54SJ108A2 series modules");
-> +MODULE_LICENSE("GPL");
+> 	I removed the field zynqmp_r5_rproc::dt_node and its no longer used in the file
 > 
+> "
+> > +	z_rproc->dev = &rproc_ptr->dev;
+> > +	z_rproc->dev->of_node = node;
+> 
+> This is quite hackish to me.  The problem is that @pdev is the rpu'a DT node
+> rather than the r5_X's DT node.  I suggest to have a look at k3_r5_probe()[1],
+> especially at how devm_of_platform_populate() is called on @dev and from there
+> how the platform device for each r5 is retreived using the same
+> for_each_available_child_of_node() loop you also have.
+> "
+> 	As I understand it this is resolved as now @pdev is the r5_X's DT node similar to the k3_r5_probe()
+> 	Also the 2 lines in question are now removed in the v22 patch
+> 	
+> 
+> "> +	struct zynqmp_r5_rproc *core;
+> 
+> Please call variables of type zynqmp_r5_rproc the same name throughout the file.
+> "
+> 	So in zynqmp_r5_probe there is an instance of a zynqmp_r5_rproc** with the name core, this is because
+> 	there is already arg with name z_rproc and z_rproc_ptr or something like this may be confusing.
+> 
+> 	With that being said, instead the zynqmp_r5_rproc** can be renamed to z_rproc if this is what you 
+> 	mean?
+> 
+> "
+> > +	rpu_mode = of_property_read_bool(dev->of_node, "lockstep-mode") ?
+> > +		    PM_RPU_MODE_LOCKSTEP : PM_RPU_MODE_SPLIT;
 
+
+> 
+> Indentation problem.  Note that is it now permitted to go beyond 80 characters
+> per line.
+> "
+> 
+> 	In v22 patch this is now:
+> 		rpu_mode = of_property_read_bool(dev->of_node, "lockstep-mode") ?
+> 		PM_RPU_MODE_LOCKSTEP : PM_RPU_MODE_SPLIT;
+> 
+> 	Is this indentation alright?
+
+        rpu_mode = of_property_read_bool(dev->of_node, "lockstep-mode") ?
+                                        PM_RPU_MODE_LOCKSTEP : PM_RPU_MODE_SPLIT;
+
+As always, the following lines need to be aligned with the '(' of the first
+line.
+
+> 
+> "
+> > +	i = 0;
+> 
+> What is the above for?  As fas as I can tell 'i' is not used in the loop below.
+> "
+> 	In v19 this var was deprecated, but as per feedback from Michael A. in later revisions there was unhandled 
+> 	case of R5_0 successfully initializating but R5_1 failing. To accommodate this case the var i was
+> 	re-introduced. If the name is unclear then it can be refactored if this is the intention
+
+If variable 'i' is not used in the loop, how can it be responsible for the
+failure reported by Michael? 
+
+> 
+> "
+> > +	struct list_head *pos, *cluster = (struct list_head *)
+> > +					 platform_get_drvdata(pdev);
+> 
+> Either align the 'p' with the '(' or simply do the assignement on another line
+> below.
+> "
+> 
+> 	This may be formatting on my terminal vs. the patch format itself but in v22 I think this is resolved.
+> 
+> 	
+> 
+> If still 1 or more of these comments or another is not addressed then my apologies and will address in the next revision. Again, thank you for the review!
+
+Despite the fact that I pointed it out in V19, there is plenty of sentences in
+the DT yaml file that don't start with a capital letter.
+
+Mathieu
+
+> 
+> Best,
+> Ben
+> 
+> 
+> 
+> > >  3 files changed, 787 insertions(+)
+> > >  create mode 100644 drivers/remoteproc/zynqmp_r5_remoteproc.c
+> > >
+> > > diff --git a/drivers/remoteproc/Kconfig b/drivers/remoteproc/Kconfig
+> > > index c6659dfea7c7..c2fe54b1d94f 100644
+> > > --- a/drivers/remoteproc/Kconfig
+> > > +++ b/drivers/remoteproc/Kconfig
+> > > @@ -275,6 +275,14 @@ config TI_K3_DSP_REMOTEPROC
+> > >  	  It's safe to say N here if you're not interested in utilizing
+> > >  	  the DSP slave processors.
+> > >
+> > > +config ZYNQMP_R5_REMOTEPROC
+> > > +	tristate "ZynqMP R5 remoteproc support"
+> > > +	depends on PM && ARCH_ZYNQMP
+> > > +	select RPMSG_VIRTIO
+> > > +	select ZYNQMP_IPI_MBOX
+> > > +	help
+> > > +	  Say y or m here to support ZynqMP R5 remote processors via the
+> > remote
+> > > +	  processor framework.
+> > >  endif # REMOTEPROC
+> > >
+> > >  endmenu
+> > > diff --git a/drivers/remoteproc/Makefile b/drivers/remoteproc/Makefile
+> > > index 3dfa28e6c701..ef1abff654c2 100644
+> > > --- a/drivers/remoteproc/Makefile
+> > > +++ b/drivers/remoteproc/Makefile
+> > > @@ -33,3 +33,4 @@ obj-$(CONFIG_ST_REMOTEPROC)		+=
+> > st_remoteproc.o
+> > >  obj-$(CONFIG_ST_SLIM_REMOTEPROC)	+= st_slim_rproc.o
+> > >  obj-$(CONFIG_STM32_RPROC)		+= stm32_rproc.o
+> > >  obj-$(CONFIG_TI_K3_DSP_REMOTEPROC)	+= ti_k3_dsp_remoteproc.o
+> > > +obj-$(CONFIG_ZYNQMP_R5_REMOTEPROC)	+= zynqmp_r5_remoteproc.o
+> > > diff --git a/drivers/remoteproc/zynqmp_r5_remoteproc.c
+> > b/drivers/remoteproc/zynqmp_r5_remoteproc.c
+> > > new file mode 100644
+> > > index 000000000000..48bffa91bc00
+> > > --- /dev/null
+> > > +++ b/drivers/remoteproc/zynqmp_r5_remoteproc.c
+> > > @@ -0,0 +1,779 @@
+> > > +// SPDX-License-Identifier: GPL-2.0
+> > > +/*
+> > > + * Zynq R5 Remote Processor driver
+> > > + *
+> > > + * Based on origin OMAP and Zynq Remote Processor driver
+> > > + *
+> > > + */
+> > > +
+> > > +#include <linux/firmware/xlnx-zynqmp.h>
+> > > +#include <linux/interrupt.h>
+> > > +#include <linux/kernel.h>
+> > > +#include <linux/list.h>
+> > > +#include <linux/mailbox_client.h>
+> > > +#include <linux/mailbox/zynqmp-ipi-message.h>
+> > > +#include <linux/module.h>
+> > > +#include <linux/of_address.h>
+> > > +#include <linux/of_platform.h>
+> > > +#include <linux/of_reserved_mem.h>
+> > > +#include <linux/platform_device.h>
+> > > +#include <linux/remoteproc.h>
+> > > +#include <linux/skbuff.h>
+> > > +#include <linux/sysfs.h>
+> > > +
+> > > +#include "remoteproc_internal.h"
+> > > +
+> > > +#define MAX_RPROCS	2 /* Support up to 2 RPU */
+> > > +#define MAX_MEM_PNODES	4 /* Max power nodes for one RPU memory
+> > instance */
+> > > +
+> > > +#define BANK_LIST_PROP	"meta-memory-regions"
+> > > +#define DDR_LIST_PROP	"memory-regions"
+> > > +
+> > > +/* IPI buffer MAX length */
+> > > +#define IPI_BUF_LEN_MAX	32U
+> > > +/* RX mailbox client buffer max length */
+> > > +#define RX_MBOX_CLIENT_BUF_MAX	(IPI_BUF_LEN_MAX + \
+> > > +				 sizeof(struct zynqmp_ipi_message))
+> > > +
+> > > +/**
+> > > + * struct zynqmp_r5_mem - zynqmp rpu memory data
+> > > + * @pnode_id: TCM power domain ids
+> > > + * @res: memory resource
+> > > + * @node: list node
+> > > + */
+> > > +struct zynqmp_r5_mem {
+> > > +	u32 pnode_id[MAX_MEM_PNODES];
+> > > +	struct resource res;
+> > > +	struct list_head node;
+> > > +};
+> > > +
+> > > +/**
+> > > + * struct zynqmp_r5_rproc - zynqmp rpu remote processor state
+> > > + *			    this is for each individual R5 core's state
+> > > + *
+> > > + * @rx_mc_buf: rx mailbox client buffer to save the rx message
+> > > + * @tx_mc: tx mailbox client
+> > > + * @rx_mc: rx mailbox client * @dev: device of RPU instance
+> > > + * @mbox_work: mbox_work for the RPU remoteproc
+> > > + * @tx_mc_skbs: socket buffers for tx mailbox client
+> > > + * @dev: device of RPU instance
+> > > + * @rproc: rproc handle
+> > > + * @tx_chan: tx mailbox channel
+> > > + * @rx_chan: rx mailbox channel
+> > > + * @pnode_id: RPU CPU power domain id
+> > > + * @elem: linked list item
+> > > + * @dt_node: device tree node that holds information for 1 R5 core.
+> > > + */
+> > > +struct zynqmp_r5_rproc {
+> > > +	unsigned char rx_mc_buf[RX_MBOX_CLIENT_BUF_MAX];
+> > > +	struct mbox_client tx_mc;
+> > > +	struct mbox_client rx_mc;
+> > > +	struct work_struct mbox_work;
+> > > +	struct sk_buff_head tx_mc_skbs;
+> > > +	struct device *dev;
+> > > +	struct rproc *rproc;
+> > > +	struct mbox_chan *tx_chan;
+> > > +	struct mbox_chan *rx_chan;
+> > > +	u32 pnode_id;
+> > > +	struct list_head elem;
+> > > +};
+> > > +
+> > > +/*
+> > > + * r5_set_mode - set RPU operation mode
+> > > + * @z_rproc: Remote processor private data
+> > > + * @rpu_mode: mode specified by device tree to configure the RPU to
+> > > + *
+> > > + * set RPU operation mode
+> > > + *
+> > > + * Return: 0 for success, negative value for failure
+> > > + */
+> > > +static int r5_set_mode(struct zynqmp_r5_rproc *z_rproc,
+> > > +		       enum rpu_oper_mode rpu_mode)
+> > > +{
+> > > +	enum rpu_tcm_comb tcm_mode;
+> > > +	enum rpu_oper_mode cur_rpu_mode;
+> > > +	int ret;
+> > > +
+> > > +	ret = zynqmp_pm_get_rpu_mode(z_rproc->pnode_id,
+> > &cur_rpu_mode);
+> > > +	if (ret < 0)
+> > > +		return ret;
+> > > +
+> > > +	if (rpu_mode != cur_rpu_mode) {
+> > > +		ret = zynqmp_pm_set_rpu_mode(z_rproc->pnode_id,
+> > > +					     rpu_mode);
+> > > +		if (ret < 0)
+> > > +			return ret;
+> > > +	}
+> > > +
+> > > +	tcm_mode = (rpu_mode == PM_RPU_MODE_LOCKSTEP) ?
+> > > +		    PM_RPU_TCM_COMB : PM_RPU_TCM_SPLIT;
+> > > +	return zynqmp_pm_set_tcm_config(z_rproc->pnode_id, tcm_mode);
+> > > +}
+> > > +
+> > > +/*
+> > > + * release TCM banks when powering down R5 core
+> > > + */
+> > > +static int tcm_mem_release(struct rproc *rproc, struct rproc_mem_entry
+> > *mem)
+> > > +{
+> > > +	u32 pnode_id = (u64)mem->priv;
+> > > +
+> > > +	iounmap(mem->va);
+> > > +	return zynqmp_pm_release_node(pnode_id);
+> > > +}
+> > > +
+> > > +/*
+> > > + * given ID corresponding to R5 core in Xilinx Platform management (xpm)
+> > API,
+> > > + * try to use xpm wake call to wake R5 core
+> > > + */
+> > > +static int zynqmp_r5_rproc_start(struct rproc *rproc)
+> > > +{
+> > > +	struct zynqmp_r5_rproc *z_rproc = rproc->priv;
+> > > +	enum rpu_boot_mem bootmem;
+> > > +
+> > > +	bootmem = (rproc->bootaddr & 0xF0000000) == 0xF0000000 ?
+> > > +		  PM_RPU_BOOTMEM_HIVEC : PM_RPU_BOOTMEM_LOVEC;
+> > > +
+> > > +	dev_dbg(rproc->dev.parent, "RPU boot from %s.",
+> > > +		bootmem == PM_RPU_BOOTMEM_HIVEC ? "OCM" : "TCM");
+> > > +
+> > > +	return zynqmp_pm_request_wake(z_rproc->pnode_id, 1,
+> > > +				     bootmem,
+> > ZYNQMP_PM_REQUEST_ACK_NO);
+> > > +}
+> > > +
+> > > +/*
+> > > + * given ID corresponding to R5 core in Xilinx Platform management (xpm)
+> > API,
+> > > + * try to use xpm power down call to power off R5 core
+> > > + */
+> > > +static int zynqmp_r5_rproc_stop(struct rproc *rproc)
+> > > +{
+> > > +	struct zynqmp_r5_rproc *z_rproc = rproc->priv;
+> > > +
+> > > +	return zynqmp_pm_force_pwrdwn(z_rproc->pnode_id,
+> > > +				     ZYNQMP_PM_REQUEST_ACK_BLOCKING);
+> > > +}
+> > > +
+> > > +/*
+> > > + * map in physical addr for  DDR mem carveout in rproc
+> > > + */
+> > > +static int zynqmp_r5_rproc_mem_alloc(struct rproc *rproc,
+> > > +				     struct rproc_mem_entry *mem)
+> > > +{
+> > > +	void *va;
+> > > +
+> > > +	va = ioremap_wc(mem->dma, mem->len);
+> > > +	if (IS_ERR_OR_NULL(va))
+> > > +		return -ENOMEM;
+> > > +
+> > > +	/* Update memory entry va */
+> > > +	mem->va = va;
+> > > +
+> > > +	return 0;
+> > > +}
+> > > +
+> > > +/* unmap rproc_mem_entry virtual addr */
+> > > +static int zynqmp_r5_rproc_mem_release(struct rproc *rproc,
+> > > +				       struct rproc_mem_entry *mem)
+> > > +{
+> > > +	iounmap(mem->va);
+> > > +	return 0;
+> > > +}
+> > > +
+> > > +/* construct rproc mem carveouts for DDR regions specified in device tree
+> > */
+> > > +static int parse_mem_regions(struct rproc *rproc)
+> > > +{
+> > > +	int num_mems, i;
+> > > +	struct zynqmp_r5_rproc *z_rproc = rproc->priv;
+> > > +	struct device *dev = &rproc->dev;
+> > > +	struct device_node *np = z_rproc->dev->of_node;
+> > > +	struct rproc_mem_entry *mem;
+> > > +
+> > > +	num_mems = of_count_phandle_with_args(np, DDR_LIST_PROP,
+> > NULL);
+> > > +	if (num_mems <= 0)
+> > > +		return 0;
+> > > +
+> > > +	for (i = 0; i < num_mems; i++) {
+> > > +		struct device_node *node;
+> > > +		struct reserved_mem *rmem;
+> > > +
+> > > +		node = of_parse_phandle(np, DDR_LIST_PROP, i);
+> > > +		if (!node)
+> > > +			return -EINVAL;
+> > > +
+> > > +		rmem = of_reserved_mem_lookup(node);
+> > > +		if (!rmem)
+> > > +			return -EINVAL;
+> > > +
+> > > +		if (strstr(node->name, "vdev0vring")) {
+> > > +			int vring_id;
+> > > +			char name[16];
+> > > +
+> > > +			/*
+> > > +			 * expecting form of "rpuXvdev0vringX as documented
+> > > +			 * in xilinx remoteproc device tree binding
+> > > +			 */
+> > > +			if (strlen(node->name) < 15) {
+> > > +				dev_err(dev, "%pOF is less than 14 chars",
+> > > +					node);
+> > > +				return -EINVAL;
+> > > +			}
+> > > +
+> > > +			/*
+> > > +			 * can be 1 of multiple vring IDs per IPC channel
+> > > +			 * e.g. 'vdev0vring0' and 'vdev0vring1'
+> > > +			 */
+> > > +			vring_id = node->name[14] - '0';
+> > > +			snprintf(name, sizeof(name), "vdev0vring%d",
+> > vring_id);
+> > > +			/* Register vring */
+> > > +			mem = rproc_mem_entry_init(dev, NULL,
+> > > +						   (dma_addr_t)rmem->base,
+> > > +						   rmem->size, rmem->base,
+> > > +
+> > zynqmp_r5_rproc_mem_alloc,
+> > > +
+> > zynqmp_r5_rproc_mem_release,
+> > > +						   name);
+> > > +		} else {
+> > > +			/* Register DMA region */
+> > > +			int (*alloc)(struct rproc *r,
+> > > +				     struct rproc_mem_entry *rme);
+> > > +			int (*release)(struct rproc *r,
+> > > +				       struct rproc_mem_entry *rme);
+> > > +			char name[20];
+> > > +
+> > > +			if (strstr(node->name, "vdev0buffer")) {
+> > > +				alloc = NULL;
+> > > +				release = NULL;
+> > > +				strcpy(name, "vdev0buffer");
+> > > +			} else {
+> > > +				alloc = zynqmp_r5_rproc_mem_alloc;
+> > > +				release = zynqmp_r5_rproc_mem_release;
+> > > +				strcpy(name, node->name);
+> > > +			}
+> > > +
+> > > +			mem = rproc_mem_entry_init(dev, NULL,
+> > > +						   (dma_addr_t)rmem->base,
+> > > +						   rmem->size, rmem->base,
+> > > +						   alloc, release, name);
+> > > +		}
+> > > +		if (!mem)
+> > > +			return -ENOMEM;
+> > > +
+> > > +		rproc_add_carveout(rproc, mem);
+> > > +	}
+> > > +
+> > > +	return 0;
+> > > +}
+> > > +
+> > > +/* call Xilinx Platform manager to request access to TCM bank */
+> > > +static int zynqmp_r5_pm_request_tcm(struct device_node *tcm_node,
+> > > +				    struct device *dev, u32 *pnode_id)
+> > > +{
+> > > +	int ret;
+> > > +
+> > > +	ret = of_property_read_u32(tcm_node, "pnode-id", pnode_id);
+> > > +	if (ret)
+> > > +		return ret;
+> > > +
+> > > +	return zynqmp_pm_request_node(*pnode_id,
+> > ZYNQMP_PM_CAPABILITY_ACCESS, 0,
+> > > +				     ZYNQMP_PM_REQUEST_ACK_BLOCKING);
+> > > +}
+> > > +
+> > > +/*
+> > > + * Given TCM bank entry,
+> > > + * this callback will set device address for R5 running on TCM
+> > > + * and also setup virtual address for TCM bank remoteproc carveout
+> > > + */
+> > > +static int tcm_mem_alloc(struct rproc *rproc,
+> > > +			 struct rproc_mem_entry *mem)
+> > > +{
+> > > +	void *va;
+> > > +	struct device *dev = rproc->dev.parent;
+> > > +
+> > > +	va = ioremap_wc(mem->dma, mem->len);
+> > > +	if (IS_ERR_OR_NULL(va))
+> > > +		return -ENOMEM;
+> > > +
+> > > +	/* Update memory entry va */
+> > > +	mem->va = va;
+> > > +
+> > > +	va = devm_ioremap_wc(dev, mem->da, mem->len);
+> > > +	if (!va)
+> > > +		return -ENOMEM;
+> > > +	/* As R5 is 32 bit, wipe out extra high bits */
+> > > +	mem->da &= 0x000fffff;
+> > > +	/*
+> > > +	 * TCM Banks 0A and 0B (0xffe00000 and 0xffe20000)
+> > > +	 * are handled with the above line of code so do nothing
+> > > +	 * for this 2 banks
+> > > +	 */
+> > > +
+> > > +	/*
+> > > +	 * TCM Banks 1A and 1B (0xffe90000 and 0xffeb0000) still
+> > > +	 * need to be translated to 0x0 and 0x20000
+> > > +	 */
+> > > +	if (mem->da == 0x90000 || mem->da == 0xB0000)
+> > > +		mem->da -= 0x90000;
+> > > +
+> > > +	/* if translated TCM bank address is not valid report error */
+> > > +	if (mem->da != 0x0 && mem->da != 0x20000) {
+> > > +		dev_err(dev, "invalid TCM bank address: %x\n", mem->da);
+> > > +		return -EINVAL;
+> > > +	}
+> > > +
+> > > +	return 0;
+> > > +}
+> > > +
+> > > +/*
+> > > + * Given R5 node in remoteproc instance
+> > > + * allocate remoteproc carveout for TCM memory
+> > > + * needed for firmware to be loaded
+> > > + */
+> > > +static int parse_tcm_banks(struct rproc *rproc)
+> > > +{
+> > > +	int i, num_banks;
+> > > +	struct zynqmp_r5_rproc *z_rproc = rproc->priv;
+> > > +	struct device *dev = &rproc->dev;
+> > > +	struct device_node *r5_node = z_rproc->dev->of_node;
+> > > +
+> > > +	/* go through TCM banks for r5 node */
+> > > +	num_banks = of_count_phandle_with_args(r5_node,
+> > BANK_LIST_PROP, NULL);
+> > > +	if (num_banks <= 0) {
+> > > +		dev_err(dev, "need to specify TCM banks\n");
+> > > +		return -EINVAL;
+> > > +	}
+> > > +	for (i = 0; i < num_banks; i++) {
+> > > +		struct resource rsc;
+> > > +		resource_size_t size;
+> > > +		struct device_node *dt_node;
+> > > +		struct rproc_mem_entry *mem;
+> > > +		int ret;
+> > > +		u32 pnode_id; /* zynqmp_pm* fn's expect u32 */
+> > > +
+> > > +		dt_node = of_parse_phandle(r5_node, BANK_LIST_PROP, i);
+> > > +		if (!dt_node)
+> > > +			return -EINVAL;
+> > > +
+> > > +		if (of_device_is_available(dt_node)) {
+> > > +			ret = of_address_to_resource(dt_node, 0, &rsc);
+> > > +			if (ret < 0)
+> > > +				return ret;
+> > > +
+> > > +			ret = zynqmp_r5_pm_request_tcm(dt_node, dev,
+> > &pnode_id);
+> > > +			if (ret < 0)
+> > > +				return ret;
+> > > +
+> > > +			/* add carveout */
+> > > +			size = resource_size(&rsc);
+> > > +			mem = rproc_mem_entry_init(dev, NULL, rsc.start,
+> > > +						   (int)size, rsc.start,
+> > > +						   tcm_mem_alloc,
+> > > +						   tcm_mem_release,
+> > > +						   rsc.name);
+> > > +			if (!mem)
+> > > +				return -ENOMEM;
+> > > +
+> > > +			mem->priv = (void *)(u64)pnode_id;
+> > > +			rproc_add_carveout(rproc, mem);
+> > > +		}
+> > > +	}
+> > > +
+> > > +	return 0;
+> > > +}
+> > > +
+> > > +/*
+> > > + * when loading firmware, load in needed DDR, TCM memory regions and
+> > wire
+> > > + * these into remoteproc core's carveouts
+> > > + */
+> > > +static int zynqmp_r5_parse_fw(struct rproc *rproc, const struct firmware
+> > *fw)
+> > > +{
+> > > +	int ret;
+> > > +
+> > > +	ret = parse_tcm_banks(rproc);
+> > > +	if (ret)
+> > > +		return ret;
+> > > +
+> > > +	ret = parse_mem_regions(rproc);
+> > > +	if (ret)
+> > > +		return ret;
+> > > +
+> > > +	ret = rproc_elf_load_rsc_table(rproc, fw);
+> > > +	if (ret == -EINVAL) {
+> > > +		/*
+> > > +		 * resource table only required for IPC.
+> > > +		 * if not present, this is not necessarily an error;
+> > > +		 * for example, loading r5 hello world application
+> > > +		 * so simply inform user and keep going.
+> > > +		 */
+> > > +		dev_info(&rproc->dev, "no resource table found.\n");
+> > > +		ret = 0;
+> > > +	}
+> > > +	return ret;
+> > > +}
+> > > +
+> > > +/* kick a firmware */
+> > > +static void zynqmp_r5_rproc_kick(struct rproc *rproc, int vqid)
+> > > +{
+> > > +	struct sk_buff *skb;
+> > > +	unsigned int skb_len;
+> > > +	struct zynqmp_ipi_message *mb_msg;
+> > > +	int ret;
+> > > +
+> > > +	struct device *dev = rproc->dev.parent;
+> > > +	struct zynqmp_r5_rproc *z_rproc = rproc->priv;
+> > > +
+> > > +	if (of_property_read_bool(dev->of_node, "mboxes")) {
+> > > +		skb_len = (unsigned int)(sizeof(vqid) + sizeof(mb_msg));
+> > > +		skb = alloc_skb(skb_len, GFP_ATOMIC);
+> > > +		if (!skb)
+> > > +			return;
+> > > +
+> > > +		mb_msg = (struct zynqmp_ipi_message *)skb_put(skb,
+> > skb_len);
+> > > +		mb_msg->len = sizeof(vqid);
+> > > +		memcpy(mb_msg->data, &vqid, sizeof(vqid));
+> > > +
+> > > +		skb_queue_tail(&z_rproc->tx_mc_skbs, skb);
+> > > +		ret = mbox_send_message(z_rproc->tx_chan, mb_msg);
+> > > +		if (ret < 0) {
+> > > +			dev_warn(dev, "Failed to kick remote.\n");
+> > > +			skb_dequeue_tail(&z_rproc->tx_mc_skbs);
+> > > +			kfree_skb(skb);
+> > > +		}
+> > > +	} else {
+> > > +		(void)skb;
+> > > +		(void)skb_len;
+> > > +		(void)mb_msg;
+> > > +		(void)ret;
+> > > +		(void)vqid;
+> > > +	}
+> > > +}
+> > > +
+> > > +static struct rproc_ops zynqmp_r5_rproc_ops = {
+> > > +	.start		= zynqmp_r5_rproc_start,
+> > > +	.stop		= zynqmp_r5_rproc_stop,
+> > > +	.load		= rproc_elf_load_segments,
+> > > +	.parse_fw	= zynqmp_r5_parse_fw,
+> > > +	.find_loaded_rsc_table = rproc_elf_find_loaded_rsc_table,
+> > > +	.sanity_check	= rproc_elf_sanity_check,
+> > > +	.get_boot_addr	= rproc_elf_get_boot_addr,
+> > > +	.kick		= zynqmp_r5_rproc_kick,
+> > > +};
+> > > +
+> > > +/**
+> > > + * event_notified_idr_cb() - event notified idr callback
+> > > + * @id: idr id
+> > > + * @ptr: pointer to idr private data
+> > > + * @data: data passed to idr_for_each callback
+> > > + *
+> > > + * Pass notification to remoteproc virtio
+> > > + *
+> > > + * Return: 0. having return is to satisfy the idr_for_each() function
+> > > + *          pointer input argument requirement.
+> > > + **/
+> > > +static int event_notified_idr_cb(int id, void *ptr, void *data)
+> > > +{
+> > > +	struct rproc *rproc = data;
+> > > +
+> > > +	(void)rproc_vq_interrupt(rproc, id);
+> > > +	return 0;
+> > > +}
+> > > +
+> > > +/**
+> > > + * handle_event_notified() - remoteproc notification work funciton
+> > > + * @work: pointer to the work structure
+> > > + *
+> > > + * It checks each registered remoteproc notify IDs.
+> > > + */
+> > > +static void handle_event_notified(struct work_struct *work)
+> > > +{
+> > > +	struct rproc *rproc;
+> > > +	struct zynqmp_r5_rproc *z_rproc;
+> > > +
+> > > +	z_rproc = container_of(work, struct zynqmp_r5_rproc, mbox_work);
+> > > +
+> > > +	(void)mbox_send_message(z_rproc->rx_chan, NULL);
+> > > +	rproc = z_rproc->rproc;
+> > > +	/*
+> > > +	 * We only use IPI for interrupt. The firmware side may or may
+> > > +	 * not write the notifyid when it trigger IPI.
+> > > +	 * And thus, we scan through all the registered notifyids.
+> > > +	 */
+> > > +	idr_for_each(&rproc->notifyids, event_notified_idr_cb, rproc);
+> > > +}
+> > > +
+> > > +/**
+> > > + * zynqmp_r5_mb_rx_cb() - Receive channel mailbox callback
+> > > + * @cl: mailbox client
+> > > + * @mssg: message pointer
+> > > + *
+> > > + * It will schedule the R5 notification work.
+> > > + */
+> > > +static void zynqmp_r5_mb_rx_cb(struct mbox_client *cl, void *mssg)
+> > > +{
+> > > +	struct zynqmp_r5_rproc *z_rproc;
+> > > +
+> > > +	z_rproc = container_of(cl, struct zynqmp_r5_rproc, rx_mc);
+> > > +	if (mssg) {
+> > > +		struct zynqmp_ipi_message *ipi_msg, *buf_msg;
+> > > +		size_t len;
+> > > +
+> > > +		ipi_msg = (struct zynqmp_ipi_message *)mssg;
+> > > +		buf_msg = (struct zynqmp_ipi_message *)z_rproc->rx_mc_buf;
+> > > +		len = (ipi_msg->len >= IPI_BUF_LEN_MAX) ?
+> > > +		      IPI_BUF_LEN_MAX : ipi_msg->len;
+> > > +		buf_msg->len = len;
+> > > +		memcpy(buf_msg->data, ipi_msg->data, len);
+> > > +	}
+> > > +	schedule_work(&z_rproc->mbox_work);
+> > > +}
+> > > +
+> > > +/**
+> > > + * zynqmp_r5_mb_tx_done() - Request has been sent to the remote
+> > > + * @cl: mailbox client
+> > > + * @mssg: pointer to the message which has been sent
+> > > + * @r: status of last TX - OK or error
+> > > + *
+> > > + * It will be called by the mailbox framework when the last TX has done.
+> > > + */
+> > > +static void zynqmp_r5_mb_tx_done(struct mbox_client *cl, void *mssg, int
+> > r)
+> > > +{
+> > > +	struct zynqmp_r5_rproc *z_rproc;
+> > > +	struct sk_buff *skb;
+> > > +
+> > > +	if (!mssg)
+> > > +		return;
+> > > +	z_rproc = container_of(cl, struct zynqmp_r5_rproc, tx_mc);
+> > > +	skb = skb_dequeue(&z_rproc->tx_mc_skbs);
+> > > +	kfree_skb(skb);
+> > > +}
+> > > +
+> > > +/**
+> > > + * zynqmp_r5_setup_mbox() - Setup mailboxes
+> > > + *			    this is used for each individual R5 core
+> > > + *
+> > > + * @z_rproc: pointer to the ZynqMP R5 processor platform data
+> > > + * @node: pointer of the device node
+> > > + *
+> > > + * Function to setup mailboxes to talk to RPU.
+> > > + *
+> > > + * Return: 0 for success, negative value for failure.
+> > > + */
+> > > +static int zynqmp_r5_setup_mbox(struct zynqmp_r5_rproc *z_rproc,
+> > > +				struct device_node *node)
+> > > +{
+> > > +	struct mbox_client *mclient;
+> > > +
+> > > +	/* Setup TX mailbox channel client */
+> > > +	mclient = &z_rproc->tx_mc;
+> > > +	mclient->rx_callback = NULL;
+> > > +	mclient->tx_block = false;
+> > > +	mclient->knows_txdone = false;
+> > > +	mclient->tx_done = zynqmp_r5_mb_tx_done;
+> > > +	mclient->dev = z_rproc->dev;
+> > > +
+> > > +	/* Setup TX mailbox channel client */
+> > > +	mclient = &z_rproc->rx_mc;
+> > > +	mclient->dev = z_rproc->dev;
+> > > +	mclient->rx_callback = zynqmp_r5_mb_rx_cb;
+> > > +	mclient->tx_block = false;
+> > > +	mclient->knows_txdone = false;
+> > > +
+> > > +	INIT_WORK(&z_rproc->mbox_work, handle_event_notified);
+> > > +
+> > > +	/* Request TX and RX channels */
+> > > +	z_rproc->tx_chan = mbox_request_channel_byname(&z_rproc-
+> > >tx_mc, "tx");
+> > > +	if (IS_ERR(z_rproc->tx_chan)) {
+> > > +		dev_err(z_rproc->dev, "failed to request mbox tx channel.\n");
+> > > +		z_rproc->tx_chan = NULL;
+> > > +		return -EINVAL;
+> > > +	}
+> > > +
+> > > +	z_rproc->rx_chan = mbox_request_channel_byname(&z_rproc-
+> > >rx_mc, "rx");
+> > > +	if (IS_ERR(z_rproc->rx_chan)) {
+> > > +		dev_err(z_rproc->dev, "failed to request mbox rx channel.\n");
+> > > +		z_rproc->rx_chan = NULL;
+> > > +		return -EINVAL;
+> > > +	}
+> > > +	skb_queue_head_init(&z_rproc->tx_mc_skbs);
+> > > +
+> > > +	return 0;
+> > > +}
+> > > +
+> > > +/**
+> > > + * zynqmp_r5_probe() - Probes ZynqMP R5 processor device node
+> > > + *		       this is called for each individual R5 core to
+> > > + *		       set up mailbox, Xilinx platform manager unique ID,
+> > > + *		       add to rproc core
+> > > + *
+> > > + * @pdev: domain platform device for current R5 core
+> > > + * @node: pointer of the device node for current R5 core
+> > > + * @rpu_mode: mode to configure RPU, split or lockstep
+> > > + * @core: Xilinx specific remoteproc structure used later to link
+> > > + *           in to cluster of cores
+> > > + *
+> > > + * Function to retrieve the information of the ZynqMP R5 device node.
+> > > + *
+> > > + * Return: 0 for success, negative value for failure.
+> > > + */
+> > > +static int zynqmp_r5_probe(struct platform_device *pdev,
+> > > +			   struct device_node *node,
+> > > +			   enum rpu_oper_mode rpu_mode,
+> > > +			   struct zynqmp_r5_rproc **core)
+> > > +{
+> > > +	int ret;
+> > > +	struct device *dev = &pdev->dev;
+> > > +	struct rproc *rproc_ptr;
+> > > +	struct zynqmp_r5_rproc *z_rproc;
+> > > +
+> > > +	/* Allocate remoteproc instance */
+> > > +	rproc_ptr = devm_rproc_alloc(dev, dev_name(dev),
+> > &zynqmp_r5_rproc_ops,
+> > > +				     NULL, sizeof(struct zynqmp_r5_rproc));
+> > > +	if (!rproc_ptr)
+> > > +		return -ENOMEM;
+> > > +	rproc_ptr->auto_boot = false;
+> > > +	z_rproc = rproc_ptr->priv;
+> > > +	z_rproc->rproc = rproc_ptr;
+> > > +	z_rproc->dev = dev;
+> > > +	/* Set up DMA mask */
+> > > +	ret = dma_set_coherent_mask(dev, DMA_BIT_MASK(32));
+> > > +	if (ret)
+> > > +		goto error;
+> > > +	/* Get R5 power domain node */
+> > > +	ret = of_property_read_u32(node, "pnode-id", &z_rproc->pnode_id);
+> > > +	if (ret)
+> > > +		goto error;
+> > > +
+> > > +	ret = r5_set_mode(z_rproc, rpu_mode);
+> > > +	if (ret)
+> > > +		goto error;
+> > > +
+> > > +	if (of_property_read_bool(node, "mboxes")) {
+> > > +		ret = zynqmp_r5_setup_mbox(z_rproc, node);
+> > > +		if (ret)
+> > > +			goto error;
+> > > +	}
+> > > +	/* Add R5 remoteproc */
+> > > +	ret = devm_rproc_add(dev, rproc_ptr);
+> > > +	if (ret)
+> > > +		goto error;
+> > > +	*core = z_rproc;
+> > > +
+> > > +error:
+> > > +	return ret;
+> > > +}
+> > > +
+> > > +/*
+> > > + * called when driver is probed, for each R5 core specified in DT,
+> > > + * setup as needed to do remoteproc-related operations
+> > > + */
+> > > +static int zynqmp_r5_remoteproc_probe(struct platform_device *pdev)
+> > > +{
+> > > +	int ret, i;
+> > > +	struct device *dev = &pdev->dev;
+> > > +	struct device_node *nc;
+> > > +	enum rpu_oper_mode rpu_mode;
+> > > +	struct list_head *cluster; /* list to track each core's rproc */
+> > > +	struct zynqmp_r5_rproc *z_rproc;
+> > > +	struct platform_device *child_pdev;
+> > > +	struct list_head *pos;
+> > > +
+> > > +	rpu_mode = of_property_read_bool(dev->of_node, "lockstep-mode")
+> > ?
+> > > +		   PM_RPU_MODE_LOCKSTEP : PM_RPU_MODE_SPLIT;
+> > > +	dev_dbg(dev, "RPU configuration: %s\n",
+> > > +		rpu_mode == PM_RPU_MODE_LOCKSTEP ? "lockstep" :
+> > "split");
+> > > +
+> > > +	/*
+> > > +	 * if 2 RPUs provided but one is lockstep, then we have an
+> > > +	 * invalid configuration.
+> > > +	 */
+> > > +	i = of_get_available_child_count(dev->of_node);
+> > > +	if ((rpu_mode == PM_RPU_MODE_LOCKSTEP && i != 1) || i >
+> > MAX_RPROCS)
+> > > +		return -EINVAL;
+> > > +
+> > > +	cluster = devm_kzalloc(dev, sizeof(*cluster), GFP_KERNEL);
+> > > +	if (!cluster)
+> > > +		return -ENOMEM;
+> > > +	INIT_LIST_HEAD(cluster);
+> > > +
+> > > +	ret = devm_of_platform_populate(dev);
+> > > +	if (ret) {
+> > > +		dev_err(dev, "devm_of_platform_populate failed, ret =
+> > %d\n",
+> > > +			ret);
+> > > +		return ret;
+> > > +	}
+> > > +
+> > > +	/* probe each individual r5 core's remoteproc-related info */
+> > > +	i = 0;
+> > > +	for_each_available_child_of_node(dev->of_node, nc) {
+> > > +		child_pdev = of_find_device_by_node(nc);
+> > > +		if (!child_pdev) {
+> > > +			dev_err(dev, "could not get R5 core platform
+> > device\n");
+> > > +			ret = -ENODEV;
+> > > +			goto out;
+> > > +		}
+> > > +		ret = zynqmp_r5_probe(child_pdev, nc, rpu_mode, &z_rproc);
+> > > +		dev_dbg(dev, "%s to probe rpu %pOF\n",
+> > > +			ret ? "Failed" : "Able",
+> > > +			nc);
+> > > +		if (!z_rproc)
+> > > +			ret = -EINVAL;
+> > > +		if (ret)
+> > > +			goto out;
+> > > +
+> > > +		put_device(&child_pdev->dev);
+> > > +		list_add_tail(&z_rproc->elem, cluster);
+> > > +		i++;
+> > > +	}
+> > > +	/* wire in so each core can be cleaned up at drive remove */
+> > > +	platform_set_drvdata(pdev, cluster);
+> > > +	return 0;
+> > > +out:
+> > > +	/* undo core0 upon any failures on core1 in split-mode */
+> > > +	if (rpu_mode == PM_RPU_MODE_SPLIT && i == 1 && ret != 0) {
+> > > +		list_for_each(pos, cluster) {
+> > > +			z_rproc = list_entry(pos, struct zynqmp_r5_rproc,
+> > elem);
+> > > +			if (of_property_read_bool(z_rproc->dev->of_node,
+> > "mboxes")) {
+> > > +				mbox_free_channel(z_rproc->tx_chan);
+> > > +				mbox_free_channel(z_rproc->rx_chan);
+> > > +			}
+> > > +		}
+> > > +	}
+> > > +	return ret;
+> > > +}
+> > > +
+> > > +/*
+> > > + * for each core, clean up the following:
+> > > + *	single rproc entry
+> > > + *	mailbox tx, rx
+> > > + */
+> > > +static int zynqmp_r5_remoteproc_remove(struct platform_device *pdev)
+> > > +{
+> > > +	struct list_head *pos, *cluster = (struct list_head *)
+> > > +					  platform_get_drvdata(pdev);
+> > > +	struct zynqmp_r5_rproc *z_rproc = NULL;
+> > > +
+> > > +	list_for_each(pos, cluster) {
+> > > +		z_rproc = list_entry(pos, struct zynqmp_r5_rproc, elem);
+> > > +
+> > > +		mbox_free_channel(z_rproc->tx_chan);
+> > > +		mbox_free_channel(z_rproc->rx_chan);
+> > > +	}
+> > > +	return 0;
+> > > +}
+> > > +
+> > > +/* Match table for OF platform binding */
+> > > +static const struct of_device_id zynqmp_r5_remoteproc_match[] = {
+> > > +	{ .compatible = "xlnx,zynqmp-r5-remoteproc", },
+> > > +	{ /* end of list */ },
+> > > +};
+> > > +MODULE_DEVICE_TABLE(of, zynqmp_r5_remoteproc_match);
+> > > +
+> > > +static struct platform_driver zynqmp_r5_remoteproc_driver = {
+> > > +	.probe = zynqmp_r5_remoteproc_probe,
+> > > +	.remove = zynqmp_r5_remoteproc_remove,
+> > > +	.driver = {
+> > > +		.name = "zynqmp_r5_remoteproc",
+> > > +		.of_match_table = zynqmp_r5_remoteproc_match,
+> > > +	},
+> > > +};
+> > > +module_platform_driver(zynqmp_r5_remoteproc_driver);
+> > > +
+> > > +MODULE_AUTHOR("Ben Levinsky <ben.levinsky@xilinx.com>");
+> > > +MODULE_LICENSE("GPL v2");
+> > > --
+> > > 2.17.1
+> > >
