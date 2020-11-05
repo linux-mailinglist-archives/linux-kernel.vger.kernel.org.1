@@ -2,358 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73A772A7539
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 03:08:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 751472A755A
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 03:23:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732232AbgKECIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 21:08:24 -0500
-Received: from mailout4.samsung.com ([203.254.224.34]:56976 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729962AbgKECIX (ORCPT
+        id S1732282AbgKECW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 21:22:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44440 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726777AbgKECW5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 21:08:23 -0500
-Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20201105020820epoutp04d7c380cbf246674bd9703daa05e852e7~Eeon-AaJ31204212042epoutp04E
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 02:08:20 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20201105020820epoutp04d7c380cbf246674bd9703daa05e852e7~Eeon-AaJ31204212042epoutp04E
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1604542100;
-        bh=UY5wyEA/7KgFYm+m/uCeoRFsAFIDrkQp2oymQvesjQA=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=vbV8R9gmw+dvJ5A384o8gUVKG5srI24IqiuMhgcsAP3tV0hzwisiToTrkZ2B6hIGl
-         TfqsALVtJeiqlw7p2giBQrBrD/r2tbGB7c24u0/choqPaLsHSPTCB6RP1bo1oLzRql
-         OwvpCs6hvGtY5bt2sHlU7FELM8dQ4x5IjhdbzB1Q=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20201105020819epcas1p16e9763cec9b873ef77f71ebfd11a4916~EeonTK8rf1663216632epcas1p1C;
-        Thu,  5 Nov 2020 02:08:19 +0000 (GMT)
-Received: from epsmges1p2.samsung.com (unknown [182.195.40.158]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4CRRkm1GDkzMqYkk; Thu,  5 Nov
-        2020 02:08:16 +0000 (GMT)
-Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
-        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        75.DB.63458.09E53AF5; Thu,  5 Nov 2020 11:08:16 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
-        20201105020815epcas1p34067ce27ad5804aba8a81f02c248c6d0~Eeojmm-Rb3016230162epcas1p3H;
-        Thu,  5 Nov 2020 02:08:15 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20201105020815epsmtrp262fd973894180f9788b62b2bed700708~Eeojlh2Oh1460114601epsmtrp2w;
-        Thu,  5 Nov 2020 02:08:15 +0000 (GMT)
-X-AuditID: b6c32a36-6c9ff7000000f7e2-df-5fa35e909926
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        0A.7F.13470.F8E53AF5; Thu,  5 Nov 2020 11:08:15 +0900 (KST)
-Received: from [10.113.221.102] (unknown [10.113.221.102]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20201105020815epsmtip257077db3170ec4ccf3fbd16ad851e68a~EeojGdeeV1081810818epsmtip2_;
-        Thu,  5 Nov 2020 02:08:15 +0000 (GMT)
-Subject: Re: [PATCH v7 45/47] PM / devfreq: tegra30: Support interconnect
- and OPPs from device-tree
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Mikko Perttunen <cyndis@kapsi.fi>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org
-From:   Chanwoo Choi <cw00.choi@samsung.com>
-Organization: Samsung Electronics
-Message-ID: <2b907334-9ddf-654a-2add-891b0dcaa8ad@samsung.com>
-Date:   Thu, 5 Nov 2020 11:22:11 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
-        Thunderbird/59.0
+        Wed, 4 Nov 2020 21:22:57 -0500
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1228C0613CF;
+        Wed,  4 Nov 2020 18:22:57 -0800 (PST)
+Received: by mail-yb1-xb43.google.com with SMTP id c129so656893yba.8;
+        Wed, 04 Nov 2020 18:22:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=g/cUsKBy9aLzWUWC4mZ7IACQUgXjiEVgWxOTM1gmtNM=;
+        b=lJQGK9GnG7+J1uANBdbm8uKpq19z1gyaLw66X3197v/Eh+m5OlnLslNEYbVlu8g8CK
+         ZZCnFYLl5Bg0lLnvaFFI1+OYo7uzQVhzaiqM6sHwmLyZ9/KoO3qTEUZkhQcgB9KRfnN8
+         eBdIre3o2wwrMhl29bF+4M29TxDUhxpZKGuUz1EFvsuPhwlVpdYE7NaiLIrNBLmW+yRK
+         fjVq88UCPkLDlKQXQfSHgItIJYak4Ljuwd4tMTACe9e6YmQ9YE7US7DwHu4bArcX5+a6
+         j4txsOjCj/2V7wFzO1I6TLS6nAiHUfJ8LxaIomR58GCxyFdn5cWMEb+SRFCpj8rQMXas
+         48/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=g/cUsKBy9aLzWUWC4mZ7IACQUgXjiEVgWxOTM1gmtNM=;
+        b=USs2oOA9l7cEf+ri2zh9DSD1gmsqOqfElq/Ejj58i8cXVX0sLHvKrDtVE/MLi3M315
+         o4N+czi150b9VGEtTPOirkdfTBROSfJY+5fodMwVdHKkwxOvHhY/EMURLnRBcj04vXAf
+         AcLWLKdMLUdXngufmCIXF7h6GobF/Ladpw28q1Svv3wqAzu8KAqe09g+GjvFztuLR07N
+         iVICTM3oTbvQxlofnHY/dhRAuyw3nFmjhRDRh1Qp96vucnc0aVem+eCkqbPGzCWaRo4w
+         cGk+ELS6VfNGiTtPc9WroIqEOjNZHsuypf5wkBD6ntcoeEUdgxuOBoJqJC6Vm8t7xool
+         zlZw==
+X-Gm-Message-State: AOAM531WjYji2XwWqpgZ68Ks8VrKmeEF/6e3HgIkblf7xktxkrhOqbBX
+        ei+/q99uJri5O/Vf4PSXLbfGCx6YJkLln/myPlY=
+X-Google-Smtp-Source: ABdhPJzNhaZ8T0cY5P/wh86IVEQo+Ph/kiGxD5Z+mYUIy/qaoPMQYrjpqQBI12hm6aFBmXdv28Ug9NWJ3cexImZ50Do=
+X-Received: by 2002:a25:bf89:: with SMTP id l9mr709494ybk.22.1604542976980;
+ Wed, 04 Nov 2020 18:22:56 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201104164923.21238-46-digetx@gmail.com>
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA01TaVBTVxidm7y8JA60jxjDLW0Vnh0HsSxhvbaE2oKSooNpmTotP0zfwBOQ
-        bJMH2H0gLixWqhRFU5RNlMWlBERhYHBYyhABKWqEVkY7BMcKJBSKgqI04eGUf+d+53z33PPd
-        ewVc0TjuIUjRpNF6DaUi8VVYY8dGf9+juyuUAWUmHrJNj/FQSWc/D9X+MwrQ7Vk7jopaTTg6
-        YCzH0M2bv/LRlbELHNRnmOCjW83FOJo50glQ7r9GHP1u3or+zKrCUcHF4wD1PdyODrZ28tFL
-        Sx2G5pvPYKj+wW/4FrHcPnSQL28yjvDlg/0LXLmpJheX37O04PL7h7s58iP7bbg8v6EGyGdM
-        axXC+NTwZJpKpPWetCZBm5iiSZKR2+OUkcqQ0ACpr3QzCiM9NZSalpFROxS+21JUjmSkZwal
-        SneUFBTDkP4R4Xptehrtmaxl0mQkrUtU6Tbr/BhKzaRrkvwStOr3pAEBgSEO4ZepyYuj03xd
-        H/rKbNiXCSp884BQAIlgOG8+wckDqwQi4hqAswW1PCchIqYBzLLGs8QTAKuH83ivOq4Pdi13
-        tAI4ZcjnsQs7gPX9fy+pVhM0vFP4gu8kxMQwBs9XvcSdBJc4CeC9lvVOjBM+sO3R0FL9dcIL
-        3pkbBU7sSkTA7JN2zIkx4h1obZ1e0qwhdsGexgPLGjfYc8q6pBESYdA2nLm8vzv8w1rCYfE6
-        eHWymOs8BCR+EcIbl/owNkMUnKgb5rN4NXzc3bCMPeCMrRVn8bewuqcTZ5tzAGxoG1geQBBs
-        q/zZ4SBwOGyEl5v92bIXbHp+GrDGr0Hb7I88pwQSrjDnkIiVrIe3HoxwWPwGrMjOxY8C0rgi
-        jnFFBOOKCMb/zUoBVgMktI5RJ9GMVBe48rZNYOnV+4ReAwWTU37tgCMA7QAKuKTYdSC2XCly
-        TaS+/obWa5X6dBXNtIMQx4CPcT3WJGgd30aTppSGBAYFBaFgaWiIVEq6uy5sylGKiCQqjU6l
-        aR2tf9XHEQg9MjkuCq/ArGmV58hHc7SbJPbup3BMsqNXrJ07LSn7Kwa/IQtXlH7Pp0WL0VYD
-        knkPqM8O5j2bj3n2qOWnTYJ2brfIWlS2K8aSkXvYrXcy6s299eUPj2e7fLC2sTBHElek67pQ
-        92Ebx9tyxh5xrlkn0zcFx9yv7L/bw1weOWWKHqLH8/frMyLnYie2JXW/Vdkt7Fow7Owq/rj+
-        9mJJuMZ8aYv70339n8W1W84lVNlrRE9iiy2x0utl2T+QpWEbWmpdOva+W5/fJJ69OC4eB4e0
-        U4ovXvRqvbM/8Tecfb4V29DxdvKV6KJj5hOFjeU98ZLP46g9j6uvmt+PVO8ufBpQZvtu3R4S
-        Y5IpqQ9Xz1D/AciK5WV+BAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrOIsWRmVeSWpSXmKPExsWy7bCSvG5/3OJ4gzmzZCzefXrKajH/yDlW
-        i9UfHzNaXPn6ns1i+t5NbBYtsxaxWJw/v4HdYuvTNUwWZ5vesFtc3jWHzeJz7xFGi84vs9gs
-        Lp5ytbjduILNYtLaqYwWZ595W7TuPcJu8e/aRhaLn7vmsVhsfnCMzUHE4/2NVnaPnbPusntc
-        OveH2WPTqk42jzvX9rB53O8+zuTR2/yOzaNvyypGj8+b5AI4o7hsUlJzMstSi/TtErgy/j/+
-        xF5w1qLiVFN5A+Ni3S5GTg4JAROJA5eOMnUxcnEICexmlGjtvcYOkZCUmHbxKHMXIweQLSxx
-        +HAxRM1bRonX876xgdQIC6RKnF/QwQKSEBG4yyIx6cctNhCHWWAGo8SfDRvZIVq2MUrsftDL
-        CtLCJqAlsf/FDbB2fgFFias/HjOC2LwCdhLtM96zgNgsAioST/Z+AqsRFQiT2LnkMRNEjaDE
-        yZlPwGo4Bcwl3t1sAKthFlCX+DPvEjOELS5x68l8JghbXmL72znMExiFZyFpn4WkZRaSlllI
-        WhYwsqxilEwtKM5Nzy02LDDMSy3XK07MLS7NS9dLzs/dxAiOey3NHYzbV33QO8TIxMF4iFGC
-        g1lJhPeC36J4Id6UxMqq1KL8+KLSnNTiQ4zSHCxK4rw3ChfGCQmkJ5akZqemFqQWwWSZODil
-        Gpha1DM56gLVT7b6Prh9OPfQ3c9slb9iWQqaXPO/hnRxnFWvP//YfkngU22nTfdPtwUdLO3s
-        Ne31DE6ft87ExuWhAcvzwOuvSm66hL79ElTI+MnzyOGXCzg7/CR/B/2fPVFtqdx3G7Fn8q9b
-        ks6FKP5tbbh8oDvmmmZqpveV9Va3q73v6/O8Vv2wr2BJQzm30I960w061Usypihvrrb/3fO7
-        pPnP2utmj+++nX2D+aVzcXvRD1kHZsOtwpt2/LvrY8l4xkWqfVOh+LGSjMa+6nlzFj8ofS3x
-        ZlZh+fHJXM9M5f1ObP3afDB3vo+iXRNHE/sbsZlfPsgqiU5an/thz1O3eKkzy/uEn/ta3fi2
-        dp0SS3FGoqEWc1FxIgDiON65agMAAA==
-X-CMS-MailID: 20201105020815epcas1p34067ce27ad5804aba8a81f02c248c6d0
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20201104165124epcas1p3fb886cc56ef8601329e9a76b7c403317
-References: <20201104164923.21238-1-digetx@gmail.com>
-        <CGME20201104165124epcas1p3fb886cc56ef8601329e9a76b7c403317@epcas1p3.samsung.com>
-        <20201104164923.21238-46-digetx@gmail.com>
+References: <20201104191052.390657-1-ndesaulniers@google.com>
+In-Reply-To: <20201104191052.390657-1-ndesaulniers@google.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Thu, 5 Nov 2020 03:22:46 +0100
+Message-ID: <CANiq72m9xX78==qAyu5dKPv-26tPh=ia4xORivvpvwbtoENSqQ@mail.gmail.com>
+Subject: Re: [PATCH] compiler-clang: remove version check for BPF Tracing
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Chen Yu <yu.chen.surf@gmail.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Marco Elver <elver@google.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dmitry,
+On Wed, Nov 4, 2020 at 8:11 PM Nick Desaulniers <ndesaulniers@google.com> wrote:
+>
+> bpftrace parses the kernel headers and uses Clang under the hood. Remove
+> the version check when __BPF_TRACING__ is defined (as bpftrace does) so
+> that this tool can continue to parse kernel headers, even with older
+> clang sources.
 
-On 11/5/20 1:49 AM, Dmitry Osipenko wrote:
-> This patch moves ACTMON driver away from generating OPP table by itself,
-> transitioning it to use the table which comes from device-tree. This
-> change breaks compatibility with older device-trees in order to bring
-> support for the interconnect framework to the driver. This is a mandatory
-> change which needs to be done in order to implement interconnect-based
-> memory DVFS. Users of legacy device-trees will get a message telling that
-> theirs DT needs to be upgraded. Now ACTMON issues memory bandwidth request
-> using dev_pm_opp_set_bw(), instead of driving EMC clock rate directly.
-> 
-> Tested-by: Peter Geis <pgwipeout@gmail.com>
-> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  drivers/devfreq/tegra30-devfreq.c | 96 +++++++++++++++++--------------
->  1 file changed, 54 insertions(+), 42 deletions(-)
-> 
-> diff --git a/drivers/devfreq/tegra30-devfreq.c b/drivers/devfreq/tegra30-devfreq.c
-> index 38cc0d014738..4db027ca17e1 100644
-> --- a/drivers/devfreq/tegra30-devfreq.c
-> +++ b/drivers/devfreq/tegra30-devfreq.c
-> @@ -19,6 +19,8 @@
->  #include <linux/reset.h>
->  #include <linux/workqueue.h>
->  
-> +#include <soc/tegra/fuse.h>
-> +
->  #include "governor.h"
->  
->  #define ACTMON_GLB_STATUS					0x0
-> @@ -155,6 +157,7 @@ struct tegra_devfreq_device {
->  
->  struct tegra_devfreq {
->  	struct devfreq		*devfreq;
-> +	struct opp_table	*opp_table;
->  
->  	struct reset_control	*reset;
->  	struct clk		*clock;
-> @@ -612,34 +615,19 @@ static void tegra_actmon_stop(struct tegra_devfreq *tegra)
->  static int tegra_devfreq_target(struct device *dev, unsigned long *freq,
->  				u32 flags)
->  {
-> -	struct tegra_devfreq *tegra = dev_get_drvdata(dev);
-> -	struct devfreq *devfreq = tegra->devfreq;
->  	struct dev_pm_opp *opp;
-> -	unsigned long rate;
-> -	int err;
-> +	int ret;
->  
->  	opp = devfreq_recommended_opp(dev, freq, flags);
->  	if (IS_ERR(opp)) {
->  		dev_err(dev, "Failed to find opp for %lu Hz\n", *freq);
->  		return PTR_ERR(opp);
->  	}
-> -	rate = dev_pm_opp_get_freq(opp);
-> -	dev_pm_opp_put(opp);
-> -
-> -	err = clk_set_min_rate(tegra->emc_clock, rate * KHZ);
-> -	if (err)
-> -		return err;
-> -
-> -	err = clk_set_rate(tegra->emc_clock, 0);
-> -	if (err)
-> -		goto restore_min_rate;
-> -
-> -	return 0;
->  
-> -restore_min_rate:
-> -	clk_set_min_rate(tegra->emc_clock, devfreq->previous_freq);
-> +	ret = dev_pm_opp_set_bw(dev, opp);
-> +	dev_pm_opp_put(opp);
->  
-> -	return err;
-> +	return ret;
->  }
->  
->  static int tegra_devfreq_get_dev_status(struct device *dev,
-> @@ -655,7 +643,7 @@ static int tegra_devfreq_get_dev_status(struct device *dev,
->  	stat->private_data = tegra;
->  
->  	/* The below are to be used by the other governors */
-> -	stat->current_frequency = cur_freq;
-> +	stat->current_frequency = cur_freq * KHZ;
->  
->  	actmon_dev = &tegra->devices[MCALL];
->  
-> @@ -705,7 +693,12 @@ static int tegra_governor_get_target(struct devfreq *devfreq,
->  		target_freq = max(target_freq, dev->target_freq);
->  	}
->  
-> -	*freq = target_freq;
-> +	/*
-> +	 * tegra-devfreq driver operates with KHz units, while OPP table
-> +	 * entries use Hz units. Hence we need to convert the units for the
-> +	 * devfreq core.
-> +	 */
-> +	*freq = target_freq * KHZ;
->  
->  	return 0;
->  }
-> @@ -774,13 +767,22 @@ static struct devfreq_governor tegra_devfreq_governor = {
->  
->  static int tegra_devfreq_probe(struct platform_device *pdev)
->  {
-> +	u32 hw_version = BIT(tegra_sku_info.soc_speedo_id);
->  	struct tegra_devfreq_device *dev;
->  	struct tegra_devfreq *tegra;
-> +	struct opp_table *opp_table;
->  	struct devfreq *devfreq;
->  	unsigned int i;
->  	long rate;
->  	int err;
->  
-> +	/* legacy device-trees don't have OPP table and must be updated */
-> +	if (!device_property_present(&pdev->dev, "operating-points-v2")) {
-> +		dev_err(&pdev->dev,
-> +			"OPP table not found, please update your device tree\n");
-> +		return -ENODEV;
-> +	}
-> +
->  	tegra = devm_kzalloc(&pdev->dev, sizeof(*tegra), GFP_KERNEL);
->  	if (!tegra)
->  		return -ENOMEM;
-> @@ -822,11 +824,31 @@ static int tegra_devfreq_probe(struct platform_device *pdev)
->  		return err;
->  	}
->  
-> +	tegra->opp_table = dev_pm_opp_get_opp_table(&pdev->dev);
-> +	err = PTR_ERR_OR_ZERO(tegra->opp_table);
-> +	if (err) {
-> +		dev_err(&pdev->dev, "Failed to prepare OPP table: %d\n", err);
-> +		return err;
-> +	}
-> +
-> +	opp_table = dev_pm_opp_set_supported_hw(&pdev->dev, &hw_version, 1);
-> +	err = PTR_ERR_OR_ZERO(opp_table);
-> +	if (err) {
-> +		dev_err(&pdev->dev, "Failed to set supported HW: %d\n", err);
-> +		goto put_table;
-> +	}
-> +
-> +	err = dev_pm_opp_of_add_table(&pdev->dev);
-> +	if (err) {
-> +		dev_err(&pdev->dev, "Failed to add OPP table: %d\n", err);
-> +		goto put_hw;
-> +	}
-> +
->  	err = clk_prepare_enable(tegra->clock);
->  	if (err) {
->  		dev_err(&pdev->dev,
->  			"Failed to prepare and enable ACTMON clock\n");
-> -		return err;
-> +		goto remove_table;
->  	}
->  
->  	err = reset_control_reset(tegra->reset);
-> @@ -850,23 +872,6 @@ static int tegra_devfreq_probe(struct platform_device *pdev)
->  		dev->regs = tegra->regs + dev->config->offset;
->  	}
->  
-> -	for (rate = 0; rate <= tegra->max_freq * KHZ; rate++) {
-> -		rate = clk_round_rate(tegra->emc_clock, rate);
-> -
-> -		if (rate < 0) {
-> -			dev_err(&pdev->dev,
-> -				"Failed to round clock rate: %ld\n", rate);
-> -			err = rate;
-> -			goto remove_opps;
-> -		}
-> -
-> -		err = dev_pm_opp_add(&pdev->dev, rate / KHZ, 0);
-> -		if (err) {
-> -			dev_err(&pdev->dev, "Failed to add OPP: %d\n", err);
-> -			goto remove_opps;
-> -		}
-> -	}
-> -
->  	platform_set_drvdata(pdev, tegra);
->  
->  	tegra->clk_rate_change_nb.notifier_call = tegra_actmon_clk_notify_cb;
-> @@ -882,7 +887,6 @@ static int tegra_devfreq_probe(struct platform_device *pdev)
->  	}
->  
->  	tegra_devfreq_profile.initial_freq = clk_get_rate(tegra->emc_clock);
-> -	tegra_devfreq_profile.initial_freq /= KHZ;
->  
->  	devfreq = devfreq_add_device(&pdev->dev, &tegra_devfreq_profile,
->  				     "tegra_actmon", NULL);
-> @@ -902,6 +906,12 @@ static int tegra_devfreq_probe(struct platform_device *pdev)
->  	reset_control_reset(tegra->reset);
->  disable_clk:
->  	clk_disable_unprepare(tegra->clock);
-> +remove_table:
-> +	dev_pm_opp_of_remove_table(&pdev->dev);
-> +put_hw:
-> +	dev_pm_opp_put_supported_hw(tegra->opp_table);
-> +put_table:
-> +	dev_pm_opp_put_opp_table(tegra->opp_table);
->  
->  	return err;
->  }
-> @@ -913,11 +923,13 @@ static int tegra_devfreq_remove(struct platform_device *pdev)
->  	devfreq_remove_device(tegra->devfreq);
->  	devfreq_remove_governor(&tegra_devfreq_governor);
->  
-> -	dev_pm_opp_remove_all_dynamic(&pdev->dev);
-> -
->  	reset_control_reset(tegra->reset);
->  	clk_disable_unprepare(tegra->clock);
->  
-> +	dev_pm_opp_of_remove_table(&pdev->dev);
-> +	dev_pm_opp_put_supported_hw(tegra->opp_table);
-> +	dev_pm_opp_put_opp_table(tegra->opp_table);
-> +
->  	return 0;
->  }
->  
-> 
+Acked-by: Miguel Ojeda <ojeda@kernel.org>
 
-Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
-
--- 
-Best Regards,
-Chanwoo Choi
-Samsung Electronics
+Cheers,
+Miguel
