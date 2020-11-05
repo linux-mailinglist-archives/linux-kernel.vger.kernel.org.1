@@ -2,63 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41B992A84F9
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 18:34:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C303C2A84FC
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 18:34:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731687AbgKEReC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 12:34:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45424 "EHLO
+        id S1731736AbgKEReG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 12:34:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731648AbgKEReB (ORCPT
+        with ESMTP id S1731677AbgKEReC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 12:34:01 -0500
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B959C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 09:34:00 -0800 (PST)
-Received: by mail-pl1-x644.google.com with SMTP id p4so1123021plr.1
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 09:34:00 -0800 (PST)
+        Thu, 5 Nov 2020 12:34:02 -0500
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68F37C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 09:34:02 -0800 (PST)
+Received: by mail-pj1-x1041.google.com with SMTP id f12so426367pjp.4
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 09:34:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
         h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
          :content-transfer-encoding;
-        bh=bXK3jEO2zIpAnRvRC4dY7e8rL0kXVixnI/E7VIB9j4U=;
-        b=y7P19SKn2el77vCjC8Zi5jhTeHuNO1vf+R4w/I4lIr1Fcr1RnLf/J5JMJlJOwxEc05
-         S+2KbUj8SV5wmt3fbRwbo4gG3rp9Uk2PVM8BFH8sLzuRymXpEf4+zsZZey+Z6RRLqpyG
-         NzkCyZakbpyOB48Yk37enTbuRnQeF8wi2a7kFkGczVEBJBpybxqiqRHxp7RDKtQ66bcY
-         GwOB0wfZxuo/0ivYLgc1wdb6ABpFy0q6G2/DyCI1OwEB45Fuek32V9GFSphmS+/kJQaH
-         HIZZApZ1DoHrqZDnty2ZxUe62tu66CfFjQ0p3qX7q+drFTmj14c7NPYdHGVUSwML6pLH
-         +FzA==
+        bh=BNUKSCGWkc6CIawczqK2wZtYLRe3Vlhmmh+CKSA+3+c=;
+        b=lzbVQmsnHGQrz4/Uh0fYZi54IjSFhyftDYTHwIkpshJXq9uFE86Pa9KWtVjBqWJ7yd
+         onq3vAXQjTajSdGzQNX20E/F+aTUTqCib4eZOiqNtlC/7QkS53dFygSpG/W3sUaNJt5c
+         qziTHhbP7erX23zyVe1C/vgsPyjRg7S59nO505Ef8FRnRDFDEHb7eJus9H8y7UOL0GcD
+         kz5bw5d7wVOPW8Ro0wVtFiDoGvk6pa/TQguCGQJNwdYqoy8N7CCh6wwBSGCc2nivqMeC
+         LVMIsZUmFNl9BJeJW24JmrCWWop64Jw79jkqnvLrQ4fzrQemdE2L/D6hiptAVeXhATd9
+         9EXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
          :mime-version:content-transfer-encoding;
-        bh=bXK3jEO2zIpAnRvRC4dY7e8rL0kXVixnI/E7VIB9j4U=;
-        b=oMDw8gxzITgPnmHqFh3uQKKIp97zipEvXLqAdUgJbUXJPTeoQ1qfmoMbn1Q1o0kkAv
-         n5ZwsbfM2BdP3B+yrCIZWuU1CW7j4+TGrgF74a9QdW5MOr1bkf+72y2BKY/ojzq6of5Z
-         LedSBKKGCoXR1vSJpsXiVXVzysgvkJtxiURHdhgRLQgN62wMiPW58sEOq5o0q9lbxZO6
-         JiCZobaCyq/+9awaRWuJk8lXym8iCnmeXv6Wzmqz40PtTxDA2X67YW5XUwUOm8uTBaCJ
-         M//z++KzCgx+fu5TKIlot3nPzg5hp+YCRCyKYUDdpOeHEONyx//EmfRdpftW1e64AzFC
-         n2rA==
-X-Gm-Message-State: AOAM5338uJzcXkGiiWt1ld6WbQe/ZIHkrbHG4XeztiXgjPXNzKLpYZ/o
-        FP/Jx7FsRUWlBW1/xF6bSYE1Rg==
-X-Google-Smtp-Source: ABdhPJzHOvTRbzaRy9XAdwgGhXwcAkSxq3p3MAxWFwaFCnmoGFFYGFWOpx4CbhYVVGhTPaItUenZkg==
-X-Received: by 2002:a17:90b:1942:: with SMTP id nk2mr3445495pjb.168.1604597639530;
-        Thu, 05 Nov 2020 09:33:59 -0800 (PST)
+        bh=BNUKSCGWkc6CIawczqK2wZtYLRe3Vlhmmh+CKSA+3+c=;
+        b=SzOwM0DyF35aInZxoXrsfbvcqH3FHEK3mTqfxkA5rjF7Z6MO+V3VNiJ/xknwQ9p61V
+         0wbijsfxus6Fi11Ekt0SbceJCkezbHcoo4OdNnU/cByBM5YbeNtNvuhc5Yyqz5bz/5RW
+         RAZAXsbc5C8FrGP/SrkQuGJoS1dMP4YkLoJhppnIz/0Dtnq//WprIuZdTZVEPjRGBewb
+         hJ6RBGZzAvCSnZJGgjxbDejtA3bQVGAiGEwGLTozZ/og3uQt6pl2bFxjcRaDNGq8xNiI
+         nINu9+udrI4hlathw0X7930PfezXk4Rxz/ecg/jSWOT95xuNVzXa5NPRWTa66EFKp533
+         r8Gw==
+X-Gm-Message-State: AOAM531pLfCUKNaLWCHOWdcZKcRByrbvV0oIH1ipGhAPLfjXbYwgDbRE
+        /NtuFoU0SAwzxGjLKed7QuaRPnO18XWmmA==
+X-Google-Smtp-Source: ABdhPJylFsENw71w4yVASLj+rnk7or2cMT1g74UPVnCfF46/UVvMxhFTOGNn7sZscCvrZhuorInUWg==
+X-Received: by 2002:a17:902:23:b029:d6:2387:55e1 with SMTP id 32-20020a1709020023b02900d6238755e1mr3120958pla.8.1604597641453;
+        Thu, 05 Nov 2020 09:34:01 -0800 (PST)
 Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id 192sm3407429pfz.200.2020.11.05.09.33.58
+        by smtp.gmail.com with ESMTPSA id c11sm2964888pgl.20.2020.11.05.09.34.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 09:33:58 -0800 (PST)
-Date:   Thu, 05 Nov 2020 09:33:58 -0800 (PST)
-X-Google-Original-Date: Wed, 04 Nov 2020 13:29:05 PST (-0800)
-Subject:     Re: [PATCH] risc-v: kernel: ftrace: Fixes improper SPDX comment style
-In-Reply-To: <20201011030351.4619-1-ryanpkosta@gmail.com>
-CC:     rostedt@goodmis.org, mingo@redhat.com,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, ryanpkosta@gmail.com
+        Thu, 05 Nov 2020 09:34:00 -0800 (PST)
+Date:   Thu, 05 Nov 2020 09:34:00 -0800 (PST)
+X-Google-Original-Date: Wed, 04 Nov 2020 14:01:41 PST (-0800)
+Subject:     Re: [PATCH v4 3/5] riscv: Separate memory init from paging init
+In-Reply-To: <20201006001752.248564-4-atish.patra@wdc.com>
+CC:     linux-kernel@vger.kernel.org, Atish Patra <Atish.Patra@wdc.com>,
+        greentime.hu@sifive.com, aou@eecs.berkeley.edu,
+        akpm@linux-foundation.org, anshuman.khandual@arm.com,
+        anup@brainfault.org, Arnd Bergmann <arnd@arndb.de>,
+        catalin.marinas@arm.com, david@redhat.com,
+        Greg KH <gregkh@linuxfoundation.org>, justin.he@arm.com,
+        Jonathan.Cameron@huawei.com, wangkefeng.wang@huawei.com,
+        linux-arch@vger.kernel.org, linux-riscv@lists.infradead.org,
+        rppt@kernel.org, nsaenzjulienne@suse.de,
+        Paul Walmsley <paul.walmsley@sifive.com>, rafael@kernel.org,
+        steven.price@arm.com, will@kernel.org, zong.li@sifive.com,
+        linux-arm-kernel@lists.infradead.org
 From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     ryanpkosta@gmail.com
-Message-ID: <mhng-f7c021fe-0eab-497f-8eb5-7daf0f3b7799@palmerdabbelt-glaptop1>
+To:     Atish Patra <Atish.Patra@wdc.com>
+Message-ID: <mhng-f811a008-fd0c-4e85-b48d-4f2c476c1c65@palmerdabbelt-glaptop1>
 Mime-Version: 1.0 (MHng)
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
@@ -66,21 +74,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 10 Oct 2020 20:03:51 PDT (-0700), ryanpkosta@gmail.com wrote:
-> Signed-off-by: Ryan Kosta <ryanpkosta@gmail.com>
-> ---
->  arch/riscv/kernel/ftrace.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+On Mon, 05 Oct 2020 17:17:50 PDT (-0700), Atish Patra wrote:
+> Currently, we perform some memory init functions in paging init. But,
+> that will be an issue for NUMA support where DT needs to be flattened
+> before numa initialization and memblock_present can only be called
+> after numa initialization.
 >
-> diff --git a/arch/riscv/kernel/ftrace.c b/arch/riscv/kernel/ftrace.c
-> index 99e12faa549..765b62434f3 100644
-> --- a/arch/riscv/kernel/ftrace.c
-> +++ b/arch/riscv/kernel/ftrace.c
-> @@ -1,4 +1,4 @@
-> -/* SPDX-License-Identifier: GPL-2.0 */
-> +// SPDX-License-Identifier: GPL-2.0
->  /*
->   * Copyright (C) 2013 Linaro Limited
->   * Author: AKASHI Takahiro <takahiro.akashi@linaro.org>
+> Move memory initialization related functions to a separate function.
+>
+> Signed-off-by: Atish Patra <atish.patra@wdc.com>
+> Reviewed-by: Greentime Hu <greentime.hu@sifive.com>
+> ---
+>  arch/riscv/include/asm/pgtable.h | 1 +
+>  arch/riscv/kernel/setup.c        | 1 +
+>  arch/riscv/mm/init.c             | 6 +++++-
+>  3 files changed, 7 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
+> index eaea1f717010..515b42f98d34 100644
+> --- a/arch/riscv/include/asm/pgtable.h
+> +++ b/arch/riscv/include/asm/pgtable.h
+> @@ -466,6 +466,7 @@ static inline void __kernel_map_pages(struct page *page, int numpages, int enabl
+>  extern void *dtb_early_va;
+>  void setup_bootmem(void);
+>  void paging_init(void);
+> +void misc_mem_init(void);
+>
+>  #define FIRST_USER_ADDRESS  0
+>
+> diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
+> index 2c6dd329312b..07fa6d13367e 100644
+> --- a/arch/riscv/kernel/setup.c
+> +++ b/arch/riscv/kernel/setup.c
+> @@ -78,6 +78,7 @@ void __init setup_arch(char **cmdline_p)
+>  #else
+>  	unflatten_device_tree();
+>  #endif
+> +	misc_mem_init();
+>
+>  #ifdef CONFIG_SWIOTLB
+>  	swiotlb_init(1);
+> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+> index ed6e83871112..114c3966aadb 100644
+> --- a/arch/riscv/mm/init.c
+> +++ b/arch/riscv/mm/init.c
+> @@ -565,8 +565,12 @@ static void __init resource_init(void)
+>  void __init paging_init(void)
+>  {
+>  	setup_vm_final();
+> -	sparse_init();
+>  	setup_zero_page();
+> +}
+> +
+> +void __init misc_mem_init(void)
+> +{
+> +	sparse_init();
+>  	zone_sizes_init();
+>  	resource_init();
+>  }
 
-Thanks, this is on fixes.
+Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
