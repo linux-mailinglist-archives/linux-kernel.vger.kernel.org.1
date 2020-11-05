@@ -2,65 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 602072A817F
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 15:52:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BADA02A818D
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 15:53:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731525AbgKEOwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 09:52:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48150 "EHLO
+        id S1731365AbgKEOwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 09:52:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731315AbgKEOw2 (ORCPT
+        with ESMTP id S1731434AbgKEOw2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 5 Nov 2020 09:52:28 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D3A9C0613D4
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 06:52:27 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id 23so1282966wmg.1
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 06:52:27 -0800 (PST)
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DCB6C0613D6
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 06:52:28 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id w1so2104978wrm.4
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 06:52:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=CpDMS+RHHV1rRQnMHYAjcZzCg3wY/F0STHOFtNum/rU=;
-        b=QpushnzWopYXqm5YWwBvN6+FQaZHUZjNp1tHAUM5Ag2u5db4kXa+UJ3Z4yl/TOmdD1
-         7T39shHAWcJiQRYKkCkciEbSRLy+kOmviXG4DtQVSWEgKSXKv6NFk9JKADhbaGGEZJAA
-         gOR7hTYFkaC0n1XYj/O1NWU4cb3MOSx4JPotMGNGBBBgUy9K2NK2k9ZFVySebV+iywE1
-         ekymQgI26V3+xOhGpSd0IXPly/an+QOpGzOAbVFqI8PeMMkoBWPrSIQ4gtFJRQR3c7NR
-         DL62I58XDWWnnY0xsrxuDBjVmUGHkMYUoJYEyhvi3yBjSU1fQmaNCGo139n4SjKDzreO
-         iqyA==
+        bh=CiwuaHU0ZHFg8OQhxx1cJ0dSvWM+0RzNg9gjhgk/WPA=;
+        b=dduQNHED/EB0aCtpEb6ZPI3Ygd/DXzxcM6AtONVZiYH8oOWysFV+SV32BXj7CRawn8
+         3qPDx42rbOXx3GO70oulyAVbyR2HuKGl8RXT08Cum9UEJAzaBP1FnUZSSWqRwEliQcMG
+         7APPDUIFphi1rufMhTfciYQOCmVo//x1tN69RM3fTfdGHw4xQf2o4ZoDpYJ8Ac+9oO7M
+         f4JjmzCn5PLS9anQBkW3NK6Qa5ihhhyARqji7LRN742P39PzfEyRybjH33AIuve1EPSz
+         12K4QAR9lXYH+qh9QIDJR7F58wDmqFRQ4cfd2yM2AWfB/b2zvVkHWRmiqt3imMKyOaNg
+         USoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=CpDMS+RHHV1rRQnMHYAjcZzCg3wY/F0STHOFtNum/rU=;
-        b=n7Erq9YW6oAt3qR14zDm+LhyVbibPO2MocUnpwocnYGQUmZcgq2A7FncqBZ3PCPQej
-         WKYfSMeWvafasSh0+YwgmZYehpe/OUV+kaad8c/8FPoxCW/kwn5wDjGA0pxzg1eGNSsn
-         kI6QEJPGyBH/khXC//lwt7LJ16TY44Yx0aT4IY32Q2gC+qYUk/M/dPGR1QpesRVB9bGL
-         PNGzq6x8dTZ6nPA1tbwp1ibsk6MXZM4+S5IxH4dq4Ox8zvN954OuRPT3jqK6nQialBSb
-         8qxghJne03hn2LmCRsoD4PS1g8L4m6Ro4/qBJH2COuNHp+U1nfb62lDehfJyDDlimTWj
-         ZZoQ==
-X-Gm-Message-State: AOAM5329+3lKgVdlktNOKoPcWvEOJSMfFzipf8z4rgAOCRy5A1jqV5gA
-        7vOXZzbeib7hzX8OMOOl7hkws808hUuwRKdA
-X-Google-Smtp-Source: ABdhPJyvqYkwE2uGejo6SM8lDSIcZCLWdzpd2TkAJxJyZGijBu5DUEM0XrGnnJJ+a8vBsZQGeJGfjw==
-X-Received: by 2002:a05:600c:22d3:: with SMTP id 19mr3311106wmg.161.1604587945893;
-        Thu, 05 Nov 2020 06:52:25 -0800 (PST)
+        bh=CiwuaHU0ZHFg8OQhxx1cJ0dSvWM+0RzNg9gjhgk/WPA=;
+        b=PlBFj4jEQrAPnf4NhxDZlbuoEX14sMepzmMiDaBtDUrF3OHsob4h1sU0X8/NcPfexF
+         /l16KuZo66QUDfl8VXvb8CiVi4nZbkuSwI01S010OWBgSGFQc67SNxV6w4GWjqKHUcg7
+         KizwIBKDXWGnOjev9hbhe3IbwUtDPDawGA8vlOF2LJaWOhh4b2lTwewCXaB1cUDMlZLJ
+         lYSThYGx9yXpEmOdNgviC543Q4XDsfuz5yZe4JlUYPri9qag7cvkM47xf93I5ROSh8W7
+         in3JBJGJYJQfsKrJcK4eoaSquXUWcgDxK8V+hTUbwZfXtgtK2qqPioM0bSgxz0ufwPFH
+         5atQ==
+X-Gm-Message-State: AOAM532Y3NZXtgk8EXC9PE5PYOHiZCi9wtz0VTlgPhgAiyeNfXlS3KHH
+        6O0YcPBfkDQrIOBxkZ8fzVUunQ==
+X-Google-Smtp-Source: ABdhPJx8+Xyxk3R3buvDFYahFOdmnHso41DjA+AdBII2gmx00vBAFsKsMfNfZ8R2RRVHTR/ZSpXreA==
+X-Received: by 2002:adf:e386:: with SMTP id e6mr3301874wrm.330.1604587947150;
+        Thu, 05 Nov 2020 06:52:27 -0800 (PST)
 Received: from dell.default ([91.110.221.242])
-        by smtp.gmail.com with ESMTPSA id f5sm2631243wmh.16.2020.11.05.06.52.24
+        by smtp.gmail.com with ESMTPSA id f5sm2631243wmh.16.2020.11.05.06.52.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 06:52:25 -0800 (PST)
+        Thu, 05 Nov 2020 06:52:26 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org, David Airlie <airlied@linux.ie>,
+Cc:     linux-kernel@vger.kernel.org,
+        Christian Koenig <christian.koenig@amd.com>,
+        Huang Rui <ray.huang@amd.com>, David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH 09/19] gpu: drm: selftests: test-drm_framebuffer: Remove set but unused variable 'fb'
-Date:   Thu,  5 Nov 2020 14:45:07 +0000
-Message-Id: <20201105144517.1826692-10-lee.jones@linaro.org>
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
+        linaro-mm-sig@lists.linaro.org
+Subject: [PATCH 10/19] gpu: drm: ttm: ttm_bo: Fix one function header - demote lots of kernel-doc abuses
+Date:   Thu,  5 Nov 2020 14:45:08 +0000
+Message-Id: <20201105144517.1826692-11-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201105144517.1826692-1-lee.jones@linaro.org>
 References: <20201105144517.1826692-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -68,33 +71,135 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/selftests/test-drm_framebuffer.c: In function ‘execute_drm_mode_fb_cmd2’:
- drivers/gpu/drm/selftests/test-drm_framebuffer.c:333:26: warning: variable ‘fb’ set but not used [-Wunused-but-set-variable]
+ drivers/gpu/drm/ttm/ttm_bo.c:51: warning: Function parameter or member 'ttm_global_mutex' not described in 'DEFINE_MUTEX'
+ drivers/gpu/drm/ttm/ttm_bo.c:286: warning: Function parameter or member 'bo' not described in 'ttm_bo_cleanup_memtype_use'
+ drivers/gpu/drm/ttm/ttm_bo.c:359: warning: Function parameter or member 'bo' not described in 'ttm_bo_cleanup_refs'
+ drivers/gpu/drm/ttm/ttm_bo.c:359: warning: Function parameter or member 'interruptible' not described in 'ttm_bo_cleanup_refs'
+ drivers/gpu/drm/ttm/ttm_bo.c:359: warning: Function parameter or member 'no_wait_gpu' not described in 'ttm_bo_cleanup_refs'
+ drivers/gpu/drm/ttm/ttm_bo.c:359: warning: Function parameter or member 'unlock_resv' not described in 'ttm_bo_cleanup_refs'
+ drivers/gpu/drm/ttm/ttm_bo.c:424: warning: Function parameter or member 'bdev' not described in 'ttm_bo_delayed_delete'
+ drivers/gpu/drm/ttm/ttm_bo.c:424: warning: Function parameter or member 'remove_all' not described in 'ttm_bo_delayed_delete'
+ drivers/gpu/drm/ttm/ttm_bo.c:635: warning: Function parameter or member 'bo' not described in 'ttm_bo_evict_swapout_allowable'
+ drivers/gpu/drm/ttm/ttm_bo.c:635: warning: Function parameter or member 'ctx' not described in 'ttm_bo_evict_swapout_allowable'
+ drivers/gpu/drm/ttm/ttm_bo.c:635: warning: Function parameter or member 'locked' not described in 'ttm_bo_evict_swapout_allowable'
+ drivers/gpu/drm/ttm/ttm_bo.c:635: warning: Function parameter or member 'busy' not described in 'ttm_bo_evict_swapout_allowable'
+ drivers/gpu/drm/ttm/ttm_bo.c:769: warning: Function parameter or member 'bo' not described in 'ttm_bo_add_move_fence'
+ drivers/gpu/drm/ttm/ttm_bo.c:769: warning: Function parameter or member 'man' not described in 'ttm_bo_add_move_fence'
+ drivers/gpu/drm/ttm/ttm_bo.c:769: warning: Function parameter or member 'mem' not described in 'ttm_bo_add_move_fence'
+ drivers/gpu/drm/ttm/ttm_bo.c:769: warning: Function parameter or member 'no_wait_gpu' not described in 'ttm_bo_add_move_fence'
+ drivers/gpu/drm/ttm/ttm_bo.c:806: warning: Function parameter or member 'bo' not described in 'ttm_bo_mem_force_space'
+ drivers/gpu/drm/ttm/ttm_bo.c:806: warning: Function parameter or member 'place' not described in 'ttm_bo_mem_force_space'
+ drivers/gpu/drm/ttm/ttm_bo.c:806: warning: Function parameter or member 'mem' not described in 'ttm_bo_mem_force_space'
+ drivers/gpu/drm/ttm/ttm_bo.c:806: warning: Function parameter or member 'ctx' not described in 'ttm_bo_mem_force_space'
+ drivers/gpu/drm/ttm/ttm_bo.c:872: warning: Function parameter or member 'bo' not described in 'ttm_bo_mem_space'
+ drivers/gpu/drm/ttm/ttm_bo.c:872: warning: Function parameter or member 'placement' not described in 'ttm_bo_mem_space'
+ drivers/gpu/drm/ttm/ttm_bo.c:872: warning: Function parameter or member 'mem' not described in 'ttm_bo_mem_space'
+ drivers/gpu/drm/ttm/ttm_bo.c:872: warning: Function parameter or member 'ctx' not described in 'ttm_bo_mem_space'
+ drivers/gpu/drm/ttm/ttm_bo.c:1387: warning: Function parameter or member 'ctx' not described in 'ttm_bo_swapout'
 
+Cc: Christian Koenig <christian.koenig@amd.com>
+Cc: Huang Rui <ray.huang@amd.com>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: Sumit Semwal <sumit.semwal@linaro.org>
 Cc: dri-devel@lists.freedesktop.org
+Cc: linux-media@vger.kernel.org
+Cc: linaro-mm-sig@lists.linaro.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/selftests/test-drm_framebuffer.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/gpu/drm/ttm/ttm_bo.c | 23 ++++++++++++-----------
+ 1 file changed, 12 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/gpu/drm/selftests/test-drm_framebuffer.c b/drivers/gpu/drm/selftests/test-drm_framebuffer.c
-index 2d29ea6f92e2a..789f22773dbc9 100644
---- a/drivers/gpu/drm/selftests/test-drm_framebuffer.c
-+++ b/drivers/gpu/drm/selftests/test-drm_framebuffer.c
-@@ -330,10 +330,9 @@ static struct drm_device mock_drm_device = {
- static int execute_drm_mode_fb_cmd2(struct drm_mode_fb_cmd2 *r)
- {
- 	int buffer_created = 0;
--	struct drm_framebuffer *fb;
+diff --git a/drivers/gpu/drm/ttm/ttm_bo.c b/drivers/gpu/drm/ttm/ttm_bo.c
+index c63b7ea1cd5d0..2b69c959d7f4d 100644
+--- a/drivers/gpu/drm/ttm/ttm_bo.c
++++ b/drivers/gpu/drm/ttm/ttm_bo.c
+@@ -45,7 +45,7 @@
  
- 	mock_drm_device.dev_private = &buffer_created;
--	fb = drm_internal_framebuffer_create(&mock_drm_device, r, NULL);
-+	drm_internal_framebuffer_create(&mock_drm_device, r, NULL);
- 	return buffer_created;
+ static void ttm_bo_global_kobj_release(struct kobject *kobj);
+ 
+-/**
++/*
+  * ttm_global_mutex - protecting the global BO state
+  */
+ DEFINE_MUTEX(ttm_global_mutex);
+@@ -274,7 +274,7 @@ static int ttm_bo_handle_move_mem(struct ttm_buffer_object *bo,
+ 	return ret;
  }
  
+-/**
++/*
+  * Call bo::reserved.
+  * Will release GPU memory type usage on destruction.
+  * This is the place to put in driver specific hooks to release
+@@ -348,9 +348,10 @@ static void ttm_bo_flush_all_fences(struct ttm_buffer_object *bo)
+  * Must be called with lru_lock and reservation held, this function
+  * will drop the lru lock and optionally the reservation lock before returning.
+  *
+- * @interruptible         Any sleeps should occur interruptibly.
+- * @no_wait_gpu           Never wait for gpu. Return -EBUSY instead.
+- * @unlock_resv           Unlock the reservation lock as well.
++ * @bo:                    The buffer object to clean-up
++ * @interruptible:         Any sleeps should occur interruptibly.
++ * @no_wait_gpu:           Never wait for gpu. Return -EBUSY instead.
++ * @unlock_resv:           Unlock the reservation lock as well.
+  */
+ 
+ static int ttm_bo_cleanup_refs(struct ttm_buffer_object *bo,
+@@ -416,7 +417,7 @@ static int ttm_bo_cleanup_refs(struct ttm_buffer_object *bo,
+ 	return 0;
+ }
+ 
+-/**
++/*
+  * Traverse the delayed list, and call ttm_bo_cleanup_refs on all
+  * encountered buffers.
+  */
+@@ -620,7 +621,7 @@ bool ttm_bo_eviction_valuable(struct ttm_buffer_object *bo,
+ }
+ EXPORT_SYMBOL(ttm_bo_eviction_valuable);
+ 
+-/**
++/*
+  * Check the target bo is allowable to be evicted or swapout, including cases:
+  *
+  * a. if share same reservation object with ctx->resv, have assumption
+@@ -759,7 +760,7 @@ int ttm_mem_evict_first(struct ttm_bo_device *bdev,
+ 	return ret;
+ }
+ 
+-/**
++/*
+  * Add the last move fence to the BO and reserve a new shared slot.
+  */
+ static int ttm_bo_add_move_fence(struct ttm_buffer_object *bo,
+@@ -795,7 +796,7 @@ static int ttm_bo_add_move_fence(struct ttm_buffer_object *bo,
+ 	return 0;
+ }
+ 
+-/**
++/*
+  * Repeatedly evict memory from the LRU for @mem_type until we create enough
+  * space, or we've evicted everything and there isn't enough space.
+  */
+@@ -857,7 +858,7 @@ static int ttm_bo_mem_placement(struct ttm_buffer_object *bo,
+ 	return 0;
+ }
+ 
+-/**
++/*
+  * Creates space for memory region @mem according to its type.
+  *
+  * This function first searches for free space in compatible memory types in
+@@ -1379,7 +1380,7 @@ int ttm_bo_wait(struct ttm_buffer_object *bo,
+ }
+ EXPORT_SYMBOL(ttm_bo_wait);
+ 
+-/**
++/*
+  * A buffer object shrink method that tries to swap out the first
+  * buffer object on the bo_global::swap_lru list.
+  */
 -- 
 2.25.1
 
