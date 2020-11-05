@@ -2,380 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 064572A7778
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 07:32:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9F662A7779
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 07:33:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730111AbgKEGcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 01:32:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54654 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729149AbgKEGcR (ORCPT
+        id S1730207AbgKEGc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 01:32:56 -0500
+Received: from mx0b-00010702.pphosted.com ([148.163.158.57]:43884 "EHLO
+        mx0b-00010702.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729149AbgKEGcz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 01:32:17 -0500
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97E97C0613CF;
-        Wed,  4 Nov 2020 22:32:15 -0800 (PST)
-Received: by mail-ot1-x342.google.com with SMTP id 32so462895otm.3;
-        Wed, 04 Nov 2020 22:32:15 -0800 (PST)
+        Thu, 5 Nov 2020 01:32:55 -0500
+Received: from pps.filterd (m0098779.ppops.net [127.0.0.1])
+        by mx0b-00010702.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0A56ShxX032386;
+        Thu, 5 Nov 2020 00:32:35 -0600
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2170.outbound.protection.outlook.com [104.47.57.170])
+        by mx0b-00010702.pphosted.com with ESMTP id 34h5r5c09h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 05 Nov 2020 00:32:35 -0600
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CamkrcLkRjKVBx5Se2AXPpl+c3Dcfkaq6npxtATiz4rQ1PE3dJ05KFDmV8PwjftuaNCtAB686qC1IdMV81L5tr3TOSWaly2CV/XTWTAlNy5WD5VN5JCUv6ZbCmvUdaw21vJcDCZ/xEyLudr6nDI2RkDBJzI6AhA9UYLlfiifR6TqM5iEMeDSom+6S9yQIFns3Go7CDBrz+UaZ9vexiH628NpzWgoiWwaOvUTdhJEBZF3XSY8p4ATDcNwsCEUE6ElKWXX1dety46N/EIevR9asU6v5cRdKLTBiP+uoOHoyK5rtbxGq+NL0tBaBgURElHBPd5l0JE/3kiEC4IPAd+QhQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BMb0lCczS6hfpfIV58P/3J+vM3A7eav6SHgvqonElPI=;
+ b=aZF2jhUBTbFAI8CUG4O98BnqySDTsBJf3jeiZimHF0CpQ4rpK257gNX/zaf+zNkq2JdhAQZFOjID6FS5MnqxyU1kqmDAbNSlIh2w9BAiJZVUrK+v4R7KDFjVS5TLADlXr3k91kjSvBIfKImwX0XPai40a30jlT3WT4UD8x/EbBLxO1RV8NXfxtcMb3kiCbIZt4S9q1dQ8Gy43pWVcKS0KKiQN1daHOcdyheRYHEy2a4j3DKb2jzXcsaOfYlXY0Zyc3oWCuI5G8loQhISjdqqYuxQM3niwgx6lPkrURuMObtw/oEuxwqXghrGjlZanCtMuUjrr3HBXCLQq1WrDpoB3g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=ni.com; dmarc=pass action=none header.from=ni.com; dkim=pass
+ header.d=ni.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=03T6gJ6dS40kdzfq7FR4zWQJ8oo9/pW0kZ6DQu+oINs=;
-        b=M9O6kcWPdCcJ3ab2Qf1kKva74D7AvlvmhWxIA5u2oKe7am0VB99pN2/gRbMI+38HEI
-         REPSC73TQhqU1KrFsocJctNdwSWaANkcKuLKVzezC4ZfTHKivHn+CTqQgLq5G8V+3ol7
-         47XG6XrDZbMCxEi4a/rzUboX3B7GP88koGQxPOg/iXo4GGU1/u2jrSMcQ0h/vjp4d+na
-         84tnAhD/1Mo7yLV1mywYudz1MDXgKfBmjBnsCVNDtAfNHLGrj1tT+eyf92ovxm8c7Use
-         +VrTwDvnuhI/DG7Mwjz5PBhMzA0p3BkIi4vjYXBKTtf5S4Zucj8bAuwmV0LcP8rr0ZgF
-         JDbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :mime-version:content-disposition:user-agent;
-        bh=03T6gJ6dS40kdzfq7FR4zWQJ8oo9/pW0kZ6DQu+oINs=;
-        b=ib9Lg3ZufZYM5MsAF3yBokvNEmWBkCVr3roXoLgvky1yovsVuzK1O5BR/oKG3DQwNg
-         tDdEfCZ/jUb5ncsXDwlTmTyIp0N6HZe0lHVD4XbyTLXTYKitWDcAWyQzu4DavgNRBcdV
-         oNlgUxGvwb2f06t4QS2uk2HhlioJkEyYSNrDRapSY6jSHhZfz+DL5ybUztQaLccAG0KU
-         XPTZq3wsm+OuygK3ZPceSAJw/XRqgkr2F6TLa0vCoF3z+HWaBVNij0gny8rUDLEaL9yT
-         qAap9QID9DkNAa+Cwv+lMCw+hnUBQsy09+F8KIC9FoNlPfd4n9AEFyGtMxea7RUt2BNV
-         fyHQ==
-X-Gm-Message-State: AOAM530/iRGEwm76ljGBwdp6lV/2wMhGoxGXe4NDPaPM25IxktWNbj1u
-        jl3C1I5c2APyDwCsRvoQs2I/FAa7IMU=
-X-Google-Smtp-Source: ABdhPJwqeg0ZK4vb4YEyxdc6/2QfPxl+JYw0ucH/L1S1UsIDfZZfY9F7OMKTs42YaO9qObsTbeV0/Q==
-X-Received: by 2002:a05:6830:154d:: with SMTP id l13mr739203otp.61.1604557934952;
-        Wed, 04 Nov 2020 22:32:14 -0800 (PST)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id q10sm183073oih.56.2020.11.04.22.32.13
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 04 Nov 2020 22:32:14 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 4 Nov 2020 22:32:12 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Brad Campbell <brad@fnarfbargle.com>
-Cc:     Andreas Kemnade <andreas@kemnade.info>,
-        Jean Delvare <jdelvare@suse.com>,
-        Arnd Bergmann <arnd@arndb.de>, rydberg@bitmath.org,
-        linux-hwmon@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        hns@goldelico.com
-Subject: Re: [PATCH] applesmc: Re-work SMC comms v1
-Message-ID: <20201105063212.GA89225@roeck-us.net>
+ d=nio365.onmicrosoft.com; s=selector2-nio365-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BMb0lCczS6hfpfIV58P/3J+vM3A7eav6SHgvqonElPI=;
+ b=H7QLJ+ZoIfABIsh5O9aKpq6sTXOsZIzCC1/XuuHbMoPYZfEdXmkZboLfGd5tjnfDDOPKQYNahDxaaYw6iLp3FBy/vmBiozHdPilt4jmEAWrifMekwCJ9DKKvKm6V9ufUP1P2JNWSbvgdL6vGNj1S3fsmSerqS0h1MGVTomh+Gyc=
+Authentication-Results: linutronix.de; dkim=none (message not signed)
+ header.d=none;linutronix.de; dmarc=none action=none header.from=ni.com;
+Received: from SN6PR04MB4496.namprd04.prod.outlook.com (2603:10b6:805:a3::23)
+ by SN6PR04MB3999.namprd04.prod.outlook.com (2603:10b6:805:3f::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.27; Thu, 5 Nov
+ 2020 06:32:33 +0000
+Received: from SN6PR04MB4496.namprd04.prod.outlook.com
+ ([fe80::cc42:669f:a4f2:c1]) by SN6PR04MB4496.namprd04.prod.outlook.com
+ ([fe80::cc42:669f:a4f2:c1%5]) with mapi id 15.20.3499.032; Thu, 5 Nov 2020
+ 06:32:33 +0000
+References: <87a6w6x7bb.fsf@ni.com> <878sbixbk4.fsf@ni.com>
+ <2376f4e71c638aee215a4911e5efed14c5adf56e.camel@gmx.de>
+ <5f536491708682fc3b86cb5b7bc1e05ffa3521e7.camel@gmx.de>
+ <874km5mnbf.fsf@nanos.tec.linutronix.de>
+ <871rh9mkvr.fsf@nanos.tec.linutronix.de>
+ <87v9ell0cn.fsf@nanos.tec.linutronix.de>
+ <a9e88887c027b11596cd7fb96c425011c36e5d29.camel@gmx.de>
+ <87sg9pkvf7.fsf@nanos.tec.linutronix.de>
+User-agent: mu4e 1.3.2; emacs 27.1
+From:   Gratian Crisan <gratian.crisan@ni.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Mike Galbraith <efault@gmx.de>,
+        Gratian Crisan <gratian.crisan@ni.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org,
+        Brandon Streiff <brandon.streiff@ni.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Darren Hart <dvhart@infradead.org>,
+        James Minor <james.minor@ni.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+In-reply-to: <87sg9pkvf7.fsf@nanos.tec.linutronix.de>
+Date:   Thu, 05 Nov 2020 00:32:29 -0600
+Message-ID: <877dr0xqiq.fsf@ni.com>
+Content-Type: text/plain
+X-Originating-IP: [130.164.62.38]
+X-ClientProxiedBy: SN4PR0801CA0014.namprd08.prod.outlook.com
+ (2603:10b6:803:29::24) To SN6PR04MB4496.namprd04.prod.outlook.com
+ (2603:10b6:805:a3::23)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from quark (130.164.62.38) by SN4PR0801CA0014.namprd08.prod.outlook.com (2603:10b6:803:29::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.22 via Frontend Transport; Thu, 5 Nov 2020 06:32:32 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 2e77bf98-5e07-484c-681e-08d8815493dc
+X-MS-TrafficTypeDiagnostic: SN6PR04MB3999:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SN6PR04MB39996F21ED1E57358D57A33EFEEE0@SN6PR04MB3999.namprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:800;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: mQHPHvKWY1Nq6mnVSg9CvEuRn7/oU58vzt/yL5PJL3dTyk6BUAqZpWXciLcRloSVzMKSwI0UBDWqdbKq4kWWIPfg0+FxpsRMb4Dk1R9DdL9k3BLoxsUeYGLliEOwcqFMsRw5t3MEO2OuZFpSgTXKIMfYDGklzDIbmuJQ0RfI+yct+N+VEkFiUr1EyZM9/8nzjEsR5BnEUTwAsEhF1LNtIwgoXYVf0KcgLBtu05O7lx39R+//H6Q46nG+ME3hramgL1B2yAMRjfBxr9ztYOFcYIJzZVWV7VcEfc/n4LeUGe5tHscjDQXEuM6owQBkzOlWcwWd3DAxg8VPcGzef1ma62jksmNdhBarIpMBCabb5Q4Q7Ch2bZa2COrKoZkXxQ/2ixW5LFtN3UAlzl8hmnn6uA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR04MB4496.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(346002)(136003)(39860400002)(366004)(376002)(66476007)(44832011)(66946007)(316002)(54906003)(66556008)(5660300002)(6496006)(36756003)(6666004)(52116002)(83380400001)(86362001)(6486002)(186003)(8676002)(966005)(16526019)(26005)(8936002)(478600001)(2906002)(4326008)(6916009)(2616005)(956004);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: uogEOU96ZUxlUGWrSjk5z+wxgstwdFHNLBDo37JCpHt07O3kwtfxhRrC3XmwFqziBks3S+zg3OvmHfklxhRCbkjc5DsOIwH+45jQumRM9GYn99QRCIICqgChuzVBlBCT2EsvdNCQA0IlmmvY49NH95fOQNhsQd/kUmmbldl2o/CFtmYMBXbSQny/catgvIK8xZG8ToCoKPkmwpkM/cH04wKJAYoUg5hIxu3mdrq2gkAwCi0MJcLJG2OuXHL0BINrdmIUXy83rg0/O13JF6osD9E2qC9DqGVEqszmdYyelBhWka5UnFJKO9uSA8oztvKRIkP0lfC728eQS4hrZ8Kj/lkJTOcy8aSXTzV/cbeM2ellFcIUm8Uv5dLAfTAjNTjBZQKCn+RMmR5rdfWPSIBtFCBe1DE/DXL28X2Mly8RyhlIaEKkvhocgdJt81qR/rhD4RYbWRYjIuk9/0Y5OjMfmEFCjiePvqWfENDfZLqgEc3T6l03RwcEI0VBpxk3mq3uhkgqa5kHjgPXXxKPhah+Hs63tNKE3/duonyZVcFjHd+uA+DnmZ+GCq1qp7G8Qgeqk/P51FAzdD8J0huhM9p+7PNGiuMrF40ac14wsWP1VZ3gcYpYRCqt1Df9Gqjhba040aJxN72UENJdyLY4U4TsgA==
+X-OriginatorOrg: ni.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2e77bf98-5e07-484c-681e-08d8815493dc
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR04MB4496.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Nov 2020 06:32:33.3556
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 87ba1f9a-44cd-43a6-b008-6fdb45a5204e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: OYT3KgIk07OR4Wocbk0vdAyxrBneJ8w795BxT4mg/4GEHvbQKS+EqFPPRTJ+RYhc2nse07l1VXJ1OF2+njHBJA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB3999
+Subject: Re: [PATCH] futex: Handle transient "ownerless" rtmutex state correctly
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-05_01:2020-11-05,2020-11-05 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_policy_notspam policy=outbound_policy score=30 spamscore=0
+ impostorscore=0 lowpriorityscore=0 malwarescore=0 suspectscore=0
+ clxscore=1011 mlxscore=0 adultscore=0 priorityscore=1501 phishscore=0
+ mlxlogscore=988 bulkscore=0 classifier=spam adjust=30 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2011050047
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 04:47:25PM +1100, Brad Campbell wrote:
-> Commit fff2d0f701e6 ("hwmon: (applesmc) avoid overlong udelay()") introduced
-> an issue whereby communication with the SMC became unreliable with write
-> errors :
-> 
-> [  120.378614] applesmc: send_byte(0x00, 0x0300) fail: 0x40
-> [  120.378621] applesmc: LKSB: write data fail
-> [  120.512782] applesmc: send_byte(0x00, 0x0300) fail: 0x40
-> [  120.512787] applesmc: LKSB: write data fail
-> 
-> The original code appeared to be timing sensitive and was not reliable with
-> the timing changes in the aforementioned commit.
-> 
-> This patch re-factors the SMC communication to remove the timing 
-> dependencies and restore function with the changes previously committed.
-> 
-> Reported-by: Andreas Kemnade <andreas@kemnade.info>
 
-Add
+Thomas Gleixner writes:
 
-Fixes: fff2d0f701e6 ("hwmon: (applesmc) avoid overlong udelay()")
+> From: Mike Galbraith <efault@gmx.de>
+>
+> Gratian managed to trigger the BUG_ON(!newowner) in fixup_pi_state_owner().
+> This is one possible chain of events leading to this:
+>
+> Task Prio       Operation
+> T1   120	lock(F)
+> T2   120	lock(F)   -> blocks (top waiter)
+> T3   50 (RT)	lock(F)   -> boosts T3 and blocks (new top waiter)
+> XX   		timeout/  -> wakes T2
+> 		signal
+> T1   50		unlock(F) -> wakes T3 (rtmutex->owner == NULL, waiter bit is set)
+> T2   120	cleanup   -> try_to_take_mutex() fails because T3 is the top waiter
+>      			     and the lower priority T2 cannot steal the lock.
+>      			  -> fixup_pi_state_owner() sees newowner == NULL -> BUG_ON()
+>
+> The comment states that this is invalid and rt_mutex_real_owner() must
+> return a non NULL owner when the trylock failed, but in case of a queued
+> and woken up waiter rt_mutex_real_owner() == NULL is a valid transient
+> state. The higher priority waiter has simply not yet managed to take over
+> the rtmutex.
+>
+> The BUG_ON() is therefore wrong and this is just another retry condition in
+> fixup_pi_state_owner().
+>
+> Drop the locks, so that T3 can make progress, and then try the fixup again.
+>
+> Gratian provided a great analysis, traces and a reproducer. The analysis is
+> to the point, but it confused the hell out of that tglx dude who had to
+> page in all the futex horrors again. Condensed version is above. 
+>
+> [ tglx: Wrote comment and changelog ]
+>
+> Fixes: c1e2f0eaf015 ("futex: Avoid violating the 10th rule of futex")
+> Reported-by: Gratian Crisan <gratian.crisan@ni.com>
+> Signed-off-by: Mike Galbraith <efault@gmx.de>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Cc: stable@vger.kernel.org
+> Link: https://urldefense.com/v3/__https://lore.kernel.org/r/87a6w6x7bb.fsf@ni.com__;!!FbZ0ZwI3Qg!5INAsNbAVSp3jaNkkjFazSRC86BpcZnVM3-oTDYl0KijU6jA5pWYk4KI79_L5F4$ 
 
-> Signed-off-by: Brad Campbell <brad@fnarfbargle.com>
-> 
+LGTM, no crashes in my testing today.
+
+-Gratian
+
 > ---
-> diff --git a/drivers/hwmon/applesmc.c b/drivers/hwmon/applesmc.c
-> index a18887990f4a..22cc5122ce9a 100644
-> --- a/drivers/hwmon/applesmc.c
-> +++ b/drivers/hwmon/applesmc.c
-> @@ -42,6 +42,11 @@
+>  kernel/futex.c |   16 ++++++++++++++--
+>  1 file changed, 14 insertions(+), 2 deletions(-)
+>
+> --- a/kernel/futex.c
+> +++ b/kernel/futex.c
+> @@ -2380,10 +2380,22 @@ static int fixup_pi_state_owner(u32 __us
+>  		}
 >  
->  #define APPLESMC_MAX_DATA_LENGTH 32
->  
-> +/* Apple SMC status bits from VirtualSMC */
-> +#define SMC_STATUS_AWAITING_DATA  0x01  ///< Data waiting to be read
-> +#define SMC_STATUS_IB_CLOSED      0x02  /// A write is pending / will ignore input
-> +#define SMC_STATUS_BUSY           0x04  ///< Busy in the middle of a command.
-> +
-
-Maybe consider using BIT() while at it.
-
-/* Please use standard comments */
-
-Also, what does the "<" mean ? Is that supposed to be negated 
-(ie bit set means not busy) ? If so, that isn't a standard notation
-that I am aware of. Maybe "not set if busy in the middle of a command"
-would be better in this case.
-
->  /* wait up to 128 ms for a status change. */
->  #define APPLESMC_MIN_WAIT	0x0010
->  #define APPLESMC_RETRY_WAIT	0x0100
-> @@ -151,65 +156,77 @@ static unsigned int key_at_index;
->  static struct workqueue_struct *applesmc_led_wq;
->  
->  /*
-> - * wait_read - Wait for a byte to appear on SMC port. Callers must
-> - * hold applesmc_lock.
-> + * Wait for specific status bits with a mask on the SMC
-> + * Used before and after writes, and before reads
->   */
-> -static int wait_read(void)
-> +
-> +static int wait_status(u8 val, u8 mask)
->  {
->  	unsigned long end = jiffies + (APPLESMC_MAX_WAIT * HZ) / USEC_PER_SEC;
->  	u8 status;
->  	int us;
->  
->  	for (us = APPLESMC_MIN_WAIT; us < APPLESMC_MAX_WAIT; us <<= 1) {
-> -		usleep_range(us, us * 16);
->  		status = inb(APPLESMC_CMD_PORT);
-> -		/* read: wait for smc to settle */
-> -		if (status & 0x01)
-> +		if ((status & mask) == val)
->  			return 0;
->  		/* timeout: give up */
->  		if (time_after(jiffies, end))
->  			break;
-> -	}
-> -
-> -	pr_warn("wait_read() fail: 0x%02x\n", status);
-> +		usleep_range(us, us * 16);
+>  		/*
+> -		 * Since we just failed the trylock; there must be an owner.
+> +		 * The trylock just failed, so either there is an owner or
+> +		 * there is a higher priority waiter than this one.
+>  		 */
+>  		newowner = rt_mutex_owner(&pi_state->pi_mutex);
+> -		BUG_ON(!newowner);
+> +		/*
+> +		 * If the higher priority waiter has not yet taken over the
+> +		 * rtmutex then newowner is NULL. We can't return here with
+> +		 * that state because it's inconsistent vs. the user space
+> +		 * state. So drop the locks and try again. It's a valid
+> +		 * situation and not any different from the other retry
+> +		 * conditions.
+> +		 */
+> +		if (unlikely(!newowner)) {
+> +			ret = -EAGAIN;
+> +			goto handle_err;
 > +		}
-> +	pr_warn("wait_status timeout: 0x%02x, 0x%02x, 0x%02x\n", status, val, mask);
->  	return -EIO;
->  }
->  
->  /*
-> - * send_byte - Write to SMC port, retrying when necessary. Callers
-> + * send_byte_data - Write to SMC data port. Callers
->   * must hold applesmc_lock.
-> + * Parameter skip must be true on the last write of any
-> + * command or it'll time out.
->   */
-> -static int send_byte(u8 cmd, u16 port)
+>  	} else {
+>  		WARN_ON_ONCE(argowner != current);
+>  		if (oldowner == current) {
 
-I would suggest to keep send_byte() and change it to the following.
-
-static int send_byte(u8 cmd, u16 port)
-{
-	return send_byte_data(cmd, port, false);
-}
-
-That would limit the number of changes needed later in the code
-(it is never called with a hard 'true' as parameter).
-
-> +
-> +static int send_byte_data(u8 cmd, u16 port, bool skip)
->  {
-> -	u8 status;
-> -	int us;
-> -	unsigned long end = jiffies + (APPLESMC_MAX_WAIT * HZ) / USEC_PER_SEC;
-> +	u8 wstat = SMC_STATUS_BUSY;
->  
-> +	if (skip)
-> +		wstat = 0;
-
-	u8 wstat = skip ? 0 : SMC_STATUS_BUSY;
-
-> +	if (wait_status(SMC_STATUS_BUSY,
-> +	SMC_STATUS_BUSY | SMC_STATUS_IB_CLOSED))
-
-This fits one line, and the error code
-should really not be overwritten.
-
-	ret = wait_status(SMC_STATUS_BUSY, SMC_STATUS_BUSY | SMC_STATUS_IB_CLOSED);
-	if (ret)
-		return ret;
-
-> +		goto fail;
->  	outb(cmd, port);
-> -	for (us = APPLESMC_MIN_WAIT; us < APPLESMC_MAX_WAIT; us <<= 1) {
-> -		usleep_range(us, us * 16);
-> -		status = inb(APPLESMC_CMD_PORT);
-> -		/* write: wait for smc to settle */
-> -		if (status & 0x02)
-> -			continue;
-> -		/* ready: cmd accepted, return */
-> -		if (status & 0x04)
-> -			return 0;
-> -		/* timeout: give up */
-> -		if (time_after(jiffies, end))
-> -			break;
-> -		/* busy: long wait and resend */
-> -		udelay(APPLESMC_RETRY_WAIT);
-> -		outb(cmd, port);
-> -	}
-> -
-> -	pr_warn("send_byte(0x%02x, 0x%04x) fail: 0x%02x\n", cmd, port, status);
-> +	if (!wait_status(wstat,
-> +	SMC_STATUS_BUSY))
-
-That really fits into one line.
-
-> +		return 0;
-> +fail:
-> +	pr_warn("send_byte_data(0x%02x, 0x%04x) fail\n", cmd, APPLESMC_CMD_PORT);
-
-Can you drop this message ? wait_status() already displays a message,
-after all. Also, please reverse error handling, and don't overwrite
-error codes.
-
-	ret = wait_status(wstat, SMC_STATUS_BUSY)
-	if (ret)
-		return ret;
-
-Actually, this can be simplified to
-	return wait_status(wstat, SMC_STATUS_BUSY);
-or, since wstat is only used once,
-	return wait_status(skip ? 0 : SMC_STATUS_BUSY, SMC_STATUS_BUSY);
-
->  	return -EIO;
->  }
->  
-> +/*
-> + * send_command - Write a command to the SMC. Callers must hold applesmc_lock.
-> + * If SMC is in undefined state, any new command write resets the state machine.
-> + */
-> +
->  static int send_command(u8 cmd)
->  {
-> -	return send_byte(cmd, APPLESMC_CMD_PORT);
-> +	u8 status;
-> +
-> +	if (wait_status(0,
-> +	SMC_STATUS_IB_CLOSED)) {
-
-Another one of those odd continuation lines.
-
-> +		pr_warn("send_command SMC was busy\n");
-
-and logging noise. As for error handling, same as above, please
-
-	ret = wait_status(0, SMC_STATUS_IB_CLOSED);
-	if (ret)
-		return ret;
-
-> +		goto fail; }
-> +
-> +	status = inb(APPLESMC_CMD_PORT);
-> +
-> +	outb(cmd, APPLESMC_CMD_PORT);
-> +	if (!wait_status(SMC_STATUS_BUSY,
-> +	SMC_STATUS_BUSY))
-
-Odd/unnecessary continuation line again.
-
-> +		return 0;
-> +fail:
-> +	pr_warn("send_cmd(0x%02x, 0x%04x) fail\n", cmd, APPLESMC_CMD_PORT);
-
-Wow, up to three messages on failure. Please, don't do that.
-One message per failure is really enough. Please simplify to
-
-	return wait_status(SMC_STATUS_BUSY, SMC_STATUS_BUSY);
-
-Actually, I notice that the callers of send_command()
-log yet again. Maybe it is time to drop all the messages
-from here and from send_argument() and only log in the
-calling code.
-
-> +	return -EIO;
->  }
->  
->  static int send_argument(const char *key)
-> @@ -217,7 +234,8 @@ static int send_argument(const char *key)
->  	int i;
->  
->  	for (i = 0; i < 4; i++)
-> -		if (send_byte(key[i], APPLESMC_DATA_PORT))
-> +	/* Parameter skip is false as we always send data after an argument */
-
-Please align comments with code. Maybe move the comment ahead
-of the for statement. Or drop it entirely - it doesn't add that
-much value. Actually, this blob would go away if you keep
-send_byte().
-
-> +		if (send_byte_data(key[i], APPLESMC_DATA_PORT, false))
->  			return -EIO;
->  	return 0;
->  }
-> @@ -233,13 +251,15 @@ static int read_smc(u8 cmd, const char *key, u8 *buffer, u8 len)
->  	}
->  
->  	/* This has no effect on newer (2012) SMCs */
-> -	if (send_byte(len, APPLESMC_DATA_PORT)) {
-> +	if (send_byte_data(len, APPLESMC_DATA_PORT, false)) {
->  		pr_warn("%.4s: read len fail\n", key);
->  		return -EIO;
->  	}
->  
->  	for (i = 0; i < len; i++) {
-> -		if (wait_read()) {
-> +		if (wait_status(SMC_STATUS_AWAITING_DATA | SMC_STATUS_BUSY,
-> +		SMC_STATUS_AWAITING_DATA | SMC_STATUS_BUSY |
-> +		SMC_STATUS_IB_CLOSED)) {
-
-Align continuatiuon lines with preceding '('. "checkpatch --strict"
-reports all those alignment issues.
-
->  			pr_warn("%.4s: read data[%d] fail\n", key, i);
->  			return -EIO;
->  		}
-> @@ -250,7 +270,7 @@ static int read_smc(u8 cmd, const char *key, u8 *buffer, u8 len)
->  	for (i = 0; i < 16; i++) {
->  		udelay(APPLESMC_MIN_WAIT);
->  		status = inb(APPLESMC_CMD_PORT);
-> -		if (!(status & 0x01))
-> +		if (!(status & SMC_STATUS_AWAITING_DATA))
->  			break;
->  		data = inb(APPLESMC_DATA_PORT);
->  	}
-> @@ -263,20 +283,21 @@ static int read_smc(u8 cmd, const char *key, u8 *buffer, u8 len)
->  static int write_smc(u8 cmd, const char *key, const u8 *buffer, u8 len)
->  {
->  	int i;
-> +	u8 end = len-1;
-
-space before and after '-', please. checkpatch --strict will tell.
-
->  
->  	if (send_command(cmd) || send_argument(key)) {
->  		pr_warn("%s: write arg fail\n", key);
->  		return -EIO;
-
-I notice the driver keeps overwriting error codes. Oh well.
-I can't expect you to fix that, and it should not be fixed as part
-of this patch, but please don't make it worse (not here, but above
-where calls are changed).
-
->  	}
->  
-> -	if (send_byte(len, APPLESMC_DATA_PORT)) {
-> +	if (send_byte_data(len, APPLESMC_DATA_PORT, false)) {
->  		pr_warn("%.4s: write len fail\n", key);
->  		return -EIO;
->  	}
->  
->  	for (i = 0; i < len; i++) {
-> -		if (send_byte(buffer[i], APPLESMC_DATA_PORT)) {
-> -			pr_warn("%s: write data fail\n", key);
-> +		if (send_byte_data(buffer[i], APPLESMC_DATA_PORT, (i == end))) {
-
-Unnecessary ( ) around i == end. Not sure if the 'end' variable
-is worth it. Might as well make it "i == len - 1" and let the compiler
-optimize it at will.
-
-> +			pr_warn("%s: write data fail at %i\n", key, i);
->  			return -EIO;
->  		}
->  	}
