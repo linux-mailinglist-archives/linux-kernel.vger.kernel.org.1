@@ -2,336 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27DDD2A81AC
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 15:58:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 867592A81B1
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 15:59:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731124AbgKEO63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 09:58:29 -0500
-Received: from relay12.mail.gandi.net ([217.70.178.232]:53547 "EHLO
-        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730461AbgKEO63 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 09:58:29 -0500
-Received: from aptenodytes (196.109.29.93.rev.sfr.net [93.29.109.196])
-        (Authenticated sender: paul.kocialkowski@bootlin.com)
-        by relay12.mail.gandi.net (Postfix) with ESMTPSA id A226E20001C;
-        Thu,  5 Nov 2020 14:58:21 +0000 (UTC)
-Date:   Thu, 5 Nov 2020 15:58:21 +0100
-From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-To:     Helen Koike <helen.koike@collabora.com>
-Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-sunxi@googlegroups.com,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Yong Deng <yong.deng@magewell.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Hans Verkuil <hverkuil@xs4all.nl>, kevin.lhopital@hotmail.com
-Subject: Re: [PATCH 00/14] Allwinner MIPI CSI-2 support for A31/V3s/A83T
-Message-ID: <20201105145821.GC615923@aptenodytes>
-References: <20201023174546.504028-1-paul.kocialkowski@bootlin.com>
- <d15d724b-6af7-3e51-1316-7bdde5a42c60@collabora.com>
- <20201104111137.GH285779@aptenodytes>
- <fd2fb44e-1814-1589-216d-78eb96b39c3a@collabora.com>
+        id S1730754AbgKEO7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 09:59:36 -0500
+Received: from mail-dm6nam10on2063.outbound.protection.outlook.com ([40.107.93.63]:51880
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728371AbgKEO7f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 09:59:35 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Cl4uW9nzHpL2cL9Xf5WEZtFeO5E7JHL7iADMZula6An2FDZd9s+hOhOyrrH9F/buybWkhaFcaj2cX7TZxRqoOQDbVUrZ209plRX2NlDcnOAG/k96hzmXyXLxDZ/0Y6Zpv8z+wcOS+djQzMMMxueUWl9O9CPzwUEEupg+09r1Ff2xERL7oqSiINzxkYlBqb3m5c/cmJdMEF9rF/6Ekb6YONGlQML7KuAMGHWXIIkrdiO1FM3gxrSgYey0Xbv1vqwnbEOP5otFjC3acRS6WuDvEY46gpB1fSVDKWa2gGf4qe9XXPiI4BCcIukG0dIEfSv1a8p2QRn3gkqbnnVRbVa/4Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8r6kb95/jr2zOC73gPjbGVkVU/gNndj5lRpi8kdnwE0=;
+ b=VWbol/4FK8xKXu/fOjigrK0B6N5hPXrcl3kV7L6qwJgJeyIrDVxnG3HQD8JVp7fs4T89vfK4HB1RiVjkjaWVCxsyYWhHRBlXxKJ5dI35tP3Gfa7tBn3SHqxNL40oIR+RqFbxLoi5UE5JE5hHZLEnzX4fYsl2pyiBv5vMOo9vdst7rhGfeg8xU5w8wJ//JcfMt5ONBJrJVwRw41GQMuJdqF0Xxd+r7B0TVgfPy9B4fcUNPAX78Ymxk02JA+GQBouep5Mm2qqFvBQI99DSEai4qaauPQbr5h4jQ0rPK/zaw7ediiu/zDRrVnIyTK0lhapwCOvmIX9kzxtbaTUd6sAo3w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8r6kb95/jr2zOC73gPjbGVkVU/gNndj5lRpi8kdnwE0=;
+ b=ELeISNDDxOGGZ/rNyMM4ZJQFkkzscP57ZxlkhtYzDz5QegPQLxL0bc4bOyfrziHM6NrYc/Kuh+ZfKCsuqlACzprRPCoCDqkKR1x0UrKjrbr78GhH1ekoAST/cxbYUcp4K+yGMl0bWX8f5dIC3ULAZlNqkkYZbzaKZxsGXkdlSOo=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from BYAPR12MB4597.namprd12.prod.outlook.com (2603:10b6:a03:10b::14)
+ by BY5PR12MB4888.namprd12.prod.outlook.com (2603:10b6:a03:1d8::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18; Thu, 5 Nov
+ 2020 14:59:30 +0000
+Received: from BYAPR12MB4597.namprd12.prod.outlook.com
+ ([fe80::74c5:c3c5:26ae:524c]) by BYAPR12MB4597.namprd12.prod.outlook.com
+ ([fe80::74c5:c3c5:26ae:524c%2]) with mapi id 15.20.3499.032; Thu, 5 Nov 2020
+ 14:59:30 +0000
+From:   Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+To:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org
+Cc:     joro@8bytes.org, Jon.Grimm@amd.com, brijesh.singh@amd.com,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+Subject: [PATCH v2] iommu/amd: Enforce 4k mapping for certain IOMMU data structures
+Date:   Thu,  5 Nov 2020 14:58:32 +0000
+Message-Id: <20201105145832.3065-1-suravee.suthikulpanit@amd.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-Originating-IP: [165.204.78.2]
+X-ClientProxiedBy: SN4PR0201CA0007.namprd02.prod.outlook.com
+ (2603:10b6:803:2b::17) To BYAPR12MB4597.namprd12.prod.outlook.com
+ (2603:10b6:a03:10b::14)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="jy6Sn24JjFx/iggw"
-Content-Disposition: inline
-In-Reply-To: <fd2fb44e-1814-1589-216d-78eb96b39c3a@collabora.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ethanolx5673host.amd.com (165.204.78.2) by SN4PR0201CA0007.namprd02.prod.outlook.com (2603:10b6:803:2b::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend Transport; Thu, 5 Nov 2020 14:59:29 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: b966af3a-8acb-4f70-0b4e-08d8819b6615
+X-MS-TrafficTypeDiagnostic: BY5PR12MB4888:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BY5PR12MB488854473B9DD32029715C65F3EE0@BY5PR12MB4888.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:923;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 9YPHqZrrVr0TxKpodZmVd4ANUZAUCrQLeAaOo9ZxeEDK3ndcf/L/T1sYSafU4KBbjZ1EgYwqBAS+gsZsJV1trdsIsGO6CcBVHinH2YBLlero9kw0I+LQnsX5TjS0+Bh+dPl/mVE11yakRDi1u4uz0yrE3dCei6jRTeZ/zJEJCyDcwruMC3hJhiRukkDARf2cFXsWdf1tGyibn7AswHMopO7ZWPUKMxf4ps+/IKR05FgCqL4w2LZmidpsSv3+00QC0BL9herQjb88XurVPOlDRFw6oXYC9+C7VpTPw/VetYkvPNcNvckAML8TQBU5646K
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB4597.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(376002)(136003)(39860400002)(346002)(478600001)(26005)(44832011)(8936002)(16526019)(8676002)(83380400001)(5660300002)(186003)(6486002)(4326008)(36756003)(2616005)(956004)(7696005)(2906002)(316002)(1076003)(66946007)(86362001)(66556008)(52116002)(66476007)(6666004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: s07BuAeP04/Gojyq1zrBEccQjA0O4fIiGkO2B1WdQiB48bf1oTpMKQqSZvOFgtpmF3CpfvgX9mHB3ZjYLndwpqmCcWSPihSJ+2K/iST+3a84DLKGGFb676xQFwTdNYek1KG8yBaJcM0z/JqJ4uNRUdVNbyRt8aOCR7BxjmL4C6ipcSA0VOzkKMfnH61eSxch0L6FdoQVSizXSjKdCBFnB9ziQ/vXo+jwiNmADTf8tJUddM3QupwHfgk21/PJqtpZVKPVteYPjtIevfnMJRtSKdaWMHOUZkLEnLZA6a3RQm20yJBR9P7iZ2YTxpJVZ8sln0FY/3FF1PqloGxt36/oecyQeHpbd/qJYoVnTaEk/hOuoPHpdiCmLsK2Gn7XD0wGSZLVtBYrNWwaMVKQ3ZKqaN5jyzXAMw7sVPUmNIOrFIk95Pun7gwp7hjXa3lheO6cbjiNZU/pn/l8TifY2tNnrzf+aJ5LjBPRSw+af/wzOpzot2fhQASWU9IiEGVI2SOT483Ek6nQ0TbnCJmCPqpfiOX3a7v9nPxlfinx1fofarYyw2TTtl8n/e5JsgIfCei3geqffbKcK9LkQSfmN6GqaltVieGxR3EIq6YgY0O2xcHXBxBNIqaglKIPHt9eeMqFcwVL4qu8GZZgbP/zgS8IYw==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b966af3a-8acb-4f70-0b4e-08d8819b6615
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB4597.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Nov 2020 14:59:30.6783
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 4xALL6+sBRe1pQZvNySv3Ejpn1QGOQfFj0ws1Q2Bh9JsIsH4tm96cLr13VSUS2uwuViEv63jaQsVaZj/LmOVgw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4888
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+AMD IOMMU requires 4k-aligned pages for the event log, the PPR log,
+and the completion wait write-back regions. However, when allocating
+the pages, they could be part of large mapping (e.g. 2M) page.
+This causes #PF due to the SNP RMP hardware enforces the check based
+on the page level for these data structures.
 
---jy6Sn24JjFx/iggw
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+So, fix by calling set_memory_4k() on the allocated pages.
 
-Hi,
+Fixes: commit c69d89aff393 ("iommu/amd: Use 4K page for completion wait write-back semaphore")
+Cc: Brijesh Singh <brijesh.singh@amd.com>
+Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+---
+ drivers/iommu/amd/init.c | 27 ++++++++++++++++++++++-----
+ 1 file changed, 22 insertions(+), 5 deletions(-)
 
-On Wed 04 Nov 20, 13:36, Helen Koike wrote:
-> Hi Paul,
->=20
-> On 11/4/20 8:11 AM, Paul Kocialkowski wrote:
-> > Hi Helen,
-> >=20
-> > On Fri 30 Oct 20, 19:44, Helen Koike wrote:
-> >> Hi Paul,
-> >>
-> >> I have some comments through the series, I hope this helps.
-> >=20
-> > Thanks for your comments :)
-> >=20
-> >> On 10/23/20 2:45 PM, Paul Kocialkowski wrote:
-> >>> This series introduces support for MIPI CSI-2, with the A31 controlle=
-r that is
-> >>> found on most SoCs (A31, V3s and probably V5) as well as the A83T-spe=
-cific
-> >>> controller. While the former uses the same MIPI D-PHY that is already=
- supported
-> >>> for DSI, the latter embeds its own D-PHY.
-> >>>
-> >>> In order to distinguish the use of the D-PHY between Rx mode (for MIP=
-I CSI-2)
-> >>> and Tx mode (for MIPI DSI), a submode is introduced for D-PHY in the =
-PHY API.
-> >>> This allows adding Rx support in the A31 D-PHY driver.
-> >>>
-> >>> A few changes and fixes are applied to the A31 CSI controller driver,=
- in order
-> >>> to support the MIPI CSI-2 use-case.
-> >>>
-> >>> Follows is the V4L2 device topology representing the interactions bet=
-ween
-> >>> the MIPI CSI-2 sensor, the MIPI CSI-2 controller (which controls the =
-D-PHY)
-> >>> and the CSI controller:
-> >>> - entity 1: sun6i-csi (1 pad, 1 link)
-> >>>             type Node subtype V4L flags 0
-> >>>             device node name /dev/video0
-> >>> 	pad0: Sink
-> >>> 		<- "sun6i-mipi-csi2":1 [ENABLED,IMMUTABLE]
-> >>>
-> >>> - entity 5: sun6i-mipi-csi2 (2 pads, 2 links)
-> >>>             type V4L2 subdev subtype Unknown flags 0
-> >>> 	pad0: Sink
-> >>> 		<- "ov5648 0-0036":0 [ENABLED,IMMUTABLE]
-> >>> 	pad1: Source
-> >>> 		-> "sun6i-csi":0 [ENABLED,IMMUTABLE]
-> >>>
-> >>> - entity 8: ov5648 0-0036 (1 pad, 1 link)
-> >>>             type V4L2 subdev subtype Sensor flags 0
-> >>>             device node name /dev/v4l-subdev0
-> >>
-> >> Question: I noticed is that sun6i-mipi-csi2 doesn't expose a node unde=
-r /dev/, but the sensor
-> >> exposes it. Probably because it uses V4L2_SUBDEV_FL_HAS_DEVNODE and su=
-n6i-csi() calls
-> >> v4l2_device_register_subdev_nodes().
-> >>
-> >> I find this weird from a userspace pov, since usually we don't mix man=
-ual and auto propagation
-> >> of the configs, so I started wondering if sun6i-csi driver should be c=
-alling
-> >> v4l2_device_register_subdev_nodes() in the first place.
-> >=20
-> > I must admit that I didn't really pay attention to that, but since
-> > sun6i-mipi-csi2 is basically a bridge driver, it doesn't make sense to =
-apply
-> > manual configuration to it. It is actually designed to forward most sub=
-dev ops
-> > to its own subdev so configuring it manually would actually result in
-> > configuring the sensor.
->=20
-> Ack, then maybe sun6i-csi needs a patch removing the call to v4l2_device_=
-register_subdev_nodes()
+diff --git a/drivers/iommu/amd/init.c b/drivers/iommu/amd/init.c
+index 82e4af8f09bb..23a790f8f550 100644
+--- a/drivers/iommu/amd/init.c
++++ b/drivers/iommu/amd/init.c
+@@ -29,6 +29,7 @@
+ #include <asm/iommu_table.h>
+ #include <asm/io_apic.h>
+ #include <asm/irq_remapping.h>
++#include <asm/set_memory.h>
+ 
+ #include <linux/crash_dump.h>
+ 
+@@ -672,11 +673,27 @@ static void __init free_command_buffer(struct amd_iommu *iommu)
+ 	free_pages((unsigned long)iommu->cmd_buf, get_order(CMD_BUFFER_SIZE));
+ }
+ 
++static void *__init iommu_alloc_4k_pages(struct amd_iommu *iommu,
++					 gfp_t gfp, size_t size)
++{
++	int order = get_order(size);
++	void *buf = (void *)__get_free_pages(gfp, order);
++
++	if (buf &&
++	    iommu_feature(iommu, FEATURE_SNP) &&
++	    set_memory_4k((unsigned long)buf, (1 << order))) {
++		free_pages((unsigned long)buf, order);
++		buf = NULL;
++	}
++
++	return buf;
++}
++
+ /* allocates the memory where the IOMMU will log its events to */
+ static int __init alloc_event_buffer(struct amd_iommu *iommu)
+ {
+-	iommu->evt_buf = (void *)__get_free_pages(GFP_KERNEL | __GFP_ZERO,
+-						  get_order(EVT_BUFFER_SIZE));
++	iommu->evt_buf = iommu_alloc_4k_pages(iommu, GFP_KERNEL | __GFP_ZERO,
++					      EVT_BUFFER_SIZE);
+ 
+ 	return iommu->evt_buf ? 0 : -ENOMEM;
+ }
+@@ -715,8 +732,8 @@ static void __init free_event_buffer(struct amd_iommu *iommu)
+ /* allocates the memory where the IOMMU will log its events to */
+ static int __init alloc_ppr_log(struct amd_iommu *iommu)
+ {
+-	iommu->ppr_log = (void *)__get_free_pages(GFP_KERNEL | __GFP_ZERO,
+-						  get_order(PPR_LOG_SIZE));
++	iommu->ppr_log = iommu_alloc_4k_pages(iommu, GFP_KERNEL | __GFP_ZERO,
++					      PPR_LOG_SIZE);
+ 
+ 	return iommu->ppr_log ? 0 : -ENOMEM;
+ }
+@@ -838,7 +855,7 @@ static int iommu_init_ga(struct amd_iommu *iommu)
+ 
+ static int __init alloc_cwwb_sem(struct amd_iommu *iommu)
+ {
+-	iommu->cmd_sem = (void *)get_zeroed_page(GFP_KERNEL);
++	iommu->cmd_sem = iommu_alloc_4k_pages(iommu, GFP_KERNEL | __GFP_ZERO, 1);
+ 
+ 	return iommu->cmd_sem ? 0 : -ENOMEM;
+ }
+-- 
+2.17.1
 
-Apparently Sakari suggested that we do need a subdev node for the MIPI CSI-2
-bridge so I'll just do that.
-
-This implementation that fowards the ops to the sensor was apparently a mis=
-take.
-
-Paul
-
-> >=20
-> > XXX
-> >=20
-> >> Also, sun6i-csi doesn't seem to be used by any board dts (it's declare=
-d on the dtsi, but I
-> >> didn't find any dts enabling it), so I wonder if it would be a bad thi=
-ng if we update it.
-> >>
-> >>> 	pad0: Source
-> >>> 		[fmt:SBGGR8_1X8/640x480@1/30 field:none colorspace:raw xfer:none yc=
-bcr:601 quantization:full-range]
-> >>> 		-> "sun6i-mipi-csi2":0 [ENABLED,IMMUTABLE]
-> >>
-> >> If I understand correctly, this is very similar to ipu3:
-> >>     sensor->bus->dma_engine
-> >>
-> >> in the case of ipu3-cio2:
-> >>     sensor->ipu3-csi2->ipu3-cio2
-> >>
-> >> in this case:
-> >>     ov5648->sun6i-mipi-csi2->sun6i-csi
-> >=20
-> > Yes this is the correct picture.
-> >=20
-> >> On thing that is confusing me is the name csi2 with csi (that makes me=
- think of csi
-> >> version one, which is not the case), I would rename it to sun6i-video =
-(or maybe
-> >> it is just me who gets confused).
-> >=20
-> > So the CSI name comes from the Allwinner litterature and implementation=
- for that
-> > controller. Since it supports parallel input on its own, it does in fac=
-t support
-> > parallel CSI. The DMA engine part alone from that controller is also us=
-ed for
-> > MIPI CSI-2, so in this case the name looses its relevance.
-> >=20
-> >> I know this driver is already upstream and not part of this series, bu=
-t on the other hand it
-> >> doesn't seem to be used.
-> >=20
-> > Personally I don't find a rename to be necessary and while I agree that
-> > nothing would apparently prevent us from renaming it, I would prefer to=
- keep
-> > the naming in line with Allwinner's litterature.
->=20
-> Ok, I didn't know it was from Allwinner's litterature, I don't mind keepi=
-ng the name.
-
-Great :)
-
-> >> On another note, I always wonder if we should expose the bus in the to=
-pology, I'm not
-> >> sure if it provides any useful API or information for userspace, and y=
-ou could have
-> >> a cleaner code (maybe code could be under phy subsystem). But at the s=
-ame time, it
-> >> seems this is a pattern on v4l2.
-> >>
-> >> I'd like to hear what others think on the above.
-> >=20
-> > My view on this is that we are dealing with two distinct controllers he=
-re,
-> > one that acts as a DMA engine and one that acts as a bridge. As a resul=
-t, two
-> > chained subdevs looks like the most appropriate representation to me.
-> >=20
-> > Using the PHY subsystem would probably be abusing the framework since t=
-he
-> > MIPI CSI-2 controller is not a PHY (and we do have a D-PHY driver for t=
-he D-PHY
-> > part that uses the PHY API already).
-> >=20
-> > So tl;dr I don't agree that it would be cleaner.
->=20
-> My point is, this is a "dummy" subdevice in userspace pov,
-> but if it is only used with auto-propagation of the configurations, then
-> it doesn't matter (since userspace won't interact with that node).
-> And in the kernel space you need to implement media boilerplate code.
-> So I was trying to think in another alternative, but tbh I don't mind
-> keeping it in the media topology.
-
-Undestood and thanks for sharing your thoughts either way, they are definit=
-ely
-welcome!
-
-Cheers,
-
-Paul
-
-> Regards,
-> Helen
->=20
-> >=20
-> > Cheers,
-> >=20
-> > Paul
-> >=20
-> >>> Happy reviewing!
-> >>>
-> >>> Paul Kocialkowski (14):
-> >>>   phy: Distinguish between Rx and Tx for MIPI D-PHY with submodes
-> >>>   phy: allwinner: phy-sun6i-mipi-dphy: Support D-PHY Rx mode for MIPI
-> >>>     CSI-2
-> >>>   media: sun6i-csi: Support an optional dedicated memory pool
-> >>>   media: sun6i-csi: Fix the image storage bpp for 10/12-bit Bayer
-> >>>     formats
-> >>>   media: sun6i-csi: Only configure the interface data width for paral=
-lel
-> >>>   media: sun6i-csi: Support feeding from the MIPI CSI-2 controller
-> >>>   dt-bindings: media: i2c: Add A31 MIPI CSI-2 bindings documentation
-> >>>   media: sunxi: Add support for the A31 MIPI CSI-2 controller
-> >>>   ARM: dts: sun8i: v3s: Add CSI0 camera interface node
-> >>>   ARM: dts: sun8i: v3s: Add MIPI D-PHY and MIPI CSI-2 interface nodes
-> >>>   dt-bindings: media: i2c: Add A83T MIPI CSI-2 bindings documentation
-> >>>   media: sunxi: Add support for the A83T MIPI CSI-2 controller
-> >>>   ARM: dts: sun8i: a83t: Add MIPI CSI-2 controller node
-> >>>   media: sunxi: sun8i-a83t-mipi-csi2: Avoid using the (unsolicited)
-> >>>     interrupt
-> >>>
-> >>>  .../media/allwinner,sun6i-a31-mipi-csi2.yaml  | 168 +++++
-> >>>  .../media/allwinner,sun8i-a83t-mipi-csi2.yaml | 158 +++++
-> >>>  arch/arm/boot/dts/sun8i-a83t.dtsi             |  26 +
-> >>>  arch/arm/boot/dts/sun8i-v3s.dtsi              |  62 ++
-> >>>  drivers/media/platform/sunxi/Kconfig          |   2 +
-> >>>  drivers/media/platform/sunxi/Makefile         |   2 +
-> >>>  .../platform/sunxi/sun6i-csi/sun6i_csi.c      |  54 +-
-> >>>  .../platform/sunxi/sun6i-csi/sun6i_csi.h      |  20 +-
-> >>>  .../platform/sunxi/sun6i-mipi-csi2/Kconfig    |  11 +
-> >>>  .../platform/sunxi/sun6i-mipi-csi2/Makefile   |   4 +
-> >>>  .../sunxi/sun6i-mipi-csi2/sun6i_mipi_csi2.c   | 635 +++++++++++++++++
-> >>>  .../sunxi/sun6i-mipi-csi2/sun6i_mipi_csi2.h   | 116 +++
-> >>>  .../sunxi/sun8i-a83t-mipi-csi2/Kconfig        |  11 +
-> >>>  .../sunxi/sun8i-a83t-mipi-csi2/Makefile       |   4 +
-> >>>  .../sun8i-a83t-mipi-csi2/sun8i_a83t_dphy.c    |  92 +++
-> >>>  .../sun8i-a83t-mipi-csi2/sun8i_a83t_dphy.h    |  39 ++
-> >>>  .../sun8i_a83t_mipi_csi2.c                    | 660 ++++++++++++++++=
-++
-> >>>  .../sun8i_a83t_mipi_csi2.h                    | 196 ++++++
-> >>>  drivers/phy/allwinner/phy-sun6i-mipi-dphy.c   | 164 ++++-
-> >>>  drivers/staging/media/rkisp1/rkisp1-isp.c     |   3 +-
-> >>>  include/linux/phy/phy-mipi-dphy.h             |  13 +
-> >>>  21 files changed, 2408 insertions(+), 32 deletions(-)
-> >>>  create mode 100644 Documentation/devicetree/bindings/media/allwinner=
-,sun6i-a31-mipi-csi2.yaml
-> >>>  create mode 100644 Documentation/devicetree/bindings/media/allwinner=
-,sun8i-a83t-mipi-csi2.yaml
-> >>>  create mode 100644 drivers/media/platform/sunxi/sun6i-mipi-csi2/Kcon=
-fig
-> >>>  create mode 100644 drivers/media/platform/sunxi/sun6i-mipi-csi2/Make=
-file
-> >>>  create mode 100644 drivers/media/platform/sunxi/sun6i-mipi-csi2/sun6=
-i_mipi_csi2.c
-> >>>  create mode 100644 drivers/media/platform/sunxi/sun6i-mipi-csi2/sun6=
-i_mipi_csi2.h
-> >>>  create mode 100644 drivers/media/platform/sunxi/sun8i-a83t-mipi-csi2=
-/Kconfig
-> >>>  create mode 100644 drivers/media/platform/sunxi/sun8i-a83t-mipi-csi2=
-/Makefile
-> >>>  create mode 100644 drivers/media/platform/sunxi/sun8i-a83t-mipi-csi2=
-/sun8i_a83t_dphy.c
-> >>>  create mode 100644 drivers/media/platform/sunxi/sun8i-a83t-mipi-csi2=
-/sun8i_a83t_dphy.h
-> >>>  create mode 100644 drivers/media/platform/sunxi/sun8i-a83t-mipi-csi2=
-/sun8i_a83t_mipi_csi2.c
-> >>>  create mode 100644 drivers/media/platform/sunxi/sun8i-a83t-mipi-csi2=
-/sun8i_a83t_mipi_csi2.h
-> >>>
-> >=20
-
---=20
-Paul Kocialkowski, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
-
---jy6Sn24JjFx/iggw
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAl+kEwwACgkQ3cLmz3+f
-v9FtlQf+OOxwm34+gNwIIIKqwatMFN/XWBgYGK7joe9k7Ak0g2dlx2lfxpc6W+qh
-ostL1hmZa+eXm1DlWDvFoKll8wwKQuE+RgQn0a8va89eohhRPGDoLA+NV2qW5L2N
-C/DUYNJoYuFMUcJp7XbM8dxAJs3ROMCLK3aY9VFgdmEWsqZ+BLROmI5sSeb+Eb3K
-OQDeyAXmAr1ybso9r6nVJmGBnFJHliaNSAzHYuJpW2hT/l5xNdMdFqtHy0Q+B5JJ
-tySGKCAFwWGJ87BNtod6OcWqjFY4aBGzRhjFftEmG5KXq162eN+PcGkWQnw7ywb+
-Q70xOtZJgi4ORR5tWwKg0znVap6/5Q==
-=3CrC
------END PGP SIGNATURE-----
-
---jy6Sn24JjFx/iggw--
