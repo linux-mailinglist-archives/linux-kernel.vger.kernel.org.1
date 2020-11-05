@@ -2,74 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C02C2A7F5B
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 14:00:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B42612A7F5A
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 14:00:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731076AbgKEM7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 07:59:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58630 "EHLO
+        id S1731062AbgKEM7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 07:59:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731038AbgKEM7u (ORCPT
+        with ESMTP id S1730958AbgKEM7w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 07:59:50 -0500
-Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E6DDC0613D2
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 04:59:50 -0800 (PST)
-Received: by mail-ua1-x944.google.com with SMTP id k12so474314uad.11
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 04:59:50 -0800 (PST)
+        Thu, 5 Nov 2020 07:59:52 -0500
+Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A6A2C0613D3
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 04:59:52 -0800 (PST)
+Received: by mail-ua1-x942.google.com with SMTP id t15so480094ual.6
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 04:59:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Ogy1F0OZxhfIxCnSobyKyOBL57nC3KTIEKh8oSdo12Y=;
-        b=lCdGxiE45E+xLqcXhqfOnyBv5sAJ6fcX8rd45RL5WkLO4LoUzy+R3uDKgfckfmDHTc
-         v0PZqlL/2eBRkz8Cj+qydXTCLss6tVvPKTrJY+jP6s0yhRUMElRXMHaWuueeISr39xl2
-         QI8NMvSWJzAH7FYQDdHEoyIhWfZxDetbEmN3ZmUAS6yt8MVlFxRaKggtSagTnc6/qNah
-         PrvhqYPtaui1rhhbk5fv4RuocM3YiiFOEKHyZ0CXUfquH9kSow0/N5JThKqpAAxgaQ9C
-         jxVeunieL1p3jr7T9f/guNEUtgtIR8+jom6805hnxzZsMwPCX6SM+N5HrGfzlAyO7s7L
-         CzWw==
+        bh=WT1MvSlztZlc1FZ5Asxkhe1NYZezAK9LnhK1vwgJmXo=;
+        b=SraoIp6GVcQVkv/M8F+b5/a1obllwuyTigrdn6SG8CQ4oTWM2I3D4/w1z1XoKddci4
+         Mj8+kvwiLLFykFKvzijWne63PuKBXEVHEV2dQirGZeDWNKUvAgYdG8GeKEVFzDI5xGOJ
+         lE+WkS0HVDlLyyt4ybARSfIuMoBZJvZIyoK74/GNeYLjQo3KEMHWoHUU53XptSRhP7Us
+         EYG5C3AXS6ncwALJF7yGYpeZozD9WPSPCunnttAtiiv6xJ9eUNK6uEkvfrWvqnjNFtK7
+         kdB+BylGReXaV6UsK0XguHSE7tIsnM7HZlejUmbhxTcgizc/StgRSSWjn/ZuVL0e29Or
+         i0aw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Ogy1F0OZxhfIxCnSobyKyOBL57nC3KTIEKh8oSdo12Y=;
-        b=TB9tC2cmEeVFfkrkA5TtlPSGc7FYpr2kRuZ64WT5GyeNjGALXTjXUxyOrkbBH0a+eL
-         Lz/mq4FG9hPqWKrialhr05r3qqg9lLegV1AKfoGLQR6TvWmwf+qoYJJSg45R20UH+01w
-         Q0Xr/loY6BYnCPFMGhlDxnV/k00T0z+JYFyy4Qx2UIaVLhlJHCJvG7A5oMnkOwle8yjc
-         TBH0I2kRQKcHkBUHjSBWXbxqWmWRa9Q4/tPwAXkeI0ZW5DrcYPLXrryBVUJZAdcW1ieL
-         E4TlcRZNbpaovcqkhTFAZsyYxCsI/kSfCyKSrjxsAepJWMxFvOPdx6dNzb3zmYxw1s6N
-         m3oQ==
-X-Gm-Message-State: AOAM533OMEF/Kyl1+TBwKKbE2iqIBD0wxDnBtFT0XVqJatAOtR2Dcgqr
-        3ein2SYhX+jctIYJESUYcNSV9thlK+u+MyfTemJMKQ==
-X-Google-Smtp-Source: ABdhPJygw6lv2K7RzimlR0j9nMogFpDzaeo2sDnSHRJ8tbpbhbUQAIPJLUSINH4E+x6ZU6D9Dds59Yz53akRLcTQxmo=
-X-Received: by 2002:a9f:2f15:: with SMTP id x21mr844197uaj.104.1604581189602;
- Thu, 05 Nov 2020 04:59:49 -0800 (PST)
+        bh=WT1MvSlztZlc1FZ5Asxkhe1NYZezAK9LnhK1vwgJmXo=;
+        b=PHRFGpLbs1YNPM49G8Q1JIa4k9CQo13JklB0z37IUShhaj7gfiK/bFOJS5nGwm0xbZ
+         BpLAacfnlkg242Bhw4wznJg1pNdfiU8QqbGjH6ff1SUqDcx6V4G/+8bNgmWnglAyTjZl
+         Mt61miXeLdGpx2yoWgLQFLSp9pGcqLR7cR1yevgXiDNgZ+voodV2OSVgoiQ0KsZEmgLV
+         ljoxzGBN9d7zL4ocrwvYPmUNOKTk+eroKazqpqk6qyaIZPpYyGpyriQIbbjMNtaU6Jwt
+         EoO5UVOqDxYTuHswMqMiRsQzMIl951sVMhjDTsD8V/9yiyAY/nyHha5K8czQGk1GMV4H
+         Chyw==
+X-Gm-Message-State: AOAM531KN78CvEYmG2pINr5BY6Uld4NmpVeKkC0Zz1saxrlMFQ4lDgs9
+        dkY61qssV+xek9LnNVbDlo+bo45fQEkiWhm/jAyk9w==
+X-Google-Smtp-Source: ABdhPJw0Ws5JxTx6vxeo66/SjiEPxXO12VwIiiEbeCglmyTuCgwCugyFQ5EdHVJLN7WAkJdswMXD1NoWU6xFViluqAo=
+X-Received: by 2002:ab0:23d5:: with SMTP id c21mr816639uan.129.1604581191469;
+ Thu, 05 Nov 2020 04:59:51 -0800 (PST)
 MIME-Version: 1.0
-References: <1604278337-55624-1-git-send-email-tiantao6@hisilicon.com>
-In-Reply-To: <1604278337-55624-1-git-send-email-tiantao6@hisilicon.com>
+References: <20201102092822.5301-1-wenbin.mei@mediatek.com> <20201102092822.5301-2-wenbin.mei@mediatek.com>
+In-Reply-To: <20201102092822.5301-2-wenbin.mei@mediatek.com>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 5 Nov 2020 13:59:12 +0100
-Message-ID: <CAPDyKFrEEB7HFEq787jitvOJmuP_t-DAbr9g_chF3JGWxwE_FA@mail.gmail.com>
-Subject: Re: [PATCH] mmc: owl-mmc: replace spin_lock_irqsave by spin_lock in
- hard IRQ
-To:     Tian Tao <tiantao6@hisilicon.com>
-Cc:     =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
+Date:   Thu, 5 Nov 2020 13:59:15 +0100
+Message-ID: <CAPDyKFpej4T=-kaEMz6nzJxeYUfJVXzHckVr-LhwvZhuU68Y4w@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] mmc: mediatek: add HS400 enhanced strobe support
+To:     Wenbin Mei <wenbin.mei@mediatek.com>
+Cc:     Chaotian Jing <chaotian.jing@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
         "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
         Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2 Nov 2020 at 01:51, Tian Tao <tiantao6@hisilicon.com> wrote:
+On Mon, 2 Nov 2020 at 10:29, Wenbin Mei <wenbin.mei@mediatek.com> wrote:
 >
-> The code has been in a irq-disabled context since it is hard IRQ. There
-> is no necessity to do it again.
+> Add support for HS400ES mode to MediaTek MMC Card Driver.
 >
-> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+> Signed-off-by: Wenbin Mei <wenbin.mei@mediatek.com>
 
 Applied for next, thanks!
 
@@ -78,34 +78,92 @@ Uffe
 
 
 > ---
->  drivers/mmc/host/owl-mmc.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
+>  drivers/mmc/host/mtk-sd.c | 40 +++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 40 insertions(+)
 >
-> diff --git a/drivers/mmc/host/owl-mmc.c b/drivers/mmc/host/owl-mmc.c
-> index ccf214a..82d2bad 100644
-> --- a/drivers/mmc/host/owl-mmc.c
-> +++ b/drivers/mmc/host/owl-mmc.c
-> @@ -134,10 +134,9 @@ static void owl_mmc_update_reg(void __iomem *reg, unsigned int val, bool state)
->  static irqreturn_t owl_irq_handler(int irq, void *devid)
->  {
->         struct owl_mmc_host *owl_host = devid;
-> -       unsigned long flags;
->         u32 state;
+> diff --git a/drivers/mmc/host/mtk-sd.c b/drivers/mmc/host/mtk-sd.c
+> index f7f68623fefc..fc5ee5df91ad 100644
+> --- a/drivers/mmc/host/mtk-sd.c
+> +++ b/drivers/mmc/host/mtk-sd.c
+> @@ -78,9 +78,12 @@
+>  #define MSDC_PAD_TUNE0   0xf0
+>  #define PAD_DS_TUNE      0x188
+>  #define PAD_CMD_TUNE     0x18c
+> +#define EMMC51_CFG0     0x204
+>  #define EMMC50_CFG0      0x208
+> +#define EMMC50_CFG1      0x20c
+>  #define EMMC50_CFG3      0x220
+>  #define SDC_FIFO_CFG     0x228
+> +#define CQHCI_SETTING   0x7fc
 >
-> -       spin_lock_irqsave(&owl_host->lock, flags);
-> +       spin_lock(&owl_host->lock);
+>  /*--------------------------------------------------------------------------*/
+>  /* Top Pad Register Offset                                                  */
+> @@ -261,15 +264,26 @@
 >
->         state = readl(owl_host->base + OWL_REG_SD_STATE);
->         if (state & OWL_SD_STATE_TEI) {
-> @@ -147,7 +146,7 @@ static irqreturn_t owl_irq_handler(int irq, void *devid)
->                 complete(&owl_host->sdc_complete);
->         }
+>  #define PAD_CMD_TUNE_RX_DLY3     (0x1f << 1)  /* RW */
 >
-> -       spin_unlock_irqrestore(&owl_host->lock, flags);
-> +       spin_unlock(&owl_host->lock);
+> +/* EMMC51_CFG0 mask */
+> +#define CMDQ_RDAT_CNT            (0x3ff << 12) /* RW */
+> +
+>  #define EMMC50_CFG_PADCMD_LATCHCK (0x1 << 0)   /* RW */
+>  #define EMMC50_CFG_CRCSTS_EDGE    (0x1 << 3)   /* RW */
+>  #define EMMC50_CFG_CFCSTS_SEL     (0x1 << 4)   /* RW */
+> +#define EMMC50_CFG_CMD_RESP_SEL   (0x1 << 9)   /* RW */
+> +
+> +/* EMMC50_CFG1 mask */
+> +#define EMMC50_CFG1_DS_CFG        (0x1 << 28)  /* RW */
 >
->         return IRQ_HANDLED;
+>  #define EMMC50_CFG3_OUTS_WR       (0x1f << 0)  /* RW */
+>
+>  #define SDC_FIFO_CFG_WRVALIDSEL   (0x1 << 24)  /* RW */
+>  #define SDC_FIFO_CFG_RDVALIDSEL   (0x1 << 25)  /* RW */
+>
+> +/* CQHCI_SETTING */
+> +#define CQHCI_RD_CMD_WND_SEL     (0x1 << 14) /* RW */
+> +#define CQHCI_WR_CMD_WND_SEL     (0x1 << 15) /* RW */
+> +
+>  /* EMMC_TOP_CONTROL mask */
+>  #define PAD_RXDLY_SEL           (0x1 << 0)      /* RW */
+>  #define DELAY_EN                (0x1 << 1)      /* RW */
+> @@ -2276,6 +2290,31 @@ static int msdc_get_cd(struct mmc_host *mmc)
+>                 return !val;
 >  }
-> --
-> 2.7.4
 >
+> +static void msdc_hs400_enhanced_strobe(struct mmc_host *mmc,
+> +                                      struct mmc_ios *ios)
+> +{
+> +       struct msdc_host *host = mmc_priv(mmc);
+> +
+> +       if (ios->enhanced_strobe) {
+> +               msdc_prepare_hs400_tuning(mmc, ios);
+> +               sdr_set_field(host->base + EMMC50_CFG0, EMMC50_CFG_PADCMD_LATCHCK, 1);
+> +               sdr_set_field(host->base + EMMC50_CFG0, EMMC50_CFG_CMD_RESP_SEL, 1);
+> +               sdr_set_field(host->base + EMMC50_CFG1, EMMC50_CFG1_DS_CFG, 1);
+> +
+> +               sdr_clr_bits(host->base + CQHCI_SETTING, CQHCI_RD_CMD_WND_SEL);
+> +               sdr_clr_bits(host->base + CQHCI_SETTING, CQHCI_WR_CMD_WND_SEL);
+> +               sdr_clr_bits(host->base + EMMC51_CFG0, CMDQ_RDAT_CNT);
+> +       } else {
+> +               sdr_set_field(host->base + EMMC50_CFG0, EMMC50_CFG_PADCMD_LATCHCK, 0);
+> +               sdr_set_field(host->base + EMMC50_CFG0, EMMC50_CFG_CMD_RESP_SEL, 0);
+> +               sdr_set_field(host->base + EMMC50_CFG1, EMMC50_CFG1_DS_CFG, 0);
+> +
+> +               sdr_set_bits(host->base + CQHCI_SETTING, CQHCI_RD_CMD_WND_SEL);
+> +               sdr_set_bits(host->base + CQHCI_SETTING, CQHCI_WR_CMD_WND_SEL);
+> +               sdr_set_field(host->base + EMMC51_CFG0, CMDQ_RDAT_CNT, 0xb4);
+> +       }
+> +}
+> +
+>  static void msdc_cqe_enable(struct mmc_host *mmc)
+>  {
+>         struct msdc_host *host = mmc_priv(mmc);
+> @@ -2333,6 +2372,7 @@ static const struct mmc_host_ops mt_msdc_ops = {
+>         .set_ios = msdc_ops_set_ios,
+>         .get_ro = mmc_gpio_get_ro,
+>         .get_cd = msdc_get_cd,
+> +       .hs400_enhanced_strobe = msdc_hs400_enhanced_strobe,
+>         .enable_sdio_irq = msdc_enable_sdio_irq,
+>         .ack_sdio_irq = msdc_ack_sdio_irq,
+>         .start_signal_voltage_switch = msdc_ops_switch_volt,
+> --
+> 2.18.0
