@@ -2,179 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A081A2A7BE1
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 11:32:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63A172A7BE2
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 11:32:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729890AbgKEKcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 05:32:25 -0500
-Received: from 212-129-56-80.ip.rebuild.sh ([212.129.56.80]:54942 "EHLO
+        id S1729986AbgKEKc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 05:32:26 -0500
+Received: from 212-129-56-80.ip.rebuild.sh ([212.129.56.80]:54944 "EHLO
         rebuild.sh" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726067AbgKEKcZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726152AbgKEKcZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 5 Nov 2020 05:32:25 -0500
-X-Greylist: delayed 374 seconds by postgrey-1.27 at vger.kernel.org; Thu, 05 Nov 2020 05:32:23 EST
 Received: from [192.168.97.21] (81-67-152-104.rev.numericable.fr [81.67.152.104])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by rebuild.sh (Postfix) with ESMTPSA id 61EFE20353;
-        Thu,  5 Nov 2020 11:26:08 +0100 (CET)
+        by rebuild.sh (Postfix) with ESMTPSA id 7043720498;
+        Thu,  5 Nov 2020 11:27:17 +0100 (CET)
 From:   =?UTF-8?B?VGhvbWFzIOKAnGlsbHdpZWNreuKAnCBEZWJlc3Nl?= 
         <dev@illwieckz.net>
 To:     LKML <linux-kernel@vger.kernel.org>
-Subject: [PATCH] drm/radeon: make all PCI GPUs use 32 bits DMA bit mask
-Message-ID: <9b61c834-c139-af55-b05a-a5ffa8c2d80f@illwieckz.net>
-Date:   Thu, 5 Nov 2020 11:26:07 +0100
+Subject: [PATCH] Revert "drm/radeon: disable AGP by default"
+Message-ID: <c441a37f-086f-7d0c-7141-121097743421@illwieckz.net>
+Date:   Thu, 5 Nov 2020 11:27:16 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.3.2
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="rnysnyRbI3psw2MwCzLVdIK97QAdrTmhL"
+ boundary="2tKqIl9hIcXdOKJS6GnPM1EvXl7KxNZbn"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---rnysnyRbI3psw2MwCzLVdIK97QAdrTmhL
-Content-Type: multipart/mixed; boundary="rZANjpIrx91R7XjeOmYb5IiIHbN0smzbc";
+--2tKqIl9hIcXdOKJS6GnPM1EvXl7KxNZbn
+Content-Type: multipart/mixed; boundary="qia2RKnvrEvVjTMwRRYfA7F1VqPc4YzmH";
  protected-headers="v1"
 From: =?UTF-8?B?VGhvbWFzIOKAnGlsbHdpZWNreuKAnCBEZWJlc3Nl?= <dev@illwieckz.net>
 To: LKML <linux-kernel@vger.kernel.org>
-Message-ID: <9b61c834-c139-af55-b05a-a5ffa8c2d80f@illwieckz.net>
-Subject: [PATCH] drm/radeon: make all PCI GPUs use 32 bits DMA bit mask
+Message-ID: <c441a37f-086f-7d0c-7141-121097743421@illwieckz.net>
+Subject: [PATCH] Revert "drm/radeon: disable AGP by default"
 
---rZANjpIrx91R7XjeOmYb5IiIHbN0smzbc
+--qia2RKnvrEvVjTMwRRYfA7F1VqPc4YzmH
 Content-Type: multipart/mixed;
- boundary="------------97D6C3908370F44AC69552C1"
+ boundary="------------3D6A9B5D22EB1D14AD70577C"
 Content-Language: en-GB
 
 This is a multi-part message in MIME format.
---------------97D6C3908370F44AC69552C1
+--------------3D6A9B5D22EB1D14AD70577C
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
 I wish to be personally CC'ed the answers/comments posted to the list in
 response to my posting.
 
-This patch prevents to fail r600_ring_test on ATI PCI devices
-hosted on K8 or K10 platforms, this error:
+This reverts commit ba806f98f868ce107aa9c453fef751de9980e4af.
 
-> [drm:r600_ring_test [radeon]] *ERROR* radeon:
->=C2=A0=C2=A0 ring 0 test failed (scratch(0x8504)=3D0xCAFEDEAD)
-> radeon 0000:03:00.0: disabling GPU acceleration
+Disabling AGP leaves some hardware without working alternative
+on some platforms. For example, PCI GPUs are known to be broken
+on K8 and K10 platforms since years: the breakage was reproduced
+from Linux 4.4 on Ubuntu 16.04 Xenial to Linux 5.10-rc1 on Ubuntu
+20.04 Focal, and it is expected to be older than Linux 4.4.
 
-and this error:
+Also, there may be some bugs specific to AGP GPUs being driven
+as PCI ones since fixing some PCI bugs introduces newer bugs
+that are very specific to AGP GPUs driven as PCI ones and not
+to PCI native ones.
 
-> trying to bind memory to uninitialized GART !
+Some AGP GPUs are still relevant to this day, like the high-end
+ATI Radeon HD 4670 AGP (RV730 XT), a very capable TeraScale GPU
+designed for OpenGL 3.3 and OpenCL 1.0 and featuring HDMI port
+and 1GB of VRAM. This GPU was distributed by various manufacturers
+and was still sold as brand new in 2012, for example this one:
+http://www.hisdigital.com/un/product2-448.shtml
+https://web.archive.org/web/2012/https://www.amazon.com/gp/product/B003CY=
+KCG8/
 
-Such PCI hardware works correctly on Intel 82801
-platform, so this change may be non-optimal for them
-on non-K8/K10 platforms.
+As an example, this AGP GPU still gets 140+ fps on the competitive
+Xonotic game in 2020, as verified during the XDWC 2020 event, also
+when compared to other games on the Unvanquished GPU compatibility
+matrix, we can notice that to outperform such AGP GPU, Intel users
+have to acquire an UHD 600 graphic chip from 2016, and Nvidia users
+relying on the free open source nouveau driver have to acquire a
+GTX 1060 from 2016:
+https://wiki.unvanquished.net/wiki/GPU_compatibility_matrix
 
-Initial code was testing for GPU chip families to choose
-between 40 bits or 32 bits, it looks like a better code
-would be to test for platforms (PCI bridge, maybe?).
+Motherboards compatible with powerful CPUs like the quad core AMD
+AM3 Phenom II CPU X4 970 (3.5GHz) supporting virtualization, 16GB
+of RAM and featuring AGP and PCI slots (not PCI Express ones) were
+sold, like this motherboard from 2006 supporting this CPU from 2010:
+https://www.asrock.com/mb/nvidia/am2nf3-vsta/
+https://www.cpu-world.com/cgi-bin/IdentifyPart.pl?PART=3DHDZ970FBK4DGM
 
-This is not enough to fix PCI GPUs on K8 (K8T800) and
-K10 (nForce3), also, non-ATI Nvidia PCI GPUs are affected
-by at least one other unknown bug that may be in common.
+This is basically among the best the market had to offer in 2012
+for AGP users. Disabling AGP turns such very capable computers and
+their AGP GPUs into paperweights.
 
-This may also prevents the uninitialized GART error to occur
-when ATI AGP cards run in PCI mode. This is not a call to
-disable AGP, and other bug(s) leaves AGP hardware unusable
-once AGP is disabled. Also this patch uncovers some other bugs
-happening when AGP cards are driven as PCI ones.
+Even if PCI and AGP-as-PCI issues are fixed, disabling AGP is
+expected to strongly affect performance of such GPUs, and disabling
+AGP may hide bugs that may be introduced after the disablement.
 
-I have probably reached my skill cap with this patch in regards to
-the topic. This may help specialists to investigate further by giving
-them an entry point.
+A boot command line switch to disable AGP to rely on PCI fallback
+may be welcome to help testing the PCI code and prevent it to rot
+as it is easier to find AGP cards than PCI ones.
 
-I have access to some not-so-old still-relevant PCI GPUs by ATI
-and Nvidia (TeraScale, Tesla 1.0, both OpenGL 3.3 capable) and
-some K8 and K10 computers that can be purposed for testing
-patches written by others in hope to get a complete fix one day.
-
+I have access to some AGP GPUs by ATI and Nvidia and some
+computers that can be purposed for testing any patches written
+by others that would improve AGP support.
 See related bugs for details about GPUs, host platforms, and a
 a lot of details and logs about issues faced:
-
-- https://bugs.launchpad.net/bugs/1902795
-> PCI graphics broken on AMD K8/K10 platform (while it works on Intel)
-> verified from Linux 4.4 to 5.10-rc1
-
-- https://bugs.launchpad.net/bugs/1902981
-> AGP GPUs driven as PCI ones (when AGP is disabled at kernel build
-> time) are known to fail on K8 and K10 platforms
 
 - https://bugs.launchpad.net/bugs/1899304
 > AGP disablement leaves GPUs without working alternative
 > (PCI fallback is broken), makes very-capable ATI TeraScale GPUs
 > unusable
 
+- https://bugs.launchpad.net/bugs/1902981
+> AGP GPUs driven as PCI ones (when AGP is disabled at kernel build
+> time) are known to fail on K8 and K10 platforms
+
+- https://bugs.launchpad.net/bugs/1902795
+> PCI graphics broken on AMD K8/K10 platform (while it works on Intel)
+> verified from Linux 4.4 to 5.10-rc1
+
 --=20
 Thomas =E2=80=9Cillwieckz=E2=80=9D Debesse
 
---------------97D6C3908370F44AC69552C1
+--------------3D6A9B5D22EB1D14AD70577C
 Content-Type: text/x-patch; charset=UTF-8;
- name="0001-drm-radeon-make-all-PCI-GPUs-use-32bits-DMA-bit-mask.patch"
+ name="0001-Revert-drm-radeon-disable-AGP-by-default.patch"
 Content-Transfer-Encoding: quoted-printable
 Content-Disposition: attachment;
- filename*0="0001-drm-radeon-make-all-PCI-GPUs-use-32bits-DMA-bit-mask.pa";
- filename*1="tch"
+ filename="0001-Revert-drm-radeon-disable-AGP-by-default.patch"
 
-=46rom 13e3a45c319ab600ee4a2b9a1d892d9b6cd23243 Mon Sep 17 00:00:00 2001
+=46rom 3c6acab35f7a210357dfbc909e089245823d4c5a Mon Sep 17 00:00:00 2001
 From: Thomas Debesse <dev@illwieckz.net>
-Date: Wed, 4 Nov 2020 06:03:27 +0100
-Subject: [PATCH] drm/radeon: make all PCI GPUs use 32 bits DMA bit mask
+Date: Thu, 5 Nov 2020 03:26:05 +0100
+Subject: [PATCH] Revert "drm/radeon: disable AGP by default"
 
-Prevent to fail r600_ring_test on ATI PCI devices
-hosted on K8 or K10 platforms, this error:
+This reverts commit ba806f98f868ce107aa9c453fef751de9980e4af.
 
-> [drm:r600_ring_test [radeon]] *ERROR* radeon:
->   ring 0 test failed (scratch(0x8504)=3D0xCAFEDEAD)
-> radeon 0000:03:00.0: disabling GPU acceleration
+Disabling AGP leaves some hardware without working alternative
+on some platforms. For example, PCI GPUs are known to be broken
+on K8 and K10 platforms since years: the breakage was reproduced
+from Linux 4.4 on Ubuntu 16.04 Xenial to Linux 5.10-rc1 on Ubuntu
+20.04 Focal, and it is expected to be older than Linux 4.4.
 
-and this error:
+Also, there may be some bugs specific to AGP GPUs being driven
+as PCI ones since fixing some PCI bugs introduces newer bugs
+that are very specific to AGP GPUs driven as PCI ones and not
+to PCI native ones.
 
-> trying to bind memory to uninitialized GART !
-
-Such PCI hardware works correctly on Intel 82801
-platform, so this change may be non-optimal for them
-on non-K8/K10 platforms.
+Even if PCI and AGP-as-PCI issues are fixed, disabling AGP is
+expected to strongly affect performance of GPUs that were still
+sold brand new in 2012 and disabling AGP may hide bugs that may
+be introduced after the disablement.
 
 Signed-off-by: Thomas Debesse <dev@illwieckz.net>
 ---
- drivers/gpu/drm/radeon/radeon_device.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/radeon/radeon_drv.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/gpu/drm/radeon/radeon_device.c b/drivers/gpu/drm/rad=
-eon/radeon_device.c
-index 266e3cbbd09b..b4cf4297d427 100644
---- a/drivers/gpu/drm/radeon/radeon_device.c
-+++ b/drivers/gpu/drm/radeon/radeon_device.c
-@@ -1372,8 +1372,16 @@ int radeon_device_init(struct radeon_device *rdev,=
-
- 	dma_bits =3D 40;
- 	if (rdev->flags & RADEON_IS_AGP)
- 		dma_bits =3D 32;
--	if ((rdev->flags & RADEON_IS_PCI) &&
--	    (rdev->family <=3D CHIP_RS740))
-+	/* Some platforms may accept 40 bits for the same PCI hardware
-+	 * that would requires 32 bits on other ones.
-+	 * PCI ATI Radeon HD 4350 (RV710) is known to work with 40 bits
-+	 * on computers running Intel Eaglelake E5200 CPU with 82801 PCI
-+	 * bridge while 32 bits are required to not fail r600_ring_test
-+	 * on computers running AMD K8 Athlon 3200+ CPU with K8T800Pro
-+	 * VT8237/8251 PCI bridge and computers running AMD K10 Phenom II
-+	 * X4 970 with Nvidia nForce3 250Gb PCI bridge.
-+	 */=20
-+	if (rdev->flags & RADEON_IS_PCI)
- 		dma_bits =3D 32;
- #ifdef CONFIG_PPC64
- 	if (rdev->family =3D=3D CHIP_CEDAR)
+diff --git a/drivers/gpu/drm/radeon/radeon_drv.c b/drivers/gpu/drm/radeon=
+/radeon_drv.c
+index 4cd30613fa1d..62b5069122cc 100644
+--- a/drivers/gpu/drm/radeon/radeon_drv.c
++++ b/drivers/gpu/drm/radeon/radeon_drv.c
+@@ -171,7 +171,12 @@ int radeon_no_wb;
+ int radeon_modeset =3D -1;
+ int radeon_dynclks =3D -1;
+ int radeon_r4xx_atom =3D 0;
++#ifdef __powerpc__
++/* Default to PCI on PowerPC (fdo #95017) */
+ int radeon_agpmode =3D -1;
++#else
++int radeon_agpmode =3D 0;
++#endif
+ int radeon_vram_limit =3D 0;
+ int radeon_gart_size =3D -1; /* auto */
+ int radeon_benchmarking =3D 0;
 --=20
 2.25.1
 
 
---------------97D6C3908370F44AC69552C1
+--------------3D6A9B5D22EB1D14AD70577C
 Content-Type: application/pgp-keys;
  name="OpenPGP_0xE06292933E2CA275.asc"
 Content-Transfer-Encoding: quoted-printable
@@ -373,29 +382,29 @@ P49
 =3D1br1
 -----END PGP PUBLIC KEY BLOCK-----
 
---------------97D6C3908370F44AC69552C1--
+--------------3D6A9B5D22EB1D14AD70577C--
 
---rZANjpIrx91R7XjeOmYb5IiIHbN0smzbc--
+--qia2RKnvrEvVjTMwRRYfA7F1VqPc4YzmH--
 
---rnysnyRbI3psw2MwCzLVdIK97QAdrTmhL
+--2tKqIl9hIcXdOKJS6GnPM1EvXl7KxNZbn
 Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="OpenPGP_signature"
 
 -----BEGIN PGP SIGNATURE-----
 
-wsF5BAABCAAjFiEE8xM2EoLjcOLWJ+ej4GKSkz4sonUFAl+j0z8FAwAAAAAACgkQ4GKSkz4sonUT
-zRAAqYeAkgyDje22Ln0mcg7RB6Nb9s+gIDfw48UCE754SvBs+5Y2cYw92qmUIvXVYS1iHwsYz9Ym
-+7NadsEE2UELFArarhZOTi5b6EF2Bv6jV8O9DCaAi3nxfci210E7LTdfk+QKTLDTpsxiyfoK3beq
-WarApVYImTQutl1P6vEPsAAZTeKXLWGyzncjNinNLskhdA/UmGNgIYGbDZdftZGkQ39xarAkm6Lr
-ty9XE/jidHyQVMxMClvwbmoK3+2oji/rSU0RtqsqsOLcsmAQk7wWr4xaSV9zop9L7SvqxbDjVP5d
-8b7vLI2lImsrxPzBjN//fPhEaho/ZosaVtJGfUkZtz3nIGiHWgjj/1L9haia82RuW+tvpXP3vR4R
-hH1ip2pbzSUqJQufeW+iSGg5GvCgBhEx8WVL1YjKQkPaV8qVa/hTEIzms1wggvQ6zSoavZixKR3U
-ZqV8ikde6ps1QZJf1lNiN3owcj+Pw9hNwOOiayNvXtz0jAaCOHlmENjHYZ2bu653AJL1+Ix5L8fg
-KSR4dA6Dq8bd4cY0S35nsILBYf50ywrXW6z+XxXl7M8SlJeZO7PKV7V/Nig3YDtFmSXq5aRQtPV9
-PlvgrbHQy9+i0njotgkOVwghOBc74xPAfjtaF9YCsvrvss7Xeub23/B0o958k9zKdid0p9JM8jH3
-yIo=
-=S1Bw
+wsF5BAABCAAjFiEE8xM2EoLjcOLWJ+ej4GKSkz4sonUFAl+j04QFAwAAAAAACgkQ4GKSkz4sonUG
+Vg/+PRo7MHjuoPPK7OQyRKdYbfzJv6ZgWQFZue8mlajtdQQ93ZuzXPe/yfOqL90yGF7u99fJ+UVC
+l2+vtPftVEj8MYxIALwRJ6LmkxMeFiDWeG4csRFbDnlkSBgB+XWXv1/LoDR5cItUqAfR2wGCvB/w
+vd5o4E1ccpEvr9hXNZxja2ANF9Mm4oRx6VCRbdCp9qKjkHiDaZWUylt3AiY9Wku791XlQiS2eU8n
+iQojQirY/bEUgd/0c3YhcrCGoxPTc+/gzVz1t6ipIYqbn/knuYvtEf00JqWUIv1h+NJsv7+ZN4Xk
+DVapnOeKgnfj/c2Hi7kq63NBcNxLHL3PT46fQR//4RDfefK2uZKbL7zkMpm6LJrj85RCQ4NKm4Hz
+PQ+oG29GKTQT4J/1vqO8WWjkv+8hPqIIaW4w3d8J14yciTFm0ytucczzsuMQszj6OLneFpoGhuJO
+pyssaIzVnTQmIB4tdPH9TS/hnTIz/gRHH7Q0UVXUqH8xYhltStDBu2+h/d21u24rD9NeKu9YwssG
+SgC5yfj8qj0xlclPUCO39IyeW7UEjsWi8mfh3IvuFUvXuGG+FX63CQP27w17TlQ98SVsuVawvp/x
+DFrs9ib6tFo/gmAYNBRIvqmpZmLfd7HQ4CL2Om6+oeWFk/WQA1+31DWi1mcaKtA4CQrca6uUd/Aa
+LxE=
+=XKt5
 -----END PGP SIGNATURE-----
 
---rnysnyRbI3psw2MwCzLVdIK97QAdrTmhL--
+--2tKqIl9hIcXdOKJS6GnPM1EvXl7KxNZbn--
