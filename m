@@ -2,77 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF6E42A81E0
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 16:08:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B01BA2A81E2
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 16:09:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731125AbgKEPIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 10:08:45 -0500
-Received: from mout.gmx.net ([212.227.17.21]:33005 "EHLO mout.gmx.net"
+        id S1731182AbgKEPI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 10:08:56 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:53862 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728371AbgKEPIo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 10:08:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1604588912;
-        bh=t5HOW7Hz+jDRKD1r1n54tNgALaBM9Fc2oZUe30efBQs=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=VRt6zM+oJ/zgMXhmtagWV1ZUm5+k8MEqthBCvhoAEn6ATpub158YeGJjiCIxdXPsy
-         1fE8Aq5R7QZsc0AggPAZR/85UZRsKxKcPfPQ0vlAaItN2xl/DdNcjNZZsQEsFHjMKL
-         uy99qHMgxj38uncJD9g0RuhcBrdqAJz8/S/0wTfk=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.221.148.80]) by mail.gmx.com (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MoO6C-1jzSMy3C2a-00olUQ; Thu, 05
- Nov 2020 16:08:32 +0100
-Message-ID: <76661fbdbd31368c0a06cd58296f5ec12817e33c.camel@gmx.de>
-Subject: Re: v5.8+ powersave governor breakage?
-From:   Mike Galbraith <efault@gmx.de>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linux PM <linux-pm@vger.kernel.org>
-Date:   Thu, 05 Nov 2020 16:08:30 +0100
-In-Reply-To: <2948497.iyA2Nh11HS@kreacher>
-References: <580d12716f6363d7404805fd4bc50e2d5ab459b0.camel@gmx.de>
-         <59d0b9516ce9a553b1e526c6495ac302f1f73e0d.camel@gmx.de>
-         <2948497.iyA2Nh11HS@kreacher>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.34.4 
+        id S1731050AbgKEPIy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 10:08:54 -0500
+Received: from zn.tnic (p200300ec2f0ee5009a3ef9f4dfadca8f.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:e500:9a3e:f9f4:dfad:ca8f])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id AA5111EC02C1;
+        Thu,  5 Nov 2020 16:08:52 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1604588932;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=SNONstbNvXEZ9XiIXgtxs4kO9p+En2BqYsKM95T00+c=;
+        b=NDqrJZpfZMhASoS5ddG9pJaiKrova5DbT+9vUdcT4HVdT62a1HKc63cmVZJEK1LetaazJS
+        Z7IJtRRWbe99qK9OpRzcJx24TdSK50TU0aBNPyv6s+AWmP1U3U1a1KcmhPDFoEpcajkkIZ
+        d/I01iO9UzuXSXu5GPLajxfU9NT/fIk=
+Date:   Thu, 5 Nov 2020 16:08:39 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jethro Beekman <jethro@fortanix.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com, kai.huang@intel.com,
+        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
+        luto@kernel.org, nhorman@redhat.com, npmccallum@redhat.com,
+        puiterwijk@redhat.com, rientjes@google.com, tglx@linutronix.de,
+        yaozhangx@google.com, mikko.ylinen@intel.com
+Subject: Re: [PATCH v40 09/24] x86/sgx: Add SGX page allocator functions
+Message-ID: <20201105150839.GB25636@zn.tnic>
+References: <20201104145430.300542-1-jarkko.sakkinen@linux.intel.com>
+ <20201104145430.300542-10-jarkko.sakkinen@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:fXmhav/M4bAq6royUTcAXddASTC0cpAMTpGk4olCoWhN7Ydler5
- ix7I8xvTEet1Ixk6mzPjIIvfdObjOHZYZdS4tldo0UQI40lRdN3iduoDIRH7Lvs85BB+0wh
- bcOaMzTioB0F/aBVNXC8OHqo+cVLPU0tkG6oZ0R1pZKsYB4/Enw9yyGYYtDeCfcI0aBhkL2
- TyTsyqh9stNYmaBGjAX4A==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:wNXUDZbnq9c=:AgyGj4FybcXB1qI9XwszOW
- gjwid8An91agimBEZYL/ML7g9ePydLj0pa2lWVnzKL+qszDr00OSRMvP17yGGzgjLFnaVyn9Y
- qtUoAwt3ZzhQ8+4leNRskI3R9UCf7fN8V9LpQJ0vbApfIgsDVtCTc35n5goYHkH0UoexZ9BYE
- K48yFyPtc5fKIlIDY2DQZWr3hRsYdS935zcl2yBRLsVMBiOGjfa58MAKyzlKLgZAQya0cM9oB
- ot2rSm3b6zyMrWZlTIDeZ7iYG+SZnSToeWP+LeN2Pp+tVPPwtQyoLzI5pEoSQQ9tKMfRUYIN2
- diXDlgY2AZWgBQtxRLvRVVfJLmKV78KMFRBaD5HBdBVblPoj58cSV6A/8dwziqAtieltd7ZbB
- abx6h3hU8CXKLOczxLk5i2lNf2fAqn416xnD0UuyP88xOQ9+Gd+Z6QpDLMltdUX+34W/ihE6v
- oZEeRNSgqR/vPExE4DtzayallqMD0GSgMmD9X/hzhKeUNLEYgPDV8Ly8XhL90osUAORYZzq+B
- YEjU4qCrTOqEgvZycJpglOUfxnDNbWvsLoCOqpXpGWGqgDpMBOe+xfH62WnazZgc342SXJ3dD
- jHzrBN42DMQb737PbouuhFElgefL2NmOOt6q6fqs+RpTPRNtNv16gYIxwwiGBqu4EVCa1r8Wd
- bd4JMeajBo0qnn+i2e1Br1jhwHbgfF0Ml7FXh54qwJjxmU8BEjiFkFOjXBc2/qkmEadD/JJ6W
- hyjE4iPxqiRwBCkjGP0me4qatQeT8QPDobJo7Qag5kNhPMbTvEamNNlMi6LHGVO2nnwTakwXs
- PnqQpJqoT7D0sBrcQ4jvASUKn9+2nBc4BjSc8o4PvrSmdA0DbLY/qEiPR4PFesCNJg7iVDPiy
- gl3ArhCZFNHSkykkaYeg==
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201104145430.300542-10-jarkko.sakkinen@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-11-05 at 15:31 +0100, Rafael J. Wysocki wrote:
-> On Monday, November 2, 2020 7:18:41 AM CET Mike Galbraith wrote:
->
-> > Desktop box did, it gained a working ondemand, while its previously
-> > working powersave went broke.
->
-> Most likely that's because it was handled by intel_pstate in the "active=
-" mode
-> previously, while it is now handled by it in the "passive" mode...
+On Wed, Nov 04, 2020 at 04:54:15PM +0200, Jarkko Sakkinen wrote:
+> The previous patch initialized a simple SGX page allocator.  Add functions
+> for runtime allocation and free.
+> 
+> This allocator and its algorithms are as simple as it gets.  They do a
+> linear search across all EPC sections and find the first free page.  They
+> are not NUMA aware and only hand out individual pages.  The SGX hardware
+> does not support large pages, so something more complicated like a buddy
+> allocator is unwarranted.
+> 
+> The free function (sgx_free_epc_page()) implicitly calls ENCLS[EREMOVE],
+> which returns the page to the uninitialized state.  This ensures that the
+> page is ready for use at the next allocation.
+> 
+> Acked-by: Jethro Beekman <jethro@fortanix.com>
+> Reviewed-by: Darren Kenny <darren.kenny@oracle.com>
+> Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+> ---
+>  arch/x86/kernel/cpu/sgx/main.c | 62 ++++++++++++++++++++++++++++++++++
+>  arch/x86/kernel/cpu/sgx/sgx.h  |  3 ++
+>  2 files changed, 65 insertions(+)
+> 
+> diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+> index 956055a0eff6..b9ac438a13a4 100644
+> --- a/arch/x86/kernel/cpu/sgx/main.c
+> +++ b/arch/x86/kernel/cpu/sgx/main.c
+> @@ -85,6 +85,68 @@ static bool __init sgx_page_reclaimer_init(void)
+>  	return true;
+>  }
+>  
+> +static struct sgx_epc_page *__sgx_alloc_epc_page_from_section(struct sgx_epc_section *section)
+> +{
+> +	struct sgx_epc_page *page;
+> +
+> +	if (list_empty(&section->page_list))
+> +		return NULL;
+> +
+> +	page = list_first_entry(&section->page_list, struct sgx_epc_page, list);
+> +	list_del_init(&page->list);
+> +
+> +	return page;
+> +}
+> +
+> +/**
+> + * __sgx_alloc_epc_page() - Allocate an EPC page
+> + *
+> + * Iterate through EPC sections and borrow a free EPC page to the caller. When a
+> + * page is no longer needed it must be released with sgx_free_epc_page().
+> + *
+> + * Return:
+> + *   an EPC page,
+> + *   -errno on error
+> + */
+> +struct sgx_epc_page *__sgx_alloc_epc_page(void)
+> +{
+> +	struct sgx_epc_section *section;
+> +	struct sgx_epc_page *page;
+> +	int i;
+> +
+> +	for (i = 0; i < sgx_nr_epc_sections; i++) {
+> +		section = &sgx_epc_sections[i];
+> +		spin_lock(&section->lock);
+> +		page = __sgx_alloc_epc_page_from_section(section);
+> +		spin_unlock(&section->lock);
 
-Perhaps the user interface should then nak switching to powersave as it
-used to nak switching to ondemand?
+Something for a future cleanup: you can put that logic into
+__sgx_alloc_epc_page_from_section() and simplify this one call site.
 
-	-Mike
+But not now - you can do that later or if v41 needs to be sent out...
 
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
