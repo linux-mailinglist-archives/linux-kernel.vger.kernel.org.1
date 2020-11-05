@@ -2,271 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E05482A8A37
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 23:57:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B4BA2A8A4C
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 23:59:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732372AbgKEW5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 17:57:15 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:58802 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731060AbgKEW5P (ORCPT
+        id S1732683AbgKEW7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 17:59:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39668 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732329AbgKEW6e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 17:57:15 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A5Mt2oB139132;
-        Thu, 5 Nov 2020 22:57:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- from : mime-version : to : cc : subject : references : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=qalVJtnMtA/H2B26JocLzfDr4AGkJ+v8RwgbvaxATvE=;
- b=zHS6zEAn4WEGkyUgW52oK4Dc9gOI9aUjY8s/ohukFkJ0jn7xp+Et4uKQAj//WIRAKden
- o2/k1fAW2ErgrgvVSJvmS5WXhTV6U+1baFGRS6if5XnbLZ2lIWnNtnWjF6Q31LNMyor/
- Tgd35zPdEGq1rGItjzm88Lnr3PyzDzRX7vtk6e66F/VspeXBm8LNbsbdpKFGOFq7e0CI
- 31KSoAEvLBQGskEMDiTwd2Q2zi83qcebINLY54ERkt767327rEl5ImiJCON37icS6GuQ
- NZGOitAN08HgtPcb+3WCSnD+zMpwoRHTijrCycvL3ikRCZkMaNfcRHD1xZ8iOSx8IhGH mw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 34hhw2xj1p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 05 Nov 2020 22:57:09 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A5MuY14139713;
-        Thu, 5 Nov 2020 22:57:09 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 34hw0nekj3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 05 Nov 2020 22:57:09 +0000
-Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0A5Mv8gB003944;
-        Thu, 5 Nov 2020 22:57:08 GMT
-Received: from [192.168.0.28] (/73.189.186.83)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 05 Nov 2020 14:57:07 -0800
-Message-ID: <5FA48342.4060404@oracle.com>
-Date:   Thu, 05 Nov 2020 14:57:06 -0800
-From:   si-wei liu <si-wei.liu@oracle.com>
-Organization: Oracle Corporation
-User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:24.0) Gecko/20100101 Thunderbird/24.2.0
+        Thu, 5 Nov 2020 17:58:34 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4848DC0613D2
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 14:58:32 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id p22so3147222wmg.3
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 14:58:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=z2MoG1dNocrYLMkGvti/5lGWVbZAkgu8eHdWXL51PkE=;
+        b=a1PMF0q8b3pGOBvYXofS9aaWLi9CHmO6TYIcj+L84FKVLDxFytw/dUeqAMox4TI5r/
+         5ryKWzrHWoshZKyHx8h33Hyy84T2qta8zjWk6hZ84b6NvoptnHxk/OoO1ldtQtF3VVCB
+         U3Fi/zyOesG1TJqcjUCQV6nlTQp8Jzn6p3ZbQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=z2MoG1dNocrYLMkGvti/5lGWVbZAkgu8eHdWXL51PkE=;
+        b=T+niuLCab85F3dSzAy3iuB6KCgS+aFFOjhHVc+KSZpXcPih4zAO0Zs1UqCSBKZ8DVp
+         lhm1NuZLh/0g/ZbvV/XlYV/XNVlquxYkuSP6xfdP+rEzpXHLDdwAGhX0HJ/IhuCApElv
+         TqNYt3SSGLlRXkqyCohTCZMd/fbaTbg0WK61umicpfmJwZyKPILIDYt1opzX+DClCdPx
+         PdGywXCoHKwQST9FgnNXBG/qYG0G1e4Q51CWTYK5+r0Gg5eGjAaJwgbtwLP9p3uFZi+v
+         FSIqR4d5LP8EhtQ++9UfgENl9NtuBNJL9v9U82Hq9F0TXSuoDDJnFTHW5YAAf0ZfmAhD
+         UplA==
+X-Gm-Message-State: AOAM5302wPzZBtYJ6vIIrZlwRDPy/ZbQXfpq7ttaZmp0HgrtlTC0ON1D
+        rsPwP9nS6LGcnbst5mRD6JyUeDZBVXp4/+JQ
+X-Google-Smtp-Source: ABdhPJzE+TyuSRNnF4lzzS++vhH/Sgrw4tMf9yO+PESrUJCOPHFOoUuxq8FLHIqD2Rei3PCZhs7ZHg==
+X-Received: by 2002:a1c:ba0b:: with SMTP id k11mr4839465wmf.37.1604617110689;
+        Thu, 05 Nov 2020 14:58:30 -0800 (PST)
+Received: from kpsingh.c.googlers.com.com (203.75.199.104.bc.googleusercontent.com. [104.199.75.203])
+        by smtp.gmail.com with ESMTPSA id f19sm3977366wml.21.2020.11.05.14.58.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Nov 2020 14:58:29 -0800 (PST)
+From:   KP Singh <kpsingh@chromium.org>
+To:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Paul Turner <pjt@google.com>,
+        Jann Horn <jannh@google.com>, Hao Luo <haoluo@google.com>
+Subject: [PATCH bpf-next v5 0/9] Implement task_local_storage
+Date:   Thu,  5 Nov 2020 22:58:18 +0000
+Message-Id: <20201105225827.2619773-1-kpsingh@chromium.org>
+X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
 MIME-Version: 1.0
-To:     Jason Wang <jasowang@redhat.com>, mst@redhat.com,
-        lingshan.zhu@intel.com
-CC:     joao.m.martins@oracle.com, boris.ostrovsky@oracle.com,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v2] vhost-vdpa: fix page pinning leakage in error path
- (rework)
-References: <1604532796-12757-1-git-send-email-si-wei.liu@oracle.com> <dcbe4f3e-42f3-d245-9ee4-b17977ad27a5@redhat.com>
-In-Reply-To: <dcbe4f3e-42f3-d245-9ee4-b17977ad27a5@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9796 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 adultscore=0 bulkscore=0
- mlxscore=0 suspectscore=2 spamscore=0 mlxlogscore=999 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011050148
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9796 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0 mlxscore=0
- suspectscore=2 clxscore=1015 priorityscore=1501 impostorscore=0
- spamscore=0 lowpriorityscore=0 mlxlogscore=999 phishscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011050148
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: KP Singh <kpsingh@google.com>
 
-On 11/4/2020 7:26 PM, Jason Wang wrote:
->
-> On 2020/11/5 上午7:33, Si-Wei Liu wrote:
->> Pinned pages are not properly accounted particularly when
->> mapping error occurs on IOTLB update. Clean up dangling
->> pinned pages for the error path.
->>
->> The memory usage for bookkeeping pinned pages is reverted
->> to what it was before: only one single free page is needed.
->> This helps reduce the host memory demand for VM with a large
->> amount of memory, or in the situation where host is running
->> short of free memory.
->>
->> Fixes: 4c8cf31885f6 ("vhost: introduce vDPA-based backend")
->> Signed-off-by: Si-Wei Liu <si-wei.liu@oracle.com>
->> ---
->> Changes in v2:
->> - Drop the reversion patch
->> - Fix unhandled page leak towards the end of page_list
->>
->>   drivers/vhost/vdpa.c | 79 
->> ++++++++++++++++++++++++++++++++++++++++------------
->>   1 file changed, 61 insertions(+), 18 deletions(-)
->>
->> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
->> index b6d9016..e112854 100644
->> --- a/drivers/vhost/vdpa.c
->> +++ b/drivers/vhost/vdpa.c
->> @@ -560,6 +560,8 @@ static int vhost_vdpa_map(struct vhost_vdpa *v,
->>         if (r)
->>           vhost_iotlb_del_range(dev->iotlb, iova, iova + size - 1);
->> +    else
->> +        atomic64_add(size >> PAGE_SHIFT, &dev->mm->pinned_vm);
->>         return r;
->>   }
->> @@ -591,14 +593,16 @@ static int 
->> vhost_vdpa_process_iotlb_update(struct vhost_vdpa *v,
->>       unsigned long list_size = PAGE_SIZE / sizeof(struct page *);
->>       unsigned int gup_flags = FOLL_LONGTERM;
->>       unsigned long npages, cur_base, map_pfn, last_pfn = 0;
->> -    unsigned long locked, lock_limit, pinned, i;
->> +    unsigned long lock_limit, sz2pin, nchunks, i;
->>       u64 iova = msg->iova;
->> +    long pinned;
->>       int ret = 0;
->>         if (vhost_iotlb_itree_first(iotlb, msg->iova,
->>                       msg->iova + msg->size - 1))
->>           return -EEXIST;
->>   +    /* Limit the use of memory for bookkeeping */
->>       page_list = (struct page **) __get_free_page(GFP_KERNEL);
->>       if (!page_list)
->>           return -ENOMEM;
->> @@ -607,52 +611,75 @@ static int 
->> vhost_vdpa_process_iotlb_update(struct vhost_vdpa *v,
->>           gup_flags |= FOLL_WRITE;
->>         npages = PAGE_ALIGN(msg->size + (iova & ~PAGE_MASK)) >> 
->> PAGE_SHIFT;
->> -    if (!npages)
->> -        return -EINVAL;
->> +    if (!npages) {
->> +        ret = -EINVAL;
->> +        goto free;
->> +    }
->>         mmap_read_lock(dev->mm);
->>   -    locked = atomic64_add_return(npages, &dev->mm->pinned_vm);
->>       lock_limit = rlimit(RLIMIT_MEMLOCK) >> PAGE_SHIFT;
->> -
->> -    if (locked > lock_limit) {
->> +    if (npages + atomic64_read(&dev->mm->pinned_vm) > lock_limit) {
->>           ret = -ENOMEM;
->> -        goto out;
->> +        goto unlock;
->>       }
->>         cur_base = msg->uaddr & PAGE_MASK;
->>       iova &= PAGE_MASK;
->> +    nchunks = 0;
->>         while (npages) {
->> -        pinned = min_t(unsigned long, npages, list_size);
->> -        ret = pin_user_pages(cur_base, pinned,
->> -                     gup_flags, page_list, NULL);
->> -        if (ret != pinned)
->> +        sz2pin = min_t(unsigned long, npages, list_size);
->> +        pinned = pin_user_pages(cur_base, sz2pin,
->> +                    gup_flags, page_list, NULL);
->> +        if (sz2pin != pinned) {
->> +            if (pinned < 0) {
->> +                ret = pinned;
->> +            } else {
->> +                unpin_user_pages(page_list, pinned);
->> +                ret = -ENOMEM;
->> +            }
->>               goto out;
->> +        }
->> +        nchunks++;
->>             if (!last_pfn)
->>               map_pfn = page_to_pfn(page_list[0]);
->>   -        for (i = 0; i < ret; i++) {
->> +        for (i = 0; i < pinned; i++) {
->>               unsigned long this_pfn = page_to_pfn(page_list[i]);
->>               u64 csize;
->>                 if (last_pfn && (this_pfn != last_pfn + 1)) {
->>                   /* Pin a contiguous chunk of memory */
->>                   csize = (last_pfn - map_pfn + 1) << PAGE_SHIFT;
->> -                if (vhost_vdpa_map(v, iova, csize,
->> -                           map_pfn << PAGE_SHIFT,
->> -                           msg->perm))
->> +                ret = vhost_vdpa_map(v, iova, csize,
->> +                             map_pfn << PAGE_SHIFT,
->> +                             msg->perm);
->> +                if (ret) {
->> +                    /*
->> +                     * Unpin the pages that are left unmapped
->> +                     * from this point on in the current
->> +                     * page_list. The remaining outstanding
->> +                     * ones which may stride across several
->> +                     * chunks will be covered in the common
->> +                     * error path subsequently.
->> +                     */
->> +                    unpin_user_pages(&page_list[i],
->> +                             pinned - i);
->
->
-> Can we simply do last_pfn = this_pfn here?
-Nope. They are not contiguous segments of memory. Noted the conditional 
-(this_pfn != last_pfn + 1) being held here.
+# v4 -> v5
 
->
->
->>                       goto out;
->> +                }
->> +
->>                   map_pfn = this_pfn;
->>                   iova += csize;
->> +                nchunks = 0;
->>               }
->>                 last_pfn = this_pfn;
->>           }
->>   -        cur_base += ret << PAGE_SHIFT;
->> -        npages -= ret;
->> +        cur_base += pinned << PAGE_SHIFT;
->> +        npages -= pinned;
->>       }
->>         /* Pin the rest chunk */
->> @@ -660,10 +687,26 @@ static int 
->> vhost_vdpa_process_iotlb_update(struct vhost_vdpa *v,
->>                    map_pfn << PAGE_SHIFT, msg->perm);
->>   out:
->>       if (ret) {
->> +        if (nchunks && last_pfn) {
->
->
-> Any reason for checking last_pfn here?
->
-> Note that we did:
->
-> +        nchunks++;
->
->          if (!last_pfn)
->              map_pfn = page_to_pfn(page_list[0]);
-It's for explicit coding to make sure this common error path can be 
-reused no matter if last_pfn has a sane value assigned or not. I can 
-change it to an implicit WARN_ON() if need be.
+- Fixes to selftests as suggested by Martin.
+- Added Martin's acks.
 
-Thanks,
--Siwei
+# v3 -> v4
 
->
->
-> Thanks
->
->
->> +            unsigned long pfn;
->> +
->> +            /*
->> +             * Unpin the outstanding pages which are yet to be
->> +             * mapped but haven't due to vdpa_map() or
->> +             * pin_user_pages() failure.
->> +             *
->> +             * Mapped pages are accounted in vdpa_map(), hence
->> +             * the corresponding unpinning will be handled by
->> +             * vdpa_unmap().
->> +             */
->> +            for (pfn = map_pfn; pfn <= last_pfn; pfn++)
->> +                unpin_user_page(pfn_to_page(pfn));
->> +        }
->>           vhost_vdpa_unmap(v, msg->iova, msg->size);
->> -        atomic64_sub(npages, &dev->mm->pinned_vm);
->>       }
->> +unlock:
->>       mmap_read_unlock(dev->mm);
->> +free:
->>       free_page((unsigned long)page_list);
->>       return ret;
->>   }
->
+- Move the patch that exposes spin lock helpers to LSM programs as the
+  first patch as some of the changes in the implementation are actually
+  for spin locks.
+- Clarify the comment in the bpf_task_storage_{get, delete} helper as
+  discussed with Martin.
+- Added Martin's ack and rebased.
+
+# v2 -> v3
+
+- Added bpf_spin_locks to the selftests for local storage, found that
+  these are not available for LSM programs.
+- Made spin lock helpers available for LSM programs (except sleepable
+  programs which need more work).
+- Minor fixes for includes and added short commit messages for patches
+  that were split up for libbpf and bpftool.
+- Added Song's acks.
+
+# v1 -> v2
+
+- Updated the refcounting for task_struct and simplified conversion
+  of fd -> struct pid.
+- Some fixes suggested by Martin and Andrii, notably:
+   * long return type for the bpf_task_storage_delete helper (update
+     for bpf_inode_storage_delete will be sent separately).
+   * Remove extra nullness check to task_storage_ptr in map syscall
+     ops.
+   * Changed the argument signature of the BPF helpers to use
+     task_struct pointer in uapi headers.
+   * Remove unnecessary verifier logic for the bpf_get_current_task_btf
+     helper.
+   * Split the changes for bpftool and libbpf.
+- Exercised syscall operations for local storage (kept a simpler verison
+  in test_local_storage.c, the eventual goal will be to update
+  sk_storage_map.c for all local storage types).
+- Formatting fixes + Rebase.
+
+We already have socket and inode local storage since [1]
+
+This patch series:
+
+* Implements bpf_local_storage for task_struct.
+* Implements the bpf_get_current_task_btf helper which returns a BTF
+  pointer to the current task. Not only is this generally cleaner
+  (reading from the task_struct currently requires BPF_CORE_READ), it
+  also allows the BTF pointer to be used in task_local_storage helpers.
+* In order to implement this helper, a RET_PTR_TO_BTF_ID is introduced
+  which works similar to RET_PTR_TO_BTF_ID_OR_NULL but does not require
+  a nullness check.
+* Implements a detection in selftests which uses the
+  task local storage to deny a running executable from unlinking itself.
+
+[1]: https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/commit/?id=f836a56e84ffc9f1a1cd73f77e10404ca46a4616
+
+
+KP Singh (9):
+  bpf: Allow LSM programs to use bpf spin locks
+  bpf: Implement task local storage
+  libbpf: Add support for task local storage
+  bpftool: Add support for task local storage
+  bpf: Implement get_current_task_btf and RET_PTR_TO_BTF_ID
+  bpf: Fix tests for local_storage
+  bpf: Update selftests for local_storage to use vmlinux.h
+  bpf: Add tests for task_local_storage
+  bpf: Exercise syscall operations for inode and sk storage
+
+ include/linux/bpf.h                           |   1 +
+ include/linux/bpf_lsm.h                       |  23 ++
+ include/linux/bpf_types.h                     |   1 +
+ include/uapi/linux/bpf.h                      |  48 +++
+ kernel/bpf/Makefile                           |   1 +
+ kernel/bpf/bpf_lsm.c                          |   8 +
+ kernel/bpf/bpf_task_storage.c                 | 315 ++++++++++++++++++
+ kernel/bpf/syscall.c                          |   3 +-
+ kernel/bpf/verifier.c                         |  37 +-
+ kernel/trace/bpf_trace.c                      |  16 +
+ security/bpf/hooks.c                          |   2 +
+ .../bpf/bpftool/Documentation/bpftool-map.rst |   3 +-
+ tools/bpf/bpftool/bash-completion/bpftool     |   2 +-
+ tools/bpf/bpftool/map.c                       |   4 +-
+ tools/include/uapi/linux/bpf.h                |  48 +++
+ tools/lib/bpf/libbpf_probes.c                 |   1 +
+ .../bpf/prog_tests/test_local_storage.c       | 195 ++++++++++-
+ .../selftests/bpf/progs/local_storage.c       | 103 ++++--
+ 18 files changed, 752 insertions(+), 59 deletions(-)
+ create mode 100644 kernel/bpf/bpf_task_storage.c
+
+-- 
+2.29.1.341.ge80a0c044ae-goog
 
