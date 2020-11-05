@@ -2,157 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8489C2A80D0
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 15:26:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 109D42A80D3
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 15:26:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731037AbgKEO0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 09:26:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44002 "EHLO
+        id S1731054AbgKEO0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 09:26:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730465AbgKEO0I (ORCPT
+        with ESMTP id S1729113AbgKEO0Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 09:26:08 -0500
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AE5AC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 06:26:06 -0800 (PST)
-Received: by mail-lj1-x243.google.com with SMTP id p15so1763530ljj.8
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 06:26:06 -0800 (PST)
+        Thu, 5 Nov 2020 09:26:25 -0500
+Received: from mail-oo1-xc44.google.com (mail-oo1-xc44.google.com [IPv6:2607:f8b0:4864:20::c44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16900C0613CF;
+        Thu,  5 Nov 2020 06:26:25 -0800 (PST)
+Received: by mail-oo1-xc44.google.com with SMTP id l26so461738oop.9;
+        Thu, 05 Nov 2020 06:26:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nQ7ga1nkChbgCNcp4Ysi78tNBZumkjAPVt4V0by2Rm8=;
-        b=pptPNx+rPKH+x8ujYpmcYsyk+OSaKWXu77RvkAt9PkUW9Em/bfITai0EeR5btFlbga
-         H9I7ln/IHvqioPTlV6w9QmZAdFToDVYMsCVCLxVkS8HdWZaKNUxU7DRjvJvNRztT7CnC
-         G7aySamX2FtDLHidKTRgYHvzlr9Hmp1s+GDA33Um8IxwSlWeUc0pv1aP1BxKAPo6ox+H
-         MlCp2OTmbeeaCfB5QfrJ3j/ST6o75MEjSUZxYHfb7CiXNN8ZfLyNHII0RFnZ3ksB9Wst
-         sGuyuVtlmXbjQ4XAh0MbwV1ZlccZ7DTvP2EFCrpuxlaO6BXe4AQQ7DUQDk8SlphH8C5+
-         GeZg==
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=fnUc98TZMoYnFy4oELrU7aOcqJiQ3OcwocODgGvI4RI=;
+        b=kbBJSaYORASAn7QfCPa0U1B4KmyJPGfa1aOhqZ0fU4iJAadH1b0KoCtg+NH02B9pCs
+         aXqqNv8vONMBiV/lh2yay/lGgDivCDN9ivVeSaBmWXVMWVTf1ncq9sai61XpjQbDUPdZ
+         AbCROf5aLi5mdu3BOy5nGvEQ1Ii7YnVZr3A0WXcWhaHNtuIs1q1PZbNzCxHVFloUeB+S
+         OOOOycxBMLI4S3Whcq5o0fTIp9GnTW/PTqP2ZogCPHtCdBo2bWZewoNHmS+GoZ8k/2PA
+         68iwWDhELxUvunALEGjqkI3kXh0a1jo2FEXzIeZJ3RMhQnRtiz4z746zaqjXGuodUKHs
+         QVpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nQ7ga1nkChbgCNcp4Ysi78tNBZumkjAPVt4V0by2Rm8=;
-        b=GLO83+/3VoMJJEvA4k6+mc5qhgQ9Y/sDqiQd9g+InV/lLiNqe5lCEmPoLHUPS4Y6Ji
-         tzkocHbKSV4ggxLzwL22oxSI3UXvFUZgoemaz0AdEeoIZvBMM5ATONtN61jn6BqwBp5/
-         itql49yINALocsRrBQd60ZN2/fmOgMatym1w2iFyEh+AOffC/y4f4nlbU54HFUQZt+Ps
-         MK1TIMFjRqIWmziEhRnxga4BgDLcbWiMvB4/Potpq948meR+I+RFZduGdhaFP/oyPPCk
-         6/Pi87biU2gncFTh7Qo5+W1VEqWRZGgxZKfGRIZD/vIDnW5c2/YTDBhG8Z9wE5WL9SEW
-         qn2g==
-X-Gm-Message-State: AOAM531S1OIdOOJKeO+P6vdYqJ57vZQO2gwMJTJB/SxY79e8r2zlxKr7
-        1monwCI3gjLOhIrZFycMm/fSNl2AkNx28FKPYtDkDfh0e9c=
-X-Google-Smtp-Source: ABdhPJxojzyjuq7Nj7ikSubvMrtczulnP1sYUG9Acvch7VPEunsyTvFdj2dDMWpVKYNODrC4v0vcXiLI77RWHXj2jNE=
-X-Received: by 2002:a2e:9583:: with SMTP id w3mr1042305ljh.25.1604586365033;
- Thu, 05 Nov 2020 06:26:05 -0800 (PST)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=fnUc98TZMoYnFy4oELrU7aOcqJiQ3OcwocODgGvI4RI=;
+        b=mFQ9oHL9Rf4h2Q6mI3rCksnWHkqJy89GI3daB1NjrZM5YCWUa1Xx+Yfjx8NhQxXGmB
+         WIdXZmTRRmyeskmUbz2QtekDvpu05DAJuBQmnGVPnXhHs9i4m7ge4cJ1TXybuz6fpwe/
+         ACQZUnmCxCwcNr5arZKxdPh+3+WNANBAziaEhe+j/KvJyvi/Ko6c7o4XzEzzI5Mg8AJk
+         pe0MT7M3D3qBJL7HNehn5kKNbSmKns6oL9OtCwFj1P8c/hf7bmQnUOzdgeIBCb1V9SMO
+         YsuUEcncHTeExRxZfsXAGZxbQwrJ9eGk+z0rr9608Pfva+xt+0krihL06l+VuA5so9Qw
+         Y7sg==
+X-Gm-Message-State: AOAM53316gRLH8RmTPBIZQAwGxst+4b0EeZ/w5WC6+GhSCOnI9EdvjzY
+        +vAzD3xKXDJX2Q9uWecL8BE=
+X-Google-Smtp-Source: ABdhPJyXZSMqjaoO0cOGxc8x1tuw3aaVlBjZD55WXlo4ngZLKeLRQoPKQWQlQ3dxsPBki6ind9j6SA==
+X-Received: by 2002:a4a:b209:: with SMTP id d9mr1952292ooo.70.1604586383027;
+        Thu, 05 Nov 2020 06:26:23 -0800 (PST)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id t25sm351860otj.13.2020.11.05.06.26.22
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 05 Nov 2020 06:26:22 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Thu, 5 Nov 2020 06:26:21 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Wang Wensheng <wangwensheng4@huawei.com>
+Cc:     wim@linux-watchdog.org, linux-watchdog@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rui.xiang@huawei.com,
+        guohanjun@huawei.com
+Subject: Re: [PATCH -next v3 1/2] watchdog: Fix potential dereferencing of
+ null pointer
+Message-ID: <20201105142621.GB1389@roeck-us.net>
+References: <20201105123848.93735-1-wangwensheng4@huawei.com>
 MIME-Version: 1.0
-References: <20201102120115.29993-1-nicola.mazzucato@arm.com>
- <20201103101840.yrgwmcjrnjn7n5q6@vireshk-i7> <87558fa9-a4c6-38c9-bcc5-f736c0229f56@arm.com>
-In-Reply-To: <87558fa9-a4c6-38c9-bcc5-f736c0229f56@arm.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Thu, 5 Nov 2020 15:25:53 +0100
-Message-ID: <CAKfTPtDvDqHjSFCmjc_D_8Tx0kosBneDxmDZRpG6XkgAnWE3nw@mail.gmail.com>
-Subject: Re: [PATCH v3 0/3] CPUFreq: Add support for cpu performance dependencies
-To:     Nicola Mazzucato <nicola.mazzucato@arm.com>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        LAK <linux-arm-kernel@lists.infradead.org>,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Sudeep Holla <sudeep.holla@arm.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Chris Redpath <chris.redpath@arm.com>,
-        Ionela Voinescu <Ionela.Voinescu@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201105123848.93735-1-wangwensheng4@huawei.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 4 Nov 2020 at 19:02, Nicola Mazzucato <nicola.mazzucato@arm.com> wrote:
->
-> Hi Viresh, thanks for looking into this.
->
-> On 11/3/20 10:18 AM, Viresh Kumar wrote:
-> > On 02-11-20, 12:01, Nicola Mazzucato wrote:
-> >> Hi All,
-> >>
-> >> In this V3 posting I have replaced the new dt-binding with minor changes/
-> >> improvements for opp (since we are now using opp tables instead).
-> >> The RFC still stands on how to make this info available to sw consumers.
-> >>
-> >> In the RFC, I am proposing a simple addition of a performance dependencies
-> >> cpumask in CPUFreq core and an example of how drivers and consumers would
-> >> make use of it.
-> >> I also propose an alternative approach, which does not require changes in
-> >> CPUFreq core, but - possibly - in all the consumers.
-> >>
-> >> This is to support systems where exposed cpu performance controls are more
-> >> fine-grained that the platform's ability to scale cpus independently.
-> >
-> > I was talking to Vincent about what you are doing here and we got a
-> > bit confused and so here are few questions that we had:
-> >
-> > - Based on my previous understanding, you don't want software
-> >   coordination of frequencies (which is done by cpufreq today), but
-> >   want the hardware to do that and so you want per-cpu cpufreq
-> >   policies.
->
-> Correct. And this has been done for quite some time in some platforms.
->
-> >
-> > - What's the real benefit of hardware coordination ? Want to make sure
-> >   I fully understand that.
->
-> The hardware coordination that is coming out by having per-cpu cpufreq policies
-> is not new, and works just fine in most of the systems.
->
-> The benefit of having per-cpu controls is that the firmware will take care of
-> the performance of the entire system. It is purely a delegation to firmware for
-> the performance optimizations.
->
-> >
-> > - Because of hardware co-ordination of otherwise co-ordinated CPUs,
-> >   few things break. Thermal and EAS are some of the examples and so
-> >   you are trying to fix them here by proving them the missing
-> >   information again.
->
-> Correct. And for this I have proposed two ways.
->
-> >
-> > - One other thing that breaks with this is freq-invariance in the
-> >   scheduler, as the scheduler won't see the real frequencies the
-> >   various CPUs are running at. Most of the hardware we have today
-> >   doesn't have counters, like AMUs, not sure if all future ones based
-> >   on SCMI will have that too, so how are they gong to be fixed ?
-> >
->
-> Correct. freq-invariance without counters is trying to do its best based on the
-> information it has available. It definitely relies on the knowledge of the v/f
-> domains to work at its best so I think in the case of per-cpu it will follow the
-> same approach as others being affected (EAS, thermal).
+On Thu, Nov 05, 2020 at 12:38:47PM +0000, Wang Wensheng wrote:
+> A reboot notifier, which stops the WDT by calling the stop hook without
+> any check, would be registered when we set WDOG_STOP_ON_REBOOT flag.
+> 
+> Howerer we allow the WDT driver to omit the stop hook since commit
+> "d0684c8a93549" ("watchdog: Make stop function optional") and provide
+> a module parameter for user that controls the WDOG_STOP_ON_REBOOT flag
+> in commit 9232c80659e94 ("watchdog: Add stop_on_reboot parameter to
+> control reboot policy"). Together that commits make user potential to
+> insert a watchdog driver that don't provide a stop hook but with the
+> stop_on_reboot parameter set, then dereferencing of null pointer occurs
+> on system reboot.
+> 
+> Check the stop hook before registering the reboot notifier to fix the
+> issue.
+> 
+> Fixes: d0684c8a9354 ("watchdog: Make stop function optional")
+> Signed-off-by: Wang Wensheng <wangwensheng4@huawei.com>
+> ---
+>  drivers/watchdog/watchdog_core.c | 9 ++++++++-
+>  1 file changed, 8 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/watchdog/watchdog_core.c b/drivers/watchdog/watchdog_core.c
+> index 423844757812..945ab38b14b8 100644
+> --- a/drivers/watchdog/watchdog_core.c
+> +++ b/drivers/watchdog/watchdog_core.c
+> @@ -267,8 +267,15 @@ static int __watchdog_register_device(struct watchdog_device *wdd)
+>  	}
+>  
+>  	if (test_bit(WDOG_STOP_ON_REBOOT, &wdd->status)) {
+> -		wdd->reboot_nb.notifier_call = watchdog_reboot_notifier;
+> +		if (!wdd->ops->stop) {
+> +			pr_err("watchdog%d: Cannot support stop_on_reboot\n",
+> +				wdd->id);
+> +			watchdog_dev_unregister(wdd);
+> +			ida_simple_remove(&watchdog_ida, id);
+> +			return -EINVAL;
+> +		}
 
-As frequency invariance has same problem as EAS and Thermal it would
-be good to see the solution as part of this proposal like EAS and
-Thermal
+The problem with this is that setting the "stop_on_reboot" module parameter
+would now prevent the watchdog from being loaded, which isn't really
+desirable and might go unnoticed. I think the initial check should be
+above, with the "Mandatory operations" check, and
+	if (stop_on_reboot != -1) {
+should be extended to
+	if (stop_on_reboot != -1 && wdd->ops->stop) {
 
->
-> >   And if we even have to fix this (freq invariance), what's hardware
-> >   coordination giving us that makes all this worth it ?
->
-> I suppose this is more a generic question for all the platforms running with h/w
-> coordination, but for our case is that the f/w will take care of the performance
-> optimizations for us :)
->
-> >
-> > Sorry about the long list :)
->
-> No problem at all. Thank you for your time on this and I hope I have made bits
-> clearer.
->
-> Nicola
->
-> >
+or possibly more fancy:
+
+	if (stop_on_reboot != -1) {
+		if (stop_on_reboot) {
+			if (!wdd->ops->stop)
+				pr_warn("watchdog%d: stop_on_reboot not supported\n", wdd->id);
+			else
+				set_bit(WDOG_STOP_ON_REBOOT, &wdd->status);
+		} else {
+			clear_bit(WDOG_STOP_ON_REBOOT, &wdd->status);
+		}
+	}
+
+Thanks,
+Guenter
+
+>  
+> +		wdd->reboot_nb.notifier_call = watchdog_reboot_notifier;
+>  		ret = register_reboot_notifier(&wdd->reboot_nb);
+>  		if (ret) {
+>  			pr_err("watchdog%d: Cannot register reboot notifier (%d)\n",
+> -- 
+> 2.25.0
+> 
