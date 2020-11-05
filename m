@@ -2,78 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A34852A89F0
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 23:35:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76A8E2A8A00
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 23:39:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731234AbgKEWf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 17:35:28 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:53469 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726801AbgKEWf1 (ORCPT
+        id S1732235AbgKEWjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 17:39:53 -0500
+Received: from mail-ot1-f42.google.com ([209.85.210.42]:43680 "EHLO
+        mail-ot1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731694AbgKEWjx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 17:35:27 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-238-Rmdo_dXeOyK3cySTP3tbsg-1; Thu, 05 Nov 2020 22:35:23 +0000
-X-MC-Unique: Rmdo_dXeOyK3cySTP3tbsg-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Thu, 5 Nov 2020 22:35:23 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Thu, 5 Nov 2020 22:35:23 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Xie He' <xie.he.0141@gmail.com>
-CC:     Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: RE: [PATCH net-next] net: x25_asy: Delete the x25_asy driver
-Thread-Topic: [PATCH net-next] net: x25_asy: Delete the x25_asy driver
-Thread-Index: AQHWs0YkvDVQKZzs2ECZM+crj0xbk6m5Pz0wgACvvICAADEhsA==
-Date:   Thu, 5 Nov 2020 22:35:23 +0000
-Message-ID: <56513ba35a864fce8e27c550b55766a1@AcuMS.aculab.com>
-References: <20201105073434.429307-1-xie.he.0141@gmail.com>
- <1d7f669ba4e444f1b35184264e5da601@AcuMS.aculab.com>
- <CAJht_EM6rXw2Y6NOw9npqUx-MSscwaZ54q7KM4V2ip_CCQsdeg@mail.gmail.com>
-In-Reply-To: <CAJht_EM6rXw2Y6NOw9npqUx-MSscwaZ54q7KM4V2ip_CCQsdeg@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Thu, 5 Nov 2020 17:39:53 -0500
+Received: by mail-ot1-f42.google.com with SMTP id y22so2975695oti.10;
+        Thu, 05 Nov 2020 14:39:52 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=l33mjh6Y58sdX7p0bIXXnh8X4f5mWO8LY9kaS0QVJ4A=;
+        b=HAIAXnYDTRlzC4F32MR8xWnVa3x5nLYSwbhJiDHTlWHaw7UOn2Sxj3TrbGxFKSS1pQ
+         lFjeLzbm8TADlbO3LtTdDqoLa17tnhtF3ehuUsWEb2lIjef7vqaB2015gdXtZZzlwpj4
+         U/Kp4XDSB4I1fwcBUWc/8VGXvHFSZjsn/Rd4XGGfCYdlR6lELzep21dXRjr7IeuhmDCX
+         5ooAot2uBShQBQZY55Ol5xNV4faVx0M8Q935SyXwv+Xqxchl7NOCjL1QgRI9KsBRvGVY
+         unx9mzh/JuEPpPQ8+PhxwetSEdXwu2Bf8uShkcjbF3eiunb18HsjJXHizOcA8D5THE8c
+         ot8w==
+X-Gm-Message-State: AOAM530fRtDJssuEB6x8N6RS0XuYuy3l9VOohPXUayxLLs2tefQwEGNj
+        3XBdnVSxdRFvLvwz7SxWoRx1ANaJ1CM7
+X-Google-Smtp-Source: ABdhPJzDd/toUHUVegfNxYe5pmvS84hMCVzJYSgsN1/BIcuceQS9+OMgPmZABerM5vzQWRnLkG768w==
+X-Received: by 2002:a9d:17c5:: with SMTP id j63mr3430400otj.9.1604615992062;
+        Thu, 05 Nov 2020 14:39:52 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id x190sm693150oia.35.2020.11.05.14.39.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Nov 2020 14:39:50 -0800 (PST)
+Received: (nullmailer pid 1931122 invoked by uid 1000);
+        Thu, 05 Nov 2020 22:39:49 -0000
+Date:   Thu, 5 Nov 2020 16:39:49 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>
+Cc:     broonie@kernel.org, joel@jms.id.au, andrew@aj.id.au, clg@kaod.org,
+        bbrezillon@kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-aspeed@lists.ozlabs.org,
+        linux-spi@vger.kernel.org, BMC-SW@aspeedtech.com
+Subject: Re: [v3 1/4] dt-bindings: spi: Add binding file for ASPEED FMC/SPI
+ memory controller
+Message-ID: <20201105223949.GA1927504@bogus>
+References: <20201105120331.9853-1-chin-ting_kuo@aspeedtech.com>
+ <20201105120331.9853-2-chin-ting_kuo@aspeedtech.com>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201105120331.9853-2-chin-ting_kuo@aspeedtech.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogWGllIEhlDQo+IFNlbnQ6IDA1IE5vdmVtYmVyIDIwMjAgMTk6MzUNCj4gDQo+IE9uIFRo
-dSwgTm92IDUsIDIwMjAgYXQgMToxMCBBTSBEYXZpZCBMYWlnaHQgPERhdmlkLkxhaWdodEBhY3Vs
-YWIuY29tPiB3cm90ZToNCj4gPg0KPiA+ID4gVGhpcyBkcml2ZXIgdHJhbnNwb3J0cyBMQVBCIChY
-LjI1IGxpbmsgbGF5ZXIpIGZyYW1lcyBvdmVyIFRUWSBsaW5rcy4NCj4gPg0KPiA+IEkgZG9uJ3Qg
-cmVtZW1iZXIgYW55IHJlcXVlc3RzIHRvIHJ1biBMQVBCIG92ZXIgYW55dGhpbmcgb3RoZXINCj4g
-PiB0aGFuIHN5bmNocm9ub3VzIGxpbmtzIHdoZW4gSSB3YXMgd3JpdGluZyBMQVBCIGltcGxlbWVu
-dGF0aW9uKHMpDQo+ID4gYmFjayBpbiB0aGUgbWlkIDE5ODAncy4NCj4gPg0KPiA+IElmIHlvdSBu
-ZWVkIHRvIHJ1biAnY29tbXMgb3ZlciBhc3luYyB1YXJ0IGxpbmtzJyB0aGVyZQ0KPiA+IGFyZSBi
-ZXR0ZXIgb3B0aW9ucy4NCj4gPg0KPiA+IEkgd29uZGVyIHdoYXQgdGhlIGFjdHVhbCB1c2UgY2Fz
-ZSB3YXM/DQo+IA0KPiBJIHRoaW5rIHRoaXMgZHJpdmVyIHdhcyBqdXN0IGZvciBleHBlcmltZW50
-YWwgcHVycG9zZXMuIEFjY29yZGluZyB0bw0KPiB0aGUgYXV0aG9yJ3MgY29tbWVudCBhdCB0aGUg
-YmVnaW5uaW5nIG9mIHgyNV9hc3kuYywgdGhpcyBkcml2ZXIgZGlkbid0DQo+IGltcGxlbWVudCBG
-Q1MgKGZyYW1lIGNoZWNrIHNlcXVlbmNlKSwgd2hpY2ggd2FzIHJlcXVpcmVkIGJ5IENDSVRUJ3MN
-Cj4gc3RhbmRhcmQuIFNvIEkgdGhpbmsgdGhpcyBkcml2ZXIgd2FzIG5vdCBzdWl0YWJsZSBmb3Ig
-cmVhbC13b3JsZCB1c2UNCj4gYW55d2F5Lg0KDQpZZXMsIHlvdSBjb3VsZCBnZXQgdHJhbnNwYXJl
-bmN5IGJ5IHNlbmRpbmcgMHg3ZiBieXRlcyB0d2ljZQ0KKGEgYml0IGxpa2UgYmlzeW5jKSBidXQg
-eW91J2Qgd2FudCB0aGUgQ1JDIHRvIGNoZWNrIGZvciBsb3N0IGJ5dGVzLg0KDQpJIGJldCB0aGlz
-IHdhcyBvbmx5IGV2ZXIgdXNlZCBieSB0aGUgYXV0aG9yIGFuZCBvbmx5IHRvIHRhbGsgdG8gaXRz
-ZWxmLg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5
-IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRp
-b24gTm86IDEzOTczODYgKFdhbGVzKQ0K
+On Thu, Nov 05, 2020 at 08:03:28PM +0800, Chin-Ting Kuo wrote:
+> Create binding file with YAML syntax for ASPEED FMC/SPI memory controller.
+> 
+> Signed-off-by: Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>
+> ---
+>  .../bindings/spi/aspeed,spi-aspeed.yaml       | 66 +++++++++++++++++++
+>  1 file changed, 66 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/spi/aspeed,spi-aspeed.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/spi/aspeed,spi-aspeed.yaml b/Documentation/devicetree/bindings/spi/aspeed,spi-aspeed.yaml
+> new file mode 100644
+> index 000000000000..41b9692c7226
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/spi/aspeed,spi-aspeed.yaml
+> @@ -0,0 +1,66 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/spi/aspeed,spi-aspeed.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: SPI memory controller for ASPEED SoCs
+> +
+> +maintainers:
+> +  - Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>
+> +
+> +description: |
+> +  There are three SPI memory controllers embedded in a ASPEED SoC.
+> +  They are usually connected to SPI NOR flashes. Each of them has
+> +  more than a chip select. They also support SPI single, dual and
+> +  quad IO modes for SPI NOR flash.
+> +
+> +allOf:
+> +  - $ref: /spi/spi-controller.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - items:
 
+You can drop oneOf (there's only 1) and items.
+
+> +          - enum:
+> +              - aspeed,ast2600-fmc
+> +              - aspeed,ast2600-spi
+> +
+> +  reg:
+> +    items:
+> +      - description: the control register location and length
+> +      - description: the flash memory mapping address and length
+> +
+> +  clocks:
+> +    description: AHB bus clock which will be converted to SPI bus clock
+
+maxItems: 1
+
+Constraints on num-cs values? Or up to 2^32 is good?
+
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - num-cs
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/ast2600-clock.h>
+> +    spi1: spi@1e630000 {
+> +      compatible = "aspeed,ast2600-spi";
+> +      reg = <0x1e630000 0xc4>, <0x30000000 0x10000000>;
+> +      reg-names = "spi_ctrl_reg", "spi_mmap";
+> +      clocks = <&syscon ASPEED_CLK_AHB>;
+> +      num-cs = <2>;
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +      flash@0 {
+> +        compatible = "jedec,spi-nor";
+> +        reg = <0>;
+> +        spi-max-frequency = <50000000>;
+> +      };
+> +      flash@1 {
+> +        compatible = "jedec,spi-nor";
+> +        reg = <1>;
+> +        spi-max-frequency = <50000000>;
+> +      };
+> +    };
+> -- 
+> 2.17.1
+> 
