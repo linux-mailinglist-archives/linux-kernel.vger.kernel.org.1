@@ -2,103 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 872722A7ECA
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 13:39:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A11662A7EDA
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 13:44:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730572AbgKEMjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 07:39:17 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:7057 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726777AbgKEMjN (ORCPT
+        id S1730345AbgKEMoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 07:44:12 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:59181 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725468AbgKEMoM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 07:39:13 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CRjkf5HJCzhYrj;
-        Thu,  5 Nov 2020 20:39:06 +0800 (CST)
-Received: from huawei.com (10.175.112.208) by DGGEMS404-HUB.china.huawei.com
- (10.3.19.204) with Microsoft SMTP Server id 14.3.487.0; Thu, 5 Nov 2020
- 20:39:02 +0800
-From:   Wang Wensheng <wangwensheng4@huawei.com>
-To:     <wim@linux-watchdog.org>, <linux@roeck-us.net>,
-        <linux-watchdog@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <rui.xiang@huawei.com>, <guohanjun@huawei.com>
-Subject: [PATCH -next v3 2/2] watchdog: Clean up error handlings
-Date:   Thu, 5 Nov 2020 12:38:48 +0000
-Message-ID: <20201105123848.93735-2-wangwensheng4@huawei.com>
-X-Mailer: git-send-email 2.25.0
-In-Reply-To: <20201105123848.93735-1-wangwensheng4@huawei.com>
-References: <20201105123848.93735-1-wangwensheng4@huawei.com>
+        Thu, 5 Nov 2020 07:44:12 -0500
+Received: from 1.general.cking.uk.vpn ([10.172.193.212])
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1kaecb-0001QT-Ht; Thu, 05 Nov 2020 12:44:09 +0000
+Subject: Re: [PATCH][next] hwmon: corsair-psu: fix unintentional sign
+ extension issue
+To:     Wilken Gottwalt <wilken.gottwalt@posteo.net>
+Cc:     Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        linux-hwmon@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20201105115019.41735-1-colin.king@canonical.com>
+ <20201105133233.10edda5b@monster.powergraphx.local>
+From:   Colin Ian King <colin.king@canonical.com>
+Message-ID: <0ad7f7e1-564c-1644-8e11-c2eacc1ba667@canonical.com>
+Date:   Thu, 5 Nov 2020 12:44:08 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.112.208]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20201105133233.10edda5b@monster.powergraphx.local>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clean up the repeated error handling process in function
-__watchdog_register_device().
+On 05/11/2020 12:32, Wilken Gottwalt wrote:
+> On Thu,  5 Nov 2020 11:50:19 +0000
+> Colin King <colin.king@canonical.com> wrote:
+> 
+>> From: Colin Ian King <colin.king@canonical.com>
+>>
+>> The shifting of the u8 integer data[3] by 24 bits to the left will
+>> be promoted to a 32 bit signed int and then sign-extended to a
+>> long. In the event that the top bit of data[3] is set then all
+>> then all the upper 32 bits of a 64 bit long end up as also being
+>> set because of the sign-extension. Fix this by casting data[3] to
+>> a long before the shift.
+>>
+>> Addresses-Coverity: ("Unintended sign extension")
+>> Fixes: ce15cd2cee8b ("hwmon: add Corsair PSU HID controller driver")
+>> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+>> ---
+>>  drivers/hwmon/corsair-psu.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/hwmon/corsair-psu.c b/drivers/hwmon/corsair-psu.c
+>> index e92d0376e7ac..5d19a888231a 100644
+>> --- a/drivers/hwmon/corsair-psu.c
+>> +++ b/drivers/hwmon/corsair-psu.c
+>> @@ -241,7 +241,7 @@ static int corsairpsu_get_value(struct corsairpsu_data *priv, u8 cmd, u8
+>> rail, l
+>>  	 * the LINEAR11 conversion are the watts values which are about 1200 for the strongest
+>> psu
+>>  	 * supported (HX1200i)
+>>  	 */
+>> -	tmp = (data[3] << 24) + (data[2] << 16) + (data[1] << 8) + data[0];
+>> +	tmp = ((long)data[3] << 24) + (data[2] << 16) + (data[1] << 8) + data[0];
+>>  	switch (cmd) {
+>>  	case PSU_CMD_IN_VOLTS:
+>>  	case PSU_CMD_IN_AMPS:
+> 
+> Yeah, this could happen if the uptime value in the micro-controller gets bigger
+> than 68 years (in seconds), and it is the only value which actually uses more
+> than 2 bytes for the representation. So what about architectures which are 32 bit
+> wide and where a long has 32 bits? I guess this simple cast is not enough.
 
-Signed-off-by: Wang Wensheng <wangwensheng4@huawei.com>
----
- drivers/watchdog/watchdog_core.c | 22 ++++++++++++----------
- 1 file changed, 12 insertions(+), 10 deletions(-)
+For 32 bits (unsigned) the 4 u8 values in data represents ~136 years no
+matter if we use a 32 or 64 bit long for tmp. The cast to long is
+signed, so yes, that's ~68 years in seconds. So perhaps
+corsairpsu_get_value() should be passing a unsigned long for the *val
+arg and tmp should be unsigned long too?
 
-diff --git a/drivers/watchdog/watchdog_core.c b/drivers/watchdog/watchdog_core.c
-index 945ab38b14b8..4fa54a620ccd 100644
---- a/drivers/watchdog/watchdog_core.c
-+++ b/drivers/watchdog/watchdog_core.c
-@@ -252,10 +252,8 @@ static int __watchdog_register_device(struct watchdog_device *wdd)
- 		wdd->id = id;
- 
- 		ret = watchdog_dev_register(wdd);
--		if (ret) {
--			ida_simple_remove(&watchdog_ida, id);
--			return ret;
--		}
-+		if (ret)
-+			goto id_remove;
- 	}
- 
- 	/* Module parameter to force watchdog policy on reboot. */
-@@ -270,9 +268,8 @@ static int __watchdog_register_device(struct watchdog_device *wdd)
- 		if (!wdd->ops->stop) {
- 			pr_err("watchdog%d: Cannot support stop_on_reboot\n",
- 				wdd->id);
--			watchdog_dev_unregister(wdd);
--			ida_simple_remove(&watchdog_ida, id);
--			return -EINVAL;
-+			ret = -EINVAL;
-+			goto dev_unregister;
- 		}
- 
- 		wdd->reboot_nb.notifier_call = watchdog_reboot_notifier;
-@@ -280,9 +277,7 @@ static int __watchdog_register_device(struct watchdog_device *wdd)
- 		if (ret) {
- 			pr_err("watchdog%d: Cannot register reboot notifier (%d)\n",
- 			       wdd->id, ret);
--			watchdog_dev_unregister(wdd);
--			ida_simple_remove(&watchdog_ida, id);
--			return ret;
-+			goto dev_unregister;
- 		}
- 	}
- 
-@@ -296,6 +291,13 @@ static int __watchdog_register_device(struct watchdog_device *wdd)
- 	}
- 
- 	return 0;
-+
-+dev_unregister:
-+	watchdog_dev_unregister(wdd);
-+id_remove:
-+	ida_simple_remove(&watchdog_ida, id);
-+
-+	return ret;
- }
- 
- /**
--- 
-2.25.0
+> 
+> greetings,
+> Wilken
+> 
 
