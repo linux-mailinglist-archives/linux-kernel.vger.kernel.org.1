@@ -2,184 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62F7E2A8523
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 18:41:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35A042A8525
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 18:41:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731759AbgKERlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 12:41:21 -0500
-Received: from smtprelay0200.hostedemail.com ([216.40.44.200]:47470 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731609AbgKERlV (ORCPT
+        id S1731781AbgKERlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 12:41:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46664 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726777AbgKERlq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 12:41:21 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id A4EDD182233F3;
-        Thu,  5 Nov 2020 17:41:18 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:2:41:355:379:599:800:960:968:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1431:1437:1515:1516:1518:1535:1593:1594:1605:1606:1712:1730:1747:1777:1792:2393:2559:2562:2691:2828:2829:2911:3138:3139:3140:3141:3142:3653:3865:3866:3867:3868:3870:3871:3872:3873:3874:4250:4321:4425:4605:4823:5007:7875:9010:10004:10848:11026:11232:11473:11658:11783:11914:12043:12295:12297:12438:12663:12679:12740:12895:13161:13229:13439:13846:13894:14659:21080:21433:21451:21627:21660:21819:30003:30022:30026:30029:30030:30041:30054:30070:30075:30083:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: vase31_190ca99272cb
-X-Filterd-Recvd-Size: 5912
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf05.hostedemail.com (Postfix) with ESMTPA;
-        Thu,  5 Nov 2020 17:41:17 +0000 (UTC)
-Message-ID: <f83c2eeafdebc6307ee6e515e4d6652b2606a068.camel@perches.com>
-Subject: Re: [PATCH v3] checkpatch: improve email parsing
-From:   Joe Perches <joe@perches.com>
-To:     Dwaipayan Ray <dwaipayanray1@gmail.com>, stable@vger.kernel.org,
-        Greg KH <gregkh@linuxfoundation.org>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com,
-        yashsri421@gmail.com
-Date:   Thu, 05 Nov 2020 09:41:15 -0800
-In-Reply-To: <20201105115949.39474-1-dwaipayanray1@gmail.com>
-References: <20201105115949.39474-1-dwaipayanray1@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Thu, 5 Nov 2020 12:41:46 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C72EC0613CF;
+        Thu,  5 Nov 2020 09:41:46 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id r186so1863289pgr.0;
+        Thu, 05 Nov 2020 09:41:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ROPmCHdS0kRg9q+B0Dggx9NnmXUvygn2aJySQRUk1PU=;
+        b=B2tWMFsjw3bi0iB38Tr2F5SWQxJLB3kpG8hw4mLTqOviEibVyWUsPuzWP8Gi3Gulni
+         tBs7hK1LMMzFX00AgmM5RLlzpoF9H1Fn7t/hnj3zX8Dni21u9y6jto/W0kBMKGtKRuEp
+         DulPVDquNepyb/CN3kfZEe+o8f4J+5Phwz5zjlGi+LjEO7eJKT5YHXRa5WJ2IHkaIAN5
+         4mC5Git3culOK0pwzGV/1iGnuh6ojacbjsqiPTbfbhpmwjUE4fnOtLaPQzrNSuzEJLqd
+         k3k56/EmfNvevYeQ/+gO3N4b1gjAIux50/4Y5REK8ZD+WhHEXtAfkVN7NinzRyPtHUxG
+         OhYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=ROPmCHdS0kRg9q+B0Dggx9NnmXUvygn2aJySQRUk1PU=;
+        b=uRtUEARagTxWi5RI6djiR/gaNWcLyvRrxbNP4BpSuqO340jobTBuxkbVM30FB1wkHQ
+         rqE35dik+u/lKEjDKoCqlqAAN1mjVelPwyZ+KD+rg3dOTcMwo69r0yFmL/nFlamFv21Q
+         K/mKprMJDRNNnK9gLVf3Vk9ogSAvwKCN2Jk8bqrIO/Dogx9TPploY0eJ6N8DbF8YIRzu
+         74uePCH1f2OHWVLmbKjpR39S1kEWrdt2WskblboeqV8Z+jbYJW9CVdMabyj7hl/8lZUf
+         8/w9CjFFH+dabmWTK/023q+puZB1fUNOFeBhc8YLC+2Y39Jdvo8pHzLlXnxUEOqUAVgi
+         fAZA==
+X-Gm-Message-State: AOAM530n4xOAjR6+N0kaPAPlnXW0dqynX018CzbqSITc13oXo1+IO+hR
+        U5DPA6HSNwuSBLoTUCMqohFhBNfykbs=
+X-Google-Smtp-Source: ABdhPJwxT1NmWqKn/Ks2DuSG4v+x+CY+eLvgsygQ1M9RxDJ3i9JX8XBa1wf2Dk72/u4YIqGx2LObWg==
+X-Received: by 2002:a63:cb51:: with SMTP id m17mr3369432pgi.337.1604598105490;
+        Thu, 05 Nov 2020 09:41:45 -0800 (PST)
+Received: from google.com ([2620:15c:211:201:7220:84ff:fe09:5e58])
+        by smtp.gmail.com with ESMTPSA id i10sm3162527pfd.60.2020.11.05.09.41.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Nov 2020 09:41:44 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Thu, 5 Nov 2020 09:41:42 -0800
+From:   Minchan Kim <minchan@kernel.org>
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     Michal Hocko <mhocko@suse.com>, linux-api@vger.kernel.org,
+        linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Christian Brauner <christian@brauner.io>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Tim Murray <timmurray@google.com>,
+        kernel-team <kernel-team@android.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>
+Subject: Re: [RFC]: userspace memory reaping
+Message-ID: <20201105174142.GA395979@google.com>
+References: <CAJuCfpHwXcq1PfzHgqyYBR3N53TtV2WMt_Oubz0JZkvJHbFKGw@mail.gmail.com>
+ <CAJuCfpH9iUt0cs1GBQppgdcD8chojCNXk22S+PeSgQ-bA7iitQ@mail.gmail.com>
+ <20201103093550.GE21990@dhcp22.suse.cz>
+ <20201103213228.GB1631979@google.com>
+ <20201104065844.GM21990@dhcp22.suse.cz>
+ <20201104204051.GA3544305@google.com>
+ <20201105122012.GD21348@dhcp22.suse.cz>
+ <CAJuCfpF5zAif97-uK8M+-fJhd0pab4fMPDMUNkAXYOB3MC7aXg@mail.gmail.com>
+ <20201105171611.GO21348@dhcp22.suse.cz>
+ <CAJuCfpHAxxoD6GG6t9_VthSa00znTHvLx60K-=cBee4ia1S5ew@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJuCfpHAxxoD6GG6t9_VthSa00znTHvLx60K-=cBee4ia1S5ew@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(adding stable and Greg KH for additional review)
-On Thu, 2020-11-05 at 17:29 +0530, Dwaipayan Ray wrote:
-> checkpatch doesn't report warnings for many common mistakes
-> in emails. Some of which are trailing commas and incorrect
-> use of email comments.
-
-I presume you've tested this against the git tree.
-
-Can you send me a file with the BAD_SIGN_OFF messages generated
-and if possible the git SHA-1s of the commits?
-
-> At the same time several false positives are reported due to
-> incorrect handling of mail comments. The most common of which
-> is due to the pattern:
+On Thu, Nov 05, 2020 at 09:21:13AM -0800, Suren Baghdasaryan wrote:
+> On Thu, Nov 5, 2020 at 9:16 AM Michal Hocko <mhocko@suse.com> wrote:
+> >
+> > On Thu 05-11-20 08:50:58, Suren Baghdasaryan wrote:
+> > > On Thu, Nov 5, 2020 at 4:20 AM Michal Hocko <mhocko@suse.com> wrote:
+> > > >
+> > > > On Wed 04-11-20 12:40:51, Minchan Kim wrote:
+> > > > > On Wed, Nov 04, 2020 at 07:58:44AM +0100, Michal Hocko wrote:
+> > > > > > On Tue 03-11-20 13:32:28, Minchan Kim wrote:
+> > > > > > > On Tue, Nov 03, 2020 at 10:35:50AM +0100, Michal Hocko wrote:
+> > > > > > > > On Mon 02-11-20 12:29:24, Suren Baghdasaryan wrote:
+> > > > > > > > [...]
+> > > > > > > > > To follow up on this. Should I post an RFC implementing SIGKILL_SYNC
+> > > > > > > > > which in addition to sending a kill signal would also reap the
+> > > > > > > > > victim's mm in the context of the caller? Maybe having some code will
+> > > > > > > > > get the discussion moving forward?
+> > > > > > > >
+> > > > > > > > Yeah, having a code, even preliminary, might help here. This definitely
+> > > > > > > > needs a good to go from process management people as that proper is land
+> > > > > > > > full of surprises...
+> > > > > > >
+> > > > > > > Just to remind a idea I suggested to reuse existing concept
+> > > > > > >
+> > > > > > >     fd = pidfd_open(victim process)
+> > > > > > >     fdatasync(fd);
+> > > > > > >     close(fd);
+> > > > > >
+> > > > > > I must have missed this proposal. Anyway, are you suggesting fdatasync
+> > > > > > to act as a destructive operation?
+> > > > >
+> > > > > write(fd) && fdatasync(fd) are already destructive operation if the file
+> > > > > is shared.
+> > > >
+> > > > I am likely missing something because fdatasync will not destroy any
+> > > > underlying data. It will sync
+> > > >
+> > > > > You don't need to reaping as destruptive operation. Rather than, just
+> > > > > commit on the asynchrnous status "write file into page cache and commit
+> > > > > with fsync" and "killing process and commit with fsync".
+> > > >
+> > > > I am sorry but I do not follow. The result of the memory reaping is a
+> > > > data loss. Any private mapping will simply lose it's content. The caller
+> > > > will get EFAULT when trying to access it but there is no way to
+> > > > reconstruct the data. This is everything but not resembling what I see
+> > > > f{data}sync is used for.
+> > >
+> > > I think Minchan considers f{data}sync as a "commit" operation.
+> >
+> > But there is nothing like commit in that operation. It is simply a
+> > destroy operation. ftruncate as Minchan mentions in another reply would
+> > be a closer fit but how do you interpret the length argument? What about
+> > memory regions which cannot be reaped?
+> >
+> > I do understand that reusing an existing mechanism is usually preferable
+> > but the semantic should be reasonable and easy to reason about.
 > 
-> <stable@vger.kernel.org> # X.X
-> 
-> Improve email parsing in checkpatch.
-> 
-> Some general comment rules are defined:
-> 
-> - Multiple name comments should not be allowed.
-> - Comments inside address should not be allowed.
-> - In general comments should be enclosed within parentheses.
->   Exception for stable@vger.kernel.org # X.X
+> Maybe then we can consider a flag for pidfd_send_signal() to indicate
+> that we want a synchronous mm cleanup when SIGKILL is being sent?
+> Similar to my original RFC but cleanup would happen in the context of
+> the caller. That seems to me like the simplest and most obvious way of
+> expressing what we want to accomplish. WDYT?
 
-not just vger.kernel.org, but this should also allow stable@kernel.org
-and only allow cc: and not any other -by: type for that email address.
-
-A process preference question for Greg and the stable team:
-
-The most common stable forms are
-
-	stable@vger.kernel.org # version info
-then
-	stable@vger.kernel.org [ version info ]
-
-with some other relatively infrequently used outlier styles, some
-that use parentheses, but this is not frequent.
-
-It might be sensible to standardize on the "# version info" trailer
-comment version info style and warn on any other form.
-
-A somewhat common style for the stable address is to use a name
-before the stable address which describes the version info:
-
-Perhaps any name before stable should be warned and the version
-should be a comment.
-
-Here's a list of the stable addresses with "version name" then
-stable address in the git tree and other outlier styles.
-
-     24 linux-stable <stable@vger.kernel.org>
-     21 5.4+ <stable@vger.kernel.org>
-     14 All applicable <stable@vger.kernel.org>
-      6 3.10+ <stable@vger.kernel.org>
-      5 5.9+ <stable@vger.kernel.org>
-      5 5.3+ <stable@vger.kernel.org>
-      5 5.1+ <stable@vger.kernel.org>
-      4 5.6+ <stable@vger.kernel.org>
-      4 4.20+ <stable@vger.kernel.org>
-      3 Stable Team <stable@vger.kernel.org>
-      3 4.19+ <stable@vger.kernel.org>
-      3 4.15+ <stable@vger.kernel.org>
-      3 4.10+ <stable@vger.kernel.org>
-      2 stable@vger.kernel.org (v2.6.12+)
-      2 5.2+ <stable@vger.kernel.org>
-      2 4.16+ <stable@vger.kernel.org>
-      1 v5.8+ <stable@vger.kernel.org>
-      1 v5.7+ <stable@vger.kernel.org>
-      1 v5.6+ <stable@vger.kernel.org>
-      1 v5.3+ <stable@vger.kernel.org>
-      1 v5.0+ <stable@vger.kernel.org>
-      1 v4.9+ <stable@vger.kernel.org>
-      1 <stable@vger.kernel.org> v5.0+
-      1 <stable@vger.kernel.org> +v4.18
-      1 stable@vger.kernel.org (3.14+)
-      1 5.8+ <stable@vger.kernel.org>
-      1 5.5+ <stable@vger.kernel.org>
-      1 5.0+ <stable@vger.kernel.org>
-      1 4.18+ <stable@vger.kernel.org>
-      1 4.14+ <stable@vger.kernel.org>
-      1 4.13+ <stable@vger.kernel.org>
-      1 4.0+ <stable@vger.kernel.org>
-      1 3.15+ <stable@vger.kernel.org>
-      1 3.11+ <stable@vger.kernel.org>
-
-> Improvements to parsing:
-> 
-> - Detect and report unexpected content after email.
-> - Quoted names are excluded from comment parsing.
-> - Trailing dots or commas in email are removed during
->   formatting. Correspondingly a BAD_SIGN_OFF warning
->   is emitted.
-> - Improperly quoted email like '"name <address>"' are now
->   warned about.
-
-All of the above seems right but perhaps the comment style for any
-<foo>-by: lines should also allow # comments.
-
-The below is just comments on the patch itself.
-
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-[]
-> @@ -2800,9 +2806,57 @@ sub process {
->  				$dequoted =~ s/" </ </;
->  				# Don't force email to have quotes
->  				# Allow just an angle bracketed address
-> -				if (!same_email_addresses($email, $suggested_email, 0)) {
-> +				if (!same_email_addresses($email, $suggested_email)) {
-> +					if (WARN("BAD_SIGN_OFF",
-> +					    "email address '$email' might be better as '$suggested_email'\n" . $herecurr) &&
-> +						$fix) {
-
-trivia:
-
-Please always align $fix with tabs to the if and then 4 spaces to the
-open parenthesis.
-
-> +				# Comments must begin only with (
-> +				# or # in case of stable@vger.kernel.org
-> +				if ($email =~ /^.*stable\@vger/) {
-
-I believe this should be
-
-				if ($email =~ /^stable\@(?:vger\.)?kernel.org$/) {
-
-> +					if ($comment ne "" && $comment !~ /^#.+/) {
-> +						if (WARN("BAD_SIGN_OFF",
-> +						    "Invalid comment format for stable: '$email', prefer parentheses\n" . $herecurr) &&
-
-Prefer #
-
-> +							$fix) {
-> +							my $new_comment = $comment;
-> +							$new_comment =~ s/^[ \(\[]+|[ \)\]]+$//g;
-
-Does the comment include any leading whitespace here?
-I presumed not given the $comment !~ /^#/ test above.
-
-
+I think that's better than introducing a specific synchronous kill.
