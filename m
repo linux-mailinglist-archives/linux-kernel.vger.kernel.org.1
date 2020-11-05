@@ -2,86 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F8382A8AB7
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 00:28:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB9CA2A8AC0
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 00:28:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732192AbgKEX2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 18:28:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41476 "EHLO mail.kernel.org"
+        id S1732686AbgKEX2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 18:28:48 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:44066 "EHLO m42-4.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729784AbgKEX2O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 18:28:14 -0500
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1732625AbgKEX2r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 18:28:47 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1604618926; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=1KAhvuLf/yvnWPBQm8h6VYbwH4+MlaWZaU2ApTgCAck=; b=Vu0wksspNZQkYYX9gAWiR8wSVzN8E1f2AgbQRKxoMKM+jTrBxkftsB/ts59Ru1uk5SklD9nm
+ wXugin4UHeFjWp/GOWr0t2qgx/lLzYL1+nhxcD9m1GE8s+gXl9NcGZ+Q+lCvJc4oJQmPajcc
+ BWlqy4U21Vhs7RDQdHXhvrYwKbQ=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 5fa48aad903b44cb0e659c76 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 05 Nov 2020 23:28:45
+ GMT
+Sender: wcheng=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 0CDC5C433FF; Thu,  5 Nov 2020 23:28:45 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from wcheng-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8B2FD20704;
-        Thu,  5 Nov 2020 23:28:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604618893;
-        bh=uW+s9tk8sFCHpIi1ccM7lmNw5WWhWb4a2EYXNp87zEM=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=rA6UeTi7wirfhxjAkj1CmQNLIOBtEWWKe2kidYVtIWNkUdVfmQzDMsM14sljW8/cz
-         JvyABj0PmLNKek5rqbJRUUuIrSOFFxzYlvyn+4fb1fDLGsJJxHx5I1SqOzz7v5Bn4g
-         m6RLj6ykMVGcvKrtmWUMbK0nHRZRmnInrGHF7hoY=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 4D0AD3522A76; Thu,  5 Nov 2020 15:28:13 -0800 (PST)
-Date:   Thu, 5 Nov 2020 15:28:13 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Qian Cai <cai@redhat.com>
-Cc:     Will Deacon <will@kernel.org>, catalin.marinas@arm.com,
-        kernel-team@android.com, Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] arm64/smp: Move rcu_cpu_starting() earlier
-Message-ID: <20201105232813.GR3249@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201028182614.13655-1-cai@redhat.com>
- <160404559895.1777248.8248643695413627642.b4-ty@kernel.org>
- <20201105222242.GA8842@willie-the-truck>
- <3b4c324abdabd12d7bd5346c18411e667afe6a55.camel@redhat.com>
+        (Authenticated sender: wcheng)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D922EC433C9;
+        Thu,  5 Nov 2020 23:28:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D922EC433C9
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
+From:   Wesley Cheng <wcheng@codeaurora.org>
+To:     balbi@kernel.org, gregkh@linuxfoundation.org,
+        stern@rowland.harvard.edu, Thinh.Nguyen@synopsys.com
+Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        jackp@codeaurora.org, Wesley Cheng <wcheng@codeaurora.org>
+Subject: [PATCH v2 0/2] Allow DWC3 runtime suspend if UDC is unbinded
+Date:   Thu,  5 Nov 2020 15:28:23 -0800
+Message-Id: <20201105232825.5233-1-wcheng@codeaurora.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3b4c324abdabd12d7bd5346c18411e667afe6a55.camel@redhat.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 06:02:49PM -0500, Qian Cai wrote:
-> On Thu, 2020-11-05 at 22:22 +0000, Will Deacon wrote:
-> > On Fri, Oct 30, 2020 at 04:33:25PM +0000, Will Deacon wrote:
-> > > On Wed, 28 Oct 2020 14:26:14 -0400, Qian Cai wrote:
-> > > > The call to rcu_cpu_starting() in secondary_start_kernel() is not early
-> > > > enough in the CPU-hotplug onlining process, which results in lockdep
-> > > > splats as follows:
-> > > > 
-> > > >  WARNING: suspicious RCU usage
-> > > >  -----------------------------
-> > > >  kernel/locking/lockdep.c:3497 RCU-list traversed in non-reader section!!
-> > > > 
-> > > > [...]
-> > > 
-> > > Applied to arm64 (for-next/fixes), thanks!
-> > > 
-> > > [1/1] arm64/smp: Move rcu_cpu_starting() earlier
-> > >       https://git.kernel.org/arm64/c/ce3d31ad3cac
-> > 
-> > Hmm, this patch has caused a regression in the case that we fail to
-> > online a CPU because it has incompatible CPU features and so we park it
-> > in cpu_die_early(). We now get an endless spew of RCU stalls because the
-> > core will never come online, but is being tracked by RCU. So I'm tempted
-> > to revert this and live with the lockdep warning while we figure out a
-> > proper fix.
-> > 
-> > What's the correct say to undo rcu_cpu_starting(), given that we cannot
-> > invoke the full hotplug machinery here? Is it correct to call
-> > rcutree_dying_cpu() on the bad CPU and then rcutree_dead_cpu() from the
-> > CPU doing cpu_up(), or should we do something else?
-> It looks to me that rcu_report_dead() does the opposite of rcu_cpu_starting(),
-> so lift rcu_report_dead() out of CONFIG_HOTPLUG_CPU and use it there to rewind,
-> Paul?
+Changes in v2:
+ - Modified logic for executing the runtime PM resume.  Using a sychronous get
+   call to avoid race conditions.
 
-Yes, rcu_report_dead() should do the trick.  Presumably the earlier
-online-time CPU-hotplug notifiers are also unwound?
+During the following scenario, the DWC3 runtime suspend routine is blocked as
+the connected flag is still true:
 
-							Thanx, Paul
+1.  Enumerate device w/ host.
+2.  Gadget is unbinded
+	- echo "" > /sys/kernel/config/usb_gadget/g1/UDC
+3.  Disconnect the USB cable (VBUS low)
+4.  No dwc3_gadget_disconnect_interrupt() seen (since controller is
+   halted from step#1)
+5.  Runtime PM autosuspend fails due to "dwc->connected" being true
+(cleared in dwc3_gadget_disconnect_interrupt())
+6.  Gadget binded
+	- echo udc_name > /sys/kernel/config/usb_gadget/g1/UDC
+7.  No runtime suspend until cable is plugged in and out
+
+Technically, for device initiated disconnects, there is no active session/link
+with the host, so the DWC3 controller should be allowed to go into a low power
+state.  Also, we need to now consider when re-binding the UDC,
+dwc3_gadget_set_speed() is executed before dwc3_gadget_pullup(), so if the DWC3
+controller is suspended/disabled, while accessing the DCFG, that could result in
+bus timeouts, etc...  Change the dwc3_gadget_set_speed() to save the speed
+being requested, and program it during dwc3_gadget_run_stop(), which is executed
+during PM runtime resume.  If not, previous setting will be overridden as we
+execute a DWC3 controller reset during PM runtime resume. 
+
+Wesley Cheng (2):
+  usb: dwc3: gadget: Allow runtime suspend if UDC unbinded
+  usb: dwc3: gadget: Preserve UDC max speed setting
+
+ drivers/usb/dwc3/core.h   |   1 +
+ drivers/usb/dwc3/gadget.c | 121 ++++++++++++++++++++++----------------
+ 2 files changed, 71 insertions(+), 51 deletions(-)
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
