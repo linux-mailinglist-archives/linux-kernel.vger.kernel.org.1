@@ -2,93 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07F742A86DD
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 20:15:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 175842A86D9
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 20:15:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732053AbgKETPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 14:15:25 -0500
-Received: from shelob.surriel.com ([96.67.55.147]:60598 "EHLO
-        shelob.surriel.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732013AbgKETPY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 14:15:24 -0500
-Received: from imladris.surriel.com ([96.67.55.152])
-        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <riel@shelob.surriel.com>)
-        id 1kakj1-00048T-FN; Thu, 05 Nov 2020 14:15:11 -0500
-From:   Rik van Riel <riel@surriel.com>
-To:     hughd@google.com
-Cc:     xuyu@linux.alibaba.com, akpm@linux-foundation.org, mgorman@suse.de,
-        aarcange@redhat.com, willy@infradead.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        linux-mm@kvack.org, vbabka@suse.cz, mhocko@suse.com,
-        Rik van Riel <riel@surriel.com>
-Subject: [PATCH 2/2] mm,thp,shm: limit gfp mask to no more than specified
-Date:   Thu,  5 Nov 2020 14:15:08 -0500
-Message-Id: <20201105191508.1961686-3-riel@surriel.com>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20201105191508.1961686-1-riel@surriel.com>
-References: <20201105191508.1961686-1-riel@surriel.com>
+        id S1731907AbgKETPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 14:15:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37746 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726214AbgKETPQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 14:15:16 -0500
+Received: from lt-jalone-7480.mtl.com (c-24-6-56-119.hsd1.ca.comcast.net [24.6.56.119])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 106D020867;
+        Thu,  5 Nov 2020 19:15:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604603714;
+        bh=iJUcvyLtqYo46zqJm17UM4SRoIEuiLQJx79iJDMZnt8=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=qaHgMwqNuEp4+Hm3j2EDnaJFy9WmsTpV46YCHSZTKes3X7r0TRyiY2UGkPKK/fdxX
+         gP10JYURyZbL6mQZuuT4u8Cc39KG46kPi6BRHRV855f5jVue3Wu5pIKGP4/UyJHMor
+         QOV7dODWb6AEgFZXtqyfWiCqGbGiRrNm3u3gNdUw=
+Message-ID: <1dd085b9f7013e9a28057f3080ee7b920bfbc9fc.camel@kernel.org>
+Subject: Re: [PATCH v2 net-next 3/3] octeontx2-af: Add devlink health
+ reporters for NIX
+From:   Saeed Mahameed <saeed@kernel.org>
+To:     George Cherian <gcherian@marvell.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jiri Pirko <jiri@nvidia.com>
+Cc:     "kuba@kernel.org" <kuba@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
+        Linu Cherian <lcherian@marvell.com>,
+        Geethasowjanya Akula <gakula@marvell.com>,
+        "masahiroy@kernel.org" <masahiroy@kernel.org>,
+        "willemdebruijn.kernel@gmail.com" <willemdebruijn.kernel@gmail.com>
+Date:   Thu, 05 Nov 2020 11:15:12 -0800
+In-Reply-To: <BYAPR18MB2679EC3507BD90B93B37A3F8C5EE0@BYAPR18MB2679.namprd18.prod.outlook.com>
+References: <BYAPR18MB2679EC3507BD90B93B37A3F8C5EE0@BYAPR18MB2679.namprd18.prod.outlook.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: riel@shelob.surriel.com
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew Wilcox pointed out that the i915 driver opportunistically
-allocates tmpfs memory, but will happily reclaim some of its
-pool if no memory is available.
+On Thu, 2020-11-05 at 13:36 +0000, George Cherian wrote:
+> Hi Saeed,
+> 
+> Thanks for the review.
+> 
+> > -----Original Message-----
+> > From: Saeed Mahameed <saeed@kernel.org>
+> > Sent: Thursday, November 5, 2020 10:39 AM
+> > To: George Cherian <gcherian@marvell.com>; netdev@vger.kernel.org;
+> > linux-kernel@vger.kernel.org; Jiri Pirko <jiri@nvidia.com>
+> > Cc: kuba@kernel.org; davem@davemloft.net; Sunil Kovvuri Goutham
+> > <sgoutham@marvell.com>; Linu Cherian <lcherian@marvell.com>;
+> > Geethasowjanya Akula <gakula@marvell.com>; masahiroy@kernel.org;
+> > willemdebruijn.kernel@gmail.com
+> > Subject: Re: [PATCH v2 net-next 3/3] octeontx2-af: Add devlink
+> > health
+> > reporters for NIX
+> > 
+> > On Wed, 2020-11-04 at 17:57 +0530, George Cherian wrote:
+> > > Add health reporters for RVU NPA block.
+> >                                ^^^ NIX ?
+> > 
+> Yes, it's NIX.
+> 
+> > Cc: Jiri
+> > 
+> > Anyway, could you please spare some words on what is NPA and what
+> > is
+> > NIX?
+> > 
+> > Regarding the reporters names, all drivers register well known
+> > generic names
+> > such as (fw,hw,rx,tx), I don't know if it is a good idea to use
+> > vendor specific
+> > names, if you are reporting for hw/fw units then just use "hw" or
+> > "fw" as the
+> > reporter name and append the unit NPA/NIX to the counter/error
+> > names.
+> Okay. These are hw units, I will rename them as hw_npa/hw_nix.
 
-Make sure the gfp mask used to opportunistically allocate a THP
-is always at least as restrictive as the original gfp mask.
+What i meant is have one reporter named "hw" and inside it report
+counters with their unit name appended to the counter name.
 
-Signed-off-by: Rik van Riel <riel@surriel.com>
-Suggested-by: Matthew Wilcox <willy@infradead.org>
----
- mm/shmem.c | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
+./devlink health
+  pci/0002:01:00.0:
+    reporter hw
+      state healthy error 0 recover 0
+      
+./devlink  health dump show pci/0002:01:00.0 reporter hw
+      NIX:
+         nix_counter_a: 0
+         ...
+     NPA: 
+         npa_counter_a: 0
+         ...
 
-diff --git a/mm/shmem.c b/mm/shmem.c
-index 6c3cb192a88d..ee3cea10c2a4 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -1531,6 +1531,26 @@ static struct page *shmem_swapin(swp_entry_t swap, gfp_t gfp,
- 	return page;
- }
- 
-+/*
-+ * Make sure huge_gfp is always more limited than limit_gfp.
-+ * Some of the flags set permissions, while others set limitations.
-+ */
-+static gfp_t limit_gfp_mask(gfp_t huge_gfp, gfp_t limit_gfp)
-+{
-+	gfp_t allowflags = __GFP_IO | __GFP_FS | __GFP_RECLAIM;
-+	gfp_t denyflags = __GFP_NOWARN | __GFP_NORETRY;
-+	gfp_t result = huge_gfp & ~allowflags;
-+
-+	/*
-+	 * Minimize the result gfp by taking the union with the deny flags,
-+	 * and the intersection of the allow flags.
-+	 */
-+	result |= (limit_gfp & denyflags);
-+	result |= (huge_gfp & limit_gfp) & allowflags;
-+
-+	return result;
-+}
-+
- static struct page *shmem_alloc_hugepage(gfp_t gfp,
- 		struct shmem_inode_info *info, pgoff_t index)
- {
-@@ -1889,6 +1909,7 @@ static int shmem_getpage_gfp(struct inode *inode, pgoff_t index,
- 
- alloc_huge:
- 	huge_gfp = vma_thp_gfp_mask(vma);
-+	huge_gfp = limit_gfp_mask(huge_gfp, gfp);
- 	page = shmem_alloc_and_acct_page(huge_gfp, inode, index, true);
- 	if (IS_ERR(page)) {
- alloc_nohuge:
--- 
-2.25.4
+
+
+> > > Only reporter dump is supported.
+> > > 
+> > > Output:
+> > >  # ./devlink health
+> > >  pci/0002:01:00.0:
+> > >    reporter npa
+> > >      state healthy error 0 recover 0
+> > >    reporter nix
+> > >      state healthy error 0 recover 0
+> > >  # ./devlink  health dump show pci/0002:01:00.0 reporter nix
+> > >   NIX_AF_GENERAL:
+> > >          Memory Fault on NIX_AQ_INST_S read: 0
+> > >          Memory Fault on NIX_AQ_RES_S write: 0
+> > >          AQ Doorbell error: 0
+> > >          Rx on unmapped PF_FUNC: 0
+> > >          Rx multicast replication error: 0
+> > >          Memory fault on NIX_RX_MCE_S read: 0
+> > >          Memory fault on multicast WQE read: 0
+> > >          Memory fault on mirror WQE read: 0
+> > >          Memory fault on mirror pkt write: 0
+> > >          Memory fault on multicast pkt write: 0
+> > >    NIX_AF_RAS:
+> > >          Poisoned data on NIX_AQ_INST_S read: 0
+> > >          Poisoned data on NIX_AQ_RES_S write: 0
+> > >          Poisoned data on HW context read: 0
+> > >          Poisoned data on packet read from mirror buffer: 0
+> > >          Poisoned data on packet read from mcast buffer: 0
+> > >          Poisoned data on WQE read from mirror buffer: 0
+> > >          Poisoned data on WQE read from multicast buffer: 0
+> > >          Poisoned data on NIX_RX_MCE_S read: 0
+> > >    NIX_AF_RVU:
+> > >          Unmap Slot Error: 0
+> > > 
+> > 
+> > Now i am a little bit skeptic here, devlink health reporter
+> > infrastructure was
+> > never meant to deal with dump op only, the main purpose is to
+> > diagnose/dump and recover.
+> > 
+> > especially in your use case where you only report counters, i don't
+> > believe
+> > devlink health dump is a proper interface for this.
+> These are not counters. These are error interrupts raised by HW
+> blocks.
+> The count is provided to understand on how frequently the errors are
+> seen.
+> Error recovery for some of the blocks happen internally. That is the
+> reason,
+> Currently only dump op is added.
+
+So you are counting these events in driver, sounds like a counter to
+me, i really think this shouldn't belong to devlink, unless you really
+utilize devlink health ops for actual reporting and recovery.
+
+what's wrong with just dumping these counters to ethtool ?
+
+> > Many of these counters if not most are data path packet based and
+> > maybe
+> > they should belong to ethtool.
+> 
+> Regards,
+> -George
+> 
+> 
+> 
 
