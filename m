@@ -2,142 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D0502A89AA
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 23:24:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A2442A89AF
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 23:24:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732598AbgKEWYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 17:24:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43082 "EHLO mail.kernel.org"
+        id S1732654AbgKEWYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 17:24:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43452 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732444AbgKEWYY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 17:24:24 -0500
-Received: from gmail.com (unknown [104.132.1.84])
+        id S1732295AbgKEWYc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 17:24:32 -0500
+Received: from localhost (230.sub-72-107-127.myvzw.com [72.107.127.230])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 11550206D4;
-        Thu,  5 Nov 2020 22:24:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C37D82078E;
+        Thu,  5 Nov 2020 22:24:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604615063;
-        bh=yYSuORKH7NpqL8BGPDIgYH99/kkDBKqNn3nu3SUcauE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kBwe89XsTmyaTEyvFcfwIZTNOli6U1zxRY/5QWYXCGDwZtOuGmZcq07VRERxWH+5d
-         WvN6IGz2k7hrXPwcV5zcJQH4XIpuMNj5OHx8dmvpr9doBnEoBi//8wI899cLx2FEwU
-         WTldm9wGl5A921wolh1hXaYNyH4QFWlTGm9uPdCE=
-Date:   Thu, 5 Nov 2020 14:24:19 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Lokesh Gidra <lokeshgidra@google.com>
-Cc:     Andrea Arcangeli <aarcange@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        James Morris <jmorris@namei.org>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Paul Moore <paul@paul-moore.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Daniel Colascione <dancol@dancol.org>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        KP Singh <kpsingh@google.com>,
-        David Howells <dhowells@redhat.com>,
-        Thomas Cedeno <thomascedeno@google.com>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Matthew Garrett <matthewgarrett@google.com>,
-        Aaron Goidel <acgoide@tycho.nsa.gov>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Adrian Reber <areber@redhat.com>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-        kaleshsingh@google.com, calin@google.com, surenb@google.com,
-        nnk@google.com, jeffv@google.com, kernel-team@android.com,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        hch@infradead.org, Daniel Colascione <dancol@google.com>
-Subject: Re: [PATCH v11 2/4] fs: add LSM-supporting anon-inode interface
-Message-ID: <20201105222419.GC2555324@gmail.com>
-References: <20201105213324.3111570-1-lokeshgidra@google.com>
- <20201105213324.3111570-3-lokeshgidra@google.com>
+        s=default; t=1604615072;
+        bh=m4VksZL7+JiqNpYze209mExqXP8l/+3AbfJkmoUOqu4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=PfPGXqzAET2q3RaQlhTZeLFhPGzVo8+uEhxpDjALDjkX6Ne0ll1Kn6HdVR69O0TJJ
+         deuq1eJ304vw8pNJJtdYWJqC7A3TOsxS7vxcPQT7euCpsCQse3ecL0LsF/aCjfjQ76
+         yXSh6nYR/sLhiJPH/MRiKVbIAtpnKtl4zP/lHobc=
+Date:   Thu, 5 Nov 2020 16:24:30 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Stephen Bates <sbates@raithlin.com>,
+        Logan Gunthorpe <logang@deltatee.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] PCI: fix a potential uninitentional integer overflow
+ issue
+Message-ID: <20201105222430.GA499522@bjorn-Precision-5520>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201105213324.3111570-3-lokeshgidra@google.com>
+In-Reply-To: <20201007123045.GS4282@kadam>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 01:33:22PM -0800, Lokesh Gidra wrote:
-> +/**
-> + * Like anon_inode_getfd(), but creates a new !S_PRIVATE anon inode rather than
-> + * reuse the singleton anon inode, and call the init_security_anon() LSM hook.
-> + * This allows the inode to have its own security context and for a LSM to
-> + * reject creation of the inode.  An optional @context_inode argument is also
-> + * added to provide the logical relationship with the new inode.  The LSM may use
-> + * @context_inode in init_security_anon(), but a reference to it is not held.
-> + */
-> +int anon_inode_getfd_secure(const char *name, const struct file_operations *fops,
-> +			    void *priv, int flags,
-> +			    const struct inode *context_inode)
-> +{
-> +	return __anon_inode_getfd(name, fops, priv, flags, context_inode, true);
-> +}
-> +EXPORT_SYMBOL_GPL(anon_inode_getfd_secure);
+On Wed, Oct 07, 2020 at 03:33:45PM +0300, Dan Carpenter wrote:
+> On Wed, Oct 07, 2020 at 12:46:15PM +0100, Colin King wrote:
+> > From: Colin Ian King <colin.king@canonical.com>
+> > 
+> > The shift of 1 by align_order is evaluated using 32 bit arithmetic
+> > and the result is assigned to a resource_size_t type variable that
+> > is a 64 bit unsigned integer on 64 bit platforms. Fix an overflow
+> > before widening issue by using the BIT_ULL macro to perform the
+> > shift.
+> > 
+> > Addresses-Coverity: ("Uninitentional integer overflow")
 
-inode_init_security_anon(), not init_security_anon().  Also please use a
-consistent line width (preferably 80 characters).
+s/Uninitentional/Unintentional/
+Also in subject (please also capitalize subject)
 
-> diff --git a/fs/libfs.c b/fs/libfs.c
-> index fc34361c1489..5b12228ecc81 100644
-> --- a/fs/libfs.c
-> +++ b/fs/libfs.c
-> @@ -1213,9 +1213,9 @@ static int anon_set_page_dirty(struct page *page)
->  };
->  
->  /*
-> - * A single inode exists for all anon_inode files. Contrary to pipes,
-> - * anon_inode inodes have no associated per-instance data, so we need
-> - * only allocate one of them.
-> + * A single inode exists for all anon_inode files, except for the secure ones.
-> + * Contrary to pipes and secure anon_inode inodes, ordinary anon_inode inodes
-> + * have no associated per-instance data, so we need only allocate one of them.
->   */
->  struct inode *alloc_anon_inode(struct super_block *s)
->  {
+Doesn't Coverity also assign an ID number for this specific issue?
+Can you include that as well, e.g.,
 
-This comment is still wrong, and the first sentence contradicts the second one.
-There are a lot of callers of alloc_anon_inode() and none of them use the
-singleton inode, since alloc_anon_inode() doesn't actually use it.  The
-singleton inode is only used by anon_inode_getfile() and anon_inode_getfd(),
-which already have comments describing how they use a singleton inode.
+  Addresses-Coverity-ID: 1226899 ("Unintentional integer overflow")
 
-IMO, just deleting this comment would be much better than either the original
-version or your proposed version.
+> > Fixes: 07d8d7e57c28 ("PCI: Make specifying PCI devices in kernel parameters reusable")
+> > Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> > ---
+> >  drivers/pci/pci.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> > index 6d4d5a2f923d..1a5844d7af35 100644
+> > --- a/drivers/pci/pci.c
+> > +++ b/drivers/pci/pci.c
+> > @@ -6209,7 +6209,7 @@ static resource_size_t pci_specified_resource_alignment(struct pci_dev *dev,
+> >  			if (align_order == -1)
+> >  				align = PAGE_SIZE;
+> >  			else
+> > -				align = 1 << align_order;
+> > +				align = BIT_ULL(align_order);
+> 
+> "align_order" comes from sscanf() so Smatch thinks it's not trusted.
+> Anything above 63 is undefined behavior.  There should be a bounds check
+> on this but I don't know what the valid values of "align" are.
 
-> diff --git a/include/linux/anon_inodes.h b/include/linux/anon_inodes.h
-> index d0d7d96261ad..6cf447cfceed 100644
-> --- a/include/linux/anon_inodes.h
-> +++ b/include/linux/anon_inodes.h
-> @@ -10,10 +10,15 @@
->  #define _LINUX_ANON_INODES_H
->  
->  struct file_operations;
-> +struct inode;
->  
->  struct file *anon_inode_getfile(const char *name,
->  				const struct file_operations *fops,
->  				void *priv, int flags);
-> +int anon_inode_getfd_secure(const char *name,
-> +			    const struct file_operations *fops,
-> +			    void *priv, int flags,
-> +			    const struct inode *context_inode);
->  int anon_inode_getfd(const char *name, const struct file_operations *fops,
->  		     void *priv, int flags);
->  
+The spec doesn't explicitly say what the size limit for 64-bit BARs
+is, but it does say 32-bit BARs can support up to 2GB (2^31).  So I
+infer that 2^63 would be the limit for 64-bit BARs.
 
-Keeping declarations in the same order as the definitions can be helpful.
+What about something like the following?  To me, BIT_ULL doesn't seem
+like an advantage over "1ULL << ", but maybe there's a reason to use
+it.
 
-- Eric
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index 8b9bea8ba751..6e17d0a6828a 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -6197,19 +6197,21 @@ static resource_size_t pci_specified_resource_alignment(struct pci_dev *dev,
+ 	while (*p) {
+ 		count = 0;
+ 		if (sscanf(p, "%d%n", &align_order, &count) == 1 &&
+-							p[count] == '@') {
++		    p[count] == '@') {
+ 			p += count + 1;
++			if (align_order > 63) {
++				pr_err("PCI: Invalid requested alignment (order %d)\n",
++				       align_order);
++				align_order = PAGE_SHIFT;
++			}
+ 		} else {
+-			align_order = -1;
++			align_order = PAGE_SHIFT;
+ 		}
+ 
+ 		ret = pci_dev_str_match(dev, p, &p);
+ 		if (ret == 1) {
+ 			*resize = true;
+-			if (align_order == -1)
+-				align = PAGE_SIZE;
+-			else
+-				align = 1 << align_order;
++			align = 1ULL << align_order;
+ 			break;
+ 		} else if (ret < 0) {
+ 			pr_err("PCI: Can't parse resource_alignment parameter: %s\n",
