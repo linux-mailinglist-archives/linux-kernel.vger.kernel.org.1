@@ -2,144 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70D4C2A8275
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 16:44:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5E562A827B
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 16:45:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731297AbgKEPo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 10:44:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34366 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731259AbgKEPo3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 10:44:29 -0500
-Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 47D7320782;
-        Thu,  5 Nov 2020 15:44:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604591067;
-        bh=jbZ5JSIyez+0E8oWD8sWvQCNVHpuJ9HD98Y+T9Fg2Aw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=c0dMUvvJgpdw+58yt+JO81K55V16ExHke69QwxXwByN4ckApzKAG2jXIjXi4aSIyt
-         ruG5DeJ8Fcef/ZoZ19HRM76A9DhOftxDU32BNYCBvip4Z4ObF4f2p7Isq/HDinsl2C
-         z5JMvCuqcu4LXkaaYz/FjKvLNfss+XT6JNM8SHts=
-Date:   Thu, 5 Nov 2020 10:44:26 -0500
-From:   Sasha Levin <sashal@kernel.org>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc:     Paul Bolle <pebolle@tiscali.nl>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Rander Wang <rander.wang@intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 5.9 080/391] ASoC: SOF: fix a runtime pm issue in SOF
- when HDMI codec doesnt work
-Message-ID: <20201105154426.GI2092@sasha-vm>
-References: <20201103203348.153465465@linuxfoundation.org>
- <20201103203352.505472614@linuxfoundation.org>
- <64a618a3cc00de4a1c3887b57447906351db77b9.camel@tiscali.nl>
- <20201105143551.GH2092@sasha-vm>
- <1f0c6a62-5208-801d-d7c2-725ee8da19b2@linux.intel.com>
+        id S1731367AbgKEPpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 10:45:17 -0500
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:36845 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731202AbgKEPpQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 10:45:16 -0500
+Received: by mail-wr1-f67.google.com with SMTP id x7so2321081wrl.3
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 07:45:14 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=W1nC8Ep9mivgJZksY7MG5lSo7fvXUWLe5EVSJUjtJ2w=;
+        b=U21S6VzMslqV3hLOfEa+otU2dkuVBjSOietDRBn1QMnacHyhXOIeL07X2NIq2+2ay2
+         1BVuQkVnY7eW1frmNDm0cj66bAJhpyNivNfaWQ6dgmqRSwPaHL/SqwysYrQ+eb5u4Nhi
+         ohCJtSGHUPSR9F/P4NBJYlyMv4kg9FbGaX1rs+Jc+lGQX43LFunlvRwEcajlzn/Jh+aJ
+         Q27TPBtFXUYsxbXyx0jrlWPHSgyu4LwTeV+Dt7byimbJAXrRs078yNyxMXbFRuS+RtCW
+         ueQyJ3oSVBg0kZKRkUp/sEeirlq04b2NVbp5+vmP9y5+Kv/DyHTRGyJek9JzDt06eVZS
+         UT7Q==
+X-Gm-Message-State: AOAM531Ts2wmMzTxhRzG/a/BQkgSlkzvR6WAMydO5LfwJNT0x97c6gdf
+        4IE1z6tkNYdsgMXKZEAqlA6iufYj38JjKlr8oj0=
+X-Google-Smtp-Source: ABdhPJxOzi1LYhpQNz43dcRN/35mXWEtr1O27x38BbvP6TvwwMe56G+SMwctz2ZAacPqdCqDoxNx8kZCRZxgszDaoNE=
+X-Received: by 2002:adf:84a5:: with SMTP id 34mr3642106wrg.8.1604591113331;
+ Thu, 05 Nov 2020 07:45:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1f0c6a62-5208-801d-d7c2-725ee8da19b2@linux.intel.com>
+References: <20201102145221.309001-1-namhyung@kernel.org> <20201102145221.309001-2-namhyung@kernel.org>
+ <f92281d1-03ec-a1bc-b54f-e2b867d5b787@linux.intel.com>
+In-Reply-To: <f92281d1-03ec-a1bc-b54f-e2b867d5b787@linux.intel.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Fri, 6 Nov 2020 00:45:02 +0900
+Message-ID: <CAM9d7cgsNEoeotoumY0S9kvn0uc34TOas_3rVRL3VyQ9_VVM5Q@mail.gmail.com>
+Subject: Re: [RFC 1/2] perf/core: Enable sched_task callbacks if PMU has it
+To:     "Liang, Kan" <kan.liang@linux.intel.com>
+Cc:     Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>, Gabriel Marin <gmx@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 08:47:57AM -0600, Pierre-Louis Bossart wrote:
->
->
->On 11/5/20 8:35 AM, Sasha Levin wrote:
->>On Thu, Nov 05, 2020 at 02:23:35PM +0100, Paul Bolle wrote:
->>>Greg Kroah-Hartman schreef op di 03-11-2020 om 21:32 [+0100]:
->>>>From: Rander Wang <rander.wang@intel.com>
->>>>
->>>>[ Upstream commit 6c63c954e1c52f1262f986f36d95f557c6f8fa94 ]
->>>>
->>>>When hda_codec_probe() doesn't initialize audio component, we disable
->>>>the codec and keep going. However,the resources are not released. The
->>>>child_count of SOF device is increased in snd_hdac_ext_bus_device_init
->>>>but is not decrease in error case, so SOF can't get suspended.
->>>>
->>>>snd_hdac_ext_bus_device_exit will be invoked in HDA framework if it
->>>>gets a error. Now copy this behavior to release resources and decrease
->>>>SOF device child_count to release SOF device.
->>>>
->>>>Signed-off-by: Rander Wang <rander.wang@intel.com>
->>>>Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
->>>>Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
->>>>Reviewed-by: Guennadi Liakhovetski 
->>>><guennadi.liakhovetski@linux.intel.com>
->>>>Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
->>>>Link: https://lore.kernel.org/r/20200825235040.1586478-3-ranjani.sridharan@linux.intel.com
->>>>
->>>>Signed-off-by: Mark Brown <broonie@kernel.org>
->>>>Signed-off-by: Sasha Levin <sashal@kernel.org>
->>>>---
->>>> sound/soc/sof/intel/hda-codec.c | 4 ++--
->>>> 1 file changed, 2 insertions(+), 2 deletions(-)
->>>>
->>>>diff --git a/sound/soc/sof/intel/hda-codec.c 
->>>>b/sound/soc/sof/intel/hda-codec.c
->>>>index 2c5c451fa19d7..c475955c6eeba 100644
->>>>--- a/sound/soc/sof/intel/hda-codec.c
->>>>+++ b/sound/soc/sof/intel/hda-codec.c
->>>>@@ -151,7 +151,7 @@ static int hda_codec_probe(struct 
->>>>snd_sof_dev *sdev, int address,
->>>>         if (!hdev->bus->audio_component) {
->>>>             dev_dbg(sdev->dev,
->>>>                 "iDisp hw present but no driver\n");
->>>>-            return -ENOENT;
->>>>+            goto error;
->>>>         }
->>>>         hda_priv->need_display_power = true;
->>>>     }
->>>>@@ -174,7 +174,7 @@ static int hda_codec_probe(struct 
->>>>snd_sof_dev *sdev, int address,
->>>>          * other return codes without modification
->>>>          */
->>>>         if (ret == 0)
->>>>-            ret = -ENOENT;
->>>>+            goto error;
->>>>     }
->>>>
->>>>     return ret;
->>>
->>>My local build of v5.9.5 broke on this patch.
->>>
->>>sound/soc/sof/intel/hda-codec.c: In function 'hda_codec_probe':
->>>sound/soc/sof/intel/hda-codec.c:177:4: error: label 'error' used 
->>>but not defined
->>> 177 |    goto error;
->>>     |    ^~~~
->>>make[4]: *** [scripts/Makefile.build:283: 
->>>sound/soc/sof/intel/hda-codec.o] Error 1
->>>make[3]: *** [scripts/Makefile.build:500: sound/soc/sof/intel] Error 2
->>>make[2]: *** [scripts/Makefile.build:500: sound/soc/sof] Error 2
->>>make[1]: *** [scripts/Makefile.build:500: sound/soc] Error 2
->>>make: *** [Makefile:1778: sound] Error 2
->>>
->>>There's indeed no error label in v5.9.5. (There is one in 
->>>v5.10-rc2, I just
->>>checked.) Is no-one else running into this?
->>
->>It seems that setting CONFIG_SND_SOC_SOF_HDA_AUDIO_CODEC=y is very
->>"difficult", it's not being set by allmodconfig nor is it easy to
->>manually set it up.
->>
->>I'll revert the patch, but it would be nice to make sure it's easier to
->>test this out too.
->
->this issue comes from out-of-order patches, give me a couple of hours 
->to look into this before reverting. thanks!
+Hello,
 
-Sure! Thanks for looking into this.
+On Thu, Nov 5, 2020 at 11:47 PM Liang, Kan <kan.liang@linux.intel.com> wrote:
+>
+>
+>
+> On 11/2/2020 9:52 AM, Namhyung Kim wrote:
+> > If an event associated with a PMU which has a sched_task callback,
+> > it should be called regardless of cpu/task context.  For example,
+>
+>
+> I don't think it's necessary. We should call it when we have to.
+> Otherwise, it just waste cycles.
+> Shouldn't the patch 2 be enough?
 
--- 
-Thanks,
-Sasha
+I'm not sure, without this patch __perf_event_task_sched_in/out
+cannot be called for per-cpu events (w/o cgroups)  IMHO.
+And I could not find any other place to check the
+perf_sched_cb_usages.
+
+Thanks
+Namhyung
+
+
+>
+> > a per-cpu event might enable large PEBS buffers so it needs to flush
+> > the buffer whenever task scheduling happens. >
+> > The underlying PMU may or may not require this for the given event,
+> > but it will be handled in the pmu::sched_task() callback anyway.
+> >
+> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> > ---
+> >   kernel/events/core.c | 4 ++++
+> >   1 file changed, 4 insertions(+)
+> >
+> > diff --git a/kernel/events/core.c b/kernel/events/core.c
+> > index b458ed3dc81b..aaa0155c4142 100644
+> > --- a/kernel/events/core.c
+> > +++ b/kernel/events/core.c
+> > @@ -4696,6 +4696,8 @@ static void unaccount_event(struct perf_event *event)
+> >               dec = true;
+> >       if (has_branch_stack(event))
+> >               dec = true;
+> > +     if (event->pmu->sched_task)
+> > +             dec = true;
+> >       if (event->attr.ksymbol)
+> >               atomic_dec(&nr_ksymbol_events);
+> >       if (event->attr.bpf_event)
+> > @@ -11225,6 +11227,8 @@ static void account_event(struct perf_event *event)
+> >               inc = true;
+> >       if (is_cgroup_event(event))
+> >               inc = true;
+> > +     if (event->pmu->sched_task)
+> > +             inc = true;
+> >       if (event->attr.ksymbol)
+> >               atomic_inc(&nr_ksymbol_events);
+> >       if (event->attr.bpf_event)
+> >
