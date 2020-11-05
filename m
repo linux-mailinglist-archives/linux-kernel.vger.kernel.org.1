@@ -2,94 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCB142A73E0
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 01:36:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 523502A73E7
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 01:39:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387609AbgKEAf7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 19:35:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56152 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732295AbgKEAf7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 19:35:59 -0500
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B7F5C0613CF;
-        Wed,  4 Nov 2020 16:35:59 -0800 (PST)
-Received: by mail-ed1-x542.google.com with SMTP id a71so123900edf.9;
-        Wed, 04 Nov 2020 16:35:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=aLDQGGg5UcbYGaPXDdfvGmApVoUZefXGOzSV4bLlTjc=;
-        b=oDimwz5BeDsibHpSNOEwwLrdxCgVLVO9UCfD7eIBxak4v/10FpJGGNjZxgSgHBISXP
-         LE0AOgIq3X4eE3c8FlDe8FjkWf+KOGZWwue9i6PINoU5PO+HpAx7J/hJPdpovnbVolnA
-         VaI11aHta4LfnwxJ9wCWIDcHf4WR0AZRzedAi5IsyfSsfEbJwhRVVatpinva8UIB7Dcz
-         PKl4g20fJW85olQBD8oBpiU3fbV4Rn4HiK+9PA00ui3zsKU324WR7+g42d8I5WWxkOK/
-         Fcoa5UIELIvTXCT9hhoKYOwQHRTr37Zlycal/rjgIToswvMw/NUD2Boac+q5hPbECJIi
-         vsZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=aLDQGGg5UcbYGaPXDdfvGmApVoUZefXGOzSV4bLlTjc=;
-        b=mJtEslfF4qVIKFhPwyF5HtnQ8WXZVVb2ZAOEckd2Wi+nO2Hjdk7XIu0WLmULQP8TnN
-         /Ae36lg221g4uHr9iwK8T0shJ9fZ/waEiY8RveZ1g693kpUOaJeefbllPgwuKufPASYZ
-         mE52dexsIoaFI4rBMkR3Hy7jExR8yE73t0s+ST901apZsBr20YsIUmHPljsiG2tup9Z9
-         k1t/kKdg0bGwGYHnpeX10uZZfSR1A/lEWK2CYK8dNH0swi4G1c98UgYwfQhW/U8ntrsc
-         79LbCYXBFzrNQSpZxMRLXtnuiNke1XnSIKZJAyjNlk+HsPiz0RE+ho9FDSpTC+ujoFDu
-         lFtQ==
-X-Gm-Message-State: AOAM5323eIwDUmB3x/aOUrmZgkhhzUxP3WYWTlDopVAVenwmaQbGq5a0
-        fdNEyhRKk9Wk3BB/b02mKZM=
-X-Google-Smtp-Source: ABdhPJyhh6ixb8agoVjI1D/kg+/m5kZt31NOV93wjE0lrfMhAUp8+oVGoA+1pl6PJBh166IpBb/DmQ==
-X-Received: by 2002:a05:6402:b35:: with SMTP id bo21mr497649edb.52.1604536557813;
-        Wed, 04 Nov 2020 16:35:57 -0800 (PST)
-Received: from skbuf ([188.25.2.177])
-        by smtp.gmail.com with ESMTPSA id m1sm16109ejj.117.2020.11.04.16.35.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 16:35:57 -0800 (PST)
-Date:   Thu, 5 Nov 2020 02:35:56 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Richard Cochran <richardcochran@gmail.com>
-Cc:     min.li.xe@renesas.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 3/3] ptp: idt82p33: optimize _idt82p33_adjfine
-Message-ID: <20201105003556.tpgvlh3ponyxzjjl@skbuf>
-References: <1604505709-5483-1-git-send-email-min.li.xe@renesas.com>
- <1604505709-5483-3-git-send-email-min.li.xe@renesas.com>
- <20201104164657.GE16105@hoboy.vegasvil.org>
+        id S2387668AbgKEAjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 19:39:18 -0500
+Received: from ozlabs.org ([203.11.71.1]:44987 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387455AbgKEAjR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 19:39:17 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CRPly6Ktpz9sTv;
+        Thu,  5 Nov 2020 11:39:10 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1604536754;
+        bh=y+kVjqzWIE9w6gAhF1CmZCkqQUFx1mNjcu8zB4cc7aE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ZYB8h90GxdHZbVK+DxSPUXmozMA0dTiQkNpayIdgq29nzz4HtatfuWi+NChlkAyND
+         Cwc346Ms1mp9WL7e3oS/+bWREuKbQdz/mYmdoeY2p8vnquCAR88YtgMR2NNXnJX2RC
+         loAysirj+x3tW1mMr+0BBC3jCZ+wqWoj7KV6yMeGcsa7/As3CZ3s8LVQtbhkJTlPgI
+         OjeoTr/iphtdz+sSrsy8m2sRiIozBX792cIptf8pix9zf1/GRqaspTBuXyG/jDu2ku
+         uzLlSbZeBjrh3HKnMMAEIqrd/5Kr+1AT05pLQYe1JOXovDq3w1/TqcNPZahmOFkaFF
+         rkUsMsiNAcMGQ==
+Date:   Thu, 5 Nov 2020 11:39:05 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>
+Cc:     Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Dave Airlie <airlied@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Mihir Bhogilal Patel <Mihir.Patel@amd.com>
+Subject: Re: linux-next: manual merge of the drm-misc tree with the amdgpu
+ tree
+Message-ID: <20201105113905.55a7d59f@canb.auug.org.au>
+In-Reply-To: <20201028120631.1a1e239c@canb.auug.org.au>
+References: <20201028120631.1a1e239c@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201104164657.GE16105@hoboy.vegasvil.org>
+Content-Type: multipart/signed; boundary="Sig_/UaQZW44KOmMlAG5YLP8483G";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 08:46:57AM -0800, Richard Cochran wrote:
-> On Wed, Nov 04, 2020 at 11:01:49AM -0500, min.li.xe@renesas.com wrote:
-> > From: Min Li <min.li.xe@renesas.com>
-> >
-> > Use div_s64 so that the neg_adj is not needed.
+--Sig_/UaQZW44KOmMlAG5YLP8483G
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+
+Hi all,
+
+On Wed, 28 Oct 2020 12:06:31 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
 >
-> Back in the day, I coded the neg_adj because there was some issue with
-> signed 64 bit division that I can't recall now.  Either div_s64 didn't
-> exist or it was buggy on some archs... there was _some_ reason.
->
-> So unless you are sure that this works on all platforms, I would leave
-> it alone.
+> Today's linux-next merge of the drm-misc tree got a conflict in:
+>=20
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c
+>=20
+> between commit:
+>=20
+>   ff72bc403170 ("drm/amdgpu: Add debugfs entry for printing VM info")
+>=20
+> from the amdgpu tree and commit:
+>=20
+>   4671078eb8e3 ("drm/amdgpu: switch over to the new pin interface")
+>=20
+> from the drm-misc tree.
+>=20
+> I fixed it up (I used the former version of this file and added the
+> following patch) and can carry the fix as necessary. This is now fixed
+> as far as linux-next is concerned, but any non trivial conflicts should
+> be mentioned to your upstream maintainer when your tree is submitted
+> for merging.  You may also want to consider cooperating with the
+> maintainer of the conflicting tree to minimise any particularly complex
+> conflicts.
+>=20
+> From: Stephen Rothwell <sfr@canb.auug.org.au>
+> Date: Wed, 28 Oct 2020 11:52:31 +1100
+> Subject: [PATCH] merge fix up for "drm/amdgpu: Add debugfs entry for prin=
+ting
+>  VM info"
+>=20
+> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> ---
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_object.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_object.c b/drivers/gpu/drm=
+/amd/amdgpu/amdgpu_object.c
+> index baca32263ec4..06dfe9b1c7e6 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_object.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_object.c
+> @@ -1555,7 +1555,7 @@ u64 amdgpu_bo_print_info(int id, struct amdgpu_bo *=
+bo, struct seq_file *m)
+>  	seq_printf(m, "\t\t0x%08x: %12lld byte %s",
+>  			id, size, placement);
+> =20
+> -	pin_count =3D READ_ONCE(bo->pin_count);
+> +	pin_count =3D READ_ONCE(bo->tbo.pin_count);
+>  	if (pin_count)
+>  		seq_printf(m, " pin count %d", pin_count);
+> =20
 
-On the other hand and with all due respect, saying that it may have been
-'buggy on some archs back in the day' and then not bringing any evidence
-is a bit of a strange claim to make.
+This fix up is now needed in the merge between the drm tree and the
+amdgpu tree.
 
-I am actively using div_s64 in drivers/net/dsa/sja1105/sja1105_ptp.c
-successfully on arm and arm64.
+--=20
+Cheers,
+Stephen Rothwell
 
-We may keep the ptp_clock_info::adjfine procedure as is, and to be
-copied by everyone, because we can't make sure that it works "on all
-platforms" (aka "cargo cult"). Or we could waste a few hours from
-somebody's time, until he figures out how to bisect the IDT 82P33 PTP
-driver (a driver with 3 patches, and 3 more with Min's series) to find a
-1-line change, and then we could find out what the problem you were
-seeing was. I say waste that guy's time :)
+--Sig_/UaQZW44KOmMlAG5YLP8483G
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+jSakACgkQAVBC80lX
+0GyDAAf/XU3M5gSGKWNWV1hB78GI3bM3JtfQiyozdL5AaxKMJAZTlTs2f2gqiVA6
+MfVj63aN5eWdodcba957C4wezYkLs4hbSEJv3MS8J1UtAOcxezn33UgOVivNE2X/
+baReqXQfwRzBNZdlwg8PwK/OtZBFzkKkR9AHZ1L9Q5KiJxGraHhcHOlo2vbBcoMb
+sZ0Q2IwOHzDInaDkRbMmRj09Imk+fdp8iil0/3wJvp/tr1PLtzwedTLPiT8yxD/y
+hwXh6rZQzp6XKBlTjOP9bHRNipsBSwFnq/JLU8OwVuNYjjyLQMJ5mtMixGX5HILX
+65fpnvPK+n4RWmomKY5Opaz9FSoQ3w==
+=1o3K
+-----END PGP SIGNATURE-----
+
+--Sig_/UaQZW44KOmMlAG5YLP8483G--
