@@ -2,77 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF6A22A7C90
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 12:05:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E0372A7C91
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 12:05:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730052AbgKELFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 06:05:00 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:36963 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729922AbgKELFA (ORCPT
+        id S1730074AbgKELFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 06:05:23 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:7146 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729263AbgKELFX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 06:05:00 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-274-4IrfFHVJNbmzEx_V1Cbj9g-1; Thu, 05 Nov 2020 11:04:55 +0000
-X-MC-Unique: 4IrfFHVJNbmzEx_V1Cbj9g-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Thu, 5 Nov 2020 11:04:55 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Thu, 5 Nov 2020 11:04:55 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Jiri Slaby' <jirislaby@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        "paulkf@microgate.com" <paulkf@microgate.com>
-Subject: RE: [PATCH 27/36] tty: synclinkmp: Mark never checked 'readval' as
- __always_unused
-Thread-Topic: [PATCH 27/36] tty: synclinkmp: Mark never checked 'readval' as
- __always_unused
-Thread-Index: AQHWs1OOseTjfttl5U67c83KY45gVqm5Xxyw
-Date:   Thu, 5 Nov 2020 11:04:54 +0000
-Message-ID: <6515b9ff5a9343f5a713e337f41450cc@AcuMS.aculab.com>
-References: <20201104193549.4026187-1-lee.jones@linaro.org>
- <20201104193549.4026187-28-lee.jones@linaro.org>
- <0a4043ee-dad5-7691-8c67-db73d3c12f52@kernel.org>
- <20201105084341.GZ4488@dell>
- <a95f8d0d-28ef-7351-cdbb-7da5ad8aa9ad@kernel.org>
-In-Reply-To: <a95f8d0d-28ef-7351-cdbb-7da5ad8aa9ad@kernel.org>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Thu, 5 Nov 2020 06:05:23 -0500
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CRgfP2bwhz15RqR;
+        Thu,  5 Nov 2020 19:05:17 +0800 (CST)
+Received: from [127.0.0.1] (10.57.22.126) by DGGEMS405-HUB.china.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Thu, 5 Nov 2020
+ 19:05:11 +0800
+Subject: Re: [PATCH v3 0/5] Introduce a new helper marco
+ DEFINE_SHOW_STORE_ATTRIBUTE at seq_file.c
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     <akpm@linux-foundation.org>, <viro@zeniv.linux.org.uk>,
+        <andriy.shevchenko@linux.intel.com>,
+        <linux-kernel@vger.kernel.org>, <martin.petersen@oracle.com>,
+        <john.garry@huawei.com>, <himanshu.madhani@cavium.com>,
+        <felipe.balbi@linux.intel.com>, <uma.shankar@intel.com>,
+        <anshuman.gupta@intel.com>, <animesh.manna@intel.com>,
+        <linux-usb@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
+        <linuxarm@huawei.com>
+References: <1604406584-53926-1-git-send-email-luojiaxing@huawei.com>
+ <20201103133644.GA2067567@kroah.com>
+From:   luojiaxing <luojiaxing@huawei.com>
+Message-ID: <69d4de3f-cf1f-3530-fc53-5cf30d11010d@huawei.com>
+Date:   Thu, 5 Nov 2020 19:05:11 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.2.1
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
+In-Reply-To: <20201103133644.GA2067567@kroah.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+X-Originating-IP: [10.57.22.126]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiA+PiBBbmQgdGhlIGxvb3AgY2FuIGJlIHR1cm5lZCBpbnRvIG5kZWxheToNCj4gPj4NCj4gPj4g
-ICAgICAgICAgLyoNCj4gPj4gICAgICAgICAgICogRm9yY2UgYXQgbGVhc3QgMTcwbnMgZGVsYXkg
-YmVmb3JlIGNsZWFyaW5nDQo+ID4+ICAgICAgICAgICAqIHJlc2V0IGJpdC4gRWFjaCByZWFkIGZy
-b20gTENSIHRha2VzIGF0IGxlYXN0DQo+ID4+ICAgICAgICAgICAqIDMwbnMgc28gMTAgdGltZXMg
-Zm9yIDMwMG5zIHRvIGJlIHNhZmUuDQo+ID4+ICAgICAgICAgICAqLw0KPiA+PiAgICAgICAgICBm
-b3IoaT0wO2k8MTA7aSsrKQ0KPiA+PiAgICAgICAgICAgICAgICAgIHJlYWR2YWwgPSAqTWlzY0N0
-cmw7DQo+ID4NCj4gPiBBZ2Fpbiwgc2luY2UgSSBjYW4ndCB0ZXN0IHRoaXMsIEkgZG8gbm90IHdh
-bnQgdGhpcyBwYXRjaCB0byBjb250YWluDQo+ID4gYW55IGZ1bmN0aW9uYWwgY2hhbmdlcy4gIEFG
-QUlDLCB0aGUgMTAgcmVnaXN0ZXIgcmVhZHMgbXVzdCBzdGlsbA0KPiA+IGhhcHBlbiBhZnRlciB0
-aGlzIHBhdGNoIGlzIGFwcGxpZWQuDQoNCllvdSBjYW4ndCB1c2UgbmRlbGF5KCk7IHRoZSB3cml0
-ZXMgY2FuIGdldCBwb3N0ZWQgc28gY2FuIGFwcGVhcg0KbXVjaCBjbG9zZXIgdG9nZXRoZXIgYnkg
-dGhlIHRpbWUgdGhleSBnZXQgdG8gdGhlIGFjdHVhbCBoYXJkd2FyZS4NCk11bHRpcGxlIHZvbGF0
-aWxlIHJlYWRzIGRvbid0IG5lZWQgYSB0YXJnZXQgdmFyaWFibGUuDQooU2hvdWxkbid0IHRoZXkg
-YWxzbyByZWFsIHJlYWRsKCk/KQ0KDQpEZWxldGluZyB0aGUgZHJpdmVyIHdvcmtzLi4uDQoNCglE
-YXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91
-bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5
-NzM4NiAoV2FsZXMpDQo=
+Hi, Greg
+
+On 2020/11/3 21:36, Greg KH wrote:
+> On Tue, Nov 03, 2020 at 08:29:39PM +0800, Luo Jiaxing wrote:
+>> We already own DEFINE_SHOW_ATTRIBUTE() helper macro for defining attribute
+>> for read-only file, but we found many of drivers also want a helper macro
+>> for read-write file too.
+>>
+>> So we add this macro to help decrease code duplication.
+>>
+>> ---
+>>   v1->v2:
+>>          1.Rename DEFINE_STORE_ATTRIBUTE() to DEFINE_SHOW_STORE_ATTRIBUTE().
+>>   v2->v3:
+>>          1.Fixed some spelling mistakes in commit.
+>>          2.Revised resumes are added for easy tracing.
+> You forgot to address Al Viro's review comments :(
+
+
+Yes, I remember that AI Viro point out that he don't want this, but Andy 
+reply later and suggest me to modify the naming,
+
+So I send a v2 for review.
+
+
+Actually I am not sure about what you mean by " forgot to address Al 
+Viro's review comments ". Should I add AI Viro's review comments at my 
+changes description?
+
+
+Thanks
+
+Jiaxing
+
+
+>
+>
+> .
+>
 
