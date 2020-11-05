@@ -2,139 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4B472A751F
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 02:55:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E21D2A751C
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 02:55:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733211AbgKEBz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 20:55:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40232 "EHLO
+        id S1733178AbgKEBzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 20:55:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726152AbgKEBz0 (ORCPT
+        with ESMTP id S1726152AbgKEBzE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 20:55:26 -0500
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D443C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 17:55:26 -0800 (PST)
-Received: by mail-ej1-x642.google.com with SMTP id j24so256747ejc.11
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 17:55:26 -0800 (PST)
+        Wed, 4 Nov 2020 20:55:04 -0500
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F392C0613D2
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 17:55:04 -0800 (PST)
+Received: by mail-pl1-x643.google.com with SMTP id k7so5158plk.3
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 17:55:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=granulate.io; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=HqVJZh5R4b0upFaHIKbbvK1EuK7eSb8uOUfKK5wvca0=;
-        b=H/yoa0G+f1T7wV9L4s8DMnkd3WINezv5JYD+GVE3JEsOWz6RiJlCTjyc/FqTdie2zR
-         kAmYA9aR8r5Qh6LJtJvFJV4Yo07bkgq8ZGsyD64H/e09GD0QuJpiVdAIy6YOoO3R3jWa
-         EH/siG/J341BKZtJ6oQ401cpXakzlWxhDCdJLG8oSmOZ3rp3/CVp2SbE7vPPyi095R8A
-         aKV/9pi25UkxkSQZoFy++sG0QgDjrXDyKyg9uqhVYZoM7lTwsjFKd1JzA20cUTrKwAX/
-         WlowpbGFtgw3PkDNBPsUi/K3Ao2V+Gewxk2IVR1mCxoEUZt18Tk19XV2S3KsN5O8gXgb
-         H01w==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=BIbhTyycJdg8v4aomXZ/rLjTbqfKa4wfwSkv3CiGgXs=;
+        b=dUppzHrDtmOkl4va+Fx+WrFGpF1BztJf6JjZXyVmIr/spj4bPIo0htN3VmSAeRlYpD
+         6kc/iHPqNy5rhMW2ijvPu2k2PMHYTTBrg8tZW4Fz5jDWUhp//QRKIS9TygUprrITg3op
+         ueEbEAwtbdgKZbbjyiVC1B7S81U+ybKp5pys8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=HqVJZh5R4b0upFaHIKbbvK1EuK7eSb8uOUfKK5wvca0=;
-        b=A/IB183/h8xjZqVHMO8KFCRKmA7l+OwWMufz8IStlWKtrQbAcv8+cwAVFZg/xFMOai
-         agIkLUyDiuhI/tTUy2bBwpota1QwJpCZe3jLdsahdzN6W1AnWOIp7M8qpH1v8xiW76D0
-         hq50/0nEypt9zflCU2QboGmv7C51D1+Stl5dcXJzlIlCe1XZ+9cJFZDUPWedrj6J1Z3m
-         noLY3JRdaae+9zsxBVmK7nSOL1pSnKNBjaokHW9y7F6nO5INOApL6PXKLyoxqR+TbdMO
-         YTx6RjeiSwC7FRVx8EIHVXpkh0OqdWAGNMjEBu+qDiA031FcEerwKwsfMst5KjztCjnW
-         3SCw==
-X-Gm-Message-State: AOAM5326QQN1YNrv79BymWKdIkC0v0qNn9lt1DWiAkXlPvsM8VwVJM/n
-        fSamUvIhlLb8Gtw+suDEO/2ClUTVEkEWCPf8
-X-Google-Smtp-Source: ABdhPJxi3Z9nqSMxIsb4RGYEC0u58IyNjZCYisHSttVMOTeSinR4csNi5inAkqpOl/QOAo7k9Wtrzg==
-X-Received: by 2002:a17:906:ca54:: with SMTP id jx20mr29218ejb.541.1604541325350;
-        Wed, 04 Nov 2020 17:55:25 -0800 (PST)
-Received: from localhost.localdomain ([5.22.135.99])
-        by smtp.gmail.com with ESMTPSA id m27sm80084ejg.3.2020.11.04.17.55.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 17:55:24 -0800 (PST)
-From:   Yonatan Goldschmidt <yonatan.goldschmidt@granulate.io>
-To:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Yonatan Goldschmidt <yonatan.goldschmidt@granulate.io>
-Subject: [PATCH v3 1/2] perf tools: Add 'in_pidns' to nsinfo struct
-Date:   Thu,  5 Nov 2020 03:54:18 +0200
-Message-Id: <20201105015418.1725218-1-yonatan.goldschmidt@granulate.io>
-X-Mailer: git-send-email 2.25.0
-In-Reply-To: <20201105014833.1724363-1-yonatan.goldschmidt@granulate.io>
-References: <20201105014833.1724363-1-yonatan.goldschmidt@granulate.io>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BIbhTyycJdg8v4aomXZ/rLjTbqfKa4wfwSkv3CiGgXs=;
+        b=SHqeaiGY/SnFFkPlA5upWDxCx44e1pMIkD7NiWkUda31u9rfTyx60oVoegNFlUBCPg
+         0Jp1dJmOK7mxcQJf2azMKT79zRC0mzkBo7664UJTmhzztPZzWCBojJrSEdWgGmpva2UE
+         rcLChNZoSzLNgcXCr9QPH645N0XUHD9AElHx7ZUaqOUPGI03OtiL5Ty1xnId7z0/bxsw
+         /oskSj7jEPk+koL6AV905CS5efYCaxQ0Z2aNI9fgWC2FxU8hbvb5r3Xskc2obWtu1Ahs
+         dQdHFwOTxPyoNHiw+kksi0aqAaDYzyTuQdvNqJ5rkQBgo2QqIqPRMUOrE08Ws7f0ARjL
+         P8vg==
+X-Gm-Message-State: AOAM531m6oo8bLz9pXauLYHb0OqC15JN95/wytqA7kn/85OZGxVf/uq/
+        XNbiMyw6v7AmPSsxsWGNicV7WA==
+X-Google-Smtp-Source: ABdhPJzR3PTjViA5QvU9CtF4+v3zgRkRd/mHdtENh2KW+Fxdc/5jmJ/eheYhfIkAyalWEwBzj03F2Q==
+X-Received: by 2002:a17:902:a60c:b029:d5:dc92:a1ca with SMTP id u12-20020a170902a60cb02900d5dc92a1camr237261plq.16.1604541303863;
+        Wed, 04 Nov 2020 17:55:03 -0800 (PST)
+Received: from localhost ([2620:15c:202:1:f693:9fff:fef4:e70a])
+        by smtp.gmail.com with ESMTPSA id y8sm154592pfe.41.2020.11.04.17.55.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Nov 2020 17:55:03 -0800 (PST)
+Date:   Wed, 4 Nov 2020 17:55:01 -0800
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] arm64: dts: qcom: sc7180-trogdor: Make pp3300_a the
+ default supply for pp3300_hub
+Message-ID: <20201105015501.GA3079843@google.com>
+References: <20201103103749.1.I0ed4abdd2b2916fbedf76be254bc3457fb8b9655@changeid>
+ <CAD=FV=Wc-b75a-QSX8qLq0+fCbcnvh_6q+N6azL=+Tk+rMie1g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAD=FV=Wc-b75a-QSX8qLq0+fCbcnvh_6q+N6azL=+Tk+rMie1g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Provides an accurate mean to determine if the owner thread
-is in a different PID namespace.
+Hi Doug,
 
-Signed-off-by: Yonatan Goldschmidt <yonatan.goldschmidt@granulate.io>
----
- tools/perf/util/namespaces.c | 11 +++++++++--
- tools/perf/util/namespaces.h |  1 +
- 2 files changed, 10 insertions(+), 2 deletions(-)
+On Wed, Nov 04, 2020 at 04:29:50PM -0800, Doug Anderson wrote:
+> Hi,
+> 
+> On Tue, Nov 3, 2020 at 10:38 AM Matthias Kaehlcke <mka@chromium.org> wrote:
+> >
+> > The trogdor design has two options for supplying the pp3300_hub power rail,
+> > it can be supplied by pp3300_l7c or pp3300_a. Initially pp3300_l7c was
+> > used, newer revisions (will) use pp3300_a as supply.
+> >
+> > Add a DT node for the pp3300_a path which includes a power switch that is
+> > controlled by a GPIO. Make this path the default and keep trogdor rev1,
+> > lazor rev0 and rev1 on pp3300_l7c.
+> 
+> It might not hurt to mention that even on early hardware that GPIO84
+> was allocated to this purpose but that it was a stuff option for what
+> actually provided power to the hub.  This explains why it's OK to add
+> the fixed regulator (just with no clients) even on old hardware.  If
+> GPIO84 had been used for something else on old hardware this would
+> have been bad.
 
-diff --git a/tools/perf/util/namespaces.c b/tools/perf/util/namespaces.c
-index 285d6f30d912..f4b3512d8dd2 100644
---- a/tools/perf/util/namespaces.c
-+++ b/tools/perf/util/namespaces.c
-@@ -66,6 +66,7 @@ int nsinfo__init(struct nsinfo *nsi)
- 	char spath[PATH_MAX];
- 	char *newns = NULL;
- 	char *statln = NULL;
-+	char *nspid;
- 	struct stat old_stat;
- 	struct stat new_stat;
- 	FILE *f = NULL;
-@@ -112,8 +113,12 @@ int nsinfo__init(struct nsinfo *nsi)
- 		}
- 
- 		if (strstr(statln, "NStgid:") != NULL) {
--			nsi->nstgid = (pid_t)strtol(strrchr(statln, '\t'),
--						     NULL, 10);
-+			nspid = strrchr(statln, '\t');
-+			nsi->nstgid = (pid_t)strtol(nspid, NULL, 10);
-+			/* If innermost tgid is not the first, process is in a different
-+			 * PID namespace.
-+			 */
-+			nsi->in_pidns = (statln + sizeof("NStgid:") - 1) != nspid;
- 			break;
- 		}
- 	}
-@@ -140,6 +145,7 @@ struct nsinfo *nsinfo__new(pid_t pid)
- 		nsi->tgid = pid;
- 		nsi->nstgid = pid;
- 		nsi->need_setns = false;
-+		nsi->in_pidns = false;
- 		/* Init may fail if the process exits while we're trying to look
- 		 * at its proc information.  In that case, save the pid but
- 		 * don't try to enter the namespace.
-@@ -166,6 +172,7 @@ struct nsinfo *nsinfo__copy(struct nsinfo *nsi)
- 		nnsi->tgid = nsi->tgid;
- 		nnsi->nstgid = nsi->nstgid;
- 		nnsi->need_setns = nsi->need_setns;
-+		nnsi->in_pidns = nsi->in_pidns;
- 		if (nsi->mntns_path) {
- 			nnsi->mntns_path = strdup(nsi->mntns_path);
- 			if (!nnsi->mntns_path) {
-diff --git a/tools/perf/util/namespaces.h b/tools/perf/util/namespaces.h
-index 4b33f684eddd..1cc8637cf885 100644
---- a/tools/perf/util/namespaces.h
-+++ b/tools/perf/util/namespaces.h
-@@ -33,6 +33,7 @@ struct nsinfo {
- 	pid_t			tgid;
- 	pid_t			nstgid;
- 	bool			need_setns;
-+	bool			in_pidns;
- 	char			*mntns_path;
- 	refcount_t		refcnt;
- };
--- 
-2.25.0
+ok
 
+> > diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+> > index bf875589d364..2d64e75a2d6d 100644
+> > --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+> > +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+> > @@ -174,6 +174,21 @@ pp3300_fp_tp: pp3300-fp-tp-regulator {
+> >                 vin-supply = <&pp3300_a>;
+> >         };
+> >
+> > +       pp3300_hub: pp3300-hub {
+> > +               compatible = "regulator-fixed";
+> > +               regulator-name = "pp3300_hub";
+> > +
+> > +               regulator-min-microvolt = <3300000>;
+> > +               regulator-max-microvolt = <3300000>;
+> > +
+> > +               gpio = <&tlmm 84 GPIO_ACTIVE_HIGH>;
+> > +               enable-active-high;
+> > +               pinctrl-names = "default";
+> > +               pinctrl-0 = <&en_pp3300_hub>;
+> > +
+> > +               vin-supply = <&pp3300_a>;
+> 
+> You're leaving things in a bit of an inconsistent state here.  The
+> "pp3300_hub_7c" is always_on / boot_on.  This new one isn't.
+
+Actually the new "pp3300_hub" it is also on at boot, the Chrome OS bootloader
+asserts the GPIO.
+
+> I know this is slightly more complicated due to the fact that downstream we
+> have a way to control the hub power but didn't quite get that resolved
+> upstream, but the way you have it now, on new hardware upstream will
+> power off the hub but also keep "pp3300_hub_7c" powered on for no
+> reason.  Seems like that should be fixed?
+
+Our EEs told me that it would be ok in terms of power to keep "pp3300_hub_7c"
+powered, since there would be no significant power consumption without load.
+
+In any case unused RPMH regulators are switched off by the kernel ~30s after
+boot, so I think we are ok:
+
+[   31.202219] ldo7: disabling
+
+The above is from the l7c regulator on a Lazor rev2.
+
+> > +       };
+> > +
+> >         /* BOARD-SPECIFIC TOP LEVEL NODES */
+> >
+> >         backlight: backlight {
+> > @@ -469,7 +484,7 @@ ppvar_l6c: ldo6 {
+> >                         regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+> >                 };
+> >
+> > -               pp3300_hub:
+> > +               pp3300_hub_7c:
+> 
+> nit: If it were me, I probably wouldn't have bothered introducing the
+> "pp3300_hub_7c" alias since it's not a real thing in the schematic.  I
+> would have just had the older revisions refer to "pp3300_l7c".  If you
+> really love the "pp3300_hub_7c", though, I won't stand in your way.
+
+true, it's not really needed, I'll get rid of it in the next version.
+
+> >                 pp3300_l7c: ldo7 {
+> >                         regulator-min-microvolt = <3304000>;
+> >                         regulator-max-microvolt = <3304000>;
+> > @@ -1151,6 +1166,19 @@ pinconf {
+> >                 };
+> >         };
+> >
+> > +       en_pp3300_hub: en-pp3300-hub {
+> > +               pinmux {
+> > +                       pins = "gpio84";
+> > +                       function = "gpio";
+> > +               };
+> > +
+> > +               pinconf {
+> > +                       pins = "gpio84";
+> > +                       drive-strength = <2>;
+> > +                       bias-disable;
+> > +               };
+> > +       };
+> > +
+> >         en_pp3300_dx_edp: en-pp3300-dx-edp {
+> 
+> "hub" sorts after "dx", so the ordering is slightly wrong here.
+
+ack, will change
