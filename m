@@ -2,101 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74A5D2A8673
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 19:50:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F9F02A866D
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 19:50:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732052AbgKESu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 13:50:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57462 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732004AbgKESuW (ORCPT
+        id S1731997AbgKESuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 13:50:21 -0500
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:35309 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727017AbgKESuV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 13:50:22 -0500
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F06CC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 10:50:22 -0800 (PST)
-Received: by mail-pj1-x1041.google.com with SMTP id ie6so526861pjb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 10:50:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=3EzvkzpYwrLmNMPvXPc/QI49X9jTb6rRy2470fIh6L0=;
-        b=px4MXYdb+PxYPOu6R6lJ55qGhTb3W2vrn4OX0bC8UaPmEk2m0swVzbEI92X33uCDs3
-         ikSsVUu2WHexB7FLTekQEtRSHEsGAW8gPpc0aCEftKCFzY3Pjzm6kSvssYzbZHt6UBEr
-         2dPRehIpM0hFZNkSeixXIPNKoeIlSoEzWYINzCtBpyXD9VO1vPKN2oQWjDT659Zd+4g6
-         614LGEka6FIfuFTScqA3rdzoqEPgR7xP5KOakZ7XcFMFD9wjImsMeeaZLlIWv9vhpyNP
-         o2Bnp7BkX0G9T5XQ2ogM/FosRww15fPHSz5+261LaAxEt1M+tLBDxDqXGc39f896t3UB
-         ukRQ==
+        Thu, 5 Nov 2020 13:50:21 -0500
+Received: by mail-ot1-f66.google.com with SMTP id n11so2409442ota.2;
+        Thu, 05 Nov 2020 10:50:20 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=3EzvkzpYwrLmNMPvXPc/QI49X9jTb6rRy2470fIh6L0=;
-        b=Ndn0IdRunbxMOub2/yny/vWKljWvlJ+i6UNh2Q3Ed8hOAp3nCVQp5DDwXO2Ubj4Ffw
-         az40489e8HlOnfPbhZJXsyBVr6dY6IOvHeJDOtyQ1w7u+Y+lt8krnQGLBy8PNiHU4BuF
-         DyuVy7oH/I6C2r9d4Z91GAqNN1tl4ES9MSkiP4H9MBHv4WTgxpNro8B/ZM1xiWNyMCJS
-         /UVAG8yCSmuLY4p215434elcUzqy+O02uxmv222ilBq3q7vr+rw4OObLd1yuW69gzXW1
-         z2FakxO1X8S6KATpbyYES3ofbMKtUvu8234j8CAEX+VA9lkzgaToq1l1KhvME+8CZfXn
-         jSzQ==
-X-Gm-Message-State: AOAM530YkcPwMzCI9wDjdi8uux4cZq1WOpqqpfAHKMzZ9CUUIfp+oo02
-        vLR45p6W+1tDk3YnBFF30Sk=
-X-Google-Smtp-Source: ABdhPJwwvyRuSz/E7DAjDgbpBdsUcgYjDXTOIfRrRB8ZJ6lAWfdKVRsyPz4fAUeDGF1TPKzwfMIuJQ==
-X-Received: by 2002:a17:90a:d584:: with SMTP id v4mr3909143pju.194.1604602222134;
-        Thu, 05 Nov 2020 10:50:22 -0800 (PST)
-Received: from localhost ([160.202.157.3])
-        by smtp.gmail.com with ESMTPSA id e24sm1862787pfl.149.2020.11.05.10.50.18
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=79BiO/+iVQS5f4JE7+Ah5lxHJdkoQWGAWwcqZ3jscHY=;
+        b=TxyGoGBFhVomn80aU+ndXWvvcuVsNq5+RZULh7qRi6I7iYENrlnkYAWTysIhBwqDh4
+         0txfCqqG5uFEuinMKCjNpHRQ7KOVAM45FjeKyYEdlAlfI3BnbKn+UrOs0vGzf2zv6Fko
+         uAKrSYcUTuSs7uhqpwxugChGxpvRbz1Mahk4Q7mSqQuTk4uBtjySKP42THR6Bjw3E6iR
+         Rt+fVJbDh5k1/dhFjdUsZsPa4z4x5PFmxUObY0Xagm1uuiQISvNfgL7u3tgasTxR7AIj
+         37Ky6sAVGhwqdYxkb6svDx2pCQCDGvSlL02HcsX3aeCfWiIFcQYDkN6WNYQp0C6yns5a
+         y0Aw==
+X-Gm-Message-State: AOAM531IEiZiEzvYavUpymFoDfvVDGKnR5fu/4uAPLVp0bAy/EuI/gUg
+        OvCQwj7MaepAxf+H0CzDKQ==
+X-Google-Smtp-Source: ABdhPJz/r3pC7uBbHrTvEghjoX8aLJu/enMy0f17YIwn0JhZKzcM8bcgybDTg2FSAW72nR++OLr4zg==
+X-Received: by 2002:a9d:ae7:: with SMTP id 94mr2509229otq.159.1604602220001;
+        Thu, 05 Nov 2020 10:50:20 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id d64sm553166oia.11.2020.11.05.10.50.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 10:50:21 -0800 (PST)
-Date:   Fri, 6 Nov 2020 00:20:16 +0530
-From:   Deepak R Varma <mh12gx2825@gmail.com>
-To:     Dave Airlie <airlied@redhat.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        virtualization@lists.linux-foundation.org,
-        spice-devel@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Cc:     mh12gx2825@gmail.com
-Subject: [PATCH] drm/qxl: replace idr_init() by idr_init_base()
-Message-ID: <20201105185016.GA71797@localhost>
+        Thu, 05 Nov 2020 10:50:19 -0800 (PST)
+Received: (nullmailer pid 1623074 invoked by uid 1000);
+        Thu, 05 Nov 2020 18:50:18 -0000
+Date:   Thu, 5 Nov 2020 12:50:18 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Sameer Pujar <spujar@nvidia.com>
+Cc:     vkoul@kernel.org, jonathanh@nvidia.com, devicetree@vger.kernel.org,
+        thierry.reding@gmail.com, linux-kernel@vger.kernel.org,
+        dmaengine@vger.kernel.org, jason@lakedaemon.net,
+        linux-tegra@vger.kernel.org, tglx@linutronix.de,
+        robh+dt@kernel.org, maz@kernel.org
+Subject: Re: [PATCH 2/4] dt-bindings: dma: Convert ADMA doc to json-schema
+Message-ID: <20201105185018.GA1622537@bogus>
+References: <1604571846-14037-1-git-send-email-spujar@nvidia.com>
+ <1604571846-14037-3-git-send-email-spujar@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <1604571846-14037-3-git-send-email-spujar@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-idr_init() uses base 0 which is an invalid identifier for this driver.
-The idr_alloc for this driver uses 1 as start value for ID range. The
-new function idr_init_base allows IDR to set the ID lookup from base 1.
-This avoids all lookups that otherwise starts from 0 since 0 is always
-unused / available.
+On Thu, 05 Nov 2020 15:54:04 +0530, Sameer Pujar wrote:
+> Move ADMA documentation to YAML format.
+> 
+> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
+> ---
+>  .../bindings/dma/nvidia,tegra210-adma.txt          | 56 -------------
+>  .../bindings/dma/nvidia,tegra210-adma.yaml         | 95 ++++++++++++++++++++++
+>  2 files changed, 95 insertions(+), 56 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/dma/nvidia,tegra210-adma.txt
+>  create mode 100644 Documentation/devicetree/bindings/dma/nvidia,tegra210-adma.yaml
+> 
 
-References: commit 6ce711f27500 ("idr: Make 1-based IDRs more efficient")
 
-Signed-off-by: Deepak R Varma <mh12gx2825@gmail.com>
----
- drivers/gpu/drm/qxl/qxl_kms.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+My bot found errors running 'make dt_binding_check' on your patch:
 
-diff --git a/drivers/gpu/drm/qxl/qxl_kms.c b/drivers/gpu/drm/qxl/qxl_kms.c
-index dc5b3850a4d4..228e2b9198f1 100644
---- a/drivers/gpu/drm/qxl/qxl_kms.c
-+++ b/drivers/gpu/drm/qxl/qxl_kms.c
-@@ -231,11 +231,11 @@ int qxl_device_init(struct qxl_device *qdev,
- 		goto cursor_ring_free;
- 	}
- 
--	idr_init(&qdev->release_idr);
-+	idr_init_base(&qdev->release_idr, 1);
- 	spin_lock_init(&qdev->release_idr_lock);
- 	spin_lock_init(&qdev->release_lock);
- 
--	idr_init(&qdev->surf_id_idr);
-+	idr_init_base(&qdev->surf_id_idr, 1);
- 	spin_lock_init(&qdev->surf_id_idr_lock);
- 
- 	mutex_init(&qdev->async_io_mutex);
--- 
-2.25.1
+yamllint warnings/errors:
+
+dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/dma/nvidia,tegra210-adma.yaml: 'oneOf' conditional failed, one must be fixed:
+	'unevaluatedProperties' is a required property
+	'additionalProperties' is a required property
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/dma/nvidia,tegra210-adma.yaml: ignoring, error in schema: 
+warning: no schema found in file: ./Documentation/devicetree/bindings/dma/nvidia,tegra210-adma.yaml
+
+
+See https://patchwork.ozlabs.org/patch/1394859
+
+The base for the patch is generally the last rc1. Any dependencies
+should be noted.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
 
