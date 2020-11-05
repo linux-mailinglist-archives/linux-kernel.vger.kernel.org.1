@@ -2,226 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B341F2A7AEA
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 10:46:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46AA42A7AF1
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 10:46:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726993AbgKEJqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 04:46:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56636 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726152AbgKEJqB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 04:46:01 -0500
-Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E143C061A4D
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 01:46:00 -0800 (PST)
-Received: by mail-ua1-x944.google.com with SMTP id h26so331109uan.10
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 01:46:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BPeVC0/yyKKsuDCRa2ABd9prVUPUc34ioExCTRmKEHc=;
-        b=uufJzy4G7ts1PiE/L3wJVNCw2wP3NSOmawqIi/e2dVMD4Xd21IBA/Vm2yEuo3NRkIO
-         5RTFPkxoUZgZvRGL3uCJhgSw/HE6fmf+IDx190dCfUqR+JPH8zXGsd6gelceLKdsJg6T
-         W9tmGvZtl0GRilR/Tesuwpo7+anWJCeo6NBiNViKTK2V8/GqdsDZTq11ps7gJlbfeY+i
-         pSoDKrE7a3V1srakOPqPG22Jy7SHWsEgoGIWEGTN0Htlxp1Nhn/YPfKpypwxo8uOWeve
-         gx03c3qbD5se6hfduEKaO+xHmrhlxJQp6xOVJi1NkwG4/qLyzw5ZIE/FCeeFdhAUNOiH
-         Ddqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BPeVC0/yyKKsuDCRa2ABd9prVUPUc34ioExCTRmKEHc=;
-        b=ST6bVMHwVJIXFCirdnXS9rAqDgeFT0Q54haf6RB0aiKITR6FhySjZDUMlank1JGcVF
-         w6L2EvGqR9OYgS15PHYVLyyL0STbBg+NNmYARpo0t48G6a7LHt29HQ53tFtEcC9zkAU8
-         vMBIa5YjIjUifNWa8CqxcBqx1ONixfky0gQELvTDzfMHCtq3w5eBL+CKdi3QQNYPdGUl
-         wjMhrjTiWf3S6etXtibeo56grO1t8hlwTKJoe3Zs+yQs18WQSZtfuynPVC31s5yQhHm8
-         J+Ac68tPAAg5xpdsIiRSE0bzfsLQ/36eC1CaqBcfwdTPvgueclWAHXL+j0sHjEtDR1HI
-         yGiQ==
-X-Gm-Message-State: AOAM530bPBvXh3GhCevEeP+6ckBd761O6HWiJxKH/nGFhmEtShNNTn36
-        3RXDWRDrABYZsbTpeRjG1oFwm7jFEEL0Q9U+FKPs1w==
-X-Google-Smtp-Source: ABdhPJyQXmDq3VGXwDr0haDHSXpl4JtWo+uo7sQGY6XWLUZgE6Tj9Jyk5i5lU0labVUxd8mL5Fh6Hi6T+EuKK3uFWNY=
-X-Received: by 2002:ab0:23d5:: with SMTP id c21mr548021uan.129.1604569559528;
- Thu, 05 Nov 2020 01:45:59 -0800 (PST)
+        id S1728522AbgKEJqO convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 5 Nov 2020 04:46:14 -0500
+Received: from mga02.intel.com ([134.134.136.20]:50768 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726894AbgKEJqN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 04:46:13 -0500
+IronPort-SDR: agtKEWIljey1dafuWpBBzmdWntsCFCfnri9FfTl6HuW9wmKbaJI8SwkdgDMnxN/1268OlOOGb0
+ GD+Ro8Cqf/QQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9795"; a="156346990"
+X-IronPort-AV: E=Sophos;i="5.77,453,1596524400"; 
+   d="scan'208";a="156346990"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2020 01:46:12 -0800
+IronPort-SDR: LP3YMUn310MILM2LDvZspBhNB/KJhExXuqSqz7IzDYrmcMu5Tsm9WiaGjAgcW1KhIl73EultN2
+ Wiug49oZe46A==
+X-IronPort-AV: E=Sophos;i="5.77,453,1596524400"; 
+   d="scan'208";a="471582971"
+Received: from mwaskox-mobl.ger.corp.intel.com (HELO localhost) ([10.252.10.106])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2020 01:46:09 -0800
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20201104234427.26477-1-digetx@gmail.com>
-In-Reply-To: <20201104234427.26477-1-digetx@gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 5 Nov 2020 10:45:23 +0100
-Message-ID: <CAPDyKFr7qTU2RPhA_ZrbCayoTTNUEno1zdmvmv+8HBe-Owrfeg@mail.gmail.com>
-Subject: Re: [PATCH v1 00/30] Introduce core voltage scaling for NVIDIA
- Tegra20/30 SoCs
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Peter Chen <Peter.Chen@nxp.com>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        driverdevel <devel@driverdev.osuosl.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        linux-pwm@vger.kernel.org,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20201104173556.GA359362@bjorn-Precision-5520>
+References: <20201104173556.GA359362@bjorn-Precision-5520>
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Tejas Upadhyay <tejaskumarx.surendrakumar.upadhyay@intel.com>
+From:   Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, bp@alien8.de, lucas.demarchi@intel.com,
+        matthew.d.roper@intel.com, hariom.pandey@intel.com,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Subject: Re: [PATCH] x86/gpu: add JSL stolen memory support
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Message-ID: <160456956585.5393.4540325192433934522@jlahtine-mobl.ger.corp.intel.com>
+User-Agent: alot/0.8.1
+Date:   Thu, 05 Nov 2020 11:46:06 +0200
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ Viresh
+Quoting Bjorn Helgaas (2020-11-04 19:35:56)
+> [+cc Jani, Joonas, Rodrigo, David, Daniel]
+> 
+> On Wed, Nov 04, 2020 at 05:35:06PM +0530, Tejas Upadhyay wrote:
+> > JSL re-uses the same stolen memory as ICL and EHL.
+> > 
+> > Cc: Lucas De Marchi <lucas.demarchi@intel.com>
+> > Cc: Matt Roper <matthew.d.roper@intel.com>
+> > Signed-off-by: Tejas Upadhyay <tejaskumarx.surendrakumar.upadhyay@intel.com>
+> 
+> I don't plan to do anything with this since previous similar patches
+> have gone through some other tree, so this is just kibitzing.
+> 
+> But the fact that we have this long list of Intel devices [1] that
+> constantly needs updates [2] is a hint that something is wrong.
 
-On Thu, 5 Nov 2020 at 00:44, Dmitry Osipenko <digetx@gmail.com> wrote:
->
-> Introduce core voltage scaling for NVIDIA Tegra20/30 SoCs, which reduces
-> power consumption and heating of the Tegra chips. Tegra SoC has multiple
-> hardware units which belong to a core power domain of the SoC and share
-> the core voltage. The voltage must be selected in accordance to a minimum
-> requirement of every core hardware unit.
->
-> The minimum core voltage requirement depends on:
->
->   1. Clock enable state of a hardware unit.
->   2. Clock frequency.
->   3. Unit's internal idling/active state.
->
-> This series is tested on Acer A500 (T20), AC100 (T20), Nexus 7 (T30) and
-> Ouya (T30) devices. I also added voltage scaling to the Ventana (T20) and
-> Cardhu (T30) boards which are tested by NVIDIA's CI farm. Tegra30 is now up
-> to 5C cooler on Nexus 7 and stays cool on Ouya (instead of becoming burning
-> hot) while system is idling. It should be possible to improve this further
-> by implementing a more advanced power management features for the kernel
-> drivers.
->
-> The DVFS support is opt-in for all boards, meaning that older DTBs will
-> continue to work like they did it before this series. It should be possible
-> to easily add the core voltage scaling support for Tegra114+ SoCs based on
-> this grounding work later on, if anyone will want to implement it.
->
-> WARNING(!) This series is made on top of the memory interconnect patches
->            which are currently under review [1]. The Tegra EMC driver
->            and devicetree-related patches need to be applied on top of
->            the ICC series.
->
-> [1] https://patchwork.ozlabs.org/project/linux-tegra/list/?series=212196
->
-> Dmitry Osipenko (30):
->   dt-bindings: host1x: Document OPP and voltage regulator properties
->   dt-bindings: mmc: tegra: Document OPP and voltage regulator properties
->   dt-bindings: pwm: tegra: Document OPP and voltage regulator properties
->   media: dt: bindings: tegra-vde: Document OPP and voltage regulator
->     properties
->   dt-binding: usb: ci-hdrc-usb2:  Document OPP and voltage regulator
->     properties
->   dt-bindings: usb: tegra-ehci: Document OPP and voltage regulator
->     properties
->   soc/tegra: Add sync state API
->   soc/tegra: regulators: Support Tegra SoC device sync state API
->   soc/tegra: regulators: Fix lockup when voltage-spread is out of range
->   regulator: Allow skipping disabled regulators in
->     regulator_check_consumers()
->   drm/tegra: dc: Support OPP and SoC core voltage scaling
->   drm/tegra: gr2d: Correct swapped device-tree compatibles
->   drm/tegra: gr2d: Support OPP and SoC core voltage scaling
->   drm/tegra: gr3d: Support OPP and SoC core voltage scaling
->   drm/tegra: hdmi: Support OPP and SoC core voltage scaling
->   gpu: host1x: Support OPP and SoC core voltage scaling
->   mmc: sdhci-tegra: Support OPP and core voltage scaling
->   pwm: tegra: Support OPP and core voltage scaling
->   media: staging: tegra-vde: Support OPP and SoC core voltage scaling
->   usb: chipidea: tegra: Support OPP and SoC core voltage scaling
->   usb: host: ehci-tegra: Support OPP and SoC core voltage scaling
->   memory: tegra20-emc: Support Tegra SoC device state syncing
->   memory: tegra30-emc: Support Tegra SoC device state syncing
->   ARM: tegra: Add OPP tables for Tegra20 peripheral devices
->   ARM: tegra: Add OPP tables for Tegra30 peripheral devices
->   ARM: tegra: ventana: Add voltage supplies to DVFS-capable devices
->   ARM: tegra: paz00: Add voltage supplies to DVFS-capable devices
->   ARM: tegra: acer-a500: Add voltage supplies to DVFS-capable devices
->   ARM: tegra: cardhu-a04: Add voltage supplies to DVFS-capable devices
->   ARM: tegra: nexus7: Add voltage supplies to DVFS-capable devices
->
->  .../display/tegra/nvidia,tegra20-host1x.txt   |  56 +++
->  .../bindings/media/nvidia,tegra-vde.txt       |  12 +
->  .../bindings/mmc/nvidia,tegra20-sdhci.txt     |  12 +
->  .../bindings/pwm/nvidia,tegra20-pwm.txt       |  13 +
->  .../devicetree/bindings/usb/ci-hdrc-usb2.txt  |   4 +
->  .../bindings/usb/nvidia,tegra20-ehci.txt      |   2 +
->  .../boot/dts/tegra20-acer-a500-picasso.dts    |  30 +-
->  arch/arm/boot/dts/tegra20-paz00.dts           |  40 +-
->  .../arm/boot/dts/tegra20-peripherals-opp.dtsi | 386 ++++++++++++++++
->  arch/arm/boot/dts/tegra20-ventana.dts         |  65 ++-
->  arch/arm/boot/dts/tegra20.dtsi                |  14 +
->  .../tegra30-asus-nexus7-grouper-common.dtsi   |  23 +
->  arch/arm/boot/dts/tegra30-cardhu-a04.dts      |  44 ++
->  .../arm/boot/dts/tegra30-peripherals-opp.dtsi | 415 ++++++++++++++++++
->  arch/arm/boot/dts/tegra30.dtsi                |  13 +
->  drivers/gpu/drm/tegra/Kconfig                 |   1 +
->  drivers/gpu/drm/tegra/dc.c                    | 138 +++++-
->  drivers/gpu/drm/tegra/dc.h                    |   5 +
->  drivers/gpu/drm/tegra/gr2d.c                  | 140 +++++-
->  drivers/gpu/drm/tegra/gr3d.c                  | 136 ++++++
->  drivers/gpu/drm/tegra/hdmi.c                  |  63 ++-
->  drivers/gpu/host1x/Kconfig                    |   1 +
->  drivers/gpu/host1x/dev.c                      |  87 ++++
->  drivers/memory/tegra/tegra20-emc.c            |   8 +-
->  drivers/memory/tegra/tegra30-emc.c            |   8 +-
->  drivers/mmc/host/Kconfig                      |   1 +
->  drivers/mmc/host/sdhci-tegra.c                |  70 ++-
->  drivers/pwm/Kconfig                           |   1 +
->  drivers/pwm/pwm-tegra.c                       |  84 +++-
->  drivers/regulator/core.c                      |  12 +-
->  .../soc/samsung/exynos-regulator-coupler.c    |   2 +-
->  drivers/soc/tegra/common.c                    | 152 ++++++-
->  drivers/soc/tegra/regulators-tegra20.c        |  25 +-
->  drivers/soc/tegra/regulators-tegra30.c        |  30 +-
->  drivers/staging/media/tegra-vde/Kconfig       |   1 +
->  drivers/staging/media/tegra-vde/vde.c         | 127 ++++++
->  drivers/staging/media/tegra-vde/vde.h         |   1 +
->  drivers/usb/chipidea/Kconfig                  |   1 +
->  drivers/usb/chipidea/ci_hdrc_tegra.c          |  79 ++++
->  drivers/usb/host/Kconfig                      |   1 +
->  drivers/usb/host/ehci-tegra.c                 |  79 ++++
->  include/linux/regulator/coupler.h             |   6 +-
->  include/soc/tegra/common.h                    |  22 +
->  43 files changed, 2360 insertions(+), 50 deletions(-)
->
-> --
-> 2.27.0
->
+We add an entry for every new integrated graphics platform. Once the
+platform is added, there have not been changes lately.
 
-I need some more time to review this, but just a quick check found a
-few potential issues...
+> IIUC the general idea is that we need to discover Intel gfx memory by
+> looking at device-dependent config space and add it to the E820 map.
+> Apparently the quirks discover this via PCI config registers like
+> I830_ESMRAMC, I845_ESMRAMC, etc, and tell the driver about it via the
+> global "intel_graphics_stolen_res"?
 
-The "core-supply", that you specify as a regulator for each
-controller's device node, is not the way we describe power domains.
-Instead, it seems like you should register a power-domain provider
-(with the help of genpd) and implement the ->set_performance_state()
-callback for it. Each device node should then be hooked up to this
-power-domain, rather than to a "core-supply". For DT bindings, please
-have a look at Documentation/devicetree/bindings/power/power-domain.yaml
-and Documentation/devicetree/bindings/power/power_domain.txt.
+We discover what is called the graphics data stolen memory. It is regular
+system memory range that is not CPU accessible. It is accessible by the
+integrated graphics only.
 
-In regards to the "sync state" problem (preventing to change
-performance states until all consumers have been attached), this can
-then be managed by the genpd provider driver instead.
+See: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/arch/x86/kernel/early-quirks.c?h=v5.10-rc2&id=814c5f1f52a4beb3710317022acd6ad34fc0b6b9
 
-Kind regards
-Uffe
+> That's not the way this should work.  There should some generic, non
+> device-dependent PCI or ACPI method to discover the memory used, or at
+> least some way to do it in the driver instead of early arch code.
+
+It's used by the early BIOS/UEFI code to set up initial framebuffer.
+Even if i915 driver is never loaded, the memory ranges still need to
+be fixed. They source of the problem is that the OEM BIOS which are
+not under our control get the programming wrong.
+
+We used to detect the memory region size again at i915 initialization
+but wanted to eliminate the code duplication and resulting subtle bugs
+that caused. Conclusion back then was that storing the struct resource
+in memory is the best trade-off.
+
+> How is this *supposed* to work?  Is there something we can do in E820
+> or other resource management that would make this easier?
+
+The code was added around Haswell (HSW) device generation to mitigate
+bugs in BIOS. It is traditionally hard to get all OEMs to fix their
+BIOS when things work for Windows. It's only later years when some
+laptop models are intended to be sold with Linux.
+
+The alternative would be to get all the OEM to fix their BIOS for Linux,
+but that is not very realistic given past experiences. So it seems
+a better choice to to add new line per platform generation to make
+sure the users can boot to Linux.
+
+Regards, Joonas
+
+> > ---
+> >  arch/x86/kernel/early-quirks.c | 1 +
+> >  1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/arch/x86/kernel/early-quirks.c b/arch/x86/kernel/early-quirks.c
+> > index a4b5af03dcc1..534cc3f78c6b 100644
+> > --- a/arch/x86/kernel/early-quirks.c
+> > +++ b/arch/x86/kernel/early-quirks.c
+> > @@ -549,6 +549,7 @@ static const struct pci_device_id intel_early_ids[] __initconst = {
+> >       INTEL_CNL_IDS(&gen9_early_ops),
+> >       INTEL_ICL_11_IDS(&gen11_early_ops),
+> >       INTEL_EHL_IDS(&gen11_early_ops),
+> > +     INTEL_JSL_IDS(&gen11_early_ops),
+> >       INTEL_TGL_12_IDS(&gen11_early_ops),
+> >       INTEL_RKL_IDS(&gen11_early_ops),
+> >  };
+> 
+> [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/x86/kernel/early-quirks.c?h=v5.10-rc2#n518
+> 
+> [2]
+>   May 2020 efbee021ad02 ("x86/gpu: add RKL stolen memory support")
+>   Jul 2019 6b2436aeb945 ("x86/gpu: add TGL stolen memory support")
+>   Mar 2019 d53fef0be4a5 ("x86/gpu: add ElkhartLake to gen11 early quirks")
+>   May 2018 db0c8d8b031d ("x86/gpu: reserve ICL's graphics stolen memory")
+>   Dec 2017 33aa69ed8aac ("x86/gpu: add CFL to early quirks")
+>   Jul 2017 2e1e9d48939e ("x86/gpu: CNL uses the same GMS values as SKL")
+>   Jan 2017 bc384c77e3bb ("x86/gpu: GLK uses the same GMS values as SKL")
+>   Oct 2015 00ce5c8a66fb ("drm/i915/kbl: Kabylake uses the same GMS values as Skylake")
+>   Mar 2015 31d4dcf705c3 ("drm/i915/bxt: Broxton uses the same GMS values as Skylake")
+>   ...
