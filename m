@@ -2,106 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DA3B2A87A1
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 20:55:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 809E52A87A6
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 20:58:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731740AbgKETzK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 14:55:10 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:57284 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726214AbgKETzK (ORCPT
+        id S1731847AbgKET6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 14:58:08 -0500
+Received: from smtprelay0093.hostedemail.com ([216.40.44.93]:43244 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726729AbgKET6I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 14:55:10 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id D8E121C0B82; Thu,  5 Nov 2020 20:55:08 +0100 (CET)
-Date:   Thu, 5 Nov 2020 20:55:08 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Jonathan Bakker <xc-racer2@live.ca>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 4.19 107/191] ARM: dts: s5pv210: move PMU node out of
- clock controller
-Message-ID: <20201105195508.GB19957@duo.ucw.cz>
-References: <20201103203232.656475008@linuxfoundation.org>
- <20201103203243.594174920@linuxfoundation.org>
- <20201105114648.GB9009@duo.ucw.cz>
- <CAJKOXPeexYuH1_9HZUGn4Q80QBtKmqCKiEd=hNd46VKTM4kGgA@mail.gmail.com>
+        Thu, 5 Nov 2020 14:58:08 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 4A045100E7B47;
+        Thu,  5 Nov 2020 19:58:07 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:69:355:379:599:800:960:968:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2194:2199:2393:2559:2562:2828:2895:3138:3139:3140:3141:3142:3354:3622:3865:3867:3868:3872:3874:4225:4321:4605:5007:6119:7514:7576:7903:7904:10004:10400:10848:11026:11232:11657:11658:11914:12043:12048:12295:12296:12297:12555:12679:12740:12895:13439:13894:14181:14659:14721:21080:21451:21627:21660:21990:30054:30056:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: cake94_5d0fadf272cc
+X-Filterd-Recvd-Size: 3092
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf09.hostedemail.com (Postfix) with ESMTPA;
+        Thu,  5 Nov 2020 19:58:05 +0000 (UTC)
+Message-ID: <31e5ce025694049ab6b21fe8f688131ac07b8abf.camel@perches.com>
+Subject: Re: [PATCH] cxgb4: Fix the -Wmisleading-indentation warning
+From:   Joe Perches <joe@perches.com>
+To:     xiakaixu1987@gmail.com, vishal@chelsio.com, davem@davemloft.net,
+        kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kaixu Xia <kaixuxia@tencent.com>
+Date:   Thu, 05 Nov 2020 11:58:04 -0800
+In-Reply-To: <1604467444-23043-1-git-send-email-kaixuxia@tencent.com>
+References: <1604467444-23043-1-git-send-email-kaixuxia@tencent.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="JP+T4n/bALQSJXh8"
-Content-Disposition: inline
-In-Reply-To: <CAJKOXPeexYuH1_9HZUGn4Q80QBtKmqCKiEd=hNd46VKTM4kGgA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 2020-11-04 at 13:24 +0800, xiakaixu1987@gmail.com wrote:
+> From: Kaixu Xia <kaixuxia@tencent.com>
+> 
+> Fix the gcc warning:
+> 
+> drivers/net/ethernet/chelsio/cxgb4/cxgb4_debugfs.c:2673:9: warning: this 'for' clause does not guard... [-Wmisleading-indentation]
+>  2673 |         for (i = 0; i < n; ++i) \
 
---JP+T4n/bALQSJXh8
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+true, the defined macros though aren't pretty and depend on
+externally defined i and n.
 
-Hi!
+It'd be good to show that and to update the slightly difficult to read
+helpers below that and remove the unnecessary T3 and R3 macros too.
 
-> > > The Power Management Unit (PMU) is a separate device which has little
-> > > common with clock controller.  Moving it to one level up (from clock
-> > > controller child to SoC) allows to remove fake simple-bus compatible =
-and
-> > > dtbs_check warnings like:
-> > >
-> > >   clock-controller@e0100000: $nodename:0:
-> > >     'clock-controller@e0100000' does not match '^([a-z][a-z0-9\\-]+-b=
-us|bus|soc|axi|ahb|apb)(@[0-9a-f]+)?$'
-> >
-> > > +++ b/arch/arm/boot/dts/s5pv210.dtsi
-> > > @@ -98,19 +98,16 @@
-> > >               };
-> > >
-> > >               clocks: clock-controller@e0100000 {
-> > > -                     compatible =3D "samsung,s5pv210-clock", "simple=
--bus";
-> > > +                     compatible =3D "samsung,s5pv210-clock";
-> > >                       reg =3D <0xe0100000 0x10000>;
-> > ...
-> > > +             pmu_syscon: syscon@e0108000 {
-> > > +                     compatible =3D "samsung-s5pv210-pmu", "syscon";
-> > > +                     reg =3D <0xe0108000 0x8000>;
-> > >               };
-> >
-> > Should clock-controller@e0100000's reg be shortened to 0x8000 so that
-> > the ranges do not overlap?
-> >
-> > Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
->=20
-> I don't think this commit should be backported to stable. It is simple
-> dtbs_check - checking whether Devicetree source matches device tree
-> schema. Neither the schema nor the warning existed in v4.19. I think
-> dtbs_check fixes should not be backported, unless a real issue is
-> pointed out.
+Perhaps:
+---
+ drivers/net/ethernet/chelsio/cxgb4/cxgb4_debugfs.c | 28 ++++++++++------------
+ 1 file changed, 13 insertions(+), 15 deletions(-)
 
-I agree with you about the backporting. Hopefully Greg drops the
-commit.
+diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_debugfs.c b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_debugfs.c
+index 0273f40b85f7..a7fddcdf4eac 100644
+--- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_debugfs.c
++++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_debugfs.c
+@@ -2666,20 +2666,20 @@ static int sge_qinfo_show(struct seq_file *seq, void *v)
+ 	if (r)
+ 		seq_putc(seq, '\n');
+ 
+-#define S3(fmt_spec, s, v) \
+-do { \
+-	seq_printf(seq, "%-12s", s); \
+-	for (i = 0; i < n; ++i) \
+-		seq_printf(seq, " %16" fmt_spec, v); \
+-		seq_putc(seq, '\n'); \
++/* These macros are dependent on locally scoped i and n variables */
++#define S3(fmt_spec, s, v)						\
++do {									\
++	seq_printf(seq, "%-12s", s);					\
++	for (i = 0; i < n; ++i)						\
++		seq_printf(seq, " %16" fmt_spec, v);			\
++	seq_putc(seq, '\n');						\
+ } while (0)
+-#define S(s, v) S3("s", s, v)
+-#define T3(fmt_spec, s, v) S3(fmt_spec, s, tx[i].v)
+-#define T(s, v) S3("u", s, tx[i].v)
+-#define TL(s, v) T3("lu", s, v)
+-#define R3(fmt_spec, s, v) S3(fmt_spec, s, rx[i].v)
+-#define R(s, v) S3("u", s, rx[i].v)
+-#define RL(s, v) R3("lu", s, v)
++
++#define S(s, v)			S3("s", s, v)
++#define T(s, v)			S3("u", s, tx[i].v)
++#define TL(s, v)		S3("lu", s, tx[i].v)
++#define R(s, v)			S3("u", s, rx[i].v)
++#define RL(s, v)		S3("lu", s, rx[i].v)
+ 
+ 	if (r < eth_entries) {
+ 		int base_qset = r * 4;
+@@ -3139,8 +3139,6 @@ do { \
+ #undef T
+ #undef TL
+ #undef S
+-#undef R3
+-#undef T3
+ #undef S3
+ out:
+ 	return 0;
 
-But the other issue is: should mainline be fixed so that ranges do not over=
-lap?
 
-Best regards,
-									Pavel
---=20
-http://www.livejournal.com/~pavelmachek
-
---JP+T4n/bALQSJXh8
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX6RYnAAKCRAw5/Bqldv6
-8i9/AJ9ai3hUhssI3I6aTYUeeZR3CWEr9wCfWAFAUwsvnzHtowU4UMMszdH3l30=
-=EtPM
------END PGP SIGNATURE-----
-
---JP+T4n/bALQSJXh8--
