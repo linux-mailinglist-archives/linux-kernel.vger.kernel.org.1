@@ -2,63 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8826E2A74F0
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 02:33:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF5D72A74F2
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 02:33:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730767AbgKEBdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 20:33:24 -0500
-Received: from rere.qmqm.pl ([91.227.64.183]:53100 "EHLO rere.qmqm.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730812AbgKEBdX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 20:33:23 -0500
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4CRQyS3Fwdz8p;
-        Thu,  5 Nov 2020 02:33:20 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1604540001; bh=8HZujv+B9glFMO2jIpcGlrIyBcBkf4Sxyjc0+yqd5Ts=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SBqUY90c81QWrd00llbDujyB9JGO3jQsXx9jLs3NzdBjbzcRTt66hTsRFgIDVJQFt
-         Q/uvCtEvZXYILOW2eJf5Lab49xCnqVwG1FM0aH6y6YPmS4MG/D9voHyhbbCS/HkcTF
-         JbFzgQzyGB7uapvZS9X3foAiu61r9Oa4Mwpye9SXV69mttRgWMSsnsglEVJZhpThG2
-         4l2MEQ2S57GDHTCoJzilogEM49k8oRwsbilxjulxJsZf1HpWSH9TsIN0m4gPESjAKH
-         I1uOJeW75KedrlCTNksdNa8l3Zo0hzCw/zDnMKRwOgQkdRtsGmN7sFaqEPDACNnlXN
-         +WRLFoHLpKl5g==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.102.4 at mail
-Date:   Thu, 5 Nov 2020 02:33:19 +0100
-From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Tony Lindgren <tony@atomide.com>, Lee Jones <lee.jones@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Zack Pearsall <zpearsall@yahoo.com>,
-        linux-tegra@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] mfd: tps65910: Correct power-off programming sequence
-Message-ID: <20201105013319.GA17266@qmqm.qmqm.pl>
-References: <20201104134408.19911-1-digetx@gmail.com>
+        id S1732851AbgKEBdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 20:33:46 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:7591 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731131AbgKEBdq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 20:33:46 -0500
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CRQyp4Cb7zLpG5;
+        Thu,  5 Nov 2020 09:33:38 +0800 (CST)
+Received: from [127.0.0.1] (10.174.176.238) by DGGEMS406-HUB.china.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server id 14.3.487.0; Thu, 5 Nov 2020
+ 09:33:34 +0800
+Subject: Re: [PATCH] fuse: check whether fuse_request_alloc returns NULL in
+ fuse_simple_request
+From:   Zhiqiang Liu <liuzhiqiang26@huawei.com>
+To:     <miklos@szeredi.hu>, <mszeredi@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>
+CC:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        linfeilong <linfeilong@huawei.com>,
+        lihaotian <lihaotian9@huawei.com>
+References: <ffefa3f4-4090-f7dd-97d4-27b8a8cb262f@huawei.com>
+Message-ID: <b99b141d-acb8-954e-c932-7d7f402db9b3@huawei.com>
+Date:   Thu, 5 Nov 2020 09:33:33 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201104134408.19911-1-digetx@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <ffefa3f4-4090-f7dd-97d4-27b8a8cb262f@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.238]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 04:44:08PM +0300, Dmitry Osipenko wrote:
-> This patch fixes system shutdown on a devices that use TPS65910 as a
-> system's power controller. In accordance to the TPS65910 datasheet, the
-> PMIC's state-machine transitions into the OFF state only when DEV_OFF
-> bit of DEVCTRL_REG is set. The ON / SLEEP states also should be cleared,
-> otherwise PMIC won't get into a proper state on shutdown. Devices like
-> Nexus 7 tablet and Ouya game console are now shutting down properly.
-[...]
+ping ...
 
-You might want to rebase on https://lkml.org/lkml/2020/9/26/397 as it's
-probably going to be accepted shortly. This just means replacing
-register accesses: tps65910_reg_*() -> regmap_*().
+On 2020/10/22 21:13, Zhiqiang Liu wrote:
+> 
+> In fuse_simple_request func, we will call fuse_request_alloc func to alloc
+> one request from fuse_req_cachep when args->force is true. However, the
+> return value of fuse_request_alloc func is not checked whether it is NULL.
+> If allocating request fails, access-NULL-pointer problem will occur.
+> 
+> Here, we check the return value of fuse_request_alloc func.
+> 
+> Fixes: 7213394c4e18 ("fuse: simplify request allocation")
+> Signed-off-by: Zhiqiang Liu <liuzhiqiang26@huawei.com>
+> Signed-off-by: Haotian Li <lihaotian9@huawei.com>
+> ---
+>  fs/fuse/dev.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/fs/fuse/dev.c b/fs/fuse/dev.c
+> index 02b3c36b3676..f7dd33ae8e31 100644
+> --- a/fs/fuse/dev.c
+> +++ b/fs/fuse/dev.c
+> @@ -481,6 +481,8 @@ ssize_t fuse_simple_request(struct fuse_conn *fc, struct fuse_args *args)
+>  	if (args->force) {
+>  		atomic_inc(&fc->num_waiting);
+>  		req = fuse_request_alloc(GFP_KERNEL | __GFP_NOFAIL);
+> +		if (!req)
+> +			return -ENOMEM;
+> 
+>  		if (!args->nocreds)
+>  			fuse_force_creds(fc, req);
+> 
 
-Best Regards,
-Micha³ Miros³aw
