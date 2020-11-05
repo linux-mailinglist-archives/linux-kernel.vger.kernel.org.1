@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B66F72A7375
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 01:02:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30DA82A7376
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 01:02:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733276AbgKEACu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 19:02:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50986 "EHLO
+        id S2387417AbgKEACw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 19:02:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728323AbgKEACt (ORCPT
+        with ESMTP id S1728323AbgKEACu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 19:02:49 -0500
-Received: from mail-wm1-x34a.google.com (mail-wm1-x34a.google.com [IPv6:2a00:1450:4864:20::34a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8B8BC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 16:02:48 -0800 (PST)
-Received: by mail-wm1-x34a.google.com with SMTP id b68so322wme.5
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 16:02:48 -0800 (PST)
+        Wed, 4 Nov 2020 19:02:50 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61D42C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 16:02:50 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id a12so460712ybc.20
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 16:02:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=z6j3WUTg8MpmEPLYdtLimxVBLIkxxjwsBk3bJk+FZ/c=;
-        b=o1BHF1EVbMTrooct4IuVuzwUadRydSkmLut5zGwLfIW86KeTj+T7+3qQd8RFCYYVk1
-         ZMQRhpeEUB0u7Y/NHq7fRwnmcx3ssRcGQXKNVGsCHvT9J0ec5Uo0HSkVZwIlNtxDiWBV
-         1AYf95vBSDu2mEJnYgYDgiUD2HOPIlRa801YsQlyBFlE4oaIsvs/R1fU90M1/78nGH31
-         rSpbf1mVkKGWUcgjBXgG/dZMJz3TUYg1+KwIJX3sm4kRmuAVkTFAYArvZdBWFDmDFy5c
-         75+gVsds4JozQ2HcmfCmLiO0RpdOJkKQTUuAkL7OUg7yjQY0LQHEif8Q02Q9qTWV0+Hq
-         AH5g==
+        bh=JW8D6ibToVOb7LpAkCihsputAW6li7gT66iFpWFJlB0=;
+        b=EIGseFkUbu4j97m+Rhe8ifiJEJ0/vSgBaoaF2oPB6YJuPwOq2yFl8o3MdZTisWpG8v
+         7KPp5oAaiwsPmjeCUi37l89Z7cZJJj/hhe5YwAUSX9ohPHFQHG9rviik167v9qNGYxg+
+         P0LNwwi8goSo5pXkQCm2SaSogyReaDgIOTbI5K97sZj9flQ0v+LrD0Pth2BoTDM0Nawq
+         hRM42A6VpyD9FTb4ipeHNtA1FxJV0NecpqgkotIXjwA3kZts685NAweHbMSnkr4kQD/y
+         wrASYwOEExzSGG5j537dCqcaS992EojrvnZ4VEjnIXPSewtClP3KbuoKPCc76tmqA1U1
+         kE1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=z6j3WUTg8MpmEPLYdtLimxVBLIkxxjwsBk3bJk+FZ/c=;
-        b=HejN5VPBmiyQlauzAJ96rJ0/05vFnByIKOQf1Ya3ZQo86nrNlfKEVCr5X2VF4jq88x
-         ES17bnl6Q1wxii0tmvom4FNs0F7GahHO7nWYY/ybPG766GvggQ4ZUTtOSL4eVz14wgWn
-         OVZ2wZiFGg587ryaCg03GKDfRHX7YwwqBtkqZISkhLUgMTnDGmtaqOzYxlarxvoJAR7w
-         1zWhB8NQhd8kBIU+23lRN1Wih894YCkWtKQJP8P35Z/J+tMMGuzW6JHR4MQgKIH4TB+Q
-         YMX7pDUpc2nNLf1aPzS2ogsgL/bJEDR9xrE+3uxX854QgkZs92v6pAB54TdZH95z1tsB
-         z4nA==
-X-Gm-Message-State: AOAM531moc65sBlvOFOhWyQ01Gu1JYVyz6rBdqLwNt/IteFpvXjQXvQc
-        hM/OiV+hv6fV6ikQBA1OFXeeeXqOm19o2Cw7
-X-Google-Smtp-Source: ABdhPJyW9CVHpcZlYLIGEMvyGyz16yUK8Wds51tx5Sii32bcO3BS7futrB9CgRdyZWCAoRPp5flAxMpdXR2/WiKH
+        bh=JW8D6ibToVOb7LpAkCihsputAW6li7gT66iFpWFJlB0=;
+        b=s3m3M4Vbge/kA224eqRq1zevvHmEeC0kh+i3QcGkyYAQjT/0wc30t2r3aLDmmzBz7n
+         WIwocAK5poqGTllWHealdhEHUL0b3xiFyqL9dBYqg7Bh6wJn3vHYQZTb9vId49zyfDE6
+         4758PsCC+mwTU9wknElijwgAyJ5gOXuF9VoIpjHo1xSL//0wvEFj9QTUP3ULunBsev0t
+         wfGwDeLru0PDvdZIOdTxNJN5ZSCZD5QzASA7VXjv12kaKA236/IS7CXX9fe3aLlMlk7u
+         uBlQ6P98U9oSCnmbYGAGI3RVpsSnHRnkHvnlmlToUqQiE4H33UVR38bD+zOUw+/oZU+o
+         I1XQ==
+X-Gm-Message-State: AOAM5329k3XFc8mM+EM9+6rtg3tRcOX9xDVQE27I8uRT5rrIGAI0dj3r
+        /+Uod15BKV817HMsRhnv8Tc2C3QCUWKRHqqp
+X-Google-Smtp-Source: ABdhPJyMEsriifNDEGfN+BopmjlIR9t9CjJFRB97WqiYs1BD5RFz7wmlp/gc3XkSEP7qscjhGorWWs7vzkyRjDGQ
 Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
 X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
- (user=andreyknvl job=sendgmr) by 2002:adf:a315:: with SMTP id
- c21mr514082wrb.272.1604534567466; Wed, 04 Nov 2020 16:02:47 -0800 (PST)
-Date:   Thu,  5 Nov 2020 01:02:15 +0100
+ (user=andreyknvl job=sendgmr) by 2002:a25:48c:: with SMTP id
+ 134mr48783ybe.158.1604534569629; Wed, 04 Nov 2020 16:02:49 -0800 (PST)
+Date:   Thu,  5 Nov 2020 01:02:16 +0100
 In-Reply-To: <cover.1604534322.git.andreyknvl@google.com>
-Message-Id: <dbd82cbb24bf5875b465e0d75568916edb8b92ea.1604534322.git.andreyknvl@google.com>
+Message-Id: <f5a46b4c122fb08bbe2fe25d91165e8d7aa232a7.1604534322.git.andreyknvl@google.com>
 Mime-Version: 1.0
 References: <cover.1604534322.git.andreyknvl@google.com>
 X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
-Subject: [PATCH 05/20] kasan: allow VMAP_STACK for HW_TAGS mode
+Subject: [PATCH 06/20] kasan: remove __kasan_unpoison_stack
 From:   Andrey Konovalov <andreyknvl@google.com>
 To:     Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will.deacon@arm.com>,
@@ -73,41 +73,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Even though hardware tag-based mode currently doesn't support checking
-vmalloc allocations, it doesn't use shadow memory and works with
-VMAP_STACK as is. Change VMAP_STACK definition accordingly.
+There's no need for __kasan_unpoison_stack() helper, as it's only
+currently used in a single place. Removing it also removes unneeded
+arithmetic.
+
+No functional changes.
 
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-Link: https://linux-review.googlesource.com/id/I3552cbc12321dec82cd7372676e9372a2eb452ac
+Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
+Link: https://linux-review.googlesource.com/id/Ie5ba549d445292fe629b4a96735e4034957bcc50
 ---
- arch/Kconfig | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ mm/kasan/common.c | 12 +++---------
+ 1 file changed, 3 insertions(+), 9 deletions(-)
 
-diff --git a/arch/Kconfig b/arch/Kconfig
-index 56b6ccc0e32d..7e7d14fae568 100644
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -914,16 +914,16 @@ config VMAP_STACK
- 	default y
- 	bool "Use a virtually-mapped stack"
- 	depends on HAVE_ARCH_VMAP_STACK
--	depends on !KASAN || KASAN_VMALLOC
-+	depends on !KASAN || KASAN_HW_TAGS || KASAN_VMALLOC
- 	help
- 	  Enable this if you want the use virtually-mapped kernel stacks
- 	  with guard pages.  This causes kernel stack overflows to be
- 	  caught immediately rather than causing difficult-to-diagnose
- 	  corruption.
+diff --git a/mm/kasan/common.c b/mm/kasan/common.c
+index a3e67d49b893..9008fc6b0810 100644
+--- a/mm/kasan/common.c
++++ b/mm/kasan/common.c
+@@ -59,18 +59,12 @@ void kasan_disable_current(void)
+ #endif /* CONFIG_KASAN_GENERIC || CONFIG_KASAN_SW_TAGS */
  
--	  To use this with KASAN, the architecture must support backing
--	  virtual mappings with real shadow memory, and KASAN_VMALLOC must
--	  be enabled.
-+	  To use this with software KASAN modes, the architecture must support
-+	  backing virtual mappings with real shadow memory, and KASAN_VMALLOC
-+	  must be enabled.
+ #if CONFIG_KASAN_STACK
+-static void __kasan_unpoison_stack(struct task_struct *task, const void *sp)
+-{
+-	void *base = task_stack_page(task);
+-	size_t size = sp - base;
+-
+-	kasan_unpoison_memory(base, size);
+-}
+-
+ /* Unpoison the entire stack for a task. */
+ void kasan_unpoison_task_stack(struct task_struct *task)
+ {
+-	__kasan_unpoison_stack(task, task_stack_page(task) + THREAD_SIZE);
++	void *base = task_stack_page(task);
++
++	kasan_unpoison_memory(base, THREAD_SIZE);
+ }
  
- config ARCH_OPTIONAL_KERNEL_RWX
- 	def_bool n
+ /* Unpoison the stack for the current task beyond a watermark sp value. */
 -- 
 2.29.1.341.ge80a0c044ae-goog
 
