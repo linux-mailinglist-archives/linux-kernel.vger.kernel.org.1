@@ -2,210 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BBC52A83E0
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 17:47:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FD082A83E4
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 17:47:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731403AbgKEQrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 11:47:10 -0500
-Received: from mx2.suse.de ([195.135.220.15]:34292 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729980AbgKEQrJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 11:47:09 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9E077AB4C;
-        Thu,  5 Nov 2020 16:47:07 +0000 (UTC)
-To:     bharata@linux.ibm.com, linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, cl@linux.com, rientjes@google.com,
-        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org, guro@fb.com,
-        shakeelb@google.com, hannes@cmpxchg.org, aneesh.kumar@linux.ibm.com
-References: <20201028055030.GA362097@in.ibm.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: Higher slub memory consumption on 64K page-size systems?
-Message-ID: <5150e942-516b-83c8-8e52-e0f294138a71@suse.cz>
-Date:   Thu, 5 Nov 2020 17:47:03 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1731668AbgKEQrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 11:47:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38098 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729980AbgKEQrl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 11:47:41 -0500
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A11C8C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 08:47:40 -0800 (PST)
+Received: by mail-qk1-x743.google.com with SMTP id k9so1757013qki.6
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 08:47:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=zhqw6nXW7an1sciymnqR0tpduOyD+zat59s5GBmVtbM=;
+        b=T/9h4B64oiALMfc42uebDeGSEyGeD0JwaqBLLTEWSdW7X4iF0nNQTGD8ItXWOPi1xM
+         DOvW9K/135GnWww5roe4BdwNCigRiUCwRDf4zxYgylBvKtGQ0y4XU2iCE2XUZ07ICn3L
+         rTXg0XPkpw/UUFWbC8Cig/5dZdORb0CzNbOAohUH2HvpxEPnNWIhHQhklANJ/hAkg8H3
+         MKb/DtGr/YW1Na1efMq3URRzjr/gbNFdmBokrf0ljC1HCRvWFNeTvkJMTB7Vdi6j+NUo
+         8K7nKdD6xanzOWR6UK32MPYw28AHa+zQYvDZXAfI7cRkoGcIsjwKs0OHgVNNYy/123gh
+         Xm9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zhqw6nXW7an1sciymnqR0tpduOyD+zat59s5GBmVtbM=;
+        b=qLuk48y9jcIMS0WpavsFyXTbxfb8ZNKLvujlAVAoFGYQ9d8Z4idUbaPpLo9FlN3Zi8
+         9MUsyU4di7eQtNLl+DMgg+yZEaLx4FtJ+UIh1KJL6qcC/g3bPQUvrrc9+8+KaaHZgrXs
+         Zd3sCb5C4TgNSCerD08XTrQsDu1LJ4Imy8W2u/6YpNOG+b1mZUsLVsRXweEqnh1jwdqU
+         GAwYMv+yjaNAKh0CwR2BLkW9WAF5xLOYXqhduVIFLI09oxBNzmtUdrd5x8uR0wveIVNe
+         aFnGITEmNCldny9VOZN079z+AMU/hYOtETCPD60yW06J7h9Hzb46bdtiQWb/Thm5aVXE
+         Uy0w==
+X-Gm-Message-State: AOAM532l87uo1UG+akMslz7VJcqPJBI0qd5Q0n8C22UzkeGdXqo0AcwU
+        ztGHcj0eWc9qmKVnzTjL9Ck51w==
+X-Google-Smtp-Source: ABdhPJwzljYxFoBvKq1VFYeruz7gb+7H6oGN3WPy1j1HdsQNZAjc4YfzOlkNglv0PQR1cXTjqGzkUA==
+X-Received: by 2002:a05:620a:697:: with SMTP id f23mr2825760qkh.374.1604594859867;
+        Thu, 05 Nov 2020 08:47:39 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id g20sm1208553qtq.51.2020.11.05.08.47.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Nov 2020 08:47:39 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kaiQE-0007e8-Gm; Thu, 05 Nov 2020 12:47:38 -0400
+Date:   Thu, 5 Nov 2020 12:47:38 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     gregkh <gregkh@linuxfoundation.org>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jason Wang <jasowang@redhat.com>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Netdev <netdev@vger.kernel.org>, Parav Pandit <parav@nvidia.com>,
+        Roi Dayan <roid@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        virtualization@lists.linux-foundation.org,
+        alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>,
+        Mark Brown <broonie@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Fred Oh <fred.oh@linux.intel.com>,
+        "Saleem, Shiraz" <shiraz.saleem@intel.com>,
+        "Patil, Kiran" <kiran.patil@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        David M Ertman <david.m.ertman@intel.com>
+Subject: Re: [PATCH mlx5-next v1 06/11] vdpa/mlx5: Connect mlx5_vdpa to
+ auxiliary bus
+Message-ID: <20201105164738.GD36674@ziepe.ca>
+References: <20201101201542.2027568-1-leon@kernel.org>
+ <20201101201542.2027568-7-leon@kernel.org>
+ <20201103154525.GO36674@ziepe.ca>
+ <CAPcyv4jP9nFAGdvB7agg3x7Y7moHGcxLd5=f5=5CXnJRUf3n9w@mail.gmail.com>
+ <20201105073302.GA3415673@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <20201028055030.GA362097@in.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201105073302.GA3415673@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/28/20 6:50 AM, Bharata B Rao wrote:
-> slub_max_order
-> --------------
-> The most promising tunable that shows consistent reduction in slab memory
-> is slub_max_order. Here is a table that shows the number of slabs that
-> end up with different orders and the total slab consumption at boot
-> for different values of slub_max_order:
-> -------------------------------------------
-> slub_max_order	Order	NrSlabs	Slab memory
-> -------------------------------------------
-> 		0	276
-> 	3	1	16	207488 kB
->      (default)	2	4
-> 		3	11
-> -------------------------------------------
-> 		0	276
-> 	2	1	16	166656 kB
-> 		2	4
-> -------------------------------------------
-> 		0	276	144128 kB
-> 	1	1	31
-> -------------------------------------------
+On Thu, Nov 05, 2020 at 08:33:02AM +0100, gregkh wrote:
+> > Were there any additional changes you wanted to see happen? I'll go
+> > give the final set another once over, but David has been diligently
+> > fixing up all the declared major issues so I expect to find at most
+> > minor incremental fixups.
 > 
-> Though only a few bigger sized caches fall into order-2 or order-3, they
-> seem to make a considerable difference to the overall slab consumption.
-> If we take task_struct cache as an example, this is how it ends up when
-> slub_max_order is varied:
+> This is in my to-review pile, along with a load of other stuff at the
+> moment:
+> 	$ ~/bin/mdfrm -c ~/mail/todo/
+> 	1709 messages in /home/gregkh/mail/todo/
 > 
-> task_struct, objsize=9856
-> --------------------------------------------
-> slub_max_order	objperslab	pagesperslab
-> --------------------------------------------
-> 3		53		8
-> 2		26		4
-> 1		13		2
-> --------------------------------------------
-> 
-> The slab page-order and hence the number of objects in a slab has a
-> bearing on the performance, but I wonder if some caches like task_struct
-> above can be auto-tuned to fall into a conservative order and do good
-> both wrt both memory and performance?
+> So give me a chance.  There is no rush on my side for this given the
+> huge delays that have happened here on the authorship side many times in
+> the past :)
 
-Hmm ideally this should be based on objperslab so if there's larger page sizes, 
-then the calculated order becomes smaller, even 0?
+On the other hand Leon and his team did invest alot of time and
+effort, very quickly, to build and QA this large mlx5 series here to
+give a better/second example as you requested only a few weeks ago.
 
-> mm/slub.c:calulate_order() has the logic which determines the the
-> page-order for the slab. It starts with min_objects and attempts
-> to arrive at the best configuration for the slab. The min_objects
-> is starts like this:
-> 
-> min_objects = 4 * (fls(nr_cpu_ids) + 1);
-> 
-> Here nr_cpu_ids depends on the maxcpus and hence this can have a
-> significant effect on those systems which define maxcpus. Slab numbers
-> post-boot for a KVM pseries guest that has 16 boottime CPUs and varying
-> number of maxcpus look like this:
-> -------------------------------
-> maxcpus		Slab memory(kB)
-> -------------------------------
-> 64		209280
-> 256		253824
-> 512		293824
-> -------------------------------
+> If you can review it, or anyone else, that is always most appreciated.
 
-Yeah IIRC nr_cpu_ids is related to number of possible cpus which is rather 
-excessive on some systems, so a relation to actually online cpus would make more 
-sense.
+Dan, Leon, Myself and others have looked at the auxiliary bus patch a
+more than a few times now. Leon in particular went over it very
+carefully and a number of bugs were fixed while he developed this
+series.
 
-> Page-order is a one time setting and obviously can't be tweaked dynamically
-> on CPU hotplug, but just wanted to bring out the effect of the same.
-> 
-> And that constant multiplicative factor of 4 was infact added by the commit
-> 9b2cd506e5f2 - "slub: Calculate min_objects based on number of processors."
-> 
-> Reducing that to say 2, does give some reduction in the slab memory
-> and also same hackbench performance with reduced slab memory, but I am not
-> sure if that could be assumed to be beneficial for all scenarios.
-> 
-> MIN_PARTIAL
-> -----------
-> This determines the number of slabs left on the partial list even if they
-> are empty. My initial thought was that the default MIN_PARTIAL value of 5
-> is on the higher side and we are accumulating MIN_PARTIAL number of
-> empty slabs in all caches without freeing them. However I hardly find
-> the case where an empty slab is retained during freeing on account of
-> partial slabs being lesser than MIN_PARTIAL.
-> 
-> However what I find in practice is that we are accumulating a lot of partial
-> slabs with just one in-use object in the whole slab. High number of such
-> partial slabs is indeed contributing to the increased slab memory consumption.
-> 
-> For example, after a hackbench run, I find the distribution of objects
-> like this for kmalloc-2k cache:
-> 
-> total_objects		3168
-> objects			1611
-> Nr partial slabs	54
-> Nr parital slabs with
-> just 1 inuse object	38
-> 
-> With 64K page-size, so many partial slabs with just 1 inuse object can
-> result in high memory usage. Is there any workaround possible prevent this
-> kind of situation?
+There seems to be nothing fundamentally wrong with it, so long as
+people are fine with the colour of the shed...
 
-Probably not, this is just fundamental internal fragmentation problem and that 
-we can't predict which objects will have similar lifetime and thus put it 
-together. Larger pages make just make the effect more pronounced. It would be 
-wrong if we allocated new pages instead of reusing the partial ones, but that's 
-not the case, IIUC?
-
-But you are measuring "after a hackbench run", so is that an important data 
-point? If the system was in some kind of steady state workload, the pages would 
-be better used I'd expect.
-
-> cpu_partial
-> -----------
-> Here is how the slab consumption post-boot varies when all the slab
-> caches are forced with the fixed cpu_partial value:
-> ---------------------------
-> cpu_partial	Slab Memory
-> ---------------------------
-> 0		175872 kB
-> 2		187136 kB
-> 4		191616 kB
-> default		204864 kB
-> ---------------------------
-> 
-> It has been suggested earlier that reducing cpu_partial and/or making
-> cpu_partial 64K page-size aware will benefit. In set_cpu_partial(),
-> for bigger sized slabs (size > PAGE_SIZE), cpu_partial is already set
-> to 2. A bit of tweaking there to introduce cpu_partial=1 for certain
-> slabs does give some benefit.
-> 
-> diff --git a/mm/slub.c b/mm/slub.c
-> index a28ed9b8fc61..e09eff1199bf 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -3626,7 +3626,9 @@ static void set_cpu_partial(struct kmem_cache *s)
->           */
->          if (!kmem_cache_has_cpu_partial(s))
->                  slub_set_cpu_partial(s, 0);
-> -       else if (s->size >= PAGE_SIZE)
-> +       else if (s->size >= 8192)
-> +               slub_set_cpu_partial(s, 1);
-> +       else if (s->size >= 4096)
->                  slub_set_cpu_partial(s, 2);
->          else if (s->size >= 1024)
->                  slub_set_cpu_partial(s, 6);
-> 
-> With the above change, the slab consumption post-boot reduces to 186048 kB.
-
-Yeah, making it agnostic to PAGE_SIZE makes sense.
-
-> Also, here are the hackbench numbers with and w/o the above change:
-> 
-> Average of 10 runs of 'hackbench -s 1024 -l 200 -g 200 -f 25 -P'
-> Slab consumption captured at the end of each run
-> --------------------------------------------------------------
-> 		Time		Slab memory
-> --------------------------------------------------------------
-> Default		11.124s		645580 kB
-> Patched		11.032s		584352 kB
-> --------------------------------------------------------------
-> 
-> I have mostly looked at reducing the slab memory consumption here.
-> But I do understand that default tunable values have been arrived
-> at based on some benchmark numbers. Are there ways or possibilities
-> to reduce the slub memory consumption with the existing level of
-> performance is what I would like to understand and explore.
-> 
-> Regards,
-> Bharata.
-> 
-
+Jason
