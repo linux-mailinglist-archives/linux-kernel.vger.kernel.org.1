@@ -2,93 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 821062A848F
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 18:15:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AABE2A8491
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 18:15:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731670AbgKERPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 12:15:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42396 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731595AbgKERO7 (ORCPT
+        id S1731706AbgKERPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 12:15:30 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:60685 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727275AbgKERP3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 12:14:59 -0500
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFD66C0613D2
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 09:14:58 -0800 (PST)
-Received: by mail-oi1-x241.google.com with SMTP id k26so2444041oiw.0
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 09:14:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=RXtyLeNDFuRDqnpcqt6pb4ylWjUgE0/Ib+KjlVuBXqE=;
-        b=g0wFBccrkYCSKXtrUi4mFAVl1sBMUEF3Lg525W88ykFuyy3aef9xbZYBSZ+Ia3uOMo
-         tmpQRRVPX+mJK5HrGD3NaW8o2fqtdOR6pCSl72eHGjHsVQfr10+xzQ2Om5I/gs/jeEgK
-         HBLnTX5zUThEeSdyGwNs7ODngz6MQ09QAG7dA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=RXtyLeNDFuRDqnpcqt6pb4ylWjUgE0/Ib+KjlVuBXqE=;
-        b=b8qkphm/cl14ixeNbf/EUUygQBbSxvvN4eDPEBnwn085s9ZmA5snz93+0yRIx03wg+
-         PImPS+ZmDryiRCstA3oWxwMj20+6FcYyJTgVqCOBlFBzLLk49gm3GKqTKnDPcJyace7X
-         k9OlId+EDIeu86Mid2yc0OcWCc4KETSDOrNsorjJ7LJJJEgmEaife+UxWHglDCjuiCtX
-         moGxgEQEqrnfx2ZN2Cs3rMisr1h7OmG0b5EV9YYiMTQHVQwkqGL6Lf0tLhxD6F3c54JW
-         y18nZYswhcu0PSpZVx2nAezWetUwDcniWpFjV0144aUtW+h3JDdFln4ICCm6EnxCHxHJ
-         lJvA==
-X-Gm-Message-State: AOAM530Ok4LFuhZUWEXhJ6e3syUXH59K03yG7eq3hbQ6WdvMsLZfD5MV
-        bD+U7k/z0Qp1+cWDIHxJMfGk/w==
-X-Google-Smtp-Source: ABdhPJyPTuj7UbQcutxVyj3OIQJLYo8G1acVwWKF7+YQ+EewEqrFVqSnAzFIcAnmX2ExNF7uRib7gQ==
-X-Received: by 2002:aca:44d7:: with SMTP id r206mr282559oia.24.1604596498202;
-        Thu, 05 Nov 2020 09:14:58 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id c21sm474397oos.30.2020.11.05.09.14.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Nov 2020 09:14:57 -0800 (PST)
-Subject: Re: [PATCH 09/13] selftests: android: fix multiple definition of
- sock_name
-To:     Christian Brauner <christian.brauner@ubuntu.com>,
-        Tommi Rantala <tommi.t.rantala@nokia.com>
-Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shuah Khan <shuah@kernel.org>,
-        greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20201008122633.687877-1-tommi.t.rantala@nokia.com>
- <20201008122633.687877-10-tommi.t.rantala@nokia.com>
- <20201009120538.45uspbezh5tqtin6@wittgenstein>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <3d46cf84-b987-d138-c6cb-e9679687ce0f@linuxfoundation.org>
-Date:   Thu, 5 Nov 2020 10:14:56 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        Thu, 5 Nov 2020 12:15:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604596528;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=ZN6f9cdzyB53mwjnLkaf9hNEOsf9avkMMDM3/cvRSUU=;
+        b=hkbcnv5SW0MnvTTNhagLeLa3tgKiQpn9JK61FonK+NSM1PuJBhC/3ymYTlKzlsSYj38QJn
+        Tib4zZ4KkQwNTo++tzydFFLP3EICqpwFweNMOGbtSxGmoY7+jaa/zNnAe1qSG9h/YYlWN3
+        +YTEobRFbXDMto+96eX0rAvKp7pc6eM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-132-m_NFKJiWP4i4i-7CuEbFow-1; Thu, 05 Nov 2020 12:15:26 -0500
+X-MC-Unique: m_NFKJiWP4i4i-7CuEbFow-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5ACA5101F7A0;
+        Thu,  5 Nov 2020 17:15:25 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0BECA6CE4F;
+        Thu,  5 Nov 2020 17:15:24 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     yadong.qi@intel.com
+Subject: [PATCH 0/2] KVM: x86: emulate wait-for-SIPI and SIPI-VMExit
+Date:   Thu,  5 Nov 2020 12:15:22 -0500
+Message-Id: <20201105171524.650693-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20201009120538.45uspbezh5tqtin6@wittgenstein>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/9/20 6:05 AM, Christian Brauner wrote:
-> On Thu, Oct 08, 2020 at 03:26:29PM +0300, Tommi Rantala wrote:
->> Fix multiple definition of sock_name compilation error:
->>
->>    tools/testing/selftests/android/ion/ipcsocket.h:8: multiple definition of `sock_name'
->>
->> Signed-off-by: Tommi Rantala <tommi.t.rantala@nokia.com>
->> ---
-> 
-> Ion will be removed from the kernel soon but this seems like an ok
-> bugfix.
-> Thanks!
-> Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
-> 
+The first patch is new, the second is a rebase of Yadong's patch
 
-ion is already gone. I am dropping this from linux-kselftest fixes
-now. This is also causing conflict with ion removal commit
+Paolo Bonzini (1):
+  KVM: x86: fix apic_accept_events vs check_nested_events
 
-thanks,
--- Shuah
+Yadong Qi (1):
+  KVM: x86: emulate wait-for-SIPI and SIPI-VMExit
+
+ arch/x86/include/asm/vmx.h      |  1 +
+ arch/x86/include/uapi/asm/vmx.h |  2 ++
+ arch/x86/kvm/lapic.c            | 30 ++++++++++++++++---
+ arch/x86/kvm/vmx/nested.c       | 53 ++++++++++++++++++++++++---------
+ arch/x86/kvm/vmx/vmx.c          |  2 +-
+ 5 files changed, 69 insertions(+), 19 deletions(-)
+
+-- 
+2.26.2
 
