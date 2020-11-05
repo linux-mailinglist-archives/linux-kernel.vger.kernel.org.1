@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C1C72A7384
+	by mail.lfdr.de (Postfix) with ESMTP id ADC512A7385
 	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 01:03:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387645AbgKEADK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 19:03:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51056 "EHLO
+        id S2387676AbgKEADO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 19:03:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387595AbgKEADJ (ORCPT
+        with ESMTP id S2387595AbgKEADM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 19:03:09 -0500
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 643A4C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 16:03:09 -0800 (PST)
-Received: by mail-qt1-x849.google.com with SMTP id h31so119154qtd.14
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 16:03:09 -0800 (PST)
+        Wed, 4 Nov 2020 19:03:12 -0500
+Received: from mail-wm1-x349.google.com (mail-wm1-x349.google.com [IPv6:2a00:1450:4864:20::349])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F53DC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 16:03:12 -0800 (PST)
+Received: by mail-wm1-x349.google.com with SMTP id t201so9429wmt.1
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 16:03:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=n/EgrjS/0wTVW1eC4Y9BfE2JdZzS0OcWlZnzEp1P2oA=;
-        b=jrZ3nq9hvCyDk1RywcRDcNGLi6wEaMLQe6lPvnUPEYicuoOqjT3eav85cW/BXeq2ZN
-         QVOCcds43Wnzx3dOnutChSfKv1NVao6weEX+bhbFjRbzNcdGAsbsHrc959Cjb8TQGLeI
-         QvY7yMKKV2eGthNdRftUUMd1mqd3sADjDOTmOzxQGQtW9yKhpco958xzs3qnh9LWUpNB
-         Vf5EwNZxVZ/etFX2hS0qJnRqlYILtSSHtGEPqZ+C4i+NiiIotBy3GT2UPg4dw7/VpXiT
-         8bDZtmQaKFqy0pr6z+S/70zL5rJgVmIhQfN3xyX7xUwnbUIZ8XcIhY12Sfv6sAIVSOsC
-         5Eyw==
+        bh=0USIvWPWD+0X5uGT95blxzhIaksN6b9CBpQaBzMOnSY=;
+        b=sFpQqhhEG5gmFI9GQ8viL3pqjWr2ET4+vulUOd3uW9uXSre4REhA33qyv+t4dVSEU7
+         w545R8LNs86kAkwY0TXSEvxLnddxzfkbaplqkm43YTr/brE+bJoOY+C2aatYwHPrKd8V
+         lyF0Dk29ZIFpFIJ1Og+2xmXpbHGti9zQJ89WmkxMG1/0OCal1u616x08x92MgB7fVD/D
+         G69WQShQeI4m/Swv42Hyjt3WeTnoKf7SUs6+1sXJtxjv/UHA5ZAhdSY1gHBAtl08c45b
+         vDih+OYOVaIk+p10CXSYtIivWlmHY49fZ1jflJr3KJySxpjBR7RHRbYJf7/j6E5/VucA
+         0Etg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=n/EgrjS/0wTVW1eC4Y9BfE2JdZzS0OcWlZnzEp1P2oA=;
-        b=r7hnW7ZyaMeP+MDaJFoIK6n8wADn4ujFdgnZmE/z0DZrgWD34lfIL8EXPdCu4CkGV9
-         Q/+Wnrkx4xQCeWpKxK1uBZKStsMUkwx09GzIFh6dq0xlqb/ziqz3SHi9Q+XMlirLkKT6
-         bU6/4/SxtpfQg0fcoIfiUQhuliTnPTTuFgRqAUnsXBak5V0oEdzBZRE3e3GcVXrFeLfX
-         3jaLm9r3ZMUkbdquVXF2e1Hs6vcoZkxPEaY0hcu3KPdckbFFGeSkdA26FkaR1reOqTw4
-         qTug3+qZ7tvOGDRoQagdaGF0uqvL85CC2VSZDtJaxomIV4R5132TBs9vHwKSBvJWLdA6
-         Z3AQ==
-X-Gm-Message-State: AOAM530HRQNn0jU9ToYFImStaiimQbej//vM1L5dqpmqP5j8fCkfCdxp
-        vyrGXoqatGqUUSLDB8xrLl6zAxPfsF8j9kNr
-X-Google-Smtp-Source: ABdhPJzX+fSBMSD2Sr3BapYXMWINq8pPniVZsem2D0Y9Dv2YLtXgN5Ei9MAIzJTjyzHz2heVRtUdpAvUTBisVAT7
+        bh=0USIvWPWD+0X5uGT95blxzhIaksN6b9CBpQaBzMOnSY=;
+        b=qYgk++TvLDpHke3MDO+Ke1lZwcB1X0ZxNghCe+wJPcA7vu1pgAD/B7hm4RFJ+OyWus
+         /5b2++L1+uBoIxs7j48DeChDfOksCFzAohscTV1Ynr2N58H27u6WCpL03aaURkn642ft
+         /Op+lnrf4QJBg9/CDyZSRfjDcJtDMUlExjYlwqeb/knqjUfay3LDc4bVfCt8c+cR3Zcp
+         ePqsfwgX6R/Kp2lg0FL1m2FDRq7KI6/zIqUi6w4DD/4+Y+K9phjWeqIBwkeGEi9jxVCn
+         RQrn6ra2KHEray4sVrzwa12XmkIi79bMms+ogfSX1t3TQX8I8V/vNYvzbkUJXee5Fynp
+         XoJA==
+X-Gm-Message-State: AOAM531ZoMQ7QoxwWP3cyyLVZvdao7v+ReU+3x03j4cErWcdOi+EN+xU
+        uCuwtaWE8snQ4LcqVM4cJtUskausPYZWtlF5
+X-Google-Smtp-Source: ABdhPJxw/lGpcSbzl86AC+uSuIK+hwvLKzT3r8ACA6Gr0SlWmsWXhA12+uWjp+hh9NvD3Cd9/idF6XWVIRZbxQIj
 Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
 X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
- (user=andreyknvl job=sendgmr) by 2002:a0c:f70f:: with SMTP id
- w15mr489369qvn.45.1604534588580; Wed, 04 Nov 2020 16:03:08 -0800 (PST)
-Date:   Thu,  5 Nov 2020 01:02:24 +0100
+ (user=andreyknvl job=sendgmr) by 2002:a5d:4c4f:: with SMTP id
+ n15mr475161wrt.137.1604534591024; Wed, 04 Nov 2020 16:03:11 -0800 (PST)
+Date:   Thu,  5 Nov 2020 01:02:25 +0100
 In-Reply-To: <cover.1604534322.git.andreyknvl@google.com>
-Message-Id: <82f01c35335ae293f6119531670354116fd63858.1604534322.git.andreyknvl@google.com>
+Message-Id: <3a3e6dfe3ad355bb5ffc3cc34769cb97aec650d2.1604534322.git.andreyknvl@google.com>
 Mime-Version: 1.0
 References: <cover.1604534322.git.andreyknvl@google.com>
 X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
-Subject: [PATCH 14/20] kasan, mm: rename kasan_poison_kfree
+Subject: [PATCH 15/20] kasan: don't round_up too much
 From:   Andrey Konovalov <andreyknvl@google.com>
 To:     Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will.deacon@arm.com>,
@@ -73,115 +73,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rename kasan_poison_kfree() to kasan_slab_free_mempool() as it better
-reflects what this annotation does.
-
-No functional changes.
+For hardware tag-based mode kasan_poison_memory() already rounds up the
+size. Do the same for software modes and remove round_up() from the common
+code.
 
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
-Link: https://linux-review.googlesource.com/id/I5026f87364e556b506ef1baee725144bb04b8810
+Link: https://linux-review.googlesource.com/id/Ib397128fac6eba874008662b4964d65352db4aa4
 ---
- include/linux/kasan.h | 16 ++++++++--------
- mm/kasan/common.c     | 16 ++++++++--------
- mm/mempool.c          |  2 +-
- 3 files changed, 17 insertions(+), 17 deletions(-)
+ mm/kasan/common.c | 8 ++------
+ mm/kasan/shadow.c | 1 +
+ 2 files changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/include/linux/kasan.h b/include/linux/kasan.h
-index ae1046fc74e5..d47601517dad 100644
---- a/include/linux/kasan.h
-+++ b/include/linux/kasan.h
-@@ -175,6 +175,13 @@ static inline bool kasan_slab_free(struct kmem_cache *s, void *object, unsigned
- 	return false;
- }
- 
-+void __kasan_slab_free_mempool(void *ptr, unsigned long ip);
-+static inline void kasan_slab_free_mempool(void *ptr, unsigned long ip)
-+{
-+	if (kasan_enabled())
-+		__kasan_slab_free_mempool(ptr, ip);
-+}
-+
- void * __must_check __kasan_slab_alloc(struct kmem_cache *s,
- 				       void *object, gfp_t flags);
- static inline void * __must_check kasan_slab_alloc(struct kmem_cache *s,
-@@ -215,13 +222,6 @@ static inline void * __must_check kasan_krealloc(const void *object,
- 	return (void *)object;
- }
- 
--void __kasan_poison_kfree(void *ptr, unsigned long ip);
--static inline void kasan_poison_kfree(void *ptr, unsigned long ip)
--{
--	if (kasan_enabled())
--		__kasan_poison_kfree(ptr, ip);
--}
--
- void __kasan_kfree_large(void *ptr, unsigned long ip);
- static inline void kasan_kfree_large(void *ptr, unsigned long ip)
- {
-@@ -261,6 +261,7 @@ static inline bool kasan_slab_free(struct kmem_cache *s, void *object,
- {
- 	return false;
- }
-+static inline void kasan_slab_free_mempool(void *ptr, unsigned long ip) {}
- static inline void *kasan_slab_alloc(struct kmem_cache *s, void *object,
- 				   gfp_t flags)
- {
-@@ -280,7 +281,6 @@ static inline void *kasan_krealloc(const void *object, size_t new_size,
- {
- 	return (void *)object;
- }
--static inline void kasan_poison_kfree(void *ptr, unsigned long ip) {}
- static inline void kasan_kfree_large(void *ptr, unsigned long ip) {}
- 
- #endif /* CONFIG_KASAN */
 diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-index 819403548f2e..60793f8695a8 100644
+index 60793f8695a8..69ab880abacc 100644
 --- a/mm/kasan/common.c
 +++ b/mm/kasan/common.c
-@@ -336,6 +336,14 @@ bool __kasan_slab_free(struct kmem_cache *cache, void *object, unsigned long ip)
- 	return ____kasan_slab_free(cache, object, ip, true);
+@@ -218,9 +218,7 @@ void __kasan_unpoison_object_data(struct kmem_cache *cache, void *object)
+ 
+ void __kasan_poison_object_data(struct kmem_cache *cache, void *object)
+ {
+-	kasan_poison_memory(object,
+-			round_up(cache->object_size, KASAN_GRANULE_SIZE),
+-			KASAN_KMALLOC_REDZONE);
++	kasan_poison_memory(object, cache->object_size, KASAN_KMALLOC_REDZONE);
  }
  
-+void __kasan_slab_free_mempool(void *ptr, unsigned long ip)
-+{
-+	struct page *page;
-+
-+	page = virt_to_head_page(ptr);
-+	____kasan_slab_free(page->slab_cache, ptr, ip, false);
-+}
-+
- static void set_alloc_info(struct kmem_cache *cache, void *object, gfp_t flags)
+ /*
+@@ -293,7 +291,6 @@ static bool ____kasan_slab_free(struct kmem_cache *cache, void *object,
  {
- 	kasan_set_track(&kasan_get_alloc_meta(cache, object)->alloc_track, flags);
-@@ -427,14 +435,6 @@ void * __must_check __kasan_krealloc(const void *object, size_t size, gfp_t flag
- 						flags, true);
- }
+ 	u8 tag;
+ 	void *tagged_object;
+-	unsigned long rounded_up_size;
  
--void __kasan_poison_kfree(void *ptr, unsigned long ip)
--{
--	struct page *page;
--
--	page = virt_to_head_page(ptr);
--	____kasan_slab_free(page->slab_cache, ptr, ip, false);
--}
--
- void __kasan_kfree_large(void *ptr, unsigned long ip)
- {
- 	if (ptr != page_address(virt_to_head_page(ptr)))
-diff --git a/mm/mempool.c b/mm/mempool.c
-index f473cdddaff0..b1f39fa75ade 100644
---- a/mm/mempool.c
-+++ b/mm/mempool.c
-@@ -104,7 +104,7 @@ static inline void poison_element(mempool_t *pool, void *element)
- static __always_inline void kasan_poison_element(mempool_t *pool, void *element)
- {
- 	if (pool->alloc == mempool_alloc_slab || pool->alloc == mempool_kmalloc)
--		kasan_poison_kfree(element, _RET_IP_);
-+		kasan_slab_free_mempool(element, _RET_IP_);
- 	else if (pool->alloc == mempool_alloc_pages)
- 		kasan_free_pages(element, (unsigned long)pool->pool_data);
- }
+ 	tag = get_tag(object);
+ 	tagged_object = object;
+@@ -314,8 +311,7 @@ static bool ____kasan_slab_free(struct kmem_cache *cache, void *object,
+ 		return true;
+ 	}
+ 
+-	rounded_up_size = round_up(cache->object_size, KASAN_GRANULE_SIZE);
+-	kasan_poison_memory(object, rounded_up_size, KASAN_KMALLOC_FREE);
++	kasan_poison_memory(object, cache->object_size, KASAN_KMALLOC_FREE);
+ 
+ 	if (!kasan_stack_collection_enabled())
+ 		return false;
+diff --git a/mm/kasan/shadow.c b/mm/kasan/shadow.c
+index 8e4fa9157a0b..3f64c9ecbcc0 100644
+--- a/mm/kasan/shadow.c
++++ b/mm/kasan/shadow.c
+@@ -82,6 +82,7 @@ void kasan_poison_memory(const void *address, size_t size, u8 value)
+ 	 * addresses to this function.
+ 	 */
+ 	address = kasan_reset_tag(address);
++	size = round_up(size, KASAN_GRANULE_SIZE);
+ 
+ 	shadow_start = kasan_mem_to_shadow(address);
+ 	shadow_end = kasan_mem_to_shadow(address + size);
 -- 
 2.29.1.341.ge80a0c044ae-goog
 
