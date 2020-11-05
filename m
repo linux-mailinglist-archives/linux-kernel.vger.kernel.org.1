@@ -2,115 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 441832A77F4
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 08:25:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 011C52A7804
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 08:27:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729266AbgKEHZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 02:25:34 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:60612 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726626AbgKEHZe (ORCPT
+        id S1730116AbgKEH06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 02:26:58 -0500
+Received: from ns3.fnarfbargle.com ([103.4.19.87]:57042 "EHLO
+        ns3.fnarfbargle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729902AbgKEH05 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 02:25:34 -0500
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0A57PTgx084143;
-        Thu, 5 Nov 2020 01:25:29 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1604561129;
-        bh=KslEU2O68CHJb3gLVJxeNScHoYi9XbnVfavsgk9RqVU=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=F0Lvsrl9udoe3tKshM8zwbmdWz/W1U4H+1Y4mPgfdynKk0xRrhC+Q1wmR/WjRc47M
-         BoChFHvicvjIBeVrHrblsmhwx1EvN8p8+4MwuMnDkXvPOUveRu01sfh/9GiS1mr5Xv
-         yTG5sZTywAGlla5aNqdYRljzB0jtINekTiLyq5Is=
-Received: from DLEE106.ent.ti.com (dlee106.ent.ti.com [157.170.170.36])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0A57PTY9068421
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 5 Nov 2020 01:25:29 -0600
-Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 5 Nov
- 2020 01:25:26 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 5 Nov 2020 01:25:26 -0600
-Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0A57PNVs052480;
-        Thu, 5 Nov 2020 01:25:24 -0600
-Subject: Re: [PATCH 2/4] arm64: dts: ti: k3-j721e*: Cleanup disabled nodes at
- SoC dtsi level
-To:     Nishanth Menon <nm@ti.com>, Roger Quadros <rogerq@ti.com>,
-        Keerthy <j-keerthy@ti.com>, Jyri Sarha <jsarha@ti.com>,
-        Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Tony Lindgren <tony@atomide.com>, Tero Kristo <t-kristo@ti.com>
-CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20201104224356.18040-1-nm@ti.com>
- <20201104224356.18040-3-nm@ti.com>
-From:   Tomi Valkeinen <tomi.valkeinen@ti.com>
-Message-ID: <265fdc00-7f5f-48c3-3d99-971ccd466232@ti.com>
-Date:   Thu, 5 Nov 2020 09:25:23 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 5 Nov 2020 02:26:57 -0500
+Received: from srv.home ([10.8.0.1] ident=heh14688)
+        by ns3.fnarfbargle.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.84_2)
+        (envelope-from <brad@fnarfbargle.com>)
+        id 1kaZf9-0008Rr-4W; Thu, 05 Nov 2020 15:26:27 +0800
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=fnarfbargle.com; s=mail;
+        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:Subject; bh=5HLunmG7HJyacgBOcrKunL1DELEhyW1eh5P0MUqSsAw=;
+        b=XqgGGzdv5ysysxJK7HbcD7++MRD3mdr+ff9NizyyQBTsAKFB/zYlx6y1GzyifqV7+H+bLrziNTgXztZ4EqUzebtFABpTYJPZI7g3XBRl765c+wCb3v/QddL/T78YxtUnUzpvVlVbFnd5G4L46PNEQXFZBoYQ5qWImRxz8myMeNU=;
+Subject: [PATCH] applesmc: Re-work SMC comms v2
+From:   Brad Campbell <brad@fnarfbargle.com>
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        Jean Delvare <jdelvare@suse.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, rydberg@bitmath.org,
+        linux-hwmon@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        hns@goldelico.com
+References: <20200930105442.3f642f6c@aktux>
+ <20200930164446.GB219887@roeck-us.net>
+ <CAK8P3a2CbhJT+B-F+cnX+uiJep9oiLM28n045-ATaVaU41u2hw@mail.gmail.com>
+ <20201002002251.28462e64@aktux>
+ <7543ef85-727d-96c3-947e-5b18e9e6c44d@roeck-us.net>
+ <20201006090226.4275c824@kemnade.info>
+ <db042e9b-be41-11b1-7059-3881b1da5c8b@fnarfbargle.com>
+ <68467f1b-cea1-47ea-a4d4-8319214b072a@fnarfbargle.com>
+ <20201104142057.62493c12@aktux>
+ <2436afef-99c6-c352-936d-567bf553388c@fnarfbargle.com>
+ <7a085650-2399-08c0-3c4d-6cd1fa28a365@roeck-us.net>
+ <fc36d066-c432-e7d2-312f-a0a592446fe2@fnarfbargle.com>
+ <10027199-5d31-93e7-9bd8-7baaebff8b71@roeck-us.net>
+ <70331f82-35a1-50bd-685d-0b06061dd213@fnarfbargle.com>
+Message-ID: <3c72ccc3-4de1-b5d0-423d-7b8c80991254@fnarfbargle.com>
+Date:   Thu, 5 Nov 2020 18:26:24 +1100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.2
 MIME-Version: 1.0
-In-Reply-To: <20201104224356.18040-3-nm@ti.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <70331f82-35a1-50bd-685d-0b06061dd213@fnarfbargle.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/11/2020 00:43, Nishanth Menon wrote:
-> The device tree standard sets the default node behavior when status
-> property as enabled. There are many reasons for doing the same, number
-> of strings in device tree, default power management functionality etc
-> are few of the reasons.
-> 
-> In general, after a few rounds of discussions [1] there are few
-> options one could take when dealing with SoC dtsi and board dts
-> 
-> a. SoC dtsi provide nodes as a super-set default (aka enabled) state and
->    to prevent messy board files, when more boards are added per SoC, we
->    optimize and disable commonly un-used nodes in board-common.dtsi
-> b. SoC dtsi disables all hardware dependent nodes by default and board
->    dts files enable nodes based on a need basis.
-> c. Subjectively pick and choose which nodes we will disable by default
->    in SoC dtsi and over the years we can optimize things and change
->    default state depending on the need.
-> 
-> While there are pros and cons on each of these approaches, the right
-> thing to do will be to stick with device tree default standards and
-> work within those established rules. So, we choose to go with option
-> (a).
-> 
-> Lets cleanup defaults of j721e SoC dtsi before this gets more harder
-> to cleanup later on and new SoCs are added.
-> 
-> The only functional difference between the dtb generated is
-> status='okay' is no longer necessary for mcasp10 and depends on the
-> default state.
-> 
-> [1] https://lore.kernel.org/linux-arm-kernel/20201027130701.GE5639@atomide.com/
-> 
-> Fixes: 1c4d35265fb2 ("arm64: dts: ti: k3-j721e-main: Add McASP nodes")
-> Fixes: 76921f15acc0 ("arm64: dts: ti: k3-j721e-main: Add DSS node")
-> Cc: Jyri Sarha <jsarha@ti.com>
-> Cc: Tomi Valkeinen <tomi.valkeinen@ti.com>
-> Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> Cc: Tony Lindgren <tony@atomide.com>
-> Signed-off-by: Nishanth Menon <nm@ti.com>
-> ---
->  .../dts/ti/k3-j721e-common-proc-board.dts     | 48 ++++++++++++++++++-
->  arch/arm64/boot/dts/ti/k3-j721e-main.dtsi     | 26 ----------
->  2 files changed, 47 insertions(+), 27 deletions(-)
-Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ti.com>
+Commit fff2d0f701e6 ("hwmon: (applesmc) avoid overlong udelay()") introduced
+an issue whereby communication with the SMC became unreliable with write
+errors like :
 
- Tomi
+[  120.378614] applesmc: send_byte(0x00, 0x0300) fail: 0x40
+[  120.378621] applesmc: LKSB: write data fail
+[  120.512782] applesmc: send_byte(0x00, 0x0300) fail: 0x40
+[  120.512787] applesmc: LKSB: write data fail
 
--- 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+The original code appeared to be timing sensitive and was not reliable with
+the timing changes in the aforementioned commit.
+
+This patch re-factors the SMC communication to remove the timing 
+dependencies and restore function with the changes previously committed.
+
+v2 : Address logic and coding style
+
+Reported-by: Andreas Kemnade <andreas@kemnade.info>
+Fixes: fff2d0f701e6 ("hwmon: (applesmc) avoid overlong udelay()")
+Signed-off-by: Brad Campbell <brad@fnarfbargle.com>
+
+---
+diff --git a/drivers/hwmon/applesmc.c b/drivers/hwmon/applesmc.c
+index a18887990f4a..de890f3ec12f 100644
+--- a/drivers/hwmon/applesmc.c
++++ b/drivers/hwmon/applesmc.c
+@@ -42,6 +42,11 @@
+ 
+ #define APPLESMC_MAX_DATA_LENGTH 32
+ 
++/* Apple SMC status bits */
++#define SMC_STATUS_AWAITING_DATA  BIT(0) /* SMC has data waiting */
++#define SMC_STATUS_IB_CLOSED      BIT(1) /* Will ignore any input */
++#define SMC_STATUS_BUSY           BIT(2) /* Command in progress */
++
+ /* wait up to 128 ms for a status change. */
+ #define APPLESMC_MIN_WAIT	0x0010
+ #define APPLESMC_RETRY_WAIT	0x0100
+@@ -151,65 +156,69 @@ static unsigned int key_at_index;
+ static struct workqueue_struct *applesmc_led_wq;
+ 
+ /*
+- * wait_read - Wait for a byte to appear on SMC port. Callers must
+- * hold applesmc_lock.
++ * Wait for specific status bits with a mask on the SMC
++ * Used before and after writes, and before reads
+  */
+-static int wait_read(void)
++
++static int wait_status(u8 val, u8 mask)
+ {
+ 	unsigned long end = jiffies + (APPLESMC_MAX_WAIT * HZ) / USEC_PER_SEC;
+ 	u8 status;
+ 	int us;
+ 
+ 	for (us = APPLESMC_MIN_WAIT; us < APPLESMC_MAX_WAIT; us <<= 1) {
+-		usleep_range(us, us * 16);
+ 		status = inb(APPLESMC_CMD_PORT);
+-		/* read: wait for smc to settle */
+-		if (status & 0x01)
++		if ((status & mask) == val)
+ 			return 0;
+ 		/* timeout: give up */
+ 		if (time_after(jiffies, end))
+ 			break;
+-	}
+-
+-	pr_warn("wait_read() fail: 0x%02x\n", status);
++		usleep_range(us, us * 16);
++		}
+ 	return -EIO;
+ }
+ 
+ /*
+- * send_byte - Write to SMC port, retrying when necessary. Callers
++ * send_byte_data - Write to SMC data port. Callers
+  * must hold applesmc_lock.
++ * Parameter skip must be true on the last write of any
++ * command or it'll time out.
+  */
+-static int send_byte(u8 cmd, u16 port)
++
++static int send_byte_data(u8 cmd, u16 port, bool skip)
+ {
+-	u8 status;
+-	int us;
+-	unsigned long end = jiffies + (APPLESMC_MAX_WAIT * HZ) / USEC_PER_SEC;
++	int ret;
+ 
++	ret = wait_status(SMC_STATUS_BUSY, SMC_STATUS_BUSY | SMC_STATUS_IB_CLOSED);
++	if (ret)
++		return ret;
+ 	outb(cmd, port);
+-	for (us = APPLESMC_MIN_WAIT; us < APPLESMC_MAX_WAIT; us <<= 1) {
+-		usleep_range(us, us * 16);
+-		status = inb(APPLESMC_CMD_PORT);
+-		/* write: wait for smc to settle */
+-		if (status & 0x02)
+-			continue;
+-		/* ready: cmd accepted, return */
+-		if (status & 0x04)
+-			return 0;
+-		/* timeout: give up */
+-		if (time_after(jiffies, end))
+-			break;
+-		/* busy: long wait and resend */
+-		udelay(APPLESMC_RETRY_WAIT);
+-		outb(cmd, port);
+-	}
++	return wait_status(skip ? 0 : SMC_STATUS_BUSY, SMC_STATUS_BUSY);
++}
+ 
+-	pr_warn("send_byte(0x%02x, 0x%04x) fail: 0x%02x\n", cmd, port, status);
+-	return -EIO;
++static int send_byte(u8 cmd, u16 port)
++{
++	return send_byte_data(cmd, port, false);
+ }
+ 
++/*
++ * send_command - Write a command to the SMC. Callers must hold applesmc_lock.
++ * If SMC is in undefined state, any new command write resets the state machine.
++ */
++
+ static int send_command(u8 cmd)
+ {
+-	return send_byte(cmd, APPLESMC_CMD_PORT);
++	u8 status;
++	int ret;
++
++	ret = wait_status(0, SMC_STATUS_IB_CLOSED);
++	if (ret)
++		return ret;
++
++	status = inb(APPLESMC_CMD_PORT);
++
++	outb(cmd, APPLESMC_CMD_PORT);
++	return wait_status(SMC_STATUS_BUSY, SMC_STATUS_BUSY);
+ }
+ 
+ static int send_argument(const char *key)
+@@ -239,7 +248,9 @@ static int read_smc(u8 cmd, const char *key, u8 *buffer, u8 len)
+ 	}
+ 
+ 	for (i = 0; i < len; i++) {
+-		if (wait_read()) {
++		if (wait_status(SMC_STATUS_AWAITING_DATA | SMC_STATUS_BUSY,
++				SMC_STATUS_AWAITING_DATA | SMC_STATUS_BUSY |
++				SMC_STATUS_IB_CLOSED)) {
+ 			pr_warn("%.4s: read data[%d] fail\n", key, i);
+ 			return -EIO;
+ 		}
+@@ -250,7 +261,7 @@ static int read_smc(u8 cmd, const char *key, u8 *buffer, u8 len)
+ 	for (i = 0; i < 16; i++) {
+ 		udelay(APPLESMC_MIN_WAIT);
+ 		status = inb(APPLESMC_CMD_PORT);
+-		if (!(status & 0x01))
++		if (!(status & SMC_STATUS_AWAITING_DATA))
+ 			break;
+ 		data = inb(APPLESMC_DATA_PORT);
+ 	}
+@@ -275,7 +286,7 @@ static int write_smc(u8 cmd, const char *key, const u8 *buffer, u8 len)
+ 	}
+ 
+ 	for (i = 0; i < len; i++) {
+-		if (send_byte(buffer[i], APPLESMC_DATA_PORT)) {
++		if (send_byte_data(buffer[i], APPLESMC_DATA_PORT, i == len - 1)) {
+ 			pr_warn("%s: write data fail\n", key);
+ 			return -EIO;
+ 		}
