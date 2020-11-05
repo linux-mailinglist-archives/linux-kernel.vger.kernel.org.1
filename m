@@ -2,215 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C99C2A7DD5
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 13:04:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23D242A7E23
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 13:05:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730499AbgKEMEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 07:04:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729916AbgKEMEY (ORCPT
+        id S1730796AbgKEMFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 07:05:40 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:2425 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727851AbgKEMFj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 07:04:24 -0500
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4F8DC061A4C
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 04:04:23 -0800 (PST)
-Received: by mail-wr1-x431.google.com with SMTP id w1so1467501wrm.4
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 04:04:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=yoyslaxAm8PV6hIMeTxmfrY9MDfCArcqs8WY1KU6rz0=;
-        b=Q/px6eeYJssao3H6yCGM9ZQFzWv/Ip4Qoxgjfan6OtKo0o5oskWa6bYOhfbcNxPhFE
-         v+heYa/hHB1iDT3p3jrrUF/oXJJnKFyAp2ShllcVFPo0dlZ8TSaQH1cyvVDyyMMF6gNZ
-         kWe+HRQCt9She4HF07U+H3eJp0gYyQdrCfQwukbUF1IKrP/cbeHsVzqSRgDXkbbColrw
-         Bm4CnlfOTl4JG5LgB4kTuyso8oaLsWLtmeKhFMGvoV/Tpw1ITjQ1+GdWovEaChYLP6kz
-         mAtUBNTpkuCVWKRC1RL910LrmVCVt7sg+EjMvB7lju5bSLyU1srZubVnLrKDVYQWwyll
-         uxzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=yoyslaxAm8PV6hIMeTxmfrY9MDfCArcqs8WY1KU6rz0=;
-        b=nMOaX7z22a417ariUxrEQHFQgmRz4a/rR1ou768DYID43AO3BYfLGDnHNoTHRAGoX7
-         ISSOjNgXm9GQcC5zbCQezW2U0lGN7ye5FWmZ+OVViByCy2v/yE4MZCNuT/tgSXJngqBJ
-         j31WcqkaA+e/zU3a4t/ORjFaIFO6kUanHlQFqu1uzKJPe4h4gLO9kjYwn+qK89/q6XYq
-         I5Ljiy1sCYUMVtBjljuZJJWIHYFkIrkZcu0tPIk5S6GJRFpWW7wSow2C8fo3YWjnfZaA
-         GeZpcHm+QEeDcReedYlnmXPrLhVxRhWrSZ+eoPVkWLo0W/gi483j5nxlvPLTKWWBswX6
-         HHWQ==
-X-Gm-Message-State: AOAM530rCX2fBWK44lQlPmRQW3CZ0m1dpNjsx7Hyo+e05oGdla8SfiVV
-        LwBdm8uoS/7+lxCwjgw8E8AvlQ==
-X-Google-Smtp-Source: ABdhPJy14ngmZTBXFrYMK/+7HY77vo3847Ea+vDsDFSZ/YZYJwZhVirxAi1vXGPy7JHhJ/W+wUjmVg==
-X-Received: by 2002:adf:f246:: with SMTP id b6mr2499877wrp.111.1604577862456;
-        Thu, 05 Nov 2020 04:04:22 -0800 (PST)
-Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.gmail.com with ESMTPSA id f4sm2363094wrq.54.2020.11.05.04.04.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 04:04:21 -0800 (PST)
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To:     linus.walleij@linaro.org, bjorn.andersson@linaro.org,
-        robh+dt@kernel.org
-Cc:     agross@kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v2 2/2] dt-bindings: pinctrl: qcom: Add sm8250 lpass lpi pinctrl bindings
-Date:   Thu,  5 Nov 2020 12:04:10 +0000
-Message-Id: <20201105120410.18305-3-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20201105120410.18305-1-srinivas.kandagatla@linaro.org>
-References: <20201105120410.18305-1-srinivas.kandagatla@linaro.org>
+        Thu, 5 Nov 2020 07:05:39 -0500
+Received: from DGGEMM403-HUB.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4CRhzt591Vz52Dh;
+        Thu,  5 Nov 2020 20:05:30 +0800 (CST)
+Received: from dggemi709-chm.china.huawei.com (10.3.20.108) by
+ DGGEMM403-HUB.china.huawei.com (10.3.20.211) with Microsoft SMTP Server (TLS)
+ id 14.3.487.0; Thu, 5 Nov 2020 20:05:34 +0800
+Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
+ dggemi709-chm.china.huawei.com (10.3.20.108) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Thu, 5 Nov 2020 20:05:34 +0800
+Received: from dggemi762-chm.china.huawei.com ([10.1.198.148]) by
+ dggemi762-chm.china.huawei.com ([10.1.198.148]) with mapi id 15.01.1913.007;
+ Thu, 5 Nov 2020 20:05:33 +0800
+From:   "Zouwei (Samuel)" <zou_wei@huawei.com>
+To:     "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        "perex@perex.cz" <perex@perex.cz>,
+        "tiwai@suse.com" <tiwai@suse.com>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>
+CC:     "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: =?gb2312?B?tPC4tDogW1BBVENIIC1uZXh0XSBBU29DOiBtZWRpYXRlazogbXQ4MTkyOiBN?=
+ =?gb2312?Q?ake_some_symbols_static?=
+Thread-Topic: [PATCH -next] ASoC: mediatek: mt8192: Make some symbols static
+Thread-Index: AQHWs2nWluaJsVCcpEKkmgl3F4+tXam5cHAg
+Date:   Thu, 5 Nov 2020 12:05:33 +0000
+Message-ID: <5f10d3f7d9b24bdc82b7ce9f6bf50023@huawei.com>
+References: <1604577724-24687-1-git-send-email-zou_wei@huawei.com>
+In-Reply-To: <1604577724-24687-1-git-send-email-zou_wei@huawei.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.174.178.100]
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add device tree binding Documentation details for Qualcomm SM8250
-LPASS(Low Power Audio Sub System) LPI(Low Power Island) pinctrl driver.
-
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- .../pinctrl/qcom,lpass-lpi-pinctrl.yaml       | 129 ++++++++++++++++++
- 1 file changed, 129 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,lpass-lpi-pinctrl.yaml
-
-diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,lpass-lpi-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,lpass-lpi-pinctrl.yaml
-new file mode 100644
-index 000000000000..562520f41a33
---- /dev/null
-+++ b/Documentation/devicetree/bindings/pinctrl/qcom,lpass-lpi-pinctrl.yaml
-@@ -0,0 +1,129 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/pinctrl/qcom,lpass-lpi-pinctrl.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Qualcomm Technologies, Inc. Low Power Audio SubSystem (LPASS)
-+  Low Power Island (LPI) TLMM block
-+
-+maintainers:
-+  - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-+
-+description: |
-+  This binding describes the Top Level Mode Multiplexer block found in the
-+  LPASS LPI IP on most Qualcomm SoCs
-+
-+properties:
-+  compatible:
-+    const: qcom,sm8250-lpass-lpi-pinctrl
-+
-+  reg:
-+    minItems: 2
-+    maxItems: 2
-+
-+  clocks:
-+    items:
-+      - description: LPASS Core voting clock
-+      - description: LPASS Audio voting clock
-+
-+  clock-names:
-+    items:
-+      - const: core
-+      - const: audio
-+
-+  gpio-controller: true
-+
-+  '#gpio-cells':
-+    description: Specifying the pin number and flags, as defined in
-+      include/dt-bindings/gpio/gpio.h
-+    const: 2
-+
-+  gpio-ranges:
-+    maxItems: 1
-+
-+#PIN CONFIGURATION NODES
-+patternProperties:
-+  '-pins$':
-+    if:
-+      type: object
-+    then:
-+      properties:
-+        pins:
-+          description:
-+            List of gpio pins affected by the properties specified in this
-+            subnode.
-+          items:
-+            oneOf:
-+              - pattern: "^gpio([0-9]|[1-9][0-9])$"
-+          minItems: 1
-+          maxItems: 14
-+
-+        function:
-+          enum: [ gpio, swr_tx_clk, qua_mi2s_sclk, swr_tx_data1, qua_mi2s_ws,
-+                  swr_tx_data2, qua_mi2s_data0, swr_rx_clk, qua_mi2s_data1,
-+                  swr_rx_data1, qua_mi2s_data2, swr_tx_data3, swr_rx_data2,
-+                  dmic1_clk, i2s1_clk, dmic1_data, i2s1_ws, dmic2_clk,
-+                  i2s1_data0, dmic2_data, i2s1_data1, i2s2_clk, wsa_swr_clk,
-+                  i2s2_ws, wsa_swr_data, dmic3_clk, i2s2_data0, dmic3_data,
-+                  i2s2_data1 ]
-+          description:
-+            Specify the alternative function to be configured for the specified
-+            pins.
-+
-+        drive-strength:
-+          enum: [2, 4, 6, 8, 10, 12, 14, 16]
-+          default: 2
-+          description:
-+            Selects the drive strength for the specified pins, in mA.
-+
-+        slew-rate:
-+          enum: [0, 1, 2, 3]
-+          default: 0
-+          description: |
-+              0: No adjustments
-+              1: Higher Slew rate (faster edges)
-+              2: Lower Slew rate (slower edges)
-+              3: Reserved (No adjustments)
-+
-+        bias-pull-down: true
-+
-+        bias-pull-up: true
-+
-+        bias-disable: true
-+
-+        output-high: true
-+
-+        output-low: true
-+
-+      required:
-+        - pins
-+        - function
-+
-+      additionalProperties: false
-+
-+required:
-+  - compatible
-+  - reg
-+  - clocks
-+  - clock-names
-+  - gpio-controller
-+  - '#gpio-cells'
-+  - gpio-ranges
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/sound/qcom,q6afe.h>
-+    lpi_tlmm: pinctrl@33c0000 {
-+        compatible = "qcom,sm8250-lpass-lpi-pinctrl";
-+        reg = <0x33c0000 0x20000>,
-+              <0x355a000 0x1000>;
-+        clocks = <&q6afecc LPASS_HW_MACRO_VOTE LPASS_CLK_ATTRIBUTE_COUPLE_NO>,
-+                 <&q6afecc LPASS_HW_DCODEC_VOTE LPASS_CLK_ATTRIBUTE_COUPLE_NO>;
-+        clock-names = "core", "audio";
-+        gpio-controller;
-+        #gpio-cells = <2>;
-+        gpio-ranges = <&lpi_tlmm 0 0 14>;
-+    };
--- 
-2.21.0
-
+SGkgYWxsLA0KDQpQbGVhc2UgaWdub3JlIHRoaXMgcGF0Y2gsIEknbGwgc2VuZCBhbm90aGVyIHBh
+dGNoIHdpdGggb3RoZXIgZml4ZXMuDQoNCi0tLS0t08q8/tStvP4tLS0tLQ0Kt6K8/sjLOiBab3V3
+ZWkgKFNhbXVlbCkgDQq3osvNyrG85DogMjAyMMTqMTHUwjXI1SAyMDowMg0KytW8/sjLOiBsZ2ly
+ZHdvb2RAZ21haWwuY29tOyBicm9vbmllQGtlcm5lbC5vcmc7IHBlcmV4QHBlcmV4LmN6OyB0aXdh
+aUBzdXNlLmNvbTsgbWF0dGhpYXMuYmdnQGdtYWlsLmNvbQ0Ks63LzTogYWxzYS1kZXZlbEBhbHNh
+LXByb2plY3Qub3JnOyBsaW51eC1hcm0ta2VybmVsQGxpc3RzLmluZnJhZGVhZC5vcmc7IGxpbnV4
+LW1lZGlhdGVrQGxpc3RzLmluZnJhZGVhZC5vcmc7IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5v
+cmc7IFpvdXdlaSAoU2FtdWVsKSA8em91X3dlaUBodWF3ZWkuY29tPg0K1vfM4jogW1BBVENIIC1u
+ZXh0XSBBU29DOiBtZWRpYXRlazogbXQ4MTkyOiBNYWtlIHNvbWUgc3ltYm9scyBzdGF0aWMNCg0K
+Rml4IHRoZSBmb2xsb3dpbmcgc3BhcnNlIHdhcm5pbmdzOg0KDQouL210ODE5Mi1kYWktaTJzLmM6
+MjA0MDo1OiB3YXJuaW5nOiBzeW1ib2wgJ210ODE5Ml9kYWlfaTJzX2dldF9zaGFyZScgd2FzIG5v
+dCBkZWNsYXJlZC4gU2hvdWxkIGl0IGJlIHN0YXRpYz8NCi4vbXQ4MTkyLWRhaS1pMnMuYzoyMDYw
+OjU6IHdhcm5pbmc6IHN5bWJvbCAnbXQ4MTkyX2RhaV9pMnNfc2V0X3ByaXYnIHdhcyBub3QgZGVj
+bGFyZWQuIFNob3VsZCBpdCBiZSBzdGF0aWM/DQoNClJlcG9ydGVkLWJ5OiBIdWxrIFJvYm90IDxo
+dWxrY2lAaHVhd2VpLmNvbT4NClNpZ25lZC1vZmYtYnk6IFpvdSBXZWkgPHpvdV93ZWlAaHVhd2Vp
+LmNvbT4NCi0tLQ0KIHNvdW5kL3NvYy9tZWRpYXRlay9tdDgxOTIvbXQ4MTkyLWRhaS1pMnMuYyB8
+IDQgKystLQ0KIDEgZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0p
+DQoNCmRpZmYgLS1naXQgYS9zb3VuZC9zb2MvbWVkaWF0ZWsvbXQ4MTkyL210ODE5Mi1kYWktaTJz
+LmMgYi9zb3VuZC9zb2MvbWVkaWF0ZWsvbXQ4MTkyL210ODE5Mi1kYWktaTJzLmMNCmluZGV4IDUz
+YzU2MGUuLjViMjkzNDAgMTAwNjQ0DQotLS0gYS9zb3VuZC9zb2MvbWVkaWF0ZWsvbXQ4MTkyL210
+ODE5Mi1kYWktaTJzLmMNCisrKyBiL3NvdW5kL3NvYy9tZWRpYXRlay9tdDgxOTIvbXQ4MTkyLWRh
+aS1pMnMuYw0KQEAgLTIwMzcsNyArMjAzNyw3IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgbXRrX2Fm
+ZV9pMnNfcHJpdiBtdDgxOTJfaTJzX3ByaXZbREFJX0kyU19OVU1dID0gew0KIAl9LA0KIH07DQog
+DQotaW50IG10ODE5Ml9kYWlfaTJzX2dldF9zaGFyZShzdHJ1Y3QgbXRrX2Jhc2VfYWZlICphZmUp
+DQorc3RhdGljIGludCBtdDgxOTJfZGFpX2kyc19nZXRfc2hhcmUoc3RydWN0IG10a19iYXNlX2Fm
+ZSAqYWZlKQ0KIHsNCiAJc3RydWN0IG10ODE5Ml9hZmVfcHJpdmF0ZSAqYWZlX3ByaXYgPSBhZmUt
+PnBsYXRmb3JtX3ByaXY7DQogCWNvbnN0IHN0cnVjdCBkZXZpY2Vfbm9kZSAqb2Zfbm9kZSA9IGFm
+ZS0+ZGV2LT5vZl9ub2RlOyBAQCAtMjA1Nyw3ICsyMDU3LDcgQEAgaW50IG10ODE5Ml9kYWlfaTJz
+X2dldF9zaGFyZShzdHJ1Y3QgbXRrX2Jhc2VfYWZlICphZmUpDQogCXJldHVybiAwOw0KIH0NCiAN
+Ci1pbnQgbXQ4MTkyX2RhaV9pMnNfc2V0X3ByaXYoc3RydWN0IG10a19iYXNlX2FmZSAqYWZlKQ0K
+K3N0YXRpYyBpbnQgbXQ4MTkyX2RhaV9pMnNfc2V0X3ByaXYoc3RydWN0IG10a19iYXNlX2FmZSAq
+YWZlKQ0KIHsNCiAJaW50IGk7DQogCWludCByZXQ7DQotLQ0KMi42LjINCg0K
