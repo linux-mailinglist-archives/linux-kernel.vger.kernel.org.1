@@ -2,94 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94F222A895B
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 22:58:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9E6C2A895D
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 22:59:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732586AbgKEV6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 16:58:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58480 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732562AbgKEV6I (ORCPT
+        id S1732566AbgKEV7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 16:59:52 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:34620 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732390AbgKEV7w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 16:58:08 -0500
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C2D6C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 13:58:07 -0800 (PST)
-Received: by mail-pg1-x52e.google.com with SMTP id r186so2320223pgr.0
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 13:58:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=2C9RwNHEEzntRHRC2/FatGdskUP1kHVzkLqXpbiboB8=;
-        b=PFT3+0PatJKuPYB1chtX4wnurYFYnsTkZSjFZzbZIlZUrbjWqygKzClUHVVTbI4Jpg
-         hgURVUNZM1FYPacsH+a8eCi5tVeuuVapm/G9vqavgnwFwa+R2/vlEu2/Hh1v98Z2fOEu
-         fQf9HVXfStgowndj35ZlQthH5zvK98BkXHjNc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=2C9RwNHEEzntRHRC2/FatGdskUP1kHVzkLqXpbiboB8=;
-        b=cjQ3UuY1LNz7UZyUzcU83v3hw8zlWCIB6/70QrVekIjjmXECAGNdmthQAemqZp2Cvp
-         siRMlATbGz/OGd0OZSItWRfay6EyIz6UVYs/gXyAXwTeRFbQ6fV7YTFpV6w4mIBk9R9q
-         u2DmJ2rQPn8C9vnyNcgV+DNU7hcKPPXTdiirxq2GfkdlL17PRMNiBc0sWuWhhRTEtOnC
-         SrZ1+yl2YcUkNriVAdjzUu4DrlJPY908QB8TGqWJdT8U2XPpF2i9S7Te/5dMGKhnfeE7
-         ysWsNX5/dMjABcRl0pViAzaAONmlpmMVn1T82Erj2WWsYrPeEH0NV0aYqi0z8dilQug4
-         4B9Q==
-X-Gm-Message-State: AOAM532HnvIHtTPNvWsNutBwbVd78Jpj56rGfgmX/3XMJg0CFC26+0W5
-        pc41tEuE1lZb+7csrXNfHY8IUA==
-X-Google-Smtp-Source: ABdhPJxiXwT2dZs/H6MoJPes3fNW6/NBVLO8bmXlFqmTu9H1Yd0qzp+LtxSQvsnzXXg9NXSdjBi2DQ==
-X-Received: by 2002:a63:d252:: with SMTP id t18mr3901954pgi.300.1604613486363;
-        Thu, 05 Nov 2020 13:58:06 -0800 (PST)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:42b0:34ff:fe3d:58e6])
-        by smtp.gmail.com with ESMTPSA id k7sm3572890pfa.184.2020.11.05.13.58.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 13:58:05 -0800 (PST)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, robdclark@chromium.org,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
-        Douglas Anderson <dianders@chromium.org>,
-        Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 3/3] dt-bindings: dt-bindings: display: simple: Add BOE NV110WTM-N61
-Date:   Thu,  5 Nov 2020 13:57:41 -0800
-Message-Id: <20201105135639.v3.3.I28d9e32b3cc0aae980ecc39d364263a3f9871298@changeid>
-X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
-In-Reply-To: <20201105135639.v3.1.I31c4f8b111dbef1ab658f206764655ae983bc560@changeid>
-References: <20201105135639.v3.1.I31c4f8b111dbef1ab658f206764655ae983bc560@changeid>
+        Thu, 5 Nov 2020 16:59:52 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A5LtjMu022290;
+        Thu, 5 Nov 2020 21:59:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=g+fL9IqGuXmwtbifkXrIAHV/u1Is0GbR3IjP9o5bNIM=;
+ b=HHrX3w8+3Xju5Z+nXPmUO6bLlngSjtCht0QQCD+9sq8uo65sq2Fmu6mMmhg0rc/6w/7G
+ 8YW3airQr/ZjExqAp87jNmeiHRZQHAC1QA4Ac95F7dvlBhkd/cLtkqbFW0+5fkqwZ+9P
+ pVS0el2o7ZcE2AZFDAOfPquBIeBDmxVZGLj1LHFKJRK2Ue9OWlMFl0+Go0s0mWhHmXHs
+ RW/w3zVdgsLtKqGfESs5pqdoYbKbpqVb/wsIkvTXMJYPpGxbCYJuxLOWowFpvpfCDo1V
+ cT4MQWtJlkVsiEXjnonHNLgPMnbNrgJ0aOXF0QLrZLeZGbt/VscdQVFdaM724Chji8I6 3w== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 34hhw2xbsw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 05 Nov 2020 21:59:30 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A5LtqD1092454;
+        Thu, 5 Nov 2020 21:59:30 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 34hvs1bk3p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 05 Nov 2020 21:59:30 +0000
+Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0A5LxQwX026988;
+        Thu, 5 Nov 2020 21:59:26 GMT
+Received: from [192.168.2.112] (/50.38.35.18)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 05 Nov 2020 13:59:26 -0800
+Subject: Re: [PATCH 0/4] hugetlbfs: use hinode_rwsem for pmd sharing
+ synchronization
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc:     Hugh Dickins <hughd@google.com>,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.vnet.ibm.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Prakash Sangappa <prakash.sangappa@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20201026233150.371577-1-mike.kravetz@oracle.com>
+ <20201103002841.273161-1-mike.kravetz@oracle.com>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <7374a8cc-ab8d-ad25-2b8b-2451ba8f7131@oracle.com>
+Date:   Thu, 5 Nov 2020 13:59:24 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201103002841.273161-1-mike.kravetz@oracle.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9796 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0 mlxscore=0
+ malwarescore=0 mlxlogscore=999 suspectscore=0 spamscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011050140
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9796 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0 mlxscore=0
+ suspectscore=0 clxscore=1015 priorityscore=1501 impostorscore=0
+ spamscore=0 lowpriorityscore=0 mlxlogscore=999 phishscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011050140
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add yet another eDP panel.
+On 11/2/20 4:28 PM, Mike Kravetz wrote:
+> The RFC series reverted all patches where i_mmap_rwsem was used for
+> pmd sharing synchronization, and then added code to use hinode_rwsem.
+> This series ends up with the same code in the end, but is structured
+> as follows:
+> 
+> - Revert the page fault/truncation race patch which depends on i_mmap_rwsem
+>   always being taken in page fault path.
+> - Add hinode_rwsem to hugetlbfs specific inode and supporting routines.
+> - Convert code from using i_mmap_rwsem for pmd sharing synchronization
+>   to using hinode_rwsem.
+> - Add code to more robustly deal with page fault/truncation races.
+> 
+> My hope is that this will be easier to review.
 
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
-Acked-by: Rob Herring <robh@kernel.org>
----
+My apologies.  Please do not spend any time on this patch series and it
+certainly is not something to be sent to stable.
 
-(no changes since v1)
+I have created a patch to address the BUG and propose that for stable [1].
 
- .../devicetree/bindings/display/panel/panel-simple.yaml         | 2 ++
- 1 file changed, 2 insertions(+)
+After further thought, the approach in this series also has lock ordering
+issues.  Here is a simple summary of the problem.
 
-diff --git a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
-index edb53ab0d9eb..93e244c67e8a 100644
---- a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
-+++ b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
-@@ -76,6 +76,8 @@ properties:
-         # BOE OPTOELECTRONICS TECHNOLOGY 10.1" WXGA TFT LCD panel
-       - boe,nv101wxmn51
-         # BOE NV133FHM-N61 13.3" FHD (1920x1080) TFT LCD Panel
-+      - boe,nv110wtm-n61
-+        # BOE NV110WTM-N61 11.0" 2160x1440 TFT LCD Panel
-       - boe,nv133fhm-n61
-         # BOE NV133FHM-N62 13.3" FHD (1920x1080) TFT LCD Panel
-       - boe,nv133fhm-n62
+With pmd sharing, the pte pointer returned by huge_pte_alloc is not
+guaranteed to be valid.  This is because another thread could have made
+a call to huge_pmd_unshare and 'unshared' the pmd page containing the
+pte pointer.
+
+The current i_mmap_rwsem locking and the inode locking proposed in this
+series acquire the semaphore in read mode before calling huge_pte_alloc.
+Code continues to hold the semaphore until finished with the pte pointer.
+Callers of huge_pmd_unshare hold the semaphore in write mode.  Thus, the
+semaphore prevents the race.
+
+The problem with this type of approach is lock ordering.  The semaphore is
+acquired in read mode during page fault processing.  The first thing this
+code does is 'allocate' a pte with huge_pte_alloc.  It will then, find or
+allocate a page and lock it.  Finally, it will lock the page table to update
+the pte.  Two instances where we may need to take the semaphore in write
+mode are page migration and memory failure.  In these cases, the first thing
+we need to do is lock the page.  Only after locking the page can we locate
+the semaphore which needs to be acquired in write mode.  Hence we end up with
+a classic cause for ABBA deadlocks.
+
+I'm starting to think that adding more synchronization is not the best way
+to approach this issue.  Rather, we should always validate pte pointers after
+acquiring the page table lock.  At the lowest level, pmd sharing is
+synchronized by the page table lock.  We already do some validation of the
+pte after acquiring the page table lock.  For example, checking if
+huge_pte_none() is still true.  Before even checking for none, we would need
+to lookup the pte again (huge_pte_offset) and compare to the pte we previously
+acquired.  If they are not the same, then we would need to backout and retry.
+
+Unless someone has another suggestion, I'll start exploring this approach.
+
+[1] https://lore.kernel.org/linux-mm/20201105195058.78401-1-mike.kravetz@oracle.com/
 -- 
-2.29.1.341.ge80a0c044ae-goog
-
+Mike Kravetz
