@@ -2,81 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 908A42A86BD
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 20:06:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C2BE2A86B7
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 20:05:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732100AbgKETFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 14:05:53 -0500
-Received: from mga09.intel.com ([134.134.136.24]:24077 "EHLO mga09.intel.com"
+        id S1732066AbgKETFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 14:05:42 -0500
+Received: from foss.arm.com ([217.140.110.172]:40486 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732074AbgKETFq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 14:05:46 -0500
-IronPort-SDR: 0u5U/aL8UtkmMvvQooSphpILIk0OP+0wR1oAjVvE8CwM3ERKDIQdcBdCq3F1+nFGeYaKVyHjx0
- lXlIw1ch7OOQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9796"; a="169584673"
-X-IronPort-AV: E=Sophos;i="5.77,454,1596524400"; 
-   d="scan'208";a="169584673"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2020 11:05:23 -0800
-IronPort-SDR: U6LL00R3L5K8HnFU6WDvb17WFVQ6lZ/RmZwdLagNdFLEWm2CvsbCVKNKUt/CDrO5QmkrMYH7pA
- wDOwzC7tU1rg==
-X-IronPort-AV: E=Sophos;i="5.77,454,1596524400"; 
-   d="scan'208";a="539529301"
-Received: from agluck-desk2.sc.intel.com ([10.3.52.68])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2020 11:05:22 -0800
-From:   Tony Luck <tony.luck@intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Tony Luck <tony.luck@intel.com>, Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
-        Aristeu Rozanski <aris@redhat.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] MAINTAINERS: Clean up the F: entries for some EDAC drivers
-Date:   Thu,  5 Nov 2020 11:05:09 -0800
-Message-Id: <20201105190509.19719-3-tony.luck@intel.com>
-X-Mailer: git-send-email 2.21.1
-In-Reply-To: <20201105190509.19719-1-tony.luck@intel.com>
-References: <20201105074807.3697-1-qiuxu.zhuo@intel.com>
- <20201105190509.19719-1-tony.luck@intel.com>
+        id S1727851AbgKETFk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 14:05:40 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6300D1474;
+        Thu,  5 Nov 2020 11:05:39 -0800 (PST)
+Received: from bogus (unknown [10.57.22.191])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 93D663F718;
+        Thu,  5 Nov 2020 11:05:37 -0800 (PST)
+Date:   Thu, 5 Nov 2020 19:05:34 +0000
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Jim Quinlan <james.quinlan@broadcom.com>
+Cc:     Rob Herring <robh@kernel.org>,
+        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 1/2] dt-bindings: Add bindings for BrcmSTB SCMI
+ mailbox driver
+Message-ID: <20201105190534.jnbbnquihkryxnup@bogus>
+References: <20201029195913.5927-1-james.quinlan@broadcom.com>
+ <20201029195913.5927-2-james.quinlan@broadcom.com>
+ <20201104215050.GA4180546@bogus>
+ <CA+-6iNw1Z1dj8oFn8DdyVPuMUP-3+n9sKXuWYWo2rfPo5j4dkA@mail.gmail.com>
+ <CAL_JsqJQA_VLhez8y6HVCdFB2DZ85KoDZ1=RtbU4Mw98aQRSxA@mail.gmail.com>
+ <CA+-6iNznMY78tJBeNrtyOy58DTKKPGxfgA0Pu2Rxx42YDJWV1w@mail.gmail.com>
+ <20201105182707.l4xx3wu2ch22qysi@bogus>
+ <CA+-6iNyeUWprE8rsBWoVigYHMdU1k8W0i3j0PF3gKKvZHCM+mg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+-6iNyeUWprE8rsBWoVigYHMdU1k8W0i3j0PF3gKKvZHCM+mg@mail.gmail.com>
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The edac_altera entry stopped at the "." and needed "[ch]" to match
-both the driver and the header file.
+On Thu, Nov 05, 2020 at 01:57:07PM -0500, Jim Quinlan wrote:
+> On Thu, Nov 5, 2020 at 1:27 PM Sudeep Holla <sudeep.holla@arm.com> wrote:
+> >
+> > On Thu, Nov 05, 2020 at 10:28:25AM -0500, Jim Quinlan wrote:
+> > > On Thu, Nov 5, 2020 at 10:13 AM Rob Herring <robh@kernel.org> wrote:
+> > > >
+> > > > On Wed, Nov 4, 2020 at 4:04 PM Jim Quinlan <james.quinlan@broadcom.com> wrote:
+> > > > >
+> > > > > On Wed, Nov 4, 2020 at 4:50 PM Rob Herring <robh@kernel.org> wrote:
+> > > > > >
+> > > > > > On Thu, Oct 29, 2020 at 03:59:06PM -0400, Jim Quinlan wrote:
+> > > > > > > Bindings are added.  Only one interrupt is needed because
+> > > > > > > we do not yet employ the SCMI p2a channel.
+> > > > > >
+> > > > > > I still don't understand what this is. To repeat from v1: I thought SCMI
+> > > > > > was a mailbox consumer, not provider?
+> > > > >
+> > > > > Hi Rob,
+> > > > >
+> > > > > I'm not sure where I am implying that SCMI is a mailbox provider?
+> > > > > Should I not mention "SCMI" in the subject line?
+> > > > >
+> > > > > This is just a mailbox driver, "consumed" by SCMI.    Our SCMI DT node
+> > > > > looks like this:
+> > > > >
+> > > > > brcm_scmi_mailbox: brcm_scmi_mailbox@0 {
+> > > > >         #mbox-cells = <1>;
+> > > > >         compatible = "brcm,brcmstb-mbox";
+> > > > > };
+> > > > >
+> > > > > brcm_scmi@0 {
+> > > > >         compatible = "arm,scmi";
+> > > > >         mboxes = <&brcm_scmi_mailbox 0>;;
+> > > > >         mbox-names = "tx";
+> > > > >         shmem = <&NWMBOX>;
+> > > > >         /* ... */
+> > > > > };
+> > > >
+> > > > Okay, that makes more sense. Though it seems like this is just adding
+> > > > a pointless level of indirection to turn an interrupt into a mailbox.
+> > > > There's nothing more to 'the mailbox' is there?
+> > >
+> > > Correct.  Although you can see that it uses both interrupts and SMC
+> > > calls to get the job done.
+> > >
+> >
+> > I was against having 2 separate solutions and would have raised my concern
+> > again. As I mentioned earlier, either extend what we have or move the
+> > existing SMC solution into this mailbox driver. Having 2 different solution
+> > for this just because you have extra interrupt to deal with is definite
+> > NACK from me as I had previously mentioned.
+> >
+> > > > So why not either
+> > > > allow SCMI to have an interrupt directly
+> > > Not sure here -- perhaps the SCMI folks have an answer?
+> > >
+> >
+> > I did ask why can't you extend the existing SCMI/SMC binding to add this
+> > as optional feature ?
+> Hi Sudeep,
+> 
+> Looking at the email you said, "In that case any reason why you can't
+> reuse the existing smc transport for SCMI." ,  and I replied with the
+> reason.  I did not interpret your statement  above as what you are
+> clearly saying now: "either extend what we have or move the existing
+> SMC solution into this mailbox driver. "
+>
 
-The edac_skx entry only matched on ".c" files so didn't include skx_common.h
+No, you are right. I didn't mention that explicitly. I wanted to, but
+thought I will wait until this driver got traction to ask you to merge
+them. Sorry for that. Anyways I am against having existing solution and
+a mailbox for SMC, they need to be merged at any cost. Where the final
+solution will be doesn't matter much to me, I am fine either way.
 
-Signed-off-by: Tony Luck <tony.luck@intel.com>
----
- MAINTAINERS | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 86eb55697c8b..8def38b814a1 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -2486,7 +2486,7 @@ F:	drivers/clk/socfpga/
- ARM/SOCFPGA EDAC SUPPORT
- M:	Dinh Nguyen <dinguyen@kernel.org>
- S:	Maintained
--F:	drivers/edac/altera_edac.
-+F:	drivers/edac/altera_edac.[ch]
- 
- ARM/SPREADTRUM SoC SUPPORT
- M:	Orson Zhai <orsonzhai@gmail.com>
-@@ -6409,7 +6409,7 @@ EDAC-SKYLAKE
- M:	Tony Luck <tony.luck@intel.com>
- L:	linux-edac@vger.kernel.org
- S:	Maintained
--F:	drivers/edac/skx_*.c
-+F:	drivers/edac/skx_*.[ch]
- 
- EDAC-TI
- M:	Tero Kristo <t-kristo@ti.com>
--- 
-2.21.1
-
+--
+Regards,
+Sudeep
