@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADC512A7385
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 01:03:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26D092A7386
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 01:03:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387676AbgKEADO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 19:03:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51070 "EHLO
+        id S2387718AbgKEADR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 19:03:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387595AbgKEADM (ORCPT
+        with ESMTP id S1733029AbgKEADQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 19:03:12 -0500
-Received: from mail-wm1-x349.google.com (mail-wm1-x349.google.com [IPv6:2a00:1450:4864:20::349])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F53DC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 16:03:12 -0800 (PST)
-Received: by mail-wm1-x349.google.com with SMTP id t201so9429wmt.1
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 16:03:12 -0800 (PST)
+        Wed, 4 Nov 2020 19:03:16 -0500
+Received: from mail-wr1-x44a.google.com (mail-wr1-x44a.google.com [IPv6:2a00:1450:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C7BBC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 16:03:14 -0800 (PST)
+Received: by mail-wr1-x44a.google.com with SMTP id w1so99839wrr.5
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 16:03:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=0USIvWPWD+0X5uGT95blxzhIaksN6b9CBpQaBzMOnSY=;
-        b=sFpQqhhEG5gmFI9GQ8viL3pqjWr2ET4+vulUOd3uW9uXSre4REhA33qyv+t4dVSEU7
-         w545R8LNs86kAkwY0TXSEvxLnddxzfkbaplqkm43YTr/brE+bJoOY+C2aatYwHPrKd8V
-         lyF0Dk29ZIFpFIJ1Og+2xmXpbHGti9zQJ89WmkxMG1/0OCal1u616x08x92MgB7fVD/D
-         G69WQShQeI4m/Swv42Hyjt3WeTnoKf7SUs6+1sXJtxjv/UHA5ZAhdSY1gHBAtl08c45b
-         vDih+OYOVaIk+p10CXSYtIivWlmHY49fZ1jflJr3KJySxpjBR7RHRbYJf7/j6E5/VucA
-         0Etg==
+        bh=KFrv2CeYC66xd7QOOp7G/eCqjg0M9rtzwQxn1AQSEo8=;
+        b=QLuAbvZHFP2W58yhtR9vhBr55r8Hyf3S4Rs3PezTxrfLFhxyd7JT09PKnYS8oSsPPq
+         gdRKQvVLLsai3OEzz4dyfxqzwtdGBwLP/JIK3nrPx65ohFOxXi8w41i17w7g8HswL0pM
+         QsnWuFYb+DhqJ6xTCmfTf5pevVgWDcXouuFmLtrqO1Pnya8cbLcz2uUW+4+tBIDfCvWR
+         NIBMGmdmtEOwmByJGW5M96WjPsZbCZh7VmiInUy7NkcWeP7l8Bovd9DsLTRHc6Tgd9yI
+         lZqfbycXbtZhTw1t+934rBC373gyowgCXZJ0eV1iEKb+i/tEaSfzGY1H5Xkynl1uQ7FS
+         4S7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=0USIvWPWD+0X5uGT95blxzhIaksN6b9CBpQaBzMOnSY=;
-        b=qYgk++TvLDpHke3MDO+Ke1lZwcB1X0ZxNghCe+wJPcA7vu1pgAD/B7hm4RFJ+OyWus
-         /5b2++L1+uBoIxs7j48DeChDfOksCFzAohscTV1Ynr2N58H27u6WCpL03aaURkn642ft
-         /Op+lnrf4QJBg9/CDyZSRfjDcJtDMUlExjYlwqeb/knqjUfay3LDc4bVfCt8c+cR3Zcp
-         ePqsfwgX6R/Kp2lg0FL1m2FDRq7KI6/zIqUi6w4DD/4+Y+K9phjWeqIBwkeGEi9jxVCn
-         RQrn6ra2KHEray4sVrzwa12XmkIi79bMms+ogfSX1t3TQX8I8V/vNYvzbkUJXee5Fynp
-         XoJA==
-X-Gm-Message-State: AOAM531ZoMQ7QoxwWP3cyyLVZvdao7v+ReU+3x03j4cErWcdOi+EN+xU
-        uCuwtaWE8snQ4LcqVM4cJtUskausPYZWtlF5
-X-Google-Smtp-Source: ABdhPJxw/lGpcSbzl86AC+uSuIK+hwvLKzT3r8ACA6Gr0SlWmsWXhA12+uWjp+hh9NvD3Cd9/idF6XWVIRZbxQIj
+        bh=KFrv2CeYC66xd7QOOp7G/eCqjg0M9rtzwQxn1AQSEo8=;
+        b=Mp2ZoikesSuyzzEcScKiBU+vTDotSmCn5C6WO33Jmse62skNymynRHb1Z5t4N4xqmN
+         R2W5lJ3aaz2VwaH8FSFhS/hmGyb1CaBCp88aBhSn+WkLr2rZUrYTeuNBq323Wx9ZxnuD
+         MluAYJ2gYpPqvHcDFNGy/dySDczETiQgCkMXyidm9eVZOdw1zF5w0NM5/VGGZEGH9w8s
+         +ziEjeE/cEV5GjhbHW8qCamc0WZ0LT/EEMJUBQrIqVASDMfo6hw7KfpllK03JaDrxUGA
+         09+u9QXWGON3Gp9EBZWUDVnyXrJ9fSfYS9ursqNQzsORD9Q2VrsCDh0ueWqoxf7HF7DA
+         7XcQ==
+X-Gm-Message-State: AOAM532JKgKkPcblNpNw/T3YFamqy2V9YaCXXinaFC1sfh7kAFg5sGzi
+        VUEZAjyDws6Ly/LiTHfXNcnxRxbORdpF1xLT
+X-Google-Smtp-Source: ABdhPJwQ27fD7Fc3ZNzuubZFZKWZfrYiXQ310vGkklvY3Ifyj2TvUAmaupP6a4qWeV/wlXVXw6iDgvs3qJM0Dpq1
 Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
 X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
- (user=andreyknvl job=sendgmr) by 2002:a5d:4c4f:: with SMTP id
- n15mr475161wrt.137.1604534591024; Wed, 04 Nov 2020 16:03:11 -0800 (PST)
-Date:   Thu,  5 Nov 2020 01:02:25 +0100
+ (user=andreyknvl job=sendgmr) by 2002:a1c:9d02:: with SMTP id
+ g2mr24703wme.110.1604534593196; Wed, 04 Nov 2020 16:03:13 -0800 (PST)
+Date:   Thu,  5 Nov 2020 01:02:26 +0100
 In-Reply-To: <cover.1604534322.git.andreyknvl@google.com>
-Message-Id: <3a3e6dfe3ad355bb5ffc3cc34769cb97aec650d2.1604534322.git.andreyknvl@google.com>
+Message-Id: <d4149b16fe2fd29e57a0bb8d997354676f76a183.1604534322.git.andreyknvl@google.com>
 Mime-Version: 1.0
 References: <cover.1604534322.git.andreyknvl@google.com>
 X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
-Subject: [PATCH 15/20] kasan: don't round_up too much
+Subject: [PATCH 16/20] kasan: simplify assign_tag and set_tag calls
 From:   Andrey Konovalov <andreyknvl@google.com>
 To:     Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will.deacon@arm.com>,
@@ -73,63 +73,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For hardware tag-based mode kasan_poison_memory() already rounds up the
-size. Do the same for software modes and remove round_up() from the common
-code.
+set_tag() already ignores the tag for the generic mode, so just call it
+as is. Add a check for the generic mode to assign_tag(), and simplify its
+call in ____kasan_kmalloc().
 
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
-Link: https://linux-review.googlesource.com/id/Ib397128fac6eba874008662b4964d65352db4aa4
+Link: https://linux-review.googlesource.com/id/I18905ca78fb4a3d60e1a34a4ca00247272480438
 ---
- mm/kasan/common.c | 8 ++------
- mm/kasan/shadow.c | 1 +
- 2 files changed, 3 insertions(+), 6 deletions(-)
+ mm/kasan/common.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
 diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-index 60793f8695a8..69ab880abacc 100644
+index 69ab880abacc..40ff3ce07a76 100644
 --- a/mm/kasan/common.c
 +++ b/mm/kasan/common.c
-@@ -218,9 +218,7 @@ void __kasan_unpoison_object_data(struct kmem_cache *cache, void *object)
- 
- void __kasan_poison_object_data(struct kmem_cache *cache, void *object)
+@@ -238,6 +238,9 @@ void __kasan_poison_object_data(struct kmem_cache *cache, void *object)
+ static u8 assign_tag(struct kmem_cache *cache, const void *object,
+ 			bool init, bool keep_tag)
  {
--	kasan_poison_memory(object,
--			round_up(cache->object_size, KASAN_GRANULE_SIZE),
--			KASAN_KMALLOC_REDZONE);
-+	kasan_poison_memory(object, cache->object_size, KASAN_KMALLOC_REDZONE);
- }
- 
- /*
-@@ -293,7 +291,6 @@ static bool ____kasan_slab_free(struct kmem_cache *cache, void *object,
- {
- 	u8 tag;
- 	void *tagged_object;
--	unsigned long rounded_up_size;
- 
- 	tag = get_tag(object);
- 	tagged_object = object;
-@@ -314,8 +311,7 @@ static bool ____kasan_slab_free(struct kmem_cache *cache, void *object,
- 		return true;
++	if (IS_ENABLED(CONFIG_KASAN_GENERIC))
++		return 0xff;
++
+ 	/*
+ 	 * 1. When an object is kmalloc()'ed, two hooks are called:
+ 	 *    kasan_slab_alloc() and kasan_kmalloc(). We assign the
+@@ -280,8 +283,8 @@ void * __must_check __kasan_init_slab_obj(struct kmem_cache *cache,
+ 		__memset(alloc_meta, 0, sizeof(*alloc_meta));
  	}
  
--	rounded_up_size = round_up(cache->object_size, KASAN_GRANULE_SIZE);
--	kasan_poison_memory(object, rounded_up_size, KASAN_KMALLOC_FREE);
-+	kasan_poison_memory(object, cache->object_size, KASAN_KMALLOC_FREE);
+-	if (IS_ENABLED(CONFIG_KASAN_SW_TAGS) || IS_ENABLED(CONFIG_KASAN_HW_TAGS))
+-		object = set_tag(object, assign_tag(cache, object, true, false));
++	/* Tag is ignored in set_tag() without CONFIG_KASAN_SW/HW_TAGS */
++	object = set_tag(object, assign_tag(cache, object, true, false));
  
- 	if (!kasan_stack_collection_enabled())
- 		return false;
-diff --git a/mm/kasan/shadow.c b/mm/kasan/shadow.c
-index 8e4fa9157a0b..3f64c9ecbcc0 100644
---- a/mm/kasan/shadow.c
-+++ b/mm/kasan/shadow.c
-@@ -82,6 +82,7 @@ void kasan_poison_memory(const void *address, size_t size, u8 value)
- 	 * addresses to this function.
- 	 */
- 	address = kasan_reset_tag(address);
-+	size = round_up(size, KASAN_GRANULE_SIZE);
+ 	return (void *)object;
+ }
+@@ -362,9 +365,7 @@ static void *____kasan_kmalloc(struct kmem_cache *cache, const void *object,
+ 				KASAN_GRANULE_SIZE);
+ 	redzone_end = round_up((unsigned long)object + cache->object_size,
+ 				KASAN_GRANULE_SIZE);
+-
+-	if (IS_ENABLED(CONFIG_KASAN_SW_TAGS) || IS_ENABLED(CONFIG_KASAN_HW_TAGS))
+-		tag = assign_tag(cache, object, false, keep_tag);
++	tag = assign_tag(cache, object, false, keep_tag);
  
- 	shadow_start = kasan_mem_to_shadow(address);
- 	shadow_end = kasan_mem_to_shadow(address + size);
+ 	/* Tag is ignored in set_tag without CONFIG_KASAN_SW/HW_TAGS */
+ 	kasan_unpoison_memory(set_tag(object, tag), size);
 -- 
 2.29.1.341.ge80a0c044ae-goog
 
