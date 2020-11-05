@@ -2,69 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24B5F2A8188
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 15:53:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA3582A8187
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 15:53:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731603AbgKEOwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 09:52:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48184 "EHLO
+        id S1731590AbgKEOwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 09:52:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731540AbgKEOwi (ORCPT
+        with ESMTP id S1731458AbgKEOwj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 09:52:38 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 675D3C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 06:52:34 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id n18so2096762wrs.5
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 06:52:34 -0800 (PST)
+        Thu, 5 Nov 2020 09:52:39 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93108C0613D3
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 06:52:35 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id d142so1868184wmd.4
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 06:52:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=rv3e4lR5n3wbFt5a45993iZf/YGmwbWZWnMbXebEIvs=;
-        b=XSREkBYK380J4CWNoXmcHRvUSexcxURarBudmCsFRVoIQ5vYDbDJky11tMykMICSa5
-         4t9WSt6mx44I9x9YihMhfrnjm70iija84cbYr3L4NqZKBysrWKTcAV2f60BmrUPyFPBc
-         uy2UBtjWg1mmBR2rV9UNTmvSNlis678WRkrwrShYsej7hOIa9wV1hL4KdbtQJtzxDpWt
-         pdjB5XWNlS0fZTNFXn5zMylPY7TooJTMlFDSFAhcBEEuM3+ByEeXJGnioaHz511LVgxV
-         vP5bJbK0TsnoToAaMHJdezPZ7VCMgyK37zQ060GU0rjX/IC+TOsbCJNFnwcMXfS16kho
-         26yw==
+        bh=Lzr2LZKkjeyh+0gXSjtszqjFcxymZo2/y4TJCmeBIoM=;
+        b=swOlcuLUwLVsy5H0kZyJDIny5wOGPi4N36T5qjg/xyiN0ZRy/TR+lqUsJM/dksU6HV
+         LRpj6JmHpaFZLKcgMPDDw95n0IWR1MQOO2UN4udOERsKfNg+qKMRbef8h/Pk7Rynqb7V
+         ldZWi/RBJgzaXFam5OkPaWd/9Pwh0fjVkAQUZXoJcfL+6QR7ox+/FUSwFYJFBdzfrkjj
+         d/tw9iWv6GAE0cL9vwkWbzs2WnsflB5dzqlm0JCj4kUOPF2Fww1gU8Deb9SxCMD/EAuZ
+         n92AkxxE100PUWDbNbdgYLDNmHqxg7zOBJoYqfDD+QWhk5y+EVgYOUJorOQBpC2tRFUz
+         sRaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=rv3e4lR5n3wbFt5a45993iZf/YGmwbWZWnMbXebEIvs=;
-        b=aA08QTfIDSSAaCCazi5dsfiaXrrEvlLQHW+dlfoARO3ZFnA8kj3Svx19gGYgVl0vdz
-         AMGMKNzL05/rq4zPwp+nw6+Ih3g36GLkiFL03VpvVaZqPxLdeoj9fpWNVvUWiJvvqe7A
-         wnVuecdy/OO/B7YsHB5yXa74xn+kz5WocsbNslneequ0cyVmoeZzf+wAj+CiQg8Z52ui
-         nfd8GUOHwwMz6hOCXxeU0Ql/U+ffsSca5W85xgPkxQr1bvauGyGD30CsS9DQh8fYozi/
-         GlTSaD4P7Qg8RrO3AHb+a4cdRRoIlelLJ/cGjxvEBF4ZPrWoy3mlkWS8g6+55IIwOLKx
-         PrfA==
-X-Gm-Message-State: AOAM533ZtNPkx4jtuN/zdbibkFCC2NataA/BMGlx78mPp6ewlFS34J3v
-        nbkKBQ2QMKMW7yLaRMSjdnCmdPVxXHIzJE+J
-X-Google-Smtp-Source: ABdhPJyRZrB38ZvyOkJUZt6MoLWccltE1b+bbQaqzlHiYSRu4qcXO2ij1vEYl45QgtpeTpFIvxmy+Q==
-X-Received: by 2002:adf:fac6:: with SMTP id a6mr3321445wrs.373.1604587953215;
-        Thu, 05 Nov 2020 06:52:33 -0800 (PST)
+        bh=Lzr2LZKkjeyh+0gXSjtszqjFcxymZo2/y4TJCmeBIoM=;
+        b=bLrf6Eg4L8VgMvPRQwitkGY9RC8DbzWSAx6lGedxOZhHiGrj7RXzs9PAAgWH1EKltq
+         lp9PtFUDH8sAgmdjE/bJNKRQ6aC7JTMXKcEYh4o/i5CBKExq0mtwdH9y5EbUIngcl+qp
+         xtvRw7bb3EgDkYuVWNuuFEpshMx8YFiXf9EGeVS9NWOY/MD6NBWHigIXSWHICTUD4L02
+         l7qajHzAbv4w24pj7uaQYLNql+q6KsnOaRUfsoFUAp+F4vYtdPr8CQflTqgulr1qezOh
+         1y6J68fXm6yYMyi5usxTvnuTimaEh5CF358RdOGewSFeU4Co0t4MEkME756bRVWZ5RR0
+         oDUw==
+X-Gm-Message-State: AOAM531oSzplBZCvU/QY70ciEqTDTc2YTlbjVsLOLlk/41Twex35RjMf
+        Qb/8rHC6f9Zr5x+PJCvH7PfG1w==
+X-Google-Smtp-Source: ABdhPJwEQdQy1KXngQ0iziaR9HkA2R0NAcKEAYFhCBRARBNNh5ssNJoyNlHhkkm7K6yluAbMvU79zQ==
+X-Received: by 2002:a1c:5f45:: with SMTP id t66mr3197691wmb.20.1604587954367;
+        Thu, 05 Nov 2020 06:52:34 -0800 (PST)
 Received: from dell.default ([91.110.221.242])
-        by smtp.gmail.com with ESMTPSA id f5sm2631243wmh.16.2020.11.05.06.52.32
+        by smtp.gmail.com with ESMTPSA id f5sm2631243wmh.16.2020.11.05.06.52.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 06:52:32 -0800 (PST)
+        Thu, 05 Nov 2020 06:52:33 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
-        Gareth Hughes <gareth@valinux.com>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH 15/19] gpu: drm: radeon: radeon_drv: Remove unused variable 'ret'
-Date:   Thu,  5 Nov 2020 14:45:13 +0000
-Message-Id: <20201105144517.1826692-16-lee.jones@linaro.org>
+        Linus Walleij <linus.walleij@linaro.org>,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH 16/19] gpu: drm: panel: panel-ilitek-ili9322: Demote non-conformant kernel-doc header
+Date:   Thu,  5 Nov 2020 14:45:14 +0000
+Message-Id: <20201105144517.1826692-17-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201105144517.1826692-1-lee.jones@linaro.org>
 References: <20201105144517.1826692-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -72,42 +71,44 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/radeon/radeon_drv.c: In function ‘radeon_pmops_runtime_suspend’:
- drivers/gpu/drm/radeon/radeon_drv.c:455:6: warning: variable ‘ret’ set but not used [-Wunused-but-set-variable]
+ drivers/gpu/drm/panel/panel-ilitek-ili9322.c:177: warning: Enum value 'ILI9322_INPUT_SRGB_THROUGH' not described in enum 'ili9322_input'
+ drivers/gpu/drm/panel/panel-ilitek-ili9322.c:177: warning: Enum value 'ILI9322_INPUT_SRGB_ALIGNED' not described in enum 'ili9322_input'
+ drivers/gpu/drm/panel/panel-ilitek-ili9322.c:177: warning: Enum value 'ILI9322_INPUT_SRGB_DUMMY_320X240' not described in enum 'ili9322_input'
+ drivers/gpu/drm/panel/panel-ilitek-ili9322.c:177: warning: Enum value 'ILI9322_INPUT_SRGB_DUMMY_360X240' not described in enum 'ili9322_input'
+ drivers/gpu/drm/panel/panel-ilitek-ili9322.c:177: warning: Enum value 'ILI9322_INPUT_DISABLED_1' not described in enum 'ili9322_input'
+ drivers/gpu/drm/panel/panel-ilitek-ili9322.c:177: warning: Enum value 'ILI9322_INPUT_PRGB_THROUGH' not described in enum 'ili9322_input'
+ drivers/gpu/drm/panel/panel-ilitek-ili9322.c:177: warning: Enum value 'ILI9322_INPUT_PRGB_ALIGNED' not described in enum 'ili9322_input'
+ drivers/gpu/drm/panel/panel-ilitek-ili9322.c:177: warning: Enum value 'ILI9322_INPUT_YUV_640X320_YCBCR' not described in enum 'ili9322_input'
+ drivers/gpu/drm/panel/panel-ilitek-ili9322.c:177: warning: Enum value 'ILI9322_INPUT_YUV_720X360_YCBCR' not described in enum 'ili9322_input'
+ drivers/gpu/drm/panel/panel-ilitek-ili9322.c:177: warning: Enum value 'ILI9322_INPUT_DISABLED_2' not described in enum 'ili9322_input'
+ drivers/gpu/drm/panel/panel-ilitek-ili9322.c:177: warning: Enum value 'ILI9322_INPUT_ITU_R_BT656_720X360_YCBCR' not described in enum 'ili9322_input'
+ drivers/gpu/drm/panel/panel-ilitek-ili9322.c:177: warning: Enum value 'ILI9322_INPUT_ITU_R_BT656_640X320_YCBCR' not described in enum 'ili9322_input'
+ drivers/gpu/drm/panel/panel-ilitek-ili9322.c:177: warning: Enum value 'ILI9322_INPUT_UNKNOWN' not described in enum 'ili9322_input'
 
-Cc: Alex Deucher <alexander.deucher@amd.com>
-Cc: "Christian König" <christian.koenig@amd.com>
+Cc: Thierry Reding <thierry.reding@gmail.com>
+Cc: Sam Ravnborg <sam@ravnborg.org>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Gareth Hughes <gareth@valinux.com>
-Cc: amd-gfx@lists.freedesktop.org
+Cc: Linus Walleij <linus.walleij@linaro.org>
 Cc: dri-devel@lists.freedesktop.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/radeon/radeon_drv.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/gpu/drm/panel/panel-ilitek-ili9322.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/radeon/radeon_drv.c b/drivers/gpu/drm/radeon/radeon_drv.c
-index 65061c949aeea..f5f1cb700d873 100644
---- a/drivers/gpu/drm/radeon/radeon_drv.c
-+++ b/drivers/gpu/drm/radeon/radeon_drv.c
-@@ -452,7 +452,6 @@ static int radeon_pmops_runtime_suspend(struct device *dev)
- {
- 	struct pci_dev *pdev = to_pci_dev(dev);
- 	struct drm_device *drm_dev = pci_get_drvdata(pdev);
--	int ret;
+diff --git a/drivers/gpu/drm/panel/panel-ilitek-ili9322.c b/drivers/gpu/drm/panel/panel-ilitek-ili9322.c
+index 074e18559b9f6..8e84df9a0033d 100644
+--- a/drivers/gpu/drm/panel/panel-ilitek-ili9322.c
++++ b/drivers/gpu/drm/panel/panel-ilitek-ili9322.c
+@@ -152,7 +152,7 @@
+ #define ILI9322_GAMMA_7			0x16
+ #define ILI9322_GAMMA_8			0x17
  
- 	if (!radeon_is_px(drm_dev)) {
- 		pm_runtime_forbid(dev);
-@@ -462,7 +461,7 @@ static int radeon_pmops_runtime_suspend(struct device *dev)
- 	drm_dev->switch_power_state = DRM_SWITCH_POWER_CHANGING;
- 	drm_kms_helper_poll_disable(drm_dev);
- 
--	ret = radeon_suspend_kms(drm_dev, false, false, false);
-+	radeon_suspend_kms(drm_dev, false, false, false);
- 	pci_save_state(pdev);
- 	pci_disable_device(pdev);
- 	pci_ignore_hotplug(pdev);
+-/**
++/*
+  * enum ili9322_input - the format of the incoming signal to the panel
+  *
+  * The panel can be connected to various input streams and four of them can
 -- 
 2.25.1
 
