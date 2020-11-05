@@ -2,170 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44FE62A8058
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 15:04:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F2AE2A805A
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 15:05:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731053AbgKEOEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 09:04:23 -0500
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:35792 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730466AbgKEOEX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 09:04:23 -0500
-Received: by mail-oi1-f195.google.com with SMTP id c80so1775814oib.2;
-        Thu, 05 Nov 2020 06:04:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OCz3t7gRNskWfm/udOw8gOa/VD6zVDcIDOXphY/tPco=;
-        b=PT4VnyrDEYFcnjdnZ2+JRnMptuVmbTo8Of8sMuCjp53rr+6F+pwMOc8owYw6z/NaLx
-         i9Z+Vo8zlQ37myH0XGYv2K1QeoFW5KgsTIVnU5kg9/ryynhUk5fjzyKwn9Ui2bkNSHv3
-         rvmIrZStNJZ6TsOvz2Y2gD2XKc2+0lRLexB6YoF4pobgDw0IlGClPYgcJ69/hiKVqH9i
-         scAHENmh5qDVeUIU7MZrMIFTmuPT5Wvwp1lJj8Uwogg+sB5E85Uf0yeDjyDIuYBkIJfS
-         o161zWuCUtxQsgFbDsYMT7KwAOyV8IGkyayLjXbAaYnjazPpm4oEmhs+5gGlW/92o4eU
-         xo7A==
-X-Gm-Message-State: AOAM5300ysxh4rpoOFYNHhwvTvCAGnK+xmAipRxrTcojUVLvmcLbIfoU
-        B04gB/V7M7myyXCC0TNtLcEalgX4DVW1IUbea+k=
-X-Google-Smtp-Source: ABdhPJxdmeRZW4IhoL8PeRW3nHA54DDXatn8B2JQDv5YhiECeakMK9m0IYm4Kfu0Aesz5E+bd1etFcD6ZhOmXuS1Xkc=
-X-Received: by 2002:aca:30d7:: with SMTP id w206mr1646251oiw.69.1604585061876;
- Thu, 05 Nov 2020 06:04:21 -0800 (PST)
+        id S1730833AbgKEOFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 09:05:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33116 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730465AbgKEOFL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 09:05:11 -0500
+Received: from mail-oi1-f178.google.com (mail-oi1-f178.google.com [209.85.167.178])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8A5362151B
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 14:05:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604585110;
+        bh=esBcP/AJui6XiODiwrRpOoJCZgU1uTPnZxKtrRhiwcQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=p0Avospvm9Lp2t90GSwX+PDScEW9y9WjpQyOZ/4BKa83ieD2OGsfWV5jRNyiM/aDm
+         9nk0uok6m3Xa66LyTG14bQXYC2S0pWeB6ElqYQiozYM7JWBGNa75/RFcx7pq3GF23w
+         AL7Xu7QQPpAL/z9XBzQePs8klKyRBXZtzWv5J0Kk=
+Received: by mail-oi1-f178.google.com with SMTP id d9so1776191oib.3
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 06:05:10 -0800 (PST)
+X-Gm-Message-State: AOAM530qj0oqhTAXvqXJiHil6/X490MvNUUKtXksJqmIdFRTE+RDqHse
+        QmS0Xdb5/JEQV3H94LpqZjgsn8ySs4z9sV2LQgw=
+X-Google-Smtp-Source: ABdhPJzvhwiuKTQ1g53DmeNxesk2+lZ+jwmMOBSwIT6oWGiGdQqKP2WkQiSoendqj34YoBYf+kut4OMFtsrmDTp2C7Q=
+X-Received: by 2002:aca:2310:: with SMTP id e16mr1519564oie.47.1604585109752;
+ Thu, 05 Nov 2020 06:05:09 -0800 (PST)
 MIME-Version: 1.0
-References: <20201015144431.9979-1-daniel.lezcano@linaro.org> <20201015144431.9979-4-daniel.lezcano@linaro.org>
-In-Reply-To: <20201015144431.9979-4-daniel.lezcano@linaro.org>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 5 Nov 2020 15:04:10 +0100
-Message-ID: <CAJZ5v0i-1eZ+j_6C83qs1-q1FSw0Yx96yQyy0KQBvDxX6KF=3w@mail.gmail.com>
-Subject: Re: [PATCH 4/5] cpuidle: governor: Export the needed symbols
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+References: <20201105125656.25259-1-andre.przywara@arm.com>
+ <20201105125656.25259-5-andre.przywara@arm.com> <20201105134142.GA4856@sirena.org.uk>
+ <20201105140322.GH82102@C02TD0UTHF1T.local>
+In-Reply-To: <20201105140322.GH82102@C02TD0UTHF1T.local>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Thu, 5 Nov 2020 15:04:57 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXEsaZAGT0jnPNyj_K1Q4W7E1+WP=tQf3bTPQi=KOCUv4g@mail.gmail.com>
+Message-ID: <CAMj1kXEsaZAGT0jnPNyj_K1Q4W7E1+WP=tQf3bTPQi=KOCUv4g@mail.gmail.com>
+Subject: Re: [PATCH v2 4/5] arm64: Add support for SMCCC TRNG entropy source
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Andre Przywara <andre.przywara@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        kvmarm <kvmarm@lists.cs.columbia.edu>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Lina Iyer <ilina@codeaurora.org>,
-        Frederic Weisbecker <frederic@kernel.org>
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Linus Walleij <linus.walleij@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 4:45 PM Daniel Lezcano
-<daniel.lezcano@linaro.org> wrote:
+On Thu, 5 Nov 2020 at 15:03, Mark Rutland <mark.rutland@arm.com> wrote:
 >
-> In the next patch, the governors will be converted to modules. Export
-> the symbols of the different functions used by the governors.
+> On Thu, Nov 05, 2020 at 01:41:42PM +0000, Mark Brown wrote:
+> > On Thu, Nov 05, 2020 at 12:56:55PM +0000, Andre Przywara wrote:
+> >
+> > >  static inline bool __must_check arch_get_random_seed_int(unsigned int *v)
+> > >  {
+> > > +   struct arm_smccc_res res;
+> > >     unsigned long val;
+> > > -   bool ok = arch_get_random_seed_long(&val);
+> > >
+> > > -   *v = val;
+> > > -   return ok;
+> > > +   if (cpus_have_const_cap(ARM64_HAS_RNG)) {
+> > > +           if (arch_get_random_seed_long(&val)) {
+> > > +                   *v = val;
+> > > +                   return true;
+> > > +           }
+> > > +           return false;
+> > > +   }
+> >
+> > It isn't obvious to me why we don't fall through to trying the SMCCC
+> > TRNG here if for some reason the v8.5-RNG didn't give us something.
+> > Definitely an obscure possibility but still...
 >
-> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-> ---
->  drivers/cpuidle/governor.c | 3 +++
->  include/linux/tick.h       | 2 ++
->  kernel/sched/core.c        | 1 +
->  kernel/time/tick-sched.c   | 9 +++++++++
->  4 files changed, 15 insertions(+)
+> I think it's better to assume that if we have a HW RNG and it's not
+> giving us entropy, it's not worthwhile trapping to the host, which might
+> encounter the exact same issue.
 >
-> diff --git a/drivers/cpuidle/governor.c b/drivers/cpuidle/governor.c
-> index 6ec27ef096f5..2791fe352f51 100644
-> --- a/drivers/cpuidle/governor.c
-> +++ b/drivers/cpuidle/governor.c
-> @@ -120,6 +120,7 @@ void cpuidle_unregister_governor(struct cpuidle_governor *gov)
+> I'd rather we have one RNG source that we trust works, and use that
+> exclusively.
 >
->         mutex_unlock(&cpuidle_lock);
->  }
-> +EXPORT_SYMBOL(cpuidle_unregister_governor);
+> That said, I'm not sure it's great to plumb this under the
+> arch_get_random*() interfaces, e.g. given this measn that
+> add_interrupt_randomness() will end up trapping to the host all the time
+> when it calls arch_get_random_seed_long().
 >
->  /**
->   * cpuidle_register_governor - registers a governor
-> @@ -150,6 +151,7 @@ int cpuidle_register_governor(struct cpuidle_governor *gov)
->
->         return ret;
->  }
-> +EXPORT_SYMBOL(cpuidle_register_governor);
->
->  /**
->   * cpuidle_governor_latency_req - Compute a latency constraint for CPU
-> @@ -166,3 +168,4 @@ s64 cpuidle_governor_latency_req(unsigned int cpu)
->
->         return (s64)device_req * NSEC_PER_USEC;
->  }
-> +EXPORT_SYMBOL(cpuidle_governor_latency_req);
-> diff --git a/include/linux/tick.h b/include/linux/tick.h
-> index 7340613c7eff..8349ba050b9c 100644
-> --- a/include/linux/tick.h
-> +++ b/include/linux/tick.h
-> @@ -124,6 +124,7 @@ enum tick_dep_bits {
->
->  #ifdef CONFIG_NO_HZ_COMMON
->  extern bool tick_nohz_enabled;
-> +extern bool tick_nohz_is_enabled(void);
->  extern bool tick_nohz_tick_stopped(void);
->  extern bool tick_nohz_tick_stopped_cpu(int cpu);
->  extern void tick_nohz_idle_stop_tick(void);
-> @@ -149,6 +150,7 @@ static inline void tick_nohz_idle_stop_tick_protected(void)
->
->  #else /* !CONFIG_NO_HZ_COMMON */
->  #define tick_nohz_enabled (0)
-> +static inline int tick_nohz_is_enabled(void) { return 0 };
->  static inline int tick_nohz_tick_stopped(void) { return 0; }
->  static inline int tick_nohz_tick_stopped_cpu(int cpu) { return 0; }
->  static inline void tick_nohz_idle_stop_tick(void) { }
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 2d95dc3f4644..ceba61bb364d 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -3838,6 +3838,7 @@ unsigned long nr_iowait_cpu(int cpu)
->  {
->         return atomic_read(&cpu_rq(cpu)->nr_iowait);
->  }
-> +EXPORT_SYMBOL_GPL(nr_iowait_cpu);
 
-Hmm.  See below.
+As it turns out, add_interrupt_randomness() isn't actually used on ARM.
 
+> Is there an existing interface for "slow" runtime entropy that we can
+> plumb this into instead?
 >
->  /*
->   * IO-wait accounting, and how its mostly bollocks (on SMP).
-> diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
-> index f0199a4ba1ad..537716124d46 100644
-> --- a/kernel/time/tick-sched.c
-> +++ b/kernel/time/tick-sched.c
-> @@ -500,12 +500,19 @@ static int __init setup_tick_nohz(char *str)
->
->  __setup("nohz=", setup_tick_nohz);
->
-> +bool tick_nohz_is_enabled(void)
-> +{
-> +       return tick_nohz_enabled;
-> +}
-> +EXPORT_SYMBOL_GPL(tick_nohz_is_enabled);
-> +
->  bool tick_nohz_tick_stopped(void)
->  {
->         struct tick_sched *ts = this_cpu_ptr(&tick_cpu_sched);
->
->         return ts->tick_stopped;
->  }
-> +EXPORT_SYMBOL_GPL(tick_nohz_tick_stopped);
->
->  bool tick_nohz_tick_stopped_cpu(int cpu)
->  {
-> @@ -1066,6 +1073,7 @@ bool tick_nohz_idle_got_tick(void)
->         }
->         return false;
->  }
-> +EXPORT_SYMBOL_GPL(tick_nohz_idle_got_tick);
->
->  /**
->   * tick_nohz_get_next_hrtimer - return the next expiration time for the hrtimer
-> @@ -1117,6 +1125,7 @@ ktime_t tick_nohz_get_sleep_length(ktime_t *delta_next)
->
->         return ktime_sub(next_event, now);
->  }
-> +EXPORT_SYMBOL_GPL(tick_nohz_get_sleep_length);
-
-Peter please correct me if I'm mistaken, but IMV the above are core
-kernel internals and they should not be accessible to random modular
-stuff.
-
->
->  /**
->   * tick_nohz_get_idle_calls_cpu - return the current idle calls counter value
-> --
+> Thanks,
+> Mark.
