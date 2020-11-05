@@ -2,111 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E67C52A81D9
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 16:07:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF6E42A81E0
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 16:08:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731065AbgKEPHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 10:07:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56174 "EHLO mail.kernel.org"
+        id S1731125AbgKEPIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 10:08:45 -0500
+Received: from mout.gmx.net ([212.227.17.21]:33005 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728371AbgKEPHN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 10:07:13 -0500
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C1CE522210;
-        Thu,  5 Nov 2020 15:07:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604588832;
-        bh=iGxDjGpgZgvh1at2/59sSPdVCtzZKM9jCmS50+iMi3E=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=RL8Yxi3b4nBNd50oejfwXK6xegX1iflPA7ERuLp1Ndd/RGOer8n4zqguIpdDv7REL
-         0D3kedysHHVG0MONILeThjZnfZ70toRQGAo7rzWFijqay/AGv/7vkSSoSxNO8E855z
-         Ze9Tjix7M53/tgPRrifDZ7YcBCnX0e9ZHhiU88x4=
-Received: by mail-wm1-f51.google.com with SMTP id h22so1941146wmb.0;
-        Thu, 05 Nov 2020 07:07:11 -0800 (PST)
-X-Gm-Message-State: AOAM531MS8gqn2Sc82PFxSTq9rnsoeiNip5JXCAeubGeANB2mbbl4sIl
-        G1J1qKz/lKrBaIFZ5P+ak90sy/b0acmaQ0UFIgI=
-X-Google-Smtp-Source: ABdhPJwFJINOEnDFfpK3PkNNsRXbOb9RCrfaMzLA61u9jqh2TFcDUA6ZjaE9FjcClJZlpFBXwreXQg11d88l56RHWWc=
-X-Received: by 2002:a1c:e919:: with SMTP id q25mr3176667wmc.142.1604588830214;
- Thu, 05 Nov 2020 07:07:10 -0800 (PST)
+        id S1728371AbgKEPIo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 10:08:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1604588912;
+        bh=t5HOW7Hz+jDRKD1r1n54tNgALaBM9Fc2oZUe30efBQs=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=VRt6zM+oJ/zgMXhmtagWV1ZUm5+k8MEqthBCvhoAEn6ATpub158YeGJjiCIxdXPsy
+         1fE8Aq5R7QZsc0AggPAZR/85UZRsKxKcPfPQ0vlAaItN2xl/DdNcjNZZsQEsFHjMKL
+         uy99qHMgxj38uncJD9g0RuhcBrdqAJz8/S/0wTfk=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.221.148.80]) by mail.gmx.com (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MoO6C-1jzSMy3C2a-00olUQ; Thu, 05
+ Nov 2020 16:08:32 +0100
+Message-ID: <76661fbdbd31368c0a06cd58296f5ec12817e33c.camel@gmx.de>
+Subject: Re: v5.8+ powersave governor breakage?
+From:   Mike Galbraith <efault@gmx.de>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linux PM <linux-pm@vger.kernel.org>
+Date:   Thu, 05 Nov 2020 16:08:30 +0100
+In-Reply-To: <2948497.iyA2Nh11HS@kreacher>
+References: <580d12716f6363d7404805fd4bc50e2d5ab459b0.camel@gmx.de>
+         <59d0b9516ce9a553b1e526c6495ac302f1f73e0d.camel@gmx.de>
+         <2948497.iyA2Nh11HS@kreacher>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-References: <20201105073434.429307-1-xie.he.0141@gmail.com>
-In-Reply-To: <20201105073434.429307-1-xie.he.0141@gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Thu, 5 Nov 2020 16:06:54 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a2bk9ZpoEvmhDpSv8ByyO-LevmF-W4Or_6RPRtV6gTQ1w@mail.gmail.com>
-Message-ID: <CAK8P3a2bk9ZpoEvmhDpSv8ByyO-LevmF-W4Or_6RPRtV6gTQ1w@mail.gmail.com>
-Subject: Re: [PATCH net-next] net: x25_asy: Delete the x25_asy driver
-To:     Xie He <xie.he.0141@gmail.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Martin Schiller <ms@dev.tdt.de>,
-        Andrew Hendry <andrew.hendry@gmail.com>,
-        linux-x25@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:fXmhav/M4bAq6royUTcAXddASTC0cpAMTpGk4olCoWhN7Ydler5
+ ix7I8xvTEet1Ixk6mzPjIIvfdObjOHZYZdS4tldo0UQI40lRdN3iduoDIRH7Lvs85BB+0wh
+ bcOaMzTioB0F/aBVNXC8OHqo+cVLPU0tkG6oZ0R1pZKsYB4/Enw9yyGYYtDeCfcI0aBhkL2
+ TyTsyqh9stNYmaBGjAX4A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:wNXUDZbnq9c=:AgyGj4FybcXB1qI9XwszOW
+ gjwid8An91agimBEZYL/ML7g9ePydLj0pa2lWVnzKL+qszDr00OSRMvP17yGGzgjLFnaVyn9Y
+ qtUoAwt3ZzhQ8+4leNRskI3R9UCf7fN8V9LpQJ0vbApfIgsDVtCTc35n5goYHkH0UoexZ9BYE
+ K48yFyPtc5fKIlIDY2DQZWr3hRsYdS935zcl2yBRLsVMBiOGjfa58MAKyzlKLgZAQya0cM9oB
+ ot2rSm3b6zyMrWZlTIDeZ7iYG+SZnSToeWP+LeN2Pp+tVPPwtQyoLzI5pEoSQQ9tKMfRUYIN2
+ diXDlgY2AZWgBQtxRLvRVVfJLmKV78KMFRBaD5HBdBVblPoj58cSV6A/8dwziqAtieltd7ZbB
+ abx6h3hU8CXKLOczxLk5i2lNf2fAqn416xnD0UuyP88xOQ9+Gd+Z6QpDLMltdUX+34W/ihE6v
+ oZEeRNSgqR/vPExE4DtzayallqMD0GSgMmD9X/hzhKeUNLEYgPDV8Ly8XhL90osUAORYZzq+B
+ YEjU4qCrTOqEgvZycJpglOUfxnDNbWvsLoCOqpXpGWGqgDpMBOe+xfH62WnazZgc342SXJ3dD
+ jHzrBN42DMQb737PbouuhFElgefL2NmOOt6q6fqs+RpTPRNtNv16gYIxwwiGBqu4EVCa1r8Wd
+ bd4JMeajBo0qnn+i2e1Br1jhwHbgfF0Ml7FXh54qwJjxmU8BEjiFkFOjXBc2/qkmEadD/JJ6W
+ hyjE4iPxqiRwBCkjGP0me4qatQeT8QPDobJo7Qag5kNhPMbTvEamNNlMi6LHGVO2nnwTakwXs
+ PnqQpJqoT7D0sBrcQ4jvASUKn9+2nBc4BjSc8o4PvrSmdA0DbLY/qEiPR4PFesCNJg7iVDPiy
+ gl3ArhCZFNHSkykkaYeg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 5, 2020 at 8:34 AM Xie He <xie.he.0141@gmail.com> wrote:
+On Thu, 2020-11-05 at 15:31 +0100, Rafael J. Wysocki wrote:
+> On Monday, November 2, 2020 7:18:41 AM CET Mike Galbraith wrote:
 >
-> This driver transports LAPB (X.25 link layer) frames over TTY links.
+> > Desktop box did, it gained a working ondemand, while its previously
+> > working powersave went broke.
 >
-> I can safely say that this driver has no actual user because it was
-> not working at all until:
-> commit 8fdcabeac398 ("drivers/net/wan/x25_asy: Fix to make it work")
->
-> The code in its current state still has problems:
->
-> 1.
-> The uses of "struct x25_asy" in x25_asy_unesc (when receiving) and in
-> x25_asy_write_wakeup (when sending) are not protected by locks against
-> x25_asy_change_mtu's changing of the transmitting/receiving buffers.
-> Also, all "netif_running" checks in this driver are not protected by
-> locks against the ndo_stop function.
->
-> 2.
-> The driver stops all TTY read/write when the netif is down.
-> I think this is not right because this may cause the last outgoing frame
-> before the netif goes down to be incompletely transmitted, and the first
-> incoming frame after the netif goes up to be incompletely received.
->
-> And there may also be other problems.
->
-> I was planning to fix these problems but after recent discussions about
-> deleting other old networking code, I think we may just delete this
-> driver, too.
->
-> Signed-off-by: Xie He <xie.he.0141@gmail.com>
-> ---
->  Documentation/process/magic-number.rst        |   1 -
->  .../it_IT/process/magic-number.rst            |   1 -
->  .../zh_CN/process/magic-number.rst            |   1 -
->  arch/mips/configs/gpr_defconfig               |   1 -
->  arch/mips/configs/mtx1_defconfig              |   1 -
->  drivers/net/wan/Kconfig                       |  15 -
->  drivers/net/wan/Makefile                      |   1 -
->  drivers/net/wan/x25_asy.c                     | 836 ------------------
->  drivers/net/wan/x25_asy.h                     |  46 -
->  9 files changed, 903 deletions(-)
->  delete mode 100644 drivers/net/wan/x25_asy.c
->  delete mode 100644 drivers/net/wan/x25_asy.h
+> Most likely that's because it was handled by intel_pstate in the "active=
+" mode
+> previously, while it is now handled by it in the "passive" mode...
 
-Adding Martin Schiller and Andrew Hendry, plus the linux-x25 mailing
-list to Cc. When I last looked at the wan drivers, I think I concluded
-that this should still be kept around, but I do not remember why.
-OTOH if it was broken for a long time, that is a clear indication that
-it was in fact unused.
+Perhaps the user interface should then nak switching to powersave as it
+used to nak switching to ondemand?
 
-Since you did the bugfix mentioned above, do you have an idea
-when it could have last worked? I see it was originally merged in
-linux-2.3.21, and Stephen Hemminger did a cleanup for
-linux-2.6.0-rc3 that he apparently tested but also said "Not sure
-if anyone ever uses this.".
+	-Mike
 
-Hopefully Martin or Andrew can provide a definite Ack or Nack on this.
-
-      Arnd
