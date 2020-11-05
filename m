@@ -2,120 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7994D2A7CF1
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 12:26:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9896D2A7CFD
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 12:30:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730399AbgKEL0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 06:26:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44142 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729827AbgKEL0d (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 06:26:33 -0500
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BEAEC0613D3
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 03:26:32 -0800 (PST)
-Received: by mail-ed1-x52f.google.com with SMTP id v4so1154222edi.0
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 03:26:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=iSxmQF561iTHdGCA/cHum/Fv1sq0ROCzHR9p5rpuQPE=;
-        b=Tj3+jhEassI/I2HH7WsRmbxOzIhZDV9sWuz+HQwTn3NHNoAH0nXilClUWzee7xM8MR
-         TBSE2dxkKaCkNpVcdl6870CqaQcwIMfEAYFb+XaVaRlqrrA72ucxBrlTxYATlfRRrpxR
-         t4lajGzvmjJEHmni3VlztTQFJ1q9q4i08KhP4Yn8f4UtIk3i+fuLFrdTrt5bWIPz3/Bs
-         toRT5mRT5d8+8drbJgIMYCNW7BjrebF6xSE4SYPG8dviS/rmLun7y8vZJacnPlFV2Z4E
-         bcV4xXi0RA2kY1UcqD3pao6tHBPlinWf/e3KZ8Lh/EkE8g6n3BYptgGNWm0J0sl/cjWE
-         r9tg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=iSxmQF561iTHdGCA/cHum/Fv1sq0ROCzHR9p5rpuQPE=;
-        b=AmMBWfrgvSy7BEMLqesiLLPDZafnBK709/pYSu1e+95IPA/cf5VATSoHbBN2ge0vAn
-         qYSvfd5oGt0Q6d1RIt79JnQwtHOdbf2HzREl/Hl2VYYLXl/1QQTL5KVA0idhSJcYq7og
-         kB1lKh0mUqkLcVdA/ao23mRBxxmcoZlRKZdLq6tUsHqVGcEbv3nEouN/JHslt0p+9qZx
-         ObZJOR2SAJPBpgpXfkxjQHPBgoVjpa9m/wEMU3B/CHm7JkQ7bbgkfKLIqYW0FPlVBR64
-         UnQuOZYDNsXCMwret5+4J8UFwNgVZ2phoR9meci3GhDquzfXLqIGsFT8daCeCd/FuCY1
-         y4JA==
-X-Gm-Message-State: AOAM532mwsg/vIO9CbO+ABLpLfEI0YIXhGAj+S3FZFEKfljxZqBMEGK+
-        IdEVwSXy36g/rU2MTwP24DV7zCrIk7j0Ra25
-X-Google-Smtp-Source: ABdhPJzkyFaXymPlZnIpRWWGlYJiJMDYR6NbVs4zbOo5E/L4R2m209MTtI9Iq+RX0cMyQcqsN396kQ==
-X-Received: by 2002:aa7:c358:: with SMTP id j24mr2033015edr.265.1604575589996;
-        Thu, 05 Nov 2020 03:26:29 -0800 (PST)
-Received: from localhost.localdomain ([83.68.95.66])
-        by smtp.gmail.com with ESMTPSA id d11sm700072edu.2.2020.11.05.03.26.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 03:26:29 -0800 (PST)
-From:   Tomasz Nowicki <tn@semihalf.com>
-To:     will@kernel.org, robin.murphy@arm.com, joro@8bytes.org,
-        gregory.clement@bootlin.com, robh+dt@kernel.org, hannah@marvell.com
-Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        devicetree@vger.kernel.org, catalin.marinas@arm.com,
-        nadavh@marvell.com, linux-arm-kernel@lists.infradead.org,
-        mw@semihalf.com, d.odintsov@traviangames.com,
-        stable@vger.kernel.org, Tomasz Nowicki <tn@semihalf.com>
-Subject: [PATCH 1/1] arm64: dts: marvell: keep SMMU disabled by default for Armada 7040 and 8040
-Date:   Thu,  5 Nov 2020 12:26:02 +0100
-Message-Id: <20201105112602.164739-1-tn@semihalf.com>
-X-Mailer: git-send-email 2.25.1
+        id S1730409AbgKEL0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 06:26:51 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:40529 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726777AbgKEL0v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 06:26:51 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CRh7927Qnz9sVS;
+        Thu,  5 Nov 2020 22:26:45 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1604575608;
+        bh=N3LQMBxz53FTAnoaW8tqbR9RuS1nFNL/IBcDzTEmo04=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=EuqJG+oW9YMlU/9C7w+LY7w/BEHnurdsiXw5EYLeUouxUmPtg9DLXMDz6koBzkxFP
+         /0Tdhcy4LzU97SCf0ag1B9XfPPfCzdauwZdXGomHJaB/s4VOtaFYmryYlWheiAwxAJ
+         p8ydnxllcULes9/vYcWWndvJDvPUHHyKjqOJu4D4txoq8JMyMyAYRkm2ASAbiHYP/r
+         GEtXi5DM2CcI3+gnulMIrGgHvItowZwos2kYpEtDoZEq4gCyyvNWlgTXF8G8V9vkaZ
+         hRWv8Cs33o7XpzNAIdrgVm40jwWUQSU2QFGO1+x3JhRd8lyIbpOhMPgjlpYFqdu77L
+         khu7frJN8nxJg==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     YiFei Zhu <zhuyifei1999@gmail.com>
+Cc:     Linux Containers <containers@lists.linux-foundation.org>,
+        linux-sh@vger.kernel.org, Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        linux-riscv@lists.infradead.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        linux-s390@vger.kernel.org, YiFei Zhu <yifeifz2@illinois.edu>,
+        linux-csky@vger.kernel.org, Tianyin Xu <tyxu@illinois.edu>,
+        linux-xtensa@linux-xtensa.org, Kees Cook <keescook@chromium.org>,
+        Jann Horn <jannh@google.com>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Will Drewry <wad@chromium.org>, linux-parisc@vger.kernel.org,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        David Laight <David.Laight@aculab.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        linuxppc-dev@lists.ozlabs.org, Tycho Andersen <tycho@tycho.pizza>
+Subject: Re: [PATCH seccomp 3/8] powerpc: Enable seccomp architecture tracking
+In-Reply-To: <CABqSeAQ+3sjLXH7GVt_tZrFT_e0nNMm8QgT+FBNQYSOc8viM=A@mail.gmail.com>
+References: <cover.1604410035.git.yifeifz2@illinois.edu> <4ec2970fcc819eb4d5dac2bd35233ccdadfda845.1604410035.git.yifeifz2@illinois.edu> <87wnz1to9n.fsf@mpe.ellerman.id.au> <CABqSeAQ+3sjLXH7GVt_tZrFT_e0nNMm8QgT+FBNQYSOc8viM=A@mail.gmail.com>
+Date:   Thu, 05 Nov 2020 22:26:44 +1100
+Message-ID: <87ft5ot56z.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-FW has to configure devices' StreamIDs so that SMMU is able to lookup
-context and do proper translation later on. For Armada 7040 & 8040 and
-publicly available FW, most of the devices are configured properly,
-but some like ap_sdhci0, PCIe, NIC still remain unassigned which
-results in SMMU faults about unmatched StreamID (assuming
-ARM_SMMU_DISABLE_BYPASS_BY_DEFAUL=y).
+YiFei Zhu <zhuyifei1999@gmail.com> writes:
+> On Wed, Nov 4, 2020 at 4:22 AM Michael Ellerman <mpe@ellerman.id.au> wrote:
+>> > +#ifdef __LITTLE_ENDIAN__
+>>
+>> As Kees mentioned this should (must?!) match the configured endian.
+>>
+>> But I think it would still be better to use the CONFIG symbol, which is
+>> CONFIG_CPU_LITTLE_ENDIAN.
+>
+> My attempt here is to be consistent with asm/syscall.h
+> syscall_get_arch [1]. Would it make sense to change that to
+> CONFIG_CPU_LITTLE_ENDIAN then?
+>
+> [1] https://elixir.bootlin.com/linux/latest/source/arch/powerpc/include/asm/syscall.h#L116
 
-Since there is dependency on custom FW let SMMU be disabled by default.
-People who still willing to use SMMU need to enable manually and
-use ARM_SMMU_DISABLE_BYPASS_BY_DEFAUL=n (or via kernel command line)
-with extra caution.
+Looking across the tree with have thousands of usages of
+__LITTLE_ENDIAN__, so it's probably not worth converting to
+CONFIG_CPU_LITTLE_ENDIAN.
 
-Fixes: 83a3545d9c37 ("arm64: dts: marvell: add SMMU support")
-Cc: <stable@vger.kernel.org> # 5.9+
-Signed-off-by: Tomasz Nowicki <tn@semihalf.com>
----
- arch/arm64/boot/dts/marvell/armada-7040.dtsi | 4 ----
- arch/arm64/boot/dts/marvell/armada-8040.dtsi | 4 ----
- 2 files changed, 8 deletions(-)
+>> > +# define SECCOMP_ARCH_NATIVE         (AUDIT_ARCH_PPC64 | __SECCOMP_ARCH_LE)
+>>
+>> You use __SECCOMP_ARCH_LE there, but previously you only defined
+>> __SECCOMP_ARCH_LE_BIT.
+>>
+>> Is there some magic somewhere that defines __SECCOMP_ARCH_LE based on
+>> __SECCOMP_ARCH_LE_BIT ?
+>
+> Oops, my bad here.
 
-diff --git a/arch/arm64/boot/dts/marvell/armada-7040.dtsi b/arch/arm64/boot/dts/marvell/armada-7040.dtsi
-index 7a3198cd7a07..2f440711d21d 100644
---- a/arch/arm64/boot/dts/marvell/armada-7040.dtsi
-+++ b/arch/arm64/boot/dts/marvell/armada-7040.dtsi
-@@ -15,10 +15,6 @@ / {
- 		     "marvell,armada-ap806";
- };
- 
--&smmu {
--	status = "okay";
--};
--
- &cp0_pcie0 {
- 	iommu-map =
- 		<0x0   &smmu 0x480 0x20>,
-diff --git a/arch/arm64/boot/dts/marvell/armada-8040.dtsi b/arch/arm64/boot/dts/marvell/armada-8040.dtsi
-index 79e8ce59baa8..22c2d6ebf381 100644
---- a/arch/arm64/boot/dts/marvell/armada-8040.dtsi
-+++ b/arch/arm64/boot/dts/marvell/armada-8040.dtsi
-@@ -15,10 +15,6 @@ / {
- 		     "marvell,armada-ap806";
- };
- 
--&smmu {
--	status = "okay";
--};
--
- &cp0_pcie0 {
- 	iommu-map =
- 		<0x0   &smmu 0x480 0x20>,
--- 
-2.25.1
+OK :)
 
+>> > +# define SECCOMP_ARCH_NATIVE_NR              NR_syscalls
+>> > +# define SECCOMP_ARCH_NATIVE_NAME    "ppc64"
+>>
+>> What's the name used for?
+>
+> This is used in the last patch in this series to report in procfs the
+> name of each architecture tracked by the bitmap cache.
+
+OK, yeah I think it would be better if the matched the uname -m values.
+
+>> Usually we use "ppc64" for 64-bit big endian and "ppc64le" for 64-bit
+>> little endian.
+>>
+>> And usually we use "ppc" for 32-bit.
+>
+> Ok.
+
+
+cheers
