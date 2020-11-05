@@ -2,96 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16E392A789E
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 09:12:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25AA32A78A0
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 09:13:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729744AbgKEIMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 03:12:54 -0500
-Received: from mail-ed1-f67.google.com ([209.85.208.67]:45349 "EHLO
-        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725287AbgKEIMx (ORCPT
+        id S1729825AbgKEINW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 03:13:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42074 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726787AbgKEINV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 03:12:53 -0500
-Received: by mail-ed1-f67.google.com with SMTP id q3so298657edr.12
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 00:12:51 -0800 (PST)
+        Thu, 5 Nov 2020 03:13:21 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2337EC0613D4
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 00:13:21 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id w14so627016wrs.9
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 00:13:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=KIVDH5XDaH9ggqUGZIcHQKJ7aQU16gyfDGlBZkQnizw=;
+        b=VBWz/toLd3hCJcC6mxxUIHV3prc/FNPmLS+XTZI7Sy/FNrUqPlnMfQFbIIHakTj9HP
+         Yn9DI/ud3jhVmgCW7Glt8NXO349Ggcq1PXXKAFyezewZZ5gVdCUttZUW/tzpR8SkEFDM
+         pPBLuFGEYKCOGnByxMpP+EYi7+HPQT5dZjlNRLUrj3YvXlElpch/DtOAMszyOthFYn6v
+         vZFU+Kx8XCc9Pzy6ZnhcL6B5Reqmv9KiUwuAYzriyRJqt3iKoBzONgq5il4oToEuqSIS
+         IfyC8EAiwDd8ejiKAVgQrpN3m+5lrr6tSrnAxzFWpgQVFVMvj55y9HK7aLFNe5WhVTMC
+         A6bA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=9k0PUeO60JBFgHy+r0PQSEUvbL6I/98BC9PRbIUtqY8=;
-        b=ZWlpHl0ftx3BY0BsRHFgh3GvPPhDEJU1g8PBW6WAVvrLmmHcD7wNUSW+GMFI2rxMJ1
-         klhuwvBtxzuW2KAqzX7u2Hqyg0+DqYhXgz7uVEYtSCDknmi6UVQ1OrxFPsRhAlyldx+o
-         nVvOW7of/jLOR/0DfCIsetmXC5dcE9+uZJ1fqCn0f7TKht/Hxi2T+DNj/dsoOwkaN1R0
-         j+2CHwDBoaDqeRFZdIBPZ5Y/B+juLTJP51xtSwDA/0H0KR+bSNC1YzFsFTv1j0OGMdof
-         YOyGkPFScNh76lXSoBRFwlYoA5D1142Ez9zVz3HUIAKGSZuawefNuiaGOMEUOvY7vdIU
-         A51A==
-X-Gm-Message-State: AOAM533B7z4Jet/vW14C59dCDkyXyxcJDkq0aNmL2kTOvABRRyGVdbwd
-        F9pLscPwfAj+wu83zn4Ugvs=
-X-Google-Smtp-Source: ABdhPJyogQH62BjyiPpVfIBH5lPJrc0fx5MttKD5BzS8bODGBSqitPyd7psdhIQiCdAmGl5vZtjhkA==
-X-Received: by 2002:a50:e185:: with SMTP id k5mr1364031edl.48.1604563970507;
-        Thu, 05 Nov 2020 00:12:50 -0800 (PST)
-Received: from [192.168.1.49] (185-219-167-24-static.vivo.cz. [185.219.167.24])
-        by smtp.gmail.com with ESMTPSA id p1sm474767ejd.33.2020.11.05.00.12.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Nov 2020 00:12:49 -0800 (PST)
-Subject: Re: [PATCH 08/36] tty: tty_ldisc: Fix some kernel-doc related
- misdemeanours
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <20201104193549.4026187-1-lee.jones@linaro.org>
- <20201104193549.4026187-9-lee.jones@linaro.org>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <8f07fa1e-d81f-fd43-9dfa-bfb9f9171619@kernel.org>
-Date:   Thu, 5 Nov 2020 09:12:48 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.3
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=KIVDH5XDaH9ggqUGZIcHQKJ7aQU16gyfDGlBZkQnizw=;
+        b=Q7Dk7HNmn5VnM5PGQfplIJNOqKLzMIWjdCCZAtidvYMohZw6V4AEg0FCrEpK41KDyY
+         f2RPZxnapjlm+0Ex8aJwKqjMLLD05p0mKKq9m1lVyJrczyYf2izpqjuxyp81IThDNgz5
+         VeAwdWk+HP1Q4JAz7HJSWIHAdkObLRLslId0ypN6AlXNBLva6RDFSdd1CgPsplGOU9x6
+         tP9PYkge7R3b0P9yOUkFI82rKGsxvtVha4PPOgyJHdgaYOLytD+AKhRKqR36x9EOJXVt
+         DDdIBgRSgUzwgvo4CpPxQqlbmkHagQ3zl/m1AkrZzk5r38DLlFeePWStl0lvJ2WY3qIj
+         hVwg==
+X-Gm-Message-State: AOAM533OOmPFkAbaOh3F1mS/6cuWFHfOPC/t6/mESr2Mhkbp+RYT4oH/
+        oE7AwBbodjwzwhC/pgIWznBHWA==
+X-Google-Smtp-Source: ABdhPJxmI88f9sWXGzgdGVLDtkew8wv8clnE2hbBjcS/u9b7MYcpXX6E1oLQBy6Cx3+pbh7wUCgXUA==
+X-Received: by 2002:adf:db8e:: with SMTP id u14mr1313307wri.233.1604563999770;
+        Thu, 05 Nov 2020 00:13:19 -0800 (PST)
+Received: from dell ([91.110.221.242])
+        by smtp.gmail.com with ESMTPSA id d20sm1343401wra.38.2020.11.05.00.13.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Nov 2020 00:13:19 -0800 (PST)
+Date:   Thu, 5 Nov 2020 08:13:14 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Tony Lindgren <tony@atomide.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux-OMAP <linux-omap@vger.kernel.org>
+Subject: Re: [PATCH 1/5] gpio: tps65910: use regmap accessors
+Message-ID: <20201105081314.GT4488@dell>
+References: <cover.1601164493.git.mirq-linux@rere.qmqm.pl>
+ <e3a3979657babf716e5f4072e373637ce86ad7ff.1601164493.git.mirq-linux@rere.qmqm.pl>
+ <CACRpkdaMHH35C1LqUROFBte3T00Lz0zApHy3hdZ83Z8EZR04hw@mail.gmail.com>
+ <20201001090104.GM6148@dell>
+ <20201104144331.GG4488@dell>
+ <20201105014728.GC17266@qmqm.qmqm.pl>
 MIME-Version: 1.0
-In-Reply-To: <20201104193549.4026187-9-lee.jones@linaro.org>
-Content-Type: text/plain; charset=iso-8859-2; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201105014728.GC17266@qmqm.qmqm.pl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04. 11. 20, 20:35, Lee Jones wrote:
->   - Functions must follow directly on from their headers
->   - Demote non-conforming kernel-doc header
->   - Ensure notes have unique section names
->   - Provide missing description for 'reinit'
-> 
-> Fixes the following W=1 kernel build warning(s):
-> 
->   drivers/tty/tty_ldisc.c:158: warning: cannot understand function prototype: 'int tty_ldisc_autoload = IS_BUILTIN(CONFIG_LDISC_AUTOLOAD); '
->   drivers/tty/tty_ldisc.c:199: warning: Function parameter or member 'ld' not described in 'tty_ldisc_put'
->   drivers/tty/tty_ldisc.c:260: warning: duplicate section name 'Note'
->   drivers/tty/tty_ldisc.c:717: warning: Function parameter or member 'reinit' not described in 'tty_ldisc_hangup'
-> 
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Jiri Slaby <jirislaby@kernel.org>
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->   drivers/tty/tty_ldisc.c | 10 +++++-----
->   1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/tty/tty_ldisc.c b/drivers/tty/tty_ldisc.c
-> index fe37ec331289b..aced2bf6173be 100644
-> --- a/drivers/tty/tty_ldisc.c
-> +++ b/drivers/tty/tty_ldisc.c
-> @@ -190,7 +189,7 @@ static struct tty_ldisc *tty_ldisc_get(struct tty_struct *tty, int disc)
->   	return ld;
->   }
->   
-> -/**
-> +/*
->    *	tty_ldisc_put		-	release the ldisc
+On Thu, 05 Nov 2020, Michał Mirosław wrote:
 
-Having tty_ldisc_get in kernel-doc, while tty_ldisc_put not doesn't make 
-much sense. What's missing to tty_ldisc_put to conform to kernel-doc?
+> On Wed, Nov 04, 2020 at 02:43:31PM +0000, Lee Jones wrote:
+> > On Thu, 01 Oct 2020, Lee Jones wrote:
+> > > On Wed, 30 Sep 2020, Linus Walleij wrote:
+> > > > On Sun, Sep 27, 2020 at 1:59 AM Michał Mirosław <mirq-linux@rere.qmqm.pl> wrote:
+> > > > > Use regmap accessors directly for register manipulation - removing one
+> > > > > layer of abstraction.
+> > > > >
+> > > > > Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+> > > > Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> > > > 
+> > > > I suppose it is easiest that Lee apply all patches to the MFD tree?
+> > > Yes, that's fine.
+> > I think this patch is orthogonal right?
+> > 
+> > Not sure why it need to go in via MFD.
+> [...]
+> 
+> The patch 4 assumes all previous patches are applied (or there will be
+> build breakage).
 
-thanks,
+Okay, no problem.
+
+Linus, do you want a PR?
+
 -- 
-js
-suse labs
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
