@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38B702A8A17
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 23:50:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5494C2A8A20
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 23:50:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732099AbgKEWuc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 17:50:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38394 "EHLO
+        id S1732451AbgKEWug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 17:50:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732336AbgKEWub (ORCPT
+        with ESMTP id S1732369AbgKEWuc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 17:50:31 -0500
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67263C0613D3
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 14:50:31 -0800 (PST)
-Received: by mail-pl1-x641.google.com with SMTP id j5so1492392plk.7
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 14:50:31 -0800 (PST)
+        Thu, 5 Nov 2020 17:50:32 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EAFCC0613D2
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 14:50:32 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id 13so2528530pfy.4
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 14:50:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=4qX2THs/dhWrDnWe2HpkQ84reF55tyq/NRsKrAKp/sc=;
-        b=ETw+rWgAMTFX8nd3Sa/fOc9UVsoX/RKNVV77GbG3QUtc5mYFlz2rz+3hjtUpFq0yE+
-         cSuNr0tpZIw8cuEmCyUJCD3PewlBUZI5ewDmmWJsQl1MiJO9ca2kuwQJjuXYuuAwY1+f
-         x32Djz8wmLoz/KQnzrnAmj8gmzwT+teb117wCzBiqxileXxsXrU7ToRbtVOO8nGkNm/L
-         mbgZ13g7LN46AbhN7oAtgswYTFdGyHKTZ7bEGhcsDoU7LKlNIe+Dq+erf6rEgruGI8Zy
-         9YMJEgRtFjSwZAgXxI6HF1qcTbbq+6IfDMCaEaa9I/jMtr+Dk7Z7uTtNDZ2UZBCveyFI
-         gqqA==
+        bh=FveG7gwXoxnfUqfAm1M6z1jk2IKd8VxnJz1cUoAZjBk=;
+        b=b4llI9RHG/2Humq5N5H7SvY6Y2SEyH1wZ6+1Ddn9Hzz0nuUfXNbKpxhXXSZKBGFP6R
+         EepxDrwGVKHAXq72JIT1fvhOFP7Qc1Zn4unihk+UKFvz2Nrdno+VNlKmAfaIHU/LGpgS
+         kbndnL937GoKuS065o5UMZUbBmXDa1hY4ejjAH1OQjZl/2qhbMLrl0nF0RHl140f39vn
+         Q/Av8Q8iUGLtO/tjmGh/4cvhsDM+UfvQ+DyebkhHg03YJ4P+vF2Qnl3KiGyuM96+/Byj
+         9R5flc8UEsjJ8LN3t2JTfKd9dcY6FQBDqEk7pJVmXIph4ooblBvBZRNRnSk/ocUaitFH
+         qd5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=4qX2THs/dhWrDnWe2HpkQ84reF55tyq/NRsKrAKp/sc=;
-        b=cV3IWy2p/Dt/cnb5LqA6ZrASVb2rwKXm0DVlQ2dBpGHRJ5nVt8foRMRToJq3MQkMhJ
-         raUiPXJ4ajNLa5XbOCyjWTtGJ+hGYtG3ddMlWB1vqFQwrJBi0VDREjJ4ke6RSntX+v7u
-         aTrYeCdeGBwfrbIv4Iqi+6mMw+SZzEvtl5b+Ey6w0o0ZHhMM9ngJKSLvBRQukDiTrX1t
-         FObk98st98o59tfPjHMzOzY/+4Y59embKPo28I9JGBlTQxHxOxFz/PYLZW7W0z3AZOFT
-         gVbTDssh6IdjZCeswWyietWjGtbKpB/Eyxt/BsxAPqrigLjigd8ho2xHtGugEsk+K2Kb
-         2B9A==
-X-Gm-Message-State: AOAM533cEWZfaSu+D+Q9ej8dCnx8lDec27ku9uFHn5MP3L7bLNRwZReo
-        7ggCKsvG4Q1GAPxB4NG0EukBJQ==
-X-Google-Smtp-Source: ABdhPJz5tKQupqtdw+ZGepIkdmidErV/RsRyOWYMokQieETW+iScif2ReC4wKK9JZ4RU9rU7xl5WLA==
-X-Received: by 2002:a17:902:864b:b029:d3:ce46:2829 with SMTP id y11-20020a170902864bb02900d3ce462829mr4023779plt.16.1604616630970;
-        Thu, 05 Nov 2020 14:50:30 -0800 (PST)
+        bh=FveG7gwXoxnfUqfAm1M6z1jk2IKd8VxnJz1cUoAZjBk=;
+        b=IwZr60mrX3I7VslPNn5UPhDCMiApEFX7v//LFA9XCNRNY4lk7pyBlGXnU4GURkGC1p
+         rKG2iiK5ElhiuTHbMLtqEfmocaHaBEFJWHICzzOyv0nHWDl5zCjobwYGpWEnT5ZyQ+st
+         fgFti0MSHOxEYSsI57feRx1EDx43Kymq7+rlAjpCrBTka57aCNK2AwSr9r5PYwE+RpCq
+         y3awh7a4rOZ7R7jcmE0edhBbEY6a3P4hFvW0x4kDHeMUYDX/cHhd6knTE/t0T792jnOS
+         p6mTXsgDIiS91jkIKA1R7ktBiFFLSsD16dDLqyQHyUni7+Q28B+dTuogbBM8RQXK5gFy
+         uIHw==
+X-Gm-Message-State: AOAM5327fTQsZ6BkesNn9VhOZPqsgFQLOPyRNoLVUTf8zHwUv8543rW8
+        GKL16OQJKsFUeqmfcics4MW6oQ==
+X-Google-Smtp-Source: ABdhPJz73sm4Tckjo9RX2sEH0hRxFtHnjX/o5b2zrBcHPmebWmx/sCrx1PxT4HTvqAJHtAwEzauEvg==
+X-Received: by 2002:a17:90b:118b:: with SMTP id gk11mr4771452pjb.178.1604616632151;
+        Thu, 05 Nov 2020 14:50:32 -0800 (PST)
 Received: from xps15.cg.shawcable.net (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id d145sm3854501pfd.136.2020.11.05.14.50.30
+        by smtp.gmail.com with ESMTPSA id d145sm3854501pfd.136.2020.11.05.14.50.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 14:50:30 -0800 (PST)
+        Thu, 05 Nov 2020 14:50:31 -0800 (PST)
 From:   Mathieu Poirier <mathieu.poirier@linaro.org>
 To:     ohad@wizery.com, bjorn.andersson@linaro.org
 Cc:     guennadi.liakhovetski@linux.intel.com,
         linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v5 1/8] rpmsg: Introduce __rpmsg{16|32|64} types
-Date:   Thu,  5 Nov 2020 15:50:21 -0700
-Message-Id: <20201105225028.3058818-2-mathieu.poirier@linaro.org>
+Subject: [PATCH v5 2/8] rpmsg: virtio: Move from virtio to rpmsg byte conversion
+Date:   Thu,  5 Nov 2020 15:50:22 -0700
+Message-Id: <20201105225028.3058818-3-mathieu.poirier@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201105225028.3058818-1-mathieu.poirier@linaro.org>
 References: <20201105225028.3058818-1-mathieu.poirier@linaro.org>
@@ -64,194 +64,168 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce __rpmsg{16|32|64} types along with byte order conversion
-functions based on an rpmsg_device operation as a foundation to
-make RPMSG modular and transport agnostic.
+Use rpmsg byte conversion functions in order for the RPMSG
+headers and generic functions to be used by external entities.
 
-Suggested-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 Reviewed-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 ---
- include/linux/rpmsg.h            | 51 ++++++++++++++++++++++++
- include/linux/rpmsg/byteorder.h  | 67 ++++++++++++++++++++++++++++++++
- include/uapi/linux/rpmsg_types.h | 11 ++++++
- 3 files changed, 129 insertions(+)
- create mode 100644 include/linux/rpmsg/byteorder.h
- create mode 100644 include/uapi/linux/rpmsg_types.h
+ drivers/rpmsg/virtio_rpmsg_bus.c | 53 +++++++++++++++++---------------
+ 1 file changed, 28 insertions(+), 25 deletions(-)
 
-diff --git a/include/linux/rpmsg.h b/include/linux/rpmsg.h
-index 9fe156d1c018..faf2daff6238 100644
---- a/include/linux/rpmsg.h
-+++ b/include/linux/rpmsg.h
-@@ -17,6 +17,7 @@
- #include <linux/kref.h>
+diff --git a/drivers/rpmsg/virtio_rpmsg_bus.c b/drivers/rpmsg/virtio_rpmsg_bus.c
+index 7d7ed4e5cce7..5259fbbc8e68 100644
+--- a/drivers/rpmsg/virtio_rpmsg_bus.c
++++ b/drivers/rpmsg/virtio_rpmsg_bus.c
+@@ -19,11 +19,11 @@
  #include <linux/mutex.h>
- #include <linux/poll.h>
+ #include <linux/of_device.h>
+ #include <linux/rpmsg.h>
 +#include <linux/rpmsg/byteorder.h>
- 
- #define RPMSG_ADDR_ANY		0xFFFFFFFF
- 
-@@ -46,6 +47,7 @@ struct rpmsg_channel_info {
-  * @dst: destination address
-  * @ept: the rpmsg endpoint of this channel
-  * @announce: if set, rpmsg will announce the creation/removal of this channel
-+ * @little_endian: True if transport is using little endian byte representation
+ #include <linux/scatterlist.h>
+ #include <linux/slab.h>
+ #include <linux/sched.h>
+ #include <linux/virtio.h>
+-#include <linux/virtio_byteorder.h>
+ #include <linux/virtio_ids.h>
+ #include <linux/virtio_config.h>
+ #include <linux/wait.h>
+@@ -85,11 +85,11 @@ struct virtproc_info {
+  * Every message sent(/received) on the rpmsg bus begins with this header.
   */
- struct rpmsg_device {
- 	struct device dev;
-@@ -55,6 +57,7 @@ struct rpmsg_device {
- 	u32 dst;
+ struct rpmsg_hdr {
+-	__virtio32 src;
+-	__virtio32 dst;
+-	__virtio32 reserved;
+-	__virtio16 len;
+-	__virtio16 flags;
++	__rpmsg32 src;
++	__rpmsg32 dst;
++	__rpmsg32 reserved;
++	__rpmsg16 len;
++	__rpmsg16 flags;
+ 	u8 data[];
+ } __packed;
+ 
+@@ -107,8 +107,8 @@ struct rpmsg_hdr {
+  */
+ struct rpmsg_ns_msg {
+ 	char name[RPMSG_NAME_SIZE];
+-	__virtio32 addr;
+-	__virtio32 flags;
++	__rpmsg32 addr;
++	__rpmsg32 flags;
+ } __packed;
+ 
+ /**
+@@ -341,8 +341,8 @@ static int virtio_rpmsg_announce_create(struct rpmsg_device *rpdev)
+ 		struct rpmsg_ns_msg nsm;
+ 
+ 		strncpy(nsm.name, rpdev->id.name, RPMSG_NAME_SIZE);
+-		nsm.addr = cpu_to_virtio32(vrp->vdev, rpdev->ept->addr);
+-		nsm.flags = cpu_to_virtio32(vrp->vdev, RPMSG_NS_CREATE);
++		nsm.addr = cpu_to_rpmsg32(rpdev, rpdev->ept->addr);
++		nsm.flags = cpu_to_rpmsg32(rpdev, RPMSG_NS_CREATE);
+ 
+ 		err = rpmsg_sendto(rpdev->ept, &nsm, sizeof(nsm), RPMSG_NS_ADDR);
+ 		if (err)
+@@ -365,8 +365,8 @@ static int virtio_rpmsg_announce_destroy(struct rpmsg_device *rpdev)
+ 		struct rpmsg_ns_msg nsm;
+ 
+ 		strncpy(nsm.name, rpdev->id.name, RPMSG_NAME_SIZE);
+-		nsm.addr = cpu_to_virtio32(vrp->vdev, rpdev->ept->addr);
+-		nsm.flags = cpu_to_virtio32(vrp->vdev, RPMSG_NS_DESTROY);
++		nsm.addr = cpu_to_rpmsg32(rpdev, rpdev->ept->addr);
++		nsm.flags = cpu_to_rpmsg32(rpdev, RPMSG_NS_DESTROY);
+ 
+ 		err = rpmsg_sendto(rpdev->ept, &nsm, sizeof(nsm), RPMSG_NS_ADDR);
+ 		if (err)
+@@ -425,6 +425,7 @@ static struct rpmsg_device *rpmsg_create_channel(struct virtproc_info *vrp,
+ 	rpdev->src = chinfo->src;
+ 	rpdev->dst = chinfo->dst;
+ 	rpdev->ops = &virtio_rpmsg_ops;
++	rpdev->little_endian = virtio_is_little_endian(vrp->vdev);
+ 
+ 	/*
+ 	 * rpmsg server channels has predefined local address (for now),
+@@ -618,10 +619,10 @@ static int rpmsg_send_offchannel_raw(struct rpmsg_device *rpdev,
+ 		}
+ 	}
+ 
+-	msg->len = cpu_to_virtio16(vrp->vdev, len);
++	msg->len = cpu_to_rpmsg16(rpdev, len);
+ 	msg->flags = 0;
+-	msg->src = cpu_to_virtio32(vrp->vdev, src);
+-	msg->dst = cpu_to_virtio32(vrp->vdev, dst);
++	msg->src = cpu_to_rpmsg32(rpdev, src);
++	msg->dst = cpu_to_rpmsg32(rpdev, dst);
+ 	msg->reserved = 0;
+ 	memcpy(msg->data, data, len);
+ 
+@@ -710,14 +711,15 @@ static int rpmsg_recv_single(struct virtproc_info *vrp, struct device *dev,
+ {
  	struct rpmsg_endpoint *ept;
- 	bool announce;
-+	bool little_endian;
+ 	struct scatterlist sg;
+-	unsigned int msg_len = virtio16_to_cpu(vrp->vdev, msg->len);
++	bool little_endian = virtio_is_little_endian(vrp->vdev);
++	unsigned int msg_len = __rpmsg16_to_cpu(little_endian, msg->len);
+ 	int err;
  
- 	const struct rpmsg_device_ops *ops;
- };
-@@ -111,6 +114,54 @@ struct rpmsg_driver {
- 	int (*callback)(struct rpmsg_device *, void *, int, void *, u32);
- };
+ 	dev_dbg(dev, "From: 0x%x, To: 0x%x, Len: %d, Flags: %d, Reserved: %d\n",
+-		virtio32_to_cpu(vrp->vdev, msg->src),
+-		virtio32_to_cpu(vrp->vdev, msg->dst), msg_len,
+-		virtio16_to_cpu(vrp->vdev, msg->flags),
+-		virtio32_to_cpu(vrp->vdev, msg->reserved));
++		__rpmsg32_to_cpu(little_endian, msg->src),
++		__rpmsg32_to_cpu(little_endian, msg->dst), msg_len,
++		__rpmsg16_to_cpu(little_endian, msg->flags),
++		__rpmsg32_to_cpu(little_endian, msg->reserved));
+ #if defined(CONFIG_DYNAMIC_DEBUG)
+ 	dynamic_hex_dump("rpmsg_virtio RX: ", DUMP_PREFIX_NONE, 16, 1,
+ 			 msg, sizeof(*msg) + msg_len, true);
+@@ -736,7 +738,7 @@ static int rpmsg_recv_single(struct virtproc_info *vrp, struct device *dev,
+ 	/* use the dst addr to fetch the callback of the appropriate user */
+ 	mutex_lock(&vrp->endpoints_lock);
  
-+static inline u16 rpmsg16_to_cpu(struct rpmsg_device *rpdev, __rpmsg16 val)
-+{
-+	if (!rpdev)
-+		return __rpmsg16_to_cpu(rpmsg_is_little_endian(), val);
-+	else
-+		return __rpmsg16_to_cpu(rpdev->little_endian, val);
-+}
-+
-+static inline __rpmsg16 cpu_to_rpmsg16(struct rpmsg_device *rpdev, u16 val)
-+{
-+	if (!rpdev)
-+		return __cpu_to_rpmsg16(rpmsg_is_little_endian(), val);
-+	else
-+		return __cpu_to_rpmsg16(rpdev->little_endian, val);
-+}
-+
-+static inline u32 rpmsg32_to_cpu(struct rpmsg_device *rpdev, __rpmsg32 val)
-+{
-+	if (!rpdev)
-+		return __rpmsg32_to_cpu(rpmsg_is_little_endian(), val);
-+	else
-+		return __rpmsg32_to_cpu(rpdev->little_endian, val);
-+}
-+
-+static inline __rpmsg32 cpu_to_rpmsg32(struct rpmsg_device *rpdev, u32 val)
-+{
-+	if (!rpdev)
-+		return __cpu_to_rpmsg32(rpmsg_is_little_endian(), val);
-+	else
-+		return __cpu_to_rpmsg32(rpdev->little_endian, val);
-+}
-+
-+static inline u64 rpmsg64_to_cpu(struct rpmsg_device *rpdev, __rpmsg64 val)
-+{
-+	if (!rpdev)
-+		return __rpmsg64_to_cpu(rpmsg_is_little_endian(), val);
-+	else
-+		return __rpmsg64_to_cpu(rpdev->little_endian, val);
-+}
-+
-+static inline __rpmsg64 cpu_to_rpmsg64(struct rpmsg_device *rpdev, u64 val)
-+{
-+	if (!rpdev)
-+		return __cpu_to_rpmsg64(rpmsg_is_little_endian(), val);
-+	else
-+		return __cpu_to_rpmsg64(rpdev->little_endian, val);
-+}
-+
- #if IS_ENABLED(CONFIG_RPMSG)
+-	ept = idr_find(&vrp->endpoints, virtio32_to_cpu(vrp->vdev, msg->dst));
++	ept = idr_find(&vrp->endpoints, __rpmsg32_to_cpu(little_endian, msg->dst));
  
- int register_rpmsg_device(struct rpmsg_device *dev);
-diff --git a/include/linux/rpmsg/byteorder.h b/include/linux/rpmsg/byteorder.h
-new file mode 100644
-index 000000000000..c0f565dbad6d
---- /dev/null
-+++ b/include/linux/rpmsg/byteorder.h
-@@ -0,0 +1,67 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Follows implementation found in linux/virtio_byteorder.h
-+ */
-+#ifndef _LINUX_RPMSG_BYTEORDER_H
-+#define _LINUX_RPMSG_BYTEORDER_H
-+#include <linux/types.h>
-+#include <uapi/linux/rpmsg_types.h>
-+
-+static inline bool rpmsg_is_little_endian(void)
-+{
-+#ifdef __LITTLE_ENDIAN
-+	return true;
-+#else
-+	return false;
-+#endif
-+}
-+
-+static inline u16 __rpmsg16_to_cpu(bool little_endian, __rpmsg16 val)
-+{
-+	if (little_endian)
-+		return le16_to_cpu((__force __le16)val);
-+	else
-+		return be16_to_cpu((__force __be16)val);
-+}
-+
-+static inline __rpmsg16 __cpu_to_rpmsg16(bool little_endian, u16 val)
-+{
-+	if (little_endian)
-+		return (__force __rpmsg16)cpu_to_le16(val);
-+	else
-+		return (__force __rpmsg16)cpu_to_be16(val);
-+}
-+
-+static inline u32 __rpmsg32_to_cpu(bool little_endian, __rpmsg32 val)
-+{
-+	if (little_endian)
-+		return le32_to_cpu((__force __le32)val);
-+	else
-+		return be32_to_cpu((__force __be32)val);
-+}
-+
-+static inline __rpmsg32 __cpu_to_rpmsg32(bool little_endian, u32 val)
-+{
-+	if (little_endian)
-+		return (__force __rpmsg32)cpu_to_le32(val);
-+	else
-+		return (__force __rpmsg32)cpu_to_be32(val);
-+}
-+
-+static inline u64 __rpmsg64_to_cpu(bool little_endian, __rpmsg64 val)
-+{
-+	if (little_endian)
-+		return le64_to_cpu((__force __le64)val);
-+	else
-+		return be64_to_cpu((__force __be64)val);
-+}
-+
-+static inline __rpmsg64 __cpu_to_rpmsg64(bool little_endian, u64 val)
-+{
-+	if (little_endian)
-+		return (__force __rpmsg64)cpu_to_le64(val);
-+	else
-+		return (__force __rpmsg64)cpu_to_be64(val);
-+}
-+
-+#endif /* _LINUX_RPMSG_BYTEORDER_H */
-diff --git a/include/uapi/linux/rpmsg_types.h b/include/uapi/linux/rpmsg_types.h
-new file mode 100644
-index 000000000000..36e3b9404391
---- /dev/null
-+++ b/include/uapi/linux/rpmsg_types.h
-@@ -0,0 +1,11 @@
-+/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-+#ifndef _UAPI_LINUX_RPMSG_TYPES_H
-+#define _UAPI_LINUX_RPMSG_TYPES_H
-+
-+#include <linux/types.h>
-+
-+typedef __u16 __bitwise __rpmsg16;
-+typedef __u32 __bitwise __rpmsg32;
-+typedef __u64 __bitwise __rpmsg64;
-+
-+#endif /* _UAPI_LINUX_RPMSG_TYPES_H */
+ 	/* let's make sure no one deallocates ept while we use it */
+ 	if (ept)
+@@ -750,7 +752,7 @@ static int rpmsg_recv_single(struct virtproc_info *vrp, struct device *dev,
+ 
+ 		if (ept->cb)
+ 			ept->cb(ept->rpdev, msg->data, msg_len, ept->priv,
+-				virtio32_to_cpu(vrp->vdev, msg->src));
++				__rpmsg32_to_cpu(little_endian, msg->src));
+ 
+ 		mutex_unlock(&ept->cb_lock);
+ 
+@@ -830,6 +832,7 @@ static int rpmsg_ns_cb(struct rpmsg_device *rpdev, void *data, int len,
+ 	struct rpmsg_channel_info chinfo;
+ 	struct virtproc_info *vrp = priv;
+ 	struct device *dev = &vrp->vdev->dev;
++	bool little_endian = virtio_is_little_endian(vrp->vdev);
+ 	int ret;
+ 
+ #if defined(CONFIG_DYNAMIC_DEBUG)
+@@ -858,13 +861,13 @@ static int rpmsg_ns_cb(struct rpmsg_device *rpdev, void *data, int len,
+ 
+ 	strncpy(chinfo.name, msg->name, sizeof(chinfo.name));
+ 	chinfo.src = RPMSG_ADDR_ANY;
+-	chinfo.dst = virtio32_to_cpu(vrp->vdev, msg->addr);
++	chinfo.dst = __rpmsg32_to_cpu(little_endian, msg->addr);
+ 
+ 	dev_info(dev, "%sing channel %s addr 0x%x\n",
+-		 virtio32_to_cpu(vrp->vdev, msg->flags) & RPMSG_NS_DESTROY ?
++		 __rpmsg32_to_cpu(little_endian, msg->flags) & RPMSG_NS_DESTROY ?
+ 		 "destroy" : "creat", msg->name, chinfo.dst);
+ 
+-	if (virtio32_to_cpu(vrp->vdev, msg->flags) & RPMSG_NS_DESTROY) {
++	if (__rpmsg32_to_cpu(little_endian, msg->flags) & RPMSG_NS_DESTROY) {
+ 		ret = rpmsg_unregister_device(&vrp->vdev->dev, &chinfo);
+ 		if (ret)
+ 			dev_err(dev, "rpmsg_destroy_channel failed: %d\n", ret);
 -- 
 2.25.1
 
