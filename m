@@ -2,127 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 449772A7B0B
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 10:53:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D25A62A7B12
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 10:55:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727536AbgKEJxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 04:53:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35720 "EHLO mail.kernel.org"
+        id S1727654AbgKEJzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 04:55:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35972 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725308AbgKEJxK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 04:53:10 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        id S1725468AbgKEJzH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 04:55:07 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5CF892151B;
-        Thu,  5 Nov 2020 09:53:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 38C682151B;
+        Thu,  5 Nov 2020 09:55:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604569989;
-        bh=05ML26Jp9zU6GACtn9aCiyu+oy90xRHx7TvqsEetQSw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=CrU9BPZMhjG6XBnFZj7rwMjBVY+aLHNqx0Nlb1mA9Fiij/8DL/eyOM0r9e8D7jhlp
-         SpmPMVZC5KABurCvlqM34aJ3EEWWHuslRh8ARBAAoztEjDKBnd09P29s5J8TcPG1i/
-         lT5ExIn9lIegbNHrSwGiL+7NorLstJSACtsZuQGc=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kabx5-007nE3-6I; Thu, 05 Nov 2020 09:53:07 +0000
+        s=default; t=1604570105;
+        bh=KGIP1wr1jvU77ylGCI/rcGT14bE4bc1Zp9eOPTIJAtI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qPSzj4nXW/qRfDl3lskAsYdXJUEgRGo9BQABrS/fXN1kBjtarewaITzkhFhU4RIqa
+         eQOaMIP1w4rg/iPuvx/o1wWmRr+l79dQhfkyVQtZOvG3gASITDJjZQK/RjjcKxDltT
+         HHnbYn/DLE19V+Sz1omD8IN96EhVm+Q/uUn/8yms=
+Date:   Thu, 5 Nov 2020 10:55:54 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Paul Fulghum <paulkf@microgate.com>
+Cc:     Jiri Slaby <jirislaby@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        "linux-kernel@vger.kernel.org Mailing List" 
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 27/36] tty: synclinkmp: Mark never checked 'readval' as
+ __always_unused
+Message-ID: <20201105095554.GA3451966@kroah.com>
+References: <20201104193549.4026187-1-lee.jones@linaro.org>
+ <20201104193549.4026187-28-lee.jones@linaro.org>
+ <0a4043ee-dad5-7691-8c67-db73d3c12f52@kernel.org>
+ <20201105084341.GZ4488@dell>
+ <a95f8d0d-28ef-7351-cdbb-7da5ad8aa9ad@kernel.org>
+ <69E3975E-A4D0-4472-80F0-9FAB2E0024FA@microgate.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 05 Nov 2020 09:53:07 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     David Brazdil <dbrazdil@google.com>
-Cc:     kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Dennis Zhou <dennis@kernel.org>,
-        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        Andrew Scull <ascull@google.com>, kernel-team@android.com
-Subject: Re: [RFC PATCH 02/26] psci: Export configured PSCI function IDs
-In-Reply-To: <20201104183630.27513-3-dbrazdil@google.com>
-References: <20201104183630.27513-1-dbrazdil@google.com>
- <20201104183630.27513-3-dbrazdil@google.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <61384a4031c6a3419c55a8cdb8f9f0ab@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: dbrazdil@google.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, dennis@kernel.org, tj@kernel.org, cl@linux.com, mark.rutland@arm.com, lorenzo.pieralisi@arm.com, qperret@google.com, ascull@google.com, kernel-team@android.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <69E3975E-A4D0-4472-80F0-9FAB2E0024FA@microgate.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-04 18:36, David Brazdil wrote:
-> Function IDs used by PSCI are configurable for v0.1 via DT/APCI. If the
-> host is using PSCI v0.1, KVM's PSCI proxy needs to use the same IDs.
-> Expose the array holding the information.
+On Thu, Nov 05, 2020 at 01:39:36AM -0800, Paul Fulghum wrote:
 > 
-> Signed-off-by: David Brazdil <dbrazdil@google.com>
-> ---
->  drivers/firmware/psci/psci.c | 10 +---------
->  include/linux/psci.h         | 10 ++++++++++
->  2 files changed, 11 insertions(+), 9 deletions(-)
 > 
-> diff --git a/drivers/firmware/psci/psci.c 
-> b/drivers/firmware/psci/psci.c
-> index ff523bdbfe3f..ffcb88f60e21 100644
-> --- a/drivers/firmware/psci/psci.c
-> +++ b/drivers/firmware/psci/psci.c
-> @@ -60,15 +60,7 @@ typedef unsigned long (psci_fn)(unsigned long, 
-> unsigned long,
->  				unsigned long, unsigned long);
->  static psci_fn *invoke_psci_fn;
+> > On Nov 5, 2020, at 1:10 AM, Jiri Slaby <jirislaby@kernel.org> wrote:
+> > 
+> > OK, let the loop alone. I would bet a half a pig that noone is able to test this driver. But one has to write this for someone to raise and admit they are still using it. In fact, there are _4_ google replies to "Microgate Corporation" "SyncLink Multiport Adapter" "lspci".
 > 
-> -enum psci_function {
-> -	PSCI_FN_CPU_SUSPEND,
-> -	PSCI_FN_CPU_ON,
-> -	PSCI_FN_CPU_OFF,
-> -	PSCI_FN_MIGRATE,
-> -	PSCI_FN_MAX,
-> -};
-> -
-> -static u32 psci_function_id[PSCI_FN_MAX];
-> +u32 psci_function_id[PSCI_FN_MAX];
 > 
->  #define PSCI_0_2_POWER_STATE_MASK		\
->  				(PSCI_0_2_POWER_STATE_ID_MASK | \
-> diff --git a/include/linux/psci.h b/include/linux/psci.h
-> index cb35b90d1746..877d844ee6d9 100644
-> --- a/include/linux/psci.h
-> +++ b/include/linux/psci.h
-> @@ -29,6 +29,16 @@ bool psci_has_osi_support(void);
->   */
->  extern int psci_driver_version;
 > 
-> +enum psci_function {
-> +	PSCI_FN_CPU_SUSPEND,
-> +	PSCI_FN_CPU_ON,
-> +	PSCI_FN_CPU_OFF,
-> +	PSCI_FN_MIGRATE,
-> +	PSCI_FN_MAX,
-> +};
-> +
-> +extern u32 psci_function_id[PSCI_FN_MAX];
+> The hardware used with synclink.c and synclinkmp.c has not been manufactured for 15 years and was low volume. The chances of either driver still being in use is very low. Not even Microgate (me) has the ability to test either anymore (no hardware). I don’t know the policy about driver removal, but I think both could be removed without upsetting anyone.
+> 
+> synclink_gt.c is still in production and the driver still actively used.
+> 
+> If there are no objections to removing the the old drivers (synclink.c/synclink_mp.c) I could make a patch to do so tomorrow (it is 1:30am here now). Nothing eliminates niggling warnings like removing dead code.
 
-I am very reluctant to expose this array to the rest of the kernel.
-The temptation becomes huge for people to start writing to it
-from random drivers in order to route PSCI calls somewhere else.
-Consider exporting an accessor instead.
+Great, please submit a patch to remove these, I will always take patches
+to delete lines :)
 
-Same thing for the following patch (there already are a couple of
-accessors for psci_cpu_suspend_feature, which you could make visible).
+thanks,
 
-Thanks,
-
-         M.
--- 
-Jazz is not dead. It just smells funny...
+greg k-h
