@@ -2,87 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 090E22A845C
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 18:02:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A67A82A8460
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 18:03:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731570AbgKERCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 12:02:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40368 "EHLO
+        id S1731516AbgKERC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 12:02:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726801AbgKERCI (ORCPT
+        with ESMTP id S1729980AbgKERC4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 12:02:08 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0B3AC0613D2;
-        Thu,  5 Nov 2020 09:02:08 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id g7so1557317pfc.2;
-        Thu, 05 Nov 2020 09:02:08 -0800 (PST)
+        Thu, 5 Nov 2020 12:02:56 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3D7CC0613CF;
+        Thu,  5 Nov 2020 09:02:54 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id y7so788801pfq.11;
+        Thu, 05 Nov 2020 09:02:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=1E/GdSgvT+IfKnf/MQnxEpHIqbogE7oTSfYMSoG+muE=;
-        b=py845HUDSn6lrlHMzWWLdBEnBIvv7pnBrtqYEs7F4lClin5wEfNwRsfuebyIhBrs0F
-         yq9wBocpigv9ECrczLtxDjmUTDnMWAR786Vx64Yy2bcRd0gtj84/iWFHKTy+ijgW6ZI1
-         JrcddhmYxQlPyOV178ghPINfaS/SzV9Vuwt8T6XlEebjsecz8PGvI7iD1VNlX4P+4uuC
-         P1j2qqd4+L1rJYPT+AXVskMPbQcW4lV5iyF2Id5QoygLx+5h7zkId0VSLBUnQMktUKfZ
-         GLYoVbrP/pRMAb9Re49tHlMWnwh+TOtzdxMIKpFx0kLjncq1PXFKQ0CrwtQk0GLv4zXz
-         C98g==
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MFo6Y7rYb87Eb88yyF9Bn0rmWzJw6Hl9bFsypbTQVcY=;
+        b=SsicXe73212qOk3V2lmG298fU6pI6n8NPV5V83gOgrX2NYmDvjMmXX1oMK7aaz9UYY
+         J3NhFT+8ZM7p8/B5DYIqkAMY4OzBqRCWDljXx0IPDzxt6SmPGWFkVQtbwrwOHMwrenVA
+         BQDlA54czjuSjNJrnXW+ovEvH0/WXPKCCbLcvb5eeyNb+Uf5x3vwci6jrgBhgQMl/6bD
+         iHu2i7q88SMGpWQH59nvzEuu1nJN5s8FbTK09fJQd0tDfeQMKKQ7QaMHkm/3s04Qx1xY
+         9t2pxYyp65HYTwEa0xNc20qyhA8mtLEXPCybpu4UJ92KWrADaJ/Q++gC4rUwOyiQX2b4
+         dSTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=1E/GdSgvT+IfKnf/MQnxEpHIqbogE7oTSfYMSoG+muE=;
-        b=bwNLdkqwi3/NqTcZP8wNee9n4NxMH7f8WR4l+kC9/pmtN6zso9gze3gclLnsipH0tX
-         aGbcPGepBwhM7i/F8owT4WfR8gfY7ujq5jnt4btE+gTBSgQFzEO5Vtis3ahLidJSt1LT
-         eFL58stUqIouQSP7jGdkkm+h3Iijyd6zVWZ9yTiS9/OoG8dZfEHw0DvWV15Rp6w9K/Jh
-         cDyq9LUDhlkH4cXXToKQr4PPMjoBKt94Di4vqkio95BHSX6QOvPVzeLuXak97JE7quyM
-         aT8AKxfe/Mc8U0UrZnwB7feD9ywsLL1rwNXljZe2EBCnH7zeSnUXfV4VljGgljLKdpQ5
-         S5bg==
-X-Gm-Message-State: AOAM531umHwoDEw9vuhYffAT0rx94wWRozMpvdLAD+h2GuGVbLaXEiZP
-        clImbAGLsKNS/m3rZYmoORg=
-X-Google-Smtp-Source: ABdhPJwbvoK5kkf0kxlXbmOFQ64ONheTWuD39VvDwGzob7HSOf95ha2r81Of2Bb41jZos3/aE9Ds2w==
-X-Received: by 2002:a65:67c2:: with SMTP id b2mr3214406pgs.39.1604595728164;
-        Thu, 05 Nov 2020 09:02:08 -0800 (PST)
-Received: from hoboy.vegasvil.org (c-73-241-114-122.hsd1.ca.comcast.net. [73.241.114.122])
-        by smtp.gmail.com with ESMTPSA id f21sm2970903pga.32.2020.11.05.09.02.06
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=MFo6Y7rYb87Eb88yyF9Bn0rmWzJw6Hl9bFsypbTQVcY=;
+        b=iwb+qpJTMmLmpjQjK7ch1q/Ub8F9tPXAHCEdYH3PwsrTOsKhOpB62os3es1iW1sqUK
+         JetRKCaLuzcm3KHsqpDZHK6Yojaa3SlTnmRK/xIlu7sAbdSqesqWLSr7TmkoZQsmm817
+         QKy+ssIPBZVVl+s8k/E5oXHUTo0pf/TpH9XDzHribudkYLWiyBwuj2vFvS4xl6z8zBNR
+         6KmxXet7+BFySoEij7sGAJkVtNM4l9RF/vV+0mRRXAsrk9n+mAY/2x21pZ/JLaDujUa3
+         jdGl0ncxT4dfKe/AJZ05Jn/qDhG+USetL2S1DbNGxQc5vUMhheCNrz1nSl1dZ5gPfnSC
+         Jvqw==
+X-Gm-Message-State: AOAM533LJ1ZAORE3EVK7xuE/aBpWQ/GY6y0Nugjj6OFOet7a7++W1Obi
+        s6p6Uck3wAfvPYZsuWcUdn4=
+X-Google-Smtp-Source: ABdhPJwE7qwJZo1qbYdWfUdjZNFKU/vsS216FqHbSWwFFHJIQ/6Dy/foejFEnMsWpMoV6D7q8QaVrQ==
+X-Received: by 2002:a63:c945:: with SMTP id y5mr3274005pgg.118.1604595774281;
+        Thu, 05 Nov 2020 09:02:54 -0800 (PST)
+Received: from bbox-1.mtv.corp.google.com ([2620:15c:211:201:7220:84ff:fe09:5e58])
+        by smtp.gmail.com with ESMTPSA id b185sm2972745pgc.68.2020.11.05.09.02.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 09:02:07 -0800 (PST)
-Date:   Thu, 5 Nov 2020 09:02:04 -0800
-From:   Richard Cochran <richardcochran@gmail.com>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     min.li.xe@renesas.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 3/3] ptp: idt82p33: optimize _idt82p33_adjfine
-Message-ID: <20201105170204.GA5258@hoboy.vegasvil.org>
-References: <1604505709-5483-1-git-send-email-min.li.xe@renesas.com>
- <1604505709-5483-3-git-send-email-min.li.xe@renesas.com>
- <20201104164657.GE16105@hoboy.vegasvil.org>
- <20201105003556.tpgvlh3ponyxzjjl@skbuf>
+        Thu, 05 Nov 2020 09:02:53 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+From:   Minchan Kim <minchan@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm <linux-mm@kvack.org>,
+        Minchan Kim <minchan@kernel.org>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Harish Sriram <harish@linux.ibm.com>, stable@vger.kernel.org
+Subject: [PATCH] Revert "mm/vunmap: add cond_resched() in vunmap_pmd_range"
+Date:   Thu,  5 Nov 2020 09:02:49 -0800
+Message-Id: <20201105170249.387069-1-minchan@kernel.org>
+X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201105003556.tpgvlh3ponyxzjjl@skbuf>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 02:35:56AM +0200, Vladimir Oltean wrote:
-> On the other hand and with all due respect, saying that it may have been
-> 'buggy on some archs back in the day' and then not bringing any evidence
-> is a bit of a strange claim to make.
+This reverts commit e47110e90584a22e9980510b00d0dfad3a83354e.
 
-You're right.  I made the effort to look back into the days of v3.0,
-and the only thing I could find is that the 32 bit implementation of
-div_s64 does extra operations and invokes an additional function call.
-But the difference in performance, if any, is probably not very large.
+While I was doing zram testing, I found sometimes decompression failed
+since the compression buffer was corrupted. With investigation,
+I found below commit calls cond_resched unconditionally so it could
+make a problem in atomic context if the task is reschedule.
+
+Revert the original commit for now.
+
+[   55.109012] BUG: sleeping function called from invalid context at mm/vmalloc.c:108^M
+[   55.110774] in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 946, name: memhog^M
+[   55.111973] 3 locks held by memhog/946:^M
+[   55.112807]  #0: ffff9d01d4b193e8 (&mm->mmap_lock#2){++++}-{4:4}, at: __mm_populate+0x103/0x160^M
+[   55.114151]  #1: ffffffffa3d53de0 (fs_reclaim){+.+.}-{0:0}, at: __alloc_pages_slowpath.constprop.0+0xa98/0x1160^M
+[   55.115848]  #2: ffff9d01d56b8110 (&zspage->lock){.+.+}-{3:3}, at: zs_map_object+0x8e/0x1f0^M
+[   55.118947] CPU: 0 PID: 946 Comm: memhog Not tainted 5.9.3-00011-gc5bfc0287345-dirty #316^M
+[   55.121265] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1 04/01/2014^M
+[   55.122540] Call Trace:^M
+[   55.122974]  dump_stack+0x8b/0xb8^M
+[   55.123588]  ___might_sleep.cold+0xb6/0xc6^M
+[   55.124328]  unmap_kernel_range_noflush+0x2eb/0x350^M
+[   55.125198]  unmap_kernel_range+0x14/0x30^M
+[   55.125920]  zs_unmap_object+0xd5/0xe0^M
+[   55.126604]  zram_bvec_rw.isra.0+0x38c/0x8e0^M
+[   55.127462]  zram_rw_page+0x90/0x101^M
+[   55.128199]  bdev_write_page+0x92/0xe0^M
+[   55.128957]  ? swap_slot_free_notify+0xb0/0xb0^M
+[   55.129841]  __swap_writepage+0x94/0x4a0^M
+[   55.130636]  ? do_raw_spin_unlock+0x4b/0xa0^M
+[   55.131462]  ? _raw_spin_unlock+0x1f/0x30^M
+[   55.132261]  ? page_swapcount+0x6c/0x90^M
+[   55.133038]  pageout+0xe3/0x3a0^M
+[   55.133702]  shrink_page_list+0xb94/0xd60^M
+[   55.134626]  shrink_inactive_list+0x158/0x460^M
+
+Cc: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+Cc: Harish Sriram <harish@linux.ibm.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Minchan Kim <minchan@kernel.org>
+---
+ mm/vmalloc.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+index 6ae491a8b210..a4f1d39ce710 100644
+--- a/mm/vmalloc.c
++++ b/mm/vmalloc.c
+@@ -102,8 +102,6 @@ static void vunmap_pmd_range(pud_t *pud, unsigned long addr, unsigned long end,
+ 		if (pmd_none_or_clear_bad(pmd))
+ 			continue;
+ 		vunmap_pte_range(pmd, addr, next, mask);
+-
+-		cond_resched();
+ 	} while (pmd++, addr = next, addr != end);
+ }
  
-> I am actively using div_s64 in drivers/net/dsa/sja1105/sja1105_ptp.c
-> successfully on arm and arm64.
+-- 
+2.29.1.341.ge80a0c044ae-goog
 
-Yeah, I see div_s64 has found its way into the ntp code, too, so it
-must be fine.
-
-Thanks,
-Richard
