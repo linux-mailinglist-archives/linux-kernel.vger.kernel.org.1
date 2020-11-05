@@ -2,106 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BFE72A834A
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 17:18:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C59FA2A8355
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 17:18:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730977AbgKEQSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 11:18:02 -0500
-Received: from mga17.intel.com ([192.55.52.151]:28624 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729718AbgKEQSB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 11:18:01 -0500
-IronPort-SDR: HZJaVa0WPgdpLEtAsRSmENygeYfuKRcwHcZNib7Xg8LS5qruIVWuIjAKg3eLfZY7iAZ1sGxFH/
- el5dc+u/0cug==
-X-IronPort-AV: E=McAfee;i="6000,8403,9796"; a="149263094"
-X-IronPort-AV: E=Sophos;i="5.77,453,1596524400"; 
-   d="scan'208";a="149263094"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2020 08:17:59 -0800
-IronPort-SDR: yxVP6A03J0rDAwY3WimJcT+LNkyeHm3psP8GU8uJmIIEa5rJx22tVlprrSvwqsSFT4xu9EwGb5
- ky6pImHJjbMA==
-X-IronPort-AV: E=Sophos;i="5.77,453,1596524400"; 
-   d="scan'208";a="539464944"
-Received: from umedepal-mobl2.amr.corp.intel.com (HELO [10.254.6.114]) ([10.254.6.114])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2020 08:17:58 -0800
-Subject: Re: [PATCH 5.9 080/391] ASoC: SOF: fix a runtime pm issue in SOF when
- HDMI codec doesnt work
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     Paul Bolle <pebolle@tiscali.nl>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Rander Wang <rander.wang@intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>
-References: <20201103203348.153465465@linuxfoundation.org>
- <20201103203352.505472614@linuxfoundation.org>
- <64a618a3cc00de4a1c3887b57447906351db77b9.camel@tiscali.nl>
- <20201105143551.GH2092@sasha-vm>
- <1f0c6a62-5208-801d-d7c2-725ee8da19b2@linux.intel.com>
- <20201105154426.GI2092@sasha-vm>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <e13d8fb6-4f69-23ad-22f6-499bffbf03d6@linux.intel.com>
-Date:   Thu, 5 Nov 2020 10:17:57 -0600
+        id S1731180AbgKEQSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 11:18:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33472 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726777AbgKEQSb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 11:18:31 -0500
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F507C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 08:18:30 -0800 (PST)
+Received: by mail-io1-xd41.google.com with SMTP id u21so2337294iol.12
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 08:18:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:from:to:references:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=cfVWFM0X2h66U3FA7MkM++MHUZA58QeZ8G3OYIHSp0E=;
+        b=PCKDgkYmQypRP9diWoxiZzO2MW0sPX9TeRFjiKz0Du6qr0m7S9hF+yhRG6sB8AsdF2
+         w6yrPsmWkW12gzbRV3FYzcnSvo5bbvd/ThHg4850jiGQmq7VUZti0BjcuJn0v6LBCLV4
+         ENk/vmHXF7pKuFQktde3K9Zs4h7cjQTaP66Tu++3ta0LuuTCPudRwrwPxW0IG50tsfvj
+         Xt2N1RwYKjlZeD7ICP2kxwwZtpL9XRX/+8F+9CulEg1tjtIStii8kWlaP2gUeb6SIVkr
+         bvQTok/aiAOMMS0PtDPUMakzE+8v8IUIWEYPNpkcBN3Vg5KR4jQv73prSemiNPjNWWQ8
+         hpjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=cfVWFM0X2h66U3FA7MkM++MHUZA58QeZ8G3OYIHSp0E=;
+        b=iQePi79ok8HQJLqaClDLrHWbIM26IFcypVm5dXPEheUqw0uKwXhs0yFh9aOaxVd+s7
+         j6fMaQMaznGINbRcy1YOohjuJMUZqXKgjwjXuawe+EYuISD1LxWkG/De9wv0kQ3EnXsa
+         60WEFwJq4eHAHLSheZSQemSdo1Po0TFIs4yFrBpmkFeVyFqjl9dckUZpfjlAZZrF0m6h
+         ujRe3xyPuLe2TIMy+1fpEjAQw6HOvt2CDZNETY0PTpJmoVW6R6VUWglCZGahi3VTkTwn
+         lFkzUfnWsu5zrEzAVt1CRXrsMZy5nJCJniWDHglRA6DPhZMTBLW/6wrY56aVdcWWV5uA
+         RuuQ==
+X-Gm-Message-State: AOAM533iWsbLz2VkJkDPcfTsryNf+pnAte0bo495C8Euv/V619rItQDL
+        q0F0jk6FleHLtv/OYP6+HH6N1CM75El0ww==
+X-Google-Smtp-Source: ABdhPJx2vgNi6qSMfE4T6MgTCwBYut2ADIkTw3pbuDtQFuACSRuzdoeFdHDtaE+ss2BMtEq7MEr3mQ==
+X-Received: by 2002:a6b:6a0b:: with SMTP id x11mr2217823iog.205.1604593106407;
+        Thu, 05 Nov 2020 08:18:26 -0800 (PST)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id a16sm1371242ilr.86.2020.11.05.08.18.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Nov 2020 08:18:25 -0800 (PST)
+Subject: Re: [PATCH] nds32: add support for TIF_NOTIFY_SIGNAL
+From:   Jens Axboe <axboe@kernel.dk>
+To:     Nick Hu <nickhu@andestech.com>, Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <4b195c6d-405d-cad8-f036-1bfc5876d528@kernel.dk>
+Message-ID: <6cea6b7c-6372-002d-f158-57f85e72668e@kernel.dk>
+Date:   Thu, 5 Nov 2020 09:18:25 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201105154426.GI2092@sasha-vm>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <4b195c6d-405d-cad8-f036-1bfc5876d528@kernel.dk>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Gentle nudge on this one.
 
->>>> My local build of v5.9.5 broke on this patch.
->>>>
->>>> sound/soc/sof/intel/hda-codec.c: In function 'hda_codec_probe':
->>>> sound/soc/sof/intel/hda-codec.c:177:4: error: label 'error' used but 
->>>> not defined
->>>>  177 |    goto error;
->>>>      |    ^~~~
->>>> make[4]: *** [scripts/Makefile.build:283: 
->>>> sound/soc/sof/intel/hda-codec.o] Error 1
->>>> make[3]: *** [scripts/Makefile.build:500: sound/soc/sof/intel] Error 2
->>>> make[2]: *** [scripts/Makefile.build:500: sound/soc/sof] Error 2
->>>> make[1]: *** [scripts/Makefile.build:500: sound/soc] Error 2
->>>> make: *** [Makefile:1778: sound] Error 2
->>>>
->>>> There's indeed no error label in v5.9.5. (There is one in v5.10-rc2, 
->>>> I just
->>>> checked.) Is no-one else running into this?
->>>
->>> It seems that setting CONFIG_SND_SOC_SOF_HDA_AUDIO_CODEC=y is very
->>> "difficult", it's not being set by allmodconfig nor is it easy to
->>> manually set it up.
->>>
->>> I'll revert the patch, but it would be nice to make sure it's easier to
->>> test this out too.
->>
->> this issue comes from out-of-order patches, give me a couple of hours 
->> to look into this before reverting. thanks!
+On 10/29/20 10:17 AM, Jens Axboe wrote:
+> Wire up TIF_NOTIFY_SIGNAL handling for nds32.
 > 
-> Sure! Thanks for looking into this.
+> Cc: Nick Hu <nickhu@andestech.com>
+> Cc: Greentime Hu <green.hu@gmail.com>
+> Cc: Vincent Chen <deanbo422@gmail.com>
+> Signed-off-by: Jens Axboe <axboe@kernel.dk>
+> ---
+> 
+> 5.11 has support queued up for TIF_NOTIFY_SIGNAL, see this posting
+> for details:
+> 
+> https://lore.kernel.org/io-uring/20201026203230.386348-1-axboe@kernel.dk/
+> 
+> As part of that work, I'm adding TIF_NOTIFY_SIGNAL support to all archs,
+> as that will enable a set of cleanups once all of them support it. I'm
+> happy carrying this patch if need be, or it can be funelled through the
+> arch tree. Let me know.
+> 
+>  arch/nds32/include/asm/thread_info.h | 2 ++
+>  arch/nds32/kernel/ex-exit.S          | 2 +-
+>  arch/nds32/kernel/signal.c           | 2 +-
+>  3 files changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/nds32/include/asm/thread_info.h b/arch/nds32/include/asm/thread_info.h
+> index c135111ec44e..d3967ad184f0 100644
+> --- a/arch/nds32/include/asm/thread_info.h
+> +++ b/arch/nds32/include/asm/thread_info.h
+> @@ -48,6 +48,7 @@ struct thread_info {
+>  #define TIF_NEED_RESCHED	2
+>  #define TIF_SINGLESTEP		3
+>  #define TIF_NOTIFY_RESUME	4	/* callback before returning to user */
+> +#define TIF_NOTIFY_SIGNAL	5	/* signal notifications exist */
+>  #define TIF_SYSCALL_TRACE	8
+>  #define TIF_POLLING_NRFLAG	17
+>  #define TIF_MEMDIE		18
+> @@ -57,6 +58,7 @@ struct thread_info {
+>  #define _TIF_SIGPENDING		(1 << TIF_SIGPENDING)
+>  #define _TIF_NEED_RESCHED	(1 << TIF_NEED_RESCHED)
+>  #define _TIF_NOTIFY_RESUME	(1 << TIF_NOTIFY_RESUME)
+> +#define _TIF_NOTIFY_SIGNAL	(1 << TIF_NOTIFY_SIGNAL)
+>  #define _TIF_SINGLESTEP		(1 << TIF_SINGLESTEP)
+>  #define _TIF_SYSCALL_TRACE	(1 << TIF_SYSCALL_TRACE)
+>  #define _TIF_POLLING_NRFLAG	(1 << TIF_POLLING_NRFLAG)
+> diff --git a/arch/nds32/kernel/ex-exit.S b/arch/nds32/kernel/ex-exit.S
+> index 6a2966c2d8c8..b30699911b81 100644
+> --- a/arch/nds32/kernel/ex-exit.S
+> +++ b/arch/nds32/kernel/ex-exit.S
+> @@ -120,7 +120,7 @@ work_pending:
+>  	andi	$p1, $r1, #_TIF_NEED_RESCHED
+>  	bnez	$p1, work_resched
+>  
+> -	andi	$p1, $r1, #_TIF_SIGPENDING|#_TIF_NOTIFY_RESUME
+> +	andi	$p1, $r1, #_TIF_SIGPENDING|#_TIF_NOTIFY_RESUME|#_TIF_NOTIFY_SIGNAL
+>  	beqz	$p1, no_work_pending
+>  
+>  	move	$r0, $sp			! 'regs'
+> diff --git a/arch/nds32/kernel/signal.c b/arch/nds32/kernel/signal.c
+> index 2acb94812af9..7e3ca430a223 100644
+> --- a/arch/nds32/kernel/signal.c
+> +++ b/arch/nds32/kernel/signal.c
+> @@ -376,7 +376,7 @@ static void do_signal(struct pt_regs *regs)
+>  asmlinkage void
+>  do_notify_resume(struct pt_regs *regs, unsigned int thread_flags)
+>  {
+> -	if (thread_flags & _TIF_SIGPENDING)
+> +	if (thread_flags & (_TIF_SIGPENDING | _TIF_NOTIFY_SIGNAL))
+>  		do_signal(regs);
+>  
+>  	if (thread_flags & _TIF_NOTIFY_RESUME)
+> 
 
-I would recommend adding this commit to 5.9-stable:
 
-11ec0edc6408a ('ASOC: SOF: Intel: hda-codec: move unused label to 
-correct position')
-
-I just tried with 5.9.5 and the compilation error is solved with this 
-commit.
-
-It was initially intended to solve a minor 'defined but not used' issue, 
-which somehow became a bad 'used but not defined' one. Probably a bad 
-git merge I did, sorry about that.
-
-Thanks!
--Pierre
-
-
+-- 
+Jens Axboe
 
