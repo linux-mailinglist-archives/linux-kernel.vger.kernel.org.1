@@ -2,167 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32AA12A7DAD
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 13:02:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85D582A7DD2
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 13:04:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730186AbgKEMCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 07:02:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49644 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726777AbgKEMCJ (ORCPT
+        id S1730532AbgKEMEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 07:04:34 -0500
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:48528 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730468AbgKEMEb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 07:02:09 -0500
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2632C0613D2
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 04:02:08 -0800 (PST)
-Received: by mail-lf1-x141.google.com with SMTP id y184so1875803lfa.12
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 04:02:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=freebox-fr.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=acijxDiGDEUt4I2cDxK+O6StwjSex3WB5cQlpv1FYyQ=;
-        b=c1DuOiIS8rPp2H8sU37QjdQYjSswWCIIgyzuwlAyEbZIntV825P2HzlPSSjZTjmu+L
-         PszfPceqjXJZE3LxcculepH396McEkrMcacEBfbWTKDIuxFJVLdyR/r2uTu1xEmz4NHS
-         O7B/VMMq90xd9ZL2fdZZjfC3kqEm5bCiAF6kK18Lx9BstIArgNFaCCPh1RABYhNPFmbf
-         85kT9ZILCNVzdgY5lbbKVIb3iBW2U8IOnhGugZhsMXUEr5iklI+lSWALVeFO5tNZEgny
-         Y2lZGPiSFIXOwpnvMNrP7RjvrGt+OU5J33PbFiC65pUc0Fd46LHxGknOTccCnCyPlexE
-         nV0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=acijxDiGDEUt4I2cDxK+O6StwjSex3WB5cQlpv1FYyQ=;
-        b=jSs0xUu+5vQmArHVieAO0+z0DKIuyUgZXvDMW/MmWenh+r/xmXspvss3pxWMrW+S8L
-         WamgiLdAWjY2WNRP6o3qAE6OK+HlGSZhjdscajovu6N8pIV8BSuud6kulsXhYDBtDHy6
-         X/xaZOW/4W/gcD7K1f5vX1fvGcdzp17y5Puw3N8IkYZIoVHVW6dKyoYO3trujW+qa8px
-         IDxPy1szBC0n8JVYlnD0kwv8IJFqB3xbXsZj0a+mosmeiz+IdUaOeKcGZYNgVe300r+l
-         kFf/K8X9pJBBGO5EP3dL2zH672oURNENZQ9xly5+toauFgxOeeArL2/mNrkT9mvhJjB7
-         YH5Q==
-X-Gm-Message-State: AOAM533KsNpRKIP4Dw+HUcR/NpVdugelkdhfXe3xA/ws2zti/bxefAzy
-        emiFB0aJdPq4KrCdieeR8+uFs9XI09IEnPLRMM/bZA==
-X-Google-Smtp-Source: ABdhPJyz0HCk27eSLygMgMvm/T9U7y0iTjhhVG7vQ+YCf7tpS/9vOrdlmgnxW0GYpObhQrtZFYwo80EfEJVI6GO5GsU=
-X-Received: by 2002:a19:6a0e:: with SMTP id u14mr815519lfu.254.1604577726840;
- Thu, 05 Nov 2020 04:02:06 -0800 (PST)
+        Thu, 5 Nov 2020 07:04:31 -0500
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 0A5Bxvq9068678;
+        Thu, 5 Nov 2020 19:59:57 +0800 (GMT-8)
+        (envelope-from chin-ting_kuo@aspeedtech.com)
+Received: from localhost.localdomain (192.168.10.9) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 5 Nov
+ 2020 20:03:35 +0800
+From:   Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>
+To:     <broonie@kernel.org>, <robh+dt@kernel.org>, <joel@jms.id.au>,
+        <andrew@aj.id.au>, <clg@kaod.org>, <bbrezillon@kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-aspeed@lists.ozlabs.org>, <linux-spi@vger.kernel.org>
+CC:     <BMC-SW@aspeedtech.com>
+Subject: [v3 0/4] Porting ASPEED FMC/SPI memory controller driver
+Date:   Thu, 5 Nov 2020 20:03:27 +0800
+Message-ID: <20201105120331.9853-1-chin-ting_kuo@aspeedtech.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20201105104049.91077-1-warthog618@gmail.com>
-In-Reply-To: <20201105104049.91077-1-warthog618@gmail.com>
-From:   Nicolas Schichan <nschichan@freebox.fr>
-Date:   Thu, 5 Nov 2020 13:01:55 +0100
-Message-ID: <CAHNNwZDiwKbhBgkOhStGip2+cMKOEBTUa13n2vuHrTc_nk2sMg@mail.gmail.com>
-Subject: Re: [PATCH] gpiolib: fix sysfs when cdev is not selected
-To:     Kent Gibson <warthog618@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        bgolaszewski@baylibre.com, linus.walleij@linaro.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [192.168.10.9]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 0A5Bxvq9068678
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Kent,
+This patch series aims to porting ASPEED FMC/SPI memory controller
+driver with spi-mem interface. Adjust device tree setting of SPI NOR
+flash in order to fit real AST2600 EVB and new SPI memory controller
+driver. Also, this patch has been verified on AST2600-A1 EVB.
 
-On Thu, Nov 5, 2020 at 11:41 AM Kent Gibson <warthog618@gmail.com> wrote:
->
-> In gpiochip_setup_dev() the call to gpiolib_cdev_register() indirectly
-> calls device_add().  This is still required for the sysfs even when
-> CONFIG_GPIO_CDEV is not selected in the build.
->
-> Replace the stubbed functions in gpiolib-cdev.h with macros in gpiolib.c
-> that perform the required device_add() and device_del() when
-> CONFIG_GPIO_CDEV is not selected.
->
-> Fixes: d143493c01b7 (gpiolib: make cdev a build option)
-> Reported-by: Nicolas Schichan <nschichan@freebox.fr>
-> Signed-off-by: Kent Gibson <warthog618@gmail.com>
-> ---
->  drivers/gpio/gpiolib-cdev.h | 15 ---------------
->  drivers/gpio/gpiolib.c      | 18 +++++++++++++++---
->  2 files changed, 15 insertions(+), 18 deletions(-)
->
-> diff --git a/drivers/gpio/gpiolib-cdev.h b/drivers/gpio/gpiolib-cdev.h
-> index cb41dd757338..b42644cbffb8 100644
-> --- a/drivers/gpio/gpiolib-cdev.h
-> +++ b/drivers/gpio/gpiolib-cdev.h
-> @@ -7,22 +7,7 @@
->
->  struct gpio_device;
->
-> -#ifdef CONFIG_GPIO_CDEV
-> -
->  int gpiolib_cdev_register(struct gpio_device *gdev, dev_t devt);
->  void gpiolib_cdev_unregister(struct gpio_device *gdev);
->
-> -#else
-> -
-> -static inline int gpiolib_cdev_register(struct gpio_device *gdev, dev_t devt)
-> -{
-> -       return 0;
-> -}
-> -
-> -static inline void gpiolib_cdev_unregister(struct gpio_device *gdev)
-> -{
-> -}
-> -
-> -#endif /* CONFIG_GPIO_CDEV */
-> -
->  #endif /* GPIOLIB_CDEV_H */
-> diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-> index 8e29a60c3697..c980ddcda833 100644
-> --- a/drivers/gpio/gpiolib.c
-> +++ b/drivers/gpio/gpiolib.c
-> @@ -480,11 +480,23 @@ static void gpiodevice_release(struct device *dev)
->         kfree(gdev);
->  }
->
-> +#ifdef CONFIG_GPIO_CDEV
-> +#define gcdev_register(gdev, devt)     gpiolib_cdev_register((gdev), (devt))
-> +#define gcdev_unregister(gdev)         gpiolib_cdev_unregister((gdev))
-> +#else
-> +/*
-> + * gpiolib_cdev_register() indirectly calls device_add(), which is still
-> + * required even when cdev is not selected.
-> + */
-> +#define gcdev_register(gdev, devt)     device_add(&(gdev)->dev)
-> +#define gcdev_unregister(gdev)         device_del(&(gdev)->dev)
-> +#endif
-> +
->  static int gpiochip_setup_dev(struct gpio_device *gdev)
->  {
->         int ret;
->
-> -       ret = gpiolib_cdev_register(gdev, gpio_devt);
-> +       ret = gcdev_register(gdev, gpio_devt);
->         if (ret)
->                 return ret;
->
-> @@ -500,7 +512,7 @@ static int gpiochip_setup_dev(struct gpio_device *gdev)
->         return 0;
->
->  err_remove_device:
-> -       gpiolib_cdev_unregister(gdev);
-> +       gcdev_unregister(gdev);
->         return ret;
->  }
->
-> @@ -825,7 +837,7 @@ void gpiochip_remove(struct gpio_chip *gc)
->          * be removed, else it will be dangling until the last user is
->          * gone.
->          */
-> -       gpiolib_cdev_unregister(gdev);
-> +       gcdev_unregister(gdev);
->         put_device(&gdev->dev);
->  }
->  EXPORT_SYMBOL_GPL(gpiochip_remove);
-> --
-> 2.29.2
->
+v2: Fix sparse warnings reported by kernel test robot <lkp@intel.com>.
+v3: Fix build warnings with x86 allmodconfig.
 
-I have tested your patch and it works for both CONFIG_GPIO_CDEV set and unset.
+Chin-Ting Kuo (4):
+  dt-bindings: spi: Add binding file for ASPEED FMC/SPI memory
+    controller
+  ARM: dts: aspeed: ast2600: Update FMC/SPI controller setting for
+    spi-aspeed.c
+  ARM: dts: aspeed: ast2600-evb: Adjust SPI flash configuration
+  spi: aspeed: Add ASPEED FMC/SPI memory controller driver
 
-Tested-by: Nicolas Schichan <nschichan@freebox.fr>
-
-Regards,
+ .../bindings/spi/aspeed,spi-aspeed.yaml       |  66 ++
+ arch/arm/boot/dts/aspeed-ast2600-evb.dts      |  26 +-
+ arch/arm/boot/dts/aspeed-g6.dtsi              |  18 +-
+ drivers/spi/Kconfig                           |  10 +
+ drivers/spi/Makefile                          |   1 +
+ drivers/spi/spi-aspeed.c                      | 969 ++++++++++++++++++
+ 6 files changed, 1080 insertions(+), 10 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/spi/aspeed,spi-aspeed.yaml
+ create mode 100644 drivers/spi/spi-aspeed.c
 
 -- 
-Nicolas Schichan
-Freebox SAS
+2.17.1
+
