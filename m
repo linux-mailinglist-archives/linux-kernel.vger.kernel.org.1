@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A3922A85D9
+	by mail.lfdr.de (Postfix) with ESMTP id E69D92A85DB
 	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 19:14:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732177AbgKESOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 13:14:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51842 "EHLO
+        id S1732197AbgKESOs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 13:14:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732077AbgKESO2 (ORCPT
+        with ESMTP id S1732081AbgKESO2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 5 Nov 2020 13:14:28 -0500
 Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6A67C0613D2
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 10:14:26 -0800 (PST)
-Received: by mail-il1-x143.google.com with SMTP id q1so2216432ilt.6
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 10:14:26 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F5B7C0613D4
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 10:14:28 -0800 (PST)
+Received: by mail-il1-x143.google.com with SMTP id x20so2204120ilj.8
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 10:14:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Q46g2Y4Md6zeZcB0v/PCzPRQD2/DO2sEvtaycXsef+M=;
-        b=aoiHrPfJtviJWxpB0JTShgx5+idh8ck62Xs+hABLTdURbuevfLTEvRtsyLebTs+/Hc
-         Y8vAopVPwC6PMNtl0q0mt7LQaVvTdv67cwsKRqdgClNOyl0KKs+XYCLc4X5xxu4EWtgp
-         9OFy/cffEgYlAhqUENFc4wDDbYtXbLzUnytT4MjoYVgyh1ldnaOkh45oTDuulvftni0Q
-         3RpQGKHnteYd0S9z09MFoKVgjQmj+caGy6YKXOP9vE9y3uJMSmBvjY4jA/JY3gkcIYq9
-         tgSWMXdVExzdtlNyBLjM8GFHnRKbk0rJ2VSmRpue1AIxJOcu556qJdLNctvxFsjpK9DL
-         YlOg==
+        bh=g6hqCj0tMKM1EuB0m76cT3vI06GLzDxohCD5yuyuwLw=;
+        b=B59okf/n9Ls0Wdu8ltBD/DJnBqNEs4ppbxg7628Ru7FSm6W7rJIAcyNWWfUAODuuEg
+         Z430rsxDNLTtap7BlQc0rmyJurfl+Vul23DOZp9UUtTnj8PSN2/RYXHnaRYSdI6ZMcq8
+         HlSQEtjmyOv31atxwEUAD9h6/+uWzSNClBejBVqVuEXswMxFt2RH65KxlLTt8NxYTcJb
+         ZVPBiCMAf3l8stOd5SlYSgUUN5nwM9YLLgrpRuMJIMZ9IM9IlhbXqPUYF6lthrZeRWTZ
+         u4oQd35847Z694U7ueWV/fLn2fe1x3aZG6ND1w+e1LlzG/S8T0Qymopc+b4OpghvvtvO
+         OZDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Q46g2Y4Md6zeZcB0v/PCzPRQD2/DO2sEvtaycXsef+M=;
-        b=gAYxQ1m9AVRkG3HTiKuSiBIjS4QiNr3rbkqBxcTVUTCgnZZhP+vBcPgaCBjgUvi7qR
-         AdWvf9WbA67mPDS1D6MzR8J1qIsKtgJX9Nqt4eN/EGg6PdJvQzsCTSJgsZszC+pSTVhN
-         RImac7XEDDYRHVnnXMcItIWdrsGKSK4q/hiccNYD3WNGmMlVXl+8oamv4ghObrSSEj5x
-         ku2RfS4Z6P8uVpgCWAKPtUP/O1K+D7btiC3ni/yStQvznyDOSH7cryOBQTvWOnoqTgsO
-         sSHwB1/Aq+irFxrm+XskBYLnL3rNZjBdKHkljgcc2g9wbFN2ETqM8QmUgXtV2x/wC1sD
-         HAMw==
-X-Gm-Message-State: AOAM533WTX4FWdRXlEOOIdRtT1Mg8S6cqOcmT8JQD5rh+Ew6WscUaDB7
-        DMSRgELfEHmCNWOMUC21XRAvOA==
-X-Google-Smtp-Source: ABdhPJyiaIVvYMPOI0rermK3dUd5lICYM6Jc4yylzvun/oYgwxnt0fkRt7l3FO0SbwmhuFjN2WbulA==
-X-Received: by 2002:a92:ca86:: with SMTP id t6mr2777842ilo.95.1604600066131;
-        Thu, 05 Nov 2020 10:14:26 -0800 (PST)
+        bh=g6hqCj0tMKM1EuB0m76cT3vI06GLzDxohCD5yuyuwLw=;
+        b=OmWtqkXxr361dQgeUlROpl2YyCUfaqwiadVR1DtK2vDMf3ichAF/I24u7iwd3P20jV
+         v4sSp+FiiSuVVQ7g0BX7Ma/DI07WvX33YtKRGn312k/bCniXXKDaZgceEQ6ex7juwOTp
+         SwarrPVmf9Rx8Sm2BL51LO2472PlQsJYxAEGN7pGL+PYY/UntlpFKp4dE5GL/WonzwBw
+         gpzcpWjnGb7mVneFvKx09CwV8AUo8mW9JqsJG9D7ZwAxHK4yAApTQPcD1ZBtjlUoP8EI
+         TLjihQ+iHEWrg6GQm88k94A9BY9+s1xkTCMOWXOOthIRuclAx7ccgSCIYdM9g3r1dP5O
+         f1+Q==
+X-Gm-Message-State: AOAM530qzhRcv1tL8jvg2M2hzj8Dl/4ol/UOdCTAZQE1gPQNkmS3L9ga
+        38RdaBwys3sdwzqPOA8JAGh3TA==
+X-Google-Smtp-Source: ABdhPJw+4DHtJN+UzL8orcCVgBrajxtK2tnXexbFSsnNW2MR+HQCAoGRMaIKKDMeWI3EjmWZnSp4Vg==
+X-Received: by 2002:a92:ac0e:: with SMTP id r14mr2991363ilh.197.1604600067550;
+        Thu, 05 Nov 2020 10:14:27 -0800 (PST)
 Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id o19sm1554136ilt.24.2020.11.05.10.14.24
+        by smtp.gmail.com with ESMTPSA id o19sm1554136ilt.24.2020.11.05.10.14.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 10:14:25 -0800 (PST)
+        Thu, 05 Nov 2020 10:14:26 -0800 (PST)
 From:   Alex Elder <elder@linaro.org>
 To:     davem@davemloft.net, kuba@kernel.org
 Cc:     evgreen@chromium.org, subashab@codeaurora.org,
         cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 10/13] net: ipa: only enable GSI IEOB IRQs when needed
-Date:   Thu,  5 Nov 2020 12:14:04 -0600
-Message-Id: <20201105181407.8006-11-elder@linaro.org>
+Subject: [PATCH net-next 11/13] net: ipa: explicitly disallow inter-EE interrupts
+Date:   Thu,  5 Nov 2020 12:14:05 -0600
+Message-Id: <20201105181407.8006-12-elder@linaro.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20201105181407.8006-1-elder@linaro.org>
 References: <20201105181407.8006-1-elder@linaro.org>
@@ -65,88 +65,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A GSI channel must be started in order to use it to perform a
-transfer data (or command) transaction.  And the only time we'll see
-an IEOB interrupt is if we send a transaction to a started channel.
-Therefore we do not need to have the IEOB interrupt type enabled
-until at least one channel has been started.  And once the last
-started channel has been stopped, we can disable the IEOB interrupt
-type again.
+It is possible for other execution environments (EEs, like the modem)
+to request changes to local (AP) channel or event ring state.  We do
+not support this feature.
 
-We already enable the IEOB interrupt for a particular channel only
-when it is started.  Extend that by having the IEOB interrupt *type*
-be enabled only when at least one channel is in STARTED state.
-
-Disallow all channels from triggering the IEOB interrupt in
-gsi_irq_setup().  We only enable an channel's interrupt when
-needed, so there is no longer any need to zero the channel mask
-in gsi_irq_disable().
+In gsi_irq_setup(), explicitly zero the mask that defines which
+channels are permitted to generate inter-EE channel state change
+interrupts.  Do the same for the event ring mask.
 
 Signed-off-by: Alex Elder <elder@linaro.org>
 ---
- drivers/net/ipa/gsi.c | 16 +++++++++++-----
- 1 file changed, 11 insertions(+), 5 deletions(-)
+ drivers/net/ipa/gsi.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/net/ipa/gsi.c b/drivers/net/ipa/gsi.c
-index 4ab1d89f642ea..aae8ea852349d 100644
+index aae8ea852349d..5e10e5c1713b1 100644
 --- a/drivers/net/ipa/gsi.c
 +++ b/drivers/net/ipa/gsi.c
-@@ -258,6 +258,7 @@ static void gsi_irq_setup(struct gsi *gsi)
- 	iowrite32(0, gsi->virt + GSI_CNTXT_SRC_CH_IRQ_MSK_OFFSET);
+@@ -259,6 +259,8 @@ static void gsi_irq_setup(struct gsi *gsi)
  	iowrite32(0, gsi->virt + GSI_CNTXT_SRC_EV_CH_IRQ_MSK_OFFSET);
  	iowrite32(0, gsi->virt + GSI_CNTXT_GLOB_IRQ_EN_OFFSET);
-+	iowrite32(0, gsi->virt + GSI_CNTXT_SRC_IEOB_IRQ_MSK_OFFSET);
+ 	iowrite32(0, gsi->virt + GSI_CNTXT_SRC_IEOB_IRQ_MSK_OFFSET);
++	iowrite32(0, gsi->virt + GSI_INTER_EE_SRC_CH_IRQ_OFFSET);
++	iowrite32(0, gsi->virt + GSI_INTER_EE_SRC_EV_CH_IRQ_OFFSET);
  }
  
  /* Turn off all GSI interrupts when we're all done */
-@@ -269,11 +270,16 @@ static void gsi_irq_teardown(struct gsi *gsi)
- 
- static void gsi_irq_ieob_enable(struct gsi *gsi, u32 evt_ring_id)
- {
-+	bool enable_ieob = !gsi->ieob_enabled_bitmap;
- 	u32 val;
- 
- 	gsi->ieob_enabled_bitmap |= BIT(evt_ring_id);
- 	val = gsi->ieob_enabled_bitmap;
- 	iowrite32(val, gsi->virt + GSI_CNTXT_SRC_IEOB_IRQ_MSK_OFFSET);
-+
-+	/* Enable the interrupt type if this is the first channel enabled */
-+	if (enable_ieob)
-+		gsi_irq_type_enable(gsi, GSI_IEOB);
- }
- 
- static void gsi_irq_ieob_disable(struct gsi *gsi, u32 evt_ring_id)
-@@ -281,6 +287,11 @@ static void gsi_irq_ieob_disable(struct gsi *gsi, u32 evt_ring_id)
- 	u32 val;
- 
- 	gsi->ieob_enabled_bitmap &= ~BIT(evt_ring_id);
-+
-+	/* Disable the interrupt type if this was the last enabled channel */
-+	if (!gsi->ieob_enabled_bitmap)
-+		gsi_irq_type_disable(gsi, GSI_IEOB);
-+
- 	val = gsi->ieob_enabled_bitmap;
- 	iowrite32(val, gsi->virt + GSI_CNTXT_SRC_IEOB_IRQ_MSK_OFFSET);
- }
-@@ -296,10 +307,6 @@ static void gsi_irq_enable(struct gsi *gsi)
+@@ -307,8 +309,6 @@ static void gsi_irq_enable(struct gsi *gsi)
  	iowrite32(ERROR_INT_FMASK, gsi->virt + GSI_CNTXT_GLOB_IRQ_EN_OFFSET);
  	gsi->type_enabled_bitmap |= BIT(GSI_GLOB_EE);
  
--	/* Each IEOB interrupt is enabled (later) as needed by channels */
--	iowrite32(0, gsi->virt + GSI_CNTXT_SRC_IEOB_IRQ_MSK_OFFSET);
--	gsi->type_enabled_bitmap |= BIT(GSI_IEOB);
+-	/* We don't use inter-EE channel or event interrupts */
 -
- 	/* We don't use inter-EE channel or event interrupts */
- 
  	/* Never enable GSI_BREAK_POINT */
-@@ -318,7 +325,6 @@ static void gsi_irq_disable(struct gsi *gsi)
- 	gsi_irq_type_update(gsi);
- 
- 	iowrite32(0, gsi->virt + GSI_CNTXT_GSI_IRQ_EN_OFFSET);
--	iowrite32(0, gsi->virt + GSI_CNTXT_SRC_IEOB_IRQ_MSK_OFFSET);
- 	iowrite32(0, gsi->virt + GSI_CNTXT_GLOB_IRQ_EN_OFFSET);
- }
- 
+ 	val = GSI_CNTXT_GSI_IRQ_ALL & ~BREAK_POINT_FMASK;
+ 	iowrite32(val, gsi->virt + GSI_CNTXT_GSI_IRQ_EN_OFFSET);
 -- 
 2.20.1
 
