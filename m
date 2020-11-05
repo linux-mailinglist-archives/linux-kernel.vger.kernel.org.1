@@ -2,92 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78AAE2A8908
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 22:29:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92E4B2A8910
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 22:32:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732550AbgKEV3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 16:29:13 -0500
-Received: from mail-40136.protonmail.ch ([185.70.40.136]:14646 "EHLO
-        mail-40136.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730973AbgKEV3M (ORCPT
+        id S1732240AbgKEVcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 16:32:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54532 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731860AbgKEVcy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 16:29:12 -0500
-Date:   Thu, 05 Nov 2020 21:29:01 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1604611750; bh=TlTCVc4GsAeJhqQaL3Nb2ua0fbsIOLGFOUjiApOTEkY=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=Qj0/1xbD/DgV5a4CaDmO/eF3yFtVAiacxsFsvvWc92lHdbDAPBmdJqPQxViInw66w
-         gsbbwwWdSgO/r5aBPmTCABQYgyDvshldXrPnrN1soieb/uaENRiXiMxwxRtUhd3fvo
-         gXJUS8r+HTsS6MCqnXwCik+K+RvAV73elV40HgjLAPjsWlDjqDJ5Pg44RL0mxlrxGX
-         9m6aVUGjvZh2yP7f3tDAgNeZmsGBjRf/ocpD6LmZwWoD959VqmncrFFqZyjg5ea4Zl
-         7PxkBSCR1NodfrzQoVt7attstz4x+Q7OCtD04NQ6L5PBY8DAdaP3HRoePV+R5xMoU6
-         lmOtgOE5/JaIw==
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Eric Dumazet <edumazet@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Martin Varghese <martin.varghese@nokia.com>,
-        Pravin B Shelar <pshelar@ovn.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Florian Westphal <fw@strlen.de>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Yadu Kishore <kyk.segfault@gmail.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Alexander Lobakin <alobakin@pm.me>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: [PATCH net-next] net: skb_vlan_untag(): don't reset transport offset if set by GRO layer
-Message-ID: <zYurwsZRN7BkqSoikWQLVqHyxz18h4LhHU4NFa2Vw@cp4-web-038.plabs.ch>
+        Thu, 5 Nov 2020 16:32:54 -0500
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05F4FC0613CF;
+        Thu,  5 Nov 2020 13:32:53 -0800 (PST)
+Received: by mail-yb1-xb43.google.com with SMTP id f6so2644107ybr.0;
+        Thu, 05 Nov 2020 13:32:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3wllOumUiN3CO5+JJCREJzUH1/CfdWjOhyUGmRgpPjQ=;
+        b=EvpXLM6KsLrLyHRvxywH0EF4bP3w80PXXPJ14Rh+P0sTeU2/3MPnb5uzohTAg3O/qF
+         8c3rAoaUZBMWh5Xiu0E5lbx3eJIJy/wjG7uQAhOe728q3LCH6XE0lOCKs9athc7yLA33
+         95joDVXKMrrMvT5a5PptXnmbf9oJZvH78YOchSpnukgY2h9kha8VEZVp6K/qnVz4jMuW
+         dxknwoF2p5yVv5Iy2i9eh4pdePaoVnZHPg5magLouN0pgoQzHN3b3pelByxZlwQuwgS+
+         J2KjiTdVEq3HRb65TnRK8o9s24eFG/bSAmtFmHIJaXag0h/5achnVgFbuQNo8pY5K5cN
+         RWaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3wllOumUiN3CO5+JJCREJzUH1/CfdWjOhyUGmRgpPjQ=;
+        b=rnOwpVFCywXoXqnFP2XOtYD7dB6Jr2u+POkke2fQKeerK+B/NVeDHHDihw+A6K2zJp
+         +UyLLDsB4tf9BPcXcnarvQza4JY5xs/pRmqEbRlzM50C7KGobCmuRvb/R9U1t7Kb0pql
+         KGFE2OQunSFQQ6tBUhzJS/qm5shNdNBGrPDBlZ4qnuS99FcXNGChP1YBKsmTf4hTbkDk
+         50ufypzEPRZzrxulCJeM1tkWXHcaRSkxo8sDcZijMZ1z+E8wSKP2ONVLRVwkMuM+TMnp
+         zmFgQHUylntDtMmXLERqwgDxAUZJKsj6+l7NOxyyPOjCUQpIQyFXzivVS9M387Ucb6lE
+         ra7A==
+X-Gm-Message-State: AOAM531PnVxN+kaXiMeM0CSVP+2tzAs3DHLw48wUNSp2MiN43MF3m2Mv
+        JSDV5qtt6rQFuIXYZN17/3VNhi9FiTOML/lWdok=
+X-Google-Smtp-Source: ABdhPJx1hyV6TUCNTUsIOtzXgIUvoqESXjIouApwK47qqKVLg/JKGcfmMZ91dBCwzzwNKPOorH1MjZSjAqCKDDZuSUA=
+X-Received: by 2002:a25:da4e:: with SMTP id n75mr6481845ybf.425.1604611973168;
+ Thu, 05 Nov 2020 13:32:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+References: <cover.1604542786.git.dxu@dxuuu.xyz> <4e3e8b9b525c8bed39c0ee2aa68f2dff701f56a4.1604542786.git.dxu@dxuuu.xyz>
+In-Reply-To: <4e3e8b9b525c8bed39c0ee2aa68f2dff701f56a4.1604542786.git.dxu@dxuuu.xyz>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 5 Nov 2020 13:32:42 -0800
+Message-ID: <CAEf4BzZN3v0Lb=XBKag3+EJANvAA=ei+ot3zNxuQc_HqYEdScw@mail.gmail.com>
+Subject: Re: [PATCH bpf v2 2/2] selftest/bpf: Test bpf_probe_read_user_str()
+ strips trailing bytes after NUL
+To:     Daniel Xu <dxu@dxuuu.xyz>
+Cc:     bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Similar to commit fda55eca5a33f
-("net: introduce skb_transport_header_was_set()"), avoid resetting
-transport offsets that were already set by GRO layer. This not only
-mirrors the behavior of __netif_receive_skb_core(), but also makes
-sense when it comes to UDP GSO fraglists forwarding: transport offset
-of such skbs is set only once by GRO receive callback and remains
-untouched and correct up to the xmitting driver in 1:1 case, but
-becomes junk after untagging in ingress VLAN case and breaks UDP
-GSO offload. This does not happen after this change, and all types
-of forwarding of UDP GSO fraglists work as expected.
+On Wed, Nov 4, 2020 at 8:51 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
+>
+> Previously, bpf_probe_read_user_str() could potentially overcopy the
+> trailing bytes after the NUL due to how do_strncpy_from_user() does the
+> copy in long-sized strides. The issue has been fixed in the previous
+> commit.
+>
+> This commit adds a selftest that ensures we don't regress
+> bpf_probe_read_user_str() again.
+>
+> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> ---
+>  .../bpf/prog_tests/probe_read_user_str.c      | 60 +++++++++++++++++++
+>  .../bpf/progs/test_probe_read_user_str.c      | 34 +++++++++++
+>  2 files changed, 94 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_probe_read_user_str.c
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c b/tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c
+> new file mode 100644
+> index 000000000000..597a166e6c8d
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c
+> @@ -0,0 +1,60 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#include <test_progs.h>
+> +#include "test_probe_read_user_str.skel.h"
+> +
+> +static const char str[] = "mestring";
+> +
+> +void test_probe_read_user_str(void)
+> +{
+> +       struct test_probe_read_user_str *skel;
+> +       int fd, err, duration = 0;
+> +       char buf[256];
+> +       ssize_t n;
+> +
+> +       skel = test_probe_read_user_str__open_and_load();
+> +       if (CHECK(!skel, "test_probe_read_user_str__open_and_load",
+> +                 "skeleton open and load failed\n"))
+> +               goto out;
+> +
+> +       err = test_probe_read_user_str__attach(skel);
+> +       if (CHECK(err, "test_probe_read_user_str__attach",
+> +                 "skeleton attach failed: %d\n", err))
+> +               goto out;
+> +
+> +       fd = open("/dev/null", O_WRONLY);
+> +       if (CHECK(fd < 0, "open", "open /dev/null failed: %d\n", fd))
+> +               goto out;
+> +
+> +       /* Give pid to bpf prog so it doesn't read from anyone else */
+> +       skel->bss->pid = getpid();
+> +
+> +       /* Ensure bytes after string are ones */
+> +       memset(buf, 1, sizeof(buf));
+> +       memcpy(buf, str, sizeof(str));
+> +
+> +       /* Trigger tracepoint */
+> +       n = write(fd, buf, sizeof(buf));
+> +       if (CHECK(n != sizeof(buf), "write", "write failed: %ld\n", n))
+> +               goto fd_out;
+> +
+> +       /* Did helper fail? */
+> +       if (CHECK(skel->bss->ret < 0, "prog ret", "prog returned: %d\n",
+> +                 skel->bss->ret))
+> +               goto fd_out;
+> +
+> +       /* Check that string was copied correctly */
+> +       err = memcmp(skel->bss->buf, str, sizeof(str));
+> +       if (CHECK(err, "memcmp", "prog copied wrong string"))
+> +               goto fd_out;
+> +
+> +       /* Now check that no extra trailing bytes were copied */
+> +       memset(buf, 0, sizeof(buf));
+> +       err = memcmp(skel->bss->buf + sizeof(str), buf, sizeof(buf) - sizeof(str));
+> +       if (CHECK(err, "memcmp", "trailing bytes were not stripped"))
+> +               goto fd_out;
+> +
+> +fd_out:
+> +       close(fd);
+> +out:
+> +       test_probe_read_user_str__destroy(skel);
+> +}
+> diff --git a/tools/testing/selftests/bpf/progs/test_probe_read_user_str.c b/tools/testing/selftests/bpf/progs/test_probe_read_user_str.c
+> new file mode 100644
+> index 000000000000..41c3e296566e
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/test_probe_read_user_str.c
+> @@ -0,0 +1,34 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#include <linux/bpf.h>
+> +#include <bpf/bpf_helpers.h>
+> +#include <bpf/bpf_tracing.h>
+> +
+> +#include <sys/types.h>
+> +
+> +struct sys_enter_write_args {
+> +       unsigned long long pad;
+> +       int syscall_nr;
+> +       int pad1; /* 4 byte hole */
 
-Signed-off-by: Alexander Lobakin <alobakin@pm.me>
----
- net/core/skbuff.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+I have a hunch that this explicit padding might break on big-endian
+architectures?..
 
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index c5e6c0b83a92..39c13b9cf79d 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -5441,9 +5441,11 @@ struct sk_buff *skb_vlan_untag(struct sk_buff *skb)
- =09=09goto err_free;
-=20
- =09skb_reset_network_header(skb);
--=09skb_reset_transport_header(skb);
- =09skb_reset_mac_len(skb);
-=20
-+=09if (!skb_transport_header_was_set(skb))
-+=09=09skb_reset_transport_header(skb);
-+
- =09return skb;
-=20
- err_free:
---=20
-2.29.2
+Can you instead include "vmlinux.h" in this file and use struct
+trace_event_raw_sys_enter? you'll just need ctx->args[2] to get that
+buffer pointer.
+
+Alternatively, and it's probably simpler overall would be to just
+provide user-space pointer through global variable:
+
+void *user_ptr;
 
 
+bpf_probe_read_user_str(buf, ..., user_ptr);
+
+From user-space:
+
+skel->bss->user_ptr = &my_userspace_buf;
+
+Full control. You can trigger tracepoint with just an usleep(1), for instance.
+
+> +       unsigned int fd;
+> +       int pad2; /* 4 byte hole */
+> +       const char *buf;
+> +       size_t count;
+> +};
+> +
+> +pid_t pid = 0;
+> +int ret = 0;
+> +char buf[256] = {};
+> +
+> +SEC("tracepoint/syscalls/sys_enter_write")
+> +int on_write(struct sys_enter_write_args *ctx)
+> +{
+> +       if (pid != (bpf_get_current_pid_tgid() >> 32))
+> +               return 0;
+> +
+> +       ret = bpf_probe_read_user_str(buf, sizeof(buf), ctx->buf);
+> +
+> +       return 0;
+> +}
+> +
+> +char _license[] SEC("license") = "GPL";
+> --
+> 2.28.0
+>
