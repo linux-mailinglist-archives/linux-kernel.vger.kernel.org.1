@@ -2,77 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D22A2A8273
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 16:44:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70D4C2A8275
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 16:44:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731248AbgKEPoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 10:44:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56222 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730660AbgKEPoV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 10:44:21 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79FCDC0613CF;
-        Thu,  5 Nov 2020 07:44:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Ak6ESadBcps7kJu00eYxbLPP9OazYAE8zIQ9Ca8IMrU=; b=oUe9xJv58WdNmKxA4k7ReOGJzG
-        wNDtZuuG3dlslzXqPfSb5s5TqkLIPrMV9w0DfCQivxQTt7o8dane0CtTTK2oEtGUiSa/p5RIDDPt3
-        BMQUONTXOZtSt6N/jl45jAUnJtLCOGJwtI2FHGHimgx1Gb/+gn1vy9+naRt7EQna2f6w3JYQsOxhN
-        LGfE+lIdjhnAW9EyHRCnv33KdxFrqD7ZMeP2sBzj/W2PlXOE2O23dXqxwE2s0sYellkWMqnx4vdY8
-        7if7PzFgSqNMpqKHbm0pFd5Zegwku1Zy1hgTC3KLrdpy4ss4jbgY7jgtAmYNMyN6KNqRE9/8lySUU
-        IlRCVxdw==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kahQX-0001mX-Rl; Thu, 05 Nov 2020 15:43:53 +0000
-Date:   Thu, 5 Nov 2020 15:43:53 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Alex Shi <alex.shi@linux.alibaba.com>, akpm@linux-foundation.org,
-        mgorman@techsingularity.net, tj@kernel.org, hughd@google.com,
-        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
-        lkp@intel.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, shakeelb@google.com,
-        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
-        kirill@shutemov.name, alexander.duyck@gmail.com,
-        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
-        shy828301@gmail.com, Vlastimil Babka <vbabka@suse.cz>,
-        Minchan Kim <minchan@kernel.org>
-Subject: Re: [PATCH v20 08/20] mm: page_idle_get_page() does not need lru_lock
-Message-ID: <20201105154353.GN17076@casper.infradead.org>
-References: <1603968305-8026-9-git-send-email-alex.shi@linux.alibaba.com>
- <20201102144110.GB724984@cmpxchg.org>
- <20201102144927.GN27442@casper.infradead.org>
- <20201102202003.GA740958@cmpxchg.org>
- <b4038b87-cf5a-fcb7-06f4-b98874029615@linux.alibaba.com>
- <20201104174603.GB744831@cmpxchg.org>
- <6eea82d8-e406-06ee-2333-eb6e2f1944e5@linux.alibaba.com>
- <20201105045702.GI17076@casper.infradead.org>
- <1e8f0162-cf2e-03eb-e7e0-ccc9f6a3eaf2@linux.alibaba.com>
- <20201105153649.GC744831@cmpxchg.org>
+        id S1731297AbgKEPo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 10:44:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34366 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731259AbgKEPo3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 10:44:29 -0500
+Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 47D7320782;
+        Thu,  5 Nov 2020 15:44:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604591067;
+        bh=jbZ5JSIyez+0E8oWD8sWvQCNVHpuJ9HD98Y+T9Fg2Aw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=c0dMUvvJgpdw+58yt+JO81K55V16ExHke69QwxXwByN4ckApzKAG2jXIjXi4aSIyt
+         ruG5DeJ8Fcef/ZoZ19HRM76A9DhOftxDU32BNYCBvip4Z4ObF4f2p7Isq/HDinsl2C
+         z5JMvCuqcu4LXkaaYz/FjKvLNfss+XT6JNM8SHts=
+Date:   Thu, 5 Nov 2020 10:44:26 -0500
+From:   Sasha Levin <sashal@kernel.org>
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc:     Paul Bolle <pebolle@tiscali.nl>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Rander Wang <rander.wang@intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 5.9 080/391] ASoC: SOF: fix a runtime pm issue in SOF
+ when HDMI codec doesnt work
+Message-ID: <20201105154426.GI2092@sasha-vm>
+References: <20201103203348.153465465@linuxfoundation.org>
+ <20201103203352.505472614@linuxfoundation.org>
+ <64a618a3cc00de4a1c3887b57447906351db77b9.camel@tiscali.nl>
+ <20201105143551.GH2092@sasha-vm>
+ <1f0c6a62-5208-801d-d7c2-725ee8da19b2@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20201105153649.GC744831@cmpxchg.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1f0c6a62-5208-801d-d7c2-725ee8da19b2@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 10:36:49AM -0500, Johannes Weiner wrote:
-> But the code is highly specific - synchronizing one struct page member
-> for one particular use case. Let's keep at least a reference to what
-> we are synchronizing against. There is a non-zero chance that if the
-> comment goes out of date, so does the code. How about this?
-> 
-> 	/*
-> 	 * page_idle does a lockless/optimistic rmap scan on page->mapping.
-> 	 * Make sure the compiler doesn't split the stores of anon_vma and
-> 	 * the PAGE_MAPPING_ANON type identifier, otherwise the rmap code
-> 	 * could mistake the mapping for a struct address_space and crash.
-> 	 */
+On Thu, Nov 05, 2020 at 08:47:57AM -0600, Pierre-Louis Bossart wrote:
+>
+>
+>On 11/5/20 8:35 AM, Sasha Levin wrote:
+>>On Thu, Nov 05, 2020 at 02:23:35PM +0100, Paul Bolle wrote:
+>>>Greg Kroah-Hartman schreef op di 03-11-2020 om 21:32 [+0100]:
+>>>>From: Rander Wang <rander.wang@intel.com>
+>>>>
+>>>>[ Upstream commit 6c63c954e1c52f1262f986f36d95f557c6f8fa94 ]
+>>>>
+>>>>When hda_codec_probe() doesn't initialize audio component, we disable
+>>>>the codec and keep going. However,the resources are not released. The
+>>>>child_count of SOF device is increased in snd_hdac_ext_bus_device_init
+>>>>but is not decrease in error case, so SOF can't get suspended.
+>>>>
+>>>>snd_hdac_ext_bus_device_exit will be invoked in HDA framework if it
+>>>>gets a error. Now copy this behavior to release resources and decrease
+>>>>SOF device child_count to release SOF device.
+>>>>
+>>>>Signed-off-by: Rander Wang <rander.wang@intel.com>
+>>>>Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+>>>>Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+>>>>Reviewed-by: Guennadi Liakhovetski 
+>>>><guennadi.liakhovetski@linux.intel.com>
+>>>>Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+>>>>Link: https://lore.kernel.org/r/20200825235040.1586478-3-ranjani.sridharan@linux.intel.com
+>>>>
+>>>>Signed-off-by: Mark Brown <broonie@kernel.org>
+>>>>Signed-off-by: Sasha Levin <sashal@kernel.org>
+>>>>---
+>>>> sound/soc/sof/intel/hda-codec.c | 4 ++--
+>>>> 1 file changed, 2 insertions(+), 2 deletions(-)
+>>>>
+>>>>diff --git a/sound/soc/sof/intel/hda-codec.c 
+>>>>b/sound/soc/sof/intel/hda-codec.c
+>>>>index 2c5c451fa19d7..c475955c6eeba 100644
+>>>>--- a/sound/soc/sof/intel/hda-codec.c
+>>>>+++ b/sound/soc/sof/intel/hda-codec.c
+>>>>@@ -151,7 +151,7 @@ static int hda_codec_probe(struct 
+>>>>snd_sof_dev *sdev, int address,
+>>>>         if (!hdev->bus->audio_component) {
+>>>>             dev_dbg(sdev->dev,
+>>>>                 "iDisp hw present but no driver\n");
+>>>>-            return -ENOENT;
+>>>>+            goto error;
+>>>>         }
+>>>>         hda_priv->need_display_power = true;
+>>>>     }
+>>>>@@ -174,7 +174,7 @@ static int hda_codec_probe(struct 
+>>>>snd_sof_dev *sdev, int address,
+>>>>          * other return codes without modification
+>>>>          */
+>>>>         if (ret == 0)
+>>>>-            ret = -ENOENT;
+>>>>+            goto error;
+>>>>     }
+>>>>
+>>>>     return ret;
+>>>
+>>>My local build of v5.9.5 broke on this patch.
+>>>
+>>>sound/soc/sof/intel/hda-codec.c: In function 'hda_codec_probe':
+>>>sound/soc/sof/intel/hda-codec.c:177:4: error: label 'error' used 
+>>>but not defined
+>>> 177 |    goto error;
+>>>     |    ^~~~
+>>>make[4]: *** [scripts/Makefile.build:283: 
+>>>sound/soc/sof/intel/hda-codec.o] Error 1
+>>>make[3]: *** [scripts/Makefile.build:500: sound/soc/sof/intel] Error 2
+>>>make[2]: *** [scripts/Makefile.build:500: sound/soc/sof] Error 2
+>>>make[1]: *** [scripts/Makefile.build:500: sound/soc] Error 2
+>>>make: *** [Makefile:1778: sound] Error 2
+>>>
+>>>There's indeed no error label in v5.9.5. (There is one in 
+>>>v5.10-rc2, I just
+>>>checked.) Is no-one else running into this?
+>>
+>>It seems that setting CONFIG_SND_SOC_SOF_HDA_AUDIO_CODEC=y is very
+>>"difficult", it's not being set by allmodconfig nor is it easy to
+>>manually set it up.
+>>
+>>I'll revert the patch, but it would be nice to make sure it's easier to
+>>test this out too.
+>
+>this issue comes from out-of-order patches, give me a couple of hours 
+>to look into this before reverting. thanks!
 
-Fine by me!  There may be other cases where seeing a split store would
-be bad, so I didn't want to call out page_idle explicitly.  But if you
-want to, I'm happy with this comment.
+Sure! Thanks for looking into this.
+
+-- 
+Thanks,
+Sasha
