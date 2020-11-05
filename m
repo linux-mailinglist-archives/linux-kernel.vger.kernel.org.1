@@ -2,75 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B9922A8468
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 18:05:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 533142A846B
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 18:06:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731600AbgKERFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 12:05:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40892 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727275AbgKERFV (ORCPT
+        id S1731533AbgKERGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 12:06:14 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:53570 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725862AbgKERGN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 12:05:21 -0500
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40239C0613CF;
-        Thu,  5 Nov 2020 09:05:20 -0800 (PST)
-Received: by mail-pj1-x1043.google.com with SMTP id gi3so389087pjb.3;
-        Thu, 05 Nov 2020 09:05:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=DkfZLxJRcuWqF8h1C1wuDqCCoEllPC6R7DtXuNRHRGA=;
-        b=CzjqoyZfeHBkSFZenYVadtTaZQijE6XMIft5FoyuutEWPNoLXZQiYzhGzi9AVykvEc
-         tgSE46+lULNRRTPDC7rb/1rBs7HsUM1KXK/wPIe5yG37OdC1V3BsjnTH3p/hgl+KkxAo
-         OOxGYiJGsO3lqXzKFO7GPf/ZCpd7qE07ePL34PFX8IzjU9kWkUDqjIZZICC6AmOahK+n
-         To8bsQ0R5x9F2NUtkOL21+9vkbx276fGw/8xgXedTFPVur+RBlm3FbJ0sOMsqjSgay6p
-         KvIl1cpzejh18O3b9hp7McXaHZLv8YDE9RT/ueQ7yEiMIWRgRoaIkjgXKUHwzexBzUe2
-         9HKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=DkfZLxJRcuWqF8h1C1wuDqCCoEllPC6R7DtXuNRHRGA=;
-        b=pATorwmiyriR5h8yfbKU+IYitMpFVR0h4ZdgQ/9dAnPZLXYIwDCGSuxmJucjs5TJD/
-         OyIjakicqcEqK+b1tOD7odQ7VNZiKM6CrbRUaH9u5EuudEDaNcRoDLgcSeYLk7NAx9UU
-         skEvd9XqTZV/6JAzz2vQknL2hR5dbAbk9RuSyNB3sCYico24KTCAbi96/C+N7aLb2V9b
-         Us8CB8liWrOOG5+3Fgov6YyFwo6BRF1FznQUugVVAE1vvWco4EVKvpJrs7iuLyr7FxVd
-         Oynhk2gofkvljBi2Ca/j7PVdF8dxu8LuLOj6THMQ9+esNCQ7WNfFDSCnFPwKDOf+/CFb
-         ALOw==
-X-Gm-Message-State: AOAM531fWlWcb4lbbt1whL5z/GmajZ463GuXHl4etjEP7DddAd9SS8db
-        6462boP0TPvDWfCUXVXiq/8=
-X-Google-Smtp-Source: ABdhPJz7z0IOLgroE/ZgLmOmWkS6TTbdkLBvsZpm22KuVB6Ig9ftl5zk61jccCtln4zD1uSQFuAs4g==
-X-Received: by 2002:a17:90a:d590:: with SMTP id v16mr3398815pju.88.1604595919770;
-        Thu, 05 Nov 2020 09:05:19 -0800 (PST)
-Received: from hoboy.vegasvil.org (c-73-241-114-122.hsd1.ca.comcast.net. [73.241.114.122])
-        by smtp.gmail.com with ESMTPSA id k4sm2570412pfg.130.2020.11.05.09.05.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 09:05:19 -0800 (PST)
-Date:   Thu, 5 Nov 2020 09:05:16 -0800
-From:   Richard Cochran <richardcochran@gmail.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     min.li.xe@renesas.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 net-next 1/3] ptp: idt82p33: add adjphase support
-Message-ID: <20201105170516.GB5258@hoboy.vegasvil.org>
-References: <1604531626-17644-1-git-send-email-min.li.xe@renesas.com>
- <20201104154508.557cc29b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        Thu, 5 Nov 2020 12:06:13 -0500
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0A5H6Abp043328;
+        Thu, 5 Nov 2020 11:06:10 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1604595970;
+        bh=4gaKFpK8PJGCAAmmXQzonqFwV4ZrZVTTuRDhDq5Bgls=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=RMu/nVGke+7u/agYvacjXjqt8YpTafjN6PDCl9ZOY0oIUrBc/6w6KawvRKdWAIkzt
+         5nvkYgZDcqOxMTxaQUgjYtvSovHLALAVDCFr2aMZeTIo3bKFkpUgIRP/Gm3GzJgdZw
+         QDRHNgnt6WpJbijRyrUgC1/w3E8rjjEDAjwL1vG8=
+Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0A5H6Ar6108561
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 5 Nov 2020 11:06:10 -0600
+Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 5 Nov
+ 2020 11:06:10 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 5 Nov 2020 11:06:10 -0600
+Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0A5H687K073591;
+        Thu, 5 Nov 2020 11:06:09 -0600
+Subject: Re: [PATCH 04/19] gpu: drm: omapdrm: omap_irq: Fix a couple of
+ doc-rot issues
+To:     Lee Jones <lee.jones@linaro.org>
+CC:     <linux-kernel@vger.kernel.org>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Clark <rob.clark@linaro.org>,
+        <dri-devel@lists.freedesktop.org>
+References: <20201105144517.1826692-1-lee.jones@linaro.org>
+ <20201105144517.1826692-5-lee.jones@linaro.org>
+From:   Tomi Valkeinen <tomi.valkeinen@ti.com>
+Message-ID: <429684b9-c967-95cf-1d8a-9f5249a00a5d@ti.com>
+Date:   Thu, 5 Nov 2020 19:06:08 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201104154508.557cc29b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201105144517.1826692-5-lee.jones@linaro.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 03:45:08PM -0800, Jakub Kicinski wrote:
-> Also are you sure the last patch is okay? Richard suggested it's not
-> worth the risk AFAIU.
+On 05/11/2020 16:45, Lee Jones wrote:
+> The API has been updated, but the header was not.
+> 
+> Fixes the following W=1 kernel build warning(s):
+> 
+>  drivers/gpu/drm/omapdrm/omap_irq.c:115: warning: Function parameter or member 'crtc' not described in 'omap_irq_enable_vblank'
+>  drivers/gpu/drm/omapdrm/omap_irq.c:115: warning: Excess function parameter 'dev' description in 'omap_irq_enable_vblank'
+>  drivers/gpu/drm/omapdrm/omap_irq.c:115: warning: Excess function parameter 'pipe' description in 'omap_irq_enable_vblank'
+>  drivers/gpu/drm/omapdrm/omap_irq.c:142: warning: Function parameter or member 'crtc' not described in 'omap_irq_disable_vblank'
+>  drivers/gpu/drm/omapdrm/omap_irq.c:142: warning: Excess function parameter 'dev' description in 'omap_irq_disable_vblank'
+>  drivers/gpu/drm/omapdrm/omap_irq.c:142: warning: Excess function parameter 'pipe' description in 'omap_irq_disable_vblank'
+> 
+> Cc: Tomi Valkeinen <tomi.valkeinen@ti.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Rob Clark <rob.clark@linaro.org>
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> ---
+>  drivers/gpu/drm/omapdrm/omap_irq.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/omapdrm/omap_irq.c b/drivers/gpu/drm/omapdrm/omap_irq.c
+> index 382bcdc72ac06..8643871e23a83 100644
+> --- a/drivers/gpu/drm/omapdrm/omap_irq.c
+> +++ b/drivers/gpu/drm/omapdrm/omap_irq.c
+> @@ -100,8 +100,7 @@ int omap_irq_enable_framedone(struct drm_crtc *crtc, bool enable)
+>  
+>  /**
+>   * enable_vblank - enable vblank interrupt events
+> - * @dev: DRM device
+> - * @pipe: which irq to enable
+> + * @crtc: DRM CRTC
+>   *
+>   * Enable vblank interrupts for @crtc.  If the device doesn't have
+>   * a hardware vblank counter, this routine should be a no-op, since
+> @@ -131,8 +130,7 @@ int omap_irq_enable_vblank(struct drm_crtc *crtc)
+>  
+>  /**
+>   * disable_vblank - disable vblank interrupt events
+> - * @dev: DRM device
+> - * @pipe: which irq to enable
+> + * @crtc: DRM CRTC
+>   *
+>   * Disable vblank interrupts for @crtc.  If the device doesn't have
+>   * a hardware vblank counter, this routine should be a no-op, since
+> 
 
-I took a look, and I can't find anything wrong with it.
+Hmm, I don't know why we have the doc texts there. These are omapdrm internal functions, and the
+text sounds like it was copied from a framework function. I think we can drop the texts here.
 
-Thanks,
-Richard
+But this patch is fine too, and I can drop the text later:
+
+Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ti.com>
+
+ Tomi
+
+-- 
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
