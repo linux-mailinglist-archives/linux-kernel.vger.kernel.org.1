@@ -2,183 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B029E2A7AB8
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 10:40:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3854C2A7AC2
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 10:42:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726779AbgKEJke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 04:40:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55746 "EHLO
+        id S1726979AbgKEJmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 04:42:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725308AbgKEJke (ORCPT
+        with ESMTP id S1725308AbgKEJmT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 04:40:34 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0836C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 01:40:33 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id l2so1364410lfk.0
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 01:40:33 -0800 (PST)
+        Thu, 5 Nov 2020 04:42:19 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D60C0C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 01:42:18 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id h2so900084wmm.0
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 01:42:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3hWsdnqZNjQDKpL2B785A/d5X3xt4A0wwW61OXRwY/c=;
-        b=vazstrmuUGxShFcPSjK99UNszN8ebLO9vYsswJWPOI0ji007BIxdt1z8ZOgCPtgL0U
-         8fQ+lGVXy9yNBtPo6ecTCGNpM6ApZsTBHHdnJ8K78acvaIz7HvPnXP+fGAmNVv1/072v
-         FzDEx07N1z7LiNMI50uDbiVBjR0upi+6Ch0pMOzuqWaqp5o0mZeoBaFBcJXGQ5AtgOGH
-         vL2clxCTwdTJQvI79Ir21mh82m26V9sgmgn6fnvm611SmhTl/DFZiAT2XFhInpof2WZg
-         VsLekC5EGBhggYbUYjBqVVL9zXyIIvOUBjU636//1r9gbQZHt6QM3GnOym2A0tBfXRFU
-         25OQ==
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wpa/gH6WKVvOZOF65OKK1Df7hL/w51tUR5ocafirz/U=;
+        b=gGpve2b5nT5gDe0F41+nOJ8S0JtPp+K/fkbykHKZpJakWRrlBTuW9/X4OP3lckOq4S
+         wFC6L2TgfvMVBEyrEUg0CaryizLLCP6ZWidtrdKSBVVAH8mjIY62v2CsJQrEZDf7Ly6U
+         pP0JtMJnmCpKC98YGUdp8xOqeDtcn7vXs6s8o=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3hWsdnqZNjQDKpL2B785A/d5X3xt4A0wwW61OXRwY/c=;
-        b=hrq4ohUyqR+q12cnXtXk6qN2vi1JfyipI7mWPnQ/8SlqZMxYcVao95VupQWeDejdKo
-         iL8PDhwCya7IvDPFTXKbXvhHhoDmI1t3cuI54ABC9DV53rf1sFjksjGcIYTaFqd3nJc9
-         zpDQ6JwIWdup6Ol9FRVw+i5lr1ZZlRxHkWlWBhq3QLbuK7+JiHP7j0lJGEg3LGuH8jTl
-         OkJ9zO0nC4CSO3BnLFu3weaR+eT3L4ZGegHtVxk3fKeWRh1fDGyTM35tV5D6h+tPhLIg
-         srHimxxsIY56P8+ufue3oK3auAuMlSu3JSi6tQJVt+t6Hn1aZ3pTazIOl4vzHSO8JXxc
-         hwKg==
-X-Gm-Message-State: AOAM5315GXVvRr058b8BRM0yrOC6YpB3uxjQclFZbej1dmPR4en4kvEd
-        C8R0QVHfv9Ga9Sc8EQDXeoYymeTh5Pac7wpdXJYPRzyFVI4d9A==
-X-Google-Smtp-Source: ABdhPJyICsojisuhbFFVcr5m6NwN6GBYE+M1nU/kA+i4WxJTNQcL76qloXWk05dLRYrco2B48Gb7uez07HDSSCe9VMs=
-X-Received: by 2002:a05:6512:3225:: with SMTP id f5mr605124lfe.441.1604569232429;
- Thu, 05 Nov 2020 01:40:32 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=wpa/gH6WKVvOZOF65OKK1Df7hL/w51tUR5ocafirz/U=;
+        b=WDWTV/sbXiss8Kzo6shVxOJAfSw8wT76Et1iuPe1lvJ5hRT5BGZYWi+VKsQS0A5Ak8
+         46K/tgdUx3oGMS+DYgKdXacKwTmuWWEQ8r3PjMyHfz4GjKkwCRpPF3vdaCJ+O0g5qG2U
+         3uhhfGPK8JYQgGdWCEpXKu8R6JPPggnKkmuHGUQF3v14Alt49wJvhQucrJUPkqQuIIr7
+         rBA9HPfM28EOgZVyC3nfj2lGqXCl4TDNMhxHmuwBkuRisuFEr3zlWRU5IYF6y9vnhjxg
+         Vdl8KTA4Z9j6OHEjoN1Dv7CCS+kvv+FW2cFAZ8Occ06zX8BT85ctE7gUD4O/4JSZAOuG
+         z8/g==
+X-Gm-Message-State: AOAM532vwDs7NwIyipsvx5nQ6xN3GsNtV4i4Rim5RN55bDgz5E2ovdUJ
+        vXgoxVa5OgfnFwuE1e8DEHE4Lg==
+X-Google-Smtp-Source: ABdhPJzLdA/5MB4X8lL2FOSUeAQLRPyPZzE5Hwhd3ddv0IHLtJIf4ldo5XuVgoPqCzuJ52+HNerkLg==
+X-Received: by 2002:a1c:2d8f:: with SMTP id t137mr1729198wmt.26.1604569337681;
+        Thu, 05 Nov 2020 01:42:17 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id w11sm1875170wmg.36.2020.11.05.01.42.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Nov 2020 01:42:16 -0800 (PST)
+Date:   Thu, 5 Nov 2020 10:42:15 +0100
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Deepak R Varma <mh12gx2825@gmail.com>
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/vgm: replace idr_init() by idr_init_base()
+Message-ID: <20201105094215.GT401619@phenom.ffwll.local>
+Mail-Followup-To: Deepak R Varma <mh12gx2825@gmail.com>,
+        David Airlie <airlied@linux.ie>, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+References: <20201104112338.GA29271@localhost>
 MIME-Version: 1.0
-References: <20201019141008.871177-1-daniel@0x0f.com> <20201019141008.871177-4-daniel@0x0f.com>
-In-Reply-To: <20201019141008.871177-4-daniel@0x0f.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 5 Nov 2020 10:40:21 +0100
-Message-ID: <CACRpkdZNr6sDqJhg3KcX0bCbcd8fh2gXFYbS1r2H2Sq+vGqjUw@mail.gmail.com>
-Subject: Re: [PATCH v2 3/5] gpio: msc313: MStar MSC313 GPIO driver
-To:     Daniel Palmer <daniel@0x0f.com>, Marc Zyngier <maz@kernel.org>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, arm-kernel@lists.infradead.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201104112338.GA29271@localhost>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 19, 2020 at 4:10 PM Daniel Palmer <daniel@0x0f.com> wrote:
+On Wed, Nov 04, 2020 at 04:53:38PM +0530, Deepak R Varma wrote:
+> idr_init() uses base 0 which is an invalid identifier. The new function
+> idr_init_base allows IDR to set the ID lookup from base 1. This avoids
+> all lookups that otherwise starts from 0 since 0 is always unused.
+> 
+> References: commit 6ce711f27500 ("idr: Make 1-based IDRs more efficient")
+> 
+> Signed-off-by: Deepak R Varma <mh12gx2825@gmail.com>
 
-> This adds a driver that supports the GPIO block found in
-> MStar/SigmaStar ARMv7 SoCs.
->
-> The controller seems to support 128 lines but where they
-> are wired up differs between chips and no currently known
-> chip uses anywhere near 128 lines so there needs to be some
-> per-chip data to collect together what lines actually have
-> physical pins attached and map the right names to them.
->
-> The core peripherals seem to use the same lines on the
-> currently known chips but the lines used for the sensor
-> interface, lcd controller etc pins seem to be totally
-> different between the infinity and mercury chips
->
-> The code tries to collect all of the re-usable names,
-> offsets etc together so that it's easy to build the extra
-> per-chip data for other chips in the future.
->
-> So far this only supports the MSC313 and MSC313E chips.
->
-> Support for the SSC8336N (mercury5) is trivial to add once
-> all of the lines have been mapped out.
->
-> Signed-off-by: Daniel Palmer <daniel@0x0f.com>
+Tiny typo in the commit message summary: s/vgm/vgem/
 
-This looks really nice, the generic hierarchical IRQchip does
-its job very well here.
+Also can you pls resbumit this with intel-gfx mailing list on cc (like for
+i915)? There's a CI bot there which runs a few vgem tests, would be good
+to confirm nothing has been broken.
 
-I saw you would send another version but this already looks
-like merge material.
+Otherwise lgtm.
 
-Certainly any remaining issues can be ironed out in-tree.
+Thanks, Daniel
 
-> +config GPIO_MSC313
-> +       bool "MStar MSC313 GPIO support"
-> +       default y if ARCH_MSTARV7
-> +       depends on ARCH_MSTARV7
-> +       select GPIOLIB_IRQCHIP
+> ---
+>  drivers/gpu/drm/vgem/vgem_fence.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/vgem/vgem_fence.c b/drivers/gpu/drm/vgem/vgem_fence.c
+> index 17f32f550dd9..2902dc6e64fa 100644
+> --- a/drivers/gpu/drm/vgem/vgem_fence.c
+> +++ b/drivers/gpu/drm/vgem/vgem_fence.c
+> @@ -233,7 +233,7 @@ int vgem_fence_signal_ioctl(struct drm_device *dev,
+>  int vgem_fence_open(struct vgem_file *vfile)
+>  {
+>  	mutex_init(&vfile->fence_mutex);
+> -	idr_init(&vfile->fence_idr);
+> +	idr_init_base(&vfile->fence_idr, 1);
+>  
+>  	return 0;
+>  }
+> -- 
+> 2.25.1
+> 
 
-select IRQ_DOMAIN_HIERARCHY
-
-since you are dependent on this.
-
-(Else people will soon report problems with randconfig...)
-
-> +/* The parent interrupt controller needs the GIC interrupt type set to GIC_SPI
-> + * so we need to provide the fwspec. Essentially gpiochip_populate_parent_fwspec_twocell
-> + * that puts GIC_SPI into the first cell.
-> + */
-> +static void *msc313_gpio_populate_parent_fwspec(struct gpio_chip *gc,
-> +                                            unsigned int parent_hwirq,
-> +                                            unsigned int parent_type)
-> +{
-> +       struct irq_fwspec *fwspec;
-> +
-> +       fwspec = kmalloc(sizeof(*fwspec), GFP_KERNEL);
-> +       if (!fwspec)
-> +               return NULL;
-> +
-> +       fwspec->fwnode = gc->irq.parent_domain->fwnode;
-> +       fwspec->param_count = 3;
-> +       fwspec->param[0] = GIC_SPI;
-> +       fwspec->param[1] = parent_hwirq;
-> +       fwspec->param[2] = parent_type;
-> +
-> +       return fwspec;
-> +}
-
-Clever. Looping in Marc Z so he can say if this looks allright to him.
-
-> +static int msc313e_gpio_child_to_parent_hwirq(struct gpio_chip *chip,
-> +                                            unsigned int child,
-> +                                            unsigned int child_type,
-> +                                            unsigned int *parent,
-> +                                            unsigned int *parent_type)
-> +{
-> +       struct msc313_gpio *priv = gpiochip_get_data(chip);
-> +       unsigned int offset = priv->gpio_data->offsets[child];
-> +       int ret = -EINVAL;
-> +
-> +       /* only the spi0 pins have interrupts on the parent
-> +        * on all of the known chips and so far they are all
-> +        * mapped to the same place
-> +        */
-> +       if (offset >= OFF_SPI0_CZ && offset <= OFF_SPI0_DO) {
-> +               *parent_type = child_type;
-> +               *parent = ((offset - OFF_SPI0_CZ) >> 2) + 28;
-> +               ret = 0;
-> +       }
-> +
-> +       return ret;
-> +}
-
-Neat!
-
-> +static int msc313_gpio_probe(struct platform_device *pdev)
-> +{
-> +       const struct msc313_gpio_data *match_data;
-> +       struct msc313_gpio *gpio;
-> +       struct gpio_chip *gpiochip;
-> +       struct gpio_irq_chip *gpioirqchip;
-> +       struct resource *res;
-> +       struct irq_domain *parent_domain;
-> +       struct device_node *parent_node;
-> +       int ret;
-> +
-> +       match_data = of_device_get_match_data(&pdev->dev);
-
-There is a lot of referencing &pdev->dev.
-
-I would add a local variable like this:
-
-struct device *dev = &pdev->dev
-
-and replace all &pdev->dev with that. It will make the code more
-compact and easier to read.
-
-Yours,
-Linus Walleij
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
