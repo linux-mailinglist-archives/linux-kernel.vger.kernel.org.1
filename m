@@ -2,90 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FBD22A8702
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 20:24:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94E952A8704
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 20:24:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732087AbgKETX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 14:23:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40226 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726729AbgKETX5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 14:23:57 -0500
-Received: from lt-jalone-7480.mtl.com (c-24-6-56-119.hsd1.ca.comcast.net [24.6.56.119])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 52EF32078E;
-        Thu,  5 Nov 2020 19:23:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604604236;
-        bh=3k6//KuwKs+rVXLHhsgOfv8phTtZpNzR3vN12AlbkP4=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=ZGpTr0aOqv4peASmmBi0mWH3deFPAVivDt5Y6PchloQNHLasd5tfYNWjfus1mD+DG
-         1xVONr6qz2ms8BusCsKJDl+Dn7zumSB6yXxCVmgz961VuxotVxvCkxk9pLfrE8BGll
-         /1mLhbpeZxRHBMJUKhgDs43yX0oexoL8dKAszle0=
-Message-ID: <011c4d4e2227df793f615b7638165c266763e24a.camel@kernel.org>
-Subject: Re: [PATCH v2 net-next 3/3] octeontx2-af: Add devlink health
- reporters for NIX
-From:   Saeed Mahameed <saeed@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>,
-        George Cherian <gcherian@marvell.com>
-Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jiri Pirko <jiri@nvidia.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        Geethasowjanya Akula <gakula@marvell.com>,
-        "masahiroy@kernel.org" <masahiroy@kernel.org>,
-        "willemdebruijn.kernel@gmail.com" <willemdebruijn.kernel@gmail.com>
-Date:   Thu, 05 Nov 2020 11:23:54 -0800
-In-Reply-To: <20201105090724.761a033d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-References: <BYAPR18MB2679EC3507BD90B93B37A3F8C5EE0@BYAPR18MB2679.namprd18.prod.outlook.com>
-         <20201105090724.761a033d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+        id S1732115AbgKETYQ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 5 Nov 2020 14:24:16 -0500
+Received: from mail-ej1-f66.google.com ([209.85.218.66]:35159 "EHLO
+        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726729AbgKETYQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 14:24:16 -0500
+Received: by mail-ej1-f66.google.com with SMTP id p5so4310464ejj.2;
+        Thu, 05 Nov 2020 11:24:15 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Y0unNGbDweZ+faBkQQ6Z4W1YsdJlQqbXhqGtrcOFviA=;
+        b=aMZRE6aiS08emS9Pz+SfdunRW4WEU+CoBv1K94ngJJnK0ftjgh6KtKVrR02blmiixk
+         HsSgJ5D7JrWOY1K4/OqkN/hAvMvgK+nA7CiDBFsIp++o05kyPqyslT194IUpdhfkbUoE
+         OZvXXxRY3P/tlnKKi3Ytyfg2NMmQ8heqmkqlbKxhU7D88/CKrCP/h0cimQbjrtYik1+s
+         0GyCvrQA7SvKKgJKCeit67cRyJYKMbTSu2rgn5JjuaUUmdEwF2ws75VP3BSp1JbcFfQi
+         poovwOQw5XA/+vnxRksKx4qlXKLoaeQ1RLG8rKAP93k49XFFU8jO7HVmo982V5n7VC1Y
+         f+8Q==
+X-Gm-Message-State: AOAM531ZooJIbKWZ8segDI6KEPgI/6jQVagO1Dfn1bOKjGJebCU48/MY
+        9Hcm8d2kaOkF5VILMEDnKg7W+7OuD7GqOw==
+X-Google-Smtp-Source: ABdhPJyvgxBQYj4xUIgUYOxoLCIj+aCbacF6UBzNtK6h8cfUS+tSAOLMjes2rgRGi2eB8ujvJH6Peg==
+X-Received: by 2002:a17:906:1a1b:: with SMTP id i27mr4045714ejf.225.1604604254466;
+        Thu, 05 Nov 2020 11:24:14 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id l8sm1507339ejr.106.2020.11.05.11.24.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Nov 2020 11:24:13 -0800 (PST)
+Date:   Thu, 5 Nov 2020 20:24:11 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     =?utf-8?Q?=C5=81ukasz?= Stelmach <l.stelmach@samsung.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Kukjin Kim <kgene@kernel.org>,
+        Anand Moon <linux.amoon@gmail.com>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        =?utf-8?Q?Bart=C5=82omiej_=C5=BBolnierkiewicz?= 
+        <b.zolnierkie@samsung.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Subject: Re: [PATCH v2 4/6] ARM: dts: exynos: Add Ethernet interface
+ description for Odroid XU
+Message-ID: <20201105192411.GC236732@kozik-lap>
+References: <20201103184412.18874-1-l.stelmach@samsung.com>
+ <CGME20201103184418eucas1p2f99b978bb007670d49741421744696f9@eucas1p2.samsung.com>
+ <20201103184412.18874-5-l.stelmach@samsung.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20201103184412.18874-5-l.stelmach@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-11-05 at 09:07 -0800, Jakub Kicinski wrote:
-> On Thu, 5 Nov 2020 13:36:56 +0000 George Cherian wrote:
-> > > Now i am a little bit skeptic here, devlink health reporter
-> > > infrastructure was
-> > > never meant to deal with dump op only, the main purpose is to
-> > > diagnose/dump and recover.
-> > > 
-> > > especially in your use case where you only report counters, i
-> > > don't believe
-> > > devlink health dump is a proper interface for this.  
-> > These are not counters. These are error interrupts raised by HW
-> > blocks.
-> > The count is provided to understand on how frequently the errors
-> > are seen.
-> > Error recovery for some of the blocks happen internally. That is
-> > the reason,
-> > Currently only dump op is added.
+On Tue, Nov 03, 2020 at 07:44:10PM +0100, Łukasz Stelmach wrote:
+> Add Ethernet interface description for Odroid XU.
 > 
-> The previous incarnation was printing messages to logs, so I assume
-> these errors are expected to be relatively low rate.
+> Add an alias to enable bootloaders to find the Ethernet
+> interface and assign a MAC address.
 > 
-> The point of using devlink health was that you can generate a netlink
-> notification when the error happens. IOW you need some calls to
-> devlink_health_report() or such.
-> 
-> At least that's my thinking, others may disagree.
+> Signed-off-by: Łukasz Stelmach <l.stelmach@samsung.com>
+> ---
+>  arch/arm/boot/dts/exynos5410-odroidxu.dts | 15 +++++++++++++++
 
-If you report an error without recovering, devlink health will report a
-bad device state
+Thanks, applied.
 
-$ ./devlink health
-   pci/0002:01:00.0:
-     reporter npa
-       state error error 1 recover 0
-
-So you will need to implement an empty recover op.
-so if these events are informational only and they don't indicate
-device health issues, why would you report them via devlink health ?
+Best regards,
+Krzysztof
 
