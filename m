@@ -2,89 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D8392A8138
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 15:45:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A27722A813C
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 15:47:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731191AbgKEOph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 09:45:37 -0500
-Received: from foss.arm.com ([217.140.110.172]:34554 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731089AbgKEOph (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 09:45:37 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7557D14BF;
-        Thu,  5 Nov 2020 06:45:36 -0800 (PST)
-Received: from C02TD0UTHF1T.local (unknown [10.57.58.72])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A86743F718;
-        Thu,  5 Nov 2020 06:45:33 -0800 (PST)
-Date:   Thu, 5 Nov 2020 14:45:30 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Marc Zyngier <maz@kernel.org>, Mark Brown <broonie@kernel.org>,
-        Andre Przywara <andre.przywara@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        kvmarm <kvmarm@lists.cs.columbia.edu>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        id S1730799AbgKEOrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 09:47:15 -0500
+Received: from cloudserver094114.home.pl ([79.96.170.134]:52836 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730465AbgKEOrO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 09:47:14 -0500
+Received: from 89-64-88-191.dynamic.chello.pl (89.64.88.191) (HELO kreacher.localnet)
+ by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.514)
+ id 18280cb34b1dfbb5; Thu, 5 Nov 2020 15:47:12 +0100
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Ionela Voinescu <ionela.voinescu@arm.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Len Brown <lenb@kernel.org>,
         Sudeep Holla <sudeep.holla@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH v2 4/5] arm64: Add support for SMCCC TRNG entropy source
-Message-ID: <20201105144530.GK82102@C02TD0UTHF1T.local>
-References: <20201105125656.25259-1-andre.przywara@arm.com>
- <20201105125656.25259-5-andre.przywara@arm.com>
- <20201105134142.GA4856@sirena.org.uk>
- <20201105140322.GH82102@C02TD0UTHF1T.local>
- <CAMj1kXEsaZAGT0jnPNyj_K1Q4W7E1+WP=tQf3bTPQi=KOCUv4g@mail.gmail.com>
- <20201105143023.GI82102@C02TD0UTHF1T.local>
- <CAMj1kXEoot13bFKywPRVf4BFhA5tSp+Nate=+Z+JsQdLW1oRrg@mail.gmail.com>
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 8/8] acpi: fix NONE coordination for domain mapping failure
+Date:   Thu, 05 Nov 2020 15:47:11 +0100
+Message-ID: <2133387.cqCEZmzLhk@kreacher>
+In-Reply-To: <20201105140202.GA16751@arm.com>
+References: <20201105125524.4409-1-ionela.voinescu@arm.com> <CAJZ5v0hheK3WrpKFXDUF1A4D9wt8ro3KJ73wqNwxn9DJyrt6zw@mail.gmail.com> <20201105140202.GA16751@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMj1kXEoot13bFKywPRVf4BFhA5tSp+Nate=+Z+JsQdLW1oRrg@mail.gmail.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 03:34:01PM +0100, Ard Biesheuvel wrote:
-> On Thu, 5 Nov 2020 at 15:30, Mark Rutland <mark.rutland@arm.com> wrote:
-> > On Thu, Nov 05, 2020 at 03:04:57PM +0100, Ard Biesheuvel wrote:
-> > > On Thu, 5 Nov 2020 at 15:03, Mark Rutland <mark.rutland@arm.com> wrote:
-> >
-> > > > That said, I'm not sure it's great to plumb this under the
-> > > > arch_get_random*() interfaces, e.g. given this measn that
-> > > > add_interrupt_randomness() will end up trapping to the host all the time
-> > > > when it calls arch_get_random_seed_long().
+On Thursday, November 5, 2020 3:02:02 PM CET Ionela Voinescu wrote:
+> Hi Rafael,
+> 
+> On Thursday 05 Nov 2020 at 14:05:55 (+0100), Rafael J. Wysocki wrote:
+> > On Thu, Nov 5, 2020 at 1:57 PM Ionela Voinescu <ionela.voinescu@arm.com> wrote:
 > > >
-> > > As it turns out, add_interrupt_randomness() isn't actually used on ARM.
-> >
-> > It's certainly called on arm64, per a warning I just hacked in:
-
-[...]
-
-> > ... and I couldn't immediately spot why 32-bit arm  would be different.
+> > > For errors parsing the _PSD domains, a separate domain is returned for
+> > > each CPU in the failed _PSD domain with no coordination (as per previous
+> > > comment). But contrary to the intention, the code was setting
+> > > CPUFREQ_SHARED_TYPE_ALL as coordination type.
+> > >
+> > > Change shared_type to CPUFREQ_SHARED_TYPE_NONE in case of errors parsing
+> > > the domain information. The function still return the error and the caller
+> > > is free to bail out the domain initialisation altogether in that case.
+> > >
+> > > Given that both functions return domains with a single CPU, this change
+> > > does not affect the functionality, but clarifies the intention.
+> > 
+> > Is this related to any other patches in the series?
+> > 
 > 
-> Hmm, I actually meant both arm64 and ARM.
+> It does not depend on any of the other patches. I first noticed this in
+> acpi_get_psd_map() which is solely used by cppc_cpufreq.c, but looking
+> some more into it showed processor_perflib.c's
+> acpi_processor_preregister_performance() had the same inconsistency.
 > 
-> Marc looked into this at my request a while ago, and I had a look
-> myself as well at the time, and IIRC, we both concluded that we don't
-> hit that code path. Darn.
-> 
-> In any case, the way add_interrupt_randomness() calls
-> arch_get_random_seed_long() is absolutely insane, so we should try to
-> fix that in any case.
+> I can submit this separately, if that works better.
 
-I have no strong opinion there, and I'm happy with that getting cleaned
-up.
+No need this time, but in general sending unrelated changes separately is less
+confusing.
 
-Regardless, I do think it's reasonable for the common code to expect
-that arch_get_random_*() to be roughly as expensive as "most other
-instructions" (since even RNDR* is expensive the CPU might be able to do
-useful speculative work in the mean time), whereas a trap to the host is
-always liable to be expensive as no useful work can be done while the
-host is handling it, so I think it makes sense to distinguish the two.
+Thanks!
 
-Thanks,
-Mark.
+
+
