@@ -2,144 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5B0A2A88F2
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 22:28:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E50862A8903
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 22:28:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732273AbgKEV2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 16:28:14 -0500
-Received: from plasma4.jpberlin.de ([80.241.57.33]:48569 "EHLO
+        id S1732522AbgKEV2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 16:28:43 -0500
+Received: from plasma4.jpberlin.de ([80.241.57.33]:49327 "EHLO
         plasma4.jpberlin.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731060AbgKEV2N (ORCPT
+        with ESMTP id S1732086AbgKEV2O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 16:28:13 -0500
+        Thu, 5 Nov 2020 16:28:14 -0500
 Received: from spamfilter01.heinlein-hosting.de (spamfilter01.heinlein-hosting.de [80.241.56.115])
-        by plasma.jpberlin.de (Postfix) with ESMTP id DE4ECAB7DC;
-        Thu,  5 Nov 2020 22:21:43 +0100 (CET)
+        by plasma.jpberlin.de (Postfix) with ESMTP id A6259AB750;
+        Thu,  5 Nov 2020 22:21:44 +0100 (CET)
 X-Virus-Scanned: amavisd-new at heinlein-support.de
 Received: from plasma.jpberlin.de ([80.241.56.68])
         by spamfilter01.heinlein-hosting.de (spamfilter01.heinlein-hosting.de [80.241.56.115]) (amavisd-new, port 10030)
-        with ESMTP id r4z_FNNlEUTs; Thu,  5 Nov 2020 22:21:42 +0100 (CET)
+        with ESMTP id P6g-UD45aW2X; Thu,  5 Nov 2020 22:21:43 +0100 (CET)
 Received: from webmail.opensynergy.com (unknown [217.66.60.5])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
         (Client CN "*.opensynergy.com", Issuer "Starfield Secure Certificate Authority - G2" (not verified))
         (Authenticated sender: opensynergy@jpberlin.de)
-        by plasma.jpberlin.de (Postfix) with ESMTPSA id 03EE6AB751;
-        Thu,  5 Nov 2020 22:21:41 +0100 (CET)
+        by plasma.jpberlin.de (Postfix) with ESMTPSA id 3DDA9AB79F;
+        Thu,  5 Nov 2020 22:21:43 +0100 (CET)
 From:   Peter Hilber <peter.hilber@opensynergy.com>
 To:     <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>,
-        <virtualization@lists.linux-foundation.org>,
-        <virtio-dev@lists.oasis-open.org>
-CC:     Peter Hilber <peter.hilber@opensynergy.com>,
+        <devicetree@vger.kernel.org>
+CC:     Igor Skalkin <igor.skalkin@opensynergy.com>,
+        Peter Hilber <peter.hilber@opensynergy.com>,
         Rob Herring <robh+dt@kernel.org>,
         <linux-kernel@vger.kernel.org>, <sudeep.holla@arm.com>,
         <souvik.chakravarty@arm.com>, <alex.bennee@linaro.org>,
-        <jean-philippe@linaro.org>, <igor.skalkin@opensynergy.com>,
-        <mikhail.golubev@opensynergy.com>, <anton.yakovlev@opensynergy.com>
-Subject: [RFC PATCH v2 00/10] firmware: arm_scmi: Add virtio transport
-Date:   Thu, 5 Nov 2020 22:21:06 +0100
-Message-ID: <20201105212116.411422-1-peter.hilber@opensynergy.com>
+        <jean-philippe@linaro.org>, <mikhail.golubev@opensynergy.com>,
+        <anton.yakovlev@opensynergy.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Jassi Brar <jassisinghbrar@gmail.com>
+Subject: [RFC PATCH v2 01/10] firmware: arm_scmi, smccc, mailbox: Make shmem based transports optional
+Date:   Thu, 5 Nov 2020 22:21:07 +0100
+Message-ID: <20201105212116.411422-2-peter.hilber@opensynergy.com>
+In-Reply-To: <20201105212116.411422-1-peter.hilber@opensynergy.com>
+References: <20201105212116.411422-1-peter.hilber@opensynergy.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
 X-ClientProxiedBy: SR-MAIL-01.open-synergy.com (10.26.10.21) To
  SR-MAIL-01.open-synergy.com (10.26.10.21)
 X-MBO-SPAM-Probability: 
-X-Rspamd-Score: -3.70 / 15.00 / 15.00
-X-Rspamd-Queue-Id: DE4ECAB7DC
-X-Rspamd-UID: ee1eec
+X-Rspamd-Score: -2.31 / 15.00 / 15.00
+X-Rspamd-Queue-Id: A6259AB750
+X-Rspamd-UID: 33c645
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series implements an SCMI virtio driver according to the virtio
-SCMI device spec patch v5 [1], after simple preparatory changes to the
-existing arm-scmi driver.
+From: Igor Skalkin <igor.skalkin@opensynergy.com>
 
-The virtio transport differs in some respects from the existing
-shared-memory based SCMI transports.
+Upon adding the virtio transport in this patch series, SCMI will also
+work without shared memory based transports. Also, the mailbox transport
+may not be needed if the smc transport is used.
 
-Message timeouts can be a problem if the virtio device (SCMI platform)
-does not have real-time properties. I set a high message rx timeout
-value which should work for non real-time virtio devices as well. There
-are other timeouts for delayed response and polling which were not
-addressed yet. Delayed responses are not really needed since, with the
-virtio transport, message responses may be transmitted out of order.
-Polling doesn't make sense at least for virtio devices without real-time
-behavior, in my understanding.
+- Compile shmem.c only if a shmem based transport is available.
 
-There are some known issues which will be resolved before removing the
-RFC tag:
+- Remove hard dependency of SCMI on mailbox.
 
-- Further work is needed on the scmi_xfer management. Unlike shmem based
-  transports, the virtio transport is actually exchanging messages with
-  the SCMI agent through the scmi_xfer tx and rx buffers. In case of a
-  message rx timeout, the arm-scmi driver could try to re-use the
-  scmi_xfer, while that might still be used by the virtio device. I
-  think part of the scmi_xfers_info bookkeeping could be optionally
-  outsourced to the transport to remediate this.
+Co-developed-by: Peter Hilber <peter.hilber@opensynergy.com>
+Signed-off-by: Peter Hilber <peter.hilber@opensynergy.com>
+Signed-off-by: Igor Skalkin <igor.skalkin@opensynergy.com>
+---
+ drivers/firmware/Kconfig           | 9 ++++++++-
+ drivers/firmware/arm_scmi/Makefile | 2 +-
+ drivers/firmware/arm_scmi/common.h | 2 ++
+ drivers/firmware/arm_scmi/driver.c | 2 ++
+ drivers/firmware/smccc/Kconfig     | 1 +
+ drivers/mailbox/Kconfig            | 1 +
+ 6 files changed, 15 insertions(+), 2 deletions(-)
 
-- After arm-scmi driver probe failure, or after remove, the scmi-virtio
-  driver may still try to process and forward message responses from the
-  virtio device.
-
-- We must be sure that the virtio transport option (such as virtio over
-  MMIO) is available when the virtio SCMI device is probed.
-
-The series is based on for-next/scmi [2], on top of
-
-commit b9ceca6be432 ("firmware: arm_scmi: Fix duplicate workqueue name")
-
-The series was actually tested with a v5.4 based kernel, with the Base
-protocol and Sensor management protocol. The virtio SCMI device used was
-a proprietary implementation by OpenSynergy. Delayed responses were not
-tested.
-
-Changes in RFC v2:
-
-- Remove the DT virtio_transport phandle, since the SCMI virtio device may
-  not be known in advance. Instead, use the first suitable probed device.
-  Change due to Rob Herring's comment.
-
-Any comments are very welcome.
-
-[1] https://lists.oasis-open.org/archives/virtio-comment/202005/msg00096.html
-[2] https://git.kernel.org/pub/scm/linux/kernel/git/sudeep.holla/linux.git
-
-
-Igor Skalkin (7):
-  firmware: arm_scmi, smccc, mailbox: Make shmem based transports
-    optional
-  firmware: arm_scmi: Document that max_msg is a per channel type limit
-  firmware: arm_scmi: Add op to override max message #
-  firmware: arm_scmi: Add per message transport data
-  firmware: arm_scmi: Add xfer_init_buffers transport op
-  dt-bindings: arm: Add virtio transport for SCMI
-  firmware: arm_scmi: Add virtio transport
-
-Peter Hilber (3):
-  firmware: arm_scmi: Add optional link_supplier() transport op
-  firmware: arm_scmi: Add per-device transport private info
-  firmware: arm_scmi: Add is_scmi_protocol_device()
-
- .../devicetree/bindings/arm/arm,scmi.txt      |  35 +-
- MAINTAINERS                                   |   1 +
- drivers/firmware/Kconfig                      |  19 +-
- drivers/firmware/arm_scmi/Makefile            |   3 +-
- drivers/firmware/arm_scmi/bus.c               |   5 +
- drivers/firmware/arm_scmi/common.h            |  37 +-
- drivers/firmware/arm_scmi/driver.c            | 124 ++++-
- drivers/firmware/arm_scmi/virtio.c            | 493 ++++++++++++++++++
- drivers/firmware/smccc/Kconfig                |   1 +
- drivers/mailbox/Kconfig                       |   1 +
- include/uapi/linux/virtio_ids.h               |   1 +
- include/uapi/linux/virtio_scmi.h              |  41 ++
- 12 files changed, 736 insertions(+), 25 deletions(-)
- create mode 100644 drivers/firmware/arm_scmi/virtio.c
- create mode 100644 include/uapi/linux/virtio_scmi.h
-
-
-base-commit: b9ceca6be43233845be70792be9b5ab315d2e010
+diff --git a/drivers/firmware/Kconfig b/drivers/firmware/Kconfig
+index afdbebba628a..bdde51adb267 100644
+--- a/drivers/firmware/Kconfig
++++ b/drivers/firmware/Kconfig
+@@ -9,7 +9,7 @@ menu "Firmware Drivers"
+ config ARM_SCMI_PROTOCOL
+ 	tristate "ARM System Control and Management Interface (SCMI) Message Protocol"
+ 	depends on ARM || ARM64 || COMPILE_TEST
+-	depends on MAILBOX
++	depends on ARM_SCMI_HAVE_SHMEM
+ 	help
+ 	  ARM System Control and Management Interface (SCMI) protocol is a
+ 	  set of operating system-independent software interfaces that are
+@@ -27,6 +27,13 @@ config ARM_SCMI_PROTOCOL
+ 	  This protocol library provides interface for all the client drivers
+ 	  making use of the features offered by the SCMI.
+ 
++config ARM_SCMI_HAVE_SHMEM
++	bool
++	default n
++	help
++	  This declares whether a shared memory based transport for SCMI is
++	  available.
++
+ config ARM_SCMI_POWER_DOMAIN
+ 	tristate "SCMI power domain driver"
+ 	depends on ARM_SCMI_PROTOCOL || (COMPILE_TEST && OF)
+diff --git a/drivers/firmware/arm_scmi/Makefile b/drivers/firmware/arm_scmi/Makefile
+index bc0d54f8e861..3cc7fa40a464 100644
+--- a/drivers/firmware/arm_scmi/Makefile
++++ b/drivers/firmware/arm_scmi/Makefile
+@@ -1,7 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ scmi-bus-y = bus.o
+ scmi-driver-y = driver.o notify.o
+-scmi-transport-y = shmem.o
++scmi-transport-$(CONFIG_ARM_SCMI_HAVE_SHMEM) = shmem.o
+ scmi-transport-$(CONFIG_MAILBOX) += mailbox.o
+ scmi-transport-$(CONFIG_HAVE_ARM_SMCCC_DISCOVERY) += smc.o
+ scmi-protocols-y = base.o clock.o perf.o power.o reset.o sensors.o system.o
+diff --git a/drivers/firmware/arm_scmi/common.h b/drivers/firmware/arm_scmi/common.h
+index 65063fa948d4..aed192238177 100644
+--- a/drivers/firmware/arm_scmi/common.h
++++ b/drivers/firmware/arm_scmi/common.h
+@@ -242,7 +242,9 @@ struct scmi_desc {
+ 	int max_msg_size;
+ };
+ 
++#ifdef CONFIG_MAILBOX
+ extern const struct scmi_desc scmi_mailbox_desc;
++#endif
+ #ifdef CONFIG_HAVE_ARM_SMCCC
+ extern const struct scmi_desc scmi_smc_desc;
+ #endif
+diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
+index 3dfd8b6a0ebf..9e2f36127793 100644
+--- a/drivers/firmware/arm_scmi/driver.c
++++ b/drivers/firmware/arm_scmi/driver.c
+@@ -918,7 +918,9 @@ ATTRIBUTE_GROUPS(versions);
+ 
+ /* Each compatible listed below must have descriptor associated with it */
+ static const struct of_device_id scmi_of_match[] = {
++#ifdef CONFIG_MAILBOX
+ 	{ .compatible = "arm,scmi", .data = &scmi_mailbox_desc },
++#endif
+ #ifdef CONFIG_HAVE_ARM_SMCCC_DISCOVERY
+ 	{ .compatible = "arm,scmi-smc", .data = &scmi_smc_desc},
+ #endif
+diff --git a/drivers/firmware/smccc/Kconfig b/drivers/firmware/smccc/Kconfig
+index 15e7466179a6..69c4d6cabf62 100644
+--- a/drivers/firmware/smccc/Kconfig
++++ b/drivers/firmware/smccc/Kconfig
+@@ -9,6 +9,7 @@ config HAVE_ARM_SMCCC_DISCOVERY
+ 	bool
+ 	depends on ARM_PSCI_FW
+ 	default y
++	select ARM_SCMI_HAVE_SHMEM
+ 	help
+ 	 SMCCC v1.0 lacked discoverability and hence PSCI v1.0 was updated
+ 	 to add SMCCC discovery mechanism though the PSCI firmware
+diff --git a/drivers/mailbox/Kconfig b/drivers/mailbox/Kconfig
+index 05b1009e2820..5ffe1ab0c869 100644
+--- a/drivers/mailbox/Kconfig
++++ b/drivers/mailbox/Kconfig
+@@ -1,6 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ menuconfig MAILBOX
+ 	bool "Mailbox Hardware Support"
++	select ARM_SCMI_HAVE_SHMEM
+ 	help
+ 	  Mailbox is a framework to control hardware communication between
+ 	  on-chip processors through queued messages and interrupt driven
 -- 
 2.25.1
 
