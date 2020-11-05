@@ -2,235 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 519E02A8329
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 17:12:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B6F12A8337
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 17:14:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730669AbgKEQMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 11:12:45 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43803 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725862AbgKEQMp (ORCPT
+        id S1731417AbgKEQOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 11:14:32 -0500
+Received: from mail-io1-f69.google.com ([209.85.166.69]:54612 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730862AbgKEQOS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 11:12:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604592762;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XH1Cfju6MZ640Pe1FCbEa5SrQlXLpmK1upziHCywFic=;
-        b=iWWNbvGcPUu4oowTzzhUJ2gd8qPnBHspftbBb8ffUcqThe20osTv/7NNXHLM273l8FaFRO
-        o76ZbL7COwaf3WGENJl/VPH8Fseov1AVQYgsQaCFxvd3FIe/+2zuq0GcStJy9azqc/agVB
-        TSYYmOgWiqnMQMymnV1To9qu20vFdEw=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-27-kCVW6sqaPauLLd8a66iYSg-1; Thu, 05 Nov 2020 11:12:41 -0500
-X-MC-Unique: kCVW6sqaPauLLd8a66iYSg-1
-Received: by mail-wr1-f72.google.com with SMTP id i1so899077wrb.18
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 08:12:41 -0800 (PST)
+        Thu, 5 Nov 2020 11:14:18 -0500
+Received: by mail-io1-f69.google.com with SMTP id s10so1429290iot.21
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 08:14:16 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XH1Cfju6MZ640Pe1FCbEa5SrQlXLpmK1upziHCywFic=;
-        b=OHD0cAmDBhQ2RqCCjuBtMPIgsSePFbrE3yBk1EslH4rYA/yRYzbC/D6qaez3YrvM1d
-         K02U3qmsm9CPXjK1dY3V2lSmFOgBnbCTINoBy2kVL6eYkxHO8hsMAQ3CFHMVQ031iz9h
-         wX1mT681ySJzsKXUKv3iBGjQ5AIzAuYG5hCI6xVJEg3mz6QHh3SowSdKo0mfFpXsd//F
-         5JiVpfKTm1DsHXBtCQe0atEGVIOd9mqKV+y0R1jNLaj85zK0uPnV1Fckm3jRUAW5JKBw
-         +M+OkPmUl9QXeeKG92NE8u19ztvShhPoCHpUYRnP6iQb2j2X3W+1+r3iLPgnNVuk9VpE
-         Ak/g==
-X-Gm-Message-State: AOAM53036z17/LjYQ7oj/CyUGKX7iTGMb+mV73+SGdxF1UQm5hX4qkje
-        nbW2ykquSAz1P0FevTHCFQHAeavuTL3na9aJeEbN4oohlAKLyPxvYere2miZkFVNLSEXXfiTGVf
-        8C3aa3SSkFOFpd50xnkOkcTTZ
-X-Received: by 2002:adf:d4ce:: with SMTP id w14mr3921288wrk.142.1604592760219;
-        Thu, 05 Nov 2020 08:12:40 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJy2CzJJV1ypEfEvxQQL+OiRx3bJ2Jl36Tk3llwe0igl1W0mD/Ql63aFdxrxXcT29tHk9YicIQ==
-X-Received: by 2002:adf:d4ce:: with SMTP id w14mr3921254wrk.142.1604592759901;
-        Thu, 05 Nov 2020 08:12:39 -0800 (PST)
-Received: from localhost.localdomain ([151.29.191.209])
-        by smtp.gmail.com with ESMTPSA id c17sm3104308wml.14.2020.11.05.08.12.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 08:12:39 -0800 (PST)
-Date:   Thu, 5 Nov 2020 17:12:36 +0100
-From:   Juri Lelli <juri.lelli@redhat.com>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     peterz@infradead.org, mingo@redhat.com, glenn@aurora.tech,
-        linux-kernel@vger.kernel.org, rostedt@goodmis.org,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        tglx@linutronix.de, luca.abeni@santannapisa.it,
-        tommaso.cucinotta@santannapisa.it, bristot@redhat.com
-Subject: Re: [PATCH] sched/deadline: Fix priority inheritance with multiple
- scheduling classes
-Message-ID: <20201105161236.GA5522@localhost.localdomain>
-References: <20201105075021.1302386-1-juri.lelli@redhat.com>
- <jhja6vvztvk.mognet@arm.com>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=mRJ15N3DTTcwfnKBXtFSdL2/0uB3J/4P0TWhY34qaus=;
+        b=oV2dPHeFU1kAJTskQ8quFnnL3K44v8kGowhuasP6uZrWoo9q67EnTnhDUAMdNP85e5
+         0N4SrJ9QoP48LI7yjzxdtrWxoGu69MHEoFH3+Y7YxcTmqecbDM7G4LsuOGg4W2eLNLN1
+         geIVyzwDXxHVs2nauFasCngRXL4MWCtOTllPvx5pVmSILjj+b3XD/GXkqR3lQ5CySv6y
+         G7sY45nD8H0CONjdpbjiKH6uRKnS7F2OFEij+vX2t+/iF2GIGUmk0REWOHFISH4IHDBK
+         r2DqRlAV9TGEVeJCzkOaNfTcb/GabytzMPS2zge8MWV1nzOKMvm+sJVbLjC2XJEOLTIp
+         NKgw==
+X-Gm-Message-State: AOAM532KeWRVjYxIV2sP3vkQiR9lkLRhogbiRRx3k6PWrvJpZYU9inbb
+        Q7KNZodgfR1kI+dDtHajtRHVBuQlPW/nPZ9ZEV+O6aei3IwX
+X-Google-Smtp-Source: ABdhPJwLhWGbogXRqjhwQml+B8efWoNtMrljpjzWu0QzWfV2m/Zk1JUfZIsMzGtOVuUnmpVJTSprT1FUMfjy1kbsO+UPSygQiiyx
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <jhja6vvztvk.mognet@arm.com>
+X-Received: by 2002:a92:a808:: with SMTP id o8mr2173202ilh.35.1604592856371;
+ Thu, 05 Nov 2020 08:14:16 -0800 (PST)
+Date:   Thu, 05 Nov 2020 08:14:16 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000003698a305b35e63fb@google.com>
+Subject: KASAN: use-after-free Read in io_uring_show_cred
+From:   syzbot <syzbot+65731228192d0cafab77@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Valentin,
+Hello,
 
-On 05/11/20 15:49, Valentin Schneider wrote:
-> 
-> Hi Juri,
-> 
-> On 05/11/20 07:50, Juri Lelli wrote:
-> > He also provided a simple reproducer creating the situation below:
-> >
-> >  So the execution order of locking steps are the following
-> >  (N1 and N2 are non-deadline tasks. D1 is a deadline task. M1 and M2
-> >  are mutexes that are enabled * with priority inheritance.)
-> >
-> >  Time moves forward as this timeline goes down:
-> >
-> >  N1              N2               D1
-> >  |               |                |
-> >  |               |                |
-> >  Lock(M1)        |                |
-> >  |               |                |
-> >  |             Lock(M2)           |
-> >  |               |                |
-> >  |               |              Lock(M2)
-> >  |               |                |
-> >  |             Lock(M1)           |
-> >  |             (!!bug triggered!) |
-> >
-> > Daniel reported a similar situation as well, by just letting ksoftirqd
-> > run with DEADLINE (and eventually block on a mutex).
-> >
-> > Problem is that boosted entities (Priority Inheritance) use static
-> > DEADLINE parameters of the top priority waiter. However, there might be
-> > cases where top waiter could be a non-DEADLINE entity that is currently
-> > boosted by a DEADLINE entity from a different lock chain (i.e., nested
-> > priority chains involving entities of non-DEADLINE classes). In this
-> > case, top waiter static DEADLINE parameters could be null (initialized
-> > to 0 at fork()) and replenish_dl_entity() would hit a BUG().
-> >
-> 
-> IIUC, rt_mutex_get_top_task(N1) == N2, and N2->dl->deadline = 0, which
-> makes enqueue_task_dl() unhappy. And that happens because, unlike p->prio,
-> DL parameters aren't properly propagated through the chain(s).
+syzbot found the following issue on:
 
-Yep. Replenishment as well, as it's going to find dl_runtime == 0.
+HEAD commit:    4ef8451b Merge tag 'perf-tools-for-v5.10-2020-11-03' of gi..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=10238e2a500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=61033507391c77ff
+dashboard link: https://syzkaller.appspot.com/bug?extid=65731228192d0cafab77
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10f42732500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=175fbb82500000
 
-> > Fix this by keeping track of the original donor and using its parameters
-> > when a task is boosted.
-> >
-> > Reported-by: Glenn Elliott <glenn@aurora.tech>
-> > Reported-by: Daniel Bristot de Oliveira <bristot@redhat.com>
-> > Signed-off-by: Juri Lelli <juri.lelli@redhat.com>
-> >
-> > ---
-> >
-> > This is actually a v2 attempt (didn't keep $SUBJECT since it's quite
-> > different than v1 [1]) to fix this problem.
-> >
-> > v1 was admittedly pretty ugly. Hope this looks slightly better (even
-> > though there is of course overhead associated to the additional
-> > pointer).
-> >
-> > Again, the proper way to fix this is by proxy execution. But, I don't
-> > think we are yet there and this problem needs a quick band-aid.
-> >
-> > One could probably also think to complicate the present approach and
-> > actually perform accounting using donor's dynamic parameters, but I fear
-> > it would be of little benefit since it would still bring all the
-> > problems associated to affinities. So, I'd propose let's try to fix all
-> > this properly with proxy and just avoid crashes in the meantime.
-> >
-> 
-> For my own sake, what affinity problems are you thinking of?
-> 
-> With proxy exec we have this "funny" dance of shoving the entire blocked-on
-> chain on a single runqueue to get the right selection out of
-> pick_next_task(), and that needs to deal with affinity (i.e. move the task
-> back to a sensible rq once it becomes runnable).
-> 
-> With the current PI, the waiting tasks are blocked and enqueued in the
-> pi_waiters tree, so as I see it affinity shouldn't matter; what am I
-> missing / not seeing? Is that related to bandwidth handling?
+The issue was bisected to:
 
-Think we might break admission control checks if donor and bosted are,
-for example, on different exclusive sets of CPUs. Guess that is a
-problem with proxy as well, though. As said in the comment above, this
-is unfortunately not much more than a band-aid. Hoping we can buy us
-some time and fix it properly with proxy.
+commit 1e6fa5216a0e59ef02e8b6b40d553238a3b81d49
+Author: Jens Axboe <axboe@kernel.dk>
+Date:   Thu Oct 15 14:46:24 2020 +0000
 
-> > 1 - 20191112075056.19971-1-juri.lelli@redhat.com
-> > ---
-> >  include/linux/sched.h   |  9 +++++
-> >  kernel/sched/core.c     | 13 ++++++--
-> >  kernel/sched/deadline.c | 74 ++++++++++++++++++++---------------------
-> >  3 files changed, 56 insertions(+), 40 deletions(-)
-> >
-> > diff --git a/include/linux/sched.h b/include/linux/sched.h
-> > index 063cd120b459..db29ab492181 100644
-> > --- a/include/linux/sched.h
-> > +++ b/include/linux/sched.h
-> > @@ -571,6 +571,15 @@ struct sched_dl_entity {
-> >        * time.
-> >        */
-> >       struct hrtimer inactive_timer;
-> > +
-> > +#ifdef CONFIG_RT_MUTEXES
-> > +	/*
-> > +	 * Priority Inheritance. When a DEADLINE scheduling entity is boosted
-> > +	 * pi_se points to the donor, otherwise points to the dl_se it belongs
-> > +	 * to (the original one/itself).
-> > +	 */
-> > +	struct sched_dl_entity *pi_se;
-> > +#endif
-> >  };
-> >
-> >  #ifdef CONFIG_UCLAMP_TASK
-> > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> > index 6f533bb7d3b9..e10aba6c363d 100644
-> > --- a/kernel/sched/core.c
-> > +++ b/kernel/sched/core.c
-> > @@ -4908,19 +4908,26 @@ void rt_mutex_setprio(struct task_struct *p, struct task_struct *pi_task)
-> >                   (pi_task && dl_prio(pi_task->prio) &&
-> >                    dl_entity_preempt(&pi_task->dl, &p->dl))) {
-> >                       p->dl.dl_boosted = 1;
-> > +			p->dl.pi_se = pi_task->dl.pi_se;
-> >                       queue_flag |= ENQUEUE_REPLENISH;
-> > -		} else
-> > +		} else {
-> >                       p->dl.dl_boosted = 0;
-> > +			p->dl.pi_se = &p->dl;
-> > +		}
-> >               p->sched_class = &dl_sched_class;
-> >       } else if (rt_prio(prio)) {
-> > -		if (dl_prio(oldprio))
-> > +		if (dl_prio(oldprio)) {
-> >                       p->dl.dl_boosted = 0;
-> > +			p->dl.pi_se = &p->dl;
-> > +		}
-> >               if (oldprio < prio)
-> >                       queue_flag |= ENQUEUE_HEAD;
-> >               p->sched_class = &rt_sched_class;
-> >       } else {
-> > -		if (dl_prio(oldprio))
-> > +		if (dl_prio(oldprio)) {
-> >                       p->dl.dl_boosted = 0;
-> > +			p->dl.pi_se = &p->dl;
-> > +		}
-> 
-> With this change, do we still need sched_dl_entity.dl_boosted? AIUI this
-> could become
-> 
->   bool is_dl_boosted(struct sched_dl_entity *dl_se)
->   {
->           return pi_of(dl_se) != dl_se;
->   }
+    io_uring: COW io_identity on mismatch
 
-Makes sense to me. I'll add this change as a separate patch if the rest
-makes sense to people as well. :-)
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13e38e2a500000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=10138e2a500000
+console output: https://syzkaller.appspot.com/x/log.txt?x=17e38e2a500000
 
-Thanks for the quick review!
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+65731228192d0cafab77@syzkaller.appspotmail.com
+Fixes: 1e6fa5216a0e ("io_uring: COW io_identity on mismatch")
 
-Best,
-Juri
+==================================================================
+BUG: KASAN: use-after-free in io_uring_show_cred+0x5bb/0x5f0 fs/io_uring.c:8921
+Read of size 8 at addr ffff8880132a04a0 by task syz-executor141/8511
 
+CPU: 0 PID: 8511 Comm: syz-executor141 Not tainted 5.10.0-rc2-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_address_description.constprop.0.cold+0xae/0x4c8 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report.cold+0x1f/0x37 mm/kasan/report.c:562
+ io_uring_show_cred+0x5bb/0x5f0 fs/io_uring.c:8921
+ idr_for_each+0x113/0x220 lib/idr.c:208
+ __io_uring_show_fdinfo fs/io_uring.c:8974 [inline]
+ io_uring_show_fdinfo+0x923/0xda0 fs/io_uring.c:8996
+ seq_show+0x4a8/0x700 fs/proc/fd.c:65
+ seq_read+0x432/0x1070 fs/seq_file.c:208
+ do_loop_readv_writev fs/read_write.c:761 [inline]
+ do_loop_readv_writev fs/read_write.c:748 [inline]
+ do_iter_read+0x48e/0x6e0 fs/read_write.c:803
+ vfs_readv+0xe5/0x150 fs/read_write.c:921
+ do_preadv fs/read_write.c:1013 [inline]
+ __do_sys_preadv fs/read_write.c:1063 [inline]
+ __se_sys_preadv fs/read_write.c:1058 [inline]
+ __x64_sys_preadv+0x231/0x310 fs/read_write.c:1058
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x4403b9
+Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db 13 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007ffedd6269c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000127
+RAX: ffffffffffffffda RBX: 00007ffedd6269d0 RCX: 00000000004403b9
+RDX: 0000000000000001 RSI: 0000000020001400 RDI: 0000000000000004
+RBP: 00000000006ca018 R08: 0000000000000000 R09: 65732f636f72702f
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000401c20
+R13: 0000000000401cb0 R14: 0000000000000000 R15: 0000000000000000
+
+Allocated by task 4887:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:461
+ kmalloc include/linux/slab.h:557 [inline]
+ kzalloc include/linux/slab.h:664 [inline]
+ tomoyo_encode2.part.0+0xe9/0x3a0 security/tomoyo/realpath.c:45
+ tomoyo_encode2 security/tomoyo/realpath.c:31 [inline]
+ tomoyo_encode+0x28/0x50 security/tomoyo/realpath.c:80
+ tomoyo_realpath_from_path+0x186/0x620 security/tomoyo/realpath.c:288
+ tomoyo_get_realpath security/tomoyo/file.c:151 [inline]
+ tomoyo_path_perm+0x21b/0x400 security/tomoyo/file.c:822
+ security_inode_getattr+0xcf/0x140 security/security.c:1279
+ vfs_getattr fs/stat.c:121 [inline]
+ vfs_fstat+0x43/0xb0 fs/stat.c:146
+ __do_sys_newfstat+0x81/0x100 fs/stat.c:386
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Freed by task 4887:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
+ kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
+ __kasan_slab_free+0x102/0x140 mm/kasan/common.c:422
+ slab_free_hook mm/slub.c:1544 [inline]
+ slab_free_freelist_hook+0x5d/0x150 mm/slub.c:1577
+ slab_free mm/slub.c:3142 [inline]
+ kfree+0xdb/0x360 mm/slub.c:4124
+ tomoyo_path_perm+0x23d/0x400 security/tomoyo/file.c:842
+ security_inode_getattr+0xcf/0x140 security/security.c:1279
+ vfs_getattr fs/stat.c:121 [inline]
+ vfs_fstat+0x43/0xb0 fs/stat.c:146
+ __do_sys_newfstat+0x81/0x100 fs/stat.c:386
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+The buggy address belongs to the object at ffff8880132a0480
+ which belongs to the cache kmalloc-96 of size 96
+The buggy address is located 32 bytes inside of
+ 96-byte region [ffff8880132a0480, ffff8880132a04e0)
+The buggy address belongs to the page:
+page:000000005ad008dd refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x132a0
+flags: 0xfff00000000200(slab)
+raw: 00fff00000000200 ffffea0000935fc0 0000000700000007 ffff888010041780
+raw: 0000000000000000 0000000080200020 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff8880132a0380: fb fb fb fb fb fb fb fb fb fb fb fb fc fc fc fc
+ ffff8880132a0400: 00 00 00 00 00 00 00 00 00 fc fc fc fc fc fc fc
+>ffff8880132a0480: fa fb fb fb fb fb fb fb fb fb fb fb fc fc fc fc
+                               ^
+ ffff8880132a0500: fa fb fb fb fb fb fb fb fb fb fb fb fc fc fc fc
+ ffff8880132a0580: 00 00 00 00 00 00 00 00 00 00 00 00 fc fc fc fc
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
