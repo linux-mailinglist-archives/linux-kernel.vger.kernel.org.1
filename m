@@ -2,78 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8FF02A8039
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 14:59:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8CE02A803D
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 15:00:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730832AbgKEN7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 08:59:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730687AbgKEN7k (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 08:59:40 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15E0CC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 05:59:40 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id 184so2419641lfd.6
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 05:59:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qCrN31ShCh5kklAu2ybIlh671dbzV48lSFSfynZtC2g=;
-        b=j6KSBm+wjUlygW1EdRVrx0blw6jsHzSB5/CgOkXRCqH/NcuFNb1htk1kDeF80U3QJK
-         vSCEymduhh7Cley52uGQ6m4mfhRuSTyUdCQDwWmLU5QZLFNcN2hrsebkrNkSx34mTibg
-         zog7uZxwmycHyHzro0eilsHPofHCjZWg83ydatCFTyFmWNEa82wIXlMxaykBLwYggeR5
-         jdNsg5wwO1mjk7gc3QWwrO5R8Qo4l1uSQlIBi0Gvz+ShWTDfIRWIi553lxvFpf3m7FNN
-         8N8uZXEzZLkKXcxNNrwLh94zQrE1bCPTIPgp/6JYcIGmbvoasQ6+0Z0x8STUwF+7QCqX
-         Xr+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qCrN31ShCh5kklAu2ybIlh671dbzV48lSFSfynZtC2g=;
-        b=ACZSwRs4CVa8/xaealjqKd3D+/lMTuC9vMiKbSp8hp6KYlOefL6UIDmOH2eVHWyzaP
-         pJltvpBRhkhLzb46Wxu9xyDV7rtk+/lm2/u+tu63//jYEjPE2uOcazAcCiEQD09biLdU
-         E9VrDx8on0/2cz3bumxL0Gf1xMvSOcl+TmMRy8RYQZgRi08c/m+ebW749It91wYKUv0r
-         L8W0Uv050BS/dY3GiYw/o4ZXj0frwyDZLOLQ/QZw6lwoC3223ozgBgOycq3HJwdycsJT
-         zlqerYn+bf8nqHXfoZzaqyr0MAsBlJNeoaPNa+wv2/fSI5dZiGMXU8r7VUOK+Mu5RabV
-         NsRw==
-X-Gm-Message-State: AOAM531Lfyo4tgGS7T32szHEOehktlrTvJPY/zmzipL9eA86e/LQ0POB
-        SOOR28nNZPzQSSKzunYKNYeolVRpT+FWZF/xjDgoxA==
-X-Google-Smtp-Source: ABdhPJw61W8PpYTmFeXsj72HbktXi8an2Ur5ijYtczp7vaWIvD5508dx6WXNwKxjaYVfl864h4lBwtpaJA4elHNr3dw=
-X-Received: by 2002:a05:6512:3225:: with SMTP id f5mr992749lfe.441.1604584778531;
- Thu, 05 Nov 2020 05:59:38 -0800 (PST)
+        id S1730865AbgKEOAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 09:00:14 -0500
+Received: from mout.gmx.net ([212.227.17.20]:56087 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726067AbgKEOAN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 09:00:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1604584786;
+        bh=voomDKjD1D7OFb6dvnpVpguZn8+/Bj7qz4MAi/lSVa8=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=MFZUPIDDrlAcNE6Rc1XottMcZR3BIl3VWMREoMZVBWH0IsvMeS9A+16vnKKAYvUiq
+         23Qhhc8hKaF0iet+XuY9/U/VyVIAmmsN2+i9Np5S6HiW6Z6nZCs4ySVrk29xTHab2X
+         ZJbISFJre4VhSipDkcc77yxe7vVfV6aowBO+aoyw=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [217.61.147.34] ([217.61.147.34]) by web-mail.gmx.net
+ (3c-app-gmx-bap66.server.lan [172.19.172.66]) (via HTTP); Thu, 5 Nov 2020
+ 14:59:46 +0100
 MIME-Version: 1.0
-References: <20201028043642.1141723-1-bjorn.andersson@linaro.org>
-In-Reply-To: <20201028043642.1141723-1-bjorn.andersson@linaro.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 5 Nov 2020 14:59:27 +0100
-Message-ID: <CACRpkdaBbdC5_6y=w5eL-jJ_Mk+toKWy8kj9t-UWx02wNfjo+g@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: qcom: sm8250: Specify PDC map
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        MSM <linux-arm-msm@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <trinity-6e877df5-d3f5-434c-9723-20a1257ec1ca-1604584786441@3c-app-gmx-bap66>
+From:   Frank Wunderlich <frank-w@public-files.de>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        linux-mediatek@lists.infradead.org,
+        Frank Wunderlich <linux@fw-web.de>,
+        linux-kernel@vger.kernel.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>
+Subject: Aw: Re:  Re:  Re: [PATCH] pci: mediatek: fix warning in msi.h
+Content-Type: text/plain; charset=UTF-8
+Date:   Thu, 5 Nov 2020 14:59:46 +0100
+Importance: normal
+Sensitivity: Normal
+In-Reply-To: <074d057910c3e834f4bd58821e8583b1@kernel.org>
+References: <20201031140330.83768-1-linux@fw-web.de>
+ <EC02022C-64CF-4F4B-A0A2-215A0A49E826@public-files.de>
+ <87lfflti8q.wl-maz@kernel.org> <1604253261.22363.0.camel@mtkswgap22>
+ <trinity-9eb2a213-f877-4af3-87df-f76a9c093073-1604255233122@3c-app-gmx-bap08>
+ <87k0v4u4uq.wl-maz@kernel.org> <87pn4w90hm.fsf@nanos.tec.linutronix.de>
+ <df5565a2f1e821041c7c531ad52a3344@kernel.org>
+ <87h7q791j8.fsf@nanos.tec.linutronix.de>
+ <877dr38kt8.fsf@nanos.tec.linutronix.de>
+ <901c5eb8bbaa3fe53ddc8f65917e48ef@kernel.org>
+ <87o8ke7njb.fsf@nanos.tec.linutronix.de>
+ <trinity-1d7f8900-10db-40c0-a0aa-47bb99ed84cd-1604508571909@3c-app-gmx-bs02>
+ <87h7q4lnoz.fsf@nanos.tec.linutronix.de>
+ <074d057910c3e834f4bd58821e8583b1@kernel.org>
+X-UI-Message-Type: mail
+X-Priority: 3
+X-Provags-ID: V03:K1:GLUO7D/wO+tb37W5SZ5xe0Eu0qDFWwHPzFWW24p1mEWACj/z/qcwnTSCcoEwSXaB+14Nk
+ 7wDTbnUHHVNZo6VPxDewR2/8VXujIgH030nqAs/Itv5DX4F5F0sSMTblaQKV7qZQ8z/VLkSrU7e8
+ 3eDKoY//ms/KCmlzkD+IylD/pK5tSaw41J7P22MIif12lj2dpYAuAua3/Z0S4bUv1phFS/DP/vKa
+ +1NLuzhw2pmKKW4I1R2ohLzqWDqKm/hfzeBr7nqZ6H5QYJaIH8GFl3tfh8d8j+vvVI9Acu0rAWfn
+ rs=
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Va1155uyhes=:jW7Xw99631EbAyN4YqXhUt
+ A6kc1A3xBXmyhPvQWp5gTojcxYr+l9OKQaAa6F6hSGlKGJKK3IjsbWH/E4QFrfO8QuZYk5l3t
+ KTckb1BlI5CA64ULsOAzDQSjvA1Iq14Yvnj/U3gHVRqfy0xd1ZmGLAjOqw8Rh/Ut+p8dSC0bh
+ ZFm+70EIqZxK0ifwlN8kAyedXD4dV7mycTDGSFEqcun7sFngFoILQkeMKuks53AbRv6WdnA6l
+ 78v7pJp5nFIUP1iEMDIMA9YhIfUOwac5OQyhlLzEKEnHjoVp6aLKazAGVJPMy2N9DmO/7PaSX
+ 8RHlg1YR14kS5H0x0Np6TcD19t6hopBGofdD7xrPwYFvAt61482BexBT1cBAZtnJ7ha0AZe77
+ Mmb28JhVBD811f1D9N7Aq4N2s+jFI0NwU+zn/RexHbps4OQNDxAL60qD3xtznq0r3Y1NB9LBz
+ M7Tqyomhxm1g7+3GskBthMsw3b9PfOH6d7YwiL5ZHJ3Q0gqCj1dwmTnY6oE62YPN+RxJZfa5x
+ ynPITwwdy66fJyUtD0r5EK1IskA3LonAq1xWuVmM6Yd1NFW0g3Aihhopfl4CzmAEypjTM8Vjq
+ MZfbHhvwEBs0w=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 5:36 AM Bjorn Andersson
-<bjorn.andersson@linaro.org> wrote:
+Marc's Patch based on thomas' last one also seems to work well for r2, again no warning, PCI and AHCI (connected to pcie bus) working
 
-> Specify the PDC mapping for SM8250, so that gpio interrupts are
-> propertly mapped to the wakeup IRQs of the PDC.
->
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-
-Patch applied for next (v5.11).
-
-If this is urgent and needs to go into fixes, just provide me
-a Fixes: tag and I will move it to the fixes branch.
-
-Yours,
-Linus Walleij
+regards Frank
