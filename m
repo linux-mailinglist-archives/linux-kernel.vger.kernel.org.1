@@ -2,146 +2,392 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DE482A84BF
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 18:21:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8277D2A84CB
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 18:25:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731642AbgKERV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 12:21:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43466 "EHLO
+        id S1731203AbgKERY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 12:24:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730975AbgKERV0 (ORCPT
+        with ESMTP id S1731818AbgKERXA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 12:21:26 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56B2CC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 09:21:26 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id 23so1563015wmg.1
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 09:21:26 -0800 (PST)
+        Thu, 5 Nov 2020 12:23:00 -0500
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93C57C0613CF;
+        Thu,  5 Nov 2020 09:23:00 -0800 (PST)
+Received: by mail-oi1-x241.google.com with SMTP id c80so2465301oib.2;
+        Thu, 05 Nov 2020 09:23:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jVksYP+m1csAgSVkfxG7oivUT+KEbcTMSnmWbNLe2cc=;
-        b=MUimO6Mb7ah6cGTZAmJxgooDhnJYtCO+v11DToWUnLcnKBgIS9B522rXKjCeF//gj2
-         P76Jx9NUMKepJIh5rbuSlFCSgBBpc9RjIE8OkFffh8b3OYLIXYZkS2dGcEQC+LREixDB
-         8ZU0UMvyXJvyy9VP5x4hFCURmF4K4JWeGoKG87nvzf22wQUHBUkFFSsQUhPlTD3fCb/3
-         +wgtioTDDpSjPOc/SpMBfrsfQGo+vFANxMb3Z8CAE9MAkWCWSFbB5eOC34x4BYcwvi5b
-         y4G/hLMtTcGr3et8Dc6KcQdALXq3+Pz/huUYBFc3y/Mc+65JJ7y4JPT4wEoGkz3TXOu2
-         HFhw==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=Ru11zWWZi+0zjLyv774fdb2vDBoDBi1DY28Q7Ub5BEE=;
+        b=gbjBOwCeQpTeh502EC8d3SyRI26sFObiEM+DSuQjRHuHW7/VMQLkejFEptfYTNEW02
+         6QiHb/M7h9KTumlltdvyMDY2tgdknXO2I5cT6WN68jOpor/K8i/VNVmmJXU6URn4TIhN
+         DnU9I1VzOFv9fv8ChEVc16HWeU6oUlq8NxL0YTJOTHqHhQ0LNLeXatFlattlLwyuDXNo
+         YMRtDe2SGAuNu294jh1J0CzS19U+EDJJjKsS/CraS+s/04sKkr5NBVLBMFKZO1Qxov6n
+         QXvd2rd5B9GbvYXTxMtqVLGhrvTDNS8Zmg1RnKSKsEceTfbnB0h3mQ+fy4wJ/ItU+RKr
+         iSxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jVksYP+m1csAgSVkfxG7oivUT+KEbcTMSnmWbNLe2cc=;
-        b=g/vXTWb9Udxj+TQgNI13v6wR8Dn4lVi7rHzHPIEfd/F3WBVQlQCSsByPC/c9RZcKeT
-         ShHfUyRjRoXArUUA6a+psE4ZqnvpbEj81wm4oXc2DqkjSFrzN9Dz02mQOUJ76DGhQjB+
-         9CUpZY9iqJ/kQTD7or3QNwMAJzgNOZTEILOLctz7eKvy4G7wdfkH3aXchVxwBbGQH8Zq
-         6thVBk3294MgZJGxiM3+O7ls3HLVQghXzfW0IB5/tEOtyjbck/B8E33878lULBUNC+Ev
-         qxO5ALfF0XOlscplPo1VrPkLRepD3H3xI8VGWlfPLiv2TJeXSXklPG6Qjo/ucaNxQ0zZ
-         WhIw==
-X-Gm-Message-State: AOAM53222VjcC6fnfEAx/BNcM0Gz7y9anvy+f/F42PA+tlLBymsS+hvA
-        H25B81FGNYY7oXIPZBqs5ic9HgX0P7qF7PGCxH3juA==
-X-Google-Smtp-Source: ABdhPJwHMg6G//mLKaUG+ayZ/oBbHYiilTcQrDw6mInR9JdkQpyrnKlQ8b/n+2t4gyudsR/O/qG576iUthD6ZFtCukg=
-X-Received: by 2002:a1c:7c0e:: with SMTP id x14mr3869550wmc.88.1604596884421;
- Thu, 05 Nov 2020 09:21:24 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=Ru11zWWZi+0zjLyv774fdb2vDBoDBi1DY28Q7Ub5BEE=;
+        b=Np1Rl82mkRdRXMc7npabTn/FNMuSwB7bWc95g/+AvJP7Mez+jowEkv7L7l29claEx3
+         Lgq79LG4do6FaCf6tptRcazz69AJArHklAwEjQkiib2fbcBT8j7e072AuTxuvfeD/oYW
+         zfW9wfuSWR7ltY9CEJWSLQAfMuwCBjAQoNsI5nDkNL1enSgwMXTyJuKSHfW/GqEeL5QS
+         H+j2EhVtg+ZjIQYdXS6YfdkIM7GBJypqGiHvemKWgKS9AjH5FvWxYHbp4PfDxKwBmdMo
+         +GfiRyv2Dpd76D4UkqLh/JU1GHcess1mx18Axu2doz23p9OcCblNhAgIo+tMcKMePkLT
+         UXGw==
+X-Gm-Message-State: AOAM532s1HjnOjS/anM8onGCxdSBAPrLMZLM7QdfsNFuDjEYfgQGI9CV
+        hO9R3XoXtsucWTiAAZHOgTBY4zaUZXqytPzC
+X-Google-Smtp-Source: ABdhPJzB3MCG+VcTmbWFOrbHCnwAZw1Y1dzvTRRuAKTLJvghwKM4AJxkGnLlS0bXOqHhqjB4n+QPLA==
+X-Received: by 2002:aca:4ec4:: with SMTP id c187mr281774oib.137.1604596977718;
+        Thu, 05 Nov 2020 09:22:57 -0800 (PST)
+Received: from ?IPv6:2600:1700:4a30:eaf0::21? ([2600:1700:4a30:eaf0::21])
+        by smtp.gmail.com with ESMTPSA id 38sm20903ots.3.2020.11.05.09.22.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Nov 2020 09:22:57 -0800 (PST)
+Subject: Re: [PATCH v2] Input: Fix the HID usage of DPAD input event
+ generation.
+To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc:     Chris Ye <lzye@google.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>, trivial@kernel.org,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        stable@vger.kernel.org
+References: <20201101193504.679934-1-lzye@google.com>
+ <CAO-hwJJVKOM7Om8E+kmYXTrA7SiOFgFt46BHfv+0j+ORhepbaQ@mail.gmail.com>
+ <7505bbc6-9f76-0875-c1c1-95d611a980bb@gmail.com>
+ <CAO-hwJK3EzeQbiPMy=8YAVp91nN6bMcAqqfzff+-6mti9PFMHQ@mail.gmail.com>
+From:   Chris Ye <linzhao.ye@gmail.com>
+Message-ID: <ecd04d7b-d541-3e0a-87e0-b3b0c0a2e792@gmail.com>
+Date:   Thu, 5 Nov 2020 09:22:55 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <CAJuCfpEQ_ADYsMrF_zjfAeQ3d-FALSP+CeYsvgH2H1-FSoGGqg@mail.gmail.com>
- <20201015092030.GB22589@dhcp22.suse.cz> <CAJuCfpHwXcq1PfzHgqyYBR3N53TtV2WMt_Oubz0JZkvJHbFKGw@mail.gmail.com>
- <CAJuCfpH9iUt0cs1GBQppgdcD8chojCNXk22S+PeSgQ-bA7iitQ@mail.gmail.com>
- <20201103093550.GE21990@dhcp22.suse.cz> <20201103213228.GB1631979@google.com>
- <20201104065844.GM21990@dhcp22.suse.cz> <20201104204051.GA3544305@google.com>
- <20201105122012.GD21348@dhcp22.suse.cz> <CAJuCfpF5zAif97-uK8M+-fJhd0pab4fMPDMUNkAXYOB3MC7aXg@mail.gmail.com>
- <20201105171611.GO21348@dhcp22.suse.cz>
-In-Reply-To: <20201105171611.GO21348@dhcp22.suse.cz>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Thu, 5 Nov 2020 09:21:13 -0800
-Message-ID: <CAJuCfpHAxxoD6GG6t9_VthSa00znTHvLx60K-=cBee4ia1S5ew@mail.gmail.com>
-Subject: Re: [RFC]: userspace memory reaping
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Minchan Kim <minchan@kernel.org>, linux-api@vger.kernel.org,
-        linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
-        Christian Brauner <christian@brauner.io>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Tim Murray <timmurray@google.com>,
-        kernel-team <kernel-team@android.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAO-hwJK3EzeQbiPMy=8YAVp91nN6bMcAqqfzff+-6mti9PFMHQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 5, 2020 at 9:16 AM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Thu 05-11-20 08:50:58, Suren Baghdasaryan wrote:
-> > On Thu, Nov 5, 2020 at 4:20 AM Michal Hocko <mhocko@suse.com> wrote:
-> > >
-> > > On Wed 04-11-20 12:40:51, Minchan Kim wrote:
-> > > > On Wed, Nov 04, 2020 at 07:58:44AM +0100, Michal Hocko wrote:
-> > > > > On Tue 03-11-20 13:32:28, Minchan Kim wrote:
-> > > > > > On Tue, Nov 03, 2020 at 10:35:50AM +0100, Michal Hocko wrote:
-> > > > > > > On Mon 02-11-20 12:29:24, Suren Baghdasaryan wrote:
-> > > > > > > [...]
-> > > > > > > > To follow up on this. Should I post an RFC implementing SIGKILL_SYNC
-> > > > > > > > which in addition to sending a kill signal would also reap the
-> > > > > > > > victim's mm in the context of the caller? Maybe having some code will
-> > > > > > > > get the discussion moving forward?
-> > > > > > >
-> > > > > > > Yeah, having a code, even preliminary, might help here. This definitely
-> > > > > > > needs a good to go from process management people as that proper is land
-> > > > > > > full of surprises...
-> > > > > >
-> > > > > > Just to remind a idea I suggested to reuse existing concept
-> > > > > >
-> > > > > >     fd = pidfd_open(victim process)
-> > > > > >     fdatasync(fd);
-> > > > > >     close(fd);
-> > > > >
-> > > > > I must have missed this proposal. Anyway, are you suggesting fdatasync
-> > > > > to act as a destructive operation?
-> > > >
-> > > > write(fd) && fdatasync(fd) are already destructive operation if the file
-> > > > is shared.
-> > >
-> > > I am likely missing something because fdatasync will not destroy any
-> > > underlying data. It will sync
-> > >
-> > > > You don't need to reaping as destruptive operation. Rather than, just
-> > > > commit on the asynchrnous status "write file into page cache and commit
-> > > > with fsync" and "killing process and commit with fsync".
-> > >
-> > > I am sorry but I do not follow. The result of the memory reaping is a
-> > > data loss. Any private mapping will simply lose it's content. The caller
-> > > will get EFAULT when trying to access it but there is no way to
-> > > reconstruct the data. This is everything but not resembling what I see
-> > > f{data}sync is used for.
-> >
-> > I think Minchan considers f{data}sync as a "commit" operation.
->
-> But there is nothing like commit in that operation. It is simply a
-> destroy operation. ftruncate as Minchan mentions in another reply would
-> be a closer fit but how do you interpret the length argument? What about
-> memory regions which cannot be reaped?
->
-> I do understand that reusing an existing mechanism is usually preferable
-> but the semantic should be reasonable and easy to reason about.
++stable@vger.kernel.org
 
-Maybe then we can consider a flag for pidfd_send_signal() to indicate
-that we want a synchronous mm cleanup when SIGKILL is being sent?
-Similar to my original RFC but cleanup would happen in the context of
-the caller. That seems to me like the simplest and most obvious way of
-expressing what we want to accomplish. WDYT?
-
+On 11/3/20 9:36 AM, Benjamin Tissoires wrote:
+> Hi Chris,
 >
-> --
-> Michal Hocko
-> SUSE Labs
+> On Mon, Nov 2, 2020 at 6:24 PM Chris Ye <linzhao.ye@gmail.com> wrote:
+>> Hi Benjamin,
+>>
+>>       I've tried the hid-tool for testing on my linux machine and it
+>> works.  However the issue comes from a game controller I don't posses in
+>> hand right now so I can't physically connect it and provide the log from
+>> hid-tool recording.  I do have the raw HID descriptor and in Linux
+>> kernel the debug info is like below:
+>>
+>> # cat /d/hid/0005\:27F8\:0BBE.0001/rdesc
+>> 05 01 09 05 a1 01 a1 02 15 81 25 7f 05 01 09 01 a1 00 75 08 95 04 35 00
+>> 46 ff 00 09 30 09 31 09 32 09 35 81 02 75 08 95 02 15 01 26 ff 00 09 39
+>> 09 39 81 02 c0 05 07 19 4f 29 52 15 00 25 01 75 01 95 04 81 02 05 01 09
+>> 90 09 91 09 92 09 93 75 01 95 04 81 02 75 01 95 10 05 09 19 01 29 10 81
+>> 02 06 02 ff 09 01 a1 01 15 00 25 01 09 04 75 01 95 01 81 02 c0 05 0c 09
+>> 01 a1 01 15 00 25 01 0a 24 02 75 01 95 01 81 06 c0 75 01 95 06 81 03 15
+>> 00 25 ff 05 02 09 01 a1 00 75 08 95 02 35 00 45 ff 09 c4 09 c5 81 02 c0
+>> 06 00 ff 09 80 75 08 95 08 15 00 26 ff 00 b1 02 c0 c0
+> Thanks for the report descriptor. That allowed me to add the device to
+> the tests at https://gitlab.freedesktop.org/bentiss/hid-tools/-/commits/wip/gamevice
 >
-> --
-> To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
+> And also to realize that... "how is that thing supposed to be working????"
 >
+>>     INPUT[INPUT]
+>>       Field(0)
+>>         Physical(GenericDesktop.Pointer)
+>>         Application(GenericDesktop.GamePad)
+>>         Usage(4)
+>>           GenericDesktop.X
+>>           GenericDesktop.Y
+>>           GenericDesktop.Z
+>>           GenericDesktop.Rz
+>>         Logical Minimum(-127)
+>>         Logical Maximum(127)
+>>         Physical Minimum(0)
+>>         Physical Maximum(255)
+>>         Report Size(8)
+>>         Report Count(4)
+>>         Report Offset(0)
+>>         Flags( Variable Absolute )
+>>       Field(1)
+>>         Physical(GenericDesktop.Pointer)
+>>         Application(GenericDesktop.GamePad)
+>>         Usage(2)
+>>           GenericDesktop.HatSwitch
+>>           GenericDesktop.HatSwitch
+>>         Logical Minimum(1)
+>>         Logical Maximum(255)
+>>         Physical Minimum(0)
+>>         Physical Maximum(255)
+>>         Report Size(8)
+>>         Report Count(2)
+>>         Report Offset(32)
+>>         Flags( Variable Absolute )
+>>       Field(2)
+>>         Application(GenericDesktop.GamePad)
+>>         Usage(4)
+>>           Keyboard.004f
+>>           Keyboard.0050
+>>           Keyboard.0051
+>>           Keyboard.0052
+>>         Logical Minimum(0)
+>>         Logical Maximum(1)
+>>         Physical Minimum(0)
+>>         Physical Maximum(255)
+>>         Report Size(1)
+>>         Report Count(4)
+>>         Report Offset(48)
+>>         Flags( Variable Absolute )
+>>       Field(3)
+>>         Application(GenericDesktop.GamePad)
+>>         Usage(4)
+>>           GenericDesktop.D-PadUp
+>>           GenericDesktop.D-PadDown
+>>           GenericDesktop.D-PadRight
+>>           GenericDesktop.D-PadLeft
+>>         Logical Minimum(0)
+>>         Logical Maximum(1)
+>>         Physical Minimum(0)
+>>         Physical Maximum(255)
+>>         Report Size(1)
+>>         Report Count(4)
+>>         Report Offset(52)
+>>         Flags( Variable Absolute )
+>>       Field(4)
+>>         Application(GenericDesktop.GamePad)
+>>         Usage(16)
+>>           Button.0001
+>>           Button.0002
+>>           Button.0003
+>>           Button.0004
+>>           Button.0005
+>>           Button.0006
+>>           Button.0007
+>>           Button.0008
+>>           Button.0009
+>>           Button.000a
+>>           Button.000b
+>>           Button.000c
+>>           Button.000d
+>>           Button.000e
+>>           Button.000f
+>>           Button.0010
+>>         Logical Minimum(0)
+>>         Logical Maximum(1)
+>>         Physical Minimum(0)
+>>         Physical Maximum(255)
+>>         Report Size(1)
+>>         Report Count(16)
+>>         Report Offset(56)
+>>         Flags( Variable Absolute )
+>>       Field(5)
+>>         Application(ff02.0001)
+>>         Usage(1)
+>>           ff02.0004
+>>         Logical Minimum(0)
+>>         Logical Maximum(1)
+>>         Physical Minimum(0)
+>>         Physical Maximum(255)
+>>         Report Size(1)
+>>         Report Count(1)
+>>         Report Offset(72)
+>>         Flags( Variable Absolute )
+>>       Field(6)
+>>         Application(Consumer.0001)
+>>         Usage(1)
+>>           Consumer.0224
+>>         Logical Minimum(0)
+>>         Logical Maximum(1)
+>>         Physical Minimum(0)
+>>         Physical Maximum(255)
+>>         Report Size(1)
+>>         Report Count(1)
+>>         Report Offset(73)
+>>         Flags( Variable Relative )
+>>       Field(7)
+>>         Physical(Simulation.0001)
+>>         Application(GenericDesktop.GamePad)
+>>         Usage(2)
+>>           Simulation.00c4
+>>           Simulation.00c5
+>>         Logical Minimum(0)
+>>         Logical Maximum(255)
+>>         Physical Minimum(0)
+>>         Physical Maximum(255)
+>>         Report Size(8)
+>>         Report Count(2)
+>>         Report Offset(80)
+>>         Flags( Variable Absolute )
+>>     FEATURE[FEATURE]
+>>       Field(0)
+>>         Application(GenericDesktop.GamePad)
+>>         Usage(8)
+>>           ff00.0080
+>>           ff00.0080
+>>           ff00.0080
+>>           ff00.0080
+>>           ff00.0080
+>>           ff00.0080
+>>           ff00.0080
+>>           ff00.0080
+>>         Logical Minimum(0)
+>>         Logical Maximum(255)
+>>         Physical Minimum(0)
+>>         Physical Maximum(255)
+>>         Report Size(8)
+>>         Report Count(8)
+>>         Report Offset(0)
+>>         Flags( Variable Absolute )
+>>
+>> GenericDesktop.X ---> Absolute.X
+>> GenericDesktop.Y ---> Absolute.Y
+>> GenericDesktop.Z ---> Absolute.Z
+>> GenericDesktop.Rz ---> Absolute.Rz
+>> GenericDesktop.HatSwitch ---> Absolute.Hat0X
+>> GenericDesktop.HatSwitch ---> Absolute.Hat0Y
+> It took me a while to realize that you were needing
+> https://patchwork.kernel.org/project/linux-input/patch/20201101193452.678628-1-lzye@google.com/
+> for that.
+>
+> But the weird part is that Hat switch are usually used as a single
+> variable, with values being mapped to Hat0X and Hat0Y. So I still
+> haven't manage to understand how the hid-input driver would map the
+> axis to a regular one between 1 and 255...
+>
+>> Keyboard.004f ---> Key.Right
+>> Keyboard.0050 ---> Key.Left
+>> Keyboard.0051 ---> Key.Down
+>> Keyboard.0052 ---> Key.Up
+>> GenericDesktop.D-PadUp ---> Absolute.Hat1X
+>> GenericDesktop.D-PadDown ---> Sync.Report
+>> GenericDesktop.D-PadRight ---> Sync.Report
+>> GenericDesktop.D-PadLeft ---> Sync.Report
+>> Button.0001 ---> Key.BtnA
+>> Button.0002 ---> Key.BtnB
+>> Button.0003 ---> Key.BtnC
+>> Button.0004 ---> Key.BtnX
+>> Button.0005 ---> Key.BtnY
+>> Button.0006 ---> Key.BtnZ
+>> Button.0007 ---> Key.BtnTL
+>> Button.0008 ---> Key.BtnTR
+>> Button.0009 ---> Key.BtnTL2
+>> Button.000a ---> Key.BtnTR2
+>> Button.000b ---> Key.BtnSelect
+>> Button.000c ---> Key.BtnStart
+>> Button.000d ---> Key.BtnMode
+>> Button.000e ---> Key.BtnThumbL
+>> Button.000f ---> Key.BtnThumbR
+>> Button.0010 ---> Key.?
+>> ff02.0004 ---> Key.Btn0
+>> Consumer.0224 ---> Key.Back
+>> Simulation.00c4 ---> Absolute.Gas
+>> Simulation.00c5 ---> Absolute.Brake
+>>
+>> So you can see the device has D-Up, D-Down,D-Right,D-Left usages, and
+>> D-up is mapped to Hat1X.
+> OK, now I am starting to understand the problem better.
+>
+>> Also if you can send HID report from hid-tool,  you will see there are
+>> always intail events on Hat1X/Hat1Y as the HatDir is 0, even no DPAD
+>> buttons pressed.  When you send HID report with D-DPAD buttons with
+>> different state, it doesn't generate any axis events because the HatDir
+>> internally is still 0 regardless the report value of the 4 DPAD usages.
+> That's the part I am a little bit stuck. I can emulate events for X,Y,
+> buttons,... but I am not sure how the gamepad sends the events for the
+> Hat switch and the D-Pad together.
+>
+> Again, before we merge anything, I'd like to have the proper tests
+> written for it, on top of
+> https://gitlab.freedesktop.org/bentiss/hid-tools/-/commits/wip/gamevice
+> so we can ensure there is no regression for it, and that we will not
+> regress on it later on.
+>
+> Cheers,
+> Benjamin
+>
+>>
+>> Thanks!
+>>
+>> Chris
+>>
+>>
+>> On 11/2/20 12:16 AM, Benjamin Tissoires wrote:
+>>> Hi Chris,
+>>>
+>>>
+>>> On Sun, Nov 1, 2020 at 8:35 PM Chris Ye <lzye@google.com> wrote:
+>>>> Generic Desktop DPAD usage is mapped by hid-input, that only the first
+>>>> DPAD usage maps to usage type EV_ABS and code of an axis. If HID
+>>>> descriptor has DPAD UP/DOWN/LEFT/RIGHT HID usages and each of usage size
+>>>> is 1 bit, then only the first one will generate input event, the rest of
+>>>> the HID usages will be assigned to hat direction only.
+>>>> The hid input event should check the HID report value and generate
+>>>> HID event for its hat direction.
+>>>>
+>>>> Test: Connect HID device with Generic Desktop DPAD usage and press the
+>>>> DPAD to generate input events.
+>>> Thanks for the patch, but I would rather have a proper tests added to
+>>> https://gitlab.freedesktop.org/libevdev/hid-tools
+>>>
+>>> We already have gamepads tests, and it would be very nice to have this
+>>> patch reflected as a test as well. This would also allow me to better
+>>> understand the problem. I am not sure I follow the whole logic of this
+>>> patch without seeing the 2 variants of report descriptors.
+>>>
+>>> Cheers,
+>>> Benjamin
+>>>
+>>>> Signed-off-by: Chris Ye <lzye@google.com>
+>>>> ---
+>>>>    drivers/hid/hid-input.c | 16 ++++++++++++----
+>>>>    1 file changed, 12 insertions(+), 4 deletions(-)
+>>>>
+>>>> diff --git a/drivers/hid/hid-input.c b/drivers/hid/hid-input.c
+>>>> index 9770db624bfa..6c1007de3409 100644
+>>>> --- a/drivers/hid/hid-input.c
+>>>> +++ b/drivers/hid/hid-input.c
+>>>> @@ -1269,7 +1269,7 @@ void hidinput_hid_event(struct hid_device *hid, struct hid_field *field, struct
+>>>>           struct input_dev *input;
+>>>>           unsigned *quirks = &hid->quirks;
+>>>>
+>>>> -       if (!usage->type)
+>>>> +       if (!usage->type && !field->dpad)
+>>>>                   return;
+>>>>
+>>>>           if (usage->type == EV_PWR) {
+>>>> @@ -1286,9 +1286,17 @@ void hidinput_hid_event(struct hid_device *hid, struct hid_field *field, struct
+>>>>                   int hat_dir = usage->hat_dir;
+>>>>                   if (!hat_dir)
+>>>>                           hat_dir = (value - usage->hat_min) * 8 / (usage->hat_max - usage->hat_min + 1) + 1;
+>>>> -               if (hat_dir < 0 || hat_dir > 8) hat_dir = 0;
+>>>> -               input_event(input, usage->type, usage->code    , hid_hat_to_axis[hat_dir].x);
+>>>> -               input_event(input, usage->type, usage->code + 1, hid_hat_to_axis[hat_dir].y);
+>>>> +               if (hat_dir < 0 || hat_dir > 8 || value == 0)
+>>>> +                       hat_dir = 0;
+>>>> +               if (field->dpad) {
+>>>> +                       input_event(input, EV_ABS, field->dpad, hid_hat_to_axis[hat_dir].x);
+>>>> +                       input_event(input, EV_ABS, field->dpad + 1, hid_hat_to_axis[hat_dir].y);
+>>>> +               } else {
+>>>> +                       input_event(input, usage->type, usage->code,
+>>>> +                               hid_hat_to_axis[hat_dir].x);
+>>>> +                       input_event(input, usage->type, usage->code + 1,
+>>>> +                               hid_hat_to_axis[hat_dir].y);
+>>>> +               }
+>>>>                   return;
+>>>>           }
+>>>>
+>>>> --
+>>>> 2.29.1.341.ge80a0c044ae-goog
+>>>>
