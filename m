@@ -2,208 +2,365 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2EC72A870A
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 20:25:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF8002A870C
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 20:25:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732128AbgKETY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 14:24:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34618 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726729AbgKETY6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 14:24:58 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F27BCC0613CF;
-        Thu,  5 Nov 2020 11:24:57 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id k18so2704211wmj.5;
-        Thu, 05 Nov 2020 11:24:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=c84j3FPt8y1UjleN+0uFFpolPY6RIuJxFH2eYBSSQwM=;
-        b=r42bEGOeIz08DFt7u/ocu6oCFubXX1RmwgYMRnTBi0HVChg14xbAs+3qnBNHUNxHn1
-         Fy9Bykw9VDs96zeTESor/LkcYogD5dX4+xwldrVgP26jPaXIdcmPVIqPUzul5We3TtfY
-         rB8ncaJpSdm+aQKBMbw7GmWuNMVnYxrYIAOKFDrAUXhOuBZXggtmCYY+JueeHhUb7BGh
-         t12SX7+IS041UB4051lhaZP7zj4sWW8KqZizZKJUSoLnG8rIfnXdpDMXVHMxBtwRhrJ+
-         ce+sX2ZDlZsrIhs1SHm5O55Vo8DtkWqfWJrZMzHOhFUcA0l1jH5vQUWuIg6hs8wMk9Mf
-         kwqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=c84j3FPt8y1UjleN+0uFFpolPY6RIuJxFH2eYBSSQwM=;
-        b=eJXzfGGVtVB1vcq8DS7mDc+V59Rb2CGaMLG138RGOZpcGlJHEPsqHg8b8NV0Vekrcx
-         ZW0bYfpXcEYaTB7CbazVDfvq69WhOfoznRQ2hzHUM8ApdgKtaYd+SwXpuIVgiwTUCO9T
-         HZz9CYjz5+0BkiuS/GzgrhIlaX8oM/2jtCqvJ7gOxRm4ORrP3GUuyYCUDbvJtbDid4/+
-         emEop7TPmqmlXxG5XSiJrxiwHA1XbYCdpyfYx4ea657yS3iQzzuuRJ/qyt0Npz9CGZVd
-         Dzk9PyqceuzNB7prmEyWwzFx9ajP0WxVrPYinrP2CwWmr2o62F4TylDZvC5RBZ4zOBli
-         dzvw==
-X-Gm-Message-State: AOAM5331qrc+p9U0RiTxeI62r7hSmS/pKOBXU7dpt8Zcie3yR4mvmksX
-        6b2SUE0AphjeHnt8YKMlvqGLwo2EkXAFMJfwvh8=
-X-Google-Smtp-Source: ABdhPJw4oMJwj2QNFJO5EVOC3Lp835RiEiDpQE7Hgn3mJaQ9tj4G+Ynr9KF0r6RHUs+Ms1UM+ZLQudg8QvBqgfoGtcQ=
-X-Received: by 2002:a7b:cc05:: with SMTP id f5mr4304183wmh.123.1604604296642;
- Thu, 05 Nov 2020 11:24:56 -0800 (PST)
+        id S1732164AbgKETZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 14:25:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40580 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726729AbgKETZM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 14:25:12 -0500
+Received: from cakuba.hsd1.ca.comcast.net (c-67-180-217-166.hsd1.ca.comcast.net [67.180.217.166])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9F5032083B;
+        Thu,  5 Nov 2020 19:25:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604604309;
+        bh=wRlsVlmFSl6RWi9sN14uRixMDSccSC9oLOYe7CNDhk4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=N2J+XbHE75SaqCzg6wusJ9wacEbVv22D9BMlIY2nXJFEv3NKhvCQ9yum2EQqWTxma
+         fa52g7mE/r+cFUOFuwQW0cDsWJXFe/CCACDqK2R+UyLwxXSTc8AfUpILfowUPSdXr2
+         /vLxH8h2IkD8DTHHfzVBjnjGnvr5z0WytXh6/AuI=
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     torvalds@linux-foundation.org
+Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Networking
+Date:   Thu,  5 Nov 2020 11:25:08 -0800
+Message-Id: <20201105192508.1699334-1-kuba@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <CAF6AEGstGtBswUUiyHxT2cCm8NwZekDnMzD0J_pQH37GwS=LiA@mail.gmail.com>
- <20201020090729.qgqish5kqamhvatj@vireshk-i7> <CAKMK7uHAgVUPHOPxDdt3LeAWqokxfuzqjZj4qqFkoKxFbRbRrg@mail.gmail.com>
- <20201020112413.xbk2vow2kgjky3pb@vireshk-i7> <CAF6AEGsCj-AtFozn8d1xiNNFNbuMJ0UxS-eMhBVXiQ7rKahKnQ@mail.gmail.com>
- <20201022080644.2ck4okrxygmkuatn@vireshk-i7> <CAF6AEGv6RMCsK4yp-W2d1mVTMcEiiwFGAb+V8rYLhDdMhqP80Q@mail.gmail.com>
- <20201027113532.nriqqws7gdcu5su6@vireshk-i7> <20201103054715.4l5j57pyjz6zd6ed@vireshk-i7>
- <CAF6AEGtgUVXm6Wwod0FC38g91Q8CotLFSoC4NmXx7GzcA=1mOA@mail.gmail.com> <20201104030353.ny7zvakgb4fsye6r@vireshk-i7>
-In-Reply-To: <20201104030353.ny7zvakgb4fsye6r@vireshk-i7>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Thu, 5 Nov 2020 11:24:44 -0800
-Message-ID: <CAF6AEGv215ixcAWmaOWs7UKAqmbMs=aFyTBBYLU-bt8XBnWb7g@mail.gmail.com>
-Subject: Re: [PATCH v2 07/22] drm/msm: Do rpm get sooner in the submit path
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <freedreno@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "Menon, Nishanth" <nm@ti.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 3, 2020 at 7:04 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> On 03-11-20, 08:50, Rob Clark wrote:
-> > sorry, it didn't apply cleanly (which I guess is due to some other
-> > dependencies that need to be picked back to v5.4 product kernel), and
-> > due to some other things I'm in middle of debugging I didn't have time
-> > yet to switch to v5.10-rc or look at what else needs to
-> > cherry-picked..
-> >
-> > If you could, pushing a branch with this patch somewhere would be a
-> > bit easier to work with (ie. fetch && cherry-pick is easier to deal
-> > with than picking things from list)
->
-> It has been in linux-next for a few days. Here is the HEAD to pick
-> from. There are few patches there since rc1.
->
-> commit 203e29749cc0 ("opp: Allocate the OPP table outside of opp_table_lock")
->
+The following changes since commit 07e0887302450a62f51dba72df6afb5fabb23d1c:
 
-sorry for the delay, with that cherry-picked, I'm getting a whole lot of:
+  Merge tag 'fallthrough-fixes-clang-5.10-rc2' of git://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux (2020-10-29 13:02:52 -0700)
 
-[   10.191497] WARNING: CPU: 7 PID: 52 at drivers/opp/of.c:115
-_find_table_of_opp_np+0x8c/0x94
-[   10.191502] Modules linked in:
-[   10.191517] CPU: 7 PID: 52 Comm: kworker/7:1 Tainted: G        W
-     5.10.0-rc2+ #2
-[   10.191522] Hardware name: Google Lazor (rev1+) with LTE (DT)
-[   10.191537] Workqueue: events deferred_probe_work_func
-[   10.191551] pstate: 60c00009 (nZCv daif +PAN +UAO -TCO BTYPE=--)
-[   10.202819] mmc0: CQHCI version 5.10
-[   10.206038] pc : _find_table_of_opp_np+0x8c/0x94
-[   10.206045] lr : _find_table_of_opp_np+0x34/0x94
-[   10.206050] sp : ffffffc010373810
-[   10.206054] x29: ffffffc010373810 x28: ffffff94c5a3d170
-[   10.206070] x27: ffffff94c5a3d168
-[   10.249098] mmc0: SDHCI controller on 7c4000.sdhci [7c4000.sdhci]
-using ADMA 64-bit
-[   10.251366] x26: ffffff94c580c000
-[   10.251374] x25: 0000000000000001 x24: ffffff963f02c750
-[   10.251385] x23: 0000000000000000 x22: ffffff94c5aabc80
-[   10.251397] x21: ffffff963f021c78 x20: ffffff94c5a75800
-[   10.256963] sdhci_msm 7c4000.sdhci: mmc0: CQE init: success
-[   10.260376]
-[   10.260380] x19: ffffff963f02c750 x18: 0000000000000004
-[   10.260392] x17: 000000000000002c x16: ffffffe2468e1e78
-[   10.260404] x15: ffffffe246df3eb8 x14: ffffffff52f45308
-[   10.311816] x13: 0000000000000000 x12: ffffffe24541aef0
-[   10.317298] x11: ffffffe246df3eb8 x10: fffffffefe60e678
-[   10.322776] x9 : 0000000000000000 x8 : ffffffb3f89a7000
-[   10.328258] x7 : ffffffe245c5d9d0 x6 : 0000000000000000
-[   10.333730] x5 : 0000000000000080 x4 : 0000000000000001
-[   10.339206] x3 : 0000000000000000 x2 : 0000000000000006
-[   10.344684] x1 : ffffffe24684aa88 x0 : 0000000000000000
-[   10.350158] Call trace:
-[   10.352695]  _find_table_of_opp_np+0x8c/0x94
-[   10.353507] mmc0: Command Queue Engine enabled
-[   10.357095]  _of_init_opp_table+0x15c/0x1e4
-[   10.357103]  _opp_get_opp_table+0x168/0x280
-[   10.357110]  dev_pm_opp_set_clkname+0x28/0xcc
-[   10.357119]  dpu_bind+0x50/0x1a4
-[   10.357128]  component_bind_all+0xf4/0x20c
-[   10.357138]  msm_drm_init+0x180/0x588
-[   10.361815] mmc0: new HS400 Enhanced strobe MMC card at address 0001
-[   10.366050]  msm_drm_bind+0x1c/0x24
-[   10.366057]  try_to_bring_up_master+0x160/0x1a8
-[   10.366065]  component_master_add_with_match+0xc4/0x108
-[   10.366072]  msm_pdev_probe+0x214/0x2a4
-[   10.366081]  platform_drv_probe+0x94/0xb4
-[   10.374415] mmcblk0: mmc0:0001 DA4064 58.2 GiB
-[   10.374871]  really_probe+0x138/0x348
-[   10.374881]  driver_probe_device+0x80/0xb8
-[   10.379483] mmcblk0boot0: mmc0:0001 DA4064 partition 1 4.00 MiB
-[   10.382446]  __device_attach_driver+0x90/0xa8
-[   10.382453]  bus_for_each_drv+0x84/0xcc
-[   10.382459]  __device_attach+0xc0/0x148
-[   10.382466]  device_initial_probe+0x18/0x20
-[   10.382473]  bus_probe_device+0x38/0x98
-[   10.382483]  deferred_probe_work_func+0x7c/0xb8
-[   10.387402] mmcblk0boot1: mmc0:0001 DA4064 partition 2 4.00 MiB
-[   10.392780]  process_one_work+0x314/0x60c
-[   10.392786]  worker_thread+0x238/0x3e8
-[   10.392793]  kthread+0x148/0x158
-[   10.392800]  ret_from_fork+0x10/0x18
-[   10.392809] CPU: 7 PID: 52 Comm: kworker/7:1 Tainted: G        W
-     5.10.0-rc2+ #2
-[   10.397683] mmcblk0rpmb: mmc0:0001 DA4064 partition 3 16.0 MiB,
-chardev (241:0)
-[   10.401051] Hardware name: Google Lazor (rev1+) with LTE (DT)
-[   10.401062] Workqueue: events deferred_probe_work_func
-[   10.401069] Call trace:
-[   10.401077]  dump_backtrace+0x0/0x1b4
-[   10.401087]  show_stack+0x1c/0x24
-[   10.427111]  mmcblk0: p1 p2 p3 p4 p5 p6 p7 p8 p9 p10 p11 p12
-[   10.427156]  dump_stack+0xdc/0x158
-[   10.427165]  __warn+0xd8/0x16c
-[   10.427173]  report_bug+0x88/0xe0
-[   10.427179]  bug_handler+0x24/0x6c
-[   10.535574]  brk_handler+0x78/0xb4
-[   10.539090]  do_debug_exception+0x1a4/0x208
-[   10.543395]  el1_sync_handler+0x8c/0x110
-[   10.547434]  el1_sync+0x7c/0x100
-[   10.550762]  _find_table_of_opp_np+0x8c/0x94
-[   10.555166]  _of_init_opp_table+0x15c/0x1e4
-[   10.559472]  _opp_get_opp_table+0x168/0x280
-[   10.563779]  dev_pm_opp_set_clkname+0x28/0xcc
-[   10.568270]  dpu_bind+0x50/0x1a4
-[   10.571607]  component_bind_all+0xf4/0x20c
-[   10.575826]  msm_drm_init+0x180/0x588
-[   10.579603]  msm_drm_bind+0x1c/0x24
-[   10.583205]  try_to_bring_up_master+0x160/0x1a8
-[   10.587877]  component_master_add_with_match+0xc4/0x108
-[   10.593251]  msm_pdev_probe+0x214/0x2a4
-[   10.597203]  platform_drv_probe+0x94/0xb4
-[   10.601334]  really_probe+0x138/0x348
-[   10.605110]  driver_probe_device+0x80/0xb8
-[   10.609329]  __device_attach_driver+0x90/0xa8
-[   10.613821]  bus_for_each_drv+0x84/0xcc
-[   10.617774]  __device_attach+0xc0/0x148
-[   10.621729]  device_initial_probe+0x18/0x20
-[   10.626044]  bus_probe_device+0x38/0x98
-[   10.629998]  deferred_probe_work_func+0x7c/0xb8
-[   10.634668]  process_one_work+0x314/0x60c
-[   10.638797]  worker_thread+0x238/0x3e8
-[   10.642661]  kthread+0x148/0x158
-[   10.645997]  ret_from_fork+0x10/0x18
-[   10.649683] irq event stamp: 117274
-[   10.653290] hardirqs last  enabled at (117273):
-[<ffffffe245ed8430>] _raw_spin_unlock_irqrestore+0x60/0x94
-[   10.663213] hardirqs last disabled at (117274):
-[<ffffffe245420ea0>] do_debug_exception+0x60/0x208
-[   10.672420] softirqs last  enabled at (116976):
-[<ffffffe245400eec>] __do_softirq+0x4bc/0x540
-[   10.681184] softirqs last disabled at (116971):
-[<ffffffe24547dd10>] __irq_exit_rcu+0x118/0x138
-[   10.690123] ---[ end trace 00b127c206a99072 ]---
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-5.10-rc3
+
+for you to fetch changes up to 2bcbf42add911ef63a6d90e92001dc2bcb053e68:
+
+  ionic: check port ptr before use (2020-11-05 09:58:25 -0800)
+
+----------------------------------------------------------------
+Networking fixes for 5.10-rc3, including fixes from wireless, can,
+and netfilter subtrees.
+
+Current release - bugs in new features:
+
+ - can: isotp: isotp_rcv_cf(): enable RX timeout handling in
+   listen-only mode
+
+Previous release - regressions:
+
+ - mac80211:
+   - don't require VHT elements for HE on 2.4 GHz
+   - fix regression where EAPOL frames were sent in plaintext
+
+ - netfilter:
+   - ipset: Update byte and packet counters regardless of whether
+     they match
+
+ - ip_tunnel: fix over-mtu packet send by allowing fragmenting even
+   if inner packet has IP_DF (don't fragment) set in its header
+   (when TUNNEL_DONT_FRAGMENT flag is not set on the tunnel dev)
+
+ - net: fec: fix MDIO probing for some FEC hardware blocks
+
+ - ip6_tunnel: set inner ipproto before ip6_tnl_encap to un-break
+   gso support
+
+ - sctp: Fix COMM_LOST/CANT_STR_ASSOC err reporting on big-endian
+   platforms, sparse-related fix used the wrong integer size
+
+Previous release - always broken:
+
+ - netfilter: use actual socket sk rather than skb sk when routing
+   harder
+
+ - r8169: work around short packet hw bug on RTL8125 by padding frames
+
+ - net: ethernet: ti: cpsw: disable PTPv1 hw timestamping
+   advertisement, the hardware does not support it
+
+ - chelsio/chtls: fix always leaking ctrl_skb and another leak caused
+   by a race condition
+
+ - fix drivers incorrectly writing into skbs on TX:
+   - cadence: force nonlinear buffers to be cloned
+   - gianfar: Account for Tx PTP timestamp in the skb headroom
+   - gianfar: Replace skb_realloc_headroom with skb_cow_head for PTP
+
+ - can: flexcan:
+   - remove FLEXCAN_QUIRK_DISABLE_MECR quirk for LS1021A
+   - add ECC initialization for VF610 and LX2160A
+   - flexcan_remove(): disable wakeup completely
+
+ - can: fix packet echo functionality:
+   - peak_canfd: fix echo management when loopback is on
+   - make sure skbs are not freed in IRQ context in case they need
+     to be dropped
+   - always clone the skbs to make sure they have a reference on
+     the socket, and prevent it from disappearing
+   - fix real payload length return value for RTR frames
+
+ - can: j1939: return failure on bind if netdev is down, rather than
+   waiting indefinitely
+
+Misc:
+
+ - IPv6: reply ICMP error if the first fragment don't include all
+   headers to improve compliance with RFC 8200
+
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+
+----------------------------------------------------------------
+Alexander Ovechkin (1):
+      ip6_tunnel: set inner ipproto before ip6_tnl_encap
+
+Camelia Groza (2):
+      dpaa_eth: update the buffer layout for non-A050385 erratum scenarios
+      dpaa_eth: fix the RX headroom size alignment
+
+Claudiu Manoil (2):
+      gianfar: Replace skb_realloc_headroom with skb_cow_head for PTP
+      gianfar: Account for Tx PTP timestamp in the skb headroom
+
+Colin Ian King (2):
+      net: atm: fix update of position index in lec_seq_next
+      can: isotp: padlen(): make const array static, makes object smaller
+
+Dan Carpenter (1):
+      can: peak_usb: add range checking in decode operations
+
+Daniele Palmas (1):
+      net: usb: qmi_wwan: add Telit LE910Cx 0x1230 composition
+
+Davide Caratti (1):
+      mptcp: token: fix unititialized variable
+
+Eelco Chaudron (1):
+      net: openvswitch: silence suspicious RCU usage warning
+
+Geert Uytterhoeven (1):
+      can: isotp: Explain PDU in CAN_ISOTP help text
+
+Greg Ungerer (1):
+      net: fec: fix MDIO probing for some FEC hardware blocks
+
+Grygorii Strashko (1):
+      net: ethernet: ti: cpsw: disable PTPv1 hw timestamping advertisement
+
+Hangbin Liu (2):
+      ICMPv6: Add ICMPv6 Parameter Problem, code 3 definition
+      IPv6: reply ICMP error if the first fragment don't include all headers
+
+Heiner Kallweit (1):
+      r8169: work around short packet hw bug on RTL8125
+
+Jakub Kicinski (6):
+      Merge branch 'ipv6-reply-icmp-error-if-fragment-doesn-t-contain-all-headers'
+      Merge git://git.kernel.org/.../pablo/nf
+      Merge tag 'mac80211-for-net-2020-10-30' of git://git.kernel.org/.../jberg/mac80211
+      Merge branch 'dpaa_eth-buffer-layout-fixes'
+      Merge branch 'master' of git://git.kernel.org/.../klassert/ipsec
+      Merge tag 'linux-can-fixes-for-5.10-20201103' of git://git.kernel.org/.../mkl/linux-can
+
+Jason A. Donenfeld (2):
+      wireguard: selftests: check that route_me_harder packets use the right sk
+      netfilter: use actual socket sk rather than skb sk when routing harder
+
+Joakim Zhang (4):
+      can: flexcan: remove FLEXCAN_QUIRK_DISABLE_MECR quirk for LS1021A
+      can: flexcan: add ECC initialization for LX2160A
+      can: flexcan: add ECC initialization for VF610
+      can: flexcan: flexcan_remove(): disable wakeup completely
+
+Johannes Berg (4):
+      mac80211: fix use of skb payload instead of header
+      cfg80211: initialize wdev data earlier
+      mac80211: always wind down STA state
+      mac80211: don't require VHT elements for HE on 2.4 GHz
+
+Jonathan McDowell (1):
+      net: dsa: qca8k: Fix port MTU setting
+
+Marc Kleine-Budde (2):
+      can: rx-offload: don't call kfree_skb() from IRQ context
+      can: mcp251xfd: mcp251xfd_regmap_crc_read(): increase severity of CRC read error messages
+
+Marek Szyprowski (1):
+      net: stmmac: Fix channel lock initialization
+
+Mark Deneen (1):
+      cadence: force nonlinear buffers to be cloned
+
+Mathy Vanhoef (1):
+      mac80211: fix regression where EAPOL frames were sent in plaintext
+
+Mauro Carvalho Chehab (1):
+      mac80211: fix kernel-doc markups
+
+Navid Emamdoost (1):
+      can: xilinx_can: handle failure cases of pm_runtime_get_sync
+
+Oleksij Rempel (3):
+      dt-bindings: can: add can-controller.yaml
+      dt-bindings: can: flexcan: convert fsl,*flexcan bindings to yaml
+      can: can_create_echo_skb(): fix echo skb generation: always use skb_clone()
+
+Oliver Hartkopp (2):
+      can: dev: __can_get_echo_skb(): fix real payload length return value for RTR frames
+      can: isotp: isotp_rcv_cf(): enable RX timeout handling in listen-only mode
+
+Pablo Neira Ayuso (2):
+      netfilter: nftables: fix netlink report logic in flowtable and genid
+      netfilter: nf_tables: missing validation from the abort path
+
+Petr Malat (1):
+      sctp: Fix COMM_LOST/CANT_STR_ASSOC err reporting on big-endian platforms
+
+Shannon Nelson (1):
+      ionic: check port ptr before use
+
+Stefano Brivio (1):
+      netfilter: ipset: Update byte and packet counters regardless of whether they match
+
+Stephane Grosjean (2):
+      can: peak_usb: peak_usb_get_ts_time(): fix timestamp wrapping
+      can: peak_canfd: pucan_handle_can_rx(): fix echo management when loopback is on
+
+Sukadev Bhattiprolu (1):
+      powerpc/vnic: Extend "failover pending" window
+
+Tom Rix (1):
+      can: mcp251xfd: remove unneeded break
+
+Vinay Kumar Yadav (2):
+      chelsio/chtls: fix memory leaks caused by a race
+      chelsio/chtls: fix always leaking ctrl_skb
+
+Vincent Mailhol (1):
+      can: dev: can_get_echo_skb(): prevent call to kfree_skb() in hard IRQ context
+
+Wong Vee Khee (1):
+      stmmac: intel: Fix kernel panic on pci probe
+
+Xin Long (1):
+      xfrm: interface: fix the priorities for ipip and ipv6 tunnels
+
+Ye Bin (1):
+      cfg80211: regulatory: Fix inconsistent format argument
+
+Yegor Yefremov (4):
+      can: j1939: rename jacd tool
+      can: j1939: fix syntax and spelling
+      can: j1939: swap addr and pgn in the send example
+      can: j1939: use backquotes for code samples
+
+YueHaibing (1):
+      sfp: Fix error handing in sfp_probe()
+
+Zhang Changzhong (3):
+      can: proc: can_remove_proc(): silence remove_proc_entry warning
+      can: j1939: j1939_sk_bind(): return failure if netdev is down
+      can: ti_hecc: ti_hecc_probe(): add missed clk_disable_unprepare() in error path
+
+kernel test robot (1):
+      can: mcp251xfd: mcp251xfd_regmap_nocrc_read(): fix semicolon.cocci warnings
+
+wenxu (1):
+      ip_tunnel: fix over-mtu packet send fail without TUNNEL_DONT_FRAGMENT flags
+
+zhuoliang zhang (1):
+      net: xfrm: fix a race condition during allocing spi
+
+ .../bindings/net/can/can-controller.yaml           |  18 +++
+ .../devicetree/bindings/net/can/fsl,flexcan.yaml   | 135 +++++++++++++++++++++
+ .../devicetree/bindings/net/can/fsl-flexcan.txt    |  57 ---------
+ Documentation/networking/j1939.rst                 | 120 +++++++++---------
+ drivers/net/can/dev.c                              |  14 ++-
+ drivers/net/can/flexcan.c                          |  12 +-
+ drivers/net/can/peak_canfd/peak_canfd.c            |  11 +-
+ drivers/net/can/rx-offload.c                       |   4 +-
+ drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c     |  22 ++--
+ drivers/net/can/spi/mcp251xfd/mcp251xfd-regmap.c   |  18 +--
+ drivers/net/can/ti_hecc.c                          |   8 +-
+ drivers/net/can/usb/peak_usb/pcan_usb_core.c       |  51 +++++++-
+ drivers/net/can/usb/peak_usb/pcan_usb_fd.c         |  48 ++++++--
+ drivers/net/can/xilinx_can.c                       |   6 +-
+ drivers/net/dsa/qca8k.c                            |   4 +-
+ drivers/net/ethernet/cadence/macb_main.c           |   3 +-
+ .../chelsio/inline_crypto/chtls/chtls_cm.c         |   2 +-
+ .../chelsio/inline_crypto/chtls/chtls_hw.c         |   3 +
+ drivers/net/ethernet/freescale/dpaa/dpaa_eth.c     |  28 +++--
+ drivers/net/ethernet/freescale/fec.h               |   6 +
+ drivers/net/ethernet/freescale/fec_main.c          |  29 +++--
+ drivers/net/ethernet/freescale/gianfar.c           |  14 +--
+ drivers/net/ethernet/ibm/ibmvnic.c                 |  36 +++++-
+ .../net/ethernet/pensando/ionic/ionic_ethtool.c    |   5 +
+ drivers/net/ethernet/realtek/r8169_main.c          |  14 ++-
+ drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c  |  14 +--
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c  |   1 +
+ drivers/net/ethernet/ti/cpsw_ethtool.c             |   1 -
+ drivers/net/ethernet/ti/cpsw_priv.c                |   5 +-
+ drivers/net/phy/sfp.c                              |   3 +-
+ drivers/net/usb/qmi_wwan.c                         |   1 +
+ include/linux/can/skb.h                            |  20 ++-
+ include/linux/netfilter/nfnetlink.h                |   9 +-
+ include/linux/netfilter_ipv4.h                     |   2 +-
+ include/linux/netfilter_ipv6.h                     |  10 +-
+ include/net/cfg80211.h                             |   9 +-
+ include/net/mac80211.h                             |   7 +-
+ include/uapi/linux/icmpv6.h                        |   1 +
+ net/atm/lec.c                                      |   5 +-
+ net/can/Kconfig                                    |   5 +-
+ net/can/isotp.c                                    |  26 ++--
+ net/can/j1939/socket.c                             |   6 +
+ net/can/proc.c                                     |   6 +-
+ net/ipv4/ip_tunnel.c                               |   3 -
+ net/ipv4/netfilter.c                               |   8 +-
+ net/ipv4/netfilter/iptable_mangle.c                |   2 +-
+ net/ipv4/netfilter/nf_reject_ipv4.c                |   2 +-
+ net/ipv4/xfrm4_tunnel.c                            |   4 +-
+ net/ipv6/icmp.c                                    |   8 +-
+ net/ipv6/ip6_tunnel.c                              |   4 +-
+ net/ipv6/netfilter.c                               |   6 +-
+ net/ipv6/netfilter/ip6table_mangle.c               |   2 +-
+ net/ipv6/reassembly.c                              |  33 ++++-
+ net/ipv6/xfrm6_tunnel.c                            |   4 +-
+ net/mac80211/mlme.c                                |   3 +-
+ net/mac80211/sta_info.c                            |  18 +++
+ net/mac80211/sta_info.h                            |   9 +-
+ net/mac80211/tx.c                                  |  44 ++++---
+ net/mptcp/token.c                                  |   2 +-
+ net/netfilter/ipset/ip_set_core.c                  |   3 +-
+ net/netfilter/ipvs/ip_vs_core.c                    |   4 +-
+ net/netfilter/nf_nat_proto.c                       |   4 +-
+ net/netfilter/nf_synproxy_core.c                   |   2 +-
+ net/netfilter/nf_tables_api.c                      |  19 +--
+ net/netfilter/nfnetlink.c                          |  22 +++-
+ net/netfilter/nft_chain_route.c                    |   4 +-
+ net/netfilter/utils.c                              |   4 +-
+ net/openvswitch/datapath.c                         |  14 +--
+ net/openvswitch/flow_table.c                       |   2 +-
+ net/sctp/sm_sideeffect.c                           |   4 +-
+ net/wireless/core.c                                |  57 +++++----
+ net/wireless/core.h                                |   5 +-
+ net/wireless/nl80211.c                             |   3 +-
+ net/wireless/reg.c                                 |   2 +-
+ net/xfrm/xfrm_interface.c                          |   8 +-
+ net/xfrm/xfrm_state.c                              |   8 +-
+ tools/testing/selftests/wireguard/netns.sh         |   8 ++
+ .../testing/selftests/wireguard/qemu/kernel.config |   2 +
+ 78 files changed, 744 insertions(+), 382 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/net/can/can-controller.yaml
+ create mode 100644 Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml
+ delete mode 100644 Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
