@@ -2,111 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5E562A827B
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 16:45:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ED6A2A828C
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 16:46:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731367AbgKEPpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 10:45:17 -0500
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:36845 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731202AbgKEPpQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 10:45:16 -0500
-Received: by mail-wr1-f67.google.com with SMTP id x7so2321081wrl.3
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 07:45:14 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=W1nC8Ep9mivgJZksY7MG5lSo7fvXUWLe5EVSJUjtJ2w=;
-        b=U21S6VzMslqV3hLOfEa+otU2dkuVBjSOietDRBn1QMnacHyhXOIeL07X2NIq2+2ay2
-         1BVuQkVnY7eW1frmNDm0cj66bAJhpyNivNfaWQ6dgmqRSwPaHL/SqwysYrQ+eb5u4Nhi
-         ohCJtSGHUPSR9F/P4NBJYlyMv4kg9FbGaX1rs+Jc+lGQX43LFunlvRwEcajlzn/Jh+aJ
-         Q27TPBtFXUYsxbXyx0jrlWPHSgyu4LwTeV+Dt7byimbJAXrRs078yNyxMXbFRuS+RtCW
-         ueQyJ3oSVBg0kZKRkUp/sEeirlq04b2NVbp5+vmP9y5+Kv/DyHTRGyJek9JzDt06eVZS
-         UT7Q==
-X-Gm-Message-State: AOAM531Ts2wmMzTxhRzG/a/BQkgSlkzvR6WAMydO5LfwJNT0x97c6gdf
-        4IE1z6tkNYdsgMXKZEAqlA6iufYj38JjKlr8oj0=
-X-Google-Smtp-Source: ABdhPJxOzi1LYhpQNz43dcRN/35mXWEtr1O27x38BbvP6TvwwMe56G+SMwctz2ZAacPqdCqDoxNx8kZCRZxgszDaoNE=
-X-Received: by 2002:adf:84a5:: with SMTP id 34mr3642106wrg.8.1604591113331;
- Thu, 05 Nov 2020 07:45:13 -0800 (PST)
+        id S1731524AbgKEPqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 10:46:15 -0500
+Received: from foss.arm.com ([217.140.110.172]:35914 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730721AbgKEPqP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 10:46:15 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8A71C14BF;
+        Thu,  5 Nov 2020 07:46:14 -0800 (PST)
+Received: from localhost (unknown [10.1.198.32])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1CA483F718;
+        Thu,  5 Nov 2020 07:46:14 -0800 (PST)
+Date:   Thu, 5 Nov 2020 15:46:12 +0000
+From:   Ionela Voinescu <ionela.voinescu@arm.com>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Nicola Mazzucato <nicola.mazzucato@arm.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        LAK <linux-arm-kernel@lists.infradead.org>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Sudeep Holla <sudeep.holla@arm.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Chris Redpath <chris.redpath@arm.com>
+Subject: Re: [PATCH v3 0/3] CPUFreq: Add support for cpu performance
+ dependencies
+Message-ID: <20201105154612.GA17891@arm.com>
+References: <20201102120115.29993-1-nicola.mazzucato@arm.com>
+ <20201103101840.yrgwmcjrnjn7n5q6@vireshk-i7>
+ <87558fa9-a4c6-38c9-bcc5-f736c0229f56@arm.com>
+ <CAKfTPtDvDqHjSFCmjc_D_8Tx0kosBneDxmDZRpG6XkgAnWE3nw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201102145221.309001-1-namhyung@kernel.org> <20201102145221.309001-2-namhyung@kernel.org>
- <f92281d1-03ec-a1bc-b54f-e2b867d5b787@linux.intel.com>
-In-Reply-To: <f92281d1-03ec-a1bc-b54f-e2b867d5b787@linux.intel.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Fri, 6 Nov 2020 00:45:02 +0900
-Message-ID: <CAM9d7cgsNEoeotoumY0S9kvn0uc34TOas_3rVRL3VyQ9_VVM5Q@mail.gmail.com>
-Subject: Re: [RFC 1/2] perf/core: Enable sched_task callbacks if PMU has it
-To:     "Liang, Kan" <kan.liang@linux.intel.com>
-Cc:     Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>, Gabriel Marin <gmx@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKfTPtDvDqHjSFCmjc_D_8Tx0kosBneDxmDZRpG6XkgAnWE3nw@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi guys,
 
-On Thu, Nov 5, 2020 at 11:47 PM Liang, Kan <kan.liang@linux.intel.com> wrote:
->
->
->
-> On 11/2/2020 9:52 AM, Namhyung Kim wrote:
-> > If an event associated with a PMU which has a sched_task callback,
-> > it should be called regardless of cpu/task context.  For example,
->
->
-> I don't think it's necessary. We should call it when we have to.
-> Otherwise, it just waste cycles.
-> Shouldn't the patch 2 be enough?
-
-I'm not sure, without this patch __perf_event_task_sched_in/out
-cannot be called for per-cpu events (w/o cgroups)  IMHO.
-And I could not find any other place to check the
-perf_sched_cb_usages.
-
-Thanks
-Namhyung
-
-
->
-> > a per-cpu event might enable large PEBS buffers so it needs to flush
-> > the buffer whenever task scheduling happens. >
-> > The underlying PMU may or may not require this for the given event,
-> > but it will be handled in the pmu::sched_task() callback anyway.
+On Thursday 05 Nov 2020 at 15:25:53 (+0100), Vincent Guittot wrote:
+[..]
+> > > - Because of hardware co-ordination of otherwise co-ordinated CPUs,
+> > >   few things break. Thermal and EAS are some of the examples and so
+> > >   you are trying to fix them here by proving them the missing
+> > >   information again.
 > >
-> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> > ---
-> >   kernel/events/core.c | 4 ++++
-> >   1 file changed, 4 insertions(+)
+> > Correct. And for this I have proposed two ways.
 > >
-> > diff --git a/kernel/events/core.c b/kernel/events/core.c
-> > index b458ed3dc81b..aaa0155c4142 100644
-> > --- a/kernel/events/core.c
-> > +++ b/kernel/events/core.c
-> > @@ -4696,6 +4696,8 @@ static void unaccount_event(struct perf_event *event)
-> >               dec = true;
-> >       if (has_branch_stack(event))
-> >               dec = true;
-> > +     if (event->pmu->sched_task)
-> > +             dec = true;
-> >       if (event->attr.ksymbol)
-> >               atomic_dec(&nr_ksymbol_events);
-> >       if (event->attr.bpf_event)
-> > @@ -11225,6 +11227,8 @@ static void account_event(struct perf_event *event)
-> >               inc = true;
-> >       if (is_cgroup_event(event))
-> >               inc = true;
-> > +     if (event->pmu->sched_task)
-> > +             inc = true;
-> >       if (event->attr.ksymbol)
-> >               atomic_inc(&nr_ksymbol_events);
-> >       if (event->attr.bpf_event)
+> > >
+> > > - One other thing that breaks with this is freq-invariance in the
+> > >   scheduler, as the scheduler won't see the real frequencies the
+> > >   various CPUs are running at. Most of the hardware we have today
+> > >   doesn't have counters, like AMUs, not sure if all future ones based
+> > >   on SCMI will have that too, so how are they gong to be fixed ?
+> > >
 > >
+> > Correct. freq-invariance without counters is trying to do its best based on the
+> > information it has available. It definitely relies on the knowledge of the v/f
+> > domains to work at its best so I think in the case of per-cpu it will follow the
+> > same approach as others being affected (EAS, thermal).
+> 
+> As frequency invariance has same problem as EAS and Thermal it would
+> be good to see the solution as part of this proposal like EAS and
+> Thermal
+> 
+
+I think I was waiting for a consensus on patch 3/3, although I believe the
+discussion at [1] tended towards option 2: "each driver to store
+internally the performance dependencies and let the driver directly
+provide the correct cpumask for any consumer."
+The alternative was option 1: "add a new dependent_cpus cpumaks in
+cpufreq_policy", as Nicola mentioned in the commit message for 3/3.
+
+If the choice is clear, I'm happy to take the FIE fixes in a separate
+set.
+
+Thanks,
+Ionela.
+
+[1] https://lore.kernel.org/linux-arm-kernel/20200924095347.32148-3-nicola.mazzucato@arm.com/
+
+> >
+> > >   And if we even have to fix this (freq invariance), what's hardware
+> > >   coordination giving us that makes all this worth it ?
+> >
+> > I suppose this is more a generic question for all the platforms running with h/w
+> > coordination, but for our case is that the f/w will take care of the performance
+> > optimizations for us :)
+> >
+> > >
+> > > Sorry about the long list :)
+> >
+> > No problem at all. Thank you for your time on this and I hope I have made bits
+> > clearer.
+> >
+> > Nicola
+> >
+> > >
