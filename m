@@ -2,78 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 390132A850F
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 18:37:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ADE62A851E
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 18:39:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731724AbgKERhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 12:37:47 -0500
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:43987 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726801AbgKERhq (ORCPT
+        id S1731723AbgKERju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 12:39:50 -0500
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:36910 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730805AbgKERju (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 12:37:46 -0500
-Received: by mail-ot1-f65.google.com with SMTP id y22so2170605oti.10;
-        Thu, 05 Nov 2020 09:37:45 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=SXNYkLqUKc8MTYanbRLkQs7GYK94sIP+QM0jXos7oP4=;
-        b=j7VYmspBYuq1ZOwOPonYCtarmLdYHe5J/BLBlnv+lvN+tJiGMmOTI3qf6msKgePWeC
-         s7M2ukGruORuoVjHk3nU7jwoxvxYEAZk9UK0EUekOkvabwsScISIn5WlobeflbTii0Pq
-         UuqcT4u871hLBy3Tqjnu7m1LKxOzUpBzVyftmc1EWH4vBNlUa9YlrUeBOGZlaVrVm+F3
-         ieE5ofU7QHU4LLAmDWxv4y4Q4Xd17IWk9+9Md4NPaLMdy4swyTD7wzzSj57NO3NMCo4r
-         /pQxIzOvW20UtLhp21OFOkkG1ZRThWRsAkXQyfhs3vqjr9l6S0gt3OnuEoabq9H+OLaW
-         tweQ==
-X-Gm-Message-State: AOAM532NlzZJU3/x4kIuZxV4lAuT2OpNgo0EFaOLXHD/PWX5pwVr+0fM
-        p/+jcsw7UP0UV1oLhUol6g==
-X-Google-Smtp-Source: ABdhPJxAI1k0VyZC87x5xf42TVt2elJ+4+m1P3SWlidqO1VtVuRTtTfa4RTIGmga6gHm4DtZwSpt8Q==
-X-Received: by 2002:a9d:12b2:: with SMTP id g47mr2337033otg.354.1604597865604;
-        Thu, 05 Nov 2020 09:37:45 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id j10sm503462oii.14.2020.11.05.09.37.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 09:37:44 -0800 (PST)
-Received: (nullmailer pid 1526952 invoked by uid 1000);
-        Thu, 05 Nov 2020 17:37:44 -0000
-Date:   Thu, 5 Nov 2020 11:37:44 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <uwe@kleine-koenig.org>
-Cc:     linux-rockchip@lists.infradead.org,
-        Heiko Stuebner <heiko@sntech.de>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Johan Jonker <jbx6244@gmail.com>,
-        Aditya Prayoga <aditya@kobol.io>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] dt-bindings: arm: rockchip: Add Kobol Helios64
-Message-ID: <20201105173744.GA1526923@bogus>
-References: <20201102150658.167161-1-uwe@kleine-koenig.org>
+        Thu, 5 Nov 2020 12:39:50 -0500
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A5HM74i017207;
+        Thu, 5 Nov 2020 18:39:27 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=vsR5ldt560beF0b1zd/ViQ5vBMqLihhw3wpz3tsDQzE=;
+ b=NgwFkJrR13eJCbOeQncy7/0EXsyN/EBNRijv6a1KwAv83uRCZAvr3jX52ikSGpQunsHo
+ wCOf1TU6eey4DZzyjeqvMf+RGIxoP1JeP/qJLUOWKkd2EgI2p9lUC7GYBRWbkRpmGFSm
+ QMkUcXDwExZajkjboejUENQHdp+qIMSm1z79tl48CAfRtfv4Q2rwo91k5r/yv1HTaNIQ
+ mzaFDQ81/y0ZHmkzURRFSeCM2XROgWCVU+KwpANXJl9jcW0j3QxuFRAzGGh1d1Jog94J
+ qOXRtONZwHKoHZc/wRBxNU68MfCN/4jxt/C19vusUyY5CLFeLgQAtgwB7AaDbO01pWXb lA== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 34gywr9fa1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 05 Nov 2020 18:39:27 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 2C5D310002A;
+        Thu,  5 Nov 2020 18:39:25 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag1node3.st.com [10.75.127.3])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id EA2602255CE;
+        Thu,  5 Nov 2020 18:39:24 +0100 (CET)
+Received: from [10.211.7.187] (10.75.127.44) by SFHDAG1NODE3.st.com
+ (10.75.127.3) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 5 Nov
+ 2020 18:38:28 +0100
+Subject: Re: [PATCH] iio: adc: stm32-adc: dma transfers cleanup
+To:     Olivier Moysan <olivier.moysan@st.com>, <jic23@kernel.org>,
+        <knaack.h@gmx.de>, <lars@metafoo.de>, <pmeerw@pmeerw.net>,
+        <alexandre.torgue@st.com>
+CC:     <linux-iio@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20201105142941.27301-1-olivier.moysan@st.com>
+From:   Fabrice Gasnier <fabrice.gasnier@st.com>
+Message-ID: <8ed73130-57e7-4073-cdf2-5f31596e728c@st.com>
+Date:   Thu, 5 Nov 2020 18:38:27 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201102150658.167161-1-uwe@kleine-koenig.org>
+In-Reply-To: <20201105142941.27301-1-olivier.moysan@st.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.44]
+X-ClientProxiedBy: SFHDAG1NODE3.st.com (10.75.127.3) To SFHDAG1NODE3.st.com
+ (10.75.127.3)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-05_11:2020-11-05,2020-11-05 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 02 Nov 2020 16:06:58 +0100, Uwe Kleine-König wrote:
-> Document the new board by Kobol introduced recently in
-> rockchip/rk3399-kobol-helios64.dts.
+On 11/5/20 3:29 PM, Olivier Moysan wrote:
+> - Remove processing related to DMA in irq handler as this
+> data transfer is managed directly in DMA callback.
+> - Update comment in stm32_adc_set_watermark() function.
 > 
-> Signed-off-by: Uwe Kleine-König <uwe@kleine-koenig.org>
-> ---
-> Hello,
-> 
-> Heiko pointed out in irc that I missed this bit when submitting support
-> for the helios64 board (last submission starting at Message-Id:
-> <20201014200030.845759-1-uwe@kleine-koenig.org>).
-> 
-> Best regards
-> Uwe
-> 
->  Documentation/devicetree/bindings/arm/rockchip.yaml | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
+> Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
 
-Acked-by: Rob Herring <robh@kernel.org>
+Hi Olivier,
+
+Reviewed-by: Fabrice Gasnier <fabrice.gasnier@st.com>
+
+Thanks,
+Fabrice
+> ---
+>  drivers/iio/adc/stm32-adc.c | 29 ++++++-----------------------
+>  1 file changed, 6 insertions(+), 23 deletions(-)
+> 
+> diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
+> index b3f31f147347..08be826f1462 100644
+> --- a/drivers/iio/adc/stm32-adc.c
+> +++ b/drivers/iio/adc/stm32-adc.c
+> @@ -1310,7 +1310,7 @@ static int stm32_adc_set_watermark(struct iio_dev *indio_dev, unsigned int val)
+>  	 * dma cyclic transfers are used, buffer is split into two periods.
+>  	 * There should be :
+>  	 * - always one buffer (period) dma is working on
+> -	 * - one buffer (period) driver can push with iio_trigger_poll().
+> +	 * - one buffer (period) driver can push data.
+>  	 */
+>  	watermark = min(watermark, val * (unsigned)(sizeof(u16)));
+>  	adc->rx_buf_sz = min(rx_buf_sz, watermark * 2 * adc->num_conv);
+> @@ -1573,31 +1573,14 @@ static irqreturn_t stm32_adc_trigger_handler(int irq, void *p)
+>  
+>  	dev_dbg(&indio_dev->dev, "%s bufi=%d\n", __func__, adc->bufi);
+>  
+> -	if (!adc->dma_chan) {
+> -		/* reset buffer index */
+> -		adc->bufi = 0;
+> -		iio_push_to_buffers_with_timestamp(indio_dev, adc->buffer,
+> -						   pf->timestamp);
+> -	} else {
+> -		int residue = stm32_adc_dma_residue(adc);
+> -
+> -		while (residue >= indio_dev->scan_bytes) {
+> -			u16 *buffer = (u16 *)&adc->rx_buf[adc->bufi];
+> -
+> -			iio_push_to_buffers_with_timestamp(indio_dev, buffer,
+> -							   pf->timestamp);
+> -			residue -= indio_dev->scan_bytes;
+> -			adc->bufi += indio_dev->scan_bytes;
+> -			if (adc->bufi >= adc->rx_buf_sz)
+> -				adc->bufi = 0;
+> -		}
+> -	}
+> -
+> +	/* reset buffer index */
+> +	adc->bufi = 0;
+> +	iio_push_to_buffers_with_timestamp(indio_dev, adc->buffer,
+> +					   pf->timestamp);
+>  	iio_trigger_notify_done(indio_dev->trig);
+>  
+>  	/* re-enable eoc irq */
+> -	if (!adc->dma_chan)
+> -		stm32_adc_conv_irq_enable(adc);
+> +	stm32_adc_conv_irq_enable(adc);
+>  
+>  	return IRQ_HANDLED;
+>  }
+> 
