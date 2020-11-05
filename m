@@ -2,139 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CBAB2A8470
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 18:08:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73B8C2A8478
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 18:11:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731623AbgKERHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 12:07:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41290 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726801AbgKERHy (ORCPT
+        id S1729361AbgKERKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 12:10:55 -0500
+Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:43185 "EHLO
+        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726777AbgKERKz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 12:07:54 -0500
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A697AC0613CF;
-        Thu,  5 Nov 2020 09:07:54 -0800 (PST)
-Received: by mail-pj1-x1044.google.com with SMTP id g19so294640pji.0;
-        Thu, 05 Nov 2020 09:07:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=a/G37s3/UjwAPE/W5DNIRy/pjvBqWVcyDTzt23Xt9No=;
-        b=mqoyA/2lbsg4coNSgnM4EjAG79SXTnyZlihW2wqmX1PzcvLeeyq0DCjJTLPmaQn19y
-         VGh3W3mRcc4G2HLm0nmQdr6uNQNr3rspKyor8teQLb6KRMM4582aahBULwVQ30UO6Wd5
-         MwJ1fxYX7gqpVWpcQVNnm1W5/y8y9IkeyavBbZqDHaiU8qg8AN4yCV9Zu+xtXdc0+yWh
-         wNfCFVXyIEcgG7MvCqcKz4qVy/Yj9NHEqR+I0PjewUdN3cN4Pshh+gu633MsObX29CRE
-         9wo6/cjJb0gpL/B0aPl81aImbRNCBxvIK1N3ofge6QeMBQmjRoUkKW/kZpjKHiS03JJV
-         oKfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=a/G37s3/UjwAPE/W5DNIRy/pjvBqWVcyDTzt23Xt9No=;
-        b=D3uAhVEMS0rjiyew67uA+dRBC2eUmuN8skCRZNTA+LFWm3jM5Mm4KUzjhlF/xDdKYX
-         KsUZokmJVKfIAtrdOVZxAKyhQUMmDk6oy8LFxXRB5LWZe54JKEFZPk7dwMMKRzYBAfLY
-         jjtcjh1IhROV9IYaFr2jF9mBZeGxfLVV3dwDbnCzPzLK1zAf111o9FibVb09F2F02+r8
-         JnH/dr37aupDqiEXQc85vyJ8kQ0cXTM0CIbzkgZ1orqhQqIK64v5agH4Gdi0SHiCduSo
-         jRw81+i5WMo5Zm59JUS45acY43u7V0LgSiNQ69mKWfIITpeHzvF3eGmofL6SHeUNDxF4
-         trDQ==
-X-Gm-Message-State: AOAM5322j5kFXHFfXvPF9vsGuW+jBEwf0zd/OoZeJnXLcNFKbWz3lZpg
-        rYfNLWiIFCaQVbG32O1vOTM=
-X-Google-Smtp-Source: ABdhPJy8ziNqMeMIAGWHm6Jef5Dh09mbR/hfx8blme5oiPK5YqEWx6aPza7yu3sEL9EBV+kaB69JTQ==
-X-Received: by 2002:a17:90a:540f:: with SMTP id z15mr3346326pjh.111.1604596074184;
-        Thu, 05 Nov 2020 09:07:54 -0800 (PST)
-Received: from google.com ([2620:15c:211:201:7220:84ff:fe09:5e58])
-        by smtp.gmail.com with ESMTPSA id r8sm2913540pgl.57.2020.11.05.09.07.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 09:07:53 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Thu, 5 Nov 2020 09:07:50 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     Michal Hocko <mhocko@suse.com>, linux-api@vger.kernel.org,
-        linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
-        Christian Brauner <christian@brauner.io>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Tim Murray <timmurray@google.com>,
-        kernel-team <kernel-team@android.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>
-Subject: Re: [RFC]: userspace memory reaping
-Message-ID: <20201105170750.GA387236@google.com>
-References: <CAJuCfpEQ_ADYsMrF_zjfAeQ3d-FALSP+CeYsvgH2H1-FSoGGqg@mail.gmail.com>
- <20201015092030.GB22589@dhcp22.suse.cz>
- <CAJuCfpHwXcq1PfzHgqyYBR3N53TtV2WMt_Oubz0JZkvJHbFKGw@mail.gmail.com>
- <CAJuCfpH9iUt0cs1GBQppgdcD8chojCNXk22S+PeSgQ-bA7iitQ@mail.gmail.com>
- <20201103093550.GE21990@dhcp22.suse.cz>
- <20201103213228.GB1631979@google.com>
- <20201104065844.GM21990@dhcp22.suse.cz>
- <20201104204051.GA3544305@google.com>
- <20201105122012.GD21348@dhcp22.suse.cz>
- <CAJuCfpF5zAif97-uK8M+-fJhd0pab4fMPDMUNkAXYOB3MC7aXg@mail.gmail.com>
+        Thu, 5 Nov 2020 12:10:55 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id 18A36CB3;
+        Thu,  5 Nov 2020 12:10:54 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Thu, 05 Nov 2020 12:10:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=5jxJjZ05MEHIANgmApYUmyWu0vB
+        OAbf8q73SX8dSjVo=; b=sTqb2lod+jH9Lf64STrSRmL1IV4y1PQJgq7jUeBDYb0
+        9t1MG0fTqj9ZSk/Ypj+8zUuSl4RaBtDuKpNriDeDvNUkeGnjhorBZJaRXfMtOMc7
+        AGOvSUwocttyQ1ktvrgEBw55RC+sLdOvcZ004AV91gnxFIaIS0oSENIVQEDqe/6/
+        AXB4+hYfpOZlHM6PON9M6fXYMQYnP0qE5PpBmlrr25ozjAMsbF3ufIvqzrKP5PW6
+        mdBiQWRhZTtSp8mbFkfI8dli1jTpe7onFzUxqoACrYY4wm2qLQG+cWJ7jZgKZgUq
+        OzpCJ5XvTkYPoYgZsoqpR1OxAZgPvh/0guNOduvMbJQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=5jxJjZ
+        05MEHIANgmApYUmyWu0vBOAbf8q73SX8dSjVo=; b=ZXp4Cxd5vfaYwErZWnkZgu
+        t4wuTG1admJdfBTe4z8OC21YoY9yt01dc/p12PwsLg9Htvs/Sk6kSbwgFK6cxyfQ
+        x7F/2HZ/6jUOBLMY9yo/kKnlK5JxS3w2gwOQ2LnCrzBBITVd2Ip+1fbUJ5geV7fT
+        Zy4Uxyu5/8U9pzwWHXq+9RKRlcdcdnQVsY9gbRA6UQ8F/+ahWmCGtXWiNwZ72y3L
+        VcP+fAzWSHuHTIQ0FGoyOcbJSnGW+yIffFt5ynFhl2+d0DCcrrtzmdFtM/Ml9kFx
+        PwMAciLH/foLN1Dbw6xfnkNBbTocAU/wk1FBa2IM3pEOeRXVxCSE3dGeKxuLGydg
+        ==
+X-ME-Sender: <xms:HDKkX8eh2j0u7mYxzVcnZLvkQr6FYGollwFmf8Z4kSuX8wLEGYkUEA>
+    <xme:HDKkX-PH2cC7U5Ra48-2nk_FlPUuL17POVN4i7jHE5W0XzFDz_8bTTmusU9yKJQBo
+    MRyoZETmwNtLT-Dg8I>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddtjedgleekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvuffkfhggtggujgesghdtre
+    ertddtvdenucfhrhhomhepofgrgihimhgvucftihhprghrugcuoehmrgigihhmvgestggv
+    rhhnohdrthgvtghhqeenucggtffrrghtthgvrhhnpeelkeeghefhuddtleejgfeljeffhe
+    ffgfeijefhgfeufefhtdevteegheeiheegudenucfkphepledtrdekledrieekrdejieen
+    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigih
+    hmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:HDKkX9hl9Nw6c7j4HSZTR0YtR3Xw3jSxc6CoTe18qQ0Ei1iyjObpYg>
+    <xmx:HDKkXx_Zkh9XOtWuKgztgZqwLKiMpae2zikllMilKlKN1_NteyDQ1w>
+    <xmx:HDKkX4sQcKeRhqLI5ZfJM59X1UvNuGpI5M3Tg32yUGWRXY9tslqcwQ>
+    <xmx:HTKkX0I-JDQdaLk8GO7fXDio1gD60FIWDuyQuueFWs45mevJ0PrVjg>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 865403280393;
+        Thu,  5 Nov 2020 12:10:52 -0500 (EST)
+Date:   Thu, 5 Nov 2020 18:10:51 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Yu-Tung Chang <mtwget@gmail.com>
+Cc:     robh+dt@kernel.org, wens@csie.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 1/1] ARM: dts: sun8i: h3: Add initial NanoPi R1 support
+Message-ID: <20201105171051.ducvxcdj5jfarmgn@gilmour.lan>
+References: <20201102100157.85801-1-mtwget@gmail.com>
+ <20201102100157.85801-2-mtwget@gmail.com>
+ <20201103113743.5764tj2ryrht4dfs@gilmour.lan>
+ <CAHRgzyOao=w6Yyqqvi1Z26=rfJgumkzDbWLxD+_5uaLmyAWiQA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="hmawvi2wmpsvk5t4"
 Content-Disposition: inline
-In-Reply-To: <CAJuCfpF5zAif97-uK8M+-fJhd0pab4fMPDMUNkAXYOB3MC7aXg@mail.gmail.com>
+In-Reply-To: <CAHRgzyOao=w6Yyqqvi1Z26=rfJgumkzDbWLxD+_5uaLmyAWiQA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 08:50:58AM -0800, Suren Baghdasaryan wrote:
-> On Thu, Nov 5, 2020 at 4:20 AM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Wed 04-11-20 12:40:51, Minchan Kim wrote:
-> > > On Wed, Nov 04, 2020 at 07:58:44AM +0100, Michal Hocko wrote:
-> > > > On Tue 03-11-20 13:32:28, Minchan Kim wrote:
-> > > > > On Tue, Nov 03, 2020 at 10:35:50AM +0100, Michal Hocko wrote:
-> > > > > > On Mon 02-11-20 12:29:24, Suren Baghdasaryan wrote:
-> > > > > > [...]
-> > > > > > > To follow up on this. Should I post an RFC implementing SIGKILL_SYNC
-> > > > > > > which in addition to sending a kill signal would also reap the
-> > > > > > > victim's mm in the context of the caller? Maybe having some code will
-> > > > > > > get the discussion moving forward?
-> > > > > >
-> > > > > > Yeah, having a code, even preliminary, might help here. This definitely
-> > > > > > needs a good to go from process management people as that proper is land
-> > > > > > full of surprises...
-> > > > >
-> > > > > Just to remind a idea I suggested to reuse existing concept
-> > > > >
-> > > > >     fd = pidfd_open(victim process)
-> > > > >     fdatasync(fd);
-> > > > >     close(fd);
-> > > >
-> > > > I must have missed this proposal. Anyway, are you suggesting fdatasync
-> > > > to act as a destructive operation?
-> > >
-> > > write(fd) && fdatasync(fd) are already destructive operation if the file
-> > > is shared.
-> >
-> > I am likely missing something because fdatasync will not destroy any
-> > underlying data. It will sync
-> >
-> > > You don't need to reaping as destruptive operation. Rather than, just
-> > > commit on the asynchrnous status "write file into page cache and commit
-> > > with fsync" and "killing process and commit with fsync".
-> >
-> > I am sorry but I do not follow. The result of the memory reaping is a
-> > data loss. Any private mapping will simply lose it's content. The caller
-> > will get EFAULT when trying to access it but there is no way to
-> > reconstruct the data. This is everything but not resembling what I see
-> > f{data}sync is used for.
-> 
-> I think Minchan considers f{data}sync as a "commit" operation. So
-> write+f{data}sync would mean we write and commit written data,
-> kill+f{data}sync would mean we kill and commit that kill (reclaim the
-> resources).
 
-If people doesn't like f{data}sync, ftruncate? My point is let's reuse
-exising API since we have pidfd.
+--hmawvi2wmpsvk5t4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-What I don't like about SIGKILL_SYNC is that it might introduce several
-SIGXXX_SYNC later.
+On Wed, Nov 04, 2020 at 04:07:48PM +0800, Yu-Tung Chang wrote:
+> > > +&uart1 {
+> > > +     pinctrl-names = "default";
+> > > +     pinctrl-0 = <&uart1_pins>;
+> >
+> > This should be already set in the DTSI
+> >
+> uart0 as the debugging interface, uart1 as the external uart port,
+> uart3 as the bluetooth.
+
+What I mean is that since it's the only muxing option, the pinctrl
+properties should already be set in the DTSI, so it's redundant to put
+them in the DTS.
+
+Maxime
+
+--hmawvi2wmpsvk5t4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX6QyGwAKCRDj7w1vZxhR
+xeBNAQCVB/qARdv0RwBjl6dfLEq2diwyT9786Lf3YpJlgpQH6AEAlINTtnwGkvjJ
+FL6ZIn2CEQ4GwRqfC83S/fJFuZDhIwE=
+=WiD2
+-----END PGP SIGNATURE-----
+
+--hmawvi2wmpsvk5t4--
