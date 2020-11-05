@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8516B2A8336
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 17:14:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A3972A832F
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 17:14:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731383AbgKEQO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 11:14:27 -0500
-Received: from mail-il1-f199.google.com ([209.85.166.199]:56310 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726996AbgKEQOT (ORCPT
+        id S1731221AbgKEQOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 11:14:21 -0500
+Received: from mail-il1-f200.google.com ([209.85.166.200]:52366 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727836AbgKEQOS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 11:14:19 -0500
-Received: by mail-il1-f199.google.com with SMTP id d9so1417328iln.22
+        Thu, 5 Nov 2020 11:14:18 -0500
+Received: by mail-il1-f200.google.com with SMTP id y15so1424806ilp.19
         for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 08:14:17 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=iCE791O+YomKx6jeJuYW72QC2S3jn0tEqUW0wtAGdsU=;
-        b=Ne/PUth0Pm3OD+khLbAhLHXVyxO+XZpopXX64DnJKFNcvpU2KEmu3b9aQmqoX272T4
-         iroXFB0JCILUSEnNR5Eo0KOZNIa8TQblU9fWX1CR248fc4EVQSqYYzV6OfG1TdLfgU0J
-         MgBIgOkzbO06+410u+lLLYmVTekheGEb8cylzDQt6p6MWs95IvE2AqEEGxuM8AnJ3RBx
-         wZCBK8am3oec125wnMawxkzdTHzh7GReyimKoiHIaaoZhXMw6f1h05H5FzV0ls4C9GoD
-         synOmvc0V6VEIe1SBRGMSjsFtOjQhL5WErIksmw0gWNEuiVMtWqQAfK8B2N3GwblxBQN
-         Ii3Q==
-X-Gm-Message-State: AOAM531GNfRhoskOJ6XsQ13s7jIZ4CeQ4ZZtOTVIiUYrzQANbIjtCFhR
-        xKVw0FUdyNLN1c/EIY73gLO5+YSahdy/eD57HzY5bWr2KnTC
-X-Google-Smtp-Source: ABdhPJwyBRqZxGelvCgD9e46F4X9OqBodPAEL6N9MJswi6mJfjBZ+T933YxLTI0nBML3N2kUJ5W1h+T0unz+HSx2YQuxY5ey01Oy
+        bh=LPep9Nteys3aoLNEl0+LmiCZ9NTgmMku4LQ+gLb0dvg=;
+        b=MFn4dI/fC0EWeb5jZN/Nmmj1sVFlOdcaru/iosMGPBfJ9lZNQdR4z47g27gaARTR6j
+         CzxrI4XVkSigxN78rLe41EgCdWm4sFEkW2sPLizU1zyq8HhRn5wStJWyP9f4ICA/Nvtk
+         5t3FFOF/GMbTrcaWzppH2hRCdWOXROjEhCPDlBkhzge8bUz1PHzd+1YLSOUNdNpFywU9
+         euKbW2pUp3rHl6yVTx0t2pCpA+QPuLgnp2y9LGHU/DfTNHnuDdml6VzF4NTjyYC4vpXr
+         WKugoX9q2qpyscWjGjR1ptWPLvh1DNIGoDg/Y1X25aooj4b/56GKrujQcHwLoNUjqUbb
+         NB8w==
+X-Gm-Message-State: AOAM533z3Xg3DLgc/9ZJRXuwRh5UZgXSehxtZN3ElH7DB4g4ZaHlfZt6
+        zg/4Pj3qejZ48IpIpoMD9xu1uf6KHzVUBLnQrmQNt8VcaYxg
+X-Google-Smtp-Source: ABdhPJzlExmcllBentIAGjJ/TCmoqYKXFCdIYJPQaPu6y/AefIfEmw5OsjI+bYcPlLDGSRSw2TPR4YPm3zf/OhLWuHrRT7B/llWj
 MIME-Version: 1.0
-X-Received: by 2002:a02:cbde:: with SMTP id u30mr2677796jaq.69.1604592856927;
+X-Received: by 2002:a92:ba8b:: with SMTP id t11mr2397105ill.194.1604592856658;
  Thu, 05 Nov 2020 08:14:16 -0800 (PST)
 Date:   Thu, 05 Nov 2020 08:14:16 -0800
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000003f135105b35e639d@google.com>
-Subject: net test error: BUG: sleeping function called from invalid context in sta_info_move_state
-From:   syzbot <syzbot+6a7fe9faf0d1d61bc24a@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Message-ID: <0000000000003afa6905b35e6386@google.com>
+Subject: general protection fault in io_uring_show_cred
+From:   syzbot <syzbot+a6d494688cdb797bdfce@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -48,98 +48,87 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    2aaf09a0 r8169: work around short packet hw bug on RTL8125
-git tree:       net
-console output: https://syzkaller.appspot.com/x/log.txt?x=15c416fc500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=803dd96a0e492ac1
-dashboard link: https://syzkaller.appspot.com/bug?extid=6a7fe9faf0d1d61bc24a
+HEAD commit:    4ef8451b Merge tag 'perf-tools-for-v5.10-2020-11-03' of gi..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=12bf23a8500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=61033507391c77ff
+dashboard link: https://syzkaller.appspot.com/bug?extid=a6d494688cdb797bdfce
 compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11022732500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13649314500000
+
+The issue was bisected to:
+
+commit 1e6fa5216a0e59ef02e8b6b40d553238a3b81d49
+Author: Jens Axboe <axboe@kernel.dk>
+Date:   Thu Oct 15 14:46:24 2020 +0000
+
+    io_uring: COW io_identity on mismatch
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14295fa8500000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=16295fa8500000
+console output: https://syzkaller.appspot.com/x/log.txt?x=12295fa8500000
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+6a7fe9faf0d1d61bc24a@syzkaller.appspotmail.com
+Reported-by: syzbot+a6d494688cdb797bdfce@syzkaller.appspotmail.com
+Fixes: 1e6fa5216a0e ("io_uring: COW io_identity on mismatch")
 
-wlan1: Created IBSS using preconfigured BSSID 50:50:50:50:50:50
-wlan1: Creating new IBSS network, BSSID 50:50:50:50:50:50
-BUG: sleeping function called from invalid context at net/mac80211/sta_info.c:1962
-in_atomic(): 0, irqs_disabled(): 0, non_block: 0, pid: 536, name: kworker/u4:5
-4 locks held by kworker/u4:5/536:
- #0: ffff88801b08a938 ((wq_completion)phy3){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff88801b08a938 ((wq_completion)phy3){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
- #0: ffff88801b08a938 ((wq_completion)phy3){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
- #0: ffff88801b08a938 ((wq_completion)phy3){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
- #0: ffff88801b08a938 ((wq_completion)phy3){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
- #0: ffff88801b08a938 ((wq_completion)phy3){+.+.}-{0:0}, at: process_one_work+0x821/0x15a0 kernel/workqueue.c:2243
- #1: ffffc9000294fda8 ((work_completion)(&sdata->work)){+.+.}-{0:0}, at: process_one_work+0x854/0x15a0 kernel/workqueue.c:2247
- #2: ffff88801bc98d00 (&wdev->mtx){+.+.}-{3:3}, at: sdata_lock net/mac80211/ieee80211_i.h:1021 [inline]
- #2: ffff88801bc98d00 (&wdev->mtx){+.+.}-{3:3}, at: ieee80211_ibss_work+0x93/0xe80 net/mac80211/ibss.c:1683
- #3: ffffffff8b337160 (rcu_read_lock){....}-{1:2}, at: sta_info_insert_finish net/mac80211/sta_info.c:644 [inline]
- #3: ffffffff8b337160 (rcu_read_lock){....}-{1:2}, at: sta_info_insert_rcu+0x680/0x2ba0 net/mac80211/sta_info.c:732
-Preemption disabled at:
-[<ffffffff88e6168f>] __mutex_lock_common kernel/locking/mutex.c:955 [inline]
-[<ffffffff88e6168f>] __mutex_lock+0x10f/0x10e0 kernel/locking/mutex.c:1103
-CPU: 1 PID: 536 Comm: kworker/u4:5 Not tainted 5.10.0-rc1-syzkaller #0
+general protection fault, probably for non-canonical address 0xdffffc04422cfb38: 0000 [#1] PREEMPT SMP KASAN
+KASAN: probably user-memory-access in range [0x000000221167d9c0-0x000000221167d9c7]
+CPU: 0 PID: 8480 Comm: syz-executor292 Not tainted 5.10.0-rc2-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: phy3 ieee80211_iface_work
+RIP: 0010:io_uring_show_cred+0x32f/0x5f0 fs/io_uring.c:8922
+Code: 3c 02 00 0f 85 a8 02 00 00 49 8b ae a0 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 8d 4d 04 48 89 ca 48 89 4c 24 18 48 c1 ea 03 <0f> b6 14 02 48 89 c8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 e4
+RSP: 0018:ffffc900015ff9f0 EFLAGS: 00010203
+RAX: dffffc0000000000 RBX: ffff8880213f4c00 RCX: 000000221167d9c4
+RDX: 00000004422cfb38 RSI: ffffffff81d32adc RDI: ffff888014b101a0
+RBP: 000000221167d9c0 R08: 0000000000000001 R09: ffff8880272840ce
+R10: ffffed1004e50819 R11: 0000000000000000 R12: 0000000000000001
+R13: ffff8880136c4cb8 R14: ffff888014b10100 R15: ffffffff8b1fe940
+FS:  0000000001182880(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000455310 CR3: 000000001b604000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:118
- ___might_sleep.cold+0x1e8/0x22e kernel/sched/core.c:7298
- sta_info_move_state+0x32/0x8d0 net/mac80211/sta_info.c:1962
- sta_info_free+0x65/0x3b0 net/mac80211/sta_info.c:274
- sta_info_insert_rcu+0x303/0x2ba0 net/mac80211/sta_info.c:738
- ieee80211_ibss_finish_sta+0x212/0x390 net/mac80211/ibss.c:592
- ieee80211_ibss_work+0x2c7/0xe80 net/mac80211/ibss.c:1700
- ieee80211_iface_work+0x82e/0x970 net/mac80211/iface.c:1476
- process_one_work+0x933/0x15a0 kernel/workqueue.c:2272
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2418
- kthread+0x3af/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-
-=============================
-[ BUG: Invalid wait context ]
-5.10.0-rc1-syzkaller #0 Tainted: G        W        
------------------------------
-kworker/u4:5/536 is trying to lock:
-ffff888019d729d0 (&local->chanctx_mtx){+.+.}-{3:3}, at: ieee80211_recalc_min_chandef+0x49/0x140 net/mac80211/util.c:2740
-other info that might help us debug this:
-context-{4:4}
-4 locks held by kworker/u4:5/536:
- #0: ffff88801b08a938 ((wq_completion)phy3){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff88801b08a938 ((wq_completion)phy3){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
- #0: ffff88801b08a938 ((wq_completion)phy3){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
- #0: ffff88801b08a938 ((wq_completion)phy3){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
- #0: ffff88801b08a938 ((wq_completion)phy3){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
- #0: ffff88801b08a938 ((wq_completion)phy3){+.+.}-{0:0}, at: process_one_work+0x821/0x15a0 kernel/workqueue.c:2243
- #1: ffffc9000294fda8 ((work_completion)(&sdata->work)){+.+.}-{0:0}, at: process_one_work+0x854/0x15a0 kernel/workqueue.c:2247
- #2: ffff88801bc98d00 (&wdev->mtx){+.+.}-{3:3}, at: sdata_lock net/mac80211/ieee80211_i.h:1021 [inline]
- #2: ffff88801bc98d00 (&wdev->mtx){+.+.}-{3:3}, at: ieee80211_ibss_work+0x93/0xe80 net/mac80211/ibss.c:1683
- #3: ffffffff8b337160 (rcu_read_lock){....}-{1:2}, at: sta_info_insert_finish net/mac80211/sta_info.c:644 [inline]
- #3: ffffffff8b337160 (rcu_read_lock){....}-{1:2}, at: sta_info_insert_rcu+0x680/0x2ba0 net/mac80211/sta_info.c:732
-stack backtrace:
-CPU: 1 PID: 536 Comm: kworker/u4:5 Tainted: G        W         5.10.0-rc1-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: phy3 ieee80211_iface_work
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:118
- print_lock_invalid_wait_context kernel/locking/lockdep.c:4489 [inline]
- check_wait_context kernel/locking/lockdep.c:4550 [inline]
- __lock_acquire.cold+0x310/0x3a2 kernel/locking/lockdep.c:4787
- lock_acquire kernel/locking/lockdep.c:5442 [inline]
- lock_acquire+0x1af/0x8b0 kernel/locking/lockdep.c:5407
- __mutex_lock_common kernel/locking/mutex.c:956 [inline]
- __mutex_lock+0x134/0x10e0 kernel/locking/mutex.c:1103
- ieee80211_recalc_min_chandef+0x49/0x140 net/mac80211/util.c:2740
- sta_info_move_state+0x3cf/0x8d0 net/mac80211/sta_info.c:2019
- sta_info_free+0x65/0x3b0 net/mac80211/sta_info.c:274
- sta_info_insert_rcu+0x303/0x2ba0 net/mac80211/sta_info.c:738
- ieee80211_ibss_finish_sta+0x212/0x390 net/mac80211/ibss.c:592
- ieee80211_ibss_work+0x2c7/0xe80 net/mac80211/ibss.c:1700
- ieee80211_iface_work+0x82e/0x970 net/mac80211/iface.c:1476
- process_one_work+0x933/0x15a0 kernel/workqueue.c:2272
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2418
- kthread+0x3af/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+ idr_for_each+0x113/0x220 lib/idr.c:208
+ __io_uring_show_fdinfo fs/io_uring.c:8974 [inline]
+ io_uring_show_fdinfo+0x923/0xda0 fs/io_uring.c:8996
+ seq_show+0x4a8/0x700 fs/proc/fd.c:65
+ seq_read+0x432/0x1070 fs/seq_file.c:208
+ do_loop_readv_writev fs/read_write.c:761 [inline]
+ do_loop_readv_writev fs/read_write.c:748 [inline]
+ do_iter_read+0x48e/0x6e0 fs/read_write.c:803
+ vfs_readv+0xe5/0x150 fs/read_write.c:921
+ do_preadv fs/read_write.c:1013 [inline]
+ __do_sys_preadv fs/read_write.c:1063 [inline]
+ __se_sys_preadv fs/read_write.c:1058 [inline]
+ __x64_sys_preadv+0x231/0x310 fs/read_write.c:1058
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x4403a9
+Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db 13 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007fff45cb17f8 EFLAGS: 00000246 ORIG_RAX: 0000000000000127
+RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 00000000004403a9
+RDX: 0000000000000333 RSI: 00000000200017c0 RDI: 0000000000000004
+RBP: 00000000006ca018 R08: 0000000000000000 R09: 65732f636f72702f
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000401c10
+R13: 0000000000401ca0 R14: 0000000000000000 R15: 0000000000000000
+Modules linked in:
+---[ end trace 2f3a282977161035 ]---
+RIP: 0010:io_uring_show_cred+0x32f/0x5f0 fs/io_uring.c:8922
+Code: 3c 02 00 0f 85 a8 02 00 00 49 8b ae a0 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 8d 4d 04 48 89 ca 48 89 4c 24 18 48 c1 ea 03 <0f> b6 14 02 48 89 c8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 e4
+RSP: 0018:ffffc900015ff9f0 EFLAGS: 00010203
+RAX: dffffc0000000000 RBX: ffff8880213f4c00 RCX: 000000221167d9c4
+RDX: 00000004422cfb38 RSI: ffffffff81d32adc RDI: ffff888014b101a0
+RBP: 000000221167d9c0 R08: 0000000000000001 R09: ffff8880272840ce
+R10: ffffed1004e50819 R11: 0000000000000000 R12: 0000000000000001
+R13: ffff8880136c4cb8 R14: ffff888014b10100 R15: ffffffff8b1fe940
+FS:  0000000001182880(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000455310 CR3: 000000001b604000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
 
 ---
@@ -149,3 +138,6 @@ syzbot engineers can be reached at syzkaller@googlegroups.com.
 
 syzbot will keep track of this issue. See:
 https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
