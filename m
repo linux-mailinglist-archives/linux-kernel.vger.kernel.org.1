@@ -2,151 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0C242A7648
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 05:14:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F2E22A7654
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 05:24:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729801AbgKEEOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 23:14:50 -0500
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:51925 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726225AbgKEEOu (ORCPT
+        id S1730803AbgKEEYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 23:24:04 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:48470 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726225AbgKEEYE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 23:14:50 -0500
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id EC9C65C00F9;
-        Wed,  4 Nov 2020 23:14:48 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Wed, 04 Nov 2020 23:14:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
-        to:cc:references:from:subject:message-id:date:mime-version
-        :in-reply-to:content-type:content-transfer-encoding; s=fm1; bh=f
-        JwbcwXPY3l7mC3CKsfGxtk7DwZ8F+yxs7HUMg4dBoo=; b=ee5InBpauKyoj6Hli
-        XGUDsBjjSWn0H/Kigzlptzd8wf4B/DVphlLZaPxX9cFIxGG8FFpuglH90DZbttPN
-        Z6WsbWPt+WCqvQdsvhyOteY5Pvjqd0yO5QhEF/oIztFuL6zxr0hJ9EQggcWAIyIc
-        6iFD++fPbEHMW+3vx5+IhoTJsXoG0TSXgyMSl9OPU24yWzkCqcYVT1K54skO8Kj4
-        8C0T6EbAoZ9f+6vPTHV3CsRNdM1KAT4+QDBll+YmZAQ5EymnSBDf8gsNi9H6KzQm
-        rbbZh1d8Iw8g8t+qWk39D1sPqYY4ljYaFAieqApm7RybzE8gmVPhmvAoViZtpbQj
-        F7Fug==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; bh=fJwbcwXPY3l7mC3CKsfGxtk7DwZ8F+yxs7HUMg4dB
-        oo=; b=goD7YzrUgOWmd+pHLJ+XHw7AxiaDaIjJW9vkJc0R+bMb2ECRbyQ0t6w8H
-        TbGjHRGp4KcnseJwCVM461q1wHM+ct9EHBYOLgSs2d8RgqLQrLkMDP933XU/mX1m
-        gkxP5Nz7lT/H7GZlCF5Jqp84uWY5rPClvKfYaciqUEy+QCT4pbmtyNh+bvnrtk/8
-        9MRzWeVocZDK6sStYQmtuL77rLmBZH9NWlTXBi8HHu99Oqy43mF+JutQDjCoYvMK
-        9t69gcD1FQrd/6ytXgy+Q1qrsrynP0Peib3SCOYmW2nr8dLityPYlAjJAa6lYXXx
-        DyLqbjp2/Y50z9Z7jCQpJG9gjpw6A==
-X-ME-Sender: <xms:OHyjX49AflmvpRAFK4qY8duxKHXkNFodQcM5j3ZwW6MD-ovNKH25MA>
-    <xme:OHyjXwsTjFZGG61O4rm7nBE1Hh4rGTMqRRc1KE_2vAMDtZGCTdjB29jPtOg_YIvG2
-    BC_xJVYmX3JZr46nA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddtiedgieelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepvfhfhffukffffgggjggtgfesthekredttdefjeenucfhrhhomhepufgrmhhu
-    vghlucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecugg
-    ftrfgrthhtvghrnhepvddttdejieduudfgffevteekffegffeguddtgfefkeduvedukeff
-    hedtfeevuedvnecukfhppeejtddrudefhedrudegkedrudehudenucevlhhushhtvghruf
-    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgr
-    nhgurdhorhhg
-X-ME-Proxy: <xmx:OHyjX-BVRMLE2LRruB5x0YmesdMSQ0l0VIaupaaoGfcM_4v7nhV5dw>
-    <xmx:OHyjX4c8o8uvtN5unD6dzf9c9jLRmEs1HrvZuwG36WB1OD4Mn3NLSw>
-    <xmx:OHyjX9PTmXcEqPQ5wlmVhfpLlbwF3oAaTBOK79BSt3dPPyYjJpOTzA>
-    <xmx:OHyjX5DnyEHntW2hVDJal0PWHk7OPh4FIdlPnqTu_mjqHhbggysWkA>
-Received: from [70.135.148.151] (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
-        by mail.messagingengine.com (Postfix) with ESMTPA id D1A11306005E;
-        Wed,  4 Nov 2020 23:14:47 -0500 (EST)
-To:     Paul Kocialkowski <contact@paulk.fr>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>, Icenowy Zheng <icenowy@aosc.io>,
-        Matteo Scordino <matteo.scordino@gmail.com>
-References: <20201103205058.435207-1-contact@paulk.fr>
- <20201103205058.435207-3-contact@paulk.fr>
-From:   Samuel Holland <samuel@sholland.org>
-Subject: Re: [PATCH v2 2/6] irqchip/sunxi-nmi: Add support for the V3s NMI
-Message-ID: <85d40081-2dd1-3a0c-15ad-a58ce866700f@sholland.org>
-Date:   Wed, 4 Nov 2020 22:14:47 -0600
-User-Agent: Mozilla/5.0 (X11; Linux ppc64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Wed, 4 Nov 2020 23:24:04 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A54NsDq137512;
+        Thu, 5 Nov 2020 04:23:54 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=cLU+aPQrXxMBN/Q0Z/TiVWZEFD/5yd4UUpsD/rKMLGc=;
+ b=uNhv1C+a57AlUoSfv9FcyS76/YEqaXDFSCWN6KY1OAC9HgcJxEcBTIREB4DUaGaT1d2m
+ iKG9MMpBnyHPJL8VLWq3mcQoghICIs6Vroh3xkgTRSTnQIWlsWzHMHDp+IrVLAtA6tYd
+ 3oF89QUUm9UqAuevtFRvEChkYnDwVBRlwKyEsu264PiNiniEraqccLr6yAtg5DeGCER1
+ Cy2kP/LFr4VlA+kp64BHrMK1/DH+bt4nzoGGBUpFwrinJLYvCS23CSkyJdVkHLyaUkBz
+ aRqG1OS5yNni8oFJWC3ViX32059LY0WUd9skCsPhgiYX2X2R/+Fab7Ozo4AcpXW36Y/S Bg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2130.oracle.com with ESMTP id 34hhb29xxa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 05 Nov 2020 04:23:54 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A54L8c3141005;
+        Thu, 5 Nov 2020 04:21:54 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 34jf4bfh8e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 05 Nov 2020 04:21:54 +0000
+Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0A54Lm3t005041;
+        Thu, 5 Nov 2020 04:21:48 GMT
+Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 04 Nov 2020 20:21:47 -0800
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+To:     Hannes Reinecke <hare@suse.de>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Arnd Bergmann <arnd@kernel.org>
+Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
+        GR-QLogic-Storage-Upstream@marvell.com,
+        target-devel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Lee Jones <lee.jones@linaro.org>, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Javed Hasan <jhasan@marvell.com>,
+        Saurav Kashyap <skashyap@marvell.com>
+Subject: Re: [PATCH 1/2] libfc: move scsi/fc_encode.h to libfc
+Date:   Wed,  4 Nov 2020 23:21:43 -0500
+Message-Id: <160455005255.26277.5936613179662668851.b4-ty@oracle.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20201026160705.3706396-1-arnd@kernel.org>
+References: <20201026160705.3706396-1-arnd@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20201103205058.435207-3-contact@paulk.fr>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9795 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0 mlxscore=0
+ bulkscore=0 malwarescore=0 mlxlogscore=999 phishscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011050030
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9795 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0 suspectscore=0
+ clxscore=1015 mlxlogscore=999 impostorscore=0 malwarescore=0
+ lowpriorityscore=0 adultscore=0 spamscore=0 priorityscore=1501 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011050031
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/3/20 2:50 PM, Paul Kocialkowski wrote:
-> The V3s/V3 has a NMI IRQ controller, which is mainly used for the AXP209
-> interrupt. In great wisdom, Allwinner decided to invert the enable and
-> pending register offsets, compared to the A20.
-> 
-> As a result, a specific compatible and register description is required
-> for the V3s. This was tested with an AXP209 on a V3 board.
-> 
-> Acked-by: Maxime Ripard <mripard@kernel.org>
-> Signed-off-by: Paul Kocialkowski <contact@paulk.fr>
-> ---
->  drivers/irqchip/irq-sunxi-nmi.c | 18 +++++++++++++++++-
->  1 file changed, 17 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/irqchip/irq-sunxi-nmi.c b/drivers/irqchip/irq-sunxi-nmi.c
-> index a412b5d5d0fa..59e0e4612ef7 100644
-> --- a/drivers/irqchip/irq-sunxi-nmi.c
-> +++ b/drivers/irqchip/irq-sunxi-nmi.c
-> @@ -44,6 +44,10 @@
->  #define SUN7I_NMI_PENDING	0x04
->  #define SUN7I_NMI_ENABLE	0x08
->  
-> +#define SUN8I_V3S_NMI_CTRL	0x00
-> +#define SUN8I_V3S_NMI_ENABLE	0x04
-> +#define SUN8I_V3S_NMI_PENDING	0x08
-> +
->  #define SUN9I_NMI_CTRL		0x00
->  #define SUN9I_NMI_ENABLE	0x04
->  #define SUN9I_NMI_PENDING	0x08
+On Mon, 26 Oct 2020 17:06:12 +0100, Arnd Bergmann wrote:
 
-These two sets of definitions are the same. So it would make sense for
-V3S and sun9i to share a configuration, instead of creating a copy.
+> Most of this file is only used inside of libfc, so move
+> it to where it is actually used, with only fc_fill_fc_hdr()
+> left inside of the header.
 
-> @@ -79,6 +83,12 @@ static const struct sunxi_sc_nmi_reg_offs sun7i_reg_offs __initconst = {
->  	.enable	= SUN7I_NMI_ENABLE,
->  };
->  
-> +static const struct sunxi_sc_nmi_reg_offs sun8i_v3s_reg_offs __initconst = {
-> +	.ctrl	= SUN8I_V3S_NMI_CTRL,
-> +	.pend	= SUN8I_V3S_NMI_PENDING,
-> +	.enable	= SUN8I_V3S_NMI_ENABLE,
-> +};
-> +
->  static const struct sunxi_sc_nmi_reg_offs sun9i_reg_offs __initconst = {
->  	.ctrl	= SUN9I_NMI_CTRL,
->  	.pend	= SUN9I_NMI_PENDING,
-> @@ -165,7 +175,6 @@ static int __init sunxi_sc_nmi_irq_init(struct device_node *node,
->  	unsigned int clr = IRQ_NOREQUEST | IRQ_NOPROBE | IRQ_NOAUTOEN;
->  	int ret;
->  
-> -
->  	domain = irq_domain_add_linear(node, 1, &irq_generic_chip_ops, NULL);
->  	if (!domain) {
->  		pr_err("Could not register interrupt domain.\n");
-> @@ -254,6 +263,13 @@ static int __init sun7i_sc_nmi_irq_init(struct device_node *node,
->  }
->  IRQCHIP_DECLARE(sun7i_sc_nmi, "allwinner,sun7i-a20-sc-nmi", sun7i_sc_nmi_irq_init);
->  
-> +static int __init sun8i_v3s_sc_nmi_irq_init(struct device_node *node,
-> +					    struct device_node *parent)
-> +{
-> +	return sunxi_sc_nmi_irq_init(node, &sun8i_v3s_reg_offs);
-> +}
-> +IRQCHIP_DECLARE(sun8i_v3s_sc_nmi, "allwinner,sun8i-v3s-sc-nmi", sun8i_v3s_sc_nmi_irq_init);
-> +
->  static int __init sun9i_nmi_irq_init(struct device_node *node,
->  				     struct device_node *parent)
->  {
-> 
+Applied to 5.11/scsi-queue, thanks!
 
+[1/2] scsi: libfc: Move scsi/fc_encode.h to libfc
+      https://git.kernel.org/mkp/scsi/c/e31ac898ac29
+[2/2] scsi: libfc: Work around -Warray-bounds warning
+      https://git.kernel.org/mkp/scsi/c/8fd9efca86d0
+
+-- 
+Martin K. Petersen	Oracle Linux Engineering
