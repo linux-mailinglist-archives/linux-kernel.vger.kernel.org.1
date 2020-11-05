@@ -2,306 +2,365 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50F422A7806
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 08:32:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A91362A780A
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 08:32:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728427AbgKEHcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 02:32:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35660 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725320AbgKEHcA (ORCPT
+        id S1728351AbgKEHcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 02:32:15 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:60392 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725320AbgKEHcP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 02:32:00 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AABBC0613CF;
-        Wed,  4 Nov 2020 23:31:59 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id r186so786832pgr.0;
-        Wed, 04 Nov 2020 23:31:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=KwWJeTM/D9R/VMk0c7O5fyAjSbVgF3hVLEVxJwgSMQY=;
-        b=sexoXPsbszdr0SgsYsGtxqMv6PFQgTqBi/LEVgUgPxDd4iD79X2os5HE7jmxar2z/X
-         nisx1Z/lb64rBH3tc1VxENz2dGJMORcCyMHfkzELVb0Neqaer50Z9rPzz4821HG7LdL+
-         ovitZvy+qpIJaFCfUlUKLiG6cHJK1kJ8rK9Zxqfj0AaubzsM0qDKqA5GhcpQbdTkOaDi
-         4oMuV1fFKDOglR5ii2bApfwN8VKA5c5xDdfJo8g0rE6sq/t9mVH9ZiXoAKMSqmaagavU
-         8wirjkMmyeA6iywLlASxd+X/4evckAUsUqYkdzz19Di0IQxjw1b+ax5OwNjiEQnAZ+fv
-         Ae7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=KwWJeTM/D9R/VMk0c7O5fyAjSbVgF3hVLEVxJwgSMQY=;
-        b=GHlEa0layWq6Ict9nZTU/HlhX5h/lYknVoO+8XPEAnVJiQuOsz+nnMVspTzFXtIU5q
-         hjpAa/IGNpTk+TuqOCLbfYzyq4xXh2KMVYskdDGhWuk43F7J/2FLkgEp7+a6OO8kz2K8
-         SN6ao/q/2sH7nvUpOzhStecDUmMaEjUVnOjgoULZfwdAYb1ExTH6vDB6l9P2f0+NbLKE
-         r24fQ3HEdQVdolj88+f46/vonHMUxa3xkWP1vVFXhP1pu5poMAG9WHnTeCldjg9+1oAA
-         nQXp3nKLzabaK9nIxZKqRPc9t/emq37G4DSBzGJuwxAHAf31ubyao+42tVVPW/pD33R4
-         ArCA==
-X-Gm-Message-State: AOAM530pQRSP60I2FutKjUEWXGw6sWmN5p0E/ERGFb/E52uFXp9egOR6
-        GG9K7pGr2JwAq35jWLt1r0NZeDb0qmf4YzOO
-X-Google-Smtp-Source: ABdhPJwlJ/wgzWIBgU7sR+pzVdPV6RL+AG7jWIHVkZn+rUGhwXS9Rwon2+gUuIfwa3olj13o/PEw2Q==
-X-Received: by 2002:a17:90b:496:: with SMTP id bh22mr1211222pjb.120.1604561518325;
-        Wed, 04 Nov 2020 23:31:58 -0800 (PST)
-Received: from [192.168.86.81] ([106.51.243.217])
-        by smtp.gmail.com with ESMTPSA id m68sm1149343pga.46.2020.11.04.23.31.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Nov 2020 23:31:57 -0800 (PST)
-Subject: Re: [PATCH v4 1/2] kunit: Support for Parameterized Testing
-To:     Marco Elver <elver@google.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        skhan@linuxfoundation.org, Iurii Zaikin <yzaikin@google.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-ext4@vger.kernel.org
-References: <20201027174630.85213-1-98.arpi@gmail.com>
- <CANpmjNOpbXHs4gs9Ro-u7hyN_zZ7s3AqDcdDy1Nqxq4ckThugA@mail.gmail.com>
-From:   Arpitha Raghunandan <98.arpi@gmail.com>
-Message-ID: <73c4e46c-10f1-9362-b4fb-94ea9d74e9b2@gmail.com>
-Date:   Thu, 5 Nov 2020 13:01:50 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 5 Nov 2020 02:32:15 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0A57W9LW075453;
+        Thu, 5 Nov 2020 01:32:09 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1604561529;
+        bh=TBAs5azRMtL2kgvAKGdeDXUMtHgfm26OZulLvGFJwUA=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=Q0ktcgHPPkcvKYNF2Ljb8Ctve8mCByI9W39b2OZ9ZUw63T5BXrOFJ31K5nYt4ufVr
+         7LKszzpLt7KSpGHjfSYLRoyaYPtWj3nQQ9jy2iyc/sogc8j4Iw6734fhnQ/21swfeG
+         nmSjnIYO8bTyj1mitv4r/E8KPsHCE6Ap2FVfuGPg=
+Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0A57W8Bv087797
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 5 Nov 2020 01:32:09 -0600
+Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 5 Nov
+ 2020 01:32:07 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 5 Nov 2020 01:32:07 -0600
+Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0A57W4qM066176;
+        Thu, 5 Nov 2020 01:32:05 -0600
+Subject: Re: [PATCH 2/4] arm64: dts: ti: k3-j721e*: Cleanup disabled nodes at
+ SoC dtsi level
+To:     Nishanth Menon <nm@ti.com>, Roger Quadros <rogerq@ti.com>,
+        Keerthy <j-keerthy@ti.com>, Jyri Sarha <jsarha@ti.com>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Tony Lindgren <tony@atomide.com>, Tero Kristo <t-kristo@ti.com>
+CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <20201104224356.18040-1-nm@ti.com>
+ <20201104224356.18040-3-nm@ti.com>
+From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
+Message-ID: <d9324b76-5587-b583-97da-5cb52f294c31@ti.com>
+Date:   Thu, 5 Nov 2020 09:32:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <CANpmjNOpbXHs4gs9Ro-u7hyN_zZ7s3AqDcdDy1Nqxq4ckThugA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20201104224356.18040-3-nm@ti.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/10/20 12:51 am, Marco Elver wrote:
-> On Tue, 27 Oct 2020 at 18:47, Arpitha Raghunandan <98.arpi@gmail.com> wrote:
->>
->> Implementation of support for parameterized testing in KUnit.
->> This approach requires the creation of a test case using the
->> KUNIT_CASE_PARAM macro that accepts a generator function as input.
->> This generator function should return the next parameter given the
->> previous parameter in parameterized tests. It also provides
->> a macro to generate common-case generators.
->>
->> Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
->> Co-developed-by: Marco Elver <elver@google.com>
->> Signed-off-by: Marco Elver <elver@google.com>
->> ---
->> Changes v3->v4:
->> - Rename kunit variables
->> - Rename generator function helper macro
->> - Add documentation for generator approach
->> - Display test case name in case of failure along with param index
->> Changes v2->v3:
->> - Modifictaion of generator macro and method
->> Changes v1->v2:
->> - Use of a generator method to access test case parameters
->>
->>  include/kunit/test.h | 34 ++++++++++++++++++++++++++++++++++
->>  lib/kunit/test.c     | 21 ++++++++++++++++++++-
->>  2 files changed, 54 insertions(+), 1 deletion(-)
->>
->> diff --git a/include/kunit/test.h b/include/kunit/test.h
->> index 9197da792336..ec2307ee9bb0 100644
->> --- a/include/kunit/test.h
->> +++ b/include/kunit/test.h
->> @@ -107,6 +107,13 @@ struct kunit;
->>   *
->>   * @run_case: the function representing the actual test case.
->>   * @name:     the name of the test case.
->> + * @generate_params: the generator function for parameterized tests.
->> + *
->> + * The generator function is used to lazily generate a series of
->> + * arbitrarily typed values that fit into a void*. The argument @prev
->> + * is the previously returned value, which should be used to derive the
->> + * next value; @prev is set to NULL on the initial generator call.
->> + * When no more values are available, the generator must return NULL.
->>   *
+Nishanth,
+
+On 05/11/2020 0.43, Nishanth Menon wrote:
+> The device tree standard sets the default node behavior when status
+> property as enabled.
+
+It should be:
+When the status property is not present under a node, the "okay' value
+is assumed.
+
+Note: the device tree specification does not document default value as
+such, see v0.3 (2.3.4, page 14).
+Yes, the "okay" is used in case the status property is missing (by Linux
+at least).
+
+> There are many reasons for doing the same, number
+> of strings in device tree,
+
+with expense of loc and readability.
+
+> default power management functionality etc
+
+Right, so how does that helps with devices present in the SoC, but no
+node at all? First thing which comes to mind is AASRC, we don't have
+Linux driver for it (and no DT binding document), but that does not mean
+that it is not present. How PM would take that into account?
+
+> are few of the reasons.
 > 
-> Hmm, should this really be the first paragraph? I think it should be
-> the paragraph before "Example:" maybe. But then that paragraph should
-> refer to generate_params e.g. "The generator function @generate_params
-> is used to ........".
+> In general, after a few rounds of discussions [1] there are few
+> options one could take when dealing with SoC dtsi and board dts
 > 
-> The other option you have is to move this paragraph to the kernel-doc
-> comment for KUNIT_CASE_PARAM, which seems to be missing a kernel-doc
-> comment.
+> a. SoC dtsi provide nodes as a super-set default (aka enabled) state and
+>    to prevent messy board files, when more boards are added per SoC, we
+>    optimize and disable commonly un-used nodes in board-common.dtsi
+> b. SoC dtsi disables all hardware dependent nodes by default and board
+>    dts files enable nodes based on a need basis.
+> c. Subjectively pick and choose which nodes we will disable by default
+>    in SoC dtsi and over the years we can optimize things and change
+>    default state depending on the need.
+
+For the record: c was not really an option. There were no subjectivity,
+the reason was pragmatic.
+
+We are all familiar with the Devicetree specification, but let me quote
+from chapter 2.3.4:
+"okay"
+Indicates the device is operational.
+
+"disabled"
+Indicates that the device is not presently operational, but it might
+become operational in the future (for example, something is not plugged
+in, or switched off).
+Refer to the device binding for details on what disabled means for a
+given device.
+
+The reason why we kept McASP nodes (and dss) disabled in the soc dtsi
+file is that they are not operation in the form they present in there.
+They _need_ additional properties to be operational and those properties
+can only be added in the board dts file.
+
+This is not remotely a subjective view, this is the opposite of
+subjectivity.
+
+As for things not owned by the OS we have the "reserved" status.
+
+> While there are pros and cons on each of these approaches, the right
+> thing to do will be to stick with device tree default standards and
+> work within those established rules. So, we choose to go with option
+> (a).
 > 
->>   * A test case is a function with the signature,
->>   * ``void (*)(struct kunit *)``
->> @@ -141,6 +148,7 @@ struct kunit;
->>  struct kunit_case {
->>         void (*run_case)(struct kunit *test);
->>         const char *name;
->> +       void* (*generate_params)(void *prev);
->>
->>         /* private: internal use only. */
->>         bool success;
->> @@ -162,6 +170,9 @@ static inline char *kunit_status_to_string(bool status)
->>   * &struct kunit_case for an example on how to use it.
->>   */
->>  #define KUNIT_CASE(test_name) { .run_case = test_name, .name = #test_name }
+> Lets cleanup defaults of j721e SoC dtsi before this gets more harder
+> to cleanup later on and new SoCs are added.
 > 
-> I.e. create a new kernel-doc comment for KUNIT_CASE_PARAM here, and
-> simply move the paragraph describing the generator protocol into that
-> comment.
+> The only functional difference between the dtb generated is
+> status='okay' is no longer necessary for mcasp10 and depends on the
+> default state.
 > 
->> +#define KUNIT_CASE_PARAM(test_name, gen_params)                        \
->> +               { .run_case = test_name, .name = #test_name,    \
->> +                 .generate_params = gen_params }
->>
->>  /**
->>   * struct kunit_suite - describes a related collection of &struct kunit_case
->> @@ -208,6 +219,15 @@ struct kunit {
->>         const char *name; /* Read only after initialization! */
->>         char *log; /* Points at case log after initialization */
->>         struct kunit_try_catch try_catch;
->> +       /* param_value points to test case parameters in parameterized tests */
+> [1] https://lore.kernel.org/linux-arm-kernel/20201027130701.GE5639@atomide.com/
 > 
-> Hmm, not quite: param_value is the current parameter value for a test
-> case. Most likely it's a pointer, but it doesn't need to be.
+> Fixes: 1c4d35265fb2 ("arm64: dts: ti: k3-j721e-main: Add McASP nodes")
+> Fixes: 76921f15acc0 ("arm64: dts: ti: k3-j721e-main: Add DSS node")
+> Cc: Jyri Sarha <jsarha@ti.com>
+> Cc: Tomi Valkeinen <tomi.valkeinen@ti.com>
+> Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> Cc: Tony Lindgren <tony@atomide.com>
+> Signed-off-by: Nishanth Menon <nm@ti.com>
+> ---
+>  .../dts/ti/k3-j721e-common-proc-board.dts     | 48 ++++++++++++++++++-
+>  arch/arm64/boot/dts/ti/k3-j721e-main.dtsi     | 26 ----------
+>  2 files changed, 47 insertions(+), 27 deletions(-)
 > 
->> +       void *param_value;
->> +       /*
->> +        * param_index stores the index of the parameter in
->> +        * parameterized tests. param_index + 1 is printed
->> +        * to indicate the parameter that causes the test
->> +        * to fail in case of test failure.
->> +        */
-> 
-> I think this comment needs to be reformatted, because you can use at
-> the very least use 80 cols per line. (If you use vim, visual select
-> and do 'gq'.)
-> 
->> +       int param_index;
->>         /*
->>          * success starts as true, and may only be set to false during a
->>          * test case; thus, it is safe to update this across multiple
->> @@ -1742,4 +1762,18 @@ do {                                                                            \
->>                                                 fmt,                           \
->>                                                 ##__VA_ARGS__)
->>
->> +/**
->> + * KUNIT_ARRAY_PARAM() - Helper method for test parameter generators
->> + *                      required in parameterized tests.
->> + * @name:  prefix of the name for the test parameter generator function.
->> + *        It will be suffixed by "_gen_params".
->> + * @array: a user-supplied pointer to an array of test parameters.
->> + */
->> +#define KUNIT_ARRAY_PARAM(name, array)                                                         \
->> +       static void *name##_gen_params(void *prev)                                              \
->> +       {                                                                                       \
->> +               typeof((array)[0]) * __next = prev ? ((typeof(__next)) prev) + 1 : (array);     \
->> +               return __next - (array) < ARRAY_SIZE((array)) ? __next : NULL;                  \
->> +       }
->> +
->>  #endif /* _KUNIT_TEST_H */
->> diff --git a/lib/kunit/test.c b/lib/kunit/test.c
->> index 750704abe89a..8ad908b61494 100644
->> --- a/lib/kunit/test.c
->> +++ b/lib/kunit/test.c
->> @@ -127,6 +127,12 @@ unsigned int kunit_test_case_num(struct kunit_suite *suite,
->>  }
->>  EXPORT_SYMBOL_GPL(kunit_test_case_num);
->>
->> +static void kunit_print_failed_param(struct kunit *test)
->> +{
->> +       kunit_err(test, "\n\tTest failed at:\n\ttest case: %s\n\tparameter: %d\n",
->> +                                               test->name, test->param_index + 1);
->> +}
-> 
-> Hmm, perhaps I wasn't clear, but I think I also misunderstood how the
-> test case successes are presented: they are not, and it's all bunched
-> into a single test case.
-> 
-> Firstly, kunit_err() already prints the test name, so if we want
-> something like "  # : the_test_case_name: failed at parameter #X",
-> simply having
-> 
->     kunit_err(test, "failed at parameter #%d\n", test->param_index + 1)
-> 
-> would be what you want.
-> 
-> But I think I missed that parameters do not actually produce a set of
-> test cases (sorry for noticing late). I think in their current form,
-> the parameterized tests would not be useful for my tests, because each
-> of my tests have test cases that have specific init and exit
-> functions. For each parameter, these would also need to run.
-> 
-> Ideally, each parameter produces its own independent test case
-> "test_case#param_index". That way, CI systems will also be able to
-> logically separate different test case params, simply because each
-> param produced its own distinct test case.
-> 
-> So, for example, we would get a series of test cases from something
-> like KUNIT_CASE_PARAM(test_case, foo_gen_params), and in the output
-> we'd see:
-> 
->     ok X - test_case#1
->     ok X - test_case#2
->     ok X - test_case#3
->     ok X - test_case#4
->     ....
-> 
-> Would that make more sense?
-> 
-> That way we'd ensure that test-case specific initialization and
-> cleanup done in init and exit functions is properly taken care of, and
-> you wouldn't need kunit_print_failed_param().
-> 
-> AFAIK, for what I propose you'd have to modify kunit_print_ok_not_ok()
-> (show param_index if parameterized test) and probably
-> kunit_run_case_catch_errors() (generate params and set
-> test->param_value and param_index).
-> 
-> Was there a reason why each param cannot be a distinct test case? If
-> not, I think this would be more useful.
+> diff --git a/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts b/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts
+> index 52e121155563..9416528caa8a 100644
+> --- a/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts
+> +++ b/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts
+> @@ -540,6 +540,46 @@ &dss {
+>  				 <&k3_clks 152 18>;	/* PLL23_HSDIV0 */
+>  };
+>  
+> +&mcasp0 {
+> +	status = "disabled";
+> +};
+> +
+> +&mcasp1 {
+> +	status = "disabled";
+> +};
+> +
+> +&mcasp2 {
+> +	status = "disabled";
+> +};
+> +
+> +&mcasp3 {
+> +	status = "disabled";
+> +};
+> +
+> +&mcasp4 {
+> +	status = "disabled";
+> +};
+> +
+> +&mcasp5 {
+> +	status = "disabled";
+> +};
+> +
+> +&mcasp6 {
+> +	status = "disabled";
+> +};
+> +
+> +&mcasp7 {
+> +	status = "disabled";
+> +};
+> +
+> +&mcasp8 {
+> +	status = "disabled";
+> +};
+> +
+> +&mcasp9 {
+> +	status = "disabled";
+> +};
+> +
+>  &mcasp10 {
+>  	#sound-dai-cells = <0>;
+>  
+> @@ -556,8 +596,10 @@ &mcasp10 {
+>  	>;
+>  	tx-num-evt = <0>;
+>  	rx-num-evt = <0>;
+> +};
+>  
+> -	status = "okay";
+> +&mcasp11 {
+> +	status = "disabled";
+>  };
+
+Looks much better in this way.
+?
+
+I always wondered what is _not_ used by the board...
+But it is not really about that, we need to disable these nodes as they
+are incomplete in dtsi, they are not operational...
+
+>  &serdes0 {
+> @@ -639,3 +681,7 @@ &pcie3_rc {
+>  &pcie3_ep {
+>  	status = "disabled";
+>  };
+> +
+> +&dss {
+> +	status = "disabled";
+> +};
+> diff --git a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
+> index e2a96b2c423c..b54332d6fdc5 100644
+> --- a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
+> @@ -1327,8 +1327,6 @@ dss: dss@04a00000 {
+>  				  "common_s1",
+>  				  "common_s2";
+>  
+> -		status = "disabled";
+> -
+>  		dss_ports: ports {
+>  			#address-cells = <1>;
+>  			#size-cells = <0>;
+> @@ -1350,8 +1348,6 @@ mcasp0: mcasp@2b00000 {
+>  		clocks = <&k3_clks 174 1>;
+>  		clock-names = "fck";
+>  		power-domains = <&k3_pds 174 TI_SCI_PD_EXCLUSIVE>;
+> -
+> -		status = "disabled";
+>  	};
+>  
+>  	mcasp1: mcasp@2b10000 {
+> @@ -1369,8 +1365,6 @@ mcasp1: mcasp@2b10000 {
+>  		clocks = <&k3_clks 175 1>;
+>  		clock-names = "fck";
+>  		power-domains = <&k3_pds 175 TI_SCI_PD_EXCLUSIVE>;
+> -
+> -		status = "disabled";
+>  	};
+>  
+>  	mcasp2: mcasp@2b20000 {
+> @@ -1388,8 +1382,6 @@ mcasp2: mcasp@2b20000 {
+>  		clocks = <&k3_clks 176 1>;
+>  		clock-names = "fck";
+>  		power-domains = <&k3_pds 176 TI_SCI_PD_EXCLUSIVE>;
+> -
+> -		status = "disabled";
+>  	};
+>  
+>  	mcasp3: mcasp@2b30000 {
+> @@ -1407,8 +1399,6 @@ mcasp3: mcasp@2b30000 {
+>  		clocks = <&k3_clks 177 1>;
+>  		clock-names = "fck";
+>  		power-domains = <&k3_pds 177 TI_SCI_PD_EXCLUSIVE>;
+> -
+> -		status = "disabled";
+>  	};
+>  
+>  	mcasp4: mcasp@2b40000 {
+> @@ -1426,8 +1416,6 @@ mcasp4: mcasp@2b40000 {
+>  		clocks = <&k3_clks 178 1>;
+>  		clock-names = "fck";
+>  		power-domains = <&k3_pds 178 TI_SCI_PD_EXCLUSIVE>;
+> -
+> -		status = "disabled";
+>  	};
+>  
+>  	mcasp5: mcasp@2b50000 {
+> @@ -1445,8 +1433,6 @@ mcasp5: mcasp@2b50000 {
+>  		clocks = <&k3_clks 179 1>;
+>  		clock-names = "fck";
+>  		power-domains = <&k3_pds 179 TI_SCI_PD_EXCLUSIVE>;
+> -
+> -		status = "disabled";
+>  	};
+>  
+>  	mcasp6: mcasp@2b60000 {
+> @@ -1464,8 +1450,6 @@ mcasp6: mcasp@2b60000 {
+>  		clocks = <&k3_clks 180 1>;
+>  		clock-names = "fck";
+>  		power-domains = <&k3_pds 180 TI_SCI_PD_EXCLUSIVE>;
+> -
+> -		status = "disabled";
+>  	};
+>  
+>  	mcasp7: mcasp@2b70000 {
+> @@ -1483,8 +1467,6 @@ mcasp7: mcasp@2b70000 {
+>  		clocks = <&k3_clks 181 1>;
+>  		clock-names = "fck";
+>  		power-domains = <&k3_pds 181 TI_SCI_PD_EXCLUSIVE>;
+> -
+> -		status = "disabled";
+>  	};
+>  
+>  	mcasp8: mcasp@2b80000 {
+> @@ -1502,8 +1484,6 @@ mcasp8: mcasp@2b80000 {
+>  		clocks = <&k3_clks 182 1>;
+>  		clock-names = "fck";
+>  		power-domains = <&k3_pds 182 TI_SCI_PD_EXCLUSIVE>;
+> -
+> -		status = "disabled";
+>  	};
+>  
+>  	mcasp9: mcasp@2b90000 {
+> @@ -1521,8 +1501,6 @@ mcasp9: mcasp@2b90000 {
+>  		clocks = <&k3_clks 183 1>;
+>  		clock-names = "fck";
+>  		power-domains = <&k3_pds 183 TI_SCI_PD_EXCLUSIVE>;
+> -
+> -		status = "disabled";
+>  	};
+>  
+>  	mcasp10: mcasp@2ba0000 {
+> @@ -1540,8 +1518,6 @@ mcasp10: mcasp@2ba0000 {
+>  		clocks = <&k3_clks 184 1>;
+>  		clock-names = "fck";
+>  		power-domains = <&k3_pds 184 TI_SCI_PD_EXCLUSIVE>;
+> -
+> -		status = "disabled";
+>  	};
+>  
+>  	mcasp11: mcasp@2bb0000 {
+> @@ -1559,8 +1535,6 @@ mcasp11: mcasp@2bb0000 {
+>  		clocks = <&k3_clks 185 1>;
+>  		clock-names = "fck";
+>  		power-domains = <&k3_pds 185 TI_SCI_PD_EXCLUSIVE>;
+> -
+> -		status = "disabled";
+>  	};
+>  
+>  	watchdog0: watchdog@2200000 {
 > 
 
-I tried adding support to run each parameter as a distinct test case by
-making changes to kunit_run_case_catch_errors(). The issue here is that
-since the results are displayed in KTAP format, this change will result in
-each parameter being considered a subtest of another subtest (test case
-in KUnit). To make this work, a lot of changes in other parts will be required,
-and it will get complicated. Running all parameters as one test case seems
-to be a better option right now. So for now, I will modify what is displayed
-by kunit_err() in case of test failure.
+There is no such a tag, but:
+whatever-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 
->>  static void kunit_print_string_stream(struct kunit *test,
->>                                       struct string_stream *stream)
->>  {
->> @@ -168,6 +174,8 @@ static void kunit_fail(struct kunit *test, struct kunit_assert *assert)
->>         assert->format(assert, stream);
->>
->>         kunit_print_string_stream(test, stream);
->> +       if (test->param_value)
->> +               kunit_print_failed_param(test);
->>
->>         WARN_ON(string_stream_destroy(stream));
->>  }
->> @@ -239,7 +247,18 @@ static void kunit_run_case_internal(struct kunit *test,
->>                 }
->>         }
->>
->> -       test_case->run_case(test);
->> +       if (!test_case->generate_params) {
->> +               test_case->run_case(test);
->> +       } else {
->> +               test->param_value = test_case->generate_params(NULL);
->> +               test->param_index = 0;
->> +
->> +               while (test->param_value) {
->> +                       test_case->run_case(test);
->> +                       test->param_value = test_case->generate_params(test->param_value);
->> +                       test->param_index++;
->> +               }
->> +       }
-> 
-> Thanks,
-> -- Marco
-> 
+- Péter
 
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
