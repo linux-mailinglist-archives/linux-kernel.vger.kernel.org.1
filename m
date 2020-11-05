@@ -2,71 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 858DD2A7D4C
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 12:39:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55A792A7D6A
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 12:44:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730243AbgKELjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 06:39:35 -0500
-Received: from foss.arm.com ([217.140.110.172]:58352 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730068AbgKELjZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 06:39:25 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BAEBB142F;
-        Thu,  5 Nov 2020 03:39:24 -0800 (PST)
-Received: from [10.37.12.41] (unknown [10.37.12.41])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5AD083F719;
-        Thu,  5 Nov 2020 03:39:22 -0800 (PST)
-Subject: Re: [PATCH v8 30/43] arm64: kasan: Allow enabling in-kernel MTE
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <cover.1604531793.git.andreyknvl@google.com>
- <5e3c76cac4b161fe39e3fc8ace614400bc2fb5b1.1604531793.git.andreyknvl@google.com>
- <58aae616-f1be-d626-de16-af48cc2512b0@arm.com>
- <CAAeHK+yfQJbHLP0ja=_qnEugyrtQFMgRyw3Z1ZOeu=NVPNCFgg@mail.gmail.com>
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-Message-ID: <1ef3f645-8b91-cfcf-811e-85123fea90fa@arm.com>
-Date:   Thu, 5 Nov 2020 11:42:23 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1730073AbgKELoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 06:44:22 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:59150 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726665AbgKELoN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 06:44:13 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id B120A1C0B82; Thu,  5 Nov 2020 12:44:08 +0100 (CET)
+Date:   Thu, 5 Nov 2020 12:44:08 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Nicholas Piggin <npiggin@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 4.19 057/191] sparc64: remove mm_cpumask clearing to fix
+ kthread_use_mm race
+Message-ID: <20201105114408.GA9009@duo.ucw.cz>
+References: <20201103203232.656475008@linuxfoundation.org>
+ <20201103203240.110227839@linuxfoundation.org>
 MIME-Version: 1.0
-In-Reply-To: <CAAeHK+yfQJbHLP0ja=_qnEugyrtQFMgRyw3Z1ZOeu=NVPNCFgg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="W/nzBZO5zC0uMSeA"
+Content-Disposition: inline
+In-Reply-To: <20201103203240.110227839@linuxfoundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/5/20 11:35 AM, Andrey Konovalov wrote:
-> This will work. Any preference on the name of this function?
->
 
-I called it in my current iteration mte_enable(), and calling it from
-cpu_enable_mte().
+--W/nzBZO5zC0uMSeA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> Alternatively we can rename mte_init_tags() to something else and let
-> it handle both RRND and sync/async.
+Hi!
 
-This is an option but then you need to change the name of kasan_init_tags and
-the init_tags indirection name as well. I would go for the simpler and just
-splitting the function as per above.
+> From: Nicholas Piggin <npiggin@gmail.com>
+>=20
+> [ Upstream commit bafb056ce27940c9994ea905336aa8f27b4f7275 ]
+=2E..
+> io_uring 2b188cc1bb857 ("Add io_uring IO interface") added code which
+> does a kthread_use_mm() from a mmget_not_zero() refcount.
+=2E..
+> The basic fix for sparc64 is to remove its mm_cpumask clearing code. The
+> optimisation could be effectively restored by sending IPIs to mm_cpumask
+> members and having them remove themselves from mm_cpumask. This is more
+> tricky so I leave it as an exercise for someone with a sparc64 SMP.
+> powerpc has a (currently similarly broken) example.
 
-What do you think?
+So this removes optimalization from Sparc, because it clashes with
+2b188cc1bb857 ("Add io_uring IO interface"). But that commit is not
+present in 4.19... so this probably is not good idea.
 
--- 
-Regards,
-Vincenzo
+Best regards,
+								Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--W/nzBZO5zC0uMSeA
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX6PliAAKCRAw5/Bqldv6
+8n98AJ9Uc+NmgNmzCQI3QdHmr+ziaK4ztwCfUlXuJoy1lBQzAM9E15amAF34hYU=
+=m0CZ
+-----END PGP SIGNATURE-----
+
+--W/nzBZO5zC0uMSeA--
