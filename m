@@ -2,79 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFAE72A77BA
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 08:08:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 898072A77BD
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 08:08:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727658AbgKEHIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 02:08:18 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41927 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726428AbgKEHIR (ORCPT
+        id S1728841AbgKEHIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 02:08:23 -0500
+Received: from smtprelay0074.hostedemail.com ([216.40.44.74]:58944 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726428AbgKEHIV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 02:08:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604560096;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jvkuQPSDCN6FYaBMhi9QfR8XY+glajAyMRxV78sAHp8=;
-        b=DaKOFf/ijQf8tLGf897YVM1E5qQM49mFvGFdaxuZVb4eSLtS12c41I3PXaHqqIh4YkA9FG
-        yzg4Jtu7Rw+8d2F36f0P4HxxnatQk3FCC53nYF22BMxg9majPOO5JAgXuJsb8HVvxdVRHO
-        NGPVEItEMhlz4VWEF2DmEfeCwlUjK7Q=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-309-24oP9kIaO0WULtCF9hmyQw-1; Thu, 05 Nov 2020 02:08:12 -0500
-X-MC-Unique: 24oP9kIaO0WULtCF9hmyQw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1552A804762;
-        Thu,  5 Nov 2020 07:08:11 +0000 (UTC)
-Received: from x1.home (ovpn-112-213.phx2.redhat.com [10.3.112.213])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0BA3D5DA33;
-        Thu,  5 Nov 2020 07:08:06 +0000 (UTC)
-Date:   Thu, 5 Nov 2020 00:08:06 -0700
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Vikas Gupta <vikas.gupta@broadcom.com>
-Cc:     eric.auger@redhat.com, cohuck@redhat.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, vikram.prakash@broadcom.com
-Subject: Re: [RFC, v0 1/3] vfio/platform: add support for msi
-Message-ID: <20201105000806.1df16656@x1.home>
-In-Reply-To: <20201105060257.35269-2-vikas.gupta@broadcom.com>
-References: <20201105060257.35269-1-vikas.gupta@broadcom.com>
-        <20201105060257.35269-2-vikas.gupta@broadcom.com>
-Organization: Red Hat
+        Thu, 5 Nov 2020 02:08:21 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 142CC180A8450;
+        Thu,  5 Nov 2020 07:08:20 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:967:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2525:2560:2563:2682:2685:2693:2731:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3868:3870:3871:3872:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:5007:6117:6119:6120:7875:7903:8957:9025:10004:10400:10848:11232:11658:11783:11914:12043:12297:12438:12679:12740:12895:13069:13149:13161:13229:13230:13311:13357:13439:13845:13894:14181:14659:14721:21080:21627:21740:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: bean75_200cdb0272c8
+X-Filterd-Recvd-Size: 2929
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf14.hostedemail.com (Postfix) with ESMTPA;
+        Thu,  5 Nov 2020 07:08:19 +0000 (UTC)
+Message-ID: <1418629172bac8fe75fee59f13e1192dd1ae5e4e.camel@perches.com>
+Subject: Re: [RFC PATCH] .clang-format: Remove conditional comments
+From:   Joe Perches <joe@perches.com>
+To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Cc:     clang-built-linux <clang-built-linux@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Date:   Wed, 04 Nov 2020 23:08:18 -0800
+In-Reply-To: <CANiq72m0Rwu78AVjt71Ym55E_xvk6SSC5ZpMoS+WEt=ri2MgNQ@mail.gmail.com>
+References: <363325b4a85f094ba9cf06301dd022912ec79d03.camel@perches.com>
+         <CANiq72=r6oieZ-Nj-e6e+HriW8kADB75z2pj6W-gg7Cff3nqGw@mail.gmail.com>
+         <CAKwvOdmnz-DJ-hG5FKJZYF7W-ujPrgfMkrb2hMLhmzhk8Hx6dA@mail.gmail.com>
+         <ba3126e1424c578f5040c7a6f04cdd6a334b2db4.camel@perches.com>
+         <CAKwvOdmoR9xph_TK5zaKdh1qHX4Sh9MW9xYcxLJf6wZfxSkv2Q@mail.gmail.com>
+         <CANiq72m0Rwu78AVjt71Ym55E_xvk6SSC5ZpMoS+WEt=ri2MgNQ@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu,  5 Nov 2020 11:32:55 +0530
-Vikas Gupta <vikas.gupta@broadcom.com> wrote:
+On Thu, 2020-11-05 at 07:44 +0100, Miguel Ojeda wrote:
+> There are a few important new features:
 
-> diff --git a/include/uapi/linux/vfio.h b/include/uapi/linux/vfio.h
-> index 2f313a238a8f..aab051e8338d 100644
-> --- a/include/uapi/linux/vfio.h
-> +++ b/include/uapi/linux/vfio.h
-> @@ -203,6 +203,7 @@ struct vfio_device_info {
->  #define VFIO_DEVICE_FLAGS_AP	(1 << 5)	/* vfio-ap device */
->  #define VFIO_DEVICE_FLAGS_FSL_MC (1 << 6)	/* vfio-fsl-mc device */
->  #define VFIO_DEVICE_FLAGS_CAPS	(1 << 7)	/* Info supports caps */
-> +#define VFIO_DEVICE_FLAGS_MSI	(1 << 8)	/* Device supports msi */
->  	__u32	num_regions;	/* Max region index + 1 */
->  	__u32	num_irqs;	/* Max IRQ index + 1 */
->  	__u32   cap_offset;	/* Offset within info struct of first cap */
+https://clang.llvm.org/docs/ClangFormatStyleOptions.html
 
-This doesn't make any sense to me, MSIs are just edge triggered
-interrupts to userspace, so why isn't this fully described via
-VFIO_DEVICE_GET_IRQ_INFO?  If we do need something new to describe it,
-this seems incomplete, which indexes are MSI (IRQ_INFO can describe
-that)?  We also already support MSI with vfio-pci, so a global flag for
-the device advertising this still seems wrong.  Thanks,
+>   - AlignConsecutiveMacros is probably one of the biggest one for the
+> kernel that we were missing so far.
 
-Alex
+There's no control as to effective column nor sensible mechanism to
+avoid extremely long indents with a single exceptional entry.
+
+>   - IndentPPDirectives and
+
+Some yes, mostly no.
+
+AlignEscapedNewlines:
+
+Generally the kernel uses column 72 but there's not real consistency.
+clang-format doesn't have that option as far as I can tell.
+
+> Then there are a few others that pertain to us too:
+>   - SpaceBeforeSquareBrackets
+
+no
+
+>   - SpacesInConditionalStatement
+
+no
+ 
+>   - SpaceAfterLogicalNot
+
+no
+
+>   - SpaceInEmptyBlock
+
+no
+
+>   - IndentGotoLabels
+
+no
+
+> 
+> Others are also worth checking to see if we can take advantage of them:
+>   - IncludeBlocks (and configuring IncludeCategories etc.)
+
+Might be worthwhile.  It's different by maintainer preference though.
+Reverse Xmas tree is somewhat common in networking, (which I think is
+silly, but DaveM likes it).  Some like alphabetic ordering, others
+by order of include.
+
+>   - StatementMacros
+
+Kernel is not c++ so this is irrelevant for gcc macro statement expressions.
+
+> Then there are others that are not related to us, but to be consistent
+> we would explicitly set them in the file. Finally, for extra points,
+> we could already document the new ones in LLVM 11 if any, for the
+> future, but that is optional.
+> 
+> If no one is up for the task, I will eventually do it... :-)
+
+Enjoy...
 
