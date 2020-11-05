@@ -2,197 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 979702A756A
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 03:26:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D9AD2A756B
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 03:26:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387692AbgKEC0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 21:26:13 -0500
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:50127 "EHLO
-        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2387593AbgKEC0J (ORCPT
+        id S2387761AbgKEC0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 21:26:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44940 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387699AbgKEC0O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 21:26:09 -0500
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id 7ACA85C01CA;
-        Wed,  4 Nov 2020 21:26:08 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Wed, 04 Nov 2020 21:26:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm1; bh=d921gZrveLgVW
-        10+cFYgvJSXNaGtEusR13nH1+m1Jf0=; b=NHLemwZ2SFJVN2DDESiS+inFiQTxo
-        qozfwGi1E4c/jSGV5fN/iXRqHyd1Ot3fCXgsPhpEDC+HQyyewpnsKj5tRsxcUdK/
-        nYn4YPCZebptPuqGxizveVIbFW20E4YgCEpajJL555BTU0IzjBggYRp6LJuJ1aFi
-        oL4HdSKlGwB3f//JA/MnsCqym9HUQIdSkkLEdBXmRyiE95YoMVRK+6Z3ffENd0v6
-        eodXi29zfOp9rNboh0nEX3hTC5Q6J7bRzehdrgF11iszGM/sMlUu2/oycm9Ahzk8
-        0L9xqK1fHEzeThMgz0boO2cZfAd4107U9uOt0PFj2jfykDSw92R4bQhsA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; bh=d921gZrveLgVW10+cFYgvJSXNaGtEusR13nH1+m1Jf0=; b=PqvG9s5K
-        hay7O1tv73p3Y7tBEWNLWfU7RFtb1XnZVILYE34g42SqCoxa2W6Fugs967Mvtjz3
-        +ePu27QYMee5D0Uv7j0Mo/aMLUW1Su8hawM2OpfHVZIVJANX1ffoTVF9SaqO++KL
-        uVJFEPROZ/FbTSnPp7+IyAuuPI93K6T/BJCmLmmF9zKNs7NeYauwbNIPWzZlbSqK
-        jRJAm9Owd3cqxbiLA88JW2JLaODXTCWqJBzDUeVwRi3jVTkbPUUhXR4fiPo4FGkq
-        dEtuJ/R04/k2s3gXz9XuSWSVLpjVzGPJP4kzLdoGgBWFiKPM55WJ/QcHhpXYY6wL
-        A8cYHIrPm0wSsg==
-X-ME-Sender: <xms:wGKjX8x3t0GvZ3DTNFqM1W0q_QXeTDYPOKonl4Sd886LVvStt7DhjA>
-    <xme:wGKjXwRmxXBxktGaWN6HX4v9NCk24oVy6D0HJDzhjaWphwflJTwBytNHb6MS0S0Ed
-    T2a0oE_bwVjWyAYUw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddtiedggeejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdljedtmdenucfjughrpefhvf
-    fufffkofgjfhgggfestdekredtredttdenucfhrhhomhepffgrnhhivghlucgiuhcuoegu
-    gihusegugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpefgkeduleekhfetvefhge
-    fgvdegfeejfefguedvuddthffggffhhedtueeuteefieenucfkphepieelrddukedurddu
-    tdehrdeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
-    hmpegugihusegugihuuhhurdighiii
-X-ME-Proxy: <xmx:wGKjX-VfxNg6Kjobcm0SQgzp_eRZj-pDG43INXfGmorda6gJtcH0Eg>
-    <xmx:wGKjX6j-w_uzhkSHD4LbZgoi1A0iju5b9AurAFbcSy31-YSNsTqWiA>
-    <xmx:wGKjX-AhYviP-1tCfDqdDtq9pPfsdVIGPTQ2BMi8OTM8AXUPXPdzcQ>
-    <xmx:wGKjX5NS8B8CL-9EHx0Mo1s0iT6t7AfhBDTv20hhQWzpYnzoRCZrlA>
-Received: from localhost.localdomain (c-69-181-105-64.hsd1.ca.comcast.net [69.181.105.64])
-        by mail.messagingengine.com (Postfix) with ESMTPA id A37AA32801D7;
-        Wed,  4 Nov 2020 21:26:07 -0500 (EST)
-From:   Daniel Xu <dxu@dxuuu.xyz>
-To:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net
-Cc:     Daniel Xu <dxu@dxuuu.xyz>, kernel-team@fb.com
-Subject: [PATCH bpf v2 2/2] selftest/bpf: Test bpf_probe_read_user_str() strips trailing bytes after NUL
-Date:   Wed,  4 Nov 2020 18:25:38 -0800
-Message-Id: <4e3e8b9b525c8bed39c0ee2aa68f2dff701f56a4.1604542786.git.dxu@dxuuu.xyz>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <cover.1604542786.git.dxu@dxuuu.xyz>
-References: <cover.1604542786.git.dxu@dxuuu.xyz>
+        Wed, 4 Nov 2020 21:26:14 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30F74C0613CF;
+        Wed,  4 Nov 2020 18:26:14 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id j18so173037pfa.0;
+        Wed, 04 Nov 2020 18:26:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=aN2VJlOwLJDzq5SW3NAeCQ4IQzHScs1tSJ+sWZ4PuuE=;
+        b=cmApw21x6XMxEXGLvq0E/VHQ5RQ5zN1kYwizsAUJbtXZC6BpIc/Ou/vL0ZjJ+fnHrN
+         kH/ESE5lPiUOBwchmb2U0JJ/tkAQMcYPAlVEk7UrcCGayeX2iaXk0O9NNV3hWPH1yha7
+         XzdQ67B6j515pZVC9GIzpshAk8fAGXGs2s7Clj+SyGeF22ya9DfsnnglgMNlVHAUClI/
+         Lepoy67FE4s5BKHKpLzP4SdkSRF5VTS5IiWAtjbHwPhDQnmayyMepPHkcoGFRhr63uBL
+         juOPRs6xHJBEm3vQN8rm3HB+dNbiNO9qgJtqCFuw018xmhZpYEaXUxiuIhU64y6UC8ay
+         l5FQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=aN2VJlOwLJDzq5SW3NAeCQ4IQzHScs1tSJ+sWZ4PuuE=;
+        b=Z6lcyl+oK/Hd1yV9Z4ryS93tJtsQuzB9/VqyqY3cYgpv8pSHpHOZFUTfxMnapycsZ1
+         WvY5b8BpuPapJYPWpBHyJTH2bMaFvbRoeVE1n6vu/JRMdh/5lPyrzWwW7Zc9ORJUlU3F
+         TRynxLud5K2XM6F2o13AhbH/Bq3J7oYT+Z4NXSkx/ZkYGej3UJdxWoxYb0N6b00qCFDh
+         9PzyRK4SYGHkdKeuXT4lQgBLkxvnosCM90a1Ar7hDHglt+fH+PNcj6vS1/1TBYPm4khy
+         oFTtZFAsTMlRNHa9gUfJBfKhA22Knj3gq1HEHhhLdRwkxBX02Ub3YTQC2+RnB6LtjD8I
+         1PDQ==
+X-Gm-Message-State: AOAM533kwYwwQZBUO5CGSqjcxMZbNuZHcYwpHuvaLILkrDek2cDEytor
+        yGEOqX2wZL3JEtEjRwWMTo8=
+X-Google-Smtp-Source: ABdhPJxedl4jUMzUMl4EsKLOilb+nrQqtC+i0oWgXRlmi8E85vynkCFiwkEY3jGq9+pVrKTDZ6WATw==
+X-Received: by 2002:a17:90a:aa85:: with SMTP id l5mr123666pjq.119.1604543173469;
+        Wed, 04 Nov 2020 18:26:13 -0800 (PST)
+Received: from [192.168.0.104] ([49.207.201.182])
+        by smtp.gmail.com with ESMTPSA id e10sm197790pfl.162.2020.11.04.18.26.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Nov 2020 18:26:12 -0800 (PST)
+Subject: Re: [RESEND PATCH v3] net: usb: usbnet: update
+ __usbnet_{read|write}_cmd() to use new API
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Oliver Neukum <oneukum@suse.com>,
+        "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+References: <20201102173946.13800-1-anant.thazhemadam@gmail.com>
+ <20201104162444.66b5cc56@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Message-ID: <dc3a4901-9aad-3064-4131-bc3fc82f965f@gmail.com>
+Date:   Thu, 5 Nov 2020 07:56:08 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201104162444.66b5cc56@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Previously, bpf_probe_read_user_str() could potentially overcopy the
-trailing bytes after the NUL due to how do_strncpy_from_user() does the
-copy in long-sized strides. The issue has been fixed in the previous
-commit.
 
-This commit adds a selftest that ensures we don't regress
-bpf_probe_read_user_str() again.
+On 05/11/20 5:54 am, Jakub Kicinski wrote:
+> On Mon,  2 Nov 2020 23:09:46 +0530 Anant Thazhemadam wrote:
+>> Currently, __usbnet_{read|write}_cmd() use usb_control_msg().
+>> However, this could lead to potential partial reads/writes being
+>> considered valid, and since most of the callers of
+>> usbnet_{read|write}_cmd() don't take partial reads/writes into account
+>> (only checking for negative error number is done), and this can lead to
+>> issues.
+>>
+>> However, the new usb_control_msg_{send|recv}() APIs don't allow partial
+>> reads and writes.
+>> Using the new APIs also relaxes the return value checking that must
+>> be done after usbnet_{read|write}_cmd() is called.
+>>
+>> Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
+> So you're changing the semantics without updating the callers?
+>
+> I'm confused. 
+>
+> Is this supposed to be applied to some tree which already has the
+> callers fixed?
+>
+> At a quick scan at least drivers/net/usb/plusb.c* would get confused 
+> as it compares the return value to zero and 0 used to mean "nothing
+> transferred", now it means "all good", no? 
+>
+> * I haven't looked at all the other callers
 
-Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
----
- .../bpf/prog_tests/probe_read_user_str.c      | 60 +++++++++++++++++++
- .../bpf/progs/test_probe_read_user_str.c      | 34 +++++++++++
- 2 files changed, 94 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_probe_read_user_str.c
+I see. I checked most of the callers that directly called the functions,
+but it seems to have slipped my mind that these callers were also
+wrappers, and to check the callers for these wrapper.
+I apologize for the oversight.
+I'll perform a more in-depth analysis of all the callers, fix this mistake,
+and send in a patch series instead, that update all the callers too.
+Would that be alright?
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c b/tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c
-new file mode 100644
-index 000000000000..597a166e6c8d
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c
-@@ -0,0 +1,60 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <test_progs.h>
-+#include "test_probe_read_user_str.skel.h"
-+
-+static const char str[] = "mestring";
-+
-+void test_probe_read_user_str(void)
-+{
-+	struct test_probe_read_user_str *skel;
-+	int fd, err, duration = 0;
-+	char buf[256];
-+	ssize_t n;
-+
-+	skel = test_probe_read_user_str__open_and_load();
-+	if (CHECK(!skel, "test_probe_read_user_str__open_and_load",
-+		  "skeleton open and load failed\n"))
-+		goto out;
-+
-+	err = test_probe_read_user_str__attach(skel);
-+	if (CHECK(err, "test_probe_read_user_str__attach",
-+		  "skeleton attach failed: %d\n", err))
-+		goto out;
-+
-+	fd = open("/dev/null", O_WRONLY);
-+	if (CHECK(fd < 0, "open", "open /dev/null failed: %d\n", fd))
-+		goto out;
-+
-+	/* Give pid to bpf prog so it doesn't read from anyone else */
-+	skel->bss->pid = getpid();
-+
-+	/* Ensure bytes after string are ones */
-+	memset(buf, 1, sizeof(buf));
-+	memcpy(buf, str, sizeof(str));
-+
-+	/* Trigger tracepoint */
-+	n = write(fd, buf, sizeof(buf));
-+	if (CHECK(n != sizeof(buf), "write", "write failed: %ld\n", n))
-+		goto fd_out;
-+
-+	/* Did helper fail? */
-+	if (CHECK(skel->bss->ret < 0, "prog ret", "prog returned: %d\n",
-+		  skel->bss->ret))
-+		goto fd_out;
-+
-+	/* Check that string was copied correctly */
-+	err = memcmp(skel->bss->buf, str, sizeof(str));
-+	if (CHECK(err, "memcmp", "prog copied wrong string"))
-+		goto fd_out;
-+
-+	/* Now check that no extra trailing bytes were copied */
-+	memset(buf, 0, sizeof(buf));
-+	err = memcmp(skel->bss->buf + sizeof(str), buf, sizeof(buf) - sizeof(str));
-+	if (CHECK(err, "memcmp", "trailing bytes were not stripped"))
-+		goto fd_out;
-+
-+fd_out:
-+	close(fd);
-+out:
-+	test_probe_read_user_str__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_probe_read_user_str.c b/tools/testing/selftests/bpf/progs/test_probe_read_user_str.c
-new file mode 100644
-index 000000000000..41c3e296566e
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_probe_read_user_str.c
-@@ -0,0 +1,34 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+#include <sys/types.h>
-+
-+struct sys_enter_write_args {
-+	unsigned long long pad;
-+	int syscall_nr;
-+	int pad1; /* 4 byte hole */
-+	unsigned int fd;
-+	int pad2; /* 4 byte hole */
-+	const char *buf;
-+	size_t count;
-+};
-+
-+pid_t pid = 0;
-+int ret = 0;
-+char buf[256] = {};
-+
-+SEC("tracepoint/syscalls/sys_enter_write")
-+int on_write(struct sys_enter_write_args *ctx)
-+{
-+	if (pid != (bpf_get_current_pid_tgid() >> 32))
-+		return 0;
-+
-+	ret = bpf_probe_read_user_str(buf, sizeof(buf), ctx->buf);
-+
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.28.0
+Thank you for your time.
 
+Thanks,
+Anant
