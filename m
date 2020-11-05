@@ -2,235 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF65A2A7B52
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 11:10:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B2992A7B55
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 11:11:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728345AbgKEKKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 05:10:20 -0500
-Received: from mga11.intel.com ([192.55.52.93]:49424 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726152AbgKEKKT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 05:10:19 -0500
-IronPort-SDR: r8LPEIA4Pq8Asme+vJX4Ohniv4cUnAOFi13f4nIVC5qbbhSVBn0AcIeYnf9S/XbnfcCN3bQF8E
- PkU0YE3FJbfw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9795"; a="165849571"
-X-IronPort-AV: E=Sophos;i="5.77,453,1596524400"; 
-   d="scan'208";a="165849571"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2020 02:10:18 -0800
-IronPort-SDR: UwFGO+gdZLk6fxTXYqBAgua4dF8AXsXi+T+4pFu1+fvF36qwqtw9kRYF+PrEBytP//qzyda100
- GR6/eTyshljQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,453,1596524400"; 
-   d="scan'208";a="354224534"
-Received: from lkp-server02.sh.intel.com (HELO e61783667810) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 05 Nov 2020 02:10:14 -0800
-Received: from kbuild by e61783667810 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kacDd-0001JR-ID; Thu, 05 Nov 2020 10:10:13 +0000
-Date:   Thu, 05 Nov 2020 18:10:07 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:core/entry] BUILD SUCCESS WITH WARNING
- b6be002bcd1dd1dedb926abf3c90c794eacb77dc
-Message-ID: <5fa3cf7f.0eZy6+L6znxMFXGG%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1728855AbgKEKL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 05:11:28 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:46322 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725308AbgKEKL2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 05:11:28 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 5D0EA1C0B85; Thu,  5 Nov 2020 11:11:24 +0100 (CET)
+Date:   Thu, 5 Nov 2020 11:11:23 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Amireddy Mallikarjuna reddy <mallikarjunax.reddy@linux.intel.com>
+Cc:     linux-leds@vger.kernel.org, dmurphy@ti.com,
+        devicetree@vger.kernel.org, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org, cheol.yong.kim@intel.com,
+        qi-ming.wu@intel.com, malliamireddy009@gmail.com,
+        yixin.zhu@intel.com
+Subject: Re: [PATCH v1 2/2] leds: lgm: Add LED controller driver for LGM Soc
+Message-ID: <20201105101123.GB7994@amd>
+References: <c9c963a2d03fbd03bd21f71f3d776ac5800cf6cc.1604331498.git.mallikarjunax.reddy@linux.intel.com>
+ <5372c8410909f7b6b020cd379980dbe4e30e31d3.1604331498.git.mallikarjunax.reddy@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="gj572EiMnwbLXET9"
+Content-Disposition: inline
+In-Reply-To: <5372c8410909f7b6b020cd379980dbe4e30e31d3.1604331498.git.mallikarjunax.reddy@linux.intel.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  core/entry
-branch HEAD: b6be002bcd1dd1dedb926abf3c90c794eacb77dc  x86/entry: Move nmi entry/exit into common code
 
-Warning in current branch:
+--gj572EiMnwbLXET9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-kernel/entry/common.c:142 handle_signal_work() warn: bitwise AND condition is false here
+Hi!
 
-Warning ids grouped by kconfigs:
+> diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
+> index ed943140e1fd..6445b39fe4fc 100644
+> --- a/drivers/leds/Kconfig
+> +++ b/drivers/leds/Kconfig
+> @@ -886,6 +886,16 @@ config LEDS_SGM3140
+>  	  This option enables support for the SGM3140 500mA Buck/Boost Charge
+>  	  Pump LED Driver.
+> =20
+> +config LEDS_LGM_SSO
+> +	tristate "LED support for Intel LGM SOC series"
+> +	depends on LEDS_CLASS
+> +	depends on MFD_SYSCON
+> +	depends on OF
+> +	help
+> +          Parallel to serial conversion, which is also called SSO contro=
+ller,
+> +          can drive external shift register for LED outputs.
+> +	  This enables LED support for Serial Shift Output Controller(SSO).
 
-gcc_recent_errors
-`-- x86_64-randconfig-m001-20201104
-    `-- kernel-entry-common.c-handle_signal_work()-warn:bitwise-AND-condition-is-false-here
+Something is wrong with indentation here.
 
-elapsed time: 724m
+> diff --git a/drivers/leds/leds-lgm-sso.c b/drivers/leds/leds-lgm-sso.c
 
-configs tested: 164
-configs skipped: 2
+Could we put it into drivers/leds/blink/ directory? You'll need to
+create it.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                        shmobile_defconfig
-sh                           se7751_defconfig
-arm                        vexpress_defconfig
-mips                          ath25_defconfig
-arm                            u300_defconfig
-sh                         microdev_defconfig
-c6x                              alldefconfig
-sh                            migor_defconfig
-arm                          pxa168_defconfig
-arm                      integrator_defconfig
-sh                        sh7785lcr_defconfig
-sh                          rsk7269_defconfig
-sh                   secureedge5410_defconfig
-mips                        maltaup_defconfig
-arm                      pxa255-idp_defconfig
-arm                          tango4_defconfig
-arm                  colibri_pxa300_defconfig
-arm                         hackkit_defconfig
-m68k                       m5208evb_defconfig
-mips                             allmodconfig
-parisc                           alldefconfig
-powerpc               mpc834x_itxgp_defconfig
-arm                           tegra_defconfig
-mips                         cobalt_defconfig
-openrisc                            defconfig
-alpha                            allyesconfig
-mips                         tb0226_defconfig
-xtensa                              defconfig
-powerpc                    sam440ep_defconfig
-mips                         db1xxx_defconfig
-arm                            pleb_defconfig
-arm                        mvebu_v7_defconfig
-arm                        spear3xx_defconfig
-powerpc                 mpc834x_itx_defconfig
-ia64                                defconfig
-mips                       capcella_defconfig
-mips                       rbtx49xx_defconfig
-arc                              alldefconfig
-um                            kunit_defconfig
-powerpc                    ge_imp3a_defconfig
-mips                     loongson1c_defconfig
-arm                        multi_v5_defconfig
-powerpc                      cm5200_defconfig
-arc                            hsdk_defconfig
-mips                        jmr3927_defconfig
-powerpc                      ppc6xx_defconfig
-powerpc                 mpc837x_rdb_defconfig
-powerpc                     mpc5200_defconfig
-m68k                       m5475evb_defconfig
-m68k                          atari_defconfig
-sh                            titan_defconfig
-powerpc                  storcenter_defconfig
-arm                        clps711x_defconfig
-sh                        edosk7760_defconfig
-parisc                generic-64bit_defconfig
-powerpc                     tqm8555_defconfig
-i386                             allyesconfig
-i386                             alldefconfig
-sh                           se7722_defconfig
-powerpc                       holly_defconfig
-mips                        bcm47xx_defconfig
-mips                            gpr_defconfig
-powerpc                     taishan_defconfig
-arm                          ep93xx_defconfig
-riscv                    nommu_virt_defconfig
-powerpc                      katmai_defconfig
-m68k                       bvme6000_defconfig
-sh                     sh7710voipgw_defconfig
-arm                         orion5x_defconfig
-arm                     davinci_all_defconfig
-sh                   sh7724_generic_defconfig
-powerpc                    klondike_defconfig
-mips                       lemote2f_defconfig
-riscv                            allmodconfig
-mips                            ar7_defconfig
-powerpc                        cell_defconfig
-sh                  sh7785lcr_32bit_defconfig
-powerpc                  iss476-smp_defconfig
-arm                          moxart_defconfig
-m68k                             allmodconfig
-arc                           tb10x_defconfig
-ia64                        generic_defconfig
-arm                         mv78xx0_defconfig
-sh                            shmin_defconfig
-m68k                          multi_defconfig
-arm                          gemini_defconfig
-powerpc                     asp8347_defconfig
-powerpc                      ppc64e_defconfig
-powerpc                     tqm8548_defconfig
-powerpc                     ksi8560_defconfig
-arc                     nsimosci_hs_defconfig
-ia64                             allmodconfig
-ia64                             allyesconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a004-20201104
-i386                 randconfig-a006-20201104
-i386                 randconfig-a005-20201104
-i386                 randconfig-a001-20201104
-i386                 randconfig-a002-20201104
-i386                 randconfig-a003-20201104
-x86_64               randconfig-a004-20201105
-x86_64               randconfig-a003-20201105
-x86_64               randconfig-a005-20201105
-x86_64               randconfig-a002-20201105
-x86_64               randconfig-a006-20201105
-x86_64               randconfig-a001-20201105
-x86_64               randconfig-a012-20201104
-x86_64               randconfig-a015-20201104
-x86_64               randconfig-a013-20201104
-x86_64               randconfig-a011-20201104
-x86_64               randconfig-a014-20201104
-x86_64               randconfig-a016-20201104
-i386                 randconfig-a015-20201104
-i386                 randconfig-a013-20201104
-i386                 randconfig-a014-20201104
-i386                 randconfig-a016-20201104
-i386                 randconfig-a011-20201104
-i386                 randconfig-a012-20201104
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+> index 000000000000..f1bae1c6ed3c
+> --- /dev/null
+> +++ b/drivers/leds/leds-lgm-sso.c
+> @@ -0,0 +1,881 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Intel LGM Soc LED SSO driver
 
-clang tested configs:
-x86_64               randconfig-a004-20201104
-x86_64               randconfig-a003-20201104
-x86_64               randconfig-a005-20201104
-x86_64               randconfig-a002-20201104
-x86_64               randconfig-a006-20201104
-x86_64               randconfig-a001-20201104
+Spell out LGM, SSO. Soc->SoC.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Pointer to documentation would be welcome here.
+
+> +enum {
+> +	US_SW =3D 0,
+> +	US_GPTC =3D 1,
+> +	US_FPID =3D 2
+> +};
+
+This is not really useful without additional comments.
+
+> +static u32 sso_rectify_brightness(u32 brightness)
+> +{
+> +	if (brightness > LED_FULL)
+> +		return LED_FULL;
+> +	else
+> +		return brightness;
+> +}
+
+Why?
+
+> +static int sso_rectify_blink_rate(struct sso_led_priv *priv, u32 rate)
+> +{
+> +	int i;
+> +
+> +	for (i =3D 0; i < MAX_FREQ_RANK; i++) {
+> +		if (rate <=3D priv->freq[i])
+> +			return i;
+> +	}
+> +
+> +	return i - 1;
+> +}
+
+Can return -1. Is that expected?
+
+> +
+> +		desc->np =3D to_of_node(fwnode_child);
+> +		if (fwnode_property_read_string(fwnode_child, "label",
+> +						&desc->name)) {
+> +			dev_err(dev, "LED no label name!\n");
+> +			goto __dt_err;
+> +		}
+
+Can you use appropriate helper from the core? labels are getting
+deprecated...
+
+
+> +		if (fwnode_property_present(fwnode_child,
+> +					    "retain-state-suspended"))
+> +			desc->retain_state_suspended =3D 1;
+
+Was this documented in the binding?
+
+> +		if (fwnode_property_read_u32(fwnode_child, "intel,led-pin",
+> +					     &prop)) {
+> +			dev_err(dev, "Failed to find led pin id!\n");
+> +			goto __dt_err;
+
+Would not we normally use something like reg =3D <x> to indicate pin?
+
+> +		if (fwnode_property_present(fwnode_child,
+> +					    "intel,sso-hw-trigger"))
+> +			desc->hw_trig =3D 1;
+
+Should not that be selectable on runtime?
+
+> +		if (fwnode_property_read_u32(fwnode_child,
+> +					     "intel,sso-brightness", &prop))
+> +			desc->brightness =3D priv->brightness;
+> +		else
+> +			desc->brightness =3D sso_rectify_brightness(prop);
+
+Can you look at "default-state" property?
+
+> +	ret =3D sso_gpio_gc_init(dev, priv);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return 0;
+> +}
+
+Just return ret.
+
+> +
+> +	ret =3D clk_prepare_enable(priv->gclk);
+> +	if (ret) {
+> +		dev_err(dev, "Failed to prepate/enable sso gate clock!\n");
+> +		return ret;
+> +	}
+> +
+> +	priv->fpid_clk =3D devm_clk_get(dev, "fpid");
+> +	if (IS_ERR(priv->fpid_clk)) {
+> +		dev_err(dev, "Failed to get fpid clock!\n");
+> +		return PTR_ERR(priv->fpid_clk);
+> +	}
+
+clk disable here?
+
+> +	ret =3D clk_prepare_enable(priv->fpid_clk);
+> +	if (ret) {
+> +		dev_err(dev, "Failed to prepare/enable fpid clock!\n");
+> +		return ret;
+> +	}
+> +	priv->fpid_clkrate =3D clk_get_rate(priv->fpid_clk);
+> +
+> +	priv->mmap =3D syscon_node_to_regmap(dev->of_node);
+> +	if (IS_ERR(priv->mmap)) {
+> +		dev_err(dev, "Failed to map iomem!\n");
+> +		return PTR_ERR(priv->mmap);
+> +	}
+
+clk disable here? ... and probably elsewhere?
+
+Best regards,
+							Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--gj572EiMnwbLXET9
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAl+jz8sACgkQMOfwapXb+vL/kwCfZ1IFg1Bv2NnP5463LyMa5gFY
+uyoAmwQlHlHT5DY5bVSK9pz3a05lJcS/
+=0SMC
+-----END PGP SIGNATURE-----
+
+--gj572EiMnwbLXET9--
