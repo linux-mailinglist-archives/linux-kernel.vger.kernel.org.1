@@ -2,106 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 482F92A768A
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 05:41:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 057962A768C
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 05:42:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729885AbgKEElW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 23:41:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37492 "EHLO
+        id S1730198AbgKEEl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 23:41:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728784AbgKEElW (ORCPT
+        with ESMTP id S1728784AbgKEElz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 23:41:22 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50CA6C0613D2
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 20:41:22 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id z24so441420pgk.3
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 20:41:22 -0800 (PST)
+        Wed, 4 Nov 2020 23:41:55 -0500
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB8A4C0613D1
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 20:41:55 -0800 (PST)
+Received: by mail-io1-xd44.google.com with SMTP id r12so492579iot.4
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 20:41:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=gqvFL/vbADRsFOSmwP9r5bVIotD6ZCq93UTx3nZJmwI=;
-        b=qkSgyuSL08dAID7k2/m7sqETUFHJZqzmJk2mvHyQA1xD/6RuT42ON4IKdGFdCh1LVF
-         k8wBzb9zeAPFNP7C57W4Ebgpw+j9ugbrN58f2Nl2PQu75QtiLmI84jqmLX9y2VmDjJot
-         VSAM6B8HKpmtkpsY724pYhAA9555wE4nK96/IbkKVNLDOPiEFc3bortyIHOV56xujAxd
-         hOMyuHm3mzf01BOVjTHq47l7uggBkcSPmN+A8wbImx2AOo7tdLqVORKmKMs+3qIt7Asx
-         06Xyzvx3H9ZW9K9zDIEBFL0vLYRH66G9ClyCubV5NRlq5sTTZjjhIffZL9FJR/d3NqcQ
-         t8eg==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Duq9dQW5Jzdb3ujMdT0fiNUQPULoX6VzrLszCWfIuRA=;
+        b=mj7WaTYLQl8Z8R2+cxErwAk6QYCYtuk0BSwcy4Vo6G0ibhWEaIHAlS9ZYRLPxt+FCx
+         Ehwxe3anN94g13po/UTX3cYHwWT4ZbCnWjCnCH9k2rHZXv4p+2T1zSd7KTQhEGsiNqDL
+         z/BB4MVSBP/8yJStYTBVtCP72D+noVuyGO1qFuFka+VAnKVKL7lF5R7BrKeFDZdfiZOn
+         sHHoU8m7LaCUdbERPUlYZ0YudsrKxdNhNthytEuK4SJiXAsU99bI537BL0UE9YN0cWNy
+         sDTdTQWAMMIEftHdjNxEL+SE6RyqW9gln7MNiTb2LiXaDtzkU65EEilv3cmgskHuQ5vN
+         JKmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=gqvFL/vbADRsFOSmwP9r5bVIotD6ZCq93UTx3nZJmwI=;
-        b=frTB7ZBykq86d+geu243qCC8Y9/cNLHyHgNYBr51yktsOitzx8Bjg6BfBW5L7CmBSL
-         X33hopd0WeRQ/h7ySxg2dwZCzmz/C6tG6HgYw00AOJ7kzQHmz5QlKVDrlscWtm66laLH
-         mt8w3LXBH5yy8W+ieeAH4zbnR4PrFXtkHxUO33YbDtWzC5ZoiUHFcECOh3Y7JyOTT9cu
-         tZcixHF0tJMElEvp3+om0vz7aImBmrCknLI85Yee/FHAenp4r7FQWgN4FXbe+YRIEdTZ
-         4xn66LQmjToqw3HJrNQMSHPoPwyh086WKe33M0ZPUJ4dp/r5BpkrznI6XHlY2Uawx+rP
-         AWHA==
-X-Gm-Message-State: AOAM530j72ZTPtlSHGhUhOtaAJCWGsu2qHce028j/NCtzhpvzp0hWnk5
-        mmNuygZNOYcmUk4Ce0kzdYZCjw==
-X-Google-Smtp-Source: ABdhPJzptq0jvKJOQ5q1k3fqtpa6kbr17VFFcsDUi8j5x+ZEwTT4cMxQaGIqho1XVOi11ouaxNTYKg==
-X-Received: by 2002:a17:90a:4488:: with SMTP id t8mr561064pjg.37.1604551281686;
-        Wed, 04 Nov 2020 20:41:21 -0800 (PST)
-Received: from localhost ([122.172.12.172])
-        by smtp.gmail.com with ESMTPSA id g4sm488989pgu.81.2020.11.04.20.41.20
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 04 Nov 2020 20:41:20 -0800 (PST)
-Date:   Thu, 5 Nov 2020 10:11:18 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Nicola Mazzucato <nicola.mazzucato@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        sudeep.holla@arm.com, rjw@rjwysocki.net, vireshk@kernel.org,
-        robh+dt@kernel.org, sboyd@kernel.org, nm@ti.com,
-        daniel.lezcano@linaro.org, morten.rasmussen@arm.com,
-        chris.redpath@arm.com
-Subject: Re: [PATCH v3 2/3] opp/of: Allow empty opp-table with opp-shared
-Message-ID: <20201105044118.k75um7gcz3ffkphc@vireshk-i7>
-References: <20201102120115.29993-1-nicola.mazzucato@arm.com>
- <20201102120115.29993-3-nicola.mazzucato@arm.com>
- <20201103050141.kiuyotzt4brisch7@vireshk-i7>
- <9f442724-df13-d582-717d-535cc9c9c9f1@arm.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Duq9dQW5Jzdb3ujMdT0fiNUQPULoX6VzrLszCWfIuRA=;
+        b=SE4BSiXgCTcDIrSSh8mLFPNSCBiuGrA3CZfa8di0QFLUcgDH2oU04ereFX36eEUyO8
+         r7xB6hv8S0nwY+UM/k8YN9j105OyDf+8whprA5jpX7ONKnyrRBnfq2/PT9d32NpGFGcS
+         LyenUNNQpEJD4bAA/wuY8f78ZSUdzvXXaYm6AgYwXahbXMIrTYVudpyo1yR164mGHe1R
+         jrLzo7dY9zt9OMTGAdWkb/G0bgkYVOdtTjbL44JbOFPJUAnetG/YZvMoHz5NqeVE2egi
+         bj6VxIh8d8mozO5orR6U4Mxbth3i2v0CJa4N2ID9fBkRorallLjq4alX29/JWSeUs236
+         xCog==
+X-Gm-Message-State: AOAM532nJDCWipVh/U8GkUkRw0aGOsc+qVqXt3Gts4MlGziVcOIf9dGL
+        O/qtL92OW3ptUyfSJvSUlx6m4/pe9nH4KOQQhAidh9YGG/U=
+X-Google-Smtp-Source: ABdhPJx1PyyQdfrnX4KUFq0a8rT1VNgnT1Ph8zJ9ue/a9y+4slW5/MkhfLkG8nrxOVPwFfwBEqkdYaKGgzycLmiPxEY=
+X-Received: by 2002:a02:cc77:: with SMTP id j23mr722712jaq.20.1604551314784;
+ Wed, 04 Nov 2020 20:41:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9f442724-df13-d582-717d-535cc9c9c9f1@arm.com>
-User-Agent: NeoMutt/20180716-391-311a52
+References: <20200909062613.18604-1-lina.wang@mediatek.com>
+ <20200915073006.GR20687@gauss3.secunet.de> <1600160722.5295.15.camel@mbjsdccf07>
+ <20200915093230.GS20687@gauss3.secunet.de> <1600172260.2494.2.camel@mbjsdccf07>
+ <20200917074637.GV20687@gauss3.secunet.de> <1600341549.32639.5.camel@mbjsdccf07>
+ <1604547381.23648.14.camel@mbjsdccf07>
+In-Reply-To: <1604547381.23648.14.camel@mbjsdccf07>
+From:   =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>
+Date:   Wed, 4 Nov 2020 20:41:43 -0800
+Message-ID: <CANP3RGfvadfLabY9vVFxcWioEBUURRSx3GHgbO2KHO180wX=bw@mail.gmail.com>
+Subject: Re: [PATCH] xfrm:fragmented ipv4 tunnel packets in inner interface
+To:     "lina.wang" <lina.wang@mediatek.com>
+Cc:     Steffen Klassert <steffen.klassert@secunet.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Linux NetDev <netdev@vger.kernel.org>,
+        Kernel hackers <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Lorenzo Colitti <lorenzo@google.com>,
+        Greg Kroah-Hartman <gregkh@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04-11-20, 17:54, Nicola Mazzucato wrote:
-> Initially I thought to place a comment right there but I ended up with an
-> explanation of this case at the top of this function (the corner-case). It
-> probably also needs more details..
+On Wed, Nov 4, 2020 at 7:53 PM lina.wang <lina.wang@mediatek.com> wrote:
+>
+> Besides several operators donot fragment packets even DF bit is not set,
+> and instead just drop packets which they think big, maybe they have a
+> consideration--- fragmentation is expensive for both the router that
+> fragments and for the host that reassembles.
+>
+> BTW, ipv6 has the different behaviour when it meets such scenary, which
+> is what we expected,ipv4 should follow the same thing. otherwise,
+> packets are drop, it is a serious thing, and there is no hints. What we
+> do is just fragmenting smaller packets, or is it possible to give us
+> some flag or a sysctl to allow us to change the behaviour?
+>
+> On Thu, 2020-09-17 at 19:19 +0800, lina.wang wrote:
+> > But it is not just one operator's broken router or misconfigured
+> > router.In the whole network, it is common to meet that router will drop
+> > bigger packet silently.I think we should make code more compatible.and
+> > the scenary is wifi calling, which mostly used udp,you know, udp
+> > wouldnot retransmit.It is serious when packet is dropped
+> >
+> > On Thu, 2020-09-17 at 09:46 +0200, Steffen Klassert wrote:
+> > > On Tue, Sep 15, 2020 at 08:17:40PM +0800, lina.wang wrote:
+> > > > We didnot get the router's log, which is some operator's.Actually, after
+> > > > we patched, there is no such issue. Sometimes,router will return
+> > > > packet-too-big, most of times nothing returned,dropped silently
+> > >
+> > > This looks like a broken router, we can't fix that in the code.
+> > >
+> > > > On Tue, 2020-09-15 at 11:32 +0200, Steffen Klassert wrote:
+> > > > > On Tue, Sep 15, 2020 at 05:05:22PM +0800, lina.wang wrote:
+> > > > > >
+> > > > > > Yes, DF bit is not set.
+> > > > >
+> > > > > ...
+> > > > >
+> > > > > > Those two packets are fragmented to one big udp packet, which payload is 1516B.
+> > > > > > After getting rid of tunnel header, it is also a udp packet, which payload is
+> > > > > > 1466 bytes.It didnot get any response for this packet.We guess it is dropped
+> > > > > > by router. Because if we reduced the length, it got response.
+> > > > >
+> > > > > If the DF bit is not set, the router should fragment the packet. If it
+> > > > > does not do so, it is misconfigured. Do you have access to that router?
 
-I read it earlier as well but yeah, that wasn't good enough for me to
-understand what you are doing.
+I'm afraid I don't really understand the exact scenario from the
+description of the patch.
 
-> Basically, on this case - empty opp table & opp-shared - we limit the scope of
-> opp-shared to *only* tell us about hw description, and not marking the opp
-> points as shared, since they are not present in DT.
-
-It doesn't matter where the OPP table entries are coming from. The OPP
-table should be marked shared if it is found to be shared.
-
-> It would be the equivalent
-> of describing that devices share clock/voltage lines, but we can't tell anything
-> about opp points cause they are not there (in DT).
-
-Its okay, even then we should set the right flags here. It is really
-confusing that we blindly set it as exclusive, even though it may be
-shared.
-
-> OTOH If we don't set shared_opp to OPP_TABLE_ACCESS_EXCLUSIVE for that specific
-> case, we won't be able to add opps for the remaining cpus as the opp core
-> will find the opps as duplicated. This is a corner case, really.
-
-Hmm, I am not sure where you fail and how but this should be set to
-OPP_TABLE_ACCESS_EXCLUSIVE only if the OPP table isn't shared. else it
-should be OPP_TABLE_ACCESS_SHARED.
-
--- 
-viresh
+However... a few questions come to mind.
+(a) why not set the DF flag, does the protocol require > mtu udp frames
+(b) what is the mtu of the inner tunnel device, and what is the mtu on
+the route through the device?
+- shouldn't we be udp fragmenting to the route/device mtu?
+maybe stuff is simply misconfigured...
