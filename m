@@ -2,100 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 251CD2A7799
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 07:55:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA4C52A779D
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 07:56:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726690AbgKEGzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 01:55:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58192 "EHLO
+        id S1726825AbgKEG4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 01:56:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725287AbgKEGzL (ORCPT
+        with ESMTP id S1725287AbgKEG4l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 01:55:11 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62F2FC0613CF;
-        Wed,  4 Nov 2020 22:55:11 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CRZ5m2t4Kz9sRR;
-        Thu,  5 Nov 2020 17:55:08 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1604559309;
-        bh=Gsdqk8eogJriZy4XKrFmPiunxG6KHp3jD6Um/oO/a5I=;
-        h=Date:From:To:Cc:Subject:From;
-        b=InIgU2mnUxSO27jciJU8QQWM4jDrvfaArhS8QLNT8zKMOjthSTz1vXmXBhV8SYMdd
-         P0nD3ngbvHSFI/I3bLBwVVpplAlUHGgXtTlbQ+hhDk/QGp7eLInYRggPtZsPUdWVAl
-         m4jRrap3bb6WjtGjqGYtvX3fJPCLX4xxvXiOx0HlwO0Tz27uOpNKZQgV3GAKVfHGqf
-         RJBEWK2Nx8jfgPCb1cEJfYJ3mcy6UesEJjFl5BDTlHe1kAYU174gndmMLWfzOUBsuO
-         1MI2T7oV5Z8LKJtN3NwxhLSzh6dpMmtYyUiqjYP0B0kWPKbjpGK+vUVKRSehXXNaV0
-         H9tjSYCqpC9Lg==
-Date:   Thu, 5 Nov 2020 17:55:07 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mark.gross@intel.com>
-Cc:     Divya Bharathi <divya.bharathi@dell.com>,
-        Mario Limonciello <mario.limonciello@dell.com>,
-        Prasanth KSR <prasanth.ksr@dell.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warnings after merge of the drivers-x86 tree
-Message-ID: <20201105175507.5f59883b@canb.auug.org.au>
+        Thu, 5 Nov 2020 01:56:41 -0500
+Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C5CBC0613D1
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 22:56:41 -0800 (PST)
+Received: by mail-oo1-xc41.google.com with SMTP id l26so178115oop.9
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 22:56:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EwC6aaL5scs/P7pPY4FBOZM78H0SX2GDzgejVIvtuSI=;
+        b=fGjMpbieMBYGTP8eXkgUOsId8oCd1W0FvaKudufpR/oS4DI1DbaCiew8igvijFxBwS
+         EHhoyWaghz1rNg9gKQCAQEMN3BvUTuPkhwCLnk+EQobkdb1tXrYj5a6rBuBQ9F39Dtu2
+         VId+sax2ltEsuv9c8Q5RCbyHOAWv1FbLTXg3Y6Kxeguv4tq/CGHIJ5pl5IMERreUSAD6
+         UM7T1zFhlnlo2IpL2n6yFmJuAaptDx4lxL3h/VKMT/l7r47IVPkX3DEsgSi/n94y6fle
+         ImOYBhqXAjxHdO7nOj+r4aj8mZCPgD+HXicU4xsdbx3245xjMpmp6wc7bZmCqDJpgBra
+         17xw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EwC6aaL5scs/P7pPY4FBOZM78H0SX2GDzgejVIvtuSI=;
+        b=kHdGeXSzbYM7v/bFaSqX2J+4Kp8lOBoEpJ3C4ulPWcpHoddQCzcAKWKHj04sWWGkhL
+         VoVg/UXujc0dL+T+5T39p9pkz+f2p5FQU1vrB8GiJB56gxX84KTjOAUOrujrcAYsTVu7
+         VSbckeswh5Belu4lIR4Qa44lUZ7WxcwmxCtZw6t7glVFx6ev41UCMcVGdjJ/7KguEYny
+         7HjZdjhFh5iWiFGAO3RCpyAv246o3OcIytzbcaHF+aG2JWr6Aw9uo+670xIXqQSZ5/m3
+         Dlhj7cQu8uABnHCxV2sxwnTadUiHTMCSWFdOjlM3m6uvfLZBadfFiPdIwuURmAAnGukv
+         9l+A==
+X-Gm-Message-State: AOAM532iGFIASBwR4Lhiu2eaEIMGhSo3Gi+dA57sBxcfsSHw1MdnGInI
+        Tnmn61SxtLwM4aSKAtXTNXXtMkqfsYDuP+59Ei9/GA==
+X-Google-Smtp-Source: ABdhPJzG+mUg1IhLpXs4PxzIVuJht73184cn4t2P8RYlFePqEzl5jZbufSglQtuHFx1WT3FcXVbe7LhHZNe2AclMWNk=
+X-Received: by 2002:a4a:96b0:: with SMTP id s45mr804814ooi.33.1604559400459;
+ Wed, 04 Nov 2020 22:56:40 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/nkSBGBB+N6hYCokjTi3WIQs";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <cover.1602838910.git.zong.li@sifive.com> <691e24d1c45a4b56b57ce1e02a04268c4253a77d.1602838910.git.zong.li@sifive.com>
+ <160454441626.3965362.17922436443029310228@swboyd.mtv.corp.google.com>
+In-Reply-To: <160454441626.3965362.17922436443029310228@swboyd.mtv.corp.google.com>
+From:   Zong Li <zong.li@sifive.com>
+Date:   Thu, 5 Nov 2020 14:56:27 +0800
+Message-ID: <CANXhq0oNpVAwGYHwjFngdGtbLHGZ8tMvgdQ8Prsg2N9L9Qpf5A@mail.gmail.com>
+Subject: Re: [PATCH 2/4] clk: sifive: Use common name for prci configuration
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     Albert Ou <aou@eecs.berkeley.edu>, linux-clk@vger.kernel.org,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Yash Shah <yash.shah@sifive.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/nkSBGBB+N6hYCokjTi3WIQs
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, Nov 5, 2020 at 10:46 AM Stephen Boyd <sboyd@kernel.org> wrote:
+>
+> Quoting Zong Li (2020-10-16 02:18:24)
+> > Use generic name CLK_SIFIVE_PRCI instead of CLK_SIFIVE_FU540_PRCI. This
+> > patch is prepared for fu740 support.
+> >
+> > Signed-off-by: Zong Li <zong.li@sifive.com>
+> > ---
+>
+> Looks ok but needs an ack from riscv maintainers to go through clk
+> tree. I was worried it would break defconfigs but it seems that the arch
+> selects the config so this should be OK, right?
 
-Hi all,
+Yes, this config is selected by arch, the defconfig won't be impacted.
 
-After merging the drivers-x86 tree, today's linux-next build (htmldocs)
-produced these warnings:
-
-Documentation/ABI/testing/sysfs-class-firmware-attributes:2: WARNING: Unexp=
-ected indentation.
-Documentation/ABI/testing/sysfs-class-firmware-attributes:2: WARNING: Unexp=
-ected indentation.
-Documentation/ABI/testing/sysfs-class-firmware-attributes:2: WARNING: Block=
- quote ends without a blank line; unexpected unindent.
-Documentation/ABI/testing/sysfs-class-firmware-attributes:173: WARNING: Une=
-xpected indentation.
-Documentation/ABI/testing/sysfs-class-firmware-attributes:173: WARNING: Une=
-xpected indentation.
-Documentation/ABI/testing/sysfs-class-firmware-attributes:173: WARNING: Blo=
-ck quote ends without a blank line; unexpected unindent.
-Documentation/ABI/testing/sysfs-class-firmware-attributes:111: WARNING: Inl=
-ine emphasis start-string without end-string.
-
-Introduced by commit
-
-  e8a60aa7404b ("platform/x86: Introduce support for Systems Management Dri=
-ver over WMI for Dell Systems")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/nkSBGBB+N6hYCokjTi3WIQs
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+jocsACgkQAVBC80lX
-0Gyvfwf/VUFar1I1U7gsuqiMUjMfxMpJ26X+TSf86Oqy1jc8yUKqzYhg4gZYG7i5
-RCytCq0Lx2Wo2xFSejgYBkNrRFzX8qyW1Ywm0B7onxCjJT627iSn0QvwJ9lYrmjd
-AXyaVbPtXl2BDg3Skps/uAuure2NhHPMZAinlzc9VZpNl9o3I6lyHGyi9JCYD/HT
-1RjzemEWq1Kffe+Z6EZ0JWSGcoAuMUgm9oMdHPiF7CrLfC1DTp9ui9hGaUI1dU86
-erhGfTOtpaJeggu/fsMh5fZRVD/02VaQRrHjsBOD2CoDUgZqaHVgFJ+Hyoav2b+1
-F1jvgT6cLJ2llGPkB4ycyrRjJy8J7Q==
-=pX2Y
------END PGP SIGNATURE-----
-
---Sig_/nkSBGBB+N6hYCokjTi3WIQs--
+>
+> >  arch/riscv/Kconfig.socs     | 2 +-
+> >  drivers/clk/sifive/Kconfig  | 6 +++---
+> >  drivers/clk/sifive/Makefile | 2 +-
+> >  3 files changed, 5 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
+> > index 8a55f6156661..3284d5c291be 100644
+> > --- a/arch/riscv/Kconfig.socs
+> > +++ b/arch/riscv/Kconfig.socs
+> > @@ -5,7 +5,7 @@ config SOC_SIFIVE
+> >         select SERIAL_SIFIVE if TTY
+> >         select SERIAL_SIFIVE_CONSOLE if TTY
+> >         select CLK_SIFIVE
+> > -       select CLK_SIFIVE_FU540_PRCI
+> > +       select CLK_SIFIVE_PRCI
+> >         select SIFIVE_PLIC
+> >         help
+> >           This enables support for SiFive SoC platform hardware.
