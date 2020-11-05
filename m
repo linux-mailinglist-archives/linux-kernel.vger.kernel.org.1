@@ -2,149 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFBCC2A85E8
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 19:15:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 595032A85F6
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 19:16:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732247AbgKESPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 13:15:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51980 "EHLO
+        id S1731870AbgKESQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 13:16:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731620AbgKESPI (ORCPT
+        with ESMTP id S1729862AbgKESQU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 13:15:08 -0500
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9FB9C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 10:15:07 -0800 (PST)
-Received: by mail-ot1-x344.google.com with SMTP id g19so2268676otp.13
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 10:15:07 -0800 (PST)
+        Thu, 5 Nov 2020 13:16:20 -0500
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AFB5C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 10:16:20 -0800 (PST)
+Received: by mail-pl1-x641.google.com with SMTP id 1so1182215ple.2
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 10:16:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2lVJy0oZJ1HKj/RNi/yGkNbXnVBFsYr/3+ED5ZMQfKw=;
-        b=IyWaPau7ZYEzIkgrk5Vh4h4G9HhBgXbnf18iSExSSwD8Va8GOuKADUz4CytksalbiW
-         MzScsBKf5oiY2HuZ1YhHj0f7X2yZf4RR6/ROIepItR8F8D/GCz6dcRvPz2s9Pv5dXK3q
-         wNxzRh7wgI7g0lSub9uEkZLBBMgnB7KSZ/94o=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=8DAc+yqZFTta9RaCxZpWb6+nPvWwsd8gU2kgzP9O8nc=;
+        b=NDDHLjmKCrwxORbkYjMPorLHS+6jqgXsTkedKqV0bhbGMIiZdDpX3u2gGayQO4iQL9
+         VRanoOw05oECWNtoGEqgHQrXzhBNN8O6SCxY0U9pTN9fHeQ2+shkjTqd86TQQ4Mk7zqw
+         qSXvQDz/nCLepFzTwLsJoFwn0poktE8iyyzVhd2aeMo6osmBph6keMEaoTnqFMJR0MsI
+         1Kk0iOaZzPA6JRPJiqbFMqLB+a7OGB8DnFpvoX32lgMQfM75KOacMW8lJbGKqiBiw+QX
+         rVQQz1c2W6RLzaPMjH0mH1eMYar/JrWRhVb8qgqwzJHI9cVqlo7dvgJSMGposDJL2rVQ
+         kAHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2lVJy0oZJ1HKj/RNi/yGkNbXnVBFsYr/3+ED5ZMQfKw=;
-        b=ugD/tQGYTlvrc9PJqkGHhO6NNaEzyLcd9/r5w5gf5vsCTEpW0ezJVbHO1u/Q3BztDa
-         KOKoeAkINzcokTWWcoADYtX1zPHp7zdiRaufDiREoEEHMJ7idTsNO+nRW8E5YRVOAU1R
-         rVvGS1ZJfKcCtA8pP5xqsVRFG9EiatGum/EROJq8fEWxhDVuAwg30NhPZMXjPy8vul6l
-         6lfNw3z18TkimmVI1ASGIx3Qc0sphaotc92uz5xc9hmtbdsdmsTV8/3Y+I1Qz3ZH2Bq1
-         hdMLOD8hbOlt5i20SWNNnMOz3fAGxiiL34o5SdTzga/EGilqfZX1sg73647cinWTTUJ+
-         g2zA==
-X-Gm-Message-State: AOAM532RPykII6/e4+uHh3nLjGYuUpY1a7H6CK0dAXGFGw6sWLO0nYCt
-        sIenl9JS5GOCRTIPpqrtlWjEYi2LXN7g7WXLFa4dIw==
-X-Google-Smtp-Source: ABdhPJz6LySZvQ0VpbbSmLJZyloCrKQbelizcXBsEwRVJaITj+vGbbcw3XfkOTnXZG1mD1JdtddL+vEJaCj1UVIENNw=
-X-Received: by 2002:a9d:3b4:: with SMTP id f49mr2710790otf.188.1604600105882;
- Thu, 05 Nov 2020 10:15:05 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=8DAc+yqZFTta9RaCxZpWb6+nPvWwsd8gU2kgzP9O8nc=;
+        b=uQ5QhBGO3KMqADMYSEKc0DX1JXEfMme0p5zfcVoSvhRdEVISBf3OSNyL7fNJRw2WIH
+         iqK4Fu6XCQ4jPNEZUo9G6MSfWSngYNkmo63N+5PBTRew43rOaySXwzIKHUA6c267h8lE
+         nw1aNNJsJ4EXyyEathejvnBUTsPoYK6dN69fIrXFdLhnHZFQ91lJ2lhxK8ziGdKk96HF
+         5K5v+1u15S239Pd/56nhZqSDdyK8Z/gWsd2LsIVPyzBSzsReEqAbkT5b7hdVtwSZrd8g
+         eeLKcJ/2pgarstdb3zJwXs2smr+1edc7xc5U5pkMvr6Nhbzrp9y6ugvYSzbzpVR7trKY
+         vkaw==
+X-Gm-Message-State: AOAM5311jYXGBDl9Bp3fMgfRN2a4cSLgQBOk+KG0an5X39RH2v3663LS
+        Rdhy7Nh3yjy0cGQDljCaHdY=
+X-Google-Smtp-Source: ABdhPJxFb/P68iReWq/rQU77ozYWg2HQsHgI3Jdm1aL9Q9i/nGtoo22bjdLmibG1FNtQPPFxGYjq/g==
+X-Received: by 2002:a17:90b:4a4e:: with SMTP id lb14mr1740465pjb.23.1604600179899;
+        Thu, 05 Nov 2020 10:16:19 -0800 (PST)
+Received: from localhost ([160.202.157.3])
+        by smtp.gmail.com with ESMTPSA id i11sm3259743pfq.156.2020.11.05.10.16.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Nov 2020 10:16:19 -0800 (PST)
+Date:   Thu, 5 Nov 2020 23:46:13 +0530
+From:   Deepak R Varma <mh12gx2825@gmail.com>
+To:     Eric Anholt <eric@anholt.net>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     mh12gx2825@gmail.com, maxime@cerno.tech, mripard@kernel.org
+Subject: [PATCH] drm/vc4: replace idr_init() by idr_init_base()
+Message-ID: <20201105181613.GA42968@localhost>
 MIME-Version: 1.0
-References: <20201105144517.1826692-1-lee.jones@linaro.org>
- <20201105164841.GH485884@ulmo> <20201105181053.GP4488@dell>
-In-Reply-To: <20201105181053.GP4488@dell>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Thu, 5 Nov 2020 19:14:54 +0100
-Message-ID: <CAKMK7uEyW_KJ1qC3gLASDe4Qyk_5UMr+yCu7VVVdAq+Z0J6RwQ@mail.gmail.com>
-Subject: Re: [PATCH 00/19] [Set 1] Rid W=1 warnings from GPU
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Christian Koenig <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        David Francis <David.Francis@amd.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Fabio Estevam <festevam@gmail.com>,
-        Gareth Hughes <gareth@valinux.com>,
-        Huang Rui <ray.huang@amd.com>, Jason Yan <yanaijie@huawei.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Jingoo Han <jg1.han@samsung.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Lyude Paul <lyude@redhat.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Nirmoy Das <nirmoy.aiemd@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Rob Clark <rob.clark@linaro.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 5, 2020 at 7:10 PM Lee Jones <lee.jones@linaro.org> wrote:
->
-> On Thu, 05 Nov 2020, Thierry Reding wrote:
->
-> > On Thu, Nov 05, 2020 at 02:44:58PM +0000, Lee Jones wrote:
-> > > This set is part of a larger effort attempting to clean-up W=1
-> > > kernel builds, which are currently overwhelmingly riddled with
-> > > niggly little warnings.
-> > >
-> > > There are 5000 warnings to work through.
-> > >
-> > > It will take a couple more sets.
-> > >
-> > > Lee Jones (19):
-> > >   gpu: host1x: bus: Add missing description for 'driver'
-> > >   gpu: ipu-v3: ipu-di: Strip out 2 unused 'di_sync_config' entries
-> > >   gpu: drm: imx: ipuv3-plane: Mark 'crtc_state' as __always_unused
-> > >   gpu: drm: omapdrm: omap_irq: Fix a couple of doc-rot issues
-> > >   gpu: drm: selftests: test-drm_mm: Mark 'hole_end' as always_unused
-> > >   gpu: drm: scheduler: sched_main: Provide missing description for
-> > >     'sched' paramter
-> > >   gpu: drm: scheduler: sched_entity: Demote non-conformant kernel-doc
-> > >     headers
-> > >   gpu: drm: omapdrm: dss: dsi: Rework and remove a few unused variables
-> > >   gpu: drm: selftests: test-drm_framebuffer: Remove set but unused
-> > >     variable 'fb'
-> > >   gpu: drm: ttm: ttm_bo: Fix one function header - demote lots of
-> > >     kernel-doc abuses
-> > >   gpu: drm: panel: panel-simple: Fix 'struct panel_desc's header
-> > >   gpu: drm: bridge: analogix: analogix_dp_reg: Remove unused function
-> > >     'analogix_dp_write_byte_to_dpcd'
-> > >   gpu: drm: ttm: ttm_tt: Demote kernel-doc header format abuses
-> > >   gpu: drm: selftests: test-drm_dp_mst_helper: Place 'struct
-> > >     drm_dp_sideband_msg_req_body' onto the heap
-> > >   gpu: drm: radeon: radeon_drv: Remove unused variable 'ret'
-> > >   gpu: drm: panel: panel-ilitek-ili9322: Demote non-conformant
-> > >     kernel-doc header
-> > >   gpu: drm: radeon: radeon_device: Fix a bunch of kernel-doc
-> > >     misdemeanours
-> > >   gpu: drm: amd: amdgpu: amdgpu: Mark global variables as __maybe_unused
-> > >   gpu: drm: bridge: analogix: analogix_dp_reg: Remove unused function
-> > >     'analogix_dp_start_aux_transaction'
-> >
-> > As commented on the other patches, the subject prefixes on most of these
-> > look wrong, but it's generally a nice cleanup.
->
-> The prefixes are automated.  I'll add this to my list of awkward
-> subsystems and go through them all manually again tomorrow. :D
+idr_init() uses base 0 which is an invalid identifier for this driver.
+The idr_alloc for this driver uses VC4_PERFMONID_MIN as start value for
+ID range and it is #defined to 1. The new function idr_init_base allows
+IDR to set the ID lookup from base 1. This avoids all lookups that
+otherwise starts from 0 since 0 is always unused / available.
 
-tbh for autmoation they look really good :-)
+References: commit 6ce711f27500 ("idr: Make 1-based IDRs more efficient")
 
-I'd say if you replace the intermediate ": " with just a / you'll be
-perfectly in style for drivers/gpu. But really I think it's ok as-is,
-imo no need to change since this is a giantic tree wide effort.
--Daniel
+Signed-off-by: Deepak R Varma <mh12gx2825@gmail.com>
+---
+ drivers/gpu/drm/vc4/vc4_perfmon.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/vc4/vc4_perfmon.c b/drivers/gpu/drm/vc4/vc4_perfmon.c
+index f4aa75efd16b..7d40f421d922 100644
+--- a/drivers/gpu/drm/vc4/vc4_perfmon.c
++++ b/drivers/gpu/drm/vc4/vc4_perfmon.c
+@@ -77,7 +77,7 @@ struct vc4_perfmon *vc4_perfmon_find(struct vc4_file *vc4file, int id)
+ void vc4_perfmon_open_file(struct vc4_file *vc4file)
+ {
+ 	mutex_init(&vc4file->perfmon.lock);
+-	idr_init(&vc4file->perfmon.idr);
++	idr_init_base(&vc4file->perfmon.idr, 1);
+ }
+ 
+ static int vc4_perfmon_idr_del(int id, void *elem, void *data)
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+2.25.1
+
