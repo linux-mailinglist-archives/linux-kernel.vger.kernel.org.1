@@ -2,278 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 308792A896D
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 23:00:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A3402A8973
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 23:01:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732690AbgKEWAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 17:00:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58364 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732623AbgKEWAZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 17:00:25 -0500
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6453021734;
-        Thu,  5 Nov 2020 22:00:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604613624;
-        bh=reAMOw/4tleva8M087IXBPk79Dfy7VEw4dnKVm5Ngig=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WDj6WWygQR8RYF8XTvZkVfCzdNf3dKyUIH6/GJnli7ZU3z+QYN4an3tSrKEOjsFKz
-         mZjft59+3RQ0IgbCKZDeQP5f0JbDFcimeoeX25OCCh4ulPg/nyAsv9wzRAvhdvP/V8
-         alZx/oRn7v2t6/6OAN0iNOK4LOrLLS9zLr/mYFN4=
-From:   paulmck@kernel.org
-To:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org
-Cc:     stern@rowland.harvard.edu, parri.andrea@gmail.com, will@kernel.org,
-        peterz@infradead.org, boqun.feng@gmail.com, npiggin@gmail.com,
-        dhowells@redhat.com, j.alglave@ucl.ac.uk, luc.maranget@inria.fr,
-        akiyks@gmail.com, "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH memory-model 8/8] tools/memory-model: Label MP tests' producers and consumers
-Date:   Thu,  5 Nov 2020 14:00:17 -0800
-Message-Id: <20201105220017.15410-8-paulmck@kernel.org>
-X-Mailer: git-send-email 2.9.5
-In-Reply-To: <20201105215953.GA15309@paulmck-ThinkPad-P72>
-References: <20201105215953.GA15309@paulmck-ThinkPad-P72>
+        id S1732745AbgKEWA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 17:00:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58910 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732444AbgKEWAz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 17:00:55 -0500
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 777A1C0613D2
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 14:00:55 -0800 (PST)
+Received: by mail-ej1-x643.google.com with SMTP id oq3so4855315ejb.7
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 14:00:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kkrL6/jK3eJFpTLVXsZRPhI+a3UIbjZsmKJ9Y1LYQJ0=;
+        b=l1zyt1jYkTklLUA4dKaMEI57G5m3V/WrJO9UWEROVOt1ialjv5+aPaK+2azNEcKZm0
+         vrcxfUIr6eZ8Kun/So75Mc20VmON8d5xdIS2rpzD+CsMBd2VqqhnemRqlDOnL66sjr1P
+         Ecc5lreu6+8+82eLvbrs02WwGF4FFHLHcePgPZ8d4QfyEF9+q7bmSY/+90lZC5kIEp4O
+         5u8S7sFHPozXs0wKAV3gQx9l3oe6/V92olWejfApaKFk3N1zIixtWQeU33iTAoGmromx
+         XUW+nJIH2V3f6sE6BWIFVXi1z/N5WJiO7KgF5iUw/PsjqHrTRre+btTWTFt0ilKSzUBm
+         fn3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kkrL6/jK3eJFpTLVXsZRPhI+a3UIbjZsmKJ9Y1LYQJ0=;
+        b=mK2iN8P++qJIESb3fNNnNuFr9i8W58gjUd3UGNBRZc6oIqLfIHkgorefG25QnjpBzY
+         AZwA4XsvzoSkIbh1RyRujEAxierDDagymrIw4TCQ01ZxQYk4JPL3iAUuGRH3GsuBZ8p3
+         rmGe6SPqjg3gDbBsb3OObDOgy5j3qMglMZYzJXuis+d/svXjdx2kk8YRg0Ht2DEjSR33
+         6lowTaU9B9z9DxkwtnczquVYhGgdWR5kOb4jZK+gCr3RoinsPYyaV+yu4DhxEuGL9qmg
+         BkvVglh4Vv00xIlXXpU4MjnyXEdNHaSJOFZse9WqmJGL+LqIHHkMCCLJxSjMheGTXEox
+         1c5g==
+X-Gm-Message-State: AOAM530fQYBpyC8jn/xZsiSZU3afGQSE/ClvAR3KXvkYbPQywO7kAvCD
+        nYA0oVUijIK5IBliKz96MrxlH2K3NVzaMABt/jFMsA==
+X-Google-Smtp-Source: ABdhPJythImg+6Su9fzxeATyfrRJDwfwiTfRoJbZhE2LPNRyXKMolHFGhd5ZFcfi1TtxdV0OdBNkOfUeah9GASwsFOs=
+X-Received: by 2002:a17:906:ad8e:: with SMTP id la14mr4221902ejb.264.1604613654118;
+ Thu, 05 Nov 2020 14:00:54 -0800 (PST)
+MIME-Version: 1.0
+References: <20201023003338.1285642-1-david.m.ertman@intel.com>
+ <20201023003338.1285642-2-david.m.ertman@intel.com> <CAPcyv4i9s=CsO5VJOhPnS77K=bD0LTQ8TUAbhLd+0OmyU8YQ3g@mail.gmail.com>
+ <DM6PR11MB284191BAA817540E52E4E2C4DDEE0@DM6PR11MB2841.namprd11.prod.outlook.com>
+In-Reply-To: <DM6PR11MB284191BAA817540E52E4E2C4DDEE0@DM6PR11MB2841.namprd11.prod.outlook.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Thu, 5 Nov 2020 14:00:00 -0800
+Message-ID: <CAPcyv4hjCmaCEUhgchkJO7WaGQeTz8gtS2YgMtBAvoGBksvvSg@mail.gmail.com>
+Subject: Re: [PATCH v3 01/10] Add auxiliary bus support
+To:     "Ertman, David M" <david.m.ertman@intel.com>
+Cc:     "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Netdev <netdev@vger.kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Fred Oh <fred.oh@linux.intel.com>,
+        Parav Pandit <parav@mellanox.com>,
+        "Saleem, Shiraz" <shiraz.saleem@intel.com>,
+        "Patil, Kiran" <kiran.patil@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Leon Romanovsky <leonro@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+On Thu, Nov 5, 2020 at 11:28 AM Ertman, David M
+<david.m.ertman@intel.com> wrote:
+[..]
+> > > Each auxiliary_device represents a part of its parent
+> > > +functionality. The generic behavior can be extended and specialized as
+> > needed
+> > > +by encapsulating an auxiliary_device within other domain-specific
+> > structures and
+> > > +the use of .ops callbacks. Devices on the auxiliary bus do not share any
+> > > +structures and the use of a communication channel with the parent is
+> > > +domain-specific.
+> >
+> > Should there be any guidance here on when to use ops and when to just
+> > export functions from parent driver to child. EXPORT_SYMBOL_NS() seems
+> > a perfect fit for publishing shared routines between parent and child.
+> >
+>
+> I would leave this up the driver writers to determine what is best for them.
 
-This commit adds comments that label the MP tests' producer and consumer
-processes, and also that label the "exists" clause as the bad outcome.
+I think there is a pathological case that can be avoided with a
+statement like the following:
 
-Reported-by: Johannes Weiner <hannes@cmpxchg.org>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- .../litmus-tests/MP+fencewmbonceonce+fencermbonceonce.litmus        | 6 +++---
- tools/memory-model/litmus-tests/MP+onceassign+derefonce.litmus      | 6 +++---
- .../litmus-tests/MP+polockmbonce+poacquiresilsil.litmus             | 6 +++---
- .../memory-model/litmus-tests/MP+polockonce+poacquiresilsil.litmus  | 6 +++---
- tools/memory-model/litmus-tests/MP+polocks.litmus                   | 6 +++---
- tools/memory-model/litmus-tests/MP+poonceonces.litmus               | 6 +++---
- .../memory-model/litmus-tests/MP+pooncerelease+poacquireonce.litmus | 6 +++---
- tools/memory-model/litmus-tests/MP+porevlocks.litmus                | 6 +++---
- 8 files changed, 24 insertions(+), 24 deletions(-)
+"Note that ops are intended as a way to augment instance behavior
+within a class of auxiliary devices, it is not the mechanism for
+exporting common infrastructure from the parent. Consider
+EXPORT_SYMBOL_NS() to convey infrastructure from the parent module to
+the auxiliary module(s)."
 
-diff --git a/tools/memory-model/litmus-tests/MP+fencewmbonceonce+fencermbonceonce.litmus b/tools/memory-model/litmus-tests/MP+fencewmbonceonce+fencermbonceonce.litmus
-index f15e501..c5c168d 100644
---- a/tools/memory-model/litmus-tests/MP+fencewmbonceonce+fencermbonceonce.litmus
-+++ b/tools/memory-model/litmus-tests/MP+fencewmbonceonce+fencermbonceonce.litmus
-@@ -13,14 +13,14 @@ C MP+fencewmbonceonce+fencermbonceonce
- 	int flag;
- }
- 
--P0(int *buf, int *flag)
-+P0(int *buf, int *flag) // Producer
- {
- 	WRITE_ONCE(*buf, 1);
- 	smp_wmb();
- 	WRITE_ONCE(*flag, 1);
- }
- 
--P1(int *buf, int *flag)
-+P1(int *buf, int *flag) // Consumer
- {
- 	int r0;
- 	int r1;
-@@ -30,4 +30,4 @@ P1(int *buf, int *flag)
- 	r1 = READ_ONCE(*buf);
- }
- 
--exists (1:r0=1 /\ 1:r1=0)
-+exists (1:r0=1 /\ 1:r1=0) (* Bad outcome. *)
-diff --git a/tools/memory-model/litmus-tests/MP+onceassign+derefonce.litmus b/tools/memory-model/litmus-tests/MP+onceassign+derefonce.litmus
-index ed8ee9b..20ff626 100644
---- a/tools/memory-model/litmus-tests/MP+onceassign+derefonce.litmus
-+++ b/tools/memory-model/litmus-tests/MP+onceassign+derefonce.litmus
-@@ -15,13 +15,13 @@ C MP+onceassign+derefonce
- 	int y=0;
- }
- 
--P0(int *x, int **p)
-+P0(int *x, int **p) // Producer
- {
- 	WRITE_ONCE(*x, 1);
- 	rcu_assign_pointer(*p, x);
- }
- 
--P1(int *x, int **p)
-+P1(int *x, int **p) // Consumer
- {
- 	int *r0;
- 	int r1;
-@@ -32,4 +32,4 @@ P1(int *x, int **p)
- 	rcu_read_unlock();
- }
- 
--exists (1:r0=x /\ 1:r1=0)
-+exists (1:r0=x /\ 1:r1=0) (* Bad outcome. *)
-diff --git a/tools/memory-model/litmus-tests/MP+polockmbonce+poacquiresilsil.litmus b/tools/memory-model/litmus-tests/MP+polockmbonce+poacquiresilsil.litmus
-index b1b1266..153917a 100644
---- a/tools/memory-model/litmus-tests/MP+polockmbonce+poacquiresilsil.litmus
-+++ b/tools/memory-model/litmus-tests/MP+polockmbonce+poacquiresilsil.litmus
-@@ -15,7 +15,7 @@ C MP+polockmbonce+poacquiresilsil
- 	int x;
- }
- 
--P0(spinlock_t *lo, int *x)
-+P0(spinlock_t *lo, int *x) // Producer
- {
- 	spin_lock(lo);
- 	smp_mb__after_spinlock();
-@@ -23,7 +23,7 @@ P0(spinlock_t *lo, int *x)
- 	spin_unlock(lo);
- }
- 
--P1(spinlock_t *lo, int *x)
-+P1(spinlock_t *lo, int *x) // Consumer
- {
- 	int r1;
- 	int r2;
-@@ -34,4 +34,4 @@ P1(spinlock_t *lo, int *x)
- 	r3 = spin_is_locked(lo);
- }
- 
--exists (1:r1=1 /\ 1:r2=0 /\ 1:r3=1)
-+exists (1:r1=1 /\ 1:r2=0 /\ 1:r3=1) (* Bad outcome. *)
-diff --git a/tools/memory-model/litmus-tests/MP+polockonce+poacquiresilsil.litmus b/tools/memory-model/litmus-tests/MP+polockonce+poacquiresilsil.litmus
-index 867c75d..aad6439 100644
---- a/tools/memory-model/litmus-tests/MP+polockonce+poacquiresilsil.litmus
-+++ b/tools/memory-model/litmus-tests/MP+polockonce+poacquiresilsil.litmus
-@@ -15,14 +15,14 @@ C MP+polockonce+poacquiresilsil
- 	int x;
- }
- 
--P0(spinlock_t *lo, int *x)
-+P0(spinlock_t *lo, int *x) // Producer
- {
- 	spin_lock(lo);
- 	WRITE_ONCE(*x, 1);
- 	spin_unlock(lo);
- }
- 
--P1(spinlock_t *lo, int *x)
-+P1(spinlock_t *lo, int *x) // Consumer
- {
- 	int r1;
- 	int r2;
-@@ -33,4 +33,4 @@ P1(spinlock_t *lo, int *x)
- 	r3 = spin_is_locked(lo);
- }
- 
--exists (1:r1=1 /\ 1:r2=0 /\ 1:r3=1)
-+exists (1:r1=1 /\ 1:r2=0 /\ 1:r3=1) (* Bad outcome. *)
-diff --git a/tools/memory-model/litmus-tests/MP+polocks.litmus b/tools/memory-model/litmus-tests/MP+polocks.litmus
-index 4b0c2ed..21cbca6 100644
---- a/tools/memory-model/litmus-tests/MP+polocks.litmus
-+++ b/tools/memory-model/litmus-tests/MP+polocks.litmus
-@@ -17,7 +17,7 @@ C MP+polocks
- 	int flag;
- }
- 
--P0(int *buf, int *flag, spinlock_t *mylock)
-+P0(int *buf, int *flag, spinlock_t *mylock) // Producer
- {
- 	WRITE_ONCE(*buf, 1);
- 	spin_lock(mylock);
-@@ -25,7 +25,7 @@ P0(int *buf, int *flag, spinlock_t *mylock)
- 	spin_unlock(mylock);
- }
- 
--P1(int *buf, int *flag, spinlock_t *mylock)
-+P1(int *buf, int *flag, spinlock_t *mylock) // Consumer
- {
- 	int r0;
- 	int r1;
-@@ -36,4 +36,4 @@ P1(int *buf, int *flag, spinlock_t *mylock)
- 	r1 = READ_ONCE(*buf);
- }
- 
--exists (1:r0=1 /\ 1:r1=0)
-+exists (1:r0=1 /\ 1:r1=0) (* Bad outcome. *)
-diff --git a/tools/memory-model/litmus-tests/MP+poonceonces.litmus b/tools/memory-model/litmus-tests/MP+poonceonces.litmus
-index 3010bba..9f9769d 100644
---- a/tools/memory-model/litmus-tests/MP+poonceonces.litmus
-+++ b/tools/memory-model/litmus-tests/MP+poonceonces.litmus
-@@ -12,13 +12,13 @@ C MP+poonceonces
- 	int flag;
- }
- 
--P0(int *buf, int *flag)
-+P0(int *buf, int *flag) // Producer
- {
- 	WRITE_ONCE(*buf, 1);
- 	WRITE_ONCE(*flag, 1);
- }
- 
--P1(int *buf, int *flag)
-+P1(int *buf, int *flag) // Consumer
- {
- 	int r0;
- 	int r1;
-@@ -27,4 +27,4 @@ P1(int *buf, int *flag)
- 	r1 = READ_ONCE(*buf);
- }
- 
--exists (1:r0=1 /\ 1:r1=0)
-+exists (1:r0=1 /\ 1:r1=0) (* Bad outcome. *)
-diff --git a/tools/memory-model/litmus-tests/MP+pooncerelease+poacquireonce.litmus b/tools/memory-model/litmus-tests/MP+pooncerelease+poacquireonce.litmus
-index 21e825d..cbe28e7 100644
---- a/tools/memory-model/litmus-tests/MP+pooncerelease+poacquireonce.litmus
-+++ b/tools/memory-model/litmus-tests/MP+pooncerelease+poacquireonce.litmus
-@@ -13,13 +13,13 @@ C MP+pooncerelease+poacquireonce
- 	int flag;
- }
- 
--P0(int *buf, int *flag)
-+P0(int *buf, int *flag) // Producer
- {
- 	WRITE_ONCE(*buf, 1);
- 	smp_store_release(flag, 1);
- }
- 
--P1(int *buf, int *flag)
-+P1(int *buf, int *flag) // Consumer
- {
- 	int r0;
- 	int r1;
-@@ -28,4 +28,4 @@ P1(int *buf, int *flag)
- 	r1 = READ_ONCE(*buf);
- }
- 
--exists (1:r0=1 /\ 1:r1=0)
-+exists (1:r0=1 /\ 1:r1=0) (* Bad outcome. *)
-diff --git a/tools/memory-model/litmus-tests/MP+porevlocks.litmus b/tools/memory-model/litmus-tests/MP+porevlocks.litmus
-index 9691d55..012041b 100644
---- a/tools/memory-model/litmus-tests/MP+porevlocks.litmus
-+++ b/tools/memory-model/litmus-tests/MP+porevlocks.litmus
-@@ -17,7 +17,7 @@ C MP+porevlocks
- 	int flag;
- }
- 
--P0(int *buf, int *flag, spinlock_t *mylock)
-+P0(int *buf, int *flag, spinlock_t *mylock) // Consumer
- {
- 	int r0;
- 	int r1;
-@@ -28,7 +28,7 @@ P0(int *buf, int *flag, spinlock_t *mylock)
- 	spin_unlock(mylock);
- }
- 
--P1(int *buf, int *flag, spinlock_t *mylock)
-+P1(int *buf, int *flag, spinlock_t *mylock) // Producer
- {
- 	spin_lock(mylock);
- 	WRITE_ONCE(*buf, 1);
-@@ -36,4 +36,4 @@ P1(int *buf, int *flag, spinlock_t *mylock)
- 	WRITE_ONCE(*flag, 1);
- }
- 
--exists (0:r0=1 /\ 0:r1=0)
-+exists (0:r0=1 /\ 0:r1=0) (* Bad outcome. *)
--- 
-2.9.5
-
+As for your other dispositions of the feedback, looks good to me.
