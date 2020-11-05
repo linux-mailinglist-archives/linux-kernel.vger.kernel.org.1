@@ -2,425 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03B492A8239
+	by mail.lfdr.de (Postfix) with ESMTP id 06BF22A823B
 	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 16:31:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731264AbgKEPb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 10:31:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54192 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730871AbgKEPbZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 10:31:25 -0500
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB537C0613CF;
-        Thu,  5 Nov 2020 07:31:24 -0800 (PST)
-Received: by mail-wr1-x42d.google.com with SMTP id g12so2237457wrp.10;
-        Thu, 05 Nov 2020 07:31:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=4fV0BdDK12dHwFksGdLm3r/EWSYhQVVyFiUoy05VctE=;
-        b=Zp+AtN34X2p5J/d56+TN/idNI62NvAiOzUAz4VrYnowB9yhTrTzyIbLUSOYWMn0rpS
-         uP8b08ZaZ2o6HfS4K/NJn5vNr9cM8MXESQ3RaseYZfG4vnONCeBCQneC+axYn6ouYu0n
-         AJqVtovYhFpBIbKtdPBJkbW8QPWh0YMoJWfKX4VcLcqTothv5ysWpycDGeYaO5jm0IBL
-         yzi5vKdJJL8hIoFuDy3cS0Aj6ktdiEu2Qpyo95/unvVoM67ZB/nc566Z8xscmKJIfU1p
-         JxumMm0BKI1rEb1R2VoGIngb1xTlTWA8PEVDvHB0Fr8jYRjtfk4jGew9FzNib8tVms6T
-         bKEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=4fV0BdDK12dHwFksGdLm3r/EWSYhQVVyFiUoy05VctE=;
-        b=qWeOyryphTxd6nUvHEs9nWBYgA9jFAXBZN0CbVA56TiDXy4QDsYddQLYLOvfwhH2Mm
-         wko6sUcxWk2mSWSaNsMGU4Ez5XgZCpKzkK84Rm/i+fyBYi+8oUrCKahk84I2nYCWZmKL
-         Ee6t1FoKz0BeLeqstd9VAONyoz4Z3x7egeiIYw9UGRfZWQdlaCn+uvdMX86yL4luaA+e
-         ZNmyh+UmxIO10QcEH/tM+kqVq80eWaH5e2XiRXgxFuv5bGQm+zQbfHlnPDMD9XQdykp1
-         q3OSVjLFLpQ4kONRFNfnYLDJw0hw9UNMtrhAbUaPhp/l8IDiBb78qk90SfUUDmIuq6DZ
-         gX6A==
-X-Gm-Message-State: AOAM533byqp72FuQhH5b/ffH5zkADzc/ESqZ1zRnWj9GVRUzmsHLbc+/
-        GAtsxTqJdFGHMTq4SnwiLnI=
-X-Google-Smtp-Source: ABdhPJzlpP5Y7KhXunZT6E+LzK2AwtCtt7L3va3Imir9hLg8Az5jbn+RLn8/R6+x01YAgBOb47LGuQ==
-X-Received: by 2002:adf:ef45:: with SMTP id c5mr3868350wrp.117.1604590283653;
-        Thu, 05 Nov 2020 07:31:23 -0800 (PST)
-Received: from localhost.localdomain ([170.253.60.68])
-        by smtp.googlemail.com with ESMTPSA id l16sm2860456wrr.83.2020.11.05.07.31.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 07:31:22 -0800 (PST)
-From:   Alejandro Colomar <colomar.6.4.3@gmail.com>
-To:     namhyung@kernel.org, mtk.manpages@gmail.com
-Cc:     Namhyung Kim <namhyung@gmail.com>, acme@kernel.org,
-        adrian.hunter@intel.com, ak@linux.intel.com,
-        alexander.shishkin@linux.intel.com, eranian@google.com,
-        irogers@google.com, jolsa@redhat.com, kan.liang@linux.intel.com,
-        linux-kernel@vger.kernel.org, linux-man@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, mark.rutland@arm.com,
-        mingo@kernel.org, peterz@infradead.org, songliubraving@fb.com,
-        Alejandro Colomar <colomar.6.4.3@gmail.com>
-Subject: [PATCH v2] perf_event_open.2: Update man page with recent changes
-Date:   Thu,  5 Nov 2020 16:30:10 +0100
-Message-Id: <20201105153009.36415-1-colomar.6.4.3@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201105082837.271636-1-namhyung@kernel.org>
-References: <20201105082837.271636-1-namhyung@kernel.org>
+        id S1731288AbgKEPba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 10:31:30 -0500
+Received: from mail-eopbgr40057.outbound.protection.outlook.com ([40.107.4.57]:59387
+        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1731272AbgKEPb3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 10:31:29 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HinGuRlb6yHRqLiO4FdA6RFlDya5naNS11xa1E3Ghoh3xggnu/iFl3BQdsxkp1SMMZu9IyNmVlRiwW2yDJcYj4O8xOUjw8ODzhPSAzi8uej5vqKHKBu7TnVpyR9g425PMIoto00NYUlF3h6NHWwgNj0fq998+MUUZjNsGlOTtWnYK2CvHsgckaAP2hrQOy9wvQ8QixGZjbUpDnHgq0wL0mnhAJSgYyhwUdolPzHcI1jFB8jpHz4+AVuMCniR6rMdGcri/gOrueQNxAVoY+dtoth3Xw5EeAsku4lxlHE+0icw3le4WCyPp79fTGAPYH4emf8MxIUIm97fxniOlmKtgw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=a+wI46yJ5G1UPgxB/dV/8b+y48yzFNxOyR/whS0J5k0=;
+ b=mB/AmWqScsZCn4P6IhChxU/MNMOaXX1FuovI4p7TdAsGGw5fE2fJDe/uCIkiEcXwREYuNQoX3Q7De3vPS2FmsEOviWUnSVhjHSoFrq1hp8jqXMUiMQCosr9WOI8/qWkkALoFqfgKI87iU8lXmStOTsJUj457ryx4aeIb5MbAvUPc2cU6MIUQDPnB2H4KK2UQ9Gh5p3sqcVgZQF3rNG+qqQAQ11BvV9l9XVmlpahLY2b8R/qWVYS4PYsaQYCYBeMMZSCtaZNXzHPHkQPXY96SrGK4t5lN/0dnY8L/2p2V9BAfpoANH+TRx6D8iL+BnIIJDJzrUb5BuwgnHphW8OLHDA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=a+wI46yJ5G1UPgxB/dV/8b+y48yzFNxOyR/whS0J5k0=;
+ b=lX0KHUpsdf9p9UTPvEHOIKYwzfZKFcaQDIJqfdEtuzUIF4eXr19Q2XZzMbMkhizr/4jGIS3x4PXZ2pYsSwVn5JSv56evi2N4IP5m4iWLOhB1tvTv4m6WKdvkJxf4q6VGMXpnVtOlRIT9GPjgjV0n7aToK162Y8Nngsgkh1yYZ9U=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=nxp.com;
+Received: from VI1PR0402MB3405.eurprd04.prod.outlook.com (2603:10a6:803:3::26)
+ by VI1PR04MB4895.eurprd04.prod.outlook.com (2603:10a6:803:56::28) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.27; Thu, 5 Nov
+ 2020 15:31:26 +0000
+Received: from VI1PR0402MB3405.eurprd04.prod.outlook.com
+ ([fe80::f557:4dcb:4d4d:57f3]) by VI1PR0402MB3405.eurprd04.prod.outlook.com
+ ([fe80::f557:4dcb:4d4d:57f3%2]) with mapi id 15.20.3499.032; Thu, 5 Nov 2020
+ 15:31:26 +0000
+From:   Laurentiu Tudor <laurentiu.tudor@nxp.com>
+To:     linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+        linux-arm-kernel@lists.infradead.org
+Cc:     diana.craciun@oss.nxp.com, ioana.ciornei@nxp.com,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>
+Subject: [PATCH 1/2] bus: fsl-mc: add back accidentally dropped error check
+Date:   Thu,  5 Nov 2020 17:30:49 +0200
+Message-Id: <20201105153050.19662-1-laurentiu.tudor@nxp.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain; charset="us-ascii"
+X-Originating-IP: [83.217.231.2]
+X-ClientProxiedBy: AM3PR05CA0156.eurprd05.prod.outlook.com
+ (2603:10a6:207:3::34) To VI1PR0402MB3405.eurprd04.prod.outlook.com
+ (2603:10a6:803:3::26)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from fsr-ub1864-101.ea.freescale.net (83.217.231.2) by AM3PR05CA0156.eurprd05.prod.outlook.com (2603:10a6:207:3::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21 via Frontend Transport; Thu, 5 Nov 2020 15:31:18 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: f23371bf-5e05-4897-ec2a-08d8819fd7c6
+X-MS-TrafficTypeDiagnostic: VI1PR04MB4895:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR04MB4895293BBCC366E824EA80AFECEE0@VI1PR04MB4895.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:101;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Wkyksh+hxe50C7RSx+BJKDjDcSKpW1OpqXYrMjPSM9fCXfcS85qnuNgtECjA1hTwnQIAL0DetcHxcOLruviw7MZyUEeZfCfsNYn9yAytpm1pkMlWcMd2v6lbakrCG0W0sUmlpbGPyPoAVNvFRLg2BI8tUEcYsCMXmA1unDDIOQuDYotY44C3hOI74J+GoHnR+r8H0fy9Vmq0TVpjCWGqkOZF9eMQbt644L69/Kuss51qbmEpdobNYPRjb2xeBc11CHy4S4r4nS9xBq89a8fQWD4DhSm+Dpmfqx0C0VZcWwPIhiEQrBJ5SIVSugMbzAm1WlVlXerbXvkKHsCT/B9Ayg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0402MB3405.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(376002)(366004)(136003)(346002)(8936002)(956004)(52116002)(66946007)(36756003)(66556008)(66476007)(2616005)(26005)(316002)(5660300002)(6506007)(1076003)(6666004)(4744005)(4326008)(86362001)(8676002)(2906002)(186003)(44832011)(16526019)(83380400001)(6486002)(478600001)(6512007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: /2mSHQDe4LRueascyAZjoZbJHiGhaUESPfVy7YWTwbksuXRUlxWUPkk+hJzxXLHh5XaUYR/gA/LUqR1p/RE0CgAcK35c4TnJNeliWiNKWMr2pHoBHq7Cuc1aqOE61DX55w3WstzK/YY+Sh0qD8EHL45+WYRkFPtZOkmS4CZ+5wq/FvUtdTQUAmbfYM95Q8BUfcRnN6djg4qT3VJQ4WEjdtnpFCSeY5rhFLjp15d4YoLB8u8p9nK1WG4HjO2mtHRDe4D4gPS9lcQnKPOJ6audI65Ota4M5DmJbr6SVCjHtlpa4RF1hj6UpCgQeRfvmEuVAYcGOW/vRHGi+raPK2SOtZ5JAWSfnvfgFB7uB5vZvdVNYEaP7JSM7dbY/wmXK8a4DORXciFM+5EFBuoO+H5xrpGow9Lf1mQ1KQ44s68/mNC6j1z8iq91nuKdN6L8UldHWtqTbc89khcsMzU/P6t4w2q3986XDbZQJc8Xy5Roil5ChsJ98fsnt5pgnJ+pMBjEa1ih2lUqhTcOulQtdis//d5E6ru0wDZDMkNyiwBG0Gi03QBrKYQCadWXQSDO7TFqXqgMJCISfCHR5dZTfoKM8GHsJPSJ9/H98m+anPPFGrFG4W9IcXigCiUMArrztFu+CARImYu0ls9d2iAV452KXw==
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f23371bf-5e05-4897-ec2a-08d8819fd7c6
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR0402MB3405.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Nov 2020 15:31:25.9598
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7X3GaaxzJVf0inKGEbj4qxxXmexUD+kcpNCEFppNo90PtfOO4WW4y5Q/k1KWPQirjG/sa5mI/qeqihzSrpxBTg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4895
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Namhyung Kim <namhyung@gmail.com>
+A previous patch accidentally dropped an error check, so add it back.
 
-There are lots of changes as usual.  I've tried to fill some missing
-bits in the man page but it'd be nice if you could take a look and put
-more info there.
-
-Signed-off-by: Namhyung Kim <namhyung@gmail.com>
-[colomar.6.4.3@gmail.com: ffix + tfix]
-Co-developed-by : Alejandro Colomar <colomar.6.4.3@gmail.com>
-Signed-off-by: Alejandro Colomar <colomar.6.4.3@gmail.com>
+Fixes: aef85b56c3c1 ("bus: fsl-mc: MC control registers are not always available")
+Signed-off-by: Laurentiu Tudor <laurentiu.tudor@nxp.com>
 ---
+ drivers/bus/fsl-mc/fsl-mc-bus.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-I wrapped a few lines, and did some formatting fixes to the patch.
-However, there are some parts where
-I found the text to be a bit unclear to me.
-Maybe you could rephrase them:
-- The paragraph right under 'write_backward'.
-- Text right under 'text_poke': "there's a changes"
-
-I would cheange
-[[
-    struct { u64 dev, inode } [nr_namespaces];
-]]
-to
-[[
-    struct {
-        u64 dev;
-        u64 inode;
-    } [nr_namespaces];
-]]
-Woudln't you?
-
-Thanks,
-
-Alex
-
- man2/perf_event_open.2 | 265 ++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 263 insertions(+), 2 deletions(-)
-
-diff --git a/man2/perf_event_open.2 b/man2/perf_event_open.2
-index 72afafb50..4adeccdde 100644
---- a/man2/perf_event_open.2
-+++ b/man2/perf_event_open.2
-@@ -247,8 +247,17 @@ struct perf_event_attr {
-                                    due to exec */
-           use_clockid    :  1,  /* use clockid for time fields */
-           context_switch :  1,  /* context switch data */
-+          write_backward :  1,  /* Write ring buffer from end
-+                                   to beginning */
-+          namespaces     :  1,  /* include namespaces data */
-+          ksymbol        :  1,  /* include ksymbol events */
-+          bpf_event      :  1,  /* include bpf events */
-+          aux_output     :  1,  /* generate AUX records
-+                                   instead of events */
-+          cgroup         :  1,  /* include cgroup events */
-+          text_poke      :  1,  /* include text poke events */
+diff --git a/drivers/bus/fsl-mc/fsl-mc-bus.c b/drivers/bus/fsl-mc/fsl-mc-bus.c
+index 76a6ee505d33..806766b1b45f 100644
+--- a/drivers/bus/fsl-mc/fsl-mc-bus.c
++++ b/drivers/bus/fsl-mc/fsl-mc-bus.c
+@@ -967,8 +967,11 @@ static int fsl_mc_bus_probe(struct platform_device *pdev)
+ 	platform_set_drvdata(pdev, mc);
  
--          __reserved_1   : 37;
-+          __reserved_1   : 30;
+ 	plat_res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
+-	if (plat_res)
++	if (plat_res) {
+ 		mc->fsl_mc_regs = devm_ioremap_resource(&pdev->dev, plat_res);
++		if (IS_ERR(mc->fsl_mc_regs))
++			return PTR_ERR(mc->fsl_mc_regs);
++	}
  
-     union {
-         __u32 wakeup_events;    /* wakeup every n events */
-@@ -854,6 +863,20 @@ is set higher than zero then the register
- values returned are those captured by
- hardware at the time of the sampled
- instruction's retirement.
-+.TP
-+.BR PERF_SAMPLE_PHYS_ADDR " (since Linux 4.13)"
-+.\" commit fc7ce9c74c3ad232b084d80148654f926d01ece7
-+Records physical address of data like in
-+.B PERF_SAMPLE_ADDR .
-+.TP
-+.BR PERF_SAMPLE_CGROUP " (since Linux 5.7)"
-+.\" commit 96aaab686505c449e24d76e76507290dcc30e008
-+Records (perf_event) cgroup id of the process.
-+This corresponds to the
-+.I id
-+field in the
-+.B PERF_RECORD_CGROUP
-+event.
- .RE
- .TP
- .IR "read_format"
-@@ -1189,6 +1212,47 @@ information even with strict
- .I perf_event_paranoid
- settings.
- .TP
-+.IR write_backward " (since Linux 4.6)"
-+.\" commit 9ecda41acb971ebd07c8fb35faf24005c0baea12
-+This makes the ring buffer is written from end to beginning.
-+This is to support reading from overwritable ring buffer.
-+.TP
-+.IR namespaces " (since Linux 4.11)"
-+.\" commit e422267322cd319e2695a535e47c5b1feeac45eb
-+This enables the generation of
-+.B PERF_RECORD_NAMESPACES
-+records when a task is entering to a new namespace.
-+Each namespace has a combination of device and inode numbers.
-+.TP
-+.IR ksymbol " (since Linux 5.0)"
-+.\" commit 76193a94522f1d4edf2447a536f3f796ce56343b
-+This enables the generation of
-+.B PERF_RECORD_KSYMBOL
-+records when a new kernel symbols are registered or unregistered.
-+This is analyzing dynamic kernel functions like eBPF.
-+.TP
-+.IR bpf_event " (since Linux 5.0)"
-+.\" commit 6ee52e2a3fe4ea35520720736e6791df1fb67106
-+This enables the generation of
-+.B PERF_RECORD_BPF_EVENT
-+records when a eBPF program is loaded or unloaded.
-+.IR auxevent " (since Linux 5.4)"
-+.\" commit ab43762ef010967e4ccd53627f70a2eecbeafefb
-+This allows normal (non-AUX) events to generate data for AUX events
-+if the hardware supports it.
-+.IR cgroup " (since Linux 5.7)"
-+.\" commit 96aaab686505c449e24d76e76507290dcc30e008
-+This enables the generation of
-+.B PERF_RECORD_CGROUP
-+records when a new cgroup is created (and activated).
-+.TR
-+.IR text_poke " (since Linux 5.8)"
-+.\" commit e17d43b93e544f5016c0251d2074c15568d5d963
-+This enables the generation of
-+.B PERF_RECORD_TEXT_POKE
-+records when there's a changes to the kernel text
-+(i.e. self-modifying code).
-+.TP
- .IR "wakeup_events" ", " "wakeup_watermark"
- This union sets how many samples
- .RI ( wakeup_events )
-@@ -2101,7 +2165,7 @@ struct {
-     u64    nr;          /* if PERF_SAMPLE_CALLCHAIN */
-     u64    ips[nr];     /* if PERF_SAMPLE_CALLCHAIN */
-     u32    size;        /* if PERF_SAMPLE_RAW */
--    char  data[size];   /* if PERF_SAMPLE_RAW */
-+    char   data[size];  /* if PERF_SAMPLE_RAW */
-     u64    bnr;         /* if PERF_SAMPLE_BRANCH_STACK */
-     struct perf_branch_entry lbr[bnr];
-                         /* if PERF_SAMPLE_BRANCH_STACK */
-@@ -2118,6 +2182,8 @@ struct {
-     u64    abi;         /* if PERF_SAMPLE_REGS_INTR */
-     u64    regs[weight(mask)];
-                         /* if PERF_SAMPLE_REGS_INTR */
-+    u64    phys_addr;   /* if PERF_SAMPLE_PHYS_ADDR */
-+    u64    cgroup;      /* if PERF_SAMPLE_CGROUP */
- };
- .EE
- .in
-@@ -2744,6 +2810,201 @@ or next (if switching out) process on the CPU.
- The thread ID of the previous (if switching in)
- or next (if switching out) thread on the CPU.
- .RE
-+.TP
-+.BR PERF_RECORD_NAMESPACES " (since Linux 4.11)"
-+.\" commit e422267322cd319e2695a535e47c5b1feeac45eb
-+This record includes various namespace information of a process.
-+.RS
-+.PP
-+.in +4n
-+.EX
-+struct {
-+    struct perf_event_header header;
-+    u32 pid;
-+    u32 tid;
-+    u64 nr_namespaces;
-+    struct { u64 dev, inode } [nr_namespaces];
-+    struct sample_id sample_id;
-+};
-+.EE
-+.in
-+.TP
-+.I pid
-+is the process ID
-+.TP
-+.I tid
-+is the thread ID
-+.TP
-+.I nr_namespace
-+is the number of namespaces in this record
-+.PP
-+Each namespace has
-+.I dev
-+and
-+.I inode
-+fields and is recorded in the
-+fixed position like below:
-+.TP
-+.BR NET_NS_INDEX = 0
-+Network namespace
-+.TP
-+.BR UTS_NS_INDEX = 1
-+UTS namespace
-+.TP
-+.BR IPC_NS_INDEX = 2
-+IPC namespace
-+.TP
-+.BR PID_NS_INDEX = 3
-+PID namespace
-+.TP
-+.BR USER_NS_INDEX = 4
-+User namespace
-+.TP
-+.BR MNT_NS_INDEX = 5
-+Mount namespace
-+.TP
-+.BR CGROUP_NS_INDEX = 6
-+Cgroup namespace
-+.PP
-+.RE
-+.TP
-+.BR PERF_RECORD_KSYMBOL " (since Linux 5.0)"
-+.\" commit 76193a94522f1d4edf2447a536f3f796ce56343b
-+This record indicates kernel symbol register/unregister events.
-+.RS
-+.PP
-+.in +4n
-+.EX
-+struct {
-+    struct perf_event_header header;
-+    u64 addr;
-+    u32 len;
-+    u16 ksym_type;
-+    u16 flags;
-+    char name[];
-+    struct sample_id sample_id;
-+};
-+.EE
-+.in
-+.TP
-+.I addr
-+is the address of the kernel symbol
-+.TP
-+.I len
-+is the length of the kernel symbol
-+.TP
-+.I ksym_type
-+is the type of the kernel symbol.
-+Currently following types are available:
-+.RS
-+.TP
-+.B PERF_RECORD_KSYMBOL_TYPE_BPF
-+The kernel symbols is a BPF function.
-+.RE
-+.TP
-+.I flags
-+If the
-+.B PERF_RECORD_KSYMBOL_FLAGS_UNREGISTER
-+is set, then this event is for unregistering the kernel symbol.
-+.RE
-+.TP
-+.BR PERF_RECORD_BPF_EVENT " (since Linux 5.0)"
-+.\" commit 6ee52e2a3fe4ea35520720736e6791df1fb67106
-+This record indicates BPF program is loaded or unloaded.
-+.RS
-+.PP
-+.in +4n
-+.EX
-+struct {
-+    struct perf_event_header header;
-+    u16 type;
-+    u16 flags;
-+    u32 id;
-+    u8 tag[BPF_TAG_SIZE];
-+    struct sample_id sample_id;
-+};
-+.EE
-+.in
-+.TP
-+.I type
-+is one of the following values:
-+.RS
-+.TP
-+.B PERF_BPF_EVENT_PROG_LOAD
-+A BPF program is loaded
-+.TP
-+.B PERF_BPF_EVENT_PROG_UNLOAD
-+A BPF program is unloaded
-+.RE
-+.TP
-+.I id
-+is the id of the BPF program.
-+.TP
-+.I tag
-+is the tag of the BPF program.
-+Currently,
-+.B BPF_TAG_SIZE
-+is defined as 8.
-+.RE
-+.TP
-+.BR PERF_RECORD_CGROUP " (since Linux 5.7)"
-+.\" commit 96aaab686505c449e24d76e76507290dcc30e008
-+This record indicates a new cgroup is created and activated.
-+.RS
-+.PP
-+.in +4n
-+.EX
-+struct {
-+    struct perf_event_header header;
-+    u64 id;
-+    char path[];
-+    struct sample_id sample_id;
-+};
-+.EE
-+.in
-+.TP
-+.I id
-+is the cgroup identifier.
-+This can be also retreived by
-+.BR name_to_handle_at (2)
-+on the cgroup path (as a file handle).
-+.TP
-+.I path
-+is the path of the cgroup from the root.
-+.RE
-+.TP
-+.BR PERF_RECORD_TEXT_POKE " (since Linux 5.8)"
-+.\" commit e17d43b93e544f5016c0251d2074c15568d5d963
-+This record indicates a change in the kernel text.
-+This includes addition and removal of the text
-+and the corresponding length is zero in this case.
-+.RS
-+.PP
-+.in +4n
-+.EX
-+struct {
-+    struct perf_event_header header;
-+    u64 addr;
-+    u16 old_len;
-+    u16 new_len;
-+    u8 bytes[];
-+    struct sample_id sample_id;
-+};
-+.EE
-+.in
-+.TP
-+.I addr
-+is the address of the change
-+.TP
-+.I old_len
-+is the old length
-+.TP
-+.I new_len
-+is the new length
-+.TP
-+.I bytes
-+contains old bytes immediately followed by new bytes.
-+.RE
- .RE
- .SS Overflow handling
- Events can be set to notify when a threshold is crossed,
+ 	if (mc->fsl_mc_regs && IS_ENABLED(CONFIG_ACPI) &&
+ 	    !dev_of_node(&pdev->dev)) {
 -- 
-2.28.0
+2.17.1
 
