@@ -2,427 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79C062A7525
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 02:59:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B1732A7521
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 02:57:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731477AbgKEB71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 20:59:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40854 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726152AbgKEB70 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 20:59:26 -0500
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9345CC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 17:59:26 -0800 (PST)
-Received: by mail-ed1-x542.google.com with SMTP id a15so305219edy.1
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 17:59:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=granulate.io; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=0r5+ZQz9R32Z8pq+pFMWM4pQX2laOF72iU3NlAU1LKQ=;
-        b=OhBSiKhT+uu2FWi+12BtGSdAt8OxHiQ4OfN+T58LlmrYWdBO1RgZPgs9TuYXoLX5jc
-         9QN6O71oM54nalijCgQ28mZ4IdRBtkf+lEa79DQfMW26Gu2FSNoJfwS/ZiNUyRv7EJv8
-         1khrf2CxAmMbiynG1bsJPUQMe89MKhDLDRs+4Z4b2crclMrFwkfG8r87IW+EN5g/n1t0
-         hxtF8oNNrs7Nwr3VIUPZHxhn0GQ6qva6/edjPXmCrf0ThFpGAdxTGvW25t+APJ3x7BPf
-         cVP3+mKFXVLp6Lt+czTx61m/16crzGAEhNjK2fjKk/wrc8DXma7ZIYd62zhlXm642rUX
-         ZX1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=0r5+ZQz9R32Z8pq+pFMWM4pQX2laOF72iU3NlAU1LKQ=;
-        b=f7x5FFYN3fT4wp8JUSKvfoShldu/F/xINq8hDYW2tGpbFk10IxGeUyTbxAldXFLdJc
-         C+jw0/CMarai5/S+mZZLOJpKDPklKmFO2M/i6ik9suUrmmnKpmphY5waXOotnEWr54aO
-         7NWVpWr+lHuEKJIg7568wdyza5V/m25j5laJpHr7c7V/zjFJaM6fG3NuWdyrtMKPGuhD
-         5OU8EPFevgfHLGhuGXdm48pkFr02VXhFd+x469vFu7np2bGtBeDGBbbs7RLTjof0xZYj
-         mRUh2JwGtKuHGGWaSb7B9Yi5WUeNUsGjHGnW6Xe4BAyW4Zc6dBwwCIb68HFfgKJqnnNe
-         GSEw==
-X-Gm-Message-State: AOAM531gZsmCMdgSQj/AAnzstDAQFbAv23g2dKFnr+s2Op6YUNYiLUAP
-        ifjzZyhcP8IkOAmh6EGofTVVag==
-X-Google-Smtp-Source: ABdhPJxo8IUG2+0k3+cwej9Yz2bzEAyWgDl5CS1n8+Wkkmh2JB4A5Bomy5qkfkApBeGizY2/b9rWCg==
-X-Received: by 2002:a05:6402:c8d:: with SMTP id cm13mr260966edb.340.1604541565122;
-        Wed, 04 Nov 2020 17:59:25 -0800 (PST)
-Received: from localhost.localdomain ([5.22.135.99])
-        by smtp.gmail.com with ESMTPSA id r11sm36812edi.91.2020.11.04.17.59.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 17:59:24 -0800 (PST)
-From:   Yonatan Goldschmidt <yonatan.goldschmidt@granulate.io>
-To:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Yonatan Goldschmidt <yonatan.goldschmidt@granulate.io>
-Subject: [PATCH v3 2/2] perf inject jit: Add namespaces support
-Date:   Thu,  5 Nov 2020 03:56:04 +0200
-Message-Id: <20201105015604.1726943-1-yonatan.goldschmidt@granulate.io>
-X-Mailer: git-send-email 2.25.0
-In-Reply-To: <20201105014833.1724363-1-yonatan.goldschmidt@granulate.io>
-References: <20201105014833.1724363-1-yonatan.goldschmidt@granulate.io>
+        id S1730615AbgKEB5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 20:57:23 -0500
+Received: from rere.qmqm.pl ([91.227.64.183]:4562 "EHLO rere.qmqm.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726152AbgKEB5W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 20:57:22 -0500
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4CRRV8213Lz8p;
+        Thu,  5 Nov 2020 02:57:20 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1604541440; bh=CIbyBdFXt/DKXUA6SLcaasMvhtGE3yBPilLsx9MiQ1Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Qwir9+Iq8HbmvrLtEFkh+jxiHn/y4cilBbn8s5lFDrKRLHVv0acz4r1haQVSZm2Ip
+         xW6suH2sx0sXOoukr8ZLKuw9VE9aIMGPSapwjRU22uUZ+hKaafP14gGhj5UgbuOwLQ
+         br4s1QDm/Z9eS3N+2vcG4T1T/K7HXStlK/fH+lD5/GQ+r0CDC/YNvG9B8uSAnnF0GV
+         XPEwapw2xXd6QEk7hQo5l+rKr8iwAULhMmyIa4CcyLkDeMHS5VfnYzOj0OndUnZPpN
+         k5UIWpoesV6jHT36EnMdVzT+RWSd0GjTbPIxr/sfb+J67gOMWDDy5+PCFsSQyWRN8N
+         fnuxSwRsl9oHw==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.102.4 at mail
+Date:   Thu, 5 Nov 2020 02:57:19 +0100
+From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the mfd tree
+Message-ID: <20201105015718.GD17266@qmqm.qmqm.pl>
+References: <20201105014728.GC17266@qmqm.qmqm.pl>
+ <20201105125027.1f4b6886@canb.auug.org.au>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-2
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201105125027.1f4b6886@canb.auug.org.au>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes "perf inject --jit" to properly operate
-on namespaced/containerized processes:
+On Thu, Nov 05, 2020 at 12:50:27PM +1100, Stephen Rothwell wrote:
+> Hi all,
+> 
+> After merging the mfd tree, today's linux-next build (arm
+> multi_v7_defconfig) failed like this:
+> 
+> drivers/gpio/gpio-tps65910.c: In function 'tps65910_gpio_get':
+> drivers/gpio/gpio-tps65910.c:31:2: error: implicit declaration of function 'tps65910_reg_read' [-Werror=implicit-function-declaration]
+>    31 |  tps65910_reg_read(tps65910, TPS65910_GPIO0 + offset, &val);
+>       |  ^~~~~~~~~~~~~~~~~
+> drivers/gpio/gpio-tps65910.c: In function 'tps65910_gpio_set':
+> drivers/gpio/gpio-tps65910.c:46:3: error: implicit declaration of function 'tps65910_reg_set_bits' [-Werror=implicit-function-declaration]
+>    46 |   tps65910_reg_set_bits(tps65910, TPS65910_GPIO0 + offset,
+>       |   ^~~~~~~~~~~~~~~~~~~~~
+> drivers/gpio/gpio-tps65910.c:49:3: error: implicit declaration of function 'tps65910_reg_clear_bits' [-Werror=implicit-function-declaration]
+>    49 |   tps65910_reg_clear_bits(tps65910, TPS65910_GPIO0 + offset,
+>       |   ^~~~~~~~~~~~~~~~~~~~~~~
+> 
+> Caused by commit
+> 
+>   23feb2c3367c ("mfd: tps65910: Clean up after switching to regmap")
+> 
+> I have used the version of the mfd tree from next-20201104 for today.
 
-* jitdump files are generated by the process, thus they should be
-  looked up in its mount NS.
-* DSOs of injected MMAP events will later be looked up in the process
-  mount NS, so write them into its NS.
-* PIDs & TIDs from jitdump events need to be translated to the PID as
-  seen by "perf record" before written into MMAP events.
+Hi,
 
-For a process in a different PID NS, the TID & PID given in the jitdump
-event are actually ignored; I use the TID & PID of the thread which
-mmap()ed the jitdump file. This is simplified and won't do for forks of
-the initial process, if they continue using the same jitdump file.
-Future patches might improve it.
+It's missing a patch for gpio part [1].
 
-This was tested by recording a NodeJS process running with "--perf-prof",
-inside a Docker container, and by recording another NodeJS process
-running in the same namespaces as perf itself, to make sure it's not
-broken for non-containerized processes.
+[1] https://lkml.org/lkml/2020/9/26/398
 
-Signed-off-by: Yonatan Goldschmidt <yonatan.goldschmidt@granulate.io>
----
- tools/perf/builtin-inject.c  |  4 +-
- tools/perf/util/jit.h        |  2 +-
- tools/perf/util/jitdump.c    | 84 ++++++++++++++++++++++++++++--------
- tools/perf/util/namespaces.c | 12 ++++++
- tools/perf/util/namespaces.h |  2 +
- 5 files changed, 82 insertions(+), 22 deletions(-)
-
-diff --git a/tools/perf/builtin-inject.c b/tools/perf/builtin-inject.c
-index 6d2f410d773a..715ae87a7368 100644
---- a/tools/perf/builtin-inject.c
-+++ b/tools/perf/builtin-inject.c
-@@ -292,7 +292,7 @@ static int perf_event__jit_repipe_mmap(struct perf_tool *tool,
- 	 * if jit marker, then inject jit mmaps and generate ELF images
- 	 */
- 	ret = jit_process(inject->session, &inject->output, machine,
--			  event->mmap.filename, event->mmap.pid, &n);
-+			  event->mmap.filename, event->mmap.pid, event->mmap.tid, &n);
- 	if (ret < 0)
- 		return ret;
- 	if (ret) {
-@@ -330,7 +330,7 @@ static int perf_event__jit_repipe_mmap2(struct perf_tool *tool,
- 	 * if jit marker, then inject jit mmaps and generate ELF images
- 	 */
- 	ret = jit_process(inject->session, &inject->output, machine,
--			  event->mmap2.filename, event->mmap2.pid, &n);
-+			  event->mmap2.filename, event->mmap2.pid, event->mmap2.tid, &n);
- 	if (ret < 0)
- 		return ret;
- 	if (ret) {
-diff --git a/tools/perf/util/jit.h b/tools/perf/util/jit.h
-index 6817ffc2a059..fb810e1b2de7 100644
---- a/tools/perf/util/jit.h
-+++ b/tools/perf/util/jit.h
-@@ -5,7 +5,7 @@
- #include <data.h>
- 
- int jit_process(struct perf_session *session, struct perf_data *output,
--		struct machine *machine, char *filename, pid_t pid, u64 *nbytes);
-+		struct machine *machine, char *filename, pid_t pid, pid_t tid, u64 *nbytes);
- 
- int jit_inject_record(const char *filename);
- 
-diff --git a/tools/perf/util/jitdump.c b/tools/perf/util/jitdump.c
-index 0804308ef285..bdcef7a0d3f5 100644
---- a/tools/perf/util/jitdump.c
-+++ b/tools/perf/util/jitdump.c
-@@ -18,6 +18,7 @@
- #include "event.h"
- #include "debug.h"
- #include "evlist.h"
-+#include "namespaces.h"
- #include "symbol.h"
- #include <elf.h>
- 
-@@ -35,6 +36,7 @@ struct jit_buf_desc {
- 	struct perf_data *output;
- 	struct perf_session *session;
- 	struct machine *machine;
-+	struct nsinfo  *nsi;
- 	union jr_entry   *entry;
- 	void             *buf;
- 	uint64_t	 sample_type;
-@@ -72,7 +74,8 @@ struct jit_tool {
- #define get_jit_tool(t) (container_of(tool, struct jit_tool, tool))
- 
- static int
--jit_emit_elf(char *filename,
-+jit_emit_elf(struct jit_buf_desc *jd,
-+	     char *filename,
- 	     const char *sym,
- 	     uint64_t code_addr,
- 	     const void *code,
-@@ -83,14 +86,18 @@ jit_emit_elf(char *filename,
- 	     uint32_t unwinding_header_size,
- 	     uint32_t unwinding_size)
- {
--	int ret, fd;
-+	int ret, fd, saved_errno;
-+	struct nscookie nsc;
- 
- 	if (verbose > 0)
- 		fprintf(stderr, "write ELF image %s\n", filename);
- 
-+	nsinfo__mountns_enter(jd->nsi, &nsc);
- 	fd = open(filename, O_CREAT|O_TRUNC|O_WRONLY, 0644);
-+	saved_errno = errno;
-+	nsinfo__mountns_exit(&nsc);
- 	if (fd == -1) {
--		pr_warning("cannot create jit ELF %s: %s\n", filename, strerror(errno));
-+		pr_warning("cannot create jit ELF %s: %s\n", filename, strerror(saved_errno));
- 		return -1;
- 	}
- 
-@@ -99,8 +106,11 @@ jit_emit_elf(char *filename,
- 
-         close(fd);
- 
--        if (ret)
--                unlink(filename);
-+	if (ret) {
-+		nsinfo__mountns_enter(jd->nsi, &nsc);
-+		unlink(filename);
-+		nsinfo__mountns_exit(&nsc);
-+	}
- 
- 	return ret;
- }
-@@ -134,12 +144,15 @@ static int
- jit_open(struct jit_buf_desc *jd, const char *name)
- {
- 	struct jitheader header;
-+	struct nscookie nsc;
- 	struct jr_prefix *prefix;
- 	ssize_t bs, bsz = 0;
- 	void *n, *buf = NULL;
- 	int ret, retval = -1;
- 
-+	nsinfo__mountns_enter(jd->nsi, &nsc);
- 	jd->in = fopen(name, "r");
-+	nsinfo__mountns_exit(&nsc);
- 	if (!jd->in)
- 		return -1;
- 
-@@ -367,6 +380,20 @@ jit_inject_event(struct jit_buf_desc *jd, union perf_event *event)
- 	return 0;
- }
- 
-+static pid_t jr_entry_pid(struct jit_buf_desc *jd, union jr_entry *jr)
-+{
-+	if (jd->nsi && jd->nsi->in_pidns)
-+		return jd->nsi->tgid;
-+	return jr->load.pid;
-+}
-+
-+static pid_t jr_entry_tid(struct jit_buf_desc *jd, union jr_entry *jr)
-+{
-+	if (jd->nsi && jd->nsi->in_pidns)
-+		return jd->nsi->pid;
-+	return jr->load.tid;
-+}
-+
- static uint64_t convert_timestamp(struct jit_buf_desc *jd, uint64_t timestamp)
- {
- 	struct perf_tsc_conversion tc;
-@@ -398,14 +425,15 @@ static int jit_repipe_code_load(struct jit_buf_desc *jd, union jr_entry *jr)
- 	const char *sym;
- 	uint64_t count;
- 	int ret, csize, usize;
--	pid_t pid, tid;
-+	pid_t nspid, pid, tid;
- 	struct {
- 		u32 pid, tid;
- 		u64 time;
- 	} *id;
- 
--	pid   = jr->load.pid;
--	tid   = jr->load.tid;
-+	nspid = jr->load.pid;
-+	pid   = jr_entry_pid(jd, jr);
-+	tid   = jr_entry_tid(jd, jr);
- 	csize = jr->load.code_size;
- 	usize = jd->unwinding_mapped_size;
- 	addr  = jr->load.code_addr;
-@@ -421,14 +449,14 @@ static int jit_repipe_code_load(struct jit_buf_desc *jd, union jr_entry *jr)
- 	filename = event->mmap2.filename;
- 	size = snprintf(filename, PATH_MAX, "%s/jitted-%d-%" PRIu64 ".so",
- 			jd->dir,
--			pid,
-+			nspid,
- 			count);
- 
- 	size++; /* for \0 */
- 
- 	size = PERF_ALIGN(size, sizeof(u64));
- 	uaddr = (uintptr_t)code;
--	ret = jit_emit_elf(filename, sym, addr, (const void *)uaddr, csize, jd->debug_data, jd->nr_debug_entries,
-+	ret = jit_emit_elf(jd, filename, sym, addr, (const void *)uaddr, csize, jd->debug_data, jd->nr_debug_entries,
- 			   jd->unwinding_data, jd->eh_frame_hdr_size, jd->unwinding_size);
- 
- 	if (jd->debug_data && jd->nr_debug_entries) {
-@@ -447,7 +475,7 @@ static int jit_repipe_code_load(struct jit_buf_desc *jd, union jr_entry *jr)
- 		free(event);
- 		return -1;
- 	}
--	if (stat(filename, &st))
-+	if (nsinfo__stat(filename, &st, jd->nsi))
- 		memset(&st, 0, sizeof(st));
- 
- 	event->mmap2.header.type = PERF_RECORD_MMAP2;
-@@ -511,14 +539,15 @@ static int jit_repipe_code_move(struct jit_buf_desc *jd, union jr_entry *jr)
- 	int usize;
- 	u16 idr_size;
- 	int ret;
--	pid_t pid, tid;
-+	pid_t nspid, pid, tid;
- 	struct {
- 		u32 pid, tid;
- 		u64 time;
- 	} *id;
- 
--	pid = jr->move.pid;
--	tid =  jr->move.tid;
-+	nspid = jr->load.pid;
-+	pid   = jr_entry_pid(jd, jr);
-+	tid   = jr_entry_tid(jd, jr);
- 	usize = jd->unwinding_mapped_size;
- 	idr_size = jd->machine->id_hdr_size;
- 
-@@ -532,12 +561,12 @@ static int jit_repipe_code_move(struct jit_buf_desc *jd, union jr_entry *jr)
- 	filename = event->mmap2.filename;
- 	size = snprintf(filename, PATH_MAX, "%s/jitted-%d-%" PRIu64 ".so",
- 	         jd->dir,
--	         pid,
-+		 nspid,
- 		 jr->move.code_index);
- 
- 	size++; /* for \0 */
- 
--	if (stat(filename, &st))
-+	if (nsinfo__stat(filename, &st, jd->nsi))
- 		memset(&st, 0, sizeof(st));
- 
- 	size = PERF_ALIGN(size, sizeof(u64));
-@@ -696,7 +725,7 @@ jit_inject(struct jit_buf_desc *jd, char *path)
-  * as captured in the RECORD_MMAP record
-  */
- static int
--jit_detect(char *mmap_name, pid_t pid)
-+jit_detect(char *mmap_name, pid_t pid, struct nsinfo *nsi)
-  {
- 	char *p;
- 	char *end = NULL;
-@@ -736,7 +765,7 @@ jit_detect(char *mmap_name, pid_t pid)
- 	 * pid does not match mmap pid
- 	 * pid==0 in system-wide mode (synthesized)
- 	 */
--	if (pid && pid2 != pid)
-+	if (pid && pid2 != nsi->nstgid)
- 		return -1;
- 	/*
- 	 * validate suffix
-@@ -778,16 +807,30 @@ jit_process(struct perf_session *session,
- 	    struct machine *machine,
- 	    char *filename,
- 	    pid_t pid,
-+	    pid_t tid,
- 	    u64 *nbytes)
- {
-+	struct thread *thread;
-+	struct nsinfo *nsi;
- 	struct evsel *first;
- 	struct jit_buf_desc jd;
- 	int ret;
- 
-+	thread = machine__findnew_thread(machine, pid, tid);
-+	if (thread == NULL) {
-+		pr_err("problem processing JIT mmap event, skipping it.\n");
-+		return 0;
-+	}
-+
-+	nsi = nsinfo__get(thread->nsinfo);
-+	thread__put(thread);
-+
- 	/*
- 	 * first, detect marker mmap (i.e., the jitdump mmap)
- 	 */
--	if (jit_detect(filename, pid)) {
-+	if (jit_detect(filename, pid, nsi)) {
-+		nsinfo__put(nsi);
-+
- 		// Strip //anon* mmaps if we processed a jitdump for this pid
- 		if (jit_has_pid(machine, pid) && (strncmp(filename, "//anon", 6) == 0))
- 			return 1;
-@@ -800,6 +843,7 @@ jit_process(struct perf_session *session,
- 	jd.session = session;
- 	jd.output  = output;
- 	jd.machine = machine;
-+	jd.nsi = nsi;
- 
- 	/*
- 	 * track sample_type to compute id_all layout
-@@ -817,5 +861,7 @@ jit_process(struct perf_session *session,
- 		ret = 1;
- 	}
- 
-+	nsinfo__put(jd.nsi);
-+
- 	return ret;
- }
-diff --git a/tools/perf/util/namespaces.c b/tools/perf/util/namespaces.c
-index f4b3512d8dd2..608b20c72a5c 100644
---- a/tools/perf/util/namespaces.c
-+++ b/tools/perf/util/namespaces.c
-@@ -287,3 +287,15 @@ char *nsinfo__realpath(const char *path, struct nsinfo *nsi)
- 
- 	return rpath;
- }
-+
-+int nsinfo__stat(const char *filename, struct stat *st, struct nsinfo *nsi)
-+{
-+	int ret;
-+	struct nscookie nsc;
-+
-+	nsinfo__mountns_enter(nsi, &nsc);
-+	ret = stat(filename, st);
-+	nsinfo__mountns_exit(&nsc);
-+
-+	return ret;
-+}
-diff --git a/tools/perf/util/namespaces.h b/tools/perf/util/namespaces.h
-index 1cc8637cf885..ad9775db7b9c 100644
---- a/tools/perf/util/namespaces.h
-+++ b/tools/perf/util/namespaces.h
-@@ -8,6 +8,7 @@
- #define __PERF_NAMESPACES_H
- 
- #include <sys/types.h>
-+#include <sys/stat.h>
- #include <linux/stddef.h>
- #include <linux/perf_event.h>
- #include <linux/refcount.h>
-@@ -56,6 +57,7 @@ void nsinfo__mountns_enter(struct nsinfo *nsi, struct nscookie *nc);
- void nsinfo__mountns_exit(struct nscookie *nc);
- 
- char *nsinfo__realpath(const char *path, struct nsinfo *nsi);
-+int nsinfo__stat(const char *filename, struct stat *st, struct nsinfo *nsi);
- 
- static inline void __nsinfo__zput(struct nsinfo **nsip)
- {
--- 
-2.25.0
-
+Best Regards
+Micha³ Miros³aw
