@@ -2,104 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 241862A75B1
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 03:42:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE7F52A75B4
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 03:43:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388378AbgKECmq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 21:42:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47508 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732450AbgKECmq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 21:42:46 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19382C0613CF;
-        Wed,  4 Nov 2020 18:42:46 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id f38so229847pgm.2;
-        Wed, 04 Nov 2020 18:42:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=2S1vFq4HZEtg7Kety/Ftf1BBZfbH4KJoly9r6aIwXR0=;
-        b=BBgrUCQYGb8qktqi/bmzdZggaR8uA0X0X1nCXdyAOF1ZmXi7mNHPnzs0I1P6vx/pkO
-         AYWuKABw2Jm5k76Ru3n32GoMMD1dgkrLFuhw5n4+RGEOpdxOTRNsjdaY99lXggdcg/VC
-         TgRVuqDu7Tgs5Z8GIqGu/poGCv8vU5+GKT/rgkow4iAXqVh/ymla3zfhlr6/FpM6FImM
-         45vLZ27bk4oW1KlKJRc2CyWmK9cd78SsJxb7qHbrtIviecxwIf5XMWJS2my4kUdI0CsR
-         7cc4fNx3cGUJ1ngxRbmww6kpH0ds+0H3ZffzyOocYEDsJ6i+9VVPEW5VzlCRRzArrxTI
-         ZnXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2S1vFq4HZEtg7Kety/Ftf1BBZfbH4KJoly9r6aIwXR0=;
-        b=JyKCnZ1ACtuKYBlTIixFDyQc6CZr7sllzNASZTUeEuexmtV8ysuZDcZfLC+K/xKvd4
-         +xewi80Z2XDi2Mt/6/RD13up89OKjuRVGFzn4MVppEWhbf5IvJTfIGVxJGfPxDgUXwlK
-         +IHkKZAJ92MflQAZQqB3n0idPqwVQUXjM1meOtWoYAAZwvFuNdQhkxYbqQPNmu4SpjrH
-         xNrxp9eh93DglKESXbT2uYHR+bqKnYt04LopV83FPsesDp6IfrNVN85PhAiu9iqnJqSV
-         euJUenUQkh03Ba4+VosKLi1GjIcJg/UC5S7ch0+UW6oeFNcvHhDdcQA2qxN804nwAGNG
-         Rsjg==
-X-Gm-Message-State: AOAM5316ZyxoCJXvKVNAEeGdtggBx92CNWnXIhaAggIUkNEWaUlrN+K2
-        okXHzbwKd80a1h8wdMq+7CV5kV8kYEI=
-X-Google-Smtp-Source: ABdhPJyMwSUn2Vd8ow9HdTR0rPiAkm2v9yCzDkdAwleWdoBcf9/eBzVLA+a3wVs705XkyibDV/sAdQ==
-X-Received: by 2002:a63:4f02:: with SMTP id d2mr381428pgb.46.1604544165129;
-        Wed, 04 Nov 2020 18:42:45 -0800 (PST)
-Received: from [10.230.28.234] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id y23sm64725pju.35.2020.11.04.18.42.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Nov 2020 18:42:44 -0800 (PST)
-Subject: Re: [PATCH net-next v3 1/4] ethtool: Add 10base-T1L link mode entries
-To:     Dan Murphy <dmurphy@ti.com>, davem@davemloft.net, andrew@lunn.ch,
-        hkallweit1@gmail.com, robh@kernel.org
-Cc:     devicetree@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20201030172950.12767-1-dmurphy@ti.com>
- <20201030172950.12767-2-dmurphy@ti.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <03eff57e-f584-6f76-7e31-f846fd8b367b@gmail.com>
-Date:   Wed, 4 Nov 2020 18:42:42 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.4.0
+        id S2388395AbgKECm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 21:42:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55938 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1733101AbgKECm6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 21:42:58 -0500
+Received: from kernel.org (unknown [104.132.1.79])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 889D42074B;
+        Thu,  5 Nov 2020 02:42:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604544177;
+        bh=o2ZixdoyTez57g0Hgq+WoFiK7SSCRB/m5mogC7KJns8=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=McE9Hu5/PkUGK6ZzHobSX7n8IhHsT8XXclsd7NLZe73S3Bg5K6I6GHt8GFIGnVjp+
+         wo8ykXNS2687iFweCked1NsnYLD0G0JSjXvcUdzsqVstdQ6o1ctynJtl1QEPAUloAc
+         5hieE/MhytBORgcSyjGRwYJUZa9MZ2MG0Ptw38EU=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20201030172950.12767-2-dmurphy@ti.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201023131925.334864-6-dmitry.baryshkov@linaro.org>
+References: <20201023131925.334864-1-dmitry.baryshkov@linaro.org> <20201023131925.334864-6-dmitry.baryshkov@linaro.org>
+Subject: Re: [PATCH v2 5/5] clk: qcom: dispcc-sm8250: handle MMCX power domain
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>
+Date:   Wed, 04 Nov 2020 18:42:56 -0800
+Message-ID: <160454417608.3965362.16775651224166864448@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Quoting Dmitry Baryshkov (2020-10-23 06:19:25)
+> On SM8250 MMCX power domain is required to access MMDS_GDSC registers.
+> This power domain is expressed as mmcx-supply regulator property. Use
+> this regulator as MDSS_GDSC supply.
+>=20
+> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> ---
+>  drivers/clk/qcom/dispcc-sm8250.c | 1 +
+>  1 file changed, 1 insertion(+)
+>=20
+> diff --git a/drivers/clk/qcom/dispcc-sm8250.c b/drivers/clk/qcom/dispcc-s=
+m8250.c
+> index 07a98d3f882d..588575e1169d 100644
+> --- a/drivers/clk/qcom/dispcc-sm8250.c
+> +++ b/drivers/clk/qcom/dispcc-sm8250.c
+> @@ -963,6 +963,7 @@ static struct gdsc mdss_gdsc =3D {
+>         },
+>         .pwrsts =3D PWRSTS_OFF_ON,
+>         .flags =3D HW_CTRL,
+> +       .supply =3D "mmcx",
+>  };
+> =20
 
-
-On 10/30/2020 10:29 AM, Dan Murphy wrote:
-> Add entries for the 10base-T1L full and half duplex supported modes.
-> 
-> $ ethtool eth0
->         Supported ports: [ TP ]
->         Supported link modes:   10baseT1L/Half 10baseT1L/Full
->         Supported pause frame use: Symmetric Receive-only
->         Supports auto-negotiation: Yes
->         Supported FEC modes: Not reported
->         Advertised link modes:  10baseT1L/Half 10baseT1L/Full
->         Advertised pause frame use: No
->         Advertised auto-negotiation: No
->         Advertised FEC modes: Not reported
->         Speed: 10Mb/s
->         Duplex: Full
->         Auto-negotiation: on
->         Port: MII
->         PHYAD: 1
->         Transceiver: external
->         Supports Wake-on: gs
->         Wake-on: d
->         SecureOn password: 00:00:00:00:00:00
->         Current message level: 0x00000000 (0)
-> 
->         Link detected: yes
-> 
-> Signed-off-by: Dan Murphy <dmurphy@ti.com>
-
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+Can this patch be applied to clk tree or will it break the tree without
+the dts/regulator bits in place?
