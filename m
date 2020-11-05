@@ -2,102 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DC3A2A8257
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 16:38:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F20402A825B
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 16:39:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731193AbgKEPi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 10:38:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55298 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731050AbgKEPi2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 10:38:28 -0500
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB48DC0613D2
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 07:38:26 -0800 (PST)
-Received: by mail-qk1-x742.google.com with SMTP id r7so1535676qkf.3
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 07:38:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oe4W/9IIStX5PS7df8SEBHKooPDTXbwCBDTfcyxclaE=;
-        b=ibKi6Xco8MbXn0RJgBL8wrtu+4b1FSUNJKWqyMWfWNim4CmEOYuxl+56dpkCSXEp1F
-         EKWCuq3aDu78RxAcJc5idAsuNU14Dpg2ZljVY1dm4WShBh7QxwRZAF9efcnsuNUTJlqm
-         IbJOUdV5Td1YLwBQcBjIMGxJxu4n9gwVJgVYU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oe4W/9IIStX5PS7df8SEBHKooPDTXbwCBDTfcyxclaE=;
-        b=VysFUIj+WS6bG6Xzd64qJ3vsWpEBrM/WnNJhD9wwbovqmJkoamqpR9/fGmHzTSGRWj
-         02y3OfgVXhAfNd7NeATJaueoRTBZDkP4iuUCxjao0wKkwDSPwPmgc8HJxmoZvOjs0iH4
-         y6dwDutPVi4VOm91Lc5tg63TDY+mO5g6a1qJV3uPOCpGaMyDfdkuoj+sKLUYNq1bcJZK
-         lCWToStVGopBGDUjwyMK9R4NEFIi9cde5jMiE3SU6xMkxJzjYt9BAP2v/niUSuXShumF
-         WtWAGjjT1HDz2o+FiU3zm7Ljqj76mzTck3Vd1Bkp29EdfsCWXzcobQCshFSy9bSyUpiW
-         1ScQ==
-X-Gm-Message-State: AOAM530oGJUoSlJSXLK7NEnVSatCZFPBzBNJa9+YW/TkbfswgpQGwOxa
-        J0sdTNoMLGxdhUQG6iYT8EcjVG6NtjG7RIvp1E0I6k94R95Y5Q==
-X-Google-Smtp-Source: ABdhPJxqzr8GwXgp1slRIIYdEd3E4yBt6kDC1cbU1KcQVJm5YduAh2GloUcUEP6vdSccYfzmfa2M85AqTpiEECH58R8=
-X-Received: by 2002:a05:620a:1024:: with SMTP id a4mr2677116qkk.390.1604590706076;
- Thu, 05 Nov 2020 07:38:26 -0800 (PST)
+        id S1731281AbgKEPjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 10:39:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33636 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730721AbgKEPjN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 10:39:13 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3C49220782;
+        Thu,  5 Nov 2020 15:39:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604590752;
+        bh=BK6UyQbmVZaBa7NHXAUIlJ5OUAFt3Xj/7AwhJMn1cVw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AkYgF9uKJZZtRdT8X6LKIae1sySM/N/v47rI7VnsqRSz7TZv0zNqnEJo071ui7RTF
+         EOrtVRvV7JZgzKu7nJoVrdFkVQTKVQdeXchIZB6Lg7cy1QnCd/+Qc/WKr+iuH3vNut
+         gCm/vjMoy7Icxu7PJsjWZub89kcW6akJzo98iLck=
+Date:   Thu, 5 Nov 2020 16:40:01 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Thorsten Leemhuis <linux@leemhuis.info>
+Cc:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Rander Wang <rander.wang@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        sound-open-firmware@alsa-project.org, alsa-devel@alsa-project.org
+Subject: Re: Build error with 5.9.5 in sound/soc/sof/intel/hda-codec.c (was:
+ [PATCH AUTOSEL 5.9 039/147] ASoC: SOF: fix a runtime pm issue in SOF when
+ HDMI codec doesn't work)
+Message-ID: <20201105154001.GA1166450@kroah.com>
+References: <20201026234905.1022767-1-sashal@kernel.org>
+ <20201026234905.1022767-39-sashal@kernel.org>
+ <f254331d-7ae2-e26f-3e1b-33a870349126@leemhuis.info>
 MIME-Version: 1.0
-References: <20201011024831.3868571-1-daniel@0x0f.com> <20201011024831.3868571-4-daniel@0x0f.com>
- <CACRpkdYmdZ81q_tsXRQ56aFjGsvV3AwJ8_hiu31mD14DGiK84A@mail.gmail.com>
- <CAFr9PXnX7QyM0VUmosFYueSe4ewA7uT2VZMfxFPaFt6-jUhoSw@mail.gmail.com>
- <CACRpkdbx+T3uX9taZNjsURHGc6qVLvGGC2boEC4=NaOi4_uZTQ@mail.gmail.com>
- <20201105093107.GB21245@1wt.eu> <CACRpkdbCB_n_jNJ+wqWWMKHG80du3kqya0vdOu41Cb4vdvOtyg@mail.gmail.com>
-In-Reply-To: <CACRpkdbCB_n_jNJ+wqWWMKHG80du3kqya0vdOu41Cb4vdvOtyg@mail.gmail.com>
-From:   Daniel Palmer <daniel@0x0f.com>
-Date:   Fri, 6 Nov 2020 00:39:13 +0900
-Message-ID: <CAFr9PXkZYL0arngaeLcKSjVum2d3ewDL8M66PfPdC5pXAtbuPQ@mail.gmail.com>
-Subject: Re: [PATCH 3/5] gpio: msc313: MStar MSC313 GPIO driver
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Willy Tarreau <w@1wt.eu>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f254331d-7ae2-e26f-3e1b-33a870349126@leemhuis.info>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Thu, Nov 05, 2020 at 02:48:33PM +0100, Thorsten Leemhuis wrote:
+> Lo! I just tried to compile 5.9.5 and ran into a build error with below
+> patch. I only did a quick look (I have to leave the keyboard soon), but
+> seems the patch quoted below that was added to 5.9.5 depends on 11ec0edc6408
+> (git.kernel.org/linus/11ec0edc6408) which wasn't backported.
+> 
+> The build error can be found here:
+> https://kojipkgs.fedoraproject.org//work/tasks/8246/54978246/build.log
+> 
+> Relevant part:
+> 
+> + make -s 'HOSTCFLAGS=-O2 -flto=auto -ffat-lto-objects -fexceptions -g
+> -grecord-gcc-switches -pipe -Wall -Werror=format-security
+> -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS
+> -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong
+> -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -fcommon -m64 -mtune=generic
+> -fasynchronous-unwind-tables -fstack-clash-protection'
+> 'HOSTLDFLAGS=-Wl,-z,relro -Wl,--as-needed  -Wl,-z,now
+> -specs=/usr/lib/rpm/redhat/redhat-hardened-ld ' ARCH=x86_64 'KCFLAGS= '
+> WITH_GCOV=0 -j48 modules
+> sound/soc/sof/intel/hda-codec.c: In function 'hda_codec_probe':
+> sound/soc/sof/intel/hda-codec.c:177:4: error: label 'error' used but not
+> defined
+>   177 |    goto error;
+>       |    ^~~~
+> make[4]: *** [scripts/Makefile.build:283: sound/soc/sof/intel/hda-codec.o]
+> Error 1
+> make[3]: *** [scripts/Makefile.build:500: sound/soc/sof/intel] Error 2
+> make[3]: *** Waiting for unfinished jobs....
+> make[2]: *** [scripts/Makefile.build:500: sound/soc/sof] Error 2
+> make[2]: *** Waiting for unfinished jobs....
+> make[1]: *** [scripts/Makefile.build:500: sound/soc] Error 2
+> make: *** [Makefile:1784: sound] Error 2
+> make: *** Waiting for unfinished jobs....
+> + exit 1
+> 
+> Looks like the compiler is right from a quick look at
+> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/sound/soc/sof/intel/hda-codec.c?h=linux-5.9.y&id=43836fdc9e318a11233cf19c5ee7ffb04e8e5d8f
+> 
+> But as I said, I lack the time for a closer look.
 
-Thanks for all of the comments.
-
-On Thu, 5 Nov 2020 at 18:42, Linus Walleij <linus.walleij@linaro.org> wrote:
->
-> On Thu, Nov 5, 2020 at 10:31 AM Willy Tarreau <w@1wt.eu> wrote:
-> > On Thu, Nov 05, 2020 at 10:21:27AM +0100, Linus Walleij wrote:
->
-> > > If your SoC is only used by OpenWrt (like ixp4xx) then it is fine
-> > > to just use bool because that distribution is always built with an
-> > > image for a specific hardware, whereas distributions are generic.
-> >
-.. snip ..
->> It's unlikely that we'll see very
-> > generic distros there given the limited storage you'd typically have
-> > in an SPI NOR (16-32 MB) and the small RAM (64MB) which tends to
-> > discourage anyone from booting a regular distro over other storage
-> > anyway.
-> >
-> > Thus my guess is that most users will keep building their own kernels.
-> >
-> > But this just emphasizes your points :-)
->
-> I think that is a good argument to keep this as bool.
-
-Thanks. I did change it to a tristate for v3 but I'll change it back.
-
-Just a heads up:
-There is another GPIO driver for this chip (same functionality,
-totally different register layout for no reason) that'll look pretty
-similar to this that'll follow soon.
-It might be similar enough that people confuse the two series as the same thing.
-
-Thanks,
-
-Daniel
+Thanks, people are looking at it already:
+	https://lore.kernel.org/r/1f0c6a62-5208-801d-d7c2-725ee8da19b2@linux.intel.com
