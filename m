@@ -2,107 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B37442A7A41
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 10:14:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 076732A7A3E
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 10:14:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731274AbgKEJOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 04:14:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51686 "EHLO
+        id S1731275AbgKEJON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 04:14:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730666AbgKEJOm (ORCPT
+        with ESMTP id S1731212AbgKEJOK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 04:14:42 -0500
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C16F1C0613D2
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 01:14:42 -0800 (PST)
-Received: by mail-pl1-x642.google.com with SMTP id t18so502329plo.0
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 01:14:42 -0800 (PST)
+        Thu, 5 Nov 2020 04:14:10 -0500
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34710C0613D3
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 01:14:10 -0800 (PST)
+Received: by mail-lj1-x241.google.com with SMTP id 23so784240ljv.7
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 01:14:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=lwLa055BkHU9dTWCUTcnkXH5JjkLSC8HIhnffeY25Zk=;
-        b=EepgRQDItwjh7SX279QAYnNLCMrLVZ5BJlsaSQt57Lwo228weAronXHiYtRQ74yV0r
-         IhL1PETBFhP4A3lgC4WsdbtvfIOi9+Rj7swepTNR5hk11luy/+ADFA5Xn1IC/j4/SYkU
-         MD0vRBLtv7uRaVFBHubPhF2XeXpgIPoeZ2WZJGqKzq8SVBozNS1N2Ke9JaSqQe0Wg3Yj
-         dbAwzWosR2w5qjFPdxEEUrIELS0sGLcmgNJ7nLpDV5/qgHtMY7XvIY0V0HvINACFE7U/
-         s8hM1/EPJRV7RBzgft6gj35HZnK5UKRPQ4cBuXHvjsa5cexFtox89d80oa9w2ZeHVjJU
-         Y+VQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=a5EvDes2mzEH21PsuVHEvhfe9s1+v+vUUboqD8o+qXg=;
+        b=yomWPI9E6p8BoxvD0WQ/GtEqnFHq6kGWctspOEorR5UAjdN2kc6Fbi0ko477mQB1pw
+         S1u3SSMzOsNlCLmXkU3c7u4W/tdZZWKYHvGjUmvzX61XYIXGjAhyt9XqhE4pdBh9a20y
+         xjZqUARJib3p8iTrUVGupUEGnumPCnPBH4q+31xnVo89s4FJ/NvHwuukNJpR9/B05V3R
+         GQu23uuePPNNKw/MCQWJi3KAMiDWPGjK2ewynTSoKw2pY5ZOLWQf1N93KT8U+iKOU8ow
+         RMYk5XfVtxkzXXVly6BrUYajnzCS/hboKAC9gOba81ME2YgYXGz5XeaYdn8St502qeAi
+         dgOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=lwLa055BkHU9dTWCUTcnkXH5JjkLSC8HIhnffeY25Zk=;
-        b=UYK/3wPOouceoYI/8eWkXZnKydDgihBcjSE/wYdMFh976Swss5IH+N6HSz6JgOr6YJ
-         9X7G0KJtEq5tDQSKOrko/pZdIdRdd4fqCLRWLvDkWDKq/aCqXXJLjwRxaOgRFgzel8G5
-         w4LIFTBurcE09osW3Xjh9Rzoxcm4ye8xOc/8nEASlbq40Ljpr0Re+571a7q7pv63PUlI
-         AoBYzrXEfJGaovCNHR97kFAvtOv+DrsWblrFYeMKwvk9pJcMsdtSotWK1+jD/1Pi9z1b
-         LUn0PKos46XCkF8TI5NEN6ZrOYZQxcql5pwrQ6GUyTEsXXr1zTdfHyR2PblC9SfRRMFe
-         wp4A==
-X-Gm-Message-State: AOAM532bnX6BtLqSUt3KqzBRGS+C1amBoUgAfALtSPAMLlV7JTaliZ5R
-        Vua6Jf5q7F9P6q7A+7iU1Mc/tQ==
-X-Google-Smtp-Source: ABdhPJzLN0DR/Tyg3X3jh6GJFxrnSziZI7/fQNDzC9lVER5hGyEjzo5mwj/zv6Hk3qtRcjl566dwvw==
-X-Received: by 2002:a17:902:9347:b029:d5:d554:9922 with SMTP id g7-20020a1709029347b02900d5d5549922mr1605449plp.56.1604567682333;
-        Thu, 05 Nov 2020 01:14:42 -0800 (PST)
-Received: from localhost ([122.172.12.172])
-        by smtp.gmail.com with ESMTPSA id 92sm1593107pjv.32.2020.11.05.01.14.41
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 05 Nov 2020 01:14:41 -0800 (PST)
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] thermal: Rearrange thermal_zone_device_set_polling()
-Date:   Thu,  5 Nov 2020 14:43:52 +0530
-Message-Id: <c024f35421c67d7b1a3a20bc280fb5131ce6db43.1604567599.git.viresh.kumar@linaro.org>
-X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=a5EvDes2mzEH21PsuVHEvhfe9s1+v+vUUboqD8o+qXg=;
+        b=hzUd2MuKHM0BKHCLmLY+5ZwDls8pxF7ySDbl/0CWy6KFbw9Dx5+J21eQojku85rZTF
+         Io+Te65BipJDoaMsePEDRR/1j/DdYu3uD9+R+IY8WQzvGBUBxc28U7DXZe9K26CV/z4c
+         5t34gG4vZC2SpwnAulVXC2o3/DJGX/OT2HOtdRffQJsJ1SU+cAx3nWudPTGO9VG19fBq
+         NDpgnkbNS/akHfh+STyR2UvTdRnfyy8B+KKOAUrs2jaPvnSL+JAJ4EoeqphYYqDbgzJl
+         FG6sYPO3w1SEaEjJMv7srQiU4+5mew8VTv5yrKLfTi5fBYhAuzp8M2vMhcXhi0MbPN9k
+         GmUQ==
+X-Gm-Message-State: AOAM5313QxSj6FYJtoz8g2jeAjblIqv0dJIsIBdOtA+OnEq5d5vkUioO
+        Nq449dSLosql2dBK6vr0DBQLXycaSFm1e37p07uldg==
+X-Google-Smtp-Source: ABdhPJxSzuOlML38xjmjdsVf6SqLQJ5np08U4vhJotjmL21O/pD0Pwm4/jAUucEfTMJSFq/ScyZzijTlTalZWAVxNuI=
+X-Received: by 2002:a2e:9a0c:: with SMTP id o12mr507459lji.104.1604567648665;
+ Thu, 05 Nov 2020 01:14:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201011024831.3868571-1-daniel@0x0f.com> <20201011024831.3868571-2-daniel@0x0f.com>
+ <CACRpkdZDyp83AiGkX9eFe2_w9eK1NXREFG896DZfPUaHboy+0g@mail.gmail.com> <CAJKOXPecUBTqbyiQQRdSPq_YuBAF+ut3RbM9AcW8nyciJyw8ig@mail.gmail.com>
+In-Reply-To: <CAJKOXPecUBTqbyiQQRdSPq_YuBAF+ut3RbM9AcW8nyciJyw8ig@mail.gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 5 Nov 2020 10:13:57 +0100
+Message-ID: <CACRpkdZDD0zTxBjfSfWXBsA=R2TSJ-J+nt+Y849QNipNhp7a5w@mail.gmail.com>
+Subject: Re: [PATCH 1/5] dt-bindings: gpio: Binding for MStar MSC313 GPIO controller
+To:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Daniel Palmer <daniel@0x0f.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rearrange thermal_zone_device_set_polling() to make it more readable and
-reduce duplicate code.
+On Mon, Oct 19, 2020 at 6:13 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
 
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
----
- drivers/thermal/thermal_core.c | 17 +++++++++--------
- 1 file changed, 9 insertions(+), 8 deletions(-)
+> The generic GPIO controller dtschema got dropped because Rob wants it
+> to be part of dtschema (outside of kernel) and then
+> relicensing/rewriting property descriptions plays a role. Only the
+> GPIO hogs went to common dtschema package.
+>
+> Therefore as of now, one should include all generic properties
+> directly in the GPIO controller bindings.
 
-diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
-index c6d74bc1c90b..7dfab370a369 100644
---- a/drivers/thermal/thermal_core.c
-+++ b/drivers/thermal/thermal_core.c
-@@ -291,16 +291,17 @@ static int __init thermal_register_governors(void)
- static void thermal_zone_device_set_polling(struct thermal_zone_device *tz,
- 					    int delay)
- {
--	if (delay > 1000)
--		mod_delayed_work(system_freezable_power_efficient_wq,
--				 &tz->poll_queue,
--				 round_jiffies(msecs_to_jiffies(delay)));
--	else if (delay)
-+	if (delay) {
-+		int time = msecs_to_jiffies(delay);
-+
-+		if (delay > 1000)
-+			time = round_jiffies(time);
-+
- 		mod_delayed_work(system_freezable_power_efficient_wq,
--				 &tz->poll_queue,
--				 msecs_to_jiffies(delay));
--	else
-+				 &tz->poll_queue, time);
-+	} else {
- 		cancel_delayed_work(&tz->poll_queue);
-+	}
- }
- 
- static inline bool should_stop_polling(struct thermal_zone_device *tz)
--- 
-2.25.0.rc1.19.g042ed3e048af
+Oh now I am confused.
 
+Rob, what is the plan here?
+
+Am I *not* to create say gpio-controller.yaml for $ref:in into
+other controllers?
+
+Yours,
+Linus Walleij
