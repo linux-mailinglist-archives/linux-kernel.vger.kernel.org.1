@@ -2,140 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 109D42A80D3
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 15:26:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAD0C2A80D5
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 15:28:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731054AbgKEO0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 09:26:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44052 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729113AbgKEO0Z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 09:26:25 -0500
-Received: from mail-oo1-xc44.google.com (mail-oo1-xc44.google.com [IPv6:2607:f8b0:4864:20::c44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16900C0613CF;
-        Thu,  5 Nov 2020 06:26:25 -0800 (PST)
-Received: by mail-oo1-xc44.google.com with SMTP id l26so461738oop.9;
-        Thu, 05 Nov 2020 06:26:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=fnUc98TZMoYnFy4oELrU7aOcqJiQ3OcwocODgGvI4RI=;
-        b=kbBJSaYORASAn7QfCPa0U1B4KmyJPGfa1aOhqZ0fU4iJAadH1b0KoCtg+NH02B9pCs
-         aXqqNv8vONMBiV/lh2yay/lGgDivCDN9ivVeSaBmWXVMWVTf1ncq9sai61XpjQbDUPdZ
-         AbCROf5aLi5mdu3BOy5nGvEQ1Ii7YnVZr3A0WXcWhaHNtuIs1q1PZbNzCxHVFloUeB+S
-         OOOOycxBMLI4S3Whcq5o0fTIp9GnTW/PTqP2ZogCPHtCdBo2bWZewoNHmS+GoZ8k/2PA
-         68iwWDhELxUvunALEGjqkI3kXh0a1jo2FEXzIeZJ3RMhQnRtiz4z746zaqjXGuodUKHs
-         QVpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=fnUc98TZMoYnFy4oELrU7aOcqJiQ3OcwocODgGvI4RI=;
-        b=mFQ9oHL9Rf4h2Q6mI3rCksnWHkqJy89GI3daB1NjrZM5YCWUa1Xx+Yfjx8NhQxXGmB
-         WIdXZmTRRmyeskmUbz2QtekDvpu05DAJuBQmnGVPnXhHs9i4m7ge4cJ1TXybuz6fpwe/
-         ACQZUnmCxCwcNr5arZKxdPh+3+WNANBAziaEhe+j/KvJyvi/Ko6c7o4XzEzzI5Mg8AJk
-         pe0MT7M3D3qBJL7HNehn5kKNbSmKns6oL9OtCwFj1P8c/hf7bmQnUOzdgeIBCb1V9SMO
-         YsuUEcncHTeExRxZfsXAGZxbQwrJ9eGk+z0rr9608Pfva+xt+0krihL06l+VuA5so9Qw
-         Y7sg==
-X-Gm-Message-State: AOAM53316gRLH8RmTPBIZQAwGxst+4b0EeZ/w5WC6+GhSCOnI9EdvjzY
-        +vAzD3xKXDJX2Q9uWecL8BE=
-X-Google-Smtp-Source: ABdhPJyXZSMqjaoO0cOGxc8x1tuw3aaVlBjZD55WXlo4ngZLKeLRQoPKQWQlQ3dxsPBki6ind9j6SA==
-X-Received: by 2002:a4a:b209:: with SMTP id d9mr1952292ooo.70.1604586383027;
-        Thu, 05 Nov 2020 06:26:23 -0800 (PST)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id t25sm351860otj.13.2020.11.05.06.26.22
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 05 Nov 2020 06:26:22 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Thu, 5 Nov 2020 06:26:21 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Wang Wensheng <wangwensheng4@huawei.com>
-Cc:     wim@linux-watchdog.org, linux-watchdog@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rui.xiang@huawei.com,
-        guohanjun@huawei.com
-Subject: Re: [PATCH -next v3 1/2] watchdog: Fix potential dereferencing of
- null pointer
-Message-ID: <20201105142621.GB1389@roeck-us.net>
-References: <20201105123848.93735-1-wangwensheng4@huawei.com>
+        id S1731038AbgKEO2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 09:28:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44202 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730754AbgKEO2L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 09:28:11 -0500
+Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BFB442078E;
+        Thu,  5 Nov 2020 14:28:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604586490;
+        bh=1y9/jO23DapTFabMMdsgl4CPgQCNWq53awT+Acfr9gI=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=MVIwt0UvFm2XY/wSuSq7AnhL71Wjx1Dv0fBPy//+sCBUozriDaU7cgHmWHPPZkGau
+         J9oqWjanQMKwPNwnarExQ77/BZl/gFT0717GFKQ09jEgBQYdVTpCDxB3qlvPPU9awE
+         GJi0XxdhDaFBx85iVk2H+KSlYqZ6Mm/1Fq7tdjO8=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 51860352265A; Thu,  5 Nov 2020 06:28:10 -0800 (PST)
+Date:   Thu, 5 Nov 2020 06:28:10 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Marco Elver <elver@google.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>, fweisbec@gmail.com,
+        neeraj.iitr10@gmail.com
+Subject: Re: [PATCH v9 5/7] rcu/segcblist: Remove useless rcupdate.h include
+Message-ID: <20201105142810.GA16800@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20201103142603.1302207-1-joel@joelfernandes.org>
+ <20201103142603.1302207-6-joel@joelfernandes.org>
+ <20201105034823.GK3249@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201105123848.93735-1-wangwensheng4@huawei.com>
+In-Reply-To: <20201105034823.GK3249@paulmck-ThinkPad-P72>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 12:38:47PM +0000, Wang Wensheng wrote:
-> A reboot notifier, which stops the WDT by calling the stop hook without
-> any check, would be registered when we set WDOG_STOP_ON_REBOOT flag.
+On Wed, Nov 04, 2020 at 07:48:23PM -0800, Paul E. McKenney wrote:
+> On Tue, Nov 03, 2020 at 09:26:01AM -0500, Joel Fernandes (Google) wrote:
+> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 > 
-> Howerer we allow the WDT driver to omit the stop hook since commit
-> "d0684c8a93549" ("watchdog: Make stop function optional") and provide
-> a module parameter for user that controls the WDOG_STOP_ON_REBOOT flag
-> in commit 9232c80659e94 ("watchdog: Add stop_on_reboot parameter to
-> control reboot policy"). Together that commits make user potential to
-> insert a watchdog driver that don't provide a stop hook but with the
-> stop_on_reboot parameter set, then dereferencing of null pointer occurs
-> on system reboot.
+> This one looks fine, but depends on the earlier "rcu/segcblist: Add
+> counters to segcblist datastructure" patch, which also changes the list
+> of #include directives for this file.  It manages to avoid conflicting
+> with "rcu/trace: Add tracing for how segcb list changes", despite this
+> one also changing the #include directives.
 > 
-> Check the stop hook before registering the reboot notifier to fix the
-> issue.
-> 
-> Fixes: d0684c8a9354 ("watchdog: Make stop function optional")
-> Signed-off-by: Wang Wensheng <wangwensheng4@huawei.com>
-> ---
->  drivers/watchdog/watchdog_core.c | 9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/watchdog/watchdog_core.c b/drivers/watchdog/watchdog_core.c
-> index 423844757812..945ab38b14b8 100644
-> --- a/drivers/watchdog/watchdog_core.c
-> +++ b/drivers/watchdog/watchdog_core.c
-> @@ -267,8 +267,15 @@ static int __watchdog_register_device(struct watchdog_device *wdd)
->  	}
->  
->  	if (test_bit(WDOG_STOP_ON_REBOOT, &wdd->status)) {
-> -		wdd->reboot_nb.notifier_call = watchdog_reboot_notifier;
-> +		if (!wdd->ops->stop) {
-> +			pr_err("watchdog%d: Cannot support stop_on_reboot\n",
-> +				wdd->id);
-> +			watchdog_dev_unregister(wdd);
-> +			ida_simple_remove(&watchdog_ida, id);
-> +			return -EINVAL;
-> +		}
+> I am testing it just out of curiosity, but it might make more sense
+> to fold this one into "rcu/segcblist: Add counters to segcblist
+> datastructure".
 
-The problem with this is that setting the "stop_on_reboot" module parameter
-would now prevent the watchdog from being loaded, which isn't really
-desirable and might go unnoticed. I think the initial check should be
-above, with the "Mandatory operations" check, and
-	if (stop_on_reboot != -1) {
-should be extended to
-	if (stop_on_reboot != -1 && wdd->ops->stop) {
+And it does pass light rcutorture.  ;-)
 
-or possibly more fancy:
+							Thanx, Paul
 
-	if (stop_on_reboot != -1) {
-		if (stop_on_reboot) {
-			if (!wdd->ops->stop)
-				pr_warn("watchdog%d: stop_on_reboot not supported\n", wdd->id);
-			else
-				set_bit(WDOG_STOP_ON_REBOOT, &wdd->status);
-		} else {
-			clear_bit(WDOG_STOP_ON_REBOOT, &wdd->status);
-		}
-	}
-
-Thanks,
-Guenter
-
->  
-> +		wdd->reboot_nb.notifier_call = watchdog_reboot_notifier;
->  		ret = register_reboot_notifier(&wdd->reboot_nb);
->  		if (ret) {
->  			pr_err("watchdog%d: Cannot register reboot notifier (%d)\n",
-> -- 
-> 2.25.0
-> 
+> > ---
+> >  kernel/rcu/rcu_segcblist.c | 1 -
+> >  1 file changed, 1 deletion(-)
+> > 
+> > diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
+> > index 2a03949d0b82..e9e72d72f7a6 100644
+> > --- a/kernel/rcu/rcu_segcblist.c
+> > +++ b/kernel/rcu/rcu_segcblist.c
+> > @@ -10,7 +10,6 @@
+> >  #include <linux/cpu.h>
+> >  #include <linux/interrupt.h>
+> >  #include <linux/kernel.h>
+> > -#include <linux/rcupdate.h>
+> >  #include <linux/types.h>
+> >  
+> >  #include "rcu_segcblist.h"
+> > -- 
+> > 2.29.1.341.ge80a0c044ae-goog
+> > 
