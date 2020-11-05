@@ -2,92 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D73762A78B5
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 09:16:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C552B2A78B6
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 09:16:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730719AbgKEIQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 03:16:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42474 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729909AbgKEIPz (ORCPT
+        id S1730878AbgKEIQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 03:16:30 -0500
+Received: from mail-ej1-f68.google.com ([209.85.218.68]:41592 "EHLO
+        mail-ej1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730175AbgKEIQ0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 03:15:55 -0500
-Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DCCFC0613CF;
-        Thu,  5 Nov 2020 00:15:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:Content-Type:
-        MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=5ET2Th0DyRXW62bKDsEdxAhHY06okhpZXJ0yl0uHDqo=; b=FxWOGn5oEkgTjRrq4kihtZ4t7D
-        gVqnMswbqzI0Ypo9pHJQWmqjgoMfcEcx5p9TqSrRPm7nzpeQTzTLPkpaoogG5WrtnMGFfKD6ypBgt
-        pu3Q9uQbB5OOgX2EOhMynlFNXxtxNsRnTAEp63LCarsf+dd0CbgRg04EkvlUPj2TjM20=;
-Received: from p200300ccff0ddc001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff0d:dc00:1a3d:a2ff:febf:d33a] helo=aktux)
-        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.89)
-        (envelope-from <andreas@kemnade.info>)
-        id 1kaaQu-0005PD-DV; Thu, 05 Nov 2020 09:15:48 +0100
-Date:   Thu, 5 Nov 2020 09:15:47 +0100
-From:   Andreas Kemnade <andreas@kemnade.info>
-To:     Henrik Rydberg <rydberg@bitmath.org>
-Cc:     Brad Campbell <brad@fnarfbargle.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>,
-        Arnd Bergmann <arnd@arndb.de>, linux-hwmon@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        hns@goldelico.com
-Subject: Re: [PATCH] applesmc: Re-work SMC comms v2
-Message-ID: <20201105091547.3335aed6@aktux>
-In-Reply-To: <6d071547-10ee-ca92-ec8b-4b5069d04501@bitmath.org>
-References: <20200930105442.3f642f6c@aktux>
-        <20200930164446.GB219887@roeck-us.net>
-        <CAK8P3a2CbhJT+B-F+cnX+uiJep9oiLM28n045-ATaVaU41u2hw@mail.gmail.com>
-        <20201002002251.28462e64@aktux>
-        <7543ef85-727d-96c3-947e-5b18e9e6c44d@roeck-us.net>
-        <20201006090226.4275c824@kemnade.info>
-        <db042e9b-be41-11b1-7059-3881b1da5c8b@fnarfbargle.com>
-        <68467f1b-cea1-47ea-a4d4-8319214b072a@fnarfbargle.com>
-        <20201104142057.62493c12@aktux>
-        <2436afef-99c6-c352-936d-567bf553388c@fnarfbargle.com>
-        <7a085650-2399-08c0-3c4d-6cd1fa28a365@roeck-us.net>
-        <fc36d066-c432-e7d2-312f-a0a592446fe2@fnarfbargle.com>
-        <10027199-5d31-93e7-9bd8-7baaebff8b71@roeck-us.net>
-        <70331f82-35a1-50bd-685d-0b06061dd213@fnarfbargle.com>
-        <3c72ccc3-4de1-b5d0-423d-7b8c80991254@fnarfbargle.com>
-        <6d071547-10ee-ca92-ec8b-4b5069d04501@bitmath.org>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Thu, 5 Nov 2020 03:16:26 -0500
+Received: by mail-ej1-f68.google.com with SMTP id cw8so1315221ejb.8
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 00:16:24 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=mzOnbpeAJjhktwiculdbHKFD/HWtRTT5V8Z1Bgn+oRQ=;
+        b=r1J9AyF71m/whKvx74X5gyo6k0XSIHKD2D7XFDZSXFKFVqxjz+YYAyYogDqCIx0mGl
+         ChWWnNpVGt8+O1R9DMJIXBLZy43oqBEc1CxVfbYkR3abWLHd99P4k3qDzUn8VRmUEa9r
+         d4H4d0C0sixOpMyoB7KhYgtdRGEAlu69o/8LplPeIiYqMawGpLMq9T3Rk9eSFvC2UCNj
+         q0+B75SHNOZBzgzew6Rpe14oYnLfL6f1glSMi4pI5UgQtUYmcN8BcgOPzV78oYioTPsV
+         ZHk582iQQ2L/7B89w1PR03IRBX0HGlFca56xM3bvLFw49etuMEMBjtMv68E3dqcpvKFp
+         eS7Q==
+X-Gm-Message-State: AOAM530isPS5XIRf2mzU4TBmjzG7lZl0v8Q0CtkYeZDA84dZkZP/iesn
+        At2hO52r5GBwmW20Oct4a3U=
+X-Google-Smtp-Source: ABdhPJxtp3gB9Gzcor3S5u8HrOSmnrI9aAzhs8915Qtj8hwJzm+xOusbbYe3pxarQSAwfeb7TvR46w==
+X-Received: by 2002:a17:906:90da:: with SMTP id v26mr1207188ejw.367.1604564183563;
+        Thu, 05 Nov 2020 00:16:23 -0800 (PST)
+Received: from ?IPv6:2a0b:e7c0:0:107::49? ([2a0b:e7c0:0:107::49])
+        by smtp.gmail.com with ESMTPSA id b8sm426759edv.20.2020.11.05.00.16.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Nov 2020 00:16:22 -0800 (PST)
+Subject: Re: [PATCH 12/36] tty: tty_io: Fix some kernel-doc issues
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Nick Holloway <alfie@dcs.warwick.ac.uk>,
+        -- <julian@uhunix.uhcc.hawaii.edu>,
+        Marko Kohtala <Marko.Kohtala@hut.fi>,
+        Bill Hawes <whawes@star.net>,
+        "C. Scott Ananian" <cananian@alumni.princeton.edu>,
+        Russell King <rmk@arm.linux.org.uk>,
+        Andrew Morton <andrewm@uow.edu.eu>
+References: <20201104193549.4026187-1-lee.jones@linaro.org>
+ <20201104193549.4026187-13-lee.jones@linaro.org>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Message-ID: <715cfe26-18d3-a035-0cf8-958f1235b4f7@kernel.org>
+Date:   Thu, 5 Nov 2020 09:16:21 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20201104193549.4026187-13-lee.jones@linaro.org>
+Content-Type: text/plain; charset=iso-8859-2; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Spam-Score: -1.0 (-)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 5 Nov 2020 08:56:04 +0100
-Henrik Rydberg <rydberg@bitmath.org> wrote:
+On 04. 11. 20, 20:35, Lee Jones wrote:
+> Demote non-conformant headers and supply some missing descriptions.
+> 
+> Fixes the following W=1 kernel build warning(s):
+> 
+>   drivers/tty/tty_io.c:218: warning: Function parameter or member 'file' not described in 'tty_free_file'
+>   drivers/tty/tty_io.c:566: warning: Function parameter or member 'exit_session' not described in '__tty_hangup'
+>   drivers/tty/tty_io.c:1077: warning: Function parameter or member 'tty' not described in 'tty_send_xchar'
+>   drivers/tty/tty_io.c:1077: warning: Function parameter or member 'ch' not described in 'tty_send_xchar'
+>   drivers/tty/tty_io.c:1155: warning: Function parameter or member 'file' not described in 'tty_driver_lookup_tty'
+>   drivers/tty/tty_io.c:1508: warning: Function parameter or member 'tty' not described in 'release_tty'
+>   drivers/tty/tty_io.c:1508: warning: Function parameter or member 'idx' not described in 'release_tty'
+>   drivers/tty/tty_io.c:2973: warning: Function parameter or member 'driver' not described in 'alloc_tty_struct'
+>   drivers/tty/tty_io.c:2973: warning: Function parameter or member 'idx' not described in 'alloc_tty_struct'
+> 
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Jiri Slaby <jirislaby@kernel.org>
+> Cc: Nick Holloway <alfie@dcs.warwick.ac.uk>
+> Cc: -- <julian@uhunix.uhcc.hawaii.edu>
+> Cc: Marko Kohtala <Marko.Kohtala@hut.fi>
+> Cc: Bill Hawes <whawes@star.net>
+> Cc: "C. Scott Ananian" <cananian@alumni.princeton.edu>
+> Cc: Russell King <rmk@arm.linux.org.uk>
+> Cc: Andrew Morton <andrewm@uow.edu.eu>
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> ---
+>   drivers/tty/tty_io.c | 10 +++++++---
+>   1 file changed, 7 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/tty/tty_io.c b/drivers/tty/tty_io.c
+> index 88b00c47b606e..f50286fb080da 100644
+> --- a/drivers/tty/tty_io.c
+> +++ b/drivers/tty/tty_io.c
+> @@ -2961,7 +2965,7 @@ static struct device *tty_get_device(struct tty_struct *tty)
+>   }
+>   
+>   
+> -/**
+> +/*
+>    *	alloc_tty_struct
+>    *
+>    *	This subroutine allocates and initializes a tty structure.
 
-> Hi Brad,
-> 
-> Great to see this effort, it is certainly an area which could be 
-> improved. After having seen several generations of Macbooks while 
-> modifying much of that code, it became clear that the SMC communication 
-> got refreshed a few times over the years. Every tiny change had to be 
-> tested on all machines, or kept separate for a particular generation, or 
-> something would break.
-> 
-> I have not followed the back story here, but I imagine the need has 
-> arisen because of a new refresh, and so this patch only needs to 
-> strictly apply to a new generation. I would therefore advice that you 
-> write the patch in that way, reducing the actual change to zero for 
-> earlier generations. It also makes it easier to test the effect of the 
-> new approach on older systems. I should be able to help testing on a 
-> 2008 and 2011 model once we get to that stage.
-> 
-Well, the issue has arisen because of a change in kernel to make clang
-happy. So it is not a new Apple device causing trouble.
+Why do you randomly sometimes fix kernel-doc and sometimes remove 
+functions from kernel-doc? What's the rule? For example, 
+alloc_tty_struct is among the ones, I would like to see fixed instead of 
+removed from kernel-doc.
 
-Regards,
-Andreas
+thanks,
+-- 
+js
+suse labs
