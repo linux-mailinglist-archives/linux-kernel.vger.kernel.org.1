@@ -2,160 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49E602A82B3
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 16:54:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 216672A82B8
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 16:54:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731315AbgKEPx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 10:53:58 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23809 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731050AbgKEPx5 (ORCPT
+        id S1731534AbgKEPy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 10:54:28 -0500
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:51828 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731050AbgKEPy1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 10:53:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604591636;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wFZ72PyJ1+m02rDkCuwgqjkgKRGx+Ew/wct32EXCLk4=;
-        b=btgpi8nkCZCWXbagbhi457bpAdifcTxaL2Rx7M+ElXG6Ia6dl0KJqkBwMEJdKf41WV6O3z
-        Zx3rmVggkClxw3cAWO10q8bmL9KvwNgn+CSURtWIor4UClse6IqcBWOJWWkUuVn8UBNnhp
-        W5Rt/V27q12yK1kSkh+Yn6tk/Zy631I=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-532-CuMU9xMnMYiHTDdIeUEIOw-1; Thu, 05 Nov 2020 10:53:54 -0500
-X-MC-Unique: CuMU9xMnMYiHTDdIeUEIOw-1
-Received: by mail-wm1-f71.google.com with SMTP id u207so782178wmu.4
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 07:53:54 -0800 (PST)
+        Thu, 5 Nov 2020 10:54:27 -0500
+Received: by mail-wm1-f68.google.com with SMTP id v5so2082743wmh.1
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 07:54:25 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=wFZ72PyJ1+m02rDkCuwgqjkgKRGx+Ew/wct32EXCLk4=;
-        b=K27uFjJ20oSg1pWgx7QU40DKY3ADkN8K2w7i2Sq7yipE8/IZlXiNqPK3UuSiTFTj15
-         NzIeBs4u1FE40zU23gK4AdUHrY0JFhQqFkfCqKCU5+txoxMpu6DgTC6Ii1lyYmDiJ0TL
-         orUPxiomyxkJjL4B2RZs8AFVlKJ3sBh85xpxlUC0QsON4OhXeZh8RykU+BPriOSTmCi0
-         H66dWwaeq2P+zK46OKbr2Al2UzkGP4QvHRk7wZCsrJoxwM39mIRcQh2h6DtiFdDSPwc5
-         caMVJTr11S+cSsKtlCxdanduX1aDfoSbTo56nUmqLwfO5u8P2iyrlnzMigoDUrPC41/4
-         GTgQ==
-X-Gm-Message-State: AOAM531l4TUrIe6bPSOX+15S7iEPcUl66gVmtVoCv9VIsH9oUQB9ngOB
-        7Y2I0mnK/YcT2rpdO8Rpn7kJiUzOV4CPlUZSmqFW3LLtlcqA1Uh2rHOeAClbVoS+ZqmkIwvH4ga
-        fqb8+ZTzsimzZbOCgkEwO/jGv
-X-Received: by 2002:adf:9b95:: with SMTP id d21mr3594040wrc.335.1604591632989;
-        Thu, 05 Nov 2020 07:53:52 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzPzlw5xOuCcXPux/37qJ+WF2tNLIFhA9EOtowntdsU5KJAlwcwqaz4qAXGEpsft7HFexG3Wg==
-X-Received: by 2002:adf:9b95:: with SMTP id d21mr3594018wrc.335.1604591632822;
-        Thu, 05 Nov 2020 07:53:52 -0800 (PST)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id j71sm3133580wmj.10.2020.11.05.07.53.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 07:53:52 -0800 (PST)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     junjiehua0xff@gmail.com
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Andrey Smetanin <asmetanin@virtuozzo.com>,
-        Junjie Hua <junjiehua@tencent.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/kvm/hyper-v: Don't deactivate APICv unconditionally
- when Hyper-V SynIC enabled
-In-Reply-To: <1604567537-909-1-git-send-email-junjiehua@tencent.com>
-References: <1604567537-909-1-git-send-email-junjiehua@tencent.com>
-Date:   Thu, 05 Nov 2020 16:53:50 +0100
-Message-ID: <87sg9n3ilt.fsf@vitty.brq.redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xCSoxE2mm7Ta4F0NDen4TpE7+839AyotSprVLgHnOpA=;
+        b=J7vjeIsVYdsdKuzdSs3m22rvo+jAO34oywiBeBGmUjntwngTNUhtypY44ANAXd3VO/
+         YdVW4aENe/ma5Q5KCqeaM4VvSZhHe4a85ovWqb96pgvoTKZKDQoPFnGgEtpvOxAizIgm
+         +QlSMJQ2okFGbxplDErYDfdbCBH6deTS9FH8CWbDUoEdbCY5Qw9hD+Yx7La60XV1KWRk
+         U0XgQc4ROQm0wOGJejqkK2zBEkFhfdCHu70CE3gcbbFlJlZsxOrDfYa0qT/6xd6KxBcN
+         9UPf/kSqCx36ux1WW+aPd0cw6GeaLM4h6CFguuRnJwbrZtHg6VqK1QGIC49tfr5grDkX
+         JQYQ==
+X-Gm-Message-State: AOAM531k6HUyuR+s7IgxsIGJ0N4J3RI/II/os1oaBUiDWlUE9eJ057GK
+        gmowCTRlbmPzGaRHf6NQyNBrHRp9uYLZ0//BF8w=
+X-Google-Smtp-Source: ABdhPJy2WHksbPfpnv4mms68mbTm//rc9TRlKqTCCefUPvwvm7NIqtTup8vjSiunQOUbQo2Y5RR8CC/ItB1nuA31C5k=
+X-Received: by 2002:a7b:cb46:: with SMTP id v6mr3454178wmj.146.1604591664643;
+ Thu, 05 Nov 2020 07:54:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20201102145221.309001-1-namhyung@kernel.org> <20201102145221.309001-3-namhyung@kernel.org>
+ <03ba0d07-45bb-0849-1843-915b6873478f@linux.intel.com>
+In-Reply-To: <03ba0d07-45bb-0849-1843-915b6873478f@linux.intel.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Fri, 6 Nov 2020 00:54:13 +0900
+Message-ID: <CAM9d7cgwmXmyUd4Y==F120BsAx2iWw6h9D+BB6D_FDw1-7SxBw@mail.gmail.com>
+Subject: Re: [RFC 2/2] perf/core: Invoke pmu::sched_task callback for per-cpu events
+To:     "Liang, Kan" <kan.liang@linux.intel.com>
+Cc:     Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>, Gabriel Marin <gmx@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-junjiehua0xff@gmail.com writes:
-
-> From: Junjie Hua <junjiehua@tencent.com>
+On Thu, Nov 5, 2020 at 11:48 PM Liang, Kan <kan.liang@linux.intel.com> wrote:
 >
-> The current implementation of Hyper-V SynIC[1] request to deactivate 
-> APICv when SynIC is enabled, since the AutoEOI feature of SynIC is not 
-> compatible with APICv[2].
 >
-> Actually, windows doesn't use AutoEOI if deprecating AutoEOI bit is set 
-> (CPUID.40000004H:EAX[bit 9], HyperV-TLFS v6.0b section 2.4.5), we don't 
-> need to disable APICv in this case.
 >
-
-Thank you for the patch, the fact that we disable APICv every time we
-enable SynIC is nothing to be proud of. I'm, however, not sure we can
-treat 'Recommend deprecating AutoEOI' as 'AutoEOI must not be
-used.'. Could you please clarify which Windows versions you've tested
-with with?
-
-> [1] commit 5c919412fe61 ("kvm/x86: Hyper-V synthetic interrupt controller")
-> [2] https://patchwork.kernel.org/patch/7486761/
+> On 11/2/2020 9:52 AM, Namhyung Kim wrote:
+> > The commit 44fae179ce73 ("perf/core: Pull pmu::sched_task() into
+> > perf_event_context_sched_out()") moved the pmu::sched_task callback to
+> > be called for task event context.  But it missed to call it for
+> > per-cpu events to flush PMU internal buffers (i.e. for PEBS, ...).
+> >
+> > This commit basically reverts the commit but keeps the optimization
+> > for task events and only add missing calls for cpu events.
+> >
+> > Fixes: 44fae179ce73 ("perf/core: Pull pmu::sched_task() into perf_event_context_sched_out()")
+> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> > ---
+[SNIP]
+> > @@ -3850,6 +3880,9 @@ void __perf_event_task_sched_in(struct task_struct *prev,
+> >
+> >       if (atomic_read(&nr_switch_events))
+> >               perf_event_switch(task, prev, true);
+> > +
+> > +     if (__this_cpu_read(perf_sched_cb_usages))
+> > +             perf_pmu_sched_task(prev, task, true);
+> >   }
 >
-> Signed-off-by: Junjie Hua <junjiehua@tencent.com>
-> ---
->  arch/x86/kvm/hyperv.c | 18 +++++++++++++++++-
->  arch/x86/kvm/lapic.c  |  3 +++
->  2 files changed, 20 insertions(+), 1 deletion(-)
+> It looks like the ("perf/core: Pull pmu::sched_task() into
+> perf_event_context_sched_in()") is also reverted in the patch.
+
+Ah, right..
+
 >
-> diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
-> index 5c7c406..9eee2da 100644
-> --- a/arch/x86/kvm/hyperv.c
-> +++ b/arch/x86/kvm/hyperv.c
-> @@ -899,6 +899,19 @@ void kvm_hv_vcpu_postcreate(struct kvm_vcpu *vcpu)
->  	hv_vcpu->vp_index = kvm_vcpu_get_idx(vcpu);
->  }
->  
-> +static bool kvm_hv_is_synic_autoeoi_deprecated(struct kvm_vcpu *vcpu)
-> +{
-> +	struct kvm_cpuid_entry2 *entry;
-> +
-> +	entry = kvm_find_cpuid_entry(vcpu,
-> +				HYPERV_CPUID_ENLIGHTMENT_INFO,
-> +				0);
-> +	if (!entry)
-> +		return false;
-> +
-> +	return entry->eax & HV_DEPRECATING_AEOI_RECOMMENDED;
-> +}
+> >
+> >   static u64 perf_calculate_period(struct perf_event *event, u64 nsec, u64 count)
+> > @@ -12999,6 +13032,7 @@ static void __init perf_event_init_all_cpus(void)
+> >   #ifdef CONFIG_CGROUP_PERF
+> >               INIT_LIST_HEAD(&per_cpu(cgrp_cpuctx_list, cpu));
+> >   #endif
+> > +             INIT_LIST_HEAD(&per_cpu(sched_cb_list, cpu));
+> >       }
+> >   }
+> >
+> >
+>
+> Can we only update the perf_sched_cb_usages and sched_cb_list for
+> per-cpu event as below patch (not tested)?
+>
+> If user only uses the per-process event, we don't need to go through the
+> list.
 
-I think we should complement (replace?) this with checking that no SINTx
-was configured with AutoEOI (and immeditely inhibit APICv if the
-situation changes).
+Hmm... ok.
 
-> +
->  int kvm_hv_activate_synic(struct kvm_vcpu *vcpu, bool dont_zero_synic_pages)
->  {
->  	struct kvm_vcpu_hv_synic *synic = vcpu_to_synic(vcpu);
-> @@ -908,7 +921,10 @@ int kvm_hv_activate_synic(struct kvm_vcpu *vcpu, bool dont_zero_synic_pages)
->  	 * not compatible with APICV, so request
->  	 * to deactivate APICV permanently.
->  	 */
-> -	kvm_request_apicv_update(vcpu->kvm, false, APICV_INHIBIT_REASON_HYPERV);
-> +	if (!kvm_hv_is_synic_autoeoi_deprecated(vcpu))
-> +		kvm_request_apicv_update(vcpu->kvm,
-> +					false, APICV_INHIBIT_REASON_HYPERV);
-> +
->  	synic->active = true;
->  	synic->dont_zero_synic_pages = dont_zero_synic_pages;
->  	synic->control = HV_SYNIC_CONTROL_ENABLE;
-> diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-> index 105e785..0bb431f 100644
-> --- a/arch/x86/kvm/lapic.c
-> +++ b/arch/x86/kvm/lapic.c
-> @@ -1263,6 +1263,9 @@ void kvm_apic_set_eoi_accelerated(struct kvm_vcpu *vcpu, int vector)
->  
->  	trace_kvm_eoi(apic, vector);
->  
-> +	if (test_bit(vector, vcpu_to_synic(apic->vcpu)->vec_bitmap))
-> +		kvm_hv_synic_send_eoi(apic->vcpu, vector);
-> +
->  	kvm_ioapic_send_eoi(apic, vector);
->  	kvm_make_request(KVM_REQ_EVENT, apic->vcpu);
->  }
+>
+>
+> diff --git a/arch/powerpc/perf/core-book3s.c
+> b/arch/powerpc/perf/core-book3s.c
+> index 6586f7e71cfb..63c9b87cab5e 100644
+> --- a/arch/powerpc/perf/core-book3s.c
+> +++ b/arch/powerpc/perf/core-book3s.c
+> @@ -380,7 +380,7 @@ static void power_pmu_bhrb_enable(struct perf_event
+> *event)
+>                 cpuhw->bhrb_context = event->ctx;
+>         }
+>         cpuhw->bhrb_users++;
+> -       perf_sched_cb_inc(event->ctx->pmu);
+> +       perf_sched_cb_inc(event->ctx->pmu, !(event->attach_state &
+> PERF_ATTACH_TASK));
+>   }
+>
+>   static void power_pmu_bhrb_disable(struct perf_event *event)
+> diff --git a/arch/x86/events/intel/ds.c b/arch/x86/events/intel/ds.c
+> index 444e5f061d04..a34b90c7fa6d 100644
+> --- a/arch/x86/events/intel/ds.c
+> +++ b/arch/x86/events/intel/ds.c
+> @@ -1022,9 +1022,9 @@ pebs_update_state(bool needed_cb, struct
+> cpu_hw_events *cpuc,
+>
+>         if (needed_cb != pebs_needs_sched_cb(cpuc)) {
+>                 if (!needed_cb)
+> -                       perf_sched_cb_inc(pmu);
+> +                       perf_sched_cb_inc(pmu, !(event->attach_state & PERF_ATTACH_TASK));
+>                 else
+> -                       perf_sched_cb_dec(pmu);
+> +                       perf_sched_cb_dec(pmu, !(event->attach_state & PERF_ATTACH_TASK));
+>
+>                 update = true;
+>         }
+> diff --git a/arch/x86/events/intel/lbr.c b/arch/x86/events/intel/lbr.c
+> index 8961653c5dd2..8d4d02cde3d4 100644
+> --- a/arch/x86/events/intel/lbr.c
+> +++ b/arch/x86/events/intel/lbr.c
+> @@ -693,7 +693,7 @@ void intel_pmu_lbr_add(struct perf_event *event)
+>          */
+>         if (x86_pmu.intel_cap.pebs_baseline && event->attr.precise_ip > 0)
+>                 cpuc->lbr_pebs_users++;
+> -       perf_sched_cb_inc(event->ctx->pmu);
+> +       perf_sched_cb_inc(event->ctx->pmu, !(event->attach_state &
+> PERF_ATTACH_TASK));
+>         if (!cpuc->lbr_users++ && !event->total_time_running)
+>                 intel_pmu_lbr_reset();
+>
+> @@ -740,7 +740,7 @@ void intel_pmu_lbr_del(struct perf_event *event)
+>         cpuc->lbr_users--;
+>         WARN_ON_ONCE(cpuc->lbr_users < 0);
+>         WARN_ON_ONCE(cpuc->lbr_pebs_users < 0);
+> -       perf_sched_cb_dec(event->ctx->pmu);
+> +       perf_sched_cb_dec(event->ctx->pmu, !(event->attach_state &
+> PERF_ATTACH_TASK));
+>   }
+>
+>   static inline bool vlbr_exclude_host(void)
+> diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+> index abb70a557cb5..5a02239ca8fd 100644
+> --- a/include/linux/perf_event.h
+> +++ b/include/linux/perf_event.h
+> @@ -966,8 +966,8 @@ extern const struct perf_event_attr
+> *perf_event_attrs(struct perf_event *event);
+>   extern void perf_event_print_debug(void);
+>   extern void perf_pmu_disable(struct pmu *pmu);
+>   extern void perf_pmu_enable(struct pmu *pmu);
+> -extern void perf_sched_cb_dec(struct pmu *pmu);
+> -extern void perf_sched_cb_inc(struct pmu *pmu);
+> +extern void perf_sched_cb_dec(struct pmu *pmu, bool systemwide);
+> +extern void perf_sched_cb_inc(struct pmu *pmu, bool systemwide);
+>   extern int perf_event_task_disable(void);
+>   extern int perf_event_task_enable(void);
+>
+> diff --git a/kernel/events/core.c b/kernel/events/core.c
+> index e6b98507734a..2d7c07af02f8 100644
+> --- a/kernel/events/core.c
+> +++ b/kernel/events/core.c
+> @@ -3484,25 +3484,29 @@ static void perf_event_context_sched_out(struct
+> task_struct *task, int ctxn,
+>
+>   static DEFINE_PER_CPU(struct list_head, sched_cb_list);
+>
+> -void perf_sched_cb_dec(struct pmu *pmu)
+> +void perf_sched_cb_dec(struct pmu *pmu, bool systemwide)
+>   {
+>         struct perf_cpu_context *cpuctx = this_cpu_ptr(pmu->pmu_cpu_context);
+>
+> -       this_cpu_dec(perf_sched_cb_usages);
+> +       --cpuctx->sched_cb_usage;
+>
+> -       if (!--cpuctx->sched_cb_usage)
+> +       if (systemwide) {
+> +               this_cpu_dec(perf_sched_cb_usages);
+>                 list_del(&cpuctx->sched_cb_entry);
+> +       }
+>   }
+>
+>
+> -void perf_sched_cb_inc(struct pmu *pmu)
+> +void perf_sched_cb_inc(struct pmu *pmu, bool systemwide)
+>   {
+>         struct perf_cpu_context *cpuctx = this_cpu_ptr(pmu->pmu_cpu_context);
+>
+> -       if (!cpuctx->sched_cb_usage++)
+> -               list_add(&cpuctx->sched_cb_entry, this_cpu_ptr(&sched_cb_list));
+> +       cpuctx->sched_cb_usage++;
+>
+> -       this_cpu_inc(perf_sched_cb_usages);
+> +       if (systemwide) {
+> +               this_cpu_inc(perf_sched_cb_usages);
+> +               list_add(&cpuctx->sched_cb_entry, this_cpu_ptr(&sched_cb_list));
 
--- 
-Vitaly
+You need to check the value and make sure it's added only once.
 
+Thanks
+Namhyung
+
+
+> +       }
+>   }
+>
+>   /*
+>
+> Thanks,
+> Kan
