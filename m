@@ -2,102 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 250352A7AF8
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 10:47:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A61B2A7AFE
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 10:49:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728553AbgKEJrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 04:47:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56922 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725468AbgKEJrw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 04:47:52 -0500
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F47AC0613CF;
-        Thu,  5 Nov 2020 01:47:52 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id t11so817454edj.13;
-        Thu, 05 Nov 2020 01:47:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=g7zM1eeP2rwptjvhJ7BsBBwb50bwWq0IMTLYduyJskk=;
-        b=EEYVRrHPBllYaZgmEUEwVjl24vH8Qwk8wgAotlnUgpD4hKTHxoX5mydUgJzIbtHOMn
-         1QiD+wff2YVVvRsBILzWmVWkuuP84i3Xng5afGX62WDK8pzjIMSWu4zojqBEdr/7cZas
-         yJxyLMsGS3lNh0XMsfKS/SjrfoSsc3v1haDa6R9SbtQV7hfCEJqMY87enBBdr49fF3s3
-         xR8/lFTWC8sut/yfhhInKYk58irEnMC0YoaqOV2OFNH7g/i/FqZt01OzbUsLjS2/O8mV
-         J5Vyrz8ulRuDLCoPTuOKP7twaUrs7tHEoQtKuxrNn+TB2zN+AWR4W5qJ/lAVPi4tSsZy
-         VTDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=g7zM1eeP2rwptjvhJ7BsBBwb50bwWq0IMTLYduyJskk=;
-        b=PG+5g9obDXqVh7+HD592jBTKe8h6ivk57ChrzJxmeYJogxwjRbSWJgpbnDp5sMSqOQ
-         EhmxOQk8/NNZL1cPfWN7FK6z6EQZk1l8IRJAgBLH22CIgddLiVjfw0wrexVNJywVuKVK
-         a1STWVIae2FdEI5QE8V4MfjfhDYMK0MwCEde1orInceKOrXmwM59COCJWS9mqPKqmxo2
-         xMYK9DQinpg8XazFJ39yFv23emELlFFc0gv51S372OibDjBnhpmMTgV+LPzB8o72BgF5
-         V3urmKMs1wdpsexNuxXaWOoi3bJ+1QBvW2Gbpr60qh8o14pZSZ1rAV7XFH+2oQQgsZsG
-         xhXw==
-X-Gm-Message-State: AOAM533kx3Gml/dO3bzKYZcAy6UEU/YW3G+NssI1PBcrBEsTi+IJItPZ
-        NrfuJ3fZq3Shtp2nZlileL9q704zC9ugfw==
-X-Google-Smtp-Source: ABdhPJwuArAx6JAAAismoWXHLH5yq4GWzdVqgvZowjzwfhZr0yCQdlJoN5h323FpY3MVHv7CVjvD1A==
-X-Received: by 2002:a05:6402:142c:: with SMTP id c12mr1730494edx.41.1604569671023;
-        Thu, 05 Nov 2020 01:47:51 -0800 (PST)
-Received: from ?IPv6:2a02:a44f:d2f0:0:7cde:5457:f7ce:ec3c? (2a02-a44f-d2f0-0-7cde-5457-f7ce-ec3c.fixed6.kpn.net. [2a02:a44f:d2f0:0:7cde:5457:f7ce:ec3c])
-        by smtp.gmail.com with ESMTPSA id 22sm621952ejw.27.2020.11.05.01.47.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Nov 2020 01:47:50 -0800 (PST)
-Subject: Re: Regression: QCA6390 fails with "mm/page_alloc: place pages to
- tail in __free_pages_core()"
-To:     Kalle Valo <kvalo@codeaurora.org>, david@redhat.com
-Cc:     ath11k@lists.infradead.org, linux-mm@kvack.org,
-        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-wireless@vger.kernel.org
-References: <fa22cf0f-3bac-add6-8c71-6f6cad5206d8@gmail.com>
- <87lffjodu7.fsf@codeaurora.org>
- <fa338986-8de4-fde1-6805-d46793c947e4@gmail.com>
- <c9cc0ec6-4dda-2608-3575-0e6dfb6d0852@gmail.com>
- <87ft5rszcs.fsf@codeaurora.org> <87ft5qsem9.fsf@codeaurora.org>
- <f99862f4-9b3a-03e5-cd26-1de6136f9e46@gmail.com>
- <87blgdscxd.fsf@codeaurora.org>
- <229c31e7-9aff-18e6-a6db-be7b46331173@gmail.com>
- <87361onphy.fsf_-_@codeaurora.org>
-From:   Pavel Procopiuc <pavel.procopiuc@gmail.com>
-Message-ID: <b9312d0b-1219-edda-0333-debb8e7b32e7@gmail.com>
-Date:   Thu, 5 Nov 2020 10:47:49 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1727698AbgKEJtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 04:49:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35112 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725308AbgKEJtI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 04:49:08 -0500
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5EFCD21D46;
+        Thu,  5 Nov 2020 09:49:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604569747;
+        bh=QBR2Tc/9WNzTItkRBAt9IIJdb9EsfXRdlj3TCpicmg4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ux2MHWMezbdTAo81cgm1ldp+hleWgwwW1SttCwLqTfOlLCiDBDKGSSfYGNkaM0b9W
+         M2JupBXyoHhxYXzW4mcmGnlFXoLNCg0oyI1Rf3AztWdDhXWtRgPj3RRDyj/cUmewRf
+         TSxUIaP7q7NvhBXJ4p1LHOsMpauLbRD8w0dxGTsE=
+Received: by mail-wm1-f50.google.com with SMTP id h62so922745wme.3;
+        Thu, 05 Nov 2020 01:49:07 -0800 (PST)
+X-Gm-Message-State: AOAM5337p3gXvOPcsVILJyqjg8RZoj4NEyC0l6XdqCVSpgGz3Jgoo/A/
+        N+cQzK1MgDaFuzNbcl9cHQiJUDxwzuimyi8G/hQ=
+X-Google-Smtp-Source: ABdhPJwAVTDv6MUiz/sUTWF6rT7rByTwI3xxgju//qMYNu5dRGzqQlZc8Ge4oUCahSSPXmbn6Zo+Hvxg4DXvv4ReSCQ=
+X-Received: by 2002:a1c:b746:: with SMTP id h67mr1726797wmf.43.1604569745838;
+ Thu, 05 Nov 2020 01:49:05 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <87361onphy.fsf_-_@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200930105442.3f642f6c@aktux> <20200930164446.GB219887@roeck-us.net>
+ <CAK8P3a2CbhJT+B-F+cnX+uiJep9oiLM28n045-ATaVaU41u2hw@mail.gmail.com>
+ <20201002002251.28462e64@aktux> <7543ef85-727d-96c3-947e-5b18e9e6c44d@roeck-us.net>
+ <20201006090226.4275c824@kemnade.info> <db042e9b-be41-11b1-7059-3881b1da5c8b@fnarfbargle.com>
+ <68467f1b-cea1-47ea-a4d4-8319214b072a@fnarfbargle.com> <20201104142057.62493c12@aktux>
+ <2436afef-99c6-c352-936d-567bf553388c@fnarfbargle.com> <7a085650-2399-08c0-3c4d-6cd1fa28a365@roeck-us.net>
+ <fc36d066-c432-e7d2-312f-a0a592446fe2@fnarfbargle.com>
+In-Reply-To: <fc36d066-c432-e7d2-312f-a0a592446fe2@fnarfbargle.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Thu, 5 Nov 2020 10:48:49 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a1HtyrkMkbEr+CCbsC0kpTjEfgNZhir2SvG2tR1ORFMow@mail.gmail.com>
+Message-ID: <CAK8P3a1HtyrkMkbEr+CCbsC0kpTjEfgNZhir2SvG2tR1ORFMow@mail.gmail.com>
+Subject: Re: [REGRESSION] hwmon: (applesmc) avoid overlong udelay()
+To:     Brad Campbell <brad@fnarfbargle.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        Jean Delvare <jdelvare@suse.com>,
+        Arnd Bergmann <arnd@arndb.de>, rydberg@bitmath.org,
+        linux-hwmon@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "H. Nikolaus Schaller" <hns@goldelico.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Op 05.11.2020 om 10:04 schreef Kalle Valo:
-> Oh, very interesting. Thanks a lot for the bisection, otherwise we would
-> have never found out whats causing this.
-> 
-> David & mm folks: Pavel noticed that his QCA6390 Wi-Fi 6 device (driver
-> ath11k) failed on v5.10-rc1. After bisecting he found that the commit
-> below causes the regression. I have not been able to reproduce this and
-> for me QCA6390 works fine. I don't know if this needs a specific kernel
-> configuration or what's the difference between our setups.
-> 
-> Any ideas what might cause this and how to fix it?
-> 
-> Full discussion: http://lists.infradead.org/pipermail/ath11k/2020-November/000501.html
-> 
-> commit 7fef431be9c9ac255838a9578331567b9dba4477
-> Author:     David Hildenbrand <david@redhat.com>
-> AuthorDate: Thu Oct 15 20:09:35 2020 -0700
-> Commit:     Linus Torvalds <torvalds@linux-foundation.org>
-> CommitDate: Fri Oct 16 11:11:18 2020 -0700
-> 
->      mm/page_alloc: place pages to tail in __free_pages_core()
+On Thu, Nov 5, 2020 at 6:05 AM Brad Campbell <brad@fnarfbargle.com> wrote:
 
-This is my kernel config, for the reference: https://gist.github.com/twistedfall/455885024c56587fc5a0f4b2784612e8
+> Appreciate the feedback.
+>
+> This would be the bare minimum based on the bits use in the original code. If the original code worked "well enough" then this should be relatively safe.
+>
+> Tested on both machines I have access to.
+
+For the patch:
+
+Acked-by: Arnd Bergmann <arnd@arndb.de>
+
+I'm glad you figured out something that works. This all looks reasonable and
+it makes much more sense than the original version that I tried to clean up
+just based on the code comments but without having access to hardware or
+documentation.
+
+       Arnd
