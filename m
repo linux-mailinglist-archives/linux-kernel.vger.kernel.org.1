@@ -2,117 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F7432A84AD
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 18:16:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FC462A84B2
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 18:17:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732016AbgKERQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 12:16:17 -0500
-Received: from mx2.suse.de ([195.135.220.15]:54598 "EHLO mx2.suse.de"
+        id S1731260AbgKERRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 12:17:05 -0500
+Received: from foss.arm.com ([217.140.110.172]:37858 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728523AbgKERQP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 12:16:15 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1604596573;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=iSIQtjhr10//VD1ePr+4g1ncowxf9ZrRXex0wWZq72I=;
-        b=GKVrtwDWxpqYR0Co35DPMPeKUWx8jjDTMPfP5GQcq39XUodVa5mb+N93C5ijnaLAOA1hgF
-        hbbzCm7XVqMyUC81jqyRjVxt1/ObnbW4UOc3lA54s9j7K+alvBF01QUrDHyUecnaOKL0lt
-        fXRqzLiviOJN2CjcuNEvHkZnCA/D6LY=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 05CB0ABAE;
-        Thu,  5 Nov 2020 17:16:13 +0000 (UTC)
-Date:   Thu, 5 Nov 2020 18:16:11 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     Minchan Kim <minchan@kernel.org>, linux-api@vger.kernel.org,
-        linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
-        Christian Brauner <christian@brauner.io>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Tim Murray <timmurray@google.com>,
-        kernel-team <kernel-team@android.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>
-Subject: Re: [RFC]: userspace memory reaping
-Message-ID: <20201105171611.GO21348@dhcp22.suse.cz>
-References: <CAJuCfpEQ_ADYsMrF_zjfAeQ3d-FALSP+CeYsvgH2H1-FSoGGqg@mail.gmail.com>
- <20201015092030.GB22589@dhcp22.suse.cz>
- <CAJuCfpHwXcq1PfzHgqyYBR3N53TtV2WMt_Oubz0JZkvJHbFKGw@mail.gmail.com>
- <CAJuCfpH9iUt0cs1GBQppgdcD8chojCNXk22S+PeSgQ-bA7iitQ@mail.gmail.com>
- <20201103093550.GE21990@dhcp22.suse.cz>
- <20201103213228.GB1631979@google.com>
- <20201104065844.GM21990@dhcp22.suse.cz>
- <20201104204051.GA3544305@google.com>
- <20201105122012.GD21348@dhcp22.suse.cz>
- <CAJuCfpF5zAif97-uK8M+-fJhd0pab4fMPDMUNkAXYOB3MC7aXg@mail.gmail.com>
+        id S1726729AbgKERRF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 12:17:05 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 62F27142F;
+        Thu,  5 Nov 2020 09:17:04 -0800 (PST)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CD75F3F719;
+        Thu,  5 Nov 2020 09:17:02 -0800 (PST)
+References: <20201105075021.1302386-1-juri.lelli@redhat.com> <jhja6vvztvk.mognet@arm.com> <20201105161236.GA5522@localhost.localdomain> <b279124a-d7f8-9801-8a8a-e2bced504e19@redhat.com>
+User-agent: mu4e 0.9.17; emacs 26.3
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Daniel Bristot de Oliveira <bristot@redhat.com>
+Cc:     Juri Lelli <juri.lelli@redhat.com>, peterz@infradead.org,
+        mingo@redhat.com, glenn@aurora.tech, linux-kernel@vger.kernel.org,
+        rostedt@goodmis.org, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, tglx@linutronix.de,
+        luca.abeni@santannapisa.it, tommaso.cucinotta@santannapisa.it
+Subject: Re: [PATCH] sched/deadline: Fix priority inheritance with multiple scheduling classes
+In-reply-to: <b279124a-d7f8-9801-8a8a-e2bced504e19@redhat.com>
+Date:   Thu, 05 Nov 2020 17:17:00 +0000
+Message-ID: <jhj8sbfzptf.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJuCfpF5zAif97-uK8M+-fJhd0pab4fMPDMUNkAXYOB3MC7aXg@mail.gmail.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 05-11-20 08:50:58, Suren Baghdasaryan wrote:
-> On Thu, Nov 5, 2020 at 4:20 AM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Wed 04-11-20 12:40:51, Minchan Kim wrote:
-> > > On Wed, Nov 04, 2020 at 07:58:44AM +0100, Michal Hocko wrote:
-> > > > On Tue 03-11-20 13:32:28, Minchan Kim wrote:
-> > > > > On Tue, Nov 03, 2020 at 10:35:50AM +0100, Michal Hocko wrote:
-> > > > > > On Mon 02-11-20 12:29:24, Suren Baghdasaryan wrote:
-> > > > > > [...]
-> > > > > > > To follow up on this. Should I post an RFC implementing SIGKILL_SYNC
-> > > > > > > which in addition to sending a kill signal would also reap the
-> > > > > > > victim's mm in the context of the caller? Maybe having some code will
-> > > > > > > get the discussion moving forward?
-> > > > > >
-> > > > > > Yeah, having a code, even preliminary, might help here. This definitely
-> > > > > > needs a good to go from process management people as that proper is land
-> > > > > > full of surprises...
-> > > > >
-> > > > > Just to remind a idea I suggested to reuse existing concept
-> > > > >
-> > > > >     fd = pidfd_open(victim process)
-> > > > >     fdatasync(fd);
-> > > > >     close(fd);
-> > > >
-> > > > I must have missed this proposal. Anyway, are you suggesting fdatasync
-> > > > to act as a destructive operation?
-> > >
-> > > write(fd) && fdatasync(fd) are already destructive operation if the file
-> > > is shared.
-> >
-> > I am likely missing something because fdatasync will not destroy any
-> > underlying data. It will sync
-> >
-> > > You don't need to reaping as destruptive operation. Rather than, just
-> > > commit on the asynchrnous status "write file into page cache and commit
-> > > with fsync" and "killing process and commit with fsync".
-> >
-> > I am sorry but I do not follow. The result of the memory reaping is a
-> > data loss. Any private mapping will simply lose it's content. The caller
-> > will get EFAULT when trying to access it but there is no way to
-> > reconstruct the data. This is everything but not resembling what I see
-> > f{data}sync is used for.
-> 
-> I think Minchan considers f{data}sync as a "commit" operation.
 
-But there is nothing like commit in that operation. It is simply a
-destroy operation. ftruncate as Minchan mentions in another reply would
-be a closer fit but how do you interpret the length argument? What about
-memory regions which cannot be reaped?
+On 05/11/20 16:33, Daniel Bristot de Oliveira wrote:
+> On 11/5/20 5:12 PM, Juri Lelli wrote:
+>> On 05/11/20 15:49, Valentin Schneider wrote:
+>>> For my own sake, what affinity problems are you thinking of?
+>>>
+>>> With proxy exec we have this "funny" dance of shoving the entire blocked-on
+>>> chain on a single runqueue to get the right selection out of
+>>> pick_next_task(), and that needs to deal with affinity (i.e. move the task
+>>> back to a sensible rq once it becomes runnable).
+>>>
+>>> With the current PI, the waiting tasks are blocked and enqueued in the
+>>> pi_waiters tree, so as I see it affinity shouldn't matter; what am I
+>>> missing / not seeing? Is that related to bandwidth handling?
+>>
+>> Think we might break admission control checks if donor and bosted are,
+>> for example, on different exclusive sets of CPUs. Guess that is a
+>> problem with proxy as well, though.
 
-I do understand that reusing an existing mechanism is usually preferable
-but the semantic should be reasonable and easy to reason about.
+Right, that gives you different rd's...
 
--- 
-Michal Hocko
-SUSE Labs
+>> As said in the comment above, this
+>> is unfortunately not much more than a band-aid. Hoping we can buy us
+>> some time and fix it properly with proxy.
+>
+> I agree with Juri that the current approach is known to be broken,
+> and that the proxy execution seems to be the mechanisms to go to
+> try to address these problems. However, this will take some time.
+>
+> Meanwhile, this patch that Juri proposes fixes problem
+> in the current mechanism - using the same approach (and breaking
+> in a known way :D).
+>
+> A proper way to handle the priority inversion with a disjoint
+> set of CPUs is something that will also be an issue with proxy
+> execution. But that is an even more complex topic :-(.
+>
+> So, IMHO, Juri's patch works well to avoid a crash,
+> making the system to behave as we expected (even if
+> we know that we cannot expect too much).
+>
+
+Aye, no disagreement here! I was mainly asking out of "personal interest",
+given I too have an eye on proxy exec - and would actually like to get back
+to it this month, if my inbox agrees.
+
+>>> With this change, do we still need sched_dl_entity.dl_boosted? AIUI this
+>>> could become
+>>>
+>>>   bool is_dl_boosted(struct sched_dl_entity *dl_se)
+>>>   {
+>>>           return pi_of(dl_se) != dl_se;
+>>>   }
+>>
+>> Makes sense to me. I'll add this change as a separate patch if the rest
+>> makes sense to people as well. :-)
+>
+> +1
+
+FWIW nothing strikes me as too crazy, so with the above:
+
+Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
+
+>
+> -- Daniel
+>
+>>
+>> Thanks for the quick review!
+>>
+>> Best,
+>> Juri
+>>
