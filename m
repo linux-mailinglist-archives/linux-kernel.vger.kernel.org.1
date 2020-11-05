@@ -2,79 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 340DB2A784D
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 08:51:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 857092A7858
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 08:53:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729858AbgKEHvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 02:51:04 -0500
-Received: from ssl.serverraum.org ([176.9.125.105]:53821 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725287AbgKEHvD (ORCPT
+        id S1728579AbgKEHxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 02:53:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39046 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726152AbgKEHxx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 02:51:03 -0500
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 8CFC322EE3;
-        Thu,  5 Nov 2020 08:51:00 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1604562661;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=y9nYMNipFWE8sSkn1Vl8PkFScRN6z5TpxXpkMWetXpU=;
-        b=EcKDtfv4J8/6mEv4+l/JnAIjw2EfFpGZbPhRTvUJxHMf/xSCy0jvF90Prq51i4SLhoWCBx
-        o527QJDxBJ6k3M7cpXMX3bGoOFnSesN38eVWUdreIdKfvnWX8Yd1S6XTkKbhmIG8GJcADN
-        HwxhyugtauPxeyIRfrrC8bngWYlKxog=
+        Thu, 5 Nov 2020 02:53:53 -0500
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28C0DC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 23:53:52 -0800 (PST)
+Received: by mail-lj1-x241.google.com with SMTP id k25so540498lji.9
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 23:53:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uWxXaFjaX2JSFXvoISaJ2nJGcPKFBfvWFO1ioi84K5o=;
+        b=LJEtMmMPnPNPuMOUjflAShtf/tGL+Srg3vIXk+Lh9SsAUj7yk2rRC4aN2nBaIEeBaH
+         7srSBNMaaQU4FOWJVKx5aYqjKLliAMLz9fH3ilnVAdUb8Aw4B2moCRMuzCCkF9X2ZKR7
+         idPu03npS0S+dIGpYKBd1q5mep93sRahA0zoeHLrMJpedNtAyosrk4IeNLEFVhV84rRi
+         YMtdyjACyWB3SkSjjAC+T4HWDmo+63ag4qIcV9tlCSWgI4nUnkUPHHXQ9LQNoh5P1xK1
+         X5oXHgtp+BLLQj0ouYR5zkyglNR0i1dk6IyQB642/q+WU6l+tApxCj0NZaZpp3Ktyd5X
+         zHlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uWxXaFjaX2JSFXvoISaJ2nJGcPKFBfvWFO1ioi84K5o=;
+        b=NfPgdINTcmKE5qj0zXuz4hWujWwf6XglZkqUwVyPauMA9phpYhGfxos/2xGsTkA6/K
+         iXFKUrHNJBzLc58hnefyNvcN1dL47reWjCHI3OR+ZylHvssXLblerIk8uzu9hp/eSFw2
+         oH2xDk0anA6j5nJDuev5hfFp+eEyG2D9ln9FYbUUHQ9zoFlxnUkEtgagJy2aZwMKUNYv
+         eVdWNi28DzVNTjAXP4vRE+1BCN4P9Zp4IbFWZ9PdL6cBKuPlEz0VyE2mk/q8GrE5lwIy
+         HNkDtT9xFt33zde26+u40TMrMxD7CaHKNOKEwYGUu3/6qpUrA/9F629Dub3rfU2H1Lsv
+         NnLw==
+X-Gm-Message-State: AOAM533CoV5lknP0fFN2OQPvcnLnvSM5A8b8SrRgFB03nfrJ4l0oxpfe
+        j0v92DdziBrDs0r2cskcgcD8CxVKEZxyrcVno7tSUw==
+X-Google-Smtp-Source: ABdhPJxm7yZCg2+JWcvzDpHbnsyXEVmR6Ak6pvhrNxzGAq4WPHDY8br8g2VKo+Vo2nD1GExdkdG3YDlede23s3WS2do=
+X-Received: by 2002:a05:651c:1205:: with SMTP id i5mr449252lja.283.1604562830673;
+ Wed, 04 Nov 2020 23:53:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 05 Nov 2020 08:50:59 +0100
-From:   Michael Walle <michael@walle.cc>
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Michael Turquette <mturquette@baylibre.com>
-Subject: Re: [PATCH] clk: fsl-sai: fix memory leak
-In-Reply-To: <160453619129.3965362.7473462251338349415@swboyd.mtv.corp.google.com>
-References: <20201101184818.2754-1-michael@walle.cc>
- <160453619129.3965362.7473462251338349415@swboyd.mtv.corp.google.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <93b003ea4b80e0b6ec3eb63288e028eb@walle.cc>
-X-Sender: michael@walle.cc
+References: <20201030143715.577641-1-narmstrong@baylibre.com>
+In-Reply-To: <20201030143715.577641-1-narmstrong@baylibre.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 5 Nov 2020 08:53:39 +0100
+Message-ID: <CACRpkdZnpjas-WYuXhJ_mwCTqTP5DpWHcnNmGpdCQjrr3xGnYg@mail.gmail.com>
+Subject: Re: [PATCH v2 0/4] media: meson: Add support for the Amlogic GE2D
+ Accelerator Unit
+To:     Neil Armstrong <narmstrong@baylibre.com>,
+        Todd Kjos <tkjos@google.com>
+Cc:     Hans Verkuil <hverkuil@xs4all.nl>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        "open list:ARM/Amlogic Meson..." <linux-amlogic@lists.infradead.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        John Stultz <john.stultz@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2020-11-05 01:29, schrieb Stephen Boyd:
-> Quoting Michael Walle (2020-11-01 10:48:18)
->> diff --git a/drivers/clk/clk-fsl-sai.c b/drivers/clk/clk-fsl-sai.c
->> index 0221180a4dd7..1e81c8d8a6fd 100644
->> --- a/drivers/clk/clk-fsl-sai.c
->> +++ b/drivers/clk/clk-fsl-sai.c
->> @@ -68,9 +68,20 @@ static int fsl_sai_clk_probe(struct platform_device 
->> *pdev)
->>         if (IS_ERR(hw))
->>                 return PTR_ERR(hw);
->> 
->> +       platform_set_drvdata(pdev, hw);
->> +
->>         return devm_of_clk_add_hw_provider(dev, of_clk_hw_simple_get, 
->> hw);
->>  }
->> 
->> +static int fsl_sai_clk_remove(struct platform_device *pdev)
->> +{
->> +       struct clk_hw *hw = platform_get_drvdata(pdev);
->> +
->> +       clk_hw_unregister_composite(hw);
-> 
-> Should we add a devm_clk_hw_register_composite() API and use it here?
-> That way we don't need a remove function and devm can be used
-> throughout.
+Hi Neil,
 
-Can do. But does adding a devm_ function qualify for the -stable branch?
-Or should I expect to have exactly this patch as a backport there then?
+this is just a drive-by question and I'm looping in Todd in the hopes for
+a discussion or clarification.
 
--michael
+On Fri, Oct 30, 2020 at 3:37 PM Neil Armstrong <narmstrong@baylibre.com> wrote:
+
+> The GE2D is a 2D accelerator with various features like configurable blitter
+> with alpha blending, frame rotation, scaling, format conversion and colorspace
+> conversion.
+>
+> The driver implements a Memory2Memory VB2 V4L2 streaming device permitting:
+> - 0, 90, 180, 270deg rotation
+> - horizontal/vertical flipping
+> - source cropping
+> - destination compositing
+> - 32bit/24bit/16bit format conversion
+>
+> This adds the support for the GE2D version found in the AXG SoCs Family.
+
+We are starting to see a bunch of these really nicely abstracted blitters
+and other 2D-accelerators now.
+
+Is stuff like Android going to pick up and use this to blit and blend
+generic buffers?
+
+Or is this in essence a camera and/or video out accelerator thing?
+
+The placement of this driver in drivers/media makes me think that
+it is for cameras or video output, but the functionality is actually
+quite generic.
+
+I've been half-guessing that userspace like Android actually mostly
+use GPUs to composit their graphics, but IIUC this can sometimes be
+used for 2D compositing, and when used will often be quicker and/or
+more energy efficient than using a GPU for the same task.
+
+Yours,
+Linus Walleij
