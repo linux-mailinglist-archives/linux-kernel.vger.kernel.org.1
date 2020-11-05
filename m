@@ -2,94 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 436512A7837
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 08:46:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 835B02A7842
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 08:49:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729441AbgKEHqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 02:46:46 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:49522 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725320AbgKEHqq (ORCPT
+        id S1729240AbgKEHtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 02:49:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38338 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726428AbgKEHtY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 02:46:46 -0500
-Received: by linux.microsoft.com (Postfix, from userid 1046)
-        id 5B48D20B4905; Wed,  4 Nov 2020 23:46:45 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5B48D20B4905
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1604562405;
-        bh=+4vC5pdHWhZcsC4RLqsaXzruecfzwJvr9SPbBGML92k=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PUIS5sSOund47b2bGCatf6rcJhvYsR39zR8hdPoD83WmfHmrpB6rxs14MbPhsoEd0
-         KFNmGAaZHP9tI4uCmlbnRUskomHcymw9Iya0xpHsON9Wgsm0Eu8BBtKoryEpgkXCdR
-         nF4PlSCGPSYxyH65Bt0DWHlMENv9ctS8mwcvB7R0=
-From:   Dhananjay Phadke <dphadke@linux.microsoft.com>
-To:     ray.jui@broadcom.com
-Cc:     andriy.shevchenko@linux.intel.com,
-        bcm-kernel-feedback-list@broadcom.com, brendanhiggins@google.com,
-        dphadke@linux.microsoft.com, f.fainelli@gmail.com,
-        linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lori.hikichi@broadcom.com,
-        rayagonda.kokatanur@broadcom.com, rjui@broadcom.com,
-        sbranden@broadcom.com, wsa@kernel.org
-Subject: Re: [PATCH v3 5/6] i2c: iproc: handle master read request
-Date:   Wed,  4 Nov 2020 23:46:45 -0800
-Message-Id: <1604562405-25414-1-git-send-email-dphadke@linux.microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <97a8d7bf-e877-c03a-f789-16cac9bb2643@broadcom.com>
-References: <97a8d7bf-e877-c03a-f789-16cac9bb2643@broadcom.com>
+        Thu, 5 Nov 2020 02:49:24 -0500
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75177C0613D2
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 23:49:24 -0800 (PST)
+Received: by mail-ej1-x641.google.com with SMTP id w13so1188844eju.13
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 23:49:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HiHN7cEc9FvAFXuwqXLWF0XbMGI5NJnlheI3AC/p0Rk=;
+        b=sDW2kw2WIZtOBBqP3OLvBf0PZR4l//kVfPnpgjZLMq0vnE4tjG4Ig8z5tff+gOMOP0
+         snGDBlsMM8PeDWRiOvFXKxwsoy/1Xtb6Xcc7mo4BQMPh/IrM38WXigtT7wQwr6ggUOjR
+         dnfFwV5wvxh5jl5IGJroHGHpfEDC4ES+wgWgBUaJCOqtZ8QG5P0CUCQzNp78U2eeV7O5
+         yCCmjn+yqQ4xcVOlwAcacEw2ny9JMCkuwMdXa4VYdR8fSYj/JM2Oeviqgge95DNvbHBt
+         rfnzbtVc3h3BTVvE+MV5I+onfG+QEpeqBoYtXw43J1bzbdBKp+zHOxdL3J2AqKAJxUFO
+         MhFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HiHN7cEc9FvAFXuwqXLWF0XbMGI5NJnlheI3AC/p0Rk=;
+        b=emLNqYo9k3UAdDNIM33PuE4Vcm8JZ3lmgOv0g3wMD1CORCs0yqFL603Gxp7dNOoFCa
+         b+npsmz+UUYhxqCHPAYtBChwS2zX94evqVYa12nUlaTCKK4EYuYWs0q7JOVER4k74xK8
+         YGKsCZY74hxwZxfOEfLRPlKB9SxKOd+p2q/Jf2KgGfCPY/M2cUbZGNunmtj+pCuX+4r6
+         FXV3VJBWo6BRQ3IoVzvQSIZ1nGCUSmlx7L1LTlDah+KKVua4KCytcilRaEk2diEVFEkB
+         ucTEjHcTOplFyF9OSWpZslsPHAThs5Ah5mHb1wqkD6rT7sLCV6sgMLwokzVkqh9/2wWR
+         K9/A==
+X-Gm-Message-State: AOAM530UItBDQIQ6QE+DiB7dH4r9lA6q1n4XPXUVRFz1wG9YZDt7SpOU
+        SSuow7wfBvQHOYF+i/o6Y0p2hwxVRA42KSNy4Hy7vA==
+X-Google-Smtp-Source: ABdhPJzMyeNcHa42GSktT9mkjMahMnmlITf9LkRgdVukR/ujD9xIfq3TSrJb0lT83dAIiwc3ssEcu4HrZhS0QU6AnNw=
+X-Received: by 2002:a17:906:4306:: with SMTP id j6mr1091381ejm.523.1604562563054;
+ Wed, 04 Nov 2020 23:49:23 -0800 (PST)
+MIME-Version: 1.0
+References: <20201101201542.2027568-1-leon@kernel.org> <20201101201542.2027568-7-leon@kernel.org>
+ <20201103154525.GO36674@ziepe.ca> <CAPcyv4jP9nFAGdvB7agg3x7Y7moHGcxLd5=f5=5CXnJRUf3n9w@mail.gmail.com>
+ <20201105073302.GA3415673@kroah.com>
+In-Reply-To: <20201105073302.GA3415673@kroah.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Wed, 4 Nov 2020 23:49:11 -0800
+Message-ID: <CAPcyv4iJZNsf9fnx2BkyCG9ECm85mFshaoxaZ3=kzMz-2-hCQQ@mail.gmail.com>
+Subject: Re: [PATCH mlx5-next v1 06/11] vdpa/mlx5: Connect mlx5_vdpa to
+ auxiliary bus
+To:     gregkh <gregkh@linuxfoundation.org>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jason Wang <jasowang@redhat.com>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Netdev <netdev@vger.kernel.org>, Parav Pandit <parav@nvidia.com>,
+        Roi Dayan <roid@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        virtualization@lists.linux-foundation.org,
+        alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>,
+        Mark Brown <broonie@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Fred Oh <fred.oh@linux.intel.com>,
+        "Saleem, Shiraz" <shiraz.saleem@intel.com>,
+        "Patil, Kiran" <kiran.patil@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        David M Ertman <david.m.ertman@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 4 Nov 2020 10:01:06 -0800, Ray Jui wrote:
-
->>>> +#define MAX_SLAVE_RX_PER_INT         10
->>>>
->>>
->>>> In patch [3/6], you've enabled IS_S_RX_THLD_SHIFT in slave ISR bitmask,
->>>> however it's not actually used in processing rx events.
->>>>
->>>> Instead of hardcoding this threshold here, it's better to add a
->>>> device-tree knob for rx threshold, program it in controller and handle
->>>> that RX_THLD interrupt. This will give more flexibility to drain the rx
->>>> fifo earlier than -
->>>> (1) waiting for FIFO_FULL interrupt for transactions > 64B.
->>>> (2) waiting for start of read transaction in case of master write-read.
->> 
->> Yes this is one way to implement.
->> But do you see any issue in batching 64 bytes at a time in case of
->> transaction > 64 Bytes.
->> I feel batching will be more efficient as it avoids more number of
->> interrupts and hence context switch.
->> 
->>>
->>> The Device Tree is really intended to describe the hardware FIFO size,
->>> not watermarks, as those tend to be more of a policy/work load decision.
->>> Maybe this is something that can be added as a module parameter, or
->>> configurable via ioctl() at some point.
->> 
+On Wed, Nov 4, 2020 at 11:32 PM gregkh <gregkh@linuxfoundation.org> wrote:
 >
->Yes, DT can have properties to describe the FIFO size, if there happens
->to be some variants in the HW blocks in different versions. But that is
->not the case here. DT should not be used to control SW/use case specific
->behavior.
+> On Wed, Nov 04, 2020 at 03:21:23PM -0800, Dan Williams wrote:
+> > On Tue, Nov 3, 2020 at 7:45 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> > [..]
+> > > > +MODULE_DEVICE_TABLE(auxiliary, mlx5v_id_table);
+> > > > +
+> > > > +static struct auxiliary_driver mlx5v_driver = {
+> > > > +     .name = "vnet",
+> > > > +     .probe = mlx5v_probe,
+> > > > +     .remove = mlx5v_remove,
+> > > > +     .id_table = mlx5v_id_table,
+> > > > +};
+> > >
+> > > It is hard to see from the diff, but when this patch is applied the
+> > > vdpa module looks like I imagined things would look with the auxiliary
+> > > bus. It is very similar in structure to a PCI driver with the probe()
+> > > function cleanly registering with its subsystem. This is what I'd like
+> > > to see from the new Intel RDMA driver.
+> > >
+> > > Greg, I think this patch is the best clean usage example.
+> > >
+> > > I've looked over this series and it has the right idea and
+> > > parts. There is definitely more that can be done to improve mlx5 in
+> > > this area, but this series is well scoped and cleans a good part of
+> > > it.
+> >
+> > Greg?
+> >
+> > I know you alluded to going your own way if the auxiliary bus patches
+> > did not shape up soon, but it seems they have and the stakeholders
+> > have reached this consensus point.
+> >
+> > Were there any additional changes you wanted to see happen? I'll go
+> > give the final set another once over, but David has been diligently
+> > fixing up all the declared major issues so I expect to find at most
+> > minor incremental fixups.
+>
+> This is in my to-review pile, along with a load of other stuff at the
+> moment:
+>         $ ~/bin/mdfrm -c ~/mail/todo/
+>         1709 messages in /home/gregkh/mail/todo/
+>
+> So give me a chance.  There is no rush on my side for this given the
+> huge delays that have happened here on the authorship side many times in
+> the past :)
 
-So the suggestion was to set HW threshold for rx fifo interrupt, not
-really a SW property. By setting it in DT, makes it easier to
-customize for target system, module param needs or ioctl makes it
-dependent on userpsace to configure it.
+Sure, I was more looking to confirm that it's worth continuing to
+polish this set given your mention of possibly going a different
+direction.
 
-The need for tasklet seems to arise from the fact that many bytes are
-left in the fifo. If there's a common problem here, such tasklet would be
-needed in i2c subsys rather than controller specific tweak, akin to
-how networking uses NAPI or adding block transactions to the interface?
+> If you can review it, or anyone else, that is always most appreciated.
 
-For master write-read event, it seems both IS_S_RD_EVENT_SHIFT and
-IS_S_RX_EVENT_SHIFT are detected, which implies that core is late to
-drain rx fifo i.e. write is complete and the read has started on the bus?
-
-
-Thanks,
-Dhananjay
-
-
+Thanks, will do.
