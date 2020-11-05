@@ -2,135 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FD3F2A7CD2
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 12:23:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE5CC2A7CD6
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 12:23:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730018AbgKELXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 06:23:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43582 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726665AbgKELXB (ORCPT
+        id S1730057AbgKELXZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 06:23:25 -0500
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:50711 "EHLO
+        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726067AbgKELXY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 06:23:01 -0500
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 124F3C0613CF;
-        Thu,  5 Nov 2020 03:23:01 -0800 (PST)
-Received: by mail-ej1-x643.google.com with SMTP id 7so2107812ejm.0;
-        Thu, 05 Nov 2020 03:23:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wNkTbLtgTkgkkwaoSGq4NvVRmI6B4VMBCAOlXrDC7QI=;
-        b=Qd7hxCdbA5cftuIXF4iuhYJNaqsn+6RmN4/oEpjdIWdXF/axEOKcwizmcG+rSGvRvn
-         fwlKPAlaMZoX+ct0lGfDGMS+oTRESZ1miFc8Xs8UpPe8Kg3SnCQEhvT52wev+BYSK6g9
-         l/fnp7z1UBUHKbaqLEXaMgOKg/dYQJnV3j84tncM7I6nV2dvcotW9UZI0BB3LL9PynYC
-         4yMR2gauRFCLp8uKbmD9maQEqANqP+KnkY29b5kyk26yqIdNOlTnqljSQu1WPMT+m9zs
-         boOAQ6p9Lov3ScSmUiYFEJUSoYeVYw0dvIKyShpxal8U9Q0BSzAtlYG79XvYoH+ZHWAh
-         ppjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wNkTbLtgTkgkkwaoSGq4NvVRmI6B4VMBCAOlXrDC7QI=;
-        b=EboXoapp2aiRPIqgUALW4gFluSGSvAGJsJKDJwLVKbwrAsnOoxiB7bFqi2wkohFn9K
-         jP5otdNepOGmdoJAILak6biSnc4zBk+Y/ZktSvQ5TjZHLESaZr4vxeydzpOXkj+qe1pP
-         F91NTy7rRV2qd+SYoM6eB1YpILrHVQxbDFd2y2J43LjGcg/4OgdIiMNnZ7nGp8PeZlul
-         fzOxT4jdiqie0gDrP/UEhMaYKighumhB+f8D3D4mig4mQEDSw5tzTZ1MpiLoyU3ehsMV
-         9LDSj3gmCH4QqsWN1Hx3Pgs8Y82XM/dMuWg0t99UEaMJOXArce4Xu1MuUhl6HT2Hq3kX
-         rxBw==
-X-Gm-Message-State: AOAM530rsUOFZL/CGfFieH9epD2fCwoieOBqeFjgceThZKUjrc7cGiq/
-        I+Utlq3tNp1WYHitO51svjE=
-X-Google-Smtp-Source: ABdhPJxp3DxDOEGh9l3/p1vbrMhDkbEnqT6kfRg6eISqxHGZD+4xtRD2vHMPIWH2Ln5BWUL/cBNOKA==
-X-Received: by 2002:a17:906:c206:: with SMTP id d6mr1684783ejz.239.1604575379746;
-        Thu, 05 Nov 2020 03:22:59 -0800 (PST)
-Received: from skbuf ([188.25.2.177])
-        by smtp.gmail.com with ESMTPSA id e9sm685614edn.30.2020.11.05.03.22.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 03:22:59 -0800 (PST)
-From:   Ioana Ciornei <ciorneiioana@gmail.com>
-X-Google-Original-From: Ioana Ciornei <ciornei.ioana@gmail.com>
-Date:   Thu, 5 Nov 2020 13:22:58 +0200
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Ioana Ciornei <ciorneiioana@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Ioana Ciornei <ioana.ciornei@nxp.com>
-Subject: Re: [RFC 5/9] staging: dpaa2-switch: handle Rx path on control
- interface
-Message-ID: <20201105112258.sgbr2fq66u47vokr@skbuf>
-References: <20201104165720.2566399-1-ciorneiioana@gmail.com>
- <20201104165720.2566399-6-ciorneiioana@gmail.com>
- <20201105004516.GG933237@lunn.ch>
+        Thu, 5 Nov 2020 06:23:24 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id 19966AD8;
+        Thu,  5 Nov 2020 06:23:23 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Thu, 05 Nov 2020 06:23:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=saApchnd9aN1F8QDQQZsmhefo66
+        C5NpK5CQWBv8jLUM=; b=CnXXs4w/JaweKP68NtUEXG6JZIFR/BJ0MjWYNtGalD0
+        0YetkSkyd1ik9YKAi/yH29FVvFKvdcnmKxANTXKW7Y8q0A17OXDwlWa4VvURdp+4
+        lTdQD/iMKgBna/pqxBwo4fJv6ebUpaHlwQ5ACkASfa2I3ounz6Il7kli8fOWPGvA
+        iQy8i9wwnyoAYPmrWu3LSNwg1LGobccEKY0R5pB9rNaJy44x+U4qVPDnR7E7A7vE
+        X4ofiXWD7/7c0EkbF9dM9eDSR7CZsDEfjE84rlpd0p4aIXQ0YutMDNZ3ZL6fFJ/W
+        WaPqxL+bF9uRLrdfEgnWLZIvgOTJMDZpdjY1dwcb8/w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=saApch
+        nd9aN1F8QDQQZsmhefo66C5NpK5CQWBv8jLUM=; b=bz3GifiSwXw9JO0EPAt1Xr
+        DkT2eRjXmevE5ou8T/gzpKdf+CUIz+d5IvcJ4Alns1sfl4L4TtNfbnxvxFSPk+rN
+        Sj8I9FQboYMUfSfPtVBcJs1NdOPwMGs5x2DeiLv0aTF1JLXORkrHBCHxkK0txpKV
+        LG5LePVxRMcmJKKN6JHtKBV91RGxu2026ABhHVm2pVQUCQv0qopr3MelT/XUTZ53
+        oTJk1sOmqUxeMnMvsNp6EKB//j7xTDDovMVsPCFFH5bbgb+FSs5fgNWfyJ5RFPtl
+        bgfCKM0Gs4hHvJVmHyqZZsgHMlu4srKJYwRz9aEgaNeUHaZ9daMpQN5XfNcftx8g
+        ==
+X-ME-Sender: <xms:qeCjX1eqEQIZL01WT7RgkORr5d-rxamBCilDditRRI-Jx_ntPGqNAw>
+    <xme:qeCjXzPNuYJQbp7NmJzwOMm-4JyXbHGzG1CJQOvMwnv8uE4aPyqsfSohW6uJSGzyR
+    k_xlB1HeZvtqU_pcas>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddtjedgvdekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:qeCjX-iI3PP-jkrvjiINI13ttpCB4T_g2RHeOUoFR5T3qLvTsaJJ1w>
+    <xmx:qeCjX-8mqqKfS2iOfFeJC_QQaJ_RKJ_ziLp9XkR521JxqSUcVdptOA>
+    <xmx:qeCjXxsSBYSHUhyK6KAls4p6gsrVYTW9JKh-4uUSS25mHDiBO_lnEA>
+    <xmx:quCjX1hTqiQVjn_Wv74WenX6cJY9U4mGvE8hYilYN7fvqHh2rxGU5w>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 2640C328038D;
+        Thu,  5 Nov 2020 06:23:21 -0500 (EST)
+Date:   Thu, 5 Nov 2020 12:23:19 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Samuel Holland <samuel@sholland.org>
+Cc:     Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        linux-arm-kernel@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com,
+        Ondrej Jirman <megous@megous.com>
+Subject: Re: [PATCH 4/6] arm64: dts: allwinner: pinephone: Add
+ light/proximity sensor
+Message-ID: <20201105112319.ic2gpb7bbsqn2ueh@gilmour.lan>
+References: <20201105054135.24860-1-samuel@sholland.org>
+ <20201105054135.24860-5-samuel@sholland.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="knxcwgcsvx5clfix"
 Content-Disposition: inline
-In-Reply-To: <20201105004516.GG933237@lunn.ch>
+In-Reply-To: <20201105054135.24860-5-samuel@sholland.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 01:45:16AM +0100, Andrew Lunn wrote:
-> > +/* Manage all NAPI instances for the control interface.
-> > + *
-> > + * We only have one RX queue and one Tx Conf queue for all
-> > + * switch ports. Therefore, we only need to enable the NAPI instance once, the
-> > + * first time one of the switch ports runs .dev_open().
-> > + */
-> > +
-> > +static void dpaa2_switch_enable_ctrl_if_napi(struct ethsw_core *ethsw)
-> > +{
-> > +	int i;
-> > +
-> > +	/* a new interface is using the NAPI instance */
-> > +	ethsw->napi_users++;
-> > +
-> > +	/* if there is already a user of the instance, return */
-> > +	if (ethsw->napi_users > 1)
-> > +		return;
-> 
-> Does there need to be any locking here? Or does it rely on RTNL?
-> Maybe a comment would be nice, or a check that RTNL is actually held.
-> 
 
-It relies on the RTNL. I'll add an assert on the RTNL lock and a comment
-to go with that.
+--knxcwgcsvx5clfix
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> > +
-> > +	if (!dpaa2_switch_has_ctrl_if(ethsw))
-> > +		return;
-> > +
-> > +	for (i = 0; i < DPAA2_SWITCH_RX_NUM_FQS; i++)
-> > +		napi_enable(&ethsw->fq[i].napi);
-> > +}
-> 
-> > +static void dpaa2_switch_rx(struct dpaa2_switch_fq *fq,
-> > +			    const struct dpaa2_fd *fd)
-> > +{
-> > +	struct ethsw_core *ethsw = fq->ethsw;
-> > +	struct ethsw_port_priv *port_priv;
-> > +	struct net_device *netdev;
-> > +	struct vlan_ethhdr *hdr;
-> > +	struct sk_buff *skb;
-> > +	u16 vlan_tci, vid;
-> > +	int if_id = -1;
-> > +	int err;
-> > +
-> > +	/* prefetch the frame descriptor */
-> > +	prefetch(fd);
-> 
-> Does this actually do any good, given that the next call:
-> 
-> > +
-> > +	/* get switch ingress interface ID */
-> > +	if_id = upper_32_bits(dpaa2_fd_get_flc(fd)) & 0x0000FFFF;
-> 
-> is accessing the frame descriptor? The idea of prefetch is to let it
-> bring it into the cache while you are busy doing something else,
-> hopefully with something which is already cache hot.
-> 
+Hi,
 
-I'll check w and w/o the prefetch but, most probably, it doesn't help.
-Thanks.
+On Wed, Nov 04, 2020 at 11:41:33PM -0600, Samuel Holland wrote:
+> From: Ondrej Jirman <megous@megous.com>
+>=20
+> Pinephone has STK3311-X proximity sensor. Add support for it.
+>=20
+> Signed-off-by: Ondrej Jirman <megous@megous.com>
+> Signed-off-by: Samuel Holland <samuel@sholland.org>
+> ---
+>  .../arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+>=20
+> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi b/ar=
+ch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi
+> index e595a8262920..9544d7658794 100644
+> --- a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi
+> +++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi
+> @@ -160,6 +160,16 @@ lis3mdl: lis3mdl@1e {
+>  		vddio-supply =3D <&reg_dldo1>;
+>  	};
+> =20
+> +	/* Light/proximity sensor */
+> +	stk3311@48 {
+> +		compatible =3D "sensortek,stk3311";
+> +		reg =3D <0x48>;
+> +		interrupt-parent =3D <&pio>;
+> +		interrupts =3D <1 0 IRQ_TYPE_EDGE_FALLING>; /* PB0 */
+> +		vdd-supply =3D <&reg_ldo_io0>;
+> +		leda-supply =3D <&reg_dldo1>;
+> +	};
+> +
 
-Ioana
+The node names should be the class of the device, not the model. The
+other sensors here have a similar issue though, so I've applied it, but
+could you send a subsequent patch fixing this?
+
+Thanks!
+Maxime
+
+--knxcwgcsvx5clfix
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX6PgpwAKCRDj7w1vZxhR
+xb4EAP40bgyEBW8OeoKMzjDfEITAHRSYuB1ae+OOUgKZ9xq3pAEAsAObBDHRV4NG
+quljybM2usk4/ikTRfohfYgDfdr31QM=
+=M/60
+-----END PGP SIGNATURE-----
+
+--knxcwgcsvx5clfix--
