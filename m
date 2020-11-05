@@ -2,139 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24A792A80C1
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 15:22:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E35D52A8040
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 15:01:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730999AbgKEOV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 09:21:59 -0500
-Received: from wp530.webpack.hosteurope.de ([80.237.130.52]:56322 "EHLO
-        wp530.webpack.hosteurope.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728371AbgKEOV6 (ORCPT
+        id S1730880AbgKEOB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 09:01:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40068 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730681AbgKEOB0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 09:21:58 -0500
-X-Greylist: delayed 1989 seconds by postgrey-1.27 at vger.kernel.org; Thu, 05 Nov 2020 09:21:57 EST
-Received: from ip4d145e30.dynamic.kabel-deutschland.de ([77.20.94.48] helo=[192.168.66.101]); authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1kafcw-0004jl-Bi; Thu, 05 Nov 2020 14:48:34 +0100
-To:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Cc:     Rander Wang <rander.wang@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        sound-open-firmware@alsa-project.org, alsa-devel@alsa-project.org
-References: <20201026234905.1022767-1-sashal@kernel.org>
- <20201026234905.1022767-39-sashal@kernel.org>
-From:   Thorsten Leemhuis <linux@leemhuis.info>
-Subject: Build error with 5.9.5 in sound/soc/sof/intel/hda-codec.c (was:
- [PATCH AUTOSEL 5.9 039/147] ASoC: SOF: fix a runtime pm issue in SOF when
- HDMI codec doesn't work)
-Message-ID: <f254331d-7ae2-e26f-3e1b-33a870349126@leemhuis.info>
-Date:   Thu, 5 Nov 2020 14:48:33 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Thu, 5 Nov 2020 09:01:26 -0500
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AC4AC0613D2
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 06:01:25 -0800 (PST)
+Received: by mail-lf1-x143.google.com with SMTP id s30so2446625lfc.4
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 06:01:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YTXLlhkJUN9wDt8Jv8WPFw5g42cb2iR5qevTYziYtbk=;
+        b=OK14Bnt3+9IeiZ6/M6McIw1LkFDy9LJWahWCHGMdSqbBSVOwLBmGir1yeEiClM89/t
+         mvkzJ1x4S9L/syjymwTkxNlizAAYao/MnA3qdsfAyStk6SQL6fZelVeqox0kMIKl5n6Z
+         zWgT6iKuOLL65ScYqJ9M5GQOeS5dsGoxshMLkR/qPSjvJvtAVBJaR49hdvDSfovIowtc
+         3XNGfaMTuA6XkPTGawdpx563b5LgCrVgSYFmkYUMhjvmWqZMmmYJL2P1zZzHPCgXSEXe
+         ivOCZq3p2hVOqsSq0HXrEmRt4VoRkEnVD9J2Gyvpfkc7mBArdUCN/6FJODadaK6LpIt3
+         /EmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YTXLlhkJUN9wDt8Jv8WPFw5g42cb2iR5qevTYziYtbk=;
+        b=OUDR8KHOBOW3GzXxgCt1EEB0atEkArkMslnXUMmWukCgAyIHUavkFzuErCT6awSYF8
+         2Rh9Gxp0drxKrq7hoB3j/tFyWyqb8ArIgiLSrpkuSTEXWgvVhaGAF5lcz4SvAw0FYyY1
+         u0PdMsv1LrKBdTP5WHwVK9kOgnpMeO5M3wY/OTx1dxv2klHucu4af4DnNvaaPWx10fIK
+         jiPd94hOCqv0y5YS6GsIGiIIivawDnwmE9GwAAB4YcZKCBa9Oa+hICWt99i1n14tsDIJ
+         P4JrsPFvNjsTrrZXlBRhzcZxHNM98K5dEJcl2NDqFYfk82HT5R5WxvCC6aElh0ej2YZa
+         o2gg==
+X-Gm-Message-State: AOAM531OOMu1kh5Si4T1MewaDrh8SEFeUfZxAX0NTvpRY3MjfctcebP+
+        hL2MQXvD6GUvA7zO6L5el+qo+uk2iK7DSi9HeVeDtA==
+X-Google-Smtp-Source: ABdhPJzvM65+qqxut8Q8K9FX99fxAPBlc0gUibPjENKKmydRQK0QV33V0O2d25Zm7Cor//tf/DGwRsM1lFrKsUhrY3k=
+X-Received: by 2002:a19:824f:: with SMTP id e76mr987111lfd.572.1604584882549;
+ Thu, 05 Nov 2020 06:01:22 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201026234905.1022767-39-sashal@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1604586117;170aacbe;
-X-HE-SMSGID: 1kafcw-0004jl-Bi
+References: <20201007160611.942754-1-junak.pub@gmail.com>
+In-Reply-To: <20201007160611.942754-1-junak.pub@gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 5 Nov 2020 15:01:08 +0100
+Message-ID: <CACRpkdY_SHWbHpsHQiQswQ9DzSLH-P=tAmeHG2JddQZ76_-0mQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] pinctrl: qcom: add pinctrl driver for msm8953
+To:     Vladimir Lypak <junak.pub@gmail.com>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Prasad Sodagudi <psodagud@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lo! I just tried to compile 5.9.5 and ran into a build error with below 
-patch. I only did a quick look (I have to leave the keyboard soon), but 
-seems the patch quoted below that was added to 5.9.5 depends on 
-11ec0edc6408 (git.kernel.org/linus/11ec0edc6408) which wasn't backported.
+On Wed, Oct 7, 2020 at 6:26 PM Vladimir Lypak <junak.pub@gmail.com> wrote:
 
-The build error can be found here:
-https://kojipkgs.fedoraproject.org//work/tasks/8246/54978246/build.log
-
-Relevant part:
-
-+ make -s 'HOSTCFLAGS=-O2 -flto=auto -ffat-lto-objects -fexceptions -g 
--grecord-gcc-switches -pipe -Wall -Werror=format-security 
--Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS 
--specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong 
--specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -fcommon -m64 
--mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection' 
-'HOSTLDFLAGS=-Wl,-z,relro -Wl,--as-needed  -Wl,-z,now 
--specs=/usr/lib/rpm/redhat/redhat-hardened-ld ' ARCH=x86_64 'KCFLAGS= ' 
-WITH_GCOV=0 -j48 modules
-sound/soc/sof/intel/hda-codec.c: In function 'hda_codec_probe':
-sound/soc/sof/intel/hda-codec.c:177:4: error: label 'error' used but not 
-defined
-   177 |    goto error;
-       |    ^~~~
-make[4]: *** [scripts/Makefile.build:283: 
-sound/soc/sof/intel/hda-codec.o] Error 1
-make[3]: *** [scripts/Makefile.build:500: sound/soc/sof/intel] Error 2
-make[3]: *** Waiting for unfinished jobs....
-make[2]: *** [scripts/Makefile.build:500: sound/soc/sof] Error 2
-make[2]: *** Waiting for unfinished jobs....
-make[1]: *** [scripts/Makefile.build:500: sound/soc] Error 2
-make: *** [Makefile:1784: sound] Error 2
-make: *** Waiting for unfinished jobs....
-+ exit 1
-
-Looks like the compiler is right from a quick look at
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/sound/soc/sof/intel/hda-codec.c?h=linux-5.9.y&id=43836fdc9e318a11233cf19c5ee7ffb04e8e5d8f
-
-But as I said, I lack the time for a closer look.
-
-Ciao, Thorsten
-
-Am 27.10.20 um 00:47 schrieb Sasha Levin:
-> From: Rander Wang <rander.wang@intel.com>
-> 
-> [ Upstream commit 6c63c954e1c52f1262f986f36d95f557c6f8fa94 ]
-> 
-> When hda_codec_probe() doesn't initialize audio component, we disable
-> the codec and keep going. However,the resources are not released. The
-> child_count of SOF device is increased in snd_hdac_ext_bus_device_init
-> but is not decrease in error case, so SOF can't get suspended.
-> 
-> snd_hdac_ext_bus_device_exit will be invoked in HDA framework if it
-> gets a error. Now copy this behavior to release resources and decrease
-> SOF device child_count to release SOF device.
-> 
-> Signed-off-by: Rander Wang <rander.wang@intel.com>
-> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-> Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-> Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-> Link: https://lore.kernel.org/r/20200825235040.1586478-3-ranjani.sridharan@linux.intel.com
-> Signed-off-by: Mark Brown <broonie@kernel.org>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> Add inititial pinctrl driver for MSM8953 platform. Compatible SoCs are:
+> MSM8953, APQ8053, SDM(SDA)450, SDM(SDA)632.
+> Based off CAF implementation.
+>
+> Signed-off-by: Prasad Sodagudi <psodagud@codeaurora.org>
+> Signed-off-by: Vladimir Lypak <junak.pub@gmail.com>
 > ---
->   sound/soc/sof/intel/hda-codec.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/sound/soc/sof/intel/hda-codec.c b/sound/soc/sof/intel/hda-codec.c
-> index 2c5c451fa19d7..c475955c6eeba 100644
-> --- a/sound/soc/sof/intel/hda-codec.c
-> +++ b/sound/soc/sof/intel/hda-codec.c
-> @@ -151,7 +151,7 @@ static int hda_codec_probe(struct snd_sof_dev *sdev, int address,
->   		if (!hdev->bus->audio_component) {
->   			dev_dbg(sdev->dev,
->   				"iDisp hw present but no driver\n");
-> -			return -ENOENT;
-> +			goto error;
->   		}
->   		hda_priv->need_display_power = true;
->   	}
-> @@ -174,7 +174,7 @@ static int hda_codec_probe(struct snd_sof_dev *sdev, int address,
->   		 * other return codes without modification
->   		 */
->   		if (ret == 0)
-> -			ret = -ENOENT;
-> +			goto error;
->   	}
->   
->   	return ret;
-> 
+> Changes in V2:
+> - sorted SDC_QDSD_PINGROUP entries in msm8953_groups array.
 
+Both patches applied, thanks!
+
+Yours,
+Linus Walleij
