@@ -2,110 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63A672A8342
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 17:16:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BFE72A834A
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 17:18:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729113AbgKEQQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 11:16:16 -0500
-Received: from mx2.suse.de ([195.135.220.15]:47782 "EHLO mx2.suse.de"
+        id S1730977AbgKEQSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 11:18:02 -0500
+Received: from mga17.intel.com ([192.55.52.151]:28624 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726371AbgKEQQP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 11:16:15 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1604592974;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lKB3aZJEDbJcd0NY8J24kxMePym/I6vQZWeeO8AULYg=;
-        b=JBloRvyRqCiMl5OOXJ5kCyn53/9fx39/QfWByfv3igJQ+B/f0PhKZCFDZW/NnyBP8dl7+S
-        e+tKRjJ+vCfmjIIaVkWa7TyFtmQOHJfRlzm7v88Z0l0I/CqKfhiVqQn72n2jvgjS2NinRx
-        0ggbORWaoJKwdW9mCqFwQ7pYzNx0Pxs=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E3506AB4C;
-        Thu,  5 Nov 2020 16:16:13 +0000 (UTC)
-Date:   Thu, 5 Nov 2020 17:16:12 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Feng Tang <feng.tang@intel.com>
-Cc:     Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mel Gorman <mgorman@suse.de>, dave.hansen@intel.com,
-        ying.huang@intel.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 0/2] mm: fix OOMs for binding workloads to movable
- zone only node
-Message-ID: <20201105161612.GM21348@dhcp22.suse.cz>
-References: <20201104075819.GA10052@dhcp22.suse.cz>
- <20201104084021.GB15700@shbuild999.sh.intel.com>
- <20201104085343.GA18718@dhcp22.suse.cz>
- <20201105014028.GA86777@shbuild999.sh.intel.com>
- <20201105120818.GC21348@dhcp22.suse.cz>
- <4029c079-b1f3-f290-26b6-a819c52f5200@suse.cz>
- <20201105125828.GG21348@dhcp22.suse.cz>
- <20201105130710.GB16525@shbuild999.sh.intel.com>
- <20201105131245.GH21348@dhcp22.suse.cz>
- <20201105134305.GA16424@shbuild999.sh.intel.com>
+        id S1729718AbgKEQSB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 11:18:01 -0500
+IronPort-SDR: HZJaVa0WPgdpLEtAsRSmENygeYfuKRcwHcZNib7Xg8LS5qruIVWuIjAKg3eLfZY7iAZ1sGxFH/
+ el5dc+u/0cug==
+X-IronPort-AV: E=McAfee;i="6000,8403,9796"; a="149263094"
+X-IronPort-AV: E=Sophos;i="5.77,453,1596524400"; 
+   d="scan'208";a="149263094"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2020 08:17:59 -0800
+IronPort-SDR: yxVP6A03J0rDAwY3WimJcT+LNkyeHm3psP8GU8uJmIIEa5rJx22tVlprrSvwqsSFT4xu9EwGb5
+ ky6pImHJjbMA==
+X-IronPort-AV: E=Sophos;i="5.77,453,1596524400"; 
+   d="scan'208";a="539464944"
+Received: from umedepal-mobl2.amr.corp.intel.com (HELO [10.254.6.114]) ([10.254.6.114])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2020 08:17:58 -0800
+Subject: Re: [PATCH 5.9 080/391] ASoC: SOF: fix a runtime pm issue in SOF when
+ HDMI codec doesnt work
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     Paul Bolle <pebolle@tiscali.nl>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Rander Wang <rander.wang@intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>
+References: <20201103203348.153465465@linuxfoundation.org>
+ <20201103203352.505472614@linuxfoundation.org>
+ <64a618a3cc00de4a1c3887b57447906351db77b9.camel@tiscali.nl>
+ <20201105143551.GH2092@sasha-vm>
+ <1f0c6a62-5208-801d-d7c2-725ee8da19b2@linux.intel.com>
+ <20201105154426.GI2092@sasha-vm>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <e13d8fb6-4f69-23ad-22f6-499bffbf03d6@linux.intel.com>
+Date:   Thu, 5 Nov 2020 10:17:57 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201105134305.GA16424@shbuild999.sh.intel.com>
+In-Reply-To: <20201105154426.GI2092@sasha-vm>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 05-11-20 21:43:05, Feng Tang wrote:
-> On Thu, Nov 05, 2020 at 02:12:45PM +0100, Michal Hocko wrote:
-> > On Thu 05-11-20 21:07:10, Feng Tang wrote:
-> > [...]
-> > > My debug traces shows it is, and its gfp_mask is 'GFP_KERNEL'
-> > 
-> > Can you provide the full information please? Which node has been
-> > requested. Which cpuset the calling process run in and which node has
-> > the allocation succeeded from? A bare dump_stack without any further
-> > context is not really helpful.
-> 
-> I don't have the same platform as the original report, so I simulated
-> one similar setup (with fakenuma and movablecore), which has 2 memory
-> nodes: node 0 has DMA0/DMA32/Movable zones, while node 1 has only
-> Movable zone. With it, I can got the same error and same oom callstack
-> as the original report (as in the cover-letter).
-> 
-> The test command is:
-> 	# docker run -it --rm --cpuset-mems 1 ubuntu:latest bash -c "grep Mems_allowed /proc/self/status"
-> 
-> To debug I only added some trace in the __alloc_pages_nodemask(), and
-> for the callstack which get the page successfully:
-> 
-> 	[  567.510903] Call Trace:
-> 	[  567.510909]  dump_stack+0x74/0x9a
-> 	[  567.510910]  __alloc_pages_nodemask.cold+0x22/0xe5
-> 	[  567.510913]  alloc_pages_current+0x87/0xe0
-> 	[  567.510914]  __vmalloc_node_range+0x14c/0x240
-> 	[  567.510918]  module_alloc+0x82/0xe0
-> 	[  567.510921]  bpf_jit_alloc_exec+0xe/0x10
-> 	[  567.510922]  bpf_jit_binary_alloc+0x7a/0x120
-> 	[  567.510925]  bpf_int_jit_compile+0x145/0x424
-> 	[  567.510926]  bpf_prog_select_runtime+0xac/0x130
 
-As already said this doesn't really tell much without the additional
-information.
+>>>> My local build of v5.9.5 broke on this patch.
+>>>>
+>>>> sound/soc/sof/intel/hda-codec.c: In function 'hda_codec_probe':
+>>>> sound/soc/sof/intel/hda-codec.c:177:4: error: label 'error' used but 
+>>>> not defined
+>>>>  177 |    goto error;
+>>>>      |    ^~~~
+>>>> make[4]: *** [scripts/Makefile.build:283: 
+>>>> sound/soc/sof/intel/hda-codec.o] Error 1
+>>>> make[3]: *** [scripts/Makefile.build:500: sound/soc/sof/intel] Error 2
+>>>> make[2]: *** [scripts/Makefile.build:500: sound/soc/sof] Error 2
+>>>> make[1]: *** [scripts/Makefile.build:500: sound/soc] Error 2
+>>>> make: *** [Makefile:1778: sound] Error 2
+>>>>
+>>>> There's indeed no error label in v5.9.5. (There is one in v5.10-rc2, 
+>>>> I just
+>>>> checked.) Is no-one else running into this?
+>>>
+>>> It seems that setting CONFIG_SND_SOC_SOF_HDA_AUDIO_CODEC=y is very
+>>> "difficult", it's not being set by allmodconfig nor is it easy to
+>>> manually set it up.
+>>>
+>>> I'll revert the patch, but it would be nice to make sure it's easier to
+>>> test this out too.
+>>
+>> this issue comes from out-of-order patches, give me a couple of hours 
+>> to look into this before reverting. thanks!
+> 
+> Sure! Thanks for looking into this.
 
-> The incomming parameter nodemask is NULL, and the function will first try the
-> cpuset nodemask (1 here), and the zoneidx is only granted 2, which makes the
-> 'ac's preferred zone to be NULL. so it goes into __alloc_pages_slowpath(),
-> which will first set the nodemask to 'NULL', and this time it got a preferred
-> zone: zone DMA32 from node 0, following get_page_from_freelist will allocate
-> one page from that zone. 
+I would recommend adding this commit to 5.9-stable:
 
-I do not follow. Both hot and slow paths of the allocator set
-ALLOC_CPUSET or emulate it by mems_allowed when cpusets are nebaled
-IIRC. This is later enforced in get_page_from_free_list. There are some
-exceptions when the allocating process can run away from its cpusets -
-e.g. IRQs, OOM victims and few other cases but definitely not a random
-allocation. There might be some subtle details that have changed or I
-might have forgot but 
--- 
-Michal Hocko
-SUSE Labs
+11ec0edc6408a ('ASOC: SOF: Intel: hda-codec: move unused label to 
+correct position')
+
+I just tried with 5.9.5 and the compilation error is solved with this 
+commit.
+
+It was initially intended to solve a minor 'defined but not used' issue, 
+which somehow became a bad 'used but not defined' one. Probably a bad 
+git merge I did, sorry about that.
+
+Thanks!
+-Pierre
+
+
+
