@@ -2,159 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F4632A8B07
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 00:52:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E4842A8B0B
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 00:55:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732461AbgKEXwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 18:52:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49724 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730895AbgKEXwf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 18:52:35 -0500
-Received: from lt-jalone-7480.mtl.com (c-24-6-56-119.hsd1.ca.comcast.net [24.6.56.119])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0512C20739;
-        Thu,  5 Nov 2020 23:52:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604620354;
-        bh=zVN6qcOZyRn/6G2pAEK9dZgGcVU1Xsvgk0SwNKZ3JdY=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=FVkYF3p4Xaw853vnm3cExPWB3x42IussfibeA4j5AYEdPrp4sBagcrNoYbmTbFo7T
-         agQ3iSIHEoCtos56qI27q2D3bwQFdF1ZnOvqXj7bAzN2B+qQArefknhR0Ms0nRffdx
-         AvI7Hlvxk/nJtr+iy23HbHRZy093iRsPdorf9UJ4=
-Message-ID: <1b96abb1da9bca4d9f962babad9a0724c1188437.camel@kernel.org>
-Subject: Re: [PATCH v2 net-next 3/3] octeontx2-af: Add devlink health
- reporters for NIX
-From:   Saeed Mahameed <saeed@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     George Cherian <gcherian@marvell.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jiri Pirko <jiri@nvidia.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        Geethasowjanya Akula <gakula@marvell.com>,
-        "masahiroy@kernel.org" <masahiroy@kernel.org>,
-        "willemdebruijn.kernel@gmail.com" <willemdebruijn.kernel@gmail.com>
-Date:   Thu, 05 Nov 2020 15:52:32 -0800
-In-Reply-To: <20201105124204.4dbea042@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-References: <BYAPR18MB2679EC3507BD90B93B37A3F8C5EE0@BYAPR18MB2679.namprd18.prod.outlook.com>
-         <20201105090724.761a033d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-         <011c4d4e2227df793f615b7638165c266763e24a.camel@kernel.org>
-         <20201105124204.4dbea042@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S1732482AbgKEXzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 18:55:53 -0500
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:35557 "EHLO
+        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729784AbgKEXzw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 18:55:52 -0500
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id 799775C0109;
+        Thu,  5 Nov 2020 18:55:51 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Thu, 05 Nov 2020 18:55:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
+        mime-version:content-transfer-encoding:content-type:subject:from
+        :to:cc:date:message-id:in-reply-to; s=fm1; bh=eI4RIxMgvzb0GvIXx2
+        OlXfTW0lvQgGCqO2xUtCYmnl8=; b=Cp1y5WV5v73rKJzH9WfAP8ROECQ/+OUMR6
+        Qbpr+elxkMOx+gx8XDiN7MHvdURVTef14Z3AURCgkc2KB1qTHYReeSY2b1MqHPhq
+        mMaPAXiqA6oWvA02uunCWPqoObxuGG9PoXz4B6j1evRHyFvIvkow+S1w4o2zEHHK
+        kQr87LAvg4jU3Q0zhTGY13qQqoJew9F+hrVHqky/JDZTJ8UobegLnfTsbDgltOr/
+        CiinH/SyCyCjk0HV0icXflc290LOGgShH7Z59t8s31WmdckZ1TC1oGw80VKR3Ft/
+        IzpO49XzXjKuBTpAL1INCkvi53v21X9N9kr2P4T4QKcemhZpcWfg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm1; bh=eI4RIxMgvzb0GvIXx2OlXfTW0lvQgGCqO2xUtCYmnl8=; b=lM83Mj2q
+        HS8cdZwI5mJhLNnJHUMbMjXfaBhlbSQ1Xg3Q6Jc/79zOPP3zmYkBFHmicMqr1NKQ
+        gqXHgfIXMgKRbZhQjuQoGOfGKt8b2EZByD57Mpm84XFJRNfI0oY7wZ6qVtGv74c8
+        WRg5pF2cceTO59lJklpNMVKlXGYGmdLgmQN632opb+iBhK7dtreqdUUR+VxJ3XwU
+        SvTw0RX7Q8cGOpc0Ul8gUNWvKXLDYRFol7FEaEy3aNWRMHY9VMZZOCkr5zbK8kZr
+        6yJY9Ug+W+0Yq4hbzn2yKAfRHKSA8DhveUXho4VzyElM1/o3+IWQBgfYVj2DoxwE
+        d+aSb/tiY8s+Sw==
+X-ME-Sender: <xms:BpGkX38e8HMOJmlGKgLUCzMXP1IHs7okSt7-wownrHoBff-j4_mrSg>
+    <xme:BpGkXzsyrZ-L1OdZRgmaMMHRb2_vUX42INaIHkohbHcwdYYpEaJhYhyKtHYGCdJK4
+    BfDLcyXYxY5nX8qTg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddtkedgudeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    gfrhhlucfvnfffucdljedtmdenucfjughrpegggfgtuffhvfffkfgjsehtqhertddttdej
+    necuhfhrohhmpedfffgrnhhivghlucgiuhdfuceougiguhesugiguhhuuhdrgiihiieqne
+    cuggftrfgrthhtvghrnhepjeefhfdufeefhfejvdevhfehudeltdeujeevudegvdejvdej
+    leejgfegtdejjeevnecukfhppeeiledrudekuddruddthedrieegnecuvehluhhsthgvrh
+    fuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepugiguhesugiguhhuuhdrgiih
+    ii
+X-ME-Proxy: <xmx:BpGkX1C9owdzwI3uL5YohnFyGJF4QNXWQGzF7jBEBm3D9Q6Ew142ew>
+    <xmx:BpGkXzfncIfIQdIUgWya7dDjubt9h-zp3GuA0V5U736PqZI1XJ1AoQ>
+    <xmx:BpGkX8OgxS8IkpmoVS7M0jS-wr1pZ6eAtn321z2gWesIzm6QaHRdDg>
+    <xmx:B5GkX5qrqkFKEQKPcKBauZzZWZOsMkZPoAoIIRbp3UKxUZYQIVtoyQ>
+Received: from localhost (c-69-181-105-64.hsd1.ca.comcast.net [69.181.105.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 1D90A3280261;
+        Thu,  5 Nov 2020 18:55:50 -0500 (EST)
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH bpf v2 2/2] selftest/bpf: Test bpf_probe_read_user_str()
+ strips trailing bytes after NUL
+From:   "Daniel Xu" <dxu@dxuuu.xyz>
+To:     "Song Liu" <songliubraving@fb.com>
+Cc:     "Andrii Nakryiko" <andrii.nakryiko@gmail.com>,
+        "bpf" <bpf@vger.kernel.org>,
+        "open list" <linux-kernel@vger.kernel.org>,
+        "Alexei Starovoitov" <ast@kernel.org>,
+        "Daniel Borkmann" <daniel@iogearbox.net>,
+        "Kernel Team" <Kernel-team@fb.com>
+Date:   Thu, 05 Nov 2020 15:55:40 -0800
+Message-Id: <C6VQIBZJGQ3W.22AG4C72KZQLI@maharaja>
+In-Reply-To: <32285B9E-976A-4357-8C97-6A394926BDFE@fb.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-11-05 at 12:42 -0800, Jakub Kicinski wrote:
-> On Thu, 05 Nov 2020 11:23:54 -0800 Saeed Mahameed wrote:
-> > If you report an error without recovering, devlink health will
-> > report a
-> > bad device state
-> > 
-> > $ ./devlink health
-> >    pci/0002:01:00.0:
-> >      reporter npa
-> >        state error error 1 recover 0
-> 
-> Actually, the counter in the driver is unnecessary, right? Devlink
-> counts errors.
->  
+On Thu Nov 5, 2020 at 3:31 PM PST, Song Liu wrote:
+>
+>
+> > On Nov 5, 2020, at 3:22 PM, Daniel Xu <dxu@dxuuu.xyz> wrote:
+> >=20
+> > On Thu Nov 5, 2020 at 1:32 PM PST, Andrii Nakryiko wrote:
+> >> On Wed, Nov 4, 2020 at 8:51 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
+> > [...]
+> >>> diff --git a/tools/testing/selftests/bpf/progs/test_probe_read_user_s=
+tr.c b/tools/testing/selftests/bpf/progs/test_probe_read_user_str.c
+> >>> new file mode 100644
+> >>> index 000000000000..41c3e296566e
+> >>> --- /dev/null
+> >>> +++ b/tools/testing/selftests/bpf/progs/test_probe_read_user_str.c
+> >>> @@ -0,0 +1,34 @@
+> >>> +// SPDX-License-Identifier: GPL-2.0
+> >>> +
+> >>> +#include <linux/bpf.h>
+> >>> +#include <bpf/bpf_helpers.h>
+> >>> +#include <bpf/bpf_tracing.h>
+> >>> +
+> >>> +#include <sys/types.h>
+> >>> +
+> >>> +struct sys_enter_write_args {
+> >>> +       unsigned long long pad;
+> >>> +       int syscall_nr;
+> >>> +       int pad1; /* 4 byte hole */
+> >>=20
+> >> I have a hunch that this explicit padding might break on big-endian
+> >> architectures?..
+> >>=20
+> >> Can you instead include "vmlinux.h" in this file and use struct
+> >> trace_event_raw_sys_enter? you'll just need ctx->args[2] to get that
+> >> buffer pointer.
+> >>=20
+> >> Alternatively, and it's probably simpler overall would be to just
+> >> provide user-space pointer through global variable:
+> >>=20
+> >> void *user_ptr;
+> >>=20
+> >>=20
+> >> bpf_probe_read_user_str(buf, ..., user_ptr);
+> >>=20
+> >> From user-space:
+> >>=20
+> >> skel->bss->user_ptr =3D &my_userspace_buf;
+> >>=20
+> >> Full control. You can trigger tracepoint with just an usleep(1), for
+> >> instance.
+> >=20
+> > Yeah, that sounds better. I'll send a v4 with passing a ptr.
+> >=20
+> > Thanks,
+> > Daniel
+>
+> One more comment, how about we test multiple strings with different
+> lengths? In this way, we can catch other alignment issues.
 
-if you mean error and recover counters, then yes. they are managed by
-devlink health
-
-every call to dl-health-report will do:
-
-devlink_health_report(reporter, err_ctx, msg)
-{
-      reproter.error++;
-
-      devlink_trigger_event(reporter, msg);
-
-      reporter.dump(err_ctx, msg);
-      reporter.diag(err_ctx);
-
-      if (!reporter.recover(err_ctx))
-             reporter.recover++;
-}
-
-so dl-health reports without a recover op will confuse the user if user
-sees error count > recover count.
-
-error count should only be grater than recover count when recover
-procedure fails which now will indicate the device is not in a healthy
-state.
-
-also i want to clarify one small note about devlink dump.
-
-devlink health dump semantics:
-on devlink health dump, the devlink health will check if previous dump
-exists and will just return it without actually calling the driver, if
-not then it will call the driver to perform a new dump and will cache
-it.
-
-user has to explicitly clear the devlink health dump of that reporter
-in order to allow for newer dump to get generated.
-
-this is done this way because we want the driver to store the dump of
-the previously reported errors at the moment the erorrs are reported by
-driver, so when a user issue  a dump command the dump of the previous
-error will be reported to user form memory without the need to access
-driver/hw who might be in a bad state.
-
-so this is why using devlink dump for reporting counters doesn't really
-work, it will only report the first time the counters are accessed via
-devlink health dump, after that it will report the same cached values
-over and over until the user clears it up.
-
-
-> > So you will need to implement an empty recover op.
-> > so if these events are informational only and they don't indicate
-> > device health issues, why would you report them via devlink health
-> > ?
-> 
-> I see devlink health reporters a way of collecting errors reports
-> which
-> for the most part are just shared with the vendor. IOW firmware (or
-> hardware) bugs.
-> 
-> Obviously as you say without recover and additional context in the
-> report the value is quite diminished. But _if_ these are indeed
-> "report
-> me to the vendor" kind of events then at least they should use our
-> current mechanics for such reports - which is dl-health.
-> 
-> Without knowing what these events are it's quite hard to tell if
-> devlink health is an overkill or counter is sufficient.
-> 
-> Either way - printing these to the logs is definitely the worst
-> choice
-> :)
-
-Sure, I don't mind using devlink health for dump only, I don't really
-have strong feelings against this, they can always extend it in the
-future.
-
-it just doesn't make sense to me to have it mainly used for dumping
-counters and without using devlik helath utilities, like events,
-reports and recover.
-
-so maybe Sunil et al. could polish this patchset and provide more
-devlink health support, like diagnose for these errors, dump HW
-information and contexts related to these errors so they could debug
-root causes, etc .. 
-Then the use for dl health in this series can be truly justified.
-
-
-
-
-
-
-
+Sure, will do that in v4 also.
