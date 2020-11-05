@@ -2,92 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36F172A7763
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 07:15:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0012F2A7768
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 07:16:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730012AbgKEGOx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 01:14:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51976 "EHLO
+        id S1731412AbgKEGQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 01:16:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726986AbgKEGOw (ORCPT
+        with ESMTP id S1730651AbgKEGQg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 01:14:52 -0500
+        Thu, 5 Nov 2020 01:16:36 -0500
 Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E1AAC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 22:14:52 -0800 (PST)
-Received: by mail-il1-x141.google.com with SMTP id g15so373322ilc.9
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 22:14:51 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EF29C0613CF;
+        Wed,  4 Nov 2020 22:16:35 -0800 (PST)
+Received: by mail-il1-x141.google.com with SMTP id p2so403603ilg.1;
+        Wed, 04 Nov 2020 22:16:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=iBGnzN/+6loJkhrhbH/dzTk9PX3jtnMo9lpzqcBWYus=;
-        b=mMXlwMbl28LpHQegs21C2BwooPh9G/lEwiRakD+GOSSjhzo380dA1MJTZ7BSQCmbjK
-         RH2/V87xles1QCNZq8BuXpxclUMlTUQb8Ikeq31KXR8lmjbM2si/8syN66Io16XjeVP9
-         34QjnVEEWH5glZbutPO8dkMCKn2hfObN1Ck5bND9zV42ns7M4uooZrcdUL64R2/MLePV
-         GETQLICQjodWPCOMHd/nKduU0kSSzwMj8zroRWMiedHq3YbEX/PXbt8bJlnExbLeociw
-         3oDfH7U51CGjEhWBjK42CX2KuOnEDSJvB4vpPhdvUrj/V+t7MzOVatAC0Q6jk9r8LnRh
-         5zAw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=70dE/wpl4FzIgvQrYHQ8OcOV3M/28K+eR6Zx4+UKA64=;
+        b=le4957vUTTZSx++bjwpKPRZ9qOitvxxPnaLhhUZZkyyS2ZumTaKWst6ORYVNcBHtVh
+         QjK+zf08FMNgAGAqyNy/yiCIYSupuz6GQIZreath+k66e6MTkisYen6ohF1YOTJVynPs
+         fJ6QNxi7LpdCUyAurffJ7Yklfexc9nugpFaHvEHQ5d3p+Bm8NvJCGzfizooc2J53sqMJ
+         TCCHnqcsFT3TswUvpmOxaRc9w6hJKyRnuX9RcSFLcpDRTHKZgw+e9Z+KJsvcjZO5vo0h
+         gNaklXeOJVM+u6EGYmgOvgUF+7P62B8EuQvbvWFAsfIUgbGzNZkgWqblrKzZ2bTWpo+3
+         b3+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=iBGnzN/+6loJkhrhbH/dzTk9PX3jtnMo9lpzqcBWYus=;
-        b=ga/NfvVB2UABwVczazs0PPjYBJkefc5vXWp/OBqfu5qtf5RB3jyDB7QBZF72GxZr8k
-         7UWd37k4Rfo07ETBNNKub4WpOfQivHjrfnRry55Um2lipwocdfU2SEb0gBJZFx5/B+b5
-         YecTmzbOCASb9RCpb/ySzw/+Rl5wo2xvaf1VmTJygKIjOzIUeyxeLic6hTGu9hf5gU1H
-         Fs7UDejldMopEVTM0vjNnurmDa27Gv94Da22EL/Fku9Wv/d+WwpptrDLeQlo4xMQjYCR
-         Z/TBxRXtVUy5bIWOdsGm4iok9ayo2D6TYFtPDr25hMCoaCEydPnIfh4P0I7ohYR9BQ7k
-         bmvg==
-X-Gm-Message-State: AOAM531NFPKd6Mq1fd5ZJG9TRJFndNhom1Reu4QNagE6eNNYHYI/qAww
-        j/6LlhNYUbUI/CEemCSgd96QyVmaE1chiSFw1Yw=
-X-Google-Smtp-Source: ABdhPJz6Y2N3qUkRbnktek4nPLfmNCHWuyfcWdIRjunYgxyruVThFqJC+YstMJEDO8Fq8QnH8c7USv1hjqVGGm+SNBk=
-X-Received: by 2002:a92:ba96:: with SMTP id t22mr783949ill.209.1604556891251;
- Wed, 04 Nov 2020 22:14:51 -0800 (PST)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=70dE/wpl4FzIgvQrYHQ8OcOV3M/28K+eR6Zx4+UKA64=;
+        b=L5cUj0/Wu7G4ySFm2QO95k0iwGeETnxmILfvuSeJm4ULEzW/jTWRmBwRivpsZB7cE/
+         oGunBlaDOd5ELht8XApiHqERffvRFm0+N+HSnOpeVGt3VtwdVhFJnsLcEl1he2VsWmXd
+         IECtid7fw7LWqSUk/+07FmnbcaLc3DNE9wlHofzqNAIj19ZFcPNMSrDvSMbOxiEYwucl
+         PSzA0Qav+4V/9fSWaQ9DssnGtBxAiv7Dh1wXmsGVpFvlR+JLnqvAU/BYs1WIUoq9ToLi
+         SQbPYRDfrwb6Jg8W+SA68ktUoYXVofNGW8FSGGokz17xhFflKyzf+lp0zXSjKxriQu22
+         Yviw==
+X-Gm-Message-State: AOAM530H3gD3nkZ9pcUHUB2L5xqhqnbNYiankONyE1+l8ghaorJytHLA
+        nmA2m+PlG23bCXJDeJiPTP7o82+To3TqP9cRvV8hscYmtlY=
+X-Google-Smtp-Source: ABdhPJz7I2FFIEhBYerSfJpUJRIduUpW2o5dx3rbWzBSV7V+8Z6CcIyTFxqmoGooijVtrghxHOjk8XC6m2jpn91RmiU=
+X-Received: by 2002:a92:ba14:: with SMTP id o20mr816503ili.268.1604556994456;
+ Wed, 04 Nov 2020 22:16:34 -0800 (PST)
 MIME-Version: 1.0
-Received: by 2002:a05:6622:409:0:0:0:0 with HTTP; Wed, 4 Nov 2020 22:14:50
- -0800 (PST)
-Reply-To: tofilbaman@gmail.com
-From:   Tofil Bama <alainekamba1@gmail.com>
-Date:   Wed, 4 Nov 2020 22:14:50 -0800
-Message-ID: <CAJnPJCPySmMneJaav0_f-orkPUa5jj7a=2jsVrbWzEQUmV=WtQ@mail.gmail.com>
-Subject: KINDEST MESSAGE.
-To:     undisclosed-recipients:;
+References: <1599562954-87257-1-git-send-email-linyunsheng@huawei.com>
+ <CAM_iQpX0_mz+McZdzZ7HFTjBihOKz5E6i4qJQSoFbZ=SZkVh=Q@mail.gmail.com>
+ <830f85b5-ef29-c68e-c982-de20ac880bd9@huawei.com> <CAM_iQpU_tbRNO=Lznz_d6YjXmenYhowEfBoOiJgEmo9x8bEevw@mail.gmail.com>
+ <1f8ebcde-f5ff-43df-960e-3661706e8d04@huawei.com> <CAM_iQpUm91x8Q0G=CXE7S43DKryABkyMTa4mz_oEfEOTFS7BgQ@mail.gmail.com>
+ <db770012-f22c-dff4-5311-bf4d17cd08e3@huawei.com> <CAM_iQpUBytX3qim3rXLkwjdX3DSKeF8YhyX6o=Jwr-R9Onb-HA@mail.gmail.com>
+ <5472023c-b50b-0cb3-4cb6-7bbea42d3612@huawei.com> <CAM_iQpVGm_Mz-yYUhhvn+p8H7mXHWHAuBNfyNj-251eY3Vr9iA@mail.gmail.com>
+In-Reply-To: <CAM_iQpVGm_Mz-yYUhhvn+p8H7mXHWHAuBNfyNj-251eY3Vr9iA@mail.gmail.com>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Wed, 4 Nov 2020 22:16:23 -0800
+Message-ID: <CAM_iQpXZHPSW9j+DaUDZdqm+wGrmy4nLL8gPEm7g3XndPn90+Q@mail.gmail.com>
+Subject: Re: [PATCH v2 net] net: sch_generic: aviod concurrent reset and
+ enqueue op for lockless qdisc
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     Jamal Hadi Salim <jhs@mojatatu.com>, Jiri Pirko <jiri@resnulli.us>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linuxarm@huawei.com,
+        John Fastabend <john.fastabend@gmail.com>,
+        Eric Dumazet <eric.dumazet@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear,
+On Wed, Nov 4, 2020 at 10:04 PM Cong Wang <xiyou.wangcong@gmail.com> wrote:
+>
+> On Mon, Nov 2, 2020 at 11:24 PM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+> > >> From my understanding, we can do anything about the old qdisc (including
+> > >> destorying the old qdisc) after some_qdisc_is_busy() return false.
+> > >
+> > > But the current code does the reset _before_ some_qdisc_is_busy(). ;)
+> >
+> > If lock is taken when doing reset, it does not matter if the reset is
+> > before some_qdisc_is_busy(), right?
+>
+> Why not? How about the following scenario?
+>
+> CPU0:                   CPU1:
+> dev_reset_queue()
+>                         net_tx_action()
+>                          -> sch_direct_xmit()
+>                            -> dev_requeue_skb()
+> some_qdisc_is_busy()
+> // waiting for TX action on CPU1
+> // now some packets are requeued
 
-My name is Mr Tofil Bama, I am the Bill and Exchange assistant
-Manager in Bank of Africa Ouagadougou Burkina Faso. In my department
-I discovered an abandoned sum of eighteen million three hundred
-thousand United State of American dollars (18.3MILLION USA DOLLARS)
-in an account that belongs to one of our foreign customer
-(late Mr Shitu Nuri) who died in Ethiopian Airlines Flight 409 that
-crashed into the Mediterranean Sea on 25th January 2010.
+Never mind, the skb_bad_txq is also cleared by dev_reset_queue().
+TX action after resetting should get NULL.
 
-Since I got information about his death I have been expecting
-his next of kin to come over and claim his money because we
-cannot release it unless somebody applies for it as the next
-of kin or relation to the deceased as indicated in our banking guidelines,
-unfortunately we learnt that all his supposed next of kin or
-relation died alongside with him in the plane crash leaving
-nobody behind for the claim.
-
-It is therefore upon this discovery that I decided to make this
-business proposal to you and release the money to you as next of kin
-to the deceased for safety and subsequent disbursement since nobody is
-coming for the fund, it is 10 years now the money is lying pending in
-the account of our deceased and I don't want the money to go into the
-bank treasury as unclaimed bill.
-
-You will be entitled with 40% of the total sum while 60% will be for
-me after which I will visit your Country to invest my own share when
-the fund is successfully transferred into your account, Please I would
-like you to keep this transaction confidential and as a top secret
-between me and you until we successfully achieve this golden
-opportunity.
-
-Yours sincerely,
-Mr Tofil Bama.
+Thanks.
