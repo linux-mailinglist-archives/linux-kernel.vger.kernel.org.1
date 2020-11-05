@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DDA12A8AF9
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 00:48:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 078C92A8AEC
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 00:47:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733057AbgKEXs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 18:48:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45970 "EHLO mail.kernel.org"
+        id S1733018AbgKEXrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 18:47:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46182 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732785AbgKEXra (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 18:47:30 -0500
+        id S1732782AbgKEXrb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 18:47:31 -0500
 Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E7A4C22248;
-        Thu,  5 Nov 2020 23:47:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4F00D2224B;
+        Thu,  5 Nov 2020 23:47:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1604620050;
-        bh=hF1NO7KIDMcNTZmIydXOIBUoL7ZkScx98CT2WtMiwYg=;
+        bh=//0hu7psAdChxmAFAEX5NFskbZhQL++78avbVvmvMOQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RzkERnkvyEhi4ad2sfHWHIfC526ZtjrMWsHqYC3H0esW8d5F3jXF29gJZC9fvC9FH
-         ZQ/Pw8AfTdgj/nrJv1JI/dOwI41Yc8vwCAHcCr2GYAQLWAqEVn1OYfS+OE6X0k09zT
-         3mnpGgWqnM0TIu/dt21gXSYqFDaYhSuDtL8ptdFI=
+        b=hWPMdsHb4C7P4Jk94QfcYUufm6JJ+jApTwVzC9GExG4wAIbQkQ5q5nIYPCGHnccoM
+         oA3qdJlx4GDbetSd287fk7UI9xydVZ0QhDLOhqy4MwH5D7qhz9Ae9qcpE6RGkU94dS
+         shugwwPXtJ5amEYX+EnyfqK4Yfi+uZ/54MCB0ZfI=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -31,11 +31,10 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
-        Hou Tao <houtao1@huawei.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 23/28] locktorture: Invoke percpu_free_rwsem() to do percpu-rwsem cleanup
-Date:   Thu,  5 Nov 2020 15:47:14 -0800
-Message-Id: <20201105234719.23307-23-paulmck@kernel.org>
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 24/28] rcutorture: Don't do need_resched() testing if ->sync is NULL
+Date:   Thu,  5 Nov 2020 15:47:15 -0800
+Message-Id: <20201105234719.23307-24-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20201105234658.GA23142@paulmck-ThinkPad-P72>
 References: <20201105234658.GA23142@paulmck-ThinkPad-P72>
@@ -43,131 +42,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hou Tao <houtao1@huawei.com>
+From: "Paul E. McKenney" <paulmck@kernel.org>
 
-When executing the LOCK06 locktorture scenario featuring percpu-rwsem,
-the RCU callback rcu_sync_func() may still be pending after locktorture
-module is removed.  This can in turn lead to the following Oops:
+If cur_ops->sync is NULL, rcu_torture_fwd_prog_nr() will nevertheless
+attempt to call through it.  This commit therefore flags cases where
+neither need_resched() nor call_rcu() forward-progress testing
+can be performed due to NULL function pointers, and also causes
+rcu_torture_fwd_prog_nr() to take an early exit if cur_ops->sync()
+is NULL.
 
-  BUG: unable to handle page fault for address: ffffffffc00eb920
-  #PF: supervisor read access in kernel mode
-  #PF: error_code(0x0000) - not-present page
-  PGD 6500a067 P4D 6500a067 PUD 6500c067 PMD 13a36c067 PTE 800000013691c163
-  Oops: 0000 [#1] PREEMPT SMP
-  CPU: 1 PID: 0 Comm: swapper/1 Not tainted 5.9.0-rc5+ #4
-  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996)
-  RIP: 0010:rcu_cblist_dequeue+0x12/0x30
-  Call Trace:
-   <IRQ>
-   rcu_core+0x1b1/0x860
-   __do_softirq+0xfe/0x326
-   asm_call_on_stack+0x12/0x20
-   </IRQ>
-   do_softirq_own_stack+0x5f/0x80
-   irq_exit_rcu+0xaf/0xc0
-   sysvec_apic_timer_interrupt+0x2e/0xb0
-   asm_sysvec_apic_timer_interrupt+0x12/0x20
-
-This commit avoids tis problem by adding an exit hook in lock_torture_ops
-and using it to call percpu_free_rwsem() for percpu rwsem torture during
-the module-cleanup function, thus ensuring that rcu_sync_func() completes
-before module exits.
-
-It is also necessary to call the exit hook if lock_torture_init()
-fails half-way, so this commit also adds an ->init_called field in
-lock_torture_cxt to indicate that exit hook, if present, must be called.
-
-Signed-off-by: Hou Tao <houtao1@huawei.com>
+Reported-by: Tom Rix <trix@redhat.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/locking/locktorture.c | 26 +++++++++++++++++++++-----
- 1 file changed, 21 insertions(+), 5 deletions(-)
+ kernel/rcu/rcutorture.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/locking/locktorture.c b/kernel/locking/locktorture.c
-index 79fbd97..fd838ce 100644
---- a/kernel/locking/locktorture.c
-+++ b/kernel/locking/locktorture.c
-@@ -76,6 +76,7 @@ static void lock_torture_cleanup(void);
-  */
- struct lock_torture_ops {
- 	void (*init)(void);
-+	void (*exit)(void);
- 	int (*writelock)(void);
- 	void (*write_delay)(struct torture_random_state *trsp);
- 	void (*task_boost)(struct torture_random_state *trsp);
-@@ -92,12 +93,13 @@ struct lock_torture_cxt {
- 	int nrealwriters_stress;
- 	int nrealreaders_stress;
- 	bool debug_lock;
-+	bool init_called;
- 	atomic_t n_lock_torture_errors;
- 	struct lock_torture_ops *cur_ops;
- 	struct lock_stress_stats *lwsa; /* writer statistics */
- 	struct lock_stress_stats *lrsa; /* reader statistics */
- };
--static struct lock_torture_cxt cxt = { 0, 0, false,
-+static struct lock_torture_cxt cxt = { 0, 0, false, false,
- 				       ATOMIC_INIT(0),
- 				       NULL, NULL};
- /*
-@@ -573,6 +575,11 @@ static void torture_percpu_rwsem_init(void)
- 	BUG_ON(percpu_init_rwsem(&pcpu_rwsem));
- }
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index e7d52fd..f4c0655 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -1923,7 +1923,9 @@ static void rcu_torture_fwd_prog_nr(struct rcu_fwd *rfp,
+ 	unsigned long stopat;
+ 	static DEFINE_TORTURE_RANDOM(trs);
  
-+static void torture_percpu_rwsem_exit(void)
-+{
-+	percpu_free_rwsem(&pcpu_rwsem);
-+}
-+
- static int torture_percpu_rwsem_down_write(void) __acquires(pcpu_rwsem)
- {
- 	percpu_down_write(&pcpu_rwsem);
-@@ -597,6 +604,7 @@ static void torture_percpu_rwsem_up_read(void) __releases(pcpu_rwsem)
- 
- static struct lock_torture_ops percpu_rwsem_lock_ops = {
- 	.init		= torture_percpu_rwsem_init,
-+	.exit		= torture_percpu_rwsem_exit,
- 	.writelock	= torture_percpu_rwsem_down_write,
- 	.write_delay	= torture_rwsem_write_delay,
- 	.task_boost     = torture_boost_dummy,
-@@ -789,9 +797,10 @@ static void lock_torture_cleanup(void)
- 
- 	/*
- 	 * Indicates early cleanup, meaning that the test has not run,
--	 * such as when passing bogus args when loading the module. As
--	 * such, only perform the underlying torture-specific cleanups,
--	 * and avoid anything related to locktorture.
-+	 * such as when passing bogus args when loading the module.
-+	 * However cxt->cur_ops.init() may have been invoked, so beside
-+	 * perform the underlying torture-specific cleanups, cur_ops.exit()
-+	 * will be invoked if needed.
- 	 */
- 	if (!cxt.lwsa && !cxt.lrsa)
- 		goto end;
-@@ -831,6 +840,11 @@ static void lock_torture_cleanup(void)
- 	cxt.lrsa = NULL;
- 
- end:
-+	if (cxt.init_called) {
-+		if (cxt.cur_ops->exit)
-+			cxt.cur_ops->exit();
-+		cxt.init_called = false;
-+	}
- 	torture_cleanup_end();
- }
- 
-@@ -878,8 +892,10 @@ static int __init lock_torture_init(void)
- 		goto unwind;
+-	if  (cur_ops->call && cur_ops->sync && cur_ops->cb_barrier) {
++	if (!cur_ops->sync) 
++		return; // Cannot do need_resched() forward progress testing without ->sync.
++	if (cur_ops->call && cur_ops->cb_barrier) {
+ 		init_rcu_head_on_stack(&fcs.rh);
+ 		selfpropcb = true;
  	}
+@@ -2149,8 +2151,8 @@ static int __init rcu_torture_fwd_prog_init(void)
  
--	if (cxt.cur_ops->init)
-+	if (cxt.cur_ops->init) {
- 		cxt.cur_ops->init();
-+		cxt.init_called = true;
-+	}
- 
- 	if (nwriters_stress >= 0)
- 		cxt.nrealwriters_stress = nwriters_stress;
+ 	if (!fwd_progress)
+ 		return 0; /* Not requested, so don't do it. */
+-	if (!cur_ops->stall_dur || cur_ops->stall_dur() <= 0 ||
+-	    cur_ops == &rcu_busted_ops) {
++	if ((!cur_ops->sync && !cur_ops->call) ||
++	    !cur_ops->stall_dur || cur_ops->stall_dur() <= 0 || cur_ops == &rcu_busted_ops) {
+ 		VERBOSE_TOROUT_STRING("rcu_torture_fwd_prog_init: Disabled, unsupported by RCU flavor under test");
+ 		return 0;
+ 	}
 -- 
 2.9.5
 
