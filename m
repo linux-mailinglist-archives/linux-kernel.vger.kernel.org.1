@@ -2,63 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB1552A7C51
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 11:53:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3372B2A7C5E
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 11:54:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730265AbgKEKw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 05:52:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46688 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729898AbgKEKw7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 05:52:59 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 023C42151B;
-        Thu,  5 Nov 2020 10:52:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604573577;
-        bh=HLwjzh+Ab+YRSUIlLPef0SMVt0Bc/DTXD1TFz9l23eg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dIBO33fLLjA/OPg65LFHzU55WtvpB3tQ1bJnzzEVv2mfXISepiXZ4jMNTDFRFZDay
-         ARTvPrW8rtJJyTi2ouVrEk7hKc1WMOgG9YbF6P9B94K2eCPUYGtOyvANjT5W5vKeoN
-         YScjbOKF+jbmr+9zQJex9YBCfRZxzvfy8lpSjiZE=
-Date:   Thu, 5 Nov 2020 11:53:46 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
-Subject: Re: [PATCH 5.9 000/391] 5.9.4-rc1 review
-Message-ID: <20201105105346.GC4038994@kroah.com>
-References: <20201103203348.153465465@linuxfoundation.org>
- <20201104175123.GD225910@roeck-us.net>
+        id S1730320AbgKEKyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 05:54:38 -0500
+Received: from mail-ed1-f68.google.com ([209.85.208.68]:39653 "EHLO
+        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726777AbgKEKyi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 05:54:38 -0500
+Received: by mail-ed1-f68.google.com with SMTP id e18so1038508edy.6
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 02:54:36 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=V2SVBRUlRYCZANib84MDUTELyGkg3kBBPrSWfuqwYHA=;
+        b=nBbOPgC5bqI/kH1AZd2I45UUNrmklwmAoyISmoFh0alSj5tMkTRVce/uQTGY9vRsKc
+         2u9E3T3GMQjkcOFg7Q45UWJ3URB7K+9zWfOmZnDKOkDhzk42Cch6FQI01kGq5MUDurur
+         SSUbT5TQwATw4qP0nC255jqYPE1js9w4SidjXxvFTYZ4pNCoDlL5VMsWSFe+J8AsrTqL
+         U61eZRqnu9ZTybBouv8fctM/s4g27IuXtTWmnFk/nyJIPC0WuXtoZQkF+YtmMRU/714K
+         N30XMamZIlKiExZerErGx0nkbvWqlIPttoklJkDhPATWfaNYwXEPCTd93v4HDALfxniL
+         oYow==
+X-Gm-Message-State: AOAM530qs8Sj3FNhoFakmZj9jDLqucR89JMlVnTmha9t52yDKIVjsoOW
+        HiLfytahEJNgBECkfzpDeAK4WvdU1S8=
+X-Google-Smtp-Source: ABdhPJxgo6MTPvWL5gv91m8aQ9NelclIF9qb63XHR/5aIrU5snAL2nSf1jHuwWrbjSbdu1tOm/u35g==
+X-Received: by 2002:a05:6402:1042:: with SMTP id e2mr1949037edu.320.1604573676175;
+        Thu, 05 Nov 2020 02:54:36 -0800 (PST)
+Received: from ?IPv6:2a0b:e7c0:0:107::49? ([2a0b:e7c0:0:107::49])
+        by smtp.gmail.com with ESMTPSA id q9sm701442ejr.115.2020.11.05.02.54.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Nov 2020 02:54:35 -0800 (PST)
+Subject: Re: [PATCH 27/36] tty: synclinkmp: Mark never checked 'readval' as
+ __always_unused
+To:     Paul Fulghum <paulkf@microgate.com>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        "linux-kernel@vger.kernel.org Mailing List" 
+        <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <20201104193549.4026187-1-lee.jones@linaro.org>
+ <20201104193549.4026187-28-lee.jones@linaro.org>
+ <0a4043ee-dad5-7691-8c67-db73d3c12f52@kernel.org>
+ <20201105084341.GZ4488@dell>
+ <a95f8d0d-28ef-7351-cdbb-7da5ad8aa9ad@kernel.org>
+ <69E3975E-A4D0-4472-80F0-9FAB2E0024FA@microgate.com>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Message-ID: <b2698a7d-1821-1cbc-3249-6888ede675f1@kernel.org>
+Date:   Thu, 5 Nov 2020 11:54:34 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201104175123.GD225910@roeck-us.net>
+In-Reply-To: <69E3975E-A4D0-4472-80F0-9FAB2E0024FA@microgate.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 09:51:23AM -0800, Guenter Roeck wrote:
-> On Tue, Nov 03, 2020 at 09:30:51PM +0100, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 5.9.4 release.
-> > There are 391 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> > 
-> > Responses should be made by Thu, 05 Nov 2020 20:29:58 +0000.
-> > Anything received after that time might be too late.
-> > 
-> Build results:
-> 	total: 154 pass: 154 fail: 0
-> Qemu test results:
-> 	total: 426 pass: 426 fail: 0
-> 
-> Tested-by: Guenter Roeck <linux@roeck-us.net>
+On 05. 11. 20, 10:39, Paul Fulghum wrote:
+> If there are no objections to removing the the old drivers (synclink.c/synclink_mp.c) I could make a patch to do so tomorrow (it is 1:30am here now). Nothing eliminates niggling warnings like removing dead code.
 
-I should have fixed up the other build issues, and thanks for letting me
-know about all of these.
+\o/ Thanks a lot.
 
-greg k-h
+-- 
+js
+suse labs
