@@ -2,112 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 034572A8ABA
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 00:28:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F8382A8AB7
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 00:28:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732564AbgKEX2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 18:28:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44356 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732434AbgKEX23 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 18:28:29 -0500
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2BE6C0613D4
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 15:28:29 -0800 (PST)
-Received: by mail-yb1-xb44.google.com with SMTP id a12so2853959ybg.9
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 15:28:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=h1yQ/s7VjZpG6AwhzGebU5FEU866tdPdQ1xbNkFkqq8=;
-        b=Yk4mo/7baJdKppRkrHPyZr1IVefIv9qFrVmuSlNHExkjOfEosxGxAdeD/pUhPfMZ+b
-         mF9KuvUDKH7S1pyMqbMRrUZ7Tzt0v5p18deKMLYYy7CuIIoCmI3UPKMsRA8t58VPibJF
-         ZEbOvVqRuqOKIC1sni93pPVEx2ygOsOX8zvvjxTNz1X0ENlfg4fIhtjq7xaadRes07Xa
-         dRhaYsM+DTwoJTWGmN6xLrn7PrIy5pme7YO8F0PPmMxGrG5ZgAFNEa1btXRMP5vORJsR
-         IkZ1LhADELoAzPvjKhdifq1ZE5AgGOuhqB7w9g2PDPHrGWObcaejUY34FpbUFOtyd1lW
-         5CZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=h1yQ/s7VjZpG6AwhzGebU5FEU866tdPdQ1xbNkFkqq8=;
-        b=sjYBGA7lnN4dAX7hlaTBgZMkLBpMmno+6bWPCPKNfPUpifnjhdL14gPjYScZg4uXDz
-         LLJ/PdhvFEM4dV0Nu6SfZsUuvxNZ26GtNfgSkNuOwJQh5yJNBD6ZNQY5gxTouc9NfAoY
-         /Kw0jgFI3vIC0sUm1dHca9qRzoN4xFt90FtOgkcMJIm4Xbi7pL/cfJK+nTMvt0y3+3ij
-         vwK8fJmMVkuadm6yXC4zEpBRMGuummdA61iGFoIwqt+A4ZBsLY7BFbZ1WD9WtpKQFzQx
-         jfKOJfJ+UgtFeb8GhEND+mO1zHzz8LlYjlXHksLNm8JmLsTQooZWpjyl47pPhUEGED9d
-         nzZw==
-X-Gm-Message-State: AOAM532sp0EqYt3XVh08FGblc1tPDmnPbV4hQ7T9lSL3qeL9Ghk1llDe
-        zxRWlkcFXztqzGbUNEoRH79eol7bN3I2jAntWnYB3w==
-X-Google-Smtp-Source: ABdhPJwstiaYkAyZo1THj8xe+oXW4f9JIHuI6T4+cJiAD4kreqKlrJz75p/Z0FWYTNDXLSHiu3l/0UHuauvk+uaRpio=
-X-Received: by 2002:a25:f817:: with SMTP id u23mr7292640ybd.466.1604618908706;
- Thu, 05 Nov 2020 15:28:28 -0800 (PST)
+        id S1732192AbgKEX2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 18:28:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41476 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729784AbgKEX2O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 18:28:14 -0500
+Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8B2FD20704;
+        Thu,  5 Nov 2020 23:28:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604618893;
+        bh=uW+s9tk8sFCHpIi1ccM7lmNw5WWhWb4a2EYXNp87zEM=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=rA6UeTi7wirfhxjAkj1CmQNLIOBtEWWKe2kidYVtIWNkUdVfmQzDMsM14sljW8/cz
+         JvyABj0PmLNKek5rqbJRUUuIrSOFFxzYlvyn+4fb1fDLGsJJxHx5I1SqOzz7v5Bn4g
+         m6RLj6ykMVGcvKrtmWUMbK0nHRZRmnInrGHF7hoY=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 4D0AD3522A76; Thu,  5 Nov 2020 15:28:13 -0800 (PST)
+Date:   Thu, 5 Nov 2020 15:28:13 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Qian Cai <cai@redhat.com>
+Cc:     Will Deacon <will@kernel.org>, catalin.marinas@arm.com,
+        kernel-team@android.com, Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] arm64/smp: Move rcu_cpu_starting() earlier
+Message-ID: <20201105232813.GR3249@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20201028182614.13655-1-cai@redhat.com>
+ <160404559895.1777248.8248643695413627642.b4-ty@kernel.org>
+ <20201105222242.GA8842@willie-the-truck>
+ <3b4c324abdabd12d7bd5346c18411e667afe6a55.camel@redhat.com>
 MIME-Version: 1.0
-References: <20201104232356.4038506-1-saravanak@google.com>
- <20201104232356.4038506-17-saravanak@google.com> <20201105094318.GF3439341@kroah.com>
-In-Reply-To: <20201105094318.GF3439341@kroah.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Thu, 5 Nov 2020 15:27:52 -0800
-Message-ID: <CAGETcx_Kh32AjVoUB3uiYBRhB+24JrceTp+HxG6vK6Ks=-e26w@mail.gmail.com>
-Subject: Re: [PATCH v1 16/18] efi: Update implementation of add_links() to
- create fwnode links
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3b4c324abdabd12d7bd5346c18411e667afe6a55.camel@redhat.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 5, 2020 at 1:42 AM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Wed, Nov 04, 2020 at 03:23:53PM -0800, Saravana Kannan wrote:
-> > The semantics of add_links() has changed from creating device link
-> > between devices to creating fwnode links between fwnodes. So, update the
-> > implementation of add_links() to match the new semantics.
-> >
-> > Signed-off-by: Saravana Kannan <saravanak@google.com>
-> > ---
-> >  drivers/firmware/efi/efi-init.c | 23 ++---------------------
-> >  1 file changed, 2 insertions(+), 21 deletions(-)
-> >
-> > diff --git a/drivers/firmware/efi/efi-init.c b/drivers/firmware/efi/efi-init.c
-> > index b148f1459fb3..c0c3d4c3837a 100644
-> > --- a/drivers/firmware/efi/efi-init.c
-> > +++ b/drivers/firmware/efi/efi-init.c
-> > @@ -316,11 +316,10 @@ static struct device_node *find_pci_overlap_node(void)
-> >   * resource reservation conflict on the memory window that the efifb
-> >   * framebuffer steals from the PCIe host bridge.
-> >   */
-> > -static int efifb_add_links(const struct fwnode_handle *fwnode,
-> > +static int efifb_add_links(struct fwnode_handle *fwnode,
-> >                          struct device *dev)
->
-> So you are fixing the build warning you added a few patches ago here?
-> Please fix up the function signatures when you made that change, not
-> here later on.
+On Thu, Nov 05, 2020 at 06:02:49PM -0500, Qian Cai wrote:
+> On Thu, 2020-11-05 at 22:22 +0000, Will Deacon wrote:
+> > On Fri, Oct 30, 2020 at 04:33:25PM +0000, Will Deacon wrote:
+> > > On Wed, 28 Oct 2020 14:26:14 -0400, Qian Cai wrote:
+> > > > The call to rcu_cpu_starting() in secondary_start_kernel() is not early
+> > > > enough in the CPU-hotplug onlining process, which results in lockdep
+> > > > splats as follows:
+> > > > 
+> > > >  WARNING: suspicious RCU usage
+> > > >  -----------------------------
+> > > >  kernel/locking/lockdep.c:3497 RCU-list traversed in non-reader section!!
+> > > > 
+> > > > [...]
+> > > 
+> > > Applied to arm64 (for-next/fixes), thanks!
+> > > 
+> > > [1/1] arm64/smp: Move rcu_cpu_starting() earlier
+> > >       https://git.kernel.org/arm64/c/ce3d31ad3cac
+> > 
+> > Hmm, this patch has caused a regression in the case that we fail to
+> > online a CPU because it has incompatible CPU features and so we park it
+> > in cpu_die_early(). We now get an endless spew of RCU stalls because the
+> > core will never come online, but is being tracked by RCU. So I'm tempted
+> > to revert this and live with the lockdep warning while we figure out a
+> > proper fix.
+> > 
+> > What's the correct say to undo rcu_cpu_starting(), given that we cannot
+> > invoke the full hotplug machinery here? Is it correct to call
+> > rcutree_dying_cpu() on the bad CPU and then rcutree_dead_cpu() from the
+> > CPU doing cpu_up(), or should we do something else?
+> It looks to me that rcu_report_dead() does the opposite of rcu_cpu_starting(),
+> so lift rcu_report_dead() out of CONFIG_HOTPLUG_CPU and use it there to rewind,
+> Paul?
 
-I'm trying not to have a mega patcht that changes a lot of code.
+Yes, rcu_report_dead() should do the trick.  Presumably the earlier
+online-time CPU-hotplug notifiers are also unwound?
 
-I guess I can drop this "const" diff from this patch and then merge it
-with the earlier patch that removes the const. But still leave the
-rest of the changes in this patch as is. Does that work for you?
-
--Saravana
+							Thanx, Paul
