@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E0A92A87EF
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 21:22:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DA422A87E9
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 21:21:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732260AbgKEUV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 15:21:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34718 "EHLO mail.kernel.org"
+        id S1732296AbgKEUVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 15:21:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34706 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732231AbgKEUV0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 15:21:26 -0500
-Subject: Re: [GIT PULL] regulator fixes for v5.10-rc2
+        id S1726996AbgKEUVZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 15:21:25 -0500
+Subject: Re: [GIT PULL] GFS2 fixes for 5.10-rc1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1604607685;
-        bh=nBBcIqtN2nJZ+S+em3An97qre10nS8RejcCwFFjlGe0=;
+        bh=ydXJB0IomFvKG1HWBjocly7MOtiPn+j1ZStA1QWvZhI=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=M0ioyD1fm5TbQBQquc7WTmZMCRXN1byKUBmzH7O4eBy4zX17tPJJan5IwPTNc/7jf
-         KOnvOsGuYxF1JW1dDtCLCVKEKY3X0rrZni0snPmjP/TYxl/eWsEa1bhp9YX+gsmF2Y
-         4W+oDbE22s8Hsg1Krvdu2yH3EDxeTl8HxIPmbeNc=
+        b=vcgO9aQpgvEy2uq4G5cwXoOwMLueo/NZYsqc0yw9O8x7PdbcERzlDEwYwWSJsJ6LS
+         uBo/TykEy+IQJw0eErU/s56RpGl8hv+9g8FAoHJ5ntcdEHqTTAl9GP1TvfCLtR6wVm
+         sURt6FzUcj6Jd0jc3uvtW5x0b2wMIApy1sNcJEBY=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201105164547.AE3AD221F8@mail.kernel.org>
-References: <20201105164547.AE3AD221F8@mail.kernel.org>
+In-Reply-To: <20201105102731.1832011-1-agruenba@redhat.com>
+References: <20201105102731.1832011-1-agruenba@redhat.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201105164547.AE3AD221F8@mail.kernel.org>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git tags/regulator-fix-v5.10-rc2
-X-PR-Tracked-Commit-Id: cf1ad559a20d1930aa7b47a52f54e1f8718de301
+X-PR-Tracked-Message-Id: <20201105102731.1832011-1-agruenba@redhat.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gfs2/linux-gfs2.git tags/gfs2-v5.10-rc1-fixes
+X-PR-Tracked-Commit-Id: da7d554f7c62d0c17c1ac3cc2586473c2d99f0bd
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 3d55978f95ca3cb66ed9161f4ef5d6e6b9569c2b
-Message-Id: <160460768564.18865.16111467494218015739.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: d1dd461207b8d1dbeaadf1e0b4e85b833c3a7c1c
+Message-Id: <160460768546.18865.16615126821094176947.pr-tracker-bot@kernel.org>
 Date:   Thu, 05 Nov 2020 20:21:25 +0000
-To:     Mark Brown <broonie@kernel.org>
+To:     Andreas Gruenbacher <agruenba@redhat.com>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        cluster-devel@redhat.com, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 05 Nov 2020 16:45:25 +0000:
+The pull request you sent on Thu,  5 Nov 2020 11:27:31 +0100:
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git tags/regulator-fix-v5.10-rc2
+> git://git.kernel.org/pub/scm/linux/kernel/git/gfs2/linux-gfs2.git tags/gfs2-v5.10-rc1-fixes
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/3d55978f95ca3cb66ed9161f4ef5d6e6b9569c2b
+https://git.kernel.org/torvalds/c/d1dd461207b8d1dbeaadf1e0b4e85b833c3a7c1c
 
 Thank you!
 
