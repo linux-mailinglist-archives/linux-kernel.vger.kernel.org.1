@@ -2,250 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD7312A81A0
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 15:55:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E0962A80F5
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 15:31:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731336AbgKEOzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 09:55:20 -0500
-Received: from disco-boy.misterjones.org ([51.254.78.96]:37260 "EHLO
-        disco-boy.misterjones.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731147AbgKEOzT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 09:55:19 -0500
-X-Greylist: delayed 2523 seconds by postgrey-1.27 at vger.kernel.org; Thu, 05 Nov 2020 09:55:18 EST
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@misterjones.org>)
-        id 1kag0k-007qtg-Vb; Thu, 05 Nov 2020 14:13:11 +0000
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 05 Nov 2020 14:13:10 +0000
-From:   Marc Zyngier <maz@misterjones.org>
-To:     Andre Przywara <andre.przywara@arm.com>
+        id S1730988AbgKEObi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 09:31:38 -0500
+Received: from foss.arm.com ([217.140.110.172]:34186 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730461AbgKEObh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 09:31:37 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B896814BF;
+        Thu,  5 Nov 2020 06:31:36 -0800 (PST)
+Received: from [192.168.2.22] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2A0623F719;
+        Thu,  5 Nov 2020 06:31:35 -0800 (PST)
+Subject: Re: [PATCH v2 4/5] arm64: Add support for SMCCC TRNG entropy source
+To:     Mark Rutland <mark.rutland@arm.com>,
+        Mark Brown <broonie@kernel.org>
 Cc:     Will Deacon <will@kernel.org>,
         Catalin Marinas <catalin.marinas@arm.com>,
         Ard Biesheuvel <ardb@kernel.org>,
         Russell King <linux@armlinux.org.uk>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, Sudeep Holla <sudeep.holla@arm.com>,
         Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 5/5] KVM: arm64: implement the TRNG hypervisor call
-In-Reply-To: <20201105125656.25259-6-andre.przywara@arm.com>
+        Linus Walleij <linus.walleij@linaro.org>
 References: <20201105125656.25259-1-andre.przywara@arm.com>
- <20201105125656.25259-6-andre.przywara@arm.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <56c0505297b4588b413ae57ee39b894f@misterjones.org>
-X-Sender: maz@misterjones.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: andre.przywara@arm.com, will@kernel.org, catalin.marinas@arm.com, ardb@kernel.org, linux@armlinux.org.uk, lorenzo.pieralisi@arm.com, linus.walleij@linaro.org, linux-kernel@vger.kernel.org, broonie@kernel.org, sudeep.holla@arm.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org
-X-SA-Exim-Mail-From: maz@misterjones.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+ <20201105125656.25259-5-andre.przywara@arm.com>
+ <20201105134142.GA4856@sirena.org.uk>
+ <20201105140322.GH82102@C02TD0UTHF1T.local>
+From:   =?UTF-8?Q?Andr=c3=a9_Przywara?= <andre.przywara@arm.com>
+Autocrypt: addr=andre.przywara@arm.com; prefer-encrypt=mutual; keydata=
+ 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
+ i4aIXCH3Wv6K
+Organization: ARM Ltd.
+Message-ID: <8bc7c4f9-651d-0ebe-858e-daa6307ec508@arm.com>
+Date:   Thu, 5 Nov 2020 14:30:27 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
+MIME-Version: 1.0
+In-Reply-To: <20201105140322.GH82102@C02TD0UTHF1T.local>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-05 12:56, Andre Przywara wrote:
-> From: Ard Biesheuvel <ardb@kernel.org>
+On 05/11/2020 14:03, Mark Rutland wrote:
+> On Thu, Nov 05, 2020 at 01:41:42PM +0000, Mark Brown wrote:
+>> On Thu, Nov 05, 2020 at 12:56:55PM +0000, Andre Przywara wrote:
+>>
+>>>  static inline bool __must_check arch_get_random_seed_int(unsigned int *v)
+>>>  {
+>>> +	struct arm_smccc_res res;
+>>>  	unsigned long val;
+>>> -	bool ok = arch_get_random_seed_long(&val);
+>>>  
+>>> -	*v = val;
+>>> -	return ok;
+>>> +	if (cpus_have_const_cap(ARM64_HAS_RNG)) {
+>>> +		if (arch_get_random_seed_long(&val)) {
+>>> +			*v = val;
+>>> +			return true;
+>>> +		}
+>>> +		return false;
+>>> +	}
+>>
+>> It isn't obvious to me why we don't fall through to trying the SMCCC
+>> TRNG here if for some reason the v8.5-RNG didn't give us something.
+>> Definitely an obscure possibility but still...
 > 
-> Provide a hypervisor implementation of the ARM architected TRNG 
-> firmware
-> interface described in ARM spec DEN0098. All function IDs are 
-> implemented,
-> including both 32-bit and 64-bit versions of the TRNG_RND service, 
-> which
-> is the centerpiece of the API.
+> I think it's better to assume that if we have a HW RNG and it's not
+> giving us entropy, it's not worthwhile trapping to the host, which might
+> encounter the exact same issue.
 > 
-> The API is backed by arch_get_unsigned_seed_long(), which is 
-> implemented
-> in terms of RNDRRS currently, and will be alternatively backed by a SMC
-> call to the secure firmware using same interface after a future patch.
-> If neither are available, the kernel's entropy pool is used instead.
+> I'd rather we have one RNG source that we trust works, and use that
+> exclusively.
 > 
-> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
-> ---
->  arch/arm64/include/asm/kvm_host.h |  2 +
->  arch/arm64/kvm/Makefile           |  2 +-
->  arch/arm64/kvm/hypercalls.c       |  6 ++
->  arch/arm64/kvm/trng.c             | 91 +++++++++++++++++++++++++++++++
->  4 files changed, 100 insertions(+), 1 deletion(-)
->  create mode 100644 arch/arm64/kvm/trng.c
+> That said, I'm not sure it's great to plumb this under the
+> arch_get_random*() interfaces, e.g. given this measn that
+> add_interrupt_randomness() will end up trapping to the host all the time
+> when it calls arch_get_random_seed_long().
 > 
-> diff --git a/arch/arm64/include/asm/kvm_host.h
-> b/arch/arm64/include/asm/kvm_host.h
-> index 781d029b8aa8..615932bacf76 100644
-> --- a/arch/arm64/include/asm/kvm_host.h
-> +++ b/arch/arm64/include/asm/kvm_host.h
-> @@ -652,4 +652,6 @@ bool kvm_arm_vcpu_is_finalized(struct kvm_vcpu 
-> *vcpu);
->  #define kvm_arm_vcpu_sve_finalized(vcpu) \
->  	((vcpu)->arch.flags & KVM_ARM64_VCPU_SVE_FINALIZED)
-> 
-> +int kvm_trng_call(struct kvm_vcpu *vcpu);
-> +
->  #endif /* __ARM64_KVM_HOST_H__ */
-> diff --git a/arch/arm64/kvm/Makefile b/arch/arm64/kvm/Makefile
-> index 1504c81fbf5d..a510037e3270 100644
-> --- a/arch/arm64/kvm/Makefile
-> +++ b/arch/arm64/kvm/Makefile
-> @@ -16,7 +16,7 @@ kvm-y := $(KVM)/kvm_main.o $(KVM)/coalesced_mmio.o
-> $(KVM)/eventfd.o \
->  	 inject_fault.o regmap.o va_layout.o handle_exit.o \
->  	 guest.o debug.o reset.o sys_regs.o \
->  	 vgic-sys-reg-v3.o fpsimd.o pmu.o \
-> -	 aarch32.o arch_timer.o \
-> +	 aarch32.o arch_timer.o trng.o \
->  	 vgic/vgic.o vgic/vgic-init.o \
->  	 vgic/vgic-irqfd.o vgic/vgic-v2.o \
->  	 vgic/vgic-v3.o vgic/vgic-v4.o \
-> diff --git a/arch/arm64/kvm/hypercalls.c b/arch/arm64/kvm/hypercalls.c
-> index 25ea4ecb6449..ead21b98b620 100644
-> --- a/arch/arm64/kvm/hypercalls.c
-> +++ b/arch/arm64/kvm/hypercalls.c
-> @@ -71,6 +71,12 @@ int kvm_hvc_call_handler(struct kvm_vcpu *vcpu)
->  		if (gpa != GPA_INVALID)
->  			val = gpa;
->  		break;
-> +	case ARM_SMCCC_TRNG_VERSION:
-> +	case ARM_SMCCC_TRNG_FEATURES:
-> +	case ARM_SMCCC_TRNG_GET_UUID:
-> +	case ARM_SMCCC_TRNG_RND32:
-> +	case ARM_SMCCC_TRNG_RND64:
-> +		return kvm_trng_call(vcpu);
->  	default:
->  		return kvm_psci_call(vcpu);
->  	}
-> diff --git a/arch/arm64/kvm/trng.c b/arch/arm64/kvm/trng.c
-> new file mode 100644
-> index 000000000000..5a27b2d99977
-> --- /dev/null
-> +++ b/arch/arm64/kvm/trng.c
-> @@ -0,0 +1,91 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +// Copyright (C) 2020 Arm Ltd.
-> +
-> +#include <linux/arm-smccc.h>
-> +#include <linux/kvm_host.h>
-> +
-> +#include <asm/kvm_emulate.h>
-> +
-> +#include <kvm/arm_hypercalls.h>
-> +
-> +#define ARM_SMCCC_TRNG_VERSION_1_0	0x10000UL
-> +
-> +#define TRNG_SUCCESS			0UL
+> Is there an existing interface for "slow" runtime entropy that we can
+> plumb this into instead?
 
-SMCCC_RET_SUCCESS
+There is the framework implementing /dev/hwrng, and in fact I started
+with a driver for that (have that in some working state).
+But this is only available somewhat late in the game (after drivers get
+initialised), and Ard mentioned that one advantage of the firmware i/f
+is (somewhat) early availability. Now for SMCCC we need firmware tables
+(for the conduit), so it's not too early either.
 
-> +#define TRNG_NOT_SUPPORTED		((unsigned long)-1)
+If too frequent firmware traps are a concern, we could always request
+the maximum 192 bits, and store them. That would avoid 2/3 of the
+current traps.
 
-SMCCC_RET_NOT_SUPPORTED
+Cheers,
+Andre
 
-> +#define TRNG_INVALID_PARAMETER		((unsigned long)-2)
-
-*crap*. Why isn't that the same value as SMCCC_RET_INVALID_PARAMETER?
-Is it too late to fix the spec?
-
-> +#define TRNG_NO_ENTROPY			((unsigned long)-3)
-> +
-> +#define MAX_BITS32			96
-> +#define MAX_BITS64			192
-
-Nothing seems to be using these definitions.
-
-> +
-> +static const uuid_t arm_smc_trng_uuid __aligned(4) = UUID_INIT(
-> +	0x023534a2, 0xe0bc, 0x45ec, 0x95, 0xdd, 0x33, 0x34, 0xc1, 0xcc, 0x31, 
-> 0x89);
-
-I object to the lack of Easter egg in this UUID. Or at least one I can
-understand. ;-)
-
-> +
-> +static int kvm_trng_do_rnd(struct kvm_vcpu *vcpu, int size)
-> +{
-> +	u32 num_bits = smccc_get_arg1(vcpu);
-> +	u64 bits[3];
-> +	int i;
-> +
-> +	if (num_bits > 3 * size) {
-> +		smccc_set_retval(vcpu, TRNG_INVALID_PARAMETER, 0, 0, 0);
-> +		return 1;
-> +	}
-> +
-> +	/* get as many bits as we need to fulfil the request */
-> +	for (i = 0; i < DIV_ROUND_UP(num_bits, 64); i++)
-> +		/* use the arm64 specific backend directly if one exists */
-> +		if (!arch_get_random_seed_long((unsigned long *)&bits[i]))
-> +			bits[i] = get_random_long();
-> +
-> +	if (num_bits % 64)
-> +		bits[i - 1] &= U64_MAX >> (64 - (num_bits % 64));
-> +
-> +	while (i < ARRAY_SIZE(bits))
-> +		bits[i++] = 0;
-
-I just wasted 3 minutes trying to understand what this was doing, only 
-to
-realise this is clearing the [MAX_BITS:num_bits] range.
-
-How about using a bitmap instead? It would result in the exact same data
-structure, only much more readable (and no u64->unsigned long casts).
-
-> +
-> +	if (size == 32)
-> +		smccc_set_retval(vcpu, TRNG_SUCCESS, lower_32_bits(bits[1]),
-> +				 upper_32_bits(bits[0]), lower_32_bits(bits[0]));
-> +	else
-> +		smccc_set_retval(vcpu, TRNG_SUCCESS, bits[2], bits[1], bits[0]);
-> +
-> +	memzero_explicit(bits, sizeof(bits));
-> +	return 1;
-> +}
-> +
-> +int kvm_trng_call(struct kvm_vcpu *vcpu)
-> +{
-> +	const __le32 *u = (__le32 *)arm_smc_trng_uuid.b;
-> +	u32 func_id = smccc_get_function(vcpu);
-> +	unsigned long val = TRNG_NOT_SUPPORTED;
-> +	int size = 64;
-> +
-> +	switch (func_id) {
-> +	case ARM_SMCCC_TRNG_VERSION:
-> +		val = ARM_SMCCC_TRNG_VERSION_1_0;
-> +		break;
-> +	case ARM_SMCCC_TRNG_FEATURES:
-> +		switch (smccc_get_arg1(vcpu)) {
-> +		case ARM_SMCCC_TRNG_VERSION:
-> +		case ARM_SMCCC_TRNG_FEATURES:
-> +		case ARM_SMCCC_TRNG_GET_UUID:
-> +		case ARM_SMCCC_TRNG_RND32:
-> +		case ARM_SMCCC_TRNG_RND64:
-> +			val = TRNG_SUCCESS;
-> +		}
-> +		break;
-> +	case ARM_SMCCC_TRNG_GET_UUID:
-> +		smccc_set_retval(vcpu, le32_to_cpu(u[0]), le32_to_cpu(u[1]),
-> +				 le32_to_cpu(u[2]), le32_to_cpu(u[3]));
-> +		return 1;
-> +	case ARM_SMCCC_TRNG_RND32:
-> +		size = 32;
-> +		fallthrough;
-> +	case ARM_SMCCC_TRNG_RND64:
-> +		return kvm_trng_do_rnd(vcpu, size);
-> +	}
-> +
-> +	smccc_set_retval(vcpu, val, 0, 0, 0);
-> +	return 1;
-> +}
-
-Thanks,
-
-         M.
--- 
-Who you jivin' with that Cosmik Debris?
