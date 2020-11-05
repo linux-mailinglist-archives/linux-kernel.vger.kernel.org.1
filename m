@@ -2,111 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 277372A8886
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 22:10:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 423632A888A
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 22:10:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732231AbgKEVJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 16:09:56 -0500
-Received: from nat-hk.nvidia.com ([203.18.50.4]:23934 "EHLO nat-hk.nvidia.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726729AbgKEVJ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 16:09:56 -0500
-Received: from HKMAIL102.nvidia.com (Not Verified[10.18.92.100]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fa46a220000>; Fri, 06 Nov 2020 05:09:54 +0800
-Received: from HKMAIL104.nvidia.com (10.18.16.13) by HKMAIL102.nvidia.com
- (10.18.16.11) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 5 Nov
- 2020 21:09:52 +0000
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.106)
- by HKMAIL104.nvidia.com (10.18.16.13) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Thu, 5 Nov 2020 21:09:52 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=l7Mm8rjmSxgUjiEKPG+2C2ztLxyMxJD8g4JqIscbI9IcVuiOymBJ9Zw2OceEa5XQcmqxs+FSZsHWqgUBBwM5NmaLj0t3siT/KUrqUrfWlj4ncLFilLUjo5ulfN3CSt/+/bcOJgIPF2PDsutbCCBDduc/WtiUCCwMx2tkYSG1QpGqFVw8NAkqZGkUMxUibgxLMJh5CwyvLZqtaRBb00fUMnOhiWCfQvwziAKDOGnhy5zGJUSQ98BWM9s8yJmuWHaD0ayVq8fc8lZa+BiR43rsjYo3jgmNoXY3hITse5wwB+nkxxIPRH6Hkoea/U5axI+YNYyxPbEHoUjwd5TsCEZVZg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UTpSXDMNYpq/ZlPjrRPFdXrTNx19FUH06M+gwR9NKyc=;
- b=dslCMAGAOpYGxSqUDx40LVedgBfzDAWlXCqsEo4aE4mv6yMMl4yMhUaaoYI/wiuT1dCgckj6NIyVc6L/jp/GOPjrbs0fDkRx0BpT10MS9HLlDBbRHSFv8+W0F6fiDxvtxDPoN3G64CZCy9iWc/wF6USUwMazba1nc0ntippw44OPuBRkrnz2dmgbjkAoqs22UZtKIM9MEsyXNxLc+vPwu+4XDLr8VN7LFJBc4PbDX/PIIOyrtlVhUk496fg2JRWZszUrA4M7Lbog2/bbHaGxr5cK4DBkBVxULRzs+aYWOglE8xX4W5myAAipXwM6FHC22DG0vGaVz1zSWpQJRf8vnw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3305.namprd12.prod.outlook.com (2603:10b6:5:189::29) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.27; Thu, 5 Nov
- 2020 21:09:50 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3499.032; Thu, 5 Nov 2020
- 21:09:50 +0000
-Date:   Thu, 5 Nov 2020 17:09:48 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Saeed Mahameed <saeed@kernel.org>
-CC:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        gregkh <gregkh@linuxfoundation.org>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jason Wang <jasowang@redhat.com>, <linux-rdma@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>, <netdev@vger.kernel.org>,
-        Parav Pandit <parav@nvidia.com>, Roi Dayan <roid@nvidia.com>,
-        <virtualization@lists.linux-foundation.org>,
-        <alsa-devel@alsa-project.org>, <tiwai@suse.de>,
-        <broonie@kernel.org>, "David S . Miller" <davem@davemloft.net>,
-        <ranjani.sridharan@linux.intel.com>,
-        <pierre-louis.bossart@linux.intel.com>, <fred.oh@linux.intel.com>,
-        <shiraz.saleem@intel.com>, <dan.j.williams@intel.com>,
-        <kiran.patil@intel.com>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH mlx5-next v1 05/11] net/mlx5: Register mlx5 devices to
- auxiliary virtual bus
-Message-ID: <20201105210948.GS2620339@nvidia.com>
-References: <20201101201542.2027568-1-leon@kernel.org>
- <20201101201542.2027568-6-leon@kernel.org>
- <d10e7a08200458c1bddb72fc983a5917daebc8f1.camel@kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <d10e7a08200458c1bddb72fc983a5917daebc8f1.camel@kernel.org>
-X-ClientProxiedBy: MN2PR15CA0052.namprd15.prod.outlook.com
- (2603:10b6:208:237::21) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S1732253AbgKEVKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 16:10:46 -0500
+Received: from asavdk3.altibox.net ([109.247.116.14]:33350 "EHLO
+        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726729AbgKEVKq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 16:10:46 -0500
+Received: from ravnborg.org (unknown [188.228.123.71])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by asavdk3.altibox.net (Postfix) with ESMTPS id D670920068;
+        Thu,  5 Nov 2020 22:10:39 +0100 (CET)
+Date:   Thu, 5 Nov 2020 22:10:38 +0100
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     YueHaibing <yuehaibing@huawei.com>
+Cc:     a.hajda@samsung.com, narmstrong@baylibre.com,
+        Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
+        jernej.skrabec@siol.net, airlied@linux.ie, daniel@ffwll.ch,
+        tomi.valkeinen@ti.com, sebastian.reichel@collabora.com,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH v2] drm/bridge: tpd12s015: Fix irq registering in
+ tpd12s015_probe
+Message-ID: <20201105211038.GA216923@ravnborg.org>
+References: <20201031031648.42368-1-yuehaibing@huawei.com>
+ <20201102143024.26216-1-yuehaibing@huawei.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR15CA0052.namprd15.prod.outlook.com (2603:10b6:208:237::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.19 via Frontend Transport; Thu, 5 Nov 2020 21:09:49 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kamVw-000OcU-51; Thu, 05 Nov 2020 17:09:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1604610594; bh=UTpSXDMNYpq/ZlPjrRPFdXrTNx19FUH06M+gwR9NKyc=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=SUx0ceXcIW2zyJzHeYJoQGPTM/viv1DoGfTPcR0+or2v9digYGZK78iY9mTNpmef7
-         eUtw7hgBMufh50UwcciJQ8V2m7eaCVfamyaldJ8oynQvlS2KpW3k6O42mi39+Tjz28
-         EgfhLlS304zbVNNTXO4RlSkKNHCUCZLAmD9Wu7k3z8sHagGO2c0AyuUxtwgMGqg+Tv
-         sDF6YnUQPt9cLhjFOB4x1uUNGN2qrHxOc9wiQzSsAI3U2RrNHywHlSUvRv12EAd5Y5
-         MhrzRRKuj94zXBaNHtf1YY6rZP9GT6oOgpknv5oJu5B4Oda3hgFQlqRy9g18EgdqIH
-         CNI51dBK3rr0w==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201102143024.26216-1-yuehaibing@huawei.com>
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=VbvZwmh9 c=1 sm=1 tr=0
+        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
+        a=kj9zAlcOel0A:10 a=i0EeH86SAAAA:8 a=e5mUnYsNAAAA:8
+        a=hQcg5WHDNkESoMxGa40A:9 a=CjuIK1q_8ugA:10 a=Vxmtnl_E_bksehYqCbjh:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 12:59:20PM -0800, Saeed Mahameed wrote:
+Hi YueHaibing
 
-> 2. you can always load a driver without its underlying device existed.
-> for example, you can load a pci device driver/module and it will load
-> and wait for pci devices to pop up, the subsysetem infrastructure will
-> match between drivers and devices and probe them.
-
-Yes, this works fine with this design
-
-> struct aux_driver mlx5_vpda_aux_driver {
+On Mon, Nov 02, 2020 at 10:30:24PM +0800, YueHaibing wrote:
+> gpiod_to_irq() return negative value in case of error,
+> the existing code doesn't handle negative error codes.
+> If the HPD gpio supports IRQs (gpiod_to_irq returns a
+> valid number), we use the IRQ. If it doesn't (gpiod_to_irq
+> returns an error), it gets polled via detect(). 
 > 
->       .name = "vdpa",
->        /* match this driver with mlx5_core devices */
->       .id_table = {"mlx5_core"}, 
->       .ops {
->             /* called before probe on actual aux mlx5_core device */
->            .is_supported(struct aux_device); 
+> Fixes: cff5e6f7e83f ("drm/bridge: Add driver for the TI TPD12S015 HDMI level shifter")
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> ---
+> v2: Add checking for >= 0 and update commit message
 
-This means module auto loading is impossible, we can't tell to load
-the module until we load the module to call the is_supported code ..
+Thanks, applied to drm-misc-next.
 
-Jason
+	Sam
+
+> ---
+>  drivers/gpu/drm/bridge/ti-tpd12s015.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/bridge/ti-tpd12s015.c b/drivers/gpu/drm/bridge/ti-tpd12s015.c
+> index 514cbf0eac75..e0e015243a60 100644
+> --- a/drivers/gpu/drm/bridge/ti-tpd12s015.c
+> +++ b/drivers/gpu/drm/bridge/ti-tpd12s015.c
+> @@ -160,7 +160,7 @@ static int tpd12s015_probe(struct platform_device *pdev)
+>  
+>  	/* Register the IRQ if the HPD GPIO is IRQ-capable. */
+>  	tpd->hpd_irq = gpiod_to_irq(tpd->hpd_gpio);
+> -	if (tpd->hpd_irq) {
+> +	if (tpd->hpd_irq >= 0) {
+>  		ret = devm_request_threaded_irq(&pdev->dev, tpd->hpd_irq, NULL,
+>  						tpd12s015_hpd_isr,
+>  						IRQF_TRIGGER_RISING |
+> -- 
+> 2.17.1
+> 
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
