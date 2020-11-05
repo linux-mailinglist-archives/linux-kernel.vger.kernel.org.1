@@ -2,88 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD4792A739F
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 01:09:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77EB32A73A2
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 01:09:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732961AbgKEAI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 19:08:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51958 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728323AbgKEAI7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 19:08:59 -0500
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D681BC0613CF;
-        Wed,  4 Nov 2020 16:08:58 -0800 (PST)
-Received: by mail-ej1-x642.google.com with SMTP id o21so35658ejb.3;
-        Wed, 04 Nov 2020 16:08:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=w1ZvfrtckudJvuBr1/s9M5Ia0PcGRhXRB5VEW+C/d0Q=;
-        b=grdT4VNFkOqGR7jQ58kE0zB6VtnKfmRaaCphmGX5xXIt5HD/DPLjTs65nCie5kf7af
-         8P0NFxDwj2NDwApnfuyuwYgYIQAM3lsqO2WrOy7pV9aKRuYqOpU9Jg4oiyo/Jr1ZX2Um
-         c/s8FQgIO1P3hXBGN+js3yqa1CFRls/HEtwWNo1rYlyModA6HPxseJ5AKf8NszbHh4+3
-         RN5vcPdSrDsGpHphucUypYtMi60/1Uudra6WiTSkn5yvxyXAqkgiN6X3KzJvc+Txgdn4
-         PDnF4szoCcEzsbJLXdvOP4mbt2MxkBqVc9GI76IuD+NXdAFUwn5D4liI2/EZYPAw/qdF
-         8Ymg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=w1ZvfrtckudJvuBr1/s9M5Ia0PcGRhXRB5VEW+C/d0Q=;
-        b=cuowIYNMCJ00l1CAEKCnlkFBHnJWe7yFwsbQhQ/VP23atnx+UN5V30Q68y+jfJOpA4
-         ZXJ4DEdsOG54MVWtohN8KCiJGozKpkALazAJPsuzXhU/uCTFTFZObFaqgTNdgEmSUxi6
-         bmBFj00oXpiVf8/9qFsk7Nnhge4jeNlTYFJ+eu6xLnaWBpGKMQDki+jGKtjrJb8S1Kc4
-         QYMd/rDVYCyWueZmv1ad4j/RDdFJZaPXDAbYBh1dy8O+UGTMoUJ9npcRcKu/CN7s1Ozf
-         XwjddyCcWlCgAYS3mFEuSRmo6K/qqe72w5OraNHtSZgIW++x1DYOE10vi2rA9rscWLsV
-         PIag==
-X-Gm-Message-State: AOAM5323PW9eDlaMOg+wmX9EN1W2SAl3v0A5HUXqZEXkDrmo49K0VTm8
-        EfYWKis7KZ0qs+6bA2o0TdY=
-X-Google-Smtp-Source: ABdhPJwOsxlDuiZAVRLJ2AA//IDaFnNzrdaiCTGEnz3A6szI00b/PMJ3weOK/FZRE3m2sKjJD5gCRg==
-X-Received: by 2002:a17:906:2e8e:: with SMTP id o14mr639705eji.324.1604534937632;
-        Wed, 04 Nov 2020 16:08:57 -0800 (PST)
-Received: from skbuf ([188.25.2.177])
-        by smtp.gmail.com with ESMTPSA id a17sm1744180eda.45.2020.11.04.16.08.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 16:08:57 -0800 (PST)
-Date:   Thu, 5 Nov 2020 02:08:56 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Ioana Ciornei <ciorneiioana@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ioana Ciornei <ioana.ciornei@nxp.com>
-Subject: Re: [PATCH net-next v2 07/19] net: phy: mscc: implement generic
- .handle_interrupt() callback
-Message-ID: <20201105000856.ff46ng36ioqwcnlf@skbuf>
-References: <20201101125114.1316879-1-ciorneiioana@gmail.com>
- <20201101125114.1316879-8-ciorneiioana@gmail.com>
+        id S1733014AbgKEAJc convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 4 Nov 2020 19:09:32 -0500
+Received: from aposti.net ([89.234.176.197]:50840 "EHLO aposti.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728323AbgKEAJb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 19:09:31 -0500
+Date:   Thu, 05 Nov 2020 00:09:15 +0000
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH] iio/adc: ingenic: Fix battery VREF for JZ4770 SoC
+To:     Artur Rojek <contact@artur-rojek.eu>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>, od@zcrc.me,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Message-Id: <F3RAJQ.DZODDTV09KM21@crapouillou.net>
+In-Reply-To: <cb8b8ff426500db61c61b51413f3746c@artur-rojek.eu>
+References: <20201104192843.67187-1-paul@crapouillou.net>
+        <cb8b8ff426500db61c61b51413f3746c@artur-rojek.eu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201101125114.1316879-8-ciorneiioana@gmail.com>
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 01, 2020 at 02:51:02PM +0200, Ioana Ciornei wrote:
-> From: Ioana Ciornei <ioana.ciornei@nxp.com>
-> 
-> In an attempt to actually support shared IRQs in phylib, we now move the
-> responsibility of triggering the phylib state machine or just returning
-> IRQ_NONE, based on the IRQ status register, to the PHY driver. Having
-> 3 different IRQ handling callbacks (.handle_interrupt(),
-> .did_interrupt() and .ack_interrupt() ) is confusing so let the PHY
-> driver implement directly an IRQ handler like any other device driver.
-> Make this driver follow the new convention.
-> 
-> Also, remove the .did_interrupt() callback since it's not anymore used.
-> 
-> Signed-off-by: Ioana Ciornei <ioana.ciornei@nxp.com>
-> ---
+Hi Artur,
 
-Tested-by: Vladimir Oltean <olteanv@gmail.com> # VSC8514
+Le mer. 4 nov. 2020 à 23:29, Artur Rojek <contact@artur-rojek.eu> a 
+écrit :
+> Hi Paul,
+> 
+> On 2020-11-04 20:28, Paul Cercueil wrote:
+>> The reference voltage for the battery is clearly marked as 1.2V in 
+>> the
+>> programming manual. With this fixed, the battery channel now returns
+>> correct values.
+>> 
+>> Fixes: a515d6488505 ("IIO: Ingenic JZ47xx: Add support for JZ4770 
+>> SoC ADC.")
+>> Cc: <stable@vger.kernel.org>
+>> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+>> ---
+>>  drivers/iio/adc/ingenic-adc.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>> 
+>> diff --git a/drivers/iio/adc/ingenic-adc.c 
+>> b/drivers/iio/adc/ingenic-adc.c
+>> index ecaff6a9b716..19b95905a45c 100644
+>> --- a/drivers/iio/adc/ingenic-adc.c
+>> +++ b/drivers/iio/adc/ingenic-adc.c
+>> @@ -71,7 +71,7 @@
+>>  #define JZ4725B_ADC_BATTERY_HIGH_VREF_BITS	10
+>>  #define JZ4740_ADC_BATTERY_HIGH_VREF		(7500 * 0.986)
+>>  #define JZ4740_ADC_BATTERY_HIGH_VREF_BITS	12
+>> -#define JZ4770_ADC_BATTERY_VREF			6600
+>> +#define JZ4770_ADC_BATTERY_VREF			1200
+>>  #define JZ4770_ADC_BATTERY_VREF_BITS		12
+>> 
+>>  #define JZ_ADC_IRQ_AUX			BIT(0)
+> 
+> I thought we set it to 6600 because GCW Zero was not showing correct 
+> battery values at 1200.
+> But if you verified that 1200 works with JZ4770, then:
+> Acked-by: Artur Rojek <contact@artur-rojek.eu>
+
+Yes, IIRC we were trying to figure out the range and settled with 
+[-3.3V,+3.3V] since it would give "plausible" values but which were 
+never quite right. The doc does say that the voltage is (hw_val / 4096) 
+* 1.2V, but also says that the ADC operated with 3.3V power supply, I 
+guess we got confused. We never considered the battery could not be 
+connected directly to the ADC's VBAT pin, so a 1.2V reference didn't 
+make sense at that time. I guess we need to learn about electronics :)
+
+It turns out the battery is connected to the VBAT pin with a 1 MOhm 
+resistor, and the VBAT pin is also pulled low with a 332 kOhm resistor. 
+So a fully charged battery with 4.2V reads as (4.2V * 332000) / 
+(1332000) = 1.05V, which totally fits in a [0V,+1.2V] range.
+
+With that same 4.2V battery I get a hardware value of about 3584, and 
+(3584 / 4096) * 1.2V == 1.05V, which matches the value computed above. 
+So the battery reading looks accurate this time.
+
+Cheers,
+-Paul
+
+
