@@ -2,114 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A15222A7398
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 01:06:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7458F2A739B
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 01:07:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387885AbgKEAFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 19:05:06 -0500
-Received: from esa5.hgst.iphmx.com ([216.71.153.144]:35644 "EHLO
-        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387861AbgKEAFC (ORCPT
+        id S1732768AbgKEAHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 19:07:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51778 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729266AbgKEAHs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 19:05:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1604534701; x=1636070701;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=ttVV2l8xgC8cKeR325K+BCZa+k2eu3E+hvY1gbVjr5M=;
-  b=ApdFA+jJYtnt22Omlci4Mj9FGiG4YjaP+pX3dN3Ps5zReY8oBEn950qo
-   2maWb7edR78Wru5WHAzES2vztUuvvl0AJcZcI97DtyrH7k9ZVza7A27PA
-   93MnGOtINvQAFi4BIENl8p/6iDMgnILIV3UT16YqnTvxUhvCqmOoRY7RG
-   MvA9sBlqhcMdChd85/OSR1pjF0bf2ahlBQwyv197v+JSwr1Q07igbTa+w
-   tIT6iPyCO1TXKNYi4DbAPKefk6gogas9sFusLEfpcWDfBBr+PAYLLY+0P
-   Sd9e0dsShq4za90glues0QoHlCWAIc41gt8QWs39MnEdMmEEZ2sOtQrcH
-   A==;
-IronPort-SDR: VHJHMLAGRguRpJLgcqWvCHHSHlO3q0gzyJG++dGgVD6KULTqzHfYhUB0ZgV9Elr/3GYSqvN/Ji
- zLAABv/zE6KfLVIoNTR3eMpDVqgRm7c1gYsa1MiGCo52mEeJqRyxAGpik0tZvC3ODm1JzHfwKB
- B+o9DeKiqQjohGsljPIHkbi3J5eYjnYACYiSGIpWw3DuhVgplIzThJMpwing0rKnyeufvt5w/J
- jOTq4lFObciAuInVioU9NTHwXHp3caGitZRvCLh9n2SaRp7SRLRDhjXFJiuLZY9kyIxrzsYL2i
- kSw=
-X-IronPort-AV: E=Sophos;i="5.77,451,1596470400"; 
-   d="scan'208";a="151945123"
-Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 05 Nov 2020 08:05:01 +0800
-IronPort-SDR: QZkZStu+ZVz3X3Kr8CFpJpqIGmq7jj0G+Zit8r0YnFyCESVJBWETbJ6+WbCKN5f26SX0vA8Xoo
- vs5F2oAD9K9d0XUaNN4h9PLTwH97J7XkkbETmN1cCIjy37muwERduS+Tt52lHKwRlnaetH7eKn
- yCCJxuIgeoTuVUZX0jp7PiEUAP2IxYmTlRYAwAsmwXXBnmpBAY5RnZE8rJysVSmB1qmfRFX2Vl
- wwxU7xlgoTr0Vteo3WbFD2qBnqL0wBwR1a2OCU2CtQW+gJeYDIngaMH+B221tOeK1kUYr27T3N
- zvUJCWoxA3muUF748Eg0fUYn
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2020 15:51:09 -0800
-IronPort-SDR: wyMNVYV728fyoW/gmDgVHH2wpGT4PFymlkeJ/1nIAqM/+kcHUw2irYtuuYStoMjWTgbPMT+1BC
- c477GyP6me2NQe9sScODAfQyhkTMiNu6JDL4PmMHsiA2YjCxBQ9G3qLk84BOCP3HsYWweotSso
- 7w06B4nZ5fynamnfg4mBDAY/8VhghC51TRZENylZDQW3lg72x1zVge0zEOwOCXnXtc+5EPB/SE
- sPnQO/UaMgVggSj3CXZgfViJfvzvqvMjyAqA7zBP6K3x/LYavGbjhSZ/OD9cVcNlEM9aT7pD6x
- ERk=
-WDCIronportException: Internal
-Received: from 6hj08h2.ad.shared (HELO jedi-01.hgst.com) ([10.86.60.117])
-  by uls-op-cesaip02.wdc.com with ESMTP; 04 Nov 2020 16:05:02 -0800
-From:   Atish Patra <atish.patra@wdc.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Atish Patra <atish.patra@wdc.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anup Patel <anup@brainfault.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        Guo Ren <ren_guo@c-sky.com>, linux-riscv@lists.infradead.org,
-        Michel Lespinasse <walken@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Zong Li <zong.li@sifive.com>
-Subject: [PATCH v3 5/5] RISC-V: Move dynamic relocation section under __init
-Date:   Wed,  4 Nov 2020 16:04:39 -0800
-Message-Id: <20201105000439.1491243-6-atish.patra@wdc.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201105000439.1491243-1-atish.patra@wdc.com>
-References: <20201105000439.1491243-1-atish.patra@wdc.com>
+        Wed, 4 Nov 2020 19:07:48 -0500
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69F06C0613CF;
+        Wed,  4 Nov 2020 16:07:48 -0800 (PST)
+Received: by mail-ed1-x541.google.com with SMTP id e18so84123edy.6;
+        Wed, 04 Nov 2020 16:07:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=W+nQNP2xeQpKAeFOiZ8Y3ubuECiJeguJA48y5TOLbV8=;
+        b=ObjOEB5xVAn1nNX3SDJ05Ef/7uvSbqcVlTGApotos5HDnEE8jyR72A6M5GYC7ET0CV
+         /GKdwzDdXqQsGnsD+SRFGr/EWrBO+hNTPE7wZvME+iuMO5e8u/X9+0Rdtt3LU6Hyhwlf
+         pi6Oo7eQ9eG9tnI3DZWn/YXLhOs+5/fDVyz7Xd1BXpPZENlWcmRqe4Cgrn7hAyhFGLrW
+         qneR6JN0UwW+q2rD5rFhaY9G/Be4dRJbA7wV/ZmuM8n1AL0KLc8gGk3eNITwwoyj2G5i
+         seYafuG+TGi+M5KKPH7eO9NG906P1/niT0lC+M1k5m/r7aZDHkEDkM5XmGghrIuMm8uV
+         8e+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=W+nQNP2xeQpKAeFOiZ8Y3ubuECiJeguJA48y5TOLbV8=;
+        b=NdV05VF70Zttqf2T9wUHY0+yF4DZDWbEhsjB0LnDH+Mxwo4kZ5UK087zOSATIcof44
+         8ax+h2+VBZW5Mno1+EcjJCDXtq/TgX1MRsBBDyxKY49ylcCTV77Ho2G8MVgx8Xu6Iwki
+         1FgCAsduLtakyXBQxW7wHt2kZHeytS6RLZY/1IBMxRBI7+4tO2id5UDnL6lR6OvqMKkY
+         +smPZor0oXAnOk3Cxr29vKfb9uvu9BcX2gMd9NRFpLxNpyc6An0UD5TdWCkylIJXsZxl
+         KiBWWvcgusN5eSPxHKfcd0bhmLX2SpuS+XoLlqxjzXUYh+0IfOFA4ll6pf7bI49W5Ien
+         1gyQ==
+X-Gm-Message-State: AOAM531DHyLlazEdZQGqNs11B4GJN87wz1yO/O0r1B90jLsS+rGStf48
+        0eC29nSD3cfm+vN5ANbTwwg=
+X-Google-Smtp-Source: ABdhPJzMv6w4mIspRTsFUlR/8H4yavlAOUXLNSjxxkm6CY/VHufPEdSfTLM7KkoAmOK18YX+zxCj0Q==
+X-Received: by 2002:a05:6402:1388:: with SMTP id b8mr351119edv.1.1604534867143;
+        Wed, 04 Nov 2020 16:07:47 -0800 (PST)
+Received: from skbuf ([188.25.2.177])
+        by smtp.gmail.com with ESMTPSA id e9sm1720071edn.30.2020.11.04.16.07.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Nov 2020 16:07:46 -0800 (PST)
+Date:   Thu, 5 Nov 2020 02:07:45 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Ioana Ciornei <ciorneiioana@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Antoine Tenart <atenart@kernel.org>
+Subject: Re: [PATCH net-next v2 08/19] net: phy: mscc: remove the use of
+ .ack_interrupt()
+Message-ID: <20201105000745.2kynhpv5x6ukjvi3@skbuf>
+References: <20201101125114.1316879-1-ciorneiioana@gmail.com>
+ <20201101125114.1316879-9-ciorneiioana@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201101125114.1316879-9-ciorneiioana@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dynamic relocation section are only required during boot. Those sections
-can be freed after init. Thus, it can be moved to __init section.
+On Sun, Nov 01, 2020 at 02:51:03PM +0200, Ioana Ciornei wrote:
+> From: Ioana Ciornei <ioana.ciornei@nxp.com>
+> 
+> In preparation of removing the .ack_interrupt() callback, we must replace
+> its occurrences (aka phy_clear_interrupt), from the 2 places where it is
+> called from (phy_enable_interrupts and phy_disable_interrupts), with
+> equivalent functionality.
+> 
+> This means that clearing interrupts now becomes something that the PHY
+> driver is responsible of doing, before enabling interrupts and after
+> clearing them. Make this driver follow the new contract.
+> 
+> Cc: Antoine Tenart <atenart@kernel.org>
+> Signed-off-by: Ioana Ciornei <ioana.ciornei@nxp.com>
+> ---
 
-Signed-off-by: Atish Patra <atish.patra@wdc.com>
----
- arch/riscv/kernel/vmlinux.lds.S | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/arch/riscv/kernel/vmlinux.lds.S b/arch/riscv/kernel/vmlinux.lds.S
-index ca19ee5acd0a..de03cb22d0e9 100644
---- a/arch/riscv/kernel/vmlinux.lds.S
-+++ b/arch/riscv/kernel/vmlinux.lds.S
-@@ -85,6 +85,10 @@ SECTIONS
- 	}
- 	PERCPU_SECTION(L1_CACHE_BYTES)
- 
-+	.rel.dyn : {
-+		*(.rel.dyn*)
-+	}
-+
- 	__init_data_end = .;
- 	__init_end = .;
- 
-@@ -116,10 +120,6 @@ SECTIONS
- 
- 	BSS_SECTION(PAGE_SIZE, PAGE_SIZE, 0)
- 
--	.rel.dyn : {
--		*(.rel.dyn*)
--	}
--
- #ifdef CONFIG_EFI
- 	. = ALIGN(PECOFF_SECTION_ALIGNMENT);
- 	__pecoff_data_virt_size = ABSOLUTE(. - __pecoff_text_end);
--- 
-2.25.1
-
+Tested-by: Vladimir Oltean <olteanv@gmail.com> # VSC8514
