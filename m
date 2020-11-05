@@ -2,93 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F20402A825B
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 16:39:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2E102A826E
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 16:42:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731281AbgKEPjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 10:39:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33636 "EHLO mail.kernel.org"
+        id S1731146AbgKEPmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 10:42:47 -0500
+Received: from nat-hk.nvidia.com ([203.18.50.4]:47765 "EHLO nat-hk.nvidia.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730721AbgKEPjN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 10:39:13 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3C49220782;
-        Thu,  5 Nov 2020 15:39:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604590752;
-        bh=BK6UyQbmVZaBa7NHXAUIlJ5OUAFt3Xj/7AwhJMn1cVw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AkYgF9uKJZZtRdT8X6LKIae1sySM/N/v47rI7VnsqRSz7TZv0zNqnEJo071ui7RTF
-         EOrtVRvV7JZgzKu7nJoVrdFkVQTKVQdeXchIZB6Lg7cy1QnCd/+Qc/WKr+iuH3vNut
-         gCm/vjMoy7Icxu7PJsjWZub89kcW6akJzo98iLck=
-Date:   Thu, 5 Nov 2020 16:40:01 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Thorsten Leemhuis <linux@leemhuis.info>
-Cc:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Rander Wang <rander.wang@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        sound-open-firmware@alsa-project.org, alsa-devel@alsa-project.org
-Subject: Re: Build error with 5.9.5 in sound/soc/sof/intel/hda-codec.c (was:
- [PATCH AUTOSEL 5.9 039/147] ASoC: SOF: fix a runtime pm issue in SOF when
- HDMI codec doesn't work)
-Message-ID: <20201105154001.GA1166450@kroah.com>
-References: <20201026234905.1022767-1-sashal@kernel.org>
- <20201026234905.1022767-39-sashal@kernel.org>
- <f254331d-7ae2-e26f-3e1b-33a870349126@leemhuis.info>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        id S1730660AbgKEPmr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 10:42:47 -0500
+Received: from HKMAIL102.nvidia.com (Not Verified[10.18.92.100]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fa41d750001>; Thu, 05 Nov 2020 23:42:45 +0800
+Received: from HKMAIL104.nvidia.com (10.18.16.13) by HKMAIL102.nvidia.com
+ (10.18.16.11) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 5 Nov
+ 2020 15:42:45 +0000
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.45) by
+ HKMAIL104.nvidia.com (10.18.16.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Thu, 5 Nov 2020 15:42:45 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gw66FIsvBsdqkhlUQJ31z/Zb3HlsbtV0sD2NBElZjqMJvDyLX+d6BdcwOjwHtM9vY9DIuPpotmpICadpQ2cwtbjPOYxQAzOhm05IFwHNqUgv0IovP6LXYQGTcfqBaG8alxsvdNAlEL6XZ6S1KwY89rxxWo6CoJFhruCBTEmQJ+vuykuFWsyAIZ9OOK/BXKVTdtUEym07Ih/6XV+cdl0kuE+5g2+ImGdUi/MIzQxvW6yiWtIDGHMC1oinpJekqW0S666woFNgV9HVsaOkrWB+SRt7kc+tA9xY3BH9hCviCwwH5TIkc8a+mRW2lUZ5/5ngSs50FNZeLgJNSi4sZirMTQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UyQxcI9U4VSYvGOFt7PFjFA5hpcYXzBo013IFYhWNgk=;
+ b=W691iisHIw9fvh5vT96DaYelNyvXnDIctfh7l7yHTz30IuJazkmaNHxPvh1atNQHPYQ5TDbFpRFeFnhYqqyiBRDopqIRST9FTDNsAVNOAYSNOFRY+IF8Nw3h8Zn9QjH/t29FSidaqua6n6wn/spIpQrmrQMS+5WtlQ9aDANcm4oFIeiP1BeTZvnQ8alMKvLlatxozlrDjBZl3sRVRCqEDCqcut9zJFdw+BcLw8WkmEJ1PLd0Y/B+gKMaQ98kj07z/aOH1rrpvAxMU/Mzv9D8Dj5jrVhoA6Q03N395yw6joSOsDFX3mfKX/kXaxaSaTPPMNzFWTf7kXt2Y8d8JKDyLQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB4513.namprd12.prod.outlook.com (2603:10b6:5:2ad::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18; Thu, 5 Nov
+ 2020 15:42:43 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3499.032; Thu, 5 Nov 2020
+ 15:42:43 +0000
+Date:   Thu, 5 Nov 2020 11:42:42 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+CC:     Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Maor Gottlieb <maorg@nvidia.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the rdma-fixes tree
+Message-ID: <20201105154242.GI2620339@nvidia.com>
+References: <20201105085458.5addbe44@canb.auug.org.au>
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <f254331d-7ae2-e26f-3e1b-33a870349126@leemhuis.info>
+In-Reply-To: <20201105085458.5addbe44@canb.auug.org.au>
+X-ClientProxiedBy: MN2PR10CA0017.namprd10.prod.outlook.com
+ (2603:10b6:208:120::30) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR10CA0017.namprd10.prod.outlook.com (2603:10b6:208:120::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21 via Frontend Transport; Thu, 5 Nov 2020 15:42:43 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kahPO-00HR6k-6d; Thu, 05 Nov 2020 11:42:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1604590965; bh=UyQxcI9U4VSYvGOFt7PFjFA5hpcYXzBo013IFYhWNgk=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=i2ZyW/5Tqufu2uRtAstj1lxC3xRbqqwrEFyD9QGqGFkGxtvz2wtkJ7JPHsQutYKSL
+         AnTMQtqr6Zm0t8Cduo5segKaVhYFkVByAJAMugKaUO5dzXNFvyVSV7P4HwFCst8vXu
+         0HzfgXcLNvMz6zEFzTSuS+P+poGNGzP0FIu1/lkKI32oXDJYY3UEhI2nvVo/OBlu7+
+         jfD7Zu3LcG8ZxL0Xgv3o/fCBgumnZ/d6h6Nl7+HAbm8FosyhnDoGQZhVnc9hqsaY5N
+         ZsObV8AJ24aAujERycH9lhBsQViUMRcbQbAA1gh63lF+PVQqfgdTIj0Zae8TwQ9gob
+         R9MXgU6Y3PQvQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 02:48:33PM +0100, Thorsten Leemhuis wrote:
-> Lo! I just tried to compile 5.9.5 and ran into a build error with below
-> patch. I only did a quick look (I have to leave the keyboard soon), but
-> seems the patch quoted below that was added to 5.9.5 depends on 11ec0edc6408
-> (git.kernel.org/linus/11ec0edc6408) which wasn't backported.
+On Thu, Nov 05, 2020 at 08:54:58AM +1100, Stephen Rothwell wrote:
+> Hi all,
 > 
-> The build error can be found here:
-> https://kojipkgs.fedoraproject.org//work/tasks/8246/54978246/build.log
+> After merging the rdma-fixes tree, today's linux-next build (htmldocs)
+> produced this warning:
 > 
-> Relevant part:
+> drivers/infiniband/ulp/srpt/ib_srpt.c:630: warning: Function parameter or member 'port_cnt' not described in 'srpt_unregister_mad_agent'
 > 
-> + make -s 'HOSTCFLAGS=-O2 -flto=auto -ffat-lto-objects -fexceptions -g
-> -grecord-gcc-switches -pipe -Wall -Werror=format-security
-> -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS
-> -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong
-> -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -fcommon -m64 -mtune=generic
-> -fasynchronous-unwind-tables -fstack-clash-protection'
-> 'HOSTLDFLAGS=-Wl,-z,relro -Wl,--as-needed  -Wl,-z,now
-> -specs=/usr/lib/rpm/redhat/redhat-hardened-ld ' ARCH=x86_64 'KCFLAGS= '
-> WITH_GCOV=0 -j48 modules
-> sound/soc/sof/intel/hda-codec.c: In function 'hda_codec_probe':
-> sound/soc/sof/intel/hda-codec.c:177:4: error: label 'error' used but not
-> defined
->   177 |    goto error;
->       |    ^~~~
-> make[4]: *** [scripts/Makefile.build:283: sound/soc/sof/intel/hda-codec.o]
-> Error 1
-> make[3]: *** [scripts/Makefile.build:500: sound/soc/sof/intel] Error 2
-> make[3]: *** Waiting for unfinished jobs....
-> make[2]: *** [scripts/Makefile.build:500: sound/soc/sof] Error 2
-> make[2]: *** Waiting for unfinished jobs....
-> make[1]: *** [scripts/Makefile.build:500: sound/soc] Error 2
-> make: *** [Makefile:1784: sound] Error 2
-> make: *** Waiting for unfinished jobs....
-> + exit 1
+> Introduced by commit
 > 
-> Looks like the compiler is right from a quick look at
-> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/sound/soc/sof/intel/hda-codec.c?h=linux-5.9.y&id=43836fdc9e318a11233cf19c5ee7ffb04e8e5d8f
-> 
-> But as I said, I lack the time for a closer look.
+>   372a1786283e ("IB/srpt: Fix memory leak in srpt_add_one")
 
-Thanks, people are looking at it already:
-	https://lore.kernel.org/r/1f0c6a62-5208-801d-d7c2-725ee8da19b2@linux.intel.com
+I patched it, thanks
+
+Jason
+
+From 21fcdeec09ff461b2f9a9ef4fcc3a136249e58a1 Mon Sep 17 00:00:00 2001
+From: Jason Gunthorpe <jgg@nvidia.com>
+Date: Thu, 5 Nov 2020 11:38:29 -0400
+Subject: [PATCH] RDMA/srpt: Fix typo in srpt_unregister_mad_agent docstring
+
+htmldocs fails with:
+
+drivers/infiniband/ulp/srpt/ib_srpt.c:630: warning: Function parameter or member 'port_cnt' not described in 'srpt_unregister_mad_agent'
+
+Fixes: 372a1786283e ("IB/srpt: Fix memory leak in srpt_add_one")
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+---
+ drivers/infiniband/ulp/srpt/ib_srpt.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
+index 1b096305de1a45..53a8becac82761 100644
+--- a/drivers/infiniband/ulp/srpt/ib_srpt.c
++++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
+@@ -622,7 +622,7 @@ static int srpt_refresh_port(struct srpt_port *sport)
+ /**
+  * srpt_unregister_mad_agent - unregister MAD callback functions
+  * @sdev: SRPT HCA pointer.
+- * #port_cnt: number of ports with registered MAD
++ * @port_cnt: number of ports with registered MAD
+  *
+  * Note: It is safe to call this function more than once for the same device.
+  */
+-- 
+2.28.0
+
+ 
+
+
