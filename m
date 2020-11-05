@@ -2,73 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 572B42A81B9
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 16:00:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A1792A81CE
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 16:04:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731178AbgKEPAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 10:00:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49396 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730854AbgKEPAT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 10:00:19 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E56DFC0613CF;
-        Thu,  5 Nov 2020 07:00:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=/abP978i8fSQssBpWowZMWNHrfqF74CKuQx5R+Ko4q8=; b=QPE6XwbQsnFE9Vg4cul0wx02Ky
-        DU5hbMExC8IszNS/6+pNlnGundeA1AVUVWnFatXxRoJUvcAx7fO8C66doRSiQ5P01gek+3MlvlmVb
-        CLyooHl/+gN+AVHLjXV07MVR16Q3pqOKSe7oMUayvP05JH4uFPfuoWew6RLUtF1IlTvme1RsROZxg
-        EKnybJPoCe4p2ZUgT62TUb+7FV8rEfu3MlsSqd5ARDDcLxZI9tJVKCjGbNzt+eNvAU9LfwQ+vCiF3
-        Z7Sl8dD3ZnBeHt/IzpRnV4te8HRy4VGO9EjJTW7Bfemmu6prO9rHyoMxz667rhG2lWHA9OXM9B99Q
-        APcBHtJw==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kagkL-0007TV-7x; Thu, 05 Nov 2020 15:00:17 +0000
-Date:   Thu, 5 Nov 2020 15:00:17 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 56/56] scrpits: kernel-doc: validate kernel-doc markup
- with the actual names
-Message-ID: <20201105150017.GL17076@casper.infradead.org>
-References: <cover.1603469755.git.mchehab+huawei@kernel.org>
- <a21343a7012c87391c4850bf3151ebd82add8d1c.1603469755.git.mchehab+huawei@kernel.org>
+        id S1731174AbgKEPEL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 10:04:11 -0500
+Received: from mail.hiperkom.hu ([46.107.238.43]:54682 "EHLO mail.hiperkom.hu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731040AbgKEPEK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 10:04:10 -0500
+X-Greylist: delayed 885 seconds by postgrey-1.27 at vger.kernel.org; Thu, 05 Nov 2020 10:04:09 EST
+Received: from mail.hiperkom.hu (localhost [127.0.0.1])
+        by mail.hiperkom.hu (Postfix) with ESMTP id 0BB01A4DF1;
+        Thu,  5 Nov 2020 15:48:22 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hiperkom.hu; s=mail;
+        t=1604587716; bh=FKS3oUWqY7WlRpYPlJBh5h9eRjsc0BTg6E/Rs7k+fkU=;
+        h=Date:From:To:Subject:Reply-To;
+        b=Q1kk8/p6LVWLdqLd7/ZQ93mr6Kl0e1JEFJP/EngtT9yj4AUeigBOeXAgTeLCzccBH
+         6WlB/TUlbS0GIOsxUFYafAyagL7TwNFoLfcws3JjrIYJgQci0IQHeQe4j7JKBVdmAF
+         4nCKroQa16RkmN1SEEpQXLNVFcPLRIQpDBIzyQQDlPBfIhj035MEQbocnetGa4KaxC
+         R+w45xhshDX1PcpKdbMkAvhS4g5RGWaZq8NHE2kdV6bv9BFTeO8k+w4VCAmYvv3Ohv
+         c+hAfkNsp3LIfd048JM5np1blYf2FK672D3packSraAsVHCQJ/ezGUHs0zu/aFtZt2
+         xlROLMTEwlffw==
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a21343a7012c87391c4850bf3151ebd82add8d1c.1603469755.git.mchehab+huawei@kernel.org>
+Date:   Thu, 05 Nov 2020 22:48:21 +0800
+From:   Mr Jonathan Hugo <gabemis@hiperkom.hu>
+To:     undisclosed-recipients:;
+Subject: Mr. Jonathan Hugo
+Reply-To: jonathanhugo001@gmail.com
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <5455aafd44080e11c05d730fbb5c3203@hiperkom.hu>
+X-Sender: gabemis@hiperkom.hu
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 06:33:43PM +0200, Mauro Carvalho Chehab wrote:
-> Kernel-doc currently expects that the kernel-doc markup to come
-> just before the function/enum/struct/union/typedef prototype.
-> 
-> Yet, if it find things like:
-> 
-> 	/**
-> 	 * refcount_add - add a value to a refcount
-> 	 * @i: the value to add to the refcount
-> 	 * @r: the refcount
-> 	 */
-> 	static inline void __refcount_add(int i, refcount_t *r, int *oldp);
-> 	static inline void refcount_add(int i, refcount_t *r);
-> 
-> Kernel-doc will do the wrong thing:
 
-I wonder if we could change kernel-doc to be (optionally) less verbose.
-If we allowed people to write:
 
-/**
- * Add a value to a refcount.
- * @i: The value to add to the refcount
- * @r: The refcount
- */
+-- 
+I am Mr. Jonathan Hugo. I have emailed you earlier on without any 
+response from you.I am The Attorney to my late client and I have decided 
+to contact you to stand as the next of kin to my Late client\\\ 's 
+deposited funds since you have the same last name with him as to enable 
+us receive his deposit as inheritance for investment amounted to US$ 
+14.5 M only.
 
-and had the kernel-doc script pick up the name of the following function
-automatically, would that be an improvement we could all agree on?
+In my first email I mentioned about my late client whose relatives I 
+cannot get in touch with. But both of you have the same last name so it 
+will be very easy to front you as his official next of kin. I am 
+compelled to do this because I would not want the finance house to push 
+my client\\\'s funds into their treasury as unclaimed inheritance.
+
+If you are interested you do let me know so that I can give you 
+Comprehensive details on what we are to do.
+
+Waiting for your response.
+Many Thanks,
+Mr. Jonathan Hugo
