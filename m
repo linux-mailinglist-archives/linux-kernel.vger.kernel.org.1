@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AFE42A7395
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 01:06:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B49F2A7399
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 01:06:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387857AbgKEAFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 19:05:00 -0500
+        id S2387897AbgKEAFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 19:05:13 -0500
 Received: from esa5.hgst.iphmx.com ([216.71.153.144]:35631 "EHLO
         esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725862AbgKEAE7 (ORCPT
+        with ESMTP id S1730241AbgKEAFA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 19:04:59 -0500
+        Wed, 4 Nov 2020 19:05:00 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
   t=1604534699; x=1636070699;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=Qmlk0Pnoc73PLeMzxCGZ41KUAZ0XJ8ZZaWUmbVJfPT0=;
-  b=pC/xQOZBdBiEz5MxSYDRRZKvAS7DxR/qQ9DCU9vAB4Iyh0voX6hShKiC
-   P+zZqF3M8tQ//dGs3waCMjFcBsjzW/jTqtO6q5J5BMyPAs02nRKf2qhsE
-   603QOX2xH5CfOmWCkgVu1EAXbWjQy8gprzG7+o4t6nz02UkNlCbw+2Y99
-   XqE8kxVqQ0xf+PSu1PZMV028kb8TuA7/hSNVCRSXu0cJDH3Gv3LJJNRHi
-   BhonzJ93PRSC3JubVEMT3vIuVV7jrCQ2MVEly9aWS9Ab6iQqQK15da5yI
-   PTFsvyMuF+b8SeHlyDQogflTrvvS+O/B4hxGKRcuau7Bt5Z/Jcz2Bwwn3
-   w==;
-IronPort-SDR: eIPIpBt26YBMDcUOfqxT0iDAGZzVIEAofj1rKI+0riLnBAd+QsRuWs2LRwv5qXaZTxGsLiaNc5
- SufKhdLH1hnJ418BB8Wo6g4RSE9Vamig3CIQNo5nceckT/RdvP2P6M7o7015FNuBTspKxyzDH6
- SwHlvBx6lDdSVUqICjrjSz1ttr6SwJ6aAU8BFVoHThZUd2eh8mX2K5R4hs3Uihcr7IiTww/D1z
- MXh5ifotcnepZMBF8OO/61DZn9jlv6YZfj79UpxDSDNoAKjTDWvYIu5TNC4qzrCQlDKqIZZZdk
- 8G4=
+  bh=2o/pSqwZIsTAsEbERDtmvi4jQRx0V2hQUyDY+mRsz0s=;
+  b=bDqUYPxZueLEpCXTCAJBa+A33vPxyx2W3K091BGDvZh/0ixJeOWYbLUx
+   M03ngTJNEKVQkJug1umlS4k4/y9cHFgpGkshdaPp4gIXqQNJeBEvMBDCt
+   B9V1zZvnN3RwQB6oOg9REGDm6oLAax5tZNLnGd4/0veIu8wxYRpYYQH3F
+   GlNjG+ISvq98ntioi87+sv48uV2d5hLxPG7jwwOoD8kXXdKVcq9ZrL5ly
+   ETsac/JrAmXQucQsz+XgsXCCmhlyLP7fwS/GCPz4EuURDKGYAONMbbwJv
+   +kPLz/ZPVwqo3NAgj8UfPYuvY2vlZQhkguB57UlPk6XM//n9iWPAcSRBE
+   Q==;
+IronPort-SDR: fvUFwTnL9HjGyjJ3/LhjtOntmt0TBAWaZrvb2DnEg8N3EvZgVRwXsZj4nQc4Vedv5wmN78KKff
+ ag4r5WKBdXYxDGwjF7MGD/X4ClsKJ1EwwsH5SH1PB4ctP+zJe1tQN5n990luMeO1F5DhDz4mJR
+ U11hyIZR/51/W8tTcWs2d0OKCCOAaMft552n57ZLEhsLXWHFHwosaIPh7PVZwuIfpboQwAIAm9
+ 22HdP4MN6EXAZjP6xPskiY8lkAfkueTwvgI+O6rqGPmbRU4Jw6FCmKhfdT5vEAEwcNlxyTvzDU
+ c7U=
 X-IronPort-AV: E=Sophos;i="5.77,451,1596470400"; 
-   d="scan'208";a="151945102"
+   d="scan'208";a="151945107"
 Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
   by ob1.hgst.iphmx.com with ESMTP; 05 Nov 2020 08:04:59 +0800
-IronPort-SDR: 2KLBc1ltz7S1M4GPGBHn82DsM8qpC+wxcx18k+SMrDLoyViZpYGUQECmQDp6pckO8gm6PxX0ho
- 0w2oCiAzJkhQnpF7Ozgplrhb3X9KLzQ28c51BOWdbyt5B7ntYJ8xaDejKGgzkUUJk/hcIarRaN
- ZOHDBgvStPQyZnbyMR5uzsqq6MvhO5fBLjsCfoP9br4YNeCLMUgCoK8oFKUNrm9mDlKVpM9vux
- bFW7Tb4NAg96D3jj6vzSw5XlihB500ekRNCYqvqUYOjdaKBSK5U+No/YFU4uxl8OV2ht3ZM52C
- xPbcRuAlkuGf8qYLV7Wc/3TC
+IronPort-SDR: a4P3bC+FmsMVT3P4qTCSK8RajDqx6U4De0Jbs2/StbeN8sDVtYF64pphQben5ApEPGcDyPpdyv
+ 1rejacRtLOtmtsV8l23iEwLKW/1oPB3dzYo44UXcL0VASbZyZq6Ir1NzDNmofaVm/a/A/V0XQi
+ 6FGQ12BN2asEFHe+wWBM73BMkzsNimWJm4xl/dyO40rwm5eC/fu0WTixjqXyWkR2r/FFqMD7pf
+ HI6Eaq7tjCHXN9jLahYBv8BBG+9S6OU+t5D6vV3AcsHKemsUmTL5QOR810xyy3YWeJjBtULmkX
+ gydmN4z30WWdSZ1wsNiRtRpY
 Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
   by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2020 15:51:07 -0800
-IronPort-SDR: yNvnMjXW346K7U6jCdqqm43ZAUXp9tQ4/5PWfGi0t/hoOXEOkeWMH2sqmoF9MWr15T9IecUil5
- +rIn45F+wDZ1zPspKPZR1OgHnNlozCSwSnYV9jmeblvU1tlIro7n4fjvb9uDQVgiRLZK780H8R
- ELgikQw7yv+uSv8qijoCDDSAvDaENigKnr5VKSba21lUMzC8nK5f8mBQ3dPB2a7dSMlbOV8qkE
- B6ArTygPgNdOdvhW5m054E/h+5+TA0FS6XAi1PB3rQaHPRTVd3AjgiG1vKojnvnJbm+HBGh5Gc
- J9c=
+IronPort-SDR: CtPiSoKUeSrgYaq6D8avvUoNBth1SV31qkH08edSmw/qTywf6d2WcIna1XWhLHD8+R/7DaMQZ/
+ ETOVXtFpxLKPetK+qushwOtnkHBtD+XkJUFZD8Ns+1hSSyfpKf05rbG7b4WR1JV61U1Wc7fn7h
+ cfdTHuA1bzwDNReFgqgBlp7D1jb/ItXwtfyy25i5RJh6e1hI4wLnqggQc8QpdYVxIk4lcVJazD
+ VyCuRnB4CN+6EJwnyLZoRgSiQ15DYdXaZRJVDbVX5ae86tlphk9bNEF5roGpH43z+FnpKhPSPj
+ pto=
 WDCIronportException: Internal
 Received: from 6hj08h2.ad.shared (HELO jedi-01.hgst.com) ([10.86.60.117])
-  by uls-op-cesaip02.wdc.com with ESMTP; 04 Nov 2020 16:04:59 -0800
+  by uls-op-cesaip02.wdc.com with ESMTP; 04 Nov 2020 16:05:00 -0800
 From:   Atish Patra <atish.patra@wdc.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Atish Patra <atish.patra@wdc.com>,
@@ -64,9 +64,9 @@ Cc:     Atish Patra <atish.patra@wdc.com>,
         Palmer Dabbelt <palmer@dabbelt.com>,
         Paul Walmsley <paul.walmsley@sifive.com>,
         Zong Li <zong.li@sifive.com>
-Subject: [PATCH v3 1/5] RISC-V: Move __start_kernel to .head.text
-Date:   Wed,  4 Nov 2020 16:04:35 -0800
-Message-Id: <20201105000439.1491243-2-atish.patra@wdc.com>
+Subject: [PATCH v3 2/5] RISC-V: Initialize SBI early
+Date:   Wed,  4 Nov 2020 16:04:36 -0800
+Message-Id: <20201105000439.1491243-3-atish.patra@wdc.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201105000439.1491243-1-atish.patra@wdc.com>
 References: <20201105000439.1491243-1-atish.patra@wdc.com>
@@ -76,30 +76,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, __start_kernel is kept in _init while _start is in head section.
-This may result in "relocation truncated to fit error" if _init section is
-moved far from head. It also makes sense to keep entire head.S in one
-section.
+Currently, SBI is initialized towards the end of arch setup. This prevents
+the set memory operations to be invoked earlier as it requires a full tlb
+flush.
 
-Keep __start_kernel in head section rather than _init.
+Initialize SBI as early as possible.
 
 Signed-off-by: Atish Patra <atish.patra@wdc.com>
 ---
- arch/riscv/kernel/head.S | 1 -
- 1 file changed, 1 deletion(-)
+ arch/riscv/kernel/setup.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/arch/riscv/kernel/head.S b/arch/riscv/kernel/head.S
-index 11e2a4fe66e0..45dbdae930bf 100644
---- a/arch/riscv/kernel/head.S
-+++ b/arch/riscv/kernel/head.S
-@@ -177,7 +177,6 @@ setup_trap_vector:
+diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
+index c424cc6dd833..b916f4a904c4 100644
+--- a/arch/riscv/kernel/setup.c
++++ b/arch/riscv/kernel/setup.c
+@@ -89,6 +89,9 @@ void __init setup_arch(char **cmdline_p)
+ 		pr_err("No DTB found in kernel mappings\n");
+ #endif
  
- END(_start)
++	if (IS_ENABLED(CONFIG_RISCV_SBI))
++		sbi_init();
++
+ #ifdef CONFIG_SWIOTLB
+ 	swiotlb_init(1);
+ #endif
+@@ -97,10 +100,6 @@ void __init setup_arch(char **cmdline_p)
+ 	kasan_init();
+ #endif
  
--	__INIT
- ENTRY(_start_kernel)
- 	/* Mask all interrupts */
- 	csrw CSR_IE, zero
+-#if IS_ENABLED(CONFIG_RISCV_SBI)
+-	sbi_init();
+-#endif
+-
+ #ifdef CONFIG_SMP
+ 	setup_smp();
+ #endif
 -- 
 2.25.1
 
