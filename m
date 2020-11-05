@@ -2,200 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 724A82A7B76
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 11:15:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 677E22A7B7A
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 11:16:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727379AbgKEKP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 05:15:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39328 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726067AbgKEKP4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 05:15:56 -0500
-Received: from pobox.suse.cz (nat1.prg.suse.com [195.250.132.148])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E4E332087D;
-        Thu,  5 Nov 2020 10:15:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604571355;
-        bh=JUCNE9CUo/Zy5ahG3o2CBdGwYq96GfXTBKkF6jXHMQE=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=p7t9s+LGni3o8A34E6kdCde9kGiPPPFwfhxJHdPfNwePHO9WmC7/kK2PYche9V5Yj
-         uyAZfdhm4w1VoNGUnKJrxNGzRCs3hxAlybFv7z0BcDZeTPUp4e3WdBiLR372MmBgMH
-         gvINVI8nSQ1uMDRBQaWrHDoBYRsno2faONWiqQxY=
-Date:   Thu, 5 Nov 2020 11:15:51 +0100 (CET)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Lars Povlsen <lars.povlsen@microchip.com>
-cc:     Rishi Gupta <gupt21@gmail.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        UNGLinuxDriver <UNGLinuxDriver@microchip.com>,
-        linux-i2c@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] HID: mcp2221: Fix GPIO output handling
-In-Reply-To: <20201104220223.293253-1-lars.povlsen@microchip.com>
-Message-ID: <nycvar.YFH.7.76.2011051115140.18859@cbobk.fhfr.pm>
-References: <20201104220223.293253-1-lars.povlsen@microchip.com>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S1728930AbgKEKQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 05:16:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727851AbgKEKQc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 05:16:32 -0500
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F1DCC0613D2
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 02:16:30 -0800 (PST)
+Received: by mail-lj1-x242.google.com with SMTP id m8so999271ljj.0
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 02:16:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XzY1VkvmYL3pvQ6ooemzXER1+NGHzQExssTtwYHfu3I=;
+        b=XTFQbF5935sVeuBgqmaOO5pdnb3YL+UApn4NnnwcaWSfdg4FAy6KlYTD8nryvGlxg1
+         zmPsKr1X/9039LndgggUw00Pk+GXaNGvH1pRx2VVE5oowCpSYyb2407ZeNMNTnh++S3g
+         jFihuaqOm1X5T2ZVRothVsfeqaqcW1kGB4eZxaC7Sp0ydjd6NRHvC/r2L4WXFLJ9SNA7
+         8Ye1SiLbKEiHIeW6QWCn5epaHTPKW+nhHBOkqUlxMQg9ke6QBQ3MuX924sxywTVuTXZP
+         2V1c/2Gbcq0mBXzpawm8qxP7jzSJz5xS4QNVuQlLYTMJ+lvcxQKKkfqEQvYQ/YnHtkaD
+         /aIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XzY1VkvmYL3pvQ6ooemzXER1+NGHzQExssTtwYHfu3I=;
+        b=iOdVNZdEa/jRW6VwifIohi/oIrIfbsXGv15Dr1QQZPOILkUmYPf5R+YtBlS2Uy0a5O
+         nmA3A3LD18NEae+G0wun6jbUMy66mq/KbbarFUUncUrQXmBgo2QAuIQr4u/0K6WlgEj6
+         6IBXDM/vjPHS0TQoGp4f3e7JhtJ+z0zGEB671jIfwEf+Pyyph4E2Y7c/BWV+B/hkviAz
+         5t/uFLNferb91FKZGmUu/+6w2qxMycVVuhIwuzj0vTHcZJb7Gll+mFF4bBI9DflgtoRl
+         xgxoPbMiVOcc+x+dczADRRcWXnLKjK8wTkLaN4aTWHxyz46UJAgtIQEsGxFRNJZFr7TW
+         eewA==
+X-Gm-Message-State: AOAM533Xq5f1eji60fjtMqOKaj02P9dcogr9KnGJ3bfvuweAJafTUGng
+        vqX5yIZIA0UZLhw7CEX2XU1Nnx7cFH2F6MPQpsCIkg==
+X-Google-Smtp-Source: ABdhPJxaq73gcB/JxlAqEL/i+o9calac2E7MR1bcyxAJh/tpAKN316vVzkkP8N7+kPd9X5pE5hxh+OwUmsUZtVAg2Gw=
+X-Received: by 2002:a2e:80d2:: with SMTP id r18mr668709ljg.286.1604571388670;
+ Thu, 05 Nov 2020 02:16:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20180129005948.7714-1-bjorn.andersson@linaro.org> <CAKZGPAPrwXNeYk+bDiMBRczVf4PaBANnzhmenZie+V0BJ7OqBg@mail.gmail.com>
+In-Reply-To: <CAKZGPAPrwXNeYk+bDiMBRczVf4PaBANnzhmenZie+V0BJ7OqBg@mail.gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 5 Nov 2020 11:16:17 +0100
+Message-ID: <CACRpkdZ2UzA=Hyw+b20dCqzu8+L7_D1bTM44MKbbue2VFCY4UQ@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: msm: Use dynamic GPIO numbering
+To:     Arun KS <arunks.linux@gmail.com>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Timur Tabi <timur@codeaurora.org>,
+        Arun KS <getarunks@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 4 Nov 2020, Lars Povlsen wrote:
+On Fri, Oct 23, 2020 at 4:21 PM Arun KS <arunks.linux@gmail.com> wrote:
 
-> The mcp2221 driver GPIO output handling has has several issues.
-> 
-> * A wrong value is used for the GPIO direction.
-> 
-> * Wrong offsets are calculated for some GPIO set value/set direction
->   operations, when offset is larger than 0.
-> 
-> This has been fixed by introducing proper manifest constants for the
-> direction encoding, and using 'offsetof' when calculating GPIO
-> register offsets.
-> 
-> The updated driver has been tested with the Sparx5 pcb134/pcb135
-> board, which has the mcp2221 device with several (output) GPIO's.
+> Im only concerned because, after this change, the use of gpio number
+> from user space has become a little difficult.
 
-I believe we want also
+This makes me a bit puzzled so I need to push back a bit
+here.
 
-Fixes: 328de1c519c5c092 ("HID: mcp2221: add GPIO functionality support")
+What is this userspace and what interface is it using?
 
-here, right? I'll add that and apply, thanks.
+We recommend using the GPIO character device with
+libgpiod for userspace applications:
+https://www.kernel.org/doc/html/latest/driver-api/gpio/using-gpio.html
 
-> Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
-> ---
->  drivers/hid/hid-mcp2221.c | 48 +++++++++++++++++++++++++++++++--------
->  1 file changed, 39 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/hid/hid-mcp2221.c b/drivers/hid/hid-mcp2221.c
-> index 0d27ccb55dd9..4211b9839209 100644
-> --- a/drivers/hid/hid-mcp2221.c
-> +++ b/drivers/hid/hid-mcp2221.c
-> @@ -49,6 +49,36 @@ enum {
->  	MCP2221_ALT_F_NOT_GPIOD = 0xEF,
->  };
->  
-> +/* MCP GPIO direction encoding */
-> +enum {
-> +	MCP2221_DIR_OUT = 0x00,
-> +	MCP2221_DIR_IN = 0x01,
-> +};
-> +
-> +#define MCP_NGPIO	4
-> +
-> +/* MCP GPIO set command layout */
-> +struct mcp_set_gpio {
-> +	u8 cmd;
-> +	u8 dummy;
-> +	struct {
-> +		u8 change_value;
-> +		u8 value;
-> +		u8 change_direction;
-> +		u8 direction;
-> +	} gpio[MCP_NGPIO];
-> +} __packed;
-> +
-> +/* MCP GPIO get command layout */
-> +struct mcp_get_gpio {
-> +	u8 cmd;
-> +	u8 dummy;
-> +	struct {
-> +		u8 direction;
-> +		u8 value;
-> +	} gpio[MCP_NGPIO];
-> +} __packed;
-> +
->  /*
->   * There is no way to distinguish responses. Therefore next command
->   * is sent only after response to previous has been received. Mutex
-> @@ -542,7 +572,7 @@ static int mcp_gpio_get(struct gpio_chip *gc,
->  
->  	mcp->txbuf[0] = MCP2221_GPIO_GET;
->  
-> -	mcp->gp_idx = (offset + 1) * 2;
-> +	mcp->gp_idx = offsetof(struct mcp_get_gpio, gpio[offset].value);
->  
->  	mutex_lock(&mcp->lock);
->  	ret = mcp_send_data_req_status(mcp, mcp->txbuf, 1);
-> @@ -559,7 +589,7 @@ static void mcp_gpio_set(struct gpio_chip *gc,
->  	memset(mcp->txbuf, 0, 18);
->  	mcp->txbuf[0] = MCP2221_GPIO_SET;
->  
-> -	mcp->gp_idx = ((offset + 1) * 4) - 1;
-> +	mcp->gp_idx = offsetof(struct mcp_set_gpio, gpio[offset].value);
->  
->  	mcp->txbuf[mcp->gp_idx - 1] = 1;
->  	mcp->txbuf[mcp->gp_idx] = !!value;
-> @@ -575,7 +605,7 @@ static int mcp_gpio_dir_set(struct mcp2221 *mcp,
->  	memset(mcp->txbuf, 0, 18);
->  	mcp->txbuf[0] = MCP2221_GPIO_SET;
->  
-> -	mcp->gp_idx = (offset + 1) * 5;
-> +	mcp->gp_idx = offsetof(struct mcp_set_gpio, gpio[offset].direction);
->  
->  	mcp->txbuf[mcp->gp_idx - 1] = 1;
->  	mcp->txbuf[mcp->gp_idx] = val;
-> @@ -590,7 +620,7 @@ static int mcp_gpio_direction_input(struct gpio_chip *gc,
->  	struct mcp2221 *mcp = gpiochip_get_data(gc);
->  
->  	mutex_lock(&mcp->lock);
-> -	ret = mcp_gpio_dir_set(mcp, offset, 0);
-> +	ret = mcp_gpio_dir_set(mcp, offset, MCP2221_DIR_IN);
->  	mutex_unlock(&mcp->lock);
->  
->  	return ret;
-> @@ -603,7 +633,7 @@ static int mcp_gpio_direction_output(struct gpio_chip *gc,
->  	struct mcp2221 *mcp = gpiochip_get_data(gc);
->  
->  	mutex_lock(&mcp->lock);
-> -	ret = mcp_gpio_dir_set(mcp, offset, 1);
-> +	ret = mcp_gpio_dir_set(mcp, offset, MCP2221_DIR_OUT);
->  	mutex_unlock(&mcp->lock);
->  
->  	/* Can't configure as output, bailout early */
-> @@ -623,7 +653,7 @@ static int mcp_gpio_get_direction(struct gpio_chip *gc,
->  
->  	mcp->txbuf[0] = MCP2221_GPIO_GET;
->  
-> -	mcp->gp_idx = (offset + 1) * 2;
-> +	mcp->gp_idx = offsetof(struct mcp_get_gpio, gpio[offset].direction);
->  
->  	mutex_lock(&mcp->lock);
->  	ret = mcp_send_data_req_status(mcp, mcp->txbuf, 1);
-> @@ -632,7 +662,7 @@ static int mcp_gpio_get_direction(struct gpio_chip *gc,
->  	if (ret)
->  		return ret;
->  
-> -	if (mcp->gpio_dir)
-> +	if (mcp->gpio_dir == MCP2221_DIR_IN)
->  		return GPIO_LINE_DIRECTION_IN;
->  
->  	return GPIO_LINE_DIRECTION_OUT;
-> @@ -758,7 +788,7 @@ static int mcp2221_raw_event(struct hid_device *hdev,
->  				mcp->status = -ENOENT;
->  			} else {
->  				mcp->status = !!data[mcp->gp_idx];
-> -				mcp->gpio_dir = !!data[mcp->gp_idx + 1];
-> +				mcp->gpio_dir = data[mcp->gp_idx + 1];
->  			}
->  			break;
->  		default:
-> @@ -860,7 +890,7 @@ static int mcp2221_probe(struct hid_device *hdev,
->  	mcp->gc->get_direction = mcp_gpio_get_direction;
->  	mcp->gc->set = mcp_gpio_set;
->  	mcp->gc->get = mcp_gpio_get;
-> -	mcp->gc->ngpio = 4;
-> +	mcp->gc->ngpio = MCP_NGPIO;
->  	mcp->gc->base = -1;
->  	mcp->gc->can_sleep = 1;
->  	mcp->gc->parent = &hdev->dev;
-> -- 
-> 2.25.1
-> 
+Is there any problem with this?
 
--- 
-Jiri Kosina
-SUSE Labs
+sysfs is deprecated for years now:
+https://www.kernel.org/doc/html/latest/admin-guide/gpio/sysfs.html
 
+Yours,
+Linus Walleij
