@@ -2,235 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EF962A8A11
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 23:47:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F4282A8A2A
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 23:51:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732397AbgKEWro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 17:47:44 -0500
-Received: from foss.arm.com ([217.140.110.172]:45282 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726801AbgKEWrn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 17:47:43 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 208BD1474;
-        Thu,  5 Nov 2020 14:47:43 -0800 (PST)
-Received: from [10.57.20.162] (unknown [10.57.20.162])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 11EA43F718;
-        Thu,  5 Nov 2020 14:47:41 -0800 (PST)
-Subject: Re: [PATCH v3 14/26] coresight: etm4x: Add sysreg access helpers
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     linux-arm-kernel@lists.infradead.org, mike.leach@linaro.org,
-        coresight@lists.linaro.org, linux-kernel@vger.kernel.org
-References: <20201028220945.3826358-1-suzuki.poulose@arm.com>
- <20201028220945.3826358-16-suzuki.poulose@arm.com>
- <20201105205248.GA3047244@xps15>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <fa21ee02-a000-9d39-2e0c-850f63354272@arm.com>
-Date:   Thu, 5 Nov 2020 22:47:41 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1732584AbgKEWvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 17:51:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38392 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732293AbgKEWua (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 17:50:30 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EF42C0613D2
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 14:50:30 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id v12so2496303pfm.13
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 14:50:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ITyVVyrjBjMsKXUPqKEIMGOz26VLuknXtLKpEuuWCZ8=;
+        b=hSedokPEjbLaB+xoEyp9IKJX7h+IgmIn/2R9U/Uc8qtN0+33DCYTMId1JCLh0vtR4b
+         ep/7qqGt5LoAVnlN/RnQvrFTF+koK3m1IGCphLW5QZKhI+kHzX6tbFYn4A7aP+zIlDr4
+         /3N+Qy2QrGEskI2piogI9XBDl5dmqNoHd9TnTvgkLqiUraNUWRqAthchNTw6wIRIsoZj
+         k8iRptooi5Dk4/S3rsW2G0FxuUk4Yj2llR/+/wwEC/JJIbTcCDJkEuszrLYW8wRBuD9Z
+         YAV6I9V0Eq3FhfBi8l5BNhL/WKDIpwtcRLdpcgZiihkoNa4JdFC0emSd3UiuHBNRyK8G
+         UKcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ITyVVyrjBjMsKXUPqKEIMGOz26VLuknXtLKpEuuWCZ8=;
+        b=n9UTWuWPaSxbUdNBSvL4zkWbbBD376ux+z3uEamzGxhKFyPwmCU1+jIvmxydorIVN1
+         eXdtJf/wBU+DpFdrjjEp8hZbia8J3H/5MRRpZcZBz3/tNsFn2yM0PJ1eO6Mr/SVeV5a0
+         CrxZdDyBuFR357S3wIFyB/e41nSECRKqeBtlhQLhTGzx7uzd9+Hj//5ITzZ72QG4TA0p
+         ReWeQIH6eSuure+nBosWbfRMSfUcQl0+Q8V986Rfp0Gs0J4+M5QvWHopu0qrZV9jg7DD
+         XzjYouwvsxSNaPv/MEVEQUct6H+5/5pzMe5DLYOFF00Cgq1XdxEKroZ9OSLwlDA4LyPJ
+         oPZw==
+X-Gm-Message-State: AOAM533h26qfHHiavsorhpt5JhOF6Rf8pSVxDImHzjRqecu8bB1OCA8W
+        YHs8hA4gKNKmxN7Ixa9OmQuF8KUSVo7WuA==
+X-Google-Smtp-Source: ABdhPJwFdF36DAICwXal1BEoZqFCs+jClw7rlQTBQ6jQCFdGCF8TgLztW8qFU6394PKklhqZ2S6e2Q==
+X-Received: by 2002:a17:90b:1058:: with SMTP id gq24mr4569893pjb.29.1604616629903;
+        Thu, 05 Nov 2020 14:50:29 -0800 (PST)
+Received: from xps15.cg.shawcable.net (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
+        by smtp.gmail.com with ESMTPSA id d145sm3854501pfd.136.2020.11.05.14.50.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Nov 2020 14:50:29 -0800 (PST)
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     ohad@wizery.com, bjorn.andersson@linaro.org
+Cc:     guennadi.liakhovetski@linux.intel.com,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v5 0/8] rpmsg: Make RPMSG name service modular 
+Date:   Thu,  5 Nov 2020 15:50:20 -0700
+Message-Id: <20201105225028.3058818-1-mathieu.poirier@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20201105205248.GA3047244@xps15>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mathieu,
+This revision addresses comments received from the previous revision,
+i.e V4.  Please see details below.
 
-On 11/5/20 8:52 PM, Mathieu Poirier wrote:
-> On Wed, Oct 28, 2020 at 10:09:33PM +0000, Suzuki K Poulose wrote:
->> ETMv4.4 architecture defines the system instructions for accessing
->> ETM via register accesses. Add basic support for accessing a given
->> register via system instructions.
->>
->> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
->> Cc: Mike Leach <mike.leach@linaro.org>
->> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
->> ---
->>   .../coresight/coresight-etm4x-core.c          |  39 ++
->>   drivers/hwtracing/coresight/coresight-etm4x.h | 348 ++++++++++++++++--
->>   2 files changed, 365 insertions(+), 22 deletions(-)
->>
->> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
->> index 4af7d45dfe63..90b80982c615 100644
->> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
->> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
->> @@ -56,6 +56,45 @@ static u64 etm4_get_access_type(struct etmv4_config *config);
->>   
->>   static enum cpuhp_state hp_online;
->>   
->> +u64 etm4x_sysreg_read(struct csdev_access *csa,
->> +		      u32 offset,
->> +		      bool _relaxed,
->> +		      bool _64bit)
-> 
-> Please fix the stacking.
-> 
+It starts by making the RPMSG protocol transport agnostic by
+moving the headers it uses to generic types and using those in the
+current implementation.  From there it re-uses the work that Arnaud
+published[1] to make the name service modular.
 
-Sure.
+Tested on stm32mp157 with the RPMSG client sample application.  Applies
+cleanly on v5.10-rc2.
 
+Thanks,
+Mathieu
 
->> +
->> +void etm4x_sysreg_write(struct csdev_access *csa,
->> +			u64 val,
->> +			u32 offset,
->> +			bool _relaxed,
->> +			bool _64bit)
-> 
-> Here too.
+[1]. https://patchwork.kernel.org/project/linux-remoteproc/list/?series=338335
 
-Sure.
+-------
+New for V5:
+- Moved include/linux/rpms_ns.h to include/linux/rpmsg/ns.h
+- Moved include/linux/rpmsg_byteorder.h to include/linux/rpmsg/byteorder.h
+- Sorted header files alphabetically in ns.h
+- Added include for rpmsg.h in ns.h
+- Rebased to v5.10-rc2
 
+Arnaud Pouliquen (4):
+  rpmsg: virtio: Rename rpmsg_create_channel
+  rpmsg: core: Add channel creation internal API
+  rpmsg: virtio: Add rpmsg channel device ops
+  rpmsg: Turn name service into a stand alone driver
 
->>   	/* Writing 0 to TRCOSLAR unlocks the trace registers */
->> diff --git a/drivers/hwtracing/coresight/coresight-etm4x.h b/drivers/hwtracing/coresight/coresight-etm4x.h
->> index 510828c73db6..5cf71b30a652 100644
->> --- a/drivers/hwtracing/coresight/coresight-etm4x.h
->> +++ b/drivers/hwtracing/coresight/coresight-etm4x.
+Mathieu Poirier (4):
+  rpmsg: Introduce __rpmsg{16|32|64} types
+  rpmsg: virtio: Move from virtio to rpmsg byte conversion
+  rpmsg: Move structure rpmsg_ns_msg to header file
+  rpmsg: Make rpmsg_{register|unregister}_device() public
 
->> +
->> +#define ETM4x_READ_CASES(res)	CASE_LIST(READ, (res))
->> +#define ETM4x_WRITE_CASES(val)	CASE_LIST(WRITE, (val))
->> +
->> +#define read_etm4x_sysreg_offset(csa, offset, _64bit)				\
->> +	({									\
->> +		u64 __val;							\
->> +										\
->> +		if (__builtin_constant_p((offset)))				\
-> 
-> Neat trick - I wonder how you stumbled on that one.
-> 
+ drivers/rpmsg/Kconfig            |   8 ++
+ drivers/rpmsg/Makefile           |   1 +
+ drivers/rpmsg/rpmsg_core.c       |  44 ++++++++
+ drivers/rpmsg/rpmsg_internal.h   |  14 ++-
+ drivers/rpmsg/rpmsg_ns.c         | 108 ++++++++++++++++++
+ drivers/rpmsg/virtio_rpmsg_bus.c | 185 +++++++++++--------------------
+ include/linux/rpmsg.h            |  63 ++++++++++-
+ include/linux/rpmsg/byteorder.h  |  67 +++++++++++
+ include/linux/rpmsg/ns.h         |  60 ++++++++++
+ include/uapi/linux/rpmsg_types.h |  11 ++
+ 10 files changed, 434 insertions(+), 127 deletions(-)
+ create mode 100644 drivers/rpmsg/rpmsg_ns.c
+ create mode 100644 include/linux/rpmsg/byteorder.h
+ create mode 100644 include/linux/rpmsg/ns.h
+ create mode 100644 include/uapi/linux/rpmsg_types.h
 
-:-). There are plenty of uses in the kernel and glibc.
+-- 
+2.25.1
 
-> 
->> +			__val = read_etm4x_sysreg_const_offset((offset));	\
->> +		else								\
->> +			__val = etm4x_sysreg_read((csa), (offset),		\
->> +						  true, _64bit);		\
->> +		__val;								\
->> +	 })
->> +
->> +#define write_etm4x_sysreg_offset(csa, val, offset, _64bit)		\
->> +	do {								\
->> +		if (__builtin_constant_p((offset)))			\
->> +			write_etm4x_sysreg_const_offset((val),		\
->> +							(offset));	\
->> +		else							\
->> +			etm4x_sysreg_write((csa), (val), (offset),	\
->> +						true, _64bit);		\
->> +	} while (0)
->> +
->> +
->> +#define etm4x_relaxed_read32(csa, offset)				\
->> +	((u32)((csa)->io_mem ?						\
->> +		 readl_relaxed((csa)->base + (offset)) :		\
->> +		 read_etm4x_sysreg_offset((csa), (offset), false)))
-> 
-> Please add an extra new line - otherwise it is very hard to read.
-> 
-
-Sure
-
->> +#define etm4x_relaxed_read64(csa, offset)				\
->> +	((u64)((csa)->io_mem ?						\
->> +		 readq_relaxed((csa)->base + (offset)) :		\
->> +		 read_etm4x_sysreg_offset((csa), (offset), true)))
-> 
-> Here too.
-> 
-
-sure
-
->> +#define etm4x_read32(csa, offset)					\
->> +	({								\
->> +		u32 __val = etm4x_relaxed_read32((csa), (offset));	\
->> +		__iormb(__val);						\
->> +		__val;							\
->> +	 })
->> +
->> +#define etm4x_read64(csa, offset)					\
->> +	({								\
->> +		u64 __val = etm4x_relaxed_read64((csa), (offset));	\
->> +		__iormb(__val);						\
->> +		__val;							\
->> +	 })
->> +
->> +#define etm4x_relaxed_write32(csa, val, offset)				\
->> +	do {								\
->> +		if ((csa)->io_mem)					\
->> +			writel_relaxed((val), (csa)->base + (offset));	\
->> +		else							\
->> +			write_etm4x_sysreg_offset((csa), (val),	\
->> +						    (offset), false);	\
-> 
-> Why using an if/else statement and above the '?' condition marker?  I would
-> really like a uniform approach.  Otherwise the reader keeps looking for
-> something subtle when there isn't.
-
-The write variants do not return a result, unlike the read.
-So, we cant use the '?'
-
-> 
->> +	} while (0)
->> +
->> +#define etm4x_relaxed_write64(csa, val, offset)				\
->> +	do {								\
->> +		if ((csa)->io_mem)					\
->> +			writeq_relaxed((val), (csa)->base + (offset));	\
->> +		else							\
->> +			write_etm4x_sysreg_offset((csa), (val),	\
->> +						    (offset), true);	\
->> +	} while (0)
->> +
->> +#define etm4x_write32(csa, val, offset)					\
->> +	do {								\
->> +		__iowmb();						\
->> +		etm4x_relaxed_write32((csa), (val), (offset));		\
->> +	} while (0)
->> +
->> +#define etm4x_write64(csa, val, offset)					\
->> +	do {								\
->> +		__iowmb();						\
->> +		etm4x_relaxed_write64((csa), (val), (offset));		\
->> +	} while (0)
->>   
->> -#define etm4x_write64(csa, val, offset)			\
->> -	writeq((val), (csa)->base + (offset))
->>   
->>   /* ETMv4 resources */
->>   #define ETM_MAX_NR_PE			8
->> @@ -512,4 +806,14 @@ enum etm_addr_ctxtype {
->>   
->>   extern const struct attribute_group *coresight_etmv4_groups[];
->>   void etm4_config_trace_mode(struct etmv4_config *config);
->> +
->> +u64 etm4x_sysreg_read(struct csdev_access *csa,
->> +		      u32 offset,
->> +		      bool _relaxed,
->> +		      bool _64bit);
->> +void etm4x_sysreg_write(struct csdev_access *csa,
->> +			u64 val,
->> +			u32 offset,
->> +			bool _relaxed,
->> +			bool _64bit);
-> 
-> With the above:
-> 
-> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-
-Thanks !
-
-> 
-> This patch holds together well.  I commend you on rendering something that is
-> quite complex into a manageable implementation.  That being said it will impact
-> Mike's complex configuration patchset (or Mike's complex configuration patchset
-> will have an impact on this).
-
-I understand. Will see when we get to it.
-
-Cheers
-Suzuki
