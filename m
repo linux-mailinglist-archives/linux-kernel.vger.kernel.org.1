@@ -2,79 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8FFB2A74DE
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 02:22:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F32D2A74DF
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 02:25:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731545AbgKEBWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 20:22:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35140 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727536AbgKEBWb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 20:22:31 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E02D7C0613CF;
-        Wed,  4 Nov 2020 17:22:30 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S2388259AbgKEBZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 20:25:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59224 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727536AbgKEBZi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 20:25:38 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CRQjw5TzHz9sVD;
-        Thu,  5 Nov 2020 12:22:28 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1604539348;
-        bh=o3kxhsPOoRuBD9yzt7+LHKfRVPr7Xjr6fTAJo5oQUqM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=kc/wVsWhWd3Gd4exDJABRTSdweefBFs9vg4GIHk4IuXtjcns3oI/lNG4MwNUzpIed
-         rT3GlpNB/VIPemLuse9OTbhDITUuaFx3DVg3n324yvVAg07pkGhI0NE5RjAJDgvWNC
-         rZUMIy4Rm12TQMzCqpW2gzRCFvwI6akxlYmPWgHkdxisjBSRoV6k14eKc5iSxNnuX0
-         RU5t5+EyX1vGsE/H8YnJr0KqqpUgsOLuFOdyCkW/nRKbr749ZNcfj1pP1SUv1coDGi
-         H72PyH0Yo8jZszf+fVLqCNrrokGh4QK9yF+xLUOLi7MgHCKW4qIVhP56oAzHXMaF0C
-         SwABiQEUWvRyw==
-Date:   Thu, 5 Nov 2020 12:22:27 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Liviu Dudau <Liviu.Dudau@arm.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: removal of the mali-dp tree
-Message-ID: <20201105122227.13e0d997@canb.auug.org.au>
+        by mail.kernel.org (Postfix) with ESMTPSA id D08BC206CB;
+        Thu,  5 Nov 2020 01:25:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604539538;
+        bh=qz4yYQPleYZbmYkefx6rykyEYB+BXcy5LdvQc/5RlZY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=2O5lFPS2WLh5ugldP62GfCoVHycgJP13/7otcNEes96C4JFqtwJU4HHI0ycNldo0M
+         rHAXQEGpCqJorLN/6FKbsiya/q17PP2uVVC6MkMKRPhnCdbCk1KLfItWDrIU+CDz4B
+         GIMRADhmXuPevLY+baJDv86I+Hjv2VAV334TDI+c=
+Date:   Wed, 4 Nov 2020 17:25:36 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Madalin Bucur <madalin.bucur@nxp.com>
+Cc:     Zou Wei <zou_wei@huawei.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH -next] dpaa_eth: use false and true for bool variables
+Message-ID: <20201104172536.140caa93@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <AM6PR04MB397628B89D6A10C973FF3162EC110@AM6PR04MB3976.eurprd04.prod.outlook.com>
+References: <1604405100-33255-1-git-send-email-zou_wei@huawei.com>
+        <AM6PR04MB397628B89D6A10C973FF3162EC110@AM6PR04MB3976.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/0Bp/ru/azcjk8ljkyZrrmwU";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/0Bp/ru/azcjk8ljkyZrrmwU
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, 3 Nov 2020 12:13:29 +0000 Madalin Bucur wrote:
+> > Fix coccicheck warnings:
+> > 
+> > ./dpaa_eth.c:2549:2-22: WARNING: Assignment of 0/1 to bool variable
+> > ./dpaa_eth.c:2562:2-22: WARNING: Assignment of 0/1 to bool variable
+> > 
+> > Reported-by: Hulk Robot <hulkci@huawei.com>
+> > Signed-off-by: Zou Wei <zou_wei@huawei.com>
+> 
+> Acked-by: Madalin Bucur <madalin.bucur@oss.nxp.com>
 
-Hi all,
-
-The mali-dp tree (git://linux-arm.org/linux-ld#for-upstream/mali-dp)
-has not been updated for more than a year and only contains a single
-patch that has been merged elsewhere as a different commit.  I will
-remove it from linux-next tomorrow.  If you want it reinstated, please
-just let me know.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/0Bp/ru/azcjk8ljkyZrrmwU
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+jU9MACgkQAVBC80lX
-0GxhVQgAhJQIXSpeH5uOUkJ9EeNwR10iegDM4v3vCLHi2bV0NAUXhX1qfLpqPkux
-u+2azM0QbVAizF7yyOr3hcqv9nSWBF+0gCzFx05Pa8kIQDpWCjZ6GtDOEmHT0D5T
-VHQED31v0gxMkUsi3f0wFlStwLfZrhd5bjhljAZZImPTr9jR5clp9yNT7eQUI8Bi
-6vlZaX9Kq9N/WzkIe8WgLb+uPNezFTHNyF+cVJSZT4wJEimV/yj1kAzx30XvLvB1
-L7rlzl32sM2F1tn1uTy/cTVe80Cenc7xrhRnjrLWr+jh31jIJiq3g0x2l0NcogOj
-s92/s6zzlC2vdXLXgmom59hDQpnX+w==
-=nHKp
------END PGP SIGNATURE-----
-
---Sig_/0Bp/ru/azcjk8ljkyZrrmwU--
+Applied, thanks!
