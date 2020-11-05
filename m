@@ -2,109 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FC462A84B2
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 18:17:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DE182A84B4
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 18:17:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731260AbgKERRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 12:17:05 -0500
-Received: from foss.arm.com ([217.140.110.172]:37858 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726729AbgKERRF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 12:17:05 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 62F27142F;
-        Thu,  5 Nov 2020 09:17:04 -0800 (PST)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CD75F3F719;
-        Thu,  5 Nov 2020 09:17:02 -0800 (PST)
-References: <20201105075021.1302386-1-juri.lelli@redhat.com> <jhja6vvztvk.mognet@arm.com> <20201105161236.GA5522@localhost.localdomain> <b279124a-d7f8-9801-8a8a-e2bced504e19@redhat.com>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Daniel Bristot de Oliveira <bristot@redhat.com>
-Cc:     Juri Lelli <juri.lelli@redhat.com>, peterz@infradead.org,
-        mingo@redhat.com, glenn@aurora.tech, linux-kernel@vger.kernel.org,
-        rostedt@goodmis.org, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, tglx@linutronix.de,
-        luca.abeni@santannapisa.it, tommaso.cucinotta@santannapisa.it
-Subject: Re: [PATCH] sched/deadline: Fix priority inheritance with multiple scheduling classes
-In-reply-to: <b279124a-d7f8-9801-8a8a-e2bced504e19@redhat.com>
-Date:   Thu, 05 Nov 2020 17:17:00 +0000
-Message-ID: <jhj8sbfzptf.mognet@arm.com>
+        id S1732061AbgKERRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 12:17:12 -0500
+Received: from mail-io1-f72.google.com ([209.85.166.72]:47625 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732020AbgKERRL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 12:17:11 -0500
+Received: by mail-io1-f72.google.com with SMTP id d19so1627322iod.14
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 09:17:09 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=Rfdp0/IC9VqRIhN/SmK7/bJW5Cqy/A/9wt6SQdrC/so=;
+        b=dWbHleiOXFsd0hp+63nUWenFVIHTXABDP0L/vY9cGPbp56E69QEuzLM0y/kdVdRUe2
+         NmwSkXtWBFbrtLlyOtGrDOtK3L/mBnwFLcgm+DgSFZchi7/WeMgAnpSR7vmdFXE9ceY+
+         4CLhMwT8ZDEFrBJHwKcGAy2jl72/lZ4wAH2pjw5BMmGo+MrDt3KaIKuvVxV8q4nanS2m
+         XOkd2C+l3JVc4bB7pwmjVJPO0Ntd9loIkHQOgRLE/YXsCtg51Tv0Bi7ietvpOeWQlhgy
+         v7jmXHOYIiLxYIS/qUpqTRtyPGPe+6ng3qqaw8FZGJuILv6ryWWc6A2AmTybSbRxTVIC
+         MbCQ==
+X-Gm-Message-State: AOAM532zcmX14eTTVKx/w9FvncHZ1M7sJz4mPCjunKRngdJ2pim4XnPl
+        B55Km2vvXOszz0T/dYFaeRKmFHGJrBtjdrnAUue370Dvn9kE
+X-Google-Smtp-Source: ABdhPJz6aE++DpR5GB57XSRgnn/AejK0OmDlD9JNlHk2Cn/tHZAQrZtFP17BXU3YjRc+tzy/tebsQtaCi4N/l2rop3tvXbzsLPOf
 MIME-Version: 1.0
-Content-Type: text/plain
+X-Received: by 2002:a92:7a0c:: with SMTP id v12mr2249529ilc.37.1604596628995;
+ Thu, 05 Nov 2020 09:17:08 -0800 (PST)
+Date:   Thu, 05 Nov 2020 09:17:08 -0800
+In-Reply-To: <000000000000dd392b05b0a1b7ac@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000014484705b35f4414@google.com>
+Subject: Re: WARNING in handle_exception_nmi
+From:   syzbot <syzbot+4e78ae6b12b00b9d1042@syzkaller.appspotmail.com>
+To:     bp@alien8.de, hpa@zytor.com, jmattson@google.com, joro@8bytes.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mingo@redhat.com, pbonzini@redhat.com, peterz@infradead.org,
+        sean.j.christopherson@intel.com, syzkaller-bugs@googlegroups.com,
+        tglx@linutronix.de, vkuznets@redhat.com, wanpengli@tencent.com,
+        will@kernel.org, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+syzbot suspects this issue was fixed by commit:
 
-On 05/11/20 16:33, Daniel Bristot de Oliveira wrote:
-> On 11/5/20 5:12 PM, Juri Lelli wrote:
->> On 05/11/20 15:49, Valentin Schneider wrote:
->>> For my own sake, what affinity problems are you thinking of?
->>>
->>> With proxy exec we have this "funny" dance of shoving the entire blocked-on
->>> chain on a single runqueue to get the right selection out of
->>> pick_next_task(), and that needs to deal with affinity (i.e. move the task
->>> back to a sensible rq once it becomes runnable).
->>>
->>> With the current PI, the waiting tasks are blocked and enqueued in the
->>> pi_waiters tree, so as I see it affinity shouldn't matter; what am I
->>> missing / not seeing? Is that related to bandwidth handling?
->>
->> Think we might break admission control checks if donor and bosted are,
->> for example, on different exclusive sets of CPUs. Guess that is a
->> problem with proxy as well, though.
+commit f8e48a3dca060e80f672d398d181db1298fbc86c
+Author: Peter Zijlstra <peterz@infradead.org>
+Date:   Thu Oct 22 10:23:02 2020 +0000
 
-Right, that gives you different rd's...
+    lockdep: Fix preemption WARN for spurious IRQ-enable
 
->> As said in the comment above, this
->> is unfortunately not much more than a band-aid. Hoping we can buy us
->> some time and fix it properly with proxy.
->
-> I agree with Juri that the current approach is known to be broken,
-> and that the proxy execution seems to be the mechanisms to go to
-> try to address these problems. However, this will take some time.
->
-> Meanwhile, this patch that Juri proposes fixes problem
-> in the current mechanism - using the same approach (and breaking
-> in a known way :D).
->
-> A proper way to handle the priority inversion with a disjoint
-> set of CPUs is something that will also be an issue with proxy
-> execution. But that is an even more complex topic :-(.
->
-> So, IMHO, Juri's patch works well to avoid a crash,
-> making the system to behave as we expected (even if
-> we know that we cannot expect too much).
->
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17bbfa8a500000
+start commit:   d3d45f82 Merge tag 'pinctrl-v5.9-2' of git://git.kernel.or..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=89ab6a0c48f30b49
+dashboard link: https://syzkaller.appspot.com/bug?extid=4e78ae6b12b00b9d1042
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12f24a0b900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=167b838f900000
 
-Aye, no disagreement here! I was mainly asking out of "personal interest",
-given I too have an eye on proxy exec - and would actually like to get back
-to it this month, if my inbox agrees.
+If the result looks correct, please mark the issue as fixed by replying with:
 
->>> With this change, do we still need sched_dl_entity.dl_boosted? AIUI this
->>> could become
->>>
->>>   bool is_dl_boosted(struct sched_dl_entity *dl_se)
->>>   {
->>>           return pi_of(dl_se) != dl_se;
->>>   }
->>
->> Makes sense to me. I'll add this change as a separate patch if the rest
->> makes sense to people as well. :-)
->
-> +1
+#syz fix: lockdep: Fix preemption WARN for spurious IRQ-enable
 
-FWIW nothing strikes me as too crazy, so with the above:
-
-Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
-
->
-> -- Daniel
->
->>
->> Thanks for the quick review!
->>
->> Best,
->> Juri
->>
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
