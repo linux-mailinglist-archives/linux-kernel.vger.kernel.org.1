@@ -2,159 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B06DD2A76D4
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 06:15:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 219422A770B
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 06:25:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730273AbgKEFPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 00:15:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49254 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726539AbgKEFP3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 00:15:29 -0500
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6FFDF2083B;
-        Thu,  5 Nov 2020 05:15:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604553328;
-        bh=tIFeScgp/vu8pkzneBUXD4tf8RI+kiaDiDaEGRZfBoI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=qfUFey0dLu9KAoC3B/Mr5ggB7M86n7U5ByZ/clxymHu1UkYAKedGu/qMafPiszMYU
-         fc7877f6MGOlE9L4wix5F6Ky+sgmQYvOmlgwfqDpSPpwmZ+DQqDrTHMb0O9AnNnNn3
-         NtIoS9kw9Z9drgByoht15aBMwEqlOqI5tfs4uUcc=
-Date:   Thu, 5 Nov 2020 14:15:24 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, Eddy_Wu@trendmicro.com,
-        x86@kernel.org, davem@davemloft.net, naveen.n.rao@linux.ibm.com,
-        anil.s.keshavamurthy@intel.com, linux-arch@vger.kernel.org,
-        cameron@moodycamel.com, oleg@redhat.com, will@kernel.org,
-        paulmck@kernel.org
-Subject: Re: [PATCH v5 14/21] kprobes: Remove NMI context check
-Message-Id: <20201105141524.9cf014cbfdc83af2daa43fa1@kernel.org>
-In-Reply-To: <20201104094722.70b9977c@gandalf.local.home>
-References: <159870598914.1229682.15230803449082078353.stgit@devnote2>
-        <159870615628.1229682.6087311596892125907.stgit@devnote2>
-        <20201030213831.04e81962@oasis.local.home>
-        <20201102141138.1fa825113742f3bea23bc383@kernel.org>
-        <20201102145334.23d4ba691c13e0b6ca87f36d@kernel.org>
-        <20201102160234.fa0ae70915ad9e2b21c08b85@kernel.org>
-        <20201102092726.57cb643f@gandalf.local.home>
-        <20201103143938.704c7974e93c854511580c38@kernel.org>
-        <20201103110913.2d7b4cea@rorschach.local.home>
-        <20201104110852.5dcace1aa7f912020ca1be2e@kernel.org>
-        <20201104094722.70b9977c@gandalf.local.home>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1730442AbgKEFZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 00:25:15 -0500
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:56760 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727711AbgKEFZO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 00:25:14 -0500
+Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
+  by alexa-out.qualcomm.com with ESMTP; 04 Nov 2020 21:25:13 -0800
+X-QCInternal: smtphost
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 04 Nov 2020 21:25:11 -0800
+X-QCInternal: smtphost
+Received: from dikshita-linux.qualcomm.com ([10.204.65.237])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 05 Nov 2020 10:54:59 +0530
+Received: by dikshita-linux.qualcomm.com (Postfix, from userid 347544)
+        id 08AC455F9; Thu,  5 Nov 2020 10:54:57 +0530 (IST)
+From:   Dikshita Agarwal <dikshita@codeaurora.org>
+To:     linux-media@vger.kernel.org, stanimir.varbanov@linaro.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        vgarodia@codeaurora.org, Dikshita Agarwal <dikshita@codeaurora.org>
+Subject: [PATCH v2] venus: venc: fix handlig of S_SELECTION and G_SELECTION
+Date:   Thu,  5 Nov 2020 10:54:56 +0530
+Message-Id: <1604553896-10301-1-git-send-email-dikshita@codeaurora.org>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 4 Nov 2020 09:47:22 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
+- return correct width and height for G_SELECTION
+- update capture port wxh with rectangle wxh.
+- add support for HFI_PROPERTY_PARAM_UNCOMPRESSED_PLANE_ACTUAL_INFO
+  to set stride info and chroma offset to FW.
 
-> On Wed, 4 Nov 2020 11:08:52 +0900
-> Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> 
-> > kretprobe_hash_lock() and kretprobe_table_lock() will be called from
-> > outside of the kprobe pre_handler context. So, please keep in_nmi()
-> > in those functions.
-> > for the pre_handler_kretprobe(), this looks good to me.
-> > 
-> 
-> Final version, before sending to Linus.
+Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
+---
+ drivers/media/platform/qcom/venus/helpers.c    | 18 +++++++++++++
+ drivers/media/platform/qcom/venus/helpers.h    |  2 ++
+ drivers/media/platform/qcom/venus/hfi_cmds.c   | 12 +++++++++
+ drivers/media/platform/qcom/venus/hfi_helper.h |  4 +--
+ drivers/media/platform/qcom/venus/venc.c       | 36 ++++++++++++++++++--------
+ 5 files changed, 59 insertions(+), 13 deletions(-)
 
-This looks good to me :)
-
-Thank you!
-
-> 
-> -- Steve
-> 
-> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-> Subject: [PATCH] kprobes: Tell lockdep about kprobe nesting
-> 
-> Since the kprobe handlers have protection that prohibits other handlers from
-> executing in other contexts (like if an NMI comes in while processing a
-> kprobe, and executes the same kprobe, it will get fail with a "busy"
-> return). Lockdep is unaware of this protection. Use lockdep's nesting api to
-> differentiate between locks taken in INT3 context and other context to
-> suppress the false warnings.
-> 
-> Link: https://lore.kernel.org/r/20201102160234.fa0ae70915ad9e2b21c08b85@kernel.org
-> 
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
-> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> ---
->  kernel/kprobes.c | 25 +++++++++++++++++++++----
->  1 file changed, 21 insertions(+), 4 deletions(-)
-> 
-> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-> index 8a12a25fa40d..41fdbb7953c6 100644
-> --- a/kernel/kprobes.c
-> +++ b/kernel/kprobes.c
-> @@ -1249,7 +1249,13 @@ __acquires(hlist_lock)
->  
->  	*head = &kretprobe_inst_table[hash];
->  	hlist_lock = kretprobe_table_lock_ptr(hash);
-> -	raw_spin_lock_irqsave(hlist_lock, *flags);
-> +	/*
-> +	 * Nested is a workaround that will soon not be needed.
-> +	 * There's other protections that make sure the same lock
-> +	 * is not taken on the same CPU that lockdep is unaware of.
-> +	 * Differentiate when it is taken in NMI context.
-> +	 */
-> +	raw_spin_lock_irqsave_nested(hlist_lock, *flags, !!in_nmi());
->  }
->  NOKPROBE_SYMBOL(kretprobe_hash_lock);
->  
-> @@ -1258,7 +1264,13 @@ static void kretprobe_table_lock(unsigned long hash,
->  __acquires(hlist_lock)
->  {
->  	raw_spinlock_t *hlist_lock = kretprobe_table_lock_ptr(hash);
-> -	raw_spin_lock_irqsave(hlist_lock, *flags);
-> +	/*
-> +	 * Nested is a workaround that will soon not be needed.
-> +	 * There's other protections that make sure the same lock
-> +	 * is not taken on the same CPU that lockdep is unaware of.
-> +	 * Differentiate when it is taken in NMI context.
-> +	 */
-> +	raw_spin_lock_irqsave_nested(hlist_lock, *flags, !!in_nmi());
->  }
->  NOKPROBE_SYMBOL(kretprobe_table_lock);
->  
-> @@ -2028,7 +2040,12 @@ static int pre_handler_kretprobe(struct kprobe *p, struct pt_regs *regs)
->  
->  	/* TODO: consider to only swap the RA after the last pre_handler fired */
->  	hash = hash_ptr(current, KPROBE_HASH_BITS);
-> -	raw_spin_lock_irqsave(&rp->lock, flags);
-> +	/*
-> +	 * Nested is a workaround that will soon not be needed.
-> +	 * There's other protections that make sure the same lock
-> +	 * is not taken on the same CPU that lockdep is unaware of.
-> +	 */
-> +	raw_spin_lock_irqsave_nested(&rp->lock, flags, 1);
->  	if (!hlist_empty(&rp->free_instances)) {
->  		ri = hlist_entry(rp->free_instances.first,
->  				struct kretprobe_instance, hlist);
-> @@ -2039,7 +2056,7 @@ static int pre_handler_kretprobe(struct kprobe *p, struct pt_regs *regs)
->  		ri->task = current;
->  
->  		if (rp->entry_handler && rp->entry_handler(ri, regs)) {
-> -			raw_spin_lock_irqsave(&rp->lock, flags);
-> +			raw_spin_lock_irqsave_nested(&rp->lock, flags, 1);
->  			hlist_add_head(&ri->hlist, &rp->free_instances);
->  			raw_spin_unlock_irqrestore(&rp->lock, flags);
->  			return 0;
-> -- 
-> 2.25.4
-> 
-
-
+diff --git a/drivers/media/platform/qcom/venus/helpers.c b/drivers/media/platform/qcom/venus/helpers.c
+index 2b6925b..efa2781 100644
+--- a/drivers/media/platform/qcom/venus/helpers.c
++++ b/drivers/media/platform/qcom/venus/helpers.c
+@@ -1621,3 +1621,21 @@ int venus_helper_get_out_fmts(struct venus_inst *inst, u32 v4l2_fmt,
+ 	return -EINVAL;
+ }
+ EXPORT_SYMBOL_GPL(venus_helper_get_out_fmts);
++
++int venus_helper_set_stride(struct venus_inst *inst,
++			    unsigned int width, unsigned int height)
++{
++	const u32 ptype = HFI_PROPERTY_PARAM_UNCOMPRESSED_PLANE_ACTUAL_INFO;
++
++	struct hfi_uncompressed_plane_actual_info plane_actual_info;
++
++	plane_actual_info.buffer_type = HFI_BUFFER_INPUT;
++	plane_actual_info.num_planes = 2;
++	plane_actual_info.plane_format[0].actual_stride = width;
++	plane_actual_info.plane_format[0].actual_plane_buffer_height = height;
++	plane_actual_info.plane_format[1].actual_stride = width;
++	plane_actual_info.plane_format[1].actual_plane_buffer_height = height / 2;
++
++	return hfi_session_set_property(inst, ptype, &plane_actual_info);
++}
++EXPORT_SYMBOL_GPL(venus_helper_set_stride);
+diff --git a/drivers/media/platform/qcom/venus/helpers.h b/drivers/media/platform/qcom/venus/helpers.h
+index a4a0562..f36c9f71 100644
+--- a/drivers/media/platform/qcom/venus/helpers.h
++++ b/drivers/media/platform/qcom/venus/helpers.h
+@@ -63,4 +63,6 @@ void venus_helper_get_ts_metadata(struct venus_inst *inst, u64 timestamp_us,
+ 				  struct vb2_v4l2_buffer *vbuf);
+ int venus_helper_get_profile_level(struct venus_inst *inst, u32 *profile, u32 *level);
+ int venus_helper_set_profile_level(struct venus_inst *inst, u32 profile, u32 level);
++int venus_helper_set_stride(struct venus_inst *inst, unsigned int aligned_width,
++			    unsigned int aligned_height);
+ #endif
+diff --git a/drivers/media/platform/qcom/venus/hfi_cmds.c b/drivers/media/platform/qcom/venus/hfi_cmds.c
+index 7022368..4f75658 100644
+--- a/drivers/media/platform/qcom/venus/hfi_cmds.c
++++ b/drivers/media/platform/qcom/venus/hfi_cmds.c
+@@ -1205,6 +1205,18 @@ static int pkt_session_set_property_1x(struct hfi_session_set_property_pkt *pkt,
+ 		pkt->shdr.hdr.size += sizeof(u32) + sizeof(*cu);
+ 		break;
+ 	}
++	case HFI_PROPERTY_PARAM_UNCOMPRESSED_PLANE_ACTUAL_INFO: {
++		struct hfi_uncompressed_plane_actual_info *in = pdata;
++		struct hfi_uncompressed_plane_actual_info *info = prop_data;
++
++		info->buffer_type = in->buffer_type;
++		info->num_planes = in->num_planes;
++		info->plane_format[0] = in->plane_format[0];
++		if (in->num_planes > 1)
++			info->plane_format[1] = in->plane_format[1];
++		pkt->shdr.hdr.size += sizeof(u32) + sizeof(*info);
++		break;
++	}
+ 	case HFI_PROPERTY_CONFIG_VENC_MAX_BITRATE:
+ 	case HFI_PROPERTY_CONFIG_VDEC_POST_LOOP_DEBLOCKER:
+ 	case HFI_PROPERTY_PARAM_BUFFER_ALLOC_MODE:
+diff --git a/drivers/media/platform/qcom/venus/hfi_helper.h b/drivers/media/platform/qcom/venus/hfi_helper.h
+index 60ee247..5938a96 100644
+--- a/drivers/media/platform/qcom/venus/hfi_helper.h
++++ b/drivers/media/platform/qcom/venus/hfi_helper.h
+@@ -908,13 +908,13 @@ struct hfi_uncompressed_plane_actual {
+ struct hfi_uncompressed_plane_actual_info {
+ 	u32 buffer_type;
+ 	u32 num_planes;
+-	struct hfi_uncompressed_plane_actual plane_format[1];
++	struct hfi_uncompressed_plane_actual plane_format[2];
+ };
+ 
+ struct hfi_uncompressed_plane_actual_constraints_info {
+ 	u32 buffer_type;
+ 	u32 num_planes;
+-	struct hfi_uncompressed_plane_constraints plane_format[1];
++	struct hfi_uncompressed_plane_constraints plane_format[2];
+ };
+ 
+ struct hfi_codec_supported {
+diff --git a/drivers/media/platform/qcom/venus/venc.c b/drivers/media/platform/qcom/venus/venc.c
+index 4ecf78e..99bfabf 100644
+--- a/drivers/media/platform/qcom/venus/venc.c
++++ b/drivers/media/platform/qcom/venus/venc.c
+@@ -190,8 +190,10 @@ static int venc_enum_fmt(struct file *file, void *fh, struct v4l2_fmtdesc *f)
+ 	pixmp->height = clamp(pixmp->height, frame_height_min(inst),
+ 			      frame_height_max(inst));
+ 
+-	if (f->type == V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE)
++	if (f->type == V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE) {
++		pixmp->width = ALIGN(pixmp->width, 128);
+ 		pixmp->height = ALIGN(pixmp->height, 32);
++	}
+ 
+ 	pixmp->width = ALIGN(pixmp->width, 2);
+ 	pixmp->height = ALIGN(pixmp->height, 2);
+@@ -335,13 +337,13 @@ static int venc_g_fmt(struct file *file, void *fh, struct v4l2_format *f)
+ 	switch (s->target) {
+ 	case V4L2_SEL_TGT_CROP_DEFAULT:
+ 	case V4L2_SEL_TGT_CROP_BOUNDS:
+-		s->r.width = inst->width;
+-		s->r.height = inst->height;
+-		break;
+-	case V4L2_SEL_TGT_CROP:
+ 		s->r.width = inst->out_width;
+ 		s->r.height = inst->out_height;
+ 		break;
++	case V4L2_SEL_TGT_CROP:
++		s->r.width = inst->width;
++		s->r.height = inst->height;
++		break;
+ 	default:
+ 		return -EINVAL;
+ 	}
+@@ -360,12 +362,19 @@ static int venc_g_fmt(struct file *file, void *fh, struct v4l2_format *f)
+ 	if (s->type != V4L2_BUF_TYPE_VIDEO_OUTPUT)
+ 		return -EINVAL;
+ 
++	if (s->r.width > inst->out_width ||
++	    s->r.height > inst->out_height)
++		return -EINVAL;
++
++	s->r.width = ALIGN(s->r.width, 2);
++	s->r.height = ALIGN(s->r.height, 2);
++
+ 	switch (s->target) {
+ 	case V4L2_SEL_TGT_CROP:
+-		if (s->r.width != inst->out_width ||
+-		    s->r.height != inst->out_height ||
+-		    s->r.top != 0 || s->r.left != 0)
+-			return -EINVAL;
++		s->r.top = 0;
++		s->r.left = 0;
++		inst->width = s->r.width;
++		inst->height = s->r.height;
+ 		break;
+ 	default:
+ 		return -EINVAL;
+@@ -728,6 +737,11 @@ static int venc_init_session(struct venus_inst *inst)
+ 	if (ret)
+ 		return ret;
+ 
++	ret = venus_helper_set_stride(inst, inst->out_width,
++				      inst->out_height);
++	if (ret)
++		goto deinit;
++
+ 	ret = venus_helper_set_input_resolution(inst, inst->width,
+ 						inst->height);
+ 	if (ret)
+@@ -816,8 +830,8 @@ static int venc_queue_setup(struct vb2_queue *q,
+ 		inst->num_input_bufs = *num_buffers;
+ 
+ 		sizes[0] = venus_helper_get_framesz(inst->fmt_out->pixfmt,
+-						    inst->width,
+-						    inst->height);
++						    inst->out_width,
++						    inst->out_height);
+ 		inst->input_buf_size = sizes[0];
+ 		break;
+ 	case V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE:
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+1.9.1
+
