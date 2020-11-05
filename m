@@ -2,81 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EFB92A7F1C
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 13:55:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CE512A7F2B
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 13:56:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730577AbgKEMzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 07:55:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726777AbgKEMzD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 07:55:03 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C6AFC0613CF;
-        Thu,  5 Nov 2020 04:55:03 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id w13so2417691eju.13;
-        Thu, 05 Nov 2020 04:55:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=zdb4a75nDYFWhXtJEBTR4K/6mw5ONd63rLzUkBKXiIE=;
-        b=DK2YPwEYBzHKcbuvAewPh2ubypxtnn47SEtlGdzykfkQgnGkJ0glK3T4UFluf2Bd00
-         woQDDU+m9maOfSPy4Eo7NicIKsybrf8ZvEBfkCy0WDnWcmQ71CVgyaZVeo8bmVwBtMRR
-         ICax/jgLnPiKntLS/rnBCLLfrZQ8pCPa5vdpL4QKYZTCRJgXsq/zI5BXAexFyjaa0dXB
-         wwvuYSIXiZsdq43mZhgsROx6lAHwI5FPfEJMU6RoCjmOpB3jzjrWpPyI3QpNH5gsJVf0
-         GYEHwqjD4biBtzVauiuG92fo2P29bUhxV8qcrCAP0t9YbKQnzoz83YMiL69UTSxC9ymM
-         eK8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=zdb4a75nDYFWhXtJEBTR4K/6mw5ONd63rLzUkBKXiIE=;
-        b=bAXy96rT5X6Gz2LOWQfmQSLbOQoZeSvvAOpgzTOj5DtGVZRV6GubbbyJQUuUlgL7V8
-         BN2XOWwaB0QZLk4YvPffhsE6SxXTo9WKroHUMeF1pRD5tgSdleJ9YEA15kZUc9ZTNEh7
-         vBI9aTFAGxwzudPPmz/Bmj4nor/zw/+vYxC23CevwEPJC/66tdpgWpnlU4brqV3EdvVx
-         8zZa79O/SoleHZHH/lAmQM0qMQy64MwENhJ/vF2vjB3IfMIdmveYzf9MRmUCDejvQrYz
-         x1sUDrTwUxe4HTdi7Fs2qeMWFwDqpKRMrj/Ni78CaNQE4hbz7Sri/dc/AiUXn0GtptuR
-         lcgQ==
-X-Gm-Message-State: AOAM5317ikTmPeCLQRkMP6xTn/VO6y9WFt8ENuzhidyDRYKVXeGazVtl
-        vAZp8dNjDDrw5dAtYvxn1qRWi0Mi9WKtlw==
-X-Google-Smtp-Source: ABdhPJyPS+uIl9TDoSmI2PgxG0jiPd8m3YJVJk/F2cVj9oVZvuwgQLQSTsFyWzMmyqWxz+Y+G0q4JA==
-X-Received: by 2002:a17:906:a149:: with SMTP id bu9mr2064502ejb.115.1604580901961;
-        Thu, 05 Nov 2020 04:55:01 -0800 (PST)
-Received: from ?IPv6:2a02:a44f:d2f0:0:7cde:5457:f7ce:ec3c? (2a02-a44f-d2f0-0-7cde-5457-f7ce-ec3c.fixed6.kpn.net. [2a02:a44f:d2f0:0:7cde:5457:f7ce:ec3c])
-        by smtp.gmail.com with ESMTPSA id d20sm860807edz.14.2020.11.05.04.55.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Nov 2020 04:55:01 -0800 (PST)
-Subject: Re: Regression: QCA6390 fails with "mm/page_alloc: place pages to
- tail in __free_pages_core()"
-To:     David Hildenbrand <david@redhat.com>,
-        Vlastimil Babka <vbabka@suse.cz>
-Cc:     Kalle Valo <kvalo@codeaurora.org>, ath11k@lists.infradead.org,
-        linux-mm@kvack.org, akpm@linux-foundation.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org
-References: <d6fb1e30-0d19-9af3-337b-69ff11c2fc6c@suse.cz>
- <8ACA82DB-D2FE-4599-8A01-D42218FDE1E5@redhat.com>
-From:   Pavel Procopiuc <pavel.procopiuc@gmail.com>
-Message-ID: <225718f1-c4b0-8683-427a-059148a39350@gmail.com>
-Date:   Thu, 5 Nov 2020 13:55:00 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
-MIME-Version: 1.0
-In-Reply-To: <8ACA82DB-D2FE-4599-8A01-D42218FDE1E5@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1730639AbgKEM4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 07:56:36 -0500
+Received: from foss.arm.com ([217.140.110.172]:59964 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726777AbgKEM4f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 07:56:35 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1E1B6142F;
+        Thu,  5 Nov 2020 04:56:35 -0800 (PST)
+Received: from e108754-lin.cambridge.arm.com (e108754-lin.cambridge.arm.com [10.1.198.32])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id DD2823F719;
+        Thu,  5 Nov 2020 04:56:33 -0800 (PST)
+From:   Ionela Voinescu <ionela.voinescu@arm.com>
+To:     rjw@rjwysocki.net, viresh.kumar@linaro.org, lenb@kernel.org,
+        sudeep.holla@arm.com
+Cc:     morten.rasmussen@arm.com, jeremy.linton@arm.com,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ionela.voinescu@arm.com
+Subject: [PATCH 0/8] cppc_cpufreq: fix, clarify and improve support
+Date:   Thu,  5 Nov 2020 12:55:16 +0000
+Message-Id: <20201105125524.4409-1-ionela.voinescu@arm.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Op 05.11.2020 om 12:13 schreef David Hildenbrand:
-> It depends in which order memory is exposed to MM, which might depend on other factors in some configurations.
-> 
-> This smells like it exposes an existing bug. Can you reproduce also with zone shuffling enabled?
+Hi guys,
 
-So just to make sure I understand you correctly, you'd like to see if the problem with ath11k driver on my hardware 
-persists when I boot pristine 5.10-rc2 kernel (without reverting commit 7fef431be9c9ac255838a9578331567b9dba4477) and 
-with page_alloc.shuffle=1, right?
+I found myself staring a bit too much at this driver in the past weeks
+and that's likely the cause for me coming up with this series of 8
+patches that cleans up, clarifies and reworks parts of it, as follows:
+
+ - patches 1-3/8: trivial clean-up and renaming with the purpose to
+                  improve readability
+ - patch 4/8: replace previous per-cpu data structures with lists of
+              domains and CPUs to get more efficient storage for driver
+              data and fix previous issues in case of CPU hotplugging,
+              as discussed at [1].
+ - patches 5-6/8: a few fixes and clarifications: mostly making sure
+                  the behavior described in the comments and debug
+                  messages matches the code and there is clear
+                  indication of what is supported and how.
+ - patch 7/8: use the existing freqdomains_cpus attribute to inform
+              the user on frequency domains.
+ - patch 8/8: acpi: replace ALL coordination with NONE coordination
+                    when errors are find parsing the _PSD domains
+              (as described in the comments in the code).
+
+Hopefully you'll find this useful for ease of maintenance and ease of
+future development of the driver.
+
+This functionality was tested on a Juno platform with modified _PSD
+tables to test the functionality for all currently supported
+coordination types: ANY, HW, NONE.
+
+The current code is based on v5.10-rc2.
+
+Thanks,
+Ionela.
+
+[1] https://lore.kernel.org/linux-pm/20200922162540.GB796@arm.com/
+
+Ionela Voinescu (8):
+  cppc_cpufreq: fix misspelling, code style and readability issues
+  cppc_cpufreq: clean up cpu, cpu_num and cpunum variable use
+  cppc_cpufreq: simplify use of performance capabilities
+  cppc_cpufreq: replace per-cpu structures with lists
+  cppc_cpufreq: use policy->cpu as driver of frequency setting
+  cppc_cpufreq: clarify support for coordination types
+  cppc_cpufreq: expose information on frequency domains
+  acpi: fix NONE coordination for domain mapping failure
+
+ .../ABI/testing/sysfs-devices-system-cpu      |   3 +-
+ drivers/acpi/cppc_acpi.c                      | 126 +++---
+ drivers/acpi/processor_perflib.c              |   2 +-
+ drivers/cpufreq/cppc_cpufreq.c                | 358 +++++++++++-------
+ include/acpi/cppc_acpi.h                      |  14 +-
+ 5 files changed, 277 insertions(+), 226 deletions(-)
+
+-- 
+2.17.1
+
