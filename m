@@ -2,106 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02C0A2A7BAA
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 11:25:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C56262A7BA5
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 11:25:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726884AbgKEKYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 05:24:34 -0500
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:15574 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725308AbgKEKYe (ORCPT
+        id S1729826AbgKEKYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 05:24:52 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:5881 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729481AbgKEKYr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 05:24:34 -0500
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A5A7ImR002644;
-        Thu, 5 Nov 2020 11:24:24 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=STMicroelectronics;
- bh=XOYDUXNJtguQVRnI5XSoaEB/aBdiZBFssfOgT5S7TD4=;
- b=waXbNWqGZ/nG3E9uhFuDaim/+G/ep0dDfTmukCthiC81NEi5UL3cpOmKEnmwyzCSQC92
- dPBTtGHNRYl4ZU+JNc2lcOn5BV1tWKTlXEZlpXwSUdLJyXmm6j/9uIHmm2nOErveejNh
- F0m7ZHf8V4UMoZdpWjjB6/FhVJ1jI4PWRrY93J7/FSRQKxWzhvb2vogAtMl3kvklcJ8O
- saZPrfcaSvN990bjBmEHKxHcsbrFNoP0oxAuX/B/aEVYR5/WK5rRvxwdeiAnd321dwj8
- pKNvT3LjEP3G2UkrnBCRHW83FoFuzYCINM71ExwVxtAl4J6UWUrB8/AuFm0gdSBrGnV8 sw== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 34h031yyng-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 05 Nov 2020 11:24:24 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id CEB4B10003A;
-        Thu,  5 Nov 2020 11:24:23 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id BBA2A23E141;
-        Thu,  5 Nov 2020 11:24:23 +0100 (CET)
-Received: from localhost (10.75.127.45) by SFHDAG3NODE2.st.com (10.75.127.8)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 5 Nov 2020 11:23:45
- +0100
-From:   Lionel Debieve <lionel.debieve@st.com>
-To:     Alexandre Torgue <alexandre.torgue@st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        Nicolas Toromanoff <nicolas.toromanoff@st.com>
-Subject: [PATCH 3/3] ARM: dts: stm32: enable CRYP by default on stm32mp15
-Date:   Thu, 5 Nov 2020 11:23:31 +0100
-Message-ID: <20201105102331.12984-4-lionel.debieve@st.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201105102331.12984-1-lionel.debieve@st.com>
-References: <20201105102331.12984-1-lionel.debieve@st.com>
+        Thu, 5 Nov 2020 05:24:47 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fa3d2ed0000>; Thu, 05 Nov 2020 02:24:45 -0800
+Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 5 Nov
+ 2020 10:24:46 +0000
+Received: from audio.nvidia.com (10.124.1.5) by mail.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
+ Transport; Thu, 5 Nov 2020 10:24:43 +0000
+From:   Sameer Pujar <spujar@nvidia.com>
+To:     <robh+dt@kernel.org>, <devicetree@vger.kernel.org>
+CC:     <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
+        <vkoul@kernel.org>, <tglx@linutronix.de>, <jason@lakedaemon.net>,
+        <maz@kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <dmaengine@vger.kernel.org>,
+        Sameer Pujar <spujar@nvidia.com>
+Subject: [PATCH 0/4] Convert few Tegra docs to json-schema
+Date:   Thu, 5 Nov 2020 15:54:02 +0530
+Message-ID: <1604571846-14037-1-git-send-email-spujar@nvidia.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.75.127.45]
-X-ClientProxiedBy: SFHDAG7NODE1.st.com (10.75.127.19) To SFHDAG3NODE2.st.com
- (10.75.127.8)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-05_05:2020-11-05,2020-11-05 signatures=0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1604571885; bh=Mz88rgJiAM8warC9rJqbKLXNRMKQw4aydqvOqWr7W5w=;
+        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:MIME-Version:
+         Content-Type;
+        b=iGG32dcaL0h8qSKjazs3ZV2XOKZOiyIMM3qKIh5SN/CaC5wPM2YwcBpzoKaof+3+r
+         YNX9T9RsDa9fK4BtXsPynO48qNH+eAmI4QKDjy2bCezObwWFpP70USwYbfCh44pqLr
+         MkQCBrsYMXXU0T06A4mdNYkTSnRXnbrIv6OS9J5gOkWRm3Cox56vG6tkvt73SVdzci
+         10DBoOtkIJzDljflpUN5qN0wG+UeJI4VOQI61TlbfAPiag6/EY83g/ARiD51FUVpsQ
+         1gUR9RNBLmMG/CF3ys6AIbJmsbyymPJkPIezryiyeC6MluKeLsWsTYaBcscpjHUxst
+         I2IOR91gwEOyQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable CRYP1 device for cryp accelerated support on
-stm32mp157C-EV1/DK2 STMicroelectronics platforms.
+Following are the summary of changes.
+* Update ADMA device node names for some of Tegra210 DT files.
+* Convert ADMA, AGIC and ACONNECT docs to YAML.
 
-Signed-off-by: Nicolas Toromanoff <nicolas.toromanoff@st.com>
-Signed-off-by: Lionel Debieve <lionel.debieve@st.com>
----
- arch/arm/boot/dts/stm32mp157c-dk2.dts | 4 ++++
- arch/arm/boot/dts/stm32mp157c-ed1.dts | 4 ++++
- 2 files changed, 8 insertions(+)
+Sameer Pujar (4):
+  arm64: tegra: Rename ADMA device nodes for Tegra210
+  dt-bindings: dma: Convert ADMA doc to json-schema
+  dt-bindings: interrupt-controller: arm,gic: Update Tegra compatibles
+  dt-bindings: bus: Convert ACONNECT doc to json-schema
 
-diff --git a/arch/arm/boot/dts/stm32mp157c-dk2.dts b/arch/arm/boot/dts/stm32mp157c-dk2.dts
-index 045636555ddd..2bc92ef3aeb9 100644
---- a/arch/arm/boot/dts/stm32mp157c-dk2.dts
-+++ b/arch/arm/boot/dts/stm32mp157c-dk2.dts
-@@ -29,6 +29,10 @@
- 	};
- };
- 
-+&cryp1 {
-+	status = "okay";
-+};
-+
- &dsi {
- 	status = "okay";
- 	phy-dsi-supply = <&reg18>;
-diff --git a/arch/arm/boot/dts/stm32mp157c-ed1.dts b/arch/arm/boot/dts/stm32mp157c-ed1.dts
-index 99796ffa43bf..74b9aaa611b5 100644
---- a/arch/arm/boot/dts/stm32mp157c-ed1.dts
-+++ b/arch/arm/boot/dts/stm32mp157c-ed1.dts
-@@ -136,6 +136,10 @@
- 	status = "okay";
- };
- 
-+&cryp1 {
-+	status = "okay";
-+};
-+
- &gpu {
- 	contiguous-area = <&gpu_reserved>;
- };
+ .../bindings/bus/nvidia,tegra210-aconnect.txt      | 44 ----------
+ .../bindings/bus/nvidia,tegra210-aconnect.yaml     | 86 ++++++++++++++++++++
+ .../bindings/dma/nvidia,tegra210-adma.txt          | 56 -------------
+ .../bindings/dma/nvidia,tegra210-adma.yaml         | 95 ++++++++++++++++++++++
+ .../bindings/interrupt-controller/arm,gic.yaml     |  9 +-
+ arch/arm64/boot/dts/nvidia/tegra210-p2371-2180.dts |  2 +-
+ arch/arm64/boot/dts/nvidia/tegra210-p3450-0000.dts |  2 +-
+ arch/arm64/boot/dts/nvidia/tegra210-smaug.dts      |  2 +-
+ arch/arm64/boot/dts/nvidia/tegra210.dtsi           |  2 +-
+ 9 files changed, 193 insertions(+), 105 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/bus/nvidia,tegra210-aconnect.txt
+ create mode 100644 Documentation/devicetree/bindings/bus/nvidia,tegra210-aconnect.yaml
+ delete mode 100644 Documentation/devicetree/bindings/dma/nvidia,tegra210-adma.txt
+ create mode 100644 Documentation/devicetree/bindings/dma/nvidia,tegra210-adma.yaml
+
 -- 
-2.17.1
+2.7.4
 
