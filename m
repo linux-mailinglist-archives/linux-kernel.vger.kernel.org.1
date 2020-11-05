@@ -2,150 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5D232A750E
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 02:48:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA32D2A7516
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 02:51:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733094AbgKEBsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 20:48:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33530 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730986AbgKEBsM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 20:48:12 -0500
-Received: from kernel.org (unknown [104.132.1.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 61CCD206FB;
-        Thu,  5 Nov 2020 01:48:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604540891;
-        bh=rxhryKZLhwfIW0weovqx1ZhbZbPI6eEEe/Iutwi8kqo=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=UDhKugVBWdFxsKXThC3PeaNYPAEoauEapaeLnv9eb2Pz+kjO0ueSg5wnWNiSVgTjX
-         gdsMTVRve0nzhn4Wx5w05hAJwH746QeG4KTBDBcbLNUyb88/qZv0VaQR2ZAN8BikH9
-         w3xERhCgq1ZRC1Yowlz90VU3YZ4Rdv5suhdJHNP0=
-Content-Type: text/plain; charset="utf-8"
+        id S1731741AbgKEBvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 20:51:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39622 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726152AbgKEBvc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 20:51:32 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08184C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 17:51:31 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id a71so259226edf.9
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 17:51:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=granulate.io; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GNi2ovThdql22SJrmXZSlfNmj0HVzEHMIO5CFwAWuos=;
+        b=Zh9pvZEWxeb8YpYtLLygNZhW/dsb6YqKQG4K2AWRe0eizBs7j0DTcymH+HIbUWooa8
+         2GiUL0yxKNbSvokAxggFk9cjOo5l4KWIN6+6o9PZ7kCuS1+zKrSGlWTIZb1tprZ4PTup
+         YG5hFYC98i2IuJiLhLSCU38OTm5/F1M4O6Xwxt+WpEZhlBJbO02ACcGu7NIA0GyOt/pq
+         6TyNCDUZTT4D5Ffbnh/if7tSCS3v/3Dq64yPna2roa7cSWLJQsIMwBmlzudPEW26e4zP
+         u9cm8w7A3N2cIVyW7/OiAY8iPNTtGQ17F3O+r5yqWn7LyKVRB0zXmuLmVnOtZesygi4V
+         oWTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GNi2ovThdql22SJrmXZSlfNmj0HVzEHMIO5CFwAWuos=;
+        b=obnAlTphPNxTFYlN6waeDB36axam+AnNJ2DtmNh9sd0lJZdXaqEOMjoua/rY+hPQXd
+         hK7Ah5jV1OfIYUDi6guqJgyIOBtjMsXPKaRa7/U3xs6s8CTsN6cKBymzWltt+50mvBO0
+         8lKkUrXj3ThE6bVP3VQRKFwfI2Hu5KyO/RmNrKnlLfYHo37o3R/g0EQ6p82MhNOpb98Z
+         mmV7cDzaRc0/8kOCgq521JfWfbfmQClft92A+C1ZnSPxe8k3iqRsOqAb8MpdqSRCiZWO
+         Dz0eY5KLIAcmws+S2LxV3sBn2Frz260Rdo1RpmORdnqD4uUCtseQircfD9y3tuW6acYj
+         +MSg==
+X-Gm-Message-State: AOAM53203k4Op8Xmc8Pd3GIIDpjjXw0j08q1A6DeYWk1dBNW9oBMhfCC
+        sltKe8FwgzR7L1CNGJlzd0FpGg==
+X-Google-Smtp-Source: ABdhPJyvIxWnvoFQk8A/jsS3o/pfUFtVriqSnbgpgeT0xnuQRPJknW0fBCx4hABKVsu/GaQxV3xPww==
+X-Received: by 2002:aa7:d843:: with SMTP id f3mr253642eds.354.1604541089722;
+        Wed, 04 Nov 2020 17:51:29 -0800 (PST)
+Received: from localhost.localdomain ([5.22.135.99])
+        by smtp.gmail.com with ESMTPSA id u7sm74521ejz.43.2020.11.04.17.51.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Nov 2020 17:51:29 -0800 (PST)
+From:   Yonatan Goldschmidt <yonatan.goldschmidt@granulate.io>
+To:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Yonatan Goldschmidt <yonatan.goldschmidt@granulate.io>
+Subject: [PATCH v3 0/2] perf inject jit: Add namespaces support
+Date:   Thu,  5 Nov 2020 03:48:31 +0200
+Message-Id: <20201105014833.1724363-1-yonatan.goldschmidt@granulate.io>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20201103141741.2511-1-mike.looijmans@topic.nl>
-References: <20201103141741.2511-1-mike.looijmans@topic.nl>
-Subject: Re: [PATCH] clk-si5341: Support NVM programming through sysfs
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     mturquette@baylibre.com, linux-kernel@vger.kernel.org,
-        Mike Looijmans <mike.looijmans@topic.nl>
-To:     Mike Looijmans <mike.looijmans@topic.nl>, linux-clk@vger.kernel.org
-Date:   Wed, 04 Nov 2020 17:48:09 -0800
-Message-ID: <160454088987.3965362.6147280271557523496@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Mike Looijmans (2020-11-03 06:17:41)
-> Export an attribute program_nvm_bank that when read reports the current
-> bank value. To program the chip's current state into NVM, write the
-> magic value 0xC7 into this attribute.
->=20
-> Signed-off-by: Mike Looijmans <mike.looijmans@topic.nl>
-> ---
+This version removes some redundant "else"s.
 
-Any chance this can be done through the nvmem framework?
+Changlog:
+v2 -> v3
+* Remove 2 redundant "else"s.
 
->  drivers/clk/clk-si5341.c | 73 ++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 73 insertions(+)
->=20
-> diff --git a/drivers/clk/clk-si5341.c b/drivers/clk/clk-si5341.c
-> index e0446e66fa64..4e025a5ea2b7 100644
-> --- a/drivers/clk/clk-si5341.c
-> +++ b/drivers/clk/clk-si5341.c
-> @@ -1199,6 +1205,69 @@ static const struct regmap_config si5341_regmap_co=
-nfig =3D {
->         .volatile_table =3D &si5341_regmap_volatile,
->  };
-> =20
-> +static ssize_t program_nvm_bank_show(struct device *dev,
-> +                               struct device_attribute *attr, char *buf)
-> +{
-> +       struct i2c_client *client =3D to_i2c_client(dev);
-> +       struct clk_si5341 *data =3D i2c_get_clientdata(client);
-> +       unsigned int regval;
-> +       int ret;
-> +
-> +       ret =3D regmap_read(data->regmap, SI5341_ACTIVE_NVM_BANK, &regval=
-);
-> +       if (ret)
-> +               return ret;
-> +
-> +       return sprintf(buf, "%#x\n", regval);
-> +}
-> +
-> +static ssize_t program_nvm_bank_store(struct device *dev,
-> +       struct device_attribute *attr,
-> +       const char *buf,
-> +       size_t count)
-> +{
-> +       struct clk_si5341 *data =3D i2c_get_clientdata(to_i2c_client(dev)=
-);
-> +       int ret;
-> +       unsigned int value;
-> +       unsigned int timeout;
-> +
-> +       ret =3D kstrtouint(buf, 0, &value);
-> +       if (ret < 0)
-> +               return ret;
-> +
-> +       /* Write the magic value to this attribute to program the NVM */
-> +       if (value !=3D SI5341_SI5341_NVM_WRITE_COOKIE)
-> +               return -EINVAL;
-> +
-> +       ret =3D regmap_write(data->regmap, SI5341_NVM_WRITE,
-> +                       SI5341_SI5341_NVM_WRITE_COOKIE);
-> +       if (ret)
-> +               return ret;
-> +
-> +       /* Wait for SI5341_DEVICE_READY register to become 0x0f */
-> +       for (timeout =3D 10000; timeout; --timeout) {
-> +               ret =3D regmap_read(data->regmap, SI5341_DEVICE_READY, &v=
-alue);
+v1 -> v2
+* Add 'in_pidns' and use PID & TID from jitdump entries for
+  non-containerized processes.
 
-This is regmap_read_poll_timeout()?
+Thanks,
 
-> +               if (ret)
-> +                       return ret;
-> +
-> +               if (value =3D=3D 0x0f)
-> +                       break;
-> +       }
-> +
-> +       return count;
-> +}
-> +
-> +static DEVICE_ATTR_RW(program_nvm_bank);
-> +
-> +static struct attribute *si5341_sysfs_entries[] =3D {
-> +       &dev_attr_program_nvm_bank.attr,
-> +       NULL,
-> +};
-> +
-> +static struct attribute_group si5341_attr_group =3D {
-> +       .name   =3D NULL, /* put in device directory */
-> +       .attrs  =3D si5341_sysfs_entries,
-> +};
+Yonatan Goldschmidt (2):
+  perf tools: Add 'in_pidns' to nsinfo struct
+  perf inject jit: Add namespaces support
 
-If not nvmem framework, then this needs to be documented in
-Documentation/ABI/
+ tools/perf/builtin-inject.c  |  4 +-
+ tools/perf/util/jit.h        |  2 +-
+ tools/perf/util/jitdump.c    | 84 ++++++++++++++++++++++++++++--------
+ tools/perf/util/namespaces.c | 23 +++++++++-
+ tools/perf/util/namespaces.h |  3 ++
+ 5 files changed, 92 insertions(+), 24 deletions(-)
 
-> +
->  static int si5341_dt_parse_dt(struct i2c_client *client,
->         struct clk_si5341_output_config *config)
->  {
-> @@ -1544,6 +1613,10 @@ static int si5341_probe(struct i2c_client *client,
->         for (i =3D 0; i < data->num_synth; ++i)
->                  devm_kfree(&client->dev, (void *)synth_clock_names[i]);
-> =20
-> +       err =3D sysfs_create_group(&client->dev.kobj, &si5341_attr_group);
-> +       if (err)
-> +               dev_err(&client->dev, "failed to create sysfs entries\n");
-> +
-
-Cool, I as a user would do what in this situation? The error message
-seems sort of worthless.
+-- 
+2.25.0
