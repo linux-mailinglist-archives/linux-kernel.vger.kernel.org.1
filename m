@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB2992A8A97
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 00:20:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 574172A8A9C
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 00:20:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732669AbgKEXUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 18:20:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43100 "EHLO
+        id S1732475AbgKEXUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 18:20:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731060AbgKEXUb (ORCPT
+        with ESMTP id S1731060AbgKEXUx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 18:20:31 -0500
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F490C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 15:20:31 -0800 (PST)
-Received: by mail-yb1-xb42.google.com with SMTP id c129so2841645yba.8
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 15:20:31 -0800 (PST)
+        Thu, 5 Nov 2020 18:20:53 -0500
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57812C0613D2
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 15:20:53 -0800 (PST)
+Received: by mail-yb1-xb43.google.com with SMTP id c129so2842295yba.8
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 15:20:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=z3KvjLX/VJORZkMvx/1zYSVzh145Bb5NCA0EOT0E+co=;
-        b=Qv4uKSRPKxySPqftfzvwkAWHZJ/wyt516/Gw/2AspIpjKZtwdgTxvcR5AzgtvXTrsu
-         7GoPjn0++JJ8shAHCAfP4oBYeaZT1BMj9MVcQAuLLLYhxyl/1QR0cc9MXCtyvAQemcnM
-         bEqyhD9qFHSdTcI034xskJwUA2Cffn+3FDNY4sUmBGlu3VwlfKXDKTH4LK5NZHiWofKb
-         2F2hFKH9Rn/7KJx+F9DibitQVHzaoYxvN+KaxY9u9L0GLMEF1zk92TEkx3gdy1pnTYEq
-         4NEnDIwskqLl7F2hCoI2cyu8CLaScCwJcYn5HjRyNTXLzLtrM4yj7DPNgT6v5VyLueEe
-         xguw==
+        bh=8wFZyYqtSK1R4m/q7QRLFzt9lunj5huoU2docdk+JL4=;
+        b=VQr5C/I+TFiFZ5SGKU1BeWphObfdjJTDj5xi0jFRSsliyimc1RaZmy7UsImMxmeFwx
+         /h64JqNojRtsW8BCZc5+H+0Lkvcfr+JQiygd+PXcKPeHs07sxkiiMwMJ6ofbAHcgLlui
+         eQO9PSZ4XzjFSiEPmAHbJ6IP8032bP54RzqZQzoyw4KK+2fBBP6/qiemKmzS9lXEe48G
+         98wXlcIhrJ2gawyLq7TEOaqZxP4IwKgwzodTpxxlY3vQbdEJsZ3ZhemZ1Cwq8J1cxUPI
+         fvBIp8I6iZo5winR1KYZJN/o0I79n+h1fVGga1PX3HmfvT8Xj6x9RquXOd1wwzSazJ1I
+         32NA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=z3KvjLX/VJORZkMvx/1zYSVzh145Bb5NCA0EOT0E+co=;
-        b=grDAhzCTu3TnSo05J1TJzJHuKzjy+nbxcOrCMYlxrJaS0vOss+IbBitfzF2g27ZDvB
-         SwrTHUKMkW1iN0QHAZ0yNSGVG8kcJoiLk6Dqo+HpQ1o4/LdrLzBM5M/sN7sgQy0v77i/
-         1FriCkiqyr5COhuGPukiSEOozME4w52Fzkwy0anOVaJ+KZKeWyxx11v0iDSd7l6Wxg1p
-         YiMkRJaPzlMGp71j5nb5OPCSUvZPKDcxCyLR9udVF4Rh8TyyrOYOIsc33j+AGo/IWfsl
-         JEr5RijUymLRxlIFNhDR3mdEWY9OOHUjgurGGX7q/s7PBgwddOMBabAkUkz8/hFTUfgT
-         GYQg==
-X-Gm-Message-State: AOAM531GWL+ZeHZKGCBy/66OG+9n7kHpdIwhajBT521LFU9FzptWM78R
-        m0YtBIdCfMfNw9F1ZPBdqMUVAtueeHQvpPUHUQvUAg==
-X-Google-Smtp-Source: ABdhPJwNPaIyrXj+5IuUPWsE7V5EABEILCdO7q1BovAOrT9z3Fn8nD8DbzEs7xRgXUqoLjsotAsX31QeSdVbUoTK3ik=
-X-Received: by 2002:a25:f817:: with SMTP id u23mr7258013ybd.466.1604618430227;
- Thu, 05 Nov 2020 15:20:30 -0800 (PST)
+        bh=8wFZyYqtSK1R4m/q7QRLFzt9lunj5huoU2docdk+JL4=;
+        b=QvSuEPGUIscQZZEpIli3Hi1fKyHmo7rFprSBe6V1vASpuSR7cnISFcjJFi1p/GoxI6
+         1zK9+o52CS8hU2IW7ckh7O/3tW8Eku/VS9G+sUn+XX9G7x9c/y1m9xP7jAaLCm79in4b
+         HFm6/CvHoK6VyJ2fRV5tOQISURVySnAVjH7VfcjPxICkH371N/EL+IhaWEhm7yjbQB3U
+         /5BMme9vkK8p9nSOGWafUv02Yo3ZfiuGaD9nucv8P9pGN9M2XzTeB0SyvG8crkct7Ycv
+         m7strExgN89PJIM3d49ty3jQpi1TyxYQOE5lUAGXzsNxiJtfyishxfzgisWjaMXH4tz3
+         nPCg==
+X-Gm-Message-State: AOAM5325ZMGH5LEFMdsimymmFDZO1rEdQM1Li1JmkoaeJT3/iFpNT+ZY
+        w4L0ubQ6+o1NAXI5NvulfkJ9kM1uSg8Bs6bITHXuFA==
+X-Google-Smtp-Source: ABdhPJwI8PTuLr/THqyxcoxyPhiBcXvDcwi5nHO4ERWE9lM50eQ300SCgVr+U1Wi7ljrzOM7oFCREm+TDa0BnbK69Y4=
+X-Received: by 2002:a25:268e:: with SMTP id m136mr6904500ybm.346.1604618452430;
+ Thu, 05 Nov 2020 15:20:52 -0800 (PST)
 MIME-Version: 1.0
 References: <20201104232356.4038506-1-saravanak@google.com>
- <20201104232356.4038506-2-saravanak@google.com> <20201105093413.GC3439341@kroah.com>
-In-Reply-To: <20201105093413.GC3439341@kroah.com>
+ <20201104232356.4038506-8-saravanak@google.com> <20201105093604.GD3439341@kroah.com>
+In-Reply-To: <20201105093604.GD3439341@kroah.com>
 From:   Saravana Kannan <saravanak@google.com>
-Date:   Thu, 5 Nov 2020 15:19:54 -0800
-Message-ID: <CAGETcx9CZp-yyRwi=27eU7hf3z1uLYhaOrY+iyZYxsNpxhLLAQ@mail.gmail.com>
-Subject: Re: [PATCH v1 01/18] Revert "driver core: Avoid deferred probe due to fw_devlink_pause/resume()"
+Date:   Thu, 5 Nov 2020 15:20:16 -0800
+Message-ID: <CAGETcx-ShEUaFzL_1oExk8KeVn+cnXLnYSz7vKxphHbnGERrhQ@mail.gmail.com>
+Subject: Re: [PATCH v1 07/18] driver core: Add fwnode_init()
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
         "Rafael J. Wysocki" <rafael@kernel.org>,
@@ -74,19 +74,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 5, 2020 at 1:33 AM Greg Kroah-Hartman
+On Thu, Nov 5, 2020 at 1:35 AM Greg Kroah-Hartman
 <gregkh@linuxfoundation.org> wrote:
 >
-> On Wed, Nov 04, 2020 at 03:23:38PM -0800, Saravana Kannan wrote:
-> > This reverts commit 2451e746478a6a6e981cfa66b62b791ca93b90c8.
+> On Wed, Nov 04, 2020 at 03:23:44PM -0800, Saravana Kannan wrote:
+> > There are multiple locations in the kernel where a struct fwnode_handle
+> > is initialized. Add fwnode_init() so that we have one way of
+> > initializing a fwnode_handle.
 > >
 > > Signed-off-by: Saravana Kannan <saravanak@google.com>
+> > ---
+> >  drivers/acpi/property.c         | 2 +-
+> >  drivers/acpi/scan.c             | 2 +-
+> >  drivers/base/swnode.c           | 2 +-
+> >  drivers/firmware/efi/efi-init.c | 8 ++++----
+> >  include/linux/fwnode.h          | 5 +++++
+> >  include/linux/of.h              | 2 +-
+> >  kernel/irq/irqdomain.c          | 2 +-
+> >  7 files changed, 14 insertions(+), 9 deletions(-)
+> >
+> > diff --git a/drivers/acpi/property.c b/drivers/acpi/property.c
+> > index d04de10a63e4..24e87b630573 100644
+> > --- a/drivers/acpi/property.c
+> > +++ b/drivers/acpi/property.c
+> > @@ -76,7 +76,7 @@ static bool acpi_nondev_subnode_extract(const union acpi_object *desc,
+> >               return false;
+> >
+> >       dn->name = link->package.elements[0].string.pointer;
+> > -     dn->fwnode.ops = &acpi_data_fwnode_ops;
+> > +     fwnode_init(&dn->fwnode, &acpi_data_fwnode_ops);
+> >       dn->parent = parent;
+> >       INIT_LIST_HEAD(&dn->data.properties);
+> >       INIT_LIST_HEAD(&dn->data.subnodes);
+> > diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
+> > index a896e5e87c93..0ac19f9274b8 100644
+> > --- a/drivers/acpi/scan.c
+> > +++ b/drivers/acpi/scan.c
+> > @@ -1589,7 +1589,7 @@ void acpi_init_device_object(struct acpi_device *device, acpi_handle handle,
+> >       device->device_type = type;
+> >       device->handle = handle;
+> >       device->parent = acpi_bus_get_parent(handle);
+> > -     device->fwnode.ops = &acpi_device_fwnode_ops;
+> > +     fwnode_init(&device->fwnode, &acpi_device_fwnode_ops);
+> >       acpi_set_device_status(device, sta);
+> >       acpi_device_get_busid(device);
+> >       acpi_set_pnp_ids(handle, &device->pnp, type);
+> > diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
+> > index 010828fc785b..4a4b2008fbc2 100644
+> > --- a/drivers/base/swnode.c
+> > +++ b/drivers/base/swnode.c
+> > @@ -653,7 +653,7 @@ swnode_register(const struct software_node *node, struct swnode *parent,
+> >       swnode->parent = parent;
+> >       swnode->allocated = allocated;
+> >       swnode->kobj.kset = swnode_kset;
+> > -     swnode->fwnode.ops = &software_node_ops;
+> > +     fwnode_init(&swnode->fwnode, &software_node_ops);
+> >
+> >       ida_init(&swnode->child_ids);
+> >       INIT_LIST_HEAD(&swnode->entry);
+> > diff --git a/drivers/firmware/efi/efi-init.c b/drivers/firmware/efi/efi-init.c
+> > index f55a92ff12c0..b148f1459fb3 100644
+> > --- a/drivers/firmware/efi/efi-init.c
+> > +++ b/drivers/firmware/efi/efi-init.c
+> > @@ -359,9 +359,7 @@ static const struct fwnode_operations efifb_fwnode_ops = {
+> >       .add_links = efifb_add_links,
+> >  };
+> >
+> > -static struct fwnode_handle efifb_fwnode = {
+> > -     .ops = &efifb_fwnode_ops,
+> > -};
+> > +static struct fwnode_handle efifb_fwnode;
+> >
+> >  static int __init register_gop_device(void)
+> >  {
+> > @@ -375,8 +373,10 @@ static int __init register_gop_device(void)
+> >       if (!pd)
+> >               return -ENOMEM;
+> >
+> > -     if (IS_ENABLED(CONFIG_PCI))
+> > +     if (IS_ENABLED(CONFIG_PCI)) {
+> > +             fwnode_init(&efifb_fwnode, &efifb_fwnode_ops);
+> >               pd->dev.fwnode = &efifb_fwnode;
+> > +     }
+> >
+> >       err = platform_device_add_data(pd, &screen_info, sizeof(screen_info));
+> >       if (err)
+> > diff --git a/include/linux/fwnode.h b/include/linux/fwnode.h
+> > index e0abafbb17f8..593fb8e58f21 100644
+> > --- a/include/linux/fwnode.h
+> > +++ b/include/linux/fwnode.h
+> > @@ -169,6 +169,11 @@ struct fwnode_operations {
+> >                       (fwnode)->ops->op(fwnode, ## __VA_ARGS__);      \
+> >       } while (false)
+> >  #define get_dev_from_fwnode(fwnode)  get_device((fwnode)->dev)
+> > +static inline void fwnode_init(struct fwnode_handle *fwnode,
+> > +                            const struct fwnode_operations *ops)
+> > +{
+> > +     fwnode->ops = ops;
+> > +}
+> >
 >
-> You need to say _why_ you are doing this, it's obvious _what_ you are
-> doing :)
+> A blank line before a new inline function is always nice to have :)
 >
-> Same for the other reverts in this series.
 
-Sorry, forgot about this. Will fix it in v2.
+Ack
 
 -Saravana
