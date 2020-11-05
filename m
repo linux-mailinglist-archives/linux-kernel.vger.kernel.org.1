@@ -2,76 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 102402A8382
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 17:27:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A251F2A837C
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 17:26:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729263AbgKEQ1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 11:27:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34856 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726729AbgKEQ1K (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 11:27:10 -0500
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74CDFC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 08:27:10 -0800 (PST)
-Received: by mail-qt1-x841.google.com with SMTP id c5so1491941qtw.3
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 08:27:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=roNw57hB7NU/TnfvOJxxpvuID9SfMYdoxWpjVnE/nWo=;
-        b=L8jp5xjn2UMt/EXs20OGFSXy/pk+JVNpuRSV/GW6yHBDqrTrDq5U5bCL+iY5fcOAbH
-         7OA3swxl6etwaNjnIv0YTY3q/XlODbPDBGeGmat4sLYvepi97cs+7+gxtXkc7OUtswCy
-         D+LaCWDW8uJruWkkcgkxgBjBvrxz+mj6TPlNPBK+oAuo2TWuu09fOuvc25UGVbxwEQZ+
-         MbFzVk4bp5Kb9L2cRr/kWQKhkT5jrz388q44MuGIGjEHHORednCfNLTTB7lxHaTcio2p
-         Ap9DtfvGNOXVsqmBnuCBCh4WBXkwYMxZFj6Z05xZuhwuvPJ3Le+PIhNlcCQYnoFhYC7+
-         lf3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=roNw57hB7NU/TnfvOJxxpvuID9SfMYdoxWpjVnE/nWo=;
-        b=Ens+lixa/0U5/YeGx5SGpbQzyhwPuEPPOou5hE659ZjXa53IOrzL5+I/0eByItspPK
-         C+BbrZardTZvC2wDZDYhSHSGfOrwsYXWTIx6/DygodW2/697VXj7XMD0RjclDky4q0zS
-         GXd/L6AMBGb0rUarlHFutW7zNImbMRYQrApfwXOJAGeugeIzYkPWrq1ZV/stjdMLqxIs
-         Plmz4QjFF463CO/e3hSnvC/sbQ1SkiCX4MKY+ckqhl2TroW7LfTqTMfehN53Amv96Cut
-         yxGB5stinlQx5NsAufEWtqk377icBjfkPnXx/na7n77bBOQGhL9lUw2tbEeOYd3s6qqU
-         /isg==
-X-Gm-Message-State: AOAM5317pRR23eL1C6B5DemLHCzfP+dustTJDvrp3i0LMl8dOEnh1DJd
-        QvDdPrWxFH7ZlEH8PRTmP7yvNg==
-X-Google-Smtp-Source: ABdhPJynGVyw87IjoO2KAGvV/FU8kPGUmMOdiP46PBtyvjQ3HDxf7yNU6wnq35wzUNxv5nukTsCaxg==
-X-Received: by 2002:ac8:65c6:: with SMTP id t6mr2648352qto.339.1604593629797;
-        Thu, 05 Nov 2020 08:27:09 -0800 (PST)
-Received: from localhost ([2620:10d:c091:480::1:fc05])
-        by smtp.gmail.com with ESMTPSA id 82sm1308994qkg.103.2020.11.05.08.27.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 08:27:09 -0800 (PST)
-Date:   Thu, 5 Nov 2020 11:25:23 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     akpm@linux-foundation.org, shakeelb@google.com, guro@fb.com,
-        mhocko@suse.com, laoar.shao@gmail.com, chris@chrisdown.name,
-        tj@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mm: memcontrol: fix missing wakeup polling thread
-Message-ID: <20201105162523.GH744831@cmpxchg.org>
-References: <20201105161936.98312-1-songmuchun@bytedance.com>
+        id S1731546AbgKEQ0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 11:26:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45464 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731224AbgKEQ0G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 11:26:06 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 27C8A20936;
+        Thu,  5 Nov 2020 16:26:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604593565;
+        bh=AleGPPaZ8rEKySOugD/QIrmAVOp6hLxKjVliIx3SA1k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pa2PmxQ9T6IeimCw5dpnnWrZizlGhbWr81133S383TN+SFKztcN8641X7zueWZpj7
+         OKJqgHhec9UruwRMggW8iWeVAIIuEdmmrjXOWGD7vmUm3uB1T5thudu8N0yISHaUcp
+         k/1zniHVzgYdGbpKmuWlNv49DGSi3b8CyuPjKoV0=
+Date:   Thu, 5 Nov 2020 17:26:53 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc:     Sasha Levin <sashal@kernel.org>, Paul Bolle <pebolle@tiscali.nl>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Rander Wang <rander.wang@intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 5.9 080/391] ASoC: SOF: fix a runtime pm issue in SOF
+ when HDMI codec doesnt work
+Message-ID: <20201105162653.GA1175591@kroah.com>
+References: <20201103203348.153465465@linuxfoundation.org>
+ <20201103203352.505472614@linuxfoundation.org>
+ <64a618a3cc00de4a1c3887b57447906351db77b9.camel@tiscali.nl>
+ <20201105143551.GH2092@sasha-vm>
+ <1f0c6a62-5208-801d-d7c2-725ee8da19b2@linux.intel.com>
+ <20201105154426.GI2092@sasha-vm>
+ <e13d8fb6-4f69-23ad-22f6-499bffbf03d6@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20201105161936.98312-1-songmuchun@bytedance.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <e13d8fb6-4f69-23ad-22f6-499bffbf03d6@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 06, 2020 at 12:19:36AM +0800, Muchun Song wrote:
-> When wen poll the swap.events, we can miss being waked up when the swap
-> event occurs. Because we didn't notify.
+On Thu, Nov 05, 2020 at 10:17:57AM -0600, Pierre-Louis Bossart wrote:
 > 
-> Fixes: f3a53a3a1e5b ("mm, memcontrol: implement memory.swap.events")
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > > > > My local build of v5.9.5 broke on this patch.
+> > > > > 
+> > > > > sound/soc/sof/intel/hda-codec.c: In function 'hda_codec_probe':
+> > > > > sound/soc/sof/intel/hda-codec.c:177:4: error: label 'error'
+> > > > > used but not defined
+> > > > >  177 |    goto error;
+> > > > >      |    ^~~~
+> > > > > make[4]: *** [scripts/Makefile.build:283:
+> > > > > sound/soc/sof/intel/hda-codec.o] Error 1
+> > > > > make[3]: *** [scripts/Makefile.build:500: sound/soc/sof/intel] Error 2
+> > > > > make[2]: *** [scripts/Makefile.build:500: sound/soc/sof] Error 2
+> > > > > make[1]: *** [scripts/Makefile.build:500: sound/soc] Error 2
+> > > > > make: *** [Makefile:1778: sound] Error 2
+> > > > > 
+> > > > > There's indeed no error label in v5.9.5. (There is one in
+> > > > > v5.10-rc2, I just
+> > > > > checked.) Is no-one else running into this?
+> > > > 
+> > > > It seems that setting CONFIG_SND_SOC_SOF_HDA_AUDIO_CODEC=y is very
+> > > > "difficult", it's not being set by allmodconfig nor is it easy to
+> > > > manually set it up.
+> > > > 
+> > > > I'll revert the patch, but it would be nice to make sure it's easier to
+> > > > test this out too.
+> > > 
+> > > this issue comes from out-of-order patches, give me a couple of
+> > > hours to look into this before reverting. thanks!
+> > 
+> > Sure! Thanks for looking into this.
+> 
+> I would recommend adding this commit to 5.9-stable:
+> 
+> 11ec0edc6408a ('ASOC: SOF: Intel: hda-codec: move unused label to correct
+> position')
+> 
+> I just tried with 5.9.5 and the compilation error is solved with this
+> commit.
+> 
+> It was initially intended to solve a minor 'defined but not used' issue,
+> which somehow became a bad 'used but not defined' one. Probably a bad git
+> merge I did, sorry about that.
 
-Cool, thanks!
+Will go do that now and push out a new release, thanks!
 
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+greg k-h
