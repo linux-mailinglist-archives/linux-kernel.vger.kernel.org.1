@@ -2,141 +2,314 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78AFA2A7E9F
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 13:32:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A02662A7E99
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 13:31:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730479AbgKEMcq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 07:32:46 -0500
-Received: from lizzy.crudebyte.com ([91.194.90.13]:43631 "EHLO
-        lizzy.crudebyte.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728371AbgKEMcp (ORCPT
+        id S1730266AbgKEMbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 07:31:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54224 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725468AbgKEMbx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 07:32:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=crudebyte.com; s=lizzy; h=Content-Type:Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-        Content-ID:Content-Description;
-        bh=CeSDKjQThdIABp8s+s/E8JP6zStMA/YM/SdYYX3O/K8=; b=lMGWqo4HYT2Vjxdcyu8lRLeUrb
-        HEEwVhDEGTlVF+0T4L9udgmm6dSckgzk7oT6ix/TVRJUvumz3RUjt+sf7mLc3ykbhepjXRBo2Jb9d
-        y6/Ggj3leVe40XwlqfqJcYbz3XZ+ePY5EgWWYJ26IOos+xUYeBV44l1VYtIA7t1SbYJtSG4Ha+eI3
-        +wZsb4dzufLWJa41huRe95It2N3A9X8sQUyh9EPMasD/wx6rlRTHqP8eFZ0ZRPfjqVry3XSy8vuWl
-        CrhX7v1QsQ9+nVcL2MVYs0lYDxDgh46yMd5fDue5uZs2TcEZz3udstQKzvzN/O4OG692QZQ+g9I8Q
-        AgY3gaQQ==;
-From:   Christian Schoenebeck <qemu_oss@crudebyte.com>
-To:     Dominique Martinet <asmadeus@codewreck.org>
-Cc:     Jianyong Wu <jianyong.wu@arm.com>, ericvh@gmail.com,
-        lucho@ionkov.net, groug@kaod.org,
-        v9fs-developer@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-        justin.he@arm.com
-Subject: Re: [PATCH RFC v2 4/4] 9p: fix race issue in fid contention.
-Date:   Thu, 05 Nov 2020 13:32:34 +0100
-Message-ID: <2540304.0IflC6tfRZ@silver>
-In-Reply-To: <20201104115708.GA30104@nautica>
-References: <20200923141146.90046-1-jianyong.wu@arm.com> <1755303.6a88tIVZ8j@silver> <20201104115708.GA30104@nautica>
+        Thu, 5 Nov 2020 07:31:53 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03645C0613CF;
+        Thu,  5 Nov 2020 04:31:53 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id b12so724011plr.4;
+        Thu, 05 Nov 2020 04:31:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RM772cDSHAyaI3S6Oht4zbOquKz4eJt+u106DCGoFhM=;
+        b=bnygRq/0tekVuestJ58NXP85dUydoHJKyPVveKREYhd6uhSOAo9ap+JAjyk2uSA+5m
+         DnB1R7xB/IfDmJVnq6+cxbine5kKLvla2UmDMvNRT9zs4Pr7Rq0wA7GRj3mB9tEdCNP2
+         4q782JLutfwanHXIQ60vDKY44FcAPBsaLhdGXMTmsvnKhHSsBkG0YzSJgDs14Edzio/U
+         6s9W8iG6CEW66YG8jFu6PFB8lGgi0cH+d5IBguTC9/M6dD4qbPObBYyziIzqOHVOd5Z8
+         efquoXGVm/vFhiOsS0zf3Q9f5AKwQGz8cnbAu+aHYxDJ2m4EARxdt0mAhxWHyzXdFn1M
+         NsHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RM772cDSHAyaI3S6Oht4zbOquKz4eJt+u106DCGoFhM=;
+        b=WIYvsYjLVUBOmx3V9dSOfavzscGQ+9f5Une4hIZBF5TGh1g1M3+oYXYPqxjWgEmTID
+         Oo3Dnr2TGbZahBJOgwLLRM8sZ2qWIdj8jUCpLdreHNTOSwJpnrhyzEohg2X7lxnjFcoN
+         avhfoQdn8JlsRrl+aeBcNlRDF2yf6X3piOV2AmBgh7dIOQvtBburGqjaVpfgMlSKUfch
+         ARlv+wphGzZBaXduTDMduAzOoLR9h36Rw21Gjw1Qw6/MUDlKoex0BWXazB3JD/nqR1pQ
+         S5WfF//hm+ZOEej7/v1g+EjjebdOP0rNFiIayq3CitOhh140Uz/aHMHRhM5esVYYJHHM
+         ZtMw==
+X-Gm-Message-State: AOAM532QQKJAjHH2p3VWko4hsOHVqeSwfAyiskwjdWlOcKWOgH7hXrSz
+        JMjWkUEybtg1Jq1Pd6JzdTjHSRhjMm+dQ9hCF04=
+X-Google-Smtp-Source: ABdhPJy2A7kynh+Cjoe9pc+2nVcIvUEQex3DbleQ3c/V6f04bARBgkPT2MNTmziRExEuL6jVAz/T7qDxGwQOv1rZ5U0=
+X-Received: by 2002:a17:902:bc4a:b029:d6:7ef9:689c with SMTP id
+ t10-20020a170902bc4ab02900d67ef9689cmr2146556plz.21.1604579512404; Thu, 05
+ Nov 2020 04:31:52 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+References: <20201105120410.18305-1-srinivas.kandagatla@linaro.org> <20201105120410.18305-2-srinivas.kandagatla@linaro.org>
+In-Reply-To: <20201105120410.18305-2-srinivas.kandagatla@linaro.org>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 5 Nov 2020 14:32:41 +0200
+Message-ID: <CAHp75VdM9LUV2M6rEZyK=4rh_+hwFK5_2-9RB7YQTuMxHSYCMg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] pinctrl: qcom: Add sm8250 lpass lpi pinctrl driver
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>, linux-arm-msm@vger.kernel.org,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mittwoch, 4. November 2020 12:57:08 CET Dominique Martinet wrote:
-> Christian Schoenebeck wrote on Wed, Nov 04, 2020:
-> > > Greg, Christian - from what I understood (in private, hopefully I'm
-> > > allowed to repeat!), he won't be able to contribute to qemu because of
-> > > company policies and I'm unlikely to take the time either right now.
-> > > I don't think it's a problem to continue as is though, we can land linux
-> > > kernel support (it's still useful for non-qemu servers) and if someone
-> > > is interested later on they'll just need to finish that bit.
-> > 
-> > Hmm, no idea what kind of policy that is; there is no GPL3 in qemu at
-> > least
-> > that some companies are concerned about, but OK not my business.
-> > 
-> > I actually thought this would still take a while on kernel side,
-> 
-> To be honest, so did I -- the original patches are so old I had more or
-> less given up on it :P
-> 
-> But I don't see any more problem now and we'll want to get there
-> eventually so now's a good time as any... I just want to get fault
-> injection to work to test various refcounting cornercases but shouldn't
-> be much longer.
+On Thu, Nov 5, 2020 at 2:06 PM Srinivas Kandagatla
+<srinivas.kandagatla@linaro.org> wrote:
+>
+> Add initial pinctrl driver to support pin configuration for
+> LPASS (Low Power Audio SubSystem) LPI (Low Power Island) pinctrl
+> on SM8250.
 
-Exactly! The situation would presumably not change at any other time in 
-future. Maybe there will be issues, we'll see, but I think it's worth it, as a 
-large bunch of software depends on use-after-unlink behaviour.
+> +config PINCTRL_LPASS_LPI
+> +       tristate "Qualcomm Technologies Inc LPASS LPI pin controller driver"
+> +       depends on GPIOLIB && OF
+> +       help
+> +         This is the pinctrl, pinmux, pinconf and gpiolib driver for the
+> +         Qualcomm Technologies Inc LPASS (Low Power Audio SubSystem) LPI
+> +         (Low Power Island) found on the Qualcomm Technologies Inc SoCs.
 
-> 
-> > so in the
-> > meantime we layed the ground in qemu for resolving this issue independent
-> > of clients and independent of any guest OS installation by introducing
-> > test cases using the 9pfs 'local' filesystem driver:
-> > 
-> > https://github.com/qemu/qemu/blob/master/tests/qtest/virtio-9p-test.c
-> > 
-> > So the idea was to resolve that chicken egg problem of this issue that way
-> > and also handle it a bit more systematically. If you now run qemu's 9p
-> > tests with latest git version (or at least with yesterday's QEMU 5.2 rc1
-> > tarball):
-> > 
-> > cd qemu/build
-> > make
-> > export QTEST_QEMU_BINARY=x86_64-softmmu/qemu-system-x86_64
-> > tests/qtest/qos-test
-> > 
-> > these tests will now create a test directory qtest-9p-local-XXXXXX under
-> > the current directory (i.e. the build directory) where they are creating
-> > real directories and files like on a production system would do, just
-> > without a guest OS.
-> > 
-> > As you can see, there are already 9p tests for creating and deleting
-> > directories, files, symlinks and hard links, etc.
-> > 
-> > Maybe somebody interested to see this issue resolved in qemu might help by
-> > rebasing Greg's old patches and testing it with some test cases this way.
-> > Personally I need to work on some other things in the next couple weeks,
-> > but if somebody needs help, questions, review, etc., I'll be there.
-> 
-> Great news, nice work there.
-> I see the new tests it doesn't look hard to add new ones reproducing
-> open-unlink-fstat for example; I think it's good to have regardless of
-> kernel progress.
-> 
-> We'll get there!
+> +#include <linux/of_device.h>
+> +#include <linux/of.h>
 
-Yes, that was the goal, trying to keep it simple so that people not 
-necessarily being deeply familiar with 9P (or QEMU) can still quickly write 
-tests for their issues.
+...
 
-This provides several benefits: we can now clearly isolate issues, because in 
-the past we often received patches where it was not immediately clear what's 
-that this patch is fixing exacly, is it a qemu problem, is it rather the 
-client that should handle this, or is this even some spanning side effect of 
-several layers involved like e.g. when overlayfs is deployed.
+> +       val = lpi_gpio_read(pctrl, pin, LPI_GPIO_REG_VAL_CTL);
 
-And another major benefit is that it simply makes development much more 
-efficient. Because you can now just change something on qemu side, and simply 
-run
+> +       val &= ~(LPI_GPIO_REG_FUNCTION_MASK);
 
-make && tests/qtest/qos-test
+Redundant parentheses.
 
-to see within few seconds whether it really does what you wanted it to do. And 
-on doubt you just look into that subdirectory qtest-9p-local-XXXXXX to see 
-what happened.
+> +       val |= i << LPI_GPIO_REG_FUNCTION_SHIFT;
+> +       lpi_gpio_write(pctrl, pin, LPI_GPIO_REG_VAL_CTL, val);
 
-You can also automatically test your changes with multiple qemu configurations 
-(e.g. different security modes, mappings, etc.) as each test case can supply 
-its own set of qemu CL options, and the tests can also be run for all enabled 
-architectures.
+...
 
-The command "tests/qtest/qos-test" is just a shortcut for 9P tests of course. 
-Because obviously there is a huge amount of test cases in qemu for all its 
-subsystems. But I will document this and other things more clearly soon to 
-lower the entry barrier for new people getting in touch with the qemu 9p code 
-base.
+> +static unsigned int lpi_drive_to_regval(u32 arg)
+> +{
+> +       return (arg/2 - 1);
 
-Best regards,
-Christian Schoenebeck
+Ditto. On top, use spaces.
 
+> +}
 
+...
+
+> +               case PIN_CONFIG_SLEW_RATE:
+> +                       if (arg > LPI_SLEW_RATE_MAX) {
+> +                               dev_err(pctldev->dev, "%s: invalid slew rate %u for pin: %d\n",
+> +                                       __func__, arg, pin);
+
+__func__ is not needed.
+
+> +                               goto set_gpio;
+> +                       }
+
+...
+
+> +                       for (i = 0; i < LPI_SLEW_BITS_SIZE; i++) {
+
+> +                               if (arg & 0x01)
+> +                                       set_bit(offset, &val);
+> +                               else
+> +                                       clear_bit(offset, &val);
+
+assign_bit(, arg & BIT(i))
+
+> +                               offset++;
+
+> +                               arg = arg >> 1;
+
+No need on a separate line, see above.
+
+> +                       }
+
+...
+
+> +done:
+
+Useless label.
+
+> +       return ret;
+
+...
+
+> +#ifdef CONFIG_DEBUG_FS
+> +#include <linux/seq_file.h>
+
+> +#else
+> +#define lpi_gpio_dbg_show NULL
+> +#endif
+
+Hmm... Doesn't pin control provide a wrapper for this?
+
+...
+
+> +       int ret, npins;
+> +       struct clk *core_vote = NULL;
+> +       struct clk *audio_vote = NULL;
+> +
+> +       struct lpi_pinctrl *pctrl;
+> +       const struct lpi_pinctrl_variant_data *data;
+> +       struct device *dev = &pdev->dev;
+> +       struct resource *res;
+
+Redundant blank line. Can you keep them in reversed xmas tree order?
+
+...
+
+> +       core_vote = devm_clk_get(&pdev->dev, "core");
+> +       if (IS_ERR(core_vote)) {
+
+> +               dev_dbg(&pdev->dev, "%s: clk get %s failed %d\n",
+> +                       __func__, "core_vote", ret);
+
+First of all you missed the deferred probe issue, second, __func__ is
+redundant for *_dbg() calls (okay, when Dynamic Debug is enabled).
+That said why not
+  return dev_err_probe();
+?
+
+> +               return PTR_ERR(core_vote);
+> +       }
+
+...
+
+> +       audio_vote = devm_clk_get(&pdev->dev, "audio");
+> +       if (IS_ERR(audio_vote)) {
+> +               dev_dbg(&pdev->dev, "%s: clk get %s failed %d\n",
+> +                       __func__, "audio_vote", ret);
+> +               return PTR_ERR(audio_vote);
+
+Ditto/
+
+> +       }
+
+Why is it not a bulk?
+
+> +       clk_prepare_enable(pctrl->core_vote);
+> +       clk_prepare_enable(pctrl->audio_vote);
+
+Either from them may return an error. Also, when you go devm_*() the
+rule of thumb is either all or none. Because here you will have
+ordering issue on ->remove().
+
+> +       res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +       pctrl->tlmm_base = devm_ioremap_resource(&pdev->dev, res);
+
+devm_platform_ioremap_resource()
+
+> +       if (IS_ERR(pctrl->tlmm_base)) {
+> +               ret = PTR_ERR(pctrl->tlmm_base);
+> +               goto err;
+> +       }
+> +
+> +
+
+One blank line is enough.
+
+> +       res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
+> +       pctrl->slew_base = devm_ioremap_resource(&pdev->dev, res);
+
+As above.
+
+> +       if (IS_ERR(pctrl->slew_base)) {
+> +               ret = PTR_ERR(pctrl->slew_base);
+> +               goto err;
+> +       }
+
+...
+
+> +       ret = gpiochip_add_data(&pctrl->chip, pctrl);
+
+Not devm_?
+
+> +       if (ret) {
+> +               dev_err(pctrl->dev, "can't add gpio chip\n");
+> +               goto err_pinctrl;
+> +       }
+
+> +       ret = gpiochip_add_pin_range(&pctrl->chip, dev_name(dev), 0, 0, npins);
+
+Why not to define a proper callback?
+
+> +       if (ret) {
+> +               dev_err(dev, "failed to add pin range\n");
+> +               goto err_range;
+> +       }
+
+...
+
+> +err_range:
+> +       gpiochip_remove(&pctrl->chip);
+> +err_pinctrl:
+> +       mutex_destroy(&pctrl->slew_access_lock);
+> +err:
+> +       clk_disable_unprepare(pctrl->core_vote);
+> +       clk_disable_unprepare(pctrl->audio_vote);
+> +
+> +       return ret;
+
+These are not needed for devm_ case.
+
+...
+
+> +static int lpi_pinctrl_remove(struct platform_device *pdev)
+> +{
+> +       struct lpi_pinctrl *pctrl = platform_get_drvdata(pdev);
+> +
+> +       gpiochip_remove(&pctrl->chip);
+> +       mutex_destroy(&pctrl->slew_access_lock);
+> +       clk_disable_unprepare(pctrl->core_vote);
+> +       clk_disable_unprepare(pctrl->audio_vote);
+
+Ditto. It also has ordering issues.
+
+> +       return 0;
+> +}
+
+...
+
+> +static const struct of_device_id lpi_pinctrl_of_match[] = {
+> +       {
+> +              .compatible = "qcom,sm8250-lpass-lpi-pinctrl",
+> +              .data = &sm8250_lpi_data,
+> +       },
+
+> +       { },
+
+Comma is not needed here.
+
+> +};
+> +
+
+Extra blank line/
+
+> +MODULE_DEVICE_TABLE(of, lpi_pinctrl_of_match);
+
+...
+
+> +static struct platform_driver lpi_pinctrl_driver = {
+
+> +};
+
+> +
+
+Extra blank line.
+
+> +module_platform_driver(lpi_pinctrl_driver);
+
+-- 
+With Best Regards,
+Andy Shevchenko
