@@ -2,127 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2E102A826E
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 16:42:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E0CB2A826F
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 16:43:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731146AbgKEPmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 10:42:47 -0500
-Received: from nat-hk.nvidia.com ([203.18.50.4]:47765 "EHLO nat-hk.nvidia.com"
+        id S1731204AbgKEPng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 10:43:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34194 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730660AbgKEPmr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 10:42:47 -0500
-Received: from HKMAIL102.nvidia.com (Not Verified[10.18.92.100]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fa41d750001>; Thu, 05 Nov 2020 23:42:45 +0800
-Received: from HKMAIL104.nvidia.com (10.18.16.13) by HKMAIL102.nvidia.com
- (10.18.16.11) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 5 Nov
- 2020 15:42:45 +0000
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.45) by
- HKMAIL104.nvidia.com (10.18.16.13) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Thu, 5 Nov 2020 15:42:45 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gw66FIsvBsdqkhlUQJ31z/Zb3HlsbtV0sD2NBElZjqMJvDyLX+d6BdcwOjwHtM9vY9DIuPpotmpICadpQ2cwtbjPOYxQAzOhm05IFwHNqUgv0IovP6LXYQGTcfqBaG8alxsvdNAlEL6XZ6S1KwY89rxxWo6CoJFhruCBTEmQJ+vuykuFWsyAIZ9OOK/BXKVTdtUEym07Ih/6XV+cdl0kuE+5g2+ImGdUi/MIzQxvW6yiWtIDGHMC1oinpJekqW0S666woFNgV9HVsaOkrWB+SRt7kc+tA9xY3BH9hCviCwwH5TIkc8a+mRW2lUZ5/5ngSs50FNZeLgJNSi4sZirMTQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UyQxcI9U4VSYvGOFt7PFjFA5hpcYXzBo013IFYhWNgk=;
- b=W691iisHIw9fvh5vT96DaYelNyvXnDIctfh7l7yHTz30IuJazkmaNHxPvh1atNQHPYQ5TDbFpRFeFnhYqqyiBRDopqIRST9FTDNsAVNOAYSNOFRY+IF8Nw3h8Zn9QjH/t29FSidaqua6n6wn/spIpQrmrQMS+5WtlQ9aDANcm4oFIeiP1BeTZvnQ8alMKvLlatxozlrDjBZl3sRVRCqEDCqcut9zJFdw+BcLw8WkmEJ1PLd0Y/B+gKMaQ98kj07z/aOH1rrpvAxMU/Mzv9D8Dj5jrVhoA6Q03N395yw6joSOsDFX3mfKX/kXaxaSaTPPMNzFWTf7kXt2Y8d8JKDyLQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4513.namprd12.prod.outlook.com (2603:10b6:5:2ad::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18; Thu, 5 Nov
- 2020 15:42:43 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3499.032; Thu, 5 Nov 2020
- 15:42:43 +0000
-Date:   Thu, 5 Nov 2020 11:42:42 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-CC:     Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Maor Gottlieb <maorg@nvidia.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the rdma-fixes tree
-Message-ID: <20201105154242.GI2620339@nvidia.com>
-References: <20201105085458.5addbe44@canb.auug.org.au>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20201105085458.5addbe44@canb.auug.org.au>
-X-ClientProxiedBy: MN2PR10CA0017.namprd10.prod.outlook.com
- (2603:10b6:208:120::30) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S1730660AbgKEPnf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 10:43:35 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E25A8206FA;
+        Thu,  5 Nov 2020 15:43:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604591015;
+        bh=O3AhsxtY8sUUmWn1Tx+mj7l7kuAvEn+JmbDXMOa/Low=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=dDiNEL9mysTp69jFVW6Bu/aoH8wXuz7T8H+cs/AHpFmLs5+2xBFmFumlo/wxvpj0V
+         4SkmeL/sVRV9xWdrR1S1QZXqYYxkTNfy87F3jd2DDClC8Edk/GNt01bb7ZmbzU45o2
+         JBRky2AchLfI+sT4HZbfKGn979X50dqKIAofnM1Y=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kahQC-007sGn-ND; Thu, 05 Nov 2020 15:43:32 +0000
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR10CA0017.namprd10.prod.outlook.com (2603:10b6:208:120::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21 via Frontend Transport; Thu, 5 Nov 2020 15:42:43 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kahPO-00HR6k-6d; Thu, 05 Nov 2020 11:42:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1604590965; bh=UyQxcI9U4VSYvGOFt7PFjFA5hpcYXzBo013IFYhWNgk=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=i2ZyW/5Tqufu2uRtAstj1lxC3xRbqqwrEFyD9QGqGFkGxtvz2wtkJ7JPHsQutYKSL
-         AnTMQtqr6Zm0t8Cduo5segKaVhYFkVByAJAMugKaUO5dzXNFvyVSV7P4HwFCst8vXu
-         0HzfgXcLNvMz6zEFzTSuS+P+poGNGzP0FIu1/lkKI32oXDJYY3UEhI2nvVo/OBlu7+
-         jfD7Zu3LcG8ZxL0Xgv3o/fCBgumnZ/d6h6Nl7+HAbm8FosyhnDoGQZhVnc9hqsaY5N
-         ZsObV8AJ24aAujERycH9lhBsQViUMRcbQbAA1gh63lF+PVQqfgdTIj0Zae8TwQ9gob
-         R9MXgU6Y3PQvQ==
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 05 Nov 2020 15:43:32 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Daniel Palmer <daniel@0x0f.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, linux-arm-kernel@lists.infradead.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 3/5] gpio: msc313: MStar MSC313 GPIO driver
+In-Reply-To: <CAFr9PX=vxCCQgCWe9FPb6Z=0=a48HwGOfM_uOG3SqGN9VSYQUA@mail.gmail.com>
+References: <20201019141008.871177-1-daniel@0x0f.com>
+ <20201019141008.871177-4-daniel@0x0f.com>
+ <CACRpkdZNr6sDqJhg3KcX0bCbcd8fh2gXFYbS1r2H2Sq+vGqjUw@mail.gmail.com>
+ <3fd04aeb5047d8059ddecc1eda19c2e4@kernel.org>
+ <CAFr9PX=vxCCQgCWe9FPb6Z=0=a48HwGOfM_uOG3SqGN9VSYQUA@mail.gmail.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <71f3632bee262a18e1b7edb74980ae9a@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: daniel@0x0f.com, linus.walleij@linaro.org, linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 08:54:58AM +1100, Stephen Rothwell wrote:
-> Hi all,
+On 2020-11-05 15:23, Daniel Palmer wrote:
+> Hi Marc,
 > 
-> After merging the rdma-fixes tree, today's linux-next build (htmldocs)
-> produced this warning:
+> On Thu, 5 Nov 2020 at 21:08, Marc Zyngier <maz@kernel.org> wrote:
+>> 
+>> On 2020-11-05 09:40, Linus Walleij wrote:
+>> > On Mon, Oct 19, 2020 at 4:10 PM Daniel Palmer <daniel@0x0f.com> wrote:
+>> 
+>> [...]
+>> 
+>> >> +/* The parent interrupt controller needs the GIC interrupt type set
+>> >> to GIC_SPI
+>> >> + * so we need to provide the fwspec. Essentially
+>> >> gpiochip_populate_parent_fwspec_twocell
+>> >> + * that puts GIC_SPI into the first cell.
+>> >> + */
+>> 
+>> nit: comment style.
 > 
-> drivers/infiniband/ulp/srpt/ib_srpt.c:630: warning: Function parameter or member 'port_cnt' not described in 'srpt_unregister_mad_agent'
+> I've fixed these and some other bits for the v3.
+> I've held off on pushing that until the rest of it seemed right.
 > 
-> Introduced by commit
+>> >> +static void *msc313_gpio_populate_parent_fwspec(struct gpio_chip *gc,
+>> >> +                                            unsigned int
+>> >> parent_hwirq,
+>> >> +                                            unsigned int parent_type)
+>> >> +{
+>> >> +       struct irq_fwspec *fwspec;
+>> >> +
+>> >> +       fwspec = kmalloc(sizeof(*fwspec), GFP_KERNEL);
+>> >> +       if (!fwspec)
+>> >> +               return NULL;
+>> >> +
+>> >> +       fwspec->fwnode = gc->irq.parent_domain->fwnode;
+>> >> +       fwspec->param_count = 3;
+>> >> +       fwspec->param[0] = GIC_SPI;
+>> >> +       fwspec->param[1] = parent_hwirq;
+>> >> +       fwspec->param[2] = parent_type;
+>> >> +
+>> >> +       return fwspec;
+>> >> +}
+>> >
+>> > Clever. Looping in Marc Z so he can say if this looks allright to him.
+>> 
+>> Yup, this looks correct. However, looking at the bit of the patch that
+>> isn't quoted here, I see that msc313_gpio_irqchip doesn't have a
+>> .irq_set_affinity callback. Is this system UP only?
 > 
->   372a1786283e ("IB/srpt: Fix memory leak in srpt_add_one")
+> What is in mainline right now is UP only but there are chips with a
+> second cortex A7 that I have working in my tree.
+> So I will add that in for v3 if I can work out what I should actually
+> do there. :)
 
-I patched it, thanks
+Probably nothing more than setting the callback to 
+irq_chip_set_affinity_parent,
+I'd expect.
 
-Jason
-
-From 21fcdeec09ff461b2f9a9ef4fcc3a136249e58a1 Mon Sep 17 00:00:00 2001
-From: Jason Gunthorpe <jgg@nvidia.com>
-Date: Thu, 5 Nov 2020 11:38:29 -0400
-Subject: [PATCH] RDMA/srpt: Fix typo in srpt_unregister_mad_agent docstring
-
-htmldocs fails with:
-
-drivers/infiniband/ulp/srpt/ib_srpt.c:630: warning: Function parameter or member 'port_cnt' not described in 'srpt_unregister_mad_agent'
-
-Fixes: 372a1786283e ("IB/srpt: Fix memory leak in srpt_add_one")
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
----
- drivers/infiniband/ulp/srpt/ib_srpt.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
-index 1b096305de1a45..53a8becac82761 100644
---- a/drivers/infiniband/ulp/srpt/ib_srpt.c
-+++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
-@@ -622,7 +622,7 @@ static int srpt_refresh_port(struct srpt_port *sport)
- /**
-  * srpt_unregister_mad_agent - unregister MAD callback functions
-  * @sdev: SRPT HCA pointer.
-- * #port_cnt: number of ports with registered MAD
-+ * @port_cnt: number of ports with registered MAD
-  *
-  * Note: It is safe to call this function more than once for the same device.
-  */
+         M.
 -- 
-2.28.0
-
- 
-
-
+Jazz is not dead. It just smells funny...
