@@ -2,122 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E8C32A8213
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 16:22:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BBA12A821B
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 16:22:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731201AbgKEPWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 10:22:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52754 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730660AbgKEPWQ (ORCPT
+        id S1731255AbgKEPW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 10:22:27 -0500
+Received: from esa6.microchip.iphmx.com ([216.71.154.253]:8483 "EHLO
+        esa6.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731204AbgKEPW0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 10:22:16 -0500
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5261BC0613CF;
-        Thu,  5 Nov 2020 07:22:14 -0800 (PST)
-Received: by mail-lj1-x242.google.com with SMTP id l10so1979097lji.4;
-        Thu, 05 Nov 2020 07:22:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=L7OVsr5m178XbCaCzAWNkdQoFi3/3zu9mN+yPgl2DUs=;
-        b=ZUE+lII34sxgdJMzK2yn/f7sQCJw/4+mRXBdMBq1/bhBQWtfS/PtExzwYtktIoAWgY
-         SU7g93lwJ2c7NK0CDwzeo+RytY043NhbabYKjJOBr7tIMP5wlLP/u6h82rzBRDjVxP9j
-         EdnAYAZOpmyMs1GUR/kcd37x1kAewnXFex0wqQUKK37hfYXxUIOMvhuhv9Kkm4bWWj03
-         NYOfuJLDcjhyyGqGtJNpIUWkJQCG6veMjv1sZZ5dae38lEVIkii3wjlD54ZKITpqpnKX
-         8VoeiDhs1BxqGTAhX5SPmAP4HQXgACk2ac5ePAi3NeEKCHu2erytV3AEJlNMrsBJq5S8
-         bmSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=L7OVsr5m178XbCaCzAWNkdQoFi3/3zu9mN+yPgl2DUs=;
-        b=twh5NJEnuJ62dpTxoXovRD4gCmY0BG4D9sS+edVQQaMZPACU1iuomMN04SrNwtNh22
-         xGgIaIIGj3vyBZ9oADNuwuwDVf+fnX79IRtDyPVBi0M7BStghUDNZRkAK7Of7dOgEVq2
-         SIFpM8RU39rOH0UKaL6zhX5IarWKE5o/lAJs701DcXrY8D5qmZXojcDNMiGQbuL4vFlv
-         8D9WQ5rOyXrCiJFoIgj2thbGswp7134dZ+pdmXKUUX7/i80MgJ+K3pCsyLmzkqt0AXue
-         PI8v+6G9SRCSt0uBy0cXjRGyCVaq8m9rxGnt7vnEEBfr03P1sJFKGC2UktRMnFqD8Kr0
-         RDQw==
-X-Gm-Message-State: AOAM533I23gWFQ5iK/2hzADTQc84tAIocMgvEeppzzNkLTtmlUB8KQgy
-        KSeJV8Z1IXgIGjbGxm2PEqKG+a1OJ9E=
-X-Google-Smtp-Source: ABdhPJwC5ZQ/5zYH2nUFCy93HeDhVeV9bcOjajKeeVZadnE++shSnXPj1s2oA0r6x39bDtt0cphAoQ==
-X-Received: by 2002:a2e:9a0e:: with SMTP id o14mr1127768lji.340.1604589731407;
-        Thu, 05 Nov 2020 07:22:11 -0800 (PST)
-Received: from [192.168.2.145] (109-252-192-83.dynamic.spd-mgts.ru. [109.252.192.83])
-        by smtp.googlemail.com with ESMTPSA id 144sm176642ljj.48.2020.11.05.07.22.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Nov 2020 07:22:10 -0800 (PST)
-Subject: Re: [PATCH v1 00/30] Introduce core voltage scaling for NVIDIA
- Tegra20/30 SoCs
-To:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Peter Chen <Peter.Chen@nxp.com>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        driverdevel <devel@driverdev.osuosl.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        linux-pwm@vger.kernel.org,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>
-References: <20201104234427.26477-1-digetx@gmail.com>
- <CAPDyKFr7qTU2RPhA_ZrbCayoTTNUEno1zdmvmv+8HBe-Owrfeg@mail.gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <cd147ab0-1304-a491-7a56-ee6199c02d32@gmail.com>
-Date:   Thu, 5 Nov 2020 18:22:09 +0300
+        Thu, 5 Nov 2020 10:22:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1604589745; x=1636125745;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=8Nee0VCzpk0Vgp0nXh8FG89MS98QQe0yg6mbF5jma2Q=;
+  b=C1C75RdWAhR01vy01CP5fDyakF2YC/M4Z9El5QXrcwyVnQHWhi+2UzAu
+   /8AjLzxrLVDRZpDW8el1pI1o+UaNugZ9XD+KzVumWP7yCBOjOKzngi0HB
+   1joQxoDf3zXa7d5X78HIHlOzZ3Pnxg6PDHXA4nTgRn663bGvN/u7vJZZt
+   2WasOPeGYoRqAJIuGPnQYXmSehTTIOMdSHwUfhMu6eBJcrjdC+X3uBlHX
+   N1aZ53rTxkzD6sdBB6g3kZLvhTgfg5d6TvN0+0JCBZNJYBeYtXHNtHprX
+   vXkJ0t7KZZcZpQucy7t5o8JtnFZ5FiOSvLYFLYv4NDD1hWeFiFARrWTuR
+   A==;
+IronPort-SDR: YEpKQPsDcnaR5QPmdVQeMheN9WFfnUtorYWNbGEfQOvcKZFyiOWnugCGRND5AuUStOGEKzGAEk
+ fzRFhdf/x7+zS4bDx2HZy5xzG/V/OKXa29ptuQ5lAWaAHTncNQNgIYJiDbIrgqUej0SsVvvDjV
+ pk5ak9f81gQqDqNi8bsngbf74STF0R2ONX0otRj6U5iUHhedMmLYEn0Gw5lib4xOhWU8XldXSQ
+ Pz/IpXLwuSxS7o4COwvnlKXUib7JNDE25UwgBzBgB9Ens4P5CIG8QFcWJ+xtFhoJmVKHt67LYb
+ Lec=
+X-IronPort-AV: E=Sophos;i="5.77,453,1596524400"; 
+   d="scan'208";a="32571915"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 05 Nov 2020 08:22:24 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 5 Nov 2020 08:22:24 -0700
+Received: from [10.171.246.99] (10.10.115.15) by chn-vm-ex01.mchp-main.com
+ (10.10.85.143) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Thu, 5 Nov 2020 08:22:19 -0700
+Subject: Re: [PATCH] net: macb: fix NULL dereference due to no pcs_config
+ method
+To:     Parshuram Thombare <pthombar@cadence.com>, <kuba@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <netdev@vger.kernel.org>,
+        <linux@armlinux.org.uk>
+CC:     <Claudiu.Beznea@microchip.com>, <Santiago.Esteban@microchip.com>,
+        <andrew@lunn.ch>, <davem@davemloft.net>,
+        <linux-kernel@vger.kernel.org>, <harini.katakam@xilinx.com>,
+        <michal.simek@xilinx.com>
+References: <1604587039-5646-1-git-send-email-pthombar@cadence.com>
+From:   Nicolas Ferre <nicolas.ferre@microchip.com>
+Organization: microchip
+Message-ID: <6873cf12-456b-c121-037b-d2c5a6138cb3@microchip.com>
+Date:   Thu, 5 Nov 2020 16:22:18 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <CAPDyKFr7qTU2RPhA_ZrbCayoTTNUEno1zdmvmv+8HBe-Owrfeg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <1604587039-5646-1-git-send-email-pthombar@cadence.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-05.11.2020 12:45, Ulf Hansson пишет:
-...
-> I need some more time to review this, but just a quick check found a
-> few potential issues...
-
-Thank you for starting the review! I'm pretty sure it will take a couple
-revisions until all the questions will be resolved :)
-
-> The "core-supply", that you specify as a regulator for each
-> controller's device node, is not the way we describe power domains.
-> Instead, it seems like you should register a power-domain provider
-> (with the help of genpd) and implement the ->set_performance_state()
-> callback for it. Each device node should then be hooked up to this
-> power-domain, rather than to a "core-supply". For DT bindings, please
-> have a look at Documentation/devicetree/bindings/power/power-domain.yaml
-> and Documentation/devicetree/bindings/power/power_domain.txt.
+On 05/11/2020 at 15:37, Parshuram Thombare wrote:
+> This patch fixes NULL pointer dereference due to NULL pcs_config
+> in pcs_ops.
 > 
-> In regards to the "sync state" problem (preventing to change
-> performance states until all consumers have been attached), this can
-> then be managed by the genpd provider driver instead.
+> Fixes: e4e143e26ce8 ("net: macb: add support for high speed interface")
 
-I'll need to take a closer look at GENPD, thank you for the suggestion.
+What is this tag? In linux-next? As patch is not yet in Linus' tree, you 
+cannot refer to it like this.
 
-Sounds like a software GENPD driver which manages clocks and voltages
-could be a good idea, but it also could be an unnecessary
-over-engineering. Let's see..
+> Reported-by: Nicolas Ferre <Nicolas.Ferre@microchip.com>
+> Link: https://lkml.org/lkml/2020/11/4/482
+
+You might need to change this to a "lore" link:
+https://lore.kernel.org/netdev/2db854c7-9ffb-328a-f346-f68982723d29@microchip.com/
+
+> Signed-off-by: Parshuram Thombare <pthombar@cadence.com>
+
+This fix looks a bit weird to me. What about proposing a patch to 
+Russell like the chunk that you already identified in function 
+phylink_major_config()?
+
+
+> ---
+>   drivers/net/ethernet/cadence/macb_main.c | 17 +++++++++++++++--
+>   1 file changed, 15 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/cadence/macb_main.c b/drivers/net/ethernet/cadence/macb_main.c
+> index b7bc160..130a5af 100644
+> --- a/drivers/net/ethernet/cadence/macb_main.c
+> +++ b/drivers/net/ethernet/cadence/macb_main.c
+> @@ -633,6 +633,15 @@ static void macb_pcs_an_restart(struct phylink_pcs *pcs)
+>          /* Not supported */
+>   }
+> 
+> +static int macb_pcs_config(struct phylink_pcs *pcs,
+> +                          unsigned int mode,
+> +                          phy_interface_t interface,
+> +                          const unsigned long *advertising,
+> +                          bool permit_pause_to_mac)
+> +{
+> +       return 0;
+> +}
+
+Russell, is the requirement for this void function intended?
+
+> +
+>   static const struct phylink_pcs_ops macb_phylink_usx_pcs_ops = {
+>          .pcs_get_state = macb_usx_pcs_get_state,
+>          .pcs_config = macb_usx_pcs_config,
+> @@ -642,6 +651,7 @@ static const struct phylink_pcs_ops macb_phylink_usx_pcs_ops = {
+>   static const struct phylink_pcs_ops macb_phylink_pcs_ops = {
+>          .pcs_get_state = macb_pcs_get_state,
+>          .pcs_an_restart = macb_pcs_an_restart,
+> +       .pcs_config = macb_pcs_config,
+>   };
+> 
+>   static void macb_mac_config(struct phylink_config *config, unsigned int mode,
+> @@ -776,10 +786,13 @@ static int macb_mac_prepare(struct phylink_config *config, unsigned int mode,
+> 
+>          if (interface == PHY_INTERFACE_MODE_10GBASER)
+>                  bp->phylink_pcs.ops = &macb_phylink_usx_pcs_ops;
+> -       else
+> +       else if (interface == PHY_INTERFACE_MODE_SGMII)
+>                  bp->phylink_pcs.ops = &macb_phylink_pcs_ops;
+
+Do you confirm that all SGMII type interfaces need phylink_pcs.ops?
+
+> +       else
+> +               bp->phylink_pcs.ops = NULL;
+> 
+> -       phylink_set_pcs(bp->phylink, &bp->phylink_pcs);
+> +       if (bp->phylink_pcs.ops)
+> +               phylink_set_pcs(bp->phylink, &bp->phylink_pcs);
+> 
+>          return 0;
+>   }
+
+Regards,
+   Nicolas
+
+-- 
+Nicolas Ferre
