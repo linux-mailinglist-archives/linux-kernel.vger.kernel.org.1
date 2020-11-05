@@ -2,94 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79E622A857E
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 18:59:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B33A72A8587
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 19:01:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731755AbgKER7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 12:59:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49452 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726214AbgKER7f (ORCPT
+        id S1731595AbgKESBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 13:01:25 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2058 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727376AbgKESBY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 12:59:35 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08D27C0613CF;
-        Thu,  5 Nov 2020 09:59:35 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id 1so1158444ple.2;
-        Thu, 05 Nov 2020 09:59:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=9R0Npxph68AU7PWFQ4QRZSNA/O3rcswyVG3VJILrsQM=;
-        b=BVD0FscPMU4YoqUkiSJgwQkIWgQ1LPWJgaG6bhkws4ZZuwvd5jQyHYnGZw1MpT58LM
-         mwviSZzHufvzgRta+8sADHXxn/dh4PlzZ4lvyM8DrkYbUYzZzhrTkIzC5gpokcbkk5SL
-         rXnVTqfNUk+AdJZsKyPPXMRcD4spEBg1nqhT0TSFmDN05qpphrlamFNpEeF+5gdqNFQI
-         h+XcHRq1FDe0B80uL4qeNr5oAgaSfWsjl3RIzh1Lok9kEJHzKkpEq/C533uRdV1NKEPM
-         XTg6tqp8QjmmxOOaRVaMJZ8nKN9kb2Fl3kAcQu6VnbumA1wot/A9ZiztNyrk3WMlgYJE
-         eWmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=9R0Npxph68AU7PWFQ4QRZSNA/O3rcswyVG3VJILrsQM=;
-        b=fJ2cOsr3szdYpKhr2J4Q4GMVEF3XYL/5SLH4O9kw+UxXTQnCv3GatFoquGH3Pq/IRB
-         XFVJTes8YlZo47UTc7aq6YcXG466AXVSD+a8uOtEfh8+rVS43LkVM1Nm6FaLiwGfU95b
-         Xj2VjJFrHjg1sYGWLo/sLQ82VEiOVNM3UmljKufY8zLKg3DRJ60tnNSAsLI4stmXzD84
-         QdH5Rls4FlRtucK0tEsl9sK+RnmiKuZXSavhxYdTKh3q8F3EaAYN6IAMccsop4lxc3Zb
-         XMzqu47yyQJA5kQq4CxiatmqevOTas0fiZTgcQYW1mACL3An60Ap7y6NlwG05WJD1f24
-         VXQA==
-X-Gm-Message-State: AOAM533//OVFWqkWoC95HA1TOWfkNFwl90viHQImU/YOuaE8EnheOmr6
-        W1ZVwDEAf6o6Sg6QiMSrc0E=
-X-Google-Smtp-Source: ABdhPJzpBzHOyBdbcoJwGu4x2cFAUIHPNF0tW4PfjHkSM901tlp4Uts8ESm2AmMKqTs0Iw8AIWneaA==
-X-Received: by 2002:a17:90a:17ad:: with SMTP id q42mr3643832pja.36.1604599174601;
-        Thu, 05 Nov 2020 09:59:34 -0800 (PST)
-Received: from localhost ([160.202.157.3])
-        by smtp.gmail.com with ESMTPSA id t129sm3350731pfc.140.2020.11.05.09.59.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 09:59:34 -0800 (PST)
-Date:   Thu, 5 Nov 2020 23:29:28 +0530
-From:   Deepak R Varma <mh12gx2825@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     mh12gx2825@gmail.com
-Subject: [PATCH] drm/tegra: replace idr_init() by idr_init_base()
-Message-ID: <20201105175928.GA42488@localhost>
+        Thu, 5 Nov 2020 13:01:24 -0500
+Received: from fraeml743-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CRrRK75P1z67Htg;
+        Fri,  6 Nov 2020 01:41:17 +0800 (CST)
+Received: from lhreml715-chm.china.huawei.com (10.201.108.66) by
+ fraeml743-chm.china.huawei.com (10.206.15.224) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Thu, 5 Nov 2020 18:42:33 +0100
+Received: from DESKTOP-6T4S3DQ.china.huawei.com (10.47.87.221) by
+ lhreml715-chm.china.huawei.com (10.201.108.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Thu, 5 Nov 2020 17:42:32 +0000
+From:   Shiju Jose <shiju.jose@huawei.com>
+To:     <linux-edac@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <james.morse@arm.com>,
+        <bp@alien8.de>, <tony.luck@intel.com>, <rjw@rjwysocki.net>,
+        <lenb@kernel.org>, <rrichter@marvell.com>
+CC:     <linuxarm@huawei.com>, <jonathan.cameron@huawei.com>,
+        <shiju.jose@huawei.com>
+Subject: [RFC PATCH 0/4] EDAC/ghes: Add EDAC device for recording the CPU error count
+Date:   Thu, 5 Nov 2020 17:42:29 +0000
+Message-ID: <20201105174233.1146-1-shiju.jose@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.47.87.221]
+X-ClientProxiedBy: lhreml745-chm.china.huawei.com (10.201.108.195) To
+ lhreml715-chm.china.huawei.com (10.201.108.66)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-idr_init() uses base 0 which is an invalid identifier for this driver.
-The new function idr_init_base allows IDR to set the ID lookup from
-base 1. This avoids all lookups that otherwise starts from 0 since
-0 is always unused.
+For the firmware-first error handling on ARM64 hardware platforms,
+CPU cache corrected error count is not recorded.
+Create an CPU EDAC device and device blocks for the CPU caches
+for this purpose. The EDAC device blocks  are created based on the
+CPU caches information represented in the ACPI PPTT.
 
-References: commit 6ce711f27500 ("idr: Make 1-based IDRs more efficient")
+User-space application could monitor the recorded corrected error
+count for the early fault detection.
 
-Signed-off-by: Deepak R Varma <mh12gx2825@gmail.com>
----
- drivers/gpu/drm/tegra/drm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Jonathan Cameron (1):
+  ACPI: PPTT: Fix for a high level cache node detected in the low level
 
-diff --git a/drivers/gpu/drm/tegra/drm.c b/drivers/gpu/drm/tegra/drm.c
-index ba9d1c3e7cac..e4baf07992a4 100644
---- a/drivers/gpu/drm/tegra/drm.c
-+++ b/drivers/gpu/drm/tegra/drm.c
-@@ -90,7 +90,7 @@ static int tegra_drm_open(struct drm_device *drm, struct drm_file *filp)
- 	if (!fpriv)
- 		return -ENOMEM;
- 
--	idr_init(&fpriv->contexts);
-+	idr_init_base(&fpriv->contexts, 1);
- 	mutex_init(&fpriv->lock);
- 	filp->driver_priv = fpriv;
- 
+Shiju Jose (3):
+  ACPI: PPTT: Add function acpi_find_cache_info
+  EDAC/ghes: Add EDAC device for the CPU caches
+  ACPI / APEI: Add reporting ARM64 CPU cache corrected error count
+
+ drivers/acpi/apei/ghes.c  |  79 +++++++++++++++++++++-
+ drivers/acpi/pptt.c       | 123 +++++++++++++++++++++++++++++++++-
+ drivers/edac/Kconfig      |  10 +++
+ drivers/edac/ghes_edac.c  | 135 ++++++++++++++++++++++++++++++++++++++
+ include/acpi/ghes.h       |  27 ++++++++
+ include/linux/cacheinfo.h |  12 ++++
+ include/linux/cper.h      |   4 ++
+ 7 files changed, 386 insertions(+), 4 deletions(-)
+
 -- 
-2.25.1
+2.17.1
 
