@@ -2,169 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B25042A867E
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 19:55:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4E572A8685
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 19:56:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731763AbgKESzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 13:55:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56100 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727017AbgKESzw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 13:55:52 -0500
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9CAD6206D9;
-        Thu,  5 Nov 2020 18:55:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604602551;
-        bh=U+eY0oLiAL3X7oMRMsfRt2ooI6apLfHOdcCodZm3Cd0=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=T8taIkA4GHyEXl6/ZlIFQv2zZTw2VS/QNzYbk5SWkni8TDMFjWEWhuILMNGrmhhFc
-         nnhKXVVktNiA2w4o16npSW3myiTi6vNMxIKqdgZ2nxbyxE4uOlSxN0RJFdB5jQALj6
-         bLecqsnthydqr9SpyxptdVInwmtwoRgmFcyf07Do=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 32B6F352265A; Thu,  5 Nov 2020 10:55:51 -0800 (PST)
-Date:   Thu, 5 Nov 2020 10:55:51 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Marco Elver <elver@google.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>, fweisbec@gmail.com,
-        neeraj.iitr10@gmail.com
-Subject: Re: [PATCH v9 7/7] rcu/segcblist: Add additional comments to explain
- smp_mb()
-Message-ID: <20201105185551.GO3249@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201103142603.1302207-1-joel@joelfernandes.org>
- <20201103142603.1302207-8-joel@joelfernandes.org>
+        id S1731919AbgKES44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 13:56:56 -0500
+Received: from mail-oo1-f65.google.com ([209.85.161.65]:33142 "EHLO
+        mail-oo1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727017AbgKES44 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 13:56:56 -0500
+Received: by mail-oo1-f65.google.com with SMTP id u5so691925oot.0;
+        Thu, 05 Nov 2020 10:56:55 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=15Y1K9usUkG9wBYnByVHYm2MLoK4h6XMHFtLXY+mdjs=;
+        b=rURCeC+sWDtHrJnFmLVi0Y7ku+A8UYeNto8FZ1PgI33VwjXCnvGIDFiRR1YGKCjMvw
+         w5I+r0+EQmJrKadO2Eeue+qfhzOGPHavX5ITo9PTLNHSDdNUWICXVt0cxNx6dTeweYqn
+         AOxVFHAfD00sX1wUnY6MLoxKvddIV3z+C2b7CWGMw/Xqz5vvnIB3Y1rTYKPg9DazFU9q
+         nsHlzUwbjVnEZMWw9dUONprgTuv6woxwVnIqFldf+eO9K3bKMdvbIdXTrHFhonnUgxEI
+         YlnlL1/wTrkmwXEr5a+Dn9ngozZe1nK7GmvBvwd1H7zPm2FEOE80QExFKnyT3EKKXcqG
+         vTSw==
+X-Gm-Message-State: AOAM533B4hK+X6a3xezWyz8q80WG6/mvFIKlWAOVXkJs47rt/ekV9sgb
+        zfOcNvZ82S16mcCWw9PgBg==
+X-Google-Smtp-Source: ABdhPJyoNx34h4/j3YzRqbVXxQbGXFshAsrXGC4xBgpM5T7zjUT14r8TQBLtnmtsKzVZ70fe1xmcEw==
+X-Received: by 2002:a4a:6251:: with SMTP id y17mr2455201oog.17.1604602614670;
+        Thu, 05 Nov 2020 10:56:54 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id i12sm537841oon.26.2020.11.05.10.56.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Nov 2020 10:56:53 -0800 (PST)
+Received: (nullmailer pid 1631441 invoked by uid 1000);
+        Thu, 05 Nov 2020 18:56:52 -0000
+Date:   Thu, 5 Nov 2020 12:56:52 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Sameer Pujar <spujar@nvidia.com>
+Cc:     devicetree@vger.kernel.org, thierry.reding@gmail.com,
+        jonathanh@nvidia.com, vkoul@kernel.org, tglx@linutronix.de,
+        jason@lakedaemon.net, maz@kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org
+Subject: Re: [PATCH 2/4] dt-bindings: dma: Convert ADMA doc to json-schema
+Message-ID: <20201105185652.GB1622537@bogus>
+References: <1604571846-14037-1-git-send-email-spujar@nvidia.com>
+ <1604571846-14037-3-git-send-email-spujar@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201103142603.1302207-8-joel@joelfernandes.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <1604571846-14037-3-git-send-email-spujar@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 09:26:03AM -0500, Joel Fernandes (Google) wrote:
-> Memory barriers are needed when updating the full length of the
-> segcblist, however it is not fully clearly why one is needed before and
-> after. This patch therefore adds additional comments to the function
-> header to explain it.
+On Thu, Nov 05, 2020 at 03:54:04PM +0530, Sameer Pujar wrote:
+> Move ADMA documentation to YAML format.
 > 
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
+> ---
+>  .../bindings/dma/nvidia,tegra210-adma.txt          | 56 -------------
+>  .../bindings/dma/nvidia,tegra210-adma.yaml         | 95 ++++++++++++++++++++++
+>  2 files changed, 95 insertions(+), 56 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/dma/nvidia,tegra210-adma.txt
+>  create mode 100644 Documentation/devicetree/bindings/dma/nvidia,tegra210-adma.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/dma/nvidia,tegra210-adma.txt b/Documentation/devicetree/bindings/dma/nvidia,tegra210-adma.txt
+> deleted file mode 100644
+> index 245d306..0000000
+> --- a/Documentation/devicetree/bindings/dma/nvidia,tegra210-adma.txt
+> +++ /dev/null
+> @@ -1,56 +0,0 @@
+> -* NVIDIA Tegra Audio DMA (ADMA) controller
+> -
+> -The Tegra Audio DMA controller that is used for transferring data
+> -between system memory and the Audio Processing Engine (APE).
+> -
+> -Required properties:
+> -- compatible: Should contain one of the following:
+> -  - "nvidia,tegra210-adma": for Tegra210
+> -  - "nvidia,tegra186-adma": for Tegra186 and Tegra194
+> -- reg: Should contain DMA registers location and length. This should be
+> -  a single entry that includes all of the per-channel registers in one
+> -  contiguous bank.
+> -- interrupts: Should contain all of the per-channel DMA interrupts in
+> -  ascending order with respect to the DMA channel index.
+> -- clocks: Must contain one entry for the ADMA module clock
+> -  (TEGRA210_CLK_D_AUDIO).
+> -- clock-names: Must contain the name "d_audio" for the corresponding
+> -  'clocks' entry.
+> -- #dma-cells : Must be 1. The first cell denotes the receive/transmit
+> -  request number and should be between 1 and the maximum number of
+> -  requests supported. This value corresponds to the RX/TX_REQUEST_SELECT
+> -  fields in the ADMA_CHn_CTRL register.
+> -
+> -
+> -Example:
+> -
+> -adma: dma@702e2000 {
+> -	compatible = "nvidia,tegra210-adma";
+> -	reg = <0x0 0x702e2000 0x0 0x2000>;
+> -	interrupt-parent = <&tegra_agic>;
+> -	interrupts = <GIC_SPI 24 IRQ_TYPE_LEVEL_HIGH>,
+> -		     <GIC_SPI 25 IRQ_TYPE_LEVEL_HIGH>,
+> -		     <GIC_SPI 26 IRQ_TYPE_LEVEL_HIGH>,
+> -		     <GIC_SPI 27 IRQ_TYPE_LEVEL_HIGH>,
+> -		     <GIC_SPI 28 IRQ_TYPE_LEVEL_HIGH>,
+> -		     <GIC_SPI 29 IRQ_TYPE_LEVEL_HIGH>,
+> -		     <GIC_SPI 30 IRQ_TYPE_LEVEL_HIGH>,
+> -		     <GIC_SPI 31 IRQ_TYPE_LEVEL_HIGH>,
+> -		     <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>,
+> -		     <GIC_SPI 33 IRQ_TYPE_LEVEL_HIGH>,
+> -		     <GIC_SPI 34 IRQ_TYPE_LEVEL_HIGH>,
+> -		     <GIC_SPI 35 IRQ_TYPE_LEVEL_HIGH>,
+> -		     <GIC_SPI 36 IRQ_TYPE_LEVEL_HIGH>,
+> -		     <GIC_SPI 37 IRQ_TYPE_LEVEL_HIGH>,
+> -		     <GIC_SPI 38 IRQ_TYPE_LEVEL_HIGH>,
+> -		     <GIC_SPI 39 IRQ_TYPE_LEVEL_HIGH>,
+> -		     <GIC_SPI 40 IRQ_TYPE_LEVEL_HIGH>,
+> -		     <GIC_SPI 41 IRQ_TYPE_LEVEL_HIGH>,
+> -		     <GIC_SPI 42 IRQ_TYPE_LEVEL_HIGH>,
+> -		     <GIC_SPI 43 IRQ_TYPE_LEVEL_HIGH>,
+> -		     <GIC_SPI 44 IRQ_TYPE_LEVEL_HIGH>,
+> -		     <GIC_SPI 45 IRQ_TYPE_LEVEL_HIGH>;
+> -	clocks = <&tegra_car TEGRA210_CLK_D_AUDIO>;
+> -	clock-names = "d_audio";
+> -	#dma-cells = <1>;
+> -};
+> diff --git a/Documentation/devicetree/bindings/dma/nvidia,tegra210-adma.yaml b/Documentation/devicetree/bindings/dma/nvidia,tegra210-adma.yaml
+> new file mode 100644
+> index 0000000..b4e657d
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/dma/nvidia,tegra210-adma.yaml
+> @@ -0,0 +1,95 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/dma/nvidia,tegra210-adma.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: NVIDIA Tegra Audio DMA (ADMA) controller
+> +
+> +description: |
+> +  The Tegra Audio DMA controller is used for transferring data
+> +  between system memory and the Audio Processing Engine (APE).
+> +
+> +maintainers:
+> +  - Jon Hunter <jonathanh@nvidia.com>
+> +
+> +allOf:
+> +  - $ref: "dma-controller.yaml#"
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - enum:
+> +          - nvidia,tegra210-adma
+> +          - nvidia,tegra186-adma
+> +      - items:
+> +          - const: nvidia,tegra194-adma
+> +          - const: nvidia,tegra186-adma
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    description: |
+> +      Should contain all of the per-channel DMA interrupts in
+> +      ascending order with respect to the DMA channel index.
 
-Looks good, thank you!  As always, I could not resist the urge to
-do a bit of wordsmithing, so that the queued commit is as shown
-below.  Please let me know if I messed anything up.
+You need to define how many (minItems/maxItems).
 
-							Thanx, Paul
+> +
+> +  clocks:
+> +    description: Must contain one entry for the ADMA module clock
 
-------------------------------------------------------------------------
+How many?
 
-commit 7dac7adefcae7558b3a85a16f51186d621623733
-Author: Joel Fernandes (Google) <joel@joelfernandes.org>
-Date:   Tue Nov 3 09:26:03 2020 -0500
+> +
+> +  clock-names:
+> +    const: d_audio
+> +
+> +  "#dma-cells":
+> +    description: |
+> +      The first cell denotes the receive/transmit request number and
+> +      should be between 1 and the maximum number of requests supported.
+> +      This value corresponds to the RX/TX_REQUEST_SELECT fields in the
+> +      ADMA_CHn_CTRL register.
+> +
 
-    rcu/segcblist: Add additional comments to explain smp_mb()
-    
-    One counter-intuitive property of RCU is the fact that full memory
-    barriers are needed both before and after updates to the full
-    (non-segmented) length.  This patch therefore helps to assist the
-    reader's intuition by adding appropriate comments.
-    
-    [ paulmck:  Wordsmithing. ]
-    Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Drop the blank line.
 
-diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
-index bb246d8..b6dda7c 100644
---- a/kernel/rcu/rcu_segcblist.c
-+++ b/kernel/rcu/rcu_segcblist.c
-@@ -94,17 +94,77 @@ static void rcu_segcblist_set_len(struct rcu_segcblist *rsclp, long v)
-  * field to disagree with the actual number of callbacks on the structure.
-  * This increase is fully ordered with respect to the callers accesses
-  * both before and after.
-+ *
-+ * So why on earth is a memory barrier required both before and after
-+ * the update to the ->len field???
-+ *
-+ * The reason is that rcu_barrier() locklessly samples each CPU's ->len
-+ * field, and if a given CPU's field is zero, avoids IPIing that CPU.
-+ * This can of course race with both queuing and invoking of callbacks.
-+ * Failng to correctly handle either of these races could result in
-+ * rcu_barrier() failing to IPI a CPU that actually had callbacks queued
-+ * which rcu_barrier() was obligated to wait on.  And if rcu_barrier()
-+ * failed to wait on such a callback, unloading certain kernel modules
-+ * would result in calls to functions whose code was no longer present in
-+ * the kernel, for but one example.
-+ *
-+ * Therefore, ->len transitions from 1->0 and 0->1 have to be carefully
-+ * ordered with respect with both list modifications and the rcu_barrier().
-+ *
-+ * The queuing case is CASE 1 and the invoking case is CASE 2.
-+ *
-+ * CASE 1: Suppose that CPU 0 has no callbacks queued, but invokes
-+ * call_rcu() just as CPU 1 invokes rcu_barrier().  CPU 0's ->len field
-+ * will transition from 0->1, which is one of the transitions that must be
-+ * handled carefully.  Without the full memory barriers before the ->len
-+ * update and at the beginning of rcu_barrier(), the following could happen:
-+ *
-+ * CPU 0				CPU 1
-+ *
-+ * call_rcu().
-+ *                      		rcu_barrier() sees ->len as 0.
-+ * set ->len = 1.
-+ *                      		rcu_barrier() does nothing.
-+ *					module is unloaded.
-+ * callback invokes unloaded function!
-+ *
-+ * With the full barriers, any case where rcu_barrier() sees ->len as 0 will
-+ * have unambiguously preceded the return from the racing call_rcu(), which
-+ * means that this call_rcu() invocation is OK to not wait on.  After all,
-+ * you are supposed to make sure that any problematic call_rcu() invocations
-+ * happen before the rcu_barrier().
-+ *
-+ *
-+ * CASE 2: Suppose that CPU 0 is invoking its last callback just as CPU 1 invokes
-+ * rcu_barrier().  CPU 0's ->len field will transition from 1->0, which is one
-+ * of the transitions that must be handled carefully.  Without the full memory
-+ * barriers after the ->len update and at the end of rcu_barrier(), the following
-+ * could happen:
-+ * 
-+ * CPU 0				CPU 1
-+ *
-+ * start invoking last callback
-+ * set ->len = 0 (reordered)
-+ *                      		rcu_barrier() sees ->len as 0
-+ *                      		rcu_barrier() does nothing.
-+ *					module is unloaded
-+ * callback executing after unloaded!
-+ *
-+ * With the full barriers, any case where rcu_barrier() sees ->len as 0
-+ * will be fully ordered after the completion of the callback function,
-+ * so that the module unloading operation is completely safe.
-+ * 
-  */
- void rcu_segcblist_add_len(struct rcu_segcblist *rsclp, long v)
- {
- #ifdef CONFIG_RCU_NOCB_CPU
--	smp_mb__before_atomic(); /* Up to the caller! */
-+	smp_mb__before_atomic(); // Read header comment above.
- 	atomic_long_add(v, &rsclp->len);
--	smp_mb__after_atomic(); /* Up to the caller! */
-+	smp_mb__after_atomic();  // Read header comment above.
- #else
--	smp_mb(); /* Up to the caller! */
-+	smp_mb(); // Read header comment above.
- 	WRITE_ONCE(rsclp->len, rsclp->len + v);
--	smp_mb(); /* Up to the caller! */
-+	smp_mb(); // Read header comment above.
- #endif
- }
- 
+> +    const: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - clocks
+> +  - clock-names
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include<dt-bindings/clock/tegra210-car.h>
+> +
+> +    dma-controller@702e2000 {
+> +        compatible = "nvidia,tegra210-adma";
+> +        reg = <0x702e2000 0x2000>;
+> +        interrupt-parent = <&tegra_agic>;
+> +        interrupts = <GIC_SPI 24 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 25 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 26 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 27 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 28 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 29 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 30 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 31 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 33 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 34 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 35 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 36 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 37 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 38 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 39 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 40 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 41 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 42 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 43 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 44 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 45 IRQ_TYPE_LEVEL_HIGH>;
+> +        clocks = <&tegra_car TEGRA210_CLK_D_AUDIO>;
+> +        clock-names = "d_audio";
+> +        #dma-cells = <1>;
+> +    };
+> +
+> +...
+> -- 
+> 2.7.4
+> 
