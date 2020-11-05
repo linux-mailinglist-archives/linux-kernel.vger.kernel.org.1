@@ -2,244 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FDB02A7A39
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 10:14:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F47A2A7A33
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 10:13:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731114AbgKEJOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 04:14:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51554 "EHLO
+        id S1730986AbgKEJNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 04:13:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731017AbgKEJN6 (ORCPT
+        with ESMTP id S1730153AbgKEJNx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 04:13:58 -0500
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFA84C0613D3
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 01:13:57 -0800 (PST)
-Received: by mail-ej1-x644.google.com with SMTP id o21so1572536ejb.3
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 01:13:57 -0800 (PST)
+        Thu, 5 Nov 2020 04:13:53 -0500
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BFA3C0613CF;
+        Thu,  5 Nov 2020 01:13:53 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id s25so1555785ejy.6;
+        Thu, 05 Nov 2020 01:13:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=cosNbBc+pGCwoieZsWO9CcMsgFAi+qgVJh6/ZaKe1v0=;
-        b=h2AbCJ6xtX9calmobLzMDdUmOt4016ZAljqf+kWZm3SpJ5dyWf5xX8QV+8uAKO7KzB
-         whVd90vtF4kEq0FjKmV2eXJCusoVmf8b1ZXm4g19A6c9d3zpTGecCZcl0xPaOrSMnUzM
-         OGxi6KTPLoJsWq0pzXzySThLXXe1GQN0O9JNP7hJsN0mTV3NqA97jL96kLNinAgMKhRQ
-         8LQz93+7bzMlzUxaAtidPL1DLIRzbOEahVB/7cnJeyFT+Us2VOVrMCBQcnomz5KE/6GC
-         gF+l6kEcCMCIt86RD/mLxN3qSNhWZV0UIk0wGcZ/d2v9DKiSjhWGarH/Lc5p3RkZiIJ/
-         zceA==
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=rZem6M7kfdgn2HJ62ywv5fOVwjJZX0jQzLoLxZvw77E=;
+        b=XRsT+odDqa5mogK9zHucsu7GKd/EU7n5hxrFej556ON666sYKOTav1XKkQX414lDAz
+         1fYB0ajgqP0SjouzlZaFi5z/XcGEiEx07oUPu2+UzJqciGDH0e7/s+l9fBe0Q5bHmmw+
+         xDn/r5HKaS1ik0fKpa4LdZahJ/0NUJ7ueGGTATS0rLu/m0Lf//t4njblJBh96vJ3634i
+         47PTZuqTz3IgT/OvRXXFHQM/G/qiHHcECjsKgseUGOF7mz2hU5WQjX2+JQfmaFg2WzTE
+         +wssk3hzFQ5czZIlm41BpkusNzTVVTkE+NAEdTbuLNoHNJ41t9VU5llJwoXp1n6Cn53P
+         gbtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=cosNbBc+pGCwoieZsWO9CcMsgFAi+qgVJh6/ZaKe1v0=;
-        b=syp90sb9hcszNk4qrj5pa8KfP9BrpXSN240b3WpnoOrLQOD7TqGzOkuTbU9JhG12Tz
-         Hj6MpHB040FAVBHbHwrFU547s5/qH+LDOdSy+XdaGQSSvEhDjgV1gs/ktJ679zUN2fak
-         nOJoGhYPNacsUTd91xBDuvVurKLmSwp7M9WnbBU50ssA7Smol9H2Jmkw53ZwmbC05edT
-         ew+GZxMgQRg/kkucACsadOJ+PHe74LnM4sjasqJHsP02lJSzOFfywK3ljylcedKrYG/T
-         JbGYcrsKzSLJTwpeNfCynpekl3VFskgCOyjGkeWTaMcKNWNBWHuM7RQqaE/4MfycVLAy
-         LiKw==
-X-Gm-Message-State: AOAM530zJ46EmdESaeHy9UabMfi66glyj4GuY9Lv3rCnD6lc+A7OZCDj
-        vcuPkthHvy0Lxz/MdvltD3/SyHRqZShlspprOdh3sw==
-X-Google-Smtp-Source: ABdhPJyFgzr6/OtoGqHbIjxgJayFJFC6ooeiWsm56YhTmEcoAALq1JBufGgUh3laISQqZelpAaKQMgQ7rYi7EiPI/xk=
-X-Received: by 2002:a17:907:420d:: with SMTP id oh21mr1350987ejb.429.1604567636515;
- Thu, 05 Nov 2020 01:13:56 -0800 (PST)
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=rZem6M7kfdgn2HJ62ywv5fOVwjJZX0jQzLoLxZvw77E=;
+        b=S+HX4oIQI8J0tVvHhInyn++3nJxKh1l5zZZpsRKWmutQuX1rWWuzVjrLjVdeu5dnWX
+         pq2JApxGw2wZu9ErAuM+kTQrSFNlcvfqbPEnSS+JiZsqrCzcOWBjTLjBazc4y4tTgESr
+         DAO0k/N+KA1SAzuoxhvh7Z5n2qtLhkvJP1tkDTFCMN2dkLyTxPBQlgPW2j7CsL9Rtlwl
+         yLJ7QCtrgkQkwfH67jtTnKxQ5iwfEkNbV7hZ6mBRA4oRztw2baEiI6+M9scNzyctgYSl
+         a+vcTrj98oY1raktjWfMvD6S0srYaWAydJhaOuOtMuHONAohwz1YOkqj1J9i1W82GG8E
+         X7rQ==
+X-Gm-Message-State: AOAM53273dqNZ37Ltx3dDrp0PefGnJRiasrd15BGEKNozCFwq5CbhnV1
+        47HIm3VW4uM6uaBQ8sBehQNC1eFIgMJGxw==
+X-Google-Smtp-Source: ABdhPJyEQixflPnVC0H356lcPyekQcJlLzeLprG9bspk73oJT2zh8+GYW2nDeV1e1fqy8TFQZ4ewlQ==
+X-Received: by 2002:a17:906:1a0c:: with SMTP id i12mr1358095ejf.176.1604567632043;
+        Thu, 05 Nov 2020 01:13:52 -0800 (PST)
+Received: from ?IPv6:2003:ea:8f23:2800:59d0:7417:1e79:f522? (p200300ea8f23280059d074171e79f522.dip0.t-ipconnect.de. [2003:ea:8f23:2800:59d0:7417:1e79:f522])
+        by smtp.googlemail.com with ESMTPSA id 64sm520076eda.63.2020.11.05.01.13.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Nov 2020 01:13:51 -0800 (PST)
+Subject: Re: Very slow realtek 8169 ethernet performance, but only one
+ interface, on ThinkPad T14.
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org
+References: <57f16fe7-2052-72cc-6628-bbb04f146ce0@gmx.com>
+ <7ee6a86c-5aca-3931-73cc-2ab72d8dd8a7@gmail.com>
+ <c4c063eb-d20b-8bc7-bbd7-b8df70c69a11@gmx.com>
+From:   Heiner Kallweit <hkallweit1@gmail.com>
+Message-ID: <9f8785d2-76b2-f0ad-7fa1-a8a38d7df3af@gmail.com>
+Date:   Thu, 5 Nov 2020 10:13:46 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <20201104103938.1286-1-nsaenzjulienne@suse.de> <20201104103938.1286-2-nsaenzjulienne@suse.de>
-In-Reply-To: <20201104103938.1286-2-nsaenzjulienne@suse.de>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Thu, 5 Nov 2020 10:13:45 +0100
-Message-ID: <CAMpxmJWJRcQQiLitJCLWKmhQVQWr3bMDY=td5FEn5uy2YZfwkA@mail.gmail.com>
-Subject: Re: [PATCH v3 01/11] firmware: raspberrypi: Introduce devm_rpi_firmware_get()
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com, linux-pwm@vger.kernel.org,
-        arm-soc <linux-arm-kernel@lists.infradead.org>,
-        linux-devicetree <devicetree@vger.kernel.org>, wahrenst@gmx.net,
-        Linux Input <linux-input@vger.kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        devel@driverdev.osuosl.org, Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        linux-rpi-kernel@lists.infradead.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <c4c063eb-d20b-8bc7-bbd7-b8df70c69a11@gmx.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 4, 2020 at 11:39 AM Nicolas Saenz Julienne
-<nsaenzjulienne@suse.de> wrote:
->
-> When unbinding the firmware device we need to make sure it has no
-> consumers left. Otherwise we'd leave them with a firmware handle
-> pointing at freed memory.
->
-> Keep a reference count of all consumers and introduce
-> devm_rpi_firmware_get() which will automatically decrease the reference
-> count upon unbinding consumer drivers.
->
-> Suggested-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
-> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
->
-> ---
->
-> Changes since v2:
->  - Create devm_rpi_firmware_get()
->
->  drivers/firmware/raspberrypi.c             | 46 ++++++++++++++++++++++
->  include/soc/bcm2835/raspberrypi-firmware.h |  8 ++++
->  2 files changed, 54 insertions(+)
->
-> diff --git a/drivers/firmware/raspberrypi.c b/drivers/firmware/raspberryp=
-i.c
-> index 2371d08bdd17..74bdb3bde9dc 100644
-> --- a/drivers/firmware/raspberrypi.c
-> +++ b/drivers/firmware/raspberrypi.c
-> @@ -11,7 +11,9 @@
->  #include <linux/module.h>
->  #include <linux/of_platform.h>
->  #include <linux/platform_device.h>
-> +#include <linux/refcount.h>
->  #include <linux/slab.h>
-> +#include <linux/wait.h>
->  #include <soc/bcm2835/raspberrypi-firmware.h>
->
->  #define MBOX_MSG(chan, data28)         (((data28) & ~0xf) | ((chan) & 0x=
-f))
-> @@ -27,6 +29,9 @@ struct rpi_firmware {
->         struct mbox_chan *chan; /* The property channel. */
->         struct completion c;
->         u32 enabled;
-> +
-> +       refcount_t consumers;
-> +       wait_queue_head_t wait;
->  };
->
->  static DEFINE_MUTEX(transaction_lock);
-> @@ -247,6 +252,8 @@ static int rpi_firmware_probe(struct platform_device =
-*pdev)
->         }
->
->         init_completion(&fw->c);
-> +       refcount_set(&fw->consumers, 1);
-> +       init_waitqueue_head(&fw->wait);
->
->         platform_set_drvdata(pdev, fw);
->
-> @@ -275,11 +282,21 @@ static int rpi_firmware_remove(struct platform_devi=
-ce *pdev)
->         rpi_hwmon =3D NULL;
->         platform_device_unregister(rpi_clk);
->         rpi_clk =3D NULL;
-> +
-> +       wait_event(fw->wait, refcount_dec_if_one(&fw->consumers));
->         mbox_free_channel(fw->chan);
->
->         return 0;
->  }
->
-> +static void rpi_firmware_put(void *data)
-> +{
-> +       struct rpi_firmware *fw =3D data;
-> +
-> +       refcount_dec(&fw->consumers);
-> +       wake_up(&fw->wait);
-> +}
-> +
->  /**
->   * rpi_firmware_get - Get pointer to rpi_firmware structure.
->   * @firmware_node:    Pointer to the firmware Device Tree node.
-> @@ -297,6 +314,35 @@ struct rpi_firmware *rpi_firmware_get(struct device_=
-node *firmware_node)
->  }
->  EXPORT_SYMBOL_GPL(rpi_firmware_get);
->
-> +/**
-> + * devm_rpi_firmware_get - Get pointer to rpi_firmware structure.
-> + * @firmware_node:    Pointer to the firmware Device Tree node.
-> + *
-> + * Returns NULL is the firmware device is not ready.
-> + */
-> +struct rpi_firmware *devm_rpi_firmware_get(struct device *dev,
-> +                                          struct device_node *firmware_n=
-ode)
-> +{
-> +       struct platform_device *pdev =3D of_find_device_by_node(firmware_=
-node);
-> +       struct rpi_firmware *fw;
-> +
-> +       if (!pdev)
-> +               return NULL;
-> +
-> +       fw =3D platform_get_drvdata(pdev);
-> +       if (!fw)
-> +               return NULL;
-> +
-> +       if (!refcount_inc_not_zero(&fw->consumers))
-> +               return NULL;
-> +
-> +       if (devm_add_action_or_reset(dev, rpi_firmware_put, fw))
-> +               return NULL;
-> +
-> +       return fw;
-> +}
-> +EXPORT_SYMBOL_GPL(devm_rpi_firmware_get);
+On 05.11.2020 08:42, Qu Wenruo wrote:
+> 
+> 
+> On 2020/11/5 下午3:01, Heiner Kallweit wrote:
+>> On 05.11.2020 03:48, Qu Wenruo wrote:
+>>> Hi,
+>>>
+>>> Not sure if this is a regression or not, but just find out that after upgrading to v5.9 kernel, one of my ethernet port on my ThinkPad T14 (ryzen version) becomes very slow.
+>>>
+>>> Only *2~3* Mbps.
+>>>
+>>> The laptop has two ethernet interfaces, one needs a passive adapter, the other one is a standard RJ45.
+>>>
+>>> The offending one is the one which needs the adapter (eth0).
+>>> While the RJ45 one is completely fine.
+>>>
+>>> 02:00.0 Ethernet controller: Realtek Semiconductor Co., Ltd. RTL8111/8168/8411 PCI Express Gigabit Ethernet Controller (rev 0e)
+>>> 05:00.0 Ethernet controller: Realtek Semiconductor Co., Ltd. RTL8111/8168/8411 PCI Express Gigabit Ethernet Controller (rev 15)
+>>>
+>>> The 02:00.0 one is the affected one.
+>>>
+>>> The related dmesgs are:
+>>> [   38.110293] r8169 0000:02:00.0: can't disable ASPM; OS doesn't have ASPM control
+>>> [   38.126069] libphy: r8169: probed
+>>> [   38.126250] r8169 0000:02:00.0 eth0: RTL8168ep/8111ep, 00:2b:67:b3:d9:20, XID 502, IRQ 105
+>>> [   38.126252] r8169 0000:02:00.0 eth0: jumbo features [frames: 9194 bytes, tx checksumming: ko]
+>>> [   38.126294] r8169 0000:05:00.0: can't disable ASPM; OS doesn't have ASPM control
+>>> [   38.126300] r8169 0000:05:00.0: enabling device (0000 -> 0003)
+>>> [   38.139355] libphy: r8169: probed
+>>> [   38.139523] r8169 0000:05:00.0 eth1: RTL8168h/8111h, 00:2b:67:b3:d9:1f, XID 541, IRQ 107
+>>> [   38.139525] r8169 0000:05:00.0 eth1: jumbo features [frames: 9194 bytes, tx checksumming: ko]
+>>> [   42.120935] Generic FE-GE Realtek PHY r8169-200:00: attached PHY driver [Generic FE-GE Realtek PHY] (mii_bus:phy_addr=r8169-200:00, irq=IGNORE)
+>>> [   42.247646] r8169 0000:02:00.0 eth0: Link is Down
+>>> [   42.280799] Generic FE-GE Realtek PHY r8169-500:00: attached PHY driver [Generic FE-GE Realtek PHY] (mii_bus:phy_addr=r8169-500:00, irq=IGNORE)
+>>> [   42.477616] r8169 0000:05:00.0 eth1: Link is Down
+>>> [   76.479569] r8169 0000:02:00.0 eth0: Link is Up - 1Gbps/Full - flow control rx/tx
+>>> [   91.271894] r8169 0000:02:00.0 eth0: Link is Down
+>>> [   99.873390] r8169 0000:02:00.0 eth0: Link is Up - 1Gbps/Full - flow control rx/tx
+>>> [   99.878938] r8169 0000:02:00.0 eth0: Link is Down
+>>> [  102.579290] r8169 0000:02:00.0 eth0: Link is Up - 1Gbps/Full - flow control rx/tx
+>>> [  185.086002] r8169 0000:02:00.0 eth0: Link is Down
+>>> [  392.884584] r8169 0000:02:00.0 eth0: Link is Up - 1Gbps/Full - flow control rx/tx
+>>> [  392.891208] r8169 0000:02:00.0 eth0: Link is Down
+>>> [  395.889047] r8169 0000:02:00.0 eth0: Link is Up - 1Gbps/Full - flow control rx/tx
+>>> [  406.670738] r8169 0000:02:00.0 eth0: Link is Down
+>>>
+>>> Really nothing strange, even it negotiates to 1Gbps.
+>>>
+>>> But during iperf3, it only goes up to miserable 3Mbps.
+>>>
+>>> Is this some known bug or something special related to the passive adapter?
+>>>
+>>> Since the adapter is passive, and hasn't experience anything wrong for a long time, I really doubt that.
+>>>
+>>> Thanks,
+>>> Qu
+>>>
+>>>
+>> Thanks for the report. From which kernel version did you upgrade?
+> 
+> Tested back to v5.7, which still shows the miserable performance.
+> 
+> So I guess it could be a faulty adapter?
+> 
+>> Please test
+>> with the prior kernel version and report behavior (link stability and speed).
+>> Under 5.9, does ethtool -S eth0 report packet errors?
+>>
+> Nope, no tx/rx_errors, no missed/aborted/underrun.
+> 
+> Adding that the adapter is completely passive (no chip, just converting
+> RJ45 pins to the I shaped pins), I'm not sure that the adapter itself
+> can fail.
+> 
+Each additional mechanical connection may cause reflections or other signal
+disturbance. You could try to restrict the speed to 100Mbps via ethtool,
+and see what the effective speed is then. 100Mbps uses two wire pairs only.
 
-Usually I'd expect the devres variant to simply call
-rpi_firmware_get() and then schedule a release callback which would
-call whatever function is the release counterpart for it currently.
-Devres actions are for drivers which want to schedule some more
-unusual tasks at driver detach. Any reason for designing it this way?
+> THanks,
+> Qu
+> 
 
-Bartosz
-
-> +
->  static const struct of_device_id rpi_firmware_of_match[] =3D {
->         { .compatible =3D "raspberrypi,bcm2835-firmware", },
->         {},
-> diff --git a/include/soc/bcm2835/raspberrypi-firmware.h b/include/soc/bcm=
-2835/raspberrypi-firmware.h
-> index cc9cdbc66403..8fe64f53a394 100644
-> --- a/include/soc/bcm2835/raspberrypi-firmware.h
-> +++ b/include/soc/bcm2835/raspberrypi-firmware.h
-> @@ -141,6 +141,8 @@ int rpi_firmware_property(struct rpi_firmware *fw,
->  int rpi_firmware_property_list(struct rpi_firmware *fw,
->                                void *data, size_t tag_size);
->  struct rpi_firmware *rpi_firmware_get(struct device_node *firmware_node)=
-;
-> +struct rpi_firmware *devm_rpi_firmware_get(struct device *dev,
-> +                                          struct device_node *firmware_n=
-ode);
->  #else
->  static inline int rpi_firmware_property(struct rpi_firmware *fw, u32 tag=
-,
->                                         void *data, size_t len)
-> @@ -158,6 +160,12 @@ static inline struct rpi_firmware *rpi_firmware_get(=
-struct device_node *firmware
->  {
->         return NULL;
->  }
-> +
-> +static inline struct rpi_firmware *devm_rpi_firmware_get(struct device *=
-dev,
-> +                                       struct device_node *firmware_node=
-)
-> +{
-> +       return NULL;
-> +}
->  #endif
->
->  #endif /* __SOC_RASPBERRY_FIRMWARE_H__ */
-> --
-> 2.29.1
->
