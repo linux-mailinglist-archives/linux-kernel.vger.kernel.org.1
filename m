@@ -2,91 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E72E2A7EC5
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 13:38:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 629DB2A7EC8
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 13:39:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730432AbgKEMiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 07:38:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45734 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726777AbgKEMip (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 07:38:45 -0500
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 959592083B;
-        Thu,  5 Nov 2020 12:38:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604579924;
-        bh=ukbI+aZOBvhM7nVW/2DbByvV7udCrwZsbR3bDwLTtWs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=YzFK8xkmQEeSCBfXgoXWfsaKWnfA8QIpx9G0jJcC2XwaDU12hANQrx6Syc3xCeKA2
-         mumwN/GyTI45eQgRrEAOzIcO+avDTENq+dBwvPEh5GZ6V70EyoBlbmov2VP4H1aruE
-         TzAjyip53c+Gr1pF+u6NulLBUFTwVKTZdSd7hvf4=
-Received: by mail-ed1-f52.google.com with SMTP id o20so1361661eds.3;
-        Thu, 05 Nov 2020 04:38:44 -0800 (PST)
-X-Gm-Message-State: AOAM531wG6bmlaCDFaZI8cnktHYlZbiKVbteZpURkWPeHwQiisFrQV2e
-        3a9j6xoBn47/15TrXXh/OZEKKVW48bFWF4I833Q=
-X-Google-Smtp-Source: ABdhPJyAjYvrQfP0xO6VsEfL8L8ctucLZXEOV/WXH2UFKRFGCW0kmD7cmPCzL8PKJsZd7qScN0RfQCDL5/Cwb8dfZaE=
-X-Received: by 2002:a50:8b65:: with SMTP id l92mr2380277edl.132.1604579922958;
- Thu, 05 Nov 2020 04:38:42 -0800 (PST)
+        id S1730488AbgKEMjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 07:39:13 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:7058 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725468AbgKEMjM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 07:39:12 -0500
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CRjkf56XVzhXfl;
+        Thu,  5 Nov 2020 20:39:06 +0800 (CST)
+Received: from huawei.com (10.175.112.208) by DGGEMS404-HUB.china.huawei.com
+ (10.3.19.204) with Microsoft SMTP Server id 14.3.487.0; Thu, 5 Nov 2020
+ 20:39:01 +0800
+From:   Wang Wensheng <wangwensheng4@huawei.com>
+To:     <wim@linux-watchdog.org>, <linux@roeck-us.net>,
+        <linux-watchdog@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <rui.xiang@huawei.com>, <guohanjun@huawei.com>
+Subject: [PATCH -next v3 1/2] watchdog: Fix potential dereferencing of null pointer
+Date:   Thu, 5 Nov 2020 12:38:47 +0000
+Message-ID: <20201105123848.93735-1-wangwensheng4@huawei.com>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-References: <20201103203232.656475008@linuxfoundation.org> <20201103203243.594174920@linuxfoundation.org>
- <20201105114648.GB9009@duo.ucw.cz>
-In-Reply-To: <20201105114648.GB9009@duo.ucw.cz>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Thu, 5 Nov 2020 13:38:31 +0100
-X-Gmail-Original-Message-ID: <CAJKOXPeexYuH1_9HZUGn4Q80QBtKmqCKiEd=hNd46VKTM4kGgA@mail.gmail.com>
-Message-ID: <CAJKOXPeexYuH1_9HZUGn4Q80QBtKmqCKiEd=hNd46VKTM4kGgA@mail.gmail.com>
-Subject: Re: [PATCH 4.19 107/191] ARM: dts: s5pv210: move PMU node out of
- clock controller
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Jonathan Bakker <xc-racer2@live.ca>,
-        Sasha Levin <sashal@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.112.208]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 5 Nov 2020 at 12:46, Pavel Machek <pavel@ucw.cz> wrote:
->
-> Hi!
->
-> > The Power Management Unit (PMU) is a separate device which has little
-> > common with clock controller.  Moving it to one level up (from clock
-> > controller child to SoC) allows to remove fake simple-bus compatible and
-> > dtbs_check warnings like:
-> >
-> >   clock-controller@e0100000: $nodename:0:
-> >     'clock-controller@e0100000' does not match '^([a-z][a-z0-9\\-]+-bus|bus|soc|axi|ahb|apb)(@[0-9a-f]+)?$'
->
-> > +++ b/arch/arm/boot/dts/s5pv210.dtsi
-> > @@ -98,19 +98,16 @@
-> >               };
-> >
-> >               clocks: clock-controller@e0100000 {
-> > -                     compatible = "samsung,s5pv210-clock", "simple-bus";
-> > +                     compatible = "samsung,s5pv210-clock";
-> >                       reg = <0xe0100000 0x10000>;
-> ...
-> > +             pmu_syscon: syscon@e0108000 {
-> > +                     compatible = "samsung-s5pv210-pmu", "syscon";
-> > +                     reg = <0xe0108000 0x8000>;
-> >               };
->
-> Should clock-controller@e0100000's reg be shortened to 0x8000 so that
-> the ranges do not overlap?
->
-> Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
+A reboot notifier, which stops the WDT by calling the stop hook without
+any check, would be registered when we set WDOG_STOP_ON_REBOOT flag.
 
-I don't think this commit should be backported to stable. It is simple
-dtbs_check - checking whether Devicetree source matches device tree
-schema. Neither the schema nor the warning existed in v4.19. I think
-dtbs_check fixes should not be backported, unless a real issue is
-pointed out.
+Howerer we allow the WDT driver to omit the stop hook since commit
+"d0684c8a93549" ("watchdog: Make stop function optional") and provide
+a module parameter for user that controls the WDOG_STOP_ON_REBOOT flag
+in commit 9232c80659e94 ("watchdog: Add stop_on_reboot parameter to
+control reboot policy"). Together that commits make user potential to
+insert a watchdog driver that don't provide a stop hook but with the
+stop_on_reboot parameter set, then dereferencing of null pointer occurs
+on system reboot.
 
-Best regards,
-Krzysztof
+Check the stop hook before registering the reboot notifier to fix the
+issue.
+
+Fixes: d0684c8a9354 ("watchdog: Make stop function optional")
+Signed-off-by: Wang Wensheng <wangwensheng4@huawei.com>
+---
+ drivers/watchdog/watchdog_core.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/watchdog/watchdog_core.c b/drivers/watchdog/watchdog_core.c
+index 423844757812..945ab38b14b8 100644
+--- a/drivers/watchdog/watchdog_core.c
++++ b/drivers/watchdog/watchdog_core.c
+@@ -267,8 +267,15 @@ static int __watchdog_register_device(struct watchdog_device *wdd)
+ 	}
+ 
+ 	if (test_bit(WDOG_STOP_ON_REBOOT, &wdd->status)) {
+-		wdd->reboot_nb.notifier_call = watchdog_reboot_notifier;
++		if (!wdd->ops->stop) {
++			pr_err("watchdog%d: Cannot support stop_on_reboot\n",
++				wdd->id);
++			watchdog_dev_unregister(wdd);
++			ida_simple_remove(&watchdog_ida, id);
++			return -EINVAL;
++		}
+ 
++		wdd->reboot_nb.notifier_call = watchdog_reboot_notifier;
+ 		ret = register_reboot_notifier(&wdd->reboot_nb);
+ 		if (ret) {
+ 			pr_err("watchdog%d: Cannot register reboot notifier (%d)\n",
+-- 
+2.25.0
+
