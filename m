@@ -2,304 +2,325 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F36492A7541
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 03:09:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8B972A755D
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 03:23:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733284AbgKECJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 21:09:52 -0500
-Received: from mailout1.samsung.com ([203.254.224.24]:37822 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731919AbgKECJv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 21:09:51 -0500
-Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20201105020949epoutp014dbffb7760fcebb45ab453608e5e8d56~Eep6sjJ5x3170631706epoutp014
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 02:09:49 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20201105020949epoutp014dbffb7760fcebb45ab453608e5e8d56~Eep6sjJ5x3170631706epoutp014
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1604542189;
-        bh=T3oE1cmazcIh1kO4VFHnnWSaONknVEsxNFutI9V3apo=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=fdWwmtmWm1DxB9C3sjWvVQEZ3WBTr+wFfP1p5Egnt4Effmvlrj/Ue17h9T8aRsVBd
-         K00PPGfhp+hsgh6zhrhmPUuJe7RPM5iv9bja4SanqycdZi00eol5UkLG5cS5zgy014
-         2iHlbH/NdotcRbSga+QJuY9oSeROwtS2Ns7QPpl4=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20201105020947epcas1p1b0f40a1264dd4cb09e7d62486832cf96~Eep5eSrg60054100541epcas1p1p;
-        Thu,  5 Nov 2020 02:09:47 +0000 (GMT)
-Received: from epsmges1p2.samsung.com (unknown [182.195.40.155]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4CRRmK4R9mzMqYkn; Thu,  5 Nov
-        2020 02:09:37 +0000 (GMT)
-Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
-        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        7C.1C.63458.BDE53AF5; Thu,  5 Nov 2020 11:09:31 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20201105020930epcas1p2d5b4c667c0298f37e86f38e336f0b4d2~Eepo7soT41552615526epcas1p2U;
-        Thu,  5 Nov 2020 02:09:30 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20201105020930epsmtrp16226568834a0db01a0934955b8272677~Eepo6m7GL0214302143epsmtrp1h;
-        Thu,  5 Nov 2020 02:09:30 +0000 (GMT)
-X-AuditID: b6c32a36-6dfff7000000f7e2-ce-5fa35edbc019
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        66.EF.08745.9DE53AF5; Thu,  5 Nov 2020 11:09:29 +0900 (KST)
-Received: from [10.113.221.102] (unknown [10.113.221.102]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20201105020929epsmtip284e8300b67ee85f58b81124bbd5ae49c~EepogMQJ80971709717epsmtip2Z;
-        Thu,  5 Nov 2020 02:09:29 +0000 (GMT)
-Subject: Re: [PATCH v7 46/47] PM / devfreq: tegra30: Separate configurations
- per-SoC generation
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Mikko Perttunen <cyndis@kapsi.fi>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org
-From:   Chanwoo Choi <cw00.choi@samsung.com>
-Organization: Samsung Electronics
-Message-ID: <4a3682c2-d3cf-151f-4541-6b08d19f8179@samsung.com>
-Date:   Thu, 5 Nov 2020 11:23:25 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
-        Thunderbird/59.0
-MIME-Version: 1.0
-In-Reply-To: <20201104164923.21238-47-digetx@gmail.com>
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA01Te0xTVxzOaW9vb0nYruXhGckcXLYlMnkULB4IoBNHSkQk6shC2OoNvaGE
-        vtJbFvYUkVdRcGO6ueoARcdrDAR0wEAmIg8zQcZAXgU2ikFnqcBYfDBc6cWM/77f7/d95zvf
-        eRB88UPcg0jRGBi9hlZRuBN29cZWf9/xD8rkAd23nND84qwAlXT2CVD1wgxAvy/bcPRNWz2O
-        skwXMNTfXydEV2Z/4KHbmQ+FaLDlHI6WCjoBMv5twtHArXfQ+NEKHBXVnAbo9r29KLutU4hW
-        hy9j6ElLMYYaprvwXa4y20i2UNZsMgtlv/Wt8GX1VUZcNjHcisumjnfzZAXH5nFZYWMVkC3V
-        b4kTJaSGKRlaweg9GU2SVpGiSQ6n9h6UR8qlwQESX0kI2kF5amg1E07tiYnzjUpR2ZNRnh/S
-        qjR7K45mWco/IkyvTTMwnkotawinGJ1CpQvR+bG0mk3TJPsladWhkoCAQKmdeDhVac7/ka8b
-        8ku/nqvPABffyAciApLb4c2M03g+cCLEZBOAf5UXCbhiEUDrxFMhVywBmJ25ynshqRlZ4XOD
-        FgBzsgowrrABWHBxCl9juZA0LC8vdgxcyVEMllesOgZ88gyAE63eaxgnfWD73Iij/zLpBYce
-        z4A17ExGwOnMagfGyNdhcd+v2Bp2I+Nh79Wsdc4m2PutxdEXkTtgpqlhff3NcMxSwuPwa/An
-        6znHViF5VgR7upYxLsMe2Dn3QMBhF/igu1HIYQ94/2TOOv4EVvZ24pw4D8DG9jvrgiDYfukr
-        uwNhd9gKa1v8ubYXbH72HeCMX4LzyycEaxRIOsO8HDFH8YaD0+b1Y3wFluUa8S8AZdoQx7Qh
-        gmlDBNP/ZqUAqwLujI5VJzOsRBe48brrgePZ+wQ3gSLrI78OwCNAB4AEn3J1vhN7QS52VtAf
-        fczotXJ9mophO4DUfsBf8j3ckrT2f6MxyCXSwKCgILRdEiyVSKjNzitv5cnFZDJtYFIZRsfo
-        X+h4hMgjg+cFdurMC1XMtFqyr0V0yPg8dnRbpNqffBa+e2pEvX8x8ftDh2Mqqu/NgilvnmGp
-        tP+SdPL93V8LdkZobxbylL8cJyKt/w4eCGmNDsu8EbHw6rh7fOUJtxkDc906EbxcWOs6dHD/
-        n1NRRaeG4+J/jo0eqzkjiH7zctfAc9sm7/uK0tGyUI15W3OPrd76+XJzYAHIeeIUQ6Xxgsqv
-        ndyVTlQ2WT4jpOzjowMhg2xCVGp63ZW6Y259n/5RYjz/KASGp7x3iux91+J3rddCHVmaPjCn
-        yG840vNP7nlPy4jaJ7kosW1UXps4JnankzwY05ZRl6fVoXcn5+9GYPFvKxNCU/FJCmOVtMSH
-        r2fp/wAuvkA+fwQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Ra0hTYRjHeXeOZ0fDOk6jdwpZy5rNmqlFLzkkiuhIGEVYIaQtPWmoc2xa
-        GQRm1tCo7Ko76cySDC/bnGWWrkztYug03XJZXmIqjrRVFhas2zYCv/3e5///Pc+Hl8R4g3gg
-        eUSWzShk0gwB4YM3dQiC175NvJ20TjuA0KevE16ootPkhWq/2AAyf3cQqMRoIFABewtHvb16
-        Lro/UcdBPfnTXDTwqIxAs+c7ASr8xhLo9att6N2puwS6XH8NoJ7JHeiMsZOLfr9pwNHPRxoc
-        NY49JzYH0A7rGS79kB3m0v0mJ0YbagoJ+v2bVoIePfeCQ58//YmgL9yrAfSsYeku7wQfSQqT
-        ceQoowiPOeiTNlykxeQW8fGnKkUeqFpZBLxJSK2H9VYnVgR8SB7VDOCvx384noAPr79+9i8g
-        /7E/7OhQejozAM5etOOujj8lhdXVGtwVBFDDOLz8Y4hwPTCqFECnvoHrUZoALNdd9XIpBCWC
-        T6ashIsXUcuh5YcNuNiXioFj+bVuxqkQqDF1u08spvbCh1U2jqfjB7vU4+65N7UR5rON7j0Y
-        JYROTT/m4SVwaLyC4+Fg+GCmDCsG/uw8nZ2nsPMUdp5yE+A1gM/IlZmpmcoIeaSMOSZWSjOV
-        ObJUcXJWpgG4/14kagatNZ/F7YBDgnYASUwQ4Nu381YSzzdFmnuCUWQlKXIyGGU7CCJxwRLf
-        72xlIo9KlWYz6QwjZxT/Uw7pHZjHCY1eZ1zdlj4XFj0X6zcoMseoc0NqxydNDp0zr0z4Nm+b
-        WmW19U9Z9A2yyW4NHJnD1Ptv+GmrBg8bl6eHj4R218VOxjWX9i19aT0anHh2bdQKSdBpdXdO
-        cnpJkyTw5s4Jx5qKky1ZE1fM24XFWzbs49Vt7Wo/oJcX6joq7Jsc5mfv9lA2taGvIMyybBhX
-        xy9jdUMzu8P8p1Wjwa3TljsL0srb+FHC5kiJffPCro+xRqJXU3apUqCrPqc1m0h5yJNXRQkr
-        VHBV5futQfkj30pTcsT6a9b7B1uq++Nzh6JDVZLiO4ewtl92rVDkiOTz2fIM1BBXkBpY8lXw
-        wT4lwJVp0ggRplBK/wL2veH7agMAAA==
-X-CMS-MailID: 20201105020930epcas1p2d5b4c667c0298f37e86f38e336f0b4d2
-X-Msg-Generator: CA
+        id S1732454AbgKECXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 21:23:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46880 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729163AbgKECXk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 21:23:40 -0500
+Received: from kernel.org (unknown [104.132.1.79])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CD81220735;
+        Thu,  5 Nov 2020 02:23:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604543019;
+        bh=oixDUU7a1AUEjrvMCBwRGSbqLiFTn1BvjnqSx7DY654=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=Q6KqcNJ2KDmRebBHSoQyI7LNXAtmcYJjeuwIqQFzN4NEub7/+5OphvpIBmEZDEYgK
+         0Ncu6Utr93ymiKUKt4jMN4t3kMFet4WCczEh818i81UaV4+ynLgsCUQWJGk/qsvheq
+         RPNQ4zmDyJO5LhRZo3uC/5KVf4ueZKGEjVD6oBWM=
 Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20201104165119epcas1p49fcab2953eeb5cdd3f4857c804b78a2c
-References: <20201104164923.21238-1-digetx@gmail.com>
-        <CGME20201104165119epcas1p49fcab2953eeb5cdd3f4857c804b78a2c@epcas1p4.samsung.com>
-        <20201104164923.21238-47-digetx@gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201028074232.22922-3-manivannan.sadhasivam@linaro.org>
+References: <20201028074232.22922-1-manivannan.sadhasivam@linaro.org> <20201028074232.22922-3-manivannan.sadhasivam@linaro.org>
+Subject: Re: [PATCH 2/4] clk: qcom: Add SDX55 GCC support
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     bjorn.andersson@linaro.org, vkoul@kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Naveen Yadav <naveenky@codeaurora.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        mturquette@baylibre.com, robh+dt@kernel.org
+Date:   Wed, 04 Nov 2020 18:23:37 -0800
+Message-ID: <160454301723.3965362.9504622582275389041@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dmitry,
-
-On 11/5/20 1:49 AM, Dmitry Osipenko wrote:
-> Previously we were using count-weight of the T124 for T30 in order to
-> get EMC clock rate that was reasonable for T30. In fact the count-weight
-> should be x2 times smaller on T30, but then devfreq was producing a bit
-> too low EMC clock rate for ISO memory clients, like display controller
-> for example.
-> 
-> Now both Tegra ACTMON and Tegra DRM display drivers support interconnect
-> framework and display driver tells to ICC what a minimum memory bandwidth
-> is needed, preventing FIFO underflows. Thus, now we can use a proper
-> count-weight value for Tegra30 and MC_ALL device config needs a bit more
-> aggressive boosting.
-> 
-> Add a separate ACTMON driver configuration that is specific to Tegra30.
-> 
-> Tested-by: Peter Geis <pgwipeout@gmail.com>
-> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+Quoting Manivannan Sadhasivam (2020-10-28 00:42:30)
+> From: Naveen Yadav <naveenky@codeaurora.org>
+>=20
+> Add Global Clock Controller (GCC) support for SDX55 SoCs from Qualcomm.
+>=20
+> Signed-off-by: Naveen Yadav <naveenky@codeaurora.org>
+> [mani: converted to parent_data, commented critical clocks, cleanups]
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 > ---
->  drivers/devfreq/tegra30-devfreq.c | 68 ++++++++++++++++++++++++-------
->  1 file changed, 54 insertions(+), 14 deletions(-)
-> 
-> diff --git a/drivers/devfreq/tegra30-devfreq.c b/drivers/devfreq/tegra30-devfreq.c
-> index 4db027ca17e1..aaa22077815c 100644
-> --- a/drivers/devfreq/tegra30-devfreq.c
-> +++ b/drivers/devfreq/tegra30-devfreq.c
-> @@ -57,13 +57,6 @@
->  #define ACTMON_BELOW_WMARK_WINDOW				3
->  #define ACTMON_BOOST_FREQ_STEP					16000
->  
-> -/*
-> - * Activity counter is incremented every 256 memory transactions, and each
-> - * transaction takes 4 EMC clocks for Tegra124; So the COUNT_WEIGHT is
-> - * 4 * 256 = 1024.
-> - */
-> -#define ACTMON_COUNT_WEIGHT					0x400
-> -
->  /*
->   * ACTMON_AVERAGE_WINDOW_LOG2: default value for @DEV_CTRL_K_VAL, which
->   * translates to 2 ^ (K_VAL + 1). ex: 2 ^ (6 + 1) = 128
-> @@ -111,7 +104,7 @@ enum tegra_actmon_device {
->  	MCCPU,
->  };
->  
-> -static const struct tegra_devfreq_device_config actmon_device_configs[] = {
-> +static const struct tegra_devfreq_device_config tegra124_device_configs[] = {
->  	{
->  		/* MCALL: All memory accesses (including from the CPUs) */
->  		.offset = 0x1c0,
-> @@ -133,6 +126,28 @@ static const struct tegra_devfreq_device_config actmon_device_configs[] = {
->  	},
->  };
->  
-> +static const struct tegra_devfreq_device_config tegra30_device_configs[] = {
-> +	{
-> +		/* MCALL: All memory accesses (including from the CPUs) */
-> +		.offset = 0x1c0,
-> +		.irq_mask = 1 << 26,
-> +		.boost_up_coeff = 200,
-> +		.boost_down_coeff = 50,
-> +		.boost_up_threshold = 20,
-> +		.boost_down_threshold = 10,
-> +	},
-> +	{
-> +		/* MCCPU: memory accesses from the CPUs */
-> +		.offset = 0x200,
-> +		.irq_mask = 1 << 25,
-> +		.boost_up_coeff = 800,
-> +		.boost_down_coeff = 40,
-> +		.boost_up_threshold = 27,
-> +		.boost_down_threshold = 10,
-> +		.avg_dependency_threshold = 16000, /* 16MHz in kHz units */
-> +	},
-> +};
-> +
->  /**
->   * struct tegra_devfreq_device - state specific to an ACTMON device
->   *
-> @@ -155,6 +170,12 @@ struct tegra_devfreq_device {
->  	unsigned long target_freq;
->  };
->  
-> +struct tegra_devfreq_soc_data {
-> +	const struct tegra_devfreq_device_config *configs;
-> +	/* Weight value for count measurements */
-> +	unsigned int count_weight;
-> +};
-> +
->  struct tegra_devfreq {
->  	struct devfreq		*devfreq;
->  	struct opp_table	*opp_table;
-> @@ -171,11 +192,13 @@ struct tegra_devfreq {
->  	struct delayed_work	cpufreq_update_work;
->  	struct notifier_block	cpu_rate_change_nb;
->  
-> -	struct tegra_devfreq_device devices[ARRAY_SIZE(actmon_device_configs)];
-> +	struct tegra_devfreq_device devices[2];
->  
->  	unsigned int		irq;
->  
->  	bool			started;
-> +
-> +	const struct tegra_devfreq_soc_data *soc;
->  };
->  
->  struct tegra_actmon_emc_ratio {
-> @@ -488,7 +511,7 @@ static void tegra_actmon_configure_device(struct tegra_devfreq *tegra,
->  	tegra_devfreq_update_avg_wmark(tegra, dev);
->  	tegra_devfreq_update_wmark(tegra, dev);
->  
-> -	device_writel(dev, ACTMON_COUNT_WEIGHT, ACTMON_DEV_COUNT_WEIGHT);
-> +	device_writel(dev, tegra->soc->count_weight, ACTMON_DEV_COUNT_WEIGHT);
->  	device_writel(dev, ACTMON_INTR_STATUS_CLEAR, ACTMON_DEV_INTR_STATUS);
->  
->  	val |= ACTMON_DEV_CTRL_ENB_PERIODIC;
-> @@ -787,6 +810,8 @@ static int tegra_devfreq_probe(struct platform_device *pdev)
->  	if (!tegra)
->  		return -ENOMEM;
->  
-> +	tegra->soc = of_device_get_match_data(&pdev->dev);
-> +
->  	tegra->regs = devm_platform_ioremap_resource(pdev, 0);
->  	if (IS_ERR(tegra->regs))
->  		return PTR_ERR(tegra->regs);
-> @@ -866,9 +891,9 @@ static int tegra_devfreq_probe(struct platform_device *pdev)
->  
->  	tegra->max_freq = rate / KHZ;
->  
-> -	for (i = 0; i < ARRAY_SIZE(actmon_device_configs); i++) {
-> +	for (i = 0; i < ARRAY_SIZE(tegra->devices); i++) {
->  		dev = tegra->devices + i;
-> -		dev->config = actmon_device_configs + i;
-> +		dev->config = tegra->soc->configs + i;
->  		dev->regs = tegra->regs + dev->config->offset;
->  	}
->  
-> @@ -933,9 +958,24 @@ static int tegra_devfreq_remove(struct platform_device *pdev)
->  	return 0;
->  }
->  
-> +static const struct tegra_devfreq_soc_data tegra124_soc = {
-> +	.configs = tegra124_device_configs,
-> +
-> +	/*
-> +	 * Activity counter is incremented every 256 memory transactions,
-> +	 * and each transaction takes 4 EMC clocks.
-> +	 */
-> +	.count_weight = 4 * 256,
-> +};
-> +
-> +static const struct tegra_devfreq_soc_data tegra30_soc = {
-> +	.configs = tegra30_device_configs,
-> +	.count_weight = 2 * 256,
-> +};
-> +
->  static const struct of_device_id tegra_devfreq_of_match[] = {
-> -	{ .compatible = "nvidia,tegra30-actmon" },
-> -	{ .compatible = "nvidia,tegra124-actmon" },
-> +	{ .compatible = "nvidia,tegra30-actmon",  .data = &tegra30_soc, },
-> +	{ .compatible = "nvidia,tegra124-actmon", .data = &tegra124_soc, },
->  	{ },
->  };
->  
-> 
+>  drivers/clk/qcom/Kconfig     |    8 +
+>  drivers/clk/qcom/Makefile    |    1 +
+>  drivers/clk/qcom/gcc-sdx55.c | 1667 ++++++++++++++++++++++++++++++++++
+>  3 files changed, 1676 insertions(+)
+>  create mode 100644 drivers/clk/qcom/gcc-sdx55.c
+>=20
+> diff --git a/drivers/clk/qcom/Kconfig b/drivers/clk/qcom/Kconfig
+> index 3a965bd326d5..dbca8debc06f 100644
+> --- a/drivers/clk/qcom/Kconfig
+> +++ b/drivers/clk/qcom/Kconfig
+> @@ -502,4 +502,12 @@ config KRAITCC
+>           Support for the Krait CPU clocks on Qualcomm devices.
+>           Say Y if you want to support CPU frequency scaling.
+> =20
+> +config GCC_SDX55
 
-Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
+Please sort instead of add at end.
 
--- 
-Best Regards,
-Chanwoo Choi
-Samsung Electronics
+> +       tristate "SDX55 Global Clock Controller"
+> +       depends on ARM
+
+Why?
+
+> +       help
+> +         Support for the global clock controller on SDX55 devices.
+> +         Say Y if you want to use peripheral devices such as UART,
+> +         SPI, I2C, USB, SD/UFS, PCIe etc.
+> +
+>  endif
+> diff --git a/drivers/clk/qcom/Makefile b/drivers/clk/qcom/Makefile
+> index 11ae86febe87..3e27d67f95aa 100644
+> --- a/drivers/clk/qcom/Makefile
+> +++ b/drivers/clk/qcom/Makefile
+> @@ -75,3 +75,4 @@ obj-$(CONFIG_SPMI_PMIC_CLKDIV) +=3D clk-spmi-pmic-div.o
+>  obj-$(CONFIG_KPSS_XCC) +=3D kpss-xcc.o
+>  obj-$(CONFIG_QCOM_HFPLL) +=3D hfpll.o
+>  obj-$(CONFIG_KRAITCC) +=3D krait-cc.o
+> +obj-$(CONFIG_GCC_SDX55) +=3D gcc-sdx55.o
+
+Please sort this instead of add at end.
+
+> diff --git a/drivers/clk/qcom/gcc-sdx55.c b/drivers/clk/qcom/gcc-sdx55.c
+> new file mode 100644
+> index 000000000000..75831c829202
+> --- /dev/null
+> +++ b/drivers/clk/qcom/gcc-sdx55.c
+> @@ -0,0 +1,1667 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Copyright (c) 2018-2019, The Linux Foundation. All rights reserved.
+> + * Copyright (c) 2020, Linaro Ltd.
+> + */
+> +
+> +#include <linux/clk-provider.h>
+> +#include <linux/module.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/regmap.h>
+> +
+> +#include <dt-bindings/clock/qcom,gcc-sdx55.h>
+> +
+> +#include "common.h"
+> +#include "clk-alpha-pll.h"
+> +#include "clk-branch.h"
+> +#include "clk-pll.h"
+> +#include "clk-rcg.h"
+> +#include "clk-regmap.h"
+> +#include "reset.h"
+> +
+> +enum {
+> +       P_BI_TCXO,
+> +       P_CORE_BI_PLL_TEST_SE,
+> +       P_GPLL0_OUT_EVEN,
+> +       P_GPLL0_OUT_MAIN,
+> +       P_GPLL4_OUT_EVEN,
+> +       P_GPLL5_OUT_MAIN,
+> +       P_SLEEP_CLK,
+> +};
+> +
+> +static struct pll_vco lucid_vco[] =3D {
+
+const
+
+> +       { 249600000, 2000000000, 0 },
+> +};
+> +
+> +static struct clk_alpha_pll gpll0 =3D {
+> +       .offset =3D 0x0,
+> +       .regs =3D clk_alpha_pll_regs[CLK_ALPHA_PLL_TYPE_LUCID],
+> +       .vco_table =3D lucid_vco,
+> +       .num_vco =3D ARRAY_SIZE(lucid_vco),
+> +       .clkr =3D {
+> +               .enable_reg =3D 0x6d000,
+> +               .enable_mask =3D BIT(0),
+> +               .hw.init =3D &(struct clk_init_data){
+> +                       .name =3D "gpll0",
+> +                       .parent_data =3D &(const struct clk_parent_data){
+> +                               .fw_name =3D "bi_tcxo",
+> +                       },
+> +                       .num_parents =3D 1,
+> +                       .ops =3D &clk_alpha_pll_fixed_lucid_ops,
+> +               },
+> +       },
+> +};
+> +
+> +static const struct clk_div_table post_div_table_lucid_even[] =3D {
+> +       { 0x0, 1 },
+> +       { 0x1, 2 },
+> +       { 0x3, 4 },
+> +       { 0x7, 8 },
+> +       { }
+> +};
+
+I think this table is common to all lucid plls? Maybe we can push it
+into the clk_ops somehow and stop duplicating it here?
+
+> +
+> +static struct clk_alpha_pll_postdiv gpll0_out_even =3D {
+> +       .offset =3D 0x0,
+> +       .regs =3D clk_alpha_pll_regs[CLK_ALPHA_PLL_TYPE_LUCID],
+> +       .post_div_shift =3D 8,
+> +       .post_div_table =3D post_div_table_lucid_even,
+> +       .num_post_div =3D ARRAY_SIZE(post_div_table_lucid_even),
+> +       .width =3D 4,
+> +       .clkr.hw.init =3D &(struct clk_init_data){
+> +               .name =3D "gpll0_out_even",
+> +               .parent_data =3D &(const struct clk_parent_data){
+> +                       .fw_name =3D "gpll0",
+> +               },
+
+If this is gpll0 in this file, then this should be a clk_hws pointer
+instead and directly pointing to the parent.
+
+> +               .num_parents =3D 1,
+> +               .ops =3D &clk_alpha_pll_postdiv_lucid_ops,
+> +       },
+> +};
+> +
+> +static struct clk_alpha_pll gpll4 =3D {
+> +       .offset =3D 0x76000,
+> +       .regs =3D clk_alpha_pll_regs[CLK_ALPHA_PLL_TYPE_LUCID],
+> +       .vco_table =3D lucid_vco,
+> +       .num_vco =3D ARRAY_SIZE(lucid_vco),
+> +       .clkr =3D {
+> +               .enable_reg =3D 0x6d000,
+> +               .enable_mask =3D BIT(4),
+> +               .hw.init =3D &(struct clk_init_data){
+> +                       .name =3D "gpll4",
+> +                       .parent_data =3D &(const struct clk_parent_data){
+> +                               .fw_name =3D "bi_tcxo",
+> +                       },
+> +                       .num_parents =3D 1,
+> +                       .ops =3D &clk_alpha_pll_fixed_lucid_ops,
+> +               },
+> +       },
+> +};
+> +
+> +static struct clk_alpha_pll_postdiv gpll4_out_even =3D {
+> +       .offset =3D 0x76000,
+> +       .regs =3D clk_alpha_pll_regs[CLK_ALPHA_PLL_TYPE_LUCID],
+> +       .post_div_shift =3D 8,
+> +       .post_div_table =3D post_div_table_lucid_even,
+> +       .num_post_div =3D ARRAY_SIZE(post_div_table_lucid_even),
+> +       .width =3D 4,
+> +       .clkr.hw.init =3D &(struct clk_init_data){
+> +               .name =3D "gpll4_out_even",
+> +               .parent_data =3D &(const struct clk_parent_data){
+> +                       .fw_name =3D "gpll4",
+
+If this is gpll4 in this file, then this should be a clk_hws pointer
+instead and directly pointing to the parent.
+
+> +               },
+> +               .num_parents =3D 1,
+> +               .ops =3D &clk_alpha_pll_postdiv_lucid_ops,
+> +       },
+> +};
+> +
+> +static struct clk_alpha_pll gpll5 =3D {
+> +       .offset =3D 0x74000,
+> +       .regs =3D clk_alpha_pll_regs[CLK_ALPHA_PLL_TYPE_LUCID],
+> +       .vco_table =3D lucid_vco,
+> +       .num_vco =3D ARRAY_SIZE(lucid_vco),
+[...]
+> +                       .name =3D "gcc_sdcc1_ahb_clk",
+> +                       .ops =3D &clk_branch2_ops,
+> +               },
+> +       },
+> +};
+> +
+> +static struct clk_branch gcc_sdcc1_apps_clk =3D {
+> +       .halt_reg =3D 0xf004,
+> +       .halt_check =3D BRANCH_HALT,
+> +       .clkr =3D {
+> +               .enable_reg =3D 0xf004,
+> +               .enable_mask =3D BIT(0),
+> +               .hw.init =3D &(struct clk_init_data){
+> +                       .name =3D "gcc_sdcc1_apps_clk",
+> +                       .parent_hws =3D (const struct clk_hw *[]){
+> +                               &gcc_sdcc1_apps_clk_src.clkr.hw },
+> +                       .num_parents =3D 1,
+> +                       .flags =3D CLK_SET_RATE_PARENT,
+> +                       .ops =3D &clk_branch2_ops,
+> +               },
+> +       },
+> +};
+> +
+> +/* For CPUSS functionality the SYS NOC clock needs to be left enabled */
+> +static struct clk_branch gcc_sys_noc_cpuss_ahb_clk =3D {
+> +       .halt_reg =3D 0x4010,
+> +       .halt_check =3D BRANCH_HALT_VOTED,
+> +       .clkr =3D {
+> +               .enable_reg =3D 0x6d008,
+> +               .enable_mask =3D BIT(0),
+> +               .hw.init =3D &(struct clk_init_data){
+> +                       .name =3D "gcc_sys_noc_cpuss_ahb_clk",
+> +                       .parent_hws =3D (const struct clk_hw *[]){
+> +                               &gcc_cpuss_ahb_clk_src.clkr.hw },
+> +                       .num_parents =3D 1,
+> +                       .flags =3D CLK_IS_CRITICAL | CLK_SET_RATE_PARENT,
+
+These CLK_IS_CRITICAL clks can't be set once at driver probe time and
+forgotten about? It would be nice to not allocate memory for things that
+never matter.
+
+> +                       .ops =3D &clk_branch2_ops,
+> +               },
+> +       },
+> +};
+> +
+> +static struct clk_branch gcc_usb30_master_clk =3D {
+> +       .halt_reg =3D 0xb010,
+> +       .halt_check =3D BRANCH_HALT,
+> +       .clkr =3D {
+> +               .enable_reg =3D 0xb010,
+> +               .enable_mask =3D BIT(0),
+> +               .hw.init =3D &(struct clk_init_data){
+> +                       .name =3D "gcc_usb30_master_clk",
+> +                       .parent_hws =3D (const struct clk_hw *[]){
+> +                               &gcc_usb30_master_clk_src.clkr.hw },
+> +                       .num_parents =3D 1,
+> +                       .flags =3D CLK_SET_RATE_PARENT,
+> +                       .ops =3D &clk_branch2_ops,
+[...]
+> +
+> +static const struct qcom_cc_desc gcc_sdx55_desc =3D {
+> +       .config =3D &gcc_sdx55_regmap_config,
+> +       .clks =3D gcc_sdx55_clocks,
+> +       .num_clks =3D ARRAY_SIZE(gcc_sdx55_clocks),
+> +       .resets =3D gcc_sdx55_resets,
+> +       .num_resets =3D ARRAY_SIZE(gcc_sdx55_resets),
+
+No gdscs?
+
+> +};
+> +
+> +static const struct of_device_id gcc_sdx55_match_table[] =3D {
+> +       { .compatible =3D "qcom,gcc-sdx55" },
+> +       { }
+> +};
+> +MODULE_DEVICE_TABLE(of, gcc_sdx55_match_table);
+> +
+> +static int gcc_sdx55_probe(struct platform_device *pdev)
+> +{
+> +       return qcom_cc_probe(pdev, &gcc_sdx55_desc);
+
+Wow haven't seen this in some time. There isn't some sort of PLL that
+needs configuring or some clks that need to be slammed on with a couple
+register writes?
+
+> +}
+> +
