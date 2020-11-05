@@ -2,152 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 925F52A7CB0
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 12:13:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7252C2A7CA8
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 12:12:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730070AbgKELNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 06:13:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42068 "EHLO
+        id S1730054AbgKELMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 06:12:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730073AbgKELNF (ORCPT
+        with ESMTP id S1726067AbgKELMV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 06:13:05 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F430C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 03:13:05 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id t14so1219474pgg.1
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 03:13:05 -0800 (PST)
+        Thu, 5 Nov 2020 06:12:21 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0A3AC0613CF;
+        Thu,  5 Nov 2020 03:12:19 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id c20so1226440pfr.8;
+        Thu, 05 Nov 2020 03:12:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=BcYYFtNRltYDE4hy/KAkGjdjtprJ1Trm7OKV+MnN8cU=;
-        b=u8YwcS6hVr8BwxXTTAlNESEmEgsS3lF6OTr1XaUbam4I/edC3qndBdjg6Uy8iz2Q4Q
-         hYlNAs1/XTw3soHv/si3tXmCczuo3mNDte6nlbwM878k4WF91kDK1iYVRDtibkoROSKj
-         yjfCZIqB3MO3ncbEJATqL58LXrnls4IqwABwbbGOdNIV9RGTDrMZptXqbnjj+V1N6WqI
-         HBRHng10F8RPuKJ6CJ1uCINPNb6xUgsC8CsubJFIRFcKAf9XUt6Zu0y7tcW3MCJO9JyS
-         huRJpus5BnMDQprBpyeMBR2Zh8O7Sqy9/tsu93YAUw3ok0YtILTEkI4ZmB3ZgeuvMkLC
-         Ze4g==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iUjAoEg9iu+vP2+zZMk5CXPigZo8ZpjB6LQlpjXIY5I=;
+        b=sMoaiLkwhmYoft6uQTfT2jODEzM75U9zMoId/2BZUYMxZu2PMiRp5J1vBrGxsKJQZ7
+         Fk7Fal0QYwLNLJ1xprNRg0KZ5As+19fF0c0i36JVwRSwdbGcQ5pdUu4PP8Wb6H43WFpT
+         o6SbUCvg+qoGC4JKyDsSQS+Scr8uQaEfHx3XrkL1xA5JLo/bH21GljEmGFwV6B0Bab7D
+         fhLFS+5aRMbqZljkz2e6MvURqeOTxNotQLz58K+zKMDxGVuLpj8dsuozzzKLKfFUZSU9
+         rug/tsPcJcnhmidy4FTTjQ13Wj4UrGUIHJJlOi8MZbPqRHbKd3SeoKiokKO086jlxhQd
+         7Vrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=BcYYFtNRltYDE4hy/KAkGjdjtprJ1Trm7OKV+MnN8cU=;
-        b=cmnMyEbTRcjcU/lX3wO41gaZ0X4dJ+7xmHbiLMKxc/DZ4QtcYJltvTNgBxIYoxMCBH
-         j9HXJWxHNxmuZyGoqrpkkQuNK/g+JApzUq3TEH8/qQgUv/aEWr0dBduCSzqRELIbGOIS
-         domtplaBuJy32E/TSiA3DtAqBLeOWJGbN2CdnEOc9dqdtZpsQmB+rf6YHebYU/Cj6WAo
-         ytmc2n4BbxIqgZNInt3S5/97iDyQcgl/lkmfzSZrVWMEO4JjEU2R7I8uSlx86lJ9Amd0
-         3d7Hh3hx8amZNEP35kvEuENIJXpBzDkFKLXignU8HxeB5SS/cUFHCwnlJd8Ukia56i9Z
-         a/BA==
-X-Gm-Message-State: AOAM5313kGqBlbkzXqKnYGCGmkHq1MqHSLjWYWiZDUfX1K0KzhprgWhV
-        tgcQBbMLxg2DiVWWg3Q0nMvXeQ==
-X-Google-Smtp-Source: ABdhPJwnuuk4daHbZCdYn/aCWQKiS7cX8bO0eWv5v6ODss+cRR8E8lvUDPwS9VwogQBWTDgNXP1wow==
-X-Received: by 2002:a17:90a:e391:: with SMTP id b17mr1925329pjz.209.1604574784247;
-        Thu, 05 Nov 2020 03:13:04 -0800 (PST)
-Received: from localhost ([122.172.12.172])
-        by smtp.gmail.com with ESMTPSA id f204sm2296698pfa.189.2020.11.05.03.13.02
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 05 Nov 2020 03:13:03 -0800 (PST)
-Date:   Thu, 5 Nov 2020 16:43:01 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Peter Chen <Peter.Chen@nxp.com>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        driverdevel <devel@driverdev.osuosl.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        linux-pwm@vger.kernel.org,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>
-Subject: Re: [PATCH v1 00/30] Introduce core voltage scaling for NVIDIA
- Tegra20/30 SoCs
-Message-ID: <20201105111301.2hxfx2tnmf2saakp@vireshk-i7>
-References: <20201104234427.26477-1-digetx@gmail.com>
- <CAPDyKFr7qTU2RPhA_ZrbCayoTTNUEno1zdmvmv+8HBe-Owrfeg@mail.gmail.com>
- <20201105100603.skrirm7uke4s2xyl@vireshk-i7>
- <CAPDyKFoCJt5MBSKBJ8n1OAMdVsWHdwXTx0zFEcZw_F_gQ6Ug0w@mail.gmail.com>
- <20201105104009.oo4dc6a2gdcwduhk@vireshk-i7>
- <CAPDyKFpQG98d6foc1U6fp3YEBdZ1vLqY9cmWxpUwXoKgDn+ojQ@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iUjAoEg9iu+vP2+zZMk5CXPigZo8ZpjB6LQlpjXIY5I=;
+        b=rju8pGYDsWboDpuSa+tRNwuvjjvWWZP0zDeNncB9wIsRaAxDOvxRVBao/dbYN+Ikbk
+         XkcGdGJbf92QpZvn+qdjiHllkhnWiCZOyJwRVJ6G7OJURH9E9LvJWAJXeHx9sgp26pgN
+         4oEWAiT+ZMWh4tzxQX9fdqDVl1dMs5/fGnSDS4vIbIO/WBu5gXiabVUIKrU9+HMFOAqQ
+         +olmeZWFmecjtnt/bGMqpbBoJrDYaTv7ikQiOuM3pnyRtc0mhyC4yUwdajTcNHlVs0HW
+         Ci+6Rz8qlcg2j5TrFkYSv2jz9pH27jr7IDYXhcbCjj6+J0Ac5WAb3s/SO/oXCzs7jeee
+         HGIA==
+X-Gm-Message-State: AOAM532LiyqddrD/lDFqQLLgXF5pnX0UHQWq8NUauHJf+rKcmleXHzax
+        BQ3ynajEkCmwymCP4CuoM2uC2UlKb5dyjSmul5Ytvi4vZSo=
+X-Google-Smtp-Source: ABdhPJx4w1l/kEti7iOKJ/mHOzonSScVh/NvYc49Rps0qP4gRt9WmPN3xWJM2w1rv9H16VII1JvAUnRl0JOQ1OSe6vc=
+X-Received: by 2002:a62:343:0:b029:15c:e33c:faff with SMTP id
+ 64-20020a6203430000b029015ce33cfaffmr1875620pfd.7.1604574739473; Thu, 05 Nov
+ 2020 03:12:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPDyKFpQG98d6foc1U6fp3YEBdZ1vLqY9cmWxpUwXoKgDn+ojQ@mail.gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+References: <20201104230703.21466-1-coiby.xu@gmail.com> <20201104230703.21466-3-coiby.xu@gmail.com>
+In-Reply-To: <20201104230703.21466-3-coiby.xu@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 5 Nov 2020 13:13:07 +0200
+Message-ID: <CAHp75Vf=78VdQPGERb-x1ucsT=SAbt2UV9ANB=vU0S7H+BLQRw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/4] pinctrl: amd: use higher precision for 512 RtcClk
+To:     Coiby Xu <coiby.xu@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        "open list:PIN CONTROL SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05-11-20, 11:56, Ulf Hansson wrote:
-> On Thu, 5 Nov 2020 at 11:40, Viresh Kumar <viresh.kumar@linaro.org> wrote:
-> > Btw, how do we identify if it is a power domain or a regulator ?
+On Thu, Nov 5, 2020 at 1:07 AM Coiby Xu <coiby.xu@gmail.com> wrote:
+>
+> RTC is 32.768kHz thus 512 RtcClk equals 15625 usec.
 
-To be honest, I was a bit afraid and embarrassed to ask this question,
-and was hoping people to make fun of me in return :)
+I could add that the documentation likely has dropped precision and
+that's why the driver mistakenly took the slightly deviated value.
 
-> Good question. It's not a crystal clear line in between them, I think.
+Anyway.
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-And I was relieved after reading this :)
+> Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Suggested-by: Hans de Goede <hdegoede@redhat.com>
+> Link: https://lore.kernel.org/linux-gpio/2f4706a1-502f-75f0-9596-cc25b4933b6c@redhat.com/
+> Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
+> ---
+>  drivers/pinctrl/pinctrl-amd.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/pinctrl/pinctrl-amd.c b/drivers/pinctrl/pinctrl-amd.c
+> index d6b2b4bd337c..4aea3e05e8c6 100644
+> --- a/drivers/pinctrl/pinctrl-amd.c
+> +++ b/drivers/pinctrl/pinctrl-amd.c
+> @@ -156,7 +156,7 @@ static int amd_gpio_set_debounce(struct gpio_chip *gc, unsigned offset,
+>                         pin_reg |= BIT(DB_TMR_OUT_UNIT_OFF);
+>                         pin_reg &= ~BIT(DB_TMR_LARGE_OFF);
+>                 } else if (debounce < 250000) {
+> -                       time = debounce / 15600;
+> +                       time = debounce / 15625;
+>                         pin_reg |= time & DB_TMR_OUT_MASK;
+>                         pin_reg &= ~BIT(DB_TMR_OUT_UNIT_OFF);
+>                         pin_reg |= BIT(DB_TMR_LARGE_OFF);
+> --
+> 2.28.0
+>
 
-> A power domain to me, means that some part of a silicon (a group of
-> controllers or just a single piece, for example) needs some kind of
-> resource (typically a power rail) to be enabled to be functional, to
-> start with.
-
-Isn't this what a part of regulator does as well ? i.e.
-enabling/disabling of the regulator or power to a group of
-controllers.
-
-Over that the regulator does voltage/current scaling as well, which
-normally the power domains don't do (though we did that in
-performance-state case).
-
-> If there are operating points involved, that's also a
-> clear indication to me, that it's not a regular regulator.
-
-Is there any example of that? I hope by OPP you meant both freq and
-voltage here. I am not sure if I know of a case where a power domain
-handles both of them.
-
-> Maybe we should try to specify this more exactly in some
-> documentation, somewhere.
-
-I think yes, it is very much required. And in absence of that I think,
-many (or most) of the platforms that also need to scale the voltage
-would have modeled their hardware as a regulator and not a PM domain.
-
-What I always thought was:
-
-- Module that can just enable/disable power to a block of SoC is a
-  power domain.
-
-- Module that can enable/disable as well as scale voltage is a
-  regulator.
-
-And so I thought that this patchset has done the right thing. This
-changed a bit with the qcom stuff where the IP to be configured was in
-control of RPM and not Linux and so we couldn't add it as a regulator.
-If it was controlled by Linux, it would have been a regulator in
-kernel for sure :)
 
 -- 
-viresh
+With Best Regards,
+Andy Shevchenko
