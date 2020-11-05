@@ -2,91 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3341E2A7C4F
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 11:52:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CFB72A7C42
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 11:52:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730253AbgKEKwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 05:52:49 -0500
-Received: from foss.arm.com ([217.140.110.172]:57294 "EHLO foss.arm.com"
+        id S1730076AbgKEKw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 05:52:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46274 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730097AbgKEKwr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 05:52:47 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 63BAE142F;
-        Thu,  5 Nov 2020 02:52:46 -0800 (PST)
-Received: from C02TD0UTHF1T.local (unknown [10.57.58.72])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 848743F66E;
-        Thu,  5 Nov 2020 02:52:44 -0800 (PST)
-Date:   Thu, 5 Nov 2020 10:52:41 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Marco Elver <elver@google.com>
-Cc:     akpm@linux-foundation.org, glider@google.com, dvyukov@google.com,
-        jannh@google.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        kasan-dev@googlegroups.com, x86@kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] kfence: Use pt_regs to generate stack trace on faults
-Message-ID: <20201105105241.GC82102@C02TD0UTHF1T.local>
-References: <20201105092133.2075331-1-elver@google.com>
+        id S1726152AbgKEKw2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 05:52:28 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 090552151B;
+        Thu,  5 Nov 2020 10:52:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604573547;
+        bh=dHIPFHJS8mksvgjLXcR/EsyhX2pv1p/eGxNVCgM8hrs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SahJzWsZQ2bLQXz1f8iY+r1b4yVRcWcoXiB8i6+F7bLid+d1tYxE59d4wtS3l6Mn7
+         ObzQPGDxTuxKJfJu0KlO3Wa5uK+NYvW7uwd5uVBtppieLp8pOmWHDqtO5y3TdYZeC5
+         khmsdst29miRjXIvJ1SmUJ71LWLvyFL55QdqMncw=
+Date:   Thu, 5 Nov 2020 11:53:16 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de,
+        linux- stable <stable@vger.kernel.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-usb@vger.kernel.org
+Subject: Re: [PATCH 5.9 000/391] 5.9.4-rc1 review
+Message-ID: <20201105105316.GA4038994@kroah.com>
+References: <20201103203348.153465465@linuxfoundation.org>
+ <CA+G9fYsrppNwC0S4vkrS8jGW4k2fgmbAzy=oMLV6X9=DHkznpw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201105092133.2075331-1-elver@google.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CA+G9fYsrppNwC0S4vkrS8jGW4k2fgmbAzy=oMLV6X9=DHkznpw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 10:21:33AM +0100, Marco Elver wrote:
-> Instead of removing the fault handling portion of the stack trace based
-> on the fault handler's name, just use struct pt_regs directly.
+On Wed, Nov 04, 2020 at 12:42:46PM +0530, Naresh Kamboju wrote:
+> On Wed, 4 Nov 2020 at 02:07, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > This is the start of the stable review cycle for the 5.9.4 release.
+> > There are 391 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> >
+> > Responses should be made by Thu, 05 Nov 2020 20:29:58 +0000.
+> > Anything received after that time might be too late.
+> >
+> > The whole patch series can be found in one patch at:
+> >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.9.4-rc1.gz
+> > or in the git tree and branch at:
+> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.9.y
+> > and the diffstat can be found below.
+> >
+> > thanks,
+> >
+> > greg k-h
 > 
-> Change kfence_handle_page_fault() to take a struct pt_regs, and plumb it
-> through to kfence_report_error() for out-of-bounds, use-after-free, or
-> invalid access errors, where pt_regs is used to generate the stack
-> trace.
+> Results from Linaro’s test farm.
+> No regressions on arm64, arm, x86_64, and i386.
 > 
-> If the kernel is a DEBUG_KERNEL, also show registers for more
-> information.
-> 
-> Suggested-by: Mark Rutland <mark.rutland@arm.com>
-> Signed-off-by: Marco Elver <elver@google.com>
+> Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Wow; I wasn't expecting this to be put together so quickly, thanks for
-doing this!
+Thanks for testing all of these and letting me know.
 
-From a scan, this looks good to me -- just one question below.
-
-> diff --git a/include/linux/kfence.h b/include/linux/kfence.h
-> index ed2d48acdafe..98a97f9d43cd 100644
-> --- a/include/linux/kfence.h
-> +++ b/include/linux/kfence.h
-> @@ -171,6 +171,7 @@ static __always_inline __must_check bool kfence_free(void *addr)
->  /**
->   * kfence_handle_page_fault() - perform page fault handling for KFENCE pages
->   * @addr: faulting address
-> + * @regs: current struct pt_regs (can be NULL, but shows full stack trace)
->   *
->   * Return:
->   * * false - address outside KFENCE pool,
-
-> @@ -44,8 +44,12 @@ static int get_stack_skipnr(const unsigned long stack_entries[], int num_entries
->  		case KFENCE_ERROR_UAF:
->  		case KFENCE_ERROR_OOB:
->  		case KFENCE_ERROR_INVALID:
-> -			is_access_fault = true;
-> -			break;
-> +			/*
-> +			 * kfence_handle_page_fault() may be called with pt_regs
-> +			 * set to NULL; in that case we'll simply show the full
-> +			 * stack trace.
-> +			 */
-> +			return 0;
-
-For both the above comments, when/where is kfence_handle_page_fault()
-called with regs set to NULL? I couldn't spot that in this patch, so
-unless I mised it I'm guessing that's somewhere outside of the patch
-context?
-
-If this is a case we don't expect to happen, maybe add a WARN_ON_ONCE()?
-
-Thanks,
-Mark.
+greg k-h
