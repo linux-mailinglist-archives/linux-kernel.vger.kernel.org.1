@@ -2,216 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 080192A8672
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 19:50:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE8ED2A8677
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 19:54:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731967AbgKESuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 13:50:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57456 "EHLO
+        id S1731682AbgKESyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 13:54:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727017AbgKESuW (ORCPT
+        with ESMTP id S1727836AbgKESyF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 13:50:22 -0500
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 091B6C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 10:50:22 -0800 (PST)
-Received: by mail-qk1-x743.google.com with SMTP id r7so2181109qkf.3
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 10:50:21 -0800 (PST)
+        Thu, 5 Nov 2020 13:54:05 -0500
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CFDDC0613D2
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 10:54:04 -0800 (PST)
+Received: by mail-pj1-x1042.google.com with SMTP id w20so536671pjh.1
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 10:54:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=sRzVU4QCj+G/NEOuuLkZgFLPxs16kEUOAR94xTqGuOI=;
-        b=Ge5ba13VykYBRgKHhJqElioEsxyeQmTyYj6/9E1yxViZlGDrM0w5SzbIoRVuuVJUHd
-         uZb1kwjXhEp9K/nbM8pGa2GMc9lQIIlhdv8T8G7EL/ogXrcYt+8URkmVWk6kPFzW5h2X
-         7bjoM0xG3BOkcZ2AP7lVtXSYF0UaxWUm74GSQ=
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HtLxZkv0TYlH01o2C6+4735a4rHSzmaJuyNckO1OmEo=;
+        b=vubNPTNXQb0W2AOa0qY3gSc9NNtvmPNZtHq+hbpfahbGOKrqfc8qEIFLmJR6OjIrnz
+         M2PKlPGln2O2B4T1T5fL+0eOnI93x+JUEpPyca+11W+R0NFkacD7yvvALn3ptG8FC+9J
+         gT6UaSXZVREeguoRzPh8+TsG659OPAXdFkqLjc5NTgqNjAxP1F95L4i7MhGGpJUPb8UQ
+         SefnFxeKpHGoL4suJs1Z4wRUrGHezEQMIAXKUQ+SPVezcECpLxvb75IcsQucNFZIFr0m
+         brJ2tp/B0cUXkZMRbyxyR6GE9J7jC/5iZhbG8g8UtAEH2fDDSYIBtRGTfRCTl7rtsayU
+         sB9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=sRzVU4QCj+G/NEOuuLkZgFLPxs16kEUOAR94xTqGuOI=;
-        b=AvOseQmH5DiujHe4KXy6/gbCqPtmFJFgTTtExB6erKDgSbjUffn558do+PQ57TVI+Y
-         8WZZDPWb938D47UwXETaRpJDBmRAKFzpGFthV4Hy9KWs97HXzKvVvbPYVDqBT1OXCWWL
-         1/VCX0furpRg3gpXJ33eQsvlNFxBs9GIGRumaIEsL3vzyvgKdJ0vZ3as5HdRmgsfsAMR
-         HJgAkso3v4uVYke5z0peKX5717Wj8RGCT5X4Rpu8Q/WQTQ+uhkhT5F1sGdMCPyR69WEN
-         Ie4txV1pp+KiI2/nquLhXP9HnwlTHeKd6kQFV+RXOZyfBm1AlVuy4rbwstlef97M7tFv
-         OXyw==
-X-Gm-Message-State: AOAM531PxbrzXOeFgUP/zC1DHRTzRgbLvJI5RnBxBA4k2EwaO4n64ehl
-        Z7NAsrHztS3Hn+LU9URfsGcyZw==
-X-Google-Smtp-Source: ABdhPJzj/b3B4IWqQPefE+U4u8lCXcyzwaIUSRdwNGIN+5maLwHwQ10GEUy6kmJb38eP/AbhJZQKkQ==
-X-Received: by 2002:a37:6cd:: with SMTP id 196mr3448823qkg.228.1604602221073;
-        Thu, 05 Nov 2020 10:50:21 -0800 (PST)
-Received: from localhost ([2620:15c:6:411:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id u31sm1516736qtu.87.2020.11.05.10.50.20
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=HtLxZkv0TYlH01o2C6+4735a4rHSzmaJuyNckO1OmEo=;
+        b=tFamSCTPOMxtwSoijufFjYlqHwQsRH8PwutXqbOK28n6YZMBWx0Kdoaho0xNp+YEpq
+         ghCXGynyWNODX6p8YV90+7OB8BKD2yS4G5pUqMdjeGOekQ0h3I9FkmXFsk43iM/z+Th3
+         zSTRUKgAcQfV5kvDx+Yq5YwM0LE9yEj+fDcVEdy8HnYXP5mjsNjg7xSxwmr1jzw5Z79A
+         dGR+xiXum9gjB21AOHIODK0tylyjYISvLj6WDeBB5UupAoSMZmRe0w15iQq8veoNcN5n
+         fSCs2mtXK9fMcqm7abUcrgOdIS0UO5qc78Mt7HMhB5r8SwWmOeiM7KQIUJka7TjqXHwA
+         uXbg==
+X-Gm-Message-State: AOAM5327qEgQ4YrDb2hoyGMFkvTusymEKWagwdd5NmEkTvrRkzrDf/rl
+        5bAfL3JYMJ6cEXrgLzGVqo6uhA==
+X-Google-Smtp-Source: ABdhPJz3Aj79Afx5ycabhmbdXG/hrX0zqj+ndTipQTpQLmniaRkOC9FOCRo98/vWkB4/t2JnqKMMqg==
+X-Received: by 2002:a17:90b:3798:: with SMTP id mz24mr3696165pjb.46.1604602443863;
+        Thu, 05 Nov 2020 10:54:03 -0800 (PST)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id z13sm3027751pgc.44.2020.11.05.10.54.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 10:50:20 -0800 (PST)
-Date:   Thu, 5 Nov 2020 13:50:19 -0500
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
-        keescook@chromium.org, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
-        benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
-        chris.hyser@oracle.com,
-        Vineeth Remanan Pillai <vpillai@digitalocean.com>,
-        Aaron Lu <aaron.lu@linux.alibaba.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Tim Chen <tim.c.chen@intel.com>
-Subject: Re: [PATCH v8 -tip 06/26] sched: Add core wide task selection and
- scheduling.
-Message-ID: <20201105185019.GA2771003@google.com>
-References: <20201020014336.2076526-1-joel@joelfernandes.org>
- <20201020014336.2076526-7-joel@joelfernandes.org>
- <20201023135129.GS2611@hirez.programming.kicks-ass.net>
- <20201023135400.GA2651@hirez.programming.kicks-ass.net>
- <20201023175724.GA3563800@google.com>
- <20201023192654.GH2974@worktop.programming.kicks-ass.net>
- <20201023213118.GD3563800@google.com>
- <20201026093131.GF2628@hirez.programming.kicks-ass.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201026093131.GF2628@hirez.programming.kicks-ass.net>
+        Thu, 05 Nov 2020 10:54:03 -0800 (PST)
+Date:   Thu, 05 Nov 2020 10:54:03 -0800 (PST)
+X-Google-Original-Date: Thu, 05 Nov 2020 10:53:03 PST (-0800)
+Subject:     Re: [PATCH 2/4] clk: sifive: Use common name for prci configuration
+In-Reply-To: <160454441626.3965362.17922436443029310228@swboyd.mtv.corp.google.com>
+CC:     zong.li@sifive.com, aou@eecs.berkeley.edu,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, mturquette@baylibre.com,
+        Paul Walmsley <paul.walmsley@sifive.com>, yash.shah@sifive.com,
+        zong.li@sifive.com
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     sboyd@kernel.org
+Message-ID: <mhng-e3785c68-4fbc-49be-aaa1-40043bcc1cab@palmerdabbelt-glaptop1>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 10:31:31AM +0100, Peter Zijlstra wrote:
-> On Fri, Oct 23, 2020 at 05:31:18PM -0400, Joel Fernandes wrote:
-> > On Fri, Oct 23, 2020 at 09:26:54PM +0200, Peter Zijlstra wrote:
-> 
-> > > How about this then?
-> > 
-> > This does look better. It makes sense and I think it will work. I will look
-> > more into it and also test it.
-> 
-> Hummm... Looking at it again I wonder if I can make something like the
-> below work.
-> 
-> (depends on the next patch that pulls core_forceidle into core-wide
-> state)
-> 
-> That would retain the CFS-cgroup optimization as well, for as long as
-> there's no cookies around.
-> 
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -4691,8 +4691,6 @@ pick_next_task(struct rq *rq, struct tas
->  		return next;
->  	}
->  
-> -	put_prev_task_balance(rq, prev, rf);
-> -
->  	smt_mask = cpu_smt_mask(cpu);
->  
->  	/*
-> @@ -4707,14 +4705,25 @@ pick_next_task(struct rq *rq, struct tas
->  	 */
->  	rq->core->core_task_seq++;
->  	need_sync = !!rq->core->core_cookie;
-> -
-> -	/* reset state */
-> -reset:
-> -	rq->core->core_cookie = 0UL;
->  	if (rq->core->core_forceidle) {
->  		need_sync = true;
->  		rq->core->core_forceidle = false;
->  	}
-> +
-> +	if (!need_sync) {
-> +		next = __pick_next_task(rq, prev, rf);
+On Wed, 04 Nov 2020 18:46:56 PST (-0800), sboyd@kernel.org wrote:
+> Quoting Zong Li (2020-10-16 02:18:24)
+>> Use generic name CLK_SIFIVE_PRCI instead of CLK_SIFIVE_FU540_PRCI. This
+>> patch is prepared for fu740 support.
+>> 
+>> Signed-off-by: Zong Li <zong.li@sifive.com>
+>> ---
+>
+> Looks ok but needs an ack from riscv maintainers to go through clk
+> tree. I was worried it would break defconfigs but it seems that the arch
+> selects the config so this should be OK, right?
 
-This could end up triggering pick_next_task_fair's newidle balancing;
+Ya, looks fine.  TBH the whole Kconfig.socs thing was probably a mistake, but
+at least in this case it makes things easy.
 
-> +		if (!next->core_cookie) {
-> +			rq->core_pick = NULL;
-> +			return next;
-> +		}
+I was going to suggest spliting the Kconfigs out so there's a _FU540_PRCI and
+an _FU740_PRCI, but looking at the code it doesn't really seem to buy us much
+-- just that one offset table we could toss.
 
-.. only to realize here that pick_next_task_fair() that we have to put_prev
-the task back as it has a cookie, but the effect of newidle balancing cannot
-be reverted.
+Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
+Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
 
-Would that be a problem as the newly pulled task might be incompatible and
-would have been better to leave it alone?
-
-TBH, this is a drastic change and we've done a lot of testing with the
-current code and its looking good. I'm a little scared of changing it right
-now and introducing regression. Can we maybe do this after the existing
-patches are upstream?
-
-thanks,
-
- - Joel
-
-
-> +		put_prev_task(next);
-> +		need_sync = true;
-> +	} else {
-> +		put_prev_task_balance(rq, prev, rf);
-> +	}
-> +
-> +	/* reset state */
-> +	rq->core->core_cookie = 0UL;
->  	for_each_cpu(i, smt_mask) {
->  		struct rq *rq_i = cpu_rq(i);
->  
-> @@ -4744,35 +4752,8 @@ pick_next_task(struct rq *rq, struct tas
->  			 * core.
->  			 */
->  			p = pick_task(rq_i, class, max);
-> -			if (!p) {
-> -				/*
-> -				 * If there weren't no cookies; we don't need to
-> -				 * bother with the other siblings.
-> -				 */
-> -				if (i == cpu && !need_sync)
-> -					goto next_class;
-> -
-> +			if (!p)
->  				continue;
-> -			}
-> -
-> -			/*
-> -			 * Optimize the 'normal' case where there aren't any
-> -			 * cookies and we don't need to sync up.
-> -			 */
-> -			if (i == cpu && !need_sync) {
-> -				if (p->core_cookie) {
-> -					/*
-> -					 * This optimization is only valid as
-> -					 * long as there are no cookies
-> -					 * involved.
-> -					 */
-> -					need_sync = true;
-> -					goto reset;
-> -				}
-> -
-> -				next = p;
-> -				goto done;
-> -			}
->  
->  			rq_i->core_pick = p;
->  
+>>  arch/riscv/Kconfig.socs     | 2 +-
+>>  drivers/clk/sifive/Kconfig  | 6 +++---
+>>  drivers/clk/sifive/Makefile | 2 +-
+>>  3 files changed, 5 insertions(+), 5 deletions(-)
+>> 
+>> diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
+>> index 8a55f6156661..3284d5c291be 100644
+>> --- a/arch/riscv/Kconfig.socs
+>> +++ b/arch/riscv/Kconfig.socs
+>> @@ -5,7 +5,7 @@ config SOC_SIFIVE
+>>         select SERIAL_SIFIVE if TTY
+>>         select SERIAL_SIFIVE_CONSOLE if TTY
+>>         select CLK_SIFIVE
+>> -       select CLK_SIFIVE_FU540_PRCI
+>> +       select CLK_SIFIVE_PRCI
+>>         select SIFIVE_PLIC
+>>         help
+>>           This enables support for SiFive SoC platform hardware.
