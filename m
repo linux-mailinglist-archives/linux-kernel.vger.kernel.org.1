@@ -2,108 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B7882A8027
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 14:57:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0E8C2A802E
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 14:58:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730894AbgKEN5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 08:57:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39422 "EHLO
+        id S1730933AbgKEN55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 08:57:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730676AbgKEN5a (ORCPT
+        with ESMTP id S1730660AbgKEN54 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 08:57:30 -0500
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14A9DC0613CF;
-        Thu,  5 Nov 2020 05:57:30 -0800 (PST)
-Received: by mail-lf1-x142.google.com with SMTP id v144so2385762lfa.13;
-        Thu, 05 Nov 2020 05:57:29 -0800 (PST)
+        Thu, 5 Nov 2020 08:57:56 -0500
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41710C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 05:57:56 -0800 (PST)
+Received: by mail-lf1-x143.google.com with SMTP id u18so2401941lfd.9
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 05:57:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=+oB95VM8Zw9gIAt2FC+TShAF+0gIWo5rt3Q41RXJdtg=;
-        b=k7qYU/S7xIQk2jr0RN0b4YX8DQl0u0bLGIF7BIO03i9ysBwBpKDn2MliLppMdD912h
-         r6BgWfzuRYtSE1eLkUMnbUB/BLsLo+YvOQfwlkgKibkMcVVi1isY/5BggTofJ/y1r0Hm
-         YXTNppZyodPQYF16UO3KTj5p7F89cfzPcpONsMTDz0kZoeDG8Fx0XGembDMrW3FuOzXM
-         jio/WB6mh7LmvjaKoQD27SeVDVB1tKJaInHuJOCXUkAdoOyzgiBYOsX/YjAtCKwJlQaR
-         K889lN9RvZfHHalw/0sSwWgdKgiFdf9q8dpTy6GIkWbl3kBPpBC5N6gEirv5uxbLGA/i
-         qy4g==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hI0UzcPlzM3Z+TT8BLCsTb4B4PaVfW/TF8pw2jZ+3SI=;
+        b=rI4ESeXM81khgcgR6VhCZFZCkhrDyz3SIB12oAg7aevlhKQnfwxm9DRbitflnAvySF
+         b1+dCx0m83TOzFMQGZwu7zNhPOmY3mmvUQhzRTdKxLNkVT7kcXUsbga9iaNUP94wqONn
+         HcOpAPayUbys/sx7e+1QFzx1rG6ppvxwBQnsLb8WXkR0i+wuTc6bKp4xVgOzX+k4uMox
+         gcQMpeuLqq5aD/5FfogyW5ppol6/4UXTiW39v/24AqNx2otBT+thZL6nOfGhJDC7YXLT
+         6XF/Eu4jZQ0GCf4aMXgOyA6B19+xP20CWGHGAj6oyWL+z5BNUpKQK26HmLXEAsMDKFOp
+         Z46Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+oB95VM8Zw9gIAt2FC+TShAF+0gIWo5rt3Q41RXJdtg=;
-        b=LAkh9c++vmxJSnAXiB1xqhPTXTn4TfINks8xtjJrUNHlePux9cmmeS4SC1vlOwc8l/
-         ehqkGpMEQX+IQm1iXV93wYKT4g4sTMvY60FrJe8GisSeHEAngbYqqpvV3MtBmp8fZ4J7
-         rzjoeOT5Dmr9wWWtre/PV2Ua/rOK+hPSvcemCCVAn4pda4AVGHA2BFLQGSEiRjjort9V
-         VBq1zEshzON1llta0pWrh3y7lgWwncfabTlglAHjaqJBjpUgl9on4O27cfQwdL4eTTr2
-         5pcSalCBNF5vNYUrjiMVoSpFN8+5Yjqe4k3eUl6R+da2N/yt98idovbJguXX7SHXvXuT
-         SkGQ==
-X-Gm-Message-State: AOAM532INXx3qDpNEcKJGdVzbINt3P4Kv0OXpx6pJnrFHLljH6WpoIjg
-        D++7dtqY1W3HwUcF/z1IO/DUgke/eBg=
-X-Google-Smtp-Source: ABdhPJy8aDH+pQWACig1gxUeRAo9xbkzKXDLndcNZHc3MgeMS7MQorfWYcYeqkisehyHHQbAhHZsRw==
-X-Received: by 2002:ac2:522a:: with SMTP id i10mr1023516lfl.128.1604584648429;
-        Thu, 05 Nov 2020 05:57:28 -0800 (PST)
-Received: from [192.168.2.145] (109-252-192-83.dynamic.spd-mgts.ru. [109.252.192.83])
-        by smtp.googlemail.com with ESMTPSA id h10sm158920ljj.116.2020.11.05.05.57.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Nov 2020 05:57:27 -0800 (PST)
-Subject: Re: [PATCH v1 00/30] Introduce core voltage scaling for NVIDIA
- Tegra20/30 SoCs
-To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Peter Chen <Peter.Chen@nxp.com>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        linux-samsung-soc@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-usb@vger.kernel.org, linux-pwm@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-media@vger.kernel.org, linux-tegra@vger.kernel.org
-References: <20201104234427.26477-1-digetx@gmail.com>
- <20201105014502.GB17266@qmqm.qmqm.pl>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <60e6ea6b-3a02-30a1-f0c9-d33ef7906ed6@gmail.com>
-Date:   Thu, 5 Nov 2020 16:57:26 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hI0UzcPlzM3Z+TT8BLCsTb4B4PaVfW/TF8pw2jZ+3SI=;
+        b=aRVafxpKrnBHQD/qqKz573JtY9Tn9xuMyUhjTRgW6956GygiZnhF9yDSwmgReYbhc0
+         BpNe4RzgdQwn/3vKLWgBejuyilZbM/Bj6RO1EPiabJmirH6oz1Y7Ek9JlFlRbsBOdtJr
+         ds/oa9ssotcLwGr0KNi1CwpwDy+nnxr6u2I9OzjY8NhLQ0EY/6CePinReA9cf0h+BEF4
+         mVfaFdqZAdtnCxM8EcFGlqK+SOaugvJFpBRrfkR2bx7U0bu7GQo18nDqnGdzBNghyt7w
+         yYSAjpCcmLM+WE6Cs98I/4W2dlcxt6+5BGmVUtx55eMLABwxHQxM/aSzpuRFEbeWYb3b
+         iDBw==
+X-Gm-Message-State: AOAM5320gWj7o5LoNsEztW8Ig4ab8QCH59gQkniNzD0DHH1gOGF7tCt7
+        GG4VeLrFkJVwEbiQ3ZN6Ic69lg0sVSBzVN0a5RQ/I0ZDnaanwQ==
+X-Google-Smtp-Source: ABdhPJylKuZVTDjj0TM1vn3dfgBS2xLU+0Zy/JEB0e0mx8z3Xl+Cke+L0nZBl0FCSalSQ25Ca/7WB9cpgUs4vwTFDQg=
+X-Received: by 2002:ac2:50c1:: with SMTP id h1mr983249lfm.333.1604584674765;
+ Thu, 05 Nov 2020 05:57:54 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201105014502.GB17266@qmqm.qmqm.pl>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20201028145117.1731876-1-geert+renesas@glider.be>
+In-Reply-To: <20201028145117.1731876-1-geert+renesas@glider.be>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 5 Nov 2020 14:57:44 +0100
+Message-ID: <CACRpkdayhrcfyXEB4P+apjOyF=8DZgmu=_H8+aQEr4XEbB0NeQ@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: Remove hole in pinctrl_gpio_range
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Heiko Stuebner <heiko@sntech.de>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-05.11.2020 04:45, Michał Mirosław пишет:
-> On Thu, Nov 05, 2020 at 02:43:57AM +0300, Dmitry Osipenko wrote:
->> Introduce core voltage scaling for NVIDIA Tegra20/30 SoCs, which reduces
->> power consumption and heating of the Tegra chips. Tegra SoC has multiple
->> hardware units which belong to a core power domain of the SoC and share
->> the core voltage. The voltage must be selected in accordance to a minimum
->> requirement of every core hardware unit.
-> [...]
-> 
-> Just looked briefly through the series - it looks like there is a lot of
-> code duplication in *_init_opp_table() functions. Could this be made
-> more generic / data-driven?
+On Wed, Oct 28, 2020 at 3:51 PM Geert Uytterhoeven
+<geert+renesas@glider.be> wrote:
 
-Indeed, it should be possible to add a common helper. I had a quick
-thought about doing it too, but then decided to defer for the starter
-since there were some differences among the needs of the drivers. I'll
-take a closer look for the v2, thanks!
+> On 64-bit platforms, pointer size and alignment are 64-bit, hence two
+> 4-byte holes are present before the pins and gc members of the
+> pinctrl_gpio_range structure.  Get rid of these holes by moving the
+> pins pointer.
+>
+> This reduces kernel size of an arm64 Rockchip kernel by ca. 512 bytes.
+>
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> ---
+> Compile-tested only (arm/multi_v7_defconfig and arm64/defconfig).
+
+Patch applied.
+
+Do you think it'd be worth it to add a check to checkpatch to suggest
+to move pointers toward the end of any struct?
+
+Yours,
+Linus Walleij
