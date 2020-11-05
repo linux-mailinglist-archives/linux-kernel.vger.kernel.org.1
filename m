@@ -2,88 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77D482A8996
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 23:16:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDD9F2A899E
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 23:19:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732639AbgKEWQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 17:16:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36286 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731508AbgKEWQH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 17:16:07 -0500
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1109E20735;
-        Thu,  5 Nov 2020 22:16:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604614566;
-        bh=imUVBYp5M4wmbLeT+9vciE49oS3Kkp42AlSUoxHmZhk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=VaJUVC2N2nUyV5925zEvK9jTWTGCpvlU1B0Vi/qCSuzJGlipDyRr1nXj11CqWWtea
-         JsgkIA+VtMpZOSrKLvXhYoqKYBo3fEBkGTnxvv8tNQ5Rck4+1n6x4tLjCOt5xIemWJ
-         rK25gTTc+/T3jYUPZV4eOobiMOQQh2EaSzL8ndDM=
-Date:   Thu, 5 Nov 2020 14:16:05 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     menglong8.dong@gmail.com
-Cc:     kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org, davem@davemloft.net,
-        ycheng@google.com, ncardwell@google.com, priyarjha@google.com,
-        edumazet@google.com, netdev@vger.kernel.org,
+        id S1732580AbgKEWT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 17:19:27 -0500
+Received: from relay10.mail.gandi.net ([217.70.178.230]:46807 "EHLO
+        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731508AbgKEWT1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 17:19:27 -0500
+Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 2ECAA240005;
+        Thu,  5 Nov 2020 22:19:25 +0000 (UTC)
+Date:   Thu, 5 Nov 2020 23:19:24 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Claudius Heine <ch@denx.de>
+Cc:     Alessandro Zummo <a.zummo@towertech.it>, linux-rtc@vger.kernel.org,
         linux-kernel@vger.kernel.org,
-        Menglong Dong <dong.menglong@zte.com.cn>
-Subject: Re: [PATCH net-next] net: udp: introduce UDP_MIB_MEMERRORS for
- udp_mem
-Message-ID: <20201105141605.06b936f3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <1604560572-18582-1-git-send-email-dong.menglong@zte.com.cn>
-References: <1604560572-18582-1-git-send-email-dong.menglong@zte.com.cn>
+        Henning Schild <henning.schild@siemens.com>,
+        Johannes Hahn <johannes-hahn@siemens.com>
+Subject: Re: [PATCH 1/2] rtc: rx6110: add i2c support
+Message-ID: <20201105221924.GI1034841@piout.net>
+References: <20201104102629.3422048-1-ch@denx.de>
+ <20201104102629.3422048-2-ch@denx.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201104102629.3422048-2-ch@denx.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu,  5 Nov 2020 02:16:11 -0500 menglong8.dong@gmail.com wrote:
-> From: Menglong Dong <dong.menglong@zte.com.cn>
-> 
-> When udp_memory_allocated is at the limit, __udp_enqueue_schedule_skb
-> will return a -ENOBUFS, and skb will be dropped in __udp_queue_rcv_skb
-> without any counters being done. It's hard to find out what happened
-> once this happen.
-> 
-> So we introduce a UDP_MIB_MEMERRORS to do this job. Well, this change
-> looks friendly to the existing users, such as netstat:
-> 
-> $ netstat -u -s
-> Udp:
->     0 packets received
->     639 packets to unknown port received.
->     158689 packet receive errors
->     180022 packets sent
->     RcvbufErrors: 20930
->     MemErrors: 137759
-> UdpLite:
-> IpExt:
->     InOctets: 257426235
->     OutOctets: 257460598
->     InNoECTPkts: 181177
-> 
-> Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
+On 04/11/2020 11:26:28+0100, Claudius Heine wrote:
+> +static int rx6110_i2c_probe(struct i2c_client *client,
+> +			    const struct i2c_device_id *id)
+> +{
+> +	struct i2c_adapter *adapter = to_i2c_adapter(client->dev.parent);
+> +	struct rx6110_data *rx6110;
+> +	int err;
+> +
+> +	if (!i2c_check_functionality(adapter, I2C_FUNC_SMBUS_BYTE_DATA
+> +				| I2C_FUNC_SMBUS_I2C_BLOCK)) {
+> +		dev_err(&adapter->dev,
+> +			"doesn't support required functionality\n");
+> +		return -EIO;
+> +	}
+> +
+> +	rx6110 = devm_kzalloc(&client->dev, sizeof(*rx6110), GFP_KERNEL);
+> +	if (!rx6110)
+> +		return -ENOMEM;
+> +
+> +	rx6110->regmap = devm_regmap_init_i2c(client, &regmap_i2c_config);
+> +	if (IS_ERR(rx6110->regmap)) {
+> +		dev_err(&client->dev, "regmap init failed for rtc rx6110\n");
+> +		return PTR_ERR(rx6110->regmap);
+> +	}
+> +
+> +	i2c_set_clientdata(client, rx6110);
+> +
+> +	rx6110->rtc = devm_rtc_device_register(&client->dev,
+> +					       client->name,
+> +					       &rx6110_rtc_ops, THIS_MODULE);
+> +
+> +	if (IS_ERR(rx6110->rtc))
+> +		return PTR_ERR(rx6110->rtc);
+> +
+> +	err = rx6110_init(rx6110);
+> +	if (err)
+> +		return err;
+> +
+> +	rx6110->rtc->max_user_freq = 1;
+> +
 
-Please CC Paolo since he have you feedback on v1 and Willem de Bruijn
-<willemb@google.com>.
+I would prefer if you could have a common function doing the RTC
+registration and init for both i2c and spi. It wouldn't do much yet but
+ideally, it would set the RTC range too and it would be better to not
+have to duplicate that.
 
-> diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
-> index 09f0a23d1a01..aa1bd53dd9f9 100644
-> --- a/net/ipv4/udp.c
-> +++ b/net/ipv4/udp.c
-> @@ -2038,6 +2038,9 @@ static int __udp_queue_rcv_skb(struct sock *sk, struct sk_buff *skb)
->  		if (rc == -ENOMEM)
->  			UDP_INC_STATS(sock_net(sk), UDP_MIB_RCVBUFERRORS,
->  					is_udplite);
-> +		else
-> +			UDP_INC_STATS(sock_net(sk), UDP_MIB_MEMERRORS,
-> +					is_udplite);
 
-The alignment of the line above is off, just ignore it and align the
-new code correctly so that checkpatch does not complain.
+-- 
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
