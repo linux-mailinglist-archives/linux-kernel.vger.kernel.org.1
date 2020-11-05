@@ -2,277 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB9662A78AF
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 09:16:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E509A2A78BC
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 09:18:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730735AbgKEIQL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 03:16:11 -0500
-Received: from mga04.intel.com ([192.55.52.120]:39805 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730543AbgKEIQE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 03:16:04 -0500
-IronPort-SDR: mCkOL5x7k9jhsJRPvZBcBepVBT9xJXq0xCQt2y+IISg2IcPgOmtmOpBt+jSdC6W6HKRDfLbkkM
- Q4+e0/8FnnOw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9795"; a="166755749"
-X-IronPort-AV: E=Sophos;i="5.77,453,1596524400"; 
-   d="scan'208";a="166755749"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2020 00:16:03 -0800
-IronPort-SDR: 05IwEy/VozTgYE7NroiL4avmOZ0AmLLlBB1AfnxpHEKV7Rbl5N5VPmInirU4uezqeSZc9PQEtf
- 6RkImQi8SCog==
-X-IronPort-AV: E=Sophos;i="5.77,453,1596524400"; 
-   d="scan'208";a="539281547"
-Received: from chenyi-pc.sh.intel.com ([10.239.159.72])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2020 00:16:01 -0800
-From:   Chenyi Qiang <chenyi.qiang@intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Xiaoyao Li <xiaoyao.li@intel.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [kvm-unit-tests PATCH] x86: Add tests for PKS
-Date:   Thu,  5 Nov 2020 16:18:05 +0800
-Message-Id: <20201105081805.5674-9-chenyi.qiang@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201105081805.5674-1-chenyi.qiang@intel.com>
-References: <20201105081805.5674-1-chenyi.qiang@intel.com>
+        id S1727483AbgKEISp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 03:18:45 -0500
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:54616 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726152AbgKEISp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 03:18:45 -0500
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20201105081833euoutp027ac4a1a69a2e1cead35f805cfec53f99~Ejr3LGEr-0044700447euoutp02V
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 08:18:33 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20201105081833euoutp027ac4a1a69a2e1cead35f805cfec53f99~Ejr3LGEr-0044700447euoutp02V
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1604564313;
+        bh=NMK60xRFJUDlh99CHxUxHQfB82mzpqWqhXHPuf9XntA=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=cJefCIKgF6oyFjabhyUuPuM8d2rDYehaUnF1VjC9sFe4URioTtr8gP4O7BlrzfWB6
+         c9tHYVmi4vDhusIEI2wuP/hwqY2Bv72B/eG6iJu2x4PRlihTZeQYJMsbPpkrOpCLhV
+         c3NP7Hjw3bpe84y069kLqvSRRuWm6k0c3X8dG6qw=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20201105081825eucas1p2edf8a2235cc36ffd94a9c48fa2e805bd~EjrwR46Dx2157521575eucas1p2e;
+        Thu,  5 Nov 2020 08:18:25 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id D2.58.06456.155B3AF5; Thu,  5
+        Nov 2020 08:18:25 +0000 (GMT)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20201105081825eucas1p2694c35782e89273166da44c593e72556~Ejrv7rU6X1870918709eucas1p2t;
+        Thu,  5 Nov 2020 08:18:25 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20201105081825eusmtrp11945a70f7cb872d6407407b815cd4279~Ejrv64dUR3154431544eusmtrp13;
+        Thu,  5 Nov 2020 08:18:25 +0000 (GMT)
+X-AuditID: cbfec7f2-7efff70000001938-d1-5fa3b551ba0a
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id 0F.7F.06017.155B3AF5; Thu,  5
+        Nov 2020 08:18:25 +0000 (GMT)
+Received: from [106.210.88.143] (unknown [106.210.88.143]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20201105081824eusmtip20006ca0ce7322a509f4b03275f5a5812~EjrvVAhSH2999429994eusmtip2n;
+        Thu,  5 Nov 2020 08:18:24 +0000 (GMT)
+Subject: Re: [PATCH v2] ARM: dts: exynos: Add a placeholder for a MAC
+ address
+To:     Anand Moon <linux.amoon@gmail.com>
+Cc:     =?UTF-8?Q?=c5=81ukasz_Stelmach?= <l.stelmach@samsung.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-samsung-soc@vger.kernel.org,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+Message-ID: <71f06064-079c-1044-a51a-ce1ea7cc4049@samsung.com>
+Date:   Thu, 5 Nov 2020 09:18:26 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
+        Gecko/20100101 Thunderbird/78.4.0
+MIME-Version: 1.0
+In-Reply-To: <CANAwSgR=20AOVxi=5L_ep=uK98dzL6Ent52Mux1_iviiK-XGPA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrBKsWRmVeSWpSXmKPExsWy7djP87qBWxfHG/w9pWaxccZ6Vov5R86x
+        WvQ/fs1scf78BnaLm4dWMFpsenyN1eLyrjlsFjPO72OyWLfxFrtF694j7A5cHjtn3WX32LSq
+        k81j85J6j74tqxg9Pm+SC2CN4rJJSc3JLEst0rdL4Mr41/KFvWCRXMXzgzcZGxjXiXcxcnBI
+        CJhInNnu0sXIxSEksIJR4tHDuUwQzhdGiVuPTzBCOJ8ZJVZ8vsXSxcgJ1rHj12kWiMRyRomj
+        F7czgySEBN4zSqz7Gg9iCwv4S2xsu8oEYosIqElcebqCFcRmFpjOLLFoogqIzSZgKNH1tosN
+        xOYVsJM49GIdO4jNIqAiMffobTBbVCBJ4u/nP8wQNYISJ2c+ATuCUyBQ4tWzr1Az5SWat85m
+        hrDFJW49mQ/2goTAMXaJM3dWMUJc7SLR9nABG4QtLPHq+BZ2CFtG4vTkHhaIhmZGiYfn1rJD
+        OD2MEpebZkB1W0vcOfeLDRRizAKaEut36UOEHSXar25hhQQkn8SNt4IQR/BJTNo2nRkizCvR
+        0SYEUa0mMev4Ori1By9cYp7AqDQLyWuzkLwzC8k7sxD2LmBkWcUonlpanJueWmyYl1quV5yY
+        W1yal66XnJ+7iRGYnk7/O/5pB+PXS0mHGAU4GJV4eB04FscLsSaWFVfmHmKU4GBWEuF1Ons6
+        Tog3JbGyKrUoP76oNCe1+BCjNAeLkjiv8aKXsUIC6YklqdmpqQWpRTBZJg5OqQbGMlOvzN0P
+        j5xbIGxeyWvH8JJ31TKPQ/LTJm5hZuCe9FN9p37607U3r4acurowSatse8q+lml+hW525Xs3
+        Wy68bsNyd5WvZzO33JaTyxaWNk3c4JyTsD+x9OgNvZx7H3f15Vzq4vh5SdTdaOI3i9U95Q61
+        lvI+pnPvhWnntM+XS9Pgra1YsmqiEktxRqKhFnNRcSIA2o387EsDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrDIsWRmVeSWpSXmKPExsVy+t/xe7qBWxfHG9y+zW2xccZ6Vov5R86x
+        WvQ/fs1scf78BnaLm4dWMFpsenyN1eLyrjlsFjPO72OyWLfxFrtF694j7A5cHjtn3WX32LSq
+        k81j85J6j74tqxg9Pm+SC2CN0rMpyi8tSVXIyC8usVWKNrQw0jO0tNAzMrHUMzQ2j7UyMlXS
+        t7NJSc3JLEst0rdL0Mv41/KFvWCRXMXzgzcZGxjXiXcxcnJICJhI7Ph1mgXEFhJYyiixrz0F
+        Ii4jcXJaAyuELSzx51oXWxcjF1DNW0aJ7efawBLCAr4Sfy7tYQOxRQTUJK48XcEKUsQsMJtZ
+        4uHO70wQHS3MEhsuzgJbwSZgKNH1tgusg1fATuLQi3XsIDaLgIrE3KO3wWxRgSSJlxemMkHU
+        CEqcnPkErJdTIFDi1bOvYJuZBcwk5m1+yAxhy0s0b50NZYtL3Hoyn2kCo9AsJO2zkLTMQtIy
+        C0nLAkaWVYwiqaXFuem5xUZ6xYm5xaV56XrJ+bmbGIExue3Yzy07GLveBR9iFOBgVOLhdeBY
+        HC/EmlhWXJl7iFGCg1lJhNfp7Ok4Id6UxMqq1KL8+KLSnNTiQ4ymQM9NZJYSTc4Hpou8knhD
+        U0NzC0tDc2NzYzMLJXHeDoGDMUIC6YklqdmpqQWpRTB9TBycUg2MeWVHLoakx3+Zav54haVv
+        01WWhb+j7/UyzvOfWhn+sS/qPXfL7Dvzf79+1H7uZaCA1BeFeaJx2qvdfy43dVVZcGj9bUbG
+        tpX1QSFbcj6V8rnu0uxaZ7BXM6+x7/HvgFaXCZPbt7NOZdTmSO5baD4jV/Wbo8ISY7njzroh
+        IQpnvgbF7JTLnPJLiaU4I9FQi7moOBEA3ss9Bd8CAAA=
+X-CMS-MailID: 20201105081825eucas1p2694c35782e89273166da44c593e72556
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20201001135310eucas1p273e3799cec0ebb29891c1b7db38685e0
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20201001135310eucas1p273e3799cec0ebb29891c1b7db38685e0
+References: <CGME20201001135310eucas1p273e3799cec0ebb29891c1b7db38685e0@eucas1p2.samsung.com>
+        <20200930143151.23961-1-l.stelmach@samsung.com>
+        <20201001135254.28178-1-l.stelmach@samsung.com>
+        <CANAwSgSvH+q21Tj9NijPa87ju+1LOJ07-is1Sucx1y5ggT6zCA@mail.gmail.com>
+        <5ecd2e6d-6aaf-bff5-c000-2c56086ed95b@samsung.com>
+        <CANAwSgR=20AOVxi=5L_ep=uK98dzL6Ent52Mux1_iviiK-XGPA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This unit-test is intended to test the KVM support for Protection Keys
-for Supervisor Pages (PKS). If CR4.PKS is set in long mode, supervisor
-pkeys are checked in addition to normal paging protections and Access or
-Write can be disabled via a MSR update without TLB flushes when
-permissions change.
+Hi Anand,
 
-Signed-off-by: Chenyi Qiang <chenyi.qiang@intel.com>
----
- lib/x86/msr.h       |   1 +
- lib/x86/processor.h |   2 +
- x86/Makefile.x86_64 |   1 +
- x86/pks.c           | 146 ++++++++++++++++++++++++++++++++++++++++++++
- x86/unittests.cfg   |   5 ++
- 5 files changed, 155 insertions(+)
- create mode 100644 x86/pks.c
+On 05.11.2020 09:06, Anand Moon wrote:
+> On Mon, 2 Nov 2020 at 21:53, Marek Szyprowski <m.szyprowski@samsung.com> wrote:
+>> On 01.11.2020 15:07, Anand Moon wrote:
+>>> On Thu, 1 Oct 2020 at 19:25, Łukasz Stelmach <l.stelmach@samsung.com> wrote:
+>>>> Add a placeholder for a MAC address. A bootloader may fill it
+>>>> to set the MAC address and override EEPROM settings.
+>>>>
+>>>> Signed-off-by: Łukasz Stelmach <l.stelmach@samsung.com>
+>>>> ---
+>>>> Changes in v2:
+>>>>    - use local-mac-address and leave mac-address to be added by a bootloader
+>>>>
+>>>>    arch/arm/boot/dts/exynos5422-odroidxu3.dts | 18 ++++++++++++++++++
+>>>>    1 file changed, 18 insertions(+)
+>>>>
+>>>> diff --git a/arch/arm/boot/dts/exynos5422-odroidxu3.dts b/arch/arm/boot/dts/exynos5422-odroidxu3.dts
+>>>> index db0bc17a667b..d0f6ac5fa79d 100644
+>>>> --- a/arch/arm/boot/dts/exynos5422-odroidxu3.dts
+>>>> +++ b/arch/arm/boot/dts/exynos5422-odroidxu3.dts
+>>>> @@ -70,3 +70,21 @@ &pwm {
+>>>>    &usbdrd_dwc3_1 {
+>>>>           dr_mode = "peripheral";
+>>>>    };
+>>>> +
+>>>> +&usbhost2 {
+>>>> +       #address-cells = <1>;
+>>>> +       #size-cells = <0>;
+>>>> +
+>>>> +       hub@1 {
+>>>> +               compatible = "usb8087,0024";
+>>>> +               reg = <1>;
+>>>> +               #address-cells = <1>;
+>>>> +               #size-cells = <0>;
+>>>> +
+>>>> +               ethernet: usbether@1 {
+>>>> +                       compatible = "usb0c45,6310";
+>>>> +                       reg = <1>;
+>>>> +                       local-mac-address = [00 00 00 00 00 00]; /* Filled in by a bootloader */
+>>>> +               };
+>>>> +       };
+>>>> +};
+>>>> --
+>>>> 2.26.2
+>>>>
+>>> Thanks for this patch, can you share some example on how to set the
+>>> mac address via u-boot bootargs
+>> A little bit hacky script to set permanent board unique MAC address:
+>>
+>> # setexp.b u0 *0x10000014; setexp.b u1 *0x10000015; setexp.b u2
+>> *0x10000016; setexp.b u3 *0x10000017; setenv ethaddr
+>> 0:0:${u0}:${u1}:${u2}:${u3}; setenv usbethaddr ${ethaddr};
+>>
+> OK this command worked for me.
+>
+>> Then if there is proper ethernet0 alias set, u-boot will then
+>> automatically save the configured MAC address to the device tree. I've
+>> just check this on recent u-boot v2020.10 and Odroid U3 board.
+>>
+>> Lukasz will send updated patch soon (with proper alias entry).
+>>
+>> If you want to hack setting MAC address manually, this will work with
+>> the current patch:
+>>
+>> # setexp.b u0 *0x10000014; setexp.b u1 *0x10000015; setexp.b u2
+>> *0x10000016; setexp.b u3 *0x10000017; fdt addr ${fdtaddr}; fdt set
+>> /soc/usb@12110000/hub@1/usbether@1 local-mac-address [ 0 0 ${u0} ${u1}
+>> ${u2} ${u3} ]
+>>
+> So do we need a similar patch for u-boot ?
 
-diff --git a/lib/x86/msr.h b/lib/x86/msr.h
-index 6ef5502..e36934b 100644
---- a/lib/x86/msr.h
-+++ b/lib/x86/msr.h
-@@ -209,6 +209,7 @@
- #define MSR_IA32_EBL_CR_POWERON		0x0000002a
- #define MSR_IA32_FEATURE_CONTROL        0x0000003a
- #define MSR_IA32_TSC_ADJUST		0x0000003b
-+#define MSR_IA32_PKRS			0x000006e1
- 
- #define FEATURE_CONTROL_LOCKED				(1<<0)
- #define FEATURE_CONTROL_VMXON_ENABLED_INSIDE_SMX	(1<<1)
-diff --git a/lib/x86/processor.h b/lib/x86/processor.h
-index 74a2498..985fdd0 100644
---- a/lib/x86/processor.h
-+++ b/lib/x86/processor.h
-@@ -50,6 +50,7 @@
- #define X86_CR4_SMEP   0x00100000
- #define X86_CR4_SMAP   0x00200000
- #define X86_CR4_PKE    0x00400000
-+#define X86_CR4_PKS    0x01000000
- 
- #define X86_EFLAGS_CF    0x00000001
- #define X86_EFLAGS_FIXED 0x00000002
-@@ -157,6 +158,7 @@ static inline u8 cpuid_maxphyaddr(void)
- #define	X86_FEATURE_RDPID		(CPUID(0x7, 0, ECX, 22))
- #define	X86_FEATURE_SPEC_CTRL		(CPUID(0x7, 0, EDX, 26))
- #define	X86_FEATURE_ARCH_CAPABILITIES	(CPUID(0x7, 0, EDX, 29))
-+#define	X86_FEATURE_PKS			(CPUID(0x7, 0, ECX, 31))
- #define	X86_FEATURE_NX			(CPUID(0x80000001, 0, EDX, 20))
- #define	X86_FEATURE_RDPRU		(CPUID(0x80000008, 0, EBX, 4))
- 
-diff --git a/x86/Makefile.x86_64 b/x86/Makefile.x86_64
-index af61d85..3a353df 100644
---- a/x86/Makefile.x86_64
-+++ b/x86/Makefile.x86_64
-@@ -20,6 +20,7 @@ tests += $(TEST_DIR)/tscdeadline_latency.flat
- tests += $(TEST_DIR)/intel-iommu.flat
- tests += $(TEST_DIR)/vmware_backdoors.flat
- tests += $(TEST_DIR)/rdpru.flat
-+tests += $(TEST_DIR)/pks.flat
- 
- include $(SRCDIR)/$(TEST_DIR)/Makefile.common
- 
-diff --git a/x86/pks.c b/x86/pks.c
-new file mode 100644
-index 0000000..a3044cf
---- /dev/null
-+++ b/x86/pks.c
-@@ -0,0 +1,146 @@
-+#include "libcflat.h"
-+#include "x86/desc.h"
-+#include "x86/processor.h"
-+#include "x86/vm.h"
-+#include "x86/msr.h"
-+
-+#define CR0_WP_MASK      (1UL << 16)
-+#define PTE_PKEY_BIT     59
-+#define SUPER_BASE        (1 << 24)
-+#define SUPER_VAR(v)      (*((__typeof__(&(v))) (((unsigned long)&v) + SUPER_BASE)))
-+
-+volatile int pf_count = 0;
-+volatile unsigned save;
-+volatile unsigned test;
-+
-+static void set_cr0_wp(int wp)
-+{
-+    unsigned long cr0 = read_cr0();
-+
-+    cr0 &= ~CR0_WP_MASK;
-+    if (wp)
-+        cr0 |= CR0_WP_MASK;
-+    write_cr0(cr0);
-+}
-+
-+void do_pf_tss(unsigned long error_code);
-+void do_pf_tss(unsigned long error_code)
-+{
-+    printf("#PF handler, error code: 0x%lx\n", error_code);
-+    pf_count++;
-+    save = test;
-+    wrmsr(MSR_IA32_PKRS, 0);
-+}
-+
-+extern void pf_tss(void);
-+
-+asm ("pf_tss: \n\t"
-+#ifdef __x86_64__
-+    // no task on x86_64, save/restore caller-save regs
-+    "push %rax; push %rcx; push %rdx; push %rsi; push %rdi\n"
-+    "push %r8; push %r9; push %r10; push %r11\n"
-+    "mov 9*8(%rsp), %rdi\n"
-+#endif
-+    "call do_pf_tss \n\t"
-+#ifdef __x86_64__
-+    "pop %r11; pop %r10; pop %r9; pop %r8\n"
-+    "pop %rdi; pop %rsi; pop %rdx; pop %rcx; pop %rax\n"
-+#endif
-+    "add $"S", %"R "sp\n\t" // discard error code
-+    "iret"W" \n\t"
-+    "jmp pf_tss\n\t"
-+    );
-+
-+static void init_test(void)
-+{
-+    pf_count = 0;
-+
-+    invlpg(&test);
-+    invlpg(&SUPER_VAR(test));
-+    wrmsr(MSR_IA32_PKRS, 0);
-+    set_cr0_wp(0);
-+}
-+
-+int main(int ac, char **av)
-+{
-+    unsigned long i;
-+    unsigned int pkey = 0x2;
-+    unsigned int pkrs_ad = 0x10;
-+    unsigned int pkrs_wd = 0x20;
-+
-+    if (!this_cpu_has(X86_FEATURE_PKS)) {
-+        printf("PKS not enabled\n");
-+        return report_summary();
-+    }
-+
-+    setup_vm();
-+    setup_alt_stack();
-+    set_intr_alt_stack(14, pf_tss);
-+    wrmsr(MSR_EFER, rdmsr(MSR_EFER) | EFER_LMA);
-+
-+    // First 16MB are user pages
-+    for (i = 0; i < SUPER_BASE; i += PAGE_SIZE) {
-+        *get_pte(phys_to_virt(read_cr3()), phys_to_virt(i)) |= ((unsigned long)pkey << PTE_PKEY_BIT);
-+        invlpg((void *)i);
-+    }
-+
-+    // Present the same 16MB as supervisor pages in the 16MB-32MB range
-+    for (i = SUPER_BASE; i < 2 * SUPER_BASE; i += PAGE_SIZE) {
-+        *get_pte(phys_to_virt(read_cr3()), phys_to_virt(i)) &= ~SUPER_BASE;
-+        *get_pte(phys_to_virt(read_cr3()), phys_to_virt(i)) &= ~PT_USER_MASK;
-+        *get_pte(phys_to_virt(read_cr3()), phys_to_virt(i)) |= ((unsigned long)pkey << PTE_PKEY_BIT);
-+        invlpg((void *)i);
-+    }
-+
-+    write_cr4(read_cr4() | X86_CR4_PKS);
-+    write_cr3(read_cr3());
-+
-+    init_test();
-+    set_cr0_wp(1);
-+    wrmsr(MSR_IA32_PKRS, pkrs_ad);
-+    SUPER_VAR(test) = 21;
-+    report(pf_count == 1 && test == 21 && save == 0,
-+           "write to supervisor page when pkrs is ad and wp == 1");
-+
-+    init_test();
-+    set_cr0_wp(0);
-+    wrmsr(MSR_IA32_PKRS, pkrs_ad);
-+    SUPER_VAR(test) = 22;
-+    report(pf_count == 1 && test == 22 && save == 21,
-+           "write to supervisor page when pkrs is ad and wp == 0");
-+
-+    init_test();
-+    set_cr0_wp(1);
-+    wrmsr(MSR_IA32_PKRS, pkrs_wd);
-+    SUPER_VAR(test) = 23;
-+    report(pf_count == 1 && test == 23 && save == 22,
-+           "write to supervisor page when pkrs is wd and wp == 1");
-+
-+    init_test();
-+    set_cr0_wp(0);
-+    wrmsr(MSR_IA32_PKRS, pkrs_wd);
-+    SUPER_VAR(test) = 24;
-+    report(pf_count == 0 && test == 24,
-+           "write to supervisor page when pkrs is wd and wp == 0");
-+
-+    init_test();
-+    set_cr0_wp(0);
-+    wrmsr(MSR_IA32_PKRS, pkrs_wd);
-+    test = 25;
-+    report(pf_count == 0 && test == 25,
-+           "write to user page when pkrs is wd and wp == 0");
-+
-+    init_test();
-+    set_cr0_wp(1);
-+    wrmsr(MSR_IA32_PKRS, pkrs_wd);
-+    test = 26;
-+    report(pf_count == 0 && test == 26,
-+           "write to user page when pkrs is wd and wp == 1");
-+
-+    init_test();
-+    wrmsr(MSR_IA32_PKRS, pkrs_ad);
-+    (void)((__typeof__(&(test))) (((unsigned long)&test)));
-+    report(pf_count == 0, "read from user page when pkrs is ad");
-+
-+    return report_summary();
-+}
-diff --git a/x86/unittests.cfg b/x86/unittests.cfg
-index 3a79151..b75419e 100644
---- a/x86/unittests.cfg
-+++ b/x86/unittests.cfg
-@@ -127,6 +127,11 @@ file = pku.flat
- arch = x86_64
- extra_params = -cpu host
- 
-+[pks]
-+file = pks.flat
-+arch = x86_64
-+extra_params = -cpu host
-+
- [asyncpf]
- file = asyncpf.flat
- extra_params = -m 2048
+I've not sure that this ethaddr hack/workaround should be added to 
+mainline uboot. Some other exynos based board have proper MAC address 
+stored in EEPROM (for example Odroid XU4/HC1). I would leave it for the 
+users to add it manually if it is really needed for now.
+
+> I am getting following error on Odroid U3+ and U-Boot 2020.10
+>
+> Odroid #  setexp.b u0 *0x10000014; setexp.b u1 *0x10000015; setexp.b
+> u2 *0x10000016; setexp.b u3 *0x10000017; fdt addr ${fdtaddr}; fdt set
+> /soc/usb@12110000/hub@1/usbether@1 local-mac-address [ 0 0 ${u0} ${u1}
+> ${u2} ${u3} ]
+> No FDT memory address configured. Please configure
+> the FDT address via "fdt addr <address>" command.
+> Aborting!
+>
+> Also added these command to boot.scr but still observing the failure
+
+You need to use proper env for setting fdt address (the "fdt addr 
+${fdtaddr}" command). For some versions it was ${fdt_addr}, the other 
+used ${fdtaddr}. Please check which one is used for loading dtb and 
+adjust the script.
+
+Best regards
+
 -- 
-2.17.1
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
 
