@@ -2,81 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6603C2A8630
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 19:39:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD56D2A8636
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 19:40:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731722AbgKESjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 13:39:24 -0500
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:38201 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726214AbgKESjX (ORCPT
+        id S1731453AbgKESkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 13:40:40 -0500
+Received: from mail-ot1-f45.google.com ([209.85.210.45]:35305 "EHLO
+        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726801AbgKESkj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 13:39:23 -0500
-Received: by mail-ot1-f68.google.com with SMTP id b2so2367660ots.5;
-        Thu, 05 Nov 2020 10:39:22 -0800 (PST)
+        Thu, 5 Nov 2020 13:40:39 -0500
+Received: by mail-ot1-f45.google.com with SMTP id n11so2381258ota.2;
+        Thu, 05 Nov 2020 10:40:38 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=oPwP/MMeCFhUmSj7N3WE3Z62TN2tMAgfxgbJBwkddp4=;
-        b=OSkAigvl4a+1KT+tzxetTTYkdhhGXtmh1efUNVpsjCZQxqn9yp5RC+UwlIkMf7bAVE
-         WHFKOIr1yQkhHrKKmv5Viv2AMiqQxntBsUkqYkaGbTPUMWygj9mQGeLUH4k6SAfeWatG
-         T0ygSN0zzO8HhP4NJRmWb1dbEkfaJ57/iMC+0Os6H1M26opUwuWwG303jVq3Epjds+TP
-         SFwTUQWgYAGh3JycFxI9o9oXdR/yniTg6asVdYlvvlLnsZ+jUJi2Gd+s7bJTWhEnmn+V
-         9knRmIaPJgdjFxJE2TE3lZ9TACRu80A0WeBEVY9yTAHWT6MqmcjH+DRWkAMnc/hpOo5h
-         cacw==
-X-Gm-Message-State: AOAM530OEXrkSPGOWnqGUm/4lzPrMNEMQ6VsSrHZIo5yZ85upoN7gVi/
-        lhVY8cE2QB+g/u0kFYxXtg==
-X-Google-Smtp-Source: ABdhPJzRBgP5+/f3MDZQcsFSgW1dFGhtocXexNDBCjlPVJJSHJJGb717wfAecWqYjVCmXRQb6VMRYA==
-X-Received: by 2002:a05:6830:1dab:: with SMTP id z11mr2479004oti.247.1604601562347;
-        Thu, 05 Nov 2020 10:39:22 -0800 (PST)
+        bh=ROW7gLPvsixXdOUBku/rceehiE2QxPW3Gr2HLN1Tahs=;
+        b=mSt/L5p0O8x1DGOmS5hS78Sl6QNnnDB0f2bUIrwhjbDvO3TV6i6spCSDainhHUBdwA
+         1WUj4fVYQ9B2Vu9hi5QsWM/Wynxofzw0m7J24I+IOoZ2tKD9HjbtMCER3nbCsjD/VhMe
+         drhiZJzQDBu9fGD4qa6+UaERCp52JEx5BJD0xYRn00ozxTO8PtV90emKXcl29CNVuiEc
+         g3Rf6rhR/nZ0MwfqghelqnT3NBCasj74k8mIvYguazqu4/u+7TlVQ4il6u1TCZ/al1Qt
+         h5/pEHYqa1+JYf6CAbE/oeMVxrOdcmYKgttr3uor438kSvwnQh6v2ussxmVPyyYE7kjk
+         8QhQ==
+X-Gm-Message-State: AOAM530jLUKLJNYVMdoX5EFUtwNwUDax2+Yd3Mgm1RpK4GT53dZUEFQS
+        +ndUtytzfGGUjnhKl4nPXO4M6gJEZsBA
+X-Google-Smtp-Source: ABdhPJwG1vUWe+mtCQWNMutnJxx2eoLNJArHfDOqxJL78DdzeDgv3gng8hQNHFIW5vfeIqU7slQlcQ==
+X-Received: by 2002:a9d:7d87:: with SMTP id j7mr2645271otn.356.1604601638458;
+        Thu, 05 Nov 2020 10:40:38 -0800 (PST)
 Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id j3sm556796oij.9.2020.11.05.10.39.20
+        by smtp.gmail.com with ESMTPSA id s26sm530580ood.38.2020.11.05.10.40.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 10:39:21 -0800 (PST)
-Received: (nullmailer pid 1607749 invoked by uid 1000);
-        Thu, 05 Nov 2020 18:39:20 -0000
-Date:   Thu, 5 Nov 2020 12:39:20 -0600
+        Thu, 05 Nov 2020 10:40:37 -0800 (PST)
+Received: (nullmailer pid 1609469 invoked by uid 1000);
+        Thu, 05 Nov 2020 18:40:36 -0000
+Date:   Thu, 5 Nov 2020 12:40:36 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Yong Wu <yong.wu@mediatek.com>
-Cc:     devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        youlin.pei@mediatek.com, Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org, ming-fan.chen@mediatek.com,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        linux-mediatek@lists.infradead.org,
-        iommu@lists.linux-foundation.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Tomasz Figa <tfiga@google.com>, Will Deacon <will@kernel.org>,
-        anan.sun@mediatek.com, Robin Murphy <robin.murphy@arm.com>,
-        linux-kernel@vger.kernel.org, srv_heupstream@mediatek.com
-Subject: Re: [PATCH v5 1/3] dt-bindings: memory: mediatek: Convert SMI to DT
- schema
-Message-ID: <20201105183920.GA1607689@bogus>
-References: <20201103054200.21386-1-yong.wu@mediatek.com>
- <20201103054200.21386-2-yong.wu@mediatek.com>
+To:     Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>
+Cc:     broonie@kernel.org, joel@jms.id.au, andrew@aj.id.au, clg@kaod.org,
+        bbrezillon@kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-aspeed@lists.ozlabs.org,
+        linux-spi@vger.kernel.org, BMC-SW@aspeedtech.com
+Subject: Re: [v2 1/4] dt-bindings: spi: Add binding file for ASPEED FMC/SPI
+ memory controller
+Message-ID: <20201105184036.GA1607865@bogus>
+References: <20201103072202.24705-1-chin-ting_kuo@aspeedtech.com>
+ <20201103072202.24705-2-chin-ting_kuo@aspeedtech.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201103054200.21386-2-yong.wu@mediatek.com>
+In-Reply-To: <20201103072202.24705-2-chin-ting_kuo@aspeedtech.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 03 Nov 2020 13:41:58 +0800, Yong Wu wrote:
-> Convert MediaTek SMI to DT schema.
+On Tue, Nov 03, 2020 at 03:21:59PM +0800, Chin-Ting Kuo wrote:
+> Create binding file with YAML syntax for ASPEED FMC/SPI memory controller.
 > 
-> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
+> Signed-off-by: Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>
 > ---
->  .../mediatek,smi-common.txt                   |  50 -------
->  .../mediatek,smi-common.yaml                  | 140 ++++++++++++++++++
->  .../memory-controllers/mediatek,smi-larb.txt  |  50 -------
->  .../memory-controllers/mediatek,smi-larb.yaml | 130 ++++++++++++++++
->  4 files changed, 270 insertions(+), 100 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/memory-controllers/mediatek,smi-common.txt
->  create mode 100644 Documentation/devicetree/bindings/memory-controllers/mediatek,smi-common.yaml
->  delete mode 100644 Documentation/devicetree/bindings/memory-controllers/mediatek,smi-larb.txt
->  create mode 100644 Documentation/devicetree/bindings/memory-controllers/mediatek,smi-larb.yaml
+>  .../bindings/spi/aspeed,spi-aspeed.yaml       | 66 +++++++++++++++++++
+>  1 file changed, 66 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/spi/aspeed,spi-aspeed.yaml
 > 
+> diff --git a/Documentation/devicetree/bindings/spi/aspeed,spi-aspeed.yaml b/Documentation/devicetree/bindings/spi/aspeed,spi-aspeed.yaml
+> new file mode 100644
+> index 000000000000..41b9692c7226
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/spi/aspeed,spi-aspeed.yaml
+> @@ -0,0 +1,66 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/spi/aspeed,spi-aspeed.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: SPI memory controller for ASPEED SoCs
+> +
+> +maintainers:
+> +  - Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>
+> +
+> +description: |
+> +  There are three SPI memory controllers embedded in a ASPEED SoC.
+> +  They are usually connected to SPI NOR flashes. Each of them has
+> +  more than a chip select. They also support SPI single, dual and
+> +  quad IO modes for SPI NOR flash.
+> +
+> +allOf:
+> +  - $ref: /spi/spi-controller.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - items:
+> +          - enum:
+> +              - aspeed,ast2600-fmc
+> +              - aspeed,ast2600-spi
+> +
+> +  reg:
+> +    items:
+> +      - description: the control register location and length
+> +      - description: the flash memory mapping address and length
+> +
+> +  clocks:
+> +    description: AHB bus clock which will be converted to SPI bus clock
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Need to define how many clocks (maxItems: 1).
+
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - num-cs
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/ast2600-clock.h>
+> +    spi1: spi@1e630000 {
+> +      compatible = "aspeed,ast2600-spi";
+> +      reg = <0x1e630000 0xc4>, <0x30000000 0x10000000>;
+> +      reg-names = "spi_ctrl_reg", "spi_mmap";
+> +      clocks = <&syscon ASPEED_CLK_AHB>;
+> +      num-cs = <2>;
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +      flash@0 {
+> +        compatible = "jedec,spi-nor";
+> +        reg = <0>;
+> +        spi-max-frequency = <50000000>;
+> +      };
+> +      flash@1 {
+> +        compatible = "jedec,spi-nor";
+> +        reg = <1>;
+> +        spi-max-frequency = <50000000>;
+> +      };
+> +    };
+> -- 
+> 2.17.1
+> 
