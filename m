@@ -2,110 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B049B2A7A0F
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 10:09:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C73222A7A19
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 10:10:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729722AbgKEJJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 04:09:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50770 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726756AbgKEJJH (ORCPT
+        id S1730623AbgKEJKP convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 5 Nov 2020 04:10:15 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:31164 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730368AbgKEJKO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 04:09:07 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15AEAC0613D2
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 01:09:07 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id h2so799809wmm.0
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 01:09:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=qg/zApnm3BiblnpdSeO9YRsP34oz7tFZxKxHQKdua88=;
-        b=rC2ubKktpY3ET2FFwX+lU13mPvP9Nhcu2aznqQnIZb503oxdqmp48wHTrUMS6mFmI6
-         NJJcP5ZrboVL3teeBu9SXili7ZLpCsszGoHtNQI3M0joQKpTFLGZzANp+ZTwwN9BFAHy
-         Ns5JWw3ZWA/NBkDiGBMcZ3p243uGP8SNurcmiv6zthnyqByLnERc4esm+rILLObaPcCP
-         kIAZG1bY3HWsdmOTwrw7IR9hHaCwQ5lUVdvrJWTyj5419SjDTcNpCOU0R4648XS8IxlS
-         KOovAhj34oV2bU38v5DGt6/o3YQg1ddmTjltP5tGkLrX8Ensj8JOC7PUPeUBkdCdstO5
-         kXyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=qg/zApnm3BiblnpdSeO9YRsP34oz7tFZxKxHQKdua88=;
-        b=WXi9y9Dt6f2uHn41BofB3/xjI/tzOiuHv4ZaSmAvGFK6gQm+XNm40pzYYRfAI8NJbt
-         NaSqjWazDlGpeWfYy23se14ouJkchPO4aB7CriYhktNvxXV/3RoS29XMs8SjtlpdffMw
-         KflOmo86k+y9+BoO6yM3CDjtpwqc0h4491Zjj7x6A3FCarn5/0tNZWAqvKMlaUq1jFhP
-         C6Rf0pTUpw+0fYRxLz3TpWHQpxfzrTiJq5LwOr8Ry6V9mhA+wH/q2pAVlTNclydcyUiz
-         mrCV+CqR0/OMTzi6FtWQCXjN2q/I8NEJEYbjcrRyHkRO62JXNOxHRnY3iPv3gZiicViG
-         gOOQ==
-X-Gm-Message-State: AOAM530WfrcM+55r9KTNgVboKpz9vKsLXPODClpR6gBQ72zezfIylycH
-        0bqf6YhclLAkPdKRCSxHnCAztw==
-X-Google-Smtp-Source: ABdhPJyje9D6+L2Xcs5hOEMbiZq2bAUd5nSH13POCaewhvoa2q9NYsaT2I/d8uxvm1YtFmDrlvYyxA==
-X-Received: by 2002:a1c:6782:: with SMTP id b124mr1690866wmc.117.1604567345642;
-        Thu, 05 Nov 2020 01:09:05 -0800 (PST)
-Received: from dell ([91.110.221.242])
-        by smtp.gmail.com with ESMTPSA id g17sm1496195wrw.37.2020.11.05.01.09.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 01:09:04 -0800 (PST)
-Date:   Thu, 5 Nov 2020 09:09:03 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the mfd tree
-Message-ID: <20201105090903.GG4488@dell>
-References: <20201105014728.GC17266@qmqm.qmqm.pl>
- <20201105125027.1f4b6886@canb.auug.org.au>
- <20201105015718.GD17266@qmqm.qmqm.pl>
+        Thu, 5 Nov 2020 04:10:14 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-36-lTFCWq8_NQCw4aZKrI50dQ-1; Thu, 05 Nov 2020 09:10:10 +0000
+X-MC-Unique: lTFCWq8_NQCw4aZKrI50dQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Thu, 5 Nov 2020 09:10:04 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Thu, 5 Nov 2020 09:10:04 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Xie He' <xie.he.0141@gmail.com>, Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: RE: [PATCH net-next] net: x25_asy: Delete the x25_asy driver
+Thread-Topic: [PATCH net-next] net: x25_asy: Delete the x25_asy driver
+Thread-Index: AQHWs0YkvDVQKZzs2ECZM+crj0xbk6m5Pz0w
+Date:   Thu, 5 Nov 2020 09:10:04 +0000
+Message-ID: <1d7f669ba4e444f1b35184264e5da601@AcuMS.aculab.com>
+References: <20201105073434.429307-1-xie.he.0141@gmail.com>
+In-Reply-To: <20201105073434.429307-1-xie.he.0141@gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201105015718.GD17266@qmqm.qmqm.pl>
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 05 Nov 2020, Michał Mirosław wrote:
-
-> On Thu, Nov 05, 2020 at 12:50:27PM +1100, Stephen Rothwell wrote:
-> > Hi all,
-> > 
-> > After merging the mfd tree, today's linux-next build (arm
-> > multi_v7_defconfig) failed like this:
-> > 
-> > drivers/gpio/gpio-tps65910.c: In function 'tps65910_gpio_get':
-> > drivers/gpio/gpio-tps65910.c:31:2: error: implicit declaration of function 'tps65910_reg_read' [-Werror=implicit-function-declaration]
-> >    31 |  tps65910_reg_read(tps65910, TPS65910_GPIO0 + offset, &val);
-> >       |  ^~~~~~~~~~~~~~~~~
-> > drivers/gpio/gpio-tps65910.c: In function 'tps65910_gpio_set':
-> > drivers/gpio/gpio-tps65910.c:46:3: error: implicit declaration of function 'tps65910_reg_set_bits' [-Werror=implicit-function-declaration]
-> >    46 |   tps65910_reg_set_bits(tps65910, TPS65910_GPIO0 + offset,
-> >       |   ^~~~~~~~~~~~~~~~~~~~~
-> > drivers/gpio/gpio-tps65910.c:49:3: error: implicit declaration of function 'tps65910_reg_clear_bits' [-Werror=implicit-function-declaration]
-> >    49 |   tps65910_reg_clear_bits(tps65910, TPS65910_GPIO0 + offset,
-> >       |   ^~~~~~~~~~~~~~~~~~~~~~~
-> > 
-> > Caused by commit
-> > 
-> >   23feb2c3367c ("mfd: tps65910: Clean up after switching to regmap")
-> > 
-> > I have used the version of the mfd tree from next-20201104 for today.
+From: Xie He
+> Sent: 05 November 2020 07:35
 > 
-> Hi,
-> 
-> It's missing a patch for gpio part [1].
-> 
-> [1] https://lkml.org/lkml/2020/9/26/398
+> This driver transports LAPB (X.25 link layer) frames over TTY links.
 
-I'm aware of it.  Just waiting for Linus' reply.
+I don't remember any requests to run LAPB over anything other
+than synchronous links when I was writing LAPB implementation(s)
+back in the mid 1980's.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+If you need to run 'comms over async uart links' there
+are better options.
+
+I wonder what the actual use case was?
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
