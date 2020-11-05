@@ -2,267 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 102BC2A831C
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 17:09:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 679B02A8316
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 17:09:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731050AbgKEQJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 11:09:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60212 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730977AbgKEQJD (ORCPT
+        id S1729977AbgKEQI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 11:08:58 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52101 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726371AbgKEQI5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 11:09:03 -0500
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FD4FC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 08:09:02 -0800 (PST)
-Received: by mail-pj1-x1041.google.com with SMTP id ie6so305501pjb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 08:09:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DNv8EosKffE1C3jvJ0rJJftgCHCwNxl7hTu0xBgm/Zs=;
-        b=pThxNC2iJ8WFGX/CGhbMOz/uQOkRR402aJuKaha93Pq/6th/4+9b3EQxZYmYMja8bt
-         JGNVYLyczLTg2hqy5qZBWT3Qlql1DyFTk1DUA3WPaJxLhLn+HdXlsk1pmfYlKC32a0Ki
-         zHxNATnnT6UY5TqJcf94WHtNHakHxKdieBbEnx3OasXX7Q21307PjKgIZSG5WzPjd5Ha
-         nMA1b85jwYf6oFl3eUW1PUHpKY341qDdil2h3EQX+oGvUp1GvL6FUtzf5k9K2pB3+nAc
-         RahaqWpJdCTC5R7p6o0Pm5Sl5Wsj+YZmm+yJOrvelDAt2iswhlHggy22P1C3OpaM7QAB
-         friA==
+        Thu, 5 Nov 2020 11:08:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604592536;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Y12kMlZjOb07g/dL052H0KGI2c3PGFmd+2DNZzzrRIA=;
+        b=Bn5MDH48LDdD61pzaC//ndW9J3/cWeDEkr8uCTMMT1HO6n84lwaMCTGMfh8ZMsj8qfgN6M
+        8xc5JHOQSAYIcyYos5+529e1sLDYDai9ghxZ2IsWNR3TrtsK2KB1TDYByduoP/rte178tt
+        OQN1NrM7Kv7kNOXYJAbq9iqNJCk1x3M=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-494-QSFCYiTsMIujgBl3zJ4CGA-1; Thu, 05 Nov 2020 11:08:54 -0500
+X-MC-Unique: QSFCYiTsMIujgBl3zJ4CGA-1
+Received: by mail-wm1-f71.google.com with SMTP id z7so796347wme.8
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 08:08:54 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DNv8EosKffE1C3jvJ0rJJftgCHCwNxl7hTu0xBgm/Zs=;
-        b=LICmPlej8gxpBD/jsh9Sj+fNGw13ZIJWVNLqiCj/womqzPXhsR8AqnUL2ZH+oytZTg
-         ub4kwLkTFemSyUY2/PNfBRORRRM6UW8rxNsrp0W4owlcxwx81TzOVq+n0HJy3QOpvq64
-         5fHSI8Q8RfhQh0VjZpHIae6cBgXJ0sYSKudYoPzn9J3bJJtMWbjR0FS67AOjdoVMC59L
-         FuewTJJJFQ6bUjc/vO+V7LxsWg1ueJ2dSAL2mnju/kf+WLNgi2Mrn2aqX+rvesKdJLHo
-         GXypk0elLd+aHKZnq3018wENPiPTVSZ64/FEy4q6beJxpPluWlY6IG8Lc9HJ7Z278mBG
-         K5tg==
-X-Gm-Message-State: AOAM532jTkdu/SRiYsDM8qsrVgNZw5i5/gNFWc45khxwjl3XUZMvn9DL
-        xOsDpSa7JaQed8/L6gp138YjnaWY6G1lmlhtPjccp4bRGtWvfYniDpk=
-X-Google-Smtp-Source: ABdhPJyfkwi9gxSQB/Njp7wQRtuErG+nc9B9XUg+PiBnL0eCmyKFJMhKuJYI9/DMyjHpnFYTEqRY9c+gEThQzv17YF8=
-X-Received: by 2002:a17:902:aa86:b029:d6:99d8:3fff with SMTP id
- d6-20020a170902aa86b02900d699d83fffmr2954337plr.34.1604592541785; Thu, 05 Nov
- 2020 08:09:01 -0800 (PST)
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Y12kMlZjOb07g/dL052H0KGI2c3PGFmd+2DNZzzrRIA=;
+        b=W+dnUjvD4M4BZ9Uv63Xlg5RdAvXqFoQRdSJknWalEBMJcQuiQ3T0dU1w8i/cBUr6WE
+         8ag1INrA70yz1GMkLMn3MmXLunO16ODVQD97msSbKoYaxCEA5aB+A8JgE8sBtZ3jHIF8
+         sR4HeqLvlIMQwfZkXMYGhgEqercoja2kCjVI1WneC7vdMBEO4CnPetvQsIGE3GvW3CCI
+         qY57Yf1b/cXroSti5wrHsUqA+5WgjML+mzozvqjAc6vIUkhQYckd1l7qOkIwkUaeiRQR
+         EaKB69FDrhU7ndt2s1j1H3GtkFwq7+5OI2zwKb4BRb1LJGWhi46yvmxeeuBzdFS2A8RJ
+         SgVg==
+X-Gm-Message-State: AOAM532/KjXUy5bVyJaDhNI2O8+T0aDr928r0dQe2+qkJWmgXyxqgaig
+        iSbBEPjvfioAE/TjV51m2vn7ESNjVzANN6STdf/ia2i+wusgadLDEumkALjEzCo4EGA7TJ4ypF6
+        yFaU5Zla8FqE7ZKiA5tjAnQ5y
+X-Received: by 2002:adf:f08a:: with SMTP id n10mr537751wro.260.1604592532867;
+        Thu, 05 Nov 2020 08:08:52 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzzGHz+vIryark98hbwn+RCxwtJul3pPXwpSuOna53NzNqfiXtft+hRmggnOQQxguTCns8DBQ==
+X-Received: by 2002:adf:f08a:: with SMTP id n10mr537727wro.260.1604592532644;
+        Thu, 05 Nov 2020 08:08:52 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
+        by smtp.gmail.com with ESMTPSA id w1sm3486314wro.44.2020.11.05.08.08.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Nov 2020 08:08:51 -0800 (PST)
+To:     yadong.qi@intel.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org
+Cc:     sean.j.christopherson@intel.com, vkuznets@redhat.com,
+        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        liran.alon@oracle.com, nikita.leshchenko@oracle.com,
+        chao.gao@intel.com, kevin.tian@intel.com, luhai.chen@intel.com,
+        bing.zhu@intel.com, kai.z.wang@intel.com
+References: <20200922052343.84388-1-yadong.qi@intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH] KVM: x86: emulate wait-for-SIPI and SIPI-VMExit
+Message-ID: <187635d0-7786-5d8f-a41a-45a6abd9d001@redhat.com>
+Date:   Thu, 5 Nov 2020 17:08:49 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-References: <20201026145114.59424-1-songmuchun@bytedance.com>
- <20201026145114.59424-6-songmuchun@bytedance.com> <20201105132337.GA7552@linux>
-In-Reply-To: <20201105132337.GA7552@linux>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Fri, 6 Nov 2020 00:08:22 +0800
-Message-ID: <CAMZfGtXwKJ3uCuNC3mxHQLNJqTcUzj7Gd2-JRuOWEjZ1C7Oh=A@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v2 05/19] mm/hugetlb: Introduce pgtable
- allocation/freeing helpers
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200922052343.84388-1-yadong.qi@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 5, 2020 at 9:23 PM Oscar Salvador <osalvador@suse.de> wrote:
->
-> On Mon, Oct 26, 2020 at 10:51:00PM +0800, Muchun Song wrote:
-> > +#ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
-> > +#define VMEMMAP_HPAGE_SHIFT                  PMD_SHIFT
-> > +#define arch_vmemmap_support_huge_mapping()  boot_cpu_has(X86_FEATURE_PSE)
->
-> I do not think you need this.
-> We already have hugepages_supported().
+On 22/09/20 07:23, yadong.qi@intel.com wrote:
+> From: Yadong Qi <yadong.qi@intel.com>
+> 
+> Background: We have a lightweight HV, it needs INIT-VMExit and
+> SIPI-VMExit to wake-up APs for guests since it do not monitor
+> the Local APIC. But currently virtual wait-for-SIPI(WFS) state
+> is not supported in nVMX, so when running on top of KVM, the L1
+> HV cannot receive the INIT-VMExit and SIPI-VMExit which cause
+> the L2 guest cannot wake up the APs.
+> 
+> According to Intel SDM Chapter 25.2 Other Causes of VM Exits,
+> SIPIs cause VM exits when a logical processor is in
+> wait-for-SIPI state.
+> 
+> In this patch:
+>      1. introduce SIPI exit reason,
+>      2. introduce wait-for-SIPI state for nVMX,
+>      3. advertise wait-for-SIPI support to guest.
+> 
+> When L1 hypervisor is not monitoring Local APIC, L0 need to emulate
+> INIT-VMExit and SIPI-VMExit to L1 to emulate INIT-SIPI-SIPI for
+> L2. L2 LAPIC write would be traped by L0 Hypervisor(KVM), L0 should
+> emulate the INIT/SIPI vmexit to L1 hypervisor to set proper state
+> for L2's vcpu state.
 
-Maybe some architectures support hugepage, but the vmemmap do not
-use the hugepage map. In  this case, we need it. But I am not sure if it
-exists in the real world. At least, x86 can reuse hugepages_supported.
+There is a problem in this patch, in that this change is incorrect:
 
->
-> > +#ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
-> > +#ifndef arch_vmemmap_support_huge_mapping
-> > +static inline bool arch_vmemmap_support_huge_mapping(void)
-> > +{
-> > +     return false;
-> > +}
->
-> Same as above
->
-> >  static inline unsigned int nr_free_vmemmap(struct hstate *h)
-> >  {
-> >       return h->nr_free_vmemmap_pages;
-> >  }
-> >
-> > +static inline unsigned int nr_vmemmap(struct hstate *h)
-> > +{
-> > +     return nr_free_vmemmap(h) + RESERVE_VMEMMAP_NR;
-> > +}
-> > +
-> > +static inline unsigned long nr_vmemmap_size(struct hstate *h)
-> > +{
-> > +     return (unsigned long)nr_vmemmap(h) << PAGE_SHIFT;
-> > +}
-> > +
-> > +static inline unsigned int nr_pgtable(struct hstate *h)
-> > +{
-> > +     unsigned long vmemmap_size = nr_vmemmap_size(h);
-> > +
-> > +     if (!arch_vmemmap_support_huge_mapping())
-> > +             return 0;
-> > +
-> > +     /*
-> > +      * No need pre-allocate page tabels when there is no vmemmap pages
-> > +      * to free.
-> > +      */
-> > +     if (!nr_free_vmemmap(h))
-> > +             return 0;
-> > +
-> > +     return ALIGN(vmemmap_size, VMEMMAP_HPAGE_SIZE) >> VMEMMAP_HPAGE_SHIFT;
-> > +}
->
-> IMHO, Mike's naming suggestion fit much better.
+> 
+> @@ -2847,7 +2847,8 @@ void kvm_apic_accept_events(struct kvm_vcpu *vcpu)
+>  	 */
+>  	if (kvm_vcpu_latch_init(vcpu)) {
+>  		WARN_ON_ONCE(vcpu->arch.mp_state == KVM_MP_STATE_INIT_RECEIVED);
+> -		if (test_bit(KVM_APIC_SIPI, &apic->pending_events))
+> +		if (test_bit(KVM_APIC_SIPI, &apic->pending_events) &&
+> +		    !is_guest_mode(vcpu))
+>  			clear_bit(KVM_APIC_SIPI, &apic->pending_events);
+>  		return;
+>  	}
 
-I will do that.
+Here you're not trying to process a latched INIT; you just want to delay 
+the processing of the SIPI until check_nested_events.
 
->
-> > +static void vmemmap_pgtable_deposit(struct page *page, pte_t *pte_p)
-> > +{
-> > +     pgtable_t pgtable = virt_to_page(pte_p);
-> > +
-> > +     /* FIFO */
-> > +     if (!page_huge_pte(page))
-> > +             INIT_LIST_HEAD(&pgtable->lru);
-> > +     else
-> > +             list_add(&pgtable->lru, &page_huge_pte(page)->lru);
-> > +     page_huge_pte(page) = pgtable;
-> > +}
->
-> I think it would make more sense if this took a pgtable argument
-> instead of a pte_t *.
+The change does have a correct part in it.  In particular, 
+vmx_apic_init_signal_blocked should have been
 
-Will do. Thanks for your suggestions.
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index 47b8357b9751..64339121a4f0 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -7558,7 +7558,7 @@ static void enable_smi_window(struct kvm_vcpu *vcpu)
 
->
-> > +static pte_t *vmemmap_pgtable_withdraw(struct page *page)
-> > +{
-> > +     pgtable_t pgtable;
-> > +
-> > +     /* FIFO */
-> > +     pgtable = page_huge_pte(page);
-> > +     if (unlikely(!pgtable))
-> > +             return NULL;
->
-> AFAICS, above check only needs to be run once.
-> It think we can move it to vmemmap_pgtable_free, can't we?
+  static bool vmx_apic_init_signal_blocked(struct kvm_vcpu *vcpu)
+  {
+-	return to_vmx(vcpu)->nested.vmxon;
++	return to_vmx(vcpu)->nested.vmxon && !is_guest_mode(vcpu);
+  }
 
-Yeah, we can. Thanks.
+  static void vmx_migrate_timers(struct kvm_vcpu *vcpu)
 
->
-> > +     page_huge_pte(page) = list_first_entry_or_null(&pgtable->lru,
-> > +                                                    struct page, lru);
-> > +     if (page_huge_pte(page))
-> > +             list_del(&pgtable->lru);
-> > +     return page_to_virt(pgtable);
-> > +}
->
-> At the risk of adding more code, I think it would be nice to return a
-> pagetable_t?
-> So it is more coherent with the name of the function and with what
-> we are doing.
+to only latch INIT signals in root mode.  However, SIPI must be cleared 
+unconditionally on SVM; the "!is_guest_mode" test in that case is incorrect.
 
-Yeah.
+The right way to do it is to call check_nested_events from 
+kvm_apic_accept_events.  This will cause an INIT or SIPI vmexit, as 
+required.  There is some extra complication to read pending_events 
+*before* kvm_apic_accept_events and not steal from the guest any INIT or 
+SIPI that is sent after kvm_apic_accept_events returns.
 
->
-> It is a pity we cannot converge these and pgtable_trans_huge_*.
-> They share some code but it is different enough.
->
-> > +static int vmemmap_pgtable_prealloc(struct hstate *h, struct page *page)
-> > +{
-> > +     int i;
-> > +     pte_t *pte_p;
-> > +     unsigned int nr = nr_pgtable(h);
-> > +
-> > +     if (!nr)
-> > +             return 0;
-> > +
-> > +     vmemmap_pgtable_init(page);
->
-> Maybe just open code this one?
+Thanks to your test case, I will test a patch and send it.
 
-Sorry. I don't quite understand what it means. Could you explain?
+Paolo
 
-
->
-> > +static inline void vmemmap_pgtable_free(struct hstate *h, struct page *page)
-> > +{
-> > +     pte_t *pte_p;
-> > +
-> > +     if (!nr_pgtable(h))
-> > +             return;
-> > +
-> > +     while ((pte_p = vmemmap_pgtable_withdraw(page)))
-> > +             pte_free_kernel(&init_mm, pte_p);
->
-> As mentioned above, move the pgtable_t check from vmemmap_pgtable_withdraw
-> in here.
-
-OK.
-
->
->
-> >  static void prep_new_huge_page(struct hstate *h, struct page *page, int nid)
-> >  {
-> > +     /* Must be called before the initialization of @page->lru */
-> > +     vmemmap_pgtable_free(h, page);
-> > +
-> >       INIT_LIST_HEAD(&page->lru);
-> >       set_compound_page_dtor(page, HUGETLB_PAGE_DTOR);
-> >       set_hugetlb_cgroup(page, NULL);
-> > @@ -1783,6 +1892,14 @@ static struct page *alloc_fresh_huge_page(struct hstate *h,
-> >       if (!page)
-> >               return NULL;
-> >
-> > +     if (vmemmap_pgtable_prealloc(h, page)) {
-> > +             if (hstate_is_gigantic(h))
-> > +                     free_gigantic_page(page, huge_page_order(h));
-> > +             else
-> > +                     put_page(page);
-> > +             return NULL;
-> > +     }
-> > +
->
-> I must confess I am bit puzzled.
->
-> IIUC, in this patch we are just adding the helpers to create/tear the page
-> tables.
-> I do not think we actually need to call vmemmap_pgtable_prealloc/vmemmap_pgtable_free, do we?
-> In the end, we are just allocating pages for pagetables and then free them shortly.
->
-> I think it would make more sense to add the calls when they need to be?
-
-OK,  will do. Thanks very much.
-
->
->
-> --
-> Oscar Salvador
-> SUSE L3
-
-
-
---
-Yours,
-Muchun
