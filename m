@@ -2,95 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 189C72A8464
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 18:04:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 268832A8466
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 18:04:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731518AbgKEREX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 12:04:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40736 "EHLO
+        id S1731586AbgKERE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 12:04:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726557AbgKEREX (ORCPT
+        with ESMTP id S1727275AbgKERE5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 12:04:23 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83D24C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 09:04:21 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id e7so1828866pfn.12
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 09:04:21 -0800 (PST)
+        Thu, 5 Nov 2020 12:04:57 -0500
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C4DDC0613CF;
+        Thu,  5 Nov 2020 09:04:57 -0800 (PST)
+Received: by mail-ot1-x344.google.com with SMTP id y22so2065599oti.10;
+        Thu, 05 Nov 2020 09:04:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=microgate-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=AiRUvyKwcp21/iTOlatjBOFIvzQH7MDgnHUMinEwyFA=;
-        b=zJkC8utyCvLJqhr9LnyzCmVEJmkhwpjjXSOKpeDRyW9vH4Tg+uDoeqqr3sPO/Fs9yC
-         fQPQe6LUlBRvQaAnkRoqwYbSyyy/HOP6vh3RhKhCiHLpnq1rqtH1OfahpJHaOzplCEUX
-         9rj+6teQfPW8j3BFLPONX6qxZPNYbi4ARsjyGry071275dQYWotQdjdknXtcLD3U0jdJ
-         PqnQINs9nXrGG6XaZ3kPH1VJrAWTfdgJQucN/BzrPR+GbDo/76DNeCCOzcjinzjQDf/m
-         YE8WvHkL9HmrjyqMFxFsAvmVrs3hmdAMm6Zg+qdBgDrZt57Gavp1TXDpXFX48fBQ5Gg+
-         oBCg==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=dKy8k+EyJ0gbJVRGrWqDzZ2Ve4IsbZKsmDjfaa9D/kQ=;
+        b=mghP5FOYbc/JbtPBWUDqFWCJPkSHbMh8hpztIY0nCMuGvXyTae7xtJ/Vsdz0DGUXRo
+         QUXUymbmUbtxmDMYwudiA81WIePYEVLXh4x4eQ1XeKyoJuxZmk5a92nLp5FsexjpmPEd
+         nuwIR79ngAcl2cbgWCvdoRZpx+pXdCMzcAspURkLpfU1cXnmujVSbU53WAs2Bre+e1sR
+         qGQNnIpjFxfbzsagFlgU0l+Sv0DVif/zNSSsPElEWjHcdETelPYVzuuzqQZT9hcNhbFg
+         tOYnrV+lgA/+1iZ9nq/cgJfObIk7czR+ow4rhSn6hWt38KZ3iBnvQKVmNqX0c7yE+yw+
+         q3OQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=AiRUvyKwcp21/iTOlatjBOFIvzQH7MDgnHUMinEwyFA=;
-        b=JRp+CTC/dvVlBS2Zv9wEkYAWc18eK4l9ds+EqIqJYC7/zRlNKjqgxfGJ++kIitXx5j
-         OVewuUW7QNYf74W/BylB/0kX4CUyc/6UviCEw27OK2MGVoegfl7lWJMlVTWUJjAi1+lj
-         3xeicigfXnvXP6RPTZidgG9kt8YCWqlfo5jPybFVRHQ0kCHXfNI+cIMpEkU0nnr/qxll
-         CclUcGmHwBCsg5755Cg/AefzI8RKl3eVMfEKRkAYSV1ix3juOjottojJryBQQE8ilQZl
-         F4oGxP1Dg2krZw+B/BIXXCKRU8UJ8r/ceLU+t4BboI18SkPZqyOBxmkzIxwlkfmRf6+a
-         8eKA==
-X-Gm-Message-State: AOAM533EoV6HwoT3fhDj6tfkjMySVz5H43z6HproaEUpuifVgvHWrfxz
-        vP/MDcbo81w663MGrv8mO7Zn3w==
-X-Google-Smtp-Source: ABdhPJxNja1n/hMUsb6d7miai/EwlVxjk1YPBVcn5lPqtE2ozo650PVaZhKGDLtOvnFwqgEUfN+k9w==
-X-Received: by 2002:a63:e74a:: with SMTP id j10mr3378850pgk.208.1604595861068;
-        Thu, 05 Nov 2020 09:04:21 -0800 (PST)
-Received: from [192.168.1.77] (c-208-53-111-167.customer.broadstripe.net. [208.53.111.167])
-        by smtp.gmail.com with ESMTPSA id i26sm3331174pfq.148.2020.11.05.09.04.19
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 05 Nov 2020 09:04:20 -0800 (PST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.15\))
-Subject: Re: [PATCH 27/36] tty: synclinkmp: Mark never checked 'readval' as
- __always_unused
-From:   Paul Fulghum <paulkf@microgate.com>
-In-Reply-To: <54D08301-C89F-4AEB-B9A0-6CED6D5EEDA6@microgate.com>
-Date:   Thu, 5 Nov 2020 09:04:18 -0800
-Cc:     David Laight <David.Laight@ACULAB.COM>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <7C858DBE-A5A1-4027-A44B-85F6AE3AE579@microgate.com>
-References: <20201104193549.4026187-1-lee.jones@linaro.org>
- <20201104193549.4026187-28-lee.jones@linaro.org>
- <0a4043ee-dad5-7691-8c67-db73d3c12f52@kernel.org>
- <20201105084341.GZ4488@dell>
- <a95f8d0d-28ef-7351-cdbb-7da5ad8aa9ad@kernel.org>
- <6515b9ff5a9343f5a713e337f41450cc@AcuMS.aculab.com>
- <20201105112728.GJ4488@dell>
- <54D08301-C89F-4AEB-B9A0-6CED6D5EEDA6@microgate.com>
-To:     Lee Jones <lee.jones@linaro.org>
-X-Mailer: Apple Mail (2.3445.104.15)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=dKy8k+EyJ0gbJVRGrWqDzZ2Ve4IsbZKsmDjfaa9D/kQ=;
+        b=KWh7xey5yDdP+E4cLaHyir2FyBZfsS/An9p6ijZVl5DJd1eJU7cXJHo1hMH4SkkZAg
+         GZqMoeNCGEdEAt+fN+BR/04h5ox1vt+x8oLo+u5kxzz6/WzOfxmIEKXu7phasIQuRQQ5
+         WutxI92OH67pfiCQlkbtfgY5fS+ljEAYu5jL2IjyLs7925DeffPZgz/EcNU4VdlPlnJD
+         pdhQ1ixbzGvPrtkoTxLyhYaZRH1eqiX/55ACpitrAda/kMmJefL/ImimE/qGlNTh2SaM
+         BqeFjHt96EBbUCbtf6sN5kwAsfffnkOeTwyNpzumLsXfjz3w4SE1ca2H2uRuPxjNbS45
+         EY7A==
+X-Gm-Message-State: AOAM532EXee5KWHQLLalxOMEKNwe+WCYAqQ/rbKLgxRZWePPU1C5RcLq
+        rtzWed9GKFAWfZ9Su/g9e8q0tlgkERniGlEK
+X-Google-Smtp-Source: ABdhPJwavEsohyaD5b3MNbTPeILFWShqfg+F2nvsjT6/BectCxOJXJ36I0M8VXY0boYaox1N8BotYw==
+X-Received: by 2002:a9d:17c5:: with SMTP id j63mr2494963otj.9.1604595896065;
+        Thu, 05 Nov 2020 09:04:56 -0800 (PST)
+Received: from ?IPv6:2600:1700:4a30:eaf0::21? ([2600:1700:4a30:eaf0::21])
+        by smtp.gmail.com with ESMTPSA id x190sm487300oia.35.2020.11.05.09.04.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Nov 2020 09:04:55 -0800 (PST)
+Subject: Re: [PATCH v2] Input: Add devices for
+ HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE
+To:     Chris Ye <lzye@google.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, trivial@kernel.org,
+        linux-input@vger.kernel.org
+References: <20201101193452.678628-1-lzye@google.com>
+From:   Chris Ye <linzhao.ye@gmail.com>
+Message-ID: <a0e0aeca-cf37-5611-47b2-1c4bdc931950@gmail.com>
+Date:   Thu, 5 Nov 2020 09:04:53 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
+MIME-Version: 1.0
+In-Reply-To: <20201101193452.678628-1-lzye@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Benjamin,
 
-Another candidate for removal is drivers/char/pcmcia/synclink_cs.c
+     Can you review this patch?  Previously the kernel increment the HID 
+usage by default,  and now in 5.4 we have to declare it explicitly 
+because of this HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE. It is breaking 
+existing devices functioning, including a few devices we have Android 
+test with.
 
-Everything I said about synclink.c/synclinkmp.c is true of that as well: =
-the hardware stopped being manufactured decades ago and is not available =
-for testing. The possibility of these cards still being =
-around/functional for use with the latest kernel is about zero.
+Thanks!
 
-If Lee Jones does wants to add that to his patch, great. If not then I =
-can do so.
+Chris
 
-(I resent this message in plain text after it was rejected for HTML, =
-sorry if anyone got a duplicate.)
-
-
-> On Nov 5, 2020, at 3:27 AM, Lee Jones <lee.jones@linaro.org> wrote:
->=20
-> Will post the removal patches when my tests finish.
+On 11/1/20 11:34 AM, Chris Ye wrote:
+> Kernel 5.4 introduces HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE, devices
+> need to be set explicitly with this flag.
+>
+> Signed-off-by: Chris Ye <lzye@google.com>
+> ---
+>   drivers/hid/hid-ids.h    | 4 ++++
+>   drivers/hid/hid-quirks.c | 4 ++++
+>   2 files changed, 8 insertions(+)
+>
+> diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
+> index 74be76e848bf..cf55dca494f3 100644
+> --- a/drivers/hid/hid-ids.h
+> +++ b/drivers/hid/hid-ids.h
+> @@ -449,6 +449,10 @@
+>   #define USB_VENDOR_ID_FRUCTEL	0x25B6
+>   #define USB_DEVICE_ID_GAMETEL_MT_MODE	0x0002
+>   
+> +#define USB_VENDOR_ID_GAMEVICE	0x27F8
+> +#define USB_DEVICE_ID_GAMEVICE_GV186	0x0BBE
+> +#define USB_DEVICE_ID_GAMEVICE_KISHI	0x0BBF
+> +
+>   #define USB_VENDOR_ID_GAMERON		0x0810
+>   #define USB_DEVICE_ID_GAMERON_DUAL_PSX_ADAPTOR	0x0001
+>   #define USB_DEVICE_ID_GAMERON_DUAL_PCS_ADAPTOR	0x0002
+> diff --git a/drivers/hid/hid-quirks.c b/drivers/hid/hid-quirks.c
+> index 0440e2f6e8a3..36d94e3485e3 100644
+> --- a/drivers/hid/hid-quirks.c
+> +++ b/drivers/hid/hid-quirks.c
+> @@ -84,6 +84,10 @@ static const struct hid_device_id hid_quirks[] = {
+>   	{ HID_USB_DEVICE(USB_VENDOR_ID_FREESCALE, USB_DEVICE_ID_FREESCALE_MX28), HID_QUIRK_NOGET },
+>   	{ HID_USB_DEVICE(USB_VENDOR_ID_FUTABA, USB_DEVICE_ID_LED_DISPLAY), HID_QUIRK_NO_INIT_REPORTS },
+>   	{ HID_USB_DEVICE(USB_VENDOR_ID_GREENASIA, USB_DEVICE_ID_GREENASIA_DUAL_USB_JOYPAD), HID_QUIRK_MULTI_INPUT },
+> +	{ HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_GAMEVICE, USB_DEVICE_ID_GAMEVICE_GV186),
+> +		HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE },
+> +	{ HID_USB_DEVICE(USB_VENDOR_ID_GAMEVICE, USB_DEVICE_ID_GAMEVICE_KISHI),
+> +		HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE },
+>   	{ HID_USB_DEVICE(USB_VENDOR_ID_HAPP, USB_DEVICE_ID_UGCI_DRIVING), HID_QUIRK_BADPAD | HID_QUIRK_MULTI_INPUT },
+>   	{ HID_USB_DEVICE(USB_VENDOR_ID_HAPP, USB_DEVICE_ID_UGCI_FIGHTING), HID_QUIRK_BADPAD | HID_QUIRK_MULTI_INPUT },
+>   	{ HID_USB_DEVICE(USB_VENDOR_ID_HAPP, USB_DEVICE_ID_UGCI_FLYING), HID_QUIRK_BADPAD | HID_QUIRK_MULTI_INPUT },
