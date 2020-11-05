@@ -2,72 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A5E92A974F
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 15:00:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 175202A9752
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 15:01:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727253AbgKFOAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 09:00:36 -0500
-Received: from mga07.intel.com ([134.134.136.100]:5448 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726565AbgKFOAg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 09:00:36 -0500
-IronPort-SDR: jMoXYqN3jUrYWX2NsUGosBivCEdsu4wNeoEvh+cQNPidW72a4i+X/Q2vCuLXAwwtWMxKC6g91b
- syhUcYL0aQ+g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9796"; a="233710303"
-X-IronPort-AV: E=Sophos;i="5.77,456,1596524400"; 
-   d="scan'208";a="233710303"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2020 06:00:35 -0800
-IronPort-SDR: jfEEqQr+DIUmqSAevm2Rx2saI3qjkxtQLeU+nyASNQgr3QyWb72oIeMM/404eKa5zlSwQt8/S/
- JZmclzPSwnmg==
-X-IronPort-AV: E=Sophos;i="5.77,456,1596524400"; 
-   d="scan'208";a="539848120"
-Received: from gliakhov-mobl2.ger.corp.intel.com (HELO ubuntu) ([10.252.35.112])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2020 06:00:34 -0800
-Date:   Fri, 6 Nov 2020 15:00:28 +0100
-From:   Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     ohad@wizery.com, bjorn.andersson@linaro.org,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 8/8] rpmsg: Turn name service into a stand alone driver
-Message-ID: <20201106140028.GB10889@ubuntu>
-References: <20201105225028.3058818-1-mathieu.poirier@linaro.org>
- <20201105225028.3058818-9-mathieu.poirier@linaro.org>
- <20201106131545.GA10889@ubuntu>
+        id S1727331AbgKFOBN convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 6 Nov 2020 09:01:13 -0500
+Received: from zimbra.thelbma.com ([208.93.238.215]:48170 "EHLO
+        zimbra.thelbma.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726565AbgKFOBM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 09:01:12 -0500
+X-Greylist: delayed 28428 seconds by postgrey-1.27 at vger.kernel.org; Fri, 06 Nov 2020 09:01:12 EST
+Received: from localhost (localhost [127.0.0.1])
+        by zimbra.thelbma.com (Postfix) with ESMTP id 78F562107D7;
+        Thu,  5 Nov 2020 13:02:47 -0500 (EST)
+Received: from zimbra.thelbma.com ([127.0.0.1])
+        by localhost (zimbra.thelbma.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id Kw-MFOzVbX8H; Thu,  5 Nov 2020 13:02:41 -0500 (EST)
+Received: from localhost (localhost [127.0.0.1])
+        by zimbra.thelbma.com (Postfix) with ESMTP id 8C78920A734;
+        Thu,  5 Nov 2020 02:59:12 -0500 (EST)
+X-Virus-Scanned: amavisd-new at zimbra.thelbma.com
+Received: from zimbra.thelbma.com ([127.0.0.1])
+        by localhost (zimbra.thelbma.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id Y1xYORhZsWOT; Thu,  5 Nov 2020 02:59:11 -0500 (EST)
+Received: from [23.106.215.139] (unknown [23.106.215.139])
+        by zimbra.thelbma.com (Postfix) with ESMTPSA id C145E2062CA;
+        Wed,  4 Nov 2020 20:07:55 -0500 (EST)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201106131545.GA10889@ubuntu>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: Final Notice 2
+To:     Recipients <members@thelbma.com>
+From:   Trustees <members@thelbma.com>
+Date:   Wed, 04 Nov 2020 17:11:04 -0800
+Reply-To: trustees202000@consultant.com
+Message-Id: <20201105010756.C145E2062CA@zimbra.thelbma.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 06, 2020 at 02:15:45PM +0100, Guennadi Liakhovetski wrote:
-> Hi Mathieu, Arnaud,
-> 
-> On Thu, Nov 05, 2020 at 03:50:28PM -0700, Mathieu Poirier wrote:
-> > From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-> > 
-> > Make the RPMSG name service announcement a stand alone driver so that it
-> > can be reused by other subsystems.  It is also the first step in making the
-> > functionatlity transport independent, i.e that is not tied to virtIO.
-> 
-> Sorry, I just realised that my testing was incomplete. I haven't tested 
-> automatic module loading and indeed it doesn't work. If rpmsg_ns is loaded 
-> it probes and it's working, but if it isn't loaded and instead the rpmsg 
-> bus driver is probed (e.g. virtio_rpmsg_bus), calling 
-> rpmsg_ns_register_device() to create a new rpmsg_ns device doesn't cause 
-> rpmsg_ns to be loaded.
-
-A simple fix for that is using MODULE_ALIAS("rpmsg:rpmsg_ns"); in rpmsg_ns.c 
-but that alone doesn't fix the problem completely - the module does load then 
-but not quickly enough, the NS announcement from the host / remote arrives 
-before rpmsg_ns has properly registered. I think the best solution would be 
-to link rpmsg_ns.c together with rpmsg_core.c. You'll probably want to keep 
-the module name, so you could rename them to just core.c and ns.c.
-
-Thanks
-Guennadi
+We are trying to reach you as regards the estate of Late George Brumley, you were made one of the beneficiaries of his estate. Do get back to me at your earliest convenience. The Trustees
