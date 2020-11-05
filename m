@@ -2,73 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CB072A7F4A
+	by mail.lfdr.de (Postfix) with ESMTP id 2067D2A7F49
 	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 13:58:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731018AbgKEM6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 07:58:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58838 "EHLO mail.kernel.org"
+        id S1730617AbgKEM6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 07:58:32 -0500
+Received: from mx2.suse.de ([195.135.220.15]:43704 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730672AbgKEM6e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 07:58:34 -0500
-Received: from kernel.org (unknown [87.71.3.50])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DC65D206D4;
-        Thu,  5 Nov 2020 12:58:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604581113;
-        bh=nw01jgr1oxcT/BSQ8RNy3JuylP0TudEfSI4BCkeILvI=;
-        h=Date:From:To:Cc:Subject:From;
-        b=OA8aa1eLmcnucKXWejEdzLr0u2RYFCRGF2pEITcOXpR4qASlfJ31DuR1Kp4QBisYY
-         O6anCnfdO2PyiThTCABqzUkpiyUIwmVPg+X1jBV56XqwosAFCdQV1qdyGekj+6ESw8
-         PJy56caePKRwwEsGOMN7JNOUms2bwgMe0TgXRcpw=
-Date:   Thu, 5 Nov 2020 14:58:27 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-xtensa@linux-xtensa.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Fix highmem initialization on arm and xtensa
-Message-ID: <20201105125827.GA301837@kernel.org>
+        id S1726067AbgKEM6b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 07:58:31 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1604581109;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=49dbr/bHxcv0Z9IlLUwudE5YhCNsVe55WQQYPE+T7qE=;
+        b=QwhpG5gGaX+pL2+wVZ2dc8jUfzM3z2nCh5SQdDCfBgiZ0ufvj267qY2EF7pnt2eqwZE0yZ
+        uBVJZJII3JI8qRqyUwyF931wFt1yS2Rd5zAacepAxQcmVZFzqrD+qc1ptOeghw4J2CmRW/
+        xWUOCyf8Wh9oEbEF9k3TPhM4CKY5uuM=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 888EEABDE;
+        Thu,  5 Nov 2020 12:58:29 +0000 (UTC)
+Date:   Thu, 5 Nov 2020 13:58:28 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Feng Tang <feng.tang@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@suse.de>, dave.hansen@intel.com,
+        ying.huang@intel.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 0/2] mm: fix OOMs for binding workloads to movable
+ zone only node
+Message-ID: <20201105125828.GG21348@dhcp22.suse.cz>
+References: <1604470210-124827-1-git-send-email-feng.tang@intel.com>
+ <20201104071308.GN21990@dhcp22.suse.cz>
+ <20201104073826.GA15700@shbuild999.sh.intel.com>
+ <20201104075819.GA10052@dhcp22.suse.cz>
+ <20201104084021.GB15700@shbuild999.sh.intel.com>
+ <20201104085343.GA18718@dhcp22.suse.cz>
+ <20201105014028.GA86777@shbuild999.sh.intel.com>
+ <20201105120818.GC21348@dhcp22.suse.cz>
+ <4029c079-b1f3-f290-26b6-a819c52f5200@suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <4029c079-b1f3-f290-26b6-a819c52f5200@suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Thu 05-11-20 13:53:24, Vlastimil Babka wrote:
+> On 11/5/20 1:08 PM, Michal Hocko wrote:
+> > On Thu 05-11-20 09:40:28, Feng Tang wrote:
+> > > > > Could you be more specific? This sounds like a bug. Allocations
+> > > > shouldn't spill over to a node which is not in the cpuset. There are few
+> > > > exceptions like IRQ context but that shouldn't happen regurarly.
+> > > 
+> > > I mean when the docker starts, it will spawn many processes which obey
+> > > the mem binding set, and they have some kernel page requests, which got
+> > > successfully allocated, like the following callstack:
+> > > 
+> > > 	[  567.044953] CPU: 1 PID: 2021 Comm: runc:[1:CHILD] Tainted: G        W I       5.9.0-rc8+ #6
+> > > 	[  567.044956] Hardware name:  /NUC6i5SYB, BIOS SYSKLi35.86A.0051.2016.0804.1114 08/04/2016
+> > > 	[  567.044958] Call Trace:
+> > > 	[  567.044972]  dump_stack+0x74/0x9a
+> > > 	[  567.044978]  __alloc_pages_nodemask.cold+0x22/0xe5
+> > > 	[  567.044986]  alloc_pages_current+0x87/0xe0
+> > > 	[  567.044991]  allocate_slab+0x2e5/0x4f0
+> > > 	[  567.044996]  ___slab_alloc+0x380/0x5d0
+> > > 	[  567.045021]  __slab_alloc+0x20/0x40
+> > > 	[  567.045025]  kmem_cache_alloc+0x2a0/0x2e0
+> > > 	[  567.045033]  mqueue_alloc_inode+0x1a/0x30
+> > > 	[  567.045041]  alloc_inode+0x22/0xa0
+> > > 	[  567.045045]  new_inode_pseudo+0x12/0x60
+> > > 	[  567.045049]  new_inode+0x17/0x30
+> > > 	[  567.045052]  mqueue_get_inode+0x45/0x3b0
+> > > 	[  567.045060]  mqueue_fill_super+0x41/0x70
+> > > 	[  567.045067]  vfs_get_super+0x7f/0x100
+> > > 	[  567.045074]  get_tree_keyed+0x1d/0x20
+> > > 	[  567.045080]  mqueue_get_tree+0x1c/0x20
+> > > 	[  567.045086]  vfs_get_tree+0x2a/0xc0
+> > > 	[  567.045092]  fc_mount+0x13/0x50
+> > > 	[  567.045099]  mq_create_mount+0x92/0xe0
+> > > 	[  567.045102]  mq_init_ns+0x3b/0x50
+> > > 	[  567.045106]  copy_ipcs+0x10a/0x1b0
+> > > 	[  567.045113]  create_new_namespaces+0xa6/0x2b0
+> > > 	[  567.045118]  unshare_nsproxy_namespaces+0x5a/0xb0
+> > > 	[  567.045124]  ksys_unshare+0x19f/0x360
+> > > 	[  567.045129]  __x64_sys_unshare+0x12/0x20
+> > > 	[  567.045135]  do_syscall_64+0x38/0x90
+> > > 	[  567.045143]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> > > 
+> > > For it, the __alloc_pages_nodemask() will first try process's targed
+> > > nodemask(unmovable node here), and there is no availabe zone, so it
+> > > goes with the NULL nodemask, and get a page in the slowpath.
+> > 
+> > OK, I see your point now. I was not aware of the slab allocator not
+> > following cpusets. Sounds like a bug to me.
+> 
+> SLAB and SLUB seem to not care about cpusets in the fast path.
 
-The following changes since commit 4ef8451b332662d004df269d4cdeb7d9f31419b5:
+Is a fallback to a different node which is outside of the cpuset
+possible?
 
-  Merge tag 'perf-tools-for-v5.10-2020-11-03' of git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux (2020-11-03 13:28:50 -0800)
+> But this
+> stack shows that it went all the way to the page allocator, so the cpusets
+> should have been obeyed there at least.
 
-are available in the Git repository at:
+Looking closer what is this dump_stack saying actually?
 
-  ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/rppt/memblock.git tags/fixes-2020-11-05
-
-for you to fetch changes up to b9bc36704cca500e2b41be4c5bf615c1d7ddc3ce:
-
-  ARM, xtensa: highmem: avoid clobbering non-page aligned memory reservations (2020-11-04 10:42:57 +0200)
-
-----------------------------------------------------------------
-Fix highmem initialization on arm and xtensa
-
-Recent refactoring of memblock iterators has broken initialization of
-highmem on arm and xtensa because it changed the way beginning and end of
-memory regions are rounded to PFNs. This fix restores the original
-behaviour.
-
-----------------------------------------------------------------
-Ard Biesheuvel (1):
-      ARM, xtensa: highmem: avoid clobbering non-page aligned memory reservations
-
- arch/arm/mm/init.c    | 4 ++--
- arch/xtensa/mm/init.c | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
-
---
-Sincerely yours,
-Mike.
+-- 
+Michal Hocko
+SUSE Labs
