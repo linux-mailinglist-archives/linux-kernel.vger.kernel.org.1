@@ -2,64 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D5C32A8A53
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 00:00:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 149192A8A51
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 00:00:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732536AbgKEXAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 18:00:46 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:59654 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731860AbgKEXAn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 18:00:43 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1604617241;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tz7m6BIOMuQlyFY37lHCaVeHt6JeUnmsr+dDR5lFJn8=;
-        b=gHeFlHOna6JrJgqSnxi/s5nT3Ju0xpCJK5lZ3BFoV3zddqdHkEibo1fav4UT1JDXNvUoyC
-        Dca6+/Zp5erjKWLsZluVuHgkmRnBwvRinNTIh75zMlDWAOLFwlD/kcIIgt80g9ka7+1c0Q
-        GdJH1yVXGBBSC8fdUMockqHuwoXJEAMCS9uEOzUoJaK6hJmYT5tmbKuGWvQwu8vglLffTD
-        OQrTGEo+urMvkUqkKQr+fGVPEcuPgw3pP7ZT2wu29emTNyBdzFcDqpT+ottxtAd+4UGFee
-        lNEbNzUAWxq1cH5hDrPD7i/v433TAPCuxZdAUJctj5xxb60aIlR4r+/f03y3Yg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1604617241;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tz7m6BIOMuQlyFY37lHCaVeHt6JeUnmsr+dDR5lFJn8=;
-        b=TfHby8VV4W1CChr0voWomcazL5DKNae6yYtIu+oRcJgKYQzAhuxGqoH9/N1QOdYkbu0L+8
-        Yl++Nidf+A30u1Cw==
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Frank Wunderlich <frank-w@public-files.de>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        linux-mediatek@lists.infradead.org,
-        Frank Wunderlich <linux@fw-web.de>,
-        linux-kernel@vger.kernel.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: Aw: Re:  Re: [PATCH] pci: mediatek: fix warning in msi.h
-In-Reply-To: <074d057910c3e834f4bd58821e8583b1@kernel.org>
-References: <20201031140330.83768-1-linux@fw-web.de> <878sbm9icl.fsf@nanos.tec.linutronix.de> <EC02022C-64CF-4F4B-A0A2-215A0A49E826@public-files.de> <87lfflti8q.wl-maz@kernel.org> <1604253261.22363.0.camel@mtkswgap22> <trinity-9eb2a213-f877-4af3-87df-f76a9c093073-1604255233122@3c-app-gmx-bap08> <87k0v4u4uq.wl-maz@kernel.org> <87pn4w90hm.fsf@nanos.tec.linutronix.de> <df5565a2f1e821041c7c531ad52a3344@kernel.org> <87h7q791j8.fsf@nanos.tec.linutronix.de> <877dr38kt8.fsf@nanos.tec.linutronix.de> <901c5eb8bbaa3fe53ddc8f65917e48ef@kernel.org> <87o8ke7njb.fsf@nanos.tec.linutronix.de> <trinity-1d7f8900-10db-40c0-a0aa-47bb99ed84cd-1604508571909@3c-app-gmx-bs02> <87h7q4lnoz.fsf@nanos.tec.linutronix.de> <074d057910c3e834f4bd58821e8583b1@kernel.org>
-Date:   Fri, 06 Nov 2020 00:00:40 +0100
-Message-ID: <87blgbl887.fsf@nanos.tec.linutronix.de>
+        id S1732390AbgKEXAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 18:00:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58416 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731860AbgKEXAl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 18:00:41 -0500
+Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 97F4920719;
+        Thu,  5 Nov 2020 23:00:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604617240;
+        bh=XlYp7OoLzkBs9gfBT6bydhG3emdrCfkQGkybFyyUB5Q=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=XRa7JCsv02I1Vi9GjZwzsSzKgJa58ZyBecwJnARej6SoTtEevpbUDGFaVzzX9nNip
+         KhF9tZTmcPALuVlew09l8vehHHEU4Z4tM4VS1BspJLkOV62NxUhN6BmOjorA5vWnCJ
+         jTfHfhR2CFRWUqcKORht5pcuB8ViJQYL34sQW6C4=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 3DA0E3522A76; Thu,  5 Nov 2020 15:00:40 -0800 (PST)
+Date:   Thu, 5 Nov 2020 15:00:40 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        jiangshanlai@gmail.com, akpm@linux-foundation.org,
+        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
+        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
+        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, joel@joelfernandes.org
+Subject: [PATCH tip/core/rcu 0/2] smp_call_function updates for v5.11
+Message-ID: <20201105230040.GA18202@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05 2020 at 09:20, Marc Zyngier wrote:
-> On 2020-11-04 23:14, Thomas Gleixner wrote:
->>  	/* Resource alignment requirements */
->>  	resource_size_t (*align_resource)(struct pci_dev *dev,
->
-> If that's the direction of travel, we also need something like this
-> for configuration where the host bridge relies on an external MSI block
-> that uses MSI domains (boot-tested in a GICv3 guest).
+Hello!
 
-Some more context would be helpful. Brain fails to decode the logic
-here.
+This series prevents /proc/cpuinfo from piling up quite so many redundant
+IPIs, and also avoids IPIing idle CPUs.
 
+1.	Avoid cpuinfo-induced IPI pileups.
+
+2.	Avoid cpuinfo-induced IPIing of idle CPUs.
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ arch/x86/kernel/cpu/aperfmperf.c |   16 +++++++++++++++-
+ include/linux/rcutiny.h          |    2 ++
+ include/linux/rcutree.h          |    1 +
+ kernel/rcu/tree.c                |    8 ++++++++
+ 4 files changed, 26 insertions(+), 1 deletion(-)
