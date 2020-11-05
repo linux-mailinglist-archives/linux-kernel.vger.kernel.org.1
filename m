@@ -2,118 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 199C92A741B
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 01:56:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1B2A2A7426
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 01:58:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387918AbgKEA4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 19:56:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59312 "EHLO
+        id S2387950AbgKEA6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 19:58:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727923AbgKEA4S (ORCPT
+        with ESMTP id S1732099AbgKEA6O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 19:56:18 -0500
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDD86C0613CF;
-        Wed,  4 Nov 2020 16:56:16 -0800 (PST)
-Received: by mail-qk1-x742.google.com with SMTP id 12so319910qkl.8;
-        Wed, 04 Nov 2020 16:56:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=76+46/j8d+HhUpqLdqtrqj06kMZC9lIAszaftzrzrbA=;
-        b=cCzrPQyEWo7u8s7NeF891HqdMDHyzf30LEvc6NJiR74N7Hs6dWqvJGrOKhOBI5E4/o
-         IIUiN+USEvzVZcuT+LuG8quJqG0c6bJpx0QJaDl05Dd8fwPA6WnvMM4b1yAOeeup2pCj
-         +M8RTZxT6A78NHzsxgDgyDWu4lITnyjl3CYrG0OQvrnQ7cDp+68oTtLyGfdpcn+NqzDt
-         X/wQztuwyCPax/iPQEDlJMhHLJEWNAvvwqMaZE+xQwxF+wKhL/uAJXmKHPAAkYJidmxg
-         KEnMvs1YJpHgZw9E30xt1obeFvWAEptcvnT8JS+hZ7ugkoRRcP1eoh/dWQVHam2VEVdH
-         zkTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=76+46/j8d+HhUpqLdqtrqj06kMZC9lIAszaftzrzrbA=;
-        b=cmpH3hmSqB9WB6471wzSKqYw0H0MFXE1szZnP4g928hw8F0pPK16yAAXZUoYaf8ZeB
-         ZI79qvyXqDzpTTWXjEU5VZgtjw/NDuAH3WDYJztsfyazAJ70gbJaTI8uFEOfonoyH7Mm
-         4IkUthwjp6ei22zSwXmU3/QAA8GROrhAPNOpzyyrBIf9VMYL64pENtzTkdU1t28t3L3L
-         Yydi5DYsP21T2f6KA79UD/Ua5fS7QoWIdFHjqo2/GZo9vSySGe3xuHmHPXsPvcYokgso
-         x4VJhdMyJuhsYAgAX7uKV6ctWH3BxpR4QTy+pEn6qhN7dCpnihKxA6ovewTW8EnfjjtR
-         W5Jg==
-X-Gm-Message-State: AOAM531jxqUHWGGaJb1NkMmFJYhaIVxFdjyqvXmn4dqYOtJc+K7At/Lj
-        E7bak8v85eMwJ67QmDe6/DI=
-X-Google-Smtp-Source: ABdhPJxVkmSiQ9WCIF/VhMI7BfIsXAtPjTGcBrfOpLZax/EaPn7jdHV8n3BSlkhf+0NXyyPzpLJ21Q==
-X-Received: by 2002:a37:e0e:: with SMTP id 14mr859793qko.455.1604537775951;
-        Wed, 04 Nov 2020 16:56:15 -0800 (PST)
-Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
-        by smtp.gmail.com with ESMTPSA id n3sm1403764qta.10.2020.11.04.16.56.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 16:56:15 -0800 (PST)
-Date:   Wed, 4 Nov 2020 17:56:13 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, stable@vger.kernel.org,
-        Chen Yu <yu.chen.surf@gmail.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Marco Elver <elver@google.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] compiler-clang: remove version check for BPF Tracing
-Message-ID: <20201105005613.GA1840301@ubuntu-m3-large-x86>
-References: <20201104191052.390657-1-ndesaulniers@google.com>
+        Wed, 4 Nov 2020 19:58:14 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2FA8C0613CF;
+        Wed,  4 Nov 2020 16:58:13 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CRQ9r6jfDz9sTK;
+        Thu,  5 Nov 2020 11:58:08 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1604537890;
+        bh=27nvI50yUte+Q88fSY3JDzpkApvknTaK+OWR6Ij0tNU=;
+        h=Date:From:To:Cc:Subject:From;
+        b=KzaBpJM4Jc++XSbk5UXuDiD2KdZo9moB8JXVl0iTSxvEizpgm5NwlkYEQv7gUH39L
+         lA0gtoEDcLk5kccvsXASr4OoBSaPwfq+IfrVpjaVSyTn4pL0EuAN1kfRSGSkJuQC7K
+         DUAT1pAsyJrLPDfRnHcpNvaABmB/2LT3RGqem3UvhyPO7ZaCsGEprOCV/S0YRd9pgt
+         PmMP4lOM00yP9HfYH8q9oZ53GmCbydM3dp2kOl7bMx2XN5smF0q9EuW5wPJsOT7Xk3
+         68y5QbHzy3eNkk4EguqX7hKTe3LZncpjtZ3B91vKIS9vlST0BHzVzrsXRhEDLZ6pXZ
+         2IdzlnRBCIv+Q==
+Date:   Thu, 5 Nov 2020 11:58:08 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Rob Clark <robdclark@gmail.com>, Sean Paul <seanpaul@chromium.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Rob Clark <robdclark@chromium.org>,
+        Stephen Boyd <swboyd@chromium.org>
+Subject: linux-next: manual merge of the drm-msm tree with the drm-misc tree
+Message-ID: <20201105115808.3aee29f1@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201104191052.390657-1-ndesaulniers@google.com>
+Content-Type: multipart/signed; boundary="Sig_/+UpkO/lwJvjogdGfigDwaWZ";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 11:10:51AM -0800, Nick Desaulniers wrote:
-> bpftrace parses the kernel headers and uses Clang under the hood. Remove
-> the version check when __BPF_TRACING__ is defined (as bpftrace does) so
-> that this tool can continue to parse kernel headers, even with older
-> clang sources.
-> 
-> Cc: <stable@vger.kernel.org>
-> Fixes: commit 1f7a44f63e6c ("compiler-clang: add build check for clang 10.0.1")
-> Reported-by: Chen Yu <yu.chen.surf@gmail.com>
-> Reported-by: Jarkko Sakkinen <jarkko@kernel.org>
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+--Sig_/+UpkO/lwJvjogdGfigDwaWZ
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Acked-by: Nathan Chancellor <natechancellor@gmail.com>
+Hi all,
 
-> ---
->  include/linux/compiler-clang.h | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/include/linux/compiler-clang.h b/include/linux/compiler-clang.h
-> index dd7233c48bf3..98cff1b4b088 100644
-> --- a/include/linux/compiler-clang.h
-> +++ b/include/linux/compiler-clang.h
-> @@ -8,8 +8,10 @@
->  		     + __clang_patchlevel__)
->  
->  #if CLANG_VERSION < 100001
-> +#ifndef __BPF_TRACING__
->  # error Sorry, your version of Clang is too old - please use 10.0.1 or newer.
->  #endif
-> +#endif
->  
->  /* Compiler specific definitions for Clang compiler */
->  
-> -- 
-> 2.29.1.341.ge80a0c044ae-goog
-> 
+Today's linux-next merge of the drm-msm tree got a conflict in:
+
+  drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
+
+between commit:
+
+  29b77ad7b9ca ("drm/atomic: Pass the full state to CRTC atomic_check")
+
+from the drm-misc tree and commit:
+
+  91693cbc13c2 ("drm/msm/dpu: Add newline to printks")
+
+from the drm-msm tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
+index e55be2922c2f,d4662e8184cc..000000000000
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
+@@@ -844,12 -838,12 +844,12 @@@ static int dpu_crtc_atomic_check(struc
+  		goto end;
+  	}
+ =20
+ -	mode =3D &state->adjusted_mode;
+ +	mode =3D &crtc_state->adjusted_mode;
+- 	DPU_DEBUG("%s: check", dpu_crtc->name);
++ 	DPU_DEBUG("%s: check\n", dpu_crtc->name);
+ =20
+  	/* force a full mode set if active state changed */
+ -	if (state->active_changed)
+ -		state->mode_changed =3D true;
+ +	if (crtc_state->active_changed)
+ +		crtc_state->mode_changed =3D true;
+ =20
+  	memset(pipe_staged, 0, sizeof(pipe_staged));
+ =20
+
+--Sig_/+UpkO/lwJvjogdGfigDwaWZ
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+jTiAACgkQAVBC80lX
+0GxkpQf/d4XQPifyB/OFigkbH0lYY1T6msn/1Sr9SQkcgIZI/uzZRM1dA825vlYV
+AzqHQjCl0cJoa+Cj/KTr9npA4LEKy7FBjndFRqq8ioVo9I990U/WAKvFfD0FG75r
+AO+U9c8RER+VodfRHefvMx7zne1QFxaYy0Kcq7Jqg5Fkm/rxrDJ4qk+ubdMVn2VE
+yT3ey4/14qt3VOLJBFyNDrAIgZ4v0/ukaA/WFC4ORmKaqnym18plR82daOKLwCjY
+8xFCqV4J1npC58AVc25lGddre7tv8qKR8FLw4qRV7kcGaa24DxCe8PIiDX749bYG
+bx9dbI2thlv2MZJMENqX8Mud1Kq39A==
+=diS3
+-----END PGP SIGNATURE-----
+
+--Sig_/+UpkO/lwJvjogdGfigDwaWZ--
