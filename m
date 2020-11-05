@@ -2,100 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E9CA2A8AE1
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 00:44:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 363A12A8AE3
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 00:47:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732200AbgKEXoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 18:44:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726801AbgKEXoY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 18:44:24 -0500
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00D37C0613CF;
-        Thu,  5 Nov 2020 15:44:23 -0800 (PST)
-Received: by mail-qt1-x844.google.com with SMTP id n63so2478677qte.4;
-        Thu, 05 Nov 2020 15:44:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sVuBclz6RbxFeixVrFDk7hds/nyx+Jqtd3Wi799FOXk=;
-        b=cDRnrACB6qhyOyott6SFEmFabDoLiuFl1tpaN50TvPHswUHt3+MPuJohwfZ41EFnrw
-         LsucrypTMbdc4g1ars45fh1+/jqITRsgaDt5QqVzlBHIAT+wL4Je5jnmf2R5ETn5E8H9
-         vruyY4XQ/S8SkVqOsjVyqhA30aDVXcXV0SNl0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sVuBclz6RbxFeixVrFDk7hds/nyx+Jqtd3Wi799FOXk=;
-        b=kzqbSD/rTBoXALnjdfTtMmJDMk8CBJpXlpSuIg1cMpCQqiHZnPJaccrDGo90c9nxaW
-         k+x2QYLNYuuM5/W2AWHIJ5LGOJs32lVbJ5uF3wt2+jdVYPf2qXQLXASsIpuIWZisZHvN
-         Ud7LoK16MXL4d6SpsVzFcn8U1E16uGRYV7Vez/A2hpBVwdVhK60SP50+md1EGd+Q9Dal
-         hBtqnDGHY9pSz05qBr7ISaCUN+89DeYZpSJk65GlspLDS2hmsZgpuXKaln24HYRjDqSs
-         Jps6Q2gRU6wj6ndvP0rLKhVA2eXp4siFOUdM1QRMCEpk791i3UO3t23D2gKTP8+bKK/p
-         8f9Q==
-X-Gm-Message-State: AOAM533bwNY/0FBVOsek4J8Zb6XUb9MEXhWcPd1DXHKWzyNE+rDsNUIH
-        fkW8PKHxbF91VkBFvdUczAlMzEdxygkXl7xDxgc=
-X-Google-Smtp-Source: ABdhPJzMkAsXAUa+nOhKuwacsfqZM5SZmXB8PE7v6p8ZThh7YcBqN1EAFeRO4VOrULqUrC3Iwdn4kG3AtWfac6tiRt8=
-X-Received: by 2002:ac8:75c9:: with SMTP id z9mr4663191qtq.363.1604619862999;
- Thu, 05 Nov 2020 15:44:22 -0800 (PST)
-MIME-Version: 1.0
-References: <20201103203232.656475008@linuxfoundation.org> <20201103203247.174991659@linuxfoundation.org>
- <20201105192305.GA18462@duo.ucw.cz>
-In-Reply-To: <20201105192305.GA18462@duo.ucw.cz>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Thu, 5 Nov 2020 23:44:11 +0000
-Message-ID: <CACPK8XcOqdtGyJ+Fcan=AaHiJTOZFeUW7-j_5kZeQowr-j24Ag@mail.gmail.com>
-Subject: Re: [PATCH 4.19 156/191] powerpc: Warn about use of smt_snooze_delay
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        stable@vger.kernel.org,
-        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Content-Type: text/plain; charset="UTF-8"
+        id S1732441AbgKEXrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 18:47:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45860 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726801AbgKEXrW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 18:47:22 -0500
+Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CE70320756;
+        Thu,  5 Nov 2020 23:47:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604620042;
+        bh=cHPyby7pAr8kcs5Rx52a5F9TaNyVrHGa7UCBfNWtirg=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=cYXFNrNcfDfo0+WAVqIfjD2ElsanHYyXMO8Di9RG1Pu6ikaevmTENFbIoofIjCFm/
+         Km0M9xxe6mxT1t42ghoS4Ru/9eRra3//eFZtS/xnerNCU1E8rYG1wy6OOAXXhcuyUr
+         6N9VuA2ojGuugqnXKcFcVslBUQWmhve0pc771Fb0=
+From:   paulmck@kernel.org
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        jiangshanlai@gmail.com, akpm@linux-foundation.org,
+        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
+        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
+        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, joel@joelfernandes.org,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 01/28] refscale: Bounds-check module parameters
+Date:   Thu,  5 Nov 2020 15:46:52 -0800
+Message-Id: <20201105234719.23307-1-paulmck@kernel.org>
+X-Mailer: git-send-email 2.9.5
+In-Reply-To: <20201105234658.GA23142@paulmck-ThinkPad-P72>
+References: <20201105234658.GA23142@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 5 Nov 2020 at 19:24, Pavel Machek <pavel@ucw.cz> wrote:
->
-> Hi!
->
-> > From: Joel Stanley <joel@jms.id.au>
-> >
-> > commit a02f6d42357acf6e5de6ffc728e6e77faf3ad217 upstream.
-> >
-> > It's not done anything for a long time. Save the percpu variable, and
-> > emit a warning to remind users to not expect it to do anything.
-> >
-> > This uses pr_warn_once instead of pr_warn_ratelimit as testing
-> > 'ppc64_cpu --smt=off' on a 24 core / 4 SMT system showed the warning
-> > to be noisy, as the online/offline loop is slow.
->
-> I don't believe this is good idea for stable. It is in 5.9-rc2, and
-> likely mainline users will get userspace fixed, but that warning is
-> less useful for -stable users.
+From: "Paul E. McKenney" <paulmck@kernel.org>
 
-The warning is about the existing behaviour of the kernel. It does let
-the user know that they won't see any difference in behaviour when
-tweaking the smt_snooze_delay variable, which was a real issue that
-Anton hit.
+The default value for refscale.nreaders is -1, which results in the code
+setting the value to three-quarters of the number of CPUs.  On single-CPU
+systems, this results in three-quarters of the value one, which the C
+language's integer arithmetic rounds to zero.  This in turn results in
+a divide-by-zero error.
 
-I agree that the future commit that removes smt_snooze_delay from the
-kernel should not be backported.
+This commit therefore adds bounds checking to the refscale module
+parameters, so that if they are less than one, they are set to the
+value one.
 
-Cheers,
+Reported-by: kernel test robot <lkp@intel.com>
+Tested-by "Chen, Rong A" <rong.a.chen@intel.com>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ kernel/rcu/refscale.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-Joel
+diff --git a/kernel/rcu/refscale.c b/kernel/rcu/refscale.c
+index 952595c..fb5f20d 100644
+--- a/kernel/rcu/refscale.c
++++ b/kernel/rcu/refscale.c
+@@ -681,6 +681,12 @@ ref_scale_init(void)
+ 	// Reader tasks (default to ~75% of online CPUs).
+ 	if (nreaders < 0)
+ 		nreaders = (num_online_cpus() >> 1) + (num_online_cpus() >> 2);
++	if (WARN_ONCE(loops <= 0, "%s: loops = %ld, adjusted to 1\n", __func__, loops))
++		loops = 1;
++	if (WARN_ONCE(nreaders <= 0, "%s: nreaders = %d, adjusted to 1\n", __func__, nreaders))
++		nreaders = 1;
++	if (WARN_ONCE(nruns <= 0, "%s: nruns = %d, adjusted to 1\n", __func__, nruns))
++		nruns = 1;
+ 	reader_tasks = kcalloc(nreaders, sizeof(reader_tasks[0]),
+ 			       GFP_KERNEL);
+ 	if (!reader_tasks) {
+-- 
+2.9.5
 
->
-> (And besides, it does not fix any serious bug).
->
-> Best regards,
->                                                                 Pavel
->
-> --
-> http://www.livejournal.com/~pavelmachek
