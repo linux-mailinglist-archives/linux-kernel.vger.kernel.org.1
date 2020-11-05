@@ -2,141 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46AA42A7AF1
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 10:46:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 686582A7AF3
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 10:47:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728522AbgKEJqO convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 5 Nov 2020 04:46:14 -0500
-Received: from mga02.intel.com ([134.134.136.20]:50768 "EHLO mga02.intel.com"
+        id S1727003AbgKEJrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 04:47:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34628 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726894AbgKEJqN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 04:46:13 -0500
-IronPort-SDR: agtKEWIljey1dafuWpBBzmdWntsCFCfnri9FfTl6HuW9wmKbaJI8SwkdgDMnxN/1268OlOOGb0
- GD+Ro8Cqf/QQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9795"; a="156346990"
-X-IronPort-AV: E=Sophos;i="5.77,453,1596524400"; 
-   d="scan'208";a="156346990"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2020 01:46:12 -0800
-IronPort-SDR: LP3YMUn310MILM2LDvZspBhNB/KJhExXuqSqz7IzDYrmcMu5Tsm9WiaGjAgcW1KhIl73EultN2
- Wiug49oZe46A==
-X-IronPort-AV: E=Sophos;i="5.77,453,1596524400"; 
-   d="scan'208";a="471582971"
-Received: from mwaskox-mobl.ger.corp.intel.com (HELO localhost) ([10.252.10.106])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2020 01:46:09 -0800
-Content-Type: text/plain; charset="utf-8"
+        id S1726152AbgKEJrN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 04:47:13 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C8AAE2080D;
+        Thu,  5 Nov 2020 09:47:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604569632;
+        bh=HHlnMYvribr6tXTc4dWdBjcjHKLjb6dHLifRUqDqwQQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=EFLzxc0G4nItwOrjOMnnSewgHj9shosTzBoWlwDLKKI7KwDNQ7RaKW9TqsU/pIg+p
+         uMsxcNdZQZJQo+Rj1yD1EmgjbipQWG6wClnZfll/W+huy0QRJr1y0deHb5k/8Mzl3/
+         ECS9HsXAUOFDwEhdx2CSmDCDPi5yO0opgabFzzXQ=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kabrJ-007n9r-JG; Thu, 05 Nov 2020 09:47:09 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <20201104173556.GA359362@bjorn-Precision-5520>
-References: <20201104173556.GA359362@bjorn-Precision-5520>
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Tejas Upadhyay <tejaskumarx.surendrakumar.upadhyay@intel.com>
-From:   Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, bp@alien8.de, lucas.demarchi@intel.com,
-        matthew.d.roper@intel.com, hariom.pandey@intel.com,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: [PATCH] x86/gpu: add JSL stolen memory support
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-Message-ID: <160456956585.5393.4540325192433934522@jlahtine-mobl.ger.corp.intel.com>
-User-Agent: alot/0.8.1
-Date:   Thu, 05 Nov 2020 11:46:06 +0200
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 05 Nov 2020 09:47:09 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     David Brazdil <dbrazdil@google.com>
+Cc:     kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Dennis Zhou <dennis@kernel.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Andrew Scull <ascull@google.com>, kernel-team@android.com
+Subject: Re: [RFC PATCH 01/26] psci: Export configured PSCI version
+In-Reply-To: <20201104183630.27513-2-dbrazdil@google.com>
+References: <20201104183630.27513-1-dbrazdil@google.com>
+ <20201104183630.27513-2-dbrazdil@google.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <2265d2fed043ab79721c1014d6144558@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: dbrazdil@google.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, dennis@kernel.org, tj@kernel.org, cl@linux.com, mark.rutland@arm.com, lorenzo.pieralisi@arm.com, qperret@google.com, ascull@google.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Bjorn Helgaas (2020-11-04 19:35:56)
-> [+cc Jani, Joonas, Rodrigo, David, Daniel]
+On 2020-11-04 18:36, David Brazdil wrote:
+> The version of PSCI that the kernel should use to communicate with
+> firmware is typically obtained from probing PSCI_VERSION. However, that
+> doesn't work for PSCI v0.1 where the host gets the information from
+> DT/ACPI, or if PSCI is not supported / was disabled.
 > 
-> On Wed, Nov 04, 2020 at 05:35:06PM +0530, Tejas Upadhyay wrote:
-> > JSL re-uses the same stolen memory as ICL and EHL.
-> > 
-> > Cc: Lucas De Marchi <lucas.demarchi@intel.com>
-> > Cc: Matt Roper <matthew.d.roper@intel.com>
-> > Signed-off-by: Tejas Upadhyay <tejaskumarx.surendrakumar.upadhyay@intel.com>
+> KVM's PSCI proxy for the host needs to be configured with the same
+> version used by the host driver. Expose the PSCI version used by the
+> host.
 > 
-> I don't plan to do anything with this since previous similar patches
-> have gone through some other tree, so this is just kibitzing.
+> Signed-off-by: David Brazdil <dbrazdil@google.com>
+> ---
+>  drivers/firmware/psci/psci.c | 6 ++++++
+>  include/linux/psci.h         | 8 ++++++++
+>  2 files changed, 14 insertions(+)
 > 
-> But the fact that we have this long list of Intel devices [1] that
-> constantly needs updates [2] is a hint that something is wrong.
-
-We add an entry for every new integrated graphics platform. Once the
-platform is added, there have not been changes lately.
-
-> IIUC the general idea is that we need to discover Intel gfx memory by
-> looking at device-dependent config space and add it to the E820 map.
-> Apparently the quirks discover this via PCI config registers like
-> I830_ESMRAMC, I845_ESMRAMC, etc, and tell the driver about it via the
-> global "intel_graphics_stolen_res"?
-
-We discover what is called the graphics data stolen memory. It is regular
-system memory range that is not CPU accessible. It is accessible by the
-integrated graphics only.
-
-See: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/arch/x86/kernel/early-quirks.c?h=v5.10-rc2&id=814c5f1f52a4beb3710317022acd6ad34fc0b6b9
-
-> That's not the way this should work.  There should some generic, non
-> device-dependent PCI or ACPI method to discover the memory used, or at
-> least some way to do it in the driver instead of early arch code.
-
-It's used by the early BIOS/UEFI code to set up initial framebuffer.
-Even if i915 driver is never loaded, the memory ranges still need to
-be fixed. They source of the problem is that the OEM BIOS which are
-not under our control get the programming wrong.
-
-We used to detect the memory region size again at i915 initialization
-but wanted to eliminate the code duplication and resulting subtle bugs
-that caused. Conclusion back then was that storing the struct resource
-in memory is the best trade-off.
-
-> How is this *supposed* to work?  Is there something we can do in E820
-> or other resource management that would make this easier?
-
-The code was added around Haswell (HSW) device generation to mitigate
-bugs in BIOS. It is traditionally hard to get all OEMs to fix their
-BIOS when things work for Windows. It's only later years when some
-laptop models are intended to be sold with Linux.
-
-The alternative would be to get all the OEM to fix their BIOS for Linux,
-but that is not very realistic given past experiences. So it seems
-a better choice to to add new line per platform generation to make
-sure the users can boot to Linux.
-
-Regards, Joonas
-
-> > ---
-> >  arch/x86/kernel/early-quirks.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/arch/x86/kernel/early-quirks.c b/arch/x86/kernel/early-quirks.c
-> > index a4b5af03dcc1..534cc3f78c6b 100644
-> > --- a/arch/x86/kernel/early-quirks.c
-> > +++ b/arch/x86/kernel/early-quirks.c
-> > @@ -549,6 +549,7 @@ static const struct pci_device_id intel_early_ids[] __initconst = {
-> >       INTEL_CNL_IDS(&gen9_early_ops),
-> >       INTEL_ICL_11_IDS(&gen11_early_ops),
-> >       INTEL_EHL_IDS(&gen11_early_ops),
-> > +     INTEL_JSL_IDS(&gen11_early_ops),
-> >       INTEL_TGL_12_IDS(&gen11_early_ops),
-> >       INTEL_RKL_IDS(&gen11_early_ops),
-> >  };
+> diff --git a/drivers/firmware/psci/psci.c 
+> b/drivers/firmware/psci/psci.c
+> index 00af99b6f97c..ff523bdbfe3f 100644
+> --- a/drivers/firmware/psci/psci.c
+> +++ b/drivers/firmware/psci/psci.c
+> @@ -49,6 +49,8 @@ static int resident_cpu = -1;
+>  struct psci_operations psci_ops;
+>  static enum arm_smccc_conduit psci_conduit = SMCCC_CONDUIT_NONE;
 > 
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/x86/kernel/early-quirks.c?h=v5.10-rc2#n518
+> +int psci_driver_version = PSCI_VERSION(0, 0);
+> +
+>  bool psci_tos_resident_on(int cpu)
+>  {
+>  	return cpu == resident_cpu;
+> @@ -461,6 +463,8 @@ static int __init psci_probe(void)
+>  		return -EINVAL;
+>  	}
 > 
-> [2]
->   May 2020 efbee021ad02 ("x86/gpu: add RKL stolen memory support")
->   Jul 2019 6b2436aeb945 ("x86/gpu: add TGL stolen memory support")
->   Mar 2019 d53fef0be4a5 ("x86/gpu: add ElkhartLake to gen11 early quirks")
->   May 2018 db0c8d8b031d ("x86/gpu: reserve ICL's graphics stolen memory")
->   Dec 2017 33aa69ed8aac ("x86/gpu: add CFL to early quirks")
->   Jul 2017 2e1e9d48939e ("x86/gpu: CNL uses the same GMS values as SKL")
->   Jan 2017 bc384c77e3bb ("x86/gpu: GLK uses the same GMS values as SKL")
->   Oct 2015 00ce5c8a66fb ("drm/i915/kbl: Kabylake uses the same GMS values as Skylake")
->   Mar 2015 31d4dcf705c3 ("drm/i915/bxt: Broxton uses the same GMS values as Skylake")
->   ...
+> +	psci_driver_version = ver;
+> +
+>  	psci_0_2_set_functions();
+> 
+>  	psci_init_migrate();
+> @@ -514,6 +518,8 @@ static int __init psci_0_1_init(struct device_node 
+> *np)
+> 
+>  	pr_info("Using PSCI v0.1 Function IDs from DT\n");
+> 
+> +	psci_driver_version = PSCI_VERSION(0, 1);
+> +
+>  	if (!of_property_read_u32(np, "cpu_suspend", &id)) {
+>  		psci_function_id[PSCI_FN_CPU_SUSPEND] = id;
+>  		psci_ops.cpu_suspend = psci_cpu_suspend;
+> diff --git a/include/linux/psci.h b/include/linux/psci.h
+> index 2a1bfb890e58..cb35b90d1746 100644
+> --- a/include/linux/psci.h
+> +++ b/include/linux/psci.h
+> @@ -21,6 +21,14 @@ bool psci_power_state_is_valid(u32 state);
+>  int psci_set_osi_mode(bool enable);
+>  bool psci_has_osi_support(void);
+> 
+> +/**
+> + * The version of the PSCI specification followed by the driver.
+> + * This is equivalent to calling PSCI_VERSION except:
+> + *   (a) it also works for PSCI v0.1, which does not support 
+> PSCI_VERSION, and
+> + *   (b) it is set to v0.0 if the PSCI driver was not initialized.
+> + */
+> +extern int psci_driver_version;
+> +
+>  struct psci_operations {
+>  	u32 (*get_version)(void);
+>  	int (*cpu_suspend)(u32 state, unsigned long entry_point);
+
+How about providing a get_version callback for pre-0.2 implementations
+instead? This would avoid exposing more symbols (psci_ops is already
+global).
+
+Thanks,
+
+         M.
+
+diff --git a/drivers/firmware/psci/psci.c b/drivers/firmware/psci/psci.c
+index 00af99b6f97c..b84454e12d92 100644
+--- a/drivers/firmware/psci/psci.c
++++ b/drivers/firmware/psci/psci.c
+@@ -500,6 +500,11 @@ static int __init psci_0_2_init(struct device_node 
+*np)
+  	return psci_probe();
+  }
+
++static u32 psci_0_1_get_version(void)
++{
++	return PSCI_VERSION(0, 1);
++}
++
+  /*
+   * PSCI < v0.2 get PSCI Function IDs via DT.
+   */
+@@ -514,6 +519,8 @@ static int __init psci_0_1_init(struct device_node 
+*np)
+
+  	pr_info("Using PSCI v0.1 Function IDs from DT\n");
+
++	psci_ops.get_version = psci_0_1_get_version;
++
+  	if (!of_property_read_u32(np, "cpu_suspend", &id)) {
+  		psci_function_id[PSCI_FN_CPU_SUSPEND] = id;
+  		psci_ops.cpu_suspend = psci_cpu_suspend;
+
+-- 
+Jazz is not dead. It just smells funny...
