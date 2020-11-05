@@ -2,225 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A19DD2A7EE1
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 13:46:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 886182A7EF5
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 13:50:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730468AbgKEMp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 07:45:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47882 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730139AbgKEMp5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 07:45:57 -0500
-Received: from tleilax.poochiereds.net (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9B1D520756;
-        Thu,  5 Nov 2020 12:45:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604580356;
-        bh=1GelF9aRS5tVKsklgGIdwFZL8G7WthPJK6xM7HDfius=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=Wfjm6yzetyE7/MEg7l1Bp+8URz4uvYNPafBAJo4vL6C9HMYp1Fsjs8PnGCu9yhASy
-         SLnPFPXFj06J2Wg8jrE6tveEgqi/H9454LvbeEdfAR9KhU31vF4zgJ/9MevMK0SYyw
-         hSOoIFQLO+87HdDHMpd+tI+KQW53JOiT33qhztrg=
-Message-ID: <d09ae090e7ec770cf799f1072a59cafe4efb6150.camel@kernel.org>
-Subject: Re: possible deadlock in send_sigurg (2)
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Boqun Feng <boqun.feng@gmail.com>,
-        syzbot <syzbot+c5e32344981ad9f33750@syzkaller.appspotmail.com>
-Cc:     bfields@fieldses.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mingo@redhat.com,
-        peterz@infradead.org, syzkaller-bugs@googlegroups.com,
-        viro@zeniv.linux.org.uk, will@kernel.org
-Date:   Thu, 05 Nov 2020 07:45:54 -0500
-In-Reply-To: <20201105062351.GA2840779@boqun-archlinux>
-References: <0000000000009d056805b252e883@google.com>
-         <000000000000e1c72705b346f8e6@google.com>
-         <20201105062351.GA2840779@boqun-archlinux>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.1 (3.38.1-1.fc33) 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1730568AbgKEMuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 07:50:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57068 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730525AbgKEMuC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 07:50:02 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDE87C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 04:50:01 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id x7so1632964wrl.3
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 04:50:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=+C+hFQf4fR17sqAg53ZRGOMsBqw3qEsg3zbacKAW2d8=;
+        b=f8u26zDOnu1BHe89VUV3H5l7cWUXq3IOJJDl3y9WOFjOWmn9enFSVWlENWcnFAVlyf
+         FWW36yGMR49eouTFeMSwwlCN0RzZUoO7J+ZmVG5zfNzP7UJ0IyjS9lEF0PxD8Mg7U8yb
+         3TuvgD62sf0Q6+wkpvAPJ7QiZ1jKRwJceI6KW7o9o3iGSISI0HrZi719NZTNn9YaEPBq
+         n0q5VzdIkgpGpMmdadSqhXACzqhgQ0hdCvY/ifc3feBtkPGkTxhOZOjjnIsyZGaPmsXr
+         pnj/+6oNEMgEaNaZkEEXX5paKK17nM+/J2NZl5aWlAeBCzybf4uFAQhOQuyB+5HfSeO3
+         gv7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=+C+hFQf4fR17sqAg53ZRGOMsBqw3qEsg3zbacKAW2d8=;
+        b=L5WKp6wRfOWKDBJmkrBdahLGCFjwDpLzZ9bmrsRXrejeFRB3m/d7fTVuup0lFvEFgL
+         AA/zdfyYbUvETpTTX63z4MwZ614dXfpNjnHa7K8UxzdJL/zLBZefHCKNynK6pG0TXOqN
+         K6mQs1LeGegwpPYJQKkMx17XXACXkbu0zwMZdPmI0pSmGQnGfJMJE6RTYmlSN/elALxA
+         YJxGxMX1CPp0KqvMJzwfEu3S/plU9TWDvUgA/9IvyDLbD8u78VZZDJDajZQAjVrb/g8C
+         S58Pv5WC4I1Y5uuthfBikPf+28lEKsMD2CCW8TOBnkfd7tWDG4b2bcp51ZcnSgpF2VQe
+         dEow==
+X-Gm-Message-State: AOAM533bAFfXf1qrMQSQQSOAaqoj0ltwKijHvtYk8pJnBln3Zv2MSFzr
+        vnae1CQvnDVDwo1YTu7xVNY=
+X-Google-Smtp-Source: ABdhPJy/qX5s2E/jLJsvII8+siT5LuOIrYywzGOEyLvMOrkQ6pRobv0L+e6n83dwD/3JM2IetjjaRA==
+X-Received: by 2002:a5d:4ed2:: with SMTP id s18mr2744512wrv.36.1604580600491;
+        Thu, 05 Nov 2020 04:50:00 -0800 (PST)
+Received: from localhost.localdomain (host-92-5-241-147.as43234.net. [92.5.241.147])
+        by smtp.gmail.com with ESMTPSA id n17sm2188378wrw.69.2020.11.05.04.49.59
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 05 Nov 2020 04:50:00 -0800 (PST)
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Jiaxin Yu <jiaxin.yu@mediatek.com>
+Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH] ASoC: mediatek: mt8192: Fix build failure
+Date:   Thu,  5 Nov 2020 12:47:47 +0000
+Message-Id: <20201105124747.18383-1-sudipm.mukherjee@gmail.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-11-05 at 14:23 +0800, Boqun Feng wrote:
-> Hi,
-> 
-> On Wed, Nov 04, 2020 at 04:18:08AM -0800, syzbot wrote:
-> > syzbot has bisected this issue to:
-> > 
-> > commit e918188611f073063415f40fae568fa4d86d9044
-> > Author: Boqun Feng <boqun.feng@gmail.com>
-> > Date:   Fri Aug 7 07:42:20 2020 +0000
-> > 
-> >     locking: More accurate annotations for read_lock()
-> > 
-> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14142732500000
-> > start commit:   4ef8451b Merge tag 'perf-tools-for-v5.10-2020-11-03' of gi..
-> > git tree:       upstream
-> > final oops:     https://syzkaller.appspot.com/x/report.txt?x=16142732500000
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=12142732500000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=61033507391c77ff
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=c5e32344981ad9f33750
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15197862500000
-> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13c59f6c500000
-> > 
-> > Reported-by: syzbot+c5e32344981ad9f33750@syzkaller.appspotmail.com
-> > Fixes: e918188611f0 ("locking: More accurate annotations for read_lock()")
-> > 
-> > For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-> 
-> Thanks for reporting this, and this is actually a deadlock potential
-> detected by the newly added recursive read deadlock detection as my
-> analysis:
-> 
-> 	https://lore.kernel.org/lkml/20200910071523.GF7922@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net
-> 
-> Besides, other reports[1][2] are caused by the same problem. I made a
-> fix for this, please have a try and see if it's get fixed.
-> 
-> Regards,
-> Boqun
-> 
-> [1]: https://lore.kernel.org/lkml/000000000000d7136005aee14bf9@google.com
-> [2]: https://lore.kernel.org/lkml/0000000000006e29ed05b3009b04@google.com
-> 
-> ----------------------------------------------------->8
-> From 7fbe730fcff2d7909be034cf6dc8bf0604d0bf14 Mon Sep 17 00:00:00 2001
-> From: Boqun Feng <boqun.feng@gmail.com>
-> Date: Thu, 5 Nov 2020 14:02:57 +0800
-> Subject: [PATCH] fs/fcntl: Fix potential deadlock in send_sig{io, urg}()
-> 
-> Syzbot reports a potential deadlock found by the newly added recursive
-> read deadlock detection in lockdep:
-> 
-> [...] ========================================================
-> [...] WARNING: possible irq lock inversion dependency detected
-> [...] 5.9.0-rc2-syzkaller #0 Not tainted
-> [...] --------------------------------------------------------
-> [...] syz-executor.1/10214 just changed the state of lock:
-> [...] ffff88811f506338 (&f->f_owner.lock){.+..}-{2:2}, at: send_sigurg+0x1d/0x200
-> [...] but this lock was taken by another, HARDIRQ-safe lock in the past:
-> [...]  (&dev->event_lock){-...}-{2:2}
-> [...]
-> [...]
-> [...] and interrupts could create inverse lock ordering between them.
-> [...]
-> [...]
-> [...] other info that might help us debug this:
-> [...] Chain exists of:
-> [...]   &dev->event_lock --> &new->fa_lock --> &f->f_owner.lock
-> [...]
-> [...]  Possible interrupt unsafe locking scenario:
-> [...]
-> [...]        CPU0                    CPU1
-> [...]        ----                    ----
-> [...]   lock(&f->f_owner.lock);
-> [...]                                local_irq_disable();
-> [...]                                lock(&dev->event_lock);
-> [...]                                lock(&new->fa_lock);
-> [...]   <Interrupt>
-> [...]     lock(&dev->event_lock);
-> [...]
-> [...]  *** DEADLOCK ***
-> 
-> The corresponding deadlock case is as followed:
-> 
-> 	CPU 0		CPU 1		CPU 2
-> 	read_lock(&fown->lock);
-> 			spin_lock_irqsave(&dev->event_lock, ...)
-> 					write_lock_irq(&filp->f_owner.lock); // wait for the lock
-> 			read_lock(&fown-lock); // have to wait until the writer release
-> 					       // due to the fairness
-> 	<interrupted>
-> 	spin_lock_irqsave(&dev->event_lock); // wait for the lock
-> 
-> The lock dependency on CPU 1 happens if there exists a call sequence:
-> 
-> 	input_inject_event():
-> 	  spin_lock_irqsave(&dev->event_lock,...);
-> 	  input_handle_event():
-> 	    input_pass_values():
-> 	      input_to_handler():
-> 	        handler->event(): // evdev_event()
-> 	          evdev_pass_values():
-> 	            spin_lock(&client->buffer_lock);
-> 	            __pass_event():
-> 	              kill_fasync():
-> 	                kill_fasync_rcu():
-> 	                  read_lock(&fa->fa_lock);
-> 	                  send_sigio():
-> 	                    read_lock(&fown->lock);
-> 
-> To fix this, make the reader in send_sigurg() and send_sigio() use
-> read_lock_irqsave() and read_lock_irqrestore().
-> 
-> Reported-by: syzbot+22e87cdf94021b984aa6@syzkaller.appspotmail.com
-> Reported-by: syzbot+c5e32344981ad9f33750@syzkaller.appspotmail.com
-> Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
-> ---
->  fs/fcntl.c | 10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/fcntl.c b/fs/fcntl.c
-> index 19ac5baad50f..05b36b28f2e8 100644
-> --- a/fs/fcntl.c
-> +++ b/fs/fcntl.c
-> @@ -781,9 +781,10 @@ void send_sigio(struct fown_struct *fown, int fd, int band)
->  {
->  	struct task_struct *p;
->  	enum pid_type type;
-> +	unsigned long flags;
->  	struct pid *pid;
->  	
-> -	read_lock(&fown->lock);
-> +	read_lock_irqsave(&fown->lock, flags);
->  
-> 
->  	type = fown->pid_type;
->  	pid = fown->pid;
-> @@ -804,7 +805,7 @@ void send_sigio(struct fown_struct *fown, int fd, int band)
->  		read_unlock(&tasklist_lock);
->  	}
->   out_unlock_fown:
-> -	read_unlock(&fown->lock);
-> +	read_unlock_irqrestore(&fown->lock, flags);
->  }
->  
-> 
->  static void send_sigurg_to_task(struct task_struct *p,
-> @@ -819,9 +820,10 @@ int send_sigurg(struct fown_struct *fown)
->  	struct task_struct *p;
->  	enum pid_type type;
->  	struct pid *pid;
-> +	unsigned long flags;
->  	int ret = 0;
->  	
-> -	read_lock(&fown->lock);
-> +	read_lock_irqsave(&fown->lock, flags);
->  
-> 
->  	type = fown->pid_type;
->  	pid = fown->pid;
-> @@ -844,7 +846,7 @@ int send_sigurg(struct fown_struct *fown)
->  		read_unlock(&tasklist_lock);
->  	}
->   out_unlock_fown:
-> -	read_unlock(&fown->lock);
-> +	read_unlock_irqrestore(&fown->lock, flags);
->  	return ret;
->  }
->  
-> 
+A build of arm64 allmodconfig with next-20201105 fails with the error:
+ERROR: modpost: "mt8192_afe_gpio_request" undefined!
+ERROR: modpost: "mt8192_afe_gpio_init" undefined!
 
-Thanks Boqun,
+Export the symbols so that mt8192-mt6359-rt1015-rt5682.ko finds it.
 
-This looks sane to me. I'll go ahead and pull it into -next for now, and
-it should make v5.11. Let me know if you think it needs to go in sooner.
+Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+---
 
-Thanks!
+build log at: https://travis-ci.com/github/sudipm-mukherjee/linux-test/jobs/428486008
+
+ sound/soc/mediatek/mt8192/mt8192-afe-gpio.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/sound/soc/mediatek/mt8192/mt8192-afe-gpio.c b/sound/soc/mediatek/mt8192/mt8192-afe-gpio.c
+index ea000888c9e8..fbbe9ed9adb3 100644
+--- a/sound/soc/mediatek/mt8192/mt8192-afe-gpio.c
++++ b/sound/soc/mediatek/mt8192/mt8192-afe-gpio.c
+@@ -160,6 +160,7 @@ int mt8192_afe_gpio_init(struct device *dev)
+ 
+ 	return 0;
+ }
++EXPORT_SYMBOL(mt8192_afe_gpio_init);
+ 
+ static int mt8192_afe_gpio_adda_dl(struct device *dev, bool enable)
+ {
+@@ -304,3 +305,4 @@ int mt8192_afe_gpio_request(struct device *dev, bool enable,
+ 
+ 	return 0;
+ }
++EXPORT_SYMBOL(mt8192_afe_gpio_request);
 -- 
-Jeff Layton <jlayton@kernel.org>
+2.11.0
 
