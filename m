@@ -2,118 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2067D2A7F49
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 13:58:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51B472A7F4C
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 14:00:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730617AbgKEM6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 07:58:32 -0500
-Received: from mx2.suse.de ([195.135.220.15]:43704 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726067AbgKEM6b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 07:58:31 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1604581109;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=49dbr/bHxcv0Z9IlLUwudE5YhCNsVe55WQQYPE+T7qE=;
-        b=QwhpG5gGaX+pL2+wVZ2dc8jUfzM3z2nCh5SQdDCfBgiZ0ufvj267qY2EF7pnt2eqwZE0yZ
-        uBVJZJII3JI8qRqyUwyF931wFt1yS2Rd5zAacepAxQcmVZFzqrD+qc1ptOeghw4J2CmRW/
-        xWUOCyf8Wh9oEbEF9k3TPhM4CKY5uuM=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 888EEABDE;
-        Thu,  5 Nov 2020 12:58:29 +0000 (UTC)
-Date:   Thu, 5 Nov 2020 13:58:28 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Feng Tang <feng.tang@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mel Gorman <mgorman@suse.de>, dave.hansen@intel.com,
-        ying.huang@intel.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 0/2] mm: fix OOMs for binding workloads to movable
- zone only node
-Message-ID: <20201105125828.GG21348@dhcp22.suse.cz>
-References: <1604470210-124827-1-git-send-email-feng.tang@intel.com>
- <20201104071308.GN21990@dhcp22.suse.cz>
- <20201104073826.GA15700@shbuild999.sh.intel.com>
- <20201104075819.GA10052@dhcp22.suse.cz>
- <20201104084021.GB15700@shbuild999.sh.intel.com>
- <20201104085343.GA18718@dhcp22.suse.cz>
- <20201105014028.GA86777@shbuild999.sh.intel.com>
- <20201105120818.GC21348@dhcp22.suse.cz>
- <4029c079-b1f3-f290-26b6-a819c52f5200@suse.cz>
+        id S1730552AbgKEM73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 07:59:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58548 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728371AbgKEM72 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 07:59:28 -0500
+Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2423C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 04:59:28 -0800 (PST)
+Received: by mail-vs1-xe44.google.com with SMTP id b129so708923vsb.1
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 04:59:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/GWKHgj2S/6eiUDyBrO4Blx873nzdq4gGQ2ur5hE7TU=;
+        b=juZNn7ATLUh5c/FjYPZJLxum7iwsn3BLLjFdy0vPProXAYp5OZ/XJODQv9JeVjNYQ3
+         OGRbmlqSg/An1FaYfaQDufnVN72C4chiT9bK0jo5PHuf4gGZpSmRLl4cZwBgI5HBa40T
+         gTXuRN/Cv3vNBHUvmWiInC6nuKoRpIVYIH8sLNRGaamBARkKkH4ClXtPzV4uEiF8gMNK
+         eGoCgJs/r5D8tbJm+2R7uyKJ2XArdAYeFGwRKtxNgMO+lbYzk21vwwsgB4nMNP/xkEus
+         SeeDvrh8j8/I6aCxgnIlziLZpN1B+sP6XwCyycHzw33ZxITqCHxx6YV5uCk8QeXfSfSb
+         lT1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/GWKHgj2S/6eiUDyBrO4Blx873nzdq4gGQ2ur5hE7TU=;
+        b=BVjw2KfrbLIKy/A9SAAfG7BpcbVP3o2o0ClESvjZA+q60szK5agCGddyb+yAc/GT5Q
+         khHsRFZZb9ycNEZ7R1xMnIwwWXbx0c5BYLYxOzmmwU//HMfG8JXzy3tJTTqeMj2X85Kr
+         VK/LCJl0TMnA0Wscel9zv0OBZf3Zj4J6CMaZHM4wyUYUu/CcFwypvn5IMn9D5DfycGQH
+         m0rWide8F2vFRz8qeyZwkaY4RSvDucReCJ/fPKnFxycGJE3k5yADoUh2LoUkvUW+VBgz
+         QRDQ1Q0rxyWM1a7crkmbjAjqgot8gjA6y0nxT012J50Jy4Kn4Si6G619eBtveEWQu5kS
+         ZtjQ==
+X-Gm-Message-State: AOAM531882BIyEyXNVhe/YXxdkmGBAxGKicekR7GvAAwHH+mWLNIKcTk
+        gdMU/s3kDV6clX74x9tAge5dSnV3p7/3uxrB3k4h0Q==
+X-Google-Smtp-Source: ABdhPJyMwTWKilMqZGi52xOIAd8ZsWEZy7lOBF0o7c9eTLak0soL/b6Rad+HnRO7r/6qiMCZdyQ9I7y/yfjXo2S1SoQ=
+X-Received: by 2002:a67:3256:: with SMTP id y83mr1116160vsy.48.1604581167927;
+ Thu, 05 Nov 2020 04:59:27 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4029c079-b1f3-f290-26b6-a819c52f5200@suse.cz>
+References: <1604021319-31338-1-git-send-email-tiantao6@hisilicon.com>
+In-Reply-To: <1604021319-31338-1-git-send-email-tiantao6@hisilicon.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 5 Nov 2020 13:58:51 +0100
+Message-ID: <CAPDyKFrsyUHAuHKZ3JbprK5aCOogRcYzaUJ2z4Wg1+AthDUrHg@mail.gmail.com>
+Subject: Re: [PATCH] mmc: moxart: replace spin_lock_irqsave by spin_lock in
+ hard IRQ
+To:     Tian Tao <tiantao6@hisilicon.com>
+Cc:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 05-11-20 13:53:24, Vlastimil Babka wrote:
-> On 11/5/20 1:08 PM, Michal Hocko wrote:
-> > On Thu 05-11-20 09:40:28, Feng Tang wrote:
-> > > > > Could you be more specific? This sounds like a bug. Allocations
-> > > > shouldn't spill over to a node which is not in the cpuset. There are few
-> > > > exceptions like IRQ context but that shouldn't happen regurarly.
-> > > 
-> > > I mean when the docker starts, it will spawn many processes which obey
-> > > the mem binding set, and they have some kernel page requests, which got
-> > > successfully allocated, like the following callstack:
-> > > 
-> > > 	[  567.044953] CPU: 1 PID: 2021 Comm: runc:[1:CHILD] Tainted: G        W I       5.9.0-rc8+ #6
-> > > 	[  567.044956] Hardware name:  /NUC6i5SYB, BIOS SYSKLi35.86A.0051.2016.0804.1114 08/04/2016
-> > > 	[  567.044958] Call Trace:
-> > > 	[  567.044972]  dump_stack+0x74/0x9a
-> > > 	[  567.044978]  __alloc_pages_nodemask.cold+0x22/0xe5
-> > > 	[  567.044986]  alloc_pages_current+0x87/0xe0
-> > > 	[  567.044991]  allocate_slab+0x2e5/0x4f0
-> > > 	[  567.044996]  ___slab_alloc+0x380/0x5d0
-> > > 	[  567.045021]  __slab_alloc+0x20/0x40
-> > > 	[  567.045025]  kmem_cache_alloc+0x2a0/0x2e0
-> > > 	[  567.045033]  mqueue_alloc_inode+0x1a/0x30
-> > > 	[  567.045041]  alloc_inode+0x22/0xa0
-> > > 	[  567.045045]  new_inode_pseudo+0x12/0x60
-> > > 	[  567.045049]  new_inode+0x17/0x30
-> > > 	[  567.045052]  mqueue_get_inode+0x45/0x3b0
-> > > 	[  567.045060]  mqueue_fill_super+0x41/0x70
-> > > 	[  567.045067]  vfs_get_super+0x7f/0x100
-> > > 	[  567.045074]  get_tree_keyed+0x1d/0x20
-> > > 	[  567.045080]  mqueue_get_tree+0x1c/0x20
-> > > 	[  567.045086]  vfs_get_tree+0x2a/0xc0
-> > > 	[  567.045092]  fc_mount+0x13/0x50
-> > > 	[  567.045099]  mq_create_mount+0x92/0xe0
-> > > 	[  567.045102]  mq_init_ns+0x3b/0x50
-> > > 	[  567.045106]  copy_ipcs+0x10a/0x1b0
-> > > 	[  567.045113]  create_new_namespaces+0xa6/0x2b0
-> > > 	[  567.045118]  unshare_nsproxy_namespaces+0x5a/0xb0
-> > > 	[  567.045124]  ksys_unshare+0x19f/0x360
-> > > 	[  567.045129]  __x64_sys_unshare+0x12/0x20
-> > > 	[  567.045135]  do_syscall_64+0x38/0x90
-> > > 	[  567.045143]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> > > 
-> > > For it, the __alloc_pages_nodemask() will first try process's targed
-> > > nodemask(unmovable node here), and there is no availabe zone, so it
-> > > goes with the NULL nodemask, and get a page in the slowpath.
-> > 
-> > OK, I see your point now. I was not aware of the slab allocator not
-> > following cpusets. Sounds like a bug to me.
-> 
-> SLAB and SLUB seem to not care about cpusets in the fast path.
+On Fri, 30 Oct 2020 at 02:28, Tian Tao <tiantao6@hisilicon.com> wrote:
+>
+> The code has been in a irq-disabled context since it is hard IRQ. There
+> is no necessity to do it again.
+>
+> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
 
-Is a fallback to a different node which is outside of the cpuset
-possible?
+Applied for next, thanks!
 
-> But this
-> stack shows that it went all the way to the page allocator, so the cpusets
-> should have been obeyed there at least.
+Kind regards
+Uffe
 
-Looking closer what is this dump_stack saying actually?
 
--- 
-Michal Hocko
-SUSE Labs
+> ---
+>  drivers/mmc/host/moxart-mmc.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/mmc/host/moxart-mmc.c b/drivers/mmc/host/moxart-mmc.c
+> index f25079b..89bff4e 100644
+> --- a/drivers/mmc/host/moxart-mmc.c
+> +++ b/drivers/mmc/host/moxart-mmc.c
+> @@ -465,9 +465,8 @@ static irqreturn_t moxart_irq(int irq, void *devid)
+>  {
+>         struct moxart_host *host = (struct moxart_host *)devid;
+>         u32 status;
+> -       unsigned long flags;
+>
+> -       spin_lock_irqsave(&host->lock, flags);
+> +       spin_lock(&host->lock);
+>
+>         status = readl(host->base + REG_STATUS);
+>         if (status & CARD_CHANGE) {
+> @@ -484,7 +483,7 @@ static irqreturn_t moxart_irq(int irq, void *devid)
+>         if (status & (FIFO_ORUN | FIFO_URUN) && host->mrq)
+>                 moxart_transfer_pio(host);
+>
+> -       spin_unlock_irqrestore(&host->lock, flags);
+> +       spin_unlock(&host->lock);
+>
+>         return IRQ_HANDLED;
+>  }
+> --
+> 2.7.4
+>
