@@ -2,81 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 446682A7ADC
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 10:44:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE24C2A7ADB
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 10:44:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729279AbgKEJoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 04:44:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56312 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727836AbgKEJoB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727107AbgKEJoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 5 Nov 2020 04:44:01 -0500
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CD17C0613D3
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 01:44:01 -0800 (PST)
-Received: by mail-lj1-x244.google.com with SMTP id v19so885983lji.5
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 01:44:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Fiir3cs5BIpMPK0iWGpD2ThmHy/2pshy4RnyFAgMk+c=;
-        b=zXfMrbFGxsDPNcew9ePdDEatydPgID3NVAQwF6vYCBO9qqkf7ZZXYD1scw5CYR/C/O
-         gQDyYfRjOdhCMdy/3EXTkZOGXdRrYggs286zU9qbt2qEeEjQROT3Tn8F0RGOauNRb/+E
-         JXLC1DdU5Qx9FKT6BOoV856o7QAmrfECMN99MWIC2fViQJsoWnB11MsAvVyMAhOU+INl
-         kueH98gMrAU7wXFrUv75Xq8cEw0tNaDo1Szpdk7LpQfhvA5SFcDNQjHu/hSJQ86aZLAA
-         uiQET85Ndm+AuutO+W9BUTNF4Bb/2iO03PBCp828vewhQL064TRYL0hPKhPegRZAWQeQ
-         1UoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Fiir3cs5BIpMPK0iWGpD2ThmHy/2pshy4RnyFAgMk+c=;
-        b=l1gcWAh+w6QOghGLPw6kNqEmySvddv0FQ1twJPE3zwqonRkvugXz4jQD8GfzzwJz1Q
-         xnUoIvu7qmQ/CGhu6d2LwkQPK9gzyq85v2IhWYRn3EYNK0+3jPVntbCuqp+VcM5CLecO
-         5fCx14hjUz6H8KhL9Oc0cNuBzNEyhFzsYApT7uF49SJe3ZWXPkcqqKxeE7G9KcyXrJRq
-         acC/GXi/1v1MujAvvWUIVceaYHgBvGSlI6JWY2zE8XIusXiQSaRv39x3XLfvfGKl4X0u
-         1uKBIlbs2IHaJ3X6A2F7jp+gfl2Jipjnirrbor4130AzLJJaLNt4n8niT56LQQNVd4ya
-         qKhA==
-X-Gm-Message-State: AOAM530iDH1mAYnHEA3UAiMcRrc/3EKl8xaHRyJjtbSkQaEG0FKCJEf7
-        /QgdmZHKnTxCmnt+S7cuhxQ1Icf/Wmi28qmjK4mEJA==
-X-Google-Smtp-Source: ABdhPJxkkaqC2wZ8LOOXXjMLKnX26vsGQzSULmY+F/v48CjdY03gPv2euRri5IvoFQWubR8J93pEdvAcrXazw5NBFRQ=
-X-Received: by 2002:a05:651c:1050:: with SMTP id x16mr625184ljm.100.1604569439670;
- Thu, 05 Nov 2020 01:43:59 -0800 (PST)
-MIME-Version: 1.0
-References: <20201019141008.871177-1-daniel@0x0f.com> <20201019141008.871177-5-daniel@0x0f.com>
-In-Reply-To: <20201019141008.871177-5-daniel@0x0f.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 5 Nov 2020 10:43:49 +0100
-Message-ID: <CACRpkdaF1+PqZaMOb9WQSV57GHsTbch84etNH765pEWa6VmgFA@mail.gmail.com>
-Subject: Re: [PATCH v2 4/5] ARM: mstar: Add gpio controller to MStar base dtsi
-To:     Daniel Palmer <daniel@0x0f.com>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, arm-kernel@lists.infradead.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Received: from mga09.intel.com ([134.134.136.24]:33602 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725468AbgKEJoA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 04:44:00 -0500
+IronPort-SDR: +2VlLOwP1p23HIyz47RPZrXHhWEcY7AdUQ1SJccvp6s2+PAV3clPWxYaTO6g9TFhwfYEPoZ2yl
+ k8BlcgWgof/A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9795"; a="169498711"
+X-IronPort-AV: E=Sophos;i="5.77,453,1596524400"; 
+   d="scan'208";a="169498711"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2020 01:43:59 -0800
+IronPort-SDR: pE9UuVIndlimvwkB72VNabhAXd/FqGcBZObmaBwyHY15DMDeMHAoaQakKYtlV36JAvfOs45bCr
+ +A04c/EJNZ5A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,453,1596524400"; 
+   d="scan'208";a="397197968"
+Received: from sgsxdev004.isng.intel.com (HELO localhost) ([10.226.88.13])
+  by orsmga001.jf.intel.com with ESMTP; 05 Nov 2020 01:43:57 -0800
+From:   Amireddy Mallikarjuna reddy <mallikarjunax.reddy@linux.intel.com>
+To:     linux-leds@vger.kernel.org, pavel@ucw.cz, dmurphy@ti.com,
+        devicetree@vger.kernel.org, robh+dt@kernel.org
+Cc:     linux-kernel@vger.kernel.org, cheol.yong.kim@intel.com,
+        qi-ming.wu@intel.com, mallikarjunax.reddy@linux.intel.com,
+        malliamireddy009@gmail.com, yixin.zhu@intel.com
+Subject: [PATCH v1 1/2] dt-bindings: leds: Add bindings for intel LGM SOC
+Date:   Thu,  5 Nov 2020 17:43:50 +0800
+Message-Id: <c9c963a2d03fbd03bd21f71f3d776ac5800cf6cc.1604331498.git.mallikarjunax.reddy@linux.intel.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 19, 2020 at 4:10 PM Daniel Palmer <daniel@0x0f.com> wrote:
+Add DT bindings YAML schema for SSO controller driver
+of Lightning Mountain(LGM) SoC.
 
-> The GPIO controller is at the same address in all of the
-> currently known chips so create a node for it in the base
-> dtsi.
->
-> Some extra properties are needed to actually use it so
-> disable it by default.
->
-> Signed-off-by: Daniel Palmer <daniel@0x0f.com>
+Signed-off-by: Amireddy Mallikarjuna reddy <mallikarjunax.reddy@linux.intel.com>
+---
+ .../devicetree/bindings/leds/leds-lgm.yaml         | 116 +++++++++++++++++++++
+ 1 file changed, 116 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/leds/leds-lgm.yaml
 
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
+diff --git a/Documentation/devicetree/bindings/leds/leds-lgm.yaml b/Documentation/devicetree/bindings/leds/leds-lgm.yaml
+new file mode 100644
+index 000000000000..1acf1fa9643b
+--- /dev/null
++++ b/Documentation/devicetree/bindings/leds/leds-lgm.yaml
+@@ -0,0 +1,116 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/leds/leds-lgm.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Intel LGM Soc LED SSO driver
++
++maintainers:
++  - Yixin.zhu@intel.com
++  - mallikarjunax.reddy@intel.com
++
++properties:
++ compatible:
++   const: intel,sso-led
++
++ reg:
++  maxItems: 1
++
++ clocks:
++  maxItems: 2
++
++ gpio-controller: true
++
++ '#gpio-cells':
++   const: 2
++
++ intel,sso-gpio-base:
++  $ref: /schemas/types.yaml#definitions/uint32
++  description:
++    Identifies the first gpio handled.
++
++ ngpios:
++  minimum: 0
++  maximum: 32
++  description:
++    Number of GPIOs this controller provides.
++
++ intel,sso-update-rate:
++  $ref: /schemas/types.yaml#definitions/uint32
++  description:
++    Blink frequency for SOUTs in Hz.
++
++ ssoled:
++    type: object
++    description:
++       This sub-node must contain a sub-node for each leds.
++
++    patternProperties:
++      "^led@[0-23]$":
++        type: object
++
++        properties:
++          intel,led-pin:
++            $ref: /schemas/types.yaml#/definitions/uint32
++            description:
++               This indicates the LED pin number.
++
++          intel,sso-brightness:
++            $ref: /schemas/types.yaml#/definitions/uint32
++            description: brightness level of the LED.
++            minimum: 0
++            maximum: 255
++
++          intel,sso-hw-trigger:
++            type: boolean
++            description: This property indicates Hardware driven/control LED.
++
++          intel,sso-hw-blink:
++            type: boolean
++            description: This property indicates Enable LED blink by Hardware.
++
++          intel,sso-blink-rate:
++            $ref: /schemas/types.yaml#/definitions/uint32
++            description: LED HW blink frequency.
++
++required:
++ - compatible
++ - reg
++ - clocks
++ - "#gpio-cells"
++ - gpio-controller
++
++additionalProperties: false
++
++examples:
++ - |
++   #include <dt-bindings/clock/intel,lgm-clk.h>
++
++   ssogpio: ssogpio@E0D40000 {
++     compatible = "intel,sso-led";
++     reg = <0xE0D40000 0x2E4>;
++     gpio-controller;
++     #gpio-cells = <2>;
++     ngpios = <32>;
++     pinctrl-names = "default";
++     pinctrl-0 = <&pinctrl_ledc>;
++     clocks = <&cgu0 LGM_GCLK_LEDC0>, <&afeclk>;
++     clock-names = "sso", "fpid";
++     intel,sso-update-rate = <250000>;
++
++     ssoled {
++        led0 {
++          label = "led0:green:gphy";
++          led-gpio = <&ssogpio 0 0>;
++          intel,led-pin = <0>;
++        };
++
++        led23 {
++          label = "led23:green:power_led";
++          led-gpio = <&ssogpio 23 0>;
++          intel,led-pin = <23>;
++          intel,sso-brightness = <0x255>;
++        };
++     };
++   };
+-- 
+2.11.0
 
-Eventually this should go through the ARM SoC tree, but
-it is fine to send with the rest of the patches, I will simply
-just apply 1-3.
-
-Yours,
-Linus Walleij
