@@ -2,81 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7D0F2A89CB
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 23:28:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7531B2A89DC
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 23:33:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732462AbgKEW2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 17:28:36 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:53136 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732434AbgKEW2a (ORCPT
+        id S1732043AbgKEWdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 17:33:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35670 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731694AbgKEWdD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 17:28:30 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: gtucker)
-        with ESMTPSA id 6A5451F46655
-Subject: Re: [PATCH] rtc: hym8563: enable wakeup by default
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Alessandro Zummo <a.zummo@towertech.it>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com
-References: <4a52fe66b327fd1974f86b7deb7e2c06d74fe64f.1604613067.git.guillaume.tucker@collabora.com>
- <20201105220938.GG1034841@piout.net>
-From:   Guillaume Tucker <guillaume.tucker@collabora.com>
-Message-ID: <03f589d0-9c6f-4a3b-4d42-8d3f66b13436@collabora.com>
-Date:   Thu, 5 Nov 2020 22:28:20 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Thu, 5 Nov 2020 17:33:03 -0500
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE1CFC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 14:33:01 -0800 (PST)
+Received: by mail-lj1-x241.google.com with SMTP id l10so3270811lji.4
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 14:33:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xkf+MRN9XePNXQPjQufkefpR5sElzsUbOnIrHmIP770=;
+        b=dxIKfNfpEsAXmY/xWOqRrYkM9KlFylLD9rFoRLmTkO8jjuZkfPUeH0cTLVuRwfCvWw
+         qaB2uzaQVJRgtANQv72cpW4iYK8to0dPByIUhVM1XpLoRsQnF6fn/QU8IZFB39U4CSh/
+         QTVk/i2gdidGlBeNCjcofGE6FcM3VUzrU6R/I=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xkf+MRN9XePNXQPjQufkefpR5sElzsUbOnIrHmIP770=;
+        b=szh4+eujRF42rsZEqoyYwOTxBVhASFY+oREhF1bpbk0rIXeCiwafvmRP6bK5f/yqFd
+         //p3yltDhDYp1vXHHt7JpLERlQbLwC+HWzoqVQdjFG/lf1HyErUDWK1e5AuRRC8Y05YQ
+         5wBCQq1kx1S/Tgv2NI9VQxaOQyTEx03kToX3Not2/XG1wMLFbY34xmXZ1rv4+SJjkMA9
+         FUcOYWGCyl9aGylaROIcul6bqQEPzAijYiW2+Ydz8RGz70uJGbagaR6bm2SUDmMO/xOV
+         SjGyMN8nK9fKDZTONSykOGuSMNtfGB6V+fl2I13qO1RP8k6h2u8d1KnWuaV1fAWLa9QW
+         JzEw==
+X-Gm-Message-State: AOAM5335C74JhHzlIjRzcES+S9IWV1VG4AtrBbP9EfDl8QJDHUV5tdSS
+        AZpxygCYTJnGaDWYwGBSFX2hrc+8caKFlk8uMkxfUw==
+X-Google-Smtp-Source: ABdhPJzZTghwKY2TlTpaD9Gyq4u7DA0d8+dC+wDNWpMnhTTPrPUtIgXcNu8LgDgNWstlwwFF0idUGjoHJyQTVyKjv68=
+X-Received: by 2002:a2e:7016:: with SMTP id l22mr1593857ljc.466.1604615580262;
+ Thu, 05 Nov 2020 14:33:00 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201105220938.GG1034841@piout.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201105144755.214341-1-kpsingh@chromium.org> <20201105144755.214341-9-kpsingh@chromium.org>
+ <20201105220250.uvm3unmbne36lsoz@kafai-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20201105220250.uvm3unmbne36lsoz@kafai-mbp.dhcp.thefacebook.com>
+From:   KP Singh <kpsingh@chromium.org>
+Date:   Thu, 5 Nov 2020 23:32:49 +0100
+Message-ID: <CACYkzJ4sNH+PjrjzTYBQ-wcRqCN+b+v+qSk6otx-b3M-U-V3-A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 8/9] bpf: Add tests for task_local_storage
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Song Liu <songliubraving@fb.com>, Paul Turner <pjt@google.com>,
+        Jann Horn <jannh@google.com>, Hao Luo <haoluo@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/11/2020 22:09, Alexandre Belloni wrote:
-> On 05/11/2020 22:01:10+0000, Guillaume Tucker wrote:
->> Enable wakeup by default in the hym8563 driver to match the behaviour
->> implemented by the majority of RTC drivers.  As per the description of
->> device_init_wakeup(), it should be enabled for "devices that everyone
->> expects to be wakeup sources".  One would expect this to be the case
->> with a real-time clock.
->>
-> 
-> Actually, the proper way of doing it for a discrete RTC is to only
-> enable wakeup if the irq request is successful or when the wakeup-source
-> property is present on the node.
+On Thu, Nov 5, 2020 at 11:03 PM Martin KaFai Lau <kafai@fb.com> wrote:
+>
+> On Thu, Nov 05, 2020 at 03:47:54PM +0100, KP Singh wrote:
+> > From: KP Singh <kpsingh@google.com>
+> >
+> > The test exercises the syscall based map operations by creating a pidfd
+> > for the current process.
+> >
 
-Thanks for the quick reply.  I see, I'll send a v2 accordingly.
+[...]
 
-Guillaume
+> > +}
+> > +
+> > +unsigned int duration;
+> static
 
->> Fixes: dcaf03849352 ("rtc: add hym8563 rtc-driver")
->> Reported-by: kernelci.org bot <bot@kernelci.org>
->> Signed-off-by: Guillaume Tucker <guillaume.tucker@collabora.com>
->> ---
->>  drivers/rtc/rtc-hym8563.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/rtc/rtc-hym8563.c b/drivers/rtc/rtc-hym8563.c
->> index 0fb79c4afb46..6fccfe634d57 100644
->> --- a/drivers/rtc/rtc-hym8563.c
->> +++ b/drivers/rtc/rtc-hym8563.c
->> @@ -527,7 +527,7 @@ static int hym8563_probe(struct i2c_client *client,
->>  	hym8563->client = client;
->>  	i2c_set_clientdata(client, hym8563);
->>  
->> -	device_set_wakeup_capable(&client->dev, true);
->> +	device_init_wakeup(&client->dev, true);
->>  
->>  	ret = hym8563_init_device(client);
->>  	if (ret) {
->> -- 
->> 2.20.1
->>
-> 
+Fixed.
 
+>
+> > +
+> > +#define TEST_STORAGE_VALUE 0xbeefdead
+> > +
+> > +struct storage {
+> > +     void *inode;
+> > +     unsigned int value;
+> > +     /* Lock ensures that spin locked versions of local stoage operations
+> > +      * also work, most operations in this tests are still single threaded
+> > +      */
+> > +     struct bpf_spin_lock lock;
+> > +};
+> > +
+> > +/* Copies an rm binary to a temp file. dest is a mkstemp template */
+> > +int copy_rm(char *dest)
+> static
+
+FIxed.
+
+[...]
+
+> > +     ret = chmod(dest, 0100);
+> > +     if (ret == -1)
+> > +             return errno;
+> > +
+> > +     close(fd_in);
+> > +     close(fd_out);
+> fd_in and fd_out are not closed in error cases.
+
+Fixed.
+
+>
+> >  {
+> > -     char fname[PATH_MAX] = "/tmp/fileXXXXXX";
+> > -     int fd;
+> > +     int ret, fd_in, fd_out;
+> > +     struct stat stat;
+> >
+
+[...]
+
+> > + */
+> > +int run_self_unlink(int *monitored_pid, const char *rm_path)
+> static
+
+Fixed.
+
+>
+> [ ... ]
+>
+> > +bool check_syscall_operations(int map_fd, int obj_fd)
+> static
+
+Fixed.
+
+>
+> [ ... ]
+>
+> >  void test_test_local_storage(void)
+> >  {
+> > +     char tmp_exec_path[PATH_MAX] = "/tmp/copy_of_rmXXXXXX";
+> > +     int err, serv_sk = -1, task_fd = -1;
+> >       struct local_storage *skel = NULL;
+> > -     int err, duration = 0, serv_sk = -1;
+> >
+
+[...]
+
+> > +     err = unlink(tmp_exec_path);
+
+> Will tmp_exec_path file be removed if there is error earlier?
+
+No. Since I cannot move this unlink as inode_unlink LSM hook sets the
+inode_storage
+result, I added another label close_prog_unlink which cleans it up for
+the errors
+before this succeeds.
+
+
+>
+> > +     if (CHECK(err != 0, "unlink", "unable to unlink %s: %d", tmp_exec_path,
+> > +               errno))
+> >               goto close_prog;
+> >
+> >       CHECK(skel->data->inode_storage_result != 0, "inode_storage_result",
+> > @@ -56,5 +200,6 @@ void test_test_local_storage(void)
+> >       close(serv_sk);
+> >
+> >  close_prog:
+> > +     close(task_fd);
+> >       local_storage__destroy(skel);
+> >  }
