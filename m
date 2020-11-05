@@ -2,211 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B2992A7B55
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 11:11:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 724A82A7B76
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 11:15:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728855AbgKEKL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 05:11:28 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:46322 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725308AbgKEKL2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 05:11:28 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 5D0EA1C0B85; Thu,  5 Nov 2020 11:11:24 +0100 (CET)
-Date:   Thu, 5 Nov 2020 11:11:23 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Amireddy Mallikarjuna reddy <mallikarjunax.reddy@linux.intel.com>
-Cc:     linux-leds@vger.kernel.org, dmurphy@ti.com,
-        devicetree@vger.kernel.org, robh+dt@kernel.org,
-        linux-kernel@vger.kernel.org, cheol.yong.kim@intel.com,
-        qi-ming.wu@intel.com, malliamireddy009@gmail.com,
-        yixin.zhu@intel.com
-Subject: Re: [PATCH v1 2/2] leds: lgm: Add LED controller driver for LGM Soc
-Message-ID: <20201105101123.GB7994@amd>
-References: <c9c963a2d03fbd03bd21f71f3d776ac5800cf6cc.1604331498.git.mallikarjunax.reddy@linux.intel.com>
- <5372c8410909f7b6b020cd379980dbe4e30e31d3.1604331498.git.mallikarjunax.reddy@linux.intel.com>
+        id S1727379AbgKEKP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 05:15:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39328 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726067AbgKEKP4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 05:15:56 -0500
+Received: from pobox.suse.cz (nat1.prg.suse.com [195.250.132.148])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E4E332087D;
+        Thu,  5 Nov 2020 10:15:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604571355;
+        bh=JUCNE9CUo/Zy5ahG3o2CBdGwYq96GfXTBKkF6jXHMQE=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=p7t9s+LGni3o8A34E6kdCde9kGiPPPFwfhxJHdPfNwePHO9WmC7/kK2PYche9V5Yj
+         uyAZfdhm4w1VoNGUnKJrxNGzRCs3hxAlybFv7z0BcDZeTPUp4e3WdBiLR372MmBgMH
+         gvINVI8nSQ1uMDRBQaWrHDoBYRsno2faONWiqQxY=
+Date:   Thu, 5 Nov 2020 11:15:51 +0100 (CET)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Lars Povlsen <lars.povlsen@microchip.com>
+cc:     Rishi Gupta <gupt21@gmail.com>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        UNGLinuxDriver <UNGLinuxDriver@microchip.com>,
+        linux-i2c@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] HID: mcp2221: Fix GPIO output handling
+In-Reply-To: <20201104220223.293253-1-lars.povlsen@microchip.com>
+Message-ID: <nycvar.YFH.7.76.2011051115140.18859@cbobk.fhfr.pm>
+References: <20201104220223.293253-1-lars.povlsen@microchip.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="gj572EiMnwbLXET9"
-Content-Disposition: inline
-In-Reply-To: <5372c8410909f7b6b020cd379980dbe4e30e31d3.1604331498.git.mallikarjunax.reddy@linux.intel.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 4 Nov 2020, Lars Povlsen wrote:
 
---gj572EiMnwbLXET9
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> The mcp2221 driver GPIO output handling has has several issues.
+> 
+> * A wrong value is used for the GPIO direction.
+> 
+> * Wrong offsets are calculated for some GPIO set value/set direction
+>   operations, when offset is larger than 0.
+> 
+> This has been fixed by introducing proper manifest constants for the
+> direction encoding, and using 'offsetof' when calculating GPIO
+> register offsets.
+> 
+> The updated driver has been tested with the Sparx5 pcb134/pcb135
+> board, which has the mcp2221 device with several (output) GPIO's.
 
-Hi!
+I believe we want also
 
-> diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
-> index ed943140e1fd..6445b39fe4fc 100644
-> --- a/drivers/leds/Kconfig
-> +++ b/drivers/leds/Kconfig
-> @@ -886,6 +886,16 @@ config LEDS_SGM3140
->  	  This option enables support for the SGM3140 500mA Buck/Boost Charge
->  	  Pump LED Driver.
-> =20
-> +config LEDS_LGM_SSO
-> +	tristate "LED support for Intel LGM SOC series"
-> +	depends on LEDS_CLASS
-> +	depends on MFD_SYSCON
-> +	depends on OF
-> +	help
-> +          Parallel to serial conversion, which is also called SSO contro=
-ller,
-> +          can drive external shift register for LED outputs.
-> +	  This enables LED support for Serial Shift Output Controller(SSO).
+Fixes: 328de1c519c5c092 ("HID: mcp2221: add GPIO functionality support")
 
-Something is wrong with indentation here.
+here, right? I'll add that and apply, thanks.
 
-> diff --git a/drivers/leds/leds-lgm-sso.c b/drivers/leds/leds-lgm-sso.c
-
-Could we put it into drivers/leds/blink/ directory? You'll need to
-create it.
-
-> index 000000000000..f1bae1c6ed3c
-> --- /dev/null
-> +++ b/drivers/leds/leds-lgm-sso.c
-> @@ -0,0 +1,881 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Intel LGM Soc LED SSO driver
-
-Spell out LGM, SSO. Soc->SoC.
-
-Pointer to documentation would be welcome here.
-
+> Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
+> ---
+>  drivers/hid/hid-mcp2221.c | 48 +++++++++++++++++++++++++++++++--------
+>  1 file changed, 39 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/hid/hid-mcp2221.c b/drivers/hid/hid-mcp2221.c
+> index 0d27ccb55dd9..4211b9839209 100644
+> --- a/drivers/hid/hid-mcp2221.c
+> +++ b/drivers/hid/hid-mcp2221.c
+> @@ -49,6 +49,36 @@ enum {
+>  	MCP2221_ALT_F_NOT_GPIOD = 0xEF,
+>  };
+>  
+> +/* MCP GPIO direction encoding */
 > +enum {
-> +	US_SW =3D 0,
-> +	US_GPTC =3D 1,
-> +	US_FPID =3D 2
+> +	MCP2221_DIR_OUT = 0x00,
+> +	MCP2221_DIR_IN = 0x01,
 > +};
-
-This is not really useful without additional comments.
-
-> +static u32 sso_rectify_brightness(u32 brightness)
-> +{
-> +	if (brightness > LED_FULL)
-> +		return LED_FULL;
-> +	else
-> +		return brightness;
-> +}
-
-Why?
-
-> +static int sso_rectify_blink_rate(struct sso_led_priv *priv, u32 rate)
-> +{
-> +	int i;
 > +
-> +	for (i =3D 0; i < MAX_FREQ_RANK; i++) {
-> +		if (rate <=3D priv->freq[i])
-> +			return i;
-> +	}
+> +#define MCP_NGPIO	4
 > +
-> +	return i - 1;
-> +}
-
-Can return -1. Is that expected?
-
+> +/* MCP GPIO set command layout */
+> +struct mcp_set_gpio {
+> +	u8 cmd;
+> +	u8 dummy;
+> +	struct {
+> +		u8 change_value;
+> +		u8 value;
+> +		u8 change_direction;
+> +		u8 direction;
+> +	} gpio[MCP_NGPIO];
+> +} __packed;
 > +
-> +		desc->np =3D to_of_node(fwnode_child);
-> +		if (fwnode_property_read_string(fwnode_child, "label",
-> +						&desc->name)) {
-> +			dev_err(dev, "LED no label name!\n");
-> +			goto __dt_err;
-> +		}
-
-Can you use appropriate helper from the core? labels are getting
-deprecated...
-
-
-> +		if (fwnode_property_present(fwnode_child,
-> +					    "retain-state-suspended"))
-> +			desc->retain_state_suspended =3D 1;
-
-Was this documented in the binding?
-
-> +		if (fwnode_property_read_u32(fwnode_child, "intel,led-pin",
-> +					     &prop)) {
-> +			dev_err(dev, "Failed to find led pin id!\n");
-> +			goto __dt_err;
-
-Would not we normally use something like reg =3D <x> to indicate pin?
-
-> +		if (fwnode_property_present(fwnode_child,
-> +					    "intel,sso-hw-trigger"))
-> +			desc->hw_trig =3D 1;
-
-Should not that be selectable on runtime?
-
-> +		if (fwnode_property_read_u32(fwnode_child,
-> +					     "intel,sso-brightness", &prop))
-> +			desc->brightness =3D priv->brightness;
-> +		else
-> +			desc->brightness =3D sso_rectify_brightness(prop);
-
-Can you look at "default-state" property?
-
-> +	ret =3D sso_gpio_gc_init(dev, priv);
-> +	if (ret)
-> +		return ret;
+> +/* MCP GPIO get command layout */
+> +struct mcp_get_gpio {
+> +	u8 cmd;
+> +	u8 dummy;
+> +	struct {
+> +		u8 direction;
+> +		u8 value;
+> +	} gpio[MCP_NGPIO];
+> +} __packed;
 > +
-> +	return 0;
-> +}
+>  /*
+>   * There is no way to distinguish responses. Therefore next command
+>   * is sent only after response to previous has been received. Mutex
+> @@ -542,7 +572,7 @@ static int mcp_gpio_get(struct gpio_chip *gc,
+>  
+>  	mcp->txbuf[0] = MCP2221_GPIO_GET;
+>  
+> -	mcp->gp_idx = (offset + 1) * 2;
+> +	mcp->gp_idx = offsetof(struct mcp_get_gpio, gpio[offset].value);
+>  
+>  	mutex_lock(&mcp->lock);
+>  	ret = mcp_send_data_req_status(mcp, mcp->txbuf, 1);
+> @@ -559,7 +589,7 @@ static void mcp_gpio_set(struct gpio_chip *gc,
+>  	memset(mcp->txbuf, 0, 18);
+>  	mcp->txbuf[0] = MCP2221_GPIO_SET;
+>  
+> -	mcp->gp_idx = ((offset + 1) * 4) - 1;
+> +	mcp->gp_idx = offsetof(struct mcp_set_gpio, gpio[offset].value);
+>  
+>  	mcp->txbuf[mcp->gp_idx - 1] = 1;
+>  	mcp->txbuf[mcp->gp_idx] = !!value;
+> @@ -575,7 +605,7 @@ static int mcp_gpio_dir_set(struct mcp2221 *mcp,
+>  	memset(mcp->txbuf, 0, 18);
+>  	mcp->txbuf[0] = MCP2221_GPIO_SET;
+>  
+> -	mcp->gp_idx = (offset + 1) * 5;
+> +	mcp->gp_idx = offsetof(struct mcp_set_gpio, gpio[offset].direction);
+>  
+>  	mcp->txbuf[mcp->gp_idx - 1] = 1;
+>  	mcp->txbuf[mcp->gp_idx] = val;
+> @@ -590,7 +620,7 @@ static int mcp_gpio_direction_input(struct gpio_chip *gc,
+>  	struct mcp2221 *mcp = gpiochip_get_data(gc);
+>  
+>  	mutex_lock(&mcp->lock);
+> -	ret = mcp_gpio_dir_set(mcp, offset, 0);
+> +	ret = mcp_gpio_dir_set(mcp, offset, MCP2221_DIR_IN);
+>  	mutex_unlock(&mcp->lock);
+>  
+>  	return ret;
+> @@ -603,7 +633,7 @@ static int mcp_gpio_direction_output(struct gpio_chip *gc,
+>  	struct mcp2221 *mcp = gpiochip_get_data(gc);
+>  
+>  	mutex_lock(&mcp->lock);
+> -	ret = mcp_gpio_dir_set(mcp, offset, 1);
+> +	ret = mcp_gpio_dir_set(mcp, offset, MCP2221_DIR_OUT);
+>  	mutex_unlock(&mcp->lock);
+>  
+>  	/* Can't configure as output, bailout early */
+> @@ -623,7 +653,7 @@ static int mcp_gpio_get_direction(struct gpio_chip *gc,
+>  
+>  	mcp->txbuf[0] = MCP2221_GPIO_GET;
+>  
+> -	mcp->gp_idx = (offset + 1) * 2;
+> +	mcp->gp_idx = offsetof(struct mcp_get_gpio, gpio[offset].direction);
+>  
+>  	mutex_lock(&mcp->lock);
+>  	ret = mcp_send_data_req_status(mcp, mcp->txbuf, 1);
+> @@ -632,7 +662,7 @@ static int mcp_gpio_get_direction(struct gpio_chip *gc,
+>  	if (ret)
+>  		return ret;
+>  
+> -	if (mcp->gpio_dir)
+> +	if (mcp->gpio_dir == MCP2221_DIR_IN)
+>  		return GPIO_LINE_DIRECTION_IN;
+>  
+>  	return GPIO_LINE_DIRECTION_OUT;
+> @@ -758,7 +788,7 @@ static int mcp2221_raw_event(struct hid_device *hdev,
+>  				mcp->status = -ENOENT;
+>  			} else {
+>  				mcp->status = !!data[mcp->gp_idx];
+> -				mcp->gpio_dir = !!data[mcp->gp_idx + 1];
+> +				mcp->gpio_dir = data[mcp->gp_idx + 1];
+>  			}
+>  			break;
+>  		default:
+> @@ -860,7 +890,7 @@ static int mcp2221_probe(struct hid_device *hdev,
+>  	mcp->gc->get_direction = mcp_gpio_get_direction;
+>  	mcp->gc->set = mcp_gpio_set;
+>  	mcp->gc->get = mcp_gpio_get;
+> -	mcp->gc->ngpio = 4;
+> +	mcp->gc->ngpio = MCP_NGPIO;
+>  	mcp->gc->base = -1;
+>  	mcp->gc->can_sleep = 1;
+>  	mcp->gc->parent = &hdev->dev;
+> -- 
+> 2.25.1
+> 
 
-Just return ret.
+-- 
+Jiri Kosina
+SUSE Labs
 
-> +
-> +	ret =3D clk_prepare_enable(priv->gclk);
-> +	if (ret) {
-> +		dev_err(dev, "Failed to prepate/enable sso gate clock!\n");
-> +		return ret;
-> +	}
-> +
-> +	priv->fpid_clk =3D devm_clk_get(dev, "fpid");
-> +	if (IS_ERR(priv->fpid_clk)) {
-> +		dev_err(dev, "Failed to get fpid clock!\n");
-> +		return PTR_ERR(priv->fpid_clk);
-> +	}
-
-clk disable here?
-
-> +	ret =3D clk_prepare_enable(priv->fpid_clk);
-> +	if (ret) {
-> +		dev_err(dev, "Failed to prepare/enable fpid clock!\n");
-> +		return ret;
-> +	}
-> +	priv->fpid_clkrate =3D clk_get_rate(priv->fpid_clk);
-> +
-> +	priv->mmap =3D syscon_node_to_regmap(dev->of_node);
-> +	if (IS_ERR(priv->mmap)) {
-> +		dev_err(dev, "Failed to map iomem!\n");
-> +		return PTR_ERR(priv->mmap);
-> +	}
-
-clk disable here? ... and probably elsewhere?
-
-Best regards,
-							Pavel
---=20
-http://www.livejournal.com/~pavelmachek
-
---gj572EiMnwbLXET9
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAl+jz8sACgkQMOfwapXb+vL/kwCfZ1IFg1Bv2NnP5463LyMa5gFY
-uyoAmwQlHlHT5DY5bVSK9pz3a05lJcS/
-=0SMC
------END PGP SIGNATURE-----
-
---gj572EiMnwbLXET9--
