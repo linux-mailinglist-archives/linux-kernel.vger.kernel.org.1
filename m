@@ -2,58 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE0FC2A8995
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 23:14:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77D482A8996
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 23:16:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732517AbgKEWOx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 17:14:53 -0500
-Received: from relay12.mail.gandi.net ([217.70.178.232]:44125 "EHLO
-        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731508AbgKEWOx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 17:14:53 -0500
-Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay12.mail.gandi.net (Postfix) with ESMTPSA id 5754F200006;
-        Thu,  5 Nov 2020 22:14:51 +0000 (UTC)
-Date:   Thu, 5 Nov 2020 23:14:51 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Claudius Heine <ch@denx.de>
-Cc:     Alessandro Zummo <a.zummo@towertech.it>, linux-rtc@vger.kernel.org,
+        id S1732639AbgKEWQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 17:16:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36286 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731508AbgKEWQH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 17:16:07 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1109E20735;
+        Thu,  5 Nov 2020 22:16:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604614566;
+        bh=imUVBYp5M4wmbLeT+9vciE49oS3Kkp42AlSUoxHmZhk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=VaJUVC2N2nUyV5925zEvK9jTWTGCpvlU1B0Vi/qCSuzJGlipDyRr1nXj11CqWWtea
+         JsgkIA+VtMpZOSrKLvXhYoqKYBo3fEBkGTnxvv8tNQ5Rck4+1n6x4tLjCOt5xIemWJ
+         rK25gTTc+/T3jYUPZV4eOobiMOQQh2EaSzL8ndDM=
+Date:   Thu, 5 Nov 2020 14:16:05 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     menglong8.dong@gmail.com
+Cc:     kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org, davem@davemloft.net,
+        ycheng@google.com, ncardwell@google.com, priyarjha@google.com,
+        edumazet@google.com, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org,
-        Henning Schild <henning.schild@siemens.com>,
-        Johannes Hahn <johannes-hahn@siemens.com>
-Subject: Re: [PATCH 0/2]  Adding I2C support to RX6110 RTC
-Message-ID: <20201105221451.GH1034841@piout.net>
-References: <20201104102629.3422048-1-ch@denx.de>
+        Menglong Dong <dong.menglong@zte.com.cn>
+Subject: Re: [PATCH net-next] net: udp: introduce UDP_MIB_MEMERRORS for
+ udp_mem
+Message-ID: <20201105141605.06b936f3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <1604560572-18582-1-git-send-email-dong.menglong@zte.com.cn>
+References: <1604560572-18582-1-git-send-email-dong.menglong@zte.com.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201104102629.3422048-1-ch@denx.de>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Claudius!
-
-It has been a while ;)
-
-On 04/11/2020 11:26:27+0100, Claudius Heine wrote:
-> Hi,
+On Thu,  5 Nov 2020 02:16:11 -0500 menglong8.dong@gmail.com wrote:
+> From: Menglong Dong <dong.menglong@zte.com.cn>
 > 
-> this patch introduces I2C support to the RX6110 RTC driver and also adds
-> an ACPI identifier to it.
+> When udp_memory_allocated is at the limit, __udp_enqueue_schedule_skb
+> will return a -ENOBUFS, and skb will be dropped in __udp_queue_rcv_skb
+> without any counters being done. It's hard to find out what happened
+> once this happen.
 > 
-> Since we are also pushing the coreboot changes for the ACPI table
-> upstream in parallel, we are free to name this ACPI entry however we
-> like it seems. So any feedback on that would be welcome ;)
+> So we introduce a UDP_MIB_MEMERRORS to do this job. Well, this change
+> looks friendly to the existing users, such as netstat:
 > 
+> $ netstat -u -s
+> Udp:
+>     0 packets received
+>     639 packets to unknown port received.
+>     158689 packet receive errors
+>     180022 packets sent
+>     RcvbufErrors: 20930
+>     MemErrors: 137759
+> UdpLite:
+> IpExt:
+>     InOctets: 257426235
+>     OutOctets: 257460598
+>     InNoECTPkts: 181177
+> 
+> Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
 
-I don't care too much about ACPI so if you are really looking for advice
-there, I guess you should ask seom of the ACPI guys (but I guess you are
-free to choose whatever you want).
+Please CC Paolo since he have you feedback on v1 and Willem de Bruijn
+<willemb@google.com>.
 
--- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+> diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
+> index 09f0a23d1a01..aa1bd53dd9f9 100644
+> --- a/net/ipv4/udp.c
+> +++ b/net/ipv4/udp.c
+> @@ -2038,6 +2038,9 @@ static int __udp_queue_rcv_skb(struct sock *sk, struct sk_buff *skb)
+>  		if (rc == -ENOMEM)
+>  			UDP_INC_STATS(sock_net(sk), UDP_MIB_RCVBUFERRORS,
+>  					is_udplite);
+> +		else
+> +			UDP_INC_STATS(sock_net(sk), UDP_MIB_MEMERRORS,
+> +					is_udplite);
+
+The alignment of the line above is off, just ignore it and align the
+new code correctly so that checkpatch does not complain.
