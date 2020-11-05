@@ -2,125 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A70582A82F9
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 17:04:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D63952A82FF
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 17:06:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729110AbgKEQEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 11:04:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59540 "EHLO
+        id S1729481AbgKEQGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 11:06:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725308AbgKEQEl (ORCPT
+        with ESMTP id S1725998AbgKEQGE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 11:04:41 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7010C0613CF;
-        Thu,  5 Nov 2020 08:04:40 -0800 (PST)
-Received: from zn.tnic (p200300ec2f0ee5006c78cd15f1739a31.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:e500:6c78:cd15:f173:9a31])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 0EE661EC03A0;
-        Thu,  5 Nov 2020 17:04:39 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1604592279;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SzsXHWOTotG9TSv9RImL2IoAhUNP7oiQrY5qi5tuMzg=;
-        b=TTyCVstWqebTE3827G5LtgKLGpokNNaaiDLK72NkKv8n4FR4eGLhoqG67GosMAQP+nAxyu
-        8FHp+h1yYv1jkvGiKjeYd2WFJhZ9ElQ6sGBygTGjiO1EcfEqVqwPfxSoh9C/vSE+6N3Tqh
-        a7tj641Cq/hxAICh/LzykJUSICAenIw=
-Date:   Thu, 5 Nov 2020 17:04:24 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        andriy.shevchenko@linux.intel.com, asapek@google.com,
-        cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com, kai.huang@intel.com,
-        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
-        luto@kernel.org, nhorman@redhat.com, npmccallum@redhat.com,
-        puiterwijk@redhat.com, rientjes@google.com, tglx@linutronix.de,
-        yaozhangx@google.com, mikko.ylinen@intel.com
-Subject: Re: [PATCH v40 10/24] mm: Add 'mprotect' hook to struct
- vm_operations_struct
-Message-ID: <20201105160424.GC25636@zn.tnic>
-References: <20201104145430.300542-1-jarkko.sakkinen@linux.intel.com>
- <20201104145430.300542-11-jarkko.sakkinen@linux.intel.com>
+        Thu, 5 Nov 2020 11:06:04 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DC86C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 08:06:04 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id t14so1705508pgg.1
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 08:06:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ovikxo5/mCGDynhuLKWYnfoRnCYgUGKva9i9tEWv1a8=;
+        b=EdukGTkEV/UUSaIBNvoE9CM3nPrhkwXNUgIkCvYzGU0VXtYPQHBJpXLD3x6fJ4a9Qz
+         sYOjmpLHcZfbS3iesTi4Y4tbT5H7lGvuGO2X8rTKMqV3MQmg80zvA38HlIG6ToEyqzcy
+         Qbtt6XGtANWh3vpIDLlJyg5PHKGMxL+9bpc5lwm/mD02+zj1JbjLJyIjjWI6pwH4TWgM
+         a+1Qv9WFfHO5mSay7f3dUi7/05jAdoWXxdOiSK1ybGn4OLLigjf6+qTiNcWYQlTCPLVF
+         C0vHyU8mjsH3y2NVokK0nfjhiDGYXRSH9Tf1bJ+xuW6mREPmopu/7C1j0h6hq5VJrKwC
+         Fzdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ovikxo5/mCGDynhuLKWYnfoRnCYgUGKva9i9tEWv1a8=;
+        b=J4ZYVyw90GJMp1M3HgbBP0D4cCa/01LlM6KX/Lj/eH8PDt3kqwtcn+zn7mlDVkjrTV
+         8tMgWRUfvvWQUqKc11umx0pLAFHjrmSFJN+aRgJbpK5brHcdqYqUydgb+FE8td5VIiLd
+         ogeoaNaYfL8ATNiNMj3SpWJxr9128givIDKI0hD61G7kXtaLYHo1LBN7ZJ1iUnXQ+XDy
+         ff+xw839uVeGzM9ovTVyUNyUFdEGUQ5FDgDK+xAvB7Z2D0wH4jK3iO/pzQtmTnQIEaDC
+         ttJiFz1CGhqwGUkNNQEosyE3dFNZ13TT45zb/G9563JJnlRy++n+54twJYaWW6ro3R+i
+         CIJQ==
+X-Gm-Message-State: AOAM531CFl92hedRtVHoergLZ08XKS3F9z5p51DFV/ECtzot/TfAF4nj
+        vuG1dQ808uFqXhhs9VCTp2vVJRh9z7pZTAdhnEb7fA==
+X-Google-Smtp-Source: ABdhPJw7XeP0zBLiCad13iVrNNx/nweI/6exBCIWAlXy75ifcsZStyxYB7vo1jWnclPs0cEx6zaCYK9+QPFCzDvmGus=
+X-Received: by 2002:a62:cd85:0:b029:18b:36c7:382d with SMTP id
+ o127-20020a62cd850000b029018b36c7382dmr2838489pfg.14.1604592363377; Thu, 05
+ Nov 2020 08:06:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201104145430.300542-11-jarkko.sakkinen@linux.intel.com>
+References: <20201102232304.2735187-1-dlatypov@google.com>
+In-Reply-To: <20201102232304.2735187-1-dlatypov@google.com>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Thu, 5 Nov 2020 08:05:51 -0800
+Message-ID: <CAFd5g45+XbduCH4oE8dBd-uBR2MZg7-w5tf7DghqGrvMyydPUQ@mail.gmail.com>
+Subject: Re: [PATCH] kunit: fix display of failed expectations for strings
+To:     Daniel Latypov <dlatypov@google.com>
+Cc:     David Gow <davidgow@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 04:54:16PM +0200, Jarkko Sakkinen wrote:
-> From: Sean Christopherson <sean.j.christopherson@intel.com>
-> 
-> Background
-> ==========
-> 
-> 1. SGX enclave pages are populated with data by copying from normal memory
->    via ioctl() (SGX_IOC_ENCLAVE_ADD_PAGES), which will be added later in
->    this series.
-> 2. It is desirable to be able to restrict those normal memory data sources.
->    For instance, to ensure that the source data is executable before
->    copying data to an executable enclave page.
-> 3. Enclave page permissions are dynamic (just like normal permissions) and
->    can be adjusted at runtime with mprotect().
-> 
-> This creates a problem because the original data source may have long since
-> vanished at the time when enclave page permissions are established (mmap()
-> or mprotect()).
-> 
-> The solution (elsewhere in this series) is to force enclaves creators to
-> declare their paging permission *intent* up front to the ioctl().  This
-> intent can me immediately compared to the source data’s mapping and
-> rejected if necessary.
-> 
-> The “intent” is also stashed off for later comparison with enclave
-> PTEs. This ensures that any future mmap()/mprotect() operations
-> performed by the enclave creator or done on behalf of the enclave
-> can be compared with the earlier declared permissions.
-> 
-> Problem
-> =======
-> 
-> There is an existing mmap() hook which allows SGX to perform this
-> permission comparison at mmap() time.  However, there is no corresponding
-> ->mprotect() hook.
-> 
-> Solution
-> ========
-> 
-> Add a vm_ops->mprotect() hook so that mprotect() operations which are
-> inconsistent with any page's stashed intent can be rejected by the driver.
-> 
-> Cc: linux-mm@kvack.org
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Acked-by: Jethro Beekman <jethro@fortanix.com>
-> Reviewed-by: Darren Kenny <darren.kenny@oracle.com>
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> Co-developed-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-> Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-> ---
->  include/linux/mm.h | 3 +++
->  mm/mprotect.c      | 5 ++++-
->  2 files changed, 7 insertions(+), 1 deletion(-)
+On Mon, Nov 2, 2020 at 3:23 PM Daniel Latypov <dlatypov@google.com> wrote:
+>
+> Currently the following expectation
+>   KUNIT_EXPECT_STREQ(test, "hi", "bye");
+> will produce:
+>   Expected "hi" == "bye", but
+>       "hi" == 1625079497
+>       "bye" == 1625079500
+>
+> After this patch:
+>   Expected "hi" == "bye", but
+>       "hi" == hi
+>       "bye" == bye
+>
+> KUNIT_INIT_BINARY_STR_ASSERT_STRUCT() was written but just mistakenly
+> not actually used by KUNIT_EXPECT_STREQ() and friends.
+>
+> Signed-off-by: Daniel Latypov <dlatypov@google.com>
 
-This needs an ACK from an mm person.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+Tested-by: Brendan Higgins <brendanhiggins@google.com>
