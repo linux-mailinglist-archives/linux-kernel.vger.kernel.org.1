@@ -2,126 +2,284 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 415BA2A898E
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 23:08:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31B382A8988
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 23:07:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732627AbgKEWIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 17:08:49 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:20186 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731508AbgKEWIt (ORCPT
+        id S1732495AbgKEWHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 17:07:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59968 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732295AbgKEWHp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 17:08:49 -0500
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 0A5M8XkC021436;
-        Thu, 5 Nov 2020 14:08:33 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=qqc11MGOXeMy+jqG9TjFb4KUaOE4ezmRiad58E4zxvQ=;
- b=qGXRsUGt/A8AJOy41MklJDneDEu23UqPkYcWWfONPotaLrM+l3N2THwP/nt7PgwwbMdo
- VH7n0e5Dol4+WduVlqs2JtQ9vAqe4QiFQNOcz7MA/MwvK+0Mu6T1VlEsbCvdRXxzfcoj
- Mj0XUu7GgXvo18ETapU+c+vvdwjKerdxddg= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0001303.ppops.net with ESMTP id 34mek3452v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 05 Nov 2020 14:08:33 -0800
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.199) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 5 Nov 2020 14:07:57 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dGaARhnRnUtCSKuWhwrN4+12HnslW6VoFkR63MJLaDaYg5zD1QEHUIBWUzqeZA5dMbId50l5E62TL+c2THr0Fazxm1WDbpwg1/dnOSzH6bsAERMqK/UPK3uOlZo09K8IJKxHdqTyWmgKKox8bDuzs4xBp2P/fONUIhEJSGIWmyVbm1hDEgRIYBqVMC+BjByxGOkL1kQe7nE28GRjuv2YZzzfFppAvJT1W7PnM+dBql/yZCim37xKOwvigpv2TCUcQ52fSWtXf1ywQ6P9AxXdePL1znKFnRAvsnAmLqjQkf0ElIEUopVqdMyVKQT25USMyxm5t5rmvX/y8YJUxNuVjA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qqc11MGOXeMy+jqG9TjFb4KUaOE4ezmRiad58E4zxvQ=;
- b=BIQzOctbe3ogYIgPo4DrK2ikQg7UhWV7QSiW/QpUgXNn+VIiHnQqGd4WRJzZzh+835VTZsERj2B6+EVIRBPI+YPRNONBCu8NFwz8daT5MwdpD0d+oFiUUF4uazPjSiyTVBV5qscw+rC4QmMPLTB/gA9PhUOW7cfHUOEHfJq+bsFg5rnt0jP+kceP+tAqBQ78EPWZJc62duu9kOnh+krR2qmlYhI3i49vHuNAM3/8w79Z65Q5V3+5vRJ+l8A6vKVEY8Tj4FxCC8dGqfRcl4RSeMiFf50amhcqvTxwxCZYEyIB6K1Nw8wmVZcdssPz1qMtTHrSsyip1j8eOjhCxOkPng==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qqc11MGOXeMy+jqG9TjFb4KUaOE4ezmRiad58E4zxvQ=;
- b=OpmQZTGsdYqxEL0ejW3hW+6HiKKHPn3t2u7DYN8rSgM3UcX1ZrFGAoTCM5NRSv2eFg5iXVQMkBjneQemCsCaN1qNH/Ox4AjwxxVuLD1+A3r1KdssFm0hiUWKy+7FtHwe8laYcml9js2dci4Ng9oJrqdEkV5j/PbCxxFM9IHtNqg=
-Authentication-Results: chromium.org; dkim=none (message not signed)
- header.d=none;chromium.org; dmarc=none action=none header.from=fb.com;
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
- by SJ0PR15MB4202.namprd15.prod.outlook.com (2603:10b6:a03:2ed::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.28; Thu, 5 Nov
- 2020 22:07:56 +0000
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::bc1d:484f:cb1f:78ee]) by BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::bc1d:484f:cb1f:78ee%4]) with mapi id 15.20.3499.032; Thu, 5 Nov 2020
- 22:07:56 +0000
-Date:   Thu, 5 Nov 2020 14:07:43 -0800
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     KP Singh <kpsingh@chromium.org>
-CC:     <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Song Liu <songliubraving@fb.com>, Paul Turner <pjt@google.com>,
-        Jann Horn <jannh@google.com>, Hao Luo <haoluo@google.com>
-Subject: Re: [PATCH bpf-next v4 9/9] bpf: Exercise syscall operations for
- inode and sk storage
-Message-ID: <20201105220743.x75mr4qmijaf52gl@kafai-mbp.dhcp.thefacebook.com>
-References: <20201105144755.214341-1-kpsingh@chromium.org>
- <20201105144755.214341-10-kpsingh@chromium.org>
+        Thu, 5 Nov 2020 17:07:45 -0500
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADA7EC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 14:07:45 -0800 (PST)
+Received: by mail-qt1-x843.google.com with SMTP id f93so2288980qtb.10
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 14:07:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=hPm+y961bfqbZOkNogoU0d9pQKUiaw2qg1d2MxvKSPI=;
+        b=vN+tPcj3YsxO9AGsCgwPslkHx4Dze80O3pQkqN4vlI8guljm52XgXWIXJBGHuYzSa/
+         rWxSGbd6QfbKbXDhOCiQFyz+XFGQxxbPLXRiRz6JoI/VJi/E9DXS0WbPRGyztwI+ngvL
+         HuA8L/SACiqt1+ONEEvh5n+rxTeEi2TeqsXwM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hPm+y961bfqbZOkNogoU0d9pQKUiaw2qg1d2MxvKSPI=;
+        b=Fr5PzZpYl7VD4vx6haMYLrEtvOIBd7PKv0+eG3RQCReLVuLlX6pfTBk5csrZJ5470u
+         2oR2cRQbN2nI5LZsqfM5kmG2Qd0qeRdnJsO3+2Hkph0Pan9uQy1wD3p/W/UBiVeP7HtH
+         fKWtGGagCRndBWorHj99UB3SKvyUFnz6IUFEmct4ANWECqeooYbpSWpU6o6ydz+h85XY
+         O4JjBEFBUtfmhq4DxHil/gFs744zdyNX5SZ9fFYPGfhcIMjH+djDdgaLs8/nYkz0e7EY
+         SfktGfpOQmysVc7LUv4UGkdUeKbQXSoVBEEKa5WT3iTbDRvZmPyYobrdQ2UHpezXeiVy
+         KZDQ==
+X-Gm-Message-State: AOAM532o/V/KX53Kt1FPYEh1JsyBDSvLLNIRlwO65z2ZCzw1qUW6LBwi
+        iyCSWDTgKDjLBb4Y9JILWrOniw==
+X-Google-Smtp-Source: ABdhPJxIrXYdrlZ8wNnrP7wL+UzHFa8E7Xc7cDZyluAJPWN0n8FoGI1HxkdtSc2pNaUVfXaf9eFjCg==
+X-Received: by 2002:ac8:7391:: with SMTP id t17mr3914510qtp.289.1604614064864;
+        Thu, 05 Nov 2020 14:07:44 -0800 (PST)
+Received: from localhost ([2620:15c:6:411:cad3:ffff:feb3:bd59])
+        by smtp.gmail.com with ESMTPSA id l16sm1761827qtr.21.2020.11.05.14.07.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Nov 2020 14:07:43 -0800 (PST)
+Date:   Thu, 5 Nov 2020 17:07:43 -0500
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, mingo@kernel.org,
+        torvalds@linux-foundation.org, fweisbec@gmail.com,
+        keescook@chromium.org, kerrnel@google.com,
+        Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
+        benbjiang@tencent.com,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
+        chris.hyser@oracle.com,
+        Vineeth Remanan Pillai <vpillai@digitalocean.com>,
+        Aaron Lu <aaron.lu@linux.alibaba.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Tim Chen <tim.c.chen@intel.com>
+Subject: Re: [PATCH v8 -tip 06/26] sched: Add core wide task selection and
+ scheduling.
+Message-ID: <20201105220743.GD2656962@google.com>
+References: <20201020014336.2076526-1-joel@joelfernandes.org>
+ <20201020014336.2076526-7-joel@joelfernandes.org>
+ <20201023135129.GS2611@hirez.programming.kicks-ass.net>
+ <20201023135400.GA2651@hirez.programming.kicks-ass.net>
+ <20201023175724.GA3563800@google.com>
+ <20201023192654.GH2974@worktop.programming.kicks-ass.net>
+ <20201023213118.GD3563800@google.com>
+ <20201026093131.GF2628@hirez.programming.kicks-ass.net>
+ <20201105185019.GA2771003@google.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201105144755.214341-10-kpsingh@chromium.org>
-X-Originating-IP: [2620:10d:c090:400::5:3041]
-X-ClientProxiedBy: MWHPR15CA0044.namprd15.prod.outlook.com
- (2603:10b6:300:ad::30) To BY5PR15MB3571.namprd15.prod.outlook.com
- (2603:10b6:a03:1f6::32)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:3041) by MWHPR15CA0044.namprd15.prod.outlook.com (2603:10b6:300:ad::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend Transport; Thu, 5 Nov 2020 22:07:55 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 67783dce-51d5-4d9f-0d72-08d881d73fd5
-X-MS-TrafficTypeDiagnostic: SJ0PR15MB4202:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SJ0PR15MB42024A9E64B271E9D61A2EBAD5EE0@SJ0PR15MB4202.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: p9WjRS2dN3yd2aqeV4dQiz6inNmxC0fAQ4BBLouieNg6uIiyzcXWq0tWLlnNfbOgH3Sm7tql9Ap84yR9jRHv8Rd8NvGVxanJpH+ckQ4yUecnRAmRD3mRLBgJaLosKiO6itdayQGXz4CIk0DrYnl7L4cnDs8dyBWtTtfBys+c4sEOZhLreTFOR1qoLM1HOEQ9De+OJgy+ASUJWtEDvbdM7dUg594p0uRMG5yvAZSjIsIQoprtFk2KuBx4aePUpz/J1eCtcmYk8PwzfDuXBziMQCWwLvAuQ3by0QXi3e/4xKqzyrByDH7QrczoBPjLFombcBpcZuCggJhIVvYjuz27dg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(396003)(346002)(376002)(366004)(39860400002)(16526019)(66476007)(4744005)(1076003)(186003)(66556008)(6916009)(86362001)(66946007)(4326008)(5660300002)(55016002)(52116002)(7696005)(2906002)(54906003)(9686003)(8936002)(316002)(6666004)(83380400001)(6506007)(478600001)(8676002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: Q7Siomu+c+vAWe4YhsciDO0tqfWgCA1dd7Ts1f4J7qG5bMExGvVok2R/KSluNPfgkZVBhqBqauJcSYtlhw769VZIujI8jrLgljlL0f50CBCmXObb7ZdaxTQg8nv5qqNxvGjcDdGrLjCLDlgnZVeEa+JMFNAP/E34n18GMhqQW8DmFMIBybmAEKvk+Wzt9mipLeUaROVNpUCLK4kkyom2L/KcHkPzufUqPidvA25bH0H0hgsKvUa/TM2oWcKFyRkTYx+j9ORx1KSYl3KFZuhvD6kdtVY3ImEYEFP/mP9kvktZtWRVkI/CPyANPSGe9dvv0w+w269o6bgC3AMGLMcUgkGTfFBDsgVIw8lHXKDVlLnmbmganjoKCj2vh7K/ldZkg33DVi65LRZpV3fv6pVWy1a3BN81uQ9BTjQbobouIvk0l8bEdfQpzZNUdLozaKkEKWtuoAXeIG3mQG6JoI1n5j4h16AKNNhd+UVFsMY/bN97DGoGEJNOqUCsarfHkRocOtvuz9B0P5Aq8CQTCPw56KO4i9DJfIaN3WQB7zi9dxuc1uDfetw59CUhLsCaK/Ns6RuGihYySP4OOdaWHw9I77zIFSzLgZOj0rjBXX4OGvFLBKTyP3XUDazQXYUwC2kHPKshE9ASCPBn4Gmt/tzlEJtiR7mmeHDuaSoyikXrvy0/b3daCN8k0OVkaD9Y1Uxc
-X-MS-Exchange-CrossTenant-Network-Message-Id: 67783dce-51d5-4d9f-0d72-08d881d73fd5
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Nov 2020 22:07:56.3673
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 0wtne8S2v4Ma2UU9e469+cl97ZlEbk64iIteuItcbFg8AA6AMSi7H0hK84Fi36Pc
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR15MB4202
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-05_15:2020-11-05,2020-11-05 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- phishscore=0 mlxscore=0 adultscore=0 clxscore=1015 spamscore=0
- priorityscore=1501 suspectscore=1 bulkscore=0 mlxlogscore=898
- lowpriorityscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2011050142
-X-FB-Internal: deliver
+In-Reply-To: <20201105185019.GA2771003@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 03:47:55PM +0100, KP Singh wrote:
-> From: KP Singh <kpsingh@google.com>
+On Thu, Nov 05, 2020 at 01:50:19PM -0500, Joel Fernandes wrote:
+> On Mon, Oct 26, 2020 at 10:31:31AM +0100, Peter Zijlstra wrote:
+> > On Fri, Oct 23, 2020 at 05:31:18PM -0400, Joel Fernandes wrote:
+> > > On Fri, Oct 23, 2020 at 09:26:54PM +0200, Peter Zijlstra wrote:
+> > 
+> > > > How about this then?
+> > > 
+> > > This does look better. It makes sense and I think it will work. I will look
+> > > more into it and also test it.
+> > 
+> > Hummm... Looking at it again I wonder if I can make something like the
+> > below work.
+> > 
+> > (depends on the next patch that pulls core_forceidle into core-wide
+> > state)
+> > 
+> > That would retain the CFS-cgroup optimization as well, for as long as
+> > there's no cookies around.
+> > 
+> > --- a/kernel/sched/core.c
+> > +++ b/kernel/sched/core.c
+> > @@ -4691,8 +4691,6 @@ pick_next_task(struct rq *rq, struct tas
+> >  		return next;
+> >  	}
+> >  
+> > -	put_prev_task_balance(rq, prev, rf);
+> > -
+> >  	smt_mask = cpu_smt_mask(cpu);
+> >  
+> >  	/*
+> > @@ -4707,14 +4705,25 @@ pick_next_task(struct rq *rq, struct tas
+> >  	 */
+> >  	rq->core->core_task_seq++;
+> >  	need_sync = !!rq->core->core_cookie;
+> > -
+> > -	/* reset state */
+> > -reset:
+> > -	rq->core->core_cookie = 0UL;
+> >  	if (rq->core->core_forceidle) {
+> >  		need_sync = true;
+> >  		rq->core->core_forceidle = false;
+> >  	}
+> > +
+> > +	if (!need_sync) {
+> > +		next = __pick_next_task(rq, prev, rf);
 > 
-> Use the check_syscall_operations added for task_local_storage to
-> exercise syscall operations for other local storage maps:
+> This could end up triggering pick_next_task_fair's newidle balancing;
 > 
-> * Check the absence of an element for the given fd.
-> * Create a new element, retrieve and compare its value.
-> * Delete the element and check again for absence.
+> > +		if (!next->core_cookie) {
+> > +			rq->core_pick = NULL;
+> > +			return next;
+> > +		}
 > 
-> Signed-off-by: KP Singh <kpsingh@google.com>
-Acked-by: Martin KaFai Lau <kafai@fb.com>
+> .. only to realize here that pick_next_task_fair() that we have to put_prev
+> the task back as it has a cookie, but the effect of newidle balancing cannot
+> be reverted.
+> 
+> Would that be a problem as the newly pulled task might be incompatible and
+> would have been better to leave it alone?
+> 
+> TBH, this is a drastic change and we've done a lot of testing with the
+> current code and its looking good. I'm a little scared of changing it right
+> now and introducing regression. Can we maybe do this after the existing
+> patches are upstream?
+
+After sleeping over it, I am trying something like the following. Thoughts?
+
+Basically, I call pick_task() in advance. That's mostly all that's different
+with your patch:
+
+---8<-----------------------
+
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 0ce17aa72694..366e5ed84a63 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -5000,28 +5000,34 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+ 	put_prev_task_balance(rq, prev, rf);
+ 
+ 	smt_mask = cpu_smt_mask(cpu);
+-
+-	/*
+-	 * core->core_task_seq, core->core_pick_seq, rq->core_sched_seq
+-	 *
+-	 * @task_seq guards the task state ({en,de}queues)
+-	 * @pick_seq is the @task_seq we did a selection on
+-	 * @sched_seq is the @pick_seq we scheduled
+-	 *
+-	 * However, preemptions can cause multiple picks on the same task set.
+-	 * 'Fix' this by also increasing @task_seq for every pick.
+-	 */
+-	rq->core->core_task_seq++;
+ 	need_sync = !!rq->core->core_cookie;
+ 
+ 	/* reset state */
+-reset:
+ 	rq->core->core_cookie = 0UL;
+ 	if (rq->core->core_forceidle) {
+ 		need_sync = true;
+ 		fi_before = true;
+ 		rq->core->core_forceidle = false;
+ 	}
++
++	/*
++	 * Optimize for common case where this CPU has no cookies
++	 * and there are no cookied tasks running on siblings.
++	 */
++	if (!need_sync) {
++		for_each_class(class) {
++			next = class->pick_task(rq);
++			if (next)
++				break;
++		}
++
++		if (!next->core_cookie) {
++			rq->core_pick = NULL;
++			goto done;
++		}
++		need_sync = true;
++	}
++
+ 	for_each_cpu(i, smt_mask) {
+ 		struct rq *rq_i = cpu_rq(i);
+ 
+@@ -5039,6 +5045,18 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+ 		}
+ 	}
+ 
++	/*
++	 * core->core_task_seq, core->core_pick_seq, rq->core_sched_seq
++	 *
++	 * @task_seq guards the task state ({en,de}queues)
++	 * @pick_seq is the @task_seq we did a selection on
++	 * @sched_seq is the @pick_seq we scheduled
++	 *
++	 * However, preemptions can cause multiple picks on the same task set.
++	 * 'Fix' this by also increasing @task_seq for every pick.
++	 */
++	rq->core->core_task_seq++;
++
+ 	/*
+ 	 * Try and select tasks for each sibling in decending sched_class
+ 	 * order.
+@@ -5059,40 +5077,8 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+ 			 * core.
+ 			 */
+ 			p = pick_task(rq_i, class, max);
+-			if (!p) {
+-				/*
+-				 * If there weren't no cookies; we don't need to
+-				 * bother with the other siblings.
+-				 */
+-				if (i == cpu && !need_sync)
+-					goto next_class;
+-
++			if (!p)
+ 				continue;
+-			}
+-
+-			/*
+-			 * Optimize the 'normal' case where there aren't any
+-			 * cookies and we don't need to sync up.
+-			 */
+-			if (i == cpu && !need_sync) {
+-				if (p->core_cookie) {
+-					/*
+-					 * This optimization is only valid as
+-					 * long as there are no cookies
+-					 * involved. We may have skipped
+-					 * non-empty higher priority classes on
+-					 * siblings, which are empty on this
+-					 * CPU, so start over.
+-					 */
+-					need_sync = true;
+-					goto reset;
+-				}
+-
+-				next = p;
+-				trace_printk("unconstrained pick: %s/%d %lx\n",
+-					     next->comm, next->pid, next->core_cookie);
+-				goto done;
+-			}
+ 
+ 			if (!is_task_rq_idle(p))
+ 				occ++;
