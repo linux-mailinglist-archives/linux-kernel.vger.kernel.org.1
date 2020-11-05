@@ -2,304 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 452C32A88E4
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 22:22:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 639E32A88E8
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 22:24:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732378AbgKEVWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 16:22:32 -0500
-Received: from smtprelay-out1.synopsys.com ([149.117.73.133]:34542 "EHLO
-        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732286AbgKEVWU (ORCPT
+        id S1732284AbgKEVYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 16:24:36 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:5076 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732162AbgKEVYf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 16:22:20 -0500
-Received: from mailhost.synopsys.com (sv1-mailhost2.synopsys.com [10.205.2.132])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id ECA5940066;
-        Thu,  5 Nov 2020 21:22:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
-        t=1604611339; bh=mNfE+zkMa68VxwrMuN4ESnNP3XrXt4EiRox8Wp8ljDI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WeRhFH/7jsEvdoyqmRjC2VyNhaRJN59VCn8iw8pdGe4irOsQLyVz420H19M5wjhJv
-         XsA2r3A5rVIpc94I4DzXke33eW2jGfLuzIHH5UGci5R2frYIlET5Vkq5X9L0oBftTO
-         ZBTI8r4JUREHPO3YK6/eH0q7/nxP4Gl9GB+Y15NJVZIquUdEaVgOWCAWWiNhk++jKP
-         wUBGOrELltwwjJ3ZR4jbzevq28fIvdzWdJn3XYXj6sTwcm+ojmeSZZ54NbNQNax2+c
-         gEanMzaBtHQHTzpzmCNs6SkupnzxY/qqnu53wfHjMNgr4ByIlnDwFydhYRLWqDPX7i
-         5BUTyWlTUMmpA==
-Received: from vineetg-Latitude-7400.internal.synopsys.com (unknown [10.13.183.89])
-        by mailhost.synopsys.com (Postfix) with ESMTP id 17282A022B;
-        Thu,  5 Nov 2020 21:22:18 +0000 (UTC)
-X-SNPS-Relay: synopsys.com
-From:   Vineet Gupta <Vineet.Gupta1@synopsys.com>
-To:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-snps-arc@lists.infradead.org,
-        Vineet Gupta <Vineet.Gupta1@synopsys.com>
-Subject: [PATCH 3/3] include/soc: remove headers for EZChip NPS
-Date:   Thu,  5 Nov 2020 13:22:10 -0800
-Message-Id: <20201105212210.1891598-4-vgupta@synopsys.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201105212210.1891598-1-vgupta@synopsys.com>
-References: <20201105212210.1891598-1-vgupta@synopsys.com>
+        Thu, 5 Nov 2020 16:24:35 -0500
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A5LG56L024936;
+        Thu, 5 Nov 2020 13:24:19 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=65U0XN+LyXnagBgEKEfw6/bRWNML48oXzwGKJEr0Be4=;
+ b=Mz7TVtXrngBXWmGJn4aPPcPwqMqp4p+5QOlLVeWPAih0YFIJj2zb+zx0vbd/EGuHDLfu
+ oedDrUEslREkVHH2VgFYXH9UtZuXKNAP2HZgr7wc7VkVN3b2xhEgB2WzJsmi4U7POiBe
+ K1NEQT8cEokOvFVr2AuCpdEwJfWHQzF5inI= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 34m81m5beq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 05 Nov 2020 13:24:19 -0800
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.172) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 5 Nov 2020 13:24:18 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SnVRKtYLvd5PreQqaqySumTIOwNEEUjeM3i45m4xmG8Ns3/5GWtqcQJ6XEm6Eze/t0L2aIn/Yalf7oJovpruSwkZFrJHaKmzC/CT4XQkNwmq9tH5UxdMwkFeeJ1lhs7t9yiC8lBpjfBMaI43nsVZfcqG0s78ESZGcTCinv2uCM6/vHGBoN7o4OWV5z8fveJLVcHlrEtGeEY0wg5bSvq3MlwAbz3/P81jO7CsI503ZI/xZxczk6lUFdVrz1vJOEzid5er8v/eUFYrCOmsDBFBXozA2Kh+3SPQZImTMaMr25Xgxi3DtfZqLZPG6fnAaKd7+7ymcIauG18SX5ZOLpEIsg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=65U0XN+LyXnagBgEKEfw6/bRWNML48oXzwGKJEr0Be4=;
+ b=QgH6yEwKkOlf56M/lcmiqYK+rgKRIh9+YXDLZ3Ih6MR27gY1uFf3jR7llTQsUBJWxHFtRjn4yPYA2OIHPS0l064vsq58mhSYC12TEQm6diLez4qDItkftf510TGuPcL0kLQic+hXmrKRSJam9DqGR3GFoRIJaKAyqNXxPftTQ9/O+s4DiGV4JphxmZeOgBVLGCQxaZ4uby8zbTX44BhwEclB2l2UucyjLAaUpZkTHj8MLwC1z9o0QTgWL975R5MH7x5Oh1fRCmyqrcaGLnVUo39T7AOtnsccOC/AjGWy4zWe0/+6Ckj3Ni8GrB3gOu1QWGxOSXjuOLi2aeM/PItj2g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=65U0XN+LyXnagBgEKEfw6/bRWNML48oXzwGKJEr0Be4=;
+ b=hoMQ01Sl3j6enZ1BPUFInYe0eDcU6v3CzdN286k2ueGvDS5YINdUWpchZeTvR7LbznD6L/uwtiLFLU4cfiExQE79xfmWaU2VUIfUyfbJiV1bOee4yEOPqpU3gXjCJ+BTaazqPSAlrSjoIcF3n9010vdWVXKXiNwPG/hRs+3QyoI=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=fb.com;
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
+ by BYAPR15MB3365.namprd15.prod.outlook.com (2603:10b6:a03:111::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21; Thu, 5 Nov
+ 2020 21:24:16 +0000
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::bc1d:484f:cb1f:78ee]) by BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::bc1d:484f:cb1f:78ee%4]) with mapi id 15.20.3499.032; Thu, 5 Nov 2020
+ 21:24:16 +0000
+Date:   Thu, 5 Nov 2020 13:24:10 -0800
+From:   Martin KaFai Lau <kafai@fb.com>
+CC:     <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
+        Hao Luo <haoluo@google.com>
+Subject: Re: [PATCH bpf-next v4 5/9] bpf: Implement get_current_task_btf and
+ RET_PTR_TO_BTF_ID
+Message-ID: <20201105212410.pngxkh6yqhhg6syc@kafai-mbp.dhcp.thefacebook.com>
+0;95;0cTo: KP Singh <kpsingh@chromium.org>
+References: <20201105144755.214341-1-kpsingh@chromium.org>
+ <20201105144755.214341-6-kpsingh@chromium.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201105144755.214341-6-kpsingh@chromium.org>
+X-Originating-IP: [2620:10d:c090:400::5:3041]
+X-ClientProxiedBy: CO2PR06CA0053.namprd06.prod.outlook.com
+ (2603:10b6:104:3::11) To BY5PR15MB3571.namprd15.prod.outlook.com
+ (2603:10b6:a03:1f6::32)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:3041) by CO2PR06CA0053.namprd06.prod.outlook.com (2603:10b6:104:3::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21 via Frontend Transport; Thu, 5 Nov 2020 21:24:15 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 20ae519f-f014-4f9b-cf0f-08d881d1265a
+X-MS-TrafficTypeDiagnostic: BYAPR15MB3365:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR15MB3365548C2E0BD35F9F4AEC46D5EE0@BYAPR15MB3365.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: SE3mGBLxCPA872L46Cy4yNSqiN7gcWis+OhUTDEF3U5qPkWOXwUOIw+19wDvQ5OjbFsvcC/trflYmXmJkn8Cgti7iPFSeY3C59dBuN5sQ02px65yHKkD7/dgb821FKhxRIXfbLqWryIu46Unv/CC1LOMmWhobZ2Y49lPxok62S4UGUv88z7xSp57jfyL1ngXtu9MPRqRFn7WTheftqnS5g8BN6Ogs0K/ctW7UUi+HTdlgt5gEkrylJBR/DZ7TiTLTGvZ8FfhmjewgPbyBZrIozG4npDEE4ADrhToR11VIqkouvxIFX/hdyV/wRmNzSRE
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(136003)(39860400002)(396003)(346002)(376002)(5660300002)(4326008)(8936002)(316002)(2906002)(66476007)(8676002)(66946007)(83380400001)(66556008)(54906003)(55016002)(186003)(1076003)(16526019)(109986005)(6506007)(9686003)(4744005)(6666004)(478600001)(86362001)(52116002)(7696005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: QzYyuDrpLVBGa1rw5mn8AAo+ldsLD0HQ7Z+ob7xMZfUAM4nuZpwNsH6bOF4Nrb7m4/Y1loLuT4fOuBjcBkSuXJmB5L38glBRD3NPAVGoovcHelcJFPJ5D9vCI85FdIBWTaviyweQlhjCiaG6CjXaw4t2bFRx4fAqP3fUT8rvvClXSkrK+QgpdAendP+RvwKh8MexJv/gesmhUayBlSxtWsH2Re6ZV7nav2o6HRsZOVoO/UkWTK8QPZkOWIOuAy1pygEYXeH6DAsVSdfFtHAq8Cvt82Ma9mkFvibWWVApMpUqPc0nAFW0uMy6zYQWX1FUtO+GE3TKYIGSKDUrNfCmMwViuXEzEp+wr+BFhTesNESUoBSIjNN5Y8wfV4MwZk8+SIprn0cdQUBgYnuGJID4Qr5s5N6xdoInPH6aXRjwGQBX3KDlXh6KjVUNP6OJ8gzLiKO719JzYStkvkp60MiIbKUgBOF0LnQdiaBjwQBEzEzOoXnq/BlNPM5kVAtZ5e+jMHWkCUGofP8Wkrat/TGSbLBZxqbwvppIEV+E2XhYml4OgJiurT9dlTNzoqzviQ/uiVfHtNmj0J1OUZamLZ0l2REoRLm5je3DuKeEx7xdv4yLvH8qgiFzIvnYHS3iTFibdhMz6v245Sl9Lvxo6kXoWOFs2RhBzLUWMyJhH6cCgse8FHT9q2b0g6xkfL1oBxDy
+X-MS-Exchange-CrossTenant-Network-Message-Id: 20ae519f-f014-4f9b-cf0f-08d881d1265a
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Nov 2020 21:24:16.5697
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Ak0kBFABVw7I8xfWoCDJWGi+34luiT5ZttFZHZj1AzhxmfZfVp6Y1xU5aBif4Rg7
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3365
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-05_15:2020-11-05,2020-11-05 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ adultscore=0 mlxlogscore=885 lowpriorityscore=0 clxscore=1015 mlxscore=0
+ bulkscore=0 impostorscore=0 phishscore=0 spamscore=0 suspectscore=1
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011050138
+X-FB-Internal: deliver
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-NPS platform has been removed from ARC port and there are no in-tree
-user of it now . So RIP !
-
-Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
----
- include/soc/nps/common.h | 172 ---------------------------------------
- include/soc/nps/mtm.h    |  59 --------------
- 2 files changed, 231 deletions(-)
- delete mode 100644 include/soc/nps/common.h
- delete mode 100644 include/soc/nps/mtm.h
-
-diff --git a/include/soc/nps/common.h b/include/soc/nps/common.h
-deleted file mode 100644
-index 8c18dc6d3fde..000000000000
---- a/include/soc/nps/common.h
-+++ /dev/null
-@@ -1,172 +0,0 @@
--/*
-- * Copyright (c) 2016, Mellanox Technologies. All rights reserved.
-- *
-- * This software is available to you under a choice of one of two
-- * licenses.  You may choose to be licensed under the terms of the GNU
-- * General Public License (GPL) Version 2, available from the file
-- * COPYING in the main directory of this source tree, or the
-- * OpenIB.org BSD license below:
-- *
-- *     Redistribution and use in source and binary forms, with or
-- *     without modification, are permitted provided that the following
-- *     conditions are met:
-- *
-- *      - Redistributions of source code must retain the above
-- *        copyright notice, this list of conditions and the following
-- *        disclaimer.
-- *
-- *      - Redistributions in binary form must reproduce the above
-- *        copyright notice, this list of conditions and the following
-- *        disclaimer in the documentation and/or other materials
-- *        provided with the distribution.
-- *
-- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
-- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
-- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-- * SOFTWARE.
-- */
--
--#ifndef SOC_NPS_COMMON_H
--#define SOC_NPS_COMMON_H
--
--#ifdef CONFIG_SMP
--#define NPS_IPI_IRQ					5
--#endif
--
--#define NPS_HOST_REG_BASE			0xF6000000
--
--#define NPS_MSU_BLKID				0x018
--
--#define CTOP_INST_RSPI_GIC_0_R12		0x3C56117E
--#define CTOP_INST_MOV2B_FLIP_R3_B1_B2_INST	0x5B60
--#define CTOP_INST_MOV2B_FLIP_R3_B1_B2_LIMM	0x00010422
--
--#ifndef AUX_IENABLE
--#define AUX_IENABLE				0x40c
--#endif
--
--#define CTOP_AUX_IACK				(0xFFFFF800 + 0x088)
--
--#ifndef __ASSEMBLY__
--
--/* In order to increase compilation test coverage */
--#ifdef CONFIG_ARC
--static inline void nps_ack_gic(void)
--{
--	__asm__ __volatile__ (
--	"       .word %0\n"
--	:
--	: "i"(CTOP_INST_RSPI_GIC_0_R12)
--	: "memory");
--}
--#else
--static inline void nps_ack_gic(void) { }
--#define write_aux_reg(r, v)
--#define read_aux_reg(r) 0
--#endif
--
--/* CPU global ID */
--struct global_id {
--	union {
--		struct {
--#ifdef CONFIG_EZNPS_MTM_EXT
--			u32 __reserved:20, cluster:4, core:4, thread:4;
--#else
--			u32 __reserved:24, cluster:4, core:4;
--#endif
--		};
--		u32 value;
--	};
--};
--
--/*
-- * Convert logical to physical CPU IDs
-- *
-- * The conversion swap bits 1 and 2 of cluster id (out of 4 bits)
-- * Now quad of logical clusters id's are adjacent physically,
-- * and not like the id's physically came with each cluster.
-- * Below table is 4x4 mesh of core clusters as it layout on chip.
-- * Cluster ids are in format: logical (physical)
-- *
-- *    -----------------   ------------------
-- * 3 |  5 (3)   7 (7)  | | 13 (11)   15 (15)|
-- *
-- * 2 |  4 (2)   6 (6)  | | 12 (10)   14 (14)|
-- *    -----------------   ------------------
-- * 1 |  1 (1)   3 (5)  | |  9  (9)   11 (13)|
-- *
-- * 0 |  0 (0)   2 (4)  | |  8  (8)   10 (12)|
-- *    -----------------   ------------------
-- *       0       1            2        3
-- */
--static inline int nps_cluster_logic_to_phys(int cluster)
--{
--#ifdef __arc__
--	 __asm__ __volatile__(
--	"       mov r3,%0\n"
--	"       .short %1\n"
--	"       .word %2\n"
--	"       mov %0,r3\n"
--	: "+r"(cluster)
--	: "i"(CTOP_INST_MOV2B_FLIP_R3_B1_B2_INST),
--	  "i"(CTOP_INST_MOV2B_FLIP_R3_B1_B2_LIMM)
--	: "r3");
--#endif
--
--	return cluster;
--}
--
--#define NPS_CPU_TO_CLUSTER_NUM(cpu) \
--	({ struct global_id gid; gid.value = cpu; \
--		nps_cluster_logic_to_phys(gid.cluster); })
--
--struct nps_host_reg_address {
--	union {
--		struct {
--			u32 base:8, cl_x:4, cl_y:4,
--			blkid:6, reg:8, __reserved:2;
--		};
--		u32 value;
--	};
--};
--
--struct nps_host_reg_address_non_cl {
--	union {
--		struct {
--			u32 base:7, blkid:11, reg:12, __reserved:2;
--		};
--		u32 value;
--	};
--};
--
--static inline void *nps_host_reg_non_cl(u32 blkid, u32 reg)
--{
--	struct nps_host_reg_address_non_cl reg_address;
--
--	reg_address.value = NPS_HOST_REG_BASE;
--	reg_address.blkid = blkid;
--	reg_address.reg = reg;
--
--	return (void *)reg_address.value;
--}
--
--static inline void *nps_host_reg(u32 cpu, u32 blkid, u32 reg)
--{
--	struct nps_host_reg_address reg_address;
--	u32 cl = NPS_CPU_TO_CLUSTER_NUM(cpu);
--
--	reg_address.value = NPS_HOST_REG_BASE;
--	reg_address.cl_x  = (cl >> 2) & 0x3;
--	reg_address.cl_y  = cl & 0x3;
--	reg_address.blkid = blkid;
--	reg_address.reg   = reg;
--
--	return (void *)reg_address.value;
--}
--#endif /* __ASSEMBLY__ */
--
--#endif /* SOC_NPS_COMMON_H */
-diff --git a/include/soc/nps/mtm.h b/include/soc/nps/mtm.h
-deleted file mode 100644
-index d2f5e7e3703e..000000000000
---- a/include/soc/nps/mtm.h
-+++ /dev/null
-@@ -1,59 +0,0 @@
--/*
-- * Copyright (c) 2016, Mellanox Technologies. All rights reserved.
-- *
-- * This software is available to you under a choice of one of two
-- * licenses.  You may choose to be licensed under the terms of the GNU
-- * General Public License (GPL) Version 2, available from the file
-- * COPYING in the main directory of this source tree, or the
-- * OpenIB.org BSD license below:
-- *
-- *     Redistribution and use in source and binary forms, with or
-- *     without modification, are permitted provided that the following
-- *     conditions are met:
-- *
-- *      - Redistributions of source code must retain the above
-- *        copyright notice, this list of conditions and the following
-- *        disclaimer.
-- *
-- *      - Redistributions in binary form must reproduce the above
-- *        copyright notice, this list of conditions and the following
-- *        disclaimer in the documentation and/or other materials
-- *        provided with the distribution.
-- *
-- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
-- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
-- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-- * SOFTWARE.
-- */
--
--#ifndef SOC_NPS_MTM_H
--#define SOC_NPS_MTM_H
--
--#define CTOP_INST_HWSCHD_OFF_R3                 0x3B6F00BF
--#define CTOP_INST_HWSCHD_RESTORE_R3             0x3E6F70C3
--
--static inline void hw_schd_save(unsigned int *flags)
--{
--	__asm__ __volatile__(
--	"       .word %1\n"
--	"       st r3,[%0]\n"
--	:
--	: "r"(flags), "i"(CTOP_INST_HWSCHD_OFF_R3)
--	: "r3", "memory");
--}
--
--static inline void hw_schd_restore(unsigned int flags)
--{
--	__asm__ __volatile__(
--	"       mov r3, %0\n"
--	"       .word %1\n"
--	:
--	: "r"(flags), "i"(CTOP_INST_HWSCHD_RESTORE_R3)
--	: "r3");
--}
--
--#endif /* SOC_NPS_MTM_H */
--- 
-2.25.1
-
+On Thu, Nov 05, 2020 at 03:47:51PM +0100, KP Singh wrote:
+> From: KP Singh <kpsingh@google.com>
+> 
+> The currently available bpf_get_current_task returns an unsigned integer
+> which can be used along with BPF_CORE_READ to read data from
+> the task_struct but still cannot be used as an input argument to a
+> helper that accepts an ARG_PTR_TO_BTF_ID of type task_struct.
+> 
+> In order to implement this helper a new return type, RET_PTR_TO_BTF_ID,
+> is added. This is similar to RET_PTR_TO_BTF_ID_OR_NULL but does not
+> require checking the nullness of returned pointer.
+> 
+> Acked-by: Song Liu <songliubraving@fb.com>
+> Signed-off-by: KP Singh <kpsingh@google.com>
+Acked-by: Martin KaFai Lau <kafai@fb.com>
