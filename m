@@ -2,54 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0FD92A82E1
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 17:00:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E4052A82EB
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 17:01:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731461AbgKEQAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 11:00:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40436 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730660AbgKEQAM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 11:00:12 -0500
-Received: from gaia (unknown [2.26.170.190])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 96C752087D;
-        Thu,  5 Nov 2020 16:00:08 +0000 (UTC)
-Date:   Thu, 5 Nov 2020 16:00:05 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Will Deacon <will.deacon@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 18/43] kasan, arm64: rename kasan_init_tags and mark
- as __init
-Message-ID: <20201105160004.GC30030@gaia>
-References: <cover.1604531793.git.andreyknvl@google.com>
- <f931d074bccbdf96ad91a34392d009fece081f59.1604531793.git.andreyknvl@google.com>
+        id S1731382AbgKEQBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 11:01:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59046 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725308AbgKEQBv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 11:01:51 -0500
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B227C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 08:01:51 -0800 (PST)
+Received: by mail-pl1-x641.google.com with SMTP id f21so991029plr.5
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 08:01:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2dd3dZUGk52m1PzHmB9JCt0RYfkWYgfXRYAB3u3yjNc=;
+        b=EmPG/oH4Tkkqi1KyDMqC3L49bMVwzFsZHlUSt88Cat+RqutdkMzjHl+/yB4P/Em2VZ
+         qK6KQysFWlzqG77VX7vskgupDft/9tVqj1l3yUWRjVXC4YCIRPXATMRWi66tr2DP8LS/
+         tP2JJfMufXtSD6dhij+iu6Xnro4uD0jVY0a2dfFi5F4wW6DHfAWXMMsoeGAWwTCna0rF
+         BkRUwhypTs12IGkdEdEhA0yiUi/ulalziUI7q/ZiqvVFf86PYuCINVHN7243tixj8t8g
+         cS0SunI/Qmm2HGQbJ/KIeNqPfRxHL2aX3D9XFALW+H4/po5M5D4oJOqpBKKzG9s5tGzx
+         raag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2dd3dZUGk52m1PzHmB9JCt0RYfkWYgfXRYAB3u3yjNc=;
+        b=f3GxVNEP3Tf9yr7/CesTqxT5+hnYO5Rh/87HRMNONQ9IJnlseexjIMs1XRUJfUC4+0
+         PxdnoIFtO9EAqxVBJqoJHXOlBzEqawWWQ15X/a/O0ettBjMtE4XN8M4ZwQCGvnqAmf7C
+         6kJXwQYaqukaqdRxkgpJXlbsctNxIAndMoEYy/Zlu8X9BKupHl/geFvPVmoUPLcSvX3s
+         yxqq7Ad8FSbw7uSXma25Tteupn/66MOGaZDwZcM4FCYuVeY+eDSK9CucNoEWxODyDp1Q
+         /VGsjwUjWp4ygrzFkhyPtAJ7QzmrOGr7UeJOsxJy6JmzmNAlFZykFvgV0Y90/jadLXVx
+         jDHw==
+X-Gm-Message-State: AOAM53049hBU6cj1rz7rs6HlNNqKTlmJdh3VPGeCRZGcXCSGPqlpkNgL
+        0svz+zBD4evR6bPEFk23xMervRbG4RiT3QK7w5NiBQ==
+X-Google-Smtp-Source: ABdhPJyGWsDb2U5zWmfBMAyXzraRvFA3S733P2djRrIVQYJ02fr92cwUAKpohVXZzTSBuwZ6rBRiqN9EFuU/c3P7XY4=
+X-Received: by 2002:a17:902:aa86:b029:d6:99d8:3fff with SMTP id
+ d6-20020a170902aa86b02900d699d83fffmr2922157plr.34.1604592110844; Thu, 05 Nov
+ 2020 08:01:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f931d074bccbdf96ad91a34392d009fece081f59.1604531793.git.andreyknvl@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201104125558.49472-1-songmuchun@bytedance.com> <20201105155028.GD744831@cmpxchg.org>
+In-Reply-To: <20201105155028.GD744831@cmpxchg.org>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Fri, 6 Nov 2020 00:01:12 +0800
+Message-ID: <CAMZfGtVAf6aZQs+1mh_KDx53DtpavYb_KpTbhoZL0kfpsCeXsA@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH] mm: memcontrol: fix missing wakeup polling thread
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@suse.com>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Chris Down <chris@chrisdown.name>, Tejun Heo <tj@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 12:18:33AM +0100, Andrey Konovalov wrote:
-> Rename kasan_init_tags() to kasan_init_sw_tags() as the upcoming hardware
-> tag-based KASAN mode will have its own initialization routine.
-> Also similarly to kasan_init() mark kasan_init_tags() as __init.
-> 
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+On Thu, Nov 5, 2020 at 11:52 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
+>
+> On Wed, Nov 04, 2020 at 08:55:58PM +0800, Muchun Song wrote:
+> > When wen poll the memory.swap.events, we can miss being waked up when the
+> > swap event occurs. Because we didn't notify.
+> >
+> > Fixes: f3a53a3a1e5b ("mm, memcontrol: implement memory.swap.events")
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+>
+> Good catch!
+>
+> > ---
+> >  include/linux/memcontrol.h | 18 ++++++++++++++++--
+> >  1 file changed, 16 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> > index 0f4dd7829fb2..2456cb737329 100644
+> > --- a/include/linux/memcontrol.h
+> > +++ b/include/linux/memcontrol.h
+> > @@ -1071,15 +1071,29 @@ static inline void count_memcg_event_mm(struct mm_struct *mm,
+> >       rcu_read_unlock();
+> >  }
+> >
+> > +static inline bool is_swap_memory_event(enum memcg_memory_event event)
+> > +{
+> > +     return event == MEMCG_SWAP_HIGH || event == MEMCG_SWAP_MAX ||
+> > +            event == MEMCG_SWAP_FAIL;
+> > +}
+>
+> Please inline this, it's not really worth the indirection.
+>
+> >  static inline void memcg_memory_event(struct mem_cgroup *memcg,
+> >                                     enum memcg_memory_event event)
+> >  {
+> > +     bool swap_event = is_swap_memory_event(event);
+> > +     struct cgroup_file *cfile;
+> > +
+> >       atomic_long_inc(&memcg->memory_events_local[event]);
+> > -     cgroup_file_notify(&memcg->events_local_file);
+> > +     if (swap_event) {
+> > +             cfile = &memcg->swap_events_file;
+> > +     } else {
+> > +             cfile = &memcg->events_file;
+> > +             cgroup_file_notify(&memcg->events_local_file);
+> > +     }
+> >
+> >       do {
+> >               atomic_long_inc(&memcg->memory_events[event]);
+> > -             cgroup_file_notify(&memcg->events_file);
+> > +             cgroup_file_notify(cfile);
+>
+> This loop is a walk up the hierarchy and memcg keeps changing, so you
+> cannot cache cfile up front.
+>
+>                 if (swap_event)
+>                         cgroup_file_notify(&memcg->swap_events_file);
+>                 else
+>                         cgroup_file_notify(&memcg->events_file);
 
-Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+Oh, Yeah, Thanks for reminding me.
+
+-- 
+Yours,
+Muchun
