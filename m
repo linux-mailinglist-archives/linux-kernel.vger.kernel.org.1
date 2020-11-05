@@ -2,98 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 327782A845A
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 18:00:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 090E22A845C
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 18:02:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731120AbgKERAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 12:00:46 -0500
-Received: from foss.arm.com ([217.140.110.172]:37504 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727836AbgKERAp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 12:00:45 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1EC5D142F;
-        Thu,  5 Nov 2020 09:00:45 -0800 (PST)
-Received: from localhost (unknown [10.1.198.32])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A80833F719;
-        Thu,  5 Nov 2020 09:00:44 -0800 (PST)
-Date:   Thu, 5 Nov 2020 17:00:43 +0000
-From:   Ionela Voinescu <ionela.voinescu@arm.com>
-To:     Jeremy Linton <jeremy.linton@arm.com>
-Cc:     rjw@rjwysocki.net, viresh.kumar@linaro.org, lenb@kernel.org,
-        sudeep.holla@arm.com, morten.rasmussen@arm.com,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/8] cppc_cpufreq: replace per-cpu structures with lists
-Message-ID: <20201105170043.GA28398@arm.com>
-References: <20201105125524.4409-1-ionela.voinescu@arm.com>
- <20201105125524.4409-5-ionela.voinescu@arm.com>
- <e568847d-b15c-970c-6ad5-b431c81c811c@arm.com>
+        id S1731570AbgKERCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 12:02:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40368 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726801AbgKERCI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 12:02:08 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0B3AC0613D2;
+        Thu,  5 Nov 2020 09:02:08 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id g7so1557317pfc.2;
+        Thu, 05 Nov 2020 09:02:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=1E/GdSgvT+IfKnf/MQnxEpHIqbogE7oTSfYMSoG+muE=;
+        b=py845HUDSn6lrlHMzWWLdBEnBIvv7pnBrtqYEs7F4lClin5wEfNwRsfuebyIhBrs0F
+         yq9wBocpigv9ECrczLtxDjmUTDnMWAR786Vx64Yy2bcRd0gtj84/iWFHKTy+ijgW6ZI1
+         JrcddhmYxQlPyOV178ghPINfaS/SzV9Vuwt8T6XlEebjsecz8PGvI7iD1VNlX4P+4uuC
+         P1j2qqd4+L1rJYPT+AXVskMPbQcW4lV5iyF2Id5QoygLx+5h7zkId0VSLBUnQMktUKfZ
+         GLYoVbrP/pRMAb9Re49tHlMWnwh+TOtzdxMIKpFx0kLjncq1PXFKQ0CrwtQk0GLv4zXz
+         C98g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=1E/GdSgvT+IfKnf/MQnxEpHIqbogE7oTSfYMSoG+muE=;
+        b=bwNLdkqwi3/NqTcZP8wNee9n4NxMH7f8WR4l+kC9/pmtN6zso9gze3gclLnsipH0tX
+         aGbcPGepBwhM7i/F8owT4WfR8gfY7ujq5jnt4btE+gTBSgQFzEO5Vtis3ahLidJSt1LT
+         eFL58stUqIouQSP7jGdkkm+h3Iijyd6zVWZ9yTiS9/OoG8dZfEHw0DvWV15Rp6w9K/Jh
+         cDyq9LUDhlkH4cXXToKQr4PPMjoBKt94Di4vqkio95BHSX6QOvPVzeLuXak97JE7quyM
+         aT8AKxfe/Mc8U0UrZnwB7feD9ywsLL1rwNXljZe2EBCnH7zeSnUXfV4VljGgljLKdpQ5
+         S5bg==
+X-Gm-Message-State: AOAM531umHwoDEw9vuhYffAT0rx94wWRozMpvdLAD+h2GuGVbLaXEiZP
+        clImbAGLsKNS/m3rZYmoORg=
+X-Google-Smtp-Source: ABdhPJwbvoK5kkf0kxlXbmOFQ64ONheTWuD39VvDwGzob7HSOf95ha2r81Of2Bb41jZos3/aE9Ds2w==
+X-Received: by 2002:a65:67c2:: with SMTP id b2mr3214406pgs.39.1604595728164;
+        Thu, 05 Nov 2020 09:02:08 -0800 (PST)
+Received: from hoboy.vegasvil.org (c-73-241-114-122.hsd1.ca.comcast.net. [73.241.114.122])
+        by smtp.gmail.com with ESMTPSA id f21sm2970903pga.32.2020.11.05.09.02.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Nov 2020 09:02:07 -0800 (PST)
+Date:   Thu, 5 Nov 2020 09:02:04 -0800
+From:   Richard Cochran <richardcochran@gmail.com>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     min.li.xe@renesas.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 3/3] ptp: idt82p33: optimize _idt82p33_adjfine
+Message-ID: <20201105170204.GA5258@hoboy.vegasvil.org>
+References: <1604505709-5483-1-git-send-email-min.li.xe@renesas.com>
+ <1604505709-5483-3-git-send-email-min.li.xe@renesas.com>
+ <20201104164657.GE16105@hoboy.vegasvil.org>
+ <20201105003556.tpgvlh3ponyxzjjl@skbuf>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e568847d-b15c-970c-6ad5-b431c81c811c@arm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201105003556.tpgvlh3ponyxzjjl@skbuf>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jeremy,
+On Thu, Nov 05, 2020 at 02:35:56AM +0200, Vladimir Oltean wrote:
+> On the other hand and with all due respect, saying that it may have been
+> 'buggy on some archs back in the day' and then not bringing any evidence
+> is a bit of a strange claim to make.
 
-On Thursday 05 Nov 2020 at 09:50:30 (-0600), Jeremy Linton wrote:
-> Hi,
-> 
-> On 11/5/20 6:55 AM, Ionela Voinescu wrote:
-> > The cppc_cpudata per-cpu storage was inefficient (1) additional to causing
-> > functional issues (2) when CPUs are hotplugged out, due to per-cpu data
-> > being improperly initialised.
-> > 
-> > (1) The amount of information needed for CPPC performance control in its
-> >      cpufreq driver depends on the domain (PSD) coordination type:
-> > 
-> >      ANY:    One set of CPPC control and capability data (e.g desired
-> >              performance, highest/lowest performance, etc) applies to all
-> >              CPUs in the domain.
-> > 
-> >      ALL:    Same as ANY. To be noted that this type is not currently
-> >              supported. When supported, information about which CPUs
-> >              belong to a domain is needed in order for frequency change
-> >              requests to be sent to each of them.
-> > 
-> >      HW:     It's necessary to store CPPC control and capability
-> >              information for all the CPUs. HW will then coordinate the
-> >              performance state based on their limitations and requests.
-> > 
-> >      NONE:   Same as HW. No HW coordination is expected.
-> > 
-> >      Despite this, the previous initialisation code would indiscriminately
-> >      allocate memory for all CPUs (all_cpu_data) and unnecessarily
-> >      duplicate performance capabilities and the domain sharing mask and type
-> >      for each possible CPU.
-> 
-> I should have mentioned this on the last set.
-> 
-> If the common case on arm/acpi machines is a single core per _PSD (which I
-> believe it is), then you are actually increasing the overhead doing this.
-> 
+You're right.  I made the effort to look back into the days of v3.0,
+and the only thing I could find is that the 32 bit implementation of
+div_s64 does extra operations and invokes an additional function call.
+But the difference in performance, if any, is probably not very large.
+ 
+> I am actively using div_s64 in drivers/net/dsa/sja1105/sja1105_ptp.c
+> successfully on arm and arm64.
 
-Thanks for taking another look and pointing this out.
+Yeah, I see div_s64 has found its way into the ntp code, too, so it
+must be fine.
 
-Yes, that would be quite inefficient as I'd be holding both CPU and domain
-information uselessly, for that case. I could drop the domain
-information without actually losing anything (shared type and shared cpu
-map have no purpose for single CPUs in a domain).
-
-Also, I don't actually need a list of CPUs in the domain, an array will
-work just as well, as I know the number of CPUs when I allocate the
-domain - that will allow me to remove the node from cppc_cpudata and
-save me some pointers.
-
-Also, I now remember I wanted to get rid of cpu and cur_policy from
-cppc_cpudata as well, as they serve no purpose. Let me know if you guys
-see a reason against this.
-
-All of this should at least bring things on par for HW and NONE types,
-while improving ANY and ALL types. Thanks again for bringing this up.
-
-Regards,
-Ionela.
+Thanks,
+Richard
