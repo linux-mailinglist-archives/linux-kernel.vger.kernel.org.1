@@ -2,180 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6749A2A770E
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 06:27:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81D522A7713
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 06:33:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730713AbgKEF1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 00:27:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44564 "EHLO
+        id S1729795AbgKEFdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 00:33:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727089AbgKEF1D (ORCPT
+        with ESMTP id S1726307AbgKEFdT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 00:27:03 -0500
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 380E2C0613CF;
-        Wed,  4 Nov 2020 21:27:03 -0800 (PST)
-Received: by mail-oi1-x241.google.com with SMTP id t143so464538oif.10;
-        Wed, 04 Nov 2020 21:27:03 -0800 (PST)
+        Thu, 5 Nov 2020 00:33:19 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DD6AC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 21:33:17 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id z4so381111ybk.15
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 21:33:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=75E+2o+yV3XAOhb/befRDlzomOX6mEJLCVmesd7dRKI=;
-        b=sfg+fAP7u0Xr+PMoWGlio/Zux1iC/PIbCUIIAdcv440+MNnJxjo1r+NI/5RKcZRlVv
-         WVWQ2jVxvahdPv8y5ygpuJBb0dGcMdkAN2HnTQxihzw5uEz+Cf+BhR2MZaFzld1YOtcu
-         IU3cNrs72O+NBzulPZVeVC2uzsMPHvyHE7eGRQb1ibGVYMp/tzTS9p5POU5/exFm0lwi
-         7y5794hbc8jEKrSJbPM9G9dJilCE8tHBPa999KZSIaTDlLDYXiX71shV2Egzes+pA1oN
-         iYfKhRwwEdTIBu9ZaWWt47dc1IMW/+nxJZz45+eshluYvcR/aO1uGzd1H53Z7FBU2rOV
-         73TA==
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=sh15ve9aIvV3iUKmUFgbshLz15IkNtmvtGR64NHNI4g=;
+        b=bGqehADRmpx4IlNrUpqWtNgbTY0vfazlhmZ3NqdwdP43lIkWy24mviOEaHlFRLnGgT
+         NHM4s4RxMF368sALCmqu/ujwxW6UJIje82EGYFuPVNCnyoHc/592PCP4539P2VlPoopA
+         pYeBl3FAO3QFfJqK4IQ7WOWF7i4q5JpCUu8N47TbMUvRdtBn253vy/IjeUaw+cpX8Gav
+         tCLzAmyldDyIpKwoR7HdWpdqAB4nc7nsjVib8LUs+Jgi52Jtq+DpR0MPzFdNJrxUF7BN
+         2vA0B50I0bV4gKD23ZhPKyBurHav1XZ92vW1jCXx4LNyaNferaTBo0oJdIQrZxYIludO
+         qdng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=75E+2o+yV3XAOhb/befRDlzomOX6mEJLCVmesd7dRKI=;
-        b=XlUnI6wxLXMFCs1Vlf2lIDItLSA5AasinCDz2dPCahhwp4CNPJY8KlhJgMR5lJxl0p
-         3Js0IVh3wcRuSjUeXaDkXQPvdl12qQ6XtLpCy0FxOWvvl/IHMSwIauVd8L8F9Ukm1TQG
-         jLCta8U/q67SkoYpd84TTToKBjcUjpyu3bKT6aVujbg6PTVk88sVE8CvfI9wxaaM+z1s
-         yUSw1iPTMYDLrAspMNUaxH6ekSthk4z0+g9sXY8G5MKkFsTvcS9nvykuICFoyTEZlXef
-         RbJowALymVl9aBgpT93QBXXLnKecua7PwyeScoTHVyhRqFj97Yk82FKXaCkiVuiaHuCV
-         Xswg==
-X-Gm-Message-State: AOAM530cbu6qFDjp6dXo8Tmdf+k8rbEZGOKNuawOxlmrXhhYhIpbWYIn
-        fE3+OYeCqwz91TYcBR49m40=
-X-Google-Smtp-Source: ABdhPJyg5R0JJv0ZSAhgYvG66ymvWL/+7KA2PP0VOKIRgQXAb7o6j3of7gFldNXKF8yvy22+K/xmeg==
-X-Received: by 2002:a05:6808:496:: with SMTP id z22mr604891oid.2.1604554022113;
-        Wed, 04 Nov 2020 21:27:02 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id r4sm116790otd.66.2020.11.04.21.27.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Nov 2020 21:27:01 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [REGRESSION] hwmon: (applesmc) avoid overlong udelay()
-To:     Brad Campbell <brad@fnarfbargle.com>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        Jean Delvare <jdelvare@suse.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, rydberg@bitmath.org,
-        linux-hwmon@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        hns@goldelico.com
-References: <20200930105442.3f642f6c@aktux>
- <20200930164446.GB219887@roeck-us.net>
- <CAK8P3a2CbhJT+B-F+cnX+uiJep9oiLM28n045-ATaVaU41u2hw@mail.gmail.com>
- <20201002002251.28462e64@aktux>
- <7543ef85-727d-96c3-947e-5b18e9e6c44d@roeck-us.net>
- <20201006090226.4275c824@kemnade.info>
- <db042e9b-be41-11b1-7059-3881b1da5c8b@fnarfbargle.com>
- <68467f1b-cea1-47ea-a4d4-8319214b072a@fnarfbargle.com>
- <20201104142057.62493c12@aktux>
- <2436afef-99c6-c352-936d-567bf553388c@fnarfbargle.com>
- <7a085650-2399-08c0-3c4d-6cd1fa28a365@roeck-us.net>
- <fc36d066-c432-e7d2-312f-a0a592446fe2@fnarfbargle.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <10027199-5d31-93e7-9bd8-7baaebff8b71@roeck-us.net>
-Date:   Wed, 4 Nov 2020 21:26:59 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <fc36d066-c432-e7d2-312f-a0a592446fe2@fnarfbargle.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=sh15ve9aIvV3iUKmUFgbshLz15IkNtmvtGR64NHNI4g=;
+        b=aFjgxZnqVBcKO6zcQ4EX1PZiuZ+N1GpEvPrHrcr2HangGk82msVFjqKqV2+Km+yaHI
+         iWml5ybW7Cws2hs64PskUucL/NXDPwWDtjkjZy7R4IdAH+wSM86x/udyYlzHfSE0BeAL
+         fbCBchiivGclWnWN4DSWiDUu6nyTqn17t2zZwfK5kBUydFeO56DRIPPFA/1ondD4vS3S
+         OWD2GnBsnIciLYPkPTPKsjDQEuQLhpli5RBj8QMXZSpUNJp2dvG8QWpGtJkIhx5ACHBl
+         HhfLTcHCt+PnA7AHYrg4t4s+1u8yMsbcgeLASyqqVL5QSu6aR354mNSfZFZspoNXcVW3
+         uGbQ==
+X-Gm-Message-State: AOAM532U73t5yPeuDCw/AGE6uaDOkkxNVzP9LCyp8Wb4ZjZ3w6twQprI
+        85AaUydWczAMEhUcsI9QvvbdYqRwQdLF
+X-Google-Smtp-Source: ABdhPJwM1UgQrmtfpE2KIiuAVQCe7/kdgsdmuymz0Z7eZ9loVwo0KvBSewNHrbzygygsepJaBL0yJw1C+DrF
+Sender: "amistry via sendgmr" <amistry@nandos.syd.corp.google.com>
+X-Received: from nandos.syd.corp.google.com ([2401:fa00:9:14:725a:fff:fe46:72ab])
+ (user=amistry job=sendgmr) by 2002:a25:32c1:: with SMTP id
+ y184mr1246892yby.298.1604554396445; Wed, 04 Nov 2020 21:33:16 -0800 (PST)
+Date:   Thu,  5 Nov 2020 16:33:04 +1100
+Message-Id: <20201105163246.v2.1.Ifd7243cd3e2c2206a893ad0a5b9a4f19549e22c6@changeid>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
+Subject: [PATCH v2] x86/speculation: Allow IBPB to be conditionally enabled on
+ CPUs with always-on STIBP
+From:   Anand K Mistry <amistry@google.com>
+To:     x86@kernel.org
+Cc:     asteinhauser@google.com, Thomas.Lendacky@amd.com,
+        tglx@linutronix.de, joelaf@google.com,
+        Anand K Mistry <amistry@google.com>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Waiman Long <longman@redhat.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/4/20 9:05 PM, Brad Campbell wrote:
-> On 5/11/20 3:43 pm, Guenter Roeck wrote:
->> On 11/4/20 6:18 PM, Brad Campbell wrote:
->>> On 5/11/20 12:20 am, Andreas Kemnade wrote:
->>>> On Tue, 3 Nov 2020 16:56:32 +1100
->>>> Brad Campbell <brad@fnarfbargle.com> wrote:
->>>
->>>>> If anyone with a Mac having a conventional SMC and seeing issues on 5.9 could test this it'd be appreciated. I'm not saying this code is "correct", but it "works for me".
->>>>>
->>>> Seems to work here.
->>>>    dmesg  | grep applesmc
->>>>
->>>> [    1.350782] applesmc: key=561 fan=1 temp=33 index=33 acc=0 lux=2 kbd=1
->>>> [    1.350922] applesmc applesmc.768: hwmon_device_register() is deprecated. Please convert the driver to use hwmon_device_register_with_info().
->>>> [   17.748504] applesmc: wait_status looping 2: 0x4a, 0x4c, 0x4f
->>>> [  212.008952] applesmc: wait_status looping 2: 0x44, 0x40, 0x4e
->>>> [  213.033930] applesmc: wait_status looping 2: 0x44, 0x40, 0x4e
->>>> [  213.167908] applesmc: wait_status looping 2: 0x44, 0x40, 0x4e
->>>> [  219.087854] applesmc: wait_status looping 2: 0x44, 0x40, 0x4e
->>>>
->>>> Tested it on top of 5.9
->>>
->>> Much appreciated Andreas.
->>>
->>> I'm not entirely sure where to go from here. I'd really like some wider testing before cleaning this up and submitting it. It puts extra checks & constraints on the comms with the SMC that weren't there previously.
->>>
->>> I guess given there doesn't appear to have been a major outcry that the driver broke in 5.9 might indicate that nobody is using it, or that it only broke on certain machines?
->>>
->>> Can we get some guidance from the hwmon maintainers on what direction they'd like to take? I don't really want to push this forward without broader testing only to find it breaks a whole heap of machines on the basis that it fixes mine.
->>>
->>
->> Trick question ;-).
->>
->> I'd suggest to keep it simple. Your patch seems to be quite complicated
->> and checks a lot of bits. Reducing that to a minimum would help limiting
->> the risk that some of those bits are interpreted differently on other
->> systems.
->>
->> Guenter
->>
->>
-> Appreciate the feedback.
-> 
-> This would be the bare minimum based on the bits use in the original code. If the original code worked "well enough" then this should be relatively safe.
-> 
+On AMD CPUs which have the feature X86_FEATURE_AMD_STIBP_ALWAYS_ON,
+STIBP is set to on and 'spectre_v2_user_stibp ==
+SPECTRE_V2_USER_STRICT_PREFERRED'. At the same time, IBPB can be set to
+conditional. However, this leads to the case where it's impossible to
+turn on IBPB for a process because in the PR_SPEC_DISABLE case in
+ib_prctl_set, the (spectre_v2_user_stibp ==
+SPECTRE_V2_USER_STRICT_PREFERRED) condition leads to a return before the
+task flag is set. Similarly, ib_prctl_get will return PR_SPEC_DISABLE
+even though IBPB is set to conditional.
 
-Can you clean that up and submit as patch ?
+More generally, the following cases are possible:
+1. STIBP = conditional && IBPB = on for spectre_v2_user=seccomp,ibpb
+2. STIBP = on && IBPB = conditional for AMD CPUs with
+   X86_FEATURE_AMD_STIBP_ALWAYS_ON
 
-Thanks,
-Guenter
+The first case functions correctly today, but only because
+spectre_v2_user_ibpb isn't updated to reflect the IBPB mode.
+
+At a high level, this change does one thing. If either STIBP or IBPB is
+set to conditional, allow the prctl to change the task flag. Also,
+reflect that capability when querying the state. This isn't perfect
+since it doesn't take into account if only STIBP or IBPB is
+unconditionally on. But it allows the conditional feature to work as
+expected, without affecting the unconditional one.
+
+Signed-off-by: Anand K Mistry <amistry@google.com>
+
+---
+
+Changes in v2:
+- Fix typo in commit message
+- s/is_spec_ib_user/is_spec_ib_user_controlled
+- Update comment in ib_prctl_set() to reference X86_FEATURE_AMD_STIBP_ALWAYS_ON
+- Have is_spec_ib_user_controlled() check both IBPB and STIBP modes
+
+ arch/x86/kernel/cpu/bugs.c | 46 +++++++++++++++++++++++---------------
+ 1 file changed, 28 insertions(+), 18 deletions(-)
+
+diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
+index d3f0db463f96..534225afe832 100644
+--- a/arch/x86/kernel/cpu/bugs.c
++++ b/arch/x86/kernel/cpu/bugs.c
+@@ -1254,6 +1254,14 @@ static int ssb_prctl_set(struct task_struct *task, unsigned long ctrl)
+ 	return 0;
+ }
+ 
++static bool is_spec_ib_user_controlled(void)
++{
++	return spectre_v2_user_ibpb == SPECTRE_V2_USER_PRCTL ||
++		spectre_v2_user_ibpb == SPECTRE_V2_USER_SECCOMP ||
++		spectre_v2_user_stibp == SPECTRE_V2_USER_PRCTL ||
++		spectre_v2_user_stibp == SPECTRE_V2_USER_SECCOMP;
++}
++
+ static int ib_prctl_set(struct task_struct *task, unsigned long ctrl)
+ {
+ 	switch (ctrl) {
+@@ -1262,13 +1270,20 @@ static int ib_prctl_set(struct task_struct *task, unsigned long ctrl)
+ 		    spectre_v2_user_stibp == SPECTRE_V2_USER_NONE)
+ 			return 0;
+ 		/*
+-		 * Indirect branch speculation is always disabled in strict
+-		 * mode. It can neither be enabled if it was force-disabled
+-		 * by a  previous prctl call.
++		 * With strict mode for both IBPB and STIBP, the instruction
++		 * code paths avoid checking this task flag and instead,
++		 * unconditionally run the instruction. However, STIBP and IBPB
++		 * are independent and either can be set to conditionally
++		 * enabled regardless of the mode of the other. If either is set
++		 * to conditional, allow the task flag to be updated, unless it
++		 * was force-disabled by a previous prctl call.
++		 * Currently, this is possible on an AMD CPU which has the
++		 * feature X86_FEATURE_AMD_STIBP_ALWAYS_ON. In this case, if the
++		 * kernel is booted with 'spectre_v2_user=seccomp', then
++		 * spectre_v2_user_ibpb == SPECTRE_V2_USER_SECCOMP and
++		 * spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT_PREFERRED.
+ 		 */
+-		if (spectre_v2_user_ibpb == SPECTRE_V2_USER_STRICT ||
+-		    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT ||
+-		    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT_PREFERRED ||
++		if (!is_spec_ib_user_controlled() ||
+ 		    task_spec_ib_force_disable(task))
+ 			return -EPERM;
+ 		task_clear_spec_ib_disable(task);
+@@ -1283,9 +1298,7 @@ static int ib_prctl_set(struct task_struct *task, unsigned long ctrl)
+ 		if (spectre_v2_user_ibpb == SPECTRE_V2_USER_NONE &&
+ 		    spectre_v2_user_stibp == SPECTRE_V2_USER_NONE)
+ 			return -EPERM;
+-		if (spectre_v2_user_ibpb == SPECTRE_V2_USER_STRICT ||
+-		    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT ||
+-		    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT_PREFERRED)
++		if (!is_spec_ib_user_controlled())
+ 			return 0;
+ 		task_set_spec_ib_disable(task);
+ 		if (ctrl == PR_SPEC_FORCE_DISABLE)
+@@ -1351,20 +1364,17 @@ static int ib_prctl_get(struct task_struct *task)
+ 	if (spectre_v2_user_ibpb == SPECTRE_V2_USER_NONE &&
+ 	    spectre_v2_user_stibp == SPECTRE_V2_USER_NONE)
+ 		return PR_SPEC_ENABLE;
+-	else if (spectre_v2_user_ibpb == SPECTRE_V2_USER_STRICT ||
+-	    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT ||
+-	    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT_PREFERRED)
+-		return PR_SPEC_DISABLE;
+-	else if (spectre_v2_user_ibpb == SPECTRE_V2_USER_PRCTL ||
+-	    spectre_v2_user_ibpb == SPECTRE_V2_USER_SECCOMP ||
+-	    spectre_v2_user_stibp == SPECTRE_V2_USER_PRCTL ||
+-	    spectre_v2_user_stibp == SPECTRE_V2_USER_SECCOMP) {
++	else if (is_spec_ib_user_controlled()) {
+ 		if (task_spec_ib_force_disable(task))
+ 			return PR_SPEC_PRCTL | PR_SPEC_FORCE_DISABLE;
+ 		if (task_spec_ib_disable(task))
+ 			return PR_SPEC_PRCTL | PR_SPEC_DISABLE;
+ 		return PR_SPEC_PRCTL | PR_SPEC_ENABLE;
+-	} else
++	} else if (spectre_v2_user_ibpb == SPECTRE_V2_USER_STRICT ||
++	    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT ||
++	    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT_PREFERRED)
++		return PR_SPEC_DISABLE;
++	else
+ 		return PR_SPEC_NOT_AFFECTED;
+ }
+ 
+-- 
+2.29.1.341.ge80a0c044ae-goog
 
