@@ -2,139 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 686F12A792F
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 09:25:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 917BC2A7933
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 09:28:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729809AbgKEIZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 03:25:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60506 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729604AbgKEIZ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 03:25:56 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5E7D8206ED;
-        Thu,  5 Nov 2020 08:25:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604564755;
-        bh=ong/5uAOzEPzvvkf24FqAzmWCt2WwE06vxIZsyxBPc0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vP9KXdx5k5SLy8dxikoStWRPdzZpUnXGbSNqhTu2Ymg+eD7ZimDK5qFaY1LQf595R
-         lE5w0dD8PtjFtFKD/9VL8j0FMSeSwJSpigdZ1E75M1iCL5GHVhs4/x2mE/l+xfa3xy
-         IlSzW9oabzBTl1TBGdilxMiZNH/O8tpjLNk1g1m8=
-Date:   Thu, 5 Nov 2020 09:26:39 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Shuo A Liu <shuo.a.liu@intel.com>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Yu Wang <yu1.wang@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>
-Subject: Re: [PATCH v5 06/17] virt: acrn: Introduce VM management interfaces
-Message-ID: <20201105082639.GB3426404@kroah.com>
-References: <20201019061803.13298-1-shuo.a.liu@intel.com>
- <20201019061803.13298-7-shuo.a.liu@intel.com>
- <20201104190235.GA2855400@kroah.com>
- <20201105031029.GB17702@shuo-intel.sh.intel.com>
- <20201105062907.GA693781@kroah.com>
- <20201105073545.GD17702@shuo-intel.sh.intel.com>
+        id S1728048AbgKEI2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 03:28:04 -0500
+Received: from mail-ej1-f68.google.com ([209.85.218.68]:35901 "EHLO
+        mail-ej1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726152AbgKEI2E (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 03:28:04 -0500
+Received: by mail-ej1-f68.google.com with SMTP id o21so1388833ejb.3
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 00:28:02 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=kub1Lp2e1PmOcVJO6y4wLb/0t5h4kQLdsa0jQnqFwbM=;
+        b=pN1STENZ86uD61cHFSyW23YBOx+mgyfpx8PcBLv6WX/wVQ0dRGAIRM/Rbtb8B05PCs
+         m4esFStjh7eVUrHi1/0/uwOMBb25i2TmfHCsMIr9zxXtWp720oqerlIycP+sEvP36uBJ
+         jfXKk+UypVkvVKtV08jokhQ5BT7Jmx94ss90iIj5RqM2wJy6i60AfwvpvPCMSZOjWRva
+         kSATRHLBXdqgpBzSb4WfJaKeguA1PZ7UAsENLq1rGaqA1/ls+FiqQ0yDhBQEq1bH++d8
+         W8f5hNtIRWvNct4uuTTl044d0DeTkJqO+VuXrCnuJQDEpjJyWodvas3e4i18Se/9Km5l
+         W6tQ==
+X-Gm-Message-State: AOAM531bMjCAuWIBvLmG2DYjU+Jm8mLo5vC8nfkrCO5+n6IawFbXdqri
+        IIDw96B6KWR9LwkPrelsuPFjlB7MZ98=
+X-Google-Smtp-Source: ABdhPJyXZotSGJWOs0mue51/Ny+A0SmvsZncZsFHz++KJgsZVjrFL0Ri099DT1cohvDJKh3gDf/oMg==
+X-Received: by 2002:a17:906:b150:: with SMTP id bt16mr1236690ejb.257.1604564882302;
+        Thu, 05 Nov 2020 00:28:02 -0800 (PST)
+Received: from ?IPv6:2a0b:e7c0:0:107::49? ([2a0b:e7c0:0:107::49])
+        by smtp.gmail.com with ESMTPSA id y18sm498747ejq.69.2020.11.05.00.28.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Nov 2020 00:28:01 -0800 (PST)
+Subject: Re: [PATCH 27/36] tty: synclinkmp: Mark never checked 'readval' as
+ __always_unused
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        paulkf@microgate.com
+References: <20201104193549.4026187-1-lee.jones@linaro.org>
+ <20201104193549.4026187-28-lee.jones@linaro.org>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Message-ID: <0a4043ee-dad5-7691-8c67-db73d3c12f52@kernel.org>
+Date:   Thu, 5 Nov 2020 09:28:00 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201105073545.GD17702@shuo-intel.sh.intel.com>
+In-Reply-To: <20201104193549.4026187-28-lee.jones@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 03:35:45PM +0800, Shuo A Liu wrote:
-> On Thu  5.Nov'20 at  7:29:07 +0100, Greg Kroah-Hartman wrote:
-> > On Thu, Nov 05, 2020 at 11:10:29AM +0800, Shuo A Liu wrote:
-> > > On Wed  4.Nov'20 at 20:02:35 +0100, Greg Kroah-Hartman wrote:
-> > > > On Mon, Oct 19, 2020 at 02:17:52PM +0800, shuo.a.liu@intel.com wrote:
-> > > > > --- /dev/null
-> > > > > +++ b/include/uapi/linux/acrn.h
-> > > > > @@ -0,0 +1,56 @@
-> > > > > +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> > > > > +/*
-> > > > > + * Userspace interface for /dev/acrn_hsm - ACRN Hypervisor Service Module
-> > > > > + *
-> > > > > + * This file can be used by applications that need to communicate with the HSM
-> > > > > + * via the ioctl interface.
-> > > > > + */
-> > > > > +
-> > > > > +#ifndef _UAPI_ACRN_H
-> > > > > +#define _UAPI_ACRN_H
-> > > > > +
-> > > > > +#include <linux/types.h>
-> > > > > +
-> > > > > +/**
-> > > > > + * struct acrn_vm_creation - Info to create a User VM
-> > > > > + * @vmid:		User VM ID returned from the hypervisor
-> > > > > + * @reserved0:		Reserved
-> > > > > + * @vcpu_num:		Number of vCPU in the VM. Return from hypervisor.
-> > > > > + * @reserved1:		Reserved
-> > > > > + * @uuid:		UUID of the VM. Pass to hypervisor directly.
-> > > > > + * @vm_flag:		Flag of the VM creating. Pass to hypervisor directly.
-> > > > > + * @ioreq_buf:		Service VM GPA of I/O request buffer. Pass to
-> > > > > + *			hypervisor directly.
-> > > > > + * @cpu_affinity:	CPU affinity of the VM. Pass to hypervisor directly.
-> > > > > + * @reserved2:		Reserved
-> > > >
-> > > > Reserved and must be 0?
-> > > 
-> > > Not a must.
-> > 
-> > That's guaranteed to come back and bite you in the end.
+On 04. 11. 20, 20:35, Lee Jones wrote:
+> Fixes the following W=1 kernel build warning(s):
 > 
-> OK. I can fill them with zero before passing them to hypervisor.
+>   drivers/tty/synclinkmp.c: In function ‘init_adapter’:
+>   drivers/tty/synclinkmp.c:5167:6: warning: variable ‘readval’ set but not used [-Wunused-but-set-variable]
 > 
-> > You all have read the "how to write a good api" document, right?
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Jiri Slaby <jirislaby@kernel.org>
+> Cc: paulkf@microgate.com
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> ---
+>   drivers/tty/synclinkmp.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Is it Documentation/driver-api/ioctl.rst? Or i missed..
+> diff --git a/drivers/tty/synclinkmp.c b/drivers/tty/synclinkmp.c
+> index 0ca738f61a35b..75f494bfdcbed 100644
+> --- a/drivers/tty/synclinkmp.c
+> +++ b/drivers/tty/synclinkmp.c
+> @@ -5165,7 +5165,7 @@ static bool init_adapter(SLMP_INFO *info)
+>   
+>   	/* Set BIT30 of Local Control Reg 0x50 to reset SCA */
+>   	volatile u32 *MiscCtrl = (u32 *)(info->lcr_base + 0x50);
+> -	u32 readval;
+> +	u32 __always_unused readval;
 
-That's one good document, but no, not what I was referring to.  I was
-thinking of Documentation/process/adding-syscalls.rst, which is what you
-are doing here implicitly with these new ioctls (every ioctl is a brand
-new syscall.)
+Why not just remove readval completely as in other cases?
 
-> > > > What are they reserved for?
-> > > >
-> > > > Same for all of the reserved fields, why?
-> > > 
-> > > Some reserved fields are to map layout in the hypervisor side, others
-> > > are for future use.
-> > 
-> > ioctls should not have these, again, please read the documentation.  If
-> > you need something new in the future, just make a new ioctl.
-> 
-> OK. I will remove some reserved fields for scalability.
+And the loop can be turned into ndelay:
 
-"scalability" should have nothing to do with any of this, right?  What
-am I missing?
+         /*
+          * Force at least 170ns delay before clearing
+          * reset bit. Each read from LCR takes at least
+          * 30ns so 10 times for 300ns to be safe.
+          */
+         for(i=0;i<10;i++)
+                 readval = *MiscCtrl;
 
-> Though i can
-> keep some reserved fields for alignment (and to keep same data structure
-> layout with the hypervisor), right?
-> Documentation/driver-api/ioctl.rst says that explicit reserved fields
-> could be used.
-
-If you need alignment, yes, that is fine, but that's not what you are
-saying these are for.  And if you need alignment, why not move things
-around so they are properly aligned.
-
-And this structure has nothing to do with the hypervisor structure,
-that's a internal-kernel structure, not a userspace-visable thing if you
-are doing things correctly.
-
-As an example of all of this type of review and conversation, please
-refer to the review of the recent nitro_enclaves code that got merged.
-All of the discussions there about ioctls are also relevant here.
 
 thanks,
-
-greg k-h
+-- 
+js
+suse labs
