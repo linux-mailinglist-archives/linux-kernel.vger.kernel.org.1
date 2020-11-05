@@ -2,205 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96E302A7B9B
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 11:25:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BB102A7BAD
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 11:26:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730013AbgKEKZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 05:25:05 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:6892 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730015AbgKEKZB (ORCPT
+        id S1729674AbgKEKZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 05:25:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726152AbgKEKZ5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 05:25:01 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fa3d3000001>; Thu, 05 Nov 2020 02:25:04 -0800
-Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 5 Nov
- 2020 10:25:00 +0000
-Received: from audio.nvidia.com (10.124.1.5) by mail.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
- Transport; Thu, 5 Nov 2020 10:24:57 +0000
-From:   Sameer Pujar <spujar@nvidia.com>
-To:     <robh+dt@kernel.org>, <devicetree@vger.kernel.org>
-CC:     <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
-        <vkoul@kernel.org>, <tglx@linutronix.de>, <jason@lakedaemon.net>,
-        <maz@kernel.org>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <dmaengine@vger.kernel.org>,
-        Sameer Pujar <spujar@nvidia.com>
-Subject: [PATCH 4/4] dt-bindings: bus: Convert ACONNECT doc to json-schema
-Date:   Thu, 5 Nov 2020 15:54:06 +0530
-Message-ID: <1604571846-14037-5-git-send-email-spujar@nvidia.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1604571846-14037-1-git-send-email-spujar@nvidia.com>
-References: <1604571846-14037-1-git-send-email-spujar@nvidia.com>
+        Thu, 5 Nov 2020 05:25:57 -0500
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16BC7C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 02:25:56 -0800 (PST)
+Received: by mail-lf1-x141.google.com with SMTP id v144so1482047lfa.13
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 02:25:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wZXYpUcHXnk29q0iXnXVF1m4qzks3JzlHDUDg4qGSWM=;
+        b=xUNEMxU+oIFKuSUBXs3OZRa4rjz4U53r2b7DNL5g5nw02FKw9AA1XV6Cil+Pw212Dz
+         713HD94UUK0vtS/lPE/9eSxCxlCpbMaWixRJQgACwGq9yqLiHqXxFgFAf588XFdezvBu
+         13gNZ1ejls7FrlF6LpU4GHFxJDLQuZ6Lq0hfKky5QEW1z45jI2o2A1yiGkXFDtkmoHFf
+         kK8xAppnBcg5vd3hCdtn/dJ+OGCy2Gz/h74RlvDvKc0sJCmj6njz1ZqEKO/Qc8mK3t2W
+         hZgjqlJ4/T8hfWvQoDRXGZqoCUWYc45aK34iZU8Kcgxj0IKzSWIBfGNuJkUoAgVQe24G
+         ifqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wZXYpUcHXnk29q0iXnXVF1m4qzks3JzlHDUDg4qGSWM=;
+        b=pqpGSaTPMrHzbqgbd6H5RLHBtAX4p6CYjTZRvTnkWYvPwDk1ob+Utrz0A7YuH+AE2L
+         7tRISIMMEgmltyEXdC4YGtGFN1OWnXbNT1ycCI8agve8xiuv5nDPTvNUTeGe7kqE9eaF
+         Q9PF1wO+phE/pGMFJYUpQKXw5HKWGwFbxF9mHDxEtUKG2zJd63+Bwc+Hrmi9vq8wIR3c
+         DP1NcnOOHvlaflkchdHtf/e8jFjUlMxJLcvebS09v94HObO76RWkrlB4fhiYm7KdPX3M
+         NbJExbdGQpLWOIh53BbpIdcPYFWHFn1yjDoi8I6NvtHHWBAjmAulIZ741MsjOgqqHIaf
+         TTIw==
+X-Gm-Message-State: AOAM531pZsNa9LYxY7061Mea1iOX9XWzSDpqKKAYmN+ORWNwUIKA9a3H
+        DYX0ZEpkxKuZAcOQ3CZxco8xR+OU4uP+XoJr6ikMTg==
+X-Google-Smtp-Source: ABdhPJzcSl1hw+q9dkvwTMUc/KZLeW+yUu2A0bMFIP+cz29kOiNYmZhpvR1N7tvOhc4hhoQBs1CZ3idg4TnSeYxK5a4=
+X-Received: by 2002:ac2:50c1:: with SMTP id h1mr664955lfm.333.1604571953117;
+ Thu, 05 Nov 2020 02:25:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1604571904; bh=EJno3VbzOuyzb/wyka2F0PEnWEXtojA2Cq7GOlRFzzA=;
-        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
-         References:MIME-Version:Content-Type;
-        b=rhUmBaIdGpuW7aG0n5KHFPbqvWBkqUL0QdzM7mU+61br1dUi2wDbgDnLjc3Pjkvxd
-         ftF/9dYngokngSs9Gbuo4vVx7utmzs1943Xxh51ZRkiYmj4n9Nj3mjsIaPanhZWHNQ
-         6zVo976HUbW9Di5TzkblIOwyMaTtKsEtJY3mQ3aaRGXFJ1fz9TrD71qeecSxxAggmT
-         izcU7a7XitBQfnhQ0oYrSLz1EAib36xyU59cofFj46M610ITC/DPa7Kw+Bj/nEBPNK
-         hA7yqquWP/SpoqxAUaDUigP/LE4rcJA6UvsFVkns6lDLZ85VPbBCbe9sf2RaxZS4Iq
-         XmfVM/2eVh1yA==
+References: <20201009060302.6220-1-mike.looijmans@topic.nl>
+In-Reply-To: <20201009060302.6220-1-mike.looijmans@topic.nl>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 5 Nov 2020 11:25:42 +0100
+Message-ID: <CACRpkdYLDUURK5yFC5UDZ3trQ8vN4pL_0zpU_FrgfhRUXibnLQ@mail.gmail.com>
+Subject: Re: [PATCH v3] dt-bindings: gpio: pca953x: Add support for the NXP PCAL9554B/C
+To:     Mike Looijmans <mike.looijmans@topic.nl>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move ACONNECT documentation to YAML format.
+Hi Mike!
 
-Signed-off-by: Sameer Pujar <spujar@nvidia.com>
----
- .../bindings/bus/nvidia,tegra210-aconnect.txt      | 44 -----------
- .../bindings/bus/nvidia,tegra210-aconnect.yaml     | 86 ++++++++++++++++++++++
- 2 files changed, 86 insertions(+), 44 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/bus/nvidia,tegra210-aconnect.txt
- create mode 100644 Documentation/devicetree/bindings/bus/nvidia,tegra210-aconnect.yaml
+thanks for your patch.
 
-diff --git a/Documentation/devicetree/bindings/bus/nvidia,tegra210-aconnect.txt b/Documentation/devicetree/bindings/bus/nvidia,tegra210-aconnect.txt
-deleted file mode 100644
-index 3108d03..0000000
---- a/Documentation/devicetree/bindings/bus/nvidia,tegra210-aconnect.txt
-+++ /dev/null
-@@ -1,44 +0,0 @@
--NVIDIA Tegra ACONNECT Bus
--
--The Tegra ACONNECT bus is an AXI switch which is used to connnect various
--components inside the Audio Processing Engine (APE). All CPU accesses to
--the APE subsystem go through the ACONNECT via an APB to AXI wrapper.
--
--Required properties:
--- compatible: Must be "nvidia,tegra210-aconnect".
--- clocks: Must contain the entries for the APE clock (TEGRA210_CLK_APE),
--  and APE interface clock (TEGRA210_CLK_APB2APE).
--- clock-names: Must contain the names "ape" and "apb2ape" for the corresponding
--  'clocks' entries.
--- power-domains: Must contain a phandle that points to the audio powergate
--  (namely 'aud') for Tegra210.
--- #address-cells: The number of cells used to represent physical base addresses
--  in the aconnect address space. Should be 1.
--- #size-cells: The number of cells used to represent the size of an address
--  range in the aconnect address space. Should be 1.
--- ranges: Mapping of the aconnect address space to the CPU address space.
--
--All devices accessed via the ACONNNECT are described by child-nodes.
--
--Example:
--
--	aconnect@702c0000 {
--		compatible = "nvidia,tegra210-aconnect";
--		clocks = <&tegra_car TEGRA210_CLK_APE>,
--			 <&tegra_car TEGRA210_CLK_APB2APE>;
--		clock-names = "ape", "apb2ape";
--		power-domains = <&pd_audio>;
--
--		#address-cells = <1>;
--		#size-cells = <1>;
--		ranges = <0x702c0000 0x0 0x702c0000 0x00040000>;
--
--
--		child1 {
--			...
--		};
--
--		child2 {
--			...
--		};
--	};
-diff --git a/Documentation/devicetree/bindings/bus/nvidia,tegra210-aconnect.yaml b/Documentation/devicetree/bindings/bus/nvidia,tegra210-aconnect.yaml
-new file mode 100644
-index 0000000..f0161bc
---- /dev/null
-+++ b/Documentation/devicetree/bindings/bus/nvidia,tegra210-aconnect.yaml
-@@ -0,0 +1,86 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/bus/nvidia,tegra210-aconnect.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: NVIDIA Tegra ACONNECT Bus
-+
-+description: |
-+  The Tegra ACONNECT bus is an AXI switch which is used to connnect various
-+  components inside the Audio Processing Engine (APE). All CPU accesses to
-+  the APE subsystem go through the ACONNECT via an APB to AXI wrapper. All
-+  devices accessed via the ACONNNECT are described by child-nodes.
-+
-+maintainers:
-+  - Jon Hunter <jonathanh@nvidia.com>
-+
-+properties:
-+  compatible:
-+    oneOf:
-+      - const: nvidia,tegra210-aconnect
-+      - items:
-+          - enum:
-+              - nvidia,tegra186-aconnect
-+              - nvidia,tegra194-aconnect
-+          - const: nvidia,tegra210-aconnect
-+
-+  clocks:
-+    items:
-+      - description: Must contain the entry for APE clock
-+      - description: Must contain the entry for APE interface clock
-+
-+  clock-names:
-+    items:
-+      - const: ape
-+      - const: apb2ape
-+
-+  power-domains:
-+    maxItems: 1
-+
-+  "#address-cells":
-+    const: 1
-+
-+  "#size-cells":
-+    const: 1
-+
-+  ranges: true
-+
-+patternProperties:
-+  "^dma-controller(@[0-9a-f]+)?$":
-+    $ref: /schemas/dma/nvidia,tegra210-adma.yaml#
-+  "^interrupt-controller(@[0-9a-f]+)?$":
-+    $ref: /schemas/interrupt-controller/arm,gic.yaml#
-+  "^ahub(@[0-9a-f]+)?$":
-+    $ref: /schemas/sound/nvidia,tegra210-ahub.yaml#
-+
-+required:
-+  - compatible
-+  - clocks
-+  - clock-names
-+  - power-domains
-+  - "#address-cells"
-+  - "#size-cells"
-+  - ranges
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include<dt-bindings/clock/tegra210-car.h>
-+
-+    aconnect@702c0000 {
-+        compatible = "nvidia,tegra210-aconnect";
-+        clocks = <&tegra_car TEGRA210_CLK_APE>,
-+                 <&tegra_car TEGRA210_CLK_APB2APE>;
-+        clock-names = "ape", "apb2ape";
-+        power-domains = <&pd_audio>;
-+
-+        #address-cells = <1>;
-+        #size-cells = <1>;
-+        ranges = <0x702c0000 0x702c0000 0x00040000>;
-+
-+        // Child device nodes follow ...
-+    };
-+
-+...
--- 
-2.7.4
+On Fri, Oct 9, 2020 at 8:03 AM Mike Looijmans <mike.looijmans@topic.nl> wrote:
 
+>        - nxp,pcal9535
+> +      - nxp,pcal9554b
+>        - nxp,pcal9555a
+
+This triggers my OCD. Putting B before A? Please make it alphabetic.
+
+No big deal, but...
+
+Yours,
+Linus Walleij
