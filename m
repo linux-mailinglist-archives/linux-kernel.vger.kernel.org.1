@@ -2,102 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E4702A7439
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 02:01:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 594122A7459
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 02:04:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387984AbgKEBBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 20:01:07 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:7413 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728052AbgKEBBG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 20:01:06 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CRQF92qWxz71p3;
-        Thu,  5 Nov 2020 09:01:01 +0800 (CST)
-Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
- (10.3.19.204) with Microsoft SMTP Server (TLS) id 14.3.487.0; Thu, 5 Nov 2020
- 09:00:59 +0800
-Subject: Re: [f2fs-dev] [PATCH v2 2/2] f2fs: fix compat F2FS_IOC_{MOVE,
- GARBAGE_COLLECT}_RANGE
-To:     Eric Biggers <ebiggers@kernel.org>
-CC:     <jaegeuk@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>
-References: <20201104064310.15769-1-yuchao0@huawei.com>
- <20201104064310.15769-2-yuchao0@huawei.com>
- <20201104180153.GB846@sol.localdomain>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <2bec3d16-e920-12b9-562d-0e055c1af28e@huawei.com>
-Date:   Thu, 5 Nov 2020 09:00:59 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S1731505AbgKEBEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 20:04:47 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:36188 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730543AbgKEBEm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 20:04:42 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kaThf-005JCz-HJ; Thu, 05 Nov 2020 02:04:39 +0100
+Date:   Thu, 5 Nov 2020 02:04:39 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Ioana Ciornei <ciorneiioana@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Ioana Ciornei <ioana.ciornei@nxp.com>
+Subject: Re: [RFC 6/9] staging: dpaa2-switch: add .ndo_start_xmit() callback
+Message-ID: <20201105010439.GH933237@lunn.ch>
+References: <20201104165720.2566399-1-ciorneiioana@gmail.com>
+ <20201104165720.2566399-7-ciorneiioana@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201104180153.GB846@sol.localdomain>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.114.67]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201104165720.2566399-7-ciorneiioana@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/11/5 2:01, Eric Biggers wrote:
-> On Wed, Nov 04, 2020 at 02:43:10PM +0800, Chao Yu wrote:
->> +static int f2fs_ioc_gc_range(struct file *filp, unsigned long arg)
->> +{
->> +	struct f2fs_gc_range range;
->> +	struct f2fs_sb_info *sbi = F2FS_I_SB(file_inode(filp));
->> +
->> +	if (!capable(CAP_SYS_ADMIN))
->> +		return -EPERM;
->> +	if (f2fs_readonly(sbi->sb))
->> +		return -EROFS;
->> +	if (copy_from_user(&range, (struct f2fs_gc_range __user *)arg,
->> +							sizeof(range)))
->> +		return -EFAULT;
->> +
->> +	return __f2fs_ioc_gc_range(filp, &range);
->> +}
-> [...]
->>   #ifdef CONFIG_COMPAT
->> +static int f2fs_compat_ioc_gc_range(struct file *file, unsigned long arg)
->> +{
->> +	struct f2fs_sb_info *sbi = F2FS_I_SB(file_inode(file));
->> +	struct compat_f2fs_gc_range __user *urange;
->> +	struct f2fs_gc_range range;
->> +	int err;
->> +
->> +	if (unlikely(f2fs_cp_error(sbi)))
->> +		return -EIO;
->> +	if (!f2fs_is_checkpoint_ready(sbi))
->> +		return -ENOSPC;
->> +	if (!capable(CAP_SYS_ADMIN))
->> +		return -EPERM;
->> +	if (f2fs_readonly(sbi->sb))
->> +		return -EROFS;
->> +
->> +	urange = compat_ptr(arg);
->> +	err = get_user(range.sync, &urange->sync);
->> +	err |= get_user(range.start, &urange->start);
->> +	err |= get_user(range.len, &urange->len);
->> +	if (err)
->> +		return -EFAULT;
->> +
->> +	return __f2fs_ioc_gc_range(file, &range);
->> +}
-> 
-> It would be better to have __f2fs_ioc_gc_range() handle the f2fs_cp_error(),
-> f2fs_is_checkpoint_ready(), capable(), and f2fs_readonly() checks, so that they
-> don't have to be duplicated in the native and compat cases.
-> 
-> Similarly for "move range".
+> +static int dpaa2_switch_build_single_fd(struct ethsw_core *ethsw,
+> +					struct sk_buff *skb,
+> +					struct dpaa2_fd *fd)
+> +{
+> +	struct device *dev = ethsw->dev;
+> +	struct sk_buff **skbh;
+> +	dma_addr_t addr;
+> +	u8 *buff_start;
+> +	void *hwa;
+> +
+> +	buff_start = PTR_ALIGN(skb->data - DPAA2_SWITCH_TX_DATA_OFFSET -
+> +			       DPAA2_SWITCH_TX_BUF_ALIGN,
+> +			       DPAA2_SWITCH_TX_BUF_ALIGN);
+> +
+> +	/* Clear FAS to have consistent values for TX confirmation. It is
+> +	 * located in the first 8 bytes of the buffer's hardware annotation
+> +	 * area
+> +	 */
+> +	hwa = buff_start + DPAA2_SWITCH_SWA_SIZE;
+> +	memset(hwa, 0, 8);
+> +
+> +	/* Store a backpointer to the skb at the beginning of the buffer
+> +	 * (in the private data area) such that we can release it
+> +	 * on Tx confirm
+> +	 */
+> +	skbh = (struct sk_buff **)buff_start;
+> +	*skbh = skb;
 
-Will clean up in v3.
+Where is the TX confirm which uses this stored pointer. I don't see it
+in this file.
 
-Thanks,
+It can be expensive to store pointer like this in buffers used for
+DMA. It has to be flushed out of the cache here as part of the
+send. Then the TX complete needs to invalidate and then read it back
+into the cache. Or you use coherent memory which is just slow.
 
-> 
-> - Eric
-> .
-> 
+It can be cheaper to keep a parallel ring in cacheable memory which
+never gets flushed.
+
+      Andrew
