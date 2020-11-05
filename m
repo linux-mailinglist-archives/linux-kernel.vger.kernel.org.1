@@ -2,195 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00DF22A7FF3
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 14:50:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC38F2A7FF6
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 14:50:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730785AbgKENus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 08:50:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51682 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725468AbgKENus (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 08:50:48 -0500
-Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E699E206B6;
-        Thu,  5 Nov 2020 13:50:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604584247;
-        bh=QhSpAqc+JI6iEP/gvXgklZw5qTJq5ZUzZ9hmMY56PxQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=aeDVCuYDBm5ybOxqE9hZvmcySKgIJYzAQRWIv2CTS9HvUSmxqRnHeNaOU5lbcUmCX
-         pavpZdRzRbP3f3/LXJ4fwrlEwVg51nc99YlC1dRmK7fhQMZfP/1dh1QPWVN6Q7J+t1
-         IlFyZcAkjxgO7Kz0iRebQBMLA/K6RGSa8Xx1tUzg=
-Received: by mail-oi1-f179.google.com with SMTP id m17so1725548oie.4;
-        Thu, 05 Nov 2020 05:50:46 -0800 (PST)
-X-Gm-Message-State: AOAM5328SoCf3+HmnlgrWN8LRhtZUMDaCEcuea3qgk19BR2G1C95O3eR
-        LXA8HIKJM09QrjOpzYIbOJqI3pjpcTqb1E0H0Q==
-X-Google-Smtp-Source: ABdhPJwlLmVul9osQoOmAYcll5ZdLwQnv0cOCpb55EEmIiGva2JHFnzJmvuYRje/DB8hxEKpkeNR1O4Z3zfeZXa8Hcg=
-X-Received: by 2002:a54:4588:: with SMTP id z8mr1649677oib.147.1604584246048;
- Thu, 05 Nov 2020 05:50:46 -0800 (PST)
+        id S1730831AbgKENu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 08:50:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38384 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730788AbgKENu6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 08:50:58 -0500
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7939C0613CF;
+        Thu,  5 Nov 2020 05:50:57 -0800 (PST)
+Received: by mail-lj1-x243.google.com with SMTP id 11so1655032ljf.2;
+        Thu, 05 Nov 2020 05:50:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=rVeMayhPAIlsOkSvb4nuohXgqZynnes1X57YaEIU5uA=;
+        b=Ddasc07+hJetg84HtPv08IWqTsehHI7PYy/jeaGYIJMoDTXsEyExRWysvl+tTQ41bV
+         /j2IxQQVm0ZteUx0q9GRqWbGelcZmQqeTBU1e610olL21Mx9kCKCXpeD7yv+fBPhPss5
+         JWaQSemcWu5a8N9oDcUPCtBRuEIam3SgIHjjL89rTHiS3g4tYrAgdbrD5yzq9B8oRV+R
+         X49313jTw0H8+KNYPD17gwxEtzw2VFyHhb7tPlXimQMeln2atdQZ8+ifIA9+5H+QsPhw
+         hXyq5ZtYxsMvnQTN+u8ByDguczGT5kPsEMzrxKxg8FUybmkzS3pehHwaSTMlDMRYoSUG
+         Bgfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=rVeMayhPAIlsOkSvb4nuohXgqZynnes1X57YaEIU5uA=;
+        b=S5UNIJeWTww+2E7aG1UxFfNw9TA2td/WbP4QYncBSWUk2nyH5ZECVxBux4Mc2IvfIm
+         QyxKRR7NHa0tiO8K/yTYj2X26tXq/9RYNc5t5W2uRV/VCa7w/nziRo9tT45UlFjS4O2t
+         bt82nA5Gq9MhRmJphXqk1JP9GOIS1d7CBQPZ1UnJ+gCxM0NB9HPnj8c+TITqUBKyO0g/
+         +H6YcPVPkm5UtwBxwP10zL+5byCeBRUZRJzMLhhprL8U6GMuBi7tj34A7zJwEwzfOmmp
+         L8PCJAivPdIv1IL7SSM2I/8UcvjU9+B7QzC8iDHylMaeUjKtVL987jR6gYPeum5KkIJ0
+         Yh2w==
+X-Gm-Message-State: AOAM532fn9Xy5Y12ZHtO+Vwf0NgUMIzZvUynJWF3E1bPTHgtTtgLSOE0
+        /DFOmm7vOVhOPmp8+fIzF7txyj4hxS8=
+X-Google-Smtp-Source: ABdhPJx9t/7UR0Azd8ghUvjNKS2td2e/Pij/noR4yugPoL3tOZYg7hWUhrN+++nNm81CO2+OQJZQJw==
+X-Received: by 2002:a2e:9618:: with SMTP id v24mr859390ljh.51.1604584256138;
+        Thu, 05 Nov 2020 05:50:56 -0800 (PST)
+Received: from [192.168.2.145] (109-252-192-83.dynamic.spd-mgts.ru. [109.252.192.83])
+        by smtp.googlemail.com with ESMTPSA id z15sm186420lfd.79.2020.11.05.05.50.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Nov 2020 05:50:55 -0800 (PST)
+Subject: Re: [PATCH v7 36/47] memory: tegra20-emc: Add devfreq support
+To:     Chanwoo Choi <cw00.choi@samsung.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Mikko Perttunen <cyndis@kapsi.fi>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org
+References: <20201104164923.21238-1-digetx@gmail.com>
+ <CGME20201104165200epcas1p1c8f692fa2d5a01c01e4f8aca55462fb2@epcas1p1.samsung.com>
+ <20201104164923.21238-37-digetx@gmail.com>
+ <95e289fc-210c-1f8d-1b24-36e33ce96deb@samsung.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <05fbab83-517f-a0e3-24db-358bfc367d5b@gmail.com>
+Date:   Thu, 5 Nov 2020 16:50:54 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <CGME20201105114814eucas1p18d9f11c44eec68738d929ad1a0263482@eucas1p1.samsung.com>
- <20201105114804.18326-1-m.szyprowski@samsung.com>
-In-Reply-To: <20201105114804.18326-1-m.szyprowski@samsung.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Thu, 5 Nov 2020 07:50:34 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqKTrUTHr4=ZDNfaf-mZE3wgfzkV=CRgb7yGzKg1oH7zvg@mail.gmail.com>
-Message-ID: <CAL_JsqKTrUTHr4=ZDNfaf-mZE3wgfzkV=CRgb7yGzKg1oH7zvg@mail.gmail.com>
-Subject: Re: [PATCH] ARM: dts: exynos: Use fixed index for the MMC devices
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Markus Reichl <m.reichl@fivetechno.de>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <95e289fc-210c-1f8d-1b24-36e33ce96deb@samsung.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 5, 2020 at 5:48 AM Marek Szyprowski
-<m.szyprowski@samsung.com> wrote:
->
-> Recently introduced asynchronous probe on the MMC devices can shuffle
-> block IDs in the system. Pin them to values equal to the physical MMC bus
-> number to ease booting in environments where UUIDs are not practical.
+05.11.2020 05:30, Chanwoo Choi пишет:
+> On 11/5/20 1:49 AM, Dmitry Osipenko wrote:
+>> Add devfreq support to the Tegra20 EMC driver. Memory utilization
+>> statistics will be periodically polled from the memory controller and
+>> appropriate minimum clock rate will be selected by the devfreq governor.
+>>
+>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>> ---
+>>  drivers/memory/tegra/Kconfig       |  2 +
+>>  drivers/memory/tegra/tegra20-emc.c | 92 ++++++++++++++++++++++++++++++
+>>  2 files changed, 94 insertions(+)
+>>
+>> diff --git a/drivers/memory/tegra/Kconfig b/drivers/memory/tegra/Kconfig
+>> index ac3dfe155505..76e9a3b10839 100644
+>> --- a/drivers/memory/tegra/Kconfig
+>> +++ b/drivers/memory/tegra/Kconfig
+>> @@ -12,6 +12,8 @@ config TEGRA20_EMC
+>>  	tristate "NVIDIA Tegra20 External Memory Controller driver"
+>>  	default y
+>>  	depends on TEGRA_MC && ARCH_TEGRA_2x_SOC
+>> +	select DEVFREQ_GOV_SIMPLE_ONDEMAND
+>> +	select PM_DEVFREQ
+>>  	select PM_OPP
+> 
+> nitpick. If you select PM_DEVFREQ, don't need to select 'PM_OPP'
+> bacause PM_DEVFREQ use OPP as mandatory with 'select PM_OPP' in Kconfig.
 
-How's that going to help for existing DTs?
+Ok
 
-> Use newly introduced aliases for mmcblk devices from commit fa2d0aa96941
-> ("mmc: core: Allow setting slot index via device tree alias").
->
-> Suggested-by: Markus Reichl <m.reichl@fivetechno.de>
-> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> ---
->  arch/arm/boot/dts/exynos3250.dtsi | 3 +++
->  arch/arm/boot/dts/exynos4.dtsi    | 2 ++
->  arch/arm/boot/dts/exynos4210.dtsi | 1 +
->  arch/arm/boot/dts/exynos4412.dtsi | 1 +
->  arch/arm/boot/dts/exynos5250.dtsi | 4 ++++
->  arch/arm/boot/dts/exynos5260.dtsi | 3 +++
->  arch/arm/boot/dts/exynos5410.dtsi | 3 +++
->  arch/arm/boot/dts/exynos5420.dtsi | 3 +++
->  8 files changed, 20 insertions(+)
->
-> diff --git a/arch/arm/boot/dts/exynos3250.dtsi b/arch/arm/boot/dts/exynos3250.dtsi
-> index 75ed82600ec8..510080bb4102 100644
-> --- a/arch/arm/boot/dts/exynos3250.dtsi
-> +++ b/arch/arm/boot/dts/exynos3250.dtsi
-> @@ -28,6 +28,9 @@
->         aliases {
->                 pinctrl0 = &pinctrl_0;
->                 pinctrl1 = &pinctrl_1;
-> +               mmc0 = &mshc_0;
-> +               mmc1 = &mshc_1;
-> +               mmc2 = &mshc_2;
->                 mshc0 = &mshc_0;
+...
+>> +static int tegra_emc_devfreq_init(struct tegra_emc *emc)
+>> +{
+>> +	int err;
+>> +
+>> +	/*
+>> +	 * PWR_COUNT is 1/2 of PWR_CLOCKS at max, and thus, the up-threshold
+>> +	 * should be less than 50.  Secondly, multiple active memory clients
+>> +	 * may cause over 20% of lost clock cycles due to stalls caused by
+>> +	 * competing memory accesses.  This means that threshold should be
+>> +	 * set to a less than 30 in order to have a properly working governor.
+>> +	 */
+>> +	emc->ondemand_data.upthreshold = 20;
+>> +
+>> +	/*
+>> +	 * Reset statistic gathers state, select global bandwidth for the
+>> +	 * statistics collection mode and set clocks counter saturation
+>> +	 * limit to maximum.
+>> +	 */
+>> +	writel_relaxed(0x00000000, emc->regs + EMC_STAT_CONTROL);
+>> +	writel_relaxed(0x00000000, emc->regs + EMC_STAT_LLMC_CONTROL);
+>> +	writel_relaxed(0xffffffff, emc->regs + EMC_STAT_PWR_CLOCK_LIMIT);
+>> +
+>> +	emc->devfreq = devfreq_add_device(emc->dev, &tegra_emc_devfreq_profile,
+>> +					  DEVFREQ_GOV_SIMPLE_ONDEMAND,
+>> +					  &emc->ondemand_data);
+> 
+> Do you want to use 'devfreq_add_device' instead of
+> 'devm_devfreq_add_device()'? If you have to use 'devfreq_add_device'
+> due to some reason, you need to call 'devfreq_remove_device' on exit.
 
-Then what's this for? Do you need multiple aliases to the same device?
-And pinctrl aliases are odd too and should be removed.
+The reason I didn't use the devm here is because the EMC-clk callback
+should be unregistered *after* devfreq is removed.
 
->                 mshc1 = &mshc_1;
->                 mshc2 = &mshc_2;
-> diff --git a/arch/arm/boot/dts/exynos4.dtsi b/arch/arm/boot/dts/exynos4.dtsi
-> index a1e54449f33f..e266f890eea4 100644
-> --- a/arch/arm/boot/dts/exynos4.dtsi
-> +++ b/arch/arm/boot/dts/exynos4.dtsi
-> @@ -45,6 +45,8 @@
->                 fimc1 = &fimc_1;
->                 fimc2 = &fimc_2;
->                 fimc3 = &fimc_3;
+Thinking a bit more about it, I guess the best variant will be to add
+devm support to the clk callback registration and then it should be
+possible to use devm for the devfreq. I'll try to implement it in v8,
+thanks.
 
-Another odd one...
-
-> +               mmc1 = &sdhci_1;
-> +               mmc2 = &sdhci_2;
->                 serial0 = &serial_0;
->                 serial1 = &serial_1;
->                 serial2 = &serial_2;
-> diff --git a/arch/arm/boot/dts/exynos4210.dtsi b/arch/arm/boot/dts/exynos4210.dtsi
-> index fddc661ded28..f1d0d5959b7f 100644
-> --- a/arch/arm/boot/dts/exynos4210.dtsi
-> +++ b/arch/arm/boot/dts/exynos4210.dtsi
-> @@ -23,6 +23,7 @@
->         compatible = "samsung,exynos4210", "samsung,exynos4";
->
->         aliases {
-> +               mmc0 = &sdhci_0;
->                 pinctrl0 = &pinctrl_0;
->                 pinctrl1 = &pinctrl_1;
->                 pinctrl2 = &pinctrl_2;
-> diff --git a/arch/arm/boot/dts/exynos4412.dtsi b/arch/arm/boot/dts/exynos4412.dtsi
-> index fa8e8d6bc4d5..9fcf7383eb9d 100644
-> --- a/arch/arm/boot/dts/exynos4412.dtsi
-> +++ b/arch/arm/boot/dts/exynos4412.dtsi
-> @@ -28,6 +28,7 @@
->                 pinctrl3 = &pinctrl_3;
->                 fimc-lite0 = &fimc_lite_0;
->                 fimc-lite1 = &fimc_lite_1;
-> +               mmc0 = &mshc_0;
->                 mshc0 = &mshc_0;
->         };
->
-> diff --git a/arch/arm/boot/dts/exynos5250.dtsi b/arch/arm/boot/dts/exynos5250.dtsi
-> index 84677332a5a2..0a0436f92fac 100644
-> --- a/arch/arm/boot/dts/exynos5250.dtsi
-> +++ b/arch/arm/boot/dts/exynos5250.dtsi
-> @@ -30,6 +30,10 @@
->                 gsc1 = &gsc_1;
->                 gsc2 = &gsc_2;
->                 gsc3 = &gsc_3;
-> +               mmc0 = &mmc_0;
-> +               mmc1 = &mmc_1;
-> +               mmc2 = &mmc_2;
-> +               mmc3 = &mmc_3;
->                 mshc0 = &mmc_0;
->                 mshc1 = &mmc_1;
->                 mshc2 = &mmc_2;
-> diff --git a/arch/arm/boot/dts/exynos5260.dtsi b/arch/arm/boot/dts/exynos5260.dtsi
-> index 973448c4ad93..64bf1d8dc33b 100644
-> --- a/arch/arm/boot/dts/exynos5260.dtsi
-> +++ b/arch/arm/boot/dts/exynos5260.dtsi
-> @@ -21,6 +21,9 @@
->                 i2c1 = &hsi2c_1;
->                 i2c2 = &hsi2c_2;
->                 i2c3 = &hsi2c_3;
-> +               mmc0 = &mmc_0;
-> +               mmc1 = &mmc_1;
-> +               mmc2 = &mmc_2;
->                 pinctrl0 = &pinctrl_0;
->                 pinctrl1 = &pinctrl_1;
->                 pinctrl2 = &pinctrl_2;
-> diff --git a/arch/arm/boot/dts/exynos5410.dtsi b/arch/arm/boot/dts/exynos5410.dtsi
-> index 584ce62361b1..503859153769 100644
-> --- a/arch/arm/boot/dts/exynos5410.dtsi
-> +++ b/arch/arm/boot/dts/exynos5410.dtsi
-> @@ -24,6 +24,9 @@
->                 pinctrl1 = &pinctrl_1;
->                 pinctrl2 = &pinctrl_2;
->                 pinctrl3 = &pinctrl_3;
-> +               mmc0 = &mmc_0;
-> +               mmc1 = &mmc_1;
-> +               mmc2 = &mmc_2;
->         };
->
->         cpus {
-> diff --git a/arch/arm/boot/dts/exynos5420.dtsi b/arch/arm/boot/dts/exynos5420.dtsi
-> index 23a8fd5c8a6e..3a3eadd890fb 100644
-> --- a/arch/arm/boot/dts/exynos5420.dtsi
-> +++ b/arch/arm/boot/dts/exynos5420.dtsi
-> @@ -19,6 +19,9 @@
->         compatible = "samsung,exynos5420", "samsung,exynos5";
->
->         aliases {
-> +               mmc0 = &mmc_0;
-> +               mmc1 = &mmc_1;
-> +               mmc2 = &mmc_2;
->                 mshc0 = &mmc_0;
->                 mshc1 = &mmc_1;
->                 mshc2 = &mmc_2;
-> --
-> 2.17.1
->
