@@ -2,114 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 420102A80CB
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 15:25:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8489C2A80D0
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 15:26:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730968AbgKEOZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 09:25:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42932 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727275AbgKEOZC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 09:25:02 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E53322071A;
-        Thu,  5 Nov 2020 14:25:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604586301;
-        bh=/vqr9Uqi5N/fBXYtTc8XN3GMzd3Mpep/CZW0u9+tyo8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=z2/qqdZml6Ny//S+VqrA1KkrimmZM7ajoAL1n7Y056USCijCLqHFgS6QYLdZs66Ub
-         fcm8bpYd9oCge4yONrLq+756Q9NVT/+/Y4c0j8oggvKWCXQYNpv7NNOm/vvsP53ttn
-         Yk0YEq/iE31P7pPmlLCbsm43n0HUlvorpE16BKxc=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kagCA-007r3l-TS; Thu, 05 Nov 2020 14:24:58 +0000
+        id S1731037AbgKEO0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 09:26:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44002 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730465AbgKEO0I (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 09:26:08 -0500
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AE5AC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 06:26:06 -0800 (PST)
+Received: by mail-lj1-x243.google.com with SMTP id p15so1763530ljj.8
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 06:26:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nQ7ga1nkChbgCNcp4Ysi78tNBZumkjAPVt4V0by2Rm8=;
+        b=pptPNx+rPKH+x8ujYpmcYsyk+OSaKWXu77RvkAt9PkUW9Em/bfITai0EeR5btFlbga
+         H9I7ln/IHvqioPTlV6w9QmZAdFToDVYMsCVCLxVkS8HdWZaKNUxU7DRjvJvNRztT7CnC
+         G7aySamX2FtDLHidKTRgYHvzlr9Hmp1s+GDA33Um8IxwSlWeUc0pv1aP1BxKAPo6ox+H
+         MlCp2OTmbeeaCfB5QfrJ3j/ST6o75MEjSUZxYHfb7CiXNN8ZfLyNHII0RFnZ3ksB9Wst
+         sGuyuVtlmXbjQ4XAh0MbwV1ZlccZ7DTvP2EFCrpuxlaO6BXe4AQQ7DUQDk8SlphH8C5+
+         GeZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nQ7ga1nkChbgCNcp4Ysi78tNBZumkjAPVt4V0by2Rm8=;
+        b=GLO83+/3VoMJJEvA4k6+mc5qhgQ9Y/sDqiQd9g+InV/lLiNqe5lCEmPoLHUPS4Y6Ji
+         tzkocHbKSV4ggxLzwL22oxSI3UXvFUZgoemaz0AdEeoIZvBMM5ATONtN61jn6BqwBp5/
+         itql49yINALocsRrBQd60ZN2/fmOgMatym1w2iFyEh+AOffC/y4f4nlbU54HFUQZt+Ps
+         MK1TIMFjRqIWmziEhRnxga4BgDLcbWiMvB4/Potpq948meR+I+RFZduGdhaFP/oyPPCk
+         6/Pi87biU2gncFTh7Qo5+W1VEqWRZGgxZKfGRIZD/vIDnW5c2/YTDBhG8Z9wE5WL9SEW
+         qn2g==
+X-Gm-Message-State: AOAM531S1OIdOOJKeO+P6vdYqJ57vZQO2gwMJTJB/SxY79e8r2zlxKr7
+        1monwCI3gjLOhIrZFycMm/fSNl2AkNx28FKPYtDkDfh0e9c=
+X-Google-Smtp-Source: ABdhPJxojzyjuq7Nj7ikSubvMrtczulnP1sYUG9Acvch7VPEunsyTvFdj2dDMWpVKYNODrC4v0vcXiLI77RWHXj2jNE=
+X-Received: by 2002:a2e:9583:: with SMTP id w3mr1042305ljh.25.1604586365033;
+ Thu, 05 Nov 2020 06:26:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Thu, 05 Nov 2020 14:24:58 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     "xuqiang (M)" <xuqiang36@huawei.com>
-Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org,
-        rui.xiang@huawei.com
-Subject: Re: [PATCH -next] irq-chip/gic-v3-its: Fixed an issue where the ITS
- executes the residual commands in the queue again when the ITS wakes up from
- sleep mode.
-In-Reply-To: <5310d2fb-3f01-1283-ea4d-c5992f0c16a5@huawei.com>
-References: <20201103081123.119969-1-xuqiang36@huawei.com>
- <87imamtiav.wl-maz@kernel.org>
- <8395dfbb-a90e-6903-abe9-cd6f7c48f441@huawei.com>
- <11f4143b4ef55739ff1441e848c1f66f@kernel.org>
- <5310d2fb-3f01-1283-ea4d-c5992f0c16a5@huawei.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <42a66989326ff73fd01318dc8fbceffc@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: xuqiang36@huawei.com, tglx@linutronix.de, linux-kernel@vger.kernel.org, rui.xiang@huawei.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+References: <20201102120115.29993-1-nicola.mazzucato@arm.com>
+ <20201103101840.yrgwmcjrnjn7n5q6@vireshk-i7> <87558fa9-a4c6-38c9-bcc5-f736c0229f56@arm.com>
+In-Reply-To: <87558fa9-a4c6-38c9-bcc5-f736c0229f56@arm.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Thu, 5 Nov 2020 15:25:53 +0100
+Message-ID: <CAKfTPtDvDqHjSFCmjc_D_8Tx0kosBneDxmDZRpG6XkgAnWE3nw@mail.gmail.com>
+Subject: Re: [PATCH v3 0/3] CPUFreq: Add support for cpu performance dependencies
+To:     Nicola Mazzucato <nicola.mazzucato@arm.com>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        LAK <linux-arm-kernel@lists.infradead.org>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Sudeep Holla <sudeep.holla@arm.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Chris Redpath <chris.redpath@arm.com>,
+        Ionela Voinescu <Ionela.Voinescu@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-05 14:06, xuqiang (M) wrote:
-> 在 2020/11/5 21:12, Marc Zyngier 写道:
->> Please don't top-post.
->> 
->> On 2020-11-05 11:54, xuqiang (M) wrote:
->>> The kernel sends three commands in the following sequence:
->>> 
->>> 1.mapd(deviceA, ITT_addr1, valid:1)
->>> 
->>> 2.mapti(deviceA):ITS write ITT_addr1 memory;
->>> 
->>> 3.mapd(deviceA, ITT_addr1, valid:0) and kfree(ITT_addr1);
->>> 
->>> 4.mapd(deviceA, ITT_addr2, valid:1);
->>> 
->>> 5.mapti(deviceA):ITS write ITT_addr2 memory;
->>> 
->>> In this case, the processor enters the sleep mode. After the kernel
->>> performs the suspend operation, the firmware performs the store
->>> operation and saves GITS_CBASER and GITS_CWRITER registers.
->>> 
->>> Then, the processor is woken up, and the firmware restores 
->>> GITS_CBASER
->>> and GITS_CWRITER registers. Because GITS_CWRITER register is not 0,
->>> ITS will read the above command sequence execution from the command
->>> queue, causing ITT_addr1 memory to be trampled.
->> 
->> This cannot work. By doing a memset on the command queue, you are
->> only feeding crap to the ITS (command 0 simply does not exist).
->> Consider yourself lucky that it doesn't just lock-up.
->> 
->> What needs to happen is the restore sequence that is already in the
->> driver, so that the command queue is in a sane state before 
->> re-enabling
->> the ITS.
->> 
->>         M.
-> 
-> 
-> On my platform, ITS_FLAGS_SAVE_SUSPEND_STATE is not set, thus
-> the first if condition in its_save_disable under list_for_each_entry 
-> goes
-> to the continue, however, I want to set the GITS_CWRITER to 0 at the
-> end of list_for_each_entry.
-> 
-> Do you have any suggestions about how to do this?
+On Wed, 4 Nov 2020 at 19:02, Nicola Mazzucato <nicola.mazzucato@arm.com> wrote:
+>
+> Hi Viresh, thanks for looking into this.
+>
+> On 11/3/20 10:18 AM, Viresh Kumar wrote:
+> > On 02-11-20, 12:01, Nicola Mazzucato wrote:
+> >> Hi All,
+> >>
+> >> In this V3 posting I have replaced the new dt-binding with minor changes/
+> >> improvements for opp (since we are now using opp tables instead).
+> >> The RFC still stands on how to make this info available to sw consumers.
+> >>
+> >> In the RFC, I am proposing a simple addition of a performance dependencies
+> >> cpumask in CPUFreq core and an example of how drivers and consumers would
+> >> make use of it.
+> >> I also propose an alternative approach, which does not require changes in
+> >> CPUFreq core, but - possibly - in all the consumers.
+> >>
+> >> This is to support systems where exposed cpu performance controls are more
+> >> fine-grained that the platform's ability to scale cpus independently.
+> >
+> > I was talking to Vincent about what you are doing here and we got a
+> > bit confused and so here are few questions that we had:
+> >
+> > - Based on my previous understanding, you don't want software
+> >   coordination of frequencies (which is done by cpufreq today), but
+> >   want the hardware to do that and so you want per-cpu cpufreq
+> >   policies.
+>
+> Correct. And this has been done for quite some time in some platforms.
+>
+> >
+> > - What's the real benefit of hardware coordination ? Want to make sure
+> >   I fully understand that.
+>
+> The hardware coordination that is coming out by having per-cpu cpufreq policies
+> is not new, and works just fine in most of the systems.
+>
+> The benefit of having per-cpu controls is that the firmware will take care of
+> the performance of the entire system. It is purely a delegation to firmware for
+> the performance optimizations.
+>
+> >
+> > - Because of hardware co-ordination of otherwise co-ordinated CPUs,
+> >   few things break. Thermal and EAS are some of the examples and so
+> >   you are trying to fix them here by proving them the missing
+> >   information again.
+>
+> Correct. And for this I have proposed two ways.
+>
+> >
+> > - One other thing that breaks with this is freq-invariance in the
+> >   scheduler, as the scheduler won't see the real frequencies the
+> >   various CPUs are running at. Most of the hardware we have today
+> >   doesn't have counters, like AMUs, not sure if all future ones based
+> >   on SCMI will have that too, so how are they gong to be fixed ?
+> >
+>
+> Correct. freq-invariance without counters is trying to do its best based on the
+> information it has available. It definitely relies on the knowledge of the v/f
+> domains to work at its best so I think in the case of per-cpu it will follow the
+> same approach as others being affected (EAS, thermal).
 
-That's pretty much dropping the checks for ITS_FLAGS_SAVE_SUSPEND_STATE,
-isn't it? But I assume your ITS is already enabled by the time you 
-reenter
-the kernel? If so, I bet your firmware is doing more than just writing
-to CBASER and CWRITER...
+As frequency invariance has same problem as EAS and Thermal it would
+be good to see the solution as part of this proposal like EAS and
+Thermal
 
-         M.
--- 
-Jazz is not dead. It just smells funny...
+>
+> >   And if we even have to fix this (freq invariance), what's hardware
+> >   coordination giving us that makes all this worth it ?
+>
+> I suppose this is more a generic question for all the platforms running with h/w
+> coordination, but for our case is that the f/w will take care of the performance
+> optimizations for us :)
+>
+> >
+> > Sorry about the long list :)
+>
+> No problem at all. Thank you for your time on this and I hope I have made bits
+> clearer.
+>
+> Nicola
+>
+> >
