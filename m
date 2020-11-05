@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A59C2A8AF7
+	by mail.lfdr.de (Postfix) with ESMTP id 1C67F2A8AF6
 	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 00:48:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733045AbgKEXsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 18:48:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46124 "EHLO mail.kernel.org"
+        id S1732958AbgKEXsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 18:48:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45970 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732804AbgKEXrb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 18:47:31 -0500
+        id S1732396AbgKEXrc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 18:47:32 -0500
 Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F330A2222A;
-        Thu,  5 Nov 2020 23:47:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6DC98221FE;
+        Thu,  5 Nov 2020 23:47:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1604620051;
-        bh=uT5n8qK9bxjpcW9G+W8gBoRmQpU8JHI58eqEgyEwSJQ=;
+        bh=p7BCROET9ehqPb8WwWhA7jHG87zNPujM1AIJ22NSe1k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JFeU/bIG0zeHjjxYtWEKumsdeVWmaDxI3Tv5eOAOMNufb1NUds3/IgXEO72h8koTT
-         gNXzF/Kcg07asPJRV8gflNfuOgXxBZdlk+u4zbTHtDpedN19vUx1wMFj76PJ9ToarB
-         /Nzk4MGqHmMRMxtyqkuG/nPWjAiQQQl2iNMO4JP8=
+        b=NtOHkGLQNQjvcKaCAe+Kd9o7SblqTsMy0QSvDQMrMf6aEiM5wbv+jns+B1fb4MzBs
+         qiFNblj2SJDCTTAJwzemsB1zXoTz5pBZL6pfnz6QaJ49CIBAuatNM3NkTAVdFSelwK
+         vBN6OU+4NsNUzbmKrHdblpfz+co21xMYP2eSpldM=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -31,10 +31,12 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 26/28] torture: Make kvm-check-branches.sh use --allcpus
-Date:   Thu,  5 Nov 2020 15:47:17 -0800
-Message-Id: <20201105234719.23307-26-paulmck@kernel.org>
+        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Willy Tarreau <w@1wt.eu>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 27/28] tools/nolibc:  Fix a spelling error in a comment
+Date:   Thu,  5 Nov 2020 15:47:18 -0800
+Message-Id: <20201105234719.23307-27-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20201105234658.GA23142@paulmck-ThinkPad-P72>
 References: <20201105234658.GA23142@paulmck-ThinkPad-P72>
@@ -42,40 +44,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+From: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
-Currently the kvm-check-branches.sh script calculates the number of CPUs
-and passes this to the kvm.sh --cpus command-line argument.  This works,
-but this commit saves a line by instead using the new kvm.sh --allcpus
-command-line argument.
+Fix a spelling in the comment line.
 
+s/memry/memory/p
+
+This is on linux-next.
+
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Signed-off-by: Willy Tarreau <w@1wt.eu>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/testing/selftests/rcutorture/bin/kvm-check-branches.sh | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ tools/include/nolibc/nolibc.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm-check-branches.sh b/tools/testing/selftests/rcutorture/bin/kvm-check-branches.sh
-index 6e65c13..370406b 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm-check-branches.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm-check-branches.sh
-@@ -52,8 +52,7 @@ echo Results directory: $resdir/$ds
- KVM="`pwd`/tools/testing/selftests/rcutorture"; export KVM
- PATH=${KVM}/bin:$PATH; export PATH
- . functions.sh
--cpus="`identify_qemu_vcpus`"
--echo Using up to $cpus CPUs.
-+echo Using all `identify_qemu_vcpus` CPUs.
+diff --git a/tools/include/nolibc/nolibc.h b/tools/include/nolibc/nolibc.h
+index d6d2623..e61d36c 100644
+--- a/tools/include/nolibc/nolibc.h
++++ b/tools/include/nolibc/nolibc.h
+@@ -107,7 +107,7 @@ static int errno;
+ #endif
  
- # Each pass through this loop does one command-line argument.
- for gitbr in $@
-@@ -74,7 +73,7 @@ do
- 		# Test the specified commit.
- 		git checkout $i > $resdir/$ds/$idir/git-checkout.out 2>&1
- 		echo git checkout return code: $? "(Commit $ntry: $i)"
--		kvm.sh --cpus $cpus --duration 3 --trust-make > $resdir/$ds/$idir/kvm.sh.out 2>&1
-+		kvm.sh --allcpus --duration 3 --trust-make > $resdir/$ds/$idir/kvm.sh.out 2>&1
- 		ret=$?
- 		echo kvm.sh return code $ret for commit $i from branch $gitbr
+ /* errno codes all ensure that they will not conflict with a valid pointer
+- * because they all correspond to the highest addressable memry page.
++ * because they all correspond to the highest addressable memory page.
+  */
+ #define MAX_ERRNO 4095
  
 -- 
 2.9.5
