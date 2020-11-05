@@ -2,96 +2,603 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B0B72A87B7
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 21:08:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A5572A87C1
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 21:12:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731821AbgKEUIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 15:08:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58118 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726801AbgKEUIK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 15:08:10 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2F8DA20729;
-        Thu,  5 Nov 2020 20:08:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604606889;
-        bh=UbXVjeOJkuP8+CC9HnOjLWKGZfWfCv/qYw/apchOvu0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LI06uVl2qSHOowOvTc/LExLLKr74j/LoNMga+IIQHSYugCgTZ/qz6FfhsHAdRUUT/
-         nbteaX4CUK9eK1EerhGvZBzlQx1Q+olQZYcX2TWiAc0diPGo6v919ZmZNcM6Rf6Dtq
-         7vA3wAgIVyvl9rDcsPHgGi8pxnMA1/wAjfG530Ds=
-Date:   Thu, 5 Nov 2020 21:08:57 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Joe Perches <joe@perches.com>
-Cc:     Dwaipayan Ray <dwaipayanray1@gmail.com>, stable@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com,
-        yashsri421@gmail.com
-Subject: Re: [PATCH v3] checkpatch: improve email parsing
-Message-ID: <20201105200857.GC1333458@kroah.com>
-References: <20201105115949.39474-1-dwaipayanray1@gmail.com>
- <f83c2eeafdebc6307ee6e515e4d6652b2606a068.camel@perches.com>
+        id S1731149AbgKEUMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 15:12:12 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:65094 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726214AbgKEUMM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 15:12:12 -0500
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A5KAuMG009036;
+        Thu, 5 Nov 2020 15:12:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : mime-version : content-type; s=pp1;
+ bh=c7h/2t2i8HCioxsjFQbRQAvWJWYVlz2PYEf49lDcluQ=;
+ b=gFpItgMYo2x2veUElz94rkwp5bmwyfdxH7xpwMCvt4UTRmlCO/FoUbNf0FKWSm2dWDMm
+ vVmOqXis2SN0u4yTd4fDY0YZOZup0dVycJOF9hwy3ij4n6k6leEEgjwKdHS1uCzD2cVO
+ eMEIr57QvKGhywsSgG0imZm9PDjdYOcgf1uz/SjCaMUFxmBGYCMXbzglQyeKR9V5TvvY
+ htKRneF5au7/+uqxfHUhjM43qw6L7gVsPvvFoD3oUexfNtIEhbgF7B83oleTEau9iv3/
+ FBDKs1PvFqkAKI/8vTCLEsgKj/sbASY0c+fV0nEABupwuY0KuuILFSrebCyXwkgyQmcv IQ== 
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 34mhyvpxw5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 05 Nov 2020 15:12:09 -0500
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0A5K3PXs008702;
+        Thu, 5 Nov 2020 20:12:07 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma02fra.de.ibm.com with ESMTP id 34j6j42792-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 05 Nov 2020 20:12:07 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0A5KC4OV4719312
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 5 Nov 2020 20:12:04 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0CFCD52067;
+        Thu,  5 Nov 2020 20:12:04 +0000 (GMT)
+Received: from osiris (unknown [9.171.69.58])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTPS id AD54052057;
+        Thu,  5 Nov 2020 20:12:03 +0000 (GMT)
+Date:   Thu, 5 Nov 2020 21:12:02 +0100
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] s390 updates for 5.10-rc3
+Message-ID: <20201105201202.GA7024@osiris>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <f83c2eeafdebc6307ee6e515e4d6652b2606a068.camel@perches.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-05_14:2020-11-05,2020-11-05 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ bulkscore=0 mlxlogscore=999 suspectscore=2 lowpriorityscore=0 adultscore=0
+ phishscore=0 malwarescore=0 mlxscore=0 clxscore=1015 impostorscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011050125
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 09:41:15AM -0800, Joe Perches wrote:
-> (adding stable and Greg KH for additional review)
-> On Thu, 2020-11-05 at 17:29 +0530, Dwaipayan Ray wrote:
-> > checkpatch doesn't report warnings for many common mistakes
-> > in emails. Some of which are trailing commas and incorrect
-> > use of email comments.
-> 
-> I presume you've tested this against the git tree.
-> 
-> Can you send me a file with the BAD_SIGN_OFF messages generated
-> and if possible the git SHA-1s of the commits?
-> 
-> > At the same time several false positives are reported due to
-> > incorrect handling of mail comments. The most common of which
-> > is due to the pattern:
-> > 
-> > <stable@vger.kernel.org> # X.X
-> > 
-> > Improve email parsing in checkpatch.
-> > 
-> > Some general comment rules are defined:
-> > 
-> > - Multiple name comments should not be allowed.
-> > - Comments inside address should not be allowed.
-> > - In general comments should be enclosed within parentheses.
-> >   Exception for stable@vger.kernel.org # X.X
-> 
-> not just vger.kernel.org, but this should also allow stable@kernel.org
-> and only allow cc: and not any other -by: type for that email address.
-> 
-> A process preference question for Greg and the stable team:
-> 
-> The most common stable forms are
-> 
-> 	stable@vger.kernel.org # version info
+Hi Linus,
 
-That is what is documented it should be, yes.
+please pull some small s390 updates for 5.10-rc3.
 
-> then
-> 	stable@vger.kernel.org [ version info ]
+Thanks,
+Heiko
 
-Really?  Ick, no wonder my email parsing scripts choke on that :)
+The following changes since commit 3cea11cd5e3b00d91caf0b4730194039b45c5891:
 
-> with some other relatively infrequently used outlier styles, some
-> that use parentheses, but this is not frequent.
+  Linux 5.10-rc2 (2020-11-01 14:43:51 -0800)
 
-The one with '#' should be preferred.  If not, we need to change our
-documentation.
+are available in the Git repository at:
 
-thanks,
+  git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.10-3
 
-greg k-h
+for you to fetch changes up to 0b2ca2c7d0c9e2731d01b6c862375d44a7e13923:
+
+  s390/pci: fix hot-plug of PCI function missing bus (2020-11-03 15:12:16 +0100)
+
+----------------------------------------------------------------
+- fix reference counting for ap devices
+
+- fix paes selftest
+
+- fix pmd_deref()/pud_deref() so they can also handle large pages
+
+- remove unused vdso file and defines
+
+- update defconfigs
+
+- call rcu_cpu_starting() early in smp init code to avoid lockdep warnings
+
+- fix hotplug of PCI function missing bus
+
+----------------------------------------------------------------
+Gerald Schaefer (1):
+      s390/mm: make pmd/pud_deref() large page aware
+
+Harald Freudenberger (2):
+      s390/ap: fix ap devices reference counting
+      s390/pkey: fix paes selftest failure with paes and pkey static build
+
+Heiko Carstens (3):
+      s390/vdso: remove empty unused file
+      s390/vdso: remove unused constants
+      s390: update defconfigs
+
+Niklas Schnelle (1):
+      s390/pci: fix hot-plug of PCI function missing bus
+
+Qian Cai (1):
+      s390/smp: move rcu_cpu_starting() earlier
+
+ arch/s390/configs/debug_defconfig    | 10 ++++---
+ arch/s390/configs/defconfig          |  9 ++++---
+ arch/s390/configs/zfcpdump_defconfig |  2 +-
+ arch/s390/include/asm/pgtable.h      | 52 +++++++++++++++++++++---------------
+ arch/s390/include/asm/vdso/vdso.h    |  0
+ arch/s390/kernel/asm-offsets.c       |  8 ------
+ arch/s390/kernel/smp.c               |  3 ++-
+ arch/s390/pci/pci_event.c            |  4 +++
+ drivers/s390/crypto/ap_bus.c         | 14 ++++++++--
+ drivers/s390/crypto/pkey_api.c       | 30 +++++++++++----------
+ drivers/s390/crypto/zcrypt_card.c    | 13 +++++----
+ drivers/s390/crypto/zcrypt_queue.c   |  6 +----
+ 12 files changed, 85 insertions(+), 66 deletions(-)
+ delete mode 100644 arch/s390/include/asm/vdso/vdso.h
+
+diff --git a/arch/s390/configs/debug_defconfig b/arch/s390/configs/debug_defconfig
+index 0784bf3caf43..a4d3c578fbd8 100644
+--- a/arch/s390/configs/debug_defconfig
++++ b/arch/s390/configs/debug_defconfig
+@@ -93,9 +93,10 @@ CONFIG_CLEANCACHE=y
+ CONFIG_FRONTSWAP=y
+ CONFIG_CMA_DEBUG=y
+ CONFIG_CMA_DEBUGFS=y
++CONFIG_CMA_AREAS=7
+ CONFIG_MEM_SOFT_DIRTY=y
+ CONFIG_ZSWAP=y
+-CONFIG_ZSMALLOC=m
++CONFIG_ZSMALLOC=y
+ CONFIG_ZSMALLOC_STAT=y
+ CONFIG_DEFERRED_STRUCT_PAGE_INIT=y
+ CONFIG_IDLE_PAGE_TRACKING=y
+@@ -378,7 +379,6 @@ CONFIG_NETLINK_DIAG=m
+ CONFIG_CGROUP_NET_PRIO=y
+ CONFIG_BPF_JIT=y
+ CONFIG_NET_PKTGEN=m
+-# CONFIG_NET_DROP_MONITOR is not set
+ CONFIG_PCI=y
+ # CONFIG_PCIEASPM is not set
+ CONFIG_PCI_DEBUG=y
+@@ -386,7 +386,7 @@ CONFIG_HOTPLUG_PCI=y
+ CONFIG_HOTPLUG_PCI_S390=y
+ CONFIG_DEVTMPFS=y
+ CONFIG_CONNECTOR=y
+-CONFIG_ZRAM=m
++CONFIG_ZRAM=y
+ CONFIG_BLK_DEV_LOOP=m
+ CONFIG_BLK_DEV_CRYPTOLOOP=m
+ CONFIG_BLK_DEV_DRBD=m
+@@ -689,6 +689,7 @@ CONFIG_CRYPTO_TEST=m
+ CONFIG_CRYPTO_DH=m
+ CONFIG_CRYPTO_ECDH=m
+ CONFIG_CRYPTO_ECRDSA=m
++CONFIG_CRYPTO_SM2=m
+ CONFIG_CRYPTO_CURVE25519=m
+ CONFIG_CRYPTO_GCM=y
+ CONFIG_CRYPTO_CHACHA20POLY1305=m
+@@ -709,7 +710,6 @@ CONFIG_CRYPTO_RMD160=m
+ CONFIG_CRYPTO_RMD256=m
+ CONFIG_CRYPTO_RMD320=m
+ CONFIG_CRYPTO_SHA3=m
+-CONFIG_CRYPTO_SM3=m
+ CONFIG_CRYPTO_TGR192=m
+ CONFIG_CRYPTO_WP512=m
+ CONFIG_CRYPTO_AES_TI=m
+@@ -753,6 +753,7 @@ CONFIG_CRYPTO_DES_S390=m
+ CONFIG_CRYPTO_AES_S390=m
+ CONFIG_CRYPTO_GHASH_S390=m
+ CONFIG_CRYPTO_CRC32_S390=y
++CONFIG_CRYPTO_DEV_VIRTIO=m
+ CONFIG_CORDIC=m
+ CONFIG_CRC32_SELFTEST=y
+ CONFIG_CRC4=m
+@@ -829,6 +830,7 @@ CONFIG_NETDEV_NOTIFIER_ERROR_INJECT=m
+ CONFIG_FAULT_INJECTION=y
+ CONFIG_FAILSLAB=y
+ CONFIG_FAIL_PAGE_ALLOC=y
++CONFIG_FAULT_INJECTION_USERCOPY=y
+ CONFIG_FAIL_MAKE_REQUEST=y
+ CONFIG_FAIL_IO_TIMEOUT=y
+ CONFIG_FAIL_FUTEX=y
+diff --git a/arch/s390/configs/defconfig b/arch/s390/configs/defconfig
+index 905bc8c4cfaf..17d5df2c1eff 100644
+--- a/arch/s390/configs/defconfig
++++ b/arch/s390/configs/defconfig
+@@ -87,9 +87,10 @@ CONFIG_KSM=y
+ CONFIG_TRANSPARENT_HUGEPAGE=y
+ CONFIG_CLEANCACHE=y
+ CONFIG_FRONTSWAP=y
++CONFIG_CMA_AREAS=7
+ CONFIG_MEM_SOFT_DIRTY=y
+ CONFIG_ZSWAP=y
+-CONFIG_ZSMALLOC=m
++CONFIG_ZSMALLOC=y
+ CONFIG_ZSMALLOC_STAT=y
+ CONFIG_DEFERRED_STRUCT_PAGE_INIT=y
+ CONFIG_IDLE_PAGE_TRACKING=y
+@@ -371,7 +372,6 @@ CONFIG_NETLINK_DIAG=m
+ CONFIG_CGROUP_NET_PRIO=y
+ CONFIG_BPF_JIT=y
+ CONFIG_NET_PKTGEN=m
+-# CONFIG_NET_DROP_MONITOR is not set
+ CONFIG_PCI=y
+ # CONFIG_PCIEASPM is not set
+ CONFIG_HOTPLUG_PCI=y
+@@ -379,7 +379,7 @@ CONFIG_HOTPLUG_PCI_S390=y
+ CONFIG_UEVENT_HELPER=y
+ CONFIG_DEVTMPFS=y
+ CONFIG_CONNECTOR=y
+-CONFIG_ZRAM=m
++CONFIG_ZRAM=y
+ CONFIG_BLK_DEV_LOOP=m
+ CONFIG_BLK_DEV_CRYPTOLOOP=m
+ CONFIG_BLK_DEV_DRBD=m
+@@ -680,6 +680,7 @@ CONFIG_CRYPTO_TEST=m
+ CONFIG_CRYPTO_DH=m
+ CONFIG_CRYPTO_ECDH=m
+ CONFIG_CRYPTO_ECRDSA=m
++CONFIG_CRYPTO_SM2=m
+ CONFIG_CRYPTO_CURVE25519=m
+ CONFIG_CRYPTO_GCM=y
+ CONFIG_CRYPTO_CHACHA20POLY1305=m
+@@ -701,7 +702,6 @@ CONFIG_CRYPTO_RMD160=m
+ CONFIG_CRYPTO_RMD256=m
+ CONFIG_CRYPTO_RMD320=m
+ CONFIG_CRYPTO_SHA3=m
+-CONFIG_CRYPTO_SM3=m
+ CONFIG_CRYPTO_TGR192=m
+ CONFIG_CRYPTO_WP512=m
+ CONFIG_CRYPTO_AES_TI=m
+@@ -745,6 +745,7 @@ CONFIG_CRYPTO_DES_S390=m
+ CONFIG_CRYPTO_AES_S390=m
+ CONFIG_CRYPTO_GHASH_S390=m
+ CONFIG_CRYPTO_CRC32_S390=y
++CONFIG_CRYPTO_DEV_VIRTIO=m
+ CONFIG_CORDIC=m
+ CONFIG_PRIME_NUMBERS=m
+ CONFIG_CRC4=m
+diff --git a/arch/s390/configs/zfcpdump_defconfig b/arch/s390/configs/zfcpdump_defconfig
+index 8f67c55625f9..a302630341ef 100644
+--- a/arch/s390/configs/zfcpdump_defconfig
++++ b/arch/s390/configs/zfcpdump_defconfig
+@@ -17,11 +17,11 @@ CONFIG_HZ_100=y
+ # CONFIG_CHSC_SCH is not set
+ # CONFIG_SCM_BUS is not set
+ CONFIG_CRASH_DUMP=y
+-# CONFIG_SECCOMP is not set
+ # CONFIG_PFAULT is not set
+ # CONFIG_S390_HYPFS_FS is not set
+ # CONFIG_VIRTUALIZATION is not set
+ # CONFIG_S390_GUEST is not set
++# CONFIG_SECCOMP is not set
+ CONFIG_PARTITION_ADVANCED=y
+ CONFIG_IBM_PARTITION=y
+ # CONFIG_CORE_DUMP_DEFAULT_ELF_HEADERS is not set
+diff --git a/arch/s390/include/asm/pgtable.h b/arch/s390/include/asm/pgtable.h
+index 6b8d8c69b1a1..b5dbae78969b 100644
+--- a/arch/s390/include/asm/pgtable.h
++++ b/arch/s390/include/asm/pgtable.h
+@@ -692,16 +692,6 @@ static inline int pud_large(pud_t pud)
+ 	return !!(pud_val(pud) & _REGION3_ENTRY_LARGE);
+ }
+ 
+-static inline unsigned long pud_pfn(pud_t pud)
+-{
+-	unsigned long origin_mask;
+-
+-	origin_mask = _REGION_ENTRY_ORIGIN;
+-	if (pud_large(pud))
+-		origin_mask = _REGION3_ENTRY_ORIGIN_LARGE;
+-	return (pud_val(pud) & origin_mask) >> PAGE_SHIFT;
+-}
+-
+ #define pmd_leaf	pmd_large
+ static inline int pmd_large(pmd_t pmd)
+ {
+@@ -747,16 +737,6 @@ static inline int pmd_none(pmd_t pmd)
+ 	return pmd_val(pmd) == _SEGMENT_ENTRY_EMPTY;
+ }
+ 
+-static inline unsigned long pmd_pfn(pmd_t pmd)
+-{
+-	unsigned long origin_mask;
+-
+-	origin_mask = _SEGMENT_ENTRY_ORIGIN;
+-	if (pmd_large(pmd))
+-		origin_mask = _SEGMENT_ENTRY_ORIGIN_LARGE;
+-	return (pmd_val(pmd) & origin_mask) >> PAGE_SHIFT;
+-}
+-
+ #define pmd_write pmd_write
+ static inline int pmd_write(pmd_t pmd)
+ {
+@@ -1238,11 +1218,39 @@ static inline pte_t mk_pte(struct page *page, pgprot_t pgprot)
+ #define pud_index(address) (((address) >> PUD_SHIFT) & (PTRS_PER_PUD-1))
+ #define pmd_index(address) (((address) >> PMD_SHIFT) & (PTRS_PER_PMD-1))
+ 
+-#define pmd_deref(pmd) (pmd_val(pmd) & _SEGMENT_ENTRY_ORIGIN)
+-#define pud_deref(pud) (pud_val(pud) & _REGION_ENTRY_ORIGIN)
+ #define p4d_deref(pud) (p4d_val(pud) & _REGION_ENTRY_ORIGIN)
+ #define pgd_deref(pgd) (pgd_val(pgd) & _REGION_ENTRY_ORIGIN)
+ 
++static inline unsigned long pmd_deref(pmd_t pmd)
++{
++	unsigned long origin_mask;
++
++	origin_mask = _SEGMENT_ENTRY_ORIGIN;
++	if (pmd_large(pmd))
++		origin_mask = _SEGMENT_ENTRY_ORIGIN_LARGE;
++	return pmd_val(pmd) & origin_mask;
++}
++
++static inline unsigned long pmd_pfn(pmd_t pmd)
++{
++	return pmd_deref(pmd) >> PAGE_SHIFT;
++}
++
++static inline unsigned long pud_deref(pud_t pud)
++{
++	unsigned long origin_mask;
++
++	origin_mask = _REGION_ENTRY_ORIGIN;
++	if (pud_large(pud))
++		origin_mask = _REGION3_ENTRY_ORIGIN_LARGE;
++	return pud_val(pud) & origin_mask;
++}
++
++static inline unsigned long pud_pfn(pud_t pud)
++{
++	return pud_deref(pud) >> PAGE_SHIFT;
++}
++
+ /*
+  * The pgd_offset function *always* adds the index for the top-level
+  * region/segment table. This is done to get a sequence like the
+diff --git a/arch/s390/include/asm/vdso/vdso.h b/arch/s390/include/asm/vdso/vdso.h
+deleted file mode 100644
+index e69de29bb2d1..000000000000
+diff --git a/arch/s390/kernel/asm-offsets.c b/arch/s390/kernel/asm-offsets.c
+index ece58f2217cb..2012c1cf0853 100644
+--- a/arch/s390/kernel/asm-offsets.c
++++ b/arch/s390/kernel/asm-offsets.c
+@@ -61,14 +61,6 @@ int main(void)
+ 	BLANK();
+ 	OFFSET(__VDSO_GETCPU_VAL, vdso_per_cpu_data, getcpu_val);
+ 	BLANK();
+-	/* constants used by the vdso */
+-	DEFINE(__CLOCK_REALTIME, CLOCK_REALTIME);
+-	DEFINE(__CLOCK_MONOTONIC, CLOCK_MONOTONIC);
+-	DEFINE(__CLOCK_REALTIME_COARSE, CLOCK_REALTIME_COARSE);
+-	DEFINE(__CLOCK_MONOTONIC_COARSE, CLOCK_MONOTONIC_COARSE);
+-	DEFINE(__CLOCK_THREAD_CPUTIME_ID, CLOCK_THREAD_CPUTIME_ID);
+-	DEFINE(__CLOCK_COARSE_RES, LOW_RES_NSEC);
+-	BLANK();
+ 	/* idle data offsets */
+ 	OFFSET(__CLOCK_IDLE_ENTER, s390_idle_data, clock_idle_enter);
+ 	OFFSET(__CLOCK_IDLE_EXIT, s390_idle_data, clock_idle_exit);
+diff --git a/arch/s390/kernel/smp.c b/arch/s390/kernel/smp.c
+index ebfe86d097f0..390d97daa2b3 100644
+--- a/arch/s390/kernel/smp.c
++++ b/arch/s390/kernel/smp.c
+@@ -855,13 +855,14 @@ void __init smp_detect_cpus(void)
+ 
+ static void smp_init_secondary(void)
+ {
+-	int cpu = smp_processor_id();
++	int cpu = raw_smp_processor_id();
+ 
+ 	S390_lowcore.last_update_clock = get_tod_clock();
+ 	restore_access_regs(S390_lowcore.access_regs_save_area);
+ 	set_cpu_flag(CIF_ASCE_PRIMARY);
+ 	set_cpu_flag(CIF_ASCE_SECONDARY);
+ 	cpu_init();
++	rcu_cpu_starting(cpu);
+ 	preempt_disable();
+ 	init_cpu_timer();
+ 	vtime_init();
+diff --git a/arch/s390/pci/pci_event.c b/arch/s390/pci/pci_event.c
+index d33f21545dfd..9a6bae503fe6 100644
+--- a/arch/s390/pci/pci_event.c
++++ b/arch/s390/pci/pci_event.c
+@@ -101,6 +101,10 @@ static void __zpci_event_availability(struct zpci_ccdf_avail *ccdf)
+ 		if (ret)
+ 			break;
+ 
++		/* the PCI function will be scanned once function 0 appears */
++		if (!zdev->zbus->bus)
++			break;
++
+ 		pdev = pci_scan_single_device(zdev->zbus->bus, zdev->devfn);
+ 		if (!pdev)
+ 			break;
+diff --git a/drivers/s390/crypto/ap_bus.c b/drivers/s390/crypto/ap_bus.c
+index 485cbfcbf06e..ef738b42a092 100644
+--- a/drivers/s390/crypto/ap_bus.c
++++ b/drivers/s390/crypto/ap_bus.c
+@@ -680,7 +680,10 @@ static int ap_device_probe(struct device *dev)
+ {
+ 	struct ap_device *ap_dev = to_ap_dev(dev);
+ 	struct ap_driver *ap_drv = to_ap_drv(dev->driver);
+-	int card, queue, devres, drvres, rc;
++	int card, queue, devres, drvres, rc = -ENODEV;
++
++	if (!get_device(dev))
++		return rc;
+ 
+ 	if (is_queue_dev(dev)) {
+ 		/*
+@@ -697,7 +700,7 @@ static int ap_device_probe(struct device *dev)
+ 		mutex_unlock(&ap_perms_mutex);
+ 		drvres = ap_drv->flags & AP_DRIVER_FLAG_DEFAULT;
+ 		if (!!devres != !!drvres)
+-			return -ENODEV;
++			goto out;
+ 	}
+ 
+ 	/* Add queue/card to list of active queues/cards */
+@@ -718,6 +721,9 @@ static int ap_device_probe(struct device *dev)
+ 		ap_dev->drv = NULL;
+ 	}
+ 
++out:
++	if (rc)
++		put_device(dev);
+ 	return rc;
+ }
+ 
+@@ -744,6 +750,8 @@ static int ap_device_remove(struct device *dev)
+ 		hash_del(&to_ap_queue(dev)->hnode);
+ 	spin_unlock_bh(&ap_queues_lock);
+ 
++	put_device(dev);
++
+ 	return 0;
+ }
+ 
+@@ -1371,6 +1379,8 @@ static inline void ap_scan_domains(struct ap_card *ac)
+ 					    __func__, ac->id, dom);
+ 				goto put_dev_and_continue;
+ 			}
++			/* get it and thus adjust reference counter */
++			get_device(dev);
+ 			if (decfg)
+ 				AP_DBF_INFO("%s(%d,%d) new (decfg) queue device created\n",
+ 					    __func__, ac->id, dom);
+diff --git a/drivers/s390/crypto/pkey_api.c b/drivers/s390/crypto/pkey_api.c
+index 99cb60ea663d..dd84995049b9 100644
+--- a/drivers/s390/crypto/pkey_api.c
++++ b/drivers/s390/crypto/pkey_api.c
+@@ -35,9 +35,6 @@ MODULE_DESCRIPTION("s390 protected key interface");
+ #define PROTKEYBLOBBUFSIZE 256	/* protected key buffer size used internal */
+ #define MAXAPQNSINLIST 64	/* max 64 apqns within a apqn list */
+ 
+-/* mask of available pckmo subfunctions, fetched once at module init */
+-static cpacf_mask_t pckmo_functions;
+-
+ /*
+  * debug feature data and functions
+  */
+@@ -91,6 +88,9 @@ static int pkey_clr2protkey(u32 keytype,
+ 			    const struct pkey_clrkey *clrkey,
+ 			    struct pkey_protkey *protkey)
+ {
++	/* mask of available pckmo subfunctions */
++	static cpacf_mask_t pckmo_functions;
++
+ 	long fc;
+ 	int keysize;
+ 	u8 paramblock[64];
+@@ -114,11 +114,13 @@ static int pkey_clr2protkey(u32 keytype,
+ 		return -EINVAL;
+ 	}
+ 
+-	/*
+-	 * Check if the needed pckmo subfunction is available.
+-	 * These subfunctions can be enabled/disabled by customers
+-	 * in the LPAR profile or may even change on the fly.
+-	 */
++	/* Did we already check for PCKMO ? */
++	if (!pckmo_functions.bytes[0]) {
++		/* no, so check now */
++		if (!cpacf_query(CPACF_PCKMO, &pckmo_functions))
++			return -ENODEV;
++	}
++	/* check for the pckmo subfunction we need now */
+ 	if (!cpacf_test_func(&pckmo_functions, fc)) {
+ 		DEBUG_ERR("%s pckmo functions not available\n", __func__);
+ 		return -ENODEV;
+@@ -2058,7 +2060,7 @@ static struct miscdevice pkey_dev = {
+  */
+ static int __init pkey_init(void)
+ {
+-	cpacf_mask_t kmc_functions;
++	cpacf_mask_t func_mask;
+ 
+ 	/*
+ 	 * The pckmo instruction should be available - even if we don't
+@@ -2066,15 +2068,15 @@ static int __init pkey_init(void)
+ 	 * is also the minimum level for the kmc instructions which
+ 	 * are able to work with protected keys.
+ 	 */
+-	if (!cpacf_query(CPACF_PCKMO, &pckmo_functions))
++	if (!cpacf_query(CPACF_PCKMO, &func_mask))
+ 		return -ENODEV;
+ 
+ 	/* check for kmc instructions available */
+-	if (!cpacf_query(CPACF_KMC, &kmc_functions))
++	if (!cpacf_query(CPACF_KMC, &func_mask))
+ 		return -ENODEV;
+-	if (!cpacf_test_func(&kmc_functions, CPACF_KMC_PAES_128) ||
+-	    !cpacf_test_func(&kmc_functions, CPACF_KMC_PAES_192) ||
+-	    !cpacf_test_func(&kmc_functions, CPACF_KMC_PAES_256))
++	if (!cpacf_test_func(&func_mask, CPACF_KMC_PAES_128) ||
++	    !cpacf_test_func(&func_mask, CPACF_KMC_PAES_192) ||
++	    !cpacf_test_func(&func_mask, CPACF_KMC_PAES_256))
+ 		return -ENODEV;
+ 
+ 	pkey_debug_init();
+diff --git a/drivers/s390/crypto/zcrypt_card.c b/drivers/s390/crypto/zcrypt_card.c
+index e342eb86acd1..33b23884b133 100644
+--- a/drivers/s390/crypto/zcrypt_card.c
++++ b/drivers/s390/crypto/zcrypt_card.c
+@@ -157,11 +157,6 @@ int zcrypt_card_register(struct zcrypt_card *zc)
+ {
+ 	int rc;
+ 
+-	rc = sysfs_create_group(&zc->card->ap_dev.device.kobj,
+-				&zcrypt_card_attr_group);
+-	if (rc)
+-		return rc;
+-
+ 	spin_lock(&zcrypt_list_lock);
+ 	list_add_tail(&zc->list, &zcrypt_card_list);
+ 	spin_unlock(&zcrypt_list_lock);
+@@ -170,6 +165,14 @@ int zcrypt_card_register(struct zcrypt_card *zc)
+ 
+ 	ZCRYPT_DBF(DBF_INFO, "card=%02x register online=1\n", zc->card->id);
+ 
++	rc = sysfs_create_group(&zc->card->ap_dev.device.kobj,
++				&zcrypt_card_attr_group);
++	if (rc) {
++		spin_lock(&zcrypt_list_lock);
++		list_del_init(&zc->list);
++		spin_unlock(&zcrypt_list_lock);
++	}
++
+ 	return rc;
+ }
+ EXPORT_SYMBOL(zcrypt_card_register);
+diff --git a/drivers/s390/crypto/zcrypt_queue.c b/drivers/s390/crypto/zcrypt_queue.c
+index 3c207066313c..5062eae73d4a 100644
+--- a/drivers/s390/crypto/zcrypt_queue.c
++++ b/drivers/s390/crypto/zcrypt_queue.c
+@@ -180,7 +180,6 @@ int zcrypt_queue_register(struct zcrypt_queue *zq)
+ 				&zcrypt_queue_attr_group);
+ 	if (rc)
+ 		goto out;
+-	get_device(&zq->queue->ap_dev.device);
+ 
+ 	if (zq->ops->rng) {
+ 		rc = zcrypt_rng_device_add();
+@@ -192,7 +191,6 @@ int zcrypt_queue_register(struct zcrypt_queue *zq)
+ out_unregister:
+ 	sysfs_remove_group(&zq->queue->ap_dev.device.kobj,
+ 			   &zcrypt_queue_attr_group);
+-	put_device(&zq->queue->ap_dev.device);
+ out:
+ 	spin_lock(&zcrypt_list_lock);
+ 	list_del_init(&zq->list);
+@@ -220,12 +218,10 @@ void zcrypt_queue_unregister(struct zcrypt_queue *zq)
+ 	list_del_init(&zq->list);
+ 	zcrypt_device_count--;
+ 	spin_unlock(&zcrypt_list_lock);
+-	zcrypt_card_put(zc);
+ 	if (zq->ops->rng)
+ 		zcrypt_rng_device_remove();
+ 	sysfs_remove_group(&zq->queue->ap_dev.device.kobj,
+ 			   &zcrypt_queue_attr_group);
+-	put_device(&zq->queue->ap_dev.device);
+-	zcrypt_queue_put(zq);
++	zcrypt_card_put(zc);
+ }
+ EXPORT_SYMBOL(zcrypt_queue_unregister);
