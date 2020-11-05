@@ -2,193 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4044C2A788D
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 09:07:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67E192A789B
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 09:12:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729495AbgKEIHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 03:07:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41102 "EHLO
+        id S1729314AbgKEIMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 03:12:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725827AbgKEIHE (ORCPT
+        with ESMTP id S1725287AbgKEIMC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 03:07:04 -0500
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE536C0613CF;
-        Thu,  5 Nov 2020 00:07:03 -0800 (PST)
-Received: by mail-ej1-x642.google.com with SMTP id i19so1271430ejx.9;
-        Thu, 05 Nov 2020 00:07:03 -0800 (PST)
+        Thu, 5 Nov 2020 03:12:02 -0500
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F472C0613CF;
+        Thu,  5 Nov 2020 00:12:01 -0800 (PST)
+Received: by mail-ed1-x542.google.com with SMTP id a15so587673edy.1;
+        Thu, 05 Nov 2020 00:12:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Ejbix6obkvCfSt+UMVFN1Q6vNzvWmPHr/OGkrFfoLFs=;
-        b=t1cy+4PwHGXn+yInQGTOcNHpRHZwsTgyldtVz1e6t3/dfyejQaexsQKzx9zUK8oTl2
-         +1A4K52qrignAy+RjVb3mBmJ31K04QCu44VWPNikzu55lfEClaBKYm9NCs9VlxYkfm1r
-         ydKEIs4EU73mF/MumaK/E4Hqr51W1KWotAT/N3dcG369HNRcrE5Mw358wInGkXF3lHTO
-         FQ/koqKnw/xDdVcyZV6ibxgGWIqlTqUNbr6xzS2HbHfPnRAYSLZtt9d+zdhKPIu3304T
-         wbFzQKSIq2lfhwTN3SFt1nYAeVks61wtEN82F9rJitYUOUxs3q8PSeZKnGampPJDh3VL
-         b4mQ==
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=lIJ/NfoYGaY62kFbhdYxSBnChfzCT4l2UF0cAPvhbUg=;
+        b=h0MygNY1Eqn6MZ5UYm5Xe05T1t/miHcjndLj7/xuhHOk4Oqt/x2W8NGdluE0IWsoCb
+         OBtDSHGp4nAu4UYCoowoqMjVd5LtMEWO+WSl7u9AvGqwzDkpEkIeERe1+aTLaubebg1J
+         hvCSMCHM5KIYwm/lTLinnhWkV2PwLfOJ6+FZhD8/S/JH3rfT5QJk/nCM4oM6lUImOGCR
+         1zU+XLWX91TJ+L0S+qC0nZGUjyEVJeyh3zW1iH5tFQpckUhnswwfdBB1EgNy5rrUl7wX
+         r4bWlBNSSX5/TjkyKmQ7AlpMSRdG67GUvNiIykxeMPQuvixdWL5HlK5bq5qGoKuUjnNS
+         ZNig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Ejbix6obkvCfSt+UMVFN1Q6vNzvWmPHr/OGkrFfoLFs=;
-        b=fN+FtgWF1KImMUzi+Qsg5DhPpTngJ81p/EaNL+DDoMyOK3xPngY4ffaXlYFQyfxAOr
-         JrGShW2baQz9VGvVNgyH9cEawe/aO7SaQYrwsmG7GWdlmIqbWW9DevlrXmImoGsy7R+t
-         ccVcONLIe+P3f2NSSP7f0X8UQFNjyPet1RfWVuR0TKG0AZ1Jda8G8SKk8TFfzXZeDbbS
-         ZDRN1voUseMHTXja+CaLXwuNDMXAbRZA6/WWP5rvmt0A/HmgM+y8n3IkGM8mDTd4tD26
-         d37vSKDfJwlocWR5w8VA0EYvF+TH6dk6NTMjpgFS2IhbdcRuoNysugN/+zzkbOAla3KG
-         USiA==
-X-Gm-Message-State: AOAM533oQxDHSFuXsK9WAKC5lg0dd1NSBwKfgJYBPxgqzhI+CoFDyRo/
-        AAECFAn/sWItuBFCiIpV/LszKh4JrVQGVbMX2enUT30sDYb3MA==
-X-Google-Smtp-Source: ABdhPJz3m2HtnIqDIg/WTO25pDMT0i+QQbqtvao1NdWSwCYoRUQX3lNPLxxIsLy8gXGTJ9Joiv/esRlckHgma7CscM8=
-X-Received: by 2002:a17:906:a098:: with SMTP id q24mr1098195ejy.191.1604563622509;
- Thu, 05 Nov 2020 00:07:02 -0800 (PST)
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lIJ/NfoYGaY62kFbhdYxSBnChfzCT4l2UF0cAPvhbUg=;
+        b=sLAYdak+IM6J7crnX0svIycAHBEklxh6NZbXXKLnIHvbyFVteGbumb4nksuUDoTHI4
+         Y1cHsT5FhwUb1owGBINjrhb8AWbLkueWFO9e+/BUTVG3dSaIMbhrKWACmOSg/cg/JbWX
+         aXEj0nYI62qgs+hWsd9jInO+VbD15ymYY5rA5X56C4I6QDM8EeG3N/TwENJzr5WW2p8M
+         BslZ+PG4oegph5E7bdEBIxCbiQQgma9SWMxUHVyU/u+FuHwGCctsvHlD+l1VJ4pM2nHx
+         Oqk/DnOcnmpsfzCSIVYal8qNE+KpNuucLWX0ZW2LBHe3OGgfjdjv66TdPyzI85jPHtog
+         j7eg==
+X-Gm-Message-State: AOAM530E3Oe6V6SQjKJlsKWUSMvQpEUbkV6jbm05GXbomvd8er38y8Zm
+        hh24ASm5z1DXW2sGrb9wtFM=
+X-Google-Smtp-Source: ABdhPJyD9o6nGDeaX2ulmZ+ghiuMN4BxZ3RuGRfBO1LHekJrHdNvZOaXiXuM1xYiUFkDb8dz37N26w==
+X-Received: by 2002:aa7:cacb:: with SMTP id l11mr1327778edt.332.1604563919740;
+        Thu, 05 Nov 2020 00:11:59 -0800 (PST)
+Received: from skbuf ([188.25.2.177])
+        by smtp.gmail.com with ESMTPSA id y2sm257247edu.48.2020.11.05.00.11.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Nov 2020 00:11:59 -0800 (PST)
+From:   Ioana Ciornei <ciorneiioana@gmail.com>
+X-Google-Original-From: Ioana Ciornei <ciornei.ioana@gmail.com>
+Date:   Thu, 5 Nov 2020 10:11:58 +0200
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Ioana Ciornei <ciorneiioana@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Lunn <andrew@lunn.ch>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, Ioana Ciornei <ioana.ciornei@nxp.com>
+Subject: Re: [RFC 6/9] staging: dpaa2-switch: add .ndo_start_xmit() callback
+Message-ID: <20201105081158.5cusnoxpj4iasbzy@skbuf>
+References: <20201104165720.2566399-1-ciorneiioana@gmail.com>
+ <20201104165720.2566399-7-ciorneiioana@gmail.com>
+ <20201104212700.sdf3sx2kjayicvkl@skbuf>
 MIME-Version: 1.0
-References: <CGME20201001135310eucas1p273e3799cec0ebb29891c1b7db38685e0@eucas1p2.samsung.com>
- <20200930143151.23961-1-l.stelmach@samsung.com> <20201001135254.28178-1-l.stelmach@samsung.com>
- <CANAwSgSvH+q21Tj9NijPa87ju+1LOJ07-is1Sucx1y5ggT6zCA@mail.gmail.com> <5ecd2e6d-6aaf-bff5-c000-2c56086ed95b@samsung.com>
-In-Reply-To: <5ecd2e6d-6aaf-bff5-c000-2c56086ed95b@samsung.com>
-From:   Anand Moon <linux.amoon@gmail.com>
-Date:   Thu, 5 Nov 2020 13:36:53 +0530
-Message-ID: <CANAwSgR=20AOVxi=5L_ep=uK98dzL6Ent52Mux1_iviiK-XGPA@mail.gmail.com>
-Subject: Re: [PATCH v2] ARM: dts: exynos: Add a placeholder for a MAC address
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     =?UTF-8?Q?=C5=81ukasz_Stelmach?= <l.stelmach@samsung.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-samsung-soc@vger.kernel.org,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201104212700.sdf3sx2kjayicvkl@skbuf>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marek,
+On Wed, Nov 04, 2020 at 11:27:00PM +0200, Vladimir Oltean wrote:
+> On Wed, Nov 04, 2020 at 06:57:17PM +0200, Ioana Ciornei wrote:
+> > From: Ioana Ciornei <ioana.ciornei@nxp.com>
+> > 
+> > Implement the .ndo_start_xmit() callback for the switch port interfaces.
+> > For each of the switch ports, gather the corresponding queue
+> > destination ID (QDID) necessary for Tx enqueueing.
+> > 
+> > We'll reserve 64 bytes for software annotations, where we keep a skb
+> > backpointer used on the Tx confirmation side for releasing the allocated
+> > memory. At the moment, we only support linear skbs.
+> > 
+> > Signed-off-by: Ioana Ciornei <ioana.ciornei@nxp.com>
+> > ---
+> > @@ -554,8 +560,10 @@ static int dpaa2_switch_port_open(struct net_device *netdev)
+> >  	struct ethsw_core *ethsw = port_priv->ethsw_data;
+> >  	int err;
+> >  
+> > -	/* No need to allow Tx as control interface is disabled */
+> > -	netif_tx_stop_all_queues(netdev);
+> > +	if (!dpaa2_switch_has_ctrl_if(port_priv->ethsw_data)) {
+> > +		/* No need to allow Tx as control interface is disabled */
+> > +		netif_tx_stop_all_queues(netdev);
+> 
+> Personal taste probably, but you could remove the braces here.
 
-On Mon, 2 Nov 2020 at 21:53, Marek Szyprowski <m.szyprowski@samsung.com> wr=
-ote:
->
-> Hi Anand,
->
-> On 01.11.2020 15:07, Anand Moon wrote:
-> > Hi Lukasz,
-> >
-> > On Thu, 1 Oct 2020 at 19:25, =C5=81ukasz Stelmach <l.stelmach@samsung.c=
-om> wrote:
-> >> Add a placeholder for a MAC address. A bootloader may fill it
-> >> to set the MAC address and override EEPROM settings.
-> >>
-> >> Signed-off-by: =C5=81ukasz Stelmach <l.stelmach@samsung.com>
-> >> ---
-> >> Changes in v2:
-> >>   - use local-mac-address and leave mac-address to be added by a bootl=
-oader
-> >>
-> >>   arch/arm/boot/dts/exynos5422-odroidxu3.dts | 18 ++++++++++++++++++
-> >>   1 file changed, 18 insertions(+)
-> >>
-> >> diff --git a/arch/arm/boot/dts/exynos5422-odroidxu3.dts b/arch/arm/boo=
-t/dts/exynos5422-odroidxu3.dts
-> >> index db0bc17a667b..d0f6ac5fa79d 100644
-> >> --- a/arch/arm/boot/dts/exynos5422-odroidxu3.dts
-> >> +++ b/arch/arm/boot/dts/exynos5422-odroidxu3.dts
-> >> @@ -70,3 +70,21 @@ &pwm {
-> >>   &usbdrd_dwc3_1 {
-> >>          dr_mode =3D "peripheral";
-> >>   };
-> >> +
-> >> +&usbhost2 {
-> >> +       #address-cells =3D <1>;
-> >> +       #size-cells =3D <0>;
-> >> +
-> >> +       hub@1 {
-> >> +               compatible =3D "usb8087,0024";
-> >> +               reg =3D <1>;
-> >> +               #address-cells =3D <1>;
-> >> +               #size-cells =3D <0>;
-> >> +
-> >> +               ethernet: usbether@1 {
-> >> +                       compatible =3D "usb0c45,6310";
-> >> +                       reg =3D <1>;
-> >> +                       local-mac-address =3D [00 00 00 00 00 00]; /* =
-Filled in by a bootloader */
-> >> +               };
-> >> +       };
-> >> +};
-> >> --
-> >> 2.26.2
-> >>
-> > Thanks for this patch, can you share some example on how to set the
-> > mac address via u-boot bootargs
->
-> A little bit hacky script to set permanent board unique MAC address:
->
-> # setexp.b u0 *0x10000014; setexp.b u1 *0x10000015; setexp.b u2
-> *0x10000016; setexp.b u3 *0x10000017; setenv ethaddr
-> 0:0:${u0}:${u1}:${u2}:${u3}; setenv usbethaddr ${ethaddr};
->
-OK this command worked for me.
+Usually checkpatch complains about this kind of thing but not this time.
+Maybe it takes into account the comment as well..
 
-> Then if there is proper ethernet0 alias set, u-boot will then
-> automatically save the configured MAC address to the device tree. I've
-> just check this on recent u-boot v2020.10 and Odroid U3 board.
->
-> Lukasz will send updated patch soon (with proper alias entry).
->
-> If you want to hack setting MAC address manually, this will work with
-> the current patch:
->
-> # setexp.b u0 *0x10000014; setexp.b u1 *0x10000015; setexp.b u2
-> *0x10000016; setexp.b u3 *0x10000017; fdt addr ${fdtaddr}; fdt set
-> /soc/usb@12110000/hub@1/usbether@1 local-mac-address [ 0 0 ${u0} ${u1}
-> ${u2} ${u3} ]
->
+I'll remove the braces.
 
-So do we need a similar patch for u-boot ?
-I am getting following error on Odroid U3+ and U-Boot 2020.10
+> 
+> > +	}
+> >  
+> >  	/* Explicitly set carrier off, otherwise
+> >  	 * netif_carrier_ok() will return true and cause 'ip link show'
+> > @@ -610,15 +618,6 @@ static int dpaa2_switch_port_stop(struct net_device *netdev)
+> >  	return 0;
+> >  }
+> >  
+> > +static netdev_tx_t dpaa2_switch_port_tx(struct sk_buff *skb,
+> > +					struct net_device *net_dev)
+> > +{
+> > +	struct ethsw_port_priv *port_priv = netdev_priv(net_dev);
+> > +	struct ethsw_core *ethsw = port_priv->ethsw_data;
+> > +	int retries = DPAA2_SWITCH_SWP_BUSY_RETRIES;
+> > +	struct dpaa2_fd fd;
+> > +	int err;
+> > +
+> > +	if (!dpaa2_switch_has_ctrl_if(ethsw))
+> > +		goto err_free_skb;
+> > +
+> > +	if (unlikely(skb_headroom(skb) < DPAA2_SWITCH_NEEDED_HEADROOM)) {
+> > +		struct sk_buff *ns;
+> > +
+> > +		ns = skb_realloc_headroom(skb, DPAA2_SWITCH_NEEDED_HEADROOM);
+> 
+> Looks like this passion for skb_realloc_headroom runs in the company?
 
-Odroid #  setexp.b u0 *0x10000014; setexp.b u1 *0x10000015; setexp.b
-u2 *0x10000016; setexp.b u3 *0x10000017; fdt addr ${fdtaddr}; fdt set
-/soc/usb@12110000/hub@1/usbether@1 local-mac-address [ 0 0 ${u0} ${u1}
-${u2} ${u3} ]
-No FDT memory address configured. Please configure
-the FDT address via "fdt addr <address>" command.
-Aborting!
+Not really, ocelot and sja1105 are safe :)
 
-Also added these command to boot.scr but still observing the failure
+> Few other drivers use it, and Claudiu just had a bug with that in gianfar.
+> Luckily what saves you from the same bug is the skb_unshare from right below.
+> Maybe you could use skb_cow_head and simplify this a bit?
+> 
+> > +		if (unlikely(!ns)) {
+> > +			netdev_err(net_dev, "Error reallocating skb headroom\n");
+> > +			goto err_free_skb;
+> > +		}
+> > +		dev_kfree_skb(skb);
+> 
+> Please use dev_consume_skb_any here, as it's not error path. Or, if you
+> use skb_cow_head, only the skb data will be reallocated, not the skb
+> structure itself, so there will be no consume_skb in that case at all,
+> another reason to simplify.
 
-mmc0(part 0) is current device
-Scanning mmc 0:1...
-Found U-Boot script /boot/boot.scr
-969 bytes read in 5 ms (188.5 KiB/s)
-## Executing script at 42000000
-7341440 bytes read in 265 ms (26.4 MiB/s)
-53875 bytes read in 56 ms (939.5 KiB/s)
-7964187 bytes read in 285 ms (26.6 MiB/s)
-libfdt fdt_path_offset() returned FDT_ERR_NOTFOUND
-Kernel image @ 0x41000000 [ 0x000000 - 0x700580 ]
-## Flattened Device Tree blob at 40800000
-   Booting using the fdt blob at 0x40800000
-   Loading Ramdisk to 4f867000, end 4ffff61b ... OK
-   Loading Device Tree to 4f856000, end 4f866272 ... OK
-,
-Best Regards
--Anand
+Ok, I can try that.
 
-> > also can you update this patch for exynos5422-odroidxu3-lite.dts and
-> > exynos4412-odroidu3.dts.
->
-> Also odroid-x2 and odroid-xu. Lukasz will take care of them.
->
-> Best regards
->
-> --
-> Marek Szyprowski, PhD
-> Samsung R&D Institute Poland
->
+How dpaa2-eth deals now with this is to just create a S/G FD when the
+headroom is less than what's necessary, so no skb_realloc_headroom() or
+skb_cow_head(). But I agree that it's best to make it as simple as
+possible.
+
+> 
+> > +		skb = ns;
+> > +	}
+> > +
+> > +	/* We'll be holding a back-reference to the skb until Tx confirmation */
+> > +	skb = skb_unshare(skb, GFP_ATOMIC);
+> > +	if (unlikely(!skb)) {
+> > +		/* skb_unshare() has already freed the skb */
+> > +		netdev_err(net_dev, "Error copying the socket buffer\n");
+> > +		goto err_exit;
+> > +	}
+> > +
+> > +	if (skb_is_nonlinear(skb)) {
+> > +		netdev_err(net_dev, "No support for non-linear SKBs!\n");
+> 
+> Rate-limit maybe?
+
+Yep, that probably should be rate-limited.
+
+> And what is the reason for no non-linear skb's? Too much code to copy
+> from dpaa2-eth?
+
+Once this is out of staging, dpaa2-eth and dpaa2-switch could share
+the Tx/Rx code path so, as you said, I just didn't want to duplicate
+everything if it's not specifically needed.
+
+> > diff --git a/drivers/staging/fsl-dpaa2/ethsw/ethsw.h b/drivers/staging/fsl-dpaa2/ethsw/ethsw.h
+> > index bd24be2c6308..b267c04e2008 100644
+> > --- a/drivers/staging/fsl-dpaa2/ethsw/ethsw.h
+> > +++ b/drivers/staging/fsl-dpaa2/ethsw/ethsw.h
+> > @@ -66,6 +66,19 @@
+> >   */
+> >  #define DPAA2_SWITCH_SWP_BUSY_RETRIES		1000
+> >  
+> > +/* Hardware annotation buffer size */
+> > +#define DPAA2_SWITCH_HWA_SIZE		64
+> > +/* Software annotation buffer size */
+> > +#define DPAA2_SWITCH_SWA_SIZE		64
+> > +
+> > +#define DPAA2_SWITCH_TX_BUF_ALIGN	64
+> 
+> Could you align all of these to the "1000" from DPAA2_SWITCH_SWP_BUSY_RETRIES?
+> 
+
+Sure.
+
+> > +
+> > +#define DPAA2_SWITCH_TX_DATA_OFFSET \
+> > +	(DPAA2_SWITCH_HWA_SIZE + DPAA2_SWITCH_SWA_SIZE)
+> > +
+> > +#define DPAA2_SWITCH_NEEDED_HEADROOM \
+> > +	(DPAA2_SWITCH_TX_DATA_OFFSET + DPAA2_SWITCH_TX_BUF_ALIGN)
+> > +
+> 
+> Ironically, you create a definition for NEEDED_HEADROOM but you do not
+> set dev->needed_headroom.
