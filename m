@@ -2,102 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61B322A792A
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 09:25:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC5C72A792D
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 09:25:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726986AbgKEIZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 03:25:40 -0500
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:41060 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725287AbgKEIZi (ORCPT
+        id S1729275AbgKEIZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 03:25:48 -0500
+Received: from mail-ed1-f67.google.com ([209.85.208.67]:43561 "EHLO
+        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725287AbgKEIZs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 03:25:38 -0500
-Received: by mail-lj1-f194.google.com with SMTP id p15so636520ljj.8;
-        Thu, 05 Nov 2020 00:25:37 -0800 (PST)
+        Thu, 5 Nov 2020 03:25:48 -0500
+Received: by mail-ed1-f67.google.com with SMTP id b9so598123edu.10;
+        Thu, 05 Nov 2020 00:25:46 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=ain3gng+tyhVNHLNuknbnfu4ui30IIf5sYIECi8yy8k=;
-        b=l+iag1Dn6afPJEZP0foFnX4mR45OhmUmETKb7gRPtw2r32GoBO4+vm522UIVjZHuVo
-         e44s8yEWQY4m/Wb9qxj10XBH8kJAQoxjILmnGJtIe9S3oT3qco4P8s/Z/Qk4P8EbFE79
-         hI/EAn9ICLBzhvCaGq9XZkLCPGEKw9WFTMhWLOj76KBON4tkqTqZQfmBz5eE+/bqWZoB
-         grscl+1HTGEM1fYgyWk0nQXmCrGejkE2TPeCdAwSoEclvptg6PT7vMfUib9I7uidKumN
-         GU/p9/aei8Ycq0sEqAgJ5f7kIz8mWf4kvjafkdSUL18ncByLoCtDuVsAF6pKju6c0AFB
-         dOGw==
-X-Gm-Message-State: AOAM5336nDUvFgULRx/orXSyAmFsa082bHDvqj9WXuaYwrPQsfYJGget
-        4Qg6uHCLJEdnsuuRfMu3uNQ=
-X-Google-Smtp-Source: ABdhPJwWQ+e6VFM217MSlVWkWBDWax6l3MPGXynbC0p4Iv0KA9VQCiTnv9HtDKAeK9MQy/vBFLe2gw==
-X-Received: by 2002:a2e:b532:: with SMTP id z18mr477696ljm.449.1604564736916;
-        Thu, 05 Nov 2020 00:25:36 -0800 (PST)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id g20sm83194ljn.134.2020.11.05.00.25.36
+        bh=BynuZQ4IcnE7iQujs9AoYeaOaUtAjpLHhcdFHAx92NU=;
+        b=KsfvtKhUqlHfJKdbL+R7bwLAvlK/PVwicE7CoswcKOw8v4F50c5EPseD1C9Gk4wk16
+         9nF8VUbtKuzu0O+yTY6eKZsDPY7odm0vgoRkgXxe24VkzgtWEczNzm3VHtgrR9eQ8XRI
+         RIKUr7MYlxrms4wDtGkSD8sILgtkhOjokStvRKiM2oiOAFBfAY431uFaSol1xWl+culx
+         MdvSooGSe+Hse0EBOi+G2m9P3Anc9aXSWIk3QmB7VbREPH7OX1uexhqcsP7Gbz/cDkA7
+         iaMIL/T5KjW0DeIYZ9gN20lheYgMShBMo71qWG8xLqk3QBEF2suzG0hViRzRUZqZ+SE9
+         uOPg==
+X-Gm-Message-State: AOAM530pc+ZgsxRLrXAFzrIdIID1IlWtjhwUU2Pp7BSM9sryusfQKF82
+        izipVNPmMJOST6G/nOlSR18=
+X-Google-Smtp-Source: ABdhPJxkpUg1Mul8x6cVLkyTVYz10e4c3t5chhkLiHgDZkp8bbZfVtyDie7JQU7x4d52LbYCid3dFg==
+X-Received: by 2002:aa7:cdd3:: with SMTP id h19mr1411156edw.330.1604564746185;
+        Thu, 05 Nov 2020 00:25:46 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id k26sm447082edf.85.2020.11.05.00.25.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 00:25:36 -0800 (PST)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1kaaaS-0001pB-BO; Thu, 05 Nov 2020 09:25:41 +0100
-Date:   Thu, 5 Nov 2020 09:25:40 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Davidlohr Bueso <dave@stgolabs.net>
-Cc:     Johan Hovold <johan@kernel.org>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Davidlohr Bueso <dbueso@suse.de>
-Subject: Re: [PATCH] usb/mos7720: process deferred urbs in a workqueue
-Message-ID: <20201105082540.GA4085@localhost>
-References: <20201102211450.5722-1-dave@stgolabs.net>
- <20201103204014.3ue37owcras6cx7p@linux-p48b.lan>
- <20201104110657.GW4085@localhost>
- <20201104162534.GY4085@localhost>
- <20201105001307.lelve65nif344cfs@linux-p48b.lan>
+        Thu, 05 Nov 2020 00:25:45 -0800 (PST)
+Date:   Thu, 5 Nov 2020 09:25:43 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Alice Guo <alice.guo@nxp.com>
+Cc:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        linux-imx@nxp.com, peng.fan@nxp.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 1/4] dt-bindings: soc: imx8m: add DT Binding doc for
+ soc unique ID
+Message-ID: <20201105082543.GA17569@kozik-lap>
+References: <20201105072629.24175-1-alice.guo@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201105001307.lelve65nif344cfs@linux-p48b.lan>
+In-Reply-To: <20201105072629.24175-1-alice.guo@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 04:13:07PM -0800, Davidlohr Bueso wrote:
-> On Wed, 04 Nov 2020, Johan Hovold wrote:
+On Thu, Nov 05, 2020 at 03:26:26PM +0800, Alice Guo wrote:
+> Add DT Binding doc for the Unique ID of i.MX 8M series.
 > 
-> >Hmm. I took at closer look at the parport code and it seems the current
-> >implementation is already racy but that removing the tasklet is going to
-> >widen that that window.
-> >
-> >Those register writes in restore() should be submitted before any
-> >later requests. Perhaps setting a flag and flushing the work in
-> >parport_prologue() could work?
+> Signed-off-by: Alice Guo <alice.guo@nxp.com>
+> ---
+>  .../devicetree/bindings/arm/fsl.yaml          | 33 +++++++++++++++++++
+>  1 file changed, 33 insertions(+)
 > 
-> Ah, I see and agree. Considering work is only deferred from restore_state()
-> I don't even think we need a flag, no? We can let parport_prologue()
-> just flush_work() unconditionally (right before taking the disc_mutex)
-> which for the most part will be idle anyway. The flush_work() also becomes
-> saner now that we'll stop rescheduling work in send_deferred_urbs().
-
-A flag isn't strictly needed, no, but it could be used to avoid some of
-the flush_work() overhead for every parport callback. The restore-state
-work will typically only be queued once.
- 
-> Also, but not strictly related to this. What do you think of deferring all
-> work in write_parport_reg_nonblock() unconditionally? I'd like to avoid
-> that mutex_trylock() because eventually I'll be re-adding a warn in the
-> locking code, but that would also simplify the code done here in the
-> nonblocking irq write. I'm not at all familiar with parport, but I would
-> think that restore_state context would not care.
-
-Sounds good to me. As long as the state is restored before submitting
-further requests we should be fine. That would even allow getting rid of
-write_parport_reg_nonblock() as you can restore the state using
-synchronous calls from the worker thread. Should simplify things quite a
-bit.
-
-> >On the other hand, the restore() implementation looks broken in that it
-> >doesn't actually restore the provided state. I'll go fix that up.
+> diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
+> index e4db0f9ed664..0419f078502b 100644
+> --- a/Documentation/devicetree/bindings/arm/fsl.yaml
+> +++ b/Documentation/devicetree/bindings/arm/fsl.yaml
+> @@ -901,6 +901,39 @@ properties:
+>                - fsl,s32v234-evb           # S32V234-EVB2 Customer Evaluation Board
+>            - const: fsl,s32v234
 > 
-> How did this thing ever work?
+> +  soc:
+> +    description:
+> +      i.MX8M Family SoC must provide a soc node in the root of the device tree,
+> +      representing the System-on-Chip since these test chips are rather complex.
+> +    type: object
+> +    properties:
+> +      compatible:
+> +        oneOf:
+> +          - items:
+> +              - const: fsl,imx8mm-soc
+> +              - const: simple-bus
+> +          - items:
+> +              - const: fsl,imx8mn-soc
+> +              - const: simple-bus
+> +          - items:
+> +              - const: fsl,imx8mp-soc
+> +              - const: simple-bus
+> +          - items:
+> +              - const: fsl,imx8mq-soc
+> +              - const: simple-bus
+> +
+> +      nvmem-cells:
+> +        maxItems: 1
+> +        description: Phandle to the SOC Unique ID provided by a nvmem node
+> +
+> +      nvmem-cells-names:
+> +        const: soc_unique_id
+> +
+> +    required:
+> +      - compatible
+> +      - nvmem-cells
+> +      - nvmem-cell-names
+> +
 
-The shadow registers are initialised at probe so as long as you don't
-switch to a different parallel-port driver without disconnecting the
-mos7715 in between it works.
+Did you actually test it? I see multiple errors with this patch.
+fsl-ls1012a-frdm.dt.yaml: /: soc:compatible: ['simple-bus'] is not valid under any of the given schemas
 
-Johan
+Best regards,
+Krzysztof
+
