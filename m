@@ -2,250 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEFEC2A7A18
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 10:10:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F36822A7A13
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 10:09:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730296AbgKEJKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 04:10:07 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51653 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726400AbgKEJKH (ORCPT
+        id S1730234AbgKEJJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 04:09:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726756AbgKEJJJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 04:10:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604567405;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=D0Yx7YldFmR4rM4oYfgS9uI70wEvehF/Ux3dT7Dw8QY=;
-        b=OcV25EaPaUkUL/vw+NKzCGF+Z1Fe3fQ4EhoQq6UOVxc7mV4fWP1VnwIP/BX9zc3UpwLvZx
-        DbPABfAxkP1MCHlEsHccWNPo8eA9X3cqjJ2zgcxmE5AkN+Do09bQZFUVjdMuGiHC94vZC4
-        kI8KjIulWTb4oYsskojeQopc4XMYZaM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-55-GNcizUb2N2GZ6EqOAS2kzw-1; Thu, 05 Nov 2020 04:07:18 -0500
-X-MC-Unique: GNcizUb2N2GZ6EqOAS2kzw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 323251007464;
-        Thu,  5 Nov 2020 09:07:13 +0000 (UTC)
-Received: from starship (unknown [10.35.207.23])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9151975121;
-        Thu,  5 Nov 2020 09:07:04 +0000 (UTC)
-Message-ID: <e177d0497f08173e7991341796aa21c2dd2ba86b.camel@redhat.com>
-Subject: Re: [PATCH] KVM: x86: use positive error values for msr emulation
- that causes #GP
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Pankaj Gupta <pankaj.gupta.linux@gmail.com>
-Cc:     kvm@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Ingo Molnar <mingo@redhat.com>, Qian Cai <cai@redhat.com>
-Date:   Thu, 05 Nov 2020 11:07:02 +0200
-In-Reply-To: <CAM9Jb+ivbM-_8ht9w2JptoHH-64=J_TvdLvm0Re+KAAuPeeGfg@mail.gmail.com>
-References: <20201101115523.115780-1-mlevitsk@redhat.com>
-         <CAM9Jb+ivbM-_8ht9w2JptoHH-64=J_TvdLvm0Re+KAAuPeeGfg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
+        Thu, 5 Nov 2020 04:09:09 -0500
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBA60C0613D6
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 01:09:08 -0800 (PST)
+Received: by mail-ed1-x542.google.com with SMTP id j20so722889edt.8
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 01:09:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DAVVTcqOtshkqa//jG0tMqJnAZn8lkJ/jC3ZQlpD4iI=;
+        b=gnCWxb3A2YT1XunheHSuiLH9SajfLtYxFoSSt/SMRqAjsx1al/ZDjdmGmdcaRCgATD
+         VjIP7kiSbjNExGEXiLiKkUKac6IoHWJ/Fimd03ck22Y3TV8a4rMz01X4WGQkmlH9oyFA
+         9esubFwVfP/2m1vKPl5C03O/MKjH3usvIu/M/u1jCtkmZsVaRlPUI4GOMG2G25yqE1WE
+         FkwCiZzuIp80ijwg2sDMrq/aDxArFsCDn2GSr7ejg4GkjzXoXRmPg7sE+KMD8rfx5UT2
+         P0rDV2vx/4uXjrJDE1VHH5s96ArZURV9t0QiVse/pLv22O/+my2jfZQspbaaigUdqAgS
+         xSDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DAVVTcqOtshkqa//jG0tMqJnAZn8lkJ/jC3ZQlpD4iI=;
+        b=QCScl6E2orEUMK7d+GDsND/40acOO+uxt6D+h8PTDlj3HjIw9J9KCFsWGC7Dys2LA9
+         i9lVd707nhNhKW/iNnUh+xrH+s6CZuuSZ6OLjmXJSkqZ0fR+tfhyZ1CB4RHZ/v8gUOId
+         ZXfl4BFJ25hyhn1divR31R8N/JxKLg2SJMKViFhQiECQVGc0yiZU7VBOXyGAmgvNXAn0
+         Q3lZh6cO2s+jyEVyl4k48hYdE3e+OEQ2jhUShicz8MLeb3TCRe29DU8yT60U6MCvwI5d
+         xIhMObiYM7wRFHyZ0Allg0MQarvdNLvlGP+bb0Bg0pQL8VNwsOxXksbkNn31kLR+vucO
+         Fc6w==
+X-Gm-Message-State: AOAM530Z/m8BCzEZH4aT0qFQNklVTTVHzY/BoxbiipfY2akqClPMJwPN
+        Xb2Ey9z/hxCiSIbyxqy6TNRMaZRmTlycjSBiS74kww==
+X-Google-Smtp-Source: ABdhPJyqANWyJ3aSTbJtEhMCIaR58Dz9yl2OLSrIAItWEawq6opjRvdm8/eux/hxk+LAgMAS7EPN7dAVW7T2X8+w+iU=
+X-Received: by 2002:a05:6402:283:: with SMTP id l3mr1593849edv.232.1604567347374;
+ Thu, 05 Nov 2020 01:09:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+References: <20201104103938.1286-1-nsaenzjulienne@suse.de> <20201104103938.1286-4-nsaenzjulienne@suse.de>
+In-Reply-To: <20201104103938.1286-4-nsaenzjulienne@suse.de>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Thu, 5 Nov 2020 10:08:56 +0100
+Message-ID: <CAMpxmJWv3nfD2xpS4jEq+vJvr=+cD7BV3AFDnsRjCG5qB60c-A@mail.gmail.com>
+Subject: Re: [PATCH v3 03/11] gpio: raspberrypi-exp: Release firmware handle
+ on unbind
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Cc:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-pwm@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
+        arm-soc <linux-arm-kernel@lists.infradead.org>,
+        linux-devicetree <devicetree@vger.kernel.org>, wahrenst@gmx.net,
+        Linux Input <linux-input@vger.kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        devel@driverdev.osuosl.org, Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        linux-rpi-kernel@lists.infradead.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-11-05 at 07:14 +0100, Pankaj Gupta wrote:
-> > Recent introduction of the userspace msr filtering added code that uses
-> > negative error codes for cases that result in either #GP delivery to
-> > the guest, or handled by the userspace msr filtering.
-> > 
-> > This breaks an assumption that a negative error code returned from the
-> > msr emulation code is a semi-fatal error which should be returned
-> > to userspace via KVM_RUN ioctl and usually kill the guest.
-> > 
-> > Fix this by reusing the already existing KVM_MSR_RET_INVALID error code,
-> > and by adding a new KVM_MSR_RET_FILTERED error code for the
-> > userspace filtered msrs.
-> > 
-> > Fixes: 291f35fb2c1d1 ("KVM: x86: report negative values from wrmsr emulation to userspace")
-> > Reported-by: Qian Cai <cai@redhat.com>
-> > Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
-> > ---
-> >  arch/x86/kvm/x86.c | 29 +++++++++++++++--------------
-> >  arch/x86/kvm/x86.h |  8 +++++++-
-> >  2 files changed, 22 insertions(+), 15 deletions(-)
-> > 
-> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> > index 397f599b20e5a..537130d78b2af 100644
-> > --- a/arch/x86/kvm/x86.c
-> > +++ b/arch/x86/kvm/x86.c
-> > @@ -255,11 +255,10 @@ static struct kmem_cache *x86_emulator_cache;
-> > 
-> >  /*
-> >   * When called, it means the previous get/set msr reached an invalid msr.
-> > - * Return 0 if we want to ignore/silent this failed msr access, or 1 if we want
-> > - * to fail the caller.
-> > + * Return true if we want to ignore/silent this failed msr access.
-> >   */
-> > -static int kvm_msr_ignored_check(struct kvm_vcpu *vcpu, u32 msr,
-> > -                                u64 data, bool write)
-> > +static bool kvm_msr_ignored_check(struct kvm_vcpu *vcpu, u32 msr,
-> > +                                 u64 data, bool write)
-> >  {
-> >         const char *op = write ? "wrmsr" : "rdmsr";
-> > 
-> > @@ -267,12 +266,11 @@ static int kvm_msr_ignored_check(struct kvm_vcpu *vcpu, u32 msr,
-> >                 if (report_ignored_msrs)
-> >                         vcpu_unimpl(vcpu, "ignored %s: 0x%x data 0x%llx\n",
-> >                                     op, msr, data);
-> > -               /* Mask the error */
-> > -               return 0;
-> > +               return true;
-> >         } else {
-> >                 vcpu_debug_ratelimited(vcpu, "unhandled %s: 0x%x data 0x%llx\n",
-> >                                        op, msr, data);
-> > -               return -ENOENT;
-> > +               return false;
-> >         }
-> >  }
-> > 
-> > @@ -1416,7 +1414,8 @@ static int do_get_msr_feature(struct kvm_vcpu *vcpu, unsigned index, u64 *data)
-> >         if (r == KVM_MSR_RET_INVALID) {
-> >                 /* Unconditionally clear the output for simplicity */
-> >                 *data = 0;
-> > -               r = kvm_msr_ignored_check(vcpu, index, 0, false);
-> > +               if (kvm_msr_ignored_check(vcpu, index, 0, false))
-> > +                       r = 0;
-> >         }
-> > 
-> >         if (r)
-> > @@ -1540,7 +1539,7 @@ static int __kvm_set_msr(struct kvm_vcpu *vcpu, u32 index, u64 data,
-> >         struct msr_data msr;
-> > 
-> >         if (!host_initiated && !kvm_msr_allowed(vcpu, index, KVM_MSR_FILTER_WRITE))
-> > -               return -EPERM;
-> > +               return KVM_MSR_RET_FILTERED;
-> > 
-> >         switch (index) {
-> >         case MSR_FS_BASE:
-> > @@ -1581,7 +1580,8 @@ static int kvm_set_msr_ignored_check(struct kvm_vcpu *vcpu,
-> >         int ret = __kvm_set_msr(vcpu, index, data, host_initiated);
-> > 
-> >         if (ret == KVM_MSR_RET_INVALID)
-> > -               ret = kvm_msr_ignored_check(vcpu, index, data, true);
-> > +               if (kvm_msr_ignored_check(vcpu, index, data, true))
-> > +                       ret = 0;
-> > 
-> >         return ret;
-> >  }
-> > @@ -1599,7 +1599,7 @@ int __kvm_get_msr(struct kvm_vcpu *vcpu, u32 index, u64 *data,
-> >         int ret;
-> > 
-> >         if (!host_initiated && !kvm_msr_allowed(vcpu, index, KVM_MSR_FILTER_READ))
-> > -               return -EPERM;
-> > +               return KVM_MSR_RET_FILTERED;
-> > 
-> >         msr.index = index;
-> >         msr.host_initiated = host_initiated;
-> > @@ -1618,7 +1618,8 @@ static int kvm_get_msr_ignored_check(struct kvm_vcpu *vcpu,
-> >         if (ret == KVM_MSR_RET_INVALID) {
-> >                 /* Unconditionally clear *data for simplicity */
-> >                 *data = 0;
-> > -               ret = kvm_msr_ignored_check(vcpu, index, 0, false);
-> > +               if (kvm_msr_ignored_check(vcpu, index, 0, false))
-> > +                       ret = 0;
-> >         }
-> > 
-> >         return ret;
-> > @@ -1662,9 +1663,9 @@ static int complete_emulated_wrmsr(struct kvm_vcpu *vcpu)
-> >  static u64 kvm_msr_reason(int r)
-> >  {
-> >         switch (r) {
-> > -       case -ENOENT:
-> > +       case KVM_MSR_RET_INVALID:
-> >                 return KVM_MSR_EXIT_REASON_UNKNOWN;
-> > -       case -EPERM:
-> > +       case KVM_MSR_RET_FILTERED:
-> >                 return KVM_MSR_EXIT_REASON_FILTER;
-> >         default:
-> >                 return KVM_MSR_EXIT_REASON_INVAL;
-> > diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
-> > index 3900ab0c6004d..e7ca622a468f5 100644
-> > --- a/arch/x86/kvm/x86.h
-> > +++ b/arch/x86/kvm/x86.h
-> > @@ -376,7 +376,13 @@ int kvm_handle_memory_failure(struct kvm_vcpu *vcpu, int r,
-> >  int kvm_handle_invpcid(struct kvm_vcpu *vcpu, unsigned long type, gva_t gva);
-> >  bool kvm_msr_allowed(struct kvm_vcpu *vcpu, u32 index, u32 type);
-> > 
-> > -#define  KVM_MSR_RET_INVALID  2
-> > +/*
-> > + * Internal error codes that are used to indicate that MSR emulation encountered
-> > + * an error that should result in #GP in the guest, unless userspace
-> > + * handles it.
-> > + */
-> > +#define  KVM_MSR_RET_INVALID   2       /* in-kernel MSR emulation #GP condition */
-> > +#define  KVM_MSR_RET_FILTERED  3       /* #GP due to userspace MSR filter */
-> > 
-> >  #define __cr4_reserved_bits(__cpu_has, __c)             \
-> >  ({                                                      \
-> 
-> This looks good to me. This should solve "-EPERM" return by "__kvm_set_msr" .
-> 
-> A question I have, In the case of "kvm_emulate_rdmsr()",  for "r" we
-> are injecting #GP.
-> Is there any possibility of this check to be hit and still result in #GP?
-
-When I wrote this patch series I assumed that msr reads usually don't have
-side effects so they shouldn't fail, and fixed only the msr write code path
-to deal with negative errors. Now that you put this in this light,
-I do think that you are right and I should have added code for both msr reads and writes
-especially to catch cases in which negative errors are returned by mistake
-like this one (my mistake in this case since my patch series was merged
-after the userspace msrs patch series).
-
-What do you think?
-
-I can prepare a separate patch for this, which should go to the next
-kernel version since this doesn't fix a regression.
-
-
-Best regards and thanks for the review,
-	Maxim Levitsky
-
-> 
-> int kvm_emulate_rdmsr(struct kvm_vcpu *vcpu)
-> {
->        ....
->         r = kvm_get_msr(vcpu, ecx, &data);
-> 
->         /* MSR read failed? See if we should ask user space */
->         if (r && kvm_get_msr_user_space(vcpu, ecx, r)) {
->                 /* Bounce to user space */
->                 return 0;
+On Wed, Nov 4, 2020 at 11:39 AM Nicolas Saenz Julienne
+<nsaenzjulienne@suse.de> wrote:
+>
+> Use devm_rpi_firmware_get() so as to make sure we release RPi's firmware
+> interface when unbinding the device.
+>
+> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+>
+> ---
+>
+> Changes since v2:
+>  - Use devm_rpi_firmware_get(), instead of remove function
+>
+>  drivers/gpio/gpio-raspberrypi-exp.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpio/gpio-raspberrypi-exp.c b/drivers/gpio/gpio-raspberrypi-exp.c
+> index bb100e0124e6..64a552ecc2ad 100644
+> --- a/drivers/gpio/gpio-raspberrypi-exp.c
+> +++ b/drivers/gpio/gpio-raspberrypi-exp.c
+> @@ -208,7 +208,7 @@ static int rpi_exp_gpio_probe(struct platform_device *pdev)
+>                 return -ENOENT;
 >         }
-> 
->         /* MSR read failed? Inject a #GP */
->         if (r) {
->                 trace_kvm_msr_read_ex(ecx);
->                 kvm_inject_gp(vcpu, 0);
->                 return 1;
->         }
->     ....
-> }
-> 
-> Apart from the question above, feel free to add:
-> Reviewed-by: Pankaj Gupta <pankaj.gupta@cloud.ionos.com>
-> 
+>
+> -       fw = rpi_firmware_get(fw_node);
+> +       fw = devm_rpi_firmware_get(&pdev->dev, fw_node);
+>         of_node_put(fw_node);
+>         if (!fw)
+>                 return -EPROBE_DEFER;
+> --
+> 2.29.1
+>
 
-
+Acked-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
