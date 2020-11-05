@@ -2,63 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BFBF2A7478
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 02:06:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 530C12A747E
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 02:07:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388096AbgKEBGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 20:06:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55746 "EHLO mail.kernel.org"
+        id S2388116AbgKEBHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 20:07:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55882 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726801AbgKEBGg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 20:06:36 -0500
-Received: from kernel.org (unknown [104.132.1.79])
+        id S1726018AbgKEBHA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 20:07:00 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.4])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 15DB720644;
-        Thu,  5 Nov 2020 01:06:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AC7CF20BED;
+        Thu,  5 Nov 2020 01:06:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604538396;
-        bh=MRyoNuVzGiBwM7Z45A98s1AUGBa5TwgJ45mF2+4sNTQ=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=hNQYXj40/F+LzcxW5RX2SmwTMdnAksznVQHONCVenw2ZdEA2r+jzLpBDGIn6MLapV
-         6uRPYUg/o63L9YgeKBKuWW8Alxm9+uzmjmzuYd/+pnCz6rXnjIZ7JtroR3k1dHN5Hg
-         zpoSpkUBmCuMy1w+9ABJKTmkY8jJrT5+P74qn8yc=
-Content-Type: text/plain; charset="utf-8"
+        s=default; t=1604538419;
+        bh=xrNNbuSiVgRenrPPmM3aEUhBPnU96ggJX5c8ysDtjx0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=V+2TqU+dPu3+Ii5F98IC8vCXfkk0ZC8fS32kF06hoYTLrlAPvKKJmg3JSLQjGZU5c
+         ib4YfgV6WFxr2dNEutwqHWYP/RnnCvHYcs0yLpWUIeyiLddSaD4p2uR/MdK4GgHYtA
+         6AVKV1dlGNclhJYl2gXyfT9SGlAQQJbKiQevT5Nc=
+Date:   Wed, 4 Nov 2020 17:06:57 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
+Cc:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <alexaundru.ardelean@analog.com>, <andrew@lunn.ch>,
+        <hkallweit1@gmail.com>, <linux@armlinux.org.uk>,
+        <davem@davemloft.net>, <ardeleanalex@gmail.com>
+Subject: Re: [PATCH net-next v2 1/2][RESEND] net: phy: adin: disable diag
+ clock & disable standby mode in config_aneg
+Message-ID: <20201104170657.06696417@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201103074436.93790-1-alexandru.ardelean@analog.com>
+References: <20201103074436.93790-1-alexandru.ardelean@analog.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1604402306-5348-8-git-send-email-abel.vesa@nxp.com>
-References: <1604402306-5348-1-git-send-email-abel.vesa@nxp.com> <1604402306-5348-8-git-send-email-abel.vesa@nxp.com>
-Subject: Re: [PATCH v5 07/14] dt-bindings: reset: imx8mp: Add hdmi blk_ctl reset IDs
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     NXP Linux Team <linux-imx@nxp.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        Abel Vesa <abel.vesa@nxp.com>
-To:     Abel Vesa <abel.vesa@nxp.com>, Adam Ford <aford173@gmail.com>,
-        Anson Huang <anson.huang@nxp.com>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Fabio Estevam <fabio.estevam@nxp.com>,
-        Jacky Bai <ping.bai@nxp.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Marek Vasut <marek.vasut@gmail.com>,
-        Mike Turquette <mturquette@baylibre.com>,
-        Peng Fan <peng.fan@nxp.com>, Rob Herring <robh@kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>
-Date:   Wed, 04 Nov 2020 17:06:34 -0800
-Message-ID: <160453839468.3965362.15207384437398891508@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Abel Vesa (2020-11-03 03:18:19)
-> These will be used imx8mp for blk_ctl driver.
->=20
-> Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
-> Acked-by: Rob Herring <robh@kernel.org>
-> Reviewed-by: Dong Aisheng <aisheng.dong@nxp.com>
-> ---
+On Tue, 3 Nov 2020 09:44:35 +0200 Alexandru Ardelean wrote:
+> When the PHY powers up, the diagnostics clock isn't enabled (bit 2 in
+> register PHY_CTRL_1 (0x0012)).
+> Also, the PHY is not in standby mode, so bit 13 in PHY_CTRL_3 (0x0017) is
+> always set at power up.
+> 
+> The standby mode and the diagnostics clock are both meant to be for the
+> cable diagnostics feature of the PHY (in phylib this would be equivalent to
+> the cable-test support), and for the frame-generator feature of the PHY.
+> 
+> In standby mode, the PHY doesn't negotiate links or manage links.
+> 
+> To use the cable diagnostics/test (or frame-generator), the PHY must be
+> first set in standby mode, so that the link operation doesn't interfere.
+> Then, the diagnostics clock must be enabled.
+> 
+> For the cable-test feature, when the operation finishes, the PHY goes into
+> PHY_UP state, and the config_aneg hook is called.
+> 
+> For the ADIN PHY, we need to make sure that during autonegotiation
+> configuration/setup the PHY is removed from standby mode and the
+> diagnostics clock is disabled, so that normal operation is resumed.
+> 
+> This change does that by moving the set of the ADIN1300_LINKING_EN bit (2)
+> in the config_aneg (to disable standby mode).
+> Previously, this was set in the downshift setup, because the downshift
+> retry value and the ADIN1300_LINKING_EN are in the same register.
+> 
+> And the ADIN1300_DIAG_CLK_EN bit (13) is cleared, to disable the
+> diagnostics clock.
+> 
+> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
 
-Acked-by: Stephen Boyd <sboyd@kernel.org>
+Applied both, thanks.
