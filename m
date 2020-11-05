@@ -2,120 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC6A82A85EB
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 19:15:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C80E22A85CE
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 19:14:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726777AbgKESOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 13:14:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51766 "EHLO
+        id S1731775AbgKESOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 13:14:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726801AbgKESOO (ORCPT
+        with ESMTP id S1729862AbgKESOO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 5 Nov 2020 13:14:14 -0500
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91FE5C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 10:14:12 -0800 (PST)
-Received: by mail-il1-x141.google.com with SMTP id e16so2234109ile.0
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 10:14:12 -0800 (PST)
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1451EC0613D4
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 10:14:14 -0800 (PST)
+Received: by mail-il1-x144.google.com with SMTP id x20so2203404ilj.8
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 10:14:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8fUu2nSRz/rQdKPD/n7O1Q6q1SAGSyes98Tm7yI3SBM=;
-        b=BLAJm2ZsjEld2uw0/svOVf7hWTZnSLqt8ZRThDTVJz+n7r8ye/EGkj/7FccKP18OjR
-         gnNqeJ/r+q2c7tG23y3bqMd6Y4SoiTesKM+xkTP+ICMYSS9pBw2ZC6mvYOXjzifvw3uL
-         N+0c33H4OkI0PxY1voOMVnYkC6iTBUzDR3yawNyhwQJ8gXBz4Ri/PRu8NyTpW9iXAJXF
-         XmmH13CXteHxEnHkCApQLkS+xlenZaZ80UEa/kaPTFtWLiwrhHmdLut5rYqdkysp790Y
-         DGbb6Emxh9ZZwygaxxYRPVFCkgrELn5ZrzzbMHGsLG3d2z2vpqD949wGClwzdHvzJbOA
-         GN+w==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=nKaefqcI17QqdeWMZD8JeaTBQ5r2E/JmwfTxUS+fzKY=;
+        b=RWxu2FrHFx9HVVRvn5cKxrxhaLaF+dvUm+TRM10PdiU0qZfsbucYAOkF3XHelELxrP
+         CfFzjCrDFDmey8BX0R/6xKYbpEYGB41tJwwI0OWjQLqgWJSGh/p0NowPoNFJ+57/pHza
+         5Vy4oUjw35Qx8dOJEtnVSDhvrFwLga+U/+AmtlI6BTGuEcu/SVzCK0n2qYreNr6NR7ib
+         1rVSwtKv2RhubMOh5yv1t95ZP+gUJ43XW8WeYkcSsB4VYbKu8ntUoMPwoh1WW7hF3ks4
+         y/HEnnbAQOs3+Opbp23lXmkApuSksdfGYGeaR0tHL2PZTjvkCDo0+y7FOkl3Z1PQt3KA
+         QWNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8fUu2nSRz/rQdKPD/n7O1Q6q1SAGSyes98Tm7yI3SBM=;
-        b=Xi1YRcBskHeCbrRVXMAUm2OILMTn0py7STRoYVk6SgaIU++C7DOjoOka6VRI19nhrG
-         kHS4toUx/P4UV6L/x0mY57xN9cIaX0tTMoJnOH25vctHHzFtk3pTUE3XUcGex5EauKlS
-         USN4fAMmorf6OCCbxBpHOn+xkr/KzeDNwwWdXp/cxWUUey1dBraWyZkT+DaX/dM5OVLx
-         MId5tOGNJTt6bdrcDqk2+nx4dhzssuxifivZEOHvEqi36h9a/TxF4FAs4IgyvTIAeHTP
-         AbBsOJs+q8CPxuuPdybF09CUpf6uQz1FkNVWG2O9Hs/OkjfkuX76LHPaSq8fV+2XBYcy
-         6RDA==
-X-Gm-Message-State: AOAM530tnBLpeverwg3u7gSaYOyHPUd/A3VEe1W0Do1sND3mpPihpjkc
-        OUGMus0VpAI6o6qVFHHH8m+B4Q==
-X-Google-Smtp-Source: ABdhPJwfPfeclJ6Osaq8WyAre/vaZ8nlCm2Fy6ydBB9gjro2ggyY3g+kGjyjXjkSlJ8odvN/omSIhw==
-X-Received: by 2002:a92:a182:: with SMTP id b2mr2779229ill.148.1604600051791;
-        Thu, 05 Nov 2020 10:14:11 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=nKaefqcI17QqdeWMZD8JeaTBQ5r2E/JmwfTxUS+fzKY=;
+        b=lG+ShVC7MFAiMC7bZNl5r6CZGCXj6hdE8BNtuz9jyP1gaex7QuRuLxB6ai6dqW8VUv
+         gU4+56fvqY17UYN10Uh8qs+CjX6aFykEGX5+XSLI5Pow9lKVFuc7ZXz+film96aD/vI3
+         5aUYWholYyOcGuRb9E8x3qSclP5/VzvchLeBXBLWRSSTp/qtcLeojk796lRVGHzngNS0
+         RhjMl7RpHRqO2xkQwQCO97sDkT2kForE0GFvCkswzxyucOOS3e0atm7KzR8GmTm1neHq
+         pKJcmDzUr91dI2qn6KR1o/+qYl51R5NBDLye/2zYlyGtGpwGxKZYYrArrAaFUJX8lsMv
+         jBZQ==
+X-Gm-Message-State: AOAM532eTIqgJ/ybdCkuY0rxlZai1fsOUhoFXCXZhfa7SfGVbO0cDart
+        AyiMtmCJzxRciVnjlfxVHXOYsw==
+X-Google-Smtp-Source: ABdhPJxphJZX4DAONNvzja8KmEVKpnehmrvQDjCC9RxUegGLEydFbBES8lZ9wcby8vN/iUhBgY/96w==
+X-Received: by 2002:a92:6b08:: with SMTP id g8mr2703981ilc.32.1604600053360;
+        Thu, 05 Nov 2020 10:14:13 -0800 (PST)
 Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id o19sm1554136ilt.24.2020.11.05.10.14.09
+        by smtp.gmail.com with ESMTPSA id o19sm1554136ilt.24.2020.11.05.10.14.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 10:14:10 -0800 (PST)
+        Thu, 05 Nov 2020 10:14:12 -0800 (PST)
 From:   Alex Elder <elder@linaro.org>
 To:     davem@davemloft.net, kuba@kernel.org
 Cc:     evgreen@chromium.org, subashab@codeaurora.org,
         cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 00/13] net: ipa: constrain GSI interrupts
-Date:   Thu,  5 Nov 2020 12:13:54 -0600
-Message-Id: <20201105181407.8006-1-elder@linaro.org>
+Subject: [PATCH net-next 01/13] net: ipa: refer to IPA versions, not GSI
+Date:   Thu,  5 Nov 2020 12:13:55 -0600
+Message-Id: <20201105181407.8006-2-elder@linaro.org>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20201105181407.8006-1-elder@linaro.org>
+References: <20201105181407.8006-1-elder@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The goal of this series is to more tightly control when GSI
-interrupts are enabled.  This is a long-ish series, so I'll
-describe it in parts.
+The GSI code is now exposed to IPA version numbers, and we handle
+version-specific behavior based on the IPA version.
 
-The first patch is actually unrelated...  I forgot to include
-it in my previous series (which exposed the GSI layer to the
-IPA version).  It is a trivial comments-only update patch.
+Modify some comments that talk about GSI versions so they reference
+IPA versions instead.  Correct version number errors in a couple of
+these comments.
 
-The second patch defers registering the GSI interrupt handler
-until *after* all of the resources that handler touches have
-been initialized.  In practice, we don't see this interrupt
-that early, but this precludes an obvious problem.
+The (comment) mapping between IPA and GSI versions in the definition
+of the ipa_version enumerated type remains.
 
-The next two patches are simple changes.  The first just
-trivially renames a field.  The second switches from using
-constant mask values to using an enumerated type of bit
-positions to represent each GSI interrupt type.
+Signed-off-by: Alex Elder <elder@linaro.org>
+---
+ drivers/net/ipa/gsi_reg.h | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-The rest implement the "real work."  First, all interrupts
-are disabled at initialization time.  Next, we keep track of
-a bitmask of enabled GSI interrupt types, updating it each
-time we enable or disable one of them.  From there we have
-a set of patches that one-by-one enable each interrupt type
-only during the period it is required.  This includes allowing
-a channel to generate IEOB interrupts only when it has been
-enabled.  And finally, the last patch simplifies some code
-now that all GSI interrupt types are handled uniformly.
-
-					-Alex
-
-Alex Elder (13):
-  net: ipa: refer to IPA versions, not GSI
-
-  net: ipa: request GSI IRQ later
-
-  net: ipa: rename gsi->event_enable_bitmap
-  net: ipa: define GSI interrupt types with an enum
-
-  net: ipa: disable all GSI interrupt types initially
-  net: ipa: cache last-saved GSI IRQ enabled type
-  net: ipa: only enable GSI channel control IRQs when needed
-  net: ipa: only enable GSI event control IRQs when needed
-  net: ipa: only enable generic command completion IRQ when needed
-  net: ipa: only enable GSI IEOB IRQs when needed
-  net: ipa: explicitly disallow inter-EE interrupts
-  net: ipa: only enable GSI general IRQs when needed
-  net: ipa: pass a value to gsi_irq_type_update()
-
- drivers/net/ipa/gsi.c     | 257 +++++++++++++++++++++++++++-----------
- drivers/net/ipa/gsi.h     |   7 +-
- drivers/net/ipa/gsi_reg.h |  31 +++--
- 3 files changed, 205 insertions(+), 90 deletions(-)
-
+diff --git a/drivers/net/ipa/gsi_reg.h b/drivers/net/ipa/gsi_reg.h
+index 8e0e9350c3831..9668797aa58ef 100644
+--- a/drivers/net/ipa/gsi_reg.h
++++ b/drivers/net/ipa/gsi_reg.h
+@@ -66,7 +66,7 @@
+ #define CHTYPE_DIR_FMASK		GENMASK(3, 3)
+ #define EE_FMASK			GENMASK(7, 4)
+ #define CHID_FMASK			GENMASK(12, 8)
+-/* The next field is present for GSI v2.0 and above */
++/* The next field is present for IPA v4.5 and above */
+ #define CHTYPE_PROTOCOL_MSB_FMASK	GENMASK(13, 13)
+ #define ERINDEX_FMASK			GENMASK(18, 14)
+ #define CHSTATE_FMASK			GENMASK(23, 20)
+@@ -95,7 +95,7 @@
+ #define WRR_WEIGHT_FMASK		GENMASK(3, 0)
+ #define MAX_PREFETCH_FMASK		GENMASK(8, 8)
+ #define USE_DB_ENG_FMASK		GENMASK(9, 9)
+-/* The next field is present for GSI v2.0 and above */
++/* The next field is only present for IPA v4.0, v4.1, and v4.2 */
+ #define USE_ESCAPE_BUF_ONLY_FMASK	GENMASK(10, 10)
+ 
+ #define GSI_CH_C_SCRATCH_0_OFFSET(ch) \
+@@ -238,19 +238,19 @@
+ #define IRAM_SIZE_FMASK			GENMASK(2, 0)
+ #define IRAM_SIZE_ONE_KB_FVAL			0
+ #define IRAM_SIZE_TWO_KB_FVAL			1
+-/* The next two values are available for GSI v2.0 and above */
++/* The next two values are available for IPA v4.0 and above */
+ #define IRAM_SIZE_TWO_N_HALF_KB_FVAL		2
+ #define IRAM_SIZE_THREE_KB_FVAL			3
+ #define NUM_CH_PER_EE_FMASK		GENMASK(7, 3)
+ #define NUM_EV_PER_EE_FMASK		GENMASK(12, 8)
+ #define GSI_CH_PEND_TRANSLATE_FMASK	GENMASK(13, 13)
+ #define GSI_CH_FULL_LOGIC_FMASK		GENMASK(14, 14)
+-/* Fields below are present for GSI v2.0 and above */
++/* Fields below are present for IPA v4.0 and above */
+ #define GSI_USE_SDMA_FMASK		GENMASK(15, 15)
+ #define GSI_SDMA_N_INT_FMASK		GENMASK(18, 16)
+ #define GSI_SDMA_MAX_BURST_FMASK	GENMASK(26, 19)
+ #define GSI_SDMA_N_IOVEC_FMASK		GENMASK(29, 27)
+-/* Fields below are present for GSI v2.2 and above */
++/* Fields below are present for IPA v4.2 and above */
+ #define GSI_USE_RD_WR_ENG_FMASK		GENMASK(30, 30)
+ #define GSI_USE_INTER_EE_FMASK		GENMASK(31, 31)
+ 
 -- 
 2.20.1
 
