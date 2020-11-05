@@ -2,124 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE7522A8109
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 15:36:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 721AB2A810C
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 15:36:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731011AbgKEOf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 09:35:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46308 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726874AbgKEOfz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 09:35:55 -0500
-Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C5EE22078E;
-        Thu,  5 Nov 2020 14:35:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604586955;
-        bh=koczk0h3+aDrB9Ca+JmHyqTqMhq2kIrm4R015M/HJ/Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kKBwXk3B8KxkvQG9GhCCbGla8J26xCjbh4VFwWKX9F77ErtYQVK6QeT8xrfQAaP8T
-         EVaTHdzMp+e0HonLp01wH4DaoaipM2c878cnCQW2xUxjOw6+oQhkJmpsfvVj3bGvMq
-         NLVs4JBJJznPkkW6VOAaDH2w+tZR3qsXPTQHUYw8=
-Date:   Thu, 5 Nov 2020 09:35:51 -0500
-From:   Sasha Levin <sashal@kernel.org>
-To:     Paul Bolle <pebolle@tiscali.nl>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Rander Wang <rander.wang@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 5.9 080/391] ASoC: SOF: fix a runtime pm issue in SOF
- when HDMI codec doesnt work
-Message-ID: <20201105143551.GH2092@sasha-vm>
-References: <20201103203348.153465465@linuxfoundation.org>
- <20201103203352.505472614@linuxfoundation.org>
- <64a618a3cc00de4a1c3887b57447906351db77b9.camel@tiscali.nl>
+        id S1731033AbgKEOgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 09:36:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45566 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726874AbgKEOgI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 09:36:08 -0500
+Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0187BC0613CF;
+        Thu,  5 Nov 2020 06:36:08 -0800 (PST)
+Received: by mail-vs1-xe43.google.com with SMTP id b3so887127vsc.5;
+        Thu, 05 Nov 2020 06:36:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=e6FZfgNltS8LHqafeymHjSnUqkGPEBNzljEgVx0yVKw=;
+        b=BxrvL/xbyD783kok4uqCYc27JoHX44Em1tyPrztMEiiNA1crlRy09Ufw8girnFcGaQ
+         FNSbgo2uqf8MfGA9fF0sgLKKMFYCYTHgl4ms2bSxZcL1xU/lbZGuizRxYb9bF4B8kgx1
+         xbKgBYkMcg6nxA2sJsjqpUGTP6OG1u82JCFeyEsTJkxKfnU9VlWSOAfQwuTbBgpS5n3I
+         8qnDW9o/vjOstKxUU2eD8NtSgnGqj5/SXVPeSSxPPLlDbace+p0xYS9bQve47QviW6+1
+         MUjy2QSNR5vnxJp6CYB6Eki/GoEb56RUHtGH62QuBCvkH9CICqWgFeIZbIcJBEwVq2Wt
+         Ht6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=e6FZfgNltS8LHqafeymHjSnUqkGPEBNzljEgVx0yVKw=;
+        b=RmNR9ApRonbIuCe4jyJL+HFJILN3rjfI6q72wBDwsf0VhswIwcBhBVNXOVrHhM3JnG
+         eXMikyssdtgVdrB9K4lbmIVJzvuBEbW8eCJKLENdLpj41f+H9nbkf3gXt/h9mcVIdW5Y
+         pA2h0/30fKUFDibrYDMvcoYKeNwV8+IEXD1sDMwcugr1WhkzxZBZ6fP/Mx6adg642MPR
+         v/rlootyoWA4U4nCBoCQiWnbalXXo2rV9fRguzqrSI1N1DgS1GPQK7QCUZBUII9B9uR8
+         TUsdRThdUV16JpWv8VROuRS9bJvRtXKPLDenFq8gFCoRMmwta+HQnrEm63YLHPxVusqp
+         +d/w==
+X-Gm-Message-State: AOAM531G/kSQbcIZJcsstnS/V/c7ZsZddrI2GiomtQuR+TjWDHasucmm
+        IP55cM3AW/Oa0M/guDjEcYNGfzzjyp926v2BlAE=
+X-Google-Smtp-Source: ABdhPJwVG3ykpy3ylK6m6Mn3dboiKHHeBejWegB4UMkBdG43JZfWpGvz232/3/8D7gO2ZhX8tsmoNMsWQAivNMyrqVk=
+X-Received: by 2002:a67:774c:: with SMTP id s73mr1524975vsc.1.1604586967123;
+ Thu, 05 Nov 2020 06:36:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <64a618a3cc00de4a1c3887b57447906351db77b9.camel@tiscali.nl>
+References: <20201105141939.9223-1-tdd21151186@gmail.com> <14dd22de-030e-c7af-494b-a4317afeb795@suse.de>
+In-Reply-To: <14dd22de-030e-c7af-494b-a4317afeb795@suse.de>
+From:   =?UTF-8?B?6Zm25Yas5Yas?= <tdd21151186@gmail.com>
+Date:   Thu, 5 Nov 2020 22:35:55 +0800
+Message-ID: <CAJ6dUx6O2a4YJvzQ052h9eZWAOSPSSofe6O2GN6kw-ACPmkrHQ@mail.gmail.com>
+Subject: Re: [PATCH] bcache: make writeback_cutoff and writeback_cutoff_sync writeable
+To:     Coly Li <colyli@suse.de>
+Cc:     dongdong tao <dongdong.tao@canonical.com>,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        "open list:BCACHE (BLOCK LAYER CACHE)" <linux-bcache@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 02:23:35PM +0100, Paul Bolle wrote:
->Greg Kroah-Hartman schreef op di 03-11-2020 om 21:32 [+0100]:
->> From: Rander Wang <rander.wang@intel.com>
->>
->> [ Upstream commit 6c63c954e1c52f1262f986f36d95f557c6f8fa94 ]
->>
->> When hda_codec_probe() doesn't initialize audio component, we disable
->> the codec and keep going. However,the resources are not released. The
->> child_count of SOF device is increased in snd_hdac_ext_bus_device_init
->> but is not decrease in error case, so SOF can't get suspended.
->>
->> snd_hdac_ext_bus_device_exit will be invoked in HDA framework if it
->> gets a error. Now copy this behavior to release resources and decrease
->> SOF device child_count to release SOF device.
->>
->> Signed-off-by: Rander Wang <rander.wang@intel.com>
->> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
->> Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
->> Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
->> Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
->> Link: https://lore.kernel.org/r/20200825235040.1586478-3-ranjani.sridharan@linux.intel.com
->> Signed-off-by: Mark Brown <broonie@kernel.org>
->> Signed-off-by: Sasha Levin <sashal@kernel.org>
->> ---
->>  sound/soc/sof/intel/hda-codec.c | 4 ++--
->>  1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/sound/soc/sof/intel/hda-codec.c b/sound/soc/sof/intel/hda-codec.c
->> index 2c5c451fa19d7..c475955c6eeba 100644
->> --- a/sound/soc/sof/intel/hda-codec.c
->> +++ b/sound/soc/sof/intel/hda-codec.c
->> @@ -151,7 +151,7 @@ static int hda_codec_probe(struct snd_sof_dev *sdev, int address,
->>  		if (!hdev->bus->audio_component) {
->>  			dev_dbg(sdev->dev,
->>  				"iDisp hw present but no driver\n");
->> -			return -ENOENT;
->> +			goto error;
->>  		}
->>  		hda_priv->need_display_power = true;
->>  	}
->> @@ -174,7 +174,7 @@ static int hda_codec_probe(struct snd_sof_dev *sdev, int address,
->>  		 * other return codes without modification
->>  		 */
->>  		if (ret == 0)
->> -			ret = -ENOENT;
->> +			goto error;
->>  	}
->>
->>  	return ret;
->
->My local build of v5.9.5 broke on this patch.
->
->sound/soc/sof/intel/hda-codec.c: In function 'hda_codec_probe':
->sound/soc/sof/intel/hda-codec.c:177:4: error: label 'error' used but not defined
->  177 |    goto error;
->      |    ^~~~
->make[4]: *** [scripts/Makefile.build:283: sound/soc/sof/intel/hda-codec.o] Error 1
->make[3]: *** [scripts/Makefile.build:500: sound/soc/sof/intel] Error 2
->make[2]: *** [scripts/Makefile.build:500: sound/soc/sof] Error 2
->make[1]: *** [scripts/Makefile.build:500: sound/soc] Error 2
->make: *** [Makefile:1778: sound] Error 2
->
->There's indeed no error label in v5.9.5. (There is one in v5.10-rc2, I just
->checked.) Is no-one else running into this?
+Ah, I missed the second part, only saw the first paragraph.
+But I kind of hope it can be configurable :)
+Anyway, thanks for the clarification.
 
-It seems that setting CONFIG_SND_SOC_SOF_HDA_AUDIO_CODEC=y is very
-"difficult", it's not being set by allmodconfig nor is it easy to
-manually set it up.
-
-I'll revert the patch, but it would be nice to make sure it's easier to
-test this out too.
-
--- 
-Thanks,
-Sasha
+Coly Li <colyli@suse.de> =E4=BA=8E2020=E5=B9=B411=E6=9C=885=E6=97=A5=E5=91=
+=A8=E5=9B=9B =E4=B8=8B=E5=8D=8810:23=E5=86=99=E9=81=93=EF=BC=9A
+>
+> On 2020/11/5 22:19, Dongdong Tao wrote:
+> > From: dongdong tao <dongdong.tao@canonical.com>
+> >
+> > commit 9aaf51654672 ("bcache: make cutoff_writeback and
+> > cutoff_writeback_sync tunable") intend to make these two option
+> > configurable by user, but these two are still read-only.
+> >
+> > Signed-off-by: dongdong tao <dongdong.tao@canonical.com>
+> > ---
+> >  drivers/md/bcache/sysfs.c | 6 ++++--
+> >  1 file changed, 4 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/md/bcache/sysfs.c b/drivers/md/bcache/sysfs.c
+> > index 554e3afc9b68..81f4a681705c 100644
+> > --- a/drivers/md/bcache/sysfs.c
+> > +++ b/drivers/md/bcache/sysfs.c
+> > @@ -102,8 +102,8 @@ read_attribute(writeback_keys_done);
+> >  read_attribute(writeback_keys_failed);
+> >  read_attribute(io_errors);
+> >  read_attribute(congested);
+> > -read_attribute(cutoff_writeback);
+> > -read_attribute(cutoff_writeback_sync);
+> > +rw_attribute(cutoff_writeback);
+> > +rw_attribute(cutoff_writeback_sync);
+> >  rw_attribute(congested_read_threshold_us);
+> >  rw_attribute(congested_write_threshold_us);
+> >
+> > @@ -902,6 +902,8 @@ STORE(__bch_cache_set)
+> >       sysfs_strtoul_bool(copy_gc_enabled,     c->copy_gc_enabled);
+> >       sysfs_strtoul_bool(idle_max_writeback_rate,
+> >                          c->idle_max_writeback_rate_enabled);
+> > +     sysfs_strtoul_clamp(cutoff_writeback, bch_cutoff_writeback, 1, 10=
+0);
+> > +     sysfs_strtoul_clamp(cutoff_writeback_sync, bch_cutoff_writeback_s=
+ync, 1, 100);
+> >
+>
+> NACK, we only support the default value. Commit 9aaf51654672 ("bcache:
+> make cutoff_writeback and cutoff_writeback_sync tunable") clearly
+> announced the purpose was for research and experiment.
+>
+> Coly Li
