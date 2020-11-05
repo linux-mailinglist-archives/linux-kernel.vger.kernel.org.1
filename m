@@ -2,190 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D40C32A85B1
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 19:07:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D4722A85B4
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 19:07:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731520AbgKESHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 13:07:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50626 "EHLO
+        id S1731666AbgKESHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 13:07:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725862AbgKESHC (ORCPT
+        with ESMTP id S1725862AbgKESHa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 13:07:02 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E49FDC0613D2
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 10:07:01 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id g12so1878930pgm.8
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 10:07:01 -0800 (PST)
+        Thu, 5 Nov 2020 13:07:30 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DB98C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 10:07:29 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id x12so2832039wrm.8
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 10:07:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=evErAM+3R8POckj6BoWNfzcQKezQH3REiwTi+k5Ke30=;
-        b=cvZYUkjBWInIl2l1mjIWf1vI7V8s6znitGQb6c5FeaYxHv0JPbh4k6w9pz9IC9AVgi
-         gDivP8WJC+El0KFshMutO5n1YhCRHEIxrqzYwu6bCUnrciwL9E/9tGm25eHqZdW/XI91
-         T59XUK3EUSN6RVDl9mXW4WPshbsdGRiNI8znzVKFYGQbhx9IrGxgBTrOhued5XD/a+Rl
-         jGfmJLxTf7oGVAKBpYdYB481ef3UnuDvjfFSwTdh0stV94i0MsDhYbrVvvmy+VsOz+Ip
-         B26F8d2w0VLVBJD8zghUyljlnVXk+Mse1xJEVITFTDvRgVup52j0H2KEoatpkwDS97+8
-         tARQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=d1inljLFK+JaRhB9KNZIg3IoNamPlcVu2A0CttkNcBw=;
+        b=OEtFpYNMWECXs8vospWA+5QAYXWVJxspuz8X8Cop2NEBzQPRcaWjzUQfKnH8wNvPg9
+         PZfPCm32EFukv70xI7uVxzGI02mZS9q9tXZa8BRUZ0F1as/c5Cg+ncQpvGCzRmM48i0J
+         HyzCCOYvB+38Y5tpjCr1C2CzeKDEr6RsQHuIakffEqC923AkJDk9JqxPfjeuGUICVlQP
+         qtG4Ra6j/vKYXeAJq+37LhOMb/6TSiOIUFR1mq9UzI4yrzWXygixzhQ1UJJqLi9ZdUw5
+         3CA0HZCjjooCTh0PhPaa5hFw8Q6NiJpgmXX9vX4fNoDfaDYqDJpHP4goZ0UHr2at61K1
+         a9Kg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=evErAM+3R8POckj6BoWNfzcQKezQH3REiwTi+k5Ke30=;
-        b=Obd4MTriKGtThMv2N+X4C23EUt943NNCqeISKFmcsTmLWVME6bS84WY1R38mag0VXU
-         JdfCBmJSTiYUXEmvyW81FLHPgW34kRD70sAxLlLcwFRN9FKBtiRzl2hBHAlz9v6xJSU9
-         LxI2Xv5ek67eijNLGhmKt/LbE/MEW6tXbIzL3MOe4+PwCegJVN2E5JkHC0R3ys5y5wHL
-         wxaYPgtXVqOQcjjrte1xhHhEQnhM2tBkrLU6nUla/XD+o80oXfdMmgmmRrzK7nhronzR
-         WJ1Jqc3yU5yokwW3Gf1vMCjNmKpxth5VZH9Rqn222bjE/WgS3MUfNL+Tzw8x7ALpvrJW
-         WkRw==
-X-Gm-Message-State: AOAM531RNxsqiq4pX/XsSi8UnFzBaoCl/KlpzSVzzMwJB3Ky4KDKmIVX
-        6EXagNqXTNfyX5P+G9udbH/cPFObydAJpA==
-X-Google-Smtp-Source: ABdhPJyRc3dpCSILr1s7f7biptBWJz9+L1an7mUZwA/tps7uFu35JlM1E3LkORf3mPe7ALBUxC60+A==
-X-Received: by 2002:aa7:9607:0:b029:155:2b85:93f5 with SMTP id q7-20020aa796070000b02901552b8593f5mr3642353pfg.36.1604599621026;
-        Thu, 05 Nov 2020 10:07:01 -0800 (PST)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id b16sm3180544pju.16.2020.11.05.10.07.00
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=d1inljLFK+JaRhB9KNZIg3IoNamPlcVu2A0CttkNcBw=;
+        b=TYfRrLF8t357xxQuNqKsaXd9W+dfV+QGKmFskNTc7Ufcn5e3gM7rT3wzJYJfzarA6U
+         O35wmrepvceFqj9s56F6KuIznZ/iUUPwAG4urSaEn1uxqePg+zzSqoDtZUudkD46yY68
+         AMp1bNOcV+3OClThv3+ECSgsZO1mvGRtfkzTIWMKrN42VVN08ivCcGZOQm5PZSrtsMQO
+         viLAugJuUyn04qHidh+3tb5ubNaL4Ido4U5hVtIC3UrWQptVVjlPHhE971vzVPlAd16X
+         ab/HnZT4yH9Uvn1INXTyN7vEQ2gUwIXGxhJQoj5B6rRTkNDUQpgf8Tn1exaNhoBKUjcg
+         8k2w==
+X-Gm-Message-State: AOAM530361uhaGYNfCfGT0EPlyBJu3YHQ9HnfJFFI1bUoC6v7r0WQK48
+        LMgpA7sF5sL4J5e7O0zhQ3G4JFc8zvCA96VQ
+X-Google-Smtp-Source: ABdhPJxPuM4D9vpAN18NV+Ds+4RJzWtjyP3sPDcasmK67rp1Vn8gnLSLHhoFx4XXvDsazFpPQsvsdw==
+X-Received: by 2002:a5d:4ac1:: with SMTP id y1mr4545973wrs.27.1604599647755;
+        Thu, 05 Nov 2020 10:07:27 -0800 (PST)
+Received: from dell ([91.110.221.242])
+        by smtp.gmail.com with ESMTPSA id a17sm4042380wra.61.2020.11.05.10.07.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 10:07:00 -0800 (PST)
-Date:   Thu, 05 Nov 2020 10:07:00 -0800 (PST)
-X-Google-Original-Date: Thu, 05 Nov 2020 09:33:55 PST (-0800)
-Subject:     Re: [PATCH v4 0/5] Unify NUMA implementation between ARM64 & RISC-V
-In-Reply-To: <20201006001752.248564-1-atish.patra@wdc.com>
-CC:     linux-kernel@vger.kernel.org, Atish Patra <Atish.Patra@wdc.com>,
-        Jonathan.Cameron@huawei.com, aou@eecs.berkeley.edu,
-        akpm@linux-foundation.org, anshuman.khandual@arm.com,
-        anup@brainfault.org, Arnd Bergmann <arnd@arndb.de>,
-        catalin.marinas@arm.com, david@redhat.com, greentime.hu@sifive.com,
-        Greg KH <gregkh@linuxfoundation.org>, justin.he@arm.com,
-        wangkefeng.wang@huawei.com, linux-arch@vger.kernel.org,
-        linux-riscv@lists.infradead.org, rppt@kernel.org,
-        nsaenzjulienne@suse.de, Paul Walmsley <paul.walmsley@sifive.com>,
-        rafael@kernel.org, steven.price@arm.com, will@kernel.org,
-        zong.li@sifive.com, linux-arm-kernel@lists.infradead.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     Atish Patra <Atish.Patra@wdc.com>,
-        Will Deacon <willdeacon@google.com>, maz@kernel.org
-Message-ID: <mhng-6971ba28-0cea-42bc-a26c-c23b9ba2af9e@palmerdabbelt-glaptop1>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
+        Thu, 05 Nov 2020 10:07:27 -0800 (PST)
+Date:   Thu, 5 Nov 2020 18:07:25 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Tomi Valkeinen <tomi.valkeinen@ti.com>
+Cc:     linux-kernel@vger.kernel.org, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH 08/19] gpu: drm: omapdrm: dss: dsi: Rework and remove a
+ few unused variables
+Message-ID: <20201105180725.GO4488@dell>
+References: <20201105144517.1826692-1-lee.jones@linaro.org>
+ <20201105144517.1826692-9-lee.jones@linaro.org>
+ <74399fab-6af5-77d3-e0eb-749774eb2837@ti.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <74399fab-6af5-77d3-e0eb-749774eb2837@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 05 Oct 2020 17:17:47 PDT (-0700), Atish Patra wrote:
-> This series attempts to move the ARM64 numa implementation to common
-> code so that RISC-V can leverage that as well instead of reimplementing
-> it again.
->
-> RISC-V specific bits are based on initial work done by Greentime Hu [1] but
-> modified to reuse the common implementation to avoid duplication.
->
-> [1] https://lkml.org/lkml/2020/1/10/233
->
-> This series has been tested on qemu with numa enabled for both RISC-V & ARM64.
-> It would be great if somebody can test it on numa capable ARM64 hardware platforms.
-> This patch series doesn't modify the maintainers list for the common code (arch_numa)
-> as I am not sure if somebody from ARM64 community or Greg should take up the
-> maintainership. Ganapatrao was the original author of the arm64 version.
-> I would be happy to update that in the next revision once it is decided.
->
-> # numactl --hardware
-> available: 2 nodes (0-1)
-> node 0 cpus: 0 1 2 3
-> node 0 size: 486 MB
-> node 0 free: 470 MB
-> node 1 cpus: 4 5 6 7
-> node 1 size: 424 MB
-> node 1 free: 408 MB
-> node distances:
-> node   0   1
->   0:  10  20
->   1:  20  10
-> # numactl -show
-> policy: default
-> preferred node: current
-> physcpubind: 0 1 2 3 4 5 6 7
-> cpubind: 0 1
-> nodebind: 0 1
-> membind: 0 1
->
-> The patches are also available at
-> https://github.com/atishp04/linux/tree/5.10_numa_unified_v4
->
-> For RISC-V, the following qemu series is a pre-requisite(already available in upstream)
-> https://patchwork.kernel.org/project/qemu-devel/list/?series=303313
->
-> Testing:
-> RISC-V:
-> Tested in Qemu and 2 socket OmniXtend FPGA.
->
-> ARM64:
-> 2 socket kunpeng920 (4 nodes around 250G a node)
-> Tested-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
->
-> There may be some minor conflicts with Mike's cleanup series [2] depending on the
-> order in which these two series are being accepted. I can rebase on top his series
-> if required.
->
-> [2] https://lkml.org/lkml/2020/8/18/754
->
-> Changes from v3->v4:
-> 1. Removed redundant duplicate header.
-> 2. Added Reviewed-by tags.
->
-> Changes from v2->v3:
-> 1. Added Acked-by/Reviewed-by tags.
-> 2. Replaced asm/acpi.h with linux/acpi.h
-> 3. Defined arch_acpi_numa_init as static.
->
-> Changes from v1->v2:
-> 1. Replaced ARM64 specific compile time protection with ACPI specific ones.
-> 2. Dropped common pcibus_to_node changes. Added required changes in RISC-V.
-> 3. Fixed few typos.
->
-> Atish Patra (4):
-> numa: Move numa implementation to common code
-> arm64, numa: Change the numa init functions name to be generic
-> riscv: Separate memory init from paging init
-> riscv: Add numa support for riscv64 platform
->
-> Greentime Hu (1):
-> riscv: Add support pte_protnone and pmd_protnone if
-> CONFIG_NUMA_BALANCING
->
-> arch/arm64/Kconfig                            |  1 +
-> arch/arm64/include/asm/numa.h                 | 45 +----------------
-> arch/arm64/kernel/acpi_numa.c                 | 13 -----
-> arch/arm64/mm/Makefile                        |  1 -
-> arch/arm64/mm/init.c                          |  4 +-
-> arch/riscv/Kconfig                            | 31 +++++++++++-
-> arch/riscv/include/asm/mmzone.h               | 13 +++++
-> arch/riscv/include/asm/numa.h                 |  8 +++
-> arch/riscv/include/asm/pci.h                  | 14 ++++++
-> arch/riscv/include/asm/pgtable.h              | 21 ++++++++
-> arch/riscv/kernel/setup.c                     | 11 ++++-
-> arch/riscv/kernel/smpboot.c                   | 12 ++++-
-> arch/riscv/mm/init.c                          | 10 +++-
-> drivers/base/Kconfig                          |  6 +++
-> drivers/base/Makefile                         |  1 +
-> .../mm/numa.c => drivers/base/arch_numa.c     | 30 ++++++++++--
-> include/asm-generic/numa.h                    | 49 +++++++++++++++++++
-> 17 files changed, 199 insertions(+), 71 deletions(-)
-> create mode 100644 arch/riscv/include/asm/mmzone.h
-> create mode 100644 arch/riscv/include/asm/numa.h
-> rename arch/arm64/mm/numa.c => drivers/base/arch_numa.c (95%)
-> create mode 100644 include/asm-generic/numa.h
+On Thu, 05 Nov 2020, Tomi Valkeinen wrote:
 
-Sorry it took me a while to get around to this, I had some work stuff to deal
-with and have managed to get buried in email.  This all looks fine to me, but
-the way it's structured make it kind of hard to apply -- essentially I can't
-take the first two without at least some Acks from the arm64 folks, and it
-smells to me like it'd be better to have those go through the arm64 tree.  The
-RISC-V stuff isn't that heavywight, but I'd like it to at least land in my
-for-next at some point as otherwise it'll be completely untested.
+> On 05/11/2020 16:45, Lee Jones wrote:
+> > Fixes the following W=1 kernel build warning(s):
+> > 
+> >  drivers/gpu/drm/omapdrm/dss/dsi.c: In function ‘_dsi_print_reset_status’:
+> >  drivers/gpu/drm/omapdrm/dss/dsi.c:1131:6: warning: variable ‘l’ set but not used [-Wunused-but-set-variable]
+> >  drivers/gpu/drm/omapdrm/dss/dsi.c: In function ‘dsi_update’:
+> >  drivers/gpu/drm/omapdrm/dss/dsi.c:3943:10: warning: variable ‘dh’ set but not used [-Wunused-but-set-variable]
+> >  drivers/gpu/drm/omapdrm/dss/dsi.c:3943:6: warning: variable ‘dw’ set but not used [-Wunused-but-set-variable]
+> > 
+> > Cc: Tomi Valkeinen <tomi.valkeinen@ti.com>
+> > Cc: David Airlie <airlied@linux.ie>
+> > Cc: Daniel Vetter <daniel@ffwll.ch>
+> > Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> > Cc: dri-devel@lists.freedesktop.org
+> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> > ---
+> >  drivers/gpu/drm/omapdrm/dss/dsi.c | 9 ++-------
+> >  1 file changed, 2 insertions(+), 7 deletions(-)
+> 
+> I'd use "drm/omap: dsi: " subject prefix, the current one is fine too:
+> 
+> Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ti.com>
+> 
+> Should I pick this up or do you want to keep the series intact?
 
-arm64 guys: do you want to try and do some sort of shared base tag sort of
-thing for these, or do you want me to refactor this such that it adds the
-generic stuff before removing the arm64 stuff so we can decouble that way?
+If you are in a position to take it, please do so.
+
+I rebase every day, so it will just vanish from my working set.
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
