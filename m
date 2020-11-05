@@ -2,128 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2C6C2A73D5
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 01:32:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41F2E2A73D7
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 01:33:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733230AbgKEAcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 19:32:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55538 "EHLO
+        id S1733298AbgKEAdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 19:33:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726608AbgKEAcA (ORCPT
+        with ESMTP id S1726608AbgKEAda (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 19:32:00 -0500
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AB58C0613D3
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 16:32:00 -0800 (PST)
-Received: by mail-ot1-x341.google.com with SMTP id z16so532295otq.6
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 16:32:00 -0800 (PST)
+        Wed, 4 Nov 2020 19:33:30 -0500
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76345C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 16:33:29 -0800 (PST)
+Received: by mail-pf1-x435.google.com with SMTP id x13so74928pfa.9
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 16:33:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DhtABJSiSskHDxawNAHeInkIhoLHhr/Rqw/OKeWlcko=;
-        b=c08FE5twIizIFpFrR0X/M7OkgNhJ2p0x0vrQ6RGZw5VXMVCZFwNoSfrHcfZnn81BNj
-         eiR3m10a/IwrOYu+Vle02m3Iw9+XrBhUZPKN2chKPhkqE9DkIOy4J6cFCy9Fuyqifk8P
-         5F4tFe1zGCTXmGSw72IPxFzkbQcnGis8jRzIYh9YQJ9khSwPfD5urXbdLuhArBRytbMH
-         B9Ikxy3A362Hq01A8oZkIXDC6fXPAJtLCv/MnjKdnLneUZA1HySt/Q+PMZO7rKWIQQuu
-         7TpeOADFqg3g7rB3PpiM0iTVFPfO+Aowoj04YtG/tgkK9pDyk+vUJ+CcnBl0wk0pOXId
-         wK1A==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CW/sv9yrZBL+KFBJhrCknWBwcN5pLx4pYyvBQgpEhFo=;
+        b=XFCODDM0hRu5r4xs9VzpGAw5JCdxymkEQpKRuokkBNR61wWkQsj5pWb93v5Xe7rHNy
+         3ByHrk2pHL1RZJ/7Xsb0aLBHnpRQHM4Va9dnDcjquddy+RV4Yb+cOnlbV1aPQPbtwO7r
+         51cD9h+54oXTEQHuFIuWJfWFbrXCBtBq3k8xCe0AfG8D+TRtMA35Cy8Vt0U+c0yH9I0k
+         c9ihPo698l+KGWDJmPocVaJmFOvTXOXY4vYMRWbCPhSGQe2X27mytZFq0gaN+0GahIKt
+         eDra94NJvUCeWOm2CP3BXpzV+AVLK5t5MIfoVJv8cP7jnx7av9MITEkhsCo9x7WmBQKy
+         v3AQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DhtABJSiSskHDxawNAHeInkIhoLHhr/Rqw/OKeWlcko=;
-        b=J7hxcX9h3QtmctfRrCYP/5bguzjDFO0DMT7OR0oXAy64Q6GbUtXzEkR8pWZ2ZQq17c
-         Bf60+uOlwn/2KlSnCr3aZyTTz7FsyL+j7y3MrqAS2Ueg+hUwWviLSoxa9KZrBkgvuayt
-         /LJahQobDSIx3Zc1oP8ATWT3nH0QKuqm+HRqJ3v52uJ8jWN2PYZtymuucYaRxOPpIxM3
-         0uAYkiPH+bcjRYdAJdY07bflhP7KbYvjblwC9BPHDTntD6bll3s5xx1CMcPEtApAfI0p
-         uZXkiCnc8WmhRSPFE9BgOWR+qkPWgqeanrhFJS77R23RkkVA7bQnHSLeY3GTXqQie66I
-         fWLA==
-X-Gm-Message-State: AOAM530lreu3CsPv08iB/9YbH8q8tAzM6VBHMWd5YZFUT3qPDIGEPpgq
-        Nt5F9v4c8tuQG6T7LKpL+WeIPQ==
-X-Google-Smtp-Source: ABdhPJxCS/mOcYL7FqRe4TEjOvLWgtxG77KL5UeDdUxWeQP7HVo0sHNHQ89bndZeMYLeRuDsYPdHDg==
-X-Received: by 2002:a9d:6419:: with SMTP id h25mr222385otl.79.1604536319425;
-        Wed, 04 Nov 2020 16:31:59 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id s28sm398527otr.4.2020.11.04.16.31.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 16:31:58 -0800 (PST)
-Date:   Wed, 4 Nov 2020 18:31:57 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Ohad Ben-Cohen <ohad@wizery.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Siddharth Gupta <sidgup@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] remoteproc: sysmon: Ensure remote notification ordering
-Message-ID: <20201105003157.GC1328@builder.lan>
-References: <20201104161625.1085981-1-bjorn.andersson@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CW/sv9yrZBL+KFBJhrCknWBwcN5pLx4pYyvBQgpEhFo=;
+        b=ANTrPYs/3NjItk+U34JTO2AI3B8waYEmwy2yU6QCZ7SirJMttq5PpaVDlWPAaPMLMG
+         CyGzzrJ7FAzPNT5lpFWd7ctxkV7+Z5+AYKf5FAXj5ujQwKy6SPfftBA2/SLRyzPpj3sh
+         1V8/4FrfuRI+8TIpG6/vkYnffv3R+B2F3lm6R6QBmOpOurtcRvVHHmOWwB/VOmOvLChd
+         Ev+lOg9YSJVxBx0wjgpCOub0uszq+0WClRMPLpgSU/AMG6TbKPI+2yhUTE0Uq6ZuDh/6
+         5EOJdo7gvowlYP7VqoSUOCTttIAUqNKV1zWd/hKvOneKx9br9YI7rRQN1hxwaws7XBIU
+         2aLA==
+X-Gm-Message-State: AOAM532qeBdj0JD1YlSqdTifmePtGgLdSA7dsPYqPMTPG/DwmnPxC5bO
+        bVjxQKW/HDd90w4CRx5Hib7TZvaA/IlhE6dX0UMoOw==
+X-Google-Smtp-Source: ABdhPJwsZDpsljgbmig5J01HoNeUav4/uq0k+hNcgl/HyQhkw/gXgfk8kIu2U6AVMF+CcvCX6t6a1kcYQZhOLFlrNtc=
+X-Received: by 2002:aa7:9a04:0:b029:163:fe2a:9e04 with SMTP id
+ w4-20020aa79a040000b0290163fe2a9e04mr574390pfj.30.1604536408833; Wed, 04 Nov
+ 2020 16:33:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201104161625.1085981-1-bjorn.andersson@linaro.org>
+References: <363325b4a85f094ba9cf06301dd022912ec79d03.camel@perches.com>
+ <CANiq72=r6oieZ-Nj-e6e+HriW8kADB75z2pj6W-gg7Cff3nqGw@mail.gmail.com>
+ <CAKwvOdmnz-DJ-hG5FKJZYF7W-ujPrgfMkrb2hMLhmzhk8Hx6dA@mail.gmail.com> <CANiq72n0FFfH6Uag5yai=tSzzOgVSLpzu5gyUr40d6Gb8GzZpA@mail.gmail.com>
+In-Reply-To: <CANiq72n0FFfH6Uag5yai=tSzzOgVSLpzu5gyUr40d6Gb8GzZpA@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 4 Nov 2020 16:33:17 -0800
+Message-ID: <CAKwvOd=eHpmKy4mQKpGA2qAZr4Ue_K+Y-1HNe07dxar7dHy0gQ@mail.gmail.com>
+Subject: Re: [RFC PATCH] .clang-format: Remove conditional comments
+To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc:     Joe Perches <joe@perches.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 04 Nov 10:16 CST 2020, Bjorn Andersson wrote:
+On Tue, Nov 3, 2020 at 7:40 PM Miguel Ojeda
+<miguel.ojeda.sandonis@gmail.com> wrote:
+>
+> distro etc.). One of the reasons for that was to help adoption, as
+> well as because clang-format gives a hard error on encountering an
+> unknown option :-(
 
-> The reliance on the remoteproc's state for determining when to send
-> sysmon notifications to a remote processor is racy with regard to
-> concurrent remoteproc operations.
-> 
-> Further more the advertisement of the state of other remote processor to
-> a newly started remote processor might not only send the wrong state,
-> but might result in a stream of state changes that are out of order.
-> 
-> Address this by introducing state tracking within the sysmon instances
-> themselves and extend the locking to ensure that the notifications are
-> consistent with this state.
-> 
-> The use of a big lock for all instances will cause contention for
-> concurrent remote processor state transitions, but the correctness of
-> the remote processors' view of their peers is more important.
-> 
-> Fixes: 1f36ab3f6e3b ("remoteproc: sysmon: Inform current rproc about all active rprocs")
-> Fixes: 1877f54f75ad ("remoteproc: sysmon: Add notifications for events")
-> Fixes: 1fb82ee806d1 ("remoteproc: qcom: Introduce sysmon")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
->  drivers/remoteproc/qcom_sysmon.c | 20 ++++++++++++++++----
->  1 file changed, 16 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/remoteproc/qcom_sysmon.c b/drivers/remoteproc/qcom_sysmon.c
-> index 9eb2f6bccea6..1e507b66354a 100644
-> --- a/drivers/remoteproc/qcom_sysmon.c
-> +++ b/drivers/remoteproc/qcom_sysmon.c
-> @@ -22,6 +22,8 @@ struct qcom_sysmon {
->  	struct rproc_subdev subdev;
->  	struct rproc *rproc;
->  
-> +	int state;
-> +
->  	struct list_head node;
->  
->  	const char *name;
-> @@ -448,7 +450,10 @@ static int sysmon_prepare(struct rproc_subdev *subdev)
->  		.ssr_event = SSCTL_SSR_EVENT_BEFORE_POWERUP
->  	};
->  
-> +	mutex_lock(&sysmon_lock);
-
-This doesn't work, because taking the big lock prevents a concurrently
-failing remote processor from reaching smd orglink to indicate that that
-remote is dead and the first remote's notifications should be
-aborted/fail fast.
-
-The result is in most cases that we're stuck here waiting for a timeout,
-but there are extreme corner cases where the notification might be
-waiting for the dead remote to drain the communication fifo.
-
-
-Will send a new version that don't rely on the big lock, but still keeps
-state information consistent.
-
-Regards,
-Bjorn
+Yeah, that's annoying. Why don't you send me a patch that downgrades
+it from hard error to polite warning (in case someone made a typo),
+and I'll review it?
+-- 
+Thanks,
+~Nick Desaulniers
