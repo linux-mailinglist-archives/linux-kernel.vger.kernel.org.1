@@ -2,66 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 395BF2A7A48
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 10:17:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E25462A7A4A
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 10:18:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730179AbgKEJRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 04:17:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55400 "EHLO mail.kernel.org"
+        id S1730209AbgKEJSi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 04:18:38 -0500
+Received: from foss.arm.com ([217.140.110.172]:55418 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726152AbgKEJRi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 04:17:38 -0500
-Received: from kernel.org (unknown [2.55.183.164])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E99BE2071A;
-        Thu,  5 Nov 2020 09:17:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604567858;
-        bh=I573k6QlJy3XTSysKWkuF7joOCnf6HO0CmWainydeUg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hMLbUMcAdOyKwfGgZ3j2w1dq9FPs5VB17aZTFuL1Y0mJvEnw+TMQnmjhAR64FQnui
-         fR4lcIgNbkhOoqdkOu8msn8aFRMkIy9CbGSVNvVbshDYjZc7GqbwFLIMNxSD71Tjhv
-         9BmRx3FMbBs3kzvclkWpIdNeBBSHfHoXssGP7qCs=
-Date:   Thu, 5 Nov 2020 11:17:30 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     "Anand K. Mistry" <amistry@google.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the akpm-current tree
-Message-ID: <20201105091730.GW4879@kernel.org>
-References: <20201105174549.614c2de4@canb.auug.org.au>
- <20201105070311.GU4879@kernel.org>
- <CAATStaMD=w+onf==L-=MQ7suJf6EaNoup5o8yW-TEbfajkbdaQ@mail.gmail.com>
- <CAATStaMEn_CSfvc=JTawGhL8yt3L0cci8XK9ru+F6RGzRcYJ7A@mail.gmail.com>
+        id S1725320AbgKEJSi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 04:18:38 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 85A8214BF;
+        Thu,  5 Nov 2020 01:18:37 -0800 (PST)
+Received: from e123083-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B57C63F718;
+        Thu,  5 Nov 2020 01:18:34 -0800 (PST)
+Date:   Thu, 5 Nov 2020 10:18:25 +0100
+From:   Morten Rasmussen <morten.rasmussen@arm.com>
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-doc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, robh+dt@kernel.org,
+        amitk@kernel.org, corbet@lwn.net, daniel.lezcano@linaro.org,
+        Dietmar.Eggemann@arm.com, qperret@google.com,
+        dianders@chromium.org, mka@chromium.org, rnayak@codeaurora.org,
+        rafael@kernel.org, sudeep.holla@arm.com, viresh.kumar@linaro.org,
+        sboyd@kernel.org, nm@ti.com
+Subject: Re: [PATCH v4 1/4] PM / EM: Add a flag indicating units of power
+ values in Energy Model
+Message-ID: <20201105091759.GA8237@e123083-lin>
+References: <20201103090600.29053-1-lukasz.luba@arm.com>
+ <20201103090600.29053-2-lukasz.luba@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAATStaMEn_CSfvc=JTawGhL8yt3L0cci8XK9ru+F6RGzRcYJ7A@mail.gmail.com>
+In-Reply-To: <20201103090600.29053-2-lukasz.luba@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 06:45:04PM +1100, Anand K. Mistry wrote:
-> SNIPPED
-> 
-> > >
-> > > Looks like left column became too wide, so rather than shift the right
-> > > column to the right, I'd suggest to drop underscores in Speculation*.
-> >
-> > Hm. That makes it inconsistent with Speculation_Store_Bypass. I guess
-> > it's the lesser of two evils.
-> 
-> Oh, do you mean renaming the existing Speculation_Store_Bypass? I
-> thought that was a big no-no for the kernel?
+On Tue, Nov 03, 2020 at 09:05:57AM +0000, Lukasz Luba wrote:
+> @@ -79,7 +82,8 @@ struct em_data_callback {
+>  struct em_perf_domain *em_cpu_get(int cpu);
+>  struct em_perf_domain *em_pd_get(struct device *dev);
+>  int em_dev_register_perf_domain(struct device *dev, unsigned int nr_states,
+> -				struct em_data_callback *cb, cpumask_t *span);
+> +				struct em_data_callback *cb, cpumask_t *spani,
 
-Right, renaming is not an option :)
-
-I thought Speculation_Store_Bypass was also introduced by the same
-patch, sorry about the confusion. 
-
--- 
-Sincerely yours,
-Mike.
+"spani" looks like a typo?
