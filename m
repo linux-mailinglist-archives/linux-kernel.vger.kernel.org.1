@@ -2,64 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BADA02A818D
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 15:53:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36EFF2A8192
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 15:53:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731365AbgKEOwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 09:52:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48158 "EHLO
+        id S1731646AbgKEOxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 09:53:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731434AbgKEOw2 (ORCPT
+        with ESMTP id S1731464AbgKEOw3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 09:52:28 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DCB6C0613D6
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 06:52:28 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id w1so2104978wrm.4
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 06:52:28 -0800 (PST)
+        Thu, 5 Nov 2020 09:52:29 -0500
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80E6FC0613D2
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 06:52:29 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id c17so2077397wrc.11
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 06:52:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=CiwuaHU0ZHFg8OQhxx1cJ0dSvWM+0RzNg9gjhgk/WPA=;
-        b=dduQNHED/EB0aCtpEb6ZPI3Ygd/DXzxcM6AtONVZiYH8oOWysFV+SV32BXj7CRawn8
-         3qPDx42rbOXx3GO70oulyAVbyR2HuKGl8RXT08Cum9UEJAzaBP1FnUZSSWqRwEliQcMG
-         7APPDUIFphi1rufMhTfciYQOCmVo//x1tN69RM3fTfdGHw4xQf2o4ZoDpYJ8Ac+9oO7M
-         f4JjmzCn5PLS9anQBkW3NK6Qa5ihhhyARqji7LRN742P39PzfEyRybjH33AIuve1EPSz
-         12K4QAR9lXYH+qh9QIDJR7F58wDmqFRQ4cfd2yM2AWfB/b2zvVkHWRmiqt3imMKyOaNg
-         USoQ==
+        bh=msUJv3g77jRfXUZFInWbo08oOqamqaMF7n9SOzCcjkY=;
+        b=r7IG/ZJuEPCMH4rRLkfuGlHBB4SlDlKJBOj/G97StXC4XJk2dMx6attzaVaNp5vWCQ
+         LlVdWwEyqS22BVqDUXVugsP5iYpT/Lm/IvVDSZ2s/WC+RtTgnoEgW7RJE5Sw38gcm7b1
+         B/B8xAIuwPcq6sm8QPMvbH1l5jBPls4ndV/ntH7W1GVpUxzoEkl3JS9gbUSEWuVbRAia
+         Ai6PwdULfSyuWv5lcXDpVwRbj7Y8MJwknqHx0g29KlYuZ80PFKciu3XjdnWh2TIG7ght
+         w0H8Hz3ptmwLg95uJLIp9jEDf7/+ciI3fBsYFv2WHqn+5UiNFGfBSCFr9PowwJshpQhl
+         79ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=CiwuaHU0ZHFg8OQhxx1cJ0dSvWM+0RzNg9gjhgk/WPA=;
-        b=PlBFj4jEQrAPnf4NhxDZlbuoEX14sMepzmMiDaBtDUrF3OHsob4h1sU0X8/NcPfexF
-         /l16KuZo66QUDfl8VXvb8CiVi4nZbkuSwI01S010OWBgSGFQc67SNxV6w4GWjqKHUcg7
-         KizwIBKDXWGnOjev9hbhe3IbwUtDPDawGA8vlOF2LJaWOhh4b2lTwewCXaB1cUDMlZLJ
-         lYSThYGx9yXpEmOdNgviC543Q4XDsfuz5yZe4JlUYPri9qag7cvkM47xf93I5ROSh8W7
-         in3JBJGJYJQfsKrJcK4eoaSquXUWcgDxK8V+hTUbwZfXtgtK2qqPioM0bSgxz0ufwPFH
-         5atQ==
-X-Gm-Message-State: AOAM532Y3NZXtgk8EXC9PE5PYOHiZCi9wtz0VTlgPhgAiyeNfXlS3KHH
-        6O0YcPBfkDQrIOBxkZ8fzVUunQ==
-X-Google-Smtp-Source: ABdhPJx8+Xyxk3R3buvDFYahFOdmnHso41DjA+AdBII2gmx00vBAFsKsMfNfZ8R2RRVHTR/ZSpXreA==
-X-Received: by 2002:adf:e386:: with SMTP id e6mr3301874wrm.330.1604587947150;
-        Thu, 05 Nov 2020 06:52:27 -0800 (PST)
+        bh=msUJv3g77jRfXUZFInWbo08oOqamqaMF7n9SOzCcjkY=;
+        b=HQ8W0Z4ZpQkjJiI6+XreRinLRbMELAEtDgq8L4d6v0e6fWvIg8sQNd56l2K0WqeaYd
+         ycVMTpZVkC2G7c7zZdsfhRJ3PRFGSemXUik6SWOsdLQwLGVuKid79IjE50nQKN84yxYa
+         xiZYMIFjVhENJqpn2I+Wf211ciJctlilo0ydOx4sxIFeY4JB57uwLvoewgYk3WCU+9iv
+         4F0HjOvxYMyH6MIPa5w1mjBDh04ZbzkqG/H22N6NO0WBmkY/yQLVCOq9FRjSemYfP4NZ
+         I6O+BqNPtYRG2jZeZ+D8pzEH1HQQlAiG8K34jw2hPvkgAm84rCxb1KBUzJkw95JSFD/z
+         IUrw==
+X-Gm-Message-State: AOAM530J0Pa6AlZV1ryVvKTlybGmj7B1GWDrIhbIi7/y9t0FHmTmTvNy
+        Cb+ruGxMOV9nky4gTDahN+UV7Q==
+X-Google-Smtp-Source: ABdhPJwOCFph5hs/qG6yS2bZ9ZwIw/eSKDawsUf80Zrt7pTiS+RF1hawBHfFt7P9n2O5VPET+RJlAw==
+X-Received: by 2002:adf:e682:: with SMTP id r2mr3425322wrm.184.1604587948243;
+        Thu, 05 Nov 2020 06:52:28 -0800 (PST)
 Received: from dell.default ([91.110.221.242])
-        by smtp.gmail.com with ESMTPSA id f5sm2631243wmh.16.2020.11.05.06.52.25
+        by smtp.gmail.com with ESMTPSA id f5sm2631243wmh.16.2020.11.05.06.52.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 06:52:26 -0800 (PST)
+        Thu, 05 Nov 2020 06:52:27 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
-        Christian Koenig <christian.koenig@amd.com>,
-        Huang Rui <ray.huang@amd.com>, David Airlie <airlied@linux.ie>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
-        linaro-mm-sig@lists.linaro.org
-Subject: [PATCH 10/19] gpu: drm: ttm: ttm_bo: Fix one function header - demote lots of kernel-doc abuses
-Date:   Thu,  5 Nov 2020 14:45:08 +0000
-Message-Id: <20201105144517.1826692-11-lee.jones@linaro.org>
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH 11/19] gpu: drm: panel: panel-simple: Fix 'struct panel_desc's header
+Date:   Thu,  5 Nov 2020 14:45:09 +0000
+Message-Id: <20201105144517.1826692-12-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201105144517.1826692-1-lee.jones@linaro.org>
 References: <20201105144517.1826692-1-lee.jones@linaro.org>
@@ -69,137 +68,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Struct headers should start with 'struct <name>'
+
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/ttm/ttm_bo.c:51: warning: Function parameter or member 'ttm_global_mutex' not described in 'DEFINE_MUTEX'
- drivers/gpu/drm/ttm/ttm_bo.c:286: warning: Function parameter or member 'bo' not described in 'ttm_bo_cleanup_memtype_use'
- drivers/gpu/drm/ttm/ttm_bo.c:359: warning: Function parameter or member 'bo' not described in 'ttm_bo_cleanup_refs'
- drivers/gpu/drm/ttm/ttm_bo.c:359: warning: Function parameter or member 'interruptible' not described in 'ttm_bo_cleanup_refs'
- drivers/gpu/drm/ttm/ttm_bo.c:359: warning: Function parameter or member 'no_wait_gpu' not described in 'ttm_bo_cleanup_refs'
- drivers/gpu/drm/ttm/ttm_bo.c:359: warning: Function parameter or member 'unlock_resv' not described in 'ttm_bo_cleanup_refs'
- drivers/gpu/drm/ttm/ttm_bo.c:424: warning: Function parameter or member 'bdev' not described in 'ttm_bo_delayed_delete'
- drivers/gpu/drm/ttm/ttm_bo.c:424: warning: Function parameter or member 'remove_all' not described in 'ttm_bo_delayed_delete'
- drivers/gpu/drm/ttm/ttm_bo.c:635: warning: Function parameter or member 'bo' not described in 'ttm_bo_evict_swapout_allowable'
- drivers/gpu/drm/ttm/ttm_bo.c:635: warning: Function parameter or member 'ctx' not described in 'ttm_bo_evict_swapout_allowable'
- drivers/gpu/drm/ttm/ttm_bo.c:635: warning: Function parameter or member 'locked' not described in 'ttm_bo_evict_swapout_allowable'
- drivers/gpu/drm/ttm/ttm_bo.c:635: warning: Function parameter or member 'busy' not described in 'ttm_bo_evict_swapout_allowable'
- drivers/gpu/drm/ttm/ttm_bo.c:769: warning: Function parameter or member 'bo' not described in 'ttm_bo_add_move_fence'
- drivers/gpu/drm/ttm/ttm_bo.c:769: warning: Function parameter or member 'man' not described in 'ttm_bo_add_move_fence'
- drivers/gpu/drm/ttm/ttm_bo.c:769: warning: Function parameter or member 'mem' not described in 'ttm_bo_add_move_fence'
- drivers/gpu/drm/ttm/ttm_bo.c:769: warning: Function parameter or member 'no_wait_gpu' not described in 'ttm_bo_add_move_fence'
- drivers/gpu/drm/ttm/ttm_bo.c:806: warning: Function parameter or member 'bo' not described in 'ttm_bo_mem_force_space'
- drivers/gpu/drm/ttm/ttm_bo.c:806: warning: Function parameter or member 'place' not described in 'ttm_bo_mem_force_space'
- drivers/gpu/drm/ttm/ttm_bo.c:806: warning: Function parameter or member 'mem' not described in 'ttm_bo_mem_force_space'
- drivers/gpu/drm/ttm/ttm_bo.c:806: warning: Function parameter or member 'ctx' not described in 'ttm_bo_mem_force_space'
- drivers/gpu/drm/ttm/ttm_bo.c:872: warning: Function parameter or member 'bo' not described in 'ttm_bo_mem_space'
- drivers/gpu/drm/ttm/ttm_bo.c:872: warning: Function parameter or member 'placement' not described in 'ttm_bo_mem_space'
- drivers/gpu/drm/ttm/ttm_bo.c:872: warning: Function parameter or member 'mem' not described in 'ttm_bo_mem_space'
- drivers/gpu/drm/ttm/ttm_bo.c:872: warning: Function parameter or member 'ctx' not described in 'ttm_bo_mem_space'
- drivers/gpu/drm/ttm/ttm_bo.c:1387: warning: Function parameter or member 'ctx' not described in 'ttm_bo_swapout'
+ drivers/gpu/drm/panel/panel-simple.c:42: warning: Cannot understand  * @modes: Pointer to array of fixed modes appropriate for this panel.  If
 
-Cc: Christian Koenig <christian.koenig@amd.com>
-Cc: Huang Rui <ray.huang@amd.com>
+Cc: Thierry Reding <thierry.reding@gmail.com>
+Cc: Sam Ravnborg <sam@ravnborg.org>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Sumit Semwal <sumit.semwal@linaro.org>
 Cc: dri-devel@lists.freedesktop.org
-Cc: linux-media@vger.kernel.org
-Cc: linaro-mm-sig@lists.linaro.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/ttm/ttm_bo.c | 23 ++++++++++++-----------
- 1 file changed, 12 insertions(+), 11 deletions(-)
+ drivers/gpu/drm/panel/panel-simple.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/gpu/drm/ttm/ttm_bo.c b/drivers/gpu/drm/ttm/ttm_bo.c
-index c63b7ea1cd5d0..2b69c959d7f4d 100644
---- a/drivers/gpu/drm/ttm/ttm_bo.c
-+++ b/drivers/gpu/drm/ttm/ttm_bo.c
-@@ -45,7 +45,7 @@
+diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
+index 8b82ec33f08ae..1327df0bddbd6 100644
+--- a/drivers/gpu/drm/panel/panel-simple.c
++++ b/drivers/gpu/drm/panel/panel-simple.c
+@@ -39,6 +39,7 @@
+ #include <drm/drm_panel.h>
  
- static void ttm_bo_global_kobj_release(struct kobject *kobj);
- 
--/**
-+/*
-  * ttm_global_mutex - protecting the global BO state
+ /**
++ * struct panel_desc
+  * @modes: Pointer to array of fixed modes appropriate for this panel.  If
+  *         only one mode then this can just be the address of this the mode.
+  *         NOTE: cannot be used with "timings" and also if this is specified
+@@ -53,6 +54,7 @@
+  * @delay: Structure containing various delay values for this panel.
+  * @bus_format: See MEDIA_BUS_FMT_... defines.
+  * @bus_flags: See DRM_BUS_FLAG_... defines.
++ * @connector_type: LVDS, eDP, DSI, DPI, etc.
   */
- DEFINE_MUTEX(ttm_global_mutex);
-@@ -274,7 +274,7 @@ static int ttm_bo_handle_move_mem(struct ttm_buffer_object *bo,
- 	return ret;
- }
- 
--/**
-+/*
-  * Call bo::reserved.
-  * Will release GPU memory type usage on destruction.
-  * This is the place to put in driver specific hooks to release
-@@ -348,9 +348,10 @@ static void ttm_bo_flush_all_fences(struct ttm_buffer_object *bo)
-  * Must be called with lru_lock and reservation held, this function
-  * will drop the lru lock and optionally the reservation lock before returning.
-  *
-- * @interruptible         Any sleeps should occur interruptibly.
-- * @no_wait_gpu           Never wait for gpu. Return -EBUSY instead.
-- * @unlock_resv           Unlock the reservation lock as well.
-+ * @bo:                    The buffer object to clean-up
-+ * @interruptible:         Any sleeps should occur interruptibly.
-+ * @no_wait_gpu:           Never wait for gpu. Return -EBUSY instead.
-+ * @unlock_resv:           Unlock the reservation lock as well.
-  */
- 
- static int ttm_bo_cleanup_refs(struct ttm_buffer_object *bo,
-@@ -416,7 +417,7 @@ static int ttm_bo_cleanup_refs(struct ttm_buffer_object *bo,
- 	return 0;
- }
- 
--/**
-+/*
-  * Traverse the delayed list, and call ttm_bo_cleanup_refs on all
-  * encountered buffers.
-  */
-@@ -620,7 +621,7 @@ bool ttm_bo_eviction_valuable(struct ttm_buffer_object *bo,
- }
- EXPORT_SYMBOL(ttm_bo_eviction_valuable);
- 
--/**
-+/*
-  * Check the target bo is allowable to be evicted or swapout, including cases:
-  *
-  * a. if share same reservation object with ctx->resv, have assumption
-@@ -759,7 +760,7 @@ int ttm_mem_evict_first(struct ttm_bo_device *bdev,
- 	return ret;
- }
- 
--/**
-+/*
-  * Add the last move fence to the BO and reserve a new shared slot.
-  */
- static int ttm_bo_add_move_fence(struct ttm_buffer_object *bo,
-@@ -795,7 +796,7 @@ static int ttm_bo_add_move_fence(struct ttm_buffer_object *bo,
- 	return 0;
- }
- 
--/**
-+/*
-  * Repeatedly evict memory from the LRU for @mem_type until we create enough
-  * space, or we've evicted everything and there isn't enough space.
-  */
-@@ -857,7 +858,7 @@ static int ttm_bo_mem_placement(struct ttm_buffer_object *bo,
- 	return 0;
- }
- 
--/**
-+/*
-  * Creates space for memory region @mem according to its type.
-  *
-  * This function first searches for free space in compatible memory types in
-@@ -1379,7 +1380,7 @@ int ttm_bo_wait(struct ttm_buffer_object *bo,
- }
- EXPORT_SYMBOL(ttm_bo_wait);
- 
--/**
-+/*
-  * A buffer object shrink method that tries to swap out the first
-  * buffer object on the bo_global::swap_lru list.
-  */
+ struct panel_desc {
+ 	const struct drm_display_mode *modes;
 -- 
 2.25.1
 
