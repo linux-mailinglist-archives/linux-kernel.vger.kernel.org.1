@@ -2,122 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95CAF2A85A8
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 19:04:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B2892A85AA
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 19:05:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731672AbgKESEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 13:04:13 -0500
-Received: from cloudserver094114.home.pl ([79.96.170.134]:45138 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729783AbgKESEM (ORCPT
+        id S1730854AbgKESFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 13:05:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50442 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725862AbgKESFx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 13:04:12 -0500
-Received: from 89-64-88-191.dynamic.chello.pl (89.64.88.191) (HELO kreacher.localnet)
- by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.514)
- id 4284eb2aea7df779; Thu, 5 Nov 2020 19:04:09 +0100
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Victor Ding <victording@google.com>
-Cc:     Zhang Rui <rui.zhang@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Kim Phillips <kim.phillips@amd.com>, linux-pm@vger.kernel.org,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tony Luck <tony.luck@intel.com>,
-        Vineela Tummalapalli <vineela.tummalapalli@intel.com>,
-        x86@kernel.org
-Subject: Re: [PATCH v3 3/4] powercap: Add AMD Fam17h RAPL support
-Date:   Thu, 05 Nov 2020 19:04:08 +0100
-Message-ID: <2121012.oOYSSSs1xd@kreacher>
-In-Reply-To: <9ea15f21febf47d5d6f62911fe0141a2ae5d5e2b.camel@linux.intel.com>
-References: <20201027072358.13725-1-victording@google.com> <CANqTbdafN+NekRN3oO35o-7DXvu1p_9SwH_XVkw1DmbgSk9y6w@mail.gmail.com> <9ea15f21febf47d5d6f62911fe0141a2ae5d5e2b.camel@linux.intel.com>
+        Thu, 5 Nov 2020 13:05:53 -0500
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06336C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 10:05:53 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id h22so2508232wmb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 10:05:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=ddPVdHBBiZmCSF2nwCQf8bCJflaE3kiyL8B6pjedEwg=;
+        b=sBau92ewJJW7KcBCfvxT20lEEY84WhnhAbBX0gUF28+ZrZnrhahdMNW6lp31qaHmYC
+         UANyNk3iUSma3EhJ2xJzhdyry8i/oUA5trpOdiwVx5Qf2btMUba+BRctrAgCT0Pt+CJn
+         d/SnqLLKya5L1Np7nEk/Dowf3ICjil/pCLApUDta3Z1dULYjaQ7E58wx8ER8bM0Vz4cq
+         abdb2yLec2fB8Cjo/+52chnAvlZtwrtLcHmN7zGXudG71TFEnma/UCOTNerf3Yu2d9f+
+         nL/5wPyVfw4j6Teq19rwufNKEPfE4RprFoUQZZ1WTTI0s2x0HQOJ24/C43hhOjHb0Oht
+         AvvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=ddPVdHBBiZmCSF2nwCQf8bCJflaE3kiyL8B6pjedEwg=;
+        b=I7V98LdqTbh7SqVci7KAX4ket7Oj4eMElQji4po8G9qWKxQN0wx+A1OiSdgLt07Sq9
+         rC+JPaifqYWvgkxtY3iXw/OyxcDIQ6wKGbaZTxcn7OwB4+nXgbc6QKh8Lc2hBXwVEfy1
+         6CwnosIlwdJC8U2U7xqOc+YVC/jKJB8SgimiAymW73m2OQdvByF87VkliO+dCkRfntCb
+         fx+JA8ryOrutSZkB57RN4lzmDKfJvn0buygbV9x21BxvAgy3ttPdo0a2Oa8+rs1XaCSa
+         LrY7mXabWo3sqBL5iyc/Cd3dOTZYa9Ei8lIAbvi68flNiC+ns6JRHH4Wxh7XTcdX9rFM
+         nDNg==
+X-Gm-Message-State: AOAM532TUAHc1TzxIdnCGROqOI1jsXaeudMNs4pyycZIHnVaS0i6BIw3
+        +RBtxaMuWkV2mYpp3Y3DQsJjOp9Cr9a54V4A
+X-Google-Smtp-Source: ABdhPJxuLkidDT0E0tOvNrylRZ2ydFSMCKpv8RDU9CIMzebL3uCc1EtXKKJ3NVio6HMtQoOabJqSow==
+X-Received: by 2002:a1c:7515:: with SMTP id o21mr4208961wmc.5.1604599551672;
+        Thu, 05 Nov 2020 10:05:51 -0800 (PST)
+Received: from dell ([91.110.221.242])
+        by smtp.gmail.com with ESMTPSA id z5sm3624083wrw.87.2020.11.05.10.05.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Nov 2020 10:05:50 -0800 (PST)
+Date:   Thu, 5 Nov 2020 18:05:48 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Paul Fulghum <paulkf@microgate.com>
+Cc:     David Laight <David.Laight@ACULAB.COM>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH 27/36] tty: synclinkmp: Mark never checked 'readval' as
+ __always_unused
+Message-ID: <20201105180548.GM4488@dell>
+References: <20201104193549.4026187-1-lee.jones@linaro.org>
+ <20201104193549.4026187-28-lee.jones@linaro.org>
+ <0a4043ee-dad5-7691-8c67-db73d3c12f52@kernel.org>
+ <20201105084341.GZ4488@dell>
+ <a95f8d0d-28ef-7351-cdbb-7da5ad8aa9ad@kernel.org>
+ <6515b9ff5a9343f5a713e337f41450cc@AcuMS.aculab.com>
+ <20201105112728.GJ4488@dell>
+ <54D08301-C89F-4AEB-B9A0-6CED6D5EEDA6@microgate.com>
+ <7C858DBE-A5A1-4027-A44B-85F6AE3AE579@microgate.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7C858DBE-A5A1-4027-A44B-85F6AE3AE579@microgate.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday, November 5, 2020 6:14:01 PM CET Srinivas Pandruvada wrote:
-> On Thu, 2020-11-05 at 14:53 +1100, Victor Ding wrote:
-> > On Wed, Nov 4, 2020 at 1:17 PM Srinivas Pandruvada
-> > <srinivas.pandruvada@linux.intel.com> wrote:
-> > > On Wed, 2020-11-04 at 12:43 +1100, Victor Ding wrote:
-> > > > On Wed, Nov 4, 2020 at 4:09 AM Srinivas Pandruvada
-> > > > <srinivas.pandruvada@linux.intel.com> wrote:
-> > > > > On Tue, 2020-11-03 at 17:10 +1100, Victor Ding wrote:
-> > > > > > On Mon, Nov 2, 2020 at 12:39 PM Zhang Rui <
-> > > > > > rui.zhang@intel.com>
-> > > > > > wrote:
-> > > > > > > On Tue, 2020-10-27 at 07:23 +0000, Victor Ding wrote:
-> > > > > > > > This patch enables AMD Fam17h RAPL support for the power
-> > > > > > > > capping
-> > > > > > > > framework. The support is as per AMD Fam17h Model31h
-> > > > > > > > (Zen2)
-> > > > > > > > and
-> > > > > > > > model 00-ffh (Zen1) PPR.
-> > > > > > > > 
-> > > > > > > > Tested by comparing the results of following two sysfs
-> > > > > > > > entries
-> > > > > > > > and
-> > > > > > > > the
-> > > > > > > > values directly read from corresponding MSRs via
-> > > > > > > > /dev/cpu/[x]/msr:
-> > > > > > > >   /sys/class/powercap/intel-rapl/intel-rapl:0/energy_uj
-> > > > > > > >   /sys/class/powercap/intel-rapl/intel-rapl:0/intel-
-> > > > > > > > rapl:0:0/energy_uj
-> > > > > 
-> > > > > Is this for just energy reporting? No capping of power?
-> > > > Correct, the hardware does not support capping of power.
-> > > I wonder if there is no capping, is this the right interface?
-> > > Do you have specific user space, which cares about this?
-> > We have tools that previously developed to measure energy status
-> > on Intel via the powercap interface. Powercap is the only interface
-> > allowing reading RAPL energy counters without requiring MSR access
-> > privileges. We want to use these tools on AMD with minimal
-> > modifications.
-> > I believe the powercap interface should support these counters,
-> > regardless of the use cases, mainly for two reasons:
-> > 1. Powercap interface already supports monitoring-only power domains,
-> > e.g. power limit is locked by BIOS or the (Intel) CPU does not expose
-> > an
-> > MSR for certain power domains. The latter is the exact situation on
-> > AMD;
-> > 2. As AMD has partially introduced the equivalent of Intel's RAPL, we
-> > should leverage this opportunity to reduce the divergence in the
-> > APIs. i.e.
-> > OS as a hardware abstraction layer should allow users to use the same
-> > set of APIs to access RAPL features if it issupported on both Intel
-> > and AMD.
-> > In this specific case, if users can query for Intel's RAPL counters
-> > via
-> > powercap, they should be able to do so as well for AMD's.
-> > > I think these counters are already exposed via hwmon sysf.
-> > Yes, they were introduced early this year. However, it is not the
-> > same as
-> > the counters exposed via powercap interface: powercap exposes the
-> > actual value of the energy counters while hwmon adds an accumulation
-> > layer on top.
-> > In addition, I don't think Intel's RAPL counters are exposed via
-> > hwmon;
-> > therefore: 1. existing fine grade power monitoring tools are not
-> > based on
-> > hwmon; 2. new tools cannot query the same set of counters via the
-> > same
-> > API so that they have to actively maintain two sets of logic.
+On Thu, 05 Nov 2020, Paul Fulghum wrote:
+
 > 
-> Fine with me.
+> Another candidate for removal is drivers/char/pcmcia/synclink_cs.c
+> 
+> Everything I said about synclink.c/synclinkmp.c is true of that as well: the hardware stopped being manufactured decades ago and is not available for testing. The possibility of these cards still being around/functional for use with the latest kernel is about zero.
+> 
+> If Lee Jones does wants to add that to his patch, great. If not then I can do so.
 
-OK, I'll queue up the series for 5.11 then if there are no other concerns.
+I'll probably send this as a follow-up, as it's easier to get merged
+into a different subsystem if they patches are separate and
+orthogonal.
 
-Thanks!
+Will submit them on the morrow.
 
-
-
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
