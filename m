@@ -2,74 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EC232A7D80
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 12:50:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32AA12A7DAD
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 13:02:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730099AbgKELu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 06:50:26 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7147 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726067AbgKELuY (ORCPT
+        id S1730186AbgKEMCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 07:02:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49644 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726777AbgKEMCJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 06:50:24 -0500
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CRhfJ1w3rz15RxG;
-        Thu,  5 Nov 2020 19:50:16 +0800 (CST)
-Received: from linux-lmwb.huawei.com (10.175.103.112) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 5 Nov 2020 19:50:13 +0800
-From:   Zou Wei <zou_wei@huawei.com>
-To:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
-        <tiwai@suse.com>, <matthias.bgg@gmail.com>
-CC:     <alsa-devel@alsa-project.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Zou Wei <zou_wei@huawei.com>
-Subject: [PATCH -next] ASoC: mediatek: mt8192: Make some symbols static
-Date:   Thu, 5 Nov 2020 20:02:04 +0800
-Message-ID: <1604577724-24687-1-git-send-email-zou_wei@huawei.com>
-X-Mailer: git-send-email 2.6.2
+        Thu, 5 Nov 2020 07:02:09 -0500
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2632C0613D2
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 04:02:08 -0800 (PST)
+Received: by mail-lf1-x141.google.com with SMTP id y184so1875803lfa.12
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 04:02:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=freebox-fr.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=acijxDiGDEUt4I2cDxK+O6StwjSex3WB5cQlpv1FYyQ=;
+        b=c1DuOiIS8rPp2H8sU37QjdQYjSswWCIIgyzuwlAyEbZIntV825P2HzlPSSjZTjmu+L
+         PszfPceqjXJZE3LxcculepH396McEkrMcacEBfbWTKDIuxFJVLdyR/r2uTu1xEmz4NHS
+         O7B/VMMq90xd9ZL2fdZZjfC3kqEm5bCiAF6kK18Lx9BstIArgNFaCCPh1RABYhNPFmbf
+         85kT9ZILCNVzdgY5lbbKVIb3iBW2U8IOnhGugZhsMXUEr5iklI+lSWALVeFO5tNZEgny
+         Y2lZGPiSFIXOwpnvMNrP7RjvrGt+OU5J33PbFiC65pUc0Fd46LHxGknOTccCnCyPlexE
+         nV0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=acijxDiGDEUt4I2cDxK+O6StwjSex3WB5cQlpv1FYyQ=;
+        b=jSs0xUu+5vQmArHVieAO0+z0DKIuyUgZXvDMW/MmWenh+r/xmXspvss3pxWMrW+S8L
+         WamgiLdAWjY2WNRP6o3qAE6OK+HlGSZhjdscajovu6N8pIV8BSuud6kulsXhYDBtDHy6
+         X/xaZOW/4W/gcD7K1f5vX1fvGcdzp17y5Puw3N8IkYZIoVHVW6dKyoYO3trujW+qa8px
+         IDxPy1szBC0n8JVYlnD0kwv8IJFqB3xbXsZj0a+mosmeiz+IdUaOeKcGZYNgVe300r+l
+         kFf/K8X9pJBBGO5EP3dL2zH672oURNENZQ9xly5+toauFgxOeeArL2/mNrkT9mvhJjB7
+         YH5Q==
+X-Gm-Message-State: AOAM533KsNpRKIP4Dw+HUcR/NpVdugelkdhfXe3xA/ws2zti/bxefAzy
+        emiFB0aJdPq4KrCdieeR8+uFs9XI09IEnPLRMM/bZA==
+X-Google-Smtp-Source: ABdhPJyz0HCk27eSLygMgMvm/T9U7y0iTjhhVG7vQ+YCf7tpS/9vOrdlmgnxW0GYpObhQrtZFYwo80EfEJVI6GO5GsU=
+X-Received: by 2002:a19:6a0e:: with SMTP id u14mr815519lfu.254.1604577726840;
+ Thu, 05 Nov 2020 04:02:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.103.112]
-X-CFilter-Loop: Reflected
+References: <20201105104049.91077-1-warthog618@gmail.com>
+In-Reply-To: <20201105104049.91077-1-warthog618@gmail.com>
+From:   Nicolas Schichan <nschichan@freebox.fr>
+Date:   Thu, 5 Nov 2020 13:01:55 +0100
+Message-ID: <CAHNNwZDiwKbhBgkOhStGip2+cMKOEBTUa13n2vuHrTc_nk2sMg@mail.gmail.com>
+Subject: Re: [PATCH] gpiolib: fix sysfs when cdev is not selected
+To:     Kent Gibson <warthog618@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        bgolaszewski@baylibre.com, linus.walleij@linaro.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following sparse warnings:
+Hello Kent,
 
-./mt8192-dai-i2s.c:2040:5: warning: symbol 'mt8192_dai_i2s_get_share' was not declared. Should it be static?
-./mt8192-dai-i2s.c:2060:5: warning: symbol 'mt8192_dai_i2s_set_priv' was not declared. Should it be static?
+On Thu, Nov 5, 2020 at 11:41 AM Kent Gibson <warthog618@gmail.com> wrote:
+>
+> In gpiochip_setup_dev() the call to gpiolib_cdev_register() indirectly
+> calls device_add().  This is still required for the sysfs even when
+> CONFIG_GPIO_CDEV is not selected in the build.
+>
+> Replace the stubbed functions in gpiolib-cdev.h with macros in gpiolib.c
+> that perform the required device_add() and device_del() when
+> CONFIG_GPIO_CDEV is not selected.
+>
+> Fixes: d143493c01b7 (gpiolib: make cdev a build option)
+> Reported-by: Nicolas Schichan <nschichan@freebox.fr>
+> Signed-off-by: Kent Gibson <warthog618@gmail.com>
+> ---
+>  drivers/gpio/gpiolib-cdev.h | 15 ---------------
+>  drivers/gpio/gpiolib.c      | 18 +++++++++++++++---
+>  2 files changed, 15 insertions(+), 18 deletions(-)
+>
+> diff --git a/drivers/gpio/gpiolib-cdev.h b/drivers/gpio/gpiolib-cdev.h
+> index cb41dd757338..b42644cbffb8 100644
+> --- a/drivers/gpio/gpiolib-cdev.h
+> +++ b/drivers/gpio/gpiolib-cdev.h
+> @@ -7,22 +7,7 @@
+>
+>  struct gpio_device;
+>
+> -#ifdef CONFIG_GPIO_CDEV
+> -
+>  int gpiolib_cdev_register(struct gpio_device *gdev, dev_t devt);
+>  void gpiolib_cdev_unregister(struct gpio_device *gdev);
+>
+> -#else
+> -
+> -static inline int gpiolib_cdev_register(struct gpio_device *gdev, dev_t devt)
+> -{
+> -       return 0;
+> -}
+> -
+> -static inline void gpiolib_cdev_unregister(struct gpio_device *gdev)
+> -{
+> -}
+> -
+> -#endif /* CONFIG_GPIO_CDEV */
+> -
+>  #endif /* GPIOLIB_CDEV_H */
+> diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
+> index 8e29a60c3697..c980ddcda833 100644
+> --- a/drivers/gpio/gpiolib.c
+> +++ b/drivers/gpio/gpiolib.c
+> @@ -480,11 +480,23 @@ static void gpiodevice_release(struct device *dev)
+>         kfree(gdev);
+>  }
+>
+> +#ifdef CONFIG_GPIO_CDEV
+> +#define gcdev_register(gdev, devt)     gpiolib_cdev_register((gdev), (devt))
+> +#define gcdev_unregister(gdev)         gpiolib_cdev_unregister((gdev))
+> +#else
+> +/*
+> + * gpiolib_cdev_register() indirectly calls device_add(), which is still
+> + * required even when cdev is not selected.
+> + */
+> +#define gcdev_register(gdev, devt)     device_add(&(gdev)->dev)
+> +#define gcdev_unregister(gdev)         device_del(&(gdev)->dev)
+> +#endif
+> +
+>  static int gpiochip_setup_dev(struct gpio_device *gdev)
+>  {
+>         int ret;
+>
+> -       ret = gpiolib_cdev_register(gdev, gpio_devt);
+> +       ret = gcdev_register(gdev, gpio_devt);
+>         if (ret)
+>                 return ret;
+>
+> @@ -500,7 +512,7 @@ static int gpiochip_setup_dev(struct gpio_device *gdev)
+>         return 0;
+>
+>  err_remove_device:
+> -       gpiolib_cdev_unregister(gdev);
+> +       gcdev_unregister(gdev);
+>         return ret;
+>  }
+>
+> @@ -825,7 +837,7 @@ void gpiochip_remove(struct gpio_chip *gc)
+>          * be removed, else it will be dangling until the last user is
+>          * gone.
+>          */
+> -       gpiolib_cdev_unregister(gdev);
+> +       gcdev_unregister(gdev);
+>         put_device(&gdev->dev);
+>  }
+>  EXPORT_SYMBOL_GPL(gpiochip_remove);
+> --
+> 2.29.2
+>
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
----
- sound/soc/mediatek/mt8192/mt8192-dai-i2s.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+I have tested your patch and it works for both CONFIG_GPIO_CDEV set and unset.
 
-diff --git a/sound/soc/mediatek/mt8192/mt8192-dai-i2s.c b/sound/soc/mediatek/mt8192/mt8192-dai-i2s.c
-index 53c560e..5b29340 100644
---- a/sound/soc/mediatek/mt8192/mt8192-dai-i2s.c
-+++ b/sound/soc/mediatek/mt8192/mt8192-dai-i2s.c
-@@ -2037,7 +2037,7 @@ static const struct mtk_afe_i2s_priv mt8192_i2s_priv[DAI_I2S_NUM] = {
- 	},
- };
- 
--int mt8192_dai_i2s_get_share(struct mtk_base_afe *afe)
-+static int mt8192_dai_i2s_get_share(struct mtk_base_afe *afe)
- {
- 	struct mt8192_afe_private *afe_priv = afe->platform_priv;
- 	const struct device_node *of_node = afe->dev->of_node;
-@@ -2057,7 +2057,7 @@ int mt8192_dai_i2s_get_share(struct mtk_base_afe *afe)
- 	return 0;
- }
- 
--int mt8192_dai_i2s_set_priv(struct mtk_base_afe *afe)
-+static int mt8192_dai_i2s_set_priv(struct mtk_base_afe *afe)
- {
- 	int i;
- 	int ret;
+Tested-by: Nicolas Schichan <nschichan@freebox.fr>
+
+Regards,
+
 -- 
-2.6.2
-
+Nicolas Schichan
+Freebox SAS
