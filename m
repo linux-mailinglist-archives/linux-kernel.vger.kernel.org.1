@@ -2,87 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDD9F2A899E
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 23:19:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7030F2A89A0
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 23:19:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732580AbgKEWT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 17:19:27 -0500
-Received: from relay10.mail.gandi.net ([217.70.178.230]:46807 "EHLO
-        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731508AbgKEWT1 (ORCPT
+        id S1732612AbgKEWTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 17:19:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33628 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731508AbgKEWTq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 17:19:27 -0500
-Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 2ECAA240005;
-        Thu,  5 Nov 2020 22:19:25 +0000 (UTC)
-Date:   Thu, 5 Nov 2020 23:19:24 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Claudius Heine <ch@denx.de>
-Cc:     Alessandro Zummo <a.zummo@towertech.it>, linux-rtc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Henning Schild <henning.schild@siemens.com>,
-        Johannes Hahn <johannes-hahn@siemens.com>
-Subject: Re: [PATCH 1/2] rtc: rx6110: add i2c support
-Message-ID: <20201105221924.GI1034841@piout.net>
-References: <20201104102629.3422048-1-ch@denx.de>
- <20201104102629.3422048-2-ch@denx.de>
+        Thu, 5 Nov 2020 17:19:46 -0500
+Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 046BAC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 14:19:45 -0800 (PST)
+Received: by mail-yb1-xb41.google.com with SMTP id c129so2715203yba.8
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 14:19:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=R99YW6naQkjTKNrYbkDdoRsHBx6NElPxT3Iw4sTWwBI=;
+        b=bSu7029BVsxtkGkG9XdftxNpc76W2uH46do1RtX/bVMy4mgfoP+OEVI4mAk+RQiEKE
+         3f3VLzAV87IZwtVWIeS4YetaHVXiSIJ9TGxHPmq1hpdNs5y11zThne9G6w6tk/sGYYkP
+         EheoBzcZkqlHR9eHxQ8vzvakop5zyLS853cqsT7ypOkHbx3ckp+NXqpRYdbVqdQRdmYS
+         MCKaFswPlLu+6kaNakEePlKwUaL86qh/XIGG2AQiuzMqlZ+9k9jAnIeH1c9G00TB/QIN
+         ufkexZLbeUzCt33sjdrBXeiiTpMVj+5UsEYgy4ZBA90JZc+3YDxfQfArt+JjuPtYntbk
+         M6+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=R99YW6naQkjTKNrYbkDdoRsHBx6NElPxT3Iw4sTWwBI=;
+        b=HUfa8DopvkDw0KC7rLl6yHsGHd/n/bQz5mPp9JtKarbqAsd27EDLKxlNZoBFCAhYT4
+         5geXj7Nz9OpI4HZK2g0BB2gb2O+4jXGwB4kaPMy499jL8QbrJ7MVV/qnyJa6bou4FoyI
+         g1CiBOr42FDN9Ex3eLXE7LQtuQz3K1buCJ3EllY9jQdfTbezdMIkyQYHwEyx8ljwhyjX
+         1nPLe41OQ5PFWazAISftwEt3rguTUsedfe79JqievR/io9XSqJwuZHBWNwmjPPxhtosq
+         3xYOvYcrgGLVueR+PWoZSU6o0n5J5mUX4aIwyehlWsMkEcrm2yzXq9MEBGdXA1sRSQia
+         Np+g==
+X-Gm-Message-State: AOAM530EplKrwb2Zv38nhvKnfNZS6bUCdwMEngewQkSg9e6UkuhYv9gx
+        2XwbnRknhPPoD2+jxQzG3+dOgFiWbjW4Yl0t2MJ+Pg==
+X-Google-Smtp-Source: ABdhPJwysPeQHX76FeXX+a3Ov6HF1AN0RHmBAgIdB3EHMiZqQaUWKAccauUaskO9vV4diWXfH62sUpQFgV4qAgTr6NM=
+X-Received: by 2002:a25:9c87:: with SMTP id y7mr6858310ybo.314.1604614784094;
+ Thu, 05 Nov 2020 14:19:44 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201104102629.3422048-2-ch@denx.de>
+References: <cover.1604534322.git.andreyknvl@google.com> <CAFKCwrgCfx_DBf_b0bJum5Y6w1hp_xzQ_xqgMe1OH2Kqw6qrxQ@mail.gmail.com>
+ <CAAeHK+zHpfwABe2Xj7U1=d2dzu4NTpBsv7vG1th14G7f=t7unw@mail.gmail.com>
+In-Reply-To: <CAAeHK+zHpfwABe2Xj7U1=d2dzu4NTpBsv7vG1th14G7f=t7unw@mail.gmail.com>
+From:   Evgenii Stepanov <eugenis@google.com>
+Date:   Thu, 5 Nov 2020 14:19:33 -0800
+Message-ID: <CAFKCwrgvPD_EvCnzOsCvdMRW0uYPmUd+FRwugU0VBJOeRHtO8Q@mail.gmail.com>
+Subject: Re: [PATCH 00/20] kasan: boot parameters for hardware tag-based mode
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/11/2020 11:26:28+0100, Claudius Heine wrote:
-> +static int rx6110_i2c_probe(struct i2c_client *client,
-> +			    const struct i2c_device_id *id)
-> +{
-> +	struct i2c_adapter *adapter = to_i2c_adapter(client->dev.parent);
-> +	struct rx6110_data *rx6110;
-> +	int err;
-> +
-> +	if (!i2c_check_functionality(adapter, I2C_FUNC_SMBUS_BYTE_DATA
-> +				| I2C_FUNC_SMBUS_I2C_BLOCK)) {
-> +		dev_err(&adapter->dev,
-> +			"doesn't support required functionality\n");
-> +		return -EIO;
-> +	}
-> +
-> +	rx6110 = devm_kzalloc(&client->dev, sizeof(*rx6110), GFP_KERNEL);
-> +	if (!rx6110)
-> +		return -ENOMEM;
-> +
-> +	rx6110->regmap = devm_regmap_init_i2c(client, &regmap_i2c_config);
-> +	if (IS_ERR(rx6110->regmap)) {
-> +		dev_err(&client->dev, "regmap init failed for rtc rx6110\n");
-> +		return PTR_ERR(rx6110->regmap);
-> +	}
-> +
-> +	i2c_set_clientdata(client, rx6110);
-> +
-> +	rx6110->rtc = devm_rtc_device_register(&client->dev,
-> +					       client->name,
-> +					       &rx6110_rtc_ops, THIS_MODULE);
-> +
-> +	if (IS_ERR(rx6110->rtc))
-> +		return PTR_ERR(rx6110->rtc);
-> +
-> +	err = rx6110_init(rx6110);
-> +	if (err)
-> +		return err;
-> +
-> +	rx6110->rtc->max_user_freq = 1;
-> +
+On Thu, Nov 5, 2020 at 12:55 PM Andrey Konovalov <andreyknvl@google.com> wrote:
+>
+> On Thu, Nov 5, 2020 at 9:49 PM Evgenii Stepanov <eugenis@google.com> wrote:
+> >
+> > > The chosen mode provides default control values for the features mentioned
+> > > above. However it's also possible to override the default values by
+> > > providing:
+> > >
+> > > - kasan.stack=off/on - enable stacks collection
+> > >                    (default: on for mode=full, otherwise off)
+> >
+> > I think this was discussed before, but should this be kasan.stacktrace
+> > or something like that?
+> > In other places "kasan stack" refers to stack instrumentation, not
+> > stack trace collection.
+> > Ex.: CONFIG_KASAN_STACK
+>
+> Forgot to update it here, but it's kasan.stacks now (with an s at the
+> end). kasan.stacktrace might be better, although it's somewhat long.
+> WDYT?
 
-I would prefer if you could have a common function doing the RTC
-registration and init for both i2c and spi. It wouldn't do much yet but
-ideally, it would set the RTC range too and it would be better to not
-have to duplicate that.
-
-
--- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+I like kasan.stacktrace, but I would not insist.
