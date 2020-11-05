@@ -2,145 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C51E42A7D7A
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 12:48:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A38302A7D96
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 12:55:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730306AbgKELsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 06:48:43 -0500
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:46112 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726067AbgKELsm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 06:48:42 -0500
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20201105114831euoutp01e37d3b6b68c4bb596298a2704746bd0e~EmjMCBrxN0459904599euoutp01y
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 11:48:31 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20201105114831euoutp01e37d3b6b68c4bb596298a2704746bd0e~EmjMCBrxN0459904599euoutp01y
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1604576911;
-        bh=Guufe+VoFpwZoPlojymng96D0t0kuWNvYu7MriOxu5g=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=h2xPJMLY3lg8R9W3zgkRCgt8im3FgBhMVqIDy8LaaYQEY0u6YjNNxVgC8cdUTNCHV
-         SUnT834q3NLT2NUx9gDjNm6IO46QAXvDG2+DGPfVPI/lb/8avLPJTC2sZOu0FNAVkc
-         dlp0XjKXb/OO9HEzvnJESldLZ2WHpqkKCco7Gmj0=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20201105114824eucas1p1d8c50dc59569ae074449018964ef9cbe~EmjFkhLE42966429664eucas1p1H;
-        Thu,  5 Nov 2020 11:48:24 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges2new.samsung.com (EUCPMTA) with SMTP id 93.F2.05997.886E3AF5; Thu,  5
-        Nov 2020 11:48:24 +0000 (GMT)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20201105114823eucas1p26250751a232cf55e39d2452e8bb83e46~EmjFA-df20490904909eucas1p2F;
-        Thu,  5 Nov 2020 11:48:23 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20201105114823eusmtrp11e2cca28503878526dd2b03de85e73e1~EmjFAQkr50565005650eusmtrp1O;
-        Thu,  5 Nov 2020 11:48:23 +0000 (GMT)
-X-AuditID: cbfec7f4-677ff7000000176d-46-5fa3e6887a7e
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id F3.6E.06017.786E3AF5; Thu,  5
-        Nov 2020 11:48:23 +0000 (GMT)
-Received: from AMDC2765.digital.local (unknown [106.120.51.73]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20201105114823eusmtip21e3271ef5f1595d22dd0333a744894e9~EmjEk5toW3066730667eusmtip2Y;
-        Thu,  5 Nov 2020 11:48:23 +0000 (GMT)
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-To:     linux-samsung-soc@vger.kernel.org
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Markus Reichl <m.reichl@fivetechno.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: dts: exynos: Use fixed index for the MMC devices
-Date:   Thu,  5 Nov 2020 12:48:14 +0100
-Message-Id: <20201105114814.18372-1-m.szyprowski@samsung.com>
-X-Mailer: git-send-email 2.17.1
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrFIsWRmVeSWpSXmKPExsWy7djP87odzxbHGxx8xWqxccZ6VovrX56z
-        Wpw/v4Hd4vKuOWwWM87vY7J4eeQHo8XaI3fZLVr3HmF34PC4dafeY9OqTjaPvi2rGD0+b5IL
-        YInisklJzcksSy3St0vgyrgw5xFTwSyeisZn8g2MU7m6GDk5JARMJF4/WccCYgsJrGCUmP07
-        o4uRC8j+wijR0feaFSLxmVHi0xFXmIZZ85ug4ssZJXb8lIewgRqmLjQAsdkEDCW63naxgdgi
-        AqoSn9sWsIMMZRZYwCSxsP0kWEJYwEPi8rxrzF2MHBwsQEX7r9WChHkFbCWu/H3ABrFLXmL1
-        hgPMIL0SAtfZJHa8essIkXCROLtwBTOELSzx6vgWdghbRuL05B4WiIZmRomH59ayQzg9jBKX
-        m2ZAdVtL3Dn3iw1kM7OApsT6XfoQYUeJ+ddvMoKEJQT4JG68FQQJMwOZk7ZNZ4YI80p0tAlB
-        VKtJzDq+Dm7twQuXoM7xkPg5bRsbJExiJbavPc42gVFuFsKuBYyMqxjFU0uLc9NTi43yUsv1
-        ihNzi0vz0vWS83M3MQJTwOl/x7/sYNz1J+kQowAHoxIPrwPH4ngh1sSy4srcQ4wSHMxKIrxO
-        Z0/HCfGmJFZWpRblxxeV5qQWH2KU5mBREuc1XvQyVkggPbEkNTs1tSC1CCbLxMEp1cC4fGak
-        uWq+75JlspckRTL+HapJ6DkgvkjBP/teNvuRI1Wm96qnz3R/NnnNp9dtt+TOppUs/FXXpXvY
-        ZeIU89/NG+2T2Y28LC79tT1ssZi3e1F/8q0DM7dxVynO3jNDaeHhtZNUZeYKvZLTnVrIIK2p
-        qDj3x+mDxy/yTJV/KcryyrD0W8rBqsbZSizFGYmGWsxFxYkA8oMCPP0CAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrMLMWRmVeSWpSXmKPExsVy+t/xe7rtzxbHG8yaJmexccZ6VovrX56z
-        Wpw/v4Hd4vKuOWwWM87vY7J4eeQHo8XaI3fZLVr3HmF34PC4dafeY9OqTjaPvi2rGD0+b5IL
-        YInSsynKLy1JVcjILy6xVYo2tDDSM7S00DMysdQzNDaPtTIyVdK3s0lJzcksSy3St0vQy7gw
-        5xFTwSyeisZn8g2MU7m6GDk5JARMJGbNb2LtYuTiEBJYyihxYcEHJoiEjMTJaQ2sELawxJ9r
-        XWwQRZ8YJXpu/2AESbAJGEp0vQVJcHKICKhKfG5bwA5SxCywjEni+t82dpCEsICHxOV515i7
-        GDk4WICK9l+rBQnzCthKXPn7gA1igbzE6g0HmCcw8ixgZFjFKJJaWpybnltspFecmFtcmpeu
-        l5yfu4kRGIDbjv3csoOx613wIUYBDkYlHl4HjsXxQqyJZcWVuYcYJTiYlUR4nc6ejhPiTUms
-        rEotyo8vKs1JLT7EaAq0eyKzlGhyPjA68kriDU0NzS0sDc2NzY3NLJTEeTsEDsYICaQnlqRm
-        p6YWpBbB9DFxcEo1MAZekpjL5P9HTC9kssPLbnFXNd32Mvln1+ccj5efbWgjeDT1NMu963GO
-        jG+K3i7hYMxuqiuSftu9qdPATSHKXarEuFS9NfifP2/snO8/5FgPdL1dslVL8HH4o/+lk1vX
-        St2RT1XOM6q45zXp/btti3VZCk8s8bE9Vdg+vbDk78tLnGlizgrPlFiKMxINtZiLihMB+Rf+
-        KVYCAAA=
-X-CMS-MailID: 20201105114823eucas1p26250751a232cf55e39d2452e8bb83e46
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20201105114823eucas1p26250751a232cf55e39d2452e8bb83e46
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20201105114823eucas1p26250751a232cf55e39d2452e8bb83e46
-References: <CGME20201105114823eucas1p26250751a232cf55e39d2452e8bb83e46@eucas1p2.samsung.com>
+        id S1730278AbgKELze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 06:55:34 -0500
+Received: from first.geanix.com ([116.203.34.67]:37450 "EHLO first.geanix.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726665AbgKELzd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 06:55:33 -0500
+X-Greylist: delayed 348 seconds by postgrey-1.27 at vger.kernel.org; Thu, 05 Nov 2020 06:55:32 EST
+Received: from zen.localdomain (unknown [185.17.218.86])
+        by first.geanix.com (Postfix) with ESMTPSA id A8368EC4DEB;
+        Thu,  5 Nov 2020 11:49:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
+        t=1604576982; bh=x+YqAx/ecSYGcqr/1jyRyq43brPuKux3IFeAXeK8Urk=;
+        h=From:To:Cc:Subject:Date;
+        b=jtlSyac+ECa1eAAI9bWrw9jKs/mYMQbODLw1N7jvD6w+c9rsRSFH7MeZISye2DVFs
+         /pXi90oqAOGl15YQPUaHapjbADjkik4HPG7BooxdrJZLe/gEVhxVEeuD7x+AFri/v3
+         BKeVFg38IXI8goENJSnAA09Lcx0FN4srxq35DmEXovfzXQzj25dB8EFAQtgI05H0AY
+         Euk0JfoP+uK1OqS0Y7KNoXywvcleFlViIg2j6cdE1Mj5ztuGXq50PY20JTlAOrt57D
+         I3wJ2++bYf3oE+ozpRzpO1DZ+/MkaK26Vtp2Y4pnWvQR2VJ+ybR8OEA51IMWdw7Epj
+         E+6OizLUjQA+Q==
+From:   Sean Nyekjaer <sean@geanix.com>
+To:     yibin.gong@nxp.com, linux-kernel@vger.kernel.org,
+        broonie@kernel.org
+Cc:     Sean Nyekjaer <sean@geanix.com>, stable@vger.kernel.org
+Subject: [PATCH] regualtor: pfuze100: limit pfuze-support-disable-sw to pfuze{100,200}
+Date:   Thu,  5 Nov 2020 12:49:26 +0100
+Message-Id: <20201105114926.734553-1-sean@geanix.com>
+X-Mailer: git-send-email 2.28.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.1 required=4.0 tests=ALL_TRUSTED,BAYES_00,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,URIBL_BLOCKED
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on ff3d05386fc5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Recently introduced asynchronous probe on the MMC devices can shuffle
-block IDs in the system. Pin them to values equal to the physical MMC bus
-number to ease booting in environments where UUIDs are not practical.
+Limit the fsl,pfuze-support-disable-sw to the pfuze100 and pfuze200
+variants.
+When enabling fsl,pfuze-support-disable-sw and using a pfuze3000 or
+pfuze3001, the driver would choose pfuze100_sw_disable_regulator_ops
+instead of the newly introduced and correct pfuze3000_sw_regulator_ops.
 
-Use newly introduced aliases for mmcblk devices from commit fa2d0aa96941
-("mmc: core: Allow setting slot index via device tree alias").
-
-Suggested-by: Markus Reichl <m.reichl@fivetechno.de>
-Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Fixes: 6f1cf5257acc ("regualtor: pfuze100: correct sw1a/sw2 on pfuze3000")
+Cc: stable@vger.kernel.org
 ---
- arch/arm64/boot/dts/exynos/exynos5433.dtsi | 6 ++++++
- arch/arm64/boot/dts/exynos/exynos7.dtsi    | 3 +++
- 2 files changed, 9 insertions(+)
+ drivers/regulator/pfuze100-regulator.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/exynos/exynos5433.dtsi b/arch/arm64/boot/dts/exynos/exynos5433.dtsi
-index 0a886bb6c806..3a37ad97fcdb 100644
---- a/arch/arm64/boot/dts/exynos/exynos5433.dtsi
-+++ b/arch/arm64/boot/dts/exynos/exynos5433.dtsi
-@@ -23,6 +23,12 @@
+diff --git a/drivers/regulator/pfuze100-regulator.c b/drivers/regulator/pfuze100-regulator.c
+index 7e8ba9246167..01a12cfcea7c 100644
+--- a/drivers/regulator/pfuze100-regulator.c
++++ b/drivers/regulator/pfuze100-regulator.c
+@@ -836,11 +836,14 @@ static int pfuze100_regulator_probe(struct i2c_client *client,
+ 		 * the switched regulator till yet.
+ 		 */
+ 		if (pfuze_chip->flags & PFUZE_FLAG_DISABLE_SW) {
+-			if (pfuze_chip->regulator_descs[i].sw_reg) {
+-				desc->ops = &pfuze100_sw_disable_regulator_ops;
+-				desc->enable_val = 0x8;
+-				desc->disable_val = 0x0;
+-				desc->enable_time = 500;
++			if (pfuze_chip->chip_id == PFUZE100 ||
++				pfuze_chip->chip_id == PFUZE200) {
++				if (pfuze_chip->regulator_descs[i].sw_reg) {
++					desc->ops = &pfuze100_sw_disable_regulator_ops;
++					desc->enable_val = 0x8;
++					desc->disable_val = 0x0;
++					desc->enable_time = 500;
++				}
+ 			}
+ 		}
  
- 	interrupt-parent = <&gic>;
- 
-+	aliases {
-+		mmc0 = &mshc_0;
-+		mmc1 = &mshc_1;
-+		mmc2 = &mshc_2;
-+	};
-+
- 	arm_a53_pmu {
- 		compatible = "arm,cortex-a53-pmu";
- 		interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>,
-diff --git a/arch/arm64/boot/dts/exynos/exynos7.dtsi b/arch/arm64/boot/dts/exynos/exynos7.dtsi
-index 48cd3a04fd07..3e319ec64997 100644
---- a/arch/arm64/boot/dts/exynos/exynos7.dtsi
-+++ b/arch/arm64/boot/dts/exynos/exynos7.dtsi
-@@ -16,6 +16,9 @@
- 	#size-cells = <2>;
- 
- 	aliases {
-+		mmc0 = &mmc_0;
-+		mmc1 = &mmc_1;
-+		mmc2 = &mmc_2;
- 		pinctrl0 = &pinctrl_alive;
- 		pinctrl1 = &pinctrl_bus0;
- 		pinctrl2 = &pinctrl_nfc;
 -- 
-2.17.1
+2.28.0
 
