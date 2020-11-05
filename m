@@ -2,101 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D0632A8809
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 21:25:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63E632A880C
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 21:25:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727836AbgKEUZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 15:25:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43992 "EHLO
+        id S1732281AbgKEUZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 15:25:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726214AbgKEUZE (ORCPT
+        with ESMTP id S1731954AbgKEUZZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 15:25:04 -0500
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21B08C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 12:25:04 -0800 (PST)
-Received: by mail-ej1-x644.google.com with SMTP id za3so4544496ejb.5
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 12:25:04 -0800 (PST)
+        Thu, 5 Nov 2020 15:25:25 -0500
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E9DFC0613D2
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 12:25:25 -0800 (PST)
+Received: by mail-lj1-x243.google.com with SMTP id a25so1125855ljn.0
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 12:25:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=fTjGrprXf/p+7VyJhV9oMQ+mFbRhaf2fd3YnoA+5GTw=;
-        b=nrTaXxU+KLiCkwx2prOFqV6fVNRvkt5LEXE3aJxYrnO2FaLmSlKykM2nD1VEHY+PCQ
-         QZGQ264x0qIXVF81JCYUR+VVO7S8yrUTIZzsIQP1XjKW7ZnbKrcSIDGcekNi0/QN+Wi1
-         umCtdtcvNp7N7oKFBY7ovM8/6KuFP19oZZtIMdtEHAe9gkMfdf0zXP/XG7XkmqyqyEET
-         yiPVGpmDHkMUkkcO4CfP7ptPpIEZSxzVMeJfkVuZN3qdNRIA2J+44ZmjcynfBkYklljK
-         z/bGMUhRsrYu1+Lh5B90G9zhw5bF2ZMr3Oms5WH5RZF9Ntp3/4NthuRrpgwbmj7n8Ufd
-         f4mA==
+        bh=MrnvvLHekW4TYcEWv1cXv+8uSn/ZuDUMwq3/3GN4sq0=;
+        b=SjMwLyhqhzhQvXym8/7mnvZtsLe5vr0EVe2f8tTUdqIVC84JD3Sj8hqfv8VZm/20Sc
+         lI5KTiHBI0MjWyuwa/+hDCUsIEuTv+Q68OXNk3gkvqWnFB5iqW6XMyQR0WS6uAgd1aO9
+         UHYBC4SgSZP4Pnc3FFblf4fJfmcHT9zrlKr5E=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=fTjGrprXf/p+7VyJhV9oMQ+mFbRhaf2fd3YnoA+5GTw=;
-        b=MKWkjnFXgXCMQabLk3AF/7RB/p4ceenL8GGgpfWdSTOnuS7DXDQlarBlMwvz2XRxZq
-         WHY1pUNPJo18eXxLdL2XcXsuTEbbneuxw9W3k7XmhyZ0WrJ3ufiyLPyPnzUnVGdfMYKq
-         YGf7mGQFiHknrTsjz9QUYIUND9IMZWkRgIFDEL3keW+o5qGpPCdmLakgalMl/0iTqR2m
-         FlRq76IYbbOyuVk9Ch/x0/vYQOx8BV0f53F2aaav9ZPcYmf9mxfnMWlgZBJTHChgpmyQ
-         xg2rt1JPgtFXgGs8U2q7bUPzQqbLU7LxX7e9mgSQyqx12PLR7S3kiy2iKBX8234hF06z
-         8kOA==
-X-Gm-Message-State: AOAM531n1RoGOgObJ67Fw5iEP57Omzx/jrAAkw/BpS70bk1x91brQat/
-        VHk5C5/Lc5KRLV1JXCOLqh+h4SS3Y3gLkyLRwtFjjw==
-X-Google-Smtp-Source: ABdhPJzI9LfCzCLX7f+iSxdraoDOaNdVltw0kDFCO6PfxopQK7HxBYytXTWKPFOHrLUr2ii9D/9tKushc/1x+YBdX90=
-X-Received: by 2002:a17:906:4306:: with SMTP id j6mr4207795ejm.523.1604607902859;
- Thu, 05 Nov 2020 12:25:02 -0800 (PST)
+        bh=MrnvvLHekW4TYcEWv1cXv+8uSn/ZuDUMwq3/3GN4sq0=;
+        b=f03XobRdJbBmQWy3UsgHtTxhWmUXfBbsI2bVnsDHdk+XLPvYQFV1ScXqqT8wMiBw45
+         khDGjK6t45/mU1NyOiN2Cfm7Cexz0PkKP6GCMm48QexzsNb6RS8foUTbtZINtMr5zOFx
+         KXn4m10sqe/WZv7mqDujxdms6+Nm8Inv9TKgI7v8SHnHfRPOCfEA02aw82DRXxQ13yVf
+         G28Bab4iRC5GM+BeH2jT+85UdodEC22hhKfJFblZ8z/W3rMbRenRNwOKFSAUYce8siH5
+         oaAqHDhwiKVvsZin4e2ruDf4lQRrAkYBVplOern3NledAzjzhothp7MtmqWB25TFRXRh
+         0pWQ==
+X-Gm-Message-State: AOAM5325FmZxz71FgbkTnniqvDP9B2NwqjrJi8LWsByFPaKPxaX/w/IC
+        zD/NBk+XcojvngTbGyyiHtHsGBUPKq3jIg==
+X-Google-Smtp-Source: ABdhPJx0+peMdA0cy3CwuAA7PdJTEImYl1hhpjsSISKW5L0pK5UmV3AVHJMpQLqx+wdOlnwOj8sU1A==
+X-Received: by 2002:a2e:b536:: with SMTP id z22mr1562337ljm.177.1604607923265;
+        Thu, 05 Nov 2020 12:25:23 -0800 (PST)
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com. [209.85.167.51])
+        by smtp.gmail.com with ESMTPSA id q24sm283162lfr.168.2020.11.05.12.25.22
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Nov 2020 12:25:22 -0800 (PST)
+Received: by mail-lf1-f51.google.com with SMTP id v144so4139586lfa.13
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 12:25:22 -0800 (PST)
+X-Received: by 2002:ac2:5c02:: with SMTP id r2mr1838888lfp.133.1604607921846;
+ Thu, 05 Nov 2020 12:25:21 -0800 (PST)
 MIME-Version: 1.0
-References: <20201023003338.1285642-1-david.m.ertman@intel.com>
- <20201023003338.1285642-2-david.m.ertman@intel.com> <CAPcyv4i9s=CsO5VJOhPnS77K=bD0LTQ8TUAbhLd+0OmyU8YQ3g@mail.gmail.com>
- <20201105094719.GQ5429@unreal> <CAPcyv4hmBhkFjSA2Q_p=Ss40CLFs86N7FugJOpq=sZ-NigoSRw@mail.gmail.com>
- <20201105202214.GA1339091@kroah.com>
-In-Reply-To: <20201105202214.GA1339091@kroah.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Thu, 5 Nov 2020 12:24:51 -0800
-Message-ID: <CAPcyv4j0Xih_wd5R8KYmWv6ty-WKxVbV54HZqr81+UqSm96LzQ@mail.gmail.com>
-Subject: Re: [PATCH v3 01/10] Add auxiliary bus support
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Leon Romanovsky <leonro@nvidia.com>,
-        Dave Ertman <david.m.ertman@intel.com>,
-        alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>,
-        Mark Brown <broonie@kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Netdev <netdev@vger.kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Fred Oh <fred.oh@linux.intel.com>,
-        Parav Pandit <parav@mellanox.com>,
-        "Saleem, Shiraz" <shiraz.saleem@intel.com>,
-        "Patil, Kiran" <kiran.patil@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <6b9e77b0-7272-221e-d475-41b266b22496@linuxfoundation.org> <CAHk-=wiscEwD+a4M2mns1kf2S+yE6gcPp0sn4znVt0ZUxaP3Wg@mail.gmail.com>
+In-Reply-To: <CAHk-=wiscEwD+a4M2mns1kf2S+yE6gcPp0sn4znVt0ZUxaP3Wg@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 5 Nov 2020 12:25:05 -0800
+X-Gmail-Original-Message-ID: <CAHk-=whPe8hpnMw9UpXyL2s+tyWX3VaG1yL57_zzwFLjP5pw5A@mail.gmail.com>
+Message-ID: <CAHk-=whPe8hpnMw9UpXyL2s+tyWX3VaG1yL57_zzwFLjP5pw5A@mail.gmail.com>
+Subject: Re: Kunit fixes update for Linux 5.10-rc3
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 5, 2020 at 12:21 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+On Thu, Nov 5, 2020 at 12:02 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
 >
-> On Thu, Nov 05, 2020 at 09:12:51AM -0800, Dan Williams wrote:
-> > > >
-> > > > Per above SPDX is v2 only, so...
-> > >
-> > > Isn't it default for the Linux kernel?
+> On Thu, Nov 5, 2020 at 8:55 AM Shuah Khan <skhan@linuxfoundation.org> wrote:
 > >
-> > SPDX eliminated the need to guess a default, and MODULE_LICENSE("GPL")
-> > implies the "or later" language. The only default assumption is that
-> > the license is GPL v2 compatible, those possibilities are myriad, but
-> > v2-only is the first preference.
+> >   .../kunit/test_data/test_config_printk_time.log    | Bin 1584 -> 1605 bytes
+> >   .../test_data/test_interrupted_tap_output.log      | Bin 1982 -> 2003 bytes
+> >   .../test_data/test_kernel_panic_interrupt.log      | Bin 1321 -> 1342 bytes
+> >   .../kunit/test_data/test_multiple_prefixes.log     | Bin 1832 -> 1861
 >
-> No, MODULE_LICENSE("GPL") does not imply "or later" at all.  Please see
-> include/linux/module.h, it means "GPL version 2".
->
+> This diffstat is a bit annoying.
 
-Oh, I did, and stopped before getting to:
+Oh, and another note: because you don't have the "[GIT PULL}" marker
+on the subject line, the pr-tracker-bot doesn't react to the pull
+requests, and you didn't get notified that it's been pulled.
 
-  "only/or later" distinction is completely irrelevant and does neither
- *replace the proper license identifiers in the corresponding source file
+Just FYI - I personally don't care, as your pull requests do show up
+in _my_ queue, because you have "git" and "pull" in the body of the
+message. But the automation doesn't see them.
 
-...sorry for the noise.
+                 Linus
