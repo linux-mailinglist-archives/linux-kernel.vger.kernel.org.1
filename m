@@ -2,57 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 951772A73D9
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 01:33:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A97122A73DF
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 01:35:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387494AbgKEAdh convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 4 Nov 2020 19:33:37 -0500
-Received: from smtp2200-217.mail.aliyun.com ([121.197.200.217]:36892 "EHLO
-        smtp2200-217.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2387408AbgKEAdg (ORCPT
+        id S2387561AbgKEAfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 19:35:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56040 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726608AbgKEAfQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 19:33:36 -0500
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1920018|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_news_journal|0.00933506-0.000345048-0.99032;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047190;MF=ren_guo@c-sky.com;NM=1;PH=DS;RN=4;RT=4;SR=0;TI=SMTPD_---.IsiYfsD_1604536412;
-Received: from 30.225.211.224(mailfrom:ren_guo@c-sky.com fp:SMTPD_---.IsiYfsD_1604536412)
-          by smtp.aliyun-inc.com(10.147.41.137);
-          Thu, 05 Nov 2020 08:33:33 +0800
-Content-Type: text/plain;
-        charset=gb2312
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
-Subject: Re: linux-next: Signed-off-by missing for commit in the csky tree
-From:   Guo Ren <ren_guo@c-sky.com>
-In-Reply-To: <20201105072222.10bd99dc@canb.auug.org.au>
-Date:   Thu, 5 Nov 2020 08:33:32 +0800
-Cc:     Lin Lei <linlei@linux.alibaba.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Transfer-Encoding: 8BIT
-Message-Id: <EC76879E-364A-4D91-9C79-43077067D5D1@c-sky.com>
-References: <20201105072222.10bd99dc@canb.auug.org.au>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-X-Mailer: Apple Mail (2.3445.104.11)
+        Wed, 4 Nov 2020 19:35:16 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22B83C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 16:35:16 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id z1so129172plo.12
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 16:35:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=R/wPomTMkZj1Nomsd//HG7kN27omvaqNPJ+rtSAN1Co=;
+        b=MeYISvHNTRMuvGpXWZoUJM2hxaPTm9Ojiv8X3ArMaTpIp5z6WG+BgLIU1f9ZP8zx+I
+         gfrELiifLERsXD0PCux70mBvQJQX2fLIt+VraLrJEBVmHd5ELgSxjCL/OW0TCTF/9UgR
+         AJTba0fbf1O1TcK+OhhvkT6E7c9kN65trWCUGh5sqgDKFILZEFa18yB+ZYSee/PAmPaG
+         BO1/e9lJLsjSbM0QAcJI9LZTqkxDdRA65QdfZbq5gUGuF9c/hejxsHusH364n1ZQZQCU
+         9knNUSxrp11opdM5jCLlwgv5zqC75ZKaH7fYwGRjVY/pnp38bcrjlRViOCAh0ntzThkQ
+         dZ5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=R/wPomTMkZj1Nomsd//HG7kN27omvaqNPJ+rtSAN1Co=;
+        b=q2StGCL7y1t1tET9KUtkI6ZnJ9UE9KnIt0gSFmeHjhC3iGVRnZEukw66TY7slkD25C
+         jFoJIsHcohGHe6R+I7dHQDLd7PAQ+ryQKVZcg3mhV85DimzsFio1OvzlEiJn9wdinXEz
+         7fm15sy+29QJ6tFN5MruvC4phdklSKFI7yi50ftwGAdSJggIrxMt4Czg+Tw/wxJPvH73
+         JVLsV6hQkNyZXaZxwkm4j7/btxvnCBjJlPdYt3JxqX4B3/SMhw4Mh2PEE0Ot92uNetiL
+         dBLJzDYSepjB5tb+JRKnNYJnzGk1q0rK45iWWVZvrTeXOKdDjj86SPe93x4XEhwQEmzk
+         gsPA==
+X-Gm-Message-State: AOAM533xJjZtOJ+EcqbpxTNA8Id4WQsFQPcIWWCItOOaKWgO2cLP8Y41
+        7ALJlWu5RUA3ixXa3tcDQGd1fOMUuTbuI+qm1aLtyg==
+X-Google-Smtp-Source: ABdhPJwoPFp3wsgb8+dGYDWYo8JMKmpwfcYH7kUkSKWs5if+NjNf0ULEf7pQQ9XjT9uy9Aaoke3ytxEP0XFn31pdcLk=
+X-Received: by 2002:a17:902:8a8b:b029:d5:f871:92bd with SMTP id
+ p11-20020a1709028a8bb02900d5f87192bdmr533068plo.10.1604536515505; Wed, 04 Nov
+ 2020 16:35:15 -0800 (PST)
+MIME-Version: 1.0
+References: <363325b4a85f094ba9cf06301dd022912ec79d03.camel@perches.com>
+ <CANiq72=r6oieZ-Nj-e6e+HriW8kADB75z2pj6W-gg7Cff3nqGw@mail.gmail.com>
+ <CAKwvOdmnz-DJ-hG5FKJZYF7W-ujPrgfMkrb2hMLhmzhk8Hx6dA@mail.gmail.com> <ba3126e1424c578f5040c7a6f04cdd6a334b2db4.camel@perches.com>
+In-Reply-To: <ba3126e1424c578f5040c7a6f04cdd6a334b2db4.camel@perches.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 4 Nov 2020 16:35:04 -0800
+Message-ID: <CAKwvOdmoR9xph_TK5zaKdh1qHX4Sh9MW9xYcxLJf6wZfxSkv2Q@mail.gmail.com>
+Subject: Re: [RFC PATCH] .clang-format: Remove conditional comments
+To:     Joe Perches <joe@perches.com>
+Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sorry, the patch is deprecated. I’ll remove it
+On Tue, Nov 3, 2020 at 5:31 PM Joe Perches <joe@perches.com> wrote:
+>
+> On Tue, 2020-11-03 at 17:08 -0800, Nick Desaulniers wrote:
+> > On Tue, Nov 3, 2020 at 1:33 PM Miguel Ojeda
+> > <miguel.ojeda.sandonis@gmail.com> wrote:
+> > > On Tue, Nov 3, 2020 at 7:29 PM Joe Perches <joe@perches.com> wrote:
+> > > >
+> > > > Now that the clang minimum supported version is > 10.0, enable the
+> > > > commented out conditional reformatting key:value lines in the file.
+> > > >
+> > > > Signed-off-by: Joe Perches <joe@perches.com>
+> > > > ---
+> > > >
+> > > > Hey Miguel.
+> > > >
+> > > > I don't use this, but on its face it seems a reasonable change
+> > > > if the commented out key:value lines are correct.
+> >
+> > Joe,
+> > what would it take to get you to use clang-format, or at least try it?
+> >  Beers?  Bribes? Dirty deeds, done dirt cheap?
+>
+> Hey Nick.
+>
+> Paint my house? ;)
 
-Best Regards
-  Guo Ren
+I'll help you paint your bikeshed. Oh, but what color?  I see a red
+door, and I want it painted black.
 
-
-
-> 在 2020年11月5日，上午4:22，Stephen Rothwell <sfr@canb.auug.org.au> 写道：
-> 
-> Hi all,
-> 
-> Commit
-> 
->  6257c1904d00 ("drivers/net: Add dwmac-thead added.")
-> 
-> is missing a Signed-off-by from its author.
-> 
-> -- 
-> Cheers,
-> Stephen Rothwell
-
+Sounds to me like Miguel could win over a critic by addressing some of
+your (quite valid) concerns. ;)
+--
+Thanks,
+~Nick Desaulniers
