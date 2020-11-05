@@ -2,122 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19BE92A8094
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 15:15:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BACA2A8087
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 15:14:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731067AbgKEOPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 09:15:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42366 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730922AbgKEOPw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 09:15:52 -0500
-Received: from mail-oo1-xc42.google.com (mail-oo1-xc42.google.com [IPv6:2607:f8b0:4864:20::c42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 078CEC0613CF;
-        Thu,  5 Nov 2020 06:15:52 -0800 (PST)
-Received: by mail-oo1-xc42.google.com with SMTP id n16so458936ooj.2;
-        Thu, 05 Nov 2020 06:15:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=y++wwA2trwoLTeidmcO6HyXS/KDcURbyY/O4LhQQQ6M=;
-        b=ha1QZSeeAlAiTnjwS63lsPoRvbfSsQWqdLQ2EGZjZBRoudlDSqohQgFDSuR0xtuj+U
-         xyY75x/1lUo9RaZOfMPjtFwXZso4SNSE83B9Yu9pqIQij8XCIWx1S3lHNVymVsUXoU1U
-         KuXjpdbOY+rFru/M89FZ5/vt5uoFgXrGCjTQQ7lQgiAo0tNuyA5YW0iAhX/9smMKEfNW
-         7R3frLknjvlimjnqUMRgzwGu+RgqLOHzNF3RYhnVEiABY/4K0mZPkVqYtWVh0ZAEgVSX
-         QsNF5ikBNYngO93BU3vozWy5Qpr4DJSVAybU2GAPW14CYUS3ciP57EtgUy2tP/5RH5ls
-         qmVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=y++wwA2trwoLTeidmcO6HyXS/KDcURbyY/O4LhQQQ6M=;
-        b=AGqebtsEOSksDwCEQ8XeMslWP55mzl9cI97HKNCKCmLQRhBtBP6KDwhoevi5YKBPWQ
-         EbBBG+BaKxS9piddC6WhcSAjSk4eRoghIRQECFbMj0cd1PmCR5VB4EXktrUdXFZH6tog
-         HB4rAIP/UilLpbJoamVXpUUTS3RdDZqdILKiQfEVG35bLv34TSyRBJS5iEHeDT3t5VOg
-         Pb8WK7cA86fEgfmLbRdScgeC0DcqYeyP9vS199xDulmZOLwFecWGkU6jjgImEKUyN0/5
-         PDs2yGRUYd9V76ZSVjCwF3UZmNIHflFrMgWqXHlWCI+816lpNIT2CajKboe3Aea7eZsE
-         /V0A==
-X-Gm-Message-State: AOAM530zCjjc2S/iNC3jcNWMuFzYTA7wllWIrCy6SF6QiVbJp6EH+H8R
-        85ucHxMnAPajFwLt65WAaQUT9lSYHdU=
-X-Google-Smtp-Source: ABdhPJxbVW5EMauDC4fb3QXE0Z5KS/uYP+xGsu5usDkf7xMtKhy4T/g/tl9bfb7eojbjgiAFpTS6FA==
-X-Received: by 2002:a4a:cf09:: with SMTP id l9mr1987400oos.30.1604585751422;
-        Thu, 05 Nov 2020 06:15:51 -0800 (PST)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id m11sm358655oop.6.2020.11.05.06.15.50
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 05 Nov 2020 06:15:50 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Thu, 5 Nov 2020 06:15:49 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Wilken Gottwalt <wilken.gottwalt@posteo.net>
-Cc:     Colin King <colin.king@canonical.com>,
-        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] hwmon: corsair-psu: fix unintentional sign
- extension issue
-Message-ID: <20201105141549.GA1389@roeck-us.net>
-References: <20201105115019.41735-1-colin.king@canonical.com>
- <20201105133233.10edda5b@monster.powergraphx.local>
+        id S1730875AbgKEOOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 09:14:03 -0500
+Received: from foss.arm.com ([217.140.110.172]:33706 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729113AbgKEOOD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 09:14:03 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 894BA14BF;
+        Thu,  5 Nov 2020 06:14:02 -0800 (PST)
+Received: from [10.37.12.41] (unknown [10.37.12.41])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C55673F719;
+        Thu,  5 Nov 2020 06:13:59 -0800 (PST)
+Subject: Re: [PATCH v8 30/43] arm64: kasan: Allow enabling in-kernel MTE
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <cover.1604531793.git.andreyknvl@google.com>
+ <5e3c76cac4b161fe39e3fc8ace614400bc2fb5b1.1604531793.git.andreyknvl@google.com>
+ <58aae616-f1be-d626-de16-af48cc2512b0@arm.com>
+ <CAAeHK+yfQJbHLP0ja=_qnEugyrtQFMgRyw3Z1ZOeu=NVPNCFgg@mail.gmail.com>
+ <1ef3f645-8b91-cfcf-811e-85123fea90fa@arm.com>
+ <CAAeHK+zuJtMbUK75TEFSmLjpu8h-wTfkra1ZGV533shYKEYi6g@mail.gmail.com>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <090ab218-8566-772b-648f-00001413fef2@arm.com>
+Date:   Thu, 5 Nov 2020 14:17:00 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201105133233.10edda5b@monster.powergraphx.local>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CAAeHK+zuJtMbUK75TEFSmLjpu8h-wTfkra1ZGV533shYKEYi6g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 01:32:33PM +0100, Wilken Gottwalt wrote:
-> On Thu,  5 Nov 2020 11:50:19 +0000
-> Colin King <colin.king@canonical.com> wrote:
+
+
+On 11/5/20 12:14 PM, Andrey Konovalov wrote:
+> On Thu, Nov 5, 2020 at 12:39 PM Vincenzo Frascino
+> <vincenzo.frascino@arm.com> wrote:
+>>
+>> On 11/5/20 11:35 AM, Andrey Konovalov wrote:
+>>> This will work. Any preference on the name of this function?
+>>>
+>>
+>> I called it in my current iteration mte_enable(), and calling it from
+>> cpu_enable_mte().
+>>
+>>> Alternatively we can rename mte_init_tags() to something else and let
+>>> it handle both RRND and sync/async.
+>>
+>> This is an option but then you need to change the name of kasan_init_tags and
+>> the init_tags indirection name as well. I would go for the simpler and just
+>> splitting the function as per above.
+>>
+>> What do you think?
 > 
-> > From: Colin Ian King <colin.king@canonical.com>
-> > 
-> > The shifting of the u8 integer data[3] by 24 bits to the left will
-> > be promoted to a 32 bit signed int and then sign-extended to a
-> > long. In the event that the top bit of data[3] is set then all
-> > then all the upper 32 bits of a 64 bit long end up as also being
-> > set because of the sign-extension. Fix this by casting data[3] to
-> > a long before the shift.
-> > 
-> > Addresses-Coverity: ("Unintended sign extension")
-> > Fixes: ce15cd2cee8b ("hwmon: add Corsair PSU HID controller driver")
-> > Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> > ---
-> >  drivers/hwmon/corsair-psu.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/hwmon/corsair-psu.c b/drivers/hwmon/corsair-psu.c
-> > index e92d0376e7ac..5d19a888231a 100644
-> > --- a/drivers/hwmon/corsair-psu.c
-> > +++ b/drivers/hwmon/corsair-psu.c
-> > @@ -241,7 +241,7 @@ static int corsairpsu_get_value(struct corsairpsu_data *priv, u8 cmd, u8
-> > rail, l
-> >  	 * the LINEAR11 conversion are the watts values which are about 1200 for the strongest
-> > psu
-> >  	 * supported (HX1200i)
-> >  	 */
-> > -	tmp = (data[3] << 24) + (data[2] << 16) + (data[1] << 8) + data[0];
-> > +	tmp = ((long)data[3] << 24) + (data[2] << 16) + (data[1] << 8) + data[0];
-> >  	switch (cmd) {
-> >  	case PSU_CMD_IN_VOLTS:
-> >  	case PSU_CMD_IN_AMPS:
-> 
-> Yeah, this could happen if the uptime value in the micro-controller gets bigger
-> than 68 years (in seconds), and it is the only value which actually uses more
-> than 2 bytes for the representation. So what about architectures which are 32 bit
-> wide and where a long has 32 bits? I guess this simple cast is not enough.
+> OK, let's split. mte_enable() as a name sounds good to me. Both
+> functions will still be called one right after another from
+> kasan_init_hw_tags (as it's now called) though. I think the name
+> works, as it means initializing the hw_tags mode, not just the tags.
 > 
 
-The hwmon subsystem uses 'long' to pass values back to the core.
-While that may be a bit unfortunate as it doesn't support uptimes
-of more than 68 years in seconds, we are not going to change the
-hwmon core to accommodate it. If the incoming data is always
-expected to be positive, and you don't want to risk the overflow,
-feel free to either use "data[3] & 0x7f" instead, or max out the
-result at INT_MAX (from <linux/limits.h>).
+I agree. When you finish with v9, could you please provide a tree with both the
+sets on top similar to [1]? I would like to repeat the tests (ltp + kselftests)
+and even to rebase my async code on top of it since we are aligning with the
+development.
 
-Thanks,
-Guenter
+[1] https://github.com/xairy/linux/tree/up-boot-mte-v1
+
+> Will do in v9.
+> 
+
+-- 
+Regards,
+Vincenzo
