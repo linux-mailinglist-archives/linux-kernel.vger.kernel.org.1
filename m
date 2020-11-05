@@ -2,294 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 361472A8166
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 15:51:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB02F2A8191
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 15:53:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731081AbgKEOux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 09:50:53 -0500
-Received: from mail-vi1eur05on2047.outbound.protection.outlook.com ([40.107.21.47]:39777
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730721AbgKEOuv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 09:50:51 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jRroRlpiI4RnQSZKfJabuBJCl1DklsiMIgE4+KYQsUMSjukrSXyBaF4z9I0eg0nhpzIg08qZV9Lx4LjjbQhWpC1+TlSnC6s2wC+7TY3FkKbITOY6o+xAg8XhnnNgLtAkTI0rUdT0hXvMFF1U9cbonHbie9rvAlWuRCuXQ+l7Do9/dS2VMsCymx4q8Iq14jUVtM3qFJMBS0z+7L1WXXPmohOjtAo8UcJqYkYFaXccRXs+9gLz7XypG9Odft/2RQeQhptbB8AZFHkqVE1ASK2tSCHq8kKBMW1C7ue46VRLo1KnUz9tmMke6AKVOJxgSj2E9EYpgqkTu20E9nW5XH8Uzw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=j15SjDF9aLjGIPxBcDlHgRAxxK6JsizXt3CeJttpP0g=;
- b=B4VtUrP8YidYS496cqCu+RufeWDW0oGhraO59VuzaOa8whEv+mVzpIJtDN380WH+tRJ68EHrtdDAln8SRUggR2jVEDO3bEVCcznpNKy9J20KaArob5iEgzTa3aff8j0bya0FYhz/6pOvXxU4JfyS9KC9TrWUeycNgNchpwmgNNeiZLwEZ/jDQNTkfOJ5xGnH+/LJH6DNWI972V7KD/H7nqaJQmh8kIgp3e5OInMzq7rSe2g9bxiwWWEihPbKPurA431AciJsgqmAqyPckowHqgjz6JzDBK/WCGiMr53QJqRzPjvRKHViMgSd3254Yekk7tfkJCOIfpJjq3uVMP/6lA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=j15SjDF9aLjGIPxBcDlHgRAxxK6JsizXt3CeJttpP0g=;
- b=Om2yd/gG0FLY7q1h+nDtNcZLlNBLoVIXxLhxjBCeZMq/Gra0PcQ/IqQd3GKoOxDqwHNiBtc/v4A8+SNo17wLqnuGhw1jq2RqKI62z+C1hYwLqT85ywr4d0C28/pr/hT8uVzTozDcU3E8Pv6NtkejesBle+9D2Toz9KukeDR1kMI=
-Authentication-Results: pengutronix.de; dkim=none (message not signed)
- header.d=none;pengutronix.de; dmarc=none action=none header.from=oss.nxp.com;
-Received: from VI1PR0402MB3902.eurprd04.prod.outlook.com
- (2603:10a6:803:22::27) by VE1PR04MB6495.eurprd04.prod.outlook.com
- (2603:10a6:803:11d::10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.22; Thu, 5 Nov
- 2020 14:50:47 +0000
-Received: from VI1PR0402MB3902.eurprd04.prod.outlook.com
- ([fe80::f000:d709:509:bb5]) by VI1PR0402MB3902.eurprd04.prod.outlook.com
- ([fe80::f000:d709:509:bb5%3]) with mapi id 15.20.3499.032; Thu, 5 Nov 2020
- 14:50:47 +0000
-From:   Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>
-To:     Lucas Stach <l.stach@pengutronix.de>,
+        id S1731661AbgKEOxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 09:53:12 -0500
+Received: from relay5-d.mail.gandi.net ([217.70.183.197]:40035 "EHLO
+        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731451AbgKEOwc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 09:52:32 -0500
+X-Originating-IP: 93.29.109.196
+Received: from aptenodytes (196.109.29.93.rev.sfr.net [93.29.109.196])
+        (Authenticated sender: paul.kocialkowski@bootlin.com)
+        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id D36D71C000D;
+        Thu,  5 Nov 2020 14:52:24 +0000 (UTC)
+Date:   Thu, 5 Nov 2020 15:52:24 +0100
+From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-sunxi@googlegroups.com,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Yong Deng <yong.deng@magewell.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Helen Koike <helen.koike@collabora.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>
-Cc:     Laurentiu Palcu <laurentiu.palcu@nxp.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/imx/dcss: allow using nearest neighbor interpolation scaling
-Date:   Thu,  5 Nov 2020 16:50:18 +0200
-Message-Id: <20201105145018.27255-1-laurentiu.palcu@oss.nxp.com>
-X-Mailer: git-send-email 2.17.1
-Content-Type: text/plain; charset="us-ascii"
-X-Originating-IP: [83.217.231.2]
-X-ClientProxiedBy: AM0PR03CA0101.eurprd03.prod.outlook.com
- (2603:10a6:208:69::42) To VI1PR0402MB3902.eurprd04.prod.outlook.com
- (2603:10a6:803:22::27)
+        Hans Verkuil <hans.verkuil@cisco.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>, kevin.lhopital@hotmail.com
+Subject: Re: [PATCH 08/14] media: sunxi: Add support for the A31 MIPI CSI-2
+ controller
+Message-ID: <20201105145224.GA615923@aptenodytes>
+References: <20201023174546.504028-1-paul.kocialkowski@bootlin.com>
+ <20201023174546.504028-9-paul.kocialkowski@bootlin.com>
+ <20201026165407.rrq6ccsexcsub5bm@gilmour.lan>
+ <20201104113458.GC287014@aptenodytes>
+ <20201104185650.ii7dlekjtfar2xpp@gilmour.lan>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from fsr-ub1864-141.ea.freescale.net (83.217.231.2) by AM0PR03CA0101.eurprd03.prod.outlook.com (2603:10a6:208:69::42) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21 via Frontend Transport; Thu, 5 Nov 2020 14:50:45 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 47c2cff4-8a32-4914-2147-08d8819a2df1
-X-MS-TrafficTypeDiagnostic: VE1PR04MB6495:
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VE1PR04MB6495F2D9540F85EB91D0D5B2BEEE0@VE1PR04MB6495.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Zp+Owf++aSJe9b38E+Yaw8qGPc+X0Ft7N65S0K+SexUXwyyVTBIojJ3G0ySLhrM/6D2N6gCvaUV7w7ZfpLLJQGX+9+rZTznjRg/TmImguDpai3I00uvw09WcM0sk1BtSo8oAVIEsnXkr/Zerw0tlauDk+GoEFyNo43U72a65mnwexu0rs6yuzh0Y6wT0w/ASiLryN3F6Ucl5waV1fouBCzM3a5RflHgn2DPvyKAtU8yR+uhqx0lFO05h9m9goWCYA4Uav6za4LHJ4pY8czlagzWotrZ2AaLYTCWSL2oiRrkvWTjQ64agcXi9VIrrDI5Y
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0402MB3902.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(396003)(39860400002)(136003)(366004)(66476007)(66556008)(2906002)(8676002)(8936002)(6486002)(6512007)(66946007)(83380400001)(6666004)(86362001)(110136005)(478600001)(2616005)(956004)(7416002)(44832011)(52116002)(1076003)(186003)(4326008)(316002)(6506007)(5660300002)(16526019)(26005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: JNv6rEFMF3tgV8akulWD+LcyC0pZWF7/vOIBmyN0Ke3ZYtMhSBGaWfw5r7xvK0Ha6W2iK8lzPJ9gytMqNO12ZY6899/GhW9hvqo8VSw51L75+t44sosAoBKXBG7NsOgRvRFttzaYcqle6ccZojTLFL9RLzEIZMRH1dadrDkv6BcW1tLEmV9ZXnHxGtMeD99p29cDxNZwOJHR/ow8Ft1ViPPagcYddT2Y0s+MB4volB47FdDp/SbsSYhtQuEz5Ev2T1SUuXW8AHiHs0qRPuVhhyDc0lKu/HjgX/bMtDcxHLUF2nN+AUV2i0P3liA1uscH+8aOngDSvRQ709TMCtBe2sC9sAaoYxT8tG62K6Tgdaq8EV/dENCrcbKrLBE6n8z9SdOLND+RI9g54q4/6RS1bCO+7N4Uoa1ssxsZGyLQcGgohSy42ER64uabXvCg4Dnvopbi2elKatj0hM0yjmp90iSJZ5lSp28wl50P6rkrOOD4qZQgB5uBSRFTOBbzogJqIKbzxCRDn1qvcO7p9l+7myei9v7TYEehTsVhxl1mnkPiVy5s7FbywGM0y2FC4mG15UWhVTo2VfKXC77smrBRvJEL6/ob0xDdYzNHxvFvF+cOcKeD940PVkC8kvBlx//Qiehw/LwrEz3sgZKX+hAPjg==
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 47c2cff4-8a32-4914-2147-08d8819a2df1
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR0402MB3902.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Nov 2020 14:50:47.1419
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: g6gYG9GXJsD3IahANBZrtvEZaF66ALFGcj61nisCHWBbhjCzexKyPSKGB+ukg+yw7fRA4PTsGXXm8k81WgSvKA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB6495
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="VS++wcV0S1rZb1Fb"
+Content-Disposition: inline
+In-Reply-To: <20201104185650.ii7dlekjtfar2xpp@gilmour.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds support for using NN interpolation scaling by setting the
-SCALING_FILTER plane property to 1. Otherwise, the default method is used.
 
-Signed-off-by: Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>
----
-I had no retro pixel art games to test this with, so I used modetest to see the
-results:
+--VS++wcV0S1rZb1Fb
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-To test, I used a 240x135 buffer, upscaled 8 times to 1920x1080:
- * default scaling method using gaussian filter:
-/usr/bin/modetest -M imx-dcss -w 33:SCALING_FILTER:0 -P 33@38:240x135*8@XR24
- * NN interpolation method:
-/usr/bin/modetest -M imx-dcss -w 33:SCALING_FILTER:1 -P 33@38:240x135*8@XR24
+Hi,
 
-Thanks,
-laurentiu
+On Wed 04 Nov 20, 19:56, Maxime Ripard wrote:
+> On Wed, Nov 04, 2020 at 12:34:58PM +0100, Paul Kocialkowski wrote:
+> > > > +	regmap_write(regmap, SUN6I_MIPI_CSI2_CFG_REG,
+> > > > +		     SUN6I_MIPI_CSI2_CFG_CHANNEL_MODE(1) |
+> > > > +		     SUN6I_MIPI_CSI2_CFG_LANE_COUNT(lanes_count));
+> > >=20
+> > > It's not really clear what the channel is here? The number of virtual
+> > > channels? Something else?
+> >=20
+> > That's somewhat described in the controller documentation. Channels ref=
+ers to
+> > physical channels of the controller, which can be used to redirect data
+> > matching either a specific data type, a specific virtual channel, or bo=
+th.
+> > There's a somewhat similar concept of channels in the CSI controller to=
+o.
+> >=20
+> > We're currently only using one...
+> >=20
+> > > > +	regmap_write(regmap, SUN6I_MIPI_CSI2_VCDT_RX_REG,
+> > > > +		     SUN6I_MIPI_CSI2_VCDT_RX_CH_VC(3, 3) |
+> > > > +		     SUN6I_MIPI_CSI2_VCDT_RX_CH_VC(2, 2) |
+> > > > +		     SUN6I_MIPI_CSI2_VCDT_RX_CH_VC(1, 1) |
+> > > > +		     SUN6I_MIPI_CSI2_VCDT_RX_CH_VC(0, 0) |
+> > > > +		     SUN6I_MIPI_CSI2_VCDT_RX_CH_DT(0, data_type));
+> >=20
+> > ... but it's safer to configure them all to virtual channel numbers so =
+we don't
+> > end up with multiple channels matching virtual channel 0.
+> >=20
+> > I'll add a comment about that.
+>=20
+> Maybe we should have pads for all of them then, even if we don't support
+> changing anything?
 
- drivers/gpu/drm/imx/dcss/dcss-dev.h    |  3 ++
- drivers/gpu/drm/imx/dcss/dcss-plane.c  | 10 +++++-
- drivers/gpu/drm/imx/dcss/dcss-scaler.c | 47 +++++++++++++++++++++-----
- 3 files changed, 50 insertions(+), 10 deletions(-)
+If that's something we can add later (I think it is), I would rather do thi=
+s in
+a sub-sequent series to keep the current one lightweight and merged ASAP.
 
-diff --git a/drivers/gpu/drm/imx/dcss/dcss-dev.h b/drivers/gpu/drm/imx/dcss/dcss-dev.h
-index c642ae17837f..1e582270c6ea 100644
---- a/drivers/gpu/drm/imx/dcss/dcss-dev.h
-+++ b/drivers/gpu/drm/imx/dcss/dcss-dev.h
-@@ -7,6 +7,7 @@
- #define __DCSS_PRV_H__
- 
- #include <drm/drm_fourcc.h>
-+#include <drm/drm_plane.h>
- #include <linux/io.h>
- #include <video/videomode.h>
- 
-@@ -165,6 +166,8 @@ void dcss_ss_sync_set(struct dcss_ss *ss, struct videomode *vm,
- /* SCALER */
- int dcss_scaler_init(struct dcss_dev *dcss, unsigned long scaler_base);
- void dcss_scaler_exit(struct dcss_scaler *scl);
-+void dcss_scaler_set_filter(struct dcss_scaler *scl, int ch_num,
-+			    enum drm_scaling_filter scaling_filter);
- void dcss_scaler_setup(struct dcss_scaler *scl, int ch_num,
- 		       const struct drm_format_info *format,
- 		       int src_xres, int src_yres, int dst_xres, int dst_yres,
-diff --git a/drivers/gpu/drm/imx/dcss/dcss-plane.c b/drivers/gpu/drm/imx/dcss/dcss-plane.c
-index 5db093aada2f..03ba88f7f995 100644
---- a/drivers/gpu/drm/imx/dcss/dcss-plane.c
-+++ b/drivers/gpu/drm/imx/dcss/dcss-plane.c
-@@ -257,7 +257,8 @@ static bool dcss_plane_needs_setup(struct drm_plane_state *state,
- 	       state->src_h  != old_state->src_h  ||
- 	       fb->format->format != old_fb->format->format ||
- 	       fb->modifier  != old_fb->modifier ||
--	       state->rotation != old_state->rotation;
-+	       state->rotation != old_state->rotation ||
-+	       state->scaling_filter != old_state->scaling_filter;
- }
- 
- static void dcss_plane_atomic_update(struct drm_plane *plane,
-@@ -313,6 +314,9 @@ static void dcss_plane_atomic_update(struct drm_plane *plane,
- 	is_rotation_90_or_270 = state->rotation & (DRM_MODE_ROTATE_90 |
- 						   DRM_MODE_ROTATE_270);
- 
-+	dcss_scaler_set_filter(dcss->scaler, dcss_plane->ch_num,
-+			       state->scaling_filter);
-+
- 	dcss_scaler_setup(dcss->scaler, dcss_plane->ch_num,
- 			  state->fb->format,
- 			  is_rotation_90_or_270 ? src_h : src_w,
-@@ -394,6 +398,10 @@ struct dcss_plane *dcss_plane_init(struct drm_device *drm,
- 	if (ret)
- 		return ERR_PTR(ret);
- 
-+	drm_plane_create_scaling_filter_property(&dcss_plane->base,
-+					BIT(DRM_SCALING_FILTER_DEFAULT) |
-+					BIT(DRM_SCALING_FILTER_NEAREST_NEIGHBOR));
-+
- 	drm_plane_create_rotation_property(&dcss_plane->base,
- 					   DRM_MODE_ROTATE_0,
- 					   DRM_MODE_ROTATE_0   |
-diff --git a/drivers/gpu/drm/imx/dcss/dcss-scaler.c b/drivers/gpu/drm/imx/dcss/dcss-scaler.c
-index cd21905de580..47852b9dd5ea 100644
---- a/drivers/gpu/drm/imx/dcss/dcss-scaler.c
-+++ b/drivers/gpu/drm/imx/dcss/dcss-scaler.c
-@@ -77,6 +77,8 @@ struct dcss_scaler_ch {
- 
- 	u32 c_vstart;
- 	u32 c_hstart;
-+
-+	bool use_nn_interpolation;
- };
- 
- struct dcss_scaler {
-@@ -243,6 +245,17 @@ static void dcss_scaler_gaussian_filter(int fc_q, bool use_5_taps,
- 	}
- }
- 
-+static void dcss_scaler_nearest_neighbor_filter(bool use_5_taps,
-+						int coef[][PSC_NUM_TAPS])
-+{
-+	int i, j;
-+
-+	for (i = 0; i < PSC_STORED_PHASES; i++)
-+		for (j = 0; j < PSC_NUM_TAPS; j++)
-+			coef[i][j] = j == PSC_NUM_TAPS >> 1 ?
-+						(1 << PSC_COEFF_PRECISION) : 0;
-+}
-+
- /**
-  * dcss_scaler_filter_design() - Compute filter coefficients using
-  *				 Gaussian filter.
-@@ -253,7 +266,8 @@ static void dcss_scaler_gaussian_filter(int fc_q, bool use_5_taps,
-  */
- static void dcss_scaler_filter_design(int src_length, int dst_length,
- 				      bool use_5_taps, bool phase0_identity,
--				      int coef[][PSC_NUM_TAPS])
-+				      int coef[][PSC_NUM_TAPS],
-+				      bool nn_interpolation)
+It would also require some investigation to find out if the MIPI CSI-2 chan=
+nel
+number i goes directly to the CSI controller channel number i or if some
+remapping can take place.
+
+What do you think?
+
+> > > > +static const struct v4l2_subdev_pad_ops sun6i_mipi_csi2_subdev_pad=
+_ops =3D {
+> > > > +	.enum_mbus_code		=3D sun6i_mipi_csi2_enum_mbus_code,
+> > > > +	.get_fmt		=3D sun6i_mipi_csi2_get_fmt,
+> > > > +	.set_fmt		=3D sun6i_mipi_csi2_set_fmt,
+> > > > +	.enum_frame_size	=3D sun6i_mipi_csi2_enum_frame_size,
+> > > > +	.enum_frame_interval	=3D sun6i_mipi_csi2_enum_frame_interval,
+> > > > +};
+> > > > +
+> > > > +/* Subdev */
+> > > > +
+> > > > +static const struct v4l2_subdev_ops sun6i_mipi_csi2_subdev_ops =3D=
  {
- 	int fc_q;
- 
-@@ -263,8 +277,11 @@ static void dcss_scaler_filter_design(int src_length, int dst_length,
- 	else
- 		fc_q = div_q(dst_length, src_length * PSC_NUM_PHASES);
- 
--	/* compute gaussian filter coefficients */
--	dcss_scaler_gaussian_filter(fc_q, use_5_taps, phase0_identity, coef);
-+	if (nn_interpolation)
-+		dcss_scaler_nearest_neighbor_filter(use_5_taps, coef);
-+	else
-+		/* compute gaussian filter coefficients */
-+		dcss_scaler_gaussian_filter(fc_q, use_5_taps, phase0_identity, coef);
- }
- 
- static void dcss_scaler_write(struct dcss_scaler_ch *ch, u32 val, u32 ofs)
-@@ -653,12 +670,14 @@ static void dcss_scaler_yuv_coef_set(struct dcss_scaler_ch *ch,
- 
- 	/* horizontal luma */
- 	dcss_scaler_filter_design(src_xres, dst_xres, false,
--				  src_xres == dst_xres, coef);
-+				  src_xres == dst_xres, coef,
-+				  ch->use_nn_interpolation);
- 	dcss_scaler_program_7_coef_set(ch, DCSS_SCALER_COEF_HLUM, coef);
- 
- 	/* vertical luma */
- 	dcss_scaler_filter_design(src_yres, dst_yres, program_5_taps,
--				  src_yres == dst_yres, coef);
-+				  src_yres == dst_yres, coef,
-+				  ch->use_nn_interpolation);
- 
- 	if (program_5_taps)
- 		dcss_scaler_program_5_coef_set(ch, DCSS_SCALER_COEF_VLUM, coef);
-@@ -678,14 +697,14 @@ static void dcss_scaler_yuv_coef_set(struct dcss_scaler_ch *ch,
- 	/* horizontal chroma */
- 	dcss_scaler_filter_design(src_xres, dst_xres, false,
- 				  (src_xres == dst_xres) && (ch->c_hstart == 0),
--				  coef);
-+				  coef, ch->use_nn_interpolation);
- 
- 	dcss_scaler_program_7_coef_set(ch, DCSS_SCALER_COEF_HCHR, coef);
- 
- 	/* vertical chroma */
- 	dcss_scaler_filter_design(src_yres, dst_yres, program_5_taps,
- 				  (src_yres == dst_yres) && (ch->c_vstart == 0),
--				  coef);
-+				  coef, ch->use_nn_interpolation);
- 	if (program_5_taps)
- 		dcss_scaler_program_5_coef_set(ch, DCSS_SCALER_COEF_VCHR, coef);
- 	else
-@@ -700,12 +719,14 @@ static void dcss_scaler_rgb_coef_set(struct dcss_scaler_ch *ch,
- 
- 	/* horizontal RGB */
- 	dcss_scaler_filter_design(src_xres, dst_xres, false,
--				  src_xres == dst_xres, coef);
-+				  src_xres == dst_xres, coef,
-+				  ch->use_nn_interpolation);
- 	dcss_scaler_program_7_coef_set(ch, DCSS_SCALER_COEF_HLUM, coef);
- 
- 	/* vertical RGB */
- 	dcss_scaler_filter_design(src_yres, dst_yres, false,
--				  src_yres == dst_yres, coef);
-+				  src_yres == dst_yres, coef,
-+				  ch->use_nn_interpolation);
- 	dcss_scaler_program_7_coef_set(ch, DCSS_SCALER_COEF_VLUM, coef);
- }
- 
-@@ -751,6 +772,14 @@ static void dcss_scaler_set_rgb10_order(struct dcss_scaler_ch *ch,
- 	ch->sdata_ctrl |= a2r10g10b10_format << A2R10G10B10_FORMAT_POS;
- }
- 
-+void dcss_scaler_set_filter(struct dcss_scaler *scl, int ch_num,
-+			    enum drm_scaling_filter scaling_filter)
-+{
-+	struct dcss_scaler_ch *ch = &scl->ch[ch_num];
-+
-+	ch->use_nn_interpolation = scaling_filter == DRM_SCALING_FILTER_NEAREST_NEIGHBOR;
-+}
-+
- void dcss_scaler_setup(struct dcss_scaler *scl, int ch_num,
- 		       const struct drm_format_info *format,
- 		       int src_xres, int src_yres, int dst_xres, int dst_yres,
--- 
-2.23.0
+> > > > +	.core		=3D &sun6i_mipi_csi2_subdev_core_ops,
+> > > > +	.video		=3D &sun6i_mipi_csi2_subdev_video_ops,
+> > > > +	.pad		=3D &sun6i_mipi_csi2_subdev_pad_ops,
+> > > > +};
+> > > > +
+> > > > +/* Notifier */
+> > > > +
+> > > > +static int sun6i_mipi_csi2_notifier_bound(struct v4l2_async_notifi=
+er *notifier,
+> > > > +					  struct v4l2_subdev *remote_subdev,
+> > > > +					  struct v4l2_async_subdev *remote_subdev_async)
+> > > > +{
+> > > > +	struct v4l2_subdev *subdev =3D notifier->sd;
+> > > > +	struct sun6i_mipi_csi2_video *video =3D
+> > > > +		sun6i_mipi_csi2_subdev_video(subdev);
+> > > > +	struct sun6i_mipi_csi2_dev *cdev =3D sun6i_mipi_csi2_video_dev(vi=
+deo);
+> > > > +	int source_pad;
+> > > > +	int ret;
+> > > > +
+> > > > +	source_pad =3D media_entity_get_fwnode_pad(&remote_subdev->entity,
+> > > > +						 remote_subdev->fwnode,
+> > > > +						 MEDIA_PAD_FL_SOURCE);
+> > > > +	if (source_pad < 0)
+> > > > +		return source_pad;
+> > > > +
+> > > > +	ret =3D media_create_pad_link(&remote_subdev->entity, source_pad,
+> > > > +				    &subdev->entity, 0,
+> > > > +				    MEDIA_LNK_FL_ENABLED |
+> > > > +				    MEDIA_LNK_FL_IMMUTABLE);
+> > > > +	if (ret) {
+> > > > +		dev_err(cdev->dev, "failed to create %s:%u -> %s:%u link\n",
+> > > > +			remote_subdev->entity.name, source_pad,
+> > > > +			subdev->entity.name, 0);
+> > > > +		return ret;
+> > > > +	}
+> > > > +
+> > > > +	video->remote_subdev =3D remote_subdev;
+> > > > +	video->remote_pad_index =3D source_pad;
+> > > > +
+> > > > +	return 0;
+> > > > +}
+> > > > +
+> > > > +static const struct v4l2_async_notifier_operations sun6i_mipi_csi2=
+_notifier_ops =3D {
+> > > > +	.bound		=3D sun6i_mipi_csi2_notifier_bound,
+> > > > +};
+> > > > +
+> > > > +/* Media Entity */
+> > > > +
+> > > > +static int sun6i_mipi_csi2_link_validate(struct media_link *link)
+> > > > +{
+> > > > +	struct v4l2_subdev *subdev =3D
+> > > > +		container_of(link->sink->entity, struct v4l2_subdev, entity);
+> > > > +	struct sun6i_mipi_csi2_video *video =3D
+> > > > +		sun6i_mipi_csi2_subdev_video(subdev);
+> > > > +	struct v4l2_subdev *remote_subdev;
+> > > > +	struct v4l2_subdev_format format =3D { 0 };
+> > > > +	int ret;
+> > > > +
+> > > > +	if (!is_media_entity_v4l2_subdev(link->source->entity))
+> > > > +		return -EINVAL;
+> > > > +
+> > > > +	remote_subdev =3D media_entity_to_v4l2_subdev(link->source->entit=
+y);
+> > > > +
+> > > > +	format.which =3D V4L2_SUBDEV_FORMAT_ACTIVE;
+> > > > +	format.pad =3D link->source->index;
+> > > > +
+> > > > +	ret =3D v4l2_subdev_call(remote_subdev, pad, get_fmt, NULL, &form=
+at);
+> > > > +	if (ret)
+> > > > +		return ret;
+> > > > +
+> > > > +	video->mbus_code =3D format.format.code;
+> > > > +
+> > > > +	return 0;
+> > > > +}
+> > >=20
+> > > I'm not really sure what you're trying to validate here?
+> >=20
+> > The whole purpose is to retreive video->mbus_code from the subdev, like=
+ it's
+> > done in the sun6i-csi driver. Maybe there is a more appropriate op to d=
+o it?
+>=20
+> I'm not sure why you need to do that in the link_validate though?
+>=20
+> You just need to init the pad format, and then you'll have a
+> get_fmt/set_fmt for your pads.
 
+Okay I may have misunderstood how manual/automatic propagation is supposed =
+to
+work then. The fact that this is done this way in the CSI driver maybe gave=
+ me
+a bad example to follow. I'll revisit this.
+
+> > > > +	cdev->regmap =3D devm_regmap_init_mmio_clk(&pdev->dev, "bus", io_=
+base,
+> > > > +						 &sun6i_mipi_csi2_regmap_config);
+> > > > +	if (IS_ERR(cdev->regmap)) {
+> > > > +		dev_err(&pdev->dev, "failed to init register map\n");
+> > > > +		return PTR_ERR(cdev->regmap);
+> > > > +	}
+> > >=20
+> > > Yeah, so that won't work. regmap expects to have access to those
+> > > registers when you enable that clock, but that won't happen since the
+> > > reset line can be disabled. You would be better off using runtime_pm
+> > > here.
+> >=20
+> > I don't understand what you mean here or what the problem could be.
+> > Here we're just initializing regmap and while this is done before the
+> > registers are available for I/O, I don't see why it would cause any
+> > issue at this point.
+>=20
+> The regmap here is supposed to take care of the resources, except it
+> only does it for some of the resources here, which kind of breaks the
+> expectations. And it doesn't allow you to have the reset / clock
+> sequence properly done.
+
+I'm not following any of this. Could you break it down some more?
+In particular I don't see the relationship between initializing the regmap
+API (which does take IORESOURCE_MEM in) and reset / clocks.
+
+Just initializing the regmap API for I/O mem doesn't mean that the registers
+are ready for use, does it? We're not requesting any I/O operation from it
+at this point.
+
+> > The exact same thing is done in the CSI driver.
+>=20
+> That's not an argument though, is it? :)
+
+That's not the point, the point is rather that if this is wrong, we should =
+fix
+it in the CSI driver as well.
+
+Paul
+
+--=20
+Paul Kocialkowski, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
+
+--VS++wcV0S1rZb1Fb
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAl+kEagACgkQ3cLmz3+f
+v9HuSAf9Gkn+ldPjpLI6G6VyL2L/bdS/Ue56m5gMEw2d9X14pvDHAIB9GySZd9PW
+mLsWayeu3/V6sDacK3y1zwh9RLyRLg5TyaBV6w2UkgImNJcnpQRkhhUOEB9W+Ua7
+aDDIUiRynclnqXET0VptEp1MX/qJHBoA63UMuJKQaKDc/1oR3ozyJTC2R8GM7Uyx
+AWz4rgxLEkiw7VMe30gLiv2j4udFag6iZjk5zNJ7CyEXpBdzDTizXK2SCc1C54Yq
+/090KaJgH5Mn0qUocqVTEhUXoLPaFXPLx7Ue2c1YrPGRny1+HIweiNMsu9OegVQ9
+WX7GAGxkLn/VLwFvjVN5/B4laAYcsA==
+=WdiC
+-----END PGP SIGNATURE-----
+
+--VS++wcV0S1rZb1Fb--
