@@ -2,122 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31AE82A80E4
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 15:30:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B7112A80E1
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 15:30:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731090AbgKEOaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 09:30:14 -0500
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:3798 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726874AbgKEOaN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 09:30:13 -0500
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A5ENFYl017987;
-        Thu, 5 Nov 2020 15:29:49 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=STMicroelectronics;
- bh=dyr85PgFl8sA9doMkGgOgiUNMN6lTP8JG0WtqSphbx4=;
- b=zFxqWEENfSHmbpanJVS5772LhH4wFSvPdg02ozNDbwrg1lBIcEujAVvl8PGcRELM1qpa
- 95gyu6ZNtzTWP6Iv0r0YGOcQozJ4qkga3b6zrEhp/+xiivO+0t4hXKTvbbOXg9AVv2r8
- JPySjkc8hIHf3blHUxO7QgFq0yx7M1j0PJfPkycfgSpg3u4EwXlxLL7cCRLcULBGMxyC
- QHhDG+ediz0YaH4+0Z7NY2Qff6swhKb/cKsUPXkkV8BjUzPYUbCb8Dy+uJ2FenNZQCOK
- HVgMs+14Ch82KvlRFrVkrj2+3k5swGvE35ZxXulaZtyofqjQTxpCsLI6ns3bEk6yv+/J kw== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 34h0321by7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 05 Nov 2020 15:29:49 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id A8F5710002A;
-        Thu,  5 Nov 2020 15:29:48 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 9100B2BA2DA;
-        Thu,  5 Nov 2020 15:29:48 +0100 (CET)
-Received: from localhost (10.75.127.47) by SFHDAG2NODE2.st.com (10.75.127.5)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 5 Nov 2020 15:29:47
- +0100
-From:   Olivier Moysan <olivier.moysan@st.com>
-To:     <jic23@kernel.org>, <knaack.h@gmx.de>, <lars@metafoo.de>,
-        <pmeerw@pmeerw.net>, <alexandre.torgue@st.com>,
-        <fabrice.gasnier@st.com>, <olivier.moysan@st.com>
-CC:     <linux-iio@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] iio: adc: stm32-adc: dma transfers cleanup
-Date:   Thu, 5 Nov 2020 15:29:41 +0100
-Message-ID: <20201105142941.27301-1-olivier.moysan@st.com>
-X-Mailer: git-send-email 2.17.1
+        id S1731068AbgKEOaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 09:30:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44594 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726874AbgKEOaC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 09:30:02 -0500
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A5F992078E;
+        Thu,  5 Nov 2020 14:30:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604586601;
+        bh=7Cpc7oTk9waps+0sn1Z129Z3jSrH4E4ebAchcTAYVZo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AyqaZINUxyFkyzMBgavBB8W7enAKYN679T/uskcZreZ/usqQGL/BnUfmhSVI7ngY8
+         vS2fVGjT5idF2Pk1fQPKPzqMz4p+9gZncgpg8W0iR6e1ilgbn2By0Cb9x0JqK2QlBx
+         ABz21xTbYfH9fTLS7WIui1kyeav9pBNyVBeeNHQA=
+Date:   Thu, 5 Nov 2020 14:29:49 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Andre Przywara <andre.przywara@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, Sudeep Holla <sudeep.holla@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH v2 4/5] arm64: Add support for SMCCC TRNG entropy source
+Message-ID: <20201105142949.GB4856@sirena.org.uk>
+References: <20201105125656.25259-1-andre.przywara@arm.com>
+ <20201105125656.25259-5-andre.przywara@arm.com>
+ <20201105134142.GA4856@sirena.org.uk>
+ <20201105140322.GH82102@C02TD0UTHF1T.local>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.47]
-X-ClientProxiedBy: SFHDAG3NODE3.st.com (10.75.127.9) To SFHDAG2NODE2.st.com
- (10.75.127.5)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-05_07:2020-11-05,2020-11-05 signatures=0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="TRYliJ5NKNqkz5bu"
+Content-Disposition: inline
+In-Reply-To: <20201105140322.GH82102@C02TD0UTHF1T.local>
+X-Cookie: It's the thought, if any, that counts!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-- Remove processing related to DMA in irq handler as this
-data transfer is managed directly in DMA callback.
-- Update comment in stm32_adc_set_watermark() function.
 
-Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
----
- drivers/iio/adc/stm32-adc.c | 29 ++++++-----------------------
- 1 file changed, 6 insertions(+), 23 deletions(-)
+--TRYliJ5NKNqkz5bu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
-index b3f31f147347..08be826f1462 100644
---- a/drivers/iio/adc/stm32-adc.c
-+++ b/drivers/iio/adc/stm32-adc.c
-@@ -1310,7 +1310,7 @@ static int stm32_adc_set_watermark(struct iio_dev *indio_dev, unsigned int val)
- 	 * dma cyclic transfers are used, buffer is split into two periods.
- 	 * There should be :
- 	 * - always one buffer (period) dma is working on
--	 * - one buffer (period) driver can push with iio_trigger_poll().
-+	 * - one buffer (period) driver can push data.
- 	 */
- 	watermark = min(watermark, val * (unsigned)(sizeof(u16)));
- 	adc->rx_buf_sz = min(rx_buf_sz, watermark * 2 * adc->num_conv);
-@@ -1573,31 +1573,14 @@ static irqreturn_t stm32_adc_trigger_handler(int irq, void *p)
- 
- 	dev_dbg(&indio_dev->dev, "%s bufi=%d\n", __func__, adc->bufi);
- 
--	if (!adc->dma_chan) {
--		/* reset buffer index */
--		adc->bufi = 0;
--		iio_push_to_buffers_with_timestamp(indio_dev, adc->buffer,
--						   pf->timestamp);
--	} else {
--		int residue = stm32_adc_dma_residue(adc);
--
--		while (residue >= indio_dev->scan_bytes) {
--			u16 *buffer = (u16 *)&adc->rx_buf[adc->bufi];
--
--			iio_push_to_buffers_with_timestamp(indio_dev, buffer,
--							   pf->timestamp);
--			residue -= indio_dev->scan_bytes;
--			adc->bufi += indio_dev->scan_bytes;
--			if (adc->bufi >= adc->rx_buf_sz)
--				adc->bufi = 0;
--		}
--	}
--
-+	/* reset buffer index */
-+	adc->bufi = 0;
-+	iio_push_to_buffers_with_timestamp(indio_dev, adc->buffer,
-+					   pf->timestamp);
- 	iio_trigger_notify_done(indio_dev->trig);
- 
- 	/* re-enable eoc irq */
--	if (!adc->dma_chan)
--		stm32_adc_conv_irq_enable(adc);
-+	stm32_adc_conv_irq_enable(adc);
- 
- 	return IRQ_HANDLED;
- }
--- 
-2.17.1
+On Thu, Nov 05, 2020 at 02:03:22PM +0000, Mark Rutland wrote:
+> On Thu, Nov 05, 2020 at 01:41:42PM +0000, Mark Brown wrote:
 
+> > It isn't obvious to me why we don't fall through to trying the SMCCC
+> > TRNG here if for some reason the v8.5-RNG didn't give us something.
+> > Definitely an obscure possibility but still...
+
+> I think it's better to assume that if we have a HW RNG and it's not
+> giving us entropy, it's not worthwhile trapping to the host, which might
+> encounter the exact same issue.
+
+There's definitely a good argument for that, but OTOH it's possible the
+SMCCC implementation is doing something else (it'd be an interesting
+implementation decision but...).  That said I don't really mind, I think
+my comment was more that if we're doing this the code should be explicit
+about what the intent is since right now it isn't obvious.  Either a
+comment or having an explicit "what method are we choosing" thing.
+
+> That said, I'm not sure it's great to plumb this under the
+> arch_get_random*() interfaces, e.g. given this measn that
+> add_interrupt_randomness() will end up trapping to the host all the time
+> when it calls arch_get_random_seed_long().
+
+> Is there an existing interface for "slow" runtime entropy that we can
+> plumb this into instead?
+
+Yeah, I was wondering about this myself - it seems like a better fit for
+hwrng rather than the arch interfaces but that's not used until
+userspace comes up, the arch stuff is all expected to be quick.  I
+suppose we could implement the SMCCC stuff for the early variants of the
+API you added so it gets used for bootstrapping purposes and then we
+rely on userspace keeping things topped up by fetching entropy through
+hwrng or otherwise but that feels confused so I have a hard time getting
+enthusiastic about it.
+
+--TRYliJ5NKNqkz5bu
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+kDFwACgkQJNaLcl1U
+h9ApKAf+L+RsRcER02kUvtZaA3aURIv7gEO9F8JuiH9/H3k1obk5bhnah70SMZfH
+7DAuojVb0QQPx47KtqF//t8Zf0NBRcbzOH8tdcT9dra1LeCyeFWX/aTR5jjxPECj
+qHsdK0a8Cp73kXJpz83zbCuZcxzDVXIJkQZs+9OAAFVH/l5kriIcsT2DDXbA/gJN
+45gX+XnMHGRoDoiMu5LfRGA4YFqWYqiJtTau2Njm203qFQL1de4sD5VGpaLM+IXk
+bOVcl9wuMwxWRy7b7JRaJ1m5lE7kXVG/RKYeZUoCekZtDAqYdcU5t7n7QrNKJAJW
+xIIvhhLZjhtp/RhDtiI0lL4B0ENuhg==
+=hyQv
+-----END PGP SIGNATURE-----
+
+--TRYliJ5NKNqkz5bu--
