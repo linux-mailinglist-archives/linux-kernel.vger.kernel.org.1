@@ -2,105 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CADF72A7D4E
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 12:39:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E720C2A7D5A
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 12:41:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730441AbgKELjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 06:39:45 -0500
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:39112 "EHLO
-        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729916AbgKELjH (ORCPT
+        id S1729898AbgKELlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 06:41:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46408 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726665AbgKELlM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 06:39:07 -0500
-Received: by mail-lj1-f195.google.com with SMTP id m16so1222902ljo.6;
-        Thu, 05 Nov 2020 03:39:05 -0800 (PST)
+        Thu, 5 Nov 2020 06:41:12 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BECC0C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 03:41:10 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id a65so938716wme.1
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 03:41:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2NT4L8anxXm4wXPLVLxmm3DEteISuGR3FP/KLGJpviU=;
+        b=x0u6INKsJMHOufY/7/lCh0VyNCFWbYUaHN7ctfYL+qRWXrEuAZumb1autNdeoQlnrV
+         k1g3HVrRhdTNG+/Z/co8PwrnifK2W2rH8k9MeUM9i8KAuQ3MzWrUkTPmgthz2rR4YAwQ
+         posQdFV148EG+os9lAobSB1P9ka4rxkuxeDc+mBbO2q2hKxTlCEtw1KbrBApiw3OUCyW
+         HAKyKjpEw+VCGeiRmbSLQ3FxEtocBrYIirVV87VbPv3UQO4sfgNJWHPYydlUb73SO2Z9
+         AOXDP/pjEyLWtkl4+xYcWAV+C2mShsY/EY3nyNz1JF0qQjQSKWeXZvUYVTSugBTRd59d
+         aTNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jck8w/E9bpQVLqgSLUvOFfHIe/qaww3VwYRc6ypuzVs=;
-        b=rVy6mb96pi//rU8b5aRGlskQj5O9Btjtj9bWFH8YK1HgdKHMzpbypQkoCAnGltrSuv
-         Y6izofwDelzMSfF8zrxydU/TP13UIel2KJah26PBzH3SNMhykX+UFsyGmPVmpI5Pg6rc
-         dKB6PZH2400PxgY7lrQrbNfWZC1IYSLqB1ggWSyS5ASSCgicnSu1l8N96h0gEZ16VTU+
-         aN+nG402K0Ihst92ZQOjLdId0bDFmlIW8Jo+S2KfPbKZTdo+1ZXXf6iMmfoK9PqSfD7O
-         BxdG3ybRxwtWseDerGOsDOgAbiMgQLM0yT68Jh/ci9XBFafWaSxjClI/LD/rmKK1aTzW
-         fXNg==
-X-Gm-Message-State: AOAM533Of7e/OMWK/PTWqCSQdtR513vv6A+Md0oE5Mp5TTXMjPaDQ3kN
-        3MjLy/bReU7tjPLgKTpvEEU=
-X-Google-Smtp-Source: ABdhPJzTkXFOD3A2pwoRy5RZFHg5E8cJ3tij6JBJxB48XvEI60+KnoAUA0gjdpI2mPOgd+89mNiS3w==
-X-Received: by 2002:a2e:3915:: with SMTP id g21mr769847lja.18.1604576345135;
-        Thu, 05 Nov 2020 03:39:05 -0800 (PST)
-Received: from localhost.localdomain (62-78-225-252.bb.dnainternet.fi. [62.78.225.252])
-        by smtp.gmail.com with ESMTPSA id r6sm130382ljg.6.2020.11.05.03.39.03
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2NT4L8anxXm4wXPLVLxmm3DEteISuGR3FP/KLGJpviU=;
+        b=NxNzxm6i2OwRDcIEJNqg4MBsXf9JvUvuDQbtQL88gg33yleUxE4hcZnDauvQQtc6d1
+         9lLa/4loo1LUkVPSIrTdP3j3TvFLjV8lRBGrWqW1p8eQApVj/OtTm89XMAK67HMzInY0
+         VDx7yo54/AULKl31630O2M4wXZXkU1Uy8EnyDFCbs2uGiJb19DbENsyRTof15jzbB8Qw
+         NNyFw66Of4toRXjY+vQakNtKlu7vBRlFHdAEwA+Y5mpTluQnuN63ePLRu81vXIaUryrK
+         IgDWJWjPgOl2QdmqU1pYkGHa/iyAHAQo9g1skFVWKw+RngjYCqMZzP49nZaFxDQNvxT/
+         kjdA==
+X-Gm-Message-State: AOAM532xWFsQ0M9uKPYBurr2dNUZRrdBAU9Xw7okB0nZTYcBZk0gqj4q
+        twEwV9iOPaWxJW3OBWL+pYx8AA==
+X-Google-Smtp-Source: ABdhPJyyPzkxO4wkBPYj9UA0OxF6Y7OTNGnkUAcf2gff0pcr11t6FZpC3LD9ZIv71Hlwcujx/5IFXg==
+X-Received: by 2002:a7b:c242:: with SMTP id b2mr2319563wmj.162.1604576469577;
+        Thu, 05 Nov 2020 03:41:09 -0800 (PST)
+Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.gmail.com with ESMTPSA id z19sm2154352wmk.12.2020.11.05.03.41.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 03:39:04 -0800 (PST)
-Date:   Thu, 5 Nov 2020 13:38:58 +0200
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-To:     matti.vaittinen@fi.rohmeurope.com, mazziesaccount@gmail.com
-Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-power@fi.rohmeurope.com,
-        linux-watchdog@vger.kernel.org
-Subject: [PATCH v5 4/4] MAINTAINERS: Add ROHM BD9576MUF and BD9573MUF drivers
-Message-ID: <8126292cb00ddcad2c4e2e2572fceaa305179691.1604574431.git.matti.vaittinen@fi.rohmeurope.com>
-References: <cover.1604574431.git.matti.vaittinen@fi.rohmeurope.com>
+        Thu, 05 Nov 2020 03:41:08 -0800 (PST)
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To:     broonie@kernel.org
+Cc:     perex@perex.cz, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, lgirdwood@gmail.com,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH] ASoc: qcom: lpass-cpu: fix warning on symbol scope
+Date:   Thu,  5 Nov 2020 11:41:00 +0000
+Message-Id: <20201105114100.18647-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1604574431.git.matti.vaittinen@fi.rohmeurope.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add maintainer entries for ROHM BD9576MUF and ROHM BD9573MUF drivers.
-MFD, regulator and watchdog drivers were introduced for these PMICs.
+This patch fixes below warning when module is compiled with W=1 C=1
 
-Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+lpass-cpu.c:677:22: warning: symbol 'lpass_hdmi_regmap_config'
+was not declared. Should it be static?
+
+Fixes: 7cb37b7bd0d3 ("ASoC: qcom: Add support for lpass hdmi driver")
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- MAINTAINERS | 4 ++++
- 1 file changed, 4 insertions(+)
+ sound/soc/qcom/lpass-cpu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index b516bb34a8d5..0bd788a94376 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -15088,16 +15088,20 @@ F:	drivers/gpio/gpio-bd71828.c
- F:	drivers/mfd/rohm-bd70528.c
- F:	drivers/mfd/rohm-bd71828.c
- F:	drivers/mfd/rohm-bd718x7.c
-+F:	drivers/mfd/rohm-bd9576.c
- F:	drivers/power/supply/bd70528-charger.c
- F:	drivers/regulator/bd70528-regulator.c
- F:	drivers/regulator/bd71828-regulator.c
- F:	drivers/regulator/bd718x7-regulator.c
-+F:	drivers/regulator/bd9576-regulator.c
- F:	drivers/regulator/rohm-regulator.c
- F:	drivers/rtc/rtc-bd70528.c
- F:	drivers/watchdog/bd70528_wdt.c
-+F:	drivers/watchdog/bd9576_wdt.c
- F:	include/linux/mfd/rohm-bd70528.h
- F:	include/linux/mfd/rohm-bd71828.h
- F:	include/linux/mfd/rohm-bd718x7.h
-+F:	include/linux/mfd/rohm-bd957x.h
- F:	include/linux/mfd/rohm-generic.h
- F:	include/linux/mfd/rohm-shared.h
+diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
+index 9d17c87445a9..1fd862e3fd8a 100644
+--- a/sound/soc/qcom/lpass-cpu.c
++++ b/sound/soc/qcom/lpass-cpu.c
+@@ -674,7 +674,7 @@ static bool lpass_hdmi_regmap_volatile(struct device *dev, unsigned int reg)
+ 	return false;
+ }
  
+-struct regmap_config lpass_hdmi_regmap_config = {
++static struct regmap_config lpass_hdmi_regmap_config = {
+ 	.reg_bits = 32,
+ 	.reg_stride = 4,
+ 	.val_bits = 32,
 -- 
-2.21.3
+2.21.0
 
-
--- 
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
-
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =] 
