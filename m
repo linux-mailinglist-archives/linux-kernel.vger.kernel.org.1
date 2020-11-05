@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21D382A8AF1
+	by mail.lfdr.de (Postfix) with ESMTP id 981DA2A8AF2
 	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 00:48:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732086AbgKEXrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 18:47:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45930 "EHLO mail.kernel.org"
+        id S1732973AbgKEXrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 18:47:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46124 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732766AbgKEXr3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1732625AbgKEXr3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 5 Nov 2020 18:47:29 -0500
 Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E04D02073A;
-        Thu,  5 Nov 2020 23:47:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 37FD02222B;
+        Thu,  5 Nov 2020 23:47:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1604620049;
-        bh=1/H3wW3U3WqFpcLj5GDy0TXJzyUIxyTZnrzzVXzfM9k=;
+        bh=T0FjSb+2JUQyF55Pcp5FDweFnihJ+OfAM/8uHYew/vs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OUxFotAvs2Ht9ig3LqV5l/mbBTN5umCd5ip1+1bzkAx1f4DP1QyYlYJfojOIcQrCl
-         uef5mXUZko4TJKXocQLcLWIT8wJgjfTo5Q9TbcFp3qX6MOau2BeaGjiAp+WUm+AckK
-         uRUiuiwtTZPPVXsG9t2TRRuOYr6Avn6Vd/cgKLNg=
+        b=0v51xrdiHPgSqeHAvxPK2yl8h+744xcbnIIJbGp2HDBtD5+2dZQdqrRcrSZkv1Ad3
+         QICOObSfZnbS6Iv1l+l5MtribX9uOi0G2nlOUkPyC4BQq8J7H67zYM3jpDh9WYq/ha
+         cFt/TRcm3nGNhdoOj4L6e3s4VFB2oZ/lsCieCRVM=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -32,9 +32,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 20/28] rcutorture: Small code cleanups
-Date:   Thu,  5 Nov 2020 15:47:11 -0800
-Message-Id: <20201105234719.23307-20-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 21/28] torture: Allow alternative forms of kvm.sh command-line arguments
+Date:   Thu,  5 Nov 2020 15:47:12 -0800
+Message-Id: <20201105234719.23307-21-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20201105234658.GA23142@paulmck-ThinkPad-P72>
 References: <20201105234658.GA23142@paulmck-ThinkPad-P72>
@@ -44,35 +44,45 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-The rcu_torture_cleanup() function fails to NULL out the reader_tasks
-pointer after freeing it and its fakewriter_tasks loop has redundant
-braces.  This commit therefore cleans these up.
+This commit allows --build-only as a synonym for --buildonly, --kconfigs
+for --kconfig, and --kmake-args for --kmake-arg.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/rcutorture.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ tools/testing/selftests/rcutorture/bin/kvm.sh | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 4391d2f..e7d52fd 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -2496,13 +2496,13 @@ rcu_torture_cleanup(void)
- 			torture_stop_kthread(rcu_torture_reader,
- 					     reader_tasks[i]);
- 		kfree(reader_tasks);
-+		reader_tasks = NULL;
- 	}
- 
- 	if (fakewriter_tasks) {
--		for (i = 0; i < nfakewriters; i++) {
-+		for (i = 0; i < nfakewriters; i++)
- 			torture_stop_kthread(rcu_torture_fakewriter,
- 					     fakewriter_tasks[i]);
--		}
- 		kfree(fakewriter_tasks);
- 		fakewriter_tasks = NULL;
- 	}
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm.sh b/tools/testing/selftests/rcutorture/bin/kvm.sh
+index c348d96..45d07b7 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm.sh
+@@ -93,7 +93,7 @@ do
+ 		TORTURE_BOOT_IMAGE="$2"
+ 		shift
+ 		;;
+-	--buildonly)
++	--buildonly|--build-only)
+ 		TORTURE_BUILDONLY=1
+ 		;;
+ 	--configs|--config)
+@@ -160,7 +160,7 @@ do
+ 		jitter="$2"
+ 		shift
+ 		;;
+-	--kconfig)
++	--kconfig|--kconfigs)
+ 		checkarg --kconfig "(Kconfig options)" $# "$2" '^CONFIG_[A-Z0-9_]\+=\([ynm]\|[0-9]\+\)\( CONFIG_[A-Z0-9_]\+=\([ynm]\|[0-9]\+\)\)*$' '^error$'
+ 		TORTURE_KCONFIG_ARG="$2"
+ 		shift
+@@ -171,7 +171,7 @@ do
+ 	--kcsan)
+ 		TORTURE_KCONFIG_KCSAN_ARG="CONFIG_DEBUG_INFO=y CONFIG_KCSAN=y CONFIG_KCSAN_ASSUME_PLAIN_WRITES_ATOMIC=n CONFIG_KCSAN_REPORT_VALUE_CHANGE_ONLY=n CONFIG_KCSAN_REPORT_ONCE_IN_MS=100000 CONFIG_KCSAN_VERBOSE=y CONFIG_KCSAN_INTERRUPT_WATCHER=y"; export TORTURE_KCONFIG_KCSAN_ARG
+ 		;;
+-	--kmake-arg)
++	--kmake-arg|--kmake-args)
+ 		checkarg --kmake-arg "(kernel make arguments)" $# "$2" '.*' '^error$'
+ 		TORTURE_KMAKE_ARG="$2"
+ 		shift
 -- 
 2.9.5
 
