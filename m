@@ -2,49 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4D2F2A87F3
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 21:22:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAD852A87F0
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 21:22:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732496AbgKEUWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 15:22:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34652 "EHLO mail.kernel.org"
+        id S1732345AbgKEUVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 15:21:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34668 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732176AbgKEUVX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 15:21:23 -0500
-Subject: Re: [GIT PULL] SPI fixes for v5.10-rc2
+        id S1732194AbgKEUVY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 15:21:24 -0500
+Subject: Re: [GIT PULL] Hyper-V fixes for 5.10-rc3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604607682;
-        bh=IpJ0HSqfBID4Y4qMCiMz0GDRwmasiMsoz8K9vgKW8qU=;
+        s=default; t=1604607683;
+        bh=dulk5KmFWuVno2rX+gwzsAOGoSfqXhjmupjdEDp2MBM=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=pxTnKTtNIVAbQ6ioXGO2S/DTbzVGbiwp3jOSBkN5XZnIwN3udhn4eU3JHUfRyO9ga
-         hQWdBhASfwUVn0njJhNrzQvaUN9IA1SRV+NTb0yswREM9B65IpQLlyqZQd0qA3jrMa
-         wpFS7M8+jFa4rBvbaPgpYS/ypZXtXHSNkd8JWcfI=
+        b=pDnxOOZLXptmU4c4RinAV3f5HO4SvosCyzAsOEqHQWYbBvzUWCWo8TSZIfSpFGrIu
+         bGWDWTZvghZZ2DZ0i1kJHrcZn992R5zlorE4WAwo6lrM/aaw24b4cKLq2Ey1ku42J+
+         3L8Txgf44BQ9MT3tPhveo6vpWwtMuTauB03qZYQk=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201105164607.AD20021734@mail.kernel.org>
-References: <20201105164607.AD20021734@mail.kernel.org>
-X-PR-Tracked-List-Id: <linux-spi.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201105164607.AD20021734@mail.kernel.org>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git tags/spi-fix-v5.10-rc2
-X-PR-Tracked-Commit-Id: 9bd77a9ce31dd242fece27219d14fbee5068dd85
+In-Reply-To: <20201105163622.dgcchoa47cetr5e6@liuwe-devbox-debian-v2>
+References: <20201105163622.dgcchoa47cetr5e6@liuwe-devbox-debian-v2>
+X-PR-Tracked-List-Id: <linux-hyperv.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20201105163622.dgcchoa47cetr5e6@liuwe-devbox-debian-v2>
+X-PR-Tracked-Remote: ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-fixes-signed
+X-PR-Tracked-Commit-Id: dbf563eee0b8cc056744514d91c5ffc2fa6c0982
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: cf26c714874c14941953f6658ef85d7ce3446a0a
-Message-Id: <160460768293.18865.4491543128747188328.pr-tracker-bot@kernel.org>
-Date:   Thu, 05 Nov 2020 20:21:22 +0000
-To:     Mark Brown <broonie@kernel.org>
+X-PR-Merge-Commit-Id: 6732b3548573780cd8e0ca17d90f3f1add6c0af7
+Message-Id: <160460768370.18865.4418631381724204586.pr-tracker-bot@kernel.org>
+Date:   Thu, 05 Nov 2020 20:21:23 +0000
+To:     Wei Liu <wei.liu@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>
+        Wei Liu <wei.liu@kernel.org>, kys@microsoft.com,
+        sthemmin@microsoft.com, haiyangz@microsoft.com,
+        Michael Kelley <mikelley@microsoft.com>,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 05 Nov 2020 16:45:46 +0000:
+The pull request you sent on Thu, 5 Nov 2020 16:36:22 +0000:
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git tags/spi-fix-v5.10-rc2
+> ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-fixes-signed
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/cf26c714874c14941953f6658ef85d7ce3446a0a
+https://git.kernel.org/torvalds/c/6732b3548573780cd8e0ca17d90f3f1add6c0af7
 
 Thank you!
 
