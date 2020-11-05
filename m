@@ -2,74 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDE0F2A782F
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 08:45:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 436512A7837
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 08:46:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729682AbgKEHpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 02:45:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37700 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726756AbgKEHpQ (ORCPT
+        id S1729441AbgKEHqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 02:46:46 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:49522 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725320AbgKEHqq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 02:45:16 -0500
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E96DFC0613D2
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 23:45:15 -0800 (PST)
-Received: by mail-io1-xd33.google.com with SMTP id o11so826672ioo.11
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 23:45:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gw4vmbm6+5GWDF0o5XQrpTP9RNmsK2gI8aXamFks1M4=;
-        b=OKOUfNxNRVhP5T2+TMkFnJ/zGX49hm358GxrWFrjQrThN468dkcuzvhnyvRT5PwMIj
-         Y+elqvzOdUbxaF6z6yzus1OIOM1iZ+7acUoDFVo63iCxVriRfze8i+CPCgtLy3Q/g1qM
-         EihToU9qbzTfLVJltYXNSZkUWBxxe8erOo4CXWg0SU20A/+zY3GvPx7+XREeZEmvm4Sv
-         Z/pYs0ivYeeqs4cdIDaiK9DpjWASjt6lqZkvGlg0NdiWzma+zTnlM1GPw2V4WbE2HVZA
-         IIzX/6wKxO5iKlBpccg2uwGiYlSWsGTfgPxSlzR8YA+8j4b5F60TZ53JNRRexxgwnft3
-         /+4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gw4vmbm6+5GWDF0o5XQrpTP9RNmsK2gI8aXamFks1M4=;
-        b=sdooDooHbWrJt4MX5R7KRY27uWY+Xv3FJW6v7uH1eQ8/av2sYeGmpqxPs6xaSCyqlz
-         Qk5tXqfdUZI/ccoRowUP/AZy5Ts9MQegz1T2N/ezi2HCHY5dAsRRKYIU23g3HoQQ38/O
-         HwVzLbKy70ixYqFSSdXYOfcvvP9q917ft0j3u710qsSZOyuoYgV0oMS2sO6RBeC2yetA
-         8jJq5TOCoXK1I0HwpGokzUvU9/WWQ6GYR37xL4o0BEK9vOKskY/ajYnEwxUtjmv3dGt9
-         oONZlnh2+ZXiQTJfrhIZvPQkK1zZ8HPZwIIHXjy47fMj7oM6rplXE53WQAv03AT/cfk8
-         RTOw==
-X-Gm-Message-State: AOAM532qVzEQMxqXBzcSm6WAJdBkcqsgYcDiRPo68EpgRckgI2jXadz/
-        TZkA0pxW6YDSii+lRKWrTEe97e2HM/ySgT0+4fjRU2GkS9kx3dzP
-X-Google-Smtp-Source: ABdhPJyDZ5pxgd2Wi2zKaLXYJKjVIIA0f7RlOZgGQat9zzZ2HsLcRi/sUQBYL5mE7CdjUT6xtNJyYJyea0xlUAPCc7Q=
-X-Received: by 2002:a02:1783:: with SMTP id 125mr1072347jah.121.1604562315167;
- Wed, 04 Nov 2020 23:45:15 -0800 (PST)
-MIME-Version: 1.0
-References: <20201105174549.614c2de4@canb.auug.org.au> <20201105070311.GU4879@kernel.org>
- <CAATStaMD=w+onf==L-=MQ7suJf6EaNoup5o8yW-TEbfajkbdaQ@mail.gmail.com>
-In-Reply-To: <CAATStaMD=w+onf==L-=MQ7suJf6EaNoup5o8yW-TEbfajkbdaQ@mail.gmail.com>
-From:   "Anand K. Mistry" <amistry@google.com>
-Date:   Thu, 5 Nov 2020 18:45:04 +1100
-Message-ID: <CAATStaMEn_CSfvc=JTawGhL8yt3L0cci8XK9ru+F6RGzRcYJ7A@mail.gmail.com>
-Subject: Re: linux-next: build warning after merge of the akpm-current tree
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 5 Nov 2020 02:46:46 -0500
+Received: by linux.microsoft.com (Postfix, from userid 1046)
+        id 5B48D20B4905; Wed,  4 Nov 2020 23:46:45 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5B48D20B4905
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1604562405;
+        bh=+4vC5pdHWhZcsC4RLqsaXzruecfzwJvr9SPbBGML92k=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=PUIS5sSOund47b2bGCatf6rcJhvYsR39zR8hdPoD83WmfHmrpB6rxs14MbPhsoEd0
+         KFNmGAaZHP9tI4uCmlbnRUskomHcymw9Iya0xpHsON9Wgsm0Eu8BBtKoryEpgkXCdR
+         nF4PlSCGPSYxyH65Bt0DWHlMENv9ctS8mwcvB7R0=
+From:   Dhananjay Phadke <dphadke@linux.microsoft.com>
+To:     ray.jui@broadcom.com
+Cc:     andriy.shevchenko@linux.intel.com,
+        bcm-kernel-feedback-list@broadcom.com, brendanhiggins@google.com,
+        dphadke@linux.microsoft.com, f.fainelli@gmail.com,
+        linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org, lori.hikichi@broadcom.com,
+        rayagonda.kokatanur@broadcom.com, rjui@broadcom.com,
+        sbranden@broadcom.com, wsa@kernel.org
+Subject: Re: [PATCH v3 5/6] i2c: iproc: handle master read request
+Date:   Wed,  4 Nov 2020 23:46:45 -0800
+Message-Id: <1604562405-25414-1-git-send-email-dphadke@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <97a8d7bf-e877-c03a-f789-16cac9bb2643@broadcom.com>
+References: <97a8d7bf-e877-c03a-f789-16cac9bb2643@broadcom.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SNIPPED
+On Wed, 4 Nov 2020 10:01:06 -0800, Ray Jui wrote:
 
-> >
-> > Looks like left column became too wide, so rather than shift the right
-> > column to the right, I'd suggest to drop underscores in Speculation*.
+>>>> +#define MAX_SLAVE_RX_PER_INT         10
+>>>>
+>>>
+>>>> In patch [3/6], you've enabled IS_S_RX_THLD_SHIFT in slave ISR bitmask,
+>>>> however it's not actually used in processing rx events.
+>>>>
+>>>> Instead of hardcoding this threshold here, it's better to add a
+>>>> device-tree knob for rx threshold, program it in controller and handle
+>>>> that RX_THLD interrupt. This will give more flexibility to drain the rx
+>>>> fifo earlier than -
+>>>> (1) waiting for FIFO_FULL interrupt for transactions > 64B.
+>>>> (2) waiting for start of read transaction in case of master write-read.
+>> 
+>> Yes this is one way to implement.
+>> But do you see any issue in batching 64 bytes at a time in case of
+>> transaction > 64 Bytes.
+>> I feel batching will be more efficient as it avoids more number of
+>> interrupts and hence context switch.
+>> 
+>>>
+>>> The Device Tree is really intended to describe the hardware FIFO size,
+>>> not watermarks, as those tend to be more of a policy/work load decision.
+>>> Maybe this is something that can be added as a module parameter, or
+>>> configurable via ioctl() at some point.
+>> 
 >
-> Hm. That makes it inconsistent with Speculation_Store_Bypass. I guess
-> it's the lesser of two evils.
+>Yes, DT can have properties to describe the FIFO size, if there happens
+>to be some variants in the HW blocks in different versions. But that is
+>not the case here. DT should not be used to control SW/use case specific
+>behavior.
 
-Oh, do you mean renaming the existing Speculation_Store_Bypass? I
-thought that was a big no-no for the kernel?
+So the suggestion was to set HW threshold for rx fifo interrupt, not
+really a SW property. By setting it in DT, makes it easier to
+customize for target system, module param needs or ioctl makes it
+dependent on userpsace to configure it.
+
+The need for tasklet seems to arise from the fact that many bytes are
+left in the fifo. If there's a common problem here, such tasklet would be
+needed in i2c subsys rather than controller specific tweak, akin to
+how networking uses NAPI or adding block transactions to the interface?
+
+For master write-read event, it seems both IS_S_RD_EVENT_SHIFT and
+IS_S_RX_EVENT_SHIFT are detected, which implies that core is late to
+drain rx fifo i.e. write is complete and the read has started on the bus?
+
+
+Thanks,
+Dhananjay
+
+
