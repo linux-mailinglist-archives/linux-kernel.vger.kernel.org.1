@@ -2,72 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F2B72A859B
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 19:02:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B5B32A859F
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 19:03:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731918AbgKESCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 13:02:20 -0500
-Received: from mx2.suse.de ([195.135.220.15]:34930 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727275AbgKESCR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 13:02:17 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1604599336;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LIAGOTKA4K4YSRkraVO7gZRH7usn+BgPOBPH886B/Q8=;
-        b=bHyTk61KVwHVM3eXdtsdePY05K1EtrYGoPZsBtvpnTLpZIMw+0ku+wPThSEH56wsMqugpw
-        S7wAgmh7GPF+otRGJ0hnrHYcjOpvF2Li6W+5eeYlIuzBDAPn8a1vLKwm+kgc8hRuMrmkrw
-        gQbB90+7LASHmNipPdhjms+za6QeUGo=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 04B11AB8F;
-        Thu,  5 Nov 2020 18:02:16 +0000 (UTC)
-Date:   Thu, 5 Nov 2020 19:02:15 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Matteo Croce <mcroce@linux.microsoft.com>
-Cc:     linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        Arnd Bergmann <arnd@arndb.de>, Mike Rapoport <rppt@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Robin Holt <robinmholt@gmail.com>,
-        Fabian Frederick <fabf@skynet.be>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v3 1/3] Revert "kernel/reboot.c: convert simple_strtoul
- to kstrtoint"
-Message-ID: <20201105180215.GG1602@alley>
-References: <20201103214025.116799-1-mcroce@linux.microsoft.com>
- <20201103214025.116799-2-mcroce@linux.microsoft.com>
+        id S1731937AbgKESDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 13:03:09 -0500
+Received: from cloudserver094114.home.pl ([79.96.170.134]:61746 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727275AbgKESDJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 13:03:09 -0500
+Received: from 89-64-88-191.dynamic.chello.pl (89.64.88.191) (HELO kreacher.localnet)
+ by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.514)
+ id 578330c461e38a78; Thu, 5 Nov 2020 19:02:46 +0100
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Mike Galbraith <efault@gmx.de>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linux PM <linux-pm@vger.kernel.org>
+Subject: Re: v5.8+ powersave governor breakage?
+Date:   Thu, 05 Nov 2020 19:02:46 +0100
+Message-ID: <2454708.LCoKzY5ALV@kreacher>
+In-Reply-To: <76661fbdbd31368c0a06cd58296f5ec12817e33c.camel@gmx.de>
+References: <580d12716f6363d7404805fd4bc50e2d5ab459b0.camel@gmx.de> <2948497.iyA2Nh11HS@kreacher> <76661fbdbd31368c0a06cd58296f5ec12817e33c.camel@gmx.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201103214025.116799-2-mcroce@linux.microsoft.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 2020-11-03 22:40:23, Matteo Croce wrote:
-> From: Matteo Croce <mcroce@microsoft.com>
+On Thursday, November 5, 2020 4:08:30 PM CET Mike Galbraith wrote:
+> On Thu, 2020-11-05 at 15:31 +0100, Rafael J. Wysocki wrote:
+> > On Monday, November 2, 2020 7:18:41 AM CET Mike Galbraith wrote:
+> >
+> > > Desktop box did, it gained a working ondemand, while its previously
+> > > working powersave went broke.
+> >
+> > Most likely that's because it was handled by intel_pstate in the "active" mode
+> > previously, while it is now handled by it in the "passive" mode...
 > 
-> This reverts commit 616feab753972b9751308f3cd2a68fc57eae8edb.
-> 
-> kstrtoint() and simple_strtoul() have a subtle difference which makes
-> them non interchangeable: if a non digit character is found amid the
-> parsing, the former will return an error, while the latter will just
-> stop parsing, e.g. simple_strtoul("123xyx") = 123.
-> 
-> The kernel cmdline reboot= argument allows to specify the CPU used
-> for rebooting, with the syntax `s####` among the other flags,
-> e.g. "reboot=warm,s31,force", so if this flag is not the last given,
-> it's silently ignored as well as the subsequent ones.
-> 
-> Fixes: 616feab75397 ("kernel/reboot.c: convert simple_strtoul to kstrtoint")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Matteo Croce <mcroce@microsoft.com>
+> Perhaps the user interface should then nak switching to powersave as it
+> used to nak switching to ondemand?
 
-Reviewed-by: Petr Mladek <pmladek@suse.com>
+It cannot do that if the powersave governor is configured in.
 
-Best Regards,
-Petr
+[Essentially, the problem is that the "powersave" thing advertised by
+intel_pstate in the "active" mode is not really the powersave governor,
+but that is a mistake made in the past and cannot be undone.  Sorry about
+that.]
+
+
+
