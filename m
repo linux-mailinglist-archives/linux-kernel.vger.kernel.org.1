@@ -2,86 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B40D2A73A4
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 01:10:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A4022A73AC
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 01:17:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733099AbgKEAKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 19:10:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52146 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728323AbgKEAKM (ORCPT
+        id S1732602AbgKEAOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 19:14:17 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:45325 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730651AbgKEAOQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 19:10:12 -0500
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A15DDC0613CF;
-        Wed,  4 Nov 2020 16:10:11 -0800 (PST)
-Received: by mail-ed1-x541.google.com with SMTP id w1so69058edv.11;
-        Wed, 04 Nov 2020 16:10:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=o/8C8k1t0TWfRGW1aAodiDnrx3NIiE1zgqhYrFNKl4U=;
-        b=o3SF3etiTvGwlgXr1ALr9N4WVhf8/QsPZelVEv3lF/j2NC5oCPiqI9/4mA4HhiFT72
-         BklJGFs7kfoQoH3Iz+1ImbleTvtWtU02qDTiMYvwVi3xmyo3BVVDcvka86PcWSAMw/dQ
-         cBcnWbHxc5MFWFkTvmTemgUkNfb2m63f4v8Za1/lVSN+MCdrMR1vUtmRnFN92HSL5qpo
-         ZJ/rhvdzSn9xc+6ftrLRWVMr59aO/S8XSA6LmjwMBJSL8ioesEPCvfUuvaoyS9INnW5R
-         xdyFCluDMbwQpJPw9RTID+z+N/qSedmX/kGdghURFavU7h07K0oLT5BXJuyNGw2aonYl
-         K9iQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=o/8C8k1t0TWfRGW1aAodiDnrx3NIiE1zgqhYrFNKl4U=;
-        b=h65sKPcU7kgpSQ+Q6MS4dRnC5VU8WElC2OpnkwR+4cMyO9o39O7jNA0tq+L6xpeYsu
-         0oPZirBdXw3Zjid4+cZTmk6NQurLNz1syj+a8wuTMfnn7cc2TLRFAG7QsBsdhJVHu0Zl
-         aQi1k0cdsEqahOFjGWHDPqVGBHPzjCgtaWfmRZEH2OPDi1Lay8z3tjxJy8FXriWzZChE
-         visLKf20oGFCxW1Q1gtuz9MFKTOtou+m75Y87IbTAp4mBHdEiLZn1LYgiZlLJPR2MJyT
-         n87JduHrwoUBxzrg5pCmF0gQQHH43R7eS/8EVXPvC4JHvzHUriC/rD1x3w6NmDcAPWSR
-         DHTw==
-X-Gm-Message-State: AOAM532tqvl0PR4PKwLcVyAzpwXueF2R2AOviGYVtzw4RW3v65JX4HKQ
-        jC36l9iMD2gFPJZWe7WkTApCftc9J5w=
-X-Google-Smtp-Source: ABdhPJxDuVzHQ+7B7tBkA6qPNbqi77Ig+C1ocU6qYXrsgGgvT50f3KHVgoL4/9iN393LsSZ1c4uHMA==
-X-Received: by 2002:aa7:c90d:: with SMTP id b13mr389808edt.136.1604535010422;
-        Wed, 04 Nov 2020 16:10:10 -0800 (PST)
-Received: from skbuf ([188.25.2.177])
-        by smtp.gmail.com with ESMTPSA id l16sm4767ejd.70.2020.11.04.16.10.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 16:10:09 -0800 (PST)
-Date:   Thu, 5 Nov 2020 02:10:08 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Ioana Ciornei <ciorneiioana@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ioana Ciornei <ioana.ciornei@nxp.com>
-Subject: Re: [PATCH net-next v2 06/19] net: phy: mscc: use
- phy_trigger_machine() to notify link change
-Message-ID: <20201105001008.ze37olgnu5lisyie@skbuf>
-References: <20201101125114.1316879-1-ciorneiioana@gmail.com>
- <20201101125114.1316879-7-ciorneiioana@gmail.com>
+        Wed, 4 Nov 2020 19:14:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604535255;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=YpxN4DkuIzAbt2hDdqNcN1aOeH/92/gcdneAJlXM470=;
+        b=hN2+CQw5wTYftjVgmGGfcngLZZktcGjqjPC4OPpFinBd2udxTssVYICCYfO57DqP2OJbNE
+        Ye8YEeQdioALDz1/OwLU56qzfsnAYHzyUuukmEXI2MQTPwK0NEh3/a/6+9i0KZxCUqn1lJ
+        CCW2PNxjga44BCoH+/Or9V2VCihB2S4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-96-eOsDhTjSPN-qDjb6vQQW8w-1; Wed, 04 Nov 2020 19:14:13 -0500
+X-MC-Unique: eOsDhTjSPN-qDjb6vQQW8w-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4C5531084C80;
+        Thu,  5 Nov 2020 00:14:11 +0000 (UTC)
+Received: from mail (ovpn-116-241.rdu2.redhat.com [10.10.116.241])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id B5B571007608;
+        Thu,  5 Nov 2020 00:14:06 +0000 (UTC)
+From:   Andrea Arcangeli <aarcange@redhat.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     YiFei Zhu <zhuyifei1999@gmail.com>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        David Laight <David.Laight@aculab.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Jann Horn <jannh@google.com>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>, Jiri Kosina <jikos@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>
+Subject: [PATCH 0/1] x86: deduplicate the spectre_v2_user documentation
+Date:   Wed,  4 Nov 2020 19:14:05 -0500
+Message-Id: <20201105001406.13005-1-aarcange@redhat.com>
+In-Reply-To: <20201104234047.GA18850@redhat.com>
+References: <20201104234047.GA18850@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201101125114.1316879-7-ciorneiioana@gmail.com>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 01, 2020 at 02:51:01PM +0200, Ioana Ciornei wrote:
-> From: Ioana Ciornei <ioana.ciornei@nxp.com>
-> 
-> According to the comment describing the phy_mac_interrupt() function, it
-> it intended to be used by MAC drivers which have noticed a link change
-> thus its use in the mscc PHY driver is improper and, most probably, was
-> added just because phy_trigger_machine() was not exported.
-> Now that we have acces to trigger the link state machine, use directly
-> the phy_trigger_machine() function to notify a link change detected by
-> the PHY driver.
-> 
-> Signed-off-by: Ioana Ciornei <ioana.ciornei@nxp.com>
-> ---
+Hello,
 
-Tested-by: Vladimir Oltean <olteanv@gmail.com>
+Could you help checking if this incremental doc cleanup is possible?
+
+After the previous patch is applied, there's still a leftover mention
+of seccomp that should be removed in a duped bit of documentation, so
+I tentatively referred the original documentation already updated in
+sync, instead of keeping the dup around and applying the same update
+to the dup.
+
+Note: as far as I can tell spec_store_bypass_disable= documentation is
+not duplicated in spectre.rst, that's better in my view. The more dups
+we have the more one goes out of sync..
+
+Andrea Arcangeli (1):
+  x86: deduplicate the spectre_v2_user documentation
+
+ Documentation/admin-guide/hw-vuln/spectre.rst | 51 +------------------
+ 1 file changed, 2 insertions(+), 49 deletions(-)
+
