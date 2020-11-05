@@ -2,138 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DE732A7A2D
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 10:13:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5692F2A7A31
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 10:13:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729909AbgKEJNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 04:13:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51416 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725320AbgKEJNJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 04:13:09 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F955C0613D2
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 01:13:09 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id d142so802722wmd.4
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 01:13:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=ppYF0PlErbRwfu8mEHF7wqc9jdX4m5kx1kPLbT7peag=;
-        b=IttUDjlTiYiGPb0c5L/usFI9KKlI5FGGTYkpqXQRVcDYOmEHfwHcdcpHZHXlj/CUmd
-         mI1zRNsW15M6Ga+fV2uIBZAabTC4bS8o6ifnFzbK2r2JDvSaBnpFXH8eTgWUkhgeg9yC
-         CUGAiYM+cZUrTy879BMVrpxQMa/sVLAqVLmaKjN9lOnK6v/AuTkDT027AqrfF8otY8y2
-         1jgLd9zYccP0nT43isgCkcIcVjYrKBgayW+iCMX87a41BtPzuyl+E1VUrWjFFQsW9hs+
-         k8q6/6lDlD1VSNaHrrcyw/k7zXv4Eusjh4gHumas/7Hcz7zH5sJGIwo8fIWnYlewFlkI
-         pP4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=ppYF0PlErbRwfu8mEHF7wqc9jdX4m5kx1kPLbT7peag=;
-        b=EC8/MvZLXx86uisjGuPvtDB+xa2lAgTV4wgz9MVRn0mjP1t/TVJRUkjDIZaLVWS1tU
-         ptzA5MWXmnhthq8ZGnyZ+Zn+uBpuN7mNo9cKKIG3GLse+b3AvgB99ppRvMJGy3WDeepI
-         9vftad1gvyMPrri4enDCENPUmzuBLMLUutpl3WUqxwT1CVks2x6V8v9o8jEX0k5Z8UDm
-         1jyO3rXB/5/ha7g0+04BYATAfTi2yrpE1VjTt2s4DRiMfsLT3cdLBDeiEuFF3z603W30
-         ejecMBJIX1080QHsjpwZ9ikfJyt17FKxpnbdQ4SmxBePC0uPMhp1tlZCqWXzcmcYk2VL
-         NAxQ==
-X-Gm-Message-State: AOAM533lZZNK849AyF8lhcoKby2uRChWr6g4wkAEn/0aBJi1lznlI3vt
-        nRc0zQVQEhijCFogYMLePToRhjjvIYMFmKFj
-X-Google-Smtp-Source: ABdhPJzwvxvC55mfhNxs1rZhTHZFiQyUhDp2eRPI3OFsmvNmIkibkr1lXvdEhVgU6KPpcLyTBYaaeA==
-X-Received: by 2002:a1c:9a0e:: with SMTP id c14mr1603242wme.35.1604567587575;
-        Thu, 05 Nov 2020 01:13:07 -0800 (PST)
-Received: from dell ([91.110.221.242])
-        by smtp.gmail.com with ESMTPSA id y10sm1453811wru.94.2020.11.05.01.13.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 01:13:06 -0800 (PST)
-Date:   Thu, 5 Nov 2020 09:13:05 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, dusonlin@emc.com.tw,
-        KT Liao <kt.liao@emc.com.tw>, linux-input@vger.kernel.org
-Subject: Re: [PATCH 06/20] include: input: elan-i2c-ids: Mark 'elan_acpi_id'
- as __maybe_unused
-Message-ID: <20201105091305.GH4488@dell>
-References: <20201104162427.2984742-1-lee.jones@linaro.org>
- <20201104162427.2984742-7-lee.jones@linaro.org>
- <20201104225054.GC1003057@dtor-ws>
+        id S1730731AbgKEJNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 04:13:23 -0500
+Received: from mga14.intel.com ([192.55.52.115]:42651 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729977AbgKEJNR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 04:13:17 -0500
+IronPort-SDR: 2ED7vNkU99Du8Mdaw2saMbc1yhwDMLfYNaUwZ+P0mGQTBhnIzy2prhIRWXlFKvITnWkypvvBOG
+ WRmKVjpUDZPg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9795"; a="168570020"
+X-IronPort-AV: E=Sophos;i="5.77,453,1596524400"; 
+   d="scan'208";a="168570020"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2020 01:13:16 -0800
+IronPort-SDR: saLZF13o3718EDPN8QnqRPQAez5JZio9xxpQ58zhQwRNqy2QwRW4iaDKuuYZb0RBsSE+Y5Nl4H
+ pUbY3VTvV/pA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,453,1596524400"; 
+   d="scan'208";a="471573991"
+Received: from mylly.fi.intel.com (HELO [10.237.72.73]) ([10.237.72.73])
+  by orsmga004.jf.intel.com with ESMTP; 05 Nov 2020 01:13:14 -0800
+Subject: Re: [PATCH 2/2] i2c: designware: slave should do WRITE_REQUESTED
+ before WRITE_RECEIVED
+To:     Michael.Wu@vatics.com, wsa@kernel.org
+Cc:     andriy.shevchenko@linux.intel.com, mika.westerberg@linux.intel.com,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        morgan.chang@vatics.com
+References: <20201030080420.28016-1-michael.wu@vatics.com>
+ <20201030080420.28016-3-michael.wu@vatics.com> <20201103210349.GE1583@kunai>
+ <5DB475451BAA174CB158B5E897FC1525B1295560@MBS07.vivotek.tw>
+From:   Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Message-ID: <815503b2-0124-b42e-be08-1f47e2dd0ee8@linux.intel.com>
+Date:   Thu, 5 Nov 2020 11:13:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201104225054.GC1003057@dtor-ws>
+In-Reply-To: <5DB475451BAA174CB158B5E897FC1525B1295560@MBS07.vivotek.tw>
+Content-Type: text/plain; charset=big5; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 04 Nov 2020, Dmitry Torokhov wrote:
+On 11/4/20 12:17 PM, Michael.Wu@vatics.com wrote:
+> Hi Wolfram,
+> 
+>>> dev->status can be used to record the current state, especially Designware
+>>> I2C controller has no interrupts to identify a write-request. This patch
+>>
+>> Just double-checking: the designware HW does not raise an interrupt when
+>> its own address + RW bit has been received?
+> 
+> Not exactly. There're an interrupt state name "RD_REQ" but no one named
+> like "WR_REQ".
+> 
+> For read-request, the slave will get a RD_REQ interrupt.
+> For write-request, the slave won't be interrupted until data arrived to
+> trigger interrupt "RX_FULL".
+> 
+> I tried to use GPIO to simulate an I2C master. I only sent its own
+> address + W bit without any data and then I got only a STOP_DET interrupt.
+> If I sent its own address + W bit + one byte data and then I got one
+> RX_FULL and a STOP_DET.
+> 
+> It seems the controller doesn't interrupt when RW bit is W, but R does.
+> What do you think, Jarkko?
+> 
+Yes, the datasheet has a flowchart for slave mode and it shows for a 
+write only RX_FULL interrupt followed by read from IC_DATA_CMD to 
+retrieve received byte. Which I believe won't occur if there is no 
+incoming data byte and only STOP_DET happens as you have observed. The 
+flowchart however doesn't include the STOP_DET flow.
 
-> Hi Lee,
-> 
-> On Wed, Nov 04, 2020 at 04:24:13PM +0000, Lee Jones wrote:
-> > Some drivers which include 'elan-i2c-ids.h' make use of
-> > 'elan_acpi_id', but not all do.  Tell the compiler that this is
-> > expected behaviour.
-> > 
-> > Fixes the following W=1 kernel build warning(s):
-> > 
-> >  include/linux/input/elan-i2c-ids.h:26:36: warning: ‘elan_acpi_id’ defined but not used [-Wunused-const-variable=]
-> > 
-> > Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> > Cc: dusonlin@emc.com.tw
-> > Cc: KT Liao <kt.liao@emc.com.tw>
-> > Cc: linux-input@vger.kernel.org
-> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > ---
-> >  include/linux/input/elan-i2c-ids.h | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/include/linux/input/elan-i2c-ids.h b/include/linux/input/elan-i2c-ids.h
-> > index 520858d126808..b6976d99b6b75 100644
-> > --- a/include/linux/input/elan-i2c-ids.h
-> > +++ b/include/linux/input/elan-i2c-ids.h
-> > @@ -23,7 +23,7 @@
-> >  
-> >  #include <linux/mod_devicetable.h>
-> >  
-> > -static const struct acpi_device_id elan_acpi_id[] = {
-> > +static const struct acpi_device_id __maybe_unused elan_acpi_id[] = {
-> >  	{ "ELAN0000", 0 },
-> >  	{ "ELAN0100", 0 },
-> >  	{ "ELAN0600", 0 },
-> 
-> I think I'd prefer something like this instead:
-> 
-> diff --git a/drivers/input/mouse/elan_i2c_core.c
-> b/drivers/input/mouse/elan_i2c_core.c
-> index c599e21a8478..65d21a050cea 100644
-> --- a/drivers/input/mouse/elan_i2c_core.c
-> +++ b/drivers/input/mouse/elan_i2c_core.c
-> @@ -34,7 +34,6 @@
->  #include <linux/completion.h>
->  #include <linux/of.h>
->  #include <linux/property.h>
-> -#include <linux/input/elan-i2c-ids.h>
->  #include <linux/regulator/consumer.h>
->  #include <asm/unaligned.h>
-> 
-> @@ -1413,6 +1412,7 @@ static const struct i2c_device_id elan_id[] = {
->  MODULE_DEVICE_TABLE(i2c, elan_id);
-> 
->  #ifdef CONFIG_ACPI
-> +#include <linux/input/elan-i2c-ids.h>
->  MODULE_DEVICE_TABLE(acpi, elan_acpi_id);
->  #endif
-
-Moving an #include file to the bottom of a source file, really?
-
-I can do as you wish, but it's a pretty 'interesting' solution. :)
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Jarkko
