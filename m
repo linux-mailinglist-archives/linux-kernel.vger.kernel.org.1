@@ -2,117 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3587D2A79B3
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 09:55:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE8352A79B7
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 09:56:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730239AbgKEIz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 03:55:26 -0500
-Received: from mail-ej1-f65.google.com ([209.85.218.65]:43360 "EHLO
-        mail-ej1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726400AbgKEIz0 (ORCPT
+        id S1730242AbgKEI4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 03:56:14 -0500
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:38641 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726371AbgKEI4N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 03:55:26 -0500
-Received: by mail-ej1-f65.google.com with SMTP id k3so1452312ejj.10;
-        Thu, 05 Nov 2020 00:55:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=GGv1/NsFYMq8a8x8p1Q5v+BEw3Nc7uWhGOg4cbDcIXA=;
-        b=adR9/VMoQntunKG+BhwmxlUA4fLk7F611U5Vw2l/d4ynCME0fdgIvE/EgE8K+4KZaf
-         iVvpp7aiaJjj49LGlfXDLiCBdvKZjup9thCgKBTPaSBJL1N/Qou46nTaUI+Yh/8qPlzf
-         0pJwqxCU9sWEgpj9g3Awe0CbDr/V/fcNR0yzWygwFjl03GAWfA02L8LZnYeC+73Zpixm
-         KeBPigwNNLSBT1+8tlTX7sveEyZ0P4vtcIM83OMF8/wbuBri+ON43ns6MmL5iy3fSs+P
-         uL8OXaWz5Q/Thu09t1QHkfvQH8X1KyGKsfCUUxtqN4bji0lS2rXfkiNg7EiIUa4XDx0z
-         fCig==
-X-Gm-Message-State: AOAM530K5+8YNWyLkAX+b/VpnKIBv6AJZP06BB3pgfyN3qwhR8jsNZYS
-        sk3mlcwsyqjFYW3jlvExceT4HH/j4WA=
-X-Google-Smtp-Source: ABdhPJwlV6BHk/ukWXn9K8mMtuqyPYhxriyIPdn8c/NN7zuf0Gv4HEl392plPlhi70fVhuuDI3r/kg==
-X-Received: by 2002:a17:906:c43:: with SMTP id t3mr1234400ejf.219.1604566523454;
-        Thu, 05 Nov 2020 00:55:23 -0800 (PST)
-Received: from ?IPv6:2a0b:e7c0:0:107::49? ([2a0b:e7c0:0:107::49])
-        by smtp.gmail.com with ESMTPSA id b12sm492530edn.86.2020.11.05.00.55.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Nov 2020 00:55:22 -0800 (PST)
-Subject: Re: [PATCH 34/36] tty: serial: pmac_zilog: Make disposable variable
- __always_unused
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Paul Mackerras <paulus@samba.org>, linux-serial@vger.kernel.org
-References: <20201104193549.4026187-1-lee.jones@linaro.org>
- <20201104193549.4026187-35-lee.jones@linaro.org>
- <445a6440-b4c8-4536-891b-0cefc78e5f57@csgroup.eu>
- <e027b620-56f8-7d8b-84ff-54839f94a4c7@kernel.org>
- <20201105083626.GW4488@dell>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <a6b63789-1315-cec1-9575-0d858a6da1d5@kernel.org>
-Date:   Thu, 5 Nov 2020 09:55:21 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.3
+        Thu, 5 Nov 2020 03:56:13 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R581e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0UEJC3Fv_1604566567;
+Received: from aliy80.localdomain(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UEJC3Fv_1604566567)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 05 Nov 2020 16:56:08 +0800
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+To:     akpm@linux-foundation.org, mgorman@techsingularity.net,
+        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
+        daniel.m.jordan@oracle.com, willy@infradead.org,
+        hannes@cmpxchg.org, lkp@intel.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        shakeelb@google.com, iamjoonsoo.kim@lge.com,
+        richard.weiyang@gmail.com, kirill@shutemov.name,
+        alexander.duyck@gmail.com, rong.a.chen@intel.com, mhocko@suse.com,
+        vdavydov.dev@gmail.com, shy828301@gmail.com
+Subject: [PATCH v21 00/19] per memcg lru lock
+Date:   Thu,  5 Nov 2020 16:55:30 +0800
+Message-Id: <1604566549-62481-1-git-send-email-alex.shi@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-In-Reply-To: <20201105083626.GW4488@dell>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05. 11. 20, 9:36, Lee Jones wrote:
-> On Thu, 05 Nov 2020, Jiri Slaby wrote:
-> 
->> On 05. 11. 20, 8:04, Christophe Leroy wrote:
->>>
->>>
->>> Le 04/11/2020 à 20:35, Lee Jones a écrit :
->>>> Fixes the following W=1 kernel build warning(s):
->>>>
->>>>    drivers/tty/serial/pmac_zilog.h:365:58: warning: variable
->>>> ‘garbage’ set but not used [-Wunused-but-set-variable]
->>>
->>> Explain how you are fixing this warning.
->>>
->>> Setting  __always_unused is usually not the good solution for fixing
->>> this warning, but here I guess this is likely the good solution. But it
->>> should be explained why.
-> 
-> There are normally 3 ways to fix this warning;
-> 
->   - Start using/checking the variable/result
->   - Remove the variable
->   - Mark it as __{always,maybe}_unused
-> 
-> The later just tells the compiler that not checking the resultant
-> value is intentional.  There are some functions (as Jiri mentions
-> below) which are marked as '__must_check' which *require* a dummy
-> (garbage) variable to be used.
-> 
->> Or, why is the "garbage =" needed in the first place? read_zsdata is not
->> defined with __warn_unused_result__.
-> 
-> I used '__always_used' here for fear of breaking something.
-> 
-> However, if it's safe to remove it, then all the better.
+This version rebase on next/master 20201104, with much of Johannes's
+Acks and some changes according to Johannes comments. And add a new patch
+v21-0006-mm-rmap-stop-store-reordering-issue-on-page-mapp.patch to support
+v21-0007.
 
-Yes please -- this "garbage" is one of the examples of volatile misuses. 
-If readb didn't work on volatile pointer, marking the return variable as 
-volatile wouldn't save it.
+This patchset followed 2 memcg VM_WARN_ON_ONCE_PAGE patches which were
+added to -mm tree yesterday.
+ 
+Many thanks for line by line review by Hugh Dickins, Alexander Duyck and
+Johannes Weiner.
 
->> And even if it was, would (void)!read_zsdata(port) fix it?
-> 
-> That's hideous. :D
+So now this patchset includes 3 parts:
+1, some code cleanup and minimum optimization as a preparation. 
+2, use TestCleanPageLRU as page isolation's precondition.
+3, replace per node lru_lock with per memcg per node lru_lock.
 
-Sure, marking reads as must_check would be insane.
+Current lru_lock is one for each of node, pgdat->lru_lock, that guard for
+lru lists, but now we had moved the lru lists into memcg for long time. Still
+using per node lru_lock is clearly unscalable, pages on each of memcgs have
+to compete each others for a whole lru_lock. This patchset try to use per
+lruvec/memcg lru_lock to repleace per node lru lock to guard lru lists, make
+it scalable for memcgs and get performance gain.
 
-> *Much* better to just use '__always_used' in that use-case.
+Currently lru_lock still guards both lru list and page's lru bit, that's ok.
+but if we want to use specific lruvec lock on the page, we need to pin down
+the page's lruvec/memcg during locking. Just taking lruvec lock first may be
+undermined by the page's memcg charge/migration. To fix this problem, we could
+take out the page's lru bit clear and use it as pin down action to block the
+memcg changes. That's the reason for new atomic func TestClearPageLRU.
+So now isolating a page need both actions: TestClearPageLRU and hold the
+lru_lock.
 
-Then using a dummy variable to fool must_check must mean must_check is 
-used incorrectly, no :)? But there are always exceptions…
+The typical usage of this is isolate_migratepages_block() in compaction.c
+we have to take lru bit before lru lock, that serialized the page isolation
+in memcg page charge/migration which will change page's lruvec and new 
+lru_lock in it.
 
-thanks,
+The above solution suggested by Johannes Weiner, and based on his new memcg 
+charge path, then have this patchset. (Hugh Dickins tested and contributed much
+code from compaction fix to general code polish, thanks a lot!).
+
+Daniel Jordan's testing show 62% improvement on modified readtwice case
+on his 2P * 10 core * 2 HT broadwell box on v18, which has no much different
+with this v20.
+https://lore.kernel.org/lkml/20200915165807.kpp7uhiw7l3loofu@ca-dmjordan1.us.oracle.com/
+
+Thanks Hugh Dickins and Konstantin Khlebnikov, they both brought this
+idea 8 years ago, and others who give comments as well: Daniel Jordan, 
+Mel Gorman, Shakeel Butt, Matthew Wilcox, Alexander Duyck etc.
+
+Thanks for Testing support from Intel 0day and Rong Chen, Fengguang Wu,
+and Yun Wang. Hugh Dickins also shared his kbuild-swap case. Thanks!
+
+
+Alex Shi (16):
+  mm/thp: move lru_add_page_tail func to huge_memory.c
+  mm/thp: use head for head page in lru_add_page_tail
+  mm/thp: Simplify lru_add_page_tail()
+  mm/thp: narrow lru locking
+  mm/vmscan: remove unnecessary lruvec adding
+  mm/rmap: stop store reordering issue on page->mapping
+  mm/memcg: add debug checking in lock_page_memcg
+  mm/swap.c: fold vm event PGROTATED into pagevec_move_tail_fn
+  mm/lru: move lock into lru_note_cost
+  mm/vmscan: remove lruvec reget in move_pages_to_lru
+  mm/mlock: remove lru_lock on TestClearPageMlocked
+  mm/mlock: remove __munlock_isolate_lru_page
+  mm/lru: introduce TestClearPageLRU
+  mm/compaction: do page isolation first in compaction
+  mm/swap.c: serialize memcg changes in pagevec_lru_move_fn
+  mm/lru: replace pgdat lru_lock with lruvec lock
+
+Alexander Duyck (1):
+  mm/lru: introduce the relock_page_lruvec function
+
+Hugh Dickins (2):
+  mm: page_idle_get_page() does not need lru_lock
+  mm/lru: revise the comments of lru_lock
+
+ Documentation/admin-guide/cgroup-v1/memcg_test.rst |  15 +-
+ Documentation/admin-guide/cgroup-v1/memory.rst     |  21 +--
+ Documentation/trace/events-kmem.rst                |   2 +-
+ Documentation/vm/unevictable-lru.rst               |  22 +--
+ include/linux/memcontrol.h                         | 110 +++++++++++
+ include/linux/mm_types.h                           |   2 +-
+ include/linux/mmzone.h                             |   6 +-
+ include/linux/page-flags.h                         |   1 +
+ include/linux/swap.h                               |   4 +-
+ mm/compaction.c                                    |  94 +++++++---
+ mm/filemap.c                                       |   4 +-
+ mm/huge_memory.c                                   |  45 +++--
+ mm/memcontrol.c                                    |  79 +++++++-
+ mm/mlock.c                                         |  63 ++-----
+ mm/mmzone.c                                        |   1 +
+ mm/page_alloc.c                                    |   1 -
+ mm/page_idle.c                                     |   4 -
+ mm/rmap.c                                          |  11 +-
+ mm/swap.c                                          | 208 ++++++++-------------
+ mm/vmscan.c                                        | 207 ++++++++++----------
+ mm/workingset.c                                    |   2 -
+ 21 files changed, 530 insertions(+), 372 deletions(-)
+
 -- 
-js
-suse labs
+1.8.3.1
+
