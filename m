@@ -2,134 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ADE62A851E
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 18:39:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F10C2A8514
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 18:39:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731723AbgKERju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 12:39:50 -0500
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:36910 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730805AbgKERju (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 12:39:50 -0500
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A5HM74i017207;
-        Thu, 5 Nov 2020 18:39:27 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=STMicroelectronics;
- bh=vsR5ldt560beF0b1zd/ViQ5vBMqLihhw3wpz3tsDQzE=;
- b=NgwFkJrR13eJCbOeQncy7/0EXsyN/EBNRijv6a1KwAv83uRCZAvr3jX52ikSGpQunsHo
- wCOf1TU6eey4DZzyjeqvMf+RGIxoP1JeP/qJLUOWKkd2EgI2p9lUC7GYBRWbkRpmGFSm
- QMkUcXDwExZajkjboejUENQHdp+qIMSm1z79tl48CAfRtfv4Q2rwo91k5r/yv1HTaNIQ
- mzaFDQ81/y0ZHmkzURRFSeCM2XROgWCVU+KwpANXJl9jcW0j3QxuFRAzGGh1d1Jog94J
- qOXRtONZwHKoHZc/wRBxNU68MfCN/4jxt/C19vusUyY5CLFeLgQAtgwB7AaDbO01pWXb lA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 34gywr9fa1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 05 Nov 2020 18:39:27 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 2C5D310002A;
-        Thu,  5 Nov 2020 18:39:25 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag1node3.st.com [10.75.127.3])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id EA2602255CE;
-        Thu,  5 Nov 2020 18:39:24 +0100 (CET)
-Received: from [10.211.7.187] (10.75.127.44) by SFHDAG1NODE3.st.com
- (10.75.127.3) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 5 Nov
- 2020 18:38:28 +0100
-Subject: Re: [PATCH] iio: adc: stm32-adc: dma transfers cleanup
-To:     Olivier Moysan <olivier.moysan@st.com>, <jic23@kernel.org>,
-        <knaack.h@gmx.de>, <lars@metafoo.de>, <pmeerw@pmeerw.net>,
-        <alexandre.torgue@st.com>
-CC:     <linux-iio@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20201105142941.27301-1-olivier.moysan@st.com>
-From:   Fabrice Gasnier <fabrice.gasnier@st.com>
-Message-ID: <8ed73130-57e7-4073-cdf2-5f31596e728c@st.com>
-Date:   Thu, 5 Nov 2020 18:38:27 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1731593AbgKERjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 12:39:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34576 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725862AbgKERjJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 12:39:09 -0500
+Received: from gaia (unknown [2.26.170.190])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7A230206CA;
+        Thu,  5 Nov 2020 17:39:05 +0000 (UTC)
+Date:   Thu, 5 Nov 2020 17:39:02 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v8 30/43] arm64: kasan: Allow enabling in-kernel MTE
+Message-ID: <20201105173901.GH30030@gaia>
+References: <cover.1604531793.git.andreyknvl@google.com>
+ <5e3c76cac4b161fe39e3fc8ace614400bc2fb5b1.1604531793.git.andreyknvl@google.com>
+ <20201105172549.GE30030@gaia>
+ <CAAeHK+x0pQyQFG9e9HRxW5p8AYamPFmP-mKpHDWTwL_XUq7msA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201105142941.27301-1-olivier.moysan@st.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.44]
-X-ClientProxiedBy: SFHDAG1NODE3.st.com (10.75.127.3) To SFHDAG1NODE3.st.com
- (10.75.127.3)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-05_11:2020-11-05,2020-11-05 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAAeHK+x0pQyQFG9e9HRxW5p8AYamPFmP-mKpHDWTwL_XUq7msA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/5/20 3:29 PM, Olivier Moysan wrote:
-> - Remove processing related to DMA in irq handler as this
-> data transfer is managed directly in DMA callback.
-> - Update comment in stm32_adc_set_watermark() function.
+On Thu, Nov 05, 2020 at 06:29:17PM +0100, Andrey Konovalov wrote:
+> On Thu, Nov 5, 2020 at 6:26 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
+> >
+> > On Thu, Nov 05, 2020 at 12:18:45AM +0100, Andrey Konovalov wrote:
+> > > diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
+> > > index 06ba6c923ab7..fcfbefcc3174 100644
+> > > --- a/arch/arm64/kernel/mte.c
+> > > +++ b/arch/arm64/kernel/mte.c
+> > > @@ -121,6 +121,13 @@ void *mte_set_mem_tag_range(void *addr, size_t size, u8 tag)
+> > >       return ptr;
+> > >  }
+> > >
+> > > +void __init mte_init_tags(u64 max_tag)
+> > > +{
+> > > +     /* Enable MTE Sync Mode for EL1. */
+> > > +     sysreg_clear_set(sctlr_el1, SCTLR_ELx_TCF_MASK, SCTLR_ELx_TCF_SYNC);
+> > > +     isb();
+> > > +}
+> >
+> > Is this going to be called on each CPU? I quickly went through the rest
+> > of the patches and couldn't see how.
 > 
-> Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
+> Yes, on each CPU. This is done via kasan_init_hw_tags() that is called
+> from cpu_enable_mte(). This change is added in the "kasan, arm64:
+> implement HW_TAGS runtime".
 
-Hi Olivier,
+Ah, I got there eventually in patch 38. Too many indirections ;) (I'm
+sure we could have trimmed them down a bit, hw_init_tags ==
+arch_init_tags == mte_init_tags).
 
-Reviewed-by: Fabrice Gasnier <fabrice.gasnier@st.com>
+> Would it make sense to put it into a separate patch?
 
-Thanks,
-Fabrice
-> ---
->  drivers/iio/adc/stm32-adc.c | 29 ++++++-----------------------
->  1 file changed, 6 insertions(+), 23 deletions(-)
-> 
-> diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
-> index b3f31f147347..08be826f1462 100644
-> --- a/drivers/iio/adc/stm32-adc.c
-> +++ b/drivers/iio/adc/stm32-adc.c
-> @@ -1310,7 +1310,7 @@ static int stm32_adc_set_watermark(struct iio_dev *indio_dev, unsigned int val)
->  	 * dma cyclic transfers are used, buffer is split into two periods.
->  	 * There should be :
->  	 * - always one buffer (period) dma is working on
-> -	 * - one buffer (period) driver can push with iio_trigger_poll().
-> +	 * - one buffer (period) driver can push data.
->  	 */
->  	watermark = min(watermark, val * (unsigned)(sizeof(u16)));
->  	adc->rx_buf_sz = min(rx_buf_sz, watermark * 2 * adc->num_conv);
-> @@ -1573,31 +1573,14 @@ static irqreturn_t stm32_adc_trigger_handler(int irq, void *p)
->  
->  	dev_dbg(&indio_dev->dev, "%s bufi=%d\n", __func__, adc->bufi);
->  
-> -	if (!adc->dma_chan) {
-> -		/* reset buffer index */
-> -		adc->bufi = 0;
-> -		iio_push_to_buffers_with_timestamp(indio_dev, adc->buffer,
-> -						   pf->timestamp);
-> -	} else {
-> -		int residue = stm32_adc_dma_residue(adc);
-> -
-> -		while (residue >= indio_dev->scan_bytes) {
-> -			u16 *buffer = (u16 *)&adc->rx_buf[adc->bufi];
-> -
-> -			iio_push_to_buffers_with_timestamp(indio_dev, buffer,
-> -							   pf->timestamp);
-> -			residue -= indio_dev->scan_bytes;
-> -			adc->bufi += indio_dev->scan_bytes;
-> -			if (adc->bufi >= adc->rx_buf_sz)
-> -				adc->bufi = 0;
-> -		}
-> -	}
-> -
-> +	/* reset buffer index */
-> +	adc->bufi = 0;
-> +	iio_push_to_buffers_with_timestamp(indio_dev, adc->buffer,
-> +					   pf->timestamp);
->  	iio_trigger_notify_done(indio_dev->trig);
->  
->  	/* re-enable eoc irq */
-> -	if (!adc->dma_chan)
-> -		stm32_adc_conv_irq_enable(adc);
-> +	stm32_adc_conv_irq_enable(adc);
->  
->  	return IRQ_HANDLED;
->  }
-> 
+I think that's fine. I had the impression that kasan_init_hw_tags()
+should only be called once.
+
+-- 
+Catalin
