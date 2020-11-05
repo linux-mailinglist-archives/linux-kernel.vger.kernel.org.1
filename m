@@ -2,71 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A9CC2A86F7
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 20:22:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8A842A86F9
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 20:23:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731826AbgKETWf convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 5 Nov 2020 14:22:35 -0500
-Received: from mail-ej1-f46.google.com ([209.85.218.46]:42097 "EHLO
-        mail-ej1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726729AbgKETWe (ORCPT
+        id S1732019AbgKETXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 14:23:08 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:54700 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726729AbgKETXH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 14:22:34 -0500
-Received: by mail-ej1-f46.google.com with SMTP id i19so4259259ejx.9;
-        Thu, 05 Nov 2020 11:22:33 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=uaX1eASOZxFBfMkZPpamSu6ifEHOCAPkAn/Q3pny6+4=;
-        b=mFnW13fY6qyD5eFSarxtkbBceVD/ahpIN9Lz1ZdDzuP5PUp3roASk+lNwsZnA8ktsi
-         tGDXpc7B83SG7qTrHDL5BbXNvs/cXWd4640pY0FRsdudWluVQOEIxBW0zM2kVtFWzwTS
-         F16bBMkWVtDMTQlxn2QpCBaUBUCzEn43CPPWK1BVgz5m8hunS2qucWt98/XKPSHbNiDI
-         hosNjTUQ0rm2GkK2ZVRnDx39dxKAt/J+rr9eMjKW7wGmx/Od2aSXuUrmy8ic9nCUvNiS
-         Nus3yANNQtZ1AWugpHunahXmnKOv7d6GpQ7fP7i/csRSfJ2Sn9ArW20GPczeSmG9tDYW
-         1UWw==
-X-Gm-Message-State: AOAM533vsK4KGAHeWSL8euVQoarKUVXTrKaqEOODXxzUaSgnT8kBavuB
-        imnyvCNR/ugtYT4UbnJI1d8=
-X-Google-Smtp-Source: ABdhPJyrHyorflE0tf79bwNs0ohuT5FKO4Wo1BK0DPGzR7i6dQAq1wJejoyMzzjU6f0UmUmgQYYJJg==
-X-Received: by 2002:a17:906:1a0b:: with SMTP id i11mr4030594ejf.404.1604604152516;
-        Thu, 05 Nov 2020 11:22:32 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id e13sm1492879ejh.65.2020.11.05.11.22.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 11:22:31 -0800 (PST)
-Date:   Thu, 5 Nov 2020 20:22:29 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     =?utf-8?Q?=C5=81ukasz?= Stelmach <l.stelmach@samsung.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Kukjin Kim <kgene@kernel.org>,
-        Anand Moon <linux.amoon@gmail.com>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        =?utf-8?Q?Bart=C5=82omiej_=C5=BBolnierkiewicz?= 
-        <b.zolnierkie@samsung.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: Re: [PATCH v2 1/6] ARM: dts: exynos: Fix Ethernet interface
- description for Odroid XU3
-Message-ID: <20201105192229.GA236732@kozik-lap>
-References: <20201103184412.18874-1-l.stelmach@samsung.com>
- <CGME20201103184417eucas1p2ae35b1c02361c2814d31ddc5fb27794d@eucas1p2.samsung.com>
- <20201103184412.18874-2-l.stelmach@samsung.com>
+        Thu, 5 Nov 2020 14:23:07 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id A40621C0B82; Thu,  5 Nov 2020 20:23:05 +0100 (CET)
+Date:   Thu, 5 Nov 2020 20:23:05 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Joel Stanley <joel@jms.id.au>,
+        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: Re: [PATCH 4.19 156/191] powerpc: Warn about use of smt_snooze_delay
+Message-ID: <20201105192305.GA18462@duo.ucw.cz>
+References: <20201103203232.656475008@linuxfoundation.org>
+ <20201103203247.174991659@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="vtzGhvizbBRQ85DL"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <20201103184412.18874-2-l.stelmach@samsung.com>
+In-Reply-To: <20201103203247.174991659@linuxfoundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 07:44:07PM +0100, Łukasz Stelmach wrote:
-> Assign appropriate compatible properties.
-> 
-> Signed-off-by: Łukasz Stelmach <l.stelmach@samsung.com>
 
-This and #2 will have to wait till I figure out what happened my
-previous pull request. I'll keep it in my queue.
+--vtzGhvizbBRQ85DL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi!
+
+> From: Joel Stanley <joel@jms.id.au>
+>=20
+> commit a02f6d42357acf6e5de6ffc728e6e77faf3ad217 upstream.
+>=20
+> It's not done anything for a long time. Save the percpu variable, and
+> emit a warning to remind users to not expect it to do anything.
+>=20
+> This uses pr_warn_once instead of pr_warn_ratelimit as testing
+> 'ppc64_cpu --smt=3Doff' on a 24 core / 4 SMT system showed the warning
+> to be noisy, as the online/offline loop is slow.
+
+I don't believe this is good idea for stable. It is in 5.9-rc2, and
+likely mainline users will get userspace fixed, but that warning is
+less useful for -stable users.
+
+(And besides, it does not fix any serious bug).
 
 Best regards,
-Krzysztof
+								Pavel
+
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--vtzGhvizbBRQ85DL
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX6RRGQAKCRAw5/Bqldv6
+8i8IAJ9X4P9kUwPdNTkLcqTSARNwc347YgCgjGuqB788e0g81yR0yuOPeeK4dnI=
+=sFTr
+-----END PGP SIGNATURE-----
+
+--vtzGhvizbBRQ85DL--
