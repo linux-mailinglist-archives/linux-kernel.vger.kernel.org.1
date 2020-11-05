@@ -2,110 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A60AB2A8719
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 20:27:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38CE82A8729
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 20:28:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731990AbgKET1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 14:27:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34996 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726996AbgKET1W (ORCPT
+        id S1732280AbgKET2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 14:28:18 -0500
+Received: from out4-smtp.messagingengine.com ([66.111.4.28]:59709 "EHLO
+        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732133AbgKET2L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 14:27:22 -0500
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D173EC0613D2
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 11:27:21 -0800 (PST)
-Received: by mail-yb1-xb44.google.com with SMTP id a12so2319475ybg.9
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 11:27:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OEJCPZbEVHfia1Epohqphy6Yj/smF64D3n/3+kypg8I=;
-        b=OQqCNHtf8pBE8qWazz/H5tigbyp3ReGtnojBVAU00we9GFG+Kcj36jZiUw5IyMElzC
-         huQq6/xWdiIFb7LxYniPB7g7MnWIqrmwD31l/b19exLeoUJpo3Eb5I8P71SKDMVPekSA
-         15iEsPQJnsEFHpMNYCh30nF1mJ/CoiF96J0jdlHyrgvhlxCgztRQyQz/JtQ6nNa6Bhy/
-         60W3FjBnys/p+nIf4Yp2fE1/NtxZG48chR23r1QKiAmsRpT+2rlF/YkZcX3K9s0u1RYB
-         xt2FbD7lCfGt6OBTRRigrztWvQ52AFMJbJgEEFEJ+zMPrTSSr/RkRj1ygcXW2Hatfqbz
-         v/hQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OEJCPZbEVHfia1Epohqphy6Yj/smF64D3n/3+kypg8I=;
-        b=PbnF57JBleLdgbuocqsgx9R3+l5H8ZuQ/znn9M9kEckhxLgk2y66DMpA8wD/S7/IbZ
-         zRf6iNtPuJnPgktSw3s1Mo+K5VagrwwBbDEjMoyfvAOkXYGnrx+iCzdznLYwkqUz+NLl
-         hSZiC0Wwidp+EVwF2YCi4YNuVFJwZiZGvQg64bHO7mokRBquwmD5zlMAkpax9VlTFPA8
-         SZz5q0nQolnv0ZYM3v+SM5Z1AS8+YUQEydYhZgF7JiQF0P3cqbdXoD/zfO/LxOLhCLn5
-         j/KeqSW2VlLVHzY8FTKC4e0wq2tifMw55Lxk30RnfRtksQ9fpz+GqXQT+uUauGybi61t
-         3yvQ==
-X-Gm-Message-State: AOAM5327ODmpsLslvCM0ZUg8cBQ678QtiRHd/I5i6ybYsXlUNu7kabbn
-        iUoRbDMtP/TnXkwdJFjg+xoDZONm94+z2uWEsXc7gA==
-X-Google-Smtp-Source: ABdhPJwlnGJOo1LG7y4K+S2hBDh8YtqWL23pmaubXW/KQdP2prs3xkbdAYxyo5drnjSES2ecA8NUXYNNDVjbT/yPuF0=
-X-Received: by 2002:a25:3:: with SMTP id 3mr5833833yba.412.1604604440845; Thu,
- 05 Nov 2020 11:27:20 -0800 (PST)
-MIME-Version: 1.0
-References: <20201104205431.3795207-1-saravanak@google.com>
- <20201104205431.3795207-2-saravanak@google.com> <20201105171201.GF4856@sirena.org.uk>
-In-Reply-To: <20201105171201.GF4856@sirena.org.uk>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Thu, 5 Nov 2020 11:26:44 -0800
-Message-ID: <CAGETcx9_En10j0DwktXtPDrx=Aqdr2iWEuHmYB-=SnfODTmMfg@mail.gmail.com>
-Subject: Re: [PATCH v1 2/2] spi: Populate fwnode in of_register_spi_device()
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Cheng-Jui.Wang@mediatek.com,
-        Android Kernel Team <kernel-team@android.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Daniel Mentz <danielmentz@google.com>,
-        linux-spi@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 5 Nov 2020 14:28:11 -0500
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id 6ADBD5C00EB;
+        Thu,  5 Nov 2020 14:28:10 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Thu, 05 Nov 2020 14:28:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
+        mime-version:content-transfer-encoding:content-type:cc:subject
+        :from:to:date:message-id:in-reply-to; s=fm1; bh=43Dc/Y9QBFZVEJ5n
+        ctwhETgLISxd+T8jon80wTz0I60=; b=UIy6YlPw8mzEdhhCZ/4N1uw7oBsstJ2b
+        qivyGyiJu0yquM+j3r6wyZyJD5Qv/1ZUHi/Anfbf/DJyRu31olSe5bbribdstDmn
+        emSAbFXTN4VcZs2KBpWt3jh/5v/pzVo1q/zsC7AlKGde0m7FmPZ1ciBVH9L41XXd
+        bGYnpZEvIgHhE4F+ltQeclAtwXcMOIQgWc7z6g11y38CHCYXOUgRQImJudK3Lusx
+        O5RB7cJdUdJf98D8apZC3w0IWG+zb1m81VWWqWtfVdXIjg92nsF1A25/bWpsshKC
+        uPB93REWIXekfEP+8NZUFCcB5IEb9ZtvIGbgrmjPF3O6hBZ0nQ5O+g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm1; bh=43Dc/Y9QBFZVEJ5nctwhETgLISxd+T8jon80wTz0I60=; b=rNhoaRcC
+        braNnrp8mRFzc7m40DMBkpSV91jSeoVKu/GjmrpeyqHVgqA5LcsKuvH4BLfW9Gw1
+        4ZkLowxwD4C5uKMJs7Vg0L1Chhg9m7IzuDEgqXreCFWugREKarbUpcyyqW8Kkyi3
+        QobIsSVmVkpRNRushuEVQAAd5cZ0G4dpKwLlKoyh2P+Ypg4B2fOuJEREKTtqgFBi
+        2I5Ymnb5IXOpVQyOs1hBZkRmwI/ywRG+DykzCRkRaQ432kZ+R0wOnyGQ3XraOmWk
+        AI4SW7uap+oFZDFZkQWUspoJIlrkMhVU2jIJqhnpA96OrNG6fz+Y6QnmkEc8PRwB
+        OrlDClWAe0eorQ==
+X-ME-Sender: <xms:SVKkX_L12YLftyWYq6MYtDgYyH4sVw-L1vMVIH4IWXd_rbvrjZpxDw>
+    <xme:SVKkXzJA02ifbofokvsw9dKLfyo0NhMfcxZp5zGt-sF81L25JsWGjRGOWIAndrfXC
+    ZWSU9uJjCVs5IErYA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddtjedguddvhecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enfghrlhcuvffnffculdejtddmnecujfgurhepggfgtgfuhffvfffkjgesthhqredttddt
+    jeenucfhrhhomhepfdffrghnihgvlhcuighufdcuoegugihusegugihuuhhurdighiiiqe
+    enucggtffrrghtthgvrhhnpeejfefhudeffefhjedvvefhheduledtueejvedugedvjedv
+    jeeljefggedtjeejveenucfkphepieelrddukedurddutdehrdeigeenucevlhhushhtvg
+    hrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdig
+    hiii
+X-ME-Proxy: <xmx:SVKkX3uZF-_mgxIUk_cqTPDsRskzex_cp9OWheKPcsRo2aC3w1aQ3g>
+    <xmx:SVKkX4ZHOG2HGSd60BtEH7lKP16nS-Ka2tj76XkeRWQS2T_Yy0ME4g>
+    <xmx:SVKkX2acBHHYOcY5-EvB7DHreTfUDFwzl9qymdaEo2EzVrYzr6otXA>
+    <xmx:SlKkX2F17KWtf3BZYvoAXX_gu7Jra6quPl-vfiQNiKEUD2vQRM7ayw>
+Received: from localhost (c-69-181-105-64.hsd1.ca.comcast.net [69.181.105.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 3B63032802F8;
+        Thu,  5 Nov 2020 14:28:09 -0500 (EST)
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Cc:     "bpf" <bpf@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "Kernel Team" <Kernel-team@fb.com>
+Subject: Re: [PATCH bpf v2 2/2] selftest/bpf: Test bpf_probe_read_user_str()
+ strips trailing bytes after NUL
+From:   "Daniel Xu" <dxu@dxuuu.xyz>
+To:     "Song Liu" <songliubraving@fb.com>
+Date:   Thu, 05 Nov 2020 11:27:41 -0800
+Message-Id: <C6VKT56JAC76.R5KKJWKRBWYM@maharaja>
+In-Reply-To: <B9A62DF7-8C1B-448C-8672-0AF6FC1773BE@fb.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 5, 2020 at 9:12 AM Mark Brown <broonie@kernel.org> wrote:
+On Thu Nov 5, 2020 at 10:30 AM PST, Song Liu wrote:
 >
-> On Wed, Nov 04, 2020 at 12:54:31PM -0800, Saravana Kannan wrote:
-> > From: Daniel Mentz <danielmentz@google.com>
-> >
-> > This allows the fw_devlink feature to work for spi devices
-> > too.  This avoids unnecessary probe deferrals related to spi devices and
-> > improves suspend/resume ordering for spi devices when fw_devlink=on.
 >
-> >       of_node_get(nc);
-> >       spi->dev.of_node = nc;
-> > +     spi->dev.fwnode = of_fwnode_handle(nc);
+> > On Nov 4, 2020, at 6:25 PM, Daniel Xu <dxu@dxuuu.xyz> wrote:
+> >=20
+> > Previously, bpf_probe_read_user_str() could potentially overcopy the
+> > trailing bytes after the NUL due to how do_strncpy_from_user() does the
+> > copy in long-sized strides. The issue has been fixed in the previous
+> > commit.
+> >=20
+> > This commit adds a selftest that ensures we don't regress
+> > bpf_probe_read_user_str() again.
+> >=20
+> > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> > ---
+> > .../bpf/prog_tests/probe_read_user_str.c      | 60 +++++++++++++++++++
+> > .../bpf/progs/test_probe_read_user_str.c      | 34 +++++++++++
+> > 2 files changed, 94 insertions(+)
+> > create mode 100644 tools/testing/selftests/bpf/prog_tests/probe_read_us=
+er_str.c
+> > create mode 100644 tools/testing/selftests/bpf/progs/test_probe_read_us=
+er_str.c
+> >=20
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/probe_read_user_str=
+.c b/tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c
+> > new file mode 100644
+> > index 000000000000..597a166e6c8d
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c
+> > @@ -0,0 +1,60 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +#include <test_progs.h>
+> > +#include "test_probe_read_user_str.skel.h"
+> > +
+> > +static const char str[] =3D "mestring";
+> > +
+> > +void test_probe_read_user_str(void)
+> > +{
+> > +	struct test_probe_read_user_str *skel;
+> > +	int fd, err, duration =3D 0;
+> > +	char buf[256];
+> > +	ssize_t n;
+> > +
+> > +	skel =3D test_probe_read_user_str__open_and_load();
+> > +	if (CHECK(!skel, "test_probe_read_user_str__open_and_load",
+> > +		  "skeleton open and load failed\n"))
+> > +		goto out;
 >
-> Why is this a manual step in an individual subsystem rather than
-> something done in the driver core
+> nit: we can just return here.
+>
+> > +
+> > +	err =3D test_probe_read_user_str__attach(skel);
+> > +	if (CHECK(err, "test_probe_read_user_str__attach",
+> > +		  "skeleton attach failed: %d\n", err))
+> > +		goto out;
+> > +
+> > +	fd =3D open("/dev/null", O_WRONLY);
+> > +	if (CHECK(fd < 0, "open", "open /dev/null failed: %d\n", fd))
+> > +		goto out;
+> > +
+> > +	/* Give pid to bpf prog so it doesn't read from anyone else */
+> > +	skel->bss->pid =3D getpid();
+>
+> It is better to set pid before attaching skel.
+>
+> > +
+> > +	/* Ensure bytes after string are ones */
+> > +	memset(buf, 1, sizeof(buf));
+> > +	memcpy(buf, str, sizeof(str));
+> > +
+> > +	/* Trigger tracepoint */
+> > +	n =3D write(fd, buf, sizeof(buf));
+> > +	if (CHECK(n !=3D sizeof(buf), "write", "write failed: %ld\n", n))
+> > +		goto fd_out;
+> > +
+> > +	/* Did helper fail? */
+> > +	if (CHECK(skel->bss->ret < 0, "prog ret", "prog returned: %d\n",
+>
+> In most cases, we use underscore instead of spaces in the second
+> argument
+> of CHECK(). IOW, please use "prog_ret" instead of "prog ret".
+>
+> > +		  skel->bss->ret))
+> > +		goto fd_out;
+> > +
+> > +	/* Check that string was copied correctly */
+> > +	err =3D memcmp(skel->bss->buf, str, sizeof(str));
+> > +	if (CHECK(err, "memcmp", "prog copied wrong string"))
+> > +		goto fd_out;
+> > +
+> > +	/* Now check that no extra trailing bytes were copied */
+> > +	memset(buf, 0, sizeof(buf));
+> > +	err =3D memcmp(skel->bss->buf + sizeof(str), buf, sizeof(buf) - sizeo=
+f(str));
+> > +	if (CHECK(err, "memcmp", "trailing bytes were not stripped"))
+> > +		goto fd_out;
+> > +
+> > +fd_out:
+> > +	close(fd);
+> > +out:
+> > +	test_probe_read_user_str__destroy(skel);
+> > +}
+> > diff --git a/tools/testing/selftests/bpf/progs/test_probe_read_user_str=
+.c b/tools/testing/selftests/bpf/progs/test_probe_read_user_str.c
+> > new file mode 100644
+> > index 000000000000..41c3e296566e
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/progs/test_probe_read_user_str.c
+> > @@ -0,0 +1,34 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +
+> > +#include <linux/bpf.h>
+> > +#include <bpf/bpf_helpers.h>
+> > +#include <bpf/bpf_tracing.h>
+> > +
+> > +#include <sys/types.h>
+> > +
+> > +struct sys_enter_write_args {
+> > +	unsigned long long pad;
+> > +	int syscall_nr;
+> > +	int pad1; /* 4 byte hole */
+> > +	unsigned int fd;
+> > +	int pad2; /* 4 byte hole */
+> > +	const char *buf;
+> > +	size_t count;
+> > +};
+> > +
+> > +pid_t pid =3D 0;
+> > +int ret =3D 0;
+> > +char buf[256] =3D {};
+> > +
+> > +SEC("tracepoint/syscalls/sys_enter_write")
+> > +int on_write(struct sys_enter_write_args *ctx)
+> > +{
+> > +	if (pid !=3D (bpf_get_current_pid_tgid() >> 32))
+> > +		return 0;
+> > +
+> > +	ret =3D bpf_probe_read_user_str(buf, sizeof(buf), ctx->buf);
+>
+> bpf_probe_read_user_str() returns "long". Let's use "long ret;"
 
-It can't be done in driver core because "fwnode" is the abstraction
-driver core uses. It shouldn't care or know if the firmware is DT,
-ACPI or something else -- that's the whole point of fwnode.
+Thanks for review, will send v3 with these changes.
 
-> - when would we not want to have the
-> fwnode correspond to the of_node,
-
-Never.
-
-> and wouldn't that just be a case of
-> checking to see if there is a fwnode already set and only initializing
-> if not anyway?
-
-Honestly, we should be deleting device.of_node and always use
-device.fwnode. But that's a long way away (lots of clean up). The
-"common" place to do this is where a struct device is created from a
-firmware (device_node, acpi_device, etc). I don't see a "common place"
-for when a device is created out of a device_node, so I think this
-patch is a reasonable middle ground.
-
--Saravana
+[...]
