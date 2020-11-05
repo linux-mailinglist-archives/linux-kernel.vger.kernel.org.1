@@ -2,108 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD6D52A79FF
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 10:04:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E996E2A7A01
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 10:05:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730323AbgKEJEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 04:04:51 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:48578 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729722AbgKEJEs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 04:04:48 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1604567087; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=/kilLHoG2diu6RpSa3tfIWIaNOYj+vv0zBOZ2rAIu6I=; b=WfK03FCs6nAXjtJNSYUONdTwyhTXNYzIprmzOtXVxT7xlM4p2cXpG1lyGlf3EoLpQREq+BYJ
- /Ap8QGWceYFr9sZ5Z4+aWqtkh8ZrzHhH2QEmYecad4ehxThG9ikUi5hh2BcFG5PZ6hqekNOY
- bQ0NGmmOTcwIt/Y+CJTukuvOJas=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 5fa3c02e15332c7001f06769 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 05 Nov 2020 09:04:46
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 87C19C433CB; Thu,  5 Nov 2020 09:04:46 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B0E23C433C6;
-        Thu,  5 Nov 2020 09:04:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B0E23C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Pavel Procopiuc <pavel.procopiuc@gmail.com>, david@redhat.com
-Cc:     ath11k@lists.infradead.org, linux-mm@kvack.org,
-        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-wireless@vger.kernel.org
-Subject: Regression: QCA6390 fails with "mm/page_alloc: place pages to tail in __free_pages_core()"
-References: <fa22cf0f-3bac-add6-8c71-6f6cad5206d8@gmail.com>
-        <87lffjodu7.fsf@codeaurora.org>
-        <fa338986-8de4-fde1-6805-d46793c947e4@gmail.com>
-        <c9cc0ec6-4dda-2608-3575-0e6dfb6d0852@gmail.com>
-        <87ft5rszcs.fsf@codeaurora.org> <87ft5qsem9.fsf@codeaurora.org>
-        <f99862f4-9b3a-03e5-cd26-1de6136f9e46@gmail.com>
-        <87blgdscxd.fsf@codeaurora.org>
-        <229c31e7-9aff-18e6-a6db-be7b46331173@gmail.com>
-Date:   Thu, 05 Nov 2020 11:04:41 +0200
-In-Reply-To: <229c31e7-9aff-18e6-a6db-be7b46331173@gmail.com> (Pavel
-        Procopiuc's message of "Wed, 4 Nov 2020 23:15:05 +0100")
-Message-ID: <87361onphy.fsf_-_@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        id S1730362AbgKEJFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 04:05:22 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:39406 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729722AbgKEJFV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 04:05:21 -0500
+Received: from [10.130.0.80] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxytFLwKNfKnYGAA--.18463S3;
+        Thu, 05 Nov 2020 17:05:16 +0800 (CST)
+Subject: Re: [PATCH v3 1/6] MIPS: Loongson64: Do not write the read only field
+ LPA of CP0_CONFIG3
+To:     Huacai Chen <chenhc@lemote.com>
+References: <1604387525-23400-1-git-send-email-yangtiezhu@loongson.cn>
+ <1604387525-23400-2-git-send-email-yangtiezhu@loongson.cn>
+ <CAAhV-H4WfaCLuCzvCJx-UriqgPAz2b0H6LGwMhyhRaxvuSAMwQ@mail.gmail.com>
+ <e999986a-8236-752a-8b17-353bb87fc521@loongson.cn>
+ <CAAhV-H62Ft_mPBY4UaM0vbd70VVgYGnQW5E0n-y8SPHKftU8UQ@mail.gmail.com>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Xuefeng Li <lixuefeng@loongson.cn>
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+Message-ID: <18551687-6fa7-c200-d6de-d405ccfb84ff@loongson.cn>
+Date:   Thu, 5 Nov 2020 17:05:14 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <CAAhV-H62Ft_mPBY4UaM0vbd70VVgYGnQW5E0n-y8SPHKftU8UQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf9AxytFLwKNfKnYGAA--.18463S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxAFyUKFWrGr1kGw45XrWDJwb_yoW5ZF15p3
+        yrAa1kGF4Yqr15CFnay34DWrWrt39xKFZ2ga1qqr18X3sIg3ZIgr1xJa18WF95Xry8K3W0
+        vFyFgrW29F47CaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvl14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r
+        xl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
+        6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr
+        0_Gr1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7Mxk0xIA0c2IEe2xFo4CE
+        bIxvr21lc2xSY4AK67AK6r4fMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r
+        4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
+        67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
+        x0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY
+        6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvj
+        DU0xZFpf9x0JU4BT5UUUUU=
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(changing the subject, adding more lists and people)
-
-Pavel Procopiuc <pavel.procopiuc@gmail.com> writes:
-
-> Op 04.11.2020 om 10:12 schreef Kalle Valo:
->> Yeah, it is unfortunately time consuming but it is the best way to get
->> bottom of this.
+On 11/05/2020 01:57 PM, Huacai Chen wrote:
+> Hi, Tiezhu,
 >
-> I have found the commit that breaks things for me, it's
-> 7fef431be9c9ac255838a9578331567b9dba4477 mm/page_alloc: place pages to
-> tail in __free_pages_core()
+> On Wed, Nov 4, 2020 at 11:51 AM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
+>> On 11/04/2020 10:00 AM, Huacai Chen wrote:
+>>> Hi, Tiezhu,
+>>>
+>>> On Tue, Nov 3, 2020 at 3:13 PM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
+>>>> The field LPA of CP0_CONFIG3 register is read only for Loongson64, so the
+>>>> write operations are meaningless, remove them.
+>>>>
+>>>> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+>>>> ---
+>>>>
+>>>> v2: No changes
+>>>> v3: No changes
+>>>>
+>>>>    arch/mips/include/asm/mach-loongson64/kernel-entry-init.h | 8 --------
+>>>>    arch/mips/loongson64/numa.c                               | 3 ---
+>>>>    2 files changed, 11 deletions(-)
+>>>>
+>>>> diff --git a/arch/mips/include/asm/mach-loongson64/kernel-entry-init.h b/arch/mips/include/asm/mach-loongson64/kernel-entry-init.h
+>>>> index 87a5bfb..e4d77f4 100644
+>>>> --- a/arch/mips/include/asm/mach-loongson64/kernel-entry-init.h
+>>>> +++ b/arch/mips/include/asm/mach-loongson64/kernel-entry-init.h
+>>>> @@ -19,10 +19,6 @@
+>>>>           .macro  kernel_entry_setup
+>>>>           .set    push
+>>>>           .set    mips64
+>>>> -       /* Set LPA on LOONGSON3 config3 */
+>>>> -       mfc0    t0, CP0_CONFIG3
+>>>> -       or      t0, (0x1 << 7)
+>>>> -       mtc0    t0, CP0_CONFIG3
+>>> Sorry for the late response, I have the same worry as Jiaxun. As you
+>>> know, Loongson's user manuals are not always correct, but the original
+>>> code comes from Loongson are usually better. So, my opinion is "Don't
+>>> change it if it doesn't break anything".
+>> Hi Huacai,
+>>
+>> Thanks for your reply, I have confirmed by Loongson user manuals and
+>> hardware designers, CP0_CONFIG3 register is read only.
+>>
+>> Without this patch, the related kernel code is meaningless, with
+>> this patch, it can reflect the reality.
+>>
+>> Thanks,
+>> Tiezhu
+> Then you should at least test your code on Loongson-3A R1 two way machine.
+
+Hi Huacai,
+
+Thanks for your opinion.
+
+I find a 3a1000 machine to test, the result is that CP0 config3
+is read only which is consistent with user manual, the LPA field
+of CP0 config3 can not write and its reset default value is 1.
+
+So this patch has no problem.
+
+Thanks,
+Tiezhu
+
 >
-> I've reverted it on top of the 5.10-rc2 and ath11k driver loads fine
-> and I have wifi working.
+> Huacai
+>>> Huacai
+>>>
+>>>>           /* Set ELPA on LOONGSON3 pagegrain */
+>>>>           mfc0    t0, CP0_PAGEGRAIN
+>>>>           or      t0, (0x1 << 29)
+>>>> @@ -54,10 +50,6 @@
+>>>>           .macro  smp_slave_setup
+>>>>           .set    push
+>>>>           .set    mips64
+>>>> -       /* Set LPA on LOONGSON3 config3 */
+>>>> -       mfc0    t0, CP0_CONFIG3
+>>>> -       or      t0, (0x1 << 7)
+>>>> -       mtc0    t0, CP0_CONFIG3
+>>>>           /* Set ELPA on LOONGSON3 pagegrain */
+>>>>           mfc0    t0, CP0_PAGEGRAIN
+>>>>           or      t0, (0x1 << 29)
+>>>> diff --git a/arch/mips/loongson64/numa.c b/arch/mips/loongson64/numa.c
+>>>> index cf9459f..c7e3cced 100644
+>>>> --- a/arch/mips/loongson64/numa.c
+>>>> +++ b/arch/mips/loongson64/numa.c
+>>>> @@ -40,9 +40,6 @@ static void enable_lpa(void)
+>>>>           unsigned long value;
+>>>>
+>>>>           value = __read_32bit_c0_register($16, 3);
+>>>> -       value |= 0x00000080;
+>>>> -       __write_32bit_c0_register($16, 3, value);
+>>>> -       value = __read_32bit_c0_register($16, 3);
+>>>>           pr_info("CP0_Config3: CP0 16.3 (0x%lx)\n", value);
+>>>>
+>>>>           value = __read_32bit_c0_register($5, 1);
+>>>> --
+>>>> 2.1.0
+>>>>
 
-Oh, very interesting. Thanks a lot for the bisection, otherwise we would
-have never found out whats causing this.
-
-David & mm folks: Pavel noticed that his QCA6390 Wi-Fi 6 device (driver
-ath11k) failed on v5.10-rc1. After bisecting he found that the commit
-below causes the regression. I have not been able to reproduce this and
-for me QCA6390 works fine. I don't know if this needs a specific kernel
-configuration or what's the difference between our setups.
-
-Any ideas what might cause this and how to fix it?
-
-Full discussion: http://lists.infradead.org/pipermail/ath11k/2020-November/000501.html
-
-commit 7fef431be9c9ac255838a9578331567b9dba4477
-Author:     David Hildenbrand <david@redhat.com>
-AuthorDate: Thu Oct 15 20:09:35 2020 -0700
-Commit:     Linus Torvalds <torvalds@linux-foundation.org>
-CommitDate: Fri Oct 16 11:11:18 2020 -0700
-
-    mm/page_alloc: place pages to tail in __free_pages_core()
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
