@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 981A42A7F3D
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 13:57:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D7E92A7F3A
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 13:57:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730978AbgKEM5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 07:57:15 -0500
-Received: from foss.arm.com ([217.140.110.172]:60094 "EHLO foss.arm.com"
+        id S1730950AbgKEM5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 07:57:13 -0500
+Received: from foss.arm.com ([217.140.110.172]:60108 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730922AbgKEM5I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 07:57:08 -0500
+        id S1730567AbgKEM5K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 07:57:10 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5754314BF;
-        Thu,  5 Nov 2020 04:57:07 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 35FB81516;
+        Thu,  5 Nov 2020 04:57:09 -0800 (PST)
 Received: from donnerap.arm.com (donnerap.cambridge.arm.com [10.1.195.35])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AD18D3F719;
-        Thu,  5 Nov 2020 04:57:05 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8B3293F719;
+        Thu,  5 Nov 2020 04:57:07 -0800 (PST)
 From:   Andre Przywara <andre.przywara@arm.com>
 To:     Will Deacon <will@kernel.org>,
         Catalin Marinas <catalin.marinas@arm.com>,
@@ -28,9 +28,9 @@ Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
         Mark Brown <broonie@kernel.org>,
         Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
         Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH v2 1/5] firmware: smccc: Add SMCCC TRNG function call IDs
-Date:   Thu,  5 Nov 2020 12:56:52 +0000
-Message-Id: <20201105125656.25259-2-andre.przywara@arm.com>
+Subject: [PATCH v2 2/5] firmware: smccc: Introduce SMCCC TRNG framework
+Date:   Thu,  5 Nov 2020 12:56:53 +0000
+Message-Id: <20201105125656.25259-3-andre.przywara@arm.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201105125656.25259-1-andre.przywara@arm.com>
 References: <20201105125656.25259-1-andre.przywara@arm.com>
@@ -38,62 +38,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ard Biesheuvel <ardb@kernel.org>
+The ARM DEN0098 document describe an SMCCC based firmware service to
+deliver hardware generated random numbers. Its existence is advertised
+according to the SMCCC v1.1 specification.
 
-The ARM architected TRNG firmware interface, described in ARM spec
-DEN0098, define an ARM SMCCC based interface to a true random number
-generator, provided by firmware.
+Add a (dummy) call to probe functions implemented in each architecture
+(ARM and arm64), to determine the existence of this interface.
+For now this return false, but this will be overwritten by each
+architecture's support patch.
 
-Add the definitions of the SMCCC functions as defined by the spec.
-
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 Signed-off-by: Andre Przywara <andre.przywara@arm.com>
 ---
- include/linux/arm-smccc.h | 31 +++++++++++++++++++++++++++++++
- 1 file changed, 31 insertions(+)
+ arch/arm/include/asm/archrandom.h   | 10 ++++++++++
+ arch/arm64/include/asm/archrandom.h | 12 ++++++++++++
+ drivers/firmware/smccc/smccc.c      |  5 +++++
+ 3 files changed, 27 insertions(+)
+ create mode 100644 arch/arm/include/asm/archrandom.h
 
-diff --git a/include/linux/arm-smccc.h b/include/linux/arm-smccc.h
-index f860645f6512..62c54234576c 100644
---- a/include/linux/arm-smccc.h
-+++ b/include/linux/arm-smccc.h
-@@ -102,6 +102,37 @@
- 			   ARM_SMCCC_OWNER_STANDARD_HYP,	\
- 			   0x21)
+diff --git a/arch/arm/include/asm/archrandom.h b/arch/arm/include/asm/archrandom.h
+new file mode 100644
+index 000000000000..a8e84ca5c2ee
+--- /dev/null
++++ b/arch/arm/include/asm/archrandom.h
+@@ -0,0 +1,10 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _ASM_ARCHRANDOM_H
++#define _ASM_ARCHRANDOM_H
++
++static inline bool __init smccc_probe_trng(void)
++{
++	return false;
++}
++
++#endif /* _ASM_ARCHRANDOM_H */
+diff --git a/arch/arm64/include/asm/archrandom.h b/arch/arm64/include/asm/archrandom.h
+index ffb1a40d5475..abe07c21da8e 100644
+--- a/arch/arm64/include/asm/archrandom.h
++++ b/arch/arm64/include/asm/archrandom.h
+@@ -8,6 +8,11 @@
+ #include <linux/kernel.h>
+ #include <asm/cpufeature.h>
  
-+/* TRNG entropy source calls (defined by ARM DEN0098) */
-+#define ARM_SMCCC_TRNG_VERSION					\
-+	ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,			\
-+			   ARM_SMCCC_SMC_32,			\
-+			   ARM_SMCCC_OWNER_STANDARD,		\
-+			   0x50)
++static inline bool __init smccc_probe_trng(void)
++{
++	return false;
++}
 +
-+#define ARM_SMCCC_TRNG_FEATURES					\
-+	ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,			\
-+			   ARM_SMCCC_SMC_32,			\
-+			   ARM_SMCCC_OWNER_STANDARD,		\
-+			   0x51)
+ static inline bool __arm64_rndr(unsigned long *v)
+ {
+ 	bool ok;
+@@ -79,5 +84,12 @@ arch_get_random_seed_long_early(unsigned long *v)
+ }
+ #define arch_get_random_seed_long_early arch_get_random_seed_long_early
+ 
++#else /* !CONFIG_ARCH_RANDOM */
 +
-+#define ARM_SMCCC_TRNG_GET_UUID					\
-+	ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,			\
-+			   ARM_SMCCC_SMC_32,			\
-+			   ARM_SMCCC_OWNER_STANDARD,		\
-+			   0x52)
++static inline bool __init smccc_probe_trng(void)
++{
++	return false;
++}
 +
-+#define ARM_SMCCC_TRNG_RND32					\
-+	ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,			\
-+			   ARM_SMCCC_SMC_32,			\
-+			   ARM_SMCCC_OWNER_STANDARD,		\
-+			   0x53)
+ #endif /* CONFIG_ARCH_RANDOM */
+ #endif /* _ASM_ARCHRANDOM_H */
+diff --git a/drivers/firmware/smccc/smccc.c b/drivers/firmware/smccc/smccc.c
+index 00c88b809c0c..74c84b9559f6 100644
+--- a/drivers/firmware/smccc/smccc.c
++++ b/drivers/firmware/smccc/smccc.c
+@@ -7,14 +7,19 @@
+ 
+ #include <linux/init.h>
+ #include <linux/arm-smccc.h>
++#include <asm/archrandom.h>
+ 
+ static u32 smccc_version = ARM_SMCCC_VERSION_1_0;
+ static enum arm_smccc_conduit smccc_conduit = SMCCC_CONDUIT_NONE;
+ 
++bool __ro_after_init smccc_trng_available = false;
 +
-+#define ARM_SMCCC_TRNG_RND64					\
-+	ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,			\
-+			   ARM_SMCCC_SMC_64,			\
-+			   ARM_SMCCC_OWNER_STANDARD,		\
-+			   0x53)
+ void __init arm_smccc_version_init(u32 version, enum arm_smccc_conduit conduit)
+ {
+ 	smccc_version = version;
+ 	smccc_conduit = conduit;
 +
- /*
-  * Return codes defined in ARM DEN 0070A
-  * ARM DEN 0070A is now merged/consolidated into ARM DEN 0028 C
++	smccc_trng_available = smccc_probe_trng();
+ }
+ 
+ enum arm_smccc_conduit arm_smccc_1_1_get_conduit(void)
 -- 
 2.17.1
 
