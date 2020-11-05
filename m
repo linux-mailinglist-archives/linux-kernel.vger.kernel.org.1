@@ -2,87 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 073B82A7D75
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 12:47:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 819422A7D10
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 12:34:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730129AbgKELrp convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 5 Nov 2020 06:47:45 -0500
-Received: from sci-ig2.spreadtrum.com ([222.66.158.135]:51831 "EHLO
-        SHSQR01.unisoc.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726067AbgKELrp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 06:47:45 -0500
-X-Greylist: delayed 1581 seconds by postgrey-1.27 at vger.kernel.org; Thu, 05 Nov 2020 06:47:39 EST
-Received: from SHSQR01.spreadtrum.com (localhost [127.0.0.2] (may be forged))
-        by SHSQR01.unisoc.com with ESMTP id 0A5BLH7F087659
-        for <linux-kernel@vger.kernel.org>; Thu, 5 Nov 2020 19:21:17 +0800 (CST)
-        (envelope-from Xuewen.Yan@unisoc.com)
-Received: from ig2.spreadtrum.com (bjmbx02.spreadtrum.com [10.0.64.8])
-        by SHSQR01.spreadtrum.com with ESMTPS id 0A5BL4cB087198
-        (version=TLSv1 cipher=AES256-SHA bits=256 verify=NO);
-        Thu, 5 Nov 2020 19:21:04 +0800 (CST)
-        (envelope-from Xuewen.Yan@unisoc.com)
-Received: from localhost (10.0.74.33) by BJMBX02.spreadtrum.com (10.0.64.8)
- with Microsoft SMTP Server (TLS) id 15.0.847.32; Thu, 5 Nov 2020 19:21:05
- +0800
-From:   Xuewen Yan <xuewen.yan@unisoc.com>
-To:     <mingo@redhat.com>, <peterz@infradead.org>,
-        <juri.lelli@redhat.com>, <vincent.guittot@linaro.org>
-CC:     <dietmar.eggemann@arm.com>, <rostedt@goodmis.org>,
-        <bsegall@google.com>, <mgorman@suse.de>, <bristot@redhat.com>,
-        <linux-kernel@vger.kernel.org>, <xuewen.yan94@gmail.com>
-Subject: [PATCH v2] sched: revise the initial value of the util_avg.
-Date:   Thu, 5 Nov 2020 19:20:53 +0800
-Message-ID: <1604575253-2386-1-git-send-email-xuewen.yan@unisoc.com>
-X-Mailer: git-send-email 1.9.1
+        id S1730108AbgKELcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 06:32:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53434 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729748AbgKELar (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 06:30:47 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C04C12083B;
+        Thu,  5 Nov 2020 11:30:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604575846;
+        bh=DHA+HMmRj/vljpoB6PI9AKkrWsALaL5kz7s/bPUod+g=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=rplNhh2/x15GoJw1yq2xcGLWRcSdakUzgWbwmTVznU3ZJVWM5SMdka+hUtwGF0iOi
+         w/AJEBkHKi6Dmq8uyEc0YHX7ZRCaxvDE8mzfYwCtLPilLZf7UCyj30N2hy9H0oW9cV
+         sVNJYhUUsD/oxcHj9ZgxnZc+rdEZHbB2longFGb0=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kadTY-007oYq-7R; Thu, 05 Nov 2020 11:30:44 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Originating-IP: [10.0.74.33]
-X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
- BJMBX02.spreadtrum.com (10.0.64.8)
-Content-Transfer-Encoding: 8BIT
-X-MAIL: SHSQR01.spreadtrum.com 0A5BL4cB087198
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 05 Nov 2020 11:30:44 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     David Brazdil <dbrazdil@google.com>
+Cc:     kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Dennis Zhou <dennis@kernel.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Andrew Scull <ascull@google.com>, kernel-team@android.com
+Subject: Re: [RFC PATCH 18/26] kvm: arm64: Intercept PSCI_CPU_OFF host SMC
+ calls
+In-Reply-To: <20201104183630.27513-19-dbrazdil@google.com>
+References: <20201104183630.27513-1-dbrazdil@google.com>
+ <20201104183630.27513-19-dbrazdil@google.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <0ebade5427b2d9a020cd33da64cb9d13@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: dbrazdil@google.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, dennis@kernel.org, tj@kernel.org, cl@linux.com, mark.rutland@arm.com, lorenzo.pieralisi@arm.com, qperret@google.com, ascull@google.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to the original code logic:
-                cfs_rq->avg.util_avg
-sa->util_avg  = -------------------- * se->load.weight
-                cfs_rq->avg.load_avg
-but for fair_sched_class:
-se->load.weight = 1024 * sched_prio_to_weight[prio];
-        cfs_rq->avg.util_avg
-so the  -------------------- must be extremely small, the
-        cfs_rq->avg.load_avg
-judgment condition "sa->util_avg < cap" could be established.
-It's not fair for those tasks who has smaller nice value.
+On 2020-11-04 18:36, David Brazdil wrote:
+> Add a handler of the CPU_OFF PSCI host SMC trapped in KVM nVHE hyp 
+> code.
+> When invoked, it changes the recorded state of the core to OFF before
+> forwarding the call to EL3. If the call fails, it changes the state 
+> back
+> to ON and returns the error to the host.
+> 
+> Signed-off-by: David Brazdil <dbrazdil@google.com>
+> ---
+>  arch/arm64/kvm/hyp/nvhe/psci.c | 30 +++++++++++++++++++++++++++++-
+>  1 file changed, 29 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/kvm/hyp/nvhe/psci.c 
+> b/arch/arm64/kvm/hyp/nvhe/psci.c
+> index c3d0a6246c66..00dc0cab860c 100644
+> --- a/arch/arm64/kvm/hyp/nvhe/psci.c
+> +++ b/arch/arm64/kvm/hyp/nvhe/psci.c
+> @@ -13,6 +13,8 @@
+>  #include <kvm/arm_psci.h>
+>  #include <uapi/linux/psci.h>
+> 
+> +#include <nvhe/spinlock.h>
+> +
+>  /* Config options set by the host. */
+>  u32 kvm_host_psci_version = PSCI_VERSION(0, 0);
+>  u32 kvm_host_psci_function_id[PSCI_FN_MAX];
+> @@ -20,6 +22,7 @@ s64 hyp_physvirt_offset;
+> 
+>  #define __hyp_pa(x) ((phys_addr_t)(x) + hyp_physvirt_offset)
+> 
+> +static DEFINE_PER_CPU(hyp_spinlock_t, psci_cpu_lock);
+>  DEFINE_PER_CPU(enum kvm_nvhe_psci_state, psci_cpu_state);
+> 
+>  static u64 get_psci_func_id(struct kvm_cpu_context *host_ctxt)
+> @@ -76,9 +79,32 @@ static __noreturn unsigned long
+> psci_forward_noreturn(struct kvm_cpu_context *ho
+>  	hyp_panic(); /* unreachable */
+>  }
+> 
+> +static int psci_cpu_off(u64 func_id, struct kvm_cpu_context 
+> *host_ctxt)
+> +{
+> +	hyp_spinlock_t *cpu_lock = this_cpu_ptr(&psci_cpu_lock);
+> +	enum kvm_nvhe_psci_state *cpu_power = this_cpu_ptr(&psci_cpu_state);
+> +	u32 power_state = (u32)host_ctxt->regs.regs[1];
+> +	int ret;
+> +
+> +	/* Change the recorded state to OFF before forwarding the call. */
+> +	hyp_spin_lock(cpu_lock);
+> +	*cpu_power = KVM_NVHE_PSCI_CPU_OFF;
+> +	hyp_spin_unlock(cpu_lock);
 
-Signed-off-by: Xuewen Yan <xuewen.yan@unisoc.com>
----
- kernel/sched/fair.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+So at this point, another CPU can observe the vcpu being "off", and 
+issue
+a PSCI_ON, which may result in an "already on". I'm not sure this is an
+actual issue, but it is worth documenting.
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 290f9e3..079760b 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -794,7 +794,11 @@ void post_init_entity_util_avg(struct task_struct *p)
+What is definitely missing is a rational about *why* we need to track 
+the
+state of the vcpus. I naively imagined that we could directly proxy the
+PSCI calls to EL3, only repainting PC for PSCI_ON.
 
-        if (cap > 0) {
-                if (cfs_rq->avg.util_avg != 0) {
--                       sa->util_avg  = cfs_rq->avg.util_avg * se->load.weight;
-+                       if (p->sched_class == &fair_sched_class)
-+                               sa->util_avg  = cfs_rq->avg.util_avg * se_weight(se);
-+                       else
-+                               sa->util_avg  = cfs_rq->avg.util_avg * se->load.weight;
-+
-                        sa->util_avg /= (cfs_rq->avg.load_avg + 1);
+Thanks,
 
-                        if (sa->util_avg > cap)
---
-1.9.1
-
-________________________________
- This email (including its attachments) is intended only for the person or entity to which it is addressed and may contain information that is privileged, confidential or otherwise protected from disclosure. Unauthorized use, dissemination, distribution or copying of this email or the information herein or taking any action in reliance on the contents of this email or the information herein, by anyone other than the intended recipient, or an employee or agent responsible for delivering the message to the intended recipient, is strictly prohibited. If you are not the intended recipient, please do not read, copy, use or disclose any part of this e-mail to others. Please notify the sender immediately and permanently delete this e-mail and any attachments if you received it in error. Internet communications cannot be guaranteed to be timely, secure, error-free or virus-free. The sender does not accept liability for any errors or omissions.
-本邮件及其附件具有保密性质，受法律保护不得泄露，仅发送给本邮件所指特定收件人。严禁非经授权使用、宣传、发布或复制本邮件或其内容。若非该特定收件人，请勿阅读、复制、 使用或披露本邮件的任何内容。若误收本邮件，请从系统中永久性删除本邮件及所有附件，并以回复邮件的方式即刻告知发件人。无法保证互联网通信及时、安全、无误或防毒。发件人对任何错漏均不承担责任。
+         M.
+-- 
+Jazz is not dead. It just smells funny...
