@@ -2,149 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BBA12A821B
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 16:22:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B484E2A821F
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 16:23:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731255AbgKEPW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 10:22:27 -0500
-Received: from esa6.microchip.iphmx.com ([216.71.154.253]:8483 "EHLO
-        esa6.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731204AbgKEPW0 (ORCPT
+        id S1731287AbgKEPXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 10:23:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731263AbgKEPXI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 10:22:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1604589745; x=1636125745;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=8Nee0VCzpk0Vgp0nXh8FG89MS98QQe0yg6mbF5jma2Q=;
-  b=C1C75RdWAhR01vy01CP5fDyakF2YC/M4Z9El5QXrcwyVnQHWhi+2UzAu
-   /8AjLzxrLVDRZpDW8el1pI1o+UaNugZ9XD+KzVumWP7yCBOjOKzngi0HB
-   1joQxoDf3zXa7d5X78HIHlOzZ3Pnxg6PDHXA4nTgRn663bGvN/u7vJZZt
-   2WasOPeGYoRqAJIuGPnQYXmSehTTIOMdSHwUfhMu6eBJcrjdC+X3uBlHX
-   N1aZ53rTxkzD6sdBB6g3kZLvhTgfg5d6TvN0+0JCBZNJYBeYtXHNtHprX
-   vXkJ0t7KZZcZpQucy7t5o8JtnFZ5FiOSvLYFLYv4NDD1hWeFiFARrWTuR
-   A==;
-IronPort-SDR: YEpKQPsDcnaR5QPmdVQeMheN9WFfnUtorYWNbGEfQOvcKZFyiOWnugCGRND5AuUStOGEKzGAEk
- fzRFhdf/x7+zS4bDx2HZy5xzG/V/OKXa29ptuQ5lAWaAHTncNQNgIYJiDbIrgqUej0SsVvvDjV
- pk5ak9f81gQqDqNi8bsngbf74STF0R2ONX0otRj6U5iUHhedMmLYEn0Gw5lib4xOhWU8XldXSQ
- Pz/IpXLwuSxS7o4COwvnlKXUib7JNDE25UwgBzBgB9Ens4P5CIG8QFcWJ+xtFhoJmVKHt67LYb
- Lec=
-X-IronPort-AV: E=Sophos;i="5.77,453,1596524400"; 
-   d="scan'208";a="32571915"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 05 Nov 2020 08:22:24 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 5 Nov 2020 08:22:24 -0700
-Received: from [10.171.246.99] (10.10.115.15) by chn-vm-ex01.mchp-main.com
- (10.10.85.143) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Thu, 5 Nov 2020 08:22:19 -0700
-Subject: Re: [PATCH] net: macb: fix NULL dereference due to no pcs_config
- method
-To:     Parshuram Thombare <pthombar@cadence.com>, <kuba@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <netdev@vger.kernel.org>,
-        <linux@armlinux.org.uk>
-CC:     <Claudiu.Beznea@microchip.com>, <Santiago.Esteban@microchip.com>,
-        <andrew@lunn.ch>, <davem@davemloft.net>,
-        <linux-kernel@vger.kernel.org>, <harini.katakam@xilinx.com>,
-        <michal.simek@xilinx.com>
-References: <1604587039-5646-1-git-send-email-pthombar@cadence.com>
-From:   Nicolas Ferre <nicolas.ferre@microchip.com>
-Organization: microchip
-Message-ID: <6873cf12-456b-c121-037b-d2c5a6138cb3@microchip.com>
-Date:   Thu, 5 Nov 2020 16:22:18 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 5 Nov 2020 10:23:08 -0500
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 843A7C0613D2
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 07:23:06 -0800 (PST)
+Received: by mail-qk1-x741.google.com with SMTP id i21so1454653qka.12
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 07:23:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=0x0f.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1SxuLZqP7expcmyIeWKucvYuGkstgspzMuDDrhMmksY=;
+        b=QgkcEaYbFwTbauWuAVLqGTRxvWi76twgcpDbNcMEkx8DmTQPUhNPmJTCJnGwcitJZ+
+         EcvTydCY9JAEc0P8ZsX8G4IO4KlR5W//1ksdtn7VPaN0RNh3NYcVSnEaXXQgJb94Wwij
+         RtwwcVVTXOiXvAtpie6fdSsuT/TNr9UEs2EOs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1SxuLZqP7expcmyIeWKucvYuGkstgspzMuDDrhMmksY=;
+        b=rcNUXPxcgpmW22w9OgjxhFn2GczR4CeiOaznVKTQYjt2d/2LUH9387DG7AOr9OBS9P
+         mgiIaAPnOCPTHrz1fRfzPhEaHHozXM+9Wc/zi3EPiJyX5+Mslx4yIzqTjnOleHKLqwFp
+         XdAvPYCSmhsA3KTCYSkwycIsM1WuTyHX5vFqRurkZ2mBqFaGc2KayJOhs11F+pkE9DBV
+         z4HfnPlgxQJuOG4N5U15M0fZnHZOB3lTpaV+SKAk96XdT5R6BINTPX5dtsSt4npPv6Av
+         Il3r6YuIK6cBN+M2zkV7H/Mzkw1HNXvV3mDWB226fFhbmLVTRd6pxlphezRy3G8ZS5c8
+         WjQg==
+X-Gm-Message-State: AOAM5327xFrrujMW1UgAyUBnkwyXDlArThX8/jaWJ5DsUSZ3jYnyy5Hz
+        DcUmqSF+gn3guQ4rIuNWMhjLx5Z7Vej0urQkZaZEsw==
+X-Google-Smtp-Source: ABdhPJxR5v810eCnN+xy4FPc5ORemteS4sufWGdQhxFtZCEDINdix51Ym1Hs+vbSKWGg17A+984EwIkolOj+XlVlAug=
+X-Received: by 2002:a37:7687:: with SMTP id r129mr1781089qkc.54.1604589785561;
+ Thu, 05 Nov 2020 07:23:05 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1604587039-5646-1-git-send-email-pthombar@cadence.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201019141008.871177-1-daniel@0x0f.com> <20201019141008.871177-4-daniel@0x0f.com>
+ <CACRpkdZNr6sDqJhg3KcX0bCbcd8fh2gXFYbS1r2H2Sq+vGqjUw@mail.gmail.com> <3fd04aeb5047d8059ddecc1eda19c2e4@kernel.org>
+In-Reply-To: <3fd04aeb5047d8059ddecc1eda19c2e4@kernel.org>
+From:   Daniel Palmer <daniel@0x0f.com>
+Date:   Fri, 6 Nov 2020 00:23:52 +0900
+Message-ID: <CAFr9PX=vxCCQgCWe9FPb6Z=0=a48HwGOfM_uOG3SqGN9VSYQUA@mail.gmail.com>
+Subject: Re: [PATCH v2 3/5] gpio: msc313: MStar MSC313 GPIO driver
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, arm-kernel@lists.infradead.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/11/2020 at 15:37, Parshuram Thombare wrote:
-> This patch fixes NULL pointer dereference due to NULL pcs_config
-> in pcs_ops.
-> 
-> Fixes: e4e143e26ce8 ("net: macb: add support for high speed interface")
+Hi Marc,
 
-What is this tag? In linux-next? As patch is not yet in Linus' tree, you 
-cannot refer to it like this.
+On Thu, 5 Nov 2020 at 21:08, Marc Zyngier <maz@kernel.org> wrote:
+>
+> On 2020-11-05 09:40, Linus Walleij wrote:
+> > On Mon, Oct 19, 2020 at 4:10 PM Daniel Palmer <daniel@0x0f.com> wrote:
+>
+> [...]
+>
+> >> +/* The parent interrupt controller needs the GIC interrupt type set
+> >> to GIC_SPI
+> >> + * so we need to provide the fwspec. Essentially
+> >> gpiochip_populate_parent_fwspec_twocell
+> >> + * that puts GIC_SPI into the first cell.
+> >> + */
+>
+> nit: comment style.
 
-> Reported-by: Nicolas Ferre <Nicolas.Ferre@microchip.com>
-> Link: https://lkml.org/lkml/2020/11/4/482
+I've fixed these and some other bits for the v3.
+I've held off on pushing that until the rest of it seemed right.
 
-You might need to change this to a "lore" link:
-https://lore.kernel.org/netdev/2db854c7-9ffb-328a-f346-f68982723d29@microchip.com/
+> >> +static void *msc313_gpio_populate_parent_fwspec(struct gpio_chip *gc,
+> >> +                                            unsigned int
+> >> parent_hwirq,
+> >> +                                            unsigned int parent_type)
+> >> +{
+> >> +       struct irq_fwspec *fwspec;
+> >> +
+> >> +       fwspec = kmalloc(sizeof(*fwspec), GFP_KERNEL);
+> >> +       if (!fwspec)
+> >> +               return NULL;
+> >> +
+> >> +       fwspec->fwnode = gc->irq.parent_domain->fwnode;
+> >> +       fwspec->param_count = 3;
+> >> +       fwspec->param[0] = GIC_SPI;
+> >> +       fwspec->param[1] = parent_hwirq;
+> >> +       fwspec->param[2] = parent_type;
+> >> +
+> >> +       return fwspec;
+> >> +}
+> >
+> > Clever. Looping in Marc Z so he can say if this looks allright to him.
+>
+> Yup, this looks correct. However, looking at the bit of the patch that
+> isn't quoted here, I see that msc313_gpio_irqchip doesn't have a
+> .irq_set_affinity callback. Is this system UP only?
 
-> Signed-off-by: Parshuram Thombare <pthombar@cadence.com>
+What is in mainline right now is UP only but there are chips with a
+second cortex A7 that I have working in my tree.
+So I will add that in for v3 if I can work out what I should actually
+do there. :)
 
-This fix looks a bit weird to me. What about proposing a patch to 
-Russell like the chunk that you already identified in function 
-phylink_major_config()?
+Thanks,
 
-
-> ---
->   drivers/net/ethernet/cadence/macb_main.c | 17 +++++++++++++++--
->   1 file changed, 15 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/cadence/macb_main.c b/drivers/net/ethernet/cadence/macb_main.c
-> index b7bc160..130a5af 100644
-> --- a/drivers/net/ethernet/cadence/macb_main.c
-> +++ b/drivers/net/ethernet/cadence/macb_main.c
-> @@ -633,6 +633,15 @@ static void macb_pcs_an_restart(struct phylink_pcs *pcs)
->          /* Not supported */
->   }
-> 
-> +static int macb_pcs_config(struct phylink_pcs *pcs,
-> +                          unsigned int mode,
-> +                          phy_interface_t interface,
-> +                          const unsigned long *advertising,
-> +                          bool permit_pause_to_mac)
-> +{
-> +       return 0;
-> +}
-
-Russell, is the requirement for this void function intended?
-
-> +
->   static const struct phylink_pcs_ops macb_phylink_usx_pcs_ops = {
->          .pcs_get_state = macb_usx_pcs_get_state,
->          .pcs_config = macb_usx_pcs_config,
-> @@ -642,6 +651,7 @@ static const struct phylink_pcs_ops macb_phylink_usx_pcs_ops = {
->   static const struct phylink_pcs_ops macb_phylink_pcs_ops = {
->          .pcs_get_state = macb_pcs_get_state,
->          .pcs_an_restart = macb_pcs_an_restart,
-> +       .pcs_config = macb_pcs_config,
->   };
-> 
->   static void macb_mac_config(struct phylink_config *config, unsigned int mode,
-> @@ -776,10 +786,13 @@ static int macb_mac_prepare(struct phylink_config *config, unsigned int mode,
-> 
->          if (interface == PHY_INTERFACE_MODE_10GBASER)
->                  bp->phylink_pcs.ops = &macb_phylink_usx_pcs_ops;
-> -       else
-> +       else if (interface == PHY_INTERFACE_MODE_SGMII)
->                  bp->phylink_pcs.ops = &macb_phylink_pcs_ops;
-
-Do you confirm that all SGMII type interfaces need phylink_pcs.ops?
-
-> +       else
-> +               bp->phylink_pcs.ops = NULL;
-> 
-> -       phylink_set_pcs(bp->phylink, &bp->phylink_pcs);
-> +       if (bp->phylink_pcs.ops)
-> +               phylink_set_pcs(bp->phylink, &bp->phylink_pcs);
-> 
->          return 0;
->   }
-
-Regards,
-   Nicolas
-
--- 
-Nicolas Ferre
+Daniel
