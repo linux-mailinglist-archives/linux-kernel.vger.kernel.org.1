@@ -2,43 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4566B2A7F11
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 13:53:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EFB92A7F1C
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 13:55:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730685AbgKEMx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 07:53:27 -0500
-Received: from mx2.suse.de ([195.135.220.15]:39214 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729992AbgKEMx1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 07:53:27 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id EB2FAABAE;
-        Thu,  5 Nov 2020 12:53:25 +0000 (UTC)
-Subject: Re: [RFC PATCH 0/2] mm: fix OOMs for binding workloads to movable
- zone only node
-To:     Michal Hocko <mhocko@suse.com>, Feng Tang <feng.tang@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mel Gorman <mgorman@suse.de>, dave.hansen@intel.com,
-        ying.huang@intel.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <1604470210-124827-1-git-send-email-feng.tang@intel.com>
- <20201104071308.GN21990@dhcp22.suse.cz>
- <20201104073826.GA15700@shbuild999.sh.intel.com>
- <20201104075819.GA10052@dhcp22.suse.cz>
- <20201104084021.GB15700@shbuild999.sh.intel.com>
- <20201104085343.GA18718@dhcp22.suse.cz>
- <20201105014028.GA86777@shbuild999.sh.intel.com>
- <20201105120818.GC21348@dhcp22.suse.cz>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <4029c079-b1f3-f290-26b6-a819c52f5200@suse.cz>
-Date:   Thu, 5 Nov 2020 13:53:24 +0100
+        id S1730577AbgKEMzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 07:55:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57882 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726777AbgKEMzD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 07:55:03 -0500
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C6AFC0613CF;
+        Thu,  5 Nov 2020 04:55:03 -0800 (PST)
+Received: by mail-ej1-x629.google.com with SMTP id w13so2417691eju.13;
+        Thu, 05 Nov 2020 04:55:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=zdb4a75nDYFWhXtJEBTR4K/6mw5ONd63rLzUkBKXiIE=;
+        b=DK2YPwEYBzHKcbuvAewPh2ubypxtnn47SEtlGdzykfkQgnGkJ0glK3T4UFluf2Bd00
+         woQDDU+m9maOfSPy4Eo7NicIKsybrf8ZvEBfkCy0WDnWcmQ71CVgyaZVeo8bmVwBtMRR
+         ICax/jgLnPiKntLS/rnBCLLfrZQ8pCPa5vdpL4QKYZTCRJgXsq/zI5BXAexFyjaa0dXB
+         wwvuYSIXiZsdq43mZhgsROx6lAHwI5FPfEJMU6RoCjmOpB3jzjrWpPyI3QpNH5gsJVf0
+         GYEHwqjD4biBtzVauiuG92fo2P29bUhxV8qcrCAP0t9YbKQnzoz83YMiL69UTSxC9ymM
+         eK8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zdb4a75nDYFWhXtJEBTR4K/6mw5ONd63rLzUkBKXiIE=;
+        b=bAXy96rT5X6Gz2LOWQfmQSLbOQoZeSvvAOpgzTOj5DtGVZRV6GubbbyJQUuUlgL7V8
+         BN2XOWwaB0QZLk4YvPffhsE6SxXTo9WKroHUMeF1pRD5tgSdleJ9YEA15kZUc9ZTNEh7
+         vBI9aTFAGxwzudPPmz/Bmj4nor/zw/+vYxC23CevwEPJC/66tdpgWpnlU4brqV3EdvVx
+         8zZa79O/SoleHZHH/lAmQM0qMQy64MwENhJ/vF2vjB3IfMIdmveYzf9MRmUCDejvQrYz
+         x1sUDrTwUxe4HTdi7Fs2qeMWFwDqpKRMrj/Ni78CaNQE4hbz7Sri/dc/AiUXn0GtptuR
+         lcgQ==
+X-Gm-Message-State: AOAM5317ikTmPeCLQRkMP6xTn/VO6y9WFt8ENuzhidyDRYKVXeGazVtl
+        vAZp8dNjDDrw5dAtYvxn1qRWi0Mi9WKtlw==
+X-Google-Smtp-Source: ABdhPJyPS+uIl9TDoSmI2PgxG0jiPd8m3YJVJk/F2cVj9oVZvuwgQLQSTsFyWzMmyqWxz+Y+G0q4JA==
+X-Received: by 2002:a17:906:a149:: with SMTP id bu9mr2064502ejb.115.1604580901961;
+        Thu, 05 Nov 2020 04:55:01 -0800 (PST)
+Received: from ?IPv6:2a02:a44f:d2f0:0:7cde:5457:f7ce:ec3c? (2a02-a44f-d2f0-0-7cde-5457-f7ce-ec3c.fixed6.kpn.net. [2a02:a44f:d2f0:0:7cde:5457:f7ce:ec3c])
+        by smtp.gmail.com with ESMTPSA id d20sm860807edz.14.2020.11.05.04.55.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Nov 2020 04:55:01 -0800 (PST)
+Subject: Re: Regression: QCA6390 fails with "mm/page_alloc: place pages to
+ tail in __free_pages_core()"
+To:     David Hildenbrand <david@redhat.com>,
+        Vlastimil Babka <vbabka@suse.cz>
+Cc:     Kalle Valo <kvalo@codeaurora.org>, ath11k@lists.infradead.org,
+        linux-mm@kvack.org, akpm@linux-foundation.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org
+References: <d6fb1e30-0d19-9af3-337b-69ff11c2fc6c@suse.cz>
+ <8ACA82DB-D2FE-4599-8A01-D42218FDE1E5@redhat.com>
+From:   Pavel Procopiuc <pavel.procopiuc@gmail.com>
+Message-ID: <225718f1-c4b0-8683-427a-059148a39350@gmail.com>
+Date:   Thu, 5 Nov 2020 13:55:00 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <20201105120818.GC21348@dhcp22.suse.cz>
+In-Reply-To: <8ACA82DB-D2FE-4599-8A01-D42218FDE1E5@redhat.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -46,56 +72,11 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/5/20 1:08 PM, Michal Hocko wrote:
-> On Thu 05-11-20 09:40:28, Feng Tang wrote:
->> > 
->> > Could you be more specific? This sounds like a bug. Allocations
->> > shouldn't spill over to a node which is not in the cpuset. There are few
->> > exceptions like IRQ context but that shouldn't happen regurarly.
->> 
->> I mean when the docker starts, it will spawn many processes which obey
->> the mem binding set, and they have some kernel page requests, which got
->> successfully allocated, like the following callstack:
->> 
->> 	[  567.044953] CPU: 1 PID: 2021 Comm: runc:[1:CHILD] Tainted: G        W I       5.9.0-rc8+ #6
->> 	[  567.044956] Hardware name:  /NUC6i5SYB, BIOS SYSKLi35.86A.0051.2016.0804.1114 08/04/2016
->> 	[  567.044958] Call Trace:
->> 	[  567.044972]  dump_stack+0x74/0x9a
->> 	[  567.044978]  __alloc_pages_nodemask.cold+0x22/0xe5
->> 	[  567.044986]  alloc_pages_current+0x87/0xe0
->> 	[  567.044991]  allocate_slab+0x2e5/0x4f0
->> 	[  567.044996]  ___slab_alloc+0x380/0x5d0
->> 	[  567.045021]  __slab_alloc+0x20/0x40
->> 	[  567.045025]  kmem_cache_alloc+0x2a0/0x2e0
->> 	[  567.045033]  mqueue_alloc_inode+0x1a/0x30
->> 	[  567.045041]  alloc_inode+0x22/0xa0
->> 	[  567.045045]  new_inode_pseudo+0x12/0x60
->> 	[  567.045049]  new_inode+0x17/0x30
->> 	[  567.045052]  mqueue_get_inode+0x45/0x3b0
->> 	[  567.045060]  mqueue_fill_super+0x41/0x70
->> 	[  567.045067]  vfs_get_super+0x7f/0x100
->> 	[  567.045074]  get_tree_keyed+0x1d/0x20
->> 	[  567.045080]  mqueue_get_tree+0x1c/0x20
->> 	[  567.045086]  vfs_get_tree+0x2a/0xc0
->> 	[  567.045092]  fc_mount+0x13/0x50
->> 	[  567.045099]  mq_create_mount+0x92/0xe0
->> 	[  567.045102]  mq_init_ns+0x3b/0x50
->> 	[  567.045106]  copy_ipcs+0x10a/0x1b0
->> 	[  567.045113]  create_new_namespaces+0xa6/0x2b0
->> 	[  567.045118]  unshare_nsproxy_namespaces+0x5a/0xb0
->> 	[  567.045124]  ksys_unshare+0x19f/0x360
->> 	[  567.045129]  __x64_sys_unshare+0x12/0x20
->> 	[  567.045135]  do_syscall_64+0x38/0x90
->> 	[  567.045143]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
->> 
->> For it, the __alloc_pages_nodemask() will first try process's targed
->> nodemask(unmovable node here), and there is no availabe zone, so it
->> goes with the NULL nodemask, and get a page in the slowpath.
+Op 05.11.2020 om 12:13 schreef David Hildenbrand:
+> It depends in which order memory is exposed to MM, which might depend on other factors in some configurations.
 > 
-> OK, I see your point now. I was not aware of the slab allocator not
-> following cpusets. Sounds like a bug to me.
+> This smells like it exposes an existing bug. Can you reproduce also with zone shuffling enabled?
 
-SLAB and SLUB seem to not care about cpusets in the fast path. But this stack 
-shows that it went all the way to the page allocator, so the cpusets should have 
-been obeyed there at least.
-
+So just to make sure I understand you correctly, you'd like to see if the problem with ath11k driver on my hardware 
+persists when I boot pristine 5.10-rc2 kernel (without reverting commit 7fef431be9c9ac255838a9578331567b9dba4477) and 
+with page_alloc.shuffle=1, right?
