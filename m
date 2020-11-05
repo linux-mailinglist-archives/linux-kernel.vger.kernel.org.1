@@ -2,103 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4382C2A8748
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 20:33:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 999832A874D
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 20:35:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732144AbgKETdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 14:33:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35926 "EHLO
+        id S1732119AbgKETfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 14:35:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726996AbgKETdT (ORCPT
+        with ESMTP id S1726996AbgKETfP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 14:33:19 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 664B1C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 11:33:19 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id 10so2114703pfp.5
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 11:33:19 -0800 (PST)
+        Thu, 5 Nov 2020 14:35:15 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB9D9C0613CF;
+        Thu,  5 Nov 2020 11:35:14 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id 62so2009924pgg.12;
+        Thu, 05 Nov 2020 11:35:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=eSpGHTliJf2Cyl4xNehipJVU0uhjtt4v/ABhWGSHLms=;
-        b=IKr4/3tHu41qkkq+TXGIqQM0yq011kjtMFgajdBo2u01m4IN5baZXmD3uJ50QaW792
-         t0aevmveRLayC8WW/2ndvF5IhEDrkQPehDbfQxdkncZaG+TxZRdzLow00cdnnm4TLbHr
-         kXgxtkZP+tsW7mHAnr5mgWNOkeJO3Tr7+wbXe17/w63808LLT6RKuOLbC+tKHjWYFm6j
-         rJe1GG7vULHd4HhrXl68nsDZ9kuEIB2RLlq/6GMhGCcA0kvI3cD9pNsLYb8eiuznc9A9
-         tjpv1LnYpHMvepZlSnqJVK63N0R8KpipbmAZes5C0d9VaInD00G/OBrJ5ckJEy3IidPF
-         zzCQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cAfagP6TptglHcLWx7VFwM6m74Lt2pq3ChoS3N6uj8U=;
+        b=Zcw0GfYhdne29HCTrnIEk0TkhM73039JthrNHXghC30fSft9V2EsPLVoCPCRKDAZbO
+         ynwmyHAqac97AVrqyPH/i6kD0YsmRhJDdBp4315/8WJCDXhgAAVM8e0BjIURDJH1X/Hq
+         QC8US1CfvJuTMGwiQrJWhqYkT8DJBUwFB2E6nCXOYFb1UkKHzrY0hC59Qknpw7tc56nt
+         gDYOS5tmN8bWP4OZ6hhhj9mxGF0GPZs+kIF+g4GGTySBrjdsdnizWcd/43b0pP7lqcWD
+         io6WVjBkfjX50qUI5uisTAsHeOG/9UHf9VOu2qgrsu+RUhGae2WAHzAl+fRcIFFKq4VX
+         Lcxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=eSpGHTliJf2Cyl4xNehipJVU0uhjtt4v/ABhWGSHLms=;
-        b=G44AZXLzM3nP+HcqKfsgW3ecpADyiphxl5UpibzhjQgPknTqNLx4BtsIVvy2Tr7rfO
-         l7YymgZeCKgU4LbvDzO0TQ5dx64DQTwuC9VI9Ps0AF4Q1GKWhru/fPUTQ6O7pAJj2baO
-         ppKBh0yz6Nd2ckDFavNIIhI2NslTECrTwYlQLwzBAHDjb6rGQMoeziEGTcy505OJX5Aj
-         qtkv/ukcXzLsGfBLDGNrhhfrGli4inNErrztQLbMYGG5OAcwpcTHwuaNOxr0WwBo4YJq
-         oXyxHZ5IzXHuq84EwNMXM0F4tahSo5EFDYlbK1dIRsG7wL9YcknfIo/nP/jVnVoFQDOi
-         pjKQ==
-X-Gm-Message-State: AOAM532LDDoWWlkxgHhzGkQAFT4FFdhamyiS1c1BnNq8IhxzSEzmItZa
-        EA+7VWLYhWf2yqE+DaCxYq4u796Kf/4=
-X-Google-Smtp-Source: ABdhPJxBSGVVgTAvY+rQZZq/gwen/q3PAFD+cgTOxAs86LiDvDJWGDgrdY2V2X2GZfaiMXQU3ZmXhQ==
-X-Received: by 2002:a63:9d8d:: with SMTP id i135mr3876922pgd.213.1604604798792;
-        Thu, 05 Nov 2020 11:33:18 -0800 (PST)
-Received: from localhost ([160.202.157.3])
-        by smtp.gmail.com with ESMTPSA id y19sm3240844pfn.147.2020.11.05.11.33.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 11:33:18 -0800 (PST)
-Date:   Fri, 6 Nov 2020 01:03:12 +0530
-From:   Deepak R Varma <mh12gx2825@gmail.com>
-To:     Eric Anholt <eric@anholt.net>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Maxime Ripard <mripard@kernel.org>
-Subject: Re: [PATCH] drm/vc4: replace idr_init() by idr_init_base()
-Message-ID: <20201105193312.GA108505@localhost>
-References: <20201105181613.GA42968@localhost>
- <CADaigPWV+x=6x_vso1Eb7ZEdmevpjgdGWO-epq-S6gJ3J1-sSA@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cAfagP6TptglHcLWx7VFwM6m74Lt2pq3ChoS3N6uj8U=;
+        b=XmkMb45wXUn6JGBr3F7VsjEx4RRR5G/BLdXb+9QbmNxAZrHK8Xju6PUQucgTYi9Sgt
+         e+GIcNMDsjpmeHMn/bRMLnV9hWMjs0nfwqPm6WYqWclF6kZQr7wfbQSZsCeTXHhEnya5
+         xSowBnviajMFWee2v6aTMaUxtUW4HSteM71OF3/Rk+jy1wFFccGfQL4hYVDWA+I8hNo8
+         73eGpW7yElHkxqnZ2cxjDxzm1KAzUDCh/sfzXPfIgI97LFdne5A/fPlFl0LdYDT6ijtO
+         G6c5EVhv23NtUAGmU1gjpbxfZ04kB9Og2AsCrNuPPXrsjiiSD55dxs0auguG7k6O5QX/
+         CNPw==
+X-Gm-Message-State: AOAM530Vf7m+tXdEyJu7S3SDl8PDJy77s8OrDcKborasO91Hmnj87G+X
+        xNUw2P39l9x7qJM+p+euxIy4Kp1jRJkskw2wEaHPkSg2
+X-Google-Smtp-Source: ABdhPJwuSlGa4EaJUDEsPQqaKLhqqhHPZKlV3e2nlshqrKsNUdm+GzhG38tEQnm1CJZWT0v26yw6SWggKb8fMGjwBWE=
+X-Received: by 2002:a17:90a:f2c5:: with SMTP id gt5mr3996781pjb.66.1604604914542;
+ Thu, 05 Nov 2020 11:35:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CADaigPWV+x=6x_vso1Eb7ZEdmevpjgdGWO-epq-S6gJ3J1-sSA@mail.gmail.com>
+References: <20201105073434.429307-1-xie.he.0141@gmail.com> <1d7f669ba4e444f1b35184264e5da601@AcuMS.aculab.com>
+In-Reply-To: <1d7f669ba4e444f1b35184264e5da601@AcuMS.aculab.com>
+From:   Xie He <xie.he.0141@gmail.com>
+Date:   Thu, 5 Nov 2020 11:35:05 -0800
+Message-ID: <CAJht_EM6rXw2Y6NOw9npqUx-MSscwaZ54q7KM4V2ip_CCQsdeg@mail.gmail.com>
+Subject: Re: [PATCH net-next] net: x25_asy: Delete the x25_asy driver
+To:     David Laight <David.Laight@aculab.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 11:25:11AM -0800, Eric Anholt wrote:
-> On Thu, Nov 5, 2020 at 10:25 AM Deepak R Varma <mh12gx2825@gmail.com> wrote:
-> >
-> > idr_init() uses base 0 which is an invalid identifier for this driver.
-> > The idr_alloc for this driver uses VC4_PERFMONID_MIN as start value for
-> > ID range and it is #defined to 1. The new function idr_init_base allows
-> > IDR to set the ID lookup from base 1. This avoids all lookups that
-> > otherwise starts from 0 since 0 is always unused / available.
-> >
-> > References: commit 6ce711f27500 ("idr: Make 1-based IDRs more efficient")
-> >
-> > Signed-off-by: Deepak R Varma <mh12gx2825@gmail.com>
-> > ---
-> >  drivers/gpu/drm/vc4/vc4_perfmon.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/gpu/drm/vc4/vc4_perfmon.c b/drivers/gpu/drm/vc4/vc4_perfmon.c
-> > index f4aa75efd16b..7d40f421d922 100644
-> > --- a/drivers/gpu/drm/vc4/vc4_perfmon.c
-> > +++ b/drivers/gpu/drm/vc4/vc4_perfmon.c
-> > @@ -77,7 +77,7 @@ struct vc4_perfmon *vc4_perfmon_find(struct vc4_file *vc4file, int id)
-> >  void vc4_perfmon_open_file(struct vc4_file *vc4file)
-> >  {
-> >         mutex_init(&vc4file->perfmon.lock);
-> > -       idr_init(&vc4file->perfmon.idr);
-> > +       idr_init_base(&vc4file->perfmon.idr, 1);
-> >  }
-> 
-> Sounds like you should use VC4_PERFMONID_MIN instead of a magic 1 here.
+On Thu, Nov 5, 2020 at 1:10 AM David Laight <David.Laight@aculab.com> wrote:
+>
+> > This driver transports LAPB (X.25 link layer) frames over TTY links.
+>
+> I don't remember any requests to run LAPB over anything other
+> than synchronous links when I was writing LAPB implementation(s)
+> back in the mid 1980's.
+>
+> If you need to run 'comms over async uart links' there
+> are better options.
+>
+> I wonder what the actual use case was?
 
-Agreed. I will update and resend v2.
-
-Thank you,
-./drv
+I think this driver was just for experimental purposes. According to
+the author's comment at the beginning of x25_asy.c, this driver didn't
+implement FCS (frame check sequence), which was required by CCITT's
+standard. So I think this driver was not suitable for real-world use
+anyway.
