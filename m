@@ -2,279 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A7972A75FC
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 04:13:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D93A2A75FF
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 04:16:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388547AbgKEDNA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 22:13:00 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38270 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730888AbgKEDM7 (ORCPT
+        id S2388538AbgKEDQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 22:16:02 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:7459 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731990AbgKEDQC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 22:12:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604545976;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uFTsPGcDcUkgQNcoW2dxxsscwMj2/3GBBizTH8MNzEE=;
-        b=Kc1n5+1Nm0a9fsDwO31AgQBRDg48PFhhvDlH91j7y16NmIlkVLF2Ejo5tl4/9a2hhbQ8+5
-        MMjkFLEvwvxo/xvTjgH/k1YGug0Ep3XlG1/q54mnK24dj3eIZ3z3sFwlXgMmhl0GB4vYHR
-        khRyGeWfQZwa2Iqt5eLpi5xmtclnkIo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-551-9jC1P1ZTOmquwYW8ZZnbQA-1; Wed, 04 Nov 2020 22:12:54 -0500
-X-MC-Unique: 9jC1P1ZTOmquwYW8ZZnbQA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 798C2803F7B;
-        Thu,  5 Nov 2020 03:12:53 +0000 (UTC)
-Received: from [10.72.13.154] (ovpn-13-154.pek2.redhat.com [10.72.13.154])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 10EFE1002C0D;
-        Thu,  5 Nov 2020 03:12:47 +0000 (UTC)
-Subject: Re: [PATCH 2/2] vhost-vdpa: fix page pinning leakage in error path
- (rework)
-To:     si-wei liu <si-wei.liu@oracle.com>, mst@redhat.com,
-        lingshan.zhu@intel.com
-Cc:     joao.m.martins@oracle.com, boris.ostrovsky@oracle.com,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-References: <1604043944-4897-1-git-send-email-si-wei.liu@oracle.com>
- <1604043944-4897-2-git-send-email-si-wei.liu@oracle.com>
- <77a2aefe-ccad-bd51-3721-1139d4e535d7@redhat.com>
- <5FA33C06.6010000@oracle.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <38317b10-0f1f-1521-ec10-a462be83b5a6@redhat.com>
-Date:   Thu, 5 Nov 2020 11:12:46 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 4 Nov 2020 22:16:02 -0500
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4CRTDs4F93zhclL;
+        Thu,  5 Nov 2020 11:15:57 +0800 (CST)
+Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server (TLS) id 14.3.487.0; Thu, 5 Nov 2020
+ 11:15:54 +0800
+Subject: Re: [PATCH v2] f2fs: change write_hint for hot/warm nodes
+To:     Jaegeuk Kim <jaegeuk@kernel.org>,
+        Daejun Park <daejun7.park@samsung.com>
+CC:     "chao@kernel.org" <chao@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-f2fs-devel@lists.sourceforge.net" 
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jieon Seol <jieon.seol@samsung.com>,
+        Sang-yoon Oh <sangyoon.oh@samsung.com>,
+        Mankyu PARK <manq.park@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        Keoseong Park <keosung.park@samsung.com>,
+        SEUNGUK SHIN <seunguk.shin@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Jaemyung Lee <jaemyung.lee@samsung.com>
+References: <CGME20201103083832epcms2p6c8b0e4470f1392772317ab2b25256b3d@epcms2p6>
+ <20201103083832epcms2p6c8b0e4470f1392772317ab2b25256b3d@epcms2p6>
+ <20201103185808.GB1273166@google.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <4be2e157-fbc1-6e2c-cdd7-a32514884754@huawei.com>
+Date:   Thu, 5 Nov 2020 11:15:53 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-In-Reply-To: <5FA33C06.6010000@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201103185808.GB1273166@google.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.114.67]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 2020/11/5 上午7:40, si-wei liu wrote:
->
-> On 11/3/2020 6:42 PM, Jason Wang wrote:
+On 2020/11/4 2:58, Jaegeuk Kim wrote:
+> On 11/03, Daejun Park wrote:
+>> In the fs-based mode of F2FS, the mapping of hot/warm node to
+>> WRITE_LIFE_NOT_SET should be changed to WRITE_LIFE_SHORT.
 >>
->> On 2020/10/30 下午3:45, Si-Wei Liu wrote:
->>> Pinned pages are not properly accounted particularly when
->>> mapping error occurs on IOTLB update. Clean up dangling
->>> pinned pages for the error path.
->>>
->>> The memory usage for bookkeeping pinned pages is reverted
->>> to what it was before: only one single free page is needed.
->>> This helps reduce the host memory demand for VM with a large
->>> amount of memory, or in the situation where host is running
->>> short of free memory.
->>>
->>> Fixes: 4c8cf31885f6 ("vhost: introduce vDPA-based backend")
->>> Signed-off-by: Si-Wei Liu <si-wei.liu@oracle.com>
->>> ---
->>>   drivers/vhost/vdpa.c | 64 
->>> +++++++++++++++++++++++++++++++++++++---------------
->>>   1 file changed, 46 insertions(+), 18 deletions(-)
->>>
->>> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
->>> index b6d9016..8da8558 100644
->>> --- a/drivers/vhost/vdpa.c
->>> +++ b/drivers/vhost/vdpa.c
->>> @@ -560,6 +560,8 @@ static int vhost_vdpa_map(struct vhost_vdpa *v,
->>>         if (r)
->>>           vhost_iotlb_del_range(dev->iotlb, iova, iova + size - 1);
->>> +    else
->>> +        atomic64_add(size >> PAGE_SHIFT, &dev->mm->pinned_vm);
->>>         return r;
->>>   }
->>> @@ -591,14 +593,16 @@ static int 
->>> vhost_vdpa_process_iotlb_update(struct vhost_vdpa *v,
->>>       unsigned long list_size = PAGE_SIZE / sizeof(struct page *);
->>>       unsigned int gup_flags = FOLL_LONGTERM;
->>>       unsigned long npages, cur_base, map_pfn, last_pfn = 0;
->>> -    unsigned long locked, lock_limit, pinned, i;
->>> +    unsigned long lock_limit, sz2pin, nchunks, i;
->>>       u64 iova = msg->iova;
->>> +    long pinned;
->>>       int ret = 0;
->>>         if (vhost_iotlb_itree_first(iotlb, msg->iova,
->>>                       msg->iova + msg->size - 1))
->>>           return -EEXIST;
->>>   +    /* Limit the use of memory for bookkeeping */
->>>       page_list = (struct page **) __get_free_page(GFP_KERNEL);
->>>       if (!page_list)
->>>           return -ENOMEM;
->>> @@ -607,52 +611,64 @@ static int 
->>> vhost_vdpa_process_iotlb_update(struct vhost_vdpa *v,
->>>           gup_flags |= FOLL_WRITE;
->>>         npages = PAGE_ALIGN(msg->size + (iova & ~PAGE_MASK)) >> 
->>> PAGE_SHIFT;
->>> -    if (!npages)
->>> -        return -EINVAL;
->>> +    if (!npages) {
->>> +        ret = -EINVAL;
->>> +        goto free;
->>> +    }
->>>         mmap_read_lock(dev->mm);
->>>   -    locked = atomic64_add_return(npages, &dev->mm->pinned_vm);
->>>       lock_limit = rlimit(RLIMIT_MEMLOCK) >> PAGE_SHIFT;
->>> -
->>> -    if (locked > lock_limit) {
->>> +    if (npages + atomic64_read(&dev->mm->pinned_vm) > lock_limit) {
->>>           ret = -ENOMEM;
->>> -        goto out;
->>> +        goto unlock;
->>>       }
->>>         cur_base = msg->uaddr & PAGE_MASK;
->>>       iova &= PAGE_MASK;
->>> +    nchunks = 0;
->>>         while (npages) {
->>> -        pinned = min_t(unsigned long, npages, list_size);
->>> -        ret = pin_user_pages(cur_base, pinned,
->>> -                     gup_flags, page_list, NULL);
->>> -        if (ret != pinned)
->>> +        sz2pin = min_t(unsigned long, npages, list_size);
->>> +        pinned = pin_user_pages(cur_base, sz2pin,
->>> +                    gup_flags, page_list, NULL);
->>> +        if (sz2pin != pinned) {
->>> +            if (pinned < 0) {
->>> +                ret = pinned;
->>> +            } else {
->>> +                unpin_user_pages(page_list, pinned);
->>> +                ret = -ENOMEM;
->>> +            }
->>>               goto out;
->>> +        }
->>> +        nchunks++;
->>>             if (!last_pfn)
->>>               map_pfn = page_to_pfn(page_list[0]);
->>>   -        for (i = 0; i < ret; i++) {
->>> +        for (i = 0; i < pinned; i++) {
->>>               unsigned long this_pfn = page_to_pfn(page_list[i]);
->>>               u64 csize;
->>>                 if (last_pfn && (this_pfn != last_pfn + 1)) {
->>>                   /* Pin a contiguous chunk of memory */
->>>                   csize = (last_pfn - map_pfn + 1) << PAGE_SHIFT;
->>> -                if (vhost_vdpa_map(v, iova, csize,
->>> -                           map_pfn << PAGE_SHIFT,
->>> -                           msg->perm))
->>> +                ret = vhost_vdpa_map(v, iova, csize,
->>> +                             map_pfn << PAGE_SHIFT,
->>> +                             msg->perm);
->>> +                if (ret)
->>>                       goto out;
->>> +
->>>                   map_pfn = this_pfn;
->>>                   iova += csize;
->>> +                nchunks = 0;
->>>               }
->>>                 last_pfn = this_pfn;
->>>           }
->>>   -        cur_base += ret << PAGE_SHIFT;
->>> -        npages -= ret;
->>> +        cur_base += pinned << PAGE_SHIFT;
->>> +        npages -= pinned;
->>>       }
->>>         /* Pin the rest chunk */
->>> @@ -660,10 +676,22 @@ static int 
->>> vhost_vdpa_process_iotlb_update(struct vhost_vdpa *v,
->>>                    map_pfn << PAGE_SHIFT, msg->perm);
->>>   out:
->>>       if (ret) {
->>> +        if (nchunks && last_pfn) {
+>> As a result of analyzing the write pattern of f2fs using real workload,
+>> hot/warm nodes have high update ratio close to hot data.[*]
+>> However, F2FS passes write hints for hot/warm nodes as WRITE_LIFE_NOT_SET.
+> 
+> I prefer to keep it as is, since basically node blocks should be separatly
+> stored from data blocks in different erase blocks in order to match F2FS GC
+
+Correct, I missed that the change will break HOT_DATA type and {HOT,WARM}_NODE
+type data separation in FTL.
+
+> and FTL GC units. And, we don't do IPU for node blocks which doesn't make sense
+> to say *update ratio*.
+
+IMO, if fs discard is fast enough, both IPU and OPU will cause original blkaddr in
+FTL being invalid, we can compare update ratio on {I,O}PU IOs inside FTL; otherwise,
+we can't.
+
+Thanks,
+
+> 
 >>
+>> Furthermore, WRITE_LIFE_NOT_SET is a default value of write hint when it is
+>> not provided from the file system.
+>> In storage, write_hint is used to distinguish streams (e.g. NVMe).
+>> So, the hot/warm node of F2FS is not distinguished from other write_hints,
+>> which can make the wrong stream seperation.
 >>
->> Can we decrease npages where you did "nchunks++" then we can check 
->> npages here instead?
-> Hmmm, I am not sure I get what you want... @nchunks gets reset to 0 
-> whenever a certain range of pinned pages is successfully mapped. The 
-> conditional (when nchunks is non-zero) here indicates if there's any 
-> _outstanding_ pinned page that has to clean up in the error handling 
-> path. While the decrement of @npages may not occur when resetting the 
-> @nchunks counter, rendering incorrect cleanup in the error path.
-
-
-Yes, I meant e can decrease npages where you did "nchunks++". Anyhow, 
-it's just a optimization to avoid a local variable which is not a must.
-
-
->
-> BTW while reviewing it I got noticed of an error in my code. There 
-> might be still page pinning leak from wherever the vhost_vdpa_map() 
-> error occurs towards the end of page_list. I will post a v2 to fix this.
->
-
-Sure, will review.
-
-Thanks
-
-
-> Regards,
-> -Siwei
->
-> --- a/drivers/vhost/vdpa.c
-> +++ b/drivers/vhost/vdpa.c
-> @@ -656,8 +656,19 @@ static int vhost_vdpa_process_iotlb_update(struct 
-> vhost_vdpa *v,
->                                 ret = vhost_vdpa_map(v, iova, csize,
->                                                      map_pfn << 
-> PAGE_SHIFT,
-> msg->perm);
-> -                               if (ret)
-> +                               if (ret) {
-> +                                       /*
-> +                                        * Unpin the pages that are 
-> left unmapped
-> +                                        * from this point on in the 
-> current
-> +                                        * page_list. The remaining 
-> outstanding
-> +                                        * ones which may stride 
-> across several
-> +                                        * chunks will be covered in 
-> the common
-> +                                        * error path subsequently.
-> +                                        */
-> + unpin_user_pages(&page_list[i],
-> +                                                        pinned - i);
->                                         goto out;
-> +                               }
->
->                                 map_pfn = this_pfn;
->                                 iova += csize;
->
->
->
+>> * Liang, Yu, et al. "An empirical study of F2FS on mobile devices." 2017
+>> IEEE 23rd International Conference on Embedded and Real-Time Computing
+>> Systems and Applications (RTCSA).
 >>
->> Thanks
+>> Signed-off-by: Daejun Park <daejun7.park@samsung.com>
+>> ---
+>> v2: update documentation and comments
+>> ---
+>>   Documentation/filesystems/f2fs.rst | 4 ++--
+>>   fs/f2fs/segment.c                  | 6 +++---
+>>   2 files changed, 5 insertions(+), 5 deletions(-)
 >>
->>
->>> +            unsigned long pfn;
->>> +
->>> +            /*
->>> +             * Unpin the outstanding pages which are unmapped.
->>> +             * Mapped pages are accounted in vdpa_map(), thus
->>> +             * will be handled by vdpa_unmap().
->>> +             */
->>> +            for (pfn = map_pfn; pfn <= last_pfn; pfn++)
->>> +                unpin_user_page(pfn_to_page(pfn));
->>> +        }
->>>           vhost_vdpa_unmap(v, msg->iova, msg->size);
->>> -        atomic64_sub(npages, &dev->mm->pinned_vm);
->>>       }
->>> +unlock:
->>>       mmap_read_unlock(dev->mm);
->>> +free:
->>>       free_page((unsigned long)page_list);
->>>       return ret;
->>>   }
->>
->
-
+>> diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
+>> index b8ee761c9922..afa3da7cfade 100644
+>> --- a/Documentation/filesystems/f2fs.rst
+>> +++ b/Documentation/filesystems/f2fs.rst
+>> @@ -717,8 +717,8 @@ WRITE_LIFE_LONG       "                        WRITE_LIFE_LONG
+>>   ===================== ======================== ===================
+>>   User                  F2FS                     Block
+>>   ===================== ======================== ===================
+>> -                      META                     WRITE_LIFE_MEDIUM;
+>> -                      HOT_NODE                 WRITE_LIFE_NOT_SET
+>> +                      META                     WRITE_LIFE_MEDIUM
+>> +                      HOT_NODE                 WRITE_LIFE_SHORT
+>>                         WARM_NODE                "
+>>                         COLD_NODE                WRITE_LIFE_NONE
+>>   ioctl(COLD)           COLD_DATA                WRITE_LIFE_EXTREME
+>> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+>> index 1596502f7375..577ab7516c6b 100644
+>> --- a/fs/f2fs/segment.c
+>> +++ b/fs/f2fs/segment.c
+>> @@ -3160,8 +3160,8 @@ int f2fs_rw_hint_to_seg_type(enum rw_hint hint)
+>>    *
+>>    * User                  F2FS                     Block
+>>    * ----                  ----                     -----
+>> - *                       META                     WRITE_LIFE_MEDIUM;
+>> - *                       HOT_NODE                 WRITE_LIFE_NOT_SET
+>> + *                       META                     WRITE_LIFE_MEDIUM
+>> + *                       HOT_NODE                 WRITE_LIFE_SHORT
+>>    *                       WARM_NODE                "
+>>    *                       COLD_NODE                WRITE_LIFE_NONE
+>>    * ioctl(COLD)           COLD_DATA                WRITE_LIFE_EXTREME
+>> @@ -3208,7 +3208,7 @@ enum rw_hint f2fs_io_type_to_rw_hint(struct f2fs_sb_info *sbi,
+>>   				return WRITE_LIFE_EXTREME;
+>>   		} else if (type == NODE) {
+>>   			if (temp == WARM || temp == HOT)
+>> -				return WRITE_LIFE_NOT_SET;
+>> +				return WRITE_LIFE_SHORT;
+>>   			else if (temp == COLD)
+>>   				return WRITE_LIFE_NONE;
+>>   		} else if (type == META) {
+>> -- 
+>> 2.25.1
+> .
+> 
