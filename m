@@ -2,146 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AAE22A74CD
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 02:16:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E4702A7439
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 02:01:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388269AbgKEBQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 20:16:14 -0500
-Received: from sonic301-36.consmr.mail.ne1.yahoo.com ([66.163.184.205]:43691
-        "EHLO sonic301-36.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388259AbgKEBQO (ORCPT
+        id S2387984AbgKEBBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 20:01:07 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:7413 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728052AbgKEBBG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 20:16:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1604538972; bh=yY/yFVl1emb2zJDw1hk6NF/KbSJkukEm4lylfgSZeVc=; h=From:To:Cc:Subject:Date:In-Reply-To:References:From:Subject; b=lXnwSlePCq8EyA4T1vcN2vOrDNlPAcl2buH7ckrYgpmlxHXAIit12mmW8sUU9SY/aX9Gg/8aCHfEYI6kB9J2VSa3SUxKNz0kS4HPxHTPuxIQplmoJCkooygolNfEx63M/8VhPKK4KVKBETH3UY+ro2uRNzeyLiE5M52fVVALfJg0WY5cDLqGPbzxqBKOdrLBHtCpJiJZDJK1irfBz5kkPgCjB+lhrXDAoLSEdBsGcB7bMdb0Vpu7jbevaOMPnD2iP6GQjhDkmu6ZSqKiZgX/LYxg6fiGgSrIsdJ2EgYOO2M0DdaZ+wKUBHcBmLvn9eqd+rwgVPMapcmC0C4yuQ2kFA==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1604538972; bh=ZAFMtpEOnazVgELbNLnWZ7misYOeJpXC6zIg5jypNKI=; h=From:To:Subject:Date; b=NMUHFfokFLRYl6F4JhHwSuPQJBTwDpCERNHKVSFKVb5YcUDYp6+BnHzoWYrLEtk1FCN6VTCe0xDCUqXKl6ssb15OJP9tJreJ1Tdt4Hq3an9eQ3BXWhfUztZwmNhMv4tcRFWjlupv9Y4OxP0G5md/us6EXDySHYAoCuz2Wyqiun99R3x95b5tE8hHlrNihwwUGzKk9xtFNqKxne+onppOBt2Z1MBOQQxOgorcq0mXYJJmUA9hNShQnEqTbMMyPRk2lxXFhzXDghMLbmtwwF24pfYsHRNwMy1/WBUqsw3eBYhdaUgWTFt9Gry+mNIM/Wc9CHsr8fI3V+/nOjTu5yPG2Q==
-X-YMail-OSG: uz66ApoVM1l9Q3PPl5hgCxQ_1ZcZlcX3DZQgALm1T.elz3Jajx7r1MfjZV4eHLX
- BojODkcHJx1YIWXdAxA1RBTkclb2Bj3wuZz4IgNRe5KES._QrcQcu.3owhzxbb.hQNe_3bzQ..3K
- Z43gJ8RHG80OVbKEB7x5TEYpCXiZ_v7H_v6Du_eXCp8Q1mR.8l_S1Xkj2zDQIpTZz6tiKRwZbGQl
- bW5GibYbaEJCHIR0wj69mxRDPO76eNDu37RUOPX.tG5djHHuHAAExjd_qEvogBgh9N3nXajzOnZh
- 9SWsgE0Q62MtoELIKspRscYTvY7ZTv031zYATaxzRa.qWRGCD.IWCPpQW7H14IaF546voMx6XxNK
- RMJiVWp25xXlRGOAJtmiUYgUsLQweC0CTrap6EcqiLzWKW0XPalGR656uMWi5b.Z30omTWysR4kO
- _0ziEM9ec0dqYC83BohF_BKbSuut6UQC_83FtVprPF1ixFRwDt9V0gwsf5cWvANtb3TuQhK913gi
- O1.nqhMSxS8f0lGcssn50OsEO1TDr1knIyU3H5rhHWM.DtBQrk6BUVGfs2d4yoOaPwE726hvzN3w
- fMHX5TivDxd1xpRFza6gsCY9R7HWT7NYCdRwBGoXAu54Kdr5Mmh1jgMDsuMJGYHysHhxSop63GLC
- XuPngwsbcA9BeAmR6_Ywg5sW.HvYpJgUz5NDJSLMwCnlx3JdiGAkj4eTkgWby7rgHpIyOG8X8zoF
- .dfYLaypTiESp574K0zI0I1pgGT6Z8SMQdv2tIa.LutsUyC.m8W0C4wKwY.RuVLo8VkUmdrG.ynm
- qE6bHFQRewQcK4b5criXYy16_rWQOJev7TwfAjAGe77e_lsI93J46f1K53oy.W2ImKVhzu6LnsBo
- 4evp_56Q.qMD3zEEBiCDqavl4vS8sglctFYHzfk8e37YHqXFY__7WGfkYZET3MVV5ik5xAk.sxUJ
- LexEFNPJk_pbkYjvL2.iNoUFcTU8rqkbLDKN9HnLbVJU4UWTkeOeI0d4jjVXyQ0EcD.R6hZW.DT7
- qvF_4yHOGDopw4N3t7Gt3SSG5vDspFbpxOitmEdjwzdJBMHIYsR3rDsWvJesDo.7KiUtYCwqCj2K
- xYHkcZGU6AZG_zwSgY1YSwl3AFsn6j0ZzHQW0ADzVQCH.JxkCcTYuzNl8w.u_2hKyMIZb3o9XZR9
- lT4PQ2F3.dpgYqZufDjPo75Iy9Dr0J2Eh2ep4suA0IHMeEH2RHZ7FbotiVtv1IJSseM6LfjgW13I
- tNOHg.SdO_DF7gEOYXDF2EmD4G9V.6.jveEZhKBwo6zIKyT2o3oZ4rGsYfZNnlt_ePjVDCLTZn0N
- 49X9cSJxP_ZxdmZl385.aGTIslovkrqZcPGLs2Z2q.L1MMD5rCD.SDni8u2bFM8SJpUWPssSzIQv
- nvWW77jM1ijipPKUaJAwA5iJ3AXpSsdugyiVCHU9EjPFoh5NZHLR_LLphkazGbCMBTAgXwXWRD99
- DD2Bmkk4f9KdDNzUpvS3qckuxzQ9LwUijS2L9oq7eGyjS9rqiaQPT_wnkvCicXGrFTmGU7ZC3jwl
- SBUvV8tnMiEc19B_ZCjlJlgGhIOooNKu5o6ieVFWDFeZfqEuNJAykF_I.t1GVofipSemcLHxRdSa
- 7zxAFWJTBquKdQs9S_cVUMPkYmlk9YRe1QT2Hr1k93.ebA9aY484YDBHVZ2xNwHa2N5QO0sKxcxr
- XGJhPpwnOgL2hrchj6LPoo4OS1Wcr6CxXeIT5BTn6UvrF4g7awp.9H1h2EqiWQewy8fB9kwJr7.A
- 3ko6aW_0.3rLzaERp2zPG6wySnz49BNTT8b.6g8Unq93ECZJYZ2aLMxOqVtHsIEqcSW8n7PMU1UO
- 5r5AXjG7l5qHz_9c9k85Xa4EUpG0WUx0yecUYNDXTfmYuSqpE8U9NcYm_qpkVKZL8h1SJEy9p6xz
- 8Nm5Ejkh6boYRUHRIEZF948NM4hXl2yvxwhcM2RisLswq0ZxAFCL8HgXurNqC02TfmvXjqWIOCAf
- VLqYYx3Yu8ktjbHRvl66ncjssthS5DupC.qbi6IyLlPFTg5wUrijfZPThkjcv1siO7vX1gprq79a
- cGC0ClYThZ4boTZ8X7foPG958k78EOi3osvRhxXugkPI5O6I1z_6HllgoXza7Ben0gFmQQs4Htjk
- 6tYCErIhOpM3KjXZC0CKZoMj5eltBMnbvsq3WL80c16KhrM1QJjc7X.1cIIunUntZe.J2CH1qjar
- 5vr6QNke0s6UA3fiV9_KO9MG7qftOwqa0oogCzOFx19yyHfuMSdTCJIkZv6shpT8SdTlfDYwDSfn
- 314U.WqwvD.qRvG1FLtt3bxQfZXa2hCdJ8yCEtVCED1Vk8qwLWyHcNLlbc3nFGofe1Em81prZOTL
- 7X7h5klhXSx4OqEaWAX2XJeryj_NK16ORB6ISSee..nFSBoY4KnUNRflsAjEb8S1_odW1bEvoJzz
- qIsWSrBS4Ifw_zc.ThVOIRlX.QKUuHUV8CBSc7IQcab9WS3rvvtJZFipSGdMrchkg5JyJOkNpKaA
- A_Y8ObHKewMQP_B4DhGs0b_kgZSxMBdcmeLdGJcM21AUnEcKZk0TrhgYV4SvBZdij6Fgt4hhjvAl
- CJj8rzZgFkMACQbjzkMKLA2nzYBP12MDc6p8VTewq7qqC7wuwx2exVamUAFtnF9qAazDOVLTkoE0
- DCtcfAv_16zH4PA97M1gNQsClYZHxyc8gZ4MHLZ1H7otMeMnyabqeX__QJWnjRHFQaZhpcN7j1Qb
- CayDtU6Bp..Nd2NHhmkwmhRsAE3faaxb.lJHCRPVrJWrkIadt9AKOiztDlosWgXpKmLJ_rebs38K
- d1MMYV7PYAZvJbuNFCUZsTB278.zpJDA8SNR6utWfWj3Qw1mw8UmQzbYu3uDeJH57znZjdXbYK6.
- lmppoIVxcWB05EMalUVBCg4JB40BE3tjnRxYiOhYv8LuyL7l8bX05g4_CuMxVk3vGlQzvB5YYdQw
- iF1ktCrWuB5ydr6IFsj5cC7sZZQOEaxNhwGwzBkSzQX12Utr1yA3sR9uB1KKfL_tqVFJ6DS8DO3U
- MipNOIk7nxQUCpkRQJTdz8AXD2Tet5.KIqbkohcOApQQMybkLFWpbHhikeqIyuwaAfnxDMjmYK1b
- 6nw9aOYpBxA_ndCvcWrpA96rFfNkqDN4D.yetx4bBZWhsiV7B3zFCoisH.J.JdSwtacKyueAvfbM
- JXYoyhWcJly4R6KjR0iRH3zw13VcjcoKbZ1rKRaO_zyEfz_8s7eZGmOSPFOszyDaEAVPB2JHJTJq
- eODvgeL.kh0wWxqOSU9a2m_GSNWjPN0IyEqswyeGTjXb4WJQ67ZrR4VWX7JVH2WvFCKxTTL8ZVtr
- OFRg.M5v7gyY-
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic301.consmr.mail.ne1.yahoo.com with HTTP; Thu, 5 Nov 2020 01:16:12 +0000
-Received: by smtp402.mail.ne1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 9b08706fcc5b5291f7c73cdec733f17c;
-          Thu, 05 Nov 2020 01:16:08 +0000 (UTC)
-From:   Casey Schaufler <casey@schaufler-ca.com>
-To:     casey.schaufler@intel.com, jmorris@namei.org,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org
-Cc:     casey@schaufler-ca.com, linux-audit@redhat.com,
-        keescook@chromium.org, john.johansen@canonical.com,
-        penguin-kernel@i-love.sakura.ne.jp, paul@paul-moore.com,
-        sds@tycho.nsa.gov, linux-kernel@vger.kernel.org
-Subject: [PATCH v22 23/23] AppArmor: Remove the exclusive flag
-Date:   Wed,  4 Nov 2020 16:49:24 -0800
-Message-Id: <20201105004924.11651-24-casey@schaufler-ca.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20201105004924.11651-1-casey@schaufler-ca.com>
-References: <20201105004924.11651-1-casey@schaufler-ca.com>
+        Wed, 4 Nov 2020 20:01:06 -0500
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CRQF92qWxz71p3;
+        Thu,  5 Nov 2020 09:01:01 +0800 (CST)
+Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
+ (10.3.19.204) with Microsoft SMTP Server (TLS) id 14.3.487.0; Thu, 5 Nov 2020
+ 09:00:59 +0800
+Subject: Re: [f2fs-dev] [PATCH v2 2/2] f2fs: fix compat F2FS_IOC_{MOVE,
+ GARBAGE_COLLECT}_RANGE
+To:     Eric Biggers <ebiggers@kernel.org>
+CC:     <jaegeuk@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>
+References: <20201104064310.15769-1-yuchao0@huawei.com>
+ <20201104064310.15769-2-yuchao0@huawei.com>
+ <20201104180153.GB846@sol.localdomain>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <2bec3d16-e920-12b9-562d-0e055c1af28e@huawei.com>
+Date:   Thu, 5 Nov 2020 09:00:59 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201104180153.GB846@sol.localdomain>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.114.67]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With the inclusion of the "display" process attribute
-mechanism AppArmor no longer needs to be treated as an
-"exclusive" security module. Remove the flag that indicates
-it is exclusive. Remove the stub getpeersec_dgram AppArmor
-hook as it has no effect in the single LSM case and
-interferes in the multiple LSM case.
+On 2020/11/5 2:01, Eric Biggers wrote:
+> On Wed, Nov 04, 2020 at 02:43:10PM +0800, Chao Yu wrote:
+>> +static int f2fs_ioc_gc_range(struct file *filp, unsigned long arg)
+>> +{
+>> +	struct f2fs_gc_range range;
+>> +	struct f2fs_sb_info *sbi = F2FS_I_SB(file_inode(filp));
+>> +
+>> +	if (!capable(CAP_SYS_ADMIN))
+>> +		return -EPERM;
+>> +	if (f2fs_readonly(sbi->sb))
+>> +		return -EROFS;
+>> +	if (copy_from_user(&range, (struct f2fs_gc_range __user *)arg,
+>> +							sizeof(range)))
+>> +		return -EFAULT;
+>> +
+>> +	return __f2fs_ioc_gc_range(filp, &range);
+>> +}
+> [...]
+>>   #ifdef CONFIG_COMPAT
+>> +static int f2fs_compat_ioc_gc_range(struct file *file, unsigned long arg)
+>> +{
+>> +	struct f2fs_sb_info *sbi = F2FS_I_SB(file_inode(file));
+>> +	struct compat_f2fs_gc_range __user *urange;
+>> +	struct f2fs_gc_range range;
+>> +	int err;
+>> +
+>> +	if (unlikely(f2fs_cp_error(sbi)))
+>> +		return -EIO;
+>> +	if (!f2fs_is_checkpoint_ready(sbi))
+>> +		return -ENOSPC;
+>> +	if (!capable(CAP_SYS_ADMIN))
+>> +		return -EPERM;
+>> +	if (f2fs_readonly(sbi->sb))
+>> +		return -EROFS;
+>> +
+>> +	urange = compat_ptr(arg);
+>> +	err = get_user(range.sync, &urange->sync);
+>> +	err |= get_user(range.start, &urange->start);
+>> +	err |= get_user(range.len, &urange->len);
+>> +	if (err)
+>> +		return -EFAULT;
+>> +
+>> +	return __f2fs_ioc_gc_range(file, &range);
+>> +}
+> 
+> It would be better to have __f2fs_ioc_gc_range() handle the f2fs_cp_error(),
+> f2fs_is_checkpoint_ready(), capable(), and f2fs_readonly() checks, so that they
+> don't have to be duplicated in the native and compat cases.
+> 
+> Similarly for "move range".
 
-Acked-by: Stephen Smalley <sds@tycho.nsa.gov>
-Acked-by: John Johansen <john.johansen@canonical.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
----
- security/apparmor/lsm.c | 20 +-------------------
- 1 file changed, 1 insertion(+), 19 deletions(-)
+Will clean up in v3.
 
-diff --git a/security/apparmor/lsm.c b/security/apparmor/lsm.c
-index 7ce570b0f491..4b7cbe9bb1be 100644
---- a/security/apparmor/lsm.c
-+++ b/security/apparmor/lsm.c
-@@ -1129,22 +1129,6 @@ static int apparmor_socket_getpeersec_stream(struct socket *sock,
- 	return error;
- }
- 
--/**
-- * apparmor_socket_getpeersec_dgram - get security label of packet
-- * @sock: the peer socket
-- * @skb: packet data
-- * @secid: pointer to where to put the secid of the packet
-- *
-- * Sets the netlabel socket state on sk from parent
-- */
--static int apparmor_socket_getpeersec_dgram(struct socket *sock,
--					    struct sk_buff *skb, u32 *secid)
--
--{
--	/* TODO: requires secid support */
--	return -ENOPROTOOPT;
--}
--
- /**
-  * apparmor_sock_graft - Initialize newly created socket
-  * @sk: child sock
-@@ -1248,8 +1232,6 @@ static struct security_hook_list apparmor_hooks[] __lsm_ro_after_init = {
- #endif
- 	LSM_HOOK_INIT(socket_getpeersec_stream,
- 		      apparmor_socket_getpeersec_stream),
--	LSM_HOOK_INIT(socket_getpeersec_dgram,
--		      apparmor_socket_getpeersec_dgram),
- 	LSM_HOOK_INIT(sock_graft, apparmor_sock_graft),
- #ifdef CONFIG_NETWORK_SECMARK
- 	LSM_HOOK_INIT(inet_conn_request, apparmor_inet_conn_request),
-@@ -1918,7 +1900,7 @@ static int __init apparmor_init(void)
- 
- DEFINE_LSM(apparmor) = {
- 	.name = "apparmor",
--	.flags = LSM_FLAG_LEGACY_MAJOR | LSM_FLAG_EXCLUSIVE,
-+	.flags = LSM_FLAG_LEGACY_MAJOR,
- 	.enabled = &apparmor_enabled,
- 	.blobs = &apparmor_blob_sizes,
- 	.init = apparmor_init,
--- 
-2.24.1
+Thanks,
 
+> 
+> - Eric
+> .
+> 
