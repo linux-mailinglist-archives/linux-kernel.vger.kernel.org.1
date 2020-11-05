@@ -2,76 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7C612A872A
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 20:28:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F2582A872C
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 20:28:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732289AbgKET2U convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 5 Nov 2020 14:28:20 -0500
-Received: from mail-ed1-f68.google.com ([209.85.208.68]:44391 "EHLO
-        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732241AbgKET2L (ORCPT
+        id S1732248AbgKET2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 14:28:31 -0500
+Received: from out4-smtp.messagingengine.com ([66.111.4.28]:50283 "EHLO
+        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727851AbgKET23 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 14:28:11 -0500
-Received: by mail-ed1-f68.google.com with SMTP id w1so2770313edv.11;
-        Thu, 05 Nov 2020 11:28:09 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=L5Nx/D4qCEIUW4gE21+dzvrg9cDCOjiDSqZH2Z2oVls=;
-        b=NoN2Gaa7ZwZYLFKoW1F8LHFEznfu1QuluOMxUsSCaymvBfK1kip2Khhen1xj0r6fbI
-         X1rCkYRvk/33LjYo22rA/+Txiu6Ih+mvgEsSvTB2kIpSbFLKdzOyKEArvpj8w9CeduGz
-         Wtl7i+dlx3jFeGu+nGT2dWYdfqOoNVf6C3Tfc95+8FzFj/dIFedERkcjTZwg2z3xo31Q
-         agPoE7BjyF9mA+hb7HBzSw1JeCcntmtEOXCWJaPe8X0Xj4yK8CdA9fqI7BlrTD1HwFZs
-         +uEFdBEPZlo3Hoao046y+veXm+LD0D5jXsaaDECaY9eUYEoIW76xB2NMdm2GcR0RVP3B
-         bLWw==
-X-Gm-Message-State: AOAM532MpakFMSXYyyJK1rS8TnbjKBYVy9lFCnl//VW8zHPPxLx5U9hd
-        8HiOEvZchpUZxy5juP+ZyoTgfotMZvbYZg==
-X-Google-Smtp-Source: ABdhPJy53Az9j2ow/GZR/jjjQYcZGR2hHKN1jejZE+AtpPyXNtuOC0IUaaYujNF97TtTMmzRJrEx4A==
-X-Received: by 2002:a50:fa92:: with SMTP id w18mr4147185edr.44.1604604489275;
-        Thu, 05 Nov 2020 11:28:09 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id q8sm1525015ejy.102.2020.11.05.11.28.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 11:28:08 -0800 (PST)
-Date:   Thu, 5 Nov 2020 20:28:06 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     =?utf-8?Q?=C5=81ukasz?= Stelmach <l.stelmach@samsung.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Kukjin Kim <kgene@kernel.org>,
-        Anand Moon <linux.amoon@gmail.com>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        =?utf-8?Q?Bart=C5=82omiej_=C5=BBolnierkiewicz?= 
-        <b.zolnierkie@samsung.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: Re: [PATCH v2 5/6] ARM: dts: exynos: Add Ethernet interface
- description for Odroid U3
-Message-ID: <20201105192806.GD236732@kozik-lap>
-References: <20201103184412.18874-1-l.stelmach@samsung.com>
- <CGME20201103184419eucas1p148b9a8b6bb513191c6d341e47969f6bd@eucas1p1.samsung.com>
- <20201103184412.18874-6-l.stelmach@samsung.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <20201103184412.18874-6-l.stelmach@samsung.com>
+        Thu, 5 Nov 2020 14:28:29 -0500
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id 31C695C019E;
+        Thu,  5 Nov 2020 14:28:28 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Thu, 05 Nov 2020 14:28:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
+        mime-version:content-transfer-encoding:content-type:cc:subject
+        :from:to:date:message-id:in-reply-to; s=fm1; bh=ehC9x8cE+ZGBKrco
+        BMypR8Z8YvOTab6tJ2SFOzXL27c=; b=buYHyesk/b1Nhdb3//UKsAarJZURlfHZ
+        F/wV+7xwvlPad2CqI+XXEJnwDwSfBbfK2clyrsERL8ja10WrEXyyxd98z8s1Mxot
+        Vu+59CRVUrfL7JW0TBVtsIXlrxz0uimzHQvG+V3SyJ637ixDFLGGTtFyDj+KipWz
+        AliPeqzttPrA46IfN258rVjpBByFqIS3Ve6mk6Mqo7WKj0T6i/IqiEZt/vaSEiXO
+        FV46HiL89z2Ctv8MmL0kKK0UxOodkkG/bOQ8Kx+6HnhJLj6s6OpEj37pjGQCwuBd
+        F1sE/Sx518OcZf5sbjfPPyuEfrcJE0vuXJmdKN5tL9TzgqdLjpndgg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm1; bh=ehC9x8cE+ZGBKrcoBMypR8Z8YvOTab6tJ2SFOzXL27c=; b=IwHq6wkE
+        aW6yx9Kk0ROQy4/bAVB7oW7ygq4wCpa49jISgt1REXVjVtDAnAaHGLU+OHkHmQyA
+        aaEsKYOAkeWYdHHghbztFpegJxbeRVv8OHVnUouiaWV2kVrOGYCKzWfgsVICO1uD
+        NOZ0U3DeTuYmt0+R70PQ5ryPgIZqP3XNOqSRhtWbiLULcaHJzOsMgpaOeO0l3vJC
+        oC1BEAubWbEMw2MVtnkjy9avgEcvv60tAXDA6F2Y7PAy7JN78Eaz0NcGWfj37H5I
+        cA5tfRw/BPm8x6WFUzyT825hBv4/cE54bUZpwyeqdeGQii2kddAqOKWt6cIRkZLy
+        P0AjlnqCUwATUQ==
+X-ME-Sender: <xms:XFKkX9hdQMI0JlDIV47qm2GjcfbitBLRBFsHWNB6qFYYdZZWyIanqg>
+    <xme:XFKkXyAhzqTWZ2hF_zg4sb5HIgfggB9MVSmKteqrNOrmKVmUQtT3-TYEdMnwXekoz
+    UXCUWaW6i4bl24Gwg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddtjedguddvhecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enfghrlhcuvffnffculdejtddmnecujfgurhepggfgtgfuhffvfffkjgesthhqredttddt
+    jeenucfhrhhomhepfdffrghnihgvlhcuighufdcuoegugihusegugihuuhhurdighiiiqe
+    enucggtffrrghtthgvrhhnpeejfefhudeffefhjedvvefhheduledtueejvedugedvjedv
+    jeeljefggedtjeejveenucfkphepieelrddukedurddutdehrdeigeenucevlhhushhtvg
+    hrufhiiigvpedunecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdig
+    hiii
+X-ME-Proxy: <xmx:XFKkX9EyZ56_iKftZqdQ8QKqFz37Bg5bcGCUKX4siOwcyNuVR4DKhw>
+    <xmx:XFKkXyTVJ4WNETLx7KONsIwT5QR3sBudUBSA9ePVLy4Z8VaP21M2wg>
+    <xmx:XFKkX6zc52yQnedW6cCdyOQQImlFz19Pyu0yFac0JYNFPmVgfIZ0EA>
+    <xmx:XFKkX-_iwjte-7ikeuNZ7dOsTOZjcGA7Ya22JO17QPvpXYdDP7vt1A>
+Received: from localhost (c-69-181-105-64.hsd1.ca.comcast.net [69.181.105.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 6F22D3060060;
+        Thu,  5 Nov 2020 14:28:27 -0500 (EST)
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Cc:     "bpf" <bpf@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "Kernel Team" <Kernel-team@fb.com>
+Subject: Re: [PATCH bpf v2 1/2] lib/strncpy_from_user.c: Don't overcopy
+ bytes after NUL terminator
+From:   "Daniel Xu" <dxu@dxuuu.xyz>
+To:     "Song Liu" <songliubraving@fb.com>
+Date:   Thu, 05 Nov 2020 11:28:11 -0800
+Message-Id: <C6VKTIUUWPD0.2INCG5OQMYVNJ@maharaja>
+In-Reply-To: <CE6BCF1F-2112-40DC-87C8-91FA2D6C86FC@fb.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 07:44:11PM +0100, Łukasz Stelmach wrote:
-> Add Ethernet interface description for Odroid U3.
-> 
-> Add an alias to enable bootloaders to find the Ethernet
-> interface and assign a MAC address.
-> 
-> Signed-off-by: Łukasz Stelmach <l.stelmach@samsung.com>
-> ---
->  arch/arm/boot/dts/exynos4412-odroidu3.dts | 12 ++++++++++++
+On Thu Nov 5, 2020 at 10:16 AM PST, Song Liu wrote:
+>
+>
+> > On Nov 4, 2020, at 6:25 PM, Daniel Xu <dxu@dxuuu.xyz> wrote:
+> >=20
+> > do_strncpy_from_user() may copy some extra bytes after the NUL
+>
+> We have multiple use of "NUL" here, should be "NULL"?
+>
+> > terminator into the destination buffer. This usually does not matter fo=
+r
+> > normal string operations. However, when BPF programs key BPF maps with
+> > strings, this matters a lot.
+> >=20
+> > A BPF program may read strings from user memory by calling the
+> > bpf_probe_read_user_str() helper which eventually calls
+> > do_strncpy_from_user(). The program can then key a map with the
+> > resulting string. BPF map keys are fixed-width and string-agnostic,
+> > meaning that map keys are treated as a set of bytes.
+> >=20
+> > The issue is when do_strncpy_from_user() overcopies bytes after the NUL
+> > terminator, it can result in seemingly identical strings occupying
+> > multiple slots in a BPF map. This behavior is subtle and totally
+> > unexpected by the user.
+> >=20
+> > This commit uses the proper word-at-a-time APIs to avoid overcopying.
+> >=20
+> > Fixes: 6ae08ae3dea2 ("bpf: Add probe_read_{user, kernel} and probe_read=
+_{user, kernel}_str helpers")
+> > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> > ---
+> > lib/strncpy_from_user.c | 9 +++++++--
+> > 1 file changed, 7 insertions(+), 2 deletions(-)
+> >=20
+> > diff --git a/lib/strncpy_from_user.c b/lib/strncpy_from_user.c
+> > index e6d5fcc2cdf3..d084189eb05c 100644
+> > --- a/lib/strncpy_from_user.c
+> > +++ b/lib/strncpy_from_user.c
+> > @@ -35,17 +35,22 @@ static inline long do_strncpy_from_user(char *dst, =
+const char __user *src,
+> > 		goto byte_at_a_time;
+> >=20
+> > 	while (max >=3D sizeof(unsigned long)) {
+> > -		unsigned long c, data;
+> > +		unsigned long c, data, mask, *out;
+> >=20
+> > 		/* Fall back to byte-at-a-time if we get a page fault */
+> > 		unsafe_get_user(c, (unsigned long __user *)(src+res), byte_at_a_time)=
+;
+> >=20
+> > -		*(unsigned long *)(dst+res) =3D c;
+> > 		if (has_zero(c, &data, &constants)) {
+> > 			data =3D prep_zero_mask(c, data, &constants);
+> > 			data =3D create_zero_mask(data);
+> > +			mask =3D zero_bytemask(data);
+> > +			out =3D (unsigned long *)(dst+res);
+> > +			*out =3D (*out & ~mask) | (c & mask);
+> > 			return res + find_zero(data);
+> > +		} else  {
+>
+> This else clause is not needed, as we return in the if clause.
 
-Thanks, applied.
+Thanks, will change in v3.
 
-Best regards,
-Krzysztof
-
+[..]
