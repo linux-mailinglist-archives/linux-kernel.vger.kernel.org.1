@@ -2,144 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 920AF2A852F
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 18:43:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7504C2A8532
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 18:44:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731810AbgKERnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 12:43:33 -0500
-Received: from lb1-smtp-cloud7.xs4all.net ([194.109.24.24]:39501 "EHLO
-        lb1-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728523AbgKERnd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 12:43:33 -0500
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud7.xs4all.net with ESMTPA
-        id ajI8kCLahRiwVajICkN8oN; Thu, 05 Nov 2020 18:43:31 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
-        t=1604598211; bh=AF/68IsCoCoaXJfmouTQI7+Xa0mxZphJKln8/rTlTOw=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=qXx9diOz1VOSNXc6KwZ8eqJaKJzva5beMIg+NyKQGCytPhSFKLFy4fdOwRfzl/PJP
-         S2HVQbOGqZIRqBHuDp3pfsmxC5/m/c07GSlhJGq8r8wiY9gR/BLIi4ZtZ57RNrBE6p
-         zWcjYcRgv0MZ1q5u705N36auilHOOt8yDEnGx7J6cmB2FSoPY0m1pl8UcQJSGvaleX
-         YRLDRYeinE75B/VxN/w1d3h9CujCYAksWgYGdOi7A53dRUrwIIsN2/r82sU4nrHDKS
-         NBzbuoIlijwOt6X735R+MFyN4NsGZ+fEOdRueukvmnRE7khbRT6M98OzpNmAGwyUO+
-         +PU+ErPe5ZSvQ==
-Subject: Re: [PATCH v2 1/3] media: videodev2.h, v4l2-ioctl: add rkisp1 meta
- buffer format
-To:     Helen Koike <helen.koike@collabora.com>,
-        linux-media@vger.kernel.org
-Cc:     linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        heiko@sntech.de, kernel@collabora.com,
-        dafna.hirschfeld@collabora.com, zhengsq@rock-chips.com,
-        laurent.pinchart@ideasonboard.com, niklas.soderlund@ragnatech.se,
-        mchehab@kernel.org, tfiga@chromium.org, ribalda@google.com
-References: <20201030112225.2095909-1-helen.koike@collabora.com>
- <20201030112225.2095909-2-helen.koike@collabora.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <89711cf3-fc1d-68e2-1de0-c6cc88c6f7d0@xs4all.nl>
-Date:   Thu, 5 Nov 2020 18:43:20 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1731815AbgKERoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 12:44:03 -0500
+Received: from mx2.suse.de ([195.135.220.15]:55146 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727851AbgKERoC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 12:44:02 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1604598240;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=AcZlukzAUrUKfltZkHVVhS/4oYwzu72oZXjdPppy0mI=;
+        b=rNEDFdeArSD7Zk+8uVrc91aIyD6dM1riXl288Ly2xJnkYu3lp3YpEYfwVH6TrY12kFYhbN
+        S6oRB3tp/6EMLAndx4jPoxxkg8CY7aAJmB6pQFQNRO7WP9/3HeXYcDnPkGpCUDhaxpjVKB
+        omnudf8M+hK03PaByfw8PylLsKVInw8=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 5556DABAE;
+        Thu,  5 Nov 2020 17:44:00 +0000 (UTC)
+Date:   Thu, 5 Nov 2020 18:43:57 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     Minchan Kim <minchan@kernel.org>, linux-api@vger.kernel.org,
+        linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Christian Brauner <christian@brauner.io>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Tim Murray <timmurray@google.com>,
+        kernel-team <kernel-team@android.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>
+Subject: Re: [RFC]: userspace memory reaping
+Message-ID: <20201105174357.GR21348@dhcp22.suse.cz>
+References: <CAJuCfpHwXcq1PfzHgqyYBR3N53TtV2WMt_Oubz0JZkvJHbFKGw@mail.gmail.com>
+ <CAJuCfpH9iUt0cs1GBQppgdcD8chojCNXk22S+PeSgQ-bA7iitQ@mail.gmail.com>
+ <20201103093550.GE21990@dhcp22.suse.cz>
+ <20201103213228.GB1631979@google.com>
+ <20201104065844.GM21990@dhcp22.suse.cz>
+ <20201104204051.GA3544305@google.com>
+ <20201105122012.GD21348@dhcp22.suse.cz>
+ <CAJuCfpF5zAif97-uK8M+-fJhd0pab4fMPDMUNkAXYOB3MC7aXg@mail.gmail.com>
+ <20201105171611.GO21348@dhcp22.suse.cz>
+ <CAJuCfpHAxxoD6GG6t9_VthSa00znTHvLx60K-=cBee4ia1S5ew@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201030112225.2095909-2-helen.koike@collabora.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfFQzZsLG4IoaX3MK9lUP4P9bGhv1ECFdNeJQOiElLglacYI/BsXbPysNb+04DVFyoEdgVkJ7Rek3vDJnPt7hIT5P1xB9L1+qCYErrvCNOGtKMS7Auwoe
- 6RkflstvARa0zkSt33v+m67BTBNKl5m7CkVR3yPJagUJh7MeTU7zCszSzL13ENT5mam7TNv8d3cHoYK8I1lG0kOcxWqk2svg+DawLaEKjG7sHJuktyrNu7br
- 27MYthrYwpWvtyjpsJqqKq+AELe04UoyZtA9OWbPhUJupEJCtNMzgCCLwoGD3bcX8PohfOoZEPXm9aWBHF3LRXA8aG55RvOrL8xtg4cMRyYk9Uxfm2vSCT+r
- n6/7CW2P0mgPLH/YgW1EduBVXCJwOP1n+cBzOODF1gknVTZ7g7M6zarTXS82LeK1jTvC6Q1HogcxbZLhD8/f2zQ691AQvwlwZiAw2+s5XOCu5D3OGO4uxh/P
- 1qwX+4ag8hN4RvzhtgiPr9rSFID4/+b6HU+YbZQgUIwW+SlKkXLE0jIqDKqClfsDUdFeTZYNpVEWqXtaIFWrkpA6jBlPYJKqCPI2q0W+El77NfUnbcgZonuv
- rViyJ/audj+z2xutflGBI8RWGUhZ3JAvAu7/OyDkFMldAPtOx0/t5/AQha6Ozk7+GCI=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJuCfpHAxxoD6GG6t9_VthSa00znTHvLx60K-=cBee4ia1S5ew@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/10/2020 12:22, Helen Koike wrote:
-> From: Shunqian Zheng <zhengsq@rock-chips.com>
+On Thu 05-11-20 09:21:13, Suren Baghdasaryan wrote:
+> On Thu, Nov 5, 2020 at 9:16 AM Michal Hocko <mhocko@suse.com> wrote:
+> >
+> > On Thu 05-11-20 08:50:58, Suren Baghdasaryan wrote:
+> > > On Thu, Nov 5, 2020 at 4:20 AM Michal Hocko <mhocko@suse.com> wrote:
+> > > >
+> > > > On Wed 04-11-20 12:40:51, Minchan Kim wrote:
+> > > > > On Wed, Nov 04, 2020 at 07:58:44AM +0100, Michal Hocko wrote:
+> > > > > > On Tue 03-11-20 13:32:28, Minchan Kim wrote:
+> > > > > > > On Tue, Nov 03, 2020 at 10:35:50AM +0100, Michal Hocko wrote:
+> > > > > > > > On Mon 02-11-20 12:29:24, Suren Baghdasaryan wrote:
+> > > > > > > > [...]
+> > > > > > > > > To follow up on this. Should I post an RFC implementing SIGKILL_SYNC
+> > > > > > > > > which in addition to sending a kill signal would also reap the
+> > > > > > > > > victim's mm in the context of the caller? Maybe having some code will
+> > > > > > > > > get the discussion moving forward?
+> > > > > > > >
+> > > > > > > > Yeah, having a code, even preliminary, might help here. This definitely
+> > > > > > > > needs a good to go from process management people as that proper is land
+> > > > > > > > full of surprises...
+> > > > > > >
+> > > > > > > Just to remind a idea I suggested to reuse existing concept
+> > > > > > >
+> > > > > > >     fd = pidfd_open(victim process)
+> > > > > > >     fdatasync(fd);
+> > > > > > >     close(fd);
+> > > > > >
+> > > > > > I must have missed this proposal. Anyway, are you suggesting fdatasync
+> > > > > > to act as a destructive operation?
+> > > > >
+> > > > > write(fd) && fdatasync(fd) are already destructive operation if the file
+> > > > > is shared.
+> > > >
+> > > > I am likely missing something because fdatasync will not destroy any
+> > > > underlying data. It will sync
+> > > >
+> > > > > You don't need to reaping as destruptive operation. Rather than, just
+> > > > > commit on the asynchrnous status "write file into page cache and commit
+> > > > > with fsync" and "killing process and commit with fsync".
+> > > >
+> > > > I am sorry but I do not follow. The result of the memory reaping is a
+> > > > data loss. Any private mapping will simply lose it's content. The caller
+> > > > will get EFAULT when trying to access it but there is no way to
+> > > > reconstruct the data. This is everything but not resembling what I see
+> > > > f{data}sync is used for.
+> > >
+> > > I think Minchan considers f{data}sync as a "commit" operation.
+> >
+> > But there is nothing like commit in that operation. It is simply a
+> > destroy operation. ftruncate as Minchan mentions in another reply would
+> > be a closer fit but how do you interpret the length argument? What about
+> > memory regions which cannot be reaped?
+> >
+> > I do understand that reusing an existing mechanism is usually preferable
+> > but the semantic should be reasonable and easy to reason about.
 > 
-> Add the Rockchip ISP1 specific processing parameter format
-> V4L2_META_FMT_RK_ISP1_PARAMS and metadata format
-> V4L2_META_FMT_RK_ISP1_STAT_3A for 3A.
-> 
-> Signed-off-by: Shunqian Zheng <zhengsq@rock-chips.com>
-> Signed-off-by: Jacob Chen <jacob2.chen@rock-chips.com>
-> Signed-off-by: Helen Koike <helen.koike@collabora.com>
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> 
-> ---
-> Hello,
-> 
-> This patch is a continuation of:
-> 
-> https://patchwork.kernel.org/project/linux-arm-kernel/patch/20191106120132.6876-2-helen.koike@collabora.com/
-> 
-> These formats are already documented under
-> Documentation/userspace-api/media/v4l/pixfmt-meta-rkisp1.rst
-> 
-> We had agreed to keep under
-> drivers/staging/media/rkisp1/uapi/rkisp1-config.h while the driver was
-> in staging, since we are moving it out of staging, I guess this is the
-> time :)
-> 
-> Regards,
-> Helen
-> ---
->  drivers/media/v4l2-core/v4l2-ioctl.c              | 2 ++
->  drivers/staging/media/rkisp1/uapi/rkisp1-config.h | 4 ----
->  include/uapi/linux/videodev2.h                    | 4 ++++
->  3 files changed, 6 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
-> index eeff398fbdcc1..202597d031c6b 100644
-> --- a/drivers/media/v4l2-core/v4l2-ioctl.c
-> +++ b/drivers/media/v4l2-core/v4l2-ioctl.c
-> @@ -1402,6 +1402,8 @@ static void v4l_fill_fmtdesc(struct v4l2_fmtdesc *fmt)
->  	case V4L2_META_FMT_UVC:		descr = "UVC Payload Header Metadata"; break;
->  	case V4L2_META_FMT_D4XX:	descr = "Intel D4xx UVC Metadata"; break;
->  	case V4L2_META_FMT_VIVID:       descr = "Vivid Metadata"; break;
-> +	case V4L2_META_FMT_RK_ISP1_PARAMS:	descr = "Rockchip ISP1 3A params"; break;
-> +	case V4L2_META_FMT_RK_ISP1_STAT_3A:	descr = "Rockchip ISP1 3A statistics"; break;
+> Maybe then we can consider a flag for pidfd_send_signal() to indicate
+> that we want a synchronous mm cleanup when SIGKILL is being sent?
+> Similar to my original RFC but cleanup would happen in the context of
+> the caller. That seems to me like the simplest and most obvious way of
+> expressing what we want to accomplish. WDYT?
 
-Use 'Params' and 'Statistics' to conform to the other descriptions.
+Yes that would make sense. Althought it would have to be SIGKILL
+specific flag IMO. But let's see what process management people think
+about that.
 
-Regards,
-
-	Hans
-
->  
->  	default:
->  		/* Compressed formats */
-> diff --git a/drivers/staging/media/rkisp1/uapi/rkisp1-config.h b/drivers/staging/media/rkisp1/uapi/rkisp1-config.h
-> index 8d906cc7da8fc..6e449e7842605 100644
-> --- a/drivers/staging/media/rkisp1/uapi/rkisp1-config.h
-> +++ b/drivers/staging/media/rkisp1/uapi/rkisp1-config.h
-> @@ -9,10 +9,6 @@
->  
->  #include <linux/types.h>
->  
-> -/* Vendor specific - used for RK_ISP1 camera sub-system */
-> -#define V4L2_META_FMT_RK_ISP1_PARAMS   v4l2_fourcc('R', 'K', '1', 'P') /* Rockchip ISP1 params */
-> -#define V4L2_META_FMT_RK_ISP1_STAT_3A  v4l2_fourcc('R', 'K', '1', 'S') /* Rockchip ISP1 3A statistics */
-> -
->  /* Defect Pixel Cluster Detection */
->  #define RKISP1_CIF_ISP_MODULE_DPCC		(1U << 0)
->  /* Black Level Subtraction */
-> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
-> index 534eaa4d39bc8..c2e13ba81196b 100644
-> --- a/include/uapi/linux/videodev2.h
-> +++ b/include/uapi/linux/videodev2.h
-> @@ -770,6 +770,10 @@ struct v4l2_pix_format {
->  #define V4L2_META_FMT_D4XX        v4l2_fourcc('D', '4', 'X', 'X') /* D4XX Payload Header metadata */
->  #define V4L2_META_FMT_VIVID	  v4l2_fourcc('V', 'I', 'V', 'D') /* Vivid Metadata */
->  
-> +/* Vendor specific - used for RK_ISP1 camera sub-system */
-> +#define V4L2_META_FMT_RK_ISP1_PARAMS	v4l2_fourcc('R', 'K', '1', 'P') /* Rockchip ISP1 params */
-> +#define V4L2_META_FMT_RK_ISP1_STAT_3A	v4l2_fourcc('R', 'K', '1', 'S') /* Rockchip ISP1 3A statistics */
-> +
->  /* priv field value to indicates that subsequent fields are valid. */
->  #define V4L2_PIX_FMT_PRIV_MAGIC		0xfeedcafe
->  
-> 
-
+-- 
+Michal Hocko
+SUSE Labs
