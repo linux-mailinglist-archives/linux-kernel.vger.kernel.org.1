@@ -2,115 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B72F2A8489
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 18:15:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 821062A848F
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 18:15:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731618AbgKERO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 12:14:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42382 "EHLO
+        id S1731670AbgKERPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 12:15:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731560AbgKERO6 (ORCPT
+        with ESMTP id S1731595AbgKERO7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 12:14:58 -0500
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FE0BC0613CF;
-        Thu,  5 Nov 2020 09:14:56 -0800 (PST)
-Received: by mail-oi1-x243.google.com with SMTP id c80so2436308oib.2;
-        Thu, 05 Nov 2020 09:14:56 -0800 (PST)
+        Thu, 5 Nov 2020 12:14:59 -0500
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFD66C0613D2
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 09:14:58 -0800 (PST)
+Received: by mail-oi1-x241.google.com with SMTP id k26so2444041oiw.0
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 09:14:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linuxfoundation.org; s=google;
         h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=EzuCScXK34H+yxMS/8Khr1NXq0vtwjjjyKo8k88A88I=;
-        b=SVzamyMb3BPqjuS8baLIgcy380+Kw/1UHngn/C6O5AUtKkyEG5lHNNV7WhoNeOumGk
-         xfubRfWRwA9JqdNuoSEAthQfctwbNTVxQfFBY8nnzMWBJTspAwMVO+6V5Ow9wt9T1RHY
-         pEgauAbO1Ao00Vn22llgU0QH+1r0rcLfThyvaJf0pec+6Xz1FAqUc5WRvz/3dOTpHyhs
-         IJ8cq2OINcjt0A0hWXUb41uSZpHmcDVhLNQtXx/RxmA0JSRRvv1e+aagOV+1UInEtPJU
-         L0URWSncR5vtoDB4KZwlYtILENl4/SvVA2132+f8aBUf6giKkLSZPeIAjDUMxGqaXMKt
-         kuaQ==
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=RXtyLeNDFuRDqnpcqt6pb4ylWjUgE0/Ib+KjlVuBXqE=;
+        b=g0wFBccrkYCSKXtrUi4mFAVl1sBMUEF3Lg525W88ykFuyy3aef9xbZYBSZ+Ia3uOMo
+         tmpQRRVPX+mJK5HrGD3NaW8o2fqtdOR6pCSl72eHGjHsVQfr10+xzQ2Om5I/gs/jeEgK
+         HBLnTX5zUThEeSdyGwNs7ODngz6MQ09QAG7dA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=EzuCScXK34H+yxMS/8Khr1NXq0vtwjjjyKo8k88A88I=;
-        b=HYoezcLKvd9pRhU/3MU4u5htLuZxGp/abW/EBmj+OeXsh3DjewiUuSHXBrorw+DIaD
-         0w4lzAi/2rYcTzya/JJgkdJRnHVgDuIZR6lwZywMFhwN7abHxr7yGSMykN6q3QafF9zd
-         7xE3FpmLAmxUkTemjHJi8GJ//pO8/9KiCbeomSJ0meMp7f73zsJDhAh2ZOUKjoUEt5lu
-         b6F89pWf38iHtagRzRn9eTQvr7hDx805fCnKNKZPjolqMYzcuNl/GBfeqnmkQgEC3iL4
-         L0RUCUR5UH2dJcMcq+YbKih1fjyvp6f4AvhdHqj8ongqMhyfVgC0iHjS7xglvYcOruwy
-         70ng==
-X-Gm-Message-State: AOAM531jF7nSf1OiJJD9pVnYk6mkbcRADWqNwGgesCecwk/D2wzK92B4
-        100eErXMIXmZtDiYcbNDK0lmXBZnj6UJB0cN
-X-Google-Smtp-Source: ABdhPJwDYYft5XnQSGlXxCKn494KFWg020g+/5Ipo5J+kie3czUmtsRjvn6EkemPdixMNA2is5YvKQ==
-X-Received: by 2002:a05:6808:496:: with SMTP id z22mr296547oid.2.1604596495674;
-        Thu, 05 Nov 2020 09:14:55 -0800 (PST)
-Received: from ?IPv6:2600:1700:4a30:eaf0::21? ([2600:1700:4a30:eaf0::21])
-        by smtp.gmail.com with ESMTPSA id h4sm464985oot.45.2020.11.05.09.14.54
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=RXtyLeNDFuRDqnpcqt6pb4ylWjUgE0/Ib+KjlVuBXqE=;
+        b=b8qkphm/cl14ixeNbf/EUUygQBbSxvvN4eDPEBnwn085s9ZmA5snz93+0yRIx03wg+
+         PImPS+ZmDryiRCstA3oWxwMj20+6FcYyJTgVqCOBlFBzLLk49gm3GKqTKnDPcJyace7X
+         k9OlId+EDIeu86Mid2yc0OcWCc4KETSDOrNsorjJ7LJJJEgmEaife+UxWHglDCjuiCtX
+         moGxgEQEqrnfx2ZN2Cs3rMisr1h7OmG0b5EV9YYiMTQHVQwkqGL6Lf0tLhxD6F3c54JW
+         y18nZYswhcu0PSpZVx2nAezWetUwDcniWpFjV0144aUtW+h3JDdFln4ICCm6EnxCHxHJ
+         lJvA==
+X-Gm-Message-State: AOAM530Ok4LFuhZUWEXhJ6e3syUXH59K03yG7eq3hbQ6WdvMsLZfD5MV
+        bD+U7k/z0Qp1+cWDIHxJMfGk/w==
+X-Google-Smtp-Source: ABdhPJyPTuj7UbQcutxVyj3OIQJLYo8G1acVwWKF7+YQ+EewEqrFVqSnAzFIcAnmX2ExNF7uRib7gQ==
+X-Received: by 2002:aca:44d7:: with SMTP id r206mr282559oia.24.1604596498202;
+        Thu, 05 Nov 2020 09:14:58 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id c21sm474397oos.30.2020.11.05.09.14.56
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Nov 2020 09:14:54 -0800 (PST)
-Subject: Re: [PATCH v2] Input: Add devices for
- HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE
-To:     Chris Ye <lzye@google.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, trivial@kernel.org,
-        linux-input@vger.kernel.org, stable@vger.kernel.org
-References: <20201101193452.678628-1-lzye@google.com>
-From:   Chris Ye <linzhao.ye@gmail.com>
-Message-ID: <8578ec06-34f5-1cf4-5f62-9cb05a0b6c08@gmail.com>
-Date:   Thu, 5 Nov 2020 09:14:53 -0800
+        Thu, 05 Nov 2020 09:14:57 -0800 (PST)
+Subject: Re: [PATCH 09/13] selftests: android: fix multiple definition of
+ sock_name
+To:     Christian Brauner <christian.brauner@ubuntu.com>,
+        Tommi Rantala <tommi.t.rantala@nokia.com>
+Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shuah Khan <shuah@kernel.org>,
+        greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20201008122633.687877-1-tommi.t.rantala@nokia.com>
+ <20201008122633.687877-10-tommi.t.rantala@nokia.com>
+ <20201009120538.45uspbezh5tqtin6@wittgenstein>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <3d46cf84-b987-d138-c6cb-e9679687ce0f@linuxfoundation.org>
+Date:   Thu, 5 Nov 2020 10:14:56 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-In-Reply-To: <20201101193452.678628-1-lzye@google.com>
+In-Reply-To: <20201009120538.45uspbezh5tqtin6@wittgenstein>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+stable@vger.kernel.org
+On 10/9/20 6:05 AM, Christian Brauner wrote:
+> On Thu, Oct 08, 2020 at 03:26:29PM +0300, Tommi Rantala wrote:
+>> Fix multiple definition of sock_name compilation error:
+>>
+>>    tools/testing/selftests/android/ion/ipcsocket.h:8: multiple definition of `sock_name'
+>>
+>> Signed-off-by: Tommi Rantala <tommi.t.rantala@nokia.com>
+>> ---
+> 
+> Ion will be removed from the kernel soon but this seems like an ok
+> bugfix.
+> Thanks!
+> Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+> 
 
-On 11/1/20 11:34 AM, Chris Ye wrote:
-> Kernel 5.4 introduces HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE, devices
-> need to be set explicitly with this flag.
->
-> Signed-off-by: Chris Ye <lzye@google.com>
-> ---
->   drivers/hid/hid-ids.h    | 4 ++++
->   drivers/hid/hid-quirks.c | 4 ++++
->   2 files changed, 8 insertions(+)
->
-> diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
-> index 74be76e848bf..cf55dca494f3 100644
-> --- a/drivers/hid/hid-ids.h
-> +++ b/drivers/hid/hid-ids.h
-> @@ -449,6 +449,10 @@
->   #define USB_VENDOR_ID_FRUCTEL	0x25B6
->   #define USB_DEVICE_ID_GAMETEL_MT_MODE	0x0002
->   
-> +#define USB_VENDOR_ID_GAMEVICE	0x27F8
-> +#define USB_DEVICE_ID_GAMEVICE_GV186	0x0BBE
-> +#define USB_DEVICE_ID_GAMEVICE_KISHI	0x0BBF
-> +
->   #define USB_VENDOR_ID_GAMERON		0x0810
->   #define USB_DEVICE_ID_GAMERON_DUAL_PSX_ADAPTOR	0x0001
->   #define USB_DEVICE_ID_GAMERON_DUAL_PCS_ADAPTOR	0x0002
-> diff --git a/drivers/hid/hid-quirks.c b/drivers/hid/hid-quirks.c
-> index 0440e2f6e8a3..36d94e3485e3 100644
-> --- a/drivers/hid/hid-quirks.c
-> +++ b/drivers/hid/hid-quirks.c
-> @@ -84,6 +84,10 @@ static const struct hid_device_id hid_quirks[] = {
->   	{ HID_USB_DEVICE(USB_VENDOR_ID_FREESCALE, USB_DEVICE_ID_FREESCALE_MX28), HID_QUIRK_NOGET },
->   	{ HID_USB_DEVICE(USB_VENDOR_ID_FUTABA, USB_DEVICE_ID_LED_DISPLAY), HID_QUIRK_NO_INIT_REPORTS },
->   	{ HID_USB_DEVICE(USB_VENDOR_ID_GREENASIA, USB_DEVICE_ID_GREENASIA_DUAL_USB_JOYPAD), HID_QUIRK_MULTI_INPUT },
-> +	{ HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_GAMEVICE, USB_DEVICE_ID_GAMEVICE_GV186),
-> +		HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE },
-> +	{ HID_USB_DEVICE(USB_VENDOR_ID_GAMEVICE, USB_DEVICE_ID_GAMEVICE_KISHI),
-> +		HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE },
->   	{ HID_USB_DEVICE(USB_VENDOR_ID_HAPP, USB_DEVICE_ID_UGCI_DRIVING), HID_QUIRK_BADPAD | HID_QUIRK_MULTI_INPUT },
->   	{ HID_USB_DEVICE(USB_VENDOR_ID_HAPP, USB_DEVICE_ID_UGCI_FIGHTING), HID_QUIRK_BADPAD | HID_QUIRK_MULTI_INPUT },
->   	{ HID_USB_DEVICE(USB_VENDOR_ID_HAPP, USB_DEVICE_ID_UGCI_FLYING), HID_QUIRK_BADPAD | HID_QUIRK_MULTI_INPUT },
+ion is already gone. I am dropping this from linux-kselftest fixes
+now. This is also causing conflict with ion removal commit
+
+thanks,
+-- Shuah
+
