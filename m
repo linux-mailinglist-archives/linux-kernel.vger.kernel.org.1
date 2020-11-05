@@ -2,154 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F47A2A7A33
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 10:13:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B37442A7A41
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 10:14:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730986AbgKEJNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 04:13:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51538 "EHLO
+        id S1731274AbgKEJOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 04:14:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730153AbgKEJNx (ORCPT
+        with ESMTP id S1730666AbgKEJOm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 04:13:53 -0500
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BFA3C0613CF;
-        Thu,  5 Nov 2020 01:13:53 -0800 (PST)
-Received: by mail-ej1-x62e.google.com with SMTP id s25so1555785ejy.6;
-        Thu, 05 Nov 2020 01:13:53 -0800 (PST)
+        Thu, 5 Nov 2020 04:14:42 -0500
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C16F1C0613D2
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 01:14:42 -0800 (PST)
+Received: by mail-pl1-x642.google.com with SMTP id t18so502329plo.0
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 01:14:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=rZem6M7kfdgn2HJ62ywv5fOVwjJZX0jQzLoLxZvw77E=;
-        b=XRsT+odDqa5mogK9zHucsu7GKd/EU7n5hxrFej556ON666sYKOTav1XKkQX414lDAz
-         1fYB0ajgqP0SjouzlZaFi5z/XcGEiEx07oUPu2+UzJqciGDH0e7/s+l9fBe0Q5bHmmw+
-         xDn/r5HKaS1ik0fKpa4LdZahJ/0NUJ7ueGGTATS0rLu/m0Lf//t4njblJBh96vJ3634i
-         47PTZuqTz3IgT/OvRXXFHQM/G/qiHHcECjsKgseUGOF7mz2hU5WQjX2+JQfmaFg2WzTE
-         +wssk3hzFQ5czZIlm41BpkusNzTVVTkE+NAEdTbuLNoHNJ41t9VU5llJwoXp1n6Cn53P
-         gbtg==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lwLa055BkHU9dTWCUTcnkXH5JjkLSC8HIhnffeY25Zk=;
+        b=EepgRQDItwjh7SX279QAYnNLCMrLVZ5BJlsaSQt57Lwo228weAronXHiYtRQ74yV0r
+         IhL1PETBFhP4A3lgC4WsdbtvfIOi9+Rj7swepTNR5hk11luy/+ADFA5Xn1IC/j4/SYkU
+         MD0vRBLtv7uRaVFBHubPhF2XeXpgIPoeZ2WZJGqKzq8SVBozNS1N2Ke9JaSqQe0Wg3Yj
+         dbAwzWosR2w5qjFPdxEEUrIELS0sGLcmgNJ7nLpDV5/qgHtMY7XvIY0V0HvINACFE7U/
+         s8hM1/EPJRV7RBzgft6gj35HZnK5UKRPQ4cBuXHvjsa5cexFtox89d80oa9w2ZeHVjJU
+         Y+VQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=rZem6M7kfdgn2HJ62ywv5fOVwjJZX0jQzLoLxZvw77E=;
-        b=S+HX4oIQI8J0tVvHhInyn++3nJxKh1l5zZZpsRKWmutQuX1rWWuzVjrLjVdeu5dnWX
-         pq2JApxGw2wZu9ErAuM+kTQrSFNlcvfqbPEnSS+JiZsqrCzcOWBjTLjBazc4y4tTgESr
-         DAO0k/N+KA1SAzuoxhvh7Z5n2qtLhkvJP1tkDTFCMN2dkLyTxPBQlgPW2j7CsL9Rtlwl
-         yLJ7QCtrgkQkwfH67jtTnKxQ5iwfEkNbV7hZ6mBRA4oRztw2baEiI6+M9scNzyctgYSl
-         a+vcTrj98oY1raktjWfMvD6S0srYaWAydJhaOuOtMuHONAohwz1YOkqj1J9i1W82GG8E
-         X7rQ==
-X-Gm-Message-State: AOAM53273dqNZ37Ltx3dDrp0PefGnJRiasrd15BGEKNozCFwq5CbhnV1
-        47HIm3VW4uM6uaBQ8sBehQNC1eFIgMJGxw==
-X-Google-Smtp-Source: ABdhPJyEQixflPnVC0H356lcPyekQcJlLzeLprG9bspk73oJT2zh8+GYW2nDeV1e1fqy8TFQZ4ewlQ==
-X-Received: by 2002:a17:906:1a0c:: with SMTP id i12mr1358095ejf.176.1604567632043;
-        Thu, 05 Nov 2020 01:13:52 -0800 (PST)
-Received: from ?IPv6:2003:ea:8f23:2800:59d0:7417:1e79:f522? (p200300ea8f23280059d074171e79f522.dip0.t-ipconnect.de. [2003:ea:8f23:2800:59d0:7417:1e79:f522])
-        by smtp.googlemail.com with ESMTPSA id 64sm520076eda.63.2020.11.05.01.13.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Nov 2020 01:13:51 -0800 (PST)
-Subject: Re: Very slow realtek 8169 ethernet performance, but only one
- interface, on ThinkPad T14.
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        netdev@vger.kernel.org
-References: <57f16fe7-2052-72cc-6628-bbb04f146ce0@gmx.com>
- <7ee6a86c-5aca-3931-73cc-2ab72d8dd8a7@gmail.com>
- <c4c063eb-d20b-8bc7-bbd7-b8df70c69a11@gmx.com>
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-Message-ID: <9f8785d2-76b2-f0ad-7fa1-a8a38d7df3af@gmail.com>
-Date:   Thu, 5 Nov 2020 10:13:46 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        bh=lwLa055BkHU9dTWCUTcnkXH5JjkLSC8HIhnffeY25Zk=;
+        b=UYK/3wPOouceoYI/8eWkXZnKydDgihBcjSE/wYdMFh976Swss5IH+N6HSz6JgOr6YJ
+         9X7G0KJtEq5tDQSKOrko/pZdIdRdd4fqCLRWLvDkWDKq/aCqXXJLjwRxaOgRFgzel8G5
+         w4LIFTBurcE09osW3Xjh9Rzoxcm4ye8xOc/8nEASlbq40Ljpr0Re+571a7q7pv63PUlI
+         AoBYzrXEfJGaovCNHR97kFAvtOv+DrsWblrFYeMKwvk9pJcMsdtSotWK1+jD/1Pi9z1b
+         LUn0PKos46XCkF8TI5NEN6ZrOYZQxcql5pwrQ6GUyTEsXXr1zTdfHyR2PblC9SfRRMFe
+         wp4A==
+X-Gm-Message-State: AOAM532bnX6BtLqSUt3KqzBRGS+C1amBoUgAfALtSPAMLlV7JTaliZ5R
+        Vua6Jf5q7F9P6q7A+7iU1Mc/tQ==
+X-Google-Smtp-Source: ABdhPJzLN0DR/Tyg3X3jh6GJFxrnSziZI7/fQNDzC9lVER5hGyEjzo5mwj/zv6Hk3qtRcjl566dwvw==
+X-Received: by 2002:a17:902:9347:b029:d5:d554:9922 with SMTP id g7-20020a1709029347b02900d5d5549922mr1605449plp.56.1604567682333;
+        Thu, 05 Nov 2020 01:14:42 -0800 (PST)
+Received: from localhost ([122.172.12.172])
+        by smtp.gmail.com with ESMTPSA id 92sm1593107pjv.32.2020.11.05.01.14.41
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 05 Nov 2020 01:14:41 -0800 (PST)
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] thermal: Rearrange thermal_zone_device_set_polling()
+Date:   Thu,  5 Nov 2020 14:43:52 +0530
+Message-Id: <c024f35421c67d7b1a3a20bc280fb5131ce6db43.1604567599.git.viresh.kumar@linaro.org>
+X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
 MIME-Version: 1.0
-In-Reply-To: <c4c063eb-d20b-8bc7-bbd7-b8df70c69a11@gmx.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05.11.2020 08:42, Qu Wenruo wrote:
-> 
-> 
-> On 2020/11/5 下午3:01, Heiner Kallweit wrote:
->> On 05.11.2020 03:48, Qu Wenruo wrote:
->>> Hi,
->>>
->>> Not sure if this is a regression or not, but just find out that after upgrading to v5.9 kernel, one of my ethernet port on my ThinkPad T14 (ryzen version) becomes very slow.
->>>
->>> Only *2~3* Mbps.
->>>
->>> The laptop has two ethernet interfaces, one needs a passive adapter, the other one is a standard RJ45.
->>>
->>> The offending one is the one which needs the adapter (eth0).
->>> While the RJ45 one is completely fine.
->>>
->>> 02:00.0 Ethernet controller: Realtek Semiconductor Co., Ltd. RTL8111/8168/8411 PCI Express Gigabit Ethernet Controller (rev 0e)
->>> 05:00.0 Ethernet controller: Realtek Semiconductor Co., Ltd. RTL8111/8168/8411 PCI Express Gigabit Ethernet Controller (rev 15)
->>>
->>> The 02:00.0 one is the affected one.
->>>
->>> The related dmesgs are:
->>> [   38.110293] r8169 0000:02:00.0: can't disable ASPM; OS doesn't have ASPM control
->>> [   38.126069] libphy: r8169: probed
->>> [   38.126250] r8169 0000:02:00.0 eth0: RTL8168ep/8111ep, 00:2b:67:b3:d9:20, XID 502, IRQ 105
->>> [   38.126252] r8169 0000:02:00.0 eth0: jumbo features [frames: 9194 bytes, tx checksumming: ko]
->>> [   38.126294] r8169 0000:05:00.0: can't disable ASPM; OS doesn't have ASPM control
->>> [   38.126300] r8169 0000:05:00.0: enabling device (0000 -> 0003)
->>> [   38.139355] libphy: r8169: probed
->>> [   38.139523] r8169 0000:05:00.0 eth1: RTL8168h/8111h, 00:2b:67:b3:d9:1f, XID 541, IRQ 107
->>> [   38.139525] r8169 0000:05:00.0 eth1: jumbo features [frames: 9194 bytes, tx checksumming: ko]
->>> [   42.120935] Generic FE-GE Realtek PHY r8169-200:00: attached PHY driver [Generic FE-GE Realtek PHY] (mii_bus:phy_addr=r8169-200:00, irq=IGNORE)
->>> [   42.247646] r8169 0000:02:00.0 eth0: Link is Down
->>> [   42.280799] Generic FE-GE Realtek PHY r8169-500:00: attached PHY driver [Generic FE-GE Realtek PHY] (mii_bus:phy_addr=r8169-500:00, irq=IGNORE)
->>> [   42.477616] r8169 0000:05:00.0 eth1: Link is Down
->>> [   76.479569] r8169 0000:02:00.0 eth0: Link is Up - 1Gbps/Full - flow control rx/tx
->>> [   91.271894] r8169 0000:02:00.0 eth0: Link is Down
->>> [   99.873390] r8169 0000:02:00.0 eth0: Link is Up - 1Gbps/Full - flow control rx/tx
->>> [   99.878938] r8169 0000:02:00.0 eth0: Link is Down
->>> [  102.579290] r8169 0000:02:00.0 eth0: Link is Up - 1Gbps/Full - flow control rx/tx
->>> [  185.086002] r8169 0000:02:00.0 eth0: Link is Down
->>> [  392.884584] r8169 0000:02:00.0 eth0: Link is Up - 1Gbps/Full - flow control rx/tx
->>> [  392.891208] r8169 0000:02:00.0 eth0: Link is Down
->>> [  395.889047] r8169 0000:02:00.0 eth0: Link is Up - 1Gbps/Full - flow control rx/tx
->>> [  406.670738] r8169 0000:02:00.0 eth0: Link is Down
->>>
->>> Really nothing strange, even it negotiates to 1Gbps.
->>>
->>> But during iperf3, it only goes up to miserable 3Mbps.
->>>
->>> Is this some known bug or something special related to the passive adapter?
->>>
->>> Since the adapter is passive, and hasn't experience anything wrong for a long time, I really doubt that.
->>>
->>> Thanks,
->>> Qu
->>>
->>>
->> Thanks for the report. From which kernel version did you upgrade?
-> 
-> Tested back to v5.7, which still shows the miserable performance.
-> 
-> So I guess it could be a faulty adapter?
-> 
->> Please test
->> with the prior kernel version and report behavior (link stability and speed).
->> Under 5.9, does ethtool -S eth0 report packet errors?
->>
-> Nope, no tx/rx_errors, no missed/aborted/underrun.
-> 
-> Adding that the adapter is completely passive (no chip, just converting
-> RJ45 pins to the I shaped pins), I'm not sure that the adapter itself
-> can fail.
-> 
-Each additional mechanical connection may cause reflections or other signal
-disturbance. You could try to restrict the speed to 100Mbps via ethtool,
-and see what the effective speed is then. 100Mbps uses two wire pairs only.
+Rearrange thermal_zone_device_set_polling() to make it more readable and
+reduce duplicate code.
 
-> THanks,
-> Qu
-> 
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+---
+ drivers/thermal/thermal_core.c | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
+index c6d74bc1c90b..7dfab370a369 100644
+--- a/drivers/thermal/thermal_core.c
++++ b/drivers/thermal/thermal_core.c
+@@ -291,16 +291,17 @@ static int __init thermal_register_governors(void)
+ static void thermal_zone_device_set_polling(struct thermal_zone_device *tz,
+ 					    int delay)
+ {
+-	if (delay > 1000)
+-		mod_delayed_work(system_freezable_power_efficient_wq,
+-				 &tz->poll_queue,
+-				 round_jiffies(msecs_to_jiffies(delay)));
+-	else if (delay)
++	if (delay) {
++		int time = msecs_to_jiffies(delay);
++
++		if (delay > 1000)
++			time = round_jiffies(time);
++
+ 		mod_delayed_work(system_freezable_power_efficient_wq,
+-				 &tz->poll_queue,
+-				 msecs_to_jiffies(delay));
+-	else
++				 &tz->poll_queue, time);
++	} else {
+ 		cancel_delayed_work(&tz->poll_queue);
++	}
+ }
+ 
+ static inline bool should_stop_polling(struct thermal_zone_device *tz)
+-- 
+2.25.0.rc1.19.g042ed3e048af
 
