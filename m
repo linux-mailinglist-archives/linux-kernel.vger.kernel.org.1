@@ -2,328 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA9C62A84FE
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 18:34:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49F8B2A8503
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 18:35:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731750AbgKEReK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 12:34:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45452 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731677AbgKEReH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 12:34:07 -0500
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0128C0613D3
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 09:34:05 -0800 (PST)
-Received: by mail-pl1-x641.google.com with SMTP id t18so1125211plo.0
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 09:34:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tTLsC/JuQ9bT/PZn35J3jlik1A01EKZdB5uZT6NLQBA=;
-        b=SuuyI97WQoL3e1V24w2VyMJKF8BUZuDbbfZcWOZtvzUs6zISDUNKj3OBsVMyJTDZ8w
-         kayLQCl5PSYcdJuErzFK3EyxT3VMo2mYB7STyrJx6FQQn+hJtSVip3SlkHTEh/AAvUr3
-         y1wkK/oYpD6XGy6lIgmy3ums6Au6e4RmXaR2QCJq1O89XGz578nqJL079oy8Kbap8wJS
-         mOoPX0a4281MiLzTSIDqDewSme+JQGhzTD3OUnhIm9fXkp2DxOzAZaonnQfHApdV/km1
-         ztwxx5HfTf+g342CtbB/GKjdApVHrIiorSOddpyboYnQ5k3HSk0rP4ThN8GbgFlLQKoE
-         3ESg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=tTLsC/JuQ9bT/PZn35J3jlik1A01EKZdB5uZT6NLQBA=;
-        b=W9+c5tl5o9zfvq2lCrPqgjNWhcYC3OkE/oZjem871MoDaR35Gh9DPjxVrglDXCT23x
-         jouLyErgMFeAZA6mW7/F6s5s3+Haz4E53Q9fjIA5grZxrCOqzC7qVF4ri/DHDi7pCabL
-         LEU2m6v/5IrSV+Z9Z1zYq1W6WYuU8hH0PWjrbjLW0XTZo6YzX52KZSa+6vJaKqMEXv9V
-         u3r/2xZqFEsRNgGypvT2OFYkBfeKSWMrs3G7r3my9Qk73h/iYul2RQ2FWJaE1gY5wuV9
-         uEHeyJIGQEZkX8Yie/yFppWDVvH3ZP4gnw4XJMEAFAs6ws0fFl94NtL8kP0m4ZinDy1N
-         oRVA==
-X-Gm-Message-State: AOAM532lKcewapFl6/9bUa1hHx52dp2hb+6Sv9HYwAnm/Rp/NDDqGz7r
-        XWUF8wVoy9VNHRi6p6VzBLguOTLnDA5VcQ==
-X-Google-Smtp-Source: ABdhPJyBPgbj1/snChSvWmWc+krUey7SpFzonD3pHV1MYkFo143SPttZ1q/7GRldlW1JILrJfMH1AA==
-X-Received: by 2002:a17:902:e983:b029:d5:f465:55d5 with SMTP id f3-20020a170902e983b02900d5f46555d5mr3142970plb.60.1604597645101;
-        Thu, 05 Nov 2020 09:34:05 -0800 (PST)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id i26sm3391428pfq.148.2020.11.05.09.34.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 09:34:04 -0800 (PST)
-Date:   Thu, 05 Nov 2020 09:34:04 -0800 (PST)
-X-Google-Original-Date: Thu, 05 Nov 2020 09:32:00 PST (-0800)
-Subject:     Re: [PATCH v4 5/5] riscv: Add numa support for riscv64 platform
-In-Reply-To: <20201006001752.248564-6-atish.patra@wdc.com>
-CC:     linux-kernel@vger.kernel.org, Atish Patra <Atish.Patra@wdc.com>,
-        greentime.hu@sifive.com, aou@eecs.berkeley.edu,
-        akpm@linux-foundation.org, anshuman.khandual@arm.com,
-        anup@brainfault.org, Arnd Bergmann <arnd@arndb.de>,
-        catalin.marinas@arm.com, david@redhat.com,
-        Greg KH <gregkh@linuxfoundation.org>, justin.he@arm.com,
-        Jonathan.Cameron@huawei.com, wangkefeng.wang@huawei.com,
-        linux-arch@vger.kernel.org, linux-riscv@lists.infradead.org,
-        rppt@kernel.org, nsaenzjulienne@suse.de,
-        Paul Walmsley <paul.walmsley@sifive.com>, rafael@kernel.org,
-        steven.price@arm.com, will@kernel.org, zong.li@sifive.com,
-        linux-arm-kernel@lists.infradead.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     Atish Patra <Atish.Patra@wdc.com>
-Message-ID: <mhng-78302817-9862-47d3-97a2-61d406377210@palmerdabbelt-glaptop1>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S1731693AbgKERfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 12:35:48 -0500
+Received: from foss.arm.com ([217.140.110.172]:38314 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726777AbgKERfr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 12:35:47 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AF75E142F;
+        Thu,  5 Nov 2020 09:35:46 -0800 (PST)
+Received: from usa.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 79C013F719;
+        Thu,  5 Nov 2020 09:35:45 -0800 (PST)
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Cc:     Sudeep Holla <sudeep.holla@arm.com>, Rob Herring <robh@kernel.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Hector Yuan <hector.yuan@mediatek.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: [PATCH] dt-bindings: dvfs: Add support for generic performance domains
+Date:   Thu,  5 Nov 2020 17:35:39 +0000
+Message-Id: <20201105173539.1426301-1-sudeep.holla@arm.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 05 Oct 2020 17:17:52 PDT (-0700), Atish Patra wrote:
-> Use the generic numa implementation to add NUMA support for RISC-V.
-> This is based on Greentime's patch[1] but modified to use generic NUMA
-> implementation and few more fixes.
->
-> [1] https://lkml.org/lkml/2020/1/10/233
->
-> Co-developed-by: Greentime Hu <greentime.hu@sifive.com>
-> Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
-> Signed-off-by: Atish Patra <atish.patra@wdc.com>
-> ---
->  arch/riscv/Kconfig              | 31 ++++++++++++++++++++++++++++++-
->  arch/riscv/include/asm/mmzone.h | 13 +++++++++++++
->  arch/riscv/include/asm/numa.h   |  8 ++++++++
->  arch/riscv/include/asm/pci.h    | 14 ++++++++++++++
->  arch/riscv/kernel/setup.c       | 10 ++++++++--
->  arch/riscv/kernel/smpboot.c     | 12 +++++++++++-
->  arch/riscv/mm/init.c            |  4 +++-
->  7 files changed, 87 insertions(+), 5 deletions(-)
->  create mode 100644 arch/riscv/include/asm/mmzone.h
->  create mode 100644 arch/riscv/include/asm/numa.h
->
-> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> index df18372861d8..7beb6ddb6eb1 100644
-> --- a/arch/riscv/Kconfig
-> +++ b/arch/riscv/Kconfig
-> @@ -137,7 +137,7 @@ config PAGE_OFFSET
->  	default 0xffffffe000000000 if 64BIT && MAXPHYSMEM_128GB
->
->  config ARCH_FLATMEM_ENABLE
-> -	def_bool y
-> +	def_bool !NUMA
->
->  config ARCH_SPARSEMEM_ENABLE
->  	def_bool y
-> @@ -295,6 +295,35 @@ config TUNE_GENERIC
->
->  endchoice
->
-> +# Common NUMA Features
-> +config NUMA
-> +	bool "NUMA Memory Allocation and Scheduler Support"
-> +	select GENERIC_ARCH_NUMA
-> +	select OF_NUMA
-> +	select ARCH_SUPPORTS_NUMA_BALANCING
-> +	help
-> +	  Enable NUMA (Non-Uniform Memory Access) support.
-> +
-> +	  The kernel will try to allocate memory used by a CPU on the
-> +	  local memory of the CPU and add some more NUMA awareness to the kernel.
-> +
-> +config NODES_SHIFT
-> +	int "Maximum NUMA Nodes (as a power of 2)"
-> +	range 1 10
-> +	default "2"
-> +	depends on NEED_MULTIPLE_NODES
-> +	help
-> +	  Specify the maximum number of NUMA Nodes available on the target
-> +	  system.  Increases memory reserved to accommodate various tables.
-> +
-> +config USE_PERCPU_NUMA_NODE_ID
-> +	def_bool y
-> +	depends on NUMA
-> +
-> +config NEED_PER_CPU_EMBED_FIRST_CHUNK
-> +	def_bool y
-> +	depends on NUMA
-> +
->  config RISCV_ISA_C
->  	bool "Emit compressed instructions when building Linux"
->  	default y
-> diff --git a/arch/riscv/include/asm/mmzone.h b/arch/riscv/include/asm/mmzone.h
-> new file mode 100644
-> index 000000000000..fa17e01d9ab2
-> --- /dev/null
-> +++ b/arch/riscv/include/asm/mmzone.h
-> @@ -0,0 +1,13 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef __ASM_MMZONE_H
-> +#define __ASM_MMZONE_H
-> +
-> +#ifdef CONFIG_NUMA
-> +
-> +#include <asm/numa.h>
-> +
-> +extern struct pglist_data *node_data[];
-> +#define NODE_DATA(nid)		(node_data[(nid)])
-> +
-> +#endif /* CONFIG_NUMA */
-> +#endif /* __ASM_MMZONE_H */
-> diff --git a/arch/riscv/include/asm/numa.h b/arch/riscv/include/asm/numa.h
-> new file mode 100644
-> index 000000000000..8c8cf4297cc3
-> --- /dev/null
-> +++ b/arch/riscv/include/asm/numa.h
-> @@ -0,0 +1,8 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef __ASM_NUMA_H
-> +#define __ASM_NUMA_H
-> +
-> +#include <asm/topology.h>
-> +#include <asm-generic/numa.h>
-> +
-> +#endif	/* __ASM_NUMA_H */
-> diff --git a/arch/riscv/include/asm/pci.h b/arch/riscv/include/asm/pci.h
-> index 1c473a1bd986..658e112c3ce7 100644
-> --- a/arch/riscv/include/asm/pci.h
-> +++ b/arch/riscv/include/asm/pci.h
-> @@ -32,6 +32,20 @@ static inline int pci_proc_domain(struct pci_bus *bus)
->  	/* always show the domain in /proc */
->  	return 1;
->  }
-> +
-> +#ifdef	CONFIG_NUMA
-> +
-> +static inline int pcibus_to_node(struct pci_bus *bus)
-> +{
-> +	return dev_to_node(&bus->dev);
-> +}
-> +#ifndef cpumask_of_pcibus
-> +#define cpumask_of_pcibus(bus)	(pcibus_to_node(bus) == -1 ?		\
-> +				 cpu_all_mask :				\
-> +				 cpumask_of_node(pcibus_to_node(bus)))
-> +#endif
-> +#endif	/* CONFIG_NUMA */
-> +
->  #endif  /* CONFIG_PCI */
->
->  #endif  /* _ASM_RISCV_PCI_H */
-> diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
-> index 07fa6d13367e..53a806a9cbaf 100644
-> --- a/arch/riscv/kernel/setup.c
-> +++ b/arch/riscv/kernel/setup.c
-> @@ -101,13 +101,19 @@ void __init setup_arch(char **cmdline_p)
->
->  static int __init topology_init(void)
->  {
-> -	int i;
-> +	int i, ret;
-> +
-> +	for_each_online_node(i)
-> +		register_one_node(i);
->
->  	for_each_possible_cpu(i) {
->  		struct cpu *cpu = &per_cpu(cpu_devices, i);
->
->  		cpu->hotpluggable = cpu_has_hotplug(i);
-> -		register_cpu(cpu, i);
-> +		ret = register_cpu(cpu, i);
-> +		if (unlikely(ret))
-> +			pr_warn("Warning: %s: register_cpu %d failed (%d)\n",
-> +			       __func__, i, ret);
->  	}
->
->  	return 0;
-> diff --git a/arch/riscv/kernel/smpboot.c b/arch/riscv/kernel/smpboot.c
-> index 96167d55ed98..5e276c25646f 100644
-> --- a/arch/riscv/kernel/smpboot.c
-> +++ b/arch/riscv/kernel/smpboot.c
-> @@ -27,6 +27,7 @@
->  #include <asm/cpu_ops.h>
->  #include <asm/irq.h>
->  #include <asm/mmu_context.h>
-> +#include <asm/numa.h>
->  #include <asm/tlbflush.h>
->  #include <asm/sections.h>
->  #include <asm/sbi.h>
-> @@ -45,13 +46,18 @@ void __init smp_prepare_cpus(unsigned int max_cpus)
->  {
->  	int cpuid;
->  	int ret;
-> +	unsigned int curr_cpuid;
-> +
-> +	curr_cpuid = smp_processor_id();
-> +	numa_store_cpu_info(curr_cpuid);
-> +	numa_add_cpu(curr_cpuid);
->
->  	/* This covers non-smp usecase mandated by "nosmp" option */
->  	if (max_cpus == 0)
->  		return;
->
->  	for_each_possible_cpu(cpuid) {
-> -		if (cpuid == smp_processor_id())
-> +		if (cpuid == curr_cpuid)
->  			continue;
->  		if (cpu_ops[cpuid]->cpu_prepare) {
->  			ret = cpu_ops[cpuid]->cpu_prepare(cpuid);
-> @@ -59,6 +65,7 @@ void __init smp_prepare_cpus(unsigned int max_cpus)
->  				continue;
->  		}
->  		set_cpu_present(cpuid, true);
-> +		numa_store_cpu_info(cpuid);
->  	}
->  }
->
-> @@ -79,6 +86,7 @@ void __init setup_smp(void)
->  		if (hart == cpuid_to_hartid_map(0)) {
->  			BUG_ON(found_boot_cpu);
->  			found_boot_cpu = 1;
-> +			early_map_cpu_to_node(0, of_node_to_nid(dn));
->  			continue;
->  		}
->  		if (cpuid >= NR_CPUS) {
-> @@ -88,6 +96,7 @@ void __init setup_smp(void)
->  		}
->
->  		cpuid_to_hartid_map(cpuid) = hart;
-> +		early_map_cpu_to_node(cpuid, of_node_to_nid(dn));
->  		cpuid++;
->  	}
->
-> @@ -153,6 +162,7 @@ asmlinkage __visible void smp_callin(void)
->  	current->active_mm = mm;
->
->  	notify_cpu_starting(curr_cpuid);
-> +	numa_add_cpu(curr_cpuid);
->  	update_siblings_masks(curr_cpuid);
->  	set_cpu_online(curr_cpuid, 1);
->
-> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-> index 114c3966aadb..c4046e11d264 100644
-> --- a/arch/riscv/mm/init.c
-> +++ b/arch/riscv/mm/init.c
-> @@ -20,6 +20,7 @@
->  #include <asm/soc.h>
->  #include <asm/io.h>
->  #include <asm/ptdump.h>
-> +#include <asm/numa.h>
->
->  #include "../kernel/head.h"
->
-> @@ -185,7 +186,6 @@ void __init setup_bootmem(void)
->
->  	early_init_fdt_scan_reserved_mem();
->  	memblock_allow_resize();
-> -	memblock_dump_all();
->
->  	for_each_memblock(memory, reg) {
->  		unsigned long start_pfn = memblock_region_memory_base_pfn(reg);
-> @@ -570,9 +570,11 @@ void __init paging_init(void)
->
->  void __init misc_mem_init(void)
->  {
-> +	arch_numa_init();
->  	sparse_init();
->  	zone_sizes_init();
->  	resource_init();
-> +	memblock_dump_all();
->  }
->
->  #ifdef CONFIG_SPARSEMEM_VMEMMAP
+The CLKSCREW attack [0] exposed security vulnerabilities in energy management
+implementations where untrusted software had direct access to clock and
+voltage hardware controls. In this attack, the malicious software was able to
+place the platform into unsafe overclocked or undervolted configurations. Such
+configurations then enabled the injection of predictable faults to reveal
+secrets.
 
-Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
+Many Arm-based systems used to or still use voltage regulator and clock
+frameworks in the kernel. These frameworks allow callers to independently
+manipulate frequency and voltage settings. Such implementations can render
+systems susceptible to this form of attack.
+
+Attacks such as CLKSCREW are now being mitigated by not having direct and
+independent control of clock and voltage in the kernel and moving that
+control to a trusted entity, such as the SCP firmware or secure world
+firmware/software which are to perform sanity checking on the requested
+performance levels, thereby preventing any attempted malicious programming.
+
+With the advent of such an abstraction, there is a need to replace the
+generic clock and regulator bindings used by such devices with a generic
+performance domains bindings.
+
+[0] https://www.usenix.org/conference/usenixsecurity17/technical-sessions/presentation/tang
+
+Cc: Rob Herring <robh+dt@kernel.org>
+Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+---
+ .../bindings/dvfs/performance-domain.yaml     | 67 +++++++++++++++++++
+ 1 file changed, 67 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/dvfs/performance-domain.yaml
+
+diff --git a/Documentation/devicetree/bindings/dvfs/performance-domain.yaml b/Documentation/devicetree/bindings/dvfs/performance-domain.yaml
+new file mode 100644
+index 000000000000..fa0151f63ac9
+--- /dev/null
++++ b/Documentation/devicetree/bindings/dvfs/performance-domain.yaml
+@@ -0,0 +1,67 @@
++# SPDX-License-Identifier: GPL-2.0
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/dvfs/performance-domain.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Generic performance domains
++
++maintainers:
++  - Sudeep Holla <sudeep.holla@arm.com>
++
++description: |+
++  This binding is intended for performance management of groups of devices or
++  CPUs that run in the same performance domain. Performance domains must not
++  be confused with power domains. A performance domain is defined by a set
++  of devices that always have to run at the same performance level. For a given
++  performance domain, there is a single point of control that affects all the
++  devices in the domain, making it impossible to set the performance level of
++  an individual device in the domain independently from other devices in
++  that domain. For example, a set of CPUs that share a voltage domain, and
++  have a common frequency control, is said to be in the same performance
++  domain.
++
++  This device tree binding can be used to bind performance domain consumer
++  devices with their performance domains provided by performance domain
++  providers. A performance domain provider can be represented by any node in
++  the device tree and can provide one or more performance domains. A consumer
++  node can refer to the provider by a phandle and a set of phandle arguments
++  (so called performance domain specifiers) of length specified by the
++  \#performance-domain-cells property in the performance domain provider node.
++
++properties:
++  "#performance-domain-cells":
++    description:
++      Number of cells in a performance domain specifier. Typically 0 for nodes
++      representing a single performance domain and 1 for nodes providing
++      multiple performance domains (e.g. performance controllers), but can be
++      any value as specified by device tree binding documentation of particular
++      provider.
++
++  performance-domains:
++    description:
++      A phandle and performance domain specifier as defined by bindings of the
++      performance controller/provider specified by phandle.
++
++required:
++  - "#performance-domain-cells"
++
++additionalProperties: true
++
++examples:
++  - |
++    performance: performance-controller@12340000 {
++        compatible = "foo,performance-controller";
++        reg = <0x12340000 0x1000>;
++        #performance-domain-cells = <1>;
++    };
++
++    // The node above defines a performance controller that is a performance
++    // domain provider and expects one cell as its phandle argument.
++
++    device1: foo@56780000 {
++        compatible = "foo,bar-controller";
++        reg = <0x56780000 0x1000>;
++        performance-domains = <&performance 1>;
++    };
++
+-- 
+2.25.1
+
