@@ -2,122 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32B712A7615
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 04:33:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F8192A761A
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 04:37:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388608AbgKEDdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 22:33:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728511AbgKEDdJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 22:33:09 -0500
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F988C0613CF;
-        Wed,  4 Nov 2020 19:33:08 -0800 (PST)
-Received: by mail-ej1-x641.google.com with SMTP id za3so528307ejb.5;
-        Wed, 04 Nov 2020 19:33:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=2QtdhLn6dbQgBdJcNj2XZy1nXB4zinTDtHIxteWe2Ok=;
-        b=lekAQ+Vs/f1h1OIgWwz9UDPTUe8NXyK8/7tmffXxLp/lB7jC3Zj1n1UGEnvyQrRzYS
-         MOh/pTyY1ylDqIdyeQNIzj/7k1nvZ0DE619EG7fU6GJ4mKBHrCm13lHLeVPoOAtLEwk1
-         p0v8klJ+jGnr+/HP5CYX1oGXvrCiKmlf5Jgme5q4fSLfvXtQvrDrSWimMi9637HHAEKN
-         WRQbsS6JEwzzs1oycmHxxlZBSCWrrBEtJ0hFllLaoVpaYB1diIhPShHBLat7VINQ4jSQ
-         xaU943CCmAhii1WjYWRevNxwIEyVyl1056y89u9Up8GjPjeixL+bxyyS0uXZ/D9Hmcbb
-         KZZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2QtdhLn6dbQgBdJcNj2XZy1nXB4zinTDtHIxteWe2Ok=;
-        b=OLzzNiMEAzEecZL145OMhHE3D9c0Z0eNxOEbpLHDA+UK19rl2elSOZ3mroYLB7Xt4S
-         CWLFrwd5ornI3urJgTMqwInAzLodgWkW0TQv2bMN/rSbb4IQkxqUjz/SDA1jSnCPs7uN
-         2NsL9EjWIEjZlpEb08WwaJFU81HaWZYJFZn4CGe/2QvdiEp2oUn+yGtwNo1fMo9oC2aA
-         +vzq0b+qkiKt5vwpauCo+LzDFyDCB/iPrUL0hW8wRExk9QOyidfE/kMXE96XgY907alB
-         /s26SjOH5iD65pumx4R5M5IJQAgESQ2vm5Cx1yZOwZHo7mhPPyD9hTFQYw9Ns7wOLvtn
-         ZPDw==
-X-Gm-Message-State: AOAM532udaf8Q13w4JO7EOFMVBzkHwmbEMaE6VdLfiKt1uqn//UcdDct
-        wyfEvv8tbCj0etdTGJTtx+8=
-X-Google-Smtp-Source: ABdhPJz33zUbd7p88ljjIkMQymD5KG2hCMCIWaIJbp3CfYs48WqFdFha53Paf0Napi+obr0g0qFg1Q==
-X-Received: by 2002:a17:906:74c6:: with SMTP id z6mr378220ejl.448.1604547187200;
-        Wed, 04 Nov 2020 19:33:07 -0800 (PST)
-Received: from andrea (host-87-7-71-164.retail.telecomitalia.it. [87.7.71.164])
-        by smtp.gmail.com with ESMTPSA id k11sm101717edh.72.2020.11.04.19.33.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 19:33:06 -0800 (PST)
-Date:   Thu, 5 Nov 2020 04:32:58 +0100
-From:   Andrea Parri <parri.andrea@gmail.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        "K . Y . Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, linux-hyperv@vger.kernel.org,
-        Andres Beltran <lkmlabelt@gmail.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Saruhan Karademir <skarade@microsoft.com>,
-        Juan Vazquez <juvazq@microsoft.com>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org
-Subject: Re: [PATCH v8 3/3] hv_netvsc: Use vmbus_requestor to generate
- transaction IDs for VMBus hardening
-Message-ID: <20201105033258.GA3079@andrea>
-References: <20201104154027.319432-1-parri.andrea@gmail.com>
- <20201104154027.319432-4-parri.andrea@gmail.com>
- <20201104134348.39feba74@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20201104134505.44d8c4d7@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        id S2388606AbgKEDhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 22:37:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39182 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728511AbgKEDhS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 22:37:18 -0500
+Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D9FB62072E;
+        Thu,  5 Nov 2020 03:37:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604547436;
+        bh=ZZTnaQFQVx76r3+eTzO0cuucwahT4Z+RZW5nIGurPGE=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=UFRyK5dt0j5MmaxJhgmy0HyghsC6MUlStdnEyF77an8fkhsf9kOmt3dvq/v+hhRhZ
+         uAtfpz5WR7y7IcGfdWRP1Sj8ruDINrwQ0ho+7Osdji/OhAqDazZ+OyZ8ULE6SntDra
+         Vr9pDoP2JaLz6n2AgZkl3bIwTSwou+ZWSg6tyLus=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 7E7673522683; Wed,  4 Nov 2020 19:37:16 -0800 (PST)
+Date:   Wed, 4 Nov 2020 19:37:16 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Marco Elver <elver@google.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>, fweisbec@gmail.com,
+        neeraj.iitr10@gmail.com
+Subject: Re: [PATCH v8 3/6] rcu/trace: Add tracing for how segcb list changes
+Message-ID: <20201105033716.GJ3249@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20201021190813.3005054-1-joel@joelfernandes.org>
+ <20201021190813.3005054-4-joel@joelfernandes.org>
+ <20201026115913.GE104441@lothringen>
+ <20201103134721.GA796570@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201104134505.44d8c4d7@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201103134721.GA796570@google.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 01:45:05PM -0800, Jakub Kicinski wrote:
-> On Wed, 4 Nov 2020 13:43:48 -0800 Jakub Kicinski wrote:
-> > On Wed,  4 Nov 2020 16:40:27 +0100 Andrea Parri (Microsoft) wrote:
-> > > From: Andres Beltran <lkmlabelt@gmail.com>
-> > > 
-> > > Currently, pointers to guest memory are passed to Hyper-V as
-> > > transaction IDs in netvsc. In the face of errors or malicious
-> > > behavior in Hyper-V, netvsc should not expose or trust the transaction
-> > > IDs returned by Hyper-V to be valid guest memory addresses. Instead,
-> > > use small integers generated by vmbus_requestor as requests
-> > > (transaction) IDs.
-> > > 
-> > > Signed-off-by: Andres Beltran <lkmlabelt@gmail.com>
-> > > Co-developed-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
-> > > Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
-> > > Reviewed-by: Michael Kelley <mikelley@microsoft.com>  
-> > 
-> > I'm assuming this is targeting net-next? If so could you please tag it
-> > as [PATCH net-next vN]?
+On Tue, Nov 03, 2020 at 08:47:21AM -0500, Joel Fernandes wrote:
+
+[ . . . ]
+
+> ---8<-----------------------
 > 
-> Ah, you don't 'cause you only sent us the third patch. In that case with
-> the nit below addressed:
+> From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
+> Subject: [PATCH] rcu/trace: Add tracing for how segcb list changes
 > 
-> Acked-by: Jakub Kicinski <kuba@kernel.org>
-
-I fixed the declarations locally.  Thank you for the review, Jakub.
-
-(Yes, FWIW, I was imaging the series to go via hyperv-next...)
-
-Thanks,
-  Andrea
-
-
+> Track how the segcb list changes before/after acceleration, during
+> queuing and during dequeuing.
 > 
-> > > @@ -695,10 +695,19 @@ static void netvsc_send_tx_complete(struct net_device *ndev,
-> > >  				    const struct vmpacket_descriptor *desc,
-> > >  				    int budget)
-> > >  {
-> > > -	struct sk_buff *skb = (struct sk_buff *)(unsigned long)desc->trans_id;
-> > > +	struct sk_buff *skb;
-> > >  	struct net_device_context *ndev_ctx = netdev_priv(ndev);  
-> > 
-> > Swap these two lines please to keep the variables declaration lines
-> > longest to shortest.
+> This has proved useful to discover an optimization to avoid unwanted GP
+> requests when there are no callbacks accelerated. The overhead is minimal as
+> each segment's length is now stored in the respective segment.
+> 
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> ---
+>  include/trace/events/rcu.h | 25 +++++++++++++++++++++++++
+>  kernel/rcu/rcu_segcblist.c | 34 ++++++++++++++++++++++++++++++++++
+>  kernel/rcu/rcu_segcblist.h |  5 +++++
+>  kernel/rcu/tree.c          |  9 +++++++++
+>  4 files changed, 73 insertions(+)
+> 
+> diff --git a/include/trace/events/rcu.h b/include/trace/events/rcu.h
+> index 155b5cb43cfd..5f8f2ee1a936 100644
+> --- a/include/trace/events/rcu.h
+> +++ b/include/trace/events/rcu.h
+> @@ -505,6 +505,31 @@ TRACE_EVENT_RCU(rcu_callback,
+>  		  __entry->qlen)
+>  );
+>  
+> +TRACE_EVENT_RCU(rcu_segcb_stats,
+> +
+> +		TP_PROTO(const char *ctx, int *cb_count, unsigned long *gp_seq),
+> +
+> +		TP_ARGS(ctx, cb_count, gp_seq),
+> +
+> +		TP_STRUCT__entry(
+> +			__field(const char *, ctx)
+> +			__array(int, cb_count, RCU_CBLIST_NSEGS)
+> +			__array(unsigned long, gp_seq, RCU_CBLIST_NSEGS)
+> +		),
+> +
+> +		TP_fast_assign(
+> +			__entry->ctx = ctx;
+> +			memcpy(__entry->cb_count, cb_count, RCU_CBLIST_NSEGS * sizeof(int));
+> +			memcpy(__entry->gp_seq, gp_seq, RCU_CBLIST_NSEGS * sizeof(unsigned long));
+> +		),
+> +
+> +		TP_printk("%s cb_count: (DONE=%d, WAIT=%d, NEXT_READY=%d, NEXT=%d) "
+> +			  "gp_seq: (DONE=%lu, WAIT=%lu, NEXT_READY=%lu, NEXT=%lu)", __entry->ctx,
+> +			  __entry->cb_count[0], __entry->cb_count[1], __entry->cb_count[2], __entry->cb_count[3],
+> +			  __entry->gp_seq[0], __entry->gp_seq[1], __entry->gp_seq[2], __entry->gp_seq[3])
+> +
+> +);
+> +
+>  /*
+>   * Tracepoint for the registration of a single RCU callback of the special
+>   * kvfree() form.  The first argument is the RCU type, the second argument
+> diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
+> index 357c19bbcb00..2a03949d0b82 100644
+> --- a/kernel/rcu/rcu_segcblist.c
+> +++ b/kernel/rcu/rcu_segcblist.c
+> @@ -14,6 +14,7 @@
+>  #include <linux/types.h>
+>  
+>  #include "rcu_segcblist.h"
+> +#include "rcu.h"
+>  
+>  /* Initialize simple callback list. */
+>  void rcu_cblist_init(struct rcu_cblist *rclp)
+> @@ -328,6 +329,39 @@ void rcu_segcblist_extract_done_cbs(struct rcu_segcblist *rsclp,
+>  	rcu_segcblist_set_seglen(rsclp, RCU_DONE_TAIL, 0);
+>  }
+>  
+> +/*
+> + * Return how many CBs each segment along with their gp_seq values.
+> + *
+> + * This function is O(N) where N is the number of segments. Only used from
+> + * tracing code which is usually disabled in production.
+> + */
+> +#ifdef CONFIG_RCU_TRACE
+> +static void rcu_segcblist_countseq(struct rcu_segcblist *rsclp,
+> +			 int cbcount[RCU_CBLIST_NSEGS],
+
+Given that negative numbers are not possible here, shouldn't
+the above be unsigned int?
+
+> +			 unsigned long gpseq[RCU_CBLIST_NSEGS])
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < RCU_CBLIST_NSEGS; i++) {
+> +		cbcount[i] = rcu_segcblist_get_seglen(rsclp, i);
+> +		gpseq[i] = rsclp->gp_seq[i];
+> +	}
+
+OK, I will bite...
+
+Why can't this function be inlined into the TP_fast_assign portion of the
+rcu_segcb_stats trace event?  Or is the usual do-while(0) loop that one
+might use to define "i" somehow illegal where TP_fast_assign() is used?
+That would also allow the gp_seq array to be memcpy()ed directly, without
+the intervening loop.
+
+Or you could take the hit of the extra storage and directly memcpy()
+both arrays.
+
+> +}
+> +
+> +void __trace_rcu_segcb_stats(struct rcu_segcblist *rsclp, const char *context)
+> +{
+> +	int cbs[RCU_CBLIST_NSEGS];
+> +	unsigned long gps[RCU_CBLIST_NSEGS];
+> +
+> +	if (!trace_rcu_segcb_stats_enabled())
+> +		return;
+> +
+> +	rcu_segcblist_countseq(rsclp, cbs, gps);
+> +
+> +	trace_rcu_segcb_stats(context, cbs, gps);
+> +}
+> +#endif
+> +
+>  /*
+>   * Extract only those callbacks still pending (not yet ready to be
+>   * invoked) from the specified rcu_segcblist structure and place them in
+> diff --git a/kernel/rcu/rcu_segcblist.h b/kernel/rcu/rcu_segcblist.h
+> index cd35c9faaf51..7750734fa116 100644
+> --- a/kernel/rcu/rcu_segcblist.h
+> +++ b/kernel/rcu/rcu_segcblist.h
+> @@ -103,3 +103,8 @@ void rcu_segcblist_advance(struct rcu_segcblist *rsclp, unsigned long seq);
+>  bool rcu_segcblist_accelerate(struct rcu_segcblist *rsclp, unsigned long seq);
+>  void rcu_segcblist_merge(struct rcu_segcblist *dst_rsclp,
+>  			 struct rcu_segcblist *src_rsclp);
+> +#ifdef CONFIG_RCU_TRACE
+> +void __trace_rcu_segcb_stats(struct rcu_segcblist *rsclp, const char *context);
+> +#else
+> +#define __trace_rcu_segcb_stats(...)
+> +#endif
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 24c00020ab83..f6c6653b3ec2 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -1497,6 +1497,8 @@ static bool rcu_accelerate_cbs(struct rcu_node *rnp, struct rcu_data *rdp)
+>  	if (!rcu_segcblist_pend_cbs(&rdp->cblist))
+>  		return false;
+>  
+> +	__trace_rcu_segcb_stats(&rdp->cblist, TPS("SegCbPreAcc"));
+
+You remembered TPS(), good!  ;-)
+
+							Thanx, Paul
+
+> +
+>  	/*
+>  	 * Callbacks are often registered with incomplete grace-period
+>  	 * information.  Something about the fact that getting exact
+> @@ -1517,6 +1519,8 @@ static bool rcu_accelerate_cbs(struct rcu_node *rnp, struct rcu_data *rdp)
+>  	else
+>  		trace_rcu_grace_period(rcu_state.name, gp_seq_req, TPS("AccReadyCB"));
+>  
+> +	__trace_rcu_segcb_stats(&rdp->cblist, TPS("SegCbPostAcc"));
+> +
+>  	return ret;
+>  }
+>  
+> @@ -2466,11 +2470,14 @@ static void rcu_do_batch(struct rcu_data *rdp)
+>  	rcu_segcblist_extract_done_cbs(&rdp->cblist, &rcl);
+>  	if (offloaded)
+>  		rdp->qlen_last_fqs_check = rcu_segcblist_n_cbs(&rdp->cblist);
+> +
+> +	__trace_rcu_segcb_stats(&rdp->cblist, TPS("SegCbDequeued"));
+>  	rcu_nocb_unlock_irqrestore(rdp, flags);
+>  
+>  	/* Invoke callbacks. */
+>  	tick_dep_set_task(current, TICK_DEP_BIT_RCU);
+>  	rhp = rcu_cblist_dequeue(&rcl);
+> +
+>  	for (; rhp; rhp = rcu_cblist_dequeue(&rcl)) {
+>  		rcu_callback_t f;
+>  
+> @@ -2983,6 +2990,8 @@ __call_rcu(struct rcu_head *head, rcu_callback_t func)
+>  		trace_rcu_callback(rcu_state.name, head,
+>  				   rcu_segcblist_n_cbs(&rdp->cblist));
+>  
+> +	__trace_rcu_segcb_stats(&rdp->cblist, TPS("SegCBQueued"));
+> +
+>  	/* Go handle any RCU core processing required. */
+>  	if (unlikely(rcu_segcblist_is_offloaded(&rdp->cblist))) {
+>  		__call_rcu_nocb_wake(rdp, was_alldone, flags); /* unlocks */
+> -- 
+> 2.29.1.341.ge80a0c044ae-goog
 > 
