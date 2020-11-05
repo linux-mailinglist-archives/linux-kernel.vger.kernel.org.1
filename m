@@ -2,178 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ED8C2A7F0D
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 13:53:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4566B2A7F11
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 13:53:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730663AbgKEMxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 07:53:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57596 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730270AbgKEMxS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 07:53:18 -0500
-Received: from mail-ua1-x943.google.com (mail-ua1-x943.google.com [IPv6:2607:f8b0:4864:20::943])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BD89C0613D2
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 04:53:16 -0800 (PST)
-Received: by mail-ua1-x943.google.com with SMTP id v16so281593uat.9
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 04:53:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=L6TCLuc1aSDhvBsEh/oyOKoJFVXSTFCOXAYW2AUTtHo=;
-        b=y6DX4cMUVCgpxUKuGqoEligLjI7mP0FgyJ97c7sIUUHZxJlTwtRRakXekgH7YsuigB
-         Na2QU2xZN4x2PfpN6omerSdhzPwwGn9bDYKeR2k6MuBaUl4m5dH4WWWTdnhpeJeXb0wO
-         XSZFej4dNy5nb1iC9xr8tfwJeCBjFjlTzg4qI2DAs6FEDqJOv7dGIgx54zxdVZ6kpJNY
-         qEEM8136+KYXcHo4ba8akOcRfEEQa2WPh8DybrHFK+sabZgBhMR36tCVRG83K7vH1cW2
-         +tAvD7+11Tiw9WmdBdchM838Ksuv8W7UHq8LoeYHHVZz9EZWz0CY4hFIKH9bgfZDnoHM
-         MkFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=L6TCLuc1aSDhvBsEh/oyOKoJFVXSTFCOXAYW2AUTtHo=;
-        b=DpLVNb6FhHhCvVDGBjR3LwoBzEmr+prBUaOH0wjt+yQMp6ViIIIqrB1skOkFzjPmNo
-         m4j4wsj6e4n9IHC6AtI7Y0mjxe0nNNkcLqRR4ETIv1hyLbIFdiaxJwMbB5xfnmHQpjiP
-         nSM7TU83bODK4lmj4CL5NY1ZaN7kk5vTeQTwXzA1gKUg/HP3BFhfBO77T6Gto4CRxESi
-         VVggJAA6UZyxtaNl1aos71wYterWpht8VSfEj2q9fHmStW5tEEkSfx9hEG3hD8BPw9/n
-         CBoHxMRBjNbWwL8hRClozjLlS2qdngV20ipJCUKXZyOfjmBOuAuvtb9iJCYtFGMQpAPp
-         W5xQ==
-X-Gm-Message-State: AOAM532L53NK3i4ME0eZ++EAZIj/MpNzunA7CGMgHOuV4bbsLVIYpNHy
-        FBzbDLHdbCHA5BkPv3RAfyw9pCiJz9BmfKGU2LIBVQ==
-X-Google-Smtp-Source: ABdhPJycxdGkrda5dU9htxc/OSwm7s+GQAoBTPW1YXOO/bE03Yfcq+QBohkR+LMOwjYHynIUz7nEwPk/k/ZMFVtVBnc=
-X-Received: by 2002:a9f:2f15:: with SMTP id x21mr833961uaj.104.1604580795669;
- Thu, 05 Nov 2020 04:53:15 -0800 (PST)
+        id S1730685AbgKEMx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 07:53:27 -0500
+Received: from mx2.suse.de ([195.135.220.15]:39214 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729992AbgKEMx1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 07:53:27 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id EB2FAABAE;
+        Thu,  5 Nov 2020 12:53:25 +0000 (UTC)
+Subject: Re: [RFC PATCH 0/2] mm: fix OOMs for binding workloads to movable
+ zone only node
+To:     Michal Hocko <mhocko@suse.com>, Feng Tang <feng.tang@intel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@suse.de>, dave.hansen@intel.com,
+        ying.huang@intel.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <1604470210-124827-1-git-send-email-feng.tang@intel.com>
+ <20201104071308.GN21990@dhcp22.suse.cz>
+ <20201104073826.GA15700@shbuild999.sh.intel.com>
+ <20201104075819.GA10052@dhcp22.suse.cz>
+ <20201104084021.GB15700@shbuild999.sh.intel.com>
+ <20201104085343.GA18718@dhcp22.suse.cz>
+ <20201105014028.GA86777@shbuild999.sh.intel.com>
+ <20201105120818.GC21348@dhcp22.suse.cz>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <4029c079-b1f3-f290-26b6-a819c52f5200@suse.cz>
+Date:   Thu, 5 Nov 2020 13:53:24 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <20201104234427.26477-1-digetx@gmail.com> <CAPDyKFr7qTU2RPhA_ZrbCayoTTNUEno1zdmvmv+8HBe-Owrfeg@mail.gmail.com>
- <20201105100603.skrirm7uke4s2xyl@vireshk-i7> <CAPDyKFoCJt5MBSKBJ8n1OAMdVsWHdwXTx0zFEcZw_F_gQ6Ug0w@mail.gmail.com>
- <20201105104009.oo4dc6a2gdcwduhk@vireshk-i7> <CAPDyKFpQG98d6foc1U6fp3YEBdZ1vLqY9cmWxpUwXoKgDn+ojQ@mail.gmail.com>
- <20201105111301.2hxfx2tnmf2saakp@vireshk-i7>
-In-Reply-To: <20201105111301.2hxfx2tnmf2saakp@vireshk-i7>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 5 Nov 2020 13:52:39 +0100
-Message-ID: <CAPDyKFr3LhrnK9mm=RzhZvcnfeAKez3Yzm6HU_oP1bnPokh9vg@mail.gmail.com>
-Subject: Re: [PATCH v1 00/30] Introduce core voltage scaling for NVIDIA
- Tegra20/30 SoCs
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Peter Chen <Peter.Chen@nxp.com>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        driverdevel <devel@driverdev.osuosl.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        linux-pwm@vger.kernel.org,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201105120818.GC21348@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 5 Nov 2020 at 12:13, Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> On 05-11-20, 11:56, Ulf Hansson wrote:
-> > On Thu, 5 Nov 2020 at 11:40, Viresh Kumar <viresh.kumar@linaro.org> wrote:
-> > > Btw, how do we identify if it is a power domain or a regulator ?
->
-> To be honest, I was a bit afraid and embarrassed to ask this question,
-> and was hoping people to make fun of me in return :)
->
-> > Good question. It's not a crystal clear line in between them, I think.
->
-> And I was relieved after reading this :)
->
-> > A power domain to me, means that some part of a silicon (a group of
-> > controllers or just a single piece, for example) needs some kind of
-> > resource (typically a power rail) to be enabled to be functional, to
-> > start with.
->
-> Isn't this what a part of regulator does as well ? i.e.
-> enabling/disabling of the regulator or power to a group of
-> controllers.
+On 11/5/20 1:08 PM, Michal Hocko wrote:
+> On Thu 05-11-20 09:40:28, Feng Tang wrote:
+>> > 
+>> > Could you be more specific? This sounds like a bug. Allocations
+>> > shouldn't spill over to a node which is not in the cpuset. There are few
+>> > exceptions like IRQ context but that shouldn't happen regurarly.
+>> 
+>> I mean when the docker starts, it will spawn many processes which obey
+>> the mem binding set, and they have some kernel page requests, which got
+>> successfully allocated, like the following callstack:
+>> 
+>> 	[  567.044953] CPU: 1 PID: 2021 Comm: runc:[1:CHILD] Tainted: G        W I       5.9.0-rc8+ #6
+>> 	[  567.044956] Hardware name:  /NUC6i5SYB, BIOS SYSKLi35.86A.0051.2016.0804.1114 08/04/2016
+>> 	[  567.044958] Call Trace:
+>> 	[  567.044972]  dump_stack+0x74/0x9a
+>> 	[  567.044978]  __alloc_pages_nodemask.cold+0x22/0xe5
+>> 	[  567.044986]  alloc_pages_current+0x87/0xe0
+>> 	[  567.044991]  allocate_slab+0x2e5/0x4f0
+>> 	[  567.044996]  ___slab_alloc+0x380/0x5d0
+>> 	[  567.045021]  __slab_alloc+0x20/0x40
+>> 	[  567.045025]  kmem_cache_alloc+0x2a0/0x2e0
+>> 	[  567.045033]  mqueue_alloc_inode+0x1a/0x30
+>> 	[  567.045041]  alloc_inode+0x22/0xa0
+>> 	[  567.045045]  new_inode_pseudo+0x12/0x60
+>> 	[  567.045049]  new_inode+0x17/0x30
+>> 	[  567.045052]  mqueue_get_inode+0x45/0x3b0
+>> 	[  567.045060]  mqueue_fill_super+0x41/0x70
+>> 	[  567.045067]  vfs_get_super+0x7f/0x100
+>> 	[  567.045074]  get_tree_keyed+0x1d/0x20
+>> 	[  567.045080]  mqueue_get_tree+0x1c/0x20
+>> 	[  567.045086]  vfs_get_tree+0x2a/0xc0
+>> 	[  567.045092]  fc_mount+0x13/0x50
+>> 	[  567.045099]  mq_create_mount+0x92/0xe0
+>> 	[  567.045102]  mq_init_ns+0x3b/0x50
+>> 	[  567.045106]  copy_ipcs+0x10a/0x1b0
+>> 	[  567.045113]  create_new_namespaces+0xa6/0x2b0
+>> 	[  567.045118]  unshare_nsproxy_namespaces+0x5a/0xb0
+>> 	[  567.045124]  ksys_unshare+0x19f/0x360
+>> 	[  567.045129]  __x64_sys_unshare+0x12/0x20
+>> 	[  567.045135]  do_syscall_64+0x38/0x90
+>> 	[  567.045143]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>> 
+>> For it, the __alloc_pages_nodemask() will first try process's targed
+>> nodemask(unmovable node here), and there is no availabe zone, so it
+>> goes with the NULL nodemask, and get a page in the slowpath.
+> 
+> OK, I see your point now. I was not aware of the slab allocator not
+> following cpusets. Sounds like a bug to me.
 
-It could, but it shouldn't.
+SLAB and SLUB seem to not care about cpusets in the fast path. But this stack 
+shows that it went all the way to the page allocator, so the cpusets should have 
+been obeyed there at least.
 
->
-> Over that the regulator does voltage/current scaling as well, which
-> normally the power domains don't do (though we did that in
-> performance-state case).
->
-> > If there are operating points involved, that's also a
-> > clear indication to me, that it's not a regular regulator.
->
-> Is there any example of that? I hope by OPP you meant both freq and
-> voltage here. I am not sure if I know of a case where a power domain
-> handles both of them.
-
-It may be both voltage and frequency - but in some cases only voltage.
-From HW point of view, many ARM legacy platforms have power domains
-that work like this.
-
-As you know, the DVFS case has in many years not been solved in a
-generic way, but mostly via platform specific hacks.
-
-The worst ones are probably those hacking clock drivers (which myself
-also have contributed to). Have a look at clk_prcmu_opp_prepare(), for
-example, which is used by the UX500 platform. Another option has been
-to use the devfreq framework, but it has limitations in regards to
-this too.
-
-That said, I am hoping that people start moving towards the
-deploying/implementing DVFS through the power-domain approach,
-together with the OPPs. Maybe there are still some pieces missing from
-an infrastructure point of view, but that should become more evident
-as more starts using it.
-
->
-> > Maybe we should try to specify this more exactly in some
-> > documentation, somewhere.
->
-> I think yes, it is very much required. And in absence of that I think,
-> many (or most) of the platforms that also need to scale the voltage
-> would have modeled their hardware as a regulator and not a PM domain.
->
-> What I always thought was:
->
-> - Module that can just enable/disable power to a block of SoC is a
->   power domain.
->
-> - Module that can enable/disable as well as scale voltage is a
->   regulator.
->
-> And so I thought that this patchset has done the right thing. This
-> changed a bit with the qcom stuff where the IP to be configured was in
-> control of RPM and not Linux and so we couldn't add it as a regulator.
-> If it was controlled by Linux, it would have been a regulator in
-> kernel for sure :)
-
-In my view, DT bindings have consistently been pushed back during the
-year, if they have tried to model power domains as regulator supplies
-from consumer device nodes. Hence, people have tried other things, as
-I mentioned above.
-
-I definitely agree that we need to update some documentations,
-explaining things more exactly. Additionally, it seems like a talk at
-some conferences should make sense, as a way to spread the word.
-
-Kind regards
-Uffe
