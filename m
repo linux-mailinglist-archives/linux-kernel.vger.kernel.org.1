@@ -2,71 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 650B82A7F57
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 14:00:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C02C2A7F5B
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 14:00:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730903AbgKEM7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 07:59:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58616 "EHLO
+        id S1731076AbgKEM7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 07:59:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730940AbgKEM7q (ORCPT
+        with ESMTP id S1731038AbgKEM7u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 07:59:46 -0500
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42D85C0613D2
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 04:59:46 -0800 (PST)
-Received: by mail-vs1-xe41.google.com with SMTP id x11so687977vsx.12
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 04:59:46 -0800 (PST)
+        Thu, 5 Nov 2020 07:59:50 -0500
+Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E6DDC0613D2
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 04:59:50 -0800 (PST)
+Received: by mail-ua1-x944.google.com with SMTP id k12so474314uad.11
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 04:59:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=DQxEJYTnrFPdkb+SIqKXmZODsTPacZYJuDmLfP+J2k4=;
-        b=XQxXbboDDYrNgWb5CeYdrF3FGkC+5Q6+wRSBmI+FXAaIwdtq+UdzWdpcVK4KKPTotX
-         lE7KRoRGBMfJzRZ4iEfwFrNjq3PAjuXTq0Q2ZDiGkONZJx2AUtZac89l3kd7pT+oNtjc
-         Im3lb7ynBI+i5nHFnIgI4ppc8jKGJQ0VFmhPvRfTeoIkKqYEvc2Bpe9hfzb7aLPtluDJ
-         9q6LJkblDFdkgAyjDZp55LZczfikI2/vTSc6Et88yzN9TJWwhMbV/wEjdiG+JFVqeGeF
-         BWSOLvGc+hKOskSC56Cit1Iq3rkj8x1+JgMsOtrftLz8VbeWFGteAO0Kpx0A+NDUr8IA
-         w3MQ==
+        bh=Ogy1F0OZxhfIxCnSobyKyOBL57nC3KTIEKh8oSdo12Y=;
+        b=lCdGxiE45E+xLqcXhqfOnyBv5sAJ6fcX8rd45RL5WkLO4LoUzy+R3uDKgfckfmDHTc
+         v0PZqlL/2eBRkz8Cj+qydXTCLss6tVvPKTrJY+jP6s0yhRUMElRXMHaWuueeISr39xl2
+         QI8NMvSWJzAH7FYQDdHEoyIhWfZxDetbEmN3ZmUAS6yt8MVlFxRaKggtSagTnc6/qNah
+         PrvhqYPtaui1rhhbk5fv4RuocM3YiiFOEKHyZ0CXUfquH9kSow0/N5JThKqpAAxgaQ9C
+         jxVeunieL1p3jr7T9f/guNEUtgtIR8+jom6805hnxzZsMwPCX6SM+N5HrGfzlAyO7s7L
+         CzWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=DQxEJYTnrFPdkb+SIqKXmZODsTPacZYJuDmLfP+J2k4=;
-        b=E+/N6O0CWqFaBCCLILs1/AfgmTyawOV1tH7I2Ynp1IKqjEeuzeX8FiMlOVA7tVYw+6
-         JadypPMik8SfaRllkgslSqD8ZCf4GUHX1hIcpeVwwyiLBBF0L4byUIeW2nzElYxvJWQt
-         NtvhkGY5s4shgJ7AU1VkWHBFldXjtCN5OTURB/8gSk3zVxCyFTr4kuKBwvSGAVPS6SLs
-         59WWqrd5uCbu8JlwgSmpOBf7ACSfkrs38nzsVdZ2i+ogYjVdH+DnuUJziMbbwN6Xtw2C
-         cPs4eutKzH3AiGRqiCTaqbTxcpnsJ9tkLnJYb7k9fBkSYarbcg4sf1mZgiaAxSAKFrbQ
-         5ggA==
-X-Gm-Message-State: AOAM533RCl42+yunzA1od5VBQeixqHI5wqdXUT17EmlIF8l+t4J6SptY
-        rXeoFQHaXlBuK/KSw8mYszhwhqGuOEvKWJJS978JfoX70Bk=
-X-Google-Smtp-Source: ABdhPJw9TiQhWBq5dN8EcB5mPqGr915+EBTr3nV6C4ziDQvzTbuZsaADvlcFFOVWGJ5j7vJZsK29Ln/YI1RA9wP46j4=
-X-Received: by 2002:a67:3256:: with SMTP id y83mr1116773vsy.48.1604581185547;
- Thu, 05 Nov 2020 04:59:45 -0800 (PST)
+        bh=Ogy1F0OZxhfIxCnSobyKyOBL57nC3KTIEKh8oSdo12Y=;
+        b=TB9tC2cmEeVFfkrkA5TtlPSGc7FYpr2kRuZ64WT5GyeNjGALXTjXUxyOrkbBH0a+eL
+         Lz/mq4FG9hPqWKrialhr05r3qqg9lLegV1AKfoGLQR6TvWmwf+qoYJJSg45R20UH+01w
+         Q0Xr/loY6BYnCPFMGhlDxnV/k00T0z+JYFyy4Qx2UIaVLhlJHCJvG7A5oMnkOwle8yjc
+         TBH0I2kRQKcHkBUHjSBWXbxqWmWRa9Q4/tPwAXkeI0ZW5DrcYPLXrryBVUJZAdcW1ieL
+         E4TlcRZNbpaovcqkhTFAZsyYxCsI/kSfCyKSrjxsAepJWMxFvOPdx6dNzb3zmYxw1s6N
+         m3oQ==
+X-Gm-Message-State: AOAM533OMEF/Kyl1+TBwKKbE2iqIBD0wxDnBtFT0XVqJatAOtR2Dcgqr
+        3ein2SYhX+jctIYJESUYcNSV9thlK+u+MyfTemJMKQ==
+X-Google-Smtp-Source: ABdhPJygw6lv2K7RzimlR0j9nMogFpDzaeo2sDnSHRJ8tbpbhbUQAIPJLUSINH4E+x6ZU6D9Dds59Yz53akRLcTQxmo=
+X-Received: by 2002:a9f:2f15:: with SMTP id x21mr844197uaj.104.1604581189602;
+ Thu, 05 Nov 2020 04:59:49 -0800 (PST)
 MIME-Version: 1.0
-References: <1604375323-33556-1-git-send-email-tiantao6@hisilicon.com>
-In-Reply-To: <1604375323-33556-1-git-send-email-tiantao6@hisilicon.com>
+References: <1604278337-55624-1-git-send-email-tiantao6@hisilicon.com>
+In-Reply-To: <1604278337-55624-1-git-send-email-tiantao6@hisilicon.com>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 5 Nov 2020 13:59:09 +0100
-Message-ID: <CAPDyKFqT9OtZorNmi8OVNAFsbV14UgqZoDNCdkvZUvcHOEnG0w@mail.gmail.com>
-Subject: Re: [PATCH] mmc: meson-mx-sdio: replace spin_lock_irqsave by
- spin_lock in hard IRQ
+Date:   Thu, 5 Nov 2020 13:59:12 +0100
+Message-ID: <CAPDyKFrEEB7HFEq787jitvOJmuP_t-DAbr9g_chF3JGWxwE_FA@mail.gmail.com>
+Subject: Re: [PATCH] mmc: owl-mmc: replace spin_lock_irqsave by spin_lock in
+ hard IRQ
 To:     Tian Tao <tiantao6@hisilicon.com>
-Cc:     Kevin Hilman <khilman@baylibre.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+Cc:     =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
         "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
         Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Amlogic Meson..." <linux-amlogic@lists.infradead.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 3 Nov 2020 at 04:48, Tian Tao <tiantao6@hisilicon.com> wrote:
+On Mon, 2 Nov 2020 at 01:51, Tian Tao <tiantao6@hisilicon.com> wrote:
 >
 > The code has been in a irq-disabled context since it is hard IRQ. There
 > is no necessity to do it again.
@@ -80,33 +78,33 @@ Uffe
 
 
 > ---
->  drivers/mmc/host/meson-mx-sdio.c | 5 ++---
+>  drivers/mmc/host/owl-mmc.c | 5 ++---
 >  1 file changed, 2 insertions(+), 3 deletions(-)
 >
-> diff --git a/drivers/mmc/host/meson-mx-sdio.c b/drivers/mmc/host/meson-mx-sdio.c
-> index 1c5299c..d4a4891 100644
-> --- a/drivers/mmc/host/meson-mx-sdio.c
-> +++ b/drivers/mmc/host/meson-mx-sdio.c
-> @@ -418,10 +418,9 @@ static irqreturn_t meson_mx_mmc_irq(int irq, void *data)
+> diff --git a/drivers/mmc/host/owl-mmc.c b/drivers/mmc/host/owl-mmc.c
+> index ccf214a..82d2bad 100644
+> --- a/drivers/mmc/host/owl-mmc.c
+> +++ b/drivers/mmc/host/owl-mmc.c
+> @@ -134,10 +134,9 @@ static void owl_mmc_update_reg(void __iomem *reg, unsigned int val, bool state)
+>  static irqreturn_t owl_irq_handler(int irq, void *devid)
 >  {
->         struct meson_mx_mmc_host *host = (void *) data;
->         u32 irqs, send;
-> -       unsigned long irqflags;
->         irqreturn_t ret;
+>         struct owl_mmc_host *owl_host = devid;
+> -       unsigned long flags;
+>         u32 state;
 >
-> -       spin_lock_irqsave(&host->irq_lock, irqflags);
-> +       spin_lock(&host->irq_lock);
+> -       spin_lock_irqsave(&owl_host->lock, flags);
+> +       spin_lock(&owl_host->lock);
 >
->         irqs = readl(host->base + MESON_MX_SDIO_IRQS);
->         send = readl(host->base + MESON_MX_SDIO_SEND);
-> @@ -434,7 +433,7 @@ static irqreturn_t meson_mx_mmc_irq(int irq, void *data)
->         /* finally ACK all pending interrupts */
->         writel(irqs, host->base + MESON_MX_SDIO_IRQS);
+>         state = readl(owl_host->base + OWL_REG_SD_STATE);
+>         if (state & OWL_SD_STATE_TEI) {
+> @@ -147,7 +146,7 @@ static irqreturn_t owl_irq_handler(int irq, void *devid)
+>                 complete(&owl_host->sdc_complete);
+>         }
 >
-> -       spin_unlock_irqrestore(&host->irq_lock, irqflags);
-> +       spin_unlock(&host->irq_lock);
+> -       spin_unlock_irqrestore(&owl_host->lock, flags);
+> +       spin_unlock(&owl_host->lock);
 >
->         return ret;
+>         return IRQ_HANDLED;
 >  }
 > --
 > 2.7.4
