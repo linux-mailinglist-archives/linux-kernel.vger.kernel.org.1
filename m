@@ -2,86 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 760722A75CE
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 03:57:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC91E2A75CD
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 03:57:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388480AbgKEC5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 21:57:18 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:45904 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388455AbgKEC5S (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 21:57:18 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A52s0q6168760;
-        Thu, 5 Nov 2020 02:57:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : mime-version :
- content-type; s=corp-2020-01-29;
- bh=tOzNk2EK2R/Deek0VqQRL7Ul3752LAL3voCK6gisD8Q=;
- b=k+EbW4DVPyB/DTh58mnGnpmRPBu5l4iNOcv6pQroSaSZnSrkZnDHdm5wHA5Z9ZA0udG4
- B9GHdXh/WIazgWtYqdbk2ASMBcrUPj/dTE3qqcue9nNXEcBjU2mDRdn/fS5gsYUIBlEx
- SKuVczClo+0PpqcePGOCaNOnkPMYsWuUqiU8t5dgHX/sojpP0YEG0yNeT3eH4L4XbQIq
- jv4mos10EN2nQ/wvmF8EmvAumQQbQKZMOrbjx3iQ2POtg5AZkBIgMgfj3aTVVNQmzzFf
- tBtxCzWGQOpW9y7TVKgSv7uw16A0xQCkgkX9kghOYzd92RoVABYobyeNRY6zSqKcujkd xg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2130.oracle.com with ESMTP id 34hhb29tb4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 05 Nov 2020 02:57:05 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A52tnZd002815;
-        Thu, 5 Nov 2020 02:57:04 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 34hvrytjcu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 05 Nov 2020 02:57:04 +0000
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0A52usfM028062;
-        Thu, 5 Nov 2020 02:56:54 GMT
-Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 04 Nov 2020 18:56:53 -0800
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Adaptec OEM Raid Solutions <aacraid@microsemi.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Arnd Bergmann <arnd@arndb.de>, Christoph Hellwig <hch@lst.de>,
-        Hannes Reinecke <hare@suse.de>, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/3] scsi: aacraid: improve compat_ioctl handlers
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1mtzwtst4.fsf@ca-mkp.ca.oracle.com>
-References: <20201030164450.1253641-1-arnd@kernel.org>
-Date:   Wed, 04 Nov 2020 21:56:51 -0500
-In-Reply-To: <20201030164450.1253641-1-arnd@kernel.org> (Arnd Bergmann's
-        message of "Fri, 30 Oct 2020 17:44:19 +0100")
+        id S2388464AbgKEC5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 21:57:12 -0500
+Received: from rere.qmqm.pl ([91.227.64.183]:4060 "EHLO rere.qmqm.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388455AbgKEC5K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 21:57:10 -0500
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4CRSq80gJrz8p;
+        Thu,  5 Nov 2020 03:57:08 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1604545028; bh=ftTu3GVhpENCklOKbGWhySdZBk/3XyASkUeEvoboYxo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=coIYJ4QFqThVJlAPSGs2RnDKZzFWxTyG88+X0vtqmLPKM28BghZsxExYdrns4OMbl
+         zvEOvpEVqNiEbe9QAZ0VdnAYgtHZyvGL/CB5nt4hLdJtT43JO+jLiKiPvPmbtScR2O
+         ulNwUE4yRcwmDwgy7qbMmRFN6rqqMLTNXKJ54ijCD1OO3cntFYkSuvYmRT7GYxHuiQ
+         b+lnQCTzfHoqvr3gUzNnAju75nl8ZSElDxcv5KJbpyFPGFHi95Mig1VoX8L3aIPFMn
+         GnDWJTc0xwJJe3FQKux780JbHY33qVCsSqmClKMGUw6ft/+KpxLa9vFCeJijkMO4zN
+         XuW9o03CGBoMA==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.102.4 at mail
+Date:   Thu, 5 Nov 2020 03:57:06 +0100
+From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc:     Corentin Labbe <clabbe.montjoie@gmail.com>, lgirdwood@gmail.com,
+        mripard@kernel.org, linux-kernel@vger.kernel.org, wens@csie.org,
+        broonie@kernel.org, linux-arm-kernel@lists.infradead.org,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>
+Subject: Re: [BUG] Error applying setting, reverse things back on lot of
+ devices
+Message-ID: <20201105025706.GE17266@qmqm.qmqm.pl>
+References: <20201021183149.GA8436@Red>
+ <20201023134201.GA533@Red>
+ <20201023203943.GA21435@Red>
+ <20201024115307.GA2745@qmqm.qmqm.pl>
+ <8a580d12-fa4a-6cd8-4d82-3e3b784e348b@pengutronix.de>
+ <20201102202727.GA20042@qmqm.qmqm.pl>
+ <124b90a8-72c7-c6cb-790f-7a22ef7510eb@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9795 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0 mlxscore=0
- malwarescore=0 mlxlogscore=713 suspectscore=1 spamscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011050022
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9795 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0 suspectscore=1
- clxscore=1015 mlxlogscore=740 impostorscore=0 malwarescore=0
- lowpriorityscore=0 adultscore=0 spamscore=0 priorityscore=1501 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011050022
+Content-Type: text/plain; charset=iso-8859-2
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <124b90a8-72c7-c6cb-790f-7a22ef7510eb@pengutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Nov 04, 2020 at 11:28:45AM +0100, Ahmad Fatoum wrote:
+> Hello,
+> 
+> On 11/2/20 9:27 PM, Micha³ Miros³aw wrote:
+> > On Mon, Nov 02, 2020 at 01:48:54PM +0100, Ahmad Fatoum wrote:
+> >> Hello Micha³,
+> >>
+> >> CC += linux-stm32
+> >>
+> >> On 10/24/20 1:53 PM, Micha³ Miros³aw wrote:
+> >>> On Fri, Oct 23, 2020 at 10:39:43PM +0200, Corentin Labbe wrote:
+> >>>> On Fri, Oct 23, 2020 at 03:42:01PM +0200, Corentin Labbe wrote:
+> >>>>> On Wed, Oct 21, 2020 at 08:31:49PM +0200, Corentin Labbe wrote:
+> >>>>> I have just saw thoses 3 lines which are probably the real problem.
+> >>>>> I have started a new bisect with this error, but it is hitting the same "crash range" the first one.
+> >>>>>
+> >>>>
+> >>>> I have bisected the problem to commit aea6cb99703e17019e025aa71643b4d3e0a24413 ("regulator: resolve supply after creating regulator")
+> >>>> Reverting this fix my problem.
+> >>
+> >> The change broke boot on all the STM32MP1 boards, because the STPMIC driver
+> >> has a vref_ddr regulator, which does not have a dedicated supply, but without
+> >> a vref_ddr-supply property the system now no longer boots.
+> > [...]
+> > 
+> > Can you catch debug logs for the bootup in question? I'm not sure what's
+> > the failure mode in your case. I guess this is not a bypassed regulator?
+> 
+> Boot up with v5.10-rc2 + your cf1ad559a2 ("regulator: defer probe when trying
+> to get voltage from unresolved supply") hangs:
+> 
+> [    1.151489] stm32f7-i2c 40015000.i2c: STM32F7 I2C-0 bus adapter
+> [    1.180698] stpmic1 1-0033: PMIC Chip Version: 0x10
+> [    1.189526] vddcore: supplied by regulator-dummy
+> [    1.195633] vdd_ddr: supplied by regulator-dummy
+> [    1.201672] vdd: supplied by regulator-dummy
+> [    1.207452] v3v3: supplied by 5V2
+> [    1.211997] v1v8_audio: supplied by v3v3
+> [    1.218036] v3v3_hdmi: supplied by 5V2
+> [    1.223626] vtt_ddr: supplied by regulator-dummy
+> [    1.227107] vdd_usb: supplied by regulator-dummy
+> [    1.234532] vdda: supplied by 5V2
+> [    1.239497] v1v2_hdmi: supplied by v3v3
+[...]
 
-Arnd,
+Can you try with the patches I just sent and with debug logs enabled?
 
-> The use of compat_alloc_user_space() can be easily replaced by
-> handling compat arguments in the regular handler, and this will make
-> it work for big-endian kernels as well, which at the moment get an
-> invalid indirect pointer argument.
+The first one just plugs a memory leak, but if there is some state
+changed/saved in the rdev->constraints (can't find that code, though),
+this might prevent it from being overwritten.
 
-Applied to 5.11/scsi-staging, thanks!
+The second patch will just tell us if you hit the early resolve case.
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+Best Regards,
+Micha³ Miros³aw
