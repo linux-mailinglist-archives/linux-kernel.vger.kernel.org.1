@@ -2,114 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91CBA2A77E7
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 08:20:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BC452A77E8
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 08:22:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728966AbgKEHU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 02:20:28 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:55668 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727245AbgKEHU2 (ORCPT
+        id S1727285AbgKEHWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 02:22:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34188 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725320AbgKEHWY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 02:20:28 -0500
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0A57K1qS069060;
-        Thu, 5 Nov 2020 01:20:01 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1604560801;
-        bh=aNnXmi+/BsbX9YuV+Vb2u6E5JEoEpPn5Q9SWNj/7eck=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=q9AMAhhwXgg6+Eyfc9S3V8N/IBko+GprebnDGlxvC3vD2ce1sHxBITbG3V/9vpJWm
-         R85wRfxKe0bxydDL3MtA37dZGGgXF7LNWjfpiaq1XVsP2PrAb3fZ+f4O/qQs6ViQMC
-         +SNoLo4wTq49WyY1o7vTZ25RyGkMuyEHKcOUv2a8=
-Received: from DFLE107.ent.ti.com (dfle107.ent.ti.com [10.64.6.28])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0A57K1fb059899
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 5 Nov 2020 01:20:01 -0600
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 5 Nov
- 2020 01:20:00 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 5 Nov 2020 01:20:00 -0600
-Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0A57JwIG037919;
-        Thu, 5 Nov 2020 01:19:59 -0600
-Subject: Re: [PATCH] arm64: dts: ti: k3-am65*/j721e*: Fix unit address format
- error for dss node
-To:     Nishanth Menon <nm@ti.com>, Jyri Sarha <jsarha@ti.com>
-CC:     Rob Herring <robh+dt@kernel.org>, Tero Kristo <t-kristo@ti.com>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20201104222519.12308-1-nm@ti.com>
-From:   Tomi Valkeinen <tomi.valkeinen@ti.com>
-Message-ID: <9e1b0cf4-3048-ea54-1477-408b3bc0539b@ti.com>
-Date:   Thu, 5 Nov 2020 09:19:58 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 5 Nov 2020 02:22:24 -0500
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D8F1C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 23:22:24 -0800 (PST)
+Received: by mail-oi1-x243.google.com with SMTP id j7so693188oie.12
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 23:22:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WSZ3+zLaojBm8Llmv8mdwwh1sKAbO9V1JJ7VIGY5YaM=;
+        b=iqd4cqhaOURh+RJCIK7wwSnQuhnxujTo2ztBt+aVcxykRvNrG9uuBde3XzAhI2pjP9
+         OOE6bjCaG65Qow41L4PK7cMY5hA3m5pLHsAATuQziti/UZ0+bTHycJBzTs1WKnnc8giT
+         tkB9OA/hvZS1dUUOu23LMJteVg7jYwg6J+RJ2kp/63ti20sl0YrPLjk0haMozMXNKVmb
+         64oS4WIeHb6RrS6tGBtkbjyiyJUWaKycGNBbqPgg/xgAza+dbfnEvHcJaDQsqkpGWLLs
+         6VgB5i9La8YVUm0i1paX5ZOAA2//pHVk34C21OIjBlBwfU8aA2aZhgSn9VPAQ3NkOpXw
+         LyPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WSZ3+zLaojBm8Llmv8mdwwh1sKAbO9V1JJ7VIGY5YaM=;
+        b=IXwvdJR5yjylZUIUcigsKdxoCoL+QjmJ/fVfuhyPOzt8R0L8N2YwlYwVuhrSTNKoaH
+         84q/C8qYfkT/eK5rLF4gJy9a71M/iI0eKiIL1d/zfVuCsDt8ounM7WUJdrMnzr/R7xmw
+         VYxx94m9ZkbyUwqhL0JeuhxaZVd79bqEwPQE1MWgt7Pk4m/418dTF5b8UJgkPuGCPjlU
+         TQljkBFGiVVln+EmtN72ttJ+cpxV+iJs1hgy9mnKaI57liVGGflKj3W0a3KJMDltPI5E
+         7SGJbn7nethzkI5/FsN/PQOAEmqfvPtBsLoafcPcluiQc7N+c1R6UqBCk6+dstOL3v4l
+         RDag==
+X-Gm-Message-State: AOAM530ofI66r75Myfd7cw+UewYcWBq6SQMLg3Qv8Mx1zfaTnzm3Ct9G
+        8p2I7JpyHKavd3Pri/Gu/XZW8r0B2qmiUi1wUdpIEQ==
+X-Google-Smtp-Source: ABdhPJy0F5JCc98tp7QNjA610x1Eqz7f1L3ylLULpbwz+DrTYw2meMBgEMIwHINr6f0EPsTptlEuoAYI6lV5pfkWL5c=
+X-Received: by 2002:aca:4b82:: with SMTP id y124mr750400oia.35.1604560943669;
+ Wed, 04 Nov 2020 23:22:23 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201104222519.12308-1-nm@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <cover.1602838910.git.zong.li@sifive.com> <b10784643665ad56ca41ea6754c7f28f8be1c7ca.1602838910.git.zong.li@sifive.com>
+ <160454434294.3965362.6100009498384462585@swboyd.mtv.corp.google.com>
+In-Reply-To: <160454434294.3965362.6100009498384462585@swboyd.mtv.corp.google.com>
+From:   Zong Li <zong.li@sifive.com>
+Date:   Thu, 5 Nov 2020 15:22:10 +0800
+Message-ID: <CANXhq0qpEXejD765A5S5KfbuYQc=in5sFdEmk5K=BzZy2L=nmQ@mail.gmail.com>
+Subject: Re: [PATCH 1/4] clk: sifive: Extract prci core to common base
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     Albert Ou <aou@eecs.berkeley.edu>, linux-clk@vger.kernel.org,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Yash Shah <yash.shah@sifive.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Nov 5, 2020 at 10:45 AM Stephen Boyd <sboyd@kernel.org> wrote:
+>
+> Quoting Zong Li (2020-10-16 02:18:23)
+> > Extract common core of prci driver to an independent file, it could
+> > allow other chips to reuse it. Separate SoCs-dependent code 'fu540'
+> > from prci core, then we can easily add 'fu740' later.
+>
+> Please indicate if there are any functional changes or this is just code
+> movement.
 
+There are some changes for common use, not just code movement or
+copies, I would figure out the changes in the commit message  in the
+next version.
 
-On 05/11/2020 00:25, Nishanth Menon wrote:
-> Fix the node address to follow the device tree convention.
-> 
-> This fixes the dtc warning:
-> <stdout>: Warning (simple_bus_reg): /bus@100000/dss@04a00000: simple-bus
-> unit address format error, expected "4a00000"
-> 
-> Fixes: 76921f15acc0 ("arm64: dts: ti: k3-j721e-main: Add DSS node")
-> Fixes: fc539b90eda2 ("arm64: dts: ti: am654: Add DSS node")
-> Cc: Jyri Sarha <jsarha@ti.com>
-> Cc: Tomi Valkeinen <tomi.valkeinen@ti.com>
-> Signed-off-by: Nishanth Menon <nm@ti.com>
-> ---
->  arch/arm64/boot/dts/ti/k3-am65-main.dtsi  | 2 +-
->  arch/arm64/boot/dts/ti/k3-j721e-main.dtsi | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
-> index 533525229a8d..27f6fd9eaa0a 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
-> @@ -834,7 +834,7 @@ csi2_0: port@0 {
->  		};
->  	};
->  
-> -	dss: dss@04a00000 {
-> +	dss: dss@4a00000 {
->  		compatible = "ti,am65x-dss";
->  		reg =	<0x0 0x04a00000 0x0 0x1000>, /* common */
->  			<0x0 0x04a02000 0x0 0x1000>, /* vidl1 */
-> diff --git a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
-> index e2a96b2c423c..c66ded9079be 100644
-> --- a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
-> @@ -1278,7 +1278,7 @@ ufs@4e84000 {
->  		};
->  	};
->  
-> -	dss: dss@04a00000 {
-> +	dss: dss@4a00000 {
->  		compatible = "ti,j721e-dss";
->  		reg =
->  			<0x00 0x04a00000 0x00 0x10000>, /* common_m */
-> 
+>
+> >
+> > Signed-off-by: Zong Li <zong.li@sifive.com>
+> > ---
+> >  drivers/clk/sifive/Makefile      |   2 +
+> >  drivers/clk/sifive/fu540-prci.c  | 586 +------------------------------
+> >  drivers/clk/sifive/fu540-prci.h  |  21 ++
+> >  drivers/clk/sifive/sifive-prci.c | 409 +++++++++++++++++++++
+> >  drivers/clk/sifive/sifive-prci.h | 201 +++++++++++
+>
+> How much of this is a copy/pastes? Can you generate patches with
+> format-patch -M -C to try to find copies and renames?
 
-Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ti.com>
+I tried to add -M and -C option to find renames and copies, but it
+doesn't detect anything here.
 
- Tomi
-
--- 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+>
+> >  5 files changed, 652 insertions(+), 567 deletions(-)
+> >  create mode 100644 drivers/clk/sifive/fu540-prci.h
+> >  create mode 100644 drivers/clk/sifive/sifive-prci.c
+> >  create mode 100644 drivers/clk/sifive/sifive-prci.h
+> >
