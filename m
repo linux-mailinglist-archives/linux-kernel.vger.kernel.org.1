@@ -2,79 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2E742A8303
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 17:06:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A8672A8310
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 17:07:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729016AbgKEQGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 11:06:12 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:34110 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725998AbgKEQGK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 11:06:10 -0500
-Received: from zn.tnic (p200300ec2f0ee5006c78cd15f1739a31.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:e500:6c78:cd15:f173:9a31])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id ABBEB1EC03A0;
-        Thu,  5 Nov 2020 17:06:07 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1604592367;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=S5boF4B6TAHFPlvlgDFEEapIEvWayFlRDB/oT9Qr6eY=;
-        b=MgIWWTeGmdGbWivhsxWZDTo5EI6CY70hB1Bn0ZQ3R8NToCxQEr4NRSgbPZf4eQa9qkVR0k
-        TEMGRxDApvtqS+glbggqJ3hz5H3xcSvCpFf+bffafn89ZZgjDoSqUcO4JPlIdb/wmUCwXr
-        aIez9StDLSstQ2wsnG9IPtMPnwmaDxc=
-Date:   Thu, 5 Nov 2020 17:05:59 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Haitao Huang <haitao.huang@linux.intel.com>,
-        Chunyang Hui <sanqian.hcy@antfin.com>,
-        Jordan Hand <jorhand@linux.microsoft.com>,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        Seth Moore <sethmo@google.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Suresh Siddha <suresh.b.siddha@intel.com>,
-        andriy.shevchenko@linux.intel.com, asapek@google.com,
-        cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com, kai.huang@intel.com,
-        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
-        luto@kernel.org, nhorman@redhat.com, puiterwijk@redhat.com,
-        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com,
-        mikko.ylinen@intel.com
-Subject: Re: [PATCH v40 11/24] x86/sgx: Add SGX misc driver interface
-Message-ID: <20201105160559.GD25636@zn.tnic>
-References: <20201104145430.300542-1-jarkko.sakkinen@linux.intel.com>
- <20201104145430.300542-12-jarkko.sakkinen@linux.intel.com>
- <20201105011043.GA700495@kernel.org>
- <20201105011615.GA701257@kernel.org>
+        id S1730943AbgKEQHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 11:07:46 -0500
+Received: from netrider.rowland.org ([192.131.102.5]:45355 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1728523AbgKEQHo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 11:07:44 -0500
+Received: (qmail 1615519 invoked by uid 1000); 5 Nov 2020 11:07:43 -0500
+Date:   Thu, 5 Nov 2020 11:07:43 -0500
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Peter Chen <Peter.Chen@nxp.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        linux-samsung-soc@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-usb@vger.kernel.org, linux-pwm@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-media@vger.kernel.org, linux-tegra@vger.kernel.org
+Subject: Re: [PATCH v1 21/30] usb: host: ehci-tegra: Support OPP and SoC core
+ voltage scaling
+Message-ID: <20201105160743.GA1613614@rowland.harvard.edu>
+References: <20201104234427.26477-1-digetx@gmail.com>
+ <20201104234427.26477-22-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201105011615.GA701257@kernel.org>
+In-Reply-To: <20201104234427.26477-22-digetx@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 03:16:15AM +0200, Jarkko Sakkinen wrote:
-> Further, I'd declare this as an inline function given how trivial it
-> turn into.
+On Thu, Nov 05, 2020 at 02:44:18AM +0300, Dmitry Osipenko wrote:
+> Add initial OPP and SoC core voltage scaling support to the Tegra EHCI
+> driver. This is required for enabling system-wide DVFS on older Tegra
+> SoCs.
 > 
-...
+> Tested-by: Peter Geis <pgwipeout@gmail.com>
+> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
 
-So are you sending a new version of only this patch as a reply to this
-subthread?
+I'm no expert on OPP stuff, but some of what you have done here looks 
+peculiar.
 
--- 
-Regards/Gruss,
-    Boris.
+> diff --git a/drivers/usb/host/ehci-tegra.c b/drivers/usb/host/ehci-tegra.c
+> index 869d9c4de5fc..0976577f54b4 100644
+> --- a/drivers/usb/host/ehci-tegra.c
+> +++ b/drivers/usb/host/ehci-tegra.c
+> @@ -17,6 +17,7 @@
+>  #include <linux/of_device.h>
+>  #include <linux/of_gpio.h>
+>  #include <linux/platform_device.h>
+> +#include <linux/pm_opp.h>
+>  #include <linux/pm_runtime.h>
+>  #include <linux/reset.h>
+>  #include <linux/slab.h>
+> @@ -364,6 +365,79 @@ static void tegra_ehci_unmap_urb_for_dma(struct usb_hcd *hcd, struct urb *urb)
+>  	free_dma_aligned_buffer(urb);
+>  }
+>  
+> +static void tegra_ehci_deinit_opp_table(void *data)
+> +{
+> +	struct device *dev = data;
+> +	struct opp_table *opp_table;
+> +
+> +	opp_table = dev_pm_opp_get_opp_table(dev);
+> +	dev_pm_opp_of_remove_table(dev);
+> +	dev_pm_opp_put_regulators(opp_table);
+> +	dev_pm_opp_put_opp_table(opp_table);
+> +}
+> +
+> +static int devm_tegra_ehci_init_opp_table(struct device *dev)
+> +{
+> +	unsigned long rate = ULONG_MAX;
+> +	struct opp_table *opp_table;
+> +	const char *rname = "core";
+> +	struct dev_pm_opp *opp;
+> +	int err;
+> +
+> +	/* legacy device-trees don't have OPP table */
+> +	if (!device_property_present(dev, "operating-points-v2"))
+> +		return 0;
+> +
+> +	/* voltage scaling is optional */
+> +	if (device_property_present(dev, "core-supply"))
+> +		opp_table = dev_pm_opp_set_regulators(dev, &rname, 1);
+> +	else
+> +		opp_table = dev_pm_opp_get_opp_table(dev);
+> +
+> +	if (IS_ERR(opp_table))
+> +		return dev_err_probe(dev, PTR_ERR(opp_table),
+> +				     "failed to prepare OPP table\n");
+> +
+> +	err = dev_pm_opp_of_add_table(dev);
+> +	if (err) {
+> +		dev_err(dev, "failed to add OPP table: %d\n", err);
+> +		goto put_table;
+> +	}
+> +
+> +	/* find suitable OPP for the maximum clock rate */
+> +	opp = dev_pm_opp_find_freq_floor(dev, &rate);
+> +	err = PTR_ERR_OR_ZERO(opp);
+> +	if (err) {
+> +		dev_err(dev, "failed to get OPP: %d\n", err);
+> +		goto remove_table;
+> +	}
+> +
+> +	dev_pm_opp_put(opp);
+> +
+> +	/*
+> +	 * First dummy rate-set initializes voltage vote by setting voltage
+> +	 * in accordance to the clock rate.
+> +	 */
+> +	err = dev_pm_opp_set_rate(dev, rate);
+> +	if (err) {
+> +		dev_err(dev, "failed to initialize OPP clock: %d\n", err);
+> +		goto remove_table;
+> +	}
+> +
+> +	err = devm_add_action(dev, tegra_ehci_deinit_opp_table, dev);
+> +	if (err)
+> +		goto remove_table;
+> +
+> +	return 0;
+> +
+> +remove_table:
+> +	dev_pm_opp_of_remove_table(dev);
+> +put_table:
+> +	dev_pm_opp_put_regulators(opp_table);
 
-https://people.kernel.org/tglx/notes-about-netiquette
+Do you really want to use the same error unwinding for opp_table values 
+obtained from dev_pm_opp_set_regulators() as from 
+dev_pm_opp_get_opp_table()?
+
+> +
+> +	return err;
+> +}
+> +
+>  static const struct tegra_ehci_soc_config tegra30_soc_config = {
+>  	.has_hostpc = true,
+>  };
+> @@ -431,6 +505,11 @@ static int tegra_ehci_probe(struct platform_device *pdev)
+>  		goto cleanup_hcd_create;
+>  	}
+>  
+> +	err = devm_tegra_ehci_init_opp_table(&pdev->dev);
+> +	if (err)
+> +		return dev_err_probe(&pdev->dev, err,
+> +				     "Failed to initialize OPP\n");
+
+Why log a second error message?  Just return err.
+
+Alan Stern
