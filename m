@@ -2,96 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FE1B2A77AE
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 08:03:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8987C2A77B2
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 08:05:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728301AbgKEHDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 02:03:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36780 "EHLO mail.kernel.org"
+        id S1727711AbgKEHFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 02:05:15 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:13004 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725294AbgKEHDT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 02:03:19 -0500
-Received: from kernel.org (unknown [87.71.17.91])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 93A8D2080D;
-        Thu,  5 Nov 2020 07:03:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604559798;
-        bh=ZwnmmeEoHE3z9MsWLdlfmgmtgaiQLsrxGAbEAvncd4c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uj3f+zm9mdY3fdGg9FsPhIepZXMpue0wWJYkDeF7Zm//GRKGChi6/7Z34qlGoryfl
-         zSqseEzOI3oxukMW9AWvX77+C1AKrQQif2Ex15HTzdrYxdLhEQCVoeRHU5jgh2bkPm
-         0bdowRzEokT55SNSTwZt+gyLkdSoQQeUibgwHE4Y=
-Date:   Thu, 5 Nov 2020 09:03:11 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Anand K Mistry <amistry@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the akpm-current tree
-Message-ID: <20201105070311.GU4879@kernel.org>
-References: <20201105174549.614c2de4@canb.auug.org.au>
+        id S1725861AbgKEHFO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 02:05:14 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4CRZKM47t1z9v117;
+        Thu,  5 Nov 2020 08:05:11 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id b4BaAEdbvgaQ; Thu,  5 Nov 2020 08:05:11 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4CRZKM3KnPz9v116;
+        Thu,  5 Nov 2020 08:05:11 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 40D2E8B819;
+        Thu,  5 Nov 2020 08:05:12 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id QNSBaGaQp51J; Thu,  5 Nov 2020 08:05:12 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id E8EB58B764;
+        Thu,  5 Nov 2020 08:05:10 +0100 (CET)
+Subject: Re: [PATCH 34/36] tty: serial: pmac_zilog: Make disposable variable
+ __always_unused
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Paul Mackerras <paulus@samba.org>,
+        linux-serial@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>
+References: <20201104193549.4026187-1-lee.jones@linaro.org>
+ <20201104193549.4026187-35-lee.jones@linaro.org>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <445a6440-b4c8-4536-891b-0cefc78e5f57@csgroup.eu>
+Date:   Thu, 5 Nov 2020 08:04:44 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201105174549.614c2de4@canb.auug.org.au>
+In-Reply-To: <20201104193549.4026187-35-lee.jones@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 05:45:49PM +1100, Stephen Rothwell wrote:
-> Hi all,
-> 
-> After merging the akpm-current tree, today's linux-next build (htmldocs)
-> produced this warning:
-> 
-> Documentation/filesystems/proc.rst:296: WARNING: Malformed table.
-> Text in column margin in table line 61.
-> 
-> ==========================  ===================================================
-> Field                       Content
-> ==========================  ===================================================
-  ...
-> Speculation_Store_Bypass    speculative store bypass mitigation status
-> Speculation_Indirect_Branch indirect branch speculation mode
-  ...
-> ==========================  ===================================================
-> Documentation/filesystems/proc.rst:234: WARNING: Error parsing content block for the "table" directive: exactly one table expected.
-
-Looks like left column became too wide, so rather than shift the right
-column to the right, I'd suggest to drop underscores in Speculation*.
-
-> 
-> .. table:: Table 1-2: Contents of the status files (as of 4.19)
-> 
->  ==========================  ===================================================
->  Field                       Content
->  ==========================  ===================================================
-   ...
->  Speculation_Store_Bypass    speculative store bypass mitigation status
->  Speculation_Indirect_Branch indirect branch speculation mode
->  Cpus_allowed                mask of CPUs on which this process may run
->  Cpus_allowed_list           Same as previous, but in "list format"
->  Mems_allowed                mask of memory nodes allowed to this process
->  Mems_allowed_list           Same as previous, but in "list format"
->  voluntary_ctxt_switches     number of voluntary context switches
->  nonvoluntary_ctxt_switches  number of non voluntary context switches
->  ==========================  ===================================================
-
-Same here.
- 
-> Introduced by commit
-> 
->   60b492d745d5 ("proc: provide details on indirect branch speculation")
-> 
-> -- 
-> Cheers,
-> Stephen Rothwell
 
 
+Le 04/11/2020 à 20:35, Lee Jones a écrit :
+> Fixes the following W=1 kernel build warning(s):
+> 
+>   drivers/tty/serial/pmac_zilog.h:365:58: warning: variable ‘garbage’ set but not used [-Wunused-but-set-variable]
 
--- 
-Sincerely yours,
-Mike.
+Explain how you are fixing this warning.
+
+Setting  __always_unused is usually not the good solution for fixing this warning, but here I guess 
+this is likely the good solution. But it should be explained why.
+
+Christophe
+
+
+> 
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Jiri Slaby <jirislaby@kernel.org>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+> Cc: Paul Mackerras <paulus@samba.org>
+> Cc: linux-serial@vger.kernel.org
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> ---
+>   drivers/tty/serial/pmac_zilog.h | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/tty/serial/pmac_zilog.h b/drivers/tty/serial/pmac_zilog.h
+> index bb874e76810e0..968aec7c1cf82 100644
+> --- a/drivers/tty/serial/pmac_zilog.h
+> +++ b/drivers/tty/serial/pmac_zilog.h
+> @@ -362,7 +362,7 @@ static inline void zssync(struct uart_pmac_port *port)
+>   
+>   /* Misc macros */
+>   #define ZS_CLEARERR(port)    (write_zsreg(port, 0, ERR_RES))
+> -#define ZS_CLEARFIFO(port)   do { volatile unsigned char garbage; \
+> +#define ZS_CLEARFIFO(port)   do { volatile unsigned char __always_unused garbage; \
+>   				     garbage = read_zsdata(port); \
+>   				     garbage = read_zsdata(port); \
+>   				     garbage = read_zsdata(port); \
+> 
