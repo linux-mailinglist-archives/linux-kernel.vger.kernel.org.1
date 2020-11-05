@@ -2,254 +2,302 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84AB72A799F
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 09:49:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC4EE2A79A7
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 09:52:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729943AbgKEItN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 03:49:13 -0500
-Received: from mga04.intel.com ([192.55.52.120]:43169 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725827AbgKEItM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 03:49:12 -0500
-IronPort-SDR: Xa6pS323LmCgAdAN1Hgb++UA1jc+OAHjpVrztGfQDe75iE6MCvNHaTsq7QpwaAh2zfsTB96qXL
- v5nihRkUXQww==
-X-IronPort-AV: E=McAfee;i="6000,8403,9795"; a="166759811"
-X-IronPort-AV: E=Sophos;i="5.77,453,1596524400"; 
-   d="scan'208";a="166759811"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2020 00:49:02 -0800
-IronPort-SDR: zeDz80cwtr5wzyggCKqBu7UeVVw/aWKtbcnIb0FCNl5tR3p10c5Kkq2Q0/T0mSONCICPYxYFiX
- Syy2fs2GyH9Q==
-X-IronPort-AV: E=Sophos;i="5.77,453,1596524400"; 
-   d="scan'208";a="539303094"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2020 00:48:57 -0800
-Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
-        id 864AA20901; Thu,  5 Nov 2020 10:48:55 +0200 (EET)
-Date:   Thu, 5 Nov 2020 10:48:55 +0200
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-sunxi@googlegroups.com,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Yong Deng <yong.deng@magewell.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Helen Koike <helen.koike@collabora.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Hans Verkuil <hverkuil@xs4all.nl>, kevin.lhopital@hotmail.com
-Subject: Re: [PATCH 11/14] dt-bindings: media: i2c: Add A83T MIPI CSI-2
- bindings documentation
-Message-ID: <20201105084855.GA26150@paasikivi.fi.intel.com>
-References: <20201023174546.504028-1-paul.kocialkowski@bootlin.com>
- <20201023174546.504028-12-paul.kocialkowski@bootlin.com>
+        id S1728272AbgKEIv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 03:51:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48104 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726626AbgKEIv6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 03:51:58 -0500
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7034C0613D3
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 00:51:56 -0800 (PST)
+Received: by mail-pl1-x641.google.com with SMTP id p4so470396plr.1
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 00:51:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=U86zsRZz8d5Flk+rPp0LVqAujZ6VjSA2pha2tzioGvk=;
+        b=rEez1yKcQYQhkZORMRIkrTy3RK+jbRX4lyJHrib74Ug42FO/TezyN5+uoFqBgzHZrn
+         K7NQevHN1tIN6chpeMbT5fEQ42ZbjlxTPpg6CrWmVv7nR93OiXosyZ3y6WdM08aPb97K
+         cBun1cZu2wFKJSnjRYJFNrK0vbPLKuOYyC7T8mEGUlNAQIJR/Pz3YM6Qt9+45Nz0tMzT
+         wRevH1/v2pAnuDg46g0uklXvdKnEXSqiKsGWarD+HGLNXCm7R16IzfmRi+L4S0+791Aq
+         sW2lhZ0sPbjNu+jWTg1U89kFlLtemVHO15wzH77g51Sv/twXMzyfMz2nfsFcGTD73xaY
+         Ko2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=U86zsRZz8d5Flk+rPp0LVqAujZ6VjSA2pha2tzioGvk=;
+        b=CrXa97S1PFxdvvMymGNnI1X3kTMB58+pweSVFLRnY2P2eFxbJY3FNVqNrJIr7zY0bb
+         jgvyTruC1B+UPHU4NzIkBYryf1GWPi5Spvb7Hs9K16tKIviDFahLc3fvn3H7AsCDNMsr
+         Vq+Pa6b/PTHSTjqQjWOtHYqWbAaeV0QGtu2r4olxDO5b1tdYnamQyWx52td9Qz79xFaX
+         Rk1dJIac3tTPwVL78SoPPZRZOwegGyu2upKsggv1drtR1jncvED6lY3qInW/pYmJGxxc
+         ++/m4xHSs4kKGNMFmqETtEkaDGRr+AUoFxG7PvdC5MHGWfCiJm63hv1RC+E8yRtjjyZl
+         Lfrw==
+X-Gm-Message-State: AOAM531ZqFDsu6h/D1Zkx3RUVvIbb/K4bRbV91UggfHTZAdSLoNP3kYU
+        ZyVh+z+OQp+jK1IoTh3pzr8n
+X-Google-Smtp-Source: ABdhPJzCIYYo7BNJGhfadLXCeNuuF+K4SlRBiuje284Tx9XMXq7Un6Yd5U8LCBR/ZwWKbFO1Sbczfw==
+X-Received: by 2002:a17:902:780f:b029:d6:3413:9fe8 with SMTP id p15-20020a170902780fb02900d634139fe8mr1410668pll.46.1604566315717;
+        Thu, 05 Nov 2020 00:51:55 -0800 (PST)
+Received: from work ([103.59.133.81])
+        by smtp.gmail.com with ESMTPSA id d18sm1524148pfo.133.2020.11.05.00.51.51
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 05 Nov 2020 00:51:54 -0800 (PST)
+Date:   Thu, 5 Nov 2020 14:21:48 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     mturquette@baylibre.com, robh+dt@kernel.org,
+        bjorn.andersson@linaro.org, vkoul@kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Naveen Yadav <naveenky@codeaurora.org>
+Subject: Re: [PATCH 2/4] clk: qcom: Add SDX55 GCC support
+Message-ID: <20201105085148.GA7308@work>
+References: <20201028074232.22922-1-manivannan.sadhasivam@linaro.org>
+ <20201028074232.22922-3-manivannan.sadhasivam@linaro.org>
+ <160454301723.3965362.9504622582275389041@swboyd.mtv.corp.google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201023174546.504028-12-paul.kocialkowski@bootlin.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <160454301723.3965362.9504622582275389041@swboyd.mtv.corp.google.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
-
-On Fri, Oct 23, 2020 at 07:45:43PM +0200, Paul Kocialkowski wrote:
-> This introduces YAML bindings documentation for the A83T MIPI CSI-2
-> controller.
+On Wed, Nov 04, 2020 at 06:23:37PM -0800, Stephen Boyd wrote:
+> Quoting Manivannan Sadhasivam (2020-10-28 00:42:30)
+> > From: Naveen Yadav <naveenky@codeaurora.org>
+> > 
+> > Add Global Clock Controller (GCC) support for SDX55 SoCs from Qualcomm.
+> > 
+> > Signed-off-by: Naveen Yadav <naveenky@codeaurora.org>
+> > [mani: converted to parent_data, commented critical clocks, cleanups]
+> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > ---
+> >  drivers/clk/qcom/Kconfig     |    8 +
+> >  drivers/clk/qcom/Makefile    |    1 +
+> >  drivers/clk/qcom/gcc-sdx55.c | 1667 ++++++++++++++++++++++++++++++++++
+> >  3 files changed, 1676 insertions(+)
+> >  create mode 100644 drivers/clk/qcom/gcc-sdx55.c
+> > 
+> > diff --git a/drivers/clk/qcom/Kconfig b/drivers/clk/qcom/Kconfig
+> > index 3a965bd326d5..dbca8debc06f 100644
+> > --- a/drivers/clk/qcom/Kconfig
+> > +++ b/drivers/clk/qcom/Kconfig
+> > @@ -502,4 +502,12 @@ config KRAITCC
+> >           Support for the Krait CPU clocks on Qualcomm devices.
+> >           Say Y if you want to support CPU frequency scaling.
+> >  
+> > +config GCC_SDX55
 > 
-> Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-> ---
->  .../media/allwinner,sun8i-a83t-mipi-csi2.yaml | 158 ++++++++++++++++++
->  1 file changed, 158 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/media/allwinner,sun8i-a83t-mipi-csi2.yaml
+> Please sort instead of add at end.
 > 
-> diff --git a/Documentation/devicetree/bindings/media/allwinner,sun8i-a83t-mipi-csi2.yaml b/Documentation/devicetree/bindings/media/allwinner,sun8i-a83t-mipi-csi2.yaml
-> new file mode 100644
-> index 000000000000..2384ae4e7be0
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/media/allwinner,sun8i-a83t-mipi-csi2.yaml
-> @@ -0,0 +1,158 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/media/allwinner,sun8i-a83t-mipi-csi2.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Allwinner A83T MIPI CSI-2 Device Tree Bindings
-> +
-> +maintainers:
-> +  - Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-> +
-> +properties:
-> +  compatible:
-> +    const: allwinner,sun8i-a83t-mipi-csi2
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    items:
-> +      - description: Bus Clock
-> +      - description: Module Clock
-> +      - description: MIPI-specific Clock
-> +      - description: Misc CSI Clock
-> +
-> +  clock-names:
-> +    items:
-> +      - const: bus
-> +      - const: mod
-> +      - const: mipi
-> +      - const: misc
-> +
-> +  resets:
-> +    maxItems: 1
-> +
-> +  # See ./video-interfaces.txt for details
-> +  ports:
-> +    type: object
-> +
-> +    properties:
-> +      port@0:
-> +        type: object
-> +        description: Input port, connect to a MIPI CSI-2 sensor
-> +
-> +        properties:
-> +          reg:
-> +            const: 0
-> +
-> +          endpoint:
-> +            type: object
-> +
-> +            properties:
-> +              remote-endpoint: true
-> +
-> +              bus-type:
-> +                const: 4
+> > +       tristate "SDX55 Global Clock Controller"
+> > +       depends on ARM
+> 
+> Why?
+> 
 
-Again, if this is D-PHY only, you can remove this.
+Not needed, will remove.
 
-> +
-> +              clock-lanes:
-> +                maxItems: 1
-> +
-> +              data-lanes:
-> +                minItems: 1
-> +                maxItems: 4
+> > +       help
+> > +         Support for the global clock controller on SDX55 devices.
+> > +         Say Y if you want to use peripheral devices such as UART,
+> > +         SPI, I2C, USB, SD/UFS, PCIe etc.
+> > +
+> >  endif
+> > diff --git a/drivers/clk/qcom/Makefile b/drivers/clk/qcom/Makefile
+> > index 11ae86febe87..3e27d67f95aa 100644
+> > --- a/drivers/clk/qcom/Makefile
+> > +++ b/drivers/clk/qcom/Makefile
+> > @@ -75,3 +75,4 @@ obj-$(CONFIG_SPMI_PMIC_CLKDIV) += clk-spmi-pmic-div.o
+> >  obj-$(CONFIG_KPSS_XCC) += kpss-xcc.o
+> >  obj-$(CONFIG_QCOM_HFPLL) += hfpll.o
+> >  obj-$(CONFIG_KRAITCC) += krait-cc.o
+> > +obj-$(CONFIG_GCC_SDX55) += gcc-sdx55.o
+> 
+> Please sort this instead of add at end.
+> 
+> > diff --git a/drivers/clk/qcom/gcc-sdx55.c b/drivers/clk/qcom/gcc-sdx55.c
+> > new file mode 100644
+> > index 000000000000..75831c829202
+> > --- /dev/null
+> > +++ b/drivers/clk/qcom/gcc-sdx55.c
+> > @@ -0,0 +1,1667 @@
+> > +
 
-Does the device support lane reordering? If not, you can remove
-clock-lanes.
+[...]
 
-> +
-> +            required:
-> +              - bus-type
-> +              - data-lanes
-> +              - remote-endpoint
-> +
-> +            additionalProperties: false
-> +
-> +        required:
-> +          - endpoint
-> +
-> +        additionalProperties: false
-> +
-> +      port@1:
-> +        type: object
-> +        description: Output port, connect to a CSI controller
-> +
-> +        properties:
-> +          reg:
-> +            const: 1
-> +
-> +          endpoint:
-> +            type: object
-> +
-> +            properties:
-> +              remote-endpoint: true
-> +
-> +              bus-type:
-> +                const: 4
+> > +static const struct clk_div_table post_div_table_lucid_even[] = {
+> > +       { 0x0, 1 },
+> > +       { 0x1, 2 },
+> > +       { 0x3, 4 },
+> > +       { 0x7, 8 },
+> > +       { }
+> > +};
+> 
+> I think this table is common to all lucid plls? Maybe we can push it
+> into the clk_ops somehow and stop duplicating it here?
+> 
 
-Is it a MIPI CSI-2 D-PHY -> MIPI CSI-2 D-PHY device? I call that "cable".
-:-)
+Are you referring to lucid plls in this driver? Because, this table is
+not common for other SoCs. And I don't think having this way introduces
+any overhead, so I'd prefer keeping it as it is.
 
-> +
-> +            additionalProperties: false
-> +
-> +        required:
-> +          - endpoint
-> +
-> +        additionalProperties: false
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - clocks
-> +  - clock-names
-> +  - resets
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    #include <dt-bindings/clock/sun8i-a83t-ccu.h>
-> +    #include <dt-bindings/reset/sun8i-a83t-ccu.h>
-> +
-> +    mipi_csi2: mipi-csi2@1cb1000 {
-> +        compatible = "allwinner,sun8i-a83t-mipi-csi2";
-> +        reg = <0x01cb1000 0x1000>;
-> +        interrupts = <GIC_SPI 83 IRQ_TYPE_LEVEL_HIGH>;
-> +        clocks = <&ccu CLK_BUS_CSI>,
-> +                 <&ccu CLK_CSI_SCLK>,
-> +                 <&ccu CLK_MIPI_CSI>,
-> +                 <&ccu CLK_CSI_MISC>;
-> +        clock-names = "bus", "mod", "mipi", "misc";
-> +        resets = <&ccu RST_BUS_CSI>;
-> +
-> +        ports {
-> +            #address-cells = <1>;
-> +            #size-cells = <0>;
-> +
-> +            mipi_csi2_in: port@0 {
-> +                reg = <0>;
-> +
-> +                mipi_csi2_in_ov8865: endpoint {
-> +                    bus-type = <4>; /* MIPI CSI-2 D-PHY */
-> +                    clock-lanes = <0>;
-> +                    data-lanes = <1 2 3 4>;
-> +
-> +                    remote-endpoint = <&ov8865_out_mipi_csi2>;
-> +                };
-> +            };
-> +
-> +            mipi_csi2_out: port@1 {
-> +                reg = <1>;
-> +
-> +                mipi_csi2_out_csi: endpoint {
-> +                    bus-type = <4>; /* MIPI CSI-2 D-PHY */
-> +                    remote-endpoint = <&csi_in_mipi_csi2>;
-> +                };
-> +            };
-> +        };
-> +    };
-> +
-> +...
+> > +
+> > +static struct clk_alpha_pll_postdiv gpll0_out_even = {
+> > +       .offset = 0x0,
+> > +       .regs = clk_alpha_pll_regs[CLK_ALPHA_PLL_TYPE_LUCID],
+> > +       .post_div_shift = 8,
+> > +       .post_div_table = post_div_table_lucid_even,
+> > +       .num_post_div = ARRAY_SIZE(post_div_table_lucid_even),
+> > +       .width = 4,
+> > +       .clkr.hw.init = &(struct clk_init_data){
+> > +               .name = "gpll0_out_even",
+> > +               .parent_data = &(const struct clk_parent_data){
+> > +                       .fw_name = "gpll0",
+> > +               },
+> 
+> If this is gpll0 in this file, then this should be a clk_hws pointer
+> instead and directly pointing to the parent.
+> 
 
--- 
-Regards,
+Ack
 
-Sakari Ailus
+> > +               .num_parents = 1,
+> > +               .ops = &clk_alpha_pll_postdiv_lucid_ops,
+> > +       },
+> > +};
+> > +
+> > +static struct clk_alpha_pll gpll4 = {
+> > +       .offset = 0x76000,
+> > +       .regs = clk_alpha_pll_regs[CLK_ALPHA_PLL_TYPE_LUCID],
+> > +       .vco_table = lucid_vco,
+> > +       .num_vco = ARRAY_SIZE(lucid_vco),
+> > +       .clkr = {
+> > +               .enable_reg = 0x6d000,
+> > +               .enable_mask = BIT(4),
+> > +               .hw.init = &(struct clk_init_data){
+> > +                       .name = "gpll4",
+> > +                       .parent_data = &(const struct clk_parent_data){
+> > +                               .fw_name = "bi_tcxo",
+> > +                       },
+> > +                       .num_parents = 1,
+> > +                       .ops = &clk_alpha_pll_fixed_lucid_ops,
+> > +               },
+> > +       },
+> > +};
+> > +
+> > +static struct clk_alpha_pll_postdiv gpll4_out_even = {
+> > +       .offset = 0x76000,
+> > +       .regs = clk_alpha_pll_regs[CLK_ALPHA_PLL_TYPE_LUCID],
+> > +       .post_div_shift = 8,
+> > +       .post_div_table = post_div_table_lucid_even,
+> > +       .num_post_div = ARRAY_SIZE(post_div_table_lucid_even),
+> > +       .width = 4,
+> > +       .clkr.hw.init = &(struct clk_init_data){
+> > +               .name = "gpll4_out_even",
+> > +               .parent_data = &(const struct clk_parent_data){
+> > +                       .fw_name = "gpll4",
+> 
+> If this is gpll4 in this file, then this should be a clk_hws pointer
+> instead and directly pointing to the parent.
+> 
+
+Ack
+
+> > +               },
+> > +               .num_parents = 1,
+> > +               .ops = &clk_alpha_pll_postdiv_lucid_ops,
+> > +       },
+> > +};
+> > +
+
+[...]
+
+> > +/* For CPUSS functionality the SYS NOC clock needs to be left enabled */
+> > +static struct clk_branch gcc_sys_noc_cpuss_ahb_clk = {
+> > +       .halt_reg = 0x4010,
+> > +       .halt_check = BRANCH_HALT_VOTED,
+> > +       .clkr = {
+> > +               .enable_reg = 0x6d008,
+> > +               .enable_mask = BIT(0),
+> > +               .hw.init = &(struct clk_init_data){
+> > +                       .name = "gcc_sys_noc_cpuss_ahb_clk",
+> > +                       .parent_hws = (const struct clk_hw *[]){
+> > +                               &gcc_cpuss_ahb_clk_src.clkr.hw },
+> > +                       .num_parents = 1,
+> > +                       .flags = CLK_IS_CRITICAL | CLK_SET_RATE_PARENT,
+> 
+> These CLK_IS_CRITICAL clks can't be set once at driver probe time and
+> forgotten about? It would be nice to not allocate memory for things that
+> never matter.
+> 
+
+Makes sense! But are we moving into the direction of deprecating the use
+of CLK_IS_CRITICAL?
+
+> > +                       .ops = &clk_branch2_ops,
+> > +               },
+> > +       },
+> > +};
+> > +
+> > +static struct clk_branch gcc_usb30_master_clk = {
+> > +       .halt_reg = 0xb010,
+> > +       .halt_check = BRANCH_HALT,
+> > +       .clkr = {
+> > +               .enable_reg = 0xb010,
+> > +               .enable_mask = BIT(0),
+> > +               .hw.init = &(struct clk_init_data){
+> > +                       .name = "gcc_usb30_master_clk",
+> > +                       .parent_hws = (const struct clk_hw *[]){
+> > +                               &gcc_usb30_master_clk_src.clkr.hw },
+> > +                       .num_parents = 1,
+> > +                       .flags = CLK_SET_RATE_PARENT,
+> > +                       .ops = &clk_branch2_ops,
+> [...]
+> > +
+> > +static const struct qcom_cc_desc gcc_sdx55_desc = {
+> > +       .config = &gcc_sdx55_regmap_config,
+> > +       .clks = gcc_sdx55_clocks,
+> > +       .num_clks = ARRAY_SIZE(gcc_sdx55_clocks),
+> > +       .resets = gcc_sdx55_resets,
+> > +       .num_resets = ARRAY_SIZE(gcc_sdx55_resets),
+> 
+> No gdscs?
+> 
+
+This will come at later point.
+
+> > +};
+> > +
+> > +static const struct of_device_id gcc_sdx55_match_table[] = {
+> > +       { .compatible = "qcom,gcc-sdx55" },
+> > +       { }
+> > +};
+> > +MODULE_DEVICE_TABLE(of, gcc_sdx55_match_table);
+> > +
+> > +static int gcc_sdx55_probe(struct platform_device *pdev)
+> > +{
+> > +       return qcom_cc_probe(pdev, &gcc_sdx55_desc);
+> 
+> Wow haven't seen this in some time. There isn't some sort of PLL that
+> needs configuring or some clks that need to be slammed on with a couple
+> register writes?
+> 
+
+Nothing as per the downstream driver. Actually the downstream just sets
+the rate of few clocks but I don't find them useful at the moment. So,
+dropped the change.
+
+Thanks,
+Mani
+
+> > +}
+> > +
