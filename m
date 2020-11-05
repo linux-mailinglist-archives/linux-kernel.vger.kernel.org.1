@@ -2,79 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B1732A7521
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 02:57:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3250E2A7529
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 03:01:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730615AbgKEB5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 20:57:23 -0500
-Received: from rere.qmqm.pl ([91.227.64.183]:4562 "EHLO rere.qmqm.pl"
+        id S1730877AbgKECBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 21:01:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35086 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726152AbgKEB5W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 20:57:22 -0500
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4CRRV8213Lz8p;
-        Thu,  5 Nov 2020 02:57:20 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1604541440; bh=CIbyBdFXt/DKXUA6SLcaasMvhtGE3yBPilLsx9MiQ1Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Qwir9+Iq8HbmvrLtEFkh+jxiHn/y4cilBbn8s5lFDrKRLHVv0acz4r1haQVSZm2Ip
-         xW6suH2sx0sXOoukr8ZLKuw9VE9aIMGPSapwjRU22uUZ+hKaafP14gGhj5UgbuOwLQ
-         br4s1QDm/Z9eS3N+2vcG4T1T/K7HXStlK/fH+lD5/GQ+r0CDC/YNvG9B8uSAnnF0GV
-         XPEwapw2xXd6QEk7hQo5l+rKr8iwAULhMmyIa4CcyLkDeMHS5VfnYzOj0OndUnZPpN
-         k5UIWpoesV6jHT36EnMdVzT+RWSd0GjTbPIxr/sfb+J67gOMWDDy5+PCFsSQyWRN8N
-         fnuxSwRsl9oHw==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.102.4 at mail
-Date:   Thu, 5 Nov 2020 02:57:19 +0100
-From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the mfd tree
-Message-ID: <20201105015718.GD17266@qmqm.qmqm.pl>
-References: <20201105014728.GC17266@qmqm.qmqm.pl>
- <20201105125027.1f4b6886@canb.auug.org.au>
+        id S1726152AbgKECBQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 21:01:16 -0500
+Received: from kernel.org (unknown [104.132.1.79])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E7EDD20719;
+        Thu,  5 Nov 2020 02:01:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604541676;
+        bh=RFc8d0y83E3PgGn9wJI96kwAEwvdlKbg2Wq2RgVOFoM=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=MBDmYvNljcbupjMZatW7V6L3jaFdSM0Q72QaGGvAWGQYIkErP3tvcpPd5ANsOpoVy
+         oy9AcWJUcBqIK0MG2nxyepckjlDF2r9MbIOVgADXZSkiXf0jt4nV9AFhKDje9hbvLr
+         tT66qE2f+WjVf/cbxvkfiQW/XtdyUpLk8qOh4bQw=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201105125027.1f4b6886@canb.auug.org.au>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <b2336f3f3cdfe6e1a2d3a7a056ab7ccc7a81b945.1603469755.git.mchehab+huawei@kernel.org>
+References: <cover.1603469755.git.mchehab+huawei@kernel.org> <b2336f3f3cdfe6e1a2d3a7a056ab7ccc7a81b945.1603469755.git.mchehab+huawei@kernel.org>
+Subject: Re: [PATCH v3 38/56] clk: fix a kernel-doc markup
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Date:   Wed, 04 Nov 2020 18:01:14 -0800
+Message-ID: <160454167435.3965362.9994740112660959961@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 12:50:27PM +1100, Stephen Rothwell wrote:
-> Hi all,
-> 
-> After merging the mfd tree, today's linux-next build (arm
-> multi_v7_defconfig) failed like this:
-> 
-> drivers/gpio/gpio-tps65910.c: In function 'tps65910_gpio_get':
-> drivers/gpio/gpio-tps65910.c:31:2: error: implicit declaration of function 'tps65910_reg_read' [-Werror=implicit-function-declaration]
->    31 |  tps65910_reg_read(tps65910, TPS65910_GPIO0 + offset, &val);
->       |  ^~~~~~~~~~~~~~~~~
-> drivers/gpio/gpio-tps65910.c: In function 'tps65910_gpio_set':
-> drivers/gpio/gpio-tps65910.c:46:3: error: implicit declaration of function 'tps65910_reg_set_bits' [-Werror=implicit-function-declaration]
->    46 |   tps65910_reg_set_bits(tps65910, TPS65910_GPIO0 + offset,
->       |   ^~~~~~~~~~~~~~~~~~~~~
-> drivers/gpio/gpio-tps65910.c:49:3: error: implicit declaration of function 'tps65910_reg_clear_bits' [-Werror=implicit-function-declaration]
->    49 |   tps65910_reg_clear_bits(tps65910, TPS65910_GPIO0 + offset,
->       |   ^~~~~~~~~~~~~~~~~~~~~~~
-> 
-> Caused by commit
-> 
->   23feb2c3367c ("mfd: tps65910: Clean up after switching to regmap")
-> 
-> I have used the version of the mfd tree from next-20201104 for today.
+Quoting Mauro Carvalho Chehab (2020-10-23 09:33:25)
+> clk_get_duty_cycle -> clk_get_scaled_duty_cycle
+>=20
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
 
-Hi,
-
-It's missing a patch for gpio part [1].
-
-[1] https://lkml.org/lkml/2020/9/26/398
-
-Best Regards
-Micha³ Miros³aw
+Applied to clk-next
