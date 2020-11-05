@@ -2,153 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22AD62A7F70
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 14:07:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DA582A7F73
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 14:07:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730484AbgKENHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 08:07:15 -0500
-Received: from mga17.intel.com ([192.55.52.151]:7969 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730139AbgKENHO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 08:07:14 -0500
-IronPort-SDR: Mio96fnY8mgfNNp5XBcns1ZXT1aOWhvSYYyJv4o6OtFT2SaW+f9PInyYkOb8QgaF6o2tjigNn0
- kjS3wIZgxzLg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9795"; a="149230052"
-X-IronPort-AV: E=Sophos;i="5.77,453,1596524400"; 
-   d="scan'208";a="149230052"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2020 05:07:13 -0800
-IronPort-SDR: ShdF1OgXEREqx66zZaS07mMXU8iQcI0SQwiBrs0lJfjumEk/P3vjVwvjuXPQCvsMn8lWcNYwuV
- wbZUglh3/9LQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,453,1596524400"; 
-   d="scan'208";a="354276130"
-Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.98])
-  by fmsmga004.fm.intel.com with ESMTP; 05 Nov 2020 05:07:10 -0800
-Date:   Thu, 5 Nov 2020 21:07:10 +0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mel Gorman <mgorman@suse.de>, dave.hansen@intel.com,
-        ying.huang@intel.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 0/2] mm: fix OOMs for binding workloads to movable
- zone only node
-Message-ID: <20201105130710.GB16525@shbuild999.sh.intel.com>
-References: <1604470210-124827-1-git-send-email-feng.tang@intel.com>
- <20201104071308.GN21990@dhcp22.suse.cz>
- <20201104073826.GA15700@shbuild999.sh.intel.com>
- <20201104075819.GA10052@dhcp22.suse.cz>
- <20201104084021.GB15700@shbuild999.sh.intel.com>
- <20201104085343.GA18718@dhcp22.suse.cz>
- <20201105014028.GA86777@shbuild999.sh.intel.com>
- <20201105120818.GC21348@dhcp22.suse.cz>
- <4029c079-b1f3-f290-26b6-a819c52f5200@suse.cz>
- <20201105125828.GG21348@dhcp22.suse.cz>
+        id S1730668AbgKENHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 08:07:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59882 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726874AbgKENHp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 08:07:45 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EDD4C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 05:07:45 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1kaezI-0006cV-1X; Thu, 05 Nov 2020 14:07:36 +0100
+Received: from [IPv6:2a03:f580:87bc:d400:74d6:79:dc8d:9bc9] (unknown [IPv6:2a03:f580:87bc:d400:74d6:79:dc8d:9bc9])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
+         client-signature RSA-PSS (4096 bits))
+        (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
+        (Authenticated sender: mkl@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 36A8058B5AE;
+        Thu,  5 Nov 2020 13:07:31 +0000 (UTC)
+Subject: Re: [PATCH][next] can: usb: fix potential integer overflow on shift
+ of a int
+To:     Colin King <colin.king@canonical.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stephane Grosjean <s.grosjean@peak-system.com>,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201105112427.40688-1-colin.king@canonical.com>
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <8d13950d-bd89-7184-7ec7-d1b308a51069@pengutronix.de>
+Date:   Thu, 5 Nov 2020 14:07:26 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201105125828.GG21348@dhcp22.suse.cz>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20201105112427.40688-1-colin.king@canonical.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="fKFLKQqxjuHZ7Rc0ZeeosIM82x3wmgzvW"
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 01:58:28PM +0100, Michal Hocko wrote:
-> On Thu 05-11-20 13:53:24, Vlastimil Babka wrote:
-> > On 11/5/20 1:08 PM, Michal Hocko wrote:
-> > > On Thu 05-11-20 09:40:28, Feng Tang wrote:
-> > > > > > Could you be more specific? This sounds like a bug. Allocations
-> > > > > shouldn't spill over to a node which is not in the cpuset. There are few
-> > > > > exceptions like IRQ context but that shouldn't happen regurarly.
-> > > > 
-> > > > I mean when the docker starts, it will spawn many processes which obey
-> > > > the mem binding set, and they have some kernel page requests, which got
-> > > > successfully allocated, like the following callstack:
-> > > > 
-> > > > 	[  567.044953] CPU: 1 PID: 2021 Comm: runc:[1:CHILD] Tainted: G        W I       5.9.0-rc8+ #6
-> > > > 	[  567.044956] Hardware name:  /NUC6i5SYB, BIOS SYSKLi35.86A.0051.2016.0804.1114 08/04/2016
-> > > > 	[  567.044958] Call Trace:
-> > > > 	[  567.044972]  dump_stack+0x74/0x9a
-> > > > 	[  567.044978]  __alloc_pages_nodemask.cold+0x22/0xe5
-> > > > 	[  567.044986]  alloc_pages_current+0x87/0xe0
-> > > > 	[  567.044991]  allocate_slab+0x2e5/0x4f0
-> > > > 	[  567.044996]  ___slab_alloc+0x380/0x5d0
-> > > > 	[  567.045021]  __slab_alloc+0x20/0x40
-> > > > 	[  567.045025]  kmem_cache_alloc+0x2a0/0x2e0
-> > > > 	[  567.045033]  mqueue_alloc_inode+0x1a/0x30
-> > > > 	[  567.045041]  alloc_inode+0x22/0xa0
-> > > > 	[  567.045045]  new_inode_pseudo+0x12/0x60
-> > > > 	[  567.045049]  new_inode+0x17/0x30
-> > > > 	[  567.045052]  mqueue_get_inode+0x45/0x3b0
-> > > > 	[  567.045060]  mqueue_fill_super+0x41/0x70
-> > > > 	[  567.045067]  vfs_get_super+0x7f/0x100
-> > > > 	[  567.045074]  get_tree_keyed+0x1d/0x20
-> > > > 	[  567.045080]  mqueue_get_tree+0x1c/0x20
-> > > > 	[  567.045086]  vfs_get_tree+0x2a/0xc0
-> > > > 	[  567.045092]  fc_mount+0x13/0x50
-> > > > 	[  567.045099]  mq_create_mount+0x92/0xe0
-> > > > 	[  567.045102]  mq_init_ns+0x3b/0x50
-> > > > 	[  567.045106]  copy_ipcs+0x10a/0x1b0
-> > > > 	[  567.045113]  create_new_namespaces+0xa6/0x2b0
-> > > > 	[  567.045118]  unshare_nsproxy_namespaces+0x5a/0xb0
-> > > > 	[  567.045124]  ksys_unshare+0x19f/0x360
-> > > > 	[  567.045129]  __x64_sys_unshare+0x12/0x20
-> > > > 	[  567.045135]  do_syscall_64+0x38/0x90
-> > > > 	[  567.045143]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> > > > 
-> > > > For it, the __alloc_pages_nodemask() will first try process's targed
-> > > > nodemask(unmovable node here), and there is no availabe zone, so it
-> > > > goes with the NULL nodemask, and get a page in the slowpath.
-> > > 
-> > > OK, I see your point now. I was not aware of the slab allocator not
-> > > following cpusets. Sounds like a bug to me.
-> > 
-> > SLAB and SLUB seem to not care about cpusets in the fast path.
-> 
-> Is a fallback to a different node which is outside of the cpuset
-> possible?
- 
-My debug traces shows it is, and its gfp_mask is 'GFP_KERNEL'
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--fKFLKQqxjuHZ7Rc0ZeeosIM82x3wmgzvW
+Content-Type: multipart/mixed; boundary="UzuUnkocISsTmrvIHSR6pwGpUAdKvcZOK";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Colin King <colin.king@canonical.com>,
+ Wolfgang Grandegger <wg@grandegger.com>,
+ "David S . Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+ Stephane Grosjean <s.grosjean@peak-system.com>, linux-can@vger.kernel.org,
+ netdev@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-ID: <8d13950d-bd89-7184-7ec7-d1b308a51069@pengutronix.de>
+Subject: Re: [PATCH][next] can: usb: fix potential integer overflow on shift
+ of a int
+References: <20201105112427.40688-1-colin.king@canonical.com>
+In-Reply-To: <20201105112427.40688-1-colin.king@canonical.com>
 
-And actually in this usage, I seen other types of kernel allocation
-request got fallback to the normal node which is not in cpuset mem
-nodemasks, like
+--UzuUnkocISsTmrvIHSR6pwGpUAdKvcZOK
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
 
-	[  567.510901] CPU: 3 PID: 2022 Comm: runc:[2:INIT] Tainted: G        W I       5.9.0-rc8+ #6
-	[  567.510902] Hardware name:  /NUC6i5SYB, BIOS SYSKLi35.86A.0051.2016.0804.1114 08/04/2016
-	[  567.510903] Call Trace:
-	[  567.510909]  dump_stack+0x74/0x9a
-	[  567.510910]  __alloc_pages_nodemask.cold+0x22/0xe5
-	[  567.510913]  alloc_pages_current+0x87/0xe0
-	[  567.510914]  __vmalloc_node_range+0x14c/0x240
-	[  567.510918]  module_alloc+0x82/0xe0
-	[  567.510921]  bpf_jit_alloc_exec+0xe/0x10
-	[  567.510922]  bpf_jit_binary_alloc+0x7a/0x120
-	[  567.510925]  bpf_int_jit_compile+0x145/0x424
-	[  567.510926]  bpf_prog_select_runtime+0xac/0x130
-	[  567.510928]  bpf_prepare_filter+0x44c/0x4b0
-	[  567.510932]  bpf_prog_create_from_user+0xc7/0x120
-	[  567.510934]  do_seccomp+0x118/0x990
-	[  567.510937]  __x64_sys_seccomp+0x1a/0x20
-	[  567.510939]  do_syscall_64+0x38/0x90
+On 11/5/20 12:24 PM, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+>=20
+> The left shift of int 32 bit integer constant 1 is evaluated using
+> 32 bit arithmetic and then assigned to a signed 64 bit variable. In
+> the case where time_ref->adapter->ts_used_bits is 32 or more this
+> can lead to an oveflow. Avoid this by shifting using the BIT_ULL macro
+> instead.
+>=20
+> Addresses-Coverity: ("Unintentional integer overflow")
+> Fixes: bb4785551f64 ("can: usb: PEAK-System Technik USB adapters driver=
+ core")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-And its gfp_mask is (GFP_KERNEL|__GFP_HIGHMEM|__GFP_NOWARN)
+Applied to linux-can/testing (not to next).
 
 Thanks,
-Feng
+Marc
 
-> > But this
-> > stack shows that it went all the way to the page allocator, so the cpusets
-> > should have been obeyed there at least.
-> 
-> Looking closer what is this dump_stack saying actually?
-> 
-> -- 
-> Michal Hocko
-> SUSE Labs
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+
+--UzuUnkocISsTmrvIHSR6pwGpUAdKvcZOK--
+
+--fKFLKQqxjuHZ7Rc0ZeeosIM82x3wmgzvW
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl+j+Q4ACgkQqclaivrt
+76lDAAgAmVS/8BHbRxhbJFsf90ZpCLXW2O8xQzYxVfGCDekpKN7zmOJbbUI10JP4
+uDteyJfwK6v7VoxdXuS5l4txDmUZJKcrp3GBrU+UBwD0f4zI6DMrX+F1rXLkoMUM
+KI1pGjZQmf8QueXO8fsP1MIPh2shRHTbbOb1OL1bQK5/lpjiclnJj8F9Z1mdE1ll
+wVSnye1cXHE8r+ojIZYZN59Arw4bjA4t9zeMVry44j1VP4XjwNxvgDrjAsp2dAyf
+wqT7lSerPFKEEf2UaTj1EHuUk8SD+VX25FxJrb/BB7LO4DgNoaI1JS7D280IO1lO
+yVDmJCfaOR7jN1C2DDyL23EtOKOWYw==
+=oerU
+-----END PGP SIGNATURE-----
+
+--fKFLKQqxjuHZ7Rc0ZeeosIM82x3wmgzvW--
