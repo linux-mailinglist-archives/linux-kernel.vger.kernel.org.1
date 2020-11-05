@@ -2,85 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92F942A8A25
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 23:51:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DDD42A8A2E
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 23:54:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731954AbgKEWvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 17:51:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38498 "EHLO
+        id S1732264AbgKEWyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 17:54:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732584AbgKEWvA (ORCPT
+        with ESMTP id S1732035AbgKEWyZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 17:51:00 -0500
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01269C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 14:50:59 -0800 (PST)
-Received: by mail-pl1-x642.google.com with SMTP id b12so1503663plr.4
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 14:50:58 -0800 (PST)
+        Thu, 5 Nov 2020 17:54:25 -0500
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F36EEC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 14:54:24 -0800 (PST)
+Received: by mail-lj1-x233.google.com with SMTP id v19so3317502lji.5
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 14:54:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=NzA0a885DJ4XJc9zARU6pOWYzV9t77/ibehK8SPM9oQ=;
-        b=La52Ivl6ubmEHVSnYNiFwsdizLW825HKvQkMsjzLTt1SQigWUqAOd3r9JOSdOIcXzo
-         tyo2EVcRJuNRD3JFf9ZeLXVx4ozsKDaPm49dsRJ1t+X8eFf1PexeXX7MTbcuXQytLvF1
-         AntPbKiQW8Y07FZTOd838uFP/MirLhUZmQBUk=
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vZcLJAUQ94UoO1154NHEjNS5p409tRzMt1dLh1JV8X0=;
+        b=g5aQsBMYMupRE3CUnCwnVcNQ6fopoEZDKGl2fL4RZHPQ0NiTDmLcz224jWhnD4PnLz
+         9LdopQdSYOZJ8wG9IcOlNwySbEHbVjsPLC/lqoQF5hCaJe1TCyhnmSTCPEnwsbZc9QdU
+         fSo9cNln3rr7DdycgxPDA3OcYzUKUaZ5fb9XU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=NzA0a885DJ4XJc9zARU6pOWYzV9t77/ibehK8SPM9oQ=;
-        b=RMU3JSZp6pHLQjQV0rFiZtwrM4/GLt534Eg90T7o3bI/6+M6JKz6bRvFy4f+xN0wT6
-         xeIeHeZWgWqdBXqChdT3Lc5NsIAlpalD0VzCdZpaEgDFN5oTdppny0PlFdhvHXyybmAe
-         KhheE8tQ9KhR1kKIM4/VBC5ekgDOCFtqYYAsm+8kifB4wBnbJ4uhfNmasU1ZojzT+Fp4
-         M1JMEQ85P5wRdH4nlHhDAuYIBKRCSU9Aohts2rM28euwGX7TL6ZjpKeJR40Kl0i6cKIG
-         s7Ii9irh1ltfSJbD24s21qcjlSYFnwvNa/NDwcMJnziqf1DGtZv6SC3hptTMCTMhyp3l
-         FjLg==
-X-Gm-Message-State: AOAM531oLTGU5gtg+3Z9U8pw19Rr5Lq7kTVme9cMtX5+74ngZVrY3kmt
-        qRo4lLnnSMPzTXM9uGW/tZOmMg==
-X-Google-Smtp-Source: ABdhPJxTyfO3NLtXjhQrIzyMZiY8zwVE1mc0yQBahQO5ZY1R9bcXnV5XTMxaWNbY/+eg/MbszYlhag==
-X-Received: by 2002:a17:902:bc47:b029:d6:d98a:1a68 with SMTP id t7-20020a170902bc47b02900d6d98a1a68mr4049384plz.63.1604616658533;
-        Thu, 05 Nov 2020 14:50:58 -0800 (PST)
-Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id k25sm3742425pfi.42.2020.11.05.14.50.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 14:50:57 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vZcLJAUQ94UoO1154NHEjNS5p409tRzMt1dLh1JV8X0=;
+        b=ns5LJRydZEiweGtK05cgcNDsGxLRnnXPJAaBJWMgO09fdJ2sqdvhRcUjp4JyIOzczW
+         FEP6GsxS8mf3bMBueE+0GUdxSkfAx3F5g2XF9zBNQy/x78EJiVmM1NAzin4hqwDs7EYP
+         PX1n5k0cMumT8BnZkLksZXQ23h26yOupTJ2hVzBd/Mw9mKTPeWTS0OqZg5RWr09nCUmI
+         ac0Bcfh6l73qloZSHvCOkkqlq+9F2IyY+h4qDb24AEE7YP7k+MmU/UxksLDzp6FhhtGk
+         CZ1a+4VgSLf9enSg7mJGAtOZLUAVh2pxtZ31SoX/zRB7/c5OdshQIsCJmXkUIoFmLPiz
+         mQiw==
+X-Gm-Message-State: AOAM530dv3Ej36ahoO+Z00ZqrD2GkrLdkplyWyils+ifXMEn7iWYtgnB
+        EQGuBmREea1mBvs7rENcW7EB1VDD182iyA==
+X-Google-Smtp-Source: ABdhPJxWw4JISoN0raI+gaAP851VdSmmqbUeXqojxRngLaRcW+C9FaIEqlKnjovcBOGBPZO8anLLkg==
+X-Received: by 2002:a2e:a41a:: with SMTP id p26mr1623988ljn.126.1604616863153;
+        Thu, 05 Nov 2020 14:54:23 -0800 (PST)
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com. [209.85.208.180])
+        by smtp.gmail.com with ESMTPSA id h5sm316345lfc.106.2020.11.05.14.54.21
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Nov 2020 14:54:22 -0800 (PST)
+Received: by mail-lj1-f180.google.com with SMTP id t13so3299176ljk.12
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 14:54:21 -0800 (PST)
+X-Received: by 2002:a2e:87d2:: with SMTP id v18mr1598737ljj.371.1604616861466;
+ Thu, 05 Nov 2020 14:54:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200220052701.7754-1-leo.yan@linaro.org>
-References: <20200220052701.7754-1-leo.yan@linaro.org>
-Subject: Re: [PATCH v5 0/9] perf cs-etm: Support thread stack and callchain
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     Leo Yan <leo.yan@linaro.org>
-To:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Coresight ML <coresight@lists.linaro.org>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Robert Walker <robert.walker@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Date:   Thu, 05 Nov 2020 14:50:56 -0800
-Message-ID: <160461665604.60232.10802283348863949674@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+References: <6b9e77b0-7272-221e-d475-41b266b22496@linuxfoundation.org>
+ <CAHk-=wiscEwD+a4M2mns1kf2S+yE6gcPp0sn4znVt0ZUxaP3Wg@mail.gmail.com>
+ <CAHk-=whPe8hpnMw9UpXyL2s+tyWX3VaG1yL57_zzwFLjP5pw5A@mail.gmail.com> <a0d87f58-7ef2-1854-ea70-5d355b20ed28@linuxfoundation.org>
+In-Reply-To: <a0d87f58-7ef2-1854-ea70-5d355b20ed28@linuxfoundation.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 5 Nov 2020 14:54:05 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wjd-jLMYaQoSz5+US0fEYCu2rLh4vn8X_WJu807k++DAA@mail.gmail.com>
+Message-ID: <CAHk-=wjd-jLMYaQoSz5+US0fEYCu2rLh4vn8X_WJu807k++DAA@mail.gmail.com>
+Subject: Re: Kunit fixes update for Linux 5.10-rc3
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Leo Yan (2020-02-19 21:26:52)
-> This patch series adds support for thread stack and callchain; this patch
-> set depends on the instruction sample fix patch set [1].
->=20
-> This patch set get more complex, so before divide into small groups, I'd
-> like to use this patch set version to include all relevant patches, hope
-> this can give whole context for related code change.
+On Thu, Nov 5, 2020 at 2:01 PM Shuah Khan <skhan@linuxfoundation.org> wrote:
+>
+> Oops. I don't usually miss adding [GIT PULL] - will pay more attention.
 
-Was this split up into small groups and sent again? I didn't see
-anything when searching lkml.
+No problem. As mentioned, my own workflow doesn't actually care as
+long as the body of the mail has that "please pull" and "git"
+mentioned.
+
+And I wouldn't have noticed the pr-tracker-bot reply missing either,
+if it wasn't for the fact that I replied to the pull request for other
+reasons..
+
+So no worries, just a note on how that "[GIT PULL]" marker might be
+helpful for _you_ to see "oh, Linus pulled it, I can forget about it".
+
+            Linus
