@@ -2,119 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E0CB2A826F
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 16:43:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D22A2A8273
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 16:44:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731204AbgKEPng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 10:43:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34194 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730660AbgKEPnf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 10:43:35 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E25A8206FA;
-        Thu,  5 Nov 2020 15:43:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604591015;
-        bh=O3AhsxtY8sUUmWn1Tx+mj7l7kuAvEn+JmbDXMOa/Low=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=dDiNEL9mysTp69jFVW6Bu/aoH8wXuz7T8H+cs/AHpFmLs5+2xBFmFumlo/wxvpj0V
-         4SkmeL/sVRV9xWdrR1S1QZXqYYxkTNfy87F3jd2DDClC8Edk/GNt01bb7ZmbzU45o2
-         JBRky2AchLfI+sT4HZbfKGn979X50dqKIAofnM1Y=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kahQC-007sGn-ND; Thu, 05 Nov 2020 15:43:32 +0000
+        id S1731248AbgKEPoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 10:44:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56222 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730660AbgKEPoV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 10:44:21 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79FCDC0613CF;
+        Thu,  5 Nov 2020 07:44:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Ak6ESadBcps7kJu00eYxbLPP9OazYAE8zIQ9Ca8IMrU=; b=oUe9xJv58WdNmKxA4k7ReOGJzG
+        wNDtZuuG3dlslzXqPfSb5s5TqkLIPrMV9w0DfCQivxQTt7o8dane0CtTTK2oEtGUiSa/p5RIDDPt3
+        BMQUONTXOZtSt6N/jl45jAUnJtLCOGJwtI2FHGHimgx1Gb/+gn1vy9+naRt7EQna2f6w3JYQsOxhN
+        LGfE+lIdjhnAW9EyHRCnv33KdxFrqD7ZMeP2sBzj/W2PlXOE2O23dXqxwE2s0sYellkWMqnx4vdY8
+        7if7PzFgSqNMpqKHbm0pFd5Zegwku1Zy1hgTC3KLrdpy4ss4jbgY7jgtAmYNMyN6KNqRE9/8lySUU
+        IlRCVxdw==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kahQX-0001mX-Rl; Thu, 05 Nov 2020 15:43:53 +0000
+Date:   Thu, 5 Nov 2020 15:43:53 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Alex Shi <alex.shi@linux.alibaba.com>, akpm@linux-foundation.org,
+        mgorman@techsingularity.net, tj@kernel.org, hughd@google.com,
+        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
+        lkp@intel.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, shakeelb@google.com,
+        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
+        kirill@shutemov.name, alexander.duyck@gmail.com,
+        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
+        shy828301@gmail.com, Vlastimil Babka <vbabka@suse.cz>,
+        Minchan Kim <minchan@kernel.org>
+Subject: Re: [PATCH v20 08/20] mm: page_idle_get_page() does not need lru_lock
+Message-ID: <20201105154353.GN17076@casper.infradead.org>
+References: <1603968305-8026-9-git-send-email-alex.shi@linux.alibaba.com>
+ <20201102144110.GB724984@cmpxchg.org>
+ <20201102144927.GN27442@casper.infradead.org>
+ <20201102202003.GA740958@cmpxchg.org>
+ <b4038b87-cf5a-fcb7-06f4-b98874029615@linux.alibaba.com>
+ <20201104174603.GB744831@cmpxchg.org>
+ <6eea82d8-e406-06ee-2333-eb6e2f1944e5@linux.alibaba.com>
+ <20201105045702.GI17076@casper.infradead.org>
+ <1e8f0162-cf2e-03eb-e7e0-ccc9f6a3eaf2@linux.alibaba.com>
+ <20201105153649.GC744831@cmpxchg.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 05 Nov 2020 15:43:32 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Daniel Palmer <daniel@0x0f.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, linux-arm-kernel@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 3/5] gpio: msc313: MStar MSC313 GPIO driver
-In-Reply-To: <CAFr9PX=vxCCQgCWe9FPb6Z=0=a48HwGOfM_uOG3SqGN9VSYQUA@mail.gmail.com>
-References: <20201019141008.871177-1-daniel@0x0f.com>
- <20201019141008.871177-4-daniel@0x0f.com>
- <CACRpkdZNr6sDqJhg3KcX0bCbcd8fh2gXFYbS1r2H2Sq+vGqjUw@mail.gmail.com>
- <3fd04aeb5047d8059ddecc1eda19c2e4@kernel.org>
- <CAFr9PX=vxCCQgCWe9FPb6Z=0=a48HwGOfM_uOG3SqGN9VSYQUA@mail.gmail.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <71f3632bee262a18e1b7edb74980ae9a@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: daniel@0x0f.com, linus.walleij@linaro.org, linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201105153649.GC744831@cmpxchg.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-05 15:23, Daniel Palmer wrote:
-> Hi Marc,
+On Thu, Nov 05, 2020 at 10:36:49AM -0500, Johannes Weiner wrote:
+> But the code is highly specific - synchronizing one struct page member
+> for one particular use case. Let's keep at least a reference to what
+> we are synchronizing against. There is a non-zero chance that if the
+> comment goes out of date, so does the code. How about this?
 > 
-> On Thu, 5 Nov 2020 at 21:08, Marc Zyngier <maz@kernel.org> wrote:
->> 
->> On 2020-11-05 09:40, Linus Walleij wrote:
->> > On Mon, Oct 19, 2020 at 4:10 PM Daniel Palmer <daniel@0x0f.com> wrote:
->> 
->> [...]
->> 
->> >> +/* The parent interrupt controller needs the GIC interrupt type set
->> >> to GIC_SPI
->> >> + * so we need to provide the fwspec. Essentially
->> >> gpiochip_populate_parent_fwspec_twocell
->> >> + * that puts GIC_SPI into the first cell.
->> >> + */
->> 
->> nit: comment style.
-> 
-> I've fixed these and some other bits for the v3.
-> I've held off on pushing that until the rest of it seemed right.
-> 
->> >> +static void *msc313_gpio_populate_parent_fwspec(struct gpio_chip *gc,
->> >> +                                            unsigned int
->> >> parent_hwirq,
->> >> +                                            unsigned int parent_type)
->> >> +{
->> >> +       struct irq_fwspec *fwspec;
->> >> +
->> >> +       fwspec = kmalloc(sizeof(*fwspec), GFP_KERNEL);
->> >> +       if (!fwspec)
->> >> +               return NULL;
->> >> +
->> >> +       fwspec->fwnode = gc->irq.parent_domain->fwnode;
->> >> +       fwspec->param_count = 3;
->> >> +       fwspec->param[0] = GIC_SPI;
->> >> +       fwspec->param[1] = parent_hwirq;
->> >> +       fwspec->param[2] = parent_type;
->> >> +
->> >> +       return fwspec;
->> >> +}
->> >
->> > Clever. Looping in Marc Z so he can say if this looks allright to him.
->> 
->> Yup, this looks correct. However, looking at the bit of the patch that
->> isn't quoted here, I see that msc313_gpio_irqchip doesn't have a
->> .irq_set_affinity callback. Is this system UP only?
-> 
-> What is in mainline right now is UP only but there are chips with a
-> second cortex A7 that I have working in my tree.
-> So I will add that in for v3 if I can work out what I should actually
-> do there. :)
+> 	/*
+> 	 * page_idle does a lockless/optimistic rmap scan on page->mapping.
+> 	 * Make sure the compiler doesn't split the stores of anon_vma and
+> 	 * the PAGE_MAPPING_ANON type identifier, otherwise the rmap code
+> 	 * could mistake the mapping for a struct address_space and crash.
+> 	 */
 
-Probably nothing more than setting the callback to 
-irq_chip_set_affinity_parent,
-I'd expect.
-
-         M.
--- 
-Jazz is not dead. It just smells funny...
+Fine by me!  There may be other cases where seeing a split store would
+be bad, so I didn't want to call out page_idle explicitly.  But if you
+want to, I'm happy with this comment.
