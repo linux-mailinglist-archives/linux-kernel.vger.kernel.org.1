@@ -2,144 +2,326 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD56D2A8636
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 19:40:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FA7E2A8639
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 19:41:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731453AbgKESkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 13:40:40 -0500
-Received: from mail-ot1-f45.google.com ([209.85.210.45]:35305 "EHLO
-        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726801AbgKESkj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 13:40:39 -0500
-Received: by mail-ot1-f45.google.com with SMTP id n11so2381258ota.2;
-        Thu, 05 Nov 2020 10:40:38 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ROW7gLPvsixXdOUBku/rceehiE2QxPW3Gr2HLN1Tahs=;
-        b=mSt/L5p0O8x1DGOmS5hS78Sl6QNnnDB0f2bUIrwhjbDvO3TV6i6spCSDainhHUBdwA
-         1WUj4fVYQ9B2Vu9hi5QsWM/Wynxofzw0m7J24I+IOoZ2tKD9HjbtMCER3nbCsjD/VhMe
-         drhiZJzQDBu9fGD4qa6+UaERCp52JEx5BJD0xYRn00ozxTO8PtV90emKXcl29CNVuiEc
-         g3Rf6rhR/nZ0MwfqghelqnT3NBCasj74k8mIvYguazqu4/u+7TlVQ4il6u1TCZ/al1Qt
-         h5/pEHYqa1+JYf6CAbE/oeMVxrOdcmYKgttr3uor438kSvwnQh6v2ussxmVPyyYE7kjk
-         8QhQ==
-X-Gm-Message-State: AOAM530jLUKLJNYVMdoX5EFUtwNwUDax2+Yd3Mgm1RpK4GT53dZUEFQS
-        +ndUtytzfGGUjnhKl4nPXO4M6gJEZsBA
-X-Google-Smtp-Source: ABdhPJwG1vUWe+mtCQWNMutnJxx2eoLNJArHfDOqxJL78DdzeDgv3gng8hQNHFIW5vfeIqU7slQlcQ==
-X-Received: by 2002:a9d:7d87:: with SMTP id j7mr2645271otn.356.1604601638458;
-        Thu, 05 Nov 2020 10:40:38 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id s26sm530580ood.38.2020.11.05.10.40.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 10:40:37 -0800 (PST)
-Received: (nullmailer pid 1609469 invoked by uid 1000);
-        Thu, 05 Nov 2020 18:40:36 -0000
-Date:   Thu, 5 Nov 2020 12:40:36 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>
-Cc:     broonie@kernel.org, joel@jms.id.au, andrew@aj.id.au, clg@kaod.org,
-        bbrezillon@kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-aspeed@lists.ozlabs.org,
-        linux-spi@vger.kernel.org, BMC-SW@aspeedtech.com
-Subject: Re: [v2 1/4] dt-bindings: spi: Add binding file for ASPEED FMC/SPI
- memory controller
-Message-ID: <20201105184036.GA1607865@bogus>
-References: <20201103072202.24705-1-chin-ting_kuo@aspeedtech.com>
- <20201103072202.24705-2-chin-ting_kuo@aspeedtech.com>
-MIME-Version: 1.0
+        id S1731818AbgKESl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 13:41:28 -0500
+Received: from mail-bn7nam10on2040.outbound.protection.outlook.com ([40.107.92.40]:7840
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726801AbgKESl1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 13:41:27 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SFJ0Ly9I9vpmDjGZVaxG41na/S0pQCBKNJQyGXuijg3lSCYZGmxamav36dLSc32XEhPWJzo1SL5M+4ADnZ4VoV/GbIZKSVL8p2InweEkj1YNsImXHSL9K4zfJcqkWEGvQwiRxxdYbNsnFI1SDqAGqVABS+x5JAK0gMrKgyOHPcKlRL2uAWieRGx7W8VCfmFpvOfMuPNTLRizqs1OIBIZILzfNJNpYtaxQ9fkAgGv8wijw1ZYvBTT6T119ReaxY3s1tNS9whpew7zMiE5hU4JoWNrw8bFNmHDgAn4fMAPQG4IflcDwik+RixbGpA4JCZtw/z5mc+yx47qrFD0u5OCdQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1xGwj7NM66PRDcWuWWfAnjbZAkqb9Mh1hO3kbAIsQts=;
+ b=j58ZXhQEjJYy0leiUMVlkc4phgOHjFdHE6ixmTaLGfAOOuxijICRIB4XlawggKoC4zW308UqoX8QKqlG+NKF0yOUHdgZzisPesszpB3gmkWjb5PtkA7xAS2zMksF6pCGRQgW4k+oC6XCBJRvP0Qd/eZA6f2XxPFnGrLe5mWoKXsPpm06ZUDOaKK9u8N6f0mmgA+RC3eouZ3Ax7CH+xBHd+VHPidM/wwg2gELVAtFVtWkvpa/WzaYDy61MJkg3apN6B8ioU3/LQG0vnH2JktwKdC/aAzySDjap7eyUjCAHxxyz3MVCYoTk0eQ/aZhUIwO5NI9y1Q2mBNu8SsQkItZGQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1xGwj7NM66PRDcWuWWfAnjbZAkqb9Mh1hO3kbAIsQts=;
+ b=MSSopkaayeOv02CW5ytwssoFV+suqs8pexHWpxCOY6x2Xrclgbliuy+3D0O5vruiUzjirCfQ7sSAoNCIupemNGuZHsdhia9T1gvQF+vgcP7+XiNjXb5bwhN5J2PZ7kjh9gqePEWEMINeA3XRZF6CQQ7+1FOOZwxywpnopD3QdV4=
+Authentication-Results: oracle.com; dkim=none (message not signed)
+ header.d=none;oracle.com; dmarc=none action=none header.from=amd.com;
+Received: from SN6PR12MB2767.namprd12.prod.outlook.com (2603:10b6:805:75::23)
+ by SA0PR12MB4590.namprd12.prod.outlook.com (2603:10b6:806:93::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.29; Thu, 5 Nov
+ 2020 18:41:22 +0000
+Received: from SN6PR12MB2767.namprd12.prod.outlook.com
+ ([fe80::d8f2:fde4:5e1d:afec]) by SN6PR12MB2767.namprd12.prod.outlook.com
+ ([fe80::d8f2:fde4:5e1d:afec%3]) with mapi id 15.20.3499.032; Thu, 5 Nov 2020
+ 18:41:22 +0000
+Date:   Thu, 5 Nov 2020 18:41:15 +0000
+From:   Ashish Kalra <ashish.kalra@amd.com>
+To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Cc:     hch@lst.de, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        hpa@zytor.com, x86@kernel.org, luto@kernel.org,
+        peterz@infradead.org, dave.hansen@linux-intel.com,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        brijesh.singh@amd.com, Thomas.Lendacky@amd.com,
+        ssg.sos.patches@amd.com
+Subject: Re: [PATCH v3] swiotlb: Adjust SWIOTBL bounce buffer size for SEV
+ guests.
+Message-ID: <20201105184115.GA25261@ashkalra_ubuntu_server>
+References: <20201104220804.21026-1-Ashish.Kalra@amd.com>
+ <20201104221452.GA26079@char.us.oracle.com>
+ <20201104223913.GA25311@ashkalra_ubuntu_server>
+ <20201105174317.GA4294@char.us.oracle.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201103072202.24705-2-chin-ting_kuo@aspeedtech.com>
+In-Reply-To: <20201105174317.GA4294@char.us.oracle.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Originating-IP: [165.204.77.1]
+X-ClientProxiedBy: DM6PR11CA0009.namprd11.prod.outlook.com
+ (2603:10b6:5:190::22) To SN6PR12MB2767.namprd12.prod.outlook.com
+ (2603:10b6:805:75::23)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ashkalra_ubuntu_server (165.204.77.1) by DM6PR11CA0009.namprd11.prod.outlook.com (2603:10b6:5:190::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21 via Frontend Transport; Thu, 5 Nov 2020 18:41:21 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: e28b6c65-1b02-49cb-386f-08d881ba6454
+X-MS-TrafficTypeDiagnostic: SA0PR12MB4590:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SA0PR12MB4590E6BBAF74E4899672E5728EEE0@SA0PR12MB4590.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: LFBEBE9eLZLzYD+M5z5UlE/V8XkmPsyl6LuQ+tRS1JWjbWC1LnRVDNM5MkHRmZqIbNn6JwHCxOGLKeTLZiBmraGNVYGRJTfxzSZIFbh/Tz+n7GW71xuFK4cPBymb27TVU8jDPYXPd1evp4kyvwL9Id6OO6cIXDBLJTWXVujcLIYJk3SvjzS6MlLpI5ESkEasv/j6AhEnW4eYPR+yCwFG0FmCV9l/LAxEqdgmVmL75DFrik2y7vicAevspqDgy6AsQ9lZM8JmtVT8jDXHXPiVeBlG5D56liEJz41CRzBKor72Pma5WyIZCZ/vB0BziUN5H6CWLJQY3t49+6f9i54hmw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2767.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(396003)(346002)(376002)(39860400002)(66946007)(55016002)(66476007)(2906002)(52116002)(6666004)(44832011)(8676002)(4326008)(66556008)(7416002)(9686003)(478600001)(6496006)(6916009)(33716001)(86362001)(8936002)(5660300002)(26005)(956004)(316002)(83380400001)(1076003)(186003)(16526019)(33656002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: +KSAZxqvCiA/NIIEKbr2eCpB3UvqJitYYKCfxyGTY2dmzMUHNUC+ET+3eIRikXGLc4HWkVnnfj7EECkBPyobec3TzVmNLozpL1kePWzJ6yTnKLJP9pSRDedbQUQbp7k7YPTmeSkX5Vvgy75Hxc5iYzl/K1E6G4bsGvQeZHmXWOvhlbod2WUc7ULx5qyWd4b7vwKWumd78bxVNVmL6I5TXLVyGTkjlRDV3YzeBlySUBYq0u3gjsGiESQMLvNco1kqrsNMqiBdJpXHggH/z1li3f0+6k3t88RVjfeuz/F6g/pBWWVZyMb10Mtq/eqUgq60hlOCpAeISXvdbKvaxeNOC8f4Xqz3Q1wwtDOugtZmrXLN9cJrdS+rgp6wwVKHb1VjlLEil7jo0YopG0Zno5RPXQsZ33xREFtCKFUOtEpqh5VMyFFI3KyI0TsBe0RlZp6tbX1uOQkvcNRBJ/q7a74wbHLWO2ALchyEV2CrkKV3z1YhJfj3MWLKxeKvnkU9Ot0HdcOpSY8g8iEK7vr7vG+9NuxzJxk175HgGrJnZ5rpz7SdGtSUfnolio8iMCN+2yKOhDjaykrzFDklySeJj3LVFGG7zrq1qc4y5qSABVrRHfLF4i0fViyL9Bdz25M4kV9N1FcrAyzH+Fmqg9WnrP/K+Q==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e28b6c65-1b02-49cb-386f-08d881ba6454
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2767.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Nov 2020 18:41:22.2475
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: pvGfk0dxnev2TrbIFYFH3G5wFpAoblSVwRsn3Z6tJaxtjRUdnuDgJdNdiDhbxLJK8weennzDkfmG6tch3EIcKA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4590
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 03:21:59PM +0800, Chin-Ting Kuo wrote:
-> Create binding file with YAML syntax for ASPEED FMC/SPI memory controller.
-> 
-> Signed-off-by: Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>
-> ---
->  .../bindings/spi/aspeed,spi-aspeed.yaml       | 66 +++++++++++++++++++
->  1 file changed, 66 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/spi/aspeed,spi-aspeed.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/spi/aspeed,spi-aspeed.yaml b/Documentation/devicetree/bindings/spi/aspeed,spi-aspeed.yaml
-> new file mode 100644
-> index 000000000000..41b9692c7226
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/spi/aspeed,spi-aspeed.yaml
-> @@ -0,0 +1,66 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/spi/aspeed,spi-aspeed.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: SPI memory controller for ASPEED SoCs
-> +
-> +maintainers:
-> +  - Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>
-> +
-> +description: |
-> +  There are three SPI memory controllers embedded in a ASPEED SoC.
-> +  They are usually connected to SPI NOR flashes. Each of them has
-> +  more than a chip select. They also support SPI single, dual and
-> +  quad IO modes for SPI NOR flash.
-> +
-> +allOf:
-> +  - $ref: /spi/spi-controller.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - items:
-> +          - enum:
-> +              - aspeed,ast2600-fmc
-> +              - aspeed,ast2600-spi
-> +
-> +  reg:
-> +    items:
-> +      - description: the control register location and length
-> +      - description: the flash memory mapping address and length
-> +
-> +  clocks:
-> +    description: AHB bus clock which will be converted to SPI bus clock
+Hello Konrad,
 
-Need to define how many clocks (maxItems: 1).
-
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +  - num-cs
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/ast2600-clock.h>
-> +    spi1: spi@1e630000 {
-> +      compatible = "aspeed,ast2600-spi";
-> +      reg = <0x1e630000 0xc4>, <0x30000000 0x10000000>;
-> +      reg-names = "spi_ctrl_reg", "spi_mmap";
-> +      clocks = <&syscon ASPEED_CLK_AHB>;
-> +      num-cs = <2>;
-> +      #address-cells = <1>;
-> +      #size-cells = <0>;
-> +      flash@0 {
-> +        compatible = "jedec,spi-nor";
-> +        reg = <0>;
-> +        spi-max-frequency = <50000000>;
-> +      };
-> +      flash@1 {
-> +        compatible = "jedec,spi-nor";
-> +        reg = <1>;
-> +        spi-max-frequency = <50000000>;
-> +      };
-> +    };
-> -- 
-> 2.17.1
+On Thu, Nov 05, 2020 at 12:43:17PM -0500, Konrad Rzeszutek Wilk wrote:
+> On Wed, Nov 04, 2020 at 10:39:13PM +0000, Ashish Kalra wrote:
+> > Hello Konrad,
+> > 
+> > On Wed, Nov 04, 2020 at 05:14:52PM -0500, Konrad Rzeszutek Wilk wrote:
+> > > On Wed, Nov 04, 2020 at 10:08:04PM +0000, Ashish Kalra wrote:
+> > > > From: Ashish Kalra <ashish.kalra@amd.com>
+> > > > 
+> > > > For SEV, all DMA to and from guest has to use shared
+> > > > (un-encrypted) pages. SEV uses SWIOTLB to make this
+> > > > happen without requiring changes to device drivers.
+> > > > However, depending on workload being run, the default
+> > > > 64MB of SWIOTLB might not be enough and SWIOTLB
+> > > > may run out of buffers to use for DMA, resulting
+> > > > in I/O errors and/or performance degradation for
+> > > > high I/O workloads.
+> > > > 
+> > > > Increase the default size of SWIOTLB for SEV guests
+> > > > using a minimum value of 128MB and a maximum value
+> > > 
+> > > <blinks>
+> > > 
+> > > 64MB for a 1GB VM is not enough?
+> > > 
+> > > > of 512MB, determining on amount of provisioned guest
+> > > 
+> > > I like the implementation on how this is done.. but
+> > > the choices of memory and how much seems very much
+> > > random. Could there be some math behind this?
+> > >
+> > 
+> > Earlier the patch was based on using a % of guest memory, as below:
+> > 
+> > +#define SEV_ADJUST_SWIOTLB_SIZE_PERCENT        5
+> > +#define SEV_ADJUST_SWIOTLB_SIZE_MAX    (1UL << 30)
+> > ...
+> > ...
+> > +       if (sev_active() && !io_tlb_nslabs) {
+> > +               unsigned long total_mem = get_num_physpages() << PAGE_SHIFT;
+> > +
+> > +               default_size = total_mem *
+> > +                       SEV_ADJUST_SWIOTLB_SIZE_PERCENT / 100;
+> > +
+> > +               default_size = ALIGN(default_size, 1 << IO_TLB_SHIFT);
+> > +
+> > +               default_size = clamp_val(default_size, IO_TLB_DEFAULT_SIZE,
+> > +                       SEV_ADJUST_SWIOTLB_SIZE_MAX);
+> > +       }
+> > 
+> > But, then it is difficult to predict what % of guest memory to use ?
+> > 
+> > Then there are other factors to consider, such as vcpu_count or if there
+> > is going to be high I/O workload, etc.
+> > 
+> > But that all makes it very complicated, what we basically want is a
+> > range from 128M to 512M and that's why the current patch which picks up
+> > this range from the amount of allocated guest memory keeps it simple. 
 > 
+> Right, so I am wondering if we can do this better.
+> 
+> That is you are never going to get any 32-bit devices with SEV right? That
+> is there is nothing that bounds you to always use the memory below 4GB?
+> 
+
+We do support 32-bit PCIe passthrough devices with SEV.
+
+Therefore, we can't just depend on >4G memory for SWIOTLB bounce buffering
+when there is I/O pressure, because we do need to support device
+passthrough of 32-bit devices.
+
+Considering this, we believe that this patch needs to adjust/extend
+boot-allocation of SWIOTLB and we want to keep it simple to do this
+within a range detemined by amount of allocated guest memory.
+
+Thanks,
+Ashish
+
+> What I wonder is if we can combine the boot-allocation of the SWIOTLB
+> with the post-boot-allocation of SWIOLTB to stitch together
+> continous physical ranges.
+> 
+> That way you have the flexibility at the start of using 64MB but if there
+> is pressure, we grow to a bigger size?
+> 
+> > 
+> > Thanks,
+> > Ashish
+> > 
+> > > > memory.
+> > > > 
+> > > > Using late_initcall() interface to invoke
+> > > > swiotlb_adjust() does not work as the size
+> > > > adjustment needs to be done before mem_encrypt_init()
+> > > > and reserve_crashkernel() which use the allocated
+> > > > SWIOTLB buffer size, hence calling it explicitly
+> > > > from setup_arch().
+> > > > 
+> > > > The SWIOTLB default size adjustment is added as an
+> > > > architecture specific interface/callback to allow
+> > > > architectures such as those supporting memory
+> > > > encryption to adjust/expand SWIOTLB size for their
+> > > > use.
+> > > > 
+> > > > Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+> > > > ---
+> > > >  arch/x86/kernel/setup.c   |  2 ++
+> > > >  arch/x86/mm/mem_encrypt.c | 42 +++++++++++++++++++++++++++++++++++++++
+> > > >  include/linux/swiotlb.h   |  1 +
+> > > >  kernel/dma/swiotlb.c      | 27 +++++++++++++++++++++++++
+> > > >  4 files changed, 72 insertions(+)
+> > > > 
+> > > > diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+> > > > index 3511736fbc74..b073d58dd4a3 100644
+> > > > --- a/arch/x86/kernel/setup.c
+> > > > +++ b/arch/x86/kernel/setup.c
+> > > > @@ -1166,6 +1166,8 @@ void __init setup_arch(char **cmdline_p)
+> > > >  	if (boot_cpu_has(X86_FEATURE_GBPAGES))
+> > > >  		hugetlb_cma_reserve(PUD_SHIFT - PAGE_SHIFT);
+> > > >  
+> > > > +	swiotlb_adjust();
+> > > > +
+> > > >  	/*
+> > > >  	 * Reserve memory for crash kernel after SRAT is parsed so that it
+> > > >  	 * won't consume hotpluggable memory.
+> > > > diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
+> > > > index 3f248f0d0e07..e0deb157cddd 100644
+> > > > --- a/arch/x86/mm/mem_encrypt.c
+> > > > +++ b/arch/x86/mm/mem_encrypt.c
+> > > > @@ -489,7 +489,49 @@ static void print_mem_encrypt_feature_info(void)
+> > > >  	pr_cont("\n");
+> > > >  }
+> > > >  
+> > > > +#define TOTAL_MEM_1G	0x40000000UL
+> > > > +#define TOTAL_MEM_4G	0x100000000UL
+> > > > +
+> > > > +#define SIZE_128M (128UL<<20)
+> > > > +#define SIZE_256M (256UL<<20)
+> > > > +#define SIZE_512M (512UL<<20)
+> > > > +
+> > > >  /* Architecture __weak replacement functions */
+> > > > +unsigned long __init arch_swiotlb_adjust(unsigned long iotlb_default_size)
+> > > > +{
+> > > > +	unsigned long size = 0;
+> > > > +
+> > > > +	/*
+> > > > +	 * For SEV, all DMA has to occur via shared/unencrypted pages.
+> > > > +	 * SEV uses SWOTLB to make this happen without changing device
+> > > > +	 * drivers. However, depending on the workload being run, the
+> > > > +	 * default 64MB of SWIOTLB may not be enough & SWIOTLB may
+> > > > +	 * run out of buffers for DMA, resulting in I/O errors and/or
+> > > > +	 * performance degradation especially with high I/O workloads.
+> > > > +	 * Increase the default size of SWIOTLB for SEV guests using
+> > > > +	 * a minimum value of 128MB and a maximum value of 512MB,
+> > > > +	 * depending on amount of provisioned guest memory.
+> > > > +	 */
+> > > > +	if (sev_active()) {
+> > > > +		phys_addr_t total_mem = memblock_phys_mem_size();
+> > > > +
+> > > > +		if (total_mem <= TOTAL_MEM_1G)
+> > > > +			size = clamp(iotlb_default_size * 2, SIZE_128M,
+> > > > +				     SIZE_128M);
+> > > > +		else if (total_mem <= TOTAL_MEM_4G)
+> > > > +			size = clamp(iotlb_default_size * 4, SIZE_256M,
+> > > > +				     SIZE_256M);
+> > > > +		else
+> > > > +			size = clamp(iotlb_default_size * 8, SIZE_512M,
+> > > > +				     SIZE_512M);
+> > > > +
+> > > > +		pr_info("SEV adjusted max SWIOTLB size = %luMB",
+> > > > +			size >> 20);
+> > > > +	}
+> > > > +
+> > > > +	return size;
+> > > > +}
+> > > > +
+> > > >  void __init mem_encrypt_init(void)
+> > > >  {
+> > > >  	if (!sme_me_mask)
+> > > > diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
+> > > > index 046bb94bd4d6..01ae6d891327 100644
+> > > > --- a/include/linux/swiotlb.h
+> > > > +++ b/include/linux/swiotlb.h
+> > > > @@ -33,6 +33,7 @@ extern void swiotlb_init(int verbose);
+> > > >  int swiotlb_init_with_tbl(char *tlb, unsigned long nslabs, int verbose);
+> > > >  extern unsigned long swiotlb_nr_tbl(void);
+> > > >  unsigned long swiotlb_size_or_default(void);
+> > > > +extern void __init swiotlb_adjust(void);
+> > > >  extern int swiotlb_late_init_with_tbl(char *tlb, unsigned long nslabs);
+> > > >  extern void __init swiotlb_update_mem_attributes(void);
+> > > >  
+> > > > diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+> > > > index c19379fabd20..66a9e627bb51 100644
+> > > > --- a/kernel/dma/swiotlb.c
+> > > > +++ b/kernel/dma/swiotlb.c
+> > > > @@ -163,6 +163,33 @@ unsigned long swiotlb_size_or_default(void)
+> > > >  	return size ? size : (IO_TLB_DEFAULT_SIZE);
+> > > >  }
+> > > >  
+> > > > +unsigned long __init __weak arch_swiotlb_adjust(unsigned long size)
+> > > > +{
+> > > > +	return 0;
+> > > > +}
+> > > > +
+> > > > +void __init swiotlb_adjust(void)
+> > > > +{
+> > > > +	unsigned long size;
+> > > > +
+> > > > +	/*
+> > > > +	 * If swiotlb parameter has not been specified, give a chance to
+> > > > +	 * architectures such as those supporting memory encryption to
+> > > > +	 * adjust/expand SWIOTLB size for their use.
+> > > > +	 */
+> > > > +	if (!io_tlb_nslabs) {
+> > > > +		size = arch_swiotlb_adjust(IO_TLB_DEFAULT_SIZE);
+> > > > +		if (size) {
+> > > > +			size = ALIGN(size, 1 << IO_TLB_SHIFT);
+> > > > +			io_tlb_nslabs = size >> IO_TLB_SHIFT;
+> > > > +			io_tlb_nslabs = ALIGN(io_tlb_nslabs, IO_TLB_SEGSIZE);
+> > > > +
+> > > > +			pr_info("architecture adjusted SWIOTLB slabs = %lu\n",
+> > > > +				io_tlb_nslabs);
+> > > > +		}
+> > > > +	}
+> > > > +}
+> > > > +
+> > > >  void swiotlb_print_info(void)
+> > > >  {
+> > > >  	unsigned long bytes = io_tlb_nslabs << IO_TLB_SHIFT;
+> > > > -- 
+> > > > 2.17.1
+> > > > 
