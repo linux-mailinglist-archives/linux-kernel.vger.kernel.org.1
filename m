@@ -2,149 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35A042A8525
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 18:41:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 624632A8529
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 18:42:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731781AbgKERlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 12:41:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46664 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726777AbgKERlq (ORCPT
+        id S1731719AbgKERmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 12:42:33 -0500
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:36562 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726214AbgKERmd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 12:41:46 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C72EC0613CF;
-        Thu,  5 Nov 2020 09:41:46 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id r186so1863289pgr.0;
-        Thu, 05 Nov 2020 09:41:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ROPmCHdS0kRg9q+B0Dggx9NnmXUvygn2aJySQRUk1PU=;
-        b=B2tWMFsjw3bi0iB38Tr2F5SWQxJLB3kpG8hw4mLTqOviEibVyWUsPuzWP8Gi3Gulni
-         tBs7hK1LMMzFX00AgmM5RLlzpoF9H1Fn7t/hnj3zX8Dni21u9y6jto/W0kBMKGtKRuEp
-         DulPVDquNepyb/CN3kfZEe+o8f4J+5Phwz5zjlGi+LjEO7eJKT5YHXRa5WJ2IHkaIAN5
-         4mC5Git3culOK0pwzGV/1iGnuh6ojacbjsqiPTbfbhpmwjUE4fnOtLaPQzrNSuzEJLqd
-         k3k56/EmfNvevYeQ/+gO3N4b1gjAIux50/4Y5REK8ZD+WhHEXtAfkVN7NinzRyPtHUxG
-         OhYQ==
+        Thu, 5 Nov 2020 12:42:33 -0500
+Received: by mail-oi1-f195.google.com with SMTP id d9so2530863oib.3;
+        Thu, 05 Nov 2020 09:42:32 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=ROPmCHdS0kRg9q+B0Dggx9NnmXUvygn2aJySQRUk1PU=;
-        b=uRtUEARagTxWi5RI6djiR/gaNWcLyvRrxbNP4BpSuqO340jobTBuxkbVM30FB1wkHQ
-         rqE35dik+u/lKEjDKoCqlqAAN1mjVelPwyZ+KD+rg3dOTcMwo69r0yFmL/nFlamFv21Q
-         K/mKprMJDRNNnK9gLVf3Vk9ogSAvwKCN2Jk8bqrIO/Dogx9TPploY0eJ6N8DbF8YIRzu
-         74uePCH1f2OHWVLmbKjpR39S1kEWrdt2WskblboeqV8Z+jbYJW9CVdMabyj7hl/8lZUf
-         8/w9CjFFH+dabmWTK/023q+puZB1fUNOFeBhc8YLC+2Y39Jdvo8pHzLlXnxUEOqUAVgi
-         fAZA==
-X-Gm-Message-State: AOAM530n4xOAjR6+N0kaPAPlnXW0dqynX018CzbqSITc13oXo1+IO+hR
-        U5DPA6HSNwuSBLoTUCMqohFhBNfykbs=
-X-Google-Smtp-Source: ABdhPJwxT1NmWqKn/Ks2DuSG4v+x+CY+eLvgsygQ1M9RxDJ3i9JX8XBa1wf2Dk72/u4YIqGx2LObWg==
-X-Received: by 2002:a63:cb51:: with SMTP id m17mr3369432pgi.337.1604598105490;
-        Thu, 05 Nov 2020 09:41:45 -0800 (PST)
-Received: from google.com ([2620:15c:211:201:7220:84ff:fe09:5e58])
-        by smtp.gmail.com with ESMTPSA id i10sm3162527pfd.60.2020.11.05.09.41.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 09:41:44 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Thu, 5 Nov 2020 09:41:42 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     Michal Hocko <mhocko@suse.com>, linux-api@vger.kernel.org,
-        linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
-        Christian Brauner <christian@brauner.io>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Tim Murray <timmurray@google.com>,
-        kernel-team <kernel-team@android.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>
-Subject: Re: [RFC]: userspace memory reaping
-Message-ID: <20201105174142.GA395979@google.com>
-References: <CAJuCfpHwXcq1PfzHgqyYBR3N53TtV2WMt_Oubz0JZkvJHbFKGw@mail.gmail.com>
- <CAJuCfpH9iUt0cs1GBQppgdcD8chojCNXk22S+PeSgQ-bA7iitQ@mail.gmail.com>
- <20201103093550.GE21990@dhcp22.suse.cz>
- <20201103213228.GB1631979@google.com>
- <20201104065844.GM21990@dhcp22.suse.cz>
- <20201104204051.GA3544305@google.com>
- <20201105122012.GD21348@dhcp22.suse.cz>
- <CAJuCfpF5zAif97-uK8M+-fJhd0pab4fMPDMUNkAXYOB3MC7aXg@mail.gmail.com>
- <20201105171611.GO21348@dhcp22.suse.cz>
- <CAJuCfpHAxxoD6GG6t9_VthSa00znTHvLx60K-=cBee4ia1S5ew@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RsDQV1h3v+QR+nJVsOOAKQRY7siph12863Hmx7NzMy4=;
+        b=jCMxFvfOKHrSyhxnzrtw4IWrQp3H82JSgITimRpV+OVBzDpixbpPyZkueE0yO2S9YT
+         6fgZnC0djuykU70M0AlqeRBgksZGFkrsV2FRG4inLGgDsY2mvlfvOgrCxIBu0oZlAOxi
+         aP1qCV63WteMPJRCgs9clpQD6xKRYkYhhbzHoTvJGLOVb+HpuXQhSL2RP79lVR0CoRM2
+         8CIJ3/6wy7vEJ2jbtimTCgWCxgGcXuSvLXhVeUc7J8fnqntH0CRgvslfYJLQNDxIXBUm
+         Nya+oTPrryzroG5gBS8NTComKY3ow8PpEKUVHk8kfUCbxqjrnsTn/7fOkb7x+abUKJp5
+         NCLw==
+X-Gm-Message-State: AOAM530OIhQv6E6br6zLi3g7arodr1CeE3GrWuzi5XEogpfEGvzTIhLi
+        jcOnuo/KeQBd2Fhpu6NlcUrnz27QeBBy6Zw1FtQ3uiCr
+X-Google-Smtp-Source: ABdhPJxFMtYdKzx2PpH20eL8m0AO+NQuRxEz8f/hfqFfPFW+kP9XJQbsjdnbm126mHFRwytDq2Or7OZhFLuDEkrBWh8=
+X-Received: by 2002:aca:30d7:: with SMTP id w206mr347615oiw.69.1604598152198;
+ Thu, 05 Nov 2020 09:42:32 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJuCfpHAxxoD6GG6t9_VthSa00znTHvLx60K-=cBee4ia1S5ew@mail.gmail.com>
+References: <20201007001934.18606-1-stanimir.varbanov@linaro.org>
+ <CAJZ5v0hxdxV6pB5q94qCEmeDXOMJQzL3b8ZokgTn00i0MbykvQ@mail.gmail.com> <e24794e5-419c-ad5f-c281-12a6e15cfa4c@linaro.org>
+In-Reply-To: <e24794e5-419c-ad5f-c281-12a6e15cfa4c@linaro.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 5 Nov 2020 18:42:20 +0100
+Message-ID: <CAJZ5v0htFwyDhJS3spKf73v=PX5dTCT2+Piotf4=NyGe+9g6Tw@mail.gmail.com>
+Subject: Re: [PATCH] PM: runtime: Use pmruntime sync variant to put suppliers
+To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 09:21:13AM -0800, Suren Baghdasaryan wrote:
-> On Thu, Nov 5, 2020 at 9:16 AM Michal Hocko <mhocko@suse.com> wrote:
+On Thu, Oct 8, 2020 at 3:08 AM Stanimir Varbanov
+<stanimir.varbanov@linaro.org> wrote:
+>
+> Hi Rafael,
+>
+> On 10/7/20 5:37 PM, Rafael J. Wysocki wrote:
+> > On Wed, Oct 7, 2020 at 2:20 AM Stanimir Varbanov
+> > <stanimir.varbanov@linaro.org> wrote:
+> >>
+> >> Calling pm_runtime_put_sync over a device with suppliers with device
+> >> link flags PM_RUNTIME | RPM_ACTIVE it is observed that the supplier
+> >> is not put (turned off) at the end, but instead put asynchronously.
 > >
-> > On Thu 05-11-20 08:50:58, Suren Baghdasaryan wrote:
-> > > On Thu, Nov 5, 2020 at 4:20 AM Michal Hocko <mhocko@suse.com> wrote:
-> > > >
-> > > > On Wed 04-11-20 12:40:51, Minchan Kim wrote:
-> > > > > On Wed, Nov 04, 2020 at 07:58:44AM +0100, Michal Hocko wrote:
-> > > > > > On Tue 03-11-20 13:32:28, Minchan Kim wrote:
-> > > > > > > On Tue, Nov 03, 2020 at 10:35:50AM +0100, Michal Hocko wrote:
-> > > > > > > > On Mon 02-11-20 12:29:24, Suren Baghdasaryan wrote:
-> > > > > > > > [...]
-> > > > > > > > > To follow up on this. Should I post an RFC implementing SIGKILL_SYNC
-> > > > > > > > > which in addition to sending a kill signal would also reap the
-> > > > > > > > > victim's mm in the context of the caller? Maybe having some code will
-> > > > > > > > > get the discussion moving forward?
-> > > > > > > >
-> > > > > > > > Yeah, having a code, even preliminary, might help here. This definitely
-> > > > > > > > needs a good to go from process management people as that proper is land
-> > > > > > > > full of surprises...
-> > > > > > >
-> > > > > > > Just to remind a idea I suggested to reuse existing concept
-> > > > > > >
-> > > > > > >     fd = pidfd_open(victim process)
-> > > > > > >     fdatasync(fd);
-> > > > > > >     close(fd);
-> > > > > >
-> > > > > > I must have missed this proposal. Anyway, are you suggesting fdatasync
-> > > > > > to act as a destructive operation?
-> > > > >
-> > > > > write(fd) && fdatasync(fd) are already destructive operation if the file
-> > > > > is shared.
-> > > >
-> > > > I am likely missing something because fdatasync will not destroy any
-> > > > underlying data. It will sync
-> > > >
-> > > > > You don't need to reaping as destruptive operation. Rather than, just
-> > > > > commit on the asynchrnous status "write file into page cache and commit
-> > > > > with fsync" and "killing process and commit with fsync".
-> > > >
-> > > > I am sorry but I do not follow. The result of the memory reaping is a
-> > > > data loss. Any private mapping will simply lose it's content. The caller
-> > > > will get EFAULT when trying to access it but there is no way to
-> > > > reconstruct the data. This is everything but not resembling what I see
-> > > > f{data}sync is used for.
-> > >
-> > > I think Minchan considers f{data}sync as a "commit" operation.
+> > Yes, that's by design.
 > >
-> > But there is nothing like commit in that operation. It is simply a
-> > destroy operation. ftruncate as Minchan mentions in another reply would
-> > be a closer fit but how do you interpret the length argument? What about
-> > memory regions which cannot be reaped?
+> >> In some case This could lead to issues for the callers which expects
+> >> that the pmruntime sync variants should also put the suppliers
+> >> synchronously.
 > >
-> > I do understand that reusing an existing mechanism is usually preferable
-> > but the semantic should be reasonable and easy to reason about.
-> 
-> Maybe then we can consider a flag for pidfd_send_signal() to indicate
-> that we want a synchronous mm cleanup when SIGKILL is being sent?
-> Similar to my original RFC but cleanup would happen in the context of
-> the caller. That seems to me like the simplest and most obvious way of
-> expressing what we want to accomplish. WDYT?
+> > Why would anyone expect that to happen?
+>
+> It is logical to me that when I call pm_runtime_put_sync the device and
+> its suppliers are put synchronously. If I want to put device and its
+> suppliers asynchronously I'd use pm_runtime_put. Is that wrong assumption?
 
-I think that's better than introducing a specific synchronous kill.
+The handling of suppliers is analogous to the handling of parents and
+the parents are suspended asynchronously when a child suspends.
+
+The difference between _put() and _put_sync() only applies to the
+device passed in as the argument.
+
+> >> Also the opposite rpm_get_suppliers is already using pmruntime _sync
+> >> variant of the API.
+> >
+> > Yes, it does, because that is necessary.
+> >
+> >> Correct this by changing pmruntime_put to pmruntime_put_sync in
+> >> rpm_put_suppliers.
+> >
+> > It is not a correction, but a change in behavior without good enough
+> > rationale, as it stands.
+>
+> In my driver case I want to deal with a recovery of a crash in remote
+> processor (the remote processor is used to control and program hardware
+> blocks and also to communicate with host processor through shared
+> memory). To restart the remote processor I have to disable clocks and
+> turn off few power domains (one of the power domains is made a supplier
+> of my main device) in order to complete the cold-boot.
+
+PM-runtime doesn't guarantee you the behavior that you'd like to see here.
+
+> The problem I'm facing with this design is that when I call
+> runtime_put_sync (to disable device's clocks and turn off power domain)
+> the clocks are disabled (part of pmruntime_suspend callback) but the
+> pmdomain (the device supplier) is not turned synchronously. I workaround
+> this by checking the supplier device via pm_runtime_active() until it
+> becomes inactive and the continue with rest of the steps.
+
+This is not a use case for PM-runtime at all.
+
+PM-runtime is all about going low-power opportunistically, whereas you
+want to enforce power down.
+
+> From my point of view this check for supplier activity should be part of
+> pmruntime API.
+
+But the API is not what you should be using for this purpose in the first place.
