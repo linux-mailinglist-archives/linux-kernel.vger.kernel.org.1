@@ -2,54 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70E5F2A736A
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 01:02:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32F832A7370
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 01:02:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732545AbgKEACi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 19:02:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50946 "EHLO
+        id S1733037AbgKEACl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 19:02:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728323AbgKEACi (ORCPT
+        with ESMTP id S1728323AbgKEACk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 19:02:38 -0500
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62FBDC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 16:02:36 -0800 (PST)
-Received: by mail-qt1-x849.google.com with SMTP id g12so117284qtc.15
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 16:02:36 -0800 (PST)
+        Wed, 4 Nov 2020 19:02:40 -0500
+Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F66AC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 16:02:39 -0800 (PST)
+Received: by mail-wr1-x449.google.com with SMTP id t14so102574wrs.2
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 16:02:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=WSUBpnn+b8BH+LyGrDbHds9kTTIXmq8ZO4c/IH1ztE8=;
-        b=tlosH7TYK549pHThXItN057SkhxAVtEmov60aTPXGGcxAQr+jBG2/9HWQQnVDHj7Lq
-         I4rcwA92bbYaRi3LrrRj+r6cVPe1BLbMsnuLNxAqDQxgzofveZawQvgUZw1DV2v7qcGI
-         C90TZE7jzRgAsnaJjj27SFbDu4SZSgMRbUoVxGlWD56qLEkTuH/ygfTexaNk2vv908bz
-         UXJWwyqLCXV88Hc4JwZaIupPoEZRKKimXcqhaqA3vIwXzrNRUhH2glnY5hUGmB5bxRxZ
-         gRVrHL3CRgV7XMXuYEsAhbcOYyAqqishtjGPg2q1+iGswsioyPqkoH85wGyc916RPirO
-         F38g==
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=Ocomz11lJ9KE0anC5CzM99SKlSLQ0mxGbD3mCLha9hU=;
+        b=TtFB7UefTiyPVVP+/kDhkkT/QxrHuTo+WYQ5Nvww663l3VqibyXgl53WW2WtoolN3r
+         wYf3SBvI/y4/ED+RCCuwa5/pUZX+bY9wrT2Bkruuc8LKJG6Bx3xM1sQnPbF8GcOx8QmF
+         mz7OfwCckO0gu8SIJZZwnULGnyIrzmYFoX7VIZiDvB2t8IjiO5TJICScNGjWfBA3MowY
+         ev/8Po/TamKjG9Q11/jRnwJFgLkXoxfftwqGS4W/r0zgAIkuTcAbu3CICmE1xGNfhTHR
+         o/P2LK0i0XtpoXyE+a1Wqq6TJ8dXDS83gGcR1mvWnopVytCSBBuVDZGQMksX5hYTNfHR
+         TmAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=WSUBpnn+b8BH+LyGrDbHds9kTTIXmq8ZO4c/IH1ztE8=;
-        b=BNmU1iE5PcK7+qJ3y/0DZ+BJ6T7iw1JIeoOC9aEXt/bVr4oBEUs7NUTi8sZzdcKmxN
-         tTsgT1QZVs9gT5Efd+/oEx/dIZlYsdzunXtWaLaKuQE+nSonkX7G8i8saUaCJU62N+W5
-         ish2jTLAsOd3vEse07yusuQ5gafOXZ8mIQpiISytoRxqMNJwMtmf00a2FQCjm5xH4Qgp
-         X57pzFCxrEfQ7GcB6IbAEm4ylqFeYxozmFK/1prx9+bh9SRk3yLXGYd5bIV6zWWfj8u1
-         h4/2UShhXjW/wM8ijxOdJLSp79MyDM/jGYQdJXa0moeURlHyZS+ke+OYUkWunRCswpyT
-         MpJg==
-X-Gm-Message-State: AOAM533DbqNpYFgaLVPkfuH7lDMTtS2RMwxvnAHSVeFQM5mBtLL7DxCb
-        PegN/lmJV6d+iQxVMsu97slat1lbkqO/MUEk
-X-Google-Smtp-Source: ABdhPJxM0Ooa/cktu8AEqoiwTREH3YYQ4nXnZhGizgrguujs+ZY0sca5P3O6TuibSvdClNd1q1Fa2i69iA8RvCzE
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=Ocomz11lJ9KE0anC5CzM99SKlSLQ0mxGbD3mCLha9hU=;
+        b=Vf+2lRoi6ogU9X5cIWuqZaB4LSuAMQxmAgxrtJFeDaFd3pbGfx8m82mdW76aasJ3qu
+         +tlAcx9VV8FxdnTQOi+NIal+b0siMurljfRhiL1quBAvtvTj3ipg2OXKB9WyBLajKwJE
+         IEcjfz1i75+/PG4/SABJ5LgCSNd/p70iTD93MI0clD76tpwiTb31Nb1QITl3JQtYtsXT
+         Nk4RrOMwjqKU+mqMihcj2H1D4lMxkS5S3KYNIKjv4bamLrjMg8XBOE4Ncvk8ZtApOY37
+         +EBNXMc0mkh8oL9G7nl+hGHz1nGvtUNjE5zKSxeUeoMm0BkI7/n7iD34xMAmjo4Q7KfB
+         CK1A==
+X-Gm-Message-State: AOAM533ojapiNBsdiH01NcoXDhPdUhC5AOH5zHyiEkwL+U4ryH4JtzXi
+        MVKhbUjOe6XHdesCcfXyiyy3lWFed9xhKSPS
+X-Google-Smtp-Source: ABdhPJxLptJ2NppRam2U5gruDbgx9bSTsC/cH6+ET8/IVRhCo/jAA8pQOAD70gM5B+ZoIP4EkLlv3XYmcaaXloEn
 Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
 X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
- (user=andreyknvl job=sendgmr) by 2002:a0c:c187:: with SMTP id
- n7mr286302qvh.19.1604534555430; Wed, 04 Nov 2020 16:02:35 -0800 (PST)
-Date:   Thu,  5 Nov 2020 01:02:10 +0100
-Message-Id: <cover.1604534322.git.andreyknvl@google.com>
+ (user=andreyknvl job=sendgmr) by 2002:a05:600c:22d3:: with SMTP id
+ 19mr178957wmg.161.1604534557830; Wed, 04 Nov 2020 16:02:37 -0800 (PST)
+Date:   Thu,  5 Nov 2020 01:02:11 +0100
+In-Reply-To: <cover.1604534322.git.andreyknvl@google.com>
+Message-Id: <e6fab9ed577dc3861c3ea0bde82bfd04df2bcce1.1604534322.git.andreyknvl@google.com>
 Mime-Version: 1.0
+References: <cover.1604534322.git.andreyknvl@google.com>
 X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
-Subject: [PATCH 00/20] kasan: boot parameters for hardware tag-based mode
+Subject: [PATCH 01/20] kasan: simplify quarantine_put call site
 From:   Andrey Konovalov <andreyknvl@google.com>
 To:     Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will.deacon@arm.com>,
@@ -70,179 +73,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-=== Overview
+Move get_free_info() call into quarantine_put() to simplify the call site.
 
-Hardware tag-based KASAN mode [1] is intended to eventually be used in
-production as a security mitigation. Therefore there's a need for finer
-control over KASAN features and for an existence of a kill switch.
+No functional changes.
 
-This patchset adds a few boot parameters for hardware tag-based KASAN that
-allow to disable or otherwise control particular KASAN features.
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
+Link: https://linux-review.googlesource.com/id/Iab0f04e7ebf8d83247024b7190c67c3c34c7940f
+---
+ mm/kasan/common.c     | 2 +-
+ mm/kasan/kasan.h      | 5 ++---
+ mm/kasan/quarantine.c | 3 ++-
+ 3 files changed, 5 insertions(+), 5 deletions(-)
 
-There's another planned patchset what will further optimize hardware
-tag-based KASAN, provide proper benchmarking and tests, and will fully
-enable tag-based KASAN for production use.
-
-Hardware tag-based KASAN relies on arm64 Memory Tagging Extension (MTE)
-[2] to perform memory and pointer tagging. Please see [3] and [4] for
-detailed analysis of how MTE helps to fight memory safety problems.
-
-The features that can be controlled are:
-
-1. Whether KASAN is enabled at all.
-2. Whether KASAN collects and saves alloc/free stacks.
-3. Whether KASAN panics on a detected bug or not.
-
-The patch titled "kasan: add and integrate kasan boot parameters" of this
-series adds a few new boot parameters.
-
-kasan.mode allows to choose one of three main modes:
-
-- kasan.mode=off - KASAN is disabled, no tag checks are performed
-- kasan.mode=prod - only essential production features are enabled
-- kasan.mode=full - all KASAN features are enabled
-
-The chosen mode provides default control values for the features mentioned
-above. However it's also possible to override the default values by
-providing:
-
-- kasan.stack=off/on - enable stacks collection
-                   (default: on for mode=full, otherwise off)
-- kasan.fault=report/panic - only report tag fault or also panic
-                         (default: report)
-
-If kasan.mode parameter is not provided, it defaults to full when
-CONFIG_DEBUG_KERNEL is enabled, and to prod otherwise.
-
-It is essential that switching between these modes doesn't require
-rebuilding the kernel with different configs, as this is required by
-the Android GKI (Generic Kernel Image) initiative.
-
-=== Benchmarks
-
-For now I've only performed a few simple benchmarks such as measuring
-kernel boot time and slab memory usage after boot. There's an upcoming
-patchset which will optimize KASAN further and include more detailed
-benchmarking results.
-
-The benchmarks were performed in QEMU and the results below exclude the
-slowdown caused by QEMU memory tagging emulation (as it's different from
-the slowdown that will be introduced by hardware and is therefore
-irrelevant).
-
-KASAN_HW_TAGS=y + kasan.mode=off introduces no performance or memory
-impact compared to KASAN_HW_TAGS=n.
-
-kasan.mode=prod (manually excluding tagging) introduces 3% of performance
-and no memory impact (except memory used by hardware to store tags)
-compared to kasan.mode=off.
-
-kasan.mode=full has about 40% performance and 30% memory impact over
-kasan.mode=prod. Both come from alloc/free stack collection.
-
-=== Notes
-
-This patchset is available here:
-
-https://github.com/xairy/linux/tree/up-boot-mte-v1
-
-and on Gerrit here:
-
-https://linux-review.googlesource.com/c/linux/kernel/git/torvalds/linux/+/3707
-
-This patchset is based on v8 of "kasan: add hardware tag-based mode for
-arm64" patchset [1].
-
-For testing in QEMU hardware tag-based KASAN requires:
-
-1. QEMU built from master [6] (use "-machine virt,mte=on -cpu max" arguments
-   to run).
-2. GCC version 10.
-
-[1] https://lkml.org/lkml/2020/11/4/1208
-[2] https://community.arm.com/developer/ip-products/processors/b/processors-ip-blog/posts/enhancing-memory-safety
-[3] https://arxiv.org/pdf/1802.09517.pdf
-[4] https://github.com/microsoft/MSRC-Security-Research/blob/master/papers/2020/Security%20analysis%20of%20memory%20tagging.pdf
-[5] https://source.android.com/devices/architecture/kernel/generic-kernel-image
-[6] https://github.com/qemu/qemu
-
-=== History
-
-Changes RFC v2 -> v1:
-- Rebrand the patchset from fully enabling production use to partially
-  addressing that; another optimization and testing patchset will be
-  required.
-- Rebase onto v8 of KASAN_HW_TAGS series.
-- Fix "ASYNC" -> "async" typo.
-- Rework depends condition for VMAP_STACK and update config text.
-- Remove unneeded reset_tag() macro, use kasan_reset_tag() instead.
-- Rename kasan.stack to kasan.stacks to avoid confusion with stack
-  instrumentation.
-- Introduce kasan_stack_collection_enabled() and kasan_is_enabled()
-  helpers.
-- Simplify kasan_stack_collection_enabled() usage.
-- Rework SLAB_KASAN flag and metadata allocation (see the corresponding
-  patch for details).
-- Allow cache merging with KASAN_HW_TAGS when kasan.stacks is off.
-- Use sync mode dy default for both prod and full KASAN modes.
-- Drop kasan.trap=sync/async boot parameter, as async mode isn't supported
-  yet.
-- Choose prod or full mode depending on CONFIG_DEBUG_KERNEL when no
-  kasan.mode boot parameter is provided.
-- Drop krealloc optimization changes, those will be included in a separate
-  patchset.
-- Update KASAN documentation to mention boot parameters.
-
-Changes RFC v1 -> RFC v2:
-- Rework boot parameters.
-- Drop __init from empty kasan_init_tags() definition.
-- Add cpu_supports_mte() helper that can be used during early boot and use
-  it in kasan_init_tags()
-- Lots of new KASAN optimization commits.
-
-Andrey Konovalov (20):
-  kasan: simplify quarantine_put call site
-  kasan: rename get_alloc/free_info
-  kasan: introduce set_alloc_info
-  kasan, arm64: unpoison stack only with CONFIG_KASAN_STACK
-  kasan: allow VMAP_STACK for HW_TAGS mode
-  kasan: remove __kasan_unpoison_stack
-  kasan: inline kasan_reset_tag for tag-based modes
-  kasan: inline random_tag for HW_TAGS
-  kasan: inline kasan_poison_memory and check_invalid_free
-  kasan: inline and rename kasan_unpoison_memory
-  kasan: add and integrate kasan boot parameters
-  kasan, mm: check kasan_enabled in annotations
-  kasan: simplify kasan_poison_kfree
-  kasan, mm: rename kasan_poison_kfree
-  kasan: don't round_up too much
-  kasan: simplify assign_tag and set_tag calls
-  kasan: clarify comment in __kasan_kfree_large
-  kasan: clean up metadata allocation and usage
-  kasan, mm: allow cache merging with no metadata
-  kasan: update documentation
-
- Documentation/dev-tools/kasan.rst | 180 ++++++++++++--------
- arch/Kconfig                      |   8 +-
- arch/arm64/kernel/sleep.S         |   2 +-
- arch/x86/kernel/acpi/wakeup_64.S  |   2 +-
- include/linux/kasan.h             | 253 +++++++++++++++++++++------
- include/linux/mm.h                |  22 ++-
- kernel/fork.c                     |   2 +-
- mm/kasan/common.c                 | 274 ++++++++++++++++++------------
- mm/kasan/generic.c                |  27 +--
- mm/kasan/hw_tags.c                | 171 ++++++++++++++++---
- mm/kasan/kasan.h                  | 113 ++++++++----
- mm/kasan/quarantine.c             |  13 +-
- mm/kasan/report.c                 |  61 ++++---
- mm/kasan/report_hw_tags.c         |   2 +-
- mm/kasan/report_sw_tags.c         |  13 +-
- mm/kasan/shadow.c                 |   5 +-
- mm/kasan/sw_tags.c                |  17 +-
- mm/mempool.c                      |   2 +-
- mm/slab_common.c                  |  13 +-
- 19 files changed, 816 insertions(+), 364 deletions(-)
-
+diff --git a/mm/kasan/common.c b/mm/kasan/common.c
+index 2bb0ef6da6bd..5712c66c11c1 100644
+--- a/mm/kasan/common.c
++++ b/mm/kasan/common.c
+@@ -308,7 +308,7 @@ static bool __kasan_slab_free(struct kmem_cache *cache, void *object,
+ 
+ 	kasan_set_free_info(cache, object, tag);
+ 
+-	quarantine_put(get_free_info(cache, object), cache);
++	quarantine_put(cache, object);
+ 
+ 	return IS_ENABLED(CONFIG_KASAN_GENERIC);
+ }
+diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
+index b0a57d8f9803..994be9979ffd 100644
+--- a/mm/kasan/kasan.h
++++ b/mm/kasan/kasan.h
+@@ -214,12 +214,11 @@ struct kasan_track *kasan_get_free_track(struct kmem_cache *cache,
+ 
+ #if defined(CONFIG_KASAN_GENERIC) && \
+ 	(defined(CONFIG_SLAB) || defined(CONFIG_SLUB))
+-void quarantine_put(struct kasan_free_meta *info, struct kmem_cache *cache);
++void quarantine_put(struct kmem_cache *cache, void *object);
+ void quarantine_reduce(void);
+ void quarantine_remove_cache(struct kmem_cache *cache);
+ #else
+-static inline void quarantine_put(struct kasan_free_meta *info,
+-				struct kmem_cache *cache) { }
++static inline void quarantine_put(struct kmem_cache *cache, void *object) { }
+ static inline void quarantine_reduce(void) { }
+ static inline void quarantine_remove_cache(struct kmem_cache *cache) { }
+ #endif
+diff --git a/mm/kasan/quarantine.c b/mm/kasan/quarantine.c
+index 580ff5610fc1..a0792f0d6d0f 100644
+--- a/mm/kasan/quarantine.c
++++ b/mm/kasan/quarantine.c
+@@ -161,11 +161,12 @@ static void qlist_free_all(struct qlist_head *q, struct kmem_cache *cache)
+ 	qlist_init(q);
+ }
+ 
+-void quarantine_put(struct kasan_free_meta *info, struct kmem_cache *cache)
++void quarantine_put(struct kmem_cache *cache, void *object)
+ {
+ 	unsigned long flags;
+ 	struct qlist_head *q;
+ 	struct qlist_head temp = QLIST_INIT;
++	struct kasan_free_meta *info = get_free_info(cache, object);
+ 
+ 	/*
+ 	 * Note: irq must be disabled until after we move the batch to the
 -- 
 2.29.1.341.ge80a0c044ae-goog
 
