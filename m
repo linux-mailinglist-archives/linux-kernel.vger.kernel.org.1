@@ -2,98 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8788B2A7A5E
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 10:22:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8C802A7A66
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 10:25:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730766AbgKEJV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 04:21:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57478 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726371AbgKEJV5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 04:21:57 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 32D3820786;
-        Thu,  5 Nov 2020 09:21:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604568116;
-        bh=mF+d9sIm/MeYnn43YMxCszIzEO4a0JVy1XN+RmmDr2Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HrklGPu25k2eVteIqn2VXi8jVAZLdT1hk/UZ5muAnSdLqinlPVtA/3yPruuTgJCYR
-         ygc6iTA0gyoXBAZNe1ENb+P6pmEBaj3dmAEDWMA0z1RfbQF/ADvQKpKNtAPyAIUN2O
-         Pe8UDkSBz7DN/wDNtAWHS4qcXgZ57QgFpYTvSjf8=
-Date:   Thu, 5 Nov 2020 10:22:45 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Casey Schaufler <casey@schaufler-ca.com>
-Cc:     casey.schaufler@intel.com, jmorris@namei.org,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-        linux-audit@redhat.com, keescook@chromium.org,
-        john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp,
-        paul@paul-moore.com, sds@tycho.nsa.gov,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org
-Subject: Re: [PATCH v22 12/23] LSM: Specify which LSM to display
-Message-ID: <20201105092245.GB3439341@kroah.com>
-References: <20201104234114.11346-1-casey@schaufler-ca.com>
- <20201104234114.11346-13-casey@schaufler-ca.com>
+        id S1730145AbgKEJZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 04:25:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726152AbgKEJZa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 04:25:30 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E44E2C0613D3
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 01:25:28 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id h22so857928wmb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 01:25:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6viq27xeTxIz8acrTQ2jRGDu1L7mOoiJCMIWrZFHf74=;
+        b=Pk45fCQQ7XngdYs3ziaP+ymxGzpakbhoUL7YEZ1pNacSF/8myikkPFyZUaHYgYV+MI
+         jUFI0zhMI1Q5QNm1leQcIJl/cJaDXfbVVx+4uWz9xdSA/Fb7U7QrV97m7ySMNgMlnXw7
+         FTghP2yCD22NR5UHFnL7m1NqQXsahfUUgl95A=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=6viq27xeTxIz8acrTQ2jRGDu1L7mOoiJCMIWrZFHf74=;
+        b=W2Dqr1j6banqqGiE+apCAEuN9rSVCqqkkGIg094MAKWp/+O3pW/uDQ5LIOi06azkV2
+         jQH6QWYvDgzApvl75UV1j/tEjHdiyfBkcVtsfspLG6/Hodnu+wcWyznfhgHojN6IJahL
+         kIMRnQAULCXwMmpFXOjRxhuS5BDdRfLQoph9Y9WDR/A/Owpb3xqBMzE9axDJ461SnPAC
+         wZtPbampadlKVzHSx9ESXnFe29td9DzMYgqKVyAcieqhDIfTSErM68fZEimzeXB57gHq
+         N3G9z2olSkXMvQYi/VtI6PrZ73YC3jRFcOSfQ5gWyi++Xw7pKN2g1DEATNZohLd98+Ar
+         ru7g==
+X-Gm-Message-State: AOAM532AlE0XS+wChwA9qxFntRRp/zwe7EFXI3GOUdHKN/Mh9IYIMtj/
+        nrOejCzPbqMAD4lzYdBY7uAhFA==
+X-Google-Smtp-Source: ABdhPJy3n17GilkYmW9UEcOuB53n8WrP7NQoee5RAk40ap5hD72YnDNsNHhquJauR7fQm17EWWmhuQ==
+X-Received: by 2002:a1c:497:: with SMTP id 145mr1699932wme.127.1604568327398;
+        Thu, 05 Nov 2020 01:25:27 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id d63sm209171wmd.12.2020.11.05.01.25.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Nov 2020 01:25:26 -0800 (PST)
+Date:   Thu, 5 Nov 2020 10:25:24 +0100
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Christoph Hellwig <hch@infradead.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        J??r??me Glisse <jglisse@redhat.com>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        Jan Kara <jack@suse.cz>, Pawel Osciak <pawel@osciak.com>,
+        KVM list <kvm@vger.kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+Subject: Re: [PATCH v5 05/15] mm/frame-vector: Use FOLL_LONGTERM
+Message-ID: <20201105092524.GQ401619@phenom.ffwll.local>
+Mail-Followup-To: John Hubbard <jhubbard@nvidia.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Christoph Hellwig <hch@infradead.org>,
+        J??r??me Glisse <jglisse@redhat.com>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        Jan Kara <jack@suse.cz>, Pawel Osciak <pawel@osciak.com>,
+        KVM list <kvm@vger.kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Tomasz Figa <tfiga@chromium.org>, Linux MM <linux-mm@kvack.org>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" <linux-media@vger.kernel.org>
+References: <7f29a42a-c408-525d-90b7-ef3c12b5826c@nvidia.com>
+ <CAKMK7uEw701AWXNJbRNM8Z+FkyUB5FbWegmSzyWPy9cG4W7OLA@mail.gmail.com>
+ <20201104140023.GQ36674@ziepe.ca>
+ <CAKMK7uH69hsFjYUkjg1aTh5f=q_3eswMSS5feFs6+ovz586+0A@mail.gmail.com>
+ <20201104162125.GA13007@infradead.org>
+ <CAKMK7uH=0+3FSR4LxP7bJUB4BsCcnCzfK2=D+2Am9QNmfZEmfw@mail.gmail.com>
+ <20201104163758.GA17425@infradead.org>
+ <20201104164119.GA18218@infradead.org>
+ <20201104181708.GU36674@ziepe.ca>
+ <d3497583-2338-596e-c764-8c571b7d22cf@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201104234114.11346-13-casey@schaufler-ca.com>
+In-Reply-To: <d3497583-2338-596e-c764-8c571b7d22cf@nvidia.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 03:41:03PM -0800, Casey Schaufler wrote:
-> Create a new entry "display" in the procfs attr directory for
-> controlling which LSM security information is displayed for a
-> process. A process can only read or write its own display value.
-> 
-> The name of an active LSM that supplies hooks for
-> human readable data may be written to "display" to set the
-> value. The name of the LSM currently in use can be read from
-> "display". At this point there can only be one LSM capable
-> of display active. A helper function lsm_task_display() is
-> provided to get the display slot for a task_struct.
-> 
-> Setting the "display" requires that all security modules using
-> setprocattr hooks allow the action. Each security module is
-> responsible for defining its policy.
-> 
-> AppArmor hook provided by John Johansen <john.johansen@canonical.com>
-> SELinux hook provided by Stephen Smalley <sds@tycho.nsa.gov>
-> 
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> Acked-by: Stephen Smalley <sds@tycho.nsa.gov>
-> Acked-by: Paul Moore <paul@paul-moore.com>
-> Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
-> Cc: linux-api@vger.kernel.org
-> ---
->  fs/proc/base.c                       |   1 +
->  include/linux/lsm_hooks.h            |  17 +++
->  security/apparmor/include/apparmor.h |   3 +-
->  security/apparmor/lsm.c              |  32 +++++
->  security/security.c                  | 169 ++++++++++++++++++++++++---
->  security/selinux/hooks.c             |  11 ++
->  security/selinux/include/classmap.h  |   2 +-
->  security/smack/smack_lsm.c           |   7 ++
->  8 files changed, 223 insertions(+), 19 deletions(-)
-> 
-> diff --git a/fs/proc/base.c b/fs/proc/base.c
-> index 0f707003dda5..7432f24f0132 100644
-> --- a/fs/proc/base.c
-> +++ b/fs/proc/base.c
-> @@ -2806,6 +2806,7 @@ static const struct pid_entry attr_dir_stuff[] = {
->  	ATTR(NULL, "fscreate",		0666),
->  	ATTR(NULL, "keycreate",		0666),
->  	ATTR(NULL, "sockcreate",	0666),
-> +	ATTR(NULL, "display",		0666),
+On Wed, Nov 04, 2020 at 10:44:56AM -0800, John Hubbard wrote:
+> On 11/4/20 10:17 AM, Jason Gunthorpe wrote:
+> > On Wed, Nov 04, 2020 at 04:41:19PM +0000, Christoph Hellwig wrote:
+> > > On Wed, Nov 04, 2020 at 04:37:58PM +0000, Christoph Hellwig wrote:
+> > > > On Wed, Nov 04, 2020 at 05:26:58PM +0100, Daniel Vetter wrote:
+> > > > > What we're discussing is whether gup_fast and pup_fast also obey this,
+> > > > > or fall over and can give you the struct page that's backing the
+> > > > > dma_mmap_* memory. Since the _fast variant doesn't check for
+> > > > > vma->vm_flags, and afaict that's the only thing which closes this gap.
+> > > > > And like you restate, that would be a bit a problem. So where's that
+> > > > > check which Jason&me aren't spotting?
+> > > > 
+> > > > remap_pte_range uses pte_mkspecial to set up the PTEs, and gup_pte_range
+> > > > errors out on pte_special.  Of course this only works for the
+> > > > CONFIG_ARCH_HAS_PTE_SPECIAL case, for other architectures we do have
+> > > > a real problem.
+> > > 
+> > > Except that we don't really support pte-level gup-fast without
+> > > CONFIG_ARCH_HAS_PTE_SPECIAL, and in fact all architectures selecting
+> > > HAVE_FAST_GUP also select ARCH_HAS_PTE_SPECIAL, so we should be fine.
 
-That's a vague name, any chance it can be more descriptive?
+Thanks for the explainer. I guess I can go back to _fast and instead
+adjust the commit message to explain why that's all fine.
 
-And where is the Documentation/ABI/ entries for all of this, how does
-userspace know what these things are, and how to use them?
+> > Mm, I thought it was probably the special flag..
+> > 
+> > Knowing that CONFIG_HAVE_FAST_GUP can't be set without
+> > CONFIG_ARCH_HAS_PTE_SPECIAL is pretty insightful, can we put that in
+> > the Kconfig?
+> > 
+> > config HAVE_FAST_GUP
+> >          depends on MMU
+> >          depends on ARCH_HAS_PTE_SPECIAL
+> >          bool
+> > 
+> Well, the !CONFIG_ARCH_HAS_PTE_SPECIAL case points out in a comment that
+> gup-fast is not *completely* unavailable there, so I don't think you want
+> to shut it off like that:
+> 
+> /*
+>  * If we can't determine whether or not a pte is special, then fail immediately
+>  * for ptes. Note, we can still pin HugeTLB and THP as these are guaranteed not
+>  * to be special.
+>  *
+>  * For a futex to be placed on a THP tail page, get_futex_key requires a
+>  * get_user_pages_fast_only implementation that can pin pages. Thus it's still
+>  * useful to have gup_huge_pmd even if we can't operate on ptes.
+>  */
 
-thanks,
-
-greg k-h
+We support hugepage faults in gpu drivers since recently, and I'm not
+seeing a pud_mkhugespecial anywhere. So not sure this works, but probably
+just me missing something again.
+-Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
