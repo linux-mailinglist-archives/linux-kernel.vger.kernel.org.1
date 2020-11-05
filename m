@@ -2,125 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A67A82A8460
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 18:03:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 189C72A8464
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 18:04:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731516AbgKERC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 12:02:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40494 "EHLO
+        id S1731518AbgKEREX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 12:04:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729980AbgKERC4 (ORCPT
+        with ESMTP id S1726557AbgKEREX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 12:02:56 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3D7CC0613CF;
-        Thu,  5 Nov 2020 09:02:54 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id y7so788801pfq.11;
-        Thu, 05 Nov 2020 09:02:54 -0800 (PST)
+        Thu, 5 Nov 2020 12:04:23 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83D24C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 09:04:21 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id e7so1828866pfn.12
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 09:04:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MFo6Y7rYb87Eb88yyF9Bn0rmWzJw6Hl9bFsypbTQVcY=;
-        b=SsicXe73212qOk3V2lmG298fU6pI6n8NPV5V83gOgrX2NYmDvjMmXX1oMK7aaz9UYY
-         J3NhFT+8ZM7p8/B5DYIqkAMY4OzBqRCWDljXx0IPDzxt6SmPGWFkVQtbwrwOHMwrenVA
-         BQDlA54czjuSjNJrnXW+ovEvH0/WXPKCCbLcvb5eeyNb+Uf5x3vwci6jrgBhgQMl/6bD
-         iHu2i7q88SMGpWQH59nvzEuu1nJN5s8FbTK09fJQd0tDfeQMKKQ7QaMHkm/3s04Qx1xY
-         9t2pxYyp65HYTwEa0xNc20qyhA8mtLEXPCybpu4UJ92KWrADaJ/Q++gC4rUwOyiQX2b4
-         dSTg==
+        d=microgate-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=AiRUvyKwcp21/iTOlatjBOFIvzQH7MDgnHUMinEwyFA=;
+        b=zJkC8utyCvLJqhr9LnyzCmVEJmkhwpjjXSOKpeDRyW9vH4Tg+uDoeqqr3sPO/Fs9yC
+         fQPQe6LUlBRvQaAnkRoqwYbSyyy/HOP6vh3RhKhCiHLpnq1rqtH1OfahpJHaOzplCEUX
+         9rj+6teQfPW8j3BFLPONX6qxZPNYbi4ARsjyGry071275dQYWotQdjdknXtcLD3U0jdJ
+         PqnQINs9nXrGG6XaZ3kPH1VJrAWTfdgJQucN/BzrPR+GbDo/76DNeCCOzcjinzjQDf/m
+         YE8WvHkL9HmrjyqMFxFsAvmVrs3hmdAMm6Zg+qdBgDrZt57Gavp1TXDpXFX48fBQ5Gg+
+         oBCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=MFo6Y7rYb87Eb88yyF9Bn0rmWzJw6Hl9bFsypbTQVcY=;
-        b=iwb+qpJTMmLmpjQjK7ch1q/Ub8F9tPXAHCEdYH3PwsrTOsKhOpB62os3es1iW1sqUK
-         JetRKCaLuzcm3KHsqpDZHK6Yojaa3SlTnmRK/xIlu7sAbdSqesqWLSr7TmkoZQsmm817
-         QKy+ssIPBZVVl+s8k/E5oXHUTo0pf/TpH9XDzHribudkYLWiyBwuj2vFvS4xl6z8zBNR
-         6KmxXet7+BFySoEij7sGAJkVtNM4l9RF/vV+0mRRXAsrk9n+mAY/2x21pZ/JLaDujUa3
-         jdGl0ncxT4dfKe/AJZ05Jn/qDhG+USetL2S1DbNGxQc5vUMhheCNrz1nSl1dZ5gPfnSC
-         Jvqw==
-X-Gm-Message-State: AOAM533LJ1ZAORE3EVK7xuE/aBpWQ/GY6y0Nugjj6OFOet7a7++W1Obi
-        s6p6Uck3wAfvPYZsuWcUdn4=
-X-Google-Smtp-Source: ABdhPJwE7qwJZo1qbYdWfUdjZNFKU/vsS216FqHbSWwFFHJIQ/6Dy/foejFEnMsWpMoV6D7q8QaVrQ==
-X-Received: by 2002:a63:c945:: with SMTP id y5mr3274005pgg.118.1604595774281;
-        Thu, 05 Nov 2020 09:02:54 -0800 (PST)
-Received: from bbox-1.mtv.corp.google.com ([2620:15c:211:201:7220:84ff:fe09:5e58])
-        by smtp.gmail.com with ESMTPSA id b185sm2972745pgc.68.2020.11.05.09.02.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 09:02:53 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-From:   Minchan Kim <minchan@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm <linux-mm@kvack.org>,
-        Minchan Kim <minchan@kernel.org>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Harish Sriram <harish@linux.ibm.com>, stable@vger.kernel.org
-Subject: [PATCH] Revert "mm/vunmap: add cond_resched() in vunmap_pmd_range"
-Date:   Thu,  5 Nov 2020 09:02:49 -0800
-Message-Id: <20201105170249.387069-1-minchan@kernel.org>
-X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=AiRUvyKwcp21/iTOlatjBOFIvzQH7MDgnHUMinEwyFA=;
+        b=JRp+CTC/dvVlBS2Zv9wEkYAWc18eK4l9ds+EqIqJYC7/zRlNKjqgxfGJ++kIitXx5j
+         OVewuUW7QNYf74W/BylB/0kX4CUyc/6UviCEw27OK2MGVoegfl7lWJMlVTWUJjAi1+lj
+         3xeicigfXnvXP6RPTZidgG9kt8YCWqlfo5jPybFVRHQ0kCHXfNI+cIMpEkU0nnr/qxll
+         CclUcGmHwBCsg5755Cg/AefzI8RKl3eVMfEKRkAYSV1ix3juOjottojJryBQQE8ilQZl
+         F4oGxP1Dg2krZw+B/BIXXCKRU8UJ8r/ceLU+t4BboI18SkPZqyOBxmkzIxwlkfmRf6+a
+         8eKA==
+X-Gm-Message-State: AOAM533EoV6HwoT3fhDj6tfkjMySVz5H43z6HproaEUpuifVgvHWrfxz
+        vP/MDcbo81w663MGrv8mO7Zn3w==
+X-Google-Smtp-Source: ABdhPJxNja1n/hMUsb6d7miai/EwlVxjk1YPBVcn5lPqtE2ozo650PVaZhKGDLtOvnFwqgEUfN+k9w==
+X-Received: by 2002:a63:e74a:: with SMTP id j10mr3378850pgk.208.1604595861068;
+        Thu, 05 Nov 2020 09:04:21 -0800 (PST)
+Received: from [192.168.1.77] (c-208-53-111-167.customer.broadstripe.net. [208.53.111.167])
+        by smtp.gmail.com with ESMTPSA id i26sm3331174pfq.148.2020.11.05.09.04.19
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 05 Nov 2020 09:04:20 -0800 (PST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.15\))
+Subject: Re: [PATCH 27/36] tty: synclinkmp: Mark never checked 'readval' as
+ __always_unused
+From:   Paul Fulghum <paulkf@microgate.com>
+In-Reply-To: <54D08301-C89F-4AEB-B9A0-6CED6D5EEDA6@microgate.com>
+Date:   Thu, 5 Nov 2020 09:04:18 -0800
+Cc:     David Laight <David.Laight@ACULAB.COM>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <7C858DBE-A5A1-4027-A44B-85F6AE3AE579@microgate.com>
+References: <20201104193549.4026187-1-lee.jones@linaro.org>
+ <20201104193549.4026187-28-lee.jones@linaro.org>
+ <0a4043ee-dad5-7691-8c67-db73d3c12f52@kernel.org>
+ <20201105084341.GZ4488@dell>
+ <a95f8d0d-28ef-7351-cdbb-7da5ad8aa9ad@kernel.org>
+ <6515b9ff5a9343f5a713e337f41450cc@AcuMS.aculab.com>
+ <20201105112728.GJ4488@dell>
+ <54D08301-C89F-4AEB-B9A0-6CED6D5EEDA6@microgate.com>
+To:     Lee Jones <lee.jones@linaro.org>
+X-Mailer: Apple Mail (2.3445.104.15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit e47110e90584a22e9980510b00d0dfad3a83354e.
 
-While I was doing zram testing, I found sometimes decompression failed
-since the compression buffer was corrupted. With investigation,
-I found below commit calls cond_resched unconditionally so it could
-make a problem in atomic context if the task is reschedule.
+Another candidate for removal is drivers/char/pcmcia/synclink_cs.c
 
-Revert the original commit for now.
+Everything I said about synclink.c/synclinkmp.c is true of that as well: =
+the hardware stopped being manufactured decades ago and is not available =
+for testing. The possibility of these cards still being =
+around/functional for use with the latest kernel is about zero.
 
-[   55.109012] BUG: sleeping function called from invalid context at mm/vmalloc.c:108^M
-[   55.110774] in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 946, name: memhog^M
-[   55.111973] 3 locks held by memhog/946:^M
-[   55.112807]  #0: ffff9d01d4b193e8 (&mm->mmap_lock#2){++++}-{4:4}, at: __mm_populate+0x103/0x160^M
-[   55.114151]  #1: ffffffffa3d53de0 (fs_reclaim){+.+.}-{0:0}, at: __alloc_pages_slowpath.constprop.0+0xa98/0x1160^M
-[   55.115848]  #2: ffff9d01d56b8110 (&zspage->lock){.+.+}-{3:3}, at: zs_map_object+0x8e/0x1f0^M
-[   55.118947] CPU: 0 PID: 946 Comm: memhog Not tainted 5.9.3-00011-gc5bfc0287345-dirty #316^M
-[   55.121265] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1 04/01/2014^M
-[   55.122540] Call Trace:^M
-[   55.122974]  dump_stack+0x8b/0xb8^M
-[   55.123588]  ___might_sleep.cold+0xb6/0xc6^M
-[   55.124328]  unmap_kernel_range_noflush+0x2eb/0x350^M
-[   55.125198]  unmap_kernel_range+0x14/0x30^M
-[   55.125920]  zs_unmap_object+0xd5/0xe0^M
-[   55.126604]  zram_bvec_rw.isra.0+0x38c/0x8e0^M
-[   55.127462]  zram_rw_page+0x90/0x101^M
-[   55.128199]  bdev_write_page+0x92/0xe0^M
-[   55.128957]  ? swap_slot_free_notify+0xb0/0xb0^M
-[   55.129841]  __swap_writepage+0x94/0x4a0^M
-[   55.130636]  ? do_raw_spin_unlock+0x4b/0xa0^M
-[   55.131462]  ? _raw_spin_unlock+0x1f/0x30^M
-[   55.132261]  ? page_swapcount+0x6c/0x90^M
-[   55.133038]  pageout+0xe3/0x3a0^M
-[   55.133702]  shrink_page_list+0xb94/0xd60^M
-[   55.134626]  shrink_inactive_list+0x158/0x460^M
+If Lee Jones does wants to add that to his patch, great. If not then I =
+can do so.
 
-Cc: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
-Cc: Harish Sriram <harish@linux.ibm.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Minchan Kim <minchan@kernel.org>
----
- mm/vmalloc.c | 2 --
- 1 file changed, 2 deletions(-)
+(I resent this message in plain text after it was rejected for HTML, =
+sorry if anyone got a duplicate.)
 
-diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-index 6ae491a8b210..a4f1d39ce710 100644
---- a/mm/vmalloc.c
-+++ b/mm/vmalloc.c
-@@ -102,8 +102,6 @@ static void vunmap_pmd_range(pud_t *pud, unsigned long addr, unsigned long end,
- 		if (pmd_none_or_clear_bad(pmd))
- 			continue;
- 		vunmap_pte_range(pmd, addr, next, mask);
--
--		cond_resched();
- 	} while (pmd++, addr = next, addr != end);
- }
- 
--- 
-2.29.1.341.ge80a0c044ae-goog
 
+> On Nov 5, 2020, at 3:27 AM, Lee Jones <lee.jones@linaro.org> wrote:
+>=20
+> Will post the removal patches when my tests finish.
