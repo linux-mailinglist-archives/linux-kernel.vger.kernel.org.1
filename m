@@ -2,132 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B01BA2A81E2
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 16:09:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A6872A81E8
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 16:11:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731182AbgKEPI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 10:08:56 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:53862 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731050AbgKEPIy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 10:08:54 -0500
-Received: from zn.tnic (p200300ec2f0ee5009a3ef9f4dfadca8f.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:e500:9a3e:f9f4:dfad:ca8f])
+        id S1731040AbgKEPLi convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 5 Nov 2020 10:11:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51144 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728371AbgKEPLh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 10:11:37 -0500
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF3C6C0613CF;
+        Thu,  5 Nov 2020 07:11:37 -0800 (PST)
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id AA5111EC02C1;
-        Thu,  5 Nov 2020 16:08:52 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1604588932;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=SNONstbNvXEZ9XiIXgtxs4kO9p+En2BqYsKM95T00+c=;
-        b=NDqrJZpfZMhASoS5ddG9pJaiKrova5DbT+9vUdcT4HVdT62a1HKc63cmVZJEK1LetaazJS
-        Z7IJtRRWbe99qK9OpRzcJx24TdSK50TU0aBNPyv6s+AWmP1U3U1a1KcmhPDFoEpcajkkIZ
-        d/I01iO9UzuXSXu5GPLajxfU9NT/fIk=
-Date:   Thu, 5 Nov 2020 16:08:39 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jethro Beekman <jethro@fortanix.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com, kai.huang@intel.com,
-        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
-        luto@kernel.org, nhorman@redhat.com, npmccallum@redhat.com,
-        puiterwijk@redhat.com, rientjes@google.com, tglx@linutronix.de,
-        yaozhangx@google.com, mikko.ylinen@intel.com
-Subject: Re: [PATCH v40 09/24] x86/sgx: Add SGX page allocator functions
-Message-ID: <20201105150839.GB25636@zn.tnic>
-References: <20201104145430.300542-1-jarkko.sakkinen@linux.intel.com>
- <20201104145430.300542-10-jarkko.sakkinen@linux.intel.com>
+        (Authenticated sender: bbrezillon)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 08C0F1F464C0;
+        Thu,  5 Nov 2020 15:11:36 +0000 (GMT)
+Date:   Thu, 5 Nov 2020 16:11:32 +0100
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     =?UTF-8?B?Q8OpZHJpYw==?= Le Goater <clg@kaod.org>,
+        <robh+dt@kernel.org>
+Cc:     Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>, <broonie@kernel.org>,
+        <joel@jms.id.au>, <andrew@aj.id.au>, <bbrezillon@kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-aspeed@lists.ozlabs.org>, <linux-spi@vger.kernel.org>,
+        <BMC-SW@aspeedtech.com>
+Subject: Re: [v3 4/4] spi: aspeed: Add ASPEED FMC/SPI memory controller
+ driver
+Message-ID: <20201105161132.37eb3265@collabora.com>
+In-Reply-To: <fd8fa472-53bb-c992-3dc2-5a984a439c07@kaod.org>
+References: <20201105120331.9853-1-chin-ting_kuo@aspeedtech.com>
+        <20201105120331.9853-5-chin-ting_kuo@aspeedtech.com>
+        <fd8fa472-53bb-c992-3dc2-5a984a439c07@kaod.org>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201104145430.300542-10-jarkko.sakkinen@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 04:54:15PM +0200, Jarkko Sakkinen wrote:
-> The previous patch initialized a simple SGX page allocator.  Add functions
-> for runtime allocation and free.
+Hi,
+
+On Thu, 5 Nov 2020 15:09:11 +0100
+Cédric Le Goater <clg@kaod.org> wrote:
+
+> Hello Chin-Ting,
 > 
-> This allocator and its algorithms are as simple as it gets.  They do a
-> linear search across all EPC sections and find the first free page.  They
-> are not NUMA aware and only hand out individual pages.  The SGX hardware
-> does not support large pages, so something more complicated like a buddy
-> allocator is unwarranted.
+> Thanks for this driver. It's much cleaner than the previous and we should 
+> try adding support for the AST2500 SoC also. I guess we can keep the old 
+> driver for the AST2400 which has a different register layout.
 > 
-> The free function (sgx_free_epc_page()) implicitly calls ENCLS[EREMOVE],
-> which returns the page to the uninitialized state.  This ensures that the
-> page is ready for use at the next allocation.
+> On the patchset, I think we should split this patch in three : 
 > 
-> Acked-by: Jethro Beekman <jethro@fortanix.com>
-> Reviewed-by: Darren Kenny <darren.kenny@oracle.com>
-> Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-> ---
->  arch/x86/kernel/cpu/sgx/main.c | 62 ++++++++++++++++++++++++++++++++++
->  arch/x86/kernel/cpu/sgx/sgx.h  |  3 ++
->  2 files changed, 65 insertions(+)
+>  - basic support
+>  - AHB window calculation depending on the flash size
+>  - read training support  
+
+I didn't look closely at the implementation, but if the read training
+tries to read a section of the NOR, I'd recommend exposing that feature
+through spi-mem and letting the SPI-NOR framework trigger the training
+instead of doing that at dirmap creation time (remember that spi-mem is
+also used for SPI NANDs which use the dirmap API too, and this training
+is unlikely to work there).
+
+The SPI-NOR framework could pass a read op template and a reference
+pattern such that all the spi-mem driver has to do is execute the
+template op and compare the output to the reference buffer.
+
+
 > 
-> diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
-> index 956055a0eff6..b9ac438a13a4 100644
-> --- a/arch/x86/kernel/cpu/sgx/main.c
-> +++ b/arch/x86/kernel/cpu/sgx/main.c
-> @@ -85,6 +85,68 @@ static bool __init sgx_page_reclaimer_init(void)
->  	return true;
->  }
+> We should avoid magic values when setting registers. This is confusing 
+> and defines are much better.
 >  
-> +static struct sgx_epc_page *__sgx_alloc_epc_page_from_section(struct sgx_epc_section *section)
-> +{
-> +	struct sgx_epc_page *page;
-> +
-> +	if (list_empty(&section->page_list))
-> +		return NULL;
-> +
-> +	page = list_first_entry(&section->page_list, struct sgx_epc_page, list);
-> +	list_del_init(&page->list);
-> +
-> +	return page;
-> +}
-> +
-> +/**
-> + * __sgx_alloc_epc_page() - Allocate an EPC page
-> + *
-> + * Iterate through EPC sections and borrow a free EPC page to the caller. When a
-> + * page is no longer needed it must be released with sgx_free_epc_page().
-> + *
-> + * Return:
-> + *   an EPC page,
-> + *   -errno on error
-> + */
-> +struct sgx_epc_page *__sgx_alloc_epc_page(void)
-> +{
-> +	struct sgx_epc_section *section;
-> +	struct sgx_epc_page *page;
-> +	int i;
-> +
-> +	for (i = 0; i < sgx_nr_epc_sections; i++) {
-> +		section = &sgx_epc_sections[i];
-> +		spin_lock(&section->lock);
-> +		page = __sgx_alloc_epc_page_from_section(section);
-> +		spin_unlock(&section->lock);
+> AST2500 support will be a bit challenging because HW does not allow    
+> to configure a 128MB AHB window, max is 120MB This is a bug and the work 
+> around is to use user mode for the remaining 8MB. Something to keep in
+> mind.
 
-Something for a future cleanup: you can put that logic into
-__sgx_alloc_epc_page_from_section() and simplify this one call site.
+Most SPI-MEM controllers don't have such a big dirmap window anyway, and
+that shouldn't be a problem, because we don't expose the direct mapping
+directly (as would be done if we were trying to support something like
+XIP). That means that, assuming your controller allows controlling the
+base spi-mem address the direct mapping points to, you should be able
+to adjust the window at runtime and make it point where you requested.
 
-But not now - you can do that later or if v41 needs to be sent out...
+Note that dirmap_{read,write}() are allowed to return less data than
+requested thus simplifying the case where a specific access requires a
+window adjustment in the middle of an read/write operation.
 
-Thx.
+Regards,
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Boris
