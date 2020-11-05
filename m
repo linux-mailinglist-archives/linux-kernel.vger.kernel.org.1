@@ -2,161 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63FAD2A7E75
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 13:21:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECB922A7E78
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 13:21:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730391AbgKEMV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 07:21:27 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:45822 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726067AbgKEMV0 (ORCPT
+        id S1730473AbgKEMVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 07:21:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52662 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725468AbgKEMVk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 07:21:26 -0500
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0A5CL7NJ062582;
-        Thu, 5 Nov 2020 06:21:07 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1604578867;
-        bh=Z4RRec5l05SjKlPI6lwgZrSpZa5Ph7B/vgfrZlgH4EA=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=V8jjEVSrFmvlfWWmuz3412aUGmrlgd35gOcW7Ewo2woR8zFtS+QQpOt+S8yfDWKOa
-         29JaHlAJCjJDlP/YjVH6JPswMaJRBTP6uP0Jr88md9/y2FJxyLTgNvZSqRx0s9hrOa
-         CaynBYj5X5xdiSz+VLY43Vi3j0FC8Jw8ziiA80NU=
-Received: from DLEE106.ent.ti.com (dlee106.ent.ti.com [157.170.170.36])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0A5CL7K8016114
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 5 Nov 2020 06:21:07 -0600
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 5 Nov
- 2020 06:21:07 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 5 Nov 2020 06:21:06 -0600
-Received: from [10.250.233.179] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0A5CL4LN045327;
-        Thu, 5 Nov 2020 06:21:04 -0600
-Subject: Re: [PATCH 0/3] mtd: Make sure UBIFS does not do multi-pass page
- programming on flashes that don't support it
-To:     Pratyush Yadav <p.yadav@ti.com>
-CC:     Richard Weinberger <richard.weinberger@gmail.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        <linux-mtd@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20201012180404.6476-1-p.yadav@ti.com>
- <20201027111804.e27pyvf62eksngmp@ti.com>
- <CAFLxGvxc=EqBStzLz3ApwYDomKMe=WeK22ohfPQs1WrMCsaVQg@mail.gmail.com>
- <fa578bda-132a-320a-264c-d973bae194dd@ti.com>
- <20201103124527.x6mp6slck44aotzn@ti.com>
-From:   Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <4c0e3207-72a4-8c1a-5fca-e9f30cc60828@ti.com>
-Date:   Thu, 5 Nov 2020 17:51:03 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 5 Nov 2020 07:21:40 -0500
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8277C0613CF;
+        Thu,  5 Nov 2020 04:21:39 -0800 (PST)
+Received: by mail-lf1-x143.google.com with SMTP id h6so2008141lfj.3;
+        Thu, 05 Nov 2020 04:21:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nl8/XcSo5npDTXvRYjKf28LcA8OJMzH5M7EJrj7FCrE=;
+        b=OazK+A8kxglaaIuq2KGJ4seXC7YezLIYXArpgFKHCPuJGB5FY6rBtFmGwRirWINIo/
+         jGvtqgbVj+Y2vpn6utxGORIL0NMfb5B7xNJoZ+GFghMioXqWszbkmnV/CrunIYc1EYEx
+         f4W78KdrarisPxECT8yVgmYORHwBk9bOsPKOWbXcERcCjRBBbSWxtq6cwft6xdqVLyIG
+         0XZUH2qKzDbmdvaKrgMIB82m1mQwFIzbfqnMrz7ucVMTXMvmoFYLHCSGHGD2LNJ3xben
+         wE72wwOkIKQ45gt/Q6MoQL4evHDkiO3pTa/LdOYuR0sui+AuG6JPjl0w4ct+TXPuhcNM
+         TvWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nl8/XcSo5npDTXvRYjKf28LcA8OJMzH5M7EJrj7FCrE=;
+        b=hX1ZS9/YL/Biin9flndXHfWWXeq1Biurj+ayjVgmeMXJsqZ6aEyd9gjgA3e/wWnTsg
+         DKfWzcumQyQ4o5iHQzF8aIss1GzZR8kqw649ZmNzGc4jkd2nyW8NRHsr3Z/htK1Z7PZK
+         ohO8/4Uxs4UsKpnZNCQIoeG7POR7MjnbRh4YzW9ELSj0944SWyL1WW0WDcdxvzFZHRzN
+         CPZxR834NYM3NgeFCOmOo58kh/HFm3XzfL1/H5vDV1Z80LIZPrP3BdiVw372vp7+Nu09
+         Oi/3Y63nqpmNGHv2LlIH7UkbYwG/WuNa0iR0XHR8NvKC8tijKUklCpA6/BGiZx7jFjGU
+         D8rw==
+X-Gm-Message-State: AOAM531CC7plxoqs0kUERhkviIsicZ8AV4oM3UsnVocJTUKugjb4h4MZ
+        wcOplozteouzEx1uC0EH1Sie0vF20STNJ1C+Dck=
+X-Google-Smtp-Source: ABdhPJynSSNGXgj8qUlEI1G+YZTJD3PV1ObCH4cbm6KUO684u+n7sV+CDebG6HE28cKAAwU5UXDx9VOaMcgPYaqS8xM=
+X-Received: by 2002:ac2:4d58:: with SMTP id 24mr872009lfp.32.1604578898187;
+ Thu, 05 Nov 2020 04:21:38 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201103124527.x6mp6slck44aotzn@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20201022122421.133976-1-gnurou@gmail.com> <c6454292-935b-f14a-e743-838ccabc6590@xs4all.nl>
+ <CAAVeFuKCEQYBs84ssCvwAkGUxGikeDFc+XNX2LzkENGc5B1n8g@mail.gmail.com> <db7a95b0-3d63-ed38-fb8a-62f32c83c13e@xs4all.nl>
+In-Reply-To: <db7a95b0-3d63-ed38-fb8a-62f32c83c13e@xs4all.nl>
+From:   Alexandre Courbot <gnurou@gmail.com>
+Date:   Thu, 5 Nov 2020 21:21:26 +0900
+Message-ID: <CAAVeFuL8TaArTd_fOLSSE-854n9vwpob5LxdqgHNa-bTTn5Gxg@mail.gmail.com>
+Subject: Re: [PATCH] media: v4l2-mem2mem: always call poll_wait() on queues
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media <linux-media@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Nov 3, 2020 at 6:48 PM Hans Verkuil <hverkuil-cisco@xs4all.nl> wrote:
+>
+> On 03/11/2020 09:51, Alexandre Courbot wrote:
+> > Hi Hans,
+> >
+> > On Sat, Oct 31, 2020 at 12:09 AM Hans Verkuil <hverkuil-cisco@xs4all.nl> wrote:
+> >>
+> >> On 22/10/2020 14:24, Alexandre Courbot wrote:
+> >>> do_poll()/do_select() seem to set the _qproc member of poll_table to
+> >>> NULL the first time they are called on a given table, making subsequent
+> >>> calls of poll_wait() on that table no-ops. This is a problem for mem2mem
+> >>> which calls poll_wait() on the V4L2 queues' waitqueues only when a
+> >>> queue-related event is requested, which may not necessarily be the case
+> >>> during the first poll.
+> >>>
+> >>> For instance, a stateful decoder is typically only interested in
+> >>> EPOLLPRI events when it starts, and will switch to listening to both
+> >>> EPOLLPRI and EPOLLIN after receiving the initial resolution change event
+> >>> and configuring the CAPTURE queue. However by the time that switch
+> >>> happens and v4l2_m2m_poll_for_data() is called for the first time,
+> >>> poll_wait() has become a no-op and the V4L2 queues waitqueues thus
+> >>> cannot be registered.
+> >>>
+> >>> Fix this by moving the registration to v4l2_m2m_poll() and do it whether
+> >>> or not one of the queue-related events are requested.
+> >>
+> >> This looks good, but would it be possible to add a test for this to
+> >> v4l2-compliance? (Look for POLL_MODE_EPOLL in v4l2-test-buffers.cpp)
+> >>
+> >> If I understand this right, calling EPOLL_CTL_ADD for EPOLLPRI, then
+> >> calling EPOLL_CTL_ADD for EPOLLIN/OUT would trigger this? Or does there
+> >> have to be an epoll_wait call in between?
+> >
+> > Even without an epoll_wait() in between the behavior is visible.
+> > v4l2_m2m_poll() will be called once during the initial EPOLL_CTL_ADD
+> > and this will trigger the bug.
+> >
+> >> Another reason for adding this test is that I wonder if regular capture
+> >> or output V4L2 devices don't have the same issue.
+> >>
+> >> It's a very subtle bug and so adding a test for this to v4l2-compliance
+> >> would be very useful.
+> >
+> > I fully agree, this is very counter-intuitive since what basically
+> > happens is that the kernel's poll_wait() function becomes a no-op
+> > after the poll() hook of a driver is called for the first time. There
+> > is no way one can expect this behavior just from browsing the code so
+> > this is likely to affect other drivers.
+> >
+> > As for the test itself, we can easily reproduce the conditions for
+> > failure in v4l2-test-buffers.cpp's captureBufs() function, but doing
+> > so will make the streaming tests fail without being specific about the
+> > cause. Or maybe we should add another pollmode to specifically test
+> > epoll in this setup? Can I get your thoughts?
+>
+> No, just keep it as part of the poll test. Just add comments at the place
+> where it fails describing this error.
+>
+> After all, it *is* a poll() bug, so it is only fair that it is tested as
+> part of the epoll test.
+>
+> Can you call EPOLL_CTL_ADD with ev.events set to 0? And then call it again
+> with the actual value that you need? If that triggers this issue as well,
+> then that is a nice test (but perhaps EPOLL_CTL_ADD won't call poll() if
+> ev.events is 0, but perhaps EPOLLERR would work instead of 0).
 
+Yup, actually the following is enough to make v4l2-compliance -s fail
+with vicodec:
 
-On 11/3/20 6:15 PM, Pratyush Yadav wrote:
-> On 03/11/20 05:05PM, Vignesh Raghavendra wrote:
->>
->>
->> On 11/1/20 3:14 AM, Richard Weinberger wrote:
->>> On Tue, Oct 27, 2020 at 12:24 PM Pratyush Yadav <p.yadav@ti.com> wrote:
->>>>> [0] https://lore.kernel.org/linux-mtd/20201005153138.6437-1-p.yadav@ti.com/
->>>>
->>>> Ping. Any comments on the series?
->>>
->>> From the UBIFS point of view I'd like to avoid as many device specific
->>> settings as possible.
->>> We check already for NOR flash, checking for NOR *and* SPI_NOR_NO_MULTI_PASS_PP
->>> feels a bit clumsy.
->>>
->>> Tudor, what do you think about SPI_NOR_NO_MULTI_PASS_PP?
->>> This kind of NOR seems to be a little NAND'ish. Maybe we can hide this detail
->>> in the mtd framework?
->>>
->>
->> Agree with Richard. I don't see need for SPI_NOR_NO_MULTI_PASS_PP. From
->> MTD point of view setting mtd->writesize to be equal to pagesize should
->> be enough. Its upto clients of MTD devices to ensure there is no multi
->> pass programming within a "writesize" block.
-> 
-> That is what I initially thought too but then I realized that multi-pass 
-> programming is completely different from page-size programming. Instead 
-> of writing 4 bytes twice, you can zero out the entire page in one single 
-> operation. You would be compliant with the write size requirement but 
-> you still do multi-pass programming because you did not erase the page 
-> before this operation.
-> 
+diff --git a/utils/v4l2-compliance/v4l2-test-buffers.cpp
+b/utils/v4l2-compliance/v4l2-test-buffers.cpp
+index 8000db23..b63326cd 100644
+--- a/utils/v4l2-compliance/v4l2-test-buffers.cpp
++++ b/utils/v4l2-compliance/v4l2-test-buffers.cpp
+@@ -903,6 +903,10 @@ static int captureBufs(struct node *node, struct
+node *node_m2m_cap, const cv4l_
+                epollfd = epoll_create1(0);
 
-Right...
+                fail_on_test(epollfd < 0);
++
++               ev.events = 0;
++               fail_on_test(epoll_ctl(epollfd, EPOLL_CTL_ADD,
+node->g_fd(), &ev));
++
+                if (node->is_m2m)
+                        ev.events = EPOLLIN | EPOLLOUT | EPOLLPRI;
+                else if (v4l_type_is_output(q.g_type()))
+@@ -910,7 +914,7 @@ static int captureBufs(struct node *node, struct
+node *node_m2m_cap, const cv4l_
+                else
+                        ev.events = EPOLLIN;
+                ev.data.fd = node->g_fd();
+-               fail_on_test(epoll_ctl(epollfd, EPOLL_CTL_ADD,
+node->g_fd(), &ev));
++               fail_on_test(epoll_ctl(epollfd, EPOLL_CTL_MOD,
+node->g_fd(), &ev));
+        }
 
-> It is also not completely correct to say the Cypress S28 flash has a 
-> write size of 256. You _can_ write one byte if you want. You just can't 
-> write to that page again without erasing it first. For example, if a 
-> file system only wants to write 128 bytes on a page, it can do so 
-> without having to write the whole page. It just needs to make sure it 
-> doesn't write to it again without erasing first.
-> 
+        if (pollmode)
 
-As per documentation:
-mtd_info::writesize: "In case of ECC-ed NOR it is of ECC block size"
+>
+> The epoll_wait() will fail when this issue hits, so that's a good place
+> to add comments explaining this problem.
+>
+> There is one other place where this needs to be tested: testEvents() in
+> v4l2-test-controls.cpp: currently this only tests select(), but there
+> should be a second epoll test here as well that just tests EPOLLPRI.
+>
+> This would catch drivers that do not stream (i.e. no EPOLLIN/OUT) but
+> that do have controls (so support EPOLLPRI).
 
-This means, it is block on which ECC is calculated on ECC-ed NOR and
-thus needs to be erased every time before being updated.
+I'll take a look there as well, and think about a proper comment
+before sending a patch towards you.
 
-Looking at flash datasheet, this seems to be 16 bytes.
-
-So mtd->writesize = 16 and not 256 (or pagesize)
-
-
-Also, It does not imply length of data being written has to be multiple
-of it. At least NAND subsystem does not seem to care that during  writes
-len < mtd->writesize[1].
-
-> nor_erase_prepare() was written to handle quirks of some specific 
-> devices. Not every device starts filling zeroes from the end of a page. 
-> So we have device-specific code in UBIFS already. You will obviously 
-> need device-specific settings to have control over that code.
-> 
-
-UBIFS intends to be robust against rogue power cuts and therefore would
-need to ensure some consistency during erase which explains flash
-specific quirk here.
-
-> One might argue that we should move nor_erase_prepare() out of UBIFS. 
-> But requiring a flash to start erasing from the start of the page is a 
-> UBIFS-specific requirement. Other users of a flash might not care about 
-> it at all.
-> 
-
-Yes. But I don't see much harm done.
-
-> And so we have ourselves a bit of a conundrum. Adding 
-> SPI_NOR_NO_MULTI_PASS_PP is IMHO the least disruptive answer. If the 
-> file system wants to do multi-pass page programming on NOR flashes, how 
-> else do we tell it not to do it for this specific flash?
-> 
-
-I see don't see need for SPI_NOR_NO_MULTI_PASS_PP as
-SPI_NOR_NO_MULTI_PASS_PP is implied within a ECC block and writesize is
-supposed to represent the same.
-
->> If this is not clear in the current documentation of struct mtd, then
->> that can be updated.
-> 
-
-[1]
-https://elixir.bootlin.com/linux/latest/source/drivers/mtd/nand/raw/nand_base.c#L4166
+Cheers,
+Alex.
