@@ -2,57 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D09C72A77CD
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 08:11:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 151B32A77CF
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 08:15:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727019AbgKEHL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 02:11:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60788 "EHLO
+        id S1727653AbgKEHPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 02:15:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725861AbgKEHL4 (ORCPT
+        with ESMTP id S1726371AbgKEHPF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 02:11:56 -0500
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30EB5C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 23:11:54 -0800 (PST)
-Received: by mail-lj1-x243.google.com with SMTP id p15so440553ljj.8
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 23:11:54 -0800 (PST)
+        Thu, 5 Nov 2020 02:15:05 -0500
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12464C0613D1
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 23:15:05 -0800 (PST)
+Received: by mail-lj1-x242.google.com with SMTP id o13so440665ljj.11
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 23:15:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=WNBLtQhx0lIFZsfU2449a/+PzoBFm8WIuwQ69CU7rMc=;
-        b=ZQT1WmbXOd3h+w+nHhJ1Vt1wtFDtE/mjJXAk3jAt2FGb0tLGDkEZJA9vr0UOxMJish
-         8ii1IbOpAn0cbLZ9pCu4GcErW25ODUZam+oFxBZJvQ0UxoSB69UopiAj4o8l5CrAlTsY
-         2gI+iNB8RUd8Pm3qH9WXxldgchh2IC3D/8tc5FWen4NyKWHmXWVP7ClT29/K8YeMoUbF
-         YRear4W1ywXxsn8x2uJCzjPu5UcrZ7P26pW+AR9wohFxpS1uy/M16oooCzBNDITBJRNg
-         AgJtZN3qVpdKC5FCW3i6N1ag2HjSXsjUqwcgUnWsoim4ZpYYvORCcaDMntQQjr4eV4Yt
-         b11A==
+        bh=TWG/H2FcV9+85Gv+l+usRIBA2/sArLkYfjgPcv0Ayyg=;
+        b=HZr14t3YQaS6wmZGUGGg17F6YFQZb2bfQ0ZVcOAe3K3QLDNkgnakem9GKQqVifCXoi
+         STNZDz8msWXRXzjPLk2dorsXnFOWv+cYTqj9SwP0FYXkvO56wXjbOi/oVEssEqCi1ZYD
+         LzhOcfQ+fS+CwUTzK3AN8Sj7Y0i/pcwcBXGRXdCoAlbnDmaoPX30hUJSiOgUkJVvXwU0
+         XS2Gq/vxN4oQwRmjKhARfz94fxVWwElpyCefw/fIxieFeDnt32sW5zCLpJJE8PVqkEK+
+         EZWwQ7vpmdt+f3/KDMemYQogxXdNiw0wKVIKT8DMxIYPekR3ZTMMJYGW7b9eUc8WoFzx
+         Uvzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=WNBLtQhx0lIFZsfU2449a/+PzoBFm8WIuwQ69CU7rMc=;
-        b=kLH4wz2R/xFKHIQscdzShBdWY6ZXZQJ5IRwwZFxOGlYzMupOSMvzw38RlOBc8CwCUY
-         E88Whc59sBMUXMgFPfIGH7F/lAi0erCB2riQLKrSbo0hOZEeTCgSaiYfTQ0HUsQIUnrX
-         LQ6+zMLq5D7HoFUTjDwioPB1uDwz1FDtPD0WosxJioG0O4qVgbGpiKLVAI3bJmJC1w66
-         EgkD7oAZ+3RgPMkT+MWnoG7jmvuJqM4hLi8AtujV4y0QE3+99ykG2jGqNmCAHEhg9s/8
-         82Fq6NixZ/T0r12V/QeYQdBtlQkQK5VW+JkaNWyMajIpwfHdZrr47mbi1OYBZx7lxF7E
-         BydA==
-X-Gm-Message-State: AOAM532byRU/BBYrqekdq+SRUmat+KhQYQDUQR39mb2feLhpaDr3eiph
-        xrgEejCmu7sQdj9Kb/pZGxb2Fjr/VJZROj7aW46UHg==
-X-Google-Smtp-Source: ABdhPJwYr72s3R4wIoyLlWiPnehmVLojv0mw4p7dpc7yNaYK2lfaYqyj0E3H340JMs3ERbhuf3MCk8LH9YBkbX7UVaQ=
-X-Received: by 2002:a05:651c:1050:: with SMTP id x16mr388615ljm.100.1604560312669;
- Wed, 04 Nov 2020 23:11:52 -0800 (PST)
+        bh=TWG/H2FcV9+85Gv+l+usRIBA2/sArLkYfjgPcv0Ayyg=;
+        b=CndkWslHsL6kGfvXGEIIAoFuAY9L6SoMBg3eEp1vIHQgmKjVsydPDVRBSS7iLDuXEF
+         0Zd5lhQN04rmIbdlLf3IkX14YT8Sz7q3XPXa1B1I+20TgHM/6CIK7I7RVRIt6KLrJzqv
+         h5iWaV/JzYNjAPZQobpL+ulPpITpfbWQVfwzF+Op8Lxb/il5hzUY89/ZNpycTc61iYf/
+         U4ttuyMaClC0qf1kK6h72pFNy2H8ElRYxVVvUYhJteJvD1NOXRA/jciaNlLlaAxHUkLX
+         fB0VSE8DBT//ls7qxzu3iVxjgB0e+K/L8MYVVYAMlRZRpTGgUN5DBGFjSkXrsdxuBCiR
+         7Nkw==
+X-Gm-Message-State: AOAM530UYyiR8/N9GzSKV2ibkU1RoE67/Sil/vpc4Ha2JUnVZiMxVhF4
+        UsdlZuhndz3zwpTVXu6QtHjQjHjCMET1mQZhAutbQw==
+X-Google-Smtp-Source: ABdhPJwJNn+o+smBtimGxgYjMVNR/yvh4E/UcDXbPfo1VNDoO19jZdQ6gL73qx33T8BX9/T0GwuSk6VIPutEd/pDQOw=
+X-Received: by 2002:a2e:8905:: with SMTP id d5mr352399lji.144.1604560503549;
+ Wed, 04 Nov 2020 23:15:03 -0800 (PST)
 MIME-Version: 1.0
-References: <20201030053153.5319-1-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20201030053153.5319-4-vadivel.muruganx.ramuthevar@linux.intel.com>
-In-Reply-To: <20201030053153.5319-4-vadivel.muruganx.ramuthevar@linux.intel.com>
+References: <20201029062014.27620-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+ <20201029062014.27620-6-vadivel.muruganx.ramuthevar@linux.intel.com>
+In-Reply-To: <20201029062014.27620-6-vadivel.muruganx.ramuthevar@linux.intel.com>
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 5 Nov 2020 08:11:41 +0100
-Message-ID: <CACRpkdZnAfogewQt83wDMmkhb4kZD=qdbq26nHcam3401WGiOA@mail.gmail.com>
-Subject: Re: [PATCH v6 3/6] spi: cadence-quadspi: Add multi-chipselect support
- for Intel LGM SoC
+Date:   Thu, 5 Nov 2020 08:14:52 +0100
+Message-ID: <CACRpkdaz9E2yc3GnN8wus3M+qQRknW2QMe8Kn-=o=czOQf7A-Q@mail.gmail.com>
+Subject: Re: [PATCH v5 5/6] dt-bindings: spi: Convert cadence-quadspi.txt to cadence-quadspi.yaml
 To:     "Ramuthevar,Vadivel MuruganX" 
         <vadivel.muruganx.ramuthevar@linux.intel.com>
 Cc:     Mark Brown <broonie@kernel.org>, Vignesh R <vigneshr@ti.com>,
@@ -72,17 +71,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 6:32 AM Ramuthevar,Vadivel MuruganX
+On Thu, Oct 29, 2020 at 8:39 AM Ramuthevar,Vadivel MuruganX
 <vadivel.muruganx.ramuthevar@linux.intel.com> wrote:
 
-> +       ddata  = of_device_get_match_data(dev);
-> +       if (ddata->hwcaps_mask & CQSPI_SUPPORTS_MULTI_CHIPSELECT) {
-> +               if (of_property_read_u32(np, "num-chipselect",
+> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
+>
+> Convert the cadence-quadspi.txt documentation to cadence-quadspi.yaml
+> remove the cadence-quadspi.txt from Documentation/devicetree/bindings/spi/
+>
+> Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
 
-The standard SPI bindings in spi-controller.yaml already has a binding
-for this "num-cs" so please use that. It is also what your device tree
-binding is referencing, so if you were using "num-chipselect" the
-YAML check should give a warning?
+> +  cdns,is-decoded-cs:
+> +    type: boolean
+> +    description:
+> +      Flag to indicate whether decoder is used or not.
+
+Please elaborate a bit on what kind of decoder this is.
+I am curious! :)
 
 Yours,
 Linus Walleij
