@@ -2,151 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36A9C2A771C
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 06:41:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C05F2A7725
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 06:42:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730925AbgKEFlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 00:41:08 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:41144 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726214AbgKEFlH (ORCPT
+        id S1731049AbgKEFli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 00:41:38 -0500
+Received: from out4-smtp.messagingengine.com ([66.111.4.28]:36461 "EHLO
+        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728301AbgKEFli (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 00:41:07 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A55SvfB162524;
-        Thu, 5 Nov 2020 05:40:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=mime-version :
- message-id : date : from : sender : to : cc : subject : references :
- in-reply-to : content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=K8Kl2iHpO5POu3iueaA7vs9t7V/Id+v7k4XyYIiSXvY=;
- b=nnJBTOrXuQKPplubPvStO8yPl1tsO8Li6N9yt3qDJ8zPUJGA0mYNt4vWS2mmjmROIjBS
- SeTWpM5ri54wsfhRvVWbYke/zpqomFrjqED7YgoQnqpbidhQ+cj2h8q8ceRNCcBnKXTf
- Tv8QvOtX/pI6JAvbY+tLDmUwZJ+9V25Hwz9YmslWWhxVqESgM7FVF32dsDUeIZY+E1gY
- LM/F79CZ//WDO1miwPv9JyHvurZL8+jdqf3elfvCrsmqwRK7jYRWaNyZq3pK+qzqT1xA
- qqIQMKtSsOxJRGyy/bzdRyS14Yq2fSiW+JNZHImHRHLTKcgNfSpAdQlCRSORvaR59eL3 8w== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 34hhw2t3kn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 05 Nov 2020 05:40:58 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A55UYKg008905;
-        Thu, 5 Nov 2020 05:40:57 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 34hw0m4e8m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 05 Nov 2020 05:40:57 +0000
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0A55euWr018275;
-        Thu, 5 Nov 2020 05:40:56 GMT
+        Thu, 5 Nov 2020 00:41:38 -0500
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id 2C6615C013F;
+        Thu,  5 Nov 2020 00:41:37 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Thu, 05 Nov 2020 00:41:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm1; bh=B5rhuolbMWbbNshLnD0r/wn+jI
+        1LORCjicwWoKNXtLw=; b=H4dbtZNI0+zWDx54ymgACSKKOHr1lHQk1XaaIjwlU0
+        g2LnzbJhXPrmb5mJVl3xWR5bldQjmezWhkUIzCcX5EWgBHfvtnTa5HFVMyaGUYaX
+        JQI1dyMy0ZtuUuletUrUcGEXhf6ZZVFcgrwIuJGni48MVoLM1mS66qrRrXLuhCG/
+        zASehZ7rky038IUi5OvDnZ6+/f7kQc9zPsmkAuNPVvKz8Mo3luTpax1mXc85iUB1
+        u1n9GAV4NggwTiWS9NQ9Ra8aIKbiVYbwJZ2+SWmAi5m7DwOwC2zjbQwr2+eRwfk9
+        MkjvFpecKVW6l9I8o7X7oST1N46QCPYHg+TFFi9f3PjQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=B5rhuolbMWbbNshLn
+        D0r/wn+jI1LORCjicwWoKNXtLw=; b=dqF+SvdW2Vw4n4LeGjW1Of8Vp2QHEWAIj
+        G2G45Hn1/dN7QKJyYDa6/YUnrec1+r38Uspi4QPHgowUA9/SDjmnrdEZtMzplX5N
+        bU0SWnw8PLa76sQloa6Q6nTNNeLUwkl2Le+IvtamvE/aX2otlUvRMC5dR6MnLivL
+        Ql6fGrxFtHXht4bb1Yo+VbJTktZSxmlAukqde9WfxPaLZ/LPwMojxnkxTfUGm/sz
+        dSrHzX1ZhUbr9jnyBPTTIMHsOP28qzWtGh9C1l54WKFU/gu9rUD2cTwAJ1ap4enY
+        MCGFZU8xgj3ZFoia8Xc8QwqiCfPrCZVS6gzr1cALilbT+qjWRsqiA==
+X-ME-Sender: <xms:kJCjX1rRIGzkMkQFBM5zYqRJ98S8oDQ2kTBnfwBZfT-SU9Bx-4DGHA>
+    <xme:kJCjX3ob_tg10xt6LDtLIOMKqNAjISJ3d-iNpSbLLE-1XY6pyyiyIQ0kTDrA6fx1m
+    vFlFFeqeR5Agx6ypA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddtiedgkeejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpefurghmuhgvlhcu
+    jfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenucggtffrrg
+    htthgvrhhnpeeiteekhfehuddugfeltddufeejjeefgeevheekueffhffhjeekheeiffdt
+    vedtveenucfkphepjedtrddufeehrddugeekrdduhedunecuvehluhhsthgvrhfuihiivg
+    eptdenucfrrghrrghmpehmrghilhhfrhhomhepshgrmhhuvghlsehshhholhhlrghnugdr
+    ohhrgh
+X-ME-Proxy: <xmx:kJCjXyOnuchXDnwpDEEkww_EpdxQ0Sgn6eIEaxLkPZVxwU-WwOFOnA>
+    <xmx:kJCjXw4IXfZo9THFhf6ZFXJtM4wAsegtegx1hwF_lUm153MNSuxIuA>
+    <xmx:kJCjX07GBEj74mRHFmHLpBBC-W8e7iL3QA2ehBJKIPpnKPnM6TD7ZQ>
+    <xmx:kZCjXxtBLf4pnavRMXFmhyVT9KCXiHtn62QJyf_8OS1oxt9a6hAs4w>
+Received: from titanium.stl.sholland.net (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 05FE232801F2;
+        Thu,  5 Nov 2020 00:41:35 -0500 (EST)
+From:   Samuel Holland <samuel@sholland.org>
+To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com,
+        Samuel Holland <samuel@sholland.org>
+Subject: [PATCH 0/6] PinePhone Device Tree Enhancements
+Date:   Wed,  4 Nov 2020 23:41:29 -0600
+Message-Id: <20201105054135.24860-1-samuel@sholland.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Message-ID: <9df96d73-015c-4de6-96fa-2f315b066909@default>
-Date:   Wed, 4 Nov 2020 21:40:54 -0800 (PST)
-From:   Gulam Mohamed <gulam.mohamed@oracle.com>
-Sender: Gulam Mohamed <gulam.mohamed@oracle.com>
-To:     Lee Duncan <lduncan@suse.com>, Chris Leech <cleech@redhat.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        open-iscsi@googlegroups.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Junxiao Bi <junxiao.bi@oracle.com>
-Subject: [PATCH] iscsi: Do Not set param when sock is NULL
-References: <1a8aaa17-b1a3-4d6a-b87a-ff49d61a0d0b@default>
-In-Reply-To: <1a8aaa17-b1a3-4d6a-b87a-ff49d61a0d0b@default>
-X-Priority: 3
-X-Mailer: Oracle Beehive Extensions for Outlook 2.0.1.9.1  (1003210) [OL
- 16.0.5056.0 (x86)]
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9795 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 adultscore=0 bulkscore=0
- mlxscore=0 suspectscore=0 spamscore=0 mlxlogscore=999 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011050041
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9795 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0 mlxscore=0
- suspectscore=0 clxscore=1011 priorityscore=1501 impostorscore=0
- spamscore=0 lowpriorityscore=0 mlxlogscore=999 phishscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011050041
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Description
-=3D=3D=3D=3D=3D=3D=3D=3D=3D
-1. This Kernel panic could be due to a timing issue when there is a race be=
-tween the sync thread and the initiator was processing of a login response =
-from the target. The session re-open can be invoked from two places
-          a.=09Sessions sync thread when the iscsid restart
-          b.=09From iscsid through iscsi error handler
-2. The session reopen sequence is as follows in user-space (iscsi-initiator=
--utils)
-          a.=09Disconnect the connection
-          b.=09Then send the stop connection request to the kernel which re=
-leases the connection (releases the socket)
-          c.=09Queues the reopen for 2 seconds delay
-         d.=09Once the delay expires, create the TCP connection again by ca=
-lling the connect() call
-         e.=09Poll for the connection
-          f.=09When poll is successful i.e when the TCP connection is estab=
-lished, it performs
-=09i. Creation of session and connection data structures
-=09ii. Bind the connection to the session. This is the place where we assig=
-n the sock to tcp_sw_conn->sock
-=09iii. Sets the parameters like target name, persistent address etc .
-=09iv. Creates the login pdu
-=09v. Sends the login pdu to kernel
-=09vi. Returns to the main loop to process further events. The kernel then =
-sends the login request over to the target node
-=09g. Once login response with success is received, it enters into full fea=
-ture phase and sets the negotiable parameters like max_recv_data_length, ma=
-x_transmit_length, data_digest etc .
-3. While setting the negotiable parameters by calling "iscsi_session_set_ne=
-g_params()", kernel panicked as sock was NULL
+This series fixes a couple of small issues with the PinePhone device
+tree, and collects some patches adding support for peripherals that
+recently received driver or DT binding support.
 
-What happened here is
---------------------------------
-1.=09Before initiator received the login response mentioned in above point =
-2.f.v, another reopen request was sent from the error handler/sync session =
-for the same session, as the initiator utils was in main loop to process fu=
-rther events (as=20
-=09mentioned in point 2.f.vi above).=20
-2.=09While processing this reopen, it stopped the connection which released=
- the socket and queued this connection and at this point of time the login =
-response was received for the earlier one
-3.=09The kernel passed over this response to user-space which then sent the=
- set_neg_params request to kernel
-4.=09As the connection was stopped, the sock was NULL and hence while the k=
-ernel was processing the set param request from user-space, it panicked
+Luca Weiss (1):
+  arm64: dts: allwinner: pinephone: Add LED flash
 
-Fix
-----
-1.=09While setting the set_param in kernel, we need to check if sock is NUL=
-L
-2.=09If the sock is NULL, then return EPERM (operation not permitted)
-3.=09Due to this error handler will be invoked in user-space again to recov=
-er the session
+Ondrej Jirman (3):
+  arm64: dts: allwinner: pinephone: Add light/proximity sensor
+  arm64: dts: allwinner: pinephone: Add WiFi support
+  arm64: dts: allwinner: pinephone: Add Bluetooth support
 
-Signed-off-by: Gulam Mohamed <gulam.mohamed@oracle.com>
-Reviewed-by: Junxiao Bi <junxiao.bi@oracle.com>
----
-diff --git a/drivers/scsi/iscsi_tcp.c b/drivers/scsi/iscsi_tcp.c
-index df47557a02a3..fd668a194053 100644
---- a/drivers/scsi/iscsi_tcp.c
-+++ b/drivers/scsi/iscsi_tcp.c
-@@ -711,6 +711,12 @@ static int iscsi_sw_tcp_conn_set_param(struct iscsi_cl=
-s_conn *cls_conn,
-        struct iscsi_tcp_conn *tcp_conn =3D conn->dd_data;
-        struct iscsi_sw_tcp_conn *tcp_sw_conn =3D tcp_conn->dd_data;
+Samuel Holland (2):
+  arm64: dts: allwinner: pinephone: Remove AC power supply
+  arm64: dts: allwinner: pinephone: Set ALDO3 to exactly 3v0
 
-+       if (!tcp_sw_conn->sock) {
-+               iscsi_conn_printk(KERN_ERR, conn,
-+                               "Cannot set param as sock is NULL\n");
-+               return -ENOTCONN;
-+       }
-+
-        switch(param) {
-        case ISCSI_PARAM_HDRDGST_EN:
-                iscsi_set_param(cls_conn, param, buf, buflen);
---=20
-2.18.4
+ .../allwinner/sun50i-a64-pinephone-1.0.dts    |  5 ++
+ .../allwinner/sun50i-a64-pinephone-1.1.dts    |  5 ++
+ .../allwinner/sun50i-a64-pinephone-1.2.dts    | 14 ++++
+ .../dts/allwinner/sun50i-a64-pinephone.dtsi   | 64 +++++++++++++++++--
+ 4 files changed, 82 insertions(+), 6 deletions(-)
+
+-- 
+2.26.2
+
