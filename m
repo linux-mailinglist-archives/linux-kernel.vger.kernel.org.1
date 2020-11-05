@@ -2,353 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C3752A88DB
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 22:20:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5B0A2A88F2
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 22:28:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732112AbgKEVUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 16:20:53 -0500
-Received: from mail-dm6nam11on2059.outbound.protection.outlook.com ([40.107.223.59]:9408
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726729AbgKEVUw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 16:20:52 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=br7UBV5VrXPXwpkLou6i0YKxdvztrEeLUuK2JJ8rSdc/2ty7Zp7dzD0egc6aBSt5iAVuElFGIfo46TOG/hhNwW9pDEFyCv7u1x08DhO1RcYNLzoTZ85JA9wUuNlMaYSQZ/qzZudXZT+rjrNoAyYuuu/K13P/44G2QIwLqklEnTWagSj+cc2uuejD19TxHVAFoVpqUSgzd1r9qTV3pzx6TiDtdPT66Z8yaKlfxLWgBOInWnKas3S2l34pkbuuflNImyeFTFylc435uoICCZj+Ixjb37yQck6K3gDY+4B58+AwdLBDZ82df5/liD2AZxdOv5HivO3ftXgE8yR49FlHgA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zHNlqiWbTGNlslK9Bb1aYnoft8FbSO1d1tYeK9aOZhw=;
- b=avNqmmIHt0ppc5PQEncqTHD4VafceLLrvS/mKjnt3KgYqPk/Y4EuvsiFis6aPDKpx35sxqbv8F+XV1n8lNKUUbKvYAMvY1BVv0Tx3RfGdUe4kbwSQD8hywB6Cs1gc4QpswXoGWBCvePWXTtK/HZcJdTqQgfE71RFcmbM7ZfosPu2YtHJPXRDj27fjPk31BUEdVhHjVAS79ZW9SbXD1dmktZ6GliI0A/r5BuJRQDhL4D24SIauP9cygwA3Nl4+hg2WTtDU9S4JUb/QTXS9EVoKe5Kgj1Sjt5kZ0NPTHkaSqdSRLvaaEBbUo20FZYAukKYePQ1FdSxlv6qBTzB/A9Aeg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zHNlqiWbTGNlslK9Bb1aYnoft8FbSO1d1tYeK9aOZhw=;
- b=Dv3tJ7PNM4jpFNATwezloRMbPLGGFfB9HprxK3cQ3dWX0UFrLbMlz+d/DkrtQgGo1hxfxmEBwLJ759v25haeG4EkKQ4UoysHA+FVFxh4TIRwNLcyYXy+kucjMGqvvlhwpR634Gv3jIIMeodWm74ndyPeVgl4JpeQ6pIr/qitL6k=
-Authentication-Results: oracle.com; dkim=none (message not signed)
- header.d=none;oracle.com; dmarc=none action=none header.from=amd.com;
-Received: from SN6PR12MB2767.namprd12.prod.outlook.com (2603:10b6:805:75::23)
- by SA0PR12MB4432.namprd12.prod.outlook.com (2603:10b6:806:98::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.27; Thu, 5 Nov
- 2020 21:20:48 +0000
-Received: from SN6PR12MB2767.namprd12.prod.outlook.com
- ([fe80::d8f2:fde4:5e1d:afec]) by SN6PR12MB2767.namprd12.prod.outlook.com
- ([fe80::d8f2:fde4:5e1d:afec%3]) with mapi id 15.20.3499.032; Thu, 5 Nov 2020
- 21:20:48 +0000
-Date:   Thu, 5 Nov 2020 21:20:45 +0000
-From:   Ashish Kalra <ashish.kalra@amd.com>
-To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-Cc:     hch@lst.de, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        hpa@zytor.com, x86@kernel.org, luto@kernel.org,
-        peterz@infradead.org, dave.hansen@linux-intel.com,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        brijesh.singh@amd.com, Thomas.Lendacky@amd.com,
-        ssg.sos.patches@amd.com
-Subject: Re: [PATCH v3] swiotlb: Adjust SWIOTBL bounce buffer size for SEV
- guests.
-Message-ID: <20201105212045.GB25303@ashkalra_ubuntu_server>
-References: <20201104220804.21026-1-Ashish.Kalra@amd.com>
- <20201104221452.GA26079@char.us.oracle.com>
- <20201104223913.GA25311@ashkalra_ubuntu_server>
- <20201105174317.GA4294@char.us.oracle.com>
- <20201105184115.GA25261@ashkalra_ubuntu_server>
- <20201105190649.GB5366@char.us.oracle.com>
- <20201105193828.GA25303@ashkalra_ubuntu_server>
- <20201105202007.GA6370@char.us.oracle.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201105202007.GA6370@char.us.oracle.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [165.204.77.1]
-X-ClientProxiedBy: DM5PR06CA0066.namprd06.prod.outlook.com
- (2603:10b6:3:37::28) To SN6PR12MB2767.namprd12.prod.outlook.com
- (2603:10b6:805:75::23)
+        id S1732273AbgKEV2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 16:28:14 -0500
+Received: from plasma4.jpberlin.de ([80.241.57.33]:48569 "EHLO
+        plasma4.jpberlin.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731060AbgKEV2N (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 16:28:13 -0500
+Received: from spamfilter01.heinlein-hosting.de (spamfilter01.heinlein-hosting.de [80.241.56.115])
+        by plasma.jpberlin.de (Postfix) with ESMTP id DE4ECAB7DC;
+        Thu,  5 Nov 2020 22:21:43 +0100 (CET)
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+Received: from plasma.jpberlin.de ([80.241.56.68])
+        by spamfilter01.heinlein-hosting.de (spamfilter01.heinlein-hosting.de [80.241.56.115]) (amavisd-new, port 10030)
+        with ESMTP id r4z_FNNlEUTs; Thu,  5 Nov 2020 22:21:42 +0100 (CET)
+Received: from webmail.opensynergy.com (unknown [217.66.60.5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (Client CN "*.opensynergy.com", Issuer "Starfield Secure Certificate Authority - G2" (not verified))
+        (Authenticated sender: opensynergy@jpberlin.de)
+        by plasma.jpberlin.de (Postfix) with ESMTPSA id 03EE6AB751;
+        Thu,  5 Nov 2020 22:21:41 +0100 (CET)
+From:   Peter Hilber <peter.hilber@opensynergy.com>
+To:     <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>,
+        <virtualization@lists.linux-foundation.org>,
+        <virtio-dev@lists.oasis-open.org>
+CC:     Peter Hilber <peter.hilber@opensynergy.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <sudeep.holla@arm.com>,
+        <souvik.chakravarty@arm.com>, <alex.bennee@linaro.org>,
+        <jean-philippe@linaro.org>, <igor.skalkin@opensynergy.com>,
+        <mikhail.golubev@opensynergy.com>, <anton.yakovlev@opensynergy.com>
+Subject: [RFC PATCH v2 00/10] firmware: arm_scmi: Add virtio transport
+Date:   Thu, 5 Nov 2020 22:21:06 +0100
+Message-ID: <20201105212116.411422-1-peter.hilber@opensynergy.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ashkalra_ubuntu_server (165.204.77.1) by DM5PR06CA0066.namprd06.prod.outlook.com (2603:10b6:3:37::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21 via Frontend Transport; Thu, 5 Nov 2020 21:20:47 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: b62a1f4c-5b68-444a-41bd-08d881d0aa4e
-X-MS-TrafficTypeDiagnostic: SA0PR12MB4432:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SA0PR12MB44322A7390E405C45744B03B8EEE0@SA0PR12MB4432.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Kz7HSJnRHSLNZfhkU7dXcfMwnYwL2VQbP6aleaIkyPVU98HdBhUxNvbYB4QtR9On5KOmWWA8zi47MHQ9JHj+WPEdztnQ9UEgWkPjfou+mu5dE3mugM/7U9/qKlbulIQVb/GUBPknmpSzSavx4VwzRMoZV3SHvedTRvQMTKlf38VPjGEuaby8H1rfFn0RZ1ZkXm51ff/2avy0b/o8IQbud1CaTp9hGy4AvY7Muakx8xBpSZMyfZYeXD9yiOs9kJ/7YK2z64KMj9WkZ+Z7YFCGI/u1dHvQO0seILvepCZ/Hbrmf0PhkjpApZP7er5DlTAnnBu8+mADmMrcUWidUjJ8GQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2767.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(366004)(396003)(39860400002)(376002)(8676002)(26005)(1076003)(16526019)(66476007)(83380400001)(5660300002)(956004)(2906002)(66946007)(30864003)(66556008)(8936002)(316002)(186003)(478600001)(55016002)(7416002)(4326008)(52116002)(33716001)(9686003)(6496006)(33656002)(44832011)(6916009)(86362001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: M9oDfpTZtW9dXywU+kghudKITr6eF9KKO6Rw6zdE4mouEYmTYB2ILFVjv/E5PitnNQeM0hqNVjdFFDdbFylwS1mkdkLC6HIberiiAHJxJQVKsRYKdFuDDWX0euRLQukYkvtTIZdf5HNqMx0YcjARi/H0QJX5vzH0EyC5cL0g6qZ8bYLN1QSpBFbO0aIxPeu9F8oDD41G9JQCxX/ksZsAebppLyGRMWfRSyaSTGfAewHcTzh6weH6M3yVDxmF90wUvf8e8PJskdlYADNksHheO6OPTGVGg4XDRAkdWVXpHd5UyCrcvZA74xLUo1L1tTLWgvuvOCkOWQ2CLQ2aeurkPkYCUSS1COSzyY6JjteSzi12YpYGmMiKYnq1JT4xCSbLkOr2Tmfi53H68Hz4K1dgHwJhxww2lXRVdLQunJXDr0z5cYGc1zYlYMyHBMHjBh9wIw5Y+M8G46QA9vBW4cerwxKGe3bCnqBJcqMzZpGWrfi3kPdAASoEoJAJT0gVJwivqxiu7p9U3urHEvqRUzWQ9UnyS2PpTvQfVMHGe3DyKsmnPau1SscBWQsvK+bYD73IX/ZG4S73LjpeZyNGAQ9pyXnbYaah/1utY+86FCsGn7Ct4s0gK0ayVFquhi6QQDoNxHq4alSxxY4GP6KdJuMxAg==
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b62a1f4c-5b68-444a-41bd-08d881d0aa4e
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2767.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Nov 2020 21:20:48.6739
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: hiMHDUGLjL46sXLNuS0EHxwu7Zb4/MXKLWXULvkyj54A+a/3Nz9W8Ks8YIhujCzqEaVpuGNN14EEXh04Oap+pQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4432
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ClientProxiedBy: SR-MAIL-01.open-synergy.com (10.26.10.21) To
+ SR-MAIL-01.open-synergy.com (10.26.10.21)
+X-MBO-SPAM-Probability: 
+X-Rspamd-Score: -3.70 / 15.00 / 15.00
+X-Rspamd-Queue-Id: DE4ECAB7DC
+X-Rspamd-UID: ee1eec
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 03:20:07PM -0500, Konrad Rzeszutek Wilk wrote:
-> On Thu, Nov 05, 2020 at 07:38:28PM +0000, Ashish Kalra wrote:
-> > On Thu, Nov 05, 2020 at 02:06:49PM -0500, Konrad Rzeszutek Wilk wrote:
-> > > .
-> > > > > Right, so I am wondering if we can do this better.
-> > > > > 
-> > > > > That is you are never going to get any 32-bit devices with SEV right? That
-> > > > > is there is nothing that bounds you to always use the memory below 4GB?
-> > > > > 
-> > > > 
-> > > > We do support 32-bit PCIe passthrough devices with SEV.
-> > > 
-> > > Ewww..  Which devices would this be?
-> > 
-> > That will be difficult to predict as customers could be doing
-> > passthrough of all kinds of devices.
-> 
-> But SEV is not on some 1990 hardware. It has PCIe, there is no PCI slots in there.
-> 
-> Is it really possible to have a PCIe device that can't do more than 32-bit DMA?
-> 
-> > 
-> > > > 
-> > > > Therefore, we can't just depend on >4G memory for SWIOTLB bounce buffering
-> > > > when there is I/O pressure, because we do need to support device
-> > > > passthrough of 32-bit devices.
-> > > 
-> > > Presumarily there is just a handful of them?
-> > >
-> > Again, it will be incorrect to assume this.
-> > 
-> > > > 
-> > > > Considering this, we believe that this patch needs to adjust/extend
-> > > > boot-allocation of SWIOTLB and we want to keep it simple to do this
-> > > > within a range detemined by amount of allocated guest memory.
-> > > 
-> > > I would prefer to not have to revert this in a year as customers
-> > > complain about "I paid $$$ and I am wasting half a gig on something 
-> > > I am not using" and giving customers knobs to tweak this instead of
-> > > doing the right thing from the start.
-> > 
-> > Currently, we face a lot of situations where we have to tell our
-> > internal teams/external customers to explicitly increase SWIOTLB buffer
-> > via the swiotlb parameter on the kernel command line, especially to
-> > get better I/O performance numbers with SEV. 
-> 
-> Presumarily these are 64-bit?
-> 
-> And what devices do you speak off that are actually affected by 
-> this performance? Increasing the SWIOTLB just means we have more
-> memory, which in mind means you can have _more_ devices in the guest
-> that won't handle the fact that DMA mapping returns an error.
-> 
-> Not neccessarily that one device suddenly can go faster.
-> 
-> > 
-> > So by having this SWIOTLB size adjustment done implicitly (even using a
-> > static logic) is a great win-win situation. In other words, having even
-> > a simple and static default increase of SWIOTLB buffer size for SEV is
-> > really useful for us.
-> > 
-> > We can always think of adding all kinds of heuristics to this, but that
-> > just adds too much complexity without any predictable performance gain.
-> > 
-> > And to add, the patch extends the SWIOTLB size as an architecture
-> > specific callback, currently it is a simple and static logic for SEV/x86
-> > specific, but there is always an option to tweak/extend it with
-> > additional logic in the future.
-> 
-> Right, and that is what I would like to talk about as I think you
-> are going to disappear (aka, busy with other stuff) after this patch goes in.
-> 
-> I need to understand this more than "performance" and "internal teams"
-> requirements to come up with a better way going forward as surely other
-> platforms will hit the same issue anyhow.
-> 
-> Lets break this down:
-> 
-> How does the performance improve for one single device if you increase the SWIOTLB?
-> Is there a specific device/driver that you can talk about that improve with this patch?
-> 
-> 
+This series implements an SCMI virtio driver according to the virtio
+SCMI device spec patch v5 [1], after simple preparatory changes to the
+existing arm-scmi driver.
 
-Yes, these are mainly for multi-queue devices such as NICs or even
-multi-queue virtio. 
+The virtio transport differs in some respects from the existing
+shared-memory based SCMI transports.
 
-This basically improves performance with concurrent DMA, hence,
-basically multi-queue devices.
+Message timeouts can be a problem if the virtio device (SCMI platform)
+does not have real-time properties. I set a high message rx timeout
+value which should work for non real-time virtio devices as well. There
+are other timeouts for delayed response and polling which were not
+addressed yet. Delayed responses are not really needed since, with the
+virtio transport, message responses may be transmitted out of order.
+Polling doesn't make sense at least for virtio devices without real-time
+behavior, in my understanding.
 
-Thanks,
-Ashish
+There are some known issues which will be resolved before removing the
+RFC tag:
 
-> > 
-> > > 
-> > > That is the right thing being something less static.
-> > > 
-> > > Can you work with me on what that could be please?
-> > > 
-> > > > 
-> > > > Thanks,
-> > > > Ashish
-> > > > 
-> > > > > What I wonder is if we can combine the boot-allocation of the SWIOTLB
-> > > > > with the post-boot-allocation of SWIOLTB to stitch together
-> > > > > continous physical ranges.
-> > > > > 
-> > > > > That way you have the flexibility at the start of using 64MB but if there
-> > > > > is pressure, we grow to a bigger size?
-> > > > > 
-> > > > > > 
-> > > > > > Thanks,
-> > > > > > Ashish
-> > > > > > 
-> > > > > > > > memory.
-> > > > > > > > 
-> > > > > > > > Using late_initcall() interface to invoke
-> > > > > > > > swiotlb_adjust() does not work as the size
-> > > > > > > > adjustment needs to be done before mem_encrypt_init()
-> > > > > > > > and reserve_crashkernel() which use the allocated
-> > > > > > > > SWIOTLB buffer size, hence calling it explicitly
-> > > > > > > > from setup_arch().
-> > > > > > > > 
-> > > > > > > > The SWIOTLB default size adjustment is added as an
-> > > > > > > > architecture specific interface/callback to allow
-> > > > > > > > architectures such as those supporting memory
-> > > > > > > > encryption to adjust/expand SWIOTLB size for their
-> > > > > > > > use.
-> > > > > > > > 
-> > > > > > > > Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
-> > > > > > > > ---
-> > > > > > > >  arch/x86/kernel/setup.c   |  2 ++
-> > > > > > > >  arch/x86/mm/mem_encrypt.c | 42 +++++++++++++++++++++++++++++++++++++++
-> > > > > > > >  include/linux/swiotlb.h   |  1 +
-> > > > > > > >  kernel/dma/swiotlb.c      | 27 +++++++++++++++++++++++++
-> > > > > > > >  4 files changed, 72 insertions(+)
-> > > > > > > > 
-> > > > > > > > diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-> > > > > > > > index 3511736fbc74..b073d58dd4a3 100644
-> > > > > > > > --- a/arch/x86/kernel/setup.c
-> > > > > > > > +++ b/arch/x86/kernel/setup.c
-> > > > > > > > @@ -1166,6 +1166,8 @@ void __init setup_arch(char **cmdline_p)
-> > > > > > > >  	if (boot_cpu_has(X86_FEATURE_GBPAGES))
-> > > > > > > >  		hugetlb_cma_reserve(PUD_SHIFT - PAGE_SHIFT);
-> > > > > > > >  
-> > > > > > > > +	swiotlb_adjust();
-> > > > > > > > +
-> > > > > > > >  	/*
-> > > > > > > >  	 * Reserve memory for crash kernel after SRAT is parsed so that it
-> > > > > > > >  	 * won't consume hotpluggable memory.
-> > > > > > > > diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
-> > > > > > > > index 3f248f0d0e07..e0deb157cddd 100644
-> > > > > > > > --- a/arch/x86/mm/mem_encrypt.c
-> > > > > > > > +++ b/arch/x86/mm/mem_encrypt.c
-> > > > > > > > @@ -489,7 +489,49 @@ static void print_mem_encrypt_feature_info(void)
-> > > > > > > >  	pr_cont("\n");
-> > > > > > > >  }
-> > > > > > > >  
-> > > > > > > > +#define TOTAL_MEM_1G	0x40000000UL
-> > > > > > > > +#define TOTAL_MEM_4G	0x100000000UL
-> > > > > > > > +
-> > > > > > > > +#define SIZE_128M (128UL<<20)
-> > > > > > > > +#define SIZE_256M (256UL<<20)
-> > > > > > > > +#define SIZE_512M (512UL<<20)
-> > > > > > > > +
-> > > > > > > >  /* Architecture __weak replacement functions */
-> > > > > > > > +unsigned long __init arch_swiotlb_adjust(unsigned long iotlb_default_size)
-> > > > > > > > +{
-> > > > > > > > +	unsigned long size = 0;
-> > > > > > > > +
-> > > > > > > > +	/*
-> > > > > > > > +	 * For SEV, all DMA has to occur via shared/unencrypted pages.
-> > > > > > > > +	 * SEV uses SWOTLB to make this happen without changing device
-> > > > > > > > +	 * drivers. However, depending on the workload being run, the
-> > > > > > > > +	 * default 64MB of SWIOTLB may not be enough & SWIOTLB may
-> > > > > > > > +	 * run out of buffers for DMA, resulting in I/O errors and/or
-> > > > > > > > +	 * performance degradation especially with high I/O workloads.
-> > > > > > > > +	 * Increase the default size of SWIOTLB for SEV guests using
-> > > > > > > > +	 * a minimum value of 128MB and a maximum value of 512MB,
-> > > > > > > > +	 * depending on amount of provisioned guest memory.
-> > > > > > > > +	 */
-> > > > > > > > +	if (sev_active()) {
-> > > > > > > > +		phys_addr_t total_mem = memblock_phys_mem_size();
-> > > > > > > > +
-> > > > > > > > +		if (total_mem <= TOTAL_MEM_1G)
-> > > > > > > > +			size = clamp(iotlb_default_size * 2, SIZE_128M,
-> > > > > > > > +				     SIZE_128M);
-> > > > > > > > +		else if (total_mem <= TOTAL_MEM_4G)
-> > > > > > > > +			size = clamp(iotlb_default_size * 4, SIZE_256M,
-> > > > > > > > +				     SIZE_256M);
-> > > > > > > > +		else
-> > > > > > > > +			size = clamp(iotlb_default_size * 8, SIZE_512M,
-> > > > > > > > +				     SIZE_512M);
-> > > > > > > > +
-> > > > > > > > +		pr_info("SEV adjusted max SWIOTLB size = %luMB",
-> > > > > > > > +			size >> 20);
-> > > > > > > > +	}
-> > > > > > > > +
-> > > > > > > > +	return size;
-> > > > > > > > +}
-> > > > > > > > +
-> > > > > > > >  void __init mem_encrypt_init(void)
-> > > > > > > >  {
-> > > > > > > >  	if (!sme_me_mask)
-> > > > > > > > diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
-> > > > > > > > index 046bb94bd4d6..01ae6d891327 100644
-> > > > > > > > --- a/include/linux/swiotlb.h
-> > > > > > > > +++ b/include/linux/swiotlb.h
-> > > > > > > > @@ -33,6 +33,7 @@ extern void swiotlb_init(int verbose);
-> > > > > > > >  int swiotlb_init_with_tbl(char *tlb, unsigned long nslabs, int verbose);
-> > > > > > > >  extern unsigned long swiotlb_nr_tbl(void);
-> > > > > > > >  unsigned long swiotlb_size_or_default(void);
-> > > > > > > > +extern void __init swiotlb_adjust(void);
-> > > > > > > >  extern int swiotlb_late_init_with_tbl(char *tlb, unsigned long nslabs);
-> > > > > > > >  extern void __init swiotlb_update_mem_attributes(void);
-> > > > > > > >  
-> > > > > > > > diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-> > > > > > > > index c19379fabd20..66a9e627bb51 100644
-> > > > > > > > --- a/kernel/dma/swiotlb.c
-> > > > > > > > +++ b/kernel/dma/swiotlb.c
-> > > > > > > > @@ -163,6 +163,33 @@ unsigned long swiotlb_size_or_default(void)
-> > > > > > > >  	return size ? size : (IO_TLB_DEFAULT_SIZE);
-> > > > > > > >  }
-> > > > > > > >  
-> > > > > > > > +unsigned long __init __weak arch_swiotlb_adjust(unsigned long size)
-> > > > > > > > +{
-> > > > > > > > +	return 0;
-> > > > > > > > +}
-> > > > > > > > +
-> > > > > > > > +void __init swiotlb_adjust(void)
-> > > > > > > > +{
-> > > > > > > > +	unsigned long size;
-> > > > > > > > +
-> > > > > > > > +	/*
-> > > > > > > > +	 * If swiotlb parameter has not been specified, give a chance to
-> > > > > > > > +	 * architectures such as those supporting memory encryption to
-> > > > > > > > +	 * adjust/expand SWIOTLB size for their use.
-> > > > > > > > +	 */
-> > > > > > > > +	if (!io_tlb_nslabs) {
-> > > > > > > > +		size = arch_swiotlb_adjust(IO_TLB_DEFAULT_SIZE);
-> > > > > > > > +		if (size) {
-> > > > > > > > +			size = ALIGN(size, 1 << IO_TLB_SHIFT);
-> > > > > > > > +			io_tlb_nslabs = size >> IO_TLB_SHIFT;
-> > > > > > > > +			io_tlb_nslabs = ALIGN(io_tlb_nslabs, IO_TLB_SEGSIZE);
-> > > > > > > > +
-> > > > > > > > +			pr_info("architecture adjusted SWIOTLB slabs = %lu\n",
-> > > > > > > > +				io_tlb_nslabs);
-> > > > > > > > +		}
-> > > > > > > > +	}
-> > > > > > > > +}
-> > > > > > > > +
-> > > > > > > >  void swiotlb_print_info(void)
-> > > > > > > >  {
-> > > > > > > >  	unsigned long bytes = io_tlb_nslabs << IO_TLB_SHIFT;
-> > > > > > > > -- 
-> > > > > > > > 2.17.1
-> > > > > > > > 
+- Further work is needed on the scmi_xfer management. Unlike shmem based
+  transports, the virtio transport is actually exchanging messages with
+  the SCMI agent through the scmi_xfer tx and rx buffers. In case of a
+  message rx timeout, the arm-scmi driver could try to re-use the
+  scmi_xfer, while that might still be used by the virtio device. I
+  think part of the scmi_xfers_info bookkeeping could be optionally
+  outsourced to the transport to remediate this.
+
+- After arm-scmi driver probe failure, or after remove, the scmi-virtio
+  driver may still try to process and forward message responses from the
+  virtio device.
+
+- We must be sure that the virtio transport option (such as virtio over
+  MMIO) is available when the virtio SCMI device is probed.
+
+The series is based on for-next/scmi [2], on top of
+
+commit b9ceca6be432 ("firmware: arm_scmi: Fix duplicate workqueue name")
+
+The series was actually tested with a v5.4 based kernel, with the Base
+protocol and Sensor management protocol. The virtio SCMI device used was
+a proprietary implementation by OpenSynergy. Delayed responses were not
+tested.
+
+Changes in RFC v2:
+
+- Remove the DT virtio_transport phandle, since the SCMI virtio device may
+  not be known in advance. Instead, use the first suitable probed device.
+  Change due to Rob Herring's comment.
+
+Any comments are very welcome.
+
+[1] https://lists.oasis-open.org/archives/virtio-comment/202005/msg00096.html
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/sudeep.holla/linux.git
+
+
+Igor Skalkin (7):
+  firmware: arm_scmi, smccc, mailbox: Make shmem based transports
+    optional
+  firmware: arm_scmi: Document that max_msg is a per channel type limit
+  firmware: arm_scmi: Add op to override max message #
+  firmware: arm_scmi: Add per message transport data
+  firmware: arm_scmi: Add xfer_init_buffers transport op
+  dt-bindings: arm: Add virtio transport for SCMI
+  firmware: arm_scmi: Add virtio transport
+
+Peter Hilber (3):
+  firmware: arm_scmi: Add optional link_supplier() transport op
+  firmware: arm_scmi: Add per-device transport private info
+  firmware: arm_scmi: Add is_scmi_protocol_device()
+
+ .../devicetree/bindings/arm/arm,scmi.txt      |  35 +-
+ MAINTAINERS                                   |   1 +
+ drivers/firmware/Kconfig                      |  19 +-
+ drivers/firmware/arm_scmi/Makefile            |   3 +-
+ drivers/firmware/arm_scmi/bus.c               |   5 +
+ drivers/firmware/arm_scmi/common.h            |  37 +-
+ drivers/firmware/arm_scmi/driver.c            | 124 ++++-
+ drivers/firmware/arm_scmi/virtio.c            | 493 ++++++++++++++++++
+ drivers/firmware/smccc/Kconfig                |   1 +
+ drivers/mailbox/Kconfig                       |   1 +
+ include/uapi/linux/virtio_ids.h               |   1 +
+ include/uapi/linux/virtio_scmi.h              |  41 ++
+ 12 files changed, 736 insertions(+), 25 deletions(-)
+ create mode 100644 drivers/firmware/arm_scmi/virtio.c
+ create mode 100644 include/uapi/linux/virtio_scmi.h
+
+
+base-commit: b9ceca6be43233845be70792be9b5ab315d2e010
+-- 
+2.25.1
+
