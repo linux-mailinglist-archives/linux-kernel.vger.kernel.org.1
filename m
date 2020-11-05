@@ -2,127 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA7272A7BDB
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 11:31:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40FDC2A7BDD
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 11:31:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729345AbgKEKbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 05:31:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35484 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726152AbgKEKbW (ORCPT
+        id S1729719AbgKEKbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 05:31:48 -0500
+Received: from mailrelay2-2.pub.mailoutpod1-cph3.one.com ([46.30.212.1]:46044
+        "EHLO mailrelay2-2.pub.mailoutpod1-cph3.one.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726152AbgKEKbs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 05:31:22 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A590C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 02:31:22 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id w4so1100770pgg.13
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 02:31:22 -0800 (PST)
+        Thu, 5 Nov 2020 05:31:48 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=VGBAVhOjF+1BxiCG/QGd19p6o0KRA/Zwhk/3kLtyC0c=;
-        b=lenVPGBmSJhTb/UugRXW30QVkwiYJB2VZBF7yqxIZcxabmZ5KHJNswuG+t72ZdlM6O
-         PAAOueXzrJeQ+J/N4yfUOkXbTLEGZ2zObqHv9JiuVABfy+D6gepDEumNuSHI9FrwXCbU
-         TaUyVfFG1OCY+V4o2iZVJZOFQl39F0pQjwYK5FlYBOj+s+rTSRSAsKKl6wSPYazxDK4l
-         2xUUCfK9XH8KMeiJWuhkfMsC43jI5pyyF8p02IEC+JEQUJ45Y30sy0k5bFrGGVrItBkP
-         HNCv3C/hZnizjUfJFEm3uCc5KsdCjPMrhG5C4xZ/Eq4dzhOWya2q+US6VxP2AKl4mcQ3
-         RCkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=VGBAVhOjF+1BxiCG/QGd19p6o0KRA/Zwhk/3kLtyC0c=;
-        b=YvRigA6Hlu/b+c4Zo/FHUkU24HwhJwYqhwlxqngww7dmKm4IIo6iA1U7aFGJGYdnuh
-         ro/eKWCwNGdErSjdoEPR1PYvsk1cfD504N4vRzteV22c19IwiKQiJDGQ7lWHHn0qe8qq
-         KsjoFvSjSwIIvwVR1J0krSkckybTjHFVsYHp2aNK/O0Hl4FXit9vWxs1CjRfzxTCJEzL
-         upnPn4f1QrFI0plFZfEU87NLK13iinkGiFpTsAyBnASS7dfW1ddKnD5mZDUXyCP3TEdi
-         q99pbxf0MLx52qZjT46NMlbq8H06RC/f/GNBE8r/j7wsBVxcs7j2Oya9xC/D7pX6utDa
-         +jbw==
-X-Gm-Message-State: AOAM530UnuwVgXMSQGW3ynk0e7uRaiHAtIem+1UlTXb7J2W4CXek9dts
-        F95bjtUj5tipxkJnMnpkSoHEq2+hMz0=
-X-Google-Smtp-Source: ABdhPJwStwAjBGuTGKkmIgB0euUBZ1GO72dQX2OO75O1JkDC15NMT+JqeburedC0i5Tq4w/Got6s6Q==
-X-Received: by 2002:a63:cf15:: with SMTP id j21mr1745244pgg.116.1604572281886;
-        Thu, 05 Nov 2020 02:31:21 -0800 (PST)
-Received: from localhost ([160.202.157.3])
-        by smtp.gmail.com with ESMTPSA id z10sm1924092pff.218.2020.11.05.02.31.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 02:31:21 -0800 (PST)
-Date:   Thu, 5 Nov 2020 16:01:16 +0530
-From:   Deepak R Varma <mh12gx2825@gmail.com>
-To:     David Airlie <airlied@linux.ie>, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Cc:     daniel@ffwll.ch, mh12gx2825@gmail.com
-Subject: Re: [PATCH] drm/vgm: replace idr_init() by idr_init_base()
-Message-ID: <20201105103116.GA29881@localhost>
-References: <20201104112338.GA29271@localhost>
- <20201105094215.GT401619@phenom.ffwll.local>
+        d=bitmath.org; s=20191106;
+        h=content-transfer-encoding:content-type:in-reply-to:mime-version:date:
+         message-id:from:references:cc:to:subject:from;
+        bh=E/Pff/B07dXKxlEt4by3cKElbeA6Phi+MNFJDeXUMiE=;
+        b=ASEgTDKFF5yC5T1J3GdA3B07v02y8G2hrkbnhTp0Y9oRASgOHZiR2u5bdcZvw+SEiCwTY5j54gBmg
+         p4fVwVutMi6KC7ArbY9Twbe5c1QniIjbAGvTjPy35Rc5cRTauwdTco2ObCjKGq4OTJLcdTesHldwV8
+         yEIUvqAlUGiaZRcFTFG4vT8mqjC2tshh63cpsJgrE5Hy+3YR0zTOuRNdw4E5Krvc0tCHKe5JvGXV0Z
+         R07aB5CSrxHIKhurGaU9HddAqqbk90rucw/5ws4GI5GLDuekTZM6lX67i/fULL94QTHEB0nRV6WFgm
+         i6IriY2sKr/YS88I4P3NONVIbMc0Asg==
+X-HalOne-Cookie: cfcf971154434c981b222b5b215374cfdaf36976
+X-HalOne-ID: 195d10c5-1f52-11eb-84b8-d0431ea8a290
+Received: from [192.168.19.13] (h-155-4-128-97.na.cust.bahnhof.se [155.4.128.97])
+        by mailrelay2.pub.mailoutpod1-cph3.one.com (Halon) with ESMTPSA
+        id 195d10c5-1f52-11eb-84b8-d0431ea8a290;
+        Thu, 05 Nov 2020 10:31:44 +0000 (UTC)
+Subject: Re: [PATCH] applesmc: Re-work SMC comms v2
+To:     Brad Campbell <brad@fnarfbargle.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-hwmon@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        hns@goldelico.com, Guenter Roeck <linux@roeck-us.net>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        Jean Delvare <jdelvare@suse.com>
+References: <20200930105442.3f642f6c@aktux>
+ <20200930164446.GB219887@roeck-us.net>
+ <CAK8P3a2CbhJT+B-F+cnX+uiJep9oiLM28n045-ATaVaU41u2hw@mail.gmail.com>
+ <20201002002251.28462e64@aktux>
+ <7543ef85-727d-96c3-947e-5b18e9e6c44d@roeck-us.net>
+ <20201006090226.4275c824@kemnade.info>
+ <db042e9b-be41-11b1-7059-3881b1da5c8b@fnarfbargle.com>
+ <68467f1b-cea1-47ea-a4d4-8319214b072a@fnarfbargle.com>
+ <20201104142057.62493c12@aktux>
+ <2436afef-99c6-c352-936d-567bf553388c@fnarfbargle.com>
+ <7a085650-2399-08c0-3c4d-6cd1fa28a365@roeck-us.net>
+ <fc36d066-c432-e7d2-312f-a0a592446fe2@fnarfbargle.com>
+ <10027199-5d31-93e7-9bd8-7baaebff8b71@roeck-us.net>
+ <70331f82-35a1-50bd-685d-0b06061dd213@fnarfbargle.com>
+ <3c72ccc3-4de1-b5d0-423d-7b8c80991254@fnarfbargle.com>
+ <6d071547-10ee-ca92-ec8b-4b5069d04501@bitmath.org>
+ <8e117844-d62a-bcb1-398d-c59cc0d4b878@fnarfbargle.com>
+From:   Henrik Rydberg <rydberg@bitmath.org>
+Message-ID: <e5a856b1-fb1a-db5d-0fde-c86d0bcca1df@bitmath.org>
+Date:   Thu, 5 Nov 2020 11:31:54 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201105094215.GT401619@phenom.ffwll.local>
+In-Reply-To: <8e117844-d62a-bcb1-398d-c59cc0d4b878@fnarfbargle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 10:42:15AM +0100, Daniel Vetter wrote:
-> On Wed, Nov 04, 2020 at 04:53:38PM +0530, Deepak R Varma wrote:
-> > idr_init() uses base 0 which is an invalid identifier. The new function
-> > idr_init_base allows IDR to set the ID lookup from base 1. This avoids
-> > all lookups that otherwise starts from 0 since 0 is always unused.
-> > 
-> > References: commit 6ce711f27500 ("idr: Make 1-based IDRs more efficient")
-> > 
-> > Signed-off-by: Deepak R Varma <mh12gx2825@gmail.com>
+On 2020-11-05 09:30, Brad Campbell wrote:
+> On 5/11/20 6:56 pm, Henrik Rydberg wrote:
+>> Hi Brad,
+>>
+>> Great to see this effort, it is certainly an area which could be improved. After having seen several generations of Macbooks while modifying much of that code, it became clear that the SMC communication got refreshed a few times over the years. Every tiny change had to be tested on all machines, or kept separate for a particular generation, or something would break.
+>>
+>> I have not followed the back story here, but I imagine the need has arisen because of a new refresh, and so this patch only needs to strictly apply to a new generation. I would therefore advice that you write the patch in that way, reducing the actual change to zero for earlier generations. It also makes it easier to test the effect of the new approach on older systems. I should be able to help testing on a 2008 and 2011 model once we get to that stage.
 > 
-> Tiny typo in the commit message summary: s/vgm/vgem/
+> G'day Henrik,
 > 
-> Also can you pls resbumit this with intel-gfx mailing list on cc (like for
-> i915)? There's a CI bot there which runs a few vgem tests, would be good
-> to confirm nothing has been broken.
+> Unfortunately I didn't make these changes to accommodate a "new generation". Changes made in kernel 5.9 broke it on my machine and in looking at why didn't identify any obvious causes, so I re-worked some of the comms.
+> 
+> I can't guarantee it won't break older machines which is why I've asked for help testing it. I only have a MacbookPro 11,1 and an iMac 12,2. It fixes both of those.
+> 
+> Help testing would be much appreciated.
 
-Hi Daniel,
-sure. I will correct the summary typo and also feed it to the CI bot.
+I see, this makes much more sense. I may be able to run some tests 
+tonight. Meanwhile, looking at the patch, the status variable in 
+send_command looks superfluous now that there is a wait_status() before it.
 
-Also, according to Felix Kuehling's comment on a similar patch for
-drm/amdkfd driver, an ID can be 0. The change I am proposing is more
-efficient for conditions that do not want to use ID as 0. Otherwise,
-id = 0 is an acceptable possibility. So, my statement that "Id 0 is an invalid
-identifier" is not true.
-
-Can you please comment if this is accurate and I should reword my log
-message as well?
-
-Thank you.
-./drv
-
-> 
-> Otherwise lgtm.
-> 
-> Thanks, Daniel
-> 
-> > ---
-> >  drivers/gpu/drm/vgem/vgem_fence.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/gpu/drm/vgem/vgem_fence.c b/drivers/gpu/drm/vgem/vgem_fence.c
-> > index 17f32f550dd9..2902dc6e64fa 100644
-> > --- a/drivers/gpu/drm/vgem/vgem_fence.c
-> > +++ b/drivers/gpu/drm/vgem/vgem_fence.c
-> > @@ -233,7 +233,7 @@ int vgem_fence_signal_ioctl(struct drm_device *dev,
-> >  int vgem_fence_open(struct vgem_file *vfile)
-> >  {
-> >  	mutex_init(&vfile->fence_mutex);
-> > -	idr_init(&vfile->fence_idr);
-> > +	idr_init_base(&vfile->fence_idr, 1);
-> >  
-> >  	return 0;
-> >  }
-> > -- 
-> > 2.25.1
-> > 
-> 
-> -- 
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> http://blog.ffwll.ch
+Thanks,
+Henrik
