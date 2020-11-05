@@ -2,91 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9854E2A898A
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 23:07:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B9AC2A8991
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 23:09:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732604AbgKEWHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 17:07:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33808 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732517AbgKEWHt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 17:07:49 -0500
-Received: from gmail.com (unknown [104.132.1.84])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 466352078E;
-        Thu,  5 Nov 2020 22:07:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604614069;
-        bh=178huzaFZ/hAY5sYLanFhkUTFNiQNJfZdx7VDjMneC0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jNn8K5XKu30RZm07Z9rmMLpJnTPLp3iYQl7n6KByggBgD6eZc83m8qrNMdo2DKd5I
-         WYq6t+0VFTFz3CbRrj/XbZ5bHumeWHXdz5ugvtxA/L8lFwt0fAQrULxT/HK2YwM/eP
-         FRs44fyFm7R4UDIqefkUUCi3IxmH3d7AcwGltpgI=
-Date:   Thu, 5 Nov 2020 14:07:45 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Lokesh Gidra <lokeshgidra@google.com>
-Cc:     Andrea Arcangeli <aarcange@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        James Morris <jmorris@namei.org>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Paul Moore <paul@paul-moore.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Daniel Colascione <dancol@dancol.org>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        KP Singh <kpsingh@google.com>,
-        David Howells <dhowells@redhat.com>,
-        Thomas Cedeno <thomascedeno@google.com>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Matthew Garrett <matthewgarrett@google.com>,
-        Aaron Goidel <acgoide@tycho.nsa.gov>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Adrian Reber <areber@redhat.com>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-        kaleshsingh@google.com, calin@google.com, surenb@google.com,
-        nnk@google.com, jeffv@google.com, kernel-team@android.com,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        hch@infradead.org
-Subject: Re: [PATCH v11 1/4] security: add inode_init_security_anon() LSM hook
-Message-ID: <20201105220745.GB2555324@gmail.com>
-References: <20201105213324.3111570-1-lokeshgidra@google.com>
- <20201105213324.3111570-2-lokeshgidra@google.com>
+        id S1732658AbgKEWJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 17:09:41 -0500
+Received: from relay5-d.mail.gandi.net ([217.70.183.197]:46203 "EHLO
+        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731508AbgKEWJl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 17:09:41 -0500
+X-Originating-IP: 86.194.74.19
+Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 69EA11C000B;
+        Thu,  5 Nov 2020 22:09:39 +0000 (UTC)
+Date:   Thu, 5 Nov 2020 23:09:38 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Guillaume Tucker <guillaume.tucker@collabora.com>
+Cc:     Alessandro Zummo <a.zummo@towertech.it>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com
+Subject: Re: [PATCH] rtc: hym8563: enable wakeup by default
+Message-ID: <20201105220938.GG1034841@piout.net>
+References: <4a52fe66b327fd1974f86b7deb7e2c06d74fe64f.1604613067.git.guillaume.tucker@collabora.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201105213324.3111570-2-lokeshgidra@google.com>
+In-Reply-To: <4a52fe66b327fd1974f86b7deb7e2c06d74fe64f.1604613067.git.guillaume.tucker@collabora.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 01:33:21PM -0800, Lokesh Gidra wrote:
-> This change adds a new LSM hook, inode_init_security_anon(), that
-> will be used while creating secure anonymous inodes.
-
-Will be used to do what?  To assign a security context to the inode and to
-allow/deny creating it, right?
-
+On 05/11/2020 22:01:10+0000, Guillaume Tucker wrote:
+> Enable wakeup by default in the hym8563 driver to match the behaviour
+> implemented by the majority of RTC drivers.  As per the description of
+> device_init_wakeup(), it should be enabled for "devices that everyone
+> expects to be wakeup sources".  One would expect this to be the case
+> with a real-time clock.
 > 
-> The new hook accepts an optional context_inode parameter that
-> callers can use to provide additional contextual information to
-> security modules for granting/denying permission to create an anon-
-> inode of the same type.
 
-It looks like the hook also uses the context_inode parameter to assign a
-security context to the inode.  Is that correct?  It looks like that's what the
-code does, so if you could get the commit messages in sync, that would be
-helpful.  I'm actually still not completely sure I'm understanding the intent
-here, given that different places say different things.
+Actually, the proper way of doing it for a discrete RTC is to only
+enable wakeup if the irq request is successful or when the wakeup-source
+property is present on the node.
 
-- Eric
+> Fixes: dcaf03849352 ("rtc: add hym8563 rtc-driver")
+> Reported-by: kernelci.org bot <bot@kernelci.org>
+> Signed-off-by: Guillaume Tucker <guillaume.tucker@collabora.com>
+> ---
+>  drivers/rtc/rtc-hym8563.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/rtc/rtc-hym8563.c b/drivers/rtc/rtc-hym8563.c
+> index 0fb79c4afb46..6fccfe634d57 100644
+> --- a/drivers/rtc/rtc-hym8563.c
+> +++ b/drivers/rtc/rtc-hym8563.c
+> @@ -527,7 +527,7 @@ static int hym8563_probe(struct i2c_client *client,
+>  	hym8563->client = client;
+>  	i2c_set_clientdata(client, hym8563);
+>  
+> -	device_set_wakeup_capable(&client->dev, true);
+> +	device_init_wakeup(&client->dev, true);
+>  
+>  	ret = hym8563_init_device(client);
+>  	if (ret) {
+> -- 
+> 2.20.1
+> 
+
+-- 
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
