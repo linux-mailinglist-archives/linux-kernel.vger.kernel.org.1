@@ -2,85 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73B2E2A7C9B
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 12:08:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93B4C2A7C9F
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 12:08:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729662AbgKELIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 06:08:35 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:7414 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726067AbgKELIf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 06:08:35 -0500
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CRgk51lMFz71Xp;
-        Thu,  5 Nov 2020 19:08:29 +0800 (CST)
-Received: from [127.0.0.1] (10.57.22.126) by DGGEMS407-HUB.china.huawei.com
- (10.3.19.207) with Microsoft SMTP Server id 14.3.487.0; Thu, 5 Nov 2020
- 19:08:22 +0800
-Subject: Re: [PATCH v3 0/5] Introduce a new helper marco
- DEFINE_SHOW_STORE_ATTRIBUTE at seq_file.c
-To:     Alan Stern <stern@rowland.harvard.edu>,
-        Greg KH <gregkh@linuxfoundation.org>
-CC:     <akpm@linux-foundation.org>, <viro@zeniv.linux.org.uk>,
-        <andriy.shevchenko@linux.intel.com>,
-        <linux-kernel@vger.kernel.org>, <martin.petersen@oracle.com>,
-        <john.garry@huawei.com>, <himanshu.madhani@cavium.com>,
-        <felipe.balbi@linux.intel.com>, <uma.shankar@intel.com>,
-        <anshuman.gupta@intel.com>, <animesh.manna@intel.com>,
-        <linux-usb@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
-        <linuxarm@huawei.com>
-References: <1604406584-53926-1-git-send-email-luojiaxing@huawei.com>
- <20201103133644.GA2067567@kroah.com>
- <20201103134523.GA1521034@rowland.harvard.edu>
-From:   luojiaxing <luojiaxing@huawei.com>
-Message-ID: <44f57eff-fb3a-b3de-4655-fdebdd9bdb07@huawei.com>
-Date:   Thu, 5 Nov 2020 19:08:21 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.2.1
+        id S1730061AbgKELIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 06:08:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49498 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730018AbgKELIp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 06:08:45 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DC76D2072E;
+        Thu,  5 Nov 2020 11:08:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604574524;
+        bh=3sUQ3ja2rj2uStC3OQabrdR0ZZMO2xkmRDD9nGypmls=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=s0/mPv6J5efk5VAAfbAzqZuUY+XMg/dc72UvmDXwVjd9/FXUVkSlXtaIh9i4EewIR
+         xAboT+rU3ASTmQrXuEAmx1nJANjGc89lVfxmnu3rYnpMdRc7mrtvUXnlT2wYBGQI26
+         /bwE1BpoOzqDmHpWu5EvDo7L24La7KLz43g5vQhQ=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kad8B-007oEK-0r; Thu, 05 Nov 2020 11:08:41 +0000
 MIME-Version: 1.0
-In-Reply-To: <20201103134523.GA1521034@rowland.harvard.edu>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.57.22.126]
-X-CFilter-Loop: Reflected
+Date:   Thu, 05 Nov 2020 11:08:38 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     David Brazdil <dbrazdil@google.com>
+Cc:     kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Dennis Zhou <dennis@kernel.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Andrew Scull <ascull@google.com>, kernel-team@android.com
+Subject: Re: [RFC PATCH 12/26] kvm: arm64: Add SMC handler in nVHE EL2
+In-Reply-To: <20201104183630.27513-13-dbrazdil@google.com>
+References: <20201104183630.27513-1-dbrazdil@google.com>
+ <20201104183630.27513-13-dbrazdil@google.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <35d054aa819034831a04aa3332aceec2@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: dbrazdil@google.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, dennis@kernel.org, tj@kernel.org, cl@linux.com, mark.rutland@arm.com, lorenzo.pieralisi@arm.com, qperret@google.com, ascull@google.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi , Alan
+On 2020-11-04 18:36, David Brazdil wrote:
+> Add handler of host SMCs in KVM nVHE trap handler. Forward all SMCs to
+> EL3 and propagate the result back to EL1. This is done in preparation
+> for validating host SMCs.
+> 
+> Signed-off-by: David Brazdil <dbrazdil@google.com>
+> ---
+>  arch/arm64/kvm/hyp/nvhe/hyp-main.c | 36 ++++++++++++++++++++++++++++++
+>  1 file changed, 36 insertions(+)
+> 
+> diff --git a/arch/arm64/kvm/hyp/nvhe/hyp-main.c
+> b/arch/arm64/kvm/hyp/nvhe/hyp-main.c
+> index 19332c20fcde..fffc2dc09a1f 100644
+> --- a/arch/arm64/kvm/hyp/nvhe/hyp-main.c
+> +++ b/arch/arm64/kvm/hyp/nvhe/hyp-main.c
+> @@ -106,6 +106,38 @@ static void handle_host_hcall(struct
+> kvm_cpu_context *host_ctxt)
+>  	host_ctxt->regs.regs[1] = ret;
+>  }
+> 
+> +static void skip_host_instruction(void)
+> +{
+> +	write_sysreg_el2(read_sysreg_el2(SYS_ELR) + 4, SYS_ELR);
+> +}
+> +
+> +static void forward_host_smc(struct kvm_cpu_context *host_ctxt)
+> +{
+> +	struct arm_smccc_res res;
+> +
+> +	arm_smccc_1_1_smc(host_ctxt->regs.regs[0], host_ctxt->regs.regs[1],
+> +			  host_ctxt->regs.regs[2], host_ctxt->regs.regs[3],
+> +			  host_ctxt->regs.regs[4], host_ctxt->regs.regs[5],
+> +			  host_ctxt->regs.regs[6], host_ctxt->regs.regs[7],
+> +			  &res);
+> +	host_ctxt->regs.regs[0] = res.a0;
+> +	host_ctxt->regs.regs[1] = res.a1;
+> +	host_ctxt->regs.regs[2] = res.a2;
+> +	host_ctxt->regs.regs[3] = res.a3;
+> +}
+> +
+> +static void handle_host_smc(struct kvm_cpu_context *host_ctxt)
+> +{
+> +	/*
+> +	 * Unlike HVC, the return address of an SMC is the instruction's PC.
+> +	 * Move the return address past the instruction.
+> +	 */
+> +	skip_host_instruction();
+> +
+> +	/* Forward SMC not handled in EL2 to EL3. */
+> +	forward_host_smc(host_ctxt);
+> +}
+> +
+>  void handle_trap(struct kvm_cpu_context *host_ctxt)
+>  {
+>  	u64 esr = read_sysreg_el2(SYS_ESR);
+> @@ -114,6 +146,10 @@ void handle_trap(struct kvm_cpu_context 
+> *host_ctxt)
+>  	case ESR_ELx_EC_HVC64:
+>  		handle_host_hcall(host_ctxt);
+>  		break;
+> +	case ESR_ELx_EC_SMC32:
 
-On 2020/11/3 21:45, Alan Stern wrote:
-> On Tue, Nov 03, 2020 at 02:36:44PM +0100, Greg KH wrote:
->> On Tue, Nov 03, 2020 at 08:29:39PM +0800, Luo Jiaxing wrote:
->>> We already own DEFINE_SHOW_ATTRIBUTE() helper macro for defining attribute
->>> for read-only file, but we found many of drivers also want a helper macro
->>> for read-write file too.
->>>
->>> So we add this macro to help decrease code duplication.
->>>
->>> ---
->>>   v1->v2:
->>>          1.Rename DEFINE_STORE_ATTRIBUTE() to DEFINE_SHOW_STORE_ATTRIBUTE().
->>>   v2->v3:
->>>          1.Fixed some spelling mistakes in commit.
->>>          2.Revised resumes are added for easy tracing.
->> You forgot to address Al Viro's review comments :(
-> You also might want to fix the type in the Subject line ("marco" instead
-> of "macro").
+How is that even possible? Host EL1 is strictly 64bit, so SMC32 cannot 
+occur.
 
+> +	case ESR_ELx_EC_SMC64:
+> +		handle_host_smc(host_ctxt);
+> +		break;
+>  	default:
+>  		hyp_panic();
+>  	}
 
-I'm sorry for such an obvious spelling error. Thanks for pointing out 
-and it will be fixed in v4.
+Thanks,
 
-
-Jiaxing
-
-
->
-> Alan Stern
->
-> .
->
-
+         M.
+-- 
+Jazz is not dead. It just smells funny...
