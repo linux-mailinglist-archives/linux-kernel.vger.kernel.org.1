@@ -2,99 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAEDB2A7885
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 09:03:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73FA12A7888
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 09:05:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729196AbgKEIDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 03:03:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40602 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725827AbgKEIDq (ORCPT
+        id S1729382AbgKEIF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 03:05:56 -0500
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:36153 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725827AbgKEIF4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 03:03:46 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E843EC0613CF;
-        Thu,  5 Nov 2020 00:03:45 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CRbcv4zGNz9sSs;
-        Thu,  5 Nov 2020 19:03:43 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1604563423;
-        bh=POksiKPA1qa1KB8wRh5C1SmgYhsq74oyVXJoGkVdJuI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=GNV2e/C6AXx2DFMdnI1Y+KHU/2+al1eViJCJUsnsJyKsmy7k+EY+ZuFwYKwWV88y/
-         kc+1FhsOrEJT96LN2E+1fkYrEi67VxYAhYhpuu+9TyVkzq3LcxrjXSfbq5AQC4deUB
-         wwCgQjMvK/FxJS35MUc1WxUFC+2Q65T1Og40LTmFIe7JsrrCxl1GzAuaDddSCFQsED
-         xK7SIZ31I/1ARlzXYKQhQDP1eMHRQ0uSlBas5h5lZzKn3Ogv7md6Kx6K1jKnIsy/D2
-         JcvFiSkD8RD3PjTGdYR/qHCAD4RQ1nwR0lzV9IOee4jMScv+jCv1uBBiMOT8rxBfVG
-         JRS5qJTeDyefQ==
-Date:   Thu, 5 Nov 2020 19:03:43 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     "Anand K. Mistry" <amistry@google.com>
-Cc:     Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the akpm-current tree
-Message-ID: <20201105190343.7f7bcfd3@canb.auug.org.au>
-In-Reply-To: <20201105190011.7089f9a6@canb.auug.org.au>
-References: <20201105174549.614c2de4@canb.auug.org.au>
-        <20201105070311.GU4879@kernel.org>
-        <CAATStaMD=w+onf==L-=MQ7suJf6EaNoup5o8yW-TEbfajkbdaQ@mail.gmail.com>
-        <20201105190011.7089f9a6@canb.auug.org.au>
+        Thu, 5 Nov 2020 03:05:56 -0500
+Received: by mail-lf1-f68.google.com with SMTP id h6so990457lfj.3;
+        Thu, 05 Nov 2020 00:05:53 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jcbSFuZNjbwwPpmdXXuMLatE+ma/MkyayRwCMh0xeEw=;
+        b=IY8TTTT/TCb1AnXBp6d4v1bQzZdEXp1SAmpAyAEBxdC1FOFpM44VUu8GQDT47gW1UF
+         NTvwbU31OSEew7Yw70XGfM3uXK1EXn7BBqscXXjSeNejlQcxJhvykg8TggqifpTlRg6u
+         FWLs88lCd+JcWhr9vG0mF+qBBXd6r5NLAvb/MBm7tw7DRfKEugTTYJ/YquzXHgTnKtDH
+         j34SL7xegiF2OF2UYPjQLu99IDlbeK6lakp09e3bS12RuhWRxROlGUZlNZVsOw4pnOQA
+         3QOczezbbcUvVn5tQnhYRZdr1pY1Ri68efFDDMYNAftpAqLtsp5ahVr44hdByZjeAZIL
+         yhmg==
+X-Gm-Message-State: AOAM530+OoYYDrSd/tW0erPGoKQDLkCrmFimyXLPef8VqYiDfcAkYB9W
+        fZTAXHVXXb74HzsG67NNUVgi8dZxqW1zAg==
+X-Google-Smtp-Source: ABdhPJxO6iT4ufyTU4k10t0H9GULmCKc8Mk9EcLRvKpR1sNEwto031olXZ7Kd6J9qcksigpxE1jkag==
+X-Received: by 2002:a19:458:: with SMTP id 85mr458868lfe.249.1604563553248;
+        Thu, 05 Nov 2020 00:05:53 -0800 (PST)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id d26sm79031ljj.102.2020.11.05.00.05.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Nov 2020 00:05:52 -0800 (PST)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1kaaHN-0000UQ-4T; Thu, 05 Nov 2020 09:05:57 +0100
+Date:   Thu, 5 Nov 2020 09:05:57 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Johan Hovold <johan@kernel.org>, linux-usb@vger.kernel.org,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        linux-kernel@vger.kernel.org, stable <stable@vger.kernel.org>
+Subject: Re: [PATCH] USB: serial: mos7720: fix parallel-port state restore
+Message-ID: <20201105080557.GZ4085@localhost>
+References: <20201104164727.26351-1-johan@kernel.org>
+ <20201104165910.GA2342981@kroah.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/vRi2KX9xRiR8z/Le8rRGQc4";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201104165910.GA2342981@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/vRi2KX9xRiR8z/Le8rRGQc4
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, Nov 04, 2020 at 05:59:10PM +0100, Greg Kroah-Hartman wrote:
+> On Wed, Nov 04, 2020 at 05:47:27PM +0100, Johan Hovold wrote:
+> > The parallel-port restore operations is called when a driver claims the
+> > port and is supposed to restore the provided state (e.g. saved when
+> > releasing the port).
+> > 
+> > Fixes: b69578df7e98 ("USB: usbserial: mos7720: add support for parallel port on moschip 7715")
+> > Cc: stable <stable@vger.kernel.org>     # 2.6.35
+> > Signed-off-by: Johan Hovold <johan@kernel.org>
+> > ---
+> >  drivers/usb/serial/mos7720.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> > 
+> > diff --git a/drivers/usb/serial/mos7720.c b/drivers/usb/serial/mos7720.c
+> > index 5eed1078fac8..5a5d2a95070e 100644
+> > --- a/drivers/usb/serial/mos7720.c
+> > +++ b/drivers/usb/serial/mos7720.c
+> > @@ -639,6 +639,8 @@ static void parport_mos7715_restore_state(struct parport *pp,
+> >  		spin_unlock(&release_lock);
+> >  		return;
+> >  	}
+> > +	mos_parport->shadowDCR = s->u.pc.ctr;
+> > +	mos_parport->shadowECR = s->u.pc.ecr;
+> 
+> Wow that's old code.  I'm guessing no one uses these devices really :(
 
-Hi Anand,
+Possibly, but this would still work as long as you don't switch parallel
+port driver without disconnecting the mos7715 device in between.
 
-On Thu, 5 Nov 2020 19:00:11 +1100 Stephen Rothwell <sfr@canb.auug.org.au> w=
-rote:
->
-> On Thu, 5 Nov 2020 18:42:23 +1100 "Anand K. Mistry" <amistry@google.com> =
-wrote:
-> >
-> > How would I go about fixing this? Send a new (v2), fixed patch to the
-> > mailing list? I'm not that familiar with how patches get merged
-> > through the branches. =20
->=20
-> Since this is in Andrew's quilt series, either a v2, or an incremental
-> patch (to wherever the original went - including cc'ing Andrew).  If
-> you send a v2, he will probably turn it into an incremental patch and
-> then squash it back before sending it to Linus.
+> Anyway, nice work:
+> 
+> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-And if you cc me as well, I will add it to the copy of Andrew's series
-that I have in linux-next (so I won't have to worry about the warning
-until Andrew gets around to sending out a new version of his quilt
-series).
---=20
-Cheers,
-Stephen Rothwell
+Thanks, now applied for -next.
 
---Sig_/vRi2KX9xRiR8z/Le8rRGQc4
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+jsd8ACgkQAVBC80lX
-0Gz1pgf+NtRLg3uZ4uuZeAym0lxMbo7NxHjgjE0oM6a4l3M4KZ6R3iqIZ/rWH8oj
-1OaNvwOC5IOLtXb74DkcR/wUpxAX5xPDm0W0PG76rOMpFbaNj/dQy9JdXya2v+EZ
-EZ03ALC7xXGXL2I03F2QltA5kDwZ0ekKYVQ8VdTlVG/ikbzLlqNCTDhP6xeRCdwp
-HfvagUIahd+QCi3aBXmdogbLtJFD06oQm657blyEmwcptHWvzV/2DD+brc0W66IG
-aLATTXmimcjkPIaFadVhDOzwBkrKHGo1gLE/kHWFgz/bIoaxw6bZpbIMqmgmhOhZ
-+OOB1b4KxmiMRRywdsSS5PG4suTR3Q==
-=2OvE
------END PGP SIGNATURE-----
-
---Sig_/vRi2KX9xRiR8z/Le8rRGQc4--
+Johan
