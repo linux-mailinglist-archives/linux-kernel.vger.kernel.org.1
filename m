@@ -2,155 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DD8C2A7EFC
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 13:50:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C5B02A7F02
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 13:51:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730665AbgKEMud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 07:50:33 -0500
-Received: from sci-ig2.spreadtrum.com ([222.66.158.135]:11649 "EHLO
-        SHSQR01.spreadtrum.com" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730594AbgKEMud (ORCPT
+        id S1730430AbgKEMvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 07:51:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57372 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726874AbgKEMvw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 07:50:33 -0500
-Received: from ig2.spreadtrum.com (bjmbx01.spreadtrum.com [10.0.64.7])
-        by SHSQR01.spreadtrum.com with ESMTPS id 0A5Co9cH052921
-        (version=TLSv1 cipher=AES256-SHA bits=256 verify=NO);
-        Thu, 5 Nov 2020 20:50:09 +0800 (CST)
-        (envelope-from Xuewen.Yan@unisoc.com)
-Received: from BJMBX02.spreadtrum.com (10.0.64.8) by BJMBX01.spreadtrum.com
- (10.0.64.7) with Microsoft SMTP Server (TLS) id 15.0.847.32; Thu, 5 Nov 2020
- 20:50:10 +0800
-Received: from BJMBX02.spreadtrum.com ([::1]) by BJMBX02.spreadtrum.com
- ([fe80::f5ea:e944:c620:5c02%19]) with mapi id 15.00.0847.030; Thu, 5 Nov 2020
- 20:50:10 +0800
-From:   =?gb2312?B?48bRp87EIChYdWV3ZW4gWWFuKQ==?= <Xuewen.Yan@unisoc.com>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-CC:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        "Daniel Bristot de Oliveira" <bristot@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "xuewen.yan94@gmail.com" <xuewen.yan94@gmail.com>
-Subject: =?gb2312?B?tPC4tDogW1BBVENIIHYyXSBzY2hlZDogcmV2aXNlIHRoZSBpbml0aWFsIHZh?=
- =?gb2312?Q?lue_of_the_util=5Favg.?=
-Thread-Topic: [PATCH v2] sched: revise the initial value of the util_avg.
-Thread-Index: AQHWs2+McwzR+LmetkKPWSFROPIlzqm5eiO4
-Date:   Thu, 5 Nov 2020 12:50:10 +0000
-Message-ID: <c111762e29004c7d9d39d96387035c89@BJMBX02.spreadtrum.com>
-References: <1604575253-2386-1-git-send-email-xuewen.yan@unisoc.com>,<CAKfTPtANnayYEOoSvJYvX3F7cv3_rOuFaxGU5K06coTWbxjV-g@mail.gmail.com>
-In-Reply-To: <CAKfTPtANnayYEOoSvJYvX3F7cv3_rOuFaxGU5K06coTWbxjV-g@mail.gmail.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.0.93.65]
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+        Thu, 5 Nov 2020 07:51:52 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0233CC0613CF;
+        Thu,  5 Nov 2020 04:51:52 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id 23so1055832wmg.1;
+        Thu, 05 Nov 2020 04:51:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=21tQgACA2MlFk2eFW9R6MtzILXqxGUisi7N1EoyxkIQ=;
+        b=K96680qm4O/M6l+aWKJNu+ZJ9qiYiGvXmUdXeJkmlO2Ypsq397j9+hLmeE0HhwoONS
+         dR+e7K8bHhd9afInT0CPDgOW+WnhQxVnFL0efmyUhKjIlVSqseq6hVvzqHbYnB28Lj2S
+         hf0xmtmx5YH6ZjfPifKQug+eC+kPnb/jroq06bCjGxg7dFRzEqUvwL2ez4feO27xnWlH
+         58cMnHokwJSCKZQ9nr6t7unOXpHYPXlPDx5OF2w8Oav0V2bZYDKa5KCEo1oRHrZGD6AI
+         zyIMHjVtjrok2SUZgYcOyYvyTSB+9b/kmLPVXjAswpaSIl8DDzwuvWXFdFsKJbpGqvBD
+         ZjEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=21tQgACA2MlFk2eFW9R6MtzILXqxGUisi7N1EoyxkIQ=;
+        b=j2/Jwq/tTK3f7WgxS3BvQvWvRzDTvahqlUeqxZSFEGYitTJXcCPbWzrKTQqtxZhwwZ
+         MyqfAi5cyjgBqmfnYARhfmjIxpZ8hrU8FxPjYygoskpQ27mHE7p2LyHdkKfOtprBlfrW
+         dsuEs1rNb+vFUqaitPbJ/VntKuzGevjmbs6vs/uEFdho4/lV/bf+9p7ZYX74nn9v9BR2
+         J8HXp38vhhQ1RxH+gMYcXqZJGtMKfQ1dvF0xIQkCQOBVKUpNF5Ad0NOgNAJb/NMCXL8u
+         ZQNkOL+CC6s7BtxDK58OUFW3AZcRRgQbkPevHcFHg3gwDNwsmJShP/G62hjXXNMrBoHb
+         /OrA==
+X-Gm-Message-State: AOAM531KByDjzxdyHzwAz4rnB2j8JV44sZzlfgCgx2Qtw0CTkkSfo8Sa
+        4+ldtUQrh/jJWAtGuNindnYuYYZWtUn8FYcI
+X-Google-Smtp-Source: ABdhPJyWTeQ6y6xMAOGUTk5rY+inL6ySSMprZBBjwbibLmAiJ4eaSRMesCMXdKqZDK4J/PcHOmHe7g==
+X-Received: by 2002:a1c:1f05:: with SMTP id f5mr2505758wmf.98.1604580710395;
+        Thu, 05 Nov 2020 04:51:50 -0800 (PST)
+Received: from andrea (host-87-7-71-164.retail.telecomitalia.it. [87.7.71.164])
+        by smtp.gmail.com with ESMTPSA id l16sm2373963wrx.5.2020.11.05.04.51.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Nov 2020 04:51:49 -0800 (PST)
+Date:   Thu, 5 Nov 2020 13:51:41 +0100
+From:   Andrea Parri <parri.andrea@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     "K . Y . Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, linux-hyperv@vger.kernel.org,
+        Andres Beltran <lkmlabelt@gmail.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Saruhan Karademir <skarade@microsoft.com>,
+        Juan Vazquez <juvazq@microsoft.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>, lkp@intel.com
+Subject: Re: [PATCH v8 1/3] Drivers: hv: vmbus: Add vmbus_requestor data
+ structure for VMBus hardening
+Message-ID: <20201105125141.GA353914@andrea>
+References: <20201104154027.319432-1-parri.andrea@gmail.com>
+ <20201104154027.319432-2-parri.andrea@gmail.com>
 MIME-Version: 1.0
-X-MAIL: SHSQR01.spreadtrum.com 0A5Co9cH052921
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201104154027.319432-2-parri.andrea@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksVmluY2VudCwNCg0KQXQgZmlyc3QsIEkgdGhpbmsgInNhLT51dGlsX2F2ZyAgPSBjZnNfcnEt
-PmF2Zy51dGlsX2F2ZyAqIHNlX3dlaWdodChzZSkiIHNob3VsZA0KYXBwbHkgdG8gYWxsIGNsYXNz
-ZXMsIGJ1dCBJIGFtIG5vdCBzdXJlIGhvdyB0aGlzIG1vZGlmaWNhdGlvbiB3b3VsZCBhZmZlY3Qg
-b3RoZXIgY2xhc3Nlcy4NCnNvIEkgYWRkZWQgdGhpcyBjZnMgY29uZGl0aW9uLg0KDQpBcyB5b3Ug
-c2FpZCwgdGhpcyBpcyBtZWFuaW5nbGVzcyBmb3IgdGhpcyBlbHNlIGtlZXBzIHVzaW5nIHNlLT5s
-b2FkLndlaWdodC4NCg0KVGhhbmtzIQ0KDQoNCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18NCreivP7IyzogVmluY2VudCBHdWl0dG90IDx2aW5jZW50Lmd1aXR0b3RAbGlu
-YXJvLm9yZz4NCreiy83KsbzkOiAyMDIwxOoxMdTCNcjVIDIwOjMwDQrK1bz+yMs6IOPG0afOxCAo
-WHVld2VuIFlhbikNCrOty806IEluZ28gTW9sbmFyOyBQZXRlciBaaWpsc3RyYTsgSnVyaSBMZWxs
-aTsgRGlldG1hciBFZ2dlbWFubjsgU3RldmVuIFJvc3RlZHQ7IEJlbiBTZWdhbGw7IE1lbCBHb3Jt
-YW47IERhbmllbCBCcmlzdG90IGRlIE9saXZlaXJhOyBsaW51eC1rZXJuZWw7IHh1ZXdlbi55YW45
-NEBnbWFpbC5jb20NCtb3zOI6IFJlOiBbUEFUQ0ggdjJdIHNjaGVkOiByZXZpc2UgdGhlIGluaXRp
-YWwgdmFsdWUgb2YgdGhlIHV0aWxfYXZnLg0KDQpPbiBUaHUsIDUgTm92IDIwMjAgYXQgMTI6MjIs
-IFh1ZXdlbiBZYW4gPHh1ZXdlbi55YW5AdW5pc29jLmNvbT4gd3JvdGU6DQo+DQo+IEFjY29yZGlu
-ZyB0byB0aGUgb3JpZ2luYWwgY29kZSBsb2dpYzoNCj4gICAgICAgICAgICAgICAgIGNmc19ycS0+
-YXZnLnV0aWxfYXZnDQo+IHNhLT51dGlsX2F2ZyAgPSAtLS0tLS0tLS0tLS0tLS0tLS0tLSAqIHNl
-LT5sb2FkLndlaWdodA0KPiAgICAgICAgICAgICAgICAgY2ZzX3JxLT5hdmcubG9hZF9hdmcNCg0K
-dGhpcyBzaG91bGQgaGF2ZSBiZWVuIHNjYWxlX2xvYWRfZG93bihzZS0+bG9hZC53ZWlnaHQpIGZy
-b20gdGhlIGJlZ2lubmluZw0KDQo+IGJ1dCBmb3IgZmFpcl9zY2hlZF9jbGFzczoNCj4gc2UtPmxv
-YWQud2VpZ2h0ID0gMTAyNCAqIHNjaGVkX3ByaW9fdG9fd2VpZ2h0W3ByaW9dOw0KDQpUaGlzIGlz
-IG9ubHkgdHJ1ZSBmb3IgNjRiaXRzIHBsYXRmb3JtIG90aGVyd2lzZSBzY2FsZV9sb2FkIGFuZA0K
-c2NhbGVfbG9hZF9kb3duIGFyZSBub3ANCg0KPiAgICAgICAgIGNmc19ycS0+YXZnLnV0aWxfYXZn
-DQo+IHNvIHRoZSAgLS0tLS0tLS0tLS0tLS0tLS0tLS0gbXVzdCBiZSBleHRyZW1lbHkgc21hbGws
-IHRoZQ0KPiAgICAgICAgIGNmc19ycS0+YXZnLmxvYWRfYXZnDQo+IGp1ZGdtZW50IGNvbmRpdGlv
-biAic2EtPnV0aWxfYXZnIDwgY2FwIiBjb3VsZCBiZSBlc3RhYmxpc2hlZC4NCj4gSXQncyBub3Qg
-ZmFpciBmb3IgdGhvc2UgdGFza3Mgd2hvIGhhcyBzbWFsbGVyIG5pY2UgdmFsdWUuDQo+DQo+IFNp
-Z25lZC1vZmYtYnk6IFh1ZXdlbiBZYW4gPHh1ZXdlbi55YW5AdW5pc29jLmNvbT4NCj4gLS0tDQo+
-ICBrZXJuZWwvc2NoZWQvZmFpci5jIHwgNiArKysrKy0NCj4gIDEgZmlsZSBjaGFuZ2VkLCA1IGlu
-c2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkNCj4NCj4gZGlmZiAtLWdpdCBhL2tlcm5lbC9zY2hl
-ZC9mYWlyLmMgYi9rZXJuZWwvc2NoZWQvZmFpci5jDQo+IGluZGV4IDI5MGY5ZTMuLjA3OTc2MGIg
-MTAwNjQ0DQo+IC0tLSBhL2tlcm5lbC9zY2hlZC9mYWlyLmMNCj4gKysrIGIva2VybmVsL3NjaGVk
-L2ZhaXIuYw0KPiBAQCAtNzk0LDcgKzc5NCwxMSBAQCB2b2lkIHBvc3RfaW5pdF9lbnRpdHlfdXRp
-bF9hdmcoc3RydWN0IHRhc2tfc3RydWN0ICpwKQ0KPg0KPiAgICAgICAgIGlmIChjYXAgPiAwKSB7
-DQo+ICAgICAgICAgICAgICAgICBpZiAoY2ZzX3JxLT5hdmcudXRpbF9hdmcgIT0gMCkgew0KDQpX
-ZSBzaG91bGQgbm93IHVzZSBjcHVfdXRpbCgpIGluc3RlYWQgb2YgY2ZzX3JxLT5hdmcudXRpbF9h
-dmcgd2hpY2gNCnRha2VzIGludG8gYWNjb3VudCBvdGhlciBjbGFzc2VzDQoNCj4gLSAgICAgICAg
-ICAgICAgICAgICAgICAgc2EtPnV0aWxfYXZnICA9IGNmc19ycS0+YXZnLnV0aWxfYXZnICogc2Ut
-PmxvYWQud2VpZ2h0Ow0KPiArICAgICAgICAgICAgICAgICAgICAgICBpZiAocC0+c2NoZWRfY2xh
-c3MgPT0gJmZhaXJfc2NoZWRfY2xhc3MpDQo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgc2EtPnV0aWxfYXZnICA9IGNmc19ycS0+YXZnLnV0aWxfYXZnICogc2Vfd2VpZ2h0KHNlKTsN
-Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgZWxzZQ0KPiArICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgIHNhLT51dGlsX2F2ZyAgPSBjZnNfcnEtPmF2Zy51dGlsX2F2ZyAqIHNlLT5sb2Fk
-LndlaWdodDsNCg0KV2h5IHRoaXMgZWxzZSBrZWVwcyB1c2luZyBzZS0+bG9hZC53ZWlnaHQgPw0K
-DQpFaXRoZXIgd2UgdXNlcyBzYS0+dXRpbF9hdmcgID0gY2ZzX3JxLT5hdmcudXRpbF9hdmcgKiBz
-ZV93ZWlnaHQoc2UpOw0KZm9yIGFsbCBjbGFzc2VzDQoNCk9yIHdlIHdhbnQgYSBkaWZmZXJlbnQg
-aW5pdCB2YWx1ZSBmb3Igb3RoZXIgY2xhc3Nlcy4gQnV0IGluIHRoaXMgY2FzZQ0Kc2UtPmxvYWQu
-d2VpZ2h0IGlzIG1lYW5pbmdsZXNzIGFuZCB3ZSBzaG91bGQgc2ltcGx5IHNldCB0aGVtIHRvIDAN
-CmFsdGhvdWdoIHdlIGNvdWxkIHByb2JhYmx5IGNvbXB1dGUgYSB2YWx1ZSBiYXNlZCBvbiBiYW5k
-d2lkdGggZm9yDQpkZWFkbGluZSBjbGFzcw0KDQo+ICsNCj4gICAgICAgICAgICAgICAgICAgICAg
-ICAgc2EtPnV0aWxfYXZnIC89IChjZnNfcnEtPmF2Zy5sb2FkX2F2ZyArIDEpOw0KPg0KPiAgICAg
-ICAgICAgICAgICAgICAgICAgICBpZiAoc2EtPnV0aWxfYXZnID4gY2FwKQ0KPiAtLQ0KPiAxLjku
-MQ0KPg0KPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXw0KPiAgVGhpcyBlbWFpbCAo
-aW5jbHVkaW5nIGl0cyBhdHRhY2htZW50cykgaXMgaW50ZW5kZWQgb25seSBmb3IgdGhlIHBlcnNv
-biBvciBlbnRpdHkgdG8gd2hpY2ggaXQgaXMgYWRkcmVzc2VkIGFuZCBtYXkgY29udGFpbiBpbmZv
-cm1hdGlvbiB0aGF0IGlzIHByaXZpbGVnZWQsIGNvbmZpZGVudGlhbCBvciBvdGhlcndpc2UgcHJv
-dGVjdGVkIGZyb20gZGlzY2xvc3VyZS4gVW5hdXRob3JpemVkIHVzZSwgZGlzc2VtaW5hdGlvbiwg
-ZGlzdHJpYnV0aW9uIG9yIGNvcHlpbmcgb2YgdGhpcyBlbWFpbCBvciB0aGUgaW5mb3JtYXRpb24g
-aGVyZWluIG9yIHRha2luZyBhbnkgYWN0aW9uIGluIHJlbGlhbmNlIG9uIHRoZSBjb250ZW50cyBv
-ZiB0aGlzIGVtYWlsIG9yIHRoZSBpbmZvcm1hdGlvbiBoZXJlaW4sIGJ5IGFueW9uZSBvdGhlciB0
-aGFuIHRoZSBpbnRlbmRlZCByZWNpcGllbnQsIG9yIGFuIGVtcGxveWVlIG9yIGFnZW50IHJlc3Bv
-bnNpYmxlIGZvciBkZWxpdmVyaW5nIHRoZSBtZXNzYWdlIHRvIHRoZSBpbnRlbmRlZCByZWNpcGll
-bnQsIGlzIHN0cmljdGx5IHByb2hpYml0ZWQuIElmIHlvdSBhcmUgbm90IHRoZSBpbnRlbmRlZCBy
-ZWNpcGllbnQsIHBsZWFzZSBkbyBub3QgcmVhZCwgY29weSwgdXNlIG9yIGRpc2Nsb3NlIGFueSBw
-YXJ0IG9mIHRoaXMgZS1tYWlsIHRvIG90aGVycy4gUGxlYXNlIG5vdGlmeSB0aGUgc2VuZGVyIGlt
-bWVkaWF0ZWx5IGFuZCBwZXJtYW5lbnRseSBkZWxldGUgdGhpcyBlLW1haWwgYW5kIGFueSBhdHRh
-Y2htZW50cyBpZiB5b3UgcmVjZWl2ZWQgaXQgaW4gZXJyb3IuIEludGVybmV0IGNvbW11bmljYXRp
-b25zIGNhbm5vdCBiZSBndWFyYW50ZWVkIHRvIGJlIHRpbWVseSwgc2VjdXJlLCBlcnJvci1mcmVl
-IG9yIHZpcnVzLWZyZWUuIFRoZSBzZW5kZXIgZG9lcyBub3QgYWNjZXB0IGxpYWJpbGl0eSBmb3Ig
-YW55IGVycm9ycyBvciBvbWlzc2lvbnMuDQo+ILG+08q8/rywxuS4vbz+vt/T0LGjw9zQ1NbKo6zK
-3Leowsmxo7uksru1w9C5wrajrL32t6LLzbj4sb7Tyrz+y/nWuMzYtqjK1bz+yMuho9HPvfu3x76t
-ytrIqMq508OhotD7tKuhoreisry78ri01saxvtPKvP678sbkxNrI3aGjyPS3x7jDzNi2qMrVvP7I
-y6Osx+vO8NTEtsGhori01sahoiDKudPDu/LF+8K2sb7Tyrz+tcTIzrrOxNrI3aGjyPTO88rVsb7T
-yrz+o6zH67TTz7XNs9bQ08C+w9DUyb6z/bG+08q8/rywy/nT0Li9vP6jrLKi0tS72Li008q8/rXE
-t73Kvby0v8y45taqt6K8/sjLoaPO3reosaPWpLulwarN+M2o0MW8sMqxoaKwssiroaLO3s7zu/K3
-wLa+oaO3orz+yMu21MjOus607cKpvvmyu7PQtaPU8MjOoaMNCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fDQogVGhpcyBlbWFpbCAoaW5jbHVkaW5nIGl0cyBhdHRhY2htZW50cykgaXMg
-aW50ZW5kZWQgb25seSBmb3IgdGhlIHBlcnNvbiBvciBlbnRpdHkgdG8gd2hpY2ggaXQgaXMgYWRk
-cmVzc2VkIGFuZCBtYXkgY29udGFpbiBpbmZvcm1hdGlvbiB0aGF0IGlzIHByaXZpbGVnZWQsIGNv
-bmZpZGVudGlhbCBvciBvdGhlcndpc2UgcHJvdGVjdGVkIGZyb20gZGlzY2xvc3VyZS4gVW5hdXRo
-b3JpemVkIHVzZSwgZGlzc2VtaW5hdGlvbiwgZGlzdHJpYnV0aW9uIG9yIGNvcHlpbmcgb2YgdGhp
-cyBlbWFpbCBvciB0aGUgaW5mb3JtYXRpb24gaGVyZWluIG9yIHRha2luZyBhbnkgYWN0aW9uIGlu
-IHJlbGlhbmNlIG9uIHRoZSBjb250ZW50cyBvZiB0aGlzIGVtYWlsIG9yIHRoZSBpbmZvcm1hdGlv
-biBoZXJlaW4sIGJ5IGFueW9uZSBvdGhlciB0aGFuIHRoZSBpbnRlbmRlZCByZWNpcGllbnQsIG9y
-IGFuIGVtcGxveWVlIG9yIGFnZW50IHJlc3BvbnNpYmxlIGZvciBkZWxpdmVyaW5nIHRoZSBtZXNz
-YWdlIHRvIHRoZSBpbnRlbmRlZCByZWNpcGllbnQsIGlzIHN0cmljdGx5IHByb2hpYml0ZWQuIElm
-IHlvdSBhcmUgbm90IHRoZSBpbnRlbmRlZCByZWNpcGllbnQsIHBsZWFzZSBkbyBub3QgcmVhZCwg
-Y29weSwgdXNlIG9yIGRpc2Nsb3NlIGFueSBwYXJ0IG9mIHRoaXMgZS1tYWlsIHRvIG90aGVycy4g
-UGxlYXNlIG5vdGlmeSB0aGUgc2VuZGVyIGltbWVkaWF0ZWx5IGFuZCBwZXJtYW5lbnRseSBkZWxl
-dGUgdGhpcyBlLW1haWwgYW5kIGFueSBhdHRhY2htZW50cyBpZiB5b3UgcmVjZWl2ZWQgaXQgaW4g
-ZXJyb3IuIEludGVybmV0IGNvbW11bmljYXRpb25zIGNhbm5vdCBiZSBndWFyYW50ZWVkIHRvIGJl
-IHRpbWVseSwgc2VjdXJlLCBlcnJvci1mcmVlIG9yIHZpcnVzLWZyZWUuIFRoZSBzZW5kZXIgZG9l
-cyBub3QgYWNjZXB0IGxpYWJpbGl0eSBmb3IgYW55IGVycm9ycyBvciBvbWlzc2lvbnMuDQqxvtPK
-vP68sMbkuL28/r7f09Cxo8Pc0NTWyqOsyty3qMLJsaO7pLK7tcPQucK2o6y99reiy824+LG+08q8
-/sv51rjM2LaoytW8/sjLoaPRz737t8e+rcrayKjKudPDoaLQ+7SroaK3orK8u/K4tNbGsb7Tyrz+
-u/LG5MTayN2ho8j0t8e4w8zYtqjK1bz+yMujrMfrzvDUxLbBoaK4tNbGoaIgyrnTw7vyxfvCtrG+
-08q8/rXEyM66zsTayN2ho8j0zvPK1bG+08q8/qOsx+u008+1zbPW0NPAvsPQ1Mm+s/2xvtPKvP68
-sMv509C4vbz+o6yyotLUu9i4tNPKvP61xLe9yr28tL/MuObWqreivP7Iy6Gjzt63qLGj1qS7pcGq
-zfjNqNDFvLDKsaGisLLIq6Gizt7O87vyt8C2vqGjt6K8/sjLttTIzrrOtO3Cqb75sruz0LWj1PDI
-zqGjDQo=
+> @@ -300,6 +303,22 @@ int hv_ringbuffer_write(struct vmbus_channel *channel,
+>  						     kv_list[i].iov_len);
+>  	}
+>  
+> +	/*
+> +	 * Allocate the request ID after the data has been copied into the
+> +	 * ring buffer.  Once this request ID is allocated, the completion
+> +	 * path could find the data and free it.
+> +	 */
+> +
+> +	if (desc->flags == VMBUS_DATA_PACKET_FLAG_COMPLETION_REQUESTED) {
+> +		rqst_id = vmbus_next_request_id(&channel->requestor, requestid);
+> +		if (rqst_id == VMBUS_RQST_ERROR) {
+> +			pr_err("No request id available\n");
+> +			return -EAGAIN;
+
+FYI, the lkp kernel test robot reported a missing call to
+spin_unlock_irqrestore(&outring_info->ring_lock, flags) before the
+above 'return': I'll address this in the next submission.
+
+  Andrea
