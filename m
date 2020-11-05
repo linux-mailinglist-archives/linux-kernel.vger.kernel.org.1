@@ -2,320 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 008642A81C3
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 16:02:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E67C52A81D9
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 16:07:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731219AbgKEPCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 10:02:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49758 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730660AbgKEPCf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 10:02:35 -0500
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A6FEC0613D2
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 07:02:34 -0800 (PST)
-Received: by mail-oi1-x241.google.com with SMTP id t143so1946374oif.10
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 07:02:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cE/I/a+glK1wUH+iTxJhL2yUQISg6MuRdUIRRW+E5aM=;
-        b=XWfoih1azO52w8zDO8vLQZaZk7ivT6hGvNeaPjNANFyj50IKJJF8IW7ZkFiY/L1nlY
-         WWlOT2qOFphxGQRH7hTc7Z1wJEoNvxVBSvwEPvtkZxkO0W6ZCuHeq8CSY73cqsoFZrfo
-         XLYzAdsJzfrS2tmQKkenSNEHSZ+DMD5KeDop+9D8BgJDoe+OaLYZj4W1ByUJ1046ehLM
-         X3P/ePaHe97CBFgW9fOb3OTjnqxdVLdnBSNUjcH8l3/MHctXU+QsqBhvf7yqICmCVz3t
-         Eeux8T0k0td/dXGkRtGH/qSZVEc3Vg8OGEfqYl4q/yfl/OyDnlaz2zqyP92LG2hqba9K
-         EbZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cE/I/a+glK1wUH+iTxJhL2yUQISg6MuRdUIRRW+E5aM=;
-        b=U/JXei9k0SA5I6Iv58MZA5rdL0fOD/wKfAM7dCl1679qgVFFfU2AVrbIsdo+A3oVZl
-         a62k11RmYMlCmbDdHOOMvAsLGri8qJjflmQc+Neq1Q/ZdQkpP2Hm/pbzIui+XY5VyfvP
-         Sd2gcbjAYAx1EzSWEBqrVac95rCDHjSONUwxtXvXmrJGhTrLCPqSnjDqMIXfFLhB5sOo
-         Sfx+1rahmZsA7FaE3iPCuXjGfdOzT8pJoWOCOdnwpYMUh8lH0TEn/vuat8YkwqSeoXzc
-         48nVy7P+/1Eit3BTkPJcsjKAhANdLvvdgFS42fyZPGJPOX1LexUk7syAMCzYh8hBOOOS
-         sPNQ==
-X-Gm-Message-State: AOAM532FuYLmufQx4WFSs9Z2IhsVrZjSpi3zUpj3qDFdnnDcw6wMRExY
-        7Ip05SfNzel/x0qJL5uXoajKVhvwzxOgow0lbCqimFeY4AvFBQ==
-X-Google-Smtp-Source: ABdhPJwlDum//2HtQ05yrZR7wh0KZAwhZgTaBZF9xruJBFjtyASBnPmJRL+f0WxhgcHdfPPfsHwrxdJzMnjhyCd7NoY=
-X-Received: by 2002:aca:a988:: with SMTP id s130mr1817540oie.172.1604588553492;
- Thu, 05 Nov 2020 07:02:33 -0800 (PST)
+        id S1731065AbgKEPHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 10:07:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56174 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728371AbgKEPHN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 10:07:13 -0500
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C1CE522210;
+        Thu,  5 Nov 2020 15:07:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604588832;
+        bh=iGxDjGpgZgvh1at2/59sSPdVCtzZKM9jCmS50+iMi3E=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=RL8Yxi3b4nBNd50oejfwXK6xegX1iflPA7ERuLp1Ndd/RGOer8n4zqguIpdDv7REL
+         0D3kedysHHVG0MONILeThjZnfZ70toRQGAo7rzWFijqay/AGv/7vkSSoSxNO8E855z
+         Ze9Tjix7M53/tgPRrifDZ7YcBCnX0e9ZHhiU88x4=
+Received: by mail-wm1-f51.google.com with SMTP id h22so1941146wmb.0;
+        Thu, 05 Nov 2020 07:07:11 -0800 (PST)
+X-Gm-Message-State: AOAM531MS8gqn2Sc82PFxSTq9rnsoeiNip5JXCAeubGeANB2mbbl4sIl
+        G1J1qKz/lKrBaIFZ5P+ak90sy/b0acmaQ0UFIgI=
+X-Google-Smtp-Source: ABdhPJwFJINOEnDFfpK3PkNNsRXbOb9RCrfaMzLA61u9jqh2TFcDUA6ZjaE9FjcClJZlpFBXwreXQg11d88l56RHWWc=
+X-Received: by 2002:a1c:e919:: with SMTP id q25mr3176667wmc.142.1604588830214;
+ Thu, 05 Nov 2020 07:07:10 -0800 (PST)
 MIME-Version: 1.0
-References: <20201027174630.85213-1-98.arpi@gmail.com> <CANpmjNOpbXHs4gs9Ro-u7hyN_zZ7s3AqDcdDy1Nqxq4ckThugA@mail.gmail.com>
- <73c4e46c-10f1-9362-b4fb-94ea9d74e9b2@gmail.com> <CANpmjNPxqQM0_f14ZwV3rHZzwhCtqx2fbOhHmXmiJawou6=z6Q@mail.gmail.com>
- <77d6dc66-1086-a9ae-ccbc-bb062ff81437@gmail.com>
-In-Reply-To: <77d6dc66-1086-a9ae-ccbc-bb062ff81437@gmail.com>
-From:   Marco Elver <elver@google.com>
-Date:   Thu, 5 Nov 2020 16:02:21 +0100
-Message-ID: <CANpmjNORLJ4b_uwBB8v2h5cxoZF2SMTaz5K6QP37PxdUJDZUDA@mail.gmail.com>
-Subject: Re: [PATCH v4 1/2] kunit: Support for Parameterized Testing
-To:     Arpitha Raghunandan <98.arpi@gmail.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        skhan@linuxfoundation.org, Iurii Zaikin <yzaikin@google.com>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-ext4@vger.kernel.org
+References: <20201105073434.429307-1-xie.he.0141@gmail.com>
+In-Reply-To: <20201105073434.429307-1-xie.he.0141@gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Thu, 5 Nov 2020 16:06:54 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2bk9ZpoEvmhDpSv8ByyO-LevmF-W4Or_6RPRtV6gTQ1w@mail.gmail.com>
+Message-ID: <CAK8P3a2bk9ZpoEvmhDpSv8ByyO-LevmF-W4Or_6RPRtV6gTQ1w@mail.gmail.com>
+Subject: Re: [PATCH net-next] net: x25_asy: Delete the x25_asy driver
+To:     Xie He <xie.he.0141@gmail.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Martin Schiller <ms@dev.tdt.de>,
+        Andrew Hendry <andrew.hendry@gmail.com>,
+        linux-x25@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 5 Nov 2020 at 15:30, Arpitha Raghunandan <98.arpi@gmail.com> wrote:
+On Thu, Nov 5, 2020 at 8:34 AM Xie He <xie.he.0141@gmail.com> wrote:
 >
-> On 05/11/20 2:00 pm, Marco Elver wrote:
-> > On Thu, 5 Nov 2020 at 08:32, Arpitha Raghunandan <98.arpi@gmail.com> wrote:
-> >>
-> >> On 28/10/20 12:51 am, Marco Elver wrote:
-> >>> On Tue, 27 Oct 2020 at 18:47, Arpitha Raghunandan <98.arpi@gmail.com> wrote:
-> >>>>
-> >>>> Implementation of support for parameterized testing in KUnit.
-> >>>> This approach requires the creation of a test case using the
-> >>>> KUNIT_CASE_PARAM macro that accepts a generator function as input.
-> >>>> This generator function should return the next parameter given the
-> >>>> previous parameter in parameterized tests. It also provides
-> >>>> a macro to generate common-case generators.
-> >>>>
-> >>>> Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
-> >>>> Co-developed-by: Marco Elver <elver@google.com>
-> >>>> Signed-off-by: Marco Elver <elver@google.com>
-> >>>> ---
-> >>>> Changes v3->v4:
-> >>>> - Rename kunit variables
-> >>>> - Rename generator function helper macro
-> >>>> - Add documentation for generator approach
-> >>>> - Display test case name in case of failure along with param index
-> >>>> Changes v2->v3:
-> >>>> - Modifictaion of generator macro and method
-> >>>> Changes v1->v2:
-> >>>> - Use of a generator method to access test case parameters
-> >>>>
-> >>>>  include/kunit/test.h | 34 ++++++++++++++++++++++++++++++++++
-> >>>>  lib/kunit/test.c     | 21 ++++++++++++++++++++-
-> >>>>  2 files changed, 54 insertions(+), 1 deletion(-)
-> >>>>
-> >>>> diff --git a/include/kunit/test.h b/include/kunit/test.h
-> >>>> index 9197da792336..ec2307ee9bb0 100644
-> >>>> --- a/include/kunit/test.h
-> >>>> +++ b/include/kunit/test.h
-> >>>> @@ -107,6 +107,13 @@ struct kunit;
-> >>>>   *
-> >>>>   * @run_case: the function representing the actual test case.
-> >>>>   * @name:     the name of the test case.
-> >>>> + * @generate_params: the generator function for parameterized tests.
-> >>>> + *
-> >>>> + * The generator function is used to lazily generate a series of
-> >>>> + * arbitrarily typed values that fit into a void*. The argument @prev
-> >>>> + * is the previously returned value, which should be used to derive the
-> >>>> + * next value; @prev is set to NULL on the initial generator call.
-> >>>> + * When no more values are available, the generator must return NULL.
-> >>>>   *
-> >>>
-> >>> Hmm, should this really be the first paragraph? I think it should be
-> >>> the paragraph before "Example:" maybe. But then that paragraph should
-> >>> refer to generate_params e.g. "The generator function @generate_params
-> >>> is used to ........".
-> >>>
-> >>> The other option you have is to move this paragraph to the kernel-doc
-> >>> comment for KUNIT_CASE_PARAM, which seems to be missing a kernel-doc
-> >>> comment.
-> >>>
-> >>>>   * A test case is a function with the signature,
-> >>>>   * ``void (*)(struct kunit *)``
-> >>>> @@ -141,6 +148,7 @@ struct kunit;
-> >>>>  struct kunit_case {
-> >>>>         void (*run_case)(struct kunit *test);
-> >>>>         const char *name;
-> >>>> +       void* (*generate_params)(void *prev);
-> >>>>
-> >>>>         /* private: internal use only. */
-> >>>>         bool success;
-> >>>> @@ -162,6 +170,9 @@ static inline char *kunit_status_to_string(bool status)
-> >>>>   * &struct kunit_case for an example on how to use it.
-> >>>>   */
-> >>>>  #define KUNIT_CASE(test_name) { .run_case = test_name, .name = #test_name }
-> >>>
-> >>> I.e. create a new kernel-doc comment for KUNIT_CASE_PARAM here, and
-> >>> simply move the paragraph describing the generator protocol into that
-> >>> comment.
-> >>>
-> >>>> +#define KUNIT_CASE_PARAM(test_name, gen_params)                        \
-> >>>> +               { .run_case = test_name, .name = #test_name,    \
-> >>>> +                 .generate_params = gen_params }
-> >>>>
-> >>>>  /**
-> >>>>   * struct kunit_suite - describes a related collection of &struct kunit_case
-> >>>> @@ -208,6 +219,15 @@ struct kunit {
-> >>>>         const char *name; /* Read only after initialization! */
-> >>>>         char *log; /* Points at case log after initialization */
-> >>>>         struct kunit_try_catch try_catch;
-> >>>> +       /* param_value points to test case parameters in parameterized tests */
-> >>>
-> >>> Hmm, not quite: param_value is the current parameter value for a test
-> >>> case. Most likely it's a pointer, but it doesn't need to be.
-> >>>
-> >>>> +       void *param_value;
-> >>>> +       /*
-> >>>> +        * param_index stores the index of the parameter in
-> >>>> +        * parameterized tests. param_index + 1 is printed
-> >>>> +        * to indicate the parameter that causes the test
-> >>>> +        * to fail in case of test failure.
-> >>>> +        */
-> >>>
-> >>> I think this comment needs to be reformatted, because you can use at
-> >>> the very least use 80 cols per line. (If you use vim, visual select
-> >>> and do 'gq'.)
-> >>>
-> >>>> +       int param_index;
-> >>>>         /*
-> >>>>          * success starts as true, and may only be set to false during a
-> >>>>          * test case; thus, it is safe to update this across multiple
-> >>>> @@ -1742,4 +1762,18 @@ do {                                                                            \
-> >>>>                                                 fmt,                           \
-> >>>>                                                 ##__VA_ARGS__)
-> >>>>
-> >>>> +/**
-> >>>> + * KUNIT_ARRAY_PARAM() - Helper method for test parameter generators
-> >>>> + *                      required in parameterized tests.
-> >>>> + * @name:  prefix of the name for the test parameter generator function.
-> >>>> + *        It will be suffixed by "_gen_params".
-> >>>> + * @array: a user-supplied pointer to an array of test parameters.
-> >>>> + */
-> >>>> +#define KUNIT_ARRAY_PARAM(name, array)                                                         \
-> >>>> +       static void *name##_gen_params(void *prev)                                              \
-> >>>> +       {                                                                                       \
-> >>>> +               typeof((array)[0]) * __next = prev ? ((typeof(__next)) prev) + 1 : (array);     \
-> >>>> +               return __next - (array) < ARRAY_SIZE((array)) ? __next : NULL;                  \
-> >>>> +       }
-> >>>> +
-> >>>>  #endif /* _KUNIT_TEST_H */
-> >>>> diff --git a/lib/kunit/test.c b/lib/kunit/test.c
-> >>>> index 750704abe89a..8ad908b61494 100644
-> >>>> --- a/lib/kunit/test.c
-> >>>> +++ b/lib/kunit/test.c
-> >>>> @@ -127,6 +127,12 @@ unsigned int kunit_test_case_num(struct kunit_suite *suite,
-> >>>>  }
-> >>>>  EXPORT_SYMBOL_GPL(kunit_test_case_num);
-> >>>>
-> >>>> +static void kunit_print_failed_param(struct kunit *test)
-> >>>> +{
-> >>>> +       kunit_err(test, "\n\tTest failed at:\n\ttest case: %s\n\tparameter: %d\n",
-> >>>> +                                               test->name, test->param_index + 1);
-> >>>> +}
-> >>>
-> >>> Hmm, perhaps I wasn't clear, but I think I also misunderstood how the
-> >>> test case successes are presented: they are not, and it's all bunched
-> >>> into a single test case.
-> >>>
-> >>> Firstly, kunit_err() already prints the test name, so if we want
-> >>> something like "  # : the_test_case_name: failed at parameter #X",
-> >>> simply having
-> >>>
-> >>>     kunit_err(test, "failed at parameter #%d\n", test->param_index + 1)
-> >>>
-> >>> would be what you want.
-> >>>
-> >>> But I think I missed that parameters do not actually produce a set of
-> >>> test cases (sorry for noticing late). I think in their current form,
-> >>> the parameterized tests would not be useful for my tests, because each
-> >>> of my tests have test cases that have specific init and exit
-> >>> functions. For each parameter, these would also need to run.
-> >>>
-> >>> Ideally, each parameter produces its own independent test case
-> >>> "test_case#param_index". That way, CI systems will also be able to
-> >>> logically separate different test case params, simply because each
-> >>> param produced its own distinct test case.
-> >>>
-> >>> So, for example, we would get a series of test cases from something
-> >>> like KUNIT_CASE_PARAM(test_case, foo_gen_params), and in the output
-> >>> we'd see:
-> >>>
-> >>>     ok X - test_case#1
-> >>>     ok X - test_case#2
-> >>>     ok X - test_case#3
-> >>>     ok X - test_case#4
-> >>>     ....
-> >>>
-> >>> Would that make more sense?
-> >>>
-> >>> That way we'd ensure that test-case specific initialization and
-> >>> cleanup done in init and exit functions is properly taken care of, and
-> >>> you wouldn't need kunit_print_failed_param().
-> >>>
-> >>> AFAIK, for what I propose you'd have to modify kunit_print_ok_not_ok()
-> >>> (show param_index if parameterized test) and probably
-> >>> kunit_run_case_catch_errors() (generate params and set
-> >>> test->param_value and param_index).
-> >>>
-> >>> Was there a reason why each param cannot be a distinct test case? If
-> >>> not, I think this would be more useful.
-> >>>
-> >>
-> >> I tried adding support to run each parameter as a distinct test case by
-> >> making changes to kunit_run_case_catch_errors(). The issue here is that
-> >> since the results are displayed in KTAP format, this change will result in
-> >> each parameter being considered a subtest of another subtest (test case
-> >> in KUnit).
-> >
-> > Do you have example output? That might help understand what's going on.
-> >
+> This driver transports LAPB (X.25 link layer) frames over TTY links.
 >
-> The change that I tried can be seen here (based on the v4 patch):
-> https://gist.github.com/arpi-r/4822899087ca4cc34572ed9e45cc5fee.
+> I can safely say that this driver has no actual user because it was
+> not working at all until:
+> commit 8fdcabeac398 ("drivers/net/wan/x25_asy: Fix to make it work")
 >
-> Using the kunit tool, I get this error:
+> The code in its current state still has problems:
 >
-> [19:20:41] [ERROR]  expected 7 test suites, but got -1
-> [ERROR] no tests run!
-> [19:20:41] ============================================================
-> [19:20:41] Testing complete. 0 tests run. 0 failed. 0 crashed.
+> 1.
+> The uses of "struct x25_asy" in x25_asy_unesc (when receiving) and in
+> x25_asy_write_wakeup (when sending) are not protected by locks against
+> x25_asy_change_mtu's changing of the transmitting/receiving buffers.
+> Also, all "netif_running" checks in this driver are not protected by
+> locks against the ndo_stop function.
 >
-> But this error is only because of how the tool displays the results.
-> The test actually does run, as can be seen in the dmesg output:
+> 2.
+> The driver stops all TTY read/write when the netif is down.
+> I think this is not right because this may cause the last outgoing frame
+> before the netif goes down to be incompletely transmitted, and the first
+> incoming frame after the netif goes up to be incompletely received.
 >
-> TAP version 14
-> 1..7
->     # Subtest: ext4_inode_test
->     1..1
->     ok 1 - inode_test_xtimestamp_decoding 1
->     ok 1 - inode_test_xtimestamp_decoding 2
->     ok 1 - inode_test_xtimestamp_decoding 3
->     ok 1 - inode_test_xtimestamp_decoding 4
->     ok 1 - inode_test_xtimestamp_decoding 5
->     ok 1 - inode_test_xtimestamp_decoding 6
->     ok 1 - inode_test_xtimestamp_decoding 7
->     ok 1 - inode_test_xtimestamp_decoding 8
->     ok 1 - inode_test_xtimestamp_decoding 9
->     ok 1 - inode_test_xtimestamp_decoding 10
->     ok 1 - inode_test_xtimestamp_decoding 11
->     ok 1 - inode_test_xtimestamp_decoding 12
->     ok 1 - inode_test_xtimestamp_decoding 13
->     ok 1 - inode_test_xtimestamp_decoding 14
->     ok 1 - inode_test_xtimestamp_decoding 15
->     ok 1 - inode_test_xtimestamp_decoding 16
-> ok 1 - ext4_inode_test
-> (followed by other kunit test outputs)
+> And there may also be other problems.
+>
+> I was planning to fix these problems but after recent discussions about
+> deleting other old networking code, I think we may just delete this
+> driver, too.
+>
+> Signed-off-by: Xie He <xie.he.0141@gmail.com>
+> ---
+>  Documentation/process/magic-number.rst        |   1 -
+>  .../it_IT/process/magic-number.rst            |   1 -
+>  .../zh_CN/process/magic-number.rst            |   1 -
+>  arch/mips/configs/gpr_defconfig               |   1 -
+>  arch/mips/configs/mtx1_defconfig              |   1 -
+>  drivers/net/wan/Kconfig                       |  15 -
+>  drivers/net/wan/Makefile                      |   1 -
+>  drivers/net/wan/x25_asy.c                     | 836 ------------------
+>  drivers/net/wan/x25_asy.h                     |  46 -
+>  9 files changed, 903 deletions(-)
+>  delete mode 100644 drivers/net/wan/x25_asy.c
+>  delete mode 100644 drivers/net/wan/x25_asy.h
 
-Hmm, interesting. Let me play with your patch a bit.
+Adding Martin Schiller and Andrew Hendry, plus the linux-x25 mailing
+list to Cc. When I last looked at the wan drivers, I think I concluded
+that this should still be kept around, but I do not remember why.
+OTOH if it was broken for a long time, that is a clear indication that
+it was in fact unused.
 
-One option is to just have the test case number increment as well,
-i.e. have this:
-|    ok 1 - inode_test_xtimestamp_decoding#1
-|    ok 2 - inode_test_xtimestamp_decoding#2
-|    ok 3 - inode_test_xtimestamp_decoding#3
-|    ok 4 - inode_test_xtimestamp_decoding#4
-|    ok 5 - inode_test_xtimestamp_decoding#5
-...
+Since you did the bugfix mentioned above, do you have an idea
+when it could have last worked? I see it was originally merged in
+linux-2.3.21, and Stephen Hemminger did a cleanup for
+linux-2.6.0-rc3 that he apparently tested but also said "Not sure
+if anyone ever uses this.".
 
-Or is there something else I missed?
+Hopefully Martin or Andrew can provide a definite Ack or Nack on this.
 
-Thanks,
--- Marco
+      Arnd
