@@ -2,95 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 589412A7757
+	by mail.lfdr.de (Postfix) with ESMTP id C729B2A7758
 	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 07:05:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730533AbgKEGFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 01:05:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50164 "EHLO
+        id S1730737AbgKEGFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 01:05:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729141AbgKEGDS (ORCPT
+        with ESMTP id S1729344AbgKEGDU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 01:03:18 -0500
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADE5EC0613D1
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 22:03:17 -0800 (PST)
-Received: by mail-pg1-x536.google.com with SMTP id h6so594337pgk.4
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 22:03:17 -0800 (PST)
+        Thu, 5 Nov 2020 01:03:20 -0500
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89742C0613D1
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 22:03:20 -0800 (PST)
+Received: by mail-pg1-x52d.google.com with SMTP id i26so590273pgl.5
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 22:03:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=broadcom.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=dwJxfTt1li9cbalF1cOR5hI7couMnw13Xkxs2UAKmOc=;
-        b=C/Ilvev+vZW0UHKxm1C3sg4I2IxXYhfJueXH6PfxeoQtgMhvdoLp+0VikW7iOccx/5
-         DnhM2dBEbI2ODXoFJ5+LTLOzTiRRpIwzuO7WMK3HGAI2xAij+sSLkhpu2dYi+l8a92tr
-         ZWlEYol8+RyT5ROI8dCFytpf7xnX/5ooCgn/Y=
+        bh=DtXkl9DXEhClYW45+FJHSgYc3+pRHH/sRV7wtYq4ReI=;
+        b=OGXQdAbM4H9Dz2HWzNOFyorpWBTE/KZf028oHtWzlyQ6k5nmDySlqWUgx0P9AJpEcg
+         9o/r3RSdGLkyyV2YO6E+tLWzLprjtwFJGsXUhPotr6sAoIGn1U4VCC/oxJnzPblTYNTh
+         solf0nryekjLi2LtA8pKMShpbGxFRUum7SKNg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=dwJxfTt1li9cbalF1cOR5hI7couMnw13Xkxs2UAKmOc=;
-        b=YnzZLCRCe2Yixv57KMsNOpKVytpbMbwR/NIJMrQJPfOIhp9ZdIw93wr6lJwzYuumDC
-         ulB0EJeZeMKjnVUV9rzXJUWzA4TeCVifwDdtdW+8iAc9KyqmCrexNmUjwlJzC8IbZzbT
-         VAvGN7dJRENOhlHNQo27Dhx2LZlo0vFITAvjvlUHt8si6fGo1/30vdwX9Y7PM4XLAqXB
-         Re2PPYTyZheo11pHuardGuPH5kXnzW9tyqJahUSYkPRiTnB2PbDn/edeHEiEr8nhEwYP
-         2LKZU7S3itV+k0MYGJPuZm8g7lB+XutYtVhBZZ449wlMIj8DU7QDtA72vNexJxZfv7Zv
-         LXQA==
-X-Gm-Message-State: AOAM532GKm+XUQENKDjNtKl1Ew/GGCQeXXEHGiuVF6HRfMj0JsiDKOD7
-        v95MbzAVHGxuBYdFHhWqctWEbQ==
-X-Google-Smtp-Source: ABdhPJx3dEWjdyWg6hfV8rda5WXNspdIsYtlA3ys9VTwK4xQAnDjVaERaVpMufWn6frgPru0VJ6QPQ==
-X-Received: by 2002:aa7:96d7:0:b029:18a:b62f:3527 with SMTP id h23-20020aa796d70000b029018ab62f3527mr918535pfq.53.1604556197209;
-        Wed, 04 Nov 2020 22:03:17 -0800 (PST)
+        bh=DtXkl9DXEhClYW45+FJHSgYc3+pRHH/sRV7wtYq4ReI=;
+        b=pQcLVYR7WkUtJ5EpjFYbXZdGYkW0spemJZ7HFf0fL6XVXoY1VVLUdPQHUwF4cJNPXU
+         c3r6RAOom2s7Pwlrzu0gD3HdQBEtuE1I+5jtU5B8Q2jxgPlzk0uxHmVntg1eqOTkCtc4
+         NrWDawTpHUMSik3OpxLk5k0r042KNTXbpJQuaYlGtdNqMIELnL6YavmM4/Zt4ajVCa4o
+         T2OaW1j57QLGjOPm2s818gy+kW6LjM/QBHkmqSEAA4SW2XlgJDqhckrcizSgIH6xW1RA
+         qjoI4tXjKzurw/V33v6kN/OABUWoM2fIC3aA2iZWoZvfc5Qf/hvXImR1xQR9blTu7sNw
+         P8qA==
+X-Gm-Message-State: AOAM5309Y4WQm0dOUTlMkxt+vAlFjRVO3iFqfGhwUk70tzLOFpnJnx5V
+        k764jN0T8SCXYKhJA9rcQ4VF0A==
+X-Google-Smtp-Source: ABdhPJw8QgrtTD8DYkA1XjYJ7s1r+wYmyMI6G7EbSjQ+D6S3VYxFIJ5Gp8XoMedSLci0ffAnepeGeA==
+X-Received: by 2002:a17:90a:5c82:: with SMTP id r2mr844405pji.69.1604556200062;
+        Wed, 04 Nov 2020 22:03:20 -0800 (PST)
 Received: from rahul_yocto_ubuntu18.ibn.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id e201sm834241pfh.73.2020.11.04.22.03.14
+        by smtp.gmail.com with ESMTPSA id e201sm834241pfh.73.2020.11.04.22.03.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 22:03:16 -0800 (PST)
+        Wed, 04 Nov 2020 22:03:19 -0800 (PST)
 From:   Vikas Gupta <vikas.gupta@broadcom.com>
 To:     eric.auger@redhat.com, alex.williamson@redhat.com,
         cohuck@redhat.com, kvm@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Cc:     vikram.prakash@broadcom.com, Vikas Gupta <vikas.gupta@broadcom.com>
-Subject: [RFC, v0 2/3] vfio/platform: change cleanup order
-Date:   Thu,  5 Nov 2020 11:32:56 +0530
-Message-Id: <20201105060257.35269-3-vikas.gupta@broadcom.com>
+Subject: [RFC, v0 3/3] vfio/platform: add Broadcom msi module
+Date:   Thu,  5 Nov 2020 11:32:57 +0530
+Message-Id: <20201105060257.35269-4-vikas.gupta@broadcom.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201105060257.35269-1-vikas.gupta@broadcom.com>
 References: <20201105060257.35269-1-vikas.gupta@broadcom.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000002c601105b355da48"
+        boundary="00000000000058086405b355da6a"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---0000000000002c601105b355da48
+--00000000000058086405b355da6a
 
-In the case of msi, vendor specific msi module may require
-region access to handle msi cleanup so we need to cleanup region
-after irq cleanup only.
+Add Broadcom msi module for platform devices.
 
 Signed-off-by: Vikas Gupta <vikas.gupta@broadcom.com>
 ---
- drivers/vfio/platform/vfio_platform_common.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/vfio/platform/Kconfig                 |  1 +
+ drivers/vfio/platform/Makefile                |  1 +
+ drivers/vfio/platform/msi/Kconfig             |  9 +++
+ drivers/vfio/platform/msi/Makefile            |  2 +
+ .../vfio/platform/msi/vfio_platform_bcmplt.c  | 74 +++++++++++++++++++
+ 5 files changed, 87 insertions(+)
+ create mode 100644 drivers/vfio/platform/msi/Kconfig
+ create mode 100644 drivers/vfio/platform/msi/Makefile
+ create mode 100644 drivers/vfio/platform/msi/vfio_platform_bcmplt.c
 
-diff --git a/drivers/vfio/platform/vfio_platform_common.c b/drivers/vfio/platform/vfio_platform_common.c
-index c713f4e4c552..b9d68ccdf92f 100644
---- a/drivers/vfio/platform/vfio_platform_common.c
-+++ b/drivers/vfio/platform/vfio_platform_common.c
-@@ -283,8 +283,8 @@ static void vfio_platform_release(void *device_data)
- 			WARN_ON(1);
- 		}
- 		pm_runtime_put(vdev->device);
--		vfio_platform_regions_cleanup(vdev);
- 		vfio_platform_irq_cleanup(vdev);
-+		vfio_platform_regions_cleanup(vdev);
- 	}
+diff --git a/drivers/vfio/platform/Kconfig b/drivers/vfio/platform/Kconfig
+index dc1a3c44f2c6..7b8696febe61 100644
+--- a/drivers/vfio/platform/Kconfig
++++ b/drivers/vfio/platform/Kconfig
+@@ -21,3 +21,4 @@ config VFIO_AMBA
+ 	  If you don't know what to do here, say N.
  
- 	mutex_unlock(&driver_lock);
+ source "drivers/vfio/platform/reset/Kconfig"
++source "drivers/vfio/platform/msi/Kconfig"
+diff --git a/drivers/vfio/platform/Makefile b/drivers/vfio/platform/Makefile
+index 3f3a24e7c4ef..9ccdcdbf0e7e 100644
+--- a/drivers/vfio/platform/Makefile
++++ b/drivers/vfio/platform/Makefile
+@@ -5,6 +5,7 @@ vfio-platform-y := vfio_platform.o
+ obj-$(CONFIG_VFIO_PLATFORM) += vfio-platform.o
+ obj-$(CONFIG_VFIO_PLATFORM) += vfio-platform-base.o
+ obj-$(CONFIG_VFIO_PLATFORM) += reset/
++obj-$(CONFIG_VFIO_PLATFORM) += msi/
+ 
+ vfio-amba-y := vfio_amba.o
+ 
+diff --git a/drivers/vfio/platform/msi/Kconfig b/drivers/vfio/platform/msi/Kconfig
+new file mode 100644
+index 000000000000..54d6b70e1e32
+--- /dev/null
++++ b/drivers/vfio/platform/msi/Kconfig
+@@ -0,0 +1,9 @@
++# SPDX-License-Identifier: GPL-2.0-only
++config VFIO_PLATFORM_BCMPLT_MSI
++	tristate "MSI support for Broadcom platform devices"
++	depends on VFIO_PLATFORM && (ARCH_BCM_IPROC || COMPILE_TEST)
++	default ARCH_BCM_IPROC
++	help
++	  Enables the VFIO platform driver to handle msi for Broadcom devices
++
++	  If you don't know what to do here, say N.
+diff --git a/drivers/vfio/platform/msi/Makefile b/drivers/vfio/platform/msi/Makefile
+new file mode 100644
+index 000000000000..27422d45cecb
+--- /dev/null
++++ b/drivers/vfio/platform/msi/Makefile
+@@ -0,0 +1,2 @@
++# SPDX-License-Identifier: GPL-2.0
++obj-$(CONFIG_VFIO_PLATFORM_BCMPLT_MSI) += vfio_platform_bcmplt.o
+diff --git a/drivers/vfio/platform/msi/vfio_platform_bcmplt.c b/drivers/vfio/platform/msi/vfio_platform_bcmplt.c
+new file mode 100644
+index 000000000000..b97a571e90a9
+--- /dev/null
++++ b/drivers/vfio/platform/msi/vfio_platform_bcmplt.c
+@@ -0,0 +1,74 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright 2020 Broadcom.
++ */
++
++#include <linux/module.h>
++#include <linux/device.h>
++#include <linux/interrupt.h>
++#include <linux/msi.h>
++#include <linux/vfio.h>
++
++#include "../vfio_platform_private.h"
++
++#define RING_SIZE	(64 << 10)
++
++#define RING_MSI_ADDR_LS	0x03c
++#define RING_MSI_ADDR_MS	0x040
++#define RING_MSI_DATA_VALUE	0x064
++
++static u32 bcm_num_msi(struct vfio_platform_device *vdev)
++{
++	struct vfio_platform_region *reg = &vdev->regions[0];
++
++	return (reg->size / RING_SIZE);
++}
++
++static int bcm_write_msi(struct vfio_platform_device *vdev,
++			 struct msi_desc *desc,
++			 struct msi_msg *msg)
++{
++	void __iomem *ring;
++	u32 msi_off = vdev->num_irqs - vdev->num_msis;
++	int ring_num = desc->irq - vdev->irqs[msi_off].hwirq;
++	struct vfio_platform_region *reg = &vdev->regions[0];
++
++	if (!reg->ioaddr) {
++		reg->ioaddr = ioremap(reg->addr, reg->size);
++		if (!reg->ioaddr)
++			return -ENOMEM;
++	}
++
++	ring = reg->ioaddr + ring_num * RING_SIZE;
++
++	writel_relaxed(msg->address_lo, ring + RING_MSI_ADDR_LS);
++	writel_relaxed(msg->address_hi, ring + RING_MSI_ADDR_MS);
++	writel_relaxed(msg->data, ring + RING_MSI_DATA_VALUE);
++
++	return 0;
++}
++
++static struct vfio_platform_msi_node vfio_platform_bcmflexrm_msi_node = {
++	.owner = THIS_MODULE,
++	.compat = "brcm,iproc-flexrm-mbox",
++	.of_get_msi = bcm_num_msi,
++	.of_msi_write = bcm_write_msi
++};
++
++static int __init vfio_platform_bcmflexrm_msi_module_init(void)
++{
++	__vfio_platform_register_msi(&vfio_platform_bcmflexrm_msi_node);
++
++	return 0;
++}
++
++static void __exit vfio_platform_bcmflexrm_msi_module_exit(void)
++{
++	vfio_platform_unregister_msi("brcm,iproc-flexrm-mbox");
++}
++
++module_init(vfio_platform_bcmflexrm_msi_module_init);
++module_exit(vfio_platform_bcmflexrm_msi_module_exit);
++
++MODULE_LICENSE("GPL v2");
++MODULE_AUTHOR("Broadcom");
 -- 
 2.17.1
 
 
---0000000000002c601105b355da48
+--00000000000058086405b355da6a
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -160,14 +275,14 @@ JH2nMg39SpVAwmRqfs6mYtenpMwKtQd9goGkIFXqdSvOPATkbS1YIGtU2byLK+/1rIWPoKNmRddj
 WOu/loxldI1sJa1tOHgtb93YpIe0HEmgxLGS0KEnbM+rn9vXNKCe+9n0PhxJIfqcf6rAtK0prRwr
 Y2MxggJvMIICawIBATBtMF0xCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNh
 MTMwMQYDVQQDEypHbG9iYWxTaWduIFBlcnNvbmFsU2lnbiAyIENBIC0gU0hBMjU2IC0gRzMCDDTZ
-lyNZkGMqSi5xbzANBglghkgBZQMEAgEFAKCB1DAvBgkqhkiG9w0BCQQxIgQg6oBEWT0bk90+DV8z
-euM2bNP48Cp9pABNwz9zbs+WyMMwGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0B
-CQUxDxcNMjAxMTA1MDYwMzE3WjBpBgkqhkiG9w0BCQ8xXDBaMAsGCWCGSAFlAwQBKjALBglghkgB
+lyNZkGMqSi5xbzANBglghkgBZQMEAgEFAKCB1DAvBgkqhkiG9w0BCQQxIgQg+E3Uvq7WXjZ+ynRM
+OkqI6b5U9bAgtUjoJHcrHd5W6VQwGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0B
+CQUxDxcNMjAxMTA1MDYwMzIwWjBpBgkqhkiG9w0BCQ8xXDBaMAsGCWCGSAFlAwQBKjALBglghkgB
 ZQMEARYwCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMAsGCSqGSIb3DQEBCjALBgkqhkiG9w0BAQcw
-CwYJYIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBAIHGvIGgsHj4t1PuvUpWg4T/rjsyNlubI+Mz
-cKUlqoQHST1fThU1ndptwOjttQbGq8q2OZxIoaIRR9MAxOSa+z12pk3K8vRaB681/uZFrXUzaudO
-BqpMXQMTOBoTW0FfVYjs75h499fCEPyYj6Xx8+j79uUcbhGGwR4rXvo9yRYniWHPowfwyXkIwexa
-hMTtPm9z5Iwwnw6/YYjmVll8GeKroLbCC+o2lRcTbTf2diXw1wX/8M3M4ibvBHyu040rZrfA9/3I
-+FK7RcTzwMS87GN0DhKyXFlEL6QEJXNfLHrURT9YoPuQyXdHds50KduPK7yKv1nLaCTDwfZTwuj/
-NZ8=
---0000000000002c601105b355da48--
+CwYJYIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBABlhSU+7fhIRuV/w9QmEp3XWcnhNa7yFP0C3
+G+mf9qYdd0pfN19JXvjSpBnlI6QPkzcV93rbWQQHi+W6lTsYZ3OQPNGd/01NbdjNM7dPsOAfCj3e
+UV0BLQTYexiAadp1SKTd4U54pL2Gk2BjZ54dIXko2Ii8efZx6G47aWO94S5lP2PxU7QQOTSY0SuS
+1Uklt4KYHMRxrc84+XZNmZj8oa9y4jIdgr+PKKQd18mncuykRMA8XbXH1Aw+GcQQI9Me7GeiCZ8N
+PRKEnX7bGVEvYJYOkP9w6rBcHN9mRb4t8WHn6HU/vzWh+8yoWWTR9MVMJ45xrKlWuq1QDrDNDIa9
+b7Q=
+--00000000000058086405b355da6a--
