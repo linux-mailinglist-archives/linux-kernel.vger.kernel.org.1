@@ -2,91 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E720C2A7D5A
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 12:41:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A25C02A7D63
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 12:42:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729898AbgKELlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 06:41:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46408 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726665AbgKELlM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 06:41:12 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BECC0C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 03:41:10 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id a65so938716wme.1
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 03:41:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2NT4L8anxXm4wXPLVLxmm3DEteISuGR3FP/KLGJpviU=;
-        b=x0u6INKsJMHOufY/7/lCh0VyNCFWbYUaHN7ctfYL+qRWXrEuAZumb1autNdeoQlnrV
-         k1g3HVrRhdTNG+/Z/co8PwrnifK2W2rH8k9MeUM9i8KAuQ3MzWrUkTPmgthz2rR4YAwQ
-         posQdFV148EG+os9lAobSB1P9ka4rxkuxeDc+mBbO2q2hKxTlCEtw1KbrBApiw3OUCyW
-         HAKyKjpEw+VCGeiRmbSLQ3FxEtocBrYIirVV87VbPv3UQO4sfgNJWHPYydlUb73SO2Z9
-         AOXDP/pjEyLWtkl4+xYcWAV+C2mShsY/EY3nyNz1JF0qQjQSKWeXZvUYVTSugBTRd59d
-         aTNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2NT4L8anxXm4wXPLVLxmm3DEteISuGR3FP/KLGJpviU=;
-        b=NxNzxm6i2OwRDcIEJNqg4MBsXf9JvUvuDQbtQL88gg33yleUxE4hcZnDauvQQtc6d1
-         9lLa/4loo1LUkVPSIrTdP3j3TvFLjV8lRBGrWqW1p8eQApVj/OtTm89XMAK67HMzInY0
-         VDx7yo54/AULKl31630O2M4wXZXkU1Uy8EnyDFCbs2uGiJb19DbENsyRTof15jzbB8Qw
-         NNyFw66Of4toRXjY+vQakNtKlu7vBRlFHdAEwA+Y5mpTluQnuN63ePLRu81vXIaUryrK
-         IgDWJWjPgOl2QdmqU1pYkGHa/iyAHAQo9g1skFVWKw+RngjYCqMZzP49nZaFxDQNvxT/
-         kjdA==
-X-Gm-Message-State: AOAM532xWFsQ0M9uKPYBurr2dNUZRrdBAU9Xw7okB0nZTYcBZk0gqj4q
-        twEwV9iOPaWxJW3OBWL+pYx8AA==
-X-Google-Smtp-Source: ABdhPJyyPzkxO4wkBPYj9UA0OxF6Y7OTNGnkUAcf2gff0pcr11t6FZpC3LD9ZIv71Hlwcujx/5IFXg==
-X-Received: by 2002:a7b:c242:: with SMTP id b2mr2319563wmj.162.1604576469577;
-        Thu, 05 Nov 2020 03:41:09 -0800 (PST)
-Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.gmail.com with ESMTPSA id z19sm2154352wmk.12.2020.11.05.03.41.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 03:41:08 -0800 (PST)
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To:     broonie@kernel.org
-Cc:     perex@perex.cz, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, lgirdwood@gmail.com,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH] ASoc: qcom: lpass-cpu: fix warning on symbol scope
-Date:   Thu,  5 Nov 2020 11:41:00 +0000
-Message-Id: <20201105114100.18647-1-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
+        id S1730276AbgKELmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 06:42:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56768 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730124AbgKELmY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 06:42:24 -0500
+Received: from kernel.org (unknown [2.55.183.164])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2AF252071A;
+        Thu,  5 Nov 2020 11:42:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604576542;
+        bh=wBBJASevkpsRXZMXJL2OiMK6CtZhq8iWhEgufgr/S4E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HHJruZEGepbkqow1qhwuCKDkVoe/lpKxogvFghtL/5RowA6qyrxSq531Gliqcbzyu
+         tDTgfPvrJ9vN7jvSKObEIq9kiRh1xeaKbxhp+zX6zw46ZOu6eW7fSqiBEMlywA8zjt
+         Ph/W2QEvA7Z47iM8NgnnYxvGybdML21CtLacZNig=
+Date:   Thu, 5 Nov 2020 13:42:00 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andy Lutomirski <luto@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Christoph Lameter <cl@linux.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Len Brown <len.brown@intel.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Pavel Machek <pavel@ucw.cz>, Pekka Enberg <penberg@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-pm@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
+        x86@kernel.org
+Subject: Re: [PATCH v4 3/4] arch, mm: restore dependency of
+ __kernel_map_pages() of DEBUG_PAGEALLOC
+Message-ID: <20201105114200.GZ4879@kernel.org>
+References: <20201103162057.22916-1-rppt@kernel.org>
+ <20201103162057.22916-4-rppt@kernel.org>
+ <f9c1dc66-fc60-db4d-9670-0271adb2ed07@suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f9c1dc66-fc60-db4d-9670-0271adb2ed07@suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes below warning when module is compiled with W=1 C=1
+On Wed, Nov 04, 2020 at 07:02:20PM +0100, Vlastimil Babka wrote:
+> On 11/3/20 5:20 PM, Mike Rapoport wrote:
+> > From: Mike Rapoport <rppt@linux.ibm.com>
+> 
+> Subject should have "on DEBUG_PAGEALLOC" ?
+> 
+> > The design of DEBUG_PAGEALLOC presumes that __kernel_map_pages() must never
+> > fail. With this assumption is wouldn't be safe to allow general usage of
+> > this function.
+> > 
+> > Moreover, some architectures that implement __kernel_map_pages() have this
+> > function guarded by #ifdef DEBUG_PAGEALLOC and some refuse to map/unmap
+> > pages when page allocation debugging is disabled at runtime.
+> > 
+> > As all the users of __kernel_map_pages() were converted to use
+> > debug_pagealloc_map_pages() it is safe to make it available only when
+> > DEBUG_PAGEALLOC is set.
+> > 
+> > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> > Acked-by: David Hildenbrand <david@redhat.com>
+> > Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> > ---
+> >   arch/Kconfig                     |  3 +++
+> >   arch/arm64/Kconfig               |  4 +---
+> >   arch/arm64/mm/pageattr.c         |  8 ++++++--
+> >   arch/powerpc/Kconfig             |  5 +----
+> >   arch/riscv/Kconfig               |  4 +---
+> >   arch/riscv/include/asm/pgtable.h |  2 --
+> >   arch/riscv/mm/pageattr.c         |  2 ++
+> >   arch/s390/Kconfig                |  4 +---
+> >   arch/sparc/Kconfig               |  4 +---
+> >   arch/x86/Kconfig                 |  4 +---
+> >   arch/x86/mm/pat/set_memory.c     |  2 ++
+> >   include/linux/mm.h               | 10 +++++++---
+> >   12 files changed, 26 insertions(+), 26 deletions(-)
+> > 
+> > diff --git a/arch/Kconfig b/arch/Kconfig
+> > index 56b6ccc0e32d..56d4752b6db6 100644
+> > --- a/arch/Kconfig
+> > +++ b/arch/Kconfig
+> > @@ -1028,6 +1028,9 @@ config HAVE_STATIC_CALL_INLINE
+> >   	bool
+> >   	depends on HAVE_STATIC_CALL
+> > +config ARCH_SUPPORTS_DEBUG_PAGEALLOC
+> > +	bool
+> > +
+> >   source "kernel/gcov/Kconfig"
+> >   source "scripts/gcc-plugins/Kconfig"
+> > diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> > index 1d466addb078..a932810cfd90 100644
+> > --- a/arch/arm64/Kconfig
+> > +++ b/arch/arm64/Kconfig
+> > @@ -71,6 +71,7 @@ config ARM64
+> >   	select ARCH_USE_QUEUED_RWLOCKS
+> >   	select ARCH_USE_QUEUED_SPINLOCKS
+> >   	select ARCH_USE_SYM_ANNOTATIONS
+> > +	select ARCH_SUPPORTS_DEBUG_PAGEALLOC
+> >   	select ARCH_SUPPORTS_MEMORY_FAILURE
+> >   	select ARCH_SUPPORTS_SHADOW_CALL_STACK if CC_HAVE_SHADOW_CALL_STACK
+> >   	select ARCH_SUPPORTS_ATOMIC_RMW
+> > @@ -1025,9 +1026,6 @@ config HOLES_IN_ZONE
+> >   source "kernel/Kconfig.hz"
+> > -config ARCH_SUPPORTS_DEBUG_PAGEALLOC
+> > -	def_bool y
+> > -
+> >   config ARCH_SPARSEMEM_ENABLE
+> >   	def_bool y
+> >   	select SPARSEMEM_VMEMMAP_ENABLE
+> > diff --git a/arch/arm64/mm/pageattr.c b/arch/arm64/mm/pageattr.c
+> > index 1b94f5b82654..439325532be1 100644
+> > --- a/arch/arm64/mm/pageattr.c
+> > +++ b/arch/arm64/mm/pageattr.c
+> > @@ -155,7 +155,7 @@ int set_direct_map_invalid_noflush(struct page *page)
+> >   		.clear_mask = __pgprot(PTE_VALID),
+> >   	};
+> > -	if (!rodata_full)
+> > +	if (!debug_pagealloc_enabled() && !rodata_full)
+> >   		return 0;
+> >   	return apply_to_page_range(&init_mm,
+> > @@ -170,7 +170,7 @@ int set_direct_map_default_noflush(struct page *page)
+> >   		.clear_mask = __pgprot(PTE_RDONLY),
+> >   	};
+> > -	if (!rodata_full)
+> > +	if (!debug_pagealloc_enabled() && !rodata_full)
+> >   		return 0;
+> >   	return apply_to_page_range(&init_mm,
+> 
+> I don't understand these two hunks. Previous patch calls this for
+> hibernation when CONFIG_ARCH_HAS_SET_DIRECT_MAP, which is true for arm64.
+> Why suddenly this starts to depend on debug_pagealloc_enabled()?
 
-lpass-cpu.c:677:22: warning: symbol 'lpass_hdmi_regmap_config'
-was not declared. Should it be static?
+I was confused about this for quite a long :)
 
-Fixes: 7cb37b7bd0d3 ("ASoC: qcom: Add support for lpass hdmi driver")
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- sound/soc/qcom/lpass-cpu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On arm64 the changes to direct^w linear map are allowed when 
 
-diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
-index 9d17c87445a9..1fd862e3fd8a 100644
---- a/sound/soc/qcom/lpass-cpu.c
-+++ b/sound/soc/qcom/lpass-cpu.c
-@@ -674,7 +674,7 @@ static bool lpass_hdmi_regmap_volatile(struct device *dev, unsigned int reg)
- 	return false;
- }
- 
--struct regmap_config lpass_hdmi_regmap_config = {
-+static struct regmap_config lpass_hdmi_regmap_config = {
- 	.reg_bits = 32,
- 	.reg_stride = 4,
- 	.val_bits = 32,
+	debug_page_alloc() || rodata_full
+
+In hibernation we essentially have now
+
+	if (1)
+		set_direct_map(something)
+	else
+		debug_page_alloc_map()
+
+With debug_pagealloc enabled but with rodata_full disabled arm64
+versions of set_direct_map_*() will become a nop, so a page that was
+unmapped by debug_pagealloc() will not be mapped back.
+
+I'm still puzzled how hibernation might ever need to save a free page,
+but that's another story.
+
 -- 
-2.21.0
-
+Sincerely yours,
+Mike.
