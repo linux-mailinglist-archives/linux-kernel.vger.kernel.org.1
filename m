@@ -2,132 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38F0B2A84BB
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 18:19:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 412912A84BC
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 18:20:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730938AbgKERTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 12:19:44 -0500
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:34314 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726729AbgKERTn (ORCPT
+        id S1731557AbgKERUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 12:20:34 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35492 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726729AbgKERUe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 12:19:43 -0500
-Received: by mail-oi1-f193.google.com with SMTP id z26so2462508oid.1;
-        Thu, 05 Nov 2020 09:19:42 -0800 (PST)
+        Thu, 5 Nov 2020 12:20:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604596832;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=A74c4Q9g1nBt0Ylu7CQA8niTKc2oxLA01JSP+C0l6xM=;
+        b=LDXbAFygxg+0H32EpVBhvIQSMr1PQS4Lom4tJ/dksbywOdyn13+X5MnDZNCjqgfqHdLgc3
+        fcR2tWJyifoSMbeEdavcvYoB1cSVa9EnwvziEHB/7gl98d2J1sUFxyUQGYfpU7nNJc6nz2
+        YlCTblq5qlRX89CefMwpaKZSF+aWa3w=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-241-qB5-wUm6NUiLtq6rbkbPpw-1; Thu, 05 Nov 2020 12:20:30 -0500
+X-MC-Unique: qB5-wUm6NUiLtq6rbkbPpw-1
+Received: by mail-wr1-f70.google.com with SMTP id 67so268415wra.2
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 09:20:30 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=05L3sB3OfgwjfPRDm4XzH9qNouMEyPQgKMGeJaoAAxE=;
-        b=YEzPiM90Zr32L1wcbVHRX+1sub0DQCVb15fgRjAluaci5vFCYQfEyQDQsY6H2XuHBI
-         iRFAuBV+b+p3rYQilL5B5yS+rnxT1K9gjNSfZ1UZ2KPw1aXo6Zj2vumXB5E4zJ1tWjgy
-         EE8pw55rJoTKSqcNZhA+kK3baEdB4JuWIy0r0ALdLEZn0w52hNUQWE2mg+pEc1cYdgMz
-         HQBNw5kLwMYFDYUEh7pHlIwzj4k1cP7GH+O1HHh5GnhHkbvnN4PkNUDJz4f3QjcNiLb4
-         xTMQ1OWwgQkMvrLYdXM0gh/r0OT4xlkbt0/uKxpzpiyEGbade6c5gWhS9dvIUNacr7fC
-         lRqg==
-X-Gm-Message-State: AOAM531/33f4mPoZQmiclvw9SiPU/M+RKq1esg5ksp2tY3E+x5Zb3Buy
-        OcD0DbsJkh2czfH5oCD0Aw==
-X-Google-Smtp-Source: ABdhPJz1LxIaYbQB7Z1S1g0MOIWHhGFF4OqmQxG+cWMMxAi7p7yzmfHtMXOns1fo/fb1L8At9GuAxA==
-X-Received: by 2002:aca:5515:: with SMTP id j21mr281269oib.150.1604596782389;
-        Thu, 05 Nov 2020 09:19:42 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id d26sm199446ooh.19.2020.11.05.09.19.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 09:19:41 -0800 (PST)
-Received: (nullmailer pid 1503059 invoked by uid 1000);
-        Thu, 05 Nov 2020 17:19:40 -0000
-Date:   Thu, 5 Nov 2020 11:19:40 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Cristian Pop <cristian.pop@analog.com>
-Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jic23@kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v7 4/5] dt-bindings:iio:adc:adi,ad7768-1: Add
- documentation for channel label
-Message-ID: <20201105171940.GA1499984@bogus>
-References: <20201102142000.68916-1-cristian.pop@analog.com>
- <20201102142000.68916-4-cristian.pop@analog.com>
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=A74c4Q9g1nBt0Ylu7CQA8niTKc2oxLA01JSP+C0l6xM=;
+        b=ejtrceYzlbPy8jV+mxhSgc4vvdEBS1sjfyer7Gn1WnBDOTrZAKSJgS8C89y9Ah4iJD
+         GIrzh0bJ3stuZNtwM9mRntIt6hj2/iwZo2TZUkOddB9sPCDUYtYaa3ht8NRg1PYutyiT
+         YOiRbPI0KRhhfbUyC/3tdMOcjWLriY49X0oFa0hD7LwkWh3BdSF+hsx7ifKiIvUUvcxc
+         m6CWCqTMnDiLIXBHo6Rgsn4IDiE61QDGMfave54Q5TbrmXqS9SRMpV9FroIBKx4Kw6kI
+         LNuXp7KhKLdfscD51ByWgDImWegX8DG835IPayFLlL8IteP3t/6tsDeopKCnq/ZJT+Hj
+         OaFg==
+X-Gm-Message-State: AOAM532jxA/Ylqv88BiSt9YjhR1XCUeT6AVRYtqHeC3hrqQYXJvGY6Wl
+        LmQ9HHRdHeMW3qWPqsorXEfV4npELLUPsE/lBhdQ/Efc2VVDw4iIdP0QsybSSl4GIkj1iDdWQIX
+        MpI5U2zR/muhLFKUYJxZeGtzD
+X-Received: by 2002:a1c:7f0f:: with SMTP id a15mr3713559wmd.97.1604596829148;
+        Thu, 05 Nov 2020 09:20:29 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyrgZredQdIK7+ieFbOS9wkGpjUVFJ46T4BeVuLZI0o0rwK+1j8hV+GXok6B8YWvDJ/eg/38A==
+X-Received: by 2002:a1c:7f0f:: with SMTP id a15mr3713545wmd.97.1604596828936;
+        Thu, 05 Nov 2020 09:20:28 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
+        by smtp.gmail.com with ESMTPSA id d16sm3230032wrw.17.2020.11.05.09.20.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Nov 2020 09:20:27 -0800 (PST)
+Subject: Re: [PATCH kvm-unit-tests v2 1/3] svm: Add ability to execute test
+ via test_run on a vcpu other than vcpu 0
+To:     Cathy Avery <cavery@redhat.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+References: <20200717113422.19575-1-cavery@redhat.com>
+ <20200717113422.19575-2-cavery@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <9e98cbad-97a9-24a6-4ff3-b97b552c03b2@redhat.com>
+Date:   Thu, 5 Nov 2020 18:20:26 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201102142000.68916-4-cristian.pop@analog.com>
+In-Reply-To: <20200717113422.19575-2-cavery@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 02, 2020 at 04:19:59PM +0200, Cristian Pop wrote:
-> Optional attribute for better identification of the channels.
+On 17/07/20 13:34, Cathy Avery wrote:
+> When running tests that can result in a vcpu being left in an
+> indeterminate state it is useful to be able to run the test on
+> a vcpu other than 0. This patch allows test_run to be executed
+> on any vcpu indicated by the on_vcpu member of the svm_test struct.
+> The initialized state of the vcpu0 registers used to populate the
+> vmcb is carried forward to the other vcpus.
 > 
-> Signed-off-by: Cristian Pop <cristian.pop@analog.com>
+> Signed-off-by: Cathy Avery <cavery@redhat.com>
 > ---
-> Changes in v7:
->  - Add "additionalProperties: false" for channel child nodes.
->  - Fix "reg" spelling.
->  .../bindings/iio/adc/adi,ad7768-1.yaml        | 32 +++++++++++++++++++
->  1 file changed, 32 insertions(+)
-
-Jonathan's common ADC schema should remove the need for some of this, 
-but given it's v7:
-
-Reviewed-by: Rob Herring <robh@kernel.org>
-
+>   lib/x86/vm.c | 18 ++++++++++++++++++
+>   lib/x86/vm.h |  7 +++++++
+>   x86/svm.c    | 24 +++++++++++++++++++++++-
+>   x86/svm.h    |  2 ++
+>   4 files changed, 50 insertions(+), 1 deletion(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/iio/adc/adi,ad7768-1.yaml b/Documentation/devicetree/bindings/iio/adc/adi,ad7768-1.yaml
-> index d3733ad8785a..6be43bf5c1e0 100644
-> --- a/Documentation/devicetree/bindings/iio/adc/adi,ad7768-1.yaml
-> +++ b/Documentation/devicetree/bindings/iio/adc/adi,ad7768-1.yaml
-> @@ -29,6 +29,12 @@ properties:
->    interrupts:
->      maxItems: 1
->  
-> +  '#address-cells':
-> +    const: 1
+> diff --git a/lib/x86/vm.c b/lib/x86/vm.c
+> index 41d6d96..e223bb4 100644
+> --- a/lib/x86/vm.c
+> +++ b/lib/x86/vm.c
+> @@ -2,6 +2,7 @@
+>   #include "libcflat.h"
+>   #include "vmalloc.h"
+>   #include "alloc_page.h"
+> +#include "smp.h"
+>   
+>   pteval_t *install_pte(pgd_t *cr3,
+>   		      int pte_level,
+> @@ -139,9 +140,18 @@ static void setup_mmu_range(pgd_t *cr3, phys_addr_t start, size_t len)
+>   	install_pages(cr3, phys, max - phys, (void *)(ulong)phys);
+>   }
+>   
+> +static void set_additional_vcpu_vmregs(struct vm_vcpu_info *info)
+> +{
+> +	write_cr3(info->cr3);
+> +	write_cr4(info->cr4);
+> +	write_cr0(info->cr0);
+> +}
 > +
-> +  '#size-cells':
-> +    const: 0
+>   void *setup_mmu(phys_addr_t end_of_memory)
+>   {
+>       pgd_t *cr3 = alloc_page();
+> +    struct vm_vcpu_info info;
+> +    int i;
+>   
+>       memset(cr3, 0, PAGE_SIZE);
+>   
+> @@ -166,6 +176,14 @@ void *setup_mmu(phys_addr_t end_of_memory)
+>       printf("cr0 = %lx\n", read_cr0());
+>       printf("cr3 = %lx\n", read_cr3());
+>       printf("cr4 = %lx\n", read_cr4());
 > +
->    vref-supply:
->      description:
->        ADC reference voltage supply
-> @@ -61,6 +67,24 @@ required:
->    - spi-cpha
->    - adi,sync-in-gpios
->  
-> +patternProperties:
-> +  "^channel@([0-9]|1[0-5])$":
-> +    type: object
-> +    description: |
-> +      Represents the external channels which are connected to the device.
+> +    info.cr3 = read_cr3();
+> +    info.cr4 = read_cr4();
+> +    info.cr0 = read_cr0();
 > +
-> +    properties:
-> +      reg:
-> +        description: |
-> +          The channel number.
+> +    for (i = 1; i < cpu_count(); i++)
+> +        on_cpu(i, (void *)set_additional_vcpu_vmregs, &info);
 > +
-> +      label:
-> +        description: |
-> +          Unique name to identify which channel this is.
-> +    required:
-> +      - reg
-> +    additionalProperties: false
+>       return cr3;
+>   }
+>   
+> diff --git a/lib/x86/vm.h b/lib/x86/vm.h
+> index 8750a1e..3a1432f 100644
+> --- a/lib/x86/vm.h
+> +++ b/lib/x86/vm.h
+> @@ -45,4 +45,11 @@ static inline void *current_page_table(void)
+>   
+>   void split_large_page(unsigned long *ptep, int level);
+>   void force_4k_page(void *addr);
 > +
->  additionalProperties: false
->  
->  examples:
-> @@ -84,6 +108,14 @@ examples:
->              reset-gpios = <&gpio 27 GPIO_ACTIVE_LOW>;
->              clocks = <&ad7768_mclk>;
->              clock-names = "mclk";
+> +struct vm_vcpu_info {
+> +        u64 cr3;
+> +        u64 cr4;
+> +        u64 cr0;
+> +};
 > +
-> +            #address-cells = <1>;
-> +            #size-cells = <0>;
+>   #endif
+> diff --git a/x86/svm.c b/x86/svm.c
+> index d8c8272..975c477 100644
+> --- a/x86/svm.c
+> +++ b/x86/svm.c
+> @@ -275,6 +275,17 @@ static void test_run(struct svm_test *test)
+>   	irq_enable();
+>   
+>   	report(test->succeeded(test), "%s", test->name);
 > +
-> +            channel@0 {
-> +                reg = <0>;
-> +                label = "channel_0";
-> +            };
->          };
->      };
->  ...
-> -- 
-> 2.17.1
+> +        if (test->on_vcpu)
+> +	    test->on_vcpu_done = true;
+> +}
+> +
+> +static void set_additional_vpcu_msr(void *msr_efer)
+> +{
+> +	void *hsave = alloc_page();
+> +
+> +	wrmsr(MSR_VM_HSAVE_PA, virt_to_phys(hsave));
+> +	wrmsr(MSR_EFER, (ulong)msr_efer | EFER_SVME | EFER_NX);
+>   }
+>   
+>   static void setup_svm(void)
+> @@ -294,6 +305,9 @@ static void setup_svm(void)
+>   	if (!npt_supported())
+>   		return;
+>   
+> +	for (i = 1; i < cpu_count(); i++)
+> +		on_cpu(i, (void *)set_additional_vpcu_msr, (void *)rdmsr(MSR_EFER));
+> +
+>   	printf("NPT detected - running all tests with NPT enabled\n");
+>   
+>   	/*
+> @@ -396,7 +410,15 @@ int main(int ac, char **av)
+>   		if (svm_tests[i].supported && !svm_tests[i].supported())
+>   			continue;
+>   		if (svm_tests[i].v2 == NULL) {
+> -			test_run(&svm_tests[i]);
+> +			if (svm_tests[i].on_vcpu) {
+> +				if (cpu_count() <= svm_tests[i].on_vcpu)
+> +					continue;
+> +				on_cpu_async(svm_tests[i].on_vcpu, (void *)test_run, &svm_tests[i]);
+> +				while (!svm_tests[i].on_vcpu_done)
+> +					cpu_relax();
+> +			}
+> +			else
+> +				test_run(&svm_tests[i]);
+>   		} else {
+>   			vmcb_ident(vmcb);
+>   			v2_test = &(svm_tests[i]);
+> diff --git a/x86/svm.h b/x86/svm.h
+> index f8e7429..1e60d52 100644
+> --- a/x86/svm.h
+> +++ b/x86/svm.h
+> @@ -348,6 +348,8 @@ struct svm_test {
+>   	ulong scratch;
+>   	/* Alternative test interface. */
+>   	void (*v2)(void);
+> +	int on_vcpu;
+> +	bool on_vcpu_done;
+>   };
+>   
+>   struct regs {
 > 
+
+Queued, thanks.
+
+Paolo
+
