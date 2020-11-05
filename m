@@ -2,94 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 512602A83A3
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 17:38:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3EF12A83AC
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 17:38:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731171AbgKEQi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 11:38:28 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:39180 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730871AbgKEQi1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 11:38:27 -0500
-Received: from zn.tnic (p200300ec2f0ee5006c78cd15f1739a31.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:e500:6c78:cd15:f173:9a31])
+        id S1731394AbgKEQil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 11:38:41 -0500
+Received: from asavdk3.altibox.net ([109.247.116.14]:41310 "EHLO
+        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731259AbgKEQil (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 11:38:41 -0500
+Received: from ravnborg.org (unknown [188.228.123.71])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 55BC71EC0455;
-        Thu,  5 Nov 2020 17:38:26 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1604594306;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=jWNgDg4lYdXRL3LCMZDyDp5A0hzWOPD9tfl4ojqe1KQ=;
-        b=HFtefqslVW9yuh/GVWrb4wPt4B40pEiNPX2MdvoIH1gWXMoJ5Jkjal70s7yckVCbCQaHzX
-        71k5BY7ibV6GEjjurPWAT/SIzHpxNTobl3sVfB2fLss6L7UGQ881bB524NxsBWvdytIrGC
-        R+vY0C5SUOBAwCHyQI07I3wDJcwvWwA=
-Date:   Thu, 5 Nov 2020 17:38:12 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Michael Roth <michael.roth@amd.com>
-Cc:     Joerg Roedel <joro@8bytes.org>, x86@kernel.org,
-        Juergen Gross <jgross@suse.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Mike Stunes <mstunes@vmware.com>,
-        Kees Cook <keescook@chromium.org>, kvm@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Cfir Cohen <cfir@google.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-kernel@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        virtualization@lists.linux-foundation.org,
-        Martin Radev <martin.b.radev@gmail.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>, hpa@zytor.com,
-        Erdem Aktas <erdemaktas@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jiri Slaby <jslaby@suse.cz>
-Subject: Re: [PATCH v7 01/72] KVM: SVM: nested: Don't allocate VMCB
- structures on stack
-Message-ID: <20201105163812.GE25636@zn.tnic>
-References: <20200907131613.12703-1-joro@8bytes.org>
- <20200907131613.12703-2-joro@8bytes.org>
- <160459347763.31546.3911053208379939674@vm0>
+        by asavdk3.altibox.net (Postfix) with ESMTPS id D181420068;
+        Thu,  5 Nov 2020 17:38:33 +0100 (CET)
+Date:   Thu, 5 Nov 2020 17:38:31 +0100
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Alex Deucher <alexander.deucher@amd.com>,
+        amd-gfx@lists.freedesktop.org, Andrzej Hajda <a.hajda@samsung.com>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        David Francis <David.Francis@amd.com>,
+        dri-devel@lists.freedesktop.org,
+        Fabio Estevam <festevam@gmail.com>,
+        Gareth Hughes <gareth@valinux.com>,
+        Huang Rui <ray.huang@amd.com>, Jason Yan <yanaijie@huawei.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Jingoo Han <jg1.han@samsung.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        linaro-mm-sig@lists.linaro.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-media@vger.kernel.org, linux-tegra@vger.kernel.org,
+        Lyude Paul <lyude@redhat.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Nirmoy Das <nirmoy.aiemd@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Rob Clark <rob.clark@linaro.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>
+Subject: Re: [PATCH 00/19] [Set 1] Rid W=1 warnings from GPU
+Message-ID: <20201105163831.GA86540@ravnborg.org>
+References: <20201105144517.1826692-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <160459347763.31546.3911053208379939674@vm0>
+In-Reply-To: <20201105144517.1826692-1-lee.jones@linaro.org>
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=VbvZwmh9 c=1 sm=1 tr=0
+        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
+        a=kj9zAlcOel0A:10 a=AZguWiFxckorV0VyCPwA:9 a=CjuIK1q_8ugA:10
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 10:24:37AM -0600, Michael Roth wrote:
-> >  out_set_gif:
-> >         svm_set_gif(svm, !!(kvm_state->flags & KVM_STATE_NESTED_GIF_SET));
-> > -       return 0;
-> > +
-> > +       ret = 0;
-> > +out_free:
-> > +       kfree(save);
-> > +       kfree(ctl);
+Hi Lee.
+
+On Thu, Nov 05, 2020 at 02:44:58PM +0000, Lee Jones wrote:
+> This set is part of a larger effort attempting to clean-up W=1
+> kernel builds, which are currently overwhelmingly riddled with
+> niggly little warnings.
+
+Thanks for looking into this.
+
+> There are 5000 warnings to work through.
 > 
-> This change seems to trigger a crash via smm-test.c (and state-test.c) KVM
-> selftest when we call vcpu_load_state->KVM_SET_NESTED_STATE. I think what's
-> happening is we are hitting the 'goto out_set_gif;'
+> It will take a couple more sets.
+:-)
 
-No out_set_gif upstream anymore after
+>   gpu: drm: panel: panel-simple: Fix 'struct panel_desc's header
+I have a patch here that inline the comments - and fix the warning as a
+side effect. I will get it posted tonight as this is better.
 
-d5cd6f340145 ("KVM: nSVM: Avoid freeing uninitialized pointers in svm_set_nested_state()")
+>   gpu: drm: bridge: analogix: analogix_dp_reg: Remove unused function
+>     'analogix_dp_write_byte_to_dpcd'
+When I looked at his I had another unused function after removing the
+first.
 
-and it looks like you hit the issue this patch is fixing.
+>   gpu: drm: panel: panel-ilitek-ili9322: Demote non-conformant
+>     kernel-doc header
+Agree on this simple approch, will apply.
 
-Can you test with the above commit cherrypicked ontop of your what looks
-like 5.9.1-ish tree?
+>   gpu: drm: bridge: analogix: analogix_dp_reg: Remove unused function
+>     'analogix_dp_start_aux_transaction'
+OK, this was the one I referred to above. They should be squashed into
+one patch.
 
-If that fixes it, we should route this patch to stable.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+	Sam
