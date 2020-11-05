@@ -2,122 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92D9A2A80FB
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 15:33:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 691352A80FD
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 15:34:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730791AbgKEOdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 09:33:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45172 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727275AbgKEOdl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 09:33:41 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59ABAC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 06:33:39 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id k18so1820720wmj.5
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 06:33:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=dJrVaW1T2oqpkxUTn13D+eeWU5ppupk4o6g18zEvuLo=;
-        b=Ksj0dq0UzyN7Jj74oPgk6k0dAC9gBuHoTgbone2hjziNphMDu+OswYTfHnSMYtjuF7
-         OfY5XdYUnCKbvT6sljLGEPxooFYtdSf3gQuaiZZQQmA2JpU1929ZDqU0lXufWjaCrbW6
-         ToXn+W+k6d12cnFkpxj9ebkw6+5sDS0AhMV+mbP6ewPzSKyLAs93W252QSrd1S/7+goD
-         LRh1zK4Wu4AvEWeSI0ce2VV4DWygS4eCERsj7vEzvxatY3Q6jgPfXmuc1HqxygHw8g5T
-         r7mknGG1sbCUHla2ZAgxaJlznNQgwHwYHHj7ZAYw5t71eVh/FgTaBDyUWLH9Zz8+mc0w
-         sdKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=dJrVaW1T2oqpkxUTn13D+eeWU5ppupk4o6g18zEvuLo=;
-        b=jVem1fUznNFiJTWIRqznlAfUHP8g9d1oc0HmM+jAxEQWJ+8PU17oiTKy0nA9JHLqsj
-         iosJ5oSmq01nNgNdlZFIshvx9ldQKKf86wbTu+YUuk8NoC5Y+DmrGYWVnRAFtl5I8Cvi
-         Z9FqC8xA688x0llsad//D+n7d0HY/ORmZrnTrq5FOByABqqoJrmH7ll5q/ZtqPUOtr9b
-         qcB31QOFJj6UBPvuEHaOSR59gjqDJh6WqKnAKnXNM25/lqjwbCPTjA/h79asXVPU7zM7
-         UNmsO1y4Iqog/XpsOP8OrW5xTXoD9JX9GnH/2dXcdRYv6E3Q5gb1oB4XnH6h5cBGtSz4
-         desQ==
-X-Gm-Message-State: AOAM531Z8VRMvq9Ed/Gz+XDSrk+VWmxz7dyFK+/DOpT22bIOt0eLsWDA
-        VxK8dXJ7arg7JcMN/wRlgwi3xg==
-X-Google-Smtp-Source: ABdhPJxiE8pTNw+xY3JenO1QKY/gJddrZr/lbM8WZ97wn9cRXPS2YZPmnfGMo03i1HPm/gBGymd4XA==
-X-Received: by 2002:a1c:b346:: with SMTP id c67mr3025956wmf.105.1604586817976;
-        Thu, 05 Nov 2020 06:33:37 -0800 (PST)
-Received: from dell ([91.110.221.242])
-        by smtp.gmail.com with ESMTPSA id y185sm2997644wmb.29.2020.11.05.06.33.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 06:33:37 -0800 (PST)
-Date:   Thu, 5 Nov 2020 14:33:35 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-kernel@vger.kernel.org,
-        Paul Mackerras <paulus@samba.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 0/2] tty: Remove obsolete drivers
-Message-ID: <20201105143335.GL4488@dell>
-References: <20201105123357.708813-1-lee.jones@linaro.org>
- <aa82ff49-8090-dcb8-7e96-6a92b189d302@csgroup.eu>
+        id S1730929AbgKEOeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 09:34:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45940 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727275AbgKEOeR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 09:34:17 -0500
+Received: from mail-oi1-f182.google.com (mail-oi1-f182.google.com [209.85.167.182])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1DA8E20936
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 14:34:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604586856;
+        bh=VEfGdwD01T/0XHlbTYUGge96HqQb9dgnH5BW3FgGG5s=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=JgNe1Qt9WhQrY0dCXQ5YDkJs2sTxwXDqy4S8jl9u4XUcY1mHEHEgPUPEurD1b77a0
+         yB/rjnCWEy6zTUQPD3jUn0DEW9FU98JqVPyKJfpymFT3bJ1eaDyw3wA2OWq4vHA9EE
+         N0TuEnS8Ln8sXyVUeX6n+Q/UI1Y05VCz+nGBKZd0=
+Received: by mail-oi1-f182.google.com with SMTP id 9so1867317oir.5
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 06:34:16 -0800 (PST)
+X-Gm-Message-State: AOAM530G4q5B7ZjhDYzmwefsNW9j+qlZwRfRD0+SDFJrn264C/F+3Gz2
+        uYreoTD9TdcYcUwHxKevTiC9/KRi4JaOECPXuNA=
+X-Google-Smtp-Source: ABdhPJx3t/0uFkcHlznqDxOOYQLdKPcG64VSpY91TiczVCs5jriGZS2IeZ1jttwCXsGymyXDjCyep/5An05zq7NYsLg=
+X-Received: by 2002:aca:c60c:: with SMTP id w12mr1824046oif.174.1604586855246;
+ Thu, 05 Nov 2020 06:34:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <aa82ff49-8090-dcb8-7e96-6a92b189d302@csgroup.eu>
+References: <20201105125656.25259-1-andre.przywara@arm.com>
+ <20201105125656.25259-5-andre.przywara@arm.com> <20201105134142.GA4856@sirena.org.uk>
+ <20201105140322.GH82102@C02TD0UTHF1T.local> <CAMj1kXEsaZAGT0jnPNyj_K1Q4W7E1+WP=tQf3bTPQi=KOCUv4g@mail.gmail.com>
+ <20201105143023.GI82102@C02TD0UTHF1T.local>
+In-Reply-To: <20201105143023.GI82102@C02TD0UTHF1T.local>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Thu, 5 Nov 2020 15:34:01 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXEoot13bFKywPRVf4BFhA5tSp+Nate=+Z+JsQdLW1oRrg@mail.gmail.com>
+Message-ID: <CAMj1kXEoot13bFKywPRVf4BFhA5tSp+Nate=+Z+JsQdLW1oRrg@mail.gmail.com>
+Subject: Re: [PATCH v2 4/5] arm64: Add support for SMCCC TRNG entropy source
+To:     Mark Rutland <mark.rutland@arm.com>, Marc Zyngier <maz@kernel.org>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Andre Przywara <andre.przywara@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        kvmarm <kvmarm@lists.cs.columbia.edu>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 05 Nov 2020, Christophe Leroy wrote:
+On Thu, 5 Nov 2020 at 15:30, Mark Rutland <mark.rutland@arm.com> wrote:
+>
+> On Thu, Nov 05, 2020 at 03:04:57PM +0100, Ard Biesheuvel wrote:
+> > On Thu, 5 Nov 2020 at 15:03, Mark Rutland <mark.rutland@arm.com> wrote:
+> > > On Thu, Nov 05, 2020 at 01:41:42PM +0000, Mark Brown wrote:
+> > > > On Thu, Nov 05, 2020 at 12:56:55PM +0000, Andre Przywara wrote:
+>
+> > > That said, I'm not sure it's great to plumb this under the
+> > > arch_get_random*() interfaces, e.g. given this measn that
+> > > add_interrupt_randomness() will end up trapping to the host all the time
+> > > when it calls arch_get_random_seed_long().
+> >
+> > As it turns out, add_interrupt_randomness() isn't actually used on ARM.
+>
+> It's certainly called on arm64, per a warning I just hacked in:
+>
+> [    1.083802] ------------[ cut here ]------------
+> [    1.084802] add_interrupt_randomness called
+> [    1.085685] WARNING: CPU: 1 PID: 0 at drivers/char/random.c:1267 add_interrupt_randomness+0x2e8/0x318
+> [    1.087599] Modules linked in:
+> [    1.088258] CPU: 1 PID: 0 Comm: swapper/1 Not tainted 5.10.0-rc2-dirty #13
+> [    1.089672] Hardware name: linux,dummy-virt (DT)
+> [    1.090659] pstate: 60400085 (nZCv daIf +PAN -UAO -TCO BTYPE=--)
+> [    1.091910] pc : add_interrupt_randomness+0x2e8/0x318
+> [    1.092965] lr : add_interrupt_randomness+0x2e8/0x318
+> [    1.094021] sp : ffff80001000be80
+> [    1.094732] x29: ffff80001000be80 x28: ffff2d0c80209840
+> [    1.095859] x27: 00000000137c3e3a x26: ffff8000100abdd0
+> [    1.096978] x25: 0000000000000035 x24: ffff67918bda8000
+> [    1.098100] x23: ffffc57c31923fe8 x22: 00000000fffedc14
+> [    1.099224] x21: ffff2d0dbef796a0 x20: ffffc57c331d16a0
+> [    1.100339] x19: ffffc57c33720a48 x18: 0000000000000010
+> [    1.101459] x17: 0000000000000000 x16: 0000000000000002
+> [    1.102578] x15: 00000000000000e7 x14: ffff80001000bb20
+> [    1.103706] x13: 00000000ffffffea x12: ffffc57c337b56e8
+> [    1.104821] x11: 0000000000000003 x10: ffffc57c3379d6a8
+> [    1.105944] x9 : ffffc57c3379d700 x8 : 0000000000017fe8
+> [    1.107073] x7 : c0000000ffffefff x6 : 0000000000000001
+> [    1.108186] x5 : 0000000000057fa8 x4 : 0000000000000000
+> [    1.109305] x3 : 00000000ffffffff x2 : ffffc57c337455d0
+> [    1.110428] x1 : db8dc9c2a1e0f600 x0 : 0000000000000000
+> [    1.111552] Call trace:
+> [    1.112083]  add_interrupt_randomness+0x2e8/0x318
+> [    1.113074]  handle_irq_event_percpu+0x48/0x90
+> [    1.114016]  handle_irq_event+0x48/0xf8
+> [    1.114826]  handle_fasteoi_irq+0xa4/0x130
+> [    1.115689]  generic_handle_irq+0x30/0x48
+> [    1.116528]  __handle_domain_irq+0x64/0xc0
+> [    1.117392]  gic_handle_irq+0xc0/0x138
+> [    1.118194]  el1_irq+0xbc/0x180
+> [    1.118870]  arch_cpu_idle+0x20/0x30
+> [    1.119630]  default_idle_call+0x8c/0x350
+> [    1.120479]  do_idle+0x224/0x298
+> [    1.121163]  cpu_startup_entry+0x28/0x70
+> [    1.121994]  secondary_start_kernel+0x184/0x198
+>
+> ... and I couldn't immediately spot why 32-bit arm  would be different.
+>
 
-> Hi,
-> 
-> Le 05/11/2020 à 13:33, Lee Jones a écrit :
-> > As per the vendor's request.
-> 
-> Is the vendor in copy of the patch ?
+Hmm, I actually meant both arm64 and ARM.
 
-Not directly.  Only interested parties as indicated by
-`get_maintainer.pl` were included.  My assumption is that he'd
-pick this set up in the same manner he picked up the last one
-(filters?).
+Marc looked into this at my request a while ago, and I had a look
+myself as well at the time, and IIRC, we both concluded that we don't
+hit that code path. Darn.
 
-> What about the other synclink adapters, namely the synclink_gt ? And the
-> synclink_cs in the drivers/char/pcmcia/ ?
-
-Ref *_cs:
-
-  If it wasn't directly mentioned, I've left it in place.
-
-Ref *_gt:
-
- "synclink_gt.c is still in production and the driver still actively
-  used."
-
-> > Lee Jones (2):
-> >    tty: Remove redundant synclink driver
-> >    tty: Remove redundant synclinkmp driver
-> > 
-> >   arch/powerpc/configs/ppc6xx_defconfig |    2 -
-> >   drivers/tty/Kconfig                   |   27 -
-> >   drivers/tty/Makefile                  |    2 -
-> >   drivers/tty/synclink.c                | 7899 -------------------------
-> >   drivers/tty/synclinkmp.c              | 5580 -----------------
-> >   5 files changed, 13510 deletions(-)
-> >   delete mode 100644 drivers/tty/synclink.c
-> >   delete mode 100644 drivers/tty/synclinkmp.c
-> > 
-> > Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Cc: Jiri Slaby <jirislaby@kernel.org>
-> > Cc: linuxppc-dev@lists.ozlabs.org
-> > Cc: Michael Ellerman <mpe@ellerman.id.au>
-> > Cc: Paul Mackerras <paulus@samba.org>
-> > 
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+In any case, the way add_interrupt_randomness() calls
+arch_get_random_seed_long() is absolutely insane, so we should try to
+fix that in any case.
