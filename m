@@ -2,122 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 533142A846B
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 18:06:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3DF82A846D
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 18:07:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731533AbgKERGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 12:06:14 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:53570 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725862AbgKERGN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 12:06:13 -0500
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0A5H6Abp043328;
-        Thu, 5 Nov 2020 11:06:10 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1604595970;
-        bh=4gaKFpK8PJGCAAmmXQzonqFwV4ZrZVTTuRDhDq5Bgls=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=RMu/nVGke+7u/agYvacjXjqt8YpTafjN6PDCl9ZOY0oIUrBc/6w6KawvRKdWAIkzt
-         5nvkYgZDcqOxMTxaQUgjYtvSovHLALAVDCFr2aMZeTIo3bKFkpUgIRP/Gm3GzJgdZw
-         QDRHNgnt6WpJbijRyrUgC1/w3E8rjjEDAjwL1vG8=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0A5H6Ar6108561
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 5 Nov 2020 11:06:10 -0600
-Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 5 Nov
- 2020 11:06:10 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 5 Nov 2020 11:06:10 -0600
-Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0A5H687K073591;
-        Thu, 5 Nov 2020 11:06:09 -0600
-Subject: Re: [PATCH 04/19] gpu: drm: omapdrm: omap_irq: Fix a couple of
- doc-rot issues
-To:     Lee Jones <lee.jones@linaro.org>
-CC:     <linux-kernel@vger.kernel.org>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Clark <rob.clark@linaro.org>,
-        <dri-devel@lists.freedesktop.org>
-References: <20201105144517.1826692-1-lee.jones@linaro.org>
- <20201105144517.1826692-5-lee.jones@linaro.org>
-From:   Tomi Valkeinen <tomi.valkeinen@ti.com>
-Message-ID: <429684b9-c967-95cf-1d8a-9f5249a00a5d@ti.com>
-Date:   Thu, 5 Nov 2020 19:06:08 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1731602AbgKERH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 12:07:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55826 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730447AbgKERH0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 12:07:26 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2526B206F9;
+        Thu,  5 Nov 2020 17:07:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604596045;
+        bh=92lLMj3nZ+N80CAl49XYHHRZncQilSNLr8At/FZYmG0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=V4iRWI/uRwYIlE3yQWmTv24k93/ER7T3e9KMcwtpupCCewDT4RnmAaE9klQKguN5A
+         Vfzddx8q4BkW82YTQ0jiuIk+AS/e6KKho1TFo9x5v2JQIItUIYvDOcVnPNVNTSvDR9
+         BVT8uIBVTdeIUZM6rYBn7+A1eYMwtqK1L1sqGTv0=
+Date:   Thu, 5 Nov 2020 09:07:24 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     George Cherian <gcherian@marvell.com>
+Cc:     Saeed Mahameed <saeed@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jiri Pirko <jiri@nvidia.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
+        "Linu Cherian" <lcherian@marvell.com>,
+        Geethasowjanya Akula <gakula@marvell.com>,
+        "masahiroy@kernel.org" <masahiroy@kernel.org>,
+        "willemdebruijn.kernel@gmail.com" <willemdebruijn.kernel@gmail.com>
+Subject: Re: [PATCH v2 net-next 3/3] octeontx2-af: Add devlink health
+ reporters for NIX
+Message-ID: <20201105090724.761a033d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <BYAPR18MB2679EC3507BD90B93B37A3F8C5EE0@BYAPR18MB2679.namprd18.prod.outlook.com>
+References: <BYAPR18MB2679EC3507BD90B93B37A3F8C5EE0@BYAPR18MB2679.namprd18.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <20201105144517.1826692-5-lee.jones@linaro.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/11/2020 16:45, Lee Jones wrote:
-> The API has been updated, but the header was not.
-> 
-> Fixes the following W=1 kernel build warning(s):
-> 
->  drivers/gpu/drm/omapdrm/omap_irq.c:115: warning: Function parameter or member 'crtc' not described in 'omap_irq_enable_vblank'
->  drivers/gpu/drm/omapdrm/omap_irq.c:115: warning: Excess function parameter 'dev' description in 'omap_irq_enable_vblank'
->  drivers/gpu/drm/omapdrm/omap_irq.c:115: warning: Excess function parameter 'pipe' description in 'omap_irq_enable_vblank'
->  drivers/gpu/drm/omapdrm/omap_irq.c:142: warning: Function parameter or member 'crtc' not described in 'omap_irq_disable_vblank'
->  drivers/gpu/drm/omapdrm/omap_irq.c:142: warning: Excess function parameter 'dev' description in 'omap_irq_disable_vblank'
->  drivers/gpu/drm/omapdrm/omap_irq.c:142: warning: Excess function parameter 'pipe' description in 'omap_irq_disable_vblank'
-> 
-> Cc: Tomi Valkeinen <tomi.valkeinen@ti.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Rob Clark <rob.clark@linaro.org>
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  drivers/gpu/drm/omapdrm/omap_irq.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/omapdrm/omap_irq.c b/drivers/gpu/drm/omapdrm/omap_irq.c
-> index 382bcdc72ac06..8643871e23a83 100644
-> --- a/drivers/gpu/drm/omapdrm/omap_irq.c
-> +++ b/drivers/gpu/drm/omapdrm/omap_irq.c
-> @@ -100,8 +100,7 @@ int omap_irq_enable_framedone(struct drm_crtc *crtc, bool enable)
->  
->  /**
->   * enable_vblank - enable vblank interrupt events
-> - * @dev: DRM device
-> - * @pipe: which irq to enable
-> + * @crtc: DRM CRTC
->   *
->   * Enable vblank interrupts for @crtc.  If the device doesn't have
->   * a hardware vblank counter, this routine should be a no-op, since
-> @@ -131,8 +130,7 @@ int omap_irq_enable_vblank(struct drm_crtc *crtc)
->  
->  /**
->   * disable_vblank - disable vblank interrupt events
-> - * @dev: DRM device
-> - * @pipe: which irq to enable
-> + * @crtc: DRM CRTC
->   *
->   * Disable vblank interrupts for @crtc.  If the device doesn't have
->   * a hardware vblank counter, this routine should be a no-op, since
-> 
+On Thu, 5 Nov 2020 13:36:56 +0000 George Cherian wrote:
+> > Now i am a little bit skeptic here, devlink health reporter infrastructure was
+> > never meant to deal with dump op only, the main purpose is to
+> > diagnose/dump and recover.
+> > 
+> > especially in your use case where you only report counters, i don't believe
+> > devlink health dump is a proper interface for this.  
+> These are not counters. These are error interrupts raised by HW blocks.
+> The count is provided to understand on how frequently the errors are seen.
+> Error recovery for some of the blocks happen internally. That is the reason,
+> Currently only dump op is added.
 
-Hmm, I don't know why we have the doc texts there. These are omapdrm internal functions, and the
-text sounds like it was copied from a framework function. I think we can drop the texts here.
+The previous incarnation was printing messages to logs, so I assume
+these errors are expected to be relatively low rate.
 
-But this patch is fine too, and I can drop the text later:
+The point of using devlink health was that you can generate a netlink
+notification when the error happens. IOW you need some calls to
+devlink_health_report() or such.
 
-Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ti.com>
-
- Tomi
-
--- 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+At least that's my thinking, others may disagree.
