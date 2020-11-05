@@ -2,213 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 219422A770B
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 06:25:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6749A2A770E
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 06:27:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730442AbgKEFZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 00:25:15 -0500
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:56760 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727711AbgKEFZO (ORCPT
+        id S1730713AbgKEF1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 00:27:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44564 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727089AbgKEF1D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 00:25:14 -0500
-Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
-  by alexa-out.qualcomm.com with ESMTP; 04 Nov 2020 21:25:13 -0800
-X-QCInternal: smtphost
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
-  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 04 Nov 2020 21:25:11 -0800
-X-QCInternal: smtphost
-Received: from dikshita-linux.qualcomm.com ([10.204.65.237])
-  by ironmsg01-blr.qualcomm.com with ESMTP; 05 Nov 2020 10:54:59 +0530
-Received: by dikshita-linux.qualcomm.com (Postfix, from userid 347544)
-        id 08AC455F9; Thu,  5 Nov 2020 10:54:57 +0530 (IST)
-From:   Dikshita Agarwal <dikshita@codeaurora.org>
-To:     linux-media@vger.kernel.org, stanimir.varbanov@linaro.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        vgarodia@codeaurora.org, Dikshita Agarwal <dikshita@codeaurora.org>
-Subject: [PATCH v2] venus: venc: fix handlig of S_SELECTION and G_SELECTION
-Date:   Thu,  5 Nov 2020 10:54:56 +0530
-Message-Id: <1604553896-10301-1-git-send-email-dikshita@codeaurora.org>
-X-Mailer: git-send-email 1.9.1
+        Thu, 5 Nov 2020 00:27:03 -0500
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 380E2C0613CF;
+        Wed,  4 Nov 2020 21:27:03 -0800 (PST)
+Received: by mail-oi1-x241.google.com with SMTP id t143so464538oif.10;
+        Wed, 04 Nov 2020 21:27:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=75E+2o+yV3XAOhb/befRDlzomOX6mEJLCVmesd7dRKI=;
+        b=sfg+fAP7u0Xr+PMoWGlio/Zux1iC/PIbCUIIAdcv440+MNnJxjo1r+NI/5RKcZRlVv
+         WVWQ2jVxvahdPv8y5ygpuJBb0dGcMdkAN2HnTQxihzw5uEz+Cf+BhR2MZaFzld1YOtcu
+         IU3cNrs72O+NBzulPZVeVC2uzsMPHvyHE7eGRQb1ibGVYMp/tzTS9p5POU5/exFm0lwi
+         7y5794hbc8jEKrSJbPM9G9dJilCE8tHBPa999KZSIaTDlLDYXiX71shV2Egzes+pA1oN
+         iYfKhRwwEdTIBu9ZaWWt47dc1IMW/+nxJZz45+eshluYvcR/aO1uGzd1H53Z7FBU2rOV
+         73TA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=75E+2o+yV3XAOhb/befRDlzomOX6mEJLCVmesd7dRKI=;
+        b=XlUnI6wxLXMFCs1Vlf2lIDItLSA5AasinCDz2dPCahhwp4CNPJY8KlhJgMR5lJxl0p
+         3Js0IVh3wcRuSjUeXaDkXQPvdl12qQ6XtLpCy0FxOWvvl/IHMSwIauVd8L8F9Ukm1TQG
+         jLCta8U/q67SkoYpd84TTToKBjcUjpyu3bKT6aVujbg6PTVk88sVE8CvfI9wxaaM+z1s
+         yUSw1iPTMYDLrAspMNUaxH6ekSthk4z0+g9sXY8G5MKkFsTvcS9nvykuICFoyTEZlXef
+         RbJowALymVl9aBgpT93QBXXLnKecua7PwyeScoTHVyhRqFj97Yk82FKXaCkiVuiaHuCV
+         Xswg==
+X-Gm-Message-State: AOAM530cbu6qFDjp6dXo8Tmdf+k8rbEZGOKNuawOxlmrXhhYhIpbWYIn
+        fE3+OYeCqwz91TYcBR49m40=
+X-Google-Smtp-Source: ABdhPJyg5R0JJv0ZSAhgYvG66ymvWL/+7KA2PP0VOKIRgQXAb7o6j3of7gFldNXKF8yvy22+K/xmeg==
+X-Received: by 2002:a05:6808:496:: with SMTP id z22mr604891oid.2.1604554022113;
+        Wed, 04 Nov 2020 21:27:02 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id r4sm116790otd.66.2020.11.04.21.27.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Nov 2020 21:27:01 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [REGRESSION] hwmon: (applesmc) avoid overlong udelay()
+To:     Brad Campbell <brad@fnarfbargle.com>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        Jean Delvare <jdelvare@suse.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, rydberg@bitmath.org,
+        linux-hwmon@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        hns@goldelico.com
+References: <20200930105442.3f642f6c@aktux>
+ <20200930164446.GB219887@roeck-us.net>
+ <CAK8P3a2CbhJT+B-F+cnX+uiJep9oiLM28n045-ATaVaU41u2hw@mail.gmail.com>
+ <20201002002251.28462e64@aktux>
+ <7543ef85-727d-96c3-947e-5b18e9e6c44d@roeck-us.net>
+ <20201006090226.4275c824@kemnade.info>
+ <db042e9b-be41-11b1-7059-3881b1da5c8b@fnarfbargle.com>
+ <68467f1b-cea1-47ea-a4d4-8319214b072a@fnarfbargle.com>
+ <20201104142057.62493c12@aktux>
+ <2436afef-99c6-c352-936d-567bf553388c@fnarfbargle.com>
+ <7a085650-2399-08c0-3c4d-6cd1fa28a365@roeck-us.net>
+ <fc36d066-c432-e7d2-312f-a0a592446fe2@fnarfbargle.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <10027199-5d31-93e7-9bd8-7baaebff8b71@roeck-us.net>
+Date:   Wed, 4 Nov 2020 21:26:59 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <fc36d066-c432-e7d2-312f-a0a592446fe2@fnarfbargle.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-- return correct width and height for G_SELECTION
-- update capture port wxh with rectangle wxh.
-- add support for HFI_PROPERTY_PARAM_UNCOMPRESSED_PLANE_ACTUAL_INFO
-  to set stride info and chroma offset to FW.
+On 11/4/20 9:05 PM, Brad Campbell wrote:
+> On 5/11/20 3:43 pm, Guenter Roeck wrote:
+>> On 11/4/20 6:18 PM, Brad Campbell wrote:
+>>> On 5/11/20 12:20 am, Andreas Kemnade wrote:
+>>>> On Tue, 3 Nov 2020 16:56:32 +1100
+>>>> Brad Campbell <brad@fnarfbargle.com> wrote:
+>>>
+>>>>> If anyone with a Mac having a conventional SMC and seeing issues on 5.9 could test this it'd be appreciated. I'm not saying this code is "correct", but it "works for me".
+>>>>>
+>>>> Seems to work here.
+>>>>    dmesg  | grep applesmc
+>>>>
+>>>> [    1.350782] applesmc: key=561 fan=1 temp=33 index=33 acc=0 lux=2 kbd=1
+>>>> [    1.350922] applesmc applesmc.768: hwmon_device_register() is deprecated. Please convert the driver to use hwmon_device_register_with_info().
+>>>> [   17.748504] applesmc: wait_status looping 2: 0x4a, 0x4c, 0x4f
+>>>> [  212.008952] applesmc: wait_status looping 2: 0x44, 0x40, 0x4e
+>>>> [  213.033930] applesmc: wait_status looping 2: 0x44, 0x40, 0x4e
+>>>> [  213.167908] applesmc: wait_status looping 2: 0x44, 0x40, 0x4e
+>>>> [  219.087854] applesmc: wait_status looping 2: 0x44, 0x40, 0x4e
+>>>>
+>>>> Tested it on top of 5.9
+>>>
+>>> Much appreciated Andreas.
+>>>
+>>> I'm not entirely sure where to go from here. I'd really like some wider testing before cleaning this up and submitting it. It puts extra checks & constraints on the comms with the SMC that weren't there previously.
+>>>
+>>> I guess given there doesn't appear to have been a major outcry that the driver broke in 5.9 might indicate that nobody is using it, or that it only broke on certain machines?
+>>>
+>>> Can we get some guidance from the hwmon maintainers on what direction they'd like to take? I don't really want to push this forward without broader testing only to find it breaks a whole heap of machines on the basis that it fixes mine.
+>>>
+>>
+>> Trick question ;-).
+>>
+>> I'd suggest to keep it simple. Your patch seems to be quite complicated
+>> and checks a lot of bits. Reducing that to a minimum would help limiting
+>> the risk that some of those bits are interpreted differently on other
+>> systems.
+>>
+>> Guenter
+>>
+>>
+> Appreciate the feedback.
+> 
+> This would be the bare minimum based on the bits use in the original code. If the original code worked "well enough" then this should be relatively safe.
+> 
 
-Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
----
- drivers/media/platform/qcom/venus/helpers.c    | 18 +++++++++++++
- drivers/media/platform/qcom/venus/helpers.h    |  2 ++
- drivers/media/platform/qcom/venus/hfi_cmds.c   | 12 +++++++++
- drivers/media/platform/qcom/venus/hfi_helper.h |  4 +--
- drivers/media/platform/qcom/venus/venc.c       | 36 ++++++++++++++++++--------
- 5 files changed, 59 insertions(+), 13 deletions(-)
+Can you clean that up and submit as patch ?
 
-diff --git a/drivers/media/platform/qcom/venus/helpers.c b/drivers/media/platform/qcom/venus/helpers.c
-index 2b6925b..efa2781 100644
---- a/drivers/media/platform/qcom/venus/helpers.c
-+++ b/drivers/media/platform/qcom/venus/helpers.c
-@@ -1621,3 +1621,21 @@ int venus_helper_get_out_fmts(struct venus_inst *inst, u32 v4l2_fmt,
- 	return -EINVAL;
- }
- EXPORT_SYMBOL_GPL(venus_helper_get_out_fmts);
-+
-+int venus_helper_set_stride(struct venus_inst *inst,
-+			    unsigned int width, unsigned int height)
-+{
-+	const u32 ptype = HFI_PROPERTY_PARAM_UNCOMPRESSED_PLANE_ACTUAL_INFO;
-+
-+	struct hfi_uncompressed_plane_actual_info plane_actual_info;
-+
-+	plane_actual_info.buffer_type = HFI_BUFFER_INPUT;
-+	plane_actual_info.num_planes = 2;
-+	plane_actual_info.plane_format[0].actual_stride = width;
-+	plane_actual_info.plane_format[0].actual_plane_buffer_height = height;
-+	plane_actual_info.plane_format[1].actual_stride = width;
-+	plane_actual_info.plane_format[1].actual_plane_buffer_height = height / 2;
-+
-+	return hfi_session_set_property(inst, ptype, &plane_actual_info);
-+}
-+EXPORT_SYMBOL_GPL(venus_helper_set_stride);
-diff --git a/drivers/media/platform/qcom/venus/helpers.h b/drivers/media/platform/qcom/venus/helpers.h
-index a4a0562..f36c9f71 100644
---- a/drivers/media/platform/qcom/venus/helpers.h
-+++ b/drivers/media/platform/qcom/venus/helpers.h
-@@ -63,4 +63,6 @@ void venus_helper_get_ts_metadata(struct venus_inst *inst, u64 timestamp_us,
- 				  struct vb2_v4l2_buffer *vbuf);
- int venus_helper_get_profile_level(struct venus_inst *inst, u32 *profile, u32 *level);
- int venus_helper_set_profile_level(struct venus_inst *inst, u32 profile, u32 level);
-+int venus_helper_set_stride(struct venus_inst *inst, unsigned int aligned_width,
-+			    unsigned int aligned_height);
- #endif
-diff --git a/drivers/media/platform/qcom/venus/hfi_cmds.c b/drivers/media/platform/qcom/venus/hfi_cmds.c
-index 7022368..4f75658 100644
---- a/drivers/media/platform/qcom/venus/hfi_cmds.c
-+++ b/drivers/media/platform/qcom/venus/hfi_cmds.c
-@@ -1205,6 +1205,18 @@ static int pkt_session_set_property_1x(struct hfi_session_set_property_pkt *pkt,
- 		pkt->shdr.hdr.size += sizeof(u32) + sizeof(*cu);
- 		break;
- 	}
-+	case HFI_PROPERTY_PARAM_UNCOMPRESSED_PLANE_ACTUAL_INFO: {
-+		struct hfi_uncompressed_plane_actual_info *in = pdata;
-+		struct hfi_uncompressed_plane_actual_info *info = prop_data;
-+
-+		info->buffer_type = in->buffer_type;
-+		info->num_planes = in->num_planes;
-+		info->plane_format[0] = in->plane_format[0];
-+		if (in->num_planes > 1)
-+			info->plane_format[1] = in->plane_format[1];
-+		pkt->shdr.hdr.size += sizeof(u32) + sizeof(*info);
-+		break;
-+	}
- 	case HFI_PROPERTY_CONFIG_VENC_MAX_BITRATE:
- 	case HFI_PROPERTY_CONFIG_VDEC_POST_LOOP_DEBLOCKER:
- 	case HFI_PROPERTY_PARAM_BUFFER_ALLOC_MODE:
-diff --git a/drivers/media/platform/qcom/venus/hfi_helper.h b/drivers/media/platform/qcom/venus/hfi_helper.h
-index 60ee247..5938a96 100644
---- a/drivers/media/platform/qcom/venus/hfi_helper.h
-+++ b/drivers/media/platform/qcom/venus/hfi_helper.h
-@@ -908,13 +908,13 @@ struct hfi_uncompressed_plane_actual {
- struct hfi_uncompressed_plane_actual_info {
- 	u32 buffer_type;
- 	u32 num_planes;
--	struct hfi_uncompressed_plane_actual plane_format[1];
-+	struct hfi_uncompressed_plane_actual plane_format[2];
- };
- 
- struct hfi_uncompressed_plane_actual_constraints_info {
- 	u32 buffer_type;
- 	u32 num_planes;
--	struct hfi_uncompressed_plane_constraints plane_format[1];
-+	struct hfi_uncompressed_plane_constraints plane_format[2];
- };
- 
- struct hfi_codec_supported {
-diff --git a/drivers/media/platform/qcom/venus/venc.c b/drivers/media/platform/qcom/venus/venc.c
-index 4ecf78e..99bfabf 100644
---- a/drivers/media/platform/qcom/venus/venc.c
-+++ b/drivers/media/platform/qcom/venus/venc.c
-@@ -190,8 +190,10 @@ static int venc_enum_fmt(struct file *file, void *fh, struct v4l2_fmtdesc *f)
- 	pixmp->height = clamp(pixmp->height, frame_height_min(inst),
- 			      frame_height_max(inst));
- 
--	if (f->type == V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE)
-+	if (f->type == V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE) {
-+		pixmp->width = ALIGN(pixmp->width, 128);
- 		pixmp->height = ALIGN(pixmp->height, 32);
-+	}
- 
- 	pixmp->width = ALIGN(pixmp->width, 2);
- 	pixmp->height = ALIGN(pixmp->height, 2);
-@@ -335,13 +337,13 @@ static int venc_g_fmt(struct file *file, void *fh, struct v4l2_format *f)
- 	switch (s->target) {
- 	case V4L2_SEL_TGT_CROP_DEFAULT:
- 	case V4L2_SEL_TGT_CROP_BOUNDS:
--		s->r.width = inst->width;
--		s->r.height = inst->height;
--		break;
--	case V4L2_SEL_TGT_CROP:
- 		s->r.width = inst->out_width;
- 		s->r.height = inst->out_height;
- 		break;
-+	case V4L2_SEL_TGT_CROP:
-+		s->r.width = inst->width;
-+		s->r.height = inst->height;
-+		break;
- 	default:
- 		return -EINVAL;
- 	}
-@@ -360,12 +362,19 @@ static int venc_g_fmt(struct file *file, void *fh, struct v4l2_format *f)
- 	if (s->type != V4L2_BUF_TYPE_VIDEO_OUTPUT)
- 		return -EINVAL;
- 
-+	if (s->r.width > inst->out_width ||
-+	    s->r.height > inst->out_height)
-+		return -EINVAL;
-+
-+	s->r.width = ALIGN(s->r.width, 2);
-+	s->r.height = ALIGN(s->r.height, 2);
-+
- 	switch (s->target) {
- 	case V4L2_SEL_TGT_CROP:
--		if (s->r.width != inst->out_width ||
--		    s->r.height != inst->out_height ||
--		    s->r.top != 0 || s->r.left != 0)
--			return -EINVAL;
-+		s->r.top = 0;
-+		s->r.left = 0;
-+		inst->width = s->r.width;
-+		inst->height = s->r.height;
- 		break;
- 	default:
- 		return -EINVAL;
-@@ -728,6 +737,11 @@ static int venc_init_session(struct venus_inst *inst)
- 	if (ret)
- 		return ret;
- 
-+	ret = venus_helper_set_stride(inst, inst->out_width,
-+				      inst->out_height);
-+	if (ret)
-+		goto deinit;
-+
- 	ret = venus_helper_set_input_resolution(inst, inst->width,
- 						inst->height);
- 	if (ret)
-@@ -816,8 +830,8 @@ static int venc_queue_setup(struct vb2_queue *q,
- 		inst->num_input_bufs = *num_buffers;
- 
- 		sizes[0] = venus_helper_get_framesz(inst->fmt_out->pixfmt,
--						    inst->width,
--						    inst->height);
-+						    inst->out_width,
-+						    inst->out_height);
- 		inst->input_buf_size = sizes[0];
- 		break;
- 	case V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE:
--- 
-1.9.1
+Thanks,
+Guenter
 
