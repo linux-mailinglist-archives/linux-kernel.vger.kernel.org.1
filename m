@@ -2,583 +2,539 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D9482A811B
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 15:39:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F5DD2A811C
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 15:40:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731063AbgKEOjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 09:39:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47192 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730943AbgKEOjK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 09:39:10 -0500
-Received: from mail-oi1-f173.google.com (mail-oi1-f173.google.com [209.85.167.173])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4013722248;
-        Thu,  5 Nov 2020 14:39:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604587147;
-        bh=mUmecSdJkEoxseTONS8R3UAbacDZaGj7lYk+9ssUHQI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=WnG3sZsKcNEeG4Da8RCKW/PsQWoPJYLIiToZxE7QIhpDKoF5y2YsyPU8kofAkP/a7
-         oxTYeW2dmZqpStxJvhFGPx9rCeDy2YAE+fV2uWM+coMeSnrBVzu2r+1L+FwtRMk+gQ
-         LhG3ja4gC6OUNZZgXxW4TRIBvx09+klPChU9m+HM=
-Received: by mail-oi1-f173.google.com with SMTP id t143so1864047oif.10;
-        Thu, 05 Nov 2020 06:39:07 -0800 (PST)
-X-Gm-Message-State: AOAM530yrdl+1BWU8sIbnuZfBJa0ttvQZjcGG5rbE9cn1TPR+Ppk2mMS
-        x1Hhn5kcPwsT0dKdhHHYyQvsZBwOe2Z7dD27Ew==
-X-Google-Smtp-Source: ABdhPJwU5V7TLimNf4ridUQvQTeb61BsbWrkIE9kS/UWXKPodc+MkejMv8vquhostZ6NFF66OgPk1k9GppcUxAtaaXQ=
-X-Received: by 2002:a54:4588:: with SMTP id z8mr1800095oib.147.1604587145153;
- Thu, 05 Nov 2020 06:39:05 -0800 (PST)
+        id S1731016AbgKEOkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 09:40:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46204 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730676AbgKEOkP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 09:40:15 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36C3BC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 06:40:15 -0800 (PST)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1kagQs-0001Pa-Vk; Thu, 05 Nov 2020 15:40:10 +0100
+Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ore@pengutronix.de>)
+        id 1kagQs-0008JP-DU; Thu, 05 Nov 2020 15:40:10 +0100
+Date:   Thu, 5 Nov 2020 15:40:10 +0100
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     kernel@pengutronix.de, linux-kernel@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-spi@vger.kernel.org,
+        David Jander <david@protonic.nl>
+Subject: Re: [PATCH v1 2/2] Input: ads7846: convert to one message
+Message-ID: <20201105144010.pqrtr4qscrsr5kbq@pengutronix.de>
+References: <20201104153528.25362-1-o.rempel@pengutronix.de>
+ <20201104153528.25362-3-o.rempel@pengutronix.de>
 MIME-Version: 1.0
-References: <20201030174429.29893-1-nramas@linux.microsoft.com>
- <20201030174429.29893-2-nramas@linux.microsoft.com> <20201104222847.GA14199@bogus>
- <ef0b4d87-1f60-5692-2ba2-47806341d629@linux.microsoft.com>
-In-Reply-To: <ef0b4d87-1f60-5692-2ba2-47806341d629@linux.microsoft.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Thu, 5 Nov 2020 08:38:53 -0600
-X-Gmail-Original-Message-ID: <CAL_Jsq+3qBr6JT3dysSt28j0UJq80u9YRf5pAh0Dvv5_+pFKXw@mail.gmail.com>
-Message-ID: <CAL_Jsq+3qBr6JT3dysSt28j0UJq80u9YRf5pAh0Dvv5_+pFKXw@mail.gmail.com>
-Subject: Re: [PATCH v8 1/4] powerpc: Refactor kexec functions to move arch
- independent code to drivers/of
-To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Cc:     Mimi Zohar <zohar@linux.ibm.com>,
-        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        James Morse <james.morse@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Sasha Levin <sashal@kernel.org>, Will Deacon <will@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        vincenzo.frascino@arm.com, Mark Rutland <mark.rutland@arm.com>,
-        dmitry.kasatkin@gmail.com, James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Allison Randal <allison@lohutok.net>,
-        Kate Stewart <kstewart@linuxfoundation.org>,
-        "AKASHI, Takahiro" <takahiro.akashi@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Bhupesh Sharma <bhsharma@redhat.com>,
-        Matthias Brugger <mbrugger@suse.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>, tao.li@vivo.com,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        linux-integrity@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        devicetree@vger.kernel.org,
-        Prakhar Srivastava <prsriva@linux.microsoft.com>,
-        balajib@linux.microsoft.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201104153528.25362-3-o.rempel@pengutronix.de>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 15:11:31 up 356 days,  5:30, 380 users,  load average: 0.34, 0.17,
+ 0.10
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 4, 2020 at 6:46 PM Lakshmi Ramasubramanian
-<nramas@linux.microsoft.com> wrote:
->
-> On 11/4/20 2:28 PM, Rob Herring wrote:
->
-> Hi Rob,
->
-> Thanks for reviewing the patch.
->
-> > On Fri, Oct 30, 2020 at 10:44:26AM -0700, Lakshmi Ramasubramanian wrote:
-> >> The functions remove_ima_buffer() and delete_fdt_mem_rsv() that handle
-> >> carrying forward the IMA measurement logs on kexec for powerpc do not
-> >> have architecture specific code, but they are currently defined for
-> >> powerpc only.
-> >>
-> >> remove_ima_buffer() and delete_fdt_mem_rsv() are used to remove
-> >> the IMA log entry from the device tree and free the memory reserved
-> >> for the log. These functions need to be defined even if the current
-> >> kernel does not support carrying forward IMA log across kexec since
-> >> the previous kernel could have supported that and therefore the current
-> >> kernel needs to free the allocation.
-> >>
-> >> Rename remove_ima_buffer() to remove_ima_kexec_buffer().
-> >> Define remove_ima_kexec_buffer() and delete_fdt_mem_rsv() in
-> >> drivers/of/fdt.c. A later patch in this series will use these functions
-> >> to free the allocation, if any, made by the previous kernel for ARM64.
-> >>
-> >> Define FDT_PROP_IMA_KEXEC_BUFFER for the chosen node, namely
-> >> "linux,ima-kexec-buffer", that is added to the DTB to hold
-> >> the address and the size of the memory reserved to carry
-> >> the IMA measurement log.
-> >>
-> >> Co-developed-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
-> >> Signed-off-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
-> >> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-> >> Reported-by: kernel test robot <lkp@intel.com> error: kernel/kexec_file_fdt.c:30: undefined reference to `fdt_num_mem_rsv'
-> >
-> > This should be added for a commit fixing the reported problem. 0-day
-> > didn't report what this patch implements.
-> I'll remove that in the updated patch I'll post.
->
-> >
-> >> ---
-> >>   arch/powerpc/include/asm/ima.h   |  10 +--
-> >>   arch/powerpc/include/asm/kexec.h |   1 -
-> >>   arch/powerpc/kexec/file_load.c   |  33 +---------
-> >>   arch/powerpc/kexec/ima.c         |  55 +++-------------
-> >>   drivers/of/fdt.c                 | 110 +++++++++++++++++++++++++++++++
-> >>   include/linux/kexec.h            |  24 +++++++
-> >>   include/linux/libfdt.h           |   3 +
-> >>   7 files changed, 149 insertions(+), 87 deletions(-)
-> >>
-> >> diff --git a/arch/powerpc/include/asm/ima.h b/arch/powerpc/include/asm/ima.h
-> >> index ead488cf3981..6355a85a3289 100644
-> >> --- a/arch/powerpc/include/asm/ima.h
-> >> +++ b/arch/powerpc/include/asm/ima.h
-> >> @@ -2,17 +2,13 @@
-> >>   #ifndef _ASM_POWERPC_IMA_H
-> >>   #define _ASM_POWERPC_IMA_H
-> >>
-> >> +#include <linux/kexec.h>
-> >> +
-> >>   struct kimage;
-> >>
-> >>   int ima_get_kexec_buffer(void **addr, size_t *size);
-> >>   int ima_free_kexec_buffer(void);
-> >>
-> >> -#ifdef CONFIG_IMA
-> >> -void remove_ima_buffer(void *fdt, int chosen_node);
-> >> -#else
-> >> -static inline void remove_ima_buffer(void *fdt, int chosen_node) {}
-> >> -#endif
-> >> -
-> >>   #ifdef CONFIG_IMA_KEXEC
-> >>   int arch_ima_add_kexec_buffer(struct kimage *image, unsigned long load_addr,
-> >>                            size_t size);
-> >> @@ -22,7 +18,7 @@ int setup_ima_buffer(const struct kimage *image, void *fdt, int chosen_node);
-> >>   static inline int setup_ima_buffer(const struct kimage *image, void *fdt,
-> >>                                 int chosen_node)
-> >>   {
-> >> -    remove_ima_buffer(fdt, chosen_node);
-> >> +    remove_ima_kexec_buffer(fdt, chosen_node);
-> >>      return 0;
-> >>   }
-> >>   #endif /* CONFIG_IMA_KEXEC */
-> >> diff --git a/arch/powerpc/include/asm/kexec.h b/arch/powerpc/include/asm/kexec.h
-> >> index 55d6ede30c19..7c223031ecdd 100644
-> >> --- a/arch/powerpc/include/asm/kexec.h
-> >> +++ b/arch/powerpc/include/asm/kexec.h
-> >> @@ -126,7 +126,6 @@ int setup_purgatory(struct kimage *image, const void *slave_code,
-> >>   int setup_new_fdt(const struct kimage *image, void *fdt,
-> >>                unsigned long initrd_load_addr, unsigned long initrd_len,
-> >>                const char *cmdline);
-> >> -int delete_fdt_mem_rsv(void *fdt, unsigned long start, unsigned long size);
-> >>
-> >>   #ifdef CONFIG_PPC64
-> >>   struct kexec_buf;
-> >> diff --git a/arch/powerpc/kexec/file_load.c b/arch/powerpc/kexec/file_load.c
-> >> index 9a232bc36c8f..7a17655c530e 100644
-> >> --- a/arch/powerpc/kexec/file_load.c
-> >> +++ b/arch/powerpc/kexec/file_load.c
-> >> @@ -18,6 +18,7 @@
-> >>   #include <linux/kexec.h>
-> >>   #include <linux/of_fdt.h>
-> >>   #include <linux/libfdt.h>
-> >> +#include <linux/kexec.h>
-> >>   #include <asm/setup.h>
-> >>   #include <asm/ima.h>
-> >>
-> >> @@ -109,38 +110,6 @@ int setup_purgatory(struct kimage *image, const void *slave_code,
-> >>      return 0;
-> >>   }
-> >>
-> >> -/**
-> >> - * delete_fdt_mem_rsv - delete memory reservation with given address and size
-> >> - *
-> >> - * Return: 0 on success, or negative errno on error.
-> >> - */
-> >> -int delete_fdt_mem_rsv(void *fdt, unsigned long start, unsigned long size)
-> >> -{
-> >> -    int i, ret, num_rsvs = fdt_num_mem_rsv(fdt);
-> >> -
-> >> -    for (i = 0; i < num_rsvs; i++) {
-> >> -            uint64_t rsv_start, rsv_size;
-> >> -
-> >> -            ret = fdt_get_mem_rsv(fdt, i, &rsv_start, &rsv_size);
-> >> -            if (ret) {
-> >> -                    pr_err("Malformed device tree.\n");
-> >> -                    return -EINVAL;
-> >> -            }
-> >> -
-> >> -            if (rsv_start == start && rsv_size == size) {
-> >> -                    ret = fdt_del_mem_rsv(fdt, i);
-> >> -                    if (ret) {
-> >> -                            pr_err("Error deleting device tree reservation.\n");
-> >> -                            return -EINVAL;
-> >> -                    }
-> >> -
-> >> -                    return 0;
-> >> -            }
-> >> -    }
-> >> -
-> >> -    return -ENOENT;
-> >> -}
-> >> -
-> >>   /*
-> >>    * setup_new_fdt - modify /chosen and memory reservation for the next kernel
-> >>    * @image:         kexec image being loaded.
-> >> diff --git a/arch/powerpc/kexec/ima.c b/arch/powerpc/kexec/ima.c
-> >> index 720e50e490b6..2b790230ea15 100644
-> >> --- a/arch/powerpc/kexec/ima.c
-> >> +++ b/arch/powerpc/kexec/ima.c
-> >> @@ -11,6 +11,8 @@
-> >>   #include <linux/of.h>
-> >>   #include <linux/memblock.h>
-> >>   #include <linux/libfdt.h>
-> >> +#include <linux/ima.h>
-> >> +#include <asm/ima.h>
-> >>
-> >>   static int get_addr_size_cells(int *addr_cells, int *size_cells)
-> >>   {
-> >> @@ -28,24 +30,6 @@ static int get_addr_size_cells(int *addr_cells, int *size_cells)
-> >>      return 0;
-> >>   }
-> >>
-> >> -static int do_get_kexec_buffer(const void *prop, int len, unsigned long *addr,
-> >> -                           size_t *size)
-> >> -{
-> >> -    int ret, addr_cells, size_cells;
-> >> -
-> >> -    ret = get_addr_size_cells(&addr_cells, &size_cells);
-> >> -    if (ret)
-> >> -            return ret;
-> >> -
-> >> -    if (len < 4 * (addr_cells + size_cells))
-> >> -            return -ENOENT;
-> >> -
-> >> -    *addr = of_read_number(prop, addr_cells);
-> >> -    *size = of_read_number(prop + 4 * addr_cells, size_cells);
-> >> -
-> >> -    return 0;
-> >> -}
-> >> -
-> >>   /**
-> >>    * ima_get_kexec_buffer - get IMA buffer from the previous kernel
-> >>    * @addr:  On successful return, set to point to the buffer contents.
-> >> @@ -100,37 +84,14 @@ int ima_free_kexec_buffer(void)
-> >>
-> >>   }
-> >>
-> >> -/**
-> >> - * remove_ima_buffer - remove the IMA buffer property and reservation from @fdt
-> >> - *
-> >> - * The IMA measurement buffer is of no use to a subsequent kernel, so we always
-> >> - * remove it from the device tree.
-> >> - */
-> >> -void remove_ima_buffer(void *fdt, int chosen_node)
-> >> -{
-> >> -    int ret, len;
-> >> -    unsigned long addr;
-> >> -    size_t size;
-> >> -    const void *prop;
-> >> -
-> >> -    prop = fdt_getprop(fdt, chosen_node, "linux,ima-kexec-buffer", &len);
-> >> -    if (!prop)
-> >> -            return;
-> >> -
-> >> -    ret = do_get_kexec_buffer(prop, len, &addr, &size);
-> >> -    fdt_delprop(fdt, chosen_node, "linux,ima-kexec-buffer");
-> >> -    if (ret)
-> >> -            return;
-> >> -
-> >> -    ret = delete_fdt_mem_rsv(fdt, addr, size);
-> >> -    if (!ret)
-> >> -            pr_debug("Removed old IMA buffer reservation.\n");
-> >> -}
-> >> -
-> >>   #ifdef CONFIG_IMA_KEXEC
-> >>   /**
-> >>    * arch_ima_add_kexec_buffer - do arch-specific steps to add the IMA buffer
-> >>    *
-> >> + * @image: kimage struct to set IMA buffer data
-> >> + * @load_addr: Starting address where IMA buffer is loaded at
-> >> + * @size: Number of bytes in the IMA buffer
-> >> + *
-> >>    * Architectures should use this function to pass on the IMA buffer
-> >>    * information to the next kernel.
-> >>    *
-> >> @@ -179,7 +140,7 @@ int setup_ima_buffer(const struct kimage *image, void *fdt, int chosen_node)
-> >>      int ret, addr_cells, size_cells, entry_size;
-> >>      u8 value[16];
-> >>
-> >> -    remove_ima_buffer(fdt, chosen_node);
-> >> +    remove_ima_kexec_buffer(fdt, chosen_node);
-> >>      if (!image->arch.ima_buffer_size)
-> >>              return 0;
-> >>
-> >> @@ -201,7 +162,7 @@ int setup_ima_buffer(const struct kimage *image, void *fdt, int chosen_node)
-> >>      if (ret)
-> >>              return ret;
-> >>
-> >> -    ret = fdt_setprop(fdt, chosen_node, "linux,ima-kexec-buffer", value,
-> >> +    ret = fdt_setprop(fdt, chosen_node, FDT_PROP_IMA_KEXEC_BUFFER, value,
-> >>                        entry_size);
-> >>      if (ret < 0)
-> >>              return -EINVAL;
-> >> diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
-> >> index 4602e467ca8b..d2e6f8ce0e42 100644
-> >> --- a/drivers/of/fdt.c
-> >> +++ b/drivers/of/fdt.c
-> >> @@ -25,6 +25,7 @@
-> >>   #include <linux/serial_core.h>
-> >>   #include <linux/sysfs.h>
-> >>   #include <linux/random.h>
-> >> +#include <linux/kexec.h>
-> >>
-> >>   #include <asm/setup.h>  /* for COMMAND_LINE_SIZE */
-> >>   #include <asm/page.h>
-> >> @@ -1289,4 +1290,113 @@ static int __init of_fdt_raw_init(void)
-> >>   late_initcall(of_fdt_raw_init);
-> >>   #endif
-> >>
-> >> +#ifdef CONFIG_HAVE_IMA_KEXEC
-> >
-> > Can we avoid #ifdef and use IS_ENABLED() within the functions?
-> I can use IS_ENABLED() or move the functions to another C file and
-> conditionally build based on the CONFIG.
->
-> >
-> >> +/**
-> >> + * do_get_kexec_buffer - Get address and size of IMA kexec buffer
-> >> + *
-> >> + * @prop: IMA kexec buffer node in the device tree
-> >> + * @len: Size of the given device tree node property
-> >> + * @addr: Return address of the node
-> >> + * @size: Return size of the node
-> >> + */
-> >> +int do_get_kexec_buffer(const void *prop, int len, unsigned long *addr,
-> >> +                    size_t *size)
-> >> +{
-> >> +    int addr_cells, size_cells;
-> >> +    struct device_node *root;
-> >> +
-> >> +    root = of_find_node_by_path("/");
-> >
-> > The code in fdt.c operates on flat trees. This is an unflattened tree.
->
-> Would it be better if I move these functions to a new C file under
-> "drivers/of"?
->
-> >
-> >> +    if (!root)
-> >> +            return -EINVAL;
-> >> +
-> >> +    addr_cells = of_n_addr_cells(root);
-> >> +    size_cells = of_n_size_cells(root);
-> >> +
-> >> +    of_node_put(root);
-> >> +
-> >> +    if (len < 4 * (addr_cells + size_cells))
-> >> +            return -ENOENT;
-> >> +
-> >> +    *addr = of_read_number(prop, addr_cells);
-> >> +    *size = of_read_number(prop + 4 * addr_cells, size_cells);
-> >
-> > There's nothing in this function specific to 'kexec buffer'.
-> >
-> > This interface is kind of broken. 'prop' could come from anywhere in
-> > the tree, but we always read the root address and size cells. Those only
-> > apply to immediate child node properties. And anything other than
-> > immediate root child nodes, there needs to be address translation.
-> >
->
-> I moved this function from arch/powerpc/kexec/ima.c to here so that it
-> can be shared by ARM64 as well. Below is one of the usage of
-> do_get_kexec_buffer().
->
->          prop = of_get_property(of_chosen, "linux,ima-kexec-buffer", &len);
->          if (!prop)
->                  return -ENOENT;
->
->          ret = do_get_kexec_buffer(prop, len, &tmp_addr, &tmp_size);
->
-> Is there a way to detect if the 'prop' is an immediate root child node
-> or not so that we can handle it appropriately in this interface function?
+Hello all,
 
-Just don't split up the function.
+This patch will need some more work. Currently, it is ignoring
+ti,settle-delay-usec property, which should be fixed in the next version.
 
-> >> +
-> >> +    return 0;
-> >> +}
-> >> +
-> >> +/**
-> >> + * remove_ima_kexec_buffer - remove the IMA buffer property and
-> >> + *                       reservation from @fdt
-> >
-> > IIRC, kerneldoc requires this to be one line.
-> I'll upate.
->
-> >
-> >> + *
-> >> + * @fdt: Flattened Device Tree to update
-> >> + * @chosen_node: Offset to the chosen node in the device tree
-> >> + *
-> >> + * The IMA measurement buffer is of no use to a subsequent kernel,
-> >> + * so we always remove it from the device tree.
-> >> + */
-> >> +void remove_ima_kexec_buffer(void *fdt, int chosen_node)
-> >> +{
-> >
-> > Can't this go in some common kexec code?
->
-> I'd considered moving this to "kernel", but Thiago suggested
-> "drivers/of" is a better place. If you have suggestions for a better
-> place, please let me know.
+Regards,
+Oleksij
 
-Humm, I guess drivers/of/ is fine, but it should be its own file.
-Also, there's nothing arch specific about handling bootargs, initrd,
-etc., so create a common function to handle all that. You can probably
-include allocating and copying the new fdt as part of that. Powerpc
-does kmalloc and arm64 does vmalloc for the new fdt. Is that a
-necessary difference?
+On Wed, Nov 04, 2020 at 04:35:28PM +0100, Oleksij Rempel wrote:
+> Convert multiple full duplex transfers in to a single transfer.
+> 
+> Current driver version support two modes:
+> - not filtered
+> - driver specific debounce filter
+> - platform specific debounce filter (do any platform provides such
+> filter?)
+> 
+> Without filter this HW is not really usable, since the physic of
+> resistive touchscreen can provide some bounce effects. With filter, we
+> have constant amount of retries + debounce retries if some anomaly was
+> detected.
+> 
+> This patch create one SPI transfer with all fields and not optional retires. If
+> bounce anomaly was detected, we will make more transfer if needed.
+> 
+> Without this patch, we will get about 10% CPU load on iMX6S if some thing
+> is pressing on the screen (holding finger, etc.)
+> 
+> With this patch, depending in the amount of retries, the CPU load will
+> be 1.5-2% with "ti,debounce-rep = <3>" and 1% or less with
+> "ti,debounce-rep = <10>". Depending on the buffer size, different SPI
+> controllers use different optimizations. On iMX, the buffer below
+> 64 Byte will be transfered in the PIO mode and beyond this threshold,
+> it will be transfered in the DMA mode.
+> 
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> ---
+>  drivers/input/touchscreen/ads7846.c | 310 +++++++++++++---------------
+>  1 file changed, 143 insertions(+), 167 deletions(-)
+> 
+> diff --git a/drivers/input/touchscreen/ads7846.c b/drivers/input/touchscreen/ads7846.c
+> index e9a520c9ad69..a68b9e5aa505 100644
+> --- a/drivers/input/touchscreen/ads7846.c
+> +++ b/drivers/input/touchscreen/ads7846.c
+> @@ -64,37 +64,25 @@
+>  
+>  struct ads7846_buf {
+>  	u8 cmd;
+> -	/* This union is a temporary hack. The driver does an in-place
+> -	 * endianness conversion. This will be cleaned up in the next
+> -	 * patch.
+> -	 */
+> -	union {
+> -		__be16 data_be16;
+> -		u16 data;
+> -	};
+> +	__be16 data;
+>  } __attribute__((__packed__));
+>  
+> -
+> -struct ts_event {
+> -	bool ignore;
+> -	struct ads7846_buf x;
+> -	struct ads7846_buf y;
+> -	struct ads7846_buf z1;
+> -	struct ads7846_buf z2;
+> -};
+> -
+>  /*
+>   * We allocate this separately to avoid cache line sharing issues when
+>   * driver is used with DMA-based SPI controllers (like atmel_spi) on
+>   * systems where main memory is not DMA-coherent (most non-x86 boards).
+>   */
+>  struct ads7846_packet {
+> -	struct ts_event tc;
+> -	struct ads7846_buf read_x_cmd;
+> -	struct ads7846_buf read_y_cmd;
+> -	struct ads7846_buf read_z1_cmd;
+> -	struct ads7846_buf read_z2_cmd;
+> +	unsigned int count;
+> +	unsigned int fields;
+> +	unsigned int last_field;
+> +	struct ads7846_buf *rx;
+> +	struct ads7846_buf *tx;
+> +
+>  	struct ads7846_buf pwrdown_cmd;
+> +
+> +	bool ignore;
+> +	u16 x, y, z1, z2;
+>  };
+>  
+>  struct ads7846 {
+> @@ -206,6 +194,13 @@ struct ads7846 {
+>  #define	REF_ON	(READ_12BIT_DFR(x, 1, 1))
+>  #define	REF_OFF	(READ_12BIT_DFR(y, 0, 0))
+>  
+> +enum ads7846_cmds {
+> +	ADS7846_Y,
+> +	ADS7846_X,
+> +	ADS7846_Z1,
+> +	ADS7846_Z2,
+> +};
+> +
+>  static int get_pendown_state(struct ads7846 *ts)
+>  {
+>  	if (ts->get_pendown_state)
+> @@ -696,26 +691,68 @@ static int ads7846_no_filter(void *ads, int data_idx, int *val)
+>  	return ADS7846_FILTER_OK;
+>  }
+>  
+> -static int ads7846_get_value(struct ads7846 *ts, struct spi_message *m)
+> +static int ads7846_get_value(struct ads7846_buf *buf)
+>  {
+>  	int value;
+> -	struct spi_transfer *t =
+> -		list_entry(m->transfers.prev, struct spi_transfer, transfer_list);
+> -	struct ads7846_buf *buf = t->rx_buf;
+>  
+> -	value = be16_to_cpup(&buf->data_be16);
+> +	value = be16_to_cpup(&buf->data);
+>  
+>  	/* enforce ADC output is 12 bits width */
+>  	return (value >> 3) & 0xfff;
+>  }
+>  
+> -static void ads7846_update_value(struct spi_message *m, int val)
+> +static void ads7846_set_field_val(struct ads7846 *ts, enum ads7846_cmds filed,
+> +				  u16 val)
+>  {
+> -	struct spi_transfer *t =
+> -		list_entry(m->transfers.prev, struct spi_transfer, transfer_list);
+> -	struct ads7846_buf *buf = t->rx_buf;
+> +	struct ads7846_packet *packet = ts->packet;
+> +
+> +	switch (filed) {
+> +	case ADS7846_Y:
+> +		packet->y = val;
+> +		break;
+> +	case ADS7846_X:
+> +		packet->x = val;
+> +		break;
+> +	case ADS7846_Z1:
+> +		packet->z1 = val;
+> +		break;
+> +	case ADS7846_Z2:
+> +		packet->z2 = val;
+> +		break;
+> +	default:
+> +		pr_err("kappuuuut auch!!!\n");
+> +	}
+> +}
+> +
+> +static int ads7846_filter_state(struct ads7846 *ts)
+> +{
+> +	struct ads7846_packet *packet = ts->packet;
+> +	int msg_idx = 0;
+> +	int action;
+> +	int val;
+> +	unsigned int a, b;
+>  
+> -	buf->data = val;
+> +	packet->ignore = false;
+> +	for (a = packet->last_field; a < packet->fields; a++) {
+> +		packet->last_field = a;
+> +		for (b = 0; b < packet->count; b++) {
+> +			val = ads7846_get_value(&packet->rx[b * packet->fields + a]);
+> +
+> +			action = ts->filter(ts->filter_data, msg_idx, &val);
+> +			if (action == ADS7846_FILTER_REPEAT) {
+> +				if (b == packet->count - 1)
+> +					return -EAGAIN;
+> +			} else if (action == ADS7846_FILTER_OK) {
+> +				ads7846_set_field_val(ts, a, val);
+> +				break;
+> +			} else {
+> +				packet->ignore = true;
+> +				return 0;
+> +			}
+> +		}
+> +	}
+> +
+> +	return 0;
+>  }
+>  
+>  static void ads7846_read_state(struct ads7846 *ts)
+> @@ -723,52 +760,30 @@ static void ads7846_read_state(struct ads7846 *ts)
+>  	struct ads7846_packet *packet = ts->packet;
+>  	struct spi_message *m;
+>  	int msg_idx = 0;
+> -	int val;
+> -	int action;
+>  	int error;
+>  
+> -	while (msg_idx < ts->msg_count) {
+> +	packet->last_field = 0;
+>  
+> +	while (msg_idx < ts->msg_count) {
+>  		ts->wait_for_sync();
+>  
+>  		m = &ts->msg[msg_idx];
+>  		error = spi_sync(ts->spi, m);
+>  		if (error) {
+>  			dev_err(&ts->spi->dev, "spi_sync --> %d\n", error);
+> -			packet->tc.ignore = true;
+> +			packet->ignore = true;
+>  			return;
+>  		}
+>  
+> -		/*
+> -		 * Last message is power down request, no need to convert
+> -		 * or filter the value.
+> -		 */
+> -		if (msg_idx < ts->msg_count - 1) {
+> +		/* last message is power down request */
+> +		if (msg_idx == ts->msg_count - 1)
+> +			break;
+>  
+> -			val = ads7846_get_value(ts, m);
+> +		error = ads7846_filter_state(ts);
+> +		if (error)
+> +			continue;
+>  
+> -			action = ts->filter(ts->filter_data, msg_idx, &val);
+> -			switch (action) {
+> -			case ADS7846_FILTER_REPEAT:
+> -				continue;
+> -
+> -			case ADS7846_FILTER_IGNORE:
+> -				packet->tc.ignore = true;
+> -				msg_idx = ts->msg_count - 1;
+> -				continue;
+> -
+> -			case ADS7846_FILTER_OK:
+> -				ads7846_update_value(m, val);
+> -				packet->tc.ignore = false;
+> -				msg_idx++;
+> -				break;
+> -
+> -			default:
+> -				BUG();
+> -			}
+> -		} else {
+> -			msg_idx++;
+> -		}
+> +		msg_idx++;
+>  	}
+>  }
+>  
+> @@ -783,14 +798,14 @@ static void ads7846_report_state(struct ads7846 *ts)
+>  	 * from on-the-wire format as part of debouncing to get stable
+>  	 * readings.
+>  	 */
+> -	x = packet->tc.x.data;
+> -	y = packet->tc.y.data;
+> +	x = packet->x;
+> +	y = packet->y;
+>  	if (ts->model == 7845) {
+>  		z1 = 0;
+>  		z2 = 0;
+>  	} else {
+> -		z1 = packet->tc.z1.data;
+> -		z2 = packet->tc.z2.data;
+> +		z1 = packet->z1;
+> +		z2 = packet->z2;
+>  	}
+>  
+>  	/* range filtering */
+> @@ -822,9 +837,9 @@ static void ads7846_report_state(struct ads7846 *ts)
+>  	 * the maximum. Don't report it to user space, repeat at least
+>  	 * once more the measurement
+>  	 */
+> -	if (packet->tc.ignore || Rt > ts->pressure_max) {
+> +	if (packet->ignore || Rt > ts->pressure_max) {
+>  		dev_vdbg(&ts->spi->dev, "ignored %d pressure %d\n",
+> -			 packet->tc.ignore, Rt);
+> +			 packet->ignore, Rt);
+>  		return;
+>  	}
+>  
+> @@ -981,17 +996,62 @@ static int ads7846_setup_pendown(struct spi_device *spi,
+>  	return 0;
+>  }
+>  
+> +
+> +static u8 ads7846_get_cmd(enum ads7846_cmds filed, int vref)
+> +{
+> +	switch (filed) {
+> +	case ADS7846_Y:
+> +		return READ_Y(vref);
+> +	case ADS7846_X:
+> +		return READ_X(vref);
+> +
+> +	/* 7846 specific commands  */
+> +	case ADS7846_Z1:
+> +		return READ_Z1(vref);
+> +	case ADS7846_Z2:
+> +		return READ_Z2(vref);
+> +	default:
+> +		pr_err("kappuuuut!!!\n");
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  /*
+>   * Set up the transfers to read touchscreen state; this assumes we
+>   * use formula #2 for pressure, not #3.
+>   */
+> -static void ads7846_setup_spi_msg(struct ads7846 *ts,
+> +static int ads7846_setup_spi_msg(struct ads7846 *ts,
+>  				  const struct ads7846_platform_data *pdata)
+>  {
+>  	struct spi_message *m = &ts->msg[0];
+>  	struct spi_transfer *x = ts->xfer;
+>  	struct ads7846_packet *packet = ts->packet;
+>  	int vref = pdata->keep_vref_on;
+> +	unsigned int a, b;
+> +	size_t size;
+> +
+> +	if (ts->debounce_max && ts->debounce_rep)
+> +		/* ads7846_debounce_filter() is making ts->debounce_rep + 2
+> +		 * reads. So we need to get all samples for normal case. */
+> +		packet->count = ts->debounce_rep + 2;
+> +	else
+> +		packet->count = 1;
+> +
+> +	if (ts->model == 7846)
+> +		packet->fields = 4; /* x, y, z1, z2 */
+> +	else
+> +		packet->fields = 2; /* x, y */
+> +
+> +	size = sizeof(*packet->tx) * packet->count * packet->fields;
+> +
+> +	packet->tx = devm_kzalloc(&ts->spi->dev, size, GFP_KERNEL);
+> +	if (!packet->tx)
+> +		return -ENOMEM;
+> +
+> +	packet->rx = devm_kzalloc(&ts->spi->dev, size, GFP_KERNEL);
+> +	if (!packet->rx)
+> +		return -ENOMEM;
+>  
+>  	if (ts->model == 7873) {
+>  		/*
+> @@ -1007,110 +1067,24 @@ static void ads7846_setup_spi_msg(struct ads7846 *ts,
+>  	spi_message_init(m);
+>  	m->context = ts;
+>  
+> -	packet->read_y_cmd.cmd = READ_Y(vref);
+> -	x->tx_buf = &packet->read_y_cmd;
+> -	x->rx_buf = &packet->tc.y;
+> -	x->len = 3;
+> -	spi_message_add_tail(x, m);
+> -
+> -	/*
+> -	 * The first sample after switching drivers can be low quality;
+> -	 * optionally discard it, using a second one after the signals
+> -	 * have had enough time to stabilize.
+> -	 */
+> -	if (pdata->settle_delay_usecs) {
+> -		x->delay.value = pdata->settle_delay_usecs;
+> -		x->delay.unit = SPI_DELAY_UNIT_USECS;
+> -		x++;
+> -
+> -		x->tx_buf = &packet->read_y_cmd;
+> -		x->rx_buf = &packet->tc.y;
+> -		x->len = 3;
+> -		spi_message_add_tail(x, m);
+> +	for (a = 0; a < packet->count; a++) {
+> +		for (b = 0; b < packet->fields; b++) {
+> +			u8 cmd = ads7846_get_cmd(b, vref);
+> +			packet->tx[a * packet->fields + b].cmd = cmd;
+> +		}
+>  	}
+>  
+> -	ts->msg_count++;
+> -	m++;
+> -	spi_message_init(m);
+> -	m->context = ts;
+> -
+> -	/* turn y- off, x+ on, then leave in lowpower */
+> -	x++;
+> -	packet->read_x_cmd.cmd = READ_X(vref);
+> -	x->tx_buf = &packet->read_x_cmd;
+> -	x->rx_buf = &packet->tc.x;
+> -	x->len = 3;
+> +	x->tx_buf = packet->tx;
+> +	x->rx_buf = packet->rx;
+> +	x->len = size;
+> +	x->cs_change = 1; /* do not set CS until we do the PWRDOWN */
+>  	spi_message_add_tail(x, m);
+>  
+> -	/* ... maybe discard first sample ... */
+> -	if (pdata->settle_delay_usecs) {
+> -		x->delay.value = pdata->settle_delay_usecs;
+> -		x->delay.unit = SPI_DELAY_UNIT_USECS;
+> -
+> -		x++;
+> -		x->tx_buf = &packet->read_x_cmd;
+> -		x->rx_buf = &packet->tc.x;
+> -		x->len = 3;
+> -		spi_message_add_tail(x, m);
+> -	}
+> -
+> -	/* turn y+ off, x- on; we'll use formula #2 */
+> -	if (ts->model == 7846) {
+> -		ts->msg_count++;
+> -		m++;
+> -		spi_message_init(m);
+> -		m->context = ts;
+> -
+> -		x++;
+> -		packet->read_z1_cmd.cmd = READ_Z1(vref);
+> -		x->tx_buf = &packet->read_z1_cmd;
+> -		x->rx_buf = &packet->tc.z1;
+> -		x->len = 3;
+> -		spi_message_add_tail(x, m);
+> -
+> -		/* ... maybe discard first sample ... */
+> -		if (pdata->settle_delay_usecs) {
+> -			x->delay.value = pdata->settle_delay_usecs;
+> -			x->delay.unit = SPI_DELAY_UNIT_USECS;
+> -
+> -			x++;
+> -			x->tx_buf = &packet->read_z1_cmd;
+> -			x->rx_buf = &packet->tc.z1;
+> -			x->len = 3;
+> -			spi_message_add_tail(x, m);
+> -		}
+> -
+> -		ts->msg_count++;
+> -		m++;
+> -		spi_message_init(m);
+> -		m->context = ts;
+> -
+> -		x++;
+> -		packet->read_z2_cmd.cmd = READ_Z2(vref);
+> -		x->tx_buf = &packet->read_z2_cmd;
+> -		x->rx_buf = &packet->tc.z2;
+> -		x->len = 3;
+> -		spi_message_add_tail(x, m);
+> -
+> -		/* ... maybe discard first sample ... */
+> -		if (pdata->settle_delay_usecs) {
+> -			x->delay.value = pdata->settle_delay_usecs;
+> -			x->delay.unit = SPI_DELAY_UNIT_USECS;
+> -
+> -			x++;
+> -			x->tx_buf = &packet->read_z2_cmd;
+> -			x->rx_buf = &packet->tc.z2;
+> -			x->len = 3;
+> -			spi_message_add_tail(x, m);
+> -		}
+> -	}
+> -
+> -	/* power down */
+>  	ts->msg_count++;
+>  	m++;
+>  	spi_message_init(m);
+>  	m->context = ts;
+> -
+> +	/* power down */
+>  	x++;
+>  	packet->pwrdown_cmd.cmd = PWRDOWN;
+>  	x->tx_buf = &packet->pwrdown_cmd;
+> @@ -1118,6 +1092,8 @@ static void ads7846_setup_spi_msg(struct ads7846 *ts,
+>  
+>  	CS_CHANGE(*x);
+>  	spi_message_add_tail(x, m);
+> +
+> +	return 0;
+>  }
+>  
+>  #ifdef CONFIG_OF
+> -- 
+> 2.28.0
+> 
+> 
 
-Then the IMA handling can all be private to the new file?
-
->
-> Note that this function needs to be available even when CONFIG_IMA is
-> not enabled. So I can't move it to "security/integrity/ima".
->
-> >> +    int ret, len;
-> >> +    unsigned long addr;
-> >> +    size_t size;
-> >> +    const void *prop;
-> >> +
-> >> +    prop = fdt_getprop(fdt, chosen_node, FDT_PROP_IMA_KEXEC_BUFFER, &len);
-> >> +    if (!prop) {
-> >> +            pr_debug("Unable to find the ima kexec buffer node\n");
-> >> +            return;
-> >> +    }
-> >> +
-> >> +    ret = do_get_kexec_buffer(prop, len, &addr, &size);
-> >> +    fdt_delprop(fdt, chosen_node, FDT_PROP_IMA_KEXEC_BUFFER);
-> >> +    if (ret) {
-> >> +            pr_err("Unable to delete the ima kexec buffer node\n");
-> >> +            return;
-> >> +    }
-> >> +
-> >> +    ret = delete_fdt_mem_rsv(fdt, addr, size);
-> >> +    if (!ret)
-> >> +            pr_debug("Removed old IMA buffer reservation.\n");
-> >> +}
-> >> +#endif /* CONFIG_HAVE_IMA_KEXEC */
-> >> +
-> >> +#ifdef CONFIG_KEXEC_FILE
-> >> +/**
-> >> + * delete_fdt_mem_rsv - delete memory reservation with given address and size
-> >> + *
-> >> + * @fdt: Flattened Device Tree to update
-> >> + * @start: Starting address of the reservation to delete
-> >> + * @size: Size of the reservation to delete
-> >> + *
-> >> + * Return: 0 on success, or negative errno on error.
-> >> + */
-> >> +int delete_fdt_mem_rsv(void *fdt, unsigned long start, unsigned long size)
-> >> +{
-> >> +    int i, ret, num_rsvs = fdt_num_mem_rsv(fdt);
-> >> +
-> >> +    for (i = 0; i < num_rsvs; i++) {
-> >> +            uint64_t rsv_start, rsv_size;
-> >> +
-> >> +            ret = fdt_get_mem_rsv(fdt, i, &rsv_start, &rsv_size);
-> >> +            if (ret) {
-> >> +                    pr_err("Malformed device tree.\n");
-> >> +                    return -EINVAL;
-> >> +            }
-> >> +
-> >> +            if (rsv_start == start && rsv_size == size) {
-> >> +                    ret = fdt_del_mem_rsv(fdt, i);
-> >> +                    if (ret) {
-> >> +                            pr_err("Error deleting device tree reservation.\n");
-> >> +                            return -EINVAL;
-> >> +                    }
-> >> +
-> >> +                    pr_debug("Freed reserved memory at %lu of size %lu\n",
-> >> +                             start, size);
-> >> +                    return 0;
-> >> +            }
-> >> +    }
-> >> +
-> >> +    return -ENOENT;
-> >> +}
-> >> +#endif /* CONFIG_KEXEC_FILE */
-> >> +
-> >>   #endif /* CONFIG_OF_EARLY_FLATTREE */
-> >> diff --git a/include/linux/kexec.h b/include/linux/kexec.h
-> >> index 9e93bef52968..6c6c6791a7ba 100644
-> >> --- a/include/linux/kexec.h
-> >> +++ b/include/linux/kexec.h
-> >> @@ -407,6 +407,30 @@ static inline int kexec_crash_loaded(void) { return 0; }
-> >>   #define kexec_in_progress false
-> >>   #endif /* CONFIG_KEXEC_CORE */
-> >>
-> >> +#if defined(CONFIG_OF_EARLY_FLATTREE) && defined(CONFIG_HAVE_IMA_KEXEC)
-> >
-> > CONFIG_OF_EARLY_FLATTREE is wrong because that's all early boot (i.e.
-> > init section) functions.
-> >
-> > If these functions are implemented in fdt.c, then this is the wrong
-> > header. But it's the implementation that should move.
->
-> If you think defining these functions in "drivers/of" is okay, I'll move
-> them to a new C file in OF.
->
-> Would CONFIG_OF_FLATTREE be a better one to enable these ima kexec
-> functions? "of_" and "fdt_" are the functions called by these ima kexec
-> functions.
-
-Yes.
-
->
-> >
-> >> +extern void remove_ima_kexec_buffer(void *fdt, int chosen_node);
-> >> +extern int do_get_kexec_buffer(const void *prop, int len, unsigned long *addr,
-> >> +                           size_t *size);
-> >> +#else
-> >> +static inline void remove_ima_kexec_buffer(void *fdt, int chosen_node) {}
-> >> +static inline int do_get_kexec_buffer(const void *prop, int len,
-> >> +                                  unsigned long *addr, size_t *size)
-> >> +{
-> >> +    return -EOPNOTSUPP;
-> >> +}
-> >> +#endif /* CONFIG_OF_EARLY_FLATTREE && CONFIG_HAVE_IMA_KEXEC */
-> >> +
-> >> +#if defined(CONFIG_OF_EARLY_FLATTREE) && defined(CONFIG_KEXEC_FILE)
-> >> +extern int delete_fdt_mem_rsv(void *fdt, unsigned long start,
-> >> +                          unsigned long size);
-> >> +#else
-> >> +static inline int delete_fdt_mem_rsv(void *fdt, unsigned long start,
-> >> +                                 unsigned long size)
-> >> +{
-> >> +    return 0;
-> >> +}
-> >> +#endif /* CONFIG_OF_EARLY_FLATTREE && CONFIG_KEXEC_FILE */
-> >> +
-> >>   #endif /* !defined(__ASSEBMLY__) */
-> >>
-> >>   #endif /* LINUX_KEXEC_H */
-> >> diff --git a/include/linux/libfdt.h b/include/linux/libfdt.h
-> >> index 90ed4ebfa692..75fb40aa013b 100644
-> >> --- a/include/linux/libfdt.h
-> >> +++ b/include/linux/libfdt.h
-> >> @@ -5,4 +5,7 @@
-> >>   #include <linux/libfdt_env.h>
-> >>   #include "../../scripts/dtc/libfdt/libfdt.h"
-> >>
-> >> +/* Common device tree properties */
-> >> +#define FDT_PROP_IMA_KEXEC_BUFFER   "linux,ima-kexec-buffer"
-> >
-> > This is not part of libfdt. We generally don't do defines for DT
-> > strings.
-> Should I create a new header file for this or would you suggest using an
-> existing one?
-
-I'm suggesting no define at all. The string is already descriptive, so
-what do you gain with the define name? Nothing.
-
-Rob
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
