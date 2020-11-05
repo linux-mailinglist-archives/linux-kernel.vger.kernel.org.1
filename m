@@ -2,129 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A88832A7C09
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 11:40:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D60322A7C0D
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 11:41:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729359AbgKEKkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 05:40:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36872 "EHLO
+        id S1729548AbgKEKlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 05:41:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726067AbgKEKkO (ORCPT
+        with ESMTP id S1726067AbgKEKlM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 05:40:14 -0500
+        Thu, 5 Nov 2020 05:41:12 -0500
 Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A0C4C0613D3
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 02:40:13 -0800 (PST)
-Received: by mail-pl1-x642.google.com with SMTP id b12so594789plr.4
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 02:40:13 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 365F3C0613CF;
+        Thu,  5 Nov 2020 02:41:12 -0800 (PST)
+Received: by mail-pl1-x642.google.com with SMTP id t22so584809plr.9;
+        Thu, 05 Nov 2020 02:41:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=WCCTQKcgxT5BgoXvd55cVkeUPDruRceTke7HPT3Hkyo=;
-        b=uI5sjdIZnJfMXmb2BmcneLzfiFbBlet9wY7JQZtjHR0GF8UkHMmcqlXwBrkvsqK1WI
-         SeinhDQqNDH8/hEaMPpSpgwvj0qAA2DAOlij96dLz+WulydyVF4o3fYzumZUYFXFoH1h
-         ZgXb17DvmcshHNZxztv5zRi/aeOa+ymd+joJrRroDAhLo0nx97avxNo1KBPgxXcO+5qD
-         SXvk12UVzaw2/5tEF2FemBinKY4gdRZP1KDwgT69Jbp7nnNi1tx0Yci0mKB/TEHxbTdH
-         hUsmGHEaNuInutK+0y4SPLiOBIQ+CzV6c4LqpUQ2rUe9GYtY4Vnxx2LLLnO7akoNoqHJ
-         X5Yw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=W3gnZyAmXTZVbhb7LKm3sXbvwT/SP+v0RFw1GtMWZEY=;
+        b=QNMc1AYzlOPIB/liIT2N1ErCmfxMFn1NCL2emcN8pRZOJeuFwroV+yfR5Aeqm0pvha
+         PwAXn8uRQIx1NKmD6/QJ67moDVSjf4o43neKGS1uUmI+WXID9abYTVzGyRJcHkqKEGFE
+         lunXYbm9K+NdyNiArvGzWpHaE13raq/FoDQ/KhuGijfYjvCTLJ9+1VGDEXUpOuptNOoC
+         JvDwhM+6KN9dw/L0aLNUt5zOFY/3g9WjMLNNYSyF8kR3rOikq/sscJOXkiN7wTW85rSE
+         SOQQGF8wn+sTvH92Jdn9PKvq/+NXb77qLakLHieVjMrRtH9SXqOpuvTNWtYZs1WhSpoa
+         LyDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=WCCTQKcgxT5BgoXvd55cVkeUPDruRceTke7HPT3Hkyo=;
-        b=A7EBGR5dCBUV4r9eWSZUyD6dUjz4pljtDPhH/Ne1IaMGYscGxMhei++yJOahvmYZsp
-         ltGAltyXihUfyKU2hWZkzIN+LfB5p4NlRCQglPWH8YbhvSPuDnTE/L04CS31bH5CC+5C
-         a5zFNyng/rav7FtIAt+qoeU1eDX/7EV3nxMDm7hR+71QMTpz4KY1cxhpmx5oKYvybtPx
-         GNGiQBw4I0xKCb4YaAhdcdLOegeHe3NdXs/B8Y3E0XOP0iw/7mzjm1xhOThcRfiGz4wE
-         l29w8f4H7W5xA3cUIc7VhBoVgaPNeU+fyihWuDRJCJGjuEvIqtALY5QrGeA6ZnIXfn4G
-         FK4Q==
-X-Gm-Message-State: AOAM532v5smdpMxtfS/5dTCxsa96qWw94XYlCTQtMqyoC4dQXCqvJHhc
-        7jGtXBsJ/eonst3Fl7Zf8EBwUA==
-X-Google-Smtp-Source: ABdhPJxaeig/5BttxMih2SwDkKcSP7+kCvVk+Bpsa5+VJfx+t48gt5Hq0JWRUoD/r4V+wRad0uK0Vw==
-X-Received: by 2002:a17:902:b601:b029:d3:e6c5:5112 with SMTP id b1-20020a170902b601b02900d3e6c55112mr1328833pls.65.1604572812590;
-        Thu, 05 Nov 2020 02:40:12 -0800 (PST)
-Received: from localhost ([122.172.12.172])
-        by smtp.gmail.com with ESMTPSA id q11sm1908845pgm.79.2020.11.05.02.40.11
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 05 Nov 2020 02:40:11 -0800 (PST)
-Date:   Thu, 5 Nov 2020 16:10:09 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Peter Chen <Peter.Chen@nxp.com>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        driverdevel <devel@driverdev.osuosl.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        linux-pwm@vger.kernel.org,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>
-Subject: Re: [PATCH v1 00/30] Introduce core voltage scaling for NVIDIA
- Tegra20/30 SoCs
-Message-ID: <20201105104009.oo4dc6a2gdcwduhk@vireshk-i7>
-References: <20201104234427.26477-1-digetx@gmail.com>
- <CAPDyKFr7qTU2RPhA_ZrbCayoTTNUEno1zdmvmv+8HBe-Owrfeg@mail.gmail.com>
- <20201105100603.skrirm7uke4s2xyl@vireshk-i7>
- <CAPDyKFoCJt5MBSKBJ8n1OAMdVsWHdwXTx0zFEcZw_F_gQ6Ug0w@mail.gmail.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=W3gnZyAmXTZVbhb7LKm3sXbvwT/SP+v0RFw1GtMWZEY=;
+        b=ITx48TxQY3Glgq0B+bK0+6kFLn6ru2TVVjzurI+lMQckMmaGllWoVGi131Opj/dxOy
+         lrUI+VapSyxy2UtIs1YZJgXYTj+pClxzwu6bPyNjTl9Ccl4bA33iFuGsjhmUFoaKnwUS
+         3FHaRGhSde1mJwe4h74K7eUgPrAuRf8ncNbFxSbmveGWTH0cVaZi9647K95V3RlD/KMi
+         2/3Ued847HFnExQiW8DL+Rm8wzbJjI4HVnSiyPKKwp5NLtgh+w8EEp0k8HAJXjvvCv23
+         2kTieWyEacvWMg7fMCQZ1NVHJCPIQCy/WrH3YZHTIDwOjm/3ui2qod8AetyCLHj0wm7o
+         Dyyw==
+X-Gm-Message-State: AOAM531zmxAtx68xSvmmsGS4Ffjq7dUvOCENVR3haGGm6lGT743PEjnN
+        bxNIvK6LWKUSsazyrhy5haQkWSmqUneJrg==
+X-Google-Smtp-Source: ABdhPJwP10PA1Cn+4qHlossF98IQc+6Etq+eMVs1qDsn4o7YRK6XQfxxHAR/yI0opAWZu81/HZSNoQ==
+X-Received: by 2002:a17:902:82c3:b029:d6:c377:c87e with SMTP id u3-20020a17090282c3b02900d6c377c87emr1687122plz.85.1604572871236;
+        Thu, 05 Nov 2020 02:41:11 -0800 (PST)
+Received: from sol.lan (106-69-171-141.dyn.iinet.net.au. [106.69.171.141])
+        by smtp.gmail.com with ESMTPSA id j13sm2055855pfd.97.2020.11.05.02.41.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Nov 2020 02:41:10 -0800 (PST)
+From:   Kent Gibson <warthog618@gmail.com>
+To:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        bgolaszewski@baylibre.com, linus.walleij@linaro.org
+Cc:     Kent Gibson <warthog618@gmail.com>,
+        Nicolas Schichan <nschichan@freebox.fr>
+Subject: [PATCH] gpiolib: fix sysfs when cdev is not selected
+Date:   Thu,  5 Nov 2020 18:40:49 +0800
+Message-Id: <20201105104049.91077-1-warthog618@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPDyKFoCJt5MBSKBJ8n1OAMdVsWHdwXTx0zFEcZw_F_gQ6Ug0w@mail.gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05-11-20, 11:34, Ulf Hansson wrote:
-> I am not objecting about scaling the voltage through a regulator,
-> that's fine to me. However, encoding a power domain as a regulator
-> (even if it may seem like a regulator) isn't. Well, unless Mark Brown
-> has changed his mind about this.
->
-> In this case, it seems like the regulator supply belongs in the
-> description of the power domain provider.
+In gpiochip_setup_dev() the call to gpiolib_cdev_register() indirectly
+calls device_add().  This is still required for the sysfs even when
+CONFIG_GPIO_CDEV is not selected in the build.
 
-Okay, I wasn't sure if it is a power domain or a regulator here. Btw,
-how do we identify if it is a power domain or a regulator ?
+Replace the stubbed functions in gpiolib-cdev.h with macros in gpiolib.c
+that perform the required device_add() and device_del() when
+CONFIG_GPIO_CDEV is not selected.
 
-> > In case of Qcom earlier (when we added the performance-state stuff),
-> > the eventual hardware was out of kernel's control and we didn't wanted
-> > (allowed) to model it as a virtual regulator just to pass the votes to
-> > the RPM. And so we did what we did.
-> >
-> > But if the hardware (where the voltage is required to be changed) is
-> > indeed a regulator and is modeled as one, then what Dmitry has done
-> > looks okay. i.e. add a supply in the device's node and microvolt
-> > property in the DT entries.
-> 
-> I guess I haven't paid enough attention how power domain regulators
-> are being described then. I was under the impression that the CPUfreq
-> case was a bit specific - and we had legacy bindings to stick with.
-> 
-> Can you point me to some other existing examples of where power domain
-> regulators are specified as a regulator in each device's node?
+Fixes: d143493c01b7 (gpiolib: make cdev a build option)
+Reported-by: Nicolas Schichan <nschichan@freebox.fr>
+Signed-off-by: Kent Gibson <warthog618@gmail.com>
+---
+ drivers/gpio/gpiolib-cdev.h | 15 ---------------
+ drivers/gpio/gpiolib.c      | 18 +++++++++++++++---
+ 2 files changed, 15 insertions(+), 18 deletions(-)
 
-No, I thought it is a regulator here and not a power domain.
-
+diff --git a/drivers/gpio/gpiolib-cdev.h b/drivers/gpio/gpiolib-cdev.h
+index cb41dd757338..b42644cbffb8 100644
+--- a/drivers/gpio/gpiolib-cdev.h
++++ b/drivers/gpio/gpiolib-cdev.h
+@@ -7,22 +7,7 @@
+ 
+ struct gpio_device;
+ 
+-#ifdef CONFIG_GPIO_CDEV
+-
+ int gpiolib_cdev_register(struct gpio_device *gdev, dev_t devt);
+ void gpiolib_cdev_unregister(struct gpio_device *gdev);
+ 
+-#else
+-
+-static inline int gpiolib_cdev_register(struct gpio_device *gdev, dev_t devt)
+-{
+-	return 0;
+-}
+-
+-static inline void gpiolib_cdev_unregister(struct gpio_device *gdev)
+-{
+-}
+-
+-#endif /* CONFIG_GPIO_CDEV */
+-
+ #endif /* GPIOLIB_CDEV_H */
+diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
+index 8e29a60c3697..c980ddcda833 100644
+--- a/drivers/gpio/gpiolib.c
++++ b/drivers/gpio/gpiolib.c
+@@ -480,11 +480,23 @@ static void gpiodevice_release(struct device *dev)
+ 	kfree(gdev);
+ }
+ 
++#ifdef CONFIG_GPIO_CDEV
++#define gcdev_register(gdev, devt)	gpiolib_cdev_register((gdev), (devt))
++#define gcdev_unregister(gdev)		gpiolib_cdev_unregister((gdev))
++#else
++/*
++ * gpiolib_cdev_register() indirectly calls device_add(), which is still
++ * required even when cdev is not selected.
++ */
++#define gcdev_register(gdev, devt)	device_add(&(gdev)->dev)
++#define gcdev_unregister(gdev)		device_del(&(gdev)->dev)
++#endif
++
+ static int gpiochip_setup_dev(struct gpio_device *gdev)
+ {
+ 	int ret;
+ 
+-	ret = gpiolib_cdev_register(gdev, gpio_devt);
++	ret = gcdev_register(gdev, gpio_devt);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -500,7 +512,7 @@ static int gpiochip_setup_dev(struct gpio_device *gdev)
+ 	return 0;
+ 
+ err_remove_device:
+-	gpiolib_cdev_unregister(gdev);
++	gcdev_unregister(gdev);
+ 	return ret;
+ }
+ 
+@@ -825,7 +837,7 @@ void gpiochip_remove(struct gpio_chip *gc)
+ 	 * be removed, else it will be dangling until the last user is
+ 	 * gone.
+ 	 */
+-	gpiolib_cdev_unregister(gdev);
++	gcdev_unregister(gdev);
+ 	put_device(&gdev->dev);
+ }
+ EXPORT_SYMBOL_GPL(gpiochip_remove);
 -- 
-viresh
+2.29.2
+
