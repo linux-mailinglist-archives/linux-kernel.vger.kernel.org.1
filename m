@@ -2,106 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53F182A7611
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 04:30:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48AD02A7613
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 04:33:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387509AbgKEDaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 22:30:11 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:36243 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728511AbgKEDaK (ORCPT
+        id S2387705AbgKEDdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 22:33:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55212 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728511AbgKEDdE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 22:30:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604547008;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=p01AHEKh5E8r7noLWT+kIHXAQKyoQ/TUkAAZi622vws=;
-        b=WMBFtsnErlE6OcxyOt+dli1Rs+lBgBZy7JT7jS1t9hdCiQCFqLD7W1K9wClsUYWCaaSKgP
-        343hiiSCq+wNnmqlDkgZTQiUue9nno4xTSTvvDKvhI7mANAMNw4wrSCBTMSlrEFke+LWE/
-        +Gf6zx2Or/Oo11NrnCO5mumYT1ozmNU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-62-vQAbCiAuN2yGQvAqZN4Zdg-1; Wed, 04 Nov 2020 22:30:04 -0500
-X-MC-Unique: vQAbCiAuN2yGQvAqZN4Zdg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9DC9557090;
-        Thu,  5 Nov 2020 03:30:03 +0000 (UTC)
-Received: from localhost.localdomain (ovpn-8-30.pek2.redhat.com [10.72.8.30])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2BB259F64;
-        Thu,  5 Nov 2020 03:30:00 +0000 (UTC)
-Subject: Re: [PATCH v2 0/3] md superblock write alignment on 512e devices
-To:     Chris Unkel <cunkel@drivescale.com>
-Cc:     linux-raid <linux-raid@vger.kernel.org>,
-        Song Liu <song@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20201029201358.29181-1-cunkel@drivescale.com>
- <265efd48-b0c6-cba5-c77e-5efb0e6b9e00@redhat.com>
- <CAHFUYDo23BBq0R5mZBZgcCEzE=rN_ZYHCZp5WEs-nBZwYeyEnA@mail.gmail.com>
-From:   Xiao Ni <xni@redhat.com>
-Message-ID: <df5a45c9-d286-11af-c206-b0ef5bff79ea@redhat.com>
-Date:   Thu, 5 Nov 2020 11:29:58 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.1
+        Wed, 4 Nov 2020 22:33:04 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7BBAC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 19:33:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:Subject:From:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=L3zOV15Bgjs3dnrs7SWT24aj9bdUSoUf03dVFP7rC+4=; b=XOxtkBzEqqYW150pcncGSvuHXS
+        AZyPuH+5NwACs7WgWDKJp+HnLDPPS/CWqwL/cxRUOGLBoFpYwpqXJeCUwg4BzK4jrBw3KGgtOaq/4
+        /cf7XDvV05NYAKkh7F9X+9JbiBJH864zOgKyn5tgzH07c4gugCo2rMjb3Mrmu++9oXhR7sXo3Ggte
+        Jt/39g3UobuFppScyctrkENIVne8YVpApB+FQF1rEFJ5r98DFazPPQUWCYhnI/PCnkRB3yHMq4XZx
+        5JAQpmVJOYS+WEi8XYjMrlqne5XCm5SX5HG+rcIqMK8v4lzgyCwDthGfytmYrHUPAzgtsdzoYlekA
+        YnzYAdZw==;
+Received: from [2601:1c0:6280:3f0::60d5]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kaW10-0005wQ-Kb; Thu, 05 Nov 2020 03:32:48 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: drivers/soundwire/qcom.c:767: undefined reference to
+ `slimbus_bus'
+To:     kernel test robot <lkp@intel.com>,
+        Jonathan Marek <jonathan@marek.ca>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Vinod Koul <vkoul@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        moderated for non-subscribers <alsa-devel@alsa-project.org>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+References: <202011030351.iq9CBMO3-lkp@intel.com>
+Message-ID: <e0d74391-18ae-0493-b8a1-cbeb6f00bde8@infradead.org>
+Date:   Wed, 4 Nov 2020 19:32:41 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <CAHFUYDo23BBq0R5mZBZgcCEzE=rN_ZYHCZp5WEs-nBZwYeyEnA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <202011030351.iq9CBMO3-lkp@intel.com>
+Content-Type: text/plain; charset=windows-1252
 Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 11/2/20 11:47 AM, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   3cea11cd5e3b00d91caf0b4730194039b45c5891
+> commit: 09309093d5e8f8774e4a3a0d42b73cf47e9421cf soundwire: qcom: fix SLIBMUS/SLIMBUS typo
+> date:   8 weeks ago
+> config: openrisc-randconfig-r005-20201102 (attached as .config)
+> compiler: or1k-linux-gcc (GCC) 9.3.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=09309093d5e8f8774e4a3a0d42b73cf47e9421cf
+>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>         git fetch --no-tags linus master
+>         git checkout 09309093d5e8f8774e4a3a0d42b73cf47e9421cf
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=openrisc 
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All errors (new ones prefixed by >>):
+> 
+>    or1k-linux-ld: drivers/soundwire/qcom.o: in function `qcom_swrm_probe':
+>>> drivers/soundwire/qcom.c:767: undefined reference to `slimbus_bus'
+>>> or1k-linux-ld: drivers/soundwire/qcom.c:771: undefined reference to `slimbus_bus'
+> 
+> vim +767 drivers/soundwire/qcom.c
+> 
+> 02efb49aa805cee Srinivas Kandagatla  2020-01-13  756  
+> 02efb49aa805cee Srinivas Kandagatla  2020-01-13  757  static int qcom_swrm_probe(struct platform_device *pdev)
+> 02efb49aa805cee Srinivas Kandagatla  2020-01-13  758  {
+> 02efb49aa805cee Srinivas Kandagatla  2020-01-13  759  	struct device *dev = &pdev->dev;
+> 02efb49aa805cee Srinivas Kandagatla  2020-01-13  760  	struct sdw_master_prop *prop;
+> 02efb49aa805cee Srinivas Kandagatla  2020-01-13  761  	struct sdw_bus_params *params;
+> 02efb49aa805cee Srinivas Kandagatla  2020-01-13  762  	struct qcom_swrm_ctrl *ctrl;
+> 02efb49aa805cee Srinivas Kandagatla  2020-01-13  763  	int ret;
+> 02efb49aa805cee Srinivas Kandagatla  2020-01-13  764  	u32 val;
+> 02efb49aa805cee Srinivas Kandagatla  2020-01-13  765  
+> 02efb49aa805cee Srinivas Kandagatla  2020-01-13  766  	ctrl = devm_kzalloc(dev, sizeof(*ctrl), GFP_KERNEL);
+> 02efb49aa805cee Srinivas Kandagatla  2020-01-13 @767  	if (!ctrl)
+> 02efb49aa805cee Srinivas Kandagatla  2020-01-13  768  		return -ENOMEM;
+> 02efb49aa805cee Srinivas Kandagatla  2020-01-13  769  
+> 09309093d5e8f87 Jonathan Marek       2020-09-08  770  #if IS_ENABLED(CONFIG_SLIMBUS)
+> 02efb49aa805cee Srinivas Kandagatla  2020-01-13 @771  	if (dev->parent->bus == &slimbus_bus) {
+> 5bd773242f75da3 Jonathan Marek       2020-09-05  772  #else
+> 5bd773242f75da3 Jonathan Marek       2020-09-05  773  	if (false) {
+> 5bd773242f75da3 Jonathan Marek       2020-09-05  774  #endif
+
+> :::::: The code at line 767 was first introduced by commit
+> :::::: 02efb49aa805cee643a643ab61a1118c2fd08b80 soundwire: qcom: add support for SoundWire controller
+> 
+> :::::: TO: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> :::::: CC: Vinod Koul <vkoul@kernel.org>
 
 
-On 11/04/2020 04:12 AM, Chris Unkel wrote:
-> Hi Xiao,
->
-> Thanks for the excellent feedback.  Since bitmap_offset appears to be
-> a free-form field, it wasn't apparent to me that the bitmap never
-> starts within 4K of the bitmap.
->
-> I don't think it's worth worrying about a logical block size that's
-> more than 4K here--from what I can see logical block size larger than
-> the usual 4K page isn't going to happen.
->
-> I do think that it makes sense to handle the case where the physical
-> block size is more than 4K.  I think what you propose works, but I
-> think in the physical block > MAX_SB_SIZE case it makes more sense to
-> align the superblock writes to the physical block size (as now) rather
-Is it a typo error? You want to say if physical block > MAX_SB_SIZE, it 
-should align the
-superblock writes to logical block size? Because I see the comments 
-below, your solution
-is to align to logical block size when physical block > MAX_SB_SIZE.
-> than rejecting the create/assemble.  Mounting with the possible
-> performance hit seems like a better outcome for the user in that case
-> than refusing to assemble.
-> It's the same check that would have to be written to reject the
-> assembly in that case and so the code shouldn't really be any more
-> complex.
->
-> So basically what I propose is:  if the physical block size is no
-> larger than MAX_SB_SIZE, pad to that; otherwise pad to to
-> logical_block_size, that is, replace queue_logical_block_size()
-> with something equivalent to:
->
->      queue_physical_block_size(...) > MAX_SB_SIZE ?
-> queue_logical_block_size(...) : queue_physical_block_size(...)
->
-> which is simple, safe in all cases, doesn't reject any feasible
-> assembly, and generates aligned sb writes on all common current
-> devices (512n,4kn,512e.)
->
-> What do you think?
-Yes, It's a nice solution :)
+config SOUNDWIRE_QCOM
+	tristate "Qualcomm SoundWire Master driver"
+	imply SLIMBUS
+	depends on SND_SOC
 
-Regards
-Xiao
+The kernel config that was attached has:
+CONFIG_SOUNDWIRE_QCOM=y
+CONFIG_SLIMBUS=m
+
+I expected that "imply" would make SLIMBUS=y since SOUNDWIRE_QCOM=y,
+but I guess that's not the case. :(
+
+Any ideas about what to do here?
+
+-- 
+~Randy
 
