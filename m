@@ -2,115 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCCBD2A7FA5
+	by mail.lfdr.de (Postfix) with ESMTP id 0BB8C2A7FA4
 	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 14:25:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730705AbgKENZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 08:25:20 -0500
-Received: from lb1-smtp-cloud8.xs4all.net ([194.109.24.21]:53713 "EHLO
-        lb1-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730200AbgKENXl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 08:23:41 -0500
-Received: from cust-43cce789 ([IPv6:fc0c:c1a4:736c:9c1a:15d2:fd0f:664c:4844])
-        by smtp-cloud8.xs4all.net with ESMTPSA
-        id afElkDBJjNanzafEokoTFN; Thu, 05 Nov 2020 14:23:38 +0100
-Message-ID: <64a618a3cc00de4a1c3887b57447906351db77b9.camel@tiscali.nl>
-Subject: Re: [PATCH 5.9 080/391] ASoC: SOF: fix a runtime pm issue in SOF
- when HDMI codec doesnt work
-From:   Paul Bolle <pebolle@tiscali.nl>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     stable@vger.kernel.org, Rander Wang <rander.wang@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Date:   Thu, 05 Nov 2020 14:23:35 +0100
-In-Reply-To: <20201103203352.505472614@linuxfoundation.org>
-References: <20201103203348.153465465@linuxfoundation.org>
-         <20201103203352.505472614@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+        id S1730594AbgKENZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 08:25:17 -0500
+Received: from mx2.suse.de ([195.135.220.15]:40974 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726067AbgKENXq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 08:23:46 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 3FDAAABDE;
+        Thu,  5 Nov 2020 13:23:45 +0000 (UTC)
+Date:   Thu, 5 Nov 2020 14:23:41 +0100
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
+        paulmck@kernel.org, mchehab+huawei@kernel.org,
+        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
+        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
+        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
+        duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v2 05/19] mm/hugetlb: Introduce pgtable
+ allocation/freeing helpers
+Message-ID: <20201105132337.GA7552@linux>
+References: <20201026145114.59424-1-songmuchun@bytedance.com>
+ <20201026145114.59424-6-songmuchun@bytedance.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfCGEJ0SEHC8hxLtU1zJbR5j6wVkwuwuqrCZxBwaDPHIl5/5hiM0Hs1zJkEgRYeuuQUvtonj0v+55Rg3ZrkVMxczgzKLJ6eqF98LZzAqIsaxd6cwCple1
- n0YtDe2EndKhclFww/5bBSaoMKNycEaRWNC/Fq+kvxDyGPmwvN7nRWXm7TeejQC/VsPWDQX9bTy4O9Q68c1JunilrubABMTvxRjWZDyE9DSLdTdcKHeF+z2b
- VpCD4PlSHISgPlvxzqeK3xD7e/zFHfxeZTne0F3pocj84q8jX63IMDdV3wLm3fBED5oBnDM68XI1cdoUls5o1wZMIYwOJNCWIl/WTyss5mo0gL6moVFToYzK
- rlH84gpdzXkLNbjJW/77LMq8asD/PGywIN89l5Sr69kMZNzmTQWNEADFwpbV8RlJ0J7WrIEu0M7YtzTcGf6xpTe+lBRP2AHYLudo6u1mfuSDNHGLBpRuwcDM
- wy4Br9MG4Sfw51lRu0SoHwwMmOUIp0aRJ8RRltP3VXJgoJubD9+UnZPfEiH2n7dACkafR3lyX5ufN7Sjq0Rt9kUQRzXRqs6xvwovhg==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201026145114.59424-6-songmuchun@bytedance.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greg Kroah-Hartman schreef op di 03-11-2020 om 21:32 [+0100]:
-> From: Rander Wang <rander.wang@intel.com>
-> 
-> [ Upstream commit 6c63c954e1c52f1262f986f36d95f557c6f8fa94 ]
-> 
-> When hda_codec_probe() doesn't initialize audio component, we disable
-> the codec and keep going. However,the resources are not released. The
-> child_count of SOF device is increased in snd_hdac_ext_bus_device_init
-> but is not decrease in error case, so SOF can't get suspended.
-> 
-> snd_hdac_ext_bus_device_exit will be invoked in HDA framework if it
-> gets a error. Now copy this behavior to release resources and decrease
-> SOF device child_count to release SOF device.
-> 
-> Signed-off-by: Rander Wang <rander.wang@intel.com>
-> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-> Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-> Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-> Link: https://lore.kernel.org/r/20200825235040.1586478-3-ranjani.sridharan@linux.intel.com
-> Signed-off-by: Mark Brown <broonie@kernel.org>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->  sound/soc/sof/intel/hda-codec.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/sound/soc/sof/intel/hda-codec.c b/sound/soc/sof/intel/hda-codec.c
-> index 2c5c451fa19d7..c475955c6eeba 100644
-> --- a/sound/soc/sof/intel/hda-codec.c
-> +++ b/sound/soc/sof/intel/hda-codec.c
-> @@ -151,7 +151,7 @@ static int hda_codec_probe(struct snd_sof_dev *sdev, int address,
->  		if (!hdev->bus->audio_component) {
->  			dev_dbg(sdev->dev,
->  				"iDisp hw present but no driver\n");
-> -			return -ENOENT;
-> +			goto error;
->  		}
->  		hda_priv->need_display_power = true;
->  	}
-> @@ -174,7 +174,7 @@ static int hda_codec_probe(struct snd_sof_dev *sdev, int address,
->  		 * other return codes without modification
->  		 */
->  		if (ret == 0)
-> -			ret = -ENOENT;
-> +			goto error;
->  	}
+On Mon, Oct 26, 2020 at 10:51:00PM +0800, Muchun Song wrote:
+> +#ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
+> +#define VMEMMAP_HPAGE_SHIFT			PMD_SHIFT
+> +#define arch_vmemmap_support_huge_mapping()	boot_cpu_has(X86_FEATURE_PSE)
+
+I do not think you need this.
+We already have hugepages_supported().
+
+> +#ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
+> +#ifndef arch_vmemmap_support_huge_mapping
+> +static inline bool arch_vmemmap_support_huge_mapping(void)
+> +{
+> +	return false;
+> +}
+
+Same as above
+
+>  static inline unsigned int nr_free_vmemmap(struct hstate *h)
+>  {
+>  	return h->nr_free_vmemmap_pages;
+>  }
 >  
->  	return ret;
+> +static inline unsigned int nr_vmemmap(struct hstate *h)
+> +{
+> +	return nr_free_vmemmap(h) + RESERVE_VMEMMAP_NR;
+> +}
+> +
+> +static inline unsigned long nr_vmemmap_size(struct hstate *h)
+> +{
+> +	return (unsigned long)nr_vmemmap(h) << PAGE_SHIFT;
+> +}
+> +
+> +static inline unsigned int nr_pgtable(struct hstate *h)
+> +{
+> +	unsigned long vmemmap_size = nr_vmemmap_size(h);
+> +
+> +	if (!arch_vmemmap_support_huge_mapping())
+> +		return 0;
+> +
+> +	/*
+> +	 * No need pre-allocate page tabels when there is no vmemmap pages
+> +	 * to free.
+> +	 */
+> +	if (!nr_free_vmemmap(h))
+> +		return 0;
+> +
+> +	return ALIGN(vmemmap_size, VMEMMAP_HPAGE_SIZE) >> VMEMMAP_HPAGE_SHIFT;
+> +}
 
-My local build of v5.9.5 broke on this patch.
+IMHO, Mike's naming suggestion fit much better.
 
-sound/soc/sof/intel/hda-codec.c: In function 'hda_codec_probe': 
-sound/soc/sof/intel/hda-codec.c:177:4: error: label 'error' used but not defined 
-  177 |    goto error; 
-      |    ^~~~ 
-make[4]: *** [scripts/Makefile.build:283: sound/soc/sof/intel/hda-codec.o] Error 1 
-make[3]: *** [scripts/Makefile.build:500: sound/soc/sof/intel] Error 2 
-make[2]: *** [scripts/Makefile.build:500: sound/soc/sof] Error 2 
-make[1]: *** [scripts/Makefile.build:500: sound/soc] Error 2 
-make: *** [Makefile:1778: sound] Error 2
+> +static void vmemmap_pgtable_deposit(struct page *page, pte_t *pte_p)
+> +{
+> +	pgtable_t pgtable = virt_to_page(pte_p);
+> +
+> +	/* FIFO */
+> +	if (!page_huge_pte(page))
+> +		INIT_LIST_HEAD(&pgtable->lru);
+> +	else
+> +		list_add(&pgtable->lru, &page_huge_pte(page)->lru);
+> +	page_huge_pte(page) = pgtable;
+> +}
 
-There's indeed no error label in v5.9.5. (There is one in v5.10-rc2, I just
-checked.) Is no-one else running into this?
+I think it would make more sense if this took a pgtable argument
+instead of a pte_t *.
 
-Thanks,
+> +static pte_t *vmemmap_pgtable_withdraw(struct page *page)
+> +{
+> +	pgtable_t pgtable;
+> +
+> +	/* FIFO */
+> +	pgtable = page_huge_pte(page);
+> +	if (unlikely(!pgtable))
+> +		return NULL;
+
+AFAICS, above check only needs to be run once.
+It think we can move it to vmemmap_pgtable_free, can't we?
+
+> +	page_huge_pte(page) = list_first_entry_or_null(&pgtable->lru,
+> +						       struct page, lru);
+> +	if (page_huge_pte(page))
+> +		list_del(&pgtable->lru);
+> +	return page_to_virt(pgtable);
+> +}
+
+At the risk of adding more code, I think it would be nice to return a
+pagetable_t?
+So it is more coherent with the name of the function and with what
+we are doing.
+
+It is a pitty we cannot converge these and pgtable_trans_huge_*.
+They share some code but it is different enough.
+
+> +static int vmemmap_pgtable_prealloc(struct hstate *h, struct page *page)
+> +{
+> +	int i;
+> +	pte_t *pte_p;
+> +	unsigned int nr = nr_pgtable(h);
+> +
+> +	if (!nr)
+> +		return 0;
+> +
+> +	vmemmap_pgtable_init(page);
+
+Maybe just open code this one?
+
+> +static inline void vmemmap_pgtable_free(struct hstate *h, struct page *page)
+> +{
+> +	pte_t *pte_p;
+> +
+> +	if (!nr_pgtable(h))
+> +		return;
+> +
+> +	while ((pte_p = vmemmap_pgtable_withdraw(page)))
+> +		pte_free_kernel(&init_mm, pte_p);
+
+As mentioned above, move the pgtable_t check from vmemmap_pgtable_withdraw
+in here.
+
+  
+>  static void prep_new_huge_page(struct hstate *h, struct page *page, int nid)
+>  {
+> +	/* Must be called before the initialization of @page->lru */
+> +	vmemmap_pgtable_free(h, page);
+> +
+>  	INIT_LIST_HEAD(&page->lru);
+>  	set_compound_page_dtor(page, HUGETLB_PAGE_DTOR);
+>  	set_hugetlb_cgroup(page, NULL);
+> @@ -1783,6 +1892,14 @@ static struct page *alloc_fresh_huge_page(struct hstate *h,
+>  	if (!page)
+>  		return NULL;
+>  
+> +	if (vmemmap_pgtable_prealloc(h, page)) {
+> +		if (hstate_is_gigantic(h))
+> +			free_gigantic_page(page, huge_page_order(h));
+> +		else
+> +			put_page(page);
+> +		return NULL;
+> +	}
+> +
+
+I must confess I am bit puzzled.
+
+IIUC, in this patch we are just adding the helpers to create/tear the page
+tables.
+I do not think we actually need to call vmemmap_pgtable_prealloc/vmemmap_pgtable_free, do we?
+In the end, we are just allocating pages for pagetables and then free them shortly.
+
+I think it would make more sense to add the calls when they need to be?
 
 
-Paul Bolle
-
+-- 
+Oscar Salvador
+SUSE L3
