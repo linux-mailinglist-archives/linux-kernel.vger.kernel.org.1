@@ -2,82 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB1482A7A3C
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 10:14:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C48052A7A43
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 10:16:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731187AbgKEJOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 04:14:08 -0500
-Received: from mail-ed1-f65.google.com ([209.85.208.65]:45450 "EHLO
-        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727731AbgKEJOH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 04:14:07 -0500
-Received: by mail-ed1-f65.google.com with SMTP id q3so468323edr.12
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 01:14:06 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=eCmKNeal20xT6UjXgXkAcyGLMhgH7uIcT6Gt8ZX0CZk=;
-        b=tLjePb1eQZxX+9PoPON40JFKETbuxg6YrrcEXKgM6rLNSyuxNzWw6XVq6uivboL885
-         BGT7cf0xBviT3saqgQ+Inhqd51CtfT+stKr0xmWfcaNkG3LeogypodGG4CO/79dgZjGC
-         jWW/WiHbEbARGLUPVrKYnqEIOor31z88gHdbbrFhH8QRSDLcXObxYdW69ZyoCDdS6RY0
-         Dpg8LYhWXsgRjeXpH/gx2kvoGECFLiYBt1Kdd58kR/e26YtSW27BOPYISklIBu/CEIfY
-         pqf3L9lc9sc6nrUTB2zO6RoKxrzA4QuJOMa33aYMbynHbRlO6N+J5J5G4VTIRFFVLuBr
-         V5tA==
-X-Gm-Message-State: AOAM531YBoiYmx+BhKAtDsmyd1UCrvys/LNnvr1dnYCLwQcjHjOwm8pU
-        7Fw7RO7oyQiM5Y9hcAE3QOg=
-X-Google-Smtp-Source: ABdhPJwr5sm+Txb965wE1cE+dZSbpKLM67GHsYuAGCsME5UlD/rlSfipqsBP4EkZ2Ew2MPg9EPkYXA==
-X-Received: by 2002:a05:6402:c8d:: with SMTP id cm13mr1492192edb.340.1604567645480;
-        Thu, 05 Nov 2020 01:14:05 -0800 (PST)
-Received: from ?IPv6:2a0b:e7c0:0:107::49? ([2a0b:e7c0:0:107::49])
-        by smtp.gmail.com with ESMTPSA id a17sm519231eda.45.2020.11.05.01.14.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Nov 2020 01:14:04 -0800 (PST)
-Subject: Re: [PATCH 12/36] tty: tty_io: Fix some kernel-doc issues
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nick Holloway <alfie@dcs.warwick.ac.uk>,
-        -- <julian@uhunix.uhcc.hawaii.edu>,
-        Marko Kohtala <Marko.Kohtala@hut.fi>,
-        Bill Hawes <whawes@star.net>,
-        "C. Scott Ananian" <cananian@alumni.princeton.edu>,
-        Russell King <rmk@arm.linux.org.uk>,
-        Andrew Morton <andrewm@uow.edu.eu>
-References: <20201104193549.4026187-1-lee.jones@linaro.org>
- <20201104193549.4026187-13-lee.jones@linaro.org>
- <715cfe26-18d3-a035-0cf8-958f1235b4f7@kernel.org>
- <20201105085315.GA4488@dell>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <adf8732b-fc01-715b-ac05-61c4c4882103@kernel.org>
-Date:   Thu, 5 Nov 2020 10:14:03 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.3
+        id S1730164AbgKEJQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 04:16:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55214 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726371AbgKEJP7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 04:15:59 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 10657206FB;
+        Thu,  5 Nov 2020 09:15:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604567756;
+        bh=3tBe0ZzmkljptH5mAbDed2hYFNq91s7DKR0Or9hxKik=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tnLhQJTdU7QaCdJ1jvoSevluXH1vzEnTZeby+NbVdImoyw7r7JpSbzdCQEA1nOnHo
+         CDq9FS7/uXO0S94GWyUzyALEVMyvYe7Ca+GozMe25SM5emEnDBf4HenEfH96dBwZcX
+         4VlSjaX4XN+0OEvk/eyr6TGpM83tfCqHQtvtYKAk=
+Date:   Thu, 5 Nov 2020 10:16:45 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Shuo A Liu <shuo.a.liu@intel.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Yu Wang <yu1.wang@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>
+Subject: Re: [PATCH v5 06/17] virt: acrn: Introduce VM management interfaces
+Message-ID: <20201105091645.GA3436809@kroah.com>
+References: <20201019061803.13298-1-shuo.a.liu@intel.com>
+ <20201019061803.13298-7-shuo.a.liu@intel.com>
+ <20201104190235.GA2855400@kroah.com>
+ <20201105031029.GB17702@shuo-intel.sh.intel.com>
+ <20201105062907.GA693781@kroah.com>
+ <20201105073545.GD17702@shuo-intel.sh.intel.com>
+ <20201105082639.GB3426404@kroah.com>
+ <20201105090200.GE17702@shuo-intel.sh.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20201105085315.GA4488@dell>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201105090200.GE17702@shuo-intel.sh.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05. 11. 20, 9:53, Lee Jones wrote:
->> For example, alloc_tty_struct is among the
->> ones, I would like to see fixed instead of removed from kernel-doc.
+On Thu, Nov 05, 2020 at 05:02:00PM +0800, Shuo A Liu wrote:
+> On Thu  5.Nov'20 at  9:26:39 +0100, Greg Kroah-Hartman wrote:
+> > On Thu, Nov 05, 2020 at 03:35:45PM +0800, Shuo A Liu wrote:
+> > > On Thu  5.Nov'20 at  7:29:07 +0100, Greg Kroah-Hartman wrote:
+> > > > On Thu, Nov 05, 2020 at 11:10:29AM +0800, Shuo A Liu wrote:
+> > > > > On Wed  4.Nov'20 at 20:02:35 +0100, Greg Kroah-Hartman wrote:
+> > > > > > On Mon, Oct 19, 2020 at 02:17:52PM +0800, shuo.a.liu@intel.com wrote:
+> > > > > > > --- /dev/null
+> > > > > > > +++ b/include/uapi/linux/acrn.h
+> > > > > > > @@ -0,0 +1,56 @@
+> > > > > > > +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+> > > > > > > +/*
+> > > > > > > + * Userspace interface for /dev/acrn_hsm - ACRN Hypervisor Service Module
+> > > > > > > + *
+> > > > > > > + * This file can be used by applications that need to communicate with the HSM
+> > > > > > > + * via the ioctl interface.
+> > > > > > > + */
+> > > > > > > +
+> > > > > > > +#ifndef _UAPI_ACRN_H
+> > > > > > > +#define _UAPI_ACRN_H
+> > > > > > > +
+> > > > > > > +#include <linux/types.h>
+> > > > > > > +
+> > > > > > > +/**
+> > > > > > > + * struct acrn_vm_creation - Info to create a User VM
+> > > > > > > + * @vmid:		User VM ID returned from the hypervisor
+> > > > > > > + * @reserved0:		Reserved
+> > > > > > > + * @vcpu_num:		Number of vCPU in the VM. Return from hypervisor.
+> > > > > > > + * @reserved1:		Reserved
+> > > > > > > + * @uuid:		UUID of the VM. Pass to hypervisor directly.
+> > > > > > > + * @vm_flag:		Flag of the VM creating. Pass to hypervisor directly.
+> > > > > > > + * @ioreq_buf:		Service VM GPA of I/O request buffer. Pass to
+> > > > > > > + *			hypervisor directly.
+> > > > > > > + * @cpu_affinity:	CPU affinity of the VM. Pass to hypervisor directly.
+> > > > > > > + * @reserved2:		Reserved
+> > > > > >
+> > > > > > Reserved and must be 0?
+> > > > >
+> > > > > Not a must.
+> > > >
+> > > > That's guaranteed to come back and bite you in the end.
+> > > 
+> > > OK. I can fill them with zero before passing them to hypervisor.
+> > > 
+> > > > You all have read the "how to write a good api" document, right?
+> > > 
+> > > Is it Documentation/driver-api/ioctl.rst? Or i missed..
+> > 
+> > That's one good document, but no, not what I was referring to.  I was
+> > thinking of Documentation/process/adding-syscalls.rst, which is what you
+> > are doing here implicitly with these new ioctls (every ioctl is a brand
+> > new syscall.)
 > 
-> There is nothing stopping anyone from providing said descriptions and
-> promoting it back up to kernel-doc.  If you have good reasons for it
-> to be properly documented with kernel-doc, then it should also be
-> referenced from /Documentation using the kernel-doc:: notation.
+> I will read it as well. Thanks.
 > 
-> Also see: scripts/find-unused-docs.sh
+> > 
+> > > > > > What are they reserved for?
+> > > > > >
+> > > > > > Same for all of the reserved fields, why?
+> > > > >
+> > > > > Some reserved fields are to map layout in the hypervisor side, others
+> > > > > are for future use.
+> > > >
+> > > > ioctls should not have these, again, please read the documentation.  If
+> > > > you need something new in the future, just make a new ioctl.
+> > > 
+> > > OK. I will remove some reserved fields for scalability.
+> > 
+> > "scalability" should have nothing to do with any of this, right?  What
+> > am I missing?
+> 
+> Sorry, i meant reserved fields for future use.
 
-Thanks for this. I must admit, I haven't managed to get familiar with 
-this stuff yet.
+Again, this is not how you do that at all.  If you need something "in
+the future", create it then.  What you are doing here ensures that you
+will never be able to do it then either, so don't even pretend :)
 
--- 
-js
-suse labs
+Read the syscall document for why this is the case.
+
+> > > Though i can
+> > > keep some reserved fields for alignment (and to keep same data structure
+> > > layout with the hypervisor), right?
+> > > Documentation/driver-api/ioctl.rst says that explicit reserved fields
+> > > could be used.
+> > 
+> > If you need alignment, yes, that is fine, but that's not what you are
+> > saying these are for.  And if you need alignment, why not move things
+> > around so they are properly aligned.
+> > 
+> > And this structure has nothing to do with the hypervisor structure,
+> > that's a internal-kernel structure, not a userspace-visable thing if you
+> > are doing things correctly.
+> 
+> It's the same structure with the one in hypervisor. HSM driver
+> doesn't maintain the VM much, it just pass the data for VM creation from
+> userspace to hypervisor.
+
+That sounds ripe for abuse, good luck!
+
+greg k-h
