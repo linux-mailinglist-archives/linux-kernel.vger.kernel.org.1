@@ -2,108 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE8ED2A8677
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 19:54:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B25042A867E
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 19:55:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731682AbgKESyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 13:54:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58058 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727836AbgKESyF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 13:54:05 -0500
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CFDDC0613D2
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 10:54:04 -0800 (PST)
-Received: by mail-pj1-x1042.google.com with SMTP id w20so536671pjh.1
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 10:54:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HtLxZkv0TYlH01o2C6+4735a4rHSzmaJuyNckO1OmEo=;
-        b=vubNPTNXQb0W2AOa0qY3gSc9NNtvmPNZtHq+hbpfahbGOKrqfc8qEIFLmJR6OjIrnz
-         M2PKlPGln2O2B4T1T5fL+0eOnI93x+JUEpPyca+11W+R0NFkacD7yvvALn3ptG8FC+9J
-         gT6UaSXZVREeguoRzPh8+TsG659OPAXdFkqLjc5NTgqNjAxP1F95L4i7MhGGpJUPb8UQ
-         SefnFxeKpHGoL4suJs1Z4wRUrGHezEQMIAXKUQ+SPVezcECpLxvb75IcsQucNFZIFr0m
-         brJ2tp/B0cUXkZMRbyxyR6GE9J7jC/5iZhbG8g8UtAEH2fDDSYIBtRGTfRCTl7rtsayU
-         sB9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=HtLxZkv0TYlH01o2C6+4735a4rHSzmaJuyNckO1OmEo=;
-        b=tFamSCTPOMxtwSoijufFjYlqHwQsRH8PwutXqbOK28n6YZMBWx0Kdoaho0xNp+YEpq
-         ghCXGynyWNODX6p8YV90+7OB8BKD2yS4G5pUqMdjeGOekQ0h3I9FkmXFsk43iM/z+Th3
-         zSTRUKgAcQfV5kvDx+Yq5YwM0LE9yEj+fDcVEdy8HnYXP5mjsNjg7xSxwmr1jzw5Z79A
-         dGR+xiXum9gjB21AOHIODK0tylyjYISvLj6WDeBB5UupAoSMZmRe0w15iQq8veoNcN5n
-         fSCs2mtXK9fMcqm7abUcrgOdIS0UO5qc78Mt7HMhB5r8SwWmOeiM7KQIUJka7TjqXHwA
-         uXbg==
-X-Gm-Message-State: AOAM5327qEgQ4YrDb2hoyGMFkvTusymEKWagwdd5NmEkTvrRkzrDf/rl
-        5bAfL3JYMJ6cEXrgLzGVqo6uhA==
-X-Google-Smtp-Source: ABdhPJz3Aj79Afx5ycabhmbdXG/hrX0zqj+ndTipQTpQLmniaRkOC9FOCRo98/vWkB4/t2JnqKMMqg==
-X-Received: by 2002:a17:90b:3798:: with SMTP id mz24mr3696165pjb.46.1604602443863;
-        Thu, 05 Nov 2020 10:54:03 -0800 (PST)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id z13sm3027751pgc.44.2020.11.05.10.54.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 10:54:03 -0800 (PST)
-Date:   Thu, 05 Nov 2020 10:54:03 -0800 (PST)
-X-Google-Original-Date: Thu, 05 Nov 2020 10:53:03 PST (-0800)
-Subject:     Re: [PATCH 2/4] clk: sifive: Use common name for prci configuration
-In-Reply-To: <160454441626.3965362.17922436443029310228@swboyd.mtv.corp.google.com>
-CC:     zong.li@sifive.com, aou@eecs.berkeley.edu,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, mturquette@baylibre.com,
-        Paul Walmsley <paul.walmsley@sifive.com>, yash.shah@sifive.com,
-        zong.li@sifive.com
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     sboyd@kernel.org
-Message-ID: <mhng-e3785c68-4fbc-49be-aaa1-40043bcc1cab@palmerdabbelt-glaptop1>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        id S1731763AbgKESzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 13:55:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56100 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727017AbgKESzw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 13:55:52 -0500
+Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9CAD6206D9;
+        Thu,  5 Nov 2020 18:55:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604602551;
+        bh=U+eY0oLiAL3X7oMRMsfRt2ooI6apLfHOdcCodZm3Cd0=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=T8taIkA4GHyEXl6/ZlIFQv2zZTw2VS/QNzYbk5SWkni8TDMFjWEWhuILMNGrmhhFc
+         nnhKXVVktNiA2w4o16npSW3myiTi6vNMxIKqdgZ2nxbyxE4uOlSxN0RJFdB5jQALj6
+         bLecqsnthydqr9SpyxptdVInwmtwoRgmFcyf07Do=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 32B6F352265A; Thu,  5 Nov 2020 10:55:51 -0800 (PST)
+Date:   Thu, 5 Nov 2020 10:55:51 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Marco Elver <elver@google.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>, fweisbec@gmail.com,
+        neeraj.iitr10@gmail.com
+Subject: Re: [PATCH v9 7/7] rcu/segcblist: Add additional comments to explain
+ smp_mb()
+Message-ID: <20201105185551.GO3249@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20201103142603.1302207-1-joel@joelfernandes.org>
+ <20201103142603.1302207-8-joel@joelfernandes.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201103142603.1302207-8-joel@joelfernandes.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 04 Nov 2020 18:46:56 PST (-0800), sboyd@kernel.org wrote:
-> Quoting Zong Li (2020-10-16 02:18:24)
->> Use generic name CLK_SIFIVE_PRCI instead of CLK_SIFIVE_FU540_PRCI. This
->> patch is prepared for fu740 support.
->> 
->> Signed-off-by: Zong Li <zong.li@sifive.com>
->> ---
->
-> Looks ok but needs an ack from riscv maintainers to go through clk
-> tree. I was worried it would break defconfigs but it seems that the arch
-> selects the config so this should be OK, right?
+On Tue, Nov 03, 2020 at 09:26:03AM -0500, Joel Fernandes (Google) wrote:
+> Memory barriers are needed when updating the full length of the
+> segcblist, however it is not fully clearly why one is needed before and
+> after. This patch therefore adds additional comments to the function
+> header to explain it.
+> 
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
-Ya, looks fine.  TBH the whole Kconfig.socs thing was probably a mistake, but
-at least in this case it makes things easy.
+Looks good, thank you!  As always, I could not resist the urge to
+do a bit of wordsmithing, so that the queued commit is as shown
+below.  Please let me know if I messed anything up.
 
-I was going to suggest spliting the Kconfigs out so there's a _FU540_PRCI and
-an _FU740_PRCI, but looking at the code it doesn't really seem to buy us much
--- just that one offset table we could toss.
+							Thanx, Paul
 
-Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
-Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
+------------------------------------------------------------------------
 
->>  arch/riscv/Kconfig.socs     | 2 +-
->>  drivers/clk/sifive/Kconfig  | 6 +++---
->>  drivers/clk/sifive/Makefile | 2 +-
->>  3 files changed, 5 insertions(+), 5 deletions(-)
->> 
->> diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
->> index 8a55f6156661..3284d5c291be 100644
->> --- a/arch/riscv/Kconfig.socs
->> +++ b/arch/riscv/Kconfig.socs
->> @@ -5,7 +5,7 @@ config SOC_SIFIVE
->>         select SERIAL_SIFIVE if TTY
->>         select SERIAL_SIFIVE_CONSOLE if TTY
->>         select CLK_SIFIVE
->> -       select CLK_SIFIVE_FU540_PRCI
->> +       select CLK_SIFIVE_PRCI
->>         select SIFIVE_PLIC
->>         help
->>           This enables support for SiFive SoC platform hardware.
+commit 7dac7adefcae7558b3a85a16f51186d621623733
+Author: Joel Fernandes (Google) <joel@joelfernandes.org>
+Date:   Tue Nov 3 09:26:03 2020 -0500
+
+    rcu/segcblist: Add additional comments to explain smp_mb()
+    
+    One counter-intuitive property of RCU is the fact that full memory
+    barriers are needed both before and after updates to the full
+    (non-segmented) length.  This patch therefore helps to assist the
+    reader's intuition by adding appropriate comments.
+    
+    [ paulmck:  Wordsmithing. ]
+    Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
+index bb246d8..b6dda7c 100644
+--- a/kernel/rcu/rcu_segcblist.c
++++ b/kernel/rcu/rcu_segcblist.c
+@@ -94,17 +94,77 @@ static void rcu_segcblist_set_len(struct rcu_segcblist *rsclp, long v)
+  * field to disagree with the actual number of callbacks on the structure.
+  * This increase is fully ordered with respect to the callers accesses
+  * both before and after.
++ *
++ * So why on earth is a memory barrier required both before and after
++ * the update to the ->len field???
++ *
++ * The reason is that rcu_barrier() locklessly samples each CPU's ->len
++ * field, and if a given CPU's field is zero, avoids IPIing that CPU.
++ * This can of course race with both queuing and invoking of callbacks.
++ * Failng to correctly handle either of these races could result in
++ * rcu_barrier() failing to IPI a CPU that actually had callbacks queued
++ * which rcu_barrier() was obligated to wait on.  And if rcu_barrier()
++ * failed to wait on such a callback, unloading certain kernel modules
++ * would result in calls to functions whose code was no longer present in
++ * the kernel, for but one example.
++ *
++ * Therefore, ->len transitions from 1->0 and 0->1 have to be carefully
++ * ordered with respect with both list modifications and the rcu_barrier().
++ *
++ * The queuing case is CASE 1 and the invoking case is CASE 2.
++ *
++ * CASE 1: Suppose that CPU 0 has no callbacks queued, but invokes
++ * call_rcu() just as CPU 1 invokes rcu_barrier().  CPU 0's ->len field
++ * will transition from 0->1, which is one of the transitions that must be
++ * handled carefully.  Without the full memory barriers before the ->len
++ * update and at the beginning of rcu_barrier(), the following could happen:
++ *
++ * CPU 0				CPU 1
++ *
++ * call_rcu().
++ *                      		rcu_barrier() sees ->len as 0.
++ * set ->len = 1.
++ *                      		rcu_barrier() does nothing.
++ *					module is unloaded.
++ * callback invokes unloaded function!
++ *
++ * With the full barriers, any case where rcu_barrier() sees ->len as 0 will
++ * have unambiguously preceded the return from the racing call_rcu(), which
++ * means that this call_rcu() invocation is OK to not wait on.  After all,
++ * you are supposed to make sure that any problematic call_rcu() invocations
++ * happen before the rcu_barrier().
++ *
++ *
++ * CASE 2: Suppose that CPU 0 is invoking its last callback just as CPU 1 invokes
++ * rcu_barrier().  CPU 0's ->len field will transition from 1->0, which is one
++ * of the transitions that must be handled carefully.  Without the full memory
++ * barriers after the ->len update and at the end of rcu_barrier(), the following
++ * could happen:
++ * 
++ * CPU 0				CPU 1
++ *
++ * start invoking last callback
++ * set ->len = 0 (reordered)
++ *                      		rcu_barrier() sees ->len as 0
++ *                      		rcu_barrier() does nothing.
++ *					module is unloaded
++ * callback executing after unloaded!
++ *
++ * With the full barriers, any case where rcu_barrier() sees ->len as 0
++ * will be fully ordered after the completion of the callback function,
++ * so that the module unloading operation is completely safe.
++ * 
+  */
+ void rcu_segcblist_add_len(struct rcu_segcblist *rsclp, long v)
+ {
+ #ifdef CONFIG_RCU_NOCB_CPU
+-	smp_mb__before_atomic(); /* Up to the caller! */
++	smp_mb__before_atomic(); // Read header comment above.
+ 	atomic_long_add(v, &rsclp->len);
+-	smp_mb__after_atomic(); /* Up to the caller! */
++	smp_mb__after_atomic();  // Read header comment above.
+ #else
+-	smp_mb(); /* Up to the caller! */
++	smp_mb(); // Read header comment above.
+ 	WRITE_ONCE(rsclp->len, rsclp->len + v);
+-	smp_mb(); /* Up to the caller! */
++	smp_mb(); // Read header comment above.
+ #endif
+ }
+ 
