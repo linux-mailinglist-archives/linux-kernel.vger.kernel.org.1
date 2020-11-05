@@ -2,126 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48AD02A7613
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 04:33:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32B712A7615
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 04:33:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387705AbgKEDdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 22:33:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55212 "EHLO
+        id S2388608AbgKEDdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 22:33:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728511AbgKEDdE (ORCPT
+        with ESMTP id S1728511AbgKEDdJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 22:33:04 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7BBAC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 19:33:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:Subject:From:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=L3zOV15Bgjs3dnrs7SWT24aj9bdUSoUf03dVFP7rC+4=; b=XOxtkBzEqqYW150pcncGSvuHXS
-        AZyPuH+5NwACs7WgWDKJp+HnLDPPS/CWqwL/cxRUOGLBoFpYwpqXJeCUwg4BzK4jrBw3KGgtOaq/4
-        /cf7XDvV05NYAKkh7F9X+9JbiBJH864zOgKyn5tgzH07c4gugCo2rMjb3Mrmu++9oXhR7sXo3Ggte
-        Jt/39g3UobuFppScyctrkENIVne8YVpApB+FQF1rEFJ5r98DFazPPQUWCYhnI/PCnkRB3yHMq4XZx
-        5JAQpmVJOYS+WEi8XYjMrlqne5XCm5SX5HG+rcIqMK8v4lzgyCwDthGfytmYrHUPAzgtsdzoYlekA
-        YnzYAdZw==;
-Received: from [2601:1c0:6280:3f0::60d5]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kaW10-0005wQ-Kb; Thu, 05 Nov 2020 03:32:48 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: drivers/soundwire/qcom.c:767: undefined reference to
- `slimbus_bus'
-To:     kernel test robot <lkp@intel.com>,
-        Jonathan Marek <jonathan@marek.ca>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Vinod Koul <vkoul@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        moderated for non-subscribers <alsa-devel@alsa-project.org>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-References: <202011030351.iq9CBMO3-lkp@intel.com>
-Message-ID: <e0d74391-18ae-0493-b8a1-cbeb6f00bde8@infradead.org>
-Date:   Wed, 4 Nov 2020 19:32:41 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Wed, 4 Nov 2020 22:33:09 -0500
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F988C0613CF;
+        Wed,  4 Nov 2020 19:33:08 -0800 (PST)
+Received: by mail-ej1-x641.google.com with SMTP id za3so528307ejb.5;
+        Wed, 04 Nov 2020 19:33:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=2QtdhLn6dbQgBdJcNj2XZy1nXB4zinTDtHIxteWe2Ok=;
+        b=lekAQ+Vs/f1h1OIgWwz9UDPTUe8NXyK8/7tmffXxLp/lB7jC3Zj1n1UGEnvyQrRzYS
+         MOh/pTyY1ylDqIdyeQNIzj/7k1nvZ0DE619EG7fU6GJ4mKBHrCm13lHLeVPoOAtLEwk1
+         p0v8klJ+jGnr+/HP5CYX1oGXvrCiKmlf5Jgme5q4fSLfvXtQvrDrSWimMi9637HHAEKN
+         WRQbsS6JEwzzs1oycmHxxlZBSCWrrBEtJ0hFllLaoVpaYB1diIhPShHBLat7VINQ4jSQ
+         xaU943CCmAhii1WjYWRevNxwIEyVyl1056y89u9Up8GjPjeixL+bxyyS0uXZ/D9Hmcbb
+         KZZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2QtdhLn6dbQgBdJcNj2XZy1nXB4zinTDtHIxteWe2Ok=;
+        b=OLzzNiMEAzEecZL145OMhHE3D9c0Z0eNxOEbpLHDA+UK19rl2elSOZ3mroYLB7Xt4S
+         CWLFrwd5ornI3urJgTMqwInAzLodgWkW0TQv2bMN/rSbb4IQkxqUjz/SDA1jSnCPs7uN
+         2NsL9EjWIEjZlpEb08WwaJFU81HaWZYJFZn4CGe/2QvdiEp2oUn+yGtwNo1fMo9oC2aA
+         +vzq0b+qkiKt5vwpauCo+LzDFyDCB/iPrUL0hW8wRExk9QOyidfE/kMXE96XgY907alB
+         /s26SjOH5iD65pumx4R5M5IJQAgESQ2vm5Cx1yZOwZHo7mhPPyD9hTFQYw9Ns7wOLvtn
+         ZPDw==
+X-Gm-Message-State: AOAM532udaf8Q13w4JO7EOFMVBzkHwmbEMaE6VdLfiKt1uqn//UcdDct
+        wyfEvv8tbCj0etdTGJTtx+8=
+X-Google-Smtp-Source: ABdhPJz33zUbd7p88ljjIkMQymD5KG2hCMCIWaIJbp3CfYs48WqFdFha53Paf0Napi+obr0g0qFg1Q==
+X-Received: by 2002:a17:906:74c6:: with SMTP id z6mr378220ejl.448.1604547187200;
+        Wed, 04 Nov 2020 19:33:07 -0800 (PST)
+Received: from andrea (host-87-7-71-164.retail.telecomitalia.it. [87.7.71.164])
+        by smtp.gmail.com with ESMTPSA id k11sm101717edh.72.2020.11.04.19.33.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Nov 2020 19:33:06 -0800 (PST)
+Date:   Thu, 5 Nov 2020 04:32:58 +0100
+From:   Andrea Parri <parri.andrea@gmail.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        "K . Y . Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, linux-hyperv@vger.kernel.org,
+        Andres Beltran <lkmlabelt@gmail.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Saruhan Karademir <skarade@microsoft.com>,
+        Juan Vazquez <juvazq@microsoft.com>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org
+Subject: Re: [PATCH v8 3/3] hv_netvsc: Use vmbus_requestor to generate
+ transaction IDs for VMBus hardening
+Message-ID: <20201105033258.GA3079@andrea>
+References: <20201104154027.319432-1-parri.andrea@gmail.com>
+ <20201104154027.319432-4-parri.andrea@gmail.com>
+ <20201104134348.39feba74@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20201104134505.44d8c4d7@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-In-Reply-To: <202011030351.iq9CBMO3-lkp@intel.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201104134505.44d8c4d7@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/2/20 11:47 AM, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   3cea11cd5e3b00d91caf0b4730194039b45c5891
-> commit: 09309093d5e8f8774e4a3a0d42b73cf47e9421cf soundwire: qcom: fix SLIBMUS/SLIMBUS typo
-> date:   8 weeks ago
-> config: openrisc-randconfig-r005-20201102 (attached as .config)
-> compiler: or1k-linux-gcc (GCC) 9.3.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=09309093d5e8f8774e4a3a0d42b73cf47e9421cf
->         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->         git fetch --no-tags linus master
->         git checkout 09309093d5e8f8774e4a3a0d42b73cf47e9421cf
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=openrisc 
+On Wed, Nov 04, 2020 at 01:45:05PM -0800, Jakub Kicinski wrote:
+> On Wed, 4 Nov 2020 13:43:48 -0800 Jakub Kicinski wrote:
+> > On Wed,  4 Nov 2020 16:40:27 +0100 Andrea Parri (Microsoft) wrote:
+> > > From: Andres Beltran <lkmlabelt@gmail.com>
+> > > 
+> > > Currently, pointers to guest memory are passed to Hyper-V as
+> > > transaction IDs in netvsc. In the face of errors or malicious
+> > > behavior in Hyper-V, netvsc should not expose or trust the transaction
+> > > IDs returned by Hyper-V to be valid guest memory addresses. Instead,
+> > > use small integers generated by vmbus_requestor as requests
+> > > (transaction) IDs.
+> > > 
+> > > Signed-off-by: Andres Beltran <lkmlabelt@gmail.com>
+> > > Co-developed-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
+> > > Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
+> > > Reviewed-by: Michael Kelley <mikelley@microsoft.com>  
+> > 
+> > I'm assuming this is targeting net-next? If so could you please tag it
+> > as [PATCH net-next vN]?
 > 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
+> Ah, you don't 'cause you only sent us the third patch. In that case with
+> the nit below addressed:
 > 
-> All errors (new ones prefixed by >>):
+> Acked-by: Jakub Kicinski <kuba@kernel.org>
+
+I fixed the declarations locally.  Thank you for the review, Jakub.
+
+(Yes, FWIW, I was imaging the series to go via hyperv-next...)
+
+Thanks,
+  Andrea
+
+
 > 
->    or1k-linux-ld: drivers/soundwire/qcom.o: in function `qcom_swrm_probe':
->>> drivers/soundwire/qcom.c:767: undefined reference to `slimbus_bus'
->>> or1k-linux-ld: drivers/soundwire/qcom.c:771: undefined reference to `slimbus_bus'
+> > > @@ -695,10 +695,19 @@ static void netvsc_send_tx_complete(struct net_device *ndev,
+> > >  				    const struct vmpacket_descriptor *desc,
+> > >  				    int budget)
+> > >  {
+> > > -	struct sk_buff *skb = (struct sk_buff *)(unsigned long)desc->trans_id;
+> > > +	struct sk_buff *skb;
+> > >  	struct net_device_context *ndev_ctx = netdev_priv(ndev);  
+> > 
+> > Swap these two lines please to keep the variables declaration lines
+> > longest to shortest.
 > 
-> vim +767 drivers/soundwire/qcom.c
-> 
-> 02efb49aa805cee Srinivas Kandagatla  2020-01-13  756  
-> 02efb49aa805cee Srinivas Kandagatla  2020-01-13  757  static int qcom_swrm_probe(struct platform_device *pdev)
-> 02efb49aa805cee Srinivas Kandagatla  2020-01-13  758  {
-> 02efb49aa805cee Srinivas Kandagatla  2020-01-13  759  	struct device *dev = &pdev->dev;
-> 02efb49aa805cee Srinivas Kandagatla  2020-01-13  760  	struct sdw_master_prop *prop;
-> 02efb49aa805cee Srinivas Kandagatla  2020-01-13  761  	struct sdw_bus_params *params;
-> 02efb49aa805cee Srinivas Kandagatla  2020-01-13  762  	struct qcom_swrm_ctrl *ctrl;
-> 02efb49aa805cee Srinivas Kandagatla  2020-01-13  763  	int ret;
-> 02efb49aa805cee Srinivas Kandagatla  2020-01-13  764  	u32 val;
-> 02efb49aa805cee Srinivas Kandagatla  2020-01-13  765  
-> 02efb49aa805cee Srinivas Kandagatla  2020-01-13  766  	ctrl = devm_kzalloc(dev, sizeof(*ctrl), GFP_KERNEL);
-> 02efb49aa805cee Srinivas Kandagatla  2020-01-13 @767  	if (!ctrl)
-> 02efb49aa805cee Srinivas Kandagatla  2020-01-13  768  		return -ENOMEM;
-> 02efb49aa805cee Srinivas Kandagatla  2020-01-13  769  
-> 09309093d5e8f87 Jonathan Marek       2020-09-08  770  #if IS_ENABLED(CONFIG_SLIMBUS)
-> 02efb49aa805cee Srinivas Kandagatla  2020-01-13 @771  	if (dev->parent->bus == &slimbus_bus) {
-> 5bd773242f75da3 Jonathan Marek       2020-09-05  772  #else
-> 5bd773242f75da3 Jonathan Marek       2020-09-05  773  	if (false) {
-> 5bd773242f75da3 Jonathan Marek       2020-09-05  774  #endif
-
-> :::::: The code at line 767 was first introduced by commit
-> :::::: 02efb49aa805cee643a643ab61a1118c2fd08b80 soundwire: qcom: add support for SoundWire controller
-> 
-> :::::: TO: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> :::::: CC: Vinod Koul <vkoul@kernel.org>
-
-
-config SOUNDWIRE_QCOM
-	tristate "Qualcomm SoundWire Master driver"
-	imply SLIMBUS
-	depends on SND_SOC
-
-The kernel config that was attached has:
-CONFIG_SOUNDWIRE_QCOM=y
-CONFIG_SLIMBUS=m
-
-I expected that "imply" would make SLIMBUS=y since SOUNDWIRE_QCOM=y,
-but I guess that's not the case. :(
-
-Any ideas about what to do here?
-
--- 
-~Randy
-
