@@ -2,182 +2,331 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 689002A87DA
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 21:19:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EBE22A87DD
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 21:20:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732033AbgKEUT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 15:19:26 -0500
-Received: from mailout12.rmx.de ([94.199.88.78]:35910 "EHLO mailout12.rmx.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730973AbgKEUTY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 15:19:24 -0500
-Received: from kdin01.retarus.com (kdin01.dmz1.retloc [172.19.17.48])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mailout12.rmx.de (Postfix) with ESMTPS id 4CRvxg4GVwzRpXp;
-        Thu,  5 Nov 2020 21:19:19 +0100 (CET)
-Received: from mta.arri.de (unknown [217.111.95.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by kdin01.retarus.com (Postfix) with ESMTPS id 4CRvxQ6K0Kz2xDW;
-        Thu,  5 Nov 2020 21:19:06 +0100 (CET)
-Received: from n95hx1g2.localnet (192.168.54.22) by mta.arri.de
- (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.487.0; Thu, 5 Nov
- 2020 21:18:05 +0100
-From:   Christian Eggers <ceggers@arri.de>
-To:     Vladimir Oltean <olteanv@gmail.com>
-CC:     Richard Cochran <richardcochran@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Helmut Grohne <helmut.grohne@intenta.de>,
-        Paul Barker <pbarker@konsulko.com>,
-        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
-        George McCollister <george.mccollister@gmail.com>,
-        Marek Vasut <marex@denx.de>,
-        Tristram Ha <Tristram.Ha@microchip.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        "Microchip Linux Driver Support" <UNGLinuxDriver@microchip.com>,
-        <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH net-next 7/9] net: dsa: microchip: ksz9477: add hardware time stamping support
-Date:   Thu, 5 Nov 2020 21:18:04 +0100
-Message-ID: <5844018.3araiXeC39@n95hx1g2>
-Organization: Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
-In-Reply-To: <20201022113243.4shddtywgvpcqq6c@skbuf>
-References: <20201019172435.4416-1-ceggers@arri.de> <2541271.Km786uMvHt@n95hx1g2> <20201022113243.4shddtywgvpcqq6c@skbuf>
+        id S1732049AbgKEUU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 15:20:56 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:36234 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726801AbgKEUUz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 15:20:55 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A5KK3XS125713;
+        Thu, 5 Nov 2020 20:20:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=JfcwfHZZn7r5DpfNKWGdKjfc3q+dqsHz2Mg5eFwpXxw=;
+ b=CYr59WuZ0GgoLMPkpW1gsmXPeL6v8/t3I6Tjt5YpuUbzG4HYmxddg9mgIuMKMzBOCvjg
+ H/6qtsP5O9rOPE3CjyO+hHAJttScfIN9l3zR0Es0hLdz+Xcw6l4o3xWOpFza+AwCta8g
+ QJoRX+VKmRl6QMdlej38cxQ7F2m53i3QZvOy6sMaqJWbaoY+Z8Q/FStVCSK4MKfz9uK3
+ tV09aAcgRxdIOH+q6PQW36ZzXwiswNzd9yqD4YkC56hjtnXkOwtujljSenvRU7mSIxmt
+ rdMvb8DPeLSKYzimow6KgNGsJ3zEp58rs9LfHwuVtX4ChiaEZXA/11s4JyYEUjuSUBAx MA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2130.oracle.com with ESMTP id 34hhb2dxfv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 05 Nov 2020 20:20:25 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A5JxpX1140140;
+        Thu, 5 Nov 2020 20:18:25 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 34hvs17tts-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 05 Nov 2020 20:18:24 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0A5KINwh026279;
+        Thu, 5 Nov 2020 20:18:23 GMT
+Received: from char.us.oracle.com (/10.152.32.25)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 05 Nov 2020 12:18:22 -0800
+Received: by char.us.oracle.com (Postfix, from userid 1000)
+        id CCF006A00F4; Thu,  5 Nov 2020 15:20:07 -0500 (EST)
+Date:   Thu, 5 Nov 2020 15:20:07 -0500
+From:   Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+To:     Ashish Kalra <ashish.kalra@amd.com>
+Cc:     hch@lst.de, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        hpa@zytor.com, x86@kernel.org, luto@kernel.org,
+        peterz@infradead.org, dave.hansen@linux-intel.com,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        brijesh.singh@amd.com, Thomas.Lendacky@amd.com,
+        ssg.sos.patches@amd.com
+Subject: Re: [PATCH v3] swiotlb: Adjust SWIOTBL bounce buffer size for SEV
+ guests.
+Message-ID: <20201105202007.GA6370@char.us.oracle.com>
+References: <20201104220804.21026-1-Ashish.Kalra@amd.com>
+ <20201104221452.GA26079@char.us.oracle.com>
+ <20201104223913.GA25311@ashkalra_ubuntu_server>
+ <20201105174317.GA4294@char.us.oracle.com>
+ <20201105184115.GA25261@ashkalra_ubuntu_server>
+ <20201105190649.GB5366@char.us.oracle.com>
+ <20201105193828.GA25303@ashkalra_ubuntu_server>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Originating-IP: [192.168.54.22]
-X-RMX-ID: 20201105-211906-4CRvxQ6K0Kz2xDW-0@kdin01
-X-RMX-SOURCE: 217.111.95.66
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201105193828.GA25303@ashkalra_ubuntu_server>
+User-Agent: Mutt/1.9.1 (2017-09-22)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9796 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0 mlxscore=0
+ malwarescore=0 mlxlogscore=999 suspectscore=0 spamscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011050129
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9796 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0 suspectscore=0
+ clxscore=1015 mlxlogscore=999 impostorscore=0 malwarescore=0
+ lowpriorityscore=0 adultscore=0 spamscore=0 priorityscore=1501 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011050130
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vladimir,
-
-On Thursday, 22 October 2020, 13:32:43 CET, Vladimir Oltean wrote:
-> On Thu, Oct 22, 2020 at 01:11:40PM +0200, Christian Eggers wrote:
-> > On Thursday, 22 October 2020, 12:50:14 CEST, Vladimir Oltean wrote:
-> > after applying the RX timestamp correctly to the correction field
-> > (shifting
-> > the nanoseconds by 16),
+On Thu, Nov 05, 2020 at 07:38:28PM +0000, Ashish Kalra wrote:
+> On Thu, Nov 05, 2020 at 02:06:49PM -0500, Konrad Rzeszutek Wilk wrote:
+> > .
+> > > > Right, so I am wondering if we can do this better.
+> > > > 
+> > > > That is you are never going to get any 32-bit devices with SEV right? That
+> > > > is there is nothing that bounds you to always use the memory below 4GB?
+> > > > 
+> > > 
+> > > We do support 32-bit PCIe passthrough devices with SEV.
+> > 
+> > Ewww..  Which devices would this be?
 > 
-> That modification should have been done anyway, since the unit of
-> measurement for correctionField is scaled ppb (48 bits nanoseconds, 16
-> bits scaled nanoseconds), and not nanoseconds.
+> That will be difficult to predict as customers could be doing
+> passthrough of all kinds of devices.
+
+But SEV is not on some 1990 hardware. It has PCIe, there is no PCI slots in there.
+
+Is it really possible to have a PCIe device that can't do more than 32-bit DMA?
+
 > 
-> > it seems that "moving" the timestamp back to the tail tag on TX is not
-> > required anymore. Keeping the RX timestamp simply in the correction
-> > field (negative value), works fine now. So this halves the effort in
-> > the tag_ksz driver.
-
-unfortunately I made a mistake when testing. Actually the timestamp *must* be
-moved from the correction field (negative) to the egress tail tag.
-
-> Ok, this makes sense.
-> Depending on what Richard responds, it now looks like the cleanest
-> approach would be to move your implementation that is currently in
-> ksz9477_update_ptp_correction_field() into a generic function called
+> > > 
+> > > Therefore, we can't just depend on >4G memory for SWIOTLB bounce buffering
+> > > when there is I/O pressure, because we do need to support device
+> > > passthrough of 32-bit devices.
+> > 
+> > Presumarily there is just a handful of them?
+> >
+> Again, it will be incorrect to assume this.
 > 
-> static inline void ptp_onestep_p2p_move_t2_to_correction(struct sk_buff
-> *skb, unsigned int ptp_type,
->  struct ptp_header *ptp_header,
-> ktime_t t2)
-I have implemented this in ptp_classify.h. Passing t2 instead of the correction
-field itself is fine for rx, but as this function is now still required for
-transmit, it looks a little bit misused there (see below).
+> > > 
+> > > Considering this, we believe that this patch needs to adjust/extend
+> > > boot-allocation of SWIOTLB and we want to keep it simple to do this
+> > > within a range detemined by amount of allocated guest memory.
+> > 
+> > I would prefer to not have to revert this in a year as customers
+> > complain about "I paid $$$ and I am wasting half a gig on something 
+> > I am not using" and giving customers knobs to tweak this instead of
+> > doing the right thing from the start.
+> 
+> Currently, we face a lot of situations where we have to tell our
+> internal teams/external customers to explicitly increase SWIOTLB buffer
+> via the swiotlb parameter on the kernel command line, especially to
+> get better I/O performance numbers with SEV. 
 
-Shall I keep it as below, or revert it to passing value of the correction field
-itself?
+Presumarily these are 64-bit?
 
-regards
-Christian
+And what devices do you speak off that are actually affected by 
+this performance? Increasing the SWIOTLB just means we have more
+memory, which in mind means you can have _more_ devices in the guest
+that won't handle the fact that DMA mapping returns an error.
 
+Not neccessarily that one device suddenly can go faster.
 
-static void ksz9477_xmit_timestamp(struct sk_buff *skb)
-{
-	struct sk_buff *clone = DSA_SKB_CB(skb)->clone;
-	struct ptp_header *ptp_hdr;
-	u32 tstamp_raw = 0;
-	u64 correction;
+> 
+> So by having this SWIOTLB size adjustment done implicitly (even using a
+> static logic) is a great win-win situation. In other words, having even
+> a simple and static default increase of SWIOTLB buffer size for SEV is
+> really useful for us.
+> 
+> We can always think of adding all kinds of heuristics to this, but that
+> just adds too much complexity without any predictable performance gain.
+> 
+> And to add, the patch extends the SWIOTLB size as an architecture
+> specific callback, currently it is a simple and static logic for SEV/x86
+> specific, but there is always an option to tweak/extend it with
+> additional logic in the future.
 
-	if (!clone)
-		goto out_put_tag;
+Right, and that is what I would like to talk about as I think you
+are going to disappear (aka, busy with other stuff) after this patch goes in.
 
-	/* Use cached PTP header and type from ksz9477_ptp_should_tstamp(). Note
-	 * that KSZ9477_SKB_CB(clone)->ptp_header != NULL implies that this is a
-	 * Pdelay_resp message.
-	 */
-	ptp_hdr = KSZ9477_SKB_CB(clone)->ptp_header;
-	if (!ptp_hdr)
-		goto out_put_tag;
+I need to understand this more than "performance" and "internal teams"
+requirements to come up with a better way going forward as surely other
+platforms will hit the same issue anyhow.
 
-	correction = get_unaligned_be64(&ptp_hdr->correction);
+Lets break this down:
 
-	/* For PDelay_Resp messages we will likely have a negative value in the
-	 * correction field (see ksz9477_rcv()). The switch hardware cannot
-	 * correctly update such values, so it must be moved to the time stamp
-	 * field in the tail tag.
-	 */
-	if ((s64)correction < 0) {
-		unsigned int ptp_type = KSZ9477_SKB_CB(clone)->ptp_type;
-		struct timespec64 ts;
-		u64 ns;
-
-		/* Move ingress time stamp from PTP header's correction field to
-		 * tail tag. Format of the correction filed is 48 bit ns + 16
-		 * bit fractional ns.  Avoid shifting negative numbers.
-		 */
-		ns = -((s64)correction) >> 16;
-		ts = ns_to_timespec64(ns);
-		tstamp_raw = ((ts.tv_sec & 3) << 30) | ts.tv_nsec;
-
->>>		/* Set correction field to 0 (by subtracting the negative value)
->>>		 * and update UDP checksum.
->>>		 */
->>>		ptp_onestep_p2p_move_t2_to_correction(skb, ptp_type, ptp_hdr, ns_to_ktime(-ns));
-	}
-
-out_put_tag:
-	put_unaligned_be32(tstamp_raw, skb_put(skb, KSZ9477_PTP_TAG_LEN));
-}
+How does the performance improve for one single device if you increase the SWIOTLB?
+Is there a specific device/driver that you can talk about that improve with this patch?
 
 
-Addtionally ptp_onestep_p2p_move_t2_to_correction() must be able to handle negative values:
-
-static inline
-void ptp_onestep_p2p_move_t2_to_correction(struct sk_buff *skb,
-					   unsigned int type,
-					   struct ptp_header *hdr,
-					   ktime_t t2)
-{
-	u8 *ptr = skb_mac_header(skb);
-	struct udphdr *uhdr = NULL;
-	s64 ns = ktime_to_ns(t2);
-	__be64 correction_old;
-	s64 correction;
-
-	/* previous correction value is required for checksum update. */
-	memcpy(&correction_old,  &hdr->correction, sizeof(correction_old));
-	correction = (s64)be64_to_cpu(correction_old);
-
-	/* PTP correction field consists of 32 bit nanoseconds and 16 bit
-	 * fractional nanoseconds.  Avoid shifting negative numbers.
-	 */
->>>	if (ns >= 0)
->>>		correction -= ns << 16;
->>>	else
->>>		correction += -ns << 16;
-
-	/* write new correction value */
-	put_unaligned_be64((u64)correction, &hdr->correction);
-...
-}
-
-
+> 
+> Thanks,
+> Ashish'
+> 
+> > 
+> > That is the right thing being something less static.
+> > 
+> > Can you work with me on what that could be please?
+> > 
+> > > 
+> > > Thanks,
+> > > Ashish
+> > > 
+> > > > What I wonder is if we can combine the boot-allocation of the SWIOTLB
+> > > > with the post-boot-allocation of SWIOLTB to stitch together
+> > > > continous physical ranges.
+> > > > 
+> > > > That way you have the flexibility at the start of using 64MB but if there
+> > > > is pressure, we grow to a bigger size?
+> > > > 
+> > > > > 
+> > > > > Thanks,
+> > > > > Ashish
+> > > > > 
+> > > > > > > memory.
+> > > > > > > 
+> > > > > > > Using late_initcall() interface to invoke
+> > > > > > > swiotlb_adjust() does not work as the size
+> > > > > > > adjustment needs to be done before mem_encrypt_init()
+> > > > > > > and reserve_crashkernel() which use the allocated
+> > > > > > > SWIOTLB buffer size, hence calling it explicitly
+> > > > > > > from setup_arch().
+> > > > > > > 
+> > > > > > > The SWIOTLB default size adjustment is added as an
+> > > > > > > architecture specific interface/callback to allow
+> > > > > > > architectures such as those supporting memory
+> > > > > > > encryption to adjust/expand SWIOTLB size for their
+> > > > > > > use.
+> > > > > > > 
+> > > > > > > Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+> > > > > > > ---
+> > > > > > >  arch/x86/kernel/setup.c   |  2 ++
+> > > > > > >  arch/x86/mm/mem_encrypt.c | 42 +++++++++++++++++++++++++++++++++++++++
+> > > > > > >  include/linux/swiotlb.h   |  1 +
+> > > > > > >  kernel/dma/swiotlb.c      | 27 +++++++++++++++++++++++++
+> > > > > > >  4 files changed, 72 insertions(+)
+> > > > > > > 
+> > > > > > > diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+> > > > > > > index 3511736fbc74..b073d58dd4a3 100644
+> > > > > > > --- a/arch/x86/kernel/setup.c
+> > > > > > > +++ b/arch/x86/kernel/setup.c
+> > > > > > > @@ -1166,6 +1166,8 @@ void __init setup_arch(char **cmdline_p)
+> > > > > > >  	if (boot_cpu_has(X86_FEATURE_GBPAGES))
+> > > > > > >  		hugetlb_cma_reserve(PUD_SHIFT - PAGE_SHIFT);
+> > > > > > >  
+> > > > > > > +	swiotlb_adjust();
+> > > > > > > +
+> > > > > > >  	/*
+> > > > > > >  	 * Reserve memory for crash kernel after SRAT is parsed so that it
+> > > > > > >  	 * won't consume hotpluggable memory.
+> > > > > > > diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
+> > > > > > > index 3f248f0d0e07..e0deb157cddd 100644
+> > > > > > > --- a/arch/x86/mm/mem_encrypt.c
+> > > > > > > +++ b/arch/x86/mm/mem_encrypt.c
+> > > > > > > @@ -489,7 +489,49 @@ static void print_mem_encrypt_feature_info(void)
+> > > > > > >  	pr_cont("\n");
+> > > > > > >  }
+> > > > > > >  
+> > > > > > > +#define TOTAL_MEM_1G	0x40000000UL
+> > > > > > > +#define TOTAL_MEM_4G	0x100000000UL
+> > > > > > > +
+> > > > > > > +#define SIZE_128M (128UL<<20)
+> > > > > > > +#define SIZE_256M (256UL<<20)
+> > > > > > > +#define SIZE_512M (512UL<<20)
+> > > > > > > +
+> > > > > > >  /* Architecture __weak replacement functions */
+> > > > > > > +unsigned long __init arch_swiotlb_adjust(unsigned long iotlb_default_size)
+> > > > > > > +{
+> > > > > > > +	unsigned long size = 0;
+> > > > > > > +
+> > > > > > > +	/*
+> > > > > > > +	 * For SEV, all DMA has to occur via shared/unencrypted pages.
+> > > > > > > +	 * SEV uses SWOTLB to make this happen without changing device
+> > > > > > > +	 * drivers. However, depending on the workload being run, the
+> > > > > > > +	 * default 64MB of SWIOTLB may not be enough & SWIOTLB may
+> > > > > > > +	 * run out of buffers for DMA, resulting in I/O errors and/or
+> > > > > > > +	 * performance degradation especially with high I/O workloads.
+> > > > > > > +	 * Increase the default size of SWIOTLB for SEV guests using
+> > > > > > > +	 * a minimum value of 128MB and a maximum value of 512MB,
+> > > > > > > +	 * depending on amount of provisioned guest memory.
+> > > > > > > +	 */
+> > > > > > > +	if (sev_active()) {
+> > > > > > > +		phys_addr_t total_mem = memblock_phys_mem_size();
+> > > > > > > +
+> > > > > > > +		if (total_mem <= TOTAL_MEM_1G)
+> > > > > > > +			size = clamp(iotlb_default_size * 2, SIZE_128M,
+> > > > > > > +				     SIZE_128M);
+> > > > > > > +		else if (total_mem <= TOTAL_MEM_4G)
+> > > > > > > +			size = clamp(iotlb_default_size * 4, SIZE_256M,
+> > > > > > > +				     SIZE_256M);
+> > > > > > > +		else
+> > > > > > > +			size = clamp(iotlb_default_size * 8, SIZE_512M,
+> > > > > > > +				     SIZE_512M);
+> > > > > > > +
+> > > > > > > +		pr_info("SEV adjusted max SWIOTLB size = %luMB",
+> > > > > > > +			size >> 20);
+> > > > > > > +	}
+> > > > > > > +
+> > > > > > > +	return size;
+> > > > > > > +}
+> > > > > > > +
+> > > > > > >  void __init mem_encrypt_init(void)
+> > > > > > >  {
+> > > > > > >  	if (!sme_me_mask)
+> > > > > > > diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
+> > > > > > > index 046bb94bd4d6..01ae6d891327 100644
+> > > > > > > --- a/include/linux/swiotlb.h
+> > > > > > > +++ b/include/linux/swiotlb.h
+> > > > > > > @@ -33,6 +33,7 @@ extern void swiotlb_init(int verbose);
+> > > > > > >  int swiotlb_init_with_tbl(char *tlb, unsigned long nslabs, int verbose);
+> > > > > > >  extern unsigned long swiotlb_nr_tbl(void);
+> > > > > > >  unsigned long swiotlb_size_or_default(void);
+> > > > > > > +extern void __init swiotlb_adjust(void);
+> > > > > > >  extern int swiotlb_late_init_with_tbl(char *tlb, unsigned long nslabs);
+> > > > > > >  extern void __init swiotlb_update_mem_attributes(void);
+> > > > > > >  
+> > > > > > > diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+> > > > > > > index c19379fabd20..66a9e627bb51 100644
+> > > > > > > --- a/kernel/dma/swiotlb.c
+> > > > > > > +++ b/kernel/dma/swiotlb.c
+> > > > > > > @@ -163,6 +163,33 @@ unsigned long swiotlb_size_or_default(void)
+> > > > > > >  	return size ? size : (IO_TLB_DEFAULT_SIZE);
+> > > > > > >  }
+> > > > > > >  
+> > > > > > > +unsigned long __init __weak arch_swiotlb_adjust(unsigned long size)
+> > > > > > > +{
+> > > > > > > +	return 0;
+> > > > > > > +}
+> > > > > > > +
+> > > > > > > +void __init swiotlb_adjust(void)
+> > > > > > > +{
+> > > > > > > +	unsigned long size;
+> > > > > > > +
+> > > > > > > +	/*
+> > > > > > > +	 * If swiotlb parameter has not been specified, give a chance to
+> > > > > > > +	 * architectures such as those supporting memory encryption to
+> > > > > > > +	 * adjust/expand SWIOTLB size for their use.
+> > > > > > > +	 */
+> > > > > > > +	if (!io_tlb_nslabs) {
+> > > > > > > +		size = arch_swiotlb_adjust(IO_TLB_DEFAULT_SIZE);
+> > > > > > > +		if (size) {
+> > > > > > > +			size = ALIGN(size, 1 << IO_TLB_SHIFT);
+> > > > > > > +			io_tlb_nslabs = size >> IO_TLB_SHIFT;
+> > > > > > > +			io_tlb_nslabs = ALIGN(io_tlb_nslabs, IO_TLB_SEGSIZE);
+> > > > > > > +
+> > > > > > > +			pr_info("architecture adjusted SWIOTLB slabs = %lu\n",
+> > > > > > > +				io_tlb_nslabs);
+> > > > > > > +		}
+> > > > > > > +	}
+> > > > > > > +}
+> > > > > > > +
+> > > > > > >  void swiotlb_print_info(void)
+> > > > > > >  {
+> > > > > > >  	unsigned long bytes = io_tlb_nslabs << IO_TLB_SHIFT;
+> > > > > > > -- 
+> > > > > > > 2.17.1
+> > > > > > > 
