@@ -2,68 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 760FC2A7FB2
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 14:29:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BC582A7FAF
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 14:28:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730511AbgKEN31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 08:29:27 -0500
-Received: from mailgw02.mediatek.com ([1.203.163.81]:61403 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1730461AbgKEN31 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 08:29:27 -0500
-X-UUID: cdcd7782eb3b4e35bb1070ae7237c5ae-20201105
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=pcnmHbDQu8GbyyLey8ydD5w9czPlndqFD5Nfo7Y2uWo=;
-        b=BJFp4CeDNTLhAImvpbmcRUVrD6suw/DRxo18fc5U14f0HQ3Lm4tV39SJ6WeVncZy9DiWZkKYV9W2AfxAleCdLKfdb0UsAJVuFSScFI5zb/txwWh5JEeXDzNbXBhTSsGGcWsBqHI0CD2Agx8YkEliS9WypTXl/g/kTFrDvbLs2eQ=;
-X-UUID: cdcd7782eb3b4e35bb1070ae7237c5ae-20201105
-Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <jiaxin.yu@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 974526844; Thu, 05 Nov 2020 21:27:11 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS33N1.mediatek.inc
- (172.27.4.75) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 5 Nov
- 2020 21:27:09 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 5 Nov 2020 21:27:09 +0800
-Message-ID: <1604582829.26523.17.camel@mhfsdcap03>
-Subject: Re: [PATCH -next v2] ASoC: mediatek: mt8192: Make some symbols
- static
-From:   Jiaxin Yu <jiaxin.yu@mediatek.com>
-To:     Zou Wei <zou_wei@huawei.com>
-CC:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
-        <tiwai@suse.com>, <matthias.bgg@gmail.com>,
-        <alsa-devel@alsa-project.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Date:   Thu, 5 Nov 2020 21:27:09 +0800
-In-Reply-To: <1604579287-25251-1-git-send-email-zou_wei@huawei.com>
-References: <1604579287-25251-1-git-send-email-zou_wei@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        id S1730677AbgKEN2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 08:28:30 -0500
+Received: from foss.arm.com ([217.140.110.172]:60898 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726874AbgKEN23 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 08:28:29 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3A994142F;
+        Thu,  5 Nov 2020 05:28:29 -0800 (PST)
+Received: from C02TD0UTHF1T.local (unknown [10.57.58.72])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D27643F719;
+        Thu,  5 Nov 2020 05:28:26 -0800 (PST)
+Date:   Thu, 5 Nov 2020 13:28:23 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Ionela Voinescu <ionela.voinescu@arm.com>
+Cc:     catalin.marinas@arm.com, sudeep.holla@arm.com, will@kernel.org,
+        souvik.chakravarty@arm.com, viresh.kumar@linaro.org,
+        valentin.schneider@arm.com, dietmar.eggemann@arm.com,
+        morten.rasmussen@arm.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 3/3] arm64: implement CPPC FFH support using AMUs
+Message-ID: <20201105132823.GG82102@C02TD0UTHF1T.local>
+References: <20201105122702.13916-1-ionela.voinescu@arm.com>
+ <20201105122702.13916-4-ionela.voinescu@arm.com>
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 4E3BCA4F16C884482DEDA47F609076C23E9CAA032D1A648EB2745A62481CDE4C2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201105122702.13916-4-ionela.voinescu@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCAyMDIwLTExLTA1IGF0IDIwOjI4ICswODAwLCBab3UgV2VpIHdyb3RlOg0KPiBGaXgg
-dGhlIGZvbGxvd2luZyBzcGFyc2Ugd2FybmluZ3M6DQo+IA0KPiAuL210ODE5Mi1kYWktaTJzLmM6
-MjA0MDo1OiB3YXJuaW5nOiBzeW1ib2wgJ210ODE5Ml9kYWlfaTJzX2dldF9zaGFyZScgd2FzIG5v
-dCBkZWNsYXJlZC4gU2hvdWxkIGl0IGJlIHN0YXRpYz8NCj4gLi9tdDgxOTItZGFpLWkycy5jOjIw
-NjA6NTogd2FybmluZzogc3ltYm9sICdtdDgxOTJfZGFpX2kyc19zZXRfcHJpdicgd2FzIG5vdCBk
-ZWNsYXJlZC4gU2hvdWxkIGl0IGJlIHN0YXRpYz8NCj4gLi9tdDgxOTItYWZlLWdwaW8uYzoxNTox
-Njogd2FybmluZzogc3ltYm9sICdhdWRfcGluY3RybCcgd2FzIG5vdCBkZWNsYXJlZC4gU2hvdWxk
-IGl0IGJlIHN0YXRpYz8NCj4gLi9tdDgxOTItYWZlLXBjbS5jOjcwOjU6IHdhcm5pbmc6IHN5bWJv
-bCAnbXQ4MTkyX2dldF9tZW1pZl9wYnVmX3NpemUnIHdhcyBub3QgZGVjbGFyZWQuIFNob3VsZCBp
-dCBiZSBzdGF0aWM/DQo+IC4vbXQ4MTkyLWFmZS1wY20uYzoyMTM3OjM5OiB3YXJuaW5nOiBzeW1i
-b2wgJ210ODE5Ml9hZmVfY29tcG9uZW50JyB3YXMgbm90IGRlY2xhcmVkLiBTaG91bGQgaXQgYmUg
-c3RhdGljPw0KPiANCj4gUmVwb3J0ZWQtYnk6IEh1bGsgUm9ib3QgPGh1bGtjaUBodWF3ZWkuY29t
-Pg0KPiBTaWduZWQtb2ZmLWJ5OiBab3UgV2VpIDx6b3Vfd2VpQGh1YXdlaS5jb20+DQoNCkFja2Vk
-LWJ5OiBKaWF4aW4gWXUgPGppYXhpbi55dUBtZWRpYXRlay5jb20+DQpUaGFua3MgZm9yIHRoZSBm
-aXhpbmcuDQo=
+On Thu, Nov 05, 2020 at 12:27:02PM +0000, Ionela Voinescu wrote:
+> If Activity Monitors (AMUs) are present, two of the counters can be used
+> to implement support for CPPC's (Collaborative Processor Performance
+> Control) delivered and reference performance monitoring functionality
+> using FFH (Functional Fixed Hardware).
+> 
+> Given that counters for a certain CPU can only be read from that CPU,
+> while FFH operations can be called from any CPU for any of the CPUs, use
+> smp_call_function_single() to provide the requested values.
+> 
+> Therefore, depending on the register addresses, the following values
+> are returned:
+>  - 0x0 (DeliveredPerformanceCounterRegister): AMU core counter
+>  - 0x1 (ReferencePerformanceCounterRegister): AMU constant counter
+> 
+> The use of Activity Monitors is hidden behind the generic
+> {read,store}_{corecnt,constcnt}() functions.
+> 
+> Read functionality for these two registers represents the only current
+> FFH support for CPPC. Read operations for other register values or write
+> operation for all registers are unsupported. Therefore, keep CPPC's FFH
+> unsupported if no CPUs have valid AMU frequency counters. For this
+> purpose, the get_cpu_with_amu_feat() is introduced.
+> 
+> Signed-off-by: Ionela Voinescu <ionela.voinescu@arm.com>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> ---
+>  arch/arm64/include/asm/cpufeature.h |  3 ++
+>  arch/arm64/kernel/cpufeature.c      | 10 ++++++
+>  arch/arm64/kernel/topology.c        | 54 +++++++++++++++++++++++++++++
+>  3 files changed, 67 insertions(+)
+> 
+> diff --git a/arch/arm64/include/asm/cpufeature.h b/arch/arm64/include/asm/cpufeature.h
+> index 751bd9d3376b..f5b44ac354dc 100644
+> --- a/arch/arm64/include/asm/cpufeature.h
+> +++ b/arch/arm64/include/asm/cpufeature.h
+> @@ -772,6 +772,9 @@ static inline bool cpu_has_amu_feat(int cpu)
+>  }
+>  #endif
+>  
+> +/* Get a cpu that supports the Activity Monitors Unit (AMU) */
+> +extern int get_cpu_with_amu_feat(void);
+> +
+>  static inline unsigned int get_vmid_bits(u64 mmfr1)
+>  {
+>  	int vmid_bits;
+> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+> index 1142970e985b..6b08ae74ad0a 100644
+> --- a/arch/arm64/kernel/cpufeature.c
+> +++ b/arch/arm64/kernel/cpufeature.c
+> @@ -1526,6 +1526,11 @@ bool cpu_has_amu_feat(int cpu)
+>  	return cpumask_test_cpu(cpu, &amu_cpus);
+>  }
+>  
+> +int get_cpu_with_amu_feat(void)
+> +{
+> +	return cpumask_any(&amu_cpus);
+> +}
+> +
+>  static void cpu_amu_enable(struct arm64_cpu_capabilities const *cap)
+>  {
+>  	if (has_cpuid_feature(cap, SCOPE_LOCAL_CPU)) {
+> @@ -1554,6 +1559,11 @@ static bool has_amu(const struct arm64_cpu_capabilities *cap,
+>  
+>  	return true;
+>  }
+> +#else
+> +int get_cpu_with_amu_feat(void)
+> +{
+> +	return nr_cpu_ids;
+> +}
+>  #endif
+>  
+>  #ifdef CONFIG_ARM64_VHE
+> diff --git a/arch/arm64/kernel/topology.c b/arch/arm64/kernel/topology.c
+> index 764fdb0f947b..7d25087deaa5 100644
+> --- a/arch/arm64/kernel/topology.c
+> +++ b/arch/arm64/kernel/topology.c
+> @@ -154,6 +154,9 @@ void update_freq_counters_refs(void)
+>  
+>  static inline bool freq_counters_valid(int cpu)
+>  {
+> +	if ((cpu >= nr_cpu_ids) || !cpumask_test_cpu(cpu, cpu_present_mask))
+> +		return false;
+> +
+>  	if (!cpu_has_amu_feat(cpu)) {
+>  		pr_debug("CPU%d: counters are not supported.\n", cpu);
+>  		return false;
+> @@ -330,3 +333,54 @@ void topology_scale_freq_tick(void)
+>  	this_cpu_write(arch_core_cycles_prev, core_cnt);
+>  	this_cpu_write(arch_const_cycles_prev, const_cnt);
+>  }
+> +
+> +#ifdef CONFIG_ACPI_CPPC_LIB
+> +#include <acpi/cppc_acpi.h>
 
+As mentioned on patch 1, I think it'd be better to open-code the smp
+call functions here, e.g.
+
+static void cpu_read_corecnt(void *val)
+{
+	*(u64 *)val = read_corecnt()
+}
+
+static void cpu_read_constcnt(void *val)
+{
+	*(u64 *)val = read_constcnt()
+}
+
+... as they're only needed here and it's much clearer what they're
+doing in-context. I think that would als oget rid of the warning you
+mention in the cover letter.
+
+Thanks,
+Mark.
+
+> +
+> +static inline
+> +int counters_read_on_cpu(int cpu, smp_call_func_t func, u64 *val)
+> +{
+> +	if (!cpu_has_amu_feat(cpu))
+> +		return -EOPNOTSUPP;
+> +
+> +	smp_call_function_single(cpu, func, val, 1);
+> +
+> +	return 0;
+> +}
+> +
+> +/*
+> + * Refer to drivers/acpi/cppc_acpi.c for the description of the functions
+> + * below.
+> + */
+> +bool cpc_ffh_supported(void)
+> +{
+> +	return freq_counters_valid(get_cpu_with_amu_feat());
+> +}
+> +
+> +int cpc_read_ffh(int cpu, struct cpc_reg *reg, u64 *val)
+> +{
+> +	int ret = -EOPNOTSUPP;
+> +
+> +	switch ((u64)reg->address) {
+> +	case 0x0:
+> +		ret = counters_read_on_cpu(cpu, store_corecnt, val);
+> +		break;
+> +	case 0x1:
+> +		ret = counters_read_on_cpu(cpu, store_constcnt, val);
+> +		break;
+> +	}
+> +
+> +	if (!ret) {
+> +		*val &= GENMASK_ULL(reg->bit_offset + reg->bit_width - 1,
+> +				    reg->bit_offset);
+> +		*val >>= reg->bit_offset;
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +int cpc_write_ffh(int cpunum, struct cpc_reg *reg, u64 val)
+> +{
+> +	return -EOPNOTSUPP;
+> +}
+> +#endif /* CONFIG_ACPI_CPPC_LIB */
+> -- 
+> 2.17.1
+> 
