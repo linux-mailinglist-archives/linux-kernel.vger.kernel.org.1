@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DC1F2A7724
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 06:41:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F2C52A7729
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 06:42:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731441AbgKEFlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 00:41:44 -0500
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:36499 "EHLO
+        id S1731539AbgKEFlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 00:41:53 -0500
+Received: from out4-smtp.messagingengine.com ([66.111.4.28]:34953 "EHLO
         out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730948AbgKEFlj (ORCPT
+        by vger.kernel.org with ESMTP id S1731067AbgKEFlj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 5 Nov 2020 00:41:39 -0500
 Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id F2C035C015B;
-        Thu,  5 Nov 2020 00:41:37 -0500 (EST)
+        by mailout.nyi.internal (Postfix) with ESMTP id 9BCA25C0170;
+        Thu,  5 Nov 2020 00:41:38 -0500 (EST)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Thu, 05 Nov 2020 00:41:37 -0500
+  by compute5.internal (MEProxy); Thu, 05 Nov 2020 00:41:38 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
         from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm1; bh=jkrVH4j2GkC3P
-        3IVwiaih9w84EK5SRrgiFWIljFK7tI=; b=RYCENO/XOI4Q+sFtnwc6lfCMxNl0m
-        pkKrWCgSTXnNMQnfLwF6ow8+SAhpWGeW7Drhgvyy/RAvYRjuIrp59VCKHGg6Yxak
-        qmMRToEMRBVQg2NZJv1N9U/DCmGTxok9B/ochYAM47f+wj3scfaX5KRwmOZHZWXy
-        mvA3TX4WVAfn3kp28lfosuSx7MYUAH5ETJ6BUApleVfd3uisWC/PtpINLCnKgdIN
-        QVqGZNNbR9tH+FV5/zTxs/No+3npLXeNVmocTEmG8RGE6JJpaT5mIXtkVC4nHv/M
-        0Z2u00gjNzWsrYxWaZmJLX06zu8O6dkSXxHSlz3wEGO9UYyeMZqMGfNPA==
+        :mime-version:content-transfer-encoding; s=fm1; bh=D33AIT7REaO42
+        I0oyofLCBVZfk49c1xYEtUgewG4c8Q=; b=IPtd1OrZ933FlMJhwROhJGwo/mikc
+        yxlKixweFOu/aPrSwqYqZVk21dmxWWPgNupEI2YD20KbBY/KV09rHcgvpPjbwH80
+        KqO9ADXsHlPyQpJXFeO227VBMY0cw/Zkidu0IYSj2XCfb55B8KMVJgPRSuzYg8O7
+        IerBry65G0BDcGZmA/IfQ17URCp2W5QECpnoIZsu2Y8tclR9Q5Eqk2BgP+IFG3Km
+        DxkvrOQA9diLpqUTdu2+X6QaCtkvGjqH2YHIAVzGhzZbUN/alxU/Ov2kRFWzDVj8
+        028WyvGgeNDZB2Z+iwazeaPJFyxA6364QiRyTZjk+Y9T0Z9PfCHTAM+cQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
         :in-reply-to:message-id:mime-version:references:subject:to
         :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; bh=jkrVH4j2GkC3P3IVwiaih9w84EK5SRrgiFWIljFK7tI=; b=WTaGYgil
-        9IuZds093SZ5P6gPC3582n1YZL+es2kb4IFZFk+bDYj8DTe+prTbiGnMaM5YUOxH
-        TIv7yRmPp5mSCPXADn54ZrE3xU8ZYqi07MfTnfu1lXBNExiw+bEhosdCBRWntVa7
-        FHkXfqah8J2IT0NUodW9Xj5FEIEl9cedeReBztSoMiZuwqDR9FArC5yLgP1LP3+f
-        nB7/dPP5N+H8+sqjX57/g21o6OiSSU8g+/6OjCQZID+xAKeL7xrs0QCvdQBA4kYB
-        zxWyAt6Id8bhWmpkncNWm2NJCDl8ePCRc3n1lZdD2AiuyL2q4MV0ILLsIDyzbxCu
-        0ap/Wv35tJvRSQ==
-X-ME-Sender: <xms:kZCjX4R40DKrCAdOCKy7M0qRkDZs2n8u4M5dZ3ysRhwZt0iT8AKJgg>
-    <xme:kZCjX1wEsMjDi0vlqVVow6m7HCQ4sAc4rYV_eKaPmy8jpbxSltvbQx3POMVwWyXrg
-    Z8GdLGNp6mT10ij2Q>
+        fm1; bh=D33AIT7REaO42I0oyofLCBVZfk49c1xYEtUgewG4c8Q=; b=k+XHEyS5
+        6yDbAWcroux4K1AY6/k/JDX03DIGNT1jY9gW0ZwHp8Na70EFBpYeWEdu4xHPqhZ1
+        3n8CGWI6xbtiCFKxUQ13yVBh05CNTgKFW82MihxoNZKnzzUZPwtQkdVdmenmtEPL
+        xG1kXhs2bD9b29lika1WvaRs0mXNynscgz3mw9ncqdonUbmA8cenpKOz2pFqFE6/
+        BgdTZ0fu2fAY4ZsrWUZmXEXlScAU8ABbUwsf/9tJXZW5EGQdLzqmDdMmab5JMU0m
+        XQKGsvlocF0KgK6UM7mw9nYcUCalfOgsEUcFjBJUmGOxqA3n6pU48aA8WaalzvOi
+        asgZVwOXpiSYhQ==
+X-ME-Sender: <xms:kpCjX_5qsXiYM8lDFfR8GagAd1PN80V04HGsLh3qP0UCfazvoFOl4A>
+    <xme:kpCjX07eyPerNi_b3ojyfaLNXfu2rxlG8MerCkgTYDE8iVWMT4K-Sy8GQqFUQOdWG
+    MvC6mcYUsXZ_zb9sA>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddtiedgkeejucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    gfrhhlucfvnfffucdlfeehmdenucfjughrpefhvffufffkofgjfhgggfestdekredtredt
-    tdenucfhrhhomhepufgrmhhuvghlucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholh
-    hlrghnugdrohhrgheqnecuggftrfgrthhtvghrnhepudfhjeefvdfhgfefheetgffhieei
-    gfefhefgvddvveefgeejheejvdfgjeehueeinecukfhppeejtddrudefhedrudegkedrud
-    ehudenucevlhhushhtvghrufhiiigvpedunecurfgrrhgrmhepmhgrihhlfhhrohhmpehs
-    rghmuhgvlhesshhhohhllhgrnhgurdhorhhg
-X-ME-Proxy: <xmx:kZCjX13bDFsa7JDAjPazUXg7KL3qOi72MCYhG3gnApadmjNafSQZwg>
-    <xmx:kZCjX8BgLnZQCD_N354cBQB-fjY-r_TS72Zl9flerUnya8EhoxJ30w>
-    <xmx:kZCjXxh27-n2F6Rz_y1JXC3jJa74ookW9wpSR_ljfI8zqC8pd4lSxQ>
-    <xmx:kZCjX5hd08BZ5MqGU9AWzJRcGe6zMg8F-mv34V0Y3yGykMJmoFWakA>
+    cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpefurghmuhgv
+    lhcujfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenucggtf
+    frrghtthgvrhhnpeduhfejfedvhffgfeehtefghfeiiefgfeehgfdvvdevfeegjeehjedv
+    gfejheeuieenucfkphepjedtrddufeehrddugeekrdduhedunecuvehluhhsthgvrhfuih
+    iivgepudenucfrrghrrghmpehmrghilhhfrhhomhepshgrmhhuvghlsehshhholhhlrghn
+    ugdrohhrgh
+X-ME-Proxy: <xmx:kpCjX2cTiYNjTHIrDQH3onepX9e0X7I6lU7lV57I2baMUuGCYocz0g>
+    <xmx:kpCjXwI5o6LgoGrS-l8QT_Wy3ATrsdIpZW_W5ENpdHNCmGWroxcAQg>
+    <xmx:kpCjXzLW0mrXh_xRo6coY5cVEISj9JOM33STnRh_vpg2d37Y3xeOUw>
+    <xmx:kpCjXwqYfmnlXLX4ecD_4vDUWIb5rr_B0rZJ7uu1oQj-t8-2F_PIJw>
 Received: from titanium.stl.sholland.net (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 3AE4732801D7;
+        by mail.messagingengine.com (Postfix) with ESMTPA id A544F32801F2;
         Thu,  5 Nov 2020 00:41:37 -0500 (EST)
 From:   Samuel Holland <samuel@sholland.org>
 To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
@@ -63,10 +63,10 @@ To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
 Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com,
         Samuel Holland <samuel@sholland.org>,
-        Luca Weiss <luca@z3ntu.xyz>
-Subject: [PATCH 3/6] arm64: dts: allwinner: pinephone: Add LED flash
-Date:   Wed,  4 Nov 2020 23:41:32 -0600
-Message-Id: <20201105054135.24860-4-samuel@sholland.org>
+        Ondrej Jirman <megous@megous.com>
+Subject: [PATCH 4/6] arm64: dts: allwinner: pinephone: Add light/proximity sensor
+Date:   Wed,  4 Nov 2020 23:41:33 -0600
+Message-Id: <20201105054135.24860-5-samuel@sholland.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20201105054135.24860-1-samuel@sholland.org>
 References: <20201105054135.24860-1-samuel@sholland.org>
@@ -76,81 +76,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luca Weiss <luca@z3ntu.xyz>
+From: Ondrej Jirman <megous@megous.com>
 
-All revisions of the PinePhone have an SGM3140 LED flash. The gpios were
-swapped on v1.0 of the board, but this was fixed in later revisions.
+Pinephone has STK3311-X proximity sensor. Add support for it.
 
-Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
+Signed-off-by: Ondrej Jirman <megous@megous.com>
 Signed-off-by: Samuel Holland <samuel@sholland.org>
 ---
- .../boot/dts/allwinner/sun50i-a64-pinephone-1.0.dts   |  5 +++++
- .../boot/dts/allwinner/sun50i-a64-pinephone-1.1.dts   |  5 +++++
- .../boot/dts/allwinner/sun50i-a64-pinephone-1.2.dts   |  5 +++++
- .../boot/dts/allwinner/sun50i-a64-pinephone.dtsi      | 11 +++++++++++
- 4 files changed, 26 insertions(+)
+ .../arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone-1.0.dts b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone-1.0.dts
-index 0c42272106af..3d5a2ae9aa39 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone-1.0.dts
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone-1.0.dts
-@@ -9,3 +9,8 @@ / {
- 	model = "Pine64 PinePhone Developer Batch (1.0)";
- 	compatible = "pine64,pinephone-1.0", "allwinner,sun50i-a64";
- };
-+
-+&sgm3140 {
-+	enable-gpios = <&pio 2 3 GPIO_ACTIVE_HIGH>; /* PC3 */
-+	flash-gpios = <&pio 3 24 GPIO_ACTIVE_HIGH>; /* PD24 */
-+};
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone-1.1.dts b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone-1.1.dts
-index 3e99a87e9ce5..c9b9f6e9ee8c 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone-1.1.dts
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone-1.1.dts
-@@ -28,3 +28,8 @@ &backlight {
- 	num-interpolated-steps = <50>;
- 	default-brightness-level = <400>;
- };
-+
-+&sgm3140 {
-+	enable-gpios = <&pio 3 24 GPIO_ACTIVE_HIGH>; /* PD24 */
-+	flash-gpios = <&pio 2 3 GPIO_ACTIVE_HIGH>; /* PC3 */
-+};
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone-1.2.dts b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone-1.2.dts
-index a9f5b670c9b8..94e4f11e0215 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone-1.2.dts
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone-1.2.dts
-@@ -38,3 +38,8 @@ &lis3mdl {
- 	interrupt-parent = <&pio>;
- 	interrupts = <1 1 IRQ_TYPE_EDGE_RISING>; /* PB1 */
- };
-+
-+&sgm3140 {
-+	enable-gpios = <&pio 3 24 GPIO_ACTIVE_HIGH>; /* PD24 */
-+	flash-gpios = <&pio 2 3 GPIO_ACTIVE_HIGH>; /* PC3 */
-+};
 diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi
-index 57c89c3b71e9..e595a8262920 100644
+index e595a8262920..9544d7658794 100644
 --- a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi
 +++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi
-@@ -49,6 +49,17 @@ red {
- 		};
+@@ -160,6 +160,16 @@ lis3mdl: lis3mdl@1e {
+ 		vddio-supply = <&reg_dldo1>;
  	};
  
-+	sgm3140: led-controller {
-+		compatible = "sgmicro,sgm3140";
-+		vin-supply = <&reg_dcdc1>;
-+
-+		sgm3140_flash: led {
-+			function = LED_FUNCTION_FLASH;
-+			color = <LED_COLOR_ID_WHITE>;
-+			flash-max-timeout-us = <250000>;
-+		};
++	/* Light/proximity sensor */
++	stk3311@48 {
++		compatible = "sensortek,stk3311";
++		reg = <0x48>;
++		interrupt-parent = <&pio>;
++		interrupts = <1 0 IRQ_TYPE_EDGE_FALLING>; /* PB0 */
++		vdd-supply = <&reg_ldo_io0>;
++		leda-supply = <&reg_dldo1>;
 +	};
 +
- 	speaker_amp: audio-amplifier {
- 		compatible = "simple-audio-amplifier";
- 		enable-gpios = <&pio 2 7 GPIO_ACTIVE_HIGH>; /* PC7 */
+ 	/* Accelerometer/gyroscope */
+ 	mpu6050@68 {
+ 		compatible = "invensense,mpu6050";
 -- 
 2.26.2
 
