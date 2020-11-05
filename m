@@ -2,118 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F4282A8A2A
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 23:51:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38B702A8A17
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 23:50:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732584AbgKEWvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 17:51:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38392 "EHLO
+        id S1732099AbgKEWuc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 17:50:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732293AbgKEWua (ORCPT
+        with ESMTP id S1732336AbgKEWub (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 17:50:30 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EF42C0613D2
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 14:50:30 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id v12so2496303pfm.13
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 14:50:30 -0800 (PST)
+        Thu, 5 Nov 2020 17:50:31 -0500
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67263C0613D3
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 14:50:31 -0800 (PST)
+Received: by mail-pl1-x641.google.com with SMTP id j5so1492392plk.7
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 14:50:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ITyVVyrjBjMsKXUPqKEIMGOz26VLuknXtLKpEuuWCZ8=;
-        b=hSedokPEjbLaB+xoEyp9IKJX7h+IgmIn/2R9U/Uc8qtN0+33DCYTMId1JCLh0vtR4b
-         ep/7qqGt5LoAVnlN/RnQvrFTF+koK3m1IGCphLW5QZKhI+kHzX6tbFYn4A7aP+zIlDr4
-         /3N+Qy2QrGEskI2piogI9XBDl5dmqNoHd9TnTvgkLqiUraNUWRqAthchNTw6wIRIsoZj
-         k8iRptooi5Dk4/S3rsW2G0FxuUk4Yj2llR/+/wwEC/JJIbTcCDJkEuszrLYW8wRBuD9Z
-         YAV6I9V0Eq3FhfBi8l5BNhL/WKDIpwtcRLdpcgZiihkoNa4JdFC0emSd3UiuHBNRyK8G
-         UKcQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=4qX2THs/dhWrDnWe2HpkQ84reF55tyq/NRsKrAKp/sc=;
+        b=ETw+rWgAMTFX8nd3Sa/fOc9UVsoX/RKNVV77GbG3QUtc5mYFlz2rz+3hjtUpFq0yE+
+         cSuNr0tpZIw8cuEmCyUJCD3PewlBUZI5ewDmmWJsQl1MiJO9ca2kuwQJjuXYuuAwY1+f
+         x32Djz8wmLoz/KQnzrnAmj8gmzwT+teb117wCzBiqxileXxsXrU7ToRbtVOO8nGkNm/L
+         mbgZ13g7LN46AbhN7oAtgswYTFdGyHKTZ7bEGhcsDoU7LKlNIe+Dq+erf6rEgruGI8Zy
+         9YMJEgRtFjSwZAgXxI6HF1qcTbbq+6IfDMCaEaa9I/jMtr+Dk7Z7uTtNDZ2UZBCveyFI
+         gqqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ITyVVyrjBjMsKXUPqKEIMGOz26VLuknXtLKpEuuWCZ8=;
-        b=n9UTWuWPaSxbUdNBSvL4zkWbbBD376ux+z3uEamzGxhKFyPwmCU1+jIvmxydorIVN1
-         eXdtJf/wBU+DpFdrjjEp8hZbia8J3H/5MRRpZcZBz3/tNsFn2yM0PJ1eO6Mr/SVeV5a0
-         CrxZdDyBuFR357S3wIFyB/e41nSECRKqeBtlhQLhTGzx7uzd9+Hj//5ITzZ72QG4TA0p
-         ReWeQIH6eSuure+nBosWbfRMSfUcQl0+Q8V986Rfp0Gs0J4+M5QvWHopu0qrZV9jg7DD
-         XzjYouwvsxSNaPv/MEVEQUct6H+5/5pzMe5DLYOFF00Cgq1XdxEKroZ9OSLwlDA4LyPJ
-         oPZw==
-X-Gm-Message-State: AOAM533h26qfHHiavsorhpt5JhOF6Rf8pSVxDImHzjRqecu8bB1OCA8W
-        YHs8hA4gKNKmxN7Ixa9OmQuF8KUSVo7WuA==
-X-Google-Smtp-Source: ABdhPJwFdF36DAICwXal1BEoZqFCs+jClw7rlQTBQ6jQCFdGCF8TgLztW8qFU6394PKklhqZ2S6e2Q==
-X-Received: by 2002:a17:90b:1058:: with SMTP id gq24mr4569893pjb.29.1604616629903;
-        Thu, 05 Nov 2020 14:50:29 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=4qX2THs/dhWrDnWe2HpkQ84reF55tyq/NRsKrAKp/sc=;
+        b=cV3IWy2p/Dt/cnb5LqA6ZrASVb2rwKXm0DVlQ2dBpGHRJ5nVt8foRMRToJq3MQkMhJ
+         raUiPXJ4ajNLa5XbOCyjWTtGJ+hGYtG3ddMlWB1vqFQwrJBi0VDREjJ4ke6RSntX+v7u
+         aTrYeCdeGBwfrbIv4Iqi+6mMw+SZzEvtl5b+Ey6w0o0ZHhMM9ngJKSLvBRQukDiTrX1t
+         FObk98st98o59tfPjHMzOzY/+4Y59embKPo28I9JGBlTQxHxOxFz/PYLZW7W0z3AZOFT
+         gVbTDssh6IdjZCeswWyietWjGtbKpB/Eyxt/BsxAPqrigLjigd8ho2xHtGugEsk+K2Kb
+         2B9A==
+X-Gm-Message-State: AOAM533cEWZfaSu+D+Q9ej8dCnx8lDec27ku9uFHn5MP3L7bLNRwZReo
+        7ggCKsvG4Q1GAPxB4NG0EukBJQ==
+X-Google-Smtp-Source: ABdhPJz5tKQupqtdw+ZGepIkdmidErV/RsRyOWYMokQieETW+iScif2ReC4wKK9JZ4RU9rU7xl5WLA==
+X-Received: by 2002:a17:902:864b:b029:d3:ce46:2829 with SMTP id y11-20020a170902864bb02900d3ce462829mr4023779plt.16.1604616630970;
+        Thu, 05 Nov 2020 14:50:30 -0800 (PST)
 Received: from xps15.cg.shawcable.net (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id d145sm3854501pfd.136.2020.11.05.14.50.28
+        by smtp.gmail.com with ESMTPSA id d145sm3854501pfd.136.2020.11.05.14.50.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 14:50:29 -0800 (PST)
+        Thu, 05 Nov 2020 14:50:30 -0800 (PST)
 From:   Mathieu Poirier <mathieu.poirier@linaro.org>
 To:     ohad@wizery.com, bjorn.andersson@linaro.org
 Cc:     guennadi.liakhovetski@linux.intel.com,
         linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v5 0/8] rpmsg: Make RPMSG name service modular 
-Date:   Thu,  5 Nov 2020 15:50:20 -0700
-Message-Id: <20201105225028.3058818-1-mathieu.poirier@linaro.org>
+Subject: [PATCH v5 1/8] rpmsg: Introduce __rpmsg{16|32|64} types
+Date:   Thu,  5 Nov 2020 15:50:21 -0700
+Message-Id: <20201105225028.3058818-2-mathieu.poirier@linaro.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201105225028.3058818-1-mathieu.poirier@linaro.org>
+References: <20201105225028.3058818-1-mathieu.poirier@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This revision addresses comments received from the previous revision,
-i.e V4.  Please see details below.
+Introduce __rpmsg{16|32|64} types along with byte order conversion
+functions based on an rpmsg_device operation as a foundation to
+make RPMSG modular and transport agnostic.
 
-It starts by making the RPMSG protocol transport agnostic by
-moving the headers it uses to generic types and using those in the
-current implementation.  From there it re-uses the work that Arnaud
-published[1] to make the name service modular.
-
-Tested on stm32mp157 with the RPMSG client sample application.  Applies
-cleanly on v5.10-rc2.
-
-Thanks,
-Mathieu
-
-[1]. https://patchwork.kernel.org/project/linux-remoteproc/list/?series=338335
-
--------
-New for V5:
-- Moved include/linux/rpms_ns.h to include/linux/rpmsg/ns.h
-- Moved include/linux/rpmsg_byteorder.h to include/linux/rpmsg/byteorder.h
-- Sorted header files alphabetically in ns.h
-- Added include for rpmsg.h in ns.h
-- Rebased to v5.10-rc2
-
-Arnaud Pouliquen (4):
-  rpmsg: virtio: Rename rpmsg_create_channel
-  rpmsg: core: Add channel creation internal API
-  rpmsg: virtio: Add rpmsg channel device ops
-  rpmsg: Turn name service into a stand alone driver
-
-Mathieu Poirier (4):
-  rpmsg: Introduce __rpmsg{16|32|64} types
-  rpmsg: virtio: Move from virtio to rpmsg byte conversion
-  rpmsg: Move structure rpmsg_ns_msg to header file
-  rpmsg: Make rpmsg_{register|unregister}_device() public
-
- drivers/rpmsg/Kconfig            |   8 ++
- drivers/rpmsg/Makefile           |   1 +
- drivers/rpmsg/rpmsg_core.c       |  44 ++++++++
- drivers/rpmsg/rpmsg_internal.h   |  14 ++-
- drivers/rpmsg/rpmsg_ns.c         | 108 ++++++++++++++++++
- drivers/rpmsg/virtio_rpmsg_bus.c | 185 +++++++++++--------------------
- include/linux/rpmsg.h            |  63 ++++++++++-
- include/linux/rpmsg/byteorder.h  |  67 +++++++++++
- include/linux/rpmsg/ns.h         |  60 ++++++++++
- include/uapi/linux/rpmsg_types.h |  11 ++
- 10 files changed, 434 insertions(+), 127 deletions(-)
- create mode 100644 drivers/rpmsg/rpmsg_ns.c
+Suggested-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+Reviewed-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+---
+ include/linux/rpmsg.h            | 51 ++++++++++++++++++++++++
+ include/linux/rpmsg/byteorder.h  | 67 ++++++++++++++++++++++++++++++++
+ include/uapi/linux/rpmsg_types.h | 11 ++++++
+ 3 files changed, 129 insertions(+)
  create mode 100644 include/linux/rpmsg/byteorder.h
- create mode 100644 include/linux/rpmsg/ns.h
  create mode 100644 include/uapi/linux/rpmsg_types.h
 
+diff --git a/include/linux/rpmsg.h b/include/linux/rpmsg.h
+index 9fe156d1c018..faf2daff6238 100644
+--- a/include/linux/rpmsg.h
++++ b/include/linux/rpmsg.h
+@@ -17,6 +17,7 @@
+ #include <linux/kref.h>
+ #include <linux/mutex.h>
+ #include <linux/poll.h>
++#include <linux/rpmsg/byteorder.h>
+ 
+ #define RPMSG_ADDR_ANY		0xFFFFFFFF
+ 
+@@ -46,6 +47,7 @@ struct rpmsg_channel_info {
+  * @dst: destination address
+  * @ept: the rpmsg endpoint of this channel
+  * @announce: if set, rpmsg will announce the creation/removal of this channel
++ * @little_endian: True if transport is using little endian byte representation
+  */
+ struct rpmsg_device {
+ 	struct device dev;
+@@ -55,6 +57,7 @@ struct rpmsg_device {
+ 	u32 dst;
+ 	struct rpmsg_endpoint *ept;
+ 	bool announce;
++	bool little_endian;
+ 
+ 	const struct rpmsg_device_ops *ops;
+ };
+@@ -111,6 +114,54 @@ struct rpmsg_driver {
+ 	int (*callback)(struct rpmsg_device *, void *, int, void *, u32);
+ };
+ 
++static inline u16 rpmsg16_to_cpu(struct rpmsg_device *rpdev, __rpmsg16 val)
++{
++	if (!rpdev)
++		return __rpmsg16_to_cpu(rpmsg_is_little_endian(), val);
++	else
++		return __rpmsg16_to_cpu(rpdev->little_endian, val);
++}
++
++static inline __rpmsg16 cpu_to_rpmsg16(struct rpmsg_device *rpdev, u16 val)
++{
++	if (!rpdev)
++		return __cpu_to_rpmsg16(rpmsg_is_little_endian(), val);
++	else
++		return __cpu_to_rpmsg16(rpdev->little_endian, val);
++}
++
++static inline u32 rpmsg32_to_cpu(struct rpmsg_device *rpdev, __rpmsg32 val)
++{
++	if (!rpdev)
++		return __rpmsg32_to_cpu(rpmsg_is_little_endian(), val);
++	else
++		return __rpmsg32_to_cpu(rpdev->little_endian, val);
++}
++
++static inline __rpmsg32 cpu_to_rpmsg32(struct rpmsg_device *rpdev, u32 val)
++{
++	if (!rpdev)
++		return __cpu_to_rpmsg32(rpmsg_is_little_endian(), val);
++	else
++		return __cpu_to_rpmsg32(rpdev->little_endian, val);
++}
++
++static inline u64 rpmsg64_to_cpu(struct rpmsg_device *rpdev, __rpmsg64 val)
++{
++	if (!rpdev)
++		return __rpmsg64_to_cpu(rpmsg_is_little_endian(), val);
++	else
++		return __rpmsg64_to_cpu(rpdev->little_endian, val);
++}
++
++static inline __rpmsg64 cpu_to_rpmsg64(struct rpmsg_device *rpdev, u64 val)
++{
++	if (!rpdev)
++		return __cpu_to_rpmsg64(rpmsg_is_little_endian(), val);
++	else
++		return __cpu_to_rpmsg64(rpdev->little_endian, val);
++}
++
+ #if IS_ENABLED(CONFIG_RPMSG)
+ 
+ int register_rpmsg_device(struct rpmsg_device *dev);
+diff --git a/include/linux/rpmsg/byteorder.h b/include/linux/rpmsg/byteorder.h
+new file mode 100644
+index 000000000000..c0f565dbad6d
+--- /dev/null
++++ b/include/linux/rpmsg/byteorder.h
+@@ -0,0 +1,67 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Follows implementation found in linux/virtio_byteorder.h
++ */
++#ifndef _LINUX_RPMSG_BYTEORDER_H
++#define _LINUX_RPMSG_BYTEORDER_H
++#include <linux/types.h>
++#include <uapi/linux/rpmsg_types.h>
++
++static inline bool rpmsg_is_little_endian(void)
++{
++#ifdef __LITTLE_ENDIAN
++	return true;
++#else
++	return false;
++#endif
++}
++
++static inline u16 __rpmsg16_to_cpu(bool little_endian, __rpmsg16 val)
++{
++	if (little_endian)
++		return le16_to_cpu((__force __le16)val);
++	else
++		return be16_to_cpu((__force __be16)val);
++}
++
++static inline __rpmsg16 __cpu_to_rpmsg16(bool little_endian, u16 val)
++{
++	if (little_endian)
++		return (__force __rpmsg16)cpu_to_le16(val);
++	else
++		return (__force __rpmsg16)cpu_to_be16(val);
++}
++
++static inline u32 __rpmsg32_to_cpu(bool little_endian, __rpmsg32 val)
++{
++	if (little_endian)
++		return le32_to_cpu((__force __le32)val);
++	else
++		return be32_to_cpu((__force __be32)val);
++}
++
++static inline __rpmsg32 __cpu_to_rpmsg32(bool little_endian, u32 val)
++{
++	if (little_endian)
++		return (__force __rpmsg32)cpu_to_le32(val);
++	else
++		return (__force __rpmsg32)cpu_to_be32(val);
++}
++
++static inline u64 __rpmsg64_to_cpu(bool little_endian, __rpmsg64 val)
++{
++	if (little_endian)
++		return le64_to_cpu((__force __le64)val);
++	else
++		return be64_to_cpu((__force __be64)val);
++}
++
++static inline __rpmsg64 __cpu_to_rpmsg64(bool little_endian, u64 val)
++{
++	if (little_endian)
++		return (__force __rpmsg64)cpu_to_le64(val);
++	else
++		return (__force __rpmsg64)cpu_to_be64(val);
++}
++
++#endif /* _LINUX_RPMSG_BYTEORDER_H */
+diff --git a/include/uapi/linux/rpmsg_types.h b/include/uapi/linux/rpmsg_types.h
+new file mode 100644
+index 000000000000..36e3b9404391
+--- /dev/null
++++ b/include/uapi/linux/rpmsg_types.h
+@@ -0,0 +1,11 @@
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++#ifndef _UAPI_LINUX_RPMSG_TYPES_H
++#define _UAPI_LINUX_RPMSG_TYPES_H
++
++#include <linux/types.h>
++
++typedef __u16 __bitwise __rpmsg16;
++typedef __u32 __bitwise __rpmsg32;
++typedef __u64 __bitwise __rpmsg64;
++
++#endif /* _UAPI_LINUX_RPMSG_TYPES_H */
 -- 
 2.25.1
 
