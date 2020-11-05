@@ -2,180 +2,427 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E21D2A751C
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 02:55:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79C062A7525
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 02:59:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733178AbgKEBzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 20:55:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40172 "EHLO
+        id S1731477AbgKEB71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 20:59:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726152AbgKEBzE (ORCPT
+        with ESMTP id S1726152AbgKEB70 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 20:55:04 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F392C0613D2
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 17:55:04 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id k7so5158plk.3
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 17:55:04 -0800 (PST)
+        Wed, 4 Nov 2020 20:59:26 -0500
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9345CC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 17:59:26 -0800 (PST)
+Received: by mail-ed1-x542.google.com with SMTP id a15so305219edy.1
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 17:59:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=BIbhTyycJdg8v4aomXZ/rLjTbqfKa4wfwSkv3CiGgXs=;
-        b=dUppzHrDtmOkl4va+Fx+WrFGpF1BztJf6JjZXyVmIr/spj4bPIo0htN3VmSAeRlYpD
-         6kc/iHPqNy5rhMW2ijvPu2k2PMHYTTBrg8tZW4Fz5jDWUhp//QRKIS9TygUprrITg3op
-         ueEbEAwtbdgKZbbjyiVC1B7S81U+ybKp5pys8=
+        d=granulate.io; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=0r5+ZQz9R32Z8pq+pFMWM4pQX2laOF72iU3NlAU1LKQ=;
+        b=OhBSiKhT+uu2FWi+12BtGSdAt8OxHiQ4OfN+T58LlmrYWdBO1RgZPgs9TuYXoLX5jc
+         9QN6O71oM54nalijCgQ28mZ4IdRBtkf+lEa79DQfMW26Gu2FSNoJfwS/ZiNUyRv7EJv8
+         1khrf2CxAmMbiynG1bsJPUQMe89MKhDLDRs+4Z4b2crclMrFwkfG8r87IW+EN5g/n1t0
+         hxtF8oNNrs7Nwr3VIUPZHxhn0GQ6qva6/edjPXmCrf0ThFpGAdxTGvW25t+APJ3x7BPf
+         cVP3+mKFXVLp6Lt+czTx61m/16crzGAEhNjK2fjKk/wrc8DXma7ZIYd62zhlXm642rUX
+         ZX1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BIbhTyycJdg8v4aomXZ/rLjTbqfKa4wfwSkv3CiGgXs=;
-        b=SHqeaiGY/SnFFkPlA5upWDxCx44e1pMIkD7NiWkUda31u9rfTyx60oVoegNFlUBCPg
-         0Jp1dJmOK7mxcQJf2azMKT79zRC0mzkBo7664UJTmhzztPZzWCBojJrSEdWgGmpva2UE
-         rcLChNZoSzLNgcXCr9QPH645N0XUHD9AElHx7ZUaqOUPGI03OtiL5Ty1xnId7z0/bxsw
-         /oskSj7jEPk+koL6AV905CS5efYCaxQ0Z2aNI9fgWC2FxU8hbvb5r3Xskc2obWtu1Ahs
-         dQdHFwOTxPyoNHiw+kksi0aqAaDYzyTuQdvNqJ5rkQBgo2QqIqPRMUOrE08Ws7f0ARjL
-         P8vg==
-X-Gm-Message-State: AOAM531m6oo8bLz9pXauLYHb0OqC15JN95/wytqA7kn/85OZGxVf/uq/
-        XNbiMyw6v7AmPSsxsWGNicV7WA==
-X-Google-Smtp-Source: ABdhPJzR3PTjViA5QvU9CtF4+v3zgRkRd/mHdtENh2KW+Fxdc/5jmJ/eheYhfIkAyalWEwBzj03F2Q==
-X-Received: by 2002:a17:902:a60c:b029:d5:dc92:a1ca with SMTP id u12-20020a170902a60cb02900d5dc92a1camr237261plq.16.1604541303863;
-        Wed, 04 Nov 2020 17:55:03 -0800 (PST)
-Received: from localhost ([2620:15c:202:1:f693:9fff:fef4:e70a])
-        by smtp.gmail.com with ESMTPSA id y8sm154592pfe.41.2020.11.04.17.55.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Nov 2020 17:55:03 -0800 (PST)
-Date:   Wed, 4 Nov 2020 17:55:01 -0800
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] arm64: dts: qcom: sc7180-trogdor: Make pp3300_a the
- default supply for pp3300_hub
-Message-ID: <20201105015501.GA3079843@google.com>
-References: <20201103103749.1.I0ed4abdd2b2916fbedf76be254bc3457fb8b9655@changeid>
- <CAD=FV=Wc-b75a-QSX8qLq0+fCbcnvh_6q+N6azL=+Tk+rMie1g@mail.gmail.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=0r5+ZQz9R32Z8pq+pFMWM4pQX2laOF72iU3NlAU1LKQ=;
+        b=f7x5FFYN3fT4wp8JUSKvfoShldu/F/xINq8hDYW2tGpbFk10IxGeUyTbxAldXFLdJc
+         C+jw0/CMarai5/S+mZZLOJpKDPklKmFO2M/i6ik9suUrmmnKpmphY5waXOotnEWr54aO
+         7NWVpWr+lHuEKJIg7568wdyza5V/m25j5laJpHr7c7V/zjFJaM6fG3NuWdyrtMKPGuhD
+         5OU8EPFevgfHLGhuGXdm48pkFr02VXhFd+x469vFu7np2bGtBeDGBbbs7RLTjof0xZYj
+         mRUh2JwGtKuHGGWaSb7B9Yi5WUeNUsGjHGnW6Xe4BAyW4Zc6dBwwCIb68HFfgKJqnnNe
+         GSEw==
+X-Gm-Message-State: AOAM531gZsmCMdgSQj/AAnzstDAQFbAv23g2dKFnr+s2Op6YUNYiLUAP
+        ifjzZyhcP8IkOAmh6EGofTVVag==
+X-Google-Smtp-Source: ABdhPJxo8IUG2+0k3+cwej9Yz2bzEAyWgDl5CS1n8+Wkkmh2JB4A5Bomy5qkfkApBeGizY2/b9rWCg==
+X-Received: by 2002:a05:6402:c8d:: with SMTP id cm13mr260966edb.340.1604541565122;
+        Wed, 04 Nov 2020 17:59:25 -0800 (PST)
+Received: from localhost.localdomain ([5.22.135.99])
+        by smtp.gmail.com with ESMTPSA id r11sm36812edi.91.2020.11.04.17.59.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Nov 2020 17:59:24 -0800 (PST)
+From:   Yonatan Goldschmidt <yonatan.goldschmidt@granulate.io>
+To:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Yonatan Goldschmidt <yonatan.goldschmidt@granulate.io>
+Subject: [PATCH v3 2/2] perf inject jit: Add namespaces support
+Date:   Thu,  5 Nov 2020 03:56:04 +0200
+Message-Id: <20201105015604.1726943-1-yonatan.goldschmidt@granulate.io>
+X-Mailer: git-send-email 2.25.0
+In-Reply-To: <20201105014833.1724363-1-yonatan.goldschmidt@granulate.io>
+References: <20201105014833.1724363-1-yonatan.goldschmidt@granulate.io>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAD=FV=Wc-b75a-QSX8qLq0+fCbcnvh_6q+N6azL=+Tk+rMie1g@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Doug,
+This patch fixes "perf inject --jit" to properly operate
+on namespaced/containerized processes:
 
-On Wed, Nov 04, 2020 at 04:29:50PM -0800, Doug Anderson wrote:
-> Hi,
-> 
-> On Tue, Nov 3, 2020 at 10:38 AM Matthias Kaehlcke <mka@chromium.org> wrote:
-> >
-> > The trogdor design has two options for supplying the pp3300_hub power rail,
-> > it can be supplied by pp3300_l7c or pp3300_a. Initially pp3300_l7c was
-> > used, newer revisions (will) use pp3300_a as supply.
-> >
-> > Add a DT node for the pp3300_a path which includes a power switch that is
-> > controlled by a GPIO. Make this path the default and keep trogdor rev1,
-> > lazor rev0 and rev1 on pp3300_l7c.
-> 
-> It might not hurt to mention that even on early hardware that GPIO84
-> was allocated to this purpose but that it was a stuff option for what
-> actually provided power to the hub.  This explains why it's OK to add
-> the fixed regulator (just with no clients) even on old hardware.  If
-> GPIO84 had been used for something else on old hardware this would
-> have been bad.
+* jitdump files are generated by the process, thus they should be
+  looked up in its mount NS.
+* DSOs of injected MMAP events will later be looked up in the process
+  mount NS, so write them into its NS.
+* PIDs & TIDs from jitdump events need to be translated to the PID as
+  seen by "perf record" before written into MMAP events.
 
-ok
+For a process in a different PID NS, the TID & PID given in the jitdump
+event are actually ignored; I use the TID & PID of the thread which
+mmap()ed the jitdump file. This is simplified and won't do for forks of
+the initial process, if they continue using the same jitdump file.
+Future patches might improve it.
 
-> > diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-> > index bf875589d364..2d64e75a2d6d 100644
-> > --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-> > +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-> > @@ -174,6 +174,21 @@ pp3300_fp_tp: pp3300-fp-tp-regulator {
-> >                 vin-supply = <&pp3300_a>;
-> >         };
-> >
-> > +       pp3300_hub: pp3300-hub {
-> > +               compatible = "regulator-fixed";
-> > +               regulator-name = "pp3300_hub";
-> > +
-> > +               regulator-min-microvolt = <3300000>;
-> > +               regulator-max-microvolt = <3300000>;
-> > +
-> > +               gpio = <&tlmm 84 GPIO_ACTIVE_HIGH>;
-> > +               enable-active-high;
-> > +               pinctrl-names = "default";
-> > +               pinctrl-0 = <&en_pp3300_hub>;
-> > +
-> > +               vin-supply = <&pp3300_a>;
-> 
-> You're leaving things in a bit of an inconsistent state here.  The
-> "pp3300_hub_7c" is always_on / boot_on.  This new one isn't.
+This was tested by recording a NodeJS process running with "--perf-prof",
+inside a Docker container, and by recording another NodeJS process
+running in the same namespaces as perf itself, to make sure it's not
+broken for non-containerized processes.
 
-Actually the new "pp3300_hub" it is also on at boot, the Chrome OS bootloader
-asserts the GPIO.
+Signed-off-by: Yonatan Goldschmidt <yonatan.goldschmidt@granulate.io>
+---
+ tools/perf/builtin-inject.c  |  4 +-
+ tools/perf/util/jit.h        |  2 +-
+ tools/perf/util/jitdump.c    | 84 ++++++++++++++++++++++++++++--------
+ tools/perf/util/namespaces.c | 12 ++++++
+ tools/perf/util/namespaces.h |  2 +
+ 5 files changed, 82 insertions(+), 22 deletions(-)
 
-> I know this is slightly more complicated due to the fact that downstream we
-> have a way to control the hub power but didn't quite get that resolved
-> upstream, but the way you have it now, on new hardware upstream will
-> power off the hub but also keep "pp3300_hub_7c" powered on for no
-> reason.  Seems like that should be fixed?
+diff --git a/tools/perf/builtin-inject.c b/tools/perf/builtin-inject.c
+index 6d2f410d773a..715ae87a7368 100644
+--- a/tools/perf/builtin-inject.c
++++ b/tools/perf/builtin-inject.c
+@@ -292,7 +292,7 @@ static int perf_event__jit_repipe_mmap(struct perf_tool *tool,
+ 	 * if jit marker, then inject jit mmaps and generate ELF images
+ 	 */
+ 	ret = jit_process(inject->session, &inject->output, machine,
+-			  event->mmap.filename, event->mmap.pid, &n);
++			  event->mmap.filename, event->mmap.pid, event->mmap.tid, &n);
+ 	if (ret < 0)
+ 		return ret;
+ 	if (ret) {
+@@ -330,7 +330,7 @@ static int perf_event__jit_repipe_mmap2(struct perf_tool *tool,
+ 	 * if jit marker, then inject jit mmaps and generate ELF images
+ 	 */
+ 	ret = jit_process(inject->session, &inject->output, machine,
+-			  event->mmap2.filename, event->mmap2.pid, &n);
++			  event->mmap2.filename, event->mmap2.pid, event->mmap2.tid, &n);
+ 	if (ret < 0)
+ 		return ret;
+ 	if (ret) {
+diff --git a/tools/perf/util/jit.h b/tools/perf/util/jit.h
+index 6817ffc2a059..fb810e1b2de7 100644
+--- a/tools/perf/util/jit.h
++++ b/tools/perf/util/jit.h
+@@ -5,7 +5,7 @@
+ #include <data.h>
+ 
+ int jit_process(struct perf_session *session, struct perf_data *output,
+-		struct machine *machine, char *filename, pid_t pid, u64 *nbytes);
++		struct machine *machine, char *filename, pid_t pid, pid_t tid, u64 *nbytes);
+ 
+ int jit_inject_record(const char *filename);
+ 
+diff --git a/tools/perf/util/jitdump.c b/tools/perf/util/jitdump.c
+index 0804308ef285..bdcef7a0d3f5 100644
+--- a/tools/perf/util/jitdump.c
++++ b/tools/perf/util/jitdump.c
+@@ -18,6 +18,7 @@
+ #include "event.h"
+ #include "debug.h"
+ #include "evlist.h"
++#include "namespaces.h"
+ #include "symbol.h"
+ #include <elf.h>
+ 
+@@ -35,6 +36,7 @@ struct jit_buf_desc {
+ 	struct perf_data *output;
+ 	struct perf_session *session;
+ 	struct machine *machine;
++	struct nsinfo  *nsi;
+ 	union jr_entry   *entry;
+ 	void             *buf;
+ 	uint64_t	 sample_type;
+@@ -72,7 +74,8 @@ struct jit_tool {
+ #define get_jit_tool(t) (container_of(tool, struct jit_tool, tool))
+ 
+ static int
+-jit_emit_elf(char *filename,
++jit_emit_elf(struct jit_buf_desc *jd,
++	     char *filename,
+ 	     const char *sym,
+ 	     uint64_t code_addr,
+ 	     const void *code,
+@@ -83,14 +86,18 @@ jit_emit_elf(char *filename,
+ 	     uint32_t unwinding_header_size,
+ 	     uint32_t unwinding_size)
+ {
+-	int ret, fd;
++	int ret, fd, saved_errno;
++	struct nscookie nsc;
+ 
+ 	if (verbose > 0)
+ 		fprintf(stderr, "write ELF image %s\n", filename);
+ 
++	nsinfo__mountns_enter(jd->nsi, &nsc);
+ 	fd = open(filename, O_CREAT|O_TRUNC|O_WRONLY, 0644);
++	saved_errno = errno;
++	nsinfo__mountns_exit(&nsc);
+ 	if (fd == -1) {
+-		pr_warning("cannot create jit ELF %s: %s\n", filename, strerror(errno));
++		pr_warning("cannot create jit ELF %s: %s\n", filename, strerror(saved_errno));
+ 		return -1;
+ 	}
+ 
+@@ -99,8 +106,11 @@ jit_emit_elf(char *filename,
+ 
+         close(fd);
+ 
+-        if (ret)
+-                unlink(filename);
++	if (ret) {
++		nsinfo__mountns_enter(jd->nsi, &nsc);
++		unlink(filename);
++		nsinfo__mountns_exit(&nsc);
++	}
+ 
+ 	return ret;
+ }
+@@ -134,12 +144,15 @@ static int
+ jit_open(struct jit_buf_desc *jd, const char *name)
+ {
+ 	struct jitheader header;
++	struct nscookie nsc;
+ 	struct jr_prefix *prefix;
+ 	ssize_t bs, bsz = 0;
+ 	void *n, *buf = NULL;
+ 	int ret, retval = -1;
+ 
++	nsinfo__mountns_enter(jd->nsi, &nsc);
+ 	jd->in = fopen(name, "r");
++	nsinfo__mountns_exit(&nsc);
+ 	if (!jd->in)
+ 		return -1;
+ 
+@@ -367,6 +380,20 @@ jit_inject_event(struct jit_buf_desc *jd, union perf_event *event)
+ 	return 0;
+ }
+ 
++static pid_t jr_entry_pid(struct jit_buf_desc *jd, union jr_entry *jr)
++{
++	if (jd->nsi && jd->nsi->in_pidns)
++		return jd->nsi->tgid;
++	return jr->load.pid;
++}
++
++static pid_t jr_entry_tid(struct jit_buf_desc *jd, union jr_entry *jr)
++{
++	if (jd->nsi && jd->nsi->in_pidns)
++		return jd->nsi->pid;
++	return jr->load.tid;
++}
++
+ static uint64_t convert_timestamp(struct jit_buf_desc *jd, uint64_t timestamp)
+ {
+ 	struct perf_tsc_conversion tc;
+@@ -398,14 +425,15 @@ static int jit_repipe_code_load(struct jit_buf_desc *jd, union jr_entry *jr)
+ 	const char *sym;
+ 	uint64_t count;
+ 	int ret, csize, usize;
+-	pid_t pid, tid;
++	pid_t nspid, pid, tid;
+ 	struct {
+ 		u32 pid, tid;
+ 		u64 time;
+ 	} *id;
+ 
+-	pid   = jr->load.pid;
+-	tid   = jr->load.tid;
++	nspid = jr->load.pid;
++	pid   = jr_entry_pid(jd, jr);
++	tid   = jr_entry_tid(jd, jr);
+ 	csize = jr->load.code_size;
+ 	usize = jd->unwinding_mapped_size;
+ 	addr  = jr->load.code_addr;
+@@ -421,14 +449,14 @@ static int jit_repipe_code_load(struct jit_buf_desc *jd, union jr_entry *jr)
+ 	filename = event->mmap2.filename;
+ 	size = snprintf(filename, PATH_MAX, "%s/jitted-%d-%" PRIu64 ".so",
+ 			jd->dir,
+-			pid,
++			nspid,
+ 			count);
+ 
+ 	size++; /* for \0 */
+ 
+ 	size = PERF_ALIGN(size, sizeof(u64));
+ 	uaddr = (uintptr_t)code;
+-	ret = jit_emit_elf(filename, sym, addr, (const void *)uaddr, csize, jd->debug_data, jd->nr_debug_entries,
++	ret = jit_emit_elf(jd, filename, sym, addr, (const void *)uaddr, csize, jd->debug_data, jd->nr_debug_entries,
+ 			   jd->unwinding_data, jd->eh_frame_hdr_size, jd->unwinding_size);
+ 
+ 	if (jd->debug_data && jd->nr_debug_entries) {
+@@ -447,7 +475,7 @@ static int jit_repipe_code_load(struct jit_buf_desc *jd, union jr_entry *jr)
+ 		free(event);
+ 		return -1;
+ 	}
+-	if (stat(filename, &st))
++	if (nsinfo__stat(filename, &st, jd->nsi))
+ 		memset(&st, 0, sizeof(st));
+ 
+ 	event->mmap2.header.type = PERF_RECORD_MMAP2;
+@@ -511,14 +539,15 @@ static int jit_repipe_code_move(struct jit_buf_desc *jd, union jr_entry *jr)
+ 	int usize;
+ 	u16 idr_size;
+ 	int ret;
+-	pid_t pid, tid;
++	pid_t nspid, pid, tid;
+ 	struct {
+ 		u32 pid, tid;
+ 		u64 time;
+ 	} *id;
+ 
+-	pid = jr->move.pid;
+-	tid =  jr->move.tid;
++	nspid = jr->load.pid;
++	pid   = jr_entry_pid(jd, jr);
++	tid   = jr_entry_tid(jd, jr);
+ 	usize = jd->unwinding_mapped_size;
+ 	idr_size = jd->machine->id_hdr_size;
+ 
+@@ -532,12 +561,12 @@ static int jit_repipe_code_move(struct jit_buf_desc *jd, union jr_entry *jr)
+ 	filename = event->mmap2.filename;
+ 	size = snprintf(filename, PATH_MAX, "%s/jitted-%d-%" PRIu64 ".so",
+ 	         jd->dir,
+-	         pid,
++		 nspid,
+ 		 jr->move.code_index);
+ 
+ 	size++; /* for \0 */
+ 
+-	if (stat(filename, &st))
++	if (nsinfo__stat(filename, &st, jd->nsi))
+ 		memset(&st, 0, sizeof(st));
+ 
+ 	size = PERF_ALIGN(size, sizeof(u64));
+@@ -696,7 +725,7 @@ jit_inject(struct jit_buf_desc *jd, char *path)
+  * as captured in the RECORD_MMAP record
+  */
+ static int
+-jit_detect(char *mmap_name, pid_t pid)
++jit_detect(char *mmap_name, pid_t pid, struct nsinfo *nsi)
+  {
+ 	char *p;
+ 	char *end = NULL;
+@@ -736,7 +765,7 @@ jit_detect(char *mmap_name, pid_t pid)
+ 	 * pid does not match mmap pid
+ 	 * pid==0 in system-wide mode (synthesized)
+ 	 */
+-	if (pid && pid2 != pid)
++	if (pid && pid2 != nsi->nstgid)
+ 		return -1;
+ 	/*
+ 	 * validate suffix
+@@ -778,16 +807,30 @@ jit_process(struct perf_session *session,
+ 	    struct machine *machine,
+ 	    char *filename,
+ 	    pid_t pid,
++	    pid_t tid,
+ 	    u64 *nbytes)
+ {
++	struct thread *thread;
++	struct nsinfo *nsi;
+ 	struct evsel *first;
+ 	struct jit_buf_desc jd;
+ 	int ret;
+ 
++	thread = machine__findnew_thread(machine, pid, tid);
++	if (thread == NULL) {
++		pr_err("problem processing JIT mmap event, skipping it.\n");
++		return 0;
++	}
++
++	nsi = nsinfo__get(thread->nsinfo);
++	thread__put(thread);
++
+ 	/*
+ 	 * first, detect marker mmap (i.e., the jitdump mmap)
+ 	 */
+-	if (jit_detect(filename, pid)) {
++	if (jit_detect(filename, pid, nsi)) {
++		nsinfo__put(nsi);
++
+ 		// Strip //anon* mmaps if we processed a jitdump for this pid
+ 		if (jit_has_pid(machine, pid) && (strncmp(filename, "//anon", 6) == 0))
+ 			return 1;
+@@ -800,6 +843,7 @@ jit_process(struct perf_session *session,
+ 	jd.session = session;
+ 	jd.output  = output;
+ 	jd.machine = machine;
++	jd.nsi = nsi;
+ 
+ 	/*
+ 	 * track sample_type to compute id_all layout
+@@ -817,5 +861,7 @@ jit_process(struct perf_session *session,
+ 		ret = 1;
+ 	}
+ 
++	nsinfo__put(jd.nsi);
++
+ 	return ret;
+ }
+diff --git a/tools/perf/util/namespaces.c b/tools/perf/util/namespaces.c
+index f4b3512d8dd2..608b20c72a5c 100644
+--- a/tools/perf/util/namespaces.c
++++ b/tools/perf/util/namespaces.c
+@@ -287,3 +287,15 @@ char *nsinfo__realpath(const char *path, struct nsinfo *nsi)
+ 
+ 	return rpath;
+ }
++
++int nsinfo__stat(const char *filename, struct stat *st, struct nsinfo *nsi)
++{
++	int ret;
++	struct nscookie nsc;
++
++	nsinfo__mountns_enter(nsi, &nsc);
++	ret = stat(filename, st);
++	nsinfo__mountns_exit(&nsc);
++
++	return ret;
++}
+diff --git a/tools/perf/util/namespaces.h b/tools/perf/util/namespaces.h
+index 1cc8637cf885..ad9775db7b9c 100644
+--- a/tools/perf/util/namespaces.h
++++ b/tools/perf/util/namespaces.h
+@@ -8,6 +8,7 @@
+ #define __PERF_NAMESPACES_H
+ 
+ #include <sys/types.h>
++#include <sys/stat.h>
+ #include <linux/stddef.h>
+ #include <linux/perf_event.h>
+ #include <linux/refcount.h>
+@@ -56,6 +57,7 @@ void nsinfo__mountns_enter(struct nsinfo *nsi, struct nscookie *nc);
+ void nsinfo__mountns_exit(struct nscookie *nc);
+ 
+ char *nsinfo__realpath(const char *path, struct nsinfo *nsi);
++int nsinfo__stat(const char *filename, struct stat *st, struct nsinfo *nsi);
+ 
+ static inline void __nsinfo__zput(struct nsinfo **nsip)
+ {
+-- 
+2.25.0
 
-Our EEs told me that it would be ok in terms of power to keep "pp3300_hub_7c"
-powered, since there would be no significant power consumption without load.
-
-In any case unused RPMH regulators are switched off by the kernel ~30s after
-boot, so I think we are ok:
-
-[   31.202219] ldo7: disabling
-
-The above is from the l7c regulator on a Lazor rev2.
-
-> > +       };
-> > +
-> >         /* BOARD-SPECIFIC TOP LEVEL NODES */
-> >
-> >         backlight: backlight {
-> > @@ -469,7 +484,7 @@ ppvar_l6c: ldo6 {
-> >                         regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> >                 };
-> >
-> > -               pp3300_hub:
-> > +               pp3300_hub_7c:
-> 
-> nit: If it were me, I probably wouldn't have bothered introducing the
-> "pp3300_hub_7c" alias since it's not a real thing in the schematic.  I
-> would have just had the older revisions refer to "pp3300_l7c".  If you
-> really love the "pp3300_hub_7c", though, I won't stand in your way.
-
-true, it's not really needed, I'll get rid of it in the next version.
-
-> >                 pp3300_l7c: ldo7 {
-> >                         regulator-min-microvolt = <3304000>;
-> >                         regulator-max-microvolt = <3304000>;
-> > @@ -1151,6 +1166,19 @@ pinconf {
-> >                 };
-> >         };
-> >
-> > +       en_pp3300_hub: en-pp3300-hub {
-> > +               pinmux {
-> > +                       pins = "gpio84";
-> > +                       function = "gpio";
-> > +               };
-> > +
-> > +               pinconf {
-> > +                       pins = "gpio84";
-> > +                       drive-strength = <2>;
-> > +                       bias-disable;
-> > +               };
-> > +       };
-> > +
-> >         en_pp3300_dx_edp: en-pp3300-dx-edp {
-> 
-> "hub" sorts after "dx", so the ordering is slightly wrong here.
-
-ack, will change
