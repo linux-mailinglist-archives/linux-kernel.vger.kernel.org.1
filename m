@@ -2,52 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E37C02A87E0
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 21:21:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD2632A87E2
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 21:21:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732124AbgKEUVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 15:21:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34516 "EHLO mail.kernel.org"
+        id S1732167AbgKEUVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 15:21:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34538 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726801AbgKEUVU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726996AbgKEUVU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 5 Nov 2020 15:21:20 -0500
-Subject: Re: [GIT PULL] PCI fixes for v5.10
+Subject: Re: [GIT PULL] Please pull RDMA subsystem changes
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1604607679;
-        bh=H4u4Bd6m0go6FQOJfir2Lu1yBBs7zGIfHVh0EBZVELw=;
+        bh=g0HNgZM1j+nqby7FWFlTAh5Tnd3g735kkQ+i4YA1wKc=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=f8JNbMehEQOlgoAOCfx/Wb5lc3EkbFhDH2Ehpp0UxLpb+58co4NCXfl0glJuBmnqZ
-         yeQSP+tjmBCNrFH52WY+ZYROFjkPyjFEM+1XlTzGpoF1RwuCMIyJZaoDC0CtgWnO5P
-         X5thB6ieuR549nviv6oXzJtv6y6aY5Bs92409M+Y=
+        b=t2XOU+VCeSFgshKlq9IEBNqzIAiA6tS1p3kB9V/4PVKuaTosh8aoYB1va95hV/s8N
+         hvXy/4Bg/aKKP1PAZf+gwkO7ukt0IkQ7q6k62Z6FgJuZgU3OsyxeofBWXQBvMvCBHf
+         Saxi1bmq8JZpK2ugSongdvRtTehAuF1hc7/ersRo=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201104211033.GA418499@bjorn-Precision-5520>
-References: <20201104211033.GA418499@bjorn-Precision-5520>
-X-PR-Tracked-List-Id: <linux-pci.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201104211033.GA418499@bjorn-Precision-5520>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci.git tags/pci-v5.10-fixes-1
-X-PR-Tracked-Commit-Id: 832ea234277a2465ec6602fa6a4db5cd9ee87ae3
+In-Reply-To: <20201105181636.GA80666@nvidia.com>
+References: <20201105181636.GA80666@nvidia.com>
+X-PR-Tracked-List-Id: <linux-rdma.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20201105181636.GA80666@nvidia.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
+X-PR-Tracked-Commit-Id: 21fcdeec09ff461b2f9a9ef4fcc3a136249e58a1
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: e2557a2cdeb2e6a6e258e27e63af34e3ac6c1069
-Message-Id: <160460767950.18865.11417118347211160640.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 6f3f374ac05d05cfa63d04f4479ead7e3cb6d087
+Message-Id: <160460767991.18865.15076452265074271780.pr-tracker-bot@kernel.org>
 Date:   Thu, 05 Nov 2020 20:21:19 +0000
-To:     Bjorn Helgaas <helgaas@kernel.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>, vtolkm@googlemail.com,
-        Vidya Sagar <vidyas@nvidia.com>, Boris V <borisvk@bstnet.org>,
-        Rajat Jain <rajatja@google.com>
+        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 4 Nov 2020 15:10:33 -0600:
+The pull request you sent on Thu, 5 Nov 2020 14:16:36 -0400:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci.git tags/pci-v5.10-fixes-1
+> git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/e2557a2cdeb2e6a6e258e27e63af34e3ac6c1069
+https://git.kernel.org/torvalds/c/6f3f374ac05d05cfa63d04f4479ead7e3cb6d087
 
 Thank you!
 
