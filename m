@@ -2,213 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92E4B2A8910
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 22:32:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ADAB2A8912
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 22:33:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732240AbgKEVcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 16:32:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54532 "EHLO
+        id S1732342AbgKEVd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 16:33:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731860AbgKEVcy (ORCPT
+        with ESMTP id S1732192AbgKEVd2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 16:32:54 -0500
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05F4FC0613CF;
-        Thu,  5 Nov 2020 13:32:53 -0800 (PST)
-Received: by mail-yb1-xb43.google.com with SMTP id f6so2644107ybr.0;
-        Thu, 05 Nov 2020 13:32:53 -0800 (PST)
+        Thu, 5 Nov 2020 16:33:28 -0500
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68765C0613D2
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 13:33:28 -0800 (PST)
+Received: by mail-qk1-x749.google.com with SMTP id i8so1913320qka.15
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 13:33:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3wllOumUiN3CO5+JJCREJzUH1/CfdWjOhyUGmRgpPjQ=;
-        b=EvpXLM6KsLrLyHRvxywH0EF4bP3w80PXXPJ14Rh+P0sTeU2/3MPnb5uzohTAg3O/qF
-         8c3rAoaUZBMWh5Xiu0E5lbx3eJIJy/wjG7uQAhOe728q3LCH6XE0lOCKs9athc7yLA33
-         95joDVXKMrrMvT5a5PptXnmbf9oJZvH78YOchSpnukgY2h9kha8VEZVp6K/qnVz4jMuW
-         dxknwoF2p5yVv5Iy2i9eh4pdePaoVnZHPg5magLouN0pgoQzHN3b3pelByxZlwQuwgS+
-         J2KjiTdVEq3HRb65TnRK8o9s24eFG/bSAmtFmHIJaXag0h/5achnVgFbuQNo8pY5K5cN
-         RWaQ==
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=UJkZX1H27CEJgxyCZBCEdyDuRuG5xM7XtCA2iT1WI+8=;
+        b=cGpcfBV4YiQi3w9EyBV0GNDbdFcCrKpU41+zMIR0Wy6uDFL2N31r1Re2FRryvxqlGL
+         jN+9wlEOoBhIuGUsPgJmcuo+wITHwciNSfVqaozV/ozE/Roe3wSKl0g+SkC4sRDpgCmz
+         cD6W9dnpWpoC+tNGfGi/a0++8RRMR7CbjiauSkhFxW0gJp+I/PA2MoOun6XV5+PrWHjo
+         rCwNjfCBvtCMsgFDq1iUmJ3OcsYWesmSMYMw623eJHlqVHiFXvQDAryixpZ3ZlHTyT52
+         ncFuO4ZHDPAPpmTRoLlAz4Vi875h8In42QAinh53SOLoAmv6ENU6PRi68sk/F0LwUdch
+         t3vA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3wllOumUiN3CO5+JJCREJzUH1/CfdWjOhyUGmRgpPjQ=;
-        b=rnOwpVFCywXoXqnFP2XOtYD7dB6Jr2u+POkke2fQKeerK+B/NVeDHHDihw+A6K2zJp
-         +UyLLDsB4tf9BPcXcnarvQza4JY5xs/pRmqEbRlzM50C7KGobCmuRvb/R9U1t7Kb0pql
-         KGFE2OQunSFQQ6tBUhzJS/qm5shNdNBGrPDBlZ4qnuS99FcXNGChP1YBKsmTf4hTbkDk
-         50ufypzEPRZzrxulCJeM1tkWXHcaRSkxo8sDcZijMZ1z+E8wSKP2ONVLRVwkMuM+TMnp
-         zmFgQHUylntDtMmXLERqwgDxAUZJKsj6+l7NOxyyPOjCUQpIQyFXzivVS9M387Ucb6lE
-         ra7A==
-X-Gm-Message-State: AOAM531PnVxN+kaXiMeM0CSVP+2tzAs3DHLw48wUNSp2MiN43MF3m2Mv
-        JSDV5qtt6rQFuIXYZN17/3VNhi9FiTOML/lWdok=
-X-Google-Smtp-Source: ABdhPJx1hyV6TUCNTUsIOtzXgIUvoqESXjIouApwK47qqKVLg/JKGcfmMZ91dBCwzzwNKPOorH1MjZSjAqCKDDZuSUA=
-X-Received: by 2002:a25:da4e:: with SMTP id n75mr6481845ybf.425.1604611973168;
- Thu, 05 Nov 2020 13:32:53 -0800 (PST)
-MIME-Version: 1.0
-References: <cover.1604542786.git.dxu@dxuuu.xyz> <4e3e8b9b525c8bed39c0ee2aa68f2dff701f56a4.1604542786.git.dxu@dxuuu.xyz>
-In-Reply-To: <4e3e8b9b525c8bed39c0ee2aa68f2dff701f56a4.1604542786.git.dxu@dxuuu.xyz>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 5 Nov 2020 13:32:42 -0800
-Message-ID: <CAEf4BzZN3v0Lb=XBKag3+EJANvAA=ei+ot3zNxuQc_HqYEdScw@mail.gmail.com>
-Subject: Re: [PATCH bpf v2 2/2] selftest/bpf: Test bpf_probe_read_user_str()
- strips trailing bytes after NUL
-To:     Daniel Xu <dxu@dxuuu.xyz>
-Cc:     bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=UJkZX1H27CEJgxyCZBCEdyDuRuG5xM7XtCA2iT1WI+8=;
+        b=G8p4XbbKnCkoQNCP4r59H2AujSjVxNnM0dEbZIucZl9K15KmLVqLc3by29mRMDmqJF
+         CIV++FU/oC2G8ZDbnCYpmgYc62Bzo5+NN0wWT0J+o6bGYz3JvAiWLoXzK3Pvw6rhKqad
+         LbCcAc5f39nvj4WAgjNTwXvF9jKefCy3jdTseGcffN6WBjXCnEFwdyBte/1IV9dyiaC2
+         HBnJc7LvEcAcMi3ePaCJQB94rfRMVwzBXRqdqpVs5qioxB1e2UNhNxkdNFiUhEUM/dVL
+         gTc5/LAd2JAB99XNvYn2y+0PUAFPinKRkabjELbRPfNd9J4OtxjuPAIoIdc0r8fWTlvU
+         qapw==
+X-Gm-Message-State: AOAM532ZxYORi+2DwHRlNHSQpLj5KVeQop/+0p8nIyml9kct0KFpZNn+
+        7B9uWm0OyWBYPD/LdnKLiGnxJD6LjYe/Mk/vAg==
+X-Google-Smtp-Source: ABdhPJxM7KMMcjHdX/wvEDHOwq3SDluZ0esQWx2yWArZrHDkxzJBbcF/kSl+dAMuvTF9XEmPLUAlY/CXzEPlOGIv4w==
+Sender: "lokeshgidra via sendgmr" <lokeshgidra@lg.mtv.corp.google.com>
+X-Received: from lg.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:29dd])
+ (user=lokeshgidra job=sendgmr) by 2002:a0c:b44a:: with SMTP id
+ e10mr4421795qvf.4.1604612007309; Thu, 05 Nov 2020 13:33:27 -0800 (PST)
+Date:   Thu,  5 Nov 2020 13:33:20 -0800
+Message-Id: <20201105213324.3111570-1-lokeshgidra@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
+Subject: [PATCH v11 0/4] SELinux support for anonymous inodes and UFFD
+From:   Lokesh Gidra <lokeshgidra@google.com>
+To:     Andrea Arcangeli <aarcange@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        James Morris <jmorris@namei.org>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Eric Biggers <ebiggers@kernel.org>
+Cc:     "Serge E. Hallyn" <serge@hallyn.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Daniel Colascione <dancol@dancol.org>,
+        Kees Cook <keescook@chromium.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        KP Singh <kpsingh@google.com>,
+        David Howells <dhowells@redhat.com>,
+        Thomas Cedeno <thomascedeno@google.com>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Matthew Garrett <matthewgarrett@google.com>,
+        Aaron Goidel <acgoide@tycho.nsa.gov>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Adrian Reber <areber@redhat.com>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        kaleshsingh@google.com, calin@google.com, surenb@google.com,
+        nnk@google.com, jeffv@google.com, kernel-team@android.com,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        hch@infradead.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 4, 2020 at 8:51 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
->
-> Previously, bpf_probe_read_user_str() could potentially overcopy the
-> trailing bytes after the NUL due to how do_strncpy_from_user() does the
-> copy in long-sized strides. The issue has been fixed in the previous
-> commit.
->
-> This commit adds a selftest that ensures we don't regress
-> bpf_probe_read_user_str() again.
->
-> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
-> ---
->  .../bpf/prog_tests/probe_read_user_str.c      | 60 +++++++++++++++++++
->  .../bpf/progs/test_probe_read_user_str.c      | 34 +++++++++++
->  2 files changed, 94 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_probe_read_user_str.c
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c b/tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c
-> new file mode 100644
-> index 000000000000..597a166e6c8d
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c
-> @@ -0,0 +1,60 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <test_progs.h>
-> +#include "test_probe_read_user_str.skel.h"
-> +
-> +static const char str[] = "mestring";
-> +
-> +void test_probe_read_user_str(void)
-> +{
-> +       struct test_probe_read_user_str *skel;
-> +       int fd, err, duration = 0;
-> +       char buf[256];
-> +       ssize_t n;
-> +
-> +       skel = test_probe_read_user_str__open_and_load();
-> +       if (CHECK(!skel, "test_probe_read_user_str__open_and_load",
-> +                 "skeleton open and load failed\n"))
-> +               goto out;
-> +
-> +       err = test_probe_read_user_str__attach(skel);
-> +       if (CHECK(err, "test_probe_read_user_str__attach",
-> +                 "skeleton attach failed: %d\n", err))
-> +               goto out;
-> +
-> +       fd = open("/dev/null", O_WRONLY);
-> +       if (CHECK(fd < 0, "open", "open /dev/null failed: %d\n", fd))
-> +               goto out;
-> +
-> +       /* Give pid to bpf prog so it doesn't read from anyone else */
-> +       skel->bss->pid = getpid();
-> +
-> +       /* Ensure bytes after string are ones */
-> +       memset(buf, 1, sizeof(buf));
-> +       memcpy(buf, str, sizeof(str));
-> +
-> +       /* Trigger tracepoint */
-> +       n = write(fd, buf, sizeof(buf));
-> +       if (CHECK(n != sizeof(buf), "write", "write failed: %ld\n", n))
-> +               goto fd_out;
-> +
-> +       /* Did helper fail? */
-> +       if (CHECK(skel->bss->ret < 0, "prog ret", "prog returned: %d\n",
-> +                 skel->bss->ret))
-> +               goto fd_out;
-> +
-> +       /* Check that string was copied correctly */
-> +       err = memcmp(skel->bss->buf, str, sizeof(str));
-> +       if (CHECK(err, "memcmp", "prog copied wrong string"))
-> +               goto fd_out;
-> +
-> +       /* Now check that no extra trailing bytes were copied */
-> +       memset(buf, 0, sizeof(buf));
-> +       err = memcmp(skel->bss->buf + sizeof(str), buf, sizeof(buf) - sizeof(str));
-> +       if (CHECK(err, "memcmp", "trailing bytes were not stripped"))
-> +               goto fd_out;
-> +
-> +fd_out:
-> +       close(fd);
-> +out:
-> +       test_probe_read_user_str__destroy(skel);
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/test_probe_read_user_str.c b/tools/testing/selftests/bpf/progs/test_probe_read_user_str.c
-> new file mode 100644
-> index 000000000000..41c3e296566e
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/test_probe_read_user_str.c
-> @@ -0,0 +1,34 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#include <linux/bpf.h>
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_tracing.h>
-> +
-> +#include <sys/types.h>
-> +
-> +struct sys_enter_write_args {
-> +       unsigned long long pad;
-> +       int syscall_nr;
-> +       int pad1; /* 4 byte hole */
+Userfaultfd in unprivileged contexts could be potentially very
+useful. We'd like to harden userfaultfd to make such unprivileged use
+less risky. This patch series allows SELinux to manage userfaultfd
+file descriptors and in the future, other kinds of
+anonymous-inode-based file descriptor.  SELinux policy authors can
+apply policy types to anonymous inodes by providing name-based
+transition rules keyed off the anonymous inode internal name (
+"[userfaultfd]" in the case of userfaultfd(2) file descriptors) and
+applying policy to the new SIDs thus produced.
 
-I have a hunch that this explicit padding might break on big-endian
-architectures?..
+With SELinux managed userfaultfd, an admin can control creation and
+movement of the file descriptors. In particular, handling of
+a userfaultfd descriptor by a different process is essentially a
+ptrace access into the process, without any of the corresponding
+security_ptrace_access_check() checks. For privacy, the admin may
+want to deny such accesses, which is possible with SELinux support.
 
-Can you instead include "vmlinux.h" in this file and use struct
-trace_event_raw_sys_enter? you'll just need ctx->args[2] to get that
-buffer pointer.
+Inside the kernel, a new anon_inode interface, anon_inode_getfd_secure,
+allows callers to opt into this SELinux management. In this new "secure"
+mode, anon_inodes create new ephemeral inodes for anonymous file objects
+instead of reusing the normal anon_inodes singleton dummy inode. A new
+LSM hook gives security modules an opportunity to configure and veto
+these ephemeral inodes.
 
-Alternatively, and it's probably simpler overall would be to just
-provide user-space pointer through global variable:
+This patch series is one of two fork of [1] and is an
+alternative to [2].
 
-void *user_ptr;
+The primary difference between the two patch series is that this
+partch series creates a unique inode for each "secure" anonymous
+inode, while the other patch series ([2]) continues using the
+singleton dummy anonymous inode and adds a way to attach SELinux
+security information directly to file objects.
 
+I prefer the approach in this patch series because 1) it's a smaller
+patch than [2], and 2) it produces a more regular security
+architecture: in this patch series, secure anonymous inodes aren't
+S_PRIVATE and they maintain the SELinux property that the label for a
+file is in its inode. We do need an additional inode per anonymous
+file, but per-struct-file inode creation doesn't seem to be a problem
+for pipes and sockets.
 
-bpf_probe_read_user_str(buf, ..., user_ptr);
+The previous version of this feature ([1]) created a new SELinux
+security class for userfaultfd file descriptors. This version adopts
+the generic transition-based approach of [2].
 
-From user-space:
+This patch series also differs from [2] in that it doesn't affect all
+anonymous inodes right away --- instead requiring anon_inodes callers
+to opt in --- but this difference isn't one of basic approach. The
+important question to resolve is whether we should be creating new
+inodes or enhancing per-file data.
 
-skel->bss->user_ptr = &my_userspace_buf;
+Changes from the first version of the patch:
 
-Full control. You can trigger tracepoint with just an usleep(1), for instance.
+  - Removed some error checks
+  - Defined a new anon_inode SELinux class to resolve the
+    ambiguity in [3]
+  - Inherit sclass as well as descriptor from context inode
 
-> +       unsigned int fd;
-> +       int pad2; /* 4 byte hole */
-> +       const char *buf;
-> +       size_t count;
-> +};
-> +
-> +pid_t pid = 0;
-> +int ret = 0;
-> +char buf[256] = {};
-> +
-> +SEC("tracepoint/syscalls/sys_enter_write")
-> +int on_write(struct sys_enter_write_args *ctx)
-> +{
-> +       if (pid != (bpf_get_current_pid_tgid() >> 32))
-> +               return 0;
-> +
-> +       ret = bpf_probe_read_user_str(buf, sizeof(buf), ctx->buf);
-> +
-> +       return 0;
-> +}
-> +
-> +char _license[] SEC("license") = "GPL";
-> --
-> 2.28.0
->
+Changes from the second version of the patch:
+
+  - Fixed example policy in the commit message to reflect the use of
+    the new anon_inode class.
+
+Changes from the third version of the patch:
+
+  - Dropped the fops parameter to the LSM hook
+  - Documented hook parameters
+  - Fixed incorrect class used for SELinux transition
+  - Removed stray UFFD changed early in the series
+  - Removed a redundant ERR_PTR(PTR_ERR())
+
+Changes from the fourth version of the patch:
+
+  - Removed an unused parameter from an internal function
+  - Fixed function documentation
+
+Changes from the fifth version of the patch:
+
+  - Fixed function documentation in fs/anon_inodes.c and
+    include/linux/lsm_hooks.h
+  - Used anon_inode_getfd_secure() in userfaultfd() syscall and removed
+    owner from userfaultfd_ctx.
+
+Changes from the sixth version of the patch:
+
+  - Removed definition of anon_inode_getfile_secure() as there are no
+    callers.
+  - Simplified function description of anon_inode_getfd_secure().
+  - Elaborated more on the purpose of 'context_inode' in commit message.
+
+Changes from the seventh version of the patch:
+
+  - Fixed error handling in _anon_inode_getfile().
+  - Fixed minor comment and indentation related issues.
+
+Changes from the eighth version of the patch:
+
+  - Replaced selinux_state.initialized with selinux_state.initialized
+
+Changes from the ninth version of the patch:
+
+  - Fixed function names in fs/anon_inodes.c
+  - Fixed comment of anon_inode_getfd_secure()
+  - Fixed name of the patch wherein userfaultfd code uses
+    anon_inode_getfd_secure()
+
+Changes from the tenth version of the patch:
+
+  - Split first patch into VFS and LSM specific patches
+  - Fixed comments in fs/anon_inodes.c
+  - Fixed comment of alloc_anon_inode()
+
+[1] https://lore.kernel.org/lkml/20200211225547.235083-1-dancol@google.com/
+[2] https://lore.kernel.org/linux-fsdevel/20200213194157.5877-1-sds@tycho.nsa.gov/
+[3] https://lore.kernel.org/lkml/23f725ca-5b5a-5938-fcc8-5bbbfc9ba9bc@tycho.nsa.gov/
+
+Daniel Colascione (3):
+  fs: add LSM-supporting anon-inode interface
+  selinux: teach SELinux about anonymous inodes
+  userfaultfd: use secure anon inodes for userfaultfd
+
+Lokesh Gidra (1):
+  security: add inode_init_security_anon() LSM hook
+
+ fs/anon_inodes.c                    | 149 ++++++++++++++++++++--------
+ fs/libfs.c                          |   6 +-
+ fs/userfaultfd.c                    |  19 ++--
+ include/linux/anon_inodes.h         |   5 +
+ include/linux/lsm_hook_defs.h       |   2 +
+ include/linux/lsm_hooks.h           |   9 ++
+ include/linux/security.h            |  10 ++
+ security/security.c                 |   8 ++
+ security/selinux/hooks.c            |  53 ++++++++++
+ security/selinux/include/classmap.h |   2 +
+ 10 files changed, 211 insertions(+), 52 deletions(-)
+
+-- 
+2.29.1.341.ge80a0c044ae-goog
+
