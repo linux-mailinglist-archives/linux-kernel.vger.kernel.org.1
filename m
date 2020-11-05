@@ -2,127 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A2442A89AF
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 23:24:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 693CC2A89BA
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 23:26:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732654AbgKEWYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 17:24:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43452 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732295AbgKEWYc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 17:24:32 -0500
-Received: from localhost (230.sub-72-107-127.myvzw.com [72.107.127.230])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C37D82078E;
-        Thu,  5 Nov 2020 22:24:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604615072;
-        bh=m4VksZL7+JiqNpYze209mExqXP8l/+3AbfJkmoUOqu4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=PfPGXqzAET2q3RaQlhTZeLFhPGzVo8+uEhxpDjALDjkX6Ne0ll1Kn6HdVR69O0TJJ
-         deuq1eJ304vw8pNJJtdYWJqC7A3TOsxS7vxcPQT7euCpsCQse3ecL0LsF/aCjfjQ76
-         yXSh6nYR/sLhiJPH/MRiKVbIAtpnKtl4zP/lHobc=
-Date:   Thu, 5 Nov 2020 16:24:30 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Stephen Bates <sbates@raithlin.com>,
-        Logan Gunthorpe <logang@deltatee.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] PCI: fix a potential uninitentional integer overflow
- issue
-Message-ID: <20201105222430.GA499522@bjorn-Precision-5520>
+        id S1732175AbgKEW0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 17:26:55 -0500
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:44108 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726729AbgKEW0y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 17:26:54 -0500
+Received: by mail-ot1-f65.google.com with SMTP id f16so2866098otl.11;
+        Thu, 05 Nov 2020 14:26:53 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=UB3JnZ8ZO2WhkCksk0bd/Ph2fVdk0d46PH2fs96dUDM=;
+        b=LV2q1fjYkneGaXDQUcOFvMyA2uiMtu1YtrExDW5WiN1vtZV2+P6d7q55ZakKhiXN9S
+         Oi9R72CSLl/1nyVxNvHsW9LVUSg4yxzz8YALw2dtcyzr91Krz5H0NYknNAO567uMaY7T
+         O6+qZEvhp2yeTvlqUSB6/RetedZH7YskzRrruhAT6Uwed1Q/NvDQ48cgdXi9ZZNkD1yo
+         YMBMMI74MH5AuLVSvtkxlEeCWalwzY5NZ0GI7FhB8R1kwdBXyzG2nHatJGUaXwJL5U7c
+         OdOmpuTBVMZ5O9+bk9inWjCN8p/q1fLxtbYsI1nUPyYvb5OUsi1DNxhvwSafkg5IfWva
+         jPzQ==
+X-Gm-Message-State: AOAM530pOFzUoeGynPpbqNFk/mDQt++5Z+YGUQoIDG14qG48UaWjmQx5
+        9OYokSVcL8bC3O6ddLCACg==
+X-Google-Smtp-Source: ABdhPJw+B0xyUSen1aJS+VSkyCAjmi3h3Ui8u7d2MZ50yhm/Xda7Hgl0eduKXYsAlGvM6EostU/GKg==
+X-Received: by 2002:a9d:20a8:: with SMTP id x37mr3290682ota.94.1604615213562;
+        Thu, 05 Nov 2020 14:26:53 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id r184sm692177oie.20.2020.11.05.14.26.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Nov 2020 14:26:52 -0800 (PST)
+Received: (nullmailer pid 1913256 invoked by uid 1000);
+        Thu, 05 Nov 2020 22:26:51 -0000
+Date:   Thu, 5 Nov 2020 16:26:51 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     =?utf-8?Q?=C5=81ukasz?= Stelmach <l.stelmach@samsung.com>
+Cc:     linux-samsung-soc@vger.kernel.org, jim.cromie@gmail.com,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Kukjin Kim <kgene@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        =?utf-8?Q?Bart=C5=82omiej_=C5=BBolnierkiewicz?= 
+        <b.zolnierkie@samsung.com>, Heiner Kallweit <hkallweit1@gmail.com>,
+        netdev@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Krzysztof Kozlowski <krzk@kernel.org>
+Subject: Re: [PATCH v5 2/5] dt-bindings: net: Add bindings for AX88796C SPI
+ Ethernet Adapter
+Message-ID: <20201105222651.GA1913164@bogus>
+References: <20201103151536.26472-1-l.stelmach@samsung.com>
+ <CGME20201103151539eucas1p234b5fe43c6f26272560a7d2ac791202f@eucas1p2.samsung.com>
+ <20201103151536.26472-3-l.stelmach@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201007123045.GS4282@kadam>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201103151536.26472-3-l.stelmach@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 03:33:45PM +0300, Dan Carpenter wrote:
-> On Wed, Oct 07, 2020 at 12:46:15PM +0100, Colin King wrote:
-> > From: Colin Ian King <colin.king@canonical.com>
-> > 
-> > The shift of 1 by align_order is evaluated using 32 bit arithmetic
-> > and the result is assigned to a resource_size_t type variable that
-> > is a 64 bit unsigned integer on 64 bit platforms. Fix an overflow
-> > before widening issue by using the BIT_ULL macro to perform the
-> > shift.
-> > 
-> > Addresses-Coverity: ("Uninitentional integer overflow")
-
-s/Uninitentional/Unintentional/
-Also in subject (please also capitalize subject)
-
-Doesn't Coverity also assign an ID number for this specific issue?
-Can you include that as well, e.g.,
-
-  Addresses-Coverity-ID: 1226899 ("Unintentional integer overflow")
-
-> > Fixes: 07d8d7e57c28 ("PCI: Make specifying PCI devices in kernel parameters reusable")
-> > Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> > ---
-> >  drivers/pci/pci.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> > index 6d4d5a2f923d..1a5844d7af35 100644
-> > --- a/drivers/pci/pci.c
-> > +++ b/drivers/pci/pci.c
-> > @@ -6209,7 +6209,7 @@ static resource_size_t pci_specified_resource_alignment(struct pci_dev *dev,
-> >  			if (align_order == -1)
-> >  				align = PAGE_SIZE;
-> >  			else
-> > -				align = 1 << align_order;
-> > +				align = BIT_ULL(align_order);
+On Tue, 03 Nov 2020 16:15:33 +0100, Łukasz Stelmach wrote:
+> Add bindings for AX88796C SPI Ethernet Adapter.
 > 
-> "align_order" comes from sscanf() so Smatch thinks it's not trusted.
-> Anything above 63 is undefined behavior.  There should be a bounds check
-> on this but I don't know what the valid values of "align" are.
+> Signed-off-by: Łukasz Stelmach <l.stelmach@samsung.com>
+> ---
+>  .../bindings/net/asix,ax88796c.yaml           | 73 +++++++++++++++++++
+>  1 file changed, 73 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/net/asix,ax88796c.yaml
+> 
 
-The spec doesn't explicitly say what the size limit for 64-bit BARs
-is, but it does say 32-bit BARs can support up to 2GB (2^31).  So I
-infer that 2^63 would be the limit for 64-bit BARs.
-
-What about something like the following?  To me, BIT_ULL doesn't seem
-like an advantage over "1ULL << ", but maybe there's a reason to use
-it.
-
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index 8b9bea8ba751..6e17d0a6828a 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -6197,19 +6197,21 @@ static resource_size_t pci_specified_resource_alignment(struct pci_dev *dev,
- 	while (*p) {
- 		count = 0;
- 		if (sscanf(p, "%d%n", &align_order, &count) == 1 &&
--							p[count] == '@') {
-+		    p[count] == '@') {
- 			p += count + 1;
-+			if (align_order > 63) {
-+				pr_err("PCI: Invalid requested alignment (order %d)\n",
-+				       align_order);
-+				align_order = PAGE_SHIFT;
-+			}
- 		} else {
--			align_order = -1;
-+			align_order = PAGE_SHIFT;
- 		}
- 
- 		ret = pci_dev_str_match(dev, p, &p);
- 		if (ret == 1) {
- 			*resize = true;
--			if (align_order == -1)
--				align = PAGE_SIZE;
--			else
--				align = 1 << align_order;
-+			align = 1ULL << align_order;
- 			break;
- 		} else if (ret < 0) {
- 			pr_err("PCI: Can't parse resource_alignment parameter: %s\n",
+Reviewed-by: Rob Herring <robh@kernel.org>
