@@ -2,137 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 925EF2A835C
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 17:19:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 835AD2A8362
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 17:20:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731291AbgKEQTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 11:19:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44094 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726400AbgKEQTh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 11:19:37 -0500
-Received: from mail-oi1-f174.google.com (mail-oi1-f174.google.com [209.85.167.174])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7F501217A0
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 16:19:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604593176;
-        bh=QFeTsECw8YHTCIMjATwkS4nkIBrexGv1rCsa6+HXtBQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=BJlNwCmqauNIFrEDOVlAHNaMc+9T7DtJIKS+0zzIo5AWpGoz8JxyaBpYTYSMxB5VI
-         kk0dZysHwZCk0+AMiCQQsS4paqsS09arfq+DtRHYEO2JQx4hUZxuO7vktRrgsAQhhZ
-         lWmgM1eclGJGYxovgKxpxQ5t/Li+RZLIweKvgfZw=
-Received: by mail-oi1-f174.google.com with SMTP id w145so2219542oie.9
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 08:19:36 -0800 (PST)
-X-Gm-Message-State: AOAM5313xtmVWypBdg3tbnyM04yDQyzGfafyNzYVeLaKwK99Fps2Ix4S
-        jglG+8gp+FAOAjgDwT2rX9/rLAub2JAfXDGfXw==
-X-Google-Smtp-Source: ABdhPJzJ+6j5XY3vsvevHMD5L1ysbf2vKi4zVY+FZQ91sSdHSgDPKOYyQytGXmWz0fPEZ05QTsQGc01ja5rqku01VBU=
-X-Received: by 2002:aca:fdd4:: with SMTP id b203mr109871oii.152.1604593175367;
- Thu, 05 Nov 2020 08:19:35 -0800 (PST)
+        id S1731504AbgKEQUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 11:20:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33732 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731309AbgKEQUH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 11:20:07 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53EF0C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 08:20:06 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id u2so1002479pls.10
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 08:20:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=92a0pEOlUy2xokOf1YuWqGl17gZaVzxLn3jpBpiTxK4=;
+        b=SEoMjFsAI7JlD1WXn5pf6xi/PC4FXjxVgkdoUa2BvuQJ96sdUJCIUH88xQ/yMGg86g
+         HhmCxgTwKrlXwOWfIrt9TJs755fOZSdeGEulLGROJgl5IBkGoXI4chkJCSB/IwiEummM
+         HpcbJYQC3LsKYotHfE2BAmWLxcpEIJWlHQ25lKX08Eppx3k1cRpETAPpmZz/5IIyn92k
+         C/ACKassAA6bxfo2BeQ6T10TVVFf/LxcEseqhtj12EQVM6cgvtRnJH1XMAkYXDorLNII
+         7uJHBUszi1pIKaSexs/tZAh43PZBj0oZ3rk5PbxIAtA3Z3PdYeRkV7aiXVkrxwiPDL4S
+         23gg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=92a0pEOlUy2xokOf1YuWqGl17gZaVzxLn3jpBpiTxK4=;
+        b=HtskL0+SBEXX1s5v9xSgJIxwEK8lOwr1vzbPj29UPJ7ulXrrf4bHfjFGttrgIttMYe
+         dY2fQKS7X9uoTgK824S8/YzQyvfI//L6mlZsPcLug6A3ykEdQafbOLA6q3ZPxcJ5IdO9
+         T+eC34ZY485I/W8WlZ2V9bvDK0CDVlnAkX7A4JtVL1D72fxEH1YrlVarpo7mUGm4/hTJ
+         S4RkN1fc7FXFQe5RrV8D64TIF2UFv49HVpZpXY/XlnhyPEQokmE71aE13UcjPTA+rBkQ
+         j4ixi2mizg18KG7WRzT4MLlXFGP3jPJGz5mEB+59xz1cg32Q0Z1o3srhv94T0QvxgnAH
+         7oqw==
+X-Gm-Message-State: AOAM533RvORmq2MFdR78epTOAQ1uJVJzxic9QLnhqteirtY6Hjja5TWv
+        rzUpU+OlxVX33d+uuSDB6KYKww==
+X-Google-Smtp-Source: ABdhPJxZRkOJbvLrEv4X3oRp2YgJcOYMvl+wHSmA+wwDJuo4jd0oH8FqLkt3WCB4DjyAXGy/y+a24Q==
+X-Received: by 2002:a17:90b:4b03:: with SMTP id lx3mr3310411pjb.102.1604593205814;
+        Thu, 05 Nov 2020 08:20:05 -0800 (PST)
+Received: from localhost.localdomain ([103.136.220.95])
+        by smtp.gmail.com with ESMTPSA id h5sm3054841pfk.126.2020.11.05.08.19.59
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 05 Nov 2020 08:20:04 -0800 (PST)
+From:   Muchun Song <songmuchun@bytedance.com>
+To:     akpm@linux-foundation.org, hannes@cmpxchg.org, shakeelb@google.com,
+        guro@fb.com, mhocko@suse.com, laoar.shao@gmail.com,
+        chris@chrisdown.name, tj@kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Muchun Song <songmuchun@bytedance.com>
+Subject: [PATCH v2] mm: memcontrol: fix missing wakeup polling thread
+Date:   Fri,  6 Nov 2020 00:19:36 +0800
+Message-Id: <20201105161936.98312-1-songmuchun@bytedance.com>
+X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 MIME-Version: 1.0
-References: <20201001140116.651970-1-robh@kernel.org> <20201001140116.651970-5-robh@kernel.org>
- <20201014110527.GA1349644@krava> <CAL_Jsq+5_uzAdn+rq-rWVACeaMMd4q+ntxxOd5JisOiBzwvDbw@mail.gmail.com>
- <20201019201541.GN1461394@krava> <CAL_JsqKpbdvxn7w1PSWrE7fLP+NtwwxtTjr02yxSkjy00yN9Xw@mail.gmail.com>
- <20201020153527.GD2113901@krava> <CAL_JsqKUK3ajL63dAs4KSPJ2VOJa9HKeiZ0AWNPhe=uvFE8zZA@mail.gmail.com>
- <20201021112430.GE2189784@krava>
-In-Reply-To: <20201021112430.GE2189784@krava>
-From:   Rob Herring <robh@kernel.org>
-Date:   Thu, 5 Nov 2020 10:19:24 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqJd1W_n1vGYmUP+Azcv__pCT+UU+VLPqLy2aJDwajZzCg@mail.gmail.com>
-Message-ID: <CAL_JsqJd1W_n1vGYmUP+Azcv__pCT+UU+VLPqLy2aJDwajZzCg@mail.gmail.com>
-Subject: Re: [PATCH v4 4/9] libperf: Add libperf_evsel__mmap()
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Raphael Gault <raphael.gault@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Ian Rogers <irogers@google.com>,
-        Honnappa Nagarahalli <honnappa.nagarahalli@arm.com>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 6:24 AM Jiri Olsa <jolsa@redhat.com> wrote:
->
-> On Tue, Oct 20, 2020 at 12:11:47PM -0500, Rob Herring wrote:
->
-> SNIP
->
-> > > > > >
-> > > > > > The mmapped read will actually fail and then we fallback here. My main
-> > > > > > concern though is adding more overhead on a feature that's meant to be
-> > > > > > low overhead (granted, it's not much). Maybe we could add checks on
-> > > > > > the mmap that we've opened the event with pid == 0 and cpu == -1 (so
-> > > > > > only 1 FD)?
-> > > > >
-> > > > > but then you limit this just for single fd.. having mmap as xyarray
-> > > > > would not be that bad and perf_evsel__mmap will call perf_mmap__mmap
-> > > > > for each defined cpu/thread .. so it depends on user how fast this
-> > > > > will be - how many maps needs to be created/mmaped
-> > > >
-> > > > Given userspace access fails for anything other than the calling
-> > > > thread and all cpus, how would more than 1 mmap be useful here?
-> > >
-> > > I'm not sure what you mean by fail in here.. you need mmap for each
-> > > event fd you want to read from
-> >
-> > Yes, but that's one mmap per event (evsel) which is different than per
-> > cpu/thread.
->
-> right, and you need mmap per fd IIUC
->
-> >
-> > > in the example below we read stats from all cpus via perf_evsel__read,
-> > > if we insert this call after perf_evsel__open:
-> > >
-> > >   perf_evsel__mmap(cpus, NULL);
-> > >
-> > > that maps page for each event, then perf_evsel__read
-> > > could go through the fast code, no?
-> >
-> > No, because we're not self-monitoring (pid == 0 and cpu == -1). With
-> > the following change:
-> >
-> > diff --git a/tools/lib/perf/tests/test-evsel.c
-> > b/tools/lib/perf/tests/test-evsel.c
-> > index eeca8203d73d..1fca9c121f7c 100644
-> > --- a/tools/lib/perf/tests/test-evsel.c
-> > +++ b/tools/lib/perf/tests/test-evsel.c
-> > @@ -17,6 +17,7 @@ static int test_stat_cpu(void)
-> >  {
-> >         struct perf_cpu_map *cpus;
-> >         struct perf_evsel *evsel;
-> > +       struct perf_event_mmap_page *pc;
-> >         struct perf_event_attr attr = {
-> >                 .type   = PERF_TYPE_SOFTWARE,
-> >                 .config = PERF_COUNT_SW_CPU_CLOCK,
-> > @@ -32,6 +33,15 @@ static int test_stat_cpu(void)
-> >         err = perf_evsel__open(evsel, cpus, NULL);
-> >         __T("failed to open evsel", err == 0);
-> >
-> > +       pc = perf_evsel__mmap(evsel, 0);
-> > +       __T("failed to mmap evsel", pc);
-> > +
-> > +#if defined(__i386__) || defined(__x86_64__) || defined(__aarch64__)
-> > +       __T("userspace counter access not supported", pc->cap_user_rdpmc);
-> > +       __T("userspace counter access not enabled", pc->index);
-> > +       __T("userspace counter width not set", pc->pmc_width >= 32);
-> > +#endif
->
-> I'll need to check, I'm surprised this would depend on the way
-> you open the event
+When wen poll the swap.events, we can miss being waked up when the swap
+event occurs. Because we didn't notify.
 
-Any more thoughts on this?
+Fixes: f3a53a3a1e5b ("mm, memcontrol: implement memory.swap.events")
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+---
+ changelog in v2:
+ - Fix problem, thanks Johannes.
 
-Rob
+ include/linux/memcontrol.h | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 0f4dd7829fb2..4f7821be5561 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -1074,12 +1074,19 @@ static inline void count_memcg_event_mm(struct mm_struct *mm,
+ static inline void memcg_memory_event(struct mem_cgroup *memcg,
+ 				      enum memcg_memory_event event)
+ {
++	bool swap_event = event == MEMCG_SWAP_HIGH || event == MEMCG_SWAP_MAX ||
++			  event == MEMCG_SWAP_FAIL;
++
+ 	atomic_long_inc(&memcg->memory_events_local[event]);
+-	cgroup_file_notify(&memcg->events_local_file);
++	if (!swap_event)
++		cgroup_file_notify(&memcg->events_local_file);
+ 
+ 	do {
+ 		atomic_long_inc(&memcg->memory_events[event]);
+-		cgroup_file_notify(&memcg->events_file);
++		if (swap_event)
++			cgroup_file_notify(&memcg->swap_events_file);
++		else
++			cgroup_file_notify(&memcg->events_file);
+ 
+ 		if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
+ 			break;
+-- 
+2.20.1
+
