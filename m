@@ -2,204 +2,528 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1B162A885E
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 21:52:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0364C2A8860
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 21:52:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732332AbgKEUwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 15:52:20 -0500
-Received: from mga01.intel.com ([192.55.52.88]:23149 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726996AbgKEUwT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 15:52:19 -0500
-IronPort-SDR: Gs4UEiplqQTpigG3bPiqEHKCM/ySrAImEu40Q5ap6+ofFJIAhH/QrG6uabM1zwq3SK67Ap8Qa7
- KcSL6VcueTPw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9796"; a="187370599"
-X-IronPort-AV: E=Sophos;i="5.77,454,1596524400"; 
-   d="scan'208";a="187370599"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2020 12:52:18 -0800
-IronPort-SDR: 5craox6rAKb9swdbfOh5gX7xCNiz6zeUUtjBp3PPR3aTHSBvyc3Cf3AeqK3TWOqzcL6F73bK5Z
- qhTpm5YEJ6fQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,454,1596524400"; 
-   d="scan'208";a="471803650"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by orsmga004.jf.intel.com with ESMTP; 05 Nov 2020 12:52:18 -0800
-Received: from orsmsx603.amr.corp.intel.com (10.22.229.16) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 5 Nov 2020 12:52:17 -0800
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Thu, 5 Nov 2020 12:52:17 -0800
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (104.47.74.47) by
- edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.1713.5; Thu, 5 Nov 2020 12:52:17 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FgcbGA1gIJEQGhwaZUgk5HFWopgM8SMjYg01j2l6RJs+/Wgsf4ZvtwGXMutmlatmayApsXtuFJi1IgqpGbIfg9g1s46Aizl9IfQ3nSV0GEVokaYckoZoQ1JY8aebEPvqPOzAIOIVss+QC2AgIzQEPAxO7E8k7H7iMHKPbXw6RZj0BNp3LEVjyEbr+oFS92UpBxVQQw7I1+lsOauutyXSy1jgDSA7Q0anlI+lIKaW3kplLvrz3NJmKreLHcD5k1BUmSq38wZ6/z+cTlp1qIWG0+f8bSelwDF1KDBHbZODbAxPgQKmeBzs0z3BqZg70dgOTofFMvx2edwRHwRTNbqRAQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pwMgkecA+AoS9RlEsts9+uuv4vo9O+aoPYfE3lqoVw0=;
- b=LRuux+DBZkLAmWHjW7urinHVsIJIEqGMj3IifeSAjnhiUYfQg/X+O5OcDjtaIChz5wt9meqn4P2BQofipuK7O43w6j/ksXN7KOYAit1uV+QAyj5lzdPPgqWRIKFaZGxYPYF1KKAbVByjUXq6M75VtnpuU8IwvoF3W+7Ci+QHeCy8JV1p07lTaVUhFHPwUSdiOo41sNyJUdrHH1wFCOcECbmmkp5lb4VKXEyki9JAqLSnwPnYMfE0D/k8vVXo47/N8cyw+VTxCM1MEru02bRGbgZLVfXGWAmFK7a7orbufbMvYDZAcFo9NxOkbgp0iCsc3ptsb1FB7RRkR+w2tvhwwQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pwMgkecA+AoS9RlEsts9+uuv4vo9O+aoPYfE3lqoVw0=;
- b=A4JJrfQtrOzSyVvApLAiLS+vsMSwVy84JjbZ4E0EzgMuvwCBYluAAcDcTW74Rwa4yiOkhEXj20a+8yviUg4T2KdkWTT0kA/TjLq3c6Y4YKpQDUQdywSrQDRygSzvanVWJo59vODLq6AH6gUURrtslppNzKVzkqAAxF4s+x2LUYw=
-Received: from DM6PR11MB2841.namprd11.prod.outlook.com (2603:10b6:5:c8::32) by
- DM5PR1101MB2284.namprd11.prod.outlook.com (2603:10b6:4:58::14) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3499.29; Thu, 5 Nov 2020 20:52:13 +0000
-Received: from DM6PR11MB2841.namprd11.prod.outlook.com
- ([fe80::6d8e:9b06:ef72:2a]) by DM6PR11MB2841.namprd11.prod.outlook.com
- ([fe80::6d8e:9b06:ef72:2a%5]) with mapi id 15.20.3541.021; Thu, 5 Nov 2020
- 20:52:13 +0000
-From:   "Ertman, David M" <david.m.ertman@intel.com>
-To:     Leon Romanovsky <leonro@nvidia.com>
-CC:     "Williams, Dan J" <dan.j.williams@intel.com>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Netdev <netdev@vger.kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Fred Oh <fred.oh@linux.intel.com>,
-        Parav Pandit <parav@mellanox.com>,
-        "Saleem, Shiraz" <shiraz.saleem@intel.com>,
-        "Patil, Kiran" <kiran.patil@intel.com>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v3 01/10] Add auxiliary bus support
-Thread-Topic: [PATCH v3 01/10] Add auxiliary bus support
-Thread-Index: AQHWqNRxbABQ//8l1UOfD+CnDPwsEKm5V8WAgACIGmCAACQFgIAAB9xQ
-Date:   Thu, 5 Nov 2020 20:52:13 +0000
-Message-ID: <DM6PR11MB2841C04DA30B0EA299554704DDEE0@DM6PR11MB2841.namprd11.prod.outlook.com>
-References: <20201023003338.1285642-1-david.m.ertman@intel.com>
- <20201023003338.1285642-2-david.m.ertman@intel.com>
- <CAPcyv4i9s=CsO5VJOhPnS77K=bD0LTQ8TUAbhLd+0OmyU8YQ3g@mail.gmail.com>
- <DM6PR11MB284191BAA817540E52E4E2C4DDEE0@DM6PR11MB2841.namprd11.prod.outlook.com>
- <20201105193511.GB5475@unreal>
-In-Reply-To: <20201105193511.GB5475@unreal>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-authentication-results: nvidia.com; dkim=none (message not signed)
- header.d=none;nvidia.com; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [50.38.47.144]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: e7df671d-e207-40ca-e29f-08d881ccac20
-x-ms-traffictypediagnostic: DM5PR1101MB2284:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr,ExtFwd
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM5PR1101MB2284772B6740229B1CB300C9DDEE0@DM5PR1101MB2284.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: DCCZhd8Mn7WAn2gUMdZN8z0UUiQfhleFAAwXMOejlKL5pty1bEQRx0xcKMYDWgxyTwMMLkknDJ3BlfZFsG7wbrQsC0s6tVG3l3/epnekyv4XMCJPL/AL1rCsl+xSackW0Je0zYSIi2B/Gk1zO7arYL0onlN2nZM4R3RjGgzPAdDxOXI9Zqqvm02UWrBo91uGBgfnQceIZGFuKvDgRTo1xzYlANPkBMGV03oBvWB+ctyAGm1xx7heRP3ue9cFE4IB1/PCqnMImq2aTdrPB/mhbSHRj9s0LDZU4gxGUP2HU5SQ1vtTkwo9RBme0wLD37Y1Fco4HiVJg7h0QWiyjtRW5A==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB2841.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(346002)(366004)(39860400002)(376002)(66476007)(66556008)(76116006)(66446008)(64756008)(53546011)(33656002)(71200400001)(478600001)(186003)(6506007)(52536014)(66946007)(5660300002)(9686003)(7416002)(8676002)(83380400001)(26005)(54906003)(55016002)(4326008)(7696005)(86362001)(316002)(8936002)(2906002)(6916009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: qC2YGckFwNg5boxji38cJHhzXulase2Ngkxci5DLI/PQwhzFmjFbRPH/yw4MtfCH9bi9xQcmRyaXd1SZ2WgQ81805hBi3T88FN0/0h68thVUw2kAW4cCKPoCesmfAWDq3mEoUi8lUxSlVJYiFpRfxsJnSWavBQ1oxA+IWYmiwOTEbGrqiu8Fn7aQ/VPsZ9lB/3GE8kvMf9ZMZApVi5s9eemgqu63sjTElv/m18vDy+G3FBWCNQPtwki+RiSO1FAL9xqcN7yKYC4a/8hwBUxHVjXRfoT4wmzSlsWTPdjfySNamHbDu0mLs/QQZ7jjai6W7H5mNhm+Aio7UMfDPhewAXwM/QdNmloyYZbiyJLM9cH73YZjFokMrU9rlMSvoPU6F7gj14i7PBTbV304UDk00BGCHkyN+E2Hj+HhdvGwa0Yxja5TJmVgYp7ui/CLopVcsSZFqFWT9xFQG1g3cmhMzTUl6M0qVz4ea/+Ht3XaHqaCbShFwP8HjKJn2qalLAdiHjaeFMYy3Ss084zfzqnpkc0FoiU8uq5mLmrAbWhBlBGAIzP9CIcruwt4GyCnDC3WYljmAJBYCKDzxo2QW6h8HS8h0xM9GAmX/9rN9w7J5fDcInBzlIE8g0SvylfOAWkCNgxCGteoZdv93ZhcWTMJ9g==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1732339AbgKEUww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 15:52:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48348 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726729AbgKEUww (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 15:52:52 -0500
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0267CC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 12:52:52 -0800 (PST)
+Received: by mail-pl1-x641.google.com with SMTP id b12so1377772plr.4
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 12:52:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=5B3BUR7zhLFI+O8VNXI+BR9UNMawI4ntjOAqlHZd5gk=;
+        b=PY7hBZA644AeQIM5WFIWFKnBaU1T64Di8bpujZvsRJV2OwNbs4WEmQ5iPxMAHpjfUZ
+         6KUeil3lRRcjeN/rG6zxP26i2m1lmWIy2CeJp5FyO/Wdl7z8oJ+qXUWAZko/ebjVmuqa
+         HVvllgwtGvHF030S/fhUIPu8kMTnGN/hCysMpNLDyoOTQ1GDxdEFUK9vcXr7rl9IK09s
+         LEX0mGAiDlOK0zLghJc5LXrI/1V/yb5B8GYVtCPrcNrxK32jyd9ucQZqH8lmnt2lupOA
+         KQ2KA30bnejbt7SJ9jN3tigr2nBDU0Q3yE3HDOxMjJrPlMEWx+q862h8o+tC2QerX62U
+         it9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5B3BUR7zhLFI+O8VNXI+BR9UNMawI4ntjOAqlHZd5gk=;
+        b=pheVTz9Hfgdez1lttBfkxhW7PJkd4rRUaNn+7dqscUqBL4KnEmDOo3YK7m/bEBXj1d
+         e9KJctePSav2mT/T4q3sznC4ypGmqkOh6hiXS2tkhhZ2bQ5SCaXBycTzpkBO9JrC33Ci
+         RRj5moxkw6AaDE8XtqeM+0UzWXyWZyUuYl33SiSitKNpXLIArdhjjjrM9YxH0UmrUwok
+         00JO14fJHdCZ0X06KoLqXjFMBqv0ynMFSCm0vP38GIYJ1SqO5iKSGJM1FsLWb03nrpNI
+         eU9wxxxukGTU5ovyLl+JhZgRVtig+orFSX/DFe3fmlklRHzjfJvLs8yPGBzL1kNxmbkx
+         fwHQ==
+X-Gm-Message-State: AOAM532sXPtfxnuwzGORjfTUNTyI58f3g9fNAXntbneqQGsvzp846wbp
+        W3ZTK8aeuLwJDt3OZBS9Wy36uw==
+X-Google-Smtp-Source: ABdhPJww/GGKynI6IBlUUKvagJbByBw8FA+0DfNNEzZH2j56kSNZVgl9qGah0Ty8LTCVO7BGI2iMvQ==
+X-Received: by 2002:a17:902:c412:b029:d6:fea3:429 with SMTP id k18-20020a170902c412b02900d6fea30429mr3011636plk.50.1604609571377;
+        Thu, 05 Nov 2020 12:52:51 -0800 (PST)
+Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
+        by smtp.gmail.com with ESMTPSA id m68sm3290085pga.46.2020.11.05.12.52.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Nov 2020 12:52:50 -0800 (PST)
+Date:   Thu, 5 Nov 2020 13:52:48 -0700
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, mike.leach@linaro.org,
+        coresight@lists.linaro.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 14/26] coresight: etm4x: Add sysreg access helpers
+Message-ID: <20201105205248.GA3047244@xps15>
+References: <20201028220945.3826358-1-suzuki.poulose@arm.com>
+ <20201028220945.3826358-16-suzuki.poulose@arm.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB2841.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e7df671d-e207-40ca-e29f-08d881ccac20
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Nov 2020 20:52:13.2723
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 6uX3z692HQ3evUZUZkdWtJxopVe5R1ql7wBFS3/Z86bOmew+e8x33S23ALsuoKaMUtHF1/gTT+9PQi5HnkgWd4YhlazVPUgczk9JZfxTvcM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1101MB2284
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201028220945.3826358-16-suzuki.poulose@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> -----Original Message-----
-> From: Leon Romanovsky <leonro@nvidia.com>
-> Sent: Thursday, November 5, 2020 11:35 AM
-> To: Ertman, David M <david.m.ertman@intel.com>
-> Cc: Williams, Dan J <dan.j.williams@intel.com>; alsa-devel@alsa-project.o=
-rg;
-> Takashi Iwai <tiwai@suse.de>; Mark Brown <broonie@kernel.org>; linux-
-> rdma <linux-rdma@vger.kernel.org>; Jason Gunthorpe <jgg@nvidia.com>;
-> Doug Ledford <dledford@redhat.com>; Netdev <netdev@vger.kernel.org>;
-> David Miller <davem@davemloft.net>; Jakub Kicinski <kuba@kernel.org>;
-> Greg KH <gregkh@linuxfoundation.org>; Ranjani Sridharan
-> <ranjani.sridharan@linux.intel.com>; Pierre-Louis Bossart <pierre-
-> louis.bossart@linux.intel.com>; Fred Oh <fred.oh@linux.intel.com>; Parav
-> Pandit <parav@mellanox.com>; Saleem, Shiraz <shiraz.saleem@intel.com>;
-> Patil, Kiran <kiran.patil@intel.com>; Linux Kernel Mailing List <linux-
-> kernel@vger.kernel.org>
-> Subject: Re: [PATCH v3 01/10] Add auxiliary bus support
->=20
-> On Thu, Nov 05, 2020 at 07:27:56PM +0000, Ertman, David M wrote:
-> > > -----Original Message-----
-> > > From: Dan Williams <dan.j.williams@intel.com>
-> > > Sent: Thursday, November 5, 2020 1:19 AM
-> > > To: Ertman, David M <david.m.ertman@intel.com>
-> > > Cc: alsa-devel@alsa-project.org; Takashi Iwai <tiwai@suse.de>; Mark
-> Brown
-> > > <broonie@kernel.org>; linux-rdma <linux-rdma@vger.kernel.org>; Jason
-> > > Gunthorpe <jgg@nvidia.com>; Doug Ledford <dledford@redhat.com>;
-> > > Netdev <netdev@vger.kernel.org>; David Miller
-> <davem@davemloft.net>;
-> > > Jakub Kicinski <kuba@kernel.org>; Greg KH
-> <gregkh@linuxfoundation.org>;
-> > > Ranjani Sridharan <ranjani.sridharan@linux.intel.com>; Pierre-Louis
-> Bossart
-> > > <pierre-louis.bossart@linux.intel.com>; Fred Oh
-> <fred.oh@linux.intel.com>;
-> > > Parav Pandit <parav@mellanox.com>; Saleem, Shiraz
-> > > <shiraz.saleem@intel.com>; Patil, Kiran <kiran.patil@intel.com>; Linu=
-x
-> > > Kernel Mailing List <linux-kernel@vger.kernel.org>; Leon Romanovsky
-> > > <leonro@nvidia.com>
-> > > Subject: Re: [PATCH v3 01/10] Add auxiliary bus support
-> > >
-> > > Some doc fixups, and minor code feedback. Otherwise looks good to me.
-> > >
-> > > On Thu, Oct 22, 2020 at 5:35 PM Dave Ertman
-> <david.m.ertman@intel.com>
-> > > wrote:
->=20
-> <...>
->=20
-> >
-> > Again, thanks for the review Dan.  Changes will be in next release (v4)=
- once
-> I give
-> > stake-holders a little time to respond.
->=20
-> Everything here can go as a Fixes, the review comments are valuable and
-> need
-> to be fixed, but they don't change anything dramatically that prevent fro=
-m
-> merging v3.
->=20
+On Wed, Oct 28, 2020 at 10:09:33PM +0000, Suzuki K Poulose wrote:
+> ETMv4.4 architecture defines the system instructions for accessing
+> ETM via register accesses. Add basic support for accessing a given
+> register via system instructions.
+> 
+> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Cc: Mike Leach <mike.leach@linaro.org>
+> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> ---
+>  .../coresight/coresight-etm4x-core.c          |  39 ++
+>  drivers/hwtracing/coresight/coresight-etm4x.h | 348 ++++++++++++++++--
+>  2 files changed, 365 insertions(+), 22 deletions(-)
+> 
+> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> index 4af7d45dfe63..90b80982c615 100644
+> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> @@ -56,6 +56,45 @@ static u64 etm4_get_access_type(struct etmv4_config *config);
+>  
+>  static enum cpuhp_state hp_online;
+>  
+> +u64 etm4x_sysreg_read(struct csdev_access *csa,
+> +		      u32 offset,
+> +		      bool _relaxed,
+> +		      bool _64bit)
 
-This works for me - I have the changes saved into an add-on patch that I ha=
-ven't
-squashed into the main patch yet.
+Please fix the stacking.
 
-> Thanks
->=20
-> >
-> > -DaveE
+> +{
+> +	u64 res = 0;
+> +
+> +	switch (offset) {
+> +	ETM4x_READ_CASES(res)
+> +	default :
+> +		WARN_ONCE(1, "etm4x: trying to read unsupported register @%x\n",
+> +			 offset);
+> +	}
+> +
+> +	if (!_relaxed)
+> +		__iormb(res);	/* Imitate the !relaxed I/O helpers */
+> +
+> +	return res;
+> +}
+> +
+> +void etm4x_sysreg_write(struct csdev_access *csa,
+> +			u64 val,
+> +			u32 offset,
+> +			bool _relaxed,
+> +			bool _64bit)
+
+Here too.
+
+> +{
+> +	if (!_relaxed)
+> +		__iowmb();	/* Imitate the !relaxed I/O helpers */
+> +	if (!_64bit)
+> +		val &= GENMASK(31, 0);
+> +
+> +	switch (offset) {
+> +	ETM4x_WRITE_CASES(val)
+> +	default :
+> +		WARN_ONCE(1, "etm4x: trying to write to unsupported register @%x\n",
+> +			offset);
+> +	}
+> +}
+> +
+>  static void etm4_os_unlock_csa(struct etmv4_drvdata *drvdata, struct csdev_access *csa)
+>  {
+>  	/* Writing 0 to TRCOSLAR unlocks the trace registers */
+> diff --git a/drivers/hwtracing/coresight/coresight-etm4x.h b/drivers/hwtracing/coresight/coresight-etm4x.h
+> index 510828c73db6..5cf71b30a652 100644
+> --- a/drivers/hwtracing/coresight/coresight-etm4x.h
+> +++ b/drivers/hwtracing/coresight/coresight-etm4x.h
+> @@ -125,29 +125,323 @@
+>  #define TRCCIDR2			0xFF8
+>  #define TRCCIDR3			0xFFC
+>  
+> -#define etm4x_relaxed_read32(csa, offset)		\
+> -	readl_relaxed((csa)->base + (offset))
+> -
+> -#define etm4x_read32(csa, offset)			\
+> -	readl((csa)->base + (offset))
+> -
+> -#define etm4x_relaxed_write32(csa, val, offset)		\
+> -	writel_relaxed((val), (csa)->base + (offset))
+> -
+> -#define etm4x_write32(csa, val, offset)			\
+> -	writel((val), (csa)->base + (offset))
+> -
+> -#define etm4x_relaxed_read64(csa, offset)		\
+> -	readq_relaxed((csa)->base + (offset))
+> -
+> -#define etm4x_read64(csa, offset)			\
+> -	readq((csa)->base + (offset))
+> -
+> -#define etm4x_relaxed_write64(csa, val, offset)		\
+> -	writeq_relaxed((val), (csa)->base + (offset))
+> +/*
+> + * System instructions to access ETM registers.
+> + * See ETMv4.4 spec ARM IHI0064F section 4.3.6 System instructions
+> + */
+> +#define ETM4x_OFFSET_TO_REG(x)		((x) >> 2)
+> +
+> +#define ETM4x_CRn(n)			(((n) >> 7) & 0x7)
+> +#define ETM4x_Op2(n)			(((n) >> 4) & 0x7)
+> +#define ETM4x_CRm(n)			((n) & 0xf)
+> +
+> +#include <asm/sysreg.h>
+> +#define ETM4x_REG_NUM_TO_SYSREG(n)				\
+> +	sys_reg(2, 1, ETM4x_CRn(n), ETM4x_CRm(n), ETM4x_Op2(n))
+> +
+> +#define READ_ETM4x_REG(reg)					\
+> +	read_sysreg_s(ETM4x_REG_NUM_TO_SYSREG((reg)))
+> +#define WRITE_ETM4x_REG(val, reg)				\
+> +	write_sysreg_s(val, ETM4x_REG_NUM_TO_SYSREG((reg)))
+> +
+> +#define read_etm4x_sysreg_const_offset(offset)			\
+> +	READ_ETM4x_REG(ETM4x_OFFSET_TO_REG(offset))
+> +
+> +#define write_etm4x_sysreg_const_offset(val, offset)		\
+> +	WRITE_ETM4x_REG(val, ETM4x_OFFSET_TO_REG(offset))
+> +
+> +#define CASE_READ(res, x)					\
+> +	case (x): { (res) = read_etm4x_sysreg_const_offset((x)); break; }
+> +
+> +#define CASE_WRITE(val, x)					\
+> +	case (x): { write_etm4x_sysreg_const_offset((val), (x)); break; }
+> +
+> +#define CASE_LIST(op, val)			\
+> +	CASE_##op((val), TRCPRGCTLR)		\
+> +	CASE_##op((val), TRCPROCSELR)		\
+> +	CASE_##op((val), TRCSTATR)		\
+> +	CASE_##op((val), TRCCONFIGR)		\
+> +	CASE_##op((val), TRCAUXCTLR)		\
+> +	CASE_##op((val), TRCEVENTCTL0R)		\
+> +	CASE_##op((val), TRCEVENTCTL1R)		\
+> +	CASE_##op((val), TRCSTALLCTLR)		\
+> +	CASE_##op((val), TRCTSCTLR)		\
+> +	CASE_##op((val), TRCSYNCPR)		\
+> +	CASE_##op((val), TRCCCCTLR)		\
+> +	CASE_##op((val), TRCBBCTLR)		\
+> +	CASE_##op((val), TRCTRACEIDR)		\
+> +	CASE_##op((val), TRCQCTLR)		\
+> +	CASE_##op((val), TRCVICTLR)		\
+> +	CASE_##op((val), TRCVIIECTLR)		\
+> +	CASE_##op((val), TRCVISSCTLR)		\
+> +	CASE_##op((val), TRCVIPCSSCTLR)		\
+> +	CASE_##op((val), TRCVDCTLR)		\
+> +	CASE_##op((val), TRCVDSACCTLR)		\
+> +	CASE_##op((val), TRCVDARCCTLR)		\
+> +	CASE_##op((val), TRCSEQEVRn(0))		\
+> +	CASE_##op((val), TRCSEQEVRn(1))		\
+> +	CASE_##op((val), TRCSEQEVRn(2))		\
+> +	CASE_##op((val), TRCSEQRSTEVR)		\
+> +	CASE_##op((val), TRCSEQSTR)		\
+> +	CASE_##op((val), TRCEXTINSELR)		\
+> +	CASE_##op((val), TRCCNTRLDVRn(0))	\
+> +	CASE_##op((val), TRCCNTRLDVRn(1))	\
+> +	CASE_##op((val), TRCCNTRLDVRn(2))	\
+> +	CASE_##op((val), TRCCNTRLDVRn(3))	\
+> +	CASE_##op((val), TRCCNTCTLRn(0))	\
+> +	CASE_##op((val), TRCCNTCTLRn(1))	\
+> +	CASE_##op((val), TRCCNTCTLRn(2))	\
+> +	CASE_##op((val), TRCCNTCTLRn(3))	\
+> +	CASE_##op((val), TRCCNTVRn(0))		\
+> +	CASE_##op((val), TRCCNTVRn(1))		\
+> +	CASE_##op((val), TRCCNTVRn(2))		\
+> +	CASE_##op((val), TRCCNTVRn(3))		\
+> +	CASE_##op((val), TRCIDR8)		\
+> +	CASE_##op((val), TRCIDR9)		\
+> +	CASE_##op((val), TRCIDR10)		\
+> +	CASE_##op((val), TRCIDR11)		\
+> +	CASE_##op((val), TRCIDR12)		\
+> +	CASE_##op((val), TRCIDR13)		\
+> +	CASE_##op((val), TRCIMSPECn(0))		\
+> +	CASE_##op((val), TRCIMSPECn(1))		\
+> +	CASE_##op((val), TRCIMSPECn(2))		\
+> +	CASE_##op((val), TRCIMSPECn(3))		\
+> +	CASE_##op((val), TRCIMSPECn(4))		\
+> +	CASE_##op((val), TRCIMSPECn(5))		\
+> +	CASE_##op((val), TRCIMSPECn(6))		\
+> +	CASE_##op((val), TRCIMSPECn(7))		\
+> +	CASE_##op((val), TRCIDR0)		\
+> +	CASE_##op((val), TRCIDR1)		\
+> +	CASE_##op((val), TRCIDR2)		\
+> +	CASE_##op((val), TRCIDR3)		\
+> +	CASE_##op((val), TRCIDR4)		\
+> +	CASE_##op((val), TRCIDR5)		\
+> +	CASE_##op((val), TRCIDR6)		\
+> +	CASE_##op((val), TRCIDR7)		\
+> +	CASE_##op((val), TRCRSCTLRn(2))		\
+> +	CASE_##op((val), TRCRSCTLRn(3))		\
+> +	CASE_##op((val), TRCRSCTLRn(4))		\
+> +	CASE_##op((val), TRCRSCTLRn(5))		\
+> +	CASE_##op((val), TRCRSCTLRn(6))		\
+> +	CASE_##op((val), TRCRSCTLRn(7))		\
+> +	CASE_##op((val), TRCRSCTLRn(8))		\
+> +	CASE_##op((val), TRCRSCTLRn(9))		\
+> +	CASE_##op((val), TRCRSCTLRn(10))	\
+> +	CASE_##op((val), TRCRSCTLRn(11))	\
+> +	CASE_##op((val), TRCRSCTLRn(12))	\
+> +	CASE_##op((val), TRCRSCTLRn(13))	\
+> +	CASE_##op((val), TRCRSCTLRn(14))	\
+> +	CASE_##op((val), TRCRSCTLRn(15))	\
+> +	CASE_##op((val), TRCRSCTLRn(16))	\
+> +	CASE_##op((val), TRCRSCTLRn(17))	\
+> +	CASE_##op((val), TRCRSCTLRn(18))	\
+> +	CASE_##op((val), TRCRSCTLRn(19))	\
+> +	CASE_##op((val), TRCRSCTLRn(20))	\
+> +	CASE_##op((val), TRCRSCTLRn(21))	\
+> +	CASE_##op((val), TRCRSCTLRn(22))	\
+> +	CASE_##op((val), TRCRSCTLRn(23))	\
+> +	CASE_##op((val), TRCRSCTLRn(24))	\
+> +	CASE_##op((val), TRCRSCTLRn(25))	\
+> +	CASE_##op((val), TRCRSCTLRn(26))	\
+> +	CASE_##op((val), TRCRSCTLRn(27))	\
+> +	CASE_##op((val), TRCRSCTLRn(28))	\
+> +	CASE_##op((val), TRCRSCTLRn(29))	\
+> +	CASE_##op((val), TRCRSCTLRn(30))	\
+> +	CASE_##op((val), TRCRSCTLRn(31))	\
+> +	CASE_##op((val), TRCSSCCRn(0))		\
+> +	CASE_##op((val), TRCSSCCRn(1))		\
+> +	CASE_##op((val), TRCSSCCRn(2))		\
+> +	CASE_##op((val), TRCSSCCRn(3))		\
+> +	CASE_##op((val), TRCSSCCRn(4))		\
+> +	CASE_##op((val), TRCSSCCRn(5))		\
+> +	CASE_##op((val), TRCSSCCRn(6))		\
+> +	CASE_##op((val), TRCSSCCRn(7))		\
+> +	CASE_##op((val), TRCSSCSRn(0))		\
+> +	CASE_##op((val), TRCSSCSRn(1))		\
+> +	CASE_##op((val), TRCSSCSRn(2))		\
+> +	CASE_##op((val), TRCSSCSRn(3))		\
+> +	CASE_##op((val), TRCSSCSRn(4))		\
+> +	CASE_##op((val), TRCSSCSRn(5))		\
+> +	CASE_##op((val), TRCSSCSRn(6))		\
+> +	CASE_##op((val), TRCSSCSRn(7))		\
+> +	CASE_##op((val), TRCSSPCICRn(0))	\
+> +	CASE_##op((val), TRCSSPCICRn(1))	\
+> +	CASE_##op((val), TRCSSPCICRn(2))	\
+> +	CASE_##op((val), TRCSSPCICRn(3))	\
+> +	CASE_##op((val), TRCSSPCICRn(4))	\
+> +	CASE_##op((val), TRCSSPCICRn(5))	\
+> +	CASE_##op((val), TRCSSPCICRn(6))	\
+> +	CASE_##op((val), TRCSSPCICRn(7))	\
+> +	CASE_##op((val), TRCOSLAR)		\
+> +	CASE_##op((val), TRCOSLSR)		\
+> +	CASE_##op((val), TRCPDCR)		\
+> +	CASE_##op((val), TRCPDSR)		\
+> +	CASE_##op((val), TRCACVRn(0))		\
+> +	CASE_##op((val), TRCACVRn(1))		\
+> +	CASE_##op((val), TRCACVRn(2))		\
+> +	CASE_##op((val), TRCACVRn(3))		\
+> +	CASE_##op((val), TRCACVRn(4))		\
+> +	CASE_##op((val), TRCACVRn(5))		\
+> +	CASE_##op((val), TRCACVRn(6))		\
+> +	CASE_##op((val), TRCACVRn(7))		\
+> +	CASE_##op((val), TRCACVRn(8))		\
+> +	CASE_##op((val), TRCACVRn(9))		\
+> +	CASE_##op((val), TRCACVRn(10))		\
+> +	CASE_##op((val), TRCACVRn(11))		\
+> +	CASE_##op((val), TRCACVRn(12))		\
+> +	CASE_##op((val), TRCACVRn(13))		\
+> +	CASE_##op((val), TRCACVRn(14))		\
+> +	CASE_##op((val), TRCACVRn(15))		\
+> +	CASE_##op((val), TRCACATRn(0))		\
+> +	CASE_##op((val), TRCACATRn(1))		\
+> +	CASE_##op((val), TRCACATRn(2))		\
+> +	CASE_##op((val), TRCACATRn(3))		\
+> +	CASE_##op((val), TRCACATRn(4))		\
+> +	CASE_##op((val), TRCACATRn(5))		\
+> +	CASE_##op((val), TRCACATRn(6))		\
+> +	CASE_##op((val), TRCACATRn(7))		\
+> +	CASE_##op((val), TRCACATRn(8))		\
+> +	CASE_##op((val), TRCACATRn(9))		\
+> +	CASE_##op((val), TRCACATRn(10))		\
+> +	CASE_##op((val), TRCACATRn(11))		\
+> +	CASE_##op((val), TRCACATRn(12))		\
+> +	CASE_##op((val), TRCACATRn(13))		\
+> +	CASE_##op((val), TRCACATRn(14))		\
+> +	CASE_##op((val), TRCACATRn(15))		\
+> +	CASE_##op((val), TRCDVCVRn(0))		\
+> +	CASE_##op((val), TRCDVCVRn(1))		\
+> +	CASE_##op((val), TRCDVCVRn(2))		\
+> +	CASE_##op((val), TRCDVCVRn(3))		\
+> +	CASE_##op((val), TRCDVCVRn(4))		\
+> +	CASE_##op((val), TRCDVCVRn(5))		\
+> +	CASE_##op((val), TRCDVCVRn(6))		\
+> +	CASE_##op((val), TRCDVCVRn(7))		\
+> +	CASE_##op((val), TRCDVCMRn(0))		\
+> +	CASE_##op((val), TRCDVCMRn(1))		\
+> +	CASE_##op((val), TRCDVCMRn(2))		\
+> +	CASE_##op((val), TRCDVCMRn(3))		\
+> +	CASE_##op((val), TRCDVCMRn(4))		\
+> +	CASE_##op((val), TRCDVCMRn(5))		\
+> +	CASE_##op((val), TRCDVCMRn(6))		\
+> +	CASE_##op((val), TRCDVCMRn(7))		\
+> +	CASE_##op((val), TRCCIDCVRn(0))		\
+> +	CASE_##op((val), TRCCIDCVRn(1))		\
+> +	CASE_##op((val), TRCCIDCVRn(2))		\
+> +	CASE_##op((val), TRCCIDCVRn(3))		\
+> +	CASE_##op((val), TRCCIDCVRn(4))		\
+> +	CASE_##op((val), TRCCIDCVRn(5))		\
+> +	CASE_##op((val), TRCCIDCVRn(6))		\
+> +	CASE_##op((val), TRCCIDCVRn(7))		\
+> +	CASE_##op((val), TRCVMIDCVRn(0))	\
+> +	CASE_##op((val), TRCVMIDCVRn(1))	\
+> +	CASE_##op((val), TRCVMIDCVRn(2))	\
+> +	CASE_##op((val), TRCVMIDCVRn(3))	\
+> +	CASE_##op((val), TRCVMIDCVRn(4))	\
+> +	CASE_##op((val), TRCVMIDCVRn(5))	\
+> +	CASE_##op((val), TRCVMIDCVRn(6))	\
+> +	CASE_##op((val), TRCVMIDCVRn(7))	\
+> +	CASE_##op((val), TRCCIDCCTLR0)		\
+> +	CASE_##op((val), TRCCIDCCTLR1)		\
+> +	CASE_##op((val), TRCVMIDCCTLR0)		\
+> +	CASE_##op((val), TRCVMIDCCTLR1)		\
+> +	CASE_##op((val), TRCITCTRL)		\
+> +	CASE_##op((val), TRCCLAIMSET)		\
+> +	CASE_##op((val), TRCCLAIMCLR)		\
+> +	CASE_##op((val), TRCDEVAFF0)		\
+> +	CASE_##op((val), TRCDEVAFF1)		\
+> +	CASE_##op((val), TRCLAR)		\
+> +	CASE_##op((val), TRCLSR)		\
+> +	CASE_##op((val), TRCAUTHSTATUS)		\
+> +	CASE_##op((val), TRCDEVARCH)		\
+> +	CASE_##op((val), TRCDEVID)		\
+> +	CASE_##op((val), TRCDEVTYPE)		\
+> +	CASE_##op((val), TRCPIDR4)		\
+> +	CASE_##op((val), TRCPIDR5)		\
+> +	CASE_##op((val), TRCPIDR6)		\
+> +	CASE_##op((val), TRCPIDR7)		\
+> +	CASE_##op((val), TRCPIDR0)		\
+> +	CASE_##op((val), TRCPIDR1)		\
+> +	CASE_##op((val), TRCPIDR2)		\
+> +	CASE_##op((val), TRCPIDR3)
+> +
+> +#define ETM4x_READ_CASES(res)	CASE_LIST(READ, (res))
+> +#define ETM4x_WRITE_CASES(val)	CASE_LIST(WRITE, (val))
+> +
+> +#define read_etm4x_sysreg_offset(csa, offset, _64bit)				\
+> +	({									\
+> +		u64 __val;							\
+> +										\
+> +		if (__builtin_constant_p((offset)))				\
+
+Neat trick - I wonder how you stumbled on that one.
+
+
+> +			__val = read_etm4x_sysreg_const_offset((offset));	\
+> +		else								\
+> +			__val = etm4x_sysreg_read((csa), (offset),		\
+> +						  true, _64bit);		\
+> +		__val;								\
+> +	 })
+> +
+> +#define write_etm4x_sysreg_offset(csa, val, offset, _64bit)		\
+> +	do {								\
+> +		if (__builtin_constant_p((offset)))			\
+> +			write_etm4x_sysreg_const_offset((val),		\
+> +							(offset));	\
+> +		else							\
+> +			etm4x_sysreg_write((csa), (val), (offset),	\
+> +						true, _64bit);		\
+> +	} while (0)
+> +
+> +
+> +#define etm4x_relaxed_read32(csa, offset)				\
+> +	((u32)((csa)->io_mem ?						\
+> +		 readl_relaxed((csa)->base + (offset)) :		\
+> +		 read_etm4x_sysreg_offset((csa), (offset), false)))
+
+Please add an extra new line - otherwise it is very hard to read.
+
+> +#define etm4x_relaxed_read64(csa, offset)				\
+> +	((u64)((csa)->io_mem ?						\
+> +		 readq_relaxed((csa)->base + (offset)) :		\
+> +		 read_etm4x_sysreg_offset((csa), (offset), true)))
+
+Here too.
+
+> +#define etm4x_read32(csa, offset)					\
+> +	({								\
+> +		u32 __val = etm4x_relaxed_read32((csa), (offset));	\
+> +		__iormb(__val);						\
+> +		__val;							\
+> +	 })
+> +
+> +#define etm4x_read64(csa, offset)					\
+> +	({								\
+> +		u64 __val = etm4x_relaxed_read64((csa), (offset));	\
+> +		__iormb(__val);						\
+> +		__val;							\
+> +	 })
+> +
+> +#define etm4x_relaxed_write32(csa, val, offset)				\
+> +	do {								\
+> +		if ((csa)->io_mem)					\
+> +			writel_relaxed((val), (csa)->base + (offset));	\
+> +		else							\
+> +			write_etm4x_sysreg_offset((csa), (val),	\
+> +						    (offset), false);	\
+
+Why using an if/else statement and above the '?' condition marker?  I would
+really like a uniform approach.  Otherwise the reader keeps looking for
+something subtle when there isn't.
+
+> +	} while (0)
+> +
+> +#define etm4x_relaxed_write64(csa, val, offset)				\
+> +	do {								\
+> +		if ((csa)->io_mem)					\
+> +			writeq_relaxed((val), (csa)->base + (offset));	\
+> +		else							\
+> +			write_etm4x_sysreg_offset((csa), (val),	\
+> +						    (offset), true);	\
+> +	} while (0)
+> +
+> +#define etm4x_write32(csa, val, offset)					\
+> +	do {								\
+> +		__iowmb();						\
+> +		etm4x_relaxed_write32((csa), (val), (offset));		\
+> +	} while (0)
+> +
+> +#define etm4x_write64(csa, val, offset)					\
+> +	do {								\
+> +		__iowmb();						\
+> +		etm4x_relaxed_write64((csa), (val), (offset));		\
+> +	} while (0)
+>  
+> -#define etm4x_write64(csa, val, offset)			\
+> -	writeq((val), (csa)->base + (offset))
+>  
+>  /* ETMv4 resources */
+>  #define ETM_MAX_NR_PE			8
+> @@ -512,4 +806,14 @@ enum etm_addr_ctxtype {
+>  
+>  extern const struct attribute_group *coresight_etmv4_groups[];
+>  void etm4_config_trace_mode(struct etmv4_config *config);
+> +
+> +u64 etm4x_sysreg_read(struct csdev_access *csa,
+> +		      u32 offset,
+> +		      bool _relaxed,
+> +		      bool _64bit);
+> +void etm4x_sysreg_write(struct csdev_access *csa,
+> +			u64 val,
+> +			u32 offset,
+> +			bool _relaxed,
+> +			bool _64bit);
+
+With the above: 
+
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+
+This patch holds together well.  I commend you on rendering something that is
+quite complex into a manageable implementation.  That being said it will impact
+Mike's complex configuration patchset (or Mike's complex configuration patchset
+will have an impact on this).
+
+>  #endif
+> -- 
+> 2.24.1
+> 
