@@ -2,91 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBE962A870E
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 20:25:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7BB12A8710
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 20:25:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732173AbgKETZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 14:25:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34686 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731984AbgKETZY (ORCPT
+        id S1732179AbgKETZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 14:25:56 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:54926 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726729AbgKETZ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 14:25:24 -0500
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8A5BC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 11:25:23 -0800 (PST)
-Received: by mail-ej1-x643.google.com with SMTP id gn41so4293111ejc.4
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 11:25:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=anholt-net.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9OwZ2JsmCSkMKjAN1GFjRMTzrmgufxcuqIpH+OrOIOI=;
-        b=0W65vgENvrNSGrqthq2T7Ype2HAJWjbYFQSGwd3qd71+udUCou0GWfY3/4Uq3OroVo
-         /n03vB0eGQoDmgnjQavMzz/bvXNvDsYOZw4QP0A/mTrdN+eSZVKkuiO9hfliZxr46bKn
-         J8wI5ax2F+9MuJpgGwBWCtHWT21XQxj1WfnsOtAKBjaBBKO/71Tyo01mYi6hB9JqPtVp
-         CrzN5A0dUtcVYXZ60FQNEgFPH/sWupNADoX4WcGmBuoYowZn81BynWLpJ1l14pzTskEC
-         BWm2CVU9tsUUuCMeJRAx6aQ9CTni8TcIZkhrM+GuRn1r1KigyTrCBSdKXwG+vIWA3zHv
-         RXbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9OwZ2JsmCSkMKjAN1GFjRMTzrmgufxcuqIpH+OrOIOI=;
-        b=cxLcq3soTwxeBDW5+8Jbq2+C2iicQXLh6svypK/krtrkuQAB/xJmi4ffRwSJ/EVvG8
-         YawOLniJWDKT1aylItx7FfnJ1RG5Ouu6LPZdg3JB9PjnMImZOMoXJkKYqM2/l4JR83Qv
-         5fAQ95WHpxtmu1WL7RS1Ng4+UPsfc3FPkYvSMtyhkDkGJPrq5hE7C+PgJRS6P3VxKtj0
-         vr7z8V0XxYWV9ekyZP5UIOtaDDoaTkiwlRCNWUCwFWsHxhBh+/ivx/+wLp0SGTyKr1Xu
-         5p7NiUp8KLRqVeLRwJSjTMjA1fxSDQFtJdIJ9y8wDmBjnoo+Mrewd5ySKrBPQTzsu+kH
-         bYRg==
-X-Gm-Message-State: AOAM530AiDpRmG0GLuZUa2CKVW4V5A5Zbx7sRLjM7kd7b60lk9yXokoX
-        R1Crbrj/Af0IPI6p1l0Ex7hXhHEoDJGCcVFuGqftWusJzUE=
-X-Google-Smtp-Source: ABdhPJzSFC7kYLWoVFEIQkU3bshpXWTc39sJVr22lchV4Hz+pC/99bCAaKFgEDSQe1h1j9QNs6Ruix54aAhWhfIC5z4=
-X-Received: by 2002:a17:906:1a0b:: with SMTP id i11mr4041808ejf.404.1604604322422;
- Thu, 05 Nov 2020 11:25:22 -0800 (PST)
+        Thu, 5 Nov 2020 14:25:56 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 0A6AC1C0B82; Thu,  5 Nov 2020 20:25:54 +0100 (CET)
+Date:   Thu, 5 Nov 2020 20:25:53 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Subject: Re: [PATCH 4.19 178/191] rtc: rx8010: dont modify the global rtc ops
+Message-ID: <20201105192553.GB18462@duo.ucw.cz>
+References: <20201103203232.656475008@linuxfoundation.org>
+ <20201103203249.312789260@linuxfoundation.org>
 MIME-Version: 1.0
-References: <20201105181613.GA42968@localhost>
-In-Reply-To: <20201105181613.GA42968@localhost>
-From:   Eric Anholt <eric@anholt.net>
-Date:   Thu, 5 Nov 2020 11:25:11 -0800
-Message-ID: <CADaigPWV+x=6x_vso1Eb7ZEdmevpjgdGWO-epq-S6gJ3J1-sSA@mail.gmail.com>
-Subject: Re: [PATCH] drm/vc4: replace idr_init() by idr_init_base()
-To:     Deepak R Varma <mh12gx2825@gmail.com>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Maxime Ripard <mripard@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="EuxKj2iCbKjpUGkD"
+Content-Disposition: inline
+In-Reply-To: <20201103203249.312789260@linuxfoundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 5, 2020 at 10:25 AM Deepak R Varma <mh12gx2825@gmail.com> wrote:
->
-> idr_init() uses base 0 which is an invalid identifier for this driver.
-> The idr_alloc for this driver uses VC4_PERFMONID_MIN as start value for
-> ID range and it is #defined to 1. The new function idr_init_base allows
-> IDR to set the ID lookup from base 1. This avoids all lookups that
-> otherwise starts from 0 since 0 is always unused / available.
->
-> References: commit 6ce711f27500 ("idr: Make 1-based IDRs more efficient")
->
-> Signed-off-by: Deepak R Varma <mh12gx2825@gmail.com>
-> ---
->  drivers/gpu/drm/vc4/vc4_perfmon.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/vc4/vc4_perfmon.c b/drivers/gpu/drm/vc4/vc4_perfmon.c
-> index f4aa75efd16b..7d40f421d922 100644
-> --- a/drivers/gpu/drm/vc4/vc4_perfmon.c
-> +++ b/drivers/gpu/drm/vc4/vc4_perfmon.c
-> @@ -77,7 +77,7 @@ struct vc4_perfmon *vc4_perfmon_find(struct vc4_file *vc4file, int id)
->  void vc4_perfmon_open_file(struct vc4_file *vc4file)
->  {
->         mutex_init(&vc4file->perfmon.lock);
-> -       idr_init(&vc4file->perfmon.idr);
-> +       idr_init_base(&vc4file->perfmon.idr, 1);
->  }
 
-Sounds like you should use VC4_PERFMONID_MIN instead of a magic 1 here.
+--EuxKj2iCbKjpUGkD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi!
+
+> commit d3b14296da69adb7825022f3224ac6137eb30abf upstream.
+>=20
+> The way the driver is implemented is buggy for the (admittedly unlikely)
+> use case where there are two RTCs with one having an interrupt configured
+> and the second not. This is caused by the fact that we use a global
+> rtc_class_ops struct which we modify depending on whether the irq number
+> is present or not.
+
+While this fixes very unlikely configuration with two RTCs...
+
+> Fix it by using two const ops structs with and without alarm operations.
+> While at it: not being able to request a configured interrupt is an error
+> so don't ignore it and bail out of probe().
+
+=2E..it contains unrelated changes and in particular will break
+operation when IRQ can not be requested.
+
+I don't believe we need it in -stable.
+
+Best regards,
+								Pavel
+
+> @@ -468,16 +478,16 @@ static int rx8010_probe(struct i2c_clien
+> =20
+>  		if (err) {
+>  			dev_err(&client->dev, "unable to request IRQ\n");
+> -			client->irq =3D 0;
+> -		} else {
+> -			rx8010_rtc_ops.read_alarm =3D rx8010_read_alarm;
+> -			rx8010_rtc_ops.set_alarm =3D rx8010_set_alarm;
+> -			rx8010_rtc_ops.alarm_irq_enable =3D rx8010_alarm_irq_enable;
+> +			return err;
+>  		}
+
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--EuxKj2iCbKjpUGkD
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX6RRwQAKCRAw5/Bqldv6
+8kK2AJsEW9B2Z6krorpL4FmqyDKN92TYhwCdFMkHcRX9J6Lo8fWTD3/nhUaPWsU=
+=qjbV
+-----END PGP SIGNATURE-----
+
+--EuxKj2iCbKjpUGkD--
