@@ -2,106 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A3402A8973
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 23:01:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A65422A8978
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 23:01:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732745AbgKEWA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 17:00:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58910 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732444AbgKEWAz (ORCPT
+        id S1732760AbgKEWBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 17:01:30 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:52916 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732414AbgKEWB3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 17:00:55 -0500
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 777A1C0613D2
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 14:00:55 -0800 (PST)
-Received: by mail-ej1-x643.google.com with SMTP id oq3so4855315ejb.7
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 14:00:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kkrL6/jK3eJFpTLVXsZRPhI+a3UIbjZsmKJ9Y1LYQJ0=;
-        b=l1zyt1jYkTklLUA4dKaMEI57G5m3V/WrJO9UWEROVOt1ialjv5+aPaK+2azNEcKZm0
-         vrcxfUIr6eZ8Kun/So75Mc20VmON8d5xdIS2rpzD+CsMBd2VqqhnemRqlDOnL66sjr1P
-         Ecc5lreu6+8+82eLvbrs02WwGF4FFHLHcePgPZ8d4QfyEF9+q7bmSY/+90lZC5kIEp4O
-         5u8S7sFHPozXs0wKAV3gQx9l3oe6/V92olWejfApaKFk3N1zIixtWQeU33iTAoGmromx
-         XUW+nJIH2V3f6sE6BWIFVXi1z/N5WJiO7KgF5iUw/PsjqHrTRre+btTWTFt0ilKSzUBm
-         fn3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kkrL6/jK3eJFpTLVXsZRPhI+a3UIbjZsmKJ9Y1LYQJ0=;
-        b=mK2iN8P++qJIESb3fNNnNuFr9i8W58gjUd3UGNBRZc6oIqLfIHkgorefG25QnjpBzY
-         AZwA4XsvzoSkIbh1RyRujEAxierDDagymrIw4TCQ01ZxQYk4JPL3iAUuGRH3GsuBZ8p3
-         rmGe6SPqjg3gDbBsb3OObDOgy5j3qMglMZYzJXuis+d/svXjdx2kk8YRg0Ht2DEjSR33
-         6lowTaU9B9z9DxkwtnczquVYhGgdWR5kOb4jZK+gCr3RoinsPYyaV+yu4DhxEuGL9qmg
-         BkvVglh4Vv00xIlXXpU4MjnyXEdNHaSJOFZse9WqmJGL+LqIHHkMCCLJxSjMheGTXEox
-         1c5g==
-X-Gm-Message-State: AOAM530fQYBpyC8jn/xZsiSZU3afGQSE/ClvAR3KXvkYbPQywO7kAvCD
-        nYA0oVUijIK5IBliKz96MrxlH2K3NVzaMABt/jFMsA==
-X-Google-Smtp-Source: ABdhPJythImg+6Su9fzxeATyfrRJDwfwiTfRoJbZhE2LPNRyXKMolHFGhd5ZFcfi1TtxdV0OdBNkOfUeah9GASwsFOs=
-X-Received: by 2002:a17:906:ad8e:: with SMTP id la14mr4221902ejb.264.1604613654118;
- Thu, 05 Nov 2020 14:00:54 -0800 (PST)
+        Thu, 5 Nov 2020 17:01:29 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: gtucker)
+        with ESMTPSA id 318751F465DE
+From:   Guillaume Tucker <guillaume.tucker@collabora.com>
+To:     Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Heiko Stuebner <heiko@sntech.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com,
+        Guillaume Tucker <guillaume.tucker@collabora.com>
+Subject: [PATCH] rtc: hym8563: enable wakeup by default
+Date:   Thu,  5 Nov 2020 22:01:10 +0000
+Message-Id: <4a52fe66b327fd1974f86b7deb7e2c06d74fe64f.1604613067.git.guillaume.tucker@collabora.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20201023003338.1285642-1-david.m.ertman@intel.com>
- <20201023003338.1285642-2-david.m.ertman@intel.com> <CAPcyv4i9s=CsO5VJOhPnS77K=bD0LTQ8TUAbhLd+0OmyU8YQ3g@mail.gmail.com>
- <DM6PR11MB284191BAA817540E52E4E2C4DDEE0@DM6PR11MB2841.namprd11.prod.outlook.com>
-In-Reply-To: <DM6PR11MB284191BAA817540E52E4E2C4DDEE0@DM6PR11MB2841.namprd11.prod.outlook.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Thu, 5 Nov 2020 14:00:00 -0800
-Message-ID: <CAPcyv4hjCmaCEUhgchkJO7WaGQeTz8gtS2YgMtBAvoGBksvvSg@mail.gmail.com>
-Subject: Re: [PATCH v3 01/10] Add auxiliary bus support
-To:     "Ertman, David M" <david.m.ertman@intel.com>
-Cc:     "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Netdev <netdev@vger.kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Fred Oh <fred.oh@linux.intel.com>,
-        Parav Pandit <parav@mellanox.com>,
-        "Saleem, Shiraz" <shiraz.saleem@intel.com>,
-        "Patil, Kiran" <kiran.patil@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Leon Romanovsky <leonro@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 5, 2020 at 11:28 AM Ertman, David M
-<david.m.ertman@intel.com> wrote:
-[..]
-> > > Each auxiliary_device represents a part of its parent
-> > > +functionality. The generic behavior can be extended and specialized as
-> > needed
-> > > +by encapsulating an auxiliary_device within other domain-specific
-> > structures and
-> > > +the use of .ops callbacks. Devices on the auxiliary bus do not share any
-> > > +structures and the use of a communication channel with the parent is
-> > > +domain-specific.
-> >
-> > Should there be any guidance here on when to use ops and when to just
-> > export functions from parent driver to child. EXPORT_SYMBOL_NS() seems
-> > a perfect fit for publishing shared routines between parent and child.
-> >
->
-> I would leave this up the driver writers to determine what is best for them.
+Enable wakeup by default in the hym8563 driver to match the behaviour
+implemented by the majority of RTC drivers.  As per the description of
+device_init_wakeup(), it should be enabled for "devices that everyone
+expects to be wakeup sources".  One would expect this to be the case
+with a real-time clock.
 
-I think there is a pathological case that can be avoided with a
-statement like the following:
+Fixes: dcaf03849352 ("rtc: add hym8563 rtc-driver")
+Reported-by: kernelci.org bot <bot@kernelci.org>
+Signed-off-by: Guillaume Tucker <guillaume.tucker@collabora.com>
+---
+ drivers/rtc/rtc-hym8563.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-"Note that ops are intended as a way to augment instance behavior
-within a class of auxiliary devices, it is not the mechanism for
-exporting common infrastructure from the parent. Consider
-EXPORT_SYMBOL_NS() to convey infrastructure from the parent module to
-the auxiliary module(s)."
+diff --git a/drivers/rtc/rtc-hym8563.c b/drivers/rtc/rtc-hym8563.c
+index 0fb79c4afb46..6fccfe634d57 100644
+--- a/drivers/rtc/rtc-hym8563.c
++++ b/drivers/rtc/rtc-hym8563.c
+@@ -527,7 +527,7 @@ static int hym8563_probe(struct i2c_client *client,
+ 	hym8563->client = client;
+ 	i2c_set_clientdata(client, hym8563);
+ 
+-	device_set_wakeup_capable(&client->dev, true);
++	device_init_wakeup(&client->dev, true);
+ 
+ 	ret = hym8563_init_device(client);
+ 	if (ret) {
+-- 
+2.20.1
 
-As for your other dispositions of the feedback, looks good to me.
