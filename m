@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 587C32A7393
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 01:06:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43E9C2A7372
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 01:02:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387850AbgKEAEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 19:04:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50972 "EHLO
+        id S1733148AbgKEACr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 19:02:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730651AbgKEACo (ORCPT
+        with ESMTP id S1728323AbgKEACq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 19:02:44 -0500
-Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FA77C0613D2
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 16:02:44 -0800 (PST)
-Received: by mail-wr1-x449.google.com with SMTP id h11so85225wrq.20
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 16:02:43 -0800 (PST)
+        Wed, 4 Nov 2020 19:02:46 -0500
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2223C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 16:02:45 -0800 (PST)
+Received: by mail-qv1-xf4a.google.com with SMTP id x10so30904qvo.22
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 16:02:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=vCuap+Z40WCfgwTrVBGRXx2rimwF3+Nybx2YvcmvQUo=;
-        b=TKDRruDc0EPKdW5qP5kZx93U6ILuVOKa9NRxOsJBSbrsNehB2La/XSXsAe/9hQyaMk
-         yCK6FVozl9zmqc2IUI/9cYSE7LNyU/0mpvnpHD2T8bl7AVgkRNS2UNY1OunTzaHIAXdt
-         FE91Mn1bMT+89GiGiG+pSKXKCCCi7QTzrqooRDTGgQ6Ctjnx1U3rrYtD1VR4mL6FgcFK
-         c/85JUoGFBsSf4jLoyMoeAlfhJucBZFp+w6YrIBmmw+RbFgil2rQH+u6WqYjog3CXg9X
-         fu8SkOWMFfLel2sGmtiWpsbMBhumZ52ebQMgrd624Xe4e6DKIvYVbygT2KF7gS/efkdd
-         Cm0A==
+        bh=75cYXImCPyiWQ9SKzSdNGkBAnxoIkaWvKX26xtnhUe0=;
+        b=PRQZtB1dufXLPUzgGaqIbaWhMXmesRjAadeDWIt74dEP8Lfsgm2ryEy6s7q8fzmlIV
+         IWJOdm09vXFCNhnpM8EQA7rqqWqjMR9RQQq+tdXuXK3ckY+h7vf59jeSgqtX019vBSLK
+         j8ygqaBGulNwu0YsR9bBAAvVI10PL05Y3wtvXuXQxic2EsEZyEkhcax1ETvG7h0+ymCX
+         e50LJMX71RYCnHJ+gYJyjhKhP+EGhLi7Hl2CmIlnTEpAV9+5QzbT4cIQ3P6MRc7P6q8P
+         Mm3sjdpxfFKeB/L9pqme/H+/pNL5HjbpvJH5LX3yE30dm0HKjUCMmqsnucEmfIgriAJ6
+         xrLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=vCuap+Z40WCfgwTrVBGRXx2rimwF3+Nybx2YvcmvQUo=;
-        b=H4lgqCh9RA0QVknp/7n1ix2OhWAU1a8ho5n1jSnfPCP+QXTdI900iW9nyDqm12AJiD
-         3QLHFgDWFa9br/MgLjWT7bi5eHo7Gc3dLautNUMZ16cQ4LMqbJ1lEQ4ztT5jtjsoJT6q
-         PYKrnPqQU3x25unQAZiWcU+svYQIykapNSJASaCY/PVeh8vcgGLudbuGOwjEiZlALhpW
-         r14PwQEuZ+T758nTN9pQpKB/FSFvcOm86daLOzcF+3zOP3HgN8l+Aoc8bkkhZcgynY14
-         Kx2FhTNxeG1eganaxSph3prIvW7i97YgaOlnJ4j/chvDwAMwZ9RgkIW6s9Lo8IpXRLFl
-         3JkQ==
-X-Gm-Message-State: AOAM530lqfUpRZpWl4lM4bloN95O7PbKhP3t3pCfCVn0aweIN4qME+Hz
-        04//DLndFtjgt5qcVvct4cf0rw5P9zweWfpD
-X-Google-Smtp-Source: ABdhPJwuuyHLeDdD+KHqiqHb6fDGG/rhTQChDK6P5WB9OmWfgwhMcOyy6D+DkRkEMkd2PMl1yMhO3tDZC6Em3M7m
+        bh=75cYXImCPyiWQ9SKzSdNGkBAnxoIkaWvKX26xtnhUe0=;
+        b=TogUeShW4Q4ODE8slYaKDIHT5CViLsSul4Qontk/+4B+HU4l/R+vtQ0xVEILvWuf+/
+         7pVI2ZOjmocn/fiIS5pYUmvdE0DzTuNZLJJIv39e66sXMPLIKpvEgKiZETwLvWzMMCCr
+         lCagrgb8HxYJyWACktA0/+Oe+AyFR09s/4JfnwTgg+J/sanb8HG2/Zix+/l7tWdX8gX9
+         CY8IJ+xIORgLFmZHutGmkepungo7Z5kiyZXPESxnSDe3uTw8w09kAysYoxWiCpckVT8i
+         +dI216iOFIgsEDtgW6NubV21hWXUyICD0utPysxPBmdib6kA8wZqjrFNPqaC3q9i+mty
+         DLIg==
+X-Gm-Message-State: AOAM530TQNNksDlivv9aatvLQvasjOcVzZ0M7XPuM2KXhcs80oNl6OXT
+        PV3bcSKoYPCDnqtan5La/Uc1mgieDO7CQcOa
+X-Google-Smtp-Source: ABdhPJw7NtC8X2ma+DihzOyHxYwzEo/bH3H1mERPSZkcC0cm1czCOnJJGd/mJicu4ukRtxMsLfXt8UL78l7IEHSt
 Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
 X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
- (user=andreyknvl job=sendgmr) by 2002:a5d:4d0d:: with SMTP id
- z13mr477608wrt.23.1604534562699; Wed, 04 Nov 2020 16:02:42 -0800 (PST)
-Date:   Thu,  5 Nov 2020 01:02:13 +0100
+ (user=andreyknvl job=sendgmr) by 2002:ad4:4443:: with SMTP id
+ l3mr356156qvt.53.1604534564913; Wed, 04 Nov 2020 16:02:44 -0800 (PST)
+Date:   Thu,  5 Nov 2020 01:02:14 +0100
 In-Reply-To: <cover.1604534322.git.andreyknvl@google.com>
-Message-Id: <4a32aecc6761e93d792cb2b78af86689025627bd.1604534322.git.andreyknvl@google.com>
+Message-Id: <16e48c6ca3f6ea0cb80d3555723a723bef85270d.1604534322.git.andreyknvl@google.com>
 Mime-Version: 1.0
 References: <cover.1604534322.git.andreyknvl@google.com>
 X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
-Subject: [PATCH 03/20] kasan: introduce set_alloc_info
+Subject: [PATCH 04/20] kasan, arm64: unpoison stack only with CONFIG_KASAN_STACK
 From:   Andrey Konovalov <andreyknvl@google.com>
 To:     Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will.deacon@arm.com>,
@@ -73,43 +73,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add set_alloc_info() helper and move kasan_set_track() into it. This will
-simplify the code for one of the upcoming changes.
+There's a config option CONFIG_KASAN_STACK that has to be enabled for
+KASAN to use stack instrumentation and perform validity checks for
+stack variables.
 
-No functional changes.
+There's no need to unpoison stack when CONFIG_KASAN_STACK is not enabled.
+Only call kasan_unpoison_task_stack[_below]() when CONFIG_KASAN_STACK is
+enabled.
+
+Note, that CONFIG_KASAN_STACK is an option that is currently always
+defined when CONFIG_KASAN is enabled, and therefore has to be tested
+with #if instead of #ifdef.
 
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
-Link: https://linux-review.googlesource.com/id/I0316193cbb4ecc9b87b7c2eee0dd79f8ec908c1a
+Link: https://linux-review.googlesource.com/id/If8a891e9fe01ea543e00b576852685afec0887e3
 ---
- mm/kasan/common.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ arch/arm64/kernel/sleep.S        |  2 +-
+ arch/x86/kernel/acpi/wakeup_64.S |  2 +-
+ include/linux/kasan.h            | 10 ++++++----
+ mm/kasan/common.c                |  2 ++
+ 4 files changed, 10 insertions(+), 6 deletions(-)
 
+diff --git a/arch/arm64/kernel/sleep.S b/arch/arm64/kernel/sleep.S
+index ba40d57757d6..bdadfa56b40e 100644
+--- a/arch/arm64/kernel/sleep.S
++++ b/arch/arm64/kernel/sleep.S
+@@ -133,7 +133,7 @@ SYM_FUNC_START(_cpu_resume)
+ 	 */
+ 	bl	cpu_do_resume
+ 
+-#ifdef CONFIG_KASAN
++#if defined(CONFIG_KASAN) && CONFIG_KASAN_STACK
+ 	mov	x0, sp
+ 	bl	kasan_unpoison_task_stack_below
+ #endif
+diff --git a/arch/x86/kernel/acpi/wakeup_64.S b/arch/x86/kernel/acpi/wakeup_64.S
+index c8daa92f38dc..5d3a0b8fd379 100644
+--- a/arch/x86/kernel/acpi/wakeup_64.S
++++ b/arch/x86/kernel/acpi/wakeup_64.S
+@@ -112,7 +112,7 @@ SYM_FUNC_START(do_suspend_lowlevel)
+ 	movq	pt_regs_r14(%rax), %r14
+ 	movq	pt_regs_r15(%rax), %r15
+ 
+-#ifdef CONFIG_KASAN
++#if defined(CONFIG_KASAN) && CONFIG_KASAN_STACK
+ 	/*
+ 	 * The suspend path may have poisoned some areas deeper in the stack,
+ 	 * which we now need to unpoison.
+diff --git a/include/linux/kasan.h b/include/linux/kasan.h
+index 42a556c5d67c..2c37a39b76ed 100644
+--- a/include/linux/kasan.h
++++ b/include/linux/kasan.h
+@@ -74,8 +74,6 @@ static inline void kasan_disable_current(void) {}
+ 
+ void kasan_unpoison_memory(const void *address, size_t size);
+ 
+-void kasan_unpoison_task_stack(struct task_struct *task);
+-
+ void kasan_alloc_pages(struct page *page, unsigned int order);
+ void kasan_free_pages(struct page *page, unsigned int order);
+ 
+@@ -120,8 +118,6 @@ void kasan_restore_multi_shot(bool enabled);
+ 
+ static inline void kasan_unpoison_memory(const void *address, size_t size) {}
+ 
+-static inline void kasan_unpoison_task_stack(struct task_struct *task) {}
+-
+ static inline void kasan_alloc_pages(struct page *page, unsigned int order) {}
+ static inline void kasan_free_pages(struct page *page, unsigned int order) {}
+ 
+@@ -173,6 +169,12 @@ static inline size_t kasan_metadata_size(struct kmem_cache *cache) { return 0; }
+ 
+ #endif /* CONFIG_KASAN */
+ 
++#if defined(CONFIG_KASAN) && CONFIG_KASAN_STACK
++void kasan_unpoison_task_stack(struct task_struct *task);
++#else
++static inline void kasan_unpoison_task_stack(struct task_struct *task) {}
++#endif
++
+ #ifdef CONFIG_KASAN_GENERIC
+ 
+ void kasan_cache_shrink(struct kmem_cache *cache);
 diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-index 8fd04415d8f4..a880e5a547ed 100644
+index a880e5a547ed..a3e67d49b893 100644
 --- a/mm/kasan/common.c
 +++ b/mm/kasan/common.c
-@@ -318,6 +318,11 @@ bool kasan_slab_free(struct kmem_cache *cache, void *object, unsigned long ip)
- 	return __kasan_slab_free(cache, object, ip, true);
+@@ -58,6 +58,7 @@ void kasan_disable_current(void)
  }
+ #endif /* CONFIG_KASAN_GENERIC || CONFIG_KASAN_SW_TAGS */
  
-+static void set_alloc_info(struct kmem_cache *cache, void *object, gfp_t flags)
-+{
-+	kasan_set_track(&kasan_get_alloc_meta(cache, object)->alloc_track, flags);
-+}
-+
- static void *__kasan_kmalloc(struct kmem_cache *cache, const void *object,
- 				size_t size, gfp_t flags, bool keep_tag)
++#if CONFIG_KASAN_STACK
+ static void __kasan_unpoison_stack(struct task_struct *task, const void *sp)
  {
-@@ -345,7 +350,7 @@ static void *__kasan_kmalloc(struct kmem_cache *cache, const void *object,
- 		KASAN_KMALLOC_REDZONE);
+ 	void *base = task_stack_page(task);
+@@ -84,6 +85,7 @@ asmlinkage void kasan_unpoison_task_stack_below(const void *watermark)
  
- 	if (cache->flags & SLAB_KASAN)
--		kasan_set_track(&kasan_get_alloc_meta(cache, object)->alloc_track, flags);
-+		set_alloc_info(cache, (void *)object, flags);
- 
- 	return set_tag(object, tag);
+ 	kasan_unpoison_memory(base, watermark - base);
  }
++#endif /* CONFIG_KASAN_STACK */
+ 
+ void kasan_alloc_pages(struct page *page, unsigned int order)
+ {
 -- 
 2.29.1.341.ge80a0c044ae-goog
 
