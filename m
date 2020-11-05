@@ -2,158 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B9FC2A7E7B
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 13:22:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 132842A7E80
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 13:24:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730489AbgKEMWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 07:22:31 -0500
-Received: from mail-40133.protonmail.ch ([185.70.40.133]:28664 "EHLO
-        mail-40133.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725468AbgKEMWb (ORCPT
+        id S1730342AbgKEMYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 07:24:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53034 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725468AbgKEMYH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 07:22:31 -0500
-Date:   Thu, 05 Nov 2020 12:22:26 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1604578948; bh=0nJYS+gLcbGAg8faV3yhKQST5RGSsRVlarw3xnFKf0w=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=lxTpiM3R1RrlQ+Nje7lDzS1LL7Oj2UD1NwDWMZFVVvvWjnK6TmFvAqor8pqv9pLON
-         On99SDlA0PZSGavBfuxhCbZRf0nhMX6jQvHOELgGjdUz/wfuMbM0Ahkv9O3Bev8TEa
-         uDrc9piQvaGlnMsFQmL8VMiAvGicMReSIOA8YEImk+08/56HTrsx0tmGnPKQbeKTSM
-         qy1G+dufn8a4SNY49uzzNPwMIbFps0TEsAgEAHuLUVKnrwpbVmzo1BwOiaGjgKodJj
-         pwQXRyx4CZNq4NgPP16Fuxa7AQwFiwe9yzwFClIPWuiti49S/juZAtoVPxlZYDijJG
-         KTnxpeVVQA7Ug==
-To:     Jason Wang <jasowang@redhat.com>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexander Lobakin <alobakin@pm.me>, Amit Shah <amit@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnaud Pouliquen <arnaud.pouliquen@st.com>,
-        Suman Anna <s-anna@ti.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: Re: [PATCH virtio] virtio: virtio_console: fix DMA memory allocation for rproc serial
-Message-ID: <aXBO8lWEART2MNuWacIKln3qh6wttCtF2oUd7vthkNU@cp3-web-012.plabs.ch>
-In-Reply-To: <004da56d-aad2-3b69-3428-02a14263289b@redhat.com>
-References: <AOKowLclCbOCKxyiJ71WeNyuAAj2q8EUtxrXbyky5E@cp7-web-042.plabs.ch> <004da56d-aad2-3b69-3428-02a14263289b@redhat.com>
+        Thu, 5 Nov 2020 07:24:07 -0500
+Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BC8EC0613CF;
+        Thu,  5 Nov 2020 04:24:07 -0800 (PST)
+Received: by mail-vs1-xe42.google.com with SMTP id l22so648907vsa.4;
+        Thu, 05 Nov 2020 04:24:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=kL2m+ZFgq1/K+CQrrDxi61N8IEUFK1H2EexBFfPVxDg=;
+        b=Ygz0p7/1IFsL6fMq4vGN0ed+2c39VHo8k8ld81EIwj/BVvsosT+em3sXxoP9ZlmKPs
+         oPYvKNB1RFt5nvFV2G1USKal7xWAt3G2Qc3H8KIP6IlSCsz1ozp2jwOuFjJGxYv5bRgV
+         ULHs3CHnSVk7FXyjP0bnsm8mrVH19eoX4YGbYnRTp70hL1X7sIGzsi+74HsmdwK0a2En
+         HMNWnEN8EzxNtQPCYAJn2rqB2qiXTMltpDOeQoM5NymQhG06QKzMMBziHR1YlyTa+kKW
+         cRpwcWzTR3H/P/EBNtKFPSLt2zV0uuUo9hsW8agIOvsFsTbBviXTS8jPt6HeW0cVpuMA
+         bPwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=kL2m+ZFgq1/K+CQrrDxi61N8IEUFK1H2EexBFfPVxDg=;
+        b=Cj0IkL/gWOYSiQyVWptQCaA29VNp7rLd+9yCQtFmXRiFoVcUjk2rn3S9pEXzWutVUz
+         lcw0pAsheyPrxoLjuStMuxMvkeoY20Zv/uPI9ZrJKPFARwnsn9W4tKXAuTcblXhpCMrl
+         zMK4clfyhWwaUGAnxu50MLkVdj209OpxW7H/BvBj3yKmeMp4PlVC5U5xnwbHJIml4xRe
+         oRDYCJTnZnbWF4Phte/U4BY0OaIILmvjT+HqHDmz0Rd9xirW+jijICCWRzmTpIOUFdxN
+         HmI9krU0Mzm6ym08CkC90LJdU1wbIVXCtrS1uoEOoSSa4FWzQblnDOUR8EpcpldcxUON
+         kLvQ==
+X-Gm-Message-State: AOAM530zA+991ejRPRHuOBjuvN4vTD+6TqRLzXO83AixcSJsIxY4C8r/
+        8AOKiR0MA2rWiIot9gAKq1zmUDqf+rZXXVx6JBU=
+X-Google-Smtp-Source: ABdhPJwrw+XyaIXuE6kgWuVslPDF/evht/Qk0FVkDZi9BYHfsLnPP4rZ+nmFWRlo79G76RQdvVb6D0/EONFB1ohCn84=
+X-Received: by 2002:a05:6102:a1a:: with SMTP id t26mr814216vsa.37.1604579046470;
+ Thu, 05 Nov 2020 04:24:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <20201029095806.10648-1-amelie.delaunay@st.com>
+ <20201029095806.10648-2-amelie.delaunay@st.com> <20201029154016.GA1917373@bogus>
+ <860d5620-4fdf-6e01-9a04-3967d6fcfd6b@st.com> <CAL_JsqKs-Po8BdShjQNDNPjNWBCD3FSPdq4KbQGx3=VnV+3nPw@mail.gmail.com>
+ <ebccf61a-c88f-c7f4-9f06-01d2bd1f43de@st.com> <20201104210803.GA4115079@bogus>
+ <2da804ff-3b3c-0ea9-14d5-a163b28ccc33@st.com>
+In-Reply-To: <2da804ff-3b3c-0ea9-14d5-a163b28ccc33@st.com>
+From:   Jun Li <lijun.kernel@gmail.com>
+Date:   Thu, 5 Nov 2020 20:23:55 +0800
+Message-ID: <CAKgpwJU_yTTYabeMYFBqNs_6=N7gaTAc1v-+fU-dshFUrL1qVA@mail.gmail.com>
+Subject: Re: [RESEND PATCH v3 1/4] dt-bindings: connector: add power-opmode
+ optional property to usb-connector
+To:     Amelie DELAUNAY <amelie.delaunay@st.com>
+Cc:     Rob Herring <robh@kernel.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Badhri Jagan Sridharan <badhri@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        "moderated list:ARM/STM32 ARCHITECTURE" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Fabrice Gasnier <fabrice.gasnier@st.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jason Wang <jasowang@redhat.com>
-Date: Thu, 5 Nov 2020 11:10:24 +0800
-
-Hi Jason,
-
-> On 2020/11/4 =E4=B8=8B=E5=8D=8811:31, Alexander Lobakin wrote:
->> Since commit 086d08725d34 ("remoteproc: create vdev subdevice with
->> specific dma memory pool"), every remoteproc has a DMA subdevice
->> ("remoteprocX#vdevYbuffer") for each virtio device, which inherits
->> DMA capabilities from the corresponding platform device. This allowed
->> to associate different DMA pools with each vdev, and required from
->> virtio drivers to perform DMA operations with the parent device
->> (vdev->dev.parent) instead of grandparent (vdev->dev.parent->parent).
->>
->> virtio_rpmsg_bus was already changed in the same merge cycle with
->> commit d999b622fcfb ("rpmsg: virtio: allocate buffer from parent"),
->> but virtio_console did not. In fact, operations using the grandparent
->> worked fine while the grandparent was the platform device, but since
->> commit c774ad010873 ("remoteproc: Fix and restore the parenting
->> hierarchy for vdev") this was changed, and now the grandparent device
->> is the remoteproc device without any DMA capabilities.
->> So, starting v5.8-rc1 the following warning is observed:
->>
->> [    2.483925] ------------[ cut here ]------------
->> [    2.489148] WARNING: CPU: 3 PID: 101 at kernel/dma/mapping.c:427 0x80=
-e7eee8
->> [    2.489152] Modules linked in: virtio_console(+)
->> [    2.503737]  virtio_rpmsg_bus rpmsg_core
->> [    2.508903]
->> [    2.528898] <Other modules, stack and call trace here>
->> [    2.913043]
->> [    2.914907] ---[ end trace 93ac8746beab612c ]---
->> [    2.920102] virtio-ports vport1p0: Error allocating inbufs
->>
->> kernel/dma/mapping.c:427 is:
->>
->> WARN_ON_ONCE(!dev->coherent_dma_mask);
->>
->> obviously because the grandparent now is remoteproc dev without any
->> DMA caps:
->>
->> [    3.104943] Parent: remoteproc0#vdev1buffer, grandparent: remoteproc0
->>
->> Fix this the same way as it was for virtio_rpmsg_bus, using just the
->> parent device (vdev->dev.parent, "remoteprocX#vdevYbuffer") for DMA
->> operations.
->> This also allows now to reserve DMA pools/buffers for rproc serial
->> via Device Tree.
->>
->> Fixes: c774ad010873 ("remoteproc: Fix and restore the parenting hierarch=
-y for vdev")
->> Cc: stable@vger.kernel.org # 5.1+
->> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
->> ---
->>   drivers/char/virtio_console.c | 8 ++++----
->>   1 file changed, 4 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/char/virtio_console.c b/drivers/char/virtio_console=
-.c
->> index a2da8f768b94..1836cc56e357 100644
->> --- a/drivers/char/virtio_console.c
->> +++ b/drivers/char/virtio_console.c
->> @@ -435,12 +435,12 @@ static struct port_buffer *alloc_buf(struct virtio=
-_device *vdev, size_t buf_size
->>   =09=09/*
->>   =09=09 * Allocate DMA memory from ancestor. When a virtio
->>   =09=09 * device is created by remoteproc, the DMA memory is
->> -=09=09 * associated with the grandparent device:
->> -=09=09 * vdev =3D> rproc =3D> platform-dev.
->> +=09=09 * associated with the parent device:
->> +=09=09 * virtioY =3D> remoteprocX#vdevYbuffer.
->>   =09=09 */
->> -=09=09if (!vdev->dev.parent || !vdev->dev.parent->parent)
->> +=09=09buf->dev =3D vdev->dev.parent;
->> +=09=09if (!buf->dev)
->>   =09=09=09goto free_buf;
->> -=09=09buf->dev =3D vdev->dev.parent->parent;
+Amelie DELAUNAY <amelie.delaunay@st.com> =E4=BA=8E2020=E5=B9=B411=E6=9C=885=
+=E6=97=A5=E5=91=A8=E5=9B=9B =E4=B8=8B=E5=8D=887:36=E5=86=99=E9=81=93=EF=BC=
+=9A
 >
+> On 11/4/20 10:08 PM, Rob Herring wrote:
+> > On Fri, Oct 30, 2020 at 04:27:14PM +0100, Amelie DELAUNAY wrote:
+> >>
+> >>
+> >> On 10/30/20 3:29 PM, Rob Herring wrote:
+> >>> On Thu, Oct 29, 2020 at 11:49 AM Amelie DELAUNAY <amelie.delaunay@st.=
+com> wrote:
+> >>>>
+> >>>>
+> >>>>
+> >>>> On 10/29/20 4:40 PM, Rob Herring wrote:
+> >>>>> On Thu, Oct 29, 2020 at 10:58:03AM +0100, Amelie Delaunay wrote:
+> >>>>>> Power operation mode may depends on hardware design, so, add the o=
+ptional
+> >>>>>> property power-opmode for usb-c connector to select the power oper=
+ation
+> >>>>>> mode capability.
+> >>>>>>
+> >>>>>> Signed-off-by: Amelie Delaunay <amelie.delaunay@st.com>
+> >>>>>> ---
+> >>>>>>     .../bindings/connector/usb-connector.yaml      | 18 ++++++++++=
+++++++++
+> >>>>>>     1 file changed, 18 insertions(+)
+> >>>>>>
+> >>>>>> diff --git a/Documentation/devicetree/bindings/connector/usb-conne=
+ctor.yaml b/Documentation/devicetree/bindings/connector/usb-connector.yaml
+> >>>>>> index 728f82db073d..200d19c60fd5 100644
+> >>>>>> --- a/Documentation/devicetree/bindings/connector/usb-connector.ya=
+ml
+> >>>>>> +++ b/Documentation/devicetree/bindings/connector/usb-connector.ya=
+ml
+> >>>>>> @@ -93,6 +93,24 @@ properties:
+> >>>>>>           - device
+> >>>>>>           - dual
+> >>>>>>
+> >>>>>> +  power-opmode:
+> >>>>>
+> >>>>> I've acked this version:
+> >>>>>
+> >>>>> https://lore.kernel.org/r/20201020093627.256885-2-badhri@google.com
+> >>>>>
+> >>>>
+> >>>> frs is used for Fast Role Swap defined in USB PD spec.
+> >>>> I understand it allows to get the same information but I'm wondering=
+ why
+> >>>> the property name is limited to -frs- in this case. What about a
+> >>>> non-power delivery USB-C connector ?
+> >>>
+> >>> I've got no idea. The folks that know USB-C and PD details need to ge=
+t
+> >>> together and work all this out. To me, it looks like the same thing..=
+.
+> >>>
+> >>
+> >> It looks but...
+> >>
+> >> The purpose of power-opmode property is to configure the USB-C control=
+lers,
+> >> especially the non-PD USB-C controllers to determine the power operati=
+on
+> >> mode that the Type C connector will support and will advertise through=
+ CC
+> >> pins when it has no power delivery support, whatever the power role: S=
+ink,
+> >> Source or Dual
+> >> The management of the property is the same that data-role and power-ro=
+le
+> >> properties, and done by USB Type-C Connector Class.
+> >>
+> >> new-source-frs-typec-current specifies initial current capability of t=
+he new
+> >> source when vSafe5V is applied during PD3.0 Fast Role Swap. So here, t=
+his
+> >> property is not applied at usb-c controller configuration level, but d=
+uring
+> >> PD Fast Role Swap, so when the Sink become the Source.
+> >> Moreover, the related driver code says FRS can only be supported by DR=
+P
+> >> ports. So new-source-frs-typec-current property, in addition to being
+> >> specific to PD, is also dedicated to DRP usb-c controller.
+> >> The property is managed by Type-C Port Controller Manager for PD.
+> >
+> > But it's the same set of possible values, right? So we can align the
+> > values at least.
+> >
 >
-> I wonder it could be the right time to introduce dma_dev for virtio
-> instead of depending on something magic via parent.
+> USB Power Delivery FRS values are defined in
+> include/dt-bindings/usb/pd.h
 
-This patch are meant to hit RC window and stable trees as a fix of
-the bug that is present since v5.8-rc1. So any new features are out
-of scope of this particular fix.
+I think this can be changed if both can be aligned.
 
-The idea of DMAing through "dev->parent" is that "virtioX" itself is a
-logical dev, not the real one, but its parent *is*. This logic is used
-across the whole tree -- every subsystem creates its own logical device,
-but drivers should always use the backing PCI/platform/etc. devices for
-DMA operations, which represent the real hardware.
-
-> (Btw I don't even notice that there's transport specific code in virtio
-> console, it's better to avoid it)
+>to fit with drivers/usb/typec/tcpm/tcpm.c
+> frs_typec_current enum.
 >
-> Thanks
+> USB-C power operation mode values are defined in
+> include/linux/usb/typec.h with typec_pwr_opmode enum and matching with
+> string values of typec_pwr_opmodes tab.
+>
+> USB PD requires USB-C.
+> USB-C doesn't requires USB PD.
+>
+> drivers/usb/typec/tcpm/tcpm.c already used typec_pwr_opmode values.
+>
+> USB PD specification Table 6-14 Fixed Supply PDO says:
+> Fast Role Swap required USB Type-C Current (see also [USB Type-C 2.0]):
+> Value | Description
+>   00b  | Fast Swap not supported (default)
+>   01b  | Default USB Power
+>   10b  | 1.5A @ 5V
+>   11b  | 3.0A @ 5V
 
-Thanks,
-Al
+This is the value in PDO of sink, the FRS property value(or after translate=
+d)
+actually is used to compare with above value.
 
->>
->>   =09=09/* Increase device refcnt to avoid freeing it */
->>   =09=09get_device(buf->dev);
+So I think both properties can share the same "value", maybe string
+like below
 
+  10 static const char * const typec_pwr_opmodes[] =3D {
+  11         [TYPEC_PWR_MODE_USB]    =3D "default",
+  12         [TYPEC_PWR_MODE_1_5A]   =3D "1.5A",
+  13         [TYPEC_PWR_MODE_3_0A]   =3D "3.0A",
+
+>
+> Note the *see also USB Type-C 2.0*.
+>
+> USB Type-C specification 4.6.2.1 USB Type-C Current says:
+> The USB Type-C connector uses CC pins for configuration including an
+> ability for a Source to advertise to its port partner (Sink) the amount
+> of current it shall supply:
+> =E2=80=A2 Default is the as-configured for high-power operation current v=
+alue as
+> defined by the USB Specification (500 mA for USB 2.0 ports; 900 mA or
+> 1,500 mA for USB 3.2 ports in single-lane or dual-lane operation,
+> respectively)
+> =E2=80=A2 1.5 A
+> =E2=80=A2 3.0 A
+>
+> > Can we align the names in some way? power-opmode and frs-source-opmode
+> > or ??
+
+how about typec-power-opmode and frs-new-source-opmode
+
+> >
+>
+> I let USB PD specialists answer.
+>
+> *frs* property fits with USB PD specification, so with USB PD protocol.
+> *power-opmode fits with USB Type-C specification, so with USB-C hardware
+> support.
+>
+> > Are these 2 properties mutually exclusive?
+
+I think yes.
+
+thanks
+Li Jun
+>> If so, that should be
+> > captured.
+>
+> FRS is specific to products with Power Delivery Support.
+>
+> power-opmode is dedicated to products with USB-C connector support.
+>
+> Regards,
+> Amelie
