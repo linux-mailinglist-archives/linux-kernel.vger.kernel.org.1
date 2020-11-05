@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72D992A8A7A
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 00:10:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDEB62A8A79
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 00:10:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732471AbgKEXJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 18:09:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34364 "EHLO mail.kernel.org"
+        id S1732555AbgKEXJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 18:09:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34390 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726801AbgKEXJY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 18:09:24 -0500
+        id S1732046AbgKEXJZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 18:09:25 -0500
 Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7F74920715;
-        Thu,  5 Nov 2020 23:09:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0A46E2083B;
+        Thu,  5 Nov 2020 23:09:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604617763;
-        bh=cLiAusonPv4tCQb0QUWkF5lsOrakxhbxXbRLovsOtas=;
+        s=default; t=1604617764;
+        bh=EBKXRZA+WNZ0UpWX3ui1bG5r7mNNDBe5p8zeNiIflb8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jJQdcD1aw6BRs37FdhQuxUotiIFH8Mb7rRArI4oar9fC0luu1RL0yWRtpDAzdBcgm
-         s699IHQ2o9xZ0EHTtu2o4aahUKIMOEXAkGbV6nvM+THmGpila7vG7uv5sXlIM3BZoD
-         t/HmHap28uUmY7SfYXwMvy85iYje4FuJ48q4tWa0=
+        b=o8Ua1NiRJ8Rbdv1uV/ra8fr0Vd0Yrwn7KZlEshvKSauOBekyA5sUlNmT+fV+ZgqZg
+         IDpMn9qQhFzQufq8URe7JHfY1T1GlkyQIruMCN+qmIbGOhajNnCZYH+g0iitKAsggT
+         Q4tY1vVPi3q3AJo8yoW/BrQ9YNitd+kjrlRJlUgw=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -32,9 +32,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 01/16] rcu: Don't invoke try_invoke_on_locked_down_task() with irqs disabled
-Date:   Thu,  5 Nov 2020 15:09:06 -0800
-Message-Id: <20201105230921.19017-1-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 02/16] x86/smpboot:  Move rcu_cpu_starting() earlier
+Date:   Thu,  5 Nov 2020 15:09:07 -0800
+Message-Id: <20201105230921.19017-2-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20201105230856.GA18904@paulmck-ThinkPad-P72>
 References: <20201105230856.GA18904@paulmck-ThinkPad-P72>
@@ -44,100 +44,83 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-The try_invoke_on_locked_down_task() function requires that
-interrupts be enabled, but it is called with interrupts disabled from
-rcu_print_task_stall(), resulting in an "IRQs not enabled as expected"
-diagnostic.  This commit therefore updates rcu_print_task_stall()
-to accumulate a list of the first few tasks while holding the current
-leaf rcu_node structure's ->lock, then releases that lock and only then
-uses try_invoke_on_locked_down_task() to attempt to obtain per-task
-detailed information.  Of course, as soon as ->lock is released, the
-task might exit, so the get_task_struct() function is used to prevent
-the task structure from going away in the meantime.
+The call to rcu_cpu_starting() in mtrr_ap_init() is not early enough
+in the CPU-hotplug onlining process, which results in lockdep splats
+as follows:
 
-Link: https://lore.kernel.org/lkml/000000000000903d5805ab908fc4@google.com/
-Reported-by: syzbot+cb3b69ae80afd6535b0e@syzkaller.appspotmail.com
-Reported-by: syzbot+f04854e1c5c9e913cc27@syzkaller.appspotmail.com
-Tested-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+=============================
+WARNING: suspicious RCU usage
+5.9.0+ #268 Not tainted
+-----------------------------
+kernel/kprobes.c:300 RCU-list traversed in non-reader section!!
+
+other info that might help us debug this:
+
+RCU used illegally from offline CPU!
+rcu_scheduler_active = 1, debug_locks = 1
+no locks held by swapper/1/0.
+
+stack backtrace:
+CPU: 1 PID: 0 Comm: swapper/1 Not tainted 5.9.0+ #268
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.10.2-1ubuntu1 04/01/2014
+Call Trace:
+ dump_stack+0x77/0x97
+ __is_insn_slot_addr+0x15d/0x170
+ kernel_text_address+0xba/0xe0
+ ? get_stack_info+0x22/0xa0
+ __kernel_text_address+0x9/0x30
+ show_trace_log_lvl+0x17d/0x380
+ ? dump_stack+0x77/0x97
+ dump_stack+0x77/0x97
+ __lock_acquire+0xdf7/0x1bf0
+ lock_acquire+0x258/0x3d0
+ ? vprintk_emit+0x6d/0x2c0
+ _raw_spin_lock+0x27/0x40
+ ? vprintk_emit+0x6d/0x2c0
+ vprintk_emit+0x6d/0x2c0
+ printk+0x4d/0x69
+ start_secondary+0x1c/0x100
+ secondary_startup_64_no_verify+0xb8/0xbb
+
+This is avoided by moving the call to rcu_cpu_starting up near
+the beginning of the start_secondary() function.  Note that the
+raw_smp_processor_id() is required in order to avoid calling into lockdep
+before RCU has declared the CPU to be watched for readers.
+
+Link: https://lore.kernel.org/lkml/160223032121.7002.1269740091547117869.tip-bot2@tip-bot2/
+Reported-by: Qian Cai <cai@redhat.com>
+Suggested-by: Peter Zijlstra <peterz@infradead.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree_stall.h | 22 +++++++++++++++++-----
- 1 file changed, 17 insertions(+), 5 deletions(-)
+ arch/x86/kernel/cpu/mtrr/mtrr.c | 2 --
+ arch/x86/kernel/smpboot.c       | 1 +
+ 2 files changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index 0fde39b..ca21d28 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -249,13 +249,16 @@ static bool check_slow_task(struct task_struct *t, void *arg)
+diff --git a/arch/x86/kernel/cpu/mtrr/mtrr.c b/arch/x86/kernel/cpu/mtrr/mtrr.c
+index 6a80f36..5f436cb 100644
+--- a/arch/x86/kernel/cpu/mtrr/mtrr.c
++++ b/arch/x86/kernel/cpu/mtrr/mtrr.c
+@@ -794,8 +794,6 @@ void mtrr_ap_init(void)
+ 	if (!use_intel() || mtrr_aps_delayed_init)
+ 		return;
  
- /*
-  * Scan the current list of tasks blocked within RCU read-side critical
-- * sections, printing out the tid of each.
-+ * sections, printing out the tid of each of the first few of them.
-  */
--static int rcu_print_task_stall(struct rcu_node *rnp)
-+static int rcu_print_task_stall(struct rcu_node *rnp, unsigned long flags)
-+	__releases(rnp->lock)
- {
-+	int i = 0;
- 	int ndetected = 0;
- 	struct rcu_stall_chk_rdr rscr;
- 	struct task_struct *t;
-+	struct task_struct *ts[8];
- 
- 	if (!rcu_preempt_blocked_readers_cgp(rnp))
- 		return 0;
-@@ -264,6 +267,14 @@ static int rcu_print_task_stall(struct rcu_node *rnp)
- 	t = list_entry(rnp->gp_tasks->prev,
- 		       struct task_struct, rcu_node_entry);
- 	list_for_each_entry_continue(t, &rnp->blkd_tasks, rcu_node_entry) {
-+		get_task_struct(t);
-+		ts[i++] = t;
-+		if (i >= ARRAY_SIZE(ts))
-+			break;
-+	}
-+	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
-+	for (i--; i; i--) {
-+		t = ts[i];
- 		if (!try_invoke_on_locked_down_task(t, check_slow_task, &rscr))
- 			pr_cont(" P%d", t->pid);
- 		else
-@@ -273,6 +284,7 @@ static int rcu_print_task_stall(struct rcu_node *rnp)
- 				".q"[rscr.rs.b.need_qs],
- 				".e"[rscr.rs.b.exp_hint],
- 				".l"[rscr.on_blkd_list]);
-+		put_task_struct(t);
- 		ndetected++;
- 	}
- 	pr_cont("\n");
-@@ -293,8 +305,9 @@ static void rcu_print_detail_task_stall_rnp(struct rcu_node *rnp)
-  * Because preemptible RCU does not exist, we never have to check for
-  * tasks blocked within RCU read-side critical sections.
-  */
--static int rcu_print_task_stall(struct rcu_node *rnp)
-+static int rcu_print_task_stall(struct rcu_node *rnp, unsigned long flags)
- {
-+	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
- 	return 0;
- }
- #endif /* #else #ifdef CONFIG_PREEMPT_RCU */
-@@ -472,7 +485,6 @@ static void print_other_cpu_stall(unsigned long gp_seq, unsigned long gps)
- 	pr_err("INFO: %s detected stalls on CPUs/tasks:\n", rcu_state.name);
- 	rcu_for_each_leaf_node(rnp) {
- 		raw_spin_lock_irqsave_rcu_node(rnp, flags);
--		ndetected += rcu_print_task_stall(rnp);
- 		if (rnp->qsmask != 0) {
- 			for_each_leaf_node_possible_cpu(rnp, cpu)
- 				if (rnp->qsmask & leaf_node_cpu_bit(rnp, cpu)) {
-@@ -480,7 +492,7 @@ static void print_other_cpu_stall(unsigned long gp_seq, unsigned long gps)
- 					ndetected++;
- 				}
- 		}
--		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
-+		ndetected += rcu_print_task_stall(rnp, flags); // Releases rnp->lock.
- 	}
- 
- 	for_each_possible_cpu(cpu)
+-	rcu_cpu_starting(smp_processor_id());
+-
+ 	/*
+ 	 * Ideally we should hold mtrr_mutex here to avoid mtrr entries
+ 	 * changed, but this routine will be called in cpu boot time,
+diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
+index de776b2..99bdceb 100644
+--- a/arch/x86/kernel/smpboot.c
++++ b/arch/x86/kernel/smpboot.c
+@@ -229,6 +229,7 @@ static void notrace start_secondary(void *unused)
+ #endif
+ 	cpu_init_exception_handling();
+ 	cpu_init();
++	rcu_cpu_starting(raw_smp_processor_id());
+ 	x86_cpuinit.early_percpu_clock_init();
+ 	preempt_disable();
+ 	smp_callin();
 -- 
 2.9.5
 
