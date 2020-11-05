@@ -2,145 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0A662A809C
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 15:17:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 948D62A80A0
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 15:17:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730770AbgKEORW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 09:17:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42612 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726874AbgKEORW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 09:17:22 -0500
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC99EC0613D2
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 06:17:21 -0800 (PST)
-Received: by mail-lj1-x242.google.com with SMTP id t13so1719009ljk.12
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 06:17:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ckFCYgz4p7fV/Rv1ULwzhaLsz6xFc6pP5TZ8DCIkxxA=;
-        b=LCaGszICBBAWv70tAKMjDm5ZOV0L4wNQX13Eecy0BkI6e1/k8zmE5W8HTwBm/ZX8M+
-         v49/+xKIETMrC1vQV6v0+Ci5Wnex0X5SRy8K3waOOb0ohDg3IyZwFelFWOLwRfKHg5td
-         ZSy0Kqof+2A8UXB/Fvm3dnyjDmCJ+LrOI0xpeedQqhf6mIQv0AL29Q2YnYo0tU3Kr1ds
-         ipoC5YUtTwXbS1xY2KBYh5WWQvT/7XDJYrgV2pDqkW6yrm6Mf/yiuhF8zhHxizc7M/lP
-         biay1WeEs45NggRz/rO2TZQ2zdbe4aW188+ciVgWWFrj/n5ldTFATiVGGa0nI/+Dr9w0
-         VV8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ckFCYgz4p7fV/Rv1ULwzhaLsz6xFc6pP5TZ8DCIkxxA=;
-        b=UnohHdKJ7rekvAcMJZMN3YH05+0fIW6fxNAJYJb2aDZvSrvnP2Bbz8h4KWugWzpqTZ
-         8RdyduGOBm4a5zsqk9/vok+Fz4b4OfqUZmoobsAFW0Z5ZMOiUk0gBC3RIdqXoQgtT1mX
-         bWSq/D36TWFZAqX2X9hGCOygb6UPiHfu8ysRIRNixZlGqrnKp3iyAyV/H9Q2UlcUXL/7
-         vLZx9uC3WzdrRQ3Cdn/I5wJtsvUdLrjI2l1cgj2qKta5zWm1XWZ1bzvYll4VKjmN2sJi
-         YaqfROD2lX+ev9/EI18K53k9mz2J6RahdNA5gz7jbfXYisEoSIkPt0PKvpURQUT4DUvw
-         jW0A==
-X-Gm-Message-State: AOAM533fGsxF18smaEJrc0zzujzqwGi+W2b1W1jLAsr3lMqL1FDB3aH4
-        P8jK9WnEq+hNqKabKf0Q6TuZDCcqQcf3M8zAEg48ax98zRei3A==
-X-Google-Smtp-Source: ABdhPJwbKFPhoBPzVE12zAliR3cQNeWctJKtHRHeIQIXzMArYYL00YURYRptpkIiDgn3MbyelUxvyacBOiB03zwHAW4=
-X-Received: by 2002:a2e:80d2:: with SMTP id r18mr1049377ljg.286.1604585840115;
- Thu, 05 Nov 2020 06:17:20 -0800 (PST)
+        id S1730922AbgKEORn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 09:17:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40288 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730775AbgKEORm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 09:17:42 -0500
+Received: from localhost (230.sub-72-107-127.myvzw.com [72.107.127.230])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3B5052073A;
+        Thu,  5 Nov 2020 14:17:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604585861;
+        bh=UDvcaHDeHELwnGnyrjkWW1mbaEvMXe4JugAAo2sR0F4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=w2vObp5xH0DLOpaXZEb6+NvsINwM8w+Uar/SS+zqNrA1Q0cFtX5/ffgvGj4oLlwC8
+         r4lPR3vo69dRFY4CWXBMhPl5O6u5jY941QqwixESmMv51wWQBqUlw3qoB3+Ei0xNfV
+         pgpep30eoY+eeYPyICUOg9QD5lXLlx9K3szrZio0=
+Date:   Thu, 5 Nov 2020 08:17:39 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
+Cc:     Tejas Upadhyay <tejaskumarx.surendrakumar.upadhyay@intel.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, bp@alien8.de, lucas.demarchi@intel.com,
+        matthew.d.roper@intel.com, hariom.pandey@intel.com,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Subject: Re: [PATCH] x86/gpu: add JSL stolen memory support
+Message-ID: <20201105141739.GA493962@bjorn-Precision-5520>
 MIME-Version: 1.0
-References: <20201031003845.41137-1-john.stultz@linaro.org>
-In-Reply-To: <20201031003845.41137-1-john.stultz@linaro.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 5 Nov 2020 15:17:09 +0100
-Message-ID: <CACRpkda1MV2=0MOMk3t4mr1RczdvfeiNTdbYXX6Jig+6p3TABA@mail.gmail.com>
-Subject: Re: [PATCH v5 1/2] pinctrl: qcom: Allow pinctrl-msm code to be
- loadable as a module
-To:     John Stultz <john.stultz@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Andy Gross <agross@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Maulik Shah <mkshah@codeaurora.org>,
-        Lina Iyer <ilina@codeaurora.org>,
-        Saravana Kannan <saravanak@google.com>,
-        Todd Kjos <tkjos@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        MSM <linux-arm-msm@vger.kernel.org>,
-        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
-        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <160456956585.5393.4540325192433934522@jlahtine-mobl.ger.corp.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 31, 2020 at 1:38 AM John Stultz <john.stultz@linaro.org> wrote:
+On Thu, Nov 05, 2020 at 11:46:06AM +0200, Joonas Lahtinen wrote:
+> Quoting Bjorn Helgaas (2020-11-04 19:35:56)
+> > [+cc Jani, Joonas, Rodrigo, David, Daniel]
+> > 
+> > On Wed, Nov 04, 2020 at 05:35:06PM +0530, Tejas Upadhyay wrote:
+> > > JSL re-uses the same stolen memory as ICL and EHL.
+> > > 
+> > > Cc: Lucas De Marchi <lucas.demarchi@intel.com>
+> > > Cc: Matt Roper <matthew.d.roper@intel.com>
+> > > Signed-off-by: Tejas Upadhyay <tejaskumarx.surendrakumar.upadhyay@intel.com>
+> > 
+> > I don't plan to do anything with this since previous similar patches
+> > have gone through some other tree, so this is just kibitzing.
+> > 
+> > But the fact that we have this long list of Intel devices [1] that
+> > constantly needs updates [2] is a hint that something is wrong.
+> 
+> We add an entry for every new integrated graphics platform. Once the
+> platform is added, there have not been changes lately.
+> 
+> > IIUC the general idea is that we need to discover Intel gfx memory by
+> > looking at device-dependent config space and add it to the E820 map.
+> > Apparently the quirks discover this via PCI config registers like
+> > I830_ESMRAMC, I845_ESMRAMC, etc, and tell the driver about it via the
+> > global "intel_graphics_stolen_res"?
+> 
+> We discover what is called the graphics data stolen memory. It is regular
+> system memory range that is not CPU accessible. It is accessible by the
+> integrated graphics only.
+> 
+> See: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/arch/x86/kernel/early-quirks.c?h=v5.10-rc2&id=814c5f1f52a4beb3710317022acd6ad34fc0b6b9
+> 
+> > That's not the way this should work.  There should some generic, non
+> > device-dependent PCI or ACPI method to discover the memory used, or at
+> > least some way to do it in the driver instead of early arch code.
+> 
+> It's used by the early BIOS/UEFI code to set up initial framebuffer.
+> Even if i915 driver is never loaded, the memory ranges still need to
+> be fixed. They source of the problem is that the OEM BIOS which are
+> not under our control get the programming wrong.
+> 
+> We used to detect the memory region size again at i915 initialization
+> but wanted to eliminate the code duplication and resulting subtle bugs
+> that caused. Conclusion back then was that storing the struct resource
+> in memory is the best trade-off.
+> 
+> > How is this *supposed* to work?  Is there something we can do in E820
+> > or other resource management that would make this easier?
+> 
+> The code was added around Haswell (HSW) device generation to mitigate
+> bugs in BIOS. It is traditionally hard to get all OEMs to fix their
+> BIOS when things work for Windows. It's only later years when some
+> laptop models are intended to be sold with Linux.
+> 
+> The alternative would be to get all the OEM to fix their BIOS for Linux,
+> but that is not very realistic given past experiences. So it seems
+> a better choice to to add new line per platform generation to make
+> sure the users can boot to Linux.
 
-> Tweaks to allow pinctrl-msm code to be loadable as a module.
->
-> This is needed in order to support having the qcom-scm driver,
-> which pinctrl-msm calls into, configured as a module.
->
-> This requires that we tweak Kconfigs selecting PINCTRL_MSM to
-> also depend on QCOM_SCM || QCOM_SCM=n so that we match the
-> module setting of QCOM_SCM.
->
-> Unlike the previous revision of this patch:
->   https://lore.kernel.org/lkml/20200625001039.56174-5-john.stultz@linaro.org/
-> this version reworks PINCTRL_MSM to be a visible option and
-> instead of having the various SoC specific drivers select
-> PINCTRL_MSM, this switches those configs to depend on
-> PINCTRL_MSM. This avoids adding the oddish looking:
->   "depend on QCOM_SCM || QCOM_SCM=n"
-> to every SoC specific driver, as that becomes a maintenance
-> headache.
->
-> We also add PINCTRL_MSM to the arm64 defconfig to avoid
-> surprises as otherwise PINCTRL_MSM/IPQ* options previously
-> enabled, will be off.
->
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Andy Gross <agross@kernel.org>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: Joerg Roedel <joro@8bytes.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Jason Cooper <jason@lakedaemon.net>
-> Cc: Marc Zyngier <maz@kernel.org>
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: Vinod Koul <vkoul@kernel.org>
-> Cc: Kalle Valo <kvalo@codeaurora.org>
-> Cc: Maulik Shah <mkshah@codeaurora.org>
-> Cc: Lina Iyer <ilina@codeaurora.org>
-> Cc: Saravana Kannan <saravanak@google.com>
-> Cc: Todd Kjos <tkjos@google.com>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: linux-arm-msm@vger.kernel.org
-> Cc: iommu@lists.linux-foundation.org
-> Cc: linux-gpio@vger.kernel.org
-> Signed-off-by: John Stultz <john.stultz@linaro.org>
-> ---
-> v2:
-> * Module description and whitespace fixes suggested by Bjorn
-> * Added QCOM_SCM || QCOM_SCM=n bits on Kconfigs selecting
->   PINCTRL_MSM. Reported by both Todd and Bjorn.
-> v3:
-> * Make sure the QCOM_SCM || QCOM_SCM=n trick is commented
-> v4:
-> * Rework "select PINCTRL_MSM" to "depends on PINCTRL_MSM"
->   to consolidate the QCOM_SCM dependency.
-> v5:
-> * Add PINCTRL_MSM to arm64 defconfig
+How does Windows do this?  Do they have to add similar code for each
+new platform?
 
-Bjorn can you have a look at this series?
-
-BTW John  I'm afraid I just merged a new QCOM subdriver so we might
-need to respin this to cover all.
-
-It's an important patch so I'll help out in rebasing it if the only problem is
-that my tree is moving under your feet.
-
-Yours,
-Linus Walleij
+> > > ---
+> > >  arch/x86/kernel/early-quirks.c | 1 +
+> > >  1 file changed, 1 insertion(+)
+> > > 
+> > > diff --git a/arch/x86/kernel/early-quirks.c b/arch/x86/kernel/early-quirks.c
+> > > index a4b5af03dcc1..534cc3f78c6b 100644
+> > > --- a/arch/x86/kernel/early-quirks.c
+> > > +++ b/arch/x86/kernel/early-quirks.c
+> > > @@ -549,6 +549,7 @@ static const struct pci_device_id intel_early_ids[] __initconst = {
+> > >       INTEL_CNL_IDS(&gen9_early_ops),
+> > >       INTEL_ICL_11_IDS(&gen11_early_ops),
+> > >       INTEL_EHL_IDS(&gen11_early_ops),
+> > > +     INTEL_JSL_IDS(&gen11_early_ops),
+> > >       INTEL_TGL_12_IDS(&gen11_early_ops),
+> > >       INTEL_RKL_IDS(&gen11_early_ops),
+> > >  };
+> > 
+> > [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/x86/kernel/early-quirks.c?h=v5.10-rc2#n518
+> > 
+> > [2]
+> >   May 2020 efbee021ad02 ("x86/gpu: add RKL stolen memory support")
+> >   Jul 2019 6b2436aeb945 ("x86/gpu: add TGL stolen memory support")
+> >   Mar 2019 d53fef0be4a5 ("x86/gpu: add ElkhartLake to gen11 early quirks")
+> >   May 2018 db0c8d8b031d ("x86/gpu: reserve ICL's graphics stolen memory")
+> >   Dec 2017 33aa69ed8aac ("x86/gpu: add CFL to early quirks")
+> >   Jul 2017 2e1e9d48939e ("x86/gpu: CNL uses the same GMS values as SKL")
+> >   Jan 2017 bc384c77e3bb ("x86/gpu: GLK uses the same GMS values as SKL")
+> >   Oct 2015 00ce5c8a66fb ("drm/i915/kbl: Kabylake uses the same GMS values as Skylake")
+> >   Mar 2015 31d4dcf705c3 ("drm/i915/bxt: Broxton uses the same GMS values as Skylake")
+> >   ...
