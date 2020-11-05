@@ -2,116 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B484E2A821F
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 16:23:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAB032A8228
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 16:26:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731287AbgKEPXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 10:23:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52892 "EHLO
+        id S1731093AbgKEP0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 10:26:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731263AbgKEPXI (ORCPT
+        with ESMTP id S1730660AbgKEP0o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 10:23:08 -0500
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 843A7C0613D2
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 07:23:06 -0800 (PST)
-Received: by mail-qk1-x741.google.com with SMTP id i21so1454653qka.12
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 07:23:06 -0800 (PST)
+        Thu, 5 Nov 2020 10:26:44 -0500
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36416C0613CF;
+        Thu,  5 Nov 2020 07:26:44 -0800 (PST)
+Received: by mail-lf1-x143.google.com with SMTP id v144so2828010lfa.13;
+        Thu, 05 Nov 2020 07:26:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1SxuLZqP7expcmyIeWKucvYuGkstgspzMuDDrhMmksY=;
-        b=QgkcEaYbFwTbauWuAVLqGTRxvWi76twgcpDbNcMEkx8DmTQPUhNPmJTCJnGwcitJZ+
-         EcvTydCY9JAEc0P8ZsX8G4IO4KlR5W//1ksdtn7VPaN0RNh3NYcVSnEaXXQgJb94Wwij
-         RtwwcVVTXOiXvAtpie6fdSsuT/TNr9UEs2EOs=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cMt8gSgbsxrejAPAMapfgWEKOe+zOFu98hbRBwXnepg=;
+        b=NHDmisLweq6u3v/iIQZG5k7LhCDQ/7W72ecQ/BqJtWJ9eVrO7AnLfYG3VuK4IQuxqm
+         LLDCs+AZ3q63YC+U7HMF+GKD4KNqyR10F/ESrvtNk2nR4/xk5s/B68RSKuQJQcGoZfR5
+         LVxxdkLMeY14rG+G7pIw7tQQhXtOFS1nfw/aFSzLAoLpunqDdRrNlSYaUtQS7wj+pSlg
+         7TqVPfjM7shl0cAiLNUMyPxRMEIdES0y+4nIdmSVH1Kdbzcq1O0XFVDgFwrRqox7iKpL
+         /q+DyInuJtmzRRz6EoZ4OADrK62axmUpsvgYDxuYFy+rhWbd6nuji55PF1wdu+yHDynR
+         qf3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1SxuLZqP7expcmyIeWKucvYuGkstgspzMuDDrhMmksY=;
-        b=rcNUXPxcgpmW22w9OgjxhFn2GczR4CeiOaznVKTQYjt2d/2LUH9387DG7AOr9OBS9P
-         mgiIaAPnOCPTHrz1fRfzPhEaHHozXM+9Wc/zi3EPiJyX5+Mslx4yIzqTjnOleHKLqwFp
-         XdAvPYCSmhsA3KTCYSkwycIsM1WuTyHX5vFqRurkZ2mBqFaGc2KayJOhs11F+pkE9DBV
-         z4HfnPlgxQJuOG4N5U15M0fZnHZOB3lTpaV+SKAk96XdT5R6BINTPX5dtsSt4npPv6Av
-         Il3r6YuIK6cBN+M2zkV7H/Mzkw1HNXvV3mDWB226fFhbmLVTRd6pxlphezRy3G8ZS5c8
-         WjQg==
-X-Gm-Message-State: AOAM5327xFrrujMW1UgAyUBnkwyXDlArThX8/jaWJ5DsUSZ3jYnyy5Hz
-        DcUmqSF+gn3guQ4rIuNWMhjLx5Z7Vej0urQkZaZEsw==
-X-Google-Smtp-Source: ABdhPJxR5v810eCnN+xy4FPc5ORemteS4sufWGdQhxFtZCEDINdix51Ym1Hs+vbSKWGg17A+984EwIkolOj+XlVlAug=
-X-Received: by 2002:a37:7687:: with SMTP id r129mr1781089qkc.54.1604589785561;
- Thu, 05 Nov 2020 07:23:05 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cMt8gSgbsxrejAPAMapfgWEKOe+zOFu98hbRBwXnepg=;
+        b=qIvHCdzEiRg/f/nCTkISM7v9/C+Z5o9Q0oMiQ7shB8CjKlIRMUJGdGn7jy7EY7Ihpr
+         lt507MCcFGGPF5kw8dfiZuHWoaxE4gjiQKzlHteluvaqQKqIi02DlxPyD51runmhWnQn
+         oA7YziEsKstzTV2mssRXFFa4q9Lqod/4w6lI0qYlnM7g9cnPCUrLfXImGMcXA2vkN0Qa
+         vdcR53Wc/bVbxrgaTQcNiDsQ4LDSj3wuLYHASmgtvkHFNb4qoqJ57OgcKuvsrLKEgW5Y
+         wJLEzuO39p0pm4eKNtH7LADdBc9vtZS2aNro0ix9QKGBmQLcwO5b77e4h7qarIdPPUZu
+         ljTQ==
+X-Gm-Message-State: AOAM5306TF+2uvq9vzNKL2R1lScDv2j0XcNd2TX7/WKPQXRGOacxCi3L
+        hobp8c4Z7VMrhN6VrkPqlP8=
+X-Google-Smtp-Source: ABdhPJxQh2Ys2Ong785i+Wp1Z41L/kTd2k5MP7nj25Hhuj3uIaMkpySWM1dVJFpY33gy5Hbzr7JESg==
+X-Received: by 2002:ac2:5102:: with SMTP id q2mr1303638lfb.391.1604590001331;
+        Thu, 05 Nov 2020 07:26:41 -0800 (PST)
+Received: from mememe.local (h83-174-248-116.dyn.bashtel.ru. [83.174.248.116])
+        by smtp.gmail.com with ESMTPSA id a7sm213151lfl.2.2020.11.05.07.26.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Nov 2020 07:26:40 -0800 (PST)
+From:   Iakov 'Jake' Kirilenko <jake.kirilenko@gmail.com>
+To:     Henrique de Moraes Holschuh <ibm-acpi@hmh.eng.br>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        ibm-acpi-devel@lists.sourceforge.net,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Iakov 'Jake' Kirilenko <jake.kirilenko@gmail.com>
+Subject: [PATCH] thinkpad_acpi: add P1 gen3 second fan support
+Date:   Thu,  5 Nov 2020 18:25:56 +0300
+Message-Id: <20201105152556.34073-1-jake.kirilenko@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20201019141008.871177-1-daniel@0x0f.com> <20201019141008.871177-4-daniel@0x0f.com>
- <CACRpkdZNr6sDqJhg3KcX0bCbcd8fh2gXFYbS1r2H2Sq+vGqjUw@mail.gmail.com> <3fd04aeb5047d8059ddecc1eda19c2e4@kernel.org>
-In-Reply-To: <3fd04aeb5047d8059ddecc1eda19c2e4@kernel.org>
-From:   Daniel Palmer <daniel@0x0f.com>
-Date:   Fri, 6 Nov 2020 00:23:52 +0900
-Message-ID: <CAFr9PX=vxCCQgCWe9FPb6Z=0=a48HwGOfM_uOG3SqGN9VSYQUA@mail.gmail.com>
-Subject: Re: [PATCH v2 3/5] gpio: msc313: MStar MSC313 GPIO driver
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, arm-kernel@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc,
+Tested on my P1 gen3, works fine with `thinkfan`. Since thinkpad_acpi fan
+control is off by default, it is safe to add 2nd fan control for brave
+overclockers
 
-On Thu, 5 Nov 2020 at 21:08, Marc Zyngier <maz@kernel.org> wrote:
->
-> On 2020-11-05 09:40, Linus Walleij wrote:
-> > On Mon, Oct 19, 2020 at 4:10 PM Daniel Palmer <daniel@0x0f.com> wrote:
->
-> [...]
->
-> >> +/* The parent interrupt controller needs the GIC interrupt type set
-> >> to GIC_SPI
-> >> + * so we need to provide the fwspec. Essentially
-> >> gpiochip_populate_parent_fwspec_twocell
-> >> + * that puts GIC_SPI into the first cell.
-> >> + */
->
-> nit: comment style.
+Signed-off-by: Iakov 'Jake' Kirilenko <jake.kirilenko@gmail.com>
+---
+ drivers/platform/x86/thinkpad_acpi.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-I've fixed these and some other bits for the v3.
-I've held off on pushing that until the rest of it seemed right.
+diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
+index e38106750..4d64ba291 100644
+--- a/drivers/platform/x86/thinkpad_acpi.c
++++ b/drivers/platform/x86/thinkpad_acpi.c
+@@ -8776,6 +8776,7 @@ static const struct tpacpi_quirk fan_quirk_table[] __initconst = {
+ 	TPACPI_Q_LNV3('N', '2', 'C', TPACPI_FAN_2CTL),	/* P52 / P72 */
+ 	TPACPI_Q_LNV3('N', '2', 'E', TPACPI_FAN_2CTL),	/* P1 / X1 Extreme (1st gen) */
+ 	TPACPI_Q_LNV3('N', '2', 'O', TPACPI_FAN_2CTL),	/* P1 / X1 Extreme (2nd gen) */
++	TPACPI_Q_LNV3('N', '2', 'V', TPACPI_FAN_2CTL),	/* P1 / X1 Extreme (3nd gen) */
+ };
+ 
+ static int __init fan_init(struct ibm_init_struct *iibm)
+-- 
+2.29.2
 
-> >> +static void *msc313_gpio_populate_parent_fwspec(struct gpio_chip *gc,
-> >> +                                            unsigned int
-> >> parent_hwirq,
-> >> +                                            unsigned int parent_type)
-> >> +{
-> >> +       struct irq_fwspec *fwspec;
-> >> +
-> >> +       fwspec = kmalloc(sizeof(*fwspec), GFP_KERNEL);
-> >> +       if (!fwspec)
-> >> +               return NULL;
-> >> +
-> >> +       fwspec->fwnode = gc->irq.parent_domain->fwnode;
-> >> +       fwspec->param_count = 3;
-> >> +       fwspec->param[0] = GIC_SPI;
-> >> +       fwspec->param[1] = parent_hwirq;
-> >> +       fwspec->param[2] = parent_type;
-> >> +
-> >> +       return fwspec;
-> >> +}
-> >
-> > Clever. Looping in Marc Z so he can say if this looks allright to him.
->
-> Yup, this looks correct. However, looking at the bit of the patch that
-> isn't quoted here, I see that msc313_gpio_irqchip doesn't have a
-> .irq_set_affinity callback. Is this system UP only?
-
-What is in mainline right now is UP only but there are chips with a
-second cortex A7 that I have working in my tree.
-So I will add that in for v3 if I can work out what I should actually
-do there. :)
-
-Thanks,
-
-Daniel
