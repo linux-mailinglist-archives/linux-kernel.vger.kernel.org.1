@@ -2,118 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA8E72A9707
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 14:32:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5012B2A9708
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 14:34:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727418AbgKFNcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 08:32:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35096 "EHLO
+        id S1727431AbgKFNeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 08:34:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727214AbgKFNcx (ORCPT
+        with ESMTP id S1727214AbgKFNeJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 08:32:53 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DBBAC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 05:32:51 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id w14so1332606wrs.9
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 05:32:51 -0800 (PST)
+        Fri, 6 Nov 2020 08:34:09 -0500
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26101C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 05:34:09 -0800 (PST)
+Received: by mail-lj1-x241.google.com with SMTP id a25so1398043ljn.0
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 05:34:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=w8s8ntm2MEeIEI9ayWbc8zocfTuCuxT7Pca+ADb+7Qc=;
-        b=QPMTT57iu7yE57KwXd2MSuIoF8zeMW6dlOjE29Zt9x9bL7xLRdpukPDMRe9JJTEgoE
-         z2iIiLfgwgx1ow66QG/inALdJe+CDzdxlyltDJQzuC00MaqXrcNrVL+gbkLL4N5N6GxV
-         gv6e4iwpqr0IRo3025RiRJZMPjSGubVGS7XstCtVJSYGLb8IAB37o2fxtH8WIl/eNSd3
-         PufoIT4Q7KmRiSYxVJ8XU2JoHIF9ILcfSnhS2YrA8hI/cc6X0URCLdBlTL+ds9RpWtDy
-         BHU0GYhyyaiBAdMQHumOniY0biwr+MMISfgdeimNoXVSdq9feD4bdPvu7No50vDrQX7y
-         bH4A==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YZyB7NIHwsVHRj+ZJxRic2IdeHhMc2SsKwtA6zsAtpw=;
+        b=Dir4kt+15DzVgGQ/R3jWHc2LHCx/K1Q9oMK8dhBzKRJQcY5PkTe2jMcFRVVZVP7wM+
+         QdNQBtDM+D+I1bgwQDTC7LyCjRcOZ8WGeyBeRy39Sai1t64xsPE/NB1yD+JJaj6FSJZW
+         0REsc9wzTyfq+QPT4FB/+Jyr2+FSDfnA5y04GVb2HYWCqaAzJVchd3vTjK17HOLXZApf
+         jtl8zj+dcjzGiBqXF/Nzch/xqcuev+q8buG2qEQLfMHBw7jAoP6cCA9wQ+fO02SCJzn2
+         stP8Tr1LS77t8gIBI8L6xLb62mUC/BOzUDAQVvaJ/yBH0YQ+VvJ6vUC+KxIjlumU7rVP
+         HqwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=w8s8ntm2MEeIEI9ayWbc8zocfTuCuxT7Pca+ADb+7Qc=;
-        b=kSnlSn7sZ1px6xw2WQ0Il6kF1QKcEeISewYwi2SZzMBkuXvq3vbWyghG1E0xajKTGE
-         H1nzEUKOX2RSsRRCXWSwA6lXPQ5fr2e30CBN0q76u0szU9cK/Qzb/ka9lMXecZkM3rSS
-         kaCTfiL1Hhcn5Vfxhx2ahoJDSIK9yO55sARP2UeNqaQHuOdm6TKTes43Lk8wrOHEmJk4
-         JlzKWzkwa5VCmFFbxUwrNAEWaYHgJi7pHslKSbw0N50E4HNSlxc5AAugvoZgKqnKWzGF
-         PjUznHBOoBkn+JZuXUheqidB09s2hw638UdVmHeM2K9zP4AtiARQMWeQblqaiNYh/7fG
-         7YIA==
-X-Gm-Message-State: AOAM531c3c9tdRFPcJpI6yU3H5csFQ19LUCPA60tEdSWz8wQNMpCur8m
-        8mhqUalNP3WRn7UK420UDrMEmd61F0/Kwwl/
-X-Google-Smtp-Source: ABdhPJxeXGa3R+8smOLhstaSz3/5YQ4z71LspuSmfI64m1Y6cCR8hwn0U8R3qzR3KdqsDWMxHPyZuQ==
-X-Received: by 2002:a5d:568a:: with SMTP id f10mr2749293wrv.30.1604669569911;
-        Fri, 06 Nov 2020 05:32:49 -0800 (PST)
-Received: from dell ([91.110.221.242])
-        by smtp.gmail.com with ESMTPSA id u81sm2624297wmb.27.2020.11.06.05.32.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Nov 2020 05:32:49 -0800 (PST)
-Date:   Fri, 6 Nov 2020 13:32:47 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     vigneshr@ti.com, miquel.raynal@bootlin.com, richard@nod.at
-Cc:     linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 00/23] Rid W=1 warnings in MTD
-Message-ID: <20201106133247.GI2063125@dell>
-References: <20201102115406.1074327-1-lee.jones@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YZyB7NIHwsVHRj+ZJxRic2IdeHhMc2SsKwtA6zsAtpw=;
+        b=inHuRCNQkZ61cjR53M1Gp66c48eZKtkgUCVu4TYHQTUt4P0nRzKsHA8MDWa6fu24Qr
+         P0UZibioqSe+yb3elh6/pvJFVvC3odlO0cbEpyzB49NXei8g4s/K9al+p8Xx2LwZExzH
+         WLkk+/VXYhvJyZEo/ZstRC+dkIGPusvclzeum1Q40AFWX1jMKL2k8ricJewURtlVmngT
+         VZ1KHocQUl/tTfR+IMmpgwnNyxDnlmzujG9GaDJA3onhjbndrRop/xorD7uahyKnlocC
+         KYpWYdVH5a1hMn9MN9KkUm/VQ9qClz5bMbnomQJCH0tPJ5t/qVJWR5Bo7bGYUEqKDcIn
+         F7aQ==
+X-Gm-Message-State: AOAM532RkUstKXnKSa9Z/J0s0eaxgN/0eYALOWi0it2vAyJz6AMz5/sE
+        w2w0gIgfAlvcxjru2V+24JwCiSZqvvAQUVmLCmYuqw==
+X-Google-Smtp-Source: ABdhPJy2BKDyzv0fq10X+2FzmYFUWLG/qRZJTZRNCXQ06RhXrnoH/UZXY04RSOr2s5pUsBPe/drGvSXL++oXKJuhpno=
+X-Received: by 2002:a2e:9583:: with SMTP id w3mr802014ljh.25.1604669647550;
+ Fri, 06 Nov 2020 05:34:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201102115406.1074327-1-lee.jones@linaro.org>
+References: <20200714125941.4174-1-peter.puhov@linaro.org> <20201102105043.GB3371@techsingularity.net>
+ <CAKfTPtB7q8DMQaC=gU+XH92XKcSiuTSBjtMuiRFS67af0gzc6g@mail.gmail.com>
+ <20201102144418.GB154641@lorien.usersys.redhat.com> <20201104094205.GI3306@suse.de>
+ <20201106120303.GE3371@techsingularity.net>
+In-Reply-To: <20201106120303.GE3371@techsingularity.net>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Fri, 6 Nov 2020 14:33:56 +0100
+Message-ID: <CAKfTPtDbyrcZtzPPsdQFOxOkreg-ejn=ABGOGqYjdVpeFPEzPw@mail.gmail.com>
+Subject: Re: [PATCH v1] sched/fair: update_pick_idlest() Select group with
+ lowest group_util when idle_cpus are equal
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Phil Auld <pauld@redhat.com>, Peter Puhov <peter.puhov@linaro.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Robert Foley <robert.foley@linaro.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Jirka Hladky <jhladky@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> This set is part of a larger effort attempting to clean-up W=1
-> kernel builds, which are currently overwhelmingly riddled with
-> niggly little warnings.
-> 
-> Lee Jones (23):
->   mtd: mtdpart: Fix misdocumented function parameter 'mtd'
->   mtd: devices: phram: File headers are not good candidates for
->     kernel-doc
->   mtd: nand: onenand: onenand_base: Fix expected kernel-doc formatting
->   mtd: devices: docg3: Fix kernel-doc 'bad line' and 'excessive doc'
->     issues
->   mtd: mtdcore: Fix misspelled function parameter 'section'
->   mtd: nand: onenand: onenand_bbt: Fix expected kernel-doc formatting
->   mtd: spi-nor: controllers: hisi-sfc: Demote non-conformant kernel-doc
->   mtd: ubi: build: Document 'ubi_num' in struct mtd_dev_param
->   mtd: nand: spi: toshiba: Demote non-conformant kernel-doc header
->   mtd: ubi: kapi: Correct documentation for 'ubi_leb_read_sg's 'sgl'
->     parameter
->   mtd: ubi: eba: Fix a couple of misdocumentation issues
->   mtd: ubi: wl: Fix a couple of kernel-doc issues
->   mtd: nand: raw: brcmnand: brcmnand: Demote non-conformant kernel-doc
->     headers
->   mtd: ubi: gluebi: Fix misnamed function parameter documentation
->   mtd: nand: raw: diskonchip: Marking unused variables as
->     __always_unused
->   mtd: nand: raw: cafe_nand: Remove superfluous param doc and add
->     another
->   mtd: nand: raw: s3c2410: Add documentation for 2 missing struct
->     members
->   mtd: nand: raw: omap_elm: Finish half populated function header,
->     demote empty ones
->   mtd: nand: raw: omap2: Fix a bunch of kernel-doc misdemeanours
->   mtd: nand: raw: sunxi_nand: Document 'sunxi_nfc's 'caps' member
->   mtd: nand: raw: arasan-nand-controller: Document 'anfc_op's 'buf'
->     member
->   mtd: nand: onenand: onenand_base: Fix some kernel-doc misdemeanours
->   mtd: devices: powernv_flash: Add function names to headers and fix
->     'dev'
+On Fri, 6 Nov 2020 at 13:03, Mel Gorman <mgorman@techsingularity.net> wrote:
+>
+> On Wed, Nov 04, 2020 at 09:42:05AM +0000, Mel Gorman wrote:
+> > While it's possible that some other factor masked the impact of the patch,
+> > the fact it's neutral for two workloads in 5.10-rc2 is suspicious as it
+> > indicates that if the patch was implemented against 5.10-rc2, it would
+> > likely not have been merged. I've queued the tests on the remaining
+> > machines to see if something more conclusive falls out.
+> >
+>
+> It's not as conclusive as I would like. fork_test generally benefits
+> across the board but I do not put much weight in that.
+>
+> Otherwise, it's workload and machine-specific.
+>
+> schbench: (wakeup latency sensitive), all machines benefitted from the
+>         revert at the low utilisation except one 2-socket haswell machine
+>         which showed higher variability when the machine was fully
+>         utilised.
 
-May I ask; what is the plan for these patches please?
+There is a pending patch to should improve this bench:
+https://lore.kernel.org/patchwork/patch/1330614/
 
-Do you plan on taking the ones that do not require re-work, rather
-than fixing up and re-submitting the whole set.  It would certainly
-save a lot of mailing list churn if that were the case.
+>
+> hackbench: Neutral except for the same 2-socket Haswell machine which
+>         took an 8% performance penalty of 8% for smaller number of groups
+>         and 4% for higher number of groups.
+>
+> pipetest: Mostly neutral except for the *same* machine showing an 18%
+>         performance gain by reverting.
+>
+> kernbench: Shows small gains at low job counts across the board -- 0.84%
+>         lowest gain up to 5.93% depending on the machine
+>
+> gitsource: low utilisation execution of the git test suite. This was
+>         mostly a win for the revert. For the list of machines tested it was
+>
+>          14.48% gain (2 socket but SNC enabled to 4 NUMA nodes)
+>         neutral      (2 socket broadwell)
+>         36.37% gain  (1 socket skylake machine)
+>          3.18% gain  (2 socket broadwell)
+>          4.4%        (2 socket EPYC 2)
+>          1.85% gain  (2 socket EPYC 1)
+>
+> While it was clear-cut for 5.9, it's less clear-cut for 5.10-rc2 although
+> the gitsource shows some severe differences depending on the machine that
+> is worth being extremely cautious about. I would still prefer a revert
+> but I'm also extremely biased and I know there are other patches in the
 
-Either way, let me know and I will abide by your decision.
+This one from Julia can also impact
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+> pipeline that may change the picture. A wider battery of tests might
+> paint a clearer picture but may not be worth the time investment.
+
+hackbench and pipetest are those that i usually run and where not
+facing regression it was either neutral or small gain which seems
+aligned with the fact that there is no much fork/exec involved in
+these bench
+My machine has faced some connections issues the last couple of days
+so I don't have all results; And especially the git source and
+kernbench one
+
+>
+> So maybe lets just keep an eye on this one. When the scheduler pipeline
+> dies down a bit (does that happen?), we should at least revisit it.
+>
+> --
+> Mel Gorman
+> SUSE Labs
