@@ -2,104 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D462F2A8E78
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 05:43:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C82212A8E93
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 06:09:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726113AbgKFEns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 23:43:48 -0500
-Received: from mga11.intel.com ([192.55.52.93]:15177 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725828AbgKFEnr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 23:43:47 -0500
-IronPort-SDR: 4ebYAZVL9d3eS0KmvT7tZixbW13Gvq0oM2TrvMvKOjFC6S6F68r5dvoxe59+EvhzsSAChqUHQD
- ipYbCeQbGJSg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9796"; a="165991804"
-X-IronPort-AV: E=Sophos;i="5.77,455,1596524400"; 
-   d="scan'208";a="165991804"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2020 20:43:47 -0800
-IronPort-SDR: A8wwO5mdzozqG58eqr5nBl8RN78TcBBXoF5GwHVYMhWRx3h2D9KWerFQACbRWZ+sl90QXoP1IG
- VgL0tGRQ2SCQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,455,1596524400"; 
-   d="scan'208";a="364057875"
-Received: from linux.intel.com ([10.54.29.200])
-  by FMSMGA003.fm.intel.com with ESMTP; 05 Nov 2020 20:43:46 -0800
-Received: from [10.215.162.127] (vramuthx-MOBL1.gar.corp.intel.com [10.215.162.127])
-        by linux.intel.com (Postfix) with ESMTP id 270AC580841;
-        Thu,  5 Nov 2020 20:43:42 -0800 (PST)
-Reply-To: vadivel.muruganx.ramuthevar@linux.intel.com
-Subject: Re: [PATCH v5 5/6] dt-bindings: spi: Convert cadence-quadspi.txt to
- cadence-quadspi.yaml
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Mark Brown <broonie@kernel.org>, Vignesh R <vigneshr@ti.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
+        id S1726082AbgKFFJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 00:09:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40894 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725776AbgKFFJp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 00:09:45 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24F14C0613CF;
+        Thu,  5 Nov 2020 21:09:45 -0800 (PST)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 9BE333D;
+        Fri,  6 Nov 2020 06:09:43 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1604639383;
+        bh=72/KUrhMBGIoUetzc6guWYFWopnI5c0uHM8v4HvuRPc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ezicyJe3TH8q8Ejj8OJ4o9ti4tZBl8nP0nWdq3cOvkoDRGPrmeo4/M6VqLD7PYK44
+         9UF8TtdfQpkYyEDrqEMG7KTEdsRoZGs5g8ssxNGacB5T1tVM05IYsjcpRedN3Auqs2
+         QN7HhTIBAHZG/EsFOmyKA0hho5RSOtc5Rn93tW6Y=
+Date:   Fri, 6 Nov 2020 07:09:40 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        =?UTF-8?Q?Miqu=c3=a8l_Raynal?= <miquel.raynal@bootlin.com>,
-        Simon Goldschmidt <simon.k.r.goldschmidt@gmail.com>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Richard Weinberger <richard@nod.at>, cheol.yong.kim@intel.com,
-        qi-ming.wu@intel.com
-References: <20201029062014.27620-1-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20201029062014.27620-6-vadivel.muruganx.ramuthevar@linux.intel.com>
- <CACRpkdaz9E2yc3GnN8wus3M+qQRknW2QMe8Kn-=o=czOQf7A-Q@mail.gmail.com>
-From:   "Ramuthevar, Vadivel MuruganX" 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
-Message-ID: <280623e3-d182-60f3-5588-96d00e573694@linux.intel.com>
-Date:   Fri, 6 Nov 2020 12:43:41 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Frank Rowand <frowand.list@gmail.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        kernel-team@android.com, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-efi@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v1 00/18] Refactor fw_devlink to significantly improve
+ boot time
+Message-ID: <20201106050940.GG16469@pendragon.ideasonboard.com>
+References: <20201104232356.4038506-1-saravanak@google.com>
 MIME-Version: 1.0
-In-Reply-To: <CACRpkdaz9E2yc3GnN8wus3M+qQRknW2QMe8Kn-=o=czOQf7A-Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201104232356.4038506-1-saravanak@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Saravana,
 
-On 5/11/2020 3:14 pm, Linus Walleij wrote:
-> On Thu, Oct 29, 2020 at 8:39 AM Ramuthevar,Vadivel MuruganX
-> <vadivel.muruganx.ramuthevar@linux.intel.com> wrote:
-> 
->> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
->>
->> Convert the cadence-quadspi.txt documentation to cadence-quadspi.yaml
->> remove the cadence-quadspi.txt from Documentation/devicetree/bindings/spi/
->>
->> Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
-> 
->> +  cdns,is-decoded-cs:
->> +    type: boolean
->> +    description:
->> +      Flag to indicate whether decoder is used or not.
-> 
-> Please elaborate a bit on what kind of decoder this is.
-> I am curious! :)
-Sure, I will elaborate more about decoder for chip select.
+Thank you for working on this !
 
-QSPI controller has in-built chip select decoder instead of external 
-decder circuit, it supports multiple chip selection by 2-to-4 decoder, 
-the below combinations
-CS0 - 1110
-CS1 - 1101
-CS2 - 1011
-CS3 - 0111
-
-when in direct access mode, each chip selection has it's own specified 
-memory region as well.
-
-Regards
-Vadivel
+On Wed, Nov 04, 2020 at 03:23:37PM -0800, Saravana Kannan wrote:
+> The current implementation of fw_devlink is very inefficient because it
+> tries to get away without creating fwnode links in the name of saving
+> memory usage. Past attempts to optimize runtime at the cost of memory
+> usage were blocked with request for data showing that the optimization
+> made significant improvement for real world scenarios.
 > 
-> Yours,
-> Linus Walleij
+> We have those scenarios now. There have been several reports of boot
+> time increase in the order of seconds in this thread [1]. Several OEMs
+> and SoC manufacturers have also privately reported significant
+> (350-400ms) increase in boot time due to all the parsing done by
+> fw_devlink.
 > 
+> So this patch series refactors fw_devlink to be more efficient. The key
+> difference now is the addition of support for fwnode links -- just a few
+> simple APIs. This also allows most of the code to be moved out of
+> firmware specific (DT mostly) code into driver core.
+> 
+> This brings the following benefits:
+> - Instead of parsing the device tree multiple times (complexity was
+>   close to O(N^3) where N in the number of properties) during bootup,
+>   fw_devlink parses each fwnode node/property only once and creates
+>   fwnode links. The rest of the fw_devlink code then just looks at these
+>   fwnode links to do rest of the work.
+> 
+> - Makes it much easier to debug probe issue due to fw_devlink in the
+>   future. fw_devlink=on blocks the probing of devices if they depend on
+>   a device that hasn't been added yet. With this refactor, it'll be very
+>   easy to tell what that device is because we now have a reference to
+>   the fwnode of the device.
+> 
+> - Much easier to add fw_devlink support to ACPI and other firmware
+>   types. A refactor to move the common bits from DT specific code to
+>   driver core was in my TODO list as a prerequisite to adding ACPI
+>   support to fw_devlink. This series gets that done.
+> 
+> Tomi/Laurent/Grygorii,
+> 
+> If you can test this series, that'd be great!
+
+I gave it a try, rebasing my branch from v5.9 to v5.10-rc2 first. On
+v5.10-rc2 the kernel dies when booting due to a deadlock (reported by
+lockdep, so hopefully not too hard to debug). *sigh*. Fortunately, it
+dies after the fw_devlink initialization, so I can still report results.
+
+Before your series:
+
+[    0.743065] cpuidle: using governor menu
+[   13.350259] No ATAGs?
+
+With your series applied:
+
+[    0.722670] cpuidle: using governor menu
+[    1.135859] No ATAGs?
+
+That's a very clear improvement :-)
+
+Tested-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+> [1] - https://lore.kernel.org/linux-pm/CAGETcx-aiW251dhEXT1GNb9bi6YcX8W=jLBrro5CnPuEjGL09g@mail.gmail.com/
+> 
+> Saravana Kannan (18):
+>   Revert "driver core: Avoid deferred probe due to fw_devlink_pause/resume()"
+>   Revert "driver core: Rename dev_links_info.defer_sync to defer_hook"
+>   Revert "driver core: Don't do deferred probe in parallel with kernel_init thread"
+>   Revert "driver core: Remove check in driver_deferred_probe_force_trigger()"
+>   Revert "of: platform: Batch fwnode parsing when adding all top level devices"
+>   Revert "driver core: fw_devlink: Add support for batching fwnode parsing"
+>   driver core: Add fwnode_init()
+>   driver core: Add fwnode link support
+>   driver core: Allow only unprobed consumers for SYNC_STATE_ONLY device links
+>   device property: Add fwnode_is_ancestor_of()
+>   driver core: Redefine the meaning of fwnode_operations.add_links()
+>   driver core: Add fw_devlink_parse_fwtree()
+>   driver core: Add fwnode_get_next_parent_dev() helper function
+>   driver core: Use device's fwnode to check if it is waiting for suppliers
+>   of: property: Update implementation of add_links() to create fwnode links
+>   efi: Update implementation of add_links() to create fwnode links
+>   driver core: Add helper functions to convert fwnode links to device links
+>   driver core: Refactor fw_devlink feature
+> 
+>  drivers/acpi/property.c         |   2 +-
+>  drivers/acpi/scan.c             |   2 +-
+>  drivers/base/core.c             | 584 +++++++++++++++++++++-----------
+>  drivers/base/property.c         |  27 ++
+>  drivers/base/swnode.c           |   2 +-
+>  drivers/firmware/efi/efi-init.c |  31 +-
+>  drivers/of/dynamic.c            |   1 +
+>  drivers/of/platform.c           |   2 -
+>  drivers/of/property.c           | 150 +++-----
+>  include/linux/device.h          |  10 +-
+>  include/linux/fwnode.h          |  66 ++--
+>  include/linux/of.h              |   2 +-
+>  include/linux/property.h        |   2 +
+>  kernel/irq/irqdomain.c          |   2 +-
+>  14 files changed, 490 insertions(+), 393 deletions(-)
+
+-- 
+Regards,
+
+Laurent Pinchart
