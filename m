@@ -2,174 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 112732A92C5
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 10:31:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06B452A92CC
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 10:33:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726852AbgKFJbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 04:31:36 -0500
-Received: from relay9-d.mail.gandi.net ([217.70.183.199]:36905 "EHLO
-        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726625AbgKFJbd (ORCPT
+        id S1726736AbgKFJcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 04:32:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53614 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726422AbgKFJcy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 04:31:33 -0500
-X-Originating-IP: 91.175.115.186
-Received: from localhost (91-175-115-186.subs.proxad.net [91.175.115.186])
-        (Authenticated sender: gregory.clement@bootlin.com)
-        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 8DB42FF804;
-        Fri,  6 Nov 2020 09:31:29 +0000 (UTC)
-From:   Gregory CLEMENT <gregory.clement@bootlin.com>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
-Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        <Steen.Hegelund@microchip.com>,
-        Gregory CLEMENT <gregory.clement@bootlin.com>
-Subject: [PATCH 4/4] pinctrl: ocelot: Add support for Serval platforms
-Date:   Fri,  6 Nov 2020 10:31:18 +0100
-Message-Id: <20201106093118.965152-5-gregory.clement@bootlin.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201106093118.965152-1-gregory.clement@bootlin.com>
-References: <20201106093118.965152-1-gregory.clement@bootlin.com>
+        Fri, 6 Nov 2020 04:32:54 -0500
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBC32C0613D3
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 01:32:53 -0800 (PST)
+Received: by mail-lj1-x244.google.com with SMTP id v19so681707lji.5
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 01:32:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0O2pgo+UmfykEgd2uLe7m+qSlQ1nNk7dEj4yrwl58uc=;
+        b=PCF3l3Ux3vXSR5kq06buJzj4g2GvzwIdDnPfwEhAliNGMQHb2EJ8ea6CIuUPQqYO0l
+         MH2/8fMTEw5ILQZPz6XCopiBtBYIfavA0rSo2PS/TtPvNoGLbYyg5+8M11pfBw+XRYo8
+         zUwHn4AP/U596zU00e5leiBdAVOoqgMkc1BTnHl1/j5VFjIY8N+HPisMfLKA95pZRKVM
+         xyqolq45WIaB2bOJ21n3+EBkkokbPdX9zHpsVFN64JB8Y5jfk9b8osgV4oyXljOQseTm
+         h2+dW1o2oOgqTv1NjsyLLTEKA6nAd6KAW2L6LZUbJc6kPDgfKAIYXnlDsAJB5dHkh7tX
+         GiIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0O2pgo+UmfykEgd2uLe7m+qSlQ1nNk7dEj4yrwl58uc=;
+        b=Q0gURUD79vcDvjnmj/i2COPBl2hyX7ezGGtH+cbDs2kvkbqm97vvPjoY5v8MO+8tI8
+         VpiQAJgdnHP8jlKDd2NZ193fWsbSflrdUGC6gY42e5hiQvmm1qah78vqpxbAGJmp3/ci
+         Xy9tW3a+JtUWx2W0KiXaLwfiMmlP3wj9rs1o9qXSLoFFqCqfsvYvmdLPCrW04xyqaZsF
+         wnDmJ2tnNrf7k3RQLhDJOZKj/81+i2tBjz/HE1PZz3KHDa1SuxQGWI1Tdg4sjYGb7EiB
+         SRLI7CZWof8wIHUdI8LAqGZGd2lmN+AOUiI00mtyCazp5o8XLUv+C3SJEfLoM/auxM1X
+         9N7g==
+X-Gm-Message-State: AOAM532iuq4SduhHR3zzS9CRwYp97onqtJ4oUgWUGMVLBy6FXVZD9Bzz
+        OW57YQ6FBJ+fyIuXY0tNJ/GXCq/8sndXoe832KoJFA==
+X-Google-Smtp-Source: ABdhPJyRRWazWWTTUshMunq0JJz7PYcu9OaGawq4/1rjyTHlsj7AVCjaucCm9rask/L4TdYyqxDT6p+HAgCzzJBgLhs=
+X-Received: by 2002:a2e:9013:: with SMTP id h19mr405821ljg.4.1604655172333;
+ Fri, 06 Nov 2020 01:32:52 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1604419306-26105-1-git-send-email-sumit.garg@linaro.org> <20201105050736.GA702944@kernel.org>
+In-Reply-To: <20201105050736.GA702944@kernel.org>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Fri, 6 Nov 2020 15:02:41 +0530
+Message-ID: <CAFA6WYPetvod-Wov2n_L5TL771j+-kt+_csyWYT-uM=haEKMZQ@mail.gmail.com>
+Subject: Re: [PATCH v8 0/4] Introduce TEE based Trusted Keys support
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Janne Karhunen <janne.karhunen@gmail.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Markus Wamser <Markus.Wamser@mixed-mode.de>,
+        Luke Hinds <lhinds@redhat.com>,
+        "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
+        linux-integrity@vger.kernel.org,
+        "open list:SECURITY SUBSYSTEM" 
+        <linux-security-module@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        op-tee@lists.trustedfirmware.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lars Povlsen <lars.povlsen@microchip.com>
+On Thu, 5 Nov 2020 at 10:37, Jarkko Sakkinen <jarkko@kernel.org> wrote:
+>
+> On Tue, Nov 03, 2020 at 09:31:42PM +0530, Sumit Garg wrote:
+> > Add support for TEE based trusted keys where TEE provides the functionality
+> > to seal and unseal trusted keys using hardware unique key. Also, this is
+> > an alternative in case platform doesn't possess a TPM device.
+> >
+> > This patch-set has been tested with OP-TEE based early TA which is already
+> > merged in upstream [1].
+>
+> Is the new RPI400 computer a platform that can be used for testing
+> patch sets like this? I've been looking for a while something ARM64
+> based with similar convenience as Intel NUC's, and on the surface
+> this new RPI product looks great for kernel testing purposes.
 
-This patch adds support for Serval pinctrl, using the ocelot driver as
-basis. It adds pinconfig support as well, as supported by the
-platform.
+Here [1] is the list of supported versions of Raspberry Pi in OP-TEE.
+The easiest approach would be to pick up a supported version or else
+do an OP-TEE port for an unsupported one (which should involve minimal
+effort).
 
-gclement: Split from a larger patch adding support all platforms in
-the same time.
+[1] https://optee.readthedocs.io/en/latest/building/devices/rpi3.html#what-versions-of-raspberry-pi-will-work
 
-Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
-Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
----
- drivers/pinctrl/pinctrl-ocelot.c | 92 ++++++++++++++++++++++++++++++++
- 1 file changed, 92 insertions(+)
+-Sumit
 
-diff --git a/drivers/pinctrl/pinctrl-ocelot.c b/drivers/pinctrl/pinctrl-ocelot.c
-index ab74c79d7cca..18336950fd95 100644
---- a/drivers/pinctrl/pinctrl-ocelot.c
-+++ b/drivers/pinctrl/pinctrl-ocelot.c
-@@ -240,6 +240,88 @@ static const struct pinctrl_pin_desc luton_pins[] = {
- 	LUTON_PIN(31),
- };
- 
-+#define SERVAL_P(p, f0, f1, f2)						\
-+static struct ocelot_pin_caps serval_pin_##p = {			\
-+	.pin = p,							\
-+	.functions = {							\
-+			FUNC_GPIO, FUNC_##f0, FUNC_##f1, FUNC_##f2,	\
-+	},								\
-+}
-+
-+SERVAL_P(0,  SG0,       NONE,      NONE);
-+SERVAL_P(1,  SG0,       NONE,      NONE);
-+SERVAL_P(2,  SG0,       NONE,      NONE);
-+SERVAL_P(3,  SG0,       NONE,      NONE);
-+SERVAL_P(4,  TACHO,     NONE,      NONE);
-+SERVAL_P(5,  PWM,       NONE,      NONE);
-+SERVAL_P(6,  TWI,       NONE,      NONE);
-+SERVAL_P(7,  TWI,       NONE,      NONE);
-+SERVAL_P(8,  SI,        NONE,      NONE);
-+SERVAL_P(9,  SI,        MD,        NONE);
-+SERVAL_P(10, SI,        MD,        NONE);
-+SERVAL_P(11, SFP,       MD,        TWI_SCL_M);
-+SERVAL_P(12, SFP,       MD,        TWI_SCL_M);
-+SERVAL_P(13, SFP,       UART2,     TWI_SCL_M);
-+SERVAL_P(14, SFP,       UART2,     TWI_SCL_M);
-+SERVAL_P(15, SFP,       PTP0,      TWI_SCL_M);
-+SERVAL_P(16, SFP,       PTP0,      TWI_SCL_M);
-+SERVAL_P(17, SFP,       PCI_WAKE,  TWI_SCL_M);
-+SERVAL_P(18, SFP,       NONE,      TWI_SCL_M);
-+SERVAL_P(19, SFP,       NONE,      TWI_SCL_M);
-+SERVAL_P(20, SFP,       NONE,      TWI_SCL_M);
-+SERVAL_P(21, SFP,       NONE,      TWI_SCL_M);
-+SERVAL_P(22, NONE,      NONE,      NONE);
-+SERVAL_P(23, NONE,      NONE,      NONE);
-+SERVAL_P(24, NONE,      NONE,      NONE);
-+SERVAL_P(25, NONE,      NONE,      NONE);
-+SERVAL_P(26, UART,      NONE,      NONE);
-+SERVAL_P(27, UART,      NONE,      NONE);
-+SERVAL_P(28, IRQ0,      NONE,      NONE);
-+SERVAL_P(29, IRQ1,      NONE,      NONE);
-+SERVAL_P(30, PTP0,      NONE,      NONE);
-+SERVAL_P(31, PTP0,      NONE,      NONE);
-+
-+#define SERVAL_PIN(n) {						\
-+	.number = n,						\
-+	.name = "GPIO_"#n,					\
-+	.drv_data = &serval_pin_##n				\
-+}
-+
-+static const struct pinctrl_pin_desc serval_pins[] = {
-+	SERVAL_PIN(0),
-+	SERVAL_PIN(1),
-+	SERVAL_PIN(2),
-+	SERVAL_PIN(3),
-+	SERVAL_PIN(4),
-+	SERVAL_PIN(5),
-+	SERVAL_PIN(6),
-+	SERVAL_PIN(7),
-+	SERVAL_PIN(8),
-+	SERVAL_PIN(9),
-+	SERVAL_PIN(10),
-+	SERVAL_PIN(11),
-+	SERVAL_PIN(12),
-+	SERVAL_PIN(13),
-+	SERVAL_PIN(14),
-+	SERVAL_PIN(15),
-+	SERVAL_PIN(16),
-+	SERVAL_PIN(17),
-+	SERVAL_PIN(18),
-+	SERVAL_PIN(19),
-+	SERVAL_PIN(20),
-+	SERVAL_PIN(21),
-+	SERVAL_PIN(22),
-+	SERVAL_PIN(23),
-+	SERVAL_PIN(24),
-+	SERVAL_PIN(25),
-+	SERVAL_PIN(26),
-+	SERVAL_PIN(27),
-+	SERVAL_PIN(28),
-+	SERVAL_PIN(29),
-+	SERVAL_PIN(30),
-+	SERVAL_PIN(31),
-+};
-+
- #define OCELOT_P(p, f0, f1, f2)						\
- static struct ocelot_pin_caps ocelot_pin_##p = {			\
- 	.pin = p,							\
-@@ -959,6 +1041,15 @@ static struct pinctrl_desc luton_desc = {
- 	.owner = THIS_MODULE,
- };
- 
-+static struct pinctrl_desc serval_desc = {
-+	.name = "serval-pinctrl",
-+	.pins = serval_pins,
-+	.npins = ARRAY_SIZE(serval_pins),
-+	.pctlops = &ocelot_pctl_ops,
-+	.pmxops = &ocelot_pmx_ops,
-+	.owner = THIS_MODULE,
-+};
-+
- static struct pinctrl_desc ocelot_desc = {
- 	.name = "ocelot-pinctrl",
- 	.pins = ocelot_pins,
-@@ -1243,6 +1334,7 @@ static int ocelot_gpiochip_register(struct platform_device *pdev,
- 
- static const struct of_device_id ocelot_pinctrl_of_match[] = {
- 	{ .compatible = "mscc,luton-pinctrl", .data = &luton_desc },
-+	{ .compatible = "mscc,serval-pinctrl", .data = &serval_desc },
- 	{ .compatible = "mscc,ocelot-pinctrl", .data = &ocelot_desc },
- 	{ .compatible = "mscc,jaguar2-pinctrl", .data = &jaguar2_desc },
- 	{ .compatible = "microchip,sparx5-pinctrl", .data = &sparx5_desc },
--- 
-2.28.0
-
+>
+> /Jarkko
+>
+> >
+> > [1] https://github.com/OP-TEE/optee_os/commit/f86ab8e7e0de869dfa25ca05a37ee070d7e5b86b
+> >
+> > Changes in v8:
+> > 1. Added static calls support instead of indirect calls.
+> > 2. Documented trusted keys source module parameter.
+> > 3. Refined patch #1 commit message discription.
+> > 4. Addressed misc. comments on patch #2.
+> > 5. Added myself as Trusted Keys co-maintainer instead.
+> > 6. Rebased to latest tpmdd master.
+> >
+> > Changes in v7:
+> > 1. Added a trusted.source module parameter in order to enforce user's
+> >    choice in case a particular platform posses both TPM and TEE.
+> > 2. Refine commit description for patch #1.
+> >
+> > Changes in v6:
+> > 1. Revert back to dynamic detection of trust source.
+> > 2. Drop author mention from trusted_core.c and trusted_tpm1.c files.
+> > 3. Rebased to latest tpmdd/master.
+> >
+> > Changes in v5:
+> > 1. Drop dynamic detection of trust source and use compile time flags
+> >    instead.
+> > 2. Rename trusted_common.c -> trusted_core.c.
+> > 3. Rename callback: cleanup() -> exit().
+> > 4. Drop "tk" acronym.
+> > 5. Other misc. comments.
+> > 6. Added review tags for patch #3 and #4.
+> >
+> > Changes in v4:
+> > 1. Pushed independent TEE features separately:
+> >   - Part of recent TEE PR: https://lkml.org/lkml/2020/5/4/1062
+> > 2. Updated trusted-encrypted doc with TEE as a new trust source.
+> > 3. Rebased onto latest tpmdd/master.
+> >
+> > Changes in v3:
+> > 1. Update patch #2 to support registration of multiple kernel pages.
+> > 2. Incoporate dependency patch #4 in this patch-set:
+> >    https://patchwork.kernel.org/patch/11091435/
+> >
+> > Changes in v2:
+> > 1. Add reviewed-by tags for patch #1 and #2.
+> > 2. Incorporate comments from Jens for patch #3.
+> > 3. Switch to use generic trusted keys framework.
+> >
+> > Sumit Garg (4):
+> >   KEYS: trusted: Add generic trusted keys framework
+> >   KEYS: trusted: Introduce TEE based Trusted Keys
+> >   doc: trusted-encrypted: updates with TEE as a new trust source
+> >   MAINTAINERS: Add myself as Trusted Keys co-maintainer
+> >
+> >  Documentation/admin-guide/kernel-parameters.txt   |  12 +
+> >  Documentation/security/keys/trusted-encrypted.rst | 203 +++++++++++--
+> >  MAINTAINERS                                       |   2 +
+> >  include/keys/trusted-type.h                       |  47 +++
+> >  include/keys/trusted_tee.h                        |  55 ++++
+> >  include/keys/trusted_tpm.h                        |  17 +-
+> >  security/keys/trusted-keys/Makefile               |   2 +
+> >  security/keys/trusted-keys/trusted_core.c         | 354 ++++++++++++++++++++++
+> >  security/keys/trusted-keys/trusted_tee.c          | 278 +++++++++++++++++
+> >  security/keys/trusted-keys/trusted_tpm1.c         | 336 ++++----------------
+> >  10 files changed, 979 insertions(+), 327 deletions(-)
+> >  create mode 100644 include/keys/trusted_tee.h
+> >  create mode 100644 security/keys/trusted-keys/trusted_core.c
+> >  create mode 100644 security/keys/trusted-keys/trusted_tee.c
+> >
+> > --
+> > 2.7.4
+> >
+> >
