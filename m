@@ -2,70 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 758FE2A9497
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 11:41:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7784E2A9498
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 11:42:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727032AbgKFKlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 05:41:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35022 "EHLO mail.kernel.org"
+        id S1726897AbgKFKmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 05:42:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35176 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726201AbgKFKlR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 05:41:17 -0500
+        id S1726010AbgKFKmy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 05:42:54 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 41E4B20702;
-        Fri,  6 Nov 2020 10:41:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 92D4920702;
+        Fri,  6 Nov 2020 10:42:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604659276;
-        bh=FZPOUxbRLfnd+t8CdYEkeO2TCpAs4UT0oND2nvpDiDU=;
+        s=default; t=1604659372;
+        bh=lzG1XHFrcM3QcQARAEI6Uz4IHlH2u0wbrmSoCt6+fVQ=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LIIV1fyeLOQP3xvdO35mmMUbH6AnHfV2gll+R4VQt/8JMCXFuKE+oywvx2kFEpXkE
-         gK9egVH44hTJgnK8pv+jk9SQW8DrJnh4b5t3AxKaEMb6J0KStHwH9K2Rf+6O5saVIu
-         OnhkH6hhV8fuxh0NK96fZtx0Y7QPMV5DCTmJm3Cs=
-Date:   Fri, 6 Nov 2020 11:42:03 +0100
+        b=w8amJD6DJbnv+b4uA5X2WJVuUIHmrNo8TXyf8qmXiBGRyNRfwLNP2YgS92BHXN4ig
+         n8YQSXUJUGGzCsnYM01r4AvHhG0A40bj/ex9fC89A94WrflT1H4ZpM7TULF+R9ytti
+         VJrpSdppG58R+px+5NfxeyTgTmPFdSECl+ZMe2uQ=
+Date:   Fri, 6 Nov 2020 11:43:38 +0100
 From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Arpitha Raghunandan <98.arpi@gmail.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        brendanhiggins@google.com, skhan@linuxfoundation.org,
-        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
-        alexandre.belloni@bootlin.com, rdunlap@infradead.org,
-        idryomov@gmail.com, kunit-dev@googlegroups.com,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH v3] lib: Convert test_printf.c to KUnit
-Message-ID: <20201106104203.GC2784089@kroah.com>
-References: <20201103111049.51916-1-98.arpi@gmail.com>
- <20201103113353.GC4077@smile.fi.intel.com>
- <20201103115223.GA268796@kroah.com>
- <20201103160728.GQ20201@alley>
- <57976ff4-7845-d721-ced1-1fe439000a9b@rasmusvillemoes.dk>
- <b24a8200-b456-ecab-cc60-6f4ff10baa5d@gmail.com>
- <1b452380-53a5-f396-bf2f-97736db28afb@rasmusvillemoes.dk>
+To:     Himadri Pandya <himadrispandya@gmail.com>
+Cc:     johan@kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH 00/15] usb: serial: avoid using usb_control_msg() directly
+Message-ID: <20201106104338.GA2785199@kroah.com>
+References: <20201104064703.15123-1-himadrispandya@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1b452380-53a5-f396-bf2f-97736db28afb@rasmusvillemoes.dk>
+In-Reply-To: <20201104064703.15123-1-himadrispandya@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 06, 2020 at 11:31:43AM +0100, Rasmus Villemoes wrote:
-> On 06/11/2020 05.04, Arpitha Raghunandan wrote:
-> > 
-> > The total number of "atoms" can be printed by maintaining a static variable
-> > total_count that can be incremented as is in the original test_printf test.
-> > But, the reporting of the random seed currently is done in kselftest and so
-> > will not show up with KUnit. I am not really sure which is better in this case.
+On Wed, Nov 04, 2020 at 12:16:48PM +0530, Himadri Pandya wrote:
+> There are many usages of usb_control_msg() that can use the new wrapper
+> functions usb_contro_msg_send() & usb_control_msg_recv() for better
+> error checks on short reads and writes. Hence use them whenever possible
+> and avoid using usb_control_msg() directly.
 > 
-> So my real questions are: Why do we have both kselftest and kunit?
+> Himadri Pandya (15):
+>   usb: serial: ark3116: use usb_control_msg_recv() and
+>     usb_control_msg_send()
+>   usb: serial: belkin_sa: use usb_control_msg_send()
+>   usb: serial: ch314: use usb_control_msg_recv() and
+>     usb_control_msg_send()
+>   usb: serial: cp210x: use usb_control_msg_recv() and
+>     usb_control_msg_send()
+>   usb: serial: cypress_m8: use usb_control_msg_recv() and
+>     usb_control_msg_send()
+>   usb: serial: f81232: use usb_control_msg_recv() and
+>     usb_control_msg_send()
+>   usb: serial: f81534: use usb_control_msg_recv() and
+>     usb_control_msg_send()
+>   usb: serial: ftdi_sio: use usb_control_msg_recv() and
+>     usb_control_msg_send()
+>   usb: serial: io_edgeport: use usb_control_msg_recv() and
+>     usb_control_msg_send()
+>   usb: serial: io_ti: use usb_control_msg_recv() and
+>     usb_control_msg_send()
+>   usb: serial: ipaq: use usb_control_msg_send()
+>   usb: serial: ipw: use usb_control_msg_send()
+>   usb: serial: iuu_phoenix: use usb_control_msg_send()
+>   usb: serial: keyspan_pda: use usb_control_msg_recv() and
+>     usb_control_msg_send()
+>   usb: serial: kl5kusb105: use usb_control_msg_recv() and
+>     usb_control_msg_send()
 
-One is testing code within the kernel image testing it within
-kernelspace, and one is outside the kernel testing it from userspace.
+For the whole series:
 
-thanks,
-
-greg k-h
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
