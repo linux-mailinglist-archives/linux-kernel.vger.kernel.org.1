@@ -2,132 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 294EF2AA098
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 23:59:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40B5B2AA0BB
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 00:11:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728909AbgKFW7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 17:59:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39520 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728358AbgKFW7U (ORCPT
+        id S1729014AbgKFXKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 18:10:06 -0500
+Received: from delivery.mailspamprotection.com ([146.66.121.64]:57569 "EHLO
+        delivery.mailspamprotection.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728878AbgKFXKF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 17:59:20 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F31F0C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 14:59:19 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id c20so2764326pfr.8
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 14:59:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=lPzksUR9ZyZwSsQ8tnKwK0p0kGK7K1utClt0jJk/L8I=;
-        b=PLQlbnYDD6tHrqH2zfCgx9joRW/t6JIVQKXStdygoYx0y1YGrmnpXvFDJZPyKbNlxc
-         oMpQ6KCY2VhlJ4ozLKpr0nFQn+yQiQfYtwLauMc0h3Wx6yL4xbrpdLJZTJAtHkIOKLDd
-         vS4yiBJWcxc/R5K0T8Rs4kB0vTLEIVE6d2SIFAZut2XjrHgha0xLUvzjnyK0qGDUL8Ed
-         Onqpa1Ara4s9pyDAslidDQg8HhncryPu8J/EeVl/693fshl+M29eLlo181YOFNvIQ5ym
-         y0RX4tTwaUDpGDHpqlyh3CpXm0qakig9E9iqhx6AvjgWfrk5cuFhvfKLhvSCIL6pGDnW
-         P+QA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=lPzksUR9ZyZwSsQ8tnKwK0p0kGK7K1utClt0jJk/L8I=;
-        b=A4YGKdcJQ7uHzL0DcHP5Jl8EgYMAb2TWHy8Bl8raYJeg0V2wPi729zUqB/f58/O4a6
-         FAA9BzxB9fnrVjhGZzV9hNRcGSfEbxgptBs+X95/NP/fGlmHrMIzZYGU2tDt8O9G2Jwj
-         hkPpIYP3NkIlTI7Hf7K8tluYn6iwMs172c7eSJa9+qikPnLeAsy43M4XlBy6z2zpjvE1
-         eOMuGPMojQ8vsg+mJnRmMGpkv1D3wjtw4Rh7vvE9cQ+pZ5IA+HfpNVT932TyXtWINDwV
-         teNmAYwE3KupwvwAhWLyrVfgxyh9psIFN4Kt+/GS1/z+SeNI9vHSm6AdN2/O2Xu7XPw4
-         7TrA==
-X-Gm-Message-State: AOAM532budhGBtO2nScXmHXKhswqDtPyO4q8aADc6PGJB03gW8UOJJwR
-        8dcYt0oBnXIh2dK1MDHYOLQU65aHVww=
-X-Google-Smtp-Source: ABdhPJxx2uc6cJXbM/n0hMuIvPfZ+Ku4/iGm9oaaJFo7H4nBel3IiiCzmB5eVGVWTUG3Tr3iIWCu6w==
-X-Received: by 2002:a17:90b:93:: with SMTP id bb19mr1899256pjb.102.1604703559474;
-        Fri, 06 Nov 2020 14:59:19 -0800 (PST)
-Received: from google.com ([2620:15c:211:201:7220:84ff:fe09:5e58])
-        by smtp.gmail.com with ESMTPSA id g7sm3643399pjl.11.2020.11.06.14.59.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Nov 2020 14:59:17 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Fri, 6 Nov 2020 14:59:16 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, Michal Hocko <mhocko@suse.com>
-Subject: Re: [PATCH] mm: introduce oom_kill_disable sysctl knob
-Message-ID: <20201106225916.GA1383786@google.com>
-References: <20201106203238.1375577-1-minchan@kernel.org>
- <57a31f2e-bb08-7303-e5fc-fe00e832cee6@infradead.org>
+        Fri, 6 Nov 2020 18:10:05 -0500
+X-Greylist: delayed 8895 seconds by postgrey-1.27 at vger.kernel.org; Fri, 06 Nov 2020 18:10:05 EST
+Received: from 162.68.214.35.bc.googleusercontent.com ([35.214.68.162] helo=c17735.sgvps.net)
+        by se20.mailspamprotection.com with esmtps (TLSv1.2:AES128-GCM-SHA256:128)
+        (Exim 4.92)
+        (envelope-from <privateconsult@astecpos.ie>)
+        id 1kb8YM-000J5R-Rk; Fri, 06 Nov 2020 14:41:48 -0600
+Received: from [127.0.0.1] (port=34508 helo=c17735.sgvps.net)
+        by c17735.sgvps.net with esmtpa (Exim 4.90devstart-1178-b07e68e5-XX)
+        (envelope-from <privateconsult@astecpos.ie>)
+        id 1kb8YL-000ElD-NS; Fri, 06 Nov 2020 14:41:45 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <57a31f2e-bb08-7303-e5fc-fe00e832cee6@infradead.org>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 06 Nov 2020 14:41:45 -0600
+From:   Elias Hampel <privateconsult@astecpos.ie>
+To:     undisclosed-recipients:;
+Subject: GD
+Reply-To: baristereliashampel@gmail.com
+Mail-Reply-To: baristereliashampel@gmail.com
+Message-ID: <43045905f306e27831c5e176b6564bf5@astecpos.ie>
+X-Sender: privateconsult@astecpos.ie
+User-Agent: Roundcube Webmail/1.2.4
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - c17735.sgvps.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - astecpos.ie
+X-Get-Message-Sender-Via: c17735.sgvps.net: none
+X-Authenticated-Sender: c17735.sgvps.net: 
+X-Originating-IP: 35.214.68.162
+X-SpamExperts-Domain: c17735.sgvps.net
+X-SpamExperts-Username: 35.214.68.162
+Authentication-Results: mailspamprotection.com; auth=pass smtp.auth=35.214.68.162@c17735.sgvps.net
+X-SpamExperts-Outgoing-Class: unsure
+X-SpamExperts-Outgoing-Evidence: Combined (0.73)
+X-Recommended-Action: accept
+X-Filter-ID: Mvzo4OR0dZXEDF/gcnlw0XvADx2zSFwG+3csxFBPBHmpSDasLI4SayDByyq9LIhV1yQJHS1Kzegy
+ bMAg/fgPR0TNWdUk1Ol2OGx3IfrIJKyP9eGNFz9TW9u+Jt8z2T3KbXsLA0HlioK7txFnPQvbtbLk
+ 8R5mlgIwJEelNeTC3y3o65BKW7lL8DLx8d0/ikhv/4G7j+4Z1CvDUHS8LFViiGqklkdwrUfTBCKW
+ oHQemSyKxzEhVPBruJbG3Vpu1vN8tzXu78EScRTPwUcwy1yhrDNyBZOsCwlrBdtWK/k9XZCqBb5C
+ wS4E/Ac5jmDrGrAg/Bq3ZUmj1IW5FGaWOGG9LbPITCL7Mi/k3emvSntuHz6Q8TWY6nkBIUxn84aD
+ 5KGXGZWlVmZ8o/7WKFWoA0QUGngOrHGWcKc5AqOFqAQq4tIxQlNLYmzGmTH4gciwNqubYfHl7hgw
+ flr5XGj4bPiDDlHUoVwaoyKiseY5we892IYad3lsxkDrjYxAaP1hGz0QyGcCgytUMu2J9HJXA1Uo
+ 4M+kOWkZiGPw0TDlmfPfoHCIHD7ErK60YE+FBEnhrjsPtelIGe3iAratF/cudhTZmWrLhMVo7s5r
+ C/i1xA6nwvG8Ksk+aedMfNWSnJswrtlNQ8clfdequDnRZkTy+cnx+wzevvA7ArqeQFEd2navgAmn
+ OvL8Z8nObfEzCxRgiDMmm7RVhDC6rGajPOQMsilQygZImPb9UZXs+o5qEZeRpTi3BT/xcase7lCw
+ 0EQdzS0Qs10w7kA+lqPr+8hLk2VakX3PtVcmb2LJ8aTiwIuD/6IxeUCivRzIwOyuOX4KWFyF/uiD
+ WE4AV/+7jLbTq0PaSolhwc2U06VjRKs2dc7cL9jEzDCWYlPftvwIc5WojNM892PNDpgLsd6Ddd/s
+ 7VM53sMd4n+I8hAsCybOun9XJ5Zrd7LxO2Sd17WFtAXaE0Et/2h5zmIUr0JVBKIrexgv4ioURM3W
+ iNs90yd9mf1sw8jI2QuAJXwT/D/EXd995JkwZuM7jUXIESohoO51xWmU8fmdjJbZjPRwgSQuMDHY
+ /GiMxy+5SH//3wY7gnO0v9JYcvzrkpQJjvVM20An7HCX5zkoB1B43qra2Z7D6jI6jKqjCAlBwgN/
+ ujv77gIBgOizYXsY7pPpudi7bULX4gWpY6I0ARCH9sl06iT2rcfKzdhbmF8jpdvM2hUwryd9Dn0G
+ 6vdV0sRYPJM/TIl4QbayTDEvuGslKTrRIXcXpFg5ivY=
+X-Report-Abuse-To: spam@quarantine1.mailspamprotection.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 06, 2020 at 12:46:47PM -0800, Randy Dunlap wrote:
-> Hi,
-> 
-> Fix a few typos:
-> 
-> On 11/6/20 12:32 PM, Minchan Kim wrote:
-> > ---
-> >  Documentation/admin-guide/sysctl/vm.rst | 14 ++++++++++++++
-> >  include/linux/mm.h                      |  2 ++
-> >  include/linux/oom.h                     |  1 +
-> >  kernel/sysctl.c                         |  9 +++++++++
-> >  mm/oom_kill.c                           | 24 ++++++++++++++++++++++++
-> >  5 files changed, 50 insertions(+)
-> > 
-> > diff --git a/Documentation/admin-guide/sysctl/vm.rst b/Documentation/admin-guide/sysctl/vm.rst
-> > index f455fa00c00f..49dcedfaf0c0 100644
-> > --- a/Documentation/admin-guide/sysctl/vm.rst
-> > +++ b/Documentation/admin-guide/sysctl/vm.rst
-> > @@ -694,6 +694,20 @@ is used in oom_kill_allocating_task.
-> >  
-> >  The default value is 0.
-> >  
-> > +oom_kill_disable
-> > +================
-> > +
-> > +This disables or enables OOM killing in out-of-memory situations.
-> > +
-> > +If this is set to one, the OOM killer is disabled so OOM kill never
-> > +hapens in out-of-memory situation. It could cause system dangerous
-> 
->    happens                            It could cause a dangerous system
-> 
-> > +state due to memory allocation failure so user should be careful to
-> 
->                                                             careful when
-> > +use it.
-> 
->    using it.
-> 
-> > +
-> > +If this is set to zero, the OOM killer is enabled so OOM kill happens
-> > +in out-of-memory situations.
-> > +
-> > +The default value is 0.
-> >  
-> >  overcommit_kbytes
-> >  =================
-> 
-> > diff --git a/mm/oom_kill.c b/mm/oom_kill.c
-> > index 8b84661a6410..0f48cdeeb1e7 100644
-> > --- a/mm/oom_kill.c
-> > +++ b/mm/oom_kill.c
-> 
-> >  #ifdef CONFIG_NUMA
-> >  /**
-> >   * oom_cpuset_eligible() - check task eligiblity for kill
-> 
->                                          eligibility
-> 
-> but that's not in your patch, so don't bother with it. :)
 
-Sure, I will resend it with fixing after waiting some feedback.
 
-Thanks for the review, Randy.
+-- 
+Hello
+i hope  you are doing great my dear, let me know when you get this 
+message to give you the news of one of your family member .
+Thanks
+Mr Elias Hampel
