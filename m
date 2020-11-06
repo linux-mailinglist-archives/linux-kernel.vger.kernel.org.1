@@ -2,116 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BCC82A8FE1
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 08:05:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7C6B2A8FE5
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 08:06:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726359AbgKFHFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 02:05:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58866 "EHLO
+        id S1726456AbgKFHFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 02:05:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725848AbgKFHFT (ORCPT
+        with ESMTP id S1725848AbgKFHFW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 02:05:19 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36BBAC0613D3
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 23:05:19 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id h6so238753pgk.4
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 23:05:19 -0800 (PST)
+        Fri, 6 Nov 2020 02:05:22 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 667CFC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 23:05:22 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id t22so237715plr.9
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 23:05:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=X+vlFfwXaQyT67tNUyi81s2s5dR5xJEgy0PknD0rbz4=;
-        b=x7tyrPdaqh682SqGflCsojgjTQx+BXzkcw1rNmmcDJ4f1/CcNFqWsU2TeslilqRYW6
-         zc5/q2J7DYA6GaZpIl9YJEuw5A+2BygaKtcNZGbiJXmhxkSHLYjjXBFUVrm/3kU2FfxF
-         HOpl09BHz7pxQM1vSb758PMQEHgdQo7a0vFwzSK04ezcCvy5z2tN77zFwQKb0oCEVS7Z
-         5Wf5xaSLDOcwVEQi6x3vCm1v9HcJ36wHsCS7oCefyqpWqoytt13+6MJpeHbxPKWMFUZ8
-         7D71Y1LBl2lTl2Ui7t2WW7/HoEOYoPNzVDuHeqlnp7Y7cKSpCWRT/VBoOVOVT9t0JXT2
-         P84Q==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=qJNlvtq3Q/fhRhMrBVr0jOCxwM2F0N9xU97jImW1c4M=;
+        b=b3Zpcyw1zX1H4YDcNngNslvdi+HNpuoFhkHkD8WbuJXybYNAWn2baVM+TM517h5pIv
+         4C5xr5v4i/051DJ0+CGlh4jQKeHQ3mO/kpnaqNoHCMvcEtVdHgDDQji/9rGvVo6yat4H
+         CTaNB3AxT2pKMd/zsusOqCFPgUiK6tWxz8E6TYX2+eXr1cR3oTGqcxFJubu8eGlloERb
+         0isAsKYT2nwpZImXK8sRAAzYbJ/TjA2P2OmChl9z1OVHrGwJql2y2usKkNP3aHQYyOlQ
+         TWLa7MQuUFVsv7tRSoayCma2SF0EK8qYXOEuAlfsi6txB4eQEinff3Xybstl+yBkdr+m
+         gc6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=X+vlFfwXaQyT67tNUyi81s2s5dR5xJEgy0PknD0rbz4=;
-        b=GcB57/FL4tndkLHoSzyCIUnwBEybCRFNjkv9MsHGN3VSEB2xdqUlt/I684zscLBrcD
-         A+0O2zzA0dE8CtaePYFiwjPtNgXVOyv1FYGpO/q1wfssQZXmN+EmHkRpoUuMLe0JT2fz
-         MiCTY80uTgCjHuDSruyrZG0Br7xcyZe2HKpHHkaLNbKFgHQC1Uz6WmOhpt7Tz5sDvWRO
-         9X62gtSeCZ9lNKpyK42aZy4y/El77Kc7Y8lrP1BX6yRX0tieGHRLTE58IoyeMLAg8Zrg
-         07Rmaqep8XRFkOep3FmkuGlEukv4dc11SJ2UbvRbKPLFMXJkGosDrbVFKcDthyJsTTII
-         woJg==
-X-Gm-Message-State: AOAM531E0FU/wMxR3v+wjbaa/icaLJaJ4C+SA96gbQ0oyL5OQZnjJHTe
-        4TW9VtKKCdOmDcbfRLFETDVEmg==
-X-Google-Smtp-Source: ABdhPJwjHQpNsy+GXHXCwxvkwHWtDNd475+Vq8i4kMmtZzheVVRcd/hAft+93Mx61nTSrMPFd3mZ/Q==
-X-Received: by 2002:a17:90a:af89:: with SMTP id w9mr989921pjq.72.1604646318621;
-        Thu, 05 Nov 2020 23:05:18 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=qJNlvtq3Q/fhRhMrBVr0jOCxwM2F0N9xU97jImW1c4M=;
+        b=EN1Jl905oEg1qdgGU4L7SakT5Hk4ykmnonqfJiFuDeM9ITTInWmrgrXGkb4ZaH6+DR
+         Dpm0wQpG1lCANzWymRp0UtYHs1ITL4cp45lxZleFOyHJ50DfE6Qv1bcDhSJjupGv8H/o
+         a3WOcqumwmvJBqKbO1Ex4Qn40PJKu8Ki3gS/L+ydm6aJINuWfhy+DrSyNUDiRk8Y0m7O
+         gzjturgebmpR6v8sEL1PBkoyi58p+lNQ4yCDi+QglbQq9FTFdjMylvQSIbauEWsh9ZRf
+         /YOrwDSHUYWJG+hHrAeOxI/FNOLsX5ktXJPRs2x5W/0Lcz7wN7vkYgvcsN8vRsJ7UQ1j
+         ac0A==
+X-Gm-Message-State: AOAM532YUv7A3+hiPVdkvVJN1QUCUUKuJxLSN74cWxW5weOcjW3GiZXM
+        Ch3V3QtBkTnI4OrstdZBS2bXNg==
+X-Google-Smtp-Source: ABdhPJxxmtFJihSCZMzO8iC+QR+Wb7imnYNUNCmRFiSUJVg8xZNbVDDfHCA7BIT46Bcy4f5K9CLgQg==
+X-Received: by 2002:a17:902:7298:b029:d4:c71a:357a with SMTP id d24-20020a1709027298b02900d4c71a357amr794203pll.38.1604646321967;
+        Thu, 05 Nov 2020 23:05:21 -0800 (PST)
 Received: from localhost ([122.172.12.172])
-        by smtp.gmail.com with ESMTPSA id r3sm1023098pjl.23.2020.11.05.23.05.17
+        by smtp.gmail.com with ESMTPSA id s9sm815857pfs.89.2020.11.05.23.05.20
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 05 Nov 2020 23:05:17 -0800 (PST)
+        Thu, 05 Nov 2020 23:05:21 -0800 (PST)
 From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Ilia Lin <ilia.lin@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Kukjin Kim <kgene@kernel.org>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Nishanth Menon <nm@ti.com>, Qiang Yu <yuq825@gmail.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Rob Herring <robh@kernel.org>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Steven Price <steven.price@arm.com>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>, digetx@gmail.com,
-        dri-devel@lists.freedesktop.org, lima@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-samsung-soc@vger.kernel.org
-Subject: [PATCH 0/7] opp: Allow dev_pm_opp_put_*() APIs to accept NULL opp_table
-Date:   Fri,  6 Nov 2020 12:33:20 +0530
-Message-Id: <cover.1604646059.git.viresh.kumar@linaro.org>
+To:     Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>, linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Rafael Wysocki <rjw@rjwysocki.net>, digetx@gmail.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/7] opp: Allow dev_pm_opp_put_*() APIs to accept NULL opp_table
+Date:   Fri,  6 Nov 2020 12:33:21 +0530
+Message-Id: <7c8e6cacc6aa09c4b3b2c4e892d91b6d4864b176.1604646059.git.viresh.kumar@linaro.org>
 X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
+In-Reply-To: <cover.1604646059.git.viresh.kumar@linaro.org>
+References: <cover.1604646059.git.viresh.kumar@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+This allows the callers to drop the unnecessary checks.
 
-This patchset updates the dev_pm_opp_put_*() helpers to accept a NULL
-pointer for the OPP table, in order to allow the callers to drop the
-unnecessary checks they had to carry.
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+---
+ drivers/opp/core.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-All these must get merged upstream through the OPP tree as there is a
-hard dependency on the first patch here. Thanks.
-
-Viresh Kumar (7):
-  opp: Allow dev_pm_opp_put_*() APIs to accept NULL opp_table
-  cpufreq: dt: dev_pm_opp_put_regulators() accepts NULL argument
-  cpufreq: qcom-cpufreq-nvmem: dev_pm_opp_put_*() accepts NULL argument
-  devfreq: exynos: dev_pm_opp_put_*() accepts NULL argument
-  drm/lima: dev_pm_opp_put_*() accepts NULL argument
-  drm/panfrost: dev_pm_opp_put_*() accepts NULL argument
-  media: venus: dev_pm_opp_put_*() accepts NULL argument
-
- drivers/cpufreq/cpufreq-dt.c                   |  6 ++----
- drivers/cpufreq/qcom-cpufreq-nvmem.c           | 15 ++++++---------
- drivers/devfreq/exynos-bus.c                   | 12 ++++--------
- drivers/gpu/drm/lima/lima_devfreq.c            | 13 ++++---------
- drivers/gpu/drm/panfrost/panfrost_devfreq.c    |  6 ++----
- drivers/media/platform/qcom/venus/pm_helpers.c |  3 +--
- drivers/opp/core.c                             | 18 ++++++++++++++++++
- 7 files changed, 37 insertions(+), 36 deletions(-)
-
+diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+index b24f685823ae..9d145bb99a59 100644
+--- a/drivers/opp/core.c
++++ b/drivers/opp/core.c
+@@ -1660,6 +1660,9 @@ EXPORT_SYMBOL_GPL(dev_pm_opp_set_supported_hw);
+  */
+ void dev_pm_opp_put_supported_hw(struct opp_table *opp_table)
+ {
++	if (unlikely(!opp_table))
++		return;
++
+ 	/* Make sure there are no concurrent readers while updating opp_table */
+ 	WARN_ON(!list_empty(&opp_table->opp_list));
+ 
+@@ -1716,6 +1719,9 @@ EXPORT_SYMBOL_GPL(dev_pm_opp_set_prop_name);
+  */
+ void dev_pm_opp_put_prop_name(struct opp_table *opp_table)
+ {
++	if (unlikely(!opp_table))
++		return;
++
+ 	/* Make sure there are no concurrent readers while updating opp_table */
+ 	WARN_ON(!list_empty(&opp_table->opp_list));
+ 
+@@ -1844,6 +1850,9 @@ void dev_pm_opp_put_regulators(struct opp_table *opp_table)
+ {
+ 	int i;
+ 
++	if (unlikely(!opp_table))
++		return;
++
+ 	if (!opp_table->regulators)
+ 		goto put_opp_table;
+ 
+@@ -1926,6 +1935,9 @@ EXPORT_SYMBOL_GPL(dev_pm_opp_set_clkname);
+  */
+ void dev_pm_opp_put_clkname(struct opp_table *opp_table)
+ {
++	if (unlikely(!opp_table))
++		return;
++
+ 	/* Make sure there are no concurrent readers while updating opp_table */
+ 	WARN_ON(!list_empty(&opp_table->opp_list));
+ 
+@@ -1981,6 +1993,9 @@ EXPORT_SYMBOL_GPL(dev_pm_opp_register_set_opp_helper);
+  */
+ void dev_pm_opp_unregister_set_opp_helper(struct opp_table *opp_table)
+ {
++	if (unlikely(!opp_table))
++		return;
++
+ 	/* Make sure there are no concurrent readers while updating opp_table */
+ 	WARN_ON(!list_empty(&opp_table->opp_list));
+ 
+@@ -2109,6 +2124,9 @@ EXPORT_SYMBOL_GPL(dev_pm_opp_attach_genpd);
+  */
+ void dev_pm_opp_detach_genpd(struct opp_table *opp_table)
+ {
++	if (unlikely(!opp_table))
++		return;
++
+ 	/*
+ 	 * Acquire genpd_virt_dev_lock to make sure virt_dev isn't getting
+ 	 * used in parallel.
 -- 
 2.25.0.rc1.19.g042ed3e048af
 
