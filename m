@@ -2,59 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D5FD2A9EFC
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 22:21:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F0D72A9EFF
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 22:22:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728032AbgKFVVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 16:21:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49874 "EHLO mail.kernel.org"
+        id S1728123AbgKFVWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 16:22:41 -0500
+Received: from foss.arm.com ([217.140.110.172]:44918 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725868AbgKFVVj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 16:21:39 -0500
-Content-Type: text/plain; charset="utf-8"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604697698;
-        bh=eYgXIrgiM7g1O99LNX0IImdvQnHUw3o5UfTypxA/6QM=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=srr1r/gxE4+BjbyC0ad8VZ94DMlyqxxHX1J/yvrFH2WW7bHIDK/9uIKu203Ga4ZgX
-         goeNgaf1zyywMlFxR9XUWRZCCZQEgLOI152SFToh/p8qxNa0KsP05DfLmx2ihX006F
-         v/uWxYepLdfBGA4YfZYH7I89IR5Xq51CD1kj5EJw=
+        id S1727771AbgKFVWl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 16:22:41 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6A99A106F;
+        Fri,  6 Nov 2020 13:22:40 -0800 (PST)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9DF213F718;
+        Fri,  6 Nov 2020 13:22:38 -0800 (PST)
+References: <20201021150335.1103231-1-aubrey.li@linux.intel.com> <jhjimamz1dv.mognet@arm.com> <27f88d6a-302e-2c28-c936-22ac233fe175@linux.intel.com>
+User-agent: mu4e 0.9.17; emacs 26.3
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     "Li\, Aubrey" <aubrey.li@linux.intel.com>
+Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        tim.c.chen@linux.intel.com, linux-kernel@vger.kernel.org,
+        Aubrey Li <aubrey.li@intel.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Jiang Biao <benbjiang@gmail.com>
+Subject: Re: [RFC PATCH v3] sched/fair: select idle cpu from idle cpumask for task wakeup
+In-reply-to: <27f88d6a-302e-2c28-c936-22ac233fe175@linux.intel.com>
+Date:   Fri, 06 Nov 2020 21:22:36 +0000
+Message-ID: <jhjy2jexjs3.mognet@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v2] bpf: Update verification logic for LSM programs
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <160469769850.21746.734806332257716938.git-patchwork-notify@kernel.org>
-Date:   Fri, 06 Nov 2020 21:21:38 +0000
-References: <20201105230651.2621917-1-kpsingh@chromium.org>
-In-Reply-To: <20201105230651.2621917-1-kpsingh@chromium.org>
-To:     KP Singh <kpsingh@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
 
-This patch was applied to bpf/bpf.git (refs/heads/master):
+On 04/11/20 11:52, Li, Aubrey wrote:
+> On 2020/11/4 3:27, Valentin Schneider wrote:
+>>> +static DEFINE_PER_CPU(bool, cpu_idle_state);
+>>
+>> I would've expected this to be far less compact than a cpumask, but that's
+>> not the story readelf is telling me. Objdump tells me this is recouping
+>> some of the padding in .data..percpu, at least with the arm64 defconfig.
+>>
+>> In any case this ought to be better wrt cacheline bouncing, which I suppose
+>> is what we ultimately want here.
+>
+> Yes, every CPU has a byte, so it may not be less than a cpumask. Probably I can
+> put it into struct rq, do you have any better suggestions?
+>
 
-On Thu,  5 Nov 2020 23:06:51 +0000 you wrote:
-> From: KP Singh <kpsingh@google.com>
-> 
-> The current logic checks if the name of the BTF type passed in
-> attach_btf_id starts with "bpf_lsm_", this is not sufficient as it also
-> allows attachment to non-LSM hooks like the very function that performs
-> this check, i.e. bpf_lsm_verify_prog.
-> 
-> [...]
-
-Here is the summary with links:
-  - [bpf-next,v2] bpf: Update verification logic for LSM programs
-    https://git.kernel.org/bpf/bpf/c/6f64e4778300
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Not really, I'm afraid.
