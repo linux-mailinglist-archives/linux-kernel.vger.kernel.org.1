@@ -2,89 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 956B92A9F41
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 22:40:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E24B2A9F17
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 22:31:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728291AbgKFVjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 16:39:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55234 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725868AbgKFVjX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 16:39:23 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 940E5C0613CF;
-        Fri,  6 Nov 2020 13:39:21 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id o129so2600580pfb.1;
-        Fri, 06 Nov 2020 13:39:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=7aTWPGVFVbBWyajMT43VMslcFxXhz4VtDG2Makyw31Y=;
-        b=r6p4t2hBK6TaeQb58ushb4iE+SAEpBwSj1UGF6u7fYvIqBs1cEHVzdSxjnk/UvBUhQ
-         W8cQNHQveNpdu6qA1gOQgeBjly7CjVn0ieNdMmJ4AE1PhT0tBGdqAE2ATyQXtl53Rdac
-         ZSEHU6hmqv482cXm79+gjmSgYiVcLHmHBSB9ASlPgGe12tTIZ7BslHv0PrUoTc6QNCzB
-         Y4D1M3FoogsQTPU2TEZ8iGOdBXFfpwexcOJliySVCXgf/GT2xq991kkYGm2s66q1CwTr
-         P9yJmfhZKmDkC/LbEoObcnYCPuhL8uq3lxzJN/aUEe2Rfj/NIp1IosQuoV/x4T5dC36U
-         Xlvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=7aTWPGVFVbBWyajMT43VMslcFxXhz4VtDG2Makyw31Y=;
-        b=Vxl4/pgZfwVJzZFpWYO18lQP5sBGo0tmoetquqOp4a0A3h9Az+OBviyLHrHlB/qGZX
-         8nNvpkdJ0LAl7z5uU8m/ccTtBPia7nnp33HbJwTueUy6G3JGDrUIo/aRBafeOGfE/ZSj
-         KUJhrF0PJBIJcHCbKDlqBlIQ+I9xA8RgOliUjyRFt76jvRlu071l0CkkRIKof3dkZ/az
-         1NWPSUDsFoyPjRUNsP4aU+baOfReBiJpw+XrMeQGx1QsPZ7/JD28JbjBcozLJNqUQrfd
-         0MSiLU6oYclCPoRb964bVF9Yj4Kst7F0l8Canqs5oXnE2Snki5Ggz7EJk5NZqIEafBvq
-         y2hA==
-X-Gm-Message-State: AOAM531vQMVSt/nbOytd5MZIHf8Pd4dwBABGyVDwHN1Ega5pi1fuMwkU
-        baoA0pgDsbZQ5iAafTynoBGXGhgCig2c7A==
-X-Google-Smtp-Source: ABdhPJwpIojmp9b1+/us6ZoC1XobJl4twTivXTCrNIPeHZ3z7HJtN7EZ21TixK2ffUkYFiMgVC+9xw==
-X-Received: by 2002:a17:90a:1f0b:: with SMTP id u11mr1596531pja.105.1604698761088;
-        Fri, 06 Nov 2020 13:39:21 -0800 (PST)
-Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id u22sm2689423pgf.24.2020.11.06.13.39.19
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 06 Nov 2020 13:39:20 -0800 (PST)
-Date:   Fri, 6 Nov 2020 13:27:08 -0800
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>, perex@perex.cz,
-        Xiubo.Lee@gmail.com, festevam@gmail.com, robh+dt@kernel.org,
-        timur@kernel.org, tiwai@suse.com, devicetree@vger.kernel.org,
-        alsa-devel@alsa-project.org, lgirdwood@gmail.com,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] ASoC: dt-bindings: fsl_aud2htx: Add binding doc
- for aud2htx module
-Message-ID: <20201106212707.GA3927@Asurada-Nvidia>
-References: <1604281947-26874-1-git-send-email-shengjiu.wang@nxp.com>
- <160466365499.22812.9217467877032314221.b4-ty@kernel.org>
- <20201106122013.GB49612@sirena.org.uk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201106122013.GB49612@sirena.org.uk>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S1728115AbgKFVbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 16:31:12 -0500
+Received: from mga05.intel.com ([192.55.52.43]:22692 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726415AbgKFVbM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 16:31:12 -0500
+IronPort-SDR: 5vYGF8AfSAcmmVQE074Ph48hzZsmQGsvk8yd/9J+f+7tA97CqR+K1BybEAdcOje2/+0oAprfGg
+ WKiVCycfuRjg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9797"; a="254311011"
+X-IronPort-AV: E=Sophos;i="5.77,457,1596524400"; 
+   d="scan'208";a="254311011"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2020 13:31:11 -0800
+IronPort-SDR: sLGclIe/yt7td3sZ5ZAd+QdJY1210ZUEanKFgtSnvIlVD8WRe6Ahi4J50wDSIRxZj2CFdmRCxY
+ WJSydsGeFYuQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,457,1596524400"; 
+   d="scan'208";a="337697737"
+Received: from unknown (HELO labuser-Ice-Lake-Client-Platform.jf.intel.com) ([10.54.55.65])
+  by orsmga002.jf.intel.com with ESMTP; 06 Nov 2020 13:31:11 -0800
+From:   kan.liang@linux.intel.com
+To:     peterz@infradead.org, mingo@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     namhyung@kernel.org, eranian@google.com, irogers@google.com,
+        gmx@google.com, acme@kernel.org, jolsa@redhat.com,
+        ak@linux.intel.com, Kan Liang <kan.liang@linux.intel.com>
+Subject: [PATCH 1/3] perf/core: Flush PMU internal buffers for per-CPU events
+Date:   Fri,  6 Nov 2020 13:29:33 -0800
+Message-Id: <20201106212935.28943-1-kan.liang@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 06, 2020 at 12:20:13PM +0000, Mark Brown wrote:
-> On Fri, Nov 06, 2020 at 11:54:23AM +0000, Mark Brown wrote:
-> > On Mon, 2 Nov 2020 09:52:26 +0800, Shengjiu Wang wrote:
-> > > AUD2HTX (Audio Subsystem TO HDMI TX Subsystem) is a new
-> > > IP module found on i.MX8MP.
-> > 
-> > Applied to
-> > 
-> >    https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-> 
-> Sorry, looks like me queueing this raced with the review comments coming
-> in.  I think the review commments are small enough that it'll be OK to
-> fix incrementally?
+From: Kan Liang <kan.liang@linux.intel.com>
 
-Yes. I am okay if we move forward with this version.
+Sometimes the PMU internal buffers have to be flushed for per-CPU events
+during a context switch, e.g., large PEBS. Otherwise, the perf tool may
+report samples in locations that do not belong to the process where the
+samples are processed in, because PEBS does not tag samples with PID/TID.
 
-Thanks
+The current code only flush the buffers for a per-task event. It doesn't
+check a per-CPU event.
+
+Add a new event state flag, PERF_ATTACH_SCHED_CB, to indicate that the
+PMU internal buffers have to be flushed for this event during a context
+switch.
+
+Add sched_cb_entry and perf_sched_cb_usages back to track the PMU/cpuctx
+which is required to be flushed.
+
+Only need to invoke the sched_task() for per-CPU events in this patch.
+The per-task events have been handled in perf_event_context_sched_in/out
+already.
+
+Fixes: 9c964efa4330 ("perf/x86/intel: Drain the PEBS buffer during context switches")
+Reported-by: Gabriel Marin <gmx@google.com>
+Reported-by: Namhyung Kim <namhyung@kernel.org>
+Originally-by: Namhyung Kim <namhyung@kernel.org>
+Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+---
+ include/linux/perf_event.h |  2 ++
+ kernel/events/core.c       | 42 ++++++++++++++++++++++++++++++++++----
+ 2 files changed, 40 insertions(+), 4 deletions(-)
+
+diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+index 0defb526cd0c..f7a84d1048b9 100644
+--- a/include/linux/perf_event.h
++++ b/include/linux/perf_event.h
+@@ -606,6 +606,7 @@ struct swevent_hlist {
+ #define PERF_ATTACH_TASK	0x04
+ #define PERF_ATTACH_TASK_DATA	0x08
+ #define PERF_ATTACH_ITRACE	0x10
++#define PERF_ATTACH_SCHED_CB	0x20
+ 
+ struct perf_cgroup;
+ struct perf_buffer;
+@@ -872,6 +873,7 @@ struct perf_cpu_context {
+ 	struct list_head		cgrp_cpuctx_entry;
+ #endif
+ 
++	struct list_head		sched_cb_entry;
+ 	int				sched_cb_usage;
+ 
+ 	int				online;
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index dba4ea4e648b..df0df5514097 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -384,6 +384,7 @@ static DEFINE_MUTEX(perf_sched_mutex);
+ static atomic_t perf_sched_count;
+ 
+ static DEFINE_PER_CPU(atomic_t, perf_cgroup_events);
++static DEFINE_PER_CPU(int, perf_sched_cb_usages);
+ static DEFINE_PER_CPU(struct pmu_event_list, pmu_sb_events);
+ 
+ static atomic_t nr_mmap_events __read_mostly;
+@@ -3481,11 +3482,16 @@ static void perf_event_context_sched_out(struct task_struct *task, int ctxn,
+ 	}
+ }
+ 
++static DEFINE_PER_CPU(struct list_head, sched_cb_list);
++
+ void perf_sched_cb_dec(struct pmu *pmu)
+ {
+ 	struct perf_cpu_context *cpuctx = this_cpu_ptr(pmu->pmu_cpu_context);
+ 
+-	--cpuctx->sched_cb_usage;
++	this_cpu_dec(perf_sched_cb_usages);
++
++	if (!--cpuctx->sched_cb_usage)
++		list_del(&cpuctx->sched_cb_entry);
+ }
+ 
+ 
+@@ -3493,7 +3499,10 @@ void perf_sched_cb_inc(struct pmu *pmu)
+ {
+ 	struct perf_cpu_context *cpuctx = this_cpu_ptr(pmu->pmu_cpu_context);
+ 
+-	cpuctx->sched_cb_usage++;
++	if (!cpuctx->sched_cb_usage++)
++		list_add(&cpuctx->sched_cb_entry, this_cpu_ptr(&sched_cb_list));
++
++	this_cpu_inc(perf_sched_cb_usages);
+ }
+ 
+ /*
+@@ -3522,6 +3531,24 @@ static void __perf_pmu_sched_task(struct perf_cpu_context *cpuctx, bool sched_in
+ 	perf_ctx_unlock(cpuctx, cpuctx->task_ctx);
+ }
+ 
++static void perf_pmu_sched_task(struct task_struct *prev,
++				struct task_struct *next,
++				bool sched_in)
++{
++	struct perf_cpu_context *cpuctx;
++
++	if (prev == next)
++		return;
++
++	list_for_each_entry(cpuctx, this_cpu_ptr(&sched_cb_list), sched_cb_entry) {
++		/* will be handled in perf_event_context_sched_in/out */
++		if (cpuctx->task_ctx)
++			continue;
++
++		__perf_pmu_sched_task(cpuctx, sched_in);
++	}
++}
++
+ static void perf_event_switch(struct task_struct *task,
+ 			      struct task_struct *next_prev, bool sched_in);
+ 
+@@ -3544,6 +3571,9 @@ void __perf_event_task_sched_out(struct task_struct *task,
+ {
+ 	int ctxn;
+ 
++	if (__this_cpu_read(perf_sched_cb_usages))
++		perf_pmu_sched_task(task, next, false);
++
+ 	if (atomic_read(&nr_switch_events))
+ 		perf_event_switch(task, next, false);
+ 
+@@ -3851,6 +3881,9 @@ void __perf_event_task_sched_in(struct task_struct *prev,
+ 
+ 	if (atomic_read(&nr_switch_events))
+ 		perf_event_switch(task, prev, true);
++
++	if (__this_cpu_read(perf_sched_cb_usages))
++		perf_pmu_sched_task(prev, task, true);
+ }
+ 
+ static u64 perf_calculate_period(struct perf_event *event, u64 nsec, u64 count)
+@@ -4675,7 +4708,7 @@ static void unaccount_event(struct perf_event *event)
+ 	if (event->parent)
+ 		return;
+ 
+-	if (event->attach_state & PERF_ATTACH_TASK)
++	if (event->attach_state & (PERF_ATTACH_TASK | PERF_ATTACH_SCHED_CB))
+ 		dec = true;
+ 	if (event->attr.mmap || event->attr.mmap_data)
+ 		atomic_dec(&nr_mmap_events);
+@@ -11204,7 +11237,7 @@ static void account_event(struct perf_event *event)
+ 	if (event->parent)
+ 		return;
+ 
+-	if (event->attach_state & PERF_ATTACH_TASK)
++	if (event->attach_state & (PERF_ATTACH_TASK | PERF_ATTACH_SCHED_CB))
+ 		inc = true;
+ 	if (event->attr.mmap || event->attr.mmap_data)
+ 		atomic_inc(&nr_mmap_events);
+@@ -12996,6 +13029,7 @@ static void __init perf_event_init_all_cpus(void)
+ #ifdef CONFIG_CGROUP_PERF
+ 		INIT_LIST_HEAD(&per_cpu(cgrp_cpuctx_list, cpu));
+ #endif
++		INIT_LIST_HEAD(&per_cpu(sched_cb_list, cpu));
+ 	}
+ }
+ 
+-- 
+2.17.1
+
