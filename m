@@ -2,252 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE4342A91B4
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 09:45:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35CB22A91BC
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 09:46:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726661AbgKFIpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 03:45:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46218 "EHLO
+        id S1726644AbgKFIqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 03:46:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725830AbgKFIpk (ORCPT
+        with ESMTP id S1725830AbgKFIqj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 03:45:40 -0500
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D28CEC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 00:45:40 -0800 (PST)
-Received: by mail-oi1-x22f.google.com with SMTP id m17so621891oie.4
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 00:45:40 -0800 (PST)
+        Fri, 6 Nov 2020 03:46:39 -0500
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D85B4C0613CF;
+        Fri,  6 Nov 2020 00:46:38 -0800 (PST)
+Received: by mail-qk1-x742.google.com with SMTP id c27so407818qko.10;
+        Fri, 06 Nov 2020 00:46:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0/92cdpzO11FzbQCzueBuQSjWB1HRcbFekCHNB7QwcU=;
-        b=WM5OUzi6OJSrwtnoagEHDtH1MNZJfaqznzdeqhLLjSaXFRo/7HhDcyly0g9sLf5x61
-         GFx2DK4dEfOCn1Su22egEM1OXHB4EPOCknH3F/yPBRxAki/tGyYa/pzYCVw77BKa2mOm
-         Q823G/ZK6sxtg40iJbIT0uFqvook8AX3pXp1k=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=d3ntAnKa8/mYLGzPmrDnpX+SS9nceIT0yXThvuLk7dA=;
+        b=PeMII59gOf7WuG2rlMrNUnfKKkKYzZ7Ef8+qFoNOUO1MT13N9+2o8BRfkNPlszNr9Z
+         pUtu9jzfVSLgV9O956BWD4k45Wz8Z2stMnaWCKoL9EdO0aEszica/DCfev6sTb1BAknl
+         pfkRrR6MtV/tYlny/Cy2cujiB6W7qiviGEdZq42BeYry0fGG9FUqjgZaBhZWNZDo0GhR
+         fGbn1lLLCLAWHz9sUD9A3YrCWOsvbc4QziPEbqREM4W3QswdwGk1vtqcMw2TU5LhGbI7
+         kwEpMh/EzjhIS0R5uJFZ3WTVTja9+7L6htx4c18BL3Znpfu3aGTf3h7FGXLy9VBKnVwE
+         U5RA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0/92cdpzO11FzbQCzueBuQSjWB1HRcbFekCHNB7QwcU=;
-        b=JX1EIj8Y1b+ZMLfghGZ9Le91X2lPXJfh4FIbPUAoZ7z9+n3ErzbBZ8GfEMZPasNiIA
-         YVCU1gPv4ioXdRrblizSEpzFNwR8///TrkPMK7Ylv6KDeCs4yfblqZRoZlgrraxF6aSJ
-         PF+tc5BoL5FHAOA+WfGglir/g5f7TJ5dBRWgdT2D2RlU5ZocYIqPmjGKvhAyWfza/tpm
-         YEH2j5TlIVhX39nh4w/4ji+NPnJ1iyvTbVOYgJJ8MqFMrgMYJucsDTznLR7xHzPSXa0g
-         QFIy6l8UgcdBAGiyZh2NJaymbzZuwjMHpF6EJp2CwEa+gQXCOvh8SW7myRc1muCAwl5g
-         9DKA==
-X-Gm-Message-State: AOAM533mwOW9yMrcFX+ECWd4+GRbcetqGL8AMjckjV+OrlmiauWL9p3O
-        /CKN8Y7h8Icgt2XbX1VJ5ekl4C/dgmKD1w==
-X-Google-Smtp-Source: ABdhPJysxyBmECkhabWj4xrH92lDorMJBvDaXxJjaLPZgTlNMAYWCnRh4Jpdtwmt681wVWcOdxx8TQ==
-X-Received: by 2002:aca:5f46:: with SMTP id t67mr486804oib.156.1604652339842;
-        Fri, 06 Nov 2020 00:45:39 -0800 (PST)
-Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com. [209.85.167.170])
-        by smtp.gmail.com with ESMTPSA id v17sm172313ote.40.2020.11.06.00.45.38
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Nov 2020 00:45:39 -0800 (PST)
-Received: by mail-oi1-f170.google.com with SMTP id q206so590139oif.13
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 00:45:38 -0800 (PST)
-X-Received: by 2002:a05:6808:602:: with SMTP id y2mr516793oih.11.1604652338400;
- Fri, 06 Nov 2020 00:45:38 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=d3ntAnKa8/mYLGzPmrDnpX+SS9nceIT0yXThvuLk7dA=;
+        b=loC1CQgHFdATcGwriiIJJLkk4g0KICNBW08Pp74t/fdOcaf7RVV3LVou48dkbWDnzR
+         2wWfEqZw+TNXJ/mYmkmNrb0QO7dBQ8ZMHd3XiwGAMj8LPBpe64ztgoPY8OdO08Dcf9fx
+         mdv8euzjvqpakR1QBs19xf7TxoDX0pCUt06TgXmHm7BgtWgUe0lCHtzb71RF7eJNaziU
+         0wtiWzVlOrvJETE6RG1P2rq2m89f98WdVas1qodtW99kznRIdg8DUBteGgxS185ARoNZ
+         0ilfxp1mzepaaEGZ51BA/2/7ZQGR7ypD2wnpNAUjid81aU1C31FFVl1IrpWrzfHDOcPF
+         D+vg==
+X-Gm-Message-State: AOAM532qw91QUMMmruwuqGUeUBpkCAxa8y1Q4D+FsoD1UEnx1FtKa7lV
+        fuxnGfi++fBq2Zky9IKSH3AGp6QuExoBrQ==
+X-Google-Smtp-Source: ABdhPJzGjNx6q1Eui0yJdJ24MIkr65ePf5mdy58YV3RH3FKIUM0P+k+G7LaUPxrniWQj+SXrwj/UZg==
+X-Received: by 2002:a37:9b48:: with SMTP id d69mr544640qke.435.1604652397999;
+        Fri, 06 Nov 2020 00:46:37 -0800 (PST)
+Received: from localhost.localdomain ([177.220.172.74])
+        by smtp.gmail.com with ESMTPSA id r8sm188681qkm.115.2020.11.06.00.46.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Nov 2020 00:46:37 -0800 (PST)
+Received: by localhost.localdomain (Postfix, from userid 1000)
+        id D4BF4C1B80; Fri,  6 Nov 2020 05:46:34 -0300 (-03)
+Date:   Fri, 6 Nov 2020 05:46:34 -0300
+From:   Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+To:     Petr Malat <oss@malat.biz>
+Cc:     linux-sctp@vger.kernel.org, Vlad Yasevich <vyasevich@gmail.com>,
+        Neil Horman <nhorman@tuxdriver.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] sctp: Fix sending when PMTU is less than
+ SCTP_DEFAULT_MINSEGMENT
+Message-ID: <20201106084634.GA3556@localhost.localdomain>
+References: <20201105103946.18771-1-oss@malat.biz>
 MIME-Version: 1.0
-References: <20201104180734.286789-1-ribalda@chromium.org> <20201104180734.286789-3-ribalda@chromium.org>
- <20201106060602.GA6926@pendragon.ideasonboard.com>
-In-Reply-To: <20201106060602.GA6926@pendragon.ideasonboard.com>
-From:   Ricardo Ribalda <ribalda@chromium.org>
-Date:   Fri, 6 Nov 2020 09:45:27 +0100
-X-Gmail-Original-Message-ID: <CANiDSCuZ_euz1tb35ETffN_NxLxW_N-7hBCpk-HhuRuRJBFxkA@mail.gmail.com>
-Message-ID: <CANiDSCuZ_euz1tb35ETffN_NxLxW_N-7hBCpk-HhuRuRJBFxkA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/7] media: uvcvideo: Move guid to entity
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201105103946.18771-1-oss@malat.biz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurent
+On Thu, Nov 05, 2020 at 11:39:47AM +0100, Petr Malat wrote:
+> Function sctp_dst_mtu() never returns lower MTU than
+> SCTP_TRUNC4(SCTP_DEFAULT_MINSEGMENT) even when the actual MTU is less,
+> in which case we rely on the IP fragmentation and must enable it.
 
-Thanks for the review
+This should be being handled at sctp_packet_will_fit():
 
-On Fri, Nov 6, 2020 at 7:06 AM Laurent Pinchart
-<laurent.pinchart@ideasonboard.com> wrote:
->
-> Hi Ricardo,
->
-> Thank you for the patch.
->
-> On Wed, Nov 04, 2020 at 07:07:29PM +0100, Ricardo Ribalda wrote:
-> > Instead of having multiple copies of the entity guid on the code, move
-> > it to the entity structure.
-> >
-> > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> > ---
-> >  drivers/media/usb/uvc/uvc_ctrl.c   | 30 ++++--------------------------
-> >  drivers/media/usb/uvc/uvc_driver.c | 21 +++++++++++++++++++--
-> >  drivers/media/usb/uvc/uvcvideo.h   |  2 +-
-> >  3 files changed, 24 insertions(+), 29 deletions(-)
-> >
-> > diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
-> > index f479d8971dfb..0e480b75e724 100644
-> > --- a/drivers/media/usb/uvc/uvc_ctrl.c
-> > +++ b/drivers/media/usb/uvc/uvc_ctrl.c
-> > @@ -826,31 +826,10 @@ static void uvc_set_le_value(struct uvc_control_mapping *mapping,
-> >   * Terminal and unit management
-> >   */
-> >
-> > -static const u8 uvc_processing_guid[16] = UVC_GUID_UVC_PROCESSING;
-> > -static const u8 uvc_camera_guid[16] = UVC_GUID_UVC_CAMERA;
-> > -static const u8 uvc_media_transport_input_guid[16] =
-> > -     UVC_GUID_UVC_MEDIA_TRANSPORT_INPUT;
-> > -
-> >  static int uvc_entity_match_guid(const struct uvc_entity *entity,
-> > -     const u8 guid[16])
-> > +                              const u8 guid[16])
-> >  {
-> > -     switch (UVC_ENTITY_TYPE(entity)) {
-> > -     case UVC_ITT_CAMERA:
-> > -             return memcmp(uvc_camera_guid, guid, 16) == 0;
-> > -
-> > -     case UVC_ITT_MEDIA_TRANSPORT_INPUT:
-> > -             return memcmp(uvc_media_transport_input_guid, guid, 16) == 0;
-> > -
-> > -     case UVC_VC_PROCESSING_UNIT:
-> > -             return memcmp(uvc_processing_guid, guid, 16) == 0;
-> > -
-> > -     case UVC_VC_EXTENSION_UNIT:
-> > -             return memcmp(entity->extension.guidExtensionCode,
-> > -                           guid, 16) == 0;
-> > -
-> > -     default:
-> > -             return 0;
-> > -     }
-> > +     return memcmp(entity->guid, guid, sizeof(entity->guid)) == 0;
-> >  }
-> >
-> >  /* ------------------------------------------------------------------------
-> > @@ -1776,8 +1755,7 @@ static int uvc_ctrl_fill_xu_info(struct uvc_device *dev,
-> >       if (data == NULL)
-> >               return -ENOMEM;
-> >
-> > -     memcpy(info->entity, ctrl->entity->extension.guidExtensionCode,
-> > -            sizeof(info->entity));
-> > +     memcpy(info->entity, ctrl->entity->guid, sizeof(info->entity));
-> >       info->index = ctrl->index;
-> >       info->selector = ctrl->index + 1;
-> >
-> > @@ -1883,7 +1861,7 @@ int uvc_xu_ctrl_query(struct uvc_video_chain *chain,
-> >
-> >       if (!found) {
-> >               uvc_trace(UVC_TRACE_CONTROL, "Control %pUl/%u not found.\n",
-> > -                     entity->extension.guidExtensionCode, xqry->selector);
-> > +                     entity->guid, xqry->selector);
-> >               return -ENOENT;
-> >       }
-> >
-> > diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
-> > index 9fc0b600eab1..77fea26faa9a 100644
-> > --- a/drivers/media/usb/uvc/uvc_driver.c
-> > +++ b/drivers/media/usb/uvc/uvc_driver.c
-> > @@ -1019,6 +1019,11 @@ static int uvc_parse_streaming(struct uvc_device *dev,
-> >       return ret;
-> >  }
-> >
-> > +static const u8 uvc_camera_guid[16] = UVC_GUID_UVC_CAMERA;
-> > +static const u8 uvc_media_transport_input_guid[16] =
-> > +     UVC_GUID_UVC_MEDIA_TRANSPORT_INPUT;
-> > +static const u8 uvc_processing_guid[16] = UVC_GUID_UVC_PROCESSING;
-> > +
-> >  static struct uvc_entity *uvc_alloc_entity(u16 type, u8 id,
-> >               unsigned int num_pads, unsigned int extra_size)
-> >  {
-> > @@ -1038,6 +1043,18 @@ static struct uvc_entity *uvc_alloc_entity(u16 type, u8 id,
-> >       entity->id = id;
-> >       entity->type = type;
-> >
-> > +     switch (type) {
-> > +     case UVC_ITT_CAMERA:
-> > +             memcpy(entity->guid, uvc_camera_guid, 16);
-> > +             break;
-> > +     case UVC_ITT_MEDIA_TRANSPORT_INPUT:
-> > +             memcpy(entity->guid, uvc_media_transport_input_guid, 16);
-> > +             break;
-> > +     case UVC_VC_PROCESSING_UNIT:
-> > +             memcpy(entity->guid, uvc_processing_guid, 16);
-> > +             break;
-> > +     }
->
-> Given that the GUID is set in uvc_parse_vendor_control() and
-> uvc_parse_standard_control() for extension units, I'm wondering if it
-> would make sense to move it there for the other entity types too. Up to
-> you. Otherwise, I'd add the following comment above the switch:
->
->         /*
->          * Set the GUID for standard entity types. For extension units, the GUID
->          * is initialized by the caller.
->          */
+          psize = packet->size;
+          if (packet->transport->asoc)
+                  pmtu = packet->transport->asoc->pathmtu;
+          else
+                  pmtu = packet->transport->pathmtu;
 
-I added the comment. So far I am working on
+          /* Decide if we need to fragment or resubmit later. */
+          if (psize + chunk_len > pmtu) {
+                  /* It's OK to fragment at IP level if any one of the following
+                   * is true:
+                   *      1. The packet is empty (meaning this chunk is greater
+                   *         the MTU)
+                   *      2. The packet doesn't have any data in it yet and data
+                   *         requires authentication.
+                   */
+                  if (sctp_packet_empty(packet) ||
+                      (!packet->has_data && chunk->auth)) {
+                          /* We no longer do re-fragmentation.
+                           * Just fragment at the IP layer, if we
+                           * actually hit this condition
+                           */
+                          packet->ipfragok = 1;
+                          goto out;
+                  }
 
-https://github.com/ribalda/linux/tree/uvctest-v3
+Why the above doesn't handle it already?
 
-Please let me know when you are ready with v2, to send v3 to the mailing list.
-
-Thanks!
-
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
->
-> > +
-> >       entity->num_links = 0;
-> >       entity->num_pads = num_pads;
-> >       entity->pads = ((void *)(entity + 1)) + extra_size;
-> > @@ -1109,7 +1126,7 @@ static int uvc_parse_vendor_control(struct uvc_device *dev,
-> >               if (unit == NULL)
-> >                       return -ENOMEM;
-> >
-> > -             memcpy(unit->extension.guidExtensionCode, &buffer[4], 16);
-> > +             memcpy(unit->guid, &buffer[4], 16);
-> >               unit->extension.bNumControls = buffer[20];
-> >               memcpy(unit->baSourceID, &buffer[22], p);
-> >               unit->extension.bControlSize = buffer[22+p];
-> > @@ -1368,7 +1385,7 @@ static int uvc_parse_standard_control(struct uvc_device *dev,
-> >               if (unit == NULL)
-> >                       return -ENOMEM;
-> >
-> > -             memcpy(unit->extension.guidExtensionCode, &buffer[4], 16);
-> > +             memcpy(unit->guid, &buffer[4], 16);
-> >               unit->extension.bNumControls = buffer[20];
-> >               memcpy(unit->baSourceID, &buffer[22], p);
-> >               unit->extension.bControlSize = buffer[22+p];
-> > diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
-> > index a3dfacf069c4..df7bf2d104a3 100644
-> > --- a/drivers/media/usb/uvc/uvcvideo.h
-> > +++ b/drivers/media/usb/uvc/uvcvideo.h
-> > @@ -304,6 +304,7 @@ struct uvc_entity {
-> >       u8 id;
-> >       u16 type;
-> >       char name[64];
-> > +     u8 guid[16];
-> >
-> >       /* Media controller-related fields. */
-> >       struct video_device *vdev;
-> > @@ -342,7 +343,6 @@ struct uvc_entity {
-> >               } selector;
-> >
-> >               struct {
-> > -                     u8  guidExtensionCode[16];
-> >                       u8  bNumControls;
-> >                       u8  bControlSize;
-> >                       u8  *bmControls;
->
-> --
-> Regards,
->
-> Laurent Pinchart
-
-
-
--- 
-Ricardo Ribalda
