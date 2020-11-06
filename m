@@ -2,169 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FFF62A8F23
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 07:00:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C8DE2A8F26
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 07:04:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726194AbgKFGAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 01:00:41 -0500
-Received: from mailout2.samsung.com ([203.254.224.25]:58348 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726142AbgKFGAl (ORCPT
+        id S1726005AbgKFGES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 01:04:18 -0500
+Received: from esa6.hgst.iphmx.com ([216.71.154.45]:50003 "EHLO
+        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725828AbgKFGES (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 01:00:41 -0500
-Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20201106060039epoutp02c4ab82235ac46e0a9a2a53065f330aa6~E1cwDp-Sd1021010210epoutp02X
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 06:00:39 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20201106060039epoutp02c4ab82235ac46e0a9a2a53065f330aa6~E1cwDp-Sd1021010210epoutp02X
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1604642439;
-        bh=H6UyVEDtCUHutc84XrkVe7KQjCGhQT8Emejis+MlvaA=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=imHvIeHWyByp3cLFqKoT5koFaDxwA3tn7MeyskUPrAR7pgPihpiVgye2JKVfTkD+u
-         bNdev3nOWI5L8hN+qWb+sdbdnC5V5t0NwV2uGRM0a2hv0Up4JkEuL54YNyVPTEXT/C
-         kaNwFBgDJlDckSXSAii00px9J0+2ikn5rvl17i1U=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20201106060039epcas1p1ad827682f90809735fdfef8d26f623b2~E1cvqcOXO0239002390epcas1p1v;
-        Fri,  6 Nov 2020 06:00:39 +0000 (GMT)
-Received: from epsmges1p4.samsung.com (unknown [182.195.40.153]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4CS8rN3Vc0zMqYkf; Fri,  6 Nov
-        2020 06:00:36 +0000 (GMT)
-Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
-        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        C0.21.10463.186E4AF5; Fri,  6 Nov 2020 15:00:33 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20201106060033epcas1p159f05b54fba9c097bbebec428fdc98a4~E1cqcZ4zm3209832098epcas1p1X;
-        Fri,  6 Nov 2020 06:00:33 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20201106060033epsmtrp1888c4120a2e9e898a7cb9ca93620b01d~E1cqbvk4N1867918679epsmtrp1i;
-        Fri,  6 Nov 2020 06:00:33 +0000 (GMT)
-X-AuditID: b6c32a38-efbff700000028df-63-5fa4e681ec4a
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        46.87.08745.186E4AF5; Fri,  6 Nov 2020 15:00:33 +0900 (KST)
-Received: from [10.113.113.235] (unknown [10.113.113.235]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20201106060033epsmtip2653cd362ba0840d7aef61cd280c48c44~E1cqO1s4R1025010250epsmtip2E;
-        Fri,  6 Nov 2020 06:00:33 +0000 (GMT)
-Subject: Re: [PATCH] arm64: dts: exynos: Use fixed index for the MMC devices
-To:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        linux-samsung-soc@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Markus Reichl <m.reichl@fivetechno.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        linux-kernel@vger.kernel.org
-From:   Jaehoon Chung <jh80.chung@samsung.com>
-Message-ID: <119c90b2-7157-ed07-5ef2-ec64d98c8823@samsung.com>
-Date:   Fri, 6 Nov 2020 15:00:54 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
-        Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20201105114814.18372-1-m.szyprowski@samsung.com>
+        Fri, 6 Nov 2020 01:04:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1604642657; x=1636178657;
+  h=from:to:cc:subject:date:message-id:content-id:
+   content-transfer-encoding:mime-version;
+  bh=BibtOzRj5RKVl8UeBYbNgJ7/ZJ8vyQN6V1w7SQeokeE=;
+  b=Mgbrn0LrJY9o8Oy5etsBt7THIBpmVYnScrQEVGkelWUc0BjVTo9xHQs4
+   SjNIdLMZIFgcelv0XQk82KbciTfcvQuN1i6v4jc+FWQueB6Y+ztncU+ck
+   uZY8562lg3uTYP2ic4PU1M8r4ukjmS8+RqBktG/lB0kTSXCVyJiYGmDQ7
+   L3Kzci8g6u5bVFvTihheHf1cFSMeQYkDMfNrTUwy38WhgpWSy6fyTKISe
+   wtWEceN09PzwYUd6Aw+A5vHtxQIh5lnTU2TtWCjq97Jgk2U+fwR20R+5E
+   y1+jHnngvVgNAmmBTIVvRWnpUmek7gpv2c3YMZHWdnM/KXV/mH4n0SQ5W
+   g==;
+IronPort-SDR: eOwAIuwxe6IdcOb/y0UKd2tx9wMDMrM4xz4JLiTfbH7u0gAVAgPX5UHqJrOGLEAw7MtSrQO5N8
+ 8VCWjun03yifomi+bLaUPgj+cd767ren+GVZr60BUqJuAjD1olbLGsPaD6N0XhG0vwx6iGyoqi
+ VBIxn+G5yMaU/pSxrhhkPo+KEzrO+Dmcwmty8sKc/zbmAOzF7dCUpkhYb8T7U7Z7GZtKn7EMF5
+ Fa6bwe8rMrVxpbjs90LDbMw8aLmt3XCrAPTNRiP0siC6K0jr4Ix8G0WQ/dmYALGNd6lh2Y5tIx
+ vnY=
+X-IronPort-AV: E=Sophos;i="5.77,455,1596470400"; 
+   d="scan'208";a="153205073"
+Received: from mail-dm6nam12lp2171.outbound.protection.outlook.com (HELO NAM12-DM6-obe.outbound.protection.outlook.com) ([104.47.59.171])
+  by ob1.hgst.iphmx.com with ESMTP; 06 Nov 2020 14:04:17 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=I57M5V/XmFdp2qsNqJE+JRLNwRyB2mSBr8F07wrBLJjxZ1ffm/PgnkS3o0be9BQ6Rb8aLFjOgNY3rdAtaB75HUdiDmbY/wPt2BBi3XgO6ne5ZmiDAb3ff+fuwwrmk6die10bBAh7zt2n2CfWvgcvb5EQNvbe1Ve/WtxDiedkJ117+Kuq2K3KvW+IYXCjrvyCtugkdcW5/v88k7gac4L3fCt+pvuAKiT7hHKzOQ7fS5al6uK2OCu6ibKg3VOOKEzLFaCkpS1FlR3I1oKR4cSltFRg2Kv+02X6MuRrUzn6GFgvaD6YdV16F8L7wA2M62xCm1sVCcdkbqRJIOV0J91LUQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BibtOzRj5RKVl8UeBYbNgJ7/ZJ8vyQN6V1w7SQeokeE=;
+ b=kJAk/SLduui9gxl/380QUTcZJX3Jn1zd7avqIawZOdk44/KoWLI1AgJNHczVq3iZ8mDekjylKBVqypQMxJHEc6JdCtdubhBNcOBiblEypIeSL9svVeonr+tD0zkrl2kg3KrdzebDFUDRXPOdVzNFJ1NbUhjDjlrIxgnULUshm+jv8dtYgTot3rO3AiBL2AeyMR2OVgc9OETSlbJdhzTbEZNqJ/kJKv2MYNGMktfaYqvpAfA2kFrk9N3cbGHJagG0dNIR79MD/nfrGU0vXHk/jbu+J+jFYxD9upsHQsgOgAsCGkGul/iuX08E9yRcPhK/EPaoR5iDqNjd0Tcc1g+ufg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BibtOzRj5RKVl8UeBYbNgJ7/ZJ8vyQN6V1w7SQeokeE=;
+ b=nKgwdNFtOkvseQAKqnj4ey7T7QH9a5HEKBts5X2cyJixqr3rloaPGQzaG/gKpVJ96hwSr/sTaXPQNRW50YatSplUy9uW6lTB5lqdF1zprEL0ewzoVnARv4HyRoIJe1ceUeWxsCj34iphQK+SvM9EVjE2j0QjesLLKz9tmqFmUd4=
+Received: from BYAPR04MB3800.namprd04.prod.outlook.com (2603:10b6:a02:ad::20)
+ by BY5PR04MB6963.namprd04.prod.outlook.com (2603:10b6:a03:228::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21; Fri, 6 Nov
+ 2020 06:04:15 +0000
+Received: from BYAPR04MB3800.namprd04.prod.outlook.com
+ ([fe80::5154:e14a:2e36:bc95]) by BYAPR04MB3800.namprd04.prod.outlook.com
+ ([fe80::5154:e14a:2e36:bc95%3]) with mapi id 15.20.3499.032; Fri, 6 Nov 2020
+ 06:04:15 +0000
+From:   Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>
+Subject: WARNING: can't access registers at asm_common_interrupt
+Thread-Topic: WARNING: can't access registers at asm_common_interrupt
+Thread-Index: AQHWtAKoC1N6UC8gbUaAN5Wk5A+R6A==
+Date:   Fri, 6 Nov 2020 06:04:15 +0000
+Message-ID: <20201106060414.edtcb7nrbzm4a32t@shindev.dhcp.fujisawa.hgst.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprJJsWRmVeSWpSXmKPExsWy7bCmgW7jsyXxBm8valtsnLGe1eL6l+es
-        FufPb2C3uLxrDpvFjPP7mCxeHvnBaLH2yF12i9a9R9gdODxu3an32LSqk82jb8sqRo/Pm+QC
-        WKKybTJSE1NSixRS85LzUzLz0m2VvIPjneNNzQwMdQ0tLcyVFPISc1NtlVx8AnTdMnOArlBS
-        KEvMKQUKBSQWFyvp29kU5ZeWpCpk5BeX2CqlFqTkFFgW6BUn5haX5qXrJefnWhkaGBiZAhUm
-        ZGdMvv2IqeAzb8WH21vYGhhXcHcxcnJICJhIXJjymbWLkYtDSGAHo8S1s7+hnE+MEve+zmOG
-        cD4zShxr2MsO09Jw8w5UYhejxKyNk1ggnPeMEs1PN7OBVAkL+EgsffSLFcQWEQiRuP/0Bdhc
-        ZpBRj49cA0uwCehIbP92nAnE5hWwk/hy7T4LiM0ioCLR9n0t2CBRgUiJnU9fskPUCEqcnPkE
-        rIYTqP7JqX3MIDazgLjErSfzmSBseYntb+eAnSch0MshMXfpF0aIu10kHm64yAphC0u8Or4F
-        6h8piZf9bVB2tcSu5jNQzR2MEre2NTFBJIwl9i+dDGRzAG3QlFi/Sx8irCix8/dcRojFfBLv
-        vvawgpRICPBKdLQJQZSoSFx6/ZIJZtXdJ/+hTvCQ+DltG9sERsVZSF6bheSdWUjemYWweAEj
-        yypGsdSC4tz01GLDAhPk+N7ECE6jWhY7GOe+/aB3iJGJg/EQowQHs5II7wW/RfFCvCmJlVWp
-        RfnxRaU5qcWHGE2BgT2RWUo0OR+YyPNK4g1NjYyNjS1MDM1MDQ2VxHn/aHfECwmkJ5akZqem
-        FqQWwfQxcXBKNTDlb7g5S5NjVqL47WkNit3tnItCLmZ6yO+Sd1s1cfvllE/rzaburNosaGlh
-        O2VHTMs3huUsOzvcXz/ce9h7ifCEvqsCaVf6PON0JyuHzLzadu1Ii45N5+H7uTenb31Y+eD/
-        zhpt78+vCsKzkryYZ55k8d2Qr9md0jK7d1+whr7mtzTDfqlPGxy3iU94m+h5+m7wepGNbIbs
-        POYTLqrJP9My4L1w+tP1V66e1XLFH+0eXvoo/YH99Jxt/r//1PL5Ll5wltmhX3vzBPtKlqS0
-        5bJ+uuLKkaYbJm5ZIXtoXsczz18L/3NfWmq48+bWj3ubLjQefR+3Sk/q3+uJiQ8ufhCI6Zn+
-        bM6WRXuUbqUeenk7X4mlOCPRUIu5qDgRALwHm44sBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrKLMWRmVeSWpSXmKPExsWy7bCSvG7jsyXxBt2bRSw2zljPanH9y3NW
-        i/PnN7BbXN41h81ixvl9TBYvj/xgtFh75C67ReveI+wOHB637tR7bFrVyebRt2UVo8fnTXIB
-        LFFcNimpOZllqUX6dglcGZNvP2Iq+Mxb8eH2FrYGxhXcXYycHBICJhINN+8wdzFycQgJ7GCU
-        OLB3EjtEQkri89OpbF2MHEC2sMThw8UQNW8ZJRZ0rAerERbwkVj66BcrSI2IQIjEwvd6IDXM
-        Ap8ZJa5O7WKFaJjIKHHoczcrSAObgI7E9m/HmUBsXgE7iS/X7rOA2CwCKhJt39eCLRMViJTY
-        ucMSokRQ4uTMJ2AlnEDlT07tYwaxmQXUJf7MuwRli0vcejKfCcKWl9j+dg7zBEahWUjaZyFp
-        mYWkZRaSlgWMLKsYJVMLinPTc4sNC4zyUsv1ihNzi0vz0vWS83M3MYJjRktrB+OeVR/0DjEy
-        cTAeYpTgYFYS4b3gtyheiDclsbIqtSg/vqg0J7X4EKM0B4uSOO/XWQvjhATSE0tSs1NTC1KL
-        YLJMHJxSDUwyEkGZOzqfJWxfclh1r2mF7n6LtyGaumLbLV9q/stknd/COXP6i4Rn62YtXiQg
-        e/W25jYXxtX/HKa8T4oo/bGq+sPZWaev3lW3Pz1LPs3RabPzpoq+e3t0xOab8/yR3yqw8YTB
-        EacHtpWti9tv85S2s33825Y2R7rlZNv6rN9XVnYEb34cIGBRJ3hDxDLm4Z35nEvOecQKx09l
-        2LEuROJu1XsO5zk7Vv539b7R2sh9Z3f2etbVn2Mb2w0uLe8o/nk1orBqe8iKHSELDdZYCgi0
-        tb28sFJkzc+1G+puzs689NA28eePgp1iLXNCbpcIXVgqFCoRnOEiz/HEtY5tgfBmpvl52Y6s
-        7u9ZTm2T2hqpxFKckWioxVxUnAgAehOUTAgDAAA=
-X-CMS-MailID: 20201106060033epcas1p159f05b54fba9c097bbebec428fdc98a4
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20201105114823eucas1p26250751a232cf55e39d2452e8bb83e46
-References: <CGME20201105114823eucas1p26250751a232cf55e39d2452e8bb83e46@eucas1p2.samsung.com>
-        <20201105114814.18372-1-m.szyprowski@samsung.com>
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [129.253.182.60]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 5cf427d4-f92c-47cc-34c9-08d88219caa1
+x-ms-traffictypediagnostic: BY5PR04MB6963:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BY5PR04MB6963D208EE807C92EF73B2CAEDED0@BY5PR04MB6963.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:110;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: KkvcRA5pXOKp0pQjMfQSUyFhoxm8wOyXwsSygBc3w5eX5fz1PvhB+MlfNwfsUL4eJS/zz6Dz9gC1fTN7DNzl4fn3XcJwypAyoDnwGp3qMardD1ojEdCvqrvuWgVpIVgJA3QbE+aNRaECqwetDu5cl9u660NXj8MFzOelUmSl9TBR8ZApRgO9RwQnleceA7YFDkpHs+69TEzUHOhRsME/oDVAR3qYLUJsE4CafgOL+Yh8r+p6v77T8HgqkcWaLtkJYrIMcKIFq0tkLYfASpEi56Od0GNtD1iJKoS08Jlt62LsvmnRUn1/u8z9wU15ubZpjLcL6JQ7q2c/+wfP4TP5t4fI+p/CRyNXWjcoRmqijb2leg5uP4sQFDZaU3ET3qhUrfYzew4a8SWVA6FKikGo50Tkj4wltQhNhxVwYow3iOXac5noY+ZIKxjnCPXxMu4ecH/uWQa/pN42XTTx1G/Nxg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR04MB3800.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(396003)(39860400002)(136003)(366004)(6506007)(9686003)(966005)(6512007)(4744005)(1076003)(186003)(86362001)(4326008)(76116006)(26005)(71200400001)(478600001)(44832011)(316002)(6916009)(6486002)(5660300002)(8936002)(2906002)(66946007)(8676002)(91956017)(66446008)(54906003)(66476007)(64756008)(83380400001)(66556008)(58493002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: PWXweTEDHNanGTr27DKnoW1/N2aULbkcxN43xRK0TyykEWoHaT+2NSlCgWUAx1sXiX4PA3FwW2Zd63ZCXTCO1GafZq11nyCvl23Jqec0bs92HmiYjVOXs/Mi7pTKC1gFZNFI+Codg+K1YfLmNI8UL8OGtcbaTIhxHVWTwY1xjb6eC+ygB8hwmzi19e314RoTYRDPR8Y1TbKTwd4twzmYcGYtnmrbgIJmENI5hRb4vHOG4jB9Ls8I3mozXnNtPnRfWLI77fi+31dw1L9YtKDIgy1vYNM+sl99qStOjgWVU9StH2ILf7/bX0WishubKT62x76MfOCQrQFbEw26uUDuGGqB+3xi4eff8ZTM/FfHfNQ9LW6VuqBHz/bp/QTQ45PtIQ5zbb3nrlgIQbGflv1LkVPZiV7sVnFLLAifDqo+zWGlCX/61pPSjA+dYfBm9OZw4GHFITQpSmazXXPKmPqbKTBrpc6U8HiAXsZaYPzYsR10ci75vk4i3OVPg+aRA+lZ7um8cNbxnmtV017A1Beqj4rOvwhyM7u5Y7dAVE/e6FQYQEgNDYVNijz4e0XX6U/V4M+IGrLG/BoOrhBvlrAEjyFPK796783ZJC8tgD2PlOBvIstTkJwzbhoHkrCEbisK70C1+sE3w16qa4smC0rMoA==
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <18FFA4171217B947A68D5837CF588F4D@namprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR04MB3800.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5cf427d4-f92c-47cc-34c9-08d88219caa1
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Nov 2020 06:04:15.6991
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 8NaFohHhkfV6T61g5YAJQgIfLAMRj30pAIi3kZsg8X9z4DtARiAXX+N7+e78KEJlbfgzWuicoMjOKJy5EbI14whbYfFmalT3aXoxF/e83ns=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR04MB6963
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/5/20 8:48 PM, Marek Szyprowski wrote:
-> Recently introduced asynchronous probe on the MMC devices can shuffle
-> block IDs in the system. Pin them to values equal to the physical MMC bus
-> number to ease booting in environments where UUIDs are not practical.
-> 
-> Use newly introduced aliases for mmcblk devices from commit fa2d0aa96941
-> ("mmc: core: Allow setting slot index via device tree alias").
-> 
-> Suggested-by: Markus Reichl <m.reichl@fivetechno.de>
-> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Greetings,
 
+I observe "WARNING: can't access registers at asm_common_interrupt+0x1e/0x4=
+0"
+in my kernel test system repeatedly, which is printed by unwind_next_frame(=
+) in
+"arch/x86/kernel/unwind_orc.c". Syzbot already reported that [1]. Similar
+warning was reported and discussed [2], but I suppose the cause is not yet
+clarified.
 
-Reviewed-by: Jaehoon Chung <jh80.chung@samsung.com>
+The warning was observed with v5.10-rc2 and older tags. I bisected and foun=
+d
+that the commit 044d0d6de9f5 ("lockdep: Only trace IRQ edges") in v5.9-rc3
+triggered the warning. Reverting that from 5.10-rc2, the warning disappeare=
+d.
+May I ask comment by expertise on CC how this commit can relate to the warn=
+ing?
 
+The test condition to reproduce the warning is rather unique (blktests,
+dm-linear and ZNS device emulation by QEMU). If any action is suggested for
+further analysis, I'm willing to take it with my test system.
+
+Wish this report helps.
+
+[1] https://lkml.org/lkml/2020/9/6/231
+[2] https://lkml.org/lkml/2020/9/8/1538
+
+--=20
 Best Regards,
-Jaehoon Chung
-
-> ---
->  arch/arm64/boot/dts/exynos/exynos5433.dtsi | 6 ++++++
->  arch/arm64/boot/dts/exynos/exynos7.dtsi    | 3 +++
->  2 files changed, 9 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/exynos/exynos5433.dtsi b/arch/arm64/boot/dts/exynos/exynos5433.dtsi
-> index 0a886bb6c806..3a37ad97fcdb 100644
-> --- a/arch/arm64/boot/dts/exynos/exynos5433.dtsi
-> +++ b/arch/arm64/boot/dts/exynos/exynos5433.dtsi
-> @@ -23,6 +23,12 @@
->  
->  	interrupt-parent = <&gic>;
->  
-> +	aliases {
-> +		mmc0 = &mshc_0;
-> +		mmc1 = &mshc_1;
-> +		mmc2 = &mshc_2;
-> +	};
-> +
->  	arm_a53_pmu {
->  		compatible = "arm,cortex-a53-pmu";
->  		interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>,
-> diff --git a/arch/arm64/boot/dts/exynos/exynos7.dtsi b/arch/arm64/boot/dts/exynos/exynos7.dtsi
-> index 48cd3a04fd07..3e319ec64997 100644
-> --- a/arch/arm64/boot/dts/exynos/exynos7.dtsi
-> +++ b/arch/arm64/boot/dts/exynos/exynos7.dtsi
-> @@ -16,6 +16,9 @@
->  	#size-cells = <2>;
->  
->  	aliases {
-> +		mmc0 = &mmc_0;
-> +		mmc1 = &mmc_1;
-> +		mmc2 = &mmc_2;
->  		pinctrl0 = &pinctrl_alive;
->  		pinctrl1 = &pinctrl_bus0;
->  		pinctrl2 = &pinctrl_nfc;
-> 
-
+Shin'ichiro Kawasaki=
