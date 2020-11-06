@@ -2,77 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9838E2A9601
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 13:11:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C207B2A9604
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 13:12:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727300AbgKFMLe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 07:11:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54900 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726317AbgKFMLd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 07:11:33 -0500
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5A2E32100A;
-        Fri,  6 Nov 2020 12:11:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604664692;
-        bh=uEOhfTfCBXqrs13X3avrkvywnW2eWiyf1LB3yk8KXlE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=pv6U9ZZ7FthqDuJGcOYZ3uv+NlHL7YPJjaJly0QyPBb+CvohysudBdVK/3dVc7eiy
-         1DDVZJ8uqTHjuJNySIwJUf8zYTYE4OFMxVwqBjvlzfl9cjk6ljfMGZ+vYNJvWGUsTb
-         unVEBtel6WTxhRmHpw1ZFIvjzszjPgofJAxipo+A=
-Received: by mail-wm1-f52.google.com with SMTP id s13so1119853wmh.4;
-        Fri, 06 Nov 2020 04:11:32 -0800 (PST)
-X-Gm-Message-State: AOAM532OzHlTPfLMLrCPzsZyHkU8ehV7xK3bGwe9dpdeBHhuvAy3Eo2C
-        4RwuCiUZduEUzoRxOEOwFA1RHCRwUzyqJI6dJ5M=
-X-Google-Smtp-Source: ABdhPJzv2EmRP8CYUYmU3H3MT9wpk8xr+uYi4DIu4bJTYIGgo1Vpv9woMA6d2Gldiu9Bnsvu9XMUY+Db9OR7x/ZBtT0=
-X-Received: by 2002:a05:600c:256:: with SMTP id 22mr2121841wmj.120.1604664689730;
- Fri, 06 Nov 2020 04:11:29 -0800 (PST)
+        id S1727215AbgKFMM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 07:12:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50458 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726317AbgKFMM4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 07:12:56 -0500
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97D9FC0613CF;
+        Fri,  6 Nov 2020 04:12:54 -0800 (PST)
+Received: by mail-io1-xd43.google.com with SMTP id n12so1238095ioc.2;
+        Fri, 06 Nov 2020 04:12:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cQdK8XuLAhEZwu9vpBmqHuUm6fgLRkW5CRR6Wloup+c=;
+        b=kbTkJbRbEI2NkQIQLvX1JU7Pz59Wxvq6uXC0hHqD5GL1dmBgeACksEWmJjSp7GbXNg
+         p3JC7OtQpJTi378mmC82sYFmo/WX1fQlYiIvcOLjGfxl21v8xTg9yDcF4ZoDFLOnHzbN
+         MXAlN1Bzdov7Y7Sylr9m+Y6SCukETaDaOTyEB3UEK5fxFPEO1Wi06SVUdLQR9kNcQAuF
+         KMU4ipd0fWL2C+X+sCdPwoCoiEPam2f3w946IyTuvhkSDi2VS/K3Nmxe6pFU4sLVKiSB
+         WslyId+GlnzMRHhk1wN1x9AazHMN02SWyOX1OcVGDK8sRzbwopwamBPj9E9m1jWk8BpR
+         T20w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cQdK8XuLAhEZwu9vpBmqHuUm6fgLRkW5CRR6Wloup+c=;
+        b=Gyx2IOniFvOKK8s+iAymkZlH567SYxzilEldsd3SE5gHOpXTo+AhOvz6OazFlHPMjn
+         a5PdtKyuYMGV4hsteYNSy8QQEa2Z0D9hgjFiZ4P3id0DcMcyfTjQgly0Ulks2Em0BDQg
+         JX3p6eFbV3LzUm6Lh7EBt7mGV9HLDhhpsxcMwFGKbZ8AUTCiA6ixmbbJICLLQQ25tF8F
+         S3Fm7LtOpuoIIjIv4SxlLkwD3VI0mWgRoo0Prhlhfgg6ViZHeg7dv57usPvteT3pvAX7
+         HrpcQ71k6AtEC/8MMYK+CA0CUuxpKvDlAddXbEaDG9pXaYblX/BLM4NDV6vAtp9q7yvx
+         7j3Q==
+X-Gm-Message-State: AOAM531sjgJy3kwlMQE2AQxcQC5tbvmJzX1Av/KHysAoU5Zjr0YUx3sL
+        xqrrAe6G68WZXYRaWht95Vg=
+X-Google-Smtp-Source: ABdhPJxY5OpN1N6GtrVI2dPb/9B7pIeBtQpRGLl3OhWRcp2TeV9n2nFuORa6vToMlvaUEKG4KAOGiw==
+X-Received: by 2002:a02:cc3c:: with SMTP id o28mr1226011jap.107.1604664773902;
+        Fri, 06 Nov 2020 04:12:53 -0800 (PST)
+Received: from aford-IdeaCentre-A730.lan ([2601:448:8400:9e8:8492:7d60:7e29:2784])
+        by smtp.gmail.com with ESMTPSA id 9sm1102935ila.61.2020.11.06.04.12.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Nov 2020 04:12:53 -0800 (PST)
+From:   Adam Ford <aford173@gmail.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     aford@beaconembedded.com, krzk@kernel.org,
+        Adam Ford <aford173@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH V2 1/3] dt-bindings: arm: fsl: Add beacon,imx8mn-beacon-kit
+Date:   Fri,  6 Nov 2020 06:12:35 -0600
+Message-Id: <20201106121238.1814427-1-aford173@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <1604649411-24886-1-git-send-email-wangqing@vivo.com> <fd46310f-0b4e-ac8b-b187-98438ee6bb60@ti.com>
-In-Reply-To: <fd46310f-0b4e-ac8b-b187-98438ee6bb60@ti.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Fri, 6 Nov 2020 13:11:13 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a0Dce3dYER0oJ+2FcV8UbJqCaAv7zSS6JZBdb6ewfnE7g@mail.gmail.com>
-Message-ID: <CAK8P3a0Dce3dYER0oJ+2FcV8UbJqCaAv7zSS6JZBdb6ewfnE7g@mail.gmail.com>
-Subject: Re: [PATCH] net/ethernet: update ret when ptp_clock is ERROR
-To:     Grygorii Strashko <grygorii.strashko@ti.com>
-Cc:     Wang Qing <wangqing@vivo.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Samuel Zou <zou_wei@huawei.com>,
-        Kurt Kanzenbach <kurt@linutronix.de>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Networking <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 6, 2020 at 12:35 PM Grygorii Strashko
-<grygorii.strashko@ti.com> wrote:
-> On 06/11/2020 09:56, Wang Qing wrote:
+Add beacon,imx8mn-beacon-kit to list of compatible options.
 
-> > +++ b/drivers/net/ethernet/ti/am65-cpts.c
-> > @@ -1001,8 +1001,7 @@ struct am65_cpts *am65_cpts_create(struct device *dev, void __iomem *regs,
->
-> there is
->         cpts->ptp_clock = ptp_clock_register(&cpts->ptp_info, cpts->dev);
->
->
-> >       if (IS_ERR_OR_NULL(cpts->ptp_clock)) {
->
-> And ptp_clock_register() can return NULL only if PTP support is disabled.
-> In which case, we should not even get here.
->
-> So, I'd propose to s/IS_ERR_OR_NULL/IS_ERR above,
-> and just assign ret = PTR_ERR(cpts->ptp_clock) here.
+Signed-off-by: Adam Ford <aford173@gmail.com>
+---
+V2:  New to series
 
-Right, using IS_ERR_OR_NULL() is almost ever a mistake, either
-from misunderstanding the interface, or from a badly designed
-interface that needs to be changed.
+ Documentation/devicetree/bindings/arm/fsl.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-     Arnd
+diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
+index 85fb24da4a02..808e001aa81a 100644
+--- a/Documentation/devicetree/bindings/arm/fsl.yaml
++++ b/Documentation/devicetree/bindings/arm/fsl.yaml
+@@ -659,6 +659,7 @@ properties:
+         items:
+           - enum:
+               - beacon,imx8mm-beacon-kit  # i.MX8MM Beacon Development Kit
++              - beacon,imx8mn-beacon-kit  # i.MX8MM Beacon Development Kit
+               - fsl,imx8mm-ddr4-evk       # i.MX8MM DDR4 EVK Board
+               - fsl,imx8mm-evk            # i.MX8MM EVK Board
+               - kontron,imx8mm-n801x-som  # i.MX8MM Kontron SL (N801X) SOM
+-- 
+2.25.1
+
