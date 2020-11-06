@@ -2,71 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8094E2A8B5E
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 01:22:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 718B32A8B60
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 01:24:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732736AbgKFAWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 19:22:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52622 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731860AbgKFAWM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 19:22:12 -0500
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AF9CC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 16:22:12 -0800 (PST)
-Received: by mail-ej1-x644.google.com with SMTP id 7so5271411ejm.0
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 16:22:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=nYZVXj5j3dvzoYoczULdt5Gu42FVrKmigVBaNtr1wR0=;
-        b=N/UwK/CPJIRwfTtaibT0oiw8hKldfVPtFEI/+uAxNViGUmJ0r7qIq+twqONn+aKW9Y
-         ZFLT9jGuiBhbye3Ps6usTmpjglPO/swpf2C1FGAGpL0KxfYnw5hjHD6CBvLPGhS28v3F
-         3QDNhp1a4ujJ/uW4KXmQQrnxl92LG3or+lzTPn9BFz7g+ydV0eNywCfZD12nZniUQl4D
-         toQmWG7MX3ZU/m8UXVem9EhJrI1LNHo8jOML7X2KkfZ4TKq4rhu5OAmwY7xr6fAV9ycz
-         ZbxiKtI6wAf1zwBLJja0SqSqVXTTyzLrZnfmHcC7wTsDkUjgpd5lMcfB4D5uDNeBLx3y
-         3mrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=nYZVXj5j3dvzoYoczULdt5Gu42FVrKmigVBaNtr1wR0=;
-        b=OWoDxsOMyf/H7NnB2ygEAkhmqSrFgCR+HoabLXrRFm/7HKxBs8nSfKKzjHMW1dP6WA
-         7oKUkceNWJGiVQ1tf7y+9AvFfbhaxZj7U25QkM+vy5PgalOYSSoXq++M52M1cXrgF3Eu
-         lDS5eMQASt9dAEKZ8k6+xtqe5r5dyUePFa577ih/19bikv1QsmvXutvg+fLyjh68sVoG
-         HbykJXpVgKJbNV1uNitpIwomOTpkdAFvASt/EFZSTCiq5fQvHz+1qJKNCoU7XOQ6Agiz
-         KuqV0/EzZ0Jd3Er4pvismWFpeZz57FdLejiNwrXq53DxRQiVCdCwLUNTxPZRdf5xNqN3
-         j9aw==
-X-Gm-Message-State: AOAM530WOfYPlStB/E25RyNH4eh9ykMDtzfG+5Iw0naTL60xilb9k0S9
-        VAuffZXT9KZP+yGTI4kmKHSn/JSoE+67jCJ35k0=
-X-Google-Smtp-Source: ABdhPJyIqfrPNM+u6nYDXeIKxrc0rwVplD2afK2PIwIVH99NE9/UOL22g4FSr30ONqESgfTjvfXwOW6YjONhJngvKyM=
-X-Received: by 2002:a17:906:4dc2:: with SMTP id f2mr4970380ejw.446.1604622131059;
- Thu, 05 Nov 2020 16:22:11 -0800 (PST)
+        id S1732811AbgKFAYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 19:24:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33642 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732712AbgKFAYA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 19:24:00 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9BD772078E;
+        Fri,  6 Nov 2020 00:23:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604622239;
+        bh=HiaBi8UGQLhNe24ZtgZFm08RS+emATH8FZ9vy0jj1N8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=wX6pOEJb0/UOXJ6l2Z2yGOvBoErmSRAujX2InU0Q7L2k4RNFtN0QF7g53+cJ0HkgI
+         3NWgIPjuUn2Sy+BTt5AONf3S4f44ZlvzhU6tmPYMbNNUc9cdSBsDDPMybwjCy416ZM
+         QtE26RHdJEqMLF2yphi2KlmVN5zGNRWuT4OvWG78=
+Date:   Thu, 5 Nov 2020 16:23:57 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Saeed Mahameed <saeed@kernel.org>
+Cc:     George Cherian <gcherian@marvell.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jiri Pirko <jiri@nvidia.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
+        Linu Cherian <lcherian@marvell.com>,
+        Geethasowjanya Akula <gakula@marvell.com>,
+        "masahiroy@kernel.org" <masahiroy@kernel.org>,
+        "willemdebruijn.kernel@gmail.com" <willemdebruijn.kernel@gmail.com>
+Subject: Re: [PATCH v2 net-next 3/3] octeontx2-af: Add devlink health
+ reporters for NIX
+Message-ID: <20201105162357.3c380467@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <1b96abb1da9bca4d9f962babad9a0724c1188437.camel@kernel.org>
+References: <BYAPR18MB2679EC3507BD90B93B37A3F8C5EE0@BYAPR18MB2679.namprd18.prod.outlook.com>
+        <20201105090724.761a033d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <011c4d4e2227df793f615b7638165c266763e24a.camel@kernel.org>
+        <20201105124204.4dbea042@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <1b96abb1da9bca4d9f962babad9a0724c1188437.camel@kernel.org>
 MIME-Version: 1.0
-Received: by 2002:a17:907:2165:0:0:0:0 with HTTP; Thu, 5 Nov 2020 16:22:10
- -0800 (PST)
-Reply-To: miss.favour150@yahoo.com
-From:   "Miss.favour" <ahmedabdallh123321@gmail.com>
-Date:   Fri, 6 Nov 2020 00:22:10 +0000
-Message-ID: <CAB6rh+B_Sht6EawBx3Pf7hxKkv96=9-JfYQ1JR=j+HNFBXJy3g@mail.gmail.com>
-Subject: OK
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Thu, 05 Nov 2020 15:52:32 -0800 Saeed Mahameed wrote:
+> On Thu, 2020-11-05 at 12:42 -0800, Jakub Kicinski wrote:
+> > On Thu, 05 Nov 2020 11:23:54 -0800 Saeed Mahameed wrote:  
+> > > If you report an error without recovering, devlink health will
+> > > report a
+> > > bad device state
+> > > 
+> > > $ ./devlink health
+> > >    pci/0002:01:00.0:
+> > >      reporter npa
+> > >        state error error 1 recover 0  
+> > 
+> > Actually, the counter in the driver is unnecessary, right? Devlink
+> > counts errors.
+> 
+> if you mean error and recover counters, then yes. they are managed by
+> devlink health
+> 
+> every call to dl-health-report will do:
+> 
+> devlink_health_report(reporter, err_ctx, msg)
+> {
+>       reproter.error++;
+> 
+>       devlink_trigger_event(reporter, msg);
+> 
+>       reporter.dump(err_ctx, msg);
+>       reporter.diag(err_ctx);
+> 
+>       if (!reporter.recover(err_ctx))
+>              reporter.recover++;
+> }
+> 
+> so dl-health reports without a recover op will confuse the user if user
+> sees error count > recover count.
+> 
+> error count should only be grater than recover count when recover
+> procedure fails which now will indicate the device is not in a healthy
+> state.
 
-I came across your email address through the google sites and I have
-much feelings over it. Apologies for my surprising email to you.
-Penpal friendship doesn't think distance,age or color. Friendship is
-hearing each other voice from the heart. A friend is a gift from God
-and someone who cares as much as you do. I'm Miss Favour, I want to be
-your friend. I'll be glad to read from you and I will reply with my
-picture as we get to know better.
+Good point, as is the internal devlink counter mismatch looks pretty
+strange.
 
-Best regards
+> also i want to clarify one small note about devlink dump.
+> 
+> devlink health dump semantics:
+> on devlink health dump, the devlink health will check if previous dump
+> exists and will just return it without actually calling the driver, if
+> not then it will call the driver to perform a new dump and will cache
+> it.
+> 
+> user has to explicitly clear the devlink health dump of that reporter
+> in order to allow for newer dump to get generated.
+> 
+> this is done this way because we want the driver to store the dump of
+> the previously reported errors at the moment the erorrs are reported by
+> driver, so when a user issue  a dump command the dump of the previous
+> error will be reported to user form memory without the need to access
+> driver/hw who might be in a bad state.
+> 
+> so this is why using devlink dump for reporting counters doesn't really
+> work, it will only report the first time the counters are accessed via
+> devlink health dump, after that it will report the same cached values
+> over and over until the user clears it up.
 
-Miss Favour.
+Agreed, if only counters are reported driver should rely on the
+devlink counters. Dump contents are for context of the event.
+
+> > > So you will need to implement an empty recover op.
+> > > so if these events are informational only and they don't indicate
+> > > device health issues, why would you report them via devlink health
+> > > ?  
+> > 
+> > I see devlink health reporters a way of collecting errors reports
+> > which
+> > for the most part are just shared with the vendor. IOW firmware (or
+> > hardware) bugs.
+> > 
+> > Obviously as you say without recover and additional context in the
+> > report the value is quite diminished. But _if_ these are indeed
+> > "report
+> > me to the vendor" kind of events then at least they should use our
+> > current mechanics for such reports - which is dl-health.
+> > 
+> > Without knowing what these events are it's quite hard to tell if
+> > devlink health is an overkill or counter is sufficient.
+> > 
+> > Either way - printing these to the logs is definitely the worst
+> > choice
+> > :)  
+> 
+> Sure, I don't mind using devlink health for dump only, I don't really
+> have strong feelings against this, they can always extend it in the
+> future.
+> 
+> it just doesn't make sense to me to have it mainly used for dumping
+> counters and without using devlik helath utilities, like events,
+> reports and recover.
+> 
+> so maybe Sunil et al. could polish this patchset and provide more
+> devlink health support, like diagnose for these errors, dump HW
+> information and contexts related to these errors so they could debug
+> root causes, etc .. 
+> Then the use for dl health in this series can be truly justified.
+
+That'd indeed be optimal.
