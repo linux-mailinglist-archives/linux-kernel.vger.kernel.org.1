@@ -2,179 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5574A2A9F47
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 22:43:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BC8D2A9F49
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 22:44:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728315AbgKFVmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 16:42:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55716 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728154AbgKFVmc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 16:42:32 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCED2C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 13:42:31 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id u4so1957259pgr.9
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 13:42:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=OXc4atPpFOTrcSg081/4sIuZT64NxkfFUx9nAZMphqM=;
-        b=JHQA2x7RUul/WbvzBh+NCAC2SubSSIltNd2gKAlpOnmoLwaVd7Zb/095OFXFBGVrbm
-         NxexypIO3UYGGZ8mZc31LTSarPk/aXdsZau0KFB3EeHvoejSdv2KU+JtOde3IPhWkzxJ
-         J12bT5ki2uydGV5jj5WAZ7p11QOhuvNEWYz+ulw7Vyco2tEsHugl9I+2jchIIyo0u7lP
-         VMUCjVewHVxT2zR2ynvfyRBdUJlnPEnPvsmIaqxiQs1CPk5dwz81snasmnU2Kv6L9sTJ
-         t8xsNllVuuW7bl29u7ULwJ9QGtnTatfa3eX+VotI9+0qs83jX26m/61hipYjrnb2GAeY
-         wfLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=OXc4atPpFOTrcSg081/4sIuZT64NxkfFUx9nAZMphqM=;
-        b=GY498aU7HcgSf+9s1yqd0ZPsV34NDkWB9B2PZDF/Z2aJjZ2ybTYHr9wRnBB+2GDxkn
-         VovKhmgQwNjMFlMF80mHO/gKzNizw90ClMAXdSRgf0gRpb2p805HlxkGHl95uRcJMh01
-         SsqCHZ1MCe654CTtuGKoH/nMYGaQ18uwJOV9nQp1kenMDwyY5BtneNUuAu5gyUqZsiMP
-         GGA3d9hXL+JKax4QrFDOUo8XZ4Thq7TrCR/CrcriKTQZ1vgnQTXzjdrIxYbmaYrzOuGa
-         4FF8ZpeAFwMHAb23+FkISQubws8EmQFXuYIxS+U8y4lxry0MviUMhLmjRnVTtALabt+o
-         fhYg==
-X-Gm-Message-State: AOAM533+827AfpTeeyDU71oOziE6TJBd1x6Ltc3wpLRNUNPzbng+/Z1K
-        gVG3OB8oyvc+iAc4FJqOnDvBXQ==
-X-Google-Smtp-Source: ABdhPJxcsqXEXVbFt07FBSIIOzpWnolNscd/0h6xqo027RWz4u9s4UdUkMFghcxXXpxQwaKlnvXAsw==
-X-Received: by 2002:a17:90a:c201:: with SMTP id e1mr1600872pjt.16.1604698951256;
-        Fri, 06 Nov 2020 13:42:31 -0800 (PST)
-Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id b29sm3153149pff.194.2020.11.06.13.42.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Nov 2020 13:42:30 -0800 (PST)
-Date:   Fri, 6 Nov 2020 14:42:28 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, mike.leach@linaro.org,
-        coresight@lists.linaro.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 21/26] coresight: etm4x: Use TRCDEVARCH for component
- discovery
-Message-ID: <20201106214228.GE3299843@xps15>
-References: <20201028220945.3826358-1-suzuki.poulose@arm.com>
- <20201028220945.3826358-23-suzuki.poulose@arm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201028220945.3826358-23-suzuki.poulose@arm.com>
+        id S1728517AbgKFVoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 16:44:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59138 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728193AbgKFVoF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 16:44:05 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D5CC52087E;
+        Fri,  6 Nov 2020 21:44:04 +0000 (UTC)
+Received: from rostedt by gandalf.local.home with local (Exim 4.94)
+        (envelope-from <rostedt@goodmis.org>)
+        id 1kb9Wd-007ix5-3Q; Fri, 06 Nov 2020 16:44:03 -0500
+Message-ID: <20201106214234.618790276@goodmis.org>
+User-Agent: quilt/0.66
+Date:   Fri, 06 Nov 2020 16:42:34 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Subject: [PATCH 0/3 v4] ftrace: Add access to function arguments for all callbacks
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 10:09:40PM +0000, Suzuki K Poulose wrote:
-> We have been using TRCIDR1 for detecting the ETM version. This
-> is in preparation for the future IP support.
-> 
-> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> ---
->  .../coresight/coresight-etm4x-core.c          | 46 +++++++++----------
->  1 file changed, 23 insertions(+), 23 deletions(-)
 
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+This is something I wanted to implement a long time ago, but held off until
+there was a good reason to do so. Now it appears that having access to the
+arguments of the function by default is very useful. As a bonus, because
+arguments must be saved regardless before calling a callback, because they
+need to be restored before returning back to the start of the traced
+function, there's not much work to do to have them always be there for
+normal function callbacks.
 
-I'm out of time for today, I will resume on Monday.
+The basic idea is that if CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS is set, then
+all callbacks registered to ftrace can use the regs parameter for the stack
+and arguments (kernel_stack_pointer(regs), regs_get_kernel_argument(regs, n)),
+without the need to set REGS that causes overhead by saving all registers as
+REGS simulates a breakpoint.
 
-Thanks,
-Mathieu
+This could be extended to move the REGS portion to kprobes itself, and
+remove the SAVE_REGS flag completely, but for now, kprobes still uses the
+full SAVE_REGS support.
 
-> 
-> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> index 4ef47a2946a4..e36bc1c722c7 100644
-> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> @@ -141,18 +141,6 @@ static void etm4_cs_unlock(struct etmv4_drvdata *drvdata,
->  		CS_UNLOCK(csa->base);
->  }
->  
-> -static bool etm4_arch_supported(u8 arch)
-> -{
-> -	/* Mask out the minor version number */
-> -	switch (arch & 0xf0) {
-> -	case ETM_ARCH_V4:
-> -		break;
-> -	default:
-> -		return false;
-> -	}
-> -	return true;
-> -}
-> -
->  static int etm4_cpu_id(struct coresight_device *csdev)
->  {
->  	struct etmv4_drvdata *drvdata = dev_get_drvdata(csdev->dev.parent);
-> @@ -677,6 +665,26 @@ static const struct coresight_ops etm4_cs_ops = {
->  static bool etm_init_iomem_access(struct etmv4_drvdata *drvdata,
->  				  struct csdev_access *csa)
->  {
-> +	u32 devarch = readl_relaxed(drvdata->base + TRCDEVARCH);
-> +	u32 idr1 = readl_relaxed(drvdata->base + TRCIDR1);
-> +
-> +	/*
-> +	 * All ETMs must implement TRCDEVARCH to indicate that
-> +	 * the component is an ETMv4. To support any broken
-> +	 * implementations we fall back to TRCIDR1 check, which
-> +	 * is not really reliable.
-> +	 */
-> +	if ((devarch & ETM_DEVARCH_ID_MASK) == ETM_DEVARCH_ETMv4x_ARCH) {
-> +		drvdata->arch = etm_devarch_to_arch(devarch);
-> +	} else {
-> +		pr_warn("CPU%d: ETM4x incompatible TRCDEVARCH: %x, falling back to TRCIDR1\n",
-> +			smp_processor_id(), devarch);
-> +
-> +		if (ETM_TRCIDR1_ARCH_MAJOR(idr1) != ETM_TRCIDR1_ARCH_ETMv4)
-> +			return false;
-> +		drvdata->arch = etm_trcidr_to_arch(idr1);
-> +	}
-> +
->  	*csa = CSDEV_ACCESS_IOMEM(drvdata->base);
->  	return true;
->  }
-> @@ -693,7 +701,6 @@ static bool etm_init_csdev_access(struct etmv4_drvdata *drvdata,
->  static void etm4_init_arch_data(void *info)
->  {
->  	u32 etmidr0;
-> -	u32 etmidr1;
->  	u32 etmidr2;
->  	u32 etmidr3;
->  	u32 etmidr4;
-> @@ -758,14 +765,6 @@ static void etm4_init_arch_data(void *info)
->  	/* TSSIZE, bits[28:24] Global timestamp size field */
->  	drvdata->ts_size = BMVAL(etmidr0, 24, 28);
->  
-> -	/* base architecture of trace unit */
-> -	etmidr1 = etm4x_relaxed_read32(csa, TRCIDR1);
-> -	/*
-> -	 * TRCARCHMIN, bits[7:4] architecture the minor version number
-> -	 * TRCARCHMAJ, bits[11:8] architecture major versin number
-> -	 */
-> -	drvdata->arch = BMVAL(etmidr1, 4, 11);
-> -
->  	/* maximum size of resources */
->  	etmidr2 = etm4x_relaxed_read32(csa, TRCIDR2);
->  	/* CIDSIZE, bits[9:5] Indicates the Context ID size */
-> @@ -1602,7 +1601,7 @@ static int etm4_probe(struct amba_device *adev, const struct amba_id *id)
->  				etm4_init_arch_data,  &init_arg, 1))
->  		dev_err(dev, "ETM arch init failed\n");
->  
-> -	if (etm4_arch_supported(drvdata->arch) == false)
-> +	if (!drvdata->arch)
->  		return -EINVAL;
->  
->  	etm4_init_trace_id(drvdata);
-> @@ -1634,7 +1633,8 @@ static int etm4_probe(struct amba_device *adev, const struct amba_id *id)
->  
->  	pm_runtime_put(&adev->dev);
->  	dev_info(&drvdata->csdev->dev, "CPU%d: ETM v%d.%d initialized\n",
-> -		 drvdata->cpu, drvdata->arch >> 4, drvdata->arch & 0xf);
-> +		 drvdata->cpu, ETM_ARCH_MAJOR_VERSION(drvdata->arch),
-> +		 ETM_ARCH_MINOR_VERSION(drvdata->arch));
->  
->  	if (boot_enable) {
->  		coresight_enable(drvdata->csdev);
-> -- 
-> 2.24.1
-> 
+The last patch extends the WITH_ARGS to allow default function tracing to
+modify the instruction pointer, where livepatching for x86 no longer needs
+to save all registers.
+
+The idea of this approach is to give enough information to a callback that
+it could retrieve all arguments, which includes the stack pointer and
+instruction pointer.
+
+This can also be extended to modify the function graph tracer to use the
+function tracer instead of having a separate trampoline.
+
+Changes since v3:
+  Have live patching depend on HAVE_DYNAMIC_FTRACE_WITH_REGS *or*
+  HAVE_DYNAMIC_FTRACE_WITH_ARGS
+
+
+Steven Rostedt (VMware) (3):
+      ftrace: Have the callbacks receive a struct ftrace_regs instead of pt_regs
+      ftrace/x86: Allow for arguments to be passed in to ftrace_regs by default
+      livepatch: Use the default ftrace_ops instead of REGS when ARGS is available
+
+----
+ arch/powerpc/include/asm/livepatch.h |  4 +++-
+ arch/s390/include/asm/livepatch.h    |  5 ++++-
+ arch/x86/Kconfig                     |  1 +
+ arch/x86/include/asm/ftrace.h        | 18 ++++++++++++++++++
+ arch/x86/include/asm/livepatch.h     |  4 ++--
+ arch/x86/kernel/ftrace_64.S          | 15 +++++++++++++--
+ arch/x86/kernel/kprobes/ftrace.c     |  3 ++-
+ include/linux/ftrace.h               | 28 ++++++++++++++++++++++++++--
+ include/linux/kprobes.h              |  2 +-
+ kernel/livepatch/Kconfig             |  2 +-
+ kernel/livepatch/patch.c             | 10 ++++++----
+ kernel/trace/Kconfig                 |  9 +++++++++
+ kernel/trace/ftrace.c                | 27 +++++++++++++++------------
+ kernel/trace/trace_event_perf.c      |  2 +-
+ kernel/trace/trace_functions.c       |  9 ++++-----
+ kernel/trace/trace_irqsoff.c         |  2 +-
+ kernel/trace/trace_sched_wakeup.c    |  2 +-
+ kernel/trace/trace_selftest.c        | 20 +++++++++++---------
+ kernel/trace/trace_stack.c           |  2 +-
+ 19 files changed, 120 insertions(+), 45 deletions(-)
