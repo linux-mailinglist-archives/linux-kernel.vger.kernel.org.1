@@ -2,51 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13DE02A8C36
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 02:42:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 884CF2A8C4F
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 02:52:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733135AbgKFBmo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 20:42:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59046 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733080AbgKFBmm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 20:42:42 -0500
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 276D6206FB;
-        Fri,  6 Nov 2020 01:42:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604626961;
-        bh=CMorIKRDiwIPukaiFQnlTZyLkb1PPC/nuytIVJwocOU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=J0EHrmarrLM/f9kAZKOxRhO94iXvMilPG08DNhCv3zg0eXCiUT+ilmZcZqubpfnSD
-         Li8s+zosiPR8R5VzOHd1WMiMz/zj24H8sPJZruIFQ0KYUDBl4tWLlxprZSHiLgCFTY
-         tlqxbYm+ht9A4R8g6Z79kJ+n72IWfY681HMGAaMs=
-Date:   Thu, 5 Nov 2020 17:42:40 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Pavana Sharma <pavana.sharma@digi.com>
-Cc:     andrew@lunn.ch, ashkan.boldaji@digi.com, davem@davemloft.net,
-        f.fainelli@gmail.com, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, marek.behun@nic.cz,
-        netdev@vger.kernel.org, vivien.didelot@gmail.com
-Subject: Re: [PATCH v8 1/4] dt-bindings: net: Add 5GBASER phy interface mode
-Message-ID: <20201105174240.0bf89caf@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <57a63f8896068d9628b334e32ccbb49cd63272fe.1604388359.git.pavana.sharma@digi.com>
-References: <cover.1604388359.git.pavana.sharma@digi.com>
-        <57a63f8896068d9628b334e32ccbb49cd63272fe.1604388359.git.pavana.sharma@digi.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1732772AbgKFBwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 20:52:22 -0500
+Received: from m17618.mail.qiye.163.com ([59.111.176.18]:9123 "EHLO
+        m17618.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730414AbgKFBwW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 20:52:22 -0500
+X-Greylist: delayed 350 seconds by postgrey-1.27 at vger.kernel.org; Thu, 05 Nov 2020 20:52:22 EST
+Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.231])
+        by m17618.mail.qiye.163.com (Hmail) with ESMTPA id 4D4C64E177F;
+        Fri,  6 Nov 2020 09:46:29 +0800 (CST)
+From:   Wang Qing <wangqing@vivo.com>
+To:     Hartley Sweeten <hsweeten@visionengravers.com>,
+        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Wang Qing <wangqing@vivo.com>
+Subject: [PATCH] arm: Add clk_get_rate input parameter null check
+Date:   Fri,  6 Nov 2020 09:46:15 +0800
+Message-Id: <1604627175-16710-1-git-send-email-wangqing@vivo.com>
+X-Mailer: git-send-email 2.7.4
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZQ0hKSk5PSx1OGBhCVkpNS09NSUxKQ0JNSk5VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKQ1VLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6OiI6Lxw4Dz8oCR0NEAw#TRQo
+        SChPC01VSlVKTUtPTUlMSkJLS0hOVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
+        SU5KVUxPVUlISllXWQgBWUFKTk9ONwY+
+X-HM-Tid: 0a759b3bcf079376kuws4d4c64e177f
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue,  3 Nov 2020 18:49:02 +1000 Pavana Sharma wrote:
-> Add 5gbase-r PHY interface mode.
-> 
-> Signed-off-by: Pavana Sharma <pavana.sharma@digi.com>
+The input parameter of clk_get_rate() is checked with IS_ERR(),
+so here we need to check null on clk.
 
-Please always CC device tree maintainers and list on patches which
-touch bindings. Even if there is no need for review Rob has a bot
-which will catch any formatting errors.
+Signed-off-by: Wang Qing <wangqing@vivo.com>
+---
+ arch/arm/mach-ep93xx/clock.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/arch/arm/mach-ep93xx/clock.c b/arch/arm/mach-ep93xx/clock.c
+index 2810eb5..4313b2f
+--- a/arch/arm/mach-ep93xx/clock.c
++++ b/arch/arm/mach-ep93xx/clock.c
+@@ -321,6 +321,9 @@ static unsigned long get_uart_rate(struct clk *clk)
+ 
+ unsigned long clk_get_rate(struct clk *clk)
+ {
++	if (!clk)
++		return 0;
++
+ 	if (clk->get_rate)
+ 		return clk->get_rate(clk);
+ 
+-- 
+2.7.4
+
