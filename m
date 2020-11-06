@@ -2,124 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20ED72A9DD2
+	by mail.lfdr.de (Postfix) with ESMTP id F0C492A9DD3
 	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 20:17:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728174AbgKFTRw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 14:17:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33228 "EHLO
+        id S1728186AbgKFTRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 14:17:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728001AbgKFTRv (ORCPT
+        with ESMTP id S1728001AbgKFTRx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 14:17:51 -0500
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E41ECC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 11:17:50 -0800 (PST)
-Received: by mail-pl1-x642.google.com with SMTP id z1so1091654plo.12
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 11:17:50 -0800 (PST)
+        Fri, 6 Nov 2020 14:17:53 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5163CC0613D2
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 11:17:53 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id o129so2264262pfb.1
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 11:17:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=broadcom.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=yTSBMnvTUdNU/En2dMzfLQm1xdFO1GNYopwkwqFqkPU=;
-        b=aL7zLPcNNpSFKIvIBZhHTLgcEIEdWXyOzB0mMtlzgnZa/SP9wTyXsWv/WP//Nvv4Z9
-         xAAvSAwr5EuAa7KT9wU1lcYPKuAs7VqyH8PMzzedLtOuIBRU7yyZdC2lv0ZLb31CCbtm
-         bQsSdlJAIDdQHk4WzBZBb73KRBiUfFgx1qF4w=
+        bh=sVlHfuRK5vdpFjt7Cilz/nXKfFAc7m+Jhr0T6bgwILk=;
+        b=aEcal1ISZyp19jge5tTordUcnoRIfguD/lSY8C4b59mH+85aS7xPsIAwua5rK7GDW3
+         8E4OwzRlQjUpIZRUY27qBVgPWvbQpfLboZrOJK/xLcwFj64WvUP01l/1Enkiqdf9z6QW
+         vy3nYqJLpVwEJnBD4nEpqERz7tIdtZ5XqYZww=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=yTSBMnvTUdNU/En2dMzfLQm1xdFO1GNYopwkwqFqkPU=;
-        b=ExJ+EyhErTarlXsq7CAra/bpzxw+3E3Fi1dfgTNC3zUl1GAeC9QAwubMR3dbwkfGhD
-         JGX+kOQ2VeKfk3P1NMcE10U7rrzPt5z15y8BoHv2+iZKwL9945gzFITfxdwHcxXTk7md
-         PI0M+DrpNzF7hb3F8uzkC50YP1Njw15+ZY8QeXEaDVRwOaJcBjpLMTD0eCmqejXE3Wt7
-         ZCgGuXwgc6QgG3PIclh43f4rVyvWDN7cag6cRilt/shd/q516QJU7e+HPpBzZSWxWkIj
-         jWalG3cjOUmutNBfoQCINObFByiG9Q7oJzhaqzUqYo9coZi2MM8Hj1Mt8F7bGj7/YB1y
-         Ukwg==
-X-Gm-Message-State: AOAM532qwaDKPZypEejnk1RbWs7YP8LVLBYvrgZ9XuthEFXyjfxuknxw
-        GhbbN/IZaybeL11EJU6Ig03h+w==
-X-Google-Smtp-Source: ABdhPJxeKR2Hw9OCb+F3nOOyw27IkjXvX7yIEVEMik4AjM7TAoA4Xi9LVht/QGqVqIHjVO9/sQeuvQ==
-X-Received: by 2002:a17:902:748a:b029:d6:9d17:44f3 with SMTP id h10-20020a170902748ab02900d69d1744f3mr2977960pll.45.1604690270429;
-        Fri, 06 Nov 2020 11:17:50 -0800 (PST)
+        bh=sVlHfuRK5vdpFjt7Cilz/nXKfFAc7m+Jhr0T6bgwILk=;
+        b=kE12I2KMkdCgy+X1td0sybvMTQehYJ1/cByd6SSFcG3WAqZjZ/u0c8RFlkjxrcspLC
+         fr7+AcuFuDeTCc7fqHvZWjmIpqQzbiuJT3+7WnFp945ZLSqrEaEJqtcIqM6mH9RUk9z7
+         bU+l7bTrw0qb9q7jDwrEZ3fqRGcw0X2nTl1VrY0lH14kyDi6abtWQf++4f/LSFhmXb2j
+         lU1FiFUjZuzy99nGTsOiaSUpFHCSiVpugoDJ4RF2JLlflPN0YbnRiE3gy0GY1U4oOuhe
+         4IMY+1h2jQTgFa8Zc03Ftk9QdqTPBSvysmCpUao/k8Ij5dek6C47KyrCevn8s5cJjYFb
+         uqyQ==
+X-Gm-Message-State: AOAM5311ckTGom4i2N9+uAjyQPMNodLDm4HOtTBxY3evgaXb4AsLqwDu
+        OsdkcDs48XvVz/DPiHgZAHrQcw==
+X-Google-Smtp-Source: ABdhPJyzbcHhSbYDvyZDY3U9jPJ5MNABEP4GIw3YZ/BZKUm2DinlbRt/fazoNveCP4Mi0sFXh39mwQ==
+X-Received: by 2002:aa7:9d81:0:b029:18b:4489:1e59 with SMTP id f1-20020aa79d810000b029018b44891e59mr3343227pfq.62.1604690272738;
+        Fri, 06 Nov 2020 11:17:52 -0800 (PST)
 Received: from stbsrv-and-01.and.broadcom.net ([192.19.231.250])
-        by smtp.gmail.com with ESMTPSA id m3sm3302207pjv.52.2020.11.06.11.17.48
+        by smtp.gmail.com with ESMTPSA id m3sm3302207pjv.52.2020.11.06.11.17.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Nov 2020 11:17:49 -0800 (PST)
+        Fri, 06 Nov 2020 11:17:52 -0800 (PST)
 From:   Jim Quinlan <james.quinlan@broadcom.com>
 To:     Philipp Zabel <p.zabel@pengutronix.de>,
         Hans de Goede <hdegoede@redhat.com>,
         Jens Axboe <axboe@kernel.dk>,
         bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        linux-arm-kernel@lists.infradead.org (moderated list:BROADCOM BCM7XXX
-        ARM ARCHITECTURE), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2 1/2] reset: brcmstb rescal: implement {de}assert() instead of reset()
-Date:   Fri,  6 Nov 2020 14:17:42 -0500
-Message-Id: <20201106191743.40457-2-james.quinlan@broadcom.com>
+Cc:     Jim Quinlan <jquinlan@broadcom.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-ide@vger.kernel.org (open list:LIBATA SUBSYSTEM (Serial and
+        Parallel ATA drivers)), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2 2/2] ata: ahci_brcm: Fix use of BCM7216 reset controller
+Date:   Fri,  6 Nov 2020 14:17:43 -0500
+Message-Id: <20201106191743.40457-3-james.quinlan@broadcom.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201106191743.40457-1-james.quinlan@broadcom.com>
 References: <20201106191743.40457-1-james.quinlan@broadcom.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000008fb27505b3751152"
+        boundary="000000000000b3912205b3751118"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---0000000000008fb27505b3751152
+--000000000000b3912205b3751118
 
-Before, only control_reset() was implemented.  However, the reset core only
-invokes control_reset() once in its lifetime.  Because we need it to invoke
-control_reset() again after resume out of S2 or S3, we have switched to
-putting the reset functionality into the control_deassert() method and
-having an empty control_assert() method.
+From: Jim Quinlan <jquinlan@broadcom.com>
 
-Signed-off-by: Jim Quinlan <james.quinlan@broadcom.com>
+This driver may use one of two resets controllers.  Keep them in separate
+variables to keep things simple.  The reset controller "rescal" is shared
+between the AHCI driver and the PCIe driver for the BrcmSTB 7216 chip.  Use
+devm_reset_control_get_optional_shared() to handle this sharing.
+
+Fixes: 272ecd60a636 ("ata: ahci_brcm: BCM7216 reset is self de-asserting")
+Fixes: c345ec6a50e9 ("ata: ahci_brcm: Support BCM7216 reset controller name")
+Signed-off-by: Jim Quinlan <jquinlan@broadcom.com>
 ---
- drivers/reset/reset-brcmstb-rescal.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+ drivers/ata/ahci_brcm.c | 46 ++++++++++++++++++++---------------------
+ 1 file changed, 23 insertions(+), 23 deletions(-)
 
-diff --git a/drivers/reset/reset-brcmstb-rescal.c b/drivers/reset/reset-brcmstb-rescal.c
-index b6f074d6a65f..1f54ae4f91fe 100644
---- a/drivers/reset/reset-brcmstb-rescal.c
-+++ b/drivers/reset/reset-brcmstb-rescal.c
-@@ -20,8 +20,8 @@ struct brcm_rescal_reset {
- 	struct reset_controller_dev rcdev;
+diff --git a/drivers/ata/ahci_brcm.c b/drivers/ata/ahci_brcm.c
+index 49f7acbfcf01..58eae075d790 100644
+--- a/drivers/ata/ahci_brcm.c
++++ b/drivers/ata/ahci_brcm.c
+@@ -86,7 +86,8 @@ struct brcm_ahci_priv {
+ 	u32 port_mask;
+ 	u32 quirks;
+ 	enum brcm_ahci_version version;
+-	struct reset_control *rcdev;
++	struct reset_control *rcdev_rescal;
++	struct reset_control *rcdev_ahci;
  };
  
--static int brcm_rescal_reset_set(struct reset_controller_dev *rcdev,
--				 unsigned long id)
-+static int brcm_rescal_reset_deassert(struct reset_controller_dev *rcdev,
-+				unsigned long id)
+ static inline u32 brcm_sata_readreg(void __iomem *addr)
+@@ -352,8 +353,8 @@ static int brcm_ahci_suspend(struct device *dev)
+ 	else
+ 		ret = 0;
+ 
+-	if (priv->version != BRCM_SATA_BCM7216)
+-		reset_control_assert(priv->rcdev);
++	reset_control_assert(priv->rcdev_ahci);
++	reset_control_assert(priv->rcdev_rescal);
+ 
+ 	return ret;
+ }
+@@ -365,10 +366,10 @@ static int __maybe_unused brcm_ahci_resume(struct device *dev)
+ 	struct brcm_ahci_priv *priv = hpriv->plat_data;
+ 	int ret = 0;
+ 
+-	if (priv->version == BRCM_SATA_BCM7216)
+-		ret = reset_control_reset(priv->rcdev);
+-	else
+-		ret = reset_control_deassert(priv->rcdev);
++	ret = reset_control_deassert(priv->rcdev_ahci);
++	if (ret)
++		return ret;
++	ret = reset_control_deassert(priv->rcdev_rescal);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -428,7 +429,6 @@ static int brcm_ahci_probe(struct platform_device *pdev)
  {
- 	struct brcm_rescal_reset *data =
- 		container_of(rcdev, struct brcm_rescal_reset, rcdev);
-@@ -52,6 +52,12 @@ static int brcm_rescal_reset_set(struct reset_controller_dev *rcdev,
- 	return 0;
+ 	const struct of_device_id *of_id;
+ 	struct device *dev = &pdev->dev;
+-	const char *reset_name = NULL;
+ 	struct brcm_ahci_priv *priv;
+ 	struct ahci_host_priv *hpriv;
+ 	struct resource *res;
+@@ -450,15 +450,15 @@ static int brcm_ahci_probe(struct platform_device *pdev)
+ 	if (IS_ERR(priv->top_ctrl))
+ 		return PTR_ERR(priv->top_ctrl);
+ 
+-	/* Reset is optional depending on platform and named differently */
+-	if (priv->version == BRCM_SATA_BCM7216)
+-		reset_name = "rescal";
+-	else
+-		reset_name = "ahci";
+-
+-	priv->rcdev = devm_reset_control_get_optional(&pdev->dev, reset_name);
+-	if (IS_ERR(priv->rcdev))
+-		return PTR_ERR(priv->rcdev);
++	if (priv->version == BRCM_SATA_BCM7216) {
++		priv->rcdev_rescal = devm_reset_control_get_optional_shared(
++			&pdev->dev, "rescal");
++		if (IS_ERR(priv->rcdev_rescal))
++			return PTR_ERR(priv->rcdev_rescal);
++	}
++	priv->rcdev_ahci = devm_reset_control_get_optional(&pdev->dev, "ahci");
++	if (IS_ERR(priv->rcdev_ahci))
++		return PTR_ERR(priv->rcdev_ahci);
+ 
+ 	hpriv = ahci_platform_get_resources(pdev, 0);
+ 	if (IS_ERR(hpriv))
+@@ -479,10 +479,10 @@ static int brcm_ahci_probe(struct platform_device *pdev)
+ 		break;
+ 	}
+ 
+-	if (priv->version == BRCM_SATA_BCM7216)
+-		ret = reset_control_reset(priv->rcdev);
+-	else
+-		ret = reset_control_deassert(priv->rcdev);
++	ret = reset_control_deassert(priv->rcdev_rescal);
++	if (ret)
++		return ret;
++	ret = reset_control_deassert(priv->rcdev_ahci);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -527,8 +527,8 @@ static int brcm_ahci_probe(struct platform_device *pdev)
+ out_disable_clks:
+ 	ahci_platform_disable_clks(hpriv);
+ out_reset:
+-	if (priv->version != BRCM_SATA_BCM7216)
+-		reset_control_assert(priv->rcdev);
++	reset_control_assert(priv->rcdev_ahci);
++	reset_control_assert(priv->rcdev_rescal);
+ 	return ret;
  }
  
-+static int brcm_rescal_reset_assert(struct reset_controller_dev *rcdev,
-+			      unsigned long id)
-+{
-+	return 0;
-+}
-+
- static int brcm_rescal_reset_xlate(struct reset_controller_dev *rcdev,
- 				   const struct of_phandle_args *reset_spec)
- {
-@@ -60,7 +66,8 @@ static int brcm_rescal_reset_xlate(struct reset_controller_dev *rcdev,
- }
- 
- static const struct reset_control_ops brcm_rescal_reset_ops = {
--	.reset = brcm_rescal_reset_set,
-+	.deassert = brcm_rescal_reset_deassert,
-+	.assert = brcm_rescal_reset_assert,
- };
- 
- static int brcm_rescal_reset_probe(struct platform_device *pdev)
 -- 
 2.17.1
 
 
---0000000000008fb27505b3751152
+--000000000000b3912205b3751118
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -189,14 +254,14 @@ V6GuAMmRknrzeTlxPy40UhUcRKk6Nm8mxl3Jh4KB68z7NFVpIx8G5w5I7S5ar1mLGNRjtFZ0RE4O
 lcCwKVGUXRaZMgQGrIhxGVelVgrcBh2vjpndlv733VI2VKE/TvV5MxMGU18RnogYSm66AEFA/Zb+
 5ztz1AtIMYICbzCCAmsCAQEwbTBdMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBu
 di1zYTEzMDEGA1UEAxMqR2xvYmFsU2lnbiBQZXJzb25hbFNpZ24gMiBDQSAtIFNIQTI1NiAtIEcz
-AgwTv2xmtR4KOmK4QvMwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIOIdZwW+rCIT
-Bl3UXR8FiTFDRdlpfEHWyfj3CKrx01LXMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIwMTEwNjE5MTc1MFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+AgwTv2xmtR4KOmK4QvMwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEINOn0id6p6xZ
+qVtn4qlaUBkjSCYjgE7pZbN2IL+k1h+rMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIwMTEwNjE5MTc1M1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
 YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCtqi/1bYqRCpOho10JgF6uoZu5tM0D
-B5ndiEXXJoHwOLVEs5NqZEYfGGDrb/Zk9Pnz5dmFT7jftu9geD8PLjUhIiUsLdA6zneVHUMJauny
-I+xyrAp9sLG/g2Eo7jo/v98WMXcN6RMjnJptFuSmsWkAaJm7lC1vPIitG+6Wjs7q7NomrttvIBYW
-Fn4Dqt0FygXBn9BGMxWs62wYI3nxKDB3Ew0UQPkmOk4P+oPKGjrmdsvqV/fcR9UrO7l48RYNvJef
-Wg29kaQFdVEpPgVjNTBQbWl+bDnX9BYEZxnXVveRCuAZFp3q4qnOundehubejIUSpEs7pA5uih33
-RBE3dvp3
---0000000000008fb27505b3751152--
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBfLVxFzl0FiOT2vPCqwq36SyMz9Juf
+SvrqYmLGAqCoDYqQYFJQNwFQ7fGchoccTxnKibOt0+pRk70WUM/UUo5ykKUcF7X7IIfrzTXehxMp
+DBB2EdvGVANpqwL+3HHpa4Ov+P1667iDZcooLcOZ70Ng0ZuslRyQ0cGqkf7ZSV/P4UQ9gKGV1MAu
+4jhdKZ5f05E1NxLZsy3kPzFaUIby/K14aajyHJ5wf2C3ltXnXpRgIl+k0ouodAYi9OTfnvfNtlRv
+MQ+eRTEdTsx46v3z1hQGYeOR04xBaUIHOVvFfd8D0hmv3KxCo0k/HgoS7Dgk7JkItEfgDtXL0gGY
+5FbEeAlK
+--000000000000b3912205b3751118--
