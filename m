@@ -2,106 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E48B2A9525
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 12:24:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 521D72A9532
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 12:25:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727162AbgKFLYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 06:24:19 -0500
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:55487 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727050AbgKFLYR (ORCPT
+        id S1727227AbgKFLZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 06:25:14 -0500
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:41564 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727177AbgKFLZN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 06:24:17 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id ABCA95C016D;
-        Fri,  6 Nov 2020 06:24:14 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Fri, 06 Nov 2020 06:24:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=Z7GtEnyfPD4Tr6magiM/9iI85Uk
-        W2DA92V9r6Z1Ss94=; b=sETp3awsl7G5UqvU35lK7x3MTLFnxfkbmbVJBfMTwrQ
-        BayTA1Prvl5ThOGZTnNNkPc9R50dhSXVrRcuSElCHgasrvP2onFQAkjJiF77rXqY
-        BCRuS9qPk2yy/ToZc4qOsTJsYgvnU1jbubwSM1RAEvPJrGaqcQGViTYrVqsArJNl
-        az+EmvI3uY7/KRjrbxSPqd6bEprbzmrwqMiv6sZq6QFDHLs0I0YQsAjFuORK++tz
-        OHwjEwuzAmm989Z+Vg/wDCHgDjPFOX1rEH319t3RgI2ykt3avC9Zw6q5YY8gEPuU
-        wqgvOHj6nZfbClLGy2uyABCX6QOrb1j3qmLIBgoi6+A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=Z7GtEn
-        yfPD4Tr6magiM/9iI85UkW2DA92V9r6Z1Ss94=; b=dPKOwB9luNzPtrOrWbYzNY
-        eXcyQQr2QHuumu8jWOdPmx4htRstFnjDmvim0hEsWRsrplqrMrtdPcFRUe6A35q7
-        dWFMJsO19WVBZYIszI0fJS23u2iBbNWC5GpvuqYdlB2E5d1gWM4RVujnDlTM2/Ug
-        5uVwx5uszkLwuC0EU48wqMfJ5HVhb13nT5Jb1iQ7b1V2duVFbUI5glJj7QasfnSl
-        OB8pjSqk1YHTHXjerGYEmPNIG58UCzb3jCREta2HGohIZYGE3h0hUOmFLhlX8jlU
-        N0wDPiVEUMrqrPyjwEPYZULqT2OJvMUStxaa5Iwtxgbxcrj0llH+sSgfCnhe2seg
-        ==
-X-ME-Sender: <xms:XTKlXzjdz1AijziNj8NHaB8goGa9CM9-mnM2RIf6zwcwG_yoTn5k_Q>
-    <xme:XTKlXwCd1_DWJOUMMeyw_XQ5ZLcraBq3HCZetMaG0JUAC6ZS2vaQyCEG899cgUnWq
-    p9WZppkQv14hoo5Pj4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddtledgvdelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:XTKlXzExPPYHhqHbNjKPW9q1ebKHebAkxC9mpzFHHjPngc5uLy6wjA>
-    <xmx:XTKlXwRk4gc-Yqn4dgMqE6hja_ZsZYuvuS3-qDqa6srmjIOcnN2cWg>
-    <xmx:XTKlXwzyM6lPt-4OP7i2OpSu6o2Z02iwQ9DEPyaHXurX3BV6gZNMnA>
-    <xmx:XjKlX_rVDy62AQEMpBwq6fk7JT0ZJ8mVAMYyvs8t5UKsItcQGM4yQQ>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 7DC30328038D;
-        Fri,  6 Nov 2020 06:24:13 -0500 (EST)
-Date:   Fri, 6 Nov 2020 12:24:12 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Samuel Holland <samuel@sholland.org>
-Cc:     Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        linux-arm-kernel@lists.infradead.org,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com
-Subject: Re: [PATCH] arm64: dts: allwinner: pinephone: Use generic sensor
- node names
-Message-ID: <20201106112412.nanxxywh7s6iqqkj@gilmour.lan>
-References: <20201106032055.51530-1-samuel@sholland.org>
+        Fri, 6 Nov 2020 06:25:13 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=3;SR=0;TI=SMTPD_---0UEQbtYd_1604661901;
+Received: from aliy80.localdomain(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UEQbtYd_1604661901)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 06 Nov 2020 19:25:01 +0800
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+To:     akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] mm/filemap: add static for function __add_to_page_cache_locked
+Date:   Fri,  6 Nov 2020 19:24:55 +0800
+Message-Id: <1604661895-5495-1-git-send-email-alex.shi@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="o7piv2twhicpvhex"
-Content-Disposition: inline
-In-Reply-To: <20201106032055.51530-1-samuel@sholland.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Otherwise it cause gcc warning:
+          ^~~~~~~~~~~~~~~
+../mm/filemap.c:830:14: warning: no previous prototype for
+‘__add_to_page_cache_locked’ [-Wmissing-prototypes]
+ noinline int __add_to_page_cache_locked(struct page *page,
+              ^~~~~~~~~~~~~~~~~~~~~~~~~~
 
---o7piv2twhicpvhex
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+Cc: Andrew Morton <akpm@linux-foundation.org> 
+Cc: linux-mm@kvack.org 
+Cc: linux-kernel@vger.kernel.org 
+---
+ mm/filemap.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On Thu, Nov 05, 2020 at 09:20:55PM -0600, Samuel Holland wrote:
-> Instead of duplicating part of the compatible string in the node name,
-> use generic names as recommended by (and listed in) section 2.2.2 of the
-> Devicetree Specification.
->=20
-> Suggested-by: Maxime Ripard <maxime@cerno.tech>
-> Signed-off-by: Samuel Holland <samuel@sholland.org>
+diff --git a/mm/filemap.c b/mm/filemap.c
+index d90614f501da..249cf489f5df 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -827,7 +827,7 @@ int replace_page_cache_page(struct page *old, struct page *new, gfp_t gfp_mask)
+ }
+ EXPORT_SYMBOL_GPL(replace_page_cache_page);
+ 
+-noinline int __add_to_page_cache_locked(struct page *page,
++static noinline int __add_to_page_cache_locked(struct page *page,
+ 					struct address_space *mapping,
+ 					pgoff_t offset, gfp_t gfp,
+ 					void **shadowp)
+-- 
+1.8.3.1
 
-Applied, thanks!
-Maxime
-
---o7piv2twhicpvhex
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX6UyXAAKCRDj7w1vZxhR
-xatGAP4vdTUYKMf7C2ve3hzaM3Rpm7yuxU086hWOPC1WD3ObygD/cve05ywhg5pl
-OiKXXaViAmTHXrEreYCXVoxBGecuxAs=
-=dRad
------END PGP SIGNATURE-----
-
---o7piv2twhicpvhex--
