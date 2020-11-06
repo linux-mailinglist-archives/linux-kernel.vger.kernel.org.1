@@ -2,95 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8764C2A9277
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 10:25:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97F4D2A927E
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 10:25:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726685AbgKFJZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 04:25:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52384 "EHLO
+        id S1726707AbgKFJZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 04:25:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725924AbgKFJZE (ORCPT
+        with ESMTP id S1725893AbgKFJZs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 04:25:04 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C84EC0613CF;
-        Fri,  6 Nov 2020 01:25:04 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id z3so773435pfz.6;
-        Fri, 06 Nov 2020 01:25:04 -0800 (PST)
+        Fri, 6 Nov 2020 04:25:48 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B1A6C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 01:25:48 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id v12so751042pfm.13
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 01:25:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=n6HjZO68eJwzCsb2ucSZ6B0XskEpVkwnHnaVuGbEBd8=;
-        b=QuNKss5T6V8FATdlBUmjBheEfwGufC9Y1UXzYxDMTiEZvLAF7bCfcmGRDg8qSEQQel
-         k3Nr9/fy6sJq5zzk3JFXFtN8YKFdHddgd5g5XTmbg820WhVQzZ/NHmxYen7Bj1sqQ8g5
-         ssFqfy7JYnuSngNiv0wzXDRRDSTxa+nSRr5xt0hYxk6DA/B3MBj71YH8Bbd+aJg/0euL
-         SV1IPLw3rjRdUBk49mYnCTKifNjQiTxnW+0FUgdLNwwviK5kpawTb4n1Bnvbu5Dh3oAY
-         pbRRwgtwO1N16x1599ipby+zECVNEvDKnYUU4Nkp9YZyy2i8cO95DboiTrH4NWyW1+Z7
-         homQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=RJ6te3ObHVnElBaSFwGNPPBac7krO/8OzGYULw7Qx98=;
+        b=XJ0VBIj7n/TNvivjTiFO2gl3zVbYjfnbWLt0sDNjhMX0SuSVXi+l6Zk5qlm1WTTBqq
+         ZeNzqpTeyloDaD4lnN42MFAbn160deOuXSa3H9O48AxVsyc6vhZNQy0cl7FuIcmIugqr
+         f9HK39X+AySWn2pEp9ZWDzzdXunuYpxKbiNNjsSg5QP8MPlwwOz/gGKT1DuSapSlgGl4
+         GMbcBx6/UYTk8qMLm4J9GvpBi8IpNTpci3sc9JgoIAaSu5XTBuFUEvvq/+ILQAzpykcS
+         QrI9APHgiOAv6v2tJC1FSmzWJoXqaAT32uHFqLVPMQlbT7EGwthj0sMjx8S51r/Gv/ep
+         wtKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=n6HjZO68eJwzCsb2ucSZ6B0XskEpVkwnHnaVuGbEBd8=;
-        b=jKxFIeltJ9IVqOMroK8eYGY1iJW07/DyYS+sYDtDs4zZ6wnpmAjFBqqz70GR2JBL0g
-         fe0pOp+3DehoKNTDg2qs6O3STIewfcTFkGT0GVV4Ds2F4a/bNP0AFez3CbvkaPNsJd4O
-         IA2fO+fO4KnGyesm/0dQmZeBR/FRpvHy5zvTrAZHiN3eq/12FeS7YeXrMRqDL5r6G98g
-         Xm1wa9awtfcDbSL4yCKikYfCJ6PYXhkqQ5rPlTHntufiZyaMP3EZn7rhdfncYigUw95t
-         fS/XjSEncJokoMLUfLvuoIVeB1yAeQ3WVz9Or9RVIH5L2mlPcXICP5rE1s+TXMqPkdGL
-         gnow==
-X-Gm-Message-State: AOAM532R82Qa4ooOnevGJKnAyM2uzIlZNPDczVHjGBDabcIBBdyMo/j3
-        PdH/W+h1flEUYwy7GCNnStcJtG11zgTZwrl7hQgwQ29fUQM=
-X-Google-Smtp-Source: ABdhPJwFBbWhc/ajqSlGOcas2h9EZH9QHYpwErKY1RO0qZxDIbkxawo5JL2nnS7meQZOjB9qgm3lQKPxILJL90d9kUw=
-X-Received: by 2002:a62:343:0:b029:15c:e33c:faff with SMTP id
- 64-20020a6203430000b029015ce33cfaffmr1037118pfd.7.1604654703797; Fri, 06 Nov
- 2020 01:25:03 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=RJ6te3ObHVnElBaSFwGNPPBac7krO/8OzGYULw7Qx98=;
+        b=s5d67kkYzOG1C37a3FGa+bEpRudLFwsKrcoDykUV+yDQ+slmVWC8oj2Ac8+gZBEVQh
+         n6YVhqHdbEtBPD1Gv4s2HfvvGGNTMEk4ETn5EvijJ9gDsHVL39YzdgjTJLEFA5rx2hlK
+         kRRH94avoCg7svaDlvUzdBv8Xp44Ub+tcukKHCHlRMTJdCAPaXzslHzIUYc/qS6oNc2c
+         AN0iPSgcLZtrEAauqk1F7Tk0MGO5d2NS+d4Ifinly/4e3RTZzfS3W0W83wbgtGZpncIS
+         yREszABlEZjhDS3y9YSEUqHpf5wbs4DJtTDvMpNfmiSviHMiK2kJ32pt4rljiPJJjdkS
+         4caQ==
+X-Gm-Message-State: AOAM530qjADykToXuz9hi4y2Kp5Kg8RzkYDU9F3R/FCqvdEe0qellNSw
+        Ol4zf0KoKtQqzEyDvsfkEAHWjQ==
+X-Google-Smtp-Source: ABdhPJz3XKub0XpZWCPKgN83lov2zPfROr1OuCkJt6Yz/rVIq3RO5XmJdbLmI8Pwc9ew4RaKAI8adA==
+X-Received: by 2002:a17:90b:1106:: with SMTP id gi6mr1627653pjb.70.1604654747918;
+        Fri, 06 Nov 2020 01:25:47 -0800 (PST)
+Received: from localhost ([122.172.12.172])
+        by smtp.gmail.com with ESMTPSA id 17sm1360293pfu.160.2020.11.06.01.25.46
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 06 Nov 2020 01:25:47 -0800 (PST)
+Date:   Fri, 6 Nov 2020 14:55:45 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     zhuguangqing83@gmail.com
+Cc:     amit.kachhap@gmail.com, daniel.lezcano@linaro.org,
+        javi.merino@kernel.org, rui.zhang@intel.com, amitk@kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Zhuguangqing <zhuguangqing@xiaomi.com>,
+        "v5 . 4+" <stable@vger.kernel.org>
+Subject: Re: [PATCH v2] thermal/drivers/cpufreq_cooling: Update cpufreq_state
+ only if state has changed
+Message-ID: <20201106092545.2elo5o73ku3wj73b@vireshk-i7>
+References: <20201106092243.15574-1-zhuguangqing83@gmail.com>
 MIME-Version: 1.0
-References: <802c8865b70c3bdf70e44d37f14e7767b6495e88.1604631371.git.greentime.hu@sifive.com>
-In-Reply-To: <802c8865b70c3bdf70e44d37f14e7767b6495e88.1604631371.git.greentime.hu@sifive.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 6 Nov 2020 11:24:47 +0200
-Message-ID: <CAHp75VdHuZc43Oe8vp-Xtb2+vsEoV2FY-W_dAifuh4Un0BveSA@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/1] gpio: sifive: To get gpio irq offset from device
- tree data
-To:     Greentime Hu <greentime.hu@sifive.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-riscv@lists.infradead.org,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Yash Shah <yash.shah@sifive.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201106092243.15574-1-zhuguangqing83@gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 6, 2020 at 4:59 AM Greentime Hu <greentime.hu@sifive.com> wrote:
->
-> We can get hwirq number of the gpio by its irq_data->hwirq so that we don't
-> need to add more macros for different platforms. This patch is tested in
-> SiFive Unleashed board and SiFive Unmatched board.
+On 06-11-20, 17:22, zhuguangqing83@gmail.com wrote:
+> From: Zhuguangqing <zhuguangqing@xiaomi.com>
+> 
+> If state has not changed successfully and we updated cpufreq_state,
+> next time when the new state is equal to cpufreq_state (not changed
+> successfully last time), we will return directly and miss a
+> freq_qos_update_request() that should have been.
+> 
+> Fixes: 5130802ddbb1 ("thermal: cpu_cooling: Switch to QoS requests for freq limits")
+> Cc: v5.4+ <stable@vger.kernel.org> # v5.4+
+> Signed-off-by: Zhuguangqing <zhuguangqing@xiaomi.com>
+> Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+> ---
+> v2:
+>   - Add Fixes: 5130802ddbb1 in log.
+>   - Add Cc: v5.4+ <stable@vger.kernel.org> # v5.4+ in log.
+>   - Add Acked-by: Viresh Kumar <viresh.kumar@linaro.org> in log.
+>   - Delete an extra blank line.
+> ---
+>  drivers/thermal/cpufreq_cooling.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/drivers/thermal/cpufreq_cooling.c b/drivers/thermal/cpufreq_cooling.c
+> index cc2959f22f01..612f063c1cfc 100644
+> --- a/drivers/thermal/cpufreq_cooling.c
+> +++ b/drivers/thermal/cpufreq_cooling.c
+> @@ -438,13 +438,11 @@ static int cpufreq_set_cur_state(struct thermal_cooling_device *cdev,
+>  	if (cpufreq_cdev->cpufreq_state == state)
+>  		return 0;
+>  
+> -	cpufreq_cdev->cpufreq_state = state;
+> -
+>  	frequency = get_state_freq(cpufreq_cdev, state);
+>  
+>  	ret = freq_qos_update_request(&cpufreq_cdev->qos_req, frequency);
+> -
+>  	if (ret > 0) {
+> +		cpufreq_cdev->cpufreq_state = state;
+>  		cpus = cpufreq_cdev->policy->cpus;
+>  		max_capacity = arch_scale_cpu_capacity(cpumask_first(cpus));
+>  		capacity = frequency * max_capacity;
 
-...
-
-> +       struct sifive_gpio *chip = gpiochip_get_data(gc);
-> +       struct irq_data *d = irq_get_irq_data(chip->irq_number[child]);
-
-> +       *parent = d->hwirq;
-
-There is an API to get hwirq.
-
-...
-
-> +       for (i = 0; i < ngpio; i++)
-> +               chip->irq_number[i] = irq_of_parse_and_map(node, i);
-
-Can't you use platform_get_irq_optional()?
-
-
+Thanks Zhuguangqing.
 
 -- 
-With Best Regards,
-Andy Shevchenko
+viresh
