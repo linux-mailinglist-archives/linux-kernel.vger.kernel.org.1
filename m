@@ -2,103 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A79122A9B42
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 18:53:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E93542A9B44
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 18:54:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727739AbgKFRxh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 12:53:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48178 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726010AbgKFRxg (ORCPT
+        id S1727779AbgKFRxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 12:53:46 -0500
+Received: from shelob.surriel.com ([96.67.55.147]:35504 "EHLO
+        shelob.surriel.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727356AbgKFRxp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 12:53:36 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 935AEC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 09:53:35 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id t14so1525342pgg.1
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 09:53:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5TMQVCNljoYFuIcGIa8R0xZ7bhBD1oFyjgSl29C7UwE=;
-        b=r843aCJQdIeK6veUamZyT4x8F0NofnZMojaKQ0Ch7uG8gUppCLbvQambLJWmecH5EX
-         /04FfcLGF7hnoUbPpOcKMiaG/ITcxBEZSNodVKrBn7Bf2TocGWnLTsIU4LVIpW7CZ8Mj
-         ZVN9tnreu774u3TGaZQqrHDJdrWZ3E54LjgMxW7CNqVpz/NcoCyefP2luBzCg7xllyw6
-         GHI8WaDiFDksSUzThDgRpBSBDf0JL6qYuwYxRrOn8BOG+chOLFsFJXfvrGqxj0wZdMF3
-         s25Dk5dQpKB/mf0uUN/Rt6RrAEw3OyVmrlIk8LgoDPJZkwAc3JLRvkTJfiTzK+1OwiO8
-         O04Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5TMQVCNljoYFuIcGIa8R0xZ7bhBD1oFyjgSl29C7UwE=;
-        b=FdXW9vh0cmPVo5gDDik9WlhpF9pbTX7Tob3KV8VdOfv+ooT/N9MoquJqndl66qiU4O
-         QkcLrMiUUJwNVVthFz6gjRvUiR8mW4d/B5WbqT9W4JCz2J2dsEp4l7W2BYRLiiiDGU8g
-         pfu1gTIOYnlhVr9cOaeEHKNDT901hzpA3BOoywUw5XCLJotzUzArgftRtnjyWtn3oUau
-         zwz4PHLLaqURZND+4TRd8c04wWhbhkhNRh1MUXwJxmVoTeWOP3tMKAzpV/H/LTG844j1
-         GWh27iQ8F+yR/tHoKvRE1aXNoXY2926y1K7eD1JzTCE9ARS2L4FT5wXPgFAXpojEavHV
-         ajNA==
-X-Gm-Message-State: AOAM530PTsr1MCqrjpqte1KFlKAlBZuOlWobKSJfT5/IpFJTFGQFqexk
-        sTiPktbXSYt+koTfG/XIPZie8A==
-X-Google-Smtp-Source: ABdhPJzl06YEHrgQVSuXECQAbWSUXZn/uPA8xvoeuhi0T/5hgG+lKXZ4xbbTIWK0wYu1zHgohEXh+w==
-X-Received: by 2002:a63:5509:: with SMTP id j9mr2643913pgb.3.1604685215106;
-        Fri, 06 Nov 2020 09:53:35 -0800 (PST)
-Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id l190sm2644522pfl.205.2020.11.06.09.53.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Nov 2020 09:53:34 -0800 (PST)
-Date:   Fri, 6 Nov 2020 10:53:32 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Cc:     ohad@wizery.com, bjorn.andersson@linaro.org,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 8/8] rpmsg: Turn name service into a stand alone driver
-Message-ID: <20201106175332.GB3203364@xps15>
-References: <20201105225028.3058818-1-mathieu.poirier@linaro.org>
- <20201105225028.3058818-9-mathieu.poirier@linaro.org>
- <20201106131545.GA10889@ubuntu>
- <20201106140028.GB10889@ubuntu>
+        Fri, 6 Nov 2020 12:53:45 -0500
+Received: from imladris.surriel.com ([96.67.55.152])
+        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <riel@shelob.surriel.com>)
+        id 1kb5va-0001y7-U8; Fri, 06 Nov 2020 12:53:34 -0500
+Message-ID: <0f50046d0195d857bf7dc5a61db0a59795c3e06b.camel@surriel.com>
+Subject: Re: [PATCH 2/2] mm,thp,shm: limit gfp mask to no more than specified
+From:   Rik van Riel <riel@surriel.com>
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     hughd@google.com, xuyu@linux.alibaba.com,
+        akpm@linux-foundation.org, mgorman@suse.de, aarcange@redhat.com,
+        willy@infradead.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, linux-mm@kvack.org, vbabka@suse.cz,
+        mhocko@suse.com
+Date:   Fri, 06 Nov 2020 12:53:33 -0500
+In-Reply-To: <20201106030511.396-1-hdanton@sina.com>
+References: <20201105191508.1961686-1-riel@surriel.com>
+         <20201106030511.396-1-hdanton@sina.com>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-F/6ayGlYGx6A27zYSP72"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201106140028.GB10889@ubuntu>
+Sender: riel@shelob.surriel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 06, 2020 at 03:00:28PM +0100, Guennadi Liakhovetski wrote:
-> On Fri, Nov 06, 2020 at 02:15:45PM +0100, Guennadi Liakhovetski wrote:
-> > Hi Mathieu, Arnaud,
-> > 
-> > On Thu, Nov 05, 2020 at 03:50:28PM -0700, Mathieu Poirier wrote:
-> > > From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-> > > 
-> > > Make the RPMSG name service announcement a stand alone driver so that it
-> > > can be reused by other subsystems.  It is also the first step in making the
-> > > functionatlity transport independent, i.e that is not tied to virtIO.
-> > 
-> > Sorry, I just realised that my testing was incomplete. I haven't tested 
-> > automatic module loading and indeed it doesn't work. If rpmsg_ns is loaded 
-> > it probes and it's working, but if it isn't loaded and instead the rpmsg 
-> > bus driver is probed (e.g. virtio_rpmsg_bus), calling 
-> > rpmsg_ns_register_device() to create a new rpmsg_ns device doesn't cause 
-> > rpmsg_ns to be loaded.
-> 
-> A simple fix for that is using MODULE_ALIAS("rpmsg:rpmsg_ns"); in rpmsg_ns.c 
-> but that alone doesn't fix the problem completely - the module does load then 
-> but not quickly enough, the NS announcement from the host / remote arrives 
-> before rpmsg_ns has properly registered. I think the best solution would be 
-> to link rpmsg_ns.c together with rpmsg_core.c. You'll probably want to keep 
-> the module name, so you could rename them to just core.c and ns.c.
 
-I'm pretty sure it is because virtio_device_ready() in rpmsg_probe() is called
-before the kernel has finished loading the name space driver.  There has to be
-a way to prevent that from happening - I will investigate further.
+--=-F/6ayGlYGx6A27zYSP72
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Thanks for reporting this,
-Mathieu
+On Fri, 2020-11-06 at 11:05 +0800, Hillf Danton wrote:
+> On Thu,  5 Nov 2020 14:15:08 -0500
+> > Matthew Wilcox pointed out that the i915 driver opportunistically
+> > allocates tmpfs memory, but will happily reclaim some of its
+> > pool if no memory is available.
+> >=20
+> > Make sure the gfp mask used to opportunistically allocate a THP
+> > is always at least as restrictive as the original gfp mask.
+> >=20
+> > Signed-off-by: Rik van Riel <riel@surriel.com>
+> > Suggested-by: Matthew Wilcox <willy@infradead.org>
+> > ---
+> >  mm/shmem.c | 21 +++++++++++++++++++++
+> >  1 file changed, 21 insertions(+)
+> >=20
+> > diff --git a/mm/shmem.c b/mm/shmem.c
+> > index 6c3cb192a88d..ee3cea10c2a4 100644
+> > --- a/mm/shmem.c
+> > +++ b/mm/shmem.c
+> > @@ -1531,6 +1531,26 @@ static struct page *shmem_swapin(swp_entry_t
+> > swap, gfp_t gfp,
+> >  	return page;
+> >  }
+> > =20
+> > +/*
+> > + * Make sure huge_gfp is always more limited than limit_gfp.
+> > + * Some of the flags set permissions, while others set
+> > limitations.
+> > + */
+> > +static gfp_t limit_gfp_mask(gfp_t huge_gfp, gfp_t limit_gfp)
+> > +{
+> > +	gfp_t allowflags =3D __GFP_IO | __GFP_FS | __GFP_RECLAIM;
+> > +	gfp_t denyflags =3D __GFP_NOWARN | __GFP_NORETRY;
+> > +	gfp_t result =3D huge_gfp & ~allowflags;
+> > +
+> > +	/*
+> > +	 * Minimize the result gfp by taking the union with the deny
+> > flags,
+> > +	 * and the intersection of the allow flags.
+> > +	 */
+> > +	result |=3D (limit_gfp & denyflags);
+>=20
+> Currently NORETRY is always set regardless of i915 and if it's
+> determined in 1/2 then the i915 thing can be done like
+>=20
+> 	return huge_gfp | (limit_gfp & __GFP_RECLAIM);
 
-> 
-> Thanks
-> Guennadi
+No, if __GFP_KSWAPD_RECLAIM or __GFP_DIRECT_RECLAIM are
+not set in either huge_gfp or limit_gfp, we want to ensure
+the resulting gfp does not have it set, either.
+
+Your suggested change
+would result in __GFP_KSWAPD_RECLAIM
+or __GFP_DIRECT_RECLAIM getting set if it was set in either
+of the input gfp variables, which is probably not the desired
+behavior.
+
+
+--=20
+All Rights Reversed.
+
+--=-F/6ayGlYGx6A27zYSP72
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEKR73pCCtJ5Xj3yADznnekoTE3oMFAl+ljZ0ACgkQznnekoTE
+3oOSCgf+JjD5NVfyruktXHepTt3ldZco3DpqfgNwKKgJEPErbxqbu78pJrYMsKgW
+mRqzSfsEAxG6pvXZmm9lFbWS3MLou1UTyccSiehxdw9k9qvYW5lxsmniQz2/tjur
+9PcQk4Ekp/+Ujdd/7vXBPcJ9KX3WzzCl5X10Y1h2Xlt2U24cw2Zjl2QLrfttH0IQ
+pvH50zCO7K02ug4dV/zIjW4lcOj1PVBnopEoJmS55UNjEW1JODi3T0XpUPRrSDWp
+uHhpImeuSHO/MgqUl2rY/c0ofJM9tZ3uZVFGUU6/796LMs1yHdX6vsWlPnVQuq4M
+FpM+4SAEaK62lT8GHDVqP3gFFa/Oyw==
+=GlII
+-----END PGP SIGNATURE-----
+
+--=-F/6ayGlYGx6A27zYSP72--
+
