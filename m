@@ -2,99 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D66EC2A9511
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 12:14:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 848752A9515
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 12:15:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727153AbgKFLO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 06:14:28 -0500
-Received: from foss.arm.com ([217.140.110.172]:35446 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727057AbgKFLO1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 06:14:27 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A3D84147A;
-        Fri,  6 Nov 2020 03:14:26 -0800 (PST)
-Received: from [10.57.14.85] (unknown [10.57.14.85])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 745553F719;
-        Fri,  6 Nov 2020 03:14:23 -0800 (PST)
-Subject: Re: [PATCH v3 3/3] [RFC] CPUFreq: Add support for
- cpu-perf-dependencies
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Nicola Mazzucato <nicola.mazzucato@arm.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        sudeep.holla@arm.com, rjw@rjwysocki.net, vireshk@kernel.org,
-        robh+dt@kernel.org, sboyd@kernel.org, nm@ti.com,
-        daniel.lezcano@linaro.org, morten.rasmussen@arm.com,
-        chris.redpath@arm.com
-References: <20201102120115.29993-1-nicola.mazzucato@arm.com>
- <20201102120115.29993-4-nicola.mazzucato@arm.com>
- <20201106092020.za3oxg7gutzc3y2b@vireshk-i7>
- <0a334a73-45ef-58ff-7dfd-9df6f4ff290a@arm.com>
- <20201106105514.bhtdklyhn7goml64@vireshk-i7>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <7f73bcd6-0f06-4ef0-7f02-0751e6c4d94b@arm.com>
-Date:   Fri, 6 Nov 2020 11:14:21 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1727096AbgKFLPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 06:15:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41582 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726565AbgKFLPx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 06:15:53 -0500
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9958DC0613CF;
+        Fri,  6 Nov 2020 03:15:53 -0800 (PST)
+Received: by mail-io1-xd30.google.com with SMTP id r12so1067407iot.4;
+        Fri, 06 Nov 2020 03:15:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AiWE+QWWlazimLi0TrkBpKXq5Z0IleCm9UdBmqp2vvs=;
+        b=bf8eze0RbGRLUlVN4d2YRJ1wRNnN72T61UbXrzhdwAK5TklUYKbjX8mIoNQYPbZa3O
+         vpHt3V3w050vcAomNruqwg7787crYSS3n9r5OzovD+ow2jm7a/y3Vn2wOYQg2cAZq5hX
+         IYjZLZmg0IqYVavZi9je8F0qqUZ8WZovIT+Keg3ltlVjhEW9STVD+enPz8pMuNx4pF5D
+         b4pT89MLptxr2ZU/32V/TcS4Qv6NkUKzvuCJSuZIkfqXpxFUeHgbyD540iBHIABlfPS1
+         fIBWbtFgPRxeEY6xXWPjVX4j3raIuFZj5jLcvR7Q9zUrs318eWZsc4B6c5tfKIt5U4dJ
+         5m8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AiWE+QWWlazimLi0TrkBpKXq5Z0IleCm9UdBmqp2vvs=;
+        b=lTzPqdB103NqE14vARQ7DGZmQ4/qEbDg+SfzRN0+HiVh497lFScyAHPk9v15ol/jdi
+         14mhImfItLcJJbwXVedy5vNFpJf3HpVaAQ2E8t3q0s5seGulgMRrA5J6xsmXd0UDzXFA
+         Zy7CyvJ1C7y4k2c6hRHtFnYqqqWvob0/mPOfsLnycpRPiMps6B0bRB0dxuulPyF6UKHX
+         AwT19z/79I4XDd+wOLrbiHBKr705MKLc8zUxYlQ7glZ5oWuWhEmHv/aZcOd/ZdibXOgz
+         LoASfwAhH6O7cQZBegCJd/5fpcaEhwdN3OLV9mzquaIMHz3e/y5gCxWddLf+bx5L5eI0
+         enYw==
+X-Gm-Message-State: AOAM533UPOpWMLqem8JeUZ/wisAzv8DZ37axwFTx30kUNpZsPPIpxJ3G
+        dvZGHcUphQv3xohqTnb0e4M=
+X-Google-Smtp-Source: ABdhPJwJszyNIhmZ2EzMaYQpVFdey2wlDA1k9QOUIRXS+UhWEB+I/7123KokQykevQ1iP9DygoTdGg==
+X-Received: by 2002:a6b:5f1d:: with SMTP id t29mr1027946iob.86.1604661352879;
+        Fri, 06 Nov 2020 03:15:52 -0800 (PST)
+Received: from aford-IdeaCentre-A730.lan ([2601:448:8400:9e8:8492:7d60:7e29:2784])
+        by smtp.gmail.com with ESMTPSA id x5sm854597ilc.15.2020.11.06.03.15.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Nov 2020 03:15:51 -0800 (PST)
+From:   Adam Ford <aford173@gmail.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH V3 1/5] dt-bindings: soc: imx: Add binding doc for spba bus
+Date:   Fri,  6 Nov 2020 05:15:39 -0600
+Message-Id: <20201106111543.1806809-1-aford173@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20201106105514.bhtdklyhn7goml64@vireshk-i7>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add binding doc for fsl,spba-bus.
 
+Signed-off-by: Adam Ford <aford173@gmail.com>
+---
+V3:  New to series
 
-On 11/6/20 10:55 AM, Viresh Kumar wrote:
-> On 06-11-20, 10:37, Lukasz Luba wrote:
->> Good question.
->>
->> How about a different interface for those cpufreq drivers?
->> That new registration API would allow to specify the cpumask.
->> Or rely on EM cpumask: em_span_cpus(em)
->>
->> Currently we have two ways to register cooling device:
->> 1. when the cpufreq driver set a flag CPUFREQ_IS_COOLING_DEV, the core
->> will register cooling device
->> 2. cpufreq driver can explicitly call the registration function:
->> cpufreq_cooling_register() with 'policy' as argument
->>
->> That would need substantial change to the cpufreq cooling code, from
->> policy oriented to custom driver's cpumask (like EM registration).
-> 
-> I am even wondering if we should really make that change. Why do we
-> need the combined load of the CPUs to be sent back to the IPA governor
-> ? Why shouldn't they all do that (they == cdev) ?
-> 
-> This is a bit confusing to me, sorry about that. The cpufreq governors
-> take a look at all the CPUs utilization and set the frequency based on
-> the highest utilization (and not the total util).
-> 
-> While in this case we present the total load of the CPUs to the IPA
-> (based on the current frequency of the CPUs), in response to which it
-> tells us the frequency at which all the CPUs of the policy can run at
-> (I am not even sure if it is the right thing to do as the CPUs have
-> different loads). And how do we fit this dependent_cpus thing into
-> this.
-> 
-> Sorry, I am not sure what's the right way of doing thing here.
-> 
-
-I also had similar doubts, because if we make frequency requests
-independently for each CPU, why not having N cooling devs, which
-will set independently QoS max freq for them...
-
-What convinced me:
-EAS and FIE would know the 'real' frequency of the cluster, IPA
-can use it also and have only one cooling device per cluster.
-
-We would like to keep this old style 'one cooling device per cpuset'.
-I don't have strong opinion and if it would appear that there are
-some errors in freq estimation for cluster, then maybe it does make
-more sense to have cdev per CPU...
-
-
+diff --git a/Documentation/devicetree/bindings/bus/fsl,spba-bus.yaml b/Documentation/devicetree/bindings/bus/fsl,spba-bus.yaml
+new file mode 100644
+index 000000000000..0a2add841145
+--- /dev/null
++++ b/Documentation/devicetree/bindings/bus/fsl,spba-bus.yaml
+@@ -0,0 +1,56 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/bus/simple-pm-bus.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Shared Peripherals Bus Interface
++
++maintainers:
++  - Shawn Guo <shawnguo@kernel.org>
++
++description: |
++  A simple bus enabling access to shared peripherals.
++
++  The "spba-bus" follows the "simple-bus" set of properties, as
++  specified in the Devicetree Specification.  It is an extension of
++  "simple-bus" because the SDMA controller uses this compatible flag to
++  determine which peripherals are available to it and the range over which
++  the SDMA can access.  There are no special clocks for the bus, because
++  the SDMA controller itself has its interrupt, and clock assignments.
++
++properties:
++  $nodename:
++    pattern: "^bus(@[0-9a-f]+)?$"
++
++  compatible:
++    contains:
++      const: fsl,spba-bus
++    description:
++      Shall contain "fsl,spba-bus" in addition to "simple-bus"
++      compatible strings.
++
++  '#address-cells':
++    enum: [ 1, 2 ]
++
++  '#size-cells':
++    enum: [ 1, 2 ]
++
++  ranges: true
++
++required:
++  - compatible
++  - '#address-cells'
++  - '#size-cells'
++  - ranges
++
++additionalProperties: true
++
++examples:
++  - |
++    bus {
++        compatible = "fsl,spba-bus", "simple-bus";
++        #address-cells = <1>;
++        #size-cells = <1>;
++        ranges;
++    };
+-- 
+2.25.1
 
