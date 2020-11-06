@@ -2,84 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B2362A8C6C
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 03:03:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C08EA2A8C6F
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 03:04:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733020AbgKFCDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 21:03:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40336 "EHLO
+        id S1733038AbgKFCEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 21:04:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730862AbgKFCDy (ORCPT
+        with ESMTP id S1732610AbgKFCEp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 21:03:54 -0500
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48A5CC0613CF;
-        Thu,  5 Nov 2020 18:03:54 -0800 (PST)
-Received: by mail-lf1-x12a.google.com with SMTP id b1so5177327lfp.11;
-        Thu, 05 Nov 2020 18:03:54 -0800 (PST)
+        Thu, 5 Nov 2020 21:04:45 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADF6FC0613D3
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 18:04:45 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id z3so2883695pfb.10
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 18:04:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Oi4Xnuin4gO7W988u55luyGaQtlR2ivokoUJshemqZc=;
-        b=qs05jK2U/NSfmW8tqCVslUD2thvDwf+/D9jAQWoya/ee/SdPzR8idqYwA4w5HXLCNt
-         UZB1WbolKKQqbEvmzo7qmF0W6zUonoqZ77aj5mDZ1/YJPy9Os/l8W85VTJydKrkt0uqz
-         /TuROap7oK8POEfMwrHSavEcpmwagexusTzeYkvLGpfiBfZc0nDpiYZOyKUpMzJvzg52
-         I6oOK/OeNMTCY/uwGpV5RWXo7OoK1Iexx9ESKqCr/ub15SHV13LfmyRtMwTIX9GbQR5K
-         Ykp1BcGp+igBayReahprZEC5b8L40ciiYNi0ygGmAYiQez7hL+en8CZlhax1hrNL72cE
-         mRDw==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Y7icUUEiNIrPUlaj0x+1jC39o2LcOwmDsvjuVu94new=;
+        b=X/VcN7fDxkB6QNSvA1o2/JBoKO1kyCOga7PWJMgYprv0D+hCk05vwNG5tM4H+lbYDN
+         Eldz8M/XVvrr/91fsElEf3XPA2itpiP2n3qLu5MBMZ2JDeuf8FY3lKvlseWBtpIRUxns
+         VDIwHa7TvMx+KH8+pYQZdqw3LCb0juFqvS2VY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Oi4Xnuin4gO7W988u55luyGaQtlR2ivokoUJshemqZc=;
-        b=q4+helZv5iR5JzqUQbyTlU+eJaw9IkOWSruVtYZ1wLp62D/EOWKoAZqIxE5cjrAMe4
-         NnMYoejjmzUSwXAntg0MUHC4/4rXmtGjnrgHFVzvHTFmBhxQvmG6ZiFJaav9pqZf/HTZ
-         tjW14WybR+LOhyOdkuCE6ZxcGTJsNIZDuPy/jaRC5cj6+abVdp7lHwUyL9+TnQHdv5GF
-         TpqYurKzuxOqs2nHVfAnyqa3mULW4l13TemPqSL/pykCvFCbPeRL/udUM5t6rvIUnEny
-         aQ8ywCG6DE0UOmRZfLJnZ4mJGHPTLXzaRxhJ2Qm7ok/n6Q8cz86hafzmWnm4f8eaVCsT
-         X9Xw==
-X-Gm-Message-State: AOAM533GiTzbSK61aCEJoZD6p91t+SldXm+KT1HOMeJLa/aYR8HUBgVi
-        IxphYZebAGTYIh2oEEdErGig65AFLognsZ8rZo4=
-X-Google-Smtp-Source: ABdhPJz0NbCaQyv+/RvgXgO7a/Go63Pbbz2HImQ4G9q1mKT2Wf4Ltwv1YrojL8VW3uH1u2MLn3h5RKsDnjGT+EjUyzk=
-X-Received: by 2002:a05:6512:3a9:: with SMTP id v9mr2297074lfp.568.1604628232809;
- Thu, 05 Nov 2020 18:03:52 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Y7icUUEiNIrPUlaj0x+1jC39o2LcOwmDsvjuVu94new=;
+        b=MtJBzrnFk9XMMKJYynJyvjNuajPeK578CZ3P2wQcWuiQ5gcGmgPO0aPdaitIrrqbdw
+         IHEVIDyUq0hcpK0o+MO3ue2NoxNNvFco77ZpeldHD4FhUWm6damyGnhUB0aB+4oo9O5r
+         PGyOXyZid96ptNJcMh2JPjBsOCCCKiD/H2pITb5xNSsaseHyxvv1f7fOC4+iRIPim+th
+         E7fKoYW8xIQTfM14STqlq+V0JQ1PSOWJK35s8LrL6DezYYoCMsfJut54jwLlhBhe+XSu
+         9gLX9UwxRCZB+GQRPKgHGyzxHNXuWCowlU2zAERC0VZVqDY0qi2iEThbkdghYJEtrmPg
+         4X/g==
+X-Gm-Message-State: AOAM5303sqnt6YVmNBVvMsdgFoJT3LEYITlaxeQbe+CqUpAu8Uz9Cel5
+        EoB3nOMCpgFwCV/RGwkJGbYXQ0wqUL3NdQ==
+X-Google-Smtp-Source: ABdhPJwtl5hZ0u87DJo55K2CGbET+7/W7Ihy/p7yM6/ZRxZrLq0X52Z9iBVMA1bZ22zg6DAS+hn3UA==
+X-Received: by 2002:a17:90b:1413:: with SMTP id jo19mr5193301pjb.221.1604628285166;
+        Thu, 05 Nov 2020 18:04:45 -0800 (PST)
+Received: from localhost ([2620:15c:202:1:f693:9fff:fef4:e70a])
+        by smtp.gmail.com with ESMTPSA id m10sm502259pjr.3.2020.11.05.18.04.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Nov 2020 18:04:44 -0800 (PST)
+Date:   Thu, 5 Nov 2020 18:04:43 -0800
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 1/2] arm64: dts: qcom: sc7180: Add sc7180-lazor-r2
+Message-ID: <20201106020443.GA4128558@google.com>
+References: <20201105163724.v2.1.I5a75056d573808f40fed22ab7d28ea6be5819f84@changeid>
+ <CAD=FV=WVVjj1Su2Ta9wQebDEWXs=9dNs9EO9EvTH=EjT4Fr8jg@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201102100157.85801-1-mtwget@gmail.com> <20201102100157.85801-2-mtwget@gmail.com>
- <20201103113743.5764tj2ryrht4dfs@gilmour.lan> <CAHRgzyOao=w6Yyqqvi1Z26=rfJgumkzDbWLxD+_5uaLmyAWiQA@mail.gmail.com>
- <20201105171051.ducvxcdj5jfarmgn@gilmour.lan>
-In-Reply-To: <20201105171051.ducvxcdj5jfarmgn@gilmour.lan>
-From:   Yu-Tung Chang <mtwget@gmail.com>
-Date:   Fri, 6 Nov 2020 10:03:35 +0800
-Message-ID: <CAHRgzyNzXk1uJzEVLvrqPu2CT8jzF+5UFEubT6kEtF=8HVgROQ@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] ARM: dts: sun8i: h3: Add initial NanoPi R1 support
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     robh+dt@kernel.org, wens@csie.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAD=FV=WVVjj1Su2Ta9wQebDEWXs=9dNs9EO9EvTH=EjT4Fr8jg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Maxime Ripard <maxime@cerno.tech> =E4=BA=8E2020=E5=B9=B411=E6=9C=886=E6=97=
-=A5=E5=91=A8=E4=BA=94 =E4=B8=8A=E5=8D=881:10=E5=86=99=E9=81=93=EF=BC=9A
->
-> On Wed, Nov 04, 2020 at 04:07:48PM +0800, Yu-Tung Chang wrote:
-> > > > +&uart1 {
-> > > > +     pinctrl-names =3D "default";
-> > > > +     pinctrl-0 =3D <&uart1_pins>;
-> > >
-> > > This should be already set in the DTSI
-> > >
-> > uart0 as the debugging interface, uart1 as the external uart port,
-> > uart3 as the bluetooth.
->
-> What I mean is that since it's the only muxing option, the pinctrl
-> properties should already be set in the DTSI, so it's redundant to put
-> them in the DTS.
->
-I can only see the definition of uart0 in the DTSI,
-because uart1 as the extension interface is exclusive to NanoPi R1.
-> Maxime
+On Thu, Nov 05, 2020 at 04:55:40PM -0800, Doug Anderson wrote:
+> Hi,
+> 
+> On Thu, Nov 5, 2020 at 4:37 PM Matthias Kaehlcke <mka@chromium.org> wrote:
+> >
+> > One important delta with respect to rev1 is a switch of the power
+> > supply for the onboard USB hub from 'pp3300_l7c' to 'pp3300_a' + a
+> > load switch. The actual regulator switch is done by the patch 'arm64:
+> > dts: qcom: sc7180-trogdor: Make pp3300_a the default supply for
+> > pp3300_hub', since it affects the entire trogdor platform. Here we
+> > only add the .dts files for lazor rev2 and replace the generic
+> > compatible entries in the rev1 .dts files.
+> >
+> > Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+> > ---
+> >
+> > Changes in v2:
+> > - patch added to the series
+> >
+> >  arch/arm64/boot/dts/qcom/Makefile              |  3 +++
+> >  .../dts/qcom/sc7180-trogdor-lazor-r1-kb.dts    |  4 ++--
+> >  .../dts/qcom/sc7180-trogdor-lazor-r1-lte.dts   |  4 ++--
+> >  .../boot/dts/qcom/sc7180-trogdor-lazor-r1.dts  |  4 ++--
+> >  .../dts/qcom/sc7180-trogdor-lazor-r2-kb.dts    | 17 +++++++++++++++++
+> >  .../dts/qcom/sc7180-trogdor-lazor-r2-lte.dts   | 18 ++++++++++++++++++
+> >  .../boot/dts/qcom/sc7180-trogdor-lazor-r2.dts  | 15 +++++++++++++++
+> >  7 files changed, 59 insertions(+), 6 deletions(-)
+> 
+> So it's pretty unlikely that this change actually happened in "-rev2".
+> "-rev2" was a _very_ small batch of boards that I don't think made it
+> into too many people's hands.  You probably want "-rev3".
+
+Ah right, now that you mention it ...
+
+> > diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r2-kb.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r2-kb.dts
+> > new file mode 100644
+> > index 000000000000..7c3a702ef209
+> > --- /dev/null
+> > +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r2-kb.dts
+> > @@ -0,0 +1,17 @@
+> > +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> > +/*
+> > + * Google Lazor board device tree source
+> > + *
+> > + * Copyright 2020 Google LLC.
+> > + */
+> > +
+> > +#include "sc7180-trogdor-lazor-r1.dts"
+> 
+> Should have been updated to not point to '-r1', no?
+
+ack
+
+> ===
+> 
+> If you want to compare, you can also look at my (abandoned) CL:
+> https://crrev.com/c/2481550
+> 
+> ...that forked out a "-rev3" to tag the WiFi slightly differently, but
+> we ended up abandoning it because we found a better way to handle the
+> WiFi stuff.
+
+Ok, thanks
