@@ -2,120 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BDB52A93E5
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 11:16:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C74792A93EA
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 11:17:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726725AbgKFKQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 05:16:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60572 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726124AbgKFKQu (ORCPT
+        id S1726795AbgKFKRb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 05:17:31 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37363 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726124AbgKFKRa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 05:16:50 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9D0FC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 02:16:49 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id e6so735893wro.1
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 02:16:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=6L9JeUWoNBxsQ2u2fgHHCXdFZ5MPFmvxZ5BNcxlrU7o=;
-        b=UprwfviyhKGM+WUYM4NtgdofoWC4MVHl4C94PV8WzSvNXpdd9CZrPxgU+JAK5O0QWq
-         zJvLDksgV4S7PsxJ0dp5p5Vv5GPFjWKebfqtwFk0SrMpnwOR3JNZLfF0Z9j4sAHM84Fs
-         bqsEi2PQuvEfr9cMbhzpYTQSwRuMIoMY2YUSDKsgYwKe/118yLk1APbOp8oMw7cRDXGS
-         Ke6Yf+/QRMduaYF4WZIEFEeE1VG4IDc7Z8kXIeWVX/p6L9d99mVASaBFbcBR6+Rriz3R
-         oV+qbQsdS0AsjSymj7Xecgg9DPIeKtosi3znZSAaQDCQLDbxJPqxD5AFe1yGnSIB9OTS
-         cQgA==
+        Fri, 6 Nov 2020 05:17:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604657848;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=c98dQk0zLTrCO2oJzlMdSO4XNM0SU0ansCker4yytFo=;
+        b=RQLIKFizm53rdsRN0fGIIsjHpuYHCSDt1gTG4q2zRz3rdn1VHBaliIfn/eWx5ENlBTqbjU
+        oiB7gQvbnq6wHNnn1ZurtdpIxflklnpS3uHRu8JY3T+TJ1N2oNrTBNcXpvC2tdeg3t9qJr
+        zk49+GYK/aanjs+oZ3PuHdvcosN0MI0=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-327-FOMsOOELObGrZcMZo2f3uw-1; Fri, 06 Nov 2020 05:17:25 -0500
+X-MC-Unique: FOMsOOELObGrZcMZo2f3uw-1
+Received: by mail-wm1-f70.google.com with SMTP id a130so380803wmf.0
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 02:17:25 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=6L9JeUWoNBxsQ2u2fgHHCXdFZ5MPFmvxZ5BNcxlrU7o=;
-        b=RazDw60aYtp6CTEheGdF7yJIG046qrQgwT0+do3DEC+GF+u06oz1z6ILFxSTk8EEsm
-         kTOD30w4pWQimBgupF4o9QWoHD+re8CiUW05Ye6BkN/Pb1pJT3Yft7IP9pBPq6WIWuyv
-         PT8bt/OIj3b4B5g1txJOUflg6Bc2SLKVFcJx5OyGLqfojtvXX0klJcUrBKtLPXDofIGC
-         e3XiE/elSqF8uTQs4XN2FZDbUQisE7ybiYkFXQoKgSSVB+qmyavA78LciukAvU86jAle
-         gP0Fr2r8xwW5I+FhNFVz5RIgwCh3nUjUqkvsVC1hwuj7T4iOHwxIYVkfOkYlcujsqJoe
-         ko2g==
-X-Gm-Message-State: AOAM532KYl1OTaj4TWwdIweNx9zb6oKjO0U3Q0nYiAjTGrHK8wfxpdWM
-        YxyRxj3/WbGt8JQCTNDptCNTmg==
-X-Google-Smtp-Source: ABdhPJwzSuIyg5V4IAhY/mFu4HPoQAojaX/su37Vjkq++11CyG43w4nmRwNFqKQyqhOoGIHqyeWyjQ==
-X-Received: by 2002:adf:e412:: with SMTP id g18mr1787350wrm.211.1604657808370;
-        Fri, 06 Nov 2020 02:16:48 -0800 (PST)
-Received: from dell ([91.110.221.242])
-        by smtp.gmail.com with ESMTPSA id y185sm1567104wmb.29.2020.11.06.02.16.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Nov 2020 02:16:47 -0800 (PST)
-Date:   Fri, 6 Nov 2020 10:16:46 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>,
-        Mike Hudson <Exoray@isys.ca>, linux-serial@vger.kernel.org
-Subject: Re: [PATCH 13/36] tty: serial: 8250: 8250_port: Staticify functions
- referenced by pointers
-Message-ID: <20201106101646.GB2063125@dell>
-References: <20201104193549.4026187-1-lee.jones@linaro.org>
- <20201104193549.4026187-14-lee.jones@linaro.org>
- <20201106095326.GA2652562@kroah.com>
- <20201106100552.GA2063125@dell>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=c98dQk0zLTrCO2oJzlMdSO4XNM0SU0ansCker4yytFo=;
+        b=OYLMz7MV6lEI310427je2gTkqnOH95VVRyuVLtEkf704PJL+n/2dWtK7f72sepALTU
+         J6ko0tac0Fhf1SAj7KS4TDv3Jf+PYFPk98hW2NJBE/zBRK5sWEs5dJqJD86P406MJnK/
+         CB8Fp2ouqyNAnf/sbRbQefFtzyWIKHgdv2qHrVPcRt45g9kyQ9je9yDmjNg9CRftADHv
+         UGVXglHFAYqsl3zPOMisqO43D8FNALh1e/+ekPFQgbX7vPvwXDuVJZlsNw8Eq82GNtso
+         bBB3keybHRFJ4+BD7V2aFiVb7UExoL6B+HiuTx5urj4a4jJAjG6HgP5URTw81fuaxADB
+         IDag==
+X-Gm-Message-State: AOAM533+Prp+g2dtKy2p+WYQAJnGliwz9Iz0xu5n3xWbBN1xXeuGsTBD
+        THbNsZhyng7RkhDPGWcrVwKHi40nc53V5FA7vDfFEm1P4C6gqjWuBYz71sLjKrm2ozUGrpTa7HR
+        j9/Y1kvAx6guxxmhcGeZRLkzE
+X-Received: by 2002:adf:f643:: with SMTP id x3mr1943816wrp.180.1604657844087;
+        Fri, 06 Nov 2020 02:17:24 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwG3yefM6iYrAHyW3FdeRueDAy5/yBY0Kpc+zqzk+vfI5Ny0ljW2fbQMUCzV0oL7AHKxkNJ1A==
+X-Received: by 2002:adf:f643:: with SMTP id x3mr1943794wrp.180.1604657843907;
+        Fri, 06 Nov 2020 02:17:23 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
+        by smtp.gmail.com with ESMTPSA id g23sm1535168wmh.21.2020.11.06.02.17.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 06 Nov 2020 02:17:23 -0800 (PST)
+Subject: Re: [PATCH v2 1/2] sched/wait: Add add_wait_queue_priority()
+To:     David Woodhouse <dwmw2@infradead.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        kvm@vger.kernel.org, Alex Williamson <alex.williamson@redhat.com>
+References: <20201026175325.585623-1-dwmw2@infradead.org>
+ <20201027143944.648769-1-dwmw2@infradead.org>
+ <20201027143944.648769-2-dwmw2@infradead.org>
+ <20201028143509.GA2628@hirez.programming.kicks-ass.net>
+ <ef4660dba8135ca5a1dc7e854babcf65d8cef46f.camel@infradead.org>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <f0901be7-1526-5b6a-90cb-6489e53cb92f@redhat.com>
+Date:   Fri, 6 Nov 2020 11:17:21 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201106100552.GA2063125@dell>
+In-Reply-To: <ef4660dba8135ca5a1dc7e854babcf65d8cef46f.camel@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 06 Nov 2020, Lee Jones wrote:
-
-> On Fri, 06 Nov 2020, Greg Kroah-Hartman wrote:
+On 04/11/20 10:35, David Woodhouse wrote:
+> On Wed, 2020-10-28 at 15:35 +0100, Peter Zijlstra wrote:
+>> On Tue, Oct 27, 2020 at 02:39:43PM +0000, David Woodhouse wrote:
+>>> From: David Woodhouse <dwmw@amazon.co.uk>
+>>>
+>>> This allows an exclusive wait_queue_entry to be added at the head of the
+>>> queue, instead of the tail as normal. Thus, it gets to consume events
+>>> first without allowing non-exclusive waiters to be woken at all.
+>>>
+>>> The (first) intended use is for KVM IRQFD, which currently has
+>>> inconsistent behaviour depending on whether posted interrupts are
+>>> available or not. If they are, KVM will bypass the eventfd completely
+>>> and deliver interrupts directly to the appropriate vCPU. If not, events
+>>> are delivered through the eventfd and userspace will receive them when
+>>> polling on the eventfd.
+>>>
+>>> By using add_wait_queue_priority(), KVM will be able to consistently
+>>> consume events within the kernel without accidentally exposing them
+>>> to userspace when they're supposed to be bypassed. This, in turn, means
+>>> that userspace doesn't have to jump through hoops to avoid listening
+>>> on the erroneously noisy eventfd and injecting duplicate interrupts.
+>>>
+>>> Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
+>>
+>> Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 > 
-> > On Wed, Nov 04, 2020 at 07:35:26PM +0000, Lee Jones wrote:
-> > > Fixes the following W=1 kernel build warning(s):
-> > > 
-> > >  drivers/tty/serial/8250/8250_port.c:349:14: warning: no previous prototype for ‘au_serial_in’ [-Wmissing-prototypes]
-> > >  drivers/tty/serial/8250/8250_port.c:359:6: warning: no previous prototype for ‘au_serial_out’ [-Wmissing-prototypes]
-> > > 
-> > > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > Cc: Jiri Slaby <jirislaby@kernel.org>
-> > > Cc: Mike Hudson <Exoray@isys.ca>
-> > > Cc: linux-serial@vger.kernel.org
-> > > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > > ---
-> > >  drivers/tty/serial/8250/8250_port.c | 4 ++--
-> > >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > And now I get build errors of:
-> > 	ld: drivers/tty/serial/8250/8250_early.o: in function `early_au_setup':
-> > 	8250_early.c:(.init.text+0x7): undefined reference to `au_serial_in'
-> > 	ld: 8250_early.c:(.init.text+0xf): undefined reference to `au_serial_out'
-> > 	make: *** [Makefile:1164: vmlinux] Error 1
-> > 
+> Thanks. Paolo, the conclusion was that you were going to take this set
+> through the KVM tree, wasn't it?
 > 
-> I *always* test build my sets before posting.
-> 
-> /investigating
 
-What config failed for you?
+Queued, except for patch 2/3 in the eventfd series which Alex hasn't 
+reviewed/acked yet.
 
-It looks as though SERIAL_8250_CONSOLE is a bool and doesn't appear to
-be compiled with allmodconfig builds for any architecture that I test
-against (Arm, Arm64, MIPS, PPC, x86).
+Paolo
 
-> > perhaps W=1 was wrong here...
-
-NEVER! ;)
-
-The prototype just needs moving is all.
-
-I'll fix the issue and re-post an alternative patch.
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
