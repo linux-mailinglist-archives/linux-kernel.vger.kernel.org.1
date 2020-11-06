@@ -2,127 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CFD42A94EF
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 12:00:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 119032A94F1
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 12:00:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727025AbgKFLAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 06:00:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39128 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726317AbgKFLAM (ORCPT
+        id S1727092AbgKFLAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 06:00:50 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:45583 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726317AbgKFLAu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 06:00:12 -0500
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 877CFC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 03:00:12 -0800 (PST)
-Received: by mail-qk1-x741.google.com with SMTP id z6so648943qkz.4
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 03:00:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=5scwP+FH/3TvdU9cRBPIGfL9OLQBWnAyRxebsQvYQJw=;
-        b=K3GEevu5XTiJFobdS3WdtKWhU/wb279WC0tnyvUS0zrqS+1hRZU39kLzr6Rs2Rs4Ct
-         RnA0QI/duInuNOTC8svzJEUEgB+Zy/BsCor7akvZoBtUE5sACyi9u5NFoHdi30UnIM7q
-         zaZ0izVo/c09fKHF4D/7D6TWLdSZ3YT99RFC5TF0OVrbzY8mNmAYKhmnbDOc9Wm+JITd
-         TKUC8zR9IakSoFyRx8uXTFhEOT4hyPv7p7IbpwDVvLZ0O31a4BDmyGxXLApCEI0fA4Tc
-         cRkT8DhvvKS6XCVkl15e2vE37m6na9YhMXtGgvYchipGxSTryUijvuK32I7bIg1y26g5
-         EUIw==
+        Fri, 6 Nov 2020 06:00:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604660448;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZtZT7itrVpNRfBlr3Cazy0HWs7zXJS+GGQb2VbmhUxk=;
+        b=Uj+6QUxNBm0P0iXvq7onhHJrK8+OfAG/0pFmW20p+x/CI63ArQ+Gde/FZe/pkQMA66MqDY
+        MH/AusmohfLYvG4Hm9Qx74GF8pzt7ikcIIlF6rXbeOUolB1oRgq1rrE34vPwsXFS0H94k8
+        YwrtoSugQcFfGftH8oW/Qr/5KmW+kmY=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-414-V632puqaPOOAtjHWuSLJLg-1; Fri, 06 Nov 2020 06:00:47 -0500
+X-MC-Unique: V632puqaPOOAtjHWuSLJLg-1
+Received: by mail-wm1-f71.google.com with SMTP id l16so294088wmh.1
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 03:00:47 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=5scwP+FH/3TvdU9cRBPIGfL9OLQBWnAyRxebsQvYQJw=;
-        b=fgs+E4ch13USGLIB74g/dVICNUlOFB4X8kGR1OZWfLKa6QjUl1wWUe1cYMLiN+c6yw
-         hp66nlgKL/bS3LXNSOaMIYxtLyP5WK/BQzyyDv6Z1lfmoA/peewHC2/vZrUG2e6nxYw7
-         UKk10t1PMI7A4x7Takd/vjCbDXIztYem5uDKy9X+vCV4Qclk3GUnP1s76i2suH8KvWmv
-         mWNDoJ173iA5f1yH4U2L2JP6Af3uhgY8m/IT41tujlJ1h18aRKpcAbYgnY9+3qbt4wey
-         stglPd+Y+kj066x7f6TClqpCVYOcyo/i/68apb2pPrGsnDhq5dy4adJpgoFIVeRdm94g
-         swLw==
-X-Gm-Message-State: AOAM531cAg8farHBSFXsZy/QrkfF/h/6ZwzRtMm4XuC9cQYtS4+O0ewo
-        AyYaEgCD0F9CjIb4R7z4xxSsW/3Kz+jTaIHxHJBZyA==
-X-Google-Smtp-Source: ABdhPJxmBJPFRCR+nFRfwqYH/BeX2Cb8nVliVSyYYIlw2cTORTY+RQImlwv64qv/wrg8lt7wtPkrBioMM43NnhfAjSI=
-X-Received: by 2002:a05:620a:697:: with SMTP id f23mr831545qkh.374.1604660411776;
- Fri, 06 Nov 2020 03:00:11 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ZtZT7itrVpNRfBlr3Cazy0HWs7zXJS+GGQb2VbmhUxk=;
+        b=bwP4mTRjiz4sLIAUruUGPcsLRUgesvbSF+w+l8fRkObbLFEAIRGXxOykvqQMUwnfPX
+         kuRbCkxMBhLQdm+XfY9OSKwmcH3YvKa/h7qp97CCPpSGyvAHqz25ScZDSAv0nOTmiwIT
+         xP6IJo4/3ttXtIy/ak24lnxcJ9WgiPwp9K8sd3sPI0wp7NU3ZeqNjJyPcBSCIal/8yBS
+         Sd/6xj3itEIbpcmEOvLD4mDJaXB0LcP7kz6nPQfA4hmyWiHvrtjsDdZOs2qQQlviIzPz
+         0B3HNgy1OCDauIHeTWR3XeY20HT5GxKlSr/vNK75vNlwx1BcG1H2YBn11HALjnxsQOjg
+         qoVg==
+X-Gm-Message-State: AOAM533myAKAPFOeCBgJ+kmXtCm62iff5f4FcwyYCk7s2R6D1CGbDpa0
+        99wfNqJfI77yU0eSswiFqzPC9Vk1Kjwskeo1/RXzdnXerMGXTBH43OwR41rElXRzNyhPZptP1QE
+        pvmLhAmH37YMmNZKHHcsH6j7U
+X-Received: by 2002:a1c:b041:: with SMTP id z62mr1861616wme.183.1604660443119;
+        Fri, 06 Nov 2020 03:00:43 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJy998yT/dbdVsyfPvdRyx12Gso3/GpsD6DmKxXxQdpz/rRJ9mO5IMFzBixjrV3UiX4aJV0qjg==
+X-Received: by 2002:a1c:b041:: with SMTP id z62mr1861590wme.183.1604660442885;
+        Fri, 06 Nov 2020 03:00:42 -0800 (PST)
+Received: from [192.168.10.118] ([93.56.170.5])
+        by smtp.gmail.com with ESMTPSA id l3sm1969557wmf.0.2020.11.06.03.00.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 06 Nov 2020 03:00:42 -0800 (PST)
+Subject: Re: [PATCH v13 06/14] KVM: Make dirty ring exclusive to dirty bitmap
+ log
+To:     Peter Xu <peterx@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        Andrew Jones <drjones@redhat.com>
+References: <20201001012044.5151-1-peterx@redhat.com>
+ <20201001012224.5818-1-peterx@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <26c461bc-b2e3-bc23-fff6-0377b09d325a@redhat.com>
+Date:   Fri, 6 Nov 2020 12:00:41 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-References: <802c8865b70c3bdf70e44d37f14e7767b6495e88.1604631371.git.greentime.hu@sifive.com>
- <CAHp75VdHuZc43Oe8vp-Xtb2+vsEoV2FY-W_dAifuh4Un0BveSA@mail.gmail.com>
-In-Reply-To: <CAHp75VdHuZc43Oe8vp-Xtb2+vsEoV2FY-W_dAifuh4Un0BveSA@mail.gmail.com>
-From:   Greentime Hu <greentime.hu@sifive.com>
-Date:   Fri, 6 Nov 2020 19:00:00 +0800
-Message-ID: <CAHCEehKfnUtuzoHQ=XSAzm5n0JqUHmYmjMCyLo2uRvYXc=GwYA@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/1] gpio: sifive: To get gpio irq offset from device
- tree data
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Yash Shah <yash.shah@sifive.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201001012224.5818-1-peterx@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andy Shevchenko <andy.shevchenko@gmail.com> =E6=96=BC 2020=E5=B9=B411=E6=9C=
-=886=E6=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8B=E5=8D=885:25=E5=AF=AB=E9=81=93=
-=EF=BC=9A
->
-> On Fri, Nov 6, 2020 at 4:59 AM Greentime Hu <greentime.hu@sifive.com> wro=
-te:
-> >
-> > We can get hwirq number of the gpio by its irq_data->hwirq so that we d=
-on't
-> > need to add more macros for different platforms. This patch is tested i=
-n
-> > SiFive Unleashed board and SiFive Unmatched board.
->
-> ...
->
-> > +       struct sifive_gpio *chip =3D gpiochip_get_data(gc);
-> > +       struct irq_data *d =3D irq_get_irq_data(chip->irq_number[child]=
-);
->
-> > +       *parent =3D d->hwirq;
->
-> There is an API to get hwirq.
->
-> ...
->
-> > +       for (i =3D 0; i < ngpio; i++)
-> > +               chip->irq_number[i] =3D irq_of_parse_and_map(node, i);
->
-> Can't you use platform_get_irq_optional()?
->
+On 01/10/20 03:22, Peter Xu wrote:
+>   
+> +	/* Dirty ring tracking is exclusive to dirty log tracking */
+> +	if (kvm->dirty_ring_size)
+> +		return -EINVAL;
+> +
 
-Thank you for reviewing.
-I would change it like this.
+ENXIO is slightly more appropriate (especially for debugging, as EINVAL 
+suggests that the arguments were wrong and not some external state).
 
-diff --git a/drivers/gpio/gpio-sifive.c b/drivers/gpio/gpio-sifive.c
-index e8cd8741dbae..bfb915bf5d78 100644
---- a/drivers/gpio/gpio-sifive.c
-+++ b/drivers/gpio/gpio-sifive.c
-@@ -145,7 +145,7 @@ static int
-sifive_gpio_child_to_parent_hwirq(struct gpio_chip *gc,
- {
-        struct sifive_gpio *chip =3D gpiochip_get_data(gc);
-        struct irq_data *d =3D irq_get_irq_data(chip->irq_number[child]);
--       *parent =3D d->hwirq;
-+       *parent =3D irqd_to_hwirq(d);
-        *parent_type =3D IRQ_TYPE_NONE;
-        return 0;
- }
-@@ -202,7 +202,7 @@ static int sifive_gpio_probe(struct platform_device *pd=
-ev)
-        }
+Paolo
 
-        for (i =3D 0; i < ngpio; i++)
--               chip->irq_number[i] =3D irq_of_parse_and_map(node, i);
-+               chip->irq_number[i] =3D platform_get_irq(pdev, i);
-
-        ret =3D bgpio_init(&chip->gc, dev, 4,
-                         chip->base + SIFIVE_GPIO_INPUT_VAL,
