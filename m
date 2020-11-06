@@ -2,78 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7784E2A9498
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 11:42:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 074182A949B
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 11:44:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726897AbgKFKmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 05:42:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35176 "EHLO mail.kernel.org"
+        id S1726948AbgKFKow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 05:44:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35336 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726010AbgKFKmy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 05:42:54 -0500
+        id S1726010AbgKFKov (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 05:44:51 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 92D4920702;
-        Fri,  6 Nov 2020 10:42:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2671720702;
+        Fri,  6 Nov 2020 10:44:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604659372;
-        bh=lzG1XHFrcM3QcQARAEI6Uz4IHlH2u0wbrmSoCt6+fVQ=;
+        s=default; t=1604659489;
+        bh=ougvJFEDJnn7GLjb5Wkwg0aE2d1u72Yu7Du/d+yLTRw=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=w8amJD6DJbnv+b4uA5X2WJVuUIHmrNo8TXyf8qmXiBGRyNRfwLNP2YgS92BHXN4ig
-         n8YQSXUJUGGzCsnYM01r4AvHhG0A40bj/ex9fC89A94WrflT1H4ZpM7TULF+R9ytti
-         VJrpSdppG58R+px+5NfxeyTgTmPFdSECl+ZMe2uQ=
-Date:   Fri, 6 Nov 2020 11:43:38 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Himadri Pandya <himadrispandya@gmail.com>
-Cc:     johan@kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [PATCH 00/15] usb: serial: avoid using usb_control_msg() directly
-Message-ID: <20201106104338.GA2785199@kroah.com>
-References: <20201104064703.15123-1-himadrispandya@gmail.com>
+        b=XB76eSCDBGX+2Tn28LKNoYpLWsv+KlUQgiXx3ngs0/THLwx772RPL53GyLh7II/mP
+         AF7HphcZKc1/lhlFmJUiDKixR4a9xL//MDINdwZ1awBkwRtQuOUzKjGJvPGOltMZUv
+         mugVcZ1eyufLjHooCAKIIh4fg/3vs7sF3Ng42fGQ=
+Date:   Fri, 6 Nov 2020 11:45:36 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Badhri Jagan Sridharan <badhri@google.com>
+Cc:     Rob Herring <robh@kernel.org>, Thierry Reding <treding@nvidia.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Prashant Malani <pmalani@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        USB <linux-usb@vger.kernel.org>, Mark Brown <broonie@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH v12 01/10] dt-bindings: usb: Maxim type-c controller
+ device tree binding document
+Message-ID: <20201106104536.GB2785199@kroah.com>
+References: <20201029063138.1429760-1-badhri@google.com>
+ <20201029063138.1429760-2-badhri@google.com>
+ <20201029153351.GA1911637@bogus>
+ <CAPTae5L8bnv1S6dK0XkPiF7aha88ed5vfaiw5HAdtvu7TQMD5g@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201104064703.15123-1-himadrispandya@gmail.com>
+In-Reply-To: <CAPTae5L8bnv1S6dK0XkPiF7aha88ed5vfaiw5HAdtvu7TQMD5g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 12:16:48PM +0530, Himadri Pandya wrote:
-> There are many usages of usb_control_msg() that can use the new wrapper
-> functions usb_contro_msg_send() & usb_control_msg_recv() for better
-> error checks on short reads and writes. Hence use them whenever possible
-> and avoid using usb_control_msg() directly.
+On Thu, Oct 29, 2020 at 01:01:52PM -0700, Badhri Jagan Sridharan wrote:
+> Hi Rob,
 > 
-> Himadri Pandya (15):
->   usb: serial: ark3116: use usb_control_msg_recv() and
->     usb_control_msg_send()
->   usb: serial: belkin_sa: use usb_control_msg_send()
->   usb: serial: ch314: use usb_control_msg_recv() and
->     usb_control_msg_send()
->   usb: serial: cp210x: use usb_control_msg_recv() and
->     usb_control_msg_send()
->   usb: serial: cypress_m8: use usb_control_msg_recv() and
->     usb_control_msg_send()
->   usb: serial: f81232: use usb_control_msg_recv() and
->     usb_control_msg_send()
->   usb: serial: f81534: use usb_control_msg_recv() and
->     usb_control_msg_send()
->   usb: serial: ftdi_sio: use usb_control_msg_recv() and
->     usb_control_msg_send()
->   usb: serial: io_edgeport: use usb_control_msg_recv() and
->     usb_control_msg_send()
->   usb: serial: io_ti: use usb_control_msg_recv() and
->     usb_control_msg_send()
->   usb: serial: ipaq: use usb_control_msg_send()
->   usb: serial: ipw: use usb_control_msg_send()
->   usb: serial: iuu_phoenix: use usb_control_msg_send()
->   usb: serial: keyspan_pda: use usb_control_msg_recv() and
->     usb_control_msg_send()
->   usb: serial: kl5kusb105: use usb_control_msg_recv() and
->     usb_control_msg_send()
+> The error seems to be because the following patch
+> 5ed132db5ad4 dt-bindings: connector: Add property to set initial
+> current cap for FRS
+> is in usb-next but not in the rc1 branch yet. To make the bot
+> recognize that this is a
+> dependency, Is it suffice to mention the following in the commit description?
+> This patch depends on patch "dt-bindings: connector: Add property to
+> set initial current cap for FRS".
+> Or is there something else that I should do ?
 
-For the whole series:
+This should all be in linux-next, Rob, is that ok?
 
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+thanks,
+
+greg k-h
