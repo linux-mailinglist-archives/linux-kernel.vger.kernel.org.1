@@ -2,166 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF8282A8D27
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 03:51:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC0E12A8D2A
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 03:52:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725933AbgKFCvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 21:51:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47714 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725616AbgKFCvP (ORCPT
+        id S1725947AbgKFCwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 21:52:09 -0500
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:47018 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725835AbgKFCwJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 21:51:15 -0500
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85321C0613CF;
-        Thu,  5 Nov 2020 18:51:15 -0800 (PST)
-Received: by mail-qt1-x841.google.com with SMTP id i7so2730965qti.6;
-        Thu, 05 Nov 2020 18:51:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WTOpuxQqUTD7Fs5ED8d6WE6HwICjQ/RXvxFgPZw8ydY=;
-        b=p/JG8EDrUjsel8y++UnIKylNNB7pdtkG84acG4fowir5XwgMGq/dJP/aJWrh0XctbL
-         ad+bYvmnzOOpMPsliLfFb9w0yxcfyKBiZd9sJOrOuniq56S3j5a3y5sYVEnZ5FO7/Q36
-         omn87/g+QkVSEEycolY5jlF6rcNa9thuBFYqBKPPlFXQ/E8nDDqgvvRU97nxZ+1guG7p
-         9OetQ7bZNAYVtwv9mHGIHzurr02g9ja+Hw36FbwjvLxyTERVcFRIsiw0a6ueba3flpt8
-         nAy9mWVR0o7N/d2XsbQVm9ncI/AmWajjppaC7uve7TaNqJSCsYc2VTGEyLRrTKSjACH9
-         z0Kg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WTOpuxQqUTD7Fs5ED8d6WE6HwICjQ/RXvxFgPZw8ydY=;
-        b=UPHtsBv9Iv9ZQw6uvQ9KVtKyftLfWNc7QXUgpStfcWDFxU9O1ZvCq/FtNjnEQRw+Er
-         JGR0oWJRNZypuXFh0E5octqFSWUMtT6eyiX4TD+ytmlJJ0+gCRpZzftg80x46LV/9J5u
-         Mf7lMkILZPOY1zJ+8Xxrj329dLeEEiyMZmWjZ+s1KZgnaLela13UMr8OG4mcDFEZCs4s
-         KP2F2utQwAr759qhtT5EeXqtUuPBpeBntK8ffCcrREIvMt4RPwgQYaxSie99VZXB+ych
-         YngzgTgDi63cgAIJN8HxGTfbdhWhRIUAxQ4VT1VWrSMUR0x08iJMwgHk7/JcLW5j79eL
-         ubkA==
-X-Gm-Message-State: AOAM533xeGYPRYK4dqILY0+YPY621R0m2c/XsxgrUkc7og1CWAQ4ZD34
-        ej0KHbkLX+vXYRZ5eMpbFr3N7JVHaz6dlwiazvo=
-X-Google-Smtp-Source: ABdhPJzmaVLfpBM4DF4coroQarUHDYYbWmF3o5VQGr7jzQ39SDG3tzILiBVeORimIM8T60VCYrXH/xjW6RHzzC5xsMs=
-X-Received: by 2002:ac8:71c3:: with SMTP id i3mr340558qtp.204.1604631074809;
- Thu, 05 Nov 2020 18:51:14 -0800 (PST)
+        Thu, 5 Nov 2020 21:52:09 -0500
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by kvm5.telegraphics.com.au (Postfix) with ESMTP id 4D86F22C30;
+        Thu,  5 Nov 2020 21:52:02 -0500 (EST)
+Date:   Fri, 6 Nov 2020 13:52:01 +1100 (AEDT)
+From:   Finn Thain <fthain@telegraphics.com.au>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+cc:     Arnd Bergmann <arnd@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Tony Luck <tony.luck@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Philip Blundell <philb@gnu.org>,
+        Joshua Thompson <funaho@jurai.org>,
+        Sam Creasey <sammy@sammy.net>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [RFC 13/13] m68k: mac: convert to generic clockevent
+In-Reply-To: <CAMuHMdUyGH=ORa4yHivMeJZaGQ3kEXi1kr9=P+u1y3QQnC+-4g@mail.gmail.com>
+Message-ID: <alpine.LNX.2.23.453.2011061343030.13@nippy.intranet>
+References: <20201008154651.1901126-1-arnd@arndb.de> <20201008154651.1901126-14-arnd@arndb.de> <alpine.LNX.2.23.453.2010091900150.12@nippy.intranet> <CAK8P3a3rM7gJjdTtcKzr6yi15n6xs-yhEpmSOf3QHfahQwxqkw@mail.gmail.com> <alpine.LNX.2.23.453.2010150937430.16@nippy.intranet>
+ <CAK8P3a3i6cum_9xGgsbxjXXvbRsP8Po5qLZ0Agb3c4gZTKC9GQ@mail.gmail.com> <CAMuHMdUyGH=ORa4yHivMeJZaGQ3kEXi1kr9=P+u1y3QQnC+-4g@mail.gmail.com>
 MIME-Version: 1.0
-References: <1604281947-26874-1-git-send-email-shengjiu.wang@nxp.com>
- <1604281947-26874-2-git-send-email-shengjiu.wang@nxp.com> <20201105013539.GA16459@Asurada-Nvidia>
-In-Reply-To: <20201105013539.GA16459@Asurada-Nvidia>
-From:   Shengjiu Wang <shengjiu.wang@gmail.com>
-Date:   Fri, 6 Nov 2020 10:51:03 +0800
-Message-ID: <CAA+D8ANrkgXR+8JGp4fPLvkKJ05EqQyShWTO+xWpPOycPT9Tyw@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] ASoC: fsl_aud2htx: Add aud2htx module driver
-To:     Nicolin Chen <nicoleotsuka@gmail.com>
-Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, alsa-devel@alsa-project.org,
-        Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linuxppc-dev@lists.ozlabs.org, Takashi Iwai <tiwai@suse.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Fabio Estevam <festevam@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 5, 2020 at 9:48 AM Nicolin Chen <nicoleotsuka@gmail.com> wrote:
->
-> On Mon, Nov 02, 2020 at 09:52:27AM +0800, Shengjiu Wang wrote:
-> > The AUD2HTX is a digital module that provides a bridge between
-> > the Audio Subsystem and the HDMI RTX Subsystem. This module
-> > includes intermediate storage to queue SDMA transactions prior
-> > to being synchronized and passed to the HDMI RTX Subsystem over
-> > the Audio Link.
+On Fri, 23 Oct 2020, Geert Uytterhoeven wrote:
+
+> > > > The arm/rpc timer seems to be roughly in the same category as most 
+> > > > of the m68k ones or the i8253 counter on a PC. It's possible that 
+> > > > some of them could use the same logic as 
+> > > > drivers/clocksource/i8253.o as long as there is any hardware 
+> > > > oneshot mode.
+> > >
+> > > There appear to be 15 platforms in that category. 4 have no 
+> > > clocksource besides the jiffies clocksource, meaning there's no 
+> > > practical alternative to using a periodic tick, like you did in your 
+> > > RFC patch:
+> > >
+> > > arch/m68k/apollo/config.c
+> > > arch/m68k/q40/q40ints.c
+> > > arch/m68k/sun3/sun3ints.c
+> > > arch/m68k/sun3x/time.c
 > >
-> > The AUD2HTX contains a DMA request routed to the SDMA module.
-> > This DMA request is controlled based on the watermark level in
-> > the 32-entry sample buffer.
-> >
-> > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
->
-> Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
->
-> Despite some small comments inline.
->
-> > +static int fsl_aud2htx_dai_probe(struct snd_soc_dai *cpu_dai)
-> > +{
-> > +     struct fsl_aud2htx *aud2htx = dev_get_drvdata(cpu_dai->dev);
-> > +
-> > +     /* DMA request when number of entries < WTMK_LOW */
-> > +     regmap_update_bits(aud2htx->regmap, AUD2HTX_CTRL_EXT,
-> > +                        AUD2HTX_CTRE_DT_MASK, 0);
-> > +
-> > +     /* Disable interrupts*/
-> > +     regmap_update_bits(aud2htx->regmap, AUD2HTX_IRQ_MASK,
-> > +                        AUD2HTX_WM_HIGH_IRQ_MASK |
-> > +                        AUD2HTX_WM_LOW_IRQ_MASK |
-> > +                        AUD2HTX_OVF_MASK,
-> > +                        AUD2HTX_WM_HIGH_IRQ_MASK |
-> > +                        AUD2HTX_WM_LOW_IRQ_MASK |
-> > +                        AUD2HTX_OVF_MASK);
-> > +
-> > +     /* Configure watermark */
-> > +     regmap_update_bits(aud2htx->regmap, AUD2HTX_CTRL_EXT,
-> > +                        AUD2HTX_CTRE_WL_MASK,
-> > +                        AUD2HTX_WTMK_LOW << AUD2HTX_CTRE_WL_SHIFT);
-> > +     regmap_update_bits(aud2htx->regmap, AUD2HTX_CTRL_EXT,
-> > +                        AUD2HTX_CTRE_WH_MASK,
-> > +                        AUD2HTX_WTMK_HIGH << AUD2HTX_CTRE_WH_SHIFT);
->
-> If there isn't a hard requirement from hardware, feels better to
-> combine all the writes to AUD2HTX_CTRL_EXT into one single MMIO.
+> > Do any of these have users? I'm fairly sure sun3x has never worked in 
+> > mainline, sun3 seems to still need the same few patches it did 20 
+> > years ago. I couldn't find much about Linux on Apollo or q40, the 
+> > information on the web for either of them seems to all be for 
+> > linux-2.4 kernels.
+> 
+> They probably don't have any users.
 
-ok, will update it.
+I have access to several Sun 3 machines but no time to work on that port, 
+unfortunately.
 
->
-> > +static irqreturn_t fsl_aud2htx_isr(int irq, void *dev_id)
-> > +{
-> > +     return IRQ_HANDLED;
->
-> Empty isr? Perhaps can drop the request_irq() at all?
-
-I'd like to keep this for future enhancement, what do you think?
-
->
-> > +static int fsl_aud2htx_probe(struct platform_device *pdev)
-> > +{
-> > +     struct fsl_aud2htx *aud2htx;
-> > +     struct resource *res;
-> > +     void __iomem *regs;
-> > +     int ret, irq;
-> > +
-> > +     aud2htx = devm_kzalloc(&pdev->dev, sizeof(*aud2htx), GFP_KERNEL);
-> > +     if (!aud2htx)
-> > +             return -ENOMEM;
-> > +
-> > +     aud2htx->pdev = pdev;
-> > +
-> > +     res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> > +     regs = devm_ioremap_resource(&pdev->dev, res);
-> > +     if (IS_ERR(regs)) {
-> > +             dev_err(&pdev->dev, "failed ioremap\n");
-> > +             return PTR_ERR(regs);
-> > +     }
-> > +
-> > +     aud2htx->regmap = devm_regmap_init_mmio(&pdev->dev, regs,
-> > +                                             &fsl_aud2htx_regmap_config);
-> > +     if (IS_ERR(aud2htx->regmap)) {
-> > +             dev_err(&pdev->dev, "failed to init regmap");
-> > +             return PTR_ERR(aud2htx->regmap);
-> > +     }
-> > +
-> > +     irq = platform_get_irq(pdev, 0);
-> > +     if (irq < 0) {
-> > +             dev_err(&pdev->dev, "no irq for node %s\n",
-> > +                     dev_name(&pdev->dev));
->
-> dev_err() already prints dev_name, so not necessary to print again.
-
-ok, will update it
-
-best regards
-wang shengjiu
+Are these 4 platforms (those with no clocksource besides the "jiffies" 
+clocksource) the only reason for CONFIG_TIME_LOW_RES on m68k?
