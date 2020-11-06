@@ -2,84 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D5502A9543
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 12:28:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B0622A9568
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 12:30:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727196AbgKFL2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 06:28:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727171AbgKFL2b (ORCPT
+        id S1727191AbgKFLaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 06:30:18 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42124 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726694AbgKFLaS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 06:28:31 -0500
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 004BAC0613D3
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 03:28:30 -0800 (PST)
-Received: by mail-ej1-x641.google.com with SMTP id o9so1449442ejg.1
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 03:28:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=PpiglogAeZjVWunyalGC1dCjHm7L8NAANzFsnB4dX60=;
-        b=OPTfmTc/tHtUOZtSE8Yl6q73ug4m1XcqTspceLvOU1uh9FNT5CoGWQsEPHqmzv7lPr
-         UameZxTddPidqt7g1XzMB0GvzQ5AKUUvEU+ikH1KV+ooIXiCh1QRxG3PwIAUkFfFutdJ
-         qFV3IeHE+At91pILz9vCqdJ25QXv0QLv5A8+/CDzas9NRz3rc6Ae2zIQMNEGmbOGj33Q
-         ruK+dYQsHL7z0Dsmf20lZPsCZ/c7SjuuWFPJUrwy6nIujXxhCh0HIECKQEHwJMoe6ScY
-         gHwtoI3gt2N/VHj2eKsKMOxYgIkIvXgMmqrYduAt9q9Te5Zc0b6sp1p7DutYfZEsrrvf
-         mSmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=PpiglogAeZjVWunyalGC1dCjHm7L8NAANzFsnB4dX60=;
-        b=CxtIsvaCssHAxgiQTQ6UXO5Z+ebJkWo5xoYwHOlvz5P/QvMZ19sJrCmoVqZFXpM84m
-         GdhUGomzQEjDvH9nVVhzpMzz0N0U2khSzY3D3s/0OxwePbt97j2FBQt4z5D6fxuGJjmX
-         pNVJWl7WrIAPsSJXXLKv4L5WxHQlZtr3pQJxRDJupKe0j8K9yPPC03d/VzvCAN8FZO6w
-         YefYq9QaGrYUYHtXMljjPeLvdglnSl4K9TKf+johcF4nKkwaLXeJr8qa3FSHcY7Wnwep
-         deIHvzgNaY0RlGfzCYQzILOAiUyCTzcZvSbr3Na2ndS7QDsg3NdPgvyIyL3F1SOboVq2
-         H00g==
-X-Gm-Message-State: AOAM530+RU5h/NMZU/qZ50mj4to9ESWKIuN51Ss3jW1lN7qi3WxTrqkl
-        4Rl3LEYayBUcBm8TUAqEEfvnXIo/Af/dGfVshYo=
-X-Google-Smtp-Source: ABdhPJyERenhKAnfuXduF6CfXKSNe0q47Dyh6486GrlPZD9R7GOic7Sr0iyyJndJPte8EEGTBoMNLiYlfJlLwUExSUY=
-X-Received: by 2002:a17:906:60f:: with SMTP id s15mr1590849ejb.449.1604662109663;
- Fri, 06 Nov 2020 03:28:29 -0800 (PST)
+        Fri, 6 Nov 2020 06:30:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604662217;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wrZ4oLrRKAlkIXCkiskrapF3SJUeI8FJdBVtlw792IE=;
+        b=B3fTBQNN7+yPRyU8pyn06pRydRetpXpc5uxstF0pvzUbZo+TAqKmTwqhPjKnsiJWCPjPP2
+        4mMUC+dnrY0emJBa75hqrxLkIccic1Rd7VCh8qek/7v2Q6g34OQLa6xhAEfyp+9rfGOmEZ
+        mfzsLdbLsdZ79LUDpoxbvzjVt3seez8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-354-fC1An0zuMgOrKv4hm-MBGg-1; Fri, 06 Nov 2020 06:30:15 -0500
+X-MC-Unique: fC1An0zuMgOrKv4hm-MBGg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EF8B5186DD28;
+        Fri,  6 Nov 2020 11:30:13 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-115-47.rdu2.redhat.com [10.10.115.47])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7C07F1A4D6;
+        Fri,  6 Nov 2020 11:30:12 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <000000000000debe9105b36bfd65@google.com>
+References: <000000000000debe9105b36bfd65@google.com>
+To:     syzbot <syzbot+f0f857c714a8800e048c@syzkaller.appspotmail.com>
+Cc:     dhowells@redhat.com, fweisbec@gmail.com,
+        linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org,
+        mingo@kernel.org, syzkaller-bugs@googlegroups.com,
+        tglx@linutronix.de
+Subject: Re: INFO: rcu detected stall in process_one_work (3)
 MIME-Version: 1.0
-Received: by 2002:a17:907:42cf:0:0:0:0 with HTTP; Fri, 6 Nov 2020 03:28:29
- -0800 (PST)
-Reply-To: officecourer014bj@aol.com
-From:   Eveline Baert <evelinebaert117@gmail.com>
-Date:   Fri, 6 Nov 2020 12:28:29 +0100
-Message-ID: <CAM_QVypgRNndboyM_20JUGTd-KmLQJ34TyLm3kbw_URdhzmgLg@mail.gmail.com>
-Subject: Attention for you outstanding payment,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1796663.1604662211.1@warthog.procyon.org.uk>
+Date:   Fri, 06 Nov 2020 11:30:11 +0000
+Message-ID: <1796664.1604662211@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Attention for you outstanding payment,
+#syz fix: afs: Fix cell removal
 
-How are you doing hoping all is well with you and your family? We know
-you might have forgotten about this your outstanding compensation
-payment due to delay on the delivery up till now.
-
-Your ATM card worth of  $4.700,000.00 USD has been today deposited
-with FedEx Express Courier Company to ship it to your home address.
-Now contact FedEx Company Director. name : Dr . Sam Udo / E-mail: {
-officecourer014bj@aol.com } & Send to them your home address where to
-ship the ATM Card to you such as;
-
-Your name____________
-Delivery Address:____
-Country______________
-Phone Number:________
-Your ID Card_________
-
-Note, all charges regard this delivery has been paid except the safe
-keeping fees which you will send to them before they can dispatch the
-parcel to your destination. So, you can call them now at +229 61 21 00
-10.
-
-Best Regards,
-
-Eveline Baert
