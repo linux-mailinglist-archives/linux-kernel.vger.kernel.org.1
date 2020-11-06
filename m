@@ -2,111 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FC042A948E
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 11:39:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 758FE2A9497
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 11:41:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727156AbgKFKjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 05:39:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34754 "EHLO mail.kernel.org"
+        id S1727032AbgKFKlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 05:41:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35022 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726912AbgKFKjL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 05:39:11 -0500
+        id S1726201AbgKFKlR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 05:41:17 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0F31C20702;
-        Fri,  6 Nov 2020 10:39:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 41E4B20702;
+        Fri,  6 Nov 2020 10:41:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604659148;
-        bh=f1ZupIgT+0W8r2Fh/UDIIdQVJ33pvudtSun0lDLJ94k=;
+        s=default; t=1604659276;
+        bh=FZPOUxbRLfnd+t8CdYEkeO2TCpAs4UT0oND2nvpDiDU=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PV5s4CRcGa+xOskrkM363gL5iQmV0vH8CZSTmB8CTlTI55h4rSuV12P18zt+LNS2a
-         mZGoMlHsnQWPDVh8WUBkxu4nWIwXVVYYUsRQfF7BkcCYKYlcOIWEUgCqECIhJuphMf
-         DrtZmnRwdm3AwqFIj42gqquLHJWful/ae8eyPpRc=
-Date:   Fri, 6 Nov 2020 11:39:55 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>,
-        Mike Hudson <Exoray@isys.ca>, linux-serial@vger.kernel.org
-Subject: Re: [PATCH 13/36] tty: serial: 8250: 8250_port: Staticify functions
- referenced by pointers
-Message-ID: <20201106103955.GA2784089@kroah.com>
-References: <20201104193549.4026187-1-lee.jones@linaro.org>
- <20201104193549.4026187-14-lee.jones@linaro.org>
- <20201106095326.GA2652562@kroah.com>
- <20201106100552.GA2063125@dell>
- <20201106101646.GB2063125@dell>
+        b=LIIV1fyeLOQP3xvdO35mmMUbH6AnHfV2gll+R4VQt/8JMCXFuKE+oywvx2kFEpXkE
+         gK9egVH44hTJgnK8pv+jk9SQW8DrJnh4b5t3AxKaEMb6J0KStHwH9K2Rf+6O5saVIu
+         OnhkH6hhV8fuxh0NK96fZtx0Y7QPMV5DCTmJm3Cs=
+Date:   Fri, 6 Nov 2020 11:42:03 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     Arpitha Raghunandan <98.arpi@gmail.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        brendanhiggins@google.com, skhan@linuxfoundation.org,
+        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
+        alexandre.belloni@bootlin.com, rdunlap@infradead.org,
+        idryomov@gmail.com, kunit-dev@googlegroups.com,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Kees Cook <keescook@chromium.org>
+Subject: Re: [PATCH v3] lib: Convert test_printf.c to KUnit
+Message-ID: <20201106104203.GC2784089@kroah.com>
+References: <20201103111049.51916-1-98.arpi@gmail.com>
+ <20201103113353.GC4077@smile.fi.intel.com>
+ <20201103115223.GA268796@kroah.com>
+ <20201103160728.GQ20201@alley>
+ <57976ff4-7845-d721-ced1-1fe439000a9b@rasmusvillemoes.dk>
+ <b24a8200-b456-ecab-cc60-6f4ff10baa5d@gmail.com>
+ <1b452380-53a5-f396-bf2f-97736db28afb@rasmusvillemoes.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201106101646.GB2063125@dell>
+In-Reply-To: <1b452380-53a5-f396-bf2f-97736db28afb@rasmusvillemoes.dk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 06, 2020 at 10:16:46AM +0000, Lee Jones wrote:
-> On Fri, 06 Nov 2020, Lee Jones wrote:
-> 
-> > On Fri, 06 Nov 2020, Greg Kroah-Hartman wrote:
+On Fri, Nov 06, 2020 at 11:31:43AM +0100, Rasmus Villemoes wrote:
+> On 06/11/2020 05.04, Arpitha Raghunandan wrote:
 > > 
-> > > On Wed, Nov 04, 2020 at 07:35:26PM +0000, Lee Jones wrote:
-> > > > Fixes the following W=1 kernel build warning(s):
-> > > > 
-> > > >  drivers/tty/serial/8250/8250_port.c:349:14: warning: no previous prototype for ‘au_serial_in’ [-Wmissing-prototypes]
-> > > >  drivers/tty/serial/8250/8250_port.c:359:6: warning: no previous prototype for ‘au_serial_out’ [-Wmissing-prototypes]
-> > > > 
-> > > > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > > Cc: Jiri Slaby <jirislaby@kernel.org>
-> > > > Cc: Mike Hudson <Exoray@isys.ca>
-> > > > Cc: linux-serial@vger.kernel.org
-> > > > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > > > ---
-> > > >  drivers/tty/serial/8250/8250_port.c | 4 ++--
-> > > >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > > 
-> > > And now I get build errors of:
-> > > 	ld: drivers/tty/serial/8250/8250_early.o: in function `early_au_setup':
-> > > 	8250_early.c:(.init.text+0x7): undefined reference to `au_serial_in'
-> > > 	ld: 8250_early.c:(.init.text+0xf): undefined reference to `au_serial_out'
-> > > 	make: *** [Makefile:1164: vmlinux] Error 1
-> > > 
-> > 
-> > I *always* test build my sets before posting.
-> > 
-> > /investigating
+> > The total number of "atoms" can be printed by maintaining a static variable
+> > total_count that can be incremented as is in the original test_printf test.
+> > But, the reporting of the random seed currently is done in kselftest and so
+> > will not show up with KUnit. I am not really sure which is better in this case.
 > 
-> What config failed for you?
-> 
-> It looks as though SERIAL_8250_CONSOLE is a bool and doesn't appear to
-> be compiled with allmodconfig builds for any architecture that I test
-> against (Arm, Arm64, MIPS, PPC, x86).
+> So my real questions are: Why do we have both kselftest and kunit?
 
-I build on x86, and here's what I have set:
+One is testing code within the kernel image testing it within
+kernelspace, and one is outside the kernel testing it from userspace.
 
-CONFIG_SERIAL_EARLYCON=y
-CONFIG_SERIAL_8250=y
-CONFIG_SERIAL_8250_DEPRECATED_OPTIONS=y
-CONFIG_SERIAL_8250_PNP=y
-CONFIG_SERIAL_8250_16550A_VARIANTS=y
-CONFIG_SERIAL_8250_FINTEK=y
-CONFIG_SERIAL_8250_CONSOLE=y
-CONFIG_SERIAL_8250_DMA=y
-CONFIG_SERIAL_8250_PCI=y
-CONFIG_SERIAL_8250_EXAR=y
-CONFIG_SERIAL_8250_NR_UARTS=16
-CONFIG_SERIAL_8250_RUNTIME_UARTS=8
-CONFIG_SERIAL_8250_EXTENDED=y
-# CONFIG_SERIAL_8250_MANY_PORTS is not set
-# CONFIG_SERIAL_8250_SHARE_IRQ is not set
-# CONFIG_SERIAL_8250_DETECT_IRQ is not set
-# CONFIG_SERIAL_8250_RSA is not set
-CONFIG_SERIAL_8250_DWLIB=y
-CONFIG_SERIAL_8250_DW=m
-CONFIG_SERIAL_8250_RT288X=y
-CONFIG_SERIAL_8250_UNIPHIER=m
-CONFIG_SERIAL_8250_LPSS=y
-CONFIG_SERIAL_8250_MID=y
-CONFIG_SERIAL_8250_TEGRA=m
+thanks,
 
-
+greg k-h
