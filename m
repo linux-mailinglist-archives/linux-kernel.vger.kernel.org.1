@@ -2,202 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 260042A96F4
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 14:24:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F37C32A96EF
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 14:24:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727439AbgKFNYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 08:24:36 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:12354 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727287AbgKFNYf (ORCPT
+        id S1727370AbgKFNYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 08:24:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727287AbgKFNYa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 08:24:35 -0500
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A6D3KAc045401;
-        Fri, 6 Nov 2020 08:24:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=pHx2leChPrzAo4WC2IenghVznIUYtgXXGfVyOhtlw/U=;
- b=PhsbIFYfRhRbCifMPlvp61ET8lMmQMqn26XRNQyyRN67kOkrOSj78oknde0VDPW7vMAR
- NWP/WG7uI+cPXkS9QMtMUnjZ4jLYvIerlmNGmN/C7fPB1YL5ak0MW8nem9671aFo/8hJ
- Orm/UcJo7phBFjVMn0ATnldfVuqxMcZ9rx+rDMqlW7tXOxTV5++eJF2+zKx6bgRnpTEM
- DTTgzcbcRmYEZE7u7Kajod6apwv1svfVM3q5V8pWm29JVVP68Gg2JWn/9v0qrftr2XgO
- AsfqaSnPfMhDtrk9PHBxA3FmTgX08xOPWqS2D8FWRmgOHUpa5H8b03EbQm5dNz8NWCgJ PA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 34n3qr7m4p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 06 Nov 2020 08:24:28 -0500
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0A6DFnwV106475;
-        Fri, 6 Nov 2020 08:24:27 -0500
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 34n3qr7m3m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 06 Nov 2020 08:24:27 -0500
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0A6DLxKn004773;
-        Fri, 6 Nov 2020 13:24:25 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma03ams.nl.ibm.com with ESMTP id 34hm6hdskk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 06 Nov 2020 13:24:25 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0A6DONFB64553234
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 6 Nov 2020 13:24:23 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 36A63AE056;
-        Fri,  6 Nov 2020 13:24:23 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C6192AE051;
-        Fri,  6 Nov 2020 13:24:19 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.77.67])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri,  6 Nov 2020 13:24:19 +0000 (GMT)
-Message-ID: <1f83ec246cb6356c340b379ab00e43f0b5bba0ae.camel@linux.ibm.com>
-Subject: Re: [PATCH v5 3/7] IMA: add hook to measure critical data
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Tushar Sugandhi <tusharsu@linux.microsoft.com>,
-        stephen.smalley.work@gmail.com, casey@schaufler-ca.com,
-        agk@redhat.com, snitzer@redhat.com, gmazyland@gmail.com,
-        paul@paul-moore.com
-Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
-        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
-        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dm-devel@redhat.com
-Date:   Fri, 06 Nov 2020 08:24:18 -0500
-In-Reply-To: <20201101222626.6111-4-tusharsu@linux.microsoft.com>
-References: <20201101222626.6111-1-tusharsu@linux.microsoft.com>
-         <20201101222626.6111-4-tusharsu@linux.microsoft.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-06_04:2020-11-05,2020-11-06 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
- lowpriorityscore=0 priorityscore=1501 spamscore=0 suspectscore=0
- impostorscore=0 adultscore=0 phishscore=0 malwarescore=0 clxscore=1015
- mlxscore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011060090
+        Fri, 6 Nov 2020 08:24:30 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CD96C0613D2
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 05:24:29 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id d142so1392679wmd.4
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 05:24:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=6aMrN2ubH+NBTONrWTRgPhticMiP338JyBFBdD8aiTA=;
+        b=ryD+Q4+MUVeASOzHNgxqAn+c8Ckbbiw3KyFVduQkViAJVQwGS/pL983W4lod999gRR
+         2neJHDjYN45QOHP+7zv33wjGm/0aB5Bzc1CVEBHTY5XxkhkQ2oLGfD9DA0jXsrZB3oR4
+         C5zjevroCDEDjpSvNz6zaV+a5PXjIqrXVRFtkzFY5hAD7l0orFjUR2C5PfYMxlF27J8s
+         7ArtaDQERCSpieGQki8vnxUEafC5JfOQEFSKapmpkQ6TU1M0Xm6Nm4lfBVcs4CdtENT7
+         VTUPoTXB9jnHoF1/4tp95v32AxRyco7/z3SfC+HAALo5mDVyJky9Gd4dgRjLW1vFZnef
+         PVEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=6aMrN2ubH+NBTONrWTRgPhticMiP338JyBFBdD8aiTA=;
+        b=Y7cuDbSimlAFnrjNj/PDV1jqECX3QkTfzmI+VLqZni6lXjVDNB07uqIWqqLq9DXUPK
+         vYDX/6pGxZmfs7z7uSFv1KqDzKU7gi/VZfbiTqSxPYmle6qcG7DO/aNzM7HB2br1Fkf4
+         ECy/gDcShoX6asGcH1hXyRvHAHACdmcZAv+LKoQT+SEqTJakwBx0S+TbdX58Zfyy965U
+         tc8/AM5lFgB2ixTTbe5DyOHx6eCnRRSBW11YmnGBzFcQf3IBdKKfG5JeT18fm5s69mT+
+         0ZFBda4o/+9d56Fd6yHi3F6aL1M2NsDrTqB5kfhANpfhXVMYhbGb0kWEyEx3j9ULAje9
+         8cnQ==
+X-Gm-Message-State: AOAM531A2glRCu11+XN7mMQr1abauhkI5XAIfH85r7OLJp89FHJTb7qa
+        +l9U/PdLFNVFGYnX0QHH/cjhvi8fnFSB8dNf
+X-Google-Smtp-Source: ABdhPJzbr63idNagKF+sCXOawx64emFPOdldZh98ECXndCpPu17PiMLTo3LM5+RkLTNmeNcNznWRkA==
+X-Received: by 2002:a1c:3c84:: with SMTP id j126mr2531900wma.151.1604669067945;
+        Fri, 06 Nov 2020 05:24:27 -0800 (PST)
+Received: from dell ([91.110.221.242])
+        by smtp.gmail.com with ESMTPSA id u195sm2341908wmu.18.2020.11.06.05.24.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Nov 2020 05:24:27 -0800 (PST)
+Date:   Fri, 6 Nov 2020 13:24:24 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     linux-kernel@vger.kernel.org,
+        Andrew Duggan <aduggan@synaptics.com>,
+        Arjan Opmeer <arjan@opmeer.net>,
+        "at www.cypress.com" <ttdrivers@cypress.com>,
+        Benson Leung <bleung@chromium.org>,
+        Bruce Kalk <kall@compass.com>,
+        Christopher Heiny <cheiny@synaptics.com>,
+        "C. Scott Ananian" <cananian@alumni.priceton.edu>,
+        Daniel Kurtz <djkurtz@chromium.org>,
+        Dan Murphy <dmurphy@ti.com>, David Jander <david@protonic.nl>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Dudley Du <dudl@cypress.com>, dusonlin@emc.com.tw,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Eugen Hristev <eugen.hristev@microchip.com>,
+        Ferruh Yigit <fery@cypress.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        KT Liao <kt.liao@emc.com.tw>,
+        Kumar G <naveen.gaddipati@stericsson.com>,
+        linux-input@vger.kernel.org, Peter Osterlund <petero2@telia.com>,
+        Phil Blundell <pb@handhelds.org>,
+        Stefan Gmeiner <riddlebox@freesurf.ch>,
+        Sundar Iyer <sundar.iyer@stericsson.com>,
+        Trilok Soni <tsoni@codeaurora.org>,
+        Vincent Huang <vincent.huang@tw.synaptics.com>
+Subject: Re: [PATCH 00/20] [Set 1/2] Rid W=1 issues from Input
+Message-ID: <20201106132424.GG2063125@dell>
+References: <20201104162427.2984742-1-lee.jones@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201104162427.2984742-1-lee.jones@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tushar,
+On Wed, 04 Nov 2020, Lee Jones wrote:
 
-On Sun, 2020-11-01 at 14:26 -0800, Tushar Sugandhi wrote:
-> Currently, IMA does not provide a generic function for kernel subsystems
-> to measure their critical data. Examples of critical data in this context
-> could be kernel in-memory r/o structures, hash of the memory structures,
-> or data that represents a linux kernel subsystem state change. The 
-> critical data, if accidentally or maliciously altered, can compromise
-> the integrity of the system.
-
-Start out with what IMA does do (e.g. measures files and more recently
-buffer data).  Afterwards continue with kernel integrity critical data
-should also be measured.  Please include a definition of kernel
-integrity critical data here, as well as in the cover letter.
-
+> This set is part of a larger effort attempting to clean-up W=1
+> kernel builds, which are currently overwhelmingly riddled with
+> niggly little warnings.
 > 
-> A generic function provided by IMA to measure critical data would enable
-> various subsystems with easier and faster on-boarding to use IMA
-> infrastructure and would also avoid code duplication.
-
-By definition LSM and IMA hooks are generic with callers in appropriate
-places in the kernel.   This paragraph is redundant.
-
+> This is the first of 2 sets.
 > 
-> Add a new IMA func CRITICAL_DATA and a corresponding IMA hook
-> ima_measure_critical_data() to support measuring critical data for 
-> various kernel subsystems. 
+> Lee Jones (20):
+>   input: rmi4: rmi_bus: Fix misnaming of
+>     '__rmi_register_function_handler's 'owner' param
+>   input: mouse: cyapa: Fix misnaming of 'cyapa_i2c_write's 'reg' param
+>   input: mouse: cyapa_gen5: Fix obvious abuse of kernel-doc format
+>   input: misc: ab8500-ponkey: Fix incorrect name in 'ab8500_ponkey' doc
+>     header
+>   input: rmi4: rmi_f01: Struct headers are expected to start with
+>     'struct <name>'
+>   include: input: elan-i2c-ids: Mark 'elan_acpi_id' as __maybe_unused
+>   input: keyboard: cros_ec_keyb: Struct headers should start with
+>     'struct <name>'
+>   input: rmi4: rmi_f11: Struct headers are expected to start with
+>     'struct <name>'
+>   input: touchscreen: resistive-adc-touch: Struct headers should start
+>     with 'struct <name>'
+>   input: mouse: synaptics: Place braces around empty if() body
+>   input: keyboard: gpio_keys: Fix misnamed function parameter 'dev'
+>   input: mouse: elantech: Demote obvious abuse of kernel-doc header
+>   input: rmi4: rmi_f54: Provide some missing 'REPORT_TYPE' enums
+>   input: rmi4: rmi_i2c: Provide some missing descriptions for struct
+>     members
+>   input: touchscreen: cyttsp4_core:  Move 'cyttsp4_tch_abs_string' to
+>     the only file that references it
+>   input: misc: drv260x: Fix kernel-doc formatting and remove one abuse
+>   input: misc: drv2665: Fix formatting expected by kernel-doc
+>   input: misc: drv2667: Fix formatting and add missing member docs
+>   input: keyboard: nomadik-ske-keypad: Provide some missing struct
+>     member docs
+>   input: keyboard: pmic8xxx-keypad: Fix kernel-doc formatting
 
-Instead of using the word "add", it would be more appropriate to use
-the word "define".   Define a new IMA hook named
-ima_measure_critical_data to measure kernel integrity critical data.  
-Please also update the Subject line as well.  "ima: define an IMA hook
-to measure kernel integrity critical data".
+Dmitry,
 
-> 
-> Signed-off-by: Tushar Sugandhi <tusharsu@linux.microsoft.com>
-> ---
-> 
-> diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
-> index 4485d87c0aa5..6e1b11dcba53 100644
-> --- a/security/integrity/ima/ima_main.c
-> +++ b/security/integrity/ima/ima_main.c
-> @@ -921,6 +921,44 @@ void ima_kexec_cmdline(int kernel_fd, const void *buf, int size)
->  	fdput(f);
->  }
->  
-> +/**
-> + * ima_measure_critical_data - measure kernel subsystem data
-> + * critical to integrity of the kernel
+Seeing as these changes are orthogonal, it would probably be easier
+and certainly cause a lot less mailing list churn if you would be kind
+enough to apply patches that do not need re-spinning.
 
-Please change this to "measure kernel integrity critical data".
+I will rebase, rework and re-submit the remainder early next week.
 
-> + * @event_data_source: name of the data source being measured;
-> + * typically it should be the name of the kernel subsystem that is sending
-> + * the data for measurement
-
-Including "data_source" here isn't quite right.  "data source" should
-only be added in the first patch which uses it, not here.   When adding
-it please shorten the field description to "kernel data source".   The
-longer explanation can be included in the longer function description.
-
-> + * @event_name: name of an event from the kernel subsystem that is sending
-> + * the data for measurement
-
-As this is being passed to process_buffer_measurement(), this should be
-the same or similar to the existing definition.
-
-> + * @buf: pointer to buffer containing data to measure
-> + * @buf_len: length of buffer(in bytes)
-> + * @measure_buf_hash: if set to true - will measure hash of the buf,
-> + *                    instead of buf
-
- kernel doc requires a single line.  In this case, please shorten the
-argument definition to "measure buffer data or buffer data hash".   The
-details can be included in the longer function description.
-
-> + *
-> + * A given kernel subsystem (event_data_source) may send
-> + * data (buf) to be measured when the data or the subsystem state changes.
-> + * The state/data change can be described by event_name.
-> + * Examples of critical data (buf) could be kernel in-memory r/o structures,
-> + * hash of the memory structures, or data that represents subsystem
-> + * state change.
-> + * measure_buf_hash can be used to save space, if the data being measured
-> + * is too large.
-> + * The data (buf) can only be measured, not appraised.
-> + */
-
-Please remove this longer function description, replacing it something
-more appropriate.  The subsequent patch that introduces the "data
-source" parameter would expand the description.
-
-thanks,
-
-Mimi
-
-> +void ima_measure_critical_data(const char *event_data_source,
-> +			       const char *event_name,
-> +			       const void *buf, int buf_len,
-> +			       bool measure_buf_hash)
-> +{
-> +	if (!event_name || !event_data_source || !buf || !buf_len) {
-> +		pr_err("Invalid arguments passed to %s().\n", __func__);
-> +		return;
-> +	}
-> +
-> +	process_buffer_measurement(NULL, buf, buf_len, event_name,
-> +				   CRITICAL_DATA, 0, event_data_source,
-> +				   measure_buf_hash);
-> +}
-> +
->  static int __init init_ima(void)
->  {
->  	int error;
-
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
