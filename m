@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F1FC2A9EEC
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 22:14:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDEBC2A9EEF
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 22:14:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728510AbgKFVNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 16:13:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47266 "EHLO mail.kernel.org"
+        id S1728306AbgKFVNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 16:13:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47224 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728116AbgKFVNZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728109AbgKFVNZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 6 Nov 2020 16:13:25 -0500
-Subject: Re: [GIT PULL] sound fixes for 5.10-rc3
+Subject: Re: [GIT PULL] s390 updates for 5.10-rc3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1604697204;
-        bh=98R1CZbPzaKml+rhWRfEGCE5ZSR7G4CWCBo5Rns3nkI=;
+        bh=yjZCcXU+gF3xZI2QXztx75k1wQMlSlbBuCY9IovNVeg=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=zM1GLHSK8zHbMDI5nQadPgPj9j7r8LoQow1LycFb/ei+e/eDz1rX71soEd/yWntMv
-         mg69u8O8o+Dg+hczQxNH1EZst8+gI0SEknHUv0ZyM27sQupbIT+nW52MyjXxvgreQO
-         reSMXSaHjuk2ywj2kEzW8pBT/njrdzMkwOTXI+gs=
+        b=lfNJCBASrXWmtKGY7a3OZilCviYgW3MFjJaGCgZRhOuSdJB9Yk3Phj44khWdBnNOK
+         MnwNMzv28UdFaSuO4nS/1GKr12RtLiyqkSTd50VmgZojLhv+qY0gM734UPE64Etnge
+         Q1uLzJ41jR7LsFMLS0pgHyytx/HGuEDZkuAI4RJE=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <s5hd00qrj4t.wl-tiwai@suse.de>
-References: <s5hd00qrj4t.wl-tiwai@suse.de>
+In-Reply-To: <20201105201202.GA7024@osiris>
+References: <20201105201202.GA7024@osiris>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <s5hd00qrj4t.wl-tiwai@suse.de>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-5.10-rc3
-X-PR-Tracked-Commit-Id: a6c96672a64f4f0e1bac9f37b5bb57d8ab551b4b
+X-PR-Tracked-Message-Id: <20201105201202.GA7024@osiris>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.10-3
+X-PR-Tracked-Commit-Id: 0b2ca2c7d0c9e2731d01b6c862375d44a7e13923
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: bb72bbe8f6c70e67c85d773e5c9b04c7fe36a0ab
-Message-Id: <160469720485.14190.650258184498798587.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: ee51814888278677cb4384814bbe3c95f6270b50
+Message-Id: <160469720448.14190.17044617785049314310.pr-tracker-bot@kernel.org>
 Date:   Fri, 06 Nov 2020 21:13:24 +0000
-To:     Takashi Iwai <tiwai@suse.de>
+To:     Heiko Carstens <hca@linux.ibm.com>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 06 Nov 2020 09:20:50 +0100:
+The pull request you sent on Thu, 5 Nov 2020 21:12:02 +0100:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-5.10-rc3
+> git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.10-3
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/bb72bbe8f6c70e67c85d773e5c9b04c7fe36a0ab
+https://git.kernel.org/torvalds/c/ee51814888278677cb4384814bbe3c95f6270b50
 
 Thank you!
 
