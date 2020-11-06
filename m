@@ -2,181 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1EB22A996E
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 17:26:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3722A2A996F
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 17:27:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727014AbgKFQ0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 11:26:35 -0500
-Received: from mailrelay1-2.pub.mailoutpod1-cph3.one.com ([46.30.212.0]:60050
-        "EHLO mailrelay1-2.pub.mailoutpod1-cph3.one.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726250AbgKFQ0f (ORCPT
+        id S1727151AbgKFQ0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 11:26:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33894 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726765AbgKFQ0q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 11:26:35 -0500
+        Fri, 6 Nov 2020 11:26:46 -0500
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 800C0C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 08:26:46 -0800 (PST)
+Received: by mail-qt1-x843.google.com with SMTP id p12so1133872qtp.7
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 08:26:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bitmath.org; s=20191106;
-        h=content-type:in-reply-to:mime-version:date:message-id:references:cc:to:from:
-         subject:from;
-        bh=SxG8W321K37P/2Nept94VZxZoM7KKo/nS12XQk8CKNk=;
-        b=SFsmAipPQwR2Ej+GWfwALmQG1dY9mUnDiQ0xGUQCM8C/SnrvRvcpWQtpLf92UF/q6QxgfqxvnBZaZ
-         X+imnkYcJ/31lzotgGQeIImNvUUW0QcEY4jRac6eM7Wqu5JU6owF+ReiocL2luudvkrPIslNlk3ByB
-         kyLqGnqeZNLl7R4WuUtxyun5eiwFWbt8GR+x+EZj1m1e4jtOTo3dSyPxrIVfe9CdhU51Bj0eStE995
-         RuaiVMcdCloPKMGf/+FlWUZ/mc+YsqxSXTz6+qBn2sl586S28o7UdgF2JU4fTr9/stHGE9Uy71yPgM
-         TeX4Psatzlf8fkuLF1ojxrry7dHy0qQ==
-X-HalOne-Cookie: 163c5e454e45403160b48d3b89fde72e40892aa8
-X-HalOne-ID: d2c0e733-204c-11eb-9654-d0431ea8a283
-Received: from [192.168.19.13] (h-155-4-128-97.na.cust.bahnhof.se [155.4.128.97])
-        by mailrelay1.pub.mailoutpod1-cph3.one.com (Halon) with ESMTPSA
-        id d2c0e733-204c-11eb-9654-d0431ea8a283;
-        Fri, 06 Nov 2020 16:26:29 +0000 (UTC)
-Subject: Re: [PATCH] applesmc: Re-work SMC comms v2
-From:   Henrik Rydberg <rydberg@bitmath.org>
-To:     Brad Campbell <brad@fnarfbargle.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, linux-hwmon@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        hns@goldelico.com, Guenter Roeck <linux@roeck-us.net>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        Jean Delvare <jdelvare@suse.com>
-References: <20200930105442.3f642f6c@aktux>
- <20200930164446.GB219887@roeck-us.net>
- <CAK8P3a2CbhJT+B-F+cnX+uiJep9oiLM28n045-ATaVaU41u2hw@mail.gmail.com>
- <20201002002251.28462e64@aktux>
- <7543ef85-727d-96c3-947e-5b18e9e6c44d@roeck-us.net>
- <20201006090226.4275c824@kemnade.info>
- <db042e9b-be41-11b1-7059-3881b1da5c8b@fnarfbargle.com>
- <68467f1b-cea1-47ea-a4d4-8319214b072a@fnarfbargle.com>
- <20201104142057.62493c12@aktux>
- <2436afef-99c6-c352-936d-567bf553388c@fnarfbargle.com>
- <7a085650-2399-08c0-3c4d-6cd1fa28a365@roeck-us.net>
- <fc36d066-c432-e7d2-312f-a0a592446fe2@fnarfbargle.com>
- <10027199-5d31-93e7-9bd8-7baaebff8b71@roeck-us.net>
- <70331f82-35a1-50bd-685d-0b06061dd213@fnarfbargle.com>
- <3c72ccc3-4de1-b5d0-423d-7b8c80991254@fnarfbargle.com>
- <6d071547-10ee-ca92-ec8b-4b5069d04501@bitmath.org>
- <8e117844-d62a-bcb1-398d-c59cc0d4b878@fnarfbargle.com>
- <e5a856b1-fb1a-db5d-0fde-c86d0bcca1df@bitmath.org>
-Message-ID: <aa60f673-427a-1a47-7593-54d1404c3c92@bitmath.org>
-Date:   Fri, 6 Nov 2020 17:26:42 +0100
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=BS6hnd+mn2KOb96zjpH6hQK2KHkxoDPNVR2pa7FD2yE=;
+        b=PcFL9oHLE7kDCMw4fCngNIyZoVhs9qIObXlFNgPNXVvlp6jZw8Qzs18oA9Jmwv24Lg
+         cmcuYmY2lGEUgEzwc7mYN9EEo20fyVLz8qnwsDfKDxxLkynU8tbH4F0ZIISJTqaVKfZQ
+         U1piVPmoijhzCKeCW3LrKP4DTwv3D73ZB3fTDOWodEZ4cwtawnOmFy4qQ+1i7Pe70I9m
+         rhQMgVgtqASq7AubWErhQWjxPCvqtdLMpmRaRJC5PaRoROOeksmKttOZgX/uHVgGx/jz
+         0UwzE3qS0fCE2DQ8SzB2rnJZzXZf692NttfPRqWTV6dFp2gTEQdcs9S5zjTgU88Z+zWu
+         Mmwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=BS6hnd+mn2KOb96zjpH6hQK2KHkxoDPNVR2pa7FD2yE=;
+        b=aX8Arcu9BsjFY035h2ts1kCHfVYdRO4CfSN58oZjeDIBFd94G25qU4/VLvFiQhhaef
+         OC+HgofgYTeOclrg/cpy7yqq29b+DG5tGrH/XIcUIFVEvC6gHyz2U1cAWHBl4Ysm/V1K
+         KZG9rNwBuIeM1r9WWr/qcJTC7mDyXZuopNnI7ZbgIGYgKBxHjYrCUNgJKkOHDwj8nMaI
+         B+pMYboVYVt0ZK/pWD1dnupSh8LcA8eHJ3FUb6iqNedEUDQo/LPJtroYTf1voS677Eq6
+         54rmFoFHwSeL4OFYokRr7nOs1/BQGHVLmghhCNL0NoSeSpwYVnMbUoKIwK4u5LxRAfVi
+         uBoA==
+X-Gm-Message-State: AOAM533g4sKGMxFggPwprkErMdhaAz5yKyEBszoGC5ylclaiip0W/jE+
+        EzkpJjQHsOBQmNxdOXelbzw+TA==
+X-Google-Smtp-Source: ABdhPJyN55QAu4juuLhQCFMe0eug0jiDEy+gUhi5BMg0fU7MFFk/abEed+QXGKQ8P8QjlTwDbFwWKA==
+X-Received: by 2002:aed:3048:: with SMTP id 66mr2298658qte.374.1604680005666;
+        Fri, 06 Nov 2020 08:26:45 -0800 (PST)
+Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
+        by smtp.gmail.com with ESMTPSA id u31sm828224qtu.87.2020.11.06.08.26.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 06 Nov 2020 08:26:44 -0800 (PST)
+Subject: Re: [PATCH v2 2/8] firmware: arm_scmi: introduce protocol handles
+To:     Cristian Marussi <cristian.marussi@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        sudeep.holla@arm.com, lukasz.luba@arm.com,
+        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
+        f.fainelli@gmail.com, etienne.carriere@linaro.org,
+        vincent.guittot@linaro.org, souvik.chakravarty@arm.com
+References: <20201028202914.43662-1-cristian.marussi@arm.com>
+ <20201028202914.43662-3-cristian.marussi@arm.com>
+ <ceda764f-6cd9-9e47-edc7-2e915c920301@linaro.org>
+ <20201104174427.GB24640@e120937-lin>
+From:   Thara Gopinath <thara.gopinath@linaro.org>
+Message-ID: <745d52d0-8578-6a25-c55e-e628d970e9fe@linaro.org>
+Date:   Fri, 6 Nov 2020 11:26:44 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <e5a856b1-fb1a-db5d-0fde-c86d0bcca1df@bitmath.org>
-Content-Type: multipart/mixed;
- boundary="------------B6F41B33EAEA186500550465"
+In-Reply-To: <20201104174427.GB24640@e120937-lin>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------B6F41B33EAEA186500550465
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
 
->> I can't guarantee it won't break older machines which is why I've 
->> asked for help testing it. I only have a MacbookPro 11,1 and an iMac 
->> 12,2. It fixes both of those.
->>
->> Help testing would be much appreciated.
+
+On 11/4/20 12:44 PM, Cristian Marussi wrote:
+> Hi
 > 
-> I see, this makes much more sense. I may be able to run some tests 
-> tonight. Meanwhile, looking at the patch, the status variable in 
-> send_command looks superfluous now that there is a wait_status() before it.
+> On Wed, Nov 04, 2020 at 11:16:18AM -0500, Thara Gopinath wrote:
+>>
+>> Hi Cristian,
+>>
+>> On 10/28/20 4:29 PM, Cristian Marussi wrote:
+>>> Add basic protocol handles definitions and helpers support.
+>>> All protocols initialization code and SCMI drivers probing is still
+>>> performed using the handle based interface.
+>>>
+>>> Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+>>> ---
+>>>    drivers/firmware/arm_scmi/common.h | 61 ++++++++++++++++++++++++++++
+>>>    drivers/firmware/arm_scmi/driver.c | 64 ++++++++++++++++++++++++++++++
+>>>    2 files changed, 125 insertions(+)
+>>>
+>>> diff --git a/drivers/firmware/arm_scmi/common.h b/drivers/firmware/arm_scmi/common.h
+>>> index b08a8ddbc22a..f0678be02a09 100644
+>>> --- a/drivers/firmware/arm_scmi/common.h
+>>> +++ b/drivers/firmware/arm_scmi/common.h
+>>> @@ -151,6 +151,67 @@ int scmi_xfer_get_init(const struct scmi_handle *h, u8 msg_id, u8 prot_id,
+>>>    		       size_t tx_size, size_t rx_size, struct scmi_xfer **p);
+>>>    void scmi_reset_rx_to_maxsz(const struct scmi_handle *handle,
+>>>    			    struct scmi_xfer *xfer);
+>>> +
+>>> +struct scmi_xfer_ops;
+>>> +
+>>> +/**
+>>> + * struct scmi_protocol_handle  - Reference to an initialized protocol instance
+>>> + *
+>>> + * @dev: A reference to the associated SCMI instance device (handle->dev).
+>>> + * @xops: A reference to a struct holding refs to the core xfer operations that
+>>> + *	  can be used by the protocol implementation to generate SCMI messages.
+>>> + * @set_priv: A method to set protocol private data for this instance.
+>>> + * @get_priv: A method to get protocol private data previously set.
+>>> + *
+>>> + * This structure represents a protocol initialized against specific SCMI
+>>> + * instance and it will be used as follows:
+>>> + * - as a parameter fed from the core to the protocol initialization code so
+>>> + *   that it can access the core xfer operations to build and generate SCMI
+>>> + *   messages exclusively for the specific underlying protocol instance.
+>>> + * - as an opaque handle fed by an SCMI driver user when it tries to access
+>>> + *   this protocol through its own protocol operations.
+>>> + *   In this case this handle will be returned as an opaque object together
+>>> + *   with the related protocol operations when the SCMI driver tries to access
+>>> + *   the protocol.
+>>> + */
+>>> +struct scmi_protocol_handle {
+>>> +	struct device *dev;
+>>> +	const struct scmi_xfer_ops *xops;
+>>> +	int (*set_priv)(const struct scmi_protocol_handle *ph, void *priv);
+>>> +	void *(*get_priv)(const struct scmi_protocol_handle *ph);
+>>> +};
+>>
+>> So scmi_xfer_ops are the ops that actually talks with the scmi firmware on
+>> the other end , right ? IIUC, these ops are the same for all the protocols
+>> of a scmi instance. Imho, this struct is not the right place for these ops
+>> to reside.You are inadvertently exposing scmi internal details to the client
+>> drivers. There is no reason why this should be part of scmi_handle. The
+>> protocols can extract it from the handle during protocol_reigster, right?
+>>
+>> So, now to the second part, why do you need a scmi_protocol_handle? Again
+>> IIUC, if you have set_priv and get_priv hooks and get_ops and put_ops hooks,
+>> there is nothing that scmi_protocol_handle is providing extra, right? As
+>> mentioned in the comments for last patch any reason all of this cannot be
+>> rolled into scmi_protocol?
+> 
+> The basic idea for protocol_hande existence is that the protocol code
+> should be able to access the core xfer ops (without EXPORTing all
+> scmi_xfer ops) but protoX should NOT be allowed to mistakenly or
+> maliciously build and send protoY messages: since the protocol_handle
+> for protoX is embedded in a specific protocol_instance in this way you
+> can call from your protocol code something like:
+> 
+> ph->xops->xfer_get_init(ph, ...)
 
-Ok, it took some time to get the machines up to speed, but so far I have 
-managed to run some tests on an MacBookAir1,1. I only managed to upgrade 
-up to 4.15, so I had to revert the inputdev polling patch, but the rest 
-applied without problems. I recovered an old test program I used to use 
-(attached), and checked for failures and reads per second
+I am still confused by this one... scmi_protocol_instance has a pointer 
+to scmi_handle. So why not handle->xops->xfer_get_init(pi, ....). Here 
+also protoX will not be allowed to send protoY messages, right? And then 
+again set_priv and get_priv can be moved to scmi_protocol_instance right ?
 
-*** hwmon: (applesmc) switch to using input device polling mode
 
-At this point in the tree, with this reverted, I see 0 failures and 55 
-reads per second.
-
-*** hwmon: (applesmc) avoid overlong udelay()
-
-With this applied, I see 0 failures and 16 reads per second.
-
-*** hwmon: (applesmc) check status earlier.
-
-With this applied, I see 0 failures and 16 reads per second.
-
-*** (HEAD -> stable) applesmc: Re-work SMC comms v2
-
-With this applied, the kernel hangs in module probe, and the kernel log 
-is flooded with read failures.
-
-So as it stands, it does not work at all. I will continue to check 
-another machine, and see if I can get something working.
-
-Henrik
-
---------------B6F41B33EAEA186500550465
-Content-Type: application/x-shellscript;
- name="applesmc-test.sh"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename="applesmc-test.sh"
-
-IyEvYmluL2Jhc2gKIwojIFRoaXMgc2NyaXB0IHRlc3RzIHRoZSBwcmVzZW5jZSBhbmQgcGVy
-Zm9ybWFuY2Ugb2YKIyB0aGUgYXBwbGVzbWMgbW9kdWxlIG9uIEFwcGxlIG1hY3RlbCBjb21w
-dXRlcnMuCiMKIyBrb3N1bWk2OEB1YnVudHVmb3J1bXMub3JnCiMKCmlmIFsgYHdob2FtaWAg
-IT0gInJvb3QiIF07IHRoZW4KICAgIGVjaG8gInNjcmlwdCBtdXN0IGJlIHJ1biBhcyByb290
-IChydW4gd2l0aCBzdWRvKSIKICAgIGV4aXQgMQpmaQoKZGV2PS9zeXMvZGV2aWNlcy9wbGF0
-Zm9ybS9hcHBsZXNtYy43NjgKCmVjaG8gLW4gIm1vZGVsOiAiCmRtaWRlY29kZSAtcyBzeXN0
-ZW0tcHJvZHVjdC1uYW1lCmVjaG8KCiMgQWNjZWxlcm9tZXRlcgplY2hvIC1uICJhY2NlbGVy
-b21ldGVyOiIKaWYgWyAtYSAkZGV2L3Bvc2l0aW9uIF07IHRoZW4KICAgIGVjaG8gLW4gIiBw
-cmVzZW50IgogICAgb3V0PWBjYXQgJGRldi9wb3NpdGlvbiAyPi9kZXYvbnVsbGAKICAgIGlm
-IFsgJD8gPSAwIF07IHRoZW4KICAgICAgICBlY2hvIC1uICIsIHJlYWRhYmxlLCBvdXRwdXQ6
-ICRvdXQiCiAgICBlbHNlCiAgICAgICAgZWNobyAtbiAiLCBub3QgcmVhZGFibGUiCiAgICBm
-aQplbHNlCiAgICBlY2hvIC1uICIgbm90IHByZXNlbnQiCmZpCmVjaG8KCiMgRmFuIC0gb25s
-eSBjaGVjayBmaXJzdCBmYW4KZWNobyAtbiAiZmFuOiAgICAgICAgICAiCmlmIFsgLWEgJGRl
-di9mYW4xX291dHB1dCBdOyB0aGVuCiAgICBlY2hvIC1uICIgcHJlc2VudCIKICAgIG91dD1g
-Y2F0ICRkZXYvZmFuMV9vdXRwdXQgMj4vZGV2L251bGxgCiAgICBpZiBbICQ/ID0gMCBdOyB0
-aGVuCiAgICAgICAgZWNobyAtbiAiLCByZWFkYWJsZSwgb3V0cHV0OiAkb3V0IgogICAgZWxz
-ZQogICAgICAgIGVjaG8gLW4gIiwgbm90IHJlYWRhYmxlIgogICAgZmkKZWxzZQogICAgZWNo
-byAtbiAiIG5vdCBwcmVzZW50IgpmaQplY2hvCgojIExpZ2h0CmVjaG8gLW4gImxpZ2h0OiAg
-ICAgICAgIgppZiBbIC1hICRkZXYvbGlnaHQgXTsgdGhlbgogICAgZWNobyAtbiAiIHByZXNl
-bnQiCiAgICBvdXQ9YGNhdCAkZGV2L2xpZ2h0IDI+L2Rldi9udWxsYAogICAgaWYgWyAkPyA9
-IDAgXTsgdGhlbgogICAgICAgIGVjaG8gLW4gIiwgcmVhZGFibGUsIG91dHB1dDogJG91dCIK
-ICAgIGVsc2UKICAgICAgICBlY2hvIC1uICIsIG5vdCByZWFkYWJsZSIKICAgIGZpCmVsc2UK
-ICAgIGVjaG8gLW4gIiBub3QgcHJlc2VudCIKZmkKZWNobwoKIyBMZWRzCmxlZHM9YGxzICRk
-ZXYvbGVkcy8qL2JyaWdodG5lc3MgMj4vZGV2L251bGxgCmVjaG8gLW4gImxlZHM6ICAgICAg
-ICAgIgppZiBbICIkbGVkcyIgIT0gIiIgXTsgdGhlbgogICAgZWNobyAiIHByZXNlbnQsIgog
-ICAgZm9yIHggaW4gJGxlZHM7IGRvCiAgICAgICAgZWNobyAtbiAiIGxlZDogICAgICAgICAg
-ICAgICAgICAgIgogICAgICAgIG91dD1gY2F0ICR4IDI+L2Rldi9udWxsYAogICAgICAgIGlm
-IFsgJD8gPSAwIF07IHRoZW4KICAgICAgICAgICAgZWNobyAtbiAicmVhZGFibGUsIG91dHB1
-dDogJG91dCIKICAgICAgICBlbHNlCiAgICAgICAgICAgIGVjaG8gLW4gIm5vdCByZWFkYWJs
-ZSIKICAgICAgICBmaQogICAgICAgIGVjaG8KICAgIGRvbmUKZWxzZQogICAgZWNobyAiIG5v
-dCBwcmVzZW50IgpmaQoKIyBUZW1wZXJhdHVyZXMKdGVtcHM9YGxzICRkZXYvdGVtcCppbnB1
-dCAyPi9kZXYvbnVsbGAKZWNobyAtbiAidGVtcGVyYXR1cmVzOiAiCmlmIFsgIiR0ZW1wcyIg
-IT0gIiIgXTsgdGhlbgogICAgZWNobyAiIHByZXNlbnQsIgogICAgZm9yIHggaW4gJHRlbXBz
-OyBkbwogICAgICAgIGVjaG8gLW4gIiB0ZW1wZXJhdHVyZTogICAgICAgICAgICIKICAgICAg
-ICBvdXQ9YGNhdCAkeCAyPi9kZXYvbnVsbGAKICAgICAgICBpZiBbICQ/ID0gMCBdOyB0aGVu
-CiAgICAgICAgICAgIGVjaG8gLW4gInJlYWRhYmxlLCBvdXRwdXQ6ICRvdXQiCiAgICAgICAg
-ZWxzZQogICAgICAgICAgICBlY2hvIC1uICJub3QgcmVhZGFibGUiCiAgICAgICAgZmkKICAg
-ICAgICBlY2hvCiAgICBkb25lCmVsc2UKICAgIGVjaG8gIiBub3QgcHJlc2VudCIKZmkKCiMg
-UGVyZm9ybWFuY2UKZWNobyAtbiAicGVyZm9ybWFuY2U6ICAgIgppZiBbICIkdGVtcHMiICE9
-ICIiIF07IHRoZW4KICAgIGVjaG8gInJlYWRpbmcgYWxsIHRlbXBlcmF0dXJlcyIKICAgIHR5
-cGVzZXQgLWkgaT0wCiAgICB0eXBlc2V0IC1pIGU9MAogICAgdHlwZXNldCAtaSBuPTUwMAog
-ICAgdHlwZXNldCAtaSB0MT1gZGF0ZSArJXNgCiAgICB3aGlsZSBbICRpIC1sdCAkbiBdOyBk
-bwogICAgICAgIG91dD1gY2F0ICR0ZW1wcyAyPi9kZXYvbnVsbGAKICAgICAgICBpZiBbICQ/
-ICE9IDAgXTsgdGhlbgogICAgICAgICAgICBlPSRlKzEKICAgICAgICBmaQogICAgICAgIGk9
-JGkrMQogICAgZG9uZQogICAgdHlwZXNldCAtaSB0Mj1gZGF0ZSArJXNgCiAgICBmYWlsPWBl
-Y2hvIHNjYWxlPTMnOycgJGUvJG4gfCBiY2AKICAgIHNwZWVkPWBlY2hvICRuLycoJyR0Mi0k
-dDEnKScgfCBiY2AKICAgIGVjaG8gIiBmYWlsIGZyZXF1ZW5jeTogICAgICAgIiAkZmFpbAog
-ICAgZWNobyAiIHJlYWRzIHBlciBzZWNvbmQ6ICAgICAiICRzcGVlZAplbHNlCiAgICBlY2hv
-ICIgbm90IHBlcmZvcm1lZCIKZmkKZWNobwoKY2QgJGRldgoKIyBGYW4gY29udHJvbCB2ZXJz
-aW9uCmVjaG8gLW4gInNtYy1mYW46ICIKCnR5cGVzZXQgLWkgbXRfaXg9MAp0eXBlc2V0IC1p
-IHNmX2l4PTAKdHlwZXNldCAtaSBpeD0xCnR5cGVzZXQgLWkgaXhtYXg9YGNhdCBrZXlfY291
-bnRgCgojIGZpbmQgdGhlIGluZGV4IG9mIHRoZSBNdCBhbmQgU2YgcmVnaXN0ZXJzCndoaWxl
-IFsgJGl4IC1sdCAkaXhtYXggXTsgZG8KICAgIGVjaG8gLW4gJGl4ID4ga2V5X2F0X2luZGV4
-CiAgICBuYW1lPWBjYXQga2V5X2F0X2luZGV4X25hbWUgMj4gL2Rldi9udWxsYAogICAgaWYg
-WyAiJG5hbWUiID0gIkYwTXQiIF07IHRoZW4KCWVjaG8gLW4gIiBNdCIKCW10X2l4PSRpeAog
-ICAgZmkKICAgIGlmIFsgIiRuYW1lIiA9ICJGMFNmIiBdOyB0aGVuCgllY2hvIC1uICIgU2Yi
-CglzZl9peD0kaXgKICAgIGZpCiAgICBpeD0kaXgrMQpkb25lCgppZiBbICRtdF9peCA9IDAg
-LWEgJHNmX2l4ICE9IDAgXTsgdGhlbgogICAgZWNobyAtbiAiIHR5cGUgQSIKZmkKCmlmIFsg
-JG10X2l4ICE9IDAgLWEgJHNmX2l4ICE9IDAgXTsgdGhlbgogICAgZWNobyAtbiAiIHR5cGUg
-QiIKZmkKCmlmIFsgJG10X2l4ICE9IDAgLWEgJHNmX2l4ID0gMCBdOyB0aGVuCiAgICBlY2hv
-IC1uICIgdHlwZSBDIgpmaQplY2hvCg==
---------------B6F41B33EAEA186500550465--
+-- 
+Warm Regards
+Thara
