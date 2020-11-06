@@ -2,79 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A7442A9EBE
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 21:56:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B74A2A9EC1
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 21:56:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728530AbgKFUz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 15:55:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48412 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728408AbgKFUz6 (ORCPT
+        id S1728544AbgKFU4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 15:56:53 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:18697 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727559AbgKFU4w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 15:55:58 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23EB9C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 12:55:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=BQCsdYcW7P+jix+PsOpY98zMadVYG0lOPq2m1W8EA9k=; b=I4RhnakvykgPcPZdI9SG8stW6Y
-        4nVxEtR2UM2tmUrdSbk8fNEFI40T0Rr/G3haSzG+nidLXTDs/+6IuGqtVSTK0EJrNfdrUp7KTrCLS
-        5RE0H6weuIzsNN2D+3+NrcMbYLAuz9EGCqgIowSlsXDBQtY+DkTDsW45S8fSSVKyLRzZRIM9YRjAs
-        esBG+LnIJ6VQzgqikoB2IDVssiGmsD3bLEGrGNEqtMvtZyiJtk9HiBMNzwn9Q1w/MzM3QGpFlhqqf
-        47s45NUXlSkY6DjN3iuolYnlAP4hz5R+b2AdeohtMEmXDbPj2Qzqikz/P+gtLaGd2Awz0FSmzt0O2
-        pRzoNl8g==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kb8lk-0001hG-Aa; Fri, 06 Nov 2020 20:55:36 +0000
-Date:   Fri, 6 Nov 2020 20:55:36 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Rong Chen <rong.a.chen@intel.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Huang Ying <ying.huang@intel.com>,
-        Hugh Dickins <hughd@google.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Matthew Auld <matthew.auld@intel.com>,
-        William Kucharski <william.kucharski@oracle.com>,
-        Qian Cai <cai@redhat.com>, LKML <linux-kernel@vger.kernel.org>,
-        lkp@lists.01.org, lkp@intel.com, feng.tang@intel.com,
-        zhengjun.xing@intel.com
-Subject: Re: [mm] e6e88712e4: stress-ng.tmpfs.ops_per_sec -69.7% regression
-Message-ID: <20201106205536.GS17076@casper.infradead.org>
-References: <20201030071715.GV31092@shao2-debian>
- <20201030131711.GJ27442@casper.infradead.org>
- <dc3864d6-f474-02b8-fdf2-ca138afe3735@intel.com>
- <20201030145835.GL27442@casper.infradead.org>
- <d57f327c-a22e-1fb0-26fe-68b4964e75dc@intel.com>
+        Fri, 6 Nov 2020 15:56:52 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fa5b8980001>; Fri, 06 Nov 2020 12:56:56 -0800
+Received: from rcampbell-dev.nvidia.com (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 6 Nov
+ 2020 20:56:47 +0000
+Subject: Re: [PATCH v3 1/6] mm/thp: add prep_transhuge_device_private_page()
+To:     Christoph Hellwig <hch@lst.de>
+CC:     <linux-mm@kvack.org>, <nouveau@lists.freedesktop.org>,
+        <linux-kselftest@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        "Jerome Glisse" <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        "Alistair Popple" <apopple@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Bharata B Rao <bharata@linux.ibm.com>,
+        Zi Yan <ziy@nvidia.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Ben Skeggs <bskeggs@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        "Andrew Morton" <akpm@linux-foundation.org>
+References: <20201106005147.20113-1-rcampbell@nvidia.com>
+ <20201106005147.20113-2-rcampbell@nvidia.com> <20201106075554.GA31341@lst.de>
+From:   Ralph Campbell <rcampbell@nvidia.com>
+X-Nvconfidentiality: public
+Message-ID: <e2d3b996-e1a9-ccc1-8b7a-31df840b8ebb@nvidia.com>
+Date:   Fri, 6 Nov 2020 12:56:47 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d57f327c-a22e-1fb0-26fe-68b4964e75dc@intel.com>
+In-Reply-To: <20201106075554.GA31341@lst.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1604696216; bh=GkUJF2wcwNFtVtDfugtak/8XayWbGhH8zDvyol5BTOw=;
+        h=Subject:To:CC:References:From:X-Nvconfidentiality:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=lbkHqjuGwbH6A6WGPayoyWp6kjVQqyl+1HlMHQmgnRCG7ImrV+QA3prCNDi0hcHWH
+         5pgzBx1Xdiu5ctXNK+U2GWo6yTLpp7AtFcK24oWgkl+tyshpzWKi3wj8nIybRWGRq2
+         vRu4YZvc9pShH8njactRwiAh/sEg82BOK8FELyMy+kNsdPDnon5t2NINVetSuGRljd
+         L/lVTVqhiQ9zwL+4m/hesd8jxRBj9zubOwR/SkuakblzyCIaImrr+oUvIdccAr+kza
+         /OQJ0ZnhXsT5Tg7g8aJFNe/0xgH5aKdy9g16stNGBndeYj4+WjornFrjd3asoPuc4z
+         qcYOZNQNpXU9w==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 02, 2020 at 01:21:39PM +0800, Rong Chen wrote:
-> we compared the tmpfs.ops_per_sec: (363 / 103.02) between this commit and
-> parent commit.
 
-Thanks!  I see about a 50% hit on my system, and this patch restores the
-performance.  Can you verify this works for you?
+On 11/5/20 11:55 PM, Christoph Hellwig wrote:
+> On Thu, Nov 05, 2020 at 04:51:42PM -0800, Ralph Campbell wrote:
+>> +extern void prep_transhuge_device_private_page(struct page *page);
+> 
+> No need for the extern.
 
-diff --git a/mm/madvise.c b/mm/madvise.c
-index 9b065d412e5f..e602333f8c0d 100644
---- a/mm/madvise.c
-+++ b/mm/madvise.c
-@@ -225,7 +225,7 @@ static void force_shm_swapin_readahead(struct vm_area_struct *vma,
- 		struct address_space *mapping)
- {
- 	XA_STATE(xas, &mapping->i_pages, linear_page_index(vma, start));
--	pgoff_t end_index = end / PAGE_SIZE;
-+	pgoff_t end_index = linear_page_index(vma, end + PAGE_SIZE - 1);
- 	struct page *page;
- 
- 	rcu_read_lock();
+Right, I was just copying the style.
+Would you like to see a preparatory patch that removes extern for the other
+declarations in huge_mm.h?
+
+>> +static inline void prep_transhuge_device_private_page(struct page *page)
+>> +{
+>> +}
+> 
+> Is the code to call this even reachable if THP support is configured
+> out?  If not just declaring it unconditionally and letting dead code
+> elimination do its job might be a tad cleaner.
+
+The HMM test driver depends on TRANSPARENT_HUGEPAGE but the nouveau SVM
+option doesn't and SVM is still useful if TRANSPARENT_HUGEPAGE is not configured.
+
+The problem with defining prep_transhuge_device_private_page() in huge_mm.h
+as a static inline function is that prep_compound_page() and prep_transhuge_page()
+would have to be EXPORT_SYMBOL_GPL which are currently mm internal only.
+The intent is to make this helper callable by separate device driver modules
+using struct pages created with memremap_pages().
+
+>> +void prep_transhuge_device_private_page(struct page *page)
+> 
+> I think a kerneldoc comment explaining what this function is useful for
+> would be helpful.
+
+That is a good idea. I'll add it to v4.
