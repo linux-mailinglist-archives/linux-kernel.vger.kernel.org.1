@@ -2,122 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 934802A9EA3
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 21:40:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DFD12A9EA5
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 21:41:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728413AbgKFUka (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 15:40:30 -0500
-Received: from netrider.rowland.org ([192.131.102.5]:59961 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1728408AbgKFUka (ORCPT
+        id S1728487AbgKFUlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 15:41:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46126 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727129AbgKFUlP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 15:40:30 -0500
-Received: (qmail 55677 invoked by uid 1000); 6 Nov 2020 15:40:08 -0500
-Date:   Fri, 6 Nov 2020 15:40:08 -0500
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, parri.andrea@gmail.com,
-        will@kernel.org, peterz@infradead.org, boqun.feng@gmail.com,
-        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
-        luc.maranget@inria.fr, akiyks@gmail.com
-Subject: Re: [PATCH memory-model 5/8] tools/memory-model: Add a glossary of
- LKMM terms
-Message-ID: <20201106204008.GA55521@rowland.harvard.edu>
-References: <20201105215953.GA15309@paulmck-ThinkPad-P72>
- <20201105220017.15410-5-paulmck@kernel.org>
- <20201106165930.GC47039@rowland.harvard.edu>
- <20201106180445.GX3249@paulmck-ThinkPad-P72>
- <20201106192351.GA53131@rowland.harvard.edu>
- <20201106195912.GA3249@paulmck-ThinkPad-P72>
+        Fri, 6 Nov 2020 15:41:15 -0500
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21262C0613CF;
+        Fri,  6 Nov 2020 12:41:15 -0800 (PST)
+Received: by mail-yb1-xb44.google.com with SMTP id g15so2266907ybq.6;
+        Fri, 06 Nov 2020 12:41:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NXrpuCgbHGPkXrL8EDCTVatq79k2biAMrH6DnCMYtLg=;
+        b=imytYR+/gxZRffg9Cg6cnS88WCEJguY/eo7kl+jiw9eXJ3Jag+Zs4/oNRMs5+Rp/q7
+         l6RT+REDAL6ujAwTtSEkQlyohkvsLq0NQUFqHg/d9u8KAc22yqq3R8dM+eYCXSELmoo6
+         MrLVZyBmYcLpfXV0ppMyM8tnDa61vXK1O4NtMiJDBSCgHG/kszG4Uz2RQ6zj3EDTr95M
+         H4ya9dwPhip/LaXw7xjTaxrHxSKDSUvu/ZEOChFT85b5K/TNYNtacV3IkYV3Bdp+HJan
+         mf+JuozlI6c7p68MqcG1hlUO3Id5+R/MDQacy9rIiXC7wkixrXoUjs7F4fkrItWFJGMV
+         aipw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NXrpuCgbHGPkXrL8EDCTVatq79k2biAMrH6DnCMYtLg=;
+        b=MAe4zIqxS4Kqax0R0OHqjZXDqHg6TFOYtlXBG8xktsdkMPFuhQ44tn71GfgtOGnHLY
+         dutMpxY4xItCa9ovd5+44Hnq83+nASEEGpRjimEKMxNte0j92Hxmp9BRklXXqwtvXQn1
+         QmyuIGhKT5qTXxAA0ZCoDmr76ruk3D92til3IbCufpf4wMi5xdBqY0ixw092DR/mlC4K
+         5eqYF6i2/1tUpYAgyRX1cedvtNWTVMHeFvLzKdS++n9vPcXwP7WoJ8U8mTo31I3BCokn
+         v26qVHSKPB6ju9IHKnPElN/zTZRuqVT3CTUyiH170EnSxTD+WD+unFRrrBEhzlqrVXTZ
+         K9Lw==
+X-Gm-Message-State: AOAM531SLgiY69t5S4WZSIKg6KTkqIY/wRNgF2DJDIGiltKiKUZwhijZ
+        /GCWFmUkfA/S9M/7sy/XRwJY/2CHohtsSIag/80=
+X-Google-Smtp-Source: ABdhPJxiz1jLUBDjvArd4MaYnBRQLaZQZ+hW8VJTGZK/kukVZ2oN/nwERCD4Q1i5/COsRIdt0it5uBFhID2gQElwZpU=
+X-Received: by 2002:a25:b0d:: with SMTP id 13mr5337996ybl.347.1604695274441;
+ Fri, 06 Nov 2020 12:41:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201106195912.GA3249@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <1604652452-11494-1-git-send-email-wangqing@vivo.com>
+In-Reply-To: <1604652452-11494-1-git-send-email-wangqing@vivo.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 6 Nov 2020 12:41:03 -0800
+Message-ID: <CAEf4Bzan81+Go84k9fenKMixCthGzXZ6v27vTyqbkmBC1LLXyw@mail.gmail.com>
+Subject: Re: [PATCH] trace: Fix passing zero to 'PTR_ERR' warning
+To:     Wang Qing <wangqing@vivo.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 06, 2020 at 11:59:12AM -0800, Paul E. McKenney wrote:
-> On Fri, Nov 06, 2020 at 02:23:51PM -0500, Alan Stern wrote:
-> > On Fri, Nov 06, 2020 at 10:04:46AM -0800, Paul E. McKenney wrote:
-> > > On Fri, Nov 06, 2020 at 11:59:30AM -0500, Alan Stern wrote:
-> > > > > +	 See also "Control Dependency".
-> > > > 
-> > > > There should also be an entry for "Data Dependency", linked from here
-> > > > and from Control Dependency.
-> > > > 
-> > > > > +Marked Access:  An access to a variable that uses an special function or
-> > > > > +	macro such as "r1 = READ_ONCE()" or "smp_store_release(&a, 1)".
-> > > > 
-> > > > How about "r1 = READ_ONCE(x)"?
-> > > 
-> > > Good catches!  I am planning to squash the commit below into the
-> > > original.  Does that cover it?
-> > 
-> > No, because you didn't add a glossary entry for "Data Dependency" and 
-> > there's no link from "Control Dependency" to "Data Dependency".
-> 
-> Sigh.  I was thinking "entry in the list", and didn't even thing to
-> check for an entry in the glossary as a whole.  With the patch below
-> (on top of the one sent earlier), are we good?
-> 
-> 							Thanx, Paul
-> 
-> ------------------------------------------------------------------------
-> 
-> commit 5a49c32551e83d30e304d6c3fbb660737ba2654e
-> Author: Paul E. McKenney <paulmck@kernel.org>
-> Date:   Fri Nov 6 11:57:25 2020 -0800
-> 
->     fixup! tools/memory-model: Add a glossary of LKMM terms
->     
->     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> 
-> diff --git a/tools/memory-model/Documentation/glossary.txt b/tools/memory-model/Documentation/glossary.txt
-> index 471bf13..b2da636 100644
-> --- a/tools/memory-model/Documentation/glossary.txt
-> +++ b/tools/memory-model/Documentation/glossary.txt
-> @@ -64,7 +64,7 @@ Control Dependency:  When a later store's execution depends on a test
->  	 fragile, and can be easily destroyed by optimizing compilers.
->  	 Please see control-dependencies.txt for more information.
->  
-> -	 See also "Address Dependency".
-> +	 See also "Address Dependency" and "Data Dependency".
->  
->  Cycle:	Memory-barrier pairing is restricted to a pair of CPUs, as the
->  	name suggests.	And in a great many cases, a pair of CPUs is all
-> @@ -85,6 +85,23 @@ Cycle:	Memory-barrier pairing is restricted to a pair of CPUs, as the
->  
->  	See also "Pairing".
->  
-> +Data Dependency:  When the data written by a later store is computed based
-> +	on the value returned by an earlier load, a "data dependency"
-> +	extends from that load to that later store.  For example:
-> +
-> +	 1 r1 = READ_ONCE(x);
-> +	 2 WRITE_ONCE(y, r1 + 1);
-> +
-> +	In this case, the data dependency extends from the READ_ONCE()
-> +	on line 1 to the WRITE_ONCE() on line 2.  Data dependencies are
-> +	fragile and can be easily destroyed by optimizing compilers.
-> +	Because optimizing compilers put a great deal of effort into
-> +	working out what values integer variables might have, this is
-> +	especially true in cases where the dependency is carried through
-> +	an integer.
-> +
-> +	See also "Address Dependency" and "Control Dependency".
-> +
->  From-Reads (fr):  When one CPU's store to a given variable happened
->  	too late to affect the value returned by another CPU's
->  	load from that same variable, there is said to be a from-reads
+On Fri, Nov 6, 2020 at 12:49 AM Wang Qing <wangqing@vivo.com> wrote:
+>
+> Fix smatch warning.
+>
+> Signed-off-by: Wang Qing <wangqing@vivo.com>
+> ---
+>  kernel/trace/bpf_trace.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index 4517c8b..2cb9c45
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -1198,7 +1198,7 @@ static int bpf_btf_printf_prepare(struct btf_ptr *ptr, u32 btf_ptr_size,
+>         *btf = bpf_get_btf_vmlinux();
+>
+>         if (IS_ERR_OR_NULL(*btf))
+> -               return PTR_ERR(*btf);
+> +               return PTR_ERR_OR_ZERO(*btf);
 
-Yes, this is better.
+Either way returns zero for error? Which is the actual bug, so I think
+the proper fix is:
 
-Is it really true that data dependencies are so easily destroyed?  I 
-would expect that a true "semantic" dependency (i.e., one where the 
-value written really does vary according to the value read) would be 
-rather hard to second guess.
+return *btf ? PTR_ERR(*btf) : -EINVAL;
 
-Alan
+Or something like that.
+
+>
+>         if (ptr->type_id > 0)
+>                 *btf_id = ptr->type_id;
+> --
+> 2.7.4
+>
