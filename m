@@ -2,106 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FA3D2A997F
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 17:32:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DBB52A998D
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 17:38:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726748AbgKFQcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 11:32:19 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42871 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726034AbgKFQcT (ORCPT
+        id S1726600AbgKFQii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 11:38:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35742 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725868AbgKFQii (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 11:32:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604680337;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+T0wh6v8l6lQUrvw4s9+AbRJQ2Z4GCUXzV2HD9+48LQ=;
-        b=Gd9fdaexEpytto1wLRYrfQavVEFPbNkzrkwnVX20MLvESGqvcwKEFnsgLEhXavWZZuTglM
-        8lgm7fm7oN/zWOzImmOhfS2JcCU0XAOSmT7IvnTEx25T+NpO5kcLT+BLfJgy3AxlgD4FfY
-        63jo/DHArXq0vyHZF3A3xK/vV+N2kWg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-334-hcRXZq1dPjaMDveOEJbP9Q-1; Fri, 06 Nov 2020 11:32:15 -0500
-X-MC-Unique: hcRXZq1dPjaMDveOEJbP9Q-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 32D5A802B45;
-        Fri,  6 Nov 2020 16:32:14 +0000 (UTC)
-Received: from w520.home (ovpn-112-213.phx2.redhat.com [10.3.112.213])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 602CE2619E;
-        Fri,  6 Nov 2020 16:32:01 +0000 (UTC)
-Date:   Fri, 6 Nov 2020 09:32:00 -0700
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     David Woodhouse <dwmw2@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        kvm@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] sched/wait: Add add_wait_queue_priority()
-Message-ID: <20201106093200.6d8975ae@w520.home>
-In-Reply-To: <f0901be7-1526-5b6a-90cb-6489e53cb92f@redhat.com>
-References: <20201026175325.585623-1-dwmw2@infradead.org>
-        <20201027143944.648769-1-dwmw2@infradead.org>
-        <20201027143944.648769-2-dwmw2@infradead.org>
-        <20201028143509.GA2628@hirez.programming.kicks-ass.net>
-        <ef4660dba8135ca5a1dc7e854babcf65d8cef46f.camel@infradead.org>
-        <f0901be7-1526-5b6a-90cb-6489e53cb92f@redhat.com>
+        Fri, 6 Nov 2020 11:38:38 -0500
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A2BCC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 08:38:38 -0800 (PST)
+Received: by mail-qt1-x843.google.com with SMTP id n63so1168996qte.4
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 08:38:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=marek-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=l//k+DSsx34Nc1jx/NivWPrPdB1Y2U4G87NDV4sY8fM=;
+        b=J+dH50Ir6c9uH6K2wDO7IcS4bmFe8lOV8q7+I16iVL9sjS3ctqlKrze3+q9Dn3fH/p
+         RpMwzXUMrzNbJyPmx+TInGqyYah2NJUHYeomnGj+eemuaR379i/7d8r5X8giuFbGhR7y
+         wrM6ajU8PG6oJDbIPQ9ERXxj/66peBmKJWpqMXvriAry6Z3WSgCMRWZe9tfZ3T9X9y9j
+         QTQwPL+nomvaHWeZlEFoV04dF9gYsCCXTk8CeYNMv10M/BfwBV6pZXPdNV9t7LDRtRoO
+         6lEJFo7vdOQFlmWWaJ8vZA+GtzvCwj4m3nO1x+NSb0nhaMaTJE3zVpMpDnJ4erK0/xQF
+         ZzlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=l//k+DSsx34Nc1jx/NivWPrPdB1Y2U4G87NDV4sY8fM=;
+        b=X8g2zjBdCOECCFqlrelHJwFWY1wQ04GOb6JAbtkNiKgMta1g2gSGofgn+RNzlNdREt
+         8jdf7ObTqg809X8DTsQSJbWQ1KJxTJsn9kClas7Y6Y1de1r25B35l2da7+ydGrswxmPA
+         JlBCo5GBNToQm09Al8FF59L6Z6wbER8VxtU8hiNonXx6neWFrBj9gYNonAUurVENKsUz
+         OrH+PO2jFLcM2yJK+VcprImhmhodgnJKVnPKKihqFUIaDDTDReZuv7feDNMbgxHrKcZS
+         zqyLZgBi7yndjlBp+rxmHTLS7kS6uLhuPWCt/knKhhMIGAZnZrr7Lg60pY53c1VSpvp2
+         cDTg==
+X-Gm-Message-State: AOAM533oPisoJ3JxB/54JEsDIlBxrYRJ5IJJt9fx3pJJeTJXQSXlZFnH
+        R7J1aLrmDFrI6Hc8eNGtVmShIw==
+X-Google-Smtp-Source: ABdhPJxHUWgYZ4frcBST4WltJsrhWPJrimgJHKRjTXKm4KGGNoJ82BuMMEXhzlmb3W3E9MA/bng0Qg==
+X-Received: by 2002:ac8:5748:: with SMTP id 8mr2284612qtx.114.1604680717401;
+        Fri, 06 Nov 2020 08:38:37 -0800 (PST)
+Received: from localhost.localdomain (modemcable068.184-131-66.mc.videotron.ca. [66.131.184.68])
+        by smtp.gmail.com with ESMTPSA id s3sm860000qkj.27.2020.11.06.08.38.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Nov 2020 08:38:36 -0800 (PST)
+From:   Jonathan Marek <jonathan@marek.ca>
+To:     freedreno@lists.freedesktop.org
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
+        GPU),
+        iommu@lists.linux-foundation.org (open list:DMA MAPPING HELPERS),
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org (open list:DRM DRIVER FOR MSM ADRENO GPU),
+        linux-kernel@vger.kernel.org (open list),
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Rob Clark <robdclark@gmail.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Sean Paul <sean@poorly.run>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        Shawn Guo <shawn.guo@linaro.org>
+Subject: [PATCH v2 0/5] drm/msm: support for host-cached BOs
+Date:   Fri,  6 Nov 2020 11:34:29 -0500
+Message-Id: <20201106163437.30836-1-jonathan@marek.ca>
+X-Mailer: git-send-email 2.26.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 6 Nov 2020 11:17:21 +0100
-Paolo Bonzini <pbonzini@redhat.com> wrote:
+This is to support cached and cached-coherent memory types in vulkan.
 
-> On 04/11/20 10:35, David Woodhouse wrote:
-> > On Wed, 2020-10-28 at 15:35 +0100, Peter Zijlstra wrote:  
-> >> On Tue, Oct 27, 2020 at 02:39:43PM +0000, David Woodhouse wrote:  
-> >>> From: David Woodhouse <dwmw@amazon.co.uk>
-> >>>
-> >>> This allows an exclusive wait_queue_entry to be added at the head of the
-> >>> queue, instead of the tail as normal. Thus, it gets to consume events
-> >>> first without allowing non-exclusive waiters to be woken at all.
-> >>>
-> >>> The (first) intended use is for KVM IRQFD, which currently has
-> >>> inconsistent behaviour depending on whether posted interrupts are
-> >>> available or not. If they are, KVM will bypass the eventfd completely
-> >>> and deliver interrupts directly to the appropriate vCPU. If not, events
-> >>> are delivered through the eventfd and userspace will receive them when
-> >>> polling on the eventfd.
-> >>>
-> >>> By using add_wait_queue_priority(), KVM will be able to consistently
-> >>> consume events within the kernel without accidentally exposing them
-> >>> to userspace when they're supposed to be bypassed. This, in turn, means
-> >>> that userspace doesn't have to jump through hoops to avoid listening
-> >>> on the erroneously noisy eventfd and injecting duplicate interrupts.
-> >>>
-> >>> Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>  
-> >>
-> >> Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>  
-> > 
-> > Thanks. Paolo, the conclusion was that you were going to take this set
-> > through the KVM tree, wasn't it?
-> >   
-> 
-> Queued, except for patch 2/3 in the eventfd series which Alex hasn't 
-> reviewed/acked yet.
+v2:
+ - added patches 2/3 to enable using dma_ops_bypass
+ - changed DRM_MSM_GEM_SYNC_CACHE patch to use dma_sync_sg_for_device()
+   and dma_sync_sg_for_cpu(), and renamed sync flags.
 
-There was no vfio patch here, nor mention why it got dropped in v2
-afaict.  Thanks,
+Not sure I did the right thing with for the dma_ops_bypass part,
+this is what I came up with reading the emails.
 
-Alex
+Jonathan Marek (5):
+  drm/msm: add MSM_BO_CACHED_COHERENT
+  dma-direct: add dma_direct_bypass() to force direct ops
+  drm/msm: call dma_direct_bypass()
+  drm/msm: add DRM_MSM_GEM_SYNC_CACHE for non-coherent cache maintenance
+  drm/msm: bump up the uapi version
+
+ drivers/gpu/drm/msm/Kconfig                |  1 +
+ drivers/gpu/drm/msm/adreno/adreno_device.c |  1 +
+ drivers/gpu/drm/msm/msm_drv.c              | 32 +++++++++++++++++++---
+ drivers/gpu/drm/msm/msm_drv.h              |  3 ++
+ drivers/gpu/drm/msm/msm_gem.c              | 31 +++++++++++++++++++++
+ include/linux/dma-direct.h                 |  9 ++++++
+ include/uapi/drm/msm_drm.h                 | 25 +++++++++++++++--
+ kernel/dma/direct.c                        | 23 ++++++++++++++++
+ 8 files changed, 118 insertions(+), 7 deletions(-)
+
+-- 
+2.26.1
 
