@@ -2,128 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBE2B2A9089
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 08:40:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B2332A908C
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 08:40:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726504AbgKFHkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 02:40:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36082 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726248AbgKFHkY (ORCPT
+        id S1726531AbgKFHkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 02:40:36 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:37025 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726248AbgKFHkg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 02:40:24 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95C01C0613D2
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 23:40:24 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id c18so404605wme.2
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 23:40:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=H/jQSiN2tGpCWcggCP9FyM2wQIVjYqAJtGxJOUgHLEY=;
-        b=F7PEVrKf0rmG4ZgcbfXfewpMxLW9AzkfZdAGllK3MEI6yhABDPOknypwCvViiKILZE
-         Q5ElUziTMlO1kg5hRu/mTMqPflOy1ywcdRlQcJ6M9Wsg39buUWwGtiHd/WG5b7S/jkGS
-         KkbfC77NXkleedZvZGl1u5nekFTz0mclOavxh1HOIWRcxTtvH2JA0cbv0mGTZSDwSSA8
-         LyOh9k0qhgs0uk8QWnJ30Xd2BVZU3BtWs9UX5JyB1jyUft6H6zbbzHhXfrjWwud2+HtA
-         /CsfFKawMCyBA8NoivKUGa8rNX7YpuTSn8m9utrXXG5Me6xR/HF82v9HnGe+1MP+4i3M
-         NWcg==
+        Fri, 6 Nov 2020 02:40:36 -0500
+Received: from mail-wr1-f70.google.com ([209.85.221.70])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <andrea.righi@canonical.com>)
+        id 1kawML-0001wJ-A1
+        for linux-kernel@vger.kernel.org; Fri, 06 Nov 2020 07:40:33 +0000
+Received: by mail-wr1-f70.google.com with SMTP id v5so160734wrr.0
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 23:40:33 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=H/jQSiN2tGpCWcggCP9FyM2wQIVjYqAJtGxJOUgHLEY=;
-        b=UP+HAIRn1euJXReISIRxPb9DRag9CQFdnMl+68cHgfN+8BvQUBeVhdZKsIWyRUOE4w
-         YLEnDLubH2OItRnjaLffZpH0OT/WvE9MiNKEHldkvpah6KHervbWv62tuloTzPWK/yjZ
-         neKuPnSry/15aOMpHFxMcACTyQ6aWpwhp/WW31S+eA/6MamMou72caAm1WWYzSmAJIje
-         +mPxOaJTCMmSd4ObK3I2FroKMv/60dc6XSH7GwQhgY+Bx/vpv6L76oUs2dOzz+34rWd8
-         BfuNsTwIHTDo+bNqaQma8ZbbrOUPI8AN+c41w0/PMVNiAbjaWye8MMgg1UKCqMtTPIIZ
-         L7jA==
-X-Gm-Message-State: AOAM530gJsArwCE3S/tqBsJJKYGj1WMGIL1n0m/mnCQ/w+kmw0ONiVaG
-        LrR7414+Fm9acKt3C3PUKCWXZA==
-X-Google-Smtp-Source: ABdhPJxFK6IJdXXPNiq9kY9ys2Eug4k/Ug5hzS0gXVUQavIqwq02s49Lrze0b3JXpQxIHPBq/GhiJw==
-X-Received: by 2002:a1c:a982:: with SMTP id s124mr973561wme.65.1604648423307;
-        Thu, 05 Nov 2020 23:40:23 -0800 (PST)
-Received: from dell ([91.110.221.242])
-        by smtp.gmail.com with ESMTPSA id a12sm746580wrr.31.2020.11.05.23.40.22
+         :mime-version:content-disposition:in-reply-to;
+        bh=Jrhr5yRQnyadQWkzdbR4ykR1Uwe+WNfv5BZIIbHimF4=;
+        b=Td7Zvifu7ELBkQrRgm/hLnB7WCVKUwcD8plocRbLVF693ZlVrA9mo6gK1PpmrMse+3
+         clGkyPt89GCsqj7Qx0HAQCdqMQ1DBlLllC2tycyh8GtCwsU8AylN+gUfOH1My2CwzAyZ
+         r4w7HFLpPU7hNVWq6b9BNLilYshbmwhBQgZ4e0o7vuUVyX/+prF508g8usu7xJij/+/s
+         NOrbWWKsGazIRfOTnKSffOm5P4XeWb4yMpNT2wYyBC8mTlWJi84ijRiCBjfa60Hd4124
+         KzfwzgZ5wEK2gwS8p7tHguqCnE7i/Rx3imBE8unQnBgQ0X9QcDokszHKiZkk65pp7K/q
+         OH5A==
+X-Gm-Message-State: AOAM531Znf7JEPL/sKJt5+MdTY14zGNRnVr3dvkhoYvT/ac6Qfr9Xd7N
+        +lCXOygvl4u3niVrqUj04jlZadMGH7O6JmNchNQ0QIlZwPehzagDZQXp67akdT57vu20am+Qf1i
+        dId1ExeQk5uT8OkslZqb0BH/svu2r4k+1BaXMdIJKRw==
+X-Received: by 2002:a05:6000:1249:: with SMTP id j9mr1108931wrx.218.1604648432778;
+        Thu, 05 Nov 2020 23:40:32 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwGoDem6P6wG417cQBINFKFKBadNGOUjnkpzIHC7/oG7bKqccFFvM+0Ov/7tkrXLPp+0mnm+w==
+X-Received: by 2002:a05:6000:1249:: with SMTP id j9mr1108911wrx.218.1604648432496;
+        Thu, 05 Nov 2020 23:40:32 -0800 (PST)
+Received: from localhost (host-87-3-180-232.retail.telecomitalia.it. [87.3.180.232])
+        by smtp.gmail.com with ESMTPSA id n14sm750005wrt.8.2020.11.05.23.40.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 23:40:22 -0800 (PST)
-Date:   Fri, 6 Nov 2020 07:40:20 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     joe@perches.com, linux-kernel@vger.kernel.org,
-        Henrik Rydberg <rydberg@bitmath.org>,
-        Peter Osterlund <petero2@telia.com>,
-        Stefan Gmeiner <riddlebox@freesurf.ch>,
-        "C. Scott Ananian" <cananian@alumni.priceton.edu>,
-        Bruce Kalk <kall@compass.com>,
-        this to <linux-input@vger.kernel.org>
-Subject: Re: [PATCH 10/20] input: mouse: synaptics: Place braces around empty
- if() body
-Message-ID: <20201106074020.GT4488@dell>
-References: <20201104162427.2984742-1-lee.jones@linaro.org>
- <20201104162427.2984742-11-lee.jones@linaro.org>
- <20201106072630.GD1003057@dtor-ws>
+        Thu, 05 Nov 2020 23:40:31 -0800 (PST)
+Date:   Fri, 6 Nov 2020 08:40:30 +0100
+From:   Andrea Righi <andrea.righi@canonical.com>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Boqun Feng <boqun.feng@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: lockdep: possible irq lock inversion dependency detected
+ (trig->leddev_list_lock)
+Message-ID: <20201106074030.GG1041241@xps-13-7390>
+References: <20201101092614.GB3989@xps-13-7390>
+ <20201031101740.GA1875@boqun-laptop.fareast.corp.microsoft.com>
+ <20201102073328.GA9930@xps-13-7390>
+ <20201102085658.GA5506@amd>
+ <20201102090927.GC9930@xps-13-7390>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201106072630.GD1003057@dtor-ws>
+In-Reply-To: <20201102090927.GC9930@xps-13-7390>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 05 Nov 2020, Dmitry Torokhov wrote:
-
-> Hi Lee,
-> 
-> On Wed, Nov 04, 2020 at 04:24:17PM +0000, Lee Jones wrote:
-> > Fixes the following W=1 kernel build warning(s):
+On Mon, Nov 02, 2020 at 10:09:28AM +0100, Andrea Righi wrote:
+> On Mon, Nov 02, 2020 at 09:56:58AM +0100, Pavel Machek wrote:
+> > Hi!
 > > 
-> >  drivers/input/mouse/synaptics.c: In function ‘synaptics_process_packet’:
-> >  drivers/input/mouse/synaptics.c:1110:6: warning: suggest braces around empty body in an ‘if’ statement [-Wempty-body]
+> > > > > I'm getting the following lockdep splat (see below).
+> > > > > 
+> > > > > Apparently this warning starts to be reported after applying:
+> > > > > 
+> > > > >  e918188611f0 ("locking: More accurate annotations for read_lock()")
+> > > > > 
+> > > > > It looks like a false positive to me, but it made me think a bit and
+> > > > > IIUC there can be still a potential deadlock, even if the deadlock
+> > > > > scenario is a bit different than what lockdep is showing.
+> > > > > 
+> > > > > In the assumption that read-locks are recursive only in_interrupt()
+> > > > > context (as stated in e918188611f0), the following scenario can still
+> > > > > happen:
+> > > > > 
+> > > > >  CPU0                                     CPU1
+> > > > >  ----                                     ----
+> > > > >  read_lock(&trig->leddev_list_lock);
+> > > > >                                           write_lock(&trig->leddev_list_lock);
+> > > > >  <soft-irq>
+> > > > >  kbd_bh()
+> > > > >    -> read_lock(&trig->leddev_list_lock);
+> > > > > 
+> > > > >  *** DEADLOCK ***
+> > > > > 
+> > > > > The write-lock is waiting on CPU1 and the second read_lock() on CPU0
+> > > > > would be blocked by the write-lock *waiter* on CPU1 => deadlock.
+> > > > > 
+> > > > 
+> > > > No, this is not a deadlock, as a write-lock waiter only blocks
+> > > > *non-recursive* readers, so since the read_lock() in kbd_bh() is called
+> > > > in soft-irq (which in_interrupt() returns true), so it's a recursive
+> > > > reader and won't get blocked by the write-lock waiter.
+> > > 
+> > > That's right, I was missing that in_interrupt() returns true also from
+> > > soft-irq context.
+> > > 
+> > > > > In that case we could prevent this deadlock condition using a workqueue
+> > > > > to call kbd_propagate_led_state() instead of calling it directly from
+> > > > > kbd_bh() (even if lockdep would still report the false positive).
+> > > > > 
+> > > > 
+> > > > The deadlock senario reported by the following splat is:
+> > > > 
+> > > > 	
+> > > > 	CPU 0:				CPU 1:					CPU 2:
+> > > > 	-----				-----					-----
+> > > > 	led_trigger_event():
+> > > > 	  read_lock(&trig->leddev_list_lock);
+> > > > 					<work queue processing>
+> > > > 	  				ata_hsm_qs_complete():
+> > > > 					  spin_lock_irqsave(&host->lock);
+> > > > 					  					write_lock(&trig->leddev_list_lock);
+> > > > 					  ata_port_freeze():
+> > > > 					    ata_do_link_abort():
+> > > > 					      ata_qc_complete():
+> > > > 					        ledtrig_disk_activity():
+> > > > 						  led_trigger_blink_oneshot():
+> > > > 						    read_lock(&trig->leddev_list_lock);
+> > > > 						    // ^ not in in_interrupt() context, so could get blocked by CPU 2
+> > > > 	<interrupt>
+> > > > 	  ata_bmdma_interrupt():
+> > > > 	    spin_lock_irqsave(&host->lock);
+> > > > 	  
+> > > > , where CPU 0 is blocked by CPU 1 because of the spin_lock_irqsave() in
+> > > > ata_bmdma_interrupt() and CPU 1 is blocked by CPU 2 because of the
+> > > > read_lock() in led_trigger_blink_oneshot() and CPU 2 is blocked by CPU 0
+> > > > because of an arbitrary writer on &trig->leddev_list_lock.
+> > > > 
+> > > > So I don't think it's false positive, but I might miss something
+> > > > obvious, because I don't know what the code here actually does ;-)
+> > > 
+> > > With the CPU2 part it all makes sense now and lockdep was right. :)
+> > > 
+> > > At this point I think we could just schedule a separate work to do the
+> > > led trigger and avoid calling it with host->lock held and that should
+> > > prevent the deadlock. I'll send a patch to do that.
 > > 
-> > Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> > Cc: Henrik Rydberg <rydberg@bitmath.org>
-> > Cc: Peter Osterlund <petero2@telia.com>
-> > Cc: Stefan Gmeiner <riddlebox@freesurf.ch>
-> > Cc: "C. Scott Ananian" <cananian@alumni.priceton.edu>
-> > Cc: Bruce Kalk <kall@compass.com>
-> > Cc: this to <linux-input@vger.kernel.org>
-> > Cc: linux-input@vger.kernel.org
-> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > ---
-> >  drivers/input/mouse/synaptics.c | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > Let's... not do that, unless we have no choice.
 > > 
-> > diff --git a/drivers/input/mouse/synaptics.c b/drivers/input/mouse/synaptics.c
-> > index 82577095e175e..07835939d83b9 100644
-> > --- a/drivers/input/mouse/synaptics.c
-> > +++ b/drivers/input/mouse/synaptics.c
-> > @@ -1106,8 +1106,9 @@ static void synaptics_process_packet(struct psmouse *psmouse)
-> >  					num_fingers = hw.w + 2;
-> >  				break;
-> >  			case 2:
-> > -				if (SYN_MODEL_PEN(info->model_id))
-> > +				if (SYN_MODEL_PEN(info->model_id)) {
-> >  					;   /* Nothing, treat a pen as a single finger */
-> > +				}
+> > Would it help if leddev_list_lock used _irqsave() locking?
 > 
-> This gives me:
-> 
-> WARNING: braces {} are not necessary for single statement blocks
-> 
-> from checkpatch.
+> Using read_lock_irqsave/irqrestore() in led_trigger_event() would be
+> enough to prevent the deadlock. If it's an acceptable solution I can
+> send a patch (already tested it and lockdep doesn't complain :)).
 
-Yes, because checkpatch just sees it as a normal single statement,
-rather than an empty one.  It complains about macros that can be
-compiled out too, which is even more dangerous.
+Any comment on
+https://lore.kernel.org/lkml/20201102104152.GG9930@xps-13-7390/?
 
-GCC wins this one though, as it *knows* it's an empty statement.
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Thanks,
+-Andrea
