@@ -2,213 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11C782A9578
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 12:33:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A58612A9575
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 12:32:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727193AbgKFLcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 06:32:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44238 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727116AbgKFLcx (ORCPT
+        id S1727080AbgKFLc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 06:32:27 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:60414 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726565AbgKFLcW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 06:32:53 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2641EC0613D2
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 03:32:53 -0800 (PST)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1kazz4-0005Zp-PD; Fri, 06 Nov 2020 12:32:46 +0100
-Received: from [IPv6:2a03:f580:87bc:d400:33f0:799f:c05f:fe06] (unknown [IPv6:2a03:f580:87bc:d400:33f0:799f:c05f:fe06])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256
-         client-signature RSA-PSS (4096 bits) client-digest SHA256)
-        (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
-        (Authenticated sender: mkl@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id EF24358C264;
-        Fri,  6 Nov 2020 11:32:44 +0000 (UTC)
-To:     Joakim Zhang <qiangqing.zhang@nxp.com>, robh+dt@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de
-Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20201106105627.31061-1-qiangqing.zhang@nxp.com>
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
- 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
-Subject: Re: [PATCH V5 0/5] can: flexcan: add stop mode support for i.MX8QM
-Message-ID: <688b3f70-07d2-fb6d-3722-f2fa3a6f3a85@pengutronix.de>
-Date:   Fri, 6 Nov 2020 12:32:40 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Fri, 6 Nov 2020 06:32:22 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0A6BWCra060273;
+        Fri, 6 Nov 2020 05:32:12 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1604662332;
+        bh=0hZftWxeH3TzvYEWUo/ySNOeak8LFO/Ww1fttHmrXmE=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=lQh4Qr9kkuR702DjqT+Zg9Y3YScafuVj1fJvpNcf7hbsCsn5rRMMhYzqGcIiiTzfZ
+         ToHU4N1TlHn7KupOiLT5DuhDBhnuGcudISQXblAzTJRIO9HlTk8LqBFXRRvzqS9a/9
+         T4OWV+AdZoecpGatVbs9lDRrIkEhWZStCxfmOGnA=
+Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0A6BWCU6005976
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 6 Nov 2020 05:32:12 -0600
+Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 6 Nov
+ 2020 05:32:11 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 6 Nov 2020 05:32:11 -0600
+Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0A6BW8Y7047332;
+        Fri, 6 Nov 2020 05:32:09 -0600
+Subject: Re: [PATCH 2/4] arm64: dts: ti: k3-j721e*: Cleanup disabled nodes at
+ SoC dtsi level
+To:     Nishanth Menon <nm@ti.com>
+CC:     Roger Quadros <rogerq@ti.com>, Keerthy <j-keerthy@ti.com>,
+        Jyri Sarha <jsarha@ti.com>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Tony Lindgren <tony@atomide.com>,
+        Tero Kristo <t-kristo@ti.com>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <20201104224356.18040-1-nm@ti.com>
+ <20201104224356.18040-3-nm@ti.com>
+ <d9324b76-5587-b583-97da-5cb52f294c31@ti.com>
+ <20201105140806.326ubfppb4guexpi@cultural>
+From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
+Message-ID: <37b4b284-0da5-c602-82a2-2b672f89891f@ti.com>
+Date:   Fri, 6 Nov 2020 13:32:51 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <20201106105627.31061-1-qiangqing.zhang@nxp.com>
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="QAoVwW4M6eWZW06VJ6CNVrCYFfZwepuub"
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20201105140806.326ubfppb4guexpi@cultural>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---QAoVwW4M6eWZW06VJ6CNVrCYFfZwepuub
-Content-Type: multipart/mixed; boundary="wrfpd44otWKUeflEeZKKl0SvqZTnP5aIH";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Joakim Zhang <qiangqing.zhang@nxp.com>, robh+dt@kernel.org,
- shawnguo@kernel.org, s.hauer@pengutronix.de
-Cc: kernel@pengutronix.de, linux-imx@nxp.com, linux-can@vger.kernel.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-ID: <688b3f70-07d2-fb6d-3722-f2fa3a6f3a85@pengutronix.de>
-Subject: Re: [PATCH V5 0/5] can: flexcan: add stop mode support for i.MX8QM
-References: <20201106105627.31061-1-qiangqing.zhang@nxp.com>
-In-Reply-To: <20201106105627.31061-1-qiangqing.zhang@nxp.com>
+Nishanth,
 
---wrfpd44otWKUeflEeZKKl0SvqZTnP5aIH
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
+On 05/11/2020 16.08, Nishanth Menon wrote:
+> On 09:32-20201105, Peter Ujfalusi wrote:
+>> Nishanth,
+>>
+>> On 05/11/2020 0.43, Nishanth Menon wrote:
+>>> The device tree standard sets the default node behavior when status
+>>> property as enabled.
+>>
+>> It should be:
+>> When the status property is not present under a node, the "okay' value
+>> is assumed.
+> 
+> Thanks.. will update.
+> 
+>>
+>> Note: the device tree specification does not document default value as
+>> such, see v0.3 (2.3.4, page 14).
+>> Yes, the "okay" is used in case the status property is missing (by Linux
+>> at least).
+> 
+> Maybe the spec update needs a formal release? Kumar's patch is merged:
+> https://github.com/devicetree-org/devicetree-specification/pull/33
+> 
+> on that exact same section, which you can see
+> https://github.com/devicetree-org/devicetree-specification/blob/master/source/chapter2-devicetree-basics.rst
 
-On 11/6/20 11:56 AM, Joakim Zhang wrote:
-> Add stop mode support for i.MX8QM.
->=20
-> ChangeLogs:
-> V4->V5:
-> 	* remove patch:firmware: imx: always export SCU symbols, since
-> 	it done by commit: 95de5094f5ac firmware: imx: add dummy functions
-> 	* rebase to fsl,flexcan.yaml
->=20
-> V3->V4:
-> 	* can_idx->scu_idx.
-> 	* return imx_scu_get_handle(&priv->sc_ipc_handle);
-> 	* failed_canregister->failed_setup_stop_mode.
->=20
-> V2->V3:
-> 	* define IMX_SC_R_CAN(x) in rsrc.h
-> 	* remove error message on -EPROBE_DEFER.
-> 	* split disable wakeup patch into separate one.
->=20
-> V1->V2:
-> 	* split ECC fix patches into separate patches.
-> 	* free can dev if failed to setup stop mode.
-> 	* disable wakeup on flexcan_remove.
-> 	* add FLEXCAN_IMX_SC_R_CAN macro helper.
-> 	* fsl,can-index->fsl,scu-index.
-> 	* move fsl,scu-index and priv->can_idx into
-> 	* flexcan_setup_stop_mode_scfw()
-> 	* prove failed if failed to setup stop mode.
->=20
-> Joakim Zhang (5):
->   dt-bindings: can: flexcan: fix fsl,clk-source property
+I stand correct, I only checked the released version.
 
-added to linux-can/testing
+> Brings it to sync to:
+> https://elinux.org/Device_Tree_Linux#status_property
+> 
+>>
+>>> There are many reasons for doing the same, number
+>>> of strings in device tree,
+>>
+>> with expense of loc and readability.
+> 
+> The "readability" part is subjective a bit.. enabled and disabled both
+> have verbosity problem lets see how we can optimize as new boards come
+> in.
 
->   dt-bindings: can: flexcan: add fsl,scu-index property to indicate a
->     resource
->   can: flexcan: rename macro FLEXCAN_QUIRK_SETUP_STOP_MODE ->
->     FLEXCAN_QUIRK_SETUP_STOP_MODE_GPR
->   dt-bindings: firmware: add IMX_SC_R_CAN(x) macro for CAN
->   can: flexcan: add CAN wakeup function for i.MX8QM
+I agree.
 
-The others go via linux-can-next/testing, once net/master is merged back =
-to
-net-next/master to have the yaml bindings.
+> 
+>>
+>>> default power management functionality etc
+>>
+>> Right, so how does that helps with devices present in the SoC, but no
+>> node at all? First thing which comes to mind is AASRC, we don't have
+>> Linux driver for it (and no DT binding document), but that does not mean
+>> that it is not present. How PM would take that into account?
+> 
+> I think we are mixing topics here -> I was stating the motivation why
+> devicetree chose such as default.
 
->  .../bindings/net/can/fsl,flexcan.yaml         |  15 +-
->  drivers/net/can/flexcan.c                     | 131 +++++++++++++++---=
+I don't question the fact that 'okay' is the default status if it is not
+explicitly present. There is no better default than that.
 
->  include/dt-bindings/firmware/imx/rsrc.h       |   1 +
->  3 files changed, 124 insertions(+), 23 deletions(-)
+> Do we have a suggestion to improve
+> the description in the commit?
 
-Marc
+A bit later on that.
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+>>
+>>> are few of the reasons.
+>>>
+>>> In general, after a few rounds of discussions [1] there are few
+>>> options one could take when dealing with SoC dtsi and board dts
+>>>
+>>> a. SoC dtsi provide nodes as a super-set default (aka enabled) state and
+>>>    to prevent messy board files, when more boards are added per SoC, we
+>>>    optimize and disable commonly un-used nodes in board-common.dtsi
+>>> b. SoC dtsi disables all hardware dependent nodes by default and board
+>>>    dts files enable nodes based on a need basis.
+>>> c. Subjectively pick and choose which nodes we will disable by default
+>>>    in SoC dtsi and over the years we can optimize things and change
+>>>    default state depending on the need.
+>>
+>> For the record: c was not really an option. There were no subjectivity,
+>> the reason was pragmatic.
+> 
+> 
+> (c) some examples where we did pick that option (fixes):
+> https://lore.kernel.org/linux-arm-kernel/20201104224356.18040-4-nm@ti.com/
+> https://lore.kernel.org/linux-arm-kernel/20201104224356.18040-5-nm@ti.com/
 
+this is different, these patches just removing the "status = 'okay';"
+lines where they are not needed and can be omitted to save few lines and
+it does help on readablity.
 
---wrfpd44otWKUeflEeZKKl0SvqZTnP5aIH--
+>> The reason why we kept McASP nodes (and dss) disabled in the soc dtsi
+>> file is that they are not operation in the form they present in there.
+>> They _need_ additional properties to be operational and those properties
+>> can only be added in the board dts file.
+> 
+> I dont think we are changing anything in the output dtb files,
 
---QAoVwW4M6eWZW06VJ6CNVrCYFfZwepuub
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+Correct, the resulted dtb is identical. If the developer for upcoming
+boards did check the schematics vs TRM vs dtsi and spot the things that
+is not configured.
+dtb check will complain when it is starting to check against the
+documentation, but McASP is not yet converted to yaml and to be honest I
+don't want to convert the current binding to be the binding. When it was
+done it just moved pdata variables to DT and that was wrong.
+This is off-topic a bit.
 
------BEGIN PGP SIGNATURE-----
+> we are
+> just leaving the defaults as dt defaults and set the disable state in
+> board dts OR common board dtsi.
 
-iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl+lNFgACgkQqclaivrt
-76n8qgf/aMFC+7XaLIlrpGpmwiyI0qs+i48mAn/OakjqjIXHCf9+CFNo11ZyHDo7
-QiKL4IqWV1Fr1Ammzf4k+EgqSX47Qe9w4lrzHpquYIoRVyj6xRUNZZ+shMJZeu9l
-BcXhECeESv2QuixKbRJMXTQLsDyQfEz1tDEpaFTXrSx/GMFjeS5EnMX9/smfOuJ7
-1u+ZP6+dK81KRN3dTvkUwn5HnQFaHS+1yhdOA4fY7VmZRPsW7fRw78VbO1FJGNLY
-uMLLAv249Dr+O3o4DSmvHvuYhWDwnRXDtSZGE9tdMI1UjhL2dhQAPowq5R7KUUC3
-6bxDgDgF+e//owIvv3Pt1oSeMq4bwA==
-=oYOw
------END PGP SIGNATURE-----
+Yes, we leave the non working/configured node 'okay' in dtsi and expect
+that the board file author will know which node must be disabled because
+it is incomplete.
 
---QAoVwW4M6eWZW06VJ6CNVrCYFfZwepuub--
+>> This is not remotely a subjective view, this is the opposite of
+>> subjectivity.
+> 
+> the usage of McASP was'nt meant as (c).. it is (b). is there a better way
+> to describe this in a generic manner?
+
+I had my saying on that ever since I have been taking care of audio on
+TI SoCs ;)
+
+I used similar analogy in a private thread around this, but imho it fits
+the case neatly:
+car == McASP
+
+you don't put an 'okay' (as is ready, operational) stamp on the car in
+the middle of the production line when the engine is not even installed.
+
+>> As for things not owned by the OS we have the "reserved" status.
+> Which is correct usage. I think your point with wkup_uart should be set as
+> reserved? I might have missed doing that - am I correct?
+> 
+> [...]
+>>>  
+>>> -	status = "okay";
+>>> +&mcasp11 {
+>>> +	status = "disabled";
+>>>  };
+>>
+>> Looks much better in this way.
+>> ?
+>>
+>> I always wondered what is _not_ used by the board...
+>> But it is not really about that, we need to disable these nodes as they
+>> are incomplete in dtsi, they are not operational...
+> 
+> Alright - what do we suggest we do?
+
+Not sure, I'm 'whatever' after [1] makes it to mainline or next.
+
+> Tony, Rob - I need some guidance here.
+
+I'm fine whatever way we take, but I think it is up to you to make the
+call as the maintainer of the TI dts files... ;)
+
+>>
+>>>  &serdes0 {
+> 	[...]
+>>>  
+>>>  	watchdog0: watchdog@2200000 {
+>>>
+>>
+>> There is no such a tag, but:
+>> whatever-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> 
+> OK - I have no idea how B4 or patchworks pick that one as :D
+
+If we take this road, than I'm okay with it, but I'm going to take
+silent protest (not sending acked-by or revired-by).
+That should not stop you doing what you believe is best for the future!
+
+fwiw, McASP will have sane handling for the variations of 'okay':
+[1]
+https://lore.kernel.org/alsa-devel/20201106072551.689-1-peter.ujfalusi@ti.com/
+
+- Péter
+
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
