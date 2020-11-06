@@ -2,88 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96BE82A94B5
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 11:51:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8619B2A94B9
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 11:51:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727117AbgKFKvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 05:51:07 -0500
-Received: from mga01.intel.com ([192.55.52.88]:10300 "EHLO mga01.intel.com"
+        id S1727123AbgKFKve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 05:51:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36910 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726201AbgKFKvH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 05:51:07 -0500
-IronPort-SDR: YUjDNC0w3gjAySdPJymae9k9l3/r4WoXp+m0fr5e06kxnlarm9NoQRwVbg6shm/fkhTsDmnqHE
- tJsY5W1x3dmA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9796"; a="187453480"
-X-IronPort-AV: E=Sophos;i="5.77,456,1596524400"; 
-   d="scan'208";a="187453480"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2020 02:51:06 -0800
-IronPort-SDR: lbbOiRuTeTRiQEc0yZcK//hJeV3DoVV7R2H31sSVvQu8ZS+wTeIh6mmzXWdSz7kpfYAPimOYxt
- RSPvH84npPlA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,456,1596524400"; 
-   d="scan'208";a="427289318"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 06 Nov 2020 02:51:02 -0800
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Fri, 06 Nov 2020 12:51:01 +0200
-Date:   Fri, 6 Nov 2020 12:51:01 +0200
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Amelie Delaunay <amelie.delaunay@st.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Badhri Jagan Sridharan <badhri@google.com>,
-        Jun Li <lijun.kernel@gmail.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org,
-        Fabrice Gasnier <fabrice.gasnier@st.com>
-Subject: Re: [PATCH v4 3/5] usb: typec: stusb160x: fix power-opmode property
- with typec-power-opmode
-Message-ID: <20201106105101.GB4062920@kuha.fi.intel.com>
-References: <20201106091854.14958-1-amelie.delaunay@st.com>
- <20201106091854.14958-4-amelie.delaunay@st.com>
+        id S1726832AbgKFKvd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 05:51:33 -0500
+Received: from localhost (otava-0257.koleje.cuni.cz [78.128.181.4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8F19420724;
+        Fri,  6 Nov 2020 10:51:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604659893;
+        bh=VRH0OOsTmug4IluCYlUGvOuQXo2JVTTtYzsTQcMKftI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=DR5GjgYnxgYfNUy4hxBJ+GkFu3TNlmpO0aaYPkTbPYlxY0rr4ihwrVMNDTN2Ds1lO
+         zjmit0mzO3nbNkk60AsmHKvxMhMqtY8XeVPwSkNIvGUwHsgdzGJviJ1Y0rhDaJqAXQ
+         KSHS80Rm+ob1CkN8BWqPmpBGJJSb7/AosGPxF6DQ=
+Date:   Fri, 6 Nov 2020 11:51:18 +0100
+From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
+To:     Pali =?UTF-8?B?Um9ow6Fy?= <pali@kernel.org>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Gregory CLEMENT <gregory.clement@bootlin.com>,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Terry Zhou <bjzhou@marvell.com>,
+        Konstantin Porotchkin <kostap@marvell.com>
+Subject: Re: [PATCH] clk: mvebu: a3700: fix the XTAL MODE pin to MPP1_9
+Message-ID: <20201106115118.43eab492@kernel.org>
+In-Reply-To: <20201106100039.11385-1-pali@kernel.org>
+References: <20201106100039.11385-1-pali@kernel.org>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201106091854.14958-4-amelie.delaunay@st.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 06, 2020 at 10:18:52AM +0100, Amelie Delaunay wrote:
-> Device tree property is named typec-power-opmode, not power-opmode.
-> 
-> Fixes: da0cb6310094 ("usb: typec: add support for STUSB160x Type-C controller family")
-> Signed-off-by: Amelie Delaunay <amelie.delaunay@st.com>
+Also, this is how A3720 WTMI code and ATF determines XTAL clock rate.
+No reason for kernel to do it differently.
 
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Reviewed-by: Marek Beh=C3=BAn <kabel@kernel.org>
 
+On Fri,  6 Nov 2020 11:00:39 +0100
+Pali Roh=C3=A1r <pali@kernel.org> wrote:
+
+> From: Terry Zhou <bjzhou@marvell.com>
+>=20
+> There is an error in the current code that the XTAL MODE
+> pin was set to NB MPP1_31 which should be NB MPP1_9.
+> The latch register of NB MPP1_9 has different offset of 0x8.
+>=20
+> Signed-off-by: Terry Zhou <bjzhou@marvell.com>
+> [pali: Fix pin name in commit message]
+> Signed-off-by: Pali Roh=C3=A1r <pali@kernel.org>
+> Fixes: 7ea8250406a6 ("clk: mvebu: Add the xtal clock for Armada 3700 SoC")
+> Cc: stable@vger.kernel.org
+>=20
 > ---
->  drivers/usb/typec/stusb160x.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/usb/typec/stusb160x.c b/drivers/usb/typec/stusb160x.c
-> index 2a618f02f4f1..d21750bbbb44 100644
-> --- a/drivers/usb/typec/stusb160x.c
-> +++ b/drivers/usb/typec/stusb160x.c
-> @@ -562,7 +562,7 @@ static int stusb160x_get_fw_caps(struct stusb160x *chip,
->  	 * Supported power operation mode can be configured through device tree
->  	 * else it is read from chip registers in stusb160x_get_caps.
->  	 */
-> -	ret = fwnode_property_read_string(fwnode, "power-opmode", &cap_str);
-> +	ret = fwnode_property_read_string(fwnode, "typec-power-opmode", &cap_str);
->  	if (!ret) {
->  		ret = typec_find_pwr_opmode(cap_str);
->  		/* Power delivery not yet supported */
-> -- 
-> 2.17.1
+> This patch is present in Marvell SDK and also in Marvell's kernel fork:
+> https://github.com/MarvellEmbeddedProcessors/linux-marvell/commit/80d4cec=
+4cef8282e5ac3aaf98ce3e68fb299a134
+>=20
+> Konstantin Porotchkin wrote on Github that Gregory Clement was notified
+> about this patch, but as this patch is still not in mainline kernel I'm
+> sending it again for review.
+>=20
+> In original commit message (only in commit message, not code) was
+> specified MPP9 pin on South Bridge, but correct is North Bridge.
+> ---
+>  drivers/clk/mvebu/armada-37xx-xtal.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/clk/mvebu/armada-37xx-xtal.c b/drivers/clk/mvebu/arm=
+ada-37xx-xtal.c
+> index e9e306d4e9af..41271351cf1f 100644
+> --- a/drivers/clk/mvebu/armada-37xx-xtal.c
+> +++ b/drivers/clk/mvebu/armada-37xx-xtal.c
+> @@ -13,8 +13,8 @@
+>  #include <linux/platform_device.h>
+>  #include <linux/regmap.h>
+> =20
+> -#define NB_GPIO1_LATCH	0xC
+> -#define XTAL_MODE	    BIT(31)
+> +#define NB_GPIO1_LATCH	0x8
+> +#define XTAL_MODE	    BIT(9)
+> =20
+>  static int armada_3700_xtal_clock_probe(struct platform_device *pdev)
+>  {
 
-thanks,
-
--- 
-heikki
