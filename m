@@ -2,108 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C0292A9AA1
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 18:17:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D76772A9AA3
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 18:18:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727393AbgKFRRU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 12:17:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42338 "EHLO
+        id S1727629AbgKFRSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 12:18:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725868AbgKFRRT (ORCPT
+        with ESMTP id S1726075AbgKFRSQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 12:17:19 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8488EC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 09:17:19 -0800 (PST)
-Date:   Fri, 6 Nov 2020 18:17:16 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1604683037;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AGKArt70WvEzDhknOx9Bw2ar6sCsCGBDr/06mOik2gM=;
-        b=g/eVfSww/b1CEhuL2eMyf53TmumsVIW07T1fqEHtbVMmtgSmmYeKcdl1yN1XXv1uiKZbNt
-        /v1rZjjcYQHJ+yBllEStZOSdwmKl+XmcUKQPV6lfIz8n5mVLG23GY2coQEFPBQdA6+fxeW
-        Qlj6cmvSt2hkW8+S7ZePjBNeKQQZLsBq3dvNggfK9XXctqgqcGrKUZb18HrDVOApdO13ID
-        UpYaVjNwa5gYxqvbGdCVK2pikVZDL5TRXxGGMY2GglwzCuwFrxwb+RXykwXCzpxKUWprNv
-        /7ID/XVjSlO5usvGZmU1Ck5nkxUin+tUckvEcEdMRGhhLEM9VQpbsLYbtPKThg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1604683037;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AGKArt70WvEzDhknOx9Bw2ar6sCsCGBDr/06mOik2gM=;
-        b=WiqldJ8yVWQCUmLRrVxIGMZ/Uj7faaADiudmoEnof1cifn4Yf97DuPNw8rTttyw4Y2PVQy
-        nZEopSnPd0IdpnAg==
-From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-kernel@vger.kernel.org, Peter Xu <peterx@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Hugh Dickins <hughd@google.com>, Jan Kara <jack@suse.cz>,
-        Jann Horn <jannh@google.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Linux-MM <linux-mm@kvack.org>, Michal Hocko <mhocko@suse.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Sebastian A. Siewior" <bigeasy@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH v3 2/2] mm: prevent gup_fast from racing with COW during
- fork
-Message-ID: <20201106171716.GA91138@lx-t490>
-References: <0-v3-7358966cab09+14e9-gup_fork_jgg@nvidia.com>
- <2-v3-7358966cab09+14e9-gup_fork_jgg@nvidia.com>
+        Fri, 6 Nov 2020 12:18:16 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C538BC0613CF;
+        Fri,  6 Nov 2020 09:18:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Message-ID:From:CC:To:Subject:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:
+        Date:Sender:Reply-To:Content-ID:Content-Description;
+        bh=h4CuqOgdybc1Oxj7qGtVKsDi0lWPsCMPHf40kTBBqlA=; b=aCf9ja6H2zuGi8/BiMx9zFLxM2
+        nzXbAnkJOOEL64Oby3ja7A3ld5bEOFxLoXZLWyM0FzqGj1Pkp60KY5pb8uqmmexuA+LS+ujiROhCz
+        dqIQes/pkumuHqXrprxobo9t6bGNS3Tfx6wo9tb+c1e0mLpLCVPmm/qXx6YT68GQj71F5zsZC/YAL
+        bOnxPGLf3pdsyp6bvVeodVgU8isyp6zB9dx8LfLqIfZuNJsd6jUVkrzb9RVY91hoJSKX+/sT+hj7P
+        DrV31h2hCUvVt6BNg7YIXPVKWJz1Yb6fjY05JqGqrJ/nZ1c8VjrJexYS0xZHtWRXQQS4SwsqH0rRS
+        uYE+9z9g==;
+Received: from host86-187-225-174.range86-187.btcentralplus.com ([86.187.225.174] helo=[10.220.150.94])
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kb5NM-0001H2-3R; Fri, 06 Nov 2020 17:18:12 +0000
+Date:   Fri, 06 Nov 2020 17:18:08 +0000
+User-Agent: K-9 Mail for Android
+In-Reply-To: <20201106093200.6d8975ae@w520.home>
+References: <20201026175325.585623-1-dwmw2@infradead.org> <20201027143944.648769-1-dwmw2@infradead.org> <20201027143944.648769-2-dwmw2@infradead.org> <20201028143509.GA2628@hirez.programming.kicks-ass.net> <ef4660dba8135ca5a1dc7e854babcf65d8cef46f.camel@infradead.org> <f0901be7-1526-5b6a-90cb-6489e53cb92f@redhat.com> <20201106093200.6d8975ae@w520.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2-v3-7358966cab09+14e9-gup_fork_jgg@nvidia.com>
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v2 1/2] sched/wait: Add add_wait_queue_priority()
+To:     Alex Williamson <alex.williamson@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+CC:     Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        kvm@vger.kernel.org
+From:   David Woodhouse <dwmw2@infradead.org>
+Message-ID: <F67D16D9-A5F0-4B40-8E1F-E713174D997B@infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jason,
 
-On Fri, Nov 06, 2020 at 11:55:14AM -0400, Jason Gunthorpe wrote:
-...
-> +	if (gup_flags & FOLL_PIN) {
-> +		seq = raw_read_seqcount(&current->mm->write_protect_seq);
-> +		if (seq & 1)
-> +			return 0;
-> +	}
-> +
-...
-> +	if (gup_flags & FOLL_PIN) {
-> +		if (read_seqcount_t_retry(&current->mm->write_protect_seq,
-> +					  seq)) {
-> +			unpin_user_pages(pages, nr_pinned);
-> +			return 0;
-> +		}
-> +	}
 
-From seqlock.h:
+On 6 November 2020 16:32:00 GMT, Alex Williamson <alex=2Ewilliamson@redhat=
+=2Ecom> wrote:
+>On Fri, 6 Nov 2020 11:17:21 +0100
+>Paolo Bonzini <pbonzini@redhat=2Ecom> wrote:
+>
+>> On 04/11/20 10:35, David Woodhouse wrote:
+>> > On Wed, 2020-10-28 at 15:35 +0100, Peter Zijlstra wrote: =20
+>> >> On Tue, Oct 27, 2020 at 02:39:43PM +0000, David Woodhouse wrote: =20
+>> >>> From: David Woodhouse <dwmw@amazon=2Eco=2Euk>
+>> >>>
+>> >>> This allows an exclusive wait_queue_entry to be added at the head
+>of the
+>> >>> queue, instead of the tail as normal=2E Thus, it gets to consume
+>events
+>> >>> first without allowing non-exclusive waiters to be woken at all=2E
+>> >>>
+>> >>> The (first) intended use is for KVM IRQFD, which currently has
+>> >>> inconsistent behaviour depending on whether posted interrupts are
+>> >>> available or not=2E If they are, KVM will bypass the eventfd
+>completely
+>> >>> and deliver interrupts directly to the appropriate vCPU=2E If not,
+>events
+>> >>> are delivered through the eventfd and userspace will receive them
+>when
+>> >>> polling on the eventfd=2E
+>> >>>
+>> >>> By using add_wait_queue_priority(), KVM will be able to
+>consistently
+>> >>> consume events within the kernel without accidentally exposing
+>them
+>> >>> to userspace when they're supposed to be bypassed=2E This, in turn,
+>means
+>> >>> that userspace doesn't have to jump through hoops to avoid
+>listening
+>> >>> on the erroneously noisy eventfd and injecting duplicate
+>interrupts=2E
+>> >>>
+>> >>> Signed-off-by: David Woodhouse <dwmw@amazon=2Eco=2Euk> =20
+>> >>
+>> >> Acked-by: Peter Zijlstra (Intel) <peterz@infradead=2Eorg> =20
+>> >=20
+>> > Thanks=2E Paolo, the conclusion was that you were going to take this
+>set
+>> > through the KVM tree, wasn't it?
+>> >  =20
+>>=20
+>> Queued, except for patch 2/3 in the eventfd series which Alex hasn't=20
+>> reviewed/acked yet=2E
+>
+>There was no vfio patch here, nor mention why it got dropped in v2
+>afaict=2E  Thanks,
 
-    /**
-     * raw_read_seqcount() - read the raw seqcount_t counter value
-     * ...
-     * Return: count to be passed to read_seqcount_retry()
-     */
-    #define raw_read_seqcount(s)
+That was a different (but related) series=2E The VFIO one is https://patch=
+work=2Ekernel=2Eorg/project/kvm/patch/20201027135523=2E646811-3-dwmw2@infra=
+dead=2Eorg/
 
-Please avoid using the internal API (read_seqcount_*t*_retry) and just
-use read_seqcount_retry() as the documentation suggests.
+Thanks=2E
 
-(I guess you just missed changing that last one... I'm in process of
- changing all these "*_seqcount_t_*" stuff to "do_*" as we talked on the
- v2 thread. Hopefully there will be no more confusion after that.)
-
-Kind regards,
-
---
-Ahmed S. Darwish
-Linutronix GmbH
+--=20
+Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
