@@ -2,79 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AF272A91DC
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 09:57:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67ED42A91DF
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 09:58:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726518AbgKFI5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 03:57:44 -0500
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:39850 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725830AbgKFI5n (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 03:57:43 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R441e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UEPEj-X_1604653060;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UEPEj-X_1604653060)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 06 Nov 2020 16:57:40 +0800
-Subject: Re: [PATCH] net/dsa: remove unused macros to tame gcc warning
-To:     Joe Perches <joe@perches.com>, andrew@lunn.ch
-Cc:     Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1604641050-6004-1-git-send-email-alex.shi@linux.alibaba.com>
- <71dc38c1646980840fb83d82fc588501af72e05f.camel@perches.com>
- <8e0fac45-9107-cdfe-de9e-ccf3abd416a4@linux.alibaba.com>
- <1662b333dd72369af4c1173035d43590fbc45292.camel@perches.com>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <28a5c53a-a576-7884-85ae-2adba39f2b8f@linux.alibaba.com>
-Date:   Fri, 6 Nov 2020 16:57:29 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
+        id S1726534AbgKFI6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 03:58:09 -0500
+Received: from thoth.sbs.de ([192.35.17.2]:46365 "EHLO thoth.sbs.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725830AbgKFI6J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 03:58:09 -0500
+Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
+        by thoth.sbs.de (8.15.2/8.15.2) with ESMTPS id 0A68vwGM012450
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 6 Nov 2020 09:57:58 +0100
+Received: from md1za8fc.ad001.siemens.net ([139.22.116.104])
+        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 0A68vvBR001908;
+        Fri, 6 Nov 2020 09:57:58 +0100
+Date:   Fri, 6 Nov 2020 09:57:56 +0100
+From:   Henning Schild <henning.schild@siemens.com>
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Claudius Heine <ch@denx.de>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        <linux-rtc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Johannes Hahn <johannes-hahn@siemens.com>,
+        <werner.zeh@siemens.com>
+Subject: Re: [PATCH 0/2]  Adding I2C support to RX6110 RTC
+Message-ID: <20201106095756.0dd8f267@md1za8fc.ad001.siemens.net>
+In-Reply-To: <20201106075908.GJ1034841@piout.net>
+References: <20201104102629.3422048-1-ch@denx.de>
+        <20201105221451.GH1034841@piout.net>
+        <20201106084034.0ea09ea3@md1za8fc.ad001.siemens.net>
+        <20201106075908.GJ1034841@piout.net>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <1662b333dd72369af4c1173035d43590fbc45292.camel@perches.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Am Fri, 6 Nov 2020 08:59:08 +0100
+schrieb Alexandre Belloni <alexandre.belloni@bootlin.com>:
 
-
-在 2020/11/6 下午4:52, Joe Perches 写道:
-> On Fri, 2020-11-06 at 16:28 +0800, Alex Shi wrote:
->>
->> 在 2020/11/6 下午2:36, Joe Perches 写道:
->>> On Fri, 2020-11-06 at 13:37 +0800, Alex Shi wrote:
->>>> There are some macros unused, they causes much gcc warnings. Let's
->>>> remove them to tame gcc.
->>>
->>> I believe these to be essentially poor warnings.
->>>
->>> Aren't these warnings generated only when adding  W=2 to the make
->>> command line?
->>>
->>> Perhaps it's better to move the warning to level 3
->>> ---
->>> diff --git a/scripts/Makefile.extrawarn b/scripts/Makefile.extrawarn
->>> index 95e4cdb94fe9..5c3c220ddb32 100644
->>> --- a/scripts/Makefile.extrawarn
->>> +++ b/scripts/Makefile.extrawarn
->>> @@ -68,7 +68,6 @@ KBUILD_CFLAGS += $(call cc-option, -Wlogical-op)
->>>  KBUILD_CFLAGS += -Wmissing-field-initializers
->>>  KBUILD_CFLAGS += -Wtype-limits
->>>  KBUILD_CFLAGS += $(call cc-option, -Wmaybe-uninitialized)
->>> -KBUILD_CFLAGS += $(call cc-option, -Wunused-macros)
->>
->> This changed too much, and impact others. May not good. :)
+> On 06/11/2020 08:40:34+0100, Henning Schild wrote:
+> > Hi,
+> > 
+> > Am Thu, 5 Nov 2020 23:14:51 +0100
+> > schrieb Alexandre Belloni <alexandre.belloni@bootlin.com>:
+> >   
+> > > Hello Claudius!
+> > > 
+> > > It has been a while ;)
+> > > 
+> > > On 04/11/2020 11:26:27+0100, Claudius Heine wrote:  
+> > > > Hi,
+> > > > 
+> > > > this patch introduces I2C support to the RX6110 RTC driver and
+> > > > also adds an ACPI identifier to it.
+> > > > 
+> > > > Since we are also pushing the coreboot changes for the ACPI
+> > > > table upstream in parallel, we are free to name this ACPI entry
+> > > > however we like it seems. So any feedback on that would be
+> > > > welcome ;) 
+> > > 
+> > > I don't care too much about ACPI so if you are really looking for
+> > > advice there, I guess you should ask seom of the ACPI guys (but I
+> > > guess you are free to choose whatever you want).
+> > >   
+> > 
+> > This is the coreboot stuff currently under review.
+> > 
+> > https://review.coreboot.org/c/coreboot/+/47235
+> >   
 > 
-> Can you clarify what you mean?
-> 
+> I can't really comment on the patch, however another part is worrying:
+> if VLF is set, coreboot is resetting the time to a valid value (user
+> defined or the build date). This is nasty because this hides the event
+> from the kernel and ulimately, userspace has no way of knowing whether
+> the RTC date is the real date or just a dummy date.
 
-Uh, change in this file will impact all kernels not only for net/dsa.
-If you want to keep these unused macros, maybe better to put them into comments?
+Is that worrying problem part of the patch, or just a general
+observation looking at their driver?
 
-Thanks!
-Alex
+I think in the patches we should focus on whether I2C and ACPI support
+should be added, and how.
+
+Henning
+
