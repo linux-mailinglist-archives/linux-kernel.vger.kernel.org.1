@@ -2,112 +2,359 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7623A2A8E38
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 05:18:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2BEA2A8E43
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 05:21:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726217AbgKFEQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 23:16:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32804 "EHLO
+        id S1726007AbgKFEV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 23:21:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725828AbgKFEQ6 (ORCPT
+        with ESMTP id S1725616AbgKFEVZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 23:16:58 -0500
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3A30C0613CF;
-        Thu,  5 Nov 2020 20:16:57 -0800 (PST)
-Received: by mail-lj1-x241.google.com with SMTP id k25so3899513lji.9;
-        Thu, 05 Nov 2020 20:16:57 -0800 (PST)
+        Thu, 5 Nov 2020 23:21:25 -0500
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99674C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 20:21:25 -0800 (PST)
+Received: by mail-ej1-x629.google.com with SMTP id o9so83905ejg.1
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 20:21:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AoocLBBvUJrI0bLOOZTh8xYoi/tHgAN+ua/bhX68FM8=;
-        b=sINzjgHvy6ulBGqRGUPhFTT730zcVjTJ63oLbOTnwWTF1dtv+m7Xh8tx18yvhbigwv
-         K+jpB1Z7Me38xpsNnnWGAGqo5I6Dhy4ODfsmaqxXVigyKn13DnoNhggKaoB6OeiRqkte
-         DADDhjdrXimmBRbhVBMJcpH6nwvlDP02GCB2IOy0ZIXbGRKZ9wBI0apeC/YziAXK7Kaw
-         bHXhtm62DVkgDKYrIYHrDummNvSi15N+6xODSxRcU28nxu6fqSWHOA8g103z/NY+foYI
-         oY1XXbuISgUEM9+DR05gTrcTC44RQlwPKqOQFrP6nVHQ2ZeSYGVL/BPwYJ89YWhBzrQe
-         kKuw==
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=5vlB4Pwupr/T1jamz8zGENU8bbSe7aYkeAEFPVdv4HI=;
+        b=PLcQ2A3AM3YI40g0sx7qWNTvrgXqXvMONJfcBg5BNwrSZuixWzekn8cCUcX05ikTx4
+         xdc4kPhXlEjok/1O/h+PUkW0B8Ls2IjoRvaxJllzc/8pCTm0vim3BTy6YqXQgdxCbpLL
+         G3K/fVdTmNqyTaiZ8aPSvHWybqEYbulB5ltN4a//1t0j+i23sCfZ/F/TOHzc8CgoQ92v
+         GBjzuvnrpbA2gp1/rQAH3IJGg2VEM45Nx7+HNxvjZ5n/BvzeoXKuvLd7AfRs/9TFFKDY
+         szJF1JwwD7sD7zTs/0FvZGm5d37SW7rrK5VCjMjrvwoLvZlbjUfRuA60jihdF9zSdv8O
+         GgGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AoocLBBvUJrI0bLOOZTh8xYoi/tHgAN+ua/bhX68FM8=;
-        b=mIOdPr8M3EcLfLEqdH1ebV/mp3BqPDDEQvhCBCHvaFlqtL+9dwCQaQmL1eR0YriU3H
-         yvufzT4LOwx85w7ExS9+CXKOCnWDsFQhZvdD8D/nuCORJ7k6wlOVkTrvRdggWGdXbhGU
-         IluiFUH61KRMx6xv3FOFhemfPNMM17pG4ZK3jLsR1N3zv79DIXnjilNVc4GkVr9162Gb
-         VYFlIDIj7NelOExffCqhuOITMfZvK0gmtuZOYJkCgrO3iB1SpPz2n0MdNi3UI3VfTpy0
-         qElijBLtkh4APUDj2682QNYs7ZgPQn7Oq64L9482VRLJ4DQZQYip4TuZd8NEyxHfKI/Q
-         mEHw==
-X-Gm-Message-State: AOAM533vnB27p3f/5ayK11SqjYIHSY8kMccaA5DTWDyjhr+5Nig5U73n
-        oPEtbOUnUguVcIaBLZ7yd/dlJ7a0cYT0GubnoYM=
-X-Google-Smtp-Source: ABdhPJzT9gjrVO2QBAMOuWU6fZsr/CDjFypLslG8r4nvEDWzi5MHV9UIGjTVCPYTBekisHpRdbi6Mo2jTxCnzgVzqnE=
-X-Received: by 2002:a2e:9094:: with SMTP id l20mr35819ljg.290.1604636216488;
- Thu, 05 Nov 2020 20:16:56 -0800 (PST)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=5vlB4Pwupr/T1jamz8zGENU8bbSe7aYkeAEFPVdv4HI=;
+        b=RkkC3zrVuNBRrSMe3KMniPBhfuqMAo0KAbxAiaRZmWYvZ+QflYieEHt+yDgme6+8Ni
+         lqreXrm2+R8mEVRoan3/ZCAzj//uL2V3pQY4apKsmERDYCwzGKB8zTZiskP96ZbhbdXj
+         vs/L9T60Y+XEvv4NSCHX/t1n1DYVtT/KlyKsbeJlquaNwZbO1Nje8j33DOhkKpHYOyVW
+         xVuthrh0yrJvXsQB6yvYtyGGIcga5qzFM1Qfvh+E89uFVI6OPeMBV7B4ELGamMJDszCA
+         6Lc53DIsoTN864tlNKBORviAbQzIdF8DWnooi8M4U+XE0E34GHLuK1qITzKUuiA9YHx+
+         9eoQ==
+X-Gm-Message-State: AOAM5316EUQgUcqOEQYVtdD++0gadVQLLt7qggtcghgZKmGx092gmc6A
+        jsfKpTtLSQvCI3wNWYrSAzlCDq5nnH0spWOGFHcxihiukWgc/A==
+X-Google-Smtp-Source: ABdhPJyTAp6j3UAjKQ2OMteR5ZqSg6wlPrzyqQv2lIeKHoWAGEEDGSY6AO29OZvElShNrbv7vkO9jskvaaWuqyBo+rU=
+X-Received: by 2002:a17:906:7f95:: with SMTP id f21mr192349ejr.340.1604636484257;
+ Thu, 05 Nov 2020 20:21:24 -0800 (PST)
 MIME-Version: 1.0
-References: <20201104191052.390657-1-ndesaulniers@google.com>
-In-Reply-To: <20201104191052.390657-1-ndesaulniers@google.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 5 Nov 2020 20:16:44 -0800
-Message-ID: <CAADnVQL_mP7HNz1n+=S7Tjk8f7efm3_w5+VQVptD2y7Wts_Mig@mail.gmail.com>
-Subject: Re: [PATCH] compiler-clang: remove version check for BPF Tracing
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        stable <stable@vger.kernel.org>,
-        Chen Yu <yu.chen.surf@gmail.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Marco Elver <elver@google.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>
+From:   Dave Airlie <airlied@gmail.com>
+Date:   Fri, 6 Nov 2020 14:21:13 +1000
+Message-ID: <CAPM=9twEfV=TerAqTaQAo+3wUUewUxeij48bCph9XC1tdX3Pew@mail.gmail.com>
+Subject: [git pull] drm fixes for 5.10-rc3
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 4, 2020 at 11:11 AM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
->
-> bpftrace parses the kernel headers and uses Clang under the hood. Remove
-> the version check when __BPF_TRACING__ is defined (as bpftrace does) so
-> that this tool can continue to parse kernel headers, even with older
-> clang sources.
->
-> Cc: <stable@vger.kernel.org>
-> Fixes: commit 1f7a44f63e6c ("compiler-clang: add build check for clang 10.0.1")
-> Reported-by: Chen Yu <yu.chen.surf@gmail.com>
-> Reported-by: Jarkko Sakkinen <jarkko@kernel.org>
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> ---
->  include/linux/compiler-clang.h | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/include/linux/compiler-clang.h b/include/linux/compiler-clang.h
-> index dd7233c48bf3..98cff1b4b088 100644
-> --- a/include/linux/compiler-clang.h
-> +++ b/include/linux/compiler-clang.h
-> @@ -8,8 +8,10 @@
->                      + __clang_patchlevel__)
->
->  #if CLANG_VERSION < 100001
-> +#ifndef __BPF_TRACING__
->  # error Sorry, your version of Clang is too old - please use 10.0.1 or newer.
->  #endif
-> +#endif
+Hey Linus,
 
-I can take it through the bpf tree if no one objects.
+It's Friday here so that means another installment of drm fixes to
+distract you from the counting process.
+
+Changes all over the place, the amdgpu changes contain support for a
+new GPU that is close to current one already in the tree (Green
+Sardine) so it shouldn't have much side effects.
+
+Otherwise imx has a few cleanup patches and fixes, amdgpu and i915
+have around the usual smattering of fixes, fonts got constified, and
+vc4/panfrost has some minor fixes. All in all a fairly regular rc3.
+
+I think we have an outstanding nouveau regression, but the author is
+looking into the fix, so should be here next week.
+
+I now return you to counting.
+Dave.
+
+drm-fixes-2020-11-06-1:
+drm fixes for 5.10-rc3
+
+fonts:
+- constify font structures.
+
+MAINTAINERS:
+- Fix path for amdgpu power management
+
+amdgpu:
+- Add support for more navi1x SKUs
+- Fix for suspend on CI dGPUs
+- VCN DPG fix for Picasso
+- Sienna Cichlid fixes
+- Polaris DPM fix
+- Add support for Green Sardine
+
+amdkfd:
+- Fix an allocation failure check
+
+i915:
+- Fix set domain's cache coherency
+- Fixes around breadcrumbs
+- Fix encoder lookup during PSR atomic
+- Hold onto an explicit ref to i915_vma_work.pinned
+- gvt: HWSP reset handling fix
+- gvt: flush workaround
+- gvt: vGPU context pin/unpin
+- gvt: mmio cmd access fix for bxt/apl
+
+imx:
+- drop unused functions and callbacks
+- reuse imx_drm_encoder_parse_of
+- spinlock rework
+- memory leak fix
+- minor cleanups
+
+vc4:
+- resource cleanup fix
+
+panfrost:
+- madvise/shrinker fix
+The following changes since commit 3cea11cd5e3b00d91caf0b4730194039b45c5891:
+
+  Linux 5.10-rc2 (2020-11-01 14:43:51 -0800)
+
+are available in the Git repository at:
+
+  git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2020-11-06-1
+
+for you to fetch changes up to 356583b956e620a7ef8086f14bfe971986a320b3:
+
+  Merge tag 'drm-misc-fixes-2020-11-05' of
+git://anongit.freedesktop.org/drm/drm-misc into drm-fixes (2020-11-06
+13:32:12 +1000)
+
+----------------------------------------------------------------
+drm fixes for 5.10-rc3
+
+fonts:
+- constify font structures.
+
+MAINTAINERS:
+- Fix path for amdgpu power management
+
+amdgpu:
+- Add support for more navi1x SKUs
+- Fix for suspend on CI dGPUs
+- VCN DPG fix for Picasso
+- Sienna Cichlid fixes
+- Polaris DPM fix
+- Add support for Green Sardine
+
+amdkfd:
+- Fix an allocation failure check
+
+i915:
+- Fix set domain's cache coherency
+- Fixes around breadcrumbs
+- Fix encoder lookup during PSR atomic
+- Hold onto an explicit ref to i915_vma_work.pinned
+- gvt: HWSP reset handling fix
+- gvt: flush workaround
+- gvt: vGPU context pin/unpin
+- gvt: mmio cmd access fix for bxt/apl
+
+imx:
+- drop unused functions and callbacks
+- reuse imx_drm_encoder_parse_of
+- spinlock rework
+- memory leak fix
+- minor cleanups
+
+vc4:
+- resource cleanup fix
+
+panfrost:
+- madvise/shrinker fix
+
+----------------------------------------------------------------
+Aaron Liu (1):
+      drm/amdgpu: enable green_sardine_asd.bin loading (v2)
+
+Alex Deucher (4):
+      drm/amdgpu/powerplay: Only apply optimized mclk dpm policy on polaris
+      drm/amdgpu/swsmu: remove duplicate call to smu_set_default_dpm_table
+      drm/amdgpu: add Green_Sardine APU flag
+      drm/amdgpu/display: remove DRM_AMD_DC_GREEN_SARDINE
+
+Arnd Bergmann (1):
+      drm/imx: tve remove extraneous type qualifier
+
+Boris Brezillon (1):
+      drm/panfrost: Fix a deadlock between the shrinker and madvise path
+
+Chris Wilson (5):
+      drm/i915/gem: Flush coherency domains on first set-domain-ioctl
+      drm/i915/gt: Use the local HWSP offset during submission
+      drm/i915/gt: Expose more parameters for emitting writes into the ring
+      drm/i915/gt: Flush xcs before tgl breadcrumbs
+      drm/i915: Hold onto an explicit ref to i915_vma_work.pinned
+
+Colin Xu (4):
+      drm/i915/gvt: Allow zero out HWSP addr on hws_pga_write
+      drm/i915/gvt: Set SNOOP for PAT3 on BXT/APL to workaround GPU BB hang
+      drm/i915/gvt: Only pin/unpin intel_context along with workload
+      drm/i915/gvt: Fix mmio handler break on BXT/APL.
+
+Dave Airlie (4):
+      Merge tag 'imx-drm-next-2020-10-30' of
+git://git.pengutronix.de/git/pza/linux into drm-fixes
+      Merge tag 'drm-intel-fixes-2020-11-05' of
+git://anongit.freedesktop.org/drm/drm-intel into drm-fixes
+      Merge tag 'amd-drm-fixes-5.10-2020-11-04' of
+git://people.freedesktop.org/~agd5f/linux into drm-fixes
+      Merge tag 'drm-misc-fixes-2020-11-05' of
+git://anongit.freedesktop.org/drm/drm-misc into drm-fixes
+
+Evan Quan (5):
+      drm/amdgpu: perform srbm soft reset always on SDMA resume
+      drm/amd/pm: correct the baco reset sequence for CI ASICs
+      drm/amd/pm: enable baco reset for Hawaii
+      drm/amd/pm: perform SMC reset on suspend/hibernation
+      drm/amd/pm: do not use ixFEATURE_STATUS for checking smc running
+
+Flora Cui (2):
+      drm/amdgpu: disable DCN and VCN for Navi14 0x7340/C9 SKU
+      drm/amdgpu: rename nv_is_headless_sku()
+
+Imre Deak (1):
+      drm/i915: Fix encoder lookup during PSR atomic check
+
+Joe Perches (1):
+      MAINTAINERS: Update AMD POWERPLAY pattern
+
+John Clements (1):
+      drm/amdgpu: resolved ASD loading issue on sienna
+
+Kent Russell (1):
+      amdkfd: Check kvmalloc return before memcpy
+
+Lee Jones (1):
+      Fonts: Replace discarded const qualifier
+
+Likun Gao (1):
+      drm/amdgpu: update golden setting for sienna_cichlid
+
+Marco Felsch (1):
+      drm/imx: parallel-display: fix edid memory leak
+
+Maxime Ripard (7):
+      drm/vc4: bo: Add a managed action to cleanup the cache
+      drm/vc4: drv: Use managed drm_mode_config_init
+      drm/vc4: gem: Add a managed action to cleanup the job queue
+      drm/vc4: Use the helper to retrieve vc4_dev when needed
+      drm/vc4: Use devm_drm_dev_alloc
+      drm/vc4: kms: Add functions to create the state objects
+      drm/vc4: drv: Remove unused variable
+
+Philipp Zabel (9):
+      gpu: ipu-v3: remove unused functions
+      drm/imx: dw_hdmi-imx: use imx_drm_encoder_parse_of
+      drm/imx: imx-tve: use regmap fast_io spinlock
+      drm/imx: imx-tve: remove redundant enable tracking
+      drm/imx: drop explicit drm_mode_config_cleanup
+      drm/imx: dw_hdmi-imx: remove empty encoder_disable callback
+      drm/imx: imx-ldb: reduce scope of edid_len
+      drm/imx: parallel-display: remove unused function enc_to_imxpd()
+      drm/imx: parallel-display: reduce scope of edid_len
+
+Prike Liang (4):
+      drm/amdgpu: add green_sardine support for gpu_info and ip block
+setting (v2)
+      drm/amdgpu: add soc15 common ip block support for green_sardine (v3)
+      drm/amdgpu: add gfx support for green_sardine (v2)
+      drm/amdgpu/sdma: add sdma engine support for green_sardine (v2)
+
+Rodrigo Vivi (1):
+      Merge tag 'gvt-fixes-2020-10-30' of
+https://github.com/intel/gvt-linux into drm-intel-fixes
+
+Roman Li (2):
+      drm/amd/display: Add green_sardine support to DC
+      drm/amd/display: Add green_sardine support to DM
+
+Steven Price (1):
+      drm/panfrost: Fix module unload
+
+Thong Thai (1):
+      drm/amdgpu: enable vcn support for green_sardine (v2)
+
+Veerabadhran Gopalakrishnan (1):
+      amd/amdgpu: Disable VCN DPG mode for Picasso
+
+Zhenyu Wang (1):
+      Merge tag 'drm-intel-fixes-2020-10-29' into gvt-fixes
+
+ MAINTAINERS                                        |  2 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_device.c         |  6 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c            |  1 +
+ drivers/gpu/drm/amd/amdgpu/amdgpu_vcn.c            |  8 ++-
+ drivers/gpu/drm/amd/amdgpu/cik.c                   |  4 +-
+ drivers/gpu/drm/amd/amdgpu/cik_sdma.c              | 27 ++++----
+ drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c             |  4 ++
+ drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c              | 12 +++-
+ drivers/gpu/drm/amd/amdgpu/nv.c                    | 11 +--
+ drivers/gpu/drm/amd/amdgpu/psp_v12_0.c             |  6 +-
+ drivers/gpu/drm/amd/amdgpu/sdma_v4_0.c             |  6 +-
+ drivers/gpu/drm/amd/amdgpu/soc15.c                 | 14 ++--
+ drivers/gpu/drm/amd/amdkfd/kfd_crat.c              |  2 +-
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c  |  6 ++
+ drivers/gpu/drm/amd/display/dc/clk_mgr/clk_mgr.c   |  5 ++
+ drivers/gpu/drm/amd/display/dc/core/dc_resource.c  |  2 +
+ drivers/gpu/drm/amd/display/include/dal_asic_id.h  |  4 ++
+ drivers/gpu/drm/amd/include/amd_shared.h           |  1 +
+ drivers/gpu/drm/amd/pm/inc/hwmgr.h                 |  1 +
+ drivers/gpu/drm/amd/pm/inc/smumgr.h                |  2 +
+ drivers/gpu/drm/amd/pm/powerplay/hwmgr/ci_baco.c   |  7 +-
+ .../gpu/drm/amd/pm/powerplay/hwmgr/smu7_hwmgr.c    | 34 +++++----
+ .../gpu/drm/amd/pm/powerplay/smumgr/ci_smumgr.c    | 29 ++++++--
+ drivers/gpu/drm/amd/pm/powerplay/smumgr/smumgr.c   |  8 +++
+ drivers/gpu/drm/amd/pm/swsmu/amdgpu_smu.c          | 11 ---
+ drivers/gpu/drm/i915/display/intel_psr.c           |  2 +-
+ drivers/gpu/drm/i915/gem/i915_gem_domain.c         | 28 ++++----
+ drivers/gpu/drm/i915/gt/intel_engine.h             | 55 +++++++++------
+ drivers/gpu/drm/i915/gt/intel_lrc.c                | 31 ++++++---
+ drivers/gpu/drm/i915/gt/intel_timeline.c           | 18 ++---
+ drivers/gpu/drm/i915/gt/intel_timeline_types.h     |  2 +
+ drivers/gpu/drm/i915/gvt/handlers.c                | 47 ++++++++++++-
+ drivers/gpu/drm/i915/gvt/scheduler.c               | 15 ++--
+ drivers/gpu/drm/i915/i915_vma.c                    |  6 +-
+ drivers/gpu/drm/imx/dw_hdmi-imx.c                  | 17 +----
+ drivers/gpu/drm/imx/imx-drm-core.c                 | 10 +--
+ drivers/gpu/drm/imx/imx-ldb.c                      | 10 ++-
+ drivers/gpu/drm/imx/imx-tve.c                      | 40 ++---------
+ drivers/gpu/drm/imx/parallel-display.c             | 20 +-----
+ drivers/gpu/drm/panfrost/panfrost_drv.c            |  5 +-
+ drivers/gpu/drm/panfrost/panfrost_gem.c            |  4 +-
+ drivers/gpu/drm/panfrost/panfrost_gem.h            |  2 +-
+ drivers/gpu/drm/panfrost/panfrost_gem_shrinker.c   | 14 +++-
+ drivers/gpu/drm/vc4/vc4_bo.c                       |  9 +--
+ drivers/gpu/drm/vc4/vc4_drv.c                      | 41 ++++-------
+ drivers/gpu/drm/vc4/vc4_drv.h                      |  9 ++-
+ drivers/gpu/drm/vc4/vc4_gem.c                      | 19 ++---
+ drivers/gpu/drm/vc4/vc4_hvs.c                      |  4 +-
+ drivers/gpu/drm/vc4/vc4_kms.c                      | 80 ++++++++++++++++------
+ drivers/gpu/drm/vc4/vc4_v3d.c                      | 12 ++--
+ drivers/gpu/ipu-v3/ipu-common.c                    | 67 ------------------
+ include/video/imx-ipu-v3.h                         |  3 -
+ lib/fonts/font_10x18.c                             |  2 +-
+ lib/fonts/font_6x10.c                              |  2 +-
+ lib/fonts/font_6x11.c                              |  2 +-
+ lib/fonts/font_6x8.c                               |  2 +-
+ lib/fonts/font_7x14.c                              |  2 +-
+ lib/fonts/font_8x16.c                              |  2 +-
+ lib/fonts/font_8x8.c                               |  2 +-
+ lib/fonts/font_acorn_8x8.c                         |  2 +-
+ lib/fonts/font_mini_4x6.c                          |  2 +-
+ lib/fonts/font_pearl_8x8.c                         |  2 +-
+ lib/fonts/font_sun12x22.c                          |  2 +-
+ lib/fonts/font_sun8x16.c                           |  2 +-
+ lib/fonts/font_ter16x32.c                          |  2 +-
+ 65 files changed, 439 insertions(+), 370 deletions(-)
