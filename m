@@ -2,107 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55AFB2A9057
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 08:30:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 439BA2A9059
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 08:31:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726481AbgKFHaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 02:30:21 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:35876 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726248AbgKFHaV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 02:30:21 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1604647820; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=ZGXXuu6qBXSfftqrulNTywUK6S0YxZhWGm7WSxymbYY=; b=PrRyGjv9u5W2dZJ1M9ZCR+cXU+issLjhzeemv9ATPNDSQ/f1c/QzGZ0nu0tE2VFcmMN3Clvl
- PXmkdWv0zZsH/D5lXEUnlk3e/2/TvhTHzWnp0VPkBJSZhOORDLeLqmbryvHCr2MQ5+Vu82Ev
- irlKZTQzI5rZDoT1rTWgcMjs/l0=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 5fa4fb812e911a5cba9f7d85 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 06 Nov 2020 07:30:09
- GMT
-Sender: akhilpo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 8FF87C433C9; Fri,  6 Nov 2020 07:30:09 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.1.9] (unknown [117.210.190.231])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: akhilpo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8529EC433C8;
-        Fri,  6 Nov 2020 07:30:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8529EC433C8
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akhilpo@codeaurora.org
-Subject: Re: [Freedreno] [PATCH v5 3/3] dt-bindings: drm/msm/gpu: Add cooling
- device support
-To:     Rob Clark <robdclark@gmail.com>, Rob Herring <robh@kernel.org>
-Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        dri-devel@freedesktop.org,
-        freedreno <freedreno@lists.freedesktop.org>
-References: <1604054832-3114-1-git-send-email-akhilpo@codeaurora.org>
- <1604054832-3114-3-git-send-email-akhilpo@codeaurora.org>
- <20201104200300.GA4036650@bogus>
- <CAF6AEGvj34MbnRS+A432AhOwMuL2BtTXJ+AD+zQ9w0_meV_-gw@mail.gmail.com>
-From:   Akhil P Oommen <akhilpo@codeaurora.org>
-Message-ID: <8c28fe20-fbcf-5076-fad8-107073df63a5@codeaurora.org>
-Date:   Fri, 6 Nov 2020 13:00:01 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.3
-MIME-Version: 1.0
-In-Reply-To: <CAF6AEGvj34MbnRS+A432AhOwMuL2BtTXJ+AD+zQ9w0_meV_-gw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1726353AbgKFHbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 02:31:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34610 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725830AbgKFHbA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 02:31:00 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB0C8C0613CF;
+        Thu,  5 Nov 2020 23:30:59 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id e7so499074pfn.12;
+        Thu, 05 Nov 2020 23:30:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=PjmfGm4EXurKjtMQzJKg85PMtWxg6au6fvWpF4KZFQ0=;
+        b=k4JMvlIFGEdDNueJ49Y+2ob3zUipwp/qt9WNR78Oe/B51Jn1xMOPEQNfpx9mtrAsJv
+         xqOU+OfapRBwkkpwbF6wnrROHmyP6SC0T5CEMxCcOuogL3qaji63QJBNilt2LOuhEASO
+         5CNP4W5GA+JiY5K8kFoZHIIx5+1NRz+Fl3p+ByHMyN49PdTJgcTme721qlmiOBuEozmY
+         Drv3OBfUhxXuW+lMJSuNyJiytCPzTpH1FKgrpZa3moSyr2DB0MSs13r7ansesTEhlLJv
+         9WrzCKCCD9QNNoml0e0WFrDwKhD4dF4zNOx11yT3oGw2Hw0pTwhNeworsUZ+6USSBDa8
+         YwhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=PjmfGm4EXurKjtMQzJKg85PMtWxg6au6fvWpF4KZFQ0=;
+        b=izZW6hbdFUWDIKWFGc0uiQB6kEu/TWetK7vDykcOmFBbq2n6ybytdltFD0aOM0iLtb
+         eif5WitJg+c3nbxMRJ4BjbCeV+PeuK/a4blzZd4RKvyXA4OXgxq0RkEJCIdWo2ilq2Nr
+         rmeMmlJxC1d6LAn/WHjoZE2nUPgL46ZleI45RwyxKaLnnCg5VqGPdm8SDUqjQDvepU6O
+         xeepaB1TyM/OdEtMdloSgJhtg8yMBoSE+Avc9MAcSpXG7LJo52UacgsesFZMEgJGmWS6
+         js8w/Cfio5KSuSoEuuvn9vYqvTxTUwYIBfGVrkW3zQ6MHQBJ+7BipdP0q8atSD6GAmUp
+         4OzA==
+X-Gm-Message-State: AOAM530CDXhc6CsJbc0oqRK1HAYTd6cx1mKMaPUqqBfRH7hoGMCmYKlJ
+        BM0KO7hHKrXisCh37ifydppmL5UDro4R
+X-Google-Smtp-Source: ABdhPJzSyINIgRGoei5f7v8jixOWwh21HKdF3nGUmlNuqGJSOxo3tZ/+OsAcY0fcIbQs0ndJkiPCog==
+X-Received: by 2002:a17:90a:1596:: with SMTP id m22mr1066156pja.189.1604647859498;
+        Thu, 05 Nov 2020 23:30:59 -0800 (PST)
+Received: from he-cluster.localdomain (67.216.221.250.16clouds.com. [67.216.221.250])
+        by smtp.gmail.com with ESMTPSA id d7sm722973pgh.17.2020.11.05.23.30.58
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 05 Nov 2020 23:30:58 -0800 (PST)
+From:   xiakaixu1987@gmail.com
+X-Google-Original-From: kaixuxia@tencent.com
+To:     a.zummo@towertech.it, alexandre.belloni@bootlin.com
+Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kaixu Xia <kaixuxia@tencent.com>
+Subject: [PATCH] rtc: sc27xx: Remove unnecessary conversion to bool
+Date:   Fri,  6 Nov 2020 15:30:54 +0800
+Message-Id: <1604647854-876-1-git-send-email-kaixuxia@tencent.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/5/2020 2:28 AM, Rob Clark wrote:
-> On Wed, Nov 4, 2020 at 12:03 PM Rob Herring <robh@kernel.org> wrote:
->>
->> On Fri, 30 Oct 2020 16:17:12 +0530, Akhil P Oommen wrote:
->>> Add cooling device support to gpu. A cooling device is bound to a
->>> thermal zone to allow thermal mitigation.
->>>
->>> Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
->>> Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
->>> ---
->>>   Documentation/devicetree/bindings/display/msm/gpu.txt | 7 +++++++
->>>   1 file changed, 7 insertions(+)
->>>
->>
->>
->> Please add Acked-by/Reviewed-by tags when posting new versions. However,
->> there's no need to repost patches *only* to add the tags. The upstream
->> maintainer will do that for acks received on the version they apply.
->>
->> If a tag was not added on purpose, please state why and what changed.
->>
-> 
-> 
-> Thanks Rob
-> 
-> I've copied over your ack from the previous version.. but yes, it
-> definitely makes my life easier when patch senders do this for me ;-)
-> 
-> BR,
-> -R
-> 
-Robh, you Acked v4 after I shared v5 patches!!
+From: Kaixu Xia <kaixuxia@tencent.com>
 
--Akhil.
+Here we could use the '!=' expression to fix the following coccicheck
+warning:
+
+./drivers/rtc/rtc-sc27xx.c:566:50-55: WARNING: conversion to bool not needed here
+
+Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
+Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
+---
+ drivers/rtc/rtc-sc27xx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/rtc/rtc-sc27xx.c b/drivers/rtc/rtc-sc27xx.c
+index 36810dd40cd3..6e65f68ea86d 100644
+--- a/drivers/rtc/rtc-sc27xx.c
++++ b/drivers/rtc/rtc-sc27xx.c
+@@ -563,7 +563,7 @@ static int sprd_rtc_check_power_down(struct sprd_rtc *rtc)
+ 	 * means the RTC has been powered down, so the RTC time values are
+ 	 * invalid.
+ 	 */
+-	rtc->valid = val == SPRD_RTC_POWER_RESET_VALUE ? false : true;
++	rtc->valid = val != SPRD_RTC_POWER_RESET_VALUE;
+ 	return 0;
+ }
+ 
+-- 
+2.20.0
+
