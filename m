@@ -2,79 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 483D32A9899
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 16:35:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 424ED2A989E
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 16:37:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727552AbgKFPfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 10:35:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51764 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726422AbgKFPfP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 10:35:15 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C7CB2208C7;
-        Fri,  6 Nov 2020 15:35:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604676914;
-        bh=paZN7AmMflubbnBs/ZRVSzsc+RrX8RA/W7ofJ5ThUB4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=C/vLytVCM05e1EYByu8kmhzsDIqP+J60oRAVf5w8r/c+cO4NuYXpPOrI9VBJuwAPv
-         NxpwfRGFFH9zfC7W+h6pzbrx6TGo2RMsVwoPPFO51fmX1iygQvk7L/B5nZtEsepCaI
-         qxWEvsSRPSSfVAsVGIsKsB+FAQ/gkVJsHZbLtTBs=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kb3lg-008Ej3-NW; Fri, 06 Nov 2020 15:35:12 +0000
+        id S1727558AbgKFPhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 10:37:18 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:58726 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726422AbgKFPhS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 10:37:18 -0500
+Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 39B5020B4905;
+        Fri,  6 Nov 2020 07:37:17 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 39B5020B4905
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1604677037;
+        bh=q4PevNfxu74JV0KEYqy84LCv65lpjN/rPTqrzxIlBks=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=QT3DxheGucb03zVsRchRm/X0Wt7iWczuLLZozJm37jmzqwPGFuvKUOP42DF525xcc
+         0gcgEe5XHYKTTCxNEdXlGOxdKoYnQGP8Mz3XIjFW9vhEBiK9RNqdXnz4wUDhugXoqx
+         XjPjC6gEWB/LHZNMWi7vgi2eqvOMLn2m5Mw5Hl+M=
+Subject: Re: [PATCH v5 6/7] IMA: add critical_data to the built-in policy
+ rules
+To:     Mimi Zohar <zohar@linux.ibm.com>,
+        Tushar Sugandhi <tusharsu@linux.microsoft.com>,
+        stephen.smalley.work@gmail.com, casey@schaufler-ca.com,
+        agk@redhat.com, snitzer@redhat.com, gmazyland@gmail.com,
+        paul@paul-moore.com
+Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
+        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dm-devel@redhat.com
+References: <20201101222626.6111-1-tusharsu@linux.microsoft.com>
+ <20201101222626.6111-7-tusharsu@linux.microsoft.com>
+ <7219f4404bc1bed6eb090b94363c283ec3266a17.camel@linux.ibm.com>
+From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Message-ID: <cdcd63f7-ce1f-4463-f886-c36832d7a706@linux.microsoft.com>
+Date:   Fri, 6 Nov 2020 07:37:16 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <7219f4404bc1bed6eb090b94363c283ec3266a17.camel@linux.ibm.com>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Fri, 06 Nov 2020 15:35:12 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Andre Przywara <andre.przywara@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        kvmarm <kvmarm@lists.cs.columbia.edu>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v2 3/5] ARM: implement support for SMCCC TRNG entropy
- source
-In-Reply-To: <CAMj1kXHfRpA906eDq6-yo-FbhvNbXYa5vs1xhAr7zG43VTP_QQ@mail.gmail.com>
-References: <20201105125656.25259-1-andre.przywara@arm.com>
- <20201105125656.25259-4-andre.przywara@arm.com>
- <7b36daa49c78d60dc788bbb3c9c1bdaa@misterjones.org>
- <CAMj1kXHfRpA906eDq6-yo-FbhvNbXYa5vs1xhAr7zG43VTP_QQ@mail.gmail.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <a9ba945763b6dc2b21d48561192f6e3f@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: ardb@kernel.org, andre.przywara@arm.com, will@kernel.org, catalin.marinas@arm.com, linux@armlinux.org.uk, lorenzo.pieralisi@arm.com, linus.walleij@linaro.org, linux-kernel@vger.kernel.org, broonie@kernel.org, sudeep.holla@arm.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-06 15:30, Ard Biesheuvel wrote:
-> On Fri, 6 Nov 2020 at 16:30, Marc Zyngier <maz@misterjones.org> wrote:
+On 11/6/20 7:24 AM, Mimi Zohar wrote:
 
-[...]
+Hi Mimi,
 
->> I don't think this cast is safe. At least not on 64bit.
+Thanks for reviewing the patches.
+
+> Hi Lakshmi, Tushar,
 > 
-> True, but this is arch/arm
+> This patch defines a new critical_data builtin policy.  Please update
+> the Subject line.
+> 
+> On Sun, 2020-11-01 at 14:26 -0800, Tushar Sugandhi wrote:
+>> From: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+>>
+>> The IMA hook to measure kernel critical data, namely
+>> ima_measure_critical_data(), could be called before a custom IMA policy
+>> is loaded. For example, SELinux calls ima_measure_critical_data() to
+>> measure its state and policy when they are initialized. This occurs
+>> before a custom IMA policy is loaded, and hence IMA hook will not
+>> measure the data. A built-in policy is therefore needed to measure
+>> critical data provided by callers before a custom IMA policy is loaded.
+> 
+> ^Define a new critical data builtin policy to allow measuring early
+> kernel integrity critical data before a custom IMA policy is loaded.
 
-I think the glasses theme becomes recurrent. Apologies for the noise.
+I will add the above line in the patch description.
 
-         M.
--- 
-Jazz is not dead. It just smells funny...
+> 
+> Either remove the references to SELinux or move this patch after the
+> subsequent patch which measures SELinux critical data.
+
+I will remove the reference to SELinux.
+I think it would be better to have this patch before the SELinux 
+measurement patch.
+
+> 
+>>
+>> Add CRITICAL_DATA to built-in IMA rules if the kernel command line
+>> contains "ima_policy=critical_data". Set the IMA template for this rule
+>> to "ima-buf" since ima_measure_critical_data() measures a buffer.
+>>
+>> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+> 
+>> ---
+>>   security/integrity/ima/ima_policy.c | 32 +++++++++++++++++++++++++++++
+>>   1 file changed, 32 insertions(+)
+>>
+>> diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
+>> index ec99e0bb6c6f..dc8fe969d3fe 100644
+>> --- a/security/integrity/ima/ima_policy.c
+>> +++ b/security/integrity/ima/ima_policy.c
+> 
+>> @@ -875,6 +884,29 @@ void __init ima_init_policy(void)
+>>   			  ARRAY_SIZE(default_appraise_rules),
+>>   			  IMA_DEFAULT_POLICY);
+>>   
+>> +	if (ima_use_critical_data) {
+>> +		template = lookup_template_desc("ima-buf");
+>> +		if (!template) {
+>> +			ret = -EINVAL;
+>> +			goto out;
+>> +		}
+>> +
+>> +		ret = template_desc_init_fields(template->fmt,
+>> +						&(template->fields),
+>> +						&(template->num_fields));
+> 
+> The default IMA template when measuring buffer data is "ima_buf".   Is
+> there a reason for allocating and initializing it here and not
+> deferring it until process_buffer_measurement()?
+> 
+
+You are right - good catch.
+I will remove the above and validate.
+
+thanks,
+  -lakshmi
+
+> 
+>> +		if (ret)
+>> +			goto out;
+>> +
+>> +		critical_data_rules[0].template = template;
+>> +		add_rules(critical_data_rules,
+>> +			  ARRAY_SIZE(critical_data_rules),
+>> +			  IMA_DEFAULT_POLICY);
+>> +	}
+>> +
+>> +out:
+>> +	if (ret)
+>> +		pr_err("%s failed, result: %d\n", __func__, ret);
+>> +
+>>   	ima_update_policy_flag();
+>>   }
+>>   
+> 
+
