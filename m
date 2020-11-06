@@ -2,209 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 335712A9F8C
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 22:52:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BCA62A9F9D
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 22:53:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728903AbgKFVvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 16:51:51 -0500
-Received: from esa1.microchip.iphmx.com ([68.232.147.91]:42794 "EHLO
-        esa1.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728489AbgKFVvv (ORCPT
+        id S1728628AbgKFVxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 16:53:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57544 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728489AbgKFVxj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 16:51:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1604699511; x=1636235511;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=xkhjEoFt7D0XHNP88IHAY8GNrfxJnjx5x7frAaszT3g=;
-  b=EtV+7ejKfZ0WwzVhRw7cBxqJQIEX+bUMQn2GVycvuTQqBcZsXhHN9JeT
-   uQYu6eLFl2L7LZ/QiC+LCfcl7uC7hzkiwi77q2rsur0FyWuAkpttTRDUn
-   hdCzmS1WE+OyGonmlO0955eNm7FDMnYjJPGBHbRbxZyb/hMEds6wJsaGd
-   Vo6+kOC++rJI9WwNyNHGFj4o+vS8Xc9jkxRw/qPaACqw05fcclUgSNOhG
-   pIrpjGHTJTQmTkOHB5fB7+l0A3ZsW7Wv31fq9bOap7kKi/B7o/LJhmU/2
-   O3epG/FkYuxoDE6uHsf388C7OSzDkRyRrlanXbAHSl6ap+RN0CaWZ9qvn
-   A==;
-IronPort-SDR: AVeJGsRYNaXy2kpVdP16DyuxsvyE5txSXMgXaVOriD9xgsy7RAu4f4cVIVrNa7VK6mBuxpI15E
- kNHYamvl0kDAVryiHi9hfjMxFXHvHrIeQc4wzLYvDnk3hq2fpMFCu3mGp1Ar4LPnhupNSdIrip
- 1sqldbBlB8fOiGfVkOKEXbJdTk58+WLWj0X2rct49bsdLBz/9VJkx7riP8ESF03OWv1ybcyiAf
- 6lFT+LjaOcWTZEkuZGWLJyaRr7K/m5EsdQanGi9n/uTrft8ZxjJaP8jMv8BvokNoFF5GL5+I7T
- wB8=
-X-IronPort-AV: E=Sophos;i="5.77,457,1596524400"; 
-   d="scan'208";a="102535887"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 06 Nov 2020 14:51:51 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 6 Nov 2020 14:51:50 -0700
-Received: from soft-dev3.localdomain (10.10.115.15) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Fri, 6 Nov 2020 14:51:48 -0700
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     <nikolay@nvidia.com>, <roopa@nvidia.com>, <davem@davemloft.net>,
-        <kuba@kernel.org>, <bridge@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Horatiu Vultur <horatiu.vultur@microchip.com>
-Subject: [PATCH net-next] bridge: mrp: Use hlist_head instead of list_head for mrp
-Date:   Fri, 6 Nov 2020 22:50:49 +0100
-Message-ID: <20201106215049.1448185-1-horatiu.vultur@microchip.com>
-X-Mailer: git-send-email 2.27.0
+        Fri, 6 Nov 2020 16:53:39 -0500
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1A13C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 13:53:38 -0800 (PST)
+Received: by mail-ej1-x643.google.com with SMTP id 7so3955410ejm.0
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 13:53:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=4Lrz5uJAiiLESdTPjmylRgOOL6zFs7nMEo6gXUlcAvc=;
+        b=DiqBNJDrEa7mvU872CK0Pi6oRMRNNNJoLPeoOQrOk9I5zFPe1tNJIhFO2TGfkwbudb
+         G82Vjx8lYZJ/NK2yOfoCk8WfbPo++S1Wh3F/NHqDnVWi42d1fQsOmU3NRU630a9ZRXfX
+         J1/XKXM8wwb/uWSccP+PzxZmgZKwrPLzxiKA+Ouu+jLAMqtWr3cvCEjVHvdwpd04n6Yi
+         PBDp9hHowksWwOO93kCcYc3ccMmac9UVvqKflXmK8vR8rYD0vHNuR58X8kDa2LBXgnKK
+         JXE5HEeF8OYwOfpjpngoS2bYpEy+s2nvjZoMZmMmROPnGutsrfKMK3XhfkAWfRhWRlUT
+         yGjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=4Lrz5uJAiiLESdTPjmylRgOOL6zFs7nMEo6gXUlcAvc=;
+        b=D81i6fhtlvW6z3cBaZvy6hDhsFDvGOYioG2vgZVeyUbrcEDc76XJtX3f/V0y0NSCn7
+         YGWOFQbxzZqQTQl3pw7Xy2HFXpIqob+OAA0cGfd2jgs1FTiIbt/saG0Qxkjp9oT1j8/Y
+         Q38S9Yr3gTzbnJll6hjRJbXb+5B+bG9e4HzxYrgxy8Skv2jjZH8bcUivqyJcZxTzg7xb
+         ajJ/g3ZaJhqM53gg+8RzFpirY4KCqKfFEYknfQQI0ZES76NmlTcEjZyibJkY8pNoEMZh
+         vsMaTt1D5C+Qi6iIQeep/LMbsN2nOHEsQ86V8TqXkyMC7D+tTYdJHSBqqtMiM1OxcgeD
+         yjDA==
+X-Gm-Message-State: AOAM531CJK5GkdqtynBTBdChazFSbnaXOYwrNCtriVRnzOPIFFBP2fQN
+        GL+oo+5LgKmITqBsDFzkrjnZT7A0Ng2zLBGIN2E=
+X-Google-Smtp-Source: ABdhPJwsh3aQno/4dYUGnxDieXScGGhq/yhW6CooR+F1wL41cYWyZXHwCubnIlbLPY+WBzVNxyr0fS0jmGGk25u+uIY=
+X-Received: by 2002:a17:906:519b:: with SMTP id y27mr3901493ejk.25.1604699617454;
+ Fri, 06 Nov 2020 13:53:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+References: <20201103130334.13468-1-shy828301@gmail.com> <20201103130334.13468-6-shy828301@gmail.com>
+ <A842D483-D9F2-4347-9A4F-1939769BC831@nvidia.com>
+In-Reply-To: <A842D483-D9F2-4347-9A4F-1939769BC831@nvidia.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Fri, 6 Nov 2020 13:53:25 -0800
+Message-ID: <CAHbLzkrNyi9O-6fnPRLy883VMzoOPhWMB2UGWJa2ZmwXWS0Jmg@mail.gmail.com>
+Subject: Re: [PATCH 5/5] mm: migrate: return -ENOSYS if THP migration is unsupported
+To:     Zi Yan <ziy@nvidia.com>
+Cc:     Michal Hocko <mhocko@suse.com>, Song Liu <songliubraving@fb.com>,
+        Mel Gorman <mgorman@suse.de>, Jan Kara <jack@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace list_head with hlist_head for MRP list under the bridge.
-There is no need for a circular list when a linear list will work.
-This will also decrease the size of 'struct net_bridge'.
+On Fri, Nov 6, 2020 at 12:17 PM Zi Yan <ziy@nvidia.com> wrote:
+>
+> On 3 Nov 2020, at 8:03, Yang Shi wrote:
+>
+> > In the current implementation unmap_and_move() would return -ENOMEM if
+> > THP migration is unsupported, then the THP will be split.  If split is
+> > failed just exit without trying to migrate other pages.  It doesn't mak=
+e
+> > too much sense since there may be enough free memory to migrate other
+> > pages and there may be a lot base pages on the list.
+> >
+> > Return -ENOSYS to make consistent with hugetlb.  And if THP split is
+> > failed just skip and try other pages on the list.
+> >
+> > Just skip the whole list and exit when free memory is really low.
+> >
+> > Signed-off-by: Yang Shi <shy828301@gmail.com>
+> > ---
+> >  mm/migrate.c | 62 ++++++++++++++++++++++++++++++++++++++--------------
+> >  1 file changed, 46 insertions(+), 16 deletions(-)
+> >
+> > diff --git a/mm/migrate.c b/mm/migrate.c
+> > index 8f6a61c9274b..b3466d8c7f03 100644
+> > --- a/mm/migrate.c
+> > +++ b/mm/migrate.c
+> > @@ -1172,7 +1172,7 @@ static int unmap_and_move(new_page_t get_new_page=
+,
+> >       struct page *newpage =3D NULL;
+> >
+> >       if (!thp_migration_supported() && PageTransHuge(page))
+> > -             return -ENOMEM;
+> > +             return -ENOSYS;
+> >
+> >       if (page_count(page) =3D=3D 1) {
+> >               /* page was freed from under us. So we are done. */
+> > @@ -1376,6 +1376,20 @@ static int unmap_and_move_huge_page(new_page_t g=
+et_new_page,
+> >       return rc;
+> >  }
+> >
+> > +static inline int try_split_thp(struct page *page, struct page *page2,
+> > +                             struct list_head *from)
+> > +{
+> > +     int rc =3D 0;
+> > +
+> > +     lock_page(page);
+> > +     rc =3D split_huge_page_to_list(page, from);
+> > +     unlock_page(page);
+> > +     if (!rc)
+> > +             list_safe_reset_next(page, page2, lru);
+>
+> This does not work as expected, right? After macro expansion, we have
+> page2 =3D list_next_entry(page, lru). Since page2 is passed as a pointer,=
+ the change
+> does not return back the caller. You need to use the pointer to page2 her=
+e.
 
-Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
----
- net/bridge/br_device.c      |  2 +-
- net/bridge/br_mrp.c         | 26 +++++++++++++-------------
- net/bridge/br_mrp_netlink.c |  2 +-
- net/bridge/br_private.h     |  2 +-
- net/bridge/br_private_mrp.h |  2 +-
- 5 files changed, 17 insertions(+), 17 deletions(-)
+Yes, I should pass in **page2. Thanks for catching this.
 
-diff --git a/net/bridge/br_device.c b/net/bridge/br_device.c
-index 2400a66fe76e8..387403931a63f 100644
---- a/net/bridge/br_device.c
-+++ b/net/bridge/br_device.c
-@@ -456,7 +456,7 @@ void br_dev_setup(struct net_device *dev)
- 	INIT_HLIST_HEAD(&br->fdb_list);
- 	INIT_HLIST_HEAD(&br->frame_type_list);
- #if IS_ENABLED(CONFIG_BRIDGE_MRP)
--	INIT_LIST_HEAD(&br->mrp_list);
-+	INIT_HLIST_HEAD(&br->mrp_list);
- #endif
- #if IS_ENABLED(CONFIG_BRIDGE_CFM)
- 	INIT_HLIST_HEAD(&br->mep_list);
-diff --git a/net/bridge/br_mrp.c b/net/bridge/br_mrp.c
-index f94d72bb7c32a..bb12fbf9aaf2b 100644
---- a/net/bridge/br_mrp.c
-+++ b/net/bridge/br_mrp.c
-@@ -54,8 +54,8 @@ static struct br_mrp *br_mrp_find_id(struct net_bridge *br, u32 ring_id)
- 	struct br_mrp *res = NULL;
- 	struct br_mrp *mrp;
- 
--	list_for_each_entry_rcu(mrp, &br->mrp_list, list,
--				lockdep_rtnl_is_held()) {
-+	hlist_for_each_entry_rcu(mrp, &br->mrp_list, list,
-+				 lockdep_rtnl_is_held()) {
- 		if (mrp->ring_id == ring_id) {
- 			res = mrp;
- 			break;
-@@ -70,8 +70,8 @@ static struct br_mrp *br_mrp_find_in_id(struct net_bridge *br, u32 in_id)
- 	struct br_mrp *res = NULL;
- 	struct br_mrp *mrp;
- 
--	list_for_each_entry_rcu(mrp, &br->mrp_list, list,
--				lockdep_rtnl_is_held()) {
-+	hlist_for_each_entry_rcu(mrp, &br->mrp_list, list,
-+				 lockdep_rtnl_is_held()) {
- 		if (mrp->in_id == in_id) {
- 			res = mrp;
- 			break;
-@@ -85,8 +85,8 @@ static bool br_mrp_unique_ifindex(struct net_bridge *br, u32 ifindex)
- {
- 	struct br_mrp *mrp;
- 
--	list_for_each_entry_rcu(mrp, &br->mrp_list, list,
--				lockdep_rtnl_is_held()) {
-+	hlist_for_each_entry_rcu(mrp, &br->mrp_list, list,
-+				 lockdep_rtnl_is_held()) {
- 		struct net_bridge_port *p;
- 
- 		p = rtnl_dereference(mrp->p_port);
-@@ -111,8 +111,8 @@ static struct br_mrp *br_mrp_find_port(struct net_bridge *br,
- 	struct br_mrp *res = NULL;
- 	struct br_mrp *mrp;
- 
--	list_for_each_entry_rcu(mrp, &br->mrp_list, list,
--				lockdep_rtnl_is_held()) {
-+	hlist_for_each_entry_rcu(mrp, &br->mrp_list, list,
-+				 lockdep_rtnl_is_held()) {
- 		if (rcu_access_pointer(mrp->p_port) == p ||
- 		    rcu_access_pointer(mrp->s_port) == p ||
- 		    rcu_access_pointer(mrp->i_port) == p) {
-@@ -450,10 +450,10 @@ static void br_mrp_del_impl(struct net_bridge *br, struct br_mrp *mrp)
- 		rcu_assign_pointer(mrp->i_port, NULL);
- 	}
- 
--	list_del_rcu(&mrp->list);
-+	hlist_del_rcu(&mrp->list);
- 	kfree_rcu(mrp, rcu);
- 
--	if (list_empty(&br->mrp_list))
-+	if (hlist_empty(&br->mrp_list))
- 		br_del_frame(br, &mrp_frame_type);
- }
- 
-@@ -503,12 +503,12 @@ int br_mrp_add(struct net_bridge *br, struct br_mrp_instance *instance)
- 	spin_unlock_bh(&br->lock);
- 	rcu_assign_pointer(mrp->s_port, p);
- 
--	if (list_empty(&br->mrp_list))
-+	if (hlist_empty(&br->mrp_list))
- 		br_add_frame(br, &mrp_frame_type);
- 
- 	INIT_DELAYED_WORK(&mrp->test_work, br_mrp_test_work_expired);
- 	INIT_DELAYED_WORK(&mrp->in_test_work, br_mrp_in_test_work_expired);
--	list_add_tail_rcu(&mrp->list, &br->mrp_list);
-+	hlist_add_tail_rcu(&mrp->list, &br->mrp_list);
- 
- 	err = br_mrp_switchdev_add(br, mrp);
- 	if (err)
-@@ -1198,5 +1198,5 @@ static int br_mrp_process(struct net_bridge_port *p, struct sk_buff *skb)
- 
- bool br_mrp_enabled(struct net_bridge *br)
- {
--	return !list_empty(&br->mrp_list);
-+	return !hlist_empty(&br->mrp_list);
- }
-diff --git a/net/bridge/br_mrp_netlink.c b/net/bridge/br_mrp_netlink.c
-index 2a2fdf3500c5b..ce6f63c77cc0a 100644
---- a/net/bridge/br_mrp_netlink.c
-+++ b/net/bridge/br_mrp_netlink.c
-@@ -453,7 +453,7 @@ int br_mrp_fill_info(struct sk_buff *skb, struct net_bridge *br)
- 	if (!mrp_tb)
- 		return -EMSGSIZE;
- 
--	list_for_each_entry_rcu(mrp, &br->mrp_list, list) {
-+	hlist_for_each_entry_rcu(mrp, &br->mrp_list, list) {
- 		struct net_bridge_port *p;
- 
- 		tb = nla_nest_start_noflag(skb, IFLA_BRIDGE_MRP_INFO);
-diff --git a/net/bridge/br_private.h b/net/bridge/br_private.h
-index 891f3b05ffa41..6f2818cb2ac02 100644
---- a/net/bridge/br_private.h
-+++ b/net/bridge/br_private.h
-@@ -482,7 +482,7 @@ struct net_bridge {
- 	struct hlist_head		fdb_list;
- 
- #if IS_ENABLED(CONFIG_BRIDGE_MRP)
--	struct list_head		mrp_list;
-+	struct hlist_head		mrp_list;
- #endif
- #if IS_ENABLED(CONFIG_BRIDGE_CFM)
- 	struct hlist_head		mep_list;
-diff --git a/net/bridge/br_private_mrp.h b/net/bridge/br_private_mrp.h
-index af0e9eff65493..1883118aae55b 100644
---- a/net/bridge/br_private_mrp.h
-+++ b/net/bridge/br_private_mrp.h
-@@ -8,7 +8,7 @@
- 
- struct br_mrp {
- 	/* list of mrp instances */
--	struct list_head		list;
-+	struct hlist_node		list;
- 
- 	struct net_bridge_port __rcu	*p_port;
- 	struct net_bridge_port __rcu	*s_port;
--- 
-2.27.0
+>
+> > +
+> > +     return rc;
+> > +}
+> > +
+> >  /*
+> >   * migrate_pages - migrate the pages specified in a list, to the free =
+pages
+> >   *              supplied as the target for the page migration
+> > @@ -1445,24 +1459,40 @@ int migrate_pages(struct list_head *from, new_p=
+age_t get_new_page,
+> >                                               reason, &ret_pages);
+> >
+> >                       switch(rc) {
+> > +                     /*
+> > +                      * THP migration might be unsupported or the
+> > +                      * allocation could've failed so we should
+> > +                      * retry on the same page with the THP split
+> > +                      * to base pages.
+> > +                      *
+> > +                      * Head page is retried immediately and tail
+> > +                      * pages are added to the tail of the list so
+> > +                      * we encounter them after the rest of the list
+> > +                      * is processed.
+> > +                      */
+> > +                     case -ENOSYS:
+> > +                             /* THP migration is unsupported */
+> > +                             if (is_thp) {
+> > +                                     if (!try_split_thp(page, page2, f=
+rom)) {
+> > +                                             nr_thp_split++;
+> > +                                             goto retry;
+> > +                                     }
+> > +
+> > +                                     nr_thp_failed++;
+> > +                                     nr_failed +=3D nr_subpages;
+> > +                                     break;
+> > +                             }
+> > +
+> > +                             /* Hugetlb migration is unsupported */
+> > +                             nr_failed++;
+> > +                             break;
+> >                       case -ENOMEM:
+> >                               /*
+> > -                              * THP migration might be unsupported or =
+the
+> > -                              * allocation could've failed so we shoul=
+d
+> > -                              * retry on the same page with the THP sp=
+lit
+> > -                              * to base pages.
+> > -                              *
+> > -                              * Head page is retried immediately and t=
+ail
+> > -                              * pages are added to the tail of the lis=
+t so
+> > -                              * we encounter them after the rest of th=
+e list
+> > -                              * is processed.
+> > +                              * When memory is low, don't bother to tr=
+y to migrate
+> > +                              * other pages, just exit.
+>
+> The comment does not match the code below. For THPs, the code tries to sp=
+lit the THP
+> and migrate the base pages if the split is successful.
 
+The comment here just covers the "goto out" rather than the split
+because I thought it is covered by the comment before "case -ENOSYS",
+which says "unsupported or the allocation could've failed", so I
+didn't repeat here.
+
+>
+> >                                */
+> >                               if (is_thp) {
+> > -                                     lock_page(page);
+> > -                                     rc =3D split_huge_page_to_list(pa=
+ge, from);
+> > -                                     unlock_page(page);
+> > -                                     if (!rc) {
+> > -                                             list_safe_reset_next(page=
+, page2, lru);
+> > +                                     if (!try_split_thp(page, page2, f=
+rom)) {
+> >                                               nr_thp_split++;
+> >                                               goto retry;
+> >                                       }
+> > @@ -1490,7 +1520,7 @@ int migrate_pages(struct list_head *from, new_pag=
+e_t get_new_page,
+> >                               break;
+> >                       default:
+> >                               /*
+> > -                              * Permanent failure (-EBUSY, -ENOSYS, et=
+c.):
+> > +                              * Permanent failure (-EBUSY, etc.):
+> >                                * unlike -EAGAIN case, the failed page i=
+s
+> >                                * removed from migration page list and n=
+ot
+> >                                * retried in the next outer loop.
+> > --
+> > 2.26.2
+>
+>
+> =E2=80=94
+> Best Regards,
+> Yan Zi
