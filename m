@@ -2,268 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5BF92A8B89
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 01:40:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C00B2A8B8E
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 01:47:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732821AbgKFAke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 19:40:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55500 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731965AbgKFAkd (ORCPT
+        id S1732662AbgKFArt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 19:47:49 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:44133 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729162AbgKFArs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 19:40:33 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E300C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 16:40:33 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id t6so1602541plq.11
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 16:40:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=uCYBkE+TmCcUery/xnzfUl6aKRxtKvMXfGG8Ul87L8s=;
-        b=NTdxuaouEl55lBJnkfWo3ASSBNl6ipyFrzlfttocTLWBERNI82YvP6k/kAOEVETPs/
-         v8eUktb/ByC8hhuJsqwTrlqTqUH0YqC6808MScOQEeEC6lRA5X3kyBW/AefKpMdDft94
-         ek0bD1QhTp+GWXF8R43Fz8vQMKQaCU7Dfrb9jfT+yiGHfBsSi2d36VI4g3XlH2w4tu+D
-         beMxJjIYdYOuxrBdmwCKfMfmct9dwWIFT3AcESfRkQEPw+/NXEp7lrocziYZctGT35uX
-         uzGmYi7vpX94kY5jvhS8+e+HT8tQsQNCMQ7ckyq4OnHHbwONC3nFSFdqVMmen6PlZ57n
-         hLrQ==
+        Thu, 5 Nov 2020 19:47:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604623667;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qyPnP4lF1Yi0XyDpJZZP5+UOnDqVjqVsDwjLlXmGNic=;
+        b=J2l6QohYRr05Y4dYaT6txMFrxZahuftn0584OSmokXjF2Ix1tr54KEGfms8Nbek76F6UAr
+        bivCcm/o/t61n5JvgXVpcR4HGISIe1h1sMFIP+p0Rn76GJEd3NxHAUvKdGKej5IGgGQvwc
+        DEDW6Tab0THXEhJX5SI1sVOjBX5xSg0=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-444-c0XE7geMMA6_DBUzvykbEg-1; Thu, 05 Nov 2020 19:47:46 -0500
+X-MC-Unique: c0XE7geMMA6_DBUzvykbEg-1
+Received: by mail-qv1-f71.google.com with SMTP id d41so2073505qvc.23
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 16:47:46 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=uCYBkE+TmCcUery/xnzfUl6aKRxtKvMXfGG8Ul87L8s=;
-        b=oW0q9goGFFT7l86icK/rZN/vHcquteKq6EGGXMbkJEP22OFS0480rhMMdYlBw1c1z0
-         /oBGB62m1ez7w/V1wRoQkyX9n84yB2FiQEOpE8mso0rcpdC+x6qLKhHhIkS+9b9yShkq
-         i58Soyal3LCGV0ILkiZhslz5IpNPgp5L6innpNUrXeadqKsItQxM/AUWDwOF5jkGv6xA
-         nuNfF/4BYbnSKtvjfdAB48MTnXVOTgStSF4hfpoS+1Aduo9Ij6X0JGn4h2oLpy6Q/DSI
-         daih3D/thvyLx+Qt66XJNao5tvvj6eIvv0U3Lto0o29shn0eWUX+1jFKvEWvfERwSSd/
-         uilA==
-X-Gm-Message-State: AOAM530hufKV6nUmdwLRdOKbitRTGDhEt4zheTmAB84hz3HmjeJOwuDm
-        vGQ5lDqOt4OWf0q0tOEYJxEzcA==
-X-Google-Smtp-Source: ABdhPJyJ2c++GjFYW2FsAr0qQqbbkRdAtQJW8TxSTJ/IrAF8beT1JVOI+kAi8KD8lveEQcD+Difygw==
-X-Received: by 2002:a17:902:e993:b029:d6:41d8:9ca3 with SMTP id f19-20020a170902e993b02900d641d89ca3mr4766084plb.57.1604623233023;
-        Thu, 05 Nov 2020 16:40:33 -0800 (PST)
-Received: from [10.209.185.147] (fmdmzpr04-ext.fm.intel.com. [192.55.55.39])
-        by smtp.gmail.com with ESMTPSA id gm12sm3613748pjb.28.2020.11.05.16.40.30
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 05 Nov 2020 16:40:31 -0800 (PST)
-From:   "Sean V Kelley" <sean.v.kelley@intel.com>
-To:     bhelgaas@google.com, Jonathan.Cameron@huawei.com,
-        xerces.zhao@gmail.com, rafael.j.wysocki@intel.com,
-        ashok.raj@intel.com, tony.luck@intel.com,
-        sathyanarayanan.kuppuswamy@intel.com, qiuxu.zhuo@intel.com
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Sean V Kelley" <sean.v.kelley@intel.com>
-Subject: Re: [PATCH v10 13/16] PCI/RCEC: Add RCiEP's linked RCEC to AER/ERR
-Date:   Thu, 05 Nov 2020 16:40:28 -0800
-X-Mailer: MailMate (1.13.2r5673)
-Message-ID: <351325EE-9199-4E14-825A-75BA1678EFA1@intel.com>
-In-Reply-To: <20201106001444.667232-14-sean.v.kelley@intel.com>
-References: <20201106001444.667232-1-sean.v.kelley@intel.com>
- <20201106001444.667232-14-sean.v.kelley@intel.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=qyPnP4lF1Yi0XyDpJZZP5+UOnDqVjqVsDwjLlXmGNic=;
+        b=EYUdM/3+kW+37NXa1FDnKIcN9N1STcd/+XbZnWXSwxLYkKXQBTSthDtJQu0kHtsFJI
+         kD7vWrGvZqFfT1BsL5gAt9dqSW3o378CqtzoFoByVQJlnkGanYDDioPcZgy1N0gC5tuG
+         t4xxbpXiiTXlOL8njzJpfcdJN8bBn6/fu9Z3nhu392SIe9X8Hbvjf8PJ1cR3CI6vWFKI
+         NbJp1cvTaazdZfaz0+yOXuKBOKE5ojkYtdIZNgOsxlVj6ThQ0doL/hCbW/yw3SjUOzz2
+         eCFPuNd6wzGtSjzs+4d0BmBmRTjCz3eS1t82bEyzJOP9If6Aef97NP8tjkB/KTTbxBct
+         9qrg==
+X-Gm-Message-State: AOAM532RMiOEGSIGzLMOSzb0PP2QEEYcZVa4b7Vfbci5uY8nYuPoMvXk
+        ZoskR9HCXWsawh6OkBIrIuCxNTCDLAtdckShD4Yk3H28n0LszwJoL45yh8nR1HqD3sSMElHjKkH
+        waj5L++Vd3ZJKS0h+8cT57c0+
+X-Received: by 2002:ac8:6d1:: with SMTP id j17mr4841439qth.230.1604623665166;
+        Thu, 05 Nov 2020 16:47:45 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxbRk7Wv/ie/4F9jx8fbSx+H1AvkziIsrSKBGbSjzVCO8ww8iY9yV90ttVKnnSFxemgsIHUZw==
+X-Received: by 2002:ac8:6d1:: with SMTP id j17mr4841425qth.230.1604623664969;
+        Thu, 05 Nov 2020 16:47:44 -0800 (PST)
+Received: from tp-x1 (c-98-239-145-235.hsd1.wv.comcast.net. [98.239.145.235])
+        by smtp.gmail.com with ESMTPSA id d133sm2374130qke.106.2020.11.05.16.47.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Nov 2020 16:47:44 -0800 (PST)
+Date:   Thu, 5 Nov 2020 19:47:43 -0500
+From:   Brian Masney <bmasney@redhat.com>
+To:     boris.ostrovsky@oracle.com, jgross@suse.com, sstabellini@kernel.org
+Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, xen-devel@lists.xenproject.org,
+        linux-kernel@vger.kernel.org, dustymabe@redhat.com
+Subject: Re: [PATCH] x86/xen: fix warning when running with nosmt mitigations
+Message-ID: <20201106004743.GA380136@tp-x1>
+References: <20201106003529.391649-1-bmasney@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201106003529.391649-1-bmasney@redhat.com>
+User-Agent: Mutt/1.14.6 (2020-07-11)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5 Nov 2020, at 16:14, Sean V Kelley wrote:
-
-> From: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
->
-> When attempting error recovery for an RCiEP associated with an RCEC =
-
-> device,
-> there needs to be a way to update the Root Error Status, the =
-
-> Uncorrectable
-> Error Status and the Uncorrectable Error Severity of the parent RCEC.  =
-
-> In
-> some non-native cases in which there is no OS-visible device =
-
-> associated
-> with the RCiEP, there is nothing to act upon as the firmware is acting
-> before the OS.
->
-> Add handling for the linked RCEC in AER/ERR while taking into account
-> non-native cases.
->
-> Co-developed-by: Sean V Kelley <sean.v.kelley@intel.com>
-> Link: =
-
-> https://lore.kernel.org/r/20201002184735.1229220-12-seanvk.dev@oregontr=
-acks.org
-> Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
-> Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> ---
->  drivers/pci/pcie/aer.c | 35 +++++++++++++++++++++++++++--------
->  drivers/pci/pcie/err.c | 20 ++++++++++----------
->  2 files changed, 37 insertions(+), 18 deletions(-)
->
-> diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
-> index 4ab379fa1506..3498af81d240 100644
-> --- a/drivers/pci/pcie/aer.c
-> +++ b/drivers/pci/pcie/aer.c
-> @@ -1357,29 +1357,48 @@ static int aer_probe(struct pcie_device *dev)
->   */
->  static pci_ers_result_t aer_root_reset(struct pci_dev *dev)
+On Thu, Nov 05, 2020 at 07:35:29PM -0500, Brian Masney wrote:
+> diff --git a/arch/x86/xen/spinlock.c b/arch/x86/xen/spinlock.c
+> index 799f4eba0a62..4a052459a08e 100644
+> --- a/arch/x86/xen/spinlock.c
+> +++ b/arch/x86/xen/spinlock.c
+> @@ -93,9 +93,24 @@ void xen_init_lock_cpu(int cpu)
+>  
+>  void xen_uninit_lock_cpu(int cpu)
 >  {
-> +	int type =3D pci_pcie_type(dev);
->  	int aer =3D dev->aer_cap;
-> +	struct pci_dev *root;
->  	int rc =3D 0;
->  	u32 reg32;
->
-> +	if (type =3D=3D PCI_EXP_TYPE_RC_END)
-> +		/*
-> +		 * The reset should only clear the Root Error Status
-> +		 * of the RCEC. Only perform this for the
-> +		 * native case, i.e., an RCEC is present.
-> +		 */
-> +		root =3D dev->rcec;
-> +	else
-> +		root =3D dev;
+> +	int irq;
 > +
->  	if (pcie_aer_is_native(dev)) {
->  		/* Disable Root's interrupt in response to error messages */
-> -		pci_read_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, &reg32);
-> +		pci_read_config_dword(root, aer + PCI_ERR_ROOT_COMMAND, &reg32);
->  		reg32 &=3D ~ROOT_PORT_INTR_ON_MESG_MASK;
-> -		pci_write_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, reg32);
-> +		pci_write_config_dword(root, aer + PCI_ERR_ROOT_COMMAND, reg32);
->  	}
->
-> -	rc =3D pci_bus_error_reset(dev);
-> -	pci_info(dev, "Root Port link has been reset (%d)\n", rc);
-> +	if (type =3D=3D PCI_EXP_TYPE_RC_EC || type =3D=3D PCI_EXP_TYPE_RC_END=
-) {
-> +		if (pcie_has_flr(root)) {
-> +			rc =3D pcie_flr(root);
-> +			pci_info(dev, "has been reset (%d)\n", rc);
-> +		}
-> +	} else {
-> +		rc =3D pci_bus_error_reset(root);
-> +		pci_info(dev, "Root Port link has been reset (%d)\n", rc);
-> +	}
-
-So this needs to change as I didn=E2=80=99t use the aer =3D dev->aer_cap =
-from =
-
-before
-because I=E2=80=99m checking explicitly for pcie_aer_is_native().  Howeve=
-r, we =
-
-still
-have the scenario of non-native and root =3D dev->rcec =3D NULL. Secondly=
-, =
-
-for the flr, that
-should be happening on the dev and that should trump use of the root var =
-
-anyway.
-
-So I would change it to: (replacing root with dev)
-
-  +	if (type =3D=3D PCI_EXP_TYPE_RC_EC || type =3D=3D PCI_EXP_TYPE_RC_END=
-) {
-  +		if (pcie_has_flr(dev)) {
-  +			rc =3D pcie_flr(dev);
-  +			pci_info(dev, "has been reset (%d)\n", rc);
-  +		}
-  +	} else {
-  +		rc =3D pci_bus_error_reset(dev);
-  +		pci_info(dev, "Root Port link has been reset (%d)\n", rc);
-  +	}
-
-Thanks,
-
-Sean
-
-
->
->  	if (pcie_aer_is_native(dev)) {
->  		/* Clear Root Error Status */
-> -		pci_read_config_dword(dev, aer + PCI_ERR_ROOT_STATUS, &reg32);
-> -		pci_write_config_dword(dev, aer + PCI_ERR_ROOT_STATUS, reg32);
-> +		pci_read_config_dword(root, aer + PCI_ERR_ROOT_STATUS, &reg32);
-> +		pci_write_config_dword(root, aer + PCI_ERR_ROOT_STATUS, reg32);
->
->  		/* Enable Root Port's interrupt in response to error messages */
-> -		pci_read_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, &reg32);
-> +		pci_read_config_dword(root, aer + PCI_ERR_ROOT_COMMAND, &reg32);
->  		reg32 |=3D ROOT_PORT_INTR_ON_MESG_MASK;
-> -		pci_write_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, reg32);
-> +		pci_write_config_dword(root, aer + PCI_ERR_ROOT_COMMAND, reg32);
->  	}
->
->  	return rc ? PCI_ERS_RESULT_DISCONNECT : PCI_ERS_RESULT_RECOVERED;
-> diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
-> index 7883c9791562..cbc5abfe767b 100644
-> --- a/drivers/pci/pcie/err.c
-> +++ b/drivers/pci/pcie/err.c
-> @@ -148,10 +148,10 @@ static int report_resume(struct pci_dev *dev, =
-
-> void *data)
->
->  /**
->   * pci_walk_bridge - walk bridges potentially AER affected
-> - * @bridge:	bridge which may be a Port, an RCEC with associated =
-
-> RCiEPs,
-> - *		or an RCiEP associated with an RCEC
-> - * @cb:		callback to be called for each device found
-> - * @userdata:	arbitrary pointer to be passed to callback
-> + * @bridge   bridge which may be an RCEC with associated RCiEPs,
-> + *           or a Port.
-> + * @cb       callback to be called for each device found
-> + * @userdata arbitrary pointer to be passed to callback.
->   *
->   * If the device provided is a bridge, walk the subordinate bus, =
-
-> including
->   * any bridged devices on buses under this bus.  Call the provided =
-
-> callback
-> @@ -164,8 +164,14 @@ static void pci_walk_bridge(struct pci_dev =
-
-> *bridge,
->  			    int (*cb)(struct pci_dev *, void *),
->  			    void *userdata)
->  {
+>  	if (!xen_pvspin)
+>  		return;
+>  
 > +	/*
-> +	 * In a non-native case where there is no OS-visible reporting
-> +	 * device the bridge will be NULL, i.e., no RCEC, no Downstream =
-
-> Port.
+> +	 * When booting the kernel with 'mitigations=auto,nosmt', the secondary
+> +	 * CPUs are not activated and only the primary thread on each CPU core
+> +	 * is used. In this situation, xen_hvm_smp_prepare_cpus(), and more
+> +	 * importantly xen_init_lock_cpu(), is not called, so the
+> +	 * lock_kicker_irq is not initialized for the secondary CPUs. Let's
+> +	 * exit early if the irq is not set to avoid a warning in the console
+> +	 * log.
 > +	 */
->  	if (bridge->subordinate)
->  		pci_walk_bus(bridge->subordinate, cb, userdata);
-> +	else if (bridge->rcec)
-> +		cb(bridge->rcec, userdata);
->  	else
->  		cb(bridge, userdata);
->  }
-> @@ -194,12 +200,6 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev =
+> +	irq = per_cpu(lock_kicker_irq, cpu);
+> +	if (irq == -1)
+> +		return;
+> +
+>  	unbind_from_irqhandler(per_cpu(lock_kicker_irq, cpu), NULL);
 
-> *dev,
->  	pci_dbg(bridge, "broadcast error_detected message\n");
->  	if (state =3D=3D pci_channel_io_frozen) {
->  		pci_walk_bridge(bridge, report_frozen_detected, &status);
-> -		if (type =3D=3D PCI_EXP_TYPE_RC_END) {
-> -			pci_warn(dev, "subordinate device reset not possible for =
+As soon as I saw this on lore, I saw that I should have passed the irq
+variable to unbind_from_irqhandler() rather than doing another per_cpu()
+lookup. I'll wait for feedback about the general approach before posting
+a v2.
 
-> RCiEP\n");
-> -			status =3D PCI_ERS_RESULT_NONE;
-> -			goto failed;
-> -		}
-> -
->  		status =3D reset_subordinates(bridge);
->  		if (status !=3D PCI_ERS_RESULT_RECOVERED) {
->  			pci_warn(bridge, "subordinate device reset failed\n");
-> --
-> 2.29.2
+Brian
+
