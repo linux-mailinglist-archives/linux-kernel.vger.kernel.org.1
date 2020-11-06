@@ -2,89 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55FA12A9389
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 11:01:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 542B82A9427
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 11:25:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726659AbgKFKBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 05:01:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41582 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725868AbgKFKBD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 05:01:03 -0500
-Received: from pali.im (pali.im [31.31.79.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 066432068E;
-        Fri,  6 Nov 2020 10:01:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604656862;
-        bh=KR21MC6tQ4ubi4Qt7pF1HSPbjyztwSH2K7rMVU0dpQQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=tikqPYjpCTF4GHIxKiLV+fcwVjTFapIF7IGGTqqToPxtgNfOgxQ/HGQAjXV+wEHYW
-         OZtgge12qScPa8t5WO5f5Cgrd2maVp4WlXfa4vEVPOhwFlmPUklhwazN5Ei/bRrqDJ
-         0Z6TMx2FwgB+DLa1FC3ZStQ2Qd6fi2JU9e0SUcRo=
-Received: by pali.im (Postfix)
-        id 1EADD732; Fri,  6 Nov 2020 11:00:59 +0100 (CET)
-From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Gregory CLEMENT <gregory.clement@bootlin.com>,
-        Marek Behun <marek.behun@nic.cz>
-Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Terry Zhou <bjzhou@marvell.com>,
-        Konstantin Porotchkin <kostap@marvell.com>
-Subject: [PATCH] clk: mvebu: a3700: fix the XTAL MODE pin to MPP1_9
-Date:   Fri,  6 Nov 2020 11:00:39 +0100
-Message-Id: <20201106100039.11385-1-pali@kernel.org>
-X-Mailer: git-send-email 2.20.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        id S1727011AbgKFKZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 05:25:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33750 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726758AbgKFKZr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 05:25:47 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18C13C0613CF;
+        Fri,  6 Nov 2020 02:25:46 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id e7so889466pfn.12;
+        Fri, 06 Nov 2020 02:25:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=FLfHJOXQm1uej3hFUFpWXlA26tRNkCfwwdzbi5ScsSQ=;
+        b=boAnYnnlhauGDB9+l9QIEa/OGeuCUKGw0IVSxJN9gJdIC6hpZjnMNyZCqrt7ZNMHQH
+         JNLfY5fx2T/HPrDCz7hd+ifKm7zIUt7eLpf1GeGmHdQCmvp7eBQuMHrPlqoki1NVuCsu
+         lT0WnCkWIf5pvZ9cMAKm5dfsThtHn3sU0jxdWx8Hvkfd02p8fPuDhZZIK3O5pw+Q4nig
+         a6NqUtyUFW8iEL0JyBqyZzoVC/Eh8EpvDNTrbsCTv1yP5enjlX2tjuTndCnznUfvhuv+
+         Uic8zjjG78/Bka3OyV1IXZxlKLcO6E9PDLXdOWJGPfdm2XnenJjENK5yOKW/lAK3Bjhd
+         etSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=FLfHJOXQm1uej3hFUFpWXlA26tRNkCfwwdzbi5ScsSQ=;
+        b=ghrmwFxnRMhpG535Dp+/zat4DUUU2HdThflPW1aL9XxCzgb7YaJ62tQwDkmL33KS4T
+         6GNjKZHui+uXQdjBoVqApUtFmHemHNe0SroyFXAIyCueqOfMh+LSoVFiSKaBC4qAISTH
+         67YoeLCUeOgsAqmPykIFwJEM6R9Ny4oQUsgkdoay6KRxUdPRCHiDGzaoHVYYupfeXx8V
+         r0bKuplKNX2UuMd4ffjc8EjID8wV5fxsoYmG8J3mIuqfIEixZwZAve6zTMu8/FSbkLLs
+         WrITSvoi6eZSnnOUyEb7SgBvSQ/NtiZWunPt+QJGgp6jWpJnyCNmTVnTA1qERIHjaabD
+         VGAA==
+X-Gm-Message-State: AOAM531RC/2GYLrafbPXoIN7fgeze0+NB6p71MUSoBlW8h/ppzi5aImM
+        n5tcz5OcWuItikYpC5+6sIE=
+X-Google-Smtp-Source: ABdhPJyLnNz9MpjtBAmV2AxZf7EJzZAtleTlmjqsR3z/9TVuGk5DSmdR9uWoBTFar7lvtqlLVgMuNQ==
+X-Received: by 2002:aa7:8287:0:b029:142:2501:39ec with SMTP id s7-20020aa782870000b0290142250139ecmr1228237pfm.59.1604658345723;
+        Fri, 06 Nov 2020 02:25:45 -0800 (PST)
+Received: from localhost.localdomain ([2402:7500:57a:6823:8ab3:4b5d:4c53:f39b])
+        by smtp.gmail.com with ESMTPSA id g3sm1260633pgl.55.2020.11.06.02.25.42
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 06 Nov 2020 02:25:45 -0800 (PST)
+From:   Gene Chen <gene.chen.richtek@gmail.com>
+To:     sre@kernel.org, matthias.bgg@gmail.com, robh+dt@kernel.org
+Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        gene_chen@richtek.com, Wilma.Wu@mediatek.com,
+        shufan_lee@richtek.com, cy_huang@richtek.com,
+        benjamin.chao@mediatek.com
+Subject: [PATCH v6 0/11] mfd: mt6360: Merge different sub-devices I2C read/write
+Date:   Fri,  6 Nov 2020 17:53:41 +0800
+Message-Id: <1604656432-10215-1-git-send-email-gene.chen.richtek@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Terry Zhou <bjzhou@marvell.com>
+This patch series merge different sub-device I2C read/write into one Regmap and
+fix coding style for well-organized.
 
-There is an error in the current code that the XTAL MODE
-pin was set to NB MPP1_31 which should be NB MPP1_9.
-The latch register of NB MPP1_9 has different offset of 0x8.
+Gene Chen (11)
+  mfd: mt6360: Rearrange include file
+  mfd: mt6360: Remove redundant brackets around raw numbers
+  mfd: mt6360: Indicate sub-dev compatible name by using
+  mfd: mt6360: Combine mt6360 pmic/ldo resources into mt6360
+  mfd: mt6360: Rename mt6360_pmu_data by mt6360_ddata
+  mfd: mt6360: Rename mt6360_pmu by mt6360
+  mfd: mt6360: Remove handle_post_irq callback function
+  mfd: mt6360: Fix flow which is used to check ic exist
+  mfd: mt6360: Merge header file into driver and remove unuse register define
+  mfd: mt6360: Merge different sub-devices I2C read/write
+  mfd: mt6360: Remove MT6360 regulator of_compatible
 
-Signed-off-by: Terry Zhou <bjzhou@marvell.com>
-[pali: Fix pin name in commit message]
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Fixes: 7ea8250406a6 ("clk: mvebu: Add the xtal clock for Armada 3700 SoC")
-Cc: stable@vger.kernel.org
+ b/drivers/mfd/Kconfig       |    1 
+ b/drivers/mfd/mt6360-core.c |  555 +++++++++++++++++++++++++++++---------------
+ include/linux/mfd/mt6360.h  |  240 -------------------
+ 3 files changed, 377 insertions(+), 419 deletions(-)
 
----
-This patch is present in Marvell SDK and also in Marvell's kernel fork:
-https://github.com/MarvellEmbeddedProcessors/linux-marvell/commit/80d4cec4cef8282e5ac3aaf98ce3e68fb299a134
+changelogs between v2 & v3
+- Replace mt6360_data to mt6360_ddata
+- Split I2C read/write to regmap driver
 
-Konstantin Porotchkin wrote on Github that Gregory Clement was notified
-about this patch, but as this patch is still not in mainline kernel I'm
-sending it again for review.
+changelogs between v3 & v4
+- Merge back mt6360 regmap driver to MFD driver
 
-In original commit message (only in commit message, not code) was
-specified MPP9 pin on South Bridge, but correct is North Bridge.
----
- drivers/clk/mvebu/armada-37xx-xtal.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+changelogs between v4 & v5
+- use devm_regmap_init
+- define crc calculation magic number
 
-diff --git a/drivers/clk/mvebu/armada-37xx-xtal.c b/drivers/clk/mvebu/armada-37xx-xtal.c
-index e9e306d4e9af..41271351cf1f 100644
---- a/drivers/clk/mvebu/armada-37xx-xtal.c
-+++ b/drivers/clk/mvebu/armada-37xx-xtal.c
-@@ -13,8 +13,8 @@
- #include <linux/platform_device.h>
- #include <linux/regmap.h>
- 
--#define NB_GPIO1_LATCH	0xC
--#define XTAL_MODE	    BIT(31)
-+#define NB_GPIO1_LATCH	0x8
-+#define XTAL_MODE	    BIT(9)
- 
- static int armada_3700_xtal_clock_probe(struct platform_device *pdev)
- {
--- 
-2.20.1
+changelogs between v5 & v6
+- Remove unrelated change
+- Remove regulator device of_compatible
 
