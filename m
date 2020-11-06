@@ -2,175 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B65B2A8BA6
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 01:53:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF7C42A8BA7
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 01:53:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732940AbgKFAxW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 19:53:22 -0500
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:52130 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732706AbgKFAxU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 19:53:20 -0500
-Received: by mail-wm1-f67.google.com with SMTP id v5so3308302wmh.1
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 16:53:19 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=boppSBMJx32ZfiF7X9zjZYOt9YxgRmOiF6nm2qOrqj8=;
-        b=mv+bDX9kLRiouRVuqjU+l5bLl/jvAwuE9AmWIkmLnCICB5RRu/h+20hQL7jyYjzpMw
-         opZzp8Pn3aStHFYMUHzf7Uu6JElTw07/kTYvS2rzB9yDMsSvKvrInbuysundxXEPTQP0
-         3JlegFje07iSXOaK38WlrffpVhxDWh9ALutumrjvH2IOgcqyxdHO5LR+byGp3z85aARr
-         6tShjXHt7tq8ifdK0QPtlpKbUIVM6kJoosiO9gIgT30/weLn2ipAAicw8pdnFKix18Wo
-         gXkS7tSrmSao5t4vywQ7C2H1f8/+tMpl4y8u36Tx8DpkhCsC3VSQtG9nKy2HqZTS8ttr
-         MZBA==
-X-Gm-Message-State: AOAM531i38IvViv3EzbpdBCOuleX2S+eMw3V3K10mjbGZ7uJLwskPn49
-        aYcfe51y54g2bM3z15Alj52FEBeZqRorn7Vvg6o=
-X-Google-Smtp-Source: ABdhPJwhvnKOfwAqKXklv5tls2QQP9/ViAPSthQG9tF0Z/JHWCKQI7193wCHgrK06h7v8Lpd4iMVua9YWb0TIGKSXZI=
-X-Received: by 2002:a1c:7e82:: with SMTP id z124mr5285829wmc.8.1604623998749;
- Thu, 05 Nov 2020 16:53:18 -0800 (PST)
+        id S1732930AbgKFAxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 19:53:39 -0500
+Received: from smtp.infotech.no ([82.134.31.41]:34839 "EHLO smtp.infotech.no"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729162AbgKFAxj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 19:53:39 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by smtp.infotech.no (Postfix) with ESMTP id CBFEB20426C
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 01:53:37 +0100 (CET)
+X-Virus-Scanned: by amavisd-new-2.6.6 (20110518) (Debian) at infotech.no
+Received: from smtp.infotech.no ([127.0.0.1])
+        by localhost (smtp.infotech.no [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id kXgDAT7+1ctc for <linux-kernel@vger.kernel.org>;
+        Fri,  6 Nov 2020 01:53:35 +0100 (CET)
+Received: from xtwo70.bingwo.ca (host-104-157-204-209.dyn.295.ca [104.157.204.209])
+        by smtp.infotech.no (Postfix) with ESMTPA id 01920204190
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 01:53:34 +0100 (CET)
+From:   Douglas Gilbert <dgilbert@interlog.com>
+To:     linux-kernel@vger.kernel.org
+Subject: [PATCH v4 0/4] scatterlist: add new capabilities
+Date:   Thu,  5 Nov 2020 19:53:29 -0500
+Message-Id: <20201106005333.24281-1-dgilbert@interlog.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20201102145221.309001-1-namhyung@kernel.org> <20201102145221.309001-2-namhyung@kernel.org>
- <f92281d1-03ec-a1bc-b54f-e2b867d5b787@linux.intel.com> <CAM9d7cgsNEoeotoumY0S9kvn0uc34TOas_3rVRL3VyQ9_VVM5Q@mail.gmail.com>
- <84bc6e54-eed8-5230-ad76-7c637613a3ec@linux.intel.com>
-In-Reply-To: <84bc6e54-eed8-5230-ad76-7c637613a3ec@linux.intel.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Fri, 6 Nov 2020 09:53:07 +0900
-Message-ID: <CAM9d7cgQHN0sLb4Oro0+aMQsLrgx+XUnSMB1RWAnayodXPkdPw@mail.gmail.com>
-Subject: Re: [RFC 1/2] perf/core: Enable sched_task callbacks if PMU has it
-To:     "Liang, Kan" <kan.liang@linux.intel.com>
-Cc:     Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>, Gabriel Marin <gmx@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 6, 2020 at 4:01 AM Liang, Kan <kan.liang@linux.intel.com> wrote:
->
->
->
-> On 11/5/2020 10:45 AM, Namhyung Kim wrote:
-> > Hello,
-> >
-> > On Thu, Nov 5, 2020 at 11:47 PM Liang, Kan <kan.liang@linux.intel.com> wrote:
-> >>
-> >>
-> >>
-> >> On 11/2/2020 9:52 AM, Namhyung Kim wrote:
-> >>> If an event associated with a PMU which has a sched_task callback,
-> >>> it should be called regardless of cpu/task context.  For example,
-> >>
-> >>
-> >> I don't think it's necessary. We should call it when we have to.
-> >> Otherwise, it just waste cycles.
-> >> Shouldn't the patch 2 be enough?
-> >
-> > I'm not sure, without this patch __perf_event_task_sched_in/out
-> > cannot be called for per-cpu events (w/o cgroups)  IMHO.
-> > And I could not find any other place to check the
-> > perf_sched_cb_usages.
-> >
->
-> Yes, it should a bug for large PEBS, and it should has always been there
-> since the large PEBS was introduced. I just tried some older kernels
-> (before recent change). Large PEBS is not flushed with per-cpu events.
->
-> But from your description, it looks like the issue is only found after
-> recent change. Could you please double check if the issue can also be
-> reproduced before the recent change?
+This patchset was sent to the linux-block and linux-scsi lists a few
+hours ago. If it is accepted that will probably be via the
+linux-block maintainer. It has potential users in the target
+sub-system and the scsi_debug driver. Other parts of the kernel
+that use <linux/scatterlist.h> may be interested which is why it
+is now being sent to the linux-kernel list.
 
-Yep, actually Gabriel reported this problem on v4.4 kernel.
-I'm sorry that my description was misleading.
 
->
->
-> >>> diff --git a/kernel/events/core.c b/kernel/events/core.c
-> >>> index b458ed3dc81b..aaa0155c4142 100644
-> >>> --- a/kernel/events/core.c
-> >>> +++ b/kernel/events/core.c
-> >>> @@ -4696,6 +4696,8 @@ static void unaccount_event(struct perf_event *event)
-> >>>                dec = true;
-> >>>        if (has_branch_stack(event))
-> >>>                dec = true;
-> >>> +     if (event->pmu->sched_task)
-> >>> +             dec = true;
->
-> I think sched_task is a too big hammer. The
-> __perf_event_task_sched_in/out will be invoked even for non-pebs per-cpu
-> events, which is not necessary.
+Scatter-gather lists (sgl_s) are frequently used as data carriers in
+the block layer. For example the SCSI and NVMe subsystems interchange
+data with the block layer using sgl_s. The sgl API is declared in
+<linux/scatterlist.h>
 
-Agreed.
+The author has extended these transient sgl use cases to a store (i.e.
+a ramdisk) in the scsi_debug driver. Other new potential uses of sgl_s
+could be for the target subsystem. When this extra step is taken, the
+need to copy between sgl_s becomes apparent. The patchset adds
+sgl_copy_sgl() and two other sgl operations.
 
->
-> Maybe we can introduce a flag to indicate the case. How about the patch
-> as below?
+The existing sgl_alloc_order() function can be seen as a replacement
+for vmalloc() for large, long-term allocations.  For what seems like
+no good reason, sgl_alloc_order() currently restricts its total
+allocation to less than or equal to 4 GiB. vmalloc() has no such
+restriction.
 
-LGTM, but I prefer PERF_ATTACH_SCHED_CB, though. :)
+Changes since v3 [posted 20201019]:
+  - re-instate check on integer overflow of nent calculation in
+    sgl_alloc_order(). Do it in such a way as to not limit the
+    overall sgl size to 4  GiB
+  - introduce sgl_compare_sgl_idx() helper function that, if
+    requested and if a miscompare is detected, will yield the byte
+    index of the first miscompare.
+  - add Reviewed-by tags from Bodo Stroesser
+  - rebase on lk 5.10.0-rc2 [was on lk 5.9.0]
 
-Thanks
-Namhyung
+Changes since v2 [posted 20201018]:
+  - remove unneeded lines from sgl_memset() definition.
+  - change sg_zero_buffer() to call sgl_memset() as the former
+    is a subset.
 
->
-> diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-> index c79748f6921d..953a4bb98330 100644
-> --- a/arch/x86/events/intel/core.c
-> +++ b/arch/x86/events/intel/core.c
-> @@ -3565,8 +3565,10 @@ static int intel_pmu_hw_config(struct perf_event
-> *event)
->                 if (!(event->attr.freq || (event->attr.wakeup_events &&
-> !event->attr.watermark))) {
->                         event->hw.flags |= PERF_X86_EVENT_AUTO_RELOAD;
->                         if (!(event->attr.sample_type &
-> -                             ~intel_pmu_large_pebs_flags(event)))
-> +                             ~intel_pmu_large_pebs_flags(event))) {
->                                 event->hw.flags |= PERF_X86_EVENT_LARGE_PEBS;
-> +                               event->attach_state |= PERF_ATTACH_SCHED_DATA;
-> +                       }
->                 }
->                 if (x86_pmu.pebs_aliases)
->                         x86_pmu.pebs_aliases(event);
-> diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
-> index 0defb526cd0c..3eef7142aa11 100644
-> --- a/include/linux/perf_event.h
-> +++ b/include/linux/perf_event.h
-> @@ -606,6 +606,7 @@ struct swevent_hlist {
->   #define PERF_ATTACH_TASK      0x04
->   #define PERF_ATTACH_TASK_DATA 0x08
->   #define PERF_ATTACH_ITRACE    0x10
-> +#define PERF_ATTACH_SCHED_DATA 0x20
->
->   struct perf_cgroup;
->   struct perf_buffer;
-> diff --git a/kernel/events/core.c b/kernel/events/core.c
-> index dba4ea4e648b..a38133b5543a 100644
-> --- a/kernel/events/core.c
-> +++ b/kernel/events/core.c
-> @@ -4675,7 +4675,7 @@ static void unaccount_event(struct perf_event *event)
->         if (event->parent)
->                 return;
->
-> -       if (event->attach_state & PERF_ATTACH_TASK)
-> +       if (event->attach_state & (PERF_ATTACH_TASK | PERF_ATTACH_SCHED_DATA))
->                 dec = true;
->         if (event->attr.mmap || event->attr.mmap_data)
->                 atomic_dec(&nr_mmap_events);
-> @@ -11204,7 +11204,7 @@ static void account_event(struct perf_event *event)
->         if (event->parent)
->                 return;
->
-> -       if (event->attach_state & PERF_ATTACH_TASK)
-> +       if (event->attach_state & (PERF_ATTACH_TASK | PERF_ATTACH_SCHED_DATA))
->                 inc = true;
->         if (event->attr.mmap || event->attr.mmap_data)
->                 atomic_inc(&nr_mmap_events);
->
-> Thanks,
-> Kan
+Changes since v1 [posted 20201016]:
+  - Bodo Stroesser pointed out a problem with the nesting of
+    kmap_atomic() [called via sg_miter_next()] and kunmap_atomic()
+    calls [called via sg_miter_stop()] and proposed a solution that
+    simplifies the previous code.
+
+  - the new implementation of the three functions has shorter periods
+    when pre-emption is disabled (but has more them). This should
+    make operations on large sgl_s more pre-emption "friendly" with
+    a relatively small performance hit.
+
+  - sgl_memset return type changed from void to size_t and is the
+    number of bytes actually (over)written. That number is needed
+    anyway internally so may as well return it as it may be useful to
+    the caller.
+
+This patchset is against lk 5.10.0-rc2
+
+Douglas Gilbert (4):
+  sgl_alloc_order: remove 4 GiB limit, sgl_free() warning
+  scatterlist: add sgl_copy_sgl() function
+  scatterlist: add sgl_compare_sgl() function
+  scatterlist: add sgl_memset()
+
+ include/linux/scatterlist.h |  16 +++
+ lib/scatterlist.c           | 244 +++++++++++++++++++++++++++++++++---
+ 2 files changed, 243 insertions(+), 17 deletions(-)
+
+-- 
+2.25.1
+
