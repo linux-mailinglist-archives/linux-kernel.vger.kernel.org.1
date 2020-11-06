@@ -2,210 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F02982A8E5A
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 05:27:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A6952A8E5C
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 05:28:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726163AbgKFE1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 23:27:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34388 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726107AbgKFE1T (ORCPT
+        id S1726175AbgKFE2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 23:28:21 -0500
+Received: from mail-lf1-f67.google.com ([209.85.167.67]:44551 "EHLO
+        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725925AbgKFE2T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 23:27:19 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD6BCC0613D3
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 20:27:17 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id i7so2975595pgh.6
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 20:27:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=NUyUANspNtxDV6SxRCRDpb8/aThmojrVXw0zcthEhBk=;
-        b=Hu5jg04RZzsiEQNEkfBdU7HvTeClSbA9rbqmuTpj13kO6V2WvZdvCTlRkSjPq6d+JL
-         rwyJm4LFVyIzI6qM/IJjtwf2Y6bDJrgU+FSGuIit1HGlJxOSjCMyMF44Gg4UyFUG7qO3
-         xJS0t4YYM7RIjwwv/ukdeVzHGljKFPSmfxl3eGcGS51EgrhCGt5LaLCK5wRjh1KedWUb
-         5zZdnbWKoSsU9m+RhG56xzrPNLx7NZ3BTIypYAK58JQHiBVaFXrtYc40iqdIyPwMVkVg
-         uCBuF/Wu+WPso6v95Q4CbfbJKsSR+3FYzz3JL3DYmMZIZpTsSU2T/HFaWyMxl/0nXhi4
-         4d9Q==
+        Thu, 5 Nov 2020 23:28:19 -0500
+Received: by mail-lf1-f67.google.com with SMTP id b1so42135lfp.11;
+        Thu, 05 Nov 2020 20:28:17 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=NUyUANspNtxDV6SxRCRDpb8/aThmojrVXw0zcthEhBk=;
-        b=SEy15qQlkrB4GneqBP9EnFN8jDnNUtkJ6hwrsXZogceAHbNvsLyPyncPqSBtLrjho5
-         MSzZbNy6uhtChwehaYlGdLzq7IOrbmLjNgtiMeT/lJu86EJg1mhf3pVkA/2apVy9sxJ0
-         0LXd1WbsNXRB9vvjxJaUipWqODWSd7wuBoed3cxK9Cvp1p3E0vQIZgPRMjeBc536NHvI
-         eVzt7TeK7rXks84023K3INbZN7TxHPSSzd5g8WXEsbPeenKt+VQ8jLQAWCyQnDNGg4CL
-         s2hafWYD1Ats0mdiGk8OpDqGY7Xj6BURL+2lUMCWf9QN0C7aWWZQr2m5VhmsAUbU4Z+K
-         d+5g==
-X-Gm-Message-State: AOAM530HwVBYHQr6RN28oKl90w2epd6URnA13ohPDPRM8F4vN8mZ75Ux
-        ZLsRHtj9HPpnriHlTttgawjh+Q3aNyBGhQ==
-X-Google-Smtp-Source: ABdhPJxCgyO1IUphemwtnrgRQaBdpcBmVSqDyVQVBYjefKLrAb/d38xXs4evPD2oZV9TF1NkjAjypg==
-X-Received: by 2002:a63:d357:: with SMTP id u23mr161799pgi.106.1604636837005;
-        Thu, 05 Nov 2020 20:27:17 -0800 (PST)
-Received: from localhost.localdomain ([2601:1c2:680:1319:692:26ff:feda:3a81])
-        by smtp.gmail.com with ESMTPSA id e24sm179864pfl.149.2020.11.05.20.27.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 20:27:16 -0800 (PST)
-From:   John Stultz <john.stultz@linaro.org>
-To:     lkml <linux-kernel@vger.kernel.org>
-Cc:     John Stultz <john.stultz@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Maulik Shah <mkshah@codeaurora.org>,
-        Lina Iyer <ilina@codeaurora.org>,
-        Saravana Kannan <saravanak@google.com>,
-        Todd Kjos <tkjos@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-arm-msm@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-gpio@vger.kernel.org
-Subject: [PATCH v6 3/3] firmware: QCOM_SCM: Allow qcom_scm driver to be loadable as a permenent module
-Date:   Fri,  6 Nov 2020 04:27:10 +0000
-Message-Id: <20201106042710.55979-3-john.stultz@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201106042710.55979-1-john.stultz@linaro.org>
-References: <20201106042710.55979-1-john.stultz@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CERvrJlC+TQNJo6snGdkL35sMbOGXywHtBhjsrxgyFA=;
+        b=QXzy6gYnp8SsTb3RwR2/5rEpwbZJFZfuzIsvfSv+BELjkTFy4NAMtD1n2f2USs1RhV
+         bAbYI33bgSyVNznCsOpaHWy/1R02ey0WfOX/NOK6CwHAq2JnQk2tpmBwjY2hkCO7fcHm
+         tsWPFsFjMwdWQ8jFjLwyZTnGGaUa2z0+48pJqTbecLbOSaeU90gRSXoPw5APPJ+s7Rpb
+         o2xewZABbFi8G59HzwlTUOwqNrV+xleksTqzBx4JCu6PReC0mEeG7WmDOYczmvqgKSrz
+         SYlDLcNiVs8pcfwxdj2Za/aPgGDQ8qrJJFFMt9pRPZJp3Tnwahspm9kqPBsbhPw57J1b
+         YzGQ==
+X-Gm-Message-State: AOAM53378JxtOMYD9x0BGIQUsuBtrfM7PRsFYABQU4CAWksjlP3hBCUL
+        qlzeMlvFG1S3KTHIFbpp6JfwbWpM6EmuCQ==
+X-Google-Smtp-Source: ABdhPJwIIOwFvUSCFxqAVlkLt1XAFT7Jv9Bcvx3EtbcqPbmS5i9LBwfXla4d+nq9ZHqu7HX/XsVGRA==
+X-Received: by 2002:ac2:4aca:: with SMTP id m10mr118271lfp.26.1604636896891;
+        Thu, 05 Nov 2020 20:28:16 -0800 (PST)
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com. [209.85.208.173])
+        by smtp.gmail.com with ESMTPSA id l6sm16661lfc.8.2020.11.05.20.28.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Nov 2020 20:28:16 -0800 (PST)
+Received: by mail-lj1-f173.google.com with SMTP id m16so9630ljo.6;
+        Thu, 05 Nov 2020 20:28:16 -0800 (PST)
+X-Received: by 2002:a2e:9243:: with SMTP id v3mr48234ljg.47.1604636895947;
+ Thu, 05 Nov 2020 20:28:15 -0800 (PST)
+MIME-Version: 1.0
+References: <20201106041513.38481-1-samuel@sholland.org>
+In-Reply-To: <20201106041513.38481-1-samuel@sholland.org>
+From:   Chen-Yu Tsai <wens@csie.org>
+Date:   Fri, 6 Nov 2020 12:28:04 +0800
+X-Gmail-Original-Message-ID: <CAGb2v67c-ywkh_s77f4sm3fmL9DuxeYMrAJAgp=_jKHBd6GdHA@mail.gmail.com>
+Message-ID: <CAGb2v67c-ywkh_s77f4sm3fmL9DuxeYMrAJAgp=_jKHBd6GdHA@mail.gmail.com>
+Subject: Re: [PATCH 0/7] PinePhone BT audio bringup
+To:     Samuel Holland <samuel@sholland.org>
+Cc:     Maxime Ripard <mripard@kernel.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        phone-devel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow the qcom_scm driver to be loadable as a permenent module.
+Hi,
 
-This still uses the "depends on QCOM_SCM || !QCOM_SCM" bit to
-ensure that drivers that call into the qcom_scm driver are
-also built as modules. While not ideal in some cases its the
-only safe way I can find to avoid build errors without having
-those drivers select QCOM_SCM and have to force it on (as
-QCOM_SCM=n can be valid for those drivers).
+On Fri, Nov 6, 2020 at 12:15 PM Samuel Holland <samuel@sholland.org> wrote:
+>
+> This series makes use of the additional DAIs recently added to the
+> sun8i-codec driver to add hardware routing for BT SCO (headset) audio
+> on the PinePhone.
+>
+> The BT audio connection is represented by the "dummy" bt-sco codec. The
+> connection to the Quectel EG-25G modem via AIF2 works as well, but I do
+> not include it here because there is no appropriate codec driver in
+> tree. We have been using an out-of-tree "dummy" codec driver similar to
+> bt-sco, and I'm not sure if such a driver would be desired upstream.
+>
+> The modem has a similar amount of configurability as the rtl8723cs BT
+> chip. For the BT chip, the DAI format and PCM parameters are set in a
+> configuration firmware file and loaded at driver load time. For the
+> modem, the DAI format and PCM parameters are set by (and can be queried
+> from) an AT command. However, this AT command requires a modem restart
+> to take effect, so the parameters cannot feasibly be changed at runtime.
+>
+> With a dummy driver, we pick some "standard" set of PCM parameters, e.g.
+> 16 bit mono at 8 or 16 kHz, and assume the hardware agrees. Similarly,
+> we assume the DAI format pre-programmed in the remote hardware matches
+> what is configured in the DAI link (in this case, in the device tree).
+>
+> Is that the right way to model this? Or does the modem (and maybe even
+> the BT chip) deserve a more featureful driver that reads and/or programs
+> the format and params at probe time?
 
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Andy Gross <agross@kernel.org>
-Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc: Joerg Roedel <joro@8bytes.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Jason Cooper <jason@lakedaemon.net>
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Cc: Vinod Koul <vkoul@kernel.org>
-Cc: Kalle Valo <kvalo@codeaurora.org>
-Cc: Maulik Shah <mkshah@codeaurora.org>
-Cc: Lina Iyer <ilina@codeaurora.org>
-Cc: Saravana Kannan <saravanak@google.com>
-Cc: Todd Kjos <tkjos@google.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: linux-arm-msm@vger.kernel.org
-Cc: iommu@lists.linux-foundation.org
-Cc: linux-gpio@vger.kernel.org
-Acked-by: Kalle Valo <kvalo@codeaurora.org>
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Signed-off-by: John Stultz <john.stultz@linaro.org>
----
-v3:
-* Fix __arm_smccc_smc build issue reported by
-  kernel test robot <lkp@intel.com>
-v4:
-* Add "depends on QCOM_SCM || !QCOM_SCM" bit to ath10k
-  config that requires it.
-v5:
-* Fix QCOM_QCM typo in Kconfig, it should be QCOM_SCM
----
- drivers/firmware/Kconfig                | 4 ++--
- drivers/firmware/Makefile               | 3 ++-
- drivers/firmware/qcom_scm.c             | 4 ++++
- drivers/iommu/Kconfig                   | 2 ++
- drivers/net/wireless/ath/ath10k/Kconfig | 1 +
- 5 files changed, 11 insertions(+), 3 deletions(-)
+FYI there's a "Bluetooth: Allow to use configure SCO socket codec parameters"
+thread on the bluetooth mailing list which is still unresolved AFAICT.
 
-diff --git a/drivers/firmware/Kconfig b/drivers/firmware/Kconfig
-index 3315e3c215864..5e369928bc567 100644
---- a/drivers/firmware/Kconfig
-+++ b/drivers/firmware/Kconfig
-@@ -235,8 +235,8 @@ config INTEL_STRATIX10_RSU
- 	  Say Y here if you want Intel RSU support.
- 
- config QCOM_SCM
--	bool
--	depends on ARM || ARM64
-+	tristate "Qcom SCM driver"
-+	depends on (ARM && HAVE_ARM_SMCCC) || ARM64
- 	select RESET_CONTROLLER
- 
- config QCOM_SCM_DOWNLOAD_MODE_DEFAULT
-diff --git a/drivers/firmware/Makefile b/drivers/firmware/Makefile
-index 5e013b6a3692e..523173cbff335 100644
---- a/drivers/firmware/Makefile
-+++ b/drivers/firmware/Makefile
-@@ -17,7 +17,8 @@ obj-$(CONFIG_ISCSI_IBFT)	+= iscsi_ibft.o
- obj-$(CONFIG_FIRMWARE_MEMMAP)	+= memmap.o
- obj-$(CONFIG_RASPBERRYPI_FIRMWARE) += raspberrypi.o
- obj-$(CONFIG_FW_CFG_SYSFS)	+= qemu_fw_cfg.o
--obj-$(CONFIG_QCOM_SCM)		+= qcom_scm.o qcom_scm-smc.o qcom_scm-legacy.o
-+obj-$(CONFIG_QCOM_SCM)		+= qcom-scm.o
-+qcom-scm-objs += qcom_scm.o qcom_scm-smc.o qcom_scm-legacy.o
- obj-$(CONFIG_TI_SCI_PROTOCOL)	+= ti_sci.o
- obj-$(CONFIG_TRUSTED_FOUNDATIONS) += trusted_foundations.o
- obj-$(CONFIG_TURRIS_MOX_RWTM)	+= turris-mox-rwtm.o
-diff --git a/drivers/firmware/qcom_scm.c b/drivers/firmware/qcom_scm.c
-index 7be48c1bec96d..6f431b73e617d 100644
---- a/drivers/firmware/qcom_scm.c
-+++ b/drivers/firmware/qcom_scm.c
-@@ -1280,6 +1280,7 @@ static const struct of_device_id qcom_scm_dt_match[] = {
- 	{ .compatible = "qcom,scm" },
- 	{}
- };
-+MODULE_DEVICE_TABLE(of, qcom_scm_dt_match);
- 
- static struct platform_driver qcom_scm_driver = {
- 	.driver = {
-@@ -1295,3 +1296,6 @@ static int __init qcom_scm_init(void)
- 	return platform_driver_register(&qcom_scm_driver);
- }
- subsys_initcall(qcom_scm_init);
-+
-+MODULE_DESCRIPTION("Qualcomm Technologies, Inc. SCM driver");
-+MODULE_LICENSE("GPL v2");
-diff --git a/drivers/iommu/Kconfig b/drivers/iommu/Kconfig
-index 04878caf6da49..c64d7a2b65134 100644
---- a/drivers/iommu/Kconfig
-+++ b/drivers/iommu/Kconfig
-@@ -248,6 +248,7 @@ config SPAPR_TCE_IOMMU
- config ARM_SMMU
- 	tristate "ARM Ltd. System MMU (SMMU) Support"
- 	depends on ARM64 || ARM || (COMPILE_TEST && !GENERIC_ATOMIC64)
-+	depends on QCOM_SCM || !QCOM_SCM #if QCOM_SCM=m this can't be =y
- 	select IOMMU_API
- 	select IOMMU_IO_PGTABLE_LPAE
- 	select ARM_DMA_USE_IOMMU if ARM
-@@ -375,6 +376,7 @@ config QCOM_IOMMU
- 	# Note: iommu drivers cannot (yet?) be built as modules
- 	bool "Qualcomm IOMMU Support"
- 	depends on ARCH_QCOM || (COMPILE_TEST && !GENERIC_ATOMIC64)
-+	depends on QCOM_SCM=y
- 	select IOMMU_API
- 	select IOMMU_IO_PGTABLE_LPAE
- 	select ARM_DMA_USE_IOMMU
-diff --git a/drivers/net/wireless/ath/ath10k/Kconfig b/drivers/net/wireless/ath/ath10k/Kconfig
-index 40f91bc8514d8..741289e385d59 100644
---- a/drivers/net/wireless/ath/ath10k/Kconfig
-+++ b/drivers/net/wireless/ath/ath10k/Kconfig
-@@ -44,6 +44,7 @@ config ATH10K_SNOC
- 	tristate "Qualcomm ath10k SNOC support"
- 	depends on ATH10K
- 	depends on ARCH_QCOM || COMPILE_TEST
-+	depends on QCOM_SCM || !QCOM_SCM #if QCOM_SCM=m this can't be =y
- 	select QCOM_QMI_HELPERS
- 	help
- 	  This module adds support for integrated WCN3990 chip connected
--- 
-2.17.1
+You might want to take a look at it.
 
+ChenYu
+
+> Because of those unanswered questions, I'm sending BT SCO support
+> first/only.
+>
+> Regards,
+> Samuel
+>
+> Arnaud Ferraris (1):
+>   arm64: dts: allwinner: pinephone: Set audio card name
+>
+> Samuel Holland (6):
+>   ASoC: dt-bindings: sun8i-codec: Increase #sound-dai-cells
+>   ARM: dts: sun8i-a33: Allow using multiple codec DAIs
+>   arm64: dts: allwinner: a64: Allow using multiple codec DAIs
+>   arm64: dts: allwinner: a64: Add pinmux nodes for AIF2/AIF3
+>   arm64: dts: allwinner: a64: Allow multiple DAI links
+>   arm64: dts: allwinner: pinephone: Add support for Bluetooth audio
+>
+>  .../sound/allwinner,sun8i-a33-codec.yaml      |  2 +-
+>  arch/arm/boot/dts/sun8i-a33.dtsi              |  4 +-
+>  .../dts/allwinner/sun50i-a64-pinephone.dtsi   | 25 +++++++++++++
+>  arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi | 37 ++++++++++++++-----
+>  4 files changed, 55 insertions(+), 13 deletions(-)
+>
+> --
+> 2.26.2
+>
