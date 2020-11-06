@@ -2,110 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDA082A95CA
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 12:53:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34BD52A95D3
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 12:54:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727173AbgKFLxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 06:53:15 -0500
-Received: from mga05.intel.com ([192.55.52.43]:41404 "EHLO mga05.intel.com"
+        id S1727217AbgKFLyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 06:54:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52448 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726876AbgKFLxO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 06:53:14 -0500
-IronPort-SDR: vyqZ0ZEpTd2RMh0pzP1nHCvDiqB0cLOuKpEWD7owXIHpWQhInz/ayIQBXAMzX5pLWV5rcwWbdb
- oNQPV9TEPTpQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9796"; a="254241285"
-X-IronPort-AV: E=Sophos;i="5.77,456,1596524400"; 
-   d="scan'208";a="254241285"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2020 03:53:14 -0800
-IronPort-SDR: u5lLLRj4LViCOb/QKvW4vpaGxu7xRftl+vFevt0ogDJ0ptsySK/75DosimeRUmYZquCjychi0+
- MnRticfo+YZQ==
-X-IronPort-AV: E=Sophos;i="5.77,456,1596524400"; 
-   d="scan'208";a="307193590"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2020 03:53:11 -0800
-Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
-        id 046CA207BF; Fri,  6 Nov 2020 13:53:08 +0200 (EET)
-Date:   Fri, 6 Nov 2020 13:53:08 +0200
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Alexandre Torgue <alexandre.torgue@st.com>
-Cc:     Hugues Fruchet <hugues.fruchet@st.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Alain Volmat <alain.volmat@st.com>,
-        Yannick Fertre <yannick.fertre@st.com>,
-        Philippe CORNU <philippe.cornu@st.com>
-Subject: Re: [PATCH v5 0/4] DCMI BT656 parallel bus mode support
-Message-ID: <20201106115308.GO26150@paasikivi.fi.intel.com>
-References: <1604511132-4014-1-git-send-email-hugues.fruchet@st.com>
- <016661fc-e9dd-bd4a-f26d-00e54626f030@st.com>
+        id S1726565AbgKFLyd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 06:54:33 -0500
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EFDC820720;
+        Fri,  6 Nov 2020 11:54:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604663672;
+        bh=uajC+yCxqwMRDpmS8LKphYFTZOXNRJlq1O5B9n/FUwg=;
+        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+        b=Nut+t71K1QLfsGV5Z84ZT/UAF3iYgWxXAonnqb4K1HqIsuRRgK9fCIHrZcYLdYmXL
+         QZgvyE+EdWgVTfon/QKg/XWgyDLIs9LK8HDzsWm3WTAgVAaTHjGgaivIeOqwcnKH2G
+         2z00OS7Kj65xRr35+ScXVH/0Oi+YDTXQcYS2Zj70=
+Date:   Fri, 06 Nov 2020 11:54:20 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Shengjiu Wang <shengjiu.wang@nxp.com>, perex@perex.cz,
+        Xiubo.Lee@gmail.com, festevam@gmail.com, robh+dt@kernel.org,
+        nicoleotsuka@gmail.com, timur@kernel.org, tiwai@suse.com,
+        devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+        lgirdwood@gmail.com
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+In-Reply-To: <1604281947-26874-1-git-send-email-shengjiu.wang@nxp.com>
+References: <1604281947-26874-1-git-send-email-shengjiu.wang@nxp.com>
+Subject: Re: [PATCH v3 1/2] ASoC: dt-bindings: fsl_aud2htx: Add binding doc for aud2htx module
+Message-Id: <160466365499.22812.9217467877032314221.b4-ty@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <016661fc-e9dd-bd4a-f26d-00e54626f030@st.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alexandre,
+On Mon, 2 Nov 2020 09:52:26 +0800, Shengjiu Wang wrote:
+> AUD2HTX (Audio Subsystem TO HDMI TX Subsystem) is a new
+> IP module found on i.MX8MP.
 
-On Thu, Nov 05, 2020 at 10:26:37AM +0100, Alexandre Torgue wrote:
-> Hi Huges
-> 
-> On 11/4/20 6:32 PM, Hugues Fruchet wrote:
-> > Add support of BT656 embedded synchronization bus.
-> > This mode allows to save hardware synchro lines hsync & vsync
-> > by replacing them with synchro codes embedded in data stream.
-> > Add "bus-type" property and make it required so that there is no
-> > ambiguity between parallel mode (bus-type=5) and BT656 mode (bus-type=6).
-> > 
-> > ===========
-> > = history =
-> > ===========
-> > version 5:
-> >    - Add revisited bindings and devicetree with explicit use of "bus-type"
-> > 
-> > version 4:
-> >    - Fix typo in commit message
-> > 
-> > version 3:
-> >    - Fix bus_width print to %u as per Sakari comment
-> > 
-> > version 2:
-> >    - As per Sakari remark, revisit commit message and document
-> >      BT656 parallel bus mode in bindings
-> > 
-> > version 1:
-> >    - Initial submission
-> > 
-> > Hugues Fruchet (4):
-> >    media: stm32-dcmi: add support of BT656 bus
-> >    media: dt-bindings: media: st,stm32-dcmi: add support of BT656 bus
-> >    ARM: dts: stm32: set bus-type in DCMI endpoint for stm32mp157c-ev1
-> >      board
-> >    ARM: dts: stm32: set bus-type in DCMI endpoint for stm32429i-eval
-> >      board
-> > 
-> >   .../devicetree/bindings/media/st,stm32-dcmi.yaml   | 38 ++++++++++++++++++++++
-> >   arch/arm/boot/dts/stm32429i-eval.dts               |  1 +
-> >   arch/arm/boot/dts/stm32mp157c-ev1.dts              |  1 +
-> >   drivers/media/platform/stm32/stm32-dcmi.c          | 37 +++++++++++++++++++--
-> >   4 files changed, 75 insertions(+), 2 deletions(-)
-> > 
-> 
-> I'll take DT patches on stm32-next tree.
+Applied to
 
-Just checking: that is only the two last patches in the set, or also the
-binding patch?
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
--- 
-Regards,
+Thanks!
 
-Sakari Ailus
+[1/2] ASoC: dt-bindings: fsl_aud2htx: Add binding doc for aud2htx module
+      commit: 40f4c56d08f2a95f4f3b036987f171dde69ddd36
+[2/2] ASoC: fsl_aud2htx: Add aud2htx module driver
+      commit: 8a24c834c053ef1b0cdefbd9c5bcb487cbc5068f
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
