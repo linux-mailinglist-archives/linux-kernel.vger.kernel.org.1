@@ -2,110 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93D542A9349
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 10:48:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 172B32A9366
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 10:51:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727026AbgKFJsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 04:48:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56070 "EHLO
+        id S1726807AbgKFJvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 04:51:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725868AbgKFJsf (ORCPT
+        with ESMTP id S1726165AbgKFJvd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 04:48:35 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6799AC0613CF;
-        Fri,  6 Nov 2020 01:48:35 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id 33so625174wrl.7;
-        Fri, 06 Nov 2020 01:48:35 -0800 (PST)
+        Fri, 6 Nov 2020 04:51:33 -0500
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E5A6C0613D2
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 01:51:32 -0800 (PST)
+Received: by mail-ej1-x633.google.com with SMTP id 7so1074189ejm.0
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 01:51:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=r7YyaJmRIWWPTEfEzl80MC6QW4rF6G5MsBiV1a8/Lpc=;
-        b=eQ3+X40TsWePgKwYfv6Y0LrGNy6Si6msdrfWqYRBp5WPTkG0hjNjGm66SiM9HqZ0nk
-         KF5HPV6RTb5+1fkntdj+itsd956wskElIvlUkBamTgKjpnplJ4Rk2Ib0ZBg32FcYylp+
-         Jfutwen3/Jo8hF5/Y7bL2j/tf2OT/5H9BfIE66I48QofEdVgCsdlHb6TyttKYBIJ9Jy5
-         cfSwiMiCX4I7W2zvParOK4si2/Z6C52EoVua/0aWfSgdb9cEX2/ug7fpydGdA+KKEM9J
-         R1r/ICUPEoh548L51HgsP7qB63gu7VwTtGnqrF2ukiNlWpoD3+spNOiV3Wf7kfih6Vuu
-         4CJA==
+        d=malat-biz.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=9IBtvz1xb0AHqlIyVvrG0wyMkGPT2R1uF6Ltx4fuS1Q=;
+        b=SAtXTf1XTB2iVd5TsH8z3gKUSMvhnZmXeL+fzOMchO4JYyHTivLWInorPoNF1DFORj
+         j8lXfXmgtXu+LcfNo4JD7X/kZD5JqBa5Sf75iYnWT1zVOVCVhwDLvnHBJQIRBo0PEPpR
+         2R/cJBBtyoU1IKHW2m2J9wLN0y1SldbIzR4n6eyWustw2bynhVWuiSODN6OzGbBkequZ
+         UYTantj+YB5gOLlQtB/RipsFf4kztiwyb1ksnx/etvPWbpL2Sb/hBy1qM3ryYc2fsIhr
+         sv1si2l3sOINQX3318hskJopCjJYeJ7xWUMTKwi1DyB3OvrKJMzCkm66nBD9cX2p+Lrx
+         jObw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=r7YyaJmRIWWPTEfEzl80MC6QW4rF6G5MsBiV1a8/Lpc=;
-        b=R1XYbL2fVZIQBto8tAFCAr9w77oAsXb4Ygb9ctFyvwkvwHax4kwqda3gSa9srkHNcU
-         dbC79coAMDov59yEzpGwXtriS3IndnRkPBOGoOhfh7xSPRd2RV04sVb3mN8qFMaBq+9G
-         rVZH2ygcxKsPxsukdDoGGfDWpeX4qPpjyRs1dvmOMPpfo3WLI54FTsFG/62eIZcBC7rX
-         6F4L8nkneWUbxM4bZ4Rex0Wl93//RIoi7U6tySjHNHMGhzZFaNP0eg19D39j33kALr3a
-         EtQ9npB8+tMepk2888BMrShyJVLo2zoR/gB+5/kV7dwPb0QeFXbMt0oUu/mCV8zVPg58
-         Zjqg==
-X-Gm-Message-State: AOAM532pOTTqgl1Gx6AgE8k76vasbx9sfYAiLrURDyCnkamApGj4nMZJ
-        7ajHOuhOeJSce5PLFerZOj0=
-X-Google-Smtp-Source: ABdhPJyVUzxwiL83Bw5+ELbmBhVqWaLCOIfOQ1w3aqx4YdGq1EfkW9niP4Pe3zgVc9WNFsu/OEZyqg==
-X-Received: by 2002:a5d:6681:: with SMTP id l1mr1705435wru.356.1604656114107;
-        Fri, 06 Nov 2020 01:48:34 -0800 (PST)
-Received: from felia.fritz.box ([2001:16b8:2d20:9d00:b87b:b644:61a3:6870])
-        by smtp.gmail.com with ESMTPSA id c9sm1187446wrp.65.2020.11.06.01.48.32
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=9IBtvz1xb0AHqlIyVvrG0wyMkGPT2R1uF6Ltx4fuS1Q=;
+        b=H56ykH7wZpwFI4crto4SIS/mPkS2YE7MrYbSzTiIyLp7mW8uQGdR1OKAkp25HTwIl5
+         93cIY27bG7GuPQyBVdyX+fy/zlPD2JJIaUYym7uB4mIBvAAkUIY/NB3D37uJDkmPK1nn
+         vItN3kpK+RbG7ArVL5L7nrtRUcJWY/S1Z1TA9Y6Rszfg7HnOPGI4aRlm/zrxLPqrVgjG
+         /Sz7oln9thSz8AKizX6vxm35XQ/f8hpavNWyw8UdLrHXkHreBQNXS2zD8hHmF3v7tlzy
+         cJAi+7bMf3RdWla7goyWR1SlolGHBJ/aMWL7stPbbih0c2IskwrE6kjQJQhOx2ls1QED
+         c6Ng==
+X-Gm-Message-State: AOAM531V5XVNWlFd4b4F+AuyUNU4qnbArAI4GGrW3yI//y21Kn6qPzV1
+        i6G48xTbZ2nwjR6WoW5M/JcgSllhKHwpF6qG
+X-Google-Smtp-Source: ABdhPJw46RbOpExLWqlAV9SWFLIsfa1kfttjTMIHD/W89boZnOgzyIxJi3jf6mmoTPl+/LfXcidpuQ==
+X-Received: by 2002:a17:907:264d:: with SMTP id ar13mr1167369ejc.207.1604656290864;
+        Fri, 06 Nov 2020 01:51:30 -0800 (PST)
+Received: from bordel.klfree.net (bordel.klfree.cz. [81.201.48.42])
+        by smtp.gmail.com with ESMTPSA id k11sm603182edh.72.2020.11.06.01.51.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Nov 2020 01:48:33 -0800 (PST)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org
-Cc:     Tom Rix <trix@redhat.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com,
-        kernel-janitors@vger.kernel.org, linux-safety@lists.elisa.tech,
-        linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] clk: remove unneeded dead-store initialization
-Date:   Fri,  6 Nov 2020 10:48:20 +0100
-Message-Id: <20201106094820.30167-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Fri, 06 Nov 2020 01:51:30 -0800 (PST)
+Date:   Fri, 6 Nov 2020 10:48:24 +0100
+From:   Petr Malat <oss@malat.biz>
+To:     Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+Cc:     linux-sctp@vger.kernel.org, Vlad Yasevich <vyasevich@gmail.com>,
+        Neil Horman <nhorman@tuxdriver.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] sctp: Fix sending when PMTU is less than
+ SCTP_DEFAULT_MINSEGMENT
+Message-ID: <20201106094824.GA7570@bordel.klfree.net>
+References: <20201105103946.18771-1-oss@malat.biz>
+ <20201106084634.GA3556@localhost.localdomain>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201106084634.GA3556@localhost.localdomain>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-make clang-analyzer on x86_64 defconfig caught my attention with:
+On Fri, Nov 06, 2020 at 05:46:34AM -0300, Marcelo Ricardo Leitner wrote:
+> On Thu, Nov 05, 2020 at 11:39:47AM +0100, Petr Malat wrote:
+> > Function sctp_dst_mtu() never returns lower MTU than
+> > SCTP_TRUNC4(SCTP_DEFAULT_MINSEGMENT) even when the actual MTU is less,
+> > in which case we rely on the IP fragmentation and must enable it.
+> 
+> This should be being handled at sctp_packet_will_fit():
 
-  drivers/clk/clk.c:423:19:
-  warning: Value stored to 'parent' during its initialization is never read
-  [clang-analyzer-deadcode.DeadStores]
-          struct clk_core *parent = ERR_PTR(-ENOENT);
-                           ^
+sctp_packet_will_fit() does something a little bit different, it
+allows fragmentation, if the packet must be longer than the pathmtu
+set in SCTP structures, which is never less than 512 (see
+sctp_dst_mtu()) even when the actual mtu is less than 512.
 
-Commit fc0c209c147f ("clk: Allow parents to be specified without string
-names") introduced clk_core_fill_parent_index() with this unneeded
-dead-store initialization.
+One can test it by setting mtu of an interface to e.g. 300,
+and sending a longer packet (e.g. 400B):
+>           psize = packet->size;
+>           if (packet->transport->asoc)
+>                   pmtu = packet->transport->asoc->pathmtu;
+>           else
+>                   pmtu = packet->transport->pathmtu;
+here the returned pmtu will be 512
 
-So, simply remove this unneeded dead-store initialization to make
-clang-analyzer happy.
+> 
+>           /* Decide if we need to fragment or resubmit later. */
+>           if (psize + chunk_len > pmtu) {
+This branch will not be taken as the packet length is less then 512
 
-As compilers will detect this unneeded assignment and optimize this anyway,
-the resulting object code is identical before and after this change.
+>            }
+> 
+And the whole function will return SCTP_XMIT_OK without setting
+ipfragok.
 
-No functional change. No change to object code.
+I think the idea of never going bellow 512 in sctp_dst_mtu() is to
+reduce overhead of SCTP headers, which is fine, but when we do that,
+we must be sure to allow the IP fragmentation, which is currently
+missing.
 
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
-applies cleanly on current master and next-20201106
+The other option would be to keep track of the real MTU in pathmtu
+and perform max(512, pathmtu) in sctp_packet_will_fit() function.
 
-Stephen, Michael, please pick this minor non-urgent clean-up patch.
-
- drivers/clk/clk.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
-index f83dac54ed85..ba35bf35bcd3 100644
---- a/drivers/clk/clk.c
-+++ b/drivers/clk/clk.c
-@@ -420,7 +420,7 @@ static struct clk_core *clk_core_get(struct clk_core *core, u8 p_index)
- static void clk_core_fill_parent_index(struct clk_core *core, u8 index)
- {
- 	struct clk_parent_map *entry = &core->parents[index];
--	struct clk_core *parent = ERR_PTR(-ENOENT);
-+	struct clk_core *parent;
- 
- 	if (entry->hw) {
- 		parent = entry->hw->core;
--- 
-2.17.1
-
+Not sure when exactly this got broken, but using MTU less than 512
+used to work in 4.9.
+  Petr
