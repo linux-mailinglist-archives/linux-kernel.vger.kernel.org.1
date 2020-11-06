@@ -2,62 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F04A2AA00D
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 23:21:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C3852AA010
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 23:21:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729307AbgKFWTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 17:19:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33376 "EHLO
+        id S1729319AbgKFWTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 17:19:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729290AbgKFWTi (ORCPT
+        with ESMTP id S1729310AbgKFWTn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 17:19:38 -0500
-Received: from mail-ua1-x943.google.com (mail-ua1-x943.google.com [IPv6:2607:f8b0:4864:20::943])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E418C0613D4
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 14:19:38 -0800 (PST)
-Received: by mail-ua1-x943.google.com with SMTP id q4so880327ual.8
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 14:19:38 -0800 (PST)
+        Fri, 6 Nov 2020 17:19:43 -0500
+Received: from mail-ua1-x941.google.com (mail-ua1-x941.google.com [IPv6:2607:f8b0:4864:20::941])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 223B9C0613D2
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 14:19:43 -0800 (PST)
+Received: by mail-ua1-x941.google.com with SMTP id h26so878193uan.10
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 14:19:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=zgkEP8uUBMM/1i9fO3D7PzhaF++uIglurMZlS2PGnJI=;
-        b=I3+dtQrekOqIj2pffR3fKNray/EJcVUlTQU+sSXU3Q1Od8KZCkuhQ1FYF/feyaehpc
-         s/gRfegERVeaAQMH38sGajrLmZ/O3nLaRAh1qgH+mTOZe58X+UC051KioNIFCxFuVrZG
-         nKoJXCvzZgjY2QnIv4Uhshr2N+pIn19uNfjO4=
+        bh=NLCsiO9TjoGgxC0blophxfVUgB7zlNdYWu3aSewsL8U=;
+        b=PoE2LDCvCjd9a68IojxzjjWvhXcThirPfm6qDX2WRJ2KG+ePtdymrUqF0KirURDPpX
+         OnroHjhjWv3e6dA9K/oFgopPmWqjZzFwyQaQtO5HA99UYvYoj/EQw0ElFxuopkMZXRSD
+         WagKY36tH3tYTUatAseCS5pDhrwJ/d3y92MNY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=zgkEP8uUBMM/1i9fO3D7PzhaF++uIglurMZlS2PGnJI=;
-        b=Hx7zITj5XJ1v4rbRwgahq5vGtM+VG3n/qXoz0x9fQUroxsMZlj1X/foldRUDPiBQFp
-         /IKl+2zdRgebXWSChAvX05Kh3cf2sZHKI51gELXz0RcrKfFTBKvUsd/KeHc5XkCitQeB
-         tIGSYNxqsEtk2kcjVdMW5Y/5e+8Nd1uvTMUfoRgBuAc9bnEIuqnPOSSFCMADuH8xKxuX
-         zZGqUO/Ey20zB3IG6MpQGVgInGzFsWBdf4BlF6IeD/SMM9bhZaq+sjXDfdMKxhXp9H29
-         GEklk8sdjeoQmacXe5MI3yaExklvarRZVIfxyR6rby9cFPd3TOp3RfcCMUN5TzVVQNj8
-         lwsw==
-X-Gm-Message-State: AOAM531kNqB3Sq7St1RIDGNuqO3XX3cfQJYIWLYuopAkXNHXSD3YqDZH
-        2MUeZiMM51W9hJEXxZsjFfwgMnYenJeJIg==
-X-Google-Smtp-Source: ABdhPJyeLOcHy0NtOMs5KQSbl1T/Ogl01Lfp2fg6P+yy+XMUASKEv2ORk0ZmcmNpjbmFX3n/QKT2ng==
-X-Received: by 2002:ab0:2302:: with SMTP id a2mr2401603uao.138.1604701177172;
-        Fri, 06 Nov 2020 14:19:37 -0800 (PST)
-Received: from mail-vk1-f175.google.com (mail-vk1-f175.google.com. [209.85.221.175])
-        by smtp.gmail.com with ESMTPSA id v140sm330356vke.50.2020.11.06.14.19.36
+        bh=NLCsiO9TjoGgxC0blophxfVUgB7zlNdYWu3aSewsL8U=;
+        b=sfo/5nk0XjD66kcNd+dk48KXDPGZoNU9Al3RPxknPtRlo0pqz3Cw5VxkQzR3h0UK8L
+         1L+W2OKUPTPCHDxQ+/gRm+yewVmljfNhOzeLpCZRfhT6ja1MHxPm1nrc9ncnSxGBzV1T
+         ws4+ZgZgt+UexNZ1fbXAGBvCF3rxvck8XP8Wd7Qth+iJ/p91YIZafF5xMDgFoGW3qa/O
+         2g+VEvg4wP/pHKE4oBENp7ugx/Ve05cnsr1xcdX75lk8BVLRLT1mwIzpsP4N6xlGb2zt
+         VqohJyc+FdFkzW5WJyoQLMoyK+8N7fBwl1gxmYXZBZ6pL7pvKNcsiwikL/7qmV561LiC
+         HLYw==
+X-Gm-Message-State: AOAM531k0u3KOSAfK98b0NGhvEc5mS81SLPnNsL6pDP1lley8L5nF0nJ
+        RWqblh5oCLjzK89kF9YJhN+lAVGgjl8lgw==
+X-Google-Smtp-Source: ABdhPJzNtBVFaFran3NaXIny9IviMj9Jjn3bpvD3uMBysjRrC74C7Sq5RwI1cUtisKk1LlSICCMCoA==
+X-Received: by 2002:ab0:6dd1:: with SMTP id r17mr2442908uaf.108.1604701182061;
+        Fri, 06 Nov 2020 14:19:42 -0800 (PST)
+Received: from mail-vs1-f53.google.com (mail-vs1-f53.google.com. [209.85.217.53])
+        by smtp.gmail.com with ESMTPSA id m14sm335858vkk.17.2020.11.06.14.19.41
         for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Nov 2020 14:19:36 -0800 (PST)
-Received: by mail-vk1-f175.google.com with SMTP id m184so588636vkb.9
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 14:19:36 -0800 (PST)
-X-Received: by 2002:a1f:ab87:: with SMTP id u129mr2589166vke.7.1604701175874;
- Fri, 06 Nov 2020 14:19:35 -0800 (PST)
+        Fri, 06 Nov 2020 14:19:41 -0800 (PST)
+Received: by mail-vs1-f53.google.com with SMTP id m16so1544742vsl.8
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 14:19:41 -0800 (PST)
+X-Received: by 2002:a67:1e01:: with SMTP id e1mr2877788vse.49.1604701180750;
+ Fri, 06 Nov 2020 14:19:40 -0800 (PST)
 MIME-Version: 1.0
 References: <20201106140125.v3.1.I5a75056d573808f40fed22ab7d28ea6be5819f84@changeid>
-In-Reply-To: <20201106140125.v3.1.I5a75056d573808f40fed22ab7d28ea6be5819f84@changeid>
+ <20201106140125.v3.2.I0ed4abdd2b2916fbedf76be254bc3457fb8b9655@changeid>
+In-Reply-To: <20201106140125.v3.2.I0ed4abdd2b2916fbedf76be254bc3457fb8b9655@changeid>
 From:   Doug Anderson <dianders@chromium.org>
-Date:   Fri, 6 Nov 2020 14:19:23 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=VNPoJVhdB09THXu5g8gbyuYw7Yj1Sj4UEuOSp4fQ8LAw@mail.gmail.com>
-Message-ID: <CAD=FV=VNPoJVhdB09THXu5g8gbyuYw7Yj1Sj4UEuOSp4fQ8LAw@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] arm64: dts: qcom: sc7180: Add sc7180-lazor-r2/r3
+Date:   Fri, 6 Nov 2020 14:19:28 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=UCiBNwtCqVrc0kFDghLsAxZo4NwAoupzXy9m10pwJgpg@mail.gmail.com>
+Message-ID: <CAD=FV=UCiBNwtCqVrc0kFDghLsAxZo4NwAoupzXy9m10pwJgpg@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] arm64: dts: qcom: sc7180-trogdor: Make pp3300_a
+ the default supply for pp3300_hub
 To:     Matthias Kaehlcke <mka@chromium.org>
 Cc:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
@@ -74,39 +76,44 @@ Hi,
 
 On Fri, Nov 6, 2020 at 2:01 PM Matthias Kaehlcke <mka@chromium.org> wrote:
 >
-> Add configs for lazor rev2 and rev3. There are no relevant deltas
-> between rev1 and rev2, so just add the rev2 compatible string to the
-> rev1 config.
+> The trogdor design has two options for supplying the 'pp3300_hub' power
+> rail, it can be supplied by 'pp3300_l7c' or 'pp3300_a'. The 'pp3300_a'
+> path includes a load switch that can be controlled through GPIO84.
+> Initially trogdor boards used 'pp3300_l7c' to power the USB hub, newer
+> revisions (will) use 'pp3300_a' as supply for 'pp3300_hub'.
 >
-> One important delta in rev3 is a switch of the power supply for the
-> onboard USB hub from 'pp3300_l7c' to 'pp3300_a' + a load switch. The
-> actual regulator switch is done by the patch 'arm64: dts: qcom:
-> sc7180-trogdor: Make pp3300_a the default supply for pp3300_hub',
-> since it affects the entire trogdor platform. Here we only add the
-> .dts files for lazor rev3 and replace the generic compatible entries
-> in the rev1 .dts files.
+> Add a DT node for the 'pp3300_a' path and a pinctrl entry for the GPIO.
+> Make this path the default and keep trogdor rev1, lazor rev0 and rev1
+> on 'pp3300_l7c'. These earlier revisions also allocated the GPIO to the
+> purpose of controlling the power switch, so there is no need to limit
+> the pinctrl config to newer revisions. Remove the platform-wide
+> 'always/boot-on' properties from 'pp3300_l7c' and add them to the
+> boards that use this supply. Also delete the 'always/boot-on'
+> properties of 'pp3300_hub' for these boards.
 >
 > Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
 > ---
 >
 > Changes in v3:
-> - rev3 switched the regulator, not rev2
-> - also handle rev2 in rev1 files
-> - fixed include in -r3-kb.dts
+> - removed 'always-on' and 'boot-on' from 'pp3300_l7c'
+> - always pair 'always-on' and 'boot-on' properties
+> - removed comment for 'pp3300_hub' 'always-on' and 'boot-on' properties
 >
 > Changes in v2:
-> - patch added to the series
+> - added 'always-on' and 'boot-on' properties for new 'pp3300_hub'
+> - removed platform-wide 'always-on' property for 'pp3300_l7c'
+> - added 'always-on' property to 'pp3300_l7c'  for boards that still
+>   use 'pp3300_l7c'
+> - delete 'always-on' property of 'pp3300_hub' for boards that still
+>   use 'pp3300_l7c'
+> - got rid of 'pp3300_hub_7c' label, just use 'pp3300_l7c'
+> - fixed position of 'en_pp3300_hub' node to respect ordering
+> - updated commit message
 >
->  arch/arm64/boot/dts/qcom/Makefile              |  3 +++
->  .../dts/qcom/sc7180-trogdor-lazor-r1-kb.dts    |  4 ++--
->  .../dts/qcom/sc7180-trogdor-lazor-r1-lte.dts   |  4 ++--
->  .../boot/dts/qcom/sc7180-trogdor-lazor-r1.dts  |  4 ++--
->  .../dts/qcom/sc7180-trogdor-lazor-r3-kb.dts    | 17 +++++++++++++++++
->  .../dts/qcom/sc7180-trogdor-lazor-r3-lte.dts   | 18 ++++++++++++++++++
->  .../boot/dts/qcom/sc7180-trogdor-lazor-r3.dts  | 15 +++++++++++++++
->  7 files changed, 59 insertions(+), 6 deletions(-)
->  create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r3-kb.dts
->  create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r3-lte.dts
->  create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r3.dts
+>  .../boot/dts/qcom/sc7180-trogdor-lazor-r0.dts | 15 ++++++++
+>  .../boot/dts/qcom/sc7180-trogdor-lazor-r1.dts | 15 ++++++++
+>  .../arm64/boot/dts/qcom/sc7180-trogdor-r1.dts | 15 ++++++++
+>  arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi  | 34 +++++++++++++++++--
+>  4 files changed, 76 insertions(+), 3 deletions(-)
 
 Reviewed-by: Douglas Anderson <dianders@chromium.org>
