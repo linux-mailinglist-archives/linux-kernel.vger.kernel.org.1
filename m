@@ -2,77 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7583D2A997A
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 17:30:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FA3D2A997F
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 17:32:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727192AbgKFQaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 11:30:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39326 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726482AbgKFQaG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 11:30:06 -0500
-Content-Type: text/plain; charset="utf-8"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604680206;
-        bh=7+TLDC0TsrPzHnm18zh2FFLZMNWt6KUkleHczhCixcI=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=dXX4qPXCSZ2z3S19tsVQDoeV8uVoY2UQpcS9So7QF7mhy/8elRheRSPcGFIEKVT3T
-         RpWnxXv1Bt4RmQ2a+MVl5NJR50eAns7QOwfFYPf79lcIaRv4JyqgkjWFxDpCMVvhW8
-         pzIZvUDO1feib8ELeak3Z+8yrxAtNOMBdEp5be08=
+        id S1726748AbgKFQcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 11:32:19 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42871 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726034AbgKFQcT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 11:32:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604680337;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+T0wh6v8l6lQUrvw4s9+AbRJQ2Z4GCUXzV2HD9+48LQ=;
+        b=Gd9fdaexEpytto1wLRYrfQavVEFPbNkzrkwnVX20MLvESGqvcwKEFnsgLEhXavWZZuTglM
+        8lgm7fm7oN/zWOzImmOhfS2JcCU0XAOSmT7IvnTEx25T+NpO5kcLT+BLfJgy3AxlgD4FfY
+        63jo/DHArXq0vyHZF3A3xK/vV+N2kWg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-334-hcRXZq1dPjaMDveOEJbP9Q-1; Fri, 06 Nov 2020 11:32:15 -0500
+X-MC-Unique: hcRXZq1dPjaMDveOEJbP9Q-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 32D5A802B45;
+        Fri,  6 Nov 2020 16:32:14 +0000 (UTC)
+Received: from w520.home (ovpn-112-213.phx2.redhat.com [10.3.112.213])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 602CE2619E;
+        Fri,  6 Nov 2020 16:32:01 +0000 (UTC)
+Date:   Fri, 6 Nov 2020 09:32:00 -0700
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     David Woodhouse <dwmw2@infradead.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        kvm@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] sched/wait: Add add_wait_queue_priority()
+Message-ID: <20201106093200.6d8975ae@w520.home>
+In-Reply-To: <f0901be7-1526-5b6a-90cb-6489e53cb92f@redhat.com>
+References: <20201026175325.585623-1-dwmw2@infradead.org>
+        <20201027143944.648769-1-dwmw2@infradead.org>
+        <20201027143944.648769-2-dwmw2@infradead.org>
+        <20201028143509.GA2628@hirez.programming.kicks-ass.net>
+        <ef4660dba8135ca5a1dc7e854babcf65d8cef46f.camel@infradead.org>
+        <f0901be7-1526-5b6a-90cb-6489e53cb92f@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v6 1/9] bpf: Allow LSM programs to use bpf spin locks
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <160468020631.12149.17904247795919763724.git-patchwork-notify@kernel.org>
-Date:   Fri, 06 Nov 2020 16:30:06 +0000
-References: <20201106103747.2780972-2-kpsingh@chromium.org>
-In-Reply-To: <20201106103747.2780972-2-kpsingh@chromium.org>
-To:     KP Singh <kpsingh@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        songliubraving@fb.com, kafai@fb.com, ast@kernel.org,
-        daniel@iogearbox.net, pjt@google.com, jannh@google.com,
-        haoluo@google.com
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Fri, 6 Nov 2020 11:17:21 +0100
+Paolo Bonzini <pbonzini@redhat.com> wrote:
 
-This series was applied to bpf/bpf-next.git (refs/heads/master):
-
-On Fri,  6 Nov 2020 10:37:39 +0000 you wrote:
-> From: KP Singh <kpsingh@google.com>
+> On 04/11/20 10:35, David Woodhouse wrote:
+> > On Wed, 2020-10-28 at 15:35 +0100, Peter Zijlstra wrote:  
+> >> On Tue, Oct 27, 2020 at 02:39:43PM +0000, David Woodhouse wrote:  
+> >>> From: David Woodhouse <dwmw@amazon.co.uk>
+> >>>
+> >>> This allows an exclusive wait_queue_entry to be added at the head of the
+> >>> queue, instead of the tail as normal. Thus, it gets to consume events
+> >>> first without allowing non-exclusive waiters to be woken at all.
+> >>>
+> >>> The (first) intended use is for KVM IRQFD, which currently has
+> >>> inconsistent behaviour depending on whether posted interrupts are
+> >>> available or not. If they are, KVM will bypass the eventfd completely
+> >>> and deliver interrupts directly to the appropriate vCPU. If not, events
+> >>> are delivered through the eventfd and userspace will receive them when
+> >>> polling on the eventfd.
+> >>>
+> >>> By using add_wait_queue_priority(), KVM will be able to consistently
+> >>> consume events within the kernel without accidentally exposing them
+> >>> to userspace when they're supposed to be bypassed. This, in turn, means
+> >>> that userspace doesn't have to jump through hoops to avoid listening
+> >>> on the erroneously noisy eventfd and injecting duplicate interrupts.
+> >>>
+> >>> Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>  
+> >>
+> >> Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>  
+> > 
+> > Thanks. Paolo, the conclusion was that you were going to take this set
+> > through the KVM tree, wasn't it?
+> >   
 > 
-> Usage of spin locks was not allowed for tracing programs due to
-> insufficient preemption checks. The verifier does not currently prevent
-> LSM programs from using spin locks, but the helpers are not exposed
-> via bpf_lsm_func_proto.
-> 
-> [...]
+> Queued, except for patch 2/3 in the eventfd series which Alex hasn't 
+> reviewed/acked yet.
 
-Here is the summary with links:
-  - [bpf-next,v6,1/9] bpf: Allow LSM programs to use bpf spin locks
-    https://git.kernel.org/bpf/bpf-next/c/9e7a4d9831e8
-  - [bpf-next,v6,2/9] bpf: Implement task local storage
-    https://git.kernel.org/bpf/bpf-next/c/4cf1bc1f1045
-  - [bpf-next,v6,3/9] libbpf: Add support for task local storage
-    https://git.kernel.org/bpf/bpf-next/c/8885274d2259
-  - [bpf-next,v6,4/9] bpftool: Add support for task local storage
-    https://git.kernel.org/bpf/bpf-next/c/864ab0616dcc
-  - [bpf-next,v6,5/9] bpf: Implement get_current_task_btf and RET_PTR_TO_BTF_ID
-    https://git.kernel.org/bpf/bpf-next/c/3ca1032ab7ab
-  - [bpf-next,v6,6/9] bpf: Fix tests for local_storage
-    https://git.kernel.org/bpf/bpf-next/c/f0e5ba0bc481
-  - [bpf-next,v6,7/9] bpf: Update selftests for local_storage to use vmlinux.h
-    https://git.kernel.org/bpf/bpf-next/c/a367efa71b3f
-  - [bpf-next,v6,8/9] bpf: Add tests for task_local_storage
-    https://git.kernel.org/bpf/bpf-next/c/9cde3beeadb3
-  - [bpf-next,v6,9/9] bpf: Exercise syscall operations for inode and sk storage
-    https://git.kernel.org/bpf/bpf-next/c/4170bc6baa54
+There was no vfio patch here, nor mention why it got dropped in v2
+afaict.  Thanks,
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+Alex
 
