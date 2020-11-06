@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53ADD2A9999
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 17:39:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF5342A999C
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 17:39:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727337AbgKFQit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 11:38:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35782 "EHLO
+        id S1727313AbgKFQiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 11:38:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727287AbgKFQir (ORCPT
+        with ESMTP id S1726593AbgKFQis (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 11:38:47 -0500
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAEA2C0613D3
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 08:38:46 -0800 (PST)
-Received: by mail-qv1-xf41.google.com with SMTP id 63so709462qva.7
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 08:38:46 -0800 (PST)
+        Fri, 6 Nov 2020 11:38:48 -0500
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32C87C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 08:38:48 -0800 (PST)
+Received: by mail-qk1-x742.google.com with SMTP id s14so1591579qkg.11
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 08:38:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=marek-ca.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Nz9fkxFdcHJ7ADLc2X+aLLgEbUSgZI45eX7FI+RDIco=;
-        b=YprrwzJHGd5zC+abZoj17nWgMOHXzcGvRcqC+fRwiSUe1n215VgAqZCBZtCmhA2c18
-         lVAh6izQHx3Gok6f9X6hwjH7OemNhVCxoIBH00xFxVbi4wg+v/pOV2geUYl2g9I18yCU
-         Pf9wzt5ZePHnXDN6GXQUuSAHrWtJRLIP5H3g/dFVz2WXaX9TF88rOXR1FidZi4BhStnW
-         RP8ds1UWLtbT2+EX803qrxQpP6WqD9o0pyH9rMgIT81lZvO/Sixw/VsS6yYby+XcugT5
-         rGCLAxN0LjEJRCcI3Dz0nnD25SV96mmVZa+QWamoV6im/LJuv1HFtxmEaZBML9XSBT2h
-         m3Dw==
+        bh=8trkRjP9UFPyJqjxFvhkrNselLfEoUHaVtNBCoJ4XCk=;
+        b=laDTNhhdkAYgGr6Xrud4Lecf7gNqF0snM2UEQZZjGWky4tYPZf0r3voT2a4dED5KIZ
+         cl4pQlYqj6ZgFT7n9Pq4eiXWmZNFws4hQxefJKlftNZEsiS8zzzJN5cqpvrkkYustkYz
+         UmdZvFy9WV7LCDt9qMLfXyfswlMlHY0UD1/Tnbp+mJ8+3fI/JRUWVQh0IROzsfvQoBlV
+         o1aHMzOOV1GDIyxa1NdiC5cHpVh7Idc03JMhHbew9YEA2phGFO9MOG/KeIPk5Sm9dIt8
+         7lo+USi40aetpZWFMU6CvX/+cTRe9g3HzeFt4qYI/TrDdJEBQd5Zv6r4tMICd5nGc1uO
+         MXgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Nz9fkxFdcHJ7ADLc2X+aLLgEbUSgZI45eX7FI+RDIco=;
-        b=lp+sAjx6N2tK+yfzdrsX7ahR270jhf65PxQOu+04+2uA3tuo5TdFzmCsYBFPY6se84
-         VOgNQqrK2N2bVyjs27MSBFd3WVRabv9sh2txVzRsTDqSY+KgiyZ0S3QorTcIY9+BRUPE
-         6a1T+132IsE7KgAKDN+PV6zlEMSe3JrNr8ZGqscG2+C8gQrRcICGljlN19MvBWq27M0M
-         kzHX+QORWD6CKhxDrjRBMT6wZ3JsAXe7B1KEGkU/pTI8BT4FW66YoULkNDSwXWTibaNb
-         g7MzY3dF3yQO4ueQQo803uOpgkUsHl37bMY0/pAVH9eNzxegyCZd5RIp7ARYXH5P8N8z
-         4Q7A==
-X-Gm-Message-State: AOAM533t/6UbPXcGRfNN7ZXhwv1L3cDMWFAGSSs+Mwx5IFMoZM7VVna5
-        5MhdMLKhb9CGs6liiHjT9QbLXQdyJzGmE4CvVW8=
-X-Google-Smtp-Source: ABdhPJwtilSBuJYfYaXlVmxWrU+ttzbHoc/4G/Yq+TmgFp3KyG8KAzxZCHi7nOXjHAXUO9CN42aFMA==
-X-Received: by 2002:ad4:4e84:: with SMTP id dy4mr2478454qvb.47.1604680725952;
-        Fri, 06 Nov 2020 08:38:45 -0800 (PST)
+        bh=8trkRjP9UFPyJqjxFvhkrNselLfEoUHaVtNBCoJ4XCk=;
+        b=VgzBsXKhuuTEZmO6UcszHvHP0c8IohE3VxPZk6lY2kqIx/s9AaQWOjN+sNpdl54UuA
+         C6zAlSW60O24rlUnmZK/0zBvJMewGZGtrkhEH0E6jLzCMj7uQz6mRYjqGAXkhEoxFeJP
+         OJa0tAvss9TlZNPgYdD/xx7CE0PfqGbjYTjjm0Nt2qUQXQE0fwOT/2BJIzddY69KHax7
+         FRRdJ2n2+5jsbzYK3361RA93ritkVvYy3MCDZHznqB9aNSR0yiuRMB3ozeE+YD3FjgrI
+         ppL7qO+yo+sQy+P8vpF21oRig69hItxVdxXfji6dpWBsyfg7/dUURvT07tsEwj4ieAOD
+         fRwA==
+X-Gm-Message-State: AOAM531GZ16Lnuu8TG+XGT9P4rQ+3bL/OmrQ2fvhGq/Ds7u787CfocOo
+        mwxqR+b+BxyoL4wtuPjok9QNbpwtMDUMckVmR20=
+X-Google-Smtp-Source: ABdhPJxIHhdp/AKI2KvUFtqY0ovg2l83Re+m5GEneL6YbUxUROsQNG8iXGSoza/7wjV/dd2t5WoU3w==
+X-Received: by 2002:a37:7304:: with SMTP id o4mr2450129qkc.351.1604680727479;
+        Fri, 06 Nov 2020 08:38:47 -0800 (PST)
 Received: from localhost.localdomain (modemcable068.184-131-66.mc.videotron.ca. [66.131.184.68])
-        by smtp.gmail.com with ESMTPSA id s3sm860000qkj.27.2020.11.06.08.38.44
+        by smtp.gmail.com with ESMTPSA id s3sm860000qkj.27.2020.11.06.08.38.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Nov 2020 08:38:45 -0800 (PST)
+        Fri, 06 Nov 2020 08:38:46 -0800 (PST)
 From:   Jonathan Marek <jonathan@marek.ca>
 To:     freedreno@lists.freedesktop.org
 Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
@@ -56,9 +56,9 @@ Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
         linux-arm-msm@vger.kernel.org (open list:DRM DRIVER FOR MSM ADRENO GPU),
         dri-devel@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
         GPU), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2 4/5] drm/msm: add DRM_MSM_GEM_SYNC_CACHE for non-coherent cache maintenance
-Date:   Fri,  6 Nov 2020 11:34:33 -0500
-Message-Id: <20201106163437.30836-5-jonathan@marek.ca>
+Subject: [PATCH v2 5/5] drm/msm: bump up the uapi version
+Date:   Fri,  6 Nov 2020 11:34:34 -0500
+Message-Id: <20201106163437.30836-6-jonathan@marek.ca>
 X-Mailer: git-send-email 2.26.1
 In-Reply-To: <20201106163437.30836-1-jonathan@marek.ca>
 References: <20201106163437.30836-1-jonathan@marek.ca>
@@ -68,149 +68,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This makes it possible to use the non-coherent cached MSM_BO_CACHED mode,
-which otherwise doesn't provide any method for cleaning/invalidating the
-cache to sync with the device.
+Increase the minor version to indicate the presence of new features.
 
 Signed-off-by: Jonathan Marek <jonathan@marek.ca>
 ---
- drivers/gpu/drm/msm/msm_drv.c | 21 +++++++++++++++++++++
- drivers/gpu/drm/msm/msm_drv.h |  2 ++
- drivers/gpu/drm/msm/msm_gem.c | 23 +++++++++++++++++++++++
- include/uapi/drm/msm_drm.h    | 20 ++++++++++++++++++++
- 4 files changed, 66 insertions(+)
+ drivers/gpu/drm/msm/msm_drv.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
-index bae48afca82e..3f17acdf6594 100644
+index 3f17acdf6594..7230d3c0eee5 100644
 --- a/drivers/gpu/drm/msm/msm_drv.c
 +++ b/drivers/gpu/drm/msm/msm_drv.c
-@@ -959,6 +959,26 @@ static int msm_ioctl_submitqueue_close(struct drm_device *dev, void *data,
- 	return msm_submitqueue_remove(file->driver_priv, id);
- }
+@@ -39,9 +39,10 @@
+  *           GEM object's debug name
+  * - 1.5.0 - Add SUBMITQUERY_QUERY ioctl
+  * - 1.6.0 - Syncobj support
++ * - 1.7.0 - MSM_BO_CACHED_COHERENT and DRM_IOCTL_MSM_GEM_SYNC_CACHE
+  */
+ #define MSM_VERSION_MAJOR	1
+-#define MSM_VERSION_MINOR	6
++#define MSM_VERSION_MINOR	7
+ #define MSM_VERSION_PATCHLEVEL	0
  
-+static int msm_ioctl_gem_sync_cache(struct drm_device *dev, void *data,
-+		struct drm_file *file)
-+{
-+	struct drm_msm_gem_sync_cache *args = data;
-+	struct drm_gem_object *obj;
-+
-+	if (args->flags & ~MSM_GEM_SYNC_CACHE_FLAGS)
-+		return -EINVAL;
-+
-+	obj = drm_gem_object_lookup(file, args->handle);
-+	if (!obj)
-+		return -ENOENT;
-+
-+	msm_gem_sync_cache(obj, args->flags, args->offset, args->end);
-+
-+	drm_gem_object_put(obj);
-+
-+	return 0;
-+}
-+
- static const struct drm_ioctl_desc msm_ioctls[] = {
- 	DRM_IOCTL_DEF_DRV(MSM_GET_PARAM,    msm_ioctl_get_param,    DRM_RENDER_ALLOW),
- 	DRM_IOCTL_DEF_DRV(MSM_GEM_NEW,      msm_ioctl_gem_new,      DRM_RENDER_ALLOW),
-@@ -971,6 +991,7 @@ static const struct drm_ioctl_desc msm_ioctls[] = {
- 	DRM_IOCTL_DEF_DRV(MSM_SUBMITQUEUE_NEW,   msm_ioctl_submitqueue_new,   DRM_RENDER_ALLOW),
- 	DRM_IOCTL_DEF_DRV(MSM_SUBMITQUEUE_CLOSE, msm_ioctl_submitqueue_close, DRM_RENDER_ALLOW),
- 	DRM_IOCTL_DEF_DRV(MSM_SUBMITQUEUE_QUERY, msm_ioctl_submitqueue_query, DRM_RENDER_ALLOW),
-+	DRM_IOCTL_DEF_DRV(MSM_GEM_SYNC_CACHE,    msm_ioctl_gem_sync_cache,    DRM_RENDER_ALLOW),
- };
- 
- static const struct vm_operations_struct vm_ops = {
-diff --git a/drivers/gpu/drm/msm/msm_drv.h b/drivers/gpu/drm/msm/msm_drv.h
-index 22ebecb28349..f170f843010e 100644
---- a/drivers/gpu/drm/msm/msm_drv.h
-+++ b/drivers/gpu/drm/msm/msm_drv.h
-@@ -318,6 +318,8 @@ void msm_gem_active_get(struct drm_gem_object *obj, struct msm_gpu *gpu);
- void msm_gem_active_put(struct drm_gem_object *obj);
- int msm_gem_cpu_prep(struct drm_gem_object *obj, uint32_t op, ktime_t *timeout);
- int msm_gem_cpu_fini(struct drm_gem_object *obj);
-+void msm_gem_sync_cache(struct drm_gem_object *obj, uint32_t flags,
-+		size_t range_start, size_t range_end);
- void msm_gem_free_object(struct drm_gem_object *obj);
- int msm_gem_new_handle(struct drm_device *dev, struct drm_file *file,
- 		uint32_t size, uint32_t flags, uint32_t *handle, char *name);
-diff --git a/drivers/gpu/drm/msm/msm_gem.c b/drivers/gpu/drm/msm/msm_gem.c
-index 3d8254b5de16..039738696f9a 100644
---- a/drivers/gpu/drm/msm/msm_gem.c
-+++ b/drivers/gpu/drm/msm/msm_gem.c
-@@ -797,6 +797,29 @@ int msm_gem_cpu_fini(struct drm_gem_object *obj)
- 	return 0;
- }
- 
-+void msm_gem_sync_cache(struct drm_gem_object *obj, uint32_t flags,
-+		size_t range_start, size_t range_end)
-+{
-+	struct msm_gem_object *msm_obj = to_msm_bo(obj);
-+	struct device *dev = msm_obj->base.dev->dev;
-+
-+	/* exit early if get_pages() hasn't been called yet */
-+	if (!msm_obj->pages)
-+		return;
-+
-+	/* TODO: sync only the specified range */
-+
-+	if (flags & MSM_GEM_SYNC_FOR_DEVICE) {
-+		dma_sync_sg_for_device(dev, msm_obj->sgt->sgl,
-+				msm_obj->sgt->nents, DMA_TO_DEVICE);
-+	}
-+
-+	if (flags & MSM_GEM_SYNC_FOR_CPU) {
-+		dma_sync_sg_for_cpu(dev, msm_obj->sgt->sgl,
-+				msm_obj->sgt->nents, DMA_FROM_DEVICE);
-+	}
-+}
-+
- #ifdef CONFIG_DEBUG_FS
- static void describe_fence(struct dma_fence *fence, const char *type,
- 		struct seq_file *m)
-diff --git a/include/uapi/drm/msm_drm.h b/include/uapi/drm/msm_drm.h
-index 474497e8743a..c8288f328528 100644
---- a/include/uapi/drm/msm_drm.h
-+++ b/include/uapi/drm/msm_drm.h
-@@ -319,6 +319,24 @@ struct drm_msm_submitqueue_query {
- 	__u32 pad;
- };
- 
-+/*
-+ * Host cache maintenance (relevant for MSM_BO_CACHED)
-+ * driver may both clean/invalidate (flush) for clean
-+ */
-+
-+#define MSM_GEM_SYNC_FOR_DEVICE		0x1
-+#define MSM_GEM_SYNC_FOR_CPU		0x2
-+
-+#define MSM_GEM_SYNC_CACHE_FLAGS	(MSM_GEM_SYNC_FOR_DEVICE | \
-+					 MSM_GEM_SYNC_FOR_CPU)
-+
-+struct drm_msm_gem_sync_cache {
-+	__u32 handle;
-+	__u32 flags;
-+	__u64 offset;
-+	__u64 end;      /* offset + size */
-+};
-+
- #define DRM_MSM_GET_PARAM              0x00
- /* placeholder:
- #define DRM_MSM_SET_PARAM              0x01
-@@ -336,6 +354,7 @@ struct drm_msm_submitqueue_query {
- #define DRM_MSM_SUBMITQUEUE_NEW        0x0A
- #define DRM_MSM_SUBMITQUEUE_CLOSE      0x0B
- #define DRM_MSM_SUBMITQUEUE_QUERY      0x0C
-+#define DRM_MSM_GEM_SYNC_CACHE         0x0D
- 
- #define DRM_IOCTL_MSM_GET_PARAM        DRM_IOWR(DRM_COMMAND_BASE + DRM_MSM_GET_PARAM, struct drm_msm_param)
- #define DRM_IOCTL_MSM_GEM_NEW          DRM_IOWR(DRM_COMMAND_BASE + DRM_MSM_GEM_NEW, struct drm_msm_gem_new)
-@@ -348,6 +367,7 @@ struct drm_msm_submitqueue_query {
- #define DRM_IOCTL_MSM_SUBMITQUEUE_NEW    DRM_IOWR(DRM_COMMAND_BASE + DRM_MSM_SUBMITQUEUE_NEW, struct drm_msm_submitqueue)
- #define DRM_IOCTL_MSM_SUBMITQUEUE_CLOSE  DRM_IOW (DRM_COMMAND_BASE + DRM_MSM_SUBMITQUEUE_CLOSE, __u32)
- #define DRM_IOCTL_MSM_SUBMITQUEUE_QUERY  DRM_IOW (DRM_COMMAND_BASE + DRM_MSM_SUBMITQUEUE_QUERY, struct drm_msm_submitqueue_query)
-+#define DRM_IOCTL_MSM_GEM_SYNC_CACHE     DRM_IOW (DRM_COMMAND_BASE + DRM_MSM_GEM_SYNC_CACHE, struct drm_msm_gem_sync_cache)
- 
- #if defined(__cplusplus)
- }
+ static const struct drm_mode_config_funcs mode_config_funcs = {
 -- 
 2.26.1
 
