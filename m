@@ -2,350 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC5702A8D3A
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 03:57:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FC0F2A8D41
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 03:57:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726016AbgKFC4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 21:56:51 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:52072 "EHLO m42-4.mailgun.net"
+        id S1726063AbgKFC5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 21:57:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44792 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725924AbgKFC4u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 21:56:50 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1604631410; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=9MQz0tAGsEZJw9iqvJvbEiXLV/HhkINlrjIrKI1wD7U=; b=kxz1E9gub3e8a7xsoW0yr6mg59QqbfMZwIGCN4EUYZHCgMoKzzsW8CvOJgnWUMlyOAxLEx8K
- KNc5c0JGRDXJUsyVU2l1cdQwicQ6mE5x5oBNEp/sEhMYU0Esf4D+nM/irBGh11ceeA78whqr
- FmsJjHNLBn+fU8X/qiDDaKBv7Gc=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 5fa4bb6ea39cfb5f6caab957 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 06 Nov 2020 02:56:46
- GMT
-Sender: psodagud=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 9906EC433CB; Fri,  6 Nov 2020 02:56:45 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from th-lint-038.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        id S1726045AbgKFC5J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 21:57:09 -0500
+Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        (Authenticated sender: psodagud)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 19C5FC433CB;
-        Fri,  6 Nov 2020 02:56:42 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 19C5FC433CB
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=psodagud@codeaurora.org
-From:   Prasad Sodagudi <psodagud@codeaurora.org>
-To:     rostedt@goodmis.org, mingo@redhat.com, keescook@chromium.org,
-        catalin.marinas@arm.com, saiprakash.ranjan@codeaurora.org,
-        will@kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, gregkh@linuxfoundation.org,
-        anton@enomsg.org, arnd@arndb.de, ccross@android.com,
-        jbaron@akamai.com, jim.cromie@gmail.com, joe@perches.com,
-        joel@joelfernandes.org, Prasad Sodagudi <psodagud@codeaurora.org>
-Subject: [PATCH v2] tracing: Add register read and write tracing support
-Date:   Thu,  5 Nov 2020 18:56:26 -0800
-Message-Id: <1604631386-178312-2-git-send-email-psodagud@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1604631386-178312-1-git-send-email-psodagud@codeaurora.org>
-References: <1604631386-178312-1-git-send-email-psodagud@codeaurora.org>
+        by mail.kernel.org (Postfix) with ESMTPSA id BB80B20885;
+        Fri,  6 Nov 2020 02:57:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604631428;
+        bh=9rQRIBsHfZeDxfMqnHjDf3pUoaqjw7mhb/AQ10vMDoY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=TF7x00ZgQVa4HaGnSQPmDiTyB8y+VIQoCzJV3YdhsaaRLyFkTM9ISom0fByffhcI1
+         pBZBzMw9pSGGggy6eUaKobaD6IWzYqTcZEfnah5VBBFPN+U/8aODKos2zvTkGnE6/X
+         iTrY+Q7WCTabdB4kIhBAdrrlNJU9vVaKgMtfmRRU=
+Received: by mail-lj1-f177.google.com with SMTP id l10so3780288lji.4;
+        Thu, 05 Nov 2020 18:57:07 -0800 (PST)
+X-Gm-Message-State: AOAM533iAYBPjJ1o+S8PD8TvKFR0STdCkW6sNlLLWWLr3SkramzaC2P8
+        Hh/ACuWjlhLVirscn7d9U1CsIadixfR7rkGUyHA=
+X-Google-Smtp-Source: ABdhPJyS549mSsbY71592hwkiYhz+BcFJErkk2ka5vmMUXvgndKh9GeAWhQ5JZMC4w2XtW9dc3WPYMqmypHc7huC/0s=
+X-Received: by 2002:a2e:8816:: with SMTP id x22mr1814521ljh.377.1604631425962;
+ Thu, 05 Nov 2020 18:57:05 -0800 (PST)
+MIME-Version: 1.0
+References: <1602918377-23573-6-git-send-email-guoren@kernel.org> <mhng-7d7afc22-b857-4f64-868e-0c7aad7f8f6a@palmerdabbelt-glaptop1>
+In-Reply-To: <mhng-7d7afc22-b857-4f64-868e-0c7aad7f8f6a@palmerdabbelt-glaptop1>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Fri, 6 Nov 2020 10:56:54 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTSWubMT3hk4pMg5my9=6G+U+8+Wx_Hzud+rxLgn6Ah6kw@mail.gmail.com>
+Message-ID: <CAJF2gTSWubMT3hk4pMg5my9=6G+U+8+Wx_Hzud+rxLgn6Ah6kw@mail.gmail.com>
+Subject: Re: [PATCH v4 5/9] riscv: Add kprobes supported
+To:     Palmer Dabbelt <palmerdabbelt@google.com>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Alan Kao <alankao@andestech.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Anup Patel <anup@brainfault.org>, linux-csky@vger.kernel.org,
+        Greentime Hu <greentime.hu@sifive.com>,
+        Zong Li <zong.li@sifive.com>,
+        =?UTF-8?Q?Patrick_St=C3=A4hlin?= <me@packi.ch>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Bjorn Topel <bjorn.topel@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add register read/write operations tracing support.
-ftrace events helps to trace register read and write
-location details of memory mapped IO registers.
-These trace logs helps to debug un clocked access
-of peripherals.
+On Fri, Nov 6, 2020 at 9:02 AM Palmer Dabbelt <palmerdabbelt@google.com> wr=
+ote:
+>
+> On Sat, 17 Oct 2020 00:06:13 PDT (-0700), guoren@kernel.org wrote:
+> > From: Guo Ren <guoren@linux.alibaba.com>
+> >
+> > This patch enables "kprobe & kretprobe" to work with ftrace
+> > interface. It utilized software breakpoint as single-step
+> > mechanism.
+> >
+> > Some instructions which can't be single-step executed must be
+> > simulated in kernel execution slot, such as: branch, jal, auipc,
+> > la ...
+> >
+> > Some instructions should be rejected for probing and we use a
+> > blacklist to filter, such as: ecall, ebreak, ...
+> >
+> > We use ebreak & c.ebreak to replace origin instruction and the
+> > kprobe handler prepares an executable memory slot for out-of-line
+> > execution with a copy of the original instruction being probed.
+> > In execution slot we add ebreak behind original instruction to
+> > simulate a single-setp mechanism.
+> >
+> > The patch is based on packi's work [1] and csky's work [2].
+> >  - The kprobes_trampoline.S is all from packi's patch
+> >  - The single-step mechanism is new designed for riscv without hw
+> >    single-step trap
+> >  - The simulation codes are from csky
+> >  - Frankly, all codes refer to other archs' implementation
+> >
+> >  [1] https://lore.kernel.org/linux-riscv/20181113195804.22825-1-me@pack=
+i.ch/
+> >  [2] https://lore.kernel.org/linux-csky/20200403044150.20562-9-guoren@k=
+ernel.org/
+> >
+> > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> > Co-Developed-by: Patrick St=C3=A4hlin <me@packi.ch>
+>
+> Checkpatch says
+>
+>     WARNING: 'Co-developed-by:' is the preferred signature form
+>     #108:
+>     Co-Developed-by: Patrick St=C3=A4hlin <me@packi.ch>
+>
+>     WARNING: Co-developed-by: must be immediately followed by Signed-off-=
+by:
+>     #108:
+>     Co-Developed-by: Patrick St=C3=A4hlin <me@packi.ch>
+>     Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+>
+> There's some other checkpatch warnings throughout the patch set, but this=
+ is
+> one I'm not supposed to fix up.  Can one of you re-post the patches with =
+the
+> correct DCO?
+Ok, I'll fix it up in V5 and rebase 5.10-rc2
 
-Signed-off-by: Prasad Sodagudi <psodagud@codeaurora.org>
----
- arch/arm64/include/asm/io.h    |  9 ++++++++
- arch/arm64/kernel/image-vars.h |  8 +++++++
- include/linux/iorw.h           | 38 +++++++++++++++++++++++++++++++
- include/trace/events/rwio.h    | 51 ++++++++++++++++++++++++++++++++++++++++++
- kernel/trace/Kconfig           | 11 +++++++++
- kernel/trace/Makefile          |  1 +
- kernel/trace/trace_readwrite.c | 31 +++++++++++++++++++++++++
- 7 files changed, 149 insertions(+)
- create mode 100644 include/linux/iorw.h
- create mode 100644 include/trace/events/rwio.h
- create mode 100644 kernel/trace/trace_readwrite.c
+--=20
+Best Regards
+ Guo Ren
 
-diff --git a/arch/arm64/include/asm/io.h b/arch/arm64/include/asm/io.h
-index fd172c4..bcfc65c 100644
---- a/arch/arm64/include/asm/io.h
-+++ b/arch/arm64/include/asm/io.h
-@@ -9,6 +9,7 @@
- #define __ASM_IO_H
- 
- #include <linux/types.h>
-+#include <linux/iorw.h>
- #include <linux/pgtable.h>
- 
- #include <asm/byteorder.h>
-@@ -24,24 +25,28 @@
- #define __raw_writeb __raw_writeb
- static inline void __raw_writeb(u8 val, volatile void __iomem *addr)
- {
-+	log_write_io(addr);
- 	asm volatile("strb %w0, [%1]" : : "rZ" (val), "r" (addr));
- }
- 
- #define __raw_writew __raw_writew
- static inline void __raw_writew(u16 val, volatile void __iomem *addr)
- {
-+	log_write_io(addr);
- 	asm volatile("strh %w0, [%1]" : : "rZ" (val), "r" (addr));
- }
- 
- #define __raw_writel __raw_writel
- static __always_inline void __raw_writel(u32 val, volatile void __iomem *addr)
- {
-+	log_write_io(addr);
- 	asm volatile("str %w0, [%1]" : : "rZ" (val), "r" (addr));
- }
- 
- #define __raw_writeq __raw_writeq
- static inline void __raw_writeq(u64 val, volatile void __iomem *addr)
- {
-+	log_write_io(addr);
- 	asm volatile("str %x0, [%1]" : : "rZ" (val), "r" (addr));
- }
- 
-@@ -49,6 +54,7 @@ static inline void __raw_writeq(u64 val, volatile void __iomem *addr)
- static inline u8 __raw_readb(const volatile void __iomem *addr)
- {
- 	u8 val;
-+	log_read_io(addr);
- 	asm volatile(ALTERNATIVE("ldrb %w0, [%1]",
- 				 "ldarb %w0, [%1]",
- 				 ARM64_WORKAROUND_DEVICE_LOAD_ACQUIRE)
-@@ -61,6 +67,7 @@ static inline u16 __raw_readw(const volatile void __iomem *addr)
- {
- 	u16 val;
- 
-+	log_read_io(addr);
- 	asm volatile(ALTERNATIVE("ldrh %w0, [%1]",
- 				 "ldarh %w0, [%1]",
- 				 ARM64_WORKAROUND_DEVICE_LOAD_ACQUIRE)
-@@ -72,6 +79,7 @@ static inline u16 __raw_readw(const volatile void __iomem *addr)
- static __always_inline u32 __raw_readl(const volatile void __iomem *addr)
- {
- 	u32 val;
-+	log_read_io(addr);
- 	asm volatile(ALTERNATIVE("ldr %w0, [%1]",
- 				 "ldar %w0, [%1]",
- 				 ARM64_WORKAROUND_DEVICE_LOAD_ACQUIRE)
-@@ -83,6 +91,7 @@ static __always_inline u32 __raw_readl(const volatile void __iomem *addr)
- static inline u64 __raw_readq(const volatile void __iomem *addr)
- {
- 	u64 val;
-+	log_read_io(addr);
- 	asm volatile(ALTERNATIVE("ldr %0, [%1]",
- 				 "ldar %0, [%1]",
- 				 ARM64_WORKAROUND_DEVICE_LOAD_ACQUIRE)
-diff --git a/arch/arm64/kernel/image-vars.h b/arch/arm64/kernel/image-vars.h
-index c615b28..6a70d91 100644
---- a/arch/arm64/kernel/image-vars.h
-+++ b/arch/arm64/kernel/image-vars.h
-@@ -103,6 +103,14 @@ KVM_NVHE_ALIAS(gic_nonsecure_priorities);
- KVM_NVHE_ALIAS(__start___kvm_ex_table);
- KVM_NVHE_ALIAS(__stop___kvm_ex_table);
- 
-+/* raw_read/write logging */
-+#if IS_ENABLED(CONFIG_TRACE_RW)
-+KVM_NVHE_ALIAS(__log_write_io);
-+KVM_NVHE_ALIAS(__log_read_io);
-+KVM_NVHE_ALIAS(__tracepoint_rwio_read);
-+KVM_NVHE_ALIAS(__tracepoint_rwio_write);
-+#endif
-+
- #endif /* CONFIG_KVM */
- 
- #endif /* __ARM64_KERNEL_IMAGE_VARS_H */
-diff --git a/include/linux/iorw.h b/include/linux/iorw.h
-new file mode 100644
-index 0000000..6b571b4
---- /dev/null
-+++ b/include/linux/iorw.h
-@@ -0,0 +1,38 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ *
-+ */
-+#ifndef __LOG_IORW_H__
-+#define __LOG_IORW_H__
-+
-+#include <linux/types.h>
-+#include <linux/atomic.h>
-+#include <linux/tracepoint-defs.h>
-+
-+#if IS_ENABLED(CONFIG_TRACE_RW)
-+DECLARE_TRACEPOINT(rwio_write);
-+DECLARE_TRACEPOINT(rwio_read);
-+
-+void __log_write_io(volatile void __iomem *addr);
-+void __log_read_io(const volatile void __iomem *addr);
-+
-+#define log_write_io(addr)			\
-+do {						\
-+	if (tracepoint_enabled(rwio_write))	\
-+		__log_write_io(addr);		\
-+} while (0)
-+
-+#define log_read_io(addr)			\
-+do {						\
-+	if (tracepoint_enabled(rwio_read))	\
-+		__log_read_io(addr);		\
-+} while (0)
-+
-+#else
-+static inline void log_write_io(volatile void __iomem *addr)
-+{ }
-+static inline void log_read_io(const volatile void __iomem *addr)
-+{ }
-+#endif /* CONFIG_TRACE_RW */
-+
-+#endif /* __LOG_IORW_H__  */
-diff --git a/include/trace/events/rwio.h b/include/trace/events/rwio.h
-new file mode 100644
-index 0000000..b26bcaf
---- /dev/null
-+++ b/include/trace/events/rwio.h
-@@ -0,0 +1,51 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+
-+#undef TRACE_SYSTEM
-+#define TRACE_SYSTEM rwio
-+
-+#if !defined(_TRACE_RWIO_H) || defined(TRACE_HEADER_MULTI_READ)
-+#define _TRACE_RWIO_H
-+
-+#include <linux/tracepoint.h>
-+
-+TRACE_EVENT(rwio_write,
-+
-+	TP_PROTO(unsigned long fn, volatile void __iomem *addr),
-+
-+	TP_ARGS(fn, addr),
-+
-+	TP_STRUCT__entry(
-+		__field(u64, fn)
-+		__field(u64, addr)
-+	),
-+
-+	TP_fast_assign(
-+		__entry->fn = fn;
-+		__entry->addr = (u64)addr;
-+	),
-+
-+	TP_printk("%pS write addr=%p\n", __entry->fn, __entry->addr)
-+);
-+
-+TRACE_EVENT(rwio_read,
-+
-+	TP_PROTO(unsigned long fn, const volatile void __iomem *addr),
-+
-+	TP_ARGS(fn, addr),
-+
-+	TP_STRUCT__entry(
-+		__field(u64, fn)
-+		__field(u64, addr)
-+	),
-+
-+	TP_fast_assign(
-+		__entry->fn = fn;
-+		__entry->addr = (u64)addr;
-+	),
-+
-+	TP_printk("%pS read addr=%p\n", __entry->fn, __entry->addr)
-+);
-+
-+#endif /* _TRACE_PREEMPTIRQ_H */
-+
-+#include <trace/define_trace.h>
-diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
-index a4020c0..f0408f9 100644
---- a/kernel/trace/Kconfig
-+++ b/kernel/trace/Kconfig
-@@ -81,6 +81,17 @@ config RING_BUFFER_ALLOW_SWAP
- 	 Allow the use of ring_buffer_swap_cpu.
- 	 Adds a very slight overhead to tracing when enabled.
- 
-+config TRACE_RW
-+	bool "Register read/write tracing"
-+	select TRACING
-+	depends on ARM64
-+	help
-+	  Create tracepoints for IO read/write operations, so that
-+	  modules can register hooks to use them.
-+
-+	  Disable this option, when there is support from corresponding
-+	  architecture.
-+
- config PREEMPTIRQ_TRACEPOINTS
- 	bool
- 	depends on TRACE_PREEMPT_TOGGLE || TRACE_IRQFLAGS
-diff --git a/kernel/trace/Makefile b/kernel/trace/Makefile
-index e153be3..69edfe50 100644
---- a/kernel/trace/Makefile
-+++ b/kernel/trace/Makefile
-@@ -92,6 +92,7 @@ obj-$(CONFIG_DYNAMIC_EVENTS) += trace_dynevent.o
- obj-$(CONFIG_PROBE_EVENTS) += trace_probe.o
- obj-$(CONFIG_UPROBE_EVENTS) += trace_uprobe.o
- obj-$(CONFIG_BOOTTIME_TRACING) += trace_boot.o
-+obj-$(CONFIG_TRACE_RW) += trace_readwrite.o
- 
- obj-$(CONFIG_TRACEPOINT_BENCHMARK) += trace_benchmark.o
- 
-diff --git a/kernel/trace/trace_readwrite.c b/kernel/trace/trace_readwrite.c
-new file mode 100644
-index 0000000..d107134
---- /dev/null
-+++ b/kernel/trace/trace_readwrite.c
-@@ -0,0 +1,31 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Register read and write tracepoints
-+ *
-+ * Copyright (c) 2020, The Linux Foundation. All rights reserved.
-+ */
-+
-+#include <linux/kallsyms.h>
-+#include <linux/uaccess.h>
-+#include <linux/module.h>
-+#include <linux/ftrace.h>
-+#include <linux/iorw.h>
-+
-+#define CREATE_TRACE_POINTS
-+#include <trace/events/rwio.h>
-+
-+#ifdef CONFIG_TRACEPOINTS
-+void __log_write_io(volatile void __iomem *addr)
-+{
-+	trace_rwio_write(CALLER_ADDR0, addr);
-+}
-+EXPORT_SYMBOL_GPL(__log_write_io);
-+EXPORT_TRACEPOINT_SYMBOL_GPL(rwio_write);
-+
-+void __log_read_io(const volatile void __iomem *addr)
-+{
-+	trace_rwio_read(CALLER_ADDR0, addr);
-+}
-+EXPORT_SYMBOL_GPL(__log_read_io);
-+EXPORT_TRACEPOINT_SYMBOL_GPL(rwio_read);
-+#endif
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+ML: https://lore.kernel.org/linux-csky/
