@@ -2,160 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 335BC2A8CA0
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 03:19:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E22F22A8CA5
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 03:23:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725928AbgKFCTX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 21:19:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42734 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725828AbgKFCTX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 21:19:23 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E538FC0613D3
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 18:19:22 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id z24so2768657pgk.3
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 18:19:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ThqwPvqZX83KmgF5BY1PefVZt9YcjzqlfmLEG4bvmlw=;
-        b=FvHlQ+YfMPFzoBk5hdYiEqNTe/RaxVCprl/rfo+96/QbnAIiVe/LFGJLjRL065U/f0
-         v8t5kiTCi6Lz4CAFs30wgSyP1VYz+SpeCS/NzwdNM8WHXXSwpfs1E0OistQuyv6R95PS
-         0gsTngclvE0sgyXAN7tSMxE1Wv8PhBBY94yT4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ThqwPvqZX83KmgF5BY1PefVZt9YcjzqlfmLEG4bvmlw=;
-        b=A0SNJsJWPQrCEo+JOcFOlP0IZ8+RB7NdqLH92V+wbXtMAw0D2aN/TLMAmD3G7gt6XM
-         ePW3vY3JpTLHiS07g8GyxclrOs20SGG9d+Dk4A66HQAfcSNwyBCdaDq88paZUgDxw6tC
-         5i6+xgpsCVaHSW4UGE+9MtOHvO98Hb+kmh2bTm9OqNmJTcjE2rPiqXT2jA8V1k+h0Leb
-         NxcffsSwe8rkkrQuPMCmcggGr4D2gS7U1oCaIa7WkxtEOAAlYpkVHflLSbPzJTqZHWFh
-         rqUl+/HOMGNjgBLEOdquHsGwnsZJSnM4YmDd/OcL1vzTGBDzupNxtQ2HSl3HHfRuvylV
-         g66w==
-X-Gm-Message-State: AOAM533yAInUBQ1P1aIP31xE2WPGTE5V7n1YwYwdUDwbiRtAuX8rZ88n
-        vM3UrwxEda/EkeNi4zuvslOwMg==
-X-Google-Smtp-Source: ABdhPJwfRrkfR5rLKajUvQCxuRLHYyRA8tcQYEOUxq4EZD0w2cOHWxAPPzuDD2dndthCxI47EThnrA==
-X-Received: by 2002:a17:90a:c7c3:: with SMTP id gf3mr5367076pjb.140.1604629162354;
-        Thu, 05 Nov 2020 18:19:22 -0800 (PST)
-Received: from localhost ([2620:15c:202:1:f693:9fff:fef4:e70a])
-        by smtp.gmail.com with ESMTPSA id j13sm4045356pfd.97.2020.11.05.18.19.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Nov 2020 18:19:21 -0800 (PST)
-Date:   Thu, 5 Nov 2020 18:19:20 -0800
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 2/2] arm64: dts: qcom: sc7180-trogdor: Make pp3300_a
- the default supply for pp3300_hub
-Message-ID: <20201106021920.GB4128558@google.com>
-References: <20201105163724.v2.1.I5a75056d573808f40fed22ab7d28ea6be5819f84@changeid>
- <20201105163724.v2.2.I0ed4abdd2b2916fbedf76be254bc3457fb8b9655@changeid>
- <CAD=FV=Xi-Fiay983L4WWVA07WWZvL0DSK4cazBwb9B3brVgM-g@mail.gmail.com>
+        id S1725882AbgKFCXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 21:23:24 -0500
+Received: from mga07.intel.com ([134.134.136.100]:20920 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725828AbgKFCXX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 21:23:23 -0500
+IronPort-SDR: XiJz9OZVGXukmoTT6vU0i5yCe5bmamwSY/zRo1vey51bwomduOatjt4z8GBIubtp8kZlMUE85y
+ 6t10ma0KUh6A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9796"; a="233658512"
+X-IronPort-AV: E=Sophos;i="5.77,454,1596524400"; 
+   d="scan'208";a="233658512"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2020 18:23:22 -0800
+IronPort-SDR: abElKfMayXFvJnv/31fO6QU2s132PpJoWelRiIkTFyjbuf3hIe8JWfh5iGXA1lTlJKXMkggrAP
+ dwg6ZuKSemjA==
+X-IronPort-AV: E=Sophos;i="5.77,454,1596524400"; 
+   d="scan'208";a="364549657"
+Received: from rhweight-mobl2.amr.corp.intel.com (HELO rhweight-mobl2.ra.intel.com) ([10.254.65.158])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2020 18:23:21 -0800
+From:   Russ Weight <russell.h.weight@intel.com>
+To:     mdf@kernel.org, lee.jones@linaro.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     trix@redhat.com, lgoncalv@redhat.com, yilun.xu@intel.com,
+        hao.wu@intel.com, matthew.gerlach@intel.com,
+        Russ Weight <russell.h.weight@intel.com>
+Subject: [PATCH v4 0/6] Intel MAX10 BMC Secure Update Driver
+Date:   Thu,  5 Nov 2020 18:23:13 -0800
+Message-Id: <20201106022319.13991-1-russell.h.weight@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAD=FV=Xi-Fiay983L4WWVA07WWZvL0DSK4cazBwb9B3brVgM-g@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 05:05:38PM -0800, Doug Anderson wrote:
-> Hi,
-> 
-> On Thu, Nov 5, 2020 at 4:37 PM Matthias Kaehlcke <mka@chromium.org> wrote:
-> >
-> > diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-r1.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-r1.dts
-> > index 0a281c24841c..6603f2102233 100644
-> > --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-r1.dts
-> > +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-r1.dts
-> > @@ -58,10 +58,23 @@ ap_ts: touchscreen@10 {
-> >         };
-> >  };
-> >
-> > +&pp3300_hub {
-> > +       /* pp3300_l7c is used to power the USB hub */
-> > +       /delete-property/regulator-always-on;
-> > +};
-> > +
-> > +&pp3300_l7c {
-> > +       regulator-always-on;
-> 
-> Personally I always end up pairing "always-on" and "boot-on", but that
-> might just be superstition from many kernel versions ago when there
-> were weird quirks.  The way you have it now you will sometimes have
-> "boot-on" but not "always-on".  Probably what you have is fine,
-> though.
+The Intel MAX10 BMC Secure Update driver instantiates the FPGA
+Security Manager class driver and provides the callback functions
+required to support secure updates on Intel n3000 PAC devices.
+This driver is implemented as a sub-driver of the Intel MAX10 BMC
+mfd driver. Future instances of the MAX10 BMC will support other
+devices as well (e.g. d5005) and this same MAX10 BMC Secure
+Update driver will receive modifications to support that device.
 
-You are right, it makes a certain sense to have them paired, I'll change it
-even though it leads to a few more entries.
+This driver interacts with the HW secure update engine of the
+BMC in order to transfer new FPGA and BMC images to FLASH so
+that they will be automatically loaded when the FPGA card reboots.
+Security is enforced by hardware and firmware. The MAX10 BMC
+Secure Update driver interacts with the firmware to initiate
+an update, pass in the necessary data, and collect status on
+the update.
 
-> > +};
-> > +
-> >  &sdhc_2 {
-> >         status = "okay";
-> >  };
-> >
-> > +&usb_hub {
-> > +        vdd-supply = <&pp3300_l7c>;
-> > +};
-> > +
-> >  /* PINCTRL - board-specific pinctrl */
-> >
-> >  &tlmm {
-> > diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-> > index bf875589d364..50e733412a7f 100644
-> > --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-> > +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-> > @@ -174,6 +174,25 @@ pp3300_fp_tp: pp3300-fp-tp-regulator {
-> >                 vin-supply = <&pp3300_a>;
-> >         };
-> >
-> > +       pp3300_hub: pp3300-hub {
-> > +               compatible = "regulator-fixed";
-> > +               regulator-name = "pp3300_hub";
-> > +
-> > +               regulator-min-microvolt = <3300000>;
-> > +               regulator-max-microvolt = <3300000>;
-> > +
-> > +               gpio = <&tlmm 84 GPIO_ACTIVE_HIGH>;
-> > +               enable-active-high;
-> > +               pinctrl-names = "default";
-> > +               pinctrl-0 = <&en_pp3300_hub>;
-> > +
-> > +               /* AP turns on with en_pp3300_hub; always on for AP */
-> 
-> Delete the above comment.  It's obvious based on the properties in
-> this node.  Other similar comments are useful because they describe
-> how the _EC_ turns on regulators and why a regulator that has an
-> enable still looks like an "always-on" regulator to the AP (because
-> it's always on whenever the AP is on).
-> 
-> If you want to add a comment, you could say:
-> 
-> /* Always on until we have a way to specify it can go off in suspend */
+This driver provides sysfs files for displaying the flash count,
+the root entry hashes (REH), and the code-signing-key (CSK)
+cancellation vectors.
 
-ok
+These patches are dependent on other patches that are under
+review. If you want to apply and compile these patches on
+linux-next, please apply these patches first:
 
-> > @@ -469,7 +488,6 @@ ppvar_l6c: ldo6 {
-> >                         regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> >                 };
-> >
-> > -               pp3300_hub:
-> >                 pp3300_l7c: ldo7 {
-> >                         regulator-min-microvolt = <3304000>;
-> >                         regulator-max-microvolt = <3304000>;
-> 
-> Shouldn't you delete the "regulator-always-on;" from ldo7 since you're
-> adding it for all the older revs?
+(7 patches) https://marc.info/?l=linux-fpga&m=160462501901359&w=2
 
-Indeed, that was the intention, it didn't blow up into my face during testing
-since the downstream tree doesn't have it anymore.
+If you have an n3000 PAC card and want to test this driver, you
+will also need this patch:
+
+(1 patch) https://marc.info/?l=linux-fpga&m=160379607703940&w=2
+
+Changelog v3 -> v4:
+  - Moved sysfs files for displaying the flash count, the root
+    entry hashes (REH), and the code-signing-key (CSK) cancellation
+    vectors from the FPGA Security Manager class driver to this
+    driver (as they are not generic enough for the class driver).
+  - Added a new ABI documentation file with informtaion about the
+    new sysfs entries: sysfs-driver-intel-m10-bmc-secure
+  - Updated the MAINTAINERS file to add the new ABI documentation
+    file: sysfs-driver-intel-m10-bmc-secure
+  - Removed unnecessary ret variable from m10bmc_secure_probe()
+  - Incorporated new devm_fpga_sec_mgr_register() function into
+    m10bmc_secure_probe() and removed the m10bmc_secure_remove()
+    function.
+
+Changelog v2 -> v3:
+  - Changed "MAX10 BMC Security Engine driver" to "MAX10 BMC Secure
+    Update driver"
+  - Changed from "Intel FPGA Security Manager" to FPGA Security Manager"
+  - Changed: iops -> sops, imgr -> smgr, IFPGA_ -> FPGA_, ifpga_ to fpga_
+  - Removed wrapper functions (m10bmc_raw_*, m10bmc_sys_*). The
+    underlying functions are now called directly.
+  - Changed "_root_entry_hash" to "_reh", with a comment explaining
+    what reh is.
+  - Renamed get_csk_vector() to m10bmc_csk_vector()
+  - Changed calling functions of functions that return "enum fpga_sec_err"
+    to check for (ret != FPGA_SEC_ERR_NONE) instead of (ret)
+
+Changelog v1 -> v2:
+  - These patches were previously submitted as part of a larger V1
+    patch set under the title "Intel FPGA Security Manager Class Driver".
+  - Grouped all changes to include/linux/mfd/intel-m10-bmc.h into a
+    single patch: "mfd: intel-m10-bmc: support for MAX10 BMC Security
+    Engine".
+  - Removed ifpga_sec_mgr_init() and ifpga_sec_mgr_uinit() functions.
+  - Adapted to changes in the Intel FPGA Security Manager by splitting
+    the single call to ifpga_sec_mgr_register() into two function
+    calls: devm_ifpga_sec_mgr_create() and ifpga_sec_mgr_register().
+  - Replaced small function-creation macros for explicit function
+    declarations.
+  - Bug fix for the get_csk_vector() function to properly apply the
+    stride variable in calls to m10bmc_raw_bulk_read().
+  - Added m10bmc_ prefix to functions in m10bmc_iops structure
+  - Implemented HW_ERRINFO_POISON for m10bmc_sec_hw_errinfo() to
+    ensure that corresponding bits are set to 1 if we are unable
+    to read the doorbell or auth_result registers.
+  - Added comments and additional code cleanup per V1 review.
+Russ Weight (6):
+  mfd: intel-m10-bmc: support for MAX10 BMC Secure Updates
+  fpga: m10bmc-sec: create max10 bmc secure update driver
+  fpga: m10bmc-sec: expose max10 flash update count
+  fpga: m10bmc-sec: expose max10 canceled keys in sysfs
+  fpga: m10bmc-sec: add max10 secure update functions
+  fpga: m10bmc-sec: add max10 get_hw_errinfo callback func
+
+ .../testing/sysfs-driver-intel-m10-bmc-secure |  61 ++
+ MAINTAINERS                                   |   2 +
+ drivers/fpga/Kconfig                          |  11 +
+ drivers/fpga/Makefile                         |   3 +
+ drivers/fpga/intel-m10-bmc-secure.c           | 542 ++++++++++++++++++
+ include/linux/mfd/intel-m10-bmc.h             |  85 +++
+ 6 files changed, 704 insertions(+)
+ create mode 100644 Documentation/ABI/testing/sysfs-driver-intel-m10-bmc-secure
+ create mode 100644 drivers/fpga/intel-m10-bmc-secure.c
+
+-- 
+2.25.1
+
