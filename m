@@ -2,129 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BD942AA16F
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 00:30:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68EC42AA175
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 00:35:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729331AbgKFXam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 18:30:42 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44672 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729152AbgKFXad (ORCPT
+        id S1728518AbgKFXfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 18:35:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45234 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728214AbgKFXfp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 18:30:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604705432;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ew4rIAC9gbf7d0rKjHF4qfpwnpt8uKp6YFkSycCbhTQ=;
-        b=jAsHmk8uYdkDEjocqUd6v/nP12UczhjtHu70MluMFmJRGmu2vuSoFG21MwnMHUuSinpMYU
-        QeWS6nqUX2Bq7KhnLS2dv2/oyp6lVGCb2uPhSJF6SzKOUu6aT3NThY8tAQFZlkJVbsMZH2
-        MP8i/DGNm9tvP7ORV5Dsnr8njAJ19OI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-7-g3HBWZfpNrCTU2cWf8kZmg-1; Fri, 06 Nov 2020 18:30:27 -0500
-X-MC-Unique: g3HBWZfpNrCTU2cWf8kZmg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1B2FD801F9A;
-        Fri,  6 Nov 2020 23:30:26 +0000 (UTC)
-Received: from Whitewolf.lyude.net (ovpn-115-78.rdu2.redhat.com [10.10.115.78])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 065F462A15;
-        Fri,  6 Nov 2020 23:30:24 +0000 (UTC)
-From:   Lyude Paul <lyude@redhat.com>
-To:     gregkh@linuxfoundation.org, stable@vger.kernel.org,
-        nouveau@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Cc:     =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
-        <ville.syrjala@linux.intel.com>, Ben Skeggs <bskeggs@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 2/2] drm/nouveau/kms/nv50-: Fix clock checking algorithm in nv50_dp_mode_valid()
-Date:   Fri,  6 Nov 2020 18:30:15 -0500
-Message-Id: <20201106233016.2481179-3-lyude@redhat.com>
-In-Reply-To: <20201106233016.2481179-1-lyude@redhat.com>
-References: <160459060724988@kroah.com>
- <20201106233016.2481179-1-lyude@redhat.com>
+        Fri, 6 Nov 2020 18:35:45 -0500
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4F5CC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 15:35:44 -0800 (PST)
+Received: by mail-lj1-x243.google.com with SMTP id v18so3232498ljc.3
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 15:35:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eMoRYBx4DAMN87q/Qxn/vkeSV0JGOokfdGoi2qdQtlk=;
+        b=VQ+L+ATYA/FZIZUCETHW1K7D8w79F/MTq60EL9Ec3V4gnL9IJk8F3eb9idwCVvlRrc
+         8Ei7CiqYZhn9fJsh+UeL/UiWhSlZBoGexP7WNISG75CFbsrLzos5TPu5Mh5YQxnnOPjp
+         G1doOAZS+cP9vHOV84ZoEALRhSaqHK+v2uXvA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eMoRYBx4DAMN87q/Qxn/vkeSV0JGOokfdGoi2qdQtlk=;
+        b=E03MNvN3bjyLvJoNNQLl1ASSuW86PiqA0+KvYuA6Xsvb+lZt0FmeEth41TuqBKMWVO
+         9JFWhH2BdmOhSYYjouwmnetOZC0Qg5BdLFN6E/MxcCO9R+1z8JwDFvHeI53t9S6/Ce+M
+         Vu4TyYDHYUBNY+dfrCrmWTA60lPKaDOYuHkmJWSuEACH5B9CjbNVTyuZ//o4Wc/DKNxz
+         ZhWUOqPzXYjYf5CSMneAD/HgA0eTQ8Xn7KA4BKCCwZx/iCZIxylLONG+COdWMGcXXlmv
+         QKB/hKqYyRsfiHblx1h3EAC3XRmdZzDTwWI6hgGrzHqHXwWJmOJOjLq/qa5K0B3f/xsK
+         hhUQ==
+X-Gm-Message-State: AOAM530OcxOKrGPz+8Vmhl6pS9Coz+9eMPjK+GcE78k+0lq5lpLTW8iG
+        zjjj8ukcxR9L4O0C2gPTE9aBwCCxxC08Mw==
+X-Google-Smtp-Source: ABdhPJzgF/ism6O6h1XdA9hGNBaEH4OWpsiV0OhgkLK1R4/hNoHTBiwlbyk3PlRM4ss0TMWjJ25bPQ==
+X-Received: by 2002:a2e:b5b9:: with SMTP id f25mr1694646ljn.309.1604705741906;
+        Fri, 06 Nov 2020 15:35:41 -0800 (PST)
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
+        by smtp.gmail.com with ESMTPSA id o3sm248623lfo.217.2020.11.06.15.35.38
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 06 Nov 2020 15:35:39 -0800 (PST)
+Received: by mail-lf1-f47.google.com with SMTP id s30so4246279lfc.4
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 15:35:38 -0800 (PST)
+X-Received: by 2002:a19:4815:: with SMTP id v21mr1885811lfa.603.1604705738619;
+ Fri, 06 Nov 2020 15:35:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+References: <20201106231635.3528496-1-soheil.kdev@gmail.com>
+In-Reply-To: <20201106231635.3528496-1-soheil.kdev@gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 6 Nov 2020 15:35:22 -0800
+X-Gmail-Original-Message-ID: <CAHk-=whM-Cm52o1kBQD4eS3Wx=XWr_z7sq=H88pmyeK_9L0=VQ@mail.gmail.com>
+Message-ID: <CAHk-=whM-Cm52o1kBQD4eS3Wx=XWr_z7sq=H88pmyeK_9L0=VQ@mail.gmail.com>
+Subject: Re: [PATCH 0/8] simplify ep_poll
+To:     Soheil Hassas Yeganeh <soheil.kdev@gmail.com>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Khazhismel Kumykov <khazhy@google.com>,
+        Guantao Liu <guantaol@google.com>,
+        Soheil Hassas Yeganeh <soheil@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While I thought I had this correct (since it actually did reject modes
-like I expected during testing), Ville Syrjala from Intel pointed out
-that the logic here isn't correct. max_clock refers to the max data rate
-supported by the DP encoder. So, limiting it to the output of ds_clock (which
-refers to the maximum dotclock of the downstream DP device) doesn't make any
-sense. Additionally, since we're using the connector's bpc as the canonical BPC
-we should use this in mode_valid until we support dynamically setting the bpp
-based on bandwidth constraints.
+On Fri, Nov 6, 2020 at 3:17 PM Soheil Hassas Yeganeh
+<soheil.kdev@gmail.com> wrote:
+>
+> The first patch in the series is a fix for the epoll race in
+> presence of timeouts, so that it can be cleanly backported to all
+> affected stable kernels.
+>
+> The rest of the patch series simplify the ep_poll() implementation.
+> Some of these simplifications result in minor performance enhancements
+> as well.  We have kept these changes under self tests and internal
+> benchmarks for a few days, and there are minor (1-2%) performance
+> enhancements as a result.
 
-https://lists.freedesktop.org/archives/dri-devel/2020-September/280276.html
+From just looking at the patches (not the end result - I didn't
+actually apply them), it looks sane to me.
 
-For more info.
-
-So, let's rewrite this using Ville's advice.
-
-Changes made for stable backport:
-* 5.9 didn't use drm_dp_downstream_max_dotclock() yet, so remove that (the
-  fix is still important regardless)
-
-v2:
-* Ville pointed out I mixed up the dotclock and the link rate. So fix that...
-* ...and also rename all the variables in this function to be more appropriately
-  labeled so I stop mixing them up.
-* Reuse the bpp from the connector for now until we have dynamic bpp selection.
-* Use use DIV_ROUND_UP for calculating the mode rate like i915 does, which we
-  should also have been doing from the start
-
-Signed-off-by: Lyude Paul <lyude@redhat.com>
-Fixes: 409d38139b42 ("drm/nouveau/kms/nv50-: Use downstream DP clock limits for mode validation")
-Cc: Ville Syrjälä <ville.syrjala@linux.intel.com>
-Cc: Lyude Paul <lyude@redhat.com>
-Cc: Ben Skeggs <bskeggs@redhat.com>
-Signed-off-by: Ben Skeggs <bskeggs@redhat.com>
----
- drivers/gpu/drm/nouveau/nouveau_dp.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/gpu/drm/nouveau/nouveau_dp.c b/drivers/gpu/drm/nouveau/nouveau_dp.c
-index 40683e1244c3f..9c06d1cc43905 100644
---- a/drivers/gpu/drm/nouveau/nouveau_dp.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_dp.c
-@@ -114,7 +114,8 @@ nv50_dp_mode_valid(struct drm_connector *connector,
- 		   unsigned *out_clock)
- {
- 	const unsigned min_clock = 25000;
--	unsigned max_clock, clock = mode->clock;
-+	unsigned int max_rate, mode_rate, clock = mode->clock;
-+	const u8 bpp = connector->display_info.bpc * 3;
- 
- 	if (mode->flags & DRM_MODE_FLAG_INTERLACE && !outp->caps.dp_interlace)
- 		return MODE_NO_INTERLACE;
-@@ -122,12 +123,13 @@ nv50_dp_mode_valid(struct drm_connector *connector,
- 	if ((mode->flags & DRM_MODE_FLAG_3D_MASK) == DRM_MODE_FLAG_3D_FRAME_PACKING)
- 		clock *= 2;
- 
--	max_clock = outp->dp.link_nr * outp->dp.link_bw;
--	clock = mode->clock * (connector->display_info.bpc * 3) / 10;
-+	max_rate = outp->dp.link_nr * outp->dp.link_bw;
-+	mode_rate = DIV_ROUND_UP(clock * bpp, 8);
-+	if (mode_rate > max_rate)
-+		return MODE_CLOCK_HIGH;
-+
- 	if (clock < min_clock)
- 		return MODE_CLOCK_LOW;
--	if (clock > max_clock)
--		return MODE_CLOCK_HIGH;
- 
- 	if (out_clock)
- 		*out_clock = clock;
--- 
-2.28.0
-
+             Linus
