@@ -2,144 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8AA52A9A76
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 18:11:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 172AC2A9AB6
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 18:23:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727293AbgKFRKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 12:10:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725868AbgKFRKx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 12:10:53 -0500
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8A27C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 09:10:51 -0800 (PST)
-Received: by mail-qv1-xf41.google.com with SMTP id 63so762210qva.7
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 09:10:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=/T4V4t+QdvwoK1NFTGIFvOZHdTRgisoLRqVT8P2lJvo=;
-        b=O8ZZhEUu0ahk3vx3VEAynSB5X0BHcaeX65/n+GCfnMVQlCjjMM3p23k8VknqbUFUyG
-         xS4iWwZ+m9Z6mkg5EpOdNoMXsSwme47E9SKHvzuTH2cbn6QNDJF2YiIdr4aqoE7iXB/k
-         R26qVZFvuzWp9l9JFughus5JP/AB6TfuCX+HSeXdMTzkEtakFSXtNv9tzCAglH78ZTaw
-         TxKQlv8W2NUJMBS609YgLTLtYOArXV3u02qTZ0YfEviaHGbm+YY/2p/KBah6FMWeQiQ3
-         QQZnfhpfPbY0agR5AT7VNJeqCdJ5FGWJIUDioISdb0gQmdag4avVcFq3hR21efkD9fzo
-         9fZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/T4V4t+QdvwoK1NFTGIFvOZHdTRgisoLRqVT8P2lJvo=;
-        b=rIFvxQg+5hrMT4xzr03Trt64X3+yseI/bGyXYsVIdHZ6KkhHCFGzZFeWBm8R+Jxem/
-         BvHwxpWuBpBSxy05VRU/V1qlW8kiH4NVx1AliAVS1IuF4+pIzNzHDADhrTgJHAmwjTjE
-         fg0nJuMR9TsPh1Hch1rEBjvjdzV9XKk3Lj5hC2IuEhbPKE1ajCYlYOt4ZJpVzs71polz
-         hKhn3AfiyS0t1QLZdpiq2vzjzgb+IefXB8PtSkiKtZSeHXcgLmXpU2wHKKJRrBSAytx9
-         EBg1c5PRdLjT540jnK3XmApo4Szb57Rv6R56S6A5ys+8sWnNDM/XzcQ2MnVyeIOmN/U4
-         MJ2g==
-X-Gm-Message-State: AOAM531BEF86mnC1zjK9YkabSn74HAk8Z5bY6reP8i/FYvKU375NXco7
-        bbvBg3K/xUbf/iSjz00BUuorug==
-X-Google-Smtp-Source: ABdhPJwF/MdD1qNke+ECauvjnsTNgCBiugOoWghae9wdj3qkdlvkqshdqouzdfR5ybfqevB97gjCZQ==
-X-Received: by 2002:a0c:e346:: with SMTP id a6mr2528444qvm.9.1604682651091;
-        Fri, 06 Nov 2020 09:10:51 -0800 (PST)
-Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id n4sm799428qkf.42.2020.11.06.09.10.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Nov 2020 09:10:49 -0800 (PST)
-Subject: Re: [PATCH v5 5/9] btrfs: zstd: Switch to the zstd-1.4.6 API
-To:     Nick Terrell <nickrterrell@gmail.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        squashfs-devel@lists.sourceforge.net,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Kernel Team <Kernel-team@fb.com>,
-        Nick Terrell <terrelln@fb.com>, Chris Mason <clm@fb.com>,
-        Petr Malat <oss@malat.biz>, Johannes Weiner <jweiner@fb.com>,
-        Niket Agarwal <niketa@fb.com>, Yann Collet <cyan@fb.com>
-References: <20201103060535.8460-1-nickrterrell@gmail.com>
- <20201103060535.8460-6-nickrterrell@gmail.com>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <b12254bc-7320-7170-f39d-e76afe1a7561@toxicpanda.com>
-Date:   Fri, 6 Nov 2020 12:10:47 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.4.0
+        id S1727617AbgKFRXB convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 6 Nov 2020 12:23:01 -0500
+Received: from exet01.ccc.at ([194.50.115.167]:19215 "EHLO EXET01.ccc.at"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726010AbgKFRXB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 12:23:01 -0500
+X-Greylist: delayed 333 seconds by postgrey-1.27 at vger.kernel.org; Fri, 06 Nov 2020 12:22:58 EST
+Received: from exdb03.ccc.at (194.50.115.138) by EXET01.ccc.at
+ (194.50.115.167) with Microsoft SMTP Server (TLS) id 14.3.487.0; Fri, 6 Nov
+ 2020 18:13:25 +0100
+Received: from [149.56.66.208] (149.56.66.208) by exdb03.ccc.at
+ (194.50.115.138) with Microsoft SMTP Server id 14.3.399.0; Fri, 6 Nov 2020
+ 18:13:20 +0100
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-In-Reply-To: <20201103060535.8460-6-nickrterrell@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: =?utf-8?q?Abschlie=C3=9Fende_Mitteilung_f=C3=BCr_die_Zahlung_des_nicht_be?=
+ =?utf-8?q?anspruchten_Preisgeldes=2C=2E?=
+To:     Recipients <abogadov.colon@mail2consultant.com>
+From:   ABOGADO VITALIS MANUEL COLON <abogadov.colon@mail2consultant.com>
+Date:   Fri, 6 Nov 2020 09:12:43 -0800
+Reply-To: <analyn.hernandez@mail2lawyer.com>
+Message-ID: <0323174e-d262-4eb6-8596-c77e729460d4@exdb03.ccc.at>
+X-Loop: 1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/3/20 1:05 AM, Nick Terrell wrote:
-> From: Nick Terrell <terrelln@fb.com>
-> 
-> Move away from the compatibility wrapper to the zstd-1.4.6 API. This
-> code is functionally equivalent.
-> 
-> Signed-off-by: Nick Terrell <terrelln@fb.com>
-> ---
->   fs/btrfs/zstd.c | 48 ++++++++++++++++++++++++++++--------------------
->   1 file changed, 28 insertions(+), 20 deletions(-)
-> 
-> diff --git a/fs/btrfs/zstd.c b/fs/btrfs/zstd.c
-> index a7367ff573d4..6b466e090cd7 100644
-> --- a/fs/btrfs/zstd.c
-> +++ b/fs/btrfs/zstd.c
-> @@ -16,7 +16,7 @@
->   #include <linux/refcount.h>
->   #include <linux/sched.h>
->   #include <linux/slab.h>
-> -#include <linux/zstd_compat.h>
-> +#include <linux/zstd.h>
->   #include "misc.h"
->   #include "compression.h"
->   #include "ctree.h"
-> @@ -159,8 +159,8 @@ static void zstd_calc_ws_mem_sizes(void)
->   			zstd_get_btrfs_parameters(level, ZSTD_BTRFS_MAX_INPUT);
->   		size_t level_size =
->   			max_t(size_t,
-> -			      ZSTD_CStreamWorkspaceBound(params.cParams),
-> -			      ZSTD_DStreamWorkspaceBound(ZSTD_BTRFS_MAX_INPUT));
-> +			      ZSTD_estimateCStreamSize_usingCParams(params.cParams),
-> +			      ZSTD_estimateDStreamSize(ZSTD_BTRFS_MAX_INPUT));
->   
->   		max_size = max_t(size_t, max_size, level_size);
->   		zstd_ws_mem_sizes[level - 1] = max_size;
-> @@ -389,13 +389,23 @@ int zstd_compress_pages(struct list_head *ws, struct address_space *mapping,
->   	*total_in = 0;
->   
->   	/* Initialize the stream */
-> -	stream = ZSTD_initCStream(params, len, workspace->mem,
-> -			workspace->size);
-> +	stream = ZSTD_initStaticCStream(workspace->mem, workspace->size);
->   	if (!stream) {
-> -		pr_warn("BTRFS: ZSTD_initCStream failed\n");
-> +		pr_warn("BTRFS: ZSTD_initStaticCStream failed\n");
->   		ret = -EIO;
->   		goto out;
->   	}
-> +	{
-> +		size_t ret2;
-> +
-> +		ret2 = ZSTD_initCStream_advanced(stream, NULL, 0, params, len);
-> +		if (ZSTD_isError(ret2)) {
-> +			pr_warn("BTRFS: ZSTD_initCStream_advanced returned %s\n",
-> +					ZSTD_getErrorName(ret2));
-> +			ret = -EIO;
-> +			goto out;
-> +		}
-> +	}
+ANWALTSKANZLEI: ABOGADO VITALIS MANUEL COLON.
+Calle de Raimundo Fernández Villaverde, 50, 28010 Madrid, Spanien.
+E mail. analyn.hernandez@mail2lawyer.com
 
-Please don't do this, you can just add size_t ret2 at the top and not put this 
-in a block.  Other than that the code looks fine, once you fix that you can add
+AKTENZEICHEN: JMCB-ES/11-547/05-17
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+KUNDENNUMMER: MD-DE/LOT-516
 
-Thanks,
+Abschließende Mitteilung für die Zahlung des nicht beanspruchten Preisgeldes.
 
-Josef
+Wir möchten Sie darüber informieren, dass das Büro für nicht eingeforderte Preisgelder in Spanien unsere Anwaltskanzlei mit der rechtlichen Beratung bei der Bearbeitung und Auszahlung von nicht eingeforderten Preisgeldern beauftragt hat, die auf Ihren Namen gutgeschrieben und seit über zwei Jahren nicht eingefordert wurden.
+
+Der Gesamtbetrag der ihnen zusteht beträgt momentan 4.540.225.10 EURO
+
+Das ursprüngliche Preisgeld belief sich auf 2.906.315,00 EURO. Dieser Beitrag wurde mehr als zwei Jahre lang investiert, daher die Erhöhung auf den oben genannten Gesamtbetrag. Nach Angaben der Geschäftsstelle des nicht beanspruchten Preisgeldes wurde dieses Geld als nicht beanspruchter Gewinn einer Lotteriegesellschaft in Ihrem Namen eingezahlt und in Ihrem Namen versichert.
+
+Wie die Lotteriegesellschaft mitteilte, wurde ihnen das Geld nach einer Weihnachtsaktion Lotterie überreicht. Nach Angaben der Lotteriegesellschaft wurden sie kontaktiert, um Sie über dieses Geld zu informieren, aber leider hatte sich bis zum Ende des festgelegten Zeitraums niemand gemeldet, um den Gewinn einzufordern, weshalb das Geld zur Verwaltung eingezahlt wurde.
+
+Nach spanischem Recht muss der Eigentümer alle zwei Jahre über seinen verfügbaren Gewinn informiert werden, und wenn das Geld nicht wieder eingefordert wird, wird der Eigentümer informiert. Der Gewinn wird über eine Investmentgesellschaft für einen weiteren Zeitraum von zwei Jahren reinvestiert. Wir sind daher vom Amt für die nicht beanspruchten Preisgelder angewiesen worden, Ihnen zu schreiben.
+
+Dies ist eine Benachrichtigung für die Inanspruchnahme dieses Geldes.
+
+Bitte beachten Sie, dass die Lotteriegesellschaft Ihre Identität überprüfen und bestätigen wird, bevor sie Ihnen das Geld ausbezahlt, und wir werden Sie beraten, wie Sie Ihren Anspruch geltend machen können. Wenden Sie sich daher bitte an unseren deutschsprachigen Anwalt DR. ANALYN YOA HERNANDEZ unter der oben genannten E-Mail-Adresse, sie ist für Zahlungen ins Ausland zuständig und wird Ihnen in dieser Angelegenheit behilflich sein. Der Anspruch sollte vor dem 28.11.2020 geltend gemacht werden, da das Geld sonst reinvestiert würde.  Wir freuen uns darauf, von Ihnen zu hören, während wir Ihnen unseren Rechtsbeistand zusichern.
+
+Mit freundlichen Grüßen
+
+ABOGADO VITALIS MANUEL COLON
+RECHTSANWAELTE AM OBERSTN GERICHTSHOF
+
+Bitte füllen Sie den nachstehenden Abschnitt aus und senden Sie ihn per E-Mail an unser Büro zurück, damit wir den Legalisierung Prozess einleiten können und das Geld von der International Lotto Investment Bank an Sie ausgezahlt wird.
+Der Verificacións Prozess durch unsere Kanzlei ist für Sie kostenlos.
+
+Unsere Kosten werden von der internationalen Lotto Kommission am Ende des Prozesses bezahlt.  Wenn sie die erforderlichen Informationen nicht vor ablauf der frist einreichen,kann die Anwaltskanzlei Garrigues und Partner nicht haftbar gemacht werden.
+
+Ein Bestätigungsschreiben wird Ihnen per E-Mail zugesandt, sobald die Überprüfung durchgeführt wurde. Die Informationen, die Sie uns zur Verfügung stellen, werden zur Zahlung an die Investmentbank weitergeleitet, Ihre Daten werden gemäß den Datenschutzbestimmungen der Europäischen Union streng vertraulich behandelt.
+
+ANMELDEFORMULAR FÜR DEN GEWINNANSPRUCH DEN GEWINNANSPRUCH
+VORNAME
+NAME
+AKTENZEICHEN
+ANSCHRIFT
+TELEFON:
+MOBILE NO:
+FAX
+GEB.DATUM
+BERUF
+NATIONALITÄT
+ABLAUFDATUM 28/11/2020 BITTE LEGEN SIE DIESEM SCHREIBEN EINE KOPIE IHRES PERSONALAUSWEISES ODER IHRES REISEPASSES BEL
+RECHTSANWAELTE AM OBERSTN GERICHTSHOF
