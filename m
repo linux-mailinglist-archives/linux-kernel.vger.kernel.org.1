@@ -2,88 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 786892A8DC8
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 04:53:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 039D92A8DCF
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 04:58:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725852AbgKFDxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 22:53:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57306 "EHLO
+        id S1725903AbgKFD6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 22:58:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725616AbgKFDxR (ORCPT
+        with ESMTP id S1725815AbgKFD6h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 22:53:17 -0500
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE668C0613CF;
-        Thu,  5 Nov 2020 19:53:16 -0800 (PST)
-Received: by mail-yb1-xb43.google.com with SMTP id f6so2587ybr.0;
-        Thu, 05 Nov 2020 19:53:16 -0800 (PST)
+        Thu, 5 Nov 2020 22:58:37 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9292BC0613CF;
+        Thu,  5 Nov 2020 19:58:35 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id z3so98094pfz.6;
+        Thu, 05 Nov 2020 19:58:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=S2AIiVxkOnwPyftxYL1/j7Dy6SZMLtDsVFSo2M4HZ00=;
-        b=TH+8jr1O5vLPDH4dbuO2Dz6p1Yd/QzZehL7b5uRnz1ilNH26KAyT2Xa3p+tCJbzw9C
-         iZshgXOQHIENIB544P5LFmvJZV7d8a0h9fs1G76RIwsWCEhyC1sfm9/a0UGkJAI4wnXg
-         MPBg7RiQtiIo4yU1xnJhMtj3vGIDKb1IiEIuvK6FrSW5+ERVJedXP6VLAPP0gEw6mpwJ
-         w419HoAwpzPExfLsu1MFjkoEhcI3hge+qxaILaPFXeiMrqg3z7h7FHyBjt2Xd39jZMC8
-         t1VGPs6I9hLODV0jG5jrmQDqyRGSnrZYc0C3bxjId4DWRzHMi02fyT/XukzwNYceAMGJ
-         UzUQ==
+        h=to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=72WK5gdLfg+8RgepOagG7LllxF4BWHujAXVduDm7r+4=;
+        b=SAA4dD3ObW/Kw83JMEzBKEwOFbgINDIl/QDPZnDGEzT9D1MQqtKgLblLF4gon3H6XI
+         e/H8Ricdau5eNPtdBuEZyLdbIfCSXJjcSAWRo8jJmqQl+3eXGlwTZo4pYUf9PdZrtrs8
+         tnvl6bGch2awvWymlM8d51ZMaRs7dPKya07HVre4kb3BietyhriyNTMJvQZpo3R8UH0i
+         +g9Iya/Ua6NJVu5TjXNMXfcSG9CeecnHaE3kKdh/uiWJY1t3hz90Nj+eykhP0viAv/xI
+         6vrbAhd8qt3cREWgij3AXggvFfOxzl2/w7DEtDcbAR48QMxndi9m47EtNWM5usiAwmRx
+         74RQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=S2AIiVxkOnwPyftxYL1/j7Dy6SZMLtDsVFSo2M4HZ00=;
-        b=ZKisKfrSPOMp7gLo1gO/Dt005VZFOpulBTApNeiAnz48YGe8mKs8cM6GJrNbTS8Vt7
-         1+3WoDN0YlExPUQ9tT46P/nx20lQRQ/uzlOcLGM62l114UiasjVr0Ate2CAtGj98pqiU
-         FV1BcEkR2c+j/ugflUx/4CZUcRvYvxXktmjQOMEMvrOhYW8hAbY5gdtBdfzle9NMjqhW
-         M7XLsjSGeOz6Kwc7GWLh5ONK4hV8O2e2YlgoYCJQVD94qgvi0SQfAkIkeRks6j4RbCM5
-         mrMkZUMKFenPOvyU5khqdSuG1EaGbqcDdvk0l6ZJ9ChjPAryCc2bQ64say0JXE2u23Zx
-         3TbQ==
-X-Gm-Message-State: AOAM533c5zjN5eeenwl6WUyzrEwKL2C3Nz0UXPG6rgn3pNTdXjX+aa06
-        CTUxhSejh/h7HPLxtZi+ZXUY5kS4mWwH7mIM1QI=
-X-Google-Smtp-Source: ABdhPJzjOn/LUMbXAzDVz/o0f2HeEUukHJv7w47ijR6bdpg0B2XCe5mt1wYLixTDSMQz5xcLln4vRswoKiRprb0uNwc=
-X-Received: by 2002:a25:da4e:: with SMTP id n75mr241475ybf.425.1604634796022;
- Thu, 05 Nov 2020 19:53:16 -0800 (PST)
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=72WK5gdLfg+8RgepOagG7LllxF4BWHujAXVduDm7r+4=;
+        b=EZEjMZPuNUSBbM2K3o9B936FL/iwpdFktli0GhjJvXqMCllRv9EBPAIfXq8kCElKUO
+         QjXtCtN6beAFzfMpR5YbfTKi246dAl1BPREkZDhICdnSzjFmOUM7fKUtElEhh7PzitVw
+         JXdZaZcnmzXP5H0DDtNDd1LZ4zcIwUpxXJUkhl2p7qIdn2C1RupoxJJGrkvMxHjWG00w
+         jtwQ/Aa7OEwH34F0/T3mF5krX5D0vKKywGPGaHzwkeYz6hv8N7BZBiv8PzMiRY8RNIX0
+         EIgQmZjJQi8q9lXMY77K4FYlhV1jAeRYx+nNIfE8fQx76c5SjfqkLZJ8SR+YJsYiZNWJ
+         98ow==
+X-Gm-Message-State: AOAM533yzzLM7BWDwCDXqnTIBf0bhrnNSiHmtHEZOBDlFoXbbvwZjRAO
+        7DgVBMz85nsoFHkxGZF12AE=
+X-Google-Smtp-Source: ABdhPJw197tx4uU6/FgGT5umqJUIokir+xifWVT5zLhPEW3lgXFo7oLNXg+7DZ0uhJVTM6h7GHjN6w==
+X-Received: by 2002:a63:4006:: with SMTP id n6mr42376pga.171.1604635114907;
+        Thu, 05 Nov 2020 19:58:34 -0800 (PST)
+Received: from [10.230.1.248] ([192.19.228.250])
+        by smtp.gmail.com with ESMTPSA id s6sm129495pfh.9.2020.11.05.19.58.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Nov 2020 19:58:33 -0800 (PST)
+To:     Prasad Sodagudi <psodagud@codeaurora.org>, rostedt@goodmis.org,
+        mingo@redhat.com, keescook@chromium.org, catalin.marinas@arm.com,
+        saiprakash.ranjan@codeaurora.org, will@kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, gregkh@linuxfoundation.org,
+        anton@enomsg.org, arnd@arndb.de, ccross@android.com,
+        jbaron@akamai.com, jim.cromie@gmail.com, joe@perches.com,
+        joel@joelfernandes.org
+References: <1604631386-178312-1-git-send-email-psodagud@codeaurora.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Subject: Re: [PATCH 2] Register read and writes tracing
+Message-ID: <a9de1928-d709-896f-ffa6-febc5d6d34c6@gmail.com>
+Date:   Thu, 5 Nov 2020 19:58:31 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <cover.1604620776.git.dxu@dxuuu.xyz> <8b8c8f51aff8fabac4425da9b0054b4c976c944b.1604620776.git.dxu@dxuuu.xyz>
-In-Reply-To: <8b8c8f51aff8fabac4425da9b0054b4c976c944b.1604620776.git.dxu@dxuuu.xyz>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 5 Nov 2020 19:53:05 -0800
-Message-ID: <CAEf4BzafhaMDuTi3CYsF2sEp_cgOv5kohBOOwSX6qPoUr4-HWw@mail.gmail.com>
-Subject: Re: [PATCH bpf v4 2/2] selftest/bpf: Test bpf_probe_read_user_str()
- strips trailing bytes after NUL
-To:     Daniel Xu <dxu@dxuuu.xyz>
-Cc:     bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Song Liu <songliubraving@fb.com>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1604631386-178312-1-git-send-email-psodagud@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 5, 2020 at 4:06 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
->
-> Previously, bpf_probe_read_user_str() could potentially overcopy the
-> trailing bytes after the NUL due to how do_strncpy_from_user() does the
-> copy in long-sized strides. The issue has been fixed in the previous
-> commit.
->
-> This commit adds a selftest that ensures we don't regress
-> bpf_probe_read_user_str() again.
->
-> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
-> ---
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
->  .../bpf/prog_tests/probe_read_user_str.c      | 71 +++++++++++++++++++
->  .../bpf/progs/test_probe_read_user_str.c      | 25 +++++++
->  2 files changed, 96 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_probe_read_user_str.c
->
+On 11/5/2020 6:56 PM, Prasad Sodagudi wrote:
+> This patch series adds register read/write event tracing
+> support. Qualcomm team tried upstreaming the register
+> trace buffer solution - [1] with pstore and dynamic debug
+> feature but that patch series didn't merge. I have followed
+> Steve suggestion from -[2] and used tracepoint_enabled() API.
+> 
+> [1] - https://patchwork.kernel.org/project/linux-arm-msm/cover/cover.1536430404.git.saiprakash.ranjan@codeaurora.org/
+> [2] - https://lore.kernel.org/lkml/20200928105501.7e29df65@oasis.local.home/ 
+> 
+> Qualcomm teams uses these logs for debugging various issues
+> in the product life cycle and hopping that this logging
+> would help other silicon vendors as this is generic approach.
 
-[...]
+There is not anything arm64 specific here other than where you have
+hooked into the low-level I/O accessors, you could consider adding this
+as a generic facility to other architectures as well.
+
+Also, have you looked at making mmiotrace less x86 specific and more
+generic?
+-- 
+Florian
