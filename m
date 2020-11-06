@@ -2,211 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 872542A914B
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 09:30:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EF312A914F
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 09:31:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726662AbgKFIaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 03:30:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726598AbgKFIaE (ORCPT
+        id S1726494AbgKFIbb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 03:31:31 -0500
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:57495 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725830AbgKFIbb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 03:30:04 -0500
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EC22C0613D4
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 00:30:04 -0800 (PST)
-Received: by mail-yb1-xb41.google.com with SMTP id c18so445930ybj.10
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 00:30:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rD9/ZK7971oPQsgTQDh0lNY/GvvQHJh4mKJIEvE3uW4=;
-        b=swGAdYh9B4UcdKFMGOCYdOwSbZ937eS+baY29gHnJVzue1i6yqXwQF+5BKXpvKHr4Z
-         RUmRrSbxIH9BqZJTbba/OvEVoirIt9d4jzAHqxguCotfDN1/W40/GMutFHguG2mUwzhi
-         M4uq4gk+4QW2Ba7xpUV83eZSWr8OAGFvs+oJFFb6ym0AFvmVFkWocz+me2nV5VLsF+xA
-         CaJMSqO+80UsA+xoFLE7I95pNMW3c4O9qWTgJBC5dOKZGc1+v9vPFzDgWjdMlQn1vHF0
-         cPyugi+aPoE2+5RhsKIIn37Ics5Kgj0P4Cerj20T/T4lcehFRB/jWr2wp0dbMGqKlhM3
-         Unxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rD9/ZK7971oPQsgTQDh0lNY/GvvQHJh4mKJIEvE3uW4=;
-        b=sYilWY9chrslCIab7rZIBW+IT+bvazqDm80LZH5bvq5xdkoV7crxQSuy1ZQhcJpTZS
-         HCFakaKe3Jk2udkM9Ynpfoc0VS6uaElwN2/61vA8CwkZcj9MiQijRZHXsAzWbKBp4ceE
-         4p5ZGkpKXza+DVGxB2MgByWvcEV6iAo155vvpvLyPBp+7LfhdwLNne3AsyneaHlGT9Th
-         LXkBFr1LJvOTK7Gx+pNdKp1ck/iKHOX79mo4ZYXHuDeroF5DXg9PWOOpSGPSE0JY7X07
-         0hJCN6WU4oTGTEzqSp/pNx6NKbIuQ4sTwdavWwMSUwQ+BH1KuKrXx6DKkm17YZjQA7UO
-         Up1Q==
-X-Gm-Message-State: AOAM531EWbyvWmvdXbRwXsTGLGWKygtbIp5/tTDXLD1m11kbq8/6NgB0
-        fVWuytNRqaRg4a+IufMLRERZoQ8dwD4mEH+Bo5HaZA==
-X-Google-Smtp-Source: ABdhPJwpd/q7RalIXkxlcZXBgsLbLVH8dlZ2vdkcPOrnPviYs7G3l0dFWmp/wsONIlbvLar8/0m7H/olvn4jVk0vsL4=
-X-Received: by 2002:a25:3:: with SMTP id 3mr1306315yba.412.1604651403053; Fri,
- 06 Nov 2020 00:30:03 -0800 (PST)
-MIME-Version: 1.0
-References: <20201104232356.4038506-1-saravanak@google.com>
- <20201104232356.4038506-16-saravanak@google.com> <20201105094228.GE3439341@kroah.com>
- <CAGETcx-0TPte6g3Cf5F3WJwdW-9yUptLDj3AcEdvWN0YJ2H4qg@mail.gmail.com>
- <20201106072247.GB2614221@kroah.com> <CAGETcx_tQboQPWuoj9hi38-1n=mAQihCi2b475z2r_9s_rXhNg@mail.gmail.com>
- <20201106075148.GA2619937@kroah.com>
-In-Reply-To: <20201106075148.GA2619937@kroah.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Fri, 6 Nov 2020 00:29:27 -0800
-Message-ID: <CAGETcx9LNWAXmbbzp3_LMeA515jwOibBfrzcadAcsNTJPHVnnQ@mail.gmail.com>
-Subject: Re: [PATCH v1 15/18] of: property: Update implementation of
- add_links() to create fwnode links
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Fri, 6 Nov 2020 03:31:31 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0UEPYlOn_1604651488;
+Received: from aliy80.localdomain(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UEPYlOn_1604651488)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 06 Nov 2020 16:31:28 +0800
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+To:     paul@paul-moore.com
+Cc:     Eric Paris <eparis@redhat.com>, linux-audit@redhat.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] audit: remove unused macros
+Date:   Fri,  6 Nov 2020 16:31:22 +0800
+Message-Id: <1604651482-9780-1-git-send-email-alex.shi@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 5, 2020 at 11:51 PM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Thu, Nov 05, 2020 at 11:41:20PM -0800, Saravana Kannan wrote:
-> > On Thu, Nov 5, 2020 at 11:22 PM Greg Kroah-Hartman
-> > <gregkh@linuxfoundation.org> wrote:
-> > >
-> > > On Thu, Nov 05, 2020 at 03:25:56PM -0800, Saravana Kannan wrote:
-> > > > On Thu, Nov 5, 2020 at 1:41 AM Greg Kroah-Hartman
-> > > > <gregkh@linuxfoundation.org> wrote:
-> > > > >
-> > > > > On Wed, Nov 04, 2020 at 03:23:52PM -0800, Saravana Kannan wrote:
-> > > > > > The semantics of add_links() has changed from creating device link
-> > > > > > between devices to creating fwnode links between fwnodes. So, update the
-> > > > > > implementation of add_links() to match the new semantics.
-> > > > > >
-> > > > > > Signed-off-by: Saravana Kannan <saravanak@google.com>
-> > > > > > ---
-> > > > > >  drivers/of/property.c | 150 ++++++++++++------------------------------
-> > > > > >  1 file changed, 41 insertions(+), 109 deletions(-)
-> > > > > >
-> > > > > > diff --git a/drivers/of/property.c b/drivers/of/property.c
-> > > > > > index 408a7b5f06a9..86303803f1b3 100644
-> > > > > > --- a/drivers/of/property.c
-> > > > > > +++ b/drivers/of/property.c
-> > > > > > @@ -1038,33 +1038,9 @@ static bool of_is_ancestor_of(struct device_node *test_ancestor,
-> > > > > >  }
-> > > > > >
-> > > > > >  /**
-> > > > > > - * of_get_next_parent_dev - Add device link to supplier from supplier phandle
-> > > > > > - * @np: device tree node
-> > > > > > - *
-> > > > > > - * Given a device tree node (@np), this function finds its closest ancestor
-> > > > > > - * device tree node that has a corresponding struct device.
-> > > > > > - *
-> > > > > > - * The caller of this function is expected to call put_device() on the returned
-> > > > > > - * device when they are done.
-> > > > > > - */
-> > > > > > -static struct device *of_get_next_parent_dev(struct device_node *np)
-> > > > > > -{
-> > > > > > -     struct device *dev = NULL;
-> > > > > > -
-> > > > > > -     of_node_get(np);
-> > > > > > -     do {
-> > > > > > -             np = of_get_next_parent(np);
-> > > > > > -             if (np)
-> > > > > > -                     dev = get_dev_from_fwnode(&np->fwnode);
-> > > > > > -     } while (np && !dev);
-> > > > > > -     of_node_put(np);
-> > > > > > -     return dev;
-> > > > > > -}
-> > > > > > -
-> > > > > > -/**
-> > > > > > - * of_link_to_phandle - Add device link to supplier from supplier phandle
-> > > > > > - * @dev: consumer device
-> > > > > > - * @sup_np: phandle to supplier device tree node
-> > > > > > + * of_link_to_phandle - Add fwnode link to supplier from supplier phandle
-> > > > > > + * @con_np: consumer device tree node
-> > > > > > + * @sup_np: supplier device tree node
-> > > > > >   *
-> > > > > >   * Given a phandle to a supplier device tree node (@sup_np), this function
-> > > > > >   * finds the device that owns the supplier device tree node and creates a
-> > > > > > @@ -1074,16 +1050,14 @@ static struct device *of_get_next_parent_dev(struct device_node *np)
-> > > > > >   * cases, it returns an error.
-> > > > > >   *
-> > > > > >   * Returns:
-> > > > > > - * - 0 if link successfully created to supplier
-> > > > > > - * - -EAGAIN if linking to the supplier should be reattempted
-> > > > > > + * - 0 if fwnode link successfully created to supplier
-> > > > > >   * - -EINVAL if the supplier link is invalid and should not be created
-> > > > > > - * - -ENODEV if there is no device that corresponds to the supplier phandle
-> > > > > > + * - -ENODEV if struct device will never be create for supplier
-> > > > > >   */
-> > > > > > -static int of_link_to_phandle(struct device *dev, struct device_node *sup_np,
-> > > > > > -                           u32 dl_flags)
-> > > > > > +static int of_link_to_phandle(struct device_node *con_np,
-> > > > > > +                           struct device_node *sup_np)
-> > > > > >  {
-> > > > > > -     struct device *sup_dev, *sup_par_dev;
-> > > > > > -     int ret = 0;
-> > > > > > +     struct device *sup_dev;
-> > > > > >       struct device_node *tmp_np = sup_np;
-> > > > > >
-> > > > > >       of_node_get(sup_np);
-> > > > > > @@ -1106,7 +1080,8 @@ static int of_link_to_phandle(struct device *dev, struct device_node *sup_np,
-> > > > > >       }
-> > > > > >
-> > > > > >       if (!sup_np) {
-> > > > > > -             dev_dbg(dev, "Not linking to %pOFP - No device\n", tmp_np);
-> > > > > > +             pr_debug("Not linking %pOFP to %pOFP - No device\n",
-> > > > > > +                      con_np, tmp_np);
-> > > > >
-> > > > > Who is calling this function without a valid dev pointer?
-> > > >
-> > > > Sorry, I plan to delete the "dev" parameter as it's not really used
-> > > > anywhere. I'm trying to do that without causing build time errors and
-> > > > making the series into digestible small patches.
-> > > >
-> > > > I can do the deletion of the parameter as a Patch 19/19. Will that work?
-> > >
-> > > That's fine, but why get rid of dev?  The driver core works on these
-> > > things, and we want errors/messages/warnings to spit out what device is
-> > > causing those issues.  It is fine to drag around a struct device pointer
-> > > just for messages, that's to be expected, and is good.
-> >
-> > In general I agree. If the fwnode being parsed is related to the dev,
-> > it's nice to have the dev name in the logs.
-> >
-> > But in this instance I feel it's analogous to printing the PID that's
-> > parsing the fwnode -- kinda irrelevant. The device in question can
-> > appear very random and it'll just cause more confusion than be of help
-> > if it shows up in the logs.
-> >
-> > For example it can be something like:
-> > <gpio device name>: linking <wifi fwnode> to <iommu fwnode>
-> >
-> > If the device was actually that of the wifi fwnode of the iommu
-> > fwnode, I agree it'll be useful to carry around the dev even if it's
-> > just for logs.
-> >
-> > Hope that makes sense.
->
-> Not really, as the device here should be the one that is doing the
-> linking, so why doesn't that matter?
+Some unused macros could cause gcc warning:
+kernel/audit.c:68:0: warning: macro "AUDIT_UNINITIALIZED" is not used
+[-Wunused-macros]
+kernel/auditsc.c:104:0: warning: macro "AUDIT_AUX_IPCPERM" is not used
+[-Wunused-macros]
+kernel/auditsc.c:82:0: warning: macro "AUDITSC_INVALID" is not used
+[-Wunused-macros]
 
-No, the links being created here are fwnode links. Also, when a fwnode
-is parsed (because the device corresponding to it is added), the whole
-fwnode tree under it is also parsed. So the device in question won't
-be either the consumer or the supplier when the log is printed. So the
-device will just be some random ancestor up the parent chain.
+remove them to tame gcc.
 
--Saravana
+Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+Cc: Paul Moore <paul@paul-moore.com> 
+Cc: Eric Paris <eparis@redhat.com> 
+Cc: linux-audit@redhat.com 
+Cc: linux-kernel@vger.kernel.org 
+---
+ kernel/audit.c   | 1 -
+ kernel/auditsc.c | 3 ---
+ 2 files changed, 4 deletions(-)
+
+diff --git a/kernel/audit.c b/kernel/audit.c
+index ac0aeaa99937..dfac1e0ca887 100644
+--- a/kernel/audit.c
++++ b/kernel/audit.c
+@@ -65,7 +65,6 @@
+ /* No auditing will take place until audit_initialized == AUDIT_INITIALIZED.
+  * (Initialization happens after skb_init is called.) */
+ #define AUDIT_DISABLED		-1
+-#define AUDIT_UNINITIALIZED	0
+ #define AUDIT_INITIALIZED	1
+ static int	audit_initialized;
+ 
+diff --git a/kernel/auditsc.c b/kernel/auditsc.c
+index 183d79cc2e12..eeb4930d499f 100644
+--- a/kernel/auditsc.c
++++ b/kernel/auditsc.c
+@@ -80,7 +80,6 @@
+ #include "audit.h"
+ 
+ /* flags stating the success for a syscall */
+-#define AUDITSC_INVALID 0
+ #define AUDITSC_SUCCESS 1
+ #define AUDITSC_FAILURE 2
+ 
+@@ -102,8 +101,6 @@ struct audit_aux_data {
+ 	int			type;
+ };
+ 
+-#define AUDIT_AUX_IPCPERM	0
+-
+ /* Number of target pids per aux struct. */
+ #define AUDIT_AUX_PIDS	16
+ 
+-- 
+1.8.3.1
+
