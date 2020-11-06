@@ -2,99 +2,361 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 708452A8F6B
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 07:23:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BFBF2A8F6E
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 07:25:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726247AbgKFGXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 01:23:17 -0500
-Received: from mxout70.expurgate.net ([194.37.255.70]:38517 "EHLO
-        mxout70.expurgate.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725828AbgKFGXR (ORCPT
+        id S1726126AbgKFGZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 01:25:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52684 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725830AbgKFGZr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 01:23:17 -0500
-Received: from [127.0.0.1] (helo=localhost)
-        by relay.expurgate.net with smtp (Exim 4.90)
-        (envelope-from <ms@dev.tdt.de>)
-        id 1kav9Q-0003pc-FY; Fri, 06 Nov 2020 07:23:08 +0100
-Received: from [195.243.126.94] (helo=securemail.tdt.de)
-        by relay.expurgate.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.90)
-        (envelope-from <ms@dev.tdt.de>)
-        id 1kav9P-0004R8-13; Fri, 06 Nov 2020 07:23:07 +0100
-Received: from securemail.tdt.de (localhost [127.0.0.1])
-        by securemail.tdt.de (Postfix) with ESMTP id 1128724004B;
-        Fri,  6 Nov 2020 07:23:06 +0100 (CET)
-Received: from mail.dev.tdt.de (unknown [10.2.4.42])
-        by securemail.tdt.de (Postfix) with ESMTP id 79F50240049;
-        Fri,  6 Nov 2020 07:23:05 +0100 (CET)
-Received: from mail.dev.tdt.de (localhost [IPv6:::1])
-        by mail.dev.tdt.de (Postfix) with ESMTP id 12439205F3;
-        Fri,  6 Nov 2020 07:23:05 +0100 (CET)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 06 Nov 2020 07:23:05 +0100
-From:   Martin Schiller <ms@dev.tdt.de>
-To:     andrew.hendry@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        edumazet@google.com, xiyuyang19@fudan.edu.cn
-Cc:     linux-x25@vger.kernel.org, netdev@vger.kernel.org,
+        Fri, 6 Nov 2020 01:25:47 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EC40C0613D2
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 22:25:47 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id a18so194286pfl.3
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 22:25:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+WaW/Kl55+DVDxtYNyOBh4gwHpyqJtIa03Gx18IWwOY=;
+        b=iSOAb50AYOS4sZQXnLvptdF+hXVBdQs1ZtMUfVPbGE/jX5VDDofDsPSZKdxVrj+x5N
+         aCK1lf7xnug98SPUYOXlZ3TGozT9h9LvJikZ9LJh0cPmYyZXRp3o/sEPOxDT/R7SOe1n
+         HzUvau2aiRbiNzMqPu+/j7aDZwaUtpcbmgCxBFtMDfGpSJYIWgfUPqOvFtjqL4EywE1I
+         Eg0pyCoWCgIH7TO9rhiolK2ZwtGiKQuGFDouhGrhcjWKPxpp5RjWKskJ/XD7qSYfVFZw
+         uff8Ivj5JX0/eNjhLPnoxydXa8HlxVXU2j+E1s9hPJHwE+9/Lz40q3AqNoNqdmHFNMkX
+         W5OQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+WaW/Kl55+DVDxtYNyOBh4gwHpyqJtIa03Gx18IWwOY=;
+        b=N2yEuIBa86jRoCJM3PWFme0Dn99D41FaXFujYke5HMtjTS5A0+ZnpLYFMr6A4L8atR
+         Wx+fv71EXemMkbzg/RVc2y6Wp5lINlGBQiy8y+ajzmpjh6WxcIpOaaWdO/2QvBdfJNvF
+         QSKZzWA93OvEtraEt8HBNjExAq4shpPHaqLPT/XEfg20kxrPQ7Hb1c1dv2xjuUkeEZB7
+         9F5tT1bsxg/gdFe7tr/zFOOET5L9MyVtnWkedVXC043AXymrLP9N59D9pJYE7Cb1niuE
+         CtzPWc23zrxJugNNuadcKcFNWb8u8SXQyK8hj35MBv2b3tNyqJNstwQMm7kpMN8Lk94h
+         g4IA==
+X-Gm-Message-State: AOAM5327+x2WO54o/tPzD0voGC2hxtKomiLkKrudPkQx/NeTvfbKmeHN
+        sEzcvTpMrpdbM1XF8SA4KGWV4Q==
+X-Google-Smtp-Source: ABdhPJxo9qyAqKQekHRi0uct4Rzw7NXa2Zd0iU/re5qij6bPI73jFb2Ecv1fNwshJJyp5NGFw3Xlhw==
+X-Received: by 2002:a17:90a:5898:: with SMTP id j24mr865337pji.78.1604643946639;
+        Thu, 05 Nov 2020 22:25:46 -0800 (PST)
+Received: from localhost ([122.172.12.172])
+        by smtp.gmail.com with ESMTPSA id d123sm574601pfa.206.2020.11.05.22.25.45
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 05 Nov 2020 22:25:45 -0800 (PST)
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
+        digetx@gmail.com, Stephan Gerhold <stephan@gerhold.net>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] net/x25: Fix null-ptr-deref in x25_connect
-Organization: TDT AG
-In-Reply-To: <20201006054558.19453-1-ms@dev.tdt.de>
-References: <20201006054558.19453-1-ms@dev.tdt.de>
-Message-ID: <9751fc51170c9bf776e03d079a3e92e3@dev.tdt.de>
-X-Sender: ms@dev.tdt.de
-User-Agent: Roundcube Webmail/1.3.15
-X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.2
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dev.tdt.de
-X-purgate-type: clean
-X-purgate-ID: 151534::1604643787-000074F7-2FECC0C1/0/0
-X-purgate: clean
+Subject: [PATCH 1/2] cpufreq: dt: Don't (ab)use dev_pm_opp_get_opp_table() to create OPP table
+Date:   Fri,  6 Nov 2020 11:54:35 +0530
+Message-Id: <684ff01900180c0a40ec307dacc673b24eab593b.1604643714.git.viresh.kumar@linaro.org>
+X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-06 07:45, Martin Schiller wrote:
-> This fixes a regression for blocking connects introduced by commit
-> 4becb7ee5b3d ("net/x25: Fix x25_neigh refcnt leak when x25 
-> disconnect").
-> 
-> The x25->neighbour is already set to "NULL" by x25_disconnect() now,
-> while a blocking connect is waiting in
-> x25_wait_for_connection_establishment(). Therefore x25->neighbour must
-> not be accessed here again and x25->state is also already set to
-> X25_STATE_0 by x25_disconnect().
-> 
-> Fixes: 4becb7ee5b3d ("net/x25: Fix x25_neigh refcnt leak when x25 
-> disconnect")
-> Signed-off-by: Martin Schiller <ms@dev.tdt.de>
-> ---
-> 
-> Change from v1:
-> also handle interrupting signals correctly
-> 
-> ---
->  net/x25/af_x25.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/net/x25/af_x25.c b/net/x25/af_x25.c
-> index 0bbb283f23c9..046d3fee66a9 100644
-> --- a/net/x25/af_x25.c
-> +++ b/net/x25/af_x25.c
-> @@ -825,7 +825,7 @@ static int x25_connect(struct socket *sock, struct
-> sockaddr *uaddr,
->  	sock->state = SS_CONNECTED;
->  	rc = 0;
->  out_put_neigh:
-> -	if (rc) {
-> +	if (rc && x25->neighbour) {
->  		read_lock_bh(&x25_list_lock);
->  		x25_neigh_put(x25->neighbour);
->  		x25->neighbour = NULL;
+Initially, the helper dev_pm_opp_get_opp_table() was supposed to be used
+only for the OPP core's internal use (it tries to find an existing OPP
+table and if it doesn't find one, then it allocates the OPP table).
 
-@David
-Is there anything left I need to do, to get this fix merged?
+Sometime back, the cpufreq-dt driver started using it to make sure all
+the relevant resources required by the OPP core are available earlier
+during initialization process to properly propagate -EPROBE_DEFER.
+
+It worked but it also abused the API to create an OPP table, which
+should be created with the help of other helpers provided by the OPP
+core.
+
+The OPP core will be updated in a later commit to limit the scope of
+dev_pm_opp_get_opp_table() to only finding an existing OPP table and not
+create one. This commit updates the cpufreq-dt driver before that
+happens.
+
+Now the cpufreq-dt driver creates the OPP and cpufreq tables for all the
+CPUs from driver's init callback itself.
+
+Cc: Stephan Gerhold <stephan@gerhold.net>
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+---
+ drivers/cpufreq/cpufreq-dt.c | 158 +++++++++++++++--------------------
+ 1 file changed, 68 insertions(+), 90 deletions(-)
+
+diff --git a/drivers/cpufreq/cpufreq-dt.c b/drivers/cpufreq/cpufreq-dt.c
+index e363ae04aac6..66b3db5efb53 100644
+--- a/drivers/cpufreq/cpufreq-dt.c
++++ b/drivers/cpufreq/cpufreq-dt.c
+@@ -30,7 +30,7 @@ struct private_data {
+ 	cpumask_var_t cpus;
+ 	struct device *cpu_dev;
+ 	struct opp_table *opp_table;
+-	struct opp_table *reg_opp_table;
++	struct cpufreq_frequency_table *freq_table;
+ 	bool have_static_opps;
+ };
+ 
+@@ -102,7 +102,6 @@ static const char *find_supply_name(struct device *dev)
+ 
+ static int cpufreq_init(struct cpufreq_policy *policy)
+ {
+-	struct cpufreq_frequency_table *freq_table;
+ 	struct private_data *priv;
+ 	struct device *cpu_dev;
+ 	struct clk *cpu_clk;
+@@ -114,9 +113,7 @@ static int cpufreq_init(struct cpufreq_policy *policy)
+ 		pr_err("failed to find data for cpu%d\n", policy->cpu);
+ 		return -ENODEV;
+ 	}
+-
+ 	cpu_dev = priv->cpu_dev;
+-	cpumask_copy(policy->cpus, priv->cpus);
+ 
+ 	cpu_clk = clk_get(cpu_dev, NULL);
+ 	if (IS_ERR(cpu_clk)) {
+@@ -125,67 +122,32 @@ static int cpufreq_init(struct cpufreq_policy *policy)
+ 		return ret;
+ 	}
+ 
+-	/*
+-	 * Initialize OPP tables for all policy->cpus. They will be shared by
+-	 * all CPUs which have marked their CPUs shared with OPP bindings.
+-	 *
+-	 * For platforms not using operating-points-v2 bindings, we do this
+-	 * before updating policy->cpus. Otherwise, we will end up creating
+-	 * duplicate OPPs for policy->cpus.
+-	 *
+-	 * OPPs might be populated at runtime, don't check for error here
+-	 */
+-	if (!dev_pm_opp_of_cpumask_add_table(policy->cpus))
+-		priv->have_static_opps = true;
+-
+-	/*
+-	 * But we need OPP table to function so if it is not there let's
+-	 * give platform code chance to provide it for us.
+-	 */
+-	ret = dev_pm_opp_get_opp_count(cpu_dev);
+-	if (ret <= 0) {
+-		dev_err(cpu_dev, "OPP table can't be empty\n");
+-		ret = -ENODEV;
+-		goto out_free_opp;
+-	}
+-
+-	ret = dev_pm_opp_init_cpufreq_table(cpu_dev, &freq_table);
+-	if (ret) {
+-		dev_err(cpu_dev, "failed to init cpufreq table: %d\n", ret);
+-		goto out_free_opp;
+-	}
++	transition_latency = dev_pm_opp_get_max_transition_latency(cpu_dev);
++	if (!transition_latency)
++		transition_latency = CPUFREQ_ETERNAL;
+ 
++	cpumask_copy(policy->cpus, priv->cpus);
+ 	policy->driver_data = priv;
+ 	policy->clk = cpu_clk;
+-	policy->freq_table = freq_table;
+-
++	policy->freq_table = priv->freq_table;
+ 	policy->suspend_freq = dev_pm_opp_get_suspend_opp_freq(cpu_dev) / 1000;
++	policy->cpuinfo.transition_latency = transition_latency;
++	policy->dvfs_possible_from_any_cpu = true;
+ 
+ 	/* Support turbo/boost mode */
+ 	if (policy_has_boost_freq(policy)) {
+ 		/* This gets disabled by core on driver unregister */
+ 		ret = cpufreq_enable_boost_support();
+ 		if (ret)
+-			goto out_free_cpufreq_table;
++			goto out_clk_put;
+ 		cpufreq_dt_attr[1] = &cpufreq_freq_attr_scaling_boost_freqs;
+ 	}
+ 
+-	transition_latency = dev_pm_opp_get_max_transition_latency(cpu_dev);
+-	if (!transition_latency)
+-		transition_latency = CPUFREQ_ETERNAL;
+-
+-	policy->cpuinfo.transition_latency = transition_latency;
+-	policy->dvfs_possible_from_any_cpu = true;
+-
+ 	dev_pm_opp_of_register_em(cpu_dev, policy->cpus);
+ 
+ 	return 0;
+ 
+-out_free_cpufreq_table:
+-	dev_pm_opp_free_cpufreq_table(cpu_dev, &freq_table);
+-out_free_opp:
+-	if (priv->have_static_opps)
+-		dev_pm_opp_of_cpumask_remove_table(policy->cpus);
++out_clk_put:
+ 	clk_put(cpu_clk);
+ 
+ 	return ret;
+@@ -208,11 +170,6 @@ static int cpufreq_offline(struct cpufreq_policy *policy)
+ 
+ static int cpufreq_exit(struct cpufreq_policy *policy)
+ {
+-	struct private_data *priv = policy->driver_data;
+-
+-	dev_pm_opp_free_cpufreq_table(priv->cpu_dev, &policy->freq_table);
+-	if (priv->have_static_opps)
+-		dev_pm_opp_of_cpumask_remove_table(policy->related_cpus);
+ 	clk_put(policy->clk);
+ 	return 0;
+ }
+@@ -236,6 +193,7 @@ static int dt_cpufreq_early_init(struct device *dev, int cpu)
+ {
+ 	struct private_data *priv;
+ 	struct device *cpu_dev;
++	bool fallback = false;
+ 	const char *reg_name;
+ 	int ret;
+ 
+@@ -254,69 +212,87 @@ static int dt_cpufreq_early_init(struct device *dev, int cpu)
+ 	if (!alloc_cpumask_var(&priv->cpus, GFP_KERNEL))
+ 		return -ENOMEM;
+ 
++	cpumask_set_cpu(cpu, priv->cpus);
+ 	priv->cpu_dev = cpu_dev;
+ 
+-	/* Try to get OPP table early to ensure resources are available */
+-	priv->opp_table = dev_pm_opp_get_opp_table(cpu_dev);
+-	if (IS_ERR(priv->opp_table)) {
+-		ret = PTR_ERR(priv->opp_table);
+-		if (ret != -EPROBE_DEFER)
+-			dev_err(cpu_dev, "failed to get OPP table: %d\n", ret);
+-		goto free_cpumask;
+-	}
+-
+ 	/*
+ 	 * OPP layer will be taking care of regulators now, but it needs to know
+ 	 * the name of the regulator first.
+ 	 */
+ 	reg_name = find_supply_name(cpu_dev);
+ 	if (reg_name) {
+-		priv->reg_opp_table = dev_pm_opp_set_regulators(cpu_dev,
+-								&reg_name, 1);
+-		if (IS_ERR(priv->reg_opp_table)) {
+-			ret = PTR_ERR(priv->reg_opp_table);
++		priv->opp_table = dev_pm_opp_set_regulators(cpu_dev, &reg_name,
++							    1);
++		if (IS_ERR(priv->opp_table)) {
++			ret = PTR_ERR(priv->opp_table);
+ 			if (ret != -EPROBE_DEFER)
+ 				dev_err(cpu_dev, "failed to set regulators: %d\n",
+ 					ret);
+-			goto put_table;
++			goto out;
+ 		}
+ 	}
+ 
+-	/* Find OPP sharing information so we can fill pri->cpus here */
+ 	/* Get OPP-sharing information from "operating-points-v2" bindings */
+ 	ret = dev_pm_opp_of_get_sharing_cpus(cpu_dev, priv->cpus);
+ 	if (ret) {
+ 		if (ret != -ENOENT)
+-			goto put_reg;
++			goto out;
+ 
+ 		/*
+ 		 * operating-points-v2 not supported, fallback to all CPUs share
+ 		 * OPP for backward compatibility if the platform hasn't set
+ 		 * sharing CPUs.
+ 		 */
+-		if (dev_pm_opp_get_sharing_cpus(cpu_dev, priv->cpus)) {
+-			cpumask_setall(priv->cpus);
+-
+-			/*
+-			 * OPP tables are initialized only for cpu, do it for
+-			 * others as well.
+-			 */
+-			ret = dev_pm_opp_set_sharing_cpus(cpu_dev, priv->cpus);
+-			if (ret)
+-				dev_err(cpu_dev, "%s: failed to mark OPPs as shared: %d\n",
+-					__func__, ret);
+-		}
++		if (dev_pm_opp_get_sharing_cpus(cpu_dev, priv->cpus))
++			fallback = true;
++	}
++
++	/*
++	 * Initialize OPP tables for all priv->cpus. They will be shared by
++	 * all CPUs which have marked their CPUs shared with OPP bindings.
++	 *
++	 * For platforms not using operating-points-v2 bindings, we do this
++	 * before updating priv->cpus. Otherwise, we will end up creating
++	 * duplicate OPPs for the CPUs.
++	 *
++	 * OPPs might be populated at runtime, don't check for error here.
++	 */
++	if (!dev_pm_opp_of_cpumask_add_table(priv->cpus))
++		priv->have_static_opps = true;
++
++	/*
++	 * The OPP table must be initialized, statically or dynamically, by this
++	 * point.
++	 */
++	ret = dev_pm_opp_get_opp_count(cpu_dev);
++	if (ret <= 0) {
++		dev_err(cpu_dev, "OPP table can't be empty\n");
++		ret = -ENODEV;
++		goto out;
++	}
++
++	if (fallback) {
++		cpumask_setall(priv->cpus);
++		ret = dev_pm_opp_set_sharing_cpus(cpu_dev, priv->cpus);
++		if (ret)
++			dev_err(cpu_dev, "%s: failed to mark OPPs as shared: %d\n",
++				__func__, ret);
++	}
++
++	ret = dev_pm_opp_init_cpufreq_table(cpu_dev, &priv->freq_table);
++	if (ret) {
++		dev_err(cpu_dev, "failed to init cpufreq table: %d\n", ret);
++		goto out;
+ 	}
+ 
+ 	list_add(&priv->node, &priv_list);
+ 	return 0;
+ 
+-put_reg:
+-	if (priv->reg_opp_table)
+-		dev_pm_opp_put_regulators(priv->reg_opp_table);
+-put_table:
+-	dev_pm_opp_put_opp_table(priv->opp_table);
+-free_cpumask:
++out:
++	if (priv->have_static_opps)
++		dev_pm_opp_of_cpumask_remove_table(priv->cpus);
++	if (priv->opp_table)
++		dev_pm_opp_put_regulators(priv->opp_table);
+ 	free_cpumask_var(priv->cpus);
+ 	return ret;
+ }
+@@ -326,9 +302,11 @@ static void dt_cpufreq_release(void)
+ 	struct private_data *priv, *tmp;
+ 
+ 	list_for_each_entry_safe(priv, tmp, &priv_list, node) {
+-		if (priv->reg_opp_table)
+-			dev_pm_opp_put_regulators(priv->reg_opp_table);
+-		dev_pm_opp_put_opp_table(priv->opp_table);
++		dev_pm_opp_free_cpufreq_table(priv->cpu_dev, &priv->freq_table);
++		if (priv->have_static_opps)
++			dev_pm_opp_of_cpumask_remove_table(priv->cpus);
++		if (priv->opp_table)
++			dev_pm_opp_put_regulators(priv->opp_table);
+ 		free_cpumask_var(priv->cpus);
+ 		list_del(&priv->node);
+ 	}
+-- 
+2.25.0.rc1.19.g042ed3e048af
 
