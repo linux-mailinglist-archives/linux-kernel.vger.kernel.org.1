@@ -2,197 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72C292A99DC
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 17:51:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6B7F2A99DF
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 17:54:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726593AbgKFQvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 11:51:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54480 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726075AbgKFQvS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 11:51:18 -0500
-Received: from kernel.org (83-245-197-237.elisa-laajakaista.fi [83.245.197.237])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5F7402151B;
-        Fri,  6 Nov 2020 16:51:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604681477;
-        bh=IEal4DM6g9pzay8voUAwBH9HgqP88t6Jh9pbcjBimdo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DwqQohcJEgkBnM4uO/7BgnvX7ReasVA1yAl5vhjUy3mNbwNHBF8antXZ217mpTy5u
-         wVc4b1yMgJhu92+vURdJa+GNLEfQ2FuU9leamNT//DOpLvKHBIIaRpxw4GN4LcIQ3u
-         C9O+8rJcGVBsxuJ5uk+vJR91YWsWwA455jOVTwNo=
-Date:   Fri, 6 Nov 2020 18:51:07 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
-        cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com, kai.huang@intel.com,
-        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
-        luto@kernel.org, nhorman@redhat.com, npmccallum@redhat.com,
-        puiterwijk@redhat.com, rientjes@google.com, tglx@linutronix.de,
-        yaozhangx@google.com, mikko.ylinen@intel.com,
-        Michal Hocko <mhocko@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH v40 10/24] mm: Add 'mprotect' hook to struct
- vm_operations_struct
-Message-ID: <20201106165107.GA52595@kernel.org>
-References: <20201104145430.300542-1-jarkko.sakkinen@linux.intel.com>
- <20201104145430.300542-11-jarkko.sakkinen@linux.intel.com>
- <20201106100409.GD3371@techsingularity.net>
+        id S1726732AbgKFQyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 11:54:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38312 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725868AbgKFQyo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 11:54:44 -0500
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C6B1C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 08:54:44 -0800 (PST)
+Received: by mail-wm1-x330.google.com with SMTP id h62so1946706wme.3
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 08:54:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=F+Vt+4TSvdy8WlC4sGQnfJ5XRS32FKrs7NXD/c6LwWA=;
+        b=GlCcA6UHHoieTNyiZ1/cpN4zXsbXTEkHsxM1XA7Q2LT+o9L2id9zdc8DOKrVNPkOXq
+         kLKz5JhU8YOpXKwoi9cGU0uj0VnmyTcZCHvx40WNG1ZcB0KCoHwvShL9rImWKk5Iblhw
+         El/nFbCGs9eX082IlAs/kb9rM4cdmTxDUBRlvzsSeXFSLnKegLjma49IBFJiJFowsGx4
+         IzoCpCAMJVCKAgqT6/CLtyUGg7xvhNGe2pFhgys4AE6gGewG/IVRx8uUrWwBILWbd7g6
+         MpETBAuRT58+HArQvzU9CTY/HS3trxfU/fYRJb1Us7NyoMvLYypmrHrMMB9TleNnFfSr
+         0MSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=F+Vt+4TSvdy8WlC4sGQnfJ5XRS32FKrs7NXD/c6LwWA=;
+        b=J+e2gqlDFiu79X0cXbUmY8pq3sG2guwcobtC9bA3Ti+5XWjw5oTF8Zybg4tALsc6iG
+         KOVvTuU4Nxq7JyWBqt9FwkIfxjO1F1Hq/4A96S1VUmXowNvxo01StHc+Ph116N8yeI+4
+         pa6p0etNaVWc4VYFOArOPdaLTNATQwBeuasMfsCfNs6GZSDY8iuinJGk717Li7/KXVR8
+         R3kZhrRZj2eXYAVg8r9m5vq1a5LXBP5f/WZWtj757As4aPaibukhta4S8HTe790J1uN3
+         pzK2qQEuGBo2xOTH2kCMtxEiA04tcfxFWhczYRbPikJRbMqxzwnYxzH47CmP0w2XBJjZ
+         meiQ==
+X-Gm-Message-State: AOAM5338UE/6s0ecx5W+40wFHpt5oylzZLS4IadAYMgA4s6rVBmqFJ6H
+        JfAsIqLQOZQ49/i+C2Vu7qZDCzuKdLoErmQO
+X-Google-Smtp-Source: ABdhPJw7CI79ie5Q1Ax/Xf8IJpGNiVB6Pub1As6gH+nRUX3HuWeQ3zj6MELYc8olGfedqWMaIpCyMQ==
+X-Received: by 2002:a7b:c11a:: with SMTP id w26mr465744wmi.131.1604681681197;
+        Fri, 06 Nov 2020 08:54:41 -0800 (PST)
+Received: from dell ([91.110.221.242])
+        by smtp.gmail.com with ESMTPSA id u6sm3107686wmj.40.2020.11.06.08.54.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Nov 2020 08:54:40 -0800 (PST)
+Date:   Fri, 6 Nov 2020 16:54:38 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     David Airlie <airlied@linux.ie>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH 16/19] gpu: drm: panel: panel-ilitek-ili9322: Demote
+ non-conformant kernel-doc header
+Message-ID: <20201106165438.GN2063125@dell>
+References: <20201105144517.1826692-1-lee.jones@linaro.org>
+ <20201105144517.1826692-17-lee.jones@linaro.org>
+ <20201105211742.GD216923@ravnborg.org>
+ <20201106074323.GV4488@dell>
+ <20201106161109.GA625131@ravnborg.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201106100409.GD3371@techsingularity.net>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201106161109.GA625131@ravnborg.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 06, 2020 at 10:04:09AM +0000, Mel Gorman wrote:
-> On Wed, Nov 04, 2020 at 04:54:16PM +0200, Jarkko Sakkinen wrote:
-> > From: Sean Christopherson <sean.j.christopherson@intel.com>
-> > 
-> > Background
-> > ==========
-> > 
-> > 1. SGX enclave pages are populated with data by copying from normal memory
-> >    via ioctl() (SGX_IOC_ENCLAVE_ADD_PAGES), which will be added later in
-> >    this series.
-> > 2. It is desirable to be able to restrict those normal memory data sources.
-> >    For instance, to ensure that the source data is executable before
-> >    copying data to an executable enclave page.
-> > 3. Enclave page permissions are dynamic (just like normal permissions) and
-> >    can be adjusted at runtime with mprotect().
-> > 
-> > This creates a problem because the original data source may have long since
-> > vanished at the time when enclave page permissions are established (mmap()
-> > or mprotect()).
-> > 
-> > The solution (elsewhere in this series) is to force enclaves creators to
-> > declare their paging permission *intent* up front to the ioctl().  This
-> > intent can me immediately compared to the source data???s mapping and
-> > rejected if necessary.
-> > 
-> > The ???intent??? is also stashed off for later comparison with enclave
-> > PTEs. This ensures that any future mmap()/mprotect() operations
-> > performed by the enclave creator or done on behalf of the enclave
-> > can be compared with the earlier declared permissions.
-> > 
-> > Problem
-> > =======
-> > 
-> > There is an existing mmap() hook which allows SGX to perform this
-> > permission comparison at mmap() time.  However, there is no corresponding
-> > ->mprotect() hook.
-> > 
-> > Solution
-> > ========
-> > 
-> > Add a vm_ops->mprotect() hook so that mprotect() operations which are
-> > inconsistent with any page's stashed intent can be rejected by the driver.
-> > 
-> 
-> I have not read the series so this is superficial only. That said...
-> 
-> > Cc: linux-mm@kvack.org
-> > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > Cc: Matthew Wilcox <willy@infradead.org>
-> > Acked-by: Jethro Beekman <jethro@fortanix.com>
-> > Reviewed-by: Darren Kenny <darren.kenny@oracle.com>
-> > Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> > Co-developed-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-> > Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-> > ---
-> >  include/linux/mm.h | 3 +++
-> >  mm/mprotect.c      | 5 ++++-
-> >  2 files changed, 7 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/include/linux/mm.h b/include/linux/mm.h
-> > index ef360fe70aaf..eb38eabc5039 100644
-> > --- a/include/linux/mm.h
-> > +++ b/include/linux/mm.h
-> > @@ -559,6 +559,9 @@ struct vm_operations_struct {
-> >  	void (*close)(struct vm_area_struct * area);
-> >  	int (*split)(struct vm_area_struct * area, unsigned long addr);
-> >  	int (*mremap)(struct vm_area_struct * area);
-> > +	int (*mprotect)(struct vm_area_struct *vma,
-> > +			struct vm_area_struct **pprev, unsigned long start,
-> > +			unsigned long end, unsigned long newflags);
-> 
-> The first user of this uses the following information
-> 
-> 	ret = sgx_encl_may_map(vma->vm_private_data, start, end, newflags);
-> 
-> It only needs start, end and newflags. The pprev is passed in so the
-> hook can call mprotect_fixup() which is redundant as the caller knows it
-> should do that. I don't think an arbitrary driver should be responsible
-> for poking too much into the mm internals to do the fixup because we do
-> not know what other users of this hook might require in the future.
-> 
-> Hence, I would suggest that the hook receive the minimum possible
-> information to do the permissions check for the first in-tree user. If
-> it returns without failure then mm/mprotect.c would always do the fixup.
-> 
-> >  	vm_fault_t (*fault)(struct vm_fault *vmf);
-> >  	vm_fault_t (*huge_fault)(struct vm_fault *vmf,
-> >  			enum page_entry_size pe_size);
-> > diff --git a/mm/mprotect.c b/mm/mprotect.c
-> > index 56c02beb6041..1fd4fa71ce16 100644
-> > --- a/mm/mprotect.c
-> > +++ b/mm/mprotect.c
-> > @@ -616,7 +616,10 @@ static int do_mprotect_pkey(unsigned long start, size_t len,
-> >  		tmp = vma->vm_end;
-> >  		if (tmp > end)
-> >  			tmp = end;
-> > -		error = mprotect_fixup(vma, &prev, nstart, tmp, newflags);
-> > +		if (vma->vm_ops && vma->vm_ops->mprotect)
-> > +			error = vma->vm_ops->mprotect(vma, &prev, nstart, tmp, newflags);
-> > +		else
-> > +			error = mprotect_fixup(vma, &prev, nstart, tmp, newflags);
-> 
-> That would then become
-> 
-> if (vma->vm_ops && vma->vm_ops->mprotect)
-> 	error = vma->vm_ops->mprotect(vma, &prev, nstart, tmp, newflags);
-> if (!error)
-> 	error = mprotect_fixup(vma, &prev, nstart, tmp, newflags);
-> 
-> and mprotect_fixup would be removed from the driver.
-> 
-> While vm_operations_struct has borderline zero documentation, a hook for
-> one in-kernel user should have a comment explaining what the semantics
-> of the hook is -- what is it responsible for (permission check), what
-> can it change (nothing), etc. Maybe something like
-> 
-> 	/*
-> 	 * Called by mprotect in the event driver-specific permission
-> 	 * checks need to be made before the mprotect is finalised.
-> 	 * No modifications should be done to the VMA, returns 0
-> 	 * if the mprotect is permitted.
-> 	 */
-> 	int (*mprotect)(struct vm_area_struct *vma,
-> 		unsigned long start, unsigned long end,
-> 		unsigned long newflags);
-> 
-> If a future driver *does* need to poke deeper into the VM for mprotect
-> then at least they'll have to explain why that's a good idea.
+On Fri, 06 Nov 2020, Sam Ravnborg wrote:
 
-Both comments make sense to me. I'll refine this patch on Monday and
-also "x86/sgx: Add SGX misc driver interface", which uses this callback.
+> Hi Lee,
+> > > 
+> > > Applied to drm-misc-next.
+> > 
+> > Thanks for all these Sam.
+> > 
+> > Any idea what happens to the other patches?
+> > 
+> > Do they go in via a different Maintainer?
+> 
+> I expect the respective drm maintaines to take them.
+> Give them a few days to take action.
+> 
+> I look forward for the next set that you said would kill 2000+ warnings.
 
-Thanks a lot for valuable feedback!
+Just testing it now.  I hope to send it this evening.
 
-> -- 
-> Mel Gorman
-> SUSE Labs
-
-/Jarkko
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
