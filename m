@@ -2,103 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 038572A9EA2
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 21:39:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 934802A9EA3
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 21:40:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728448AbgKFUjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 15:39:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35454 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727129AbgKFUjF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 15:39:05 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F286120719;
-        Fri,  6 Nov 2020 20:39:03 +0000 (UTC)
-Date:   Fri, 6 Nov 2020 15:39:01 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Artem Bityutskiy <dedekind1@gmail.com>
-Cc:     Tom Zanussi <zanussi@kernel.org>, linux-kernel@vger.kernel.org,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Subject: Re: [PATCH] docs: trace: fix event state structure name
-Message-ID: <20201106153901.1e578557@gandalf.local.home>
-In-Reply-To: <20201104122113.322452-1-dedekind1@gmail.com>
-References: <20201104122113.322452-1-dedekind1@gmail.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1728413AbgKFUka (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 15:40:30 -0500
+Received: from netrider.rowland.org ([192.131.102.5]:59961 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1728408AbgKFUka (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 15:40:30 -0500
+Received: (qmail 55677 invoked by uid 1000); 6 Nov 2020 15:40:08 -0500
+Date:   Fri, 6 Nov 2020 15:40:08 -0500
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, parri.andrea@gmail.com,
+        will@kernel.org, peterz@infradead.org, boqun.feng@gmail.com,
+        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
+        luc.maranget@inria.fr, akiyks@gmail.com
+Subject: Re: [PATCH memory-model 5/8] tools/memory-model: Add a glossary of
+ LKMM terms
+Message-ID: <20201106204008.GA55521@rowland.harvard.edu>
+References: <20201105215953.GA15309@paulmck-ThinkPad-P72>
+ <20201105220017.15410-5-paulmck@kernel.org>
+ <20201106165930.GC47039@rowland.harvard.edu>
+ <20201106180445.GX3249@paulmck-ThinkPad-P72>
+ <20201106192351.GA53131@rowland.harvard.edu>
+ <20201106195912.GA3249@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201106195912.GA3249@paulmck-ThinkPad-P72>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed,  4 Nov 2020 14:21:13 +0200
-Artem Bityutskiy <dedekind1@gmail.com> wrote:
-
-> From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+On Fri, Nov 06, 2020 at 11:59:12AM -0800, Paul E. McKenney wrote:
+> On Fri, Nov 06, 2020 at 02:23:51PM -0500, Alan Stern wrote:
+> > On Fri, Nov 06, 2020 at 10:04:46AM -0800, Paul E. McKenney wrote:
+> > > On Fri, Nov 06, 2020 at 11:59:30AM -0500, Alan Stern wrote:
+> > > > > +	 See also "Control Dependency".
+> > > > 
+> > > > There should also be an entry for "Data Dependency", linked from here
+> > > > and from Control Dependency.
+> > > > 
+> > > > > +Marked Access:  An access to a variable that uses an special function or
+> > > > > +	macro such as "r1 = READ_ONCE()" or "smp_store_release(&a, 1)".
+> > > > 
+> > > > How about "r1 = READ_ONCE(x)"?
+> > > 
+> > > Good catches!  I am planning to squash the commit below into the
+> > > original.  Does that cover it?
+> > 
+> > No, because you didn't add a glossary entry for "Data Dependency" and 
+> > there's no link from "Control Dependency" to "Data Dependency".
 > 
-> The documentation refers to a non-existent 'struct synth_trace_state'
-> structure. The correct name is 'struct synth_event_trace_state'.
+> Sigh.  I was thinking "entry in the list", and didn't even thing to
+> check for an entry in the glossary as a whole.  With the patch below
+> (on top of the one sent earlier), are we good?
 > 
-> In other words, this patch is a mechanical substitution:
-> s/synth_trace_state/synth_event_trace_state/g
+> 							Thanx, Paul
 > 
-
-Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-
--- Steve
-
-> Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-> ---
->  Documentation/trace/events.rst | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
+> ------------------------------------------------------------------------
 > 
-> diff --git a/Documentation/trace/events.rst b/Documentation/trace/events.rst
-> index f792b1959a33..bdba7b0e19ef 100644
-> --- a/Documentation/trace/events.rst
-> +++ b/Documentation/trace/events.rst
-> @@ -787,13 +787,13 @@ To trace a synthetic using the piecewise method described above, the
->  synth_event_trace_start() function is used to 'open' the synthetic
->  event trace::
+> commit 5a49c32551e83d30e304d6c3fbb660737ba2654e
+> Author: Paul E. McKenney <paulmck@kernel.org>
+> Date:   Fri Nov 6 11:57:25 2020 -0800
+> 
+>     fixup! tools/memory-model: Add a glossary of LKMM terms
+>     
+>     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> 
+> diff --git a/tools/memory-model/Documentation/glossary.txt b/tools/memory-model/Documentation/glossary.txt
+> index 471bf13..b2da636 100644
+> --- a/tools/memory-model/Documentation/glossary.txt
+> +++ b/tools/memory-model/Documentation/glossary.txt
+> @@ -64,7 +64,7 @@ Control Dependency:  When a later store's execution depends on a test
+>  	 fragile, and can be easily destroyed by optimizing compilers.
+>  	 Please see control-dependencies.txt for more information.
 >  
-> -       struct synth_trace_state trace_state;
-> +       struct synth_event_trace_state trace_state;
+> -	 See also "Address Dependency".
+> +	 See also "Address Dependency" and "Data Dependency".
 >  
->         ret = synth_event_trace_start(schedtest_event_file, &trace_state);
+>  Cycle:	Memory-barrier pairing is restricted to a pair of CPUs, as the
+>  	name suggests.	And in a great many cases, a pair of CPUs is all
+> @@ -85,6 +85,23 @@ Cycle:	Memory-barrier pairing is restricted to a pair of CPUs, as the
 >  
->  It's passed the trace_event_file representing the synthetic event
->  using the same methods as described above, along with a pointer to a
-> -struct synth_trace_state object, which will be zeroed before use and
-> +struct synth_event_trace_state object, which will be zeroed before use and
->  used to maintain state between this and following calls.
+>  	See also "Pairing".
 >  
->  Once the event has been opened, which means space for it has been
-> @@ -805,7 +805,7 @@ lookup per field.
->  
->  To assign the values one after the other without lookups,
->  synth_event_add_next_val() should be used.  Each call is passed the
-> -same synth_trace_state object used in the synth_event_trace_start(),
-> +same synth_event_trace_state object used in the synth_event_trace_start(),
->  along with the value to set the next field in the event.  After each
->  field is set, the 'cursor' points to the next field, which will be set
->  by the subsequent call, continuing until all the fields have been set
-> @@ -834,7 +834,7 @@ this method would be (without error-handling code)::
->         ret = synth_event_add_next_val(395, &trace_state);
->  
->  To assign the values in any order, synth_event_add_val() should be
-> -used.  Each call is passed the same synth_trace_state object used in
-> +used.  Each call is passed the same synth_event_trace_state object used in
->  the synth_event_trace_start(), along with the field name of the field
->  to set and the value to set it to.  The same sequence of calls as in
->  the above examples using this method would be (without error-handling
-> @@ -856,7 +856,7 @@ can be used but not both at the same time.
->  
->  Finally, the event won't be actually traced until it's 'closed',
->  which is done using synth_event_trace_end(), which takes only the
-> -struct synth_trace_state object used in the previous calls::
-> +struct synth_event_trace_state object used in the previous calls::
->  
->         ret = synth_event_trace_end(&trace_state);
->  
+> +Data Dependency:  When the data written by a later store is computed based
+> +	on the value returned by an earlier load, a "data dependency"
+> +	extends from that load to that later store.  For example:
+> +
+> +	 1 r1 = READ_ONCE(x);
+> +	 2 WRITE_ONCE(y, r1 + 1);
+> +
+> +	In this case, the data dependency extends from the READ_ONCE()
+> +	on line 1 to the WRITE_ONCE() on line 2.  Data dependencies are
+> +	fragile and can be easily destroyed by optimizing compilers.
+> +	Because optimizing compilers put a great deal of effort into
+> +	working out what values integer variables might have, this is
+> +	especially true in cases where the dependency is carried through
+> +	an integer.
+> +
+> +	See also "Address Dependency" and "Control Dependency".
+> +
+>  From-Reads (fr):  When one CPU's store to a given variable happened
+>  	too late to affect the value returned by another CPU's
+>  	load from that same variable, there is said to be a from-reads
 
+Yes, this is better.
+
+Is it really true that data dependencies are so easily destroyed?  I 
+would expect that a true "semantic" dependency (i.e., one where the 
+value written really does vary according to the value read) would be 
+rather hard to second guess.
+
+Alan
