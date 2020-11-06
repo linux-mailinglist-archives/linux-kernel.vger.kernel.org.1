@@ -2,53 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C29F42A9EE9
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 22:13:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C32F82A9EF9
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 22:17:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728183AbgKFVNe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 16:13:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47334 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728131AbgKFVN0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 16:13:26 -0500
-Subject: Re: [GIT PULL] tpmdd updates for v5.10-rc4
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604697205;
-        bh=g/0tITjlKhXWV7bBiuGKrhqxg8yXFOQ6MjnngtQmOsk=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=jI2HRILGOxTurdH1o1swy/Z7LVdfU/2GOsIay0SNH36S2xwHuY8HmIo66z39DRmKN
-         zJ0CIXNVSyfEBlY1EIT/EaEjKWQoDg2t9etomlsYkHuVrILCcRPsl8QA1D8PJHW5DO
-         h+y3Y5RJ9z+03VgHykKR7U8j6IqjU/ao/UEhwl6E=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201106162552.GA50264@kernel.org>
-References: <20201106162552.GA50264@kernel.org>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201106162552.GA50264@kernel.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-tpmdd.git tags/tpmdd-next-v5.10-rc4
-X-PR-Tracked-Commit-Id: 8ffd778aff45be760292225049e0141255d4ad6e
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 28ced768a4262bc81c61c8244e0e57048afc18d1
-Message-Id: <160469720546.14190.13296096196953432263.pr-tracker-bot@kernel.org>
-Date:   Fri, 06 Nov 2020 21:13:25 +0000
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>, jmorris@namei.org,
-        dhowells@redhat.com, peterhuewe@gmx.de
+        id S1727869AbgKFVRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 16:17:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51708 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726987AbgKFVRF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 16:17:05 -0500
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC3BAC0613CF;
+        Fri,  6 Nov 2020 13:17:04 -0800 (PST)
+Received: by mail-lf1-x143.google.com with SMTP id l2so3863692lfk.0;
+        Fri, 06 Nov 2020 13:17:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WkGrV/BbVtUkmTGpKSoHOJ3tmEgalZorpuSoBRbJCuQ=;
+        b=nfrOhidemVObwN1hMd9w38JhMRHc8c/4JsZZp0QYvmq/i7vBh1E/QTIFFjhzoaeHT8
+         bKPeJhg/6NLRpqt7ZhZ33qia+f9BehobVXaSv14mkpQzTKHf4GNUiYlsa1cJ564gCLbu
+         Ks562QH5mKAgM5+W23AfyCDMEHqs3ygmHLHBJ5ERKg5KggstXnUhdUH9haCpW/poqldw
+         nb8g0/Em2TSunfPotj/4P96bQWMju2OVL8dtrnZMRY3zrFgoXp90m+a7HXYEqXoMra4Y
+         LB8sqp1xS5N1zM5B5d3PzJSWu5NZ+V+v2ocjrF5mgBPq82Lj2XSMYYllnF5wb6xqfQ3a
+         ELZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WkGrV/BbVtUkmTGpKSoHOJ3tmEgalZorpuSoBRbJCuQ=;
+        b=cd4RjhNSVSgMNv+LAssc4MlqA1FGXBIRL+equQeR86UUj2nJwnW3QVRdn8hpD7lyyJ
+         BTc44OntVn+1U/IcVjMfFATjvivSEr94ZmSgazNqU+KtfPZRf/RsNbgTqgF74Bm/gPZ8
+         w69pHGvq5U6I488Tk9UQYFPma2gLj1GDyNbHPWe9aVCUXK/hSVsL98poWC/me1gr0w35
+         Peqp9WOZ1JDVqFlHwmlhpKd7UOZr93SrjGChoQJQi8VAfHWcUQynrdJMybC/YWq+bxZS
+         Abd/jQ/U/tvaOy/etuQPsTsJW/QEXWjrXjkktSrvkyPld9K8g9fbPdxPP7Vr2jGbWQ6h
+         /AaA==
+X-Gm-Message-State: AOAM5309F5qRKuspTzLtAjWqSGRMf84gMFcCumEUrOT22ocGTfrQdcOu
+        xm2vevJQ6ls/dj41pJQ640qZlnGKbi4jvE5sOVl1l/H1
+X-Google-Smtp-Source: ABdhPJyfVXD4ZNlc08tGDQHN9GdKpru9VbQBM0VrXDAAliNrmnbyv+4LpRsT5Yxl8VIbnGJ0B8sZZvtKrP24glAYnHo=
+X-Received: by 2002:ac2:5f42:: with SMTP id 2mr1489911lfz.263.1604697423379;
+ Fri, 06 Nov 2020 13:17:03 -0800 (PST)
+MIME-Version: 1.0
+References: <20201105230651.2621917-1-kpsingh@chromium.org>
+In-Reply-To: <20201105230651.2621917-1-kpsingh@chromium.org>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 6 Nov 2020 13:16:52 -0800
+Message-ID: <CAADnVQJzT_NxggEXpkno+raB2=3=bc7-ZmkR5-hB1dGkoPB_Vg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2] bpf: Update verification logic for LSM programs
+To:     KP Singh <kpsingh@chromium.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 6 Nov 2020 18:25:52 +0200:
+On Thu, Nov 5, 2020 at 3:06 PM KP Singh <kpsingh@chromium.org> wrote:
+>
+> From: KP Singh <kpsingh@google.com>
+>
+> The current logic checks if the name of the BTF type passed in
+> attach_btf_id starts with "bpf_lsm_", this is not sufficient as it also
+> allows attachment to non-LSM hooks like the very function that performs
+> this check, i.e. bpf_lsm_verify_prog.
+>
+> In order to ensure that this verification logic allows attachment to
+> only LSM hooks, the LSM_HOOK definitions in lsm_hook_defs.h are used to
+> generate a BTF_ID set. Upon verification, the attach_btf_id of the
+> program being attached is checked for presence in this set.
+>
+> Signed-off-by: KP Singh <kpsingh@google.com>
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-tpmdd.git tags/tpmdd-next-v5.10-rc4
-
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/28ced768a4262bc81c61c8244e0e57048afc18d1
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+I've added Fixes tag and applied to bpf tree.
