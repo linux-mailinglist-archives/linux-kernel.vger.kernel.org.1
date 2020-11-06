@@ -2,83 +2,362 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE9892A9508
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 12:12:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D08E2A9509
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 12:13:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726942AbgKFLMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 06:12:37 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:59268 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726565AbgKFLMg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 06:12:36 -0500
-Received: from zn.tnic (p200300ec2f0d1f00f768ac1eea3c6850.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:1f00:f768:ac1e:ea3c:6850])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 21C891EC0472;
-        Fri,  6 Nov 2020 12:12:35 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1604661155;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=OCxVZWJigVhJHe/ncO/1mdogKymzvXbkcJRjV3WLbbc=;
-        b=LzOpYBRdo+QL74XTXml4Qq9WUKbpDmz0D/nWteBYZoFQdjcx3z815+dE3PYxwDi/MfyMos
-        2glCfam0gbtK6wXW8sGaGsVHRnRDCnhYJbHKFYGX+0bMkVKg3pnQmB+WlkoyTJDgfdp+Lu
-        zyO2B5NeX3/VFVwCXacQsL/fMtAcGwc=
-Date:   Fri, 6 Nov 2020 12:12:20 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Zhen Lei <thunder.leizhen@huawei.com>
-Cc:     Tony Luck <tony.luck@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86 <x86@kernel.org>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        linux-edac <linux-edac@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] x86/mce: remove unused WARN_ON() in
- mce_register_decode_chain()
-Message-ID: <20201106111220.GA14914@zn.tnic>
-References: <20201106084340.2009-1-thunder.leizhen@huawei.com>
+        id S1727087AbgKFLM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 06:12:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41102 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726317AbgKFLM4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 06:12:56 -0500
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE292C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 03:12:55 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id h62so955735wme.3
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 03:12:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=s7hWJyyabv7sI/xODuTMucUe3yrgTF3pC69+ROC/S8Y=;
+        b=ds/Oe2IaV1IEO2VJo8FZOySGoTnyAnhf/4uDafYyRECwYi2juu1ib8lOfP2DJ27X4p
+         aaVT4mkH4XPGC0X84gMYHL00Z+f3KIx1rrTQqUG3S7ptDhGXch3+v4yBbY3etIeYyQGE
+         I8tE8DreW9P0HDBG8u/7s8KcyjbMyOCuknXc03aih62df6/YMo6GS4OwU6M4wl5HM0VE
+         WUnDrjAA2UvXTMp8lnqoQHdMJt4AfkWSX5DI4PpK172HZ9AiWSLPZP+vpUgtzdvv9P2m
+         UbjuPNkM7RMJU+rVRW6Km66SSJzfijw6r1khzA7kBfF42GDAUsMhm8REURreWoC8ENWj
+         DXrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=s7hWJyyabv7sI/xODuTMucUe3yrgTF3pC69+ROC/S8Y=;
+        b=RqE7c9oLxav1vvHtxqVNHo4i91WWDkd6Kvt56mWT5FKBhElvliAGvGRR7gV56Ol81B
+         Blqu8xSgrQnAToGeWiEFwbdhRJmbIjOgjxT8PL88YG0WWHCNl7TkpEAeJMZek6Li5eem
+         SzUdNm+81BBz3Q7/daL8VgC/SNiJ/bWXR4xFa5N2xDmPuvJ1cwxenxDXveccr+Ze5TEw
+         2Bc8qYgwLunC2LDn3S5qTPDbTVsxhkZOpH1EJw4nSE9JW9ycMMEUOLIXw+f/ZNNeBryd
+         xaf72BHxn0BvGYLbBaBvITubgQe+UcDxWbvmrxhVmb8pCbJpx8jrbRRZfADJPL5HfaOx
+         e4dA==
+X-Gm-Message-State: AOAM530XkBEyUUhSISDzdsdrLRAyn2zHFLd2iOwc3mmZ3FhEyVXNSa3h
+        KOLO4OE1TLXkFGmU/txkvToDpQ==
+X-Google-Smtp-Source: ABdhPJya+4M9jpMB4EHwvPz4HdjvNjJ554A5ToFy4rwZSt6uEwsBJhNNh9D7BRQXO+kQFqwEXt9DSQ==
+X-Received: by 2002:a7b:c145:: with SMTP id z5mr1815645wmi.164.1604661174401;
+        Fri, 06 Nov 2020 03:12:54 -0800 (PST)
+Received: from dell ([91.110.221.242])
+        by smtp.gmail.com with ESMTPSA id d2sm1611881wrq.34.2020.11.06.03.12.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Nov 2020 03:12:53 -0800 (PST)
+Date:   Fri, 6 Nov 2020 11:12:51 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>,
+        Mike Hudson <Exoray@isys.ca>, linux-serial@vger.kernel.org
+Subject: Re: [PATCH 13/36] tty: serial: 8250: 8250_port: Staticify functions
+ referenced by pointers
+Message-ID: <20201106111251.GF2063125@dell>
+References: <20201104193549.4026187-1-lee.jones@linaro.org>
+ <20201104193549.4026187-14-lee.jones@linaro.org>
+ <20201106095326.GA2652562@kroah.com>
+ <20201106100552.GA2063125@dell>
+ <20201106101646.GB2063125@dell>
+ <20201106103955.GA2784089@kroah.com>
+ <20201106104810.GE2063125@dell>
+ <20201106105552.GA2810950@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201106084340.2009-1-thunder.leizhen@huawei.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201106105552.GA2810950@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 06, 2020 at 04:43:40PM +0800, Zhen Lei wrote:
-> enum mce_notifier_prios {
->         MCE_PRIO_LOWEST,
->         MCE_PRIO_MCELOG,
->         MCE_PRIO_EDAC,
-> 
-> After commit c9c6d216ed28 ("x86/mce: Rename "first" function as "early""),
-> there is no other integer between MCE_PRIO_MCELOG and MCE_PRIO_EDAC.
-> Therefore, the WARN_ON() will never be triggered, just delete it.
-> 
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> ---
->  arch/x86/kernel/cpu/mce/core.c | 3 ---
->  1 file changed, 3 deletions(-)
-> 
-> diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-> index 4102b866e7c0..914f9f102995 100644
-> --- a/arch/x86/kernel/cpu/mce/core.c
-> +++ b/arch/x86/kernel/cpu/mce/core.c
-> @@ -162,9 +162,6 @@ EXPORT_SYMBOL_GPL(mce_log);
->  
->  void mce_register_decode_chain(struct notifier_block *nb)
->  {
-> -	if (WARN_ON(nb->priority > MCE_PRIO_MCELOG && nb->priority < MCE_PRIO_EDAC))
-> -		return;
+On Fri, 06 Nov 2020, Greg Kroah-Hartman wrote:
 
-No, you don't want to remove it - you want to update it so that it
-catches wrong priorities...
+> On Fri, Nov 06, 2020 at 10:48:10AM +0000, Lee Jones wrote:
+> > On Fri, 06 Nov 2020, Greg Kroah-Hartman wrote:
+> > 
+> > > On Fri, Nov 06, 2020 at 10:16:46AM +0000, Lee Jones wrote:
+> > > > On Fri, 06 Nov 2020, Lee Jones wrote:
+> > > > 
+> > > > > On Fri, 06 Nov 2020, Greg Kroah-Hartman wrote:
+> > > > > 
+> > > > > > On Wed, Nov 04, 2020 at 07:35:26PM +0000, Lee Jones wrote:
+> > > > > > > Fixes the following W=1 kernel build warning(s):
+> > > > > > > 
+> > > > > > >  drivers/tty/serial/8250/8250_port.c:349:14: warning: no previous prototype for ‘au_serial_in’ [-Wmissing-prototypes]
+> > > > > > >  drivers/tty/serial/8250/8250_port.c:359:6: warning: no previous prototype for ‘au_serial_out’ [-Wmissing-prototypes]
+> > > > > > > 
+> > > > > > > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > > > > > Cc: Jiri Slaby <jirislaby@kernel.org>
+> > > > > > > Cc: Mike Hudson <Exoray@isys.ca>
+> > > > > > > Cc: linux-serial@vger.kernel.org
+> > > > > > > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> > > > > > > ---
+> > > > > > >  drivers/tty/serial/8250/8250_port.c | 4 ++--
+> > > > > > >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > > > > > 
+> > > > > > And now I get build errors of:
+> > > > > > 	ld: drivers/tty/serial/8250/8250_early.o: in function `early_au_setup':
+> > > > > > 	8250_early.c:(.init.text+0x7): undefined reference to `au_serial_in'
+> > > > > > 	ld: 8250_early.c:(.init.text+0xf): undefined reference to `au_serial_out'
+> > > > > > 	make: *** [Makefile:1164: vmlinux] Error 1
+> > > > > > 
+> > > > > 
+> > > > > I *always* test build my sets before posting.
+> > > > > 
+> > > > > /investigating
+> > > > 
+> > > > What config failed for you?
+> > > > 
+> > > > It looks as though SERIAL_8250_CONSOLE is a bool and doesn't appear to
+> > > > be compiled with allmodconfig builds for any architecture that I test
+> > > > against (Arm, Arm64, MIPS, PPC, x86).
+> > > 
+> > > I build on x86, and here's what I have set:
+> > > 
+> > > CONFIG_SERIAL_EARLYCON=y
+> > > CONFIG_SERIAL_8250=y
+> > > CONFIG_SERIAL_8250_DEPRECATED_OPTIONS=y
+> > > CONFIG_SERIAL_8250_PNP=y
+> > > CONFIG_SERIAL_8250_16550A_VARIANTS=y
+> > > CONFIG_SERIAL_8250_FINTEK=y
+> > > CONFIG_SERIAL_8250_CONSOLE=y
+> > > CONFIG_SERIAL_8250_DMA=y
+> > > CONFIG_SERIAL_8250_PCI=y
+> > > CONFIG_SERIAL_8250_EXAR=y
+> > > CONFIG_SERIAL_8250_NR_UARTS=16
+> > > CONFIG_SERIAL_8250_RUNTIME_UARTS=8
+> > > CONFIG_SERIAL_8250_EXTENDED=y
+> > > # CONFIG_SERIAL_8250_MANY_PORTS is not set
+> > > # CONFIG_SERIAL_8250_SHARE_IRQ is not set
+> > > # CONFIG_SERIAL_8250_DETECT_IRQ is not set
+> > > # CONFIG_SERIAL_8250_RSA is not set
+> > > CONFIG_SERIAL_8250_DWLIB=y
+> > > CONFIG_SERIAL_8250_DW=m
+> > > CONFIG_SERIAL_8250_RT288X=y
+> > > CONFIG_SERIAL_8250_UNIPHIER=m
+> > > CONFIG_SERIAL_8250_LPSS=y
+> > > CONFIG_SERIAL_8250_MID=y
+> > > CONFIG_SERIAL_8250_TEGRA=m
+> > 
+> > Is that from the default defconfig?  Or something bespoke?
+> 
+> No idea, bespoke I guess, it's grown over the years as what I use for
+> testing the tty.git tree.  Odd that I have some 8250 options turned off,
+> no idea why that is...
 
-Thx.
+Not as strange as this.
+
+I cannot recreate the issue or work out why:
+
+# THE OUTPUT
+#   *_port.o and *_early.o were both built
+
+$ ls -l ../builds/build-x86/drivers/tty/serial/8250/
+total 1196
+-rw-rw-r-- 1 lee lee  36376 Nov  6 10:52 8250_aspeed_vuart.o
+-rw-rw-r-- 1 lee lee  17696 Nov  6 10:52 8250_bcm2835aux.o
+-rw-rw-r-- 1 lee lee  90896 Nov  6 10:52 8250_core.o
+-rw-rw-r-- 1 lee lee  34184 Nov  6 10:52 8250_dma.o
+-rw-rw-r-- 1 lee lee  11840 Nov  6 10:52 8250_dwlib.o
+-rw-rw-r-- 1 lee lee  50472 Nov  6 10:52 8250_dw.o
+-rw-rw-r-- 1 lee lee  16496 Nov  6 10:52 8250_early.o
+-rw-rw-r-- 1 lee lee  49376 Nov  6 10:52 8250_exar.o
+-rw-rw-r-- 1 lee lee  20256 Nov  6 10:52 8250_fintek.o
+-rw-rw-r-- 1 lee lee  26976 Nov  6 10:52 8250_ingenic.o
+-rw-rw-r-- 1 lee lee  18904 Nov  6 10:52 8250_lpc18xx.o
+-rw-rw-r-- 1 lee lee  21712 Nov  6 10:52 8250_lpss.o
+-rw-rw-r-- 1 lee lee  18768 Nov  6 10:52 8250_men_mcb.o
+-rw-rw-r-- 1 lee lee  25880 Nov  6 10:52 8250_mid.o
+-rw-rw-r-- 1 lee lee  30880 Nov  6 10:52 8250_of.o
+-rw-rw-r-- 1 lee lee 142776 Nov  6 10:52 8250_pci.o
+-rw-rw-r-- 1 lee lee  23240 Nov  6 10:52 8250_pnp.o
+-rw-rw-r-- 1 lee lee 214088 Nov  6 10:52 8250_port.o
+-rw-rw-r-- 1 lee lee  18992 Nov  6 10:52 8250_tegra.o
+-rw-rw-r-- 1 lee lee  23736 Nov  6 10:52 8250_uniphier.o
+-rw-rw-r-- 1 lee lee   1626 Nov  6 10:52 built-in.a
+-rw-rw-r-- 1 lee lee      0 Nov  6 10:52 modules.order
+-rw-rw-r-- 1 lee lee  94280 Nov  6 10:52 serial_cs.o
+
+# THE BUILD
+
+ locally noclean x86 w1 drivers/tty debug
+ 
+ Running locally
+ 
+ ********************
+ * Building for X86 *
+ ********************
+ 
+ rm -rf ../builds/build-x86/drivers/tty/
+ 
+ make -f Makefile -j24 KBUILD_OUTPUT=../builds/build-x86 allyesconfig
+ make -f Makefile -j24 KBUILD_OUTPUT=../builds/build-x86  W=1  drivers/tty/
+ 
+ make[1]: Entering directory '/home/lee/projects/linux/builds/build-x86'
+   SYNC    include/config/auto.conf.cmd
+   GEN     Makefile
+   GEN     Makefile
+   DESCEND  objtool
+   CALL    scripts/atomic/check-atomics.sh
+   CALL    scripts/checksyscalls.sh
+   CC      drivers/tty/tty_io.o
+   CC      drivers/tty/n_tty.o
+   CC      drivers/tty/tty_ioctl.o
+   CC      drivers/tty/tty_ldisc.o
+   CC      drivers/tty/tty_buffer.o
+   CC      drivers/tty/tty_port.o
+   CC      drivers/tty/vt/vt_ioctl.o
+   CC      drivers/tty/tty_mutex.o
+   CC      drivers/tty/hvc/hvc_console.o
+   CC      drivers/tty/vt/selection.o
+   CC      drivers/tty/vt/vc_screen.o
+   CC      drivers/tty/hvc/hvc_irq.o
+   CC      drivers/tty/ipwireless/hardware.o
+   CC      drivers/tty/serdev/core.o
+   CC      drivers/tty/tty_ldsem.o
+   CC      drivers/tty/vt/keyboard.o
+   CC      drivers/tty/serdev/serdev-ttyport.o
+   CC      drivers/tty/hvc/hvc_xen.o
+   CC      drivers/tty/tty_baudrate.o
+   CC      drivers/tty/ipwireless/main.o
+   CC      drivers/tty/serial/serial_core.o
+   CC      drivers/tty/serial/8250/8250_core.o
+   CC      drivers/tty/serial/8250/8250_pnp.o
+   CC      drivers/tty/serial/jsm/jsm_driver.o
+   CC      drivers/tty/ipwireless/network.o
+   CC      drivers/tty/ipwireless/tty.o
+   CC      drivers/tty/serial/8250/8250_port.o
+   CC      drivers/tty/vt/consolemap.o
+   CC      drivers/tty/serial/jsm/jsm_neo.o
+   CC      drivers/tty/serial/8250/8250_dma.o
+   HOSTCC  drivers/tty/vt/conmakehash
+   CC      drivers/tty/tty_jobctrl.o
+   CC      drivers/tty/n_null.o
+   CC      drivers/tty/serial/8250/8250_dwlib.o
+   CC      drivers/tty/vt/vt.o
+   AR      drivers/tty/ipwireless/built-in.a
+   CC      drivers/tty/serial/jsm/jsm_tty.o
+   CC      drivers/tty/serial/jsm/jsm_cls.o
+   CC      drivers/tty/serial/earlycon.o
+   CC      drivers/tty/pty.o
+   SHIPPED drivers/tty/vt/defkeymap.c
+   CC      drivers/tty/tty_audit.o
+   CC      drivers/tty/vt/defkeymap.o
+   CONMK   drivers/tty/vt/consolemap_deftbl.c
+   CC      drivers/tty/vt/consolemap_deftbl.o
+   CC      drivers/tty/serial/clps711x.o
+   CC      drivers/tty/serial/8250/8250_fintek.o
+   AR      drivers/tty/serial/jsm/built-in.a
+   AR      drivers/tty/hvc/built-in.a
+   CC      drivers/tty/serial/bcm63xx_uart.o
+   CC      drivers/tty/serial/8250/8250_pci.o
+   CC      drivers/tty/serial/samsung_tty.o
+   CC      drivers/tty/serial/8250/8250_exar.o
+   CC      drivers/tty/serial/max3100.o
+   CC      drivers/tty/serial/max310x.o
+   CC      drivers/tty/serial/lpc32xx_hs.o
+   AR      drivers/tty/serdev/built-in.a
+   CC      drivers/tty/serial/8250/serial_cs.o
+   CC      drivers/tty/serial/8250/8250_aspeed_vuart.o
+   CC      drivers/tty/sysrq.o
+   CC      drivers/tty/n_hdlc.o
+   CC      drivers/tty/n_gsm.o
+   CC      drivers/tty/n_tracerouter.o
+   CC      drivers/tty/n_tracesink.o
+   CC      drivers/tty/serial/8250/8250_bcm2835aux.o
+   CC      drivers/tty/serial/sh-sci.o
+   CC      drivers/tty/cyclades.o
+   CC      drivers/tty/serial/imx.o
+   CC      drivers/tty/serial/imx_earlycon.o
+   CC      drivers/tty/serial/8250/8250_early.o
+   CC      drivers/tty/serial/8250/8250_men_mcb.o
+   CC      drivers/tty/isicom.o
+   CC      drivers/tty/moxa.o
+   CC      drivers/tty/serial/8250/8250_dw.o
+   AR      drivers/tty/vt/built-in.a
+   CC      drivers/tty/mxser.o
+   CC      drivers/tty/serial/sccnxp.o
+   CC      drivers/tty/serial/8250/8250_lpc18xx.o
+   CC      drivers/tty/serial/sc16is7xx.o
+   CC      drivers/tty/serial/8250/8250_uniphier.o
+   CC      drivers/tty/serial/atmel_serial.o
+   CC      drivers/tty/serial/uartlite.o
+   CC      drivers/tty/serial/8250/8250_ingenic.o
+   CC      drivers/tty/serial/qcom_geni_serial.o
+   CC      drivers/tty/serial/8250/8250_lpss.o
+   CC      drivers/tty/serial/8250/8250_mid.o
+   CC      drivers/tty/nozomi.o
+   CC      drivers/tty/ttynull.o
+   CC      drivers/tty/rocket.o
+   CC      drivers/tty/synclink_gt.o
+   CC      drivers/tty/serial/8250/8250_tegra.o
+   CC      drivers/tty/serial/8250/8250_of.o
+   CC      drivers/tty/goldfish.o
+   CC      drivers/tty/serial/altera_uart.o
+   CC      drivers/tty/serial/st-asc.o
+   CC      drivers/tty/serial/ucc_uart.o
+   CC      drivers/tty/serial/timbuart.o
+   CC      drivers/tty/serial/altera_jtaguart.o
+   CC      drivers/tty/serial/ifx6x60.o
+   CC      drivers/tty/serial/pch_uart.o
+   CC      drivers/tty/serial/mxs-auart.o
+   CC      drivers/tty/serial/lantiq.o
+   AR      drivers/tty/serial/8250/built-in.a
+   CC      drivers/tty/serial/xilinx_uartps.o
+   CC      drivers/tty/serial/arc_uart.o
+   CC      drivers/tty/serial/rp2.o
+   CC      drivers/tty/serial/fsl_lpuart.o
+   CC      drivers/tty/serial/fsl_linflexuart.o
+   CC      drivers/tty/serial/digicolor-usart.o
+   CC      drivers/tty/serial/men_z135_uart.o
+   CC      drivers/tty/serial/sprd_serial.o
+   CC      drivers/tty/serial/stm32-usart.o
+   CC      drivers/tty/serial/mvebu-uart.o
+   CC      drivers/tty/serial/mps2-uart.o
+   CC      drivers/tty/serial/owl-uart.o
+   CC      drivers/tty/serial/rda-uart.o
+   CC      drivers/tty/serial/milbeaut_usio.o
+   CC      drivers/tty/serial/sifive.o
+   CC      drivers/tty/serial/serial_mctrl_gpio.o
+   CC      drivers/tty/serial/kgdb_nmi.o
+   CC      drivers/tty/serial/kgdboc.o
+   AR      drivers/tty/serial/built-in.a
+   AR      drivers/tty/built-in.a
+ make[1]: Leaving directory '/home/lee/projects/linux/builds/build-x86'
+ 
+ ******************************
+ * Checking for SPARSE errors *
+ ******************************
+ 
+ make -f Makefile -j24 KBUILD_OUTPUT=../builds/build-x86 C=1 W=1  drivers/tty/
+ 
+ make[1]: Entering directory '/home/lee/projects/linux/builds/build-x86'
+   GEN     Makefile
+   DESCEND  objtool
+   CALL    scripts/atomic/check-atomics.sh
+   CALL    scripts/checksyscalls.sh
+ make[1]: Leaving directory '/home/lee/projects/linux/builds/build-x86'
+ 
+ ******************************
+ * Checking for SMATCH errors *
+ *   TODO: stdout => stderr   *
+ ******************************
+ 
+ make -f Makefile -j24 KBUILD_OUTPUT=../builds/build-x86 C=1 CHECK='smatch --no-data -p=kernel' W=1  drivers/tty/
+ 
+ make[1]: Entering directory '/home/lee/projects/linux/builds/build-x86'
+   GEN     Makefile
+   DESCEND  objtool
+   CALL    scripts/atomic/check-atomics.sh
+   CALL    scripts/checksyscalls.sh
+ make[1]: Leaving directory '/home/lee/projects/linux/builds/build-x86'
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
