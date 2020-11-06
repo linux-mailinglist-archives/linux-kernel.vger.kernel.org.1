@@ -2,100 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3649A2A9C87
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 19:39:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F03B2A9C7A
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 19:39:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728050AbgKFSjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 13:39:32 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:31854 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727983AbgKFSjc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 13:39:32 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1604687971; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=q41jYODzwoaR+ygNJ5mFB6dSauU1naWcl3L+q392400=; b=giw3Wy6o21FG4Ty+DtWIVNjqep6FYDzDjFTgFzf3VGbCoIhj3iOvO9VXBm6UZX0jlMLipBBw
- JLHO1N1HwjtIMuQD1R/tH+hkIyDH8Pg1CMrEFwuIshIvlkcOKWLiONNSn0GGsGkHczuNjyNM
- QK3ryEm9m6b+MCkrmd69lvtE+OI=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 5fa5982f60d9475652a41713 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 06 Nov 2020 18:38:39
- GMT
-Sender: tdas=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 4FDC7C433CB; Fri,  6 Nov 2020 18:38:39 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from tdas-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: tdas)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7D3BFC433C8;
-        Fri,  6 Nov 2020 18:38:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7D3BFC433C8
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=tdas@codeaurora.org
-From:   Taniya Das <tdas@codeaurora.org>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Douglas Anderson <dianders@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Andy Gross <agross@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Taniya Das <tdas@codeaurora.org>
-Subject: [PATCH v1] arm64: dts: sc7180: Add camera clock controller node
-Date:   Sat,  7 Nov 2020 00:08:27 +0530
-Message-Id: <1604687907-25712-1-git-send-email-tdas@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S1728023AbgKFSi7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 13:38:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55264 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728015AbgKFSi5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 13:38:57 -0500
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69414C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 10:38:56 -0800 (PST)
+Received: by mail-ot1-x344.google.com with SMTP id 79so2115309otc.7
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 10:38:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YxHuRb9btK6fIk12CKU8DqhKvsu/vUJtkdyol4DJ8ic=;
+        b=XIn0aYLWh5cfYI8YC8hnnl+xITpJDnJfsx1CLbBNUc+eCZZd57DKArsvW7NDUqVSt1
+         LheCTXJR5A2xA9YYkLBgHiNAFh0oWTUTNf3j6wEN6ZsXKsOSbE4ZvTs4h+FpXAIFXeyt
+         Pmij+rPN/c2LZwrq9SM4W6hND4HiVPfiI1cD2ERzy6Hd5GJ0fd6CkwQh6r5w/2ZwMTTA
+         +S5xw1FmFZmLSVBxFCRBcLTSF6cmUwmsKCL10xkwBZNcb2q3Lm+IkI5xlJn62nAxiMJP
+         xd/L4tYnn0i3ENSMpCo5fGMt6h5HbECCZK40m4p9ZJuA+34kehcoRo8kdBykFutyedKG
+         8YyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YxHuRb9btK6fIk12CKU8DqhKvsu/vUJtkdyol4DJ8ic=;
+        b=QxyjVidapOjm3NZ82n8IW7HNZiqlUJPiqMHY/FanTuR8w+FbZU82UjESQbd8RnwPCk
+         LKnPqiEI1zFi0yCLTOLi3pxX5jUey2H5aDSs5PdlAPi9a2V+fvc8ulQ54bZuT1EdWutL
+         wELXow33SJXflUlYeHQ2FbJz7ViIAJI2guMvEDH2/izZ/8hVUjN8tCdL3AUwZNQNTQHa
+         KiPjwjTOYNWwAUdnakyvAhQEYBHDI83aki/qyIWw7bST+n8WmVSBez58NFIDCWLxNxOw
+         xTvbnhCdHgKwkxJEDpRmcXRtOZjqQhR753YUgpyaM5EkTlfzfKkt3AIHkUR9lt/hzP+/
+         FLTg==
+X-Gm-Message-State: AOAM533/pucZk0SReImX9G68fFCIanDEHo9RYlh0Xv0lsyCMoNkKE45j
+        m9/XjgJ2fxE+wB/iNrdfStfertSWayG9NcRE3GEGZg==
+X-Google-Smtp-Source: ABdhPJxNcc3J7eTwqEeCUsfredQHDe3wiEWZuB9t+2mZJN3+7jqYuEo+q+e2qHzI5HQK1c1ykKTjqQ8tIuyGLvZ7mOQ=
+X-Received: by 2002:a9d:65d5:: with SMTP id z21mr1849209oth.251.1604687935680;
+ Fri, 06 Nov 2020 10:38:55 -0800 (PST)
+MIME-Version: 1.0
+References: <20201106182657.30492-1-98.arpi@gmail.com> <20201106182850.30602-1-98.arpi@gmail.com>
+In-Reply-To: <20201106182850.30602-1-98.arpi@gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Fri, 6 Nov 2020 19:38:44 +0100
+Message-ID: <CANpmjNP4+ByVyabqiDy1KW94XBEMG3j4jqugY3kN+C-w1kEVhA@mail.gmail.com>
+Subject: Re: [PATCH v5 2/2] fs: ext4: Modify inode-test.c to use KUnit
+ parameterized testing feature
+To:     Arpitha Raghunandan <98.arpi@gmail.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        skhan@linuxfoundation.org, Iurii Zaikin <yzaikin@google.com>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-ext4@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the camera clock controller node supported on SC7180.
+On Fri, 6 Nov 2020 at 19:29, Arpitha Raghunandan <98.arpi@gmail.com> wrote:
+> Modify fs/ext4/inode-test.c to use the parameterized testing
+> feature of KUnit.
+>
+> Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
+> ---
+[...]
+>  fs/ext4/inode-test.c | 314 ++++++++++++++++++++++---------------------
+>  1 file changed, 158 insertions(+), 156 deletions(-)
 
-Signed-off-by: Taniya Das <tdas@codeaurora.org>
----
- arch/arm64/boot/dts/qcom/sc7180.dtsi | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+Acked-by: Marco Elver <elver@google.com>
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-index f5ef2cb..e795dba 100644
---- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-@@ -5,6 +5,7 @@
-  * Copyright (c) 2019, The Linux Foundation. All rights reserved.
-  */
-
-+#include <dt-bindings/clock/qcom,camcc-sc7180.h>
- #include <dt-bindings/clock/qcom,dispcc-sc7180.h>
- #include <dt-bindings/clock/qcom,gcc-sc7180.h>
- #include <dt-bindings/clock/qcom,gpucc-sc7180.h>
-@@ -2896,6 +2897,18 @@
- 			qcom,bcm-voters = <&apps_bcm_voter>;
- 		};
-
-+		camcc: clock-controller@ad00000 {
-+			compatible = "qcom,sc7180-camcc";
-+			reg = <0 0x0ad00000 0 0x10000>;
-+			clocks = <&rpmhcc RPMH_CXO_CLK>,
-+			       <&gcc GCC_CAMERA_AHB_CLK>,
-+			       <&gcc GCC_CAMERA_XO_CLK>;
-+			clock-names = "bi_tcxo", "iface", "xo";
-+			#clock-cells = <1>;
-+			#reset-cells = <1>;
-+			#power-domain-cells = <1>;
-+		};
-+
- 		mdss: mdss@ae00000 {
- 			compatible = "qcom,sc7180-mdss";
- 			reg = <0 0x0ae00000 0 0x1000>;
---
-Qualcomm INDIA, on behalf of Qualcomm Innovation Center, Inc.is a member
-of the Code Aurora Forum, hosted by the  Linux Foundation.
-
+Thanks,
+-- Marco
