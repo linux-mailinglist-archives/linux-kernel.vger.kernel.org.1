@@ -2,101 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 251C42A930A
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 10:45:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F98E2A930B
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 10:46:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726558AbgKFJph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 04:45:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726242AbgKFJph (ORCPT
+        id S1726629AbgKFJqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 04:46:24 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:37671 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725868AbgKFJqY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 04:45:37 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2E82C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 01:45:35 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id c20so814117pfr.8
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 01:45:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=zgVfc4epwEVsBy5D1AlUoYufK2pJ7jZPil3bBJ0ToF4=;
-        b=m/pgJcyWvpgkbl+Udmn/zdof1pLjxbbEEp1pJkBFpKCJ9R2DsOQeoBN26YdgKznIxJ
-         eKoxq0aVJTZE0WIb0FteLoh8t65lfR6HNJesAm0aIccIY28IKNUptNvwxmeztAv4hL5x
-         sEDmhQLx8u353eEhU3iZtFnkKJ0QOTT3I0sbM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zgVfc4epwEVsBy5D1AlUoYufK2pJ7jZPil3bBJ0ToF4=;
-        b=JS7SJk+Ufcz1c/LBESKoCZlyRREmqyCUF0qg6mqtxcFeI/bCx0UM/7KdspIum/fI/l
-         yVd06B6nvlXInoEP7APFNu4qvoa5nuw8H1a5jRA2l+u4rutRNIzPTudt0Y9IBRKsBZHf
-         htN8ipBZZn+WhXRy/m+txwnGEBexzxt/Ta0+9/DVeMGLczwSN5xpUjt9DEIAImEnbXnc
-         YkO4FT08J61/5BIIWNB3NiNHjGuoWiEtG8w8tSeq7rNdoxGtq54ltG8ZvwJAf/QtGHML
-         qgH/qym+BhvF+cTg8ueZdz3j7Ibljkpt/NU6FLQ5Jc4VYdUWDXb4Y2UmO7qGd5WGguvO
-         DPjw==
-X-Gm-Message-State: AOAM533rfWfa5NwPQZeIelfn0kXeKIXOD7v0l1yCMI99M5ox2aIt7z8J
-        7PfIw4LfflZRK64Yb7b0U0gj+w==
-X-Google-Smtp-Source: ABdhPJwjy4FnXBN7q9t3B3vjzFR5efrhhh4bKy8ZzGsKjVyZNKNN/E9/0s/8oei2zEkyqzkLvr9Z1Q==
-X-Received: by 2002:a63:1519:: with SMTP id v25mr1036774pgl.2.1604655935179;
-        Fri, 06 Nov 2020 01:45:35 -0800 (PST)
-Received: from google.com ([2620:15c:202:201:a28c:fdff:fef0:49dd])
-        by smtp.gmail.com with ESMTPSA id g16sm1619530pju.5.2020.11.06.01.45.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Nov 2020 01:45:34 -0800 (PST)
-Date:   Fri, 6 Nov 2020 01:45:33 -0800
-From:   Prashant Malani <pmalani@chromium.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, heikki.krogerus@linux.intel.com,
-        dzigterman@chromium.org, alevkoy@chromium.org,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>
-Subject: Re: [PATCH 6/6] platform/chrome: cros_ec_typec: Store cable plug type
-Message-ID: <20201106094533.GB823981@google.com>
-References: <20201106012758.525472-1-pmalani@chromium.org>
- <20201106012758.525472-7-pmalani@chromium.org>
- <20201106072059.GA2614221@kroah.com>
- <20201106085907.GA823981@google.com>
- <20201106093302.GA2637814@kroah.com>
+        Fri, 6 Nov 2020 04:46:24 -0500
+X-UUID: 66107521c869482c9656fccadfaeac7f-20201106
+X-UUID: 66107521c869482c9656fccadfaeac7f-20201106
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
+        (envelope-from <macpaul.lin@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1245991233; Fri, 06 Nov 2020 17:46:21 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 6 Nov 2020 17:46:18 +0800
+Received: from mtkswgap22.mediatek.inc (172.21.77.33) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 6 Nov 2020 17:46:18 +0800
+From:   Macpaul Lin <macpaul.lin@mediatek.com>
+To:     Rob Herring <robh@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>
+CC:     Ainge Hsu <ainge.hsu@mediatek.com>,
+        Eddie Hung <eddie.hung@mediatek.com>,
+        Mediatek WSD Upstream <wsd_upstream@mediatek.com>,
+        Macpaul Lin <macpaul.lin@mediatek.com>,
+        Macpaul Lin <macpaul@gmail.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-usb@vger.kernel.org>, <linux-mediatek@lists.infradead.org>
+Subject: [PATCH v2 1/2] dt-bindings: usb: mediatek,mtk-xhci: add str-clock-on
+Date:   Fri, 6 Nov 2020 17:46:04 +0800
+Message-ID: <1604655965-22418-1-git-send-email-macpaul.lin@mediatek.com>
+X-Mailer: git-send-email 1.7.9.5
+In-Reply-To: <1604301530-31546-1-git-send-email-macpaul.lin@mediatek.com>
+References: <1604301530-31546-1-git-send-email-macpaul.lin@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201106093302.GA2637814@kroah.com>
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+Option "mediatek,str-clock-on" means to keep clock on during system
+suspend and resume. Some platform will flush register settings if clock has
+been disabled when system is suspended. Set this option to avoid clock off.
 
-On Fri, Nov 06, 2020 at 10:33:02AM +0100, Greg Kroah-Hartman wrote:
-> On Fri, Nov 06, 2020 at 12:59:07AM -0800, Prashant Malani wrote:
-> > Hi Greg,
-> > 
-> > Did you not receive these?
-> 
-> Ah, I got 1, 2, and 5, and now 6.  That's confusing, think about if you
-> were to receive such a series, what would you think to do with it?
-> 
+Change-Id: Id841f58e9d7fb3656511072b3eb14d0d355e2dd5
+Signed-off-by: Macpaul Lin <macpaul.lin@mediatek.com>
+---
+Changes for v2:
+  - Rename "mediatek,keep-clock-on" to "mediatek,str-clock-on" which implies
+    this option related to STR functions.
+  - After discussion with Chunfeng, resend dt-bindings descritption based on
+    mediatek,mtk-xhci.txt instead of yaml format.
 
-Yeah, I agree it looks confusing. Sorry about that.
+ .../devicetree/bindings/usb/mediatek,mtk-xhci.txt  |    3 +++
+ 1 file changed, 3 insertions(+)
 
-> > > So you save it but what happens with the value?
-> > 
-> > The type C connector class framework exposes it via syfs to user-space when we
-> > register the cable via typec_register_cable() in patch 4/6 [2].
-> 
-> So you added a new sysfs file and api without updating
-> Documentation/ABI/?  That's not good :(
+diff --git a/Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.txt b/Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.txt
+index 42d8814..fc93bcf 100644
+--- a/Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.txt
++++ b/Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.txt
+@@ -37,6 +37,9 @@ Required properties:
+ 
+ Optional properties:
+  - wakeup-source : enable USB remote wakeup;
++ - mediatek,str-clock-on: Keep clock on during system suspend and resume.
++	Some platform will flush register settings if clock has been disabled
++	when system is suspended.
+  - mediatek,syscon-wakeup : phandle to syscon used to access the register
+ 	of the USB wakeup glue layer between xHCI and SPM; it depends on
+ 	"wakeup-source", and has two arguments:
+-- 
+1.7.9.5
 
-This is a pre-existing API[1] and sysfs file[2] so we are using those
-and not adding anything new.
-
-[1]:
-https://www.kernel.org/doc/html/latest/driver-api/usb/typec.html#c.typec_register_cable
-[2]: https://www.kernel.org/doc/Documentation/ABI/testing/sysfs-class-typec
-(see /sys/class/<port>-cable/plug_type)
-
-
-Best regards,
