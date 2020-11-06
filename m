@@ -2,140 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53E9F2A9452
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 11:28:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 274412A9459
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 11:29:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727030AbgKFK2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 05:28:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34154 "EHLO
+        id S1726890AbgKFK3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 05:29:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726757AbgKFK2L (ORCPT
+        with ESMTP id S1726201AbgKFK3L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 05:28:11 -0500
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A985C0613D4
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 02:28:11 -0800 (PST)
-Received: by mail-oi1-x243.google.com with SMTP id t143so840799oif.10
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 02:28:11 -0800 (PST)
+        Fri, 6 Nov 2020 05:29:11 -0500
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24794C0613CF;
+        Fri,  6 Nov 2020 02:29:11 -0800 (PST)
+Received: by mail-ej1-x641.google.com with SMTP id s25so1198040ejy.6;
+        Fri, 06 Nov 2020 02:29:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GZSvjJXJ5NeS3xeVpOYrkTBUqUJmeylcGC99/vSxMgE=;
-        b=bzj83Mf9zM2hSbE8EWsBjDPrQihAyugYzXs6/XtzMk42mlteKogf38yikrIVtP0YIp
-         1PpqGJ83G8CMqUOSy0c+3J2x07vzzrc1y+f0AiA/gsD366OU8Q4TqDzYqRuPe+cWSz/V
-         V9A5M3N3kUQY2mHkFVy5IQrEsMOk51+osCoGc=
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=6KO3tpZd9fabNVI7knO854DR7pkC+nbJTMXJxRywBRA=;
+        b=EMe3OMLoP1liYhjqmesTIm2OlSPEBZKFgyagolt5SDpky7xC2UVQ2bapJPCmi+Kjfk
+         mkzYOS5nVmK8O6uv8ECa16gBtIxF/bt1YbWleozvTfWMQwdmqtuYYRNJAl3UnEopwhJK
+         g26Zo2I7/PF8WPxGs96/n7IpzZWdOFycfw3faWxDO+MHdu0i5/jsQd6sMUZFhWVxkRmR
+         fALhhgHAAWNafZUQkqPTSFfCQEGk0c3aLL383IhONAQmlj+uA2Zb7t9E4R8BjuXU8IMJ
+         O0000TWi980w1YbmEGGbaEY+I4pkgfBGlFVu5lB4g8Ys9CkW0KgN0G+vOVjorrfmrMKy
+         zkOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GZSvjJXJ5NeS3xeVpOYrkTBUqUJmeylcGC99/vSxMgE=;
-        b=R2ooh+As8lZtlWVvecVPAloxRv2NO5oc2FUD8oJuEmko2nDgy9H4yCH5PAIR8pQFJZ
-         3g6Sjlxkv8JdZVQiWG3trG3gln/wUhTNdMTx7aWBeQVT4PHtAVtvWj81mSmGZw5Pu/uq
-         Yo0ymvI0V1iPbSHNwU4Vc9LzsD0Z29hfBEjFgyvKpqnlLVIvAfzcDkFZwbF8qSTdPInv
-         EHfLefs33nAX2nkzKzEvP233nomh3vjLVFS8hqpL/Cp4yIx1fXpqhUFmZEsY9C3F+73E
-         v5T/QgTgJL4W7M/96rquPFHvV1iluzaemu68x+mvaqCf/GO8sDUU5rIU0SRcqL4Yy+U7
-         Qssg==
-X-Gm-Message-State: AOAM532A+opeCbFeao01rGUARuEmUU1wF831CkABy7EMBXetqMRs38eX
-        gWJOxpH8EWnBDZEMTtpm1yktIgOTH5mpz46+znN52Q==
-X-Google-Smtp-Source: ABdhPJxaH0jX6R8wLLVMSL6X5ZRgt3aYM2nGlRnlOOpo51kJ5ZLuq1XuS09rdAP7rLsL8i/ky1hkd4FCo7S1HBbLmlY=
-X-Received: by 2002:aca:b141:: with SMTP id a62mr626467oif.101.1604658490602;
- Fri, 06 Nov 2020 02:28:10 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=6KO3tpZd9fabNVI7knO854DR7pkC+nbJTMXJxRywBRA=;
+        b=GS4+rz/SQFyqPt4F1O9uFwifTzAjCGzSmX9k9pHjUtG3y3gAnHSbB64osDQJy51kpp
+         5a4YRA4xfUjXkcPQVTiTMsXNcl/oo+K2BBii1cvVF4P3saYlHsafFo8rr943eC2FsZgL
+         CundsXSDc6Jk16LgE8fiSPbubsGe7nGxwqb+9zddGyaC5WEyHazflpbuOIVuSflWgph6
+         gqjVmc/8UsTfE5cMNvQLhx+saBNTrgGDs6QQeAJqZLlTLRUFRLlbMlQh4OZjHdWhYvtl
+         T2Hu1GDDVoivMc0CHPp+T8a7ibaQ6MamYYy4HiEKrYbGS5fmpsfR0Cd1hrQ2lthytSKR
+         wi+A==
+X-Gm-Message-State: AOAM532V72dYuhVElvJ+qdO7sdCDVCNywUQAU6R0L+g/vegcEE34Mngm
+        xX/9gF9GIJq3a9X0RNSft19EFf5ZoYE1lg==
+X-Google-Smtp-Source: ABdhPJwaSNRdkwLPT5rKEBe1a0MIvWVbRI5fFAFSNm5F00QScRXq83ByBFNMbNKBobP+3nuKRcdVTg==
+X-Received: by 2002:a17:906:4bc2:: with SMTP id x2mr1352791ejv.525.1604658549486;
+        Fri, 06 Nov 2020 02:29:09 -0800 (PST)
+Received: from [192.168.2.1] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id h4sm691028edj.1.2020.11.06.02.29.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 06 Nov 2020 02:29:08 -0800 (PST)
+Subject: Re: [PATCH] arm64: dts: rockchip: Reorder LED triggers from mmc
+ devices on rk3399-roc-pc.
+To:     Markus Reichl <m.reichl@fivetechno.de>,
+        linux-rockchip@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>
+Cc:     dianders@chromium.org, robin.murphy@arm.com, wens@kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20201104192933.1001-1-m.reichl@fivetechno.de>
+From:   Johan Jonker <jbx6244@gmail.com>
+Message-ID: <db3986ed-e572-bdd1-6f04-3bb2d04d49fa@gmail.com>
+Date:   Fri, 6 Nov 2020 11:29:06 +0100
+User-Agent: Mozilla/5.0 (X11; Linux i686; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-References: <CAKMK7uEw701AWXNJbRNM8Z+FkyUB5FbWegmSzyWPy9cG4W7OLA@mail.gmail.com>
- <20201104140023.GQ36674@ziepe.ca> <CAKMK7uH69hsFjYUkjg1aTh5f=q_3eswMSS5feFs6+ovz586+0A@mail.gmail.com>
- <20201104162125.GA13007@infradead.org> <CAKMK7uH=0+3FSR4LxP7bJUB4BsCcnCzfK2=D+2Am9QNmfZEmfw@mail.gmail.com>
- <20201104163758.GA17425@infradead.org> <20201104164119.GA18218@infradead.org>
- <20201104181708.GU36674@ziepe.ca> <d3497583-2338-596e-c764-8c571b7d22cf@nvidia.com>
- <20201105092524.GQ401619@phenom.ffwll.local> <20201105124950.GZ36674@ziepe.ca>
- <7ae3486d-095e-cf4e-6b0f-339d99709996@nvidia.com> <CAKMK7uGRw=xXE+D=JJsNeRav9+hdO4tcDSvDbAuWfc3T4VkoJw@mail.gmail.com>
-In-Reply-To: <CAKMK7uGRw=xXE+D=JJsNeRav9+hdO4tcDSvDbAuWfc3T4VkoJw@mail.gmail.com>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Fri, 6 Nov 2020 11:27:59 +0100
-Message-ID: <CAKMK7uFb2uhfRCwe1y5Kafd-WWqE_F3_FfpHR9f8-X-aHhgjOQ@mail.gmail.com>
-Subject: Re: [PATCH v5 05/15] mm/frame-vector: Use FOLL_LONGTERM
-To:     John Hubbard <jhubbard@nvidia.com>,
-        Thomas Hellstrom <thomas.hellstrom@intel.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Christoph Hellwig <hch@infradead.org>,
-        "J??r??me Glisse" <jglisse@redhat.com>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        Jan Kara <jack@suse.cz>, Pawel Osciak <pawel@osciak.com>,
-        KVM list <kvm@vger.kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201104192933.1001-1-m.reichl@fivetechno.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 6, 2020 at 11:01 AM Daniel Vetter <daniel@ffwll.ch> wrote:
->
-> On Fri, Nov 6, 2020 at 5:08 AM John Hubbard <jhubbard@nvidia.com> wrote:
-> >
-> > On 11/5/20 4:49 AM, Jason Gunthorpe wrote:
-> > > On Thu, Nov 05, 2020 at 10:25:24AM +0100, Daniel Vetter wrote:
-> > >>> /*
-> > >>>   * If we can't determine whether or not a pte is special, then fail immediately
-> > >>>   * for ptes. Note, we can still pin HugeTLB and THP as these are guaranteed not
-> > >>>   * to be special.
-> > >>>   *
-> > >>>   * For a futex to be placed on a THP tail page, get_futex_key requires a
-> > >>>   * get_user_pages_fast_only implementation that can pin pages. Thus it's still
-> > >>>   * useful to have gup_huge_pmd even if we can't operate on ptes.
-> > >>>   */
-> > >>
-> > >> We support hugepage faults in gpu drivers since recently, and I'm not
-> > >> seeing a pud_mkhugespecial anywhere. So not sure this works, but probably
-> > >> just me missing something again.
-> > >
-> > > It means ioremap can't create an IO page PUD, it has to be broken up.
-> > >
-> > > Does ioremap even create anything larger than PTEs?
->
-> gpu drivers also tend to use vmf_insert_pfn* directly, so we can do
-> on-demand paging and move buffers around. From what I glanced for
-> lowest level we to the pte_mkspecial correctly (I think I convinced
-> myself that vm_insert_pfn does that), but for pud/pmd levels it seems
-> just yolo.
+Hi Markus,
 
-So I dug around a bit more and ttm sets PFN_DEV | PFN_MAP to get past
-the various pft_t_devmap checks (see e.g. vmf_insert_pfn_pmd_prot()).
-x86-64 has ARCH_HAS_PTE_DEVMAP, and gup.c seems to handle these
-specially, but frankly I got totally lost in what this does.
+On 11/4/20 8:29 PM, Markus Reichl wrote:
+> After patch [1] SD-card becomes mmc1 and eMMC becomes mmc2.
+> Correct trigger of LEDs accordingly.
+> 
+> [1]
+> https://patchwork.kernel.org/patch/11881427
+> 
+> Signed-off-by: Markus Reichl <m.reichl@fivetechno.de>
+> ---
+>  arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi
+> index e7a459fa4322..20309076dbac 100644
+> --- a/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi
+> +++ b/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi
+> @@ -74,14 +74,14 @@ diy_led: led-1 {
+>  			label = "red:diy";
+>  			gpios = <&gpio0 RK_PB5 GPIO_ACTIVE_HIGH>;
+>  			default-state = "off";
+> -			linux,default-trigger = "mmc1";
 
-The comment above the pfn_t_devmap check makes me wonder whether doing
-this is correct or not.
+> +			linux,default-trigger = "mmc2";
 
-Also adding Thomas Hellstrom, who implemented the huge map support in ttm.
--Daniel
+remove
+>  		};
+>  
+>  		yellow_led: led-2 {
+>  			label = "yellow:yellow-led";
+>  			gpios = <&gpio0 RK_PA2 GPIO_ACTIVE_HIGH>;
+>  			default-state = "off";
+> -			linux,default-trigger = "mmc0";
 
-> remap_pfn_range seems to indeed split down to pte level always.
->
-> >  From my reading, yes. See ioremap_try_huge_pmd().
->
-> The ioremap here shouldn't matter, since this is for kernel-internal
-> mappings. So that's all fine I think.
-> -Daniel
-> --
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> http://blog.ffwll.ch
+> +			linux,default-trigger = "mmc1";
+
+remove
+
+>  		};
+>  	};
+>  
+> 
+
+The "mmc1" and "mmc2" options are custom values and invalid to the
+automated dt check in the mainline kernel.
+
+make ARCH=arm64 dtbs_check
+DT_SCHEMA_FILES=Documentation/devicetree/bindings/leds/leds-gpio.yaml
 
 
+  linux,default-trigger:
+    description:
+      This parameter, if present, is a string defining the trigger
+assigned to
+      the LED.
+    $ref: /schemas/types.yaml#definitions/string
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+    enum:
+        # LED will act as a back-light, controlled by the framebuffer system
+      - backlight
+        # LED will turn on (but for leds-gpio see "default-state"
+property in
+        # Documentation/devicetree/bindings/leds/leds-gpio.yaml)
+      - default-on
+        # LED "double" flashes at a load average based rate
+      - heartbeat
+        # LED indicates disk activity
+      - disk-activity
+        # LED indicates IDE disk activity (deprecated), in new
+implementations
+        # use "disk-activity"
+      - ide-disk
+        # LED flashes at a fixed, configurable rate
+      - timer
+        # LED alters the brightness for the specified duration with one
+software
+        # timer (requires "led-pattern" property)
+      - pattern
