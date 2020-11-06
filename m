@@ -2,96 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B02562A9928
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 17:11:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BFE32A9931
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 17:12:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727141AbgKFQLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 11:11:25 -0500
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:33724 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726867AbgKFQLY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 11:11:24 -0500
-Received: by mail-ot1-f66.google.com with SMTP id i18so1711636ots.0;
-        Fri, 06 Nov 2020 08:11:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DJzE/KuQ7K18CVtvfLEE+6QUXG1ivVfOIAlgwQBM+y8=;
-        b=inujDl+uhv27tFXmACrXP+ePcSKwFTDwSOYJ7PkYJt37ZCQyF4UIBctpQ25rwogz4f
-         HD1JwevsCWl1fMr5C0eKB6BgCO4W9i/rDXgv+iWxZ+XAL5jqBm/1ysMDKoo9/RCn9G+l
-         sGGSdUvPkjSPAsj43vjZxyWFA6asSuTjs+dT6Uz38e3J9IDUI6AS8js5QNzci6pJN26T
-         aWfD6OUoMoUyOWmQmw5WFFKaeFkRxc2CYOgIflvN8MbLu0qGaH7dxljwu5IIoDMh0t1/
-         4kGOb7q7dXdjTmz/HgvJtVRKVBv6d3Fmbpqt0StkNkVE1hgdlsRO4Ym/MI9G+HM1hbJu
-         6lpA==
-X-Gm-Message-State: AOAM532riGEg+NMRdhFhrWBVxZCp7KN5Q1wDwPcSiGqdoAUytRUVpySC
-        pYrrxXAiKpzbe1mgzzV61CokDKxgLw==
-X-Google-Smtp-Source: ABdhPJzQHAadyaK/sIwKmkNCidTdXTmvxMhCRlyHwqCQusqvJ2wj1rC3GxJuI1keQwv3C+JdqT0+7A==
-X-Received: by 2002:a05:6830:60a:: with SMTP id w10mr1635072oti.104.1604679083780;
-        Fri, 06 Nov 2020 08:11:23 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id w8sm377300otm.64.2020.11.06.08.11.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Nov 2020 08:11:23 -0800 (PST)
-Received: (nullmailer pid 3290341 invoked by uid 1000);
-        Fri, 06 Nov 2020 16:11:22 -0000
-Date:   Fri, 6 Nov 2020 10:11:22 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Sowjanya Komatineni <skomatineni@nvidia.com>
-Cc:     thierry.reding@gmail.com, linux-kernel@vger.kernel.org,
-        robh+dt@kernel.org, linux-tegra@vger.kernel.org,
-        linux-ide@vger.kernel.org, devicetree@vger.kernel.org,
-        jonathanh@nvidia.com
-Subject: Re: [PATCH v1 1/4] dt-bindings: ata: tegra: Convert binding
- documentation to YAML
-Message-ID: <20201106161122.GB3289870@bogus>
-References: <1604628968-1501-1-git-send-email-skomatineni@nvidia.com>
- <1604628968-1501-2-git-send-email-skomatineni@nvidia.com>
+        id S1727097AbgKFQM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 11:12:26 -0500
+Received: from mail-eopbgr40097.outbound.protection.outlook.com ([40.107.4.97]:14503
+        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725875AbgKFQMZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 11:12:25 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YF+CqrAwd3My3e1g1voADX/0p8Wy/Ryb5gvfVxbMXPI8KYaCSrJugY6JDFGlrDrrzydFftWHLVIswfZnJUeEiow6PLe2mCIKzkxDkyv8PTnvgeVReZZ7CMd10EGyUMIzqr027CdiVMVff6jgd1h5rxP8iHgcg6qkZNOVZ6y2cX4VoYF5xWROr7Vk02/i2b/fbsUTH2FC0lQAUTg4HFCx/m1BcXvIoY1EC+53PrH500tNsBdmnLVawUwFxzl2LkI/Ak/DFmo9p+3yHBtJee8VJh+xY2uTaf1KuIumCWt2gJmsVpLi7j+NnK4OrQz74z41DvPnLdU876p4u63Y/046fw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=N8Df0edrjwG7zvlqwzcM7zgQD19g8v6gG+4/QzN8Tf8=;
+ b=g8xHkmiBa2Yh6EdliW7WKRWGX7d9QBZb1Fe8ZMePjUQv0TmL6X5RFsalA90QB64xJnFZ0nc4mhOkjokBg/G8cDmelsDQlDSrxTUwcG2yOFlNonEcDJIjnSJ1k7Az4v3m00D4tENulKT4UV6sF68SOuvD5RenwVUhUM0QSi0Dekcw4PCM14sc7AfwnuTaqfer/8KhSKgfvbVGOfCaWB3Ss3bLxiup7dpGSo1CAmGb/3NYgQPTpnmzo6IQkMN2PU+wCvt+FG85XDilVGhQhRerOGgszIsgDWIeIHylOkNGiu2VK25sxERBamsoyV9OFRVnjX58bxP2wcbSdn55OCzH+Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=plvision.eu; dmarc=pass action=none header.from=plvision.eu;
+ dkim=pass header.d=plvision.eu; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plvision.eu;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=N8Df0edrjwG7zvlqwzcM7zgQD19g8v6gG+4/QzN8Tf8=;
+ b=k3VNSkdnTk2ppRZvW8weYrzKgekqfl5TZfMv5HAo+6Km6GUWXZ9sZN2ovBpkUjFbZ34YJ8S8Vlj/+NEZ8FoS0qVI3bKxlYXYLZSiIWey369Zg2Wgg8eqccCfJ9OxQOOMX386UDpnpoFioIbmEptZmLI1YIIUFUJ5j6CIxilXoX8=
+Authentication-Results: plvision.eu; dkim=none (message not signed)
+ header.d=none;plvision.eu; dmarc=none action=none header.from=plvision.eu;
+Received: from HE1P190MB0539.EURP190.PROD.OUTLOOK.COM (2603:10a6:7:56::28) by
+ HE1P190MB0489.EURP190.PROD.OUTLOOK.COM (2603:10a6:7:60::32) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3499.18; Fri, 6 Nov 2020 16:12:21 +0000
+Received: from HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
+ ([fe80::c1ab:71de:6bc2:89fe]) by HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
+ ([fe80::c1ab:71de:6bc2:89fe%6]) with mapi id 15.20.3499.032; Fri, 6 Nov 2020
+ 16:12:21 +0000
+From:   Vadym Kochan <vadym.kochan@plvision.eu>
+To:     Volodymyr Mytnyk <volodymyr.mytnyk@plvision.eu>,
+        Andrii Savka <andrii.savka@plvision.eu>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Vadym Kochan <vadym.kochan@plvision.eu>,
+        Oleksandr Mazur <oleksandr.mazur@plvision.eu>,
+        Serhiy Boiko <serhiy.boiko@plvision.eu>,
+        Serhiy Pshyk <serhiy.pshyk@plvision.eu>,
+        Taras Chornyi <taras.chornyi@plvision.eu>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Mickey Rachamim <mickeyr@marvell.com>
+Subject: [PATCH net] net: marvell: prestera: fix compilation with CONFIG_BRIDGE=m
+Date:   Fri,  6 Nov 2020 18:11:25 +0200
+Message-Id: <20201106161128.24069-1-vadym.kochan@plvision.eu>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-Originating-IP: [217.20.186.93]
+X-ClientProxiedBy: AM5PR0701CA0062.eurprd07.prod.outlook.com
+ (2603:10a6:203:2::24) To HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
+ (2603:10a6:7:56::28)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1604628968-1501-2-git-send-email-skomatineni@nvidia.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from pc60716vkochan.x.ow.s (217.20.186.93) by AM5PR0701CA0062.eurprd07.prod.outlook.com (2603:10a6:203:2::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.13 via Frontend Transport; Fri, 6 Nov 2020 16:12:20 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 4a4e5068-cce0-4de1-2c74-08d8826ebd56
+X-MS-TrafficTypeDiagnostic: HE1P190MB0489:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <HE1P190MB04895566926E107DDB26224995ED0@HE1P190MB0489.EURP190.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: P2tSmLTChG8gQGjJCJqX96zSE34AI6Xb7IIN+jgQNW1dV0JT9EpWqXRcN2GsW3qanFWYMvq1COZ9xZGHtWTh+c3SmDdYjPgLvsgK/I47lAC8KYJmdVJ4kRUxLW/yMHLRh3u9kvnzMqAPJVqwxBLa5y8aWUy6Eha4BwkRgnOoO1FVz6GJ0dGtr59ZDg5Qxg92tXG4zNlTWEy/oezKZu9WVrmm3eHyowsZI04o1pruib/nbkxchGjQO4QRyG6O6+/3Lh9UuQijjOX29oBJuiWQbaYvahVNUa09IqmXbEGuxoRK2meuL5XubDXRBb8WlZIqpIlSSM2grU7CC6koRoHk8oNJhuanFyvvxmrIJ3uwOxM=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1P190MB0539.EURP190.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(136003)(366004)(39830400003)(376002)(396003)(346002)(2616005)(36756003)(6486002)(16526019)(478600001)(6506007)(2906002)(6512007)(956004)(8936002)(186003)(5660300002)(86362001)(66556008)(44832011)(110136005)(8676002)(66946007)(4326008)(52116002)(1076003)(66476007)(26005)(316002)(921003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: HqL2zCFEDS0DBArIqcR/pUVmbCxMyTGiCPRHwpT2a5kacD0UvTNRGvBEFmwz2X6Pdduqzb+28tm+mxh+1gsYtjZI/h7WU/sek7mGnQ98dD0QWZp6azj+ridyPZjfi4v8nPkU5LpvmvDWqKjr31L8CreY2C1Puv0lxWZ629nFdmC6SC7kLUATBRl3yxOrzhtS0tEYw54iTtgI4LBvDRSoJyI7edahGlMQOOnQZRX0pdh5wAbHfOdMx2Ly/PPZ/6a5XoNHa4zU+W3BJMs9jgEQXat2vWcz+0//5XLbhQXJJQ/aLa1pj+JsS7caXNqHHGQ8l1rDqoazhvN4kpeEsEF7vpAZulo/MJpstLECZRFI9wHtNHR1AE510qs4ThzaE6YTr8x5CgkG1zRExSLIhxAxhaWGC2VSDj6wQq1lxxwKU85IEiIbwNjp/5cysFhgC+Jco+g6omaYMuJJQ3hlPUzfZouxfx2d06MKtet1rAcSIasSMJD0xC9EdPpDPZ8rPVwfMkUzaJEzuksVXaAvBO7ktuGeHklPDGL1k+vCQbUVgnSnl8XNJrVX7DgcqbqTDe5DPYuyJ3Cb+pLGRlxQ1VfIvk+zIvU52YqV8O1pKYrkQPPfp+duFQQigZNuK4ul/d0uvhyY1RNE17rHtu4qkM4TQA==
+X-OriginatorOrg: plvision.eu
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4a4e5068-cce0-4de1-2c74-08d8826ebd56
+X-MS-Exchange-CrossTenant-AuthSource: HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Nov 2020 16:12:20.9628
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 03707b74-30f3-46b6-a0e0-ff0a7438c9c4
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: x0AGn0tlv2bisWjREZyle+RoC/IqucP+hH/pMarnuJ5m4c9gKtrXgmgphxEUREC0tulXtEuV3D8/L9muir+SCYbpqc5tN6LUv24H1GC15Vk=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1P190MB0489
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 05 Nov 2020 18:16:05 -0800, Sowjanya Komatineni wrote:
-> This patch converts text based dt-binding document to YAML based
-> dt-binding document.
-> 
-> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
-> ---
->  .../devicetree/bindings/ata/nvidia,tegra-ahci.yaml | 152 +++++++++++++++++++++
->  .../bindings/ata/nvidia,tegra124-ahci.txt          |  44 ------
->  2 files changed, 152 insertions(+), 44 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/ata/nvidia,tegra-ahci.yaml
->  delete mode 100644 Documentation/devicetree/bindings/ata/nvidia,tegra124-ahci.txt
-> 
+With CONFIG_BRIDGE=m the compilation fails:
 
+    ld: drivers/net/ethernet/marvell/prestera/prestera_switchdev.o: in function `prestera_bridge_port_event':
+    prestera_switchdev.c:(.text+0x2ebd): undefined reference to `br_vlan_enabled'
 
-My bot found errors running 'make dt_binding_check' on your patch:
+in case the driver is statically enabled.
 
-yamllint warnings/errors:
+Fix it by adding 'BRIDGE || BRIDGE=n' dependency.
 
-dtschema/dtc warnings/errors:
-Error: Documentation/devicetree/bindings/ata/nvidia,tegra-ahci.example.dts:27.31-32 syntax error
-FATAL ERROR: Unable to parse input tree
-make[1]: *** [scripts/Makefile.lib:342: Documentation/devicetree/bindings/ata/nvidia,tegra-ahci.example.dt.yaml] Error 1
-make[1]: *** Waiting for unfinished jobs....
-make: *** [Makefile:1364: dt_binding_check] Error 2
+Fixes: e1189d9a5fbe ("net: marvell: prestera: Add Switchdev driver implementation")
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
+---
+ drivers/net/ethernet/marvell/prestera/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-
-See https://patchwork.ozlabs.org/patch/1395390
-
-The base for the patch is generally the last rc1. Any dependencies
-should be noted.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
+diff --git a/drivers/net/ethernet/marvell/prestera/Kconfig b/drivers/net/ethernet/marvell/prestera/Kconfig
+index b1fcc44f566a..b6f20e2034c6 100644
+--- a/drivers/net/ethernet/marvell/prestera/Kconfig
++++ b/drivers/net/ethernet/marvell/prestera/Kconfig
+@@ -6,6 +6,7 @@
+ config PRESTERA
+ 	tristate "Marvell Prestera Switch ASICs support"
+ 	depends on NET_SWITCHDEV && VLAN_8021Q
++	depends on BRIDGE || BRIDGE=n
+ 	select NET_DEVLINK
+ 	help
+ 	  This driver supports Marvell Prestera Switch ASICs family.
+-- 
+2.17.1
 
