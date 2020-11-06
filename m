@@ -2,85 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BE062A8C74
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 03:10:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F34B22A8C77
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 03:11:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732921AbgKFCKU convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 5 Nov 2020 21:10:20 -0500
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:45625 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731060AbgKFCKT (ORCPT
+        id S1726143AbgKFCLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 21:11:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41524 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726126AbgKFCLa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 21:10:19 -0500
-Received: by mail-lj1-f194.google.com with SMTP id t13so3676516ljk.12;
-        Thu, 05 Nov 2020 18:10:18 -0800 (PST)
+        Thu, 5 Nov 2020 21:11:30 -0500
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F58DC0613D2
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 18:11:30 -0800 (PST)
+Received: by mail-qt1-x849.google.com with SMTP id l67so2169326qte.6
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 18:11:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=T1ssYQnlZfXYg4a9CrE5sQuW0tqmDafqmdVBZ8OGyYk=;
+        b=TcY9DZhY0raayijWagcNzm4ZuafclgG6HVA/Sz1qQnQJQOIfbQHvvL7RNmX+9P4UtB
+         oU5bGzkYPf4vBagfhZ2H/5dyyrnXt2KXH8nnnG2AAxOAKVFlIPmODwO7U/oeJDRH6+p2
+         2hsqKwA3RN+85OY3avD3vLPbAHTg8vq3LucXtnw688M7egI3PZ/CkuxKILVTw58owe1l
+         MSo5HTPx4dp7XvFGzTLI2u4EM2xDdWyBkvnLzI1lar1APXh0aZ2ah+upKTkO85OeywV3
+         g1Medy/bw7NowmvGMbavBgzcDTJ7aBszMcbHGS8Ho/CWoztR11RpNPqQ+yW6AJJvdKBO
+         8mYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=TCAkol59pNC4A1Ep6Vh2I5icEcF6Xj0QtXarfZ1GeIo=;
-        b=Ik/fiFDSuiOGh478UJJ5WEiYLaUMzefzYkfeKRLJLZ+E4v1YQNTRMeb5WoKKoqq2J+
-         Kuun4pRezAqUPZtaRL/CPGFGWWfTuElZ4PAqaBfI9cX9ysIEYMQobRMinSkPFgftrqdJ
-         9PQOfztkTo0FlfcvKyNdQGwzKNd04Zo/n8bluh6mq4xdLEQWmalPU3bGzGrABxSGg+mM
-         bfg0D/QME1Et9ZUbup1K/3CbXkVzyFyDR7uVznqoFLnCmn7IT3itJ7E6uJPD5hCczjlm
-         v0w5Fa/uurP/Db/no3hVgK/wMvsuXrvly2wPN2ay0JhNXUkfekjTZo//zm5tEMvF8Xhc
-         Dqpg==
-X-Gm-Message-State: AOAM53140NPtFVRuOP4NT6R9vwKPc+K4Ig7/vL//53ctc+0dWotp0VLn
-        kZqGVvlaA/0rN07PW+gZd9HT2SdxL3ptXw==
-X-Google-Smtp-Source: ABdhPJwJcrJ1KHjp3J3gAxuQLQr6pm5I/n5CYQaoK6doApH7OX7iFot5iPkkMw59tyJjjlU9AyUeQw==
-X-Received: by 2002:a2e:884d:: with SMTP id z13mr1796164ljj.413.1604628617172;
-        Thu, 05 Nov 2020 18:10:17 -0800 (PST)
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com. [209.85.208.171])
-        by smtp.gmail.com with ESMTPSA id c26sm358154lfh.107.2020.11.05.18.10.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Nov 2020 18:10:16 -0800 (PST)
-Received: by mail-lj1-f171.google.com with SMTP id a25so1866848ljn.0;
-        Thu, 05 Nov 2020 18:10:16 -0800 (PST)
-X-Received: by 2002:a05:651c:336:: with SMTP id b22mr2007851ljp.75.1604628616262;
- Thu, 05 Nov 2020 18:10:16 -0800 (PST)
-MIME-Version: 1.0
-References: <20201102100157.85801-1-mtwget@gmail.com> <20201102100157.85801-2-mtwget@gmail.com>
- <20201103113743.5764tj2ryrht4dfs@gilmour.lan> <CAHRgzyOao=w6Yyqqvi1Z26=rfJgumkzDbWLxD+_5uaLmyAWiQA@mail.gmail.com>
- <20201105171051.ducvxcdj5jfarmgn@gilmour.lan> <CAHRgzyNzXk1uJzEVLvrqPu2CT8jzF+5UFEubT6kEtF=8HVgROQ@mail.gmail.com>
-In-Reply-To: <CAHRgzyNzXk1uJzEVLvrqPu2CT8jzF+5UFEubT6kEtF=8HVgROQ@mail.gmail.com>
-From:   Chen-Yu Tsai <wens@csie.org>
-Date:   Fri, 6 Nov 2020 10:10:10 +0800
-X-Gmail-Original-Message-ID: <CAGb2v64HyUn8KjPPA0JBA5tPaxX7-keNfs+M22pL5SmETN0FQg@mail.gmail.com>
-Message-ID: <CAGb2v64HyUn8KjPPA0JBA5tPaxX7-keNfs+M22pL5SmETN0FQg@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] ARM: dts: sun8i: h3: Add initial NanoPi R1 support
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Rob Herring <robh+dt@kernel.org>, Yu-Tung Chang <mtwget@gmail.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=T1ssYQnlZfXYg4a9CrE5sQuW0tqmDafqmdVBZ8OGyYk=;
+        b=WWQmCaPcnBgyGDkdsk+4K3ZrD5aTUGPngrnuhTPXmWOtUNA/ME8E1bfrupEM4dMFE0
+         sV+KDXGBmdSPqW5s6usvaWhmS3I4m7LY6MwkTItlCXdGEaIcUz+4PvT8gz1TH7+PO9t8
+         fFDXVFmEhCNxPDypy0IvSy8lohRolp1PXjs8DH6TnpQgFpJsCfj6CbYtyx8G8CHCl58z
+         tKBXSGa9ca2vwIktG8vtwPsw/5peFXV4cJoNimnAN/Kq2vBf3BrLVPBU2XvsGRw7DSNL
+         sRwxBVgzanSNo9EMqNAWFLERrTAhKDdPeQw/b+lj5Nj167moS/jO7uxG4Qhp99HCWqta
+         DTnA==
+X-Gm-Message-State: AOAM533UE4mWiL+PV1lGMU9aiEirwdI9swuyGYSN+MC7A95UxK0UCISr
+        Y4wdDeR5U2YT5lWJhuAEC81aIgED3KBT
+X-Google-Smtp-Source: ABdhPJxOvwIwaEbk6c5IHG3124uPZYpsU4BroVZh94M50Q/ggQeD+jmPu/TwzfSqVPCNKiKIMes8VimzH0Y+
+Sender: "amistry via sendgmr" <amistry@nandos.syd.corp.google.com>
+X-Received: from nandos.syd.corp.google.com ([2401:fa00:9:14:725a:fff:fe46:72ab])
+ (user=amistry job=sendgmr) by 2002:a0c:8e4f:: with SMTP id
+ w15mr665237qvb.42.1604628689164; Thu, 05 Nov 2020 18:11:29 -0800 (PST)
+Date:   Fri,  6 Nov 2020 13:10:43 +1100
+Message-Id: <20201106131015.v2.1.I7782b0cedb705384a634cfd8898eb7523562da99@changeid>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
+Subject: [PATCH v2] proc: Provide details on indirect branch speculation
+From:   Anand K Mistry <amistry@google.com>
+To:     linux-fsdevel@vger.kernel.org
+Cc:     asteinhauser@google.com, sfr@canb.auug.org.au, rppt@kernel.org,
+        joelaf@google.com, tglx@linutronix.de,
+        Anand K Mistry <amistry@google.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Alexey Gladkov <gladkov.alexey@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 6, 2020 at 10:03 AM Yu-Tung Chang <mtwget@gmail.com> wrote:
->
-> Maxime Ripard <maxime@cerno.tech> 于2020年11月6日周五 上午1:10写道：
-> >
-> > On Wed, Nov 04, 2020 at 04:07:48PM +0800, Yu-Tung Chang wrote:
-> > > > > +&uart1 {
-> > > > > +     pinctrl-names = "default";
-> > > > > +     pinctrl-0 = <&uart1_pins>;
-> > > >
-> > > > This should be already set in the DTSI
-> > > >
-> > > uart0 as the debugging interface, uart1 as the external uart port,
-> > > uart3 as the bluetooth.
-> >
-> > What I mean is that since it's the only muxing option, the pinctrl
-> > properties should already be set in the DTSI, so it's redundant to put
-> > them in the DTS.
-> >
-> I can only see the definition of uart0 in the DTSI,
-> because uart1 as the extension interface is exclusive to NanoPi R1.
+Similar to speculation store bypass, show information about the indirect
+branch speculation mode of a task in /proc/$pid/status.
 
-Maxime, to clarify, UART1 can be used with or without RTS/CTS,
-so there is no default muxing in the DTSI.
+Signed-off-by: Anand K Mistry <amistry@google.com>
+---
 
-ChenYu
+Changes in v2:
+- Remove underscores from field name to workaround documentation issue
+
+ Documentation/filesystems/proc.rst |  2 ++
+ fs/proc/array.c                    | 28 ++++++++++++++++++++++++++++
+ 2 files changed, 30 insertions(+)
+
+diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
+index 533c79e8d2cd..531edaf07924 100644
+--- a/Documentation/filesystems/proc.rst
++++ b/Documentation/filesystems/proc.rst
+@@ -210,6 +210,7 @@ read the file /proc/PID/status::
+   NoNewPrivs:     0
+   Seccomp:        0
+   Speculation_Store_Bypass:       thread vulnerable
++  SpeculationIndirectBranch:      conditional enabled
+   voluntary_ctxt_switches:        0
+   nonvoluntary_ctxt_switches:     1
+ 
+@@ -292,6 +293,7 @@ It's slow but very precise.
+  NoNewPrivs                  no_new_privs, like prctl(PR_GET_NO_NEW_PRIV, ...)
+  Seccomp                     seccomp mode, like prctl(PR_GET_SECCOMP, ...)
+  Speculation_Store_Bypass    speculative store bypass mitigation status
++ SpeculationIndirectBranch   indirect branch speculation mode
+  Cpus_allowed                mask of CPUs on which this process may run
+  Cpus_allowed_list           Same as previous, but in "list format"
+  Mems_allowed                mask of memory nodes allowed to this process
+diff --git a/fs/proc/array.c b/fs/proc/array.c
+index 65ec2029fa80..014c1859554d 100644
+--- a/fs/proc/array.c
++++ b/fs/proc/array.c
+@@ -368,6 +368,34 @@ static inline void task_seccomp(struct seq_file *m, struct task_struct *p)
+ 		seq_puts(m, "vulnerable");
+ 		break;
+ 	}
++
++	seq_puts(m, "\nSpeculationIndirectBranch:\t");
++	switch (arch_prctl_spec_ctrl_get(p, PR_SPEC_INDIRECT_BRANCH)) {
++	case -EINVAL:
++		seq_puts(m, "unsupported");
++		break;
++	case PR_SPEC_NOT_AFFECTED:
++		seq_puts(m, "not affected");
++		break;
++	case PR_SPEC_PRCTL | PR_SPEC_FORCE_DISABLE:
++		seq_puts(m, "conditional force disabled");
++		break;
++	case PR_SPEC_PRCTL | PR_SPEC_DISABLE:
++		seq_puts(m, "conditional disabled");
++		break;
++	case PR_SPEC_PRCTL | PR_SPEC_ENABLE:
++		seq_puts(m, "conditional enabled");
++		break;
++	case PR_SPEC_ENABLE:
++		seq_puts(m, "always enabled");
++		break;
++	case PR_SPEC_DISABLE:
++		seq_puts(m, "always disabled");
++		break;
++	default:
++		seq_puts(m, "unknown");
++		break;
++	}
+ 	seq_putc(m, '\n');
+ }
+ 
+-- 
+2.29.1.341.ge80a0c044ae-goog
+
