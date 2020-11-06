@@ -2,142 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 544832A8C5A
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 02:58:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 487D52A8C4D
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 02:51:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732858AbgKFB6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 20:58:07 -0500
-Received: from cmta19.telus.net ([209.171.16.92]:32941 "EHLO cmta19.telus.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730414AbgKFB6H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 20:58:07 -0500
-X-Greylist: delayed 488 seconds by postgrey-1.27 at vger.kernel.org; Thu, 05 Nov 2020 20:58:06 EST
-Received: from dougxps ([173.180.45.3])
-        by cmsmtp with SMTP
-        id aqt0kwPg7dLkEaqt1kZKc4; Thu, 05 Nov 2020 18:49:57 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=telus.net; s=neo;
-        t=1604627397; bh=EQ2VgUbGgV+uFwLbFWhleNcbVstRS/kO5xtYuUuBq24=;
-        h=From:To:Cc:References:In-Reply-To:Subject:Date;
-        b=YK1ZmjXW5mhpM+I0VP6mno26vEh3v016ESNf5CQhoPBNDclhNCxwvPUaA+fGenvNl
-         adS2nDJTZA95HanowQ0AsUG3mTaYDUTKwGO0DSHyF0/sFdiGVr4/RCxxjKxjSmGqO+
-         a1Tp767cLvRZUiKq6NEn20ubsopYSxrhMc+6iQGIwFwurAr4F5f+fs0S0KL9xacm8w
-         2h5u6RGWbW03BQi6PUCZCxNiyi81LYsNV/BDI8svtCS4RFpLb5qtzrAI5VypmyQ62O
-         6z6X/6VGReTjHTG6alMn58ZHA6sjwWaZpXqxAl/atDMq4s+BDvo6kTr6Vd+mVY1UkL
-         +7OpSr5YQn+xw==
-X-Telus-Authed: none
-X-Authority-Analysis: v=2.4 cv=WPm64lgR c=1 sm=1 tr=0 ts=5fa4abc5
- a=ZeVyObKPoMU90SgYCeSZ1g==:117 a=ZeVyObKPoMU90SgYCeSZ1g==:17
- a=Pyq9K9CWowscuQLKlpiwfMBGOR0=:19 a=kj9zAlcOel0A:10 a=QyXUC8HyAAAA:8
- a=gu6fZOg2AAAA:8 a=8THPvSkuJoZwLrQ9cBcA:9 a=CjuIK1q_8ugA:10 a=-FEs8UIgK8oA:10
- a=NWVoK91CQyQA:10 a=2RSlZUUhi9gRBrsHwhhZ:22
-From:   "Doug Smythies" <dsmythies@telus.net>
-To:     "'Rafael J. Wysocki'" <rjw@rjwysocki.net>,
-        "'Linux PM'" <linux-pm@vger.kernel.org>
-Cc:     "'Rafael J. Wysocki'" <rafael@kernel.org>,
-        "'Viresh Kumar'" <viresh.kumar@linaro.org>,
-        "'Srinivas Pandruvada'" <srinivas.pandruvada@linux.intel.com>,
-        "'Zhang Rui'" <rui.zhang@intel.com>,
-        "'LKML'" <linux-kernel@vger.kernel.org>
-References: <7417968.Ghue05m4RV@kreacher> <2233690.N3OVLkotou@kreacher>
-In-Reply-To: <2233690.N3OVLkotou@kreacher>
-Subject: RE: [PATCH 1/2] cpufreq: Introduce target min and max frequency hints
-Date:   Thu, 5 Nov 2020 17:49:53 -0800
-Message-ID: <001b01d6b3df$21165940$63430bc0$@net>
+        id S1732820AbgKFBu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 20:50:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38270 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732772AbgKFBu5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 20:50:57 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA4F5C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 17:50:56 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id i26so2711659pgl.5
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 17:50:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fossix-org.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Bj6mkx33Lq/FHGsQAOAgb5U1Gocj2AWp9p/LUe5BWp8=;
+        b=dJSDIAQ4jjGcjcwaGzD4ZlAgYa8IwO3UwpSqFuY5q1tqQ8YRaMwCROu6Z1Fi/kSKWZ
+         kh5MDjJCfnikopT+pSVxRZ3lKpXCRX2qct8rM7z28kMJQjReAIjgBQTyT3QqiLZhD/XS
+         m3jDBk611UGuEwdMjMTbPRB4DrujBFJp1reelkTeOSqLS0l0aFYuFBAZgRhYWjhVO7/x
+         GPD9q6yOyriLPW70UHANSIxeF2KNx7HFXcRrNfGBKZZCX7GjjElp3zk4ZRGW9zr6hiLw
+         3EzeuWvXWtCB1szarGWa2rtkTqoXroG2SymZzt4DooAVwIGgH05sm5cR2WLt1WGLmdeI
+         hZPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Bj6mkx33Lq/FHGsQAOAgb5U1Gocj2AWp9p/LUe5BWp8=;
+        b=Lot0tfO5BJuNBGIUqFwkcz3cgJsBy4kvbclyD6BeE2zJqGA2alzp7NEHlJkub+absk
+         bfuWBpeLRk7G3uXx6oR9ahr42JtriFy4fApcsiqEczR9FE8S9wlPRolPjVdHtGmSACKR
+         eetnmWNOZFlcwl4i5xOEndt7FK91Re2KxiryvIeiPgY17oqgZ1+Ke7dqxBalX/j11Msr
+         CbiVX87VRdXdc+7wD4BP4ERqmbt1rdXLPwWgy5u1H4PwnteXUU7R/AecESiZX3xJ44E3
+         qclv3svjLFXmW2IWVAh6b/AoZ9gSB6Jtq+hmv6vcr5FkIuFjJZ+Xn3BkdWN2WQ8BmEid
+         /78g==
+X-Gm-Message-State: AOAM532DZP7/KRXPJckbJ5zDCV9DOMDiiK9X8sgofAP8jFWi7V42iCP1
+        6xZ5SVrDkB9xYuwO5Vm0hNmEGeZ0w/as0g==
+X-Google-Smtp-Source: ABdhPJxFllSk+4bISm4qJozdEm6dyBslXlrnbGUbz/i9CXI3UfQKVNdIX6iL6/tDtNeNJMYIYT7Epg==
+X-Received: by 2002:a62:5e06:0:b029:164:a9ca:b07e with SMTP id s6-20020a625e060000b0290164a9cab07emr4710392pfb.36.1604627456277;
+        Thu, 05 Nov 2020 17:50:56 -0800 (PST)
+Received: from santosiv.in.ibm.com.com ([103.21.79.4])
+        by smtp.gmail.com with ESMTPSA id v3sm3357050pju.38.2020.11.05.17.50.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Nov 2020 17:50:55 -0800 (PST)
+From:   Santosh Sivaraj <santosh@fossix.org>
+To:     Linux Kernel <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Santosh Sivaraj <santosh@fossix.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Petr Mladek <pmladek@suse.com>
+Subject: [PATCH v2] kernel/watchdog: Fix watchdog_allowed_mask not used warning
+Date:   Fri,  6 Nov 2020 07:20:25 +0530
+Message-Id: <20201106015025.1281561-1-santosh@fossix.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Office Outlook 12.0
-Content-Language: en-ca
-Thread-Index: AdazoQzOa64DtwxHQV2ivz0yvkdgTgAM4bQw
-X-CMAE-Envelope: MS4xfOnrGS/Thze5mEGyKkwj5SyTIuz7k6xioMBYgNxOS3r1kTiTTBoQHV/3fPgx5sDCTVmwN5AqW+TL2VAoRyjciQd389sWRFRcFPfuXto90COudkUsNIQB
- vWfHuai3mED8GwYSRWjD0E8wrb15q/bOUnvyb9D+A/3dOOxe1zRdLI7prRMmG4MXEB9GtbqquDdm7B4N7ifyfAeWX7yJxvgwDOj51M4f6DwSCqxcgslXJ5RD
- PdNvvTWhZSSiZPleL+BQp2s+tSY4eCvDVSaWhdn8sweclJA8mL/dEQxZ31lradvz5aOjac+CSnvqHFHctWcTF14X7rr1iU8dLqdY9W2b8TwioxLiQjlg9DCv
- q0R5+k50wfsIicLcLqICdWrKMt8YedaItQHEHZFMkzvlWfuhBKI=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rafael:
+Define watchdog_allowed_mask only when SOFTLOCKUP_DETECTOR is enabled.
 
-Thank you for this patch set.
+Fixes: 7feeb9cd4f5b ("watchdog/sysctl: Clean up sysctl variable name space")
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Petr Mladek <pmladek@suse.com>
+Signed-off-by: Santosh Sivaraj <santosh@fossix.org>
+---
+v2:
+Added Petr's reviewed-by from [1] and add fixes tag as suggested by Christophe.
 
-I can not get the patch to apply.
-I was trying on top on 5.10-rc2, and have been unable to determine
-what other patches might need to be applied first.
+[1]: https://lkml.org/lkml/2020/8/20/1030
 
-On 2020.11.05 10:24 Rafael J. Wysocki wrote:
+ kernel/watchdog.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-...
-
-> 
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> ---
->  drivers/cpufreq/cpufreq.c             |    3 +++
->  drivers/cpufreq/cpufreq_performance.c |    4 ++++
->  drivers/cpufreq/cpufreq_powersave.c   |    4 ++++
->  include/linux/cpufreq.h               |   16 ++++++++++++++++
-
-I do not understand why this part says to look for 16
-differences, but I can only find 2.
-
->  4 files changed, 27 insertions(+)
-> 
-> Index: linux-pm/include/linux/cpufreq.h
-> ===================================================================
-> --- linux-pm.orig/include/linux/cpufreq.h
-> +++ linux-pm/include/linux/cpufreq.h
-> @@ -63,6 +63,8 @@ struct cpufreq_policy {
-> 
->  	unsigned int		min;    /* in kHz */
->  	unsigned int		max;    /* in kHz */
-> +	unsigned int		target_min; /* in kHz */
-> +	unsigned int		target_max; /* in kHz */
->  	unsigned int		cur;    /* in kHz, only needed if cpufreq
->  					 * governors are used */
->  	unsigned int		suspend_freq; /* freq to set during suspend */
-> Index: linux-pm/drivers/cpufreq/cpufreq.c
-
-...
-
-Anyway, I edited the patch, deleting the include/linux/cpufreq.h part,
-then it applied, as did patch 2 of 2.
-I edited include/linux/cpufreq.h manually.
-
-Issues with the powersave governor reported in [1] and [2]
-are fixed. Relevant part quoted and updated below:
-
-> In early September Doug wrote:
->> powersave governor:
->> acpi-cpufreq: good
->> intel_cpufreq hwp: bad
-
-Now good, with this patch set.
-
->> intel_cpufreq no hwp: good
-
-...
-
-> For the powersave governor, this is what we have now:
-> 
-> intel_cpufreq hwp == intel_pstate hwp
-> intel_cpufreq no hwp == acpi-cpufreq == always minimum freq
-> intel_pstate no hwp ~= acpi-cpufreq/ondemand
-
-...
-
-> My expectation was/is:
-> 
-> intel_cpufreq hwp == intel_cpufreq no hwp == acpi-cpufreq == always minimum freq
-
-And this is what we now have, with this patch set.
-
-> intel_pstate no hwp ~= acpi-cpufreq/ondemand
-> intel_pstate hwp == Unique. Say, extremely course version of ondemand.
-
-[1] https://marc.info/?l=linux-pm&m=159769839401767&w=2
-[2] https://marc.info/?l=linux-pm&m=159943780220923&w=2
-
-... Doug
-
+diff --git a/kernel/watchdog.c b/kernel/watchdog.c
+index 5abb5b22ad13..71109065bd8e 100644
+--- a/kernel/watchdog.c
++++ b/kernel/watchdog.c
+@@ -44,8 +44,6 @@ int __read_mostly soft_watchdog_user_enabled = 1;
+ int __read_mostly watchdog_thresh = 10;
+ static int __read_mostly nmi_watchdog_available;
+ 
+-static struct cpumask watchdog_allowed_mask __read_mostly;
+-
+ struct cpumask watchdog_cpumask __read_mostly;
+ unsigned long *watchdog_cpumask_bits = cpumask_bits(&watchdog_cpumask);
+ 
+@@ -162,6 +160,8 @@ static void lockup_detector_update_enable(void)
+ int __read_mostly sysctl_softlockup_all_cpu_backtrace;
+ #endif
+ 
++static struct cpumask watchdog_allowed_mask __read_mostly;
++
+ /* Global variables, exported for sysctl */
+ unsigned int __read_mostly softlockup_panic =
+ 			CONFIG_BOOTPARAM_SOFTLOCKUP_PANIC_VALUE;
+-- 
+2.26.2
 
