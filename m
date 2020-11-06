@@ -2,315 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25DFA2A9420
+	by mail.lfdr.de (Postfix) with ESMTP id 24F902A941F
 	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 11:25:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726902AbgKFKZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1726945AbgKFKZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 05:25:26 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33118 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726831AbgKFKZZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 6 Nov 2020 05:25:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58914 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725868AbgKFKZZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 05:25:25 -0500
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604658324;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=rzIGS6pP6lZWtk6SQ8xr2MVcGhW0ibnx4UquLJftED4=;
+        b=VSZbBYUBuQinlppbMy5K+664LCZwnmArxmoxG//XQBtGGARWEG1jAnRBj++UF+cXhl58im
+        i8jNa1uHzp6nN3dxiYV82l+4sQYmGRu1tIrOirmnDCwLFZ7ljuNwCdbMwhwp7esarEtmDk
+        6R2cPZcVwsgtM0uuj2AHrnMnvuQIHLU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-7-x8h7qqNrOmm7t1TuMTU4mg-1; Fri, 06 Nov 2020 05:25:22 -0500
+X-MC-Unique: x8h7qqNrOmm7t1TuMTU4mg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0E04920691;
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 45DA01868416;
+        Fri,  6 Nov 2020 10:25:21 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 024B519C4F;
         Fri,  6 Nov 2020 10:25:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604658322;
-        bh=6YzS8ko75d9YTXXdkNZu4e61owx1w6yTEHh/zi9Ys+8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=qrj0z7G3y/lZrOk2fz41MdO04PyFbYhfjAhrg5AVQLxLizOCNVBjMsgKIy0bUw0Hi
-         hqqcf/Zb0mCmEIW8Ik8Ma2jhwN9eOnseMIUiq5Yvfw2pZ+LVsjQO+7jZiixAowTDoI
-         n4AsCexEDeWZTmwsOwUMKcG4RJmGkrAZ4+EUEE+o=
-Date:   Fri, 6 Nov 2020 19:25:13 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt (VMware) <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Petr Mladek <pmladek@suse.com>, Guo Ren <guoren@kernel.org>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-csky@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org
-Subject: Re: [PATCH 05/11 v3] kprobes/ftrace: Add recursion protection to
- the ftrace callback
-Message-Id: <20201106192513.80b330351c0cafd03134b0d1@kernel.org>
-In-Reply-To: <20201106023546.944907560@goodmis.org>
-References: <20201106023235.367190737@goodmis.org>
-        <20201106023546.944907560@goodmis.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     peterx@redhat.com
+Subject: [PATCH] KVM: remove kvm_clear_guest_page
+Date:   Fri,  6 Nov 2020 05:25:17 -0500
+Message-Id: <20201106102517.664773-1-pbonzini@redhat.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 05 Nov 2020 21:32:40 -0500
-Steven Rostedt (VMware) <rostedt@goodmis.org> wrote:
+kvm_clear_guest_page is not used anymore after "KVM: X86: Don't track dirty
+for KVM_SET_[TSS_ADDR|IDENTITY_MAP_ADDR]", except from kvm_clear_guest.
+We can just inline it in its sole user.
 
-> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-> 
-> If a ftrace callback does not supply its own recursion protection and
-> does not set the RECURSION_SAFE flag in its ftrace_ops, then ftrace will
-> make a helper trampoline to do so before calling the callback instead of
-> just calling the callback directly.
-> 
-> The default for ftrace_ops is going to change. It will expect that handlers
-> provide their own recursion protection, unless its ftrace_ops states
-> otherwise.
-> 
-> Link: https://lkml.kernel.org/r/20201028115613.140212174@goodmis.org
-> 
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+---
+ include/linux/kvm_host.h |  1 -
+ virt/kvm/kvm_main.c      | 11 ++---------
+ 2 files changed, 2 insertions(+), 10 deletions(-)
 
-Looks good to me.
-
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
-
-Thank you!
-
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Masami Hiramatsu <mhiramat@kernel.org>
-> Cc: Guo Ren <guoren@kernel.org>
-> Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
-> Cc: Helge Deller <deller@gmx.de>
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-> Cc: Paul Mackerras <paulus@samba.org>
-> Cc: Heiko Carstens <hca@linux.ibm.com>
-> Cc: Vasily Gorbik <gor@linux.ibm.com>
-> Cc: Christian Borntraeger <borntraeger@de.ibm.com>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Borislav Petkov <bp@alien8.de>
-> Cc: x86@kernel.org
-> Cc: "H. Peter Anvin" <hpa@zytor.com>
-> Cc: "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
-> Cc: Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: linux-csky@vger.kernel.org
-> Cc: linux-parisc@vger.kernel.org
-> Cc: linuxppc-dev@lists.ozlabs.org
-> Cc: linux-s390@vger.kernel.org
-> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> ---
-> 
-> Changes since v2:
-> 
->  - Move get_kprobe() into preempt disabled sections for various archs
-> 
-> 
->  arch/csky/kernel/probes/ftrace.c     | 12 ++++++++++--
->  arch/parisc/kernel/ftrace.c          | 16 +++++++++++++---
->  arch/powerpc/kernel/kprobes-ftrace.c | 11 ++++++++++-
->  arch/s390/kernel/ftrace.c            | 16 +++++++++++++---
->  arch/x86/kernel/kprobes/ftrace.c     | 12 ++++++++++--
->  5 files changed, 56 insertions(+), 11 deletions(-)
-> 
-> diff --git a/arch/csky/kernel/probes/ftrace.c b/arch/csky/kernel/probes/ftrace.c
-> index 5264763d05be..5eb2604fdf71 100644
-> --- a/arch/csky/kernel/probes/ftrace.c
-> +++ b/arch/csky/kernel/probes/ftrace.c
-> @@ -13,16 +13,21 @@ int arch_check_ftrace_location(struct kprobe *p)
->  void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
->  			   struct ftrace_ops *ops, struct pt_regs *regs)
->  {
-> +	int bit;
->  	bool lr_saver = false;
->  	struct kprobe *p;
->  	struct kprobe_ctlblk *kcb;
->  
-> -	/* Preempt is disabled by ftrace */
-> +	bit = ftrace_test_recursion_trylock();
-> +	if (bit < 0)
-> +		return;
-> +
-> +	preempt_disable_notrace();
->  	p = get_kprobe((kprobe_opcode_t *)ip);
->  	if (!p) {
->  		p = get_kprobe((kprobe_opcode_t *)(ip - MCOUNT_INSN_SIZE));
->  		if (unlikely(!p) || kprobe_disabled(p))
-> -			return;
-> +			goto out;
->  		lr_saver = true;
->  	}
->  
-> @@ -56,6 +61,9 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
->  		 */
->  		__this_cpu_write(current_kprobe, NULL);
->  	}
-> +out:
-> +	preempt_enable_notrace();
-> +	ftrace_test_recursion_unlock(bit);
->  }
->  NOKPROBE_SYMBOL(kprobe_ftrace_handler);
->  
-> diff --git a/arch/parisc/kernel/ftrace.c b/arch/parisc/kernel/ftrace.c
-> index 63e3ecb9da81..13d85042810a 100644
-> --- a/arch/parisc/kernel/ftrace.c
-> +++ b/arch/parisc/kernel/ftrace.c
-> @@ -207,14 +207,21 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
->  			   struct ftrace_ops *ops, struct pt_regs *regs)
->  {
->  	struct kprobe_ctlblk *kcb;
-> -	struct kprobe *p = get_kprobe((kprobe_opcode_t *)ip);
-> +	struct kprobe *p;
-> +	int bit;
->  
-> -	if (unlikely(!p) || kprobe_disabled(p))
-> +	bit = ftrace_test_recursion_trylock();
-> +	if (bit < 0)
->  		return;
->  
-> +	preempt_disable_notrace();
-> +	p = get_kprobe((kprobe_opcode_t *)ip);
-> +	if (unlikely(!p) || kprobe_disabled(p))
-> +		goto out;
-> +
->  	if (kprobe_running()) {
->  		kprobes_inc_nmissed_count(p);
-> -		return;
-> +		goto out;
->  	}
->  
->  	__this_cpu_write(current_kprobe, p);
-> @@ -235,6 +242,9 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
->  		}
->  	}
->  	__this_cpu_write(current_kprobe, NULL);
-> +out:
-> +	preempt_enable_notrace();
-> +	ftrace_test_recursion_unlock(bit);
->  }
->  NOKPROBE_SYMBOL(kprobe_ftrace_handler);
->  
-> diff --git a/arch/powerpc/kernel/kprobes-ftrace.c b/arch/powerpc/kernel/kprobes-ftrace.c
-> index 972cb28174b2..5df8d50c65ae 100644
-> --- a/arch/powerpc/kernel/kprobes-ftrace.c
-> +++ b/arch/powerpc/kernel/kprobes-ftrace.c
-> @@ -18,10 +18,16 @@ void kprobe_ftrace_handler(unsigned long nip, unsigned long parent_nip,
->  {
->  	struct kprobe *p;
->  	struct kprobe_ctlblk *kcb;
-> +	int bit;
->  
-> +	bit = ftrace_test_recursion_trylock();
-> +	if (bit < 0)
-> +		return;
-> +
-> +	preempt_disable_notrace();
->  	p = get_kprobe((kprobe_opcode_t *)nip);
->  	if (unlikely(!p) || kprobe_disabled(p))
-> -		return;
-> +		goto out;
->  
->  	kcb = get_kprobe_ctlblk();
->  	if (kprobe_running()) {
-> @@ -52,6 +58,9 @@ void kprobe_ftrace_handler(unsigned long nip, unsigned long parent_nip,
->  		 */
->  		__this_cpu_write(current_kprobe, NULL);
->  	}
-> +out:
-> +	preempt_enable_notrace();
-> +	ftrace_test_recursion_unlock(bit);
->  }
->  NOKPROBE_SYMBOL(kprobe_ftrace_handler);
->  
-> diff --git a/arch/s390/kernel/ftrace.c b/arch/s390/kernel/ftrace.c
-> index b388e87a08bf..8f31c726537a 100644
-> --- a/arch/s390/kernel/ftrace.c
-> +++ b/arch/s390/kernel/ftrace.c
-> @@ -201,14 +201,21 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
->  		struct ftrace_ops *ops, struct pt_regs *regs)
->  {
->  	struct kprobe_ctlblk *kcb;
-> -	struct kprobe *p = get_kprobe((kprobe_opcode_t *)ip);
-> +	struct kprobe *p;
-> +	int bit;
->  
-> -	if (unlikely(!p) || kprobe_disabled(p))
-> +	bit = ftrace_test_recursion_trylock();
-> +	if (bit < 0)
->  		return;
->  
-> +	preempt_disable_notrace();
-> +	p = get_kprobe((kprobe_opcode_t *)ip);
-> +	if (unlikely(!p) || kprobe_disabled(p))
-> +		goto out;
-> +
->  	if (kprobe_running()) {
->  		kprobes_inc_nmissed_count(p);
-> -		return;
-> +		goto out;
->  	}
->  
->  	__this_cpu_write(current_kprobe, p);
-> @@ -228,6 +235,9 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
->  		}
->  	}
->  	__this_cpu_write(current_kprobe, NULL);
-> +out:
-> +	preempt_enable_notrace();
-> +	ftrace_test_recursion_unlock(bit);
->  }
->  NOKPROBE_SYMBOL(kprobe_ftrace_handler);
->  
-> diff --git a/arch/x86/kernel/kprobes/ftrace.c b/arch/x86/kernel/kprobes/ftrace.c
-> index 681a4b36e9bb..a40a6cdfcca3 100644
-> --- a/arch/x86/kernel/kprobes/ftrace.c
-> +++ b/arch/x86/kernel/kprobes/ftrace.c
-> @@ -18,11 +18,16 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
->  {
->  	struct kprobe *p;
->  	struct kprobe_ctlblk *kcb;
-> +	int bit;
->  
-> -	/* Preempt is disabled by ftrace */
-> +	bit = ftrace_test_recursion_trylock();
-> +	if (bit < 0)
-> +		return;
-> +
-> +	preempt_disable_notrace();
->  	p = get_kprobe((kprobe_opcode_t *)ip);
->  	if (unlikely(!p) || kprobe_disabled(p))
-> -		return;
-> +		goto out;
->  
->  	kcb = get_kprobe_ctlblk();
->  	if (kprobe_running()) {
-> @@ -52,6 +57,9 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
->  		 */
->  		__this_cpu_write(current_kprobe, NULL);
->  	}
-> +out:
-> +	preempt_enable_notrace();
-> +	ftrace_test_recursion_unlock(bit);
->  }
->  NOKPROBE_SYMBOL(kprobe_ftrace_handler);
->  
-> -- 
-> 2.28.0
-> 
-> 
-
-
+diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+index 7f2e2a09ebbd..66a4324f329d 100644
+--- a/include/linux/kvm_host.h
++++ b/include/linux/kvm_host.h
+@@ -792,7 +792,6 @@ int kvm_gfn_to_hva_cache_init(struct kvm *kvm, struct gfn_to_hva_cache *ghc,
+ 			offset_in_page(__gpa), v);			\
+ })
+ 
+-int kvm_clear_guest_page(struct kvm *kvm, gfn_t gfn, int offset, int len);
+ int kvm_clear_guest(struct kvm *kvm, gpa_t gpa, unsigned long len);
+ struct kvm_memory_slot *gfn_to_memslot(struct kvm *kvm, gfn_t gfn);
+ bool kvm_is_visible_gfn(struct kvm *kvm, gfn_t gfn);
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index 2541a17ff1c4..1c7514579861 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -2616,23 +2616,16 @@ int kvm_read_guest_cached(struct kvm *kvm, struct gfn_to_hva_cache *ghc,
+ }
+ EXPORT_SYMBOL_GPL(kvm_read_guest_cached);
+ 
+-int kvm_clear_guest_page(struct kvm *kvm, gfn_t gfn, int offset, int len)
+-{
+-	const void *zero_page = (const void *) __va(page_to_phys(ZERO_PAGE(0)));
+-
+-	return kvm_write_guest_page(kvm, gfn, zero_page, offset, len);
+-}
+-EXPORT_SYMBOL_GPL(kvm_clear_guest_page);
+-
+ int kvm_clear_guest(struct kvm *kvm, gpa_t gpa, unsigned long len)
+ {
++	const void *zero_page = (const void *) __va(page_to_phys(ZERO_PAGE(0)));
+ 	gfn_t gfn = gpa >> PAGE_SHIFT;
+ 	int seg;
+ 	int offset = offset_in_page(gpa);
+ 	int ret;
+ 
+ 	while ((seg = next_segment(len, offset)) != 0) {
+-		ret = kvm_clear_guest_page(kvm, gfn, offset, seg);
++		ret = kvm_write_guest_page(kvm, gfn, zero_page, offset, len);
+ 		if (ret < 0)
+ 			return ret;
+ 		offset = 0;
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+2.26.2
+
