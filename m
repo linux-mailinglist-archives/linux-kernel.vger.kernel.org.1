@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 078B62A8CBF
+	by mail.lfdr.de (Postfix) with ESMTP id E4F342A8CC1
 	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 03:28:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725962AbgKFC2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 21:28:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44056 "EHLO
+        id S1725977AbgKFC2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 21:28:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725924AbgKFC2E (ORCPT
+        with ESMTP id S1725960AbgKFC2H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 21:28:04 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84F6CC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 18:28:03 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id r10so2766126pgb.10
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 18:28:03 -0800 (PST)
+        Thu, 5 Nov 2020 21:28:07 -0500
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 946DBC0613D2
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 18:28:06 -0800 (PST)
+Received: by mail-pl1-x641.google.com with SMTP id f21so1724989plr.5
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 18:28:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=EHuG0Jy6EGEK8AT49rN0FT6QR3rLE0SQJ7N5PHZrNUg=;
-        b=lDQpvOMhfEckH3aBCoY6dQHdQP0xQtt0xKcmT1nRLxjH7bXA8rS3lbs6NtH7dRNnL+
-         YA5TG/iE0b+21OXTzpOqdaZAry5qDp7DDN/Lc6B68/zzJVNSz+s84vNduVd+9dVbpCeb
-         ccIEnyX/3qdwHqHj9HD63ICzvuj07svIXfulJ2H3vKNG0OAG+tkEgVbh30Z8HBWsJWhs
-         n45BQqr1FlTFU25LfMuoA2Q/bRr8Tq9LmWktyJoBXVEETCQtjnOVKVJse67v3HvuTFsr
-         pinxLTapW7lBb9eQD37sgsJRokbw/mbIQYyE0+0nHp0ae2ZnPaFCMrXnTCmdjQNJZ/Fn
-         XQgg==
+        bh=Kxtn2tv4u7bnPJ1IBZRdbU16YLLAD3BvCHIEx+fGmCc=;
+        b=RtjEQNH+ub9yP3HG5/0wESf0GkMMsrWd5B9RNqMCieK5gQb7I/lJ1roDbJeqfFtQEs
+         jSiZR7s5D0LlvApzIULrfWNteZNka3Af6HF2iTHLSiwT2xK4cySGnza7N70fyy8amRjc
+         P9BfYpZpGobcBtRABvCTNTMHjgH2DLr8/4ekiLMEk5jwmGMdN2l231QpJYzaUe1idy8t
+         osXwYskw3ZTXkTLuVN2oEO0ACPXWjQ8ILvsCFftWtcWPVfIkL5Z2W9hH5fNRfldpqMXX
+         HtiIjRfGBJoaPJFoghqTZ/f9+X7+EiqsiEQjfTZmZ1jRZ8qc9pIK7+bO8e2L9Uh/oFv0
+         RlNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=EHuG0Jy6EGEK8AT49rN0FT6QR3rLE0SQJ7N5PHZrNUg=;
-        b=rRGyqOdIdIMLbkNqS6xl98MqTs2AvK8822OklFl6IZwp3T9PlSVFS7vPumTnA5k53f
-         +J+K/Gdy4VcXc8Om3EWipiz09JCoGbKOnC0YTDE34oepNEHNo2H9YRikGEht0E6Gr/J8
-         zZhmqeCsCtG3EDvDE8EZ8TIz51p5m4S/60/vbgmR9nLy+VO5FhXoSy5MdXBqP0tOC0Mk
-         l12WDsgHx6B3ZQWhHO5PEU0lZP9hrUdBfxz+5Tf+9rpsjR/dXw+z4NRoVxIh6JNqGCGe
-         HXKBYKlaN22fmErBMk83MAyJ0wY5bM2xR7xVobtoIhVSphoN5KNAma9Dc0UnS0spE7hp
-         WZEg==
-X-Gm-Message-State: AOAM5328+h91cVa05G3hNpAkXgouTErmy1teuenhyPDdBW9xCa0nETf/
-        D5s5uP+LdRLpClTZd5LFioK5FA==
-X-Google-Smtp-Source: ABdhPJyuAUYh9S8nNtqsyW6D2p9vq1O6UCtYHz2DUeavZTjWzEmAmN3e9YJz24uoDKohv6uE53fNOA==
-X-Received: by 2002:a63:fd08:: with SMTP id d8mr5270959pgh.406.1604629683072;
-        Thu, 05 Nov 2020 18:28:03 -0800 (PST)
+        bh=Kxtn2tv4u7bnPJ1IBZRdbU16YLLAD3BvCHIEx+fGmCc=;
+        b=cZ0g8vfd4TdDsVPqivqSjxz0B4gc1UMySOKGuFLeOZFwqYMXyAo3U5mZ34nPD/laAh
+         DbF/Y9icsjE37xCL4awRzasE5XLSDDZgqsBfrD4tO6DIHRZeFao/geF6WfdS1cp67QPN
+         1H4N/uC1ksl016VZtUWEF9UoKkqzxaJaZSBbYrReTxBflk3f0lfRildDW568dC6GwH6V
+         ex+fD1cmEz5LGRxRLm6x5SzRTZgzsHoTS2djE+KOmUgFaAq4sTXUhoC8ZWHtSmHQqXlu
+         tiKkRPEmeJpQhEzz1sPpsJw4Wa2V4D4TfdFkwfdRsHmHFjAAb/7EBSZN7BXDe6A7mxrk
+         CMfA==
+X-Gm-Message-State: AOAM53149pgD70UEV6tth/ZBN4SjU8kje9F84QeF6A1erhEtte5gKROU
+        X/VveVr4VMwrShZY5b+nyzCn3A==
+X-Google-Smtp-Source: ABdhPJzh6FMka8y/xFkLHA4CPWwTsQ+mA0zVxRKA9lvNgc5K/xiYnUMj7ZPlLmdkpGArWPM03lPE2g==
+X-Received: by 2002:a17:902:aa47:b029:d6:ac0f:fe76 with SMTP id c7-20020a170902aa47b02900d6ac0ffe76mr7462plr.42.1604629686096;
+        Thu, 05 Nov 2020 18:28:06 -0800 (PST)
 Received: from localhost.localdomain (p784a66b9.tkyea130.ap.so-net.ne.jp. [120.74.102.185])
-        by smtp.gmail.com with ESMTPSA id m13sm3703040pjr.30.2020.11.05.18.28.00
+        by smtp.gmail.com with ESMTPSA id m13sm3703040pjr.30.2020.11.05.18.28.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 18:28:02 -0800 (PST)
+        Thu, 05 Nov 2020 18:28:05 -0800 (PST)
 From:   AKASHI Takahiro <takahiro.akashi@linaro.org>
 To:     ulf.hansson@linaro.org, adrian.hunter@intel.com
 Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
         ben.chuang@genesyslogic.com.tw, greg.tu@genesyslogic.com.tw,
         AKASHI Takahiro <takahiro.akashi@linaro.org>
-Subject: [RFC PATCH v3.1 02/27] mmc: core: UHS-II support, modify power-up sequence
-Date:   Fri,  6 Nov 2020 11:27:01 +0900
-Message-Id: <20201106022726.19831-3-takahiro.akashi@linaro.org>
+Subject: [RFC PATCH v3.1 03/27] mmc: core: UHS-II support, skip set_chip_select()
+Date:   Fri,  6 Nov 2020 11:27:02 +0900
+Message-Id: <20201106022726.19831-4-takahiro.akashi@linaro.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201106022726.19831-1-takahiro.akashi@linaro.org>
 References: <20201106022726.19831-1-takahiro.akashi@linaro.org>
@@ -65,137 +65,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to Fig. 3-35 in "SD Host Controller Simplified Spec. Ver4.20":
-- Prepare vdd1, vdd2 and ios.timing for using after/in step (2)
-- chip_select is not used in UHS-II, used to return to the legacy flow
+mmc_set_chip_select() should be called only in UHS-II mode,
+and not for UHS-II mode.
 
 Signed-off-by: Ben Chuang <ben.chuang@genesyslogic.com.tw>
 Signed-off-by: AKASHI Takahiro <takahiro.akashi@linaro.org>
 ---
- drivers/mmc/core/core.c      | 61 +++++++++++++++++++++++++-----------
- drivers/mmc/core/regulator.c | 14 +++++++++
- 2 files changed, 56 insertions(+), 19 deletions(-)
+ drivers/mmc/core/core.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/mmc/core/core.c b/drivers/mmc/core/core.c
-index d42037f0f10d..5541ed956c4d 100644
+index 5541ed956c4d..4e12bd98fc08 100644
 --- a/drivers/mmc/core/core.c
 +++ b/drivers/mmc/core/core.c
-@@ -1315,33 +1315,52 @@ void mmc_power_up(struct mmc_host *host, u32 ocr)
- 	if (host->ios.power_mode == MMC_POWER_ON)
- 		return;
- 
--	mmc_pwrseq_pre_power_on(host);
-+	if (host->flags & MMC_UHS2_SUPPORT) {
-+		/* TODO: handle 'ocr' parameter */
-+		host->ios.vdd = fls(host->ocr_avail) - 1;
-+		host->ios.vdd2 = fls(host->ocr_avail_uhs2) - 1;
-+		if (mmc_host_is_spi(host))
-+			host->ios.chip_select = MMC_CS_HIGH;
-+		else
-+			host->ios.chip_select = MMC_CS_DONTCARE;
-+		host->ios.timing = MMC_TIMING_UHS2;
-+	} else {
-+		mmc_pwrseq_pre_power_on(host);
- 
--	host->ios.vdd = fls(ocr) - 1;
--	host->ios.power_mode = MMC_POWER_UP;
--	/* Set initial state and call mmc_set_ios */
--	mmc_set_initial_state(host);
-+		host->ios.vdd = fls(ocr) - 1;
-+		host->ios.power_mode = MMC_POWER_UP;
-+		/* Set initial state and call mmc_set_ios */
-+		mmc_set_initial_state(host);
- 
--	mmc_set_initial_signal_voltage(host);
-+		mmc_set_initial_signal_voltage(host);
- 
--	/*
--	 * This delay should be sufficient to allow the power supply
--	 * to reach the minimum voltage.
--	 */
--	mmc_delay(host->ios.power_delay_ms);
-+		/*
-+		 * This delay should be sufficient to allow the power supply
-+		 * to reach the minimum voltage.
-+		 */
-+		mmc_delay(host->ios.power_delay_ms);
- 
--	mmc_pwrseq_post_power_on(host);
-+		mmc_pwrseq_post_power_on(host);
- 
+@@ -898,8 +898,10 @@ static inline void mmc_set_ios(struct mmc_host *host)
+  */
+ void mmc_set_chip_select(struct mmc_host *host, int mode)
+ {
+-	host->ios.chip_select = mode;
+-	mmc_set_ios(host);
++	if (!(host->flags & MMC_UHS2_INITIALIZED)) {
++		host->ios.chip_select = mode;
++		mmc_set_ios(host);
 +	}
- 	host->ios.clock = host->f_init;
--
- 	host->ios.power_mode = MMC_POWER_ON;
-+
- 	mmc_set_ios(host);
- 
--	/*
--	 * This delay must be at least 74 clock sizes, or 1 ms, or the
--	 * time required to reach a stable voltage.
--	 */
--	mmc_delay(host->ios.power_delay_ms);
-+	if (host->flags & MMC_UHS2_SUPPORT)
-+		/*
-+		 * This delay should be sufficient to allow the power supply
-+		 * to reach the minimum voltage.
-+		 */
-+		/*  TODO: avoid an immediate value */
-+		mmc_delay(10);
-+	else
-+		/*
-+		 * This delay must be at least 74 clock sizes, or 1 ms, or the
-+		 * time required to reach a stable voltage.
-+		 */
-+		mmc_delay(host->ios.power_delay_ms);
  }
  
- void mmc_power_off(struct mmc_host *host)
-@@ -2316,7 +2335,11 @@ void mmc_start_host(struct mmc_host *host)
- 
- 	if (!(host->caps2 & MMC_CAP2_NO_PRESCAN_POWERUP)) {
- 		mmc_claim_host(host);
--		mmc_power_up(host, host->ocr_avail);
-+
-+		/* Power up here will make UHS2 init ugly. */
-+		if (!(host->caps & MMC_CAP_UHS2))
-+			mmc_power_up(host, host->ocr_avail);
-+
- 		mmc_release_host(host);
- 	}
- 
-diff --git a/drivers/mmc/core/regulator.c b/drivers/mmc/core/regulator.c
-index 609201a467ef..629e25bc8cb7 100644
---- a/drivers/mmc/core/regulator.c
-+++ b/drivers/mmc/core/regulator.c
-@@ -249,6 +249,7 @@ int mmc_regulator_get_supply(struct mmc_host *mmc)
- 
- 	mmc->supply.vmmc = devm_regulator_get_optional(dev, "vmmc");
- 	mmc->supply.vqmmc = devm_regulator_get_optional(dev, "vqmmc");
-+	mmc->supply.vmmc2 = devm_regulator_get_optional(dev, "vmmc2");
- 
- 	if (IS_ERR(mmc->supply.vmmc)) {
- 		if (PTR_ERR(mmc->supply.vmmc) == -EPROBE_DEFER)
-@@ -268,6 +269,19 @@ int mmc_regulator_get_supply(struct mmc_host *mmc)
- 		dev_dbg(dev, "No vqmmc regulator found\n");
- 	}
- 
-+	if (IS_ERR(mmc->supply.vmmc2)) {
-+		if (PTR_ERR(mmc->supply.vmmc2) == -EPROBE_DEFER)
-+			return -EPROBE_DEFER;
-+		dev_dbg(dev, "No vmmc2 regulator found\n");
-+	} else {
-+		ret = mmc_regulator_get_ocrmask(mmc->supply.vmmc2);
-+		if (ret > 0)
-+			mmc->ocr_avail_uhs2 = ret;
-+		else
-+			dev_warn(dev, "Failed getting UHS2 OCR mask: %d\n",
-+				 ret);
-+	}
-+
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(mmc_regulator_get_supply);
+ /*
 -- 
 2.28.0
 
