@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD1FF2A8CDF
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 03:29:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5E622A8CE1
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 03:29:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726362AbgKFC3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 21:29:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44302 "EHLO
+        id S1726385AbgKFC3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 21:29:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726343AbgKFC3I (ORCPT
+        with ESMTP id S1726365AbgKFC3M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 21:29:08 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A42CC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 18:29:08 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id e21so2761913pgr.11
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 18:29:08 -0800 (PST)
+        Thu, 5 Nov 2020 21:29:12 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89A33C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 18:29:11 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id c20so2928330pfr.8
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 18:29:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Cx3VoQbaR+Z5v6mQk7FBIZ1yEyqwjxeeLB00ez5Q8ag=;
-        b=MiUWaRZjxNWNLJlY97uyYRnFY3hLDVTrcG8EYyZuJYr2d5xfpNdLTnXBcGGhXJATKQ
-         ASMZwZ+k7MDAq0hH52UczCF+gNKBiBtPNBk719ajwrAkl/BQ0oSTjgAoYjnUsbqsvKXg
-         /nfrYyhTa3PTnXpNJdHaBAcGYTKlBftdJhrE6HENKNd8Jab11KDOyaUEKdaLQW1GWDPy
-         AuBI4+EG6CSbPDFnJ06xN6zcY7k7lHU65KKuw+vpGC5z6CdexR9lMBhZBDK+bxlTnCIn
-         t0cj0oY/4dFvSSicw006yG5TPTUf9ptLMYKUDGPRa1av6h/FnAzp9nI/4FH4dkxN/GC2
-         l8aQ==
+        bh=VO4alIYzWpT/RwVpJHrL0FuhDDCUQBDuaOz3l1c8Zvg=;
+        b=RZb4Z9QTABVXxV5JwDIA8O9KK6r/7ZbyZdiLePOrnMaBNmhNTZG43oWpib94I5Koh/
+         Jsqffw5hBp3XloN0cqqMhkvkL4vDJgnma75Bpngzc0hqYe/63+RsFCa8CB9koBJFGe1N
+         BAEKkM9HfDGpgfNPx0U7G/BmavcxYjhEFLpQAF4HdkTXxBd3JoVEF5/U833dKhJWI0DJ
+         MbvHCVY99JFEdHa53jWt2uapnfrNAEFQw9pU8ipBZtbXESm8KYAhokRrH+0j6Lx8bsDb
+         nDxMB0XzLvabJxgTXX2/meMB/J8qPsavu+ly4Ty8nvu8NI74BvtoiJv0WVYCOCTlKOt8
+         pqWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Cx3VoQbaR+Z5v6mQk7FBIZ1yEyqwjxeeLB00ez5Q8ag=;
-        b=Pch1lBbdxgiAl0JiXYyNrO9+Pv7gCCLfICnQoYQxVAntNOLTGqHolLploOLd/ydpQE
-         ieUS91OypR8yIO0FNVgY2I9/DcZThma7vbaICUh4x1j54bAe225Dg9oWjcaY6OV9jqB9
-         ay1M36P1sBuPIxqJH4Ci0ZP7B2799sMg3E9WMGWXXcsuvp8vaIfjF2BYJi5Wog0DniX4
-         gk285hf7KgR0e5ftGB7t5C6jylefFbHtLBm/kh6UeGZL+pMQ8OmRb7h+G4LcxMjS8qfi
-         Armu+RW3N9weB7IGnk5sGp8f2gH9z03edW2aJQp7VEXFZKDhJ6QGfXEOw/8Wmdx03+6R
-         hevg==
-X-Gm-Message-State: AOAM533ywNcuCPnJGBi7Z0NFuZ+2DSiDFplYJyExzY40Svm/iwhmzAz1
-        RoiZBZYs6GuAC29ZU9ZP81SWtw==
-X-Google-Smtp-Source: ABdhPJypRNlTCibcoawN7Q6kChCkjFXba6Cszjbj36YKmhg/NcAC4TV+sGQVNS4zQa3kZJ2wWLZGOA==
-X-Received: by 2002:aa7:8bdd:0:b029:18b:9cb:dead with SMTP id s29-20020aa78bdd0000b029018b09cbdeadmr5304786pfd.24.1604629748103;
-        Thu, 05 Nov 2020 18:29:08 -0800 (PST)
+        bh=VO4alIYzWpT/RwVpJHrL0FuhDDCUQBDuaOz3l1c8Zvg=;
+        b=SHBtKLCQEl1l72F5uezCKnU9XWy6dmChSMZaPYw2MXpzha1JlfTkWMbOtUPKdTUrDZ
+         mJjn2xAQhfO9KBoxQCQ4wpxFyPbHbzF/MkWCUJ5YPt/WvzvxPahevUBNXHsJszkJwVbD
+         3tdm0+U5PmnCzUcgx77/jMehrekWlomT6iVa4GqOlBjJU562Yfk5n1o9lFy2+6K9fSKW
+         5Hp41lpsGMf9OI5k49bJO3WC+B7Xbq8O5+Ay4n2KVPIF/nQbj6H6uOicip1EvPTZvCjQ
+         Du1PH+Z1IMxfByM4DmrkCXZfc4EpK1tcIL2xoLbPzOHZSNj6j0AN9Uo7OoUD8VPClpgb
+         tj1A==
+X-Gm-Message-State: AOAM5320jw185DmZzKpXlOQDNbjAVJMviUoeNNcky6VPYijnWofTkPpm
+        jNchpHcmgl2K2PPo/eENPrtVjg==
+X-Google-Smtp-Source: ABdhPJxyUhzSrs60GH/XttMxHZWHngc9fR6hhqUeDkRR7HD8qwlpNDHHkNLwNOHAJR1BveB8/CqD3g==
+X-Received: by 2002:a17:90a:7784:: with SMTP id v4mr18893pjk.60.1604629751085;
+        Thu, 05 Nov 2020 18:29:11 -0800 (PST)
 Received: from localhost.localdomain (p784a66b9.tkyea130.ap.so-net.ne.jp. [120.74.102.185])
-        by smtp.gmail.com with ESMTPSA id m13sm3703040pjr.30.2020.11.05.18.29.05
+        by smtp.gmail.com with ESMTPSA id m13sm3703040pjr.30.2020.11.05.18.29.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 18:29:07 -0800 (PST)
+        Thu, 05 Nov 2020 18:29:10 -0800 (PST)
 From:   AKASHI Takahiro <takahiro.akashi@linaro.org>
 To:     ulf.hansson@linaro.org, adrian.hunter@intel.com
 Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
         ben.chuang@genesyslogic.com.tw, greg.tu@genesyslogic.com.tw,
         AKASHI Takahiro <takahiro.akashi@linaro.org>
-Subject: [RFC PATCH v3.1 23/27] mmc: sdhci-uhs2: add pre-detect_init hook
-Date:   Fri,  6 Nov 2020 11:27:22 +0900
-Message-Id: <20201106022726.19831-24-takahiro.akashi@linaro.org>
+Subject: [RFC PATCH v3.1 24/27] mmc: core: add post-mmc_attach_sd hook
+Date:   Fri,  6 Nov 2020 11:27:23 +0900
+Message-Id: <20201106022726.19831-25-takahiro.akashi@linaro.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201106022726.19831-1-takahiro.akashi@linaro.org>
 References: <20201106022726.19831-1-takahiro.akashi@linaro.org>
@@ -65,44 +65,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ben Chuang <ben.chuang@genesyslogic.com.tw>
-
-This "pre" hook for detect_init(), uhs2_pre_detect_init, will be required
-to enable UHS-II support, at least, on GL9755.
+This "post" hook for mmc_attach_sd() will be required to enable UHS-II
+support, at least, on GL9755.
 
 Signed-off-by: Ben Chuang <ben.chuang@genesyslogic.com.tw>
 Signed-off-by: AKASHI Takahiro <takahiro.akashi@linaro.org>
 ---
- drivers/mmc/host/sdhci-uhs2.c | 3 +++
- drivers/mmc/host/sdhci.h      | 1 +
- 2 files changed, 4 insertions(+)
+ drivers/mmc/core/sd.c    | 6 ++++++
+ include/linux/mmc/host.h | 1 +
+ 2 files changed, 7 insertions(+)
 
-diff --git a/drivers/mmc/host/sdhci-uhs2.c b/drivers/mmc/host/sdhci-uhs2.c
-index 5d3362ea138f..3dd81c89d8f1 100644
---- a/drivers/mmc/host/sdhci-uhs2.c
-+++ b/drivers/mmc/host/sdhci-uhs2.c
-@@ -1631,6 +1631,9 @@ static int sdhci_uhs2_do_detect_init(struct mmc_host *mmc)
- 	DBG("%s: begin UHS2 init.\n", __func__);
- 	spin_lock_irqsave(&host->lock, flags);
+diff --git a/drivers/mmc/core/sd.c b/drivers/mmc/core/sd.c
+index 54e155ff44ff..9e0a5abe9be1 100644
+--- a/drivers/mmc/core/sd.c
++++ b/drivers/mmc/core/sd.c
+@@ -1411,6 +1411,12 @@ int mmc_attach_sd(struct mmc_host *host)
+ 		goto remove_card;
  
-+	if (host->ops && host->ops->uhs2_pre_detect_init)
-+		host->ops->uhs2_pre_detect_init(host);
+ 	mmc_claim_host(host);
 +
- 	if (sdhci_uhs2_interface_detect(host)) {
- 		pr_warn("%s: cannot detect UHS2 interface.\n",
- 			mmc_hostname(host->mmc));
-diff --git a/drivers/mmc/host/sdhci.h b/drivers/mmc/host/sdhci.h
-index b1d856664b58..4e2cb73a63bd 100644
---- a/drivers/mmc/host/sdhci.h
-+++ b/drivers/mmc/host/sdhci.h
-@@ -723,6 +723,7 @@ struct sdhci_ops {
- 				struct mmc_request *mrq);
- 	void    (*dump_vendor_regs)(struct sdhci_host *host);
- 	void	(*dump_uhs2_regs)(struct sdhci_host *host);
-+	void    (*uhs2_pre_detect_init)(struct sdhci_host *host);
++	/* TODO: Is this the right place? */
++	if ((host->flags & MMC_UHS2_INITIALIZED) &&
++	    host->ops->uhs2_post_attach_sd)
++		host->ops->uhs2_post_attach_sd(host);
++
+ 	return 0;
+ 
+ remove_card:
+diff --git a/include/linux/mmc/host.h b/include/linux/mmc/host.h
+index 19a265190ad3..03131e4504ad 100644
+--- a/include/linux/mmc/host.h
++++ b/include/linux/mmc/host.h
+@@ -181,6 +181,7 @@ struct mmc_host_ops {
+ 	int	(*uhs2_set_reg)(struct mmc_host *host, enum uhs2_act act);
+ 	void    (*uhs2_disable_clk)(struct mmc_host *host);
+ 	void    (*uhs2_enable_clk)(struct mmc_host *host);
++	void    (*uhs2_post_attach_sd)(struct mmc_host *host);
  };
  
- #ifdef CONFIG_MMC_SDHCI_IO_ACCESSORS
+ struct mmc_cqe_ops {
 -- 
 2.28.0
 
