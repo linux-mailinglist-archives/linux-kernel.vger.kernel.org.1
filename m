@@ -2,65 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0371B2A9164
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 09:35:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 335E02A9198
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 09:36:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726598AbgKFIfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 03:35:19 -0500
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:40756 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725830AbgKFIfT (ORCPT
+        id S1726719AbgKFIgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 03:36:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44846 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725848AbgKFIgp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 03:35:19 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R931e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UEP0dwV_1604651716;
-Received: from aliy80.localdomain(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UEP0dwV_1604651716)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 06 Nov 2020 16:35:16 +0800
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-To:     pablo@netfilter.org
-Cc:     Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] netfilter: remove unused macro DUMP_INIT to tame gcc
-Date:   Fri,  6 Nov 2020 16:35:13 +0800
-Message-Id: <1604651713-9920-1-git-send-email-alex.shi@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Fri, 6 Nov 2020 03:36:45 -0500
+Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A042C0613D2
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 00:36:45 -0800 (PST)
+Received: by mail-yb1-xb41.google.com with SMTP id b138so474154yba.5
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 00:36:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qEZLCwayVmjTSz55WLFDrASQyKwm9AzKbv8zrefCiDk=;
+        b=Ji/jXL4wApkUI69Y5av8UFEa6ZvMG8Mm7sMdeBuZf7EoU4V1ZJLIvyslti7xbYYgOo
+         7sI5169sAiOnVjscRjwLSG5mTCDgJbsvvoyW7NaM+rXP+TANNYM9GzJTJeHzh5IJBSn6
+         jCu4ranqabbyvqfRRUp8VUmP12hOGnUWANJ2MHUcQuqSD+QuRogFeUpnHgYeTln5Ymb2
+         IxW851j1Otp0qXE2KbajHox2eLThi38VBbZU7+cZkmlqcN1NRpsNCkHTGxZofwDuILfd
+         YJVqD/sCpYRPLK+Qa+6GsSNblgKHxW6x/FkEn9nScueY9kHi8mFdGrFX2iHrBlCcY0aX
+         0Zzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qEZLCwayVmjTSz55WLFDrASQyKwm9AzKbv8zrefCiDk=;
+        b=UWqosGShPi3/RIprXl1Lbx84WaAajDhofXVGPIHe6sxy/ndCcTV9PI9ZjzBzsVTErw
+         bspF/3Q3d6TqniaDDyXA8HSfWWKX2vBww8O9wUpuGxcO9g7GKfx2iuyxLXADgqmMwzLL
+         qVccRPokJ+LoTJPgpkvJk5XIXRUFyQ9WY6MmQ9dTr+c3vtFdoJY2cgDA0pi765r+32sN
+         tuMqUCYGqZlY+2jKS9Meds65HG7gz4+uQdxiN7AxujQ40yLm3rf3pmKahXFXm8PiVTrb
+         2mEsA/nqna5WbBsul6AO3qo/N5TGECAKS6BWER5iQY9QOKEZlX5HTCue+QCtP18l99Yx
+         oauw==
+X-Gm-Message-State: AOAM531wqe0ARBgDExIULFHgT6nKdAR+721yIMvFcqv6g//qbQmOE271
+        IYSUTRRFhV+8dVWc9Ims2xVrmrekxSQpHIr+lIXseg==
+X-Google-Smtp-Source: ABdhPJzvDcNdXHjO7nYfSMx7aYo6WWdRNoKpDm3K2m0Ae6MfNyULyjym/ptGih8ndA11+PnN2rHt+iT8lQNTMQ3Kip0=
+X-Received: by 2002:a25:d2c5:: with SMTP id j188mr1358442ybg.32.1604651804489;
+ Fri, 06 Nov 2020 00:36:44 -0800 (PST)
+MIME-Version: 1.0
+References: <20201104232356.4038506-1-saravanak@google.com> <20201106050940.GG16469@pendragon.ideasonboard.com>
+In-Reply-To: <20201106050940.GG16469@pendragon.ideasonboard.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Fri, 6 Nov 2020 00:36:08 -0800
+Message-ID: <CAGETcx-rvTuEmJUsf6qP3WkPLOh6m6cy8E_LsJPoGejNOXrdcw@mail.gmail.com>
+Subject: Re: [PATCH v1 00/18] Refactor fw_devlink to significantly improve
+ boot time
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Android Kernel Team <kernel-team@android.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-net/netfilter/ipset/ip_set_core.c:1416:0: warning: macro "DUMP_INIT" is
-not used [-Wunused-macros]
+On Thu, Nov 5, 2020 at 9:09 PM Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
+>
+> Hi Saravana,
+>
+> Thank you for working on this !
+>
+> On Wed, Nov 04, 2020 at 03:23:37PM -0800, Saravana Kannan wrote:
+> > The current implementation of fw_devlink is very inefficient because it
+> > tries to get away without creating fwnode links in the name of saving
+> > memory usage. Past attempts to optimize runtime at the cost of memory
+> > usage were blocked with request for data showing that the optimization
+> > made significant improvement for real world scenarios.
+> >
+> > We have those scenarios now. There have been several reports of boot
+> > time increase in the order of seconds in this thread [1]. Several OEMs
+> > and SoC manufacturers have also privately reported significant
+> > (350-400ms) increase in boot time due to all the parsing done by
+> > fw_devlink.
+> >
+> > So this patch series refactors fw_devlink to be more efficient. The key
+> > difference now is the addition of support for fwnode links -- just a few
+> > simple APIs. This also allows most of the code to be moved out of
+> > firmware specific (DT mostly) code into driver core.
+> >
+> > This brings the following benefits:
+> > - Instead of parsing the device tree multiple times (complexity was
+> >   close to O(N^3) where N in the number of properties) during bootup,
+> >   fw_devlink parses each fwnode node/property only once and creates
+> >   fwnode links. The rest of the fw_devlink code then just looks at these
+> >   fwnode links to do rest of the work.
+> >
+> > - Makes it much easier to debug probe issue due to fw_devlink in the
+> >   future. fw_devlink=on blocks the probing of devices if they depend on
+> >   a device that hasn't been added yet. With this refactor, it'll be very
+> >   easy to tell what that device is because we now have a reference to
+> >   the fwnode of the device.
+> >
+> > - Much easier to add fw_devlink support to ACPI and other firmware
+> >   types. A refactor to move the common bits from DT specific code to
+> >   driver core was in my TODO list as a prerequisite to adding ACPI
+> >   support to fw_devlink. This series gets that done.
+> >
+> > Tomi/Laurent/Grygorii,
+> >
+> > If you can test this series, that'd be great!
+>
+> I gave it a try, rebasing my branch from v5.9 to v5.10-rc2 first. On
+> v5.10-rc2 the kernel dies when booting due to a deadlock (reported by
+> lockdep, so hopefully not too hard to debug). *sigh*. Fortunately, it
+> dies after the fw_devlink initialization, so I can still report results.
 
-This macro unused and cause above warning. So let's remove it.
+Phew! For a sec I thought you said fw_devlink was causing a deadlock.
 
-Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-Cc: Pablo Neira Ayuso <pablo@netfilter.org> 
-Cc: Jozsef Kadlecsik <kadlec@netfilter.org> 
-Cc: Florian Westphal <fw@strlen.de> 
-Cc: "David S. Miller" <davem@davemloft.net> 
-Cc: netfilter-devel@vger.kernel.org 
-Cc: coreteam@netfilter.org 
-Cc: netdev@vger.kernel.org 
-Cc: linux-kernel@vger.kernel.org 
----
- net/netfilter/ipset/ip_set_core.c | 1 -
- 1 file changed, 1 deletion(-)
+>
+> Before your series:
+>
+> [    0.743065] cpuidle: using governor menu
+> [   13.350259] No ATAGs?
+>
+> With your series applied:
+>
+> [    0.722670] cpuidle: using governor menu
+> [    1.135859] No ATAGs?
+>
+> That's a very clear improvement :-)
 
-diff --git a/net/netfilter/ipset/ip_set_core.c b/net/netfilter/ipset/ip_set_core.c
-index c7eaa3776238..69c10878bf97 100644
---- a/net/netfilter/ipset/ip_set_core.c
-+++ b/net/netfilter/ipset/ip_set_core.c
-@@ -1420,7 +1420,6 @@ static int ip_set_swap(struct net *net, struct sock *ctnl, struct sk_buff *skb,
- 
- /* List/save set data */
- 
--#define DUMP_INIT	0
- #define DUMP_ALL	1
- #define DUMP_ONE	2
- #define DUMP_LAST	3
--- 
-1.8.3.1
+Thanks for testing. Great to hear it's helping!
 
+> Tested-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+I'll add it to my v2 series.
+
+-Saravana
