@@ -2,128 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32E632A9536
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 12:25:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 371A12A953A
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 12:27:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727252AbgKFLZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 06:25:28 -0500
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:59483 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727122AbgKFLZ1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 06:25:27 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id B828E5C0153;
-        Fri,  6 Nov 2020 06:25:26 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Fri, 06 Nov 2020 06:25:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=5Yj3pXQpJQALCaR6UFoEFtk+Vub
-        KVPBnWpRqxnrhHuA=; b=hWy03zmZAFHytdBzXtRpvB+dk5szc4oggqunvmdsEG9
-        nRPEZTtoG5opxmFZ9nQ9YfZLJd1vXQlPSaSXFLqUfh9AmvmZdz1Y9U+2Qh7TU69f
-        Xq2e+LjwG9JDuvgMTSPb5640nMbOXFv1ntpbEMdApnzMxWBLqByNT8WliAisxrYb
-        SJ77ywApQbCpQKv7eX41a6VXDcaiFtkESdwHPkzFmsutlrCpFw2ijkWwCDQCd3wA
-        KPLadfTHIUIptMXf78+Ks2/+jMCnbuApz5C6KzSz6DedygeAoxSYKxA8Cp5XDOId
-        NRYYGpAcAo2dl6gto6JesaKgpQmmBIVJ7/6k7MKy7Bg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=5Yj3pX
-        QpJQALCaR6UFoEFtk+VubKVPBnWpRqxnrhHuA=; b=VjeOVWhemV1v/e6auJzZYU
-        ZK2Z1qQIAHO68il7TtIO1CKuqb/JGiBP9zh3CSOxh7ORpQnpnX3EhI2aeLyqxozK
-        UjZiVnZ9C0kZNJtEKz1U8MKbTkUB+YZgj9iUrQM3qjHn4T/fr9cjKEdUTRbPLrVK
-        frEFDdxVFipyL9hdjfcVqYoAgwRnwjfqn2f0kDf+4KEY9oWXJ/Kghcdu0Zm7ccqP
-        ldraG4zvuGqKdgh954moHudsjkl3e04XXGFi0kf42e1iLyebnLylyianeqqGMWg3
-        F6QyqoC/PwWD9p+f7exoQqLTtY+gAsnuwZIf0cpt5yptJgeXpr1ewpjXXHP3Rb6A
-        ==
-X-ME-Sender: <xms:pjKlX7g-r3OzqBlGUPtnfOMef5Ff20LIcRFrW8gOUMu8HuO1DuLg8w>
-    <xme:pjKlX4AgjV2gEIjnjguaeC4k6ZTlAIxTFBkPQ25yniNlARUVMYC8xKzfLyG6rVU2r
-    TPkJQG-Lhd9hYymheY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddtledgfedtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvuffkfhggtggujgesghdtre
-    ertddtjeenucfhrhhomhepofgrgihimhgvucftihhprghrugcuoehmrgigihhmvgestggv
-    rhhnohdrthgvtghhqeenucggtffrrghtthgvrhhnpeeutdfgjeeuudehvefgvedvtedtud
-    elfffgffekledtffekgedukeejueevieegudenucfkphepledtrdekledrieekrdejieen
-    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigih
-    hmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:pjKlX7Euqo2-BA5LBlOv0mx-1RB-u0yUA1HUiHPfhoRoQIx6pN6cBw>
-    <xmx:pjKlX4RTeAUrsrwxoSorifplE-EwnUKWjq1FvD2TUd6gf3yhOs1Hng>
-    <xmx:pjKlX4zrNyEuZPSiSZbfCDhBAcu7_Lyy_kuWVPjPFLUVTe6Y6HZgNQ>
-    <xmx:pjKlX0_Ez6RW8-1GDku0cacMMZlvryr2j4dDCvTFVqVQzbvc3j-46g>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 3BF5E3060067;
-        Fri,  6 Nov 2020 06:25:26 -0500 (EST)
-Date:   Fri, 6 Nov 2020 12:25:25 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Chen-Yu Tsai <wens@csie.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, Yu-Tung Chang <mtwget@gmail.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 1/1] ARM: dts: sun8i: h3: Add initial NanoPi R1 support
-Message-ID: <20201106112525.rhom3yedunyf2qtn@gilmour.lan>
-References: <20201102100157.85801-1-mtwget@gmail.com>
- <20201102100157.85801-2-mtwget@gmail.com>
- <20201103113743.5764tj2ryrht4dfs@gilmour.lan>
- <CAHRgzyOao=w6Yyqqvi1Z26=rfJgumkzDbWLxD+_5uaLmyAWiQA@mail.gmail.com>
- <20201105171051.ducvxcdj5jfarmgn@gilmour.lan>
- <CAHRgzyNzXk1uJzEVLvrqPu2CT8jzF+5UFEubT6kEtF=8HVgROQ@mail.gmail.com>
- <CAGb2v64HyUn8KjPPA0JBA5tPaxX7-keNfs+M22pL5SmETN0FQg@mail.gmail.com>
+        id S1726878AbgKFL1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 06:27:33 -0500
+Received: from foss.arm.com ([217.140.110.172]:35822 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726422AbgKFL1d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 06:27:33 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CCDD2147A;
+        Fri,  6 Nov 2020 03:27:32 -0800 (PST)
+Received: from [10.57.54.223] (unknown [10.57.54.223])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2A5B13F719;
+        Fri,  6 Nov 2020 03:27:31 -0800 (PST)
+Subject: Re: [PATCH] arm64: dts: rockchip: Reorder LED triggers from mmc
+ devices on rk3399-roc-pc.
+To:     Johan Jonker <jbx6244@gmail.com>,
+        Markus Reichl <m.reichl@fivetechno.de>,
+        linux-rockchip@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>
+Cc:     dianders@chromium.org, wens@kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20201104192933.1001-1-m.reichl@fivetechno.de>
+ <db3986ed-e572-bdd1-6f04-3bb2d04d49fa@gmail.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <bb433605-09fd-388b-dfb0-0a3c52b3fc9f@arm.com>
+Date:   Fri, 6 Nov 2020 11:27:29 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="o5cxt6yl5jkrofc6"
-Content-Disposition: inline
-In-Reply-To: <CAGb2v64HyUn8KjPPA0JBA5tPaxX7-keNfs+M22pL5SmETN0FQg@mail.gmail.com>
+In-Reply-To: <db3986ed-e572-bdd1-6f04-3bb2d04d49fa@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2020-11-06 10:29, Johan Jonker wrote:
+> Hi Markus,
+> 
+> On 11/4/20 8:29 PM, Markus Reichl wrote:
+>> After patch [1] SD-card becomes mmc1 and eMMC becomes mmc2.
+>> Correct trigger of LEDs accordingly.
+>>
+>> [1]
+>> https://patchwork.kernel.org/patch/11881427
+>>
+>> Signed-off-by: Markus Reichl <m.reichl@fivetechno.de>
+>> ---
+>>   arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi | 4 ++--
+>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi
+>> index e7a459fa4322..20309076dbac 100644
+>> --- a/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi
+>> +++ b/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi
+>> @@ -74,14 +74,14 @@ diy_led: led-1 {
+>>   			label = "red:diy";
+>>   			gpios = <&gpio0 RK_PB5 GPIO_ACTIVE_HIGH>;
+>>   			default-state = "off";
+>> -			linux,default-trigger = "mmc1";
+> 
+>> +			linux,default-trigger = "mmc2";
+> 
+> remove
+>>   		};
+>>   
+>>   		yellow_led: led-2 {
+>>   			label = "yellow:yellow-led";
+>>   			gpios = <&gpio0 RK_PA2 GPIO_ACTIVE_HIGH>;
+>>   			default-state = "off";
+>> -			linux,default-trigger = "mmc0";
+> 
+>> +			linux,default-trigger = "mmc1";
+> 
+> remove
+> 
+>>   		};
+>>   	};
+>>   
+>>
+> 
+> The "mmc1" and "mmc2" options are custom values and invalid to the
+> automated dt check in the mainline kernel.
 
---o5cxt6yl5jkrofc6
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+It's already been established that the binding is at fault here. Effort 
+should be spent on fixing *that*, not sacrificing useful and intended DT 
+functionality in blind deference to the schema gods.
 
-On Fri, Nov 06, 2020 at 10:10:10AM +0800, Chen-Yu Tsai wrote:
-> On Fri, Nov 6, 2020 at 10:03 AM Yu-Tung Chang <mtwget@gmail.com> wrote:
-> >
-> > Maxime Ripard <maxime@cerno.tech> =E4=BA=8E2020=E5=B9=B411=E6=9C=886=E6=
-=97=A5=E5=91=A8=E4=BA=94 =E4=B8=8A=E5=8D=881:10=E5=86=99=E9=81=93=EF=BC=9A
-> > >
-> > > On Wed, Nov 04, 2020 at 04:07:48PM +0800, Yu-Tung Chang wrote:
-> > > > > > +&uart1 {
-> > > > > > +     pinctrl-names =3D "default";
-> > > > > > +     pinctrl-0 =3D <&uart1_pins>;
-> > > > >
-> > > > > This should be already set in the DTSI
-> > > > >
-> > > > uart0 as the debugging interface, uart1 as the external uart port,
-> > > > uart3 as the bluetooth.
-> > >
-> > > What I mean is that since it's the only muxing option, the pinctrl
-> > > properties should already be set in the DTSI, so it's redundant to put
-> > > them in the DTS.
-> > >
-> > I can only see the definition of uart0 in the DTSI,
-> > because uart1 as the extension interface is exclusive to NanoPi R1.
->=20
-> Maxime, to clarify, UART1 can be used with or without RTS/CTS,
-> so there is no default muxing in the DTSI.
+Robin.
 
-Ah, right. I've applied the patch, thanks!
-Maxime
-
---o5cxt6yl5jkrofc6
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX6UypAAKCRDj7w1vZxhR
-xULWAQDtMJJRAnUKqx7U3L+DoVsH4mBZm+cp6aPjSmezn/xztgD/amXTl45vNkPz
-Hs9hPJMRhRwjXBx5r8+fAmbkQ0RdbQQ=
-=SP/I
------END PGP SIGNATURE-----
-
---o5cxt6yl5jkrofc6--
+> 
+> make ARCH=arm64 dtbs_check
+> DT_SCHEMA_FILES=Documentation/devicetree/bindings/leds/leds-gpio.yaml
+> 
+> 
+>    linux,default-trigger:
+>      description:
+>        This parameter, if present, is a string defining the trigger
+> assigned to
+>        the LED.
+>      $ref: /schemas/types.yaml#definitions/string
+> 
+>      enum:
+>          # LED will act as a back-light, controlled by the framebuffer system
+>        - backlight
+>          # LED will turn on (but for leds-gpio see "default-state"
+> property in
+>          # Documentation/devicetree/bindings/leds/leds-gpio.yaml)
+>        - default-on
+>          # LED "double" flashes at a load average based rate
+>        - heartbeat
+>          # LED indicates disk activity
+>        - disk-activity
+>          # LED indicates IDE disk activity (deprecated), in new
+> implementations
+>          # use "disk-activity"
+>        - ide-disk
+>          # LED flashes at a fixed, configurable rate
+>        - timer
+>          # LED alters the brightness for the specified duration with one
+> software
+>          # timer (requires "led-pattern" property)
+>        - pattern
+> 
