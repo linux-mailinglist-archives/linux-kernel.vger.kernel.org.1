@@ -2,101 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36FD42A9A5B
+	by mail.lfdr.de (Postfix) with ESMTP id A48D32A9A5C
 	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 18:04:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727498AbgKFRC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 12:02:59 -0500
-Received: from mail-oo1-f67.google.com ([209.85.161.67]:33559 "EHLO
-        mail-oo1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726880AbgKFRC5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 12:02:57 -0500
-Received: by mail-oo1-f67.google.com with SMTP id u5so499277oot.0;
-        Fri, 06 Nov 2020 09:02:57 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rk7T64LoL7N2SeWrLIWOJBC0gy4oWD2nnIdv4KYgYXw=;
-        b=YMILLRrLtqdYIStpxB3EDxgEr/cBxPExUa4od9eJP1mVE+7VHbPvu43z5I6EzV5iKi
-         UccEMA7rB3B42oyOdvPVAYiAYga9CI4xwJFXDyOUFlZA/TXQ/x9Uij9toWQ+YaLLZUwz
-         6Aj6dsdVid0YBrzTT8q9HzMsC18AoZLU1cEXJjx39PmubrQi8qMWP40eX3ZOzU3/DKBf
-         i1RXk32/S0bTa57bN1F+iQi733LRS/exZLNQO2m+TzmSmUX8hKkK7//fHwov4mZEoRzS
-         GB9QvAEKJqRjl+lrdW5mWaSjv850ODqRJOCq/u85OkfrOfjRND+yNgxJu/12uVAZfIca
-         tAkQ==
-X-Gm-Message-State: AOAM530CTCXWVgiGeuI24czdiTyZuSB4Vy6JXqxZ37mALRQuOvw7GT7g
-        DbY+jt0/fn/qLklkxl6kfwk9WJmDqaTpw7JVkRw=
-X-Google-Smtp-Source: ABdhPJw9guvs1ATyoICfMDk+D2jRXImbBOPCrTGgy/a9Nuv0PHva1gqeJXIU7vYb67LYFW9M4QT/D5ORPTF4DyPHOv4=
-X-Received: by 2002:a4a:d815:: with SMTP id f21mr1918338oov.44.1604682176990;
- Fri, 06 Nov 2020 09:02:56 -0800 (PST)
+        id S1727762AbgKFRDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 12:03:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60326 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726880AbgKFRDR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 12:03:17 -0500
+Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 144F1217A0;
+        Fri,  6 Nov 2020 17:03:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604682196;
+        bh=8qTMHsqw2tR8BoQH69u5hejd4jKL4a4QMXrqYRaNg2Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=b3BaJyxzuCBZbIOZIZY7xuDiyfkm8O9vsQYyOHW4HoTKjkHlisX4Oc7uhcEX+WL6P
+         JITz0WXmSDjg4a7xRaVxCgTCiorGnORl9TVpCL8OaHSt2c1JP+UEhj+4WcquA7pAVs
+         kNEEkSv25vkK5tvP+O2XqTk/qa/XqfyZ2zMg1oX8=
+Date:   Fri, 6 Nov 2020 09:03:14 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     syzbot <syzbot+92340f7b2b4789907fdb@syzkaller.appspotmail.com>,
+        andreyknvl@google.com, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, rafael@kernel.org,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: WARNING in input_register_device
+Message-ID: <20201106170314.GA845@sol.localdomain>
+References: <000000000000872b5405b36f8e31@google.com>
+ <20201106140336.GA3319902@kroah.com>
 MIME-Version: 1.0
-References: <7417968.Ghue05m4RV@kreacher> <2233690.N3OVLkotou@kreacher> <20201106100712.u336gbtblaxr2cit@vireshk-i7>
-In-Reply-To: <20201106100712.u336gbtblaxr2cit@vireshk-i7>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 6 Nov 2020 18:02:45 +0100
-Message-ID: <CAJZ5v0gT07K-oPa0=f8+Fq6tevqZJ8iWYjtf9YDNUJw1GJEBBA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] cpufreq: Introduce target min and max frequency hints
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201106140336.GA3319902@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 6, 2020 at 11:07 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> On 05-11-20, 19:23, Rafael J. Wysocki wrote:
-> > Index: linux-pm/include/linux/cpufreq.h
-> > ===================================================================
-> > --- linux-pm.orig/include/linux/cpufreq.h
-> > +++ linux-pm/include/linux/cpufreq.h
-> > @@ -63,6 +63,8 @@ struct cpufreq_policy {
-> >
-> >       unsigned int            min;    /* in kHz */
-> >       unsigned int            max;    /* in kHz */
-> > +     unsigned int            target_min; /* in kHz */
-> > +     unsigned int            target_max; /* in kHz */
-> >       unsigned int            cur;    /* in kHz, only needed if cpufreq
-> >                                        * governors are used */
-> >       unsigned int            suspend_freq; /* freq to set during suspend */
->
-> Rafael, honestly speaking I didn't like this patch very much.
+On Fri, Nov 06, 2020 at 03:03:36PM +0100, Greg KH wrote:
+> On Fri, Nov 06, 2020 at 04:43:17AM -0800, syzbot wrote:
+> > Hello,
+> > 
+> > syzbot found the following issue on:
+> > 
+> > HEAD commit:    9e39aef3 usb: misc: brcmstb-usb-pinmap: Make sync_all_pins..
+> > git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=145ffa8a500000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=a05f5efbb00b1465
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=92340f7b2b4789907fdb
+> > compiler:       gcc (GCC) 10.1.0-syz 20200507
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=172ae7a8500000
+> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13b24746500000
+> > 
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: syzbot+92340f7b2b4789907fdb@syzkaller.appspotmail.com
+> > 
+> > microsoft 0003:045E:07DA.0001: unknown main item tag 0x0
+> > HID 045e:07da: Invalid code 65791 type 1
+> > ------------[ cut here ]------------
+> > init_uevent_argv: buffer size too small
+> > WARNING: CPU: 0 PID: 5 at lib/kobject_uevent.c:259 init_uevent_argv lib/kobject_uevent.c:259 [inline]
+> > WARNING: CPU: 0 PID: 5 at lib/kobject_uevent.c:259 kobject_uevent_env+0x1640/0x1680 lib/kobject_uevent.c:608
+> 
+> You gave it a device with a buffer that was "too small", and it rejected
+> it.
+> 
+> Which, aside from the huge warning message, is to be expected, so I
+> don't think this is really a bug here.
+> 
 
-So what's the concern, specifically?
+The purpose of WARN is for reporting recoverable kernel bugs.  So a reachable
+WARN is a bug.  Either it is reporting one, or the bug is that the use of WARN
+is wrong.
 
-> We need to fix a very specific problem with the intel-pstate driver when it is
-> used with powersave/performance governor to make sure the hard limits
-> are enforced. And this is something which no one else may face as
-> well.
-
-Well, I predict that the CPPC driver will face this problem too at one point.
-
-As well as any other driver which doesn't select OPPs directly for
-that matter, at least to some extent (note that intel_pstate in the
-"passive" mode without HWP has it too, but since there is no way to
-enforce the target max in that case, it is not relevant).
-
-> What about doing something like this instead in the intel_pstate
-> driver only to get this fixed ?
->
->         if (!strcmp(policy->governor->name, "powersave") ||
->             !strcmp(policy->governor->name, "performance"))
->                 hard-limit-to-be-enforced;
->
-> This would be a much simpler and contained approach IMHO.
-
-I obviously prefer to do it the way I did in this series, because it
-is more general and it is based on the governor telling the driver
-what is needed instead of the driver trying to figure out what the
-governor is and guessing what may be needed because of that.
-
-But if you have a very specific technical concern regarding my
-approach, I can do it the other way too.
-
-Cheers!
+- Eric
