@@ -2,231 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 201382AA079
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 23:41:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B2862AA07B
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 23:41:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728902AbgKFWlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 17:41:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36792 "EHLO
+        id S1728940AbgKFWl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 17:41:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728390AbgKFWlo (ORCPT
+        with ESMTP id S1728390AbgKFWly (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 17:41:44 -0500
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1116C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 14:41:43 -0800 (PST)
-Received: by mail-qv1-xf43.google.com with SMTP id b11so1215718qvr.9
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 14:41:43 -0800 (PST)
+        Fri, 6 Nov 2020 17:41:54 -0500
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 767E1C0613CF;
+        Fri,  6 Nov 2020 14:41:54 -0800 (PST)
+Received: by mail-qt1-x843.google.com with SMTP id i7so1963088qti.6;
+        Fri, 06 Nov 2020 14:41:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=uJ67opO7C728cJP3Weo9LnZt/RwZ0Q6XMY8gffqYTN8=;
-        b=SwKk4P7ekzqDI8nemhvLYShZV4oWgRGNmYNMR2u8dimxwQqx2v+3dIiLUpjo/fXoKN
-         ZQBUoEtAsAGAbl6nVjskEcRbqojxJwk3A6JKJSe536r8k5/reqJO6/SIyEA/tNl7lpiU
-         HWOtVuRXX9BwiH4pD69o2d5abDvtaeWo7LKBo=
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=z7FzhduA30Tm2qYziVPMUtmZyLRgCN7aQ0VOcniLxfY=;
+        b=HJ3eU3myQMPuA6VE8cHM6/10KXPZMnaphEJVB3Wrm4mr18vUuECaCd9fy/IUt8KUpJ
+         KtL2QwgXfwA6p0zbrWnB/C6MtYYIS+OQNEQKQ6L0FKKzW+xV4IDXYbhWj/MA4h4HovI7
+         pinQUoyzFWmASq/Jxxss6GfF04D4BPyT1JZp24xjltmN6ox7QsSZLKocE8Wrv7ykihJH
+         jhQx5BADjQ1GzBvgG48C2ILsD5gOJxSC0pFo+ZAXkTeP+5Sac4ImPXajPvoFMnsuwa0v
+         fOmTRQhHGyGBTL+P4fSRJ5SPKDFYNou7amgFNusX4F6TapLGI9439WgX/AhBVHAQD36O
+         3aqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=uJ67opO7C728cJP3Weo9LnZt/RwZ0Q6XMY8gffqYTN8=;
-        b=nYqd+h5rKVqDFdwoHXGyzY/gTohA+YrzXtJTQaSyE3z7iNSUYjxIorL1hcO+oVdgj4
-         fxvEVaMCh7DN0Et13hFY8Ni6gMjsJx+rOVw8lV2QwOkbYUyhGUoBwzlgV6xo/blMXOfb
-         G93EokoFNuHZsHAkcmN6vARIfnOMnJlK9uR0qqM+D3JyH0vgHdzYpPrY7iIdKqvwSWKz
-         MYJvHRIxg1JeIm2ac7IjTRfH2Oi5vhdmPWFVHQm3JeZnIz1u0RBrJ4vJ4FOWrK8xY8yR
-         Zy/3twLXpSYexm49HG3xuKDZSEXQwk8h23TGRM5oXVWE42cYBw2Yvat45M4FCeAFZZeX
-         iUow==
-X-Gm-Message-State: AOAM5335ccXdixz8tyk0j9KMuRO4ZqQW21j65r3oarIiaGbTVHWKs8M+
-        hbh4ljWT6rK8vTaJtZZwk8nM7g==
-X-Google-Smtp-Source: ABdhPJwlAS6XxBBDv4+ky2kP0opSdjWtxHNFiv+rAyLcs68VZB08ahycnQ5JQwGH+4yCjQBxGZMBgg==
-X-Received: by 2002:a05:6214:9d2:: with SMTP id dp18mr3832526qvb.29.1604702502856;
-        Fri, 06 Nov 2020 14:41:42 -0800 (PST)
-Received: from localhost ([2620:15c:6:411:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id a200sm1519240qkb.66.2020.11.06.14.41.42
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=z7FzhduA30Tm2qYziVPMUtmZyLRgCN7aQ0VOcniLxfY=;
+        b=rfJURQHid0AmNWgyH6NZxaiVFD+MwVQP3PC7rSfuOuwq2F6nxSYm+yawBxl35k0GwZ
+         GMrNOyz7ap1no5y3OKtkOnkn1brTNCOOV1Urem0VpuZJM7Qo+dbcrrl2KHpXBri9OZSt
+         uLV2onTPXU/y8EwFqcbF7z2/y2mQtWa1xZK5nvzY80uXYKzaL3dyE7hl0Cm16AjVohIw
+         CNhNXQDtxXj1lKsrJkQaiNm6IORY/qQYhzg+Zs2p5iv0rBcefiO3ZRJ90m+vilV3A130
+         zJqxCBbxQFNtZdFKMUb3nn+Kxz4T+NTvvNBwTUjCMzjletOfoIRZbxgiJChl/zdTMjzk
+         BW+Q==
+X-Gm-Message-State: AOAM5301PBgASb97dOxokhF/ODGI8jesHze5K0iMzQYgfuRVBYfM6PF9
+        tFE4lA7WdTZT7X+7LaK9Azc=
+X-Google-Smtp-Source: ABdhPJxKeA2me0EkL+mP07TIDmSCUWPJiEsceqjGfsRkB8cJn8NR84Q7ocq9nUHwYWQI50UgZEZpSw==
+X-Received: by 2002:ac8:5d53:: with SMTP id g19mr3762928qtx.306.1604702513581;
+        Fri, 06 Nov 2020 14:41:53 -0800 (PST)
+Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
+        by smtp.gmail.com with ESMTPSA id w54sm1563018qtb.0.2020.11.06.14.41.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Nov 2020 14:41:42 -0800 (PST)
-Date:   Fri, 6 Nov 2020 17:41:41 -0500
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
+        Fri, 06 Nov 2020 14:41:52 -0800 (PST)
+Date:   Fri, 6 Nov 2020 15:41:51 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
 Cc:     linux-kernel@vger.kernel.org,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Marco Elver <elver@google.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>, fweisbec@gmail.com,
-        neeraj.iitr10@gmail.com
-Subject: Re: [PATCH v9 7/7] rcu/segcblist: Add additional comments to explain
- smp_mb()
-Message-ID: <20201106224141.GA1397669@google.com>
-References: <20201103142603.1302207-1-joel@joelfernandes.org>
- <20201103142603.1302207-8-joel@joelfernandes.org>
- <20201105185551.GO3249@paulmck-ThinkPad-P72>
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+        linux-pm@vger.kernel.org,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org,
+        Taniya Das <tdas@codeaurora.org>, linux-next@vger.kernel.org
+Subject: Re: [PATCH -next] clk: pm_clock: provide stubs for
+ pm_clk_runtime_suspend/_resume
+Message-ID: <20201106224151.GA3571170@ubuntu-m3-large-x86>
+References: <20201106180544.5681-1-rdunlap@infradead.org>
+ <20201106181713.GA3970874@ubuntu-m3-large-x86>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201105185551.GO3249@paulmck-ThinkPad-P72>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201106181713.GA3970874@ubuntu-m3-large-x86>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 10:55:51AM -0800, Paul E. McKenney wrote:
-> On Tue, Nov 03, 2020 at 09:26:03AM -0500, Joel Fernandes (Google) wrote:
-> > Memory barriers are needed when updating the full length of the
-> > segcblist, however it is not fully clearly why one is needed before and
-> > after. This patch therefore adds additional comments to the function
-> > header to explain it.
+On Fri, Nov 06, 2020 at 11:17:13AM -0700, Nathan Chancellor wrote:
+> On Fri, Nov 06, 2020 at 10:05:44AM -0800, Randy Dunlap wrote:
+> > Add stubs for pm_clk_runtime_suspend() and pm_clk_runtime_resume()
+> > to fix build errors when CONFIG_PM and CONFIG_PM_CLK are not enabled.
 > > 
-> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > Fixes these build errors:
+> > 
+> > ../drivers/clk/qcom/camcc-sc7180.c: In function ‘cam_cc_sc7180_probe’:
+> > ../drivers/clk/qcom/camcc-sc7180.c:1672:8: error: implicit declaration of function ‘pm_clk_runtime_resume’; did you mean ‘pm_runtime_resume’? [-Werror=implicit-function-declaration]
+> >   ret = pm_clk_runtime_resume(&pdev->dev);
+> >         ^~~~~~~~~~~~~~~~~~~~~
+> > ../drivers/clk/qcom/camcc-sc7180.c:1681:3: error: implicit declaration of function ‘pm_clk_runtime_suspend’; did you mean ‘pm_runtime_suspend’? [-Werror=implicit-function-declaration]
+> >    pm_clk_runtime_suspend(&pdev->dev);
+> >    ^~~~~~~~~~~~~~~~~~~~~~
+> > 
+> > Fixes: 15d09e830bbc ("clk: qcom: camcc: Add camera clock controller driver for SC7180")
+> > Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> > Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+> > Cc: Len Brown <len.brown@intel.com>
+> > Cc: Pavel Machek <pavel@ucw.cz>
+> > Cc: linux-pm@vger.kernel.org
+> > Cc: Michael Turquette <mturquette@baylibre.com>
+> > Cc: Stephen Boyd <sboyd@kernel.org>
+> > Cc: linux-clk@vger.kernel.org
+> > Cc: Taniya Das <tdas@codeaurora.org>
+> > Cc: linux-next@vger.kernel.org
 > 
-> Looks good, thank you!  As always, I could not resist the urge to
-> do a bit of wordsmithing, so that the queued commit is as shown
-> below.  Please let me know if I messed anything up.
-
-> 							Thanx, Paul
+> This fixes the same build failure that I saw with s390 all{mod,yes}config.
 > 
-> ------------------------------------------------------------------------
-> 
-> commit 7dac7adefcae7558b3a85a16f51186d621623733
-> Author: Joel Fernandes (Google) <joel@joelfernandes.org>
-> Date:   Tue Nov 3 09:26:03 2020 -0500
-> 
->     rcu/segcblist: Add additional comments to explain smp_mb()
->     
->     One counter-intuitive property of RCU is the fact that full memory
->     barriers are needed both before and after updates to the full
->     (non-segmented) length.  This patch therefore helps to assist the
->     reader's intuition by adding appropriate comments.
->     
->     [ paulmck:  Wordsmithing. ]
->     Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
->     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> 
-> diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
-> index bb246d8..b6dda7c 100644
-> --- a/kernel/rcu/rcu_segcblist.c
-> +++ b/kernel/rcu/rcu_segcblist.c
-> @@ -94,17 +94,77 @@ static void rcu_segcblist_set_len(struct rcu_segcblist *rsclp, long v)
->   * field to disagree with the actual number of callbacks on the structure.
->   * This increase is fully ordered with respect to the callers accesses
->   * both before and after.
-> + *
-> + * So why on earth is a memory barrier required both before and after
-> + * the update to the ->len field???
-> + *
-> + * The reason is that rcu_barrier() locklessly samples each CPU's ->len
-> + * field, and if a given CPU's field is zero, avoids IPIing that CPU.
-> + * This can of course race with both queuing and invoking of callbacks.
-> + * Failng to correctly handle either of these races could result in
-> + * rcu_barrier() failing to IPI a CPU that actually had callbacks queued
-> + * which rcu_barrier() was obligated to wait on.  And if rcu_barrier()
-> + * failed to wait on such a callback, unloading certain kernel modules
-> + * would result in calls to functions whose code was no longer present in
-> + * the kernel, for but one example.
-> + *
-> + * Therefore, ->len transitions from 1->0 and 0->1 have to be carefully
-> + * ordered with respect with both list modifications and the rcu_barrier().
-> + *
-> + * The queuing case is CASE 1 and the invoking case is CASE 2.
-> + *
-> + * CASE 1: Suppose that CPU 0 has no callbacks queued, but invokes
-> + * call_rcu() just as CPU 1 invokes rcu_barrier().  CPU 0's ->len field
-> + * will transition from 0->1, which is one of the transitions that must be
-> + * handled carefully.  Without the full memory barriers before the ->len
-> + * update and at the beginning of rcu_barrier(), the following could happen:
-> + *
-> + * CPU 0				CPU 1
-> + *
-> + * call_rcu().
-> + *                      		rcu_barrier() sees ->len as 0.
-> + * set ->len = 1.
-> + *                      		rcu_barrier() does nothing.
-> + *					module is unloaded.
-> + * callback invokes unloaded function!
-> + *
-> + * With the full barriers, any case where rcu_barrier() sees ->len as 0 will
-> + * have unambiguously preceded the return from the racing call_rcu(), which
-> + * means that this call_rcu() invocation is OK to not wait on.  After all,
-> + * you are supposed to make sure that any problematic call_rcu() invocations
-> + * happen before the rcu_barrier().
+> Build-tested-by: Nathan Chancellor <natechancellor@gmail.com>
+> Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
 
-Unfortunately, I did not understand your explanation. To me the barrier
-*before* the setting of length is needed on CPU0 only for 1->0 transition
-(Dequeue). Where as in
-your example above, it is for enqueue.
+Actually, this breaks certain powerpc configs:
 
-This was case 1 in my patch:
+$ make -skj"$(nproc)" ARCH=powerpc CROSS_COMPILE=powerpc-linux- distclean ppc44x_defconfig drivers/base/power/common.o
+In file included from drivers/base/power/common.c:11:
+./include/linux/pm_clock.h:87:19: error: static declaration of 'pm_clk_runtime_suspend' follows non-static declaration
+   87 | static inline int pm_clk_runtime_suspend(struct device *dev)
+      |                   ^~~~~~~~~~~~~~~~~~~~~~
+./include/linux/pm_clock.h:23:12: note: previous declaration of 'pm_clk_runtime_suspend' was here
+   23 | extern int pm_clk_runtime_suspend(struct device *dev);
+      |            ^~~~~~~~~~~~~~~~~~~~~~
+./include/linux/pm_clock.h:91:19: error: static declaration of 'pm_clk_runtime_resume' follows non-static declaration
+   91 | static inline int pm_clk_runtime_resume(struct device *dev)
+      |                   ^~~~~~~~~~~~~~~~~~~~~
+./include/linux/pm_clock.h:24:12: note: previous declaration of 'pm_clk_runtime_resume' was here
+   24 | extern int pm_clk_runtime_resume(struct device *dev);
+      |            ^~~~~~~~~~~~~~~~~~~~~
+make[4]: *** [scripts/Makefile.build:283: drivers/base/power/common.o] Error 1
+make[4]: Target '__build' not remade because of errors.
+make[3]: *** [scripts/Makefile.build:500: drivers/base/power] Error 2
+make[3]: Target '__build' not remade because of errors.
+make[2]: *** [scripts/Makefile.build:500: drivers/base] Error 2
+make[2]: Target '__build' not remade because of errors.
+make[1]: *** [Makefile:1797: drivers] Error 2
+make[1]: Target 'drivers/base/power/common.o' not remade because of errors.
+make: *** [Makefile:335: __build_one_by_one] Error 2
+make: Target 'distclean' not remade because of errors.
+make: Target 'ppc44x_defconfig' not remade because of errors.
+make: Target 'drivers/base/power/common.o' not remade because of errors.
 
-+ * To illustrate the problematic scenario to avoid:
-+ * P0 (what P1 sees)	P1
-+ * set len = 0
-+ *                      rcu_barrier sees len as 0
-+ * dequeue from list
-+ *                      rcu_barrier does nothing.
-+ *
+I think this should be moved into the CONFIG_PM block at the top of the
+file.
 
-
-Here, P1 should see the transition of 1->0 *after* the CB is dequeued. Which
-means you needed a memory barrier *before* the setting of len from 1->0 and
-*after* the dequeue. IOW, rcu_barrier should 'see' the memory ordering as:
-
-1. dequeue
-2. set len from 1 -> 0.
-
-For the enqueue case, it is the reverse, rcu_barrier should see:
-1. set len from 0 -> 1
-2. enqueue
-
-Either way, the point I think I was trying to make is that the length should
-always be seen as non-zero if the list is non-empty. Basically, the
-rcu_barrier() should always not do the fast-path if the list is non-empty.
-Worst-case it might do the slow-path when it is not necessary, but it should
-never do the fast-path when it was not supposed to.
-
-Thoughts?
-
-thanks,
-
- - Joel
-
-
-
-> + *
-> + *
-> + * CASE 2: Suppose that CPU 0 is invoking its last callback just as CPU 1 invokes
-> + * rcu_barrier().  CPU 0's ->len field will transition from 1->0, which is one
-> + * of the transitions that must be handled carefully.  Without the full memory
-> + * barriers after the ->len update and at the end of rcu_barrier(), the following
-> + * could happen:
-> + * 
-> + * CPU 0				CPU 1
-> + *
-> + * start invoking last callback
-> + * set ->len = 0 (reordered)
-> + *                      		rcu_barrier() sees ->len as 0
-> + *                      		rcu_barrier() does nothing.
-> + *					module is unloaded
-> + * callback executing after unloaded!
-> + *
-> + * With the full barriers, any case where rcu_barrier() sees ->len as 0
-> + * will be fully ordered after the completion of the callback function,
-> + * so that the module unloading operation is completely safe.
-> + * 
->   */
->  void rcu_segcblist_add_len(struct rcu_segcblist *rsclp, long v)
->  {
->  #ifdef CONFIG_RCU_NOCB_CPU
-> -	smp_mb__before_atomic(); /* Up to the caller! */
-> +	smp_mb__before_atomic(); // Read header comment above.
->  	atomic_long_add(v, &rsclp->len);
-> -	smp_mb__after_atomic(); /* Up to the caller! */
-> +	smp_mb__after_atomic();  // Read header comment above.
->  #else
-> -	smp_mb(); /* Up to the caller! */
-> +	smp_mb(); // Read header comment above.
->  	WRITE_ONCE(rsclp->len, rsclp->len + v);
-> -	smp_mb(); /* Up to the caller! */
-> +	smp_mb(); // Read header comment above.
->  #endif
->  }
->  
+> > ---
+> >  include/linux/pm_clock.h |    9 +++++++++
+> >  1 file changed, 9 insertions(+)
+> > 
+> > --- linux-next-20201106.orig/include/linux/pm_clock.h
+> > +++ linux-next-20201106/include/linux/pm_clock.h
+> > @@ -83,6 +83,15 @@ static inline void pm_clk_remove(struct
+> >  static inline void pm_clk_remove_clk(struct device *dev, struct clk *clk)
+> >  {
+> >  }
+> > +
+> > +static inline int pm_clk_runtime_suspend(struct device *dev)
+> > +{
+> > +	return 0;
+> > +}
+> > +static inline int pm_clk_runtime_resume(struct device *dev)
+> > +{
+> > +	return 0;
+> > +}
+> >  #endif
+> >  
+> >  #ifdef CONFIG_HAVE_CLK
