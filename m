@@ -2,108 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC8A72A8E25
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 05:15:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7623A2A8E38
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 05:18:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726181AbgKFEPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 23:15:21 -0500
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:46481 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725979AbgKFEPT (ORCPT
+        id S1726217AbgKFEQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 23:16:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32804 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725828AbgKFEQ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 23:15:19 -0500
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 0E583580550;
-        Thu,  5 Nov 2020 23:15:18 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Thu, 05 Nov 2020 23:15:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm1; bh=ECNH1N3X+tK1E
-        zurzCRoTQKYBerkPVc0kdRDCQ8PRWo=; b=X5DpYmVA/yyQxcvEx4hYEi700qy0y
-        U2Nu3bE7EESqvyFkCLoGCflWR50wid9QwdcuMb1y1qP19ImeP7PYhvojODGtvbc0
-        9HTHcKW8s9NGNmtnchl0Opibo1ONFhyjcha5qWWOuny82lMb38Ukhmz08oDGZnsj
-        aUQ0zyz9IiftmD1xEv7/E1UykwD9tPd5XEaawCuN+Q3VLU2KyyZj15MnRmpCbTJ7
-        mxkwew9lCjwZwmVbGVo5yXyqesi1zE/A8cQRv/AdT9tleNy3J8qF5fd4fHMtzW2E
-        EIIf/SmatOyDEuHR9M+I4cJ7or8Df5n722F4NXpBRcLsnoWe2eN6DfeZg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; bh=ECNH1N3X+tK1EzurzCRoTQKYBerkPVc0kdRDCQ8PRWo=; b=IXc+T9of
-        KUa9EQ7L8EvlETwjCYm698mLQlnXSt+VaKBe+Ry5iXOfohW6Qdu48RXypoiSqOZd
-        MxpnDk96pjMOEva/sHuhCoP06+JdFq4eZThmCjX6whY+4zc6DluLD4yNA3+sGCet
-        puqkpNgJSSEw7QPAWBs/HQ7eX3qocXEQncCqQSJ8PwrT1p0wZ0ZpIpSF7AiuJVT9
-        4grqYaQLSO1bG5BA8p6TAJsZ4FntUveF0utw7DF7umcrKY3qLKcSBVls6aE+LGo/
-        GYT0HrIOfAuFeQrjobmMviPWGAd+gR2yOK8PZNaUw9WCo09tRfGFbRW46o2YGeaI
-        Q/PbbSbEV/0txQ==
-X-ME-Sender: <xms:1c2kXyzBtoUW2GNGUL28PO88opfA0oyawo8OfYxQQIinyePpHUFCAA>
-    <xme:1c2kX-Tj46TbsMQw3awPQ4o-qBd1soW-zWuKizG_Lo9JHWkdQQEutsZtQ26-jfOzs
-    9r3K_y04QdtTS2E6Q>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddtkedgjedtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpefurghmuhgv
-    lhcujfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenucggtf
-    frrghtthgvrhhnpeduhfejfedvhffgfeehtefghfeiiefgfeehgfdvvdevfeegjeehjedv
-    gfejheeuieenucfkphepjedtrddufeehrddugeekrdduhedunecuvehluhhsthgvrhfuih
-    iivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepshgrmhhuvghlsehshhholhhlrghn
-    ugdrohhrgh
-X-ME-Proxy: <xmx:1c2kX0U4V7n_XqKNoSLff0PMPrPaaU5QB7J4AZvCg-wj_V3xzW8QkQ>
-    <xmx:1c2kX4hfMEF9p7ixVuF_zuP8PM6o9LxjMWXBCeKCUTlsNlcNu_BN2A>
-    <xmx:1c2kX0ChEHXU_dFVnnNqlst8tnJPX520XvXhFC89prK1edVulVJxEg>
-    <xmx:1s2kX44D4nveAPacTRjRyAcJES-SzRRie2FZrC0cKm-tPNIrX3WC3g>
-Received: from titanium.stl.sholland.net (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 25CCB3060062;
-        Thu,  5 Nov 2020 23:15:17 -0500 (EST)
-From:   Samuel Holland <samuel@sholland.org>
-To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        phone-devel@vger.kernel.org, Samuel Holland <samuel@sholland.org>,
-        Arnaud Ferraris <arnaud.ferraris@collabora.com>
-Subject: [PATCH 7/7] arm64: dts: allwinner: pinephone: Set audio card name
-Date:   Thu,  5 Nov 2020 22:15:13 -0600
-Message-Id: <20201106041513.38481-8-samuel@sholland.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201106041513.38481-1-samuel@sholland.org>
-References: <20201106041513.38481-1-samuel@sholland.org>
+        Thu, 5 Nov 2020 23:16:58 -0500
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3A30C0613CF;
+        Thu,  5 Nov 2020 20:16:57 -0800 (PST)
+Received: by mail-lj1-x241.google.com with SMTP id k25so3899513lji.9;
+        Thu, 05 Nov 2020 20:16:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AoocLBBvUJrI0bLOOZTh8xYoi/tHgAN+ua/bhX68FM8=;
+        b=sINzjgHvy6ulBGqRGUPhFTT730zcVjTJ63oLbOTnwWTF1dtv+m7Xh8tx18yvhbigwv
+         K+jpB1Z7Me38xpsNnnWGAGqo5I6Dhy4ODfsmaqxXVigyKn13DnoNhggKaoB6OeiRqkte
+         DADDhjdrXimmBRbhVBMJcpH6nwvlDP02GCB2IOy0ZIXbGRKZ9wBI0apeC/YziAXK7Kaw
+         bHXhtm62DVkgDKYrIYHrDummNvSi15N+6xODSxRcU28nxu6fqSWHOA8g103z/NY+foYI
+         oY1XXbuISgUEM9+DR05gTrcTC44RQlwPKqOQFrP6nVHQ2ZeSYGVL/BPwYJ89YWhBzrQe
+         kKuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AoocLBBvUJrI0bLOOZTh8xYoi/tHgAN+ua/bhX68FM8=;
+        b=mIOdPr8M3EcLfLEqdH1ebV/mp3BqPDDEQvhCBCHvaFlqtL+9dwCQaQmL1eR0YriU3H
+         yvufzT4LOwx85w7ExS9+CXKOCnWDsFQhZvdD8D/nuCORJ7k6wlOVkTrvRdggWGdXbhGU
+         IluiFUH61KRMx6xv3FOFhemfPNMM17pG4ZK3jLsR1N3zv79DIXnjilNVc4GkVr9162Gb
+         VYFlIDIj7NelOExffCqhuOITMfZvK0gmtuZOYJkCgrO3iB1SpPz2n0MdNi3UI3VfTpy0
+         qElijBLtkh4APUDj2682QNYs7ZgPQn7Oq64L9482VRLJ4DQZQYip4TuZd8NEyxHfKI/Q
+         mEHw==
+X-Gm-Message-State: AOAM533vnB27p3f/5ayK11SqjYIHSY8kMccaA5DTWDyjhr+5Nig5U73n
+        oPEtbOUnUguVcIaBLZ7yd/dlJ7a0cYT0GubnoYM=
+X-Google-Smtp-Source: ABdhPJzT9gjrVO2QBAMOuWU6fZsr/CDjFypLslG8r4nvEDWzi5MHV9UIGjTVCPYTBekisHpRdbi6Mo2jTxCnzgVzqnE=
+X-Received: by 2002:a2e:9094:: with SMTP id l20mr35819ljg.290.1604636216488;
+ Thu, 05 Nov 2020 20:16:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201104191052.390657-1-ndesaulniers@google.com>
+In-Reply-To: <20201104191052.390657-1-ndesaulniers@google.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 5 Nov 2020 20:16:44 -0800
+Message-ID: <CAADnVQL_mP7HNz1n+=S7Tjk8f7efm3_w5+VQVptD2y7Wts_Mig@mail.gmail.com>
+Subject: Re: [PATCH] compiler-clang: remove version check for BPF Tracing
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        stable <stable@vger.kernel.org>,
+        Chen Yu <yu.chen.surf@gmail.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Marco Elver <elver@google.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnaud Ferraris <arnaud.ferraris@collabora.com>
+On Wed, Nov 4, 2020 at 11:11 AM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> bpftrace parses the kernel headers and uses Clang under the hood. Remove
+> the version check when __BPF_TRACING__ is defined (as bpftrace does) so
+> that this tool can continue to parse kernel headers, even with older
+> clang sources.
+>
+> Cc: <stable@vger.kernel.org>
+> Fixes: commit 1f7a44f63e6c ("compiler-clang: add build check for clang 10.0.1")
+> Reported-by: Chen Yu <yu.chen.surf@gmail.com>
+> Reported-by: Jarkko Sakkinen <jarkko@kernel.org>
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> ---
+>  include/linux/compiler-clang.h | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/include/linux/compiler-clang.h b/include/linux/compiler-clang.h
+> index dd7233c48bf3..98cff1b4b088 100644
+> --- a/include/linux/compiler-clang.h
+> +++ b/include/linux/compiler-clang.h
+> @@ -8,8 +8,10 @@
+>                      + __clang_patchlevel__)
+>
+>  #if CLANG_VERSION < 100001
+> +#ifndef __BPF_TRACING__
+>  # error Sorry, your version of Clang is too old - please use 10.0.1 or newer.
+>  #endif
+> +#endif
 
-Add the "PinePhone" name to the sound card: this will make
-upstreaming an ALSA UCM config easier as we can use a unique name.
-
-It also avoids an issue where the default card name is truncated.
-
-Signed-off-by: Arnaud Ferraris <arnaud.ferraris@collabora.com>
-[Samuel: Split out change, updated commit message]
-Signed-off-by: Samuel Holland <samuel@sholland.org>
----
- arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi
-index 6125910d29db..fca6310df6c3 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi
-@@ -386,6 +386,7 @@ &reg_rtc_ldo {
- 
- &sound {
- 	status = "okay";
-+	simple-audio-card,name = "PinePhone";
- 	simple-audio-card,aux-devs = <&codec_analog>, <&speaker_amp>;
- 	simple-audio-card,widgets = "Microphone", "Headset Microphone",
- 				    "Microphone", "Internal Microphone",
--- 
-2.26.2
-
+I can take it through the bpf tree if no one objects.
