@@ -2,131 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9A192A9814
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 16:10:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB2302A9818
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 16:10:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727531AbgKFPK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 10:10:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45414 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727499AbgKFPKZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 10:10:25 -0500
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8ADB322227;
-        Fri,  6 Nov 2020 15:10:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604675425;
-        bh=qThnILg5nCb2Hmeq+KRlqMIjinhD+Gy6r+f/5IjtZiw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pfKvbldlEjCUrMNJLyz6fMKmY16F90mXAb0rAyB1oXKnd22Z8cE41SI1B7o4oPWX7
-         VWYOnlKUOLf3h+uRmL3y3+Hs9/Mc8PVRIOq1h6MbC+CoI7jO8PpPhzb/SGglWGdToj
-         2oZ8sjwhQv2fFDzzIAgc9xlPTk+/6o7lPCylfiJs=
-Date:   Fri, 6 Nov 2020 15:10:11 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Cheng-Jui.Wang@mediatek.com,
-        Android Kernel Team <kernel-team@android.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Daniel Mentz <danielmentz@google.com>,
-        linux-spi@vger.kernel.org
-Subject: Re: [PATCH v1 2/2] spi: Populate fwnode in of_register_spi_device()
-Message-ID: <20201106151011.GE49612@sirena.org.uk>
-References: <20201104205431.3795207-1-saravanak@google.com>
- <20201104205431.3795207-2-saravanak@google.com>
- <20201105171201.GF4856@sirena.org.uk>
- <CAGETcx9_En10j0DwktXtPDrx=Aqdr2iWEuHmYB-=SnfODTmMfg@mail.gmail.com>
+        id S1727555AbgKFPKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 10:10:45 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:53878 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727499AbgKFPKp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 10:10:45 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0A6FAcUY021603;
+        Fri, 6 Nov 2020 09:10:38 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1604675438;
+        bh=cYq9nLX08g+AS2pblkyYqwuEvgJAblM0udPTzaUKv8s=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=h3b2DP/fx0Ig2ry7sgpgiEY3IygBp5SacsDDkQ3MQUDn4efxMU4wo8HyB8aDyH6l4
+         zfiQorUHqPWlcFLEXPXnV2ln185+sE1PUOcgjVXwOynWw8HwKji+dL9HGH3qlecvMC
+         vQUzfEJIxbBnIfz1b+tTbj1zf/zQIN8pasgSTnUE=
+Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0A6FAcBF129824
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 6 Nov 2020 09:10:38 -0600
+Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 6 Nov
+ 2020 09:10:37 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 6 Nov 2020 09:10:37 -0600
+Received: from [10.250.235.36] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0A6FAYee002242;
+        Fri, 6 Nov 2020 09:10:34 -0600
+Subject: Re: [PATCH 8/8] arm64: dts: ti: k3-j721e-main: Fix PCIe maximum
+ outbound regions
+To:     Rob Herring <robh@kernel.org>, Nishanth Menon <nm@ti.com>
+CC:     Lee Jones <lee.jones@linaro.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Tero Kristo <t-kristo@ti.com>, Roger Quadros <rogerq@ti.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-pci@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
+References: <20201102101154.13598-1-kishon@ti.com>
+ <20201102101154.13598-9-kishon@ti.com>
+ <20201102164137.ntl3v6gu274ek2r2@gauze> <20201105165331.GA55814@bogus>
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <1825b8dc-89c4-f5e6-69f2-4b0f6f3e5944@ti.com>
+Date:   Fri, 6 Nov 2020 20:40:33 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="wTWi5aaYRw9ix9vO"
-Content-Disposition: inline
-In-Reply-To: <CAGETcx9_En10j0DwktXtPDrx=Aqdr2iWEuHmYB-=SnfODTmMfg@mail.gmail.com>
-X-Cookie: It's the thought, if any, that counts!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201105165331.GA55814@bogus>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Rob,
 
---wTWi5aaYRw9ix9vO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On 05/11/20 10:23 pm, Rob Herring wrote:
+> On Mon, Nov 02, 2020 at 10:41:37AM -0600, Nishanth Menon wrote:
+>> On 15:41-20201102, Kishon Vijay Abraham I wrote:
+>>> PCIe controller in J721E supports a maximum of 32 outbound regions.
+>>> commit 4e5833884f66 ("arm64: dts: ti: k3-j721e-main: Add PCIe device tree
+>>> nodes") incorrectly added maximum number of outbound regions to 16. Fix
+>>> it here.
+>>>
+>>> Fixes: 4e5833884f66 ("arm64: dts: ti: k3-j721e-main: Add PCIe device tree nodes")
+>>> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+>>> ---
+>>>  arch/arm64/boot/dts/ti/k3-j721e-main.dtsi | 8 ++++----
+>>>  1 file changed, 4 insertions(+), 4 deletions(-)
+>>>
+>>> diff --git a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
+>>> index e2a96b2c423c..61b533130ed1 100644
+>>> --- a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
+>>> +++ b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
+>>> @@ -652,7 +652,7 @@
+>>>  		power-domains = <&k3_pds 239 TI_SCI_PD_EXCLUSIVE>;
+>>>  		clocks = <&k3_clks 239 1>;
+>>>  		clock-names = "fck";
+>>> -		cdns,max-outbound-regions = <16>;
+>>> +		cdns,max-outbound-regions = <32>;
+> 
+> Can this be made detectable instead? Write to region registers and check 
+> the write sticks? I'm doing this for the DWC controller.
+> 
+> Or make the property optional with the default being the max (32).
 
-On Thu, Nov 05, 2020 at 11:26:44AM -0800, Saravana Kannan wrote:
-> On Thu, Nov 5, 2020 at 9:12 AM Mark Brown <broonie@kernel.org> wrote:
+okay, I'll make this an optional property and send a patch which removes
+cdns,max-outbound-regions in k3-j721e-main.dtsi.
 
-> > >       of_node_get(nc);
-> > >       spi->dev.of_node = nc;
-> > > +     spi->dev.fwnode = of_fwnode_handle(nc);
-
-> > Why is this a manual step in an individual subsystem rather than
-> > something done in the driver core
-
-> It can't be done in driver core because "fwnode" is the abstraction
-> driver core uses. It shouldn't care or know if the firmware is DT,
-> ACPI or something else -- that's the whole point of fwnode.
-
-Clearly it *can* be done in the driver core, the question is do we want
-to.  The abstraction thing feels weaker at init than use after init,
-"init from X" is a common enough pattern.  If it's done by the driver
-core there would be no possibility of anything that creates devices
-getting things wrong here, and the driver core already has a bunch of
-integration with both DT and ACPI so it seems like a weird boundary to
-have.
-
-> > and wouldn't that just be a case of
-> > checking to see if there is a fwnode already set and only initializing
-> > if not anyway?
-
-> Honestly, we should be deleting device.of_node and always use
-> device.fwnode. But that's a long way away (lots of clean up). The
-> "common" place to do this is where a struct device is created from a
-> firmware (device_node, acpi_device, etc). I don't see a "common place"
-> for when a device is created out of a device_node, so I think this
-> patch is a reasonable middle ground.
-
-That is obviously a much bigger job that's going to require going
-through subsystems (and their drivers) properly to eliminate references
-to of_node, I'm not clear how doing this little bit per subsystem rather
-than in the core helps or hinders going through and doing that.  I don't
-think you'll ever have a single place where a device is constructed, and
-I'm not sure that that is even desirable, since there are per subsystem
-things that need doing.
-
-I'd be totally happy with eliminating all references to of_node from the
-subsystem but for this it seems more sensible to do it in the driver
-core and cover everything rather than running around everything that
-creates a device from DT individually and having stuff fall through the
-cracks - it's been a year since the equivalent change was made in I2C
-for example, we've had new buses merged in that time never mind SPI not
-being covered.
-
-BTW I'm also missing patch 1 and the cover letter for this series, not
-sure what's going on there?
-
---wTWi5aaYRw9ix9vO
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+lZ1IACgkQJNaLcl1U
-h9DyUgf9GVIIEgVFeiFwfpBxRp9KUtKikyJJ4G/Plgv+Bogc094JDTo+SIaMoQbG
-cmwe2/ku3ir8I4FL8ud8W572cFMJbzHdG+giRDMDzb69A+mmfwUiW8D48ZhVX4ks
-LGqvriy1bH0BKfzAvoduiZTjGxeIEeZ7/k2i1r4oq9X35GLl3o4po4045SW8uWVQ
-XQ9Gdy0PgMcUEcdwDnWlaRzXmUUMmYRpVdhliGYiAoQJ754UPh2Vl9dCj3nhw1vI
-uI0s2QMjWdYju1fJtjkStB8b8mZkSWyoeoMJSZhi+d8Ie3bEi7u5QPc+F4f9Ln59
-IJVRNPipUqgtxuadJaa6Ak57PilcXA==
-=zoTL
------END PGP SIGNATURE-----
-
---wTWi5aaYRw9ix9vO--
+Thanks,
+Kishon
