@@ -2,183 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3930C2A99D3
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 17:49:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72C292A99DC
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 17:51:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727131AbgKFQsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 11:48:53 -0500
-Received: from mga12.intel.com ([192.55.52.136]:25696 "EHLO mga12.intel.com"
+        id S1726593AbgKFQvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 11:51:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54480 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726408AbgKFQsw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 11:48:52 -0500
-IronPort-SDR: /y4p+dqCDj282iZCsJvvA6ICQBsHsQ+HUgVSSwtVZiesckMzn4/tEjHWbm8VTBYUHrYadlmgo+
- n1LRdkFuaK+w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9797"; a="148848426"
-X-IronPort-AV: E=Sophos;i="5.77,457,1596524400"; 
-   d="scan'208";a="148848426"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2020 08:48:52 -0800
-IronPort-SDR: 142GO92Vb+KLu0rbvEYCKskGFKEK8ve/xYgrfu3PQd+4h7o0L3YSVU/i/sS+JIPGNqpvg1W0BY
- T7ImiiDSixQQ==
-X-IronPort-AV: E=Sophos;i="5.77,457,1596524400"; 
-   d="scan'208";a="364225272"
-Received: from otc-nc-03.jf.intel.com (HELO otc-nc-03) ([10.54.39.36])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2020 08:48:51 -0800
-Date:   Fri, 6 Nov 2020 08:48:50 -0800
-From:   "Raj, Ashok" <ashok.raj@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        "vkoul@kernel.org" <vkoul@kernel.org>,
-        "Dey, Megha" <megha.dey@intel.com>,
-        "maz@kernel.org" <maz@kernel.org>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "Lu, Baolu" <baolu.lu@intel.com>,
-        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "jing.lin@intel.com" <jing.lin@intel.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "netanelg@mellanox.com" <netanelg@mellanox.com>,
-        "shahafs@mellanox.com" <shahafs@mellanox.com>,
-        "yan.y.zhao@linux.intel.com" <yan.y.zhao@linux.intel.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "Ortiz, Samuel" <samuel.ortiz@intel.com>,
-        "Hossain, Mona" <mona.hossain@intel.com>,
-        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Ashok Raj <ashok.raj@intel.com>
-Subject: Re: [PATCH v4 06/17] PCI: add SIOV and IMS capability detection
-Message-ID: <20201106164850.GA85879@otc-nc-03>
-References: <ec52cedf-3a99-5ca1-ffbb-d8f8c4f62395@intel.com>
- <20201102132158.GA3352700@nvidia.com>
- <MWHPR11MB1645675ED03E23674A705DF68C110@MWHPR11MB1645.namprd11.prod.outlook.com>
- <20201103124351.GM2620339@nvidia.com>
- <MWHPR11MB164544C9CFCC3F162C1C6FC18CEF0@MWHPR11MB1645.namprd11.prod.outlook.com>
- <20201104124017.GW2620339@nvidia.com>
- <MWHPR11MB1645862A8F7CF7FB8DD011778CEF0@MWHPR11MB1645.namprd11.prod.outlook.com>
- <20201104135415.GX2620339@nvidia.com>
- <MWHPR11MB1645524BDEDF8899914F32AE8CED0@MWHPR11MB1645.namprd11.prod.outlook.com>
- <20201106131415.GT2620339@nvidia.com>
+        id S1726075AbgKFQvS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 11:51:18 -0500
+Received: from kernel.org (83-245-197-237.elisa-laajakaista.fi [83.245.197.237])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5F7402151B;
+        Fri,  6 Nov 2020 16:51:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604681477;
+        bh=IEal4DM6g9pzay8voUAwBH9HgqP88t6Jh9pbcjBimdo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DwqQohcJEgkBnM4uO/7BgnvX7ReasVA1yAl5vhjUy3mNbwNHBF8antXZ217mpTy5u
+         wVc4b1yMgJhu92+vURdJa+GNLEfQ2FuU9leamNT//DOpLvKHBIIaRpxw4GN4LcIQ3u
+         C9O+8rJcGVBsxuJ5uk+vJR91YWsWwA455jOVTwNo=
+Date:   Fri, 6 Nov 2020 18:51:07 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
+        cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com, kai.huang@intel.com,
+        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
+        luto@kernel.org, nhorman@redhat.com, npmccallum@redhat.com,
+        puiterwijk@redhat.com, rientjes@google.com, tglx@linutronix.de,
+        yaozhangx@google.com, mikko.ylinen@intel.com,
+        Michal Hocko <mhocko@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH v40 10/24] mm: Add 'mprotect' hook to struct
+ vm_operations_struct
+Message-ID: <20201106165107.GA52595@kernel.org>
+References: <20201104145430.300542-1-jarkko.sakkinen@linux.intel.com>
+ <20201104145430.300542-11-jarkko.sakkinen@linux.intel.com>
+ <20201106100409.GD3371@techsingularity.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201106131415.GT2620339@nvidia.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20201106100409.GD3371@techsingularity.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jason
-
-On Fri, Nov 06, 2020 at 09:14:15AM -0400, Jason Gunthorpe wrote:
-> On Fri, Nov 06, 2020 at 09:48:34AM +0000, Tian, Kevin wrote:
-> > > The interrupt controller is responsible to create an addr/data pair
-> > > for an interrupt message. It sets the message format and ensures it
-> > > routes to the proper CPU interrupt handler. Everything about the
-> > > addr/data pair is owned by the platform interrupt controller.
-> > > 
-> > > Devices do not create interrupts. They only trigger the addr/data pair
-> > > the platform gives them.
+On Fri, Nov 06, 2020 at 10:04:09AM +0000, Mel Gorman wrote:
+> On Wed, Nov 04, 2020 at 04:54:16PM +0200, Jarkko Sakkinen wrote:
+> > From: Sean Christopherson <sean.j.christopherson@intel.com>
 > > 
-> > I guess that we may just view it from different angles. On x86 platform,
-> > a MSI/IMS capable device directly composes interrupt messages, with 
-> > addr/data pair filled by OS.
+> > Background
+> > ==========
+> > 
+> > 1. SGX enclave pages are populated with data by copying from normal memory
+> >    via ioctl() (SGX_IOC_ENCLAVE_ADD_PAGES), which will be added later in
+> >    this series.
+> > 2. It is desirable to be able to restrict those normal memory data sources.
+> >    For instance, to ensure that the source data is executable before
+> >    copying data to an executable enclave page.
+> > 3. Enclave page permissions are dynamic (just like normal permissions) and
+> >    can be adjusted at runtime with mprotect().
+> > 
+> > This creates a problem because the original data source may have long since
+> > vanished at the time when enclave page permissions are established (mmap()
+> > or mprotect()).
+> > 
+> > The solution (elsewhere in this series) is to force enclaves creators to
+> > declare their paging permission *intent* up front to the ioctl().  This
+> > intent can me immediately compared to the source data???s mapping and
+> > rejected if necessary.
+> > 
+> > The ???intent??? is also stashed off for later comparison with enclave
+> > PTEs. This ensures that any future mmap()/mprotect() operations
+> > performed by the enclave creator or done on behalf of the enclave
+> > can be compared with the earlier declared permissions.
+> > 
+> > Problem
+> > =======
+> > 
+> > There is an existing mmap() hook which allows SGX to perform this
+> > permission comparison at mmap() time.  However, there is no corresponding
+> > ->mprotect() hook.
+> > 
+> > Solution
+> > ========
+> > 
+> > Add a vm_ops->mprotect() hook so that mprotect() operations which are
+> > inconsistent with any page's stashed intent can be rejected by the driver.
+> > 
 > 
-> Yes, all platforms work like that. The addr/data pair is *opaque* to
-> the device. Only the platform interrupt controller component
-> understands how to form those values.
-
-True, the addr/data pair is opaque. IMS doesn't dictate what the contents
-of addr/data pair is made of. That is still a platform attribute. IMS simply 
-controls where the pair is physically stored. Which only the device dictates.
-
+> I have not read the series so this is superficial only. That said...
 > 
-> > If there is no IOMMU remapping enabled in the middle, the message
-> > just hits the CPU. Your description possibly is from software side,
-> > e.g. describing the hierarchical IRQ domain concept?
+> > Cc: linux-mm@kvack.org
+> > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > Cc: Matthew Wilcox <willy@infradead.org>
+> > Acked-by: Jethro Beekman <jethro@fortanix.com>
+> > Reviewed-by: Darren Kenny <darren.kenny@oracle.com>
+> > Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> > Co-developed-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+> > Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+> > ---
+> >  include/linux/mm.h | 3 +++
+> >  mm/mprotect.c      | 5 ++++-
+> >  2 files changed, 7 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/include/linux/mm.h b/include/linux/mm.h
+> > index ef360fe70aaf..eb38eabc5039 100644
+> > --- a/include/linux/mm.h
+> > +++ b/include/linux/mm.h
+> > @@ -559,6 +559,9 @@ struct vm_operations_struct {
+> >  	void (*close)(struct vm_area_struct * area);
+> >  	int (*split)(struct vm_area_struct * area, unsigned long addr);
+> >  	int (*mremap)(struct vm_area_struct * area);
+> > +	int (*mprotect)(struct vm_area_struct *vma,
+> > +			struct vm_area_struct **pprev, unsigned long start,
+> > +			unsigned long end, unsigned long newflags);
 > 
-> I suppose you could say that. Technically the APIC doesn't form any
-> addr/data pairs, but the configuration of the APIC, IOMMU and other
-> platform components define what addr/data pairs are acceptable.
+> The first user of this uses the following information
 > 
-> The IRQ domain stuff broadly puts responsibilty to form these values
-> in the IRQ layer which abstracts all the platform detatils. In Linux
-> we expect the platform to provide the IRQ Domain tha can specify
-> working addr/data pairs.
+> 	ret = sgx_encl_may_map(vma->vm_private_data, start, end, newflags);
 > 
-> > I agree with this point, just as how pci-hyperv.c works. In concept Linux
-> > guest driver should be able to use IMS when running on Hyper-v. There
-> > is no such thing for KVM, but possibly one day we will need similar stuff.
-> > Before that happens the guest could choose to simply disallow devmsi
-> > by default in the platform code (inventing a hypercall just for 'disable' 
-> > doesn't make sense) and ignore the IMS cap. One small open is whether
-> > this can be done in one central-place. The detection of running as guest
-> > is done in arch-specific code. Do we need disabling devmsi for every arch?
-> >
-> > But when talking about virtualization it's not good to assume the guest
-> > behavior. It's perfectly sane to run a guest OS which doesn't implement 
-> > any PV stuff (thus don't know running in a VM) but do support IMS. In 
-> > such scenario the IMS cap allows the hypervisor to educate the guest 
-> > driver to use MSI instead of IMS, as long as the driver follows the device 
-> > spec. In this regard I don't think that the IMS cap will be a short-term 
-> > thing, although Linux may choose to not use it.
+> It only needs start, end and newflags. The pprev is passed in so the
+> hook can call mprotect_fixup() which is redundant as the caller knows it
+> should do that. I don't think an arbitrary driver should be responsible
+> for poking too much into the mm internals to do the fixup because we do
+> not know what other users of this hook might require in the future.
 > 
-> The IMS flag belongs in the platform not in the devices.
-
-This support is mostly a SW thing right? we don't need to muck with
-platform/ACPI for that matter. 
-
+> Hence, I would suggest that the hook receive the minimum possible
+> information to do the permissions check for the first in-tree user. If
+> it returns without failure then mm/mprotect.c would always do the fixup.
 > 
-> For instance you could put a "disable IMS" flag in the ACPI tables, in
-> the config space of the emuulated root port, or any other areas that
-> clearly belong to the platform.
-
-Maybe there is a different interpretation for IMS that I'm missing. Devices
-that need more interrupt support than supported by PCIe standards, and how
-device has grouped the storage needs for the addr/data pair is a device
-attribute.
-
-I missed why ACPI tables should carry such information. If kernel doesn't
-want to support those devices its within kernel control. Which means kernel
-will only use the available MSIx interfaces. This is legacy support.
-
+> >  	vm_fault_t (*fault)(struct vm_fault *vmf);
+> >  	vm_fault_t (*huge_fault)(struct vm_fault *vmf,
+> >  			enum page_entry_size pe_size);
+> > diff --git a/mm/mprotect.c b/mm/mprotect.c
+> > index 56c02beb6041..1fd4fa71ce16 100644
+> > --- a/mm/mprotect.c
+> > +++ b/mm/mprotect.c
+> > @@ -616,7 +616,10 @@ static int do_mprotect_pkey(unsigned long start, size_t len,
+> >  		tmp = vma->vm_end;
+> >  		if (tmp > end)
+> >  			tmp = end;
+> > -		error = mprotect_fixup(vma, &prev, nstart, tmp, newflags);
+> > +		if (vma->vm_ops && vma->vm_ops->mprotect)
+> > +			error = vma->vm_ops->mprotect(vma, &prev, nstart, tmp, newflags);
+> > +		else
+> > +			error = mprotect_fixup(vma, &prev, nstart, tmp, newflags);
 > 
-> The OS logic would be
->  - If no IMS information found then use IMS (Bare metal)
->  - If the IMS disable flag is found then
->    - If (future) hypercall available and the OS knows how to use it
->      then use IMS
->    - If no hypercall found, or no OS knowledge, fail IMS
+> That would then become
 > 
-> Our devices can use IMS even in a pure no-emulation
+> if (vma->vm_ops && vma->vm_ops->mprotect)
+> 	error = vma->vm_ops->mprotect(vma, &prev, nstart, tmp, newflags);
+> if (!error)
+> 	error = mprotect_fixup(vma, &prev, nstart, tmp, newflags);
+> 
+> and mprotect_fixup would be removed from the driver.
+> 
+> While vm_operations_struct has borderline zero documentation, a hook for
+> one in-kernel user should have a comment explaining what the semantics
+> of the hook is -- what is it responsible for (permission check), what
+> can it change (nothing), etc. Maybe something like
+> 
+> 	/*
+> 	 * Called by mprotect in the event driver-specific permission
+> 	 * checks need to be made before the mprotect is finalised.
+> 	 * No modifications should be done to the VMA, returns 0
+> 	 * if the mprotect is permitted.
+> 	 */
+> 	int (*mprotect)(struct vm_area_struct *vma,
+> 		unsigned long start, unsigned long end,
+> 		unsigned long newflags);
+> 
+> If a future driver *does* need to poke deeper into the VM for mprotect
+> then at least they'll have to explain why that's a good idea.
 
-This is true for IMS as well. But probably not implemented in the kernel as
-such. From a HW point of view (take idxd for instance) the facility is
-available to native OS as well. The early RFC supported this for native.
+Both comments make sense to me. I'll refine this patch on Monday and
+also "x86/sgx: Add SGX misc driver interface", which uses this callback.
 
-Native devices can have both MSIx and IMS capability. But as I understand this
-isn't how we have partitioned things in SW today. We left IMS only for
-mdev's. And I agree this would be very useful.
+Thanks a lot for valuable feedback!
 
-In cases where we want to support interrupt handles for user space
-notification (when application specifies that in the descriptor). Those
-could be IMS. The device HW has support for it.
+> -- 
+> Mel Gorman
+> SUSE Labs
 
-Remember the "Why PASID in IMS entry" discussion?
-
-https://lore.kernel.org/lkml/20201008233210.GH4734@nvidia.com/
-
-Cheers,
-Ashok
+/Jarkko
