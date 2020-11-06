@@ -2,104 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF3092A9D8D
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 20:08:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF9D22A9D90
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 20:09:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728086AbgKFTI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 14:08:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56322 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725868AbgKFTIz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 14:08:55 -0500
-Received: from gaia (unknown [2.26.170.190])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CA06120882;
-        Fri,  6 Nov 2020 19:08:50 +0000 (UTC)
-Date:   Fri, 6 Nov 2020 19:08:48 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Atish Patra <atishp@atishpatra.org>
-Cc:     Atish Patra <atish.patra@wdc.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Zong Li <zong.li@sifive.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Will Deacon <will@kernel.org>, linux-arch@vger.kernel.org,
-        Lorenzo Pieralisi <Lorenzo.Pieralisi@arm.com>,
-        Jia He <justin.he@arm.com>, Anup Patel <anup@brainfault.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Steven Price <steven.price@arm.com>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Subject: Re: [PATCH v4 2/5] arm64, numa: Change the numa init functions name
- to be generic
-Message-ID: <20201106190847.GA23792@gaia>
-References: <20201006001752.248564-1-atish.patra@wdc.com>
- <20201006001752.248564-3-atish.patra@wdc.com>
- <20201106171403.GK29329@gaia>
- <CAOnJCUJo795yX_7am0hdB_JFio3_ZBRHioHNcydhqEouCUynUg@mail.gmail.com>
+        id S1728117AbgKFTJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 14:09:15 -0500
+Received: from mail-ed1-f65.google.com ([209.85.208.65]:41227 "EHLO
+        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728096AbgKFTJD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 14:09:03 -0500
+Received: by mail-ed1-f65.google.com with SMTP id j20so2339014edt.8;
+        Fri, 06 Nov 2020 11:09:01 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qK37W3xTCJXp7MUelHSeuVBr0ncAlJOu059iUAhSoPQ=;
+        b=QG9e3VbaOPodfRo1oGxsLAScCTytuPDnUttfql9HGO29RDw8GSXfHstExbomyG/eiy
+         KJ5NAIl8h8WAr/xd86Ps/jUqtJu+PQffiSuu9ZnITFmuRvBiBQWM783U3gZPfZ/8MhXp
+         qzjjHWSBVGvM6lWM2hQyF/y5ZS+MkAF86XupHDbEcL6K64edYiif+WIvmwUcKR+mgKFW
+         io0OfYN8mZAS8e/tKh24h7u/07s0plJee4uclIE11TTBkjPmsTLdpIjbdA5yLvHdjNfV
+         40QcrMxLSfta57iz+7vMFSM2H0gHKrUOIade1K86KppVYWmovx02xAriqqi/2Xt4Njv/
+         Pwxg==
+X-Gm-Message-State: AOAM5303M40eC8F2S9dT4en5Ji5TWjkc58ciatbZa/uuo0WUsE/gTW/0
+        pRZJc9LJwyhSCJCLZxkmySh8lYUOBIg=
+X-Google-Smtp-Source: ABdhPJwdAHZPSXDWTQYtqObDqNkh3xX1JcIZrPeM6I5RcvHVIxwL8vDjKJ29lIgHkpGyN+FLmALthQ==
+X-Received: by 2002:aa7:dd4a:: with SMTP id o10mr3580286edw.109.1604689741010;
+        Fri, 06 Nov 2020 11:09:01 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id a10sm1628669edu.78.2020.11.06.11.08.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Nov 2020 11:08:59 -0800 (PST)
+Date:   Fri, 6 Nov 2020 20:08:58 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Mikko Perttunen <cyndis@kapsi.fi>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v7 34/47] memory: tegra20-emc: Continue probing if
+ timings are missing in device-tree
+Message-ID: <20201106190858.GZ65086@kozik-lap>
+References: <20201104164923.21238-1-digetx@gmail.com>
+ <20201104164923.21238-35-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAOnJCUJo795yX_7am0hdB_JFio3_ZBRHioHNcydhqEouCUynUg@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201104164923.21238-35-digetx@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 06, 2020 at 09:33:14AM -0800, Atish Patra wrote:
-> On Fri, Nov 6, 2020 at 9:14 AM Catalin Marinas <catalin.marinas@arm.com> wrote:
-> > On Mon, Oct 05, 2020 at 05:17:49PM -0700, Atish Patra wrote:
-> > > diff --git a/arch/arm64/kernel/acpi_numa.c b/arch/arm64/kernel/acpi_numa.c
-> > > index 7ff800045434..96502ff92af5 100644
-> > > --- a/arch/arm64/kernel/acpi_numa.c
-> > > +++ b/arch/arm64/kernel/acpi_numa.c
-> > > @@ -117,16 +117,3 @@ void __init acpi_numa_gicc_affinity_init(struct acpi_srat_gicc_affinity *pa)
-> > >
-> > >       node_set(node, numa_nodes_parsed);
-> > >  }
-> > > -
-> > > -int __init arm64_acpi_numa_init(void)
-> > > -{
-> > > -     int ret;
-> > > -
-> > > -     ret = acpi_numa_init();
-> > > -     if (ret) {
-> > > -             pr_info("Failed to initialise from firmware\n");
-> > > -             return ret;
-> > > -     }
-> > > -
-> > > -     return srat_disabled() ? -EINVAL : 0;
-> > > -}
-> >
-> > I think it's better if arm64_acpi_numa_init() and arm64_numa_init()
-> > remained in the arm64 code. It's not really much code to be shared.
+On Wed, Nov 04, 2020 at 07:49:10PM +0300, Dmitry Osipenko wrote:
+> EMC driver will become mandatory after turning it into interconnect
+> provider because interconnect users, like display controller driver, will
+> fail to probe using newer device-trees that have interconnect properties.
+> Thus make EMC driver to probe even if timings are missing in device-tree.
 > 
-> RISC-V will probably support ACPI one day. The idea is to not to do
-> exercise again in future.
-> Moreover, there will be arch_numa_init which will be used by RISC-V
-> and there will be arm64_numa_init
-> used by arm64. However, if you feel strongly about it, I am happy to
-> move back those two functions to arm64.
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  drivers/memory/tegra/tegra20-emc.c | 34 ++++++++++++++----------------
+>  1 file changed, 16 insertions(+), 18 deletions(-)
 
-I don't have a strong view on this, only if there's a risk at some point
-of the implementations diverging (e.g. quirks). We can revisit it if
-that happens.
+Thanks, applied.
 
-It may be worth swapping patches 1 and 2 so that you don't have an
-arm64_* function in the core code after the first patch (more of a
-nitpick). Either way, feel free to add my ack on both patches:
+Best regards,
+Krzysztof
 
-Acked-by: Catalin Marinas <catalin.marinas@arm.com>
