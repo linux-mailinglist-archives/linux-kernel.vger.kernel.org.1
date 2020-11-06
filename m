@@ -2,84 +2,297 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B05472A9E58
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 21:02:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B74F2A9E5C
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 21:03:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728321AbgKFUCY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 15:02:24 -0500
-Received: from mailrelay2-2.pub.mailoutpod1-cph3.one.com ([46.30.212.1]:31362
-        "EHLO mailrelay2-2.pub.mailoutpod1-cph3.one.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727341AbgKFUCY (ORCPT
+        id S1728349AbgKFUD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 15:03:27 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:6632 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727341AbgKFUD1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 15:02:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bitmath.org; s=20191106;
-        h=content-transfer-encoding:content-type:in-reply-to:mime-version:date:
-         message-id:references:cc:to:from:subject:from;
-        bh=pGS+hRIpgZjBebzJuXnWRieKofFe11yfaznBGKJtRhk=;
-        b=GwwduhURhWi2rqn7PJ9NkknQ1j90kPiJ7LyZSBrgZKeEpZYHap0S2aBsKT72hnOMVbPjG9VcKsHiJ
-         F+yQReD5OHqxYgT9F8D3/u1RoNTrqIZcC2W7TISuJxZeIbNrnv0l6ULiaG5P2TKgablASlEK2W7vMV
-         eyMJ/bwl0jnMIJC6/qdMIr8QqVxbaxTCbCnlGV0thA8Q2MAW9eh30ZIMf5eIiJHfEgNMvY3XnGhGEF
-         ZH0XECqdCcsO3iQzM/37mpLNeeeHSaz7ZPuu9gaGrSFIE3YhtJggq5XoOT5OFo+fPLTp4eZnYLOSnT
-         kvoVTjrSl3iw1wPRSSz+2oxAvDurvXA==
-X-HalOne-Cookie: b7aca7b6cdc0a30bc058387c825741d339e1fc31
-X-HalOne-ID: f9d6d3b5-206a-11eb-84b8-d0431ea8a290
-Received: from [192.168.19.13] (h-155-4-128-97.na.cust.bahnhof.se [155.4.128.97])
-        by mailrelay2.pub.mailoutpod1-cph3.one.com (Halon) with ESMTPSA
-        id f9d6d3b5-206a-11eb-84b8-d0431ea8a290;
-        Fri, 06 Nov 2020 20:02:19 +0000 (UTC)
-Subject: Re: [PATCH] applesmc: Re-work SMC comms v2
-From:   Henrik Rydberg <rydberg@bitmath.org>
-To:     Brad Campbell <brad@fnarfbargle.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, linux-hwmon@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        hns@goldelico.com, Guenter Roeck <linux@roeck-us.net>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        Jean Delvare <jdelvare@suse.com>
-References: <20200930105442.3f642f6c@aktux>
- <20200930164446.GB219887@roeck-us.net>
- <CAK8P3a2CbhJT+B-F+cnX+uiJep9oiLM28n045-ATaVaU41u2hw@mail.gmail.com>
- <20201002002251.28462e64@aktux>
- <7543ef85-727d-96c3-947e-5b18e9e6c44d@roeck-us.net>
- <20201006090226.4275c824@kemnade.info>
- <db042e9b-be41-11b1-7059-3881b1da5c8b@fnarfbargle.com>
- <68467f1b-cea1-47ea-a4d4-8319214b072a@fnarfbargle.com>
- <20201104142057.62493c12@aktux>
- <2436afef-99c6-c352-936d-567bf553388c@fnarfbargle.com>
- <7a085650-2399-08c0-3c4d-6cd1fa28a365@roeck-us.net>
- <fc36d066-c432-e7d2-312f-a0a592446fe2@fnarfbargle.com>
- <10027199-5d31-93e7-9bd8-7baaebff8b71@roeck-us.net>
- <70331f82-35a1-50bd-685d-0b06061dd213@fnarfbargle.com>
- <3c72ccc3-4de1-b5d0-423d-7b8c80991254@fnarfbargle.com>
- <6d071547-10ee-ca92-ec8b-4b5069d04501@bitmath.org>
- <8e117844-d62a-bcb1-398d-c59cc0d4b878@fnarfbargle.com>
- <e5a856b1-fb1a-db5d-0fde-c86d0bcca1df@bitmath.org>
- <aa60f673-427a-1a47-7593-54d1404c3c92@bitmath.org>
-Message-ID: <9109d059-d9cb-7464-edba-3f42aa78ce92@bitmath.org>
-Date:   Fri, 6 Nov 2020 21:02:32 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Fri, 6 Nov 2020 15:03:27 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fa5ac0c0001>; Fri, 06 Nov 2020 12:03:24 -0800
+Received: from [10.2.172.112] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 6 Nov
+ 2020 20:03:25 +0000
+From:   Zi Yan <ziy@nvidia.com>
+To:     Yang Shi <shy828301@gmail.com>
+CC:     <mhocko@suse.com>, <songliubraving@fb.com>, <mgorman@suse.de>,
+        <jack@suse.cz>, <akpm@linux-foundation.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/5] mm: migrate: simplify the logic for handling
+ permanent failure
+Date:   Fri, 6 Nov 2020 15:03:22 -0500
+X-Mailer: MailMate (1.13.2r5673)
+Message-ID: <E2ACBA14-4409-47D2-A6F7-C5E0660200AB@nvidia.com>
+In-Reply-To: <20201103130334.13468-3-shy828301@gmail.com>
+References: <20201103130334.13468-1-shy828301@gmail.com>
+ <20201103130334.13468-3-shy828301@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <aa60f673-427a-1a47-7593-54d1404c3c92@bitmath.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed;
+        boundary="=_MailMate_AF21AA39-A852-4F05-AD91-00B951BFE759_=";
+        micalg=pgp-sha512; protocol="application/pgp-signature"
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1604693004; bh=XPDuj8vY7B5KbQ9YRLVClEc3VE4FOrykxg1NfeWBddU=;
+        h=From:To:CC:Subject:Date:X-Mailer:Message-ID:In-Reply-To:
+         References:MIME-Version:Content-Type:X-Originating-IP:
+         X-ClientProxiedBy;
+        b=SmDoj8KadYJogkrLXRiE8vSwMiIY5siDurtcNhaml48aw0YmwFNdi9Wh5jUka/R2p
+         ruJLqJbUC+ZwyTVEFv1ZbVKRbfeo60agZs7ifIA/EX4Vhc2bBqF5oAr9imuOATU4tW
+         plqFHtoNzZBwic8mJIqlUnxeeps3qTG5S13CSSEUlxsPROHVO5cO2PqdpE26wjvlM9
+         tQM6rznMBuh9aTj8mZOgC81zYQxyCVNxu+DYq9T9Vy3SZE3eoPKlLvd/T3qm18NIpu
+         ZzzZ0DYmEJuD0jQfnF/u6cBPa7ZUixDnecmOk3uEOGqe2WgXqXZPvBpyMdL9EGMu5R
+         Wr9Yg1SB0K6DQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> So as it stands, it does not work at all. I will continue to check 
-> another machine, and see if I can get something working.
+--=_MailMate_AF21AA39-A852-4F05-AD91-00B951BFE759_=
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On the MacBookAir3,1 the situation is somewhat better.
+On 3 Nov 2020, at 8:03, Yang Shi wrote:
 
-The first three tree positions result in zero failures and 10 reads per 
-second. The fourth yields zero failues and 11 reads per second, within 
-the margin of similarity.
+> When unmap_and_move{_huge_page}() returns !-EAGAIN and !MIGRATEPAGE_SUC=
+CESS,
+> the page would be put back to LRU or proper list if it is non-LRU movab=
+le
+> page.  But, the callers always call putback_movable_pages() to put the
+> failed pages back later on, so it seems not very efficient to put every=
 
-So, the patch appears to have no apparent effect on the 3,1 series.
+> single page back immediately, and the code looks convoluted.
+>
+> Put the failed page on a separate list, then splice the list to migrate=
 
-Now onto fixing the 1,1 behavior.
+> list when all pages are tried.  It is the caller's responsibility to
+> call putback_movable_pages() to handle failures.  This also makes the
+> code simpler and more readable.
+>
+> After the change the rules are:
+>     * Success: non hugetlb page will be freed, hugetlb page will be put=
 
-Henrik
+>                back
+>     * -EAGAIN: stay on the from list
+>     * -ENOMEM: stay on the from list
+>     * Other errno: put on ret_pages list then splice to from list
 
+Can you put this before the switch case in the migrate_pages? That will
+be very helpful to understand the code.
+>
+> The from list would be empty iff all pages are migrated successfully, i=
+t
+
+s/iff/if unless you really mean if and only if. :)
+
+
+Everything else looks good to me. Thanks for making the code cleaner.
+With the changes above, you can add Reviewed-by: Zi Yan <ziy@nvidia.com>.=
+
+
+> was not so before.  This has no impact to current existing callsites.
+>
+> Signed-off-by: Yang Shi <shy828301@gmail.com>
+> ---
+>  mm/migrate.c | 58 ++++++++++++++++++++++++++--------------------------=
+
+>  1 file changed, 29 insertions(+), 29 deletions(-)
+>
+> diff --git a/mm/migrate.c b/mm/migrate.c
+> index 8a2e7e19e27b..c33c92495ead 100644
+> --- a/mm/migrate.c
+> +++ b/mm/migrate.c
+> @@ -1169,7 +1169,8 @@ static int unmap_and_move(new_page_t get_new_page=
+,
+>  				   free_page_t put_new_page,
+>  				   unsigned long private, struct page *page,
+>  				   int force, enum migrate_mode mode,
+> -				   enum migrate_reason reason)
+> +				   enum migrate_reason reason,
+> +				   struct list_head *ret)
+>  {
+>  	int rc =3D MIGRATEPAGE_SUCCESS;
+>  	struct page *newpage =3D NULL;
+> @@ -1206,7 +1207,14 @@ static int unmap_and_move(new_page_t get_new_pag=
+e,
+>  		 * migrated will have kept its references and be restored.
+>  		 */
+>  		list_del(&page->lru);
+> +	}
+>
+> +	/*
+> +	 * If migration is successful, releases reference grabbed during
+> +	 * isolation. Otherwise, restore the page to right list unless
+> +	 * we want to retry.
+> +	 */
+> +	if (rc =3D=3D MIGRATEPAGE_SUCCESS) {
+>  		/*
+>  		 * Compaction can migrate also non-LRU pages which are
+>  		 * not accounted to NR_ISOLATED_*. They can be recognized
+> @@ -1215,35 +1223,16 @@ static int unmap_and_move(new_page_t get_new_pa=
+ge,
+>  		if (likely(!__PageMovable(page)))
+>  			mod_node_page_state(page_pgdat(page), NR_ISOLATED_ANON +
+>  					page_is_file_lru(page), -thp_nr_pages(page));
+> -	}
+>
+> -	/*
+> -	 * If migration is successful, releases reference grabbed during
+> -	 * isolation. Otherwise, restore the page to right list unless
+> -	 * we want to retry.
+> -	 */
+> -	if (rc =3D=3D MIGRATEPAGE_SUCCESS) {
+>  		if (reason !=3D MR_MEMORY_FAILURE)
+>  			/*
+>  			 * We release the page in page_handle_poison.
+>  			 */
+>  			put_page(page);
+>  	} else {
+> -		if (rc !=3D -EAGAIN) {
+> -			if (likely(!__PageMovable(page))) {
+> -				putback_lru_page(page);
+> -				goto put_new;
+> -			}
+> +		if (rc !=3D -EAGAIN)
+> +			list_add_tail(&page->lru, ret);
+>
+> -			lock_page(page);
+> -			if (PageMovable(page))
+> -				putback_movable_page(page);
+> -			else
+> -				__ClearPageIsolated(page);
+> -			unlock_page(page);
+> -			put_page(page);
+> -		}
+> -put_new:
+>  		if (put_new_page)
+>  			put_new_page(newpage, private);
+>  		else
+> @@ -1274,7 +1263,8 @@ static int unmap_and_move(new_page_t get_new_page=
+,
+>  static int unmap_and_move_huge_page(new_page_t get_new_page,
+>  				free_page_t put_new_page, unsigned long private,
+>  				struct page *hpage, int force,
+> -				enum migrate_mode mode, int reason)
+> +				enum migrate_mode mode, int reason,
+> +				struct list_head *ret)
+>  {
+>  	int rc =3D -EAGAIN;
+>  	int page_was_mapped =3D 0;
+> @@ -1290,7 +1280,7 @@ static int unmap_and_move_huge_page(new_page_t ge=
+t_new_page,
+>  	 * kicking migration.
+>  	 */
+>  	if (!hugepage_migration_supported(page_hstate(hpage))) {
+> -		putback_active_hugepage(hpage);
+> +		list_move_tail(&hpage->lru, ret);
+>  		return -ENOSYS;
+>  	}
+>
+> @@ -1372,8 +1362,10 @@ static int unmap_and_move_huge_page(new_page_t g=
+et_new_page,
+>  out_unlock:
+>  	unlock_page(hpage);
+>  out:
+> -	if (rc !=3D -EAGAIN)
+> +	if (rc =3D=3D MIGRATEPAGE_SUCCESS)
+>  		putback_active_hugepage(hpage);
+> +	else if (rc !=3D -EAGAIN && rc !=3D MIGRATEPAGE_SUCCESS)
+> +		list_move_tail(&hpage->lru, ret);
+>
+>  	/*
+>  	 * If migration was not successful and there's a freeing callback, us=
+e
+> @@ -1404,8 +1396,8 @@ static int unmap_and_move_huge_page(new_page_t ge=
+t_new_page,
+>   *
+>   * The function returns after 10 attempts or if no pages are movable a=
+ny more
+>   * because the list has become empty or no retryable pages exist any m=
+ore.
+> - * The caller should call putback_movable_pages() to return pages to t=
+he LRU
+> - * or free list only if ret !=3D 0.
+> + * It is caller's responsibility to call putback_movable_pages() to re=
+turn pages
+> + * to the LRU or free list only if ret !=3D 0.
+>   *
+>   * Returns the number of pages that were not migrated, or an error cod=
+e.
+>   */
+> @@ -1426,6 +1418,7 @@ int migrate_pages(struct list_head *from, new_pag=
+e_t get_new_page,
+>  	struct page *page2;
+>  	int swapwrite =3D current->flags & PF_SWAPWRITE;
+>  	int rc, nr_subpages;
+> +	LIST_HEAD(ret_pages);
+>
+>  	if (!swapwrite)
+>  		current->flags |=3D PF_SWAPWRITE;
+> @@ -1448,11 +1441,12 @@ int migrate_pages(struct list_head *from, new_p=
+age_t get_new_page,
+>  			if (PageHuge(page))
+>  				rc =3D unmap_and_move_huge_page(get_new_page,
+>  						put_new_page, private, page,
+> -						pass > 2, mode, reason);
+> +						pass > 2, mode, reason,
+> +						&ret_pages);
+>  			else
+>  				rc =3D unmap_and_move(get_new_page, put_new_page,
+>  						private, page, pass > 2, mode,
+> -						reason);
+> +						reason, &ret_pages);
+>
+>  			switch(rc) {
+>  			case -ENOMEM:
+> @@ -1519,6 +1513,12 @@ int migrate_pages(struct list_head *from, new_pa=
+ge_t get_new_page,
+>  	nr_thp_failed +=3D thp_retry;
+>  	rc =3D nr_failed;
+>  out:
+> +	/*
+> +	 * Put the permanent failure page back to migration list, they
+> +	 * will be put back to the right list by the caller.
+> +	 */
+> +	list_splice(&ret_pages, from);
+> +
+>  	count_vm_events(PGMIGRATE_SUCCESS, nr_succeeded);
+>  	count_vm_events(PGMIGRATE_FAIL, nr_failed);
+>  	count_vm_events(THP_MIGRATION_SUCCESS, nr_thp_succeeded);
+> -- =
+
+> 2.26.2
+
+
+=E2=80=94
+Best Regards,
+Yan Zi
+
+--=_MailMate_AF21AA39-A852-4F05-AD91-00B951BFE759_=
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJDBAEBCgAtFiEEh7yFAW3gwjwQ4C9anbJR82th+ooFAl+lrAoPHHppeUBudmlk
+aWEuY29tAAoJEJ2yUfNrYfqKzDIP/0wxvCcIu+z5PuGBP/U2eE/5KAE65O2y2O9G
+77GAMpR8ruv0wQgusCzjTcme3GFEqybdmQZP8FgWFAjUYTRmgD8Q24B8GZkDS8Wn
+vU0ogbLLeSDrijOAMdMQNJzdCdRD4nd9M1uHJ7FEYkWmFZVHi8uZWLbsZGtPBKF/
+I0a0JavBsHiHjGi3IIZsEbLExRsWiZxYZOzEua37nFl9yCDXZFQJ0w3XCBu4pGuj
+Zrj96SUJ6s26acWIXpsMDONIv9O/T3nghpX6O26dh3fG3+gg3UoFer/20aQtB6cM
+5R7fo/3FfSKGp0Vr5djWPnUPgxS+FCyf4/Ox3aVdCFq/ugXaQUchz6kQQQXPDIWa
+DydceO3wbvlrYAQQxP1GZPvPz7xl9yP8DjA2XQlgPOFgWyHk8CJFa5Y+Q8WqQ7bW
+/eM3P5UlXVInR6hdtJu9nxm9E/YVIjGM3NKQ11ZFlSBrUxOwFBrUmBsCJmb+Ou1W
+HgNW4eaMdPb+3XiPLw0zNzZ6/9pjbE+jjvzbse+r8ni6ZOZPRZSo3U14X/wWBGQw
+iSNikk81goWIX5/sS/3T+Flz6m8o8jZnIr77pvmbzz0wt2dJ7J7yF7WfTvjCdAev
+BuOYPlBlw2UAvGkYpAvB2Bg8iRylyyo1bWwR5PMF4ff92nyih7GzBN1WKNmuw9vf
+zv17fLYs
+=gMI1
+-----END PGP SIGNATURE-----
+
+--=_MailMate_AF21AA39-A852-4F05-AD91-00B951BFE759_=--
