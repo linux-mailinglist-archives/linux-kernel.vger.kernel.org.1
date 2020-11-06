@@ -2,78 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8F0F2A8B75
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 01:36:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 042C62A8B7C
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 01:36:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732835AbgKFAfu convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 5 Nov 2020 19:35:50 -0500
-Received: from mga11.intel.com ([192.55.52.93]:62719 "EHLO mga11.intel.com"
+        id S1732994AbgKFAgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 19:36:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55230 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732810AbgKFAfs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 19:35:48 -0500
-IronPort-SDR: hEvOZyCf0ePoWuNzlNlDlWbHLSk68bFqXI5it5v9XaHVlQVFt1LK6e55ZLuci0ZTRUj+eeU55x
- Y0/5HNg3Zasw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9796"; a="165973360"
-X-IronPort-AV: E=Sophos;i="5.77,454,1596524400"; 
-   d="scan'208";a="165973360"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2020 16:35:47 -0800
-IronPort-SDR: /Y47oWl7HMOIZGyu06vs4KW+MDNltlNvE1/4EwxNR7xKx6UMWdmOAu0Es7LUMqdQjSa3JPQFxk
- dGKSrPfqIGvw==
-X-ExtLoopCount2: 2 from 10.18.126.85
-X-IronPort-AV: E=Sophos;i="5.77,454,1596524400"; 
-   d="scan'208";a="364011485"
-Received: from fmsmsx605.amr.corp.intel.com ([10.18.126.85])
-  by FMSMGA003.fm.intel.com with ESMTP; 05 Nov 2020 16:35:47 -0800
-Received: from shsmsx605.ccr.corp.intel.com (10.109.6.215) by
- fmsmsx605.amr.corp.intel.com (10.18.126.85) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 5 Nov 2020 16:35:46 -0800
-Received: from shsmsx601.ccr.corp.intel.com (10.109.6.141) by
- SHSMSX605.ccr.corp.intel.com (10.109.6.215) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Fri, 6 Nov 2020 08:35:45 +0800
-Received: from shsmsx601.ccr.corp.intel.com ([10.109.6.141]) by
- SHSMSX601.ccr.corp.intel.com ([10.109.6.141]) with mapi id 15.01.1713.004;
- Fri, 6 Nov 2020 08:35:45 +0800
-From:   "Li, Philip" <philip.li@intel.com>
-To:     "kbuild-all@lists.01.org" <kbuild-all@lists.01.org>,
-        "lkp@lists.01.org" <lkp@lists.01.org>
-CC:     LKML <linux-kernel@vger.kernel.org>
-Subject: [0-Day CI notification] the service will be paused from 11/6/2020 5
- PM to 11/9/2020 10 AM (PRC time)
-Thread-Topic: [0-Day CI notification] the service will be paused from
- 11/6/2020 5 PM to 11/9/2020 10 AM (PRC time)
-Thread-Index: Adaz1K681ly6OtWITRaQ4iWab4vgRg==
-Date:   Fri, 6 Nov 2020 00:35:45 +0000
-Message-ID: <808cc457b2104e429e9de69854b73b00@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-extloop1: 1
-x-ironport-av: E=Sophos;i="5.68,285,1569308400";    d="scan'208";a="286726654"
-x-originating-ip: [10.239.127.36]
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <03734A31709A55489E7EC4B45CA59579@intel.com>
-Content-Transfer-Encoding: 8BIT
+        id S1732696AbgKFAgS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 19:36:18 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CB1F120759;
+        Fri,  6 Nov 2020 00:36:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604622977;
+        bh=tRqgcsdimRuU943pgSMhYm9axOpsG9cRtfmZCIbi+1o=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=TxV5HNRjkNFmHVKKGj0rmhIUMfRKEeZf+PgQV540q4bZ3VVN7FGK9h9OdyAjmdmUj
+         GxQM97Bai13yrh3l8oAKqoOzVAt88locMy3uaoLSEzExxzi8RhQwJdjJGgU2owPjYd
+         nQzP5fB2SPZYsTKvVhmcKIrysUPYh4ttJ0XXmYBw=
+Date:   Thu, 5 Nov 2020 16:36:14 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Ioana Ciornei <ciorneiioana@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Andre Edich <andre.edich@microchip.com>,
+        Antoine Tenart <atenart@kernel.org>,
+        Baruch Siach <baruch@tkos.co.il>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Dan Murphy <dmurphy@ti.com>,
+        Divya Koppera <Divya.Koppera@microchip.com>,
+        Hauke Mehrtens <hauke@hauke-m.de>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Kavya Sree Kotagiri <kavyasree.kotagiri@microchip.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        Marek Vasut <marex@denx.de>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Mathias Kresin <dev@kresin.me>,
+        Maxim Kochetkov <fido_max@inbox.ru>,
+        Michael Walle <michael@walle.cc>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Nisar Sayed <Nisar.Sayed@microchip.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Philippe Schenker <philippe.schenker@toradex.com>,
+        Willy Liu <willy.liu@realtek.com>,
+        Yuiko Oshino <yuiko.oshino@microchip.com>
+Subject: Re: [PATCH net-next v2 00/19] net: phy: add support for shared
+ interrupts (part 1)
+Message-ID: <20201105163614.647d47c9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201101125114.1316879-1-ciorneiioana@gmail.com>
+References: <20201101125114.1316879-1-ciorneiioana@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all, this is Philip who maintains the 0-Day CI test service.
-Thanks for anyone who subscribes to the service. We will have a
-lab power construction this weekend, thus need to pause the service
-for about 3 days, at PRC time from 11/6/2020 5 PM to 11/9/2020 10 AM.
+On Sun,  1 Nov 2020 14:50:55 +0200 Ioana Ciornei wrote:
+> From: Ioana Ciornei <ioana.ciornei@nxp.com>
+> 
+> This patch set aims to actually add support for shared interrupts in
+> phylib and not only for multi-PHY devices. While we are at it,
+> streamline the interrupt handling in phylib.
 
-Sorry for any inconvenience caused by this, we will recover the
-service to be online as early as possible.
-
-Thanks
-
+Applied, thank you!
