@@ -2,156 +2,283 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAF032A8D5B
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 04:08:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C1772A8D5E
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 04:11:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726024AbgKFDIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 22:08:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50390 "EHLO
+        id S1725859AbgKFDLG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 22:11:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725979AbgKFDIP (ORCPT
+        with ESMTP id S1725616AbgKFDLF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 22:08:15 -0500
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAE2AC0613CF;
-        Thu,  5 Nov 2020 19:08:15 -0800 (PST)
-Received: by mail-oi1-x244.google.com with SMTP id m143so3977523oig.7;
-        Thu, 05 Nov 2020 19:08:15 -0800 (PST)
+        Thu, 5 Nov 2020 22:11:05 -0500
+Received: from mail-ua1-x941.google.com (mail-ua1-x941.google.com [IPv6:2607:f8b0:4864:20::941])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78193C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 19:11:05 -0800 (PST)
+Received: by mail-ua1-x941.google.com with SMTP id 52so1189672uaj.4
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 19:11:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=YKYbqTkRpeU4z3Otv7jH/F2PF/FTh1iGJclR/wBuU1g=;
-        b=DHpxlZf9sm7WM9ovVETZlCxj+fvv+65q+SyEtYR7HIOaBU985TO5rk3LnPBBJkjb+s
-         zrhk28eHwKle5FJd2ZOxotuL4+IkY+623X3BlMbcK8aH7WGfAvDZmQRg6l3qrgpzMyEF
-         Wfk6WaoGaVVvVMfEXNrIKOGDVX8k2Z9Ui39R8FL9RZM7cYvQMExcGC193qLKA10564rK
-         fmtuOWV8upaX8jMZQqKJD+V/IMGoJaEwzE1ZKUnJNKXaf1soOhMRMcPJXzdY/Qfj2TnA
-         /4EQpEmweWi0SpERZsvjMcXWF5qxoLbnMl9PQXTaGgXs9fnBS064Ktx/laKOc1Uja2mk
-         tQdQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=UG3DAlH9b9Or2QNwH1ghe+WKv0N6NvDdVmlq47TlkRU=;
+        b=bOII9tou5D9cYfGL+0ova6j8npZ0Bp7kHX3GTNHiNihnzfgTiiJQ9x+GzhAlFuXYS9
+         3yRmfDdmWUq7sZlrNIW7uGAZmU2mu0hE7XxLirbUti0eaYM7VSooxI1TEs/FBpkPoGDw
+         x2aHiW3b9UPwXKELcJ906unUzNGUngCCknlG/lrr8tOK8Xc2ec+N+GuGb3o3PUIesGqw
+         9Mo/r+eLp0NNKdxE3X8orbhqOKBfzzGQP9wHMMSl4ksVygkDaYdJCfH7EwVniz+hQcLD
+         evJ2JhbPHktOhGF8T+F4hROTh0Qq9lT+GJVwq4s/QEOeI+WroPdrxh8rbf+HX4EnntS4
+         B7YA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=YKYbqTkRpeU4z3Otv7jH/F2PF/FTh1iGJclR/wBuU1g=;
-        b=I7sXzHkqaMsD55CNUwxbPX5vwwklwLVSXEStwLQdaF1QHRgzuj2Jcg+aQuOM3V0cLS
-         69JXTHfA61/Yvo7Ll8tXpavbFVqLQjtBNhVB1tA3OhjUOogbaHLO2shf/pFx50ivjnWJ
-         y9RxudLvvKPF6a/hEahhsQcJ3B94bs2kxCfncg2LvBBZxVYOL/LHl/YW/5ZjILJa3COr
-         g5307IpOfrN9KrJwqhT312Nh8xJEoPlBn+7shFlgL8FNUktJ9FKUmFmTrk1UYIc9VEEe
-         2i6eRthnTMzgxTlILh+xQtv28m0CBv2sJ6vW4RWHIdT0Xv890GSIdUd4/424fa+XFsIg
-         gvkA==
-X-Gm-Message-State: AOAM532hv1qXhVWvTV5cuPMDbnvGLbstuamUgGw+OpLj8pTTTis5n7t5
-        M/TI5OF6T8Q9cCmzsPL5ghiFDwSJ7iQ=
-X-Google-Smtp-Source: ABdhPJz8ckybX5pnkrSeKDacLcZuTpkPPngefywQga5vnA7XWMqqufu23HgbO2HpZkfPX+6D+KdHWg==
-X-Received: by 2002:aca:ea42:: with SMTP id i63mr50760oih.130.1604632095130;
-        Thu, 05 Nov 2020 19:08:15 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id m13sm23191otn.20.2020.11.05.19.08.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Nov 2020 19:08:14 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH] applesmc: Re-work SMC comms v2
-To:     Brad Campbell <brad@fnarfbargle.com>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        Jean Delvare <jdelvare@suse.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, rydberg@bitmath.org,
-        linux-hwmon@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        hns@goldelico.com
-References: <20200930105442.3f642f6c@aktux>
- <20200930164446.GB219887@roeck-us.net>
- <CAK8P3a2CbhJT+B-F+cnX+uiJep9oiLM28n045-ATaVaU41u2hw@mail.gmail.com>
- <20201002002251.28462e64@aktux>
- <7543ef85-727d-96c3-947e-5b18e9e6c44d@roeck-us.net>
- <20201006090226.4275c824@kemnade.info>
- <db042e9b-be41-11b1-7059-3881b1da5c8b@fnarfbargle.com>
- <68467f1b-cea1-47ea-a4d4-8319214b072a@fnarfbargle.com>
- <20201104142057.62493c12@aktux>
- <2436afef-99c6-c352-936d-567bf553388c@fnarfbargle.com>
- <7a085650-2399-08c0-3c4d-6cd1fa28a365@roeck-us.net>
- <fc36d066-c432-e7d2-312f-a0a592446fe2@fnarfbargle.com>
- <10027199-5d31-93e7-9bd8-7baaebff8b71@roeck-us.net>
- <70331f82-35a1-50bd-685d-0b06061dd213@fnarfbargle.com>
- <3c72ccc3-4de1-b5d0-423d-7b8c80991254@fnarfbargle.com>
- <e59440cb-72bc-4e48-4ff0-54ceb8e3ae91@roeck-us.net>
- <34ff244b-fe98-fcf5-eb61-95a529a52c45@fnarfbargle.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- xsFNBE6H1WcBEACu6jIcw5kZ5dGeJ7E7B2uweQR/4FGxH10/H1O1+ApmcQ9i87XdZQiB9cpN
- RYHA7RCEK2dh6dDccykQk3bC90xXMPg+O3R+C/SkwcnUak1UZaeK/SwQbq/t0tkMzYDRxfJ7
- nyFiKxUehbNF3r9qlJgPqONwX5vJy4/GvDHdddSCxV41P/ejsZ8PykxyJs98UWhF54tGRWFl
- 7i1xvaDB9lN5WTLRKSO7wICuLiSz5WZHXMkyF4d+/O5ll7yz/o/JxK5vO/sduYDIlFTvBZDh
- gzaEtNf5tQjsjG4io8E0Yq0ViobLkS2RTNZT8ICq/Jmvl0SpbHRvYwa2DhNsK0YjHFQBB0FX
- IdhdUEzNefcNcYvqigJpdICoP2e4yJSyflHFO4dr0OrdnGLe1Zi/8Xo/2+M1dSSEt196rXaC
- kwu2KgIgmkRBb3cp2vIBBIIowU8W3qC1+w+RdMUrZxKGWJ3juwcgveJlzMpMZNyM1jobSXZ0
- VHGMNJ3MwXlrEFPXaYJgibcg6brM6wGfX/LBvc/haWw4yO24lT5eitm4UBdIy9pKkKmHHh7s
- jfZJkB5fWKVdoCv/omy6UyH6ykLOPFugl+hVL2Prf8xrXuZe1CMS7ID9Lc8FaL1ROIN/W8Vk
- BIsJMaWOhks//7d92Uf3EArDlDShwR2+D+AMon8NULuLBHiEUQARAQABzTJHdWVudGVyIFJv
- ZWNrIChMaW51eCBhY2NvdW50KSA8bGludXhAcm9lY2stdXMubmV0PsLBgQQTAQIAKwIbAwYL
- CQgHAwIGFQgCCQoLBBYCAwECHgECF4ACGQEFAlVcphcFCRmg06EACgkQyx8mb86fmYFg0RAA
- nzXJzuPkLJaOmSIzPAqqnutACchT/meCOgMEpS5oLf6xn5ySZkl23OxuhpMZTVX+49c9pvBx
- hpvl5bCWFu5qC1jC2eWRYU+aZZE4sxMaAGeWenQJsiG9lP8wkfCJP3ockNu0ZXXAXwIbY1O1
- c+l11zQkZw89zNgWgKobKzrDMBFOYtAh0pAInZ9TSn7oA4Ctejouo5wUugmk8MrDtUVXmEA9
- 7f9fgKYSwl/H7dfKKsS1bDOpyJlqhEAH94BHJdK/b1tzwJCFAXFhMlmlbYEk8kWjcxQgDWMu
- GAthQzSuAyhqyZwFcOlMCNbAcTSQawSo3B9yM9mHJne5RrAbVz4TWLnEaX8gA5xK3uCNCeyI
- sqYuzA4OzcMwnnTASvzsGZoYHTFP3DQwf2nzxD6yBGCfwNGIYfS0i8YN8XcBgEcDFMWpOQhT
- Pu3HeztMnF3HXrc0t7e5rDW9zCh3k2PA6D2NV4fews9KDFhLlTfCVzf0PS1dRVVWM+4jVl6l
- HRIAgWp+2/f8dx5vPc4Ycp4IsZN0l1h9uT7qm1KTwz+sSl1zOqKD/BpfGNZfLRRxrXthvvY8
- BltcuZ4+PGFTcRkMytUbMDFMF9Cjd2W9dXD35PEtvj8wnEyzIos8bbgtLrGTv/SYhmPpahJA
- l8hPhYvmAvpOmusUUyB30StsHIU2LLccUPPOwU0ETofVZwEQALlLbQeBDTDbwQYrj0gbx3bq
- 7kpKABxN2MqeuqGr02DpS9883d/t7ontxasXoEz2GTioevvRmllJlPQERVxM8gQoNg22twF7
- pB/zsrIjxkE9heE4wYfN1AyzT+AxgYN6f8hVQ7Nrc9XgZZe+8IkuW/Nf64KzNJXnSH4u6nJM
- J2+Dt274YoFcXR1nG76Q259mKwzbCukKbd6piL+VsT/qBrLhZe9Ivbjq5WMdkQKnP7gYKCAi
- pNVJC4enWfivZsYupMd9qn7Uv/oCZDYoBTdMSBUblaLMwlcjnPpOYK5rfHvC4opxl+P/Vzyz
- 6WC2TLkPtKvYvXmdsI6rnEI4Uucg0Au/Ulg7aqqKhzGPIbVaL+U0Wk82nz6hz+WP2ggTrY1w
- ZlPlRt8WM9w6WfLf2j+PuGklj37m+KvaOEfLsF1v464dSpy1tQVHhhp8LFTxh/6RWkRIR2uF
- I4v3Xu/k5D0LhaZHpQ4C+xKsQxpTGuYh2tnRaRL14YMW1dlI3HfeB2gj7Yc8XdHh9vkpPyuT
- nY/ZsFbnvBtiw7GchKKri2gDhRb2QNNDyBnQn5mRFw7CyuFclAksOdV/sdpQnYlYcRQWOUGY
- HhQ5eqTRZjm9z+qQe/T0HQpmiPTqQcIaG/edgKVTUjITfA7AJMKLQHgp04Vylb+G6jocnQQX
- JqvvP09whbqrABEBAAHCwWUEGAECAA8CGwwFAlVcpi8FCRmg08MACgkQyx8mb86fmYHNRQ/+
- J0OZsBYP4leJvQF8lx9zif+v4ZY/6C9tTcUv/KNAE5leyrD4IKbnV4PnbrVhjq861it/zRQW
- cFpWQszZyWRwNPWUUz7ejmm9lAwPbr8xWT4qMSA43VKQ7ZCeTQJ4TC8kjqtcbw41SjkjrcTG
- wF52zFO4bOWyovVAPncvV9eGA/vtnd3xEZXQiSt91kBSqK28yjxAqK/c3G6i7IX2rg6pzgqh
- hiH3/1qM2M/LSuqAv0Rwrt/k+pZXE+B4Ud42hwmMr0TfhNxG+X7YKvjKC+SjPjqp0CaztQ0H
- nsDLSLElVROxCd9m8CAUuHplgmR3seYCOrT4jriMFBtKNPtj2EE4DNV4s7k0Zy+6iRQ8G8ng
- QjsSqYJx8iAR8JRB7Gm2rQOMv8lSRdjva++GT0VLXtHULdlzg8VjDnFZ3lfz5PWEOeIMk7Rj
- trjv82EZtrhLuLjHRCaG50OOm0hwPSk1J64R8O3HjSLdertmw7eyAYOo4RuWJguYMg5DRnBk
- WkRwrSuCn7UG+qVWZeKEsFKFOkynOs3pVbcbq1pxbhk3TRWCGRU5JolI4ohy/7JV1TVbjiDI
- HP/aVnm6NC8of26P40Pg8EdAhajZnHHjA7FrJXsy3cyIGqvg9os4rNkUWmrCfLLsZDHD8FnU
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <f71cef1c-f90b-ebb8-660d-29e6a174a079@roeck-us.net>
-Date:   Thu, 5 Nov 2020 19:08:12 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=UG3DAlH9b9Or2QNwH1ghe+WKv0N6NvDdVmlq47TlkRU=;
+        b=lRxd9FMHt42c/Vb3CWysyB/r2ti+JP+fwh/YZ49Vh7ywcJF+WGJ0JBeD7tdzHtOfnU
+         wzaEs/2MBkszafQpPqeyb4P6k+GpPx1tKGOgjH268xfm94GwiZmkAvcPrHRq0NETLR7u
+         pKiPnGhaNuWfLahY6aul6WwdZ/aqp0btLdi/MzG5iIrXXTDKM8pzKcv4jsmRcH96OFF7
+         CJzro9dzzl7PgaYPo4usUSE2tNtPohmmUbxApnhkazDQgMmXTM0/P9gp39gmxhsnYtMg
+         ed32PTWzrOk/38oQRH9al8hDz5GJ8S1JC2MYteUxC9immP2+DVcg4OEThhnIrr+6thQs
+         xQYg==
+X-Gm-Message-State: AOAM530syozEyWS1Ab+jipnRAaV9nDT0XzLxliSt4wln9/aCp/SDfr6M
+        DaySVso8tUw+XHU/PxZ3HGkM8Rj1jGPesWbW9aSGKg==
+X-Google-Smtp-Source: ABdhPJzstqO6KWunaZQtlcX7azqKa/IMOm+fpiTNoBQ1xJN75OQpFGRApY+XjVotH/xO4pWK6BRfvovl74LUlbDaGDA=
+X-Received: by 2002:ab0:5b55:: with SMTP id v21mr3403151uae.65.1604632264237;
+ Thu, 05 Nov 2020 19:11:04 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <34ff244b-fe98-fcf5-eb61-95a529a52c45@fnarfbargle.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20201029095806.10648-1-amelie.delaunay@st.com>
+ <20201029095806.10648-2-amelie.delaunay@st.com> <20201029154016.GA1917373@bogus>
+ <860d5620-4fdf-6e01-9a04-3967d6fcfd6b@st.com> <CAL_JsqKs-Po8BdShjQNDNPjNWBCD3FSPdq4KbQGx3=VnV+3nPw@mail.gmail.com>
+ <ebccf61a-c88f-c7f4-9f06-01d2bd1f43de@st.com> <20201104210803.GA4115079@bogus>
+ <2da804ff-3b3c-0ea9-14d5-a163b28ccc33@st.com> <CAKgpwJU_yTTYabeMYFBqNs_6=N7gaTAc1v-+fU-dshFUrL1qVA@mail.gmail.com>
+ <CAL_JsqJUVRRD=j6FTFUgUuhfLkGe5WRex+gj7N6wvu-DbwL+bA@mail.gmail.com>
+In-Reply-To: <CAL_JsqJUVRRD=j6FTFUgUuhfLkGe5WRex+gj7N6wvu-DbwL+bA@mail.gmail.com>
+From:   Badhri Jagan Sridharan <badhri@google.com>
+Date:   Thu, 5 Nov 2020 19:10:27 -0800
+Message-ID: <CAPTae5JtpRS11FxsYE4wLFoM=fng__v8wEWMtyCJqiqrgS5SmA@mail.gmail.com>
+Subject: Re: [RESEND PATCH v3 1/4] dt-bindings: connector: add power-opmode
+ optional property to usb-connector
+To:     Rob Herring <robh@kernel.org>
+Cc:     Jun Li <lijun.kernel@gmail.com>,
+        Amelie DELAUNAY <amelie.delaunay@st.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        "moderated list:ARM/STM32 ARCHITECTURE" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Fabrice Gasnier <fabrice.gasnier@st.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/5/20 4:02 PM, Brad Campbell wrote:
-[ ... ]
->>> +/* Apple SMC status bits */
->>> +#define SMC_STATUS_AWAITING_DATA  BIT(0) /* SMC has data waiting */
->>> +#define SMC_STATUS_IB_CLOSED      BIT(1) /* Will ignore any input */
->>> +#define SMC_STATUS_BUSY           BIT(2) /* Command in progress */
->>> +
->>
->> Hah, tricked you here ;-). Using "BIT()" requires
->>
->> #include <linux/bits.h>
-> 
-> "requires" ?? 
-> It compiles and tests without warning, but I'll certainly add it in.
-> 
+Hi Rob and Amelie,
 
-Each driver should include the files with the declarations it needs, and
-not depend on some indirect includes. Those indirect includes are not guaranteed
-to exist and may be removed at some point in the future. "It compiles" is most
-definitely not a valid argument.
+With regards to discussions in this thread,
+For https://lore.kernel.org/r/20201020093627.256885-2-badhri@google.com,
+I can send in a patch to update the new-source-frs-typec-current property.
+Amelie, If you are already planning to send that I am fine with that as wel=
+l.
+Let me know !
 
-Guenter
+To summarize the changes for new-source-frs-typec-current would be,
+1. Rename to frs-new-source-opmode
+2. Use string values instead of u32 similar to typec-power-opmode.
+Are these correct ?
+
+Thanks,
+Badhri
+
+On Thu, Nov 5, 2020 at 7:55 AM Rob Herring <robh@kernel.org> wrote:
+>
+> On Thu, Nov 5, 2020 at 6:24 AM Jun Li <lijun.kernel@gmail.com> wrote:
+> >
+> > Amelie DELAUNAY <amelie.delaunay@st.com> =E4=BA=8E2020=E5=B9=B411=E6=9C=
+=885=E6=97=A5=E5=91=A8=E5=9B=9B =E4=B8=8B=E5=8D=887:36=E5=86=99=E9=81=93=EF=
+=BC=9A
+> > >
+> > > On 11/4/20 10:08 PM, Rob Herring wrote:
+> > > > On Fri, Oct 30, 2020 at 04:27:14PM +0100, Amelie DELAUNAY wrote:
+> > > >>
+> > > >>
+> > > >> On 10/30/20 3:29 PM, Rob Herring wrote:
+> > > >>> On Thu, Oct 29, 2020 at 11:49 AM Amelie DELAUNAY <amelie.delaunay=
+@st.com> wrote:
+> > > >>>>
+> > > >>>>
+> > > >>>>
+> > > >>>> On 10/29/20 4:40 PM, Rob Herring wrote:
+> > > >>>>> On Thu, Oct 29, 2020 at 10:58:03AM +0100, Amelie Delaunay wrote=
+:
+> > > >>>>>> Power operation mode may depends on hardware design, so, add t=
+he optional
+> > > >>>>>> property power-opmode for usb-c connector to select the power =
+operation
+> > > >>>>>> mode capability.
+> > > >>>>>>
+> > > >>>>>> Signed-off-by: Amelie Delaunay <amelie.delaunay@st.com>
+> > > >>>>>> ---
+> > > >>>>>>     .../bindings/connector/usb-connector.yaml      | 18 ++++++=
+++++++++++++
+> > > >>>>>>     1 file changed, 18 insertions(+)
+> > > >>>>>>
+> > > >>>>>> diff --git a/Documentation/devicetree/bindings/connector/usb-c=
+onnector.yaml b/Documentation/devicetree/bindings/connector/usb-connector.y=
+aml
+> > > >>>>>> index 728f82db073d..200d19c60fd5 100644
+> > > >>>>>> --- a/Documentation/devicetree/bindings/connector/usb-connecto=
+r.yaml
+> > > >>>>>> +++ b/Documentation/devicetree/bindings/connector/usb-connecto=
+r.yaml
+> > > >>>>>> @@ -93,6 +93,24 @@ properties:
+> > > >>>>>>           - device
+> > > >>>>>>           - dual
+> > > >>>>>>
+> > > >>>>>> +  power-opmode:
+> > > >>>>>
+> > > >>>>> I've acked this version:
+> > > >>>>>
+> > > >>>>> https://lore.kernel.org/r/20201020093627.256885-2-badhri@google=
+.com
+> > > >>>>>
+> > > >>>>
+> > > >>>> frs is used for Fast Role Swap defined in USB PD spec.
+> > > >>>> I understand it allows to get the same information but I'm wonde=
+ring why
+> > > >>>> the property name is limited to -frs- in this case. What about a
+> > > >>>> non-power delivery USB-C connector ?
+> > > >>>
+> > > >>> I've got no idea. The folks that know USB-C and PD details need t=
+o get
+> > > >>> together and work all this out. To me, it looks like the same thi=
+ng...
+> > > >>>
+> > > >>
+> > > >> It looks but...
+> > > >>
+> > > >> The purpose of power-opmode property is to configure the USB-C con=
+trollers,
+> > > >> especially the non-PD USB-C controllers to determine the power ope=
+ration
+> > > >> mode that the Type C connector will support and will advertise thr=
+ough CC
+> > > >> pins when it has no power delivery support, whatever the power rol=
+e: Sink,
+> > > >> Source or Dual
+> > > >> The management of the property is the same that data-role and powe=
+r-role
+> > > >> properties, and done by USB Type-C Connector Class.
+> > > >>
+> > > >> new-source-frs-typec-current specifies initial current capability =
+of the new
+> > > >> source when vSafe5V is applied during PD3.0 Fast Role Swap. So her=
+e, this
+> > > >> property is not applied at usb-c controller configuration level, b=
+ut during
+> > > >> PD Fast Role Swap, so when the Sink become the Source.
+> > > >> Moreover, the related driver code says FRS can only be supported b=
+y DRP
+> > > >> ports. So new-source-frs-typec-current property, in addition to be=
+ing
+> > > >> specific to PD, is also dedicated to DRP usb-c controller.
+> > > >> The property is managed by Type-C Port Controller Manager for PD.
+> > > >
+> > > > But it's the same set of possible values, right? So we can align th=
+e
+> > > > values at least.
+> > > >
+> > >
+> > > USB Power Delivery FRS values are defined in
+> > > include/dt-bindings/usb/pd.h
+> >
+> > I think this can be changed if both can be aligned.
+> >
+> > >to fit with drivers/usb/typec/tcpm/tcpm.c
+> > > frs_typec_current enum.
+> > >
+> > > USB-C power operation mode values are defined in
+> > > include/linux/usb/typec.h with typec_pwr_opmode enum and matching wit=
+h
+> > > string values of typec_pwr_opmodes tab.
+> > >
+> > > USB PD requires USB-C.
+> > > USB-C doesn't requires USB PD.
+> > >
+> > > drivers/usb/typec/tcpm/tcpm.c already used typec_pwr_opmode values.
+> > >
+> > > USB PD specification Table 6-14 Fixed Supply PDO says:
+> > > Fast Role Swap required USB Type-C Current (see also [USB Type-C 2.0]=
+):
+> > > Value | Description
+> > >   00b  | Fast Swap not supported (default)
+> > >   01b  | Default USB Power
+> > >   10b  | 1.5A @ 5V
+> > >   11b  | 3.0A @ 5V
+> >
+> > This is the value in PDO of sink, the FRS property value(or after trans=
+lated)
+> > actually is used to compare with above value.
+> >
+> > So I think both properties can share the same "value", maybe string
+> > like below
+> >
+> >   10 static const char * const typec_pwr_opmodes[] =3D {
+> >   11         [TYPEC_PWR_MODE_USB]    =3D "default",
+> >   12         [TYPEC_PWR_MODE_1_5A]   =3D "1.5A",
+> >   13         [TYPEC_PWR_MODE_3_0A]   =3D "3.0A",
+> >
+> > >
+> > > Note the *see also USB Type-C 2.0*.
+> > >
+> > > USB Type-C specification 4.6.2.1 USB Type-C Current says:
+> > > The USB Type-C connector uses CC pins for configuration including an
+> > > ability for a Source to advertise to its port partner (Sink) the amou=
+nt
+> > > of current it shall supply:
+> > > =E2=80=A2 Default is the as-configured for high-power operation curre=
+nt value as
+> > > defined by the USB Specification (500 mA for USB 2.0 ports; 900 mA or
+> > > 1,500 mA for USB 3.2 ports in single-lane or dual-lane operation,
+> > > respectively)
+> > > =E2=80=A2 1.5 A
+> > > =E2=80=A2 3.0 A
+> > >
+> > > > Can we align the names in some way? power-opmode and frs-source-opm=
+ode
+> > > > or ??
+> >
+> > how about typec-power-opmode and frs-new-source-opmode
+>
+> Sure.
+>
+> >
+> > > >
+> > >
+> > > I let USB PD specialists answer.
+> > >
+> > > *frs* property fits with USB PD specification, so with USB PD protoco=
+l.
+> > > *power-opmode fits with USB Type-C specification, so with USB-C hardw=
+are
+> > > support.
+> > >
+> > > > Are these 2 properties mutually exclusive?
+> >
+> > I think yes.
+>
+> This should work to express that:
+>
+> allOf:
+>   - not:
+>       required:
+>         - typec-power-opmode
+>         - frs-new-source-opmode
+>
+> Rob
