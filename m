@@ -2,128 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54A4C2A94D0
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 11:54:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B68992A94D5
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 11:55:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727143AbgKFKyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 05:54:51 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:34726 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727038AbgKFKyv (ORCPT
+        id S1727175AbgKFKzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 05:55:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38356 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726832AbgKFKzS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 05:54:51 -0500
-Date:   Fri, 6 Nov 2020 11:54:47 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1604660088;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8qKYotRUY13kT4qJj8yVCDhzL4uOJ2Lx+7X1ta+4W8Q=;
-        b=b+7AJwobaxS1fcwPIb3LoPMbciQ4ZIxLjGFpC3D7n3iCPpge+iBYyRm4DGDP+aJzpZGA8u
-        m5cJrhPDezPOfSR662wyxQJ/gyIeGe6/w4YQtP9AusPN368m7qb5xs63NgRi4ma8pE5HYc
-        qSF8wAZK8LZffxD6o0vbvHKTqgbL4JTnN1QiCGvo7DQLJn21eZjNnbbXjzjLQMCGEWv9QU
-        21Axr4O8wd1qaCuWTwGrkDiJQBukfubzKYX4ri2luJyEjbNruD/1iLtQjgl/LAJX5Kp80m
-        EuMRcdc/gEVDUJ+e7TIBfsoQRcnQ43L3T+r/QYoXIrDAJ5h3FONVm18Bvzskzw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1604660088;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8qKYotRUY13kT4qJj8yVCDhzL4uOJ2Lx+7X1ta+4W8Q=;
-        b=a+pQvHCjOOXy1I5JRj7lDqFJRCw29fS8i/B5sGakjp/C/ApgTOXFHaW1f72nOZiwtyGqHq
-        mxrZdSXqHvhP4RCA==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Daniel Wagner <wagi@monom.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [ANNOUNCE] v5.10-rc2-rt4
-Message-ID: <20201106105447.2lasulgjrbqdhnlh@linutronix.de>
-References: <20201103195731.erjkgyzxzzjylhui@linutronix.de>
- <20201104103809.bhl2iorbwv6xowtw@beryllium.lan>
- <20201104104617.ueefmpdou4t3t2ce@linutronix.de>
- <20201104111948.vpykh3ptmysqhmve@beryllium.lan>
- <20201104124746.74jdsig3dffomv3k@beryllium.lan>
- <20201104130930.llx56gtqt532h7c7@linutronix.de>
- <20201104160650.b63zqof74wohgpa2@beryllium.lan>
+        Fri, 6 Nov 2020 05:55:18 -0500
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1262DC0613D3
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 02:55:18 -0800 (PST)
+Received: by mail-pl1-x641.google.com with SMTP id b12so495451plr.4
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 02:55:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=b/EXZYeChCIs1m40/OogMCYwnFfXBPrTLz46deLiJcA=;
+        b=XE3WmDim8YAmqM4wMueP497yfYpq4mZKBuDgqPG/tLQgt6JSE0/4rnF/ynwrUFUtoD
+         PQ5xhlF+SNe+ddNm3uq1E+sW+nc5eCrwv24/wQzXUILasKZByU53yrycLJmEBB9oErna
+         IYdADsb7pse/R6UfvZYps8Y7FrZP9cIMsDW9gF4LvQH0kmFTCXYT0ESV4wOshPeby7tV
+         R23mChkPhLJr78HSEuhX9xsyg0sxLwNhU4i7N1Ru1R4slkqFpd+Rz4K/Z7wssYvRnHbp
+         U7T6XYHccwRJkqgoN0hfDBue85ZLX2awle9liKb/q4YQ+f7QZcdeIA4Vp5wWI2RDbduO
+         cOmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=b/EXZYeChCIs1m40/OogMCYwnFfXBPrTLz46deLiJcA=;
+        b=WvasFoi4QkOj586YNR8C9dVM6FYhGvK7JAbGYH84tRJMEyofkkJPZHuCz98yhgBAUY
+         XWP0QFxoBFGjs/4AQcKxVMgjPXPKqZbwMiSoWR1lZDSv5Q1D7WwHSDCGIvhrhZutyoNO
+         SE0LdWOYL9k8l36oFS4XEGqMdZF1kWooOb0JiKXeWF1/mo/hiRYVAJhAxukzRnbAXGvY
+         MGRh5DeSPOvjTNDNKNQOmQgljxdn6wN5pWgOzZ24s4JZXjr51d8qaeE4Hhjoyok32/x/
+         XfCHp94BD9tTWKfL5HHTcpkYs8zuPQO1Rf1c7urX9a2jjDao1KaBtZ2wc+xkOwfKXDYa
+         rLMQ==
+X-Gm-Message-State: AOAM533pEHx3N4N2OKShGP+68/g7Y3OGjfcvPju+ukdKaocKOR/fGL8i
+        +IbZJbGg9P5zfxP9HDZweNuyQw==
+X-Google-Smtp-Source: ABdhPJwLCX4MA/OOHdhLU3UIDCLaYzo+IJOWbKzfu+djgm7NfBe6J0VuY+WxKlwV8jfW74rAFh9prA==
+X-Received: by 2002:a17:902:7c12:b029:d6:ed57:fe13 with SMTP id x18-20020a1709027c12b02900d6ed57fe13mr1373599pll.59.1604660117422;
+        Fri, 06 Nov 2020 02:55:17 -0800 (PST)
+Received: from localhost ([122.172.12.172])
+        by smtp.gmail.com with ESMTPSA id y124sm1641133pfy.28.2020.11.06.02.55.16
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 06 Nov 2020 02:55:16 -0800 (PST)
+Date:   Fri, 6 Nov 2020 16:25:14 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     Nicola Mazzucato <nicola.mazzucato@arm.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        sudeep.holla@arm.com, rjw@rjwysocki.net, vireshk@kernel.org,
+        robh+dt@kernel.org, sboyd@kernel.org, nm@ti.com,
+        daniel.lezcano@linaro.org, morten.rasmussen@arm.com,
+        chris.redpath@arm.com
+Subject: Re: [PATCH v3 3/3] [RFC] CPUFreq: Add support for
+ cpu-perf-dependencies
+Message-ID: <20201106105514.bhtdklyhn7goml64@vireshk-i7>
+References: <20201102120115.29993-1-nicola.mazzucato@arm.com>
+ <20201102120115.29993-4-nicola.mazzucato@arm.com>
+ <20201106092020.za3oxg7gutzc3y2b@vireshk-i7>
+ <0a334a73-45ef-58ff-7dfd-9df6f4ff290a@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20201104160650.b63zqof74wohgpa2@beryllium.lan>
+In-Reply-To: <0a334a73-45ef-58ff-7dfd-9df6f4ff290a@arm.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-04 17:06:50 [+0100], Daniel Wagner wrote:
-> On Wed, Nov 04, 2020 at 02:09:30PM +0100, Sebastian Andrzej Siewior wrote:
-> > Could you figure out if the arm64 thingy started with -rt4 or was
-> > already in rt3?
->=20
-> I wrote a quick and dirty script to extract the data from my logs to see
-> if the regression might be older then I remembered. I filtered out the
-> obviously wrong configured runs (e.g !RT). It looks like the first
-> recorded outlier is around 5.9.0-rt16. Does this already help or do you
-> want me to bissect it down?
+On 06-11-20, 10:37, Lukasz Luba wrote:
+> Good question.
+> 
+> How about a different interface for those cpufreq drivers?
+> That new registration API would allow to specify the cpumask.
+> Or rely on EM cpumask: em_span_cpus(em)
+> 
+> Currently we have two ways to register cooling device:
+> 1. when the cpufreq driver set a flag CPUFREQ_IS_COOLING_DEV, the core
+> will register cooling device
+> 2. cpufreq driver can explicitly call the registration function:
+> cpufreq_cooling_register() with 'policy' as argument
+> 
+> That would need substantial change to the cpufreq cooling code, from
+> policy oriented to custom driver's cpumask (like EM registration).
 
-> rpi3    signaltest      5.9.0-rc8-rt12
->   813   0_signaltest         t0-max-latency      : fail     214.00
-> rpi3    signaltest      5.9.0-rc8-rt12
->   874   0_signaltest         t0-max-latency      : fail     217.00
-> rpi3    signaltest      5.9.0-rt16
->   963   0_signaltest         t0-max-latency      : fail     321.00
+I am even wondering if we should really make that change. Why do we
+need the combined load of the CPUs to be sent back to the IPA governor
+? Why shouldn't they all do that (they == cdev) ?
 
-Here, rt 13,14,15 would be interesting so we could narrow down the
-~100us.
-v5.9-rc8-rt14 got new migrate-disable but I wouldn't expect it to cause
-it. The other changes look also harmless (like the rtmutex redo which
-should be a 0 change but then it mighe behave differently in regard to
-workqueue in some corner cases).
+This is a bit confusing to me, sorry about that. The cpufreq governors
+take a look at all the CPUs utilization and set the frequency based on
+the highest utilization (and not the total util).
 
-> rpi3    signaltest      5.9.1-rt19
->   1038  0_signaltest         t0-max-latency      : fail     341.00
-> rpi3    signaltest      5.9.1-rt20
->   1079  0_signaltest         t0-max-latency      : fail     318.00
+While in this case we present the total load of the CPUs to the IPA
+(based on the current frequency of the CPUs), in response to which it
+tells us the frequency at which all the CPUs of the policy can run at
+(I am not even sure if it is the right thing to do as the CPUs have
+different loads). And how do we fit this dependent_cpus thing into
+this.
 
-Looking from my announcement:
-|      - Tiny update to the rtmutex patches (make __read_rt_trylock()
-|        static).
+Sorry, I am not sure what's the right way of doing thing here.
 
-this could improve things but not that much.
-
-|      - The test_lockup module failed to compile. Reported by Fernando
-|        Lopez-Lezcano.
-
-unrelated.
-
-|      - The `kcompactd' daemon together with MEMCG could have accessed
-|        per-CPU variables in preemtible context.
-
-an additional lock=E2=80=A6
-
-|      - The patch for the crash in the block layer (previously reported by
-|        David Runge) has been replaced with another set of patches which
-|        were submitted upstream.
-
-looks also innocent.
-
-So I have nothing to explain 20us improvement.
-
-> rpi3    signaltest      5.10.0-rc1-rt1
->   1118  0_signaltest         t0-max-latency      : fail     415.00
-> rpi3    signaltest      5.10.0-rc2-rt4
->   1163  0_signaltest         t0-max-latency      : fail     340.00
-
--rt2 gained new kmap code.
--rt3 received an update of the above
-
-This is the only outstanding thing between rt1 and rt4.
-
-But all this is only signal right? Nothing on the cyclictest front? If
-lazy-preempt broke in a way then it should be only noticed by
-cyclictest. You can however disable lazy-preempt just to be sure.
-
-Sebastian
+-- 
+viresh
