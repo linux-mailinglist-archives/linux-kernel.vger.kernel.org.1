@@ -2,67 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B3EF2A8F05
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 06:48:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D727A2A8F0A
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 06:53:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726116AbgKFFsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 00:48:37 -0500
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:35235 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725830AbgKFFsh (ORCPT
+        id S1726202AbgKFFxg convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 6 Nov 2020 00:53:36 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:9928 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725828AbgKFFxf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 00:48:37 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=3;SR=0;TI=SMTPD_---0UEOSihB_1604641714;
-Received: from aliy80.localdomain(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UEOSihB_1604641714)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 06 Nov 2020 13:48:34 +0800
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-To:     konishi.ryusuke@gmail.com
-Cc:     linux-nilfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] fs/nilfs2: remove some unused macros to tame gcc
-Date:   Fri,  6 Nov 2020 13:48:33 +0800
-Message-Id: <1604641713-6484-1-git-send-email-alex.shi@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Fri, 6 Nov 2020 00:53:35 -0500
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A65e8Bl029867
+        for <linux-kernel@vger.kernel.org>; Thu, 5 Nov 2020 21:53:35 -0800
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 34mx9p8h59-5
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 21:53:35 -0800
+Received: from intmgw003.08.frc2.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:21d::5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 5 Nov 2020 21:53:31 -0800
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id DA7EE2EC8EF9; Thu,  5 Nov 2020 21:51:29 -0800 (PST)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <kernel-team@fb.com>, <linux-kernel@vger.kernel.org>,
+        <rafael@kernel.org>, <jeyu@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH bpf-next 0/5] Integrate kernel module BTF support
+Date:   Thu, 5 Nov 2020 21:51:05 -0800
+Message-ID: <20201106055111.3972047-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.24.1
+X-FB-Internal: Safe
+Content-Type: text/plain
+Content-Transfer-Encoding: 8BIT
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-06_01:2020-11-05,2020-11-06 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ phishscore=0 spamscore=0 malwarescore=0 impostorscore=0 mlxscore=0
+ mlxlogscore=999 suspectscore=0 clxscore=1015 adultscore=0
+ priorityscore=1501 bulkscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2011060039
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There some macros are unused and cause gcc warning. Remove them.
+This patch set adds BTF generation for kernel modules using a compact split
+BTF approach. Respective patches have all the details.
 
-fs/nilfs2/segment.c:137:0: warning: macro "nilfs_cnt32_gt" is not used
-[-Wunused-macros]
-fs/nilfs2/segment.c:144:0: warning: macro "nilfs_cnt32_le" is not used
-[-Wunused-macros]
-fs/nilfs2/segment.c:143:0: warning: macro "nilfs_cnt32_lt" is not used
-[-Wunused-macros]
+Kernel module BTFs rely on pahole's split BTF support, which is added in [0]
+and will be available starting from v1.19. Support for it is detected
+automatically during kernel build time.
 
-Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-Cc: Ryusuke Konishi <konishi.ryusuke@gmail.com> 
-Cc: linux-nilfs@vger.kernel.org 
-Cc: linux-kernel@vger.kernel.org 
----
- fs/nilfs2/segment.c | 5 -----
- 1 file changed, 5 deletions(-)
+This patch set implements in-kernel support for split BTF loading and
+validation. It also extends GET_OBJ_INFO API for BTFs to return BTF's module
+name and a flag whether BTF itself is in-kernel or user-provided. vmlinux BTF
+is also exposed to user-space through the same BTF object iteration APIs.
 
-diff --git a/fs/nilfs2/segment.c b/fs/nilfs2/segment.c
-index e3726aca28ed..cd4da9535aed 100644
---- a/fs/nilfs2/segment.c
-+++ b/fs/nilfs2/segment.c
-@@ -134,14 +134,9 @@ struct nilfs_sc_operations {
- static void nilfs_segctor_do_immediate_flush(struct nilfs_sc_info *);
- static void nilfs_dispose_list(struct the_nilfs *, struct list_head *, int);
- 
--#define nilfs_cnt32_gt(a, b)   \
--	(typecheck(__u32, a) && typecheck(__u32, b) && \
--	 ((__s32)(b) - (__s32)(a) < 0))
- #define nilfs_cnt32_ge(a, b)   \
- 	(typecheck(__u32, a) && typecheck(__u32, b) && \
- 	 ((__s32)(a) - (__s32)(b) >= 0))
--#define nilfs_cnt32_lt(a, b)  nilfs_cnt32_gt(b, a)
--#define nilfs_cnt32_le(a, b)  nilfs_cnt32_ge(b, a)
- 
- static int nilfs_prepare_segment_lock(struct super_block *sb,
- 				      struct nilfs_transaction_info *ti)
+Follow up patch set will utilize the fact that vmlinux and module BTFs now
+have associated ID to provide ability to attach BPF fentry/fexit/etc programs
+to functions defined in kernel modules.
+
+bpftool is also extended to show module/vmlinux BTF's name.
+
+  [0] https://patchwork.kernel.org/project/netdevbpf/list/?series=378699&state=*
+
+rfc->v1:
+  - CONFIG_DEBUG_INFO_BTF_MODULES is derived automatically (Alexei);
+  - vmlinux BTF now has explicit "vmlinux" name (Alexei);
+  - added sysfs ABI documentation for /sys/kernel/btf/<module> (Greg).
+
+Cc: Arnaldo Carvalho de Melo <acme@redhat.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+Andrii Nakryiko (5):
+  bpf: add in-kernel split BTF support
+  bpf: assign ID to vmlinux BTF and return extra info for BTF in
+    GET_OBJ_INFO
+  kbuild: build kernel module BTFs if BTF is enabled and pahole supports
+    it
+  bpf: load and verify kernel module BTFs
+  tools/bpftool: add support for in-kernel and named BTF in `btf show`
+
+ Documentation/ABI/testing/sysfs-kernel-btf |   8 +
+ include/linux/bpf.h                        |   2 +
+ include/linux/module.h                     |   4 +
+ include/uapi/linux/bpf.h                   |   3 +
+ kernel/bpf/btf.c                           | 412 ++++++++++++++++++---
+ kernel/bpf/sysfs_btf.c                     |   2 +-
+ kernel/module.c                            |  32 ++
+ lib/Kconfig.debug                          |   9 +
+ scripts/Makefile.modfinal                  |  20 +-
+ tools/bpf/bpftool/btf.c                    |  28 +-
+ tools/include/uapi/linux/bpf.h             |   3 +
+ 11 files changed, 466 insertions(+), 57 deletions(-)
+
 -- 
-1.8.3.1
+2.24.1
 
