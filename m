@@ -2,108 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 459D22A94F6
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 12:01:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 603B02A94FB
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 12:08:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727139AbgKFLBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 06:01:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39388 "EHLO
+        id S1726977AbgKFLHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 06:07:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726422AbgKFLBt (ORCPT
+        with ESMTP id S1726422AbgKFLHt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 06:01:49 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FD38C0613CF;
-        Fri,  6 Nov 2020 03:01:49 -0800 (PST)
-Date:   Fri, 06 Nov 2020 11:01:45 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1604660507;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=l+Lr4luvqX5AY0oKUf3vEzGcztSHnX4u0eLOHWhgpkw=;
-        b=zwfm3igvkySGAOyiB4zH/fTFSdev8dHh2d5EgU7kq5XXNptYX6qlk+aIqiOOW4BkXfrYFp
-        sTm8eRUmXCac8HWFa5F43Ga+WqpAP9s0Kb1VsgaN2N4EpUE0dzpu0Yke64QnAKmJDm53zL
-        drAq1p2zyN5gdUVgAuzacr2jN2a2SRH1G0Gp4mAk4E0SOyhwudA0HngqUVrOpkrg9Dw0oC
-        6LvdppRlcFwUj9rwhtFZta/RJPVpBWqPHgxe3TCc9ue//kwIAkeugK8k/Wv5U4r836Ij3s
-        2YlTMjwLSyGKv400RFf0oZmvBK4wKpTJhalwNYjFGnL7caBDbpo8T+yYvPXMmA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1604660507;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=l+Lr4luvqX5AY0oKUf3vEzGcztSHnX4u0eLOHWhgpkw=;
-        b=6X3twlw3vfhVXIQ/ZXk2cuUaNOrGKd73j7WZ4/ox8s1SKNEaeMsEemCFA2+kIbFMsC6yyG
-        qLhxSh2/dyajqhDA==
-From:   "tip-bot2 for Kaixu Xia" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: ras/core] x86/mce: Assign boolean values to a bool variable
-Cc:     Tosk Robot <tencent_os_robot@tencent.com>,
-        Kaixu Xia <kaixuxia@tencent.com>, Borislav Petkov <bp@suse.de>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <1604654363-1463-1-git-send-email-kaixuxia@tencent.com>
-References: <1604654363-1463-1-git-send-email-kaixuxia@tencent.com>
+        Fri, 6 Nov 2020 06:07:49 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 983C1C0613D4
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 03:07:46 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id 10so206012wml.2
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 03:07:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=n7O8QvaxHe67uhrGjIcnRsG7AT5yAAmj1iYj13UlWSk=;
+        b=sotY8lsijBMHrgYWzuJFn2xDYKLi5oQpVgBSlGqq1p9jFgvL2qVYnUnZLOPj6Rc8Ij
+         /zYg00YTvSRuq6ZJL9EVCVxx2ZgwLw78VHw+PNSkhJSay3Xeghsksi63Gs/mFvgltOrE
+         9LOq5eOnwExTRslV6rYH9ctYH0qcMfI0gOcyW0gD77RaEd+JerRvz4BsWwS14ge9B5O3
+         tfNycJsJyxAVRXvKWm3PfvJKiwVOnrgOw861TqoJeTOiCED5HMt11B1GhD5VvJgew66U
+         BcVN925IXn3WWd34yhaESEb+WTuZX1E8oUc0tN+X2gGp4AJBlN65uRYWQkYbxmJUO5wl
+         XrNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=n7O8QvaxHe67uhrGjIcnRsG7AT5yAAmj1iYj13UlWSk=;
+        b=nZ+vDDdTfGGya+ojaCuXoWHTJz8mj1TSYG9HleVuTZ8YVjj3KXaLPmdioWmqeJ8DPZ
+         Ejc4TyFaE+tpSxEBUUsKHqP+yDxKVSR+uEGxSlsNBoolg+10EnaoCaVrZrkNrfrJYR1P
+         OhqsPPmTKcRnPuhT45Fvf5hXb4Zlx8fylmokAGo/7TDUdlzjluMLw2gUoLAKZ6Wqf04K
+         b19JTD/9/2OWInEWjaxXYOtHRVs8FBdcPAUBVBmhb94a+z1gAbXmWIwDQK42izxQ/ZVl
+         RYQI0k863iDYbPxKVGEkjlgM2YMG1fYeQLo87YswOPnhmOBtCm9rDGI3Mta0e2f6PmEx
+         JXJA==
+X-Gm-Message-State: AOAM530f27NC0h6O0DAwECuHjWwErXYQKeJz8nBtjnN4axm5q6CduBgl
+        ZxO2RaDMoV5NRIzyjB9FALT/tEys16kVzlot
+X-Google-Smtp-Source: ABdhPJz0VpUwzSEJM0C94AmhzrNY+e+xXXJWgjWfhL2b/c+qUr+twopaKZjYT44xkHyz8UuRHlUL5w==
+X-Received: by 2002:a1c:e919:: with SMTP id q25mr1811606wmc.142.1604660865058;
+        Fri, 06 Nov 2020 03:07:45 -0800 (PST)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id q2sm1548574wrw.40.2020.11.06.03.07.43
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 06 Nov 2020 03:07:44 -0800 (PST)
+Subject: Re: [PATCH v2 1/2] pinctrl: qcom: Add sm8250 lpass lpi pinctrl driver
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>, linux-arm-msm@vger.kernel.org,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20201105120410.18305-1-srinivas.kandagatla@linaro.org>
+ <20201105120410.18305-2-srinivas.kandagatla@linaro.org>
+ <CAHp75VdM9LUV2M6rEZyK=4rh_+hwFK5_2-9RB7YQTuMxHSYCMg@mail.gmail.com>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <640e8a15-d66d-3fca-6637-bd8dae32ea4a@linaro.org>
+Date:   Fri, 6 Nov 2020 11:07:43 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Message-ID: <160466050594.397.9879783882609753138.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <CAHp75VdM9LUV2M6rEZyK=4rh_+hwFK5_2-9RB7YQTuMxHSYCMg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the ras/core branch of tip:
+Thanks Andy for the review,
 
-Commit-ID:     77080929d56d87a57093869a15d2785b8b2d8cd5
-Gitweb:        https://git.kernel.org/tip/77080929d56d87a57093869a15d2785b8b2d8cd5
-Author:        Kaixu Xia <kaixuxia@tencent.com>
-AuthorDate:    Fri, 06 Nov 2020 17:19:23 +08:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Fri, 06 Nov 2020 11:51:04 +01:00
+On 05/11/2020 12:32, Andy Shevchenko wrote:
+> On Thu, Nov 5, 2020 at 2:06 PM Srinivas Kandagatla
+> <srinivas.kandagatla@linaro.org> wrote:
+>>
+>> Add initial pinctrl driver to support pin configuration for
+>> LPASS (Low Power Audio SubSystem) LPI (Low Power Island) pinctrl
+>> on SM8250.
+> 
+>> +config PINCTRL_LPASS_LPI
+>> +       tristate "Qualcomm Technologies Inc LPASS LPI pin controller driver"
+>> +       depends on GPIOLIB && OF
+>> +       help
+>> +         This is the pinctrl, pinmux, pinconf and gpiolib driver for the
+>> +         Qualcomm Technologies Inc LPASS (Low Power Audio SubSystem) LPI
+>> +         (Low Power Island) found on the Qualcomm Technologies Inc SoCs.
+> 
+>> +#include <linux/of_device.h>
+>> +#include <linux/of.h>
+> 
 
-x86/mce: Assign boolean values to a bool variable
+I agree with most of the style related comments! will fix them in next 
+version!
 
-Fix the following coccinelle warnings:
+> ...
+> 
+>> +#ifdef CONFIG_DEBUG_FS
+>> +#include <linux/seq_file.h>
+> 
+>> +#else
+>> +#define lpi_gpio_dbg_show NULL
+>> +#endif
+> 
+> Hmm... Doesn't pin control provide a wrapper for this?
+> 
+I does, but the custom code can provide additional information (such as 
+pullup/pulldown configuration) which default one does not provide.
 
-  ./arch/x86/kernel/cpu/mce/core.c:1765:3-20: WARNING: Assignment of 0/1 to bool variable
-  ./arch/x86/kernel/cpu/mce/core.c:1584:2-9: WARNING: Assignment of 0/1 to bool variable
+Most of the pinctrl drivers have there own version of this!
 
- [ bp: Massage commit message. ]
+> ...
+> 
+>> +       int ret, npins;
+>> +       struct clk *core_vote = NULL;
+>> +       struct clk *audio_vote = NULL;
+>> +
+>> +       struct lpi_pinctrl *pctrl;
+>> +       const struct lpi_pinctrl_variant_data *data;
+>> +       struct device *dev = &pdev->dev;
+>> +       struct resource *res;
+> 
+> Redundant blank line. Can you keep them in reversed xmas tree order?
+> 
+> ...
+> 
+>> +       core_vote = devm_clk_get(&pdev->dev, "core");
+>> +       if (IS_ERR(core_vote)) {
+> 
+>> +               dev_dbg(&pdev->dev, "%s: clk get %s failed %d\n",
+>> +                       __func__, "core_vote", ret);
+> 
+> First of all you missed the deferred probe issue, second, __func__ is
+> redundant for *_dbg() calls (okay, when Dynamic Debug is enabled).
+> That said why not
+>    return dev_err_probe();
+> ?
+It looks neat, I will use that!
+Thanks for this hint, I never knew we had some function like that!
 
-Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
-Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/1604654363-1463-1-git-send-email-kaixuxia@tencent.com
----
- arch/x86/kernel/cpu/mce/core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-index 51bf910..888248a 100644
---- a/arch/x86/kernel/cpu/mce/core.c
-+++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -1581,7 +1581,7 @@ static void __mcheck_cpu_mce_banks_init(void)
- 		 * __mcheck_cpu_init_clear_banks() does the final bank setup.
- 		 */
- 		b->ctl = -1ULL;
--		b->init = 1;
-+		b->init = true;
- 	}
- }
- 
-@@ -1762,7 +1762,7 @@ static int __mcheck_cpu_apply_quirks(struct cpuinfo_x86 *c)
- 		 */
- 
- 		if (c->x86 == 6 && c->x86_model < 0x1A && this_cpu_read(mce_num_banks) > 0)
--			mce_banks[0].init = 0;
-+			mce_banks[0].init = false;
- 
- 		/*
- 		 * All newer Intel systems support MCE broadcasting. Enable
+> 
+>> +               return PTR_ERR(core_vote);
+>> +       }
+> 
+> ...
+> 
+>> +       audio_vote = devm_clk_get(&pdev->dev, "audio");
+>> +       if (IS_ERR(audio_vote)) {
+>> +               dev_dbg(&pdev->dev, "%s: clk get %s failed %d\n",
+>> +                       __func__, "audio_vote", ret);
+>> +               return PTR_ERR(audio_vote);
+> 
+> Ditto/
+> 
+>> +       }
+> 
+> Why is it not a bulk?
+
+I can try that!
+> 
+>> +       clk_prepare_enable(pctrl->core_vote);
+>> +       clk_prepare_enable(pctrl->audio_vote);
+> 
+> Either from them may return an error. Also, when you go devm_*() the
+> rule of thumb is either all or none. Because here you will have
+> ordering issue on ->remove().
+> 
+>> +       res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>> +       pctrl->tlmm_base = devm_ioremap_resource(&pdev->dev, res);
+> 
+> devm_platform_ioremap_resource()
+
+make sense, I remember doing this! somehow I missed it in this version!
+
+rest of the comments looks sensible to me, will make sure that those are 
+fixed in next version.
+
+
+thanks,
+srini
