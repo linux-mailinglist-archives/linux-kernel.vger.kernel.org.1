@@ -2,110 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38A8C2A8DA0
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 04:40:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EDE82A8D94
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 04:37:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726004AbgKFDkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 22:40:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55302 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725828AbgKFDkU (ORCPT
+        id S1725849AbgKFDhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 22:37:40 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:7152 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725616AbgKFDhk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 22:40:20 -0500
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20498C0613CF;
-        Thu,  5 Nov 2020 19:40:20 -0800 (PST)
-Received: by mail-ej1-x643.google.com with SMTP id s25so5722465ejy.6;
-        Thu, 05 Nov 2020 19:40:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=v31c+3qUzm/Jl9mhtRELjufMUcxhfj6Qpk0Egg0rkIc=;
-        b=G2sPbaKVWlctWWt9dQqnUUZ26kWvTx4lqpzkKvDn9D1DxhleQxkvLOaOHnbPnk3raT
-         Lk7PdtiqqtRFkDpPM2JXWduU85jDrg8SZreWZlATMqd6zdcLaz9YfcKnq7bEGGA+m9cX
-         8Oz+j9tVEk9imS/i1TzoJ0qXuejfUX/yDNMCKzUwGWr58yJWgUTUfe9hp5NueEa+RI+Y
-         6gaq/n+nbQqqV2c7zT3zd3ZZmmU9CYkeTmw9KfZYMsomje/mKrNiMdHr/4c3Kgl4RCWC
-         bzLptOP6jsqvjY2KAAtprDXXZqNIVxX7p8Mpl0josoGZXcroSDGO+j5lCF40P9Qmte1l
-         qniQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=v31c+3qUzm/Jl9mhtRELjufMUcxhfj6Qpk0Egg0rkIc=;
-        b=jLUkkbyO98doxMqo7lS7kLNE79Bc13eeqi9rdNULIS89aIZbV/fB/MYqoQHFIOEWJh
-         Byrdgeuog6BwGpIJPpZiuO2xSf6RKNGO94jm79q+i6XwWrLZHfH4pWjX1KIRewe5+ukJ
-         v0ewICR5geq65dBIdSG2w1mDPha02fiGLr/C7cPZHK5WMHABIUaScKaIe3aDGqiDpM1X
-         01qd/U+IEiAv7DjO/wF4xdko0MRNHQxx3fhNLo01VurHySfD+qf6QIGhd9EX6fOgZDOB
-         56Vby4DeVM4HnmdryGtQcQY3pRvQH4mBmkDtroFjl+htEubmJFgAxUe85lMPZD7STCiL
-         kA8Q==
-X-Gm-Message-State: AOAM533tnjTYNJfjbzn9FR+P2kthn3eUOEK/lnYaGJ3ZXA2E4i5mYqyT
-        NcmsqFMzvM+hOLaePWnS5RA=
-X-Google-Smtp-Source: ABdhPJxdlgrDr75OUdeerY4h/FD+9Z7XvLQL8XO5mZ2NUVm/pGUpKmrXgCq2czkobGG4KNQiERvrOA==
-X-Received: by 2002:a17:906:6a57:: with SMTP id n23mr55277ejs.315.1604634018857;
-        Thu, 05 Nov 2020 19:40:18 -0800 (PST)
-Received: from felia.fritz.box ([2001:16b8:2d20:9d00:b87b:b644:61a3:6870])
-        by smtp.gmail.com with ESMTPSA id z23sm2103337ejb.4.2020.11.05.19.40.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 19:40:18 -0800 (PST)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        kernel-janitors@vger.kernel.org, linux-safety@lists.elisa.tech,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] printk: remove unneeded dead-store assignment
-Date:   Fri,  6 Nov 2020 04:40:05 +0100
-Message-Id: <20201106034005.18822-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 5 Nov 2020 22:37:40 -0500
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CS5gF1KNyz15Rgr;
+        Fri,  6 Nov 2020 11:37:29 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 6 Nov 2020 11:37:23 +0800
+From:   Qinglang Miao <miaoqinglang@huawei.com>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Qinglang Miao <miaoqinglang@huawei.com>
+Subject: [PATCH v4] PCI: v3: fix missing clk_disable_unprepare() on error in v3_pci_probe
+Date:   Fri, 6 Nov 2020 11:42:49 +0800
+Message-ID: <20201106034249.169996-1-miaoqinglang@huawei.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20201106031208.160334-1-miaoqinglang@huawei.com>
+References: <20201106031208.160334-1-miaoqinglang@huawei.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-make clang-analyzer on x86_64 defconfig caught my attention with:
+Fix the missing clk_disable_unprepare() before return
+from v3_pci_probe() in the error handling case.
 
-  kernel/printk/printk_ringbuffer.c:885:3: warning:
-  Value stored to 'desc' is never read [clang-analyzer-deadcode.DeadStores]
-                desc = to_desc(desc_ring, head_id);
-                ^
+I also move the clock-enable function later to avoid some
+fixes.
 
-Commit b6cf8b3f3312 ("printk: add lockless ringbuffer") introduced
-desc_reserve() with this unneeded dead-store assignment.
-
-As discussed with John Ogness privately, this is probably just some minor
-left-over from previous iterations of the ringbuffer implementation. So,
-simply remove this unneeded dead assignment to make clang-analyzer happy.
-
-As compilers will detect this unneeded assignment and optimize this anyway,
-the resulting object code is identical before and after this change.
-
-No functional change. No change to object code.
-
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Fixes: 68a15eb7bd0c ("PCI: v3-semi: Add V3 Semiconductor PCI host driver")
+Suggested-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
 ---
-applies cleanly on current master and next-20201105
+ v2: add commit causing this problem and add more error handling
+     cases which are not enough.
+ v3: 1. fix the wrong 'Fixes commit'.
+     2. use goto to clean up this patch.
+     3. cover all error handling cases.
+ v4: fix uncorresponding author name.
+ drivers/pci/controller/pci-v3-semi.c | 49 +++++++++++++++++-----------
+ 1 file changed, 30 insertions(+), 19 deletions(-)
 
-John, please ack.
-Petr, please pick this minor non-urgent clean-up patch.
-
- kernel/printk/printk_ringbuffer.c | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/kernel/printk/printk_ringbuffer.c b/kernel/printk/printk_ringbuffer.c
-index 6b1525685277..74e25a1704f2 100644
---- a/kernel/printk/printk_ringbuffer.c
-+++ b/kernel/printk/printk_ringbuffer.c
-@@ -882,8 +882,6 @@ static bool desc_reserve(struct printk_ringbuffer *rb, unsigned long *id_out)
- 	head_id = atomic_long_read(&desc_ring->head_id); /* LMM(desc_reserve:A) */
+diff --git a/drivers/pci/controller/pci-v3-semi.c b/drivers/pci/controller/pci-v3-semi.c
+index 154a53986..f862a56a3 100644
+--- a/drivers/pci/controller/pci-v3-semi.c
++++ b/drivers/pci/controller/pci-v3-semi.c
+@@ -725,18 +725,6 @@ static int v3_pci_probe(struct platform_device *pdev)
+ 	host->sysdata = v3;
+ 	v3->dev = dev;
  
- 	do {
--		desc = to_desc(desc_ring, head_id);
+-	/* Get and enable host clock */
+-	clk = devm_clk_get(dev, NULL);
+-	if (IS_ERR(clk)) {
+-		dev_err(dev, "clock not found\n");
+-		return PTR_ERR(clk);
+-	}
+-	ret = clk_prepare_enable(clk);
+-	if (ret) {
+-		dev_err(dev, "unable to enable clock\n");
+-		return ret;
+-	}
 -
- 		id = DESC_ID(head_id + 1);
- 		id_prev_wrap = DESC_ID_PREV_WRAP(desc_ring, id);
+ 	regs = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	v3->base = devm_ioremap_resource(dev, regs);
+ 	if (IS_ERR(v3->base))
+@@ -761,10 +749,24 @@ static int v3_pci_probe(struct platform_device *pdev)
+ 	if (IS_ERR(v3->config_base))
+ 		return PTR_ERR(v3->config_base);
  
++	/* Get and enable host clock */
++        clk = devm_clk_get(dev, NULL);
++        if (IS_ERR(clk)) {
++                dev_err(dev, "clock not found\n");
++                return PTR_ERR(clk);
++        }
++        ret = clk_prepare_enable(clk);
++        if (ret) {
++                dev_err(dev, "unable to enable clock\n");
++                return ret;
++        }
++
+ 	/* Get and request error IRQ resource */
+ 	irq = platform_get_irq(pdev, 0);
+-	if (irq < 0)
+-		return irq;
++	if (irq < 0) {
++		ret = irq;
++		goto err_clk;
++	}
+ 
+ 	ret = devm_request_irq(dev, irq, v3_irq, 0,
+ 			"PCIv3 error", v3);
+@@ -772,7 +774,7 @@ static int v3_pci_probe(struct platform_device *pdev)
+ 		dev_err(dev,
+ 			"unable to request PCIv3 error IRQ %d (%d)\n",
+ 			irq, ret);
+-		return ret;
++		goto err_clk;
+ 	}
+ 
+ 	/*
+@@ -814,12 +816,12 @@ static int v3_pci_probe(struct platform_device *pdev)
+ 		ret = v3_pci_setup_resource(v3, host, win);
+ 		if (ret) {
+ 			dev_err(dev, "error setting up resources\n");
+-			return ret;
++			goto err_clk;
+ 		}
+ 	}
+ 	ret = v3_pci_parse_map_dma_ranges(v3, np);
+ 	if (ret)
+-		return ret;
++		goto err_clk;
+ 
+ 	/*
+ 	 * Disable PCI to host IO cycles, enable I/O buffers @3.3V,
+@@ -863,7 +865,7 @@ static int v3_pci_probe(struct platform_device *pdev)
+ 	if (of_device_is_compatible(np, "arm,integrator-ap-pci")) {
+ 		ret = v3_integrator_init(v3);
+ 		if (ret)
+-			return ret;
++			goto err_clk;
+ 	}
+ 
+ 	/* Post-init: enable PCI memory and invalidate (master already on) */
+@@ -889,7 +891,16 @@ static int v3_pci_probe(struct platform_device *pdev)
+ 	val |= V3_SYSTEM_M_LOCK;
+ 	writew(val, v3->base + V3_SYSTEM);
+ 
+-	return pci_host_probe(host);
++	ret = pci_host_probe(host);
++	if (ret < 0)
++		goto err_clk;
++
++	return 0;
++
++err_clk:
++	clk_disable_unprepare(clk);
++
++	return ret;
+ }
+ 
+ static const struct of_device_id v3_pci_of_match[] = {
 -- 
-2.17.1
+2.23.0
 
