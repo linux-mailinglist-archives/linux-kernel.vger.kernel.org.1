@@ -2,56 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6BAE2AA124
+	by mail.lfdr.de (Postfix) with ESMTP id 590F72AA123
 	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 00:28:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729118AbgKFX1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 18:27:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43964 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729025AbgKFX1c (ORCPT
+        id S1729104AbgKFX1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 18:27:45 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:38574 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728979AbgKFX1c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 6 Nov 2020 18:27:32 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB08EC0613CF;
-        Fri,  6 Nov 2020 15:27:31 -0800 (PST)
-Date:   Fri, 06 Nov 2020 23:27:28 -0000
+Date:   Fri, 06 Nov 2020 23:27:29 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1604705249;
+        s=2020; t=1604705250;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=6WRMCRF28h6pRNY5hY+19Ww4ZXSpZ2AcoJ/LlhK308E=;
-        b=pHak251JknweP0zgyEwTO90GPSqg0FH5Q9d0kQ+REazkDQnHt9ZzDaY5Wj4irJsoiNjqGG
-        PAOY89/W6wYcHEOak6A+/5SNPE4GGYEPy7wcqyxtVbaIFL85vRYZtn4v5/H322u8D6N0xw
-        e8q9ZeJSzmpig2E7DV5vszEcDePo6rRwEIflq2pqVBmTUWMcBTm2w8jXfNntR2aWsxqz/t
-        eDtB+keXuV2yrsPB1e8B20sWbpTDtqs1chCHjSh21C3MkwPru3z58ko68EZBozPbkEp4e6
-        BQlDl6EkwsorIwPB5Tb9eR40UkxWyGOJxfi67Jduusdx/zxtylzrg2/kkB3zrw==
+        bh=pY7DA9qbI5XRfZrVzIAfdYa2nRBVxh972fm02NL9VrQ=;
+        b=t/ubHeWnFI3TtT8dRwHG1re+yGQPOhkkpsUTYCYPR/P0zGgB3/8nDEat4Ec+IIkgGkcTJM
+        BXjYIeZgAesy0G6dNhGTcPKz02jtPO+TiyEWEwuUd+kJatGWFu9VGIaAgioMDhFBSYVsKx
+        ihsYhkxh4xXf+sj0OcVtApORf+1YtHWu7i7AueDUlEYVnF8LHm5pKm80HvIYZRXfhmEc6H
+        ehjQYYf+68dHa5Gk73QvCU3lWND3aRfq51FUPnj0liUQYohUtGwNjBOND+nDn5ORiHt/d9
+        kDsR43SP2q1MZOtue9l2css78TuNdoEUqT5AK19fTTsGgePCJ4gKij8L4MCdgg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1604705249;
+        s=2020e; t=1604705250;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=6WRMCRF28h6pRNY5hY+19Ww4ZXSpZ2AcoJ/LlhK308E=;
-        b=O4J1yGNBnucmHzAL3Wn4gZ4PWB1T0Vj65ZPTYXWSntxgnYdm9WpIJ/fjD08t4blI1eWr0b
-        bzyhYty5O2U32UDg==
+        bh=pY7DA9qbI5XRfZrVzIAfdYa2nRBVxh972fm02NL9VrQ=;
+        b=m5RcE2LTURfX+es8IR3EAIJn1gKV9r0qAoUEAXi/pltUuAqP5NO8s2zPO/MJ7OrwD62+nq
+        /XvLUF6JrHb4PbBA==
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/mm] fs: Remove asm/kmap_types.h includes
+Subject: [tip: core/mm] highmem: Remove unused functions
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        David Sterba <dsterba@suse.com>,
+        Christoph Hellwig <hch@lst.de>,
         Andrew Morton <akpm@linux-foundation.org>,
         x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20201103095856.870272797@linutronix.de>
-References: <20201103095856.870272797@linutronix.de>
+In-Reply-To: <20201103095856.732891880@linutronix.de>
+References: <20201103095856.732891880@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <160470524828.397.14799125635929085668.tip-bot2@tip-bot2>
+Message-ID: <160470524907.397.8217098587465620351.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -62,48 +59,49 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/mm branch of tip:
 
-Commit-ID:     e8f147dc3f1f6b4c27b2eeaf82df4f469d80d469
-Gitweb:        https://git.kernel.org/tip/e8f147dc3f1f6b4c27b2eeaf82df4f469d80d469
+Commit-ID:     b819fd9da38508e0504624b87d9983fcc4237f3c
+Gitweb:        https://git.kernel.org/tip/b819fd9da38508e0504624b87d9983fcc4237f3c
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Tue, 03 Nov 2020 10:27:15 +01:00
+AuthorDate:    Tue, 03 Nov 2020 10:27:14 +01:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
 CommitterDate: Fri, 06 Nov 2020 23:14:53 +01:00
 
-fs: Remove asm/kmap_types.h includes
+highmem: Remove unused functions
 
-Historical leftovers from the time where kmap() had fixed slots.
+Nothing uses totalhigh_pages_dec() and totalhigh_pages_set().
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Acked-by: David Sterba <dsterba@suse.com>
+Cc: Christoph Hellwig <hch@lst.de>
 Cc: Andrew Morton <akpm@linux-foundation.org>
-Link: https://lore.kernel.org/r/20201103095856.870272797@linutronix.de
+Link: https://lore.kernel.org/r/20201103095856.732891880@linutronix.de
 
 ---
- fs/aio.c         | 1 -
- fs/btrfs/ctree.h | 1 -
- 2 files changed, 2 deletions(-)
+ include/linux/highmem.h | 10 ----------
+ 1 file changed, 10 deletions(-)
 
-diff --git a/fs/aio.c b/fs/aio.c
-index c45c20d..0247daf 100644
---- a/fs/aio.c
-+++ b/fs/aio.c
-@@ -43,7 +43,6 @@
- #include <linux/mount.h>
- #include <linux/pseudo_fs.h>
+diff --git a/include/linux/highmem.h b/include/linux/highmem.h
+index 14e6202..f5c3133 100644
+--- a/include/linux/highmem.h
++++ b/include/linux/highmem.h
+@@ -104,21 +104,11 @@ static inline void totalhigh_pages_inc(void)
+ 	atomic_long_inc(&_totalhigh_pages);
+ }
  
--#include <asm/kmap_types.h>
- #include <linux/uaccess.h>
- #include <linux/nospec.h>
+-static inline void totalhigh_pages_dec(void)
+-{
+-	atomic_long_dec(&_totalhigh_pages);
+-}
+-
+ static inline void totalhigh_pages_add(long count)
+ {
+ 	atomic_long_add(count, &_totalhigh_pages);
+ }
  
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 0378933..01947f6 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -17,7 +17,6 @@
- #include <linux/wait.h>
- #include <linux/slab.h>
- #include <trace/events/btrfs.h>
--#include <asm/kmap_types.h>
- #include <asm/unaligned.h>
- #include <linux/pagemap.h>
- #include <linux/btrfs.h>
+-static inline void totalhigh_pages_set(long val)
+-{
+-	atomic_long_set(&_totalhigh_pages, val);
+-}
+-
+ void kmap_flush_unused(void);
+ 
+ struct page *kmap_to_page(void *addr);
