@@ -2,138 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 249322A8E06
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 05:07:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA35B2A8E08
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 05:08:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725975AbgKFEHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 23:07:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34808 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725616AbgKFEHQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 23:07:16 -0500
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 31A292067C;
-        Fri,  6 Nov 2020 04:07:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604635635;
-        bh=x749VDOE0kRsPi7mKRGEx+ShORQkiqV8g3bkMLRGmYA=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=FzPXO/hXLo2O61wypPrvGlm4J7yTdOxZrOPySHQtj0r09Kz5DbOScDEkRU8rmJT3q
-         ATsIMfbhMXAgj4Kh9/brSwZN521oFoSRhBiALAOh2eO96r5stAFy2JBXQ3C1q8uL7Y
-         zsCz6RqfeL/VsJvEA1j/hZn8CzyOnyuUX/zglvx4=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id C9DC73522AAE; Thu,  5 Nov 2020 20:07:14 -0800 (PST)
-Date:   Thu, 5 Nov 2020 20:07:14 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Qian Cai <cai@redhat.com>
-Cc:     Will Deacon <will@kernel.org>, catalin.marinas@arm.com,
-        kernel-team@android.com, Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] arm64/smp: Move rcu_cpu_starting() earlier
-Message-ID: <20201106040714.GS3249@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201028182614.13655-1-cai@redhat.com>
- <160404559895.1777248.8248643695413627642.b4-ty@kernel.org>
- <20201105222242.GA8842@willie-the-truck>
- <3b4c324abdabd12d7bd5346c18411e667afe6a55.camel@redhat.com>
- <20201105232813.GR3249@paulmck-ThinkPad-P72>
- <ec2de23c04e400266fcf98dfd282da0b173a68c3.camel@redhat.com>
+        id S1726081AbgKFEIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 23:08:19 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:16193 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725616AbgKFEIT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 23:08:19 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fa4cc360002>; Thu, 05 Nov 2020 20:08:22 -0800
+Received: from [10.2.49.167] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 6 Nov
+ 2020 04:08:11 +0000
+Subject: Re: [PATCH v5 05/15] mm/frame-vector: Use FOLL_LONGTERM
+To:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Christoph Hellwig <hch@infradead.org>,
+        J??r??me Glisse <jglisse@redhat.com>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        Jan Kara <jack@suse.cz>, Pawel Osciak <pawel@osciak.com>,
+        KVM list <kvm@vger.kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        "Daniel Vetter" <daniel.vetter@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+References: <CAKMK7uEw701AWXNJbRNM8Z+FkyUB5FbWegmSzyWPy9cG4W7OLA@mail.gmail.com>
+ <20201104140023.GQ36674@ziepe.ca>
+ <CAKMK7uH69hsFjYUkjg1aTh5f=q_3eswMSS5feFs6+ovz586+0A@mail.gmail.com>
+ <20201104162125.GA13007@infradead.org>
+ <CAKMK7uH=0+3FSR4LxP7bJUB4BsCcnCzfK2=D+2Am9QNmfZEmfw@mail.gmail.com>
+ <20201104163758.GA17425@infradead.org> <20201104164119.GA18218@infradead.org>
+ <20201104181708.GU36674@ziepe.ca>
+ <d3497583-2338-596e-c764-8c571b7d22cf@nvidia.com>
+ <20201105092524.GQ401619@phenom.ffwll.local>
+ <20201105124950.GZ36674@ziepe.ca>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <7ae3486d-095e-cf4e-6b0f-339d99709996@nvidia.com>
+Date:   Thu, 5 Nov 2020 20:08:10 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ec2de23c04e400266fcf98dfd282da0b173a68c3.camel@redhat.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201105124950.GZ36674@ziepe.ca>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1604635702; bh=Zxaf2o6Bf8KCt8GGVyqkabRsYvK65I+alpkY1bpXUj4=;
+        h=Subject:To:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=XUcqFVIT6wpyCLo/7MIMA70nfnEAQlMnvxS6BpI49u8niHEonhjOFRr5jpKAiDgSb
+         NruirMHJ0lklnJPVstdxDDpsNeDoRzXNbc/ZwNiwsnyeDHnXN2zye8BykFo4BmM8pn
+         eb+ONcJpKqq41slnim2JQO2fNKWYRjv2D8SW2MtwUNBsIi33cxfub4Kh3D4Qd5ngz+
+         xrhVX4XmfgwdyAZcB6p78K3Qsl/oPr5iUR4d6pKEmurex3ZAnsYGQ2ya0g2Vdsm1vi
+         TmzogOYW7iQNIRy5mgIxCPwKcT0KL2pFOmPHkECsQklCGjQEZmxD/3b/wK/ZG9ox5k
+         l2KSFxiaOUvow==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 09:15:24PM -0500, Qian Cai wrote:
-> On Thu, 2020-11-05 at 15:28 -0800, Paul E. McKenney wrote:
-> > On Thu, Nov 05, 2020 at 06:02:49PM -0500, Qian Cai wrote:
-> > > On Thu, 2020-11-05 at 22:22 +0000, Will Deacon wrote:
-> > > > On Fri, Oct 30, 2020 at 04:33:25PM +0000, Will Deacon wrote:
-> > > > > On Wed, 28 Oct 2020 14:26:14 -0400, Qian Cai wrote:
-> > > > > > The call to rcu_cpu_starting() in secondary_start_kernel() is not
-> > > > > > early
-> > > > > > enough in the CPU-hotplug onlining process, which results in lockdep
-> > > > > > splats as follows:
-> > > > > > 
-> > > > > >  WARNING: suspicious RCU usage
-> > > > > >  -----------------------------
-> > > > > >  kernel/locking/lockdep.c:3497 RCU-list traversed in non-reader
-> > > > > > section!!
-> > > > > > 
-> > > > > > [...]
-> > > > > 
-> > > > > Applied to arm64 (for-next/fixes), thanks!
-> > > > > 
-> > > > > [1/1] arm64/smp: Move rcu_cpu_starting() earlier
-> > > > >       https://git.kernel.org/arm64/c/ce3d31ad3cac
-> > > > 
-> > > > Hmm, this patch has caused a regression in the case that we fail to
-> > > > online a CPU because it has incompatible CPU features and so we park it
-> > > > in cpu_die_early(). We now get an endless spew of RCU stalls because the
-> > > > core will never come online, but is being tracked by RCU. So I'm tempted
-> > > > to revert this and live with the lockdep warning while we figure out a
-> > > > proper fix.
-> > > > 
-> > > > What's the correct say to undo rcu_cpu_starting(), given that we cannot
-> > > > invoke the full hotplug machinery here? Is it correct to call
-> > > > rcutree_dying_cpu() on the bad CPU and then rcutree_dead_cpu() from the
-> > > > CPU doing cpu_up(), or should we do something else?
-> > > It looks to me that rcu_report_dead() does the opposite of
-> > > rcu_cpu_starting(),
-> > > so lift rcu_report_dead() out of CONFIG_HOTPLUG_CPU and use it there to
-> > > rewind,
-> > > Paul?
-> > 
-> > Yes, rcu_report_dead() should do the trick.  Presumably the earlier
-> > online-time CPU-hotplug notifiers are also unwound?
-> I don't think that is an issue here. cpu_die_early() set CPU_STUCK_IN_KERNEL,
-> and then __cpu_up() will see a timeout waiting for the AP online and then deal
-> with CPU_STUCK_IN_KERNEL according. Thus, something like this? I don't see
-> anything in rcu_report_dead() depends on CONFIG_HOTPLUG_CPU=y.
-
-If this works for the ARM folks, it seems like a reasonable approach
-to me.  I cannot reasonably test this because not only do I not have
-an ARM system, I don't have a system on which a kernel can be built
-with CONFIG_HOTPLUG_CPU=n, so I must rely on others' testing.
-
-							Thanx, Paul
-
-> diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
-> index 09c96f57818c..10729d2d6084 100644
-> --- a/arch/arm64/kernel/smp.c
-> +++ b/arch/arm64/kernel/smp.c
-> @@ -421,6 +421,8 @@ void cpu_die_early(void)
->  
->  	update_cpu_boot_status(CPU_STUCK_IN_KERNEL);
->  
-> +	rcu_report_dead(cpu);
-> +
->  	cpu_park_loop();
->  }
->  
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 2a52f42f64b6..bd04b09b84b3 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -4077,7 +4077,6 @@ void rcu_cpu_starting(unsigned int cpu)
->  	smp_mb(); /* Ensure RCU read-side usage follows above initialization. */
->  }
->  
-> -#ifdef CONFIG_HOTPLUG_CPU
->  /*
->   * The outgoing function has no further need of RCU, so remove it from
->   * the rcu_node tree's ->qsmaskinitnext bit masks.
-> @@ -4117,6 +4116,7 @@ void rcu_report_dead(unsigned int cpu)
->  	rdp->cpu_started = false;
->  }
->  
-> +#ifdef CONFIG_HOTPLUG_CPU
->  /*
->   * The outgoing CPU has just passed through the dying-idle state, and we
->   * are being invoked from the CPU that was IPIed to continue the offline
+On 11/5/20 4:49 AM, Jason Gunthorpe wrote:
+> On Thu, Nov 05, 2020 at 10:25:24AM +0100, Daniel Vetter wrote:
+>>> /*
+>>>   * If we can't determine whether or not a pte is special, then fail immediately
+>>>   * for ptes. Note, we can still pin HugeTLB and THP as these are guaranteed not
+>>>   * to be special.
+>>>   *
+>>>   * For a futex to be placed on a THP tail page, get_futex_key requires a
+>>>   * get_user_pages_fast_only implementation that can pin pages. Thus it's still
+>>>   * useful to have gup_huge_pmd even if we can't operate on ptes.
+>>>   */
+>>
+>> We support hugepage faults in gpu drivers since recently, and I'm not
+>> seeing a pud_mkhugespecial anywhere. So not sure this works, but probably
+>> just me missing something again.
 > 
+> It means ioremap can't create an IO page PUD, it has to be broken up.
+> 
+> Does ioremap even create anything larger than PTEs?
+> 
+
+ From my reading, yes. See ioremap_try_huge_pmd().
+
+thanks,
+-- 
+John Hubbard
+NVIDIA
