@@ -2,100 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F0CD2A8F8B
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 07:41:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DEC42A8F8E
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 07:42:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726310AbgKFGlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 01:41:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55148 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725830AbgKFGlj (ORCPT
+        id S1726273AbgKFGlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 01:41:55 -0500
+Received: from m176115.mail.qiye.163.com ([59.111.176.115]:37206 "EHLO
+        m176115.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725828AbgKFGlz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 01:41:39 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EBFFC0613CF;
-        Thu,  5 Nov 2020 22:41:39 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CS9lg543Mz9sRK;
-        Fri,  6 Nov 2020 17:41:35 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1604644897;
-        bh=zuk2I0WUJmi0lgQXq3yEuhrLu5JccxAOavoUgTBIxp0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=VONiLQt9uhZb71OGYoYD4a9uxCOfw7tYMSQnlsCCfJlita2neZxcJm+lkDWmB93rG
-         MYmjgu3PAZ3ODAVxEurq0adooKYa9T/FR8HJXv1es9JaggAQItUON7gvnc7NcbKtPY
-         dNTlwy3EsqRMRLUigO1V97zYeMLHrUx3n9DaJVQXiWjUH6JjK4rOj4ETIXH7qpB/47
-         hw2JG2zeOCejqaGiL3nXnpKAmpHD6EWuniG5YjyL+bMI58B7pIBTIfHL8x4IFvgcQE
-         tpDA/arUqFsmepVUiI3ER4T77qGNi59gfQt0xFjC+NU420dV3qF4c3DtFI4RSJAN6w
-         lXsEKSyk2Guyg==
-Date:   Fri, 6 Nov 2020 17:41:34 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Anand K Mistry <amistry@google.com>
-Cc:     linux-fsdevel@vger.kernel.org, asteinhauser@google.com,
-        rppt@kernel.org, joelaf@google.com, tglx@linutronix.de,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Alexey Gladkov <gladkov.alexey@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] proc: Provide details on indirect branch speculation
-Message-ID: <20201106174134.6ccf4cd7@canb.auug.org.au>
-In-Reply-To: <20201106131015.v2.1.I7782b0cedb705384a634cfd8898eb7523562da99@changeid>
-References: <20201106131015.v2.1.I7782b0cedb705384a634cfd8898eb7523562da99@changeid>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/g.4oPnOi=DGyHmBq.TSGse_";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        Fri, 6 Nov 2020 01:41:55 -0500
+Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.231])
+        by m176115.mail.qiye.163.com (Hmail) with ESMTPA id CAE41667108;
+        Fri,  6 Nov 2020 14:41:48 +0800 (CST)
+From:   Wang Qing <wangqing@vivo.com>
+To:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Wang Qing <wangqing@vivo.com>
+Subject: [PATCH] perf: remove duplicate check on fwnode
+Date:   Fri,  6 Nov 2020 14:41:42 +0800
+Message-Id: <1604644902-29655-1-git-send-email-wangqing@vivo.com>
+X-Mailer: git-send-email 2.7.4
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZQhkfTB9CGk0dGh8fVkpNS09NT09CSkpDQkNVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS09ISFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NRA6Vhw6GD8aTh01GDBNTy0h
+        EgsKFEpVSlVKTUtPTU9PQkpJSUJIVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
+        SU5KVUxPVUlISllXWQgBWUFKTktDNwY+
+X-HM-Tid: 0a759c4a30299373kuwscae41667108
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/g.4oPnOi=DGyHmBq.TSGse_
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+fwnode is checked IS_ERR_OR_NULL in following check by
+is_of_node() or is_acpi_device_node(), remove duplicate check.
 
-Hi Anand,
+Signed-off-by: Wang Qing <wangqing@vivo.com>
+---
+ drivers/perf/arm_dsu_pmu.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-On Fri,  6 Nov 2020 13:10:43 +1100 Anand K Mistry <amistry@google.com> wrot=
-e:
->
-> Similar to speculation store bypass, show information about the indirect
-> branch speculation mode of a task in /proc/$pid/status.
->=20
-> Signed-off-by: Anand K Mistry <amistry@google.com>
-> ---
->=20
-> Changes in v2:
-> - Remove underscores from field name to workaround documentation issue
+diff --git a/drivers/perf/arm_dsu_pmu.c b/drivers/perf/arm_dsu_pmu.c
+index 98e68ed..0459a34
+--- a/drivers/perf/arm_dsu_pmu.c
++++ b/drivers/perf/arm_dsu_pmu.c
+@@ -716,9 +716,6 @@ static int dsu_pmu_device_probe(struct platform_device *pdev)
+ 	if (IS_ERR(dsu_pmu))
+ 		return PTR_ERR(dsu_pmu);
+ 
+-	if (IS_ERR_OR_NULL(fwnode))
+-		return -ENOENT;
+-
+ 	if (is_of_node(fwnode))
+ 		rc = dsu_pmu_dt_get_cpus(&pdev->dev, &dsu_pmu->associated_cpus);
+ 	else if (is_acpi_device_node(fwnode))
+-- 
+2.7.4
 
-I replaced the previous version in linux-next with this today. It fixes
-the htmldocs warning from yesterday, thanks.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/g.4oPnOi=DGyHmBq.TSGse_
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+k8B4ACgkQAVBC80lX
-0GzPJgf7BYsEXjhux180lQAOxjPcKaAybcinGW6gjVc4blDLMa0T/GSmHYtOqvKX
-dPiv2ijvQAnePFe+JZgrmDX4BafJ59aiY4+/a5/eEMT1mnl7byhsD37EGQA4kzhn
-SUwqUqe4Mlve6WA0jjlQ8xPbex7wll5uaj9XnQ6wmdP8pXGve6I5rgMdaeMtbABY
-WgXTImVk0Hsq0gZmNzoahn9TAMAHDLaS2H6sEfBtj1jRRNzSr94xuq0BHLj2egrb
-KUS2t74axUvVv2Y8xm5DEq62RbxvvswvurUoSYkBgGkV48SesJrTxnSzoYrU8m/5
-4Y/z/FWMv3pRVQ4eoaay4sDJrJnGlw==
-=38oe
------END PGP SIGNATURE-----
-
---Sig_/g.4oPnOi=DGyHmBq.TSGse_--
