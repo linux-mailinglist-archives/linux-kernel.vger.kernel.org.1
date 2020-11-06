@@ -2,71 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7C852A9F85
+	by mail.lfdr.de (Postfix) with ESMTP id 753F42A9F84
 	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 22:51:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728722AbgKFVvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 16:51:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56924 "EHLO
+        id S1728875AbgKFVu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 16:50:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728720AbgKFVuG (ORCPT
+        with ESMTP id S1728722AbgKFVuG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 6 Nov 2020 16:50:06 -0500
 Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5D0FC0613D3
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 13:50:04 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id d142so2837703wmd.4
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 13:50:04 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA177C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 13:50:05 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id s13so2658365wmh.4
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 13:50:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=socaU7um35iwEdYbuZIG6DpwnbxHw+sI5ykPEkbUzts=;
-        b=u2YdzXP+cI8hNzxPMwK6P2NcmDOFEzfBJQ1EpULD/0QTAzDAFswU3D9HeqnrXDaHgs
-         Oy1MEtKUiI0ihnz/ecIt2Zgh/i8gi71GIO72wLjJAI/LL7YwzoMcf0+q+tmjnKo6QcuJ
-         +Pey6urIMQgILLkxbg12Gxzk65TaqpK+n5BAvblzKUfHnkTnovij7Oz3MZsQst54SD4J
-         nN9l+QaZBIpPJG2iHMDHMANkmJHJXM/PXJq3dYk1iUFhneAtRGIYLAUkr2iWoOZDT5V0
-         /pv6XxQ+ZFkcmR/MEtxE2C/os+HjFieodE3x8YaO2IXZw4PxzJnvCd0D5EwooPWjpxl5
-         FXig==
+        bh=g3s/vNbQhCOhaWUYjnatK+JAnL9zFArhDEfxOk3yJ9s=;
+        b=QWCbYIFHbnL6cvVci1njVHiIUyhUnpp3bWojQBoR2JpVYoexBntA0mWqhP0DaOE2fM
+         M7A6HqqFQ7dsmueWwZcVWsA9lu9tHYweFv81kqWlo1c4FbFUtVgUaCvtZQkpWHDUnrWk
+         hjnAtDgqlGXxpfXJuujeGzda1GJmOmIi9oIyAzvinNSYXX0/bqCAczSXaP964OnyZqnQ
+         itH5RagP5FQTTjj4FyQddYro6+/8euDYjhwzlwQI2+M3D6xnTS1GANsk3X7PZrzs8kTK
+         pNZ2tlRH7Kl64ZBNSGfJAK63+d4wrmV3FTejPZe/RLzgVbbvigIP1/ZdAD4BzTX3iJ97
+         berA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=socaU7um35iwEdYbuZIG6DpwnbxHw+sI5ykPEkbUzts=;
-        b=EHD9+VK/Ds+ZiLELyh+uI3+4rbXUR7+LzFGJ/OrkmkwLkPJS15Ch5pg6GUl0lUdM4A
-         OUuArCjqvMw6ONmocL/g76Pqb02OJRMjaDH5GH04dYyCUqH1x8mMmpWWMCVRl5+i3wNA
-         QmIWg/JCkl6+XNeJgGVg7xTmVCuVxajMfAgQtzAcFKX3DcQ9hLeEy4AZzLxyumNAETIO
-         D5eafc7Hd1HmCHldEH3TLwZ3kO26XBo6eZ1mxdX4sp/fDNnuLCgayJxC5AHYP/uxBQdl
-         0IkYH3OHM8OaWisggebkJWYTUhy5+mju4DCFoPAGtl/NpJfw/o6YpYg3mp6a35WvrB6R
-         st6w==
-X-Gm-Message-State: AOAM533LLeLD7OuFIEAzq7Fich9gsN43Q8nWTiuUMvOLyQvZ3SLOV5z1
-        KlUqxseg2u6jcOVkG6qA0E7UGA==
-X-Google-Smtp-Source: ABdhPJxf2Mvms/vp2uquszu6id9VkQjR791be6+7w0PjmFHlbmzZeAI2kpvTw7QIRDdYtY7cmrQZ9w==
-X-Received: by 2002:a05:600c:210a:: with SMTP id u10mr1644995wml.98.1604699403507;
-        Fri, 06 Nov 2020 13:50:03 -0800 (PST)
+        bh=g3s/vNbQhCOhaWUYjnatK+JAnL9zFArhDEfxOk3yJ9s=;
+        b=qboF3S4TdrJEnzXC+FqofdlWb7Zc4yhkYiVmtjkh/HpqjdyE/i8g9mMgOcZt5dEJ7B
+         hF+pSwLdvQO/R30mijtbdUc4v03xFetUME703XvZehKLURjw4I7aMyIXfBV6XqatYs3R
+         OPWdVeMQS0L0iCRhtihDyGPYSPPgxy1y1wUCZgIClwnxhddkTcsTb/jaFHwBcz8Wl5CP
+         B+fnpCeUQiquHEvIuQ9IsHdqRxWx1P0vQ4zOKsNAAuAo9rEohb1zlzYsL5QjLWV4qKip
+         qKo3Q+8ZywAwjdHkuLfsvjw49AKaSa6KL1bKJzPjrvNsUzeRc6MPwB3oqZudX2BHqHaO
+         f7ug==
+X-Gm-Message-State: AOAM532jJGX3IHALDAtZKvHV+JQ286OXFEg0SXMY0F8wFNeFARuTYfgy
+        jkFvkOGVzCnh1Wcw53rPJ0g1Ug==
+X-Google-Smtp-Source: ABdhPJyOw2SZ7qeRyvMdjsuBPr5WvcSlm0uiM/Hm5KSHTGSt1O1F+ndVZ5Pq7eFnPGNB15kWxdNmAA==
+X-Received: by 2002:a1c:4d4:: with SMTP id 203mr1615684wme.153.1604699404699;
+        Fri, 06 Nov 2020 13:50:04 -0800 (PST)
 Received: from dell.default ([91.110.221.236])
-        by smtp.gmail.com with ESMTPSA id t199sm3981084wmt.46.2020.11.06.13.50.02
+        by smtp.gmail.com with ESMTPSA id t199sm3981084wmt.46.2020.11.06.13.50.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Nov 2020 13:50:02 -0800 (PST)
+        Fri, 06 Nov 2020 13:50:04 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
         Tomi Valkeinen <tomi.valkeinen@ti.com>,
         David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Rob Clark <rob.clark@linaro.org>,
-        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
-        linaro-mm-sig@lists.linaro.org
-Subject: [PATCH 08/19] drm/omapdrm/omap_gem: Fix misnamed and missing parameter descriptions
-Date:   Fri,  6 Nov 2020 21:49:38 +0000
-Message-Id: <20201106214949.2042120-9-lee.jones@linaro.org>
+        Daniel Vetter <daniel@ffwll.ch>, Rob Clark <rob@ti.com>,
+        Andy Gross <andy.gross@ti.com>, dri-devel@lists.freedesktop.org
+Subject: [PATCH 09/19] drm/omapdrm/omap_dmm_tiler: Demote abusive use of kernel-doc format
+Date:   Fri,  6 Nov 2020 21:49:39 +0000
+Message-Id: <20201106214949.2042120-10-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201106214949.2042120-1-lee.jones@linaro.org>
 References: <20201106214949.2042120-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -74,45 +69,58 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/omapdrm/omap_gem.c:593: warning: Function parameter or member 'file' not described in 'omap_gem_dumb_create'
- drivers/gpu/drm/omapdrm/omap_gem.c:593: warning: Excess function parameter 'drm_file' description in 'omap_gem_dumb_create'
- drivers/gpu/drm/omapdrm/omap_gem.c:619: warning: Function parameter or member 'offset' not described in 'omap_gem_dumb_map_offset'
+ drivers/gpu/drm/omapdrm/omap_dmm_tiler.c:313: warning: Function parameter or member 'dmm' not described in 'dmm_txn_init'
+ drivers/gpu/drm/omapdrm/omap_dmm_tiler.c:313: warning: Function parameter or member 'tcm' not described in 'dmm_txn_init'
+ drivers/gpu/drm/omapdrm/omap_dmm_tiler.c:353: warning: Function parameter or member 'txn' not described in 'dmm_txn_append'
+ drivers/gpu/drm/omapdrm/omap_dmm_tiler.c:353: warning: Function parameter or member 'area' not described in 'dmm_txn_append'
+ drivers/gpu/drm/omapdrm/omap_dmm_tiler.c:353: warning: Function parameter or member 'pages' not described in 'dmm_txn_append'
+ drivers/gpu/drm/omapdrm/omap_dmm_tiler.c:353: warning: Function parameter or member 'npages' not described in 'dmm_txn_append'
+ drivers/gpu/drm/omapdrm/omap_dmm_tiler.c:353: warning: Function parameter or member 'roll' not described in 'dmm_txn_append'
+ drivers/gpu/drm/omapdrm/omap_dmm_tiler.c:399: warning: Function parameter or member 'txn' not described in 'dmm_txn_commit'
+ drivers/gpu/drm/omapdrm/omap_dmm_tiler.c:399: warning: Function parameter or member 'wait' not described in 'dmm_txn_commit'
 
 Cc: Tomi Valkeinen <tomi.valkeinen@ti.com>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Sumit Semwal <sumit.semwal@linaro.org>
-Cc: "Christian König" <christian.koenig@amd.com>
-Cc: Rob Clark <rob.clark@linaro.org>
+Cc: Rob Clark <rob@ti.com>
+Cc: Andy Gross <andy.gross@ti.com>
 Cc: dri-devel@lists.freedesktop.org
-Cc: linux-media@vger.kernel.org
-Cc: linaro-mm-sig@lists.linaro.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/omapdrm/omap_gem.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/omapdrm/omap_dmm_tiler.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/omapdrm/omap_gem.c b/drivers/gpu/drm/omapdrm/omap_gem.c
-index d8e09792793ab..0e5adfaae6455 100644
---- a/drivers/gpu/drm/omapdrm/omap_gem.c
-+++ b/drivers/gpu/drm/omapdrm/omap_gem.c
-@@ -580,7 +580,7 @@ int omap_gem_mmap_obj(struct drm_gem_object *obj,
+diff --git a/drivers/gpu/drm/omapdrm/omap_dmm_tiler.c b/drivers/gpu/drm/omapdrm/omap_dmm_tiler.c
+index 42ec51bb7b1b0..cedaab456041a 100644
+--- a/drivers/gpu/drm/omapdrm/omap_dmm_tiler.c
++++ b/drivers/gpu/drm/omapdrm/omap_dmm_tiler.c
+@@ -306,7 +306,7 @@ static irqreturn_t omap_dmm_irq_handler(int irq, void *arg)
+ 	return IRQ_HANDLED;
+ }
  
- /**
-  * omap_gem_dumb_create	-	create a dumb buffer
-- * @drm_file: our client file
-+ * @file: our client file
-  * @dev: our device
-  * @args: the requested arguments copied from userspace
-  *
-@@ -610,6 +610,7 @@ int omap_gem_dumb_create(struct drm_file *file, struct drm_device *dev,
-  * @file: our drm client file
-  * @dev: drm device
-  * @handle: GEM handle to the object (from dumb_create)
-+ * @offset: memory map offset placeholder
-  *
-  * Do the necessary setup to allow the mapping of the frame buffer
-  * into user memory. We don't have to do much here at the moment.
+-/**
++/*
+  * Get a handle for a DMM transaction
+  */
+ static struct dmm_txn *dmm_txn_init(struct dmm *dmm, struct tcm *tcm)
+@@ -344,7 +344,7 @@ static struct dmm_txn *dmm_txn_init(struct dmm *dmm, struct tcm *tcm)
+ 	return txn;
+ }
+ 
+-/**
++/*
+  * Add region to DMM transaction.  If pages or pages[i] is NULL, then the
+  * corresponding slot is cleared (ie. dummy_pa is programmed)
+  */
+@@ -392,7 +392,7 @@ static void dmm_txn_append(struct dmm_txn *txn, struct pat_area *area,
+ 	return;
+ }
+ 
+-/**
++/*
+  * Commit the DMM transaction.
+  */
+ static int dmm_txn_commit(struct dmm_txn *txn, bool wait)
 -- 
 2.25.1
 
