@@ -2,157 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BE352A8B19
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 01:05:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44B352A8B1C
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 01:06:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732533AbgKFAFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 19:05:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53396 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729162AbgKFAFw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 19:05:52 -0500
-Received: from gmail.com (unknown [104.132.1.84])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DB85420759;
-        Fri,  6 Nov 2020 00:05:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604621152;
-        bh=GopOboKX48Vi0577YtxhvXzwzmNNcbiW/DXzmt2YRyw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YJUAgFFxsomGeKRDsqkPvTl10ieWoHnI53gAbkmNITqavukLvtAaBYdFJS4gCo93T
-         KbphgajLNbDle8mGVn8KSnV/z2VtoaPcr2R0ho+k+amGkhhmiwJeCcqGcYvHFPkW8/
-         +RljiNOBxc5452dh/5GaT8hff7sS0F2L87LEe7jw=
-Date:   Thu, 5 Nov 2020 16:05:50 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Chao Yu <yuchao0@huawei.com>
-Cc:     jaegeuk@kernel.org, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [f2fs-dev] [PATCH v3 2/2] f2fs: fix compat F2FS_IOC_{MOVE,
- GARBAGE_COLLECT}_RANGE
-Message-ID: <20201106000550.GD2555324@gmail.com>
-References: <20201105010934.16018-1-yuchao0@huawei.com>
+        id S1732672AbgKFAGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 19:06:47 -0500
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:33541 "EHLO
+        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729162AbgKFAGr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 19:06:47 -0500
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id 77B735C0238;
+        Thu,  5 Nov 2020 19:06:46 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Thu, 05 Nov 2020 19:06:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm1; bh=7xsynmTgqhqmmABRwsUDwqOu5v
+        23z8b/ouobTL9ZhgM=; b=Uw6r1IQ4lIgKUdRqmClAU4HT8VztZYqdv9rteT1+uf
+        wdca3/endcJpM7esZEELMw6jGa7VH/gjaSG2JMQWSHRz+FTRjQzUAztLgWktpGql
+        67TlbvVSYYZPddkY1KTfPo5Hfmtm96jGdJa1FtL7fzJ0NimeV0aHn7Ae9zmtGX07
+        kzJsrBYtlPGFnwWFGh6Q2BeZapB2CF7foAAoqNVH5xD8wQtVdJMNk3wIgEV4Rhw3
+        hleHRJp8ossBLT5N9v8IJXEoZnBtu7Jx1jcAmm+j+ZZYn/xXGjeSb9x0M280oFUb
+        Myl50zCBNjJKM9t8gWT7mNClkZuZeo/BKXbymJGui7Pg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=7xsynmTgqhqmmABRw
+        sUDwqOu5v23z8b/ouobTL9ZhgM=; b=fw1zaxLnBzxMxHxTJ9ODBsa3gdtZthpxa
+        cwCS8IpZNcsYGY7AEFeBz89cidwa6qO22y9SAvytVZcVp27TdkKYEVzhwFTVyVtC
+        L0APiHHKtNlLy6c0I/Bhbyc10nUbdoPUa6rtty+Qtjv685RRvhexh2jXlht0nURp
+        IaYkEqobICmRj5T74OozqXKNpTgDeXg8feXU2F1rNIpqwVrMAkZgfYFbWk9eAZMr
+        +VUVd4zczTpZV1Bsd9d3Lts+FoqFLkrYX5mNHARBQFaO1gW9m0Iysg4+RvCuq0lE
+        IwWVdT/pvNA2ShBX2LbN1RQQ44tBj3cvkwzT8vZH9XGymZzPSpc+w==
+X-ME-Sender: <xms:lpOkX3UJYuuvSJPJJB0KE38KepfBDjorOrU5Fyf0TRsUhTkXQrXU7Q>
+    <xme:lpOkX_lAD8M5ENpyYELiWCyHVmtnK0YiYw8dUt5uUGwO4mt6Kj5ACZb1aDNlD3Hpc
+    VAN1dB25f7JDbpRQw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddtkedgudelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdljedtmdenucfjughrpefhvf
+    fufffkofgggfestdekredtredttdenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihu
+    segugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpeeifffgledvffeitdeljedvte
+    effeeivdefheeiveevjeduieeigfetieevieffffenucfkphepieelrddukedurddutdeh
+    rdeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    gugihusegugihuuhhurdighiii
+X-ME-Proxy: <xmx:lpOkXza4yoxGinqOrjd4bo3w1iQaRAXQ8kKLxWSDgEv3vc5glGs-sQ>
+    <xmx:lpOkXyVffP4xeQnv9Aw5PYZWBP8wMrJ49t77-2J8Dmf50gqQ5KoMWQ>
+    <xmx:lpOkXxmFzyAX0Fkhj6sNR4SlT_4Mb0BVHQSjTbXPle3aIvF5EcZc9Q>
+    <xmx:lpOkX0u3y6S6uxEC6fKjn9NF3vbVL6md27xlNn9VP39hdq_kH2t2YA>
+Received: from localhost.localdomain (c-69-181-105-64.hsd1.ca.comcast.net [69.181.105.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 49ADA3280391;
+        Thu,  5 Nov 2020 19:06:45 -0500 (EST)
+From:   Daniel Xu <dxu@dxuuu.xyz>
+To:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, songliubraving@fb.com,
+        andrii.nakryiko@gmail.com
+Cc:     Daniel Xu <dxu@dxuuu.xyz>, kernel-team@fb.com
+Subject: [PATCH bpf v4 0/2] Fix bpf_probe_read_user_str() overcopying
+Date:   Thu,  5 Nov 2020 16:06:33 -0800
+Message-Id: <cover.1604620776.git.dxu@dxuuu.xyz>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201105010934.16018-1-yuchao0@huawei.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch is marked 2/2, but it seems you sent it out on its own.  Patch series
-are supposed to be resend in full; otherwise people can see just one patch and
-have no context.
+6ae08ae3dea2 ("bpf: Add probe_read_{user, kernel} and probe_read_{user,
+kernel}_str helpers") introduced a subtle bug where
+bpf_probe_read_user_str() would potentially copy a few extra bytes after
+the NUL terminator.
 
-On Thu, Nov 05, 2020 at 09:09:34AM +0800, Chao Yu wrote:
-> Eric reported a ioctl bug in below link:
-> 
-> https://lore.kernel.org/linux-f2fs-devel/20201103032234.GB2875@sol.localdomain/
-> 
-> That said, on some 32-bit architectures, u64 has only 32-bit alignment,
-> notably i386 and x86_32, so that size of struct f2fs_gc_range compiled
-> in x86_32 is 20 bytes, however the size in x86_64 is 24 bytes, binary
-> compiled in x86_32 can not call F2FS_IOC_GARBAGE_COLLECT_RANGE successfully
-> due to mismatched value of ioctl command in between binary and f2fs
-> module, similarly, F2FS_IOC_MOVE_RANGE will fail too.
-> 
-> In this patch we introduce two ioctls for compatibility of above special
-> 32-bit binary:
-> - F2FS_IOC32_GARBAGE_COLLECT_RANGE
-> - F2FS_IOC32_MOVE_RANGE
-> 
+This issue is particularly nefarious when strings are used as map keys,
+as seemingly identical strings can occupy multiple entries in a map.
 
-It would be good to add a proper reported-by line, otherwise it's not clear who
-"Eric" is (there are lots of Erics):
+This patchset fixes the issue and introduces a selftest to prevent
+future regressions.
 
-Reported-by: Eric Biggers <ebiggers@google.com>
+v3 -> v4:
+* directly pass userspace pointer to prog
+* test more strings of different length
 
-> +static int __f2fs_ioc_gc_range(struct file *filp, struct f2fs_gc_range *range)
->  {
-> -	struct inode *inode = file_inode(filp);
-> -	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
-> -	struct f2fs_gc_range range;
-> +	struct f2fs_sb_info *sbi = F2FS_I_SB(file_inode(filp));
->  	u64 end;
->  	int ret;
->  
-> +	if (unlikely(f2fs_cp_error(sbi)))
-> +		return -EIO;
-> +	if (!f2fs_is_checkpoint_ready(sbi))
-> +		return -ENOSPC;
+v2 -> v3:
+* set pid filter before attaching prog in selftest
+* use long instead of int as bpf_probe_read_user_str() retval
+* style changes
 
-These two checkpoint-related checks weren't present in the original version.
-Is that intentional?
+v1 -> v2:
+* add Fixes: tag
+* add selftest
 
-> +static int __f2fs_ioc_move_range(struct file *filp,
-> +				struct f2fs_move_range *range)
->  {
-> -	struct f2fs_move_range range;
-> +	struct f2fs_sb_info *sbi = F2FS_I_SB(file_inode(filp));
->  	struct fd dst;
->  	int err;
->  
-> +	if (unlikely(f2fs_cp_error(sbi)))
-> +		return -EIO;
-> +	if (!f2fs_is_checkpoint_ready(sbi))
-> +		return -ENOSPC;
-> +
+Daniel Xu (2):
+  lib/strncpy_from_user.c: Don't overcopy bytes after NUL terminator
+  selftest/bpf: Test bpf_probe_read_user_str() strips trailing bytes
+    after NUL
 
-Likewise here.
+ lib/strncpy_from_user.c                       |  9 ++-
+ .../bpf/prog_tests/probe_read_user_str.c      | 71 +++++++++++++++++++
+ .../bpf/progs/test_probe_read_user_str.c      | 25 +++++++
+ 3 files changed, 103 insertions(+), 2 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_probe_read_user_str.c
 
-> diff --git a/include/uapi/linux/f2fs.h b/include/uapi/linux/f2fs.h
-> index f00199a2e38b..8c14e88a9645 100644
-> --- a/include/uapi/linux/f2fs.h
-> +++ b/include/uapi/linux/f2fs.h
-> @@ -5,6 +5,10 @@
->  #include <linux/types.h>
->  #include <linux/ioctl.h>
->  
-> +#ifdef __KERNEL__
-> +#include <linux/compat.h>
-> +#endif
-> +
->  /*
->   * f2fs-specific ioctl commands
->   */
-> @@ -65,6 +69,16 @@ struct f2fs_gc_range {
->  	__u64 len;
->  };
->  
-> +#if defined(__KERNEL__) && defined(CONFIG_COMPAT)
-> +struct compat_f2fs_gc_range {
-> +	u32 sync;
-> +	compat_u64 start;
-> +	compat_u64 len;
-> +};
-> +#define F2FS_IOC32_GARBAGE_COLLECT_RANGE	_IOW(F2FS_IOCTL_MAGIC, 11,\
-> +						struct compat_f2fs_gc_range)
-> +#endif
-> +
->  struct f2fs_defragment {
->  	__u64 start;
->  	__u64 len;
-> @@ -77,6 +91,17 @@ struct f2fs_move_range {
->  	__u64 len;		/* size to move */
->  };
->  
-> +#if defined(__KERNEL__) && defined(CONFIG_COMPAT)
-> +struct compat_f2fs_move_range {
-> +	u32 dst_fd;
-> +	compat_u64 pos_in;
-> +	compat_u64 pos_out;
-> +	compat_u64 len;
-> +};
-> +#define F2FS_IOC32_MOVE_RANGE		_IOWR(F2FS_IOCTL_MAGIC, 9,	\
-> +					struct compat_f2fs_move_range)
-> +#endif
-> +
->  struct f2fs_flush_device {
->  	__u32 dev_num;		/* device number to flush */
->  	__u32 segments;		/* # of segments to flush */
-> -- 
+-- 
+2.28.0
 
-Did you consider instead putting these compat definitions in an internal kernel
-header, or even just in the .c file, to avoid cluttering up the UAPI header?
-
-- Eric
