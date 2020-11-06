@@ -2,92 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 102022A8FB9
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 07:56:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 175962A8FBC
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 07:57:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726249AbgKFG4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 01:56:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40512 "EHLO mail.kernel.org"
+        id S1726309AbgKFG5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 01:57:19 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:14870 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725828AbgKFG4d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 01:56:33 -0500
-Received: from localhost (searspoint.nvidia.com [216.228.112.21])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 83A17206F4;
-        Fri,  6 Nov 2020 06:56:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604645793;
-        bh=yRhE6XR0cLSyZZkXEIf4EKqkW1OuHyv4bdZKoioXVrw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kuiVH9hQopx87bfdsAx2gbKmFgqYBDw23j1qfXnRfX10trVIjqzi1XQuIsXTGLE9G
-         1DTngfIQUa/4q9EbToBgKnayZOqY86jTsC5P77eqHjqujTvlcdN+c69Yid3YbD3VC5
-         tWou/zcOf1hZwMT8Gp8NSxGCgRn/4TGKZrD2daKc=
-Date:   Fri, 6 Nov 2020 08:56:29 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>, Saeed Mahameed <saeed@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        gregkh <gregkh@linuxfoundation.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jason Wang <jasowang@redhat.com>, linux-rdma@vger.kernel.org,
-        "Michael S. Tsirkin" <mst@redhat.com>, netdev@vger.kernel.org,
-        Parav Pandit <parav@nvidia.com>, Roi Dayan <roid@nvidia.com>,
-        virtualization@lists.linux-foundation.org,
-        alsa-devel@alsa-project.org, tiwai@suse.de, broonie@kernel.org,
-        "David S . Miller" <davem@davemloft.net>,
-        ranjani.sridharan@linux.intel.com,
-        pierre-louis.bossart@linux.intel.com, fred.oh@linux.intel.com,
-        shiraz.saleem@intel.com, dan.j.williams@intel.com,
-        kiran.patil@intel.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH mlx5-next v1 05/11] net/mlx5: Register mlx5 devices to
- auxiliary virtual bus
-Message-ID: <20201106065629.GD5475@unreal>
-References: <20201101201542.2027568-1-leon@kernel.org>
- <20201101201542.2027568-6-leon@kernel.org>
- <d10e7a08200458c1bddb72fc983a5917daebc8f1.camel@kernel.org>
- <20201105210948.GS2620339@nvidia.com>
+        id S1725828AbgKFG5T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 01:57:19 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4CSB5m178Xz9tyl8;
+        Fri,  6 Nov 2020 07:57:16 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id 0tvnNDWyEbSe; Fri,  6 Nov 2020 07:57:16 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4CSB5l6dqHz9tyl7;
+        Fri,  6 Nov 2020 07:57:15 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id B95238B885;
+        Fri,  6 Nov 2020 07:57:16 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id M78HGa_Z50-v; Fri,  6 Nov 2020 07:57:16 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5854B8B75F;
+        Fri,  6 Nov 2020 07:57:16 +0100 (CET)
+Subject: Re: [PATCH v2] kernel/watchdog: Fix watchdog_allowed_mask not used
+ warning
+To:     Santosh Sivaraj <santosh@fossix.org>,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Petr Mladek <pmladek@suse.com>
+References: <20201106015025.1281561-1-santosh@fossix.org>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <78e3bbe8-4f45-0b68-6e72-85fcc4f75695@csgroup.eu>
+Date:   Fri, 6 Nov 2020 07:57:16 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201105210948.GS2620339@nvidia.com>
+In-Reply-To: <20201106015025.1281561-1-santosh@fossix.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 05:09:48PM -0400, Jason Gunthorpe wrote:
-> On Thu, Nov 05, 2020 at 12:59:20PM -0800, Saeed Mahameed wrote:
->
-> > 2. you can always load a driver without its underlying device existed.
-> > for example, you can load a pci device driver/module and it will load
-> > and wait for pci devices to pop up, the subsysetem infrastructure will
-> > match between drivers and devices and probe them.
->
-> Yes, this works fine with this design
->
-> > struct aux_driver mlx5_vpda_aux_driver {
-> >
-> >       .name = "vdpa",
-> >        /* match this driver with mlx5_core devices */
-> >       .id_table = {"mlx5_core"},
-> >       .ops {
-> >             /* called before probe on actual aux mlx5_core device */
-> >            .is_supported(struct aux_device);
->
-> This means module auto loading is impossible, we can't tell to load
-> the module until we load the module to call the is_supported code ..
 
-Right, and if we can, it will be violation of everything we know in
-driver model, because the call "is_supported" will need to be called
-for every registered driver without any relation to existed devices.
 
-And mlx5_rescan_drivers() came as a need to overcome LAG and eswitch
-craziness in everything related to their reprobe flows. Once they will
-be changed to work like normal drivers, we will be able to simplify it.
+Le 06/11/2020 à 02:50, Santosh Sivaraj a écrit :
+> Define watchdog_allowed_mask only when SOFTLOCKUP_DETECTOR is enabled.
+> 
+> Fixes: 7feeb9cd4f5b ("watchdog/sysctl: Clean up sysctl variable name space")
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Reviewed-by: Petr Mladek <pmladek@suse.com>
+> Signed-off-by: Santosh Sivaraj <santosh@fossix.org>
 
-So let's talk offline to see how can we improve mlx5_core even more
-after this series is merged.
+Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 
-Thanks
-
->
-> Jason
+> ---
+> v2:
+> Added Petr's reviewed-by from [1] and add fixes tag as suggested by Christophe.
+> 
+> [1]: https://lkml.org/lkml/2020/8/20/1030
+> 
+>   kernel/watchdog.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/watchdog.c b/kernel/watchdog.c
+> index 5abb5b22ad13..71109065bd8e 100644
+> --- a/kernel/watchdog.c
+> +++ b/kernel/watchdog.c
+> @@ -44,8 +44,6 @@ int __read_mostly soft_watchdog_user_enabled = 1;
+>   int __read_mostly watchdog_thresh = 10;
+>   static int __read_mostly nmi_watchdog_available;
+>   
+> -static struct cpumask watchdog_allowed_mask __read_mostly;
+> -
+>   struct cpumask watchdog_cpumask __read_mostly;
+>   unsigned long *watchdog_cpumask_bits = cpumask_bits(&watchdog_cpumask);
+>   
+> @@ -162,6 +160,8 @@ static void lockup_detector_update_enable(void)
+>   int __read_mostly sysctl_softlockup_all_cpu_backtrace;
+>   #endif
+>   
+> +static struct cpumask watchdog_allowed_mask __read_mostly;
+> +
+>   /* Global variables, exported for sysctl */
+>   unsigned int __read_mostly softlockup_panic =
+>   			CONFIG_BOOTPARAM_SOFTLOCKUP_PANIC_VALUE;
+> 
