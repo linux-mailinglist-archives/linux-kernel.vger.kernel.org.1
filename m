@@ -2,120 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C35012A8E45
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 05:22:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57C882A8E4E
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 05:27:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726101AbgKFEWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 23:22:12 -0500
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:40168 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725616AbgKFEWL (ORCPT
-        <rfc822;Linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 23:22:11 -0500
-Received: by mail-wm1-f65.google.com with SMTP id k18so110214wmj.5
-        for <Linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 20:22:10 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yaOz8rpy4YZVVYrFTQpdIbOhwzCCvaA9JIQK3PIcPlY=;
-        b=CYN+OkiMc9i34Ulyeo7eFzFI4y1SEwkbWzHBdUCRug31vzUQ2nVQsgA5EEkyvIEoY/
-         PW1beuKRyxypEGJFcrSZWafi0BnQ1P241BsAl4F1v8zUJoeVSLtILCltbCoEJ/uWcHVT
-         8GlfC8ZEKaNVEadUAfifeB8mglBozIyeh5cDqqTa12FinHFkanXWjpvowC7cwBDBvLj4
-         7X7Px5TTydZUuLCl5AT+Tu0saVM4Mbc8zbLY8DA9602TFkdGnEDMh53jcpe6P8PKRN8l
-         D9mgpdEqCIbyac47XrZ6FZXmBwsjB+qQ0P327akSwXB9zrHe8YOWmf/2U5fBlwRJf9z/
-         VthA==
-X-Gm-Message-State: AOAM531t7Vomw/IRdj7bciwBw+fuf2HsXx562m+GctdQTFQaRs2uqLwn
-        iqucDZaS65n0kgadrru6GZNaCf/St8LEXMJAYrE=
-X-Google-Smtp-Source: ABdhPJyllKqrIiheuxS4r5w3yr66esEK50n6cR5cZOoOKkxaVrzihZE7AwxTKR2x+V9Y7yTV0sVNRdFjRyVlQWtsKOc=
-X-Received: by 2002:a1c:9ad3:: with SMTP id c202mr232474wme.43.1604636529508;
- Thu, 05 Nov 2020 20:22:09 -0800 (PST)
+        id S1725939AbgKFE0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 23:26:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34312 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725616AbgKFE0z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 23:26:55 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5406CC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 20:26:55 -0800 (PST)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 82AC4B16;
+        Fri,  6 Nov 2020 05:26:51 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1604636811;
+        bh=Dzy4k7oMrh6Qwr0FibbNWC+4whZQko79sRwDL+YBC5M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Hp7cQ1Cyu0ma0fKXMBujwp0zP6HjHtC7x3tNfOHBazC+xC9z/qrPFCj03UALtowE0
+         YQFP6oDJeY2jNiR1yNJ9Rr1VpM8K6Ry4DNagPN4Gsii0WTEv4uxlhaW/kA5PINLsWF
+         H1LLmCc5JSyKR4PwbePZZZUW/cKHHYt0wyziJNEQ=
+Date:   Fri, 6 Nov 2020 06:26:50 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH 08/19] gpu: drm: omapdrm: dss: dsi: Rework and remove a
+ few unused variables
+Message-ID: <20201106042650.GA16469@pendragon.ideasonboard.com>
+References: <20201105144517.1826692-1-lee.jones@linaro.org>
+ <20201105144517.1826692-9-lee.jones@linaro.org>
 MIME-Version: 1.0
-References: <20201104015102.30363-1-yao.jin@linux.intel.com>
- <20201106030018.GA359712@google.com> <93fae76f-ce2b-ab0b-3ae9-cc9a2b4cbaec@linux.intel.com>
-In-Reply-To: <93fae76f-ce2b-ab0b-3ae9-cc9a2b4cbaec@linux.intel.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Fri, 6 Nov 2020 13:21:58 +0900
-Message-ID: <CAM9d7chhrYh1hmHkw8NKkwEHDoU0q2ArpOj3NGm0_RiQ7eSuxQ@mail.gmail.com>
-Subject: Re: [PATCH] perf vendor events: Update Skylake client events to v50
-To:     "Jin, Yao" <yao.jin@linux.intel.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        linux-kernel <Linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        "Liang, Kan" <kan.liang@intel.com>, yao.jin@intel.com,
-        Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201105144517.1826692-9-lee.jones@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 6, 2020 at 12:12 PM Jin, Yao <yao.jin@linux.intel.com> wrote:
->
-> Hi Namhyung,
->
-> On 11/6/2020 11:00 AM, Namhyung Kim wrote:
-> > Hi,
-> >
-> > On Wed, Nov 04, 2020 at 09:51:02AM +0800, Jin Yao wrote:
-> >> - Update Skylake events to v50.
-> >> - Update Skylake JSON metrics from TMAM 4.0.
-> >> - Fix the issue in DRAM_Parallel_Reads
-> >> - Fix the perf test warning
-> >>
-> >> Before:
-> >>
-> >> root@kbl-ppc:~# perf stat -M DRAM_Parallel_Reads -- sleep 1
-> >> event syntax error: '{arb/event=0x80,umask=0x2/,arb/event=0x80,umask=0x2,thresh=1/}:W'
-> >>                       \___ unknown term 'thresh' for pmu 'uncore_arb'
-> >>
-> >> valid terms: event,edge,inv,umask,cmask,config,config1,config2,name,period,percore
-> >>
-> >> Initial error:
-> >> event syntax error: '..umask=0x2/,arb/event=0x80,umask=0x2,thresh=1/}:W'
-> >>                                    \___ Cannot find PMU `arb'. Missing kernel support?
-> >>
-> >> root@kbl-ppc:~# perf test metrics
-> >> 10: PMU events                                 :
-> >> 10.3: Parsing of PMU event table metrics               : Skip (some metrics failed)
-> >> 10.4: Parsing of PMU event table metrics with fake PMUs: Ok
-> >> 67: Parse and process metrics                  : Ok
-> >>
-> >> After:
-> >>
-> >> root@kbl-ppc:~# perf stat -M MEM_Parallel_Reads -- sleep 1
-> >>
-> >>   Performance counter stats for 'system wide':
-> >>
-> >>           4,951,646      arb/event=0x80,umask=0x2/ #    26.30 MEM_Parallel_Reads       (50.04%)
-> >>             188,251      arb/event=0x80,umask=0x2,cmask=1/                                     (49.96%)
-> >>
-> >>         1.000867010 seconds time elapsed
-> >>
-> >> root@kbl-ppc:~# perf test metrics
-> >> 10: PMU events                                 :
-> >> 10.3: Parsing of PMU event table metrics               : Ok
-> >> 10.4: Parsing of PMU event table metrics with fake PMUs: Ok
-> >> 67: Parse and process metrics                  : Ok
-> >>
-> >> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
-> >
-> > It seems not applied to acme/perf/core cleanly.
-> >
-> > Thanks,
-> > Namhyung
-> >
->
-> It seems the patch mail is truncated. :(
->
-> I attach the patch file in the mail. Sorry for inconvenience.
+Hi Lee,
 
-I've checked it fixed the perf test on my laptop (skylake).
+Thank you for the patch.
 
-Tested-by: Namhyung Kim <namhyung@kernel.org>
+On Thu, Nov 05, 2020 at 02:45:06PM +0000, Lee Jones wrote:
+> Fixes the following W=1 kernel build warning(s):
+> 
+>  drivers/gpu/drm/omapdrm/dss/dsi.c: In function ‘_dsi_print_reset_status’:
+>  drivers/gpu/drm/omapdrm/dss/dsi.c:1131:6: warning: variable ‘l’ set but not used [-Wunused-but-set-variable]
+>  drivers/gpu/drm/omapdrm/dss/dsi.c: In function ‘dsi_update’:
+>  drivers/gpu/drm/omapdrm/dss/dsi.c:3943:10: warning: variable ‘dh’ set but not used [-Wunused-but-set-variable]
+>  drivers/gpu/drm/omapdrm/dss/dsi.c:3943:6: warning: variable ‘dw’ set but not used [-Wunused-but-set-variable]
+> 
+> Cc: Tomi Valkeinen <tomi.valkeinen@ti.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-Thanks,
-Namhyung
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+> ---
+>  drivers/gpu/drm/omapdrm/dss/dsi.c | 9 ++-------
+>  1 file changed, 2 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/omapdrm/dss/dsi.c b/drivers/gpu/drm/omapdrm/dss/dsi.c
+> index eeccf40bae416..5929b320b3cfa 100644
+> --- a/drivers/gpu/drm/omapdrm/dss/dsi.c
+> +++ b/drivers/gpu/drm/omapdrm/dss/dsi.c
+> @@ -1128,13 +1128,12 @@ static void dsi_runtime_put(struct dsi_data *dsi)
+>  
+>  static void _dsi_print_reset_status(struct dsi_data *dsi)
+>  {
+> -	u32 l;
+>  	int b0, b1, b2;
+>  
+>  	/* A dummy read using the SCP interface to any DSIPHY register is
+>  	 * required after DSIPHY reset to complete the reset of the DSI complex
+>  	 * I/O. */
+> -	l = dsi_read_reg(dsi, DSI_DSIPHY_CFG5);
+> +	dsi_read_reg(dsi, DSI_DSIPHY_CFG5);
+>  
+>  	if (dsi->data->quirks & DSI_QUIRK_REVERSE_TXCLKESC) {
+>  		b0 = 28;
+> @@ -3940,7 +3939,6 @@ static int dsi_update(struct omap_dss_device *dssdev, int channel,
+>  		void (*callback)(int, void *), void *data)
+>  {
+>  	struct dsi_data *dsi = to_dsi_data(dssdev);
+> -	u16 dw, dh;
+>  
+>  	dsi_perf_mark_setup(dsi);
+>  
+> @@ -3949,11 +3947,8 @@ static int dsi_update(struct omap_dss_device *dssdev, int channel,
+>  	dsi->framedone_callback = callback;
+>  	dsi->framedone_data = data;
+>  
+> -	dw = dsi->vm.hactive;
+> -	dh = dsi->vm.vactive;
+> -
+>  #ifdef DSI_PERF_MEASURE
+> -	dsi->update_bytes = dw * dh *
+> +	dsi->update_bytes = dsi->vm.hactive * dsi->vm.vactive *
+>  		dsi_get_pixel_size(dsi->pix_fmt) / 8;
+>  #endif
+>  	dsi_update_screen_dispc(dsi);
+
+-- 
+Regards,
+
+Laurent Pinchart
