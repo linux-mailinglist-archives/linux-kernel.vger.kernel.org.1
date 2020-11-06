@@ -2,104 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 533A92A97B1
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 15:32:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C46DC2A97A5
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 15:31:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727448AbgKFOct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 09:32:49 -0500
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:34512 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726565AbgKFOct (ORCPT
+        id S1727251AbgKFObd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 09:31:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44248 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726565AbgKFObc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 09:32:49 -0500
-Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A6EWDkl022669;
-        Fri, 6 Nov 2020 15:32:27 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=STMicroelectronics;
- bh=gxL+3W7NeUQn84nqYpY2cBP3e8fFsOZ0M8nvt5bAy4I=;
- b=QHQy1OMl/3gn+e9jj4//ePtm9KdrLveBFJClGr7P3aJwwKrhCdtv5LEBqOrbXiR7Ls3C
- 0lv5rmOZA/XhKye9ixg2BsmhCj/INt7NG29Awzh2ysxXQDm+Fifik8zHECdbTbwOHtkn
- buIcr/YMvuTy6QPnQ+b3EAvzcsZDI0hgPylb4PZTSwXYJ6c1Hpw8wRMfo0/SMxHPOyOm
- uMdYa8sSw7+uMljlefDxiM9nLpYA8Apl06r8CTI/WjCzSGtSCb5HiwAs2DaDzjolxHhI
- yeSp8wikLuuK8sBO6mfFyCt5gHEIXudGMkjXVLvrYstJggeovPi+wPiNp0OAlkQCYdJb bQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 34h00evvkm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 06 Nov 2020 15:32:27 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id B85871000BB;
-        Fri,  6 Nov 2020 15:23:55 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag1node3.st.com [10.75.127.3])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id A8BAB2AD2BA;
-        Fri,  6 Nov 2020 15:23:55 +0100 (CET)
-Received: from localhost (10.75.127.46) by SFHDAG1NODE3.st.com (10.75.127.3)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 6 Nov 2020 15:23:33
- +0100
-From:   Christophe Roullier <christophe.roullier@st.com>
-To:     <wim@linux-watchdog.org>, <linux@roeck-us.net>,
-        <mcoquelin.stm32@gmail.com>, <alexandre.torgue@st.com>
-CC:     <linux-watchdog@vger.kernel.org>, <christophe.roullier@st.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Etienne Carriere <etienne.carriere@st.com>
-Subject: [PATCH V2 1/1] watchdog: stm32_iwdg: don't print an error on probe deferral
-Date:   Fri, 6 Nov 2020 15:23:27 +0100
-Message-ID: <20201106142327.3129-2-christophe.roullier@st.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201106142327.3129-1-christophe.roullier@st.com>
-References: <20201106142327.3129-1-christophe.roullier@st.com>
+        Fri, 6 Nov 2020 09:31:32 -0500
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15418C0613D2
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 06:31:32 -0800 (PST)
+Received: by mail-ej1-x643.google.com with SMTP id o21so2221831ejb.3
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 06:31:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6jO1JvdLqeiH3264lCYhj7Gy4bF9zHfZntEVAZAvsks=;
+        b=lRfYqwlHmkiO4L+mrhKBCy1RCydVF0Kae5XfTywnCxqgNk+I/3qMeYsauHG0w5FBmR
+         PdLJSqAmuwKnGakZbKzazDkGs1VlbE+/vqA6HTYIU2k+t1L+FGQI2xpCGRFG22V9K7ty
+         2EAtn08MMb4m5QALnbsoSzjHB+I749tCBb0g5c9myKCEaD1RhOh/s4D1Cyr0ji9susAU
+         ngJMq1+Coj95GQkB/QOJ9SazWWSEEM6UwZhyO0M2NR+8BQvul9jGWGp2G4CEn8JEjWrx
+         V8Vn9S0Vsw1B4aw61v8UbFRxXxxB+KxJYZVmEhNjIRWfULykQgGb40pa9SYL2ojantMJ
+         UCfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6jO1JvdLqeiH3264lCYhj7Gy4bF9zHfZntEVAZAvsks=;
+        b=HXn1C0a448uRKEWQc3FkkvKTw01ovKGS/MSfW7PhPPFeCdHN+gGk6XIsNxx/NXc7Jq
+         4bkZSvAXInRDJO8aqqj7Zq3LdmLfjdosD4ucntQFO/On+sOzt1eyo9a1+vXthrG1oYXx
+         xsb7pMBifvz07mJom9Fb3CsaPA5x7Vn8L1xXUhcM1tmh4uCAHekqzyClcKGMFdAi9Is6
+         vYvx7zHCXyyeMThQbdXssoGgpC/yWMMCy6BENpmDBR+Wle7W/UkKtsM8FjWh891f7NOZ
+         eBu+a6h6jNn8YfwI8yR4J54bUfGAKOqyYZlG/WtBgn7w4rLsufMiaGQlchMcREkRkwpu
+         a3Zw==
+X-Gm-Message-State: AOAM533I47wGfZZsVCBgKJhF6bMk83qrb2t2r8FRbGQrvX2sBpBisvoU
+        vtq0XGsvSUqihwBJ0Q4fDMD5a+3+3NDi5Sz+mnvzjQ==
+X-Google-Smtp-Source: ABdhPJxteyN0q/t8Zh7XAfYNQLAzU6gV+MgbSN1UI1ZQ0Y8oOfjDV9opyYXqFQewhFn2CA8VYBwpcKz7ZTds54vTPiY=
+X-Received: by 2002:a17:906:1c83:: with SMTP id g3mr2246116ejh.168.1604673090686;
+ Fri, 06 Nov 2020 06:31:30 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.46]
-X-ClientProxiedBy: SFHDAG3NODE1.st.com (10.75.127.7) To SFHDAG1NODE3.st.com
- (10.75.127.3)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-06_06:2020-11-05,2020-11-06 signatures=0
+References: <20201104132624.17168-1-digetx@gmail.com>
+In-Reply-To: <20201104132624.17168-1-digetx@gmail.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Fri, 6 Nov 2020 15:31:20 +0100
+Message-ID: <CAMpxmJWwC-gqVERsUzdNH7jA5jC40fzekkFXJvagDmau1-F9QQ@mail.gmail.com>
+Subject: Re: [PATCH v1 1/2] gpio: tegra: Add lockdep class
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Peter Geis <pgwipeout@gmail.com>, linux-tegra@vger.kernel.org,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Etienne Carriere <etienne.carriere@st.com>
+On Wed, Nov 4, 2020 at 2:26 PM Dmitry Osipenko <digetx@gmail.com> wrote:
+>
+> Add lockdep class in order to fix debug warnings that are coming from a
+> legit nested use of irq_set_irq_wake() by the Tegra GPIO driver.
+>
+>  WARNING: possible recursive locking detected
+>  ...
+>   (irq_set_irq_wake) from (tegra_gpio_irq_set_wake)
+>   (tegra_gpio_irq_set_wake) from (irq_set_irq_wake)
+>   (irq_set_irq_wake) from (brcmf_sdiod_intr_register [brcmfmac])
+>  ...
+>
+> Tested-by: Peter Geis <pgwipeout@gmail.com>
+> Reported-by: Peter Geis <pgwipeout@gmail.com>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  drivers/gpio/gpio-tegra.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/drivers/gpio/gpio-tegra.c b/drivers/gpio/gpio-tegra.c
+> index 86568154cdb3..98fc78739ebf 100644
+> --- a/drivers/gpio/gpio-tegra.c
+> +++ b/drivers/gpio/gpio-tegra.c
+> @@ -560,6 +560,9 @@ static const struct dev_pm_ops tegra_gpio_pm_ops = {
+>         SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(tegra_gpio_suspend, tegra_gpio_resume)
+>  };
+>
+> +static struct lock_class_key gpio_lock_class;
+> +static struct lock_class_key gpio_request_class;
+> +
+>  static int tegra_gpio_probe(struct platform_device *pdev)
+>  {
+>         struct tegra_gpio_info *tgi;
+> @@ -661,6 +664,7 @@ static int tegra_gpio_probe(struct platform_device *pdev)
+>                 bank = &tgi->bank_info[GPIO_BANK(gpio)];
+>
+>                 irq_set_chip_data(irq, bank);
+> +               irq_set_lockdep_class(irq, &gpio_lock_class, &gpio_request_class);
+>                 irq_set_chip_and_handler(irq, &tgi->ic, handle_simple_irq);
+>         }
+>
+> --
+> 2.27.0
+>
 
-Do not print an error trace when deferring probe for clock resources.
+Patch applied, thanks!
 
-Signed-off-by: Etienne Carriere <etienne.carriere@st.com>
-Signed-off-by: Christophe Roullier <christophe.roullier@st.com>
----
- drivers/watchdog/stm32_iwdg.c | 13 +++++--------
- 1 file changed, 5 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/watchdog/stm32_iwdg.c b/drivers/watchdog/stm32_iwdg.c
-index 25188d6bbe15..a3436c296c97 100644
---- a/drivers/watchdog/stm32_iwdg.c
-+++ b/drivers/watchdog/stm32_iwdg.c
-@@ -162,18 +162,15 @@ static int stm32_iwdg_clk_init(struct platform_device *pdev,
- 	u32 ret;
- 
- 	wdt->clk_lsi = devm_clk_get(dev, "lsi");
--	if (IS_ERR(wdt->clk_lsi)) {
--		dev_err(dev, "Unable to get lsi clock\n");
--		return PTR_ERR(wdt->clk_lsi);
--	}
-+	if (IS_ERR(wdt->clk_lsi))
-+		return dev_err_probe(dev, PTR_ERR(wdt->clk_lsi), "Unable to get lsi clock\n");
- 
- 	/* optional peripheral clock */
- 	if (wdt->data->has_pclk) {
- 		wdt->clk_pclk = devm_clk_get(dev, "pclk");
--		if (IS_ERR(wdt->clk_pclk)) {
--			dev_err(dev, "Unable to get pclk clock\n");
--			return PTR_ERR(wdt->clk_pclk);
--		}
-+		if (IS_ERR(wdt->clk_pclk))
-+			return dev_err_probe(dev, PTR_ERR(wdt->clk_pclk),
-+					     "Unable to get pclk clock\n");
- 
- 		ret = clk_prepare_enable(wdt->clk_pclk);
- 		if (ret) {
--- 
-2.17.1
-
+Bartosz
