@@ -2,187 +2,296 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 790602A9070
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 08:34:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 486E42A90BA
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 08:50:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726537AbgKFHek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 02:34:40 -0500
-Received: from mailout1.samsung.com ([203.254.224.24]:15131 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726527AbgKFHej (ORCPT
+        id S1726554AbgKFHut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 02:50:49 -0500
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:64246 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725848AbgKFHut (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 02:34:39 -0500
-Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20201106073435epoutp01ff04415751f14c80e9c2b7c93b70ca50~E2uxPdY-z2685626856epoutp01E
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 07:34:35 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20201106073435epoutp01ff04415751f14c80e9c2b7c93b70ca50~E2uxPdY-z2685626856epoutp01E
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1604648075;
-        bh=q970vv8s62XPkoucluNk/h+Bajm6Y938td+8aJMMAw4=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=eq3kAYeOVZEkw3hlpWCYmUbJ7IMRsMlju7vx6JmQu20UqtupxqljcyrxY/RJ+3FGI
-         4Ml8f8ZUYesV+UCDBTJbCylsVuqzSwARvFqZVXUWhWWnOsICj7ggqEOCHsPKQw0dF7
-         7SoxtKlIMaXrH06WYb+ugRFNK1YqmZSZ3ktZETHg=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20201106073435epcas1p125afa6d21d5ae454f02de15ffce340ad~E2uwwi4-p2629926299epcas1p1D;
-        Fri,  6 Nov 2020 07:34:35 +0000 (GMT)
-Received: from epsmges1p3.samsung.com (unknown [182.195.40.152]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4CSBwm25H5zMqYkV; Fri,  6 Nov
-        2020 07:34:32 +0000 (GMT)
-Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
-        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        37.F2.09582.88CF4AF5; Fri,  6 Nov 2020 16:34:32 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20201106073431epcas1p2993319f4ff36cfb3b3d5ed0291ffd492~E2utsIQpD1083410834epcas1p2N;
-        Fri,  6 Nov 2020 07:34:31 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20201106073431epsmtrp1b3cd262c18b472e9559413e04dba4e32~E2utrMe2i0289402894epsmtrp1P;
-        Fri,  6 Nov 2020 07:34:31 +0000 (GMT)
-X-AuditID: b6c32a37-8afff7000000256e-d3-5fa4fc88bdff
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        6E.03.13470.78CF4AF5; Fri,  6 Nov 2020 16:34:31 +0900 (KST)
-Received: from [10.113.221.102] (unknown [10.113.221.102]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20201106073431epsmtip299c4225a08abf332bb859f8b498f4a32~E2utZU25v2894528945epsmtip2a;
-        Fri,  6 Nov 2020 07:34:31 +0000 (GMT)
-Subject: Re: [PATCH 4/7] devfreq: exynos: dev_pm_opp_put_*() accepts NULL
- argument
-From:   Chanwoo Choi <cw00.choi@samsung.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Rafael Wysocki <rjw@rjwysocki.net>,
-        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
-        digetx@gmail.com, linux-samsung-soc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Organization: Samsung Electronics
-Message-ID: <5a9625bc-9e40-fb18-b111-9cd797943af3@samsung.com>
-Date:   Fri, 6 Nov 2020 16:48:26 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
-        Thunderbird/59.0
+        Fri, 6 Nov 2020 02:50:49 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R581e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=24;SR=0;TI=SMTPD_---0UEOeJgs_1604649032;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UEOeJgs_1604649032)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 06 Nov 2020 15:50:33 +0800
+Subject: Re: [PATCH v21 18/19] mm/lru: introduce the relock_page_lruvec
+ function
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+To:     akpm@linux-foundation.org, mgorman@techsingularity.net,
+        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
+        daniel.m.jordan@oracle.com, willy@infradead.org,
+        hannes@cmpxchg.org, lkp@intel.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        shakeelb@google.com, iamjoonsoo.kim@lge.com,
+        richard.weiyang@gmail.com, kirill@shutemov.name,
+        alexander.duyck@gmail.com, rong.a.chen@intel.com, mhocko@suse.com,
+        vdavydov.dev@gmail.com, shy828301@gmail.com
+Cc:     Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>
+References: <1604566549-62481-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1604566549-62481-19-git-send-email-alex.shi@linux.alibaba.com>
+Message-ID: <66d8e79d-7ec6-bfbc-1c82-bf32db3ae5b7@linux.alibaba.com>
+Date:   Fri, 6 Nov 2020 15:50:22 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <4b13f82c-fa2a-939f-e26f-e8fc4d34d567@samsung.com>
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrFJsWRmVeSWpSXmKPExsWy7bCmrm7HnyXxBmdv8lis/viY0aL/8Wtm
-        i/PnN7BbnG16w26x6fE1VovLu+awWXzuPcJoMeP8PiaL240r2Cze/DjLZHHm9CVWi3/XNrJY
-        dBz5xmyx8auHA5/Hzll32T02repk87hzbQ+bx+Yl9R5brrazePRtWcXocfzGdiaPz5vkAjii
-        sm0yUhNTUosUUvOS81My89JtlbyD453jTc0MDHUNLS3MlRTyEnNTbZVcfAJ03TJzgM5WUihL
-        zCkFCgUkFhcr6dvZFOWXlqQqZOQXl9gqpRak5BRYFugVJ+YWl+al6yXn51oZGhgYmQIVJmRn
-        TP35i7ngNn/FkxvTWBsYP/N0MXJwSAiYSCyaZ9XFyMUhJLCDUeLGhBXMEM4nRomV59ewQzjf
-        GCWefrgAlOEE67gybz0jRGIvo8T9ZQuYIJz3jBKNa04xgVQJC4RINLw/ygJiswloSex/cYMN
-        pEhE4ASjxKz+b2AdzAJrmCT617wG6+AXUJS4+uMxI4jNK2An0XSoAcxmEVCR+Ld0A5gtKhAm
-        cXJbC1SNoMTJmU/ANnAK2Eu8fv2JDcRmFhCXuPVkPhOELS+x/e0csI8kBN5wSHxf/o8R4gkX
-        ifdnt7FC2MISr45vYYewpSRe9rdB2dUSK08eYYNo7mCU2LL/AlSDscT+pZOZQOHHLKApsX6X
-        PkRYUWLn77mMEIv5JN597WGFBDGvREebEESJssTlB3eZIGxJicXtnWwTGJVmIXlnFpIXZiF5
-        YRbCsgWMLKsYxVILinPTU4sNC4yR43sTIzhRa5nvYJz29oPeIUYmDsZDjBIczEoivBf8FsUL
-        8aYkVlalFuXHF5XmpBYfYjQFBvBEZinR5HxgrsgriTc0NTI2NrYwMTQzNTRUEuf9o90RLySQ
-        nliSmp2aWpBaBNPHxMEp1cC0+u3P8DPPJqQ9tBJf+fKyj13bIfmOtXkvPr6+Hx27p190qsqN
-        bR0Sz88uvLvaw/tXyjxFRW7Ot1Pufcy2eb71colrRejHM/temTuYWFXwC2jcT7F09mgJ1j2Z
-        EWgVb2hm58z3M9B+4Z6V5qcMDhaHdzbcqVGakyr0IU/OZ8+W/X/lHD4sfp4TcEvUqmXZ0+rX
-        7ya9LRd36bY4fuf1Q6dZC5Xeuc+54ny+8ufci4fO/TuzQd7X3ODfzZB12gka8Z969bg8ti9w
-        +ibMkJItWfPZIn5LnqHWecuXjzkcKv7fNOt3X2h2IFGmPfnEbI7CiWJKm1sian4w/f9bPXf7
-        5u0WF2dEJle47s9VvdDU28ehxFKckWioxVxUnAgAfcdB710EAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrKIsWRmVeSWpSXmKPExsWy7bCSvG77nyXxBr8bjC1Wf3zMaNH/+DWz
-        xfnzG9gtzja9YbfY9Pgaq8XlXXPYLD73HmG0mHF+H5PF7cYVbBZvfpxlsjhz+hKrxb9rG1ks
-        Oo58Y7bY+NXDgc9j56y77B6bVnWyedy5tofNY/OSeo8tV9tZPPq2rGL0OH5jO5PH501yARxR
-        XDYpqTmZZalF+nYJXBlTf/5iLrjNX/HkxjTWBsbPPF2MnBwSAiYSV+atZ+xi5OIQEtjNKLFv
-        y3dWiISkxLSLR5m7GDmAbGGJw4eLIWreMkrc6XvMBFIjLBAi0fD+KAuIzSagJbH/xQ02kCIR
-        gVOMEjdf9LODOMwCa5gkrpxawAbRfoZJ4tukp+wgLfwCihJXfzxmBLF5Bewkmg41gNksAioS
-        /5ZuALNFBcIkdi6BWMcrIChxcuYTsHWcAvYSr19/YgOxmQXUJf7Mu8QMYYtL3HoynwnClpfY
-        /nYO8wRG4VlI2mchaZmFpGUWkpYFjCyrGCVTC4pz03OLDQsM81LL9YoTc4tL89L1kvNzNzGC
-        Y1ZLcwfj9lUf9A4xMnEwHmKU4GBWEuG94LcoXog3JbGyKrUoP76oNCe1+BCjNAeLkjjvjcKF
-        cUIC6YklqdmpqQWpRTBZJg5OqQam82tnWKptkJi7dl1vm0K7x2atfyX5CRdW8UaV8HRsOT7n
-        huSaxT0PH2UVXz3613At/3K/L7y7Erek194yu9DfYu8pv11HLmKz1v3Ve6teGu+9cdW7acO7
-        8uK2Kp4bR39O+3bshdxJ/oQP59Ja15YVXJsu8Lbz8EfzfQkb3v8Wb83eecReqe/p/0SpU2tc
-        Sh+7ceeWP3q3LT3ov7zVRdvqox52p4VruYvOsa3l5He3X8HE7HHWTPiX8pQVx8oOZK+0esm9
-        VU0/N3TNzD12m6KOdV06s/appH6p+OlLqVu3L027tOkkc4ZocOnkxSb/73L/3vhv1hRtWY3b
-        T6NPqsw3DG15zb41+Mjndys0lxvJ1yixFGckGmoxFxUnAgDfXt+1SAMAAA==
-X-CMS-MailID: 20201106073431epcas1p2993319f4ff36cfb3b3d5ed0291ffd492
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20201106070533epcas1p480406659e38528d1263641612fcff8bb
-References: <cover.1604646059.git.viresh.kumar@linaro.org>
-        <CGME20201106070533epcas1p480406659e38528d1263641612fcff8bb@epcas1p4.samsung.com>
-        <b3c936d862b8c81ab568f38bd7acc438cb7efac8.1604646059.git.viresh.kumar@linaro.org>
-        <a2f9dbba-1c07-8b60-fda5-737843be92e0@samsung.com>
-        <4b13f82c-fa2a-939f-e26f-e8fc4d34d567@samsung.com>
+In-Reply-To: <1604566549-62481-19-git-send-email-alex.shi@linux.alibaba.com>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/6/20 4:46 PM, Chanwoo Choi wrote:
-> On 11/6/20 4:42 PM, Chanwoo Choi wrote:
->> Hi Viresh,
->>
->> On 11/6/20 4:03 PM, Viresh Kumar wrote:
->>> The dev_pm_opp_put_*() APIs now accepts a NULL opp_table pointer and so
->>> there is no need for us to carry the extra check. Drop them.
->>>
->>> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
->>> ---
->>>  drivers/devfreq/exynos-bus.c | 12 ++++--------
->>>  1 file changed, 4 insertions(+), 8 deletions(-)
->>>
->>> diff --git a/drivers/devfreq/exynos-bus.c b/drivers/devfreq/exynos-bus.c
->>> index 1e684a448c9e..143fd58ec3dc 100644
->>> --- a/drivers/devfreq/exynos-bus.c
->>> +++ b/drivers/devfreq/exynos-bus.c
->>> @@ -158,10 +158,8 @@ static void exynos_bus_exit(struct device *dev)
->>>  
->>>  	dev_pm_opp_of_remove_table(dev);
->>>  	clk_disable_unprepare(bus->clk);
->>> -	if (bus->opp_table) {
->>> -		dev_pm_opp_put_regulators(bus->opp_table);
->>> -		bus->opp_table = NULL;
->>> -	}
->>> +	dev_pm_opp_put_regulators(bus->opp_table);
->>> +	bus->opp_table = NULL;
->>>  }
->>>  
->>>  static void exynos_bus_passive_exit(struct device *dev)
->>> @@ -444,10 +442,8 @@ static int exynos_bus_probe(struct platform_device *pdev)
->>>  	dev_pm_opp_of_remove_table(dev);
->>>  	clk_disable_unprepare(bus->clk);
->>>  err_reg:
->>> -	if (!passive) {
->>> -		dev_pm_opp_put_regulators(bus->opp_table);
->>> -		bus->opp_table = NULL;
->>> -	}
->>> +	dev_pm_opp_put_regulators(bus->opp_table);
->>> +	bus->opp_table = NULL;
->>>  
->>>  	return ret;
->>>  }
->>>
->>
->> Applied it. Thanks.
->>
-> 
-> It seems that this patch depends on first patch.
-> So, need to be merged to one git repository.
-> 
-> Instead of applying it to devfreq.git,
-> Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
-> 
 
-Also, need to add 'PM /' prefix to patch title 
-in order to keep the same format with already merged devfreq patches.
-- 'PM / devfreq: exynos: dev_pm_opp_put_*() accepts NULL argument'
 
+ÔÚ 2020/11/5 ÏÂÎç4:55, Alex Shi Ð´µÀ:
+> From: Alexander Duyck <alexander.h.duyck@linux.intel.com>
+
+
+update the patch on page_memcg() change:
+
+
+From 6c142eb582e7d0dbf473572ad092eca07ab75221 Mon Sep 17 00:00:00 2001
+From: Alexander Duyck <alexander.h.duyck@linux.intel.com>
+Date: Tue, 26 May 2020 17:31:15 +0800
+Subject: [PATCH v21 18/19] mm/lru: introduce the relock_page_lruvec function
+
+Use this new function to replace repeated same code, no func change.
+
+When testing for relock we can avoid the need for RCU locking if we simply
+compare the page pgdat and memcg pointers versus those that the lruvec is
+holding. By doing this we can avoid the extra pointer walks and accesses of
+the memory cgroup.
+
+In addition we can avoid the checks entirely if lruvec is currently NULL.
+
+Signed-off-by: Alexander Duyck <alexander.h.duyck@linux.intel.com>
+Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+Acked-by: Hugh Dickins <hughd@google.com>
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Cc: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Tejun Heo <tj@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Cc: cgroups@vger.kernel.org
+Cc: linux-mm@kvack.org
+---
+ include/linux/memcontrol.h | 52 ++++++++++++++++++++++++++++++++++++++++++++++
+ mm/mlock.c                 | 11 +---------
+ mm/swap.c                  | 33 +++++++----------------------
+ mm/vmscan.c                | 12 ++---------
+ 4 files changed, 62 insertions(+), 46 deletions(-)
+
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 6ecb08ff4ad1..8c57d6335ee4 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -660,6 +660,22 @@ static inline struct lruvec *mem_cgroup_lruvec(struct mem_cgroup *memcg,
+ 
+ struct lruvec *mem_cgroup_page_lruvec(struct page *, struct pglist_data *);
+ 
++static inline bool lruvec_holds_page_lru_lock(struct page *page,
++					      struct lruvec *lruvec)
++{
++	pg_data_t *pgdat = page_pgdat(page);
++	const struct mem_cgroup *memcg;
++	struct mem_cgroup_per_node *mz;
++
++	if (mem_cgroup_disabled())
++		return lruvec == &pgdat->__lruvec;
++
++	mz = container_of(lruvec, struct mem_cgroup_per_node, lruvec);
++	memcg = page_memcg(page) ? : root_mem_cgroup;
++
++	return lruvec->pgdat == pgdat && mz->memcg == memcg;
++}
++
+ struct mem_cgroup *mem_cgroup_from_task(struct task_struct *p);
+ 
+ struct mem_cgroup *get_mem_cgroup_from_mm(struct mm_struct *mm);
+@@ -1221,6 +1237,14 @@ static inline struct lruvec *mem_cgroup_page_lruvec(struct page *page,
+ 	return &pgdat->__lruvec;
+ }
+ 
++static inline bool lruvec_holds_page_lru_lock(struct page *page,
++					      struct lruvec *lruvec)
++{
++	pg_data_t *pgdat = page_pgdat(page);
++
++	return lruvec == &pgdat->__lruvec;
++}
++
+ static inline struct mem_cgroup *parent_mem_cgroup(struct mem_cgroup *memcg)
+ {
+ 	return NULL;
+@@ -1663,6 +1687,34 @@ static inline void unlock_page_lruvec_irqrestore(struct lruvec *lruvec,
+ 	spin_unlock_irqrestore(&lruvec->lru_lock, flags);
+ }
+ 
++/* Don't lock again iff page's lruvec locked */
++static inline struct lruvec *relock_page_lruvec_irq(struct page *page,
++		struct lruvec *locked_lruvec)
++{
++	if (locked_lruvec) {
++		if (lruvec_holds_page_lru_lock(page, locked_lruvec))
++			return locked_lruvec;
++
++		unlock_page_lruvec_irq(locked_lruvec);
++	}
++
++	return lock_page_lruvec_irq(page);
++}
++
++/* Don't lock again iff page's lruvec locked */
++static inline struct lruvec *relock_page_lruvec_irqsave(struct page *page,
++		struct lruvec *locked_lruvec, unsigned long *flags)
++{
++	if (locked_lruvec) {
++		if (lruvec_holds_page_lru_lock(page, locked_lruvec))
++			return locked_lruvec;
++
++		unlock_page_lruvec_irqrestore(locked_lruvec, *flags);
++	}
++
++	return lock_page_lruvec_irqsave(page, flags);
++}
++
+ #ifdef CONFIG_CGROUP_WRITEBACK
+ 
+ struct wb_domain *mem_cgroup_wb_domain(struct bdi_writeback *wb);
+diff --git a/mm/mlock.c b/mm/mlock.c
+index ab164a675c25..55b3b3672977 100644
+--- a/mm/mlock.c
++++ b/mm/mlock.c
+@@ -277,16 +277,7 @@ static void __munlock_pagevec(struct pagevec *pvec, struct zone *zone)
+ 			 * so we can spare the get_page() here.
+ 			 */
+ 			if (TestClearPageLRU(page)) {
+-				struct lruvec *new_lruvec;
+-
+-				new_lruvec = mem_cgroup_page_lruvec(page,
+-						page_pgdat(page));
+-				if (new_lruvec != lruvec) {
+-					if (lruvec)
+-						unlock_page_lruvec_irq(lruvec);
+-					lruvec = lock_page_lruvec_irq(page);
+-				}
+-
++				lruvec = relock_page_lruvec_irq(page, lruvec);
+ 				del_page_from_lru_list(page, lruvec,
+ 							page_lru(page));
+ 				continue;
+diff --git a/mm/swap.c b/mm/swap.c
+index ed033f7c4f2d..c593ba596dea 100644
+--- a/mm/swap.c
++++ b/mm/swap.c
+@@ -210,19 +210,12 @@ static void pagevec_lru_move_fn(struct pagevec *pvec,
+ 
+ 	for (i = 0; i < pagevec_count(pvec); i++) {
+ 		struct page *page = pvec->pages[i];
+-		struct lruvec *new_lruvec;
+ 
+ 		/* block memcg migration during page moving between lru */
+ 		if (!TestClearPageLRU(page))
+ 			continue;
+ 
+-		new_lruvec = mem_cgroup_page_lruvec(page, page_pgdat(page));
+-		if (lruvec != new_lruvec) {
+-			if (lruvec)
+-				unlock_page_lruvec_irqrestore(lruvec, flags);
+-			lruvec = lock_page_lruvec_irqsave(page, &flags);
+-		}
+-
++		lruvec = relock_page_lruvec_irqsave(page, lruvec, &flags);
+ 		(*move_fn)(page, lruvec);
+ 
+ 		SetPageLRU(page);
+@@ -918,17 +911,12 @@ void release_pages(struct page **pages, int nr)
+ 		}
+ 
+ 		if (PageLRU(page)) {
+-			struct lruvec *new_lruvec;
+-
+-			new_lruvec = mem_cgroup_page_lruvec(page,
+-							page_pgdat(page));
+-			if (new_lruvec != lruvec) {
+-				if (lruvec)
+-					unlock_page_lruvec_irqrestore(lruvec,
+-									flags);
++			struct lruvec *prev_lruvec = lruvec;
++
++			lruvec = relock_page_lruvec_irqsave(page, lruvec,
++									&flags);
++			if (prev_lruvec != lruvec)
+ 				lock_batch = 0;
+-				lruvec = lock_page_lruvec_irqsave(page, &flags);
+-			}
+ 
+ 			VM_BUG_ON_PAGE(!PageLRU(page), page);
+ 			__ClearPageLRU(page);
+@@ -1033,15 +1021,8 @@ void __pagevec_lru_add(struct pagevec *pvec)
+ 
+ 	for (i = 0; i < pagevec_count(pvec); i++) {
+ 		struct page *page = pvec->pages[i];
+-		struct lruvec *new_lruvec;
+-
+-		new_lruvec = mem_cgroup_page_lruvec(page, page_pgdat(page));
+-		if (lruvec != new_lruvec) {
+-			if (lruvec)
+-				unlock_page_lruvec_irqrestore(lruvec, flags);
+-			lruvec = lock_page_lruvec_irqsave(page, &flags);
+-		}
+ 
++		lruvec = relock_page_lruvec_irqsave(page, lruvec, &flags);
+ 		__pagevec_lru_add_fn(page, lruvec);
+ 	}
+ 	if (lruvec)
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index 2953ddec88a0..3b09a39de8cd 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -1884,8 +1884,7 @@ static unsigned noinline_for_stack move_pages_to_lru(struct lruvec *lruvec,
+ 		 * All pages were isolated from the same lruvec (and isolation
+ 		 * inhibits memcg migration).
+ 		 */
+-		VM_BUG_ON_PAGE(mem_cgroup_page_lruvec(page, page_pgdat(page))
+-							!= lruvec, page);
++		VM_BUG_ON_PAGE(!lruvec_holds_page_lru_lock(page, lruvec), page);
+ 		lru = page_lru(page);
+ 		nr_pages = thp_nr_pages(page);
+ 
+@@ -4277,7 +4276,6 @@ void check_move_unevictable_pages(struct pagevec *pvec)
+ 	for (i = 0; i < pvec->nr; i++) {
+ 		struct page *page = pvec->pages[i];
+ 		int nr_pages;
+-		struct lruvec *new_lruvec;
+ 
+ 		if (PageTransTail(page))
+ 			continue;
+@@ -4289,13 +4287,7 @@ void check_move_unevictable_pages(struct pagevec *pvec)
+ 		if (!TestClearPageLRU(page))
+ 			continue;
+ 
+-		new_lruvec = mem_cgroup_page_lruvec(page, page_pgdat(page));
+-		if (lruvec != new_lruvec) {
+-			if (lruvec)
+-				unlock_page_lruvec_irq(lruvec);
+-			lruvec = lock_page_lruvec_irq(page);
+-		}
+-
++		lruvec = relock_page_lruvec_irq(page, lruvec);
+ 		if (page_evictable(page) && PageUnevictable(page)) {
+ 			enum lru_list lru = page_lru_base_type(page);
+ 
 -- 
-Best Regards,
-Chanwoo Choi
-Samsung Electronics
+1.8.3.1
+
