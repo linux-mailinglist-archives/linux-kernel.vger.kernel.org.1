@@ -2,181 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CD082A9E98
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 21:34:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D95A52A9E9A
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 21:34:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728409AbgKFUem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 15:34:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45110 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728140AbgKFUem (ORCPT
+        id S1728450AbgKFUex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 15:34:53 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:9066 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727129AbgKFUew (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 15:34:42 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6B22C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 12:34:41 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id g12so1839514pgm.8
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 12:34:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=2KkxLBPEW3Bs3fGukbxI8lyHUIDDucrAm1orqPYuJAo=;
-        b=lWoh3SdhQyLLcHfEZt+CX9NH2HIoW5TjSsyk6+DC1RTgYcVXCUhAxW/l+oAKy5c8NN
-         PraVCVN8XoRu1sP8QbHvPz2vtbrW5fcQvUX1kQK6dk4F0DLXaEbzID8PmixICzG9kizO
-         KwtmRB5gHJIZe17eOcuixQDgR4+NiP7idZNTl2S6GkqCqkLHuCXEfKopKCuXPOtDu867
-         xbvxKVVHpZAh5J47zImkM4PUKXGGFCB2lzGrN3uH7URITKcZIZb2/1A4V0tYK04mKzHa
-         Tvbt034gyxcXEOFVtxFtmwIilAxw8Lo7DQtseixS2W+GAbYXYiRAp3gOk/zk+kQV/UfI
-         QUwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2KkxLBPEW3Bs3fGukbxI8lyHUIDDucrAm1orqPYuJAo=;
-        b=qd0l/LJdpJIqY7Y9oYCGsHAMaLru2cFUWU+9zdMBrLgmUT8h64gmFEW19OxnMZpJzy
-         g+W9AsjoTsMm/AFKiZytmmCEReYWlc8uZOly+MvDuse1qVO9oyJ/MDvPMMoljpdye/AW
-         D/sjciYPuoo8dJpXLuhB36oFhpea8PF+fmWrCIYFDE5CGL/510xchZFdlEh9ikCwH9+q
-         RpJnjnsumPvp27lsnMhSE5vGNrAAcPmEPZDWo20fWVr+3JNU0njwva4xiLDnm2ZyryDn
-         ebJ9EW2Y450Q+XTESkhSpb+Z2rhWTxs/vxUOb+1TH5AM9WaHJxoVpRNoeDIBwqH7awOY
-         U/3A==
-X-Gm-Message-State: AOAM530Xdj97P511SFkcaWf4xT4BpqZJ6RGzBY3W+dJem7G8xVXURzD9
-        TPiWMDZ9F0wwyQbyBFspr/Znyw==
-X-Google-Smtp-Source: ABdhPJzZvlRJNgQe9ztrxNrZsQvU9Rj1m2vXE53gBtkxweeX5ZPuHFK3ShkhcAGXF3+2X0lYdNprrg==
-X-Received: by 2002:a17:90b:e14:: with SMTP id ge20mr1363483pjb.78.1604694880658;
-        Fri, 06 Nov 2020 12:34:40 -0800 (PST)
-Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id q23sm3243713pfg.18.2020.11.06.12.34.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Nov 2020 12:34:40 -0800 (PST)
-Date:   Fri, 6 Nov 2020 13:34:38 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, mike.leach@linaro.org,
-        coresight@lists.linaro.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 19/26] coresight: etm4x: Detect access early on the
- target CPU
-Message-ID: <20201106203438.GB3299843@xps15>
-References: <20201028220945.3826358-1-suzuki.poulose@arm.com>
- <20201028220945.3826358-21-suzuki.poulose@arm.com>
+        Fri, 6 Nov 2020 15:34:52 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fa5b36a0000>; Fri, 06 Nov 2020 12:34:50 -0800
+Received: from rcampbell-dev.nvidia.com (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 6 Nov
+ 2020 20:34:49 +0000
+Subject: Re: [PATCH v3 1/6] mm/thp: add prep_transhuge_device_private_page()
+To:     Matthew Wilcox <willy@infradead.org>
+CC:     <linux-mm@kvack.org>, <nouveau@lists.freedesktop.org>,
+        <linux-kselftest@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        "Jerome Glisse" <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        "Alistair Popple" <apopple@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Bharata B Rao <bharata@linux.ibm.com>,
+        Zi Yan <ziy@nvidia.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Ben Skeggs <bskeggs@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20201106005147.20113-1-rcampbell@nvidia.com>
+ <20201106005147.20113-2-rcampbell@nvidia.com>
+ <20201106121407.GQ17076@casper.infradead.org>
+From:   Ralph Campbell <rcampbell@nvidia.com>
+X-Nvconfidentiality: public
+Message-ID: <e384a09a-23a2-6a9b-dda6-db93e26c8f66@nvidia.com>
+Date:   Fri, 6 Nov 2020 12:34:49 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201028220945.3826358-21-suzuki.poulose@arm.com>
+In-Reply-To: <20201106121407.GQ17076@casper.infradead.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1604694890; bh=3kQ//mMEobyQywMprE0fVaDOJaCYEqZr2rGa9riAH38=;
+        h=Subject:To:CC:References:From:X-Nvconfidentiality:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=ZfdPSy+wi5oJm1vMDFZi1SmNpeYM/8prR76BnNgoMkSMSy4w7h5WgBEzZsEPEcS7N
+         DRqem5D7qEyAsyuyRSY1i0ypwydJcgYVspVqXuDd3UeWrYgNZ+wbrcfPkA1ygnQn0T
+         CgmMWbi80T2WSfm1AmNpNcKF6QcMvRpiihkgA3C35EL15KcKT671+VzYGb8zgXxAOJ
+         SLVF/22aNTf29FHM+5IKkAi7SOxnYjbRIIXFE+b9Kjh+qhWw4+VWDRnR6Wd7DV0QQw
+         fSpOl7pA3HC2EoGrk4/m0ZED4KnZacd2J5rab7HOFIpKm/ZWATixv9WLIel2nUmv/A
+         EnHQPaKIzWVMQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 10:09:38PM +0000, Suzuki K Poulose wrote:
-> In preparation to detect the support for system instruction
-> support, move the detection of the device access to the target
-> CPU.
+
+On 11/6/20 4:14 AM, Matthew Wilcox wrote:
+> On Thu, Nov 05, 2020 at 04:51:42PM -0800, Ralph Campbell wrote:
+>> Add a helper function to allow device drivers to create device private
+>> transparent huge pages. This is intended to help support device private
+>> THP migrations.
 > 
-> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> ---
->  .../coresight/coresight-etm4x-core.c          | 45 ++++++++++++++++---
->  1 file changed, 40 insertions(+), 5 deletions(-)
+> I think you'd be better off with these calling conventions:
 > 
-> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> index f038bb10bc78..308674ab746c 100644
-> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> @@ -56,6 +56,11 @@ static u64 etm4_get_access_type(struct etmv4_config *config);
->  
->  static enum cpuhp_state hp_online;
->  
-> +struct etm_init_arg {
-
-s/etm_init_arg/etm4_init_arg
-
-> +	struct etmv4_drvdata	*drvdata;
-> +	struct csdev_access	*csa;
-> +};
+> -void prep_transhuge_page(struct page *page)
+> +struct page *thp_prep(struct page *page)
+>   {
+> +       if (!page || compound_order(page) == 0)
+> +               return page;
+>          /*
+> -        * we use page->mapping and page->indexlru in second tail page
+> +        * we use page->mapping and page->index in second tail page
+>           * as list_head: assuming THP order >= 2
+>           */
+> +       BUG_ON(compound_order(page) == 1);
+>   
+>          INIT_LIST_HEAD(page_deferred_list(page));
+>          set_compound_page_dtor(page, TRANSHUGE_PAGE_DTOR);
 > +
->  u64 etm4x_sysreg_read(struct csdev_access *csa,
->  		      u32 offset,
->  		      bool _relaxed,
-> @@ -669,6 +674,22 @@ static const struct coresight_ops etm4_cs_ops = {
->  	.source_ops	= &etm4_source_ops,
->  };
->  
-> +static bool etm_init_iomem_access(struct etmv4_drvdata *drvdata,
-> +				  struct csdev_access *csa)
-> +{
-> +	*csa = CSDEV_ACCESS_IOMEM(drvdata->base);
-> +	return true;
-> +}
-> +
-> +static bool etm_init_csdev_access(struct etmv4_drvdata *drvdata,
-> +				  struct csdev_access *csa)
-> +{
-> +	if (drvdata->base)
-> +		return etm_init_iomem_access(drvdata, csa);
-> +
-> +	return false;
-> +}
-
-Returning a boolean rather than an int for the above two functions seems odd to
-me.
-
-> +
->  static void etm4_init_arch_data(void *info)
->  {
->  	u32 etmidr0;
-> @@ -677,11 +698,22 @@ static void etm4_init_arch_data(void *info)
->  	u32 etmidr3;
->  	u32 etmidr4;
->  	u32 etmidr5;
-> -	struct etmv4_drvdata *drvdata = info;
-> -	struct csdev_access tmp_csa = CSDEV_ACCESS_IOMEM(drvdata->base);
-> -	struct csdev_access *csa = &tmp_csa;
-> +	struct etm_init_arg *init_arg = info;
-> +	struct etmv4_drvdata *drvdata;
-> +	struct csdev_access *csa;
->  	int i;
->  
-> +	drvdata = init_arg->drvdata;
-> +	csa = init_arg->csa;
-> +
-> +	/*
-> +	 * If we are unable to detect the access mechanism,
-> +	 * or unable to detect the trace unit type, fail
-> +	 * early.
-> +	 */
-> +	if (!etm_init_csdev_access(drvdata, csa))
-> +		return;
-> +
->  	/* Make sure all registers are accessible */
->  	etm4_os_unlock_csa(drvdata, csa);
->  	etm4_cs_unlock(drvdata, csa);
-> @@ -1524,6 +1556,7 @@ static int etm4_probe(struct amba_device *adev, const struct amba_id *id)
->  	struct etmv4_drvdata *drvdata;
->  	struct resource *res = &adev->res;
->  	struct coresight_desc desc = { 0 };
-> +	struct etm_init_arg init_arg = { 0 };
->  
->  	drvdata = devm_kzalloc(dev, sizeof(*drvdata), GFP_KERNEL);
->  	if (!drvdata)
-> @@ -1551,7 +1584,6 @@ static int etm4_probe(struct amba_device *adev, const struct amba_id *id)
->  		return PTR_ERR(base);
->  
->  	drvdata->base = base;
-> -	desc.access = CSDEV_ACCESS_IOMEM(base);
->  
->  	spin_lock_init(&drvdata->spinlock);
->  
-> @@ -1563,8 +1595,11 @@ static int etm4_probe(struct amba_device *adev, const struct amba_id *id)
->  	if (!desc.name)
->  		return -ENOMEM;
->  
-> +	init_arg.drvdata = drvdata;
-> +	init_arg.csa = &desc.access;
-> +
->  	if (smp_call_function_single(drvdata->cpu,
-> -				etm4_init_arch_data,  drvdata, 1))
-> +				etm4_init_arch_data,  &init_arg, 1))
->  		dev_err(dev, "ETM arch init failed\n");
->  
->  	if (etm4_arch_supported(drvdata->arch) == false)
-> -- 
-> 2.24.1
+> +       return page;
+>   }
 > 
+> It simplifies the users.
+
+I'm not sure what the simplification is.
+If you mean the name change from prep_transhuge_page() to thp_prep(),
+that seems fine to me. The following could also be renamed to
+thp_prep_device_private_page() or similar.
+
+>> +void prep_transhuge_device_private_page(struct page *page)
+>> +{
+>> +	prep_compound_page(page, HPAGE_PMD_ORDER);
+>> +	prep_transhuge_page(page);
+>> +	/* Only the head page has a reference to the pgmap. */
+>> +	percpu_ref_put_many(page->pgmap->ref, HPAGE_PMD_NR - 1);
+>> +}
+>> +EXPORT_SYMBOL_GPL(prep_transhuge_device_private_page);
+> 
+> Something else that may interest you from my patch series is support
+> for page sizes other than PMD_SIZE.  I don't know what page sizes 
+> hardware supports.  There's no support for page sizes other than PMD
+> for anonymous memory, so this might not be too useful for you yet.
+
+I did see those changes. It might help some device drivers to do DMA in
+larger than PAGE_SIZE blocks but less than PMD_SIZE. It might help
+reduce page table sizes since 2MB, 64K, and 4K are commonly supported
+GPU page sizes. The MIGRATE_PFN_COMPOUND flag is intended to indicate
+that the page size is determined by page_size() so I was thinking ahead
+to other than PMD sized pages. However, when migrating a pte_none() or
+pmd_none() page, there is no source page to determine the size.
+Maybe I need to encode the page order in the migrate PFN entry like
+hmm_range_fault().
+
+Anyway, I agree that thinking about page sizes other than PMD is good.
