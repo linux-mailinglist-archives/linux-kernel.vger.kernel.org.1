@@ -2,150 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 764B82A9101
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 09:10:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF5F62A9107
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 09:11:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726492AbgKFIK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 03:10:29 -0500
-Received: from mx2.suse.de ([195.135.220.15]:60842 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725830AbgKFIK3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 03:10:29 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1604650227;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cnKqsKK811Yuykke9FVYpJ7LXK+WwGHKEzsvdLhzzr0=;
-        b=JExK9dBxhnGDZWRQA3bTSMWQPKnF9h/Hh60uLB8P8hvxhXBvaphsQH+GNbxiUND8WSImde
-        NoWc324vFEdE6NgN9LrqRMdmFnXSB4Q+z66uIs/5hZHmjx2R1EAL0+9u3K/w1ieSraMzLk
-        WgjyL3cUKkDUCseQ1hk4AEhgFQUuinU=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 6088AAB8F;
-        Fri,  6 Nov 2020 08:10:27 +0000 (UTC)
-Date:   Fri, 6 Nov 2020 09:10:26 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Feng Tang <feng.tang@intel.com>
-Cc:     Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mel Gorman <mgorman@suse.de>, dave.hansen@intel.com,
-        ying.huang@intel.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 0/2] mm: fix OOMs for binding workloads to movable
- zone only node
-Message-ID: <20201106081026.GB7247@dhcp22.suse.cz>
-References: <20201104085343.GA18718@dhcp22.suse.cz>
- <20201105014028.GA86777@shbuild999.sh.intel.com>
- <20201105120818.GC21348@dhcp22.suse.cz>
- <4029c079-b1f3-f290-26b6-a819c52f5200@suse.cz>
- <20201105125828.GG21348@dhcp22.suse.cz>
- <20201105130710.GB16525@shbuild999.sh.intel.com>
- <20201105131245.GH21348@dhcp22.suse.cz>
- <20201105134305.GA16424@shbuild999.sh.intel.com>
- <20201105161612.GM21348@dhcp22.suse.cz>
- <20201106070656.GA129085@shbuild999.sh.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201106070656.GA129085@shbuild999.sh.intel.com>
+        id S1726603AbgKFILc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 03:11:32 -0500
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:57520 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725616AbgKFILc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 03:11:32 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UEPFNeZ_1604650287;
+Received: from aliy80.localdomain(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UEPFNeZ_1604650287)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 06 Nov 2020 16:11:28 +0800
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+To:     alex.aring@gmail.com
+Cc:     Stefan Schmidt <stefan@datenfreihafen.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-wpan@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] net/ieee802154: remove unused macros to tame gcc
+Date:   Fri,  6 Nov 2020 16:10:37 +0800
+Message-Id: <1604650237-22192-1-git-send-email-alex.shi@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 06-11-20 15:06:56, Feng Tang wrote:
-> On Thu, Nov 05, 2020 at 05:16:12PM +0100, Michal Hocko wrote:
-> > On Thu 05-11-20 21:43:05, Feng Tang wrote:
-> > > On Thu, Nov 05, 2020 at 02:12:45PM +0100, Michal Hocko wrote:
-> > > > On Thu 05-11-20 21:07:10, Feng Tang wrote:
-> > > > [...]
-> > > > > My debug traces shows it is, and its gfp_mask is 'GFP_KERNEL'
-> > > > 
-> > > > Can you provide the full information please? Which node has been
-> > > > requested. Which cpuset the calling process run in and which node has
-> > > > the allocation succeeded from? A bare dump_stack without any further
-> > > > context is not really helpful.
-> > > 
-> > > I don't have the same platform as the original report, so I simulated
-> > > one similar setup (with fakenuma and movablecore), which has 2 memory
-> > > nodes: node 0 has DMA0/DMA32/Movable zones, while node 1 has only
-> > > Movable zone. With it, I can got the same error and same oom callstack
-> > > as the original report (as in the cover-letter).
-> > > 
-> > > The test command is:
-> > > 	# docker run -it --rm --cpuset-mems 1 ubuntu:latest bash -c "grep Mems_allowed /proc/self/status"
-> > > 
-> > > To debug I only added some trace in the __alloc_pages_nodemask(), and
-> > > for the callstack which get the page successfully:
-> > > 
-> > > 	[  567.510903] Call Trace:
-> > > 	[  567.510909]  dump_stack+0x74/0x9a
-> > > 	[  567.510910]  __alloc_pages_nodemask.cold+0x22/0xe5
-> > > 	[  567.510913]  alloc_pages_current+0x87/0xe0
-> > > 	[  567.510914]  __vmalloc_node_range+0x14c/0x240
-> > > 	[  567.510918]  module_alloc+0x82/0xe0
-> > > 	[  567.510921]  bpf_jit_alloc_exec+0xe/0x10
-> > > 	[  567.510922]  bpf_jit_binary_alloc+0x7a/0x120
-> > > 	[  567.510925]  bpf_int_jit_compile+0x145/0x424
-> > > 	[  567.510926]  bpf_prog_select_runtime+0xac/0x130
-> > 
-> > As already said this doesn't really tell much without the additional
-> > information.
-> > 
-> > > The incomming parameter nodemask is NULL, and the function will first try the
-> > > cpuset nodemask (1 here), and the zoneidx is only granted 2, which makes the
-> > > 'ac's preferred zone to be NULL. so it goes into __alloc_pages_slowpath(),
-> > > which will first set the nodemask to 'NULL', and this time it got a preferred
-> > > zone: zone DMA32 from node 0, following get_page_from_freelist will allocate
-> > > one page from that zone. 
-> > 
-> > I do not follow. Both hot and slow paths of the allocator set
-> > ALLOC_CPUSET or emulate it by mems_allowed when cpusets are nebaled
-> > IIRC. This is later enforced in get_page_from_free_list. There are some
-> > exceptions when the allocating process can run away from its cpusets -
-> > e.g. IRQs, OOM victims and few other cases but definitely not a random
-> > allocation. There might be some subtle details that have changed or I
-> > might have forgot but 
-> 
-> yes, I was confused too. IIUC, the key check inside get_page_from_freelist()
-> is 
-> 
-> 	if (cpusets_enabled() &&
-> 		(alloc_flags & ALLOC_CPUSET) &&
-> 		!__cpuset_zone_allowed(zone, gfp_mask))
-> 
-> In our case (kernel page got allocated), the first 2 conditions are true,
-> and for __cpuset_zone_allowed(), the possible place to return true is
-> checking parent cpuset's nodemask
-> 
-> 	cs = nearest_hardwall_ancestor(task_cs(current));
-> 	allowed = node_isset(node, cs->mems_allowed);
-> 
-> This will override the ALLOC_CPUSET check.
+Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+Cc: Alexander Aring <alex.aring@gmail.com> 
+Cc: Stefan Schmidt <stefan@datenfreihafen.org> 
+Cc: "David S. Miller" <davem@davemloft.net> 
+Cc: Jakub Kicinski <kuba@kernel.org> 
+Cc: linux-wpan@vger.kernel.org 
+Cc: netdev@vger.kernel.org 
+Cc: linux-kernel@vger.kernel.org 
+---
+ net/ieee802154/nl802154.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-Yes and this is ok because that is defined hierarchical semantic of the
-cpusets which applies to any !hardwalled allocation. Cpusets are quite
-non intuitive. Re-reading the previous discussion I have realized that
-me trying to not go into those details might have mislead you. Let me
-try again and clarify that now.
-
-I was talking in context of the patch you are proposing and that is a
-clear violation of the cpuset isolation. Especially for hardwalled
-setups because it allows to spill over to other nodes which shouldn't be
-possible except for few exceptions which shouldn't generate a lot of
-allocations (e.g. oom victim exiting, IRQ context).
-
-What I was not talking about, and should have been more clear about, is
-that without hardwall resp. exclusive nodes the isolation is best effort
-only for most kernel allocation requests (or more specifically those
-without __GFP_HARDWALL). Your patch doesn't distinguish between those
-and any non movable allocations and effectively allowed to runaway even
-for hardwalled allocations which are not movable. Those can be controlled
-by userspace very easily.
-
-I hope this clarifies it a bit more and sorry if I mislead you.
+diff --git a/net/ieee802154/nl802154.c b/net/ieee802154/nl802154.c
+index 7c5a1aa5adb4..1cebdcedc48c 100644
+--- a/net/ieee802154/nl802154.c
++++ b/net/ieee802154/nl802154.c
+@@ -2098,11 +2098,7 @@ static int nl802154_del_llsec_seclevel(struct sk_buff *skb,
+ #define NL802154_FLAG_NEED_NETDEV	0x02
+ #define NL802154_FLAG_NEED_RTNL		0x04
+ #define NL802154_FLAG_CHECK_NETDEV_UP	0x08
+-#define NL802154_FLAG_NEED_NETDEV_UP	(NL802154_FLAG_NEED_NETDEV |\
+-					 NL802154_FLAG_CHECK_NETDEV_UP)
+ #define NL802154_FLAG_NEED_WPAN_DEV	0x10
+-#define NL802154_FLAG_NEED_WPAN_DEV_UP	(NL802154_FLAG_NEED_WPAN_DEV |\
+-					 NL802154_FLAG_CHECK_NETDEV_UP)
+ 
+ static int nl802154_pre_doit(const struct genl_ops *ops, struct sk_buff *skb,
+ 			     struct genl_info *info)
 -- 
-Michal Hocko
-SUSE Labs
+1.8.3.1
+
