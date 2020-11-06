@@ -2,359 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 538862A8DB5
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 04:48:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A04D2A8DB8
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 04:48:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726045AbgKFDsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 22:48:06 -0500
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:35608 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725616AbgKFDsG (ORCPT
+        id S1726061AbgKFDsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 22:48:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56618 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725616AbgKFDsu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 22:48:06 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R331e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0UEO33AN_1604634469;
-Received: from aliy80.localdomain(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UEO33AN_1604634469)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 06 Nov 2020 11:48:01 +0800
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     "J. Bruce Fields" <bfields@fieldses.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] fs/nfsd: remove unused NFSDDBG_FACILITY to tame gcc
-Date:   Fri,  6 Nov 2020 11:47:37 +0800
-Message-Id: <1604634457-3954-2-git-send-email-alex.shi@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1604634457-3954-1-git-send-email-alex.shi@linux.alibaba.com>
-References: <1604634457-3954-1-git-send-email-alex.shi@linux.alibaba.com>
-To:     unlisted-recipients:; (no To-header on input)
+        Thu, 5 Nov 2020 22:48:50 -0500
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCA59C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 19:48:49 -0800 (PST)
+Received: by mail-lf1-x142.google.com with SMTP id l2so5463054lfk.0
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 19:48:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ppVeo0b190qF2Ptj5wRZlt8bVEFE8U+FRbqIrPfzfO0=;
+        b=Y0OvGdC7Ay1jBPx9c95rwCWL5YO1NKIyLtH3RBjJqksuu5AmwVeqJA3yAVePeFJpD+
+         FNnIveyBAgJypsaK51ANwnqRY7vR4BDOlrKMA1BLxssBAe6rezmriag1QbajUoT/ZYrN
+         ia/BNKgIUF2Dh8y1MMAUsf9DpJByCV5DJS2VJkfHelErXdtSUlMof+LOnHR2w5t7Lgp8
+         qXDVuCE4fh3v7LRCzvKaV2W42Pcpn+WomjbzeSw0L8WQ5PBPJfLgYXwY7wEsOObmFR7E
+         MQuyqNeRdqW4WggiOLj3w/oToWlhsUSpLUpGXRyZ/xcdo2KG7q7xYzh1w+ag4jRU6Hmu
+         2PVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ppVeo0b190qF2Ptj5wRZlt8bVEFE8U+FRbqIrPfzfO0=;
+        b=hJPN++VWaMz4N/aJbk5mZFil1JpEbk7Sh4BymXsOviouQMqIJYVXSMwkuCE8QE76KK
+         RfNtX+c3U3RwozwteIV+PJwUGb184ttScGWMRfXO0N6W8Yc5whqGFruN8UNmn0vRP/0c
+         FPZpKasY72OrkcHZVdqRM1R0Se2WE8utCH7k65vp7NS8iQleIBILhgq5/7+ktudWAXS5
+         DXQbGqBtYvzVEL+9ja/UDIkifISpoQ8nQjtQgIgQh0UGkFupGcNbzkx+haL9wRYAFToL
+         vdYGpZVMTwiqhi26ZMDOBdO9gQTtP5FzEoSmVUUXtfIJbJJaFywUu7l03+KhMjcerMHI
+         LV+g==
+X-Gm-Message-State: AOAM532vMWHQWzr0F0cdu+7VLvQ6f6i/Lr5rnECRtRAyOyFCMLHg2zWR
+        1TKoNU57ghmG37W809Ics4L3yF1RCdWhTpHIwx0fTw==
+X-Google-Smtp-Source: ABdhPJxbdRyNk08Ob4JHGuI4T01MyHskgm3c1DqN+BTCMCllgLD793w6HxN7Xw1dUaB0tfhybEYmpnLfDVXd/P4HXms=
+X-Received: by 2002:a19:4204:: with SMTP id p4mr39766lfa.536.1604634528395;
+ Thu, 05 Nov 2020 19:48:48 -0800 (PST)
+MIME-Version: 1.0
+References: <20201103103051.34553-1-ajye_huang@compal.corp-partner.google.com>
+ <20201103103051.34553-2-ajye_huang@compal.corp-partner.google.com> <20201105184350.GA1611477@bogus>
+In-Reply-To: <20201105184350.GA1611477@bogus>
+From:   Ajye Huang <ajye_huang@compal.corp-partner.google.com>
+Date:   Fri, 6 Nov 2020 11:48:37 +0800
+Message-ID: <CALprXBYUddwE-+Bnt2qh4ETwZJ2LnwmB1mQNT88vcqxB8kPW4Q@mail.gmail.com>
+Subject: Re: [PATCH v5 1/2] ASoC: google: dt-bindings: modify machine bindings
+ for two MICs case
+To:     Rob Herring <robh@kernel.org>
+Cc:     Ajye Huang <ajye.huang@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Rohit kumar <rohitkr@codeaurora.org>,
+        Banajit Goswami <bgoswami@codeaurora.org>,
+        Patrick Lai <plai@codeaurora.org>,
+        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Cheng-yi Chiang <cychiang@chromium.org>,
+        Tzung-Bi Shih <tzungbi@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        ALSA development <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are lots of NFSDDBG_FACILITY defined in many files
-but it isn't used anywhere. so remove it to tame the gcc warning:
+HI, Rob,
 
-fs/nfsd/nfsxdr.c:12:0: warning: macro "NFSDDBG_FACILITY" is not used
-[-Wunused-macros]
-fs/nfsd/filecache.c:23:0: warning: macro "NFSDDBG_FACILITY" is not used
-[-Wunused-macros]
-fs/nfsd/nfs3xdr.c:17:0: warning: macro "NFSDDBG_FACILITY" is not used
-[-Wunused-macros]
-fs/nfsd/flexfilelayoutxdr.c:11:0: warning: macro "NFSDDBG_FACILITY" is
-not used [-Wunused-macros]
-fs/nfsd/nfsxdr.c:12:0: warning: macro "NFSDDBG_FACILITY" is not used
-[-Wunused-macros]
-fs/nfsd/filecache.c:23:0: warning: macro "NFSDDBG_FACILITY" is not used
-[-Wunused-macros]
-fs/nfsd/nfs3xdr.c:17:0: warning: macro "NFSDDBG_FACILITY" is not used
-[-Wunused-macros]
-fs/nfsd/flexfilelayoutxdr.c:11:0: warning: macro "NFSDDBG_FACILITY" is
-not used [-Wunused-macros]
+Thank you for the comments.
 
-Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-Cc: "J. Bruce Fields" <bfields@fieldses.org> 
-Cc: Chuck Lever <chuck.lever@oracle.com> 
-Cc: linux-nfs@vger.kernel.org 
-Cc: linux-kernel@vger.kernel.org 
----
- fs/nfsd/blocklayout.c       | 3 ---
- fs/nfsd/blocklayoutxdr.c    | 3 ---
- fs/nfsd/export.c            | 2 --
- fs/nfsd/filecache.c         | 2 --
- fs/nfsd/flexfilelayout.c    | 2 --
- fs/nfsd/flexfilelayoutxdr.c | 2 --
- fs/nfsd/lockd.c             | 2 --
- fs/nfsd/nfs2acl.c           | 2 --
- fs/nfsd/nfs3proc.c          | 2 --
- fs/nfsd/nfs3xdr.c           | 2 --
- fs/nfsd/nfs4callback.c      | 2 --
- fs/nfsd/nfs4layouts.c       | 2 --
- fs/nfsd/nfs4proc.c          | 2 --
- fs/nfsd/nfs4recover.c       | 2 --
- fs/nfsd/nfs4state.c         | 2 --
- fs/nfsd/nfs4xdr.c           | 2 --
- fs/nfsd/nfsfh.c             | 2 --
- fs/nfsd/nfsproc.c           | 2 --
- fs/nfsd/nfssvc.c            | 2 --
- fs/nfsd/nfsxdr.c            | 2 --
- fs/nfsd/vfs.c               | 2 --
- 21 files changed, 44 deletions(-)
 
-diff --git a/fs/nfsd/blocklayout.c b/fs/nfsd/blocklayout.c
-index a07c39c94bbd..81790fabae45 100644
---- a/fs/nfsd/blocklayout.c
-+++ b/fs/nfsd/blocklayout.c
-@@ -17,9 +17,6 @@
- #include "pnfs.h"
- #include "filecache.h"
- 
--#define NFSDDBG_FACILITY	NFSDDBG_PNFS
--
--
- static __be32
- nfsd4_block_proc_layoutget(struct inode *inode, const struct svc_fh *fhp,
- 		struct nfsd4_layoutget *args)
-diff --git a/fs/nfsd/blocklayoutxdr.c b/fs/nfsd/blocklayoutxdr.c
-index 442543304930..9a03ce88f9f2 100644
---- a/fs/nfsd/blocklayoutxdr.c
-+++ b/fs/nfsd/blocklayoutxdr.c
-@@ -10,9 +10,6 @@
- #include "nfsd.h"
- #include "blocklayoutxdr.h"
- 
--#define NFSDDBG_FACILITY	NFSDDBG_PNFS
--
--
- __be32
- nfsd4_block_encode_layoutget(struct xdr_stream *xdr,
- 		struct nfsd4_layoutget *lgp)
-diff --git a/fs/nfsd/export.c b/fs/nfsd/export.c
-index 21e404e7cb68..cf8b50f16d05 100644
---- a/fs/nfsd/export.c
-+++ b/fs/nfsd/export.c
-@@ -25,8 +25,6 @@
- #include "filecache.h"
- #include "trace.h"
- 
--#define NFSDDBG_FACILITY	NFSDDBG_EXPORT
--
- /*
-  * We have two caches.
-  * One maps client+vfsmnt+dentry to export options - the export map
-diff --git a/fs/nfsd/filecache.c b/fs/nfsd/filecache.c
-index 3c6c2f7d1688..8e5942648fef 100644
---- a/fs/nfsd/filecache.c
-+++ b/fs/nfsd/filecache.c
-@@ -20,8 +20,6 @@
- #include "filecache.h"
- #include "trace.h"
- 
--#define NFSDDBG_FACILITY	NFSDDBG_FH
--
- /* FIXME: dynamically size this for the machine somehow? */
- #define NFSD_FILE_HASH_BITS                   12
- #define NFSD_FILE_HASH_SIZE                  (1 << NFSD_FILE_HASH_BITS)
-diff --git a/fs/nfsd/flexfilelayout.c b/fs/nfsd/flexfilelayout.c
-index db7ef07ae50c..c764051eb22e 100644
---- a/fs/nfsd/flexfilelayout.c
-+++ b/fs/nfsd/flexfilelayout.c
-@@ -16,8 +16,6 @@
- #include "flexfilelayoutxdr.h"
- #include "pnfs.h"
- 
--#define NFSDDBG_FACILITY	NFSDDBG_PNFS
--
- static __be32
- nfsd4_ff_proc_layoutget(struct inode *inode, const struct svc_fh *fhp,
- 		struct nfsd4_layoutget *args)
-diff --git a/fs/nfsd/flexfilelayoutxdr.c b/fs/nfsd/flexfilelayoutxdr.c
-index e81d2a5cf381..8a2e8bc05d4d 100644
---- a/fs/nfsd/flexfilelayoutxdr.c
-+++ b/fs/nfsd/flexfilelayoutxdr.c
-@@ -8,8 +8,6 @@
- #include "nfsd.h"
- #include "flexfilelayoutxdr.h"
- 
--#define NFSDDBG_FACILITY	NFSDDBG_PNFS
--
- struct ff_idmap {
- 	char buf[11];
- 	int len;
-diff --git a/fs/nfsd/lockd.c b/fs/nfsd/lockd.c
-index 3f5b3d7b62b7..7684e13b3813 100644
---- a/fs/nfsd/lockd.c
-+++ b/fs/nfsd/lockd.c
-@@ -12,8 +12,6 @@
- #include "nfsd.h"
- #include "vfs.h"
- 
--#define NFSDDBG_FACILITY		NFSDDBG_LOCKD
--
- #ifdef CONFIG_LOCKD_V4
- #define nlm_stale_fh	nlm4_stale_fh
- #define nlm_failed	nlm4_failed
-diff --git a/fs/nfsd/nfs2acl.c b/fs/nfsd/nfs2acl.c
-index 6a900f770dd2..09088c4b2d3d 100644
---- a/fs/nfsd/nfs2acl.c
-+++ b/fs/nfsd/nfs2acl.c
-@@ -13,8 +13,6 @@
- #include "xdr3.h"
- #include "vfs.h"
- 
--#define NFSDDBG_FACILITY		NFSDDBG_PROC
--
- /*
-  * NULL call.
-  */
-diff --git a/fs/nfsd/nfs3proc.c b/fs/nfsd/nfs3proc.c
-index a633044b0dc1..781e265921aa 100644
---- a/fs/nfsd/nfs3proc.c
-+++ b/fs/nfsd/nfs3proc.c
-@@ -13,8 +13,6 @@
- #include "xdr3.h"
- #include "vfs.h"
- 
--#define NFSDDBG_FACILITY		NFSDDBG_PROC
--
- static int	nfs3_ftypes[] = {
- 	0,			/* NF3NON */
- 	S_IFREG,		/* NF3REG */
-diff --git a/fs/nfsd/nfs3xdr.c b/fs/nfsd/nfs3xdr.c
-index 1d30c21af01a..07c8e16ac189 100644
---- a/fs/nfsd/nfs3xdr.c
-+++ b/fs/nfsd/nfs3xdr.c
-@@ -14,8 +14,6 @@
- #include "netns.h"
- #include "vfs.h"
- 
--#define NFSDDBG_FACILITY		NFSDDBG_XDR
--
- 
- /*
-  * Mapping of S_IF* types to NFS file types
-diff --git a/fs/nfsd/nfs4callback.c b/fs/nfsd/nfs4callback.c
-index 052be5bf9ef5..642d6c1779da 100644
---- a/fs/nfsd/nfs4callback.c
-+++ b/fs/nfsd/nfs4callback.c
-@@ -42,8 +42,6 @@
- #include "xdr4cb.h"
- #include "xdr4.h"
- 
--#define NFSDDBG_FACILITY                NFSDDBG_PROC
--
- static void nfsd4_mark_cb_fault(struct nfs4_client *, int reason);
- 
- #define NFSPROC4_CB_NULL 0
-diff --git a/fs/nfsd/nfs4layouts.c b/fs/nfsd/nfs4layouts.c
-index a97873f2d22b..e77b05516707 100644
---- a/fs/nfsd/nfs4layouts.c
-+++ b/fs/nfsd/nfs4layouts.c
-@@ -13,8 +13,6 @@
- #include "netns.h"
- #include "trace.h"
- 
--#define NFSDDBG_FACILITY                NFSDDBG_PNFS
--
- struct nfs4_layout {
- 	struct list_head		lo_perstate;
- 	struct nfs4_layout_stateid	*lo_state;
-diff --git a/fs/nfsd/nfs4proc.c b/fs/nfsd/nfs4proc.c
-index ad2fa1a8e7ad..fa6ed4ad7335 100644
---- a/fs/nfsd/nfs4proc.c
-+++ b/fs/nfsd/nfs4proc.c
-@@ -80,8 +80,6 @@
- { }
- #endif
- 
--#define NFSDDBG_FACILITY		NFSDDBG_PROC
--
- static u32 nfsd_attrmask[] = {
- 	NFSD_WRITEABLE_ATTRS_WORD0,
- 	NFSD_WRITEABLE_ATTRS_WORD1,
-diff --git a/fs/nfsd/nfs4recover.c b/fs/nfsd/nfs4recover.c
-index 186fa2c2c6ba..9c8738e32b74 100644
---- a/fs/nfsd/nfs4recover.c
-+++ b/fs/nfsd/nfs4recover.c
-@@ -49,8 +49,6 @@
- #include "vfs.h"
- #include "netns.h"
- 
--#define NFSDDBG_FACILITY                NFSDDBG_PROC
--
- /* Declarations */
- struct nfsd4_client_tracking_ops {
- 	int (*init)(struct net *);
-diff --git a/fs/nfsd/nfs4state.c b/fs/nfsd/nfs4state.c
-index d7f27ed6b794..79286c96f480 100644
---- a/fs/nfsd/nfs4state.c
-+++ b/fs/nfsd/nfs4state.c
-@@ -53,8 +53,6 @@
- #include "filecache.h"
- #include "trace.h"
- 
--#define NFSDDBG_FACILITY                NFSDDBG_PROC
--
- #define all_ones {{~0,~0},~0}
- static const stateid_t one_stateid = {
- 	.si_generation = ~0,
-diff --git a/fs/nfsd/nfs4xdr.c b/fs/nfsd/nfs4xdr.c
-index e3c6bea83bd6..f318c12371ab 100644
---- a/fs/nfsd/nfs4xdr.c
-+++ b/fs/nfsd/nfs4xdr.c
-@@ -59,8 +59,6 @@
- #endif
- 
- 
--#define NFSDDBG_FACILITY		NFSDDBG_XDR
--
- const u32 nfsd_suppattrs[3][3] = {
- 	{NFSD4_SUPPORTED_ATTRS_WORD0,
- 	 NFSD4_SUPPORTED_ATTRS_WORD1,
-diff --git a/fs/nfsd/nfsfh.c b/fs/nfsd/nfsfh.c
-index c81dbbad8792..196ab411df77 100644
---- a/fs/nfsd/nfsfh.c
-+++ b/fs/nfsd/nfsfh.c
-@@ -16,8 +16,6 @@
- #include "auth.h"
- #include "trace.h"
- 
--#define NFSDDBG_FACILITY		NFSDDBG_FH
--
- 
- /*
-  * our acceptability function.
-diff --git a/fs/nfsd/nfsproc.c b/fs/nfsd/nfsproc.c
-index 0d71549f9d42..230da422bb43 100644
---- a/fs/nfsd/nfsproc.c
-+++ b/fs/nfsd/nfsproc.c
-@@ -11,8 +11,6 @@
- #include "xdr.h"
- #include "vfs.h"
- 
--#define NFSDDBG_FACILITY		NFSDDBG_PROC
--
- static __be32
- nfsd_proc_null(struct svc_rqst *rqstp)
- {
-diff --git a/fs/nfsd/nfssvc.c b/fs/nfsd/nfssvc.c
-index 27b1ad136150..b5c6f439086a 100644
---- a/fs/nfsd/nfssvc.c
-+++ b/fs/nfsd/nfssvc.c
-@@ -29,8 +29,6 @@
- #include "netns.h"
- #include "filecache.h"
- 
--#define NFSDDBG_FACILITY	NFSDDBG_SVC
--
- bool inter_copy_offload_enable;
- EXPORT_SYMBOL_GPL(inter_copy_offload_enable);
- module_param(inter_copy_offload_enable, bool, 0644);
-diff --git a/fs/nfsd/nfsxdr.c b/fs/nfsd/nfsxdr.c
-index 9e00a902113e..0f797da50f78 100644
---- a/fs/nfsd/nfsxdr.c
-+++ b/fs/nfsd/nfsxdr.c
-@@ -9,8 +9,6 @@
- #include "xdr.h"
- #include "auth.h"
- 
--#define NFSDDBG_FACILITY		NFSDDBG_XDR
--
- /*
-  * Mapping of S_IF* types to NFS file types
-  */
-diff --git a/fs/nfsd/vfs.c b/fs/nfsd/vfs.c
-index 1ecaceebee13..4c31b9f4a54b 100644
---- a/fs/nfsd/vfs.c
-+++ b/fs/nfsd/vfs.c
-@@ -47,8 +47,6 @@
- #include "filecache.h"
- #include "trace.h"
- 
--#define NFSDDBG_FACILITY		NFSDDBG_FILEOP
--
- /* 
-  * Called from nfsd_lookup and encode_dirent. Check if we have crossed 
-  * a mount point.
--- 
-1.8.3.1
+On Fri, Nov 6, 2020 at 2:43 AM Rob Herring <robh@kernel.org> wrote:
+>
+> On Tue, Nov 03, 2020 at 06:30:50PM +0800, Ajye Huang wrote:
+> > Add a property "dmic-gpios" for switching between two MICs.
+> >
+> > Signed-off-by: Ajye Huang <ajye_huang@compal.corp-partner.google.com>
+> > ---
+> >  .../bindings/sound/google,sc7180-trogdor.yaml | 58 +++++++++++++++++++
+> >  1 file changed, 58 insertions(+)
+> >
+> > diff --git a/Documentation/devicetree/bindings/sound/google,sc7180-trogdor.yaml b/Documentation/devicetree/bindings/sound/google,sc7180-trogdor.yaml
+> > index efc34689d6b5..9e0505467e57 100644
+> > --- a/Documentation/devicetree/bindings/sound/google,sc7180-trogdor.yaml
+> > +++ b/Documentation/devicetree/bindings/sound/google,sc7180-trogdor.yaml
+> > @@ -34,6 +34,9 @@ properties:
+> >    "#size-cells":
+> >      const: 0
+> >
+> > +  dmic-gpios:
+> > +    description: GPIO for switching between DMICs
+>
+> Need to define how many (maxItems: 1).
 
+Yes, I will add in the v6 version.
+
+>
+> > +
+> >  patternProperties:
+> >    "^dai-link(@[0-9])?$":
+> >      description:
+> > @@ -81,6 +84,7 @@ additionalProperties: false
+> >  examples:
+> >
+> >    - |
+> > +    //Example 1
+> >      sound {
+> >          compatible = "google,sc7180-trogdor";
+> >          model = "sc7180-rt5682-max98357a-1mic";
+> > @@ -128,3 +132,57 @@ examples:
+> >              };
+> >          };
+> >      };
+> > +
+> > +  - |
+> > +    //Example 2 (2mic case)
+> > +    sound {
+> > +        compatible = "google,sc7180-trogdor";
+> > +        model = "sc7180-rt5682-max98357a-2mic";
+> > +
+> > +        audio-routing =
+> > +                    "Headphone Jack", "HPOL",
+> > +                    "Headphone Jack", "HPOR";
+> > +
+> > +        #address-cells = <1>;
+> > +        #size-cells = <0>;
+> > +
+> > +        dmic-gpios = <&tlmm 86 0>;
+>
+> Do we really need another example for this? Can't you just add it to the
+> existing example?
+
+I think just keep One example. I will remove the example2 and put
+dmic-gpios = <&tlmm 86 0>; in the first example and
+modify the model from "sc7180-rt5682-max98357a-1mic" to
+"sc7180-rt5682-max98357a-2mic". It looks clear.
+
+>
+> > +
+> > +        dai-link@0 {
+> > +            link-name = "MultiMedia0";
+> > +            reg = <0>;
+> > +            cpu {
+> > +                sound-dai = <&lpass_cpu 0>;
+> > +            };
+> > +
+> > +            codec {
+> > +                sound-dai = <&alc5682 0>;
+> > +            };
+> > +        };
+> > +
+> > +        dai-link@1 {
+> > +            link-name = "MultiMedia1";
+> > +            reg = <1>;
+> > +            cpu {
+> > +                sound-dai = <&lpass_cpu 1>;
+> > +            };
+> > +
+> > +            codec {
+> > +                sound-dai = <&max98357a>;
+> > +            };
+> > +        };
+> > +
+> > +        dai-link@2 {
+> > +            link-name = "MultiMedia2";
+> > +            reg = <2>;
+> > +            cpu {
+> > +                sound-dai = <&lpass_hdmi 0>;
+> > +            };
+> > +
+> > +            codec {
+> > +                sound-dai = <&msm_dp>;
+> > +            };
+> > +        };
+> > +    };
+> > +
+> > +...
+> > --
+> > 2.25.1
+> >
