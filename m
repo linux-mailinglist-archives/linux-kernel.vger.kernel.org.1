@@ -2,47 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCB112A9DD0
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 20:17:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20ED72A9DD2
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 20:17:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728142AbgKFTRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 14:17:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33220 "EHLO
+        id S1728174AbgKFTRw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 14:17:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728113AbgKFTRt (ORCPT
+        with ESMTP id S1728001AbgKFTRv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 14:17:49 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01610C0613D2
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 11:17:49 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id x15so284202pll.2
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 11:17:48 -0800 (PST)
+        Fri, 6 Nov 2020 14:17:51 -0500
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E41ECC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 11:17:50 -0800 (PST)
+Received: by mail-pl1-x642.google.com with SMTP id z1so1091654plo.12
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 11:17:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=broadcom.com; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=MfL7Kcayne2bBXllbhiNw8ykdfxbsPqyIIhHehjDdHo=;
-        b=Zcn9eQrYZjxMcEP/AmfNcmrRcctgwJ7faZX5naIoKOuWHxqv0ukbeRSGL0CMRIrnyJ
-         WRKvtTl2MZgvXnSv2Vx3XS/gjffhxwg5VakTHHXWoiAVc8DHoNCFOKZ51QQVV/7XylU6
-         waT3ODdamtttlz8PV8TwUW7SfCJLFY0cR8nCQ=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=yTSBMnvTUdNU/En2dMzfLQm1xdFO1GNYopwkwqFqkPU=;
+        b=aL7zLPcNNpSFKIvIBZhHTLgcEIEdWXyOzB0mMtlzgnZa/SP9wTyXsWv/WP//Nvv4Z9
+         xAAvSAwr5EuAa7KT9wU1lcYPKuAs7VqyH8PMzzedLtOuIBRU7yyZdC2lv0ZLb31CCbtm
+         bQsSdlJAIDdQHk4WzBZBb73KRBiUfFgx1qF4w=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=MfL7Kcayne2bBXllbhiNw8ykdfxbsPqyIIhHehjDdHo=;
-        b=FSN75HtqmmSCxsGjMgcDJL9fRHHCBO2XuoDzLbBzmOUTvMpbwXSjZFKHJ8mk7o+/qa
-         7sychvDiioau61WUFY7YiWJP3BVrBzUTiqlLTnIGxrJOSbGP87TibKFtX3VGmPOv7EUo
-         TV7JM15finb/bw0HJmw25mrQvBCz2JkaZ4mXOWDLirHHhDZgmRjKFWwZP//DTj6dgTgk
-         m5MQcNNhT2UfWdVQWj10LPfmPLdE+cSQgCxjRc6BO1fGZM9qHrLqbIYp+WZ6kAm65ywc
-         RNce6RwDv5RGcAtKb1arhPLaRNzb90LZtFs9KoQ4/J1512ckxBaCdGv7POi0pjQKilmb
-         lEgg==
-X-Gm-Message-State: AOAM532MWmj/htU0OGRYYrGxttnmqyypvENYW969u6tUWhL2C2vVIfsR
-        AV8HykCkLeaWlTXLLWmwPsSG4Q==
-X-Google-Smtp-Source: ABdhPJxj/c/Whhp8FHQmEoh32VuBam3HXNir3Ubs0Q7vrtaA9TeOUYWUcjcsDgFWfAgzAt4DTCjldQ==
-X-Received: by 2002:a17:902:684b:b029:d6:e482:9fee with SMTP id f11-20020a170902684bb02900d6e4829feemr2923000pln.10.1604690268270;
-        Fri, 06 Nov 2020 11:17:48 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=yTSBMnvTUdNU/En2dMzfLQm1xdFO1GNYopwkwqFqkPU=;
+        b=ExJ+EyhErTarlXsq7CAra/bpzxw+3E3Fi1dfgTNC3zUl1GAeC9QAwubMR3dbwkfGhD
+         JGX+kOQ2VeKfk3P1NMcE10U7rrzPt5z15y8BoHv2+iZKwL9945gzFITfxdwHcxXTk7md
+         PI0M+DrpNzF7hb3F8uzkC50YP1Njw15+ZY8QeXEaDVRwOaJcBjpLMTD0eCmqejXE3Wt7
+         ZCgGuXwgc6QgG3PIclh43f4rVyvWDN7cag6cRilt/shd/q516QJU7e+HPpBzZSWxWkIj
+         jWalG3cjOUmutNBfoQCINObFByiG9Q7oJzhaqzUqYo9coZi2MM8Hj1Mt8F7bGj7/YB1y
+         Ukwg==
+X-Gm-Message-State: AOAM532qwaDKPZypEejnk1RbWs7YP8LVLBYvrgZ9XuthEFXyjfxuknxw
+        GhbbN/IZaybeL11EJU6Ig03h+w==
+X-Google-Smtp-Source: ABdhPJxeKR2Hw9OCb+F3nOOyw27IkjXvX7yIEVEMik4AjM7TAoA4Xi9LVht/QGqVqIHjVO9/sQeuvQ==
+X-Received: by 2002:a17:902:748a:b029:d6:9d17:44f3 with SMTP id h10-20020a170902748ab02900d69d1744f3mr2977960pll.45.1604690270429;
+        Fri, 06 Nov 2020 11:17:50 -0800 (PST)
 Received: from stbsrv-and-01.and.broadcom.net ([192.19.231.250])
-        by smtp.gmail.com with ESMTPSA id m3sm3302207pjv.52.2020.11.06.11.17.46
+        by smtp.gmail.com with ESMTPSA id m3sm3302207pjv.52.2020.11.06.11.17.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Nov 2020 11:17:47 -0800 (PST)
+        Fri, 06 Nov 2020 11:17:49 -0800 (PST)
 From:   Jim Quinlan <james.quinlan@broadcom.com>
 To:     Philipp Zabel <p.zabel@pengutronix.de>,
         Hans de Goede <hdegoede@redhat.com>,
@@ -50,42 +51,75 @@ To:     Philipp Zabel <p.zabel@pengutronix.de>,
         bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com
 Cc:     Florian Fainelli <f.fainelli@gmail.com>,
         linux-arm-kernel@lists.infradead.org (moderated list:BROADCOM BCM7XXX
-        ARM ARCHITECTURE),
-        linux-ide@vger.kernel.org (open list:LIBATA SUBSYSTEM (Serial and
-        Parallel ATA drivers)), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2 0/2] ata: ahci_brcm: Fix use of BCM7216 reset controller
-Date:   Fri,  6 Nov 2020 14:17:41 -0500
-Message-Id: <20201106191743.40457-1-james.quinlan@broadcom.com>
+        ARM ARCHITECTURE), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2 1/2] reset: brcmstb rescal: implement {de}assert() instead of reset()
+Date:   Fri,  6 Nov 2020 14:17:42 -0500
+Message-Id: <20201106191743.40457-2-james.quinlan@broadcom.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201106191743.40457-1-james.quinlan@broadcom.com>
+References: <20201106191743.40457-1-james.quinlan@broadcom.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="00000000000071ace405b375110f"
+        boundary="0000000000008fb27505b3751152"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---00000000000071ace405b375110f
+--0000000000008fb27505b3751152
 
-v2 -- refactor rescal-reset driver to implement assert/deassert rather than
-      reset because the reset call only fires once per lifetime and we need
-      to reset after every resume from S2 or S3.
-   -- Split the use of "ahci" and "rescal" controllers in separate fields
-      to keep things simple.
+Before, only control_reset() was implemented.  However, the reset core only
+invokes control_reset() once in its lifetime.  Because we need it to invoke
+control_reset() again after resume out of S2 or S3, we have switched to
+putting the reset functionality into the control_deassert() method and
+having an empty control_assert() method.
 
-v1 -- original
+Signed-off-by: Jim Quinlan <james.quinlan@broadcom.com>
+---
+ drivers/reset/reset-brcmstb-rescal.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
-Jim Quinlan (2):
-  reset: brcmstb rescal: implement {de}assert() instead of reset()
-  ata: ahci_brcm: Fix use of BCM7216 reset controller
-
- drivers/ata/ahci_brcm.c              | 46 ++++++++++++++--------------
- drivers/reset/reset-brcmstb-rescal.c | 13 ++++++--
- 2 files changed, 33 insertions(+), 26 deletions(-)
-
+diff --git a/drivers/reset/reset-brcmstb-rescal.c b/drivers/reset/reset-brcmstb-rescal.c
+index b6f074d6a65f..1f54ae4f91fe 100644
+--- a/drivers/reset/reset-brcmstb-rescal.c
++++ b/drivers/reset/reset-brcmstb-rescal.c
+@@ -20,8 +20,8 @@ struct brcm_rescal_reset {
+ 	struct reset_controller_dev rcdev;
+ };
+ 
+-static int brcm_rescal_reset_set(struct reset_controller_dev *rcdev,
+-				 unsigned long id)
++static int brcm_rescal_reset_deassert(struct reset_controller_dev *rcdev,
++				unsigned long id)
+ {
+ 	struct brcm_rescal_reset *data =
+ 		container_of(rcdev, struct brcm_rescal_reset, rcdev);
+@@ -52,6 +52,12 @@ static int brcm_rescal_reset_set(struct reset_controller_dev *rcdev,
+ 	return 0;
+ }
+ 
++static int brcm_rescal_reset_assert(struct reset_controller_dev *rcdev,
++			      unsigned long id)
++{
++	return 0;
++}
++
+ static int brcm_rescal_reset_xlate(struct reset_controller_dev *rcdev,
+ 				   const struct of_phandle_args *reset_spec)
+ {
+@@ -60,7 +66,8 @@ static int brcm_rescal_reset_xlate(struct reset_controller_dev *rcdev,
+ }
+ 
+ static const struct reset_control_ops brcm_rescal_reset_ops = {
+-	.reset = brcm_rescal_reset_set,
++	.deassert = brcm_rescal_reset_deassert,
++	.assert = brcm_rescal_reset_assert,
+ };
+ 
+ static int brcm_rescal_reset_probe(struct platform_device *pdev)
 -- 
 2.17.1
 
 
---00000000000071ace405b375110f
+--0000000000008fb27505b3751152
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -155,14 +189,14 @@ V6GuAMmRknrzeTlxPy40UhUcRKk6Nm8mxl3Jh4KB68z7NFVpIx8G5w5I7S5ar1mLGNRjtFZ0RE4O
 lcCwKVGUXRaZMgQGrIhxGVelVgrcBh2vjpndlv733VI2VKE/TvV5MxMGU18RnogYSm66AEFA/Zb+
 5ztz1AtIMYICbzCCAmsCAQEwbTBdMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBu
 di1zYTEzMDEGA1UEAxMqR2xvYmFsU2lnbiBQZXJzb25hbFNpZ24gMiBDQSAtIFNIQTI1NiAtIEcz
-AgwTv2xmtR4KOmK4QvMwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIDQTw56nhalc
-AnKrnUHYXMbm5tGgS8T3SNDgXf0pHhkEMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIwMTEwNjE5MTc0OFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+AgwTv2xmtR4KOmK4QvMwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIOIdZwW+rCIT
+Bl3UXR8FiTFDRdlpfEHWyfj3CKrx01LXMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIwMTEwNjE5MTc1MFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
 YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCwA4PYaTlcjF53ERFzVtzWN6JuS5vN
-/VqGCd9sh8IBrCkx0ZYON9B1P0l1eRZt4eVagM7JZdwWsR4h6C1zNR4fwzsFr8IL6UswzXfKUgur
-pqaGyQpG1wIKbnVHTEkG8UB/KgFcdkXBxt2kFM6zuZSqRvQdU/poDZb9VKKQEZUKIMThNFznk9Jx
-gHhjNw+zVnWyoSmxmhIAuiPsBQN66I3mObDrd0RY02z8vHg/DN4I9CUgba+08gR/yatrd/oxDjvh
-coUxKWnruGVcYz2TGnNo1hXYEffM8u8q5Jn+SisBlpbvEunWQFRpkDrwovTwEJK4RIqFJzeZQ/tk
-IBKbKk4d
---00000000000071ace405b375110f--
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCtqi/1bYqRCpOho10JgF6uoZu5tM0D
+B5ndiEXXJoHwOLVEs5NqZEYfGGDrb/Zk9Pnz5dmFT7jftu9geD8PLjUhIiUsLdA6zneVHUMJauny
+I+xyrAp9sLG/g2Eo7jo/v98WMXcN6RMjnJptFuSmsWkAaJm7lC1vPIitG+6Wjs7q7NomrttvIBYW
+Fn4Dqt0FygXBn9BGMxWs62wYI3nxKDB3Ew0UQPkmOk4P+oPKGjrmdsvqV/fcR9UrO7l48RYNvJef
+Wg29kaQFdVEpPgVjNTBQbWl+bDnX9BYEZxnXVveRCuAZFp3q4qnOundehubejIUSpEs7pA5uih33
+RBE3dvp3
+--0000000000008fb27505b3751152--
