@@ -2,130 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BCA72A91AE
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 09:44:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE4342A91B4
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 09:45:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726628AbgKFIon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 03:44:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46066 "EHLO
+        id S1726661AbgKFIpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 03:45:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725830AbgKFIom (ORCPT
+        with ESMTP id S1725830AbgKFIpk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 03:44:42 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B3F1C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 00:44:42 -0800 (PST)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1kaxML-0007ok-Qg; Fri, 06 Nov 2020 09:44:37 +0100
-Subject: Re: [PATCH 03/19] gpu: drm: imx: ipuv3-plane: Mark 'crtc_state' as
- __always_unused
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Fabio Estevam <festevam@gmail.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>
-References: <20201105144517.1826692-1-lee.jones@linaro.org>
- <20201105144517.1826692-4-lee.jones@linaro.org>
- <15a4a184-74c2-e630-193a-cdea61545a03@pengutronix.de>
- <20201106074151.GU4488@dell>
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-Message-ID: <5056c156-9f6c-8e0d-54e8-5317fdd46c12@pengutronix.de>
-Date:   Fri, 6 Nov 2020 09:44:35 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        Fri, 6 Nov 2020 03:45:40 -0500
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D28CEC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 00:45:40 -0800 (PST)
+Received: by mail-oi1-x22f.google.com with SMTP id m17so621891oie.4
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 00:45:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0/92cdpzO11FzbQCzueBuQSjWB1HRcbFekCHNB7QwcU=;
+        b=WM5OUzi6OJSrwtnoagEHDtH1MNZJfaqznzdeqhLLjSaXFRo/7HhDcyly0g9sLf5x61
+         GFx2DK4dEfOCn1Su22egEM1OXHB4EPOCknH3F/yPBRxAki/tGyYa/pzYCVw77BKa2mOm
+         Q823G/ZK6sxtg40iJbIT0uFqvook8AX3pXp1k=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0/92cdpzO11FzbQCzueBuQSjWB1HRcbFekCHNB7QwcU=;
+        b=JX1EIj8Y1b+ZMLfghGZ9Le91X2lPXJfh4FIbPUAoZ7z9+n3ErzbBZ8GfEMZPasNiIA
+         YVCU1gPv4ioXdRrblizSEpzFNwR8///TrkPMK7Ylv6KDeCs4yfblqZRoZlgrraxF6aSJ
+         PF+tc5BoL5FHAOA+WfGglir/g5f7TJ5dBRWgdT2D2RlU5ZocYIqPmjGKvhAyWfza/tpm
+         YEH2j5TlIVhX39nh4w/4ji+NPnJ1iyvTbVOYgJJ8MqFMrgMYJucsDTznLR7xHzPSXa0g
+         QFIy6l8UgcdBAGiyZh2NJaymbzZuwjMHpF6EJp2CwEa+gQXCOvh8SW7myRc1muCAwl5g
+         9DKA==
+X-Gm-Message-State: AOAM533mwOW9yMrcFX+ECWd4+GRbcetqGL8AMjckjV+OrlmiauWL9p3O
+        /CKN8Y7h8Icgt2XbX1VJ5ekl4C/dgmKD1w==
+X-Google-Smtp-Source: ABdhPJysxyBmECkhabWj4xrH92lDorMJBvDaXxJjaLPZgTlNMAYWCnRh4Jpdtwmt681wVWcOdxx8TQ==
+X-Received: by 2002:aca:5f46:: with SMTP id t67mr486804oib.156.1604652339842;
+        Fri, 06 Nov 2020 00:45:39 -0800 (PST)
+Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com. [209.85.167.170])
+        by smtp.gmail.com with ESMTPSA id v17sm172313ote.40.2020.11.06.00.45.38
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 06 Nov 2020 00:45:39 -0800 (PST)
+Received: by mail-oi1-f170.google.com with SMTP id q206so590139oif.13
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 00:45:38 -0800 (PST)
+X-Received: by 2002:a05:6808:602:: with SMTP id y2mr516793oih.11.1604652338400;
+ Fri, 06 Nov 2020 00:45:38 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201106074151.GU4488@dell>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20201104180734.286789-1-ribalda@chromium.org> <20201104180734.286789-3-ribalda@chromium.org>
+ <20201106060602.GA6926@pendragon.ideasonboard.com>
+In-Reply-To: <20201106060602.GA6926@pendragon.ideasonboard.com>
+From:   Ricardo Ribalda <ribalda@chromium.org>
+Date:   Fri, 6 Nov 2020 09:45:27 +0100
+X-Gmail-Original-Message-ID: <CANiDSCuZ_euz1tb35ETffN_NxLxW_N-7hBCpk-HhuRuRJBFxkA@mail.gmail.com>
+Message-ID: <CANiDSCuZ_euz1tb35ETffN_NxLxW_N-7hBCpk-HhuRuRJBFxkA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/7] media: uvcvideo: Move guid to entity
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/6/20 8:41 AM, Lee Jones wrote:
-> On Thu, 05 Nov 2020, Ahmad Fatoum wrote:
-> 
->> Hello Lee,
->>
->> On 11/5/20 3:45 PM, Lee Jones wrote:
->>> In the macro for_each_oldnew_crtc_in_state() 'crtc_state' is provided
->>> as a container for state->crtcs[i].new_state, but is not utilised in
->>> this use-case.  We cannot simply delete the variable, so here we tell
->>> the compiler that we're intentionally discarding the read value.
->>
->> for_each_oldnew_crtc_in_state already (void) casts the drm_crtc and the old
->> drm_crtc_state to silence unused-but-set-variable warning. Should we maybe
->> (void) cast the new crtc_state as well?
-> 
-> From what I saw, it only void casts the ones which aren't assigned.
+Hi Laurent
 
-How do you mean? I wonder if
+Thanks for the review
 
- #define for_each_oldnew_crtc_in_state(__state, crtc, old_crtc_state, new_crtc_state, __i) \
-        for ((__i) = 0;                                                 \
-             (__i) < (__state)->dev->mode_config.num_crtc;              \
-             (__i)++)                                                   \
-                for_each_if ((__state)->crtcs[__i].ptr &&               \
-                             ((crtc) = (__state)->crtcs[__i].ptr,       \
-                              (void)(crtc) /* Only to avoid unused-but-set-variable warning */, \
-                             (old_crtc_state) = (__state)->crtcs[__i].old_state, \
-                             (void)(old_crtc_state) /* Only to avoid unused-but-set-variable warning */, \
--                            (new_crtc_state) = (__state)->crtcs[__i].new_state, 1))
-+                            (new_crtc_state) = (__state)->crtcs[__i].new_state, \
-+                            (void)(new_crtc_state), 1))
+On Fri, Nov 6, 2020 at 7:06 AM Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
+>
+> Hi Ricardo,
+>
+> Thank you for the patch.
+>
+> On Wed, Nov 04, 2020 at 07:07:29PM +0100, Ricardo Ribalda wrote:
+> > Instead of having multiple copies of the entity guid on the code, move
+> > it to the entity structure.
+> >
+> > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> > ---
+> >  drivers/media/usb/uvc/uvc_ctrl.c   | 30 ++++--------------------------
+> >  drivers/media/usb/uvc/uvc_driver.c | 21 +++++++++++++++++++--
+> >  drivers/media/usb/uvc/uvcvideo.h   |  2 +-
+> >  3 files changed, 24 insertions(+), 29 deletions(-)
+> >
+> > diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
+> > index f479d8971dfb..0e480b75e724 100644
+> > --- a/drivers/media/usb/uvc/uvc_ctrl.c
+> > +++ b/drivers/media/usb/uvc/uvc_ctrl.c
+> > @@ -826,31 +826,10 @@ static void uvc_set_le_value(struct uvc_control_mapping *mapping,
+> >   * Terminal and unit management
+> >   */
+> >
+> > -static const u8 uvc_processing_guid[16] = UVC_GUID_UVC_PROCESSING;
+> > -static const u8 uvc_camera_guid[16] = UVC_GUID_UVC_CAMERA;
+> > -static const u8 uvc_media_transport_input_guid[16] =
+> > -     UVC_GUID_UVC_MEDIA_TRANSPORT_INPUT;
+> > -
+> >  static int uvc_entity_match_guid(const struct uvc_entity *entity,
+> > -     const u8 guid[16])
+> > +                              const u8 guid[16])
+> >  {
+> > -     switch (UVC_ENTITY_TYPE(entity)) {
+> > -     case UVC_ITT_CAMERA:
+> > -             return memcmp(uvc_camera_guid, guid, 16) == 0;
+> > -
+> > -     case UVC_ITT_MEDIA_TRANSPORT_INPUT:
+> > -             return memcmp(uvc_media_transport_input_guid, guid, 16) == 0;
+> > -
+> > -     case UVC_VC_PROCESSING_UNIT:
+> > -             return memcmp(uvc_processing_guid, guid, 16) == 0;
+> > -
+> > -     case UVC_VC_EXTENSION_UNIT:
+> > -             return memcmp(entity->extension.guidExtensionCode,
+> > -                           guid, 16) == 0;
+> > -
+> > -     default:
+> > -             return 0;
+> > -     }
+> > +     return memcmp(entity->guid, guid, sizeof(entity->guid)) == 0;
+> >  }
+> >
+> >  /* ------------------------------------------------------------------------
+> > @@ -1776,8 +1755,7 @@ static int uvc_ctrl_fill_xu_info(struct uvc_device *dev,
+> >       if (data == NULL)
+> >               return -ENOMEM;
+> >
+> > -     memcpy(info->entity, ctrl->entity->extension.guidExtensionCode,
+> > -            sizeof(info->entity));
+> > +     memcpy(info->entity, ctrl->entity->guid, sizeof(info->entity));
+> >       info->index = ctrl->index;
+> >       info->selector = ctrl->index + 1;
+> >
+> > @@ -1883,7 +1861,7 @@ int uvc_xu_ctrl_query(struct uvc_video_chain *chain,
+> >
+> >       if (!found) {
+> >               uvc_trace(UVC_TRACE_CONTROL, "Control %pUl/%u not found.\n",
+> > -                     entity->extension.guidExtensionCode, xqry->selector);
+> > +                     entity->guid, xqry->selector);
+> >               return -ENOENT;
+> >       }
+> >
+> > diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
+> > index 9fc0b600eab1..77fea26faa9a 100644
+> > --- a/drivers/media/usb/uvc/uvc_driver.c
+> > +++ b/drivers/media/usb/uvc/uvc_driver.c
+> > @@ -1019,6 +1019,11 @@ static int uvc_parse_streaming(struct uvc_device *dev,
+> >       return ret;
+> >  }
+> >
+> > +static const u8 uvc_camera_guid[16] = UVC_GUID_UVC_CAMERA;
+> > +static const u8 uvc_media_transport_input_guid[16] =
+> > +     UVC_GUID_UVC_MEDIA_TRANSPORT_INPUT;
+> > +static const u8 uvc_processing_guid[16] = UVC_GUID_UVC_PROCESSING;
+> > +
+> >  static struct uvc_entity *uvc_alloc_entity(u16 type, u8 id,
+> >               unsigned int num_pads, unsigned int extra_size)
+> >  {
+> > @@ -1038,6 +1043,18 @@ static struct uvc_entity *uvc_alloc_entity(u16 type, u8 id,
+> >       entity->id = id;
+> >       entity->type = type;
+> >
+> > +     switch (type) {
+> > +     case UVC_ITT_CAMERA:
+> > +             memcpy(entity->guid, uvc_camera_guid, 16);
+> > +             break;
+> > +     case UVC_ITT_MEDIA_TRANSPORT_INPUT:
+> > +             memcpy(entity->guid, uvc_media_transport_input_guid, 16);
+> > +             break;
+> > +     case UVC_VC_PROCESSING_UNIT:
+> > +             memcpy(entity->guid, uvc_processing_guid, 16);
+> > +             break;
+> > +     }
+>
+> Given that the GUID is set in uvc_parse_vendor_control() and
+> uvc_parse_standard_control() for extension units, I'm wondering if it
+> would make sense to move it there for the other entity types too. Up to
+> you. Otherwise, I'd add the following comment above the switch:
+>
+>         /*
+>          * Set the GUID for standard entity types. For extension units, the GUID
+>          * is initialized by the caller.
+>          */
 
-wouldn't be better.
+I added the comment. So far I am working on
 
-> 
->>> Fixes the following W=1 kernel build warning(s):
->>>
->>>  drivers/gpu/drm/imx/ipuv3-plane.c: In function ‘ipu_planes_assign_pre’:
->>>  drivers/gpu/drm/imx/ipuv3-plane.c:746:42: warning: variable ‘crtc_state’ set but not used [-Wunused-but-set-variable]
->>>
->>> Cc: Philipp Zabel <p.zabel@pengutronix.de>
->>> Cc: David Airlie <airlied@linux.ie>
->>> Cc: Daniel Vetter <daniel@ffwll.ch>
->>> Cc: Shawn Guo <shawnguo@kernel.org>
->>> Cc: Sascha Hauer <s.hauer@pengutronix.de>
->>> Cc: Pengutronix Kernel Team <kernel@pengutronix.de>
->>> Cc: Fabio Estevam <festevam@gmail.com>
->>> Cc: NXP Linux Team <linux-imx@nxp.com>
->>> Cc: dri-devel@lists.freedesktop.org
->>> Signed-off-by: Lee Jones <lee.jones@linaro.org>
->>> ---
->>>  drivers/gpu/drm/imx/ipuv3-plane.c | 2 +-
->>>  1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/gpu/drm/imx/ipuv3-plane.c b/drivers/gpu/drm/imx/ipuv3-plane.c
->>> index 8a4235d9d9f1e..acc0a3ce4992f 100644
->>> --- a/drivers/gpu/drm/imx/ipuv3-plane.c
->>> +++ b/drivers/gpu/drm/imx/ipuv3-plane.c
->>> @@ -743,7 +743,7 @@ bool ipu_plane_atomic_update_pending(struct drm_plane *plane)
->>>  int ipu_planes_assign_pre(struct drm_device *dev,
->>>  			  struct drm_atomic_state *state)
->>>  {
->>> -	struct drm_crtc_state *old_crtc_state, *crtc_state;
->>> +	struct drm_crtc_state *old_crtc_state, __always_unused *crtc_state;
->>>  	struct drm_plane_state *plane_state;
->>>  	struct ipu_plane_state *ipu_state;
->>>  	struct ipu_plane *ipu_plane;
->>>
->>
-> 
+https://github.com/ribalda/linux/tree/uvctest-v3
+
+Please let me know when you are ready with v2, to send v3 to the mailing list.
+
+Thanks!
+
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+>
+> > +
+> >       entity->num_links = 0;
+> >       entity->num_pads = num_pads;
+> >       entity->pads = ((void *)(entity + 1)) + extra_size;
+> > @@ -1109,7 +1126,7 @@ static int uvc_parse_vendor_control(struct uvc_device *dev,
+> >               if (unit == NULL)
+> >                       return -ENOMEM;
+> >
+> > -             memcpy(unit->extension.guidExtensionCode, &buffer[4], 16);
+> > +             memcpy(unit->guid, &buffer[4], 16);
+> >               unit->extension.bNumControls = buffer[20];
+> >               memcpy(unit->baSourceID, &buffer[22], p);
+> >               unit->extension.bControlSize = buffer[22+p];
+> > @@ -1368,7 +1385,7 @@ static int uvc_parse_standard_control(struct uvc_device *dev,
+> >               if (unit == NULL)
+> >                       return -ENOMEM;
+> >
+> > -             memcpy(unit->extension.guidExtensionCode, &buffer[4], 16);
+> > +             memcpy(unit->guid, &buffer[4], 16);
+> >               unit->extension.bNumControls = buffer[20];
+> >               memcpy(unit->baSourceID, &buffer[22], p);
+> >               unit->extension.bControlSize = buffer[22+p];
+> > diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
+> > index a3dfacf069c4..df7bf2d104a3 100644
+> > --- a/drivers/media/usb/uvc/uvcvideo.h
+> > +++ b/drivers/media/usb/uvc/uvcvideo.h
+> > @@ -304,6 +304,7 @@ struct uvc_entity {
+> >       u8 id;
+> >       u16 type;
+> >       char name[64];
+> > +     u8 guid[16];
+> >
+> >       /* Media controller-related fields. */
+> >       struct video_device *vdev;
+> > @@ -342,7 +343,6 @@ struct uvc_entity {
+> >               } selector;
+> >
+> >               struct {
+> > -                     u8  guidExtensionCode[16];
+> >                       u8  bNumControls;
+> >                       u8  bControlSize;
+> >                       u8  *bmControls;
+>
+> --
+> Regards,
+>
+> Laurent Pinchart
+
+
 
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Ricardo Ribalda
