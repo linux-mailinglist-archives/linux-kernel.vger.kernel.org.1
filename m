@@ -2,164 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EDE82A8D94
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 04:37:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD01F2A8DB2
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 04:47:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725849AbgKFDhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 22:37:40 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7152 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725616AbgKFDhk (ORCPT
+        id S1725972AbgKFDrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 22:47:52 -0500
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:38722 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725616AbgKFDrw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 22:37:40 -0500
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CS5gF1KNyz15Rgr;
-        Fri,  6 Nov 2020 11:37:29 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 6 Nov 2020 11:37:23 +0800
-From:   Qinglang Miao <miaoqinglang@huawei.com>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Qinglang Miao <miaoqinglang@huawei.com>
-Subject: [PATCH v4] PCI: v3: fix missing clk_disable_unprepare() on error in v3_pci_probe
-Date:   Fri, 6 Nov 2020 11:42:49 +0800
-Message-ID: <20201106034249.169996-1-miaoqinglang@huawei.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201106031208.160334-1-miaoqinglang@huawei.com>
-References: <20201106031208.160334-1-miaoqinglang@huawei.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+        Thu, 5 Nov 2020 22:47:52 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=2;SR=0;TI=SMTPD_---0UEO33AN_1604634469;
+Received: from aliy80.localdomain(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UEO33AN_1604634469)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 06 Nov 2020 11:47:49 +0800
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] fs/hfs: remove unused macro to tame gcc
+Date:   Fri,  6 Nov 2020 11:47:36 +0800
+Message-Id: <1604634457-3954-1-git-send-email-alex.shi@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the missing clk_disable_unprepare() before return
-from v3_pci_probe() in the error handling case.
+Couple macro are duplicated defined and they are not used. So
+to tame gcc, let's remove them.
 
-I also move the clock-enable function later to avoid some
-fixes.
+fs/hfsplus/part_tbl.c:26:0: warning: macro "HFS_DRVR_DESC_MAGIC" is not
+used [-Wunused-macros]
+fs/hfsplus/part_tbl.c:30:0: warning: macro "HFS_MFS_SUPER_MAGIC" is not
+used [-Wunused-macros]
+fs/hfsplus/part_tbl.c:21:0: warning: macro "HFS_DD_BLK" is not used
+[-Wunused-macros]
+net/l2tp/l2tp_core.c:73:0: warning: macro "L2TP_HDRFLAG_P" is not used
+[-Wunused-macros]
 
-Fixes: 68a15eb7bd0c ("PCI: v3-semi: Add V3 Semiconductor PCI host driver")
-Suggested-by: Rob Herring <robh@kernel.org>
-Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+Cc: linux-fsdevel@vger.kernel.org 
+Cc: linux-kernel@vger.kernel.org 
 ---
- v2: add commit causing this problem and add more error handling
-     cases which are not enough.
- v3: 1. fix the wrong 'Fixes commit'.
-     2. use goto to clean up this patch.
-     3. cover all error handling cases.
- v4: fix uncorresponding author name.
- drivers/pci/controller/pci-v3-semi.c | 49 +++++++++++++++++-----------
- 1 file changed, 30 insertions(+), 19 deletions(-)
+ fs/hfs/hfs.h          | 2 --
+ fs/hfsplus/part_tbl.c | 2 --
+ 2 files changed, 4 deletions(-)
 
-diff --git a/drivers/pci/controller/pci-v3-semi.c b/drivers/pci/controller/pci-v3-semi.c
-index 154a53986..f862a56a3 100644
---- a/drivers/pci/controller/pci-v3-semi.c
-+++ b/drivers/pci/controller/pci-v3-semi.c
-@@ -725,18 +725,6 @@ static int v3_pci_probe(struct platform_device *pdev)
- 	host->sysdata = v3;
- 	v3->dev = dev;
+diff --git a/fs/hfs/hfs.h b/fs/hfs/hfs.h
+index 6f194d0768b6..12a807d9dbc0 100644
+--- a/fs/hfs/hfs.h
++++ b/fs/hfs/hfs.h
+@@ -15,11 +15,9 @@
+ #define HFS_MDB_BLK		2 /* Block (w/i partition) of MDB */
  
--	/* Get and enable host clock */
--	clk = devm_clk_get(dev, NULL);
--	if (IS_ERR(clk)) {
--		dev_err(dev, "clock not found\n");
--		return PTR_ERR(clk);
--	}
--	ret = clk_prepare_enable(clk);
--	if (ret) {
--		dev_err(dev, "unable to enable clock\n");
--		return ret;
--	}
--
- 	regs = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	v3->base = devm_ioremap_resource(dev, regs);
- 	if (IS_ERR(v3->base))
-@@ -761,10 +749,24 @@ static int v3_pci_probe(struct platform_device *pdev)
- 	if (IS_ERR(v3->config_base))
- 		return PTR_ERR(v3->config_base);
+ /* magic numbers for various disk blocks */
+-#define HFS_DRVR_DESC_MAGIC	0x4552 /* "ER": driver descriptor map */
+ #define HFS_OLD_PMAP_MAGIC	0x5453 /* "TS": old-type partition map */
+ #define HFS_NEW_PMAP_MAGIC	0x504D /* "PM": new-type partition map */
+ #define HFS_SUPER_MAGIC		0x4244 /* "BD": HFS MDB (super block) */
+-#define HFS_MFS_SUPER_MAGIC	0xD2D7 /* MFS MDB (super block) */
  
-+	/* Get and enable host clock */
-+        clk = devm_clk_get(dev, NULL);
-+        if (IS_ERR(clk)) {
-+                dev_err(dev, "clock not found\n");
-+                return PTR_ERR(clk);
-+        }
-+        ret = clk_prepare_enable(clk);
-+        if (ret) {
-+                dev_err(dev, "unable to enable clock\n");
-+                return ret;
-+        }
-+
- 	/* Get and request error IRQ resource */
- 	irq = platform_get_irq(pdev, 0);
--	if (irq < 0)
--		return irq;
-+	if (irq < 0) {
-+		ret = irq;
-+		goto err_clk;
-+	}
+ /* various FIXED size parameters */
+ #define HFS_SECTOR_SIZE		512    /* size of an HFS sector */
+diff --git a/fs/hfsplus/part_tbl.c b/fs/hfsplus/part_tbl.c
+index 63164ebc52fa..ecda671d56a8 100644
+--- a/fs/hfsplus/part_tbl.c
++++ b/fs/hfsplus/part_tbl.c
+@@ -23,11 +23,9 @@
+ #define HFS_MDB_BLK		2 /* Block (w/i partition) of MDB */
  
- 	ret = devm_request_irq(dev, irq, v3_irq, 0,
- 			"PCIv3 error", v3);
-@@ -772,7 +774,7 @@ static int v3_pci_probe(struct platform_device *pdev)
- 		dev_err(dev,
- 			"unable to request PCIv3 error IRQ %d (%d)\n",
- 			irq, ret);
--		return ret;
-+		goto err_clk;
- 	}
+ /* magic numbers for various disk blocks */
+-#define HFS_DRVR_DESC_MAGIC	0x4552 /* "ER": driver descriptor map */
+ #define HFS_OLD_PMAP_MAGIC	0x5453 /* "TS": old-type partition map */
+ #define HFS_NEW_PMAP_MAGIC	0x504D /* "PM": new-type partition map */
+ #define HFS_SUPER_MAGIC		0x4244 /* "BD": HFS MDB (super block) */
+-#define HFS_MFS_SUPER_MAGIC	0xD2D7 /* MFS MDB (super block) */
  
- 	/*
-@@ -814,12 +816,12 @@ static int v3_pci_probe(struct platform_device *pdev)
- 		ret = v3_pci_setup_resource(v3, host, win);
- 		if (ret) {
- 			dev_err(dev, "error setting up resources\n");
--			return ret;
-+			goto err_clk;
- 		}
- 	}
- 	ret = v3_pci_parse_map_dma_ranges(v3, np);
- 	if (ret)
--		return ret;
-+		goto err_clk;
- 
- 	/*
- 	 * Disable PCI to host IO cycles, enable I/O buffers @3.3V,
-@@ -863,7 +865,7 @@ static int v3_pci_probe(struct platform_device *pdev)
- 	if (of_device_is_compatible(np, "arm,integrator-ap-pci")) {
- 		ret = v3_integrator_init(v3);
- 		if (ret)
--			return ret;
-+			goto err_clk;
- 	}
- 
- 	/* Post-init: enable PCI memory and invalidate (master already on) */
-@@ -889,7 +891,16 @@ static int v3_pci_probe(struct platform_device *pdev)
- 	val |= V3_SYSTEM_M_LOCK;
- 	writew(val, v3->base + V3_SYSTEM);
- 
--	return pci_host_probe(host);
-+	ret = pci_host_probe(host);
-+	if (ret < 0)
-+		goto err_clk;
-+
-+	return 0;
-+
-+err_clk:
-+	clk_disable_unprepare(clk);
-+
-+	return ret;
- }
- 
- static const struct of_device_id v3_pci_of_match[] = {
+ /*
+  * The new style Mac partition map
 -- 
-2.23.0
+1.8.3.1
 
