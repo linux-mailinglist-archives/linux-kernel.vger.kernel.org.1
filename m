@@ -2,107 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB5412A908B
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 08:40:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07E532A9087
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 08:40:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726526AbgKFHk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 02:40:29 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:58474 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726248AbgKFHk0 (ORCPT
+        id S1726487AbgKFHkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 02:40:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725830AbgKFHkN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 02:40:26 -0500
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A67WAJJ170344;
-        Fri, 6 Nov 2020 02:40:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : date :
- message-id : subject; s=pp1;
- bh=iuecD5zUOAE9BIUvAvgOIeZkcZLar3f0+ORBlsIp6zc=;
- b=TNv5IcCF9Bbfaclw+Rqn0bYPmCqepSEnWbdhKn4MBm07Nn4Phrl7ZjdGvw7iYsTs3G6f
- wfT0G1Uk8cym203ezn9kc49S+xo97xgrWk7lH2jEFvos3MsgX56z2ONMONZzOzLtErO4
- ThnMRD5lnMovQdqiKMCiTtTdD5gdJEoiGEdm0j2BH7P+sh6Ol+RLam8/XqNCP8rJpv0+
- PpkWS7TF4NibBmCPWeZOb0wS50BTn/ugNGj8nmflSr2Dv5Z9n9OBR0QEvBCerZaUX8dy
- Whwc+sq5c6qYYsWp4SzNzywDsVySZ4pRJIS9kzJn0QmK+FeZDK4zZMTdiepYJJENzQRZ sw== 
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 34mnyj2c0j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 06 Nov 2020 02:40:18 -0500
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0A67bCBE015767;
-        Fri, 6 Nov 2020 07:40:16 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma04ams.nl.ibm.com with ESMTP id 34h01ue0nu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 06 Nov 2020 07:40:15 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0A67eDSA3736208
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 6 Nov 2020 07:40:13 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A434352050;
-        Fri,  6 Nov 2020 07:40:13 +0000 (GMT)
-Received: from MacBook-Pro.local (unknown [9.85.71.182])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 366135204F;
-        Fri,  6 Nov 2020 07:40:12 +0000 (GMT)
-From:   Sachin Sant <sachinp@linux.vnet.ibm.com>
-To:     Michael Ellerman <michael@ellerman.id.au>,
-        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org
-Cc:     Sachin Sant <sachinp@linux.vnet.ibm.com>, christian@brauner.io,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        keescook@chromium.org
-Date:   Fri, 06 Nov 2020 13:10:06 +0530
-Message-Id: <160464840151.97255.15344214064240834294.sendpatchset@MacBook-Pro.local>
-Subject: [PATCH V2] selftests/cgroup: Fix build on older distros
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-06_02:2020-11-05,2020-11-06 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=1
- priorityscore=1501 bulkscore=0 spamscore=0 phishscore=0 impostorscore=0
- lowpriorityscore=0 mlxlogscore=777 mlxscore=0 adultscore=0 clxscore=1011
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011060048
+        Fri, 6 Nov 2020 02:40:13 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D70EC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 23:40:13 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id b8so268979wrn.0
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 23:40:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=FBCTJlC6IgyFxCdhJWM7lRLLPX+oBdWzGjC12/FTDB0=;
+        b=pP0Aad/y+VvQMppvdJTxmqkGA4n7WEkLPyt0/SQqsohWMZ0WCGFRVCVmubPTCNXu0i
+         5KNjN8/SSrCK8qBoc1YJIGSd+hKEK6wVFBW+XP+rVqlJ5PQDO3VGYGEE14Dq+VmLb8IX
+         RyVc0DaKILVBsdfK3BftUj2y6HAmcyB5pSXulB7gxP202bNkGcLU33VBDUTTDcMCfGFY
+         0yiP2IcVCo+9spH4njz0g/Eg34mgcg76IxFAkbjwrtcJWF9o2stQ95KvJ7bWDY1xDe+4
+         7raWX71MTb9znWi2191NtF5tnkDxDYtyDBXD3L27pOvWNLR1g95rDF57YCSbEpzpxktU
+         m6KA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=FBCTJlC6IgyFxCdhJWM7lRLLPX+oBdWzGjC12/FTDB0=;
+        b=qYPraqx0hV7DR/RtPNhxCtVL30+QfYVkBuVDYmdEhQBdzqy+XyKL5kutr9xnVkBabm
+         hpmd7SAj3HU4JhGu7T8LVnnE+I4ZURJi7G4doiAEFkZNIhzGG3+T3QmeN8pQG5WpkbWP
+         JnsEzD+5YQGJ/ZZMrY/VLJG1+AV6wq6Uy4krYwbrqz83saoxaOpjAWEMyEVG+UfbziT1
+         /tjFoZcl4Oer4qR3++mA8mkV2wO3Kcq86PK6uGdAAwRiXB5YqeSKVq87lIl7mUUqDI1Y
+         M4KOXrz0ugkzPacgr5IeE1lpRmVRchKdINES4YshtWPkof3qWN2WDebxwNl17D5nPP9/
+         kRgA==
+X-Gm-Message-State: AOAM533ZvwI1Qx2tyHma3FV6/40yzJtJHxgl98Fh34ZI/IdFQQBmSBhi
+        iokrfAgkoVyIc71nrVqIQ6U=
+X-Google-Smtp-Source: ABdhPJxA7N7QLsOuq5CNYGAsnhTp/0gYkEQ50Az1rX2NwdZ2BSd2VBcyl2AEiH8Wu9NFtEaAddlinA==
+X-Received: by 2002:adf:face:: with SMTP id a14mr1144899wrs.6.1604648411971;
+        Thu, 05 Nov 2020 23:40:11 -0800 (PST)
+Received: from ziggy.stardust ([213.195.112.112])
+        by smtp.gmail.com with ESMTPSA id v6sm863384wrb.53.2020.11.05.23.40.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Nov 2020 23:40:11 -0800 (PST)
+Subject: Re: [PATCH] mfd: syscon: Add
+ syscon_regmap_lookup_by_phandle_optional() function.
+To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Collabora Kernel ML <kernel@collabora.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Arnd Bergmann <arnd@arndb.de>, Lee Jones <lee.jones@linaro.org>
+References: <20201027211154.3371691-1-enric.balletbo@collabora.com>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <d6e29e8b-9d5e-455b-24dc-7ec016c9b6b2@gmail.com>
+Date:   Fri, 6 Nov 2020 08:40:09 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
+MIME-Version: 1.0
+In-Reply-To: <20201027211154.3371691-1-enric.balletbo@collabora.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On older distros struct clone_args does not have a cgroup member,
-leading to build errors:
 
- cgroup_util.c: In function 'clone_into_cgroup':
- cgroup_util.c:343:4: error: 'struct clone_args' has no member named 'cgroup'
- cgroup_util.c:346:33: error: invalid application of 'sizeof' to incomplete
-  type 'struct clone_args'
 
-But the selftests already have a locally defined version of the
-structure which is up to date, called __clone_args.
+On 27/10/2020 22:11, Enric Balletbo i Serra wrote:
+> This adds syscon_regmap_lookup_by_phandle_optional() function to get an
+> optional regmap.
+> 
+> It behaves the same as syscon_regmap_lookup_by_phandle() except where
+> there is no regmap phandle. In this case, instead of returning -ENODEV,
+> the function returns NULL. This makes error checking simpler when the
+> regmap phandle is optional.
+> 
+> Suggested-by: Nicolas Boichat <drinkcat@chromium.org>
+> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 
-So use __clone_args which fixes the error.
+Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
 
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Signed-off-by: Sachin Sant <sachinp@linux.vnet.ibm.com>>
-Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
----
-
-V2: Replace all instances of clone_args by __clone_args
----
-
-diff --git a/a/tools/testing/selftests/cgroup/cgroup_util.c b/b/tools/testing/selftests/cgroup/cgroup_util.c
-index 05853b0..0270146 100644
---- a/a/tools/testing/selftests/cgroup/cgroup_util.c
-+++ b/b/tools/testing/selftests/cgroup/cgroup_util.c
-@@ -337,13 +337,13 @@ pid_t clone_into_cgroup(int cgroup_fd)
- #ifdef CLONE_ARGS_SIZE_VER2
- 	pid_t pid;
- 
--	struct clone_args args = {
-+	struct __clone_args args = {
- 		.flags = CLONE_INTO_CGROUP,
- 		.exit_signal = SIGCHLD,
- 		.cgroup = cgroup_fd,
- 	};
- 
--	pid = sys_clone3(&args, sizeof(struct clone_args));
-+	pid = sys_clone3(&args, sizeof(struct __clone_args));
- 	/*
- 	 * Verify that this is a genuine test failure:
- 	 * ENOSYS -> clone3() not available
+> ---
+> 
+>   drivers/mfd/syscon.c       | 13 +++++++++++++
+>   include/linux/mfd/syscon.h | 11 +++++++++++
+>   2 files changed, 24 insertions(+)
+> 
+> diff --git a/drivers/mfd/syscon.c b/drivers/mfd/syscon.c
+> index ca465794ea9c..60c5c2b194cc 100644
+> --- a/drivers/mfd/syscon.c
+> +++ b/drivers/mfd/syscon.c
+> @@ -255,6 +255,19 @@ struct regmap *syscon_regmap_lookup_by_phandle_args(struct device_node *np,
+>   }
+>   EXPORT_SYMBOL_GPL(syscon_regmap_lookup_by_phandle_args);
+>   
+> +struct regmap *syscon_regmap_lookup_by_phandle_optional(struct device_node *np,
+> +					const char *property)
+> +{
+> +	struct regmap *regmap;
+> +
+> +	regmap = syscon_regmap_lookup_by_phandle(np, property);
+> +	if (IS_ERR(regmap) && PTR_ERR(regmap) == -ENODEV)
+> +		return NULL;
+> +
+> +	return regmap;
+> +}
+> +EXPORT_SYMBOL_GPL(syscon_regmap_lookup_by_phandle_optional);
+> +
+>   static int syscon_probe(struct platform_device *pdev)
+>   {
+>   	struct device *dev = &pdev->dev;
+> diff --git a/include/linux/mfd/syscon.h b/include/linux/mfd/syscon.h
+> index 7f20e9b502a5..a1fe8aedced2 100644
+> --- a/include/linux/mfd/syscon.h
+> +++ b/include/linux/mfd/syscon.h
+> @@ -28,6 +28,9 @@ extern struct regmap *syscon_regmap_lookup_by_phandle_args(
+>   					const char *property,
+>   					int arg_count,
+>   					unsigned int *out_args);
+> +extern struct regmap *syscon_regmap_lookup_by_phandle_optional(
+> +					struct device_node *np,
+> +					const char *property);
+>   #else
+>   static inline struct regmap *device_node_to_regmap(struct device_node *np)
+>   {
+> @@ -59,6 +62,14 @@ static inline struct regmap *syscon_regmap_lookup_by_phandle_args(
+>   {
+>   	return ERR_PTR(-ENOTSUPP);
+>   }
+> +
+> +static inline struct regmap *syscon_regmap_lookup_by_phandle_optional(
+> +					struct device_node *np,
+> +					const char *property)
+> +{
+> +	return ERR_PTR(-ENOTSUPP);
+> +}
+> +
+>   #endif
+>   
+>   #endif /* __LINUX_MFD_SYSCON_H__ */
+> 
