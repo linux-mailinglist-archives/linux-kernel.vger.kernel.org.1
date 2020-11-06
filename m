@@ -2,87 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C73462A990A
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 17:05:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8934D2A990D
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 17:07:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726321AbgKFQFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 11:05:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725868AbgKFQFQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 11:05:16 -0500
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C90BC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 08:05:16 -0800 (PST)
-Received: by mail-pl1-x642.google.com with SMTP id k7so855330plk.3
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 08:05:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FoXLdGBXdDw+uNhHPXkAApRLi9OkMFj360uNnK0TzyI=;
-        b=jxymNEiBQdKqAHykPjKbWpEhm4u9GCjg7eq5wCGyJLgHLTYslfM/0NPk0SXdfY24QZ
-         cnpnmr2OE9cBW3K8cFRTos0+c1g5aRS87zl4gsPQecUKK3amXqdY+jjM+Q1nEYwMSJor
-         JqheHA4SZJwORlrnrHUIlAjyb4X/ts3GNBBSAubExNR4oNKpQCWRPaFFcwOaBdReFR8P
-         gUb8hdP1kCHx3otLu+Vvein8AqOttA77bCacIArXzOqpFzJYdob1AllyM63YX2IFVQ/O
-         ro4Y1eWnlSN3BjVMzZ8AZPQZZDJWLEIJK/DXrp7l4yon8Mur8vvUBjCCLgLeXL/Y6Neq
-         Qv9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FoXLdGBXdDw+uNhHPXkAApRLi9OkMFj360uNnK0TzyI=;
-        b=q+RjPq8lkjr4B4ttrgJBARLORpzO0+QcW5SVhpIbbsAe9jYLSPAKK03T5iD3t4d3YG
-         yXaS/qKNJiRuyPaVV6AXILtFCEJ1UJCryWEEUpjwYccR6nzqWBz+A5mw9DUqnWp5id72
-         32w1kFEgSYhW/wefV0gPtOZvJbXvIqqGi510RvSGpdFUgrF68GcLmevBtAs199Y7YgBo
-         mYQjS5pZS7YojCu+NvXMWU+iLebsX8eyRbuS0Lt3sFK+077cnGUyiUkXQ5muVjPjdlzq
-         RlGNOrHA2EALIQkYv5zbzPeQbanK+X2SQx2oBA14Q+yu+VgYmQ8IdyvKCkJuEmGV/woB
-         /y5w==
-X-Gm-Message-State: AOAM530TaEal00LaD+xqPknKV1HlrqX0EXz81vLlZW12bXBs4xNxoYYj
-        bpbx5gGXykbRhWO/iBRX277CGdkxTD0h4c2Ucic=
-X-Google-Smtp-Source: ABdhPJz/nrWsBe1yaqnUnN57MUNrXaKdxF0bSsQg2P3Pu351GfUOcDtnIp/ZKl5jKvXBTQu/50DK+x9OZX4FbR9elts=
-X-Received: by 2002:a17:902:6bc8:b029:d6:d9d:f28c with SMTP id
- m8-20020a1709026bc8b02900d60d9df28cmr2172651plt.17.1604678715972; Fri, 06 Nov
- 2020 08:05:15 -0800 (PST)
+        id S1726697AbgKFQGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 11:06:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59746 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725868AbgKFQGv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 11:06:51 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2AA5E2078B;
+        Fri,  6 Nov 2020 16:06:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604678810;
+        bh=d9Gi07iaKLOb6bYB85zhOUrzxMsKmvTb4B3WbC93xyk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=T1WynHEc7leJzJZzHbDHezQ67N930g/hMbtg3wtJfD7rVSSzOv0kZ4ULHgzAE05r7
+         EHkbxrxOHUYzF2/A9PV3QTKXe+wk1oqGT4qlRNUOG7xJfeRWABriGoSFogWnwgLCgK
+         L1vBPfCVk83uRSPbbDh6ZgEn1mFDNVHngHSrGDWw=
+Date:   Fri, 6 Nov 2020 08:06:49 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Martin Schiller <ms@dev.tdt.de>
+Cc:     andrew.hendry@gmail.com, davem@davemloft.net, edumazet@google.com,
+        xiyuyang19@fudan.edu.cn, linux-x25@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] net/x25: Fix null-ptr-deref in x25_connect
+Message-ID: <20201106080649.122dfb22@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <9751fc51170c9bf776e03d079a3e92e3@dev.tdt.de>
+References: <20201006054558.19453-1-ms@dev.tdt.de>
+        <9751fc51170c9bf776e03d079a3e92e3@dev.tdt.de>
 MIME-Version: 1.0
-References: <20201106143551.43908-1-andriy.shevchenko@linux.intel.com> <e461a47754974c0d8d0b61981b77ae80@AcuMS.aculab.com>
-In-Reply-To: <e461a47754974c0d8d0b61981b77ae80@AcuMS.aculab.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 6 Nov 2020 18:06:04 +0200
-Message-ID: <CAHp75VfTFL_7bJ5HyyuATVk32+buD9JoNDhyf1noAfoFGqJ_OQ@mail.gmail.com>
-Subject: Re: [PATCH v1 1/3] vt: keyboard, use GENMAASK()/BIT() macros instead
- of open coded variants
-To:     David Laight <David.Laight@aculab.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 6, 2020 at 5:35 PM David Laight <David.Laight@aculab.com> wrote:
->
-> From: Andy Shevchenko
-> > Sent: 06 November 2020 14:36
-> >
-> > There are few places when GENMASK() or BIT() macro is suitable and makes code
-> > easier to understand.
-> >
-> ...
-> > -     if ((d & ~0xff) == BRL_UC_ROW) {
-> > -             if ((ch & ~0xff) == BRL_UC_ROW)
-> > +     if ((d & ~GENMASK(7, 0)) == BRL_UC_ROW) {
-> > +             if ((ch & ~GENMASK(7, 0)) == BRL_UC_ROW)
-> >                       return d | ch;
->
-> Do you really think that makes it more readable?
+On Fri, 06 Nov 2020 07:23:05 +0100 Martin Schiller wrote:
+> On 2020-10-06 07:45, Martin Schiller wrote:
+> > This fixes a regression for blocking connects introduced by commit
+> > 4becb7ee5b3d ("net/x25: Fix x25_neigh refcnt leak when x25 
+> > disconnect").
+> > 
+> > The x25->neighbour is already set to "NULL" by x25_disconnect() now,
+> > while a blocking connect is waiting in
+> > x25_wait_for_connection_establishment(). Therefore x25->neighbour must
+> > not be accessed here again and x25->state is also already set to
+> > X25_STATE_0 by x25_disconnect().
+> > 
+> > Fixes: 4becb7ee5b3d ("net/x25: Fix x25_neigh refcnt leak when x25 
+> > disconnect")
+> > Signed-off-by: Martin Schiller <ms@dev.tdt.de>
+> 
+> @David
+> Is there anything left I need to do, to get this fix merged?
 
-Yes. Because this tells explicitly how many bits are used for metadata
-vs. data.
+Hm, no idea what happened here (you could try to check the state in
+patchwork but it's gonna take some digging to find a month old patch).
 
--- 
-With Best Regards,
-Andy Shevchenko
+Please resend and we'll take it from there.
