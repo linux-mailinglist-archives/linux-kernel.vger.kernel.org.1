@@ -2,163 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D00882A9B94
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 19:06:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6B542A9B96
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 19:07:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727845AbgKFSGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 13:06:18 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:54004 "EHLO
+        id S1727856AbgKFSHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 13:07:05 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:30133 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726999AbgKFSGR (ORCPT
+        by vger.kernel.org with ESMTP id S1726034AbgKFSHF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 13:06:17 -0500
+        Fri, 6 Nov 2020 13:07:05 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604685975;
+        s=mimecast20190719; t=1604686024;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=I0pHHCkh8h1ZrxEhKDliX3OCq4ruCPd3+x0l3KQUgGU=;
-        b=IZLVqyHbA3Q2R3YcnMWZpt9vZwXP6g4X2YsFJLClWB+djQmZc+C4M6tXcDNhgxu/J4f8+t
-        3+x5lPtVdh+rjNXYSqp943I/EdAzykLAyYOORzM8az2jxLp9qbvgW+ty9ESRdh3uS0+yAW
-        YJjxv/M8drpum3Bor+2CN7Q6/HyK6bc=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-296-8LYSHNbXMGiGNsOSdJrkqQ-1; Fri, 06 Nov 2020 13:06:14 -0500
-X-MC-Unique: 8LYSHNbXMGiGNsOSdJrkqQ-1
-Received: by mail-qk1-f197.google.com with SMTP id z28so1277102qkj.4
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 10:06:14 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=I0pHHCkh8h1ZrxEhKDliX3OCq4ruCPd3+x0l3KQUgGU=;
-        b=EcC0N8zRleyTt6bqgN5NaOjs8E3ROKP2kyqadHWhsPbIy6oh2glAzRHF5xHpRcTc6q
-         Fd35v+GWwPowwhw4K70Y/SUMjLXAWr61ix2vHdBUfCCs8NVMZqAj7N0QjXKNRgI9YGPY
-         PpdS5Xxtn3LXmwvNZb012XrC5+jJlohv7Z6UdtC4AI8G/AMKeDOIkLQo17Fiuyf3hSbj
-         hDTfbrj5ibVUoM70bnoxxKh303RbBjdRKR3wuxguPDUeTyCgbkUCQ1HIO/TOg33qh5Zg
-         3xggvx4/iPiR+hCzVVF1pW27++KJQ84QBmQFxKgDlLgjKAgdQVNULv4a+M8d6G0jeVfg
-         gq6g==
-X-Gm-Message-State: AOAM532ry5Dquwv7BQ9JNEmUdFRizlLa0/1WwLB9qpiVNh+/AErab984
-        t1keTIYxdgaM43odAEAM3bHlPlGJq+vPT2/XIUoYfxDP6va7rNFD+CW0fTr20Fd3gRWfDXOCZ8t
-        MTpDkN1RJVYerxr5rfMeeml0P
-X-Received: by 2002:ac8:8c7:: with SMTP id y7mr2650788qth.278.1604685973240;
-        Fri, 06 Nov 2020 10:06:13 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyWT3/EkzB1mX6LhVONygniIZnUOQZ1LF3NKmOlnmVvJ9+64XP0m9y9W4ZrQ8JA4RXLNIG+BQ==
-X-Received: by 2002:ac8:8c7:: with SMTP id y7mr2650770qth.278.1604685972976;
-        Fri, 06 Nov 2020 10:06:12 -0800 (PST)
-Received: from xz-x1 (bras-vprn-toroon474qw-lp130-20-174-93-89-196.dsl.bell.ca. [174.93.89.196])
-        by smtp.gmail.com with ESMTPSA id g11sm1011865qkl.30.2020.11.06.10.06.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Nov 2020 10:06:12 -0800 (PST)
-Date:   Fri, 6 Nov 2020 13:06:10 -0500
-From:   Peter Xu <peterx@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        Andrew Jones <drjones@redhat.com>
-Subject: Re: [PATCH v13 13/14] KVM: selftests: Let dirty_log_test async for
- dirty ring test
-Message-ID: <20201106180610.GC138364@xz-x1>
-References: <20201001012044.5151-1-peterx@redhat.com>
- <20201001012239.6159-1-peterx@redhat.com>
- <6d5eb99e-e068-e5a6-522f-07ef9c33127f@redhat.com>
+        bh=5nM9DcY6LK1ZTK0WBQbt1EV41MUCkdtc0oZOmII8m4g=;
+        b=GB4l/feH9UOR3UKvVMEIjIhi7EuXCmHosPA16pnxfT6buqNZfXW/c1/5y7+NU3SDlsWlGk
+        JDelFn1sQFhXOdfLDj989pEZHw1ZFplwXcN6XJxki4rAUSm2wCkfigWV6pLiWJRHXkLtwd
+        EiRQi6A39QGqGP7bAg+azkTHiglQatQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-436-udipSmXqM0iU7pOl8ER5Bw-1; Fri, 06 Nov 2020 13:07:00 -0500
+X-MC-Unique: udipSmXqM0iU7pOl8ER5Bw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 42EBE1DE00;
+        Fri,  6 Nov 2020 18:06:59 +0000 (UTC)
+Received: from treble (ovpn-116-174.rdu2.redhat.com [10.10.116.174])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 813E5261A0;
+        Fri,  6 Nov 2020 18:06:44 +0000 (UTC)
+Date:   Fri, 6 Nov 2020 12:06:28 -0600
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>
+Subject: Re: WARNING: can't access registers at asm_common_interrupt
+Message-ID: <20201106180628.r4emdw3yoxfzryzu@treble>
+References: <20201106060414.edtcb7nrbzm4a32t@shindev.dhcp.fujisawa.hgst.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <6d5eb99e-e068-e5a6-522f-07ef9c33127f@redhat.com>
+In-Reply-To: <20201106060414.edtcb7nrbzm4a32t@shindev.dhcp.fujisawa.hgst.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 06, 2020 at 12:27:54PM +0100, Paolo Bonzini wrote:
-> On 01/10/20 03:22, Peter Xu wrote:
-> > +
-> > +static void vcpu_sig_handler(int sig)
-> > +{
-> > +	TEST_ASSERT(sig == SIG_IPI, "unknown signal: %d", sig);
-> > +}
-> > +
+On Fri, Nov 06, 2020 at 06:04:15AM +0000, Shinichiro Kawasaki wrote:
+> Greetings,
 > 
-> Unless you also use run->immediate_exit in vcpu_kick, this is racy.  The
-> alternative is to _not_ set up a signal handler and instead block the
-> signal.  KVM_SET_SIGNAL_MASK unblocks the signal inside the VM and on -EINTR
-> sigwait accepts the signal (removes it from the set of pending signal).
+> I observe "WARNING: can't access registers at asm_common_interrupt+0x1e/0x40"
+> in my kernel test system repeatedly, which is printed by unwind_next_frame() in
+> "arch/x86/kernel/unwind_orc.c". Syzbot already reported that [1]. Similar
+> warning was reported and discussed [2], but I suppose the cause is not yet
+> clarified.
+> 
+> The warning was observed with v5.10-rc2 and older tags. I bisected and found
+> that the commit 044d0d6de9f5 ("lockdep: Only trace IRQ edges") in v5.9-rc3
+> triggered the warning. Reverting that from 5.10-rc2, the warning disappeared.
+> May I ask comment by expertise on CC how this commit can relate to the warning?
+> 
+> The test condition to reproduce the warning is rather unique (blktests,
+> dm-linear and ZNS device emulation by QEMU). If any action is suggested for
+> further analysis, I'm willing to take it with my test system.
 
-Thanks for picking up the series!
+Hi,
 
-I think you're right.  One trivial comment below:
+Thanks for reporting this issue.  This might be a different issue from
+[2].
 
-> 
-> This is a bit more complicated, but I think it's a good idea to do it this
-> way for documentation purposes.  Here is the patch:
-> 
-> diff --git a/tools/testing/selftests/kvm/dirty_log_test.c
-> b/tools/testing/selftests/kvm/dirty_log_test.c
-> index 4b404dfdc2f9..9a5b876b74af 100644
-> --- a/tools/testing/selftests/kvm/dirty_log_test.c
-> +++ b/tools/testing/selftests/kvm/dirty_log_test.c
-> @@ -172,11 +172,6 @@ static pthread_t vcpu_thread;
->  /* Only way to pass this to the signal handler */
->  static struct kvm_vm *current_vm;
-> 
-> -static void vcpu_sig_handler(int sig)
-> -{
-> -	TEST_ASSERT(sig == SIG_IPI, "unknown signal: %d", sig);
-> -}
-> -
->  static void vcpu_kick(void)
->  {
->  	pthread_kill(vcpu_thread, SIG_IPI);
-> @@ -484,13 +479,26 @@ static void *vcpu_worker(void *data)
->  	struct kvm_vm *vm = data;
->  	uint64_t *guest_array;
->  	uint64_t pages_count = 0;
-> -	struct sigaction sigact;
-> +	struct kvm_signal_mask *sigmask = alloca(offsetof(struct kvm_signal_mask,
-> sigset)
-> +						 + sizeof(sigset_t));
-> +	sigset_t *sigset = (sigset_t *) &sigmask->sigset;
-> 
->  	current_vm = vm;
->  	vcpu_fd = vcpu_get_fd(vm, VCPU_ID);
-> -	memset(&sigact, 0, sizeof(sigact));
-> -	sigact.sa_handler = vcpu_sig_handler;
-> -	sigaction(SIG_IPI, &sigact, NULL);
-> +
-> +	/*
-> +	 * SIG_IPI is unblocked atomically while in KVM_RUN.  It causes the
-> +	 * ioctl to return with -EINTR, but it is still pending and we need
-> +	 * to accept it with the sigwait.
-> +	 */
-> +	sigmask->len = 8;
-> +	pthread_sigmask(0, NULL, sigset);
-
-Not extremely important, but still better with SIG_BLOCK imho, since it seems
-not all archs defined SIG_BLOCK as zero.
-
-> +	vcpu_ioctl(vm, VCPU_ID, KVM_SET_SIGNAL_MASK, sigmask);
-> +	sigaddset(sigset, SIG_IPI);
-> +	pthread_sigmask(SIG_BLOCK, sigset, NULL);
-> +
-> +	sigemptyset(sigset);
-> +	sigaddset(sigset, SIG_IPI);
-> 
->  	guest_array = addr_gva2hva(vm, (vm_vaddr_t)random_array);
-> 
-> @@ -500,6 +508,11 @@ static void *vcpu_worker(void *data)
->  		pages_count += TEST_PAGES_PER_LOOP;
->  		/* Let the guest dirty the random pages */
->  		ret = ioctl(vcpu_fd, KVM_RUN, NULL);
-> +		if (ret == -EINTR) {
-> +			int sig = -1;
-> +			sigwait(sigset, &sig);
-> +			assert(sig == SIG_IPI);
-> +		}
->  		log_mode_after_vcpu_run(vm, ret, errno);
->  	}
-> 
+Can you send me the arch/x86/entry/entry_64.o file from your build?
 
 -- 
-Peter Xu
+Josh
 
