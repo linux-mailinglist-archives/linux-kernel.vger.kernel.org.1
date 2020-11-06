@@ -2,96 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53C922A8FF3
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 08:06:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ABF12A8FD8
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 08:03:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726556AbgKFHFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 02:05:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58956 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726546AbgKFHFl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 02:05:41 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3718C0613D2
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 23:05:40 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id x23so240448plr.6
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 23:05:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=pxVky9l6SjSdLAcTA14Zb0ig0mPHGe9JAZ+xYlz+WWM=;
-        b=mhYxA+hfdYdKmPXf+5Uz0ENmGw87DnvuIRtIBfijjW125XoltnFPxPeJAjShhP1zZF
-         CzHGGfPvrH1yEQCVgAcTfBZmHN3ABIvSHx1IaK5Trurbt0YMJtiPt0HhqXRbpPJ7pVmw
-         Vj9iWoAHCCUyS23qBnzK518EtYvDXqzPRzD0KsDn1kPn9/XpFBg2Fz5UJAuSLVy7lRd7
-         d/ecLj2XoE46q4rsnj3OKtDW2ONjIFyjbc8J9B5IHqJvNzST0o4vuKdObU+KurINcgqS
-         34l1mY33qyM58jFdL+CPsZjlLQggsMs2cbeoy9a1GJsRw8pcgEnwd54lhRdiCdC1/vfa
-         XVbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=pxVky9l6SjSdLAcTA14Zb0ig0mPHGe9JAZ+xYlz+WWM=;
-        b=Q2xTgJS/F/3hrjFpyOz78uAZQNUDi5RTZLFN56W2G1798xpRBlZJn79Vj/xmcYirzN
-         6daF/UKfHKqJKsuLPknzhWOrDGgN6dK7l+XM6C4jLt9j87GGOjyn9lYg5p6DkdnguA/X
-         8DGFAtK+8MatrSSL+1JlJeybh834SorItlwSzUUYhNQce2VNOenJpOn0EFxUYMjsXtud
-         elUKva8MTVwBaGYYPOvUbDRAvfhBvWyHdouBxGNukT65Hc1mgM3qV+FbNDMoct84BEaV
-         YcIRzMQluBbAIAhmsrZ7M/1zKIz47bEsh5G4I0lKhWKH7UGvilJRKIfWGiX7pypReLBn
-         KUFg==
-X-Gm-Message-State: AOAM532twhOPbIdeeNePtUCzyLBzt5dDJuU0a/Rt3onIRkNzXz5txdmw
-        PGLFvMEe62GAAfyc4kcJhiww0w==
-X-Google-Smtp-Source: ABdhPJzB5pJKmoygsJHbeXL3UzkTiA/e90EaTRfyPTER4FtLh1D97O8MORlGdkGm/5rhbsYmfMB2iQ==
-X-Received: by 2002:a17:902:6ac1:b029:d6:c43e:a42d with SMTP id i1-20020a1709026ac1b02900d6c43ea42dmr719733plt.21.1604646340242;
-        Thu, 05 Nov 2020 23:05:40 -0800 (PST)
-Received: from localhost ([122.172.12.172])
-        by smtp.gmail.com with ESMTPSA id z17sm551372pga.85.2020.11.05.23.05.39
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 05 Nov 2020 23:05:39 -0800 (PST)
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>, linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Rafael Wysocki <rjw@rjwysocki.net>,
-        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
-        digetx@gmail.com, linux-media@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 7/7] media: venus: dev_pm_opp_put_*() accepts NULL argument
-Date:   Fri,  6 Nov 2020 12:33:27 +0530
-Message-Id: <1b1c2086f01a27f7da6e6512dd47d47d153f626d.1604646059.git.viresh.kumar@linaro.org>
-X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
-In-Reply-To: <cover.1604646059.git.viresh.kumar@linaro.org>
-References: <cover.1604646059.git.viresh.kumar@linaro.org>
+        id S1726436AbgKFHDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 02:03:39 -0500
+Received: from helcar.hmeau.com ([216.24.177.18]:35104 "EHLO fornost.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726242AbgKFHDj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 02:03:39 -0500
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1kavmY-00088a-8Q; Fri, 06 Nov 2020 18:03:35 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 06 Nov 2020 18:03:34 +1100
+Date:   Fri, 6 Nov 2020 18:03:34 +1100
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Horia =?utf-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Andrei Botila <andrei.botila@nxp.com>,
+        linux-crypto@vger.kernel.org, NXP Linux Team <linux-imx@nxp.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] crypto: caam - fix printing on xts fallback allocation
+ error path
+Message-ID: <20201106070334.GJ11620@gondor.apana.org.au>
+References: <20201101200553.25248-1-horia.geanta@nxp.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201101200553.25248-1-horia.geanta@nxp.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The dev_pm_opp_put_*() APIs now accepts a NULL opp_table pointer and so
-there is no need for us to carry the extra check. Drop them.
+On Sun, Nov 01, 2020 at 10:05:53PM +0200, Horia Geantă wrote:
+> At the time xts fallback tfm allocation fails the device struct
+> hasn't been enabled yet in the caam xts tfm's private context.
+> 
+> Fix this by using the device struct from xts algorithm's private context
+> or, when not available, by replacing dev_err with pr_err.
+> 
+> Fixes: 9d9b14dbe077 ("crypto: caam/jr - add fallback for XTS with more than 8B IV")
+> Fixes: 83e8aa912138 ("crypto: caam/qi - add fallback for XTS with more than 8B IV")
+> Fixes: 36e2d7cfdcf1 ("crypto: caam/qi2 - add fallback for XTS with more than 8B IV")
+> Signed-off-by: Horia Geantă <horia.geanta@nxp.com>
+> ---
+>  drivers/crypto/caam/caamalg.c     | 4 ++--
+>  drivers/crypto/caam/caamalg_qi.c  | 4 ++--
+>  drivers/crypto/caam/caamalg_qi2.c | 3 ++-
+>  3 files changed, 6 insertions(+), 5 deletions(-)
 
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
----
- drivers/media/platform/qcom/venus/pm_helpers.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/drivers/media/platform/qcom/venus/pm_helpers.c b/drivers/media/platform/qcom/venus/pm_helpers.c
-index 57877eacecf0..e1e9130288ad 100644
---- a/drivers/media/platform/qcom/venus/pm_helpers.c
-+++ b/drivers/media/platform/qcom/venus/pm_helpers.c
-@@ -898,8 +898,7 @@ static void core_put_v4(struct device *dev)
- 
- 	if (core->has_opp_table)
- 		dev_pm_opp_of_remove_table(dev);
--	if (core->opp_table)
--		dev_pm_opp_put_clkname(core->opp_table);
-+	dev_pm_opp_put_clkname(core->opp_table);
- 
- }
- 
+Patch applied.  Thanks.
 -- 
-2.25.0.rc1.19.g042ed3e048af
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
