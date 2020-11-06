@@ -2,122 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AA812A91CB
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 09:49:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7876A2A91D1
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 09:52:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726627AbgKFItK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 03:49:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46752 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725830AbgKFItK (ORCPT
+        id S1726241AbgKFIwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 03:52:40 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:52704 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726075AbgKFIwj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 03:49:10 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89ADEC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 00:49:08 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id y12so441915wrp.6
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 00:49:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=4gXfZMux6ogf2vVPHPrkL0rjreUZC3GES5D2UkiysIw=;
-        b=C6iQhO/6iKUaCjWMaeY8SSjPW3SPed7FleZjgyiTbeenEF+cP/6d0G2NFBlmZ6O+0H
-         bioL6f0N8OmX7BWLovVyNsXDaR9/nfXxEHTy5jLd7+u3mFIq7wJlEri4rU3IlV4wqgcD
-         83JOnHkogW2l+61CjQQr5BNpYIV7HEgBg3nmG4Fve6ZR37i8/7lAL2dsyLsJEnNchGiC
-         lCshBq71mdswYGS4ahEw8pGeUEJY4WU8A7zy3kdNr9+wSwgQY8Lul4rkCPgz4TKI8hIP
-         8zA+DSnXbK0DYB4g2q+MP09tRsmr/SaiyRXr01/x6G2Ah0fUMYHNlIKbDUVPgaVw88wV
-         0F4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=4gXfZMux6ogf2vVPHPrkL0rjreUZC3GES5D2UkiysIw=;
-        b=qMZmewSsLijTqlj3quAAU6wnQXdWxwFfqJtPKjtkUK+9mee+aXZB4IaqClT6B2sa1/
-         ZXUg6GNgD6TjqjSiisXDvijnoubVuRgeLGSSUKqSqcKToDTR6zXb9aOfW2/CWW4kNhxC
-         uxckKpiScMbr/+NRY1yRqeb9vK75+jPi9gsEztF4v/7JQyLFuJdt4Dfq1FWuARs8wYIO
-         9rRii9i4rxoDYhFjAy+gb1qU+ZckUebJWDnDcfFIgsHQFyz6zwjp/HpgSWIQx9n6pYqe
-         0sTSq6jdjdgjplvhm2HbhzS8ziYNqfNHpbXPvegebhg5Geoh3qLA7E+D2K5Oa8B+Fuz6
-         wlrg==
-X-Gm-Message-State: AOAM5311c/o+5mDwJ8si5v/z8AA7e3dNFGkkB7N9epcrp80e/7Uah3Va
-        MjCw8GTWUSaW3qjIJ3YZ4iyBuw==
-X-Google-Smtp-Source: ABdhPJxV2f1/yepdeAvjiDc4ZJvmvoXzriD7P33clmKJfkWKfm32k8/eAy9mdgUCgs52Ep3+q+DT+A==
-X-Received: by 2002:a05:6000:7:: with SMTP id h7mr1443346wrx.83.1604652547314;
-        Fri, 06 Nov 2020 00:49:07 -0800 (PST)
-Received: from dell ([91.110.221.242])
-        by smtp.gmail.com with ESMTPSA id t11sm1163799wmf.35.2020.11.06.00.49.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Nov 2020 00:49:06 -0800 (PST)
-Date:   Fri, 6 Nov 2020 08:49:04 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
-Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Fabio Estevam <festevam@gmail.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>
-Subject: Re: [PATCH 03/19] gpu: drm: imx: ipuv3-plane: Mark 'crtc_state' as
- __always_unused
-Message-ID: <20201106084904.GY4488@dell>
-References: <20201105144517.1826692-1-lee.jones@linaro.org>
- <20201105144517.1826692-4-lee.jones@linaro.org>
- <15a4a184-74c2-e630-193a-cdea61545a03@pengutronix.de>
- <20201106074151.GU4488@dell>
- <5056c156-9f6c-8e0d-54e8-5317fdd46c12@pengutronix.de>
+        Fri, 6 Nov 2020 03:52:39 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A68n23R059812;
+        Fri, 6 Nov 2020 08:52:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=hdn3S6G4CZ9K6laz9yIdjncIsG6hx8UfoRsDLSDj7Cc=;
+ b=r3MCFurXvxw6VH30+BpBL/iLkG9zfbW90V0aivuUIG37aBoX6BdCRhYrYHqo3bSCcrZP
+ q4jcrELDM51Erem499ec0SOlvwNU4ibutEKmmJ+R6Gh8ZarvtI/TAD5F3eDTNXmGDtY+
+ JOOK9ONDKTUvu+6B4+3ktfZk+aax0Wk5ShmzSUiepAoOZWdc5/9rrxmDLgA/6SAWv8ZG
+ M+jyY5FVqKGAYr0ONxXKjweKE6VofLKEJJ4/CqeMFXnO4aYpKmdM9Lt4ikua+/k7iwLD
+ ubZOfjZ6xWNkH5vaESacio1+wtbq2DSVtRrOpzFHAPIdzg9QnH9lvARO3ddoyyu0xXB0 wA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 34hhw2yvgw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 06 Nov 2020 08:52:18 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A68oo64166690;
+        Fri, 6 Nov 2020 08:52:18 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 34hw0jwc5m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 06 Nov 2020 08:52:18 +0000
+Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0A68qC36031674;
+        Fri, 6 Nov 2020 08:52:17 GMT
+Received: from mwanda (/10.175.216.98)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 06 Nov 2020 00:52:11 -0800
+Date:   Fri, 6 Nov 2020 11:52:05 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Ingo Molnar <mingo@redhat.com>, Darren Hart <dvhart@infradead.org>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH] futex: Don't enable IRQs unconditionally in put_pi_state()
+Message-ID: <20201106085205.GA1159983@mwanda>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5056c156-9f6c-8e0d-54e8-5317fdd46c12@pengutronix.de>
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9796 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=999
+ phishscore=0 bulkscore=0 spamscore=0 malwarescore=0 mlxscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011060064
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9796 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0 mlxscore=0
+ suspectscore=0 clxscore=1011 priorityscore=1501 impostorscore=0
+ spamscore=0 lowpriorityscore=0 mlxlogscore=999 phishscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011060064
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 06 Nov 2020, Ahmad Fatoum wrote:
+The exit_pi_state_list() function calls put_pi_state() with IRQs
+disabled and is not expecting that IRQs will be enabled inside the
+function.  Use the _irqsave() so that IRQs are restored to the original
+state instead of enabled unconditionally.
 
-> On 11/6/20 8:41 AM, Lee Jones wrote:
-> > On Thu, 05 Nov 2020, Ahmad Fatoum wrote:
-> > 
-> >> Hello Lee,
-> >>
-> >> On 11/5/20 3:45 PM, Lee Jones wrote:
-> >>> In the macro for_each_oldnew_crtc_in_state() 'crtc_state' is provided
-> >>> as a container for state->crtcs[i].new_state, but is not utilised in
-> >>> this use-case.  We cannot simply delete the variable, so here we tell
-> >>> the compiler that we're intentionally discarding the read value.
-> >>
-> >> for_each_oldnew_crtc_in_state already (void) casts the drm_crtc and the old
-> >> drm_crtc_state to silence unused-but-set-variable warning. Should we maybe
-> >> (void) cast the new crtc_state as well?
-> > 
-> > From what I saw, it only void casts the ones which aren't assigned.
-> 
-> How do you mean? I wonder if
-> 
->  #define for_each_oldnew_crtc_in_state(__state, crtc, old_crtc_state, new_crtc_state, __i) \
->         for ((__i) = 0;                                                 \
->              (__i) < (__state)->dev->mode_config.num_crtc;              \
->              (__i)++)                                                   \
->                 for_each_if ((__state)->crtcs[__i].ptr &&               \
->                              ((crtc) = (__state)->crtcs[__i].ptr,       \
->                               (void)(crtc) /* Only to avoid unused-but-set-variable warning */, \
->                              (old_crtc_state) = (__state)->crtcs[__i].old_state, \
->                              (void)(old_crtc_state) /* Only to avoid unused-but-set-variable warning */, \
-> -                            (new_crtc_state) = (__state)->crtcs[__i].new_state, 1))
-> +                            (new_crtc_state) = (__state)->crtcs[__i].new_state, \
-> +                            (void)(new_crtc_state), 1))
-> 
-> wouldn't be better.
+Fixes: 153fbd1226fb ("futex: Fix more put_pi_state() vs. exit_pi_state_list() races")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+This is from static analysis and not tested.  I am not very familiar
+with futex code.
 
-That also works for me.  I can fix this up.
+ kernel/futex.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
+diff --git a/kernel/futex.c b/kernel/futex.c
+index f8614ef4ff31..ca84745713bc 100644
+--- a/kernel/futex.c
++++ b/kernel/futex.c
+@@ -788,8 +788,9 @@ static void put_pi_state(struct futex_pi_state *pi_state)
+ 	 */
+ 	if (pi_state->owner) {
+ 		struct task_struct *owner;
++		unsigned long flags;
+ 
+-		raw_spin_lock_irq(&pi_state->pi_mutex.wait_lock);
++		raw_spin_lock_irqsave(&pi_state->pi_mutex.wait_lock, flags);
+ 		owner = pi_state->owner;
+ 		if (owner) {
+ 			raw_spin_lock(&owner->pi_lock);
+@@ -797,7 +798,7 @@ static void put_pi_state(struct futex_pi_state *pi_state)
+ 			raw_spin_unlock(&owner->pi_lock);
+ 		}
+ 		rt_mutex_proxy_unlock(&pi_state->pi_mutex, owner);
+-		raw_spin_unlock_irq(&pi_state->pi_mutex.wait_lock);
++		raw_spin_unlock_irqrestore(&pi_state->pi_mutex.wait_lock, flags);
+ 	}
+ 
+ 	if (current->pi_state_cache) {
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.28.0
+
