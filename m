@@ -2,83 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8B442AA080
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 23:46:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6604C2AA085
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 23:48:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728955AbgKFWqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 17:46:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48568 "EHLO mail.kernel.org"
+        id S1728872AbgKFWsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 17:48:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48734 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728408AbgKFWqT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 17:46:19 -0500
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.1])
+        id S1728358AbgKFWsN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 17:48:13 -0500
+Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9EDDA2087E;
-        Fri,  6 Nov 2020 22:46:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9578E2087E;
+        Fri,  6 Nov 2020 22:48:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604702778;
-        bh=i44Y1P6laXQjWocSVI8b/5WYJYlsz/UZcBJas/yMZ2o=;
+        s=default; t=1604702893;
+        bh=Oj1ydksyNqQ3ZwyWkWH+O74qkDDreoYI/9+2rwNutow=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=vth4ShWnNCxOWPEYFhf2r43v524rF425f5RaFDqL1jI6vPTRji6+99tlSgsuppDdN
-         /lZ1qgzzWP8y94lmybwD/UTorsvVJCGuEZ0G1FglkDHJv32wAsSaxM+fAQSOGBfVlZ
-         zOzeyCqGfqnU5vD5rlKtU6Yp2v6YjJGLAoAHeUiI=
-Date:   Fri, 6 Nov 2020 14:46:16 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Networking <netdev@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Christoph Hellwig <hch@infradead.org>,
-        Jiri Pirko <jiri@mellanox.com>,
-        Taehee Yoo <ap420073@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next v3 0/4] remove compat_alloc_user_space()
-Message-ID: <20201106144616.28d074a6@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <CAK8P3a0soc41M-s0nd9xQgztyVCHNy8VJpQ9jmzi-N0Z0rGfRQ@mail.gmail.com>
-References: <20201106173231.3031349-1-arnd@kernel.org>
-        <CAK8P3a0soc41M-s0nd9xQgztyVCHNy8VJpQ9jmzi-N0Z0rGfRQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        b=GgJzvJbYnUHZVh/KVjPbUkpsfTIS+ixIdR5hDbc8e6O11e3cdgusrJ+SXHU1mNK02
+         T1pf6Ysk+sGbT7IeHtbS79IjEOVb10BsqWj7Z/BpfjH8Hjsl5L51bZ3setY8WJNtnr
+         JcdIhGHQmomXcxD8lLvJYy+d8B/elDLs+I2TO9iQ=
+Date:   Fri, 6 Nov 2020 14:48:11 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     =?ISO-8859-1?Q? "Christian_K=F6nig" ?= 
+        <ckoenig.leichtzumerken@gmail.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linaro-mm-sig@lists.linaro.org, dri-devel@lists.freedesktop.org,
+        linux-media@vger.kernel.org
+Subject: Re: [PATCH 1/2] mm: mmap: fix fput in error path v2
+Message-Id: <20201106144811.cf228ca9278ec78887d42960@linux-foundation.org>
+In-Reply-To: <20201106114806.46015-2-christian.koenig@amd.com>
+References: <20201106114806.46015-1-christian.koenig@amd.com>
+        <20201106114806.46015-2-christian.koenig@amd.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 6 Nov 2020 22:48:18 +0100 Arnd Bergmann wrote:
-> On Fri, Nov 6, 2020 at 6:32 PM Arnd Bergmann <arnd@kernel.org> wrote:
-> >
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >
-> > This is the third version of my seires, now spanning four patches
-> > instead of two, with a new approach for handling struct ifreq
-> > compatibility after I realized that my earlier approach introduces
-> > additional problems.
-> >
-> > The idea here is to always push down the compat conversion
-> > deeper into the call stack: rather than pretending to be
-> > native mode with a modified copy of the original data on
-> > the user space stack, have the code that actually works on
-> > the data understand the difference between native and compat
-> > versions.
-> >
-> > I have spent a long time looking at all drivers that implement
-> > an ndo_do_ioctl callback to verify that my assumptions are
-> > correct. This has led to a series of 29 additional patches
-> > that I am not including here but will post separately, fixing
-> > a number of bugs in SIOCDEVPRIVATE ioctls, removing dead
-> > code, and splitting ndo_do_ioctl into two new ndo callbacks
-> > for private and ethernet specific commands.  
-> 
-> I got a reply from the build bots that the version I sent was broken
-> on 32-bit machines, so don't merge it just yet. Let me know if
-> there are any other comments I should address before resending
-> though.
+On Fri,  6 Nov 2020 12:48:05 +0100 "Christian K=F6nig" <ckoenig.leichtzumer=
+ken@gmail.com> wrote:
 
-Looks like patch 4 also breaks 64 bit allmodconfig build.
+> Patch "495c10cc1c0c CHROMIUM: dma-buf: restore args..."
+> adds a workaround for a bug in mmap_region.
+>=20
+> As the comment states ->mmap() callback can change
+> vma->vm_file and so we might call fput() on the wrong file.
+>=20
+> Revert the workaround and proper fix this in mmap_region.
+>=20
 
-Beyond that - patches 1 and 4 warrant need a second look at:
+Seems correct, best I can tell.  Presumably all ->mmap() instances will
+correctly fput() to original file* if they're rewriting vma->vm_file.
 
-	checkpatch.pl --strict --min-conf-desc-length=80
+
+
