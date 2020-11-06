@@ -2,44 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6812D2A9290
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 10:28:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AC6F2A9294
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 10:28:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726560AbgKFJ2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 04:28:15 -0500
-Received: from esa5.microchip.iphmx.com ([216.71.150.166]:42869 "EHLO
+        id S1726597AbgKFJ2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 04:28:22 -0500
+Received: from esa5.microchip.iphmx.com ([216.71.150.166]:42888 "EHLO
         esa5.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725868AbgKFJ2O (ORCPT
+        with ESMTP id S1726600AbgKFJ2V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 04:28:14 -0500
+        Fri, 6 Nov 2020 04:28:21 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1604654894; x=1636190894;
-  h=from:to:cc:subject:date:message-id:mime-version;
-  bh=XFJniwlkNXe8JM15OXyPD5pcQfDbLM43u1ZRyw/GVgk=;
-  b=GTKjchbDWcS2fm7+Qz1PKNWXWOyrSUrYG0+YLgy1ZNme3Rnq/ObRuTny
-   zGCOCdPrCF5VYEZi+34zB6B7Q+69+amWIlrhZOa7fhqsU9r43bYKYM3Jr
-   2PYHUjU8m5hco0R74ujQtc6nQyQHMrd2IFXkztOPniKXPQEQUB1zgUyEw
-   Hy+XfEb5K7tP8GULqXuo+NaF4QgqGcXXhmLyMtwCkazxuGrLko79OnIti
-   BUUlsofQl4kwP1bhIFyQCCicHtOBic+UvgTxs1+YwKXlv+XQfWO3TFuW8
-   0iZsws6/ncNdLQOfHO1BNU491SuDVMvHSBrsJuoIwvCQmEOtPsutR+/2b
-   A==;
-IronPort-SDR: PiN57OyndIRezPrmP27QVdfP9WUeWkQxAMo9QmP1nWM1lMY8qk5l0xrCE6Wmla35kxvYLbuVRn
- /aJL4OyZmsmv+0MX6nbmlfH9/QTAaE7tmvSHt9Pb0EnGE6CjjnDs9HeNNIwa2IB2h1vQMTvEne
- sJXSmbqioY+99bdOnL5nycYigbS8X7OzcRLENgAKeKTN7LhrXXOcI7jsnyuHglQRT7j2oRiqOZ
- gmaET2pVAMJDS629U9J9aKkdG7aXkAtIJ0pqWi+2ya0mqMaOpdY1s00CaMDxLzzIaio1QMsWB3
- I90=
+  t=1604654901; x=1636190901;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version;
+  bh=QpD53wBg29UptUvVNqRf5JTCpttxxocLcDTpaKiBG1k=;
+  b=ZffDnelsJTyj50VwMLoLyi4FazklPyG6L1LGy/2g8/79uxjDpBpj+oXt
+   +0x4nGpdCpNZ7XxuYDfs/ZFj1Gog+Pl+TZLtYuKw7gx+8Vdec386nmDj0
+   41Hkw7lXzMGQohDfyfo6buwbDoIucNC79dyXGQ7ovXR9YOrbh7pyTr3kF
+   fo0rF4eV8EfkLwtXei1QwXKfoSoMzIJEx+IwPpRvP8khfj7lnXCd4xZzx
+   eJc9jDCF175n40Cezid/3dCkO1PB2a+8oyUVpWz0ABwFBH2gSxQW2FNBK
+   tfw/A0Zm/9/RSaKWR1wV7rKSMaBW5ZXyGrtNzP3OlLHFTBmReNHBpzI1f
+   g==;
+IronPort-SDR: EjMR1QoQACNq8qJ+vGWcjbpfR6eyDPZMDPaO9xVEWTcaYvRGqEWZCJIDjSz1tL/ioLl1LhWUpm
+ apl9uqDeN85uGlaSBfdAsxSah/yZkOFuSmC0QaYpQ9f7YEWQ9/uZrbGu5s0EKzU29nwWW3IhB2
+ 7awICnlRDF3/xI2XkNR7lvqQcQW+ifxHhW1iMj4haeI3+iw+NIuFytHLa+kaS8lMtYjWOMEZkF
+ f5vCUJJIa5SEWqOQIn13iztIbjR3t07QoWkEEyGmeWmpSD0QGaqPSCFjCLJnEhH4ABi7TX+WqN
+ 3Ho=
 X-IronPort-AV: E=Sophos;i="5.77,456,1596524400"; 
-   d="scan'208";a="97423883"
+   d="scan'208";a="97423916"
 Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 06 Nov 2020 02:28:14 -0700
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 06 Nov 2020 02:28:20 -0700
 Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
  chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 6 Nov 2020 02:28:13 -0700
+ 15.1.1979.3; Fri, 6 Nov 2020 02:28:20 -0700
 Received: from m18063-ThinkPad-T460p.microchip.com (10.10.115.15) by
  chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Fri, 6 Nov 2020 02:28:06 -0700
+ 15.1.1979.3 via Frontend Transport; Fri, 6 Nov 2020 02:28:15 -0700
 From:   Claudiu Beznea <claudiu.beznea@microchip.com>
 To:     <mturquette@baylibre.com>, <sboyd@kernel.org>,
         <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
@@ -48,96 +49,60 @@ CC:     <eugen.hristev@microchip.com>, <linux-clk@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         Claudiu Beznea <claudiu.beznea@microchip.com>
-Subject: [PATCH v3 00/11] clk: at91: adapt for dvfs
-Date:   Fri, 6 Nov 2020 11:27:53 +0200
-Message-ID: <1604654884-30339-1-git-send-email-claudiu.beznea@microchip.com>
+Subject: [PATCH v3 01/11] clk: at91: sama7g5: fix compilation error
+Date:   Fri, 6 Nov 2020 11:27:54 +0200
+Message-ID: <1604654884-30339-2-git-send-email-claudiu.beznea@microchip.com>
 X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1604654884-30339-1-git-send-email-claudiu.beznea@microchip.com>
+References: <1604654884-30339-1-git-send-email-claudiu.beznea@microchip.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+pmc_data_allocate() has been changed. pmc_data_free() was removed.
+Adapt the code taking this into consideration. With this the programmable
+clocks were also saved in sama7g5_pmc so that they could be later
+referenced.
 
-SAMA7G5 is capable of DVFS. The supported CPU clock frequencies could be
-obtained from CPU PLL. The hardware block diagram for clock feeding the
-CPU is as follows:
+Fixes: cb783bbbcf54 ("clk: at91: sama7g5: add clock support for sama7g5")
+Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+---
+ drivers/clk/at91/sama7g5.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-                               +--------+
-                           +-->|divider1|--> CPU clock
-                           |   +--------+
-+--------+   +----------+  |   +--------+
-|CPU PLL |-->|prescaller|--+-->|divider0|--> MCK0 clock
-+--------+   +----------+      +--------+
-
-When switching CPU clock frequencies the MCK0 is also changed by DVFS
-driver to avoid its over/under clocking (depending on CPU clock frequency
-requested by DVFS algorithms). Some of IPs feed by MCK0 are MCK0 glich
-aware, some are not. For this MCK0 was removed from the parents list of
-the IPs which are not MCK0 glitch aware (patch 7/11).
-
-This series adapt AT91 clocks (mostly sam9x60-pll and master clock drivers)
-so that runtime changes of these clocks to be allowed.
-
-The CPU clock was registered from prescaller clock (see above diagram)
-and no software control has been added for divider1 because the frequencies
-supported by SAMA7G5's CPU could be directly obtained from CPU PLL +
-prescaller.
-
-On top of this series I also added a fix for sama7g5.c code (patch 1/11).
-Please let me know if you would like me to send this one separtely (it
-would be nice if this fix could be integrated in 5.10).
-
-Changes were tested on SAMA5D2, SAMA5D3, SAM9X60 and SAMA7G5.
-
-Thank you,
-Claudiu Beznea
-
-Changes in v3:
-- collected Reviewed-by, Tested-by tags
-- add patches 4/11, 5/11, 9/11
-- in patch 10/11 use CLK_SET_RATE_GATE on MCK div and MCK pres for all
-  the platforms except sama7g5
-
-Changes in v2:
-- s/at91rm9200_mck_lock/at91sam9260_mck_lock in patch 7/8
-
-Claudiu Beznea (7):
-  clk: at91: sama7g5: fix compilation error
-  clk: at91: clk-sam9x60-pll: allow runtime changes for pll
-  clk: at91: sama7g5: remove mck0 from parent list of other clocks
-  clk: at91: sama7g5: decrease lower limit for MCK0 rate
-  clk: at91: sama7g5: do not allow cpu pll to go higher than 1GHz
-  clk: at91: clk-master: re-factor master clock
-  clk: at91: sama7g5: register cpu clock
-
-Eugen Hristev (4):
-  dt-bindings: clock: at91: add sama7g5 pll defines
-  clk: at91: sama7g5: allow SYS and CPU PLLs to be exported and
-    referenced in DT
-  clk: at91: clk-master: add 5th divisor for mck master
-  clk: at91: sama7g5: add 5th divisor for mck0 layout and
-    characteristics
-
- drivers/clk/at91/at91rm9200.c      |  21 ++-
- drivers/clk/at91/at91sam9260.c     |  26 ++-
- drivers/clk/at91/at91sam9g45.c     |  32 +++-
- drivers/clk/at91/at91sam9n12.c     |  36 ++--
- drivers/clk/at91/at91sam9rl.c      |  23 ++-
- drivers/clk/at91/at91sam9x5.c      |  28 +++-
- drivers/clk/at91/clk-master.c      | 328 +++++++++++++++++++++++++++++++------
- drivers/clk/at91/clk-sam9x60-pll.c | 102 ++++++++++--
- drivers/clk/at91/dt-compat.c       |  15 +-
- drivers/clk/at91/pmc.h             |  22 ++-
- drivers/clk/at91/sam9x60.c         |  36 ++--
- drivers/clk/at91/sama5d2.c         |  42 +++--
- drivers/clk/at91/sama5d3.c         |  38 +++--
- drivers/clk/at91/sama5d4.c         |  40 +++--
- drivers/clk/at91/sama7g5.c         | 204 ++++++++++++++---------
- include/dt-bindings/clock/at91.h   |  11 ++
- 16 files changed, 759 insertions(+), 245 deletions(-)
-
+diff --git a/drivers/clk/at91/sama7g5.c b/drivers/clk/at91/sama7g5.c
+index 0db2ab3eca14..a092a940baa4 100644
+--- a/drivers/clk/at91/sama7g5.c
++++ b/drivers/clk/at91/sama7g5.c
+@@ -838,7 +838,7 @@ static void __init sama7g5_pmc_setup(struct device_node *np)
+ 	sama7g5_pmc = pmc_data_allocate(PMC_I2S1_MUX + 1,
+ 					nck(sama7g5_systemck),
+ 					nck(sama7g5_periphck),
+-					nck(sama7g5_gck));
++					nck(sama7g5_gck), 8);
+ 	if (!sama7g5_pmc)
+ 		return;
+ 
+@@ -980,6 +980,8 @@ static void __init sama7g5_pmc_setup(struct device_node *np)
+ 						    sama7g5_prog_mux_table);
+ 		if (IS_ERR(hw))
+ 			goto err_free;
++
++		sama7g5_pmc->pchws[i] = hw;
+ 	}
+ 
+ 	for (i = 0; i < ARRAY_SIZE(sama7g5_systemck); i++) {
+@@ -1052,7 +1054,7 @@ static void __init sama7g5_pmc_setup(struct device_node *np)
+ 		kfree(alloc_mem);
+ 	}
+ 
+-	pmc_data_free(sama7g5_pmc);
++	kfree(sama7g5_pmc);
+ }
+ 
+ /* Some clks are used for a clocksource */
 -- 
 2.7.4
 
