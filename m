@@ -2,105 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36F2B2A9711
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 14:37:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78B182A9716
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 14:40:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727472AbgKFNhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 08:37:41 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:56062 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726708AbgKFNhl (ORCPT
+        id S1727427AbgKFNkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 08:40:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36322 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727342AbgKFNkn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 08:37:41 -0500
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0A6DbGJ8102374;
-        Fri, 6 Nov 2020 07:37:16 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1604669836;
-        bh=a/oKUWOuKW3ydPesK1Xly4sled9yN1hC7tAR646Mr6U=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=eWB9jV/3IRkMGKzVpRcoSFtbBTO1+tFzf2zseIuXMZL7v3jLbprFGMuDxfIefbP7h
-         gr5fA2fj/YomyzUD43uycDx2WlUE7ANmGW3RHz1NBuCJ5mpuWu92YrcmknbP164JX9
-         LiZOPsGrq8lXpDwB861e6Pveryh/dUpapGB48gew=
-Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0A6DbFMs119490
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 6 Nov 2020 07:37:15 -0600
-Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 6 Nov
- 2020 07:37:15 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 6 Nov 2020 07:37:15 -0600
-Received: from [10.250.233.179] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0A6DbB3W081197;
-        Fri, 6 Nov 2020 07:37:12 -0600
-Subject: Re: [PATCH 07/23] mtd: spi-nor: controllers: hisi-sfc: Demote
- non-conformant kernel-doc
-To:     Lee Jones <lee.jones@linaro.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        <linux-mtd@lists.infradead.org>, <linux-media@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <linaro-mm-sig@lists.linaro.org>
-References: <20201102115406.1074327-1-lee.jones@linaro.org>
- <20201102115406.1074327-8-lee.jones@linaro.org>
-From:   Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <5ba82a34-5dfe-71f0-703e-6603de6ef468@ti.com>
-Date:   Fri, 6 Nov 2020 19:07:11 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 6 Nov 2020 08:40:43 -0500
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0303C0613D2
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 05:40:42 -0800 (PST)
+Received: by mail-lf1-x144.google.com with SMTP id u18so1954201lfd.9
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 05:40:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JfCJQ0jO5eraFDJbfYizUOVGWnEdmH9dyGuSSJLkvIw=;
+        b=W9caSxE1LFwmaV36thpbhx25S8CmHaMDJztjs2sJYmrOs3KwLI8SmDCv/KzE1u8Kp1
+         0J7/gWiX8hSRB7kFATEZR6NZS05ooJj3LxmWxh5FMqoF1IfZrnJfeq8GNvYUivZtD3he
+         oZVCrBqwPhpB5NeWR9YZqcmtu+71j/NYe5UZW+8Mt2MEXlddTWqFdGdH/eQmrFczPHxJ
+         FWuMhj2cD744AvRU7RDD1xhDM4jhs+OVwZhwnR2qvtDIIp6DSkGJ8I1l0fEWYfti7t2B
+         tOKxCTQCnAZa/XYxdl1+oRSk/P057E0JWqYJG86FgoWxzygd6R8CKuAPgFfLCtpRvEOE
+         Nonw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JfCJQ0jO5eraFDJbfYizUOVGWnEdmH9dyGuSSJLkvIw=;
+        b=pErLbC6eYuZBbG5iDLGVlyt6E92fmt8shdga3ONnP27KaA3vgVamq9ZvYfBSxnpQDd
+         ScVjnTNCY1si4n2Tu/2Cowz+rQ95S6Y4704uIxNX8+29UpEIPZ8rORCoglZHPa9JAbcG
+         Dnm6T4Gkv8zIVtW6YBIUIkdZynnp3JK4IHLfD/ET19YoAceAGWA3CTK64hIkj+nLzfO3
+         kqtV0t8CBgU3WF08kP4INvG8dL8BKk0r3Vf3eKNVkoVuUlWF8D5L0WZTRIDMUJI2WwwG
+         UFXylpWCWw0oL54ke01huxlvdKEhXMM30K88iibtHIjjl8YAk6uObStAnfyWppCQhN4F
+         XDeQ==
+X-Gm-Message-State: AOAM531ncm+q7fBVtBYlKu63ph4lzIG0pPaW6uCBPPkh66GOyDk6GEum
+        9l3rZWI/SPeobZgLVeB/KpfSoxG/rOtgU23bD2uDxA==
+X-Google-Smtp-Source: ABdhPJwZytu/TucMs/LzjMgrHms4raPSqPz486Urbgq99iCqReLz35olpz8fmr6pdMYLedtRThpCSPblGeiM1QLNkGQ=
+X-Received: by 2002:a05:6512:3225:: with SMTP id f5mr871293lfe.441.1604670040988;
+ Fri, 06 Nov 2020 05:40:40 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201102115406.1074327-8-lee.jones@linaro.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20201016204019.2606-1-linux@fw-web.de> <20201016204019.2606-4-linux@fw-web.de>
+In-Reply-To: <20201016204019.2606-4-linux@fw-web.de>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 6 Nov 2020 14:40:30 +0100
+Message-ID: <CACRpkdbjp87VH0Jq8SCtcMs1xaaKy3P+DPzMN8J=cuDad-YSvw@mail.gmail.com>
+Subject: Re: [RFC 3/3] pinctl: mt7622: drop pwm ch7 as mt7622 only has 6 channels
+To:     Frank Wunderlich <linux@fw-web.de>
+Cc:     "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sean Wang <sean.wang@kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Oct 16, 2020 at 10:40 PM Frank Wunderlich <linux@fw-web.de> wrote:
 
+> From: Frank Wunderlich <frank-w@public-files.de>
+>
+> mt7622 is reported by mediatek to have only 6 pwm channels
+> so drop pindefines for 7th channel
+>
+> Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
 
-On 11/2/20 5:23 PM, Lee Jones wrote:
-> Fixes the following W=1 kernel build warning(s):
-> 
->  drivers/mtd/spi-nor/controllers/hisi-sfc.c:328: warning: Function parameter or member 'np' not described in 'hisi_spi_nor_register'
->  drivers/mtd/spi-nor/controllers/hisi-sfc.c:328: warning: Function parameter or member 'host' not described in 'hisi_spi_nor_register'
-> 
-> Cc: Tudor Ambarus <tudor.ambarus@microchip.com>
-> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
-> Cc: Richard Weinberger <richard@nod.at>
-> Cc: Vignesh Raghavendra <vigneshr@ti.com>
-> Cc: Sumit Semwal <sumit.semwal@linaro.org>
-> Cc: "Christian König" <christian.koenig@amd.com>
-> Cc: linux-mtd@lists.infradead.org
-> Cc: linux-media@vger.kernel.org
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: linaro-mm-sig@lists.linaro.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  drivers/mtd/spi-nor/controllers/hisi-sfc.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/controllers/hisi-sfc.c b/drivers/mtd/spi-nor/controllers/hisi-sfc.c
-> index 95c502173cbda..7c26f8f565cba 100644
-> --- a/drivers/mtd/spi-nor/controllers/hisi-sfc.c
-> +++ b/drivers/mtd/spi-nor/controllers/hisi-sfc.c
-> @@ -320,7 +320,7 @@ static const struct spi_nor_controller_ops hisi_controller_ops = {
->  	.write = hisi_spi_nor_write,
->  };
->  
-> -/**
-> +/*
->   * Get spi flash device information and register it as a mtd device.
->   */
->  static int hisi_spi_nor_register(struct device_node *np,
-> 
+This patch (3/3) applied to the pinctrl tree.
 
-Reviewed-by: Vignesh Raghavendra <vigneshr@ti.com>
+Please apply 1-2 to the ARM SoC tree.
+
+Yours,
+Linus Walleij
