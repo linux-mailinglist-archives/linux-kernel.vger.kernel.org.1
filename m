@@ -2,102 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAA4E2A8B72
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 01:35:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A20D22A8B71
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 01:35:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732870AbgKFAfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 19:35:52 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:28802 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732729AbgKFAft (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 19:35:49 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1604622948; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=rLJ5XLoX+SvLWPgBWZ4tkoVwvC0M5uo8P7v0KGtz3Hg=; b=lk+5YWgHXnGhCUa+d0gzGo6D3RRZqV8bnoqFDb7W5yjYgKjKR3sH2A8ifbrdkMUH7b16Hy1c
- hQJaYzhHUm6TOttk3CJQOAs/F6TeKWUK6zdWiGy+pNYtCgPAd2qMmyInrs8bbiPXRAYB8qMZ
- EoCbPSw5fweFyrgRDnHaeBcsIAs=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 5fa49a215f52a2916beb1c60 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 06 Nov 2020 00:34:41
- GMT
-Sender: bbhatt=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 8AC14C433CB; Fri,  6 Nov 2020 00:34:40 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbhatt)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D049DC433F0;
-        Fri,  6 Nov 2020 00:34:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D049DC433F0
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bbhatt@codeaurora.org
-From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
-To:     manivannan.sadhasivam@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
-        Bhaumik Bhatt <bbhatt@codeaurora.org>
-Subject: [PATCH v1 6/6] bus: mhi: core: Skip RDDM download for unknown execution environment
-Date:   Thu,  5 Nov 2020 16:34:29 -0800
-Message-Id: <1604622869-40212-7-git-send-email-bbhatt@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1604622869-40212-1-git-send-email-bbhatt@codeaurora.org>
-References: <1604622869-40212-1-git-send-email-bbhatt@codeaurora.org>
+        id S1732802AbgKFAfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 19:35:46 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28260 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732741AbgKFAfq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 19:35:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604622945;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=8cFssZ0LJiNsdeVizgTqZXbeUskMHHnTsA2koKzQk4Y=;
+        b=H+iO+8Sb1EUDYcIuzn8EEAwSLMYh17AXeW/9ymwHcpi4W50TkuPxTltL/3klZ0abMas/7t
+        vbV8w3GTRV8VVXltTI6UsTm+AIwYYzUXpOPK1kMV66AMY6wDINkQhICUSeukgNNXSUdbJW
+        J8ofPRifSpJhZDU1YDzBB6YuSfpbG0g=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-509-O1-Up9G7MaSRS2rAoUTKyg-1; Thu, 05 Nov 2020 19:35:44 -0500
+X-MC-Unique: O1-Up9G7MaSRS2rAoUTKyg-1
+Received: by mail-qv1-f69.google.com with SMTP id a1so2081164qvj.3
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 16:35:43 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8cFssZ0LJiNsdeVizgTqZXbeUskMHHnTsA2koKzQk4Y=;
+        b=B46+1ow4d4BBGEZlSHnkwR726hQaUUNjA/pgDnr8wuCRElZfOPxHBkrvur1xsJxKeH
+         VYzyRJmOadOerEVrOBDGZczyKkaargXD1Dvlbi6dz88fmsRrFGQqKr7u6STvC22VZ5Rd
+         YgDSyGrlaceXezCgvXL/kZDp5SrSR3pl6QZyyUxbpzQIh6sBHQyYrDu3AJmu822ab6bQ
+         P+5Q9QrUa2El7P0ckeXGjV15bgQQqWbgoWrV/0G/mjSiR0baGAdlqjioBXqtSM49NXij
+         yKYzIk11R7n/6h2Qvo1JLil1DpoBjozLZ2wajKcz2VxDlAoRW0ZbWGcVdOdbEwaUQZlU
+         6E6g==
+X-Gm-Message-State: AOAM531RMtFGDcCw7P3SaXcKAUrxJkiz9bwO8RkB2EcXqsgWUPeHI2q1
+        JeNZT6ytKO/74F0EH3GMoe3wXd30wRgxAPCYpxXTsO9+L9o8KT5JcT2MmKaJLNJkcAUq201MMiJ
+        8gQ8qnkjZGs/Mo/+fdhHjHD0O
+X-Received: by 2002:a37:617:: with SMTP id 23mr4692636qkg.256.1604622943548;
+        Thu, 05 Nov 2020 16:35:43 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxcXHlYQXweZgP7+K8o61FNzv2e/Th67Tuvn2dyHTEh2Lw53WCzH/qHH2/nUUSBWuJ16IKdJg==
+X-Received: by 2002:a37:617:: with SMTP id 23mr4692615qkg.256.1604622943297;
+        Thu, 05 Nov 2020 16:35:43 -0800 (PST)
+Received: from tp-x1.redhat.com (c-98-239-145-235.hsd1.wv.comcast.net. [98.239.145.235])
+        by smtp.gmail.com with ESMTPSA id b3sm2002837qte.85.2020.11.05.16.35.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Nov 2020 16:35:42 -0800 (PST)
+From:   Brian Masney <bmasney@redhat.com>
+To:     boris.ostrovsky@oracle.com, jgross@suse.com, sstabellini@kernel.org
+Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, xen-devel@lists.xenproject.org,
+        linux-kernel@vger.kernel.org, dustymabe@redhat.com
+Subject: [PATCH] x86/xen: fix warning when running with nosmt mitigations
+Date:   Thu,  5 Nov 2020 19:35:29 -0500
+Message-Id: <20201106003529.391649-1-bmasney@redhat.com>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If MHI is unable to determine the execution environment during
-the panic path, host must skip the RDDM download. This can happen
-if the BHI offset read or the BHI_EXECENV register read fails
-indicating that the underlying transport is unresponsive. Hence,
-there is no need to trigger an RDDM using SYSERR or request an
-SOC reset.
+When booting a hyperthreaded system with the kernel parameter
+'mitigations=auto,nosmt', the following warning occurs:
 
-Suggested-by: Hemant Kumar <hemantk@codeaurora.org>
-Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+    WARNING: CPU: 0 PID: 1 at drivers/xen/events/events_base.c:1112 unbind_from_irqhandler+0x4e/0x60
+    ...
+    Hardware name: Xen HVM domU, BIOS 4.2.amazon 08/24/2006
+    ...
+    Call Trace:
+     xen_uninit_lock_cpu+0x28/0x62
+     xen_hvm_cpu_die+0x21/0x30
+     takedown_cpu+0x9c/0xe0
+     ? trace_suspend_resume+0x60/0x60
+     cpuhp_invoke_callback+0x9a/0x530
+     _cpu_up+0x11a/0x130
+     cpu_up+0x7e/0xc0
+     bringup_nonboot_cpus+0x48/0x50
+     smp_init+0x26/0x79
+     kernel_init_freeable+0xea/0x229
+     ? rest_init+0xaa/0xaa
+     kernel_init+0xa/0x106
+     ret_from_fork+0x35/0x40
+
+The secondary CPUs are not activated with the nosmt mitigations and only
+the primary thread on each CPU core is used. In this situation,
+xen_hvm_smp_prepare_cpus(), and more importantly xen_init_lock_cpu(), is
+not called, so the lock_kicker_irq is not initialized for the secondary
+CPUs. Let's fix this by exiting early in xen_uninit_lock_cpu() if the
+irq is not set to avoid the warning from above for each secondary CPU.
+
+Signed-off-by: Brian Masney <bmasney@redhat.com>
 ---
- drivers/bus/mhi/core/boot.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ arch/x86/xen/spinlock.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-diff --git a/drivers/bus/mhi/core/boot.c b/drivers/bus/mhi/core/boot.c
-index 16244cc..40606e5 100644
---- a/drivers/bus/mhi/core/boot.c
-+++ b/drivers/bus/mhi/core/boot.c
-@@ -92,6 +92,9 @@ static int __mhi_download_rddm_in_panic(struct mhi_controller *mhi_cntrl)
- 	 * image download completion.
- 	 */
- 	ee = mhi_get_exec_env(mhi_cntrl);
-+	if (ee == MHI_EE_MAX)
-+		goto error_exit_rddm;
+diff --git a/arch/x86/xen/spinlock.c b/arch/x86/xen/spinlock.c
+index 799f4eba0a62..4a052459a08e 100644
+--- a/arch/x86/xen/spinlock.c
++++ b/arch/x86/xen/spinlock.c
+@@ -93,9 +93,24 @@ void xen_init_lock_cpu(int cpu)
+ 
+ void xen_uninit_lock_cpu(int cpu)
+ {
++	int irq;
 +
- 	if (ee != MHI_EE_RDDM) {
- 		dev_dbg(dev, "Trigger device into RDDM mode using SYS ERR\n");
- 		mhi_set_mhi_state(mhi_cntrl, MHI_STATE_SYS_ERR);
-@@ -140,9 +143,11 @@ static int __mhi_download_rddm_in_panic(struct mhi_controller *mhi_cntrl)
- 	ret = mhi_read_reg(mhi_cntrl, base, BHIE_RXVECSTATUS_OFFS, &rx_status);
+ 	if (!xen_pvspin)
+ 		return;
  
- 	dev_err(dev, "Did not complete RDDM transfer\n");
--	dev_err(dev, "Current EE: %s\n", TO_MHI_EXEC_STR(ee));
- 	dev_err(dev, "RXVEC_STATUS: 0x%x\n", rx_status);
- 
-+error_exit_rddm:
-+	dev_err(dev, "Current EE: %s\n", TO_MHI_EXEC_STR(ee));
++	/*
++	 * When booting the kernel with 'mitigations=auto,nosmt', the secondary
++	 * CPUs are not activated and only the primary thread on each CPU core
++	 * is used. In this situation, xen_hvm_smp_prepare_cpus(), and more
++	 * importantly xen_init_lock_cpu(), is not called, so the
++	 * lock_kicker_irq is not initialized for the secondary CPUs. Let's
++	 * exit early if the irq is not set to avoid a warning in the console
++	 * log.
++	 */
++	irq = per_cpu(lock_kicker_irq, cpu);
++	if (irq == -1)
++		return;
 +
- 	return -EIO;
- }
- 
+ 	unbind_from_irqhandler(per_cpu(lock_kicker_irq, cpu), NULL);
+ 	per_cpu(lock_kicker_irq, cpu) = -1;
+ 	kfree(per_cpu(irq_name, cpu));
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+2.26.2
 
