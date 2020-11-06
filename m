@@ -2,53 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F8F62AA177
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 00:37:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 225D72AA184
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 00:47:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728676AbgKFXh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 18:37:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57200 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728214AbgKFXh1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 18:37:27 -0500
-Subject: Re: [GIT PULL] SCSI fixes for 5.10-rc2
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604705847;
-        bh=O/Zw+F9WW3C6aE70BN/uupbODTcf+QM7u3KUK9cqDjE=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=OZgzOWKOlVw+nCBUoQEhbKB3N57omU153rAdCW1kV5Sz649PAa86qwHt27JvhGZXm
-         Scc5jTbyLvxZEjkp38Ar+qXvEl5Dv7rsBRnJwr3+qfpil9D8oNQi7Q/4H1ijCIxToi
-         46wN3KJSyriArQ162FVgwhBqUyfYuWyzDLGmmlGc=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <8a60c7bd72f908a637f0f9e60cce7ab3a047e343.camel@HansenPartnership.com>
-References: <8a60c7bd72f908a637f0f9e60cce7ab3a047e343.camel@HansenPartnership.com>
-X-PR-Tracked-List-Id: <linux-scsi.vger.kernel.org>
-X-PR-Tracked-Message-Id: <8a60c7bd72f908a637f0f9e60cce7ab3a047e343.camel@HansenPartnership.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
-X-PR-Tracked-Commit-Id: 5feed64f9199ff90c4239971733f23f30aeb2484
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: d4fc96832f0131c8f2fb067fb01c3007df6d4c9f
-Message-Id: <160470584695.19097.12436655830782607257.pr-tracker-bot@kernel.org>
-Date:   Fri, 06 Nov 2020 23:37:26 +0000
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+        id S1728070AbgKFXrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 18:47:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47018 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726447AbgKFXrN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 18:47:13 -0500
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72A50C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 15:47:13 -0800 (PST)
+Received: by mail-ed1-x542.google.com with SMTP id e18so2959640edy.6
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 15:47:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ld/AFos27KlKPC12X38aMGZUocKXd6SaJrBUuNVGmN0=;
+        b=tkdRkau4k4qjSOcL+lCqzMeF+zlmlKnfIhzdIaXGkB93zPzYnQCCykbyAg5/beJ7x1
+         HgU3JBNk6olMLPuuM02azIWJ//sqvEgCfm3ZkRkYahGBfztBEZIuwB0a+2QXERVQpzZb
+         LQsrQk8z7NgBJNN1hwTtGdI2NqjcbW5QMvB/MXhBjVqRCt4Lugw2PNQV574teL+vJ8Gb
+         Rr47XEeICg3VZuwo9nltfAwQsb+AnZV93sF2wQ1ynN2NooVyHpU1Hje/5WOxFo9IPy+C
+         EKNk1Xh660oMB9+fPeQ1LRRC/oblHCBovC7ZPkhP5ZKEZoASeAS6xILfFyPOg4Y+PM7b
+         zEjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ld/AFos27KlKPC12X38aMGZUocKXd6SaJrBUuNVGmN0=;
+        b=suEKUmbHM8osRQLfsEzUSOmbtKRbLUhFNBUo+BgeDQv9HfIcYBHgian6WNynltXqFA
+         lvDhwZMzWgBndXe/LmHEKvU2MukxvciQmOURVMY6B5jR1y9/go27ep5qthmbrlCKnpKv
+         vk5/3gFxfiDc4aU26vjuka4YvOQTBi1e11/daAV8fsrZZaZze5YVCl9SiD7xcU4KZNT4
+         2bcr2Y7duR5jvlvAFauWGSYBljbh9FAatLnTb6tGRVCoMqbhjAFglc+QcxvabciIvNPa
+         yBIne6KY0ft1W0usjwWiuSOtyB5Y5kubR7lUi6pU+9B4VOX1DT4WP/53CPYmsQ2IRnH3
+         TP4g==
+X-Gm-Message-State: AOAM5322w7yvvooOe0mQoc37VUWB2rzpm/NMvVIPVvgeWpzMA1mfCqfG
+        PPPb3ecOsu1QjVyEECAgWLpz7L6/r/53qKt0nb6M1Q==
+X-Google-Smtp-Source: ABdhPJy/RVV3sqTqc4xE+GihNiS1eS50AdCrqwgYd+vRMib4fmp3nZlcH77SGQmU6AM1MQg85qDtVq7mK+6+ZFe4bSI=
+X-Received: by 2002:aa7:d843:: with SMTP id f3mr4792654eds.354.1604706432202;
+ Fri, 06 Nov 2020 15:47:12 -0800 (PST)
+MIME-Version: 1.0
+References: <20201102132158.GA3352700@nvidia.com> <MWHPR11MB1645675ED03E23674A705DF68C110@MWHPR11MB1645.namprd11.prod.outlook.com>
+ <20201103124351.GM2620339@nvidia.com> <MWHPR11MB164544C9CFCC3F162C1C6FC18CEF0@MWHPR11MB1645.namprd11.prod.outlook.com>
+ <20201104124017.GW2620339@nvidia.com> <MWHPR11MB1645862A8F7CF7FB8DD011778CEF0@MWHPR11MB1645.namprd11.prod.outlook.com>
+ <20201104135415.GX2620339@nvidia.com> <MWHPR11MB1645524BDEDF8899914F32AE8CED0@MWHPR11MB1645.namprd11.prod.outlook.com>
+ <20201106131415.GT2620339@nvidia.com> <20201106164850.GA85879@otc-nc-03> <20201106175131.GW2620339@nvidia.com>
+In-Reply-To: <20201106175131.GW2620339@nvidia.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Fri, 6 Nov 2020 15:47:00 -0800
+Message-ID: <CAPcyv4iYHA1acfo=+fTk+U_TrLbSWJjA6v4oeTXgVYDTrnCoGw@mail.gmail.com>
+Subject: Re: [PATCH v4 06/17] PCI: add SIOV and IMS capability detection
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     "Raj, Ashok" <ashok.raj@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        "vkoul@kernel.org" <vkoul@kernel.org>,
+        "Dey, Megha" <megha.dey@intel.com>,
+        "maz@kernel.org" <maz@kernel.org>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>, "Lu, Baolu" <baolu.lu@intel.com>,
+        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        "jing.lin@intel.com" <jing.lin@intel.com>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "netanelg@mellanox.com" <netanelg@mellanox.com>,
+        "shahafs@mellanox.com" <shahafs@mellanox.com>,
+        "yan.y.zhao@linux.intel.com" <yan.y.zhao@linux.intel.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "Ortiz, Samuel" <samuel.ortiz@intel.com>,
+        "Hossain, Mona" <mona.hossain@intel.com>,
+        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 06 Nov 2020 14:26:05 -0800:
+On Fri, Nov 6, 2020 at 9:51 AM Jason Gunthorpe <jgg@nvidia.com> wrote:
+[..]
+> > This is true for IMS as well. But probably not implemented in the kernel as
+> > such. From a HW point of view (take idxd for instance) the facility is
+> > available to native OS as well. The early RFC supported this for native.
+>
+> I can't follow what you are trying to say here.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
+I'm having a hard time following the technical cruxes of this debate.
+I grokked your feedback on the original IMS proposal way back at the
+beginning of this effort (pre-COVID even!), so maybe I can mediate
+here as well. Although, SIOV is that much harder for me to spell than
+IMS, so bear with me.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/d4fc96832f0131c8f2fb067fb01c3007df6d4c9f
+> Dave said the IMS cap was to indicate that the VMM supported emulation
+> of IMS so that the VMM can do the MSI addr/data translation as part of
+> the emulation.
+>
+> I'm saying emulation will be too horrible for our devices that don't
+> require *any* emulation.
 
-Thank you!
+This part I think I understand, i.e. why spend any logic emulating IMS
+as MSI since the IMS capability can be a paravirtualized interface
+from guest to VMM with none of the compromises that MSI would enforce.
+Did I get that right?
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+> It is a bad architecture. The platform needs to handle this globally
+> for all devices, not special hacky emulations things custom made for
+> every device out there.
+
+I confess I don't quite understand the shape of what "platform needs
+to handle this globally" means, but I understand the desired end
+result of "no emulation added where not needed". However, would this
+mean that the bare-metal idxd driver can not be used directly in the
+guest without modification? For example, as I understand from talking
+to Ashok, idxd has some device events like error notification hard
+wired to MSI while data patch interrupts are IMS. So even if the IMS
+side does not hook up MSI emulation doesn't idxd still need MSI
+emulation to reuse the bare metal driver directly?
+
+> > Native devices can have both MSIx and IMS capability. But as I
+> > understand this isn't how we have partitioned things in SW today. We
+> > left IMS only for mdev's. And I agree this would be very useful.
+>
+> That split is just some decision idxd did, we are thinking about doing
+> other things in our devices.
+
+Where does the collision happen between what you need for a clean
+implementation of an IMS-like capability (/me misses his "dev-msi"
+name that got thrown out in the Thomas rewrite), and emulation needed
+to not have VF special casing in the idxd driver.
+
+Also feel free to straighten me out (Jason or Ashok) if I've botched
+the understanding of this.
