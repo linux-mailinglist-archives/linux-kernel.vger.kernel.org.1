@@ -2,87 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E64712A8E10
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 05:10:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 435A02A8E62
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 05:31:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726111AbgKFEJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 23:09:58 -0500
-Received: from mga04.intel.com ([192.55.52.120]:11272 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725815AbgKFEJ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 23:09:56 -0500
-IronPort-SDR: UikGDYcWiO8+XinSvtapjalX9cWmNIXL5lm+OEngz70zoPyjpdslD5zo++veb2cHxNrpj7R/a7
- 0m9d1JV9p+VQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9796"; a="166909027"
-X-IronPort-AV: E=Sophos;i="5.77,455,1596524400"; 
-   d="scan'208";a="166909027"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2020 20:09:55 -0800
-IronPort-SDR: MxCqS5DlBO6FG8aVKfKbxZ8aOdpl5wS3AJK6mFRvcBabB+dKNHWSNEthbVzPZuJzc5TF2NgHa9
- SKfLVDwlYAnA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,455,1596524400"; 
-   d="scan'208";a="354560667"
-Received: from zulkifl3-ilbpg0.png.intel.com ([10.88.229.114])
-  by fmsmga004.fm.intel.com with ESMTP; 05 Nov 2020 20:09:53 -0800
-From:   muhammad.husaini.zulkifli@intel.com
-To:     linux-mmc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     adrian.hunter@intel.com, lakshmi.bai.raja.subramanian@intel.com,
-        wan.ahmad.zainie.wan.mohamad@intel.com,
-        muhammad.husaini.zulkifli@intel.com, david.e.box@linux.intel.com
-Subject: [PATCH v1 1/1] mmc: sdhci-of-arasan: Specify .clk_ops for Keem Bay SOC
-Date:   Fri,  6 Nov 2020 20:09:33 +0800
-Message-Id: <20201106120933.7190-2-muhammad.husaini.zulkifli@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201106120933.7190-1-muhammad.husaini.zulkifli@intel.com>
-References: <20201106120933.7190-1-muhammad.husaini.zulkifli@intel.com>
+        id S1726110AbgKFEbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 23:31:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35086 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725616AbgKFEbo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 23:31:44 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42063C0613CF;
+        Thu,  5 Nov 2020 20:31:44 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CS6sm2q3Hz9sPB;
+        Fri,  6 Nov 2020 15:31:39 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1604637101;
+        bh=/qnSqxlseB0z4p99jsg13j0kBVQxIFFGSTzw4zhXShU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=RFM8DSNokqGpEjZoNo2ajcWH8NM0oht7IKcWwNv/rwXjfOe92FfR2tX2PzoJDgQ++
+         pGVKNtDBQDX+/4w+cK6PKyDcMg0PNJVZ6r/MOgtdhQUSkFUrBD/m410JAtS2mWR9em
+         T/Z4Mq4z5X+rE1yeBtSUs3q414VHXmx9QePdQTuGhqtqwi9zAweGMlF5j44cLnwjQo
+         meKDOiVpJMw5BoJsLPn6QAKPr7PMy7IEhK3hWxyDbdPVf09bZVu3X9/aGGI/O34iG3
+         /urfBJzmTOrGT3lEL7FfGc9TYmK9Dip7/nha+RVWjXjVycvFXUzxXlBFoLUr2uC1qO
+         nRYzblU+TlPSA==
+Date:   Fri, 6 Nov 2020 15:31:38 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the nand tree
+Message-ID: <20201106153138.38725a6b@canb.auug.org.au>
+In-Reply-To: <20201103173739.0071761a@canb.auug.org.au>
+References: <20201103173739.0071761a@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/6FuwPobJEyejat9d5oE92P6";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
+--Sig_/6FuwPobJEyejat9d5oE92P6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Commit 16ada730a759 ("mmc: sdhci-of-arasan: Modify clock operations handling")
-introduces platform specific SDHCI clock operation.
+Hi all,
 
-This patch declares the clock operation for Keem Bay.
-Add clk_ops for SD, EMMC and SDIO operations.
+On Tue, 3 Nov 2020 17:37:39 +1100 Stephen Rothwell <sfr@canb.auug.org.au> w=
+rote:
+>=20
+> After merging the nand tree, today's linux-next build (htmldocs)
+> produced these warnings:
+>=20
+> Error: Cannot open file drivers/mtd/nand/raw/nand_ecc.c
+> Error: Cannot open file drivers/mtd/nand/raw/nand_ecc.c
+>=20
+> Caused by commit
+>=20
+>   5c859c18150b ("mtd: nand: ecc-hamming: Move Hamming code to the generic=
+ NAND layer")
+>=20
+> Tha sbove file is referred to in:
+>=20
+> Documentation/driver-api/mtd/nand_ecc.rst
+> Documentation/driver-api/mtdnand.rst
 
-Fixes: 36c6aadaae86 ("mmc: sdhci-of-arasan: Add support for Intel Keem Bay")
+I am still getting the above warnings.
+--=20
+Cheers,
+Stephen Rothwell
 
-Signed-off-by: Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
-Reviewed-by: Adrian Hunter <adrian.hunter@intel.com>
----
- drivers/mmc/host/sdhci-of-arasan.c | 3 +++
- 1 file changed, 3 insertions(+)
+--Sig_/6FuwPobJEyejat9d5oE92P6
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-diff --git a/drivers/mmc/host/sdhci-of-arasan.c b/drivers/mmc/host/sdhci-of-arasan.c
-index 829ccef87426..012d52e1abee 100644
---- a/drivers/mmc/host/sdhci-of-arasan.c
-+++ b/drivers/mmc/host/sdhci-of-arasan.c
-@@ -1199,16 +1199,19 @@ static struct sdhci_arasan_of_data sdhci_arasan_versal_data = {
- static struct sdhci_arasan_of_data intel_keembay_emmc_data = {
- 	.soc_ctl_map = &intel_keembay_soc_ctl_map,
- 	.pdata = &sdhci_keembay_emmc_pdata,
-+	.clk_ops = &arasan_clk_ops,
- };
- 
- static struct sdhci_arasan_of_data intel_keembay_sd_data = {
- 	.soc_ctl_map = &intel_keembay_soc_ctl_map,
- 	.pdata = &sdhci_keembay_sd_pdata,
-+	.clk_ops = &arasan_clk_ops,
- };
- 
- static struct sdhci_arasan_of_data intel_keembay_sdio_data = {
- 	.soc_ctl_map = &intel_keembay_soc_ctl_map,
- 	.pdata = &sdhci_keembay_sdio_pdata,
-+	.clk_ops = &arasan_clk_ops,
- };
- 
- static const struct of_device_id sdhci_arasan_of_match[] = {
--- 
-2.17.1
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+k0asACgkQAVBC80lX
+0GxhFQf/fZMTUADTsv1p+2rtJpMTXHNrKRhNo/6ltrGh6qvncRLIT/APfOda8x8C
+Tb4r4m3cBvobMpt0auBW9Aff3i0MuUEqRVEcc6UW3z+b5AZIzSWMp0LmWeEC1FiX
+1uH0HaY/Bdqs7BZDmadz48X+HGP6nDsKb3oq/JpCOOwi+EuJBtSz4Z5f96Qy9mJi
+CZg5d0CRyCaDt58VYL/Gq9FWXH48M7bpLZ+E0vbP/GzagUu54zxVxY9yn6wL6UML
+lpy11qQFQzWlfgzyw0DMZ1pvF0bke1f5UrPFdmvLHycN55bj+GEKH8+6YTaReW71
+ZeTCiA9YUE5LnEWHUF805BBg8B9BLQ==
+=8Ce/
+-----END PGP SIGNATURE-----
+
+--Sig_/6FuwPobJEyejat9d5oE92P6--
