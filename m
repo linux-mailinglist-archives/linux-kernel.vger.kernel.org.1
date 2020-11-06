@@ -2,92 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 101362A9D9D
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 20:11:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6491A2A9DAA
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 20:13:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728105AbgKFTLt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 14:11:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57424 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727257AbgKFTLt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 14:11:49 -0500
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1D6BE20882;
-        Fri,  6 Nov 2020 19:11:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604689908;
-        bh=e9go00OPM1UzmcwI9P1HigeeZ+n07Z6Qs6e/rNp0WL4=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Ql+d1620nolPyv30ofEW4z95xWVHKap8Ay9fFXMHQ/G/GCznnJUbAExvq2JYVhZ8+
-         OUJmy80KnbcOBsR4kxKimQ4HJEwXPVMGtA3Zpq35PVFyKgXH/7zbHPzsDgWLjJFxe4
-         qlAa8ueRVGaYIL5XzcqBXLOX56KIQnjLwGEm8YRk=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id AECDF352097B; Fri,  6 Nov 2020 11:11:47 -0800 (PST)
-Date:   Fri, 6 Nov 2020 11:11:47 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, parri.andrea@gmail.com,
-        will@kernel.org, peterz@infradead.org, boqun.feng@gmail.com,
-        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
-        luc.maranget@inria.fr, akiyks@gmail.com
-Subject: Re: [PATCH memory-model 3/8] tools/memory-model: Document categories
- of ordering primitives
-Message-ID: <20201106191147.GY3249@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201105215953.GA15309@paulmck-ThinkPad-P72>
- <20201105220017.15410-3-paulmck@kernel.org>
- <20201106165654.GB47039@rowland.harvard.edu>
+        id S1728125AbgKFTNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 14:13:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60752 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726447AbgKFTNV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 14:13:21 -0500
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55EF3C0613D2
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 11:13:20 -0800 (PST)
+Received: by mail-yb1-xb43.google.com with SMTP id a12so2060571ybg.9
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 11:13:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lDPmrGFyyFCuKqcXej1vTwCKboywcjbteDegF6u/TEM=;
+        b=qDSXDHqVps4VOYMWow1GJ0SanYAuA1SdO6RbRbZ31Wh4pI55eM0GeW/IGBYf9468HB
+         DO4nCTQMXR432ljb7SJvfNZF2qWgRKGagrJvUmOT4o82vRxaBJss0WGtrldob4GRA9Zn
+         Xxs1Xl2TRU/R3J5RM9Lwu5yHGCOJDimnz2NJz7sZIhLzKW/Je9zerb3v3ratHqEhbMqG
+         MQElstyGbHkQwv3qIm73AGIUyxncTZjlrIkanVoFNg5C3jThhLeE8PLaSwuoGhBC43K7
+         wcaFDe3YAlBewKAQt0Nacc/VIXSdgPyfaZct8KRI3oeYn/u+CsztnWHuWfahAFWe8HNo
+         usYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lDPmrGFyyFCuKqcXej1vTwCKboywcjbteDegF6u/TEM=;
+        b=IiNNeXH03Ns76Wlwvq9EqDwbCT9njDsHrg+GhjDZkR6I+Yk24gKPBk7mMl/tZRMchv
+         mzZmpAPEJiCc6nZttFNWMOOjc5AyPlg5SheYAzD2RVqKvtwYRIVpW4LzmYzIiP8A6YSj
+         ioLmVJPzybBSAjJxeAVl/TxPniWFkVctfMnOTP5w56a9YoCO36rSB2dcH41PUat8e8P8
+         TH7nnpso/x9ZHfoSL9OGYZ63ysWqOv+NpuwjitIse/DSR6uVHdLvqUyqSSAcpebT8Ioi
+         s6zyj71X1k07s1VAzJE5TaKfZjHqKIHq4N1UWcJtVJsbI/js6JlRX+1bLb/xfeMJqg1L
+         R52A==
+X-Gm-Message-State: AOAM530Zu296YyjKuhl2KzakShcnGhNUvlah9RTai48Pu014pM9J77NJ
+        jdt6DmCE79uiNCoH3sckeiEFFZeI9JQIxzV2RBTuvg==
+X-Google-Smtp-Source: ABdhPJxdpwkjU6nef5hnn+qBzVQD4nTVfGkL+NAu+//5kga1xXgG9HgNv//s3EOvEsHYitfkxS3QOuETzCIFrw7hEjQ=
+X-Received: by 2002:a25:c483:: with SMTP id u125mr4486728ybf.310.1604689999367;
+ Fri, 06 Nov 2020 11:13:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201106165654.GB47039@rowland.harvard.edu>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20201104205431.3795207-1-saravanak@google.com>
+ <20201104205431.3795207-2-saravanak@google.com> <20201105171201.GF4856@sirena.org.uk>
+ <CAGETcx9_En10j0DwktXtPDrx=Aqdr2iWEuHmYB-=SnfODTmMfg@mail.gmail.com> <20201106151011.GE49612@sirena.org.uk>
+In-Reply-To: <20201106151011.GE49612@sirena.org.uk>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Fri, 6 Nov 2020 11:12:43 -0800
+Message-ID: <CAGETcx-i--K+1go-+126bBB85BG8kksgRr3j3hnCRfkt0vqBMA@mail.gmail.com>
+Subject: Re: [PATCH v1 2/2] spi: Populate fwnode in of_register_spi_device()
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Cheng-Jui.Wang@mediatek.com,
+        Android Kernel Team <kernel-team@android.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Daniel Mentz <danielmentz@google.com>,
+        linux-spi@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 06, 2020 at 11:56:54AM -0500, Alan Stern wrote:
-> On Thu, Nov 05, 2020 at 02:00:12PM -0800, paulmck@kernel.org wrote:
-> > From: "Paul E. McKenney" <paulmck@kernel.org>
-> > 
-> > The Linux kernel has a number of categories of ordering primitives, which
-> > are recorded in the LKMM implementation and hinted at by cheatsheet.txt.
-> > But there is no overview of these categories, and such an overview
-> > is needed in order to understand multithreaded LKMM litmus tests.
-> > This commit therefore adds an ordering.txt as well as extracting a
-> > control-dependencies.txt from memory-barriers.txt.  It also updates the
-> > README file.
-> > 
-> > [ paulmck:  Apply Akira Yokosawa file-placement feedback. ]
-> > [ paulmck:  Apply Alan Stern feedback. ]
-> > [ paulmck:  Apply self-review feedback. ]
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > ---
-> > diff --git a/tools/memory-model/Documentation/README b/tools/memory-model/Documentation/README
-> > index 2d9539f..a50ea81 100644
-> > --- a/tools/memory-model/Documentation/README
-> > +++ b/tools/memory-model/Documentation/README
-> 
-> > @@ -41,13 +50,21 @@ README
-> >  cheatsheet.txt
-> >  	Quick-reference guide to the Linux-kernel memory model.
-> >  
-> > +control-dependencies.txt
-> > +	Guide to preventing compiler optimizations from destroying
-> > +	your control dependencies.
-> > +
-> >  explanation.txt
-> > -	Detailed description of the memory model.
-> > +	Detailed description of the memory model in detail.
-> 
-> A redundantly redundant change.
+On Fri, Nov 6, 2020 at 7:10 AM Mark Brown <broonie@kernel.org> wrote:
+>
+> On Thu, Nov 05, 2020 at 11:26:44AM -0800, Saravana Kannan wrote:
+> > On Thu, Nov 5, 2020 at 9:12 AM Mark Brown <broonie@kernel.org> wrote:
+>
+> > > >       of_node_get(nc);
+> > > >       spi->dev.of_node = nc;
+> > > > +     spi->dev.fwnode = of_fwnode_handle(nc);
+>
+> > > Why is this a manual step in an individual subsystem rather than
+> > > something done in the driver core
+>
+> > It can't be done in driver core because "fwnode" is the abstraction
+> > driver core uses. It shouldn't care or know if the firmware is DT,
+> > ACPI or something else -- that's the whole point of fwnode.
+>
+> Clearly it *can* be done in the driver core, the question is do we want
+> to.  The abstraction thing feels weaker at init than use after init,
+> "init from X" is a common enough pattern.  If it's done by the driver
+> core there would be no possibility of anything that creates devices
+> getting things wrong here, and the driver core already has a bunch of
+> integration with both DT and ACPI so it seems like a weird boundary to
+> have.
+>
+> > > and wouldn't that just be a case of
+> > > checking to see if there is a fwnode already set and only initializing
+> > > if not anyway?
+>
+> > Honestly, we should be deleting device.of_node and always use
+> > device.fwnode. But that's a long way away (lots of clean up). The
+> > "common" place to do this is where a struct device is created from a
+> > firmware (device_node, acpi_device, etc). I don't see a "common place"
+> > for when a device is created out of a device_node, so I think this
+> > patch is a reasonable middle ground.
+>
+> That is obviously a much bigger job that's going to require going
+> through subsystems (and their drivers) properly to eliminate references
+> to of_node, I'm not clear how doing this little bit per subsystem rather
+> than in the core helps or hinders going through and doing that.  I don't
+> think you'll ever have a single place where a device is constructed, and
+> I'm not sure that that is even desirable, since there are per subsystem
+> things that need doing.
+>
+> I'd be totally happy with eliminating all references to of_node from the
+> subsystem but for this it seems more sensible to do it in the driver
+> core and cover everything rather than running around everything that
+> creates a device from DT individually and having stuff fall through the
+> cracks - it's been a year since the equivalent change was made in I2C
+> for example, we've had new buses merged in that time never mind SPI not
+> being covered.
 
-I will revert the reversion of the removal of the added detail "in
-detail".  ;-)
+Since you kicked off another thread while we were still discussing it
+here, I'll just move to that thread. I don't want to discuss the same
+thing in two different places.
 
-Good catch, thank you!
+> BTW I'm also missing patch 1 and the cover letter for this series, not
+> sure what's going on there?
 
-						Thanx, Paul
+Sorry, scripting error. There is no series.
+
+-Saravana
