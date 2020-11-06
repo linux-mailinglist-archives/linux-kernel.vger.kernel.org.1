@@ -2,99 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA2FF2A9B50
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 18:56:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A20122A9B52
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 18:56:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727699AbgKFRzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 12:55:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48526 "EHLO
+        id S1727749AbgKFR4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 12:56:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727099AbgKFRzu (ORCPT
+        with ESMTP id S1727159AbgKFR4i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 12:55:50 -0500
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47DC9C0613CF;
-        Fri,  6 Nov 2020 09:55:50 -0800 (PST)
-Received: by mail-qt1-x842.google.com with SMTP id r8so1344244qtp.13;
-        Fri, 06 Nov 2020 09:55:50 -0800 (PST)
+        Fri, 6 Nov 2020 12:56:38 -0500
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D98D2C0613D2
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 09:56:37 -0800 (PST)
+Received: by mail-ot1-x343.google.com with SMTP id g19so1984592otp.13
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 09:56:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Tesnr6tHCwXv22LKMrMKDJ13D6GR3yqp1TvXkruwatk=;
-        b=fmwQtSRhbUnSDsyjkARa4UgvmDAkCyOTl8SP7WEr1Yvp99ubKu6cysLvYFvTHwDb+i
-         iMleoK+yLBncD/Hkpfj9Os7Y/rJElG6JOdL6nW5fHIkJkGd2IIee4ucBdceCjNK4ERc1
-         bVTYE3OBsnlW+s9Uqf+oqgC3uoH88B3KievXbhXDJzaBVySOguOrfxhT0m5FEOrugMG4
-         5a4vxR/1HC1hf6GxRdNJZdsLQq+oxoir3fXN7+NLgAlWRxRB+vRQxb9wzY/Jq9mHj6wS
-         AF36SNHci6m5WcQ1gdLdC2uneD3cFuGV1FyQ4QGAvDsbwhhGbBt633RHZRfLAnr+jmNR
-         p07A==
+        d=dubeyko-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=3m3w3/fMOlXDJm+N0Zej/RJjQZ0pYPZ00tCtiQEUSdU=;
+        b=fovs4N3RKV79lvUTx8jz3MnziHYdcUaz1I+/LXTF08aaL01hiRrss+ZRqyQTKh93QX
+         CowdktADguXo614na/wuq7Fe6Cb+fq9tDGC50xsWjjm4QqWv9uYZILCqjUdIe3lutkY/
+         zltAIoitQnvXDw9GTrf5cRkiB/rPlIIAQ3aNM0CDChoxsSdsq8MzA+M3+iTp2AkSKfJk
+         mM53fD7VNawuTuq7JUgf6t8gggLz5RP2JmxnueU8TGXNxNszhEY6BVGJh5+1nQKZfmwm
+         PMB/yZKferQUdqYC8VWtZyAZsi9bKT2wvzbDMfAus6p46rHH9QM2LRetmOD1xvhpupmx
+         wx4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Tesnr6tHCwXv22LKMrMKDJ13D6GR3yqp1TvXkruwatk=;
-        b=GTX4KKl6aLp5shyMoetwBUWcGTgNrhVVRx3ddddpvRIDYKLNDFUF/sO6uiK6a7h4wC
-         5GtQA1VNNv/hyDGkNib2Vxef7ALS02RLXxi1Gm8tYk4qCzN3HSc2HcxHN9gRFAfQxnVa
-         RUuv8fWAwN2gtI9Y+I1moZ912iX6fwOYCbWJ3b5MjSEHxHGihCNHdESed6jbCyvYZC65
-         ISXwXP2iFmiA4FjcTTLqqkcchhPrsL8EBJEcHKee2Pt7xzbtp6YO6KHLxVhkVf6XwSPD
-         1CBPaxV8YNlMhjkLH29aZV3DDoPXFYjgWQWcPXAuVRi0fZsSOdyijFmcsxXHKb/5oMhf
-         DkUg==
-X-Gm-Message-State: AOAM5310IVZtCTv0PH3MdSFf5xr1xalST6DEOpNpjl9VG9buFb4g8sF7
-        aOm2fA8hd3Oh82OgEdMKnL8=
-X-Google-Smtp-Source: ABdhPJzEyYIodKj9msxe0ftebe0gV40PxOWt79WgLwdwXh6s6tMYM+rTDL/UuLerw0UKYGNos2TWkA==
-X-Received: by 2002:ac8:7b2c:: with SMTP id l12mr2519740qtu.309.1604685349389;
-        Fri, 06 Nov 2020 09:55:49 -0800 (PST)
-Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
-        by smtp.gmail.com with ESMTPSA id p127sm1006598qkc.37.2020.11.06.09.55.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Nov 2020 09:55:48 -0800 (PST)
-Date:   Fri, 6 Nov 2020 10:55:47 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [GIT PULL] SPI fixes for v5.10-rc2
-Message-ID: <20201106175547.GA2959494@ubuntu-m3-large-x86>
-References: <20201105164607.AD20021734@mail.kernel.org>
- <20201106101815.GA1403068@ubuntu-m3-large-x86>
- <20201106110053.GA5532@sirena.org.uk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201106110053.GA5532@sirena.org.uk>
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=3m3w3/fMOlXDJm+N0Zej/RJjQZ0pYPZ00tCtiQEUSdU=;
+        b=C3neIvArcWtn9mthFYVBqGkPExsUNgt6yWVpZxrwXx34/VOjAA0D5uK3uKJcAMWECE
+         F5gj/XgSO7TCK+M3+o0jFZJXYM66shaB7MGPzNY0mfTx6X3IM5WGFOFGbaqv1sueAfaB
+         qlQRPan0L3IU5OzuXe/bLEx95gl5KOrgpLomNtDD4gDWur4ddHgYYZ5yNkwbU4qoDdm/
+         2BMIiBwhlBg7Ves1enq5me93sejaVIxo1SpPAwkbJmCFLwQNt7Wq1x4xGtEQHOGnt2mV
+         nwXV7jBqbEUg0w7/zMWPo5+uHvGdQEam8fiOZvVuWfj9ztEFCNiQEp8T0NGYaeUfOMUH
+         61ig==
+X-Gm-Message-State: AOAM532qvo50OfWmEQzBkWTCJpecSq5NtVr3J9E0CiUW531GUHNwHmG/
+        ZqyVo+02d5SlEzkeZHUzMoBh9RKfBiZ8lA==
+X-Google-Smtp-Source: ABdhPJwa2jH0nyfQTVUAb/Jl6YC01h0VQZTP9j6ZoS9GeipGQbVBWQWaGN7Xs8TLDolQKCHe1D7iGg==
+X-Received: by 2002:a9d:590e:: with SMTP id t14mr1960910oth.230.1604685397160;
+        Fri, 06 Nov 2020 09:56:37 -0800 (PST)
+Received: from vyachessmacbook.attlocal.net ([2600:1700:42f0:6600:714b:383:8655:34f6])
+        by smtp.gmail.com with ESMTPSA id u22sm466162oor.13.2020.11.06.09.56.35
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 06 Nov 2020 09:56:36 -0800 (PST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
+Subject: Re: [PATCH] fs/hfs: remove unused macro to tame gcc
+From:   Viacheslav Dubeyko <slava@dubeyko.com>
+In-Reply-To: <1604634457-3954-1-git-send-email-alex.shi@linux.alibaba.com>
+Date:   Fri, 6 Nov 2020 09:56:31 -0800
+Cc:     Linux FS devel list <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <7FF53100-8B2A-4267-AB70-97D28A325F06@dubeyko.com>
+References: <1604634457-3954-1-git-send-email-alex.shi@linux.alibaba.com>
+To:     Alex Shi <alex.shi@linux.alibaba.com>
+X-Mailer: Apple Mail (2.3608.120.23.2.4)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 06, 2020 at 11:00:53AM +0000, Mark Brown wrote:
-> On Fri, Nov 06, 2020 at 03:18:15AM -0700, Nathan Chancellor wrote:
-> > On Thu, Nov 05, 2020 at 04:45:46PM +0000, Mark Brown wrote:
-> 
-> > > Martin Hundebøll (1):
-> > >       spi: bcm2835: fix gpio cs level inversion
-> 
-> > Why did this go in with two outstanding reports?
-> 
-> > It looks like there is a fix for it now:
-> 
-> > https://lore.kernel.org/linux-spi/20201105090615.620315-1-martin@geanix.com/
-> 
-> > Although I guess it is going to require a resend...
-> 
-> Erk, sorry - I remembered the issue being fixed but got confused and
-> thought that it was an incremental patch on top of something applied
-> rather than something that got fixed in a patch revision (got it
-> confused with another issue I think).  The incremental fix is queued
-> now, I should send it out later today.
 
-No worries, I just wanted to make sure that you were still aware of the
-issues with it. Obviously you have a lot on your plate constantly so it
-is understandable that something falls through the cracks occasionally
-:)
 
-I see you have sent that pull already, thanks for the quick response!
+> On Nov 5, 2020, at 7:47 PM, Alex Shi <alex.shi@linux.alibaba.com> =
+wrote:
+>=20
+> Couple macro are duplicated defined and they are not used. So
+> to tame gcc, let's remove them.
+>=20
+> fs/hfsplus/part_tbl.c:26:0: warning: macro "HFS_DRVR_DESC_MAGIC" is =
+not
+> used [-Wunused-macros]
+> fs/hfsplus/part_tbl.c:30:0: warning: macro "HFS_MFS_SUPER_MAGIC" is =
+not
+> used [-Wunused-macros]
+> fs/hfsplus/part_tbl.c:21:0: warning: macro "HFS_DD_BLK" is not used
+> [-Wunused-macros]
+> net/l2tp/l2tp_core.c:73:0: warning: macro "L2TP_HDRFLAG_P" is not used
+> [-Wunused-macros]
+>=20
 
-Cheers,
-Nathan
+
+Sorry, but this patch doesn=E2=80=99t make sense at all, from my point =
+of view.
+It is the declaration of magics that could take place on the volume.
+Even if these declarations haven=E2=80=99t been used in the code, then
+it is important to be aware about this. I don=E2=80=99t think that it =
+make sense
+to follow to the compiler=E2=80=99s complains in this case. I believe =
+that
+it needs to keep these declarations.
+
+Thanks,
+Viacheslav Dubeyko.=20
+
+
+> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+> Cc: linux-fsdevel@vger.kernel.org=20
+> Cc: linux-kernel@vger.kernel.org=20
+> ---
+> fs/hfs/hfs.h          | 2 --
+> fs/hfsplus/part_tbl.c | 2 --
+> 2 files changed, 4 deletions(-)
+>=20
+> diff --git a/fs/hfs/hfs.h b/fs/hfs/hfs.h
+> index 6f194d0768b6..12a807d9dbc0 100644
+> --- a/fs/hfs/hfs.h
+> +++ b/fs/hfs/hfs.h
+> @@ -15,11 +15,9 @@
+> #define HFS_MDB_BLK		2 /* Block (w/i partition) of MDB */
+>=20
+> /* magic numbers for various disk blocks */
+> -#define HFS_DRVR_DESC_MAGIC	0x4552 /* "ER": driver descriptor map */
+> #define HFS_OLD_PMAP_MAGIC	0x5453 /* "TS": old-type partition map =
+*/
+> #define HFS_NEW_PMAP_MAGIC	0x504D /* "PM": new-type partition map =
+*/
+> #define HFS_SUPER_MAGIC		0x4244 /* "BD": HFS MDB (super =
+block) */
+> -#define HFS_MFS_SUPER_MAGIC	0xD2D7 /* MFS MDB (super block) */
+>=20
+> /* various FIXED size parameters */
+> #define HFS_SECTOR_SIZE		512    /* size of an HFS sector =
+*/
+> diff --git a/fs/hfsplus/part_tbl.c b/fs/hfsplus/part_tbl.c
+> index 63164ebc52fa..ecda671d56a8 100644
+> --- a/fs/hfsplus/part_tbl.c
+> +++ b/fs/hfsplus/part_tbl.c
+> @@ -23,11 +23,9 @@
+> #define HFS_MDB_BLK		2 /* Block (w/i partition) of MDB */
+>=20
+> /* magic numbers for various disk blocks */
+> -#define HFS_DRVR_DESC_MAGIC	0x4552 /* "ER": driver descriptor map */
+> #define HFS_OLD_PMAP_MAGIC	0x5453 /* "TS": old-type partition map =
+*/
+> #define HFS_NEW_PMAP_MAGIC	0x504D /* "PM": new-type partition map =
+*/
+> #define HFS_SUPER_MAGIC		0x4244 /* "BD": HFS MDB (super =
+block) */
+> -#define HFS_MFS_SUPER_MAGIC	0xD2D7 /* MFS MDB (super block) */
+>=20
+> /*
+>  * The new style Mac partition map
+> --=20
+> 1.8.3.1
+>=20
+
