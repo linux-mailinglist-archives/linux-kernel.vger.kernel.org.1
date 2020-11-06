@@ -2,66 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A1BA2A9874
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 16:23:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21E072A9877
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 16:23:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727593AbgKFPW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 10:22:59 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:36956 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727639AbgKFPW7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 10:22:59 -0500
-Received: from zn.tnic (p200300ec2f0d1f00a4cc36f619593225.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:1f00:a4cc:36f6:1959:3225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 874C71EC03EA;
-        Fri,  6 Nov 2020 16:22:57 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1604676178;
+        id S1727681AbgKFPXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 10:23:34 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:36024 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726812AbgKFPXd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 10:23:33 -0500
+Date:   Fri, 6 Nov 2020 16:23:29 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1604676211;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=4S5KHTu0b7/e9t7QGnVTVE/CYcplYeRZTP1PGG4sVWk=;
-        b=Tt+0MwXsM/5V0Ja26+sniWCJzCuxTz/+HS9btYCJ3duW2v4yPgtiWlWibnfCKJt907/Ajm
-        R+P2n/+E3rXsPeU0SHl6qekZFfKBZ7R6a5jyHuCmuyyYCMQkKmzQEYTseJpga3MRb7HtYH
-        mZNCBhf1Tse+Qtd4UavjuhJqTqUjB4E=
-Date:   Fri, 6 Nov 2020 16:22:44 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Hewenliang <hewenliang4@huawei.com>
-Cc:     tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
-        osandov@fb.com, rppt@kernel.org, lijiang@redhat.com,
-        linux-kernel@vger.kernel.org, hushiyuan@huawei.com
-Subject: Re: [PATCH] x86/kexec: Initialize the value of ident mapping offset
-Message-ID: <20201106152244.GE14914@zn.tnic>
-References: <20201106033005.2354-1-hewenliang4@huawei.com>
+         in-reply-to:in-reply-to:references:references;
+        bh=gtLuAYXrlaU0hbaqYajfTStS7KDqOPQPneTx+0rzWpE=;
+        b=oecZkBnHsmqmlAcxFE/V/ZxyMTKkH0OoslfUnscBSsp/oSawPcrcxjMPsGlS+xKKQRY1Un
+        c3kpY9oYrVLsJBLZed65wjzG2X6e63kA2/hpxaXZTs2/l4HieIs9zEl0bMmn2fgvgi+M8u
+        1pzbzHlR1b2SMbUc1H3E54Bef/FzAWvjNwYWeIWVMpACCj6hbSs28ahhAfhdNja9bwHQbV
+        jkHDMPWJiCyIMcUkcdd2+E5JJGTBde0QGOUndFOckyPJh8SF/7FGnc6VXHkZDvileQcRXx
+        x+li+gPQC17FEF1TLUIZphGcVQiv8VUiSDLbdzAbwVM8Z7tbxQEZdsfqeT0OAA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1604676211;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gtLuAYXrlaU0hbaqYajfTStS7KDqOPQPneTx+0rzWpE=;
+        b=uOEYaONJz22IL6804wmaEva2hvTRTSJt3LvyCppRrt5KlNPFOznNZkB9Q1k+GE2wKnw9nV
+        Br0TyB7B8uZ+y3BA==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Jens Axboe <axboe@kernel.dk>, Sagi Grimberg <sagi@grimberg.me>,
+        linux-block@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        David Runge <dave@sleepmap.de>, linux-rt-users@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Daniel Wagner <dwagner@suse.de>, Mike Galbraith <efault@gmx.de>
+Subject: Re: [PATCH 3/3] blk-mq: Use llist_head for blk_cpu_done
+Message-ID: <20201106152329.4vms2hk7dlzyojfw@linutronix.de>
+References: <20201029140536.GA6376@infradead.org>
+ <20201029145623.3zry7o6nh6ks5tjj@linutronix.de>
+ <20201029145743.GA19379@infradead.org>
+ <d2c15411-5b21-535b-6e07-331ebe22f8c8@grimberg.me>
+ <20201029210103.ocufuvj6i4idf5hj@linutronix.de>
+ <deb40e55-d228-06c8-8719-fc8657a0a19b@grimberg.me>
+ <20201031104108.wjjdiklqrgyqmj54@linutronix.de>
+ <3bbfb5e1-c5d7-8f3b-4b96-6dc02be0550d@kernel.dk>
+ <20201102095533.fxc2xpauzsoju7cm@linutronix.de>
+ <20201102181238.GA17806@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201106033005.2354-1-hewenliang4@huawei.com>
+In-Reply-To: <20201102181238.GA17806@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 10:30:05PM -0500, Hewenliang wrote:
-> From: hewenliang <hewenliang4@huawei.com>
+On 2020-11-02 18:12:38 [+0000], Christoph Hellwig wrote:
+> > to not break that assumption you just mentioned and provide 
+> > |static inline void blk_mq_complete_request_local(struct request *rq)
+> > |{
+> > |                 rq->q->mq_ops->complete(rq);
+> > |}
+> > 
+> > so that completion issued from from process context (like those from
+> > usb-storage) don't end up waking `ksoftird' (running at SCHED_OTHER)
+> > completing the requests but rather performing it right away. The softirq
+> > dance makes no sense here.
 > 
-> It is necessary to initialize the value of ident mapping offset.
+> Agreed.  But I don't think your above blk_mq_complete_request_local
+> is all that useful either as ->complete is defined by the caller,
+> so we could just do a direct call.
+In usb-storage case it is hidden somewhere in the SCSI stack but this
+can probably be changed later on.
 
-Why is it necessary?
+>                                     Basically we should just
+> return false from blk_mq_complete_request_remote after updating
+> the state when called from process context.  But given that IIRC
+> we are not supposed to check what state we are called from
+> we'll need a helper just for updating the state instead and
+> ensure the driver uses the right helper.  Now of course we might
+> have process context callers that still want to bounce to the
+> submitting CPU, but in that case we should go directly to a
+> workqueue or similar.
 
-> This can not only avoid using dirty data,
+So instead blk_mq_complete_request_local() you want a helper to set the
+state in which the completion function is invoked. Sounds more like an
+argument :)
 
-What happens to designated initializers when some of the members are not
-explicitly mentioned?
+> Either way doing this properly will probabl involve an audit of all
+> drivers, but I think that is worth it.
 
-Hint:
+I'm lost. Should I repost the three patches with a preempt_disable()
+section (as suggested) to not break preemptible callers? And then move
+from there to provide callers from preemtible context an alternative?
 
-$ make arch/x86/kernel/machine_kexec_64.s
-
-and look at that file before your patch.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Sebastian
