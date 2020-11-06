@@ -2,105 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C00B2A8B8E
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 01:47:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B38D2A8B93
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 01:52:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732662AbgKFArt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 19:47:49 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:44133 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729162AbgKFArs (ORCPT
+        id S1732755AbgKFAv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 19:51:56 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:2066 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729784AbgKFAvz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 19:47:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604623667;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qyPnP4lF1Yi0XyDpJZZP5+UOnDqVjqVsDwjLlXmGNic=;
-        b=J2l6QohYRr05Y4dYaT6txMFrxZahuftn0584OSmokXjF2Ix1tr54KEGfms8Nbek76F6UAr
-        bivCcm/o/t61n5JvgXVpcR4HGISIe1h1sMFIP+p0Rn76GJEd3NxHAUvKdGKej5IGgGQvwc
-        DEDW6Tab0THXEhJX5SI1sVOjBX5xSg0=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-444-c0XE7geMMA6_DBUzvykbEg-1; Thu, 05 Nov 2020 19:47:46 -0500
-X-MC-Unique: c0XE7geMMA6_DBUzvykbEg-1
-Received: by mail-qv1-f71.google.com with SMTP id d41so2073505qvc.23
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 16:47:46 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=qyPnP4lF1Yi0XyDpJZZP5+UOnDqVjqVsDwjLlXmGNic=;
-        b=EYUdM/3+kW+37NXa1FDnKIcN9N1STcd/+XbZnWXSwxLYkKXQBTSthDtJQu0kHtsFJI
-         kD7vWrGvZqFfT1BsL5gAt9dqSW3o378CqtzoFoByVQJlnkGanYDDioPcZgy1N0gC5tuG
-         t4xxbpXiiTXlOL8njzJpfcdJN8bBn6/fu9Z3nhu392SIe9X8Hbvjf8PJ1cR3CI6vWFKI
-         NbJp1cvTaazdZfaz0+yOXuKBOKE5ojkYtdIZNgOsxlVj6ThQ0doL/hCbW/yw3SjUOzz2
-         eCFPuNd6wzGtSjzs+4d0BmBmRTjCz3eS1t82bEyzJOP9If6Aef97NP8tjkB/KTTbxBct
-         9qrg==
-X-Gm-Message-State: AOAM532RMiOEGSIGzLMOSzb0PP2QEEYcZVa4b7Vfbci5uY8nYuPoMvXk
-        ZoskR9HCXWsawh6OkBIrIuCxNTCDLAtdckShD4Yk3H28n0LszwJoL45yh8nR1HqD3sSMElHjKkH
-        waj5L++Vd3ZJKS0h+8cT57c0+
-X-Received: by 2002:ac8:6d1:: with SMTP id j17mr4841439qth.230.1604623665166;
-        Thu, 05 Nov 2020 16:47:45 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxbRk7Wv/ie/4F9jx8fbSx+H1AvkziIsrSKBGbSjzVCO8ww8iY9yV90ttVKnnSFxemgsIHUZw==
-X-Received: by 2002:ac8:6d1:: with SMTP id j17mr4841425qth.230.1604623664969;
-        Thu, 05 Nov 2020 16:47:44 -0800 (PST)
-Received: from tp-x1 (c-98-239-145-235.hsd1.wv.comcast.net. [98.239.145.235])
-        by smtp.gmail.com with ESMTPSA id d133sm2374130qke.106.2020.11.05.16.47.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 16:47:44 -0800 (PST)
-Date:   Thu, 5 Nov 2020 19:47:43 -0500
-From:   Brian Masney <bmasney@redhat.com>
-To:     boris.ostrovsky@oracle.com, jgross@suse.com, sstabellini@kernel.org
-Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, xen-devel@lists.xenproject.org,
-        linux-kernel@vger.kernel.org, dustymabe@redhat.com
-Subject: Re: [PATCH] x86/xen: fix warning when running with nosmt mitigations
-Message-ID: <20201106004743.GA380136@tp-x1>
-References: <20201106003529.391649-1-bmasney@redhat.com>
+        Thu, 5 Nov 2020 19:51:55 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fa49e2f0000>; Thu, 05 Nov 2020 16:51:59 -0800
+Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 6 Nov
+ 2020 00:51:51 +0000
+Received: from rcampbell-dev.nvidia.com (10.124.1.5) by mail.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
+ Transport; Fri, 6 Nov 2020 00:51:51 +0000
+From:   Ralph Campbell <rcampbell@nvidia.com>
+To:     <linux-mm@kvack.org>, <nouveau@lists.freedesktop.org>,
+        <linux-kselftest@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Jerome Glisse <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Jason Gunthorpe" <jgg@nvidia.com>,
+        Bharata B Rao <bharata@linux.ibm.com>,
+        Zi Yan <ziy@nvidia.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        "Shuah Khan" <shuah@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Ralph Campbell" <rcampbell@nvidia.com>
+Subject: [PATCH v3 0/6] mm/hmm/nouveau: add THP migration to migrate_vma_*
+Date:   Thu, 5 Nov 2020 16:51:41 -0800
+Message-ID: <20201106005147.20113-1-rcampbell@nvidia.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201106003529.391649-1-bmasney@redhat.com>
-User-Agent: Mutt/1.14.6 (2020-07-11)
+X-NVConfidentiality: public
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1604623919; bh=yd2V0Bj7e0BljktQG2A8aEh2H8lDRzFocecZDywzuvo=;
+        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:MIME-Version:
+         X-NVConfidentiality:Content-Transfer-Encoding:Content-Type;
+        b=l1GP2MqkXumBnOLdZPkkI/rhR7a4QkhrOLUzQZ07kAYQ/Co7WXfjmo46mueuuYvZq
+         Br4aCN5s2HI1+/JMzxHxzk9kadPHc2pQPf3Rtj77uLEYEZzaxYsF5HJtLu7+RBGYln
+         kmNW1dk9VrCVI8cp6tvg2EiI4aEyYOfCHItqRY+fTSmi7KzwNWmS44k3KW56sW+MzW
+         o2huLaZevX2k/szf3mkftTbe/zpAKP3yluAPe9gWgMq1+UQwEo9MYmPmH9pM0Ish3f
+         NBf69WgnEPE5Plno3uUZkGtiOrkYQmWQEKVUyZjSs3433S3bzfsqF/n/H07IOMgK7k
+         vZ64sh9YOSrBA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 07:35:29PM -0500, Brian Masney wrote:
-> diff --git a/arch/x86/xen/spinlock.c b/arch/x86/xen/spinlock.c
-> index 799f4eba0a62..4a052459a08e 100644
-> --- a/arch/x86/xen/spinlock.c
-> +++ b/arch/x86/xen/spinlock.c
-> @@ -93,9 +93,24 @@ void xen_init_lock_cpu(int cpu)
->  
->  void xen_uninit_lock_cpu(int cpu)
->  {
-> +	int irq;
-> +
->  	if (!xen_pvspin)
->  		return;
->  
-> +	/*
-> +	 * When booting the kernel with 'mitigations=auto,nosmt', the secondary
-> +	 * CPUs are not activated and only the primary thread on each CPU core
-> +	 * is used. In this situation, xen_hvm_smp_prepare_cpus(), and more
-> +	 * importantly xen_init_lock_cpu(), is not called, so the
-> +	 * lock_kicker_irq is not initialized for the secondary CPUs. Let's
-> +	 * exit early if the irq is not set to avoid a warning in the console
-> +	 * log.
-> +	 */
-> +	irq = per_cpu(lock_kicker_irq, cpu);
-> +	if (irq == -1)
-> +		return;
-> +
->  	unbind_from_irqhandler(per_cpu(lock_kicker_irq, cpu), NULL);
+This series adds support for transparent huge page migration to
+migrate_vma_*() and adds nouveau SVM and HMM selftests as consumers.
+Earlier versions were posted previously [1] and [2].
 
-As soon as I saw this on lore, I saw that I should have passed the irq
-variable to unbind_from_irqhandler() rather than doing another per_cpu()
-lookup. I'll wait for feedback about the general approach before posting
-a v2.
+The patches apply cleanly to the linux-mm 5.10.0-rc2 tree. There are a
+lot of other THP patches being posted. I don't think there are any
+semantic conflicts but there may be some merge conflicts depending on
+the order Andrew applies these.
 
-Brian
+Changes in v3:
+Sent the patch ("mm/thp: fix __split_huge_pmd_locked() for migration PMD")
+as a separate patch from this series.
+
+Rebased to linux-mm 5.10.0-rc2.
+
+Changes in v2:
+Added splitting a THP midway in the migration process:
+i.e., in migrate_vma_pages().
+
+[1] https://lore.kernel.org/linux-mm/20200619215649.32297-1-rcampbell@nvidi=
+a.com
+[2] https://lore.kernel.org/linux-mm/20200902165830.5367-1-rcampbell@nvidia=
+.com
+
+Ralph Campbell (6):
+  mm/thp: add prep_transhuge_device_private_page()
+  mm/migrate: move migrate_vma_collect_skip()
+  mm: support THP migration to device private memory
+  mm/thp: add THP allocation helper
+  mm/hmm/test: add self tests for THP migration
+  nouveau: support THP migration to private memory
+
+ drivers/gpu/drm/nouveau/nouveau_dmem.c | 289 +++++++++++-----
+ drivers/gpu/drm/nouveau/nouveau_svm.c  |  11 +-
+ drivers/gpu/drm/nouveau/nouveau_svm.h  |   3 +-
+ include/linux/gfp.h                    |  10 +
+ include/linux/huge_mm.h                |  12 +
+ include/linux/memremap.h               |   9 +
+ include/linux/migrate.h                |   2 +
+ lib/test_hmm.c                         | 437 +++++++++++++++++++++----
+ lib/test_hmm_uapi.h                    |   3 +
+ mm/huge_memory.c                       | 147 +++++++--
+ mm/memcontrol.c                        |  25 +-
+ mm/memory.c                            |  10 +-
+ mm/memremap.c                          |   4 +-
+ mm/migrate.c                           | 429 +++++++++++++++++++-----
+ mm/rmap.c                              |   2 +-
+ tools/testing/selftests/vm/hmm-tests.c | 404 +++++++++++++++++++++++
+ 16 files changed, 1522 insertions(+), 275 deletions(-)
+
+--=20
+2.20.1
 
