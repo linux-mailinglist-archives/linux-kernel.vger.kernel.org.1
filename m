@@ -2,106 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 346B52A931B
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 10:47:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB2652A9337
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 10:47:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726863AbgKFJqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 04:46:55 -0500
-Received: from mx2.suse.de ([195.135.220.15]:57546 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726820AbgKFJqx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 04:46:53 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id EDCFEAC35;
-        Fri,  6 Nov 2020 09:46:51 +0000 (UTC)
-Date:   Fri, 6 Nov 2020 10:46:48 +0100
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: Re: [External] Re: [PATCH v2 05/19] mm/hugetlb: Introduce pgtable
- allocation/freeing helpers
-Message-ID: <20201106094643.GA15654@linux>
-References: <20201026145114.59424-1-songmuchun@bytedance.com>
- <20201026145114.59424-6-songmuchun@bytedance.com>
- <20201105132337.GA7552@linux>
- <CAMZfGtXwKJ3uCuNC3mxHQLNJqTcUzj7Gd2-JRuOWEjZ1C7Oh=A@mail.gmail.com>
+        id S1726998AbgKFJri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 04:47:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55916 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726931AbgKFJrh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 04:47:37 -0500
+Received: from mail-vk1-xa41.google.com (mail-vk1-xa41.google.com [IPv6:2607:f8b0:4864:20::a41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A125C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 01:47:36 -0800 (PST)
+Received: by mail-vk1-xa41.google.com with SMTP id d191so108882vka.13
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 01:47:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=23W4y+M6abuLudmZYHb5EuUWkPwY6lV1mseRyEhWEi8=;
+        b=mCza6PKGULKR3KSLVi71jaHeGa6jbvf6eXzzXIBvNZeyIvCsGCa0s69whdIqeCnP5h
+         mBXASZSIMWro685Lrr3eqyNcGTqYWXcWrkmSjeghCw/RZcqBPaXJs2pxzzmkC37gHMRK
+         3JrHTfZywnCyf11o6Inei30zBTKv+nQNQGq04ubzXiaWxwoQfGdqG00g1CqlJGsB/BCy
+         SF+PPXvk4D69igY9N+Jk/R+pI2iIYDoA5XrYnZBYwQnr9ejxhUSjMb4vvY7rT7KHcnbY
+         27llEWNDyIS8qOTbGquBtsENdCDqQCx6NlIdaaRmBu5bYBGDhw2TSMH51pVRSps4IBkw
+         RIYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=23W4y+M6abuLudmZYHb5EuUWkPwY6lV1mseRyEhWEi8=;
+        b=J7vAzdc1/qoffwKM4vTKmuDI4aZmIjHkjz8eEQ0VgPIxjQyRRbO0zprtOO3xhVvoZ3
+         r4AT0h2zGpLjct3yLU1Vt6eP51LV2Yv3ZEUIW+MpA9paN/akxr+oUH9COVoRwTZgnlHi
+         dtIUPXHTgLgpW9ogCFHSWkblnLkNXCxAZGWwOSKHmY/8/X0rffO5ItocoqfqcUXC/kUv
+         2k5k4c93D5UwL27wDVLnyU8C16/STUMnjt3nyNux5JsTa5J3rt9KVdoyCYTI/nlkx6W8
+         ZVfOLBSI5b+uDDgLYoN6Vs5u7YtIV+GwDcAzmv2A2eAq729hpBIWeywMox7B0TR159Kq
+         yI6A==
+X-Gm-Message-State: AOAM530DkjeXTmYZd9/jhOcl5eR0n+5MWGyJ8j0mjxPe2o4Tq9GE1jNr
+        2+IeM18iJgaKFf0cCz2RBoAjLEumkscjwmMo5QhDOQ==
+X-Google-Smtp-Source: ABdhPJyXTD4HNdZV3wzzfqQ8t69K2mMISGmdEjWNlqIkWraZz4pfH1N3k25yw1yNuJKt+bmqGH3xyqLHf33qIXEIte0=
+X-Received: by 2002:a1f:9682:: with SMTP id y124mr465715vkd.6.1604656055569;
+ Fri, 06 Nov 2020 01:47:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMZfGtXwKJ3uCuNC3mxHQLNJqTcUzj7Gd2-JRuOWEjZ1C7Oh=A@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201106073358.8379-1-patrice.chotard@st.com>
+In-Reply-To: <20201106073358.8379-1-patrice.chotard@st.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Fri, 6 Nov 2020 10:46:58 +0100
+Message-ID: <CAPDyKFq94tpotN9P=pgBx+=deYQWzAYfFQWO3ejPOqAMN3PN=Q@mail.gmail.com>
+Subject: Re: [PATCH v1 0/4] PM: Add dev_wakeup_path() helper
+To:     Patrice CHOTARD <patrice.chotard@st.com>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        Erwan Le Ray <erwan.leray@st.com>,
+        Alexandre TORGUE <alexandre.torgue@st.com>,
+        Fabrice Gasnier <fabrice.gasnier@st.com>,
+        Pierre-Yves MORDRET <pierre-yves.mordret@st.com>,
+        amelie.delaunay@st.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 06, 2020 at 12:08:22AM +0800, Muchun Song wrote:
-> > I do not think you need this.
-> > We already have hugepages_supported().
-> 
-> Maybe some architectures support hugepage, but the vmemmap do not
-> use the hugepage map. In  this case, we need it. But I am not sure if it
-> exists in the real world. At least, x86 can reuse hugepages_supported.
+On Fri, 6 Nov 2020 at 08:34, <patrice.chotard@st.com> wrote:
+>
+> From: Patrice Chotard <patrice.chotard@st.com>
+>
+> Add dev_wakeup_path() helper to avoid to spread
+> dev->power.wakeup_path test in drivers.
+>
+> Cc: amelie.delaunay@st.com,
+>     erwan_leray@st.com,
+>     fabrice.gasnier@st.com,
+>     alexandre.torgue@st.com,
+>     alain.volmat@st.com,
+>     pierre-yves.mordret@st.com
+>
+> *** BLURB HERE ***
 
-Yes, but that is the point.
-IIUC, this patchset will enable HugeTLB vmemmap pages only for x86_64.
-Then, let us make the patchset specific to that architecture.
+:-)
 
-If at some point this grows more users (powerpc, arm, ...), then we
-can add the missing code, but for now it makes sense to only include
-the bits to make this work on x86_64.
+>
+> Patrice Chotard (4):
+>   PM / wakeup: Add dev_wakeup_path() helper
+>   PM: domains: Make usage of device_wakeup_path() helper
+>   PM: core: Make usage of device_wakeup_path() helper
+>   i2c: stm32f7: Make usage of dev_wakeup_path() helper
+>
+>  drivers/base/power/domain.c      |  4 ++--
+>  drivers/base/power/main.c        |  4 ++--
+>  drivers/i2c/busses/i2c-stm32f7.c |  4 ++--
+>  include/linux/pm_wakeup.h        | 10 ++++++++++
+>  4 files changed, 16 insertions(+), 6 deletions(-)
+>
+> --
+> 2.17.1
+>
 
-And also according to this the changelog is a bit "misleading".
+For the series:
 
-"On some architectures, the vmemmap areas use huge page mapping.
-If we want to free the unused vmemmap pages, we have to split
-the huge pmd firstly. So we should pre-allocate pgtable to split
-huge pmd."
+Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
 
-On x86_64, vmemmap is always PMD mapped if the machine has hugepages
-support and if we have 2MB contiguos pages and PMD aligned.
-e.g: I have seen cases where after the system has ran for a period
-of time hotplug operations were mapping the vmemmap representing
-the hot-added range on page base, because we could not find
-enough contiguos and aligned memory.
-
-Something that [1] tries to solve:
-
-[1] https://patchwork.kernel.org/project/linux-mm/cover/20201022125835.26396-1-osalvador@suse.de/
-
-But anyway, my point is that let us make it clear in the changelog that
-this is aimed for x86_64 at the moment.
-Saying "on some architures" might make think people that this is not
-x86_64 specific.
-
->> > > +     vmemmap_pgtable_init(page);
-> >
-> > Maybe just open code this one?
-> 
-> Sorry. I don't quite understand what it means. Could you explain?
-
-I meant doing 
-
-page_huge_pte(page) = NULL
-
-But no strong feelings.
-
--- 
-Oscar Salvador
-SUSE L3
+Kind regards
+Uffe
