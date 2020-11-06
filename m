@@ -2,150 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 335E02A9198
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 09:36:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28FFC2A9197
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 09:36:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726719AbgKFIgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 03:36:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44846 "EHLO
+        id S1726678AbgKFIgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 03:36:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725848AbgKFIgp (ORCPT
+        with ESMTP id S1725830AbgKFIgm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 03:36:45 -0500
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A042C0613D2
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 00:36:45 -0800 (PST)
-Received: by mail-yb1-xb41.google.com with SMTP id b138so474154yba.5
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 00:36:45 -0800 (PST)
+        Fri, 6 Nov 2020 03:36:42 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ED90C0613CF;
+        Fri,  6 Nov 2020 00:36:41 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id e21so386742pgr.11;
+        Fri, 06 Nov 2020 00:36:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qEZLCwayVmjTSz55WLFDrASQyKwm9AzKbv8zrefCiDk=;
-        b=Ji/jXL4wApkUI69Y5av8UFEa6ZvMG8Mm7sMdeBuZf7EoU4V1ZJLIvyslti7xbYYgOo
-         7sI5169sAiOnVjscRjwLSG5mTCDgJbsvvoyW7NaM+rXP+TANNYM9GzJTJeHzh5IJBSn6
-         jCu4ranqabbyvqfRRUp8VUmP12hOGnUWANJ2MHUcQuqSD+QuRogFeUpnHgYeTln5Ymb2
-         IxW851j1Otp0qXE2KbajHox2eLThi38VBbZU7+cZkmlqcN1NRpsNCkHTGxZofwDuILfd
-         YJVqD/sCpYRPLK+Qa+6GsSNblgKHxW6x/FkEn9nScueY9kHi8mFdGrFX2iHrBlCcY0aX
-         0Zzg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=+qSLTAucKIzC5zZwm342qCeQvvPCk8ksHbR7fQaZbX4=;
+        b=imn0pZSNxZsLrHPYBFL+vAg8PxjfqXdFQxDQtbA1NSJGbdfCfW36wnzp/70b4P4PfC
+         TH+rli3XjJSjxsT0Ygas1koR9AQVcKMZKmrlEvVghjmnZd//GXutkA0zAgFuy8y6DDW6
+         RQGM+oCCwmpYaUeEPlF1kRGT41ddn4WcpbpBX//sB7OvYUC1u0e2TEpmRBr4mvKIlbne
+         RgH3nS4TUNWCJl6I3zzNyH5kO5mLtqmueXaFMaXEutJGjNyUOLYZH8jwsdSjv/VqOPrC
+         nrEqjh50gIypbrDD08xQsep7+aiw8tD10ewoGtgGy41mCR+f46XLYNm7163SKrgUxY0e
+         VBdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qEZLCwayVmjTSz55WLFDrASQyKwm9AzKbv8zrefCiDk=;
-        b=UWqosGShPi3/RIprXl1Lbx84WaAajDhofXVGPIHe6sxy/ndCcTV9PI9ZjzBzsVTErw
-         bspF/3Q3d6TqniaDDyXA8HSfWWKX2vBww8O9wUpuGxcO9g7GKfx2iuyxLXADgqmMwzLL
-         qVccRPokJ+LoTJPgpkvJk5XIXRUFyQ9WY6MmQ9dTr+c3vtFdoJY2cgDA0pi765r+32sN
-         tuMqUCYGqZlY+2jKS9Meds65HG7gz4+uQdxiN7AxujQ40yLm3rf3pmKahXFXm8PiVTrb
-         2mEsA/nqna5WbBsul6AO3qo/N5TGECAKS6BWER5iQY9QOKEZlX5HTCue+QCtP18l99Yx
-         oauw==
-X-Gm-Message-State: AOAM531wqe0ARBgDExIULFHgT6nKdAR+721yIMvFcqv6g//qbQmOE271
-        IYSUTRRFhV+8dVWc9Ims2xVrmrekxSQpHIr+lIXseg==
-X-Google-Smtp-Source: ABdhPJzvDcNdXHjO7nYfSMx7aYo6WWdRNoKpDm3K2m0Ae6MfNyULyjym/ptGih8ndA11+PnN2rHt+iT8lQNTMQ3Kip0=
-X-Received: by 2002:a25:d2c5:: with SMTP id j188mr1358442ybg.32.1604651804489;
- Fri, 06 Nov 2020 00:36:44 -0800 (PST)
-MIME-Version: 1.0
-References: <20201104232356.4038506-1-saravanak@google.com> <20201106050940.GG16469@pendragon.ideasonboard.com>
-In-Reply-To: <20201106050940.GG16469@pendragon.ideasonboard.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Fri, 6 Nov 2020 00:36:08 -0800
-Message-ID: <CAGETcx-rvTuEmJUsf6qP3WkPLOh6m6cy8E_LsJPoGejNOXrdcw@mail.gmail.com>
-Subject: Re: [PATCH v1 00/18] Refactor fw_devlink to significantly improve
- boot time
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=+qSLTAucKIzC5zZwm342qCeQvvPCk8ksHbR7fQaZbX4=;
+        b=aN4K4ZiNhelP2b1XmW5j/dPuAxHOhNqxnWjpdCLolIpWH4a+qrlfWATEyZR8kJ+vi6
+         ZnGcPhvmNnAmIogwTozighgL22mCmtOw6tZT8BRTGnQcwPC0A0ePl42DE8fpABJQIULl
+         dxbxWcFzPBOC/aeVkaQK48BmeY9AIiINQtaJPnD8HCb2gsSjFqjvg8udSgmhUkR3ts58
+         dn/+pzj9InbM1fUBEIVNCD0+EI6URjNXlQLkQHAx65lP8dyqvdBeIp/eSeEfoJXkComo
+         cj92XZ03UfTIkzfJqyhNFDlPdp1zOAt9aZoIhaoG5FanGCIIA/F6AMyTuwLSiRjiDCZX
+         Iz0w==
+X-Gm-Message-State: AOAM530MYzhVkHbNh4M/5Y01yjhMia9YIC8WjmQTR+BmqFaNgnBG0fl8
+        EumbG0YUFG4AGaQu+LYu/1ITkIWPuQu5
+X-Google-Smtp-Source: ABdhPJxpBDG9SaVNnwr93UUXnTAbjCLxut547OQ22TAPQAQAexwPQt5bH3o3dZA+/VQn5lG1QZz8ow==
+X-Received: by 2002:aa7:9095:0:b029:164:75c4:5d15 with SMTP id i21-20020aa790950000b029016475c45d15mr1037486pfa.49.1604651801151;
+        Fri, 06 Nov 2020 00:36:41 -0800 (PST)
+Received: from he-cluster.localdomain (67.216.221.250.16clouds.com. [67.216.221.250])
+        by smtp.gmail.com with ESMTPSA id z206sm1232773pfc.3.2020.11.06.00.36.39
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 06 Nov 2020 00:36:40 -0800 (PST)
+From:   xiakaixu1987@gmail.com
+X-Google-Original-From: kaixuxia@tencent.com
+To:     linus.walleij@linaro.org
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kaixu Xia <kaixuxia@tencent.com>
+Subject: [PATCH] pinctrl: ocelot: Remove unnecessary conversion to bool
+Date:   Fri,  6 Nov 2020 16:36:35 +0800
+Message-Id: <1604651795-1220-1-git-send-email-kaixuxia@tencent.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 5, 2020 at 9:09 PM Laurent Pinchart
-<laurent.pinchart@ideasonboard.com> wrote:
->
-> Hi Saravana,
->
-> Thank you for working on this !
->
-> On Wed, Nov 04, 2020 at 03:23:37PM -0800, Saravana Kannan wrote:
-> > The current implementation of fw_devlink is very inefficient because it
-> > tries to get away without creating fwnode links in the name of saving
-> > memory usage. Past attempts to optimize runtime at the cost of memory
-> > usage were blocked with request for data showing that the optimization
-> > made significant improvement for real world scenarios.
-> >
-> > We have those scenarios now. There have been several reports of boot
-> > time increase in the order of seconds in this thread [1]. Several OEMs
-> > and SoC manufacturers have also privately reported significant
-> > (350-400ms) increase in boot time due to all the parsing done by
-> > fw_devlink.
-> >
-> > So this patch series refactors fw_devlink to be more efficient. The key
-> > difference now is the addition of support for fwnode links -- just a few
-> > simple APIs. This also allows most of the code to be moved out of
-> > firmware specific (DT mostly) code into driver core.
-> >
-> > This brings the following benefits:
-> > - Instead of parsing the device tree multiple times (complexity was
-> >   close to O(N^3) where N in the number of properties) during bootup,
-> >   fw_devlink parses each fwnode node/property only once and creates
-> >   fwnode links. The rest of the fw_devlink code then just looks at these
-> >   fwnode links to do rest of the work.
-> >
-> > - Makes it much easier to debug probe issue due to fw_devlink in the
-> >   future. fw_devlink=on blocks the probing of devices if they depend on
-> >   a device that hasn't been added yet. With this refactor, it'll be very
-> >   easy to tell what that device is because we now have a reference to
-> >   the fwnode of the device.
-> >
-> > - Much easier to add fw_devlink support to ACPI and other firmware
-> >   types. A refactor to move the common bits from DT specific code to
-> >   driver core was in my TODO list as a prerequisite to adding ACPI
-> >   support to fw_devlink. This series gets that done.
-> >
-> > Tomi/Laurent/Grygorii,
-> >
-> > If you can test this series, that'd be great!
->
-> I gave it a try, rebasing my branch from v5.9 to v5.10-rc2 first. On
-> v5.10-rc2 the kernel dies when booting due to a deadlock (reported by
-> lockdep, so hopefully not too hard to debug). *sigh*. Fortunately, it
-> dies after the fw_devlink initialization, so I can still report results.
+From: Kaixu Xia <kaixuxia@tencent.com>
 
-Phew! For a sec I thought you said fw_devlink was causing a deadlock.
+Fix the following coccicheck warning:
 
->
-> Before your series:
->
-> [    0.743065] cpuidle: using governor menu
-> [   13.350259] No ATAGs?
->
-> With your series applied:
->
-> [    0.722670] cpuidle: using governor menu
-> [    1.135859] No ATAGs?
->
-> That's a very clear improvement :-)
+./drivers/pinctrl/pinctrl-ocelot.c:732:28-33: WARNING: conversion to bool not needed here
 
-Thanks for testing. Great to hear it's helping!
+Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
+Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
+---
+ drivers/pinctrl/pinctrl-ocelot.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> Tested-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+diff --git a/drivers/pinctrl/pinctrl-ocelot.c b/drivers/pinctrl/pinctrl-ocelot.c
+index a4a1b00f7f0d..c2be5c44077f 100644
+--- a/drivers/pinctrl/pinctrl-ocelot.c
++++ b/drivers/pinctrl/pinctrl-ocelot.c
+@@ -729,7 +729,7 @@ static int ocelot_pinconf_get(struct pinctrl_dev *pctldev,
+ 		if (err)
+ 			return err;
+ 		if (param == PIN_CONFIG_BIAS_DISABLE)
+-			val = (val == 0 ? true : false);
++			val = (val == 0);
+ 		else if (param == PIN_CONFIG_BIAS_PULL_DOWN)
+ 			val = (val & BIAS_PD_BIT ? true : false);
+ 		else    /* PIN_CONFIG_BIAS_PULL_UP */
+-- 
+2.20.0
 
-I'll add it to my v2 series.
-
--Saravana
