@@ -2,162 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25E862A97A9
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 15:32:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA8642A97AB
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 15:32:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727338AbgKFOcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 09:32:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44332 "EHLO
+        id S1727396AbgKFOcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 09:32:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726565AbgKFOcA (ORCPT
+        with ESMTP id S1726565AbgKFOcQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 09:32:00 -0500
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37836C0613D3
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 06:32:00 -0800 (PST)
-Received: by mail-ed1-x542.google.com with SMTP id cq7so1275750edb.4
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 06:32:00 -0800 (PST)
+        Fri, 6 Nov 2020 09:32:16 -0500
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E71BC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 06:32:16 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id p19so1073545wmg.0
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 06:32:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oB1Imkum9eDeaPIc2hKzTYzV0vCEPBOSK4bPPbyIfFo=;
-        b=MJZxZb9Np7qkyYy2+/tuO+PJ7RD8i5hCMCSDVGIKwTmGEMUp8jBXPxbi+ypenl2uOX
-         qJ+L1g3+lrM0rI9q1py697lLpVRpbpkvaX0ElM8ptuKvrrkiH2JpsDBGnsMgMYG1cxgj
-         rf004YD74RsbNxZw9n64cR/SXbBsAMzl7nmG9y4aWGHYSDiJIASZMOZKw1AJaZ4GgIvq
-         dlNw/F+0nf0rg9hu3C2ImbB6PPdVRLjidafVVXKzFiq/1l+5YdtMlfZc6GuqsDe5Vz4T
-         jjDqLv8LS3Z8+gbHNi8Btm42PrEaRycBGPh5rEGzK7ffR3uGl6alKh5Vqg0qZUM0QFth
-         YvKA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=TG+grahIptnoTDeadrfkRn7emRkmhtKpvXQhWUpy47k=;
+        b=CrhDurWJAeG4yK5DEGv6d9vKTLLPGIfaDJN7YD9qUnkQpoyQUsXYvGemkHpc95FY87
+         pviTM6G9r8Hhf2hQUKgc22YuQg0Ss5mCLrSh9xbXMmx0fXYz4mRWJdyIA6XwOPnXVf9P
+         skctiWNEDRpalRxGXR8tQzPcfJ7in7yLpP3sLfM+mroEGkpOMrz+tf6RKaWSMRTZM0Za
+         F30A4x23Xj7WI1aPnn+zIU01l+RroFxRZfvuqgGlrntMzkS/zPC+d8A1Nbfmm6UK0xL+
+         2ZPHj9LYGSlZ2puczY7UpBzyZtP1yhTfY5YpPk10esNMcygJdK6YH7T2fLjK8emhE7Ux
+         cL0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oB1Imkum9eDeaPIc2hKzTYzV0vCEPBOSK4bPPbyIfFo=;
-        b=aWLwzq1qgdWg4ngplCrCwC5cCRCj3dZQznHe31sQEOyrDmb4jJseXlb9jbgAhBzc4k
-         Qj5sSyAj9WP7YFwA1cPiS+QaSG9pZxgvRmRuMngFxyBguq+9MCxiOTK3e+f816jygAMa
-         3yroBPRa1W//bkEvyStz/YYAvoK4GeyWQ3uBOfyddLKsi05LmOIUCcVjDQNqSM9DF3sk
-         bMzYZXuIaYX6HRhpPpKMAtegm64FxsYacJNPpD4iCxLpQZgyE3Ov1sgSYHLirgmEtktc
-         Vf7KhzwC5zWYukcXpcaF6RnV9DnZ/A/PY8qemQkkMvbPOKcTEMoni+o1WNRP6fZ8bpZM
-         h7GQ==
-X-Gm-Message-State: AOAM530YQYi9jp08r9sc7UweMAEZNhu3fnDmTGRbhlCcguBM+Yegl7//
-        AOCMtUS5ODh5l3IgLu8GbtCtcG452gKf+IdLzBdvfg==
-X-Google-Smtp-Source: ABdhPJwN3sBPbMXm3I2rAZin69LJ3GQIjqXtM+gIxWu/GLSx5jjjouxHaYHt0BHaZZKKHv3ulQCoB71rLRAWQxWPAZw=
-X-Received: by 2002:a50:ab15:: with SMTP id s21mr2279062edc.88.1604673118970;
- Fri, 06 Nov 2020 06:31:58 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=TG+grahIptnoTDeadrfkRn7emRkmhtKpvXQhWUpy47k=;
+        b=f4Sbla2CYnI15FlQumaMSXn8WieTb37sAqszMGDJ5KMUWuwpiXgwXMsHh/USeGD0QP
+         lZzZF2laz5eK2Th9CZj/KFmunBxnrvC+J0ldTEyW39/S9aWrtOb7u71DqQzrhzH37/Hg
+         y9taogIp8ALhOhryfEhAQ598jfFVkr3nFXoZsoUC8bmtDnGt6rBVfNoEmRiXvOazYFn5
+         EimJtVi7DnSvbN1Opc5Azg+TIUnlctolpeEo+NdmTxCjOIi2FKloU23Z4Psj81bPASsJ
+         KdhkpakZP/9LDVGfzQNrdzX7+hm3/RgtqvzpblJgjY7S5kbhoJG4B4iEwp+ZPFiAhnis
+         iUXw==
+X-Gm-Message-State: AOAM530BfCyfUAmPAaQgUblFo9N1I8c2yUmFj52oHts1hHPGNJC8/05S
+        NnB97y2+1LrVu5LEwXFywUF26Q==
+X-Google-Smtp-Source: ABdhPJz0I4gPLyquCNwWmcmsIQGxwkz8JIey0HnDEKQCgJUtOSWDcHPzwffR+RU3ePv5LrUQVQs2ZA==
+X-Received: by 2002:a1c:4646:: with SMTP id t67mr2949050wma.40.1604673134943;
+        Fri, 06 Nov 2020 06:32:14 -0800 (PST)
+Received: from dell ([91.110.221.242])
+        by smtp.gmail.com with ESMTPSA id a185sm2567348wmf.24.2020.11.06.06.32.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Nov 2020 06:32:14 -0800 (PST)
+Date:   Fri, 6 Nov 2020 14:32:12 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Tomi Valkeinen <tomi.valkeinen@ti.com>
+Cc:     linux-kernel@vger.kernel.org, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH 08/19] gpu: drm: omapdrm: dss: dsi: Rework and remove a
+ few unused variables
+Message-ID: <20201106143212.GJ2063125@dell>
+References: <20201105144517.1826692-1-lee.jones@linaro.org>
+ <20201105144517.1826692-9-lee.jones@linaro.org>
+ <74399fab-6af5-77d3-e0eb-749774eb2837@ti.com>
+ <20201105180725.GO4488@dell>
+ <e48964e6-4a94-4495-0217-90db19fff629@ti.com>
 MIME-Version: 1.0
-References: <20201104170423.23436-1-digetx@gmail.com> <20201104170423.23436-2-digetx@gmail.com>
-In-Reply-To: <20201104170423.23436-2-digetx@gmail.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Fri, 6 Nov 2020 15:31:48 +0100
-Message-ID: <CAMpxmJVUkXxDkPDKQr98H0uCWJF9zKKzpe9np3McmT3MmeLJ3A@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] gpio: tegra: Use raw_spinlock
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Peter Geis <pgwipeout@gmail.com>, linux-tegra@vger.kernel.org,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <e48964e6-4a94-4495-0217-90db19fff629@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 4, 2020 at 6:04 PM Dmitry Osipenko <digetx@gmail.com> wrote:
->
-> Use raw_spinlock in order to fix spurious messages about invalid context
-> when spinlock debugging is enabled. This happens because there is a legit
-> nested raw_spinlock->spinlock locking usage within IRQ-related code. IRQ
-> core uses raw spinlock and then Tegra GPIO driver uses a nested spinlock.
-> The debug code can't recognize and handle this case, hence we need to use
-> raw spinlock in the GPIO driver.
->
->  [ BUG: Invalid wait context ]
->  ...
->   (dump_stack) from (__lock_acquire)
->   (__lock_acquire) from (lock_acquire)
->   (lock_acquire) from (_raw_spin_lock_irqsave)
->   (_raw_spin_lock_irqsave) from (tegra_gpio_irq_set_type)
->   (tegra_gpio_irq_set_type) from (__irq_set_trigger)
->   (__irq_set_trigger) from (__setup_irq)
->   (__setup_irq) from (request_threaded_irq)
->   (request_threaded_irq) from (devm_request_threaded_irq)
->   (devm_request_threaded_irq) from (elants_i2c_probe)
->   (elants_i2c_probe) from (i2c_device_probe)
->  ...
->
-> Tested-by: Peter Geis <pgwipeout@gmail.com>
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->
-> Changelog:
->
-> v2: - Only lvl_lock is converted to raw_spinlock. The dbc_lock doesn't
->       relate to IRQ and doesn't need the conversion.
->
->     - Improved commit message by clarifying that IRQ core uses raw
->       spinlock.
->
->     - Added clarifying comment to the code for the lvl_lock.
->
->  drivers/gpio/gpio-tegra.c | 18 +++++++++++++-----
->  1 file changed, 13 insertions(+), 5 deletions(-)
->
-> diff --git a/drivers/gpio/gpio-tegra.c b/drivers/gpio/gpio-tegra.c
-> index 98fc78739ebf..e19ebff6018c 100644
-> --- a/drivers/gpio/gpio-tegra.c
-> +++ b/drivers/gpio/gpio-tegra.c
-> @@ -61,8 +61,16 @@ struct tegra_gpio_info;
->  struct tegra_gpio_bank {
->         unsigned int bank;
->         unsigned int irq;
-> -       spinlock_t lvl_lock[4];
-> -       spinlock_t dbc_lock[4]; /* Lock for updating debounce count register */
-> +
-> +       /*
-> +        * IRQ-core code uses raw locking, and thus, nested locking also
-> +        * should be raw in order not to trip spinlock debug warnings.
-> +        */
-> +       raw_spinlock_t lvl_lock[4];
-> +
-> +       /* Lock for updating debounce count register */
-> +       spinlock_t dbc_lock[4];
-> +
->  #ifdef CONFIG_PM_SLEEP
->         u32 cnf[4];
->         u32 out[4];
-> @@ -334,14 +342,14 @@ static int tegra_gpio_irq_set_type(struct irq_data *d, unsigned int type)
->                 return -EINVAL;
->         }
->
-> -       spin_lock_irqsave(&bank->lvl_lock[port], flags);
-> +       raw_spin_lock_irqsave(&bank->lvl_lock[port], flags);
->
->         val = tegra_gpio_readl(tgi, GPIO_INT_LVL(tgi, gpio));
->         val &= ~(GPIO_INT_LVL_MASK << GPIO_BIT(gpio));
->         val |= lvl_type << GPIO_BIT(gpio);
->         tegra_gpio_writel(tgi, val, GPIO_INT_LVL(tgi, gpio));
->
-> -       spin_unlock_irqrestore(&bank->lvl_lock[port], flags);
-> +       raw_spin_unlock_irqrestore(&bank->lvl_lock[port], flags);
->
->         tegra_gpio_mask_write(tgi, GPIO_MSK_OE(tgi, gpio), gpio, 0);
->         tegra_gpio_enable(tgi, gpio);
-> @@ -675,7 +683,7 @@ static int tegra_gpio_probe(struct platform_device *pdev)
->                                                  tegra_gpio_irq_handler, bank);
->
->                 for (j = 0; j < 4; j++) {
-> -                       spin_lock_init(&bank->lvl_lock[j]);
-> +                       raw_spin_lock_init(&bank->lvl_lock[j]);
->                         spin_lock_init(&bank->dbc_lock[j]);
->                 }
->         }
-> --
-> 2.27.0
->
+On Fri, 06 Nov 2020, Tomi Valkeinen wrote:
 
-Patch applied, thanks!
+> On 05/11/2020 20:07, Lee Jones wrote:
+> > On Thu, 05 Nov 2020, Tomi Valkeinen wrote:
+> > 
+> >> On 05/11/2020 16:45, Lee Jones wrote:
+> >>> Fixes the following W=1 kernel build warning(s):
+> >>>
+> >>>  drivers/gpu/drm/omapdrm/dss/dsi.c: In function ‘_dsi_print_reset_status’:
+> >>>  drivers/gpu/drm/omapdrm/dss/dsi.c:1131:6: warning: variable ‘l’ set but not used [-Wunused-but-set-variable]
+> >>>  drivers/gpu/drm/omapdrm/dss/dsi.c: In function ‘dsi_update’:
+> >>>  drivers/gpu/drm/omapdrm/dss/dsi.c:3943:10: warning: variable ‘dh’ set but not used [-Wunused-but-set-variable]
+> >>>  drivers/gpu/drm/omapdrm/dss/dsi.c:3943:6: warning: variable ‘dw’ set but not used [-Wunused-but-set-variable]
+> >>>
+> >>> Cc: Tomi Valkeinen <tomi.valkeinen@ti.com>
+> >>> Cc: David Airlie <airlied@linux.ie>
+> >>> Cc: Daniel Vetter <daniel@ffwll.ch>
+> >>> Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> >>> Cc: dri-devel@lists.freedesktop.org
+> >>> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> >>> ---
+> >>>  drivers/gpu/drm/omapdrm/dss/dsi.c | 9 ++-------
+> >>>  1 file changed, 2 insertions(+), 7 deletions(-)
+> >>
+> >> I'd use "drm/omap: dsi: " subject prefix, the current one is fine too:
+> >>
+> >> Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ti.com>
+> >>
+> >> Should I pick this up or do you want to keep the series intact?
+> > 
+> > If you are in a position to take it, please do so.
+> > 
+> > I rebase every day, so it will just vanish from my working set.
+> 
+> I have a 56 patch series on dsi.c that I sent yesterday, and it conflicts with this one. I'll pick
+> this one on top of my series.
 
-Bartosz
+Sounds good, thanks.
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
