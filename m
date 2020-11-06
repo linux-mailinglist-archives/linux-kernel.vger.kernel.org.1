@@ -2,134 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5FEA2A8FFF
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 08:07:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F37392A9007
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 08:11:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726300AbgKFHHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 02:07:00 -0500
-Received: from mga07.intel.com ([134.134.136.100]:39854 "EHLO mga07.intel.com"
+        id S1726237AbgKFHLK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 02:11:10 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:56754 "EHLO m42-4.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725828AbgKFHHA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 02:07:00 -0500
-IronPort-SDR: IQ7Ng/zE2cTGaUtmtYhWbxdhMTbD9hw7XXOeuPD/2QQeAeiAGygQvkRa2DIqzX4mHGw5sXaqw/
- aZg1+3uHjNqg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9796"; a="233677208"
-X-IronPort-AV: E=Sophos;i="5.77,455,1596524400"; 
-   d="scan'208";a="233677208"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2020 23:06:59 -0800
-IronPort-SDR: Tqs3Igj9aFSu78o2eV3CEG5Qrl7tkXtBTj7kOv6uEDJBbkwdv4hmpHbWCKYYI6ANwgorq2xg6y
- sFRXkptN3f9w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,455,1596524400"; 
-   d="scan'208";a="528243897"
-Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.98])
-  by fmsmga006.fm.intel.com with ESMTP; 05 Nov 2020 23:06:57 -0800
-Date:   Fri, 6 Nov 2020 15:06:56 +0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mel Gorman <mgorman@suse.de>, dave.hansen@intel.com,
-        ying.huang@intel.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 0/2] mm: fix OOMs for binding workloads to movable
- zone only node
-Message-ID: <20201106070656.GA129085@shbuild999.sh.intel.com>
-References: <20201104084021.GB15700@shbuild999.sh.intel.com>
- <20201104085343.GA18718@dhcp22.suse.cz>
- <20201105014028.GA86777@shbuild999.sh.intel.com>
- <20201105120818.GC21348@dhcp22.suse.cz>
- <4029c079-b1f3-f290-26b6-a819c52f5200@suse.cz>
- <20201105125828.GG21348@dhcp22.suse.cz>
- <20201105130710.GB16525@shbuild999.sh.intel.com>
- <20201105131245.GH21348@dhcp22.suse.cz>
- <20201105134305.GA16424@shbuild999.sh.intel.com>
- <20201105161612.GM21348@dhcp22.suse.cz>
+        id S1725828AbgKFHLJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 02:11:09 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1604646668; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=M7Jbb2/KtYXppLcxnwTJFUrf47vGgmwOSsDkYg4ptJQ=;
+ b=SF62lS5RbPPzO/cOgjOiN8DIljpKgIDQqtuLmD/CbxBEi2agC9ZqoIdYpMc11Ou37uZoFhMS
+ Lv7A38+FazW5/SQD73c7AAykoMI9Rhxg10BAX6fsDZW90LqZm0r7MqMKT6bUefS7evrMbaAG
+ scyXEze5nfjpB6dc8Z296fL1+us=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 5fa4f70b42c6e77b6539057d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 06 Nov 2020 07:11:07
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D7CE3C433C6; Fri,  6 Nov 2020 07:11:07 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id CF211C433C8;
+        Fri,  6 Nov 2020 07:11:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org CF211C433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201105161612.GM21348@dhcp22.suse.cz>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH] ath10k: add option for chip-id based BDF selection
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20201020000506.1.Ifbc28707942179f1cefc7491e995814564495270@changeid>
+References: <20201020000506.1.Ifbc28707942179f1cefc7491e995814564495270@changeid>
+To:     Abhishek Kumar <kuabhs@chromium.org>
+Cc:     ath10k@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-wireless@vger.kernel.org, kuabhs@chromium.org
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20201106071107.D7CE3C433C6@smtp.codeaurora.org>
+Date:   Fri,  6 Nov 2020 07:11:07 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 05:16:12PM +0100, Michal Hocko wrote:
-> On Thu 05-11-20 21:43:05, Feng Tang wrote:
-> > On Thu, Nov 05, 2020 at 02:12:45PM +0100, Michal Hocko wrote:
-> > > On Thu 05-11-20 21:07:10, Feng Tang wrote:
-> > > [...]
-> > > > My debug traces shows it is, and its gfp_mask is 'GFP_KERNEL'
-> > > 
-> > > Can you provide the full information please? Which node has been
-> > > requested. Which cpuset the calling process run in and which node has
-> > > the allocation succeeded from? A bare dump_stack without any further
-> > > context is not really helpful.
-> > 
-> > I don't have the same platform as the original report, so I simulated
-> > one similar setup (with fakenuma and movablecore), which has 2 memory
-> > nodes: node 0 has DMA0/DMA32/Movable zones, while node 1 has only
-> > Movable zone. With it, I can got the same error and same oom callstack
-> > as the original report (as in the cover-letter).
-> > 
-> > The test command is:
-> > 	# docker run -it --rm --cpuset-mems 1 ubuntu:latest bash -c "grep Mems_allowed /proc/self/status"
-> > 
-> > To debug I only added some trace in the __alloc_pages_nodemask(), and
-> > for the callstack which get the page successfully:
-> > 
-> > 	[  567.510903] Call Trace:
-> > 	[  567.510909]  dump_stack+0x74/0x9a
-> > 	[  567.510910]  __alloc_pages_nodemask.cold+0x22/0xe5
-> > 	[  567.510913]  alloc_pages_current+0x87/0xe0
-> > 	[  567.510914]  __vmalloc_node_range+0x14c/0x240
-> > 	[  567.510918]  module_alloc+0x82/0xe0
-> > 	[  567.510921]  bpf_jit_alloc_exec+0xe/0x10
-> > 	[  567.510922]  bpf_jit_binary_alloc+0x7a/0x120
-> > 	[  567.510925]  bpf_int_jit_compile+0x145/0x424
-> > 	[  567.510926]  bpf_prog_select_runtime+0xac/0x130
+Abhishek Kumar <kuabhs@chromium.org> wrote:
+
+> In some devices difference in chip-id should be enough to pick
+> the right BDF. Add another support for chip-id based BDF selection.
+> With this new option, ath10k supports 2 fallback options.
 > 
-> As already said this doesn't really tell much without the additional
-> information.
+> The board name with chip-id as option looks as follows
+> board name 'bus=snoc,qmi-board-id=ff,qmi-chip-id=320'
 > 
-> > The incomming parameter nodemask is NULL, and the function will first try the
-> > cpuset nodemask (1 here), and the zoneidx is only granted 2, which makes the
-> > 'ac's preferred zone to be NULL. so it goes into __alloc_pages_slowpath(),
-> > which will first set the nodemask to 'NULL', and this time it got a preferred
-> > zone: zone DMA32 from node 0, following get_page_from_freelist will allocate
-> > one page from that zone. 
-> 
-> I do not follow. Both hot and slow paths of the allocator set
-> ALLOC_CPUSET or emulate it by mems_allowed when cpusets are nebaled
-> IIRC. This is later enforced in get_page_from_free_list. There are some
-> exceptions when the allocating process can run away from its cpusets -
-> e.g. IRQs, OOM victims and few other cases but definitely not a random
-> allocation. There might be some subtle details that have changed or I
-> might have forgot but 
+> Signed-off-by: Abhishek Kumar <kuabhs@chromium.org>
+> Reviewed-by: Douglas Anderson <dianders@chromium.org>
+> Tested-by: Douglas Anderson <dianders@chromium.org>
+> Tested-by: Abhishek Kumar <kuabhs@chromium.org>
 
-yes, I was confused too. IIUC, the key check inside get_page_from_freelist()
-is 
+There were few checkpatch warnings which I fixed:
 
-	if (cpusets_enabled() &&
-		(alloc_flags & ALLOC_CPUSET) &&
-		!__cpuset_zone_allowed(zone, gfp_mask))
+$ ath10k-check
+drivers/net/wireless/ath/ath10k/core.c:1501: Alignment should match open parenthesis
+drivers/net/wireless/ath/ath10k/core.c:1512: line length of 92 exceeds 90 columns
+drivers/net/wireless/ath/ath10k/core.c:1521: line length of 92 exceeds 90 columns
 
-In our case (kernel page got allocated), the first 2 conditions are true,
-and for __cpuset_zone_allowed(), the possible place to return true is
-checking parent cpuset's nodemask
+The first one was also what Doug commented. I also added Tested-on tags,
+thanks for those. The updated patch is in pending branch (soon).
 
-	cs = nearest_hardwall_ancestor(task_cs(current));
-	allowed = node_isset(node, cs->mems_allowed);
+But is this patch ok to take now? I didn't quite get the conclusion of the
+discussion.
 
-This will override the ALLOC_CPUSET check.
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20201020000506.1.Ifbc28707942179f1cefc7491e995814564495270@changeid/
 
-Thanks,
-Feng
-> -- 
-> Michal Hocko
-> SUSE Labs
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
