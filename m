@@ -2,74 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF0C72A919F
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 09:39:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18F3F2A91A9
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 09:44:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726540AbgKFIji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 03:39:38 -0500
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:56903 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725830AbgKFIjh (ORCPT
+        id S1726552AbgKFIoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 03:44:06 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:7061 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726338AbgKFIoF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 03:39:37 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0UEPYmPR_1604651973;
-Received: from aliy80.localdomain(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UEPYmPR_1604651973)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 06 Nov 2020 16:39:33 +0800
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-To:     hpa@zytor.com
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] x86/kvm: remove unused macro HV_CLOCK_SIZE
-Date:   Fri,  6 Nov 2020 16:39:23 +0800
-Message-Id: <1604651963-10067-1-git-send-email-alex.shi@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Fri, 6 Nov 2020 03:44:05 -0500
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CSDSs325fzhhPm;
+        Fri,  6 Nov 2020 16:43:57 +0800 (CST)
+Received: from thunder-town.china.huawei.com (10.174.178.230) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 6 Nov 2020 16:43:51 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     Tony Luck <tony.luck@intel.com>, Borislav Petkov <bp@alien8.de>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86 <x86@kernel.org>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        linux-edac <linux-edac@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH 1/1] x86/mce: remove unused WARN_ON() in mce_register_decode_chain()
+Date:   Fri, 6 Nov 2020 16:43:40 +0800
+Message-ID: <20201106084340.2009-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.178.230]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This macro is useless, and could cause gcc warning:
-arch/x86/kernel/kvmclock.c:47:0: warning: macro "HV_CLOCK_SIZE" is not
-used [-Wunused-macros]
-Let's remove it.
+enum mce_notifier_prios {
+        MCE_PRIO_LOWEST,
+        MCE_PRIO_MCELOG,
+        MCE_PRIO_EDAC,
 
-Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com> 
-Cc: Sean Christopherson <sean.j.christopherson@intel.com> 
-Cc: Vitaly Kuznetsov <vkuznets@redhat.com> 
-Cc: Wanpeng Li <wanpengli@tencent.com> 
-Cc: Jim Mattson <jmattson@google.com> 
-Cc: Joerg Roedel <joro@8bytes.org> 
-Cc: Thomas Gleixner <tglx@linutronix.de> 
-Cc: Ingo Molnar <mingo@redhat.com> 
-Cc: Borislav Petkov <bp@alien8.de> 
-Cc: x86@kernel.org 
-Cc: "H. Peter Anvin" <hpa@zytor.com> 
-Cc: kvm@vger.kernel.org 
-Cc: linux-kernel@vger.kernel.org 
+After commit c9c6d216ed28 ("x86/mce: Rename "first" function as "early""),
+there is no other integer between MCE_PRIO_MCELOG and MCE_PRIO_EDAC.
+Therefore, the WARN_ON() will never be triggered, just delete it.
+
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 ---
- arch/x86/kernel/kvmclock.c | 1 -
- 1 file changed, 1 deletion(-)
+ arch/x86/kernel/cpu/mce/core.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/arch/x86/kernel/kvmclock.c b/arch/x86/kernel/kvmclock.c
-index 34b18f6eeb2c..aa593743acf6 100644
---- a/arch/x86/kernel/kvmclock.c
-+++ b/arch/x86/kernel/kvmclock.c
-@@ -44,7 +44,6 @@ static int __init parse_no_kvmclock_vsyscall(char *arg)
- early_param("no-kvmclock-vsyscall", parse_no_kvmclock_vsyscall);
+diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
+index 4102b866e7c0..914f9f102995 100644
+--- a/arch/x86/kernel/cpu/mce/core.c
++++ b/arch/x86/kernel/cpu/mce/core.c
+@@ -162,9 +162,6 @@ EXPORT_SYMBOL_GPL(mce_log);
  
- /* Aligned to page sizes to match whats mapped via vsyscalls to userspace */
--#define HV_CLOCK_SIZE	(sizeof(struct pvclock_vsyscall_time_info) * NR_CPUS)
- #define HVC_BOOT_ARRAY_SIZE \
- 	(PAGE_SIZE / sizeof(struct pvclock_vsyscall_time_info))
- 
+ void mce_register_decode_chain(struct notifier_block *nb)
+ {
+-	if (WARN_ON(nb->priority > MCE_PRIO_MCELOG && nb->priority < MCE_PRIO_EDAC))
+-		return;
+-
+ 	blocking_notifier_chain_register(&x86_mce_decoder_chain, nb);
+ }
+ EXPORT_SYMBOL_GPL(mce_register_decode_chain);
 -- 
-1.8.3.1
+2.26.0.106.g9fadedd
+
 
