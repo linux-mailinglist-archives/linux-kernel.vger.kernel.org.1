@@ -2,100 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1CB42A906C
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 08:34:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 297502A9075
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 08:36:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726522AbgKFHeT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 02:34:19 -0500
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:56246 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726121AbgKFHeQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 02:34:16 -0500
-Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A67WAXQ024861;
-        Fri, 6 Nov 2020 08:34:10 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=STMicroelectronics;
- bh=inRp6hPiIockC5nS3L+IsnkrSlcfoBjiyTAc2cHofEM=;
- b=e3xbnbEsdALKCaLVYR0ePYxAKiq/CS9GP9aC5E6L2v1pKb7p7OHLuD2geGnpSqc0OxLz
- F1opHCYdcCuiECzxL3CmTfrm8zUZqX6Ecn7SRXd9VK29bdPCfN3pKeRtDWoGM8Ng9OWM
- 34GTLIDytrSS1Zz3neDHr7tyWL+jU39Md1wuINXWTC1lZ2z2P13GLasPcYgDmMUfbGbJ
- PURIZVjDlFElxPoNKw2xBIuvksvW/JfueZQnfZx2pdyjk6dURmv4T4smW4s4QwKf/CL1
- 6KHARCRHZiIJY3A7KrxblNAYdJ7ME09hlMIjlmyOhJIsD0ypGf/Tq9mhJY+fUdFISz59 DA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 34h00etmnb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 06 Nov 2020 08:34:10 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 57333100038;
-        Fri,  6 Nov 2020 08:34:10 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 4D087226678;
-        Fri,  6 Nov 2020 08:34:10 +0100 (CET)
-Received: from localhost (10.75.127.48) by SFHDAG2NODE3.st.com (10.75.127.6)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 6 Nov 2020 08:34:09
- +0100
-From:   <patrice.chotard@st.com>
-To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Kevin Hilman <khilman@kernel.org>
-CC:     <patrice.chotard@st.com>, Erwan Le Ray <erwan.leray@st.com>,
-        Alexandre TORGUE <alexandre.torgue@st.com>,
-        Fabrice Gasnier <fabrice.gasnier@st.com>,
-        Pierre-Yves MORDRET <pierre-yves.mordret@st.com>,
-        <amelie.delaunay@st.com>, <erwan_leray@st.com>,
-        <alain.volmat@st.com>
-Subject: [PATCH v1 4/4] i2c: stm32f7: Make usage of dev_wakeup_path() helper
-Date:   Fri, 6 Nov 2020 08:33:58 +0100
-Message-ID: <20201106073358.8379-5-patrice.chotard@st.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201106073358.8379-1-patrice.chotard@st.com>
-References: <20201106073358.8379-1-patrice.chotard@st.com>
+        id S1726325AbgKFHgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 02:36:18 -0500
+Received: from mga11.intel.com ([192.55.52.93]:26692 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725842AbgKFHgS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 02:36:18 -0500
+IronPort-SDR: lbkLOMzWeybjeFKzIeTPLywOMzGc6DVUyszgR2f/87Y98lCipjNv4jgVOAZrebCI2oBmGQejHq
+ LYa3Ak1FewHg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9796"; a="166004523"
+X-IronPort-AV: E=Sophos;i="5.77,455,1596524400"; 
+   d="scan'208";a="166004523"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2020 23:36:18 -0800
+IronPort-SDR: gLGsKSgpUPznoyv8n67Rw5M+68wGylzyacufXs32ZWTj5kic45/CUvM7VvmmP+fAkMWMJy5Mzg
+ 4yPc4TwJ0y9Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,455,1596524400"; 
+   d="scan'208";a="427248745"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 05 Nov 2020 23:36:15 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Fri, 06 Nov 2020 09:36:15 +0200
+Date:   Fri, 6 Nov 2020 09:36:15 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Prashant Malani <pmalani@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        gregkh@linuxfoundation.org, Benson Leung <bleung@chromium.org>
+Subject: Re: [PATCH v3 2/2] usb: typec: Expose Product Type VDOs via sysfs
+Message-ID: <20201106073615.GA4062920@kuha.fi.intel.com>
+References: <20201023214328.1262883-1-pmalani@chromium.org>
+ <20201023214328.1262883-2-pmalani@chromium.org>
+ <20201104174917.GC3913249@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.48]
-X-ClientProxiedBy: SFHDAG7NODE2.st.com (10.75.127.20) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-06_02:2020-11-05,2020-11-06 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201104174917.GC3913249@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Patrice Chotard <patrice.chotard@st.com>
+On Wed, Nov 04, 2020 at 09:49:17AM -0800, Prashant Malani wrote:
+> Hi All,
+> 
+> Was wondering if there were any comments on v3 of this series?
 
-Make usage of dev_wakeup_path() helper.
+Sorry to keep you waiting with this...
 
-Signed-off-by: Patrice Chotard <patrice.chotard@st.com>
----
- drivers/i2c/busses/i2c-stm32f7.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+I'm still wondering if the patch 2/2 is what we should use. Right now
+I don't have really any better ideas. But give the rest of the week to
+think about this.
 
-diff --git a/drivers/i2c/busses/i2c-stm32f7.c b/drivers/i2c/busses/i2c-stm32f7.c
-index f41f51a176a1..9aa8e65b511e 100644
---- a/drivers/i2c/busses/i2c-stm32f7.c
-+++ b/drivers/i2c/busses/i2c-stm32f7.c
-@@ -2322,7 +2322,7 @@ static int stm32f7_i2c_suspend(struct device *dev)
- 
- 	i2c_mark_adapter_suspended(&i2c_dev->adap);
- 
--	if (!device_may_wakeup(dev) && !dev->power.wakeup_path) {
-+	if (!device_may_wakeup(dev) && !device_wakeup_path(dev)) {
- 		ret = stm32f7_i2c_regs_backup(i2c_dev);
- 		if (ret < 0) {
- 			i2c_mark_adapter_resumed(&i2c_dev->adap);
-@@ -2341,7 +2341,7 @@ static int stm32f7_i2c_resume(struct device *dev)
- 	struct stm32f7_i2c_dev *i2c_dev = dev_get_drvdata(dev);
- 	int ret;
- 
--	if (!device_may_wakeup(dev) && !dev->power.wakeup_path) {
-+	if (!device_may_wakeup(dev) && !device_wakeup_path(dev)) {
- 		ret = pm_runtime_force_resume(dev);
- 		if (ret < 0)
- 			return ret;
+thanks,
+
 -- 
-2.17.1
-
+heikki
