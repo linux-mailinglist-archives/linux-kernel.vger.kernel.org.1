@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 190462A948A
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 11:38:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B7592A9477
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 11:38:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727189AbgKFKi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 05:38:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35662 "EHLO
+        id S1727125AbgKFKh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 05:37:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727049AbgKFKhy (ORCPT
+        with ESMTP id S1727055AbgKFKhz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 05:37:54 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 449F6C0617A7
+        Fri, 6 Nov 2020 05:37:55 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED114C061A4C
         for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 02:37:54 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id c16so866978wmd.2
+Received: by mail-wr1-x444.google.com with SMTP id g12so773156wrp.10
         for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 02:37:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=aSzUbTNsne9al3ng9/59i+9c1bESHaPY8FhaRGWHPGM=;
-        b=YLKZw4HhpyYUZFVlUFiEw5Wm1C7+sYLDey9ZnEaIvUaEdd7Z+xlGXvdHkR0hLU2Q5C
-         dxnZ26g5i/A/nhj4HpRNcjfgZNfllEay2/MpW3mPXB4RAr2zCKpuQTSfH4VvWKrHlfwq
-         UpleKG8EL2h3iuz8rbk4G83YiaApAGR79exs4=
+        bh=mDrtghr7fl8Qm7zyLn6VVlKwXJERTG2goMRxM/wpmVk=;
+        b=TG8m0rb86hYMe3axR5sMufRTlAfAJxsttHiX51AiVPLzYrLVvxctyW4cXaUlKNilb1
+         o+TMsZ+KaWolXAApOuDjXG5Q0lAbRp9zQis+dBvz1YqPSP07MhBeTAc7Nvtkur9dK4P6
+         fj3hGua5R4lTCYWGJAvkC+4XXRuNIF6fJo/WU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=aSzUbTNsne9al3ng9/59i+9c1bESHaPY8FhaRGWHPGM=;
-        b=rHHZLj/9eBZwiv5LBXDGBquGcN90Ne9B5qhvRQnyM9/qmW4lDxSnFbHEnzzcMtBTQv
-         65CVW7/0NiO7L/LQh4f/0vTZ1ktkSem5z0E1AFR20/I2AhEoiI5Yo/tmG4+YjB2gtQZZ
-         eFAuzhavIG55TU3JS+zoKghVBr8VcGLxgcp0XSPYZI01MJhxJj9zeSgs6z9jbvCSZckH
-         OWwtlJBTtOPm8aXDqIzoi9QzFgb3xbRLOuE5Y1aGqWx3meTCmymWPZSEgRxAbJ+kGwKS
-         OG7OfNpHTjfvrZ51iqbdCgZ5rRl/tCLdVZf14qa6JoWoZtERixH8/n5JeUzWkEENa0uh
-         5aKQ==
-X-Gm-Message-State: AOAM533qaMAnvQC4A6oVg3KHEhAifwHCR3IfMqHE/jlEE9RsHZuRr1YF
-        AHSbJJwB+LTlzRTuIumZlN+8eUnOgW5aP6Sp
-X-Google-Smtp-Source: ABdhPJy2mEtxLwhLJgLaHvy0Y7Fhz+4GASBr58Mb2+CRdivIgpW3T4tlTUkuLbflM56RHfgMCSpKxw==
-X-Received: by 2002:a7b:c00b:: with SMTP id c11mr1708819wmb.175.1604659072681;
-        Fri, 06 Nov 2020 02:37:52 -0800 (PST)
+        bh=mDrtghr7fl8Qm7zyLn6VVlKwXJERTG2goMRxM/wpmVk=;
+        b=mEKtX3MPuelorX7ZOBZnqoPrM2eNv8AMZ69HNHSZT3wa76RPHhrGpsAbR6XT/5I5e+
+         wD3lt4YBtlClz+Uu0wA4QZR0GaeAXXzsjx1deZ5032c8OCyQPSpfxAiY9bg2hwOeoQbW
+         Ix1Nr6MehOwYmG07EWb86IqgIZSToLFzUhn692opxVs6yAnQczetgGLHu2zcqgbrJ9OO
+         e4hIwgocM8ESXYdQNrd21bxchTk9BrdFiNjMFMB01EwYyu59KO79kHOMAzzGICkBUC0C
+         JhcaDrCZqXtB6bzKKDyAJrZokJkksM4crpchRL4WxTXsk4LZ5nNqo47NISc4JJcyfI7Y
+         xKng==
+X-Gm-Message-State: AOAM531e+ZboUgrxZ0bjcdeNEUZOdRLLYaoxcCW953r4TqlzIi7bqGP9
+        6grv9dNXoLjZ5GCspwi6/UaylQEQP7LXOr2Z
+X-Google-Smtp-Source: ABdhPJwqxxvFdQje8ueSIXSHHM+I0exSHpFHfLMsIF2YrjVNsFx6hHzUFXzbrii01rBcEKC6Q5q1iw==
+X-Received: by 2002:adf:f083:: with SMTP id n3mr1891796wro.391.1604659073369;
+        Fri, 06 Nov 2020 02:37:53 -0800 (PST)
 Received: from kpsingh.c.googlers.com.com (203.75.199.104.bc.googleusercontent.com. [104.199.75.203])
         by smtp.gmail.com with ESMTPSA id t1sm1537639wrs.48.2020.11.06.02.37.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
@@ -52,9 +52,9 @@ Cc:     Song Liu <songliubraving@fb.com>, Martin KaFai Lau <kafai@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
         Hao Luo <haoluo@google.com>
-Subject: [PATCH bpf-next v6 4/9] bpftool: Add support for task local storage
-Date:   Fri,  6 Nov 2020 10:37:42 +0000
-Message-Id: <20201106103747.2780972-5-kpsingh@chromium.org>
+Subject: [PATCH bpf-next v6 5/9] bpf: Implement get_current_task_btf and RET_PTR_TO_BTF_ID
+Date:   Fri,  6 Nov 2020 10:37:43 +0000
+Message-Id: <20201106103747.2780972-6-kpsingh@chromium.org>
 X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
 In-Reply-To: <20201106103747.2780972-1-kpsingh@chromium.org>
 References: <20201106103747.2780972-1-kpsingh@chromium.org>
@@ -66,68 +66,147 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: KP Singh <kpsingh@google.com>
 
-Updates the binary to handle the BPF_MAP_TYPE_TASK_STORAGE as
-"task_storage" for printing and parsing. Also updates the documentation
-and bash completion
+The currently available bpf_get_current_task returns an unsigned integer
+which can be used along with BPF_CORE_READ to read data from
+the task_struct but still cannot be used as an input argument to a
+helper that accepts an ARG_PTR_TO_BTF_ID of type task_struct.
+
+In order to implement this helper a new return type, RET_PTR_TO_BTF_ID,
+is added. This is similar to RET_PTR_TO_BTF_ID_OR_NULL but does not
+require checking the nullness of returned pointer.
 
 Acked-by: Song Liu <songliubraving@fb.com>
 Acked-by: Martin KaFai Lau <kafai@fb.com>
 Signed-off-by: KP Singh <kpsingh@google.com>
 ---
- tools/bpf/bpftool/Documentation/bpftool-map.rst | 3 ++-
- tools/bpf/bpftool/bash-completion/bpftool       | 2 +-
- tools/bpf/bpftool/map.c                         | 4 +++-
- 3 files changed, 6 insertions(+), 3 deletions(-)
+ include/linux/bpf.h            |  1 +
+ include/uapi/linux/bpf.h       |  9 +++++++++
+ kernel/bpf/verifier.c          |  7 +++++--
+ kernel/trace/bpf_trace.c       | 16 ++++++++++++++++
+ tools/include/uapi/linux/bpf.h |  9 +++++++++
+ 5 files changed, 40 insertions(+), 2 deletions(-)
 
-diff --git a/tools/bpf/bpftool/Documentation/bpftool-map.rst b/tools/bpf/bpftool/Documentation/bpftool-map.rst
-index dade10cdf295..3d52256ba75f 100644
---- a/tools/bpf/bpftool/Documentation/bpftool-map.rst
-+++ b/tools/bpf/bpftool/Documentation/bpftool-map.rst
-@@ -50,7 +50,8 @@ MAP COMMANDS
- |		| **lru_percpu_hash** | **lpm_trie** | **array_of_maps** | **hash_of_maps**
- |		| **devmap** | **devmap_hash** | **sockmap** | **cpumap** | **xskmap** | **sockhash**
- |		| **cgroup_storage** | **reuseport_sockarray** | **percpu_cgroup_storage**
--|		| **queue** | **stack** | **sk_storage** | **struct_ops** | **ringbuf** | **inode_storage** }
-+|		| **queue** | **stack** | **sk_storage** | **struct_ops** | **ringbuf** | **inode_storage**
-+		| **task_storage** }
- 
- DESCRIPTION
- ===========
-diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftool/bash-completion/bpftool
-index 3f1da30c4da6..fdffbc64c65c 100644
---- a/tools/bpf/bpftool/bash-completion/bpftool
-+++ b/tools/bpf/bpftool/bash-completion/bpftool
-@@ -705,7 +705,7 @@ _bpftool()
-                                 hash_of_maps devmap devmap_hash sockmap cpumap \
-                                 xskmap sockhash cgroup_storage reuseport_sockarray \
-                                 percpu_cgroup_storage queue stack sk_storage \
--                                struct_ops inode_storage' -- \
-+                                struct_ops inode_storage task_storage' -- \
-                                                    "$cur" ) )
-                             return 0
-                             ;;
-diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
-index a7efbd84fbcc..b400364ee054 100644
---- a/tools/bpf/bpftool/map.c
-+++ b/tools/bpf/bpftool/map.c
-@@ -51,6 +51,7 @@ const char * const map_type_name[] = {
- 	[BPF_MAP_TYPE_STRUCT_OPS]		= "struct_ops",
- 	[BPF_MAP_TYPE_RINGBUF]			= "ringbuf",
- 	[BPF_MAP_TYPE_INODE_STORAGE]		= "inode_storage",
-+	[BPF_MAP_TYPE_TASK_STORAGE]		= "task_storage",
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 2fffd30e13ac..73d5381a5d5c 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -310,6 +310,7 @@ enum bpf_return_type {
+ 	RET_PTR_TO_BTF_ID_OR_NULL,	/* returns a pointer to a btf_id or NULL */
+ 	RET_PTR_TO_MEM_OR_BTF_ID_OR_NULL, /* returns a pointer to a valid memory or a btf_id or NULL */
+ 	RET_PTR_TO_MEM_OR_BTF_ID,	/* returns a pointer to a valid memory or a btf_id */
++	RET_PTR_TO_BTF_ID,		/* returns a pointer to a btf_id */
  };
  
- const size_t map_type_name_size = ARRAY_SIZE(map_type_name);
-@@ -1464,7 +1465,8 @@ static int do_help(int argc, char **argv)
- 		"                 lru_percpu_hash | lpm_trie | array_of_maps | hash_of_maps |\n"
- 		"                 devmap | devmap_hash | sockmap | cpumap | xskmap | sockhash |\n"
- 		"                 cgroup_storage | reuseport_sockarray | percpu_cgroup_storage |\n"
--		"                 queue | stack | sk_storage | struct_ops | ringbuf | inode_storage }\n"
-+		"                 queue | stack | sk_storage | struct_ops | ringbuf | inode_storage |\n"
-+		"		  task_storage }\n"
- 		"       " HELP_SPEC_OPTIONS "\n"
- 		"",
- 		bin_name, argv[-2]);
+ /* eBPF function prototype used by verifier to allow BPF_CALLs from eBPF programs
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index f4037b2161a6..9879d6793e90 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -3779,6 +3779,14 @@ union bpf_attr {
+  *		0 on success.
+  *
+  *		**-ENOENT** if the bpf_local_storage cannot be found.
++ *
++ * struct task_struct *bpf_get_current_task_btf(void)
++ *	Description
++ *		Return a BTF pointer to the "current" task.
++ *		This pointer can also be used in helpers that accept an
++ *		*ARG_PTR_TO_BTF_ID* of type *task_struct*.
++ *	Return
++ *		Pointer to the current task.
+  */
+ #define __BPF_FUNC_MAPPER(FN)		\
+ 	FN(unspec),			\
+@@ -3939,6 +3947,7 @@ union bpf_attr {
+ 	FN(redirect_peer),		\
+ 	FN(task_storage_get),		\
+ 	FN(task_storage_delete),	\
++	FN(get_current_task_btf),	\
+ 	/* */
+ 
+ /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 00960f6a83ec..10da26e55130 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -5186,11 +5186,14 @@ static int check_helper_call(struct bpf_verifier_env *env, int func_id, int insn
+ 				PTR_TO_BTF_ID : PTR_TO_BTF_ID_OR_NULL;
+ 			regs[BPF_REG_0].btf_id = meta.ret_btf_id;
+ 		}
+-	} else if (fn->ret_type == RET_PTR_TO_BTF_ID_OR_NULL) {
++	} else if (fn->ret_type == RET_PTR_TO_BTF_ID_OR_NULL ||
++		   fn->ret_type == RET_PTR_TO_BTF_ID) {
+ 		int ret_btf_id;
+ 
+ 		mark_reg_known_zero(env, regs, BPF_REG_0);
+-		regs[BPF_REG_0].type = PTR_TO_BTF_ID_OR_NULL;
++		regs[BPF_REG_0].type = fn->ret_type == RET_PTR_TO_BTF_ID ?
++						     PTR_TO_BTF_ID :
++						     PTR_TO_BTF_ID_OR_NULL;
+ 		ret_btf_id = *fn->ret_btf_id;
+ 		if (ret_btf_id == 0) {
+ 			verbose(env, "invalid return type %d of func %s#%d\n",
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index 4517c8b66518..e4515b0f62a8 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -1022,6 +1022,20 @@ const struct bpf_func_proto bpf_get_current_task_proto = {
+ 	.ret_type	= RET_INTEGER,
+ };
+ 
++BPF_CALL_0(bpf_get_current_task_btf)
++{
++	return (unsigned long) current;
++}
++
++BTF_ID_LIST_SINGLE(bpf_get_current_btf_ids, struct, task_struct)
++
++static const struct bpf_func_proto bpf_get_current_task_btf_proto = {
++	.func		= bpf_get_current_task_btf,
++	.gpl_only	= true,
++	.ret_type	= RET_PTR_TO_BTF_ID,
++	.ret_btf_id	= &bpf_get_current_btf_ids[0],
++};
++
+ BPF_CALL_2(bpf_current_task_under_cgroup, struct bpf_map *, map, u32, idx)
+ {
+ 	struct bpf_array *array = container_of(map, struct bpf_array, map);
+@@ -1265,6 +1279,8 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 		return &bpf_get_current_pid_tgid_proto;
+ 	case BPF_FUNC_get_current_task:
+ 		return &bpf_get_current_task_proto;
++	case BPF_FUNC_get_current_task_btf:
++		return &bpf_get_current_task_btf_proto;
+ 	case BPF_FUNC_get_current_uid_gid:
+ 		return &bpf_get_current_uid_gid_proto;
+ 	case BPF_FUNC_get_current_comm:
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index f4037b2161a6..9879d6793e90 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -3779,6 +3779,14 @@ union bpf_attr {
+  *		0 on success.
+  *
+  *		**-ENOENT** if the bpf_local_storage cannot be found.
++ *
++ * struct task_struct *bpf_get_current_task_btf(void)
++ *	Description
++ *		Return a BTF pointer to the "current" task.
++ *		This pointer can also be used in helpers that accept an
++ *		*ARG_PTR_TO_BTF_ID* of type *task_struct*.
++ *	Return
++ *		Pointer to the current task.
+  */
+ #define __BPF_FUNC_MAPPER(FN)		\
+ 	FN(unspec),			\
+@@ -3939,6 +3947,7 @@ union bpf_attr {
+ 	FN(redirect_peer),		\
+ 	FN(task_storage_get),		\
+ 	FN(task_storage_delete),	\
++	FN(get_current_task_btf),	\
+ 	/* */
+ 
+ /* integer value in 'imm' field of BPF_CALL instruction selects which helper
 -- 
 2.29.1.341.ge80a0c044ae-goog
 
