@@ -2,159 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 718B32A8B60
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 01:24:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A01B2A8B64
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 01:26:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732811AbgKFAYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 19:24:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33642 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732712AbgKFAYA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 19:24:00 -0500
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9BD772078E;
-        Fri,  6 Nov 2020 00:23:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604622239;
-        bh=HiaBi8UGQLhNe24ZtgZFm08RS+emATH8FZ9vy0jj1N8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=wX6pOEJb0/UOXJ6l2Z2yGOvBoErmSRAujX2InU0Q7L2k4RNFtN0QF7g53+cJ0HkgI
-         3NWgIPjuUn2Sy+BTt5AONf3S4f44ZlvzhU6tmPYMbNNUc9cdSBsDDPMybwjCy416ZM
-         QtE26RHdJEqMLF2yphi2KlmVN5zGNRWuT4OvWG78=
-Date:   Thu, 5 Nov 2020 16:23:57 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Saeed Mahameed <saeed@kernel.org>
-Cc:     George Cherian <gcherian@marvell.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jiri Pirko <jiri@nvidia.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        Geethasowjanya Akula <gakula@marvell.com>,
-        "masahiroy@kernel.org" <masahiroy@kernel.org>,
-        "willemdebruijn.kernel@gmail.com" <willemdebruijn.kernel@gmail.com>
-Subject: Re: [PATCH v2 net-next 3/3] octeontx2-af: Add devlink health
- reporters for NIX
-Message-ID: <20201105162357.3c380467@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <1b96abb1da9bca4d9f962babad9a0724c1188437.camel@kernel.org>
-References: <BYAPR18MB2679EC3507BD90B93B37A3F8C5EE0@BYAPR18MB2679.namprd18.prod.outlook.com>
-        <20201105090724.761a033d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <011c4d4e2227df793f615b7638165c266763e24a.camel@kernel.org>
-        <20201105124204.4dbea042@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <1b96abb1da9bca4d9f962babad9a0724c1188437.camel@kernel.org>
+        id S1732952AbgKFA01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 19:26:27 -0500
+Received: from smtprelay0100.hostedemail.com ([216.40.44.100]:37834 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1732181AbgKFA01 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 19:26:27 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 14936100E7B42;
+        Fri,  6 Nov 2020 00:26:26 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:968:973:988:989:1260:1277:1311:1313:1314:1345:1359:1431:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:1801:2393:2559:2562:2692:2828:3138:3139:3140:3141:3142:3354:3622:3653:3865:3866:3867:3868:3870:3871:3872:3873:4321:4362:4384:4605:4823:5007:6119:7875:7903:8531:9149:10004:10400:10848:11026:11232:11473:11658:11783:11914:12297:12663:12740:12895:13161:13229:13439:13894:14181:14659:14721:21080:21433:21451:21611:21627:21660:21789:21819:30003:30022:30029:30030:30054:30070:30083:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: blow35_160a2c4272ce
+X-Filterd-Recvd-Size: 3200
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf20.hostedemail.com (Postfix) with ESMTPA;
+        Fri,  6 Nov 2020 00:26:24 +0000 (UTC)
+Message-ID: <772993cade7e2def4ee9727255734bf9cd6d3f59.camel@perches.com>
+Subject: Re: [PATCH v3] checkpatch: improve email parsing
+From:   Joe Perches <joe@perches.com>
+To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
+Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org,
+        Aditya Srivastava <yashsri421@gmail.com>
+Date:   Thu, 05 Nov 2020 16:26:23 -0800
+In-Reply-To: <CABJPP5BTRtAjdNQdRCx-3HjmyJ0AnoXBzB95YiPRMoF0njOOaA@mail.gmail.com>
+References: <20201105115949.39474-1-dwaipayanray1@gmail.com>
+         <f83c2eeafdebc6307ee6e515e4d6652b2606a068.camel@perches.com>
+         <CABJPP5BTRtAjdNQdRCx-3HjmyJ0AnoXBzB95YiPRMoF0njOOaA@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 05 Nov 2020 15:52:32 -0800 Saeed Mahameed wrote:
-> On Thu, 2020-11-05 at 12:42 -0800, Jakub Kicinski wrote:
-> > On Thu, 05 Nov 2020 11:23:54 -0800 Saeed Mahameed wrote:  
-> > > If you report an error without recovering, devlink health will
-> > > report a
-> > > bad device state
+On Fri, 2020-11-06 at 02:46 +0530, Dwaipayan Ray wrote:
+> > Can you send me a file with the BAD_SIGN_OFF messages generated
+> > and if possible the git SHA-1s of the commits?
+> Yes sure, am attaching the file for data tested on about 27k commits
+> from v5.4.
+
+Thanks.
+
+> Excluded the duplicate signatures, tags and spacing ones for
+> simplicity.
+> 
+> >      24 linux-stable <stable@vger.kernel.org>
+> >      21 5.4+ <stable@vger.kernel.org>
+> >      14 All applicable <stable@vger.kernel.org>
+> >       6 3.10+ <stable@vger.kernel.org>
+> >       5 5.9+ <stable@vger.kernel.org>
+> >       5 5.3+ <stable@vger.kernel.org>
+> 
+> Do I also convert these then for the fix?
+
+Yes.
+
+Ideally removing any case insensitive name like linux-stable or stable
+and also removing any leading < or trailing > from the email address.
+
+And the stable email address should be forced to lower case only.
+
+Any other name should be moved as a comment after the email address
+then #.
+
+> > > Improvements to parsing:
 > > > 
-> > > $ ./devlink health
-> > >    pci/0002:01:00.0:
-> > >      reporter npa
-> > >        state error error 1 recover 0  
+> > > - Detect and report unexpected content after email.
+> > > - Quoted names are excluded from comment parsing.
+> > > - Trailing dots or commas in email are removed during
+> > >   formatting. Correspondingly a BAD_SIGN_OFF warning
+> > >   is emitted.
+> > > - Improperly quoted email like '"name <address>"' are now
+> > >   warned about.
+[]
+> > > +                                                     my $new_comment = $comment;
+> > > +                                                     $new_comment =~ s/^[ \(\[]+|[ \)\]]+$//g;
 > > 
-> > Actually, the counter in the driver is unnecessary, right? Devlink
-> > counts errors.
-> 
-> if you mean error and recover counters, then yes. they are managed by
-> devlink health
-> 
-> every call to dl-health-report will do:
-> 
-> devlink_health_report(reporter, err_ctx, msg)
-> {
->       reproter.error++;
-> 
->       devlink_trigger_event(reporter, msg);
-> 
->       reporter.dump(err_ctx, msg);
->       reporter.diag(err_ctx);
-> 
->       if (!reporter.recover(err_ctx))
->              reporter.recover++;
-> }
-> 
-> so dl-health reports without a recover op will confuse the user if user
-> sees error count > recover count.
-> 
-> error count should only be grater than recover count when recover
-> procedure fails which now will indicate the device is not in a healthy
-> state.
-
-Good point, as is the internal devlink counter mismatch looks pretty
-strange.
-
-> also i want to clarify one small note about devlink dump.
-> 
-> devlink health dump semantics:
-> on devlink health dump, the devlink health will check if previous dump
-> exists and will just return it without actually calling the driver, if
-> not then it will call the driver to perform a new dump and will cache
-> it.
-> 
-> user has to explicitly clear the devlink health dump of that reporter
-> in order to allow for newer dump to get generated.
-> 
-> this is done this way because we want the driver to store the dump of
-> the previously reported errors at the moment the erorrs are reported by
-> driver, so when a user issue  a dump command the dump of the previous
-> error will be reported to user form memory without the need to access
-> driver/hw who might be in a bad state.
-> 
-> so this is why using devlink dump for reporting counters doesn't really
-> work, it will only report the first time the counters are accessed via
-> devlink health dump, after that it will report the same cached values
-> over and over until the user clears it up.
-
-Agreed, if only counters are reported driver should rely on the
-devlink counters. Dump contents are for context of the event.
-
-> > > So you will need to implement an empty recover op.
-> > > so if these events are informational only and they don't indicate
-> > > device health issues, why would you report them via devlink health
-> > > ?  
+> > Does the comment include any leading whitespace here?
+> > I presumed not given the $comment !~ /^#/ test above.
 > > 
-> > I see devlink health reporters a way of collecting errors reports
-> > which
-> > for the most part are just shared with the vendor. IOW firmware (or
-> > hardware) bugs.
-> > 
-> > Obviously as you say without recover and additional context in the
-> > report the value is quite diminished. But _if_ these are indeed
-> > "report
-> > me to the vendor" kind of events then at least they should use our
-> > current mechanics for such reports - which is dl-health.
-> > 
-> > Without knowing what these events are it's quite hard to tell if
-> > devlink health is an overkill or counter is sufficient.
-> > 
-> > Either way - printing these to the logs is definitely the worst
-> > choice
-> > :)  
-> 
-> Sure, I don't mind using devlink health for dump only, I don't really
-> have strong feelings against this, they can always extend it in the
-> future.
-> 
-> it just doesn't make sense to me to have it mainly used for dumping
-> counters and without using devlik helath utilities, like events,
-> reports and recover.
-> 
-> so maybe Sunil et al. could polish this patchset and provide more
-> devlink health support, like diagnose for these errors, dump HW
-> information and contexts related to these errors so they could debug
-> root causes, etc .. 
-> Then the use for dl health in this series can be truly justified.
+> I added it to discard empty spaces before or after the first
+> brackets are unwrapped. Something like (  v5.7 ) would
+> be better if translated to # v5.7. (The extra spaces would be purged).
+> It just looks good :). Should I change it to keep it as it is?
 
-That'd indeed be optimal.
+No.  Converting the comment style is very sensible and a good change.
+I did not understand why the regex included a space.  I do now.
+I suggest changing the space to use \s in case there are tabs.
+
+
