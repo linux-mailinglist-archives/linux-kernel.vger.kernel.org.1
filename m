@@ -2,121 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D598F2A952D
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 12:25:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E48B2A9525
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 12:24:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727194AbgKFLZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 06:25:03 -0500
-Received: from mout.gmx.net ([212.227.15.15]:35353 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727169AbgKFLZC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 06:25:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1604661893;
-        bh=h353MSDKnlc8XqUZeAyhas+YODqkJ+e9pssvf3FjUok=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=aOyFj+ihLNo8vNR9NmndGcVTXCZxT7uI61RkrFne59UM60AeURY4gINR/U4aGc1wV
-         JGYwUuDSH4+bx1d8HxYowaKqLVrdFisMVV/cxwXyfDM19MozMROzLd/OrvPHi7GHKq
-         lJVHrB3trnuz+2GhRW/Ja9of6I2XxgzhE6n2sWpE=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from longitude ([37.201.214.162]) by mail.gmx.com (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1N5VHM-1kHuQQ4ArS-016wEu; Fri, 06
- Nov 2020 12:24:53 +0100
-From:   =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To:     linux-input@vger.kernel.org
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 3/3] ARM: dts: imx50-kobo-aura: Enable eKTF2132 touchscreen
-Date:   Fri,  6 Nov 2020 12:24:12 +0100
-Message-Id: <20201106112412.390724-4-j.neuschaefer@gmx.net>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201106112412.390724-1-j.neuschaefer@gmx.net>
-References: <20201106112412.390724-1-j.neuschaefer@gmx.net>
+        id S1727162AbgKFLYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 06:24:19 -0500
+Received: from out4-smtp.messagingengine.com ([66.111.4.28]:55487 "EHLO
+        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727050AbgKFLYR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 06:24:17 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id ABCA95C016D;
+        Fri,  6 Nov 2020 06:24:14 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Fri, 06 Nov 2020 06:24:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=Z7GtEnyfPD4Tr6magiM/9iI85Uk
+        W2DA92V9r6Z1Ss94=; b=sETp3awsl7G5UqvU35lK7x3MTLFnxfkbmbVJBfMTwrQ
+        BayTA1Prvl5ThOGZTnNNkPc9R50dhSXVrRcuSElCHgasrvP2onFQAkjJiF77rXqY
+        BCRuS9qPk2yy/ToZc4qOsTJsYgvnU1jbubwSM1RAEvPJrGaqcQGViTYrVqsArJNl
+        az+EmvI3uY7/KRjrbxSPqd6bEprbzmrwqMiv6sZq6QFDHLs0I0YQsAjFuORK++tz
+        OHwjEwuzAmm989Z+Vg/wDCHgDjPFOX1rEH319t3RgI2ykt3avC9Zw6q5YY8gEPuU
+        wqgvOHj6nZfbClLGy2uyABCX6QOrb1j3qmLIBgoi6+A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=Z7GtEn
+        yfPD4Tr6magiM/9iI85UkW2DA92V9r6Z1Ss94=; b=dPKOwB9luNzPtrOrWbYzNY
+        eXcyQQr2QHuumu8jWOdPmx4htRstFnjDmvim0hEsWRsrplqrMrtdPcFRUe6A35q7
+        dWFMJsO19WVBZYIszI0fJS23u2iBbNWC5GpvuqYdlB2E5d1gWM4RVujnDlTM2/Ug
+        5uVwx5uszkLwuC0EU48wqMfJ5HVhb13nT5Jb1iQ7b1V2duVFbUI5glJj7QasfnSl
+        OB8pjSqk1YHTHXjerGYEmPNIG58UCzb3jCREta2HGohIZYGE3h0hUOmFLhlX8jlU
+        N0wDPiVEUMrqrPyjwEPYZULqT2OJvMUStxaa5Iwtxgbxcrj0llH+sSgfCnhe2seg
+        ==
+X-ME-Sender: <xms:XTKlXzjdz1AijziNj8NHaB8goGa9CM9-mnM2RIf6zwcwG_yoTn5k_Q>
+    <xme:XTKlXwCd1_DWJOUMMeyw_XQ5ZLcraBq3HCZetMaG0JUAC6ZS2vaQyCEG899cgUnWq
+    p9WZppkQv14hoo5Pj4>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddtledgvdelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:XTKlXzExPPYHhqHbNjKPW9q1ebKHebAkxC9mpzFHHjPngc5uLy6wjA>
+    <xmx:XTKlXwRk4gc-Yqn4dgMqE6hja_ZsZYuvuS3-qDqa6srmjIOcnN2cWg>
+    <xmx:XTKlXwzyM6lPt-4OP7i2OpSu6o2Z02iwQ9DEPyaHXurX3BV6gZNMnA>
+    <xmx:XjKlX_rVDy62AQEMpBwq6fk7JT0ZJ8mVAMYyvs8t5UKsItcQGM4yQQ>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 7DC30328038D;
+        Fri,  6 Nov 2020 06:24:13 -0500 (EST)
+Date:   Fri, 6 Nov 2020 12:24:12 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Samuel Holland <samuel@sholland.org>
+Cc:     Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        linux-arm-kernel@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com
+Subject: Re: [PATCH] arm64: dts: allwinner: pinephone: Use generic sensor
+ node names
+Message-ID: <20201106112412.nanxxywh7s6iqqkj@gilmour.lan>
+References: <20201106032055.51530-1-samuel@sholland.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Eb/mcNh+2C3ChXXzq4O8bBzixHexY7F7ebnCPUuzp8adYY8PHb8
- n+jg1ro2q3wch1bs8eNLfUhN1uK0jv5/95w7l9kD36ePUkIXxF6/FC6NEN7Ddvgm0FQjWzF
- 8LNpimBG9tRWA4TxPk9e6fi48+BP+LNEC8BXuLzGXmQFwh/vzZzJXGjmIpb8Deja1avtaJB
- d/j7/6SewIyn7+tu0Xt1w==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:K85UTosfvTo=:Kdq+p7usASgZEEWfOffCZO
- 3UOnagOb19HiiVSQrSNS32zdAvIUTU9cZrMqleCgARdtR/QdIhpRcXShtp6Y+uqBMt+vQBZdD
- cbihIunTRj5YJEom+ayGoJl+AeHBOziN9wy/azTLQcssQ7ezgO3XC/4B1sq5ZmceWsr4Qe1xe
- Z0+uBrjcN/CNoR0HnygpiOsbvmz0xYIP2dedpbJQhxJgdSpaJWhsbTSSedFbK+/+Ea2Bw8A0n
- wJrlcy7ZxrEKHJ/saXkdKKNulDH/NNDw08qJzDoGjtWxQjPCW61sT+QFjfiRR02793bJIXl5i
- KJpXWO0r22Tm0M+2hQaz/wkLrWstITjeS+ibK7zbPKQhN3ZJPv/2ZvUvWuKoi9OWP4U6+aF3F
- 4ySTRylPqO/8L7VTEFXwezOXiTYBBJcmkVYpA4GE81in5NPpNPARCiGh41v4K/Ow628cXngkV
- H4xQosYKYFII/UY/PR84WfOdf6UaCSh4I7IjbVOk3IhLARp5cZXGWqpbXEkLKAeBe+2J+60yJ
- Ar5/1FuKknK1b4JP0FhkD+twsACKcmHE7qSFIoXOw1W6yxba/G4+d9QNvW0VC9PqUnxbEI8hL
- enze9Fo4L5QMETf+tiAhPjeGkZv0XSYvtlRlDoxS30aoNT47hqPV/cDgXnPHBZBd+97z2qDJ/
- jo4RFE2Ku8EsEobTn58BKztr40a/1QNMlXbJBsMZi8ckcWbpio0jAkpmmC/ch36nGUiN5FXJR
- TbmRj+8tYHbxmZW05AU7wFWEGDWiWJC7r9k1eQArmrXM3RZWXkLFoWYbKgeIYmefM3vl33Bp0
- xOr0AcEiT0tDfSrQ04j14B8t6GeR+vWbXqq/RzW+7Haidx50TdZjyLVwIUaYf1QeMN6rOQEtl
- IzK719hMyRlozZiKYDN512y8ycBSVF+PtPne7OsDs=
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="o7piv2twhicpvhex"
+Content-Disposition: inline
+In-Reply-To: <20201106032055.51530-1-samuel@sholland.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Kobo Aura has an eKTF2132 touchscreen controller.
 
-Although the vendor kernel toggles a reset pin (GPIO5-12) during the
-startup sequence, the touchscreen works without it.
+--o7piv2twhicpvhex
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
-=2D--
+On Thu, Nov 05, 2020 at 09:20:55PM -0600, Samuel Holland wrote:
+> Instead of duplicating part of the compatible string in the node name,
+> use generic names as recommended by (and listed in) section 2.2.2 of the
+> Devicetree Specification.
+>=20
+> Suggested-by: Maxime Ripard <maxime@cerno.tech>
+> Signed-off-by: Samuel Holland <samuel@sholland.org>
 
-This patch requires "[PATCH] ARM: dts: imx50-kobo-aura: Add 'grp' suffix
-to pinctrl node names" in order to apply cleanly.
-(https://lore.kernel.org/lkml/20201031210729.2804471-1-j.neuschaefer@gmx.n=
-et/)
-=2D--
- arch/arm/boot/dts/imx50-kobo-aura.dts | 16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
+Applied, thanks!
+Maxime
 
-diff --git a/arch/arm/boot/dts/imx50-kobo-aura.dts b/arch/arm/boot/dts/imx=
-50-kobo-aura.dts
-index b2fbee60271f2..82ce8c43be867 100644
-=2D-- a/arch/arm/boot/dts/imx50-kobo-aura.dts
-+++ b/arch/arm/boot/dts/imx50-kobo-aura.dts
-@@ -120,7 +120,14 @@ &i2c1 {
- 	pinctrl-0 =3D <&pinctrl_i2c1>;
- 	status =3D "okay";
+--o7piv2twhicpvhex
+Content-Type: application/pgp-signature; name="signature.asc"
 
--	/* TODO: ektf2132 touch controller at 0x15 */
-+	touchscreen@15 {
-+		reg =3D <0x15>;
-+		compatible =3D "elan,ektf2132";
-+		pinctrl-names =3D "default";
-+		pinctrl-0 =3D <&pinctrl_ts>;
-+		power-gpios =3D <&gpio4 9 GPIO_ACTIVE_HIGH>;
-+		interrupts-extended =3D <&gpio5 13 IRQ_TYPE_EDGE_FALLING>;
-+	};
- };
+-----BEGIN PGP SIGNATURE-----
 
- &i2c2 {
-@@ -240,6 +247,13 @@ MX50_PAD_SD3_D7__ESDHC3_DAT7		0x1d4
- 		>;
- 	};
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX6UyXAAKCRDj7w1vZxhR
+xatGAP4vdTUYKMf7C2ve3hzaM3Rpm7yuxU086hWOPC1WD3ObygD/cve05ywhg5pl
+OiKXXaViAmTHXrEreYCXVoxBGecuxAs=
+=dRad
+-----END PGP SIGNATURE-----
 
-+	pinctrl_ts: tsgrp {
-+		fsl,pins =3D <
-+			MX50_PAD_CSPI_MOSI__GPIO4_9		0x0
-+			MX50_PAD_SD2_D5__GPIO5_13		0x0
-+		>;
-+	};
-+
- 	pinctrl_uart2: uart2grp {
- 		fsl,pins =3D <
- 			MX50_PAD_UART2_TXD__UART2_TXD_MUX	0x1e4
-=2D-
-2.28.0
-
+--o7piv2twhicpvhex--
