@@ -2,138 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1946A2A9B89
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 19:04:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B863C2A9B90
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 19:05:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727641AbgKFSEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 13:04:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33736 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727155AbgKFSEr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 13:04:47 -0500
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 52BA4206FA;
-        Fri,  6 Nov 2020 18:04:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604685886;
-        bh=h164DUbrltXAvgsRUwKtqAsftPyhoc7Fn/OhofvTlRk=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=RA/8yJFvpnF0eIgV4Z5w4qpsGAfEKjHOGJXjICr6o+QHlDkMe7yG/Kn0rPv9OO0rh
-         YCKzVzwRmPzqc3N9MLrrA7CQbq5aA0KVjcdMxeYTNjkafGr6i41xy78gXDGPzheqI6
-         bnf/EtHZkOLnvHV3aF20JZDM3krTPAdsTO/pX3LY=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 0A6E1352097B; Fri,  6 Nov 2020 10:04:46 -0800 (PST)
-Date:   Fri, 6 Nov 2020 10:04:46 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, parri.andrea@gmail.com,
-        will@kernel.org, peterz@infradead.org, boqun.feng@gmail.com,
-        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
-        luc.maranget@inria.fr, akiyks@gmail.com
-Subject: Re: [PATCH memory-model 5/8] tools/memory-model: Add a glossary of
- LKMM terms
-Message-ID: <20201106180445.GX3249@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201105215953.GA15309@paulmck-ThinkPad-P72>
- <20201105220017.15410-5-paulmck@kernel.org>
- <20201106165930.GC47039@rowland.harvard.edu>
+        id S1727815AbgKFSFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 13:05:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50078 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726034AbgKFSFx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 13:05:53 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F3D2C0613CF;
+        Fri,  6 Nov 2020 10:05:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=90zuK8BdS44z3twp9I9Jyw0x30yb82cvNVQYVDPC/9U=; b=AK0B6vve+vs4QnOQAcsmJ7A5X4
+        PxVnO2q4QT3W4RoD/Yixod2UovCJoRby6Q3OKPC7JYJYz9pzDGO00cYzkvv/v62jORtekHV+wIm8O
+        6x8wY/SRhAw3D3d/FcLdULGt74TkHAhTS9rSFSm2+HrR0QPK4EZA+33gDMuYFJ+YAMPRWzq2+28LZ
+        /7S6L9YvyXzF7rUXjao6vW5BD6ckhvo9IQItoDo0lMgfjvSIjLm56eyWdHZOO816HpoUNAp3VGORd
+        WaLQxPJ1VN74XOv2iiHT1BhLvJjjz0eosg7CZzyQcRX2b2rgodW0Dtv8aKwTYkzrx9C+myj9Cglfv
+        nkLUuA4g==;
+Received: from [2601:1c0:6280:3f0::a1cb] (helo=smtpauth.infradead.org)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kb67S-0003oB-8v; Fri, 06 Nov 2020 18:05:50 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+        linux-pm@vger.kernel.org,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org,
+        Taniya Das <tdas@codeaurora.org>, linux-next@vger.kernel.org
+Subject: [PATCH -next] clk: pm_clock: provide stubs for pm_clk_runtime_suspend/_resume
+Date:   Fri,  6 Nov 2020 10:05:44 -0800
+Message-Id: <20201106180544.5681-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201106165930.GC47039@rowland.harvard.edu>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 06, 2020 at 11:59:30AM -0500, Alan Stern wrote:
-> On Thu, Nov 05, 2020 at 02:00:14PM -0800, paulmck@kernel.org wrote:
-> > From: "Paul E. McKenney" <paulmck@kernel.org>
-> > 
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > ---
-> >  tools/memory-model/Documentation/glossary.txt | 155 ++++++++++++++++++++++++++
-> >  1 file changed, 155 insertions(+)
-> >  create mode 100644 tools/memory-model/Documentation/glossary.txt
-> > 
-> > diff --git a/tools/memory-model/Documentation/glossary.txt b/tools/memory-model/Documentation/glossary.txt
-> > new file mode 100644
-> > index 0000000..036fa28
-> > --- /dev/null
-> > +++ b/tools/memory-model/Documentation/glossary.txt
-> > @@ -0,0 +1,155 @@
-> > +This document contains brief definitions of LKMM-related terms.  Like most
-> > +glossaries, it is not intended to be read front to back (except perhaps
-> > +as a way of confirming a diagnosis of OCD), but rather to be searched
-> > +for specific terms.
-> > +
-> > +
-> > +Address Dependency:  When the address of a later memory access is computed
-> > +	based on the value returned by an earlier load, an "address
-> > +	dependency" extends from that load extending to the later access.
-> > +	Address dependencies are quite common in RCU read-side critical
-> > +	sections:
-> > +
-> > +	 1 rcu_read_lock();
-> > +	 2 p = rcu_dereference(gp);
-> > +	 3 do_something(p->a);
-> > +	 4 rcu_read_unlock();
-> > +
-> > +	 In this case, because the address of "p->a" on line 3 is computed
-> > +	 from the value returned by the rcu_dereference() on line 2, the
-> > +	 address dependency extends from that rcu_dereference() to that
-> > +	 "p->a".  In rare cases, optimizing compilers can destroy address
-> > +	 dependencies.	Please see Documentation/RCU/rcu_dereference.txt
-> > +	 for more information.
-> > +
-> > +	 See also "Control Dependency".
-> 
-> There should also be an entry for "Data Dependency", linked from here
-> and from Control Dependency.
-> 
-> > +Marked Access:  An access to a variable that uses an special function or
-> > +	macro such as "r1 = READ_ONCE()" or "smp_store_release(&a, 1)".
-> 
-> How about "r1 = READ_ONCE(x)"?
+Add stubs for pm_clk_runtime_suspend() and pm_clk_runtime_resume()
+to fix build errors when CONFIG_PM and CONFIG_PM_CLK are not enabled.
 
-Good catches!  I am planning to squash the commit below into the
-original.  Does that cover it?
+Fixes these build errors:
 
-							Thanx, Paul
+../drivers/clk/qcom/camcc-sc7180.c: In function ‘cam_cc_sc7180_probe’:
+../drivers/clk/qcom/camcc-sc7180.c:1672:8: error: implicit declaration of function ‘pm_clk_runtime_resume’; did you mean ‘pm_runtime_resume’? [-Werror=implicit-function-declaration]
+  ret = pm_clk_runtime_resume(&pdev->dev);
+        ^~~~~~~~~~~~~~~~~~~~~
+../drivers/clk/qcom/camcc-sc7180.c:1681:3: error: implicit declaration of function ‘pm_clk_runtime_suspend’; did you mean ‘pm_runtime_suspend’? [-Werror=implicit-function-declaration]
+   pm_clk_runtime_suspend(&pdev->dev);
+   ^~~~~~~~~~~~~~~~~~~~~~
 
-------------------------------------------------------------------------
+Fixes: 15d09e830bbc ("clk: qcom: camcc: Add camera clock controller driver for SC7180")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc: Len Brown <len.brown@intel.com>
+Cc: Pavel Machek <pavel@ucw.cz>
+Cc: linux-pm@vger.kernel.org
+Cc: Michael Turquette <mturquette@baylibre.com>
+Cc: Stephen Boyd <sboyd@kernel.org>
+Cc: linux-clk@vger.kernel.org
+Cc: Taniya Das <tdas@codeaurora.org>
+Cc: linux-next@vger.kernel.org
+---
+ include/linux/pm_clock.h |    9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-commit 27c694f5a049d3edac1f258b888d02650cec936a
-Author: Paul E. McKenney <paulmck@kernel.org>
-Date:   Fri Nov 6 10:02:41 2020 -0800
-
-    squash! tools/memory-model: Add a glossary of LKMM terms
-    
-    [ paulmck: Apply Alan Stern feedback. ]
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-
-diff --git a/tools/memory-model/Documentation/glossary.txt b/tools/memory-model/Documentation/glossary.txt
-index 383151b..471bf13 100644
---- a/tools/memory-model/Documentation/glossary.txt
-+++ b/tools/memory-model/Documentation/glossary.txt
-@@ -22,7 +22,7 @@ Address Dependency:  When the address of a later memory access is computed
- 	 dependencies.	Please see Documentation/RCU/rcu_dereference.txt
- 	 for more information.
+--- linux-next-20201106.orig/include/linux/pm_clock.h
++++ linux-next-20201106/include/linux/pm_clock.h
+@@ -83,6 +83,15 @@ static inline void pm_clk_remove(struct
+ static inline void pm_clk_remove_clk(struct device *dev, struct clk *clk)
+ {
+ }
++
++static inline int pm_clk_runtime_suspend(struct device *dev)
++{
++	return 0;
++}
++static inline int pm_clk_runtime_resume(struct device *dev)
++{
++	return 0;
++}
+ #endif
  
--	 See also "Control Dependency".
-+	 See also "Control Dependency" and "Data Dependency".
- 
- Acquire:  With respect to a lock, acquiring that lock, for example,
- 	using spin_lock().  With respect to a non-lock shared variable,
-@@ -109,7 +109,7 @@ Happens-Before (hb): A relation between two accesses in which LKMM
- 	section of explanation.txt.
- 
- Marked Access:  An access to a variable that uses an special function or
--	macro such as "r1 = READ_ONCE()" or "smp_store_release(&a, 1)".
-+	macro such as "r1 = READ_ONCE(x)" or "smp_store_release(&a, 1)".
- 
- 	See also "Unmarked Access".
- 
+ #ifdef CONFIG_HAVE_CLK
