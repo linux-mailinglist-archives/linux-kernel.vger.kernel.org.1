@@ -2,200 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 356EA2A920D
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 10:03:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CBDD2A91ED
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 10:01:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726121AbgKFJDj convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 6 Nov 2020 04:03:39 -0500
-Received: from mail-eopbgr1300139.outbound.protection.outlook.com ([40.107.130.139]:21728
-        "EHLO APC01-HK2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726074AbgKFJDL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 04:03:11 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jFYr/uxAY0dedN3uQzb6MKqkk1JpYB/YCb5jGU1wtojQAXWa53LsGZtP9GkV0uqBN2mM8DPgCH+ZzoMmsaCtcNelmFURa7diTvgggk7hbVDuBVWJVc9tIDwvGqtgtebFU9d6PqwBtESlX/dU6Fk+qhrQfzt74/jMX35la1x3qndKSEPDOkTTK6fDYXyz3U0dhS1ilLsF07ajLkzmrru64UWpL+kq3pbskvwwbkYMCvNWd54pbyVkS+wzxfYEFguQpmTU7LnO6DAQP/jwKkpKIonBSSWHD2MsRklNtz3KpBJ96vJEvFwJM9TU/bcvNZAXCjGdx917q0jh0304lSGVgw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Rh+Svn6smS/SqtKYQBLY53tsEIphYI6eXh74imGVTsE=;
- b=YA0jQUDf8QWDtg+Ed2YcDWUAqfC8Ly8xdLXRml4OPftheMxEQvTo9PWues4HQSXQtXgsKRCoUAFt+3pcCvf14QaTfJhAnU2xiyyQb48/5v246TnLHeXboTMgvZ3qRMCDVIbVppzPHMR6f3WUC//o9JFf3Ad2uZW2AZ96r4eUYULQp7mR33kBrWTSMPWY/eyDINQCuZ/NSYFcyXJDgcHJkiwXXE1RMQb5sTwO19TZd4/z1BY4poqe5O7jVXN6OAiKjyDz8MOku2k+SOIeOgFxX1B6QGEPpN88eGBqV6OoEeyMMdDVFZ4VUQEeod2IaEjYXEJnQCT5F5hOBaQvP70Oww==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=aspeedtech.com; dmarc=pass action=none
- header.from=aspeedtech.com; dkim=pass header.d=aspeedtech.com; arc=none
-Received: from HK0PR06MB2786.apcprd06.prod.outlook.com (2603:1096:203:5b::22)
- by HK0PR06MB2356.apcprd06.prod.outlook.com (2603:1096:203:42::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.27; Fri, 6 Nov
- 2020 09:03:07 +0000
-Received: from HK0PR06MB2786.apcprd06.prod.outlook.com
- ([fe80::c9cf:b4b1:3371:d532]) by HK0PR06MB2786.apcprd06.prod.outlook.com
- ([fe80::c9cf:b4b1:3371:d532%7]) with mapi id 15.20.3499.033; Fri, 6 Nov 2020
- 09:03:06 +0000
-From:   Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     "broonie@kernel.org" <broonie@kernel.org>,
-        "joel@jms.id.au" <joel@jms.id.au>,
-        "andrew@aj.id.au" <andrew@aj.id.au>, "clg@kaod.org" <clg@kaod.org>,
-        "bbrezillon@kernel.org" <bbrezillon@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
-        BMC-SW <BMC-SW@aspeedtech.com>
-Subject: RE: [v2 1/4] dt-bindings: spi: Add binding file for ASPEED FMC/SPI
- memory controller
-Thread-Topic: [v2 1/4] dt-bindings: spi: Add binding file for ASPEED FMC/SPI
- memory controller
-Thread-Index: AQHWs6MqVFfaQvK8UkmffmksveHUb6m6z8Fg
-Date:   Fri, 6 Nov 2020 09:03:06 +0000
-Message-ID: <HK0PR06MB27861E37623DDADE1FE5A472B2ED0@HK0PR06MB2786.apcprd06.prod.outlook.com>
-References: <20201103072202.24705-1-chin-ting_kuo@aspeedtech.com>
- <20201103072202.24705-2-chin-ting_kuo@aspeedtech.com>
- <20201105184036.GA1607865@bogus>
-In-Reply-To: <20201105184036.GA1607865@bogus>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=aspeedtech.com;
-x-originating-ip: [211.20.114.70]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 8c6df00f-158d-4d99-2c62-08d88232c6db
-x-ms-traffictypediagnostic: HK0PR06MB2356:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <HK0PR06MB23569D812FBFF30F2606B5E0B2ED0@HK0PR06MB2356.apcprd06.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3968;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: d4nDnbJ2r0iI9AbR0Q0nQelzXG1vlfStCGPzmme0PE28JVrS+LpWWfrW0BpgStOPfOCS9fCdALmT0cRbQ4d6BGYqmk/kHJwVYEp+UuImlHmIT1gkBIeUBjOWmZl4RMrE47enupxvOb5G5a32P6kzUzwFxvFLxdy91wRQloDuJt8pXFU07o3QsGRb7NrfkpDyoFnitJcktav2GVvdBTFvC6kOX+lvhwfMm8D7Z87s/gpwDBjcbhPdAOsuoqrWTGd0dg5Rv7saP8KYY+FZrIIT3X+9u3i5lh2sONWpSDOsQXtcySUGtTJJ2dOWyaii/mX+nt7/kaBgvHVfd0+hm9buQ+3DexLxSjU/e4aJr7FWGrhnVzjmPVe/PH6xP2TSq10yNqMMmjrkWstLyFBXTFm9Lg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HK0PR06MB2786.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(136003)(346002)(376002)(39840400004)(366004)(71200400001)(7416002)(6916009)(4326008)(83380400001)(966005)(9686003)(107886003)(64756008)(55016002)(186003)(66446008)(76116006)(66946007)(8936002)(33656002)(316002)(26005)(6506007)(7696005)(54906003)(66556008)(5660300002)(66476007)(8676002)(52536014)(55236004)(53546011)(2906002)(86362001)(478600001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: QKfQ156ydVaXc+0j+YnIzTte32miiUi3xC3ob9tucoqblhfXloOF/kC6erR4uxalgAJM/rEyqQyzkn0L3ts/0ya0GmcmzeVavhSdvVKWG4oTGSI/AlupUpJVYVF4jhpcAfn4DC8gfK1nUWu/2DIRRI4Xg6oHdWmk3UE3F0wwS/B5On6XME2au5l8HaT9eKZNXgyIzx2LHad7Sb2mRHDlB9vgUMsdpVxPfA1sNW9q1dhRmaPWTUP7J0vSK5XOHWIAecs9GIGN9aep2SGRWwP96S1VbqXFgq+XCYYnSXOo9iOyiiy3hHDmnMpfnGQRDGrMwdAfxCar1gGRUOl4LQC6BkQZQql3BxgwfdHIJV7h/2igFIWDd87eC0twl3qIeanJjaW0nkZZeRssUuhjUZBDSSNE7AriWknDpcWgmmWDbeJ49BNAsPrxU/0HCkjEbKDMZALDGvRkVUCL4ibtZzNjgwBAv2m2FR+CGZEQPrpEJUcKvU4mhD8VLVaV36H6NzekAgmzYM6bX9ZFZFbZ7T2Bn6d2xeAEQ04L+hvIERAJfCsiCq0lbdpz4kSVBUtqZnmVeJ1VH77fPAz7fZmg3JlP57Kp34NGmwInv8+dFg1z2SbEioPoshKL4gIy4lBjMrAQ+mr5FCSYXd676bJwmEO2Dg==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-MIME-Version: 1.0
-X-OriginatorOrg: aspeedtech.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: HK0PR06MB2786.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8c6df00f-158d-4d99-2c62-08d88232c6db
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Nov 2020 09:03:06.8054
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43d4aa98-e35b-4575-8939-080e90d5a249
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: OWQDt9pXkh41x576wkQRCSlHOXtApjoEcVgfud+447TApOsw8S+Bu7Epi8YZJri9AsOa/2o2nOb8xisvOM0byq19pLeNis6qBzh/FICDmWI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK0PR06MB2356
+        id S1726443AbgKFJA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 04:00:57 -0500
+Received: from mga09.intel.com ([134.134.136.24]:4550 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725835AbgKFJA4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 04:00:56 -0500
+IronPort-SDR: lsSwtWDvaGXhvgyFTk7sQb9GWdz72WMflXLwqsZX0qWv5YQlYU9HgRv0gbd4OhY4mEDE5o+f2v
+ vZiW9UUsTWzQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9796"; a="169670225"
+X-IronPort-AV: E=Sophos;i="5.77,456,1596524400"; 
+   d="scan'208";a="169670225"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2020 01:00:55 -0800
+IronPort-SDR: t2MbEemj6vFM6wgVQZwHgK0M0sP+tvKKecZPtEXbbtpIgA5AI059nyVhiq15BeJmL0cyh14xGR
+ CilcI/RY9vNA==
+X-IronPort-AV: E=Sophos;i="5.77,456,1596524400"; 
+   d="scan'208";a="472000251"
+Received: from chenyi-pc.sh.intel.com ([10.239.159.72])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2020 01:00:52 -0800
+From:   Chenyi Qiang <chenyi.qiang@intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Xiaoyao Li <xiaoyao.li@intel.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v5 0/4] Add bus lock VM exit support
+Date:   Fri,  6 Nov 2020 17:03:11 +0800
+Message-Id: <20201106090315.18606-1-chenyi.qiang@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+This patch series add the support for bus lock VM exit in KVM. It is a
+sub-feature of bus lock detection. When it is enabled by the VMM, the
+processor generates a "Bus Lock" VM exit following execution of an
+instruction if the processor detects that one or more bus locks were
+caused the instruction was being executed (due to either direct access
+by the instruction or stuffed accesses like through A/D updates).
 
-> -----Original Message-----
-> From: Rob Herring <robh@kernel.org>
-> Sent: Friday, November 6, 2020 2:41 AM
-> To: Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>
-> Cc: broonie@kernel.org; joel@jms.id.au; andrew@aj.id.au; clg@kaod.org;
-> bbrezillon@kernel.org; devicetree@vger.kernel.org;
-> linux-kernel@vger.kernel.org; linux-aspeed@lists.ozlabs.org;
-> linux-spi@vger.kernel.org; BMC-SW <BMC-SW@aspeedtech.com>
-> Subject: Re: [v2 1/4] dt-bindings: spi: Add binding file for ASPEED FMC/SPI
-> memory controller
-> 
-> On Tue, Nov 03, 2020 at 03:21:59PM +0800, Chin-Ting Kuo wrote:
-> > Create binding file with YAML syntax for ASPEED FMC/SPI memory
-> controller.
-> >
-> > Signed-off-by: Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>
-> > ---
-> >  .../bindings/spi/aspeed,spi-aspeed.yaml       | 66
-> +++++++++++++++++++
-> >  1 file changed, 66 insertions(+)
-> >  create mode 100644
-> > Documentation/devicetree/bindings/spi/aspeed,spi-aspeed.yaml
-> >
-> > diff --git
-> > a/Documentation/devicetree/bindings/spi/aspeed,spi-aspeed.yaml
-> > b/Documentation/devicetree/bindings/spi/aspeed,spi-aspeed.yaml
-> > new file mode 100644
-> > index 000000000000..41b9692c7226
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/spi/aspeed,spi-aspeed.yaml
-> > @@ -0,0 +1,66 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) %YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/spi/aspeed,spi-aspeed.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: SPI memory controller for ASPEED SoCs
-> > +
-> > +maintainers:
-> > +  - Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>
-> > +
-> > +description: |
-> > +  There are three SPI memory controllers embedded in a ASPEED SoC.
-> > +  They are usually connected to SPI NOR flashes. Each of them has
-> > +  more than a chip select. They also support SPI single, dual and
-> > +  quad IO modes for SPI NOR flash.
-> > +
-> > +allOf:
-> > +  - $ref: /spi/spi-controller.yaml#
-> > +
-> > +properties:
-> > +  compatible:
-> > +    oneOf:
-> > +      - items:
-> > +          - enum:
-> > +              - aspeed,ast2600-fmc
-> > +              - aspeed,ast2600-spi
-> > +
-> > +  reg:
-> > +    items:
-> > +      - description: the control register location and length
-> > +      - description: the flash memory mapping address and length
-> > +
-> > +  clocks:
-> > +    description: AHB bus clock which will be converted to SPI bus
-> > + clock
-> 
-> Need to define how many clocks (maxItems: 1).
+Bus lock VM exit will introduce a new modifier bit (bit 26) in
+exit_reason field in VMCS which indicates bus lock VM exit is preempted
+by a higher priority VM exit. The first patch is to apply Sean's
+refactor for vcpu_vmx.exit_reason as a preparation patch for bus lock
+VM exit support.
 
-Okay, it will be added on the next patch version.
+The second patch is the refactor for vcpu->run->flags. Bus lock VM exit
+will introduce a new field in the flags to inform the userspace that
+there's a bus lock detected in guest. It's also a preparation patch.
 
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +  - clocks
-> > +  - num-cs
-> > +
-> > +unevaluatedProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    #include <dt-bindings/clock/ast2600-clock.h>
-> > +    spi1: spi@1e630000 {
-> > +      compatible = "aspeed,ast2600-spi";
-> > +      reg = <0x1e630000 0xc4>, <0x30000000 0x10000000>;
-> > +      reg-names = "spi_ctrl_reg", "spi_mmap";
-> > +      clocks = <&syscon ASPEED_CLK_AHB>;
-> > +      num-cs = <2>;
-> > +      #address-cells = <1>;
-> > +      #size-cells = <0>;
-> > +      flash@0 {
-> > +        compatible = "jedec,spi-nor";
-> > +        reg = <0>;
-> > +        spi-max-frequency = <50000000>;
-> > +      };
-> > +      flash@1 {
-> > +        compatible = "jedec,spi-nor";
-> > +        reg = <1>;
-> > +        spi-max-frequency = <50000000>;
-> > +      };
-> > +    };
-> > --
-> > 2.17.1
-> >
+The third patch is the concrete enabling working for bus lock VM exit.
+Add the support to set the capability to enable bus lock VM exit. The
+current implementation is just exiting to userspace when handling the
+bus lock detected in guest.
 
-Best Wishes,
-Chin-Ting
+The detail of throttling policy in user space is still to be discussed.
+We may enforce ratelimit on bus lock in guest, inject some sleep time,
+or... We hope to get more ideas on this.
+
+Document for Bus Lock Detection is now available at the latest "Intel
+Architecture Instruction Set Extensions Programming Reference".
+
+Document Link:
+https://software.intel.com/content/www/us/en/develop/download/intel-architecture-instruction-set-extensions-programming-reference.html
+
+---
+
+Changelogs
+
+v4->v5:
+- rebase on top on v5.10-rc2
+- add preparation patch that reset the vcpu->run->flags at the beginning
+  of the vcpu_run.(Suggested by Sean)
+- set the KVM_RUN_BUS_LOCK for all bus lock exit to avoid checking both
+  exit_reason and run->flags
+- add the document to introduce the new kvm capability
+  (KVM_CAP_X86_BUS_LOCK_EXIT)
+- v4:https://lore.kernel.org/lkml/20201012033542.4696-1-chenyi.qiang@intel.com/
+
+
+v3->v4:
+- rebase on top of v5.9
+- some code cleanup.
+- v3:https://lore.kernel.org/lkml/20200910083751.26686-1-chenyi.qiang@intel.com/
+
+v2->v3:
+- use a bitmap to get/set the capability of bus lock detection. we support
+  exit and off mode currently.
+- put the handle of exiting to userspace in vmx.c, thus no need to
+  define a shadow to track vmx->exit_reason.bus_lock_detected.
+- remove the vcpu->stats.bus_locks since every bus lock exits to userspace.
+- v2:https://lore.kernel.org/lkml/20200817033604.5836-1-chenyi.qiang@intel.com/ 
+
+v1->v2:
+- resolve Vitaly's comment to introduce the KVM_EXIT_BUS_LOCK and a
+  capability to enable it.
+- add the support to exit to user space when handling bus locks.
+- extend the vcpu->run->flags to indicate bus lock detected for other
+  exit reasons when exiting to user space.
+- v1:https://lore.kernel.org/lkml/20200628085341.5107-1-chenyi.qiang@intel.com/
+
+---
+
+Chenyi Qiang (3):
+  KVM: X86: Reset the vcpu->run->flags at the beginning of vcpu_run
+  KVM: VMX: Enable bus lock VM exit
+  KVM: X86: Add the Document for KVM_CAP_X86_BUS_LOCK_EXIT
+
+Sean Christopherson (1):
+  KVM: VMX: Convert vcpu_vmx.exit_reason to a union
+
+ Documentation/virt/kvm/api.rst     |  45 ++++++++++++-
+ arch/x86/include/asm/kvm_host.h    |   7 ++
+ arch/x86/include/asm/vmx.h         |   1 +
+ arch/x86/include/asm/vmxfeatures.h |   1 +
+ arch/x86/include/uapi/asm/kvm.h    |   1 +
+ arch/x86/include/uapi/asm/vmx.h    |   4 +-
+ arch/x86/kvm/vmx/capabilities.h    |   6 ++
+ arch/x86/kvm/vmx/nested.c          |  42 +++++++-----
+ arch/x86/kvm/vmx/vmx.c             | 105 +++++++++++++++++++----------
+ arch/x86/kvm/vmx/vmx.h             |  25 ++++++-
+ arch/x86/kvm/x86.c                 |  28 +++++++-
+ include/uapi/linux/kvm.h           |   5 ++
+ 12 files changed, 214 insertions(+), 56 deletions(-)
+
+-- 
+2.17.1
+
