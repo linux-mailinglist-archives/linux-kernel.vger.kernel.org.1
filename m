@@ -2,70 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B4212A9303
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 10:43:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFA8E2A92F7
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 10:40:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726625AbgKFJnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 04:43:39 -0500
-Received: from m176115.mail.qiye.163.com ([59.111.176.115]:5525 "EHLO
-        m176115.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725893AbgKFJnj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 04:43:39 -0500
-Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.231])
-        by m176115.mail.qiye.163.com (Hmail) with ESMTPA id D5413665B17;
-        Fri,  6 Nov 2020 17:43:36 +0800 (CST)
-From:   Wang Qing <wangqing@vivo.com>
-To:     Serge Semin <fancer.lancer@gmail.com>,
-        Jon Mason <jdmason@kudzu.us>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Allen Hubbe <allenbh@gmail.com>, linux-ntb@googlegroups.com,
-        linux-kernel@vger.kernel.org
-Cc:     Wang Qing <wangqing@vivo.com>
-Subject: [PATCH] ntb: idt: fix error check in ntb_hw_idt.c
-Date:   Fri,  6 Nov 2020 17:43:31 +0800
-Message-Id: <1604655811-31933-1-git-send-email-wangqing@vivo.com>
-X-Mailer: git-send-email 2.7.4
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZGR5NTBoYSh9KTh5CVkpNS09NTk5DSkxJT0hVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hKQ1VLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NyI6Hgw4Mj8jQhw4AxEvMw1K
-        FhIaFCNVSlVKTUtPTU5OQ0pMTE9LVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
-        SU5KVUxPVUlISllXWQgBWUFKQk9DNwY+
-X-HM-Tid: 0a759cf0a1a49373kuwsd5413665b17
+        id S1726792AbgKFJks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 04:40:48 -0500
+Received: from mga05.intel.com ([192.55.52.43]:32829 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726139AbgKFJks (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 04:40:48 -0500
+IronPort-SDR: TWoiwc2yCoJo7ECPGeewuJw/3Os4doTgKcfjPN/ZUzsZ08tcf12I4fbvSZS2RXDZasBXBIwaPF
+ 5zVzQn6cwT/w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9796"; a="254230709"
+X-IronPort-AV: E=Sophos;i="5.77,456,1596524400"; 
+   d="scan'208";a="254230709"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2020 01:40:47 -0800
+IronPort-SDR: mFsLs/WbQF0CrQWu6INR/ALjXHhz2xqtBvAnYtd2IXKMvL88+duqxlA3zlLJNq3J+CTwO40l8W
+ GFvX9a6FlZlQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,456,1596524400"; 
+   d="scan'208";a="354673376"
+Received: from glass.png.intel.com ([172.30.181.98])
+  by fmsmga004.fm.intel.com with ESMTP; 06 Nov 2020 01:40:43 -0800
+From:   Wong Vee Khee <vee.khee.wong@intel.com>
+To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Cc:     netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Ong Boon Leong <boon.leong.ong@intel.com>,
+        Voon Wei Feng <weifeng.voon@intel.com>,
+        Wong Vee Khee <vee.khee.wong@intel.com>
+Subject: [PATCH net-next 1/1] stmmac: intel: change all EHL/TGL to auto detect phy addr
+Date:   Fri,  6 Nov 2020 17:43:41 +0800
+Message-Id: <20201106094341.4241-1-vee.khee.wong@intel.com>
+X-Mailer: git-send-email 2.17.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-idt_create_dev never return NULL and fix smatch warning.
+From: Voon Weifeng <weifeng.voon@intel.com>
 
-Signed-off-by: Wang Qing <wangqing@vivo.com>
+Set all EHL/TGL phy_addr to -1 so that the driver will automatically
+detect it at run-time by probing all the possible 32 addresses.
+
+Signed-off-by: Voon Weifeng <weifeng.voon@intel.com>
+Signed-off-by: Wong Vee Khee <vee.khee.wong@intel.com>
 ---
- drivers/ntb/hw/idt/ntb_hw_idt.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/drivers/ntb/hw/idt/ntb_hw_idt.c b/drivers/ntb/hw/idt/ntb_hw_idt.c
-index d54261f..e7a4c2a
---- a/drivers/ntb/hw/idt/ntb_hw_idt.c
-+++ b/drivers/ntb/hw/idt/ntb_hw_idt.c
-@@ -2511,7 +2511,7 @@ static int idt_init_dbgfs(struct idt_ntb_dev *ndev)
- 	/* If the top directory is not created then do nothing */
- 	if (IS_ERR_OR_NULL(dbgfs_topdir)) {
- 		dev_info(&ndev->ntb.pdev->dev, "Top DebugFS directory absent");
--		return PTR_ERR(dbgfs_topdir);
-+		return PTR_ERR_OR_ZERO(dbgfs_topdir);
- 	}
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
+index b6e5e3e36b63..7c1353f37247 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
+@@ -236,6 +236,7 @@ static int intel_mgbe_common_data(struct pci_dev *pdev,
+ 	int ret;
+ 	int i;
  
- 	/* Create the info file node */
-@@ -2756,7 +2756,7 @@ static int idt_pci_probe(struct pci_dev *pdev,
++	plat->phy_addr = -1;
+ 	plat->clk_csr = 5;
+ 	plat->has_gmac = 0;
+ 	plat->has_gmac4 = 1;
+@@ -345,7 +346,6 @@ static int ehl_sgmii_data(struct pci_dev *pdev,
+ 			  struct plat_stmmacenet_data *plat)
+ {
+ 	plat->bus_id = 1;
+-	plat->phy_addr = 0;
+ 	plat->phy_interface = PHY_INTERFACE_MODE_SGMII;
  
- 	/* Allocate the memory for IDT NTB device data */
- 	ndev = idt_create_dev(pdev, id);
--	if (IS_ERR_OR_NULL(ndev))
-+	if (IS_ERR(ndev))
- 		return PTR_ERR(ndev);
+ 	plat->serdes_powerup = intel_serdes_powerup;
+@@ -362,7 +362,6 @@ static int ehl_rgmii_data(struct pci_dev *pdev,
+ 			  struct plat_stmmacenet_data *plat)
+ {
+ 	plat->bus_id = 1;
+-	plat->phy_addr = 0;
+ 	plat->phy_interface = PHY_INTERFACE_MODE_RGMII;
  
- 	/* Initialize the basic PCI subsystem of the device */
+ 	return ehl_common_data(pdev, plat);
+@@ -376,7 +375,6 @@ static int ehl_pse0_common_data(struct pci_dev *pdev,
+ 				struct plat_stmmacenet_data *plat)
+ {
+ 	plat->bus_id = 2;
+-	plat->phy_addr = 1;
+ 	return ehl_common_data(pdev, plat);
+ }
+ 
+@@ -408,7 +406,6 @@ static int ehl_pse1_common_data(struct pci_dev *pdev,
+ 				struct plat_stmmacenet_data *plat)
+ {
+ 	plat->bus_id = 3;
+-	plat->phy_addr = 1;
+ 	return ehl_common_data(pdev, plat);
+ }
+ 
+@@ -450,7 +447,6 @@ static int tgl_sgmii_data(struct pci_dev *pdev,
+ 			  struct plat_stmmacenet_data *plat)
+ {
+ 	plat->bus_id = 1;
+-	plat->phy_addr = 0;
+ 	plat->phy_interface = PHY_INTERFACE_MODE_SGMII;
+ 	plat->serdes_powerup = intel_serdes_powerup;
+ 	plat->serdes_powerdown = intel_serdes_powerdown;
 -- 
-2.7.4
+2.17.0
 
