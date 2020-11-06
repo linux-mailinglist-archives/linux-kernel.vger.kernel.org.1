@@ -2,84 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C44232A9AA6
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 18:18:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 623F12A9AA8
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 18:18:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727669AbgKFRS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 12:18:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38322 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727608AbgKFRS0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 12:18:26 -0500
-Received: from gaia (unknown [2.26.170.190])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 90B4E22227;
-        Fri,  6 Nov 2020 17:18:21 +0000 (UTC)
-Date:   Fri, 6 Nov 2020 17:18:19 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     Atish Patra <Atish.Patra@wdc.com>,
-        Will Deacon <willdeacon@google.com>, maz@kernel.org,
-        linux-kernel@vger.kernel.org, Jonathan.Cameron@huawei.com,
-        aou@eecs.berkeley.edu, akpm@linux-foundation.org,
-        anshuman.khandual@arm.com, anup@brainfault.org,
-        Arnd Bergmann <arnd@arndb.de>, david@redhat.com,
-        greentime.hu@sifive.com, Greg KH <gregkh@linuxfoundation.org>,
-        justin.he@arm.com, wangkefeng.wang@huawei.com,
-        linux-arch@vger.kernel.org, linux-riscv@lists.infradead.org,
-        rppt@kernel.org, nsaenzjulienne@suse.de,
-        Paul Walmsley <paul.walmsley@sifive.com>, rafael@kernel.org,
-        steven.price@arm.com, will@kernel.org, zong.li@sifive.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v4 0/5] Unify NUMA implementation between ARM64 & RISC-V
-Message-ID: <20201106171818.GL29329@gaia>
-References: <20201006001752.248564-1-atish.patra@wdc.com>
- <mhng-6971ba28-0cea-42bc-a26c-c23b9ba2af9e@palmerdabbelt-glaptop1>
+        id S1727692AbgKFRSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 12:18:47 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:1566 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727287AbgKFRSq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 12:18:46 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fa585790000>; Fri, 06 Nov 2020 09:18:49 -0800
+Received: from [10.2.59.206] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 6 Nov
+ 2020 17:18:45 +0000
+Subject: Re: [PATCH v1 1/4] dt-bindings: ata: tegra: Convert binding
+ documentation to YAML
+From:   Sowjanya Komatineni <skomatineni@nvidia.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     <thierry.reding@gmail.com>, <linux-kernel@vger.kernel.org>,
+        <robh+dt@kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-ide@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <jonathanh@nvidia.com>
+References: <1604628968-1501-1-git-send-email-skomatineni@nvidia.com>
+ <1604628968-1501-2-git-send-email-skomatineni@nvidia.com>
+ <20201106161122.GB3289870@bogus>
+ <f8ba33f1-90fa-a9f0-5834-9de23fc8ad31@nvidia.com>
+Message-ID: <d0a42b1c-8ddc-fc97-c675-70a5b7601580@nvidia.com>
+Date:   Fri, 6 Nov 2020 09:18:46 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <mhng-6971ba28-0cea-42bc-a26c-c23b9ba2af9e@palmerdabbelt-glaptop1>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <f8ba33f1-90fa-a9f0-5834-9de23fc8ad31@nvidia.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1604683129; bh=VWIsRcQDKDV7PcpK5vBAO2Hxh55PFI5xtcXzYtDOamU=;
+        h=Subject:From:To:CC:References:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+         Content-Language:X-Originating-IP:X-ClientProxiedBy;
+        b=LTmAX2qSsrtYTYs6gZIzVcgARkmnr0MYd66B/PoRgDLeRM5BgMSKBc6pGTC6oEc3X
+         9ElOaeZA+H5k/KoGZKKsm+2In7YdSoNefHFMWp57ghISbvgKILOfi1VdhaRwkmL4hA
+         H1alqJIjcnmg7LqG85wK8LRgnafgefJR4DZTUX+PbtnVB6iuV5ouPiX2OzSeAmhNoB
+         vFG0dkgmhIB9aMaokQCPB+2x9qSETZlcAC1BeKpbGp2uLgoU1CaUYlRIiuiiSuHfd+
+         uMGpke8O+vtt6hhRfuSzDfvAyyRf8k7ahU4DH5fCXjevAbQcZ0IBK47NwBGp3OIkq3
+         YfMyGj6KfSGLg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 10:07:00AM -0800, Palmer Dabbelt wrote:
-> On Mon, 05 Oct 2020 17:17:47 PDT (-0700), Atish Patra wrote:
-> > arch/arm64/Kconfig                            |  1 +
-> > arch/arm64/include/asm/numa.h                 | 45 +----------------
-> > arch/arm64/kernel/acpi_numa.c                 | 13 -----
-> > arch/arm64/mm/Makefile                        |  1 -
-> > arch/arm64/mm/init.c                          |  4 +-
-> > arch/riscv/Kconfig                            | 31 +++++++++++-
-> > arch/riscv/include/asm/mmzone.h               | 13 +++++
-> > arch/riscv/include/asm/numa.h                 |  8 +++
-> > arch/riscv/include/asm/pci.h                  | 14 ++++++
-> > arch/riscv/include/asm/pgtable.h              | 21 ++++++++
-> > arch/riscv/kernel/setup.c                     | 11 ++++-
-> > arch/riscv/kernel/smpboot.c                   | 12 ++++-
-> > arch/riscv/mm/init.c                          | 10 +++-
-> > drivers/base/Kconfig                          |  6 +++
-> > drivers/base/Makefile                         |  1 +
-> > .../mm/numa.c => drivers/base/arch_numa.c     | 30 ++++++++++--
-> > include/asm-generic/numa.h                    | 49 +++++++++++++++++++
-> > 17 files changed, 199 insertions(+), 71 deletions(-)
-> > create mode 100644 arch/riscv/include/asm/mmzone.h
-> > create mode 100644 arch/riscv/include/asm/numa.h
-> > rename arch/arm64/mm/numa.c => drivers/base/arch_numa.c (95%)
-> > create mode 100644 include/asm-generic/numa.h
-[...]
-> arm64 guys: do you want to try and do some sort of shared base tag sort of
-> thing for these, or do you want me to refactor this such that it adds the
-> generic stuff before removing the arm64 stuff so we can decouble that way?
 
-I had a comment on the second patch (probably impacting the first) but
-otherwise they look fine.
+On 11/6/20 8:41 AM, Sowjanya Komatineni wrote:
+>
+> On 11/6/20 8:11 AM, Rob Herring wrote:
+>> On Thu, 05 Nov 2020 18:16:05 -0800, Sowjanya Komatineni wrote:
+>>> This patch converts text based dt-binding document to YAML based
+>>> dt-binding document.
+>>>
+>>> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
+>>> ---
+>>> =C2=A0 .../devicetree/bindings/ata/nvidia,tegra-ahci.yaml | 152=20
+>>> +++++++++++++++++++++
+>>> =C2=A0 .../bindings/ata/nvidia,tegra124-ahci.txt=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 44 ------
+>>> =C2=A0 2 files changed, 152 insertions(+), 44 deletions(-)
+>>> =C2=A0 create mode 100644=20
+>>> Documentation/devicetree/bindings/ata/nvidia,tegra-ahci.yaml
+>>> =C2=A0 delete mode 100644=20
+>>> Documentation/devicetree/bindings/ata/nvidia,tegra124-ahci.txt
+>>>
+>>
+>> My bot found errors running 'make dt_binding_check' on your patch:
+>>
+>> yamllint warnings/errors:
+>>
+>> dtschema/dtc warnings/errors:
+>> Error:=20
+>> Documentation/devicetree/bindings/ata/nvidia,tegra-ahci.example.dts:27.3=
+1-32=20
+>> syntax error
+>> FATAL ERROR: Unable to parse input tree
+>> make[1]: *** [scripts/Makefile.lib:342:=20
+>> Documentation/devicetree/bindings/ata/nvidia,tegra-ahci.example.dt.yaml]=
+=20
+>> Error 1
+>> make[1]: *** Waiting for unfinished jobs....
+>> make: *** [Makefile:1364: dt_binding_check] Error 2
+>>
+>>
+>> See https://patchwork.ozlabs.org/patch/1395390
+>>
+>> The base for the patch is generally the last rc1. Any dependencies
+>> should be noted.
+>>
+>> If you already ran 'make dt_binding_check' and didn't see the above
+>> error(s), then make sure 'yamllint' is installed and dt-schema is up to
+>> date:
+>>
+>> pip3 install dtschema --upgrade
+>>
+>> Please check and re-submit.
+> Thanks Rob. Will re-try after installing up-to-date.
 
-I'm happy for this series to go in via the riscv tree but, if we run
-into conflicts, please provide a stable branch somewhere containing the
-arm64 changes (first two patches).
+Somehow running 'make dt_binding_check' gives below error.
 
--- 
-Catalin
+I have yamllint newest version (1.2.1-1). Any specific version of=20
+yamllint is needed?
+
+ =C2=A0LINT=C2=A0=C2=A0=C2=A0 Documentation/devicetree/bindings
+invalid config: unknown option "max-spaces-inside-empty" for rule "braces"
+xargs: /usr/bin/yamllint: exited with status 255; aborting
+Documentation/devicetree/bindings/Makefile:59: recipe for target=20
+'Documentation/devicetree/bindings/processed-schema-examples.json' failed
+make[1]: ***=20
+[Documentation/devicetree/bindings/processed-schema-examples.json] Error 12=
+4
+Makefile:1362: recipe for target 'dt_binding_check' failed
+make: *** [dt_binding_check] Error 2
+
