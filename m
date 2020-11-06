@@ -2,222 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 538802AA0A5
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 00:02:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C32B2AA0A7
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 00:02:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729004AbgKFXCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 18:02:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40060 "EHLO
+        id S1728390AbgKFXCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 18:02:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728390AbgKFXCp (ORCPT
+        with ESMTP id S1729011AbgKFXCv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 18:02:45 -0500
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7085FC0613CF;
-        Fri,  6 Nov 2020 15:02:45 -0800 (PST)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1kbAkY-0006y4-OY; Sat, 07 Nov 2020 00:02:30 +0100
-Date:   Sat, 7 Nov 2020 00:02:30 +0100
-From:   Florian Westphal <fw@strlen.de>
-To:     Paul Menzel <pmenzel@molgen.mpg.de>
-Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>,
-        Florian Westphal <fw@strlen.de>,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        linux-kernel@vger.kernel.org, Xin Liu <xinxliu@microsoft.com>,
-        Guohan Lu <lguohan@gmail.com>,
-        Kiran Kella <kiran.kella@broadcom.com>,
-        Akhilesh Samineni <akhilesh.samineni@broadcom.com>
-Subject: Re: [PATCH] netfilter: nf_nat: Support fullcone NAT
-Message-ID: <20201106230230.GA23619@breakpoint.cc>
-References: <20201106220106.80432-1-pmenzel@molgen.mpg.de>
+        Fri, 6 Nov 2020 18:02:51 -0500
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5E04C0613CF;
+        Fri,  6 Nov 2020 15:02:50 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: koike)
+        with ESMTPSA id D1AD01F46BD1
+From:   Helen Koike <helen.koike@collabora.com>
+To:     linux-media@vger.kernel.org
+Cc:     linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        heiko@sntech.de, kernel@collabora.com, hverkuil-cisco@xs4all.nl,
+        dafna.hirschfeld@collabora.com, zhengsq@rock-chips.com,
+        laurent.pinchart@ideasonboard.com, niklas.soderlund@ragnatech.se,
+        mchehab@kernel.org, tfiga@chromium.org, ribalda@google.com
+Subject: [PATCH] media: staging: rkisp1: cap: fix timeout when stopping the stream
+Date:   Fri,  6 Nov 2020 20:02:36 -0300
+Message-Id: <20201106230236.1884387-1-helen.koike@collabora.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201106220106.80432-1-pmenzel@molgen.mpg.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Paul Menzel <pmenzel@molgen.mpg.de> wrote:
-> From: Kiran Kella <kiran.kella@broadcom.com>
-> 
-> Changes done in the kernel to ensure 3-tuple uniqueness of the conntrack
-> entries for the fullcone nat functionality.
-> 
-> *   Hashlist is maintained for the 3-tuple unique keys (Protocol/Source
->     IP/Port) for all the conntrack entries.
-> 
-> *   When NAT table rules are created with the fullcone option, the
->     SNAT/POSTROUTING stage ensures the ports from the pool are picked up in
->     such a way that the 3-tuple is uniquely assigned.
-> 
-> *   In the DNAT/POSTROUTING stage, the fullcone behavior is ensured by checking
->     and reusing the 3-tuple for the Source IP/Port in the original direction.
-> 
-> *   When the pool is exhausted of the 3-tuple assignments, the packets are
->     dropped, else, they will be going out of the router they being 5-tuple
->     unique (which is not intended).
-> 
-> *   Passing fullcone option using iptables is part of another PR (in
->     sonic-buildimage repo).
+The dma engine should be stopped first.
+The driver waits for an interrupt to stop the stream in a known state
+after a frame.
+If rkisp1_cap_stream_disable() is called after stopping the rest of the
+pipeline, then most likely the interrupt won't arrive, we'll get a
+timeout and debugfs variables mp_stop_timeout or sp_stop_timeout will
+be incremented.
 
-These are way too many changes for a single patch.
-Please consider splitting this ino multiple chunks, e.g. at least
-separate functional fullcone from the boilerplate changes.
+Fixes: 37db540bb9d1f ("media: staging: rkisp1: cap: refactor enable/disable stream to allow multistreaming")
+Signed-off-by: Helen Koike <helen.koike@collabora.com>
+---
+ drivers/staging/media/rkisp1/rkisp1-capture.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> The kernel changes mentioned above are done to counter the challenges
-> explained in the section *3.4.2.1 Handling NAT model mismatch between
-> the ASIC and the Kernel* in the NAT HLD [1].
+diff --git a/drivers/staging/media/rkisp1/rkisp1-capture.c b/drivers/staging/media/rkisp1/rkisp1-capture.c
+index 6d2fd27970f28..b81235afd0534 100644
+--- a/drivers/staging/media/rkisp1/rkisp1-capture.c
++++ b/drivers/staging/media/rkisp1/rkisp1-capture.c
+@@ -895,6 +895,8 @@ static void rkisp1_pipeline_stream_disable(struct rkisp1_capture *cap)
+ {
+ 	struct rkisp1_device *rkisp1 = cap->rkisp1;
+ 
++	rkisp1_cap_stream_disable(cap);
++
+ 	/*
+ 	 * If the other capture is streaming, isp and sensor nodes shouldn't
+ 	 * be disabled, skip them.
+@@ -907,8 +909,6 @@ static void rkisp1_pipeline_stream_disable(struct rkisp1_capture *cap)
+ 
+ 	v4l2_subdev_call(&rkisp1->resizer_devs[cap->id].sd, video, s_stream,
+ 			 false);
+-
+-	rkisp1_cap_stream_disable(cap);
+ }
+ 
+ /*
+-- 
+2.29.2
 
-And please add the relevant explanations from this
-
-> [1]: https://github.com/kirankella/SONiC/blob/nat_doc_changes/doc/nat/nat_design_spec.md
-
-... to the commit message.
-
-> This is taken from switch network operating system (NOS) SONiC’s Linux
-> repository, where the support was added in September 2019 [1], and
-> forwarded ported to Linux 4.19 by Akhilesh in June 2020 [2].
-
-> I am sending it upstream as a request for comments, before effort
-> is put into forward porting it to Linux master.
-
-I don't see any huge problems from a technical pov.
-But I don't see why this functionality is needed from a pure SW
-point of view.
-
-AFAICS SONiC uses a propritary (or at least, custom) offload mechanism
-to place nat entries into HW.
-
-Netfilter already has a forwarding offload mechanism, described in
-Documentation/networking/nf_flowtable.rst , so I'm not sure it makes
-sense to accept this without patches to support the needed offload
-support as well.
-
-AFAIU passing fullcone makes no sense unless using offload HW that
-doesn't support the current nat port allocation scheme.
-
-And current kernel doesn't support any such HW.
-
-Nevertheless, some comments below.
-
-> +/* Is this 3-tuple already taken? (not by us)*/
-> +int
-> +nf_nat_used_3_tuple(const struct nf_conntrack_tuple *tuple,
-> +		    const struct nf_conn *ignored_conntrack,
-> +		    enum nf_nat_manip_type maniptype);
-> +
->  	 */
-> -	void (*unique_tuple)(const struct nf_nat_l3proto *l3proto,
-> +	int  (*unique_tuple)(const struct nf_nat_l3proto *l3proto,
->  			     struct nf_conntrack_tuple *tuple,
->  			     const struct nf_nat_range2 *range,
->  			     enum nf_nat_manip_type maniptype,
-
-The above change should be done in a separate patch, so its
-in a isolated change.  This will ease review of the fullcone part.
-
->  /* generate unique tuple ... */
-> -static void
-> +static int
->  gre_unique_tuple(const struct nf_nat_l3proto *l3proto,
->  		 struct nf_conntrack_tuple *tuple,
->  		 const struct nf_nat_range2 *range,
-> @@ -52,7 +52,7 @@ gre_unique_tuple(const struct nf_nat_l3proto *l3proto,
->  	/* If there is no master conntrack we are not PPTP,
->  	   do not change tuples */
->  	if (!ct->master)
-> -		return;
-> +		return 0;
->  
->  	if (maniptype == NF_NAT_MANIP_SRC)
->  		keyptr = &tuple->src.u.gre.key;
-> @@ -73,11 +73,11 @@ gre_unique_tuple(const struct nf_nat_l3proto *l3proto,
->  	for (i = 0; ; ++key) {
->  		*keyptr = htons(min + key % range_size);
->  		if (++i == range_size || !nf_nat_used_tuple(tuple, ct))
-> -			return;
-> +			return 1;
->  	}
-
-I suggest you use 'bool' type for this rather than int, unless you plan
-to use errno codes here in some future change.
-
-> @@ -155,6 +156,31 @@ hash_by_src(const struct net *n, const struct nf_conntrack_tuple *tuple)
->  	return reciprocal_scale(hash, nf_nat_htable_size);
->  }
->  
-> +static inline unsigned int
-> +hash_by_dst(const struct net *n, const struct nf_conntrack_tuple *tuple)
-
-please avoid inline keyword in .c files for new submissions.
-
-> +{
-> +	unsigned int hash;
-> +
-> +	get_random_once(&nf_nat_hash_rnd, sizeof(nf_nat_hash_rnd));
-
-get_random_once can't be called from multiple places for the same random
-value.
-
-[ I did not check if thats the case since patch doesn't apply to current
-nf ].
-
-> +static inline int
-> +same_reply_dst(const struct nf_conn *ct,
-> +	       const struct nf_conntrack_tuple *tuple)
-> +{
-> +	const struct nf_conntrack_tuple *t;
-> +
-> +	t = &ct->tuplehash[IP_CT_DIR_REPLY].tuple;
-> +	return (t->dst.protonum == tuple->dst.protonum &&
-> +		nf_inet_addr_cmp(&t->dst.u3, &tuple->dst.u3) &&
-> +		t->dst.u.all == tuple->dst.u.all);
-> +}
-
-Please run patches through scripts/checkpatch.pl before submission,
-we try to avoid '()' in return (...);
-
-> +/* Only called for DST manip */
-> +static int
-> +find_appropriate_dst(struct net *net,
-> +		     const struct nf_conntrack_zone *zone,
-> +		     const struct nf_nat_l3proto *l3proto,
-> +		     const struct nf_nat_l4proto *l4proto,
-> +		     const struct nf_conntrack_tuple *tuple,
-> +		     struct nf_conntrack_tuple *result)
-> +{
-> +	struct nf_conntrack_tuple reply;
-> +	unsigned int h;
-> +	const struct nf_conn *ct;
-
-Silly, but some maintainers prefer reverse-xmas-tree, i.e.
-
-   	struct nf_conntrack_tuple reply;
-   	const struct nf_conn *ct;
-   	unsigned int h;
-
-> @@ -327,8 +421,11 @@ get_unique_tuple(struct nf_conntrack_tuple *tuple,
->  	const struct nf_conntrack_zone *zone;
->  	const struct nf_nat_l3proto *l3proto;
->  	const struct nf_nat_l4proto *l4proto;
-> +	struct nf_nat_range2 nat_range;
->  	struct net *net = nf_ct_net(ct);
->  
-> +        memcpy(&nat_range, range, sizeof(struct nf_nat_range2));
-
-	nat_range = *range ?
-
-> @@ -1055,9 +1188,14 @@ static int __init nf_nat_init(void)
->  	if (!nf_nat_bysource)
->  		return -ENOMEM;
->  
-> +	nf_nat_by_manip_src = nf_ct_alloc_hashtable(&nf_nat_htable_size, 0);
-> +	if (!nf_nat_by_manip_src)
-> +		return -ENOMEM;
-
-This lacks error unwind for nf_nat_bysource.
