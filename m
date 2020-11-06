@@ -2,126 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEC802A9BB4
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 19:17:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 280F72A9BE4
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 19:20:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727864AbgKFSRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 13:17:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51880 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727183AbgKFSRQ (ORCPT
+        id S1727933AbgKFSUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 13:20:21 -0500
+Received: from ale.deltatee.com ([204.191.154.188]:59272 "EHLO
+        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727918AbgKFSUU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 13:17:16 -0500
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30411C0613CF;
-        Fri,  6 Nov 2020 10:17:16 -0800 (PST)
-Received: by mail-qv1-xf41.google.com with SMTP id g13so871402qvu.1;
-        Fri, 06 Nov 2020 10:17:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=xpxktmvHGo+CaqevD+BoyqDDeQDal/1mY0CZMqQlRYQ=;
-        b=IQAyatVaE/uhtZdFF21kT1+BmaaKOzsyQ+RInMQqxRz7Xmr4DURZTI7pvPKVcn44z4
-         9IsQpUHzTSbORLNbOX7vmGYUtLzmhzvhTiInx771aeJk78orN39uVoqdurieqtPFeIwM
-         0I9CUDd2l8QqVqvIhKpDB2xHoEkmV8mn7JlYBH4jxLm0ksPgssQqqPK7hU2tofg3gnP0
-         euPRReHNbZejDZMhMirdxj4CTkVpQ5abGmV0mjFI9VW4/2K5wZ4SkrtG3M5TJXK8pQpT
-         gBIEo3lwgcVLkAKTIiYNWpzdRGzV5+zctC1XcsKLtMliUmqjnRtF+ciH9tb67GQvpUYm
-         USaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=xpxktmvHGo+CaqevD+BoyqDDeQDal/1mY0CZMqQlRYQ=;
-        b=X7hgTy4/b2dGgEZ+Nv9+7kYIsDIBYqFlnVviTtxErf5L9TMiljnxy6JbZwzwhGhKba
-         a8S1sTP1yxDXRSgPHwIKczfJioD9tRMwSpSij6qmnbY7wMxEN3sqfH+PosjdOK2CUpE6
-         nddv7pTrxBkGfx67LKp9Z8FGtK0sTgYHrvDs8gQim57B2Dtvw5UHX6k3JBy2GTmCu134
-         r1wcSrDeqbwW0R9eES9g7LVmbTo+K4f1cUY+9tty/+ZRHt9v4QO25Bzq2pBQVSTxYnW7
-         mCge4s3iBqKNG72ap2ybS4GO8cX8xl725P50wrtci+SE3kHsc3qx3tZITZh4hH1Zf7s7
-         U2xw==
-X-Gm-Message-State: AOAM531Cctl0sBaTUvkj2vDm8KPsZMX+RYPJxXT8xDL1n6n244TtKing
-        NaFtM+wgfFZAMeeIM+QuT+8=
-X-Google-Smtp-Source: ABdhPJzzLjrmp5elXPE46DAm1ZvY6K4jJYerNwXzLzaDa3Vf8oKjY7bMuaGnrAkmUW8kQc0Lose/Zw==
-X-Received: by 2002:ad4:4a74:: with SMTP id cn20mr2672816qvb.61.1604686635391;
-        Fri, 06 Nov 2020 10:17:15 -0800 (PST)
-Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
-        by smtp.gmail.com with ESMTPSA id k3sm985419qtj.84.2020.11.06.10.17.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Nov 2020 10:17:14 -0800 (PST)
-Date:   Fri, 6 Nov 2020 11:17:13 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        linux-pm@vger.kernel.org,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org,
-        Taniya Das <tdas@codeaurora.org>, linux-next@vger.kernel.org
-Subject: Re: [PATCH -next] clk: pm_clock: provide stubs for
- pm_clk_runtime_suspend/_resume
-Message-ID: <20201106181713.GA3970874@ubuntu-m3-large-x86>
-References: <20201106180544.5681-1-rdunlap@infradead.org>
+        Fri, 6 Nov 2020 13:20:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=deltatee.com; s=20200525; h=Subject:Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Sender:
+        Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+        :Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=4c2lQ6ZJoiJD4wddIsh1sqnOjISbk8NdEHLgyMHjsI4=; b=WEavvMGUHHtVS6NthMSIjYgE8G
+        m2Shk+887YnWyl84qAu5c5aSnwfmdgsQkwuV6Qk/VTpfpITmSKpZTStz2VoJeuvrgKYFgbkpcC2x9
+        +Eygs4xkSnIjwB3jk8TQYbV+xWQY2KzZLECeTap/XHrhF7RfsNefRy2cKKo9kcYj3Hkd43uD6lH8r
+        UeDxe01Yy7KFTC7wo/J2Zw1d3VJYZkJMQ5JZSmcYq3a5l1dL0v2dLl8ounQVMEe9onzzakY4UYleu
+        immFBl00AOuIB6Gr3JQNUHz9T+DktFRE1Gznw7frT3XHfeD8UYFSjQcgB6Z9ymXrL/hXHs6bQE5SP
+        AZUhpu/A==;
+Received: from s01060023bee90a7d.cg.shawcable.net ([24.64.145.4] helo=[192.168.0.10])
+        by ale.deltatee.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <logang@deltatee.com>)
+        id 1kb6LI-0003vN-G2; Fri, 06 Nov 2020 11:20:09 -0700
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
+        Stephen Bates <sbates@raithlin.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Ira Weiny <iweiny@intel.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Don Dutile <ddutile@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+References: <20201106170036.18713-1-logang@deltatee.com>
+ <20201106170036.18713-15-logang@deltatee.com>
+ <20201106172206.GS36674@ziepe.ca>
+ <b1e8dfce-d583-bed8-d04d-b7265a54c99f@deltatee.com>
+ <20201106174223.GU36674@ziepe.ca>
+ <2c2d2815-165e-2ef9-60d6-3ace7ff3aaa5@deltatee.com>
+ <20201106180922.GV36674@ziepe.ca>
+From:   Logan Gunthorpe <logang@deltatee.com>
+Message-ID: <09885400-36f8-bc1d-27f0-a8adcf6104d4@deltatee.com>
+Date:   Fri, 6 Nov 2020 11:20:05 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
+In-Reply-To: <20201106180922.GV36674@ziepe.ca>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201106180544.5681-1-rdunlap@infradead.org>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 24.64.145.4
+X-SA-Exim-Rcpt-To: daniel.vetter@ffwll.ch, willy@infradead.org, ddutile@redhat.com, jhubbard@nvidia.com, iweiny@intel.com, christian.koenig@amd.com, dan.j.williams@intel.com, hch@lst.de, sbates@raithlin.com, iommu@lists.linux-foundation.org, linux-mm@kvack.org, linux-pci@vger.kernel.org, linux-block@vger.kernel.org, linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, jgg@ziepe.ca
+X-SA-Exim-Mail-From: logang@deltatee.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-8.7 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        GREYLIST_ISWHITE,MYRULES_FREE,NICE_REPLY_A autolearn=ham
+        autolearn_force=no version=3.4.2
+Subject: Re: [RFC PATCH 14/15] PCI/P2PDMA: Introduce pci_mmap_p2pmem()
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 06, 2020 at 10:05:44AM -0800, Randy Dunlap wrote:
-> Add stubs for pm_clk_runtime_suspend() and pm_clk_runtime_resume()
-> to fix build errors when CONFIG_PM and CONFIG_PM_CLK are not enabled.
-> 
-> Fixes these build errors:
-> 
-> ../drivers/clk/qcom/camcc-sc7180.c: In function ‘cam_cc_sc7180_probe’:
-> ../drivers/clk/qcom/camcc-sc7180.c:1672:8: error: implicit declaration of function ‘pm_clk_runtime_resume’; did you mean ‘pm_runtime_resume’? [-Werror=implicit-function-declaration]
->   ret = pm_clk_runtime_resume(&pdev->dev);
->         ^~~~~~~~~~~~~~~~~~~~~
-> ../drivers/clk/qcom/camcc-sc7180.c:1681:3: error: implicit declaration of function ‘pm_clk_runtime_suspend’; did you mean ‘pm_runtime_suspend’? [-Werror=implicit-function-declaration]
->    pm_clk_runtime_suspend(&pdev->dev);
->    ^~~~~~~~~~~~~~~~~~~~~~
-> 
-> Fixes: 15d09e830bbc ("clk: qcom: camcc: Add camera clock controller driver for SC7180")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-> Cc: Len Brown <len.brown@intel.com>
-> Cc: Pavel Machek <pavel@ucw.cz>
-> Cc: linux-pm@vger.kernel.org
-> Cc: Michael Turquette <mturquette@baylibre.com>
-> Cc: Stephen Boyd <sboyd@kernel.org>
-> Cc: linux-clk@vger.kernel.org
-> Cc: Taniya Das <tdas@codeaurora.org>
-> Cc: linux-next@vger.kernel.org
 
-This fixes the same build failure that I saw with s390 all{mod,yes}config.
 
-Build-tested-by: Nathan Chancellor <natechancellor@gmail.com>
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
-
-> ---
->  include/linux/pm_clock.h |    9 +++++++++
->  1 file changed, 9 insertions(+)
+On 2020-11-06 11:09 a.m., Jason Gunthorpe wrote:
+>> Ah, hmm, yes. I guess the pages have to be hooked and returned to the
+>> genalloc through free_devmap_managed_page(). 
 > 
-> --- linux-next-20201106.orig/include/linux/pm_clock.h
-> +++ linux-next-20201106/include/linux/pm_clock.h
-> @@ -83,6 +83,15 @@ static inline void pm_clk_remove(struct
->  static inline void pm_clk_remove_clk(struct device *dev, struct clk *clk)
->  {
->  }
-> +
-> +static inline int pm_clk_runtime_suspend(struct device *dev)
-> +{
-> +	return 0;
-> +}
-> +static inline int pm_clk_runtime_resume(struct device *dev)
-> +{
-> +	return 0;
-> +}
->  #endif
->  
->  #ifdef CONFIG_HAVE_CLK
+> That sounds about right, but in this case it doesn't need the VMA
+> operations.
+> 
+>> Seems like it might be doable... but it will complicate things for
+>> users that don't want to use the genpool (though no such users exist
+>> upstream).
+> 
+> I would like to use this stuff in RDMA pretty much immediately and the
+> genpool is harmful for those cases, so please don't make decisions
+> that are tying thing to genpool
+
+I certainly can't make decisions for code that isn't currently upstream.
+So you will almost certainly have to make changes for the code you want
+to add, as is the standard procedure. I can't and should not export APIs
+that you might need that have no upstream users, but you are certainly
+free to send patches that create them when you add the use case.
+
+Ultimately, if you aren't using the genpool you will have to implement
+your own mmap operation that somehow allocates the pages and your own
+page_free hook. The latter can be accommodated for by a patch that
+splits off pci_p2pdma_add_resource() into a function that doesn't use
+the genpool (I've already seen two independent developers create a
+similar patch for this but with no upstream user, they couldn't be taken
+upstream).
+
+I also don't expect this to be going upstream in the near term so don't
+get too excited about using it.
+
+Logan
