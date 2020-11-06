@@ -2,64 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB82F2A94C6
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 11:54:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 029E52A94BF
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 11:53:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727199AbgKFKyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 05:54:06 -0500
-Received: from elvis.franken.de ([193.175.24.41]:41183 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727139AbgKFKx4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 05:53:56 -0500
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1kazNR-0000vt-04; Fri, 06 Nov 2020 11:53:53 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 29ADAC4DDA; Fri,  6 Nov 2020 11:53:22 +0100 (CET)
-Date:   Fri, 6 Nov 2020 11:53:22 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Zou Wei <zou_wei@huawei.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] mm/hugetlb: Make is_aligned_hugepage_range static
-Message-ID: <20201106105322.GF9806@alpha.franken.de>
-References: <1603937600-53015-1-git-send-email-zou_wei@huawei.com>
+        id S1727059AbgKFKxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 05:53:25 -0500
+Received: from mail-il1-f198.google.com ([209.85.166.198]:33178 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726642AbgKFKxZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 05:53:25 -0500
+Received: by mail-il1-f198.google.com with SMTP id p17so712758ilj.0
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 02:53:24 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=DDSyTW0cXmYYVcRPO4w8oETTjvfxbaLefaEF1z3VOqw=;
+        b=UEsOp2T0nv2KGfVKApGfp8etzya74eKXz/j+DmhcJeAtKcs7lt/5uR8mvJ3zNlLDrC
+         k/zhdhM9DwbsIcebpCkVVcfDWqu6mkIdB5+WQ2hjb/MjNQd4WlBSAMGAg77fVLNH6qpM
+         C1fTqFUoRSH0PGohycCcOLAmjBh3KMH4tdus8VBqA7ybJFhQT71q15iSZXR8+lJs6afY
+         iBqpHbbAq1MSsETGNemJrb5XIl8gcXnHLSCdrccr1QXS1reUZQzl8+0HmFZ1WnfzHQY6
+         0L4p7Cxgo8rTdRIFQH/CUh2V9+wI/RJfmpX9LkLqRcMkN0hK+ysWyK1/0GDB47yOv8HF
+         jVCg==
+X-Gm-Message-State: AOAM530O13Bf7Dih7wW3KhRR0mE2mD8VHwZG58Pe9jFqJPykWvxFouOn
+        MYdBd9tY8nVqinWPmT841YONy1UabiRllejztXB8Fi3J/SUz
+X-Google-Smtp-Source: ABdhPJyW6YXkMYU74RkWHcekbpdxFTrNthZb9JCrArTwPLfB6vH6p3Oj1st3EsqwF3G89qvqNXHc4U3zgyZNV9Uh1STyXsK9LMjX
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1603937600-53015-1-git-send-email-zou_wei@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Received: by 2002:a5e:9604:: with SMTP id a4mr973198ioq.61.1604660004200;
+ Fri, 06 Nov 2020 02:53:24 -0800 (PST)
+Date:   Fri, 06 Nov 2020 02:53:24 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000892b3905b36e059b@google.com>
+Subject: WARNING: bad unlock balance in ieee80211_unregister_hw
+From:   syzbot <syzbot+a6e9e84a19d90b996a65@syzkaller.appspotmail.com>
+To:     ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+        gnault@redhat.com, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 10:13:20AM +0800, Zou Wei wrote:
-> Fix the following sparse warning:
-> 
-> arch/mips/mm/hugetlbpage.c:64:5: warning:
-> symbol 'is_aligned_hugepage_range' was not declared. Should it be static?
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Zou Wei <zou_wei@huawei.com>
-> ---
->  arch/mips/mm/hugetlbpage.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/mips/mm/hugetlbpage.c b/arch/mips/mm/hugetlbpage.c
-> index 77ffece..774c988 100644
-> --- a/arch/mips/mm/hugetlbpage.c
-> +++ b/arch/mips/mm/hugetlbpage.c
-> @@ -61,7 +61,7 @@ pte_t *huge_pte_offset(struct mm_struct *mm, unsigned long addr,
->  /*
->   * This function checks for proper alignment of input addr and len parameters.
->   */
-> -int is_aligned_hugepage_range(unsigned long addr, unsigned long len)
-> +static int is_aligned_hugepage_range(unsigned long addr, unsigned long len)
+Hello,
 
-this should give then a warning that 'is_aligned_hugepage_range' is unused.
-Could you send a patch, which remove function completely ?
+syzbot found the following issue on:
 
-Thomas.
+HEAD commit:    cb5dc5b0 Merge branch 'bpf: safeguard hashtab locking in N..
+git tree:       bpf-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=13498a0c500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=58a4ca757d776bfe
+dashboard link: https://syzkaller.appspot.com/bug?extid=a6e9e84a19d90b996a65
+compiler:       gcc (GCC) 10.1.0-syz 20200507
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+a6e9e84a19d90b996a65@syzkaller.appspotmail.com
+
+=====================================
+WARNING: bad unlock balance detected!
+5.9.0-syzkaller #0 Not tainted
+-------------------------------------
+kworker/u4:3/24893 is trying to release lock ((wq_completion)phy264) at:
+[<ffffffff81476be1>] flush_workqueue+0xe1/0x13e0 kernel/workqueue.c:2780
+but there are no more locks to release!
+
+other info that might help us debug this:
+3 locks held by kworker/u4:3/24893:
+ #0: ffff8881407aa938 ((wq_completion)netns){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff8881407aa938 ((wq_completion)netns){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff8881407aa938 ((wq_completion)netns){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff8881407aa938 ((wq_completion)netns){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff8881407aa938 ((wq_completion)netns){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff8881407aa938 ((wq_completion)netns){+.+.}-{0:0}, at: process_one_work+0x821/0x15a0 kernel/workqueue.c:2243
+ #1: ffffc9000218fda8 (net_cleanup_work){+.+.}-{0:0}, at: process_one_work+0x854/0x15a0 kernel/workqueue.c:2247
+ #2: ffffffff8c914010 (pernet_ops_rwsem){++++}-{3:3}, at: cleanup_net+0x9b/0xa00 net/core/net_namespace.c:566
+
+stack backtrace:
+CPU: 1 PID: 24893 Comm: kworker/u4:3 Not tainted 5.9.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: netns cleanup_net
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_unlock_imbalance_bug include/trace/events/lock.h:58 [inline]
+ __lock_release kernel/locking/lockdep.c:5126 [inline]
+ lock_release.cold+0x34/0x4e kernel/locking/lockdep.c:5462
+ flush_workqueue+0x125/0x13e0 kernel/workqueue.c:2784
+ drain_workqueue+0x1a5/0x3c0 kernel/workqueue.c:2948
+ destroy_workqueue+0x71/0x760 kernel/workqueue.c:4372
+ ieee80211_unregister_hw+0x1a2/0x210 net/mac80211/main.c:1388
+ mac80211_hwsim_del_radio drivers/net/wireless/mac80211_hwsim.c:3360 [inline]
+ hwsim_exit_net+0x56b/0xc90 drivers/net/wireless/mac80211_hwsim.c:4115
+ ops_exit_list+0xb0/0x160 net/core/net_namespace.c:187
+ cleanup_net+0x4ea/0xa00 net/core/net_namespace.c:604
+ process_one_work+0x933/0x15a0 kernel/workqueue.c:2272
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2418
+ kthread+0x3af/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+device hsr_slave_1 left promiscuous mode
+batman_adv: batadv0: Removing interface: batadv_slave_0
+batman_adv: batadv0: Interface deactivated: batadv_slave_1
+batman_adv: batadv0: Removing interface: batadv_slave_1
+bridge0: port 2(bridge_slave_1) entered disabled state
+device bridge_slave_0 left promiscuous mode
+bridge0: port 1(bridge_slave_0) entered disabled state
+device veth0_macvtap left promiscuous mode
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
