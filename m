@@ -2,86 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2F3A2A921A
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 10:06:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AD572A921C
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 10:07:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726290AbgKFJGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 04:06:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49514 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725848AbgKFJGk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 04:06:40 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77674C0613CF;
-        Fri,  6 Nov 2020 01:06:40 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: gtucker)
-        with ESMTPSA id 7CFBB1F467A1
-From:   Guillaume Tucker <guillaume.tucker@collabora.com>
-To:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Heiko Stuebner <heiko@sntech.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com,
-        Guillaume Tucker <guillaume.tucker@collabora.com>
-Subject: [PATCH v2] rtc: hym8563: enable wakeup when applicable
-Date:   Fri,  6 Nov 2020 09:06:31 +0000
-Message-Id: <1ea023e2ba50a4dab6e39be93d7de3146af71a60.1604653374.git.guillaume.tucker@collabora.com>
-X-Mailer: git-send-email 2.20.1
+        id S1726416AbgKFJHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 04:07:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45260 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725924AbgKFJHp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 04:07:45 -0500
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F177A20936;
+        Fri,  6 Nov 2020 09:07:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604653663;
+        bh=/WyFgfLiGBaivhLHjIz34mnY1A6swv5xaVPIuWmwMgU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WnOhTeDRPNs0Thwdi2AySf3T1uexugRszfvWjTL6d9s7t8NaLOaMvcWnq9sQYeJUc
+         GbacubcrP0u+B7mW9YZ5SSiBCSKuabvXr3h71sH3dJLaHkvvV+JpmBESXmXrb5rVte
+         /PVOJcyd5irAOomsEe/Wr/aFsSvgpxQ1Brbh0h18=
+Date:   Fri, 6 Nov 2020 09:07:38 +0000
+From:   Will Deacon <will@kernel.org>
+To:     tangyouling <tangyouling@loongson.cn>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, ardb@kernel.org
+Subject: Re: [PATCH] arm64: Change the location of DISCARDS
+Message-ID: <20201106090737.GA9496@willie-the-truck>
+References: <1604486932-18889-1-git-send-email-tangyouling@loongson.cn>
+ <20201105214738.GB8600@willie-the-truck>
+ <759a51ad-8b2e-24bd-52f5-99769ff5557c@loongson.cn>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <759a51ad-8b2e-24bd-52f5-99769ff5557c@loongson.cn>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable wakeup in the hym8563 driver if the IRQ was successfully
-requested or if wakeup-source is set in the devicetree.
+On Fri, Nov 06, 2020 at 09:06:42AM +0800, tangyouling wrote:
+> In the include/asm-generic/vmlinux.lds.h:978, the description is as follows:
+> DISCARDS must be the last of output section definitions so that such archs
+> put those in earlier section definitions.
 
-As per the description of device_init_wakeup(), it should be enabled
-for "devices that everyone expects to be wakeup sources".  One would
-expect this to be the case with a real-time clock.
+Sure, I see that text, but I don't get why it matters. It would be nice to
+have some rationale as to what could go wrong if they aren't at the end,
+so we can improve that comment and avoid the inevitable regression in the
+future when things get shuffled around.
 
-Tested on rk3288-rock2-square, which has an IRQ configured for the
-RTC.  As a result, wakeup was enabled during driver initialisation.
-
-Fixes: dcaf03849352 ("rtc: add hym8563 rtc-driver")
-Reported-by: kernelci.org bot <bot@kernelci.org>
-Signed-off-by: Guillaume Tucker <guillaume.tucker@collabora.com>
----
-
-Notes:
-    v2: enable wakeup if irq or wakeup-source
-
- drivers/rtc/rtc-hym8563.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/rtc/rtc-hym8563.c b/drivers/rtc/rtc-hym8563.c
-index 0fb79c4afb46..24e0095be058 100644
---- a/drivers/rtc/rtc-hym8563.c
-+++ b/drivers/rtc/rtc-hym8563.c
-@@ -527,8 +527,6 @@ static int hym8563_probe(struct i2c_client *client,
- 	hym8563->client = client;
- 	i2c_set_clientdata(client, hym8563);
- 
--	device_set_wakeup_capable(&client->dev, true);
--
- 	ret = hym8563_init_device(client);
- 	if (ret) {
- 		dev_err(&client->dev, "could not init device, %d\n", ret);
-@@ -547,6 +545,11 @@ static int hym8563_probe(struct i2c_client *client,
- 		}
- 	}
- 
-+	if (client->irq > 0 ||
-+	    device_property_read_bool(&client->dev, "wakeup-source")) {
-+		device_init_wakeup(&client->dev, true);
-+	}
-+
- 	/* check state of calendar information */
- 	ret = i2c_smbus_read_byte_data(client, HYM8563_SEC);
- 	if (ret < 0)
--- 
-2.20.1
-
+Will
