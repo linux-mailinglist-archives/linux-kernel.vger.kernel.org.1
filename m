@@ -2,81 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B0F92A90D9
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 08:59:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FED22A90DC
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 09:00:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726485AbgKFH7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 02:59:14 -0500
-Received: from relay3-d.mail.gandi.net ([217.70.183.195]:37901 "EHLO
-        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726027AbgKFH7L (ORCPT
+        id S1726516AbgKFIAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 03:00:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725848AbgKFIAV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 02:59:11 -0500
-X-Originating-IP: 86.194.74.19
-Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 4407B6000E;
-        Fri,  6 Nov 2020 07:59:09 +0000 (UTC)
-Date:   Fri, 6 Nov 2020 08:59:08 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Henning Schild <henning.schild@siemens.com>
-Cc:     Claudius Heine <ch@denx.de>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Johannes Hahn <johannes-hahn@siemens.com>,
-        werner.zeh@siemens.com
-Subject: Re: [PATCH 0/2]  Adding I2C support to RX6110 RTC
-Message-ID: <20201106075908.GJ1034841@piout.net>
-References: <20201104102629.3422048-1-ch@denx.de>
- <20201105221451.GH1034841@piout.net>
- <20201106084034.0ea09ea3@md1za8fc.ad001.siemens.net>
+        Fri, 6 Nov 2020 03:00:21 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7803CC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 00:00:21 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id 13so588205pfy.4
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 00:00:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=OUDJWBRHwmYg5tlx0f56mWuGsqX70lEgfuyCu6MGgDY=;
+        b=drBTIQeZXlaXVlJsp27DBaPcuBEycKjamPfhc6zYwpws6xfRK9vfgZiWkV4rNEi7M5
+         OWrmw4f3RSK30h82lZrWg1X+YsHJy/tE9Dsz47/UmJ0/mT7HxZu/b9lbjmfPzjoFdNw6
+         A/4gZ3r9bwpgfdaUM8bgOuTf9zzZJxt2nHtTrd9G454SzIEz0OXannaDks1IW1GuVQw9
+         mvkNK1oWCp4q139za+bDu/4H+zQKgMUlNHDiG7rblNCObYMnhLP2eY4a3Zj/SVWdqo7m
+         idV07qkN/Nvy08s84lPX0sax058qONlFSIjttgXhUiETxNR1JCnD0RQwy56A3jAkpMMs
+         fg5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=OUDJWBRHwmYg5tlx0f56mWuGsqX70lEgfuyCu6MGgDY=;
+        b=aSKFX7mn566q5evyCgGU90k8SN2ztMGGxOgowxYYyp3BZ4E7h/4d6b96DUze6a5EJ5
+         gdUTDsotooXBWV3z/okD84P46RlyslXqXPeICH1ajmIgwXmxOX/rQA8ZfJZRANJ54TQl
+         ProPnEkBnLkLDTPEAUPw5pFG/CdVVc92tAmn7mIyOU1ITXInNCiNGq07Cpp7QWhqetLX
+         yslSJAc35i4ulTIhm+iFozMqKP2RRssks/Wmqwx5ZJxJbEDbHlMXQXT6IyZaZbzu/u+v
+         c/IHCOyah3LgF2JnAsq2n2QGSsPAroXld/T7QRGLnFhmr3BZMtrUG2uiS/RGBQKx+SYQ
+         DWDA==
+X-Gm-Message-State: AOAM531QD/UgXbpQcOoB9+pfweCTogFsK4/wHFc/g/OirpgfklxLuLmI
+        Cp9T0X4B6ClnXpsm/EdJbFu/
+X-Google-Smtp-Source: ABdhPJzpUZPKJ5GpbKAVaCk3jBB0uvT90VUsltjwg18aA8NK1aKQ4VNqj1ekuYKQdtox2ZiEh6M/1Q==
+X-Received: by 2002:a17:90b:a51:: with SMTP id gw17mr1125617pjb.218.1604649620738;
+        Fri, 06 Nov 2020 00:00:20 -0800 (PST)
+Received: from work ([103.59.133.81])
+        by smtp.gmail.com with ESMTPSA id a23sm810149pgv.35.2020.11.06.00.00.18
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 06 Nov 2020 00:00:19 -0800 (PST)
+Date:   Fri, 6 Nov 2020 13:30:14 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Hemant Kumar <hemantk@codeaurora.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jhugo@codeaurora.org, bbhatt@codeaurora.org,
+        loic.poulain@linaro.org
+Subject: Re: [PATCH v1 1/2] bus: mhi: core: Count number of HW channels
+ supported by controller
+Message-ID: <20201106080014.GH3473@work>
+References: <1603504843-38557-1-git-send-email-hemantk@codeaurora.org>
+ <1603504843-38557-2-git-send-email-hemantk@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201106084034.0ea09ea3@md1za8fc.ad001.siemens.net>
+In-Reply-To: <1603504843-38557-2-git-send-email-hemantk@codeaurora.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/11/2020 08:40:34+0100, Henning Schild wrote:
-> Hi,
+On Fri, Oct 23, 2020 at 07:00:42PM -0700, Hemant Kumar wrote:
+> Device provides the total number of HW channels it supports using MHI
+> configuration register. Host supported HW channels shall not exceed
+> that value. In order to make this check, a counter is needed to store
+> total number of HW channels required by host.
 > 
-> Am Thu, 5 Nov 2020 23:14:51 +0100
-> schrieb Alexandre Belloni <alexandre.belloni@bootlin.com>:
+> Signed-off-by: Hemant Kumar <hemantk@codeaurora.org>
+> ---
+>  drivers/bus/mhi/core/init.c     | 2 ++
+>  drivers/bus/mhi/core/internal.h | 1 +
+>  include/linux/mhi.h             | 1 +
+>  3 files changed, 4 insertions(+)
 > 
-> > Hello Claudius!
-> > 
-> > It has been a while ;)
-> > 
-> > On 04/11/2020 11:26:27+0100, Claudius Heine wrote:
-> > > Hi,
-> > > 
-> > > this patch introduces I2C support to the RX6110 RTC driver and also
-> > > adds an ACPI identifier to it.
-> > > 
-> > > Since we are also pushing the coreboot changes for the ACPI table
-> > > upstream in parallel, we are free to name this ACPI entry however we
-> > > like it seems. So any feedback on that would be welcome ;)
-> > >   
-> > 
-> > I don't care too much about ACPI so if you are really looking for
-> > advice there, I guess you should ask seom of the ACPI guys (but I
-> > guess you are free to choose whatever you want).
-> > 
-> 
-> This is the coreboot stuff currently under review.
-> 
-> https://review.coreboot.org/c/coreboot/+/47235
-> 
+> diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
+> index 0ffdebd..70fd6af 100644
+> --- a/drivers/bus/mhi/core/init.c
+> +++ b/drivers/bus/mhi/core/init.c
+> @@ -725,6 +725,8 @@ static int parse_ch_cfg(struct mhi_controller *mhi_cntrl,
+>  		mhi_chan = &mhi_cntrl->mhi_chan[chan];
+>  		mhi_chan->name = ch_cfg->name;
+>  		mhi_chan->chan = chan;
+> +		if (chan >= MHI_HW_CHAN_START_IDX)
+> +			mhi_cntrl->hw_chan++;
+>  
+>  		mhi_chan->tre_ring.elements = ch_cfg->num_elements;
+>  		if (!mhi_chan->tre_ring.elements)
+> diff --git a/drivers/bus/mhi/core/internal.h b/drivers/bus/mhi/core/internal.h
+> index 7989269..3d8e480 100644
+> --- a/drivers/bus/mhi/core/internal.h
+> +++ b/drivers/bus/mhi/core/internal.h
+> @@ -454,6 +454,7 @@ enum mhi_pm_state {
+>  #define PRIMARY_CMD_RING		0
+>  #define MHI_DEV_WAKE_DB			127
+>  #define MHI_MAX_MTU			0xffff
+> +#define MHI_HW_CHAN_START_IDX		100
+>  #define MHI_RANDOM_U32_NONZERO(bmsk)	(prandom_u32_max(bmsk) + 1)
+>  
+>  enum mhi_er_type {
+> diff --git a/include/linux/mhi.h b/include/linux/mhi.h
+> index d4841e5..ea441d2 100644
+> --- a/include/linux/mhi.h
+> +++ b/include/linux/mhi.h
+> @@ -389,6 +389,7 @@ struct mhi_controller {
+>  	struct list_head lpm_chans;
+>  	int *irq;
+>  	u32 max_chan;
+> +	u32 hw_chan;
 
-I can't really comment on the patch, however another part is worrying:
-if VLF is set, coreboot is resetting the time to a valid value (user
-defined or the build date). This is nasty because this hides the event
-from the kernel and ulimately, userspace has no way of knowing whether
-the RTC date is the real date or just a dummy date.
+Please add Kdoc for this member. With that,
 
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
--- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Thanks,
+Mani
+
+>  	u32 total_ev_rings;
+>  	u32 hw_ev_rings;
+>  	u32 sw_ev_rings;
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+> 
