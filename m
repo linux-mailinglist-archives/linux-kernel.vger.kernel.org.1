@@ -2,239 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 557452A8B82
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 01:37:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D34B2A8B85
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 01:39:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733011AbgKFAhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 19:37:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55060 "EHLO
+        id S1732789AbgKFAjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 19:39:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732889AbgKFAhp (ORCPT
+        with ESMTP id S1731965AbgKFAjt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 19:37:45 -0500
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B007C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 16:37:45 -0800 (PST)
-Received: by mail-pg1-x535.google.com with SMTP id r186so2599316pgr.0
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 16:37:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=eWFExiUft5Duzv61RypPNQKu/5puPrFkS8dVHuVaiao=;
-        b=b+yp5ifYdRGPlSsWRqSK+sKn1G73G7B7QKGK6Q8lSXEikaSA3bCAnIpJHyAcb/FUPE
-         xmGQen5/c7nC4NOyU+flw+HuCUqkiQ1NSh47UQ1zsWqwZWUazaoqWIOArx8PY7izwtk+
-         k1W56aJoe4TrplaWHOfjsZJ0NEMyv+Epu8uuE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=eWFExiUft5Duzv61RypPNQKu/5puPrFkS8dVHuVaiao=;
-        b=r97HU0QsgLZMu+WNAaqCx/stY4LhOBirZkysDME+FwEDpCuvnGND8mJc6XRvq5N0Co
-         09dnq2ZJI64xmOS6ve3u8sPJ15bFqzVZA5aZmk6o3EXFcxgo7PY1FlVG0NrZAW1io7EI
-         ZDXMwK9VUNUtr9W8+aTGHsRaNm54RGGmTP51WTe6G+EL4XQWt2SZPzxdiCL7GVXo4ncy
-         aE8LyPh9L7lGkArdhNOzCCHgm8EsqHmrckNc7WQc9nogFF+eMVgAAa+2Qc6dt85i++fQ
-         /cYY7d0ocHMJ7ZbJUmQmLuDPIcekRty6IKZqeYb2bpB79wrRc6S3EvYuiQaI0qBdEGBX
-         C8ng==
-X-Gm-Message-State: AOAM533rO4hsnJdHlO3xThJlyKno1FGABPRFOF6XxtcrE2xAFGNZDUN9
-        4MucC9WrOsrlAmCg6QUqMb0A1g==
-X-Google-Smtp-Source: ABdhPJwH0BipH1uikW/1xZSb9lxX0MDSK+bPRCICxN2IBKoegmEcXyoOiUIYBif+DSi+JElG4pk94A==
-X-Received: by 2002:a17:90a:4742:: with SMTP id y2mr5120722pjg.228.1604623064780;
-        Thu, 05 Nov 2020 16:37:44 -0800 (PST)
-Received: from localhost ([2620:15c:202:1:f693:9fff:fef4:e70a])
-        by smtp.gmail.com with ESMTPSA id bx6sm3446554pjb.39.2020.11.05.16.37.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Nov 2020 16:37:44 -0800 (PST)
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Matthias Kaehlcke <mka@chromium.org>
-Subject: [PATCH v2 2/2] arm64: dts: qcom: sc7180-trogdor: Make pp3300_a the default supply for pp3300_hub
-Date:   Thu,  5 Nov 2020 16:37:33 -0800
-Message-Id: <20201105163724.v2.2.I0ed4abdd2b2916fbedf76be254bc3457fb8b9655@changeid>
-X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
-In-Reply-To: <20201105163724.v2.1.I5a75056d573808f40fed22ab7d28ea6be5819f84@changeid>
-References: <20201105163724.v2.1.I5a75056d573808f40fed22ab7d28ea6be5819f84@changeid>
+        Thu, 5 Nov 2020 19:39:49 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C064C0613CF;
+        Thu,  5 Nov 2020 16:39:49 -0800 (PST)
+Received: from zn.tnic (p200300ec2f0ee50005b6d9c42d515134.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:e500:5b6:d9c4:2d51:5134])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7EFA51EC03C1;
+        Fri,  6 Nov 2020 01:39:46 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1604623186;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=0szqA5V2pWQy1oA4esAc8Cd/+uPXvX7U+GvP5QW9eG0=;
+        b=oy5kilDAaqW8D3fJeTgJuW3QylXyiVe5HYjaX0XPPDCel+XUQwGXzH6wjm1AGlYfxIs5no
+        r4thFzHBCwhuHfpUfJa8XlGpAJRL7uq6QBovCno2DKVA2DD8a7HNrXRmIgMXeulu5FcMn0
+        0235BOZ4bTQdtucU9xbEAGyFarjyBdQ=
+Date:   Fri, 6 Nov 2020 01:39:32 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Michael Roth <michael.roth@amd.com>
+Cc:     Joerg Roedel <joro@8bytes.org>, x86@kernel.org,
+        Juergen Gross <jgross@suse.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Mike Stunes <mstunes@vmware.com>,
+        Kees Cook <keescook@chromium.org>, kvm@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Cfir Cohen <cfir@google.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-kernel@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        virtualization@lists.linux-foundation.org,
+        Martin Radev <martin.b.radev@gmail.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>, hpa@zytor.com,
+        Erdem Aktas <erdemaktas@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jiri Slaby <jslaby@suse.cz>
+Subject: Re: [PATCH v7 01/72] KVM: SVM: nested: Don't allocate VMCB
+ structures on stack
+Message-ID: <20201106003932.GQ25636@zn.tnic>
+References: <20200907131613.12703-1-joro@8bytes.org>
+ <20200907131613.12703-2-joro@8bytes.org>
+ <160459347763.31546.3911053208379939674@vm0>
+ <20201105163812.GE25636@zn.tnic>
+ <20201106003153.wrr7zvjjl3hl2pec@vm0>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201106003153.wrr7zvjjl3hl2pec@vm0>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The trogdor design has two options for supplying the 'pp3300_hub' power
-rail, it can be supplied by 'pp3300_l7c' or 'pp3300_a'. The 'pp3300_a'
-path includes a load switch that can be controlled through GPIO84.
-Initially trogdor boards used 'pp3300_l7c' to power the USB hub, newer
-revisions (will) use 'pp3300_a' as supply for 'pp3300_hub'.
+On Thu, Nov 05, 2020 at 06:31:53PM -0600, Michael Roth wrote:
+> I can confirm that patch fixes the issue. It is indeed a 5.9.1 tree, but
+> looks like the SEV-ES patches didn't go in until v5.10-rc1
 
-Add a DT node for the 'pp3300_a' path and a pinctrl entry for the GPIO.
-Make this path the default and keep trogdor rev1, lazor rev0 and rev1
-on 'pp3300_l7c'. These earlier revisions also allocated the GPIO to the
-purpose of controlling the power switch, so there is no need to limit
-the pinctrl config to newer revisions. Remove the platform-wide
-'always-on' property from 'pp3300_l7c' and add it to the boards that
-use this supply. Also delete the 'always-on' of 'pp3300_hub' for
-these boards.
+Yes, they went into 5.10-rc1 during the merge window.
 
-Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
----
+> (this tree had a backport of them), so stable trees shouldn't be
+> affected.
 
-Changes in v2:
-- added 'always-on' and 'boot-on' properties for new 'pp3300_hub'
-- removed platform-wide 'always-on' property for 'pp3300_l7c'
-- added 'always-on' property to 'pp3300_l7c'  for boards that still
-  use 'pp3300_l7c'
-- delete 'always-on' property of 'pp3300_hub' for boards that still
-  use 'pp3300_l7c'
-- got rid of 'pp3300_hub_7c' label, just use 'pp3300_l7c'
-- fixed position of 'en_pp3300_hub' node to respect ordering
-- updated commit message
+Ah, ok, that makes sense.
 
- .../boot/dts/qcom/sc7180-trogdor-lazor-r0.dts | 13 ++++++++
- .../boot/dts/qcom/sc7180-trogdor-lazor-r1.dts | 13 ++++++++
- .../arm64/boot/dts/qcom/sc7180-trogdor-r1.dts | 13 ++++++++
- arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi  | 33 ++++++++++++++++++-
- 4 files changed, 71 insertions(+), 1 deletion(-)
+Thanks for checking!
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r0.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r0.dts
-index ae4c23a4fe65..1d809269e7ef 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r0.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r0.dts
-@@ -14,6 +14,15 @@ / {
- 	compatible = "google,lazor-rev0", "qcom,sc7180";
- };
- 
-+&pp3300_hub {
-+	/* pp3300_l7c is used to power the USB hub */
-+	/delete-property/regulator-always-on;
-+};
-+
-+&pp3300_l7c {
-+	regulator-always-on;
-+};
-+
- &sn65dsi86_out {
- 	/*
- 	 * Lane 0 was incorrectly mapped on the cable, but we've now decided
-@@ -22,3 +31,7 @@ &sn65dsi86_out {
- 	 */
- 	lane-polarities = <1 0>;
- };
-+
-+&usb_hub {
-+	vdd-supply = <&pp3300_l7c>;
-+};
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1.dts
-index f6ee1beba458..1d573523d6b6 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1.dts
-@@ -13,3 +13,16 @@ / {
- 	model = "Google Lazor (rev1)";
- 	compatible = "google,lazor-rev1", "qcom,sc7180";
- };
-+
-+&pp3300_hub {
-+	/* pp3300_l7c is used to power the USB hub */
-+	/delete-property/regulator-always-on;
-+};
-+
-+&pp3300_l7c {
-+	regulator-always-on;
-+};
-+
-+&usb_hub {
-+	 vdd-supply = <&pp3300_l7c>;
-+};
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-r1.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-r1.dts
-index 0a281c24841c..6603f2102233 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-r1.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-r1.dts
-@@ -58,10 +58,23 @@ ap_ts: touchscreen@10 {
- 	};
- };
- 
-+&pp3300_hub {
-+	/* pp3300_l7c is used to power the USB hub */
-+	/delete-property/regulator-always-on;
-+};
-+
-+&pp3300_l7c {
-+	regulator-always-on;
-+};
-+
- &sdhc_2 {
- 	status = "okay";
- };
- 
-+&usb_hub {
-+	 vdd-supply = <&pp3300_l7c>;
-+};
-+
- /* PINCTRL - board-specific pinctrl */
- 
- &tlmm {
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-index bf875589d364..50e733412a7f 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-@@ -174,6 +174,25 @@ pp3300_fp_tp: pp3300-fp-tp-regulator {
- 		vin-supply = <&pp3300_a>;
- 	};
- 
-+	pp3300_hub: pp3300-hub {
-+		compatible = "regulator-fixed";
-+		regulator-name = "pp3300_hub";
-+
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+
-+		gpio = <&tlmm 84 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&en_pp3300_hub>;
-+
-+		/* AP turns on with en_pp3300_hub; always on for AP */
-+		regulator-always-on;
-+		regulator-boot-on;
-+
-+		vin-supply = <&pp3300_a>;
-+	};
-+
- 	/* BOARD-SPECIFIC TOP LEVEL NODES */
- 
- 	backlight: backlight {
-@@ -469,7 +488,6 @@ ppvar_l6c: ldo6 {
- 			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
- 		};
- 
--		pp3300_hub:
- 		pp3300_l7c: ldo7 {
- 			regulator-min-microvolt = <3304000>;
- 			regulator-max-microvolt = <3304000>;
-@@ -1164,6 +1182,19 @@ pinconf {
- 		};
- 	};
- 
-+	en_pp3300_hub: en-pp3300-hub {
-+		pinmux {
-+			pins = "gpio84";
-+			function = "gpio";
-+		};
-+
-+		pinconf {
-+			pins = "gpio84";
-+			drive-strength = <2>;
-+			bias-disable;
-+		};
-+	};
-+
- 	fpmcu_boot0: fpmcu-boot0 {
- 		pinmux {
- 			pins = "gpio10";
 -- 
-2.29.1.341.ge80a0c044ae-goog
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
