@@ -2,107 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2C392A9796
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 15:27:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 743CB2A979C
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 15:28:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727211AbgKFO1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 09:27:43 -0500
-Received: from mx2.suse.de ([195.135.220.15]:46544 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726010AbgKFO1m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 09:27:42 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1604672860;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fneYivF7KPk5Vezwqp16bHvlG7pQia60PP+ozhIKNOI=;
-        b=hOSy8tf6Xv9bxsLj3BRpsgcu/m8tXPh77G9b08Scucev/08pfZ/oZN7WOboqt1Phltz0oY
-        EY+Z7IhgTgZK8/cheL0CPQ+pGMcTvUW7Ysp6ShK8LBZpwqpEn7fzXD6giDnRBpzEP5qAeT
-        BwsA/u4RxQJT0sh1JOGSdIWHppyWK2U=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id CBFB7ABCC;
-        Fri,  6 Nov 2020 14:27:39 +0000 (UTC)
-Date:   Fri, 6 Nov 2020 15:27:38 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Jonathan Corbet <corbet@lwn.net>, Guo Ren <guoren@kernel.org>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Kees Cook <keescook@chromium.org>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        linux-doc@vger.kernel.org, linux-csky@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-s390@vger.kernel.org, live-patching@vger.kernel.org
-Subject: Re: [PATCH 11/11 v3] ftrace: Add recording of functions that caused
- recursion
-Message-ID: <20201106142738.GX20201@alley>
-References: <20201106023235.367190737@goodmis.org>
- <20201106023548.102375687@goodmis.org>
- <20201106131317.GW20201@alley>
- <20201106084131.7dfc3a30@gandalf.local.home>
+        id S1727286AbgKFO2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 09:28:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726708AbgKFO2s (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 09:28:48 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AFF3C0613D2
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 06:28:48 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id z24so1070975pgk.3
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 06:28:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=m4sL72j84R47QycVsnsicRm6ltqmghjuS6NlUF00PZI=;
+        b=VF21kubqqziFC4me+QI38duNcceD9mNHFSMrDlgo5oJMSxIQAfXVIQ2X2uw0H93wzG
+         2WYarJmeHJtmfpIexbDnudvJSdrUj0xF9HmwXYCp8i7eabbNTja+zKKykZrq5JWmKGpd
+         j/9XiDi30PGPTZaVtlYh9QQGAqiChCfIbCKTVG2owJ0wslz41mVjMM+Q5zhEMjijNyH+
+         FPvJoWkuI2+UfsNJ4vopOAVaDPrl527JwhtSdY0lwChkRX2NVO6uGx2PiXTmH5n5h7d/
+         zi0q4l19lXNfYZFjsdB6CupJyu9F/6LE9WUJqsAKddnX0OsoZiCFEBTPhhEirRzZ4LW7
+         IgqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=m4sL72j84R47QycVsnsicRm6ltqmghjuS6NlUF00PZI=;
+        b=diD5TFHVJdcMED1TQxs3cx0uyIBGN0q52Y/EYcXy1C0osT4nf7DDzG19/HbXQyFSU6
+         XY3O30za5nbsStcjnOPTMKx09f+q4aw/5tuJM9Ns2IPnl5+aE/LE32LcSCr7ZVsS3LQe
+         NJYIER1AtuKX/PY5CS6ejtOO7STe3OAljUIDx056GFS2V1Z6C+28BkyoOiPHt5NWA4Qn
+         exGn9pAoe4MWSCOK+BwuGRuXyOD0qB9ltibHhgCY+2FgE0+rm/lQ9pyPOWls56FSYzGy
+         MTZqrqwpfVvGFtMl9yVIf0FJKBidz6iFEqvhLirguG6vBzGRQSHlECMEmgHdJvlTlRZf
+         VnEQ==
+X-Gm-Message-State: AOAM531+lk00ej1qoI0vzSzo8HD+VYB60Zzb81+IrBZTIdevK19rNmAw
+        CpsEMsObnZ6PNk+SxcxNId4=
+X-Google-Smtp-Source: ABdhPJzAI5vxv166BttXFT+ZsydXjoMrwvkfmli1wq1cIJ+nuEgeG+HAdbGW6jrDXFh+yVsZLDzPVg==
+X-Received: by 2002:a17:90a:c7c3:: with SMTP id gf3mr2837790pjb.140.1604672928091;
+        Fri, 06 Nov 2020 06:28:48 -0800 (PST)
+Received: from IGL6397W.cw01.contiwan.com ([27.104.143.83])
+        by smtp.gmail.com with ESMTPSA id gq24sm2919989pjb.30.2020.11.06.06.28.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Nov 2020 06:28:46 -0800 (PST)
+From:   Thirumalesha Narasimhappa <nthirumalesha7@gmail.com>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Shivamurthy Shastri <sshivamurthy@micron.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Chuanhong Guo <gch981213@gmail.com>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Thirumalesha Narasimhappa <nthirumalesha7@gmail.com>
+Subject: [PATCH v6] mtd: spinand: micron: add support for MT29F2G01AAAED
+Date:   Fri,  6 Nov 2020 22:28:38 +0800
+Message-Id: <20201106142838.7772-1-nthirumalesha7@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201106084131.7dfc3a30@gandalf.local.home>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 2020-11-06 08:41:31, Steven Rostedt wrote:
-> On Fri, 6 Nov 2020 14:13:17 +0100
-> Petr Mladek <pmladek@suse.com> wrote:
-> 
-> > JFYI, the code reading and writing the cache looks good to me.
-> > 
-> > It is still possible that some entries might stay unused (filled
-> > with zeroes) but it should be hard to hit in practice. It
-> > is good enough from my POV.
-> 
-> You mean the part that was commented?
+The MT29F2G01AAAED is a single die, 2Gb Micron SPI NAND Flash with 4-bit
+ECC
 
-Yeah, it is the comment problem when nr_records is pushed forward.
+Signed-off-by: Thirumalesha Narasimhappa <nthirumalesha7@gmail.com>
+---
 
-> > 
-> > I do not give Reviewed-by tag just because I somehow do not have power
-> > to review the entire patch carefully enough at the moment.
-> 
-> No problem. Thanks for looking at it.
-> 
-> I'm adding a link to this thread, so if someone wants proof you helped out
-> on this code, you can have them follow the links ;-)
-> 
-> Anyway, even if I push this to linux-next where I stop rebasing code
-> (because of test coverage), I do rebase for adding tags. So if you ever get
-> around at looking at this code, I can add that tag later (before the next
-> merge window), or if you find something, I could fix it with a new patch and
-> give you a Reported-by.
+v6: Reverted the SPINAND_OP_VARIANTS() as they were in v4 for
+MT29F2G01AAAED device
 
-Good to know.
+v5: As per the review comments, the changes were reverted to the v2,
+except the MT29F2G01AAAED device related (including the review comments)
 
-Best Regards,
-Petr
+v4: Split patch into two parts,
+    1. Generalise the oob structure name & function names as show in v3
+    2. Add support for MT29F2G01AAAED device
+       a. Add oob section check in micron_ooblayout_free function
+       b. Rename mt29f2g01aaaed_* to generic name micron_4_*
+
+v3: As per the review comments,
+     1. Renamed read_cache_variants as quadio_read_cache_variants,
+write_cache_variants as
+      x4_write_cache_variants/x1_write_cache_variants,
+update_cache_variants as
+      x4_update_cache_variants/x1_update_cache_variants,
+read_cache_variants as x4_read_cache_variants
+     2. Renamed micron_8_ooblayout as micron_grouped_ooblayout &
+mt29f2g01aaaed_ooblayout as
+      micron_interleaved_ooblayout
+     3. Generalized page size based oob section check in
+mt29f2g01aaaed_ooblayout_ecc function
+      and separate case check for two bytes BBM reserved in
+mt29f2g01aaaed_ooblayout_free function
+     4. Removed mt29f2g01aaaed_ecc_get_status function &
+MICRON_STATUS_ECC_1TO4_BITFLIPS
+
+v2: Removed SPINAND_SELECT_TARGET as per the comments & fixed typo
+errors
+
+v1: Add support for Micron SPI Nand device MT29F2G01AAAED
+
+ drivers/mtd/nand/spi/micron.c | 64 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 64 insertions(+)
+
+diff --git a/drivers/mtd/nand/spi/micron.c b/drivers/mtd/nand/spi/micron.c
+index 5d370cfcdaaa..317866c077de 100644
+--- a/drivers/mtd/nand/spi/micron.c
++++ b/drivers/mtd/nand/spi/micron.c
+@@ -44,6 +44,19 @@ static SPINAND_OP_VARIANTS(update_cache_variants,
+ 		SPINAND_PROG_LOAD_X4(false, 0, NULL, 0),
+ 		SPINAND_PROG_LOAD(false, 0, NULL, 0));
+ 
++/* Micron  MT29F2G01AAAED Device */
++static SPINAND_OP_VARIANTS(x4_read_cache_variants,
++			   SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
++			   SPINAND_PAGE_READ_FROM_CACHE_X2_OP(0, 1, NULL, 0),
++			   SPINAND_PAGE_READ_FROM_CACHE_OP(true, 0, 1, NULL, 0),
++			   SPINAND_PAGE_READ_FROM_CACHE_OP(false, 0, 1, NULL, 0));
++
++static SPINAND_OP_VARIANTS(x1_write_cache_variants,
++			   SPINAND_PROG_LOAD(true, 0, NULL, 0));
++
++static SPINAND_OP_VARIANTS(x1_update_cache_variants,
++			   SPINAND_PROG_LOAD(false, 0, NULL, 0));
++
+ static int micron_8_ooblayout_ecc(struct mtd_info *mtd, int section,
+ 				  struct mtd_oob_region *region)
+ {
+@@ -74,6 +87,47 @@ static const struct mtd_ooblayout_ops micron_8_ooblayout = {
+ 	.free = micron_8_ooblayout_free,
+ };
+ 
++static int micron_4_ooblayout_ecc(struct mtd_info *mtd, int section,
++				  struct mtd_oob_region *region)
++{
++	struct spinand_device *spinand = mtd_to_spinand(mtd);
++
++	if (section >= spinand->base.memorg.pagesize /
++			mtd->ecc_step_size)
++		return -ERANGE;
++
++	region->offset = (section * 16) + 8;
++	region->length = 8;
++
++	return 0;
++}
++
++static int micron_4_ooblayout_free(struct mtd_info *mtd, int section,
++				   struct mtd_oob_region *region)
++{
++	struct spinand_device *spinand = mtd_to_spinand(mtd);
++
++	if (section >= spinand->base.memorg.pagesize /
++			mtd->ecc_step_size)
++		return -ERANGE;
++
++	if (section) {
++		region->offset = 16 * section;
++		region->length = 8;
++	} else {
++		/* section 0 has two bytes reserved for the BBM */
++		region->offset = 2;
++		region->length = 6;
++	}
++
++	return 0;
++}
++
++static const struct mtd_ooblayout_ops micron_4_ooblayout = {
++	.ecc = micron_4_ooblayout_ecc,
++	.free = micron_4_ooblayout_free,
++};
++
+ static int micron_select_target(struct spinand_device *spinand,
+ 				unsigned int target)
+ {
+@@ -217,6 +271,16 @@ static const struct spinand_info micron_spinand_table[] = {
+ 		     SPINAND_ECCINFO(&micron_8_ooblayout,
+ 				     micron_8_ecc_get_status),
+ 		     SPINAND_SELECT_TARGET(micron_select_target)),
++	/* M69A 2Gb 3.3V */
++	SPINAND_INFO("MT29F2G01AAAED",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x9F),
++		     NAND_MEMORG(1, 2048, 64, 64, 2048, 80, 2, 1, 1),
++		     NAND_ECCREQ(4, 512),
++		     SPINAND_INFO_OP_VARIANTS(&x4_read_cache_variants,
++					      &x1_write_cache_variants,
++					      &x1_update_cache_variants),
++		     0,
++		     SPINAND_ECCINFO(&micron_4_ooblayout, NULL)),
+ };
+ 
+ static int micron_spinand_init(struct spinand_device *spinand)
+-- 
+2.25.1
+
