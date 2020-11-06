@@ -2,197 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0614B2A8C8E
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 03:16:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2AE02A8C9A
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 03:19:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727512AbgKFCQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 21:16:21 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:9190 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727055AbgKFCQL (ORCPT
+        id S1725844AbgKFCRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 21:17:21 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:45409 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725817AbgKFCRV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 21:16:11 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fa4b1ee0000>; Thu, 05 Nov 2020 18:16:14 -0800
-Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 6 Nov
- 2020 02:16:10 +0000
-Received: from skomatineni-linux.nvidia.com (10.124.1.5) by mail.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
- Transport; Fri, 6 Nov 2020 02:16:10 +0000
-From:   Sowjanya Komatineni <skomatineni@nvidia.com>
-To:     <skomatineni@nvidia.com>, <thierry.reding@gmail.com>,
-        <jonathanh@nvidia.com>, <robh+dt@kernel.org>
-CC:     <devicetree@vger.kernel.org>, <linux-ide@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v1 4/4] ata: ahci_tegra: Add AHCI support for Tegra186
-Date:   Thu, 5 Nov 2020 18:16:08 -0800
-Message-ID: <1604628968-1501-5-git-send-email-skomatineni@nvidia.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1604628968-1501-1-git-send-email-skomatineni@nvidia.com>
-References: <1604628968-1501-1-git-send-email-skomatineni@nvidia.com>
-X-NVConfidentiality: public
+        Thu, 5 Nov 2020 21:17:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604629039;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=foOZy0tCz1jxCbpETG5UIW0qij0a04UpX6miBXh7+Dc=;
+        b=A3ARGtpaAWUUdSpYWZ1ObfRrtmKblhcVjrv5oan9h4gEy1KS3YxaNVS4sm4Pl/0870UmS1
+        NwDZD6osRfEQcVD/7W2ntvKmgZMngRWe+BNYBHoCYVfhzDIKqAlqnbYlc7BXNbu/ZTBPOW
+        BrzWOLzjf9Nrbsk5hUqN9sxGc51skf4=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-224-F8xvFPLyOtSVxM7yn2OqVg-1; Thu, 05 Nov 2020 21:17:16 -0500
+X-MC-Unique: F8xvFPLyOtSVxM7yn2OqVg-1
+Received: by mail-qt1-f198.google.com with SMTP id l67so2175955qte.6
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 18:17:16 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=foOZy0tCz1jxCbpETG5UIW0qij0a04UpX6miBXh7+Dc=;
+        b=t13Gxm6hT1OV2X1wyEk/nYgdYh8wSm+p3yOlWZcDSxRBa+8dNmQSHf1DQDHeoBpm0m
+         UdPeymfjC7hDYe2/S/xD32++IRzARUcMQ9b/oWjbgWDlgxzSGgyhnY7k7ZslsPR3VVD7
+         heVce2Z+Qeq57Ph4ysqvKcVu2j+hZ5Q10Lov6Yf+t0aR2ClGK6cBShUekyg/QXkTpfDL
+         SET/Tm/bxd4fwEm/3bB/du7zYD7XS2h/3tCKbSTMo5AqMCgfFoPtRPYMBwWn1/a9IkcK
+         aH1pp5JH5f+hCUjnXQGQ7whWt/jmy87T2awIyFhJGqO2uOJObOvluuKHL57rr5fZUZ4C
+         lz2Q==
+X-Gm-Message-State: AOAM530w334gXLBRHYXWo+5djX7fpCuEBt34hVRk3shtdI/yCu6iZF7j
+        UA5eq0/iKKU54l8bGM7PjKOSJiV+Lu3RIXP8vQOwUO+/iehym53cvDotxP1KMwCEI42NRcLmjYG
+        YmSKhLAn3hPsf9H6tIqHHGOii
+X-Received: by 2002:ae9:e41a:: with SMTP id q26mr5377501qkc.246.1604629035529;
+        Thu, 05 Nov 2020 18:17:15 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzCTjSjLVyCDBJFvGLtaXnVkIu5zI2SCdofvNmrjaLm638Fyz54c5K9EVsapniDZXfPi9W0kQ==
+X-Received: by 2002:ae9:e41a:: with SMTP id q26mr5377490qkc.246.1604629035317;
+        Thu, 05 Nov 2020 18:17:15 -0800 (PST)
+Received: from xps13.jcline.org ([2605:a601:a639:f01:1ac8:8e0c:f1cc:7a29])
+        by smtp.gmail.com with ESMTPSA id q20sm2195301qtn.80.2020.11.05.18.17.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Nov 2020 18:17:14 -0800 (PST)
+From:   Jeremy Cline <jcline@redhat.com>
+To:     Ben Skeggs <bskeggs@redhat.com>
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Jeremy Cline <jcline@redhat.com>
+Subject: [PATCH 0/3] drm/nouveau: extend the lifetime of nouveau_drm
+Date:   Thu,  5 Nov 2020 21:16:53 -0500
+Message-Id: <20201106021656.40743-1-jcline@redhat.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1604628974; bh=bqvYhM4gfczmD1UkOCBSQi6kCpayixLg2a8u43aYS8U=;
-        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
-         References:X-NVConfidentiality:MIME-Version:Content-Type;
-        b=hh+lYfEhV8FLeCv8AXVzAksSQqoPTkC9vrZw2Y4QRhKLwrYG7oqLyP9fzzIIZ4Bby
-         9vmMvXEy4efwS9qc20oFTctXR5dxFOFcDgSHFJvRMMqYwqEkQyr+/GkViZyIBD/s0Z
-         mmo7SlNzkpYkkaBgdjK9RiGAXOtFzH4VBrxoLngzRTKZLjn/yzGRO45ttz/ddVjQ8O
-         F6395YPreV9L44J6RlCee6U2QpPYU3czoZvSIvI71cU0TBsZGDYs4cK8wO+m15UvJC
-         2Fm/hNorLf5+xD/E5brDtAs4hLyNAxPgYE0b46o3HWJc06PTlrPNfIHjKTHF4ohIy+
-         w+l79lowE8ZaA==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds support for AHCI-compliant Serial ATA controller
-on Tegra186 SoC.
+Hi folks,
 
-Tegra186 does not have sata-oob reset.
-Tegra186 SATA_NVOOB register filed COMMA_CNT position and width are
-different compared to Tegra210 and prior.
+Currently, when the device is removed (or the driver is unbound) the
+nouveau_drm structure de-allocated. However, it's still accessible from
+and used by some DRM layer callbacks. For example, file handles can be
+closed after the device has been removed (physically or otherwise). This
+series converts the Nouveau device structure to be allocated and
+de-allocated with the devm_drm_dev_alloc() API.
 
-So, this patch adds a flag has_sata_oob_rst and tegra_ahci_regs to
-SoC specific strcuture tegra_ahci_soc and updated their implementation
-accordingly.
+In the future, additional resources that should be bound to the lifetime
+of the drm_device can be added, and the drmm_add_action() APIs offer a
+nice hook for arbitrary cleanup actions before the drm_device is
+destroyed, so I suspect much of the current cleanup code in Nouveau
+would benefit from some refactoring to use this.
 
-Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
----
- drivers/ata/ahci_tegra.c | 60 +++++++++++++++++++++++++++++++++++++-----------
- 1 file changed, 47 insertions(+), 13 deletions(-)
+Finally, although not *strictly* necessary for this series, I included
+some documentation for structures I investigated for this work.
 
-diff --git a/drivers/ata/ahci_tegra.c b/drivers/ata/ahci_tegra.c
-index cb55ebc1..56612af 100644
---- a/drivers/ata/ahci_tegra.c
-+++ b/drivers/ata/ahci_tegra.c
-@@ -59,8 +59,6 @@
- #define T_SATA0_CFG_PHY_1_PAD_PLL_IDDQ_EN		BIT(22)
- 
- #define T_SATA0_NVOOB                                   0x114
--#define T_SATA0_NVOOB_COMMA_CNT_MASK                    (0xff << 16)
--#define T_SATA0_NVOOB_COMMA_CNT                         (0x07 << 16)
- #define T_SATA0_NVOOB_SQUELCH_FILTER_MODE_MASK          (0x3 << 24)
- #define T_SATA0_NVOOB_SQUELCH_FILTER_MODE               (0x1 << 24)
- #define T_SATA0_NVOOB_SQUELCH_FILTER_LENGTH_MASK        (0x3 << 26)
-@@ -154,11 +152,18 @@ struct tegra_ahci_ops {
- 	int (*init)(struct ahci_host_priv *hpriv);
- };
- 
-+struct tegra_ahci_regs {
-+	unsigned int nvoob_comma_cnt_mask;
-+	unsigned int nvoob_comma_cnt_val;
-+};
-+
- struct tegra_ahci_soc {
- 	const char *const		*supply_names;
- 	u32				num_supplies;
- 	bool				supports_devslp;
-+	bool				has_sata_oob_rst;
- 	const struct tegra_ahci_ops	*ops;
-+	const struct tegra_ahci_regs	*regs;
- };
- 
- struct tegra_ahci_priv {
-@@ -240,11 +245,13 @@ static int tegra_ahci_power_on(struct ahci_host_priv *hpriv)
- 	if (ret)
- 		return ret;
- 
--	ret = tegra_powergate_sequence_power_up(TEGRA_POWERGATE_SATA,
--						tegra->sata_clk,
--						tegra->sata_rst);
--	if (ret)
--		goto disable_regulators;
-+	if (!tegra->pdev->dev.pm_domain) {
-+		ret = tegra_powergate_sequence_power_up(TEGRA_POWERGATE_SATA,
-+							tegra->sata_clk,
-+							tegra->sata_rst);
-+		if (ret)
-+			goto disable_regulators;
-+	}
- 
- 	reset_control_assert(tegra->sata_oob_rst);
- 	reset_control_assert(tegra->sata_cold_rst);
-@@ -330,10 +337,10 @@ static int tegra_ahci_controller_init(struct ahci_host_priv *hpriv)
- 	writel(val, tegra->sata_regs + SCFG_OFFSET + T_SATA_CFG_PHY_0);
- 
- 	val = readl(tegra->sata_regs + SCFG_OFFSET + T_SATA0_NVOOB);
--	val &= ~(T_SATA0_NVOOB_COMMA_CNT_MASK |
-+	val &= ~(tegra->soc->regs->nvoob_comma_cnt_mask |
- 		 T_SATA0_NVOOB_SQUELCH_FILTER_LENGTH_MASK |
- 		 T_SATA0_NVOOB_SQUELCH_FILTER_MODE_MASK);
--	val |= (T_SATA0_NVOOB_COMMA_CNT |
-+	val |= (tegra->soc->regs->nvoob_comma_cnt_val |
- 		T_SATA0_NVOOB_SQUELCH_FILTER_LENGTH |
- 		T_SATA0_NVOOB_SQUELCH_FILTER_MODE);
- 	writel(val, tegra->sata_regs + SCFG_OFFSET + T_SATA0_NVOOB);
-@@ -449,15 +456,35 @@ static const struct tegra_ahci_ops tegra124_ahci_ops = {
- 	.init = tegra124_ahci_init,
- };
- 
-+static const struct tegra_ahci_regs tegra124_ahci_regs = {
-+	.nvoob_comma_cnt_mask = GENMASK(30, 28),
-+	.nvoob_comma_cnt_val = (7 << 28),
-+};
-+
- static const struct tegra_ahci_soc tegra124_ahci_soc = {
- 	.supply_names = tegra124_supply_names,
- 	.num_supplies = ARRAY_SIZE(tegra124_supply_names),
- 	.supports_devslp = false,
-+	.has_sata_oob_rst = true,
- 	.ops = &tegra124_ahci_ops,
-+	.regs = &tegra124_ahci_regs,
- };
- 
- static const struct tegra_ahci_soc tegra210_ahci_soc = {
- 	.supports_devslp = false,
-+	.has_sata_oob_rst = true,
-+	.regs = &tegra124_ahci_regs,
-+};
-+
-+static const struct tegra_ahci_regs tegra186_ahci_regs = {
-+	.nvoob_comma_cnt_mask = GENMASK(23, 16),
-+	.nvoob_comma_cnt_val = (7 << 16),
-+};
-+
-+static const struct tegra_ahci_soc tegra186_ahci_soc = {
-+	.supports_devslp = false,
-+	.has_sata_oob_rst = false,
-+	.regs = &tegra186_ahci_regs,
- };
- 
- static const struct of_device_id tegra_ahci_of_match[] = {
-@@ -469,6 +496,10 @@ static const struct of_device_id tegra_ahci_of_match[] = {
- 		.compatible = "nvidia,tegra210-ahci",
- 		.data = &tegra210_ahci_soc
- 	},
-+	{
-+		.compatible = "nvidia,tegra186-ahci",
-+		.data = &tegra186_ahci_soc
-+	},
- 	{}
- };
- MODULE_DEVICE_TABLE(of, tegra_ahci_of_match);
-@@ -518,10 +549,13 @@ static int tegra_ahci_probe(struct platform_device *pdev)
- 		return PTR_ERR(tegra->sata_rst);
- 	}
- 
--	tegra->sata_oob_rst = devm_reset_control_get(&pdev->dev, "sata-oob");
--	if (IS_ERR(tegra->sata_oob_rst)) {
--		dev_err(&pdev->dev, "Failed to get sata-oob reset\n");
--		return PTR_ERR(tegra->sata_oob_rst);
-+	if (tegra->soc->has_sata_oob_rst) {
-+		tegra->sata_oob_rst = devm_reset_control_get(&pdev->dev,
-+							     "sata-oob");
-+		if (IS_ERR(tegra->sata_oob_rst)) {
-+			dev_err(&pdev->dev, "Failed to get sata-oob reset\n");
-+			return PTR_ERR(tegra->sata_oob_rst);
-+		}
- 	}
- 
- 	tegra->sata_cold_rst = devm_reset_control_get(&pdev->dev, "sata-cold");
+Jeremy Cline (3):
+  drm/nouveau: Use helper to convert nouveau_drm to drm_device
+  drm/nouveau: manage nouveau_drm lifetime with devres
+  drm/nouveau: begin documenting core nouveau structures
+
+ drivers/gpu/drm/nouveau/dispnv04/crtc.c     |  10 +-
+ drivers/gpu/drm/nouveau/dispnv50/base.c     |   2 +-
+ drivers/gpu/drm/nouveau/dispnv50/base507c.c |   7 +-
+ drivers/gpu/drm/nouveau/dispnv50/core.c     |   2 +-
+ drivers/gpu/drm/nouveau/dispnv50/core507d.c |   2 +-
+ drivers/gpu/drm/nouveau/dispnv50/curs.c     |   2 +-
+ drivers/gpu/drm/nouveau/dispnv50/curs507a.c |   5 +-
+ drivers/gpu/drm/nouveau/dispnv50/disp.c     |  17 +--
+ drivers/gpu/drm/nouveau/dispnv50/oimm.c     |   2 +-
+ drivers/gpu/drm/nouveau/dispnv50/oimm507b.c |   2 +-
+ drivers/gpu/drm/nouveau/dispnv50/ovly.c     |   2 +-
+ drivers/gpu/drm/nouveau/dispnv50/ovly507e.c |   5 +-
+ drivers/gpu/drm/nouveau/dispnv50/wimm.c     |   2 +-
+ drivers/gpu/drm/nouveau/dispnv50/wimmc37b.c |   2 +-
+ drivers/gpu/drm/nouveau/dispnv50/wndw.c     |   2 +-
+ drivers/gpu/drm/nouveau/dispnv50/wndwc37e.c |   5 +-
+ drivers/gpu/drm/nouveau/nouveau_bo.c        |  16 ++-
+ drivers/gpu/drm/nouveau/nouveau_debugfs.c   |   9 +-
+ drivers/gpu/drm/nouveau/nouveau_display.c   |  16 +--
+ drivers/gpu/drm/nouveau/nouveau_dmem.c      |  17 +--
+ drivers/gpu/drm/nouveau/nouveau_drm.c       |  41 ++++----
+ drivers/gpu/drm/nouveau/nouveau_drv.h       | 111 +++++++++++++++++++-
+ drivers/gpu/drm/nouveau/nouveau_fbcon.c     |  19 ++--
+ drivers/gpu/drm/nouveau/nouveau_gem.c       |   8 +-
+ drivers/gpu/drm/nouveau/nouveau_svm.c       |   4 +-
+ drivers/gpu/drm/nouveau/nouveau_ttm.c       |   4 +-
+ drivers/gpu/drm/nouveau/nouveau_vga.c       |   8 +-
+ 27 files changed, 216 insertions(+), 106 deletions(-)
+
 -- 
-2.7.4
+2.28.0
 
