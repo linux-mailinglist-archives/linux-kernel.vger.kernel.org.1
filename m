@@ -2,142 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F06A72A9E4E
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 20:53:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D85042A9E52
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 20:59:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728318AbgKFTxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 14:53:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38798 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727341AbgKFTxo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 14:53:44 -0500
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D05E6C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 11:53:43 -0800 (PST)
-Received: by mail-qt1-x842.google.com with SMTP id r8so1619429qtp.13
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 11:53:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=sU45ASLE3qTNEeDnzXy0mWmjw/B5hdl1YB3C1dRGzkI=;
-        b=FudZRGzAxEFk9lGKJUSPzsyZKArhHRwyzmRlvf+GFC+ATQPjzcBbVOeDLLB7moiVUf
-         ObxxpnS/zZJpTm82iWz+fyi9jGs/I9YeNae0ROJk7xm4ksGu3vErOwXPC3998pjQlR5p
-         4czYVsKEbRHoddebJV0noju3HQZREanU58l+vhPFj17Ta8rGMwytFISX8XsKNrHR+BX8
-         lRJNDwJeHT2t31rpqbAdGGp0+akczI7HoAc6Ksjc1BT3ksZah6pY+y3OqCayYTmpzL+D
-         Vcc6mEGa7A07b9rAWqQo7QjWrLXkk8WsSTWPLKnX0XjNAe7EuqN+sDQBd5I1lutR9Gx3
-         kmvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=sU45ASLE3qTNEeDnzXy0mWmjw/B5hdl1YB3C1dRGzkI=;
-        b=tg9NaHvibBlAhC2dqlmJX1KY8A32WNVji1q4ronwQcDHxhDxSPGdXtokbC92mKkR1t
-         s84RTsfnp+kw5pmErp1bBX1sykR/WnuLuN8dUjxpvvLq5XHNpcyNW0nuV/PX454/kRlq
-         5u9H/rFgQp9RXrPPQzqZ/3rkkSRAnZociVIclSSR635O9OiY300aoOk1T7o4AuBcOXva
-         f7UC2rhNGtx0jXA+Xg315nzt0UiwS9ZPRhF6eqy8bX1W376I21Plprpp5tGBH8Nuwcgh
-         Tua+NOSGLBxh1ux+LMluY3q50S92mucdbbn/JeqLwkqnkD1UAOh/VkJvNDm+x4J9dnAR
-         YE8Q==
-X-Gm-Message-State: AOAM532zXhbP+nJ7HcNqRz1RmRLY7PDn0SFnVOAS6oLeqxnaNvr8rpp8
-        8WGVtTo+Qp50QXHdHtwTQd8/zQ==
-X-Google-Smtp-Source: ABdhPJwcMytaU5RLKIBqp2abyuS1iVFiLHOqHqGF/QD5vN1zrtKnu5OM6Laul9BgJOP5lCmGBjWjKA==
-X-Received: by 2002:aed:32c7:: with SMTP id z65mr3146052qtd.266.1604692422443;
-        Fri, 06 Nov 2020 11:53:42 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id r41sm1239041qtj.23.2020.11.06.11.53.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Nov 2020 11:53:41 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kb7np-0011j7-5m; Fri, 06 Nov 2020 15:53:41 -0400
-Date:   Fri, 6 Nov 2020 15:53:41 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Logan Gunthorpe <logang@deltatee.com>
-Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
-        Stephen Bates <sbates@raithlin.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Ira Weiny <iweiny@intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Don Dutile <ddutile@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Subject: Re: [RFC PATCH 14/15] PCI/P2PDMA: Introduce pci_mmap_p2pmem()
-Message-ID: <20201106195341.GA244516@ziepe.ca>
-References: <20201106170036.18713-1-logang@deltatee.com>
- <20201106170036.18713-15-logang@deltatee.com>
- <20201106172206.GS36674@ziepe.ca>
- <b1e8dfce-d583-bed8-d04d-b7265a54c99f@deltatee.com>
- <20201106174223.GU36674@ziepe.ca>
- <2c2d2815-165e-2ef9-60d6-3ace7ff3aaa5@deltatee.com>
- <20201106180922.GV36674@ziepe.ca>
- <09885400-36f8-bc1d-27f0-a8adcf6104d4@deltatee.com>
- <20201106193024.GW36674@ziepe.ca>
- <03032637-0826-da76-aec2-121902b1c166@deltatee.com>
+        id S1728224AbgKFT7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 14:59:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46666 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727341AbgKFT7N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 14:59:13 -0500
+Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AD9CF2072E;
+        Fri,  6 Nov 2020 19:59:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604692752;
+        bh=9mX9TvEO8rw24AB+IUBS/bq7dIXKxdoLl+nP5eU+nZI=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=foJOOv/3lMxXk+DmEKgp2fKE3zd4I3NEK/ih6koyTwEV67pj70ZDYPh0uhQ+3V8Fj
+         ajX67ekBjmRI0TUhBgU5ZNUIjIZjUpxE1XRDVwxudXShVaoSWouATMBCSmu7gUfLt0
+         KSKcZOxtrZWRr1vjy32pG2nIO8pL7Ory+LkVzwHU=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 4DE36352131F; Fri,  6 Nov 2020 11:59:12 -0800 (PST)
+Date:   Fri, 6 Nov 2020 11:59:12 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, parri.andrea@gmail.com,
+        will@kernel.org, peterz@infradead.org, boqun.feng@gmail.com,
+        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
+        luc.maranget@inria.fr, akiyks@gmail.com
+Subject: Re: [PATCH memory-model 5/8] tools/memory-model: Add a glossary of
+ LKMM terms
+Message-ID: <20201106195912.GA3249@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20201105215953.GA15309@paulmck-ThinkPad-P72>
+ <20201105220017.15410-5-paulmck@kernel.org>
+ <20201106165930.GC47039@rowland.harvard.edu>
+ <20201106180445.GX3249@paulmck-ThinkPad-P72>
+ <20201106192351.GA53131@rowland.harvard.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <03032637-0826-da76-aec2-121902b1c166@deltatee.com>
+In-Reply-To: <20201106192351.GA53131@rowland.harvard.edu>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 06, 2020 at 12:44:59PM -0700, Logan Gunthorpe wrote:
-> 
-> 
-> On 2020-11-06 12:30 p.m., Jason Gunthorpe wrote:
-> >> I certainly can't make decisions for code that isn't currently
-> >> upstream.
+On Fri, Nov 06, 2020 at 02:23:51PM -0500, Alan Stern wrote:
+> On Fri, Nov 06, 2020 at 10:04:46AM -0800, Paul E. McKenney wrote:
+> > On Fri, Nov 06, 2020 at 11:59:30AM -0500, Alan Stern wrote:
+> > > > +	 See also "Control Dependency".
+> > > 
+> > > There should also be an entry for "Data Dependency", linked from here
+> > > and from Control Dependency.
+> > > 
+> > > > +Marked Access:  An access to a variable that uses an special function or
+> > > > +	macro such as "r1 = READ_ONCE()" or "smp_store_release(&a, 1)".
+> > > 
+> > > How about "r1 = READ_ONCE(x)"?
 > > 
-> > The rdma drivers are all upstream, what are you thinking about?
+> > Good catches!  I am planning to squash the commit below into the
+> > original.  Does that cover it?
 > 
-> Really? I feel like you should know what I mean here...
-> 
-> I mean upstream code that actually uses the APIs that I'd have to
-> introduce. I can't say here's an API feature that no code uses but the
-> already upstream rdma driver might use eventually. It's fairly easy to
-> send patches that make the necessary changes when someone adds a use of
-> those changes inside the rdma code.
+> No, because you didn't add a glossary entry for "Data Dependency" and 
+> there's no link from "Control Dependency" to "Data Dependency".
 
-Sure, but that doesn't mean you have to actively design things to be
-unusable beyond this narrow case. The RDMA drivers are all there, all
-upstream, if this work is accepted then the changes to insert P2P
-pages into their existing mmap flows is a reasonable usecase to
-consider at this point when building core code APIs.
+Sigh.  I was thinking "entry in the list", and didn't even thing to
+check for an entry in the glossary as a whole.  With the patch below
+(on top of the one sent earlier), are we good?
 
-You shouldn't add dead code, but at least have a design in mind for
-what it needs to look like and some allowance.
+							Thanx, Paul
 
-> >> Ultimately, if you aren't using the genpool you will have to implement
-> >> your own mmap operation that somehow allocates the pages and your own
-> >> page_free hook. 
-> > 
-> > Sure, the mlx5 driver already has a specialized alloctor for it's BAR
-> > pages.
-> 
-> So it *might* make sense to carve out a common helper to setup a VMA for
-> P2PDMA to do the vm_flags check and set VM_MIXEDMAP... but besides that,
-> there's no code that would be common to the two cases.
+------------------------------------------------------------------------
 
-I think the whole insertion of P2PDMA pages into a VMA should be
-similar to io_remap_pfn() so all the VM flags, pgprot_decrypted and
-other subtle details are all in one place. (also it needs a
-pgprot_decrypted before doing vmf_insert, I just learned that this
-month)
+commit 5a49c32551e83d30e304d6c3fbb660737ba2654e
+Author: Paul E. McKenney <paulmck@kernel.org>
+Date:   Fri Nov 6 11:57:25 2020 -0800
 
-> >> I also don't expect this to be going upstream in the near term so don't
-> >> get too excited about using it.
-> > 
-> > I don't know, it is actually not that horrible, the GUP and IOMMU
-> > related changes are simpler than I expected
-> 
-> I think the deal breaker is the SGL hack and the fact that there are
-> important IOMMU implementations that won't have support.
+    fixup! tools/memory-model: Add a glossary of LKMM terms
+    
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 
-Yes, that is pretty hacky, maybe someone will have a better idea
-
-Jason
+diff --git a/tools/memory-model/Documentation/glossary.txt b/tools/memory-model/Documentation/glossary.txt
+index 471bf13..b2da636 100644
+--- a/tools/memory-model/Documentation/glossary.txt
++++ b/tools/memory-model/Documentation/glossary.txt
+@@ -64,7 +64,7 @@ Control Dependency:  When a later store's execution depends on a test
+ 	 fragile, and can be easily destroyed by optimizing compilers.
+ 	 Please see control-dependencies.txt for more information.
+ 
+-	 See also "Address Dependency".
++	 See also "Address Dependency" and "Data Dependency".
+ 
+ Cycle:	Memory-barrier pairing is restricted to a pair of CPUs, as the
+ 	name suggests.	And in a great many cases, a pair of CPUs is all
+@@ -85,6 +85,23 @@ Cycle:	Memory-barrier pairing is restricted to a pair of CPUs, as the
+ 
+ 	See also "Pairing".
+ 
++Data Dependency:  When the data written by a later store is computed based
++	on the value returned by an earlier load, a "data dependency"
++	extends from that load to that later store.  For example:
++
++	 1 r1 = READ_ONCE(x);
++	 2 WRITE_ONCE(y, r1 + 1);
++
++	In this case, the data dependency extends from the READ_ONCE()
++	on line 1 to the WRITE_ONCE() on line 2.  Data dependencies are
++	fragile and can be easily destroyed by optimizing compilers.
++	Because optimizing compilers put a great deal of effort into
++	working out what values integer variables might have, this is
++	especially true in cases where the dependency is carried through
++	an integer.
++
++	See also "Address Dependency" and "Control Dependency".
++
+ From-Reads (fr):  When one CPU's store to a given variable happened
+ 	too late to affect the value returned by another CPU's
+ 	load from that same variable, there is said to be a from-reads
