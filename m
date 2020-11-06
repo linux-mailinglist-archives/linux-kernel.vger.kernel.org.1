@@ -2,63 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD6C02A8D7F
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 04:30:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB2662A8D82
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 04:31:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725885AbgKFDaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 22:30:52 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7151 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725830AbgKFDaw (ORCPT
+        id S1725986AbgKFDb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 22:31:29 -0500
+Received: from m176115.mail.qiye.163.com ([59.111.176.115]:19401 "EHLO
+        m176115.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725842AbgKFDb3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 22:30:52 -0500
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CS5WL2l2Qz15Q31;
-        Fri,  6 Nov 2020 11:30:38 +0800 (CST)
-Received: from huawei.com (10.175.104.175) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Fri, 6 Nov 2020
- 11:30:34 +0800
-From:   Hewenliang <hewenliang4@huawei.com>
-To:     <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
-        <hpa@zytor.com>, <osandov@fb.com>, <rppt@kernel.org>,
-        <lijiang@redhat.com>, <linux-kernel@vger.kernel.org>
-CC:     <hewenliang4@huawei.com>, <hushiyuan@huawei.com>
-Subject: [PATCH] x86/kexec: Initialize the value of ident mapping offset
-Date:   Thu, 5 Nov 2020 22:30:05 -0500
-Message-ID: <20201106033005.2354-1-hewenliang4@huawei.com>
-X-Mailer: git-send-email 2.19.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.175]
-X-CFilter-Loop: Reflected
+        Thu, 5 Nov 2020 22:31:29 -0500
+Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.231])
+        by m176115.mail.qiye.163.com (Hmail) with ESMTPA id AD9BB666934;
+        Fri,  6 Nov 2020 11:31:23 +0800 (CST)
+From:   Wang Qing <wangqing@vivo.com>
+To:     Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Wang Qing <wangqing@vivo.com>
+Subject: [PATCH] usb: Use IS_ERR_OR_NULL() instead of IS_ERR()
+Date:   Fri,  6 Nov 2020 11:31:18 +0800
+Message-Id: <1604633478-24729-1-git-send-email-wangqing@vivo.com>
+X-Mailer: git-send-email 2.7.4
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZHxgeSB4fHhhJQx8ZVkpNS09NSEhPQ09KQ0pVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKQ1VLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6OCo6PBw6ND8qKx0XSSs8OkpD
+        ARkwCzBVSlVKTUtPTUhIT0NPTkJKVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
+        SU5KVUxPVUlISllXWQgBWUFKTk5ONwY+
+X-HM-Tid: 0a759b9bda699373kuwsad9bb666934
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: hewenliang <hewenliang4@huawei.com>
+__usb_find_phy may return NULL, so we should use IS_ERR_OR_NULL()
 
-It is necessary to initialize the value of ident mapping offset.
-This can not only avoid using dirty data, but also improve the
-code readability when we using the variable of offset.
-
-Signed-off-by: hewenliang <hewenliang4@huawei.com>
+Signed-off-by: Wang Qing <wangqing@vivo.com>
 ---
- arch/x86/kernel/machine_kexec_64.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/usb/phy/phy.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/kernel/machine_kexec_64.c b/arch/x86/kernel/machine_kexec_64.c
-index a29a44a98e5b..101cbce893e4 100644
---- a/arch/x86/kernel/machine_kexec_64.c
-+++ b/arch/x86/kernel/machine_kexec_64.c
-@@ -196,6 +196,7 @@ static int init_pgtable(struct kimage *image, unsigned long start_pgtable)
- 		.alloc_pgt_page	= alloc_pgt_page,
- 		.context	= image,
- 		.page_flag	= __PAGE_KERNEL_LARGE_EXEC,
-+		.offset		= 0,
- 		.kernpg_flag	= _KERNPG_TABLE_NOENC,
- 	};
- 	unsigned long mstart, mend;
+diff --git a/drivers/usb/phy/phy.c b/drivers/usb/phy/phy.c
+index de21967..60c5ea4 100755
+--- a/drivers/usb/phy/phy.c
++++ b/drivers/usb/phy/phy.c
+@@ -460,7 +460,7 @@ struct usb_phy *usb_get_phy(enum usb_phy_type type)
+ 	spin_lock_irqsave(&phy_lock, flags);
+ 
+ 	phy = __usb_find_phy(&phy_list, type);
+-	if (IS_ERR(phy) || !try_module_get(phy->dev->driver->owner)) {
++	if (IS_ERR_OR_NULL(phy) || !try_module_get(phy->dev->driver->owner)) {
+ 		pr_debug("PHY: unable to find transceiver of type %s\n",
+ 			usb_phy_type_string(type));
+ 		if (!IS_ERR(phy))
 -- 
-2.19.1
+2.7.4
 
