@@ -2,59 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2CC42A922E
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 10:13:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A87EE2A9236
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 10:14:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726489AbgKFJM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 04:12:59 -0500
-Received: from m176115.mail.qiye.163.com ([59.111.176.115]:24597 "EHLO
-        m176115.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725868AbgKFJM7 (ORCPT
+        id S1726632AbgKFJOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 04:14:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50758 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726452AbgKFJOn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 04:12:59 -0500
-Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.231])
-        by m176115.mail.qiye.163.com (Hmail) with ESMTPA id 6B2B7666D5D;
-        Fri,  6 Nov 2020 17:12:55 +0800 (CST)
-From:   Wang Qing <wangqing@vivo.com>
-To:     Mark Salter <msalter@redhat.com>,
-        Aurelien Jacquiot <jacquiot.aurelien@gmail.com>,
-        Wang Qing <wangqing@vivo.com>, linux-c6x-dev@linux-c6x.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] arm: fix a typo
-Date:   Fri,  6 Nov 2020 17:12:49 +0800
-Message-Id: <1604653971-20805-1-git-send-email-wangqing@vivo.com>
+        Fri, 6 Nov 2020 04:14:43 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FC4FC0613CF;
+        Fri,  6 Nov 2020 01:14:43 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id 72so743304pfv.7;
+        Fri, 06 Nov 2020 01:14:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=xWD6H4YfLBIgZGKjax+AFoeOAhrK/THIB6kdeDCShJY=;
+        b=GzHqAIoDzpgOzhilppD8kn7BpKL6BJeSVIQ3Uo+coa5gtDSC0KMxA+4hUFNBSDE1mq
+         He6WUprAfACDfjaPXJtlF0J1b+NlvQlOm9tfskNUoLnLa6eLFj7OVd4WTGq9v359ALRM
+         WPLLUOUaBuOU4JinhRGEBCuQIFG6OJZjOpzdl6LD+DnaLvqRT6xKNSf6tzJ+5iro1K5i
+         IEGf9+JK/xro0eGS5+eklHFc5uTcS+YL3j/LC4E+T/AZpzMZg1n1fnod/7QUwKBZelb0
+         Dx9w1qORlRdp/6n4Ysus5Bp9gSKNxRGxWk8VIXLLWYfdC6jBGyXhvsuRC0lUBkAQjeNM
+         PglA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=xWD6H4YfLBIgZGKjax+AFoeOAhrK/THIB6kdeDCShJY=;
+        b=UKhSFpJf+VsDS+A4NTqMIe0gNokJK7cb0aeAy9sojnfmWlRiNXpA58AAXn7+FhZ5Jl
+         Xe+knlFTV6KrQutv4ogI4eDBzjdIMvfWHsd2tkJLm1G5KP+c/U28kHxKhRUdH89wmUhk
+         n1V7Gj45S3W6X8QXD4d/isQgecAYpqYBAktqD9KQcZhwwrvwn8bdLUyxkEaQyrAgzDbg
+         oQCpYPNRDxd/IBIKWbLNVABUuyCsi0NiBkmJAPDZd5MlbdmqMZGcrKIvNQurXuzGF1ZI
+         rG+FaoEbJ3rCBbVwQNiJrcSHmPWzr86I+8wO1uvCR1bi0vhwWUOmfQuQsvMT4oXP6Pft
+         DdOw==
+X-Gm-Message-State: AOAM533crPifxy6jE4CayIGxm2esC3GF36JpNn93sg5Mk2QlkZaoULpF
+        qPVpvLMHtD7TUuxxZ0aoQkI=
+X-Google-Smtp-Source: ABdhPJx1Jz7z3zuiEau+Ca8VYfyduHHSG12aO00hzV3HQAjIHEABseinOucxdlMp4LH/8wpnoyUFJQ==
+X-Received: by 2002:a63:354c:: with SMTP id c73mr1000958pga.315.1604654082944;
+        Fri, 06 Nov 2020 01:14:42 -0800 (PST)
+Received: from localhost.localdomain ([154.93.3.113])
+        by smtp.gmail.com with ESMTPSA id e8sm1323167pfj.157.2020.11.06.01.14.40
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 06 Nov 2020 01:14:42 -0800 (PST)
+From:   menglong8.dong@gmail.com
+X-Google-Original-From: dong.menglong@zte.com.cn
+To:     daniel@iogearbox.net
+Cc:     ast@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        andrii@kernel.org, john.fastabend@gmail.cm, kpsingh@chromium.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Menglong Dong <dong.menglong@zte.com.cn>
+Subject: [PATCH] samples/bpf: remove duplicate include
+Date:   Fri,  6 Nov 2020 04:13:54 -0500
+Message-Id: <1604654034-52821-1-git-send-email-dong.menglong@zte.com.cn>
 X-Mailer: git-send-email 2.7.4
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZSU1KQh5LQ0NCTRkZVkpNS09NTkhCTE5DTEtVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hKQ1VLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NzI6Ijo6MT8sThwOHA5MGgsQ
-        PiswFDlVSlVKTUtPTU5IQkxNSEpDVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
-        SU5KVUxPVUlISllXWQgBWUFKQ0pJNwY+
-X-HM-Tid: 0a759cd488a29373kuws6b2b7666d5d
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-withing should be within.
+From: Menglong Dong <dong.menglong@zte.com.cn>
 
-Signed-off-by: Wang Qing <wangqing@vivo.com>
+Obviously, 'bpf/bpf.h' in 'samples/bpf/hbm.c' is duplicated.
+
+Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
 ---
- arch/c6x/platforms/megamod-pic.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ samples/bpf/hbm.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/arch/c6x/platforms/megamod-pic.c b/arch/c6x/platforms/megamod-pic.c
-index 56189e5..adac7ac
---- a/arch/c6x/platforms/megamod-pic.c
-+++ b/arch/c6x/platforms/megamod-pic.c
-@@ -165,7 +165,7 @@ static void __init set_megamod_mux(struct megamod_pic *pic, int src, int output)
-  * The MUX map is an array of up to 12 cells; one for each usable core priority
-  * interrupt. The value of a given cell is the megamodule interrupt source
-  * which is to me MUXed to the output corresponding to the cell position
-- * withing the array. The first cell in the array corresponds to priority
-+ * within the array. The first cell in the array corresponds to priority
-  * 4 and the last (12th) cell corresponds to priority 15. The allowed
-  * values are 4 - ((NR_COMBINERS * 32) - 1). Note that the combined interrupt
-  * sources (0 - 3) are not allowed to be mapped through this property. They
+diff --git a/samples/bpf/hbm.c b/samples/bpf/hbm.c
+index ff4c533..400e741 100644
+--- a/samples/bpf/hbm.c
++++ b/samples/bpf/hbm.c
+@@ -51,7 +51,6 @@
+ #include "cgroup_helpers.h"
+ #include "hbm.h"
+ #include "bpf_util.h"
+-#include <bpf/bpf.h>
+ #include <bpf/libbpf.h>
+ 
+ bool outFlag = true;
 -- 
 2.7.4
 
