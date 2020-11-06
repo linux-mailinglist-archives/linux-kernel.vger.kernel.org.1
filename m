@@ -2,98 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B29AF2A9256
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 10:19:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFF5B2A9261
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 10:20:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726705AbgKFJTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 04:19:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51498 "EHLO
+        id S1726655AbgKFJUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 04:20:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726423AbgKFJTb (ORCPT
+        with ESMTP id S1726127AbgKFJUd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 04:19:31 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A22DC0613CF;
-        Fri,  6 Nov 2020 01:19:29 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id i26so482604pgl.5;
-        Fri, 06 Nov 2020 01:19:29 -0800 (PST)
+        Fri, 6 Nov 2020 04:20:33 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A49DC0613D3
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 01:20:33 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id 72so756956pfv.7
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 01:20:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=gbK9LV/P+tPvAYfKi87cJG5c+9+YYVyHdjHSk9eK97Q=;
-        b=aWzCWhXUPpDXUK5fKoHnqJ9DuKlVgxafpPANQKZ20ngBstpHALDDUqAf6ZCq7qyVD3
-         n8tpET9KojA//w7opNFPgmx5YpNpAaNL0UEZ99GJYlf8kcbRc2Vq8wwMWNrnGELv8QwP
-         nJKKvuwQOdL+KsmPEbrM4w3D/qA7ddRUIEacSPkXykbzg4fZz4A/yT5g3SYxsn/oIn7c
-         etVl65BiKh0qX71ZI+jO+Or+2FDEjP+Ycq1lzA4IrTlIHeBUZymHCCUJxoBQsxOXo+QL
-         3/m5fNRz/Eot9dYH8vupQtjZGArewAO0PsgSbTRLvW5UP2pVsI0T7kefU1WiNkBmyTAj
-         9/NA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=o8uFcVKje4kv+RGQbC1+Di2p0kqZQdZRyJXvb9yfszI=;
+        b=Zo46DEmkqJXg2ONVmV7MPYuDSINCYRNJKcahQ33Zg+IcFOcg+lu1DP5wDQk1KC5MZr
+         YQ9tDm410E0LrIe7lGXHW/t0PyfyTHad3w8yu7hj8zMOJBlbzPoI/YHs5bgKf6bcODsU
+         hlAUSlCrONQOsU05d7+2mZxORNu/JRNguiMRANQQ2kdOLt6kxG9Rm9u2y8WvG4asnpgj
+         vBsGf4CLT/AITZza3UDP8F6blDt1pz2pjcOMEiWl1yNj2lGZCV1lPfusdcu/QRVJHATP
+         J8Bag4/eqwNiceJoEXSo1isob3PyOLkqGlgpIXDHqAqVZVkhnjVkvT5S4akFldscFpeC
+         16JA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=gbK9LV/P+tPvAYfKi87cJG5c+9+YYVyHdjHSk9eK97Q=;
-        b=WZdztdzvcuBS1Z04DM2/t4ZgbTv+P8v9F+iNetKBthpiN3Lot+a9I5LiEi8NbEZSPI
-         QUc5Sw2oMBwV/0fbZDbrYF/59Z1hdadf5WiWwhRFuyED4STA30dGy/rsLhqYixBhA3WH
-         FxcDujyv15xem+jcrTlOxlMWRpcIkfHcTuFrBTdLUxdmucifQFENhWIrkVw6ug+riMJd
-         odHuuwEBGX4r6a2zjZlhPIiFmGkaII7uqguFNuNW2lOV9QE89EiYpPhKF/borJdh7Psh
-         aTCh1lw6B+a4T0rFWl7cCaLfnDSxfqUS3E7mKmbTziexw1fyY6ohGeeNChKvgYZf1mhI
-         rvZg==
-X-Gm-Message-State: AOAM531zWMA8kpk1ewj6cwhiTO4hVnMGb9V3oAYrXB5vw1MkNRyYuWyr
-        kaYtSQ7n/NHbdqkcbvTe9SXisetVXZ0H1iQ=
-X-Google-Smtp-Source: ABdhPJw6yOPMV7i9xgya+5xdR7lmvPLbE69tIzIQ8vkBRF8ylXXhnAMJ1tY6HyBxEfLC+rrdv77A8Q==
-X-Received: by 2002:a63:fc5f:: with SMTP id r31mr993658pgk.90.1604654369055;
-        Fri, 06 Nov 2020 01:19:29 -0800 (PST)
-Received: from he-cluster.localdomain (67.216.221.250.16clouds.com. [67.216.221.250])
-        by smtp.gmail.com with ESMTPSA id e10sm1433898pfl.162.2020.11.06.01.19.27
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=o8uFcVKje4kv+RGQbC1+Di2p0kqZQdZRyJXvb9yfszI=;
+        b=IDOHcgyFejbMuIvqWbZWSqq09HCX468asvy7zPf8GoITHRW8sgCQ6mZxAFM0npiwSv
+         c8090IzRtvEl9VVRyq12aTyhE0fLo9k/N7CBVhmYGm4slkDtXo7j303QbbzmfKKyVeQC
+         P+q88cWE07dS2ea4Lfa/FNEVpgswqCX07jfpWjgLxadTqsY2SE/dmHE6TCpZy3UEM+By
+         gtqXyKUFZNd2BNpYFHq4NZAZdAxawjc1cSmjFFx6DzHjAgX95lvvQv+Q/nUMW9Pe/JzD
+         RwDL56vEvenjXj3l6Lp5LsBKO8Pj0Y2fWyfVIVBcEtkT6j8YJ4bVQAxSojRLniS1aXSD
+         ZQvw==
+X-Gm-Message-State: AOAM532tB7hfyhYZUOgCmE7bpolHgG3BKlXKQHcLWu/v6CCgWFnt2QdR
+        9BluIrz+a5mCe6QcYYMOsH9r2A==
+X-Google-Smtp-Source: ABdhPJzR8+V8THDr+L0oS5ftjQ06bl0btESASGt/pHIKZV9BSbI/wAdu5iu+3PBZhWIHPCib1LCIWA==
+X-Received: by 2002:a62:a11a:0:b029:18a:df9e:f537 with SMTP id b26-20020a62a11a0000b029018adf9ef537mr1145546pff.29.1604654432830;
+        Fri, 06 Nov 2020 01:20:32 -0800 (PST)
+Received: from localhost ([122.172.12.172])
+        by smtp.gmail.com with ESMTPSA id e6sm1088952pgn.9.2020.11.06.01.20.31
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 06 Nov 2020 01:19:28 -0800 (PST)
-From:   xiakaixu1987@gmail.com
-X-Google-Original-From: kaixuxia@tencent.com
-To:     tony.luck@intel.com, bp@alien8.de
-Cc:     linux-edac@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, Kaixu Xia <kaixuxia@tencent.com>
-Subject: [PATCH] x86/mce: Use true,false for bool variable
-Date:   Fri,  6 Nov 2020 17:19:23 +0800
-Message-Id: <1604654363-1463-1-git-send-email-kaixuxia@tencent.com>
-X-Mailer: git-send-email 1.8.3.1
+        Fri, 06 Nov 2020 01:20:32 -0800 (PST)
+Date:   Fri, 6 Nov 2020 14:50:20 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Nicola Mazzucato <nicola.mazzucato@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        sudeep.holla@arm.com, rjw@rjwysocki.net, vireshk@kernel.org,
+        robh+dt@kernel.org, sboyd@kernel.org, nm@ti.com,
+        daniel.lezcano@linaro.org, morten.rasmussen@arm.com,
+        chris.redpath@arm.com
+Subject: Re: [PATCH v3 3/3] [RFC] CPUFreq: Add support for
+ cpu-perf-dependencies
+Message-ID: <20201106092020.za3oxg7gutzc3y2b@vireshk-i7>
+References: <20201102120115.29993-1-nicola.mazzucato@arm.com>
+ <20201102120115.29993-4-nicola.mazzucato@arm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201102120115.29993-4-nicola.mazzucato@arm.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kaixu Xia <kaixuxia@tencent.com>
+On 02-11-20, 12:01, Nicola Mazzucato wrote:
+> This is a continuation of the previous v2, where we focused mostly on the
+> dt binding.
+> 
+> I am seeking some feedback/comments on the following two approaches.
+> 
+> Intro:
+> We have seen that in a system where performance control and hardware
+> description do not match (i.e. per-cpu), we still need the information of
+> how the v/f lines are shared among the cpus. We call this information
+> "performance dependencies".
+> We got this info through the opp-shared (the previous 2 patches aim for
+> that).
+> 
+> Problem:
+> How do we share such info (retrieved from a cpufreq driver) to other
+> consumers that rely on it? I have two proposals.
 
-Fix the following coccinelle reports:
+I haven't really stop thinking about what and how we should solve
+this, but I have few concerns first.
 
-./arch/x86/kernel/cpu/mce/core.c:1765:3-20: WARNING: Assignment of 0/1 to bool variable
-./arch/x86/kernel/cpu/mce/core.c:1584:2-9: WARNING: Assignment of 0/1 to bool variable
+> 2) drivers/thermal/cpufreq_cooling: Replace related_cpus with dependent_cpus
 
-Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
-Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
----
- arch/x86/kernel/cpu/mce/core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+I am not sure if I understand completely on how this is going to be
+modified/work.
 
-diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-index 4102b866e7c0..962b61c19f5b 100644
---- a/arch/x86/kernel/cpu/mce/core.c
-+++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -1581,7 +1581,7 @@ static void __mcheck_cpu_mce_banks_init(void)
- 		 * __mcheck_cpu_init_clear_banks() does the final bank setup.
- 		 */
- 		b->ctl = -1ULL;
--		b->init = 1;
-+		b->init = true;
- 	}
- }
- 
-@@ -1762,7 +1762,7 @@ static int __mcheck_cpu_apply_quirks(struct cpuinfo_x86 *c)
- 		 */
- 
- 		if (c->x86 == 6 && c->x86_model < 0x1A && this_cpu_read(mce_num_banks) > 0)
--			mce_banks[0].init = 0;
-+			mce_banks[0].init = false;
- 
- 		/*
- 		 * All newer Intel systems support MCE broadcasting. Enable
+The only use of related_cpus in the cooling driver is in the helper
+cdev->get_requested_power(), where we need to find the total power
+being consumed by devices controlled by the cooling device. Right ?
+
+Now the cooling devices today are very closely related to the cpufreq
+policy, the registration function itself takes a cpufreq policy as an
+argument.
+
+Consider that you have an octa-core platform and all the CPUs are
+dependent on each other. With your suggested changes and hw control,
+we will have different cpufreq policies for each CPU. And so we will
+have a cooling device, cdev, for each CPU as well. When the IPA
+governor calls cdev->get_requested_power(), why should we ever bother
+to traverse the list of dependent_cpus and not related_cpus only ?
+
+Otherwise the same CPU will have its load contributed to the power of
+8 cooling devices.
+
 -- 
-2.20.0
-
+viresh
