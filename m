@@ -2,108 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2889B2A9608
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 13:13:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9CA72A960D
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 13:14:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727340AbgKFMNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 07:13:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50472 "EHLO
+        id S1727267AbgKFMOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 07:14:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727313AbgKFMM6 (ORCPT
+        with ESMTP id S1726939AbgKFMOS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 07:12:58 -0500
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FDC0C0613CF;
-        Fri,  6 Nov 2020 04:12:58 -0800 (PST)
-Received: by mail-io1-xd44.google.com with SMTP id r9so1225870ioo.7;
-        Fri, 06 Nov 2020 04:12:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=L6H1fFozyeKKcyb7FCmptp2YIUA7XL8+rjQnzk8u6gE=;
-        b=e48OD3+xHZYJO0wiD2HikrNndReP6JHTnQ/It4WuemT1dVcevYBpMc8Gc+2srbFvAC
-         ekvQ5BXCTS9zB7m7z/b7uRfCf40BcmUGQSl7NsvMNwZFCGwt63JKSD8aVVQvr7JDrWwy
-         YBgDwxkBpgOCp+1WHmwunJ1YlG1G00t31H4YaPsbQI1OEJOqsIj9ii0ckMLyMyogpjVA
-         hqBHGQ5ku514TGVUzl8w3SMP6nFPi62f3F5TGIODfIUT+Rg+naKR6f8ffI29NB1MBt6+
-         u8dru7Ed5pBVMLqrq7P7YJAo7FbBwdJLNo5Loc7iILNkN3Sx+ikVzD5jkVspD2H+Rc9+
-         Frdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=L6H1fFozyeKKcyb7FCmptp2YIUA7XL8+rjQnzk8u6gE=;
-        b=Kd7I0+PuW2VLKkN//2l2ID307Sy6nDAHkpHPg4titLPykoiLMjWXQkTRT0qR0Bql8x
-         NBK/ImcpzDZVhq+2H/EB2heOPrv8Txz+uQn1cFDJzMarOvqoie+YVsWw+doSl9nQfmB+
-         np1mltV0FhN4BLHQR1c6lAlfCPw3vn7vDBjBUdMmyfh2VV/2Qeto0/HxYAFyew/ozXAc
-         /Q3QmP2csD8aIMuDsU8GgjYGcbjxOXzUtzHnqhUCf4hIQsvawaFueBIRpVA+yDsqq4zQ
-         xLKxK5jU/X0ucvVAikWJWT3H3KjnuT7oDahe+1f4IUSYKbTFiWso+Ng2OZi1TcpU9o+s
-         mNfA==
-X-Gm-Message-State: AOAM530jt/Vkmh3AaRh1yLbW1NkOBUd3So4d0zjORuK+j6VMQCBKx9aD
-        BlQBKXm3F1K9jQMLxc+xy2g=
-X-Google-Smtp-Source: ABdhPJwwSKSQiPoLLG8/TX8+m0rwSpl/qtyR5HuVCoo5OOVMhifHRYr9oG6QhlnI4u4dR4eM1sObcA==
-X-Received: by 2002:a02:ce30:: with SMTP id v16mr1309374jar.33.1604664777977;
-        Fri, 06 Nov 2020 04:12:57 -0800 (PST)
-Received: from aford-IdeaCentre-A730.lan ([2601:448:8400:9e8:8492:7d60:7e29:2784])
-        by smtp.gmail.com with ESMTPSA id 9sm1102935ila.61.2020.11.06.04.12.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Nov 2020 04:12:57 -0800 (PST)
-From:   Adam Ford <aford173@gmail.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     aford@beaconembedded.com, krzk@kernel.org,
-        Adam Ford <aford173@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH V2 3/3] arm64: defconfig: Enable WM8962
-Date:   Fri,  6 Nov 2020 06:12:37 -0600
-Message-Id: <20201106121238.1814427-3-aford173@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201106121238.1814427-1-aford173@gmail.com>
-References: <20201106121238.1814427-1-aford173@gmail.com>
+        Fri, 6 Nov 2020 07:14:18 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C120C0613CF;
+        Fri,  6 Nov 2020 04:14:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=wdArR4SHu2gVwVCDPOZrqVGBGWB7EWn5STqcT4bB33k=; b=aOkaNP8WZH4t1Wns/ePyMSfp5O
+        155hPzRmP47qJCbmYtSQvXMqvRjT43bFMlTyiCKhIu25g6ZNZ61hhu6RRcePjR7HRtHf5BFqScCgY
+        wC+CrZOl8xhJ4LGMfj06PRCHNvouk1xIyuoh3rz6S+eX5f0+wk35xlfsDHIy/LfRSMBWjfRRuc/4I
+        i6rwfhMnKN2PiMR1hTVfOLsV6KoSUcNNtzkuFGcwClnRC2me+NCB+UTOGSDB69/JZx7yrzuz5tcDj
+        xLebLHADq8qaWnlZH36ddbmZtSfNSfE3A3e1Pg45fmRxj7uHMzvkM5vL0iPCODUeUjxCApzedsJJl
+        A38knfLg==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kb0d5-0006Re-7j; Fri, 06 Nov 2020 12:14:07 +0000
+Date:   Fri, 6 Nov 2020 12:14:07 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Ralph Campbell <rcampbell@nvidia.com>
+Cc:     linux-mm@kvack.org, nouveau@lists.freedesktop.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jerome Glisse <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Bharata B Rao <bharata@linux.ibm.com>,
+        Zi Yan <ziy@nvidia.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Ben Skeggs <bskeggs@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v3 1/6] mm/thp: add prep_transhuge_device_private_page()
+Message-ID: <20201106121407.GQ17076@casper.infradead.org>
+References: <20201106005147.20113-1-rcampbell@nvidia.com>
+ <20201106005147.20113-2-rcampbell@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201106005147.20113-2-rcampbell@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Beacon EmbeddedWorks development kits supporting i.MX8M Mini
-and Nano have an WM8962 audio CODEC installed.  Add modules for both
-CONFIG_SND_SOC_WM8962 and CONFIG_SND_SOC_FSL_ASOC_CARD to enable them.
+On Thu, Nov 05, 2020 at 04:51:42PM -0800, Ralph Campbell wrote:
+> Add a helper function to allow device drivers to create device private
+> transparent huge pages. This is intended to help support device private
+> THP migrations.
 
-Signed-off-by: Adam Ford <aford173@gmail.com>
----
-V2:  New to series
+I think you'd be better off with these calling conventions:
 
- arch/arm64/configs/defconfig | 2 ++
- 1 file changed, 2 insertions(+)
+-void prep_transhuge_page(struct page *page)
++struct page *thp_prep(struct page *page)
+ {
++       if (!page || compound_order(page) == 0)
++               return page;
+        /*
+-        * we use page->mapping and page->indexlru in second tail page
++        * we use page->mapping and page->index in second tail page
+         * as list_head: assuming THP order >= 2
+         */
++       BUG_ON(compound_order(page) == 1);
+ 
+        INIT_LIST_HEAD(page_deferred_list(page));
+        set_compound_page_dtor(page, TRANSHUGE_PAGE_DTOR);
++
++       return page;
+ }
 
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index 821b21a56ad7..00357f5c6fa5 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -701,6 +701,7 @@ CONFIG_SND_SOC_FSL_EASRC=m
- CONFIG_SND_IMX_SOC=m
- CONFIG_SND_SOC_IMX_SPDIF=m
- CONFIG_SND_SOC_IMX_AUDMIX=m
-+CONFIG_SND_SOC_FSL_ASOC_CARD=m
- CONFIG_SND_MESON_AXG_SOUND_CARD=m
- CONFIG_SND_MESON_GX_SOUND_CARD=m
- CONFIG_SND_SOC_QCOM=m
-@@ -728,6 +729,7 @@ CONFIG_SND_SOC_SIMPLE_AMPLIFIER=m
- CONFIG_SND_SOC_TAS571X=m
- CONFIG_SND_SOC_WCD934X=m
- CONFIG_SND_SOC_WM8904=m
-+CONFIG_SND_SOC_WM8962=m
- CONFIG_SND_SOC_WSA881X=m
- CONFIG_SND_SIMPLE_CARD=m
- CONFIG_SND_AUDIO_GRAPH_CARD=m
--- 
-2.25.1
+It simplifies the users.
 
+> +void prep_transhuge_device_private_page(struct page *page)
+> +{
+> +	prep_compound_page(page, HPAGE_PMD_ORDER);
+> +	prep_transhuge_page(page);
+> +	/* Only the head page has a reference to the pgmap. */
+> +	percpu_ref_put_many(page->pgmap->ref, HPAGE_PMD_NR - 1);
+> +}
+> +EXPORT_SYMBOL_GPL(prep_transhuge_device_private_page);
+
+Something else that may interest you from my patch series is support
+for page sizes other than PMD_SIZE.  I don't know what page sizes your
+hardware supports.  There's no support for page sizes other than PMD
+for anonymous memory, so this might not be too useful for you yet.
