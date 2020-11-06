@@ -2,393 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68BCB2A8F0E
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 06:54:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FA552A8F19
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 06:55:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726255AbgKFFyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 00:54:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47848 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725828AbgKFFyW (ORCPT
+        id S1726352AbgKFFyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 00:54:53 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:40074 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726260AbgKFFyx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 00:54:22 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92100C0613CF;
-        Thu,  5 Nov 2020 21:54:22 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id 62so75492pgg.12;
-        Thu, 05 Nov 2020 21:54:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Nq5CFM2iwN1eLIgSQD0rdPsBmq4v/im+POuO6iBKUQk=;
-        b=sLT0bcky7yfsVhao1qS4JTlp+epYSHPffxnzghzUjakaB/qHgfA98sYEGEVc0zzQwe
-         J4wdoewK+/LJt7kvJiYuuMBnBRb9wjBwsj6mr5G1UFtdSKpgso3u3YTD0fqD4e9cK4Xt
-         8TORTrQqVJTw/XgUHGvZ+r/H1HA7M59rWWFEXe9agQPUIvaHoZxa71wjiMyIWODwIUBk
-         t98RieM5RVBv+ERoWh0OMBu92ztyj0NGQY5zfMLFKA57uanucGbhNTASd4wxR2K+VusB
-         hpPgEQvDRgPYHW66IeScSFgrkgbD2rNiOlycs1PpIDmY77eAWYcipV8+9sP0+RhRZPnT
-         GJ5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Nq5CFM2iwN1eLIgSQD0rdPsBmq4v/im+POuO6iBKUQk=;
-        b=YU2/j7ZYRuKtqDNL3d+6aEbQLKgrWfP6qrZAEfuyoLuXtOH9P5Dth/znLvKKKNACvq
-         cPhPcD5cXOUEkq4Eemk2wQpth+fmEASZqiIVL3EOeiA6ARK4akXdBE6K69TMa2w9wAin
-         6HsT3K6jvCELFc0HQJrhhnItf2/bUznv1mY9+ScT6VT7EKV7SDT/1WhbLBrVzfXYlH+4
-         0M0K9GWhxyaNNRXCNaWcTRXaLIwak3wXKg9PdFNuPCZAoxkj1x5HuSU0jaoB7HDtAmqO
-         +jNSwl5UZqX4uv0n1anV0LxnxMgHoqwMcNg4f7e/XFVfgeFvHjtsZI8QtoP5AAB+61/t
-         iZ3A==
-X-Gm-Message-State: AOAM531dsEv72Mb3b9V5VogbKAUd2+U/HJ9TTFoqmBMoCgcdKjX6ZdGT
-        RgqOngZEzguaI2SRXNSn/5XengiAbEvyylU0
-X-Google-Smtp-Source: ABdhPJykQHMBFsWv2so7Tyk82KDxnV1lySkZ35Kw9NzmU2PcshI7SV93xXeSJvOohnrMtfCQKFWigw==
-X-Received: by 2002:a17:90a:43c6:: with SMTP id r64mr727013pjg.128.1604642061681;
-        Thu, 05 Nov 2020 21:54:21 -0800 (PST)
-Received: from [192.168.86.81] ([106.51.243.217])
-        by smtp.gmail.com with ESMTPSA id 26sm251695pgu.83.2020.11.05.21.54.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Nov 2020 21:54:20 -0800 (PST)
-Subject: Re: [PATCH v4 1/2] kunit: Support for Parameterized Testing
-To:     Marco Elver <elver@google.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        skhan@linuxfoundation.org, Iurii Zaikin <yzaikin@google.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-ext4@vger.kernel.org
-References: <20201027174630.85213-1-98.arpi@gmail.com>
- <CANpmjNOpbXHs4gs9Ro-u7hyN_zZ7s3AqDcdDy1Nqxq4ckThugA@mail.gmail.com>
- <73c4e46c-10f1-9362-b4fb-94ea9d74e9b2@gmail.com>
- <CANpmjNPxqQM0_f14ZwV3rHZzwhCtqx2fbOhHmXmiJawou6=z6Q@mail.gmail.com>
- <77d6dc66-1086-a9ae-ccbc-bb062ff81437@gmail.com>
- <CANpmjNORLJ4b_uwBB8v2h5cxoZF2SMTaz5K6QP37PxdUJDZUDA@mail.gmail.com>
- <20201105195503.GA2399621@elver.google.com>
-From:   Arpitha Raghunandan <98.arpi@gmail.com>
-Message-ID: <f7e04221-607c-dd05-24a6-27c26d86919d@gmail.com>
-Date:   Fri, 6 Nov 2020 11:24:15 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 6 Nov 2020 00:54:53 -0500
+X-UUID: 50d5a11850aa4c6fb9ed9d3c0ef08991-20201106
+X-UUID: 50d5a11850aa4c6fb9ed9d3c0ef08991-20201106
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
+        (envelope-from <macpaul.lin@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 742032322; Fri, 06 Nov 2020 13:54:46 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 6 Nov 2020 13:54:43 +0800
+Received: from mtkswgap22.mediatek.inc (172.21.77.33) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 6 Nov 2020 13:54:41 +0800
+From:   Macpaul Lin <macpaul.lin@mediatek.com>
+To:     Alan Stern <stern@rowland.harvard.edu>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>
+CC:     Ainge Hsu <ainge.hsu@mediatek.com>,
+        Eddie Hung <eddie.hung@mediatek.com>,
+        Mediatek WSD Upstream <wsd_upstream@mediatek.com>,
+        Macpaul Lin <macpaul.lin@mediatek.com>,
+        Macpaul Lin <macpaul@gmail.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-usb@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
+        <stable@vger.kernel.org>
+Subject: [RESEND PATCH v4] usb: mtu3: fix panic in mtu3_gadget_stop()
+Date:   Fri, 6 Nov 2020 13:54:29 +0800
+Message-ID: <1604642069-20961-1-git-send-email-macpaul.lin@mediatek.com>
+X-Mailer: git-send-email 1.7.9.5
+In-Reply-To: <1598539328-1976-1-git-send-email-macpaul.lin@mediatek.com>
+References: <1598539328-1976-1-git-send-email-macpaul.lin@mediatek.com>
 MIME-Version: 1.0
-In-Reply-To: <20201105195503.GA2399621@elver.google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-TM-SNTS-SMTP: 39034FCC61EDF9B6A654BEEF06F6764DB605319D12BBEBE5EA98C7A01A428BEF2000:8
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/11/20 1:25 am, Marco Elver wrote:
-> On Thu, Nov 05, 2020 at 04:02PM +0100, Marco Elver wrote:
->> On Thu, 5 Nov 2020 at 15:30, Arpitha Raghunandan <98.arpi@gmail.com> wrote:
-> [...]
->>>>> I tried adding support to run each parameter as a distinct test case by
->>>>> making changes to kunit_run_case_catch_errors(). The issue here is that
->>>>> since the results are displayed in KTAP format, this change will result in
->>>>> each parameter being considered a subtest of another subtest (test case
->>>>> in KUnit).
->>>>
->>>> Do you have example output? That might help understand what's going on.
->>>>
->>>
->>> The change that I tried can be seen here (based on the v4 patch):
->>> https://gist.github.com/arpi-r/4822899087ca4cc34572ed9e45cc5fee.
->>>
->>> Using the kunit tool, I get this error:
->>>
->>> [19:20:41] [ERROR]  expected 7 test suites, but got -1
->>> [ERROR] no tests run!
->>> [19:20:41] ============================================================
->>> [19:20:41] Testing complete. 0 tests run. 0 failed. 0 crashed.
->>>
->>> But this error is only because of how the tool displays the results.
->>> The test actually does run, as can be seen in the dmesg output:
->>>
->>> TAP version 14
->>> 1..7
->>>     # Subtest: ext4_inode_test
->>>     1..1
->>>     ok 1 - inode_test_xtimestamp_decoding 1
->>>     ok 1 - inode_test_xtimestamp_decoding 2
->>>     ok 1 - inode_test_xtimestamp_decoding 3
->>>     ok 1 - inode_test_xtimestamp_decoding 4
->>>     ok 1 - inode_test_xtimestamp_decoding 5
->>>     ok 1 - inode_test_xtimestamp_decoding 6
->>>     ok 1 - inode_test_xtimestamp_decoding 7
->>>     ok 1 - inode_test_xtimestamp_decoding 8
->>>     ok 1 - inode_test_xtimestamp_decoding 9
->>>     ok 1 - inode_test_xtimestamp_decoding 10
->>>     ok 1 - inode_test_xtimestamp_decoding 11
->>>     ok 1 - inode_test_xtimestamp_decoding 12
->>>     ok 1 - inode_test_xtimestamp_decoding 13
->>>     ok 1 - inode_test_xtimestamp_decoding 14
->>>     ok 1 - inode_test_xtimestamp_decoding 15
->>>     ok 1 - inode_test_xtimestamp_decoding 16
->>> ok 1 - ext4_inode_test
->>> (followed by other kunit test outputs)
->>
->> Hmm, interesting. Let me play with your patch a bit.
->>
->> One option is to just have the test case number increment as well,
->> i.e. have this:
->> |    ok 1 - inode_test_xtimestamp_decoding#1
->> |    ok 2 - inode_test_xtimestamp_decoding#2
->> |    ok 3 - inode_test_xtimestamp_decoding#3
->> |    ok 4 - inode_test_xtimestamp_decoding#4
->> |    ok 5 - inode_test_xtimestamp_decoding#5
->> ...
->>
->> Or is there something else I missed?
-> 
-> Right, so TAP wants the exact number of tests it will run ahead of time.
-> In which case we can still put the results of each parameterized test in
-> a diagnostic. Please see my proposed patch below, which still does
-> proper initialization/destruction of each parameter case as if it was
-> its own test case.
-> 
-> With it the output looks as follows:
-> 
-> | TAP version 14
-> | 1..6
-> |     # Subtest: ext4_inode_test
-> |     1..1
-> |     # ok param#0 - inode_test_xtimestamp_decoding
-> |     # ok param#1 - inode_test_xtimestamp_decoding
-> |     # ok param#2 - inode_test_xtimestamp_decoding
-> |     # ok param#3 - inode_test_xtimestamp_decoding
-> |     # ok param#4 - inode_test_xtimestamp_decoding
-> |     # ok param#5 - inode_test_xtimestamp_decoding
-> |     # ok param#6 - inode_test_xtimestamp_decoding
-> |     # ok param#7 - inode_test_xtimestamp_decoding
-> |     # ok param#8 - inode_test_xtimestamp_decoding
-> |     # ok param#9 - inode_test_xtimestamp_decoding
-> |     # ok param#10 - inode_test_xtimestamp_decoding
-> |     # ok param#11 - inode_test_xtimestamp_decoding
-> |     # ok param#12 - inode_test_xtimestamp_decoding
-> |     # ok param#13 - inode_test_xtimestamp_decoding
-> |     # ok param#14 - inode_test_xtimestamp_decoding
-> |     # ok param#15 - inode_test_xtimestamp_decoding
-> |     ok 1 - inode_test_xtimestamp_decoding
-> | ok 1 - ext4_inode_test
-> 
-> Would that be reasonable? If so, feel free to take the patch and
-> test/adjust as required.
-> 
-> I'm not sure on the best format -- is there is a recommended format for
-> parameterized test result output? If not, I suppose we can put anything
-> we like into the diagnostic.
-> 
+This patch fixes a possible issue when mtu3_gadget_stop()
+already assigned NULL to mtu->gadget_driver during mtu_gadget_disconnect().
 
-I think this format of output should be fine for parameterized tests.
-But, this patch has the same issue as earlier. While, the tests run and
-this is the output that can be seen using dmesg, it still causes an issue on
-using the kunit tool. It gives a similar error:
+[<ffffff9008161974>] notifier_call_chain+0xa4/0x128
+[<ffffff9008161fd4>] __atomic_notifier_call_chain+0x84/0x138
+[<ffffff9008162ec0>] notify_die+0xb0/0x120
+[<ffffff900809e340>] die+0x1f8/0x5d0
+[<ffffff90080d03b4>] __do_kernel_fault+0x19c/0x280
+[<ffffff90080d04dc>] do_bad_area+0x44/0x140
+[<ffffff90080d0f9c>] do_translation_fault+0x4c/0x90
+[<ffffff9008080a78>] do_mem_abort+0xb8/0x258
+[<ffffff90080849d0>] el1_da+0x24/0x3c
+[<ffffff9009bde01c>] mtu3_gadget_disconnect+0xac/0x128
+[<ffffff9009bd576c>] mtu3_irq+0x34c/0xc18
+[<ffffff90082ac03c>] __handle_irq_event_percpu+0x2ac/0xcd0
+[<ffffff90082acae0>] handle_irq_event_percpu+0x80/0x138
+[<ffffff90082acc44>] handle_irq_event+0xac/0x148
+[<ffffff90082b71cc>] handle_fasteoi_irq+0x234/0x568
+[<ffffff90082a8708>] generic_handle_irq+0x48/0x68
+[<ffffff90082a96ac>] __handle_domain_irq+0x264/0x1740
+[<ffffff90080819f4>] gic_handle_irq+0x14c/0x250
+[<ffffff9008084cec>] el1_irq+0xec/0x194
+[<ffffff90085b985c>] dma_pool_alloc+0x6e4/0xae0
+[<ffffff9008d7f890>] cmdq_mbox_pool_alloc_impl+0xb0/0x238
+[<ffffff9008d80904>] cmdq_pkt_alloc_buf+0x2dc/0x7c0
+[<ffffff9008d80f60>] cmdq_pkt_add_cmd_buffer+0x178/0x270
+[<ffffff9008d82320>] cmdq_pkt_perf_begin+0x108/0x148
+[<ffffff9008d824d8>] cmdq_pkt_create+0x178/0x1f0
+[<ffffff9008f96230>] mtk_crtc_config_default_path+0x328/0x7a0
+[<ffffff90090246cc>] mtk_drm_idlemgr_kick+0xa6c/0x1460
+[<ffffff9008f9bbb4>] mtk_drm_crtc_atomic_begin+0x1a4/0x1a68
+[<ffffff9008e8df9c>] drm_atomic_helper_commit_planes+0x154/0x878
+[<ffffff9008f2fb70>] mtk_atomic_complete.isra.16+0xe80/0x19c8
+[<ffffff9008f30910>] mtk_atomic_commit+0x258/0x898
+[<ffffff9008ef142c>] drm_atomic_commit+0xcc/0x108
+[<ffffff9008ef7cf0>] drm_mode_atomic_ioctl+0x1c20/0x2580
+[<ffffff9008ebc768>] drm_ioctl_kernel+0x118/0x1b0
+[<ffffff9008ebcde8>] drm_ioctl+0x5c0/0x920
+[<ffffff900863b030>] do_vfs_ioctl+0x188/0x1820
+[<ffffff900863c754>] SyS_ioctl+0x8c/0xa0
 
-[11:07:38] [ERROR]  expected 7 test suites, but got -1
-[11:07:38] [ERROR] expected_suite_index -1, but got 2
-[11:07:38] [ERROR] got unexpected test suite: kunit-try-catch-test
-[ERROR] no tests run!
-[11:07:38] ============================================================
-[11:07:38] Testing complete. 0 tests run. 0 failed. 0 crashed.
+Fixes: df2069acb005 ("usb: Add MediaTek USB3 DRD driver")
+Signed-off-by: Macpaul Lin <macpaul.lin@mediatek.com>
+Acked-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+Cc: stable@vger.kernel.org
+---
+RESEND for v4:
+  - Resend this patch by plain-text instead of MTK IT's default (base64)
+    outgoing SMTP settings.
+  - Add Acked-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+Changes for v4:
+  - Add a "Fixes:" line.  Thanks Felipe.
+Changes for v3:
+  - Call synchronize_irq() in mtu3_gadget_stop() instead of remembering
+    callback function in mtu3_gadget_disconnect().
+    Thanks for Alan's suggestion.
+Changes for v2:
+  - Check mtu_gadget_driver out of spin_lock might still not work.
+    We use a temporary pointer to remember the callback function.
 
-Thanks!
+ drivers/usb/mtu3/mtu3_gadget.c |    1 +
+ 1 file changed, 1 insertions(+)
 
-> Thanks,
-> -- Marco
-> 
-> ------ >8 ------
-> 
-> From ccbf4e2e190a2d7c6a94a51c9b1fb3b9a940e578 Mon Sep 17 00:00:00 2001
-> From: Arpitha Raghunandan <98.arpi@gmail.com>
-> Date: Tue, 27 Oct 2020 23:16:30 +0530
-> Subject: [PATCH] kunit: Support for Parameterized Testing
-> 
-> Implementation of support for parameterized testing in KUnit.
-> This approach requires the creation of a test case using the
-> KUNIT_CASE_PARAM macro that accepts a generator function as input.
-> This generator function should return the next parameter given the
-> previous parameter in parameterized tests. It also provides
-> a macro to generate common-case generators.
-> 
-> Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
-> Co-developed-by: Marco Elver <elver@google.com>
-> Signed-off-by: Marco Elver <elver@google.com>
-> ---
-> Changes v4->v5:
-> - Update kernel-doc comments.
-> - Use const void* for generator return and prev value types.
-> - Add kernel-doc comment for KUNIT_ARRAY_PARAM.
-> - Rework parameterized test case execution strategy: each parameter is executed
->   as if it was its own test case, with its own test initialization and cleanup
->   (init and exit are called, etc.). However, we cannot add new test cases per TAP
->   protocol once we have already started execution. Instead, log the result of
->   each parameter run as a diagnostic comment.
-> Changes v3->v4:
-> - Rename kunit variables
-> - Rename generator function helper macro
-> - Add documentation for generator approach
-> - Display test case name in case of failure along with param index
-> Changes v2->v3:
-> - Modifictaion of generator macro and method
-> Changes v1->v2:
-> - Use of a generator method to access test case parameters
-> ---
->  include/kunit/test.h | 36 ++++++++++++++++++++++++++++++++++
->  lib/kunit/test.c     | 46 +++++++++++++++++++++++++++++++-------------
->  2 files changed, 69 insertions(+), 13 deletions(-)
-> 
-> diff --git a/include/kunit/test.h b/include/kunit/test.h
-> index 9197da792336..ae5488a37e48 100644
-> --- a/include/kunit/test.h
-> +++ b/include/kunit/test.h
-> @@ -107,6 +107,7 @@ struct kunit;
->   *
->   * @run_case: the function representing the actual test case.
->   * @name:     the name of the test case.
-> + * @generate_params: the generator function for parameterized tests.
->   *
->   * A test case is a function with the signature,
->   * ``void (*)(struct kunit *)``
-> @@ -141,6 +142,7 @@ struct kunit;
->  struct kunit_case {
->  	void (*run_case)(struct kunit *test);
->  	const char *name;
-> +	const void* (*generate_params)(const void *prev);
->  
->  	/* private: internal use only. */
->  	bool success;
-> @@ -163,6 +165,22 @@ static inline char *kunit_status_to_string(bool status)
->   */
->  #define KUNIT_CASE(test_name) { .run_case = test_name, .name = #test_name }
->  
-> +/**
-> + * KUNIT_CASE_PARAM - A helper for creation a parameterized &struct kunit_case
-> + *
-> + * @test_name: a reference to a test case function.
-> + * @gen_params: a reference to a parameter generator function.
-> + *
-> + * The generator function ``const void* gen_params(const void *prev)`` is used
-> + * to lazily generate a series of arbitrarily typed values that fit into a
-> + * void*. The argument @prev is the previously returned value, which should be
-> + * used to derive the next value; @prev is set to NULL on the initial generator
-> + * call.  When no more values are available, the generator must return NULL.
-> + */
-> +#define KUNIT_CASE_PARAM(test_name, gen_params)			\
-> +		{ .run_case = test_name, .name = #test_name,	\
-> +		  .generate_params = gen_params }
-> +
->  /**
->   * struct kunit_suite - describes a related collection of &struct kunit_case
->   *
-> @@ -208,6 +226,10 @@ struct kunit {
->  	const char *name; /* Read only after initialization! */
->  	char *log; /* Points at case log after initialization */
->  	struct kunit_try_catch try_catch;
-> +	/* param_value is the current parameter value for a test case. */
-> +	const void *param_value;
-> +	/* param_index stores the index of the parameter in parameterized tests. */
-> +	int param_index;
->  	/*
->  	 * success starts as true, and may only be set to false during a
->  	 * test case; thus, it is safe to update this across multiple
-> @@ -1742,4 +1764,18 @@ do {									       \
->  						fmt,			       \
->  						##__VA_ARGS__)
->  
-> +/**
-> + * KUNIT_ARRAY_PARAM() - Define test parameter generator from an array.
-> + * @name:  prefix for the test parameter generator function.
-> + * @array: array of test parameters.
-> + *
-> + * Define function @name_gen_params which uses @array to generate parameters.
-> + */
-> +#define KUNIT_ARRAY_PARAM(name, array)								\
-> +	static const void *name##_gen_params(const void *prev)					\
-> +	{											\
-> +		typeof((array)[0]) * __next = prev ? ((typeof(__next)) prev) + 1 : (array);	\
-> +		return __next - (array) < ARRAY_SIZE((array)) ? __next : NULL;			\
-> +	}
-> +
->  #endif /* _KUNIT_TEST_H */
-> diff --git a/lib/kunit/test.c b/lib/kunit/test.c
-> index 750704abe89a..453ebe4da77d 100644
-> --- a/lib/kunit/test.c
-> +++ b/lib/kunit/test.c
-> @@ -325,29 +325,25 @@ static void kunit_catch_run_case(void *data)
->   * occur in a test case and reports them as failures.
->   */
->  static void kunit_run_case_catch_errors(struct kunit_suite *suite,
-> -					struct kunit_case *test_case)
-> +					struct kunit_case *test_case,
-> +					struct kunit *test)
->  {
->  	struct kunit_try_catch_context context;
->  	struct kunit_try_catch *try_catch;
-> -	struct kunit test;
->  
-> -	kunit_init_test(&test, test_case->name, test_case->log);
-> -	try_catch = &test.try_catch;
-> +	kunit_init_test(test, test_case->name, test_case->log);
-> +	try_catch = &test->try_catch;
->  
->  	kunit_try_catch_init(try_catch,
-> -			     &test,
-> +			     test,
->  			     kunit_try_run_case,
->  			     kunit_catch_run_case);
-> -	context.test = &test;
-> +	context.test = test;
->  	context.suite = suite;
->  	context.test_case = test_case;
->  	kunit_try_catch_run(try_catch, &context);
->  
-> -	test_case->success = test.success;
-> -
-> -	kunit_print_ok_not_ok(&test, true, test_case->success,
-> -			      kunit_test_case_num(suite, test_case),
-> -			      test_case->name);
-> +	test_case->success = test->success;
->  }
->  
->  int kunit_run_tests(struct kunit_suite *suite)
-> @@ -356,8 +352,32 @@ int kunit_run_tests(struct kunit_suite *suite)
->  
->  	kunit_print_subtest_start(suite);
->  
-> -	kunit_suite_for_each_test_case(suite, test_case)
-> -		kunit_run_case_catch_errors(suite, test_case);
-> +	kunit_suite_for_each_test_case(suite, test_case) {
-> +		struct kunit test = { .param_value = NULL, .param_index = 0 };
-> +		bool test_success = true;
-> +
-> +		if (test_case->generate_params)
-> +			test.param_value = test_case->generate_params(NULL);
-> +
-> +		do {
-> +			kunit_run_case_catch_errors(suite, test_case, &test);
-> +			test_success &= test_case->success;
-> +
-> +			if (test_case->generate_params) {
-> +				kunit_log(KERN_INFO, &test,
-> +					  KUNIT_SUBTEST_INDENT
-> +					  "# %s param#%d - %s",
-> +					  kunit_status_to_string(test.success),
-> +					  test.param_index, test_case->name);
-> +				test.param_value = test_case->generate_params(test.param_value);
-> +				test.param_index++;
-> +			}
-> +		} while (test.param_value);
-> +
-> +		kunit_print_ok_not_ok(&test, true, test_success,
-> +				      kunit_test_case_num(suite, test_case),
-> +				      test_case->name);
-> +	}
->  
->  	kunit_print_subtest_end(suite);
->  
-> 
+diff --git a/drivers/usb/mtu3/mtu3_gadget.c b/drivers/usb/mtu3/mtu3_gadget.c
+index 1de5c9a..1ab3d3a 100644
+--- a/drivers/usb/mtu3/mtu3_gadget.c
++++ b/drivers/usb/mtu3/mtu3_gadget.c
+@@ -564,6 +564,7 @@ static int mtu3_gadget_stop(struct usb_gadget *g)
+ 
+ 	spin_unlock_irqrestore(&mtu->lock, flags);
+ 
++	synchronize_irq(mtu->irq);
+ 	return 0;
+ }
+ 
+-- 
+1.7.9.5
 
