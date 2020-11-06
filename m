@@ -2,109 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E10562A9CA3
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 19:46:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED0162A9CA6
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 19:46:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727882AbgKFSqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 13:46:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56422 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727773AbgKFSqK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 13:46:10 -0500
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96392C0613D3
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 10:46:10 -0800 (PST)
-Received: by mail-ot1-x343.google.com with SMTP id a15so435569otf.5
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 10:46:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ElN3AyTjh5aMXmGHUFTcrTsMazikTf7o2LtiuSniYZ4=;
-        b=D5+Q8S8gQ/D72X/54r2aCENNdmG3qQ/uSOs4qlrC+meTGrBxWzyUhbGN5AcVRTbEoX
-         aBSlJSl6MMdPmek/r8GTKw7FWl8xaY2+bPHhNZzTHG/0p2owpuWq/aKHsdju2u8Fnvzi
-         vUDnyU57uiirO5PL4roeYjBl10DFZqt4pZ5UO/cJGeBRMCpUP0Hh/3nCf1LJ50MLGTOb
-         1mRyWLZT4mNkiGXwj1Y4seayHJZR0/rogLS8o4xfuxPZsiC75TDzUe7IbEPkul49oP6t
-         YZmd+0T8fWEzyfDN/uM1DegNmzRu9xJlEABocHUEQaG6ygy2Lvg9lKy3Vb+HQqWkvMXg
-         lY0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ElN3AyTjh5aMXmGHUFTcrTsMazikTf7o2LtiuSniYZ4=;
-        b=Mt/zpE4a6fzCC4K6TPJFe7b7XE8meVSARZkLV/r/pLjxe5WF/JSqF3OS0xpccR6ghw
-         0MujZo+gJZOWuUa3x/tvPkx13eqSZRD8UKq17oHdelgTuxbA8YoGw4Z8L/g90vUe1QWU
-         yNS2NUS3m4Q/QpAbQgf7Y5uiOSN+XyScPxIDS8QF40zomxq8EyLXGr55uqOQ4neJkBIS
-         7/ZbN5j1ETC8syDjcTKdMu3MHRSwrezFUD58TepsST8d+gTV/7/1FuIkqO0H/2WCIcl2
-         JJE/0WlKoTyc2LVOBxfNU5uuj7kIa7sZQWTnbgfZY6GOEErzSTBYeiU1uWd9huFo73yQ
-         4hLw==
-X-Gm-Message-State: AOAM531RQBLXTwd7IRfU2Zfo7RGcC0zFmUI1TLvKWsOuxgw6chkTR8Uu
-        aLXR27HC9jZsqKjDTO+twkR53qndeCO2efEDXYe6MA==
-X-Google-Smtp-Source: ABdhPJyh/Y4j/Wq2GsZz2D7bg/jo7/og/6yXxY6CRqxe+L0UEXv1UfKub2quFBwezIXP7sjaOGFzFmPQYxb0C85z3RU=
-X-Received: by 2002:a9d:65d5:: with SMTP id z21mr1868950oth.251.1604688369657;
- Fri, 06 Nov 2020 10:46:09 -0800 (PST)
+        id S1727946AbgKFSqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 13:46:34 -0500
+Received: from mx2.suse.de ([195.135.220.15]:57516 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726034AbgKFSqd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 13:46:33 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B18D4AD52;
+        Fri,  6 Nov 2020 18:46:31 +0000 (UTC)
+Message-ID: <88c69ac0c9d7e144c80cebc7e9f82b000828e7f5.camel@suse.de>
+Subject: Re: [PATCH v6 1/7] arm64: mm: Move reserve_crashkernel() into
+ mem_init()
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     James Morse <james.morse@arm.com>
+Cc:     robh+dt@kernel.org, catalin.marinas@arm.com, hch@lst.de,
+        ardb@kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, lorenzo.pieralisi@arm.com,
+        will@kernel.org, jeremy.linton@arm.com,
+        iommu@lists.linux-foundation.org,
+        linux-rpi-kernel@lists.infradead.org, guohanjun@huawei.com,
+        robin.murphy@arm.com, linux-arm-kernel@lists.infradead.org
+Date:   Fri, 06 Nov 2020 19:46:29 +0100
+In-Reply-To: <e60d643e-4879-3fc3-737d-2c145332a6d7@arm.com>
+References: <20201103173159.27570-1-nsaenzjulienne@suse.de>
+         <20201103173159.27570-2-nsaenzjulienne@suse.de>
+         <e60d643e-4879-3fc3-737d-2c145332a6d7@arm.com>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-TnJp0vXFQpxxgYpSGy1Q"
+User-Agent: Evolution 3.36.5 
 MIME-Version: 1.0
-References: <20201106182657.30492-1-98.arpi@gmail.com>
-In-Reply-To: <20201106182657.30492-1-98.arpi@gmail.com>
-From:   Marco Elver <elver@google.com>
-Date:   Fri, 6 Nov 2020 19:45:58 +0100
-Message-ID: <CANpmjNPsACW1mZmkWiCSeXfvAGaxAS5sHtYMu0-DfE7ec2pFMA@mail.gmail.com>
-Subject: Re: [PATCH v5 1/2] kunit: Support for Parameterized Testing
-To:     Arpitha Raghunandan <98.arpi@gmail.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        skhan@linuxfoundation.org, Iurii Zaikin <yzaikin@google.com>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-ext4@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 6 Nov 2020 at 19:28, Arpitha Raghunandan <98.arpi@gmail.com> wrote:
->
-> Implementation of support for parameterized testing in KUnit.
-> This approach requires the creation of a test case using the
-> KUNIT_CASE_PARAM macro that accepts a generator function as input.
-> This generator function should return the next parameter given the
-> previous parameter in parameterized tests. It also provides
-> a macro to generate common-case generators.
->
-> Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
-> Co-developed-by: Marco Elver <elver@google.com>
-> Signed-off-by: Marco Elver <elver@google.com>
-[...]
-> -       kunit_suite_for_each_test_case(suite, test_case)
-> -               kunit_run_case_catch_errors(suite, test_case);
-> +       kunit_suite_for_each_test_case(suite, test_case) {
-> +               struct kunit test = { .param_value = NULL, .param_index = 0 };
-> +               bool test_success = true;
-> +
-> +               if (test_case->generate_params)
-> +                       test.param_value = test_case->generate_params(NULL);
-> +
-> +               do {
-> +                       kunit_run_case_catch_errors(suite, test_case, &test);
-> +                       test_success &= test_case->success;
-> +
-> +                       if (test_case->generate_params) {
-> +                               kunit_log(KERN_INFO, &test,
-> +                                       KUNIT_SUBTEST_INDENT
-> +                                       "# %s: param-%d %s",
-> +                                       test_case->name, test.param_index,
-> +                                       kunit_status_to_string(test.success));
 
-Sorry, I still found something. The patch I sent had this aligned with
-the '(', whereas when I apply this patch it no longer is aligned. Why?
+--=-TnJp0vXFQpxxgYpSGy1Q
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-I see the rest of the file also aligns arguments with opening '(', so
-I think your change is inconsistent.
+Hi James, thanks for the review. Some comments/questions below.
 
-Thanks,
--- Marco
+On Thu, 2020-11-05 at 16:11 +0000, James Morse wrote:
+> Hi!
+>=20
+> On 03/11/2020 17:31, Nicolas Saenz Julienne wrote:
+> > crashkernel might reserve memory located in ZONE_DMA. We plan to delay
+> > ZONE_DMA's initialization after unflattening the devicetree and ACPI's
+> > boot table initialization, so move it later in the boot process.
+> > Specifically into mem_init(), this is the last place crashkernel will b=
+e
+> > able to reserve the memory before the page allocator kicks in.
+> > There
+> > isn't any apparent reason for doing this earlier.
+>=20
+> It's so that map_mem() can carve it out of the linear/direct map.
+> This is so that stray writes from a crashing kernel can't accidentally co=
+rrupt the kdump
+> kernel. We depend on this if we continue with kdump, but failed to offlin=
+e all the other
+> CPUs.
+
+I presume here you refer to arch_kexec_protect_crashkres(), IIUC this will =
+only
+happen further down the line, after having loaded the kdump kernel image. B=
+ut
+it also depends on the mappings to be PAGE sized (flags =3D=3D NO_BLOCK_MAP=
+PINGS |
+NO_CONT_MAPPINGS).
+
+> We also depend on this when skipping the checksum code in purgatory, whic=
+h can be
+> exceedingly slow.
+
+This one I don't fully understand, so I'll lazily assume the prerequisite i=
+s
+the same WRT how memory is mapped. :)
+
+Ultimately there's also /sys/kernel/kexec_crash_size's handling. Same
+prerequisite.
+
+Keeping in mind acpi_table_upgrade() and unflatten_device_tree() depend on
+having the linear mappings available. I don't see any simple way of solving
+this. Both moving the firmware description routines to use fixmap or correc=
+ting
+the linear mapping further down the line so as to include kdump's regions, =
+seem
+excessive/impossible (feel free to correct me here). I'd be happy to hear
+suggestions. Otherwise we're back to hard-coding the information as we
+initially did.
+
+Let me stress that knowing the DMA constraints in the system before reservi=
+ng
+crashkernel's regions is necessary if we ever want it to work seamlessly on=
+ all
+platforms. Be it small stuff like the Raspberry Pi or huge servers with TB =
+of
+memory.
+
+Regards,
+Nicolas
+
+
+--=-TnJp0vXFQpxxgYpSGy1Q
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl+lmgUACgkQlfZmHno8
+x/5+dgf+Pf8JjmucAPuXan1nTGcvtuILsP3sC+cq8tqi84bsKFRFACqHN5J2rXwK
+ZzRX2RyPQDWT3O3Fbp7i/wYt2XDie598NvbIozdZ6ojULPL1FEUwn/6f2Eb2uuPE
+bMSfZt/hTSa7wEESYeNV2gLjAb/bsA7Y4kxy8sDrTIJl44vJLbcdbE1MGX7wyBSi
+YtNOajCrqpvkiXofu5+d6TFJLGALl27t2uLIuBMZU9OK5bkS7As75nsyPnRjwtQp
+cwLHdyNtpgY1PJ2Za6gJyvyykaz8RAlgWbxeAANcdn6lGtVgDEcwVs/d25skS2k3
+KY4U5Ag5+Nextbi5cic+Ep4C2Pfb3A==
+=8Wzl
+-----END PGP SIGNATURE-----
+
+--=-TnJp0vXFQpxxgYpSGy1Q--
+
