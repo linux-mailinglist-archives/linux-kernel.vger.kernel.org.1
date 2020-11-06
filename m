@@ -2,82 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 642D12A8B40
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 01:15:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F9D42A8B55
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 01:16:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732754AbgKFAPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 19:15:48 -0500
-Received: from mga12.intel.com ([192.55.52.136]:23065 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732925AbgKFAPV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 19:15:21 -0500
-IronPort-SDR: rnXmH+9GpWkXVP2g/0Cul04O8DBN8+ELUkOrepBdxXhY5tHOLNiVJHmVGisYdpLfn79wf9yzXx
- r4Kxdhd9U6fQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9796"; a="148759558"
-X-IronPort-AV: E=Sophos;i="5.77,454,1596524400"; 
-   d="scan'208";a="148759558"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2020 16:15:20 -0800
-IronPort-SDR: HQQzm1/acZexAvJm1iNRVnf7Ci21Agq5Kt0TTZj/m3gKzTvxBi/A+Wsu0pp58mwwIoONMqrQWE
- ntSvJLS77tig==
-X-IronPort-AV: E=Sophos;i="5.77,454,1596524400"; 
-   d="scan'208";a="529621757"
-Received: from gabriels-mobl1.amr.corp.intel.com (HELO arch-ashland-svkelley.intel.com) ([10.209.37.33])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2020 16:15:20 -0800
-From:   Sean V Kelley <sean.v.kelley@intel.com>
-To:     bhelgaas@google.com, Jonathan.Cameron@huawei.com,
-        xerces.zhao@gmail.com, rafael.j.wysocki@intel.com,
-        ashok.raj@intel.com, tony.luck@intel.com,
-        sathyanarayanan.kuppuswamy@intel.com, qiuxu.zhuo@intel.com
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sean V Kelley <sean.v.kelley@intel.com>
-Subject: [PATCH v10 16/16] PCI/AER: Add RCEC AER error injection support
-Date:   Thu,  5 Nov 2020 16:14:44 -0800
-Message-Id: <20201106001444.667232-17-sean.v.kelley@intel.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201106001444.667232-1-sean.v.kelley@intel.com>
-References: <20201106001444.667232-1-sean.v.kelley@intel.com>
+        id S1733102AbgKFAQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 19:16:19 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:53206 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732729AbgKFAQS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 19:16:18 -0500
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A604dCp029775;
+        Thu, 5 Nov 2020 16:16:02 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=Twwf1bZ/gqt8fZsJXUQLmYphU/pAhqDT8z55eJCaS5s=;
+ b=nbzfUTrK2H4Y3HVHWP+UrFJJLW8e1FR9A4Q/35fCzUUwr3SgNPMbF80vF4Mf/b7Hv98O
+ UOtspkOQGT0bnnpuOExNg4TcqvhjKF9BKsezwxy9LhNzUXu864KDXFLYYgkFVI6kiYx1
+ Pa/V5C53S43bMrkpiP+eaBd7JUczFhlhNBM= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 34mr9b94v8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 05 Nov 2020 16:16:02 -0800
+Received: from NAM04-BN3-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.230) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 5 Nov 2020 16:16:01 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kbscs5neEBXNDNSddZTgKHp91vy6HCQsCeYw8Ju0wi0NS7CRfadte3QPusP6TGPrkd0or4dkdaYEk/y4PUuWp5rbkQ5qyzfS4sr9l4vkmiQmNlvFQIs361V0NjFzol1henHN00uYmDekl15B2xpklfCgQtPmEHqoixAPkeIjLOLf8RrBbwySD/4L2QK7vymtmPbcv/cATvW54hQCSzRpciN9eShk6NdrXcoW1kpjV8jYArDp+TeIpL6FHZ8tS/CVS2MMswGGWd/z5jrzRKib44CAO7+60aoxIpvCkcQe6A/jBk/NHjohTYkdoNkaC6NKnR/wrSAlgtCahkqVskNtIA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Twwf1bZ/gqt8fZsJXUQLmYphU/pAhqDT8z55eJCaS5s=;
+ b=cC1OHhyUISN/Y8pjqFj0SmpcT6PtI8oEE2mySPAz+JL1wET/Fh1y74ZRvHuDUnFdJnKGvHwROKL7nwjxmhn04ncTCriN6/TtL0XK1yForvi3VRw6J0v0yr/OUk1CWHa6cCy/Rq6ZSes8Snppm6t1LK46niCegsWxSiH5E6Erf/W1aUlpiB8+LS+s8NhbkBfrZzasy5SH05jLOd2KOJkwocZieofHdVQiCO88OGDZmyBdDCHb/RA9kkOtjSnBLLvkDjpdKWYzHqIWU+naSNDUbOEUZCyFTHEsMpmOB/aEGchLxME2LTcTxiXXLImzVhgKJzjWtzh13hoCChDh8G+LSA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Twwf1bZ/gqt8fZsJXUQLmYphU/pAhqDT8z55eJCaS5s=;
+ b=Vtb30AUkga7I336WPhMDi/eiey0kMt+oNIDGr8DFdvYgDgtvLDpEzc8weyIekGmmetm3iCxv/G1j5Hq607Jvawx0N92WTs/61kHhoXr5MMb0D0R9M4cuIQRmzWntR0GXjmCNW5Sx6lftdvQnxB993ZYSCEVRXD/AxqLCYM4YKZw=
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
+ by BYAPR15MB2647.namprd15.prod.outlook.com (2603:10b6:a03:153::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18; Fri, 6 Nov
+ 2020 00:15:58 +0000
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::7d77:205b:bbc4:4c70]) by BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::7d77:205b:bbc4:4c70%6]) with mapi id 15.20.3499.030; Fri, 6 Nov 2020
+ 00:15:57 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     Daniel Xu <dxu@dxuuu.xyz>
+CC:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "andrii.nakryiko@gmail.com" <andrii.nakryiko@gmail.com>,
+        Kernel Team <Kernel-team@fb.com>
+Subject: Re: [PATCH bpf v4 1/2] lib/strncpy_from_user.c: Don't overcopy bytes
+ after NUL terminator
+Thread-Topic: [PATCH bpf v4 1/2] lib/strncpy_from_user.c: Don't overcopy bytes
+ after NUL terminator
+Thread-Index: AQHWs9C5LVaWDjXRREKJL+Ztb1AwE6m6PF2A
+Date:   Fri, 6 Nov 2020 00:15:57 +0000
+Message-ID: <472C44CE-2DB2-48B1-8F58-0541F877AEA7@fb.com>
+References: <cover.1604620776.git.dxu@dxuuu.xyz>
+ <4ff12d0c19de63e7172d25922adfb83ae7c8691f.1604620776.git.dxu@dxuuu.xyz>
+In-Reply-To: <4ff12d0c19de63e7172d25922adfb83ae7c8691f.1604620776.git.dxu@dxuuu.xyz>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3608.120.23.2.4)
+authentication-results: dxuuu.xyz; dkim=none (message not signed)
+ header.d=none;dxuuu.xyz; dmarc=none action=none header.from=fb.com;
+x-originating-ip: [2620:10d:c090:400::5:ca49]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 25cccf58-4a6b-4326-9a72-08d881e92289
+x-ms-traffictypediagnostic: BYAPR15MB2647:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR15MB26478AD63A5721CB0ED486B3B3ED0@BYAPR15MB2647.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-oob-tlc-oobclassifiers: OLM:1332;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: gqVllp04ueFGNoRvE7Xh2Cl76kOqsgOTmMkyYdNj8OzDyqg3VExIuB8fyocSZEOFyJPzGkwHYpEs8NAZ+d2DPfKJvcw3eUnq4QsnR3srFNO3R0LybGpp6OPbO9aGrfFfY/iJvHRkZOIHsQIdVBNiYT1skBQ5H42YsSVQ/zT66ZZXBnwBqloYZVnE5myO9FhSlwscylb+9L/irAqkZpttwPIYb78yovAqcmZB0V/6FQeTS1OHgAg8yOqTWcKiPbyEBbuMybPmOAZDTr5CNZT7we2s0MZIH13UY8wrh/ZYAyRc2dxIcUl/9quaCLqHIL/6QvxTYL+SeNg8kCHgxZGbkA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(396003)(376002)(39860400002)(136003)(346002)(36756003)(478600001)(2906002)(5660300002)(186003)(316002)(71200400001)(4326008)(54906003)(2616005)(53546011)(6506007)(66476007)(6916009)(8936002)(64756008)(6486002)(76116006)(66446008)(66946007)(86362001)(66556008)(8676002)(91956017)(6512007)(33656002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: +sddDc3AC6Yd0EJVTg8FlkBo3aqQKuaQe8BHTdQeztcPgirj8XcAzqCk1pMHYkbYBZGxErZiUQyF7SocFJRjK5ob07KOAAaivSIPXetWOiOzWxVLCoRjoZ/ctgu6FOpkyIQcCsFW3MZx3LfdQTKinrEpIts3Y9OYubuTEoKbjVCXGfiGOkDM5fSzoUZUz+95PcHcPDtGziIWe3lePoOS2DLGL81cgDTSFYe2Ub3dTmP1sgJkFnoYIgWu5cocN5t07HvIZq21piXIsSRohaqHiZq6rVpwBeHcf0g97xHU5bShEYjcfmRMjcSa3esuDUCwWJbyBani8+myk30E6mKfWTY5g3Y0yq45bfXm5P5bTVUFPNur3fg4WMzooj+jQU79PtVTo9Sv2N2rCJ6rhmozTodtwHcRMA7ohrzjprMO2EPtoDeFBlfIYecDDRN06CanJWsszHUEasjJriYCwfLVM74X1+CnKXHwfjQwmf6UAEhmrk1cei9EvDIXWdLPKW2DOLQcIQEWyLp7RAEsSZuap6ykQTOeMoJZwC0IPUM4rwr3oknm+/XrULv8GIpNoT+3C2NmMvfYyeDzfctOFuV3dqa2CQdU7l4dW9JOTtxXYzWzgmSNWmmJBYFjWxBajPJceDECLlaKpyGmbgYtrW82mvj7wUXxKI39GuSX08FGVIYtz2XHGyog02Vio22wQpqD
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <BBC7D29BA048AC4CA1A1F4FA615C912A@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB2999.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 25cccf58-4a6b-4326-9a72-08d881e92289
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Nov 2020 00:15:57.8522
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 9Lz2R8lWf8UO3o9IIhC5g2tUmspDFWXosin6vJ6X3G+Tih8gkl6Wrj1dRpxoWtQ5yhz6U9FDIiWoX+kwRguf8Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2647
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-05_16:2020-11-05,2020-11-05 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ phishscore=0 clxscore=1015 lowpriorityscore=0 mlxlogscore=667
+ suspectscore=0 mlxscore=0 priorityscore=1501 impostorscore=0 bulkscore=0
+ adultscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011050158
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
 
-Root Complex Event Collectors (RCEC) appear as peers to Root Ports and may
-also have the AER capability.
 
-Add RCEC support to the AER error injection driver.
+> On Nov 5, 2020, at 4:06 PM, Daniel Xu <dxu@dxuuu.xyz> wrote:
+>=20
+> do_strncpy_from_user() may copy some extra bytes after the NUL
+> terminator into the destination buffer. This usually does not matter for
+> normal string operations. However, when BPF programs key BPF maps with
+> strings, this matters a lot.
+>=20
+> A BPF program may read strings from user memory by calling the
+> bpf_probe_read_user_str() helper which eventually calls
+> do_strncpy_from_user(). The program can then key a map with the
+> resulting string. BPF map keys are fixed-width and string-agnostic,
+> meaning that map keys are treated as a set of bytes.
+>=20
+> The issue is when do_strncpy_from_user() overcopies bytes after the NUL
+> terminator, it can result in seemingly identical strings occupying
+> multiple slots in a BPF map. This behavior is subtle and totally
+> unexpected by the user.
+>=20
+> This commit uses the proper word-at-a-time APIs to avoid overcopying.
+>=20
+> Fixes: 6ae08ae3dea2 ("bpf: Add probe_read_{user, kernel} and probe_read_{=
+user, kernel}_str helpers")
+> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
 
-Co-developed-by: Sean V Kelley <sean.v.kelley@intel.com>
-Link: https://lore.kernel.org/r/20201002184735.1229220-15-seanvk.dev@oregontracks.org
-Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
----
- drivers/pci/pcie/aer_inject.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+Acked-by: Song Liu <songliubraving@fb.com>
 
-diff --git a/drivers/pci/pcie/aer_inject.c b/drivers/pci/pcie/aer_inject.c
-index c2cbf425afc5..767f8859b99b 100644
---- a/drivers/pci/pcie/aer_inject.c
-+++ b/drivers/pci/pcie/aer_inject.c
-@@ -333,8 +333,11 @@ static int aer_inject(struct aer_error_inj *einj)
- 	if (!dev)
- 		return -ENODEV;
- 	rpdev = pcie_find_root_port(dev);
-+	/* If Root Port not found, try to find an RCEC */
-+	if (!rpdev)
-+		rpdev = dev->rcec;
- 	if (!rpdev) {
--		pci_err(dev, "Root port not found\n");
-+		pci_err(dev, "Neither Root Port nor RCEC found\n");
- 		ret = -ENODEV;
- 		goto out_put;
- 	}
--- 
-2.29.2
+[...]
 
