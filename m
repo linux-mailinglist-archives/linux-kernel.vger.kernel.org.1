@@ -2,93 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6C372A9728
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 14:41:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17CE92A9718
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 14:40:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727511AbgKFNli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 08:41:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47810 "EHLO mail.kernel.org"
+        id S1727470AbgKFNk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 08:40:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47454 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726708AbgKFNli (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 08:41:38 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        id S1727438AbgKFNkz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 08:40:55 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AA5E12067B;
-        Fri,  6 Nov 2020 13:41:33 +0000 (UTC)
-Date:   Fri, 6 Nov 2020 08:41:31 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Jonathan Corbet <corbet@lwn.net>, Guo Ren <guoren@kernel.org>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Kees Cook <keescook@chromium.org>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        linux-doc@vger.kernel.org, linux-csky@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-s390@vger.kernel.org, live-patching@vger.kernel.org
-Subject: Re: [PATCH 11/11 v3] ftrace: Add recording of functions that caused
- recursion
-Message-ID: <20201106084131.7dfc3a30@gandalf.local.home>
-In-Reply-To: <20201106131317.GW20201@alley>
-References: <20201106023235.367190737@goodmis.org>
-        <20201106023548.102375687@goodmis.org>
-        <20201106131317.GW20201@alley>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        by mail.kernel.org (Postfix) with ESMTPSA id 036B620735;
+        Fri,  6 Nov 2020 13:40:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604670054;
+        bh=YwRjRr5lQ3DrZpfxUlBZhH48YgZI3xA4YO4Sg1E415c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=X4qmm7sLeUGaNiAgiy4WPChA/ZU3+M1x3a9Wu04rQnc0fOQy+x24c4KFbTl5jQjZH
+         jLDCXPJRBCUS3kcG6Xv4dp7+ED8YWGb1Crx6Px1WDHHk0INGxdE4xfTy6VJfm3BQmi
+         nnkpgO+znrw8YXgpe+OO//E9kgNlyWPAlQAUNgVI=
+Date:   Fri, 6 Nov 2020 14:41:36 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Pawel Laszczak <pawell@cadence.com>
+Cc:     peter.chen@nxp.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, balbi@kernel.org,
+        colin.king@canonical.com, rogerq@ti.com, kurahul@cadence.com,
+        nsekhar@ti.com
+Subject: Re: [PATCH v2 00/10] Introduced new Cadence USBSSP DRD Driver.
+Message-ID: <20201106134136.GA3316286@kroah.com>
+References: <20201106114300.1245-1-pawell@cadence.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201106114300.1245-1-pawell@cadence.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 6 Nov 2020 14:13:17 +0100
-Petr Mladek <pmladek@suse.com> wrote:
-
-> JFYI, the code reading and writing the cache looks good to me.
+On Fri, Nov 06, 2020 at 12:42:50PM +0100, Pawel Laszczak wrote:
+> This patch introduce new Cadence USBSS DRD driver to linux kernel.
 > 
-> It is still possible that some entries might stay unused (filled
-> with zeroes) but it should be hard to hit in practice. It
-> is good enough from my POV.
-
-You mean the part that was commented?
-
+> The Cadence USBSS DRD Controller is a highly configurable IP Core which
+> can be instantiated as Dual-Role Device (DRD), Peripheral Only and
+> Host Only (XHCI)configurations.
 > 
-> I do not give Reviewed-by tag just because I somehow do not have power
-> to review the entire patch carefully enough at the moment.
+> The current driver has been validated with FPGA burned. We have support
+> for PCIe bus, which is used on FPGA prototyping.
+> 
+> The host side of USBSS-DRD controller is compliance with XHCI
+> specification, so it works with standard XHCI Linux driver.
+> 
+> The device side of USBSS DRD controller is compliant with XHCI.
+> The architecture for device side is almost the same as for host side,
+> and most of the XHCI specification can be used to understand how
+> this controller operates.
+> 
+> This controller and driver support Full Speed, Hight Speed, Supper Speed
+> and Supper Speed Plus USB protocol.
+> 
+> The prefix cdnsp used in driver has chosen by analogy to cdn3 driver.
+> The last letter of this acronym means PLUS. The formal name of controller
+> is USBSSP but it's to generic so I've decided to use CDNSP.
+> 
+> The patch 1: adds support for DRD CDNSP.
+> The patch 2: separates common code that can be reusable by cdnsp driver.
+> The patch 3: moves reusable code to separate module.
+> The patch 4: changes prefixes in reusable code from cdns3 to common cdns.
+> The patch 5: adopts gadget_dev pointer in cdns structure to make possible 
+>              use it in both drivers.
+> The patches 6-8: add the main part of driver and has been intentionally
+>              split into 3 part. In my opinion such division should not
+>              affect understanding and reviewing the driver, and cause that
+>              main patch (7/8) is little smaller. Patch 6 introduces main
+>              header file for driver, 7 is the main part that implements all
+>              functionality of driver and 8 introduces tracepoints.
+> The patch 9: Adds cdns3 prefixes to files related with USBSS driver.
+> the patch 10: Adds USBSSP DRD IP driver entry to MAINTAINERS file.
+> 
+> Changlog from v1:
+> - updated common code to latest cdns3 driver
+> - moved cdnsp driver files to cdns3 as sugested by Peter Chan
+> - removed duplicate code from cdnsp_ep0_set_config function
+> - added cdns3 prefixes to file related with USBSS driver
+> - updated MAINTAINERS file
+> - fixed issue with U1
+> - fixed issue with L1
+> - some less improtant changes sugested by Chunfeng Yun
 
-No problem. Thanks for looking at it.
+After a quick review, I don't see anything wrong with this series, nice
+work.
 
-I'm adding a link to this thread, so if someone wants proof you helped out
-on this code, you can have them follow the links ;-)
+It does feel odd you need to split things into a "common" and then 2
+other modules, but I guess it makes sense.  Worst case, over time, you
+merge them back together after everyone just ends up enabling both of
+them :)
 
-Anyway, even if I push this to linux-next where I stop rebasing code
-(because of test coverage), I do rebase for adding tags. So if you ever get
-around at looking at this code, I can add that tag later (before the next
-merge window), or if you find something, I could fix it with a new patch and
-give you a Reported-by.
+Felipe, want me to take these directly, or should they go through your
+tree after you review them?  I never remember with this driver whose it
+goes through.
 
--- Steve
+thanks,
+
+greg k-h
