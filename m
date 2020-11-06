@@ -2,130 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E579A2A9A1A
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 18:00:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6318D2A9A1B
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 18:00:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727746AbgKFQ7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 11:59:37 -0500
-Received: from mail-02.mail-europe.com ([51.89.119.103]:42956 "EHLO
-        mail-02.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727471AbgKFQ7g (ORCPT
+        id S1727665AbgKFQ7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 11:59:51 -0500
+Received: from netrider.rowland.org ([192.131.102.5]:38749 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1725868AbgKFQ7v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 11:59:36 -0500
-Date:   Fri, 06 Nov 2020 16:59:25 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1604681973;
-        bh=q97hEjceJ6nbr48yC1m9U9+JpJMDG+nd0Pgn/ZWOkHg=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=qMeyAQs3016EjEm8+8afwGko2JDjXVjtutZRDvrkddw6psMsdsBhnN0kOCCl1hzD2
-         FcfrYpWSOJKbyjwZszVJIO46QphTJd0EZe1K1n9YzW3Bht7N3Mtyvxoe4ITAL/D9SP
-         R8FECoADFH5JEnebigG6XUmU9JUO044m29p7SAe4=
-To:     Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-From:   =?utf-8?Q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= 
-        <nfraprado@protonmail.com>
-Cc:     linux-leds@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        Brian Masney <masneyb@onstation.org>,
-        Luca Weiss <luca@z3ntu.xyz>,
-        Russell King <linux@armlinux.org.uk>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        linux-kernel@vger.kernel.org, lkcamp@lists.libreplanetbr.org,
-        andrealmeid@collabora.com
-Reply-To: =?utf-8?Q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= 
-          <nfraprado@protonmail.com>
-Subject: [RFC PATCH 3/3] ARM: dts: qcom: msm8974-hammerhead: Add support for the flash LED
-Message-ID: <20201106165737.1029106-4-nfraprado@protonmail.com>
-In-Reply-To: <20201106165737.1029106-1-nfraprado@protonmail.com>
-References: <20201106165737.1029106-1-nfraprado@protonmail.com>
+        Fri, 6 Nov 2020 11:59:51 -0500
+Received: (qmail 47392 invoked by uid 1000); 6 Nov 2020 11:59:30 -0500
+Date:   Fri, 6 Nov 2020 11:59:30 -0500
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     paulmck@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, parri.andrea@gmail.com,
+        will@kernel.org, peterz@infradead.org, boqun.feng@gmail.com,
+        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
+        luc.maranget@inria.fr, akiyks@gmail.com
+Subject: Re: [PATCH memory-model 5/8] tools/memory-model: Add a glossary of
+ LKMM terms
+Message-ID: <20201106165930.GC47039@rowland.harvard.edu>
+References: <20201105215953.GA15309@paulmck-ThinkPad-P72>
+ <20201105220017.15410-5-paulmck@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201105220017.15410-5-paulmck@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the necessary device tree nodes for the flash LED.
+On Thu, Nov 05, 2020 at 02:00:14PM -0800, paulmck@kernel.org wrote:
+> From: "Paul E. McKenney" <paulmck@kernel.org>
+> 
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> ---
+>  tools/memory-model/Documentation/glossary.txt | 155 ++++++++++++++++++++++++++
+>  1 file changed, 155 insertions(+)
+>  create mode 100644 tools/memory-model/Documentation/glossary.txt
+> 
+> diff --git a/tools/memory-model/Documentation/glossary.txt b/tools/memory-model/Documentation/glossary.txt
+> new file mode 100644
+> index 0000000..036fa28
+> --- /dev/null
+> +++ b/tools/memory-model/Documentation/glossary.txt
+> @@ -0,0 +1,155 @@
+> +This document contains brief definitions of LKMM-related terms.  Like most
+> +glossaries, it is not intended to be read front to back (except perhaps
+> +as a way of confirming a diagnosis of OCD), but rather to be searched
+> +for specific terms.
+> +
+> +
+> +Address Dependency:  When the address of a later memory access is computed
+> +	based on the value returned by an earlier load, an "address
+> +	dependency" extends from that load extending to the later access.
+> +	Address dependencies are quite common in RCU read-side critical
+> +	sections:
+> +
+> +	 1 rcu_read_lock();
+> +	 2 p = rcu_dereference(gp);
+> +	 3 do_something(p->a);
+> +	 4 rcu_read_unlock();
+> +
+> +	 In this case, because the address of "p->a" on line 3 is computed
+> +	 from the value returned by the rcu_dereference() on line 2, the
+> +	 address dependency extends from that rcu_dereference() to that
+> +	 "p->a".  In rare cases, optimizing compilers can destroy address
+> +	 dependencies.	Please see Documentation/RCU/rcu_dereference.txt
+> +	 for more information.
+> +
+> +	 See also "Control Dependency".
 
-Signed-off-by: N=C3=ADcolas F. R. A. Prado <nfraprado@protonmail.com>
----
- .../qcom-msm8974-lge-nexus5-hammerhead.dts    | 56 +++++++++++++++++++
- 1 file changed, 56 insertions(+)
+There should also be an entry for "Data Dependency", linked from here
+and from Control Dependency.
 
-diff --git a/arch/arm/boot/dts/qcom-msm8974-lge-nexus5-hammerhead.dts b/arc=
-h/arm/boot/dts/qcom-msm8974-lge-nexus5-hammerhead.dts
-index 32b474bfeec3..6aa93c236178 100644
---- a/arch/arm/boot/dts/qcom-msm8974-lge-nexus5-hammerhead.dts
-+++ b/arch/arm/boot/dts/qcom-msm8974-lge-nexus5-hammerhead.dts
-@@ -730,4 +730,60 @@ otg {
- =09=09=09};
- =09=09};
- =09};
-+=09pm8941@1 {
-+=09=09qcom,leds@d300 {
-+=09=09=09status =3D "ok";
-+
-+=09=09=09compatible =3D "qcom,leds-qpnp";
-+=09=09=09reg =3D <0xd300 0x100>;
-+=09=09=09label =3D "flash";
-+=09=09=09flash-boost-supply =3D <&pm8941_5vs1>;
-+=09=09=09torch-boost-supply =3D <&pm8941_5v>;
-+=09=09=09pm8941_flash0: qcom,flash_0 {
-+=09=09=09=09qcom,max-current =3D <1000>;
-+=09=09=09=09qcom,default-state =3D "off";
-+=09=09=09=09qcom,headroom =3D <3>;
-+=09=09=09=09qcom,duration =3D <1280>;
-+=09=09=09=09qcom,clamp-curr =3D <200>;
-+=09=09=09=09qcom,startup-dly =3D <3>;
-+=09=09=09=09qcom,safety-timer;
-+=09=09=09=09label =3D "flash";
-+=09=09=09=09linux,default-trigger =3D
-+=09=09=09=09=09"flash0_trigger";
-+=09=09=09=09qcom,id =3D <1>;
-+=09=09=09=09linux,name =3D "led:flash_0";
-+=09=09=09=09qcom,current =3D <620>;
-+=09=09=09};
-+
-+=09=09=09pm8941_flash1: qcom,flash_1 {
-+=09=09=09=09qcom,max-current =3D <1000>;
-+=09=09=09=09qcom,default-state =3D "off";
-+=09=09=09=09qcom,headroom =3D <3>;
-+=09=09=09=09qcom,duration =3D <1280>;
-+=09=09=09=09qcom,clamp-curr =3D <200>;
-+=09=09=09=09qcom,startup-dly =3D <3>;
-+=09=09=09=09qcom,safety-timer;
-+=09=09=09=09linux,default-trigger =3D
-+=09=09=09=09=09"flash1_trigger";
-+=09=09=09=09label =3D "flash";
-+=09=09=09=09qcom,id =3D <2>;
-+=09=09=09=09linux,name =3D "led:flash_1";
-+=09=09=09=09qcom,current =3D <620>;
-+=09=09=09};
-+
-+=09=09=09pm8941_torch: qcom,flash_torch {
-+=09=09=09=09qcom,max-current =3D <200>;
-+=09=09=09=09qcom,default-state =3D "off";
-+=09=09=09=09qcom,headroom =3D <0>;
-+=09=09=09=09qcom,startup-dly =3D <1>;
-+=09=09=09=09linux,default-trigger =3D
-+=09=09=09=09=09"torch_trigger";
-+=09=09=09=09label =3D "flash";
-+=09=09=09=09qcom,id =3D <2>;
-+=09=09=09=09linux,name =3D "led:flash_torch";
-+=09=09=09=09qcom,current =3D <90>;
-+=09=09=09=09qcom,torch-enable;
-+=09=09=09};
-+=09=09};
-+=09};
- };
---=20
-2.29.2
+> +Marked Access:  An access to a variable that uses an special function or
+> +	macro such as "r1 = READ_ONCE()" or "smp_store_release(&a, 1)".
 
+How about "r1 = READ_ONCE(x)"?
 
+Alan
