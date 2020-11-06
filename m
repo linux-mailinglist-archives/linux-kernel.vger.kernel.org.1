@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C9392A9EEE
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 22:14:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84F662A9EF5
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 22:14:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728133AbgKFVNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 16:13:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47176 "EHLO mail.kernel.org"
+        id S1728694AbgKFVOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 16:14:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47190 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728070AbgKFVNX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 16:13:23 -0500
-Subject: Re: [GIT PULL] VFIO fixes for v5.10-rc3
+        id S1728071AbgKFVNY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 16:13:24 -0500
+Subject: Re: [GIT PULL] SPI fixes for v5.10-rc2-2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1604697203;
-        bh=Fw23+0OsxcBrqf1MpJP96N4jzfg0u8Irl5O9gb3+5UI=;
+        bh=JSgth3tfgPhPN4tXKctwBg5AZk3HnGTJlyywwpQuknk=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=a8bD36s2x8AwoGFUdmnyFxmd9GOnqikWgyGNQzmjW7FD/47qpdZbG7VJvLlDZwHWs
-         iIbs1gupxflwYWI6tEuL3xJR4wfY6JSVx2OlPixPvnECGS3m85eHFR2Gd3HmfGaN5v
-         E+dMjyv0X4i9QQkKkA6cmc6vaK0vVo3AMNYp/QYk=
+        b=UqhEORHs88GdfXSl2mT9PXPNAJOTYsUXEXzAX9pm1PtiBWxmaUxKAEwhwepQLjJeJ
+         hlJFI28MJGg9AXsQ0H7MkcBfbI9vBUE9jwwGC1OGLMMdZpuErxcq8otU/NmY7DInUD
+         Uh8/9qNQYcgdC1F8FmOl/BxSrWs4POIBmmItrS7A=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201105135157.72abcadb@w520.home>
-References: <20201105135157.72abcadb@w520.home>
-X-PR-Tracked-List-Id: <kvm.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201105135157.72abcadb@w520.home>
-X-PR-Tracked-Remote: git://github.com/awilliam/linux-vfio.git tags/vfio-v5.10-rc3
-X-PR-Tracked-Commit-Id: e4eccb853664de7bcf9518fb658f35e748bf1f68
+In-Reply-To: <20201106173823.48AD72151B@mail.kernel.org>
+References: <20201106173823.48AD72151B@mail.kernel.org>
+X-PR-Tracked-List-Id: <linux-spi.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20201106173823.48AD72151B@mail.kernel.org>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git tags/spi-fix-v5.10-rc2-2
+X-PR-Tracked-Commit-Id: bc7f2cd7559c5595dc38b909ae9a8d43e0215994
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 1669ecf9c884c639c4a83859e33a24d892aec790
-Message-Id: <160469720329.14190.11091433669088855193.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 44d80621857f916f1370782cdd20c9359ccc5eea
+Message-Id: <160469720351.14190.6655629553371321723.pr-tracker-bot@kernel.org>
 Date:   Fri, 06 Nov 2020 21:13:23 +0000
-To:     Alex Williamson <alex.williamson@redhat.com>
+To:     Mark Brown <broonie@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 5 Nov 2020 13:51:57 -0700:
+The pull request you sent on Fri, 06 Nov 2020 17:37:59 +0000:
 
-> git://github.com/awilliam/linux-vfio.git tags/vfio-v5.10-rc3
+> https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git tags/spi-fix-v5.10-rc2-2
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/1669ecf9c884c639c4a83859e33a24d892aec790
+https://git.kernel.org/torvalds/c/44d80621857f916f1370782cdd20c9359ccc5eea
 
 Thank you!
 
