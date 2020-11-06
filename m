@@ -2,109 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 609792A984E
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 16:14:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4260D2A9860
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 16:16:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727803AbgKFPOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 10:14:35 -0500
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:38511 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727665AbgKFPOY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 10:14:24 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id AC98F580701;
-        Fri,  6 Nov 2020 10:14:23 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Fri, 06 Nov 2020 10:14:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm1; bh=SzmJUpEELVvdR
-        xE50uIjwGm8zMB0GdoR18I3irVVZQI=; b=RCCAOLFsgkOyCNGZmUO2sVk9uv06J
-        qAMp84Mbv5OmnpO/oVhohP81FilXzdgbNTPY5Vey/aaI6uwCVYhNdMj8RAy7WfLF
-        cewW8iwlEUaJ/Ht0CTeKievU0XRMTCbvSgErdO/Bc4Crolk3qtQBaPmkMdI+nUpz
-        LEoytHBqeIRu4RpQyyeoeJqwSJoBOdClaFeJ2o647tNTEKWZSk48PHbLV4OGLi3T
-        5Cvavapc44/EaKa8zp3ePHMUCMpXpHFK7LJal33umIuxukpjS92KSLd60cHRyAm0
-        T1aZUyLVd3XIF2Tug8RfKzswxFEKadKJbC7BG+Uw2p5AKil+Yawb+BV7g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; bh=SzmJUpEELVvdRxE50uIjwGm8zMB0GdoR18I3irVVZQI=; b=BytyAt+R
-        sMjY8gQbI5HJ5sGPo6QMPPFmnCK6+KDsy1wvSPU0nUAMhn22BnTQ4UsS8vgfAMEZ
-        XUSiSKZvoutzCYgQDjaG0E/TgT6iobizThUVMxKZDUkhS8Ewm8RVjboX1gLeecuP
-        m6coczlSLFXfEp01WZoxwipYBERIhmEfE6vLVNW0UIAQuNwTNUJKDyyHyVDnFEoX
-        m5QFhDNhHb+Cu9rFJzxqKkz3xHMqWs25OxxNccD5E9J1zS9cJZSHI6Jp6c98lYEH
-        r2ZnXRfQ4BpNdukZtCgaBD8TtUqv6bycm6ePNgApkjMltKFmyPF4hUMACdxHlSBP
-        a2vSkZnYalBYvA==
-X-ME-Sender: <xms:T2ilX3wyiOdT9FK4ymEi7mv0oneD9pLoakL_Gd5lN1vmObQvLdgtNQ>
-    <xme:T2ilX_QCn0yjaf2aRsn4v-tTfUDa1K5rZW1Rwf8uBi0VqtZIePj81TwvMY94B-y8a
-    Io1KDl1fdtptIFVLzw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddtledgjeehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepvdekleevfeffkeejhfffueelteelfeduieefheduudfggffhhfffheevveeh
-    hedvnecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgepfeenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:T2ilXxXSq8RdxYQlQcj5jRxU4aDsgUE7HxME6IVD9t7B3HAwRSUE6A>
-    <xmx:T2ilXxi9JkK6tkWO8M4i4vcxe-MJPWxkRqh2e1-AILWKMg9qMyoCNA>
-    <xmx:T2ilX5DXxVbPlhA9QFSjBI-d6KI2kuMH83T7uZcFHCXY1EX4eoE6Nw>
-    <xmx:T2ilXxZRyNBPR3tXZYSnu_anBhpuggG2k4xdndsixbBfBz07at6CLA>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 24297306005B;
-        Fri,  6 Nov 2020 10:14:23 -0500 (EST)
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>, Christoph Hellwig <hch@lst.de>
-Cc:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        Yong Deng <yong.deng@magewell.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Hans Verkuil <hverkuil@xs4all.nl>
-Subject: [PATCH 7/7] media: sun8i-di: Remove the call to of_dma_configure
-Date:   Fri,  6 Nov 2020 16:14:11 +0100
-Message-Id: <20201106151411.321743-8-maxime@cerno.tech>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201106151411.321743-1-maxime@cerno.tech>
-References: <20201106151411.321743-1-maxime@cerno.tech>
+        id S1727660AbgKFPP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 10:15:26 -0500
+Received: from raptor.unsafe.ru ([5.9.43.93]:46012 "EHLO raptor.unsafe.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727182AbgKFPP0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 10:15:26 -0500
+Received: from comp-core-i7-2640m-0182e6.redhat.com (ip-89-103-122-167.net.upcbroadband.cz [89.103.122.167])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by raptor.unsafe.ru (Postfix) with ESMTPSA id 2F0FE209D4;
+        Fri,  6 Nov 2020 15:15:21 +0000 (UTC)
+From:   Alexey Gladkov <gladkov.alexey@gmail.com>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        "Eric W . Biederman" <ebiederm@xmission.com>
+Cc:     Alexey Gladkov <legion@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Kees Cook <keescook@chromium.org>
+Subject: [PATCH v4 0/3] proc: Relax check of mount visibility
+Date:   Fri,  6 Nov 2020 16:15:09 +0100
+Message-Id: <cover.1604675649.git.gladkov.alexey@gmail.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.1 (raptor.unsafe.ru [5.9.43.93]); Fri, 06 Nov 2020 15:15:23 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-of_dma_configure is called by the core before probe gets called so this
-is redundant.
+If only the dynamic part of procfs is mounted (subset=pid), then there is no
+need to check if procfs is fully visible to the user in the new user namespace.
 
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
----
- drivers/media/platform/sunxi/sun8i-di/sun8i-di.c | 4 ----
- 1 file changed, 4 deletions(-)
+Changelog
+---------
+v4:
+* Set SB_I_DYNAMIC only if pidonly is set.
+* Add an error message if subset=pid is canceled during remount.
 
-diff --git a/drivers/media/platform/sunxi/sun8i-di/sun8i-di.c b/drivers/media/platform/sunxi/sun8i-di/sun8i-di.c
-index ba5d07886607..ed863bf5ea80 100644
---- a/drivers/media/platform/sunxi/sun8i-di/sun8i-di.c
-+++ b/drivers/media/platform/sunxi/sun8i-di/sun8i-di.c
-@@ -825,10 +825,6 @@ static int deinterlace_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
--	ret = of_dma_configure(dev->dev, dev->dev->of_node, true);
--	if (ret)
--		return ret;
--
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	dev->base = devm_ioremap_resource(&pdev->dev, res);
- 	if (IS_ERR(dev->base))
+v3:
+* Add 'const' to struct cred *mounter_cred (fix kernel test robot warning).
+
+v2:
+* cache the mounters credentials and make access to the net directories
+  contingent of the permissions of the mounter of procfs.
+
+--
+
+Alexey Gladkov (3):
+  proc: Relax check of mount visibility
+  proc: Show /proc/self/net only for CAP_NET_ADMIN
+  proc: Disable cancellation of subset=pid option
+
+ fs/namespace.c          | 27 ++++++++++++++++-----------
+ fs/proc/proc_net.c      |  8 ++++++++
+ fs/proc/root.c          | 29 ++++++++++++++++++++++-------
+ include/linux/fs.h      |  1 +
+ include/linux/proc_fs.h |  1 +
+ 5 files changed, 48 insertions(+), 18 deletions(-)
+
 -- 
-2.28.0
+2.25.4
 
