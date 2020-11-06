@@ -2,181 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2BAA2A8BDC
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 02:06:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AA382A8C06
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 02:20:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733273AbgKFBGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 20:06:42 -0500
-Received: from mga18.intel.com ([134.134.136.126]:38191 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733219AbgKFBGl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 20:06:41 -0500
-IronPort-SDR: 48iqFFLbCvi1liTU60IUZpDaFEFL0m506AwQgcXNKIgjy5Q7tAc1AEYBwi927mfGUP0pdXaQx3
- PMhDL6pHIrIA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9796"; a="157264721"
-X-IronPort-AV: E=Sophos;i="5.77,454,1596524400"; 
-   d="scan'208";a="157264721"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2020 17:06:40 -0800
-IronPort-SDR: W4hsUtTSzDLH7xlqOYx7acicCeYuCuZAwYVPPIepDZMs4KXRXdpPmqdeucjSTqDT4fu4Mq94E7
- Uwv4pw3iGweg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,454,1596524400"; 
-   d="scan'208";a="471874572"
-Received: from local-michael-cet-test.sh.intel.com ([10.239.159.156])
-  by orsmga004.jf.intel.com with ESMTP; 05 Nov 2020 17:06:38 -0800
-From:   Yang Weijiang <weijiang.yang@intel.com>
-To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pbonzini@redhat.com, sean.j.christopherson@intel.com,
-        jmattson@google.com
-Cc:     yu.c.zhang@linux.intel.com, Yang Weijiang <weijiang.yang@intel.com>
-Subject: [PATCH v14 13/13] KVM: nVMX: Enable CET support for nested VMX
-Date:   Fri,  6 Nov 2020 09:16:37 +0800
-Message-Id: <20201106011637.14289-14-weijiang.yang@intel.com>
-X-Mailer: git-send-email 2.17.2
-In-Reply-To: <20201106011637.14289-1-weijiang.yang@intel.com>
-References: <20201106011637.14289-1-weijiang.yang@intel.com>
+        id S1732335AbgKFBUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 20:20:21 -0500
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:57345 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730246AbgKFBUU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 20:20:20 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=22;SR=0;TI=SMTPD_---0UEN0K6x_1604625615;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UEN0K6x_1604625615)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 06 Nov 2020 09:20:16 +0800
+Subject: Re: [PATCH v21 06/19] mm/rmap: stop store reordering issue on
+ page->mapping
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+To:     akpm@linux-foundation.org, mgorman@techsingularity.net,
+        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
+        daniel.m.jordan@oracle.com, willy@infradead.org,
+        hannes@cmpxchg.org, lkp@intel.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        shakeelb@google.com, iamjoonsoo.kim@lge.com,
+        richard.weiyang@gmail.com, kirill@shutemov.name,
+        alexander.duyck@gmail.com, rong.a.chen@intel.com, mhocko@suse.com,
+        vdavydov.dev@gmail.com, shy828301@gmail.com
+Cc:     Minchan Kim <minchan@kernel.org>
+References: <1604566549-62481-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1604566549-62481-7-git-send-email-alex.shi@linux.alibaba.com>
+Message-ID: <e66ef2e5-c74c-6498-e8b3-56c37b9d2d15@linux.alibaba.com>
+Date:   Fri, 6 Nov 2020 09:20:04 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.0
+MIME-Version: 1.0
+In-Reply-To: <1604566549-62481-7-git-send-email-alex.shi@linux.alibaba.com>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add vmcs12 fields for all CET fields, pass-through CET MSRs to L2 when
-possible, and enumerate the VMCS controls and CR4 bit as supported.
 
-Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
+
+updated for comments change from Johannes
+
+
+From 2fd278b1ca6c3e260ad249808b62f671d8db5a7b Mon Sep 17 00:00:00 2001
+From: Alex Shi <alex.shi@linux.alibaba.com>
+Date: Thu, 5 Nov 2020 11:38:24 +0800
+Subject: [PATCH v21 06/19] mm/rmap: stop store reordering issue on
+ page->mapping
+
+Hugh Dickins and Minchan Kim observed a long time issue which
+discussed here, but actully the mentioned fix missed.
+https://lore.kernel.org/lkml/20150504031722.GA2768@blaptop/
+The store reordering may cause problem in the scenario:
+
+	CPU 0						CPU1
+   do_anonymous_page
+	page_add_new_anon_rmap()
+	  page->mapping = anon_vma + PAGE_MAPPING_ANON
+	lru_cache_add_inactive_or_unevictable()
+	  spin_lock(lruvec->lock)
+	  SetPageLRU()
+	  spin_unlock(lruvec->lock)
+						/* idletacking judged it as LRU
+						 * page so pass the page in
+						 * page_idle_clear_pte_refs
+						 */
+						page_idle_clear_pte_refs
+						  rmap_walk
+						    if PageAnon(page)
+
+Johannes give detailed examples how the store reordering could cause
+a trouble:
+"The concern is the SetPageLRU may get reorder before 'page->mapping'
+setting, That would make CPU 1 will observe at page->mapping after
+observing PageLRU set on the page.
+
+1. anon_vma + PAGE_MAPPING_ANON
+
+   That's the in-order scenario and is fine.
+
+2. NULL
+
+   That's possible if the page->mapping store gets reordered to occur
+   after SetPageLRU. That's fine too because we check for it.
+
+3. anon_vma without the PAGE_MAPPING_ANON bit
+
+   That would be a problem and could lead to all kinds of undesirable
+   behavior including crashes and data corruption.
+
+   Is it possible? AFAICT the compiler is allowed to tear the store to
+   page->mapping and I don't see anything that would prevent it.
+
+That said, I also don't see how the reader testing PageLRU under the
+lru_lock would prevent that in the first place. AFAICT we need that
+WRITE_ONCE() around the page->mapping assignment."
+
+Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Minchan Kim <minchan@kernel.org>
+Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-mm@kvack.org
 ---
- arch/x86/kvm/vmx/nested.c | 30 ++++++++++++++++++++++++++++--
- arch/x86/kvm/vmx/vmcs12.c |  6 ++++++
- arch/x86/kvm/vmx/vmcs12.h | 14 +++++++++++++-
- arch/x86/kvm/vmx/vmx.c    |  1 +
- 4 files changed, 48 insertions(+), 3 deletions(-)
+ mm/rmap.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-index 8abc7bdd94f7..0fe18986c259 100644
---- a/arch/x86/kvm/vmx/nested.c
-+++ b/arch/x86/kvm/vmx/nested.c
-@@ -638,6 +638,29 @@ static inline bool nested_vmx_prepare_msr_bitmap(struct kvm_vcpu *vcpu,
- 	nested_vmx_disable_intercept_for_msr(msr_bitmap_l1, msr_bitmap_l0,
- 					     MSR_KERNEL_GS_BASE, MSR_TYPE_RW);
+diff --git a/mm/rmap.c b/mm/rmap.c
+index 1b84945d655c..380c6b9956c2 100644
+--- a/mm/rmap.c
++++ b/mm/rmap.c
+@@ -1054,8 +1054,14 @@ static void __page_set_anon_rmap(struct page *page,
+ 	if (!exclusive)
+ 		anon_vma = anon_vma->root;
  
-+	/* Pass CET MSRs to nested VM if L0 and L1 are set to pass-through. */
-+	nested_vmx_cond_disable_intercept_for_msr(vcpu, MSR_IA32_U_CET,
-+						  msr_bitmap_l1, msr_bitmap_l0,
-+						  MSR_TYPE_RW);
-+	nested_vmx_cond_disable_intercept_for_msr(vcpu, MSR_IA32_PL3_SSP,
-+						  msr_bitmap_l1, msr_bitmap_l0,
-+						  MSR_TYPE_RW);
-+	nested_vmx_cond_disable_intercept_for_msr(vcpu, MSR_IA32_S_CET,
-+						  msr_bitmap_l1, msr_bitmap_l0,
-+						  MSR_TYPE_RW);
-+	nested_vmx_cond_disable_intercept_for_msr(vcpu, MSR_IA32_PL0_SSP,
-+						  msr_bitmap_l1, msr_bitmap_l0,
-+						  MSR_TYPE_RW);
-+	nested_vmx_cond_disable_intercept_for_msr(vcpu, MSR_IA32_PL1_SSP,
-+						  msr_bitmap_l1, msr_bitmap_l0,
-+						  MSR_TYPE_RW);
-+	nested_vmx_cond_disable_intercept_for_msr(vcpu, MSR_IA32_PL2_SSP,
-+						  msr_bitmap_l1, msr_bitmap_l0,
-+						  MSR_TYPE_RW);
-+	nested_vmx_cond_disable_intercept_for_msr(vcpu, MSR_IA32_INT_SSP_TAB,
-+						  msr_bitmap_l1, msr_bitmap_l0,
-+						  MSR_TYPE_RW);
-+
- 	/*
- 	 * Checking the L0->L1 bitmap is trying to verify two things:
- 	 *
-@@ -6336,7 +6359,9 @@ void nested_vmx_setup_ctls_msrs(struct nested_vmx_msrs *msrs, u32 ept_caps)
- 		VM_EXIT_HOST_ADDR_SPACE_SIZE |
- #endif
- 		VM_EXIT_LOAD_IA32_PAT | VM_EXIT_SAVE_IA32_PAT |
--		VM_EXIT_CLEAR_BNDCFGS | VM_EXIT_LOAD_IA32_PERF_GLOBAL_CTRL;
-+		VM_EXIT_CLEAR_BNDCFGS | VM_EXIT_LOAD_IA32_PERF_GLOBAL_CTRL |
-+		VM_EXIT_LOAD_CET_STATE;
-+
- 	msrs->exit_ctls_high |=
- 		VM_EXIT_ALWAYSON_WITHOUT_TRUE_MSR |
- 		VM_EXIT_LOAD_IA32_EFER | VM_EXIT_SAVE_IA32_EFER |
-@@ -6356,7 +6381,8 @@ void nested_vmx_setup_ctls_msrs(struct nested_vmx_msrs *msrs, u32 ept_caps)
- 		VM_ENTRY_IA32E_MODE |
- #endif
- 		VM_ENTRY_LOAD_IA32_PAT | VM_ENTRY_LOAD_BNDCFGS |
--		VM_ENTRY_LOAD_IA32_PERF_GLOBAL_CTRL;
-+		VM_ENTRY_LOAD_IA32_PERF_GLOBAL_CTRL | VM_ENTRY_LOAD_CET_STATE;
-+
- 	msrs->entry_ctls_high |=
- 		(VM_ENTRY_ALWAYSON_WITHOUT_TRUE_MSR | VM_ENTRY_LOAD_IA32_EFER);
- 
-diff --git a/arch/x86/kvm/vmx/vmcs12.c b/arch/x86/kvm/vmx/vmcs12.c
-index c8e51c004f78..8fd8e0beecef 100644
---- a/arch/x86/kvm/vmx/vmcs12.c
-+++ b/arch/x86/kvm/vmx/vmcs12.c
-@@ -137,6 +137,9 @@ const unsigned short vmcs_field_to_offset_table[] = {
- 	FIELD(GUEST_PENDING_DBG_EXCEPTIONS, guest_pending_dbg_exceptions),
- 	FIELD(GUEST_SYSENTER_ESP, guest_sysenter_esp),
- 	FIELD(GUEST_SYSENTER_EIP, guest_sysenter_eip),
-+	FIELD(GUEST_S_CET, guest_s_cet),
-+	FIELD(GUEST_SSP, guest_ssp),
-+	FIELD(GUEST_INTR_SSP_TABLE, guest_ssp_tbl),
- 	FIELD(HOST_CR0, host_cr0),
- 	FIELD(HOST_CR3, host_cr3),
- 	FIELD(HOST_CR4, host_cr4),
-@@ -149,5 +152,8 @@ const unsigned short vmcs_field_to_offset_table[] = {
- 	FIELD(HOST_IA32_SYSENTER_EIP, host_ia32_sysenter_eip),
- 	FIELD(HOST_RSP, host_rsp),
- 	FIELD(HOST_RIP, host_rip),
-+	FIELD(HOST_S_CET, host_s_cet),
-+	FIELD(HOST_SSP, host_ssp),
-+	FIELD(HOST_INTR_SSP_TABLE, host_ssp_tbl),
- };
- const unsigned int nr_vmcs12_fields = ARRAY_SIZE(vmcs_field_to_offset_table);
-diff --git a/arch/x86/kvm/vmx/vmcs12.h b/arch/x86/kvm/vmx/vmcs12.h
-index 80232daf00ff..016896c9e701 100644
---- a/arch/x86/kvm/vmx/vmcs12.h
-+++ b/arch/x86/kvm/vmx/vmcs12.h
-@@ -115,7 +115,13 @@ struct __packed vmcs12 {
- 	natural_width host_ia32_sysenter_eip;
- 	natural_width host_rsp;
- 	natural_width host_rip;
--	natural_width paddingl[8]; /* room for future expansion */
-+	natural_width host_s_cet;
-+	natural_width host_ssp;
-+	natural_width host_ssp_tbl;
-+	natural_width guest_s_cet;
-+	natural_width guest_ssp;
-+	natural_width guest_ssp_tbl;
-+	natural_width paddingl[2]; /* room for future expansion */
- 	u32 pin_based_vm_exec_control;
- 	u32 cpu_based_vm_exec_control;
- 	u32 exception_bitmap;
-@@ -295,6 +301,12 @@ static inline void vmx_check_vmcs12_offsets(void)
- 	CHECK_OFFSET(host_ia32_sysenter_eip, 656);
- 	CHECK_OFFSET(host_rsp, 664);
- 	CHECK_OFFSET(host_rip, 672);
-+	CHECK_OFFSET(host_s_cet, 680);
-+	CHECK_OFFSET(host_ssp, 688);
-+	CHECK_OFFSET(host_ssp_tbl, 696);
-+	CHECK_OFFSET(guest_s_cet, 704);
-+	CHECK_OFFSET(guest_ssp, 712);
-+	CHECK_OFFSET(guest_ssp_tbl, 720);
- 	CHECK_OFFSET(pin_based_vm_exec_control, 744);
- 	CHECK_OFFSET(cpu_based_vm_exec_control, 748);
- 	CHECK_OFFSET(exception_bitmap, 752);
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 6ba2027a3d44..5a3e2ff4d7ad 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -7276,6 +7276,7 @@ static void nested_vmx_cr_fixed1_bits_update(struct kvm_vcpu *vcpu)
- 	cr4_fixed1_update(X86_CR4_PKE,        ecx, feature_bit(PKU));
- 	cr4_fixed1_update(X86_CR4_UMIP,       ecx, feature_bit(UMIP));
- 	cr4_fixed1_update(X86_CR4_LA57,       ecx, feature_bit(LA57));
-+	cr4_fixed1_update(X86_CR4_CET,	      ecx, feature_bit(SHSTK));
- 
- #undef cr4_fixed1_update
++	/*
++	 * page_idle does a lockless/optimistic rmap scan on page->mapping.
++	 * Make sure the compiler doesn't split the stores of anon_vma and
++	 * the PAGE_MAPPING_ANON type identifier, otherwise the rmap code
++	 * could mistake the mapping for a struct address_space and crash.
++	 */
+ 	anon_vma = (void *) anon_vma + PAGE_MAPPING_ANON;
+-	page->mapping = (struct address_space *) anon_vma;
++	WRITE_ONCE(page->mapping, (struct address_space *) anon_vma);
+ 	page->index = linear_page_index(vma, address);
  }
+ 
 -- 
-2.17.2
+1.8.3.1
 
