@@ -2,103 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 112622AA06A
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 23:31:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CC6B2AA06E
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 23:32:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728888AbgKFWbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 17:31:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35302 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728408AbgKFWby (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 17:31:54 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7539AC0613CF;
-        Fri,  6 Nov 2020 14:31:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=uKFp6ndH5gt97JZMTQlnD2RC9vnO3OIFv4HmGm7a2e4=; b=Fn6oKQaK7vWLVZGa5Y+vMLjcC3
-        Xd70zDJFJ1djl7SvZL0cpf9YV4Z3sTJaUBJVnp9MKc3omKtXSOa98pCk1CgKbfE0utgIJXPAXkCxV
-        zMU6Ysxye5xQxqZq7w6U4li7hRMgZyThYBrkSVST/mrI0gWGHzEI9eviMrsyzgMaywUbpRosFlXrH
-        7lHmfCkjCf5ymOap1etR2B9Htkha0CX+/ABFWji7i4Wrqmy+1qpM+PtluPjE7eOJ4ePvQlA/AuVQR
-        VmhaDw1kHAvfFkTcnbDHOsl8VdonN8e88XmWbQiKquXhSHv4bU+U2hmr3KVKNxfBXgsPFxeF86v1v
-        FXzVntrA==;
-Received: from [2601:1c0:6280:3f0::a1cb]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kbAGn-0007ZG-BZ; Fri, 06 Nov 2020 22:31:45 +0000
-Subject: Re: [Sound-open-firmware] linux-next: Tree for Nov 6
- (sound/soc/sof/sof-pci-dev.o)
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc:     Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        sound-open-firmware@alsa-project.org,
-        "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." 
-        <alsa-devel@alsa-project.org>
-References: <20201106171834.64e4d6d5@canb.auug.org.au>
- <0a66a2b1-85b6-3515-47f4-2e861b991386@infradead.org>
- <7505ed68-f12b-d1d9-12e5-f8ae34a74ebd@linux.intel.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <0e8f0a8b-60c4-d146-90a2-a972d1748a4c@infradead.org>
-Date:   Fri, 6 Nov 2020 14:31:41 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1728948AbgKFWch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 17:32:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47080 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728828AbgKFWcg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 17:32:36 -0500
+Received: from kernel.org (83-245-197-237.elisa-laajakaista.fi [83.245.197.237])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4D89820704;
+        Fri,  6 Nov 2020 22:32:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604701956;
+        bh=6D+H/j34nFiaoGdjicPCrtq5SbG2qFMkBfVYnXPpMIo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LX3odbfbf7cey5nomtm7o2CfIwhYDW7AbFsEI4zkeh3WB4M/+RUzg9OlIKP7c4nat
+         OQrYWxfnNeMLbrsujGhJc3qemAsK+g2gBMe+lYWfB+MlorWx4y9jdmOPsQTusRc6ni
+         dlxyRaf2UOHyApQ6RZ4R0lyYgwjOruwwyinfu/8k=
+Date:   Sat, 7 Nov 2020 00:32:28 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        stable <stable@vger.kernel.org>,
+        Chen Yu <yu.chen.surf@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Marco Elver <elver@google.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>
+Subject: Re: [PATCH] compiler-clang: remove version check for BPF Tracing
+Message-ID: <20201106223228.GB56210@kernel.org>
+References: <20201104191052.390657-1-ndesaulniers@google.com>
+ <CAADnVQL_mP7HNz1n+=S7Tjk8f7efm3_w5+VQVptD2y7Wts_Mig@mail.gmail.com>
+ <CAKwvOdk8DdKEuSYW2j0LUeNVoFa=ShXPKBTvpUHakG-U9kbAsw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <7505ed68-f12b-d1d9-12e5-f8ae34a74ebd@linux.intel.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKwvOdk8DdKEuSYW2j0LUeNVoFa=ShXPKBTvpUHakG-U9kbAsw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/6/20 12:53 PM, Pierre-Louis Bossart wrote:
+On Fri, Nov 06, 2020 at 10:52:50AM -0800, Nick Desaulniers wrote:
+> On Thu, Nov 5, 2020 at 8:16 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > I can take it through the bpf tree if no one objects.
 > 
->> on x86_64:
->>
->> ld: sound/soc/sof/sof-pci-dev.o: in function `sof_pci_probe':
->> sof-pci-dev.c:(.text+0x5c): undefined reference to `snd_intel_dsp_driver_probe'
->>
->>
->> Full randconfig file is attached.
+> Doesn't matter to me. You'll need to coordinate with Andrew though,
+> since I got the email that this was picked up into -mm:
 > 
-> Nice catch, thanks Randy! Looks like we put the select SND_INTEL_DSP_CONFIG in the wrong place, it's not dependent on the HDaudio link being selected. Clearly a bug we've had for a while.
-> 
-> The diff below makes the error go away but I have to run it past folks who are already enjoying their week-end. Will follow-up next week with a proper fix.
+> >> This patch should soon appear at
+> >>     https://ozlabs.org/~akpm/mmots/broken-out/compiler-clang-remove-version-check-for-bpf-tracing.patch
+> >> and later at
+> >>     https://ozlabs.org/~akpm/mmotm/broken-out/compiler-clang-remove-version-check-for-bpf-tracing.patch
 
-Works for me. You can have an Ack if you use this patch.
-Thanks.
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Thanks a lot for quick response to everyone :-) This ebpf tracing has
+been a great help lately with the SGX patch set. Hope I get chance to
+contribute to this work at some point in future.
 
-> diff --git a/sound/soc/sof/intel/Kconfig b/sound/soc/sof/intel/Kconfig
-> index a066e08860cb..5bfc2f8b13b9 100644
-> --- a/sound/soc/sof/intel/Kconfig
-> +++ b/sound/soc/sof/intel/Kconfig
-> @@ -271,6 +271,7 @@ config SND_SOC_SOF_JASPERLAKE
-> 
->  config SND_SOC_SOF_HDA_COMMON
->         tristate
-> +       select SND_INTEL_DSP_CONFIG
->         select SND_SOC_SOF_INTEL_COMMON
->         select SND_SOC_SOF_HDA_LINK_BASELINE
->         help
-> @@ -330,7 +331,6 @@ config SND_SOC_SOF_HDA
->         tristate
->         select SND_HDA_EXT_CORE if SND_SOC_SOF_HDA_LINK
->         select SND_SOC_HDAC_HDA if SND_SOC_SOF_HDA_AUDIO_CODEC
-> -       select SND_INTEL_DSP_CONFIG
->         help
->           This option is not user-selectable but automagically handled by
->           'select' statements at a higher level
-> 
-> 
+> -- 
+> Thanks,
+> ~Nick Desaulniers
 
-
--- 
-~Randy
+/Jarkko
