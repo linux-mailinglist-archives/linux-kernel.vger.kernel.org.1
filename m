@@ -2,200 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21DCC2A8B20
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 01:06:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39AA62A8B32
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 01:15:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732749AbgKFAGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 19:06:54 -0500
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:59487 "EHLO
-        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729162AbgKFAGt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 19:06:49 -0500
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id 371905C0236;
-        Thu,  5 Nov 2020 19:06:48 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Thu, 05 Nov 2020 19:06:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm1; bh=mkQNWZBo7LAmh
-        Gnqr0maVLRmZnUOpV0QQCTASmqfUzw=; b=kc2XFpTCzvdVbSWvKFkR3brub8cob
-        cFB4LY6w8D0QsjQU/qrNwVbTqCvgU2jGinCmZyI75uPCQHrPTGandCV/+zlgBy44
-        CMOdhjpjdcSqFHsGSGVBhdCbDNoNGp6Df3re3ufMU1tUOoveujq16BtmYJLYYuht
-        75vdo/ip3BagD3oHwg7qv0onyvJftuPD+lZNExrLMxdzDsc6RRE4jkcQBbRqCGFx
-        9pNHwrLhjH5vdKW/8X6o07ivHa3kiy/xMh0p6GxfZIS98kyFbVoWWMoSZsTaBQ4Z
-        H0Iimvi8MeRtuqS8woezslb9JLfXJwCkNukf+ukirr7IZC7pVtUeSzRCw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; bh=mkQNWZBo7LAmhGnqr0maVLRmZnUOpV0QQCTASmqfUzw=; b=cCOx0iu/
-        pl2ufcvgyJkeo3c0cnCRagpzc6oEfb07uAAw15qDvUB9JmTzEsyuFdT1PctsFPj9
-        VR2vjWmuXxFBBhNB8HeoPGBzGDjW+ZY9NBkTQpQVlUBWqGHvDa1eKRhEu3bEoUM4
-        m7BjHhbIeWJZ3VXrH3Mm+VMhB6D7vsGEV8anC7qsycajqC4CfGngmrza4ZwNaYZP
-        95i8v7tE3EHGC+ODghtoJYQa4BPV9UOM5vmXW/Y/WHxffwwgowdJJLtDH+GSyEMV
-        +Sk8bd0V9ZPnTDCHVWIpwyFxt9/6frj7Knq4pWvVS/cnPHyzXhi0137NlzoHXaMZ
-        xc20UgA9DnuHbA==
-X-ME-Sender: <xms:mJOkXw9thcV-esprnfquqNNHkbjRvEJjOSq2W2-e-h-wXxg1ZYeM7Q>
-    <xme:mJOkX4sFlc1iEsD_e6rTDRD6aSFFVDKZonQOcqpGwIAFIa5V4YipqFzNZYFRFqDWJ
-    3aiW8sxmA43C88riA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddtkedgudelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdljedtmdenucfjughrpefhvf
-    fufffkofgjfhgggfestdekredtredttdenucfhrhhomhepffgrnhhivghlucgiuhcuoegu
-    gihusegugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpefgkeduleekhfetvefhge
-    fgvdegfeejfefguedvuddthffggffhhedtueeuteefieenucfkphepieelrddukedurddu
-    tdehrdeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
-    hmpegugihusegugihuuhhurdighiii
-X-ME-Proxy: <xmx:mJOkX2CW8gjR8xvZJmDfjReii6m1OActMZuqlz2DImQMk_xVYL_nQQ>
-    <xmx:mJOkXwezx-cshV_BwwGsFnuqGPhs9j0xp8toWk8JqX4H7KtBv0HelQ>
-    <xmx:mJOkX1NIl3PPM79RqtBSHIddx_eDfNrWW8XsULoI69T1bojfbg3MFg>
-    <xmx:mJOkX41lzknFsSmIG6PmDaVq8XIUa_1oNNfO-H9usDsvnxj2mAmr5w>
-Received: from localhost.localdomain (c-69-181-105-64.hsd1.ca.comcast.net [69.181.105.64])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 3A71C328037B;
-        Thu,  5 Nov 2020 19:06:47 -0500 (EST)
-From:   Daniel Xu <dxu@dxuuu.xyz>
-To:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, songliubraving@fb.com,
-        andrii.nakryiko@gmail.com
-Cc:     Daniel Xu <dxu@dxuuu.xyz>, kernel-team@fb.com
-Subject: [PATCH bpf v4 2/2] selftest/bpf: Test bpf_probe_read_user_str() strips trailing bytes after NUL
-Date:   Thu,  5 Nov 2020 16:06:35 -0800
-Message-Id: <8b8c8f51aff8fabac4425da9b0054b4c976c944b.1604620776.git.dxu@dxuuu.xyz>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <cover.1604620776.git.dxu@dxuuu.xyz>
-References: <cover.1604620776.git.dxu@dxuuu.xyz>
+        id S1732698AbgKFAPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 19:15:08 -0500
+Received: from mga12.intel.com ([192.55.52.136]:23004 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729162AbgKFAPI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 19:15:08 -0500
+IronPort-SDR: /ouWvUINHyrgcAKr5YsCI9B8+cPhR1rlosvqYpISKKYrXjtiDy1avVrntUEU/EHFosTpY4pnXg
+ FglsSxfDmWtw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9796"; a="148759521"
+X-IronPort-AV: E=Sophos;i="5.77,454,1596524400"; 
+   d="scan'208";a="148759521"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2020 16:15:05 -0800
+IronPort-SDR: Po4Mv59ZiFm33GRA+bMex8AEd4jBdPh9+KgnQWeZQoPNmD8L1+QinhmCZ014BsHweO5DuZEchw
+ uPRsRP/+qGFg==
+X-IronPort-AV: E=Sophos;i="5.77,454,1596524400"; 
+   d="scan'208";a="529621679"
+Received: from gabriels-mobl1.amr.corp.intel.com (HELO arch-ashland-svkelley.intel.com) ([10.209.37.33])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2020 16:15:04 -0800
+From:   Sean V Kelley <sean.v.kelley@intel.com>
+To:     bhelgaas@google.com, Jonathan.Cameron@huawei.com,
+        xerces.zhao@gmail.com, rafael.j.wysocki@intel.com,
+        ashok.raj@intel.com, tony.luck@intel.com,
+        sathyanarayanan.kuppuswamy@intel.com, qiuxu.zhuo@intel.com
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sean V Kelley <sean.v.kelley@intel.com>
+Subject: [PATCH v10 00/16] Add RCEC handling to PCI/AER
+Date:   Thu,  5 Nov 2020 16:14:28 -0800
+Message-Id: <20201106001444.667232-1-sean.v.kelley@intel.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Previously, bpf_probe_read_user_str() could potentially overcopy the
-trailing bytes after the NUL due to how do_strncpy_from_user() does the
-copy in long-sized strides. The issue has been fixed in the previous
-commit.
+Changes since v9 [1], based on discussion [2], AER patch [3],
+and pci/master tree [4]:
 
-This commit adds a selftest that ensures we don't regress
-bpf_probe_read_user_str() again.
+- No functional changes. Tested with aer injection.
 
-Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
----
- .../bpf/prog_tests/probe_read_user_str.c      | 71 +++++++++++++++++++
- .../bpf/progs/test_probe_read_user_str.c      | 25 +++++++
- 2 files changed, 96 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_probe_read_user_str.c
+PCI/RCEC: Add RCiEP's linked RCEC to AER/ERR
+- Tighten up aer_root_reset() as a preliminary patch separate from RCEC/RCIEP
+series. So rebase series with the aer_root_reset() patch.
+(Bjorn Helgaas)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c b/tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c
-new file mode 100644
-index 000000000000..e419298132b5
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c
-@@ -0,0 +1,71 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <test_progs.h>
-+#include "test_probe_read_user_str.skel.h"
-+
-+static const char str1[] = "mestring";
-+static const char str2[] = "mestringalittlebigger";
-+static const char str3[] = "mestringblubblubblubblubblub";
-+
-+static int test_one_str(struct test_probe_read_user_str *skel, const char *str,
-+			size_t len)
-+{
-+	int err, duration = 0;
-+	char buf[256];
-+
-+	/* Ensure bytes after string are ones */
-+	memset(buf, 1, sizeof(buf));
-+	memcpy(buf, str, len);
-+
-+	/* Give prog our userspace pointer */
-+	skel->bss->user_ptr = buf;
-+
-+	/* Trigger tracepoint */
-+	usleep(1);
-+
-+	/* Did helper fail? */
-+	if (CHECK(skel->bss->ret < 0, "prog_ret", "prog returned: %ld\n",
-+		  skel->bss->ret))
-+		return 1;
-+
-+	/* Check that string was copied correctly */
-+	err = memcmp(skel->bss->buf, str, len);
-+	if (CHECK(err, "memcmp", "prog copied wrong string"))
-+		return 1;
-+
-+	/* Now check that no extra trailing bytes were copied */
-+	memset(buf, 0, sizeof(buf));
-+	err = memcmp(skel->bss->buf + len, buf, sizeof(buf) - len);
-+	if (CHECK(err, "memcmp", "trailing bytes were not stripped"))
-+		return 1;
-+
-+	return 0;
-+}
-+
-+void test_probe_read_user_str(void)
-+{
-+	struct test_probe_read_user_str *skel;
-+	int err, duration = 0;
-+
-+	skel = test_probe_read_user_str__open_and_load();
-+	if (CHECK(!skel, "test_probe_read_user_str__open_and_load",
-+		  "skeleton open and load failed\n"))
-+		return;
-+
-+	/* Give pid to bpf prog so it doesn't read from anyone else */
-+	skel->bss->pid = getpid();
-+
-+	err = test_probe_read_user_str__attach(skel);
-+	if (CHECK(err, "test_probe_read_user_str__attach",
-+		  "skeleton attach failed: %d\n", err))
-+		goto out;
-+
-+	if (test_one_str(skel, str1, sizeof(str1)))
-+		goto out;
-+	if (test_one_str(skel, str2, sizeof(str2)))
-+		goto out;
-+	if (test_one_str(skel, str3, sizeof(str3)))
-+		goto out;
-+
-+out:
-+	test_probe_read_user_str__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_probe_read_user_str.c b/tools/testing/selftests/bpf/progs/test_probe_read_user_str.c
-new file mode 100644
-index 000000000000..3ae398b75dcd
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_probe_read_user_str.c
-@@ -0,0 +1,25 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+#include <sys/types.h>
-+
-+pid_t pid = 0;
-+long ret = 0;
-+void *user_ptr = 0;
-+char buf[256] = {};
-+
-+SEC("tracepoint/syscalls/sys_enter_nanosleep")
-+int on_write(void *ctx)
-+{
-+	if (pid != (bpf_get_current_pid_tgid() >> 32))
-+		return 0;
-+
-+	ret = bpf_probe_read_user_str(buf, sizeof(buf), user_ptr);
-+
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.28.0
+[1] https://lore.kernel.org/linux-pci/20201016001113.2301761-1-seanvk.dev@oregontracks.org/
+[2] https://lore.kernel.org/linux-pci/20201020162820.GA370938@bjorn-Precision-5520/
+[3] https://lore.kernel.org/linux-pci/20201104232244.434115-1-sean.v.kelley@intel.com/
+[4] https://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci.git/log/
+
+
+Root Complex Event Collectors (RCEC) provide support for terminating error
+and PME messages from Root Complex Integrated Endpoints (RCiEPs).  An RCEC
+resides on a Bus in the Root Complex. Multiple RCECs can in fact reside on
+a single bus. An RCEC will explicitly declare supported RCiEPs through the
+Root Complex Endpoint Association Extended Capability.
+
+(See PCIe 5.0-1, sections 1.3.2.3 (RCiEP), and 7.9.10 (RCEC Ext. Cap.))
+
+The kernel lacks handling for these RCECs and the error messages received
+from their respective associated RCiEPs. More recently, a new CPU
+interconnect, Compute eXpress Link (CXL) depends on RCEC capabilities for
+purposes of error messaging from CXL 1.1 supported RCiEP devices.
+
+DocLink: https://www.computeexpresslink.org/
+
+This use case is not limited to CXL. Existing hardware today includes
+support for RCECs, such as the Denverton microserver product
+family. Future hardware will be forthcoming.
+
+(See Intel Document, Order number: 33061-003US)
+
+So services such as AER or PME could be associated with an RCEC driver.
+In the case of CXL, if an RCiEP (i.e., CXL 1.1 device) is associated with a
+platform's RCEC it shall signal PME and AER error conditions through that
+RCEC.
+
+Towards the above use cases, add the missing RCEC class and extend the
+PCIe Root Port and service drivers to allow association of RCiEPs to their
+respective parent RCEC and facilitate handling of terminating error and PME
+messages.
+
+Tested-by: Jonathan Cameron <Jonathan.Cameron@huawei.com> #non-native/no RCEC
+
+
+Qiuxu Zhuo (4):
+  PCI/RCEC: Add RCEC class code and extended capability
+  PCI/RCEC: Bind RCEC devices to the Root Port driver
+  PCI/RCEC: Add RCiEP's linked RCEC to AER/ERR
+  PCI/AER: Add RCEC AER error injection support
+
+Sean V Kelley (12):
+  AER: aer_root_reset() non-native handling
+  PCI/RCEC: Cache RCEC capabilities in pci_init_capabilities()
+  PCI/ERR: Rename reset_link() to reset_subordinates()
+  PCI/ERR: Simplify by using pci_upstream_bridge()
+  PCI/ERR: Simplify by computing pci_pcie_type() once
+  PCI/ERR: Use "bridge" for clarity in pcie_do_recovery()
+  PCI/ERR: Avoid negated conditional for clarity
+  PCI/ERR: Add pci_walk_bridge() to pcie_do_recovery()
+  PCI/ERR: Limit AER resets in pcie_do_recovery()
+  PCI/RCEC: Add pcie_link_rcec() to associate RCiEPs
+  PCI/AER: Add pcie_walk_rcec() to RCEC AER handling
+  PCI/PME: Add pcie_walk_rcec() to RCEC PME handling
+
+ drivers/pci/pci.h               |  29 ++++-
+ drivers/pci/pcie/Makefile       |   2 +-
+ drivers/pci/pcie/aer.c          |  79 +++++++++----
+ drivers/pci/pcie/aer_inject.c   |   5 +-
+ drivers/pci/pcie/err.c          |  93 +++++++++++-----
+ drivers/pci/pcie/pme.c          |  15 ++-
+ drivers/pci/pcie/portdrv_core.c |   9 +-
+ drivers/pci/pcie/portdrv_pci.c  |   8 +-
+ drivers/pci/pcie/rcec.c         | 190 ++++++++++++++++++++++++++++++++
+ drivers/pci/probe.c             |   2 +
+ include/linux/pci.h             |   5 +
+ include/linux/pci_ids.h         |   1 +
+ include/uapi/linux/pci_regs.h   |   7 ++
+ 13 files changed, 382 insertions(+), 63 deletions(-)
+ create mode 100644 drivers/pci/pcie/rcec.c
+
+--
+2.29.2
 
