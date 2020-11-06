@@ -2,210 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCFBB2A9095
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 08:42:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 195052A9091
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 08:42:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726544AbgKFHl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 02:41:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36326 "EHLO
+        id S1726406AbgKFHlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 02:41:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726497AbgKFHl6 (ORCPT
+        with ESMTP id S1725830AbgKFHlz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 02:41:58 -0500
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B08EC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 23:41:57 -0800 (PST)
-Received: by mail-yb1-xb42.google.com with SMTP id m188so372204ybf.2
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 23:41:57 -0800 (PST)
+        Fri, 6 Nov 2020 02:41:55 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EE33C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 23:41:55 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id c9so400229wml.5
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 23:41:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QTZ+mR0yw2trxDGTFS+bvNciA6tk8BOqQlBiDGPQfJM=;
-        b=S1l2xLdTqVq2ltEN2mrPy3XdtMyi05nRUV5f/FmPa9D60PlmPmlug2a8DGs5JByXUf
-         U4hY1zdOfcNxVHh2+WK8ypBioWUs4WtfPRtJ4Fw4FqOB/D7VeyAcxDoGrxpa97MjEurH
-         /D4RIRcbKxYD2wNBiDo4zRIVZDEjDYXKQC1gQTK/rvEArNqSbWlQNToz4GJotdfnyTat
-         4cWO/AcbXt8WJnt6F3Lu0s9yTyAMSIhvE1kMd4e3XbJcHUDTCHs8XULGSR7/TrbdADhC
-         etr6br84kAkspmfqxlaF+5lFEhY3+pizLVdDIxHFAJ4I/DLa0GSn+bXgJiU7/lUFIK6K
-         mB2A==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=6ufj42Bv/86ArnSS/EsHZyzQ98Oc/FG+uTtO5PTygmc=;
+        b=oLWx6Bsyrgz3NhKGWzEcRFID//Yk8EMYlq2WgiHL04Xqe+fXjhBHsNNetTodNCTJQg
+         YnYjmwFrOO/cAHOSHWakseRDbfJOfr5yeyv1hBfk5mmKEWwZuWpm8zxTgkPcFD3DJLvr
+         V55gd+MlEOTjQ4lfpqmtd7rQVYuVZIvxvoqkPojAFPszQ7tXk78SqH2wfcb4ZRU5fngC
+         ETrYc7UeUU379hnFLQsmgniteVzGKzFxzSKbWe5wsZwf6qe9RTAqzoL+r8VM7nhPrMHN
+         Czt5GXRlXWhkNa+mQ+V22iv5a44QaysNqwMxXjleavTBw/936bKBYuYDJQMrQychEFav
+         EbHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QTZ+mR0yw2trxDGTFS+bvNciA6tk8BOqQlBiDGPQfJM=;
-        b=dHCps+Z2SrzS+mcfQoFWCb7ohl/GGA1Za2EXPYCMHK/N2HPQ7GzB7U4gVKcNVLzYc2
-         2uqUxIsgTw0i+dk53v2db8L/qzlr4pKI1SGCbmqlmzoQXpnVeyAydI/pzCru3kYIBQ76
-         0dk5cu6WhEKbUYier5k9O/n09/TvaetlWuh3rOOnhkSqPz6s9nQ7rqu3CbDP9dIw9jbx
-         i2AQlwt9rsYclEd9cOBVlQ2NrN/FyOWXpXekuXprfEmD9Ab1KAxZAdeMYzfmIh6b3jCs
-         ZzTc/1dhAxEocpWSjQDev2WhrAwnvfCaBR3dwAeLAl/g8RFJgzLUY7DKmtdeTOhx70Ch
-         B+Cw==
-X-Gm-Message-State: AOAM533A/BTkAJTDxDShSWYnMqz/INXJx7yfbaHLaBXp5lWj7KbyIppJ
-        xe0w2WbCfEeHJgbxvKRO7MkLQlwbsxKtYxRmupURYA==
-X-Google-Smtp-Source: ABdhPJwfrNAgvjm+h63iu1XRZnC29WoULOmr0mLAgXrY9MYEO6CcpB9pgsa2cDzepk0gfm2cOoTlaGnAT5Xyo+bmdOo=
-X-Received: by 2002:a25:1c86:: with SMTP id c128mr1143314ybc.96.1604648516320;
- Thu, 05 Nov 2020 23:41:56 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=6ufj42Bv/86ArnSS/EsHZyzQ98Oc/FG+uTtO5PTygmc=;
+        b=rQfmtC8B/3TDb3QjkO9hnq5SokHxFlkJ2xdyGOUNy9eBAOZenmQZuo0dwsIMGGYW9H
+         L1t8g3qhuCKRBhKY9Ucpqe0OuVc0wcR9z7ZdmPrdIetRsgNR6hXiOcgReCd69L+VevxF
+         hBIlgWXstweDRuDAAdpCCD7RIJiNdVPo7+Ra9wIewuKZMByFQJW/oRCHHxLZxvTq+yfx
+         vBqCmjpjjNc8FlMTwqOIGT6suKoz0VeqeuzvYfvrejo6URm2EaX09r1/ZEJyv0OH3SR8
+         UT7L69ElxOhF//gbKDD5RWIJtEtQoWI9TqEstcl7Jkq4n4clHIG/cVBARGlo8hDJdiyL
+         5/5g==
+X-Gm-Message-State: AOAM532aqFUB/k9R/pxZ3VNzEEBOxTuIs972oJCVLl3iexJFfwB/xOvu
+        igHTwozXDd7fEGdlKv6MsvK9YA==
+X-Google-Smtp-Source: ABdhPJzLc6OVDukzV94pq5ko/pywJDPvwYQgId12KwgvXF/J8yC5zh/9oAvErhJxoolu/oop54L0Sw==
+X-Received: by 2002:a1c:80cb:: with SMTP id b194mr921576wmd.73.1604648514026;
+        Thu, 05 Nov 2020 23:41:54 -0800 (PST)
+Received: from dell ([91.110.221.242])
+        by smtp.gmail.com with ESMTPSA id r1sm767193wro.18.2020.11.05.23.41.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Nov 2020 23:41:53 -0800 (PST)
+Date:   Fri, 6 Nov 2020 07:41:51 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Fabio Estevam <festevam@gmail.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>
+Subject: Re: [PATCH 03/19] gpu: drm: imx: ipuv3-plane: Mark 'crtc_state' as
+ __always_unused
+Message-ID: <20201106074151.GU4488@dell>
+References: <20201105144517.1826692-1-lee.jones@linaro.org>
+ <20201105144517.1826692-4-lee.jones@linaro.org>
+ <15a4a184-74c2-e630-193a-cdea61545a03@pengutronix.de>
 MIME-Version: 1.0
-References: <20201104232356.4038506-1-saravanak@google.com>
- <20201104232356.4038506-16-saravanak@google.com> <20201105094228.GE3439341@kroah.com>
- <CAGETcx-0TPte6g3Cf5F3WJwdW-9yUptLDj3AcEdvWN0YJ2H4qg@mail.gmail.com> <20201106072247.GB2614221@kroah.com>
-In-Reply-To: <20201106072247.GB2614221@kroah.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Thu, 5 Nov 2020 23:41:20 -0800
-Message-ID: <CAGETcx_tQboQPWuoj9hi38-1n=mAQihCi2b475z2r_9s_rXhNg@mail.gmail.com>
-Subject: Re: [PATCH v1 15/18] of: property: Update implementation of
- add_links() to create fwnode links
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <15a4a184-74c2-e630-193a-cdea61545a03@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 5, 2020 at 11:22 PM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Thu, Nov 05, 2020 at 03:25:56PM -0800, Saravana Kannan wrote:
-> > On Thu, Nov 5, 2020 at 1:41 AM Greg Kroah-Hartman
-> > <gregkh@linuxfoundation.org> wrote:
-> > >
-> > > On Wed, Nov 04, 2020 at 03:23:52PM -0800, Saravana Kannan wrote:
-> > > > The semantics of add_links() has changed from creating device link
-> > > > between devices to creating fwnode links between fwnodes. So, update the
-> > > > implementation of add_links() to match the new semantics.
-> > > >
-> > > > Signed-off-by: Saravana Kannan <saravanak@google.com>
-> > > > ---
-> > > >  drivers/of/property.c | 150 ++++++++++++------------------------------
-> > > >  1 file changed, 41 insertions(+), 109 deletions(-)
-> > > >
-> > > > diff --git a/drivers/of/property.c b/drivers/of/property.c
-> > > > index 408a7b5f06a9..86303803f1b3 100644
-> > > > --- a/drivers/of/property.c
-> > > > +++ b/drivers/of/property.c
-> > > > @@ -1038,33 +1038,9 @@ static bool of_is_ancestor_of(struct device_node *test_ancestor,
-> > > >  }
-> > > >
-> > > >  /**
-> > > > - * of_get_next_parent_dev - Add device link to supplier from supplier phandle
-> > > > - * @np: device tree node
-> > > > - *
-> > > > - * Given a device tree node (@np), this function finds its closest ancestor
-> > > > - * device tree node that has a corresponding struct device.
-> > > > - *
-> > > > - * The caller of this function is expected to call put_device() on the returned
-> > > > - * device when they are done.
-> > > > - */
-> > > > -static struct device *of_get_next_parent_dev(struct device_node *np)
-> > > > -{
-> > > > -     struct device *dev = NULL;
-> > > > -
-> > > > -     of_node_get(np);
-> > > > -     do {
-> > > > -             np = of_get_next_parent(np);
-> > > > -             if (np)
-> > > > -                     dev = get_dev_from_fwnode(&np->fwnode);
-> > > > -     } while (np && !dev);
-> > > > -     of_node_put(np);
-> > > > -     return dev;
-> > > > -}
-> > > > -
-> > > > -/**
-> > > > - * of_link_to_phandle - Add device link to supplier from supplier phandle
-> > > > - * @dev: consumer device
-> > > > - * @sup_np: phandle to supplier device tree node
-> > > > + * of_link_to_phandle - Add fwnode link to supplier from supplier phandle
-> > > > + * @con_np: consumer device tree node
-> > > > + * @sup_np: supplier device tree node
-> > > >   *
-> > > >   * Given a phandle to a supplier device tree node (@sup_np), this function
-> > > >   * finds the device that owns the supplier device tree node and creates a
-> > > > @@ -1074,16 +1050,14 @@ static struct device *of_get_next_parent_dev(struct device_node *np)
-> > > >   * cases, it returns an error.
-> > > >   *
-> > > >   * Returns:
-> > > > - * - 0 if link successfully created to supplier
-> > > > - * - -EAGAIN if linking to the supplier should be reattempted
-> > > > + * - 0 if fwnode link successfully created to supplier
-> > > >   * - -EINVAL if the supplier link is invalid and should not be created
-> > > > - * - -ENODEV if there is no device that corresponds to the supplier phandle
-> > > > + * - -ENODEV if struct device will never be create for supplier
-> > > >   */
-> > > > -static int of_link_to_phandle(struct device *dev, struct device_node *sup_np,
-> > > > -                           u32 dl_flags)
-> > > > +static int of_link_to_phandle(struct device_node *con_np,
-> > > > +                           struct device_node *sup_np)
-> > > >  {
-> > > > -     struct device *sup_dev, *sup_par_dev;
-> > > > -     int ret = 0;
-> > > > +     struct device *sup_dev;
-> > > >       struct device_node *tmp_np = sup_np;
-> > > >
-> > > >       of_node_get(sup_np);
-> > > > @@ -1106,7 +1080,8 @@ static int of_link_to_phandle(struct device *dev, struct device_node *sup_np,
-> > > >       }
-> > > >
-> > > >       if (!sup_np) {
-> > > > -             dev_dbg(dev, "Not linking to %pOFP - No device\n", tmp_np);
-> > > > +             pr_debug("Not linking %pOFP to %pOFP - No device\n",
-> > > > +                      con_np, tmp_np);
-> > >
-> > > Who is calling this function without a valid dev pointer?
-> >
-> > Sorry, I plan to delete the "dev" parameter as it's not really used
-> > anywhere. I'm trying to do that without causing build time errors and
-> > making the series into digestible small patches.
-> >
-> > I can do the deletion of the parameter as a Patch 19/19. Will that work?
->
-> That's fine, but why get rid of dev?  The driver core works on these
-> things, and we want errors/messages/warnings to spit out what device is
-> causing those issues.  It is fine to drag around a struct device pointer
-> just for messages, that's to be expected, and is good.
+On Thu, 05 Nov 2020, Ahmad Fatoum wrote:
 
-In general I agree. If the fwnode being parsed is related to the dev,
-it's nice to have the dev name in the logs.
+> Hello Lee,
+> 
+> On 11/5/20 3:45 PM, Lee Jones wrote:
+> > In the macro for_each_oldnew_crtc_in_state() 'crtc_state' is provided
+> > as a container for state->crtcs[i].new_state, but is not utilised in
+> > this use-case.  We cannot simply delete the variable, so here we tell
+> > the compiler that we're intentionally discarding the read value.
+> 
+> for_each_oldnew_crtc_in_state already (void) casts the drm_crtc and the old
+> drm_crtc_state to silence unused-but-set-variable warning. Should we maybe
+> (void) cast the new crtc_state as well?
 
-But in this instance I feel it's analogous to printing the PID that's
-parsing the fwnode -- kinda irrelevant. The device in question can
-appear very random and it'll just cause more confusion than be of help
-if it shows up in the logs.
+From what I saw, it only void casts the ones which aren't assigned.
 
-For example it can be something like:
-<gpio device name>: linking <wifi fwnode> to <iommu fwnode>
+> > Fixes the following W=1 kernel build warning(s):
+> > 
+> >  drivers/gpu/drm/imx/ipuv3-plane.c: In function ‘ipu_planes_assign_pre’:
+> >  drivers/gpu/drm/imx/ipuv3-plane.c:746:42: warning: variable ‘crtc_state’ set but not used [-Wunused-but-set-variable]
+> > 
+> > Cc: Philipp Zabel <p.zabel@pengutronix.de>
+> > Cc: David Airlie <airlied@linux.ie>
+> > Cc: Daniel Vetter <daniel@ffwll.ch>
+> > Cc: Shawn Guo <shawnguo@kernel.org>
+> > Cc: Sascha Hauer <s.hauer@pengutronix.de>
+> > Cc: Pengutronix Kernel Team <kernel@pengutronix.de>
+> > Cc: Fabio Estevam <festevam@gmail.com>
+> > Cc: NXP Linux Team <linux-imx@nxp.com>
+> > Cc: dri-devel@lists.freedesktop.org
+> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> > ---
+> >  drivers/gpu/drm/imx/ipuv3-plane.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/gpu/drm/imx/ipuv3-plane.c b/drivers/gpu/drm/imx/ipuv3-plane.c
+> > index 8a4235d9d9f1e..acc0a3ce4992f 100644
+> > --- a/drivers/gpu/drm/imx/ipuv3-plane.c
+> > +++ b/drivers/gpu/drm/imx/ipuv3-plane.c
+> > @@ -743,7 +743,7 @@ bool ipu_plane_atomic_update_pending(struct drm_plane *plane)
+> >  int ipu_planes_assign_pre(struct drm_device *dev,
+> >  			  struct drm_atomic_state *state)
+> >  {
+> > -	struct drm_crtc_state *old_crtc_state, *crtc_state;
+> > +	struct drm_crtc_state *old_crtc_state, __always_unused *crtc_state;
+> >  	struct drm_plane_state *plane_state;
+> >  	struct ipu_plane_state *ipu_state;
+> >  	struct ipu_plane *ipu_plane;
+> > 
+> 
 
-If the device was actually that of the wifi fwnode of the iommu
-fwnode, I agree it'll be useful to carry around the dev even if it's
-just for logs.
-
-Hope that makes sense.
-
-> > > And the only way it can be NULL is if fwnode is NULL, and as you control
-> > > the callers to it, how can that be the case?
-> >
-> > fwnode represents a generic firmware node. The to_of_node() returns
-> > NULL if fwnode is not a DT node. So con_np can be NULL if that
-> > happens. That's why we need a NULL check here.  With the current code,
-> > that can never happen, bit I think it doesn't hurt to check in case
-> > there's a buggy caller. I don't have a strong opinion - so I can do it
-> > whichever way.
->
-> If it can't happen, no need to check for it :)
-
-I don't have a strong opinion, so I can delete it if you insist.
-
--Saravana
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
