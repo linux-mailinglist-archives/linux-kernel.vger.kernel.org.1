@@ -2,149 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 424ED2A989E
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 16:37:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05B602A98A4
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 16:39:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727558AbgKFPhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 10:37:18 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:58726 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726422AbgKFPhS (ORCPT
+        id S1727556AbgKFPjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 10:39:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54824 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726812AbgKFPjv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 10:37:18 -0500
-Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 39B5020B4905;
-        Fri,  6 Nov 2020 07:37:17 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 39B5020B4905
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1604677037;
-        bh=q4PevNfxu74JV0KEYqy84LCv65lpjN/rPTqrzxIlBks=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=QT3DxheGucb03zVsRchRm/X0Wt7iWczuLLZozJm37jmzqwPGFuvKUOP42DF525xcc
-         0gcgEe5XHYKTTCxNEdXlGOxdKoYnQGP8Mz3XIjFW9vhEBiK9RNqdXnz4wUDhugXoqx
-         XjPjC6gEWB/LHZNMWi7vgi2eqvOMLn2m5Mw5Hl+M=
-Subject: Re: [PATCH v5 6/7] IMA: add critical_data to the built-in policy
- rules
-To:     Mimi Zohar <zohar@linux.ibm.com>,
-        Tushar Sugandhi <tusharsu@linux.microsoft.com>,
-        stephen.smalley.work@gmail.com, casey@schaufler-ca.com,
-        agk@redhat.com, snitzer@redhat.com, gmazyland@gmail.com,
-        paul@paul-moore.com
-Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
-        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dm-devel@redhat.com
-References: <20201101222626.6111-1-tusharsu@linux.microsoft.com>
- <20201101222626.6111-7-tusharsu@linux.microsoft.com>
- <7219f4404bc1bed6eb090b94363c283ec3266a17.camel@linux.ibm.com>
-From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Message-ID: <cdcd63f7-ce1f-4463-f886-c36832d7a706@linux.microsoft.com>
-Date:   Fri, 6 Nov 2020 07:37:16 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <7219f4404bc1bed6eb090b94363c283ec3266a17.camel@linux.ibm.com>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Fri, 6 Nov 2020 10:39:51 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44ADAC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 07:39:51 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id 33so1766542wrl.7
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 07:39:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=dHttO5/yXe+zE/4cXNc13Yjy23cOxk1sqyCBSDVq+3g=;
+        b=uK62e2DxF8OgnyqYBVt7Q+L5l5lGR6ORzq2pC+Y4KGtNo8H27Y6pbH+6yicg/pTbcs
+         NHgpPLNWOYWASU3CRTMP9ijnYPneoIsc84KlGNiSJu2Jg4pByEHkDAHu+xykYuqVNbFx
+         K6NT5suBaa+NMGTQtlC0kqh/DPzDdt5XInQy3cV15MOJnzP30fhWrH+NmGf/+JA64UuE
+         Os3hZREqEb6mNPr+7cowh5PJQLsN4Zap7FbykQlYEYFScHlthQcYZ2k4KVj0+J2btogk
+         1CrfpYb+kOJFk4reXOKd5ryhLTNPuR0/uHjMkmbueS0cNCPt7BMVNodEv6FT0wYZOpuy
+         dLJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=dHttO5/yXe+zE/4cXNc13Yjy23cOxk1sqyCBSDVq+3g=;
+        b=IeIi7AhLtfWjzEMwatjvk/lOnT8DfMFzpzMmznTt/91J99mrt0C/XRNccfwNzwDj2H
+         R+oCkVl++8sg/09XuETeauqgnCVbO08zdtJaS+kKnQsReQiZAaF2EfGKm98Pr5izWo12
+         Y8X3nyIhCMa6ZLMnoURLLho76wmwX/8uN33OAum7qvQertbGP8dUCu50ZHWThikfoypO
+         3OnBZXLo/jFHTGp4jN3QNRnXjCDumGxuuLeqz0Qjc4w+dCSYHIIt+qE3Egs3Vtfuc+Fk
+         luU8XreIGIUaFtGPBt/OkSiEQtxK0Mr7Rl4lVrBlefjXWC3UUB7swrRLn9zRudGe7WhD
+         TCXw==
+X-Gm-Message-State: AOAM533rsVB0Ks9p94SUNpFQPOw+VDd2gqp1Pp1mVPrKgR3XN5Evm6bt
+        0CZvkxOdMy8RHi7M63N+/y0=
+X-Google-Smtp-Source: ABdhPJxk+8+5r5VPDtQML9neWLWfMJgNT/HWaTQAhXXcppGzmOId7Hli2cTUXAjz1Mq6pcPeITOSpw==
+X-Received: by 2002:adf:8bcc:: with SMTP id w12mr3616870wra.157.1604677189926;
+        Fri, 06 Nov 2020 07:39:49 -0800 (PST)
+Received: from localhost.localdomain (host-92-5-241-147.as43234.net. [92.5.241.147])
+        by smtp.gmail.com with ESMTPSA id v189sm3095576wmg.14.2020.11.06.07.39.49
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 06 Nov 2020 07:39:49 -0800 (PST)
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH] driver core: export device_is_bound() to fix build failure
+Date:   Fri,  6 Nov 2020 15:37:44 +0000
+Message-Id: <20201106153744.22661-1-sudipm.mukherjee@gmail.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/6/20 7:24 AM, Mimi Zohar wrote:
+When CONFIG_MXC_CLK_SCU is configured as 'm' the build fails as it
+is unable to find device_is_bound(). The error being:
+ERROR: modpost: "device_is_bound" [drivers/clk/imx/clk-imx-scu.ko]
+	undefined!
 
-Hi Mimi,
+Export the symbol so that the module finds it.
 
-Thanks for reviewing the patches.
+Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+---
 
-> Hi Lakshmi, Tushar,
-> 
-> This patch defines a new critical_data builtin policy.  Please update
-> the Subject line.
-> 
-> On Sun, 2020-11-01 at 14:26 -0800, Tushar Sugandhi wrote:
->> From: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
->>
->> The IMA hook to measure kernel critical data, namely
->> ima_measure_critical_data(), could be called before a custom IMA policy
->> is loaded. For example, SELinux calls ima_measure_critical_data() to
->> measure its state and policy when they are initialized. This occurs
->> before a custom IMA policy is loaded, and hence IMA hook will not
->> measure the data. A built-in policy is therefore needed to measure
->> critical data provided by callers before a custom IMA policy is loaded.
-> 
-> ^Define a new critical data builtin policy to allow measuring early
-> kernel integrity critical data before a custom IMA policy is loaded.
+ drivers/base/dd.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-I will add the above line in the patch description.
-
-> 
-> Either remove the references to SELinux or move this patch after the
-> subsequent patch which measures SELinux critical data.
-
-I will remove the reference to SELinux.
-I think it would be better to have this patch before the SELinux 
-measurement patch.
-
-> 
->>
->> Add CRITICAL_DATA to built-in IMA rules if the kernel command line
->> contains "ima_policy=critical_data". Set the IMA template for this rule
->> to "ima-buf" since ima_measure_critical_data() measures a buffer.
->>
->> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-> 
->> ---
->>   security/integrity/ima/ima_policy.c | 32 +++++++++++++++++++++++++++++
->>   1 file changed, 32 insertions(+)
->>
->> diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
->> index ec99e0bb6c6f..dc8fe969d3fe 100644
->> --- a/security/integrity/ima/ima_policy.c
->> +++ b/security/integrity/ima/ima_policy.c
-> 
->> @@ -875,6 +884,29 @@ void __init ima_init_policy(void)
->>   			  ARRAY_SIZE(default_appraise_rules),
->>   			  IMA_DEFAULT_POLICY);
->>   
->> +	if (ima_use_critical_data) {
->> +		template = lookup_template_desc("ima-buf");
->> +		if (!template) {
->> +			ret = -EINVAL;
->> +			goto out;
->> +		}
->> +
->> +		ret = template_desc_init_fields(template->fmt,
->> +						&(template->fields),
->> +						&(template->num_fields));
-> 
-> The default IMA template when measuring buffer data is "ima_buf".   Is
-> there a reason for allocating and initializing it here and not
-> deferring it until process_buffer_measurement()?
-> 
-
-You are right - good catch.
-I will remove the above and validate.
-
-thanks,
-  -lakshmi
-
-> 
->> +		if (ret)
->> +			goto out;
->> +
->> +		critical_data_rules[0].template = template;
->> +		add_rules(critical_data_rules,
->> +			  ARRAY_SIZE(critical_data_rules),
->> +			  IMA_DEFAULT_POLICY);
->> +	}
->> +
->> +out:
->> +	if (ret)
->> +		pr_err("%s failed, result: %d\n", __func__, ret);
->> +
->>   	ima_update_policy_flag();
->>   }
->>   
-> 
+diff --git a/drivers/base/dd.c b/drivers/base/dd.c
+index 148e81969e04..a796a57e5efb 100644
+--- a/drivers/base/dd.c
++++ b/drivers/base/dd.c
+@@ -353,6 +353,7 @@ bool device_is_bound(struct device *dev)
+ {
+ 	return dev->p && klist_node_attached(&dev->p->knode_driver);
+ }
++EXPORT_SYMBOL(device_is_bound);
+ 
+ static void driver_bound(struct device *dev)
+ {
+-- 
+2.11.0
 
