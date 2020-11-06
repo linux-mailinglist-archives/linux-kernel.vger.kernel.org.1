@@ -2,127 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FB752A933E
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 10:47:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 346B52A931B
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 10:47:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727035AbgKFJrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 04:47:43 -0500
-Received: from esa5.microchip.iphmx.com ([216.71.150.166]:41964 "EHLO
-        esa5.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726201AbgKFJrl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 04:47:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1604656061; x=1636192061;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=gVkb/HduIodWBWgTTPTKx7ktzM9BdW4BzHHiUogCOBA=;
-  b=Uz+8L77fbyWG1zF37NTN9r88bPQbwtg+dEbzpVsfrw0+/mLOQBJ1tLsW
-   qruwgU2f7280TKzIaveGSF6aNnqnwzBfc3WdJBSTka2wnrOjEaJ5UULlA
-   x4R7+OaNHxLZItwKD7JOMmKUrsOvKuOKd1R4wYn6dpH7iMhg9F1+IJtA1
-   MWlTqygjbJdORJaGNfbOZywZrCFZJSqwIHsTIJarRjMd/vT/dHeIoWqLZ
-   ZzAPmAqlmdG2C5vwQ5c/pUTjwmBsBinjZ+zf/uPVxyh0YntD6XOyIsMC1
-   abLeR+efeL/8sesnzTMeDmue9rHhqxPy730/Me7UeDIMY/agsOM9+I/eh
-   A==;
-IronPort-SDR: OQcD0hW+21HJs/1YPlhfQ/Y9q39o4GUKUs0pJc/rTlJFVKhR11ljxT+STUs5htGDdX5vQ9PrLM
- b2zOcasvxxZ3hNdjuJzK1XppvS06r/MrHr/qf5MInMGyN1pF4SDqwPzoa2QSKSnFSxgFeJowWB
- Oqa69g30eUbHvyH8Gdih0HQXMZ2uVzo6mt9IvI+0r/0824Mbs+5gtMZ15zdYEnF7Ncno2pfXjw
- MexRpPsw26ygSTJqsW8ds5s2guz9KCvUFmier6OyYq51vWNIiTJ8ry3/i5Znj39dSBDAm934/Q
- +Vo=
-X-IronPort-AV: E=Sophos;i="5.77,456,1596524400"; 
-   d="scan'208";a="97428461"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 06 Nov 2020 02:47:40 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 6 Nov 2020 02:47:38 -0700
-Received: from m18063-ThinkPad-T460p.microchip.com (10.10.115.15) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Fri, 6 Nov 2020 02:47:33 -0700
-From:   Claudiu Beznea <claudiu.beznea@microchip.com>
-To:     <mturquette@baylibre.com>, <sboyd@kernel.org>,
-        <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
-        <ludovic.desroches@microchip.com>, <robh+dt@kernel.org>
-CC:     <eugen.hristev@microchip.com>, <linux-clk@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>
-Subject: [PATCH v4 11/11] clk: at91: sama7g5: register cpu clock
-Date:   Fri, 6 Nov 2020 11:46:28 +0200
-Message-ID: <1604655988-353-12-git-send-email-claudiu.beznea@microchip.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1604655988-353-1-git-send-email-claudiu.beznea@microchip.com>
-References: <1604655988-353-1-git-send-email-claudiu.beznea@microchip.com>
+        id S1726863AbgKFJqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 04:46:55 -0500
+Received: from mx2.suse.de ([195.135.220.15]:57546 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726820AbgKFJqx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 04:46:53 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id EDCFEAC35;
+        Fri,  6 Nov 2020 09:46:51 +0000 (UTC)
+Date:   Fri, 6 Nov 2020 10:46:48 +0100
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: Re: [External] Re: [PATCH v2 05/19] mm/hugetlb: Introduce pgtable
+ allocation/freeing helpers
+Message-ID: <20201106094643.GA15654@linux>
+References: <20201026145114.59424-1-songmuchun@bytedance.com>
+ <20201026145114.59424-6-songmuchun@bytedance.com>
+ <20201105132337.GA7552@linux>
+ <CAMZfGtXwKJ3uCuNC3mxHQLNJqTcUzj7Gd2-JRuOWEjZ1C7Oh=A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMZfGtXwKJ3uCuNC3mxHQLNJqTcUzj7Gd2-JRuOWEjZ1C7Oh=A@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Register CPU clock as being the master clock prescaler. This would
-be used by DVFS. The block schema of SAMA7G5's PMC contains also a divider
-between master clock prescaler and CPU (PMC_CPU_RATIO.RATIO) but the
-frequencies supported by SAMA7G5 could be directly received from
-CPUPLL + master clock prescaler and the extra divider would do no work in
-case it would be enabled.
+On Fri, Nov 06, 2020 at 12:08:22AM +0800, Muchun Song wrote:
+> > I do not think you need this.
+> > We already have hugepages_supported().
+> 
+> Maybe some architectures support hugepage, but the vmemmap do not
+> use the hugepage map. In  this case, we need it. But I am not sure if it
+> exists in the real world. At least, x86 can reuse hugepages_supported.
 
-Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
----
- drivers/clk/at91/sama7g5.c       | 13 ++++++-------
- include/dt-bindings/clock/at91.h |  1 +
- 2 files changed, 7 insertions(+), 7 deletions(-)
+Yes, but that is the point.
+IIUC, this patchset will enable HugeTLB vmemmap pages only for x86_64.
+Then, let us make the patchset specific to that architecture.
 
-diff --git a/drivers/clk/at91/sama7g5.c b/drivers/clk/at91/sama7g5.c
-index be32d9b88d89..40fceb7595d4 100644
---- a/drivers/clk/at91/sama7g5.c
-+++ b/drivers/clk/at91/sama7g5.c
-@@ -885,7 +885,7 @@ static void __init sama7g5_pmc_setup(struct device_node *np)
- 	if (IS_ERR(regmap))
- 		return;
- 
--	sama7g5_pmc = pmc_data_allocate(PMC_ETHPLL + 1,
-+	sama7g5_pmc = pmc_data_allocate(PMC_CPU + 1,
- 					nck(sama7g5_systemck),
- 					nck(sama7g5_periphck),
- 					nck(sama7g5_gck), 8);
-@@ -962,18 +962,17 @@ static void __init sama7g5_pmc_setup(struct device_node *np)
- 		}
- 	}
- 
--	parent_names[0] = md_slck_name;
--	parent_names[1] = "mainck";
--	parent_names[2] = "cpupll_divpmcck";
--	parent_names[3] = "syspll_divpmcck";
--	hw = at91_clk_register_master_pres(regmap, "mck0_pres", 4, parent_names,
-+	parent_names[0] = "cpupll_divpmcck";
-+	hw = at91_clk_register_master_pres(regmap, "cpuck", 1, parent_names,
- 					   &mck0_layout, &mck0_characteristics,
- 					   &pmc_mck0_lock,
- 					   CLK_SET_RATE_PARENT, 0);
- 	if (IS_ERR(hw))
- 		goto err_free;
- 
--	hw = at91_clk_register_master_div(regmap, "mck0_div", "mck0_pres",
-+	sama7g5_pmc->chws[PMC_CPU] = hw;
-+
-+	hw = at91_clk_register_master_div(regmap, "mck0", "cpuck",
- 					  &mck0_layout, &mck0_characteristics,
- 					  &pmc_mck0_lock, 0);
- 	if (IS_ERR(hw))
-diff --git a/include/dt-bindings/clock/at91.h b/include/dt-bindings/clock/at91.h
-index fab313f62e8f..98e1b2ab6403 100644
---- a/include/dt-bindings/clock/at91.h
-+++ b/include/dt-bindings/clock/at91.h
-@@ -34,6 +34,7 @@
- #define PMC_AUDIOPMCPLL		(PMC_MAIN + 6)
- #define PMC_AUDIOIOPLL		(PMC_MAIN + 7)
- #define PMC_ETHPLL		(PMC_MAIN + 8)
-+#define PMC_CPU			(PMC_MAIN + 9)
- 
- #ifndef AT91_PMC_MOSCS
- #define AT91_PMC_MOSCS		0		/* MOSCS Flag */
+If at some point this grows more users (powerpc, arm, ...), then we
+can add the missing code, but for now it makes sense to only include
+the bits to make this work on x86_64.
+
+And also according to this the changelog is a bit "misleading".
+
+"On some architectures, the vmemmap areas use huge page mapping.
+If we want to free the unused vmemmap pages, we have to split
+the huge pmd firstly. So we should pre-allocate pgtable to split
+huge pmd."
+
+On x86_64, vmemmap is always PMD mapped if the machine has hugepages
+support and if we have 2MB contiguos pages and PMD aligned.
+e.g: I have seen cases where after the system has ran for a period
+of time hotplug operations were mapping the vmemmap representing
+the hot-added range on page base, because we could not find
+enough contiguos and aligned memory.
+
+Something that [1] tries to solve:
+
+[1] https://patchwork.kernel.org/project/linux-mm/cover/20201022125835.26396-1-osalvador@suse.de/
+
+But anyway, my point is that let us make it clear in the changelog that
+this is aimed for x86_64 at the moment.
+Saying "on some architures" might make think people that this is not
+x86_64 specific.
+
+>> > > +     vmemmap_pgtable_init(page);
+> >
+> > Maybe just open code this one?
+> 
+> Sorry. I don't quite understand what it means. Could you explain?
+
+I meant doing 
+
+page_huge_pte(page) = NULL
+
+But no strong feelings.
+
 -- 
-2.7.4
-
+Oscar Salvador
+SUSE L3
