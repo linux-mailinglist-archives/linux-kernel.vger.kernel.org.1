@@ -2,110 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E05CB2A8EDD
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 06:26:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E64B2A8EE2
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 06:26:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726090AbgKFF0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 00:26:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43436 "EHLO
+        id S1726167AbgKFF0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 00:26:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725979AbgKFF0A (ORCPT
+        with ESMTP id S1725979AbgKFF0l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 00:26:00 -0500
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B473FC0613D2
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 21:26:00 -0800 (PST)
-Received: by mail-pl1-x641.google.com with SMTP id p4so148504plr.1
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 21:26:00 -0800 (PST)
+        Fri, 6 Nov 2020 00:26:41 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5B8FC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 21:26:41 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id w4so23841pgg.13
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 21:26:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=dWFmJSmMkzR+Uad+HotN/bLAH+aGeTDhTIhR7y4Osz4=;
-        b=lQ7sUrQwFwA65z8XIV/1OrFNCwF1wpgZvP0iRY/UhGXlwEY2z45LUKV3qipYGFDw5C
-         oyXN4l/NuSYMb1kldHmcCnC0Rfuu0KALdUsXV00nGr6uZD6Qact/FD6B6f82A4vObmlh
-         CGY3yotUFEDj0kzC9xttQ5v92GSlhsvwTHrDedrTivqp9rbysFkFqMWdlgmsKDM1X9/N
-         ispxVQYPWmDoFkc9k/4LU1yfBRTETyn4ryHDuirafZehJuNNrXAKBau9oh0WosSWnheU
-         nzqOM8s7yzfBKax4iOLLwbDBsaZxoiXM8TMiU3McQMxZEGzw2GFrFYWU2aKZ8TYjFwuR
-         GUmA==
+        d=google.com; s=20161025;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EkQLhkGZHqpvuQT2CFN2+E1nRGoyf455nd9ZLIW66dM=;
+        b=kHPaqhNUPrft4bDa8rGifjMcUdpz202rSSaV36nVs/Hru2LoPXEWCRkzDvufyB9fzW
+         NSoIP9+mGKO9emMplFGwv88J9odD3J+C3hnsgl1EFQh644MZcr2/UFrxZQVSqpdOru1D
+         Cmrl/jkn07BuKlQLVcijDNoSqnDsg+zhyE9lZE6A/7Ls/DXa0twaXKON0tk6fOzMdLib
+         gL6msyEqIGKNhU5JC3o91m1M+BlvLluct1HU7J7JIrtMk9GwU22+beqtoLMAWoO4OSqQ
+         OB3i+sdARPUIfQbirFuZ2Wep0ZTe9EYYEVKQCLpVY6L+cbPRusdhKmqOFesXtZC533pF
+         /3eQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=dWFmJSmMkzR+Uad+HotN/bLAH+aGeTDhTIhR7y4Osz4=;
-        b=Z1sgCYMquUMzV5+8cJMi9kfixnMtJCCeyVGT9SUOHZ5rb2vbj/Kj6OuXWK5lRD6wRZ
-         eojw2nEFYbQCvOPzS+fD0sZw3S/L6vP3CXuu+0bw37ely4wJH94MyRySmCMeUu8ZrYqm
-         6q4zFIftPPzv6x2m9KHjRbZnBIKO2hPgVQUrutRshnbCP3ppRhacjl+BMSz3uRLnDhgp
-         Tq9l5i/Aq/ZJRMkHpVNnQ7z2w48R+fE0Jc7ovrX72DyQPb6CBVPhs7PLPDopkee9Z1NT
-         vB1X5C/xCptVmgFgDn382WjqVoawUgto+Tg+pc9EmlRrK0xQa3uSjU46RyV5+xzTEdwO
-         SdKQ==
-X-Gm-Message-State: AOAM533alCK9mry9wzLy8BpSncXdkqSdKCm2Kls2uhA3prrJvLp5TYHQ
-        8DhqAqjtvdiw6vlBFWRMGHyJOq5GK5P6
-X-Google-Smtp-Source: ABdhPJzp0NoM3yI7AVtmcQwDbCiiD1+GM+ZQR8tweE7CdIhc9T6fVZz2vt+IdJ1UXf5BVfFuHbI6SQ==
-X-Received: by 2002:a17:902:760c:b029:d6:efa5:4cdd with SMTP id k12-20020a170902760cb02900d6efa54cddmr500153pll.56.1604640360100;
-        Thu, 05 Nov 2020 21:26:00 -0800 (PST)
-Received: from work ([103.59.133.81])
-        by smtp.gmail.com with ESMTPSA id l190sm151232pfl.205.2020.11.05.21.25.57
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 05 Nov 2020 21:25:59 -0800 (PST)
-Date:   Fri, 6 Nov 2020 10:55:54 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/6] bus: mhi: core: Remove unnecessary counter from
- mhi_firmware_copy()
-Message-ID: <20201106052554.GB3473@work>
-References: <1604622869-40212-1-git-send-email-bbhatt@codeaurora.org>
- <1604622869-40212-2-git-send-email-bbhatt@codeaurora.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1604622869-40212-2-git-send-email-bbhatt@codeaurora.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=EkQLhkGZHqpvuQT2CFN2+E1nRGoyf455nd9ZLIW66dM=;
+        b=PlDKuGS6mU3CDu9XIbsqfzfBYgcVKMD0b5j7/LrXqqgFDcj3DSIa2ZJnCT7eyHTwyz
+         lexnUJf6ayPtWR5t6qnSO7rw+pZk3/ZA1lxmBX4zJY9bescfVlF0xn//S2kBWPVc/FHE
+         ZOj8tP2BoCK/RM3Zr5w2VNhTntnV5T8x2JveRpCTF1sehhbQrbOjpn0QR7tZDEF2YZ/u
+         Nfw03rPUO2Se3V1GQ0xir9EC7MKL9ArzU/G8FJTfYUj2zr96j4Byh2VliQjIrxgcARiC
+         op+dPDNabXQI3jThrxRKaMMDk8Ma2+fDQ6vyhMGmNG6U370rIIvoVUmNnVXUFLQ8ly2v
+         Agdw==
+X-Gm-Message-State: AOAM530F0KyHKWUxpVIGLIOV5xJ6XovuimOZ3Am8ktZBpTUSeB3X+Nd8
+        14qbPdbSRgcbHSFDNvaqJ6YymwGoj+48TPE7
+X-Google-Smtp-Source: ABdhPJyX2PZV+nlWTOdRmguB30haDCamIKp/V4ktqSQVJ6fCG/rlsMyBnAkVJtH0MnxR2zUHOKWEUA==
+X-Received: by 2002:a63:db18:: with SMTP id e24mr312795pgg.155.1604640400933;
+        Thu, 05 Nov 2020 21:26:40 -0800 (PST)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id g7sm499742pjl.11.2020.11.05.21.26.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Nov 2020 21:26:40 -0800 (PST)
+Date:   Thu, 05 Nov 2020 21:26:40 -0800 (PST)
+X-Google-Original-Date: Thu, 05 Nov 2020 21:26:38 PST (-0800)
+Subject:     Re: [PATCH AUTOSEL 4.19 28/60] riscv: Define AT_VECTOR_SIZE_ARCH for ARCH_DLINFO
+In-Reply-To: <20201027000415.1026364-28-sashal@kernel.org>
+CC:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        zong.li@sifive.com, penberg@kernel.org, sashal@kernel.org,
+        linux-riscv@lists.infradead.org
+From:   Palmer Dabbelt <palmerdabbelt@google.com>
+To:     sashal@kernel.org
+Message-ID: <mhng-2b910e68-c031-484b-9d19-5c845f9c65f4@palmerdabbelt-glaptop1>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 04:34:24PM -0800, Bhaumik Bhatt wrote:
-> There is an extra 'i' counter in the mhi_firmware_copy() function
-> which is unused. Remove it to clean-up code and reduce stack
-> space as well as improve efficiency of the function.
-> 
-> Fixes: cd457afb1667 ("bus: mhi: core: Add support for downloading firmware over BHIe")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
-
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-
-Thanks,
-Mani
-
+On Mon, 26 Oct 2020 17:03:43 PDT (-0700), sashal@kernel.org wrote:
+> From: Zong Li <zong.li@sifive.com>
+>
+> [ Upstream commit b5fca7c55f9fbab5ad732c3bce00f31af6ba5cfa ]
+>
+> AT_VECTOR_SIZE_ARCH should be defined with the maximum number of
+> NEW_AUX_ENT entries that ARCH_DLINFO can contain, but it wasn't defined
+> for RISC-V at all even though ARCH_DLINFO will contain one NEW_AUX_ENT
+> for the VDSO address.
+>
+> Signed-off-by: Zong Li <zong.li@sifive.com>
+> Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
+> Reviewed-by: Pekka Enberg <penberg@kernel.org>
+> Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
 > ---
->  drivers/bus/mhi/core/boot.c | 2 --
->  1 file changed, 2 deletions(-)
-> 
-> diff --git a/drivers/bus/mhi/core/boot.c b/drivers/bus/mhi/core/boot.c
-> index 24422f5..6b6fd96 100644
-> --- a/drivers/bus/mhi/core/boot.c
-> +++ b/drivers/bus/mhi/core/boot.c
-> @@ -365,7 +365,6 @@ static void mhi_firmware_copy(struct mhi_controller *mhi_cntrl,
->  	size_t remainder = firmware->size;
->  	size_t to_cpy;
->  	const u8 *buf = firmware->data;
-> -	int i = 0;
->  	struct mhi_buf *mhi_buf = img_info->mhi_buf;
->  	struct bhi_vec_entry *bhi_vec = img_info->bhi_vec;
->  
-> @@ -377,7 +376,6 @@ static void mhi_firmware_copy(struct mhi_controller *mhi_cntrl,
->  
->  		buf += to_cpy;
->  		remainder -= to_cpy;
-> -		i++;
->  		bhi_vec++;
->  		mhi_buf++;
->  	}
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
+>  arch/riscv/include/uapi/asm/auxvec.h | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/arch/riscv/include/uapi/asm/auxvec.h b/arch/riscv/include/uapi/asm/auxvec.h
+> index 1376515547cda..ed7bf7c7add5f 100644
+> --- a/arch/riscv/include/uapi/asm/auxvec.h
+> +++ b/arch/riscv/include/uapi/asm/auxvec.h
+> @@ -21,4 +21,7 @@
+>  /* vDSO location */
+>  #define AT_SYSINFO_EHDR 33
+>
+> +/* entries in ARCH_DLINFO */
+> +#define AT_VECTOR_SIZE_ARCH	1
+> +
+>  #endif /* _UAPI_ASM_RISCV_AUXVEC_H */
+
+Thanks.  This should have been
+
+Fixes: 2129a235c098 ("RISC-V: ELF and module implementation")
+
+which is essentially all the way back to the beginning.
