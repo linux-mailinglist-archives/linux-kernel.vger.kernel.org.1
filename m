@@ -2,108 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F5122A96E2
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 14:18:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9CA22A96E4
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 14:19:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727421AbgKFNSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 08:18:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32846 "EHLO
+        id S1727412AbgKFNTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 08:19:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727286AbgKFNSW (ORCPT
+        with ESMTP id S1726939AbgKFNTe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 08:18:22 -0500
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05142C0613CF;
-        Fri,  6 Nov 2020 05:18:22 -0800 (PST)
-Received: by mail-lf1-x144.google.com with SMTP id e27so1871104lfn.7;
-        Fri, 06 Nov 2020 05:18:21 -0800 (PST)
+        Fri, 6 Nov 2020 08:19:34 -0500
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF6D4C0613CF;
+        Fri,  6 Nov 2020 05:19:34 -0800 (PST)
+Received: by mail-oi1-x243.google.com with SMTP id m13so1278325oih.8;
+        Fri, 06 Nov 2020 05:19:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=/ZICzGQmqQbkGI6sIDsSebYSxfwSQo6dV5nLmzImzEM=;
-        b=Th0FVcMtP7pzCAWxNyRhRsbrX5/KeAsZalB8SYcP9z7qA4uAUWIOnBO+RYQjT9mw5B
-         cSnCXDppYrSJLZgShdLbGxiiceYc8ZWCpfcUrcVz+tw1h09HX2FE4qsP150aqCy85dc5
-         8qSoqh0+MyaBsvcu/QZZPl1b0RjB79I+kibDCH9V0HbaoAFcqwL5ZHa0UgZpJAZQskNI
-         I22Os1h8n1HcCncOkRjd/jNESppeHfwQu2XLYfZBi0/vqN8M/XyrHhxMeuEoWxoyOquY
-         op/RfghaLweNpZvLVr9rOV6qz6Ko7N2EmN1qklkbGCDip2699Nzg5y2b+q5dOTtUG3GT
-         6pNw==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=KJB1xgKq9a1nDIt664i0hHb75r+6UHn2yvPVaWKbhxg=;
+        b=DOsBqRxtlNHR5ZreCneNhifwRaW0lb046z4iq3WQ1KfggQtlzfU8J2qXJREhyDQ7cg
+         ++BcXlYn2XWSI80IMs3qZRytRdnxuwGaACeb98bAQBtqeGaPn+XuaM1iuPMhS24SAtTC
+         r3LGYYfV+UV+4u0LOj3Y6Z4q8/RVJN3ov2Wh8wtD/UG3bTSUd4ptom+gTl+T8xBf2naU
+         5xNP24vO1EnlXXuKvhw0kDCu4FSmTkdHzXLVQi67rxS9aLXzU614i2nv4SmFaoB7uZhd
+         Ue5mD1REr01eXLZrlhBR0f2qkYLHhYmKu8Vlf6gLHOjHDC5hnsReZf90U9RKAOudX/Ye
+         V4+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/ZICzGQmqQbkGI6sIDsSebYSxfwSQo6dV5nLmzImzEM=;
-        b=NcuLPpq7cVYksLizbJijo0uWoB+vk850EWVvLcrShdfHCVYlgSqJ83KBR3D5VRI6O1
-         cYzvMMjtTDxZr8TwC2qGc7m+YG+8GEhgFAJueKYimJ2eW4h+IN9O9Z4sO71uDNclpd/y
-         o3nKOlA/4DxrqkiDmbPedfBDEQfC2MpOrCEW9cc9rdRq9Kmu1MtlXnx/0LwsqUTldaCB
-         cFTzJdDSCp32Vnj6AYYpeaPZyCurLJ2UNui+4rK9ohk+HN2w4iW1T0UHEuuCMdhpvnG/
-         88oPkViAypHBGEqA/4RM76g2a2tujt80R56WZofs6TM20VvWC7yOVtKFx8S2nEzV+q1E
-         zCTw==
-X-Gm-Message-State: AOAM533nNnDSEg2yyVJ0XK0c8Qn64kc8jxzxufIB1xhHprHGGFFuiQa2
-        RgcJTU/oLnG5ckMJEljUWMr5BfXKm7c=
-X-Google-Smtp-Source: ABdhPJxTkP2nzxORo9hszBEzNCIz/b63bCFXVn0pFxEHE4HfsnE2LZI+v9lZTjqNnO8zjJcXihuvwg==
-X-Received: by 2002:a19:3ce:: with SMTP id 197mr970993lfd.364.1604668700381;
-        Fri, 06 Nov 2020 05:18:20 -0800 (PST)
-Received: from [192.168.2.145] (109-252-192-83.dynamic.spd-mgts.ru. [109.252.192.83])
-        by smtp.googlemail.com with ESMTPSA id p7sm138030ljj.47.2020.11.06.05.18.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Nov 2020 05:18:19 -0800 (PST)
-Subject: Re: [PATCH 2/2] opp: Don't create an OPP table from
- dev_pm_opp_get_opp_table()
-To:     Viresh Kumar <viresh.kumar@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-kernel@vger.kernel.org
-References: <684ff01900180c0a40ec307dacc673b24eab593b.1604643714.git.viresh.kumar@linaro.org>
- <1012a98950355bd5a52424668050a17c3430cbe0.1604643714.git.viresh.kumar@linaro.org>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <ec9839dd-5d2d-0d6b-6563-b14da4af1a57@gmail.com>
-Date:   Fri, 6 Nov 2020 16:18:19 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to:user-agent;
+        bh=KJB1xgKq9a1nDIt664i0hHb75r+6UHn2yvPVaWKbhxg=;
+        b=LMXJ1RS86YRdw4BPsi4VLVrMB6FTCGo4pP+64Q6UF1CF3wRkEe7L4itm38wNANqD5a
+         mtvWY1hRtjtNtX7iLip6PIV5lMe8hJi00j+PES5bF/mCNuy+H/2Jzo5aGbcntoJ84ygF
+         daVDo3NXNycrJ+ZqDCnqZYcP1jj8eUaQTYiwPImempX9CP70lGlpas37MOpdj9bWakCG
+         7il30sBCkqedhWKsjSADl1RNixu5p6XvGLXjdtTIWE8/+OowgxzV/WtCwBHQH2SuHRWY
+         06njw7/r5N55k8avYR3M+ua/+cOUyeDY3H9UKEqqzuo26iYhoh1xDkZNx0+cORp+MZ8K
+         v/Dg==
+X-Gm-Message-State: AOAM531lzwYzjizXyS3R/QgyNhi/KBe/9DnoqZRObY6GrTY4f7LLTvzJ
+        8K/iYOD30LIDpzc3zvGXQlH3/GjfayI=
+X-Google-Smtp-Source: ABdhPJy//DTLAwtKxOi4CFlZ1NvnIpSpWaxe8a66KjJ8ASGzscPZnO1sTkVM8HlWE9XeUr2CKK5t0A==
+X-Received: by 2002:aca:33c2:: with SMTP id z185mr1130517oiz.174.1604668774086;
+        Fri, 06 Nov 2020 05:19:34 -0800 (PST)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id y3sm282369ota.62.2020.11.06.05.19.33
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 06 Nov 2020 05:19:33 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Fri, 6 Nov 2020 05:19:32 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     "wangwensheng (C)" <wangwensheng4@huawei.com>
+Cc:     "wim@linux-watchdog.org" <wim@linux-watchdog.org>,
+        "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Xiangrui (Euler)" <rui.xiang@huawei.com>,
+        "Guohanjun (Hanjun Guo)" <guohanjun@huawei.com>
+Subject: Re: [PATCH -next v3 1/2] watchdog: Fix potential dereferencing of
+ null pointer
+Message-ID: <20201106131932.GE14837@roeck-us.net>
+References: <20201105123848.93735-1-wangwensheng4@huawei.com>
+ <20201105142621.GB1389@roeck-us.net>
+ <4a85d0170a69430585fb89aba7490d9a@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <1012a98950355bd5a52424668050a17c3430cbe0.1604643714.git.viresh.kumar@linaro.org>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <4a85d0170a69430585fb89aba7490d9a@huawei.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-06.11.2020 09:24, Viresh Kumar пишет:
-> It has been found that some users (like cpufreq-dt and others on LKML)
-> have abused the helper dev_pm_opp_get_opp_table() to create the OPP
-> table instead of just finding it, which is the wrong thing to do. This
-> routine was meant for OPP core's internal working and exposed the whole
-> functionality by mistake.
+On Fri, Nov 06, 2020 at 07:37:08AM +0000, wangwensheng (C) wrote:
+> 在 2020/11/5 22:26, Guenter Roeck 写道:
+> > On Thu, Nov 05, 2020 at 12:38:47PM +0000, Wang Wensheng wrote:
+> >> A reboot notifier, which stops the WDT by calling the stop hook without
+> >> any check, would be registered when we set WDOG_STOP_ON_REBOOT flag.
+> >>
+> >> Howerer we allow the WDT driver to omit the stop hook since commit
+> >> "d0684c8a93549" ("watchdog: Make stop function optional") and provide
+> >> a module parameter for user that controls the WDOG_STOP_ON_REBOOT flag
+> >> in commit 9232c80659e94 ("watchdog: Add stop_on_reboot parameter to
+> >> control reboot policy"). Together that commits make user potential to
+> >> insert a watchdog driver that don't provide a stop hook but with the
+> >> stop_on_reboot parameter set, then dereferencing of null pointer occurs
+> >> on system reboot.
+> >>
+> >> Check the stop hook before registering the reboot notifier to fix the
+> >> issue.
+> >>
+> >> Fixes: d0684c8a9354 ("watchdog: Make stop function optional")
+> >> Signed-off-by: Wang Wensheng <wangwensheng4@huawei.com>
+> >> ---
+> >>   drivers/watchdog/watchdog_core.c | 9 ++++++++-
+> >>   1 file changed, 8 insertions(+), 1 deletion(-)
+> >>
+> >> diff --git a/drivers/watchdog/watchdog_core.c b/drivers/watchdog/watchdog_core.c
+> >> index 423844757812..945ab38b14b8 100644
+> >> --- a/drivers/watchdog/watchdog_core.c
+> >> +++ b/drivers/watchdog/watchdog_core.c
+> >> @@ -267,8 +267,15 @@ static int __watchdog_register_device(struct watchdog_device *wdd)
+> >>   	}
+> >>   
+> >>   	if (test_bit(WDOG_STOP_ON_REBOOT, &wdd->status)) {
+> >> -		wdd->reboot_nb.notifier_call = watchdog_reboot_notifier;
+> >> +		if (!wdd->ops->stop) {
+> >> +			pr_err("watchdog%d: Cannot support stop_on_reboot\n",
+> >> +				wdd->id);
+> >> +			watchdog_dev_unregister(wdd);
+> >> +			ida_simple_remove(&watchdog_ida, id);
+> >> +			return -EINVAL;
+> >> +		}
+> > 
+> > The problem with this is that setting the "stop_on_reboot" module parameter
+> > would now prevent the watchdog from being loaded, which isn't really
+> > desirable and might go unnoticed. I think the initial check should be
+> > above, with the "Mandatory operations" check, and
+> > 	if (stop_on_reboot != -1) {
+> > should be extended to
+> > 	if (stop_on_reboot != -1 && wdd->ops->stop) {
+> > 
+> > or possibly more fancy:
+> > 
+> > 	if (stop_on_reboot != -1) {
+> > 		if (stop_on_reboot) {
+> > 			if (!wdd->ops->stop)
+> > 				pr_warn("watchdog%d: stop_on_reboot not supported\n", wdd->id);
+> > 			else
+> > 				set_bit(WDOG_STOP_ON_REBOOT, &wdd->status);
+> > 		} else {
+> > 			clear_bit(WDOG_STOP_ON_REBOOT, &wdd->status);
+> > 		}
+> > 	}
+> > 
+> > Thanks,
+> > Guenter
 > 
-> Change the scope of dev_pm_opp_get_opp_table() to only finding the
-> table. The internal helpers _opp_get_opp_table*() are thus renamed to
-> _add_opp_table*(), dev_pm_opp_get_opp_table_indexed() is removed (as we
-> don't need the index field for finding the OPP table) and so the only
-> user, genpd, is updated.
+> Now the divergence is that should we stop the registering process and 
+> return error when the STOP_ON_REBOOT flag is set but the driver doesn't 
+> support it. The flag is set in two scenes.
+> Firstly,the driver that should provide the stop hook may set the flag 
+> staticlly, and it is a bug of the driver if it set the flag but without 
+> a stop hook. Then giving an error shall be more striking.
+> Secondly, the user can change the flag using module parameter. Is it 
+> reasonable to just ignore the STOP_ON_REBOOT flag and give a warning 
+> when the user truely want it? And under this circumstance a warning is 
+> easier to get unnoticed than an error.
+> I prefer to stop the registering process and return an error in those 
+> two scenes.
 > 
-> Note that the prototype of _add_opp_table() was already left in opp.h by
-> mistake when it was removed earlier and so we weren't required to add it
-> now.
 
-Hello Viresh,
+I disagree. A bad module parameter should not result in module load
+failures.
 
-It looks like this is not an entirely correct change because previously
-it was possible to get an empty opp_table in order to use it for the
-dev_pm_opp_set_rate(), which would fall back to clk_set_rate if table is
-empty.
+Guenter
 
-Now it's not possible to get an empty table and
-dev_pm_opp_of_add_table() would error out if OPPs are missing in a
-device-tree. Hence it's not possible to implement a fall back without
-abusing opp_set_regulators() or opp_set_supported_hw() for getting the
-empty table. Or am I missing something?
+> Thanks
+> > 
+> >>   
+> >> +		wdd->reboot_nb.notifier_call = watchdog_reboot_notifier;
+> >>   		ret = register_reboot_notifier(&wdd->reboot_nb);
+> >>   		if (ret) {
+> >>   			pr_err("watchdog%d: Cannot register reboot notifier (%d)\n",
+> >> -- 
+> >> 2.25.0
+> >>
+> > 
+> 
