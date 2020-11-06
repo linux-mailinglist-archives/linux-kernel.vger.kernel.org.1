@@ -2,361 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2D722A948C
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 11:38:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34CFA2A9474
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 11:37:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727200AbgKFKij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 05:38:39 -0500
-Received: from mail-ej1-f65.google.com ([209.85.218.65]:35229 "EHLO
-        mail-ej1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727096AbgKFKiW (ORCPT
+        id S1727012AbgKFKhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 05:37:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35642 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726010AbgKFKhv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 05:38:22 -0500
-Received: by mail-ej1-f65.google.com with SMTP id p5so1249423ejj.2
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 02:38:17 -0800 (PST)
+        Fri, 6 Nov 2020 05:37:51 -0500
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78F1CC0613D2
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 02:37:51 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id n18so793571wrs.5
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 02:37:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6M9PqsVQ6w1K95Vv3V5suIvowhnAPGzDV9z7R3SVjWM=;
+        b=X+35wcHHLbk44vs217bg5jdDCau+AwyaGVxkHy2AWscagQdnDzs6xLBILWtUWe2gY2
+         I46PGliEx6waIAO+EVOldFLjaY6hOi6ZjPYwwF3smlFwb20JeHCyHray5bZLr2kul2sD
+         TiT+55HBQmGaSq+vvFwXftqt6EtFaW1DB2K9U=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:message-id:date:mime-version;
-        bh=phwJ17m1qteKl8cKwWHpMRzBfXcARPqA3LHb4IHhBYE=;
-        b=VNBwk0aHYiuHIsNcWwgp3Sg6AfRUkuFCl77B1FsSNDdh/02OvZVy2E13j8cP+49299
-         lliZLWVfG1AyelqfrvYBYuqvRzf2HRlY5/s+WtwZmtq1+4i6CNuHZFHG1ZI8pl/T5t22
-         E1Tz64iVFlB04Lb09Y45fb23F6E7TE+THDTbWXRH6EW2ly9gqbDdtX/hc7gZ5vfcyUnh
-         h9WtkvlpPrM7cnarGMp5u2p2tDTHizzkp62oUmV4VpVyLjJLN498emKM76emYeZ3tiVh
-         ETyssxetHxvdE7Gu0DHOtx7HBMrAENl7T+jDOtmLHrgoqahKSeyEiKcBkE3CXWyG2vKD
-         FN6w==
-X-Gm-Message-State: AOAM532MlrceC0Mhmb7wBjALUaUkGYzKintCrgNRQUgaze1QXnY101yY
-        4qyNCw9HWUTQx4Jfhb5MtpA=
-X-Google-Smtp-Source: ABdhPJzP7iT5YWmH+6U21ClR+z14CZ1M03HUdcYF4slKebmDldkgMKoxdVM8O0cYZWK4M4rrhex/Zg==
-X-Received: by 2002:a17:906:6546:: with SMTP id u6mr1365996ejn.36.1604659097023;
-        Fri, 06 Nov 2020 02:38:17 -0800 (PST)
-Received: from darkstar ([2a04:ee41:4:5025:8295:1d2:ca0d:985e])
-        by smtp.gmail.com with ESMTPSA id bg4sm653328ejb.24.2020.11.06.02.38.15
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6M9PqsVQ6w1K95Vv3V5suIvowhnAPGzDV9z7R3SVjWM=;
+        b=qcp/jQFQgA7W9dfWuDwXK56hHAKA8BDBTbGG1USXMBqTOBlsyYLO0iHCe7ddGvRFHi
+         moX1SPB22IBQHPVNL36AJKGaC8vMHXKJdy/5oLLIYT7LWlA74w2c2fkfhASYarU3DtrT
+         l3LqCJ7GHWvkUdIXPT/qhQ6mhO2yisiuUMMFgFYrtfROs2+yv7+d42EP8Xr2kbTY7MkV
+         ACF+fQhWI7zmQL0CxqPq0TjETWRR4o5A+U0G8Q/scqQvVk7HvDhh36Ysv1k3SG95/6Cu
+         rq/T1CnupVPYI2VWmHNz5DEPmHOuasPb/OhemKbXNXCZ6ijzmZ4nXHj/oeNRCopckNIX
+         Du2Q==
+X-Gm-Message-State: AOAM530oLTMUqrMansfOOWRI5rGcBChuQPagsf9//TTlNrAZYuOuiMGa
+        vMeU8Y+MFT57yaSpudEdGRHqfKhqNRqpOMQI
+X-Google-Smtp-Source: ABdhPJw1Q11+DjsJvGu3FftQ+yUokOXHGd8As2B3AQgserWa1UXtdasyMHRTSCQdzgRt1iyFnklHDg==
+X-Received: by 2002:adf:f4c9:: with SMTP id h9mr1846319wrp.332.1604659069744;
+        Fri, 06 Nov 2020 02:37:49 -0800 (PST)
+Received: from kpsingh.c.googlers.com.com (203.75.199.104.bc.googleusercontent.com. [104.199.75.203])
+        by smtp.gmail.com with ESMTPSA id t1sm1537639wrs.48.2020.11.06.02.37.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Nov 2020 02:38:16 -0800 (PST)
-References: <20201103023756.1012088-1-hsiang023167@gmail.com>
-User-agent: mu4e 1.4.13; emacs 27.1
-From:   Patrick Bellasi <patrick.bellasi@matbug.net>
-To:     Yun Hsiang <hsiang023167@gmail.com>
-Cc:     dietmar.eggemann@arm.com, peterz@infradead.org,
-        linux-kernel@vger.kernel.org, qais.yousef@arm.com,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH v5 1/1] sched/uclamp: add SCHED_FLAG_UTIL_CLAMP_RESET
- flag to reset uclamp
-In-reply-to: <20201103023756.1012088-1-hsiang023167@gmail.com>
-Message-ID: <87blgag4an.derkling@matbug.net>
-Date:   Fri, 06 Nov 2020 11:36:48 +0100
+        Fri, 06 Nov 2020 02:37:49 -0800 (PST)
+From:   KP Singh <kpsingh@chromium.org>
+To:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Paul Turner <pjt@google.com>,
+        Jann Horn <jannh@google.com>, Hao Luo <haoluo@google.com>
+Subject: [PATCH bpf-next v6 0/9] Implement task_local_storage
+Date:   Fri,  6 Nov 2020 10:37:38 +0000
+Message-Id: <20201106103747.2780972-1-kpsingh@chromium.org>
+X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: KP Singh <kpsingh@google.com>
 
-Hi Yun,
-thanks for keep improving this.
+# v5 -> v6
 
-I'm replying here but still considering all other reviewers comments.
+- Using a wrapper for copy_file_range in selftests since it's missing
+  in older libcs.
+- Added Martin's acks.
 
-Best,
-Patrick
+# v4 -> v5
 
-On Tue, Nov 03, 2020 at 03:37:56 +0100, Yun Hsiang <hsiang023167@gmail.com> wrote...
+- Fixes to selftests as suggested by Martin.
+- Added Martin's acks.
 
-> If the user wants to stop controlling uclamp and let the task inherit
-> the value from the group, we need a method to reset.
->
-> Add SCHED_FLAG_UTIL_CLAMP_RESET flag to allow the user to reset uclamp via
-> sched_setattr syscall.
->
-> The policy is
-> _CLAMP_RESET                           => reset both min and max
-> _CLAMP_RESET | _CLAMP_MIN              => reset min value
-> _CLAMP_RESET | _CLAMP_MAX              => reset max value
-> _CLAMP_RESET | _CLAMP_MIN | _CLAMP_MAX => reset both min and max
+# v3 -> v4
 
-This documentation should be added to the uapi header and, most
-importantly, in:
-  include/uapi/linux/sched/types.h
-where the documentation for struct sched_attr is provided.
+- Move the patch that exposes spin lock helpers to LSM programs as the
+  first patch as some of the changes in the implementation are actually
+  for spin locks.
+- Clarify the comment in the bpf_task_storage_{get, delete} helper as
+  discussed with Martin.
+- Added Martin's ack and rebased.
 
+# v2 -> v3
 
-> Signed-off-by: Yun Hsiang <hsiang023167@gmail.com>
-> Reported-by: kernel test robot <lkp@intel.com>
-> ---
->  include/uapi/linux/sched.h |  7 +++--
->  kernel/sched/core.c        | 59 ++++++++++++++++++++++++++++----------
->  2 files changed, 49 insertions(+), 17 deletions(-)
->
-> diff --git a/include/uapi/linux/sched.h b/include/uapi/linux/sched.h
-> index 3bac0a8ceab2..6c823ddb1a1e 100644
-> --- a/include/uapi/linux/sched.h
-> +++ b/include/uapi/linux/sched.h
-> @@ -132,17 +132,20 @@ struct clone_args {
->  #define SCHED_FLAG_KEEP_PARAMS		0x10
->  #define SCHED_FLAG_UTIL_CLAMP_MIN	0x20
->  #define SCHED_FLAG_UTIL_CLAMP_MAX	0x40
-> +#define SCHED_FLAG_UTIL_CLAMP_RESET	0x80
->  
->  #define SCHED_FLAG_KEEP_ALL	(SCHED_FLAG_KEEP_POLICY | \
->  				 SCHED_FLAG_KEEP_PARAMS)
->  
+- Added bpf_spin_locks to the selftests for local storage, found that
+  these are not available for LSM programs.
+- Made spin lock helpers available for LSM programs (except sleepable
+  programs which need more work).
+- Minor fixes for includes and added short commit messages for patches
+  that were split up for libbpf and bpftool.
+- Added Song's acks.
 
-(Related to the following discussion point)
-What about adding in a comment here to call out that the following
-definitions are "internal only"?
-Moreover, we could probably wrap the following two define within an
-#ifdef __KERNEL__/#endif block
+# v1 -> v2
 
+- Updated the refcounting for task_struct and simplified conversion
+  of fd -> struct pid.
+- Some fixes suggested by Martin and Andrii, notably:
+   * long return type for the bpf_task_storage_delete helper (update
+     for bpf_inode_storage_delete will be sent separately).
+   * Remove extra nullness check to task_storage_ptr in map syscall
+     ops.
+   * Changed the argument signature of the BPF helpers to use
+     task_struct pointer in uapi headers.
+   * Remove unnecessary verifier logic for the bpf_get_current_task_btf
+     helper.
+   * Split the changes for bpftool and libbpf.
+- Exercised syscall operations for local storage (kept a simpler verison
+  in test_local_storage.c, the eventual goal will be to update
+  sk_storage_map.c for all local storage types).
+- Formatting fixes + Rebase.
 
-Something like:
+We already have socket and inode local storage since [1]
 
-+ /*
-+ * The following definitions are internal only, do not use them to set
-+ * set_{set,get}attr() params. Use instead a valid combination of the
-+ * flags defined above.
-+ */
-+ #ifdef __KERNEL__
+This patch series:
 
->  #define SCHED_FLAG_UTIL_CLAMP	(SCHED_FLAG_UTIL_CLAMP_MIN | \
-> -				 SCHED_FLAG_UTIL_CLAMP_MAX)
-> +				 SCHED_FLAG_UTIL_CLAMP_MAX | \
-> +				 SCHED_FLAG_UTIL_CLAMP_RESET)
+* Implements bpf_local_storage for task_struct.
+* Implements the bpf_get_current_task_btf helper which returns a BTF
+  pointer to the current task. Not only is this generally cleaner
+  (reading from the task_struct currently requires BPF_CORE_READ), it
+  also allows the BTF pointer to be used in task_local_storage helpers.
+* In order to implement this helper, a RET_PTR_TO_BTF_ID is introduced
+  which works similar to RET_PTR_TO_BTF_ID_OR_NULL but does not require
+  a nullness check.
+* Implements a detection in selftests which uses the
+  task local storage to deny a running executable from unlinking itself.
 
-We need the _RESET flag only here (not below), since this is a UCLAMP
-feature and it's worth/useful to have a single "all uclamp flags"
-definition...
+[1]: https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/commit/?id=f836a56e84ffc9f1a1cd73f77e10404ca46a4616
 
->  #define SCHED_FLAG_ALL	(SCHED_FLAG_RESET_ON_FORK	| \
->  			 SCHED_FLAG_RECLAIM		| \
->  			 SCHED_FLAG_DL_OVERRUN		| \
->  			 SCHED_FLAG_KEEP_ALL		| \
-> -			 SCHED_FLAG_UTIL_CLAMP)
-> +			 SCHED_FLAG_UTIL_CLAMP		| \
-> +			 SCHED_FLAG_UTIL_CLAMP_RESET)
+KP Singh (9):
+  bpf: Allow LSM programs to use bpf spin locks
+  bpf: Implement task local storage
+  libbpf: Add support for task local storage
+  bpftool: Add support for task local storage
+  bpf: Implement get_current_task_btf and RET_PTR_TO_BTF_ID
+  bpf: Fix tests for local_storage
+  bpf: Update selftests for local_storage to use vmlinux.h
+  bpf: Add tests for task_local_storage
+  bpf: Exercise syscall operations for inode and sk storage
 
-... i.e., you can drop the chunk above.
+ include/linux/bpf.h                           |   1 +
+ include/linux/bpf_lsm.h                       |  23 ++
+ include/linux/bpf_types.h                     |   1 +
+ include/uapi/linux/bpf.h                      |  48 +++
+ kernel/bpf/Makefile                           |   1 +
+ kernel/bpf/bpf_lsm.c                          |   8 +
+ kernel/bpf/bpf_task_storage.c                 | 315 ++++++++++++++++++
+ kernel/bpf/syscall.c                          |   3 +-
+ kernel/bpf/verifier.c                         |  37 +-
+ kernel/trace/bpf_trace.c                      |  16 +
+ security/bpf/hooks.c                          |   2 +
+ .../bpf/bpftool/Documentation/bpftool-map.rst |   3 +-
+ tools/bpf/bpftool/bash-completion/bpftool     |   2 +-
+ tools/bpf/bpftool/map.c                       |   4 +-
+ tools/include/uapi/linux/bpf.h                |  48 +++
+ tools/lib/bpf/libbpf_probes.c                 |   1 +
+ .../bpf/prog_tests/test_local_storage.c       | 200 ++++++++++-
+ .../selftests/bpf/progs/local_storage.c       | 103 ++++--
+ 18 files changed, 757 insertions(+), 59 deletions(-)
+ create mode 100644 kernel/bpf/bpf_task_storage.c
 
-+ #endif /* __KERNEL__ */
-
-Regarding Qais comment, I had the same Dietmar's thought: I doubt there
-are apps using _FLAGS_ALL from userspace. For DL tasks, since they
-cannot fork, it makes no sense to specify, for example
-_RESET_ON_FORK|_RECLAIM. For CFS/RT tasks, where UCLAMP is supported, it
-makes no sense to specify DL flags.
-
-It's true however that having this def here when it's supposed to be
-used only internally, can be kind of "confusing", but it's also useful
-to keep the definition aligned with the flags defined above.
-The ifdef wrapping proposed above should make this even more explicit.
-
-Perhaps we can also better call this out also with an additional note
-right after:
-
-  https://elixir.bootlin.com/linux/v5.9.6/source/include/uapi/linux/sched/types.h#L43
-
-In that file, I believe the "Task Utilization Attributes" section can
-also be improved by adding a description of the _UCLAMP flags semantics.
-
-
->  #endif /* _UAPI_LINUX_SCHED_H */
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 8160ab5263f8..6ae463b64834 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -1004,7 +1004,7 @@ unsigned int uclamp_rq_max_value(struct rq *rq, enum uclamp_id clamp_id,
->  	return uclamp_idle_value(rq, clamp_id, clamp_value);
->  }
->  
-> -static void __uclamp_update_util_min_rt_default(struct task_struct *p)
-> +static inline void __uclamp_update_util_min_rt_default(struct task_struct *p)
->  {
-
-Again, IMO, this is _not_ an unrelated change at all. Actually, I still
-would like to do one step more and inline this function in the _only
-place_ where it's used. Qais arguments for not doing that where [1]:
-
-  Updating the default rt value is done from different contexts. Hence
-  it is important to document the rules under which this update must
-  happen and ensure the update happens through a common path.
-
-I don't see why these arguments are not satisfied when we inline, e.g.
-
----8<---
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index d2003a7d5ab5..369074154e1d 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -1004,25 +1004,9 @@ unsigned int uclamp_rq_max_value(struct rq *rq, enum uclamp_id clamp_id,
-        return uclamp_idle_value(rq, clamp_id, clamp_value);
- }
- 
--static void __uclamp_update_util_min_rt_default(struct task_struct *p)
--{
--       unsigned int default_util_min;
--       struct uclamp_se *uc_se;
--
--       lockdep_assert_held(&p->pi_lock);
--
--       uc_se = &p->uclamp_req[UCLAMP_MIN];
--
--       /* Only sync if user didn't override the default */
--       if (uc_se->user_defined)
--               return;
--
--       default_util_min = sysctl_sched_uclamp_util_min_rt_default;
--       uclamp_se_set(uc_se, default_util_min, false);
--}
--
- static void uclamp_update_util_min_rt_default(struct task_struct *p)
- {
-+       struct uclamp_se *uc_se = &p->uclamp_req[UCLAMP_MIN];
-        struct rq_flags rf;
-        struct rq *rq;
- 
-@@ -1031,7 +1015,11 @@ static void uclamp_update_util_min_rt_default(struct task_struct *p)
- 
-        /* Protect updates to p->uclamp_* */
-        rq = task_rq_lock(p, &rf);
--       __uclamp_update_util_min_rt_default(p);
-+
-+       /* Only sync if user didn't override the default */
-+       if (!uc_se->user_defined)
-+               uclamp_se_set(uc_se, sysctl_sched_uclamp_util_min_rt_default, false);
-+
-        task_rq_unlock(rq, p, &rf);
- }
----8<---
-
-[1] https://lore.kernel.org/lkml/20201028182946.6qfmt7q35ewrjjua@e107158-lin/
-
->  	unsigned int default_util_min;
->  	struct uclamp_se *uc_se;
-> @@ -1413,8 +1413,14 @@ int sysctl_sched_uclamp_handler(struct ctl_table *table, int write,
->  static int uclamp_validate(struct task_struct *p,
->  			   const struct sched_attr *attr)
->  {
-> -	unsigned int lower_bound = p->uclamp_req[UCLAMP_MIN].value;
-> -	unsigned int upper_bound = p->uclamp_req[UCLAMP_MAX].value;
-> +	unsigned int lower_bound, upper_bound;
-> +
-> +	/* Do not check uclamp attributes values in reset case. */
-> +	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_RESET)
-> +		return 0;
-> +
-> +	lower_bound = p->uclamp_req[UCLAMP_MIN].value;
-> +	upper_bound = p->uclamp_req[UCLAMP_MAX].value;
->  
->  	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MIN)
->  		lower_bound = attr->sched_util_min;
-> @@ -1438,20 +1444,43 @@ static int uclamp_validate(struct task_struct *p,
->  	return 0;
->  }
->  
-> +static int uclamp_reset(enum uclamp_id clamp_id, unsigned long flags)
-> +{
-> +	/* No _UCLAMP_RESET flag set: do not reset */
-
-              ^^^^^^^^^^^^^
-Maybe better using the full flag name for all these?
-
-> +	if (!(flags & SCHED_FLAG_UTIL_CLAMP_RESET))
-> +		return false;
-> +
-> +	/* Only _UCLAMP_RESET flag set: reset both clamps */
-> +	if (!(flags & (SCHED_FLAG_UTIL_CLAMP_MIN | SCHED_FLAG_UTIL_CLAMP_MAX)))
-> +		return true;
-> +
-> +	/* Both _UCLAMP_RESET and _UCLAMP_MIN flags are set: reset only min */
-> +	if ((flags & SCHED_FLAG_UTIL_CLAMP_MIN) && clamp_id == UCLAMP_MIN)
-> +		return true;
-> +
-> +	/* Both _UCLAMP_RESET and _UCLAMP_MAX flags are set: reset only max */
-> +	if ((flags & SCHED_FLAG_UTIL_CLAMP_MAX) && clamp_id == UCLAMP_MAX)
-> +		return true;
-> +
-> +	return false;
-
-I was suggesting maybe we need READ_ONCE() in the if above but did not
-addressed previous Dietmar's question [2] on why.
-
-The function above has a correct semantics only when the ordering of the
-if statement is strictly observed.
-
-Now, since we don't have any data dependency on the multiple if cases,
-are we sure an overzealous compiler will never come up with some
-"optimized reordering" of the checks required?
-
-IOW, if the compiler could scramble the checks on an optimization, we
-would get a wrong semantics which is also very difficult do debug.
-Hence the idea to use READ_ONCE, to both tell the compiler to not
-even attempt reordering those checks and also to better document the
-code about the importance of the ordering on those checks.
-
-Is now more clear? Does that makes sense?
-
-[2] https://lore.kernel.org/lkml/c59f7c85-59a2-488b-ce51-b3abee506dac@arm.com/
-
-> +}
-> +
->  static void __setscheduler_uclamp(struct task_struct *p,
->  				  const struct sched_attr *attr)
->  {
->  	enum uclamp_id clamp_id;
->  
->  	/*
-> -	 * On scheduling class change, reset to default clamps for tasks
-> -	 * without a task-specific value.
-> +	 * Reset to default clamps on forced _UCLAMP_RESET (always) and
-> +	 * for tasks without a task-specific value (on scheduling class change).
->  	 */
->  	for_each_clamp_id(clamp_id) {
-> +		unsigned int clamp_value;
->  		struct uclamp_se *uc_se = &p->uclamp_req[clamp_id];
->  
->  		/* Keep using defined clamps across class changes */
-> -		if (uc_se->user_defined)
-> +		if (!uclamp_reset(clamp_id, attr->sched_flags) &&
-> +				uc_se->user_defined)
->  			continue;
->  
->  		/*
-> @@ -1459,24 +1488,24 @@ static void __setscheduler_uclamp(struct task_struct *p,
->  		 * at runtime.
->  		 */
->  		if (unlikely(rt_task(p) && clamp_id == UCLAMP_MIN))
-> -			__uclamp_update_util_min_rt_default(p);
-> +			clamp_value = sysctl_sched_uclamp_util_min_rt_default;
->  		else
-> -			uclamp_se_set(uc_se, uclamp_none(clamp_id), false);
-> +			clamp_value = uclamp_none(clamp_id);
->  
-> +		uclamp_se_set(uc_se, clamp_value, false);
->  	}
->  
-> -	if (likely(!(attr->sched_flags & SCHED_FLAG_UTIL_CLAMP)))
-> +	if (likely(!(attr->sched_flags && SCHED_FLAG_UTIL_CLAMP)) ||
-> +		attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_RESET)
->  		return;
-
-Parenthesis required for multi-line is statements.
-
-Following chucks not required.
-
-> -	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MIN) {
-> +	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MIN)
->  		uclamp_se_set(&p->uclamp_req[UCLAMP_MIN],
-> -			      attr->sched_util_min, true);
-> -	}
-> +				attr->sched_util_min, true);
->  
-> -	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MAX) {
-> +	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MAX)
->  		uclamp_se_set(&p->uclamp_req[UCLAMP_MAX],
-> -			      attr->sched_util_max, true);
-> -	}
-> +				attr->sched_util_max, true);
->  }
->  
->  static void uclamp_fork(struct task_struct *p)
+-- 
+2.29.1.341.ge80a0c044ae-goog
 
