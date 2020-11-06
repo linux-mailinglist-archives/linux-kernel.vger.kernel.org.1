@@ -2,118 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F41B2A975D
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 15:03:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 316012A9760
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 15:03:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727464AbgKFOC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 09:02:59 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:10806 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727263AbgKFOC7 (ORCPT
+        id S1727428AbgKFODU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 09:03:20 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:40166 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726812AbgKFODU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 09:02:59 -0500
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A6E1Lpt076369;
-        Fri, 6 Nov 2020 09:02:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=vEsnfnljgi10FY8f+eHuNuFVn88s5gBhJUyG0fD/nvM=;
- b=qC+VvwjkvSPSyUkcaxrOXwklUgAONd1oFup45bl20X7ezHL0syEMLg42fld+SAcqf2es
- s1L40QkRYW1iQ9jETB6Fxh/x/5CX7IIr7ILEnBO+hfo6gVl38BAB1cT5v+rJmizrxOo+
- 6iQGFxfzrmehMvHemaW/u7b9d94l4VIVhNqIPwqI835AVfbCRKeUIwYLH6bb2Prxb9V2
- DbvJlwP9sGra4craf1+UzhsN3AzqWU0wZVKgP1GPKZrGvvDBpoREv2iKlF1JLnK8y45m
- OZYh1hl5NwtF8ZgELIFg8/4qoBAfgbFHEkuSv7shL66HJgQphNyoNziHkklwkkMi7zGt dg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34m7rev8ej-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 06 Nov 2020 09:02:48 -0500
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0A6E1kOh077657;
-        Fri, 6 Nov 2020 09:02:13 -0500
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34m7rev81f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 06 Nov 2020 09:02:13 -0500
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0A6E1qbs015211;
-        Fri, 6 Nov 2020 14:01:52 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma03ams.nl.ibm.com with ESMTP id 34hm6hdtqj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 06 Nov 2020 14:01:51 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0A6E1n8b65339700
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 6 Nov 2020 14:01:49 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A4355AE04D;
-        Fri,  6 Nov 2020 14:01:49 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8C2B5AE045;
-        Fri,  6 Nov 2020 14:01:46 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.77.67])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri,  6 Nov 2020 14:01:46 +0000 (GMT)
-Message-ID: <bef97a69db37d358db21668b179fd8821430b1b4.camel@linux.ibm.com>
-Subject: Re: [PATCH v5 5/7] IMA: validate supported kernel data sources
- before measurement
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Tushar Sugandhi <tusharsu@linux.microsoft.com>,
-        stephen.smalley.work@gmail.com, casey@schaufler-ca.com,
-        agk@redhat.com, snitzer@redhat.com, gmazyland@gmail.com,
-        paul@paul-moore.com
-Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
-        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
-        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dm-devel@redhat.com
-Date:   Fri, 06 Nov 2020 09:01:45 -0500
-In-Reply-To: <20201101222626.6111-6-tusharsu@linux.microsoft.com>
-References: <20201101222626.6111-1-tusharsu@linux.microsoft.com>
-         <20201101222626.6111-6-tusharsu@linux.microsoft.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-06_04:2020-11-05,2020-11-06 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 spamscore=0
- malwarescore=0 adultscore=0 lowpriorityscore=0 clxscore=1015 mlxscore=0
- impostorscore=0 priorityscore=1501 phishscore=0 suspectscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011060101
+        Fri, 6 Nov 2020 09:03:20 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0A6E3EUv127757;
+        Fri, 6 Nov 2020 08:03:14 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1604671394;
+        bh=5+kSDz856W1qx9cgvwWKSlzBi71LyL62j0NDBZaEQl0=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=O2WSFqsFIMe0Q1RSP2MCw3LBR7/jynlpK8Bsc0sn52XZ1/TE1GpkdpB/jGG6FCXwG
+         FD8n4kIsQ5cc/B9YoO1p4ojNYkzCjcmQdXynVKkXU/Rf2ZX5NkkdRLNgkRQ+oRt8v+
+         gEXlCrvoznkcWRUKnYGCEnXKMZoPnbPke7DNPvao=
+Received: from DLEE106.ent.ti.com (dlee106.ent.ti.com [157.170.170.36])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0A6E3E6n100939
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 6 Nov 2020 08:03:14 -0600
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 6 Nov
+ 2020 08:03:13 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 6 Nov 2020 08:03:13 -0600
+Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0A6E3BJf004038;
+        Fri, 6 Nov 2020 08:03:12 -0600
+Subject: Re: [PATCH 08/19] gpu: drm: omapdrm: dss: dsi: Rework and remove a
+ few unused variables
+To:     Lee Jones <lee.jones@linaro.org>
+CC:     <linux-kernel@vger.kernel.org>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        <dri-devel@lists.freedesktop.org>
+References: <20201105144517.1826692-1-lee.jones@linaro.org>
+ <20201105144517.1826692-9-lee.jones@linaro.org>
+ <74399fab-6af5-77d3-e0eb-749774eb2837@ti.com> <20201105180725.GO4488@dell>
+From:   Tomi Valkeinen <tomi.valkeinen@ti.com>
+Message-ID: <e48964e6-4a94-4495-0217-90db19fff629@ti.com>
+Date:   Fri, 6 Nov 2020 16:03:11 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20201105180725.GO4488@dell>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tushar,
-
-On Sun, 2020-11-01 at 14:26 -0800, Tushar Sugandhi wrote:
-> Currently, IMA does not restrict random data sources from measuring
-> their data using ima_measure_critical_data(). Any kernel data source can
-> call the function, and it's data will get measured as long as the input
-> event_data_source is part of the IMA policy - CRITICAL_DATA+data_sources.
+On 05/11/2020 20:07, Lee Jones wrote:
+> On Thu, 05 Nov 2020, Tomi Valkeinen wrote:
 > 
-> To ensure that only data from supported sources are measured, the kernel
-> subsystem name needs to be added to a compile-time list of supported
-> sources (an "allowed list of components"). IMA then validates the input
-> parameter - "event_data_source" passed to ima_measure_critical_data()
-> against this allowed list at run-time.
+>> On 05/11/2020 16:45, Lee Jones wrote:
+>>> Fixes the following W=1 kernel build warning(s):
+>>>
+>>>  drivers/gpu/drm/omapdrm/dss/dsi.c: In function ‘_dsi_print_reset_status’:
+>>>  drivers/gpu/drm/omapdrm/dss/dsi.c:1131:6: warning: variable ‘l’ set but not used [-Wunused-but-set-variable]
+>>>  drivers/gpu/drm/omapdrm/dss/dsi.c: In function ‘dsi_update’:
+>>>  drivers/gpu/drm/omapdrm/dss/dsi.c:3943:10: warning: variable ‘dh’ set but not used [-Wunused-but-set-variable]
+>>>  drivers/gpu/drm/omapdrm/dss/dsi.c:3943:6: warning: variable ‘dw’ set but not used [-Wunused-but-set-variable]
+>>>
+>>> Cc: Tomi Valkeinen <tomi.valkeinen@ti.com>
+>>> Cc: David Airlie <airlied@linux.ie>
+>>> Cc: Daniel Vetter <daniel@ffwll.ch>
+>>> Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+>>> Cc: dri-devel@lists.freedesktop.org
+>>> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+>>> ---
+>>>  drivers/gpu/drm/omapdrm/dss/dsi.c | 9 ++-------
+>>>  1 file changed, 2 insertions(+), 7 deletions(-)
+>>
+>> I'd use "drm/omap: dsi: " subject prefix, the current one is fine too:
+>>
+>> Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ti.com>
+>>
+>> Should I pick this up or do you want to keep the series intact?
 > 
-> This compile-time list must be updated when kernel subsystems are
-> updated to measure their data using IMA.
+> If you are in a position to take it, please do so.
 > 
-> Provide an infrastructure for kernel data sources to be added to
-> IMA's supported data sources list at compile-time. Update
-> ima_measure_critical_data() to validate, at run-time, that the data
-> source is supported before measuring the data coming from that source.
+> I rebase every day, so it will just vanish from my working set.
 
-For those interested in limiting which critical data to measure, the
-"data sources" IMA policy rule option already does that.   Why is this
-needed?
+I have a 56 patch series on dsi.c that I sent yesterday, and it conflicts with this one. I'll pick
+this one on top of my series.
 
-thanks,
+ Tomi
 
-Mimi
-
+-- 
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
