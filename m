@@ -2,147 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40B382A935E
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 10:50:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 044042A935C
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 10:50:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726992AbgKFJuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 04:50:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56350 "EHLO
+        id S1727076AbgKFJuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 04:50:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727064AbgKFJuM (ORCPT
+        with ESMTP id S1726423AbgKFJuJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 04:50:12 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62327C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 01:50:12 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id c20so824251pfr.8
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 01:50:12 -0800 (PST)
+        Fri, 6 Nov 2020 04:50:09 -0500
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A493C0613CF;
+        Fri,  6 Nov 2020 01:50:07 -0800 (PST)
+Received: by mail-il1-x144.google.com with SMTP id p10so562602ile.3;
+        Fri, 06 Nov 2020 01:50:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=/dwHpj1cW3L4kr58+zXOY+yCLUfLvqEMwWKgfEwMH/s=;
-        b=UvGKpOWgoGOeeQEEqmtcQf04za5UTPBliknXTiFSg9S/PyE+v26r+EVnmD/gTW7uxq
-         roBqFZxXykjYtFd2p0+YRpAGeUODSltiLqO20ZMiPnV6gllgsf91le3smtYsmEgvyMHJ
-         NfZyl52rlzEXQ/aMTj1YxQsqjcnKaTSlMT5hKzNt/AxKCwPJSmCLKwOcjmIA/E6am87j
-         j7Y2oyJCW/QsSQvDgq+GI/HxWwQMGM7SaCxk0ApT49O5mIN/Ox0m5Gl9eLYJYPez1Ft2
-         gnU76O3nkPEvmT21qbqTpd+26NxqS2vnVHUlv89F1295fWtEBE5AxB2qs9k/v85QT3wK
-         LB9w==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Xo980jxDgHwElwCLE395h1hcpqz7tSY6loYQUrMps3A=;
+        b=nXWUVZfhV0+btoasoZHp+W0XUuF1dY1RydW0bCEjZfZMZechY86dZbBADBqZD7R/gP
+         NkcnaZtFnMiOpXvJsZ/wQU3EyUjaLYzpGpBDcqosxFPjl6i99Vf8SA7ilr7YsQ3omeTf
+         GsoZxcUeVWOvbTFznbC705BQq+A3Fki4eAhdJI1VJNqc3ynSPwRHVjZw8+UcHd429onw
+         yF4ZN3e7Yj+Zk5VpaFDk8dJGkSyQeYDam1KVEB2acdyYKrj33KnhEURSTiBeOMAHNp7U
+         /V1QRGjmFor/e/aG9sbrQXpfa/QnhQIjbjjVrD0Tm0RX1jHQtRInR14kLgF69656Aqea
+         0Xvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=/dwHpj1cW3L4kr58+zXOY+yCLUfLvqEMwWKgfEwMH/s=;
-        b=iS7nb6PBe3yAtJSCh2LYhECKOGLs5SxlELmPKvApmOJUN2pXCjoIkXb31zGr8R9jls
-         1peHvfHT/10HkAH40dcnWh1j1imgLGfT6zxxMJmKLJl6LvvP15+5CMl5gvmw5op+wPh8
-         1B9ndIagtMoVtavIBBsEGshZeSFKn0pltsJzyl6JhNHnczflxRgVXdOULqrXsYGublD5
-         4S3slfCiSASROWJtHSCw4rnw06cqc6r+dSDdYyvj70UEJL5ZSfi95qs49LBAk+SJuOdG
-         wmqumkGuomLIUaLqh5IjaQOk7pcjLx5q1bOqdPCbBU+rg8xlPsZzC0fCt2cfEtO7Cb49
-         v5rg==
-X-Gm-Message-State: AOAM532ZJEiQPoXoF+TDMlApXEDchZsP7sK3xjsueGGeYXJKVc0dMsry
-        aFqNH2AEEg67mL/YRJgkeypG9Q==
-X-Google-Smtp-Source: ABdhPJxqvanSRvZbftvV9fjdwCxxQT0SoSe+H3ocssOuZ22lX0l5tNpnrlTKmm5zvL+mOpaxwfNJSQ==
-X-Received: by 2002:a65:40ca:: with SMTP id u10mr1036986pgp.71.1604656211967;
-        Fri, 06 Nov 2020 01:50:11 -0800 (PST)
-Received: from localhost ([2400:8904::f03c:91ff:fe8a:adf7])
-        by smtp.gmail.com with ESMTPSA id h5sm1545090pfk.126.2020.11.06.01.50.11
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 06 Nov 2020 01:50:11 -0800 (PST)
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>, Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kemeng Shi <shikemeng@huawei.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Al Grant <Al.Grant@arm.com>, James Clark <james.clark@arm.com>,
-        Wei Li <liwei391@huawei.com>,
-        Andre Przywara <andre.przywara@arm.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v4 9/9] perf mem: Support Arm SPE events
-Date:   Fri,  6 Nov 2020 17:48:53 +0800
-Message-Id: <20201106094853.21082-10-leo.yan@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201106094853.21082-1-leo.yan@linaro.org>
-References: <20201106094853.21082-1-leo.yan@linaro.org>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Xo980jxDgHwElwCLE395h1hcpqz7tSY6loYQUrMps3A=;
+        b=j3FigQfUYvAnZSwD9ImS5pgNqJIzehFMtmTKrC4Gl30IF5SqLz+ilmrg9yZ/s/yO7S
+         T5d1ZUpODr9NJF2gjn6EKybFMrO0c1Wz8FFJ2731KGSmfpliMqOmtfo7GOMIN/0QbT2w
+         sr0QEm/yJb2+b2cXvd5iAI/DjBX9vjpTgu3/SgGbbn3eMXSDaZbbrXCNpC74lKy7GieH
+         wnU9CYQBo1ud3g25jE0i0GIejHikYj7P5TVnGopbNHg4W3mSy2Dot4uPq5YTjldJndfX
+         Nr/UTp5zSx1EP8JnMRNa7igVksmplQ+sgzpvyUBTRsZuDL4VmdTExLYocQH3lQNVnbV/
+         eq3A==
+X-Gm-Message-State: AOAM532Fe3e6+AEfZgF4NLyAY9qEoNbDZz4yUnLhf/3UYMt+/Z6ooDKs
+        AE8fSOgPGebvOXTuUfBR8oyVZsNv/l8=
+X-Google-Smtp-Source: ABdhPJxZp36p6E2qRtUdnnHhjz1uk5ZO4T1LrrfvyzSUV82a53vXRt7bP0NKoshVvnHFy55uHy0/KQ==
+X-Received: by 2002:a92:d449:: with SMTP id r9mr752535ilm.276.1604656206576;
+        Fri, 06 Nov 2020 01:50:06 -0800 (PST)
+Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
+        by smtp.gmail.com with ESMTPSA id r14sm711209ilc.78.2020.11.06.01.50.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Nov 2020 01:50:06 -0800 (PST)
+Date:   Fri, 6 Nov 2020 02:50:04 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Balbir Singh <bsingharora@gmail.com>, Tom Rix <trix@redhat.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com,
+        kernel-janitors@vger.kernel.org, linux-safety@lists.elisa.tech,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] taskstats: remove unneeded dead assignment
+Message-ID: <20201106095004.GA3269193@ubuntu-m3-large-x86>
+References: <20201106062210.27920-1-lukas.bulwahn@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201106062210.27920-1-lukas.bulwahn@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds Arm SPE events for perf memory profiling:
+On Fri, Nov 06, 2020 at 07:22:10AM +0100, Lukas Bulwahn wrote:
+> make clang-analyzer on x86_64 defconfig caught my attention with:
+> 
+>   kernel/taskstats.c:120:2: warning: Value stored to 'rc' is never read \
+>   [clang-analyzer-deadcode.DeadStores]
+>           rc = 0;
+>           ^
+> 
+> Commit d94a041519f3 ("taskstats: free skb, avoid returns in
+> send_cpu_listeners") made send_cpu_listeners() not return a value and
+> hence, the rc variable remained only to be used within the loop where
+> it is always assigned before read and it does not need any other
+> initialisation.
+> 
+> So, simply remove this unneeded dead initializing assignment.
+> 
+> As compilers will detect this unneeded assignment and optimize this anyway,
+> the resulting object code is identical before and after this change.
+> 
+> No functional change. No change to object code.
+> 
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 
-  'spe-load': event for only recording memory load ops;
-  'spe-store': event for only recording memory store ops;
-  'spe-ldst': event for recording memory load and store ops.
+Question below.
 
-Signed-off-by: Leo Yan <leo.yan@linaro.org>
----
- tools/perf/arch/arm64/util/Build        |  2 +-
- tools/perf/arch/arm64/util/mem-events.c | 37 +++++++++++++++++++++++++
- 2 files changed, 38 insertions(+), 1 deletion(-)
- create mode 100644 tools/perf/arch/arm64/util/mem-events.c
+Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
 
-diff --git a/tools/perf/arch/arm64/util/Build b/tools/perf/arch/arm64/util/Build
-index 8d2b9bcfffca..ead2f2275eee 100644
---- a/tools/perf/arch/arm64/util/Build
-+++ b/tools/perf/arch/arm64/util/Build
-@@ -10,4 +10,4 @@ perf-$(CONFIG_LIBDW_DWARF_UNWIND) += unwind-libdw.o
- perf-$(CONFIG_AUXTRACE) += ../../arm/util/pmu.o \
- 			      ../../arm/util/auxtrace.o \
- 			      ../../arm/util/cs-etm.o \
--			      arm-spe.o
-+			      arm-spe.o mem-events.o
-diff --git a/tools/perf/arch/arm64/util/mem-events.c b/tools/perf/arch/arm64/util/mem-events.c
-new file mode 100644
-index 000000000000..2a2497372671
---- /dev/null
-+++ b/tools/perf/arch/arm64/util/mem-events.c
-@@ -0,0 +1,37 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include "map_symbol.h"
-+#include "mem-events.h"
-+
-+#define E(t, n, s) { .tag = t, .name = n, .sysfs_name = s }
-+
-+static struct perf_mem_event perf_mem_events[PERF_MEM_EVENTS__MAX] = {
-+	E("spe-load",	"arm_spe_0/ts_enable=1,load_filter=1,store_filter=0,min_latency=%u/",	"arm_spe_0"),
-+	E("spe-store",	"arm_spe_0/ts_enable=1,load_filter=0,store_filter=1/",			"arm_spe_0"),
-+	E("spe-ldst",	"arm_spe_0/ts_enable=1,load_filter=1,store_filter=1,min_latency=%u/",	"arm_spe_0"),
-+};
-+
-+static char mem_ev_name[100];
-+
-+struct perf_mem_event *perf_mem_events__ptr(int i)
-+{
-+	if (i >= PERF_MEM_EVENTS__MAX)
-+		return NULL;
-+
-+	return &perf_mem_events[i];
-+}
-+
-+char *perf_mem_events__name(int i)
-+{
-+	struct perf_mem_event *e = perf_mem_events__ptr(i);
-+
-+	if (i >= PERF_MEM_EVENTS__MAX)
-+		return NULL;
-+
-+	if (i == PERF_MEM_EVENTS__LOAD || i == PERF_MEM_EVENTS__LOAD_STORE)
-+		scnprintf(mem_ev_name, sizeof(mem_ev_name),
-+			  e->name, perf_mem_events__loads_ldlat);
-+	else /* PERF_MEM_EVENTS__STORE */
-+		scnprintf(mem_ev_name, sizeof(mem_ev_name), e->name);
-+
-+	return mem_ev_name;
-+}
--- 
-2.17.1
+> ---
+> applies cleanly on current master and next-20201105
+> 
+> Balbir, please pick this minor non-urgent clean-up patch.
+> 
+>  kernel/taskstats.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/kernel/taskstats.c b/kernel/taskstats.c
+> index a2802b6ff4bb..bd18a7bf5276 100644
+> --- a/kernel/taskstats.c
+> +++ b/kernel/taskstats.c
+> @@ -117,7 +117,6 @@ static void send_cpu_listeners(struct sk_buff *skb,
+>  
+>  	genlmsg_end(skb, reply);
+>  
+> -	rc = 0;
+>  	down_read(&listeners->sem);
+>  	list_for_each_entry(s, &listeners->list, list) {
 
+Would it be worth moving the scope of rc into the for loop, now that it
+is only used there? Looks like it used to be used in the main function
+scope before commit 053c095a82cf ("netlink: make nlmsg_end() and
+genlmsg_end() void") but if this is removed, it is only used to check
+the return of genlmsg_unicast within the list_for_each_entry loop. Not
+sure that buys us anything but I know you have done it in patches
+before so I thought it was worth considering.
+
+>  		skb_next = NULL;
+> -- 
+> 2.17.1
+> 
+
+Cheers,
+Nathan
