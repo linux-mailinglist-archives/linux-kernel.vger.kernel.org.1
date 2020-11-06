@@ -2,107 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C6152A9034
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 08:23:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AEF72A9038
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 08:25:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726472AbgKFHXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 02:23:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45638 "EHLO mail.kernel.org"
+        id S1726392AbgKFHZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 02:25:43 -0500
+Received: from z5.mailgun.us ([104.130.96.5]:64618 "EHLO z5.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725828AbgKFHXY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 02:23:24 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1725830AbgKFHZn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 02:25:43 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1604647542; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=KSFtXB0fMYrRDLd4eZCZ6m18gRUOPuVsjW4FtBbLZ/Y=; b=wAnlWdhBWqJ3InAzdzJYZFAC3ZY6uQ2O1jD+Hmdih3q8VhHJxD0+4Xov0SJ9LKbxoDOHsb2y
+ B5vBO1xeIHYfk2VDQmPxvzVN1pYnsVW9hZ4Afhb46n39P28hb9NbQTREoa20uYBtXMEQY3RY
+ SBNn/C1anhTzMgxOfAFA4CfMSXw=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 5fa4fa76257b36c43ed11ca0 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 06 Nov 2020 07:25:42
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 1074BC433F0; Fri,  6 Nov 2020 07:25:42 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E346F20825;
-        Fri,  6 Nov 2020 07:23:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604647403;
-        bh=bZJj9WzPD8oFm2s1+akaeCuY5a6U01z3MrdDbjK8/Wg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SIcEk99OJ4VFTbYW0yjOffgikbLeXsA+wGZwFN+Y8mCjh7EPIIibbGa5bK+p5Y+iJ
-         TjCrMctji9tbz6sdmeR5D90XVG7CS0wFRHlQetPCM1jPQhgEWoavBDWYwCqzTL/UoQ
-         /NLE8cZ86XvPHeVG7xAcrlFVIjVfRPKuzGMjSC9g=
-Date:   Fri, 6 Nov 2020 08:24:10 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 60663C433C8;
+        Fri,  6 Nov 2020 07:25:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 60663C433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Rakesh Pillai <pillair@codeaurora.org>,
+        Abhishek Kumar <kuabhs@chromium.org>,
+        Brian Norris <briannorris@chromium.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-Subject: Re: [PATCH v1 17/18] driver core: Add helper functions to convert
- fwnode links to device links
-Message-ID: <20201106072410.GC2614221@kroah.com>
-References: <20201104232356.4038506-1-saravanak@google.com>
- <20201104232356.4038506-18-saravanak@google.com>
- <20201105094350.GG3439341@kroah.com>
- <CAGETcx--D_KCpvK3b9NAQbMgWxzYT6MGEav1h2M8V7f=wK5L6A@mail.gmail.com>
+        ath10k <ath10k@lists.infradead.org>
+Subject: Re: [PATCH v2] ath10k: Fix the parsing error in service available event
+References: <1603904469-598-1-git-send-email-pillair@codeaurora.org>
+        <CAD=FV=V0apTHaemMKvRx1HWLaO9ArC2t4ohfZ7-CthFz2NiA2A@mail.gmail.com>
+Date:   Fri, 06 Nov 2020 09:25:37 +0200
+In-Reply-To: <CAD=FV=V0apTHaemMKvRx1HWLaO9ArC2t4ohfZ7-CthFz2NiA2A@mail.gmail.com>
+        (Doug Anderson's message of "Wed, 28 Oct 2020 11:44:48 -0700")
+Message-ID: <87wnyzkkum.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGETcx--D_KCpvK3b9NAQbMgWxzYT6MGEav1h2M8V7f=wK5L6A@mail.gmail.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 03:32:05PM -0800, Saravana Kannan wrote:
-> On Thu, Nov 5, 2020 at 1:43 AM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Wed, Nov 04, 2020 at 03:23:54PM -0800, Saravana Kannan wrote:
-> > > Add helper functions __fw_devlink_link_to_consumers() and
-> > > __fw_devlink_link_to_suppliers() that convert fwnode links to device
-> > > links.
-> > >
-> > > __fw_devlink_link_to_consumers() is for creating:
-> > > - Device links between a newly added device and all its consumer devices
-> > >   that have been added to driver core.
-> > > - Proxy SYNC_STATE_ONLY device links between the newly added device and
-> > >   the parent devices of all its consumers that have not been added to
-> > >   driver core yet.
-> > >
-> > > __fw_devlink_link_to_suppliers() is for creating:
-> > > - Device links between a newly added device and all its supplier devices
-> > > - Proxy SYNC_STATE_ONLY device links between the newly added device and
-> > >   all the supplier devices of its child device nodes.
-> > >
-> > > Signed-off-by: Saravana Kannan <saravanak@google.com>
-> >
-> > Did you just add build warnings with these static functions that no one
-> > calls?
-> 
-> The next patch in this series uses it. I'm just splitting it up into a
-> separate patch so that it's digestible and I can provide more details
-> in the commit text.
+Doug Anderson <dianders@chromium.org> writes:
 
-But you can not add build warnings, you know this :)
+>>  static int ath10k_wmi_tlv_op_pull_svc_avail(struct ath10k *ar,
+>> diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+>> index 1fa7107..2e4b561 100644
+>> --- a/drivers/net/wireless/ath/ath10k/wmi.c
+>> +++ b/drivers/net/wireless/ath/ath10k/wmi.c
+>> @@ -5751,8 +5751,9 @@ void ath10k_wmi_event_service_available(struct ath10k *ar, struct sk_buff *skb)
+>>                             ret);
+>>         }
+>>
+>> -       ath10k_wmi_map_svc_ext(ar, arg.service_map_ext, ar->wmi.svc_map,
+>> -                              __le32_to_cpu(arg.service_map_ext_len));
+>> +       if (arg.service_map_ext_valid)
+>> +               ath10k_wmi_map_svc_ext(ar, arg.service_map_ext, ar->wmi.svc_map,
+>> +                                      __le32_to_cpu(arg.service_map_ext_len));
+>
+> Your new patch still requires the caller to init the
+> "service_map_ext_valid" to false before calling, but I guess there's
+> not a whole lot more we can do because we might be parsing more than
+> one tag.  It does seem nice that at least we now have a validity bit
+> instead of just relying on a non-zero length to be valid.
+>
+> It might be nice to have a comment saying that it's up to us to init
+> "arg.service_map_ext_valid" to false before calling
+> ath10k_wmi_pull_svc_avail(), but I won't insist.  Maybe that's obvious
+> to everyone but me...
 
-> Couple of options:
-> 1. Drop the static in this patch and add it back when it's used in patch 18/18.
-> 2. Drop the commit text and squash this with 18/18 if you think the
-> function documentation is clear enough and it won't make patch 18/18
-> too hard to review.
+It's not obvious to me either. Please add that comment.
 
-It is hard to review new functions when you do not see them being used,
-otherwise you have to flip back and forth between patches, which is
-difficult.
+BTW, for some reason Doug's response didn't get to patchwork:
 
-Add the functions, and use them, in the same patch.  Otherwise we have
-no idea _HOW_ you are using them, or even if you end up using them at
-all.
+https://patchwork.kernel.org/project/linux-wireless/patch/1603904469-598-1-git-send-email-pillair@codeaurora.org/
 
-thanks,
+Though I do see it in linux-wireless, so most likely this was a
+temporary glitch in patchwork. But it's just worrisome as nowadays I
+only check the comments in patchwork before I apply the patch.
 
-greg k-h
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
