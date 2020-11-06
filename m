@@ -2,97 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98A072A9DA6
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 20:13:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF20D2A9DAF
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 20:13:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728028AbgKFTNM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 14:13:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57916 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728122AbgKFTNM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 14:13:12 -0500
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4376120882;
-        Fri,  6 Nov 2020 19:13:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604689991;
-        bh=GlE34wY4SMh9cHwy9fY5b6a+GW8qy3H3b92CYNVkOlY=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=HsNRShLLsMj3MumqMT21spb7ze6Rkyd1cY9WfrQYFRmWpVJXVU4LVOyO5p2MliUSg
-         AhjY++FpjhcWNOaAefQhI3o271/+oUMsG5+HP8sWZ/61GuZh4iYYinCA/lt9i7sTmA
-         dOV9YcIfvvzVcYRkbEglEJQvAt9GjExC6MFHdHaU=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id EDBCC352097B; Fri,  6 Nov 2020 11:13:10 -0800 (PST)
-Date:   Fri, 6 Nov 2020 11:13:10 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Davidlohr Bueso <dave@stgolabs.net>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
-Subject: Re: [PATCH tip/core/rcu 03/28] locktorture: Track time of last
- ->writeunlock()
-Message-ID: <20201106191310.GZ3249@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201105234658.GA23142@paulmck-ThinkPad-P72>
- <20201105234719.23307-3-paulmck@kernel.org>
- <20201106065642.ti7mgrll7mbrndja@linux-p48b.lan>
+        id S1728169AbgKFTN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 14:13:27 -0500
+Received: from mail-ed1-f67.google.com ([209.85.208.67]:36211 "EHLO
+        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726447AbgKFTNZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 14:13:25 -0500
+Received: by mail-ed1-f67.google.com with SMTP id o20so2370742eds.3;
+        Fri, 06 Nov 2020 11:13:24 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9EZhY8MX2ORnPTYlgHuLdEC9xYXRcHwFhL5jilyHyBk=;
+        b=bSM3TpMpzsRYb3RmH5ih8TThVDqSriIvMMFCw7RmWCzzGDjDHFjda52hRs8Hj6JC+a
+         VhSdHPcxPSuJ90bfwNJ/v+9TrYDihvMq4TYhGkhy0H/ajQF6PHqrHOZYZIFtJuRHzg2M
+         MfeZZRjKzyaO1u3+GguvzNmAlnjldkjkHCsFisIiqGUGFTnCPRSXO45bMrTDONARZsLe
+         Wk2PbH0mkiP3rtxaYy+cFg4ROuXtY5Xe7js74gKYZuGR+JuNVejAJcetR1aG4On18BXf
+         OfvMOMM6c7k2+Q+7lQlX+TPFjnOEK2eUaleqSd2+tSgqX3tFPgG2Zc2p+MNz6c1KZtjQ
+         7k7Q==
+X-Gm-Message-State: AOAM532M1Uj9WLmk/UDLKqQCn4b0frNWhN+vr8zFDQSW0QNFGCWFDg8U
+        uGovuF4tUmu3kkT7NQIi1x0=
+X-Google-Smtp-Source: ABdhPJy7Qz/mYqSzbcnBR4NZTFT5VYfhsIq8GGjSYs73p0hgywJkMPbiryDfg2BYkIp0DwxRJWQNUA==
+X-Received: by 2002:aa7:d801:: with SMTP id v1mr3516842edq.250.1604690003690;
+        Fri, 06 Nov 2020 11:13:23 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id b1sm1635774edw.27.2020.11.06.11.13.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Nov 2020 11:13:21 -0800 (PST)
+Date:   Fri, 6 Nov 2020 20:13:19 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Mikko Perttunen <cyndis@kapsi.fi>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v7 36/47] memory: tegra20-emc: Add devfreq support
+Message-ID: <20201106191319.GB65086@kozik-lap>
+References: <20201104164923.21238-1-digetx@gmail.com>
+ <20201104164923.21238-37-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201106065642.ti7mgrll7mbrndja@linux-p48b.lan>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201104164923.21238-37-digetx@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 10:56:42PM -0800, Davidlohr Bueso wrote:
-> On Thu, 05 Nov 2020, paulmck@kernel.org wrote:
+On Wed, Nov 04, 2020 at 07:49:12PM +0300, Dmitry Osipenko wrote:
+> Add devfreq support to the Tegra20 EMC driver. Memory utilization
+> statistics will be periodically polled from the memory controller and
+> appropriate minimum clock rate will be selected by the devfreq governor.
 > 
-> > From: "Paul E. McKenney" <paulmck@kernel.org>
-> > 
-> > This commit adds a last_lock_release variable that tracks the time of
-> > the last ->writeunlock() call, which allows easier diagnosing of lock
-> > hangs when using a kernel debugger.
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  drivers/memory/tegra/Kconfig       |  2 +
+>  drivers/memory/tegra/tegra20-emc.c | 92 ++++++++++++++++++++++++++++++
+>  2 files changed, 94 insertions(+)
 > 
-> This makes sense to have.
-> 
-> Acked-by: Davidlohr Bueso <dbueso@suse.de>
 
-Will apply, thank you!
+I see this one still received comments. I skipped the DTS patches and
+applied everything till patch #35. I understand you will send v8, so in
+such case please skip the applied ones (you can rebase on my for-next or
+on Monday's linux-next).
 
-							Thanx, Paul
-
-> > Cc: Davidlohr Bueso <dave@stgolabs.net>
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > ---
-> > kernel/locking/locktorture.c | 2 ++
-> > 1 file changed, 2 insertions(+)
-> > 
-> > diff --git a/kernel/locking/locktorture.c b/kernel/locking/locktorture.c
-> > index 62d215b..316531d 100644
-> > --- a/kernel/locking/locktorture.c
-> > +++ b/kernel/locking/locktorture.c
-> > @@ -60,6 +60,7 @@ static struct task_struct **reader_tasks;
-> > 
-> > static bool lock_is_write_held;
-> > static bool lock_is_read_held;
-> > +static unsigned long last_lock_release;
-> > 
-> > struct lock_stress_stats {
-> > 	long n_lock_fail;
-> > @@ -632,6 +633,7 @@ static int lock_torture_writer(void *arg)
-> > 		lwsp->n_lock_acquired++;
-> > 		cxt.cur_ops->write_delay(&rand);
-> > 		lock_is_write_held = false;
-> > +		WRITE_ONCE(last_lock_release, jiffies);
-> > 		cxt.cur_ops->writeunlock();
-> > 
-> > 		stutter_wait("lock_torture_writer");
-> > -- 
-> > 2.9.5
-> > 
+Best regards,
+Krzysztof
