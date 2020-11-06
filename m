@@ -2,258 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B41B92A8F71
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 07:26:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F1A22A8F73
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 07:26:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726258AbgKFGZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 01:25:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52716 "EHLO
+        id S1726276AbgKFG0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 01:26:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725830AbgKFGZ7 (ORCPT
+        with ESMTP id S1725830AbgKFG0U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 01:25:59 -0500
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE36AC0613D2
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 22:25:57 -0800 (PST)
-Received: by mail-pl1-x641.google.com with SMTP id x23so198324plr.6
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 22:25:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Rp9C+9S//3zvTfS0X7Z1GniUoDQOMUaHSWSzt/VmaaU=;
-        b=jVFTp+Ni97ZaD18qQ1I8O6kPWPVW6/7r37muDjxnZmprOLFeyBAvqQfOQ8UFmmph0H
-         sYh6JzvMY8cxkF+Pp1EibX0Mfty9cJouCKPcoASP21OL5sSQz0jfnRM6K+4kj3j6Mn48
-         ziMmPmKwccYp8S7TRpHdWlVNTWwqahFJLHuUCZm/9o5hmDTkmdQ86YgcVEbcFgxVWHgk
-         jrkizgdpCrkiU80ftQj7ybw48JsI1NUxwHuitsYfiogkYhdV3oUDraIyJaFu4mpJztF4
-         q3mxniQMakmz5Or8lYvKjY6hQZPfUi6Sb8snWOblAiz6s2q0UeDGUO1NqLFkc2WOcpXs
-         FDUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Rp9C+9S//3zvTfS0X7Z1GniUoDQOMUaHSWSzt/VmaaU=;
-        b=tDWhhwnivX83ig0yY/3zuBBuWfcnQJtq6oQzL25Xfn7VANZPkHi4dbObYSsSUWaTQT
-         SpXGZjnAjGh0m30zMDponc7eletGd/0zemG5CdFbn4iXIOUtwhjiYKEGll63u8dvqvOR
-         cNeob5hthmq3PIb2sswduMwbglLoYuPVHQ9T3N7Oh4I6TOO7MLRX/VIQNwsnVXXISy5D
-         a1uQYkF0mBQjogycu+FKngThCuT7MulDgtbhZ/vr2jxaEVxHp1+5gleBq/RryAAbFBO4
-         jg5hvIM7jUEie2fgyjozPjd9GhqyQuev3OWbFH5BC9KiyTXe6GVaSy+vIMfPw6WGfbCu
-         ERkw==
-X-Gm-Message-State: AOAM53079Q9HiLDwbzJ6I7mdh1/1ey/ps2kaWFetJLlPjjUA7NQBX2tV
-        e/CBWGd6eK/YoyxnCiG9Zw8aBPV78fZoiQ==
-X-Google-Smtp-Source: ABdhPJzfbbyHt3QksSkQXWasKcVVVcVICowIcQXmjUCkZ5zzQg8QMbWob1Lpjl1xpPn0lXotlKRpmA==
-X-Received: by 2002:a17:902:a50a:b029:d4:da2d:c9a1 with SMTP id s10-20020a170902a50ab02900d4da2dc9a1mr702017plq.6.1604643957435;
-        Thu, 05 Nov 2020 22:25:57 -0800 (PST)
-Received: from localhost ([122.172.12.172])
-        by smtp.gmail.com with ESMTPSA id y4sm790267pjc.53.2020.11.05.22.25.56
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 05 Nov 2020 22:25:56 -0800 (PST)
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>, linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>, digetx@gmail.com,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] opp: Don't create an OPP table from dev_pm_opp_get_opp_table()
-Date:   Fri,  6 Nov 2020 11:54:36 +0530
-Message-Id: <1012a98950355bd5a52424668050a17c3430cbe0.1604643714.git.viresh.kumar@linaro.org>
-X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
-In-Reply-To: <684ff01900180c0a40ec307dacc673b24eab593b.1604643714.git.viresh.kumar@linaro.org>
-References: <684ff01900180c0a40ec307dacc673b24eab593b.1604643714.git.viresh.kumar@linaro.org>
+        Fri, 6 Nov 2020 01:26:20 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA3AFC0613CF;
+        Thu,  5 Nov 2020 22:26:19 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CS9Q12Zy2z9sRK;
+        Fri,  6 Nov 2020 17:26:17 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1604643977;
+        bh=8h4shHUMU2Yp8NBxybv83X6J7G0LdA9jJZvFEL1tanM=;
+        h=Date:From:To:Cc:Subject:From;
+        b=HYsNbr+dhni6jacainBswiYGpW8Rm9CleugCltF4XepIBZDo/tFBHLtSG1EHivBk3
+         WMUzYguwVFiQl5ttT4ABMN7YumLQYijDz8k5Yk0EzITWKhiT90sMkP0IkRWIHe58zM
+         Jd6BpawcLVZXVJe9IPAabYhTuEwv4hCJna6+Rj0zhGziBULZl25T6y8Ou6uLj641fU
+         a5cZrGdqIvrhAgdWPj1ig0MxIFG6FTcCv/MqD31T5OEY5TirY7cUaSxpwwdRD7Bcvf
+         3Lv3rJQo1TpPSzj5rF4Fn7fdFr+RguXgfV2NLFpLY5APDpe9anN7cBHSfkct97vkJl
+         ddOrm25qz1CHw==
+Date:   Fri, 6 Nov 2020 17:26:16 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the akpm-current tree
+Message-ID: <20201106172616.4a27b3b3@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/f4E28sS5IoLWgM+V9tk1+bn";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It has been found that some users (like cpufreq-dt and others on LKML)
-have abused the helper dev_pm_opp_get_opp_table() to create the OPP
-table instead of just finding it, which is the wrong thing to do. This
-routine was meant for OPP core's internal working and exposed the whole
-functionality by mistake.
+--Sig_/f4E28sS5IoLWgM+V9tk1+bn
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Change the scope of dev_pm_opp_get_opp_table() to only finding the
-table. The internal helpers _opp_get_opp_table*() are thus renamed to
-_add_opp_table*(), dev_pm_opp_get_opp_table_indexed() is removed (as we
-don't need the index field for finding the OPP table) and so the only
-user, genpd, is updated.
+Hi all,
 
-Note that the prototype of _add_opp_table() was already left in opp.h by
-mistake when it was removed earlier and so we weren't required to add it
-now.
+After merging the akpm-current tree, today's linux-next build (htmldocs)
+produced this warning:
 
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
----
- drivers/base/power/domain.c |  2 +-
- drivers/opp/core.c          | 27 +++++++++++++--------------
- drivers/opp/of.c            |  4 ++--
- drivers/opp/opp.h           |  1 +
- include/linux/pm_opp.h      |  1 -
- 5 files changed, 17 insertions(+), 18 deletions(-)
+include/linux/kfence.h:138: warning: Function parameter or member 'addr' no=
+t described in 'kfence_object_start'
 
-diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
-index 743268996336..92b750b865d5 100644
---- a/drivers/base/power/domain.c
-+++ b/drivers/base/power/domain.c
-@@ -2249,7 +2249,7 @@ int of_genpd_add_provider_onecell(struct device_node *np,
- 			 * Save table for faster processing while setting
- 			 * performance state.
- 			 */
--			genpd->opp_table = dev_pm_opp_get_opp_table_indexed(&genpd->dev, i);
-+			genpd->opp_table = dev_pm_opp_get_opp_table(&genpd->dev);
- 			WARN_ON(IS_ERR(genpd->opp_table));
- 		}
- 
-diff --git a/drivers/opp/core.c b/drivers/opp/core.c
-index 9915e8487f0b..b24f685823ae 100644
---- a/drivers/opp/core.c
-+++ b/drivers/opp/core.c
-@@ -1138,7 +1138,7 @@ void _get_opp_table_kref(struct opp_table *opp_table)
-  * uses the opp_tables_busy flag to indicate if another creator is in the middle
-  * of adding an OPP table and others should wait for it to finish.
-  */
--static struct opp_table *_opp_get_opp_table(struct device *dev, int index)
-+struct opp_table *_add_opp_table_indexed(struct device *dev, int index)
- {
- 	struct opp_table *opp_table;
- 
-@@ -1188,17 +1188,16 @@ static struct opp_table *_opp_get_opp_table(struct device *dev, int index)
- 	return opp_table;
- }
- 
--struct opp_table *dev_pm_opp_get_opp_table(struct device *dev)
-+struct opp_table *_add_opp_table(struct device *dev)
- {
--	return _opp_get_opp_table(dev, 0);
-+	return _add_opp_table_indexed(dev, 0);
- }
--EXPORT_SYMBOL_GPL(dev_pm_opp_get_opp_table);
- 
--struct opp_table *dev_pm_opp_get_opp_table_indexed(struct device *dev,
--						   int index)
-+struct opp_table *dev_pm_opp_get_opp_table(struct device *dev)
- {
--	return _opp_get_opp_table(dev, index);
-+	return _find_opp_table(dev);
- }
-+EXPORT_SYMBOL_GPL(dev_pm_opp_get_opp_table);
- 
- static void _opp_table_kref_release(struct kref *kref)
- {
-@@ -1627,7 +1626,7 @@ struct opp_table *dev_pm_opp_set_supported_hw(struct device *dev,
- {
- 	struct opp_table *opp_table;
- 
--	opp_table = dev_pm_opp_get_opp_table(dev);
-+	opp_table = _add_opp_table(dev);
- 	if (IS_ERR(opp_table))
- 		return opp_table;
- 
-@@ -1686,7 +1685,7 @@ struct opp_table *dev_pm_opp_set_prop_name(struct device *dev, const char *name)
- {
- 	struct opp_table *opp_table;
- 
--	opp_table = dev_pm_opp_get_opp_table(dev);
-+	opp_table = _add_opp_table(dev);
- 	if (IS_ERR(opp_table))
- 		return opp_table;
- 
-@@ -1779,7 +1778,7 @@ struct opp_table *dev_pm_opp_set_regulators(struct device *dev,
- 	struct regulator *reg;
- 	int ret, i;
- 
--	opp_table = dev_pm_opp_get_opp_table(dev);
-+	opp_table = _add_opp_table(dev);
- 	if (IS_ERR(opp_table))
- 		return opp_table;
- 
-@@ -1887,7 +1886,7 @@ struct opp_table *dev_pm_opp_set_clkname(struct device *dev, const char *name)
- 	struct opp_table *opp_table;
- 	int ret;
- 
--	opp_table = dev_pm_opp_get_opp_table(dev);
-+	opp_table = _add_opp_table(dev);
- 	if (IS_ERR(opp_table))
- 		return opp_table;
- 
-@@ -1955,7 +1954,7 @@ struct opp_table *dev_pm_opp_register_set_opp_helper(struct device *dev,
- 	if (!set_opp)
- 		return ERR_PTR(-EINVAL);
- 
--	opp_table = dev_pm_opp_get_opp_table(dev);
-+	opp_table = _add_opp_table(dev);
- 	if (IS_ERR(opp_table))
- 		return opp_table;
- 
-@@ -2039,7 +2038,7 @@ struct opp_table *dev_pm_opp_attach_genpd(struct device *dev,
- 	int index = 0, ret = -EINVAL;
- 	const char **name = names;
- 
--	opp_table = dev_pm_opp_get_opp_table(dev);
-+	opp_table = _add_opp_table(dev);
- 	if (IS_ERR(opp_table))
- 		return opp_table;
- 
-@@ -2204,7 +2203,7 @@ int dev_pm_opp_add(struct device *dev, unsigned long freq, unsigned long u_volt)
- 	struct opp_table *opp_table;
- 	int ret;
- 
--	opp_table = dev_pm_opp_get_opp_table(dev);
-+	opp_table = _add_opp_table(dev);
- 	if (IS_ERR(opp_table))
- 		return PTR_ERR(opp_table);
- 
-diff --git a/drivers/opp/of.c b/drivers/opp/of.c
-index 9faeb83e4b32..c718092757d9 100644
---- a/drivers/opp/of.c
-+++ b/drivers/opp/of.c
-@@ -974,7 +974,7 @@ int dev_pm_opp_of_add_table(struct device *dev)
- 	struct opp_table *opp_table;
- 	int ret;
- 
--	opp_table = dev_pm_opp_get_opp_table_indexed(dev, 0);
-+	opp_table = _add_opp_table_indexed(dev, 0);
- 	if (IS_ERR(opp_table))
- 		return PTR_ERR(opp_table);
- 
-@@ -1029,7 +1029,7 @@ int dev_pm_opp_of_add_table_indexed(struct device *dev, int index)
- 			index = 0;
- 	}
- 
--	opp_table = dev_pm_opp_get_opp_table_indexed(dev, index);
-+	opp_table = _add_opp_table_indexed(dev, index);
- 	if (IS_ERR(opp_table))
- 		return PTR_ERR(opp_table);
- 
-diff --git a/drivers/opp/opp.h b/drivers/opp/opp.h
-index ebd930e0b3ca..4ced7ffa8158 100644
---- a/drivers/opp/opp.h
-+++ b/drivers/opp/opp.h
-@@ -224,6 +224,7 @@ int _opp_add(struct device *dev, struct dev_pm_opp *new_opp, struct opp_table *o
- int _opp_add_v1(struct opp_table *opp_table, struct device *dev, unsigned long freq, long u_volt, bool dynamic);
- void _dev_pm_opp_cpumask_remove_table(const struct cpumask *cpumask, int last_cpu);
- struct opp_table *_add_opp_table(struct device *dev);
-+struct opp_table *_add_opp_table_indexed(struct device *dev, int index);
- void _put_opp_list_kref(struct opp_table *opp_table);
- 
- #ifdef CONFIG_OF
-diff --git a/include/linux/pm_opp.h b/include/linux/pm_opp.h
-index dbb484524f82..1435c054016a 100644
---- a/include/linux/pm_opp.h
-+++ b/include/linux/pm_opp.h
-@@ -90,7 +90,6 @@ struct dev_pm_set_opp_data {
- #if defined(CONFIG_PM_OPP)
- 
- struct opp_table *dev_pm_opp_get_opp_table(struct device *dev);
--struct opp_table *dev_pm_opp_get_opp_table_indexed(struct device *dev, int index);
- void dev_pm_opp_put_opp_table(struct opp_table *opp_table);
- 
- unsigned long dev_pm_opp_get_voltage(struct dev_pm_opp *opp);
--- 
-2.25.0.rc1.19.g042ed3e048af
+Introduced by patch
 
+  mm: add Kernel Electric-Fence infrastructure
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/f4E28sS5IoLWgM+V9tk1+bn
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+k7IgACgkQAVBC80lX
+0GwSjwf+Pz2gmhx4kh0a5dkY2U32WJByJAz7vv5livdncJXkOCN4xL+g9SHp7U9p
+mJT6LIyFrHHq+48a/yCU0WnH9vetZY5x/mzuAQoVg9EbsjpWYorWaj/dr+YPhh3f
+BSmbkA9oDPhfEPEOU2+hLqHs0Huu+EYJGKC/ScPHrwPrGAIdQ8Uih+7z7UsPfAwI
++Z24mmXXmbNv9jZSZhFnnEM1v95CjgfGqFLna2xLV4fGxPIEDEmduHIxT4DV83RQ
+viOITUv4jtFTAq2iWM3T7SW5ZhRMsBWKHKMjxJrXg5jqcxt/UBHdEigK4soqXbjX
+vxcA/vzvO/XxuQJLbXH5ncyRxlazWw==
+=l7t9
+-----END PGP SIGNATURE-----
+
+--Sig_/f4E28sS5IoLWgM+V9tk1+bn--
