@@ -2,120 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A29F2A9B5E
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 19:01:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38B352A9B84
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 19:03:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726928AbgKFSBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 13:01:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49376 "EHLO
+        id S1727721AbgKFSDP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 13:03:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726034AbgKFSBS (ORCPT
+        with ESMTP id S1727069AbgKFSDO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 13:01:18 -0500
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AADE4C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 10:01:18 -0800 (PST)
-Received: by mail-qk1-x744.google.com with SMTP id b18so1861166qkc.9
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 10:01:18 -0800 (PST)
+        Fri, 6 Nov 2020 13:03:14 -0500
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 752B9C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 10:03:14 -0800 (PST)
+Received: by mail-qt1-x841.google.com with SMTP id h12so1363909qtc.9
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 10:03:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=q71DOcgxQ/FG+0xRI5ty6ibPA0LopqgeTgo5KPl0sXI=;
-        b=BFXZEyu0IJx/Eo1PAWDnU1E+j+u2xlC+giK0SSSSmSwwyQ7JfBDuPZt5o+4CCPJMnW
-         /hvbt4kvErDT3iza/KDi032qxXMwKG4Nu7cgikuhMa9LoMwcJP6qXYaIG54/rBFRS9uM
-         bXXsDoqRFpKmbwJ83PJL+wwVRVaPJrPyB8qM6IP3w1+HRFyNoaE4LsTfLQpjsnc5kUqG
-         9uzH2odBeM17XZchQptnC1H7HRXBTkbjJCP/QME4wcYx4VZ5H5wJA648x6NFEKPLVzIV
-         ngJTwswU4MyALzXeuQ++Mp9Vuju3354k2/pfGE/9IHa36EP4nf+bGJ8VEI114kVoRMJj
-         dDSg==
+        bh=p1CcGa5j+LtJL5zURX6fDA5w3O8+Vz5UmqHSHkyTHyI=;
+        b=M24HNHlp2Av/ocP/HGwx3Kfvpq/m2n7nwu3HWio44Ma0zLCwSG6KK+jBNEjW2t/mVc
+         2dV1A4AFVHInwbI8eMn6R6RRtsPKyWNYfCrhRhF11AixmfINzps6OPhE4oHI8EQnk/yh
+         d/ei6kv7tzW/15vtjRB8bMBp2+VOjdO5JHzcUsyB8LkmzR8/vVizjzUfn+P34qnbsndo
+         1pX6jGKVxX/8WuJv/PiD5dUFlR6JJgiF0KFnMLtqEOJzWxVDVWHjRRRt0gNHpvU54EE1
+         nSwxyMX1hlW+bStOrKd2jY3KUvWtXxJV291FDH8f9MXg4kz4rZfdx/i54l9jjMMLA7Fg
+         4Hdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=q71DOcgxQ/FG+0xRI5ty6ibPA0LopqgeTgo5KPl0sXI=;
-        b=DIGsZgyomp9Hu1W6C4cuZps/y/+a8AEGMeWs9tUc29DaUE7ryCgxntQ9ScRv+czzKk
-         ycCpK0AfriVqPqEDTpAtzmfBcncetQF4f2y0Y0Hz02pPKi3/M4NVjStfjHBgEhZ42DHN
-         RkVONidHS4lNZN9/M/meocOHPGoOxOjPvlGhehVcT9xw8FKrqTowB7/I02qoT65nKBXA
-         P9RcThJ5JBG//pM4JHefCsm2SgHKDAO+l78foJPF49gbSHvqz39qT8n2AFzCPFqoojXD
-         QetYFl5gCcxMWkRAC9Si2hrOz+RVeeEmzUjOWbg5mjKQ/Wz8pMsCHu0dsL3uvSOBojoy
-         C8Zg==
-X-Gm-Message-State: AOAM533a84u5DMlVKE6PQntwREWmGgdrASStU/HrCPmwqVhjBMXfYy4U
-        Ws+VvIsef1pw1YbQlKhGIkc=
-X-Google-Smtp-Source: ABdhPJzvM8vj7aDUG+FeZM5sY4sQwhD207HCFkuHpBTU8KLpOk2Rgfvm3t9JJxM9oRVgotbiAHiHlg==
-X-Received: by 2002:a05:620a:22f5:: with SMTP id p21mr2452964qki.13.1604685677742;
-        Fri, 06 Nov 2020 10:01:17 -0800 (PST)
+        bh=p1CcGa5j+LtJL5zURX6fDA5w3O8+Vz5UmqHSHkyTHyI=;
+        b=qtJ/+x58Xw2koYhAHgESOEyjuDC6ELk1qSZ/aapDCMl5/mIszjOB/6OCnZG//O+Wuv
+         p5XoymYm4UMFHYXVLXBgVy0npsN6Z3YXZoww9sGRWNoLRxOYRAOvoj2n2lFHPp8cNfYr
+         sBMcfsz3LhVDsSSoYiyhTAz8AVOh7eLXQU1F3tROLEZMZw/VgH+n7zkleWxQ6pOl4EsF
+         bC5zvA2cutWsTyAPw7g0rddbsLBd6KVcVeeb62emnmo6J4bHaPkV+DmO9jH9J+uT3ZJj
+         ah2y5qg1HWNBZ+gXzTo9ygaTiZkf9YcPwf78Us0f4I9OgYva0m6liQniIOMhAKiPuIXF
+         /AqQ==
+X-Gm-Message-State: AOAM532ODioM2AwukvE/FMJTRXPh3vYjm1G/exVoGKhqL9lFL0M0g6hy
+        j2bl3DAhy4QtfFF8ic8c7PI=
+X-Google-Smtp-Source: ABdhPJy7PvOTlP6z2fkw7p/r4ZDxeOC9ZDf7brV+12OHkv0igghG75GEiUiDfAngXmxe30fv56Oeig==
+X-Received: by 2002:ac8:705b:: with SMTP id y27mr2626562qtm.192.1604685793651;
+        Fri, 06 Nov 2020 10:03:13 -0800 (PST)
 Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
-        by smtp.gmail.com with ESMTPSA id 66sm993396qkd.81.2020.11.06.10.01.16
+        by smtp.gmail.com with ESMTPSA id d18sm996591qka.41.2020.11.06.10.03.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Nov 2020 10:01:16 -0800 (PST)
-Date:   Fri, 6 Nov 2020 11:01:15 -0700
+        Fri, 06 Nov 2020 10:03:12 -0800 (PST)
+Date:   Fri, 6 Nov 2020 11:03:11 -0700
 From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Adrian Ratiu <adrian.ratiu@collabora.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        linux-arm-kernel@lists.infradead.org,
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Adrian Ratiu <adrian.ratiu@collabora.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com,
+        Arnd Bergmann <arnd@arndb.de>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
         Russell King <linux@armlinux.org.uk>,
-        linux-kernel@vger.kernel.org, kernel@collabora.com,
-        Ard Biesheuvel <ardb@kernel.org>
-Subject: Re: [PATCH 2/2] arm: lib: xor-neon: disable clang vectorization
-Message-ID: <20201106180115.GB2959494@ubuntu-m3-large-x86>
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Collabora kernel ML <kernel@collabora.com>
+Subject: Re: [PATCH 1/2] arm: lib: xor-neon: remove unnecessary GCC < 4.6
+ warning
+Message-ID: <20201106180311.GC2959494@ubuntu-m3-large-x86>
 References: <20201106051436.2384842-1-adrian.ratiu@collabora.com>
- <20201106051436.2384842-3-adrian.ratiu@collabora.com>
- <20201106101419.GB3811063@ubuntu-m3-large-x86>
- <87wnyyvh56.fsf@collabora.com>
+ <20201106051436.2384842-2-adrian.ratiu@collabora.com>
+ <CAK8P3a0kXkoeAbNiPH5-7-73V2nAsnCMkQSrPZq4ysVYNyE-WQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87wnyyvh56.fsf@collabora.com>
+In-Reply-To: <CAK8P3a0kXkoeAbNiPH5-7-73V2nAsnCMkQSrPZq4ysVYNyE-WQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Adrian,
+On Fri, Nov 06, 2020 at 03:46:36PM +0100, Arnd Bergmann wrote:
+> On Fri, Nov 6, 2020 at 6:14 AM Adrian Ratiu <adrian.ratiu@collabora.com> wrote:
+> >
+> > From: Nathan Chancellor <natechancellor@gmail.com>
+> >
+> > Drop warning because kernel now requires GCC >= v4.9 after
+> > commit 6ec4476ac825 ("Raise gcc version requirement to 4.9").
+> >
+> > Reported-by: Nick Desaulniers <ndesaulniers@google.com>
+> > Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+> > Signed-off-by: Adrian Ratiu <adrian.ratiu@collabora.com>
+> > ---
+> >  arch/arm/lib/xor-neon.c | 9 +--------
+> >  1 file changed, 1 insertion(+), 8 deletions(-)
+> >
+> > diff --git a/arch/arm/lib/xor-neon.c b/arch/arm/lib/xor-neon.c
+> > index b99dd8e1c93f..e1e76186ec23 100644
+> > --- a/arch/arm/lib/xor-neon.c
+> > +++ b/arch/arm/lib/xor-neon.c
+> > @@ -19,15 +19,8 @@ MODULE_LICENSE("GPL");
+> >   * -ftree-vectorize) to attempt to exploit implicit parallelism and emit
+> >   * NEON instructions.
+> >   */
+> > -#if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
+> > +#ifdef CONFIG_CC_IS_GCC
+> >  #pragma GCC optimize "tree-vectorize"
+> > -#else
+> > -/*
+> > - * While older versions of GCC do not generate incorrect code, they fail to
+> > - * recognize the parallel nature of these functions, and emit plain ARM code,
+> > - * which is known to be slower than the optimized ARM code in asm-arm/xor.h.
+> > - */
+> > -#warning This code requires at least version 4.6 of GCC
+> >  #endif
+> 
+> I think we still need the #else path, otherwise we don't warn about
+> clang being broken here.
+> 
+> If it is intentional that we now silently build this code with clang
+> without it working as intended, that should be mentioned in the
+> changelog.
+> 
+>       Arnd
 
-On Fri, Nov 06, 2020 at 01:50:13PM +0200, Adrian Ratiu wrote:
-> I tested Arnd's kernel patch from the LLVM bugtracker [1], but with the
-> Clang v10.0.1 I still get warnings like the following even though the
-> __restrict workaround seems to affect the generated instructions:
-> 
-> ./include/asm-generic/xor.h:15:2: remark: the cost-model indicates that
-> interleaving is not beneficial [-Rpass-missed=loop-vectorize]
-> ./include/asm-generic/xor.h:11:1: remark: List vectorization was possible
-> but not beneficial with cost 0 >= 0 [-Rpass-missed=slp-vectorizer]
-> xor_8regs_2(unsigned long bytes, unsigned long *__restrict p1, unsigned long
-> *__restrict p2)
-> 
-> [1] https://bugs.llvm.org/show_bug.cgi?id=40976#c6
-
-Ack, thanks for double checking!
-
-> In my opinion we have 3 ways to go regarding this:
-> 
-> 1. Leave it as is and try to notify the user of the breakage (eg add a new
-> warning). You previously said this is not a good idea because the user can't
-> do anything about it. I agree.
-> 
-> 2. Somehow work around the compiler bug in the kernel which is what the LLVM
-> bugtracker patch tries to do. This is a slippery slope even if we somehow
-> get it right, especially since multiple Clang versions might be supported in
-> the future and we don't know when the bug will be properly fixed by the
-> compiler. In addition we're enabling and "hiding" possibly undefined
-> behaviour.
-> 
-> 3. Disable the broken feature and once the compiler bug is fixed enable it
-> back warning users of old compilers that there is an action they can take:
-> upgrade. This is exactly how this was handled for GCC previously, so there
-> is a precedent.
-> 
-> This implements the 3'rd scenario which is also the first thing Arnd
-> suggested in the original patch. :)
-
-I agree that number three is definitely the most robust against the
-future. I know that I periodically grep the tree for "bugs.llvm.org"
-because we always file something on LLVM's bug tracker when we have to
-work around something in the kernel. I think this patch is totally fine
-as is, hopefully we can get it fixed in LLVM sooner rather than later.
+Maybe patch 2/2 should come before this one? With that patch, we are not
+even going to build this code so this patch purely becomes a "we do not
+support this GCC version anymore" cleanup patch.
 
 Cheers,
 Nathan
