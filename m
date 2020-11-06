@@ -2,58 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AD572A921C
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 10:07:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86B9F2A921E
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 10:09:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726416AbgKFJHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 04:07:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45260 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725924AbgKFJHp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 04:07:45 -0500
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F177A20936;
-        Fri,  6 Nov 2020 09:07:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604653663;
-        bh=/WyFgfLiGBaivhLHjIz34mnY1A6swv5xaVPIuWmwMgU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WnOhTeDRPNs0Thwdi2AySf3T1uexugRszfvWjTL6d9s7t8NaLOaMvcWnq9sQYeJUc
-         GbacubcrP0u+B7mW9YZ5SSiBCSKuabvXr3h71sH3dJLaHkvvV+JpmBESXmXrb5rVte
-         /PVOJcyd5irAOomsEe/Wr/aFsSvgpxQ1Brbh0h18=
-Date:   Fri, 6 Nov 2020 09:07:38 +0000
-From:   Will Deacon <will@kernel.org>
-To:     tangyouling <tangyouling@loongson.cn>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, ardb@kernel.org
-Subject: Re: [PATCH] arm64: Change the location of DISCARDS
-Message-ID: <20201106090737.GA9496@willie-the-truck>
-References: <1604486932-18889-1-git-send-email-tangyouling@loongson.cn>
- <20201105214738.GB8600@willie-the-truck>
- <759a51ad-8b2e-24bd-52f5-99769ff5557c@loongson.cn>
+        id S1726166AbgKFJI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 04:08:59 -0500
+Received: from relay3-d.mail.gandi.net ([217.70.183.195]:53039 "EHLO
+        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725830AbgKFJI6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 04:08:58 -0500
+X-Originating-IP: 86.194.74.19
+Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id E825360014;
+        Fri,  6 Nov 2020 09:08:55 +0000 (UTC)
+Date:   Fri, 6 Nov 2020 10:08:55 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Henning Schild <henning.schild@siemens.com>
+Cc:     Claudius Heine <ch@denx.de>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Johannes Hahn <johannes-hahn@siemens.com>,
+        werner.zeh@siemens.com
+Subject: Re: [PATCH 0/2]  Adding I2C support to RX6110 RTC
+Message-ID: <20201106090855.GN1034841@piout.net>
+References: <20201104102629.3422048-1-ch@denx.de>
+ <20201105221451.GH1034841@piout.net>
+ <20201106084034.0ea09ea3@md1za8fc.ad001.siemens.net>
+ <20201106075908.GJ1034841@piout.net>
+ <20201106095756.0dd8f267@md1za8fc.ad001.siemens.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <759a51ad-8b2e-24bd-52f5-99769ff5557c@loongson.cn>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201106095756.0dd8f267@md1za8fc.ad001.siemens.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 06, 2020 at 09:06:42AM +0800, tangyouling wrote:
-> In the include/asm-generic/vmlinux.lds.h:978, the description is as follows:
-> DISCARDS must be the last of output section definitions so that such archs
-> put those in earlier section definitions.
+On 06/11/2020 09:57:56+0100, Henning Schild wrote:
+> Am Fri, 6 Nov 2020 08:59:08 +0100
+> schrieb Alexandre Belloni <alexandre.belloni@bootlin.com>:
+> 
+> > On 06/11/2020 08:40:34+0100, Henning Schild wrote:
+> > > Hi,
+> > > 
+> > > Am Thu, 5 Nov 2020 23:14:51 +0100
+> > > schrieb Alexandre Belloni <alexandre.belloni@bootlin.com>:
+> > >   
+> > > > Hello Claudius!
+> > > > 
+> > > > It has been a while ;)
+> > > > 
+> > > > On 04/11/2020 11:26:27+0100, Claudius Heine wrote:  
+> > > > > Hi,
+> > > > > 
+> > > > > this patch introduces I2C support to the RX6110 RTC driver and
+> > > > > also adds an ACPI identifier to it.
+> > > > > 
+> > > > > Since we are also pushing the coreboot changes for the ACPI
+> > > > > table upstream in parallel, we are free to name this ACPI entry
+> > > > > however we like it seems. So any feedback on that would be
+> > > > > welcome ;) 
+> > > > 
+> > > > I don't care too much about ACPI so if you are really looking for
+> > > > advice there, I guess you should ask seom of the ACPI guys (but I
+> > > > guess you are free to choose whatever you want).
+> > > >   
+> > > 
+> > > This is the coreboot stuff currently under review.
+> > > 
+> > > https://review.coreboot.org/c/coreboot/+/47235
+> > >   
+> > 
+> > I can't really comment on the patch, however another part is worrying:
+> > if VLF is set, coreboot is resetting the time to a valid value (user
+> > defined or the build date). This is nasty because this hides the event
+> > from the kernel and ulimately, userspace has no way of knowing whether
+> > the RTC date is the real date or just a dummy date.
+> 
+> Is that worrying problem part of the patch, or just a general
+> observation looking at their driver?
+> 
 
-Sure, I see that text, but I don't get why it matters. It would be nice to
-have some rationale as to what could go wrong if they aren't at the end,
-so we can improve that comment and avoid the inevitable regression in the
-future when things get shuffled around.
+It is a separate observation on their driver.
 
-Will
+
+-- 
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
