@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B77E82A8CFD
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 03:36:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57A402A8D02
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 03:36:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726012AbgKFCf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 21:35:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40884 "EHLO mail.kernel.org"
+        id S1726039AbgKFCgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 21:36:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40850 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725909AbgKFCfv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1725616AbgKFCfv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 5 Nov 2020 21:35:51 -0500
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7307822280;
+        by mail.kernel.org (Postfix) with ESMTPSA id ACD8C22203;
         Fri,  6 Nov 2020 02:35:49 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94)
         (envelope-from <rostedt@goodmis.org>)
-        id 1karbQ-007WNj-25; Thu, 05 Nov 2020 21:35:48 -0500
-Message-ID: <20201106023547.904270143@goodmis.org>
+        id 1karbQ-007WOD-8l; Thu, 05 Nov 2020 21:35:48 -0500
+Message-ID: <20201106023548.102375687@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Thu, 05 Nov 2020 21:32:45 -0500
+Date:   Thu, 05 Nov 2020 21:32:46 -0500
 From:   Steven Rostedt (VMware) <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
@@ -32,11 +32,30 @@ Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
         Jiri Kosina <jikos@kernel.org>,
         Miroslav Benes <mbenes@suse.cz>,
         Petr Mladek <pmladek@suse.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Jonathan Corbet <corbet@lwn.net>, Guo Ren <guoren@kernel.org>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Kees Cook <keescook@chromium.org>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
         Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>,
-        linux-doc@vger.kernel.org
-Subject: [PATCH 10/11 v3] ftrace: Reverse what the RECURSION flag means in the ftrace_ops
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-doc@vger.kernel.org, linux-csky@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, live-patching@vger.kernel.org
+Subject: [PATCH 11/11 v3] ftrace: Add recording of functions that caused recursion
 References: <20201106023235.367190737@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,342 +65,624 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Now that all callbacks are recursion safe, reverse the meaning of the
-RECURSION flag and rename it from RECURSION_SAFE to simply RECURSION.
-Now only callbacks that request to have recursion protecting it will
-have the added trampoline to do so.
+This adds CONFIG_FTRACE_RECORD_RECURSION that will record to a file
+"recursed_functions" all the functions that caused recursion while a
+callback to the function tracer was running.
 
-Also remove the outdated comment about "PER_CPU" when determining to
-use the ftrace_ops_assist_func.
-
-Link: https://lkml.kernel.org/r/20201028115613.742454631@goodmis.org
-
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: Guo Ren <guoren@kernel.org>
+Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
+Cc: Helge Deller <deller@gmx.de>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Paul Mackerras <paulus@samba.org>
+Cc: Heiko Carstens <hca@linux.ibm.com>
+Cc: Vasily Gorbik <gor@linux.ibm.com>
+Cc: Christian Borntraeger <borntraeger@de.ibm.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: x86@kernel.org
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Anton Vorontsov <anton@enomsg.org>
+Cc: Colin Cross <ccross@android.com>
+Cc: Tony Luck <tony.luck@intel.com>
+Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+Cc: Jiri Kosina <jikos@kernel.org>
 Cc: Miroslav Benes <mbenes@suse.cz>
-Cc: Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>
 Cc: Petr Mladek <pmladek@suse.com>
+Cc: Joe Lawrence <joe.lawrence@redhat.com>
+Cc: Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>
+Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Cc: linux-doc@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-csky@vger.kernel.org
+Cc: linux-parisc@vger.kernel.org
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: linux-s390@vger.kernel.org
+Cc: live-patching@vger.kernel.org
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- Documentation/trace/ftrace-uses.rst | 82 +++++++++++++++++++++--------
- include/linux/ftrace.h              | 12 ++---
- kernel/trace/fgraph.c               |  3 +-
- kernel/trace/ftrace.c               | 20 ++++---
- kernel/trace/trace_events.c         |  1 -
- kernel/trace/trace_functions.c      |  2 +-
- kernel/trace/trace_selftest.c       |  7 +--
- kernel/trace/trace_stack.c          |  1 -
- 8 files changed, 79 insertions(+), 49 deletions(-)
+
+Changes since v2:
+
+ - Use trace_recursion flags in current for protecting recursion of recursion recording
+ - Make the recursion logic a little cleaner
+ - Export GPL the recursion recording
+
+ Documentation/trace/ftrace-uses.rst   |   6 +-
+ arch/csky/kernel/probes/ftrace.c      |   2 +-
+ arch/parisc/kernel/ftrace.c           |   2 +-
+ arch/powerpc/kernel/kprobes-ftrace.c  |   2 +-
+ arch/s390/kernel/ftrace.c             |   2 +-
+ arch/x86/kernel/kprobes/ftrace.c      |   2 +-
+ fs/pstore/ftrace.c                    |   2 +-
+ include/linux/trace_recursion.h       |  29 +++-
+ kernel/livepatch/patch.c              |   2 +-
+ kernel/trace/Kconfig                  |  25 +++
+ kernel/trace/Makefile                 |   1 +
+ kernel/trace/ftrace.c                 |   4 +-
+ kernel/trace/trace_event_perf.c       |   2 +-
+ kernel/trace/trace_functions.c        |   2 +-
+ kernel/trace/trace_output.c           |   6 +-
+ kernel/trace/trace_output.h           |   1 +
+ kernel/trace/trace_recursion_record.c | 236 ++++++++++++++++++++++++++
+ 17 files changed, 306 insertions(+), 20 deletions(-)
+ create mode 100644 kernel/trace/trace_recursion_record.c
 
 diff --git a/Documentation/trace/ftrace-uses.rst b/Documentation/trace/ftrace-uses.rst
-index a4955f7e3d19..86cd14b8e126 100644
+index 86cd14b8e126..5981d5691745 100644
 --- a/Documentation/trace/ftrace-uses.rst
 +++ b/Documentation/trace/ftrace-uses.rst
-@@ -30,8 +30,8 @@ The ftrace context
-   This requires extra care to what can be done inside a callback. A callback
-   can be called outside the protective scope of RCU.
+@@ -118,7 +118,7 @@ can help in this regard. If you start your code with:
  
--The ftrace infrastructure has some protections against recursions and RCU
--but one must still be very careful how they use the callbacks.
-+There are helper functions to help against recursion, and making sure
-+RCU is watching. These are explained below.
+ 	int bit;
  
+-	bit = ftrace_test_recursion_trylock();
++	bit = ftrace_test_recursion_trylock(ip, parent_ip);
+ 	if (bit < 0)
+ 		return;
  
- The ftrace_ops structure
-@@ -108,6 +108,50 @@ The prototype of the callback function is as follows (as of v4.14):
- 	at the start of the function where ftrace was tracing. Otherwise it
- 	either contains garbage, or NULL.
+@@ -130,7 +130,9 @@ The code in between will be safe to use, even if it ends up calling a
+ function that the callback is tracing. Note, on success,
+ ftrace_test_recursion_trylock() will disable preemption, and the
+ ftrace_test_recursion_unlock() will enable it again (if it was previously
+-enabled).
++enabled). The instruction pointer (ip) and its parent (parent_ip) is passed to
++ftrace_test_recursion_trylock() to record where the recursion happened
++(if CONFIG_FTRACE_RECORD_RECURSION is set).
  
-+Protect your callback
-+=====================
-+
-+As functions can be called from anywhere, and it is possible that a function
-+called by a callback may also be traced, and call that same callback,
-+recursion protection must be used. There are two helper functions that
-+can help in this regard. If you start your code with:
-+
-+	int bit;
-+
-+	bit = ftrace_test_recursion_trylock();
-+	if (bit < 0)
-+		return;
-+
-+and end it with:
-+
-+	ftrace_test_recursion_unlock(bit);
-+
-+The code in between will be safe to use, even if it ends up calling a
-+function that the callback is tracing. Note, on success,
-+ftrace_test_recursion_trylock() will disable preemption, and the
-+ftrace_test_recursion_unlock() will enable it again (if it was previously
-+enabled).
-+
-+Alternatively, if the FTRACE_OPS_FL_RECURSION flag is set on the ftrace_ops
-+(as explained below), then a helper trampoline will be used to test
-+for recursion for the callback and no recursion test needs to be done.
-+But this is at the expense of a slightly more overhead from an extra
-+function call.
-+
-+If your callback accesses any data or critical section that requires RCU
-+protection, it is best to make sure that RCU is "watching", otherwise
-+that data or critical section will not be protected as expected. In this
-+case add:
-+
-+	if (!rcu_is_watching())
-+		return;
-+
-+Alternatively, if the FTRACE_OPS_FL_RCU flag is set on the ftrace_ops
-+(as explained below), then a helper trampoline will be used to test
-+for rcu_is_watching for the callback and no other test needs to be done.
-+But this is at the expense of a slightly more overhead from an extra
-+function call.
-+
+ Alternatively, if the FTRACE_OPS_FL_RECURSION flag is set on the ftrace_ops
+ (as explained below), then a helper trampoline will be used to test
+diff --git a/arch/csky/kernel/probes/ftrace.c b/arch/csky/kernel/probes/ftrace.c
+index 5eb2604fdf71..f30b179924ef 100644
+--- a/arch/csky/kernel/probes/ftrace.c
++++ b/arch/csky/kernel/probes/ftrace.c
+@@ -18,7 +18,7 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+ 	struct kprobe *p;
+ 	struct kprobe_ctlblk *kcb;
  
- The ftrace FLAGS
- ================
-@@ -128,26 +172,20 @@ FTRACE_OPS_FL_SAVE_REGS_IF_SUPPORTED
- 	will not fail with this flag set. But the callback must check if
- 	regs is NULL or not to determine if the architecture supports it.
+-	bit = ftrace_test_recursion_trylock();
++	bit = ftrace_test_recursion_trylock(ip, parent_ip);
+ 	if (bit < 0)
+ 		return;
  
--FTRACE_OPS_FL_RECURSION_SAFE
--	By default, a wrapper is added around the callback to
--	make sure that recursion of the function does not occur. That is,
--	if a function that is called as a result of the callback's execution
--	is also traced, ftrace will prevent the callback from being called
--	again. But this wrapper adds some overhead, and if the callback is
--	safe from recursion, it can set this flag to disable the ftrace
--	protection.
--
--	Note, if this flag is set, and recursion does occur, it could cause
--	the system to crash, and possibly reboot via a triple fault.
--
--	It is OK if another callback traces a function that is called by a
--	callback that is marked recursion safe. Recursion safe callbacks
--	must never trace any function that are called by the callback
--	itself or any nested functions that those functions call.
--
--	If this flag is set, it is possible that the callback will also
--	be called with preemption enabled (when CONFIG_PREEMPTION is set),
--	but this is not guaranteed.
-+FTRACE_OPS_FL_RECURSION
-+	By default, it is expected that the callback can handle recursion.
-+	But if the callback is not that worried about overehead, then
-+	setting this bit will add the recursion protection around the
-+	callback by calling a helper function that will do the recursion
-+	protection and only call the callback if it did not recurse.
+diff --git a/arch/parisc/kernel/ftrace.c b/arch/parisc/kernel/ftrace.c
+index 13d85042810a..1c5d3732bda2 100644
+--- a/arch/parisc/kernel/ftrace.c
++++ b/arch/parisc/kernel/ftrace.c
+@@ -210,7 +210,7 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+ 	struct kprobe *p;
+ 	int bit;
+ 
+-	bit = ftrace_test_recursion_trylock();
++	bit = ftrace_test_recursion_trylock(ip, parent_ip);
+ 	if (bit < 0)
+ 		return;
+ 
+diff --git a/arch/powerpc/kernel/kprobes-ftrace.c b/arch/powerpc/kernel/kprobes-ftrace.c
+index 5df8d50c65ae..fdfee39938ea 100644
+--- a/arch/powerpc/kernel/kprobes-ftrace.c
++++ b/arch/powerpc/kernel/kprobes-ftrace.c
+@@ -20,7 +20,7 @@ void kprobe_ftrace_handler(unsigned long nip, unsigned long parent_nip,
+ 	struct kprobe_ctlblk *kcb;
+ 	int bit;
+ 
+-	bit = ftrace_test_recursion_trylock();
++	bit = ftrace_test_recursion_trylock(nip, parent_nip);
+ 	if (bit < 0)
+ 		return;
+ 
+diff --git a/arch/s390/kernel/ftrace.c b/arch/s390/kernel/ftrace.c
+index 8f31c726537a..657c1ab45408 100644
+--- a/arch/s390/kernel/ftrace.c
++++ b/arch/s390/kernel/ftrace.c
+@@ -204,7 +204,7 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+ 	struct kprobe *p;
+ 	int bit;
+ 
+-	bit = ftrace_test_recursion_trylock();
++	bit = ftrace_test_recursion_trylock(ip, parent_ip);
+ 	if (bit < 0)
+ 		return;
+ 
+diff --git a/arch/x86/kernel/kprobes/ftrace.c b/arch/x86/kernel/kprobes/ftrace.c
+index a40a6cdfcca3..954d930a7127 100644
+--- a/arch/x86/kernel/kprobes/ftrace.c
++++ b/arch/x86/kernel/kprobes/ftrace.c
+@@ -20,7 +20,7 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+ 	struct kprobe_ctlblk *kcb;
+ 	int bit;
+ 
+-	bit = ftrace_test_recursion_trylock();
++	bit = ftrace_test_recursion_trylock(ip, parent_ip);
+ 	if (bit < 0)
+ 		return;
+ 
+diff --git a/fs/pstore/ftrace.c b/fs/pstore/ftrace.c
+index 816210fc5d3a..adb0935eb062 100644
+--- a/fs/pstore/ftrace.c
++++ b/fs/pstore/ftrace.c
+@@ -41,7 +41,7 @@ static void notrace pstore_ftrace_call(unsigned long ip,
+ 	if (unlikely(oops_in_progress))
+ 		return;
+ 
+-	bit = ftrace_test_recursion_trylock();
++	bit = ftrace_test_recursion_trylock(ip, parent_ip);
+ 	if (bit < 0)
+ 		return;
+ 
+diff --git a/include/linux/trace_recursion.h b/include/linux/trace_recursion.h
+index ac3d73484cb2..228cc56ed66e 100644
+--- a/include/linux/trace_recursion.h
++++ b/include/linux/trace_recursion.h
+@@ -91,6 +91,9 @@ enum {
+ 	 * not be correct. Allow for a single recursion to cover this case.
+ 	 */
+ 	TRACE_TRANSITION_BIT,
 +
-+	Note, if this flag is not set, and recursion does occur, it could
-+	cause the system to crash, and possibly reboot via a triple fault.
++	/* Used to prevent recursion recording from recursing. */
++	TRACE_RECORD_RECURSION_BIT,
+ };
+ 
+ #define trace_recursion_set(bit)	do { (current)->trace_recursion |= (1<<(bit)); } while (0)
+@@ -142,7 +145,22 @@ static __always_inline int trace_get_context_bit(void)
+ 			pc & HARDIRQ_MASK ? TRACE_CTX_IRQ : TRACE_CTX_SOFTIRQ;
+ }
+ 
+-static __always_inline int trace_test_and_set_recursion(int start, int max)
++#ifdef CONFIG_FTRACE_RECORD_RECURSION
++extern void ftrace_record_recursion(unsigned long ip, unsigned long parent_ip);
++# define do_ftrace_record_recursion(ip, pip)				\
++	do {								\
++		if (!trace_recursion_test(TRACE_RECORD_RECURSION_BIT)) { \
++			trace_recursion_set(TRACE_RECORD_RECURSION_BIT); \
++			ftrace_record_recursion(ip, pip);		\
++			trace_recursion_clear(TRACE_RECORD_RECURSION_BIT); \
++		}							\
++	} while (0)
++#else
++# define do_ftrace_record_recursion(ip, pip)	do { } while (0)
++#endif
 +
-+	Not, if this flag is set, then the callback will always be called
-+	with preemption disabled. If it is not set, then it is possible
-+	(but not guaranteed) that the callback will be called in
-+	preemptable context.
++static __always_inline int trace_test_and_set_recursion(unsigned long ip, unsigned long pip,
++							int start, int max)
+ {
+ 	unsigned int val = current->trace_recursion;
+ 	int bit;
+@@ -158,8 +176,10 @@ static __always_inline int trace_test_and_set_recursion(int start, int max)
+ 		 * a switch between contexts. Allow for a single recursion.
+ 		 */
+ 		bit = TRACE_TRANSITION_BIT;
+-		if (trace_recursion_test(bit))
++		if (trace_recursion_test(bit)) {
++			do_ftrace_record_recursion(ip, pip);
+ 			return -1;
++		}
+ 		trace_recursion_set(bit);
+ 		barrier();
+ 		return bit + 1;
+@@ -199,9 +219,10 @@ static __always_inline void trace_clear_recursion(int bit)
+  * Returns: -1 if a recursion happened.
+  *           >= 0 if no recursion
+  */
+-static __always_inline int ftrace_test_recursion_trylock(void)
++static __always_inline int ftrace_test_recursion_trylock(unsigned long ip,
++							 unsigned long parent_ip)
+ {
+-	return trace_test_and_set_recursion(TRACE_FTRACE_START, TRACE_FTRACE_MAX);
++	return trace_test_and_set_recursion(ip, parent_ip, TRACE_FTRACE_START, TRACE_FTRACE_MAX);
+ }
  
- FTRACE_OPS_FL_IPMODIFY
- 	Requires FTRACE_OPS_FL_SAVE_REGS set. If the callback is to "hijack"
-diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
-index 0e4164a7f56d..806196345c3f 100644
---- a/include/linux/ftrace.h
-+++ b/include/linux/ftrace.h
-@@ -98,7 +98,7 @@ ftrace_func_t ftrace_ops_get_func(struct ftrace_ops *ops);
- /*
-  * FTRACE_OPS_FL_* bits denote the state of ftrace_ops struct and are
-  * set in the flags member.
-- * CONTROL, SAVE_REGS, SAVE_REGS_IF_SUPPORTED, RECURSION_SAFE, STUB and
-+ * CONTROL, SAVE_REGS, SAVE_REGS_IF_SUPPORTED, RECURSION, STUB and
-  * IPMODIFY are a kind of attribute flags which can be set only before
-  * registering the ftrace_ops, and can not be modified while registered.
-  * Changing those attribute flags after registering ftrace_ops will
-@@ -121,10 +121,10 @@ ftrace_func_t ftrace_ops_get_func(struct ftrace_ops *ops);
-  *            passing regs to the handler.
-  *            Note, if this flag is set, the SAVE_REGS flag will automatically
-  *            get set upon registering the ftrace_ops, if the arch supports it.
-- * RECURSION_SAFE - The ftrace_ops can set this to tell the ftrace infrastructure
-- *            that the call back has its own recursion protection. If it does
-- *            not set this, then the ftrace infrastructure will add recursion
-- *            protection for the caller.
-+ * RECURSION - The ftrace_ops can set this to tell the ftrace infrastructure
-+ *            that the call back needs recursion protection. If it does
-+ *            not set this, then the ftrace infrastructure will assume
-+ *            that the callback can handle recursion on its own.
-  * STUB   - The ftrace_ops is just a place holder.
-  * INITIALIZED - The ftrace_ops has already been initialized (first use time
-  *            register_ftrace_function() is called, it will initialized the ops)
-@@ -156,7 +156,7 @@ enum {
- 	FTRACE_OPS_FL_DYNAMIC			= BIT(1),
- 	FTRACE_OPS_FL_SAVE_REGS			= BIT(2),
- 	FTRACE_OPS_FL_SAVE_REGS_IF_SUPPORTED	= BIT(3),
--	FTRACE_OPS_FL_RECURSION_SAFE		= BIT(4),
-+	FTRACE_OPS_FL_RECURSION			= BIT(4),
- 	FTRACE_OPS_FL_STUB			= BIT(5),
- 	FTRACE_OPS_FL_INITIALIZED		= BIT(6),
- 	FTRACE_OPS_FL_DELETED			= BIT(7),
-diff --git a/kernel/trace/fgraph.c b/kernel/trace/fgraph.c
-index 5658f13037b3..73edb9e4f354 100644
---- a/kernel/trace/fgraph.c
-+++ b/kernel/trace/fgraph.c
-@@ -334,8 +334,7 @@ unsigned long ftrace_graph_ret_addr(struct task_struct *task, int *idx,
+ /**
+diff --git a/kernel/livepatch/patch.c b/kernel/livepatch/patch.c
+index 15480bf3ce88..875c5dbbdd33 100644
+--- a/kernel/livepatch/patch.c
++++ b/kernel/livepatch/patch.c
+@@ -49,7 +49,7 @@ static void notrace klp_ftrace_handler(unsigned long ip,
  
- static struct ftrace_ops graph_ops = {
- 	.func			= ftrace_stub,
--	.flags			= FTRACE_OPS_FL_RECURSION_SAFE |
--				   FTRACE_OPS_FL_INITIALIZED |
-+	.flags			= FTRACE_OPS_FL_INITIALIZED |
- 				   FTRACE_OPS_FL_PID |
- 				   FTRACE_OPS_FL_STUB,
- #ifdef FTRACE_GRAPH_TRAMP_ADDR
+ 	ops = container_of(fops, struct klp_ops, fops);
+ 
+-	bit = ftrace_test_recursion_trylock();
++	bit = ftrace_test_recursion_trylock(ip, parent_ip);
+ 	if (WARN_ON_ONCE(bit < 0))
+ 		return;
+ 	/*
+diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
+index a4020c0b4508..9b11c096d139 100644
+--- a/kernel/trace/Kconfig
++++ b/kernel/trace/Kconfig
+@@ -727,6 +727,31 @@ config TRACE_EVAL_MAP_FILE
+ 
+ 	If unsure, say N.
+ 
++config FTRACE_RECORD_RECURSION
++	bool "Record functions that recurse in function tracing"
++	depends on FUNCTION_TRACER
++	help
++	  All callbacks that attach to the function tracing have some sort
++	  of protection against recursion. Even though the protection exists,
++	  it adds overhead. This option will create a file in the tracefs
++	  file system called "recursed_functions" that will list the functions
++	  that triggered a recursion.
++
++	  This will add more overhead to cases that have recursion.
++
++	  If unsure, say N
++
++config FTRACE_RECORD_RECURSION_SIZE
++	int "Max number of recursed functions to record"
++	default	128
++	depends on FTRACE_RECORD_RECURSION
++	help
++	  This defines the limit of number of functions that can be
++	  listed in the "recursed_functions" file, that lists all
++	  the functions that caused a recursion to happen.
++	  This file can be reset, but the limit can not change in
++	  size at runtime.
++
+ config GCOV_PROFILE_FTRACE
+ 	bool "Enable GCOV profiling on ftrace subsystem"
+ 	depends on GCOV_KERNEL
+diff --git a/kernel/trace/Makefile b/kernel/trace/Makefile
+index e153be351548..7e44cea89fdc 100644
+--- a/kernel/trace/Makefile
++++ b/kernel/trace/Makefile
+@@ -92,6 +92,7 @@ obj-$(CONFIG_DYNAMIC_EVENTS) += trace_dynevent.o
+ obj-$(CONFIG_PROBE_EVENTS) += trace_probe.o
+ obj-$(CONFIG_UPROBE_EVENTS) += trace_uprobe.o
+ obj-$(CONFIG_BOOTTIME_TRACING) += trace_boot.o
++obj-$(CONFIG_FTRACE_RECORD_RECURSION) += trace_recursion_record.o
+ 
+ obj-$(CONFIG_TRACEPOINT_BENCHMARK) += trace_benchmark.o
+ 
 diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index 8185f7240095..39f2bba89b76 100644
+index 39f2bba89b76..03aad2b5cd5e 100644
 --- a/kernel/trace/ftrace.c
 +++ b/kernel/trace/ftrace.c
-@@ -80,7 +80,7 @@ enum {
+@@ -6918,7 +6918,7 @@ __ftrace_ops_list_func(unsigned long ip, unsigned long parent_ip,
+ 	struct ftrace_ops *op;
+ 	int bit;
  
- struct ftrace_ops ftrace_list_end __read_mostly = {
- 	.func		= ftrace_stub,
--	.flags		= FTRACE_OPS_FL_RECURSION_SAFE | FTRACE_OPS_FL_STUB,
-+	.flags		= FTRACE_OPS_FL_STUB,
- 	INIT_OPS_HASH(ftrace_list_end)
- };
+-	bit = trace_test_and_set_recursion(TRACE_LIST_START, TRACE_LIST_MAX);
++	bit = trace_test_and_set_recursion(ip, parent_ip, TRACE_LIST_START, TRACE_LIST_MAX);
+ 	if (bit < 0)
+ 		return;
  
-@@ -866,7 +866,7 @@ static void unregister_ftrace_profiler(void)
- #else
- static struct ftrace_ops ftrace_profile_ops __read_mostly = {
- 	.func		= function_profile_call,
--	.flags		= FTRACE_OPS_FL_RECURSION_SAFE | FTRACE_OPS_FL_INITIALIZED,
-+	.flags		= FTRACE_OPS_FL_INITIALIZED,
- 	INIT_OPS_HASH(ftrace_profile_ops)
- };
- 
-@@ -1040,8 +1040,7 @@ struct ftrace_ops global_ops = {
- 	.local_hash.notrace_hash	= EMPTY_HASH,
- 	.local_hash.filter_hash		= EMPTY_HASH,
- 	INIT_OPS_HASH(global_ops)
--	.flags				= FTRACE_OPS_FL_RECURSION_SAFE |
--					  FTRACE_OPS_FL_INITIALIZED |
-+	.flags				= FTRACE_OPS_FL_INITIALIZED |
- 					  FTRACE_OPS_FL_PID,
- };
- 
-@@ -2382,7 +2381,7 @@ static void call_direct_funcs(unsigned long ip, unsigned long pip,
- 
- struct ftrace_ops direct_ops = {
- 	.func		= call_direct_funcs,
--	.flags		= FTRACE_OPS_FL_IPMODIFY | FTRACE_OPS_FL_RECURSION_SAFE
-+	.flags		= FTRACE_OPS_FL_IPMODIFY
- 			  | FTRACE_OPS_FL_DIRECT | FTRACE_OPS_FL_SAVE_REGS
- 			  | FTRACE_OPS_FL_PERMANENT,
- 	/*
-@@ -6864,8 +6863,7 @@ void ftrace_init_trace_array(struct trace_array *tr)
- 
- struct ftrace_ops global_ops = {
- 	.func			= ftrace_stub,
--	.flags			= FTRACE_OPS_FL_RECURSION_SAFE |
--				  FTRACE_OPS_FL_INITIALIZED |
-+	.flags			= FTRACE_OPS_FL_INITIALIZED |
- 				  FTRACE_OPS_FL_PID,
- };
- 
-@@ -7023,11 +7021,11 @@ NOKPROBE_SYMBOL(ftrace_ops_assist_func);
- ftrace_func_t ftrace_ops_get_func(struct ftrace_ops *ops)
+@@ -6993,7 +6993,7 @@ static void ftrace_ops_assist_func(unsigned long ip, unsigned long parent_ip,
  {
- 	/*
--	 * If the function does not handle recursion, needs to be RCU safe,
--	 * or does per cpu logic, then we need to call the assist handler.
-+	 * If the function does not handle recursion or needs to be RCU safe,
-+	 * then we need to call the assist handler.
- 	 */
--	if (!(ops->flags & FTRACE_OPS_FL_RECURSION_SAFE) ||
--	    ops->flags & FTRACE_OPS_FL_RCU)
-+	if (ops->flags & (FTRACE_OPS_FL_RECURSION |
-+			  FTRACE_OPS_FL_RCU))
- 		return ftrace_ops_assist_func;
+ 	int bit;
  
- 	return ops->func;
-diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
-index 47a71f96e5bc..244abbcd1db5 100644
---- a/kernel/trace/trace_events.c
-+++ b/kernel/trace/trace_events.c
-@@ -3712,7 +3712,6 @@ function_test_events_call(unsigned long ip, unsigned long parent_ip,
- static struct ftrace_ops trace_ops __initdata  =
- {
- 	.func = function_test_events_call,
--	.flags = FTRACE_OPS_FL_RECURSION_SAFE,
- };
+-	bit = trace_test_and_set_recursion(TRACE_LIST_START, TRACE_LIST_MAX);
++	bit = trace_test_and_set_recursion(ip, parent_ip, TRACE_LIST_START, TRACE_LIST_MAX);
+ 	if (bit < 0)
+ 		return;
  
- static __init void event_trace_self_test_with_function(void)
+diff --git a/kernel/trace/trace_event_perf.c b/kernel/trace/trace_event_perf.c
+index a2b9fddb8148..1b202e28dfaa 100644
+--- a/kernel/trace/trace_event_perf.c
++++ b/kernel/trace/trace_event_perf.c
+@@ -447,7 +447,7 @@ perf_ftrace_function_call(unsigned long ip, unsigned long parent_ip,
+ 	if ((unsigned long)ops->private != smp_processor_id())
+ 		return;
+ 
+-	bit = ftrace_test_recursion_trylock();
++	bit = ftrace_test_recursion_trylock(ip, parent_ip);
+ 	if (bit < 0)
+ 		return;
+ 
 diff --git a/kernel/trace/trace_functions.c b/kernel/trace/trace_functions.c
-index 943756c01190..89c414ce1388 100644
+index 89c414ce1388..646eda6c44a5 100644
 --- a/kernel/trace/trace_functions.c
 +++ b/kernel/trace/trace_functions.c
-@@ -48,7 +48,7 @@ int ftrace_allocate_ftrace_ops(struct trace_array *tr)
+@@ -141,7 +141,7 @@ function_trace_call(unsigned long ip, unsigned long parent_ip,
+ 	if (unlikely(!tr->function_enabled))
+ 		return;
  
- 	/* Currently only the non stack version is supported */
- 	ops->func = function_trace_call;
--	ops->flags = FTRACE_OPS_FL_RECURSION_SAFE | FTRACE_OPS_FL_PID;
-+	ops->flags = FTRACE_OPS_FL_PID;
+-	bit = ftrace_test_recursion_trylock();
++	bit = ftrace_test_recursion_trylock(ip, parent_ip);
+ 	if (bit < 0)
+ 		return;
  
- 	tr->ops = ops;
- 	ops->private = tr;
-diff --git a/kernel/trace/trace_selftest.c b/kernel/trace/trace_selftest.c
-index 4738ad48a667..8ee3c0bb5d8a 100644
---- a/kernel/trace/trace_selftest.c
-+++ b/kernel/trace/trace_selftest.c
-@@ -150,17 +150,14 @@ static void trace_selftest_test_dyn_func(unsigned long ip,
+diff --git a/kernel/trace/trace_output.c b/kernel/trace/trace_output.c
+index 000e9dc224c6..92b1575ae0ca 100644
+--- a/kernel/trace/trace_output.c
++++ b/kernel/trace/trace_output.c
+@@ -353,8 +353,8 @@ static inline const char *kretprobed(const char *name)
+ }
+ #endif /* CONFIG_KRETPROBES */
  
- static struct ftrace_ops test_probe1 = {
- 	.func			= trace_selftest_test_probe1_func,
--	.flags			= FTRACE_OPS_FL_RECURSION_SAFE,
- };
- 
- static struct ftrace_ops test_probe2 = {
- 	.func			= trace_selftest_test_probe2_func,
--	.flags			= FTRACE_OPS_FL_RECURSION_SAFE,
- };
- 
- static struct ftrace_ops test_probe3 = {
- 	.func			= trace_selftest_test_probe3_func,
--	.flags			= FTRACE_OPS_FL_RECURSION_SAFE,
- };
- 
- static void print_counts(void)
-@@ -448,11 +445,11 @@ static void trace_selftest_test_recursion_safe_func(unsigned long ip,
- 
- static struct ftrace_ops test_rec_probe = {
- 	.func			= trace_selftest_test_recursion_func,
-+	.flags			= FTRACE_OPS_FL_RECURSION,
- };
- 
- static struct ftrace_ops test_recsafe_probe = {
- 	.func			= trace_selftest_test_recursion_safe_func,
--	.flags			= FTRACE_OPS_FL_RECURSION_SAFE,
- };
- 
- static int
-@@ -561,7 +558,7 @@ static void trace_selftest_test_regs_func(unsigned long ip,
- 
- static struct ftrace_ops test_regs_probe = {
- 	.func		= trace_selftest_test_regs_func,
--	.flags		= FTRACE_OPS_FL_RECURSION_SAFE | FTRACE_OPS_FL_SAVE_REGS,
-+	.flags		= FTRACE_OPS_FL_SAVE_REGS,
- };
- 
- static int
-diff --git a/kernel/trace/trace_stack.c b/kernel/trace/trace_stack.c
-index c408423e5d65..969db526a563 100644
---- a/kernel/trace/trace_stack.c
-+++ b/kernel/trace/trace_stack.c
-@@ -318,7 +318,6 @@ stack_trace_call(unsigned long ip, unsigned long parent_ip,
- static struct ftrace_ops trace_ops __read_mostly =
+-static void
+-seq_print_sym(struct trace_seq *s, unsigned long address, bool offset)
++void
++trace_seq_print_sym(struct trace_seq *s, unsigned long address, bool offset)
  {
- 	.func = stack_trace_call,
--	.flags = FTRACE_OPS_FL_RECURSION_SAFE,
- };
+ #ifdef CONFIG_KALLSYMS
+ 	char str[KSYM_SYMBOL_LEN];
+@@ -420,7 +420,7 @@ seq_print_ip_sym(struct trace_seq *s, unsigned long ip, unsigned long sym_flags)
+ 		goto out;
+ 	}
  
- static ssize_t
+-	seq_print_sym(s, ip, sym_flags & TRACE_ITER_SYM_OFFSET);
++	trace_seq_print_sym(s, ip, sym_flags & TRACE_ITER_SYM_OFFSET);
+ 
+ 	if (sym_flags & TRACE_ITER_SYM_ADDR)
+ 		trace_seq_printf(s, " <" IP_FMT ">", ip);
+diff --git a/kernel/trace/trace_output.h b/kernel/trace/trace_output.h
+index 2f742b74e7e6..4c954636caf0 100644
+--- a/kernel/trace/trace_output.h
++++ b/kernel/trace/trace_output.h
+@@ -16,6 +16,7 @@ extern int
+ seq_print_ip_sym(struct trace_seq *s, unsigned long ip,
+ 		unsigned long sym_flags);
+ 
++extern void trace_seq_print_sym(struct trace_seq *s, unsigned long address, bool offset);
+ extern int trace_print_context(struct trace_iterator *iter);
+ extern int trace_print_lat_context(struct trace_iterator *iter);
+ 
+diff --git a/kernel/trace/trace_recursion_record.c b/kernel/trace/trace_recursion_record.c
+new file mode 100644
+index 000000000000..b2edac1fe156
+--- /dev/null
++++ b/kernel/trace/trace_recursion_record.c
+@@ -0,0 +1,236 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <linux/seq_file.h>
++#include <linux/kallsyms.h>
++#include <linux/module.h>
++#include <linux/ftrace.h>
++#include <linux/fs.h>
++
++#include "trace_output.h"
++
++struct recursed_functions {
++	unsigned long		ip;
++	unsigned long		parent_ip;
++};
++
++static struct recursed_functions recursed_functions[CONFIG_FTRACE_RECORD_RECURSION_SIZE];
++static atomic_t nr_records;
++
++/*
++ * Cache the last found function. Yes, updates to this is racey, but
++ * so is memory cache ;-)
++ */
++static unsigned long cached_function;
++
++void ftrace_record_recursion(unsigned long ip, unsigned long parent_ip)
++{
++	int index = 0;
++	int i;
++	unsigned long old;
++
++ again:
++	/* First check the last one recorded */
++	if (ip == cached_function)
++		return;
++
++	i = atomic_read(&nr_records);
++	/* nr_records is -1 when clearing records */
++	smp_mb__after_atomic();
++	if (i < 0)
++		return;
++
++	/*
++	 * If there's two writers and this writer comes in second,
++	 * the cmpxchg() below to update the ip will fail. Then this
++	 * writer will try again. It is possible that index will now
++	 * be greater than nr_records. This is because the writer
++	 * that succeeded has not updated the nr_records yet.
++	 * This writer could keep trying again until the other writer
++	 * updates nr_records. But if the other writer takes an
++	 * interrupt, and that interrupt locks up that CPU, we do
++	 * not want this CPU to lock up due to the recursion protection,
++	 * and have a bug report showing this CPU as the cause of
++	 * locking up the computer. To not lose this record, this
++	 * writer will simply use the next position to update the
++	 * recursed_functions, and it will update the nr_records
++	 * accordingly.
++	 */
++	if (index < i)
++		index = i;
++	if (index >= CONFIG_FTRACE_RECORD_RECURSION_SIZE)
++		return;
++
++	for (i = index - 1; i >= 0; i--) {
++		if (recursed_functions[i].ip == ip) {
++			cached_function = ip;
++			return;
++		}
++	}
++
++	cached_function = ip;
++
++	/*
++	 * We only want to add a function if it hasn't been added before.
++	 * Add to the current location before incrementing the count.
++	 * If it fails to add, then increment the index (save in i)
++	 * and try again.
++	 */
++	old = cmpxchg(&recursed_functions[index].ip, 0, ip);
++	if (old != 0) {
++		/* Did something else already added this for us? */
++		if (old == ip)
++			return;
++		/* Try the next location (use i for the next index) */
++		index++;
++		goto again;
++	}
++
++	recursed_functions[index].parent_ip = parent_ip;
++
++	/*
++	 * It's still possible that we could race with the clearing
++	 *    CPU0                                    CPU1
++	 *    ----                                    ----
++	 *                                       ip = func
++	 *  nr_records = -1;
++	 *  recursed_functions[0] = 0;
++	 *                                       i = -1
++	 *                                       if (i < 0)
++	 *  nr_records = 0;
++	 *  (new recursion detected)
++	 *      recursed_functions[0] = func
++	 *                                            cmpxchg(recursed_functions[0],
++	 *                                                    func, 0)
++	 *
++	 * But the worse that could happen is that we get a zero in
++	 * the recursed_functions array, and it's likely that "func" will
++	 * be recorded again.
++	 */
++	i = atomic_read(&nr_records);
++	smp_mb__after_atomic();
++	if (i < 0)
++		cmpxchg(&recursed_functions[index].ip, ip, 0);
++	else if (i <= index)
++		atomic_cmpxchg(&nr_records, i, index + 1);
++}
++EXPORT_SYMBOL_GPL(ftrace_record_recursion);
++
++static DEFINE_MUTEX(recursed_function_lock);
++static struct trace_seq *tseq;
++
++static void *recursed_function_seq_start(struct seq_file *m, loff_t *pos)
++{
++	void *ret = NULL;
++	int index;
++
++	mutex_lock(&recursed_function_lock);
++	index = atomic_read(&nr_records);
++	if (*pos < index) {
++		ret = &recursed_functions[*pos];
++	}
++
++	tseq = kzalloc(sizeof(*tseq), GFP_KERNEL);
++	if (!tseq)
++		return ERR_PTR(-ENOMEM);
++
++	trace_seq_init(tseq);
++
++	return ret;
++}
++
++static void *recursed_function_seq_next(struct seq_file *m, void *v, loff_t *pos)
++{
++	int index;
++	int p;
++
++	index = atomic_read(&nr_records);
++	p = ++(*pos);
++
++	return p < index ? &recursed_functions[p] : NULL;
++}
++
++static void recursed_function_seq_stop(struct seq_file *m, void *v)
++{
++	kfree(tseq);
++	mutex_unlock(&recursed_function_lock);
++}
++
++static int recursed_function_seq_show(struct seq_file *m, void *v)
++{
++	struct recursed_functions *record = v;
++	int ret = 0;
++
++	if (record) {
++		trace_seq_print_sym(tseq, record->parent_ip, true);
++		trace_seq_puts(tseq, ":\t");
++		trace_seq_print_sym(tseq, record->ip, true);
++		trace_seq_putc(tseq, '\n');
++		ret = trace_print_seq(m, tseq);
++	}
++
++	return ret;
++}
++
++static const struct seq_operations recursed_function_seq_ops = {
++	.start  = recursed_function_seq_start,
++	.next   = recursed_function_seq_next,
++	.stop   = recursed_function_seq_stop,
++	.show   = recursed_function_seq_show
++};
++
++static int recursed_function_open(struct inode *inode, struct file *file)
++{
++	int ret = 0;
++
++	mutex_lock(&recursed_function_lock);
++	/* If this file was opened for write, then erase contents */
++	if ((file->f_mode & FMODE_WRITE) && (file->f_flags & O_TRUNC)) {
++		/* disable updating records */
++		atomic_set(&nr_records, -1);
++		smp_mb__after_atomic();
++		memset(recursed_functions, 0, sizeof(recursed_functions));
++		smp_wmb();
++		/* enable them again */
++		atomic_set(&nr_records, 0);
++	}
++	if (file->f_mode & FMODE_READ)
++		ret = seq_open(file, &recursed_function_seq_ops);
++	mutex_unlock(&recursed_function_lock);
++
++	return ret;
++}
++
++static ssize_t recursed_function_write(struct file *file,
++				       const char __user *buffer,
++				       size_t count, loff_t *ppos)
++{
++	return count;
++}
++
++static int recursed_function_release(struct inode *inode, struct file *file)
++{
++	if (file->f_mode & FMODE_READ)
++		seq_release(inode, file);
++	return 0;
++}
++
++static const struct file_operations recursed_functions_fops = {
++	.open           = recursed_function_open,
++	.write		= recursed_function_write,
++	.read           = seq_read,
++	.llseek         = seq_lseek,
++	.release        = recursed_function_release,
++};
++
++__init static int create_recursed_functions(void)
++{
++	struct dentry *dentry;
++
++	dentry = trace_create_file("recursed_functions", 0644, NULL, NULL,
++				   &recursed_functions_fops);
++	if (!dentry)
++		pr_warn("WARNING: Failed to create recursed_functions\n");
++	return 0;
++}
++
++fs_initcall(create_recursed_functions);
 -- 
 2.28.0
 
