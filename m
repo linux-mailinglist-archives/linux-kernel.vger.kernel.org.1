@@ -2,142 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F00292A94BE
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 11:52:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB82F2A94C6
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 11:54:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726988AbgKFKwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 05:52:53 -0500
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:43015 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726642AbgKFKwx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 05:52:53 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 97AA15C0070;
-        Fri,  6 Nov 2020 05:52:52 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Fri, 06 Nov 2020 05:52:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=N9XuQ3DBW3GUsaF7SYTnC8EtrNu
-        XcbHAT/ogm3d+XRk=; b=ccmPfSnO0zjKFCrvqwxNYMS/2TRa/FwDO6Ty/Bns65p
-        4s6xnrutCF+jsg2/AYf/DAtKL5Bh8h4a0hlRggq8xALoTJ9/pFahWLTKWiUGt54Z
-        h4/1VC8xy+qvYou9z3y7pGyfT+uY/tNkw/3rKYZJhfYpBAk7w+i66LekYtm7SXfI
-        v1VFt0IqdTVMbgYtYQqNj5lBJ1p9sbRlQuh3HhmpGqQROFsXj4GgAae1RywOGDg9
-        KZbqDkgVdoRqFCGsm+yZaSn18/82tErfb/RT5SyAnAennsE8CbgVdWyGWCNUmrDq
-        gg8+MdTCAXT7rm1RIlPByoOQ1CMH6VkapzkwKbGakww==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=N9XuQ3
-        DBW3GUsaF7SYTnC8EtrNuXcbHAT/ogm3d+XRk=; b=fz3sODXSrPFyTamNXseYQn
-        ovOrUlMOOlINULPdklxqB8JhLLIzDlw+zXGn2KRyNQ2IRjSOGHoYHAwrTTqG8rU8
-        PisyN/W6O6QyoCCtsl7Fe7v05aaVoqrPVyLqWuI3V5Qse9c3fr8nagpdMp81zl5I
-        pKioTD5LHVWHG6K2gjB8uFv8x9TYuyfJ4UrLiJGofMg9Wo0DmI82yqqLG1MzzdHU
-        ZxTN90SRk9V6Rhj5ejd8TihDbgJWVABM8+9PVrpHbvV/RJXN0wP4ls7lgc8lY6Ox
-        W9SARrG0kNyzKUvvBMITAv6rKcJN/XppcSyhaZAoR92IgwkGbIpwgksFVswgwwcg
-        ==
-X-ME-Sender: <xms:AyulX_U3c_k4aZVZ_5FXi7aXHoOhp7onEwpuh-fqi9braMdeRJXTJQ>
-    <xme:AyulX3kNJw5lqZK_zJwLGOeMIO6DpxmVZ54vYJh0Tm7Yaskoe5kN9TyYxn1rWcrPA
-    qYoYIMep-eu5guznnQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddtledgvddvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:AyulX7bKp23WSuHCHFhvlaxxssRA9vttrIHLLNGeL6USanlPwthlKg>
-    <xmx:AyulX6U_PGkWC5q6gD2IyBJZQ3BcALsOEkPGYWQwxQ5EQDxYrRHgCg>
-    <xmx:AyulX5kbNe5ZO7TdHvRk8ndW95dQWxvN2npd_yRnTSQIM1DJhkc5HA>
-    <xmx:BCulX_hvSNFcWPNue8tl7OBIJwaUD54JIXXOTJ1CkZ5S5bKFBQiqKQ>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id C463432801F2;
-        Fri,  6 Nov 2020 05:52:50 -0500 (EST)
-Date:   Fri, 6 Nov 2020 11:52:49 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Eric Anholt <eric@anholt.net>
-Cc:     Deepak R Varma <mh12gx2825@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] drm/vc4: replace idr_init() by idr_init_base()
-Message-ID: <20201106105249.zvyd36shfec24lzn@gilmour.lan>
-References: <20201105202135.GA145111@localhost>
- <CADaigPXM8NAZFAydXwcZt7ie_aK1aO8C=jqssA375sCMgU_gHw@mail.gmail.com>
+        id S1727199AbgKFKyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 05:54:06 -0500
+Received: from elvis.franken.de ([193.175.24.41]:41183 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727139AbgKFKx4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 05:53:56 -0500
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1kazNR-0000vt-04; Fri, 06 Nov 2020 11:53:53 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 29ADAC4DDA; Fri,  6 Nov 2020 11:53:22 +0100 (CET)
+Date:   Fri, 6 Nov 2020 11:53:22 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Zou Wei <zou_wei@huawei.com>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] mm/hugetlb: Make is_aligned_hugepage_range static
+Message-ID: <20201106105322.GF9806@alpha.franken.de>
+References: <1603937600-53015-1-git-send-email-zou_wei@huawei.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="wpowarwxfffuey44"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CADaigPXM8NAZFAydXwcZt7ie_aK1aO8C=jqssA375sCMgU_gHw@mail.gmail.com>
+In-Reply-To: <1603937600-53015-1-git-send-email-zou_wei@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Oct 29, 2020 at 10:13:20AM +0800, Zou Wei wrote:
+> Fix the following sparse warning:
+> 
+> arch/mips/mm/hugetlbpage.c:64:5: warning:
+> symbol 'is_aligned_hugepage_range' was not declared. Should it be static?
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Zou Wei <zou_wei@huawei.com>
+> ---
+>  arch/mips/mm/hugetlbpage.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/mips/mm/hugetlbpage.c b/arch/mips/mm/hugetlbpage.c
+> index 77ffece..774c988 100644
+> --- a/arch/mips/mm/hugetlbpage.c
+> +++ b/arch/mips/mm/hugetlbpage.c
+> @@ -61,7 +61,7 @@ pte_t *huge_pte_offset(struct mm_struct *mm, unsigned long addr,
+>  /*
+>   * This function checks for proper alignment of input addr and len parameters.
+>   */
+> -int is_aligned_hugepage_range(unsigned long addr, unsigned long len)
+> +static int is_aligned_hugepage_range(unsigned long addr, unsigned long len)
 
---wpowarwxfffuey44
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+this should give then a warning that 'is_aligned_hugepage_range' is unused.
+Could you send a patch, which remove function completely ?
 
-On Thu, Nov 05, 2020 at 01:24:14PM -0800, Eric Anholt wrote:
-> On Thu, Nov 5, 2020 at 12:21 PM Deepak R Varma <mh12gx2825@gmail.com> wro=
-te:
-> >
-> > idr_init() uses base 0 which is an invalid identifier for this driver.
-> > The idr_alloc for this driver uses VC4_PERFMONID_MIN as start value for
-> > ID range and it is #defined to 1. The new function idr_init_base allows
-> > IDR to set the ID lookup from base 1. This avoids all lookups that
-> > otherwise starts from 0 since 0 is always unused / available.
-> >
-> > References: commit 6ce711f27500 ("idr: Make 1-based IDRs more efficient=
-")
-> >
-> > Signed-off-by: Deepak R Varma <mh12gx2825@gmail.com>
-> > ---
-> > Changes since v1:
-> >    - Change suggested by Eric Anholt
-> >      1. Use VC4_PERFMONID_MIN instead of magic number 1
-> >
-> >  drivers/gpu/drm/vc4/vc4_perfmon.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/gpu/drm/vc4/vc4_perfmon.c b/drivers/gpu/drm/vc4/vc=
-4_perfmon.c
-> > index f4aa75efd16b..18abc06335c1 100644
-> > --- a/drivers/gpu/drm/vc4/vc4_perfmon.c
-> > +++ b/drivers/gpu/drm/vc4/vc4_perfmon.c
-> > @@ -77,7 +77,7 @@ struct vc4_perfmon *vc4_perfmon_find(struct vc4_file =
-*vc4file, int id)
-> >  void vc4_perfmon_open_file(struct vc4_file *vc4file)
-> >  {
-> >         mutex_init(&vc4file->perfmon.lock);
-> > -       idr_init(&vc4file->perfmon.idr);
-> > +       idr_init_base(&vc4file->perfmon.idr, VC4_PERFMONID_MIN);
-> >  }
-> >
-> >  static int vc4_perfmon_idr_del(int id, void *elem, void *data)
-> > --
-> > 2.25.1
->=20
-> Reviewed-by: Eric Anholt <eric@anholt.net>
->=20
-> hopefully Maxime can apply it.
+Thomas.
 
-Applied, thanks!
-Maxime
-
---wpowarwxfffuey44
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX6UrAQAKCRDj7w1vZxhR
-xUhsAQCxvwWAyRE6P1mtYodyBj0Urt6AjZf76xX/ejfIhiQPSgD/ZC5FY38xgVXy
-gO16XKmOsRetlk1j6qah2BzWKkbNDQw=
-=kXl7
------END PGP SIGNATURE-----
-
---wpowarwxfffuey44--
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
