@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A39A2A9355
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 10:50:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9806B2A9357
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 10:50:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726871AbgKFJtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 04:49:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56250 "EHLO
+        id S1727000AbgKFJtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 04:49:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726074AbgKFJtk (ORCPT
+        with ESMTP id S1726889AbgKFJtr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 04:49:40 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63F2CC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 01:49:39 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id 10so833153pfp.5
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 01:49:39 -0800 (PST)
+        Fri, 6 Nov 2020 04:49:47 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A263C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 01:49:47 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id 10so833429pfp.5
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 01:49:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=Kd4epe4q0Au0t9vfVIipb8EifZAH94kZvxB3D28L/e8=;
-        b=IA8RY+JPOGoW2yuLsWEIhueODFoxSxyOzTq9LQH/8/YF0V4KiboxL4+o1XiHUMlWQL
-         MdsKIgL3QY6/AAQrFCuegnEARsCr1COpUpkPeOwzaolWucs83oSrR/6dmHjPjC4QmtKz
-         kPen52Ku0Uqedu9rpODqa7/UlpbYX7oS6IwUwJYsbmY+pZu8/E3pnJmxykQAyeMXHxGO
-         k4/aYVAAlxCaaHQ2f2Hn3rSOgYII7TAjnRbQvgn6CmK1L8PCwR20Lv51tgPaL0gJg8gk
-         D9uV8u7Ny0qzSCmFRmb1rorcu+f2C83wLv3+wEZnGbqdwNEFJ29tO7NsLCIb7ZS9+ymO
-         OktA==
+        bh=LYurlota429k+S26ab5934uwHlC+pF/vMcIbnSJ/V9o=;
+        b=qagIXdRGk0Gmhr9PFGLytsMpJ6MiBHp+xj3CZSq0X36y7BrRRE/WL9JjhmvSHfsI7E
+         Ruo7NHtohS7VNOXD9PDQIO9oZdo9Ow4q58Fv9SWL1s8PGex1gvhC7xF08vV/kFTc3eEF
+         koH1cJr5IFatibk70QhtI0tl6AFyl3tMFGCAABL+HSesli6KrYdqectKDCe3cpV1rM6K
+         fEIdc1LVqsYQcELYIjyj7AXPVwQEmvggXtPskfX2vUuIPrwD7NDS/fPnUNWpjxDfXkXv
+         D0JIW8TGyPp3n9z2p5l59nsJeQl8+6JV3dz5EuQh6pfOCtIqCXr0TOUxS+tieXuf/kTI
+         zjpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=Kd4epe4q0Au0t9vfVIipb8EifZAH94kZvxB3D28L/e8=;
-        b=mZik2xN2FURlHU6W6LAlWwX+wRzR594v5jxvVHXPYnejcrib+gysxjDk2BQNSWu7rz
-         TPyeNBN9xSwkHcsiIIERk9ATUoeQBjDu8mBIqxOamNV+oOPTudk0SlKy4zFdDg+j+3Tr
-         H8JHSyfYQawW568RsWQ85NFwgVO/0DA0aulJ4WKrtkZmZ6tK+CGq8b2nLJ19mRH1GIqa
-         aB5T+rQXsJqLSB+X4l1YH1JgrpnCC/mvihruIcNyv7fuVrKHlgnA5/F0DLuY7pegUfld
-         YwoqDNLLVW2a57fqW2mfM0WKM4SAq/lMdUZ1ZSiraTNtU4JmD8J7dsDYkEBQwf5dgIVf
-         hjBA==
-X-Gm-Message-State: AOAM532ijv83TplupbbGuhUHcgzTicEBruR3W+o/euWBC7cmD75w7ZEf
-        LB/uM086wRHdPThdY6ZGPO7cAA==
-X-Google-Smtp-Source: ABdhPJwP1o28b2yhGIdrMiAJxF7cQb74HsJiaXjCy267FNG09WBjctcaYpdX7FisbQjV5u3qtzkdaA==
-X-Received: by 2002:a63:f84c:: with SMTP id v12mr1074588pgj.125.1604656178999;
-        Fri, 06 Nov 2020 01:49:38 -0800 (PST)
+        bh=LYurlota429k+S26ab5934uwHlC+pF/vMcIbnSJ/V9o=;
+        b=pHomP694CLxFRQe86HYWD+YJuKnczv840RfRqYTXkAhF2LFSoxmdIoxkKN4C3KuA3X
+         Z4InYEdCKgJH/RvWLWktSbzmbizXoeMUhsd1BDW+Wn3nwFoj+HdmpDaZhBuHvguq9iGB
+         JD2ZXNUVPVWS/1H/XYKiiHhhhmQ6g7S2kGiOtj6qt+SXmPqqPjmeth2byxqhqYdRCXgG
+         GfZEFWilTiRrksKVKkh/d/190MGeXv1SuXMuuAzKXhpikraVC3HON9N9A0XTikxgDmAA
+         v3fxNhe9Qb405J1GdMJ83OMNrCL3BHfhr2cwAIubeU23hrOmObLW9Jz8Wnp0hPxKZHL6
+         mZMA==
+X-Gm-Message-State: AOAM532DyftqWl0xfYq5Po1wr5ChRS7aC8vwyWeuE1GjbFEDhaXWH98G
+        Ic0Suk6ZOJCvBnUDotBrIf7BpQ==
+X-Google-Smtp-Source: ABdhPJy3smMYOtATZcLboJdt62vLjlIt4Z1DwdMeYX/nzaKvREMsTC/fo3oENctsIYtIEJnzJYnt2Q==
+X-Received: by 2002:a63:de07:: with SMTP id f7mr1036356pgg.27.1604656186608;
+        Fri, 06 Nov 2020 01:49:46 -0800 (PST)
 Received: from localhost ([2400:8904::f03c:91ff:fe8a:adf7])
-        by smtp.gmail.com with ESMTPSA id b6sm1071115pgq.58.2020.11.06.01.49.38
+        by smtp.gmail.com with ESMTPSA id o10sm1049774pgp.16.2020.11.06.01.49.45
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 06 Nov 2020 01:49:38 -0800 (PST)
+        Fri, 06 Nov 2020 01:49:46 -0800 (PST)
 From:   Leo Yan <leo.yan@linaro.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Jiri Olsa <jolsa@redhat.com>, Ian Rogers <irogers@google.com>,
@@ -67,9 +67,9 @@ To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Andre Przywara <andre.przywara@arm.com>,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v4 4/9] perf c2c: Support memory event PERF_MEM_EVENTS__LOAD_STORE
-Date:   Fri,  6 Nov 2020 17:48:48 +0800
-Message-Id: <20201106094853.21082-5-leo.yan@linaro.org>
+Subject: [PATCH v4 5/9] perf mem: Only initialize memory event for recording
+Date:   Fri,  6 Nov 2020 17:48:49 +0800
+Message-Id: <20201106094853.21082-6-leo.yan@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201106094853.21082-1-leo.yan@linaro.org>
 References: <20201106094853.21082-1-leo.yan@linaro.org>
@@ -77,50 +77,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When user doesn't specify event name, perf c2c tool enables both the
-load and store events, and this leads to failure for opening the
-duplicate PMU device for AUX trace.
-
-After the memory event PERF_MEM_EVENTS__LOAD_STORE is introduced, when
-the user doesn't specify event name, this patch converts the required
-operation to PERF_MEM_EVENTS__LOAD_STORE if the arch supports it.
-Otherwise, the tool still rolls back to enable events
-PERF_MEM_EVENTS__LOAD and PERF_MEM_EVENTS__STORE.
+It's needless to initialize memory events for reporting, this patch
+moves memory event initialization for only recording.  Furthermore,
+the change allows to parse perf data on cross platforms, e.g. perf
+tool can report result properly even the machine doesn't support
+the memory events.
 
 Signed-off-by: Leo Yan <leo.yan@linaro.org>
+Acked-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/builtin-c2c.c | 17 +++++++++++++----
- 1 file changed, 13 insertions(+), 4 deletions(-)
+ tools/perf/builtin-mem.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/tools/perf/builtin-c2c.c b/tools/perf/builtin-c2c.c
-index 4d1a08e38233..98ae33eac6cc 100644
---- a/tools/perf/builtin-c2c.c
-+++ b/tools/perf/builtin-c2c.c
-@@ -2895,11 +2895,20 @@ static int perf_c2c__record(int argc, const char **argv)
- 	rec_argv[i++] = "record";
+diff --git a/tools/perf/builtin-mem.c b/tools/perf/builtin-mem.c
+index 21ebe0f47e64..72ce4b8fbb0f 100644
+--- a/tools/perf/builtin-mem.c
++++ b/tools/perf/builtin-mem.c
+@@ -77,6 +77,11 @@ static int __cmd_record(int argc, const char **argv, struct perf_mem *mem)
+ 	OPT_END()
+ 	};
  
- 	if (!event_set) {
--		e = perf_mem_events__ptr(PERF_MEM_EVENTS__LOAD);
--		e->record = true;
-+		e = perf_mem_events__ptr(PERF_MEM_EVENTS__LOAD_STORE);
-+		/*
-+		 * The load and store operations are required, use the event
-+		 * PERF_MEM_EVENTS__LOAD_STORE if it is supported.
-+		 */
-+		if (e->tag) {
-+			e->record = true;
-+		} else {
-+			e = perf_mem_events__ptr(PERF_MEM_EVENTS__LOAD);
-+			e->record = true;
++	if (perf_mem_events__init()) {
++		pr_err("failed: memory events not supported\n");
++		return -1;
++	}
++
+ 	argc = parse_options(argc, argv, options, record_mem_usage,
+ 			     PARSE_OPT_KEEP_UNKNOWN);
  
--		e = perf_mem_events__ptr(PERF_MEM_EVENTS__STORE);
--		e->record = true;
-+			e = perf_mem_events__ptr(PERF_MEM_EVENTS__STORE);
-+			e->record = true;
-+		}
- 	}
+@@ -441,11 +446,6 @@ int cmd_mem(int argc, const char **argv)
+ 		NULL
+ 	};
  
- 	e = perf_mem_events__ptr(PERF_MEM_EVENTS__LOAD);
+-	if (perf_mem_events__init()) {
+-		pr_err("failed: memory events not supported\n");
+-		return -1;
+-	}
+-
+ 	argc = parse_options_subcommand(argc, argv, mem_options, mem_subcommands,
+ 					mem_usage, PARSE_OPT_KEEP_UNKNOWN);
+ 
 -- 
 2.17.1
 
