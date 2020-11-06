@@ -2,119 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DFA82A92D7
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 10:35:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F1DD2A92DA
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 10:36:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726512AbgKFJfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 04:35:55 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20717 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726124AbgKFJfy (ORCPT
+        id S1726648AbgKFJgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 04:36:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54170 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726600AbgKFJgW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 04:35:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604655353;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=COh7322GhHnYTfoWCK648pPK1F4ogcTwn4taOORgpuE=;
-        b=et0SjcajHDnLWQ5Ahrgq3OERkzsd39oadJrTn8X/+7OIXeEGLxJujWmhfT0L6jYX2g8fZi
-        uWB3FolYu6lm61rOLjaEQnXiecov1nzoC1lLitUslhZy6TIpQVj/patGTIpkgcF10g1GU0
-        Wsjp1QDxltA7hexvrqPIauO+HQTR8Qc=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-413-TTqG_wLeNAmj9Yh1XgEnog-1; Fri, 06 Nov 2020 04:35:51 -0500
-X-MC-Unique: TTqG_wLeNAmj9Yh1XgEnog-1
-Received: by mail-ej1-f69.google.com with SMTP id p18so260620ejl.14
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 01:35:51 -0800 (PST)
+        Fri, 6 Nov 2020 04:36:22 -0500
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CB64C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 01:36:20 -0800 (PST)
+Received: by mail-lj1-x243.google.com with SMTP id v18so698516ljc.3
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 01:36:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=q326GXxs8YkWuvBRrekt++B5YyugaqPURgSA3otIq6U=;
+        b=XOdrV8ei8AtuxGdV1ULzurTDZi9h0STRi4e6h9KSaQcs9JaVCAn0s20MSYRGsfiFhS
+         cAQ5HcxJvNf0bcm1aZwo8OiJ6W0Fup+vqbs+neWVychssgU12cZHqou2LvwZxZ5+zw/O
+         UbY+h3caECgBTLExtoKALN2LeSJxBz6tIItFeB7JXnns2q5n4Um4KSY+uNaYOmCdF167
+         NJtEYQhcNGeAodeU/Pg9ZM0jYbX3UIxHAPtpN3fZkoLi9Yo0dKHqYBv2dMTK3YUSmFaA
+         IfnlybJGiKErfJm73wIsfRzvHBwMNHy3ybeANKJ4joxvD1nWgm+PtNMAh5sXYCS5e7k8
+         xGBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=COh7322GhHnYTfoWCK648pPK1F4ogcTwn4taOORgpuE=;
-        b=uUP5j81PofUl55u2D4aqXGfdcpJDNvkvJ0YpWjrYhJjCJNZ4g5q/a7KZ/C+m3KCMbe
-         YlqxX7OMirCez1VCbPN63B9kA03CQZW9ZQWSnNQpsh/6NNoPvHNYJ8bukr1BhGl+OiFe
-         PDlA7OVbxn9GfKPx5T1l0QYtFoUT6/MA3ntdkrS2bZwrSBSHz9C745L+4UZUrRZ8E34E
-         23qO43sY6tQFFrLLBV3xssuUEoyOOlvKKj0mG9oUB9MoPyzopVYxHp2vbkD9MV0NJlHO
-         SPI5SBxu6RyvFJD8KplddKe/YlbNNezqJieb0E6Bn4Nxcj5K86tfnh2oYK9qsJHtkEgU
-         lM2w==
-X-Gm-Message-State: AOAM531hu38YMDIP+c+5XFukvaZpY61o0rLNMLG8wsDC4yUtinyjN91x
-        h+N5QYt/3DsYwYAjpUSPWwYRIDYNKonUDA6ckqS+Gv0fyE1v1bfoqZUs574ijhe66lzjD7eOfq3
-        ceCZLOV4cYxCapLjjiyLdgXjd
-X-Received: by 2002:aa7:c40b:: with SMTP id j11mr1052201edq.151.1604655350420;
-        Fri, 06 Nov 2020 01:35:50 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxCyBjacm4/sWb+AyM7ztQpZR/p9PyzAKj5KqdlXmlv9S87IqV7wnB9RlzqOueD7Gf0frb6xQ==
-X-Received: by 2002:aa7:c40b:: with SMTP id j11mr1052185edq.151.1604655350213;
-        Fri, 06 Nov 2020 01:35:50 -0800 (PST)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id i13sm485679ejv.84.2020.11.06.01.35.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Nov 2020 01:35:49 -0800 (PST)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        hpa@zytor.com
-Subject: Re: [PATCH] x86/kvm: remove unused macro HV_CLOCK_SIZE
-In-Reply-To: <1604651963-10067-1-git-send-email-alex.shi@linux.alibaba.com>
-References: <1604651963-10067-1-git-send-email-alex.shi@linux.alibaba.com>
-Date:   Fri, 06 Nov 2020 10:35:48 +0100
-Message-ID: <87o8ka3k0b.fsf@vitty.brq.redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=q326GXxs8YkWuvBRrekt++B5YyugaqPURgSA3otIq6U=;
+        b=Eqycl7Zo7+tHsglBT0k/fUo/BIZ/xI54wOc7U63Cib2xAZJQsOgig8N8LLSMt0qnWB
+         jge7rOnnyBrTNM0k1Y/Unsz35hEKMKoSMCI7+S2bNmw7M73XWALhy+ZJG56+tVUrRYG/
+         0Mm8UzCT+FiikIhAQ6GRZQP6NseXMINvXzfQyUdfl2iH+F+lxt+ZpnkEpRqUEClYx4o+
+         xbMtetPqxBTW2TCuBRNRGkKLv7krmv7ZQZZ32IMKHvj22sMXE7UZCcEipiGjtFvN5+Bq
+         tjNWV0M+N/nyU1iXHhjXBO0vKV6qfHeEhwk3miEx7fKMUQ2hbedCYt9fXt1sqf6Pbppz
+         3rlQ==
+X-Gm-Message-State: AOAM531fY+0ZdSZq2mlxIIbVyoZVYHSLRyhH+CySJcygv0s9iHOtA/A+
+        J1Oqclo9riJJi999C2kMWjlGqKPQnT7KrgrnJUhxJw==
+X-Google-Smtp-Source: ABdhPJzROlV5g3M3Pzjhr+1raVc/1hLidCyn5chZ4duWrpT16uo1Ir8x1bNuTAoV3x713D+qUJtWOjkKrtVhYQnc/ao=
+X-Received: by 2002:a2e:80d2:: with SMTP id r18mr465456ljg.286.1604655379127;
+ Fri, 06 Nov 2020 01:36:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20201030154519.1245983-1-arnd@kernel.org>
+In-Reply-To: <20201030154519.1245983-1-arnd@kernel.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 6 Nov 2020 10:36:07 +0100
+Message-ID: <CACRpkdauAb+Rss7XU5tNyi8BwhSdPiTJwy+YL08dkf6VnNkd-g@mail.gmail.com>
+Subject: Re: [PATCH v4 0/9] ARM: remove set_fs callers and implementation
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Christoph Hellwig <hch@lst.de>, Arnd Bergmann <arnd@arndb.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alex Shi <alex.shi@linux.alibaba.com> writes:
+On Fri, Oct 30, 2020 at 4:45 PM Arnd Bergmann <arnd@kernel.org> wrote:
 
-> This macro is useless, and could cause gcc warning:
-> arch/x86/kernel/kvmclock.c:47:0: warning: macro "HV_CLOCK_SIZE" is not
-> used [-Wunused-macros]
-> Let's remove it.
+> This is the rebased version of my ARM set_fs patches on top of
+> v5.10-rc1, dropping the TASK_SIZE_MAX patch but leaving everything
+> else unchanged.
 >
-> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-> Cc: Paolo Bonzini <pbonzini@redhat.com> 
-> Cc: Sean Christopherson <sean.j.christopherson@intel.com> 
-> Cc: Vitaly Kuznetsov <vkuznets@redhat.com> 
-> Cc: Wanpeng Li <wanpengli@tencent.com> 
-> Cc: Jim Mattson <jmattson@google.com> 
-> Cc: Joerg Roedel <joro@8bytes.org> 
-> Cc: Thomas Gleixner <tglx@linutronix.de> 
-> Cc: Ingo Molnar <mingo@redhat.com> 
-> Cc: Borislav Petkov <bp@alien8.de> 
-> Cc: x86@kernel.org 
-> Cc: "H. Peter Anvin" <hpa@zytor.com> 
-> Cc: kvm@vger.kernel.org 
-> Cc: linux-kernel@vger.kernel.org 
-> ---
->  arch/x86/kernel/kvmclock.c | 1 -
->  1 file changed, 1 deletion(-)
->
-> diff --git a/arch/x86/kernel/kvmclock.c b/arch/x86/kernel/kvmclock.c
-> index 34b18f6eeb2c..aa593743acf6 100644
-> --- a/arch/x86/kernel/kvmclock.c
-> +++ b/arch/x86/kernel/kvmclock.c
-> @@ -44,7 +44,6 @@ static int __init parse_no_kvmclock_vsyscall(char *arg)
->  early_param("no-kvmclock-vsyscall", parse_no_kvmclock_vsyscall);
->  
->  /* Aligned to page sizes to match whats mapped via vsyscalls to userspace */
-> -#define HV_CLOCK_SIZE	(sizeof(struct pvclock_vsyscall_time_info) * NR_CPUS)
->  #define HVC_BOOT_ARRAY_SIZE \
->  	(PAGE_SIZE / sizeof(struct pvclock_vsyscall_time_info))
+> I have tested the oabi-compat changes using the LTP tests for the three
+> modified syscalls using an Armv7 kernel and a Debian 5 OABI user space.
 
-Fixes: 95a3d4454bb1 ("x86/kvmclock: Switch kvmclock data to a PER_CPU variable")
+I tested this patch set on the ARM Footbridge (SA110) with an ages old
+Red Hat Linux OABI userspace.
 
-where the last and the only user was removed.
+It works.
 
-Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+Tested-by: Linus Walleij <linus.walleij@linaro.org>
 
--- 
-Vitaly
-
+Yours,
+Linus Walleij
