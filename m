@@ -2,95 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BEA72A8DE9
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 04:59:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 786892A8DC8
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 04:53:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726182AbgKFD7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 22:59:54 -0500
-Received: from pbmsgap02.intersil.com ([192.157.179.202]:47722 "EHLO
-        pbmsgap02.intersil.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725895AbgKFD7w (ORCPT
+        id S1725852AbgKFDxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 22:53:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57306 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725616AbgKFDxR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 22:59:52 -0500
-Received: from pps.filterd (pbmsgap02.intersil.com [127.0.0.1])
-        by pbmsgap02.intersil.com (8.16.0.42/8.16.0.42) with SMTP id 0A63pf7D009766;
-        Thu, 5 Nov 2020 22:52:43 -0500
-Received: from pbmxdp01.intersil.corp (pbmxdp01.pb.intersil.com [132.158.200.222])
-        by pbmsgap02.intersil.com with ESMTP id 34mk3mgb3x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Thu, 05 Nov 2020 22:52:42 -0500
-Received: from pbmxdp02.intersil.corp (132.158.200.223) by
- pbmxdp01.intersil.corp (132.158.200.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id
- 15.1.1979.3; Thu, 5 Nov 2020 22:52:41 -0500
-Received: from localhost (132.158.202.109) by pbmxdp02.intersil.corp
- (132.158.200.223) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Thu, 5 Nov 2020 22:52:41 -0500
-From:   <min.li.xe@renesas.com>
-To:     <richardcochran@gmail.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Min Li <min.li.xe@renesas.com>
-Subject: [PATCH v4 net-next 3/3] ptp: idt82p33: optimize _idt82p33_adjfine
-Date:   Thu, 5 Nov 2020 22:52:09 -0500
-Message-ID: <1604634729-24960-3-git-send-email-min.li.xe@renesas.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1604634729-24960-1-git-send-email-min.li.xe@renesas.com>
-References: <1604634729-24960-1-git-send-email-min.li.xe@renesas.com>
-X-TM-AS-MML: disable
+        Thu, 5 Nov 2020 22:53:17 -0500
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE668C0613CF;
+        Thu,  5 Nov 2020 19:53:16 -0800 (PST)
+Received: by mail-yb1-xb43.google.com with SMTP id f6so2587ybr.0;
+        Thu, 05 Nov 2020 19:53:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=S2AIiVxkOnwPyftxYL1/j7Dy6SZMLtDsVFSo2M4HZ00=;
+        b=TH+8jr1O5vLPDH4dbuO2Dz6p1Yd/QzZehL7b5uRnz1ilNH26KAyT2Xa3p+tCJbzw9C
+         iZshgXOQHIENIB544P5LFmvJZV7d8a0h9fs1G76RIwsWCEhyC1sfm9/a0UGkJAI4wnXg
+         MPBg7RiQtiIo4yU1xnJhMtj3vGIDKb1IiEIuvK6FrSW5+ERVJedXP6VLAPP0gEw6mpwJ
+         w419HoAwpzPExfLsu1MFjkoEhcI3hge+qxaILaPFXeiMrqg3z7h7FHyBjt2Xd39jZMC8
+         t1VGPs6I9hLODV0jG5jrmQDqyRGSnrZYc0C3bxjId4DWRzHMi02fyT/XukzwNYceAMGJ
+         UzUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=S2AIiVxkOnwPyftxYL1/j7Dy6SZMLtDsVFSo2M4HZ00=;
+        b=ZKisKfrSPOMp7gLo1gO/Dt005VZFOpulBTApNeiAnz48YGe8mKs8cM6GJrNbTS8Vt7
+         1+3WoDN0YlExPUQ9tT46P/nx20lQRQ/uzlOcLGM62l114UiasjVr0Ate2CAtGj98pqiU
+         FV1BcEkR2c+j/ugflUx/4CZUcRvYvxXktmjQOMEMvrOhYW8hAbY5gdtBdfzle9NMjqhW
+         M7XLsjSGeOz6Kwc7GWLh5ONK4hV8O2e2YlgoYCJQVD94qgvi0SQfAkIkeRks6j4RbCM5
+         mrMkZUMKFenPOvyU5khqdSuG1EaGbqcDdvk0l6ZJ9ChjPAryCc2bQ64say0JXE2u23Zx
+         3TbQ==
+X-Gm-Message-State: AOAM533c5zjN5eeenwl6WUyzrEwKL2C3Nz0UXPG6rgn3pNTdXjX+aa06
+        CTUxhSejh/h7HPLxtZi+ZXUY5kS4mWwH7mIM1QI=
+X-Google-Smtp-Source: ABdhPJzjOn/LUMbXAzDVz/o0f2HeEUukHJv7w47ijR6bdpg0B2XCe5mt1wYLixTDSMQz5xcLln4vRswoKiRprb0uNwc=
+X-Received: by 2002:a25:da4e:: with SMTP id n75mr241475ybf.425.1604634796022;
+ Thu, 05 Nov 2020 19:53:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-06_01:2020-11-05,2020-11-06 signatures=0
-X-Proofpoint-Spam-Details: rule=junk_notspam policy=junk score=0 mlxlogscore=741 phishscore=0
- malwarescore=0 adultscore=0 bulkscore=0 suspectscore=4 spamscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011060023
-X-Proofpoint-Spam-Reason: mlx
+References: <cover.1604620776.git.dxu@dxuuu.xyz> <8b8c8f51aff8fabac4425da9b0054b4c976c944b.1604620776.git.dxu@dxuuu.xyz>
+In-Reply-To: <8b8c8f51aff8fabac4425da9b0054b4c976c944b.1604620776.git.dxu@dxuuu.xyz>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 5 Nov 2020 19:53:05 -0800
+Message-ID: <CAEf4BzafhaMDuTi3CYsF2sEp_cgOv5kohBOOwSX6qPoUr4-HWw@mail.gmail.com>
+Subject: Re: [PATCH bpf v4 2/2] selftest/bpf: Test bpf_probe_read_user_str()
+ strips trailing bytes after NUL
+To:     Daniel Xu <dxu@dxuuu.xyz>
+Cc:     bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Song Liu <songliubraving@fb.com>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Min Li <min.li.xe@renesas.com>
+On Thu, Nov 5, 2020 at 4:06 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
+>
+> Previously, bpf_probe_read_user_str() could potentially overcopy the
+> trailing bytes after the NUL due to how do_strncpy_from_user() does the
+> copy in long-sized strides. The issue has been fixed in the previous
+> commit.
+>
+> This commit adds a selftest that ensures we don't regress
+> bpf_probe_read_user_str() again.
+>
+> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> ---
 
-Use div_s64 so that the neg_adj is not needed.
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
-Signed-off-by: Min Li <min.li.xe@renesas.com>
+>  .../bpf/prog_tests/probe_read_user_str.c      | 71 +++++++++++++++++++
+>  .../bpf/progs/test_probe_read_user_str.c      | 25 +++++++
+>  2 files changed, 96 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_probe_read_user_str.c
+>
 
-Acked-by: Richard Cochran <richardcochran@gmail.com>
----
- drivers/ptp/ptp_idt82p33.c | 10 +---------
- 1 file changed, 1 insertion(+), 9 deletions(-)
-
-diff --git a/drivers/ptp/ptp_idt82p33.c b/drivers/ptp/ptp_idt82p33.c
-index 223bc11..c1c959f 100644
---- a/drivers/ptp/ptp_idt82p33.c
-+++ b/drivers/ptp/ptp_idt82p33.c
-@@ -320,7 +320,6 @@ static int _idt82p33_adjfine(struct idt82p33_channel *channel, long scaled_ppm)
- {
- 	struct idt82p33 *idt82p33 = channel->idt82p33;
- 	unsigned char buf[5] = {0};
--	int neg_adj = 0;
- 	int err, i;
- 	s64 fcw;
- 
-@@ -340,16 +339,9 @@ static int _idt82p33_adjfine(struct idt82p33_channel *channel, long scaled_ppm)
- 	 * FCW = -------------
- 	 *         168 * 2^4
- 	 */
--	if (scaled_ppm < 0) {
--		neg_adj = 1;
--		scaled_ppm = -scaled_ppm;
--	}
- 
- 	fcw = scaled_ppm * 244140625ULL;
--	fcw = div_u64(fcw, 2688);
--
--	if (neg_adj)
--		fcw = -fcw;
-+	fcw = div_s64(fcw, 2688);
- 
- 	for (i = 0; i < 5; i++) {
- 		buf[i] = fcw & 0xff;
--- 
-2.7.4
-
+[...]
