@@ -2,134 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 737AD2A8BC6
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 02:04:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEBD72A8BCD
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 02:06:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732825AbgKFBEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 20:04:50 -0500
-Received: from mail-eopbgr80041.outbound.protection.outlook.com ([40.107.8.41]:44928
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730895AbgKFBEt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 20:04:49 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Tmym6fzavml1SKVzHsrJEVJWT75BVbbm+aocwF979syNRrIxy54J5ZM9PWyck4S41XAoHHacNV05+6zixuFHMleIAXpT5W7WiVMVgrSmI7xS9mXE+42w0XMFR5EoUFCttZQPkB27p6AQ/9oRjN8seZHh/tBFSMLFKf2sM2GHVaHzQY6sIOjKUdKZn4lFRHi/qDE3m0tqN9Cr4nsmcSo9tDuj838kOYIHe2bXjzyAwkGfdtMMsIxikJM9UZ75Vgi2D0o0Mb5yvst7eUyH6uQGowgzGdfrD3IMRw/F3UwyDfZULkjAuBVyAdArLuWY6uoH4Vsv8d7lFlLzg+h3mEJ7Ww==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DiCC1qvZuTb4uM268hSXpedkkAUQba+j36S6fC+/DNc=;
- b=fuUvnNpEzdx7T6qazG1wFMV0JQ+MtY3GlVP1VxqQMRaVJNZI1p3HKyBhKA7r0l+cqk7LVluIxPYn2iXLPKM50DgWFA8FcKwbUzl7jfX+302nbBWsp1niPcvBlW2h1LXtrJ80DbJofKM9n00bjhPmyP339CO+HA6N/dOZQdTw58W0rCQ13aNyJ1GxkDB7ZTWzZmPzOJVc8OLAfgzLGXGDMo+i6/MsCesLWpOOqI2lEdR54haBPlePjtUBCOk5Mx4usxDReKnOoV2/MZC7J5a2rgieXO1LqGRZnpBxmvwPZPw2/nKQwpIHzcmkEQCf4R0VOZLxam/2W/6sJeiY3x/BrQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DiCC1qvZuTb4uM268hSXpedkkAUQba+j36S6fC+/DNc=;
- b=mNDrxiIENV/GX3uX8kybRPKC1OQBJi91R7dgtpVmO0gQ1TSvz48+t+rEkZUmY1eL/4xgqRRBiiKpUAHOFe2GFoDqoSOe5mGLyqlKlJo+hDQRSxtR3HpnYw8bGgvW0WOCNXzMVUFi/KR5JGNDnL8z6MAzMe545PLxUOs+xiVlC+k=
-Received: from AM5PR04MB3137.eurprd04.prod.outlook.com (2603:10a6:206:c::18)
- by AM6PR04MB5606.eurprd04.prod.outlook.com (2603:10a6:20b:a4::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.27; Fri, 6 Nov
- 2020 01:04:46 +0000
-Received: from AM5PR04MB3137.eurprd04.prod.outlook.com
- ([fe80::2d75:aaf5:5aa6:5de9]) by AM5PR04MB3137.eurprd04.prod.outlook.com
- ([fe80::2d75:aaf5:5aa6:5de9%6]) with mapi id 15.20.3541.021; Fri, 6 Nov 2020
- 01:04:46 +0000
-From:   Mirela Rabulea <mirela.rabulea@nxp.com>
-To:     "mchehab@kernel.org" <mchehab@kernel.org>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "Mirela Rabulea (OSS)" <mirela.rabulea@oss.nxp.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "hverkuil-cisco@xs4all.nl" <hverkuil-cisco@xs4all.nl>
-CC:     dl-linux-imx <linux-imx@nxp.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "laurent.pinchart+renesas@ideasonboard.com" 
-        <laurent.pinchart+renesas@ideasonboard.com>,
-        Aisheng Dong <aisheng.dong@nxp.com>,
-        Laurentiu Palcu <laurentiu.palcu@nxp.com>,
-        Robert Chiras <robert.chiras@nxp.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "paul.kocialkowski@bootlin.com" <paul.kocialkowski@bootlin.com>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        "niklas.soderlund+renesas@ragnatech.se" 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        "dafna.hirschfeld@collabora.com" <dafna.hirschfeld@collabora.com>,
-        "ezequiel@collabora.com" <ezequiel@collabora.com>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>
-Subject: Re: [EXT] Re: [PATCH v4 00/11] Add V4L2 driver for i.MX8 JPEG
- Encoder/Decoder
-Thread-Topic: [EXT] Re: [PATCH v4 00/11] Add V4L2 driver for i.MX8 JPEG
- Encoder/Decoder
-Thread-Index: AQHWsMWkv7WhjUz/NUWFyddbmpRRQ6m34FqAgAAA2YCAABnagIAAC0qAgAJJtAA=
-Date:   Fri, 6 Nov 2020 01:04:45 +0000
-Message-ID: <6332a0d29721c8cef39c99ef7fd358464d492da1.camel@nxp.com>
-References: <20201102030821.3049-1-mirela.rabulea@oss.nxp.com>
-         <9c6cf9bf-f6d8-78f5-5f31-d7ea9e25da0d@xs4all.nl>
-         <ca7a395a-68ea-33a3-1216-0adf225fce7b@xs4all.nl>
-         <982d940c4809b843fdc177daf4db349a0e667924.camel@nxp.com>
-         <eec89e90-f414-121d-fbe4-ced23b44f6cc@xs4all.nl>
-In-Reply-To: <eec89e90-f414-121d-fbe4-ced23b44f6cc@xs4all.nl>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [86.124.170.94]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 36796082-7748-4dc3-137e-08d881eff3d9
-x-ms-traffictypediagnostic: AM6PR04MB5606:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <AM6PR04MB56069604BB1A2B623C9143A18FED0@AM6PR04MB5606.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: TJ2isHj3WbF0yX4tgzk+nu9u1zKRvgd4IVt2mbXJE8951oC0zzTr/Y4CCGc2EeodkKebSX3gb+Hz/AJXzwk5xETVeafk5a5/7SeVjZnHKhZ8IHDkzpqmR8JMVNZj0fyz+n4x7EpiCE/s+D3/V6V2bpsOx0CE2Xo8zK6WjI/keTsnSMDhztweVkf3eHLkgh781w80KJIVo3BUvJxVG/PTjeQGwTbbwYAnxsMKvET3EZ5VgpB5AwoKHFRPGzoiULRU6djK3WE4Cz+OXANC9BNwiatLv38+gqUlbl6Ucu5opvLaWsElzaQlNX3e7nD8vngyJ9Q852AaT2ktw6feeKmyKRxUZIARiYD57xJObtbo6wJ0wicxDSrVu//SaUGO4Fgp
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM5PR04MB3137.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(346002)(396003)(39850400004)(366004)(478600001)(71200400001)(316002)(8676002)(6506007)(36756003)(54906003)(110136005)(7416002)(2906002)(44832011)(86362001)(6486002)(66946007)(66446008)(66476007)(186003)(6512007)(66556008)(4326008)(64756008)(26005)(76116006)(91956017)(2616005)(8936002)(5660300002)(99106002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: q3H/LrpU8oSBrCeMO/sjARz5ZW+V2ZQ+qYxZ2R7Ch+k9t7Zm/qmj1CmJelkU2nhNBG32Kc4bxXVUo/7q8UXM3vIaaLWJduJLSRcBC8WdpX9ssvEp9u2YDDePvOInS/iIT2gDPKxCyCL6grQsNwUvpdMVhC2a+dxULZtVIEtvDwkIMIuZbfwqdGGNMPpehsaJVCeaVcduKbGSLJdDQl+7PSUH6nGSWFqIiVF+HPIP9KdraZLVSzSwyFftYJE0AqUjTBf7uNSiOboM3uu8AvAGzpMr+QSb+/8dhihLjAJUs3lXFoPoKJY0rhCRy/LNQu0J6LnCzzS0CO+arW8AWk9MnXcRT6ONKHv1soqNv8XKWsxqryIK2IM/NRm/9ex3YYhLA07rFn9CJ/ezv/htt4Vlr8iNN3t/hx3PB+SEH7r05+IX/7a9LDyXNat0eJOpARBJpKQ0PzS23ZYcaRAtYixx1rKGeAc5pdy9kUEhmOau0Oa9eC+WTfpblDU7STqPgmUT77zsBiXCeoJER4xtKp7vZw6j/JLJJQiuhvmI/eUsdZKMH36Dfumpi+HXbqdxetmD9PSa98fn1mS4PYFiZVDcK3NOfWxzVCUq3PlOqLIwYsJJf4+WfcgsBlC76JsOXvP1OQNILltYYUVyxFTNpU9oLA==
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <48720E65F20D884C930ADD91AAC00C78@eurprd04.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1732869AbgKFBFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 20:05:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59438 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730895AbgKFBFx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 20:05:53 -0500
+Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 929B1C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 17:05:52 -0800 (PST)
+Received: by mail-vs1-xe44.google.com with SMTP id x11so1841745vsx.12
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 17:05:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zl0JfwBdkHFjUOM+k4t02C3sqQeESdTnHmptr/WPqos=;
+        b=T4FeGdGTIArV45DKyfH8ukSWDzaGccekIQtA898zsN78fWbPAdEA/QxSAVxvvZ7f4t
+         i0orFlznbIXTjT4aOSeulZG+tmk+BkwyiTQ4sRBLM8itWu6LZ8bYWM8Xef3i3aP/D7Ch
+         z7wYW71WH2BgyTIHFmZNCHZ4AbGqKoMe6Mlr8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zl0JfwBdkHFjUOM+k4t02C3sqQeESdTnHmptr/WPqos=;
+        b=HNMRtXzljpb6tc8bz3YlMg2sw/pbx1Z7DiTxurPoLhr3wAlD1VL1sRdn4sjgGol3hF
+         5NB9clCoiDqzlC7JgHRemFOtkgoz3OMZCLwsTNbsARSuakVuRPo1fPWY2MPGmFsupYOY
+         gxKYhT269GCHuxHEbQCuYgYbihJ6IXXNDx/y/STyba6M+Oo6XpDeLV5WwNIDkAGL2hg0
+         LWrKmbuf/SfEwroQYzcPB638nIl9y4Hv+JttJwv5jenfeavlkZhZkvrhd9I/TaMloo6K
+         jlt7LN+0JjbfA7YdQ3KBZifuy9wJxiYWiCTy+RfbIk91pF3PtHMzT14XZcvC7mqFHbKS
+         49OQ==
+X-Gm-Message-State: AOAM5326Wu0hpjJpyzh7BBWtW+UK2h3Y0C0KOtodBlaEwi6Twn8t4Qw9
+        FH8I2fFnd4KPQBUstLpLjp2Dfa5SPpFZzg==
+X-Google-Smtp-Source: ABdhPJzbowFMkIx09aIXBgNAuETRPWcXww05fNV5/n0OhD0SGhoCX5/9kOTOVShRW7qpVxpwhgAlSw==
+X-Received: by 2002:a67:2901:: with SMTP id p1mr3505251vsp.28.1604624751194;
+        Thu, 05 Nov 2020 17:05:51 -0800 (PST)
+Received: from mail-vs1-f48.google.com (mail-vs1-f48.google.com. [209.85.217.48])
+        by smtp.gmail.com with ESMTPSA id a8sm479982vsp.4.2020.11.05.17.05.50
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Nov 2020 17:05:50 -0800 (PST)
+Received: by mail-vs1-f48.google.com with SMTP id l22so1860134vsa.4
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 17:05:50 -0800 (PST)
+X-Received: by 2002:a05:6102:309a:: with SMTP id l26mr3390127vsb.4.1604624750113;
+ Thu, 05 Nov 2020 17:05:50 -0800 (PST)
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM5PR04MB3137.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 36796082-7748-4dc3-137e-08d881eff3d9
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Nov 2020 01:04:45.9472
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: bLC5XNQp4PXCMVeYt++y3dDadpFRMtPjL11Mtba3aVY0MEhlhIyQRj4e8r2PgM3T7TxjqY1HLzhW05Kn2ppExw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB5606
+References: <20201105163724.v2.1.I5a75056d573808f40fed22ab7d28ea6be5819f84@changeid>
+ <20201105163724.v2.2.I0ed4abdd2b2916fbedf76be254bc3457fb8b9655@changeid>
+In-Reply-To: <20201105163724.v2.2.I0ed4abdd2b2916fbedf76be254bc3457fb8b9655@changeid>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Thu, 5 Nov 2020 17:05:38 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=Xi-Fiay983L4WWVA07WWZvL0DSK4cazBwb9B3brVgM-g@mail.gmail.com>
+Message-ID: <CAD=FV=Xi-Fiay983L4WWVA07WWZvL0DSK4cazBwb9B3brVgM-g@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] arm64: dts: qcom: sc7180-trogdor: Make pp3300_a
+ the default supply for pp3300_hub
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gV2VkLCAyMDIwLTExLTA0IGF0IDE1OjA4ICswMTAwLCBIYW5zIFZlcmt1aWwgd3JvdGU6DQo+
-IA0KPiBUaGlzIHdhcyBuZXZlciByZWFsbHkgd2VsbCBkZWZpbmVkLiBCYXNpY2FsbHkgdGhlIEpQ
-RUcgc3RhbmRhcmQNCj4gZG9lc24ndA0KPiBzdG9yZSBjb2xvcmltZXRyeSBhcyBtZXRhZGF0YSwg
-aW5zdGVhZCBpdCBpcyB1bmRlcnN0b29kIHRvIGJlIHNSR0INCj4gY29sb3JpbWV0cnkuDQo+IA0K
-PiBTbyBpZiB5b3UgdGFrZSB3aGF0IGEgSFcgSlBFRyBlbmNvZGVyIGNyZWF0ZXMgYW5kIHdhbnQg
-dG8gc2hvdyBpdCBvbg0KPiBhbm90aGVyDQo+IGRldmljZSwgdGhlbiBpdCB3aWxsIGJlIGludGVy
-cHJldGVkIGFzIHNSR0IuIE5vdyBpZiB1c2Vyc3BhY2UgYWRkcw0KPiBzb21lIEpQRUcNCj4gZXh0
-ZW5zaW9uIHdoZXJlIGl0IGRlY2xhcmVzIHRoZSBjb2xvcmltZXRyeSB0byBiZSBzb21ldGhpbmcg
-ZWxzZSwNCj4gdGhlbiB0aGF0DQo+IGlzIGZpbmUsIGJ1dCB0aGF0J3Mgb3V0IG9mIHNjb3BlIG9m
-IGEgSFcgSlBFRyBlbmNvZGVyIGRyaXZlciwgSU1ITy4NCj4gDQo+IEkgc3VzcGVjdCB0aGF0IHRo
-ZSBjb2RhIHBhdGNoIHdhcyBhY3R1YWxseSB0cnlpbmcgdG8gbWFrZSBjb2RhIGJlaGF2ZQ0KPiB3
-aXRoDQo+IGFuIG9sZGVyIHZlcnNpb24gb2YgdjRsMi1jb21wbGlhbmNlIHdoZXJlIGEgSlBFRyBj
-b2RlYyB3YXMgdGVzdGVkIGluDQo+IHRoZQ0KPiBzYW1lIHdheSBhcyBhIEgyNjQgY29kZWMuIExh
-dGVyIHdlIHJlYWxpemVkIHRoYXQgdGhhdCBkaWRuJ3QgbWFrZQ0KPiBzZW5zZSBmb3INCj4gSlBF
-RyBjb2RlY3MgYW5kIHRoZSB0ZXN0IHdhcyBjaGFuZ2VkLiBCdXQgbm93IGNvZGEgZmFpbHMgb24g
-dGhhdA0KPiB0ZXN0Lg0KPiANCj4gPiBPbmNlIEkgY2xhcmlmeSBvbiB0aGlzLCBJJ2xsIGluY2x1
-ZGUgYSBmaXggaW4gdjUuDQo+IA0KPiBJIGhvcGUgdGhpcyBoZWxwcy4NCj4gDQo+ICAgICAgICAg
-SGFucw0KPiANCg0KVGhhbmtzIGZvciBjbGFyaWZ5aW5nLCBJIGZpeGVkIHRoZSBjb2xvcnNwYWNl
-IGluZm9ybWF0aW9uIHRvIHNSR0IsIGZvcg0KYm90aCBjYXB0dXJlICYgb3V0cHV0IChWNEwyX0NP
-TE9SU1BBQ0VfU1JHQiwgVjRMMl9ZQ0JDUl9FTkNfNjAxIGFuZA0KVjRMMl9RVUFOVElaQVRJT05f
-RlVMTF9SQU5HRSkuIEFsbCBwYXNzIG5vdy4gSXQgd2lsbCBiZSBpbiB0aGUgbmV4dA0KdmVyc2lv
-bi4NCg0K
+Hi,
+
+On Thu, Nov 5, 2020 at 4:37 PM Matthias Kaehlcke <mka@chromium.org> wrote:
+>
+> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-r1.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-r1.dts
+> index 0a281c24841c..6603f2102233 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-r1.dts
+> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-r1.dts
+> @@ -58,10 +58,23 @@ ap_ts: touchscreen@10 {
+>         };
+>  };
+>
+> +&pp3300_hub {
+> +       /* pp3300_l7c is used to power the USB hub */
+> +       /delete-property/regulator-always-on;
+> +};
+> +
+> +&pp3300_l7c {
+> +       regulator-always-on;
+
+Personally I always end up pairing "always-on" and "boot-on", but that
+might just be superstition from many kernel versions ago when there
+were weird quirks.  The way you have it now you will sometimes have
+"boot-on" but not "always-on".  Probably what you have is fine,
+though.
+
+
+> +};
+> +
+>  &sdhc_2 {
+>         status = "okay";
+>  };
+>
+> +&usb_hub {
+> +        vdd-supply = <&pp3300_l7c>;
+> +};
+> +
+>  /* PINCTRL - board-specific pinctrl */
+>
+>  &tlmm {
+> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+> index bf875589d364..50e733412a7f 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+> @@ -174,6 +174,25 @@ pp3300_fp_tp: pp3300-fp-tp-regulator {
+>                 vin-supply = <&pp3300_a>;
+>         };
+>
+> +       pp3300_hub: pp3300-hub {
+> +               compatible = "regulator-fixed";
+> +               regulator-name = "pp3300_hub";
+> +
+> +               regulator-min-microvolt = <3300000>;
+> +               regulator-max-microvolt = <3300000>;
+> +
+> +               gpio = <&tlmm 84 GPIO_ACTIVE_HIGH>;
+> +               enable-active-high;
+> +               pinctrl-names = "default";
+> +               pinctrl-0 = <&en_pp3300_hub>;
+> +
+> +               /* AP turns on with en_pp3300_hub; always on for AP */
+
+Delete the above comment.  It's obvious based on the properties in
+this node.  Other similar comments are useful because they describe
+how the _EC_ turns on regulators and why a regulator that has an
+enable still looks like an "always-on" regulator to the AP (because
+it's always on whenever the AP is on).
+
+If you want to add a comment, you could say:
+
+/* Always on until we have a way to specify it can go off in suspend */
+
+
+> @@ -469,7 +488,6 @@ ppvar_l6c: ldo6 {
+>                         regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+>                 };
+>
+> -               pp3300_hub:
+>                 pp3300_l7c: ldo7 {
+>                         regulator-min-microvolt = <3304000>;
+>                         regulator-max-microvolt = <3304000>;
+
+Shouldn't you delete the "regulator-always-on;" from ldo7 since you're
+adding it for all the older revs?
