@@ -2,95 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF5472A9775
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 15:12:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 070DE2A977E
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 15:18:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727383AbgKFOMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 09:12:41 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:6754 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726939AbgKFOMl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 09:12:41 -0500
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CSMlt3RxqzkfqP;
-        Fri,  6 Nov 2020 22:12:26 +0800 (CST)
-Received: from thunder-town.china.huawei.com (10.174.178.230) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 6 Nov 2020 22:12:27 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Tony Luck <tony.luck@intel.com>, Borislav Petkov <bp@alien8.de>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86 <x86@kernel.org>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        linux-edac <linux-edac@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH v2 1/1] x86/mce: correct the detection of invalid mce priorities
-Date:   Fri, 6 Nov 2020 22:12:16 +0800
-Message-ID: <20201106141216.2062-2-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
-In-Reply-To: <20201106141216.2062-1-thunder.leizhen@huawei.com>
-References: <20201106141216.2062-1-thunder.leizhen@huawei.com>
+        id S1727438AbgKFOSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 09:18:34 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:39242 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726812AbgKFOSd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 09:18:33 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kb2ZI-005cCn-1E; Fri, 06 Nov 2020 15:18:20 +0100
+Date:   Fri, 6 Nov 2020 15:18:20 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net/dsa: remove unused macros to tame gcc warning
+Message-ID: <20201106141820.GP933237@lunn.ch>
+References: <1604641050-6004-1-git-send-email-alex.shi@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.178.230]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1604641050-6004-1-git-send-email-alex.shi@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-enum mce_notifier_prios {
-	MCE_PRIO_LOWEST,
-	...
-	MCE_PRIO_CEC
-};
+On Fri, Nov 06, 2020 at 01:37:30PM +0800, Alex Shi wrote:
+> There are some macros unused, they causes much gcc warnings. Let's
+> remove them to tame gcc.
+> 
+> net/dsa/tag_brcm.c:51:0: warning: macro "BRCM_EG_RC_SWITCH" is not used
+> [-Wunused-macros]
+> net/dsa/tag_brcm.c:53:0: warning: macro "BRCM_EG_RC_MIRROR" is not used
+> [-Wunused-macros]
+> net/dsa/tag_brcm.c:55:0: warning: macro "BRCM_EG_TC_MASK" is not used
+> [-Wunused-macros]
+> net/dsa/tag_brcm.c:35:0: warning: macro "BRCM_IG_TS_SHIFT" is not used
+> [-Wunused-macros]
+> net/dsa/tag_brcm.c:46:0: warning: macro "BRCM_EG_RC_MASK" is not used
+> [-Wunused-macros]
+> net/dsa/tag_brcm.c:49:0: warning: macro "BRCM_EG_RC_PROT_SNOOP" is not
+> used [-Wunused-macros]
+> net/dsa/tag_brcm.c:34:0: warning: macro "BRCM_IG_TE_MASK" is not used
+> [-Wunused-macros]
+> net/dsa/tag_brcm.c:43:0: warning: macro "BRCM_EG_CID_MASK" is not used
+> [-Wunused-macros]
+> net/dsa/tag_brcm.c:50:0: warning: macro "BRCM_EG_RC_PROT_TERM" is not
+> used [-Wunused-macros]
+> net/dsa/tag_brcm.c:54:0: warning: macro "BRCM_EG_TC_SHIFT" is not used
+> [-Wunused-macros]
+> net/dsa/tag_brcm.c:52:0: warning: macro "BRCM_EG_RC_MAC_LEARN" is not
+> used [-Wunused-macros]
+> net/dsa/tag_brcm.c:48:0: warning: macro "BRCM_EG_RC_EXCEPTION" is not
+> used [-Wunused-macros]
+> 
+> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+> Cc: Andrew Lunn <andrew@lunn.ch> 
+> Cc: Vivien Didelot <vivien.didelot@gmail.com> 
+> Cc: Florian Fainelli <f.fainelli@gmail.com> 
+> Cc: Vladimir Oltean <olteanv@gmail.com> 
+> Cc: "David S. Miller" <davem@davemloft.net> 
+> Cc: Jakub Kicinski <kuba@kernel.org> 
+> Cc: netdev@vger.kernel.org 
+> Cc: linux-kernel@vger.kernel.org 
+> ---
+>  net/dsa/tag_brcm.c | 15 ---------------
+>  1 file changed, 15 deletions(-)
+> 
+> diff --git a/net/dsa/tag_brcm.c b/net/dsa/tag_brcm.c
+> index e934dace3922..ce23b5d4c6b8 100644
+> --- a/net/dsa/tag_brcm.c
+> +++ b/net/dsa/tag_brcm.c
+> @@ -30,29 +30,14 @@
+>  /* 1st byte in the tag */
+>  #define BRCM_IG_TC_SHIFT	2
+>  #define BRCM_IG_TC_MASK		0x7
+> -/* 2nd byte in the tag */
+> -#define BRCM_IG_TE_MASK		0x3
+> -#define BRCM_IG_TS_SHIFT	7
+>  /* 3rd byte in the tag */
+>  #define BRCM_IG_DSTMAP2_MASK	1
+>  #define BRCM_IG_DSTMAP1_MASK	0xff
 
-After commit c9c6d216ed28 ("x86/mce: Rename "first" function as "early""),
-the range of invalid priorities is changed. Add a new enumeration value
-MCE_PRIO_HIGHEST, so that people can add enumeration values greater than
-MCE_PRIO_CEC in the future without having to modify the function
-mce_register_decode_chain().
+Hi Alex
 
-Because the type of "nb->priority" is int, so the priority less than
-MCE_PRIO_LOWEST is also invalid.
+It is good to remember that there are multiple readers of source
+files. There is the compiler which generates code from it, and there
+is the human trying to understand what is going on, what the hardware
+can do, how we could maybe extend the code in the future to make use
+of bits are currently don't, etc.
 
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- arch/x86/include/asm/mce.h     | 3 ++-
- arch/x86/kernel/cpu/mce/core.c | 3 ++-
- 2 files changed, 4 insertions(+), 2 deletions(-)
+The compiler has no use of these macros, at the moment. But i as a
+human do. It is valuable documentation, given that there is no open
+datasheet for this hardware.
 
-diff --git a/arch/x86/include/asm/mce.h b/arch/x86/include/asm/mce.h
-index a0f147893a04..fc25c88c7ff2 100644
---- a/arch/x86/include/asm/mce.h
-+++ b/arch/x86/include/asm/mce.h
-@@ -177,7 +177,8 @@ enum mce_notifier_prios {
- 	MCE_PRIO_EXTLOG,
- 	MCE_PRIO_UC,
- 	MCE_PRIO_EARLY,
--	MCE_PRIO_CEC
-+	MCE_PRIO_CEC,
-+	MCE_PRIO_HIGHEST = MCE_PRIO_CEC
- };
- 
- struct notifier_block;
-diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-index 4102b866e7c0..0a54a2cfeeff 100644
---- a/arch/x86/kernel/cpu/mce/core.c
-+++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -162,7 +162,8 @@ EXPORT_SYMBOL_GPL(mce_log);
- 
- void mce_register_decode_chain(struct notifier_block *nb)
- {
--	if (WARN_ON(nb->priority > MCE_PRIO_MCELOG && nb->priority < MCE_PRIO_EDAC))
-+	if (WARN_ON((nb->priority < MCE_PRIO_LOWEST) ||
-+		    (nb->priority > MCE_PRIO_HIGHEST)))
- 		return;
- 
- 	blocking_notifier_chain_register(&x86_mce_decoder_chain, nb);
--- 
-2.26.0.106.g9fadedd
+I would say these warnings are bogus, and the code should be left
+alone.
 
-
+	Andrew
