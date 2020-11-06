@@ -2,101 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21E072A9877
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 16:23:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59C742A987B
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 16:24:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727681AbgKFPXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 10:23:34 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:36024 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726812AbgKFPXd (ORCPT
+        id S1727690AbgKFPYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 10:24:38 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:40422 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726812AbgKFPYh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 10:23:33 -0500
-Date:   Fri, 6 Nov 2020 16:23:29 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1604676211;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gtLuAYXrlaU0hbaqYajfTStS7KDqOPQPneTx+0rzWpE=;
-        b=oecZkBnHsmqmlAcxFE/V/ZxyMTKkH0OoslfUnscBSsp/oSawPcrcxjMPsGlS+xKKQRY1Un
-        c3kpY9oYrVLsJBLZed65wjzG2X6e63kA2/hpxaXZTs2/l4HieIs9zEl0bMmn2fgvgi+M8u
-        1pzbzHlR1b2SMbUc1H3E54Bef/FzAWvjNwYWeIWVMpACCj6hbSs28ahhAfhdNja9bwHQbV
-        jkHDMPWJiCyIMcUkcdd2+E5JJGTBde0QGOUndFOckyPJh8SF/7FGnc6VXHkZDvileQcRXx
-        x+li+gPQC17FEF1TLUIZphGcVQiv8VUiSDLbdzAbwVM8Z7tbxQEZdsfqeT0OAA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1604676211;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gtLuAYXrlaU0hbaqYajfTStS7KDqOPQPneTx+0rzWpE=;
-        b=uOEYaONJz22IL6804wmaEva2hvTRTSJt3LvyCppRrt5KlNPFOznNZkB9Q1k+GE2wKnw9nV
-        Br0TyB7B8uZ+y3BA==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Jens Axboe <axboe@kernel.dk>, Sagi Grimberg <sagi@grimberg.me>,
-        linux-block@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        David Runge <dave@sleepmap.de>, linux-rt-users@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Daniel Wagner <dwagner@suse.de>, Mike Galbraith <efault@gmx.de>
-Subject: Re: [PATCH 3/3] blk-mq: Use llist_head for blk_cpu_done
-Message-ID: <20201106152329.4vms2hk7dlzyojfw@linutronix.de>
-References: <20201029140536.GA6376@infradead.org>
- <20201029145623.3zry7o6nh6ks5tjj@linutronix.de>
- <20201029145743.GA19379@infradead.org>
- <d2c15411-5b21-535b-6e07-331ebe22f8c8@grimberg.me>
- <20201029210103.ocufuvj6i4idf5hj@linutronix.de>
- <deb40e55-d228-06c8-8719-fc8657a0a19b@grimberg.me>
- <20201031104108.wjjdiklqrgyqmj54@linutronix.de>
- <3bbfb5e1-c5d7-8f3b-4b96-6dc02be0550d@kernel.dk>
- <20201102095533.fxc2xpauzsoju7cm@linutronix.de>
- <20201102181238.GA17806@infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201102181238.GA17806@infradead.org>
+        Fri, 6 Nov 2020 10:24:37 -0500
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A6F3NAP056226;
+        Fri, 6 Nov 2020 10:24:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=KBbdnSiz3EXWnhfRMbhvejhr2vQ9k1ez+Tx9W+nIVrg=;
+ b=SeSFoE3ZLmWoOCeSZKrKTM4Cc/LeywdLW6aPcK/QiWrDmjWo/DqyXxv1jsn6ZmgMnYzY
+ npaIIaL6ZMkaLmAN1cNLCQbysemsixL0OOwfVp5OsyViRGScJIQRYCPOdNPMQWk/v3HC
+ 179cayvgqfqJFX1iEbf3r4rKUAzvJRLucCK5eRMmXvnys1Vi8H/UJdmieH/HUq21SMXi
+ n2jkTHsTe8drlmtrShyz2S9HwYGWO+AGjsQJra4Kt0B1CWmeZfvvYpSGdcKrPCgP6k7V
+ yQ1wjO2bDQJVDByFw3XNj0HRksHP9T7MeaETnOnQ5JCUU1y8twSv2rOpRF7uYlnE8sZV AQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34n0vygnj0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 06 Nov 2020 10:24:33 -0500
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0A6F3Sk9056743;
+        Fri, 6 Nov 2020 10:24:32 -0500
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34n0vygngs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 06 Nov 2020 10:24:32 -0500
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0A6FCigg013609;
+        Fri, 6 Nov 2020 15:24:29 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma05fra.de.ibm.com with ESMTP id 34h01quduh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 06 Nov 2020 15:24:29 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0A6FORP05505684
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 6 Nov 2020 15:24:27 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6F92DAE051;
+        Fri,  6 Nov 2020 15:24:27 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2B4A4AE045;
+        Fri,  6 Nov 2020 15:24:24 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.77.67])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri,  6 Nov 2020 15:24:23 +0000 (GMT)
+Message-ID: <7219f4404bc1bed6eb090b94363c283ec3266a17.camel@linux.ibm.com>
+Subject: Re: [PATCH v5 6/7] IMA: add critical_data to the built-in policy
+ rules
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Tushar Sugandhi <tusharsu@linux.microsoft.com>,
+        stephen.smalley.work@gmail.com, casey@schaufler-ca.com,
+        agk@redhat.com, snitzer@redhat.com, gmazyland@gmail.com,
+        paul@paul-moore.com
+Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
+        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
+        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dm-devel@redhat.com
+Date:   Fri, 06 Nov 2020 10:24:23 -0500
+In-Reply-To: <20201101222626.6111-7-tusharsu@linux.microsoft.com>
+References: <20201101222626.6111-1-tusharsu@linux.microsoft.com>
+         <20201101222626.6111-7-tusharsu@linux.microsoft.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-06_06:2020-11-05,2020-11-06 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 lowpriorityscore=0 bulkscore=0 phishscore=0
+ priorityscore=1501 spamscore=0 suspectscore=0 malwarescore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011060109
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-02 18:12:38 [+0000], Christoph Hellwig wrote:
-> > to not break that assumption you just mentioned and provide 
-> > |static inline void blk_mq_complete_request_local(struct request *rq)
-> > |{
-> > |                 rq->q->mq_ops->complete(rq);
-> > |}
-> > 
-> > so that completion issued from from process context (like those from
-> > usb-storage) don't end up waking `ksoftird' (running at SCHED_OTHER)
-> > completing the requests but rather performing it right away. The softirq
-> > dance makes no sense here.
+Hi Lakshmi, Tushar,
+
+This patch defines a new critical_data builtin policy.  Please update
+the Subject line.
+
+On Sun, 2020-11-01 at 14:26 -0800, Tushar Sugandhi wrote:
+> From: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
 > 
-> Agreed.  But I don't think your above blk_mq_complete_request_local
-> is all that useful either as ->complete is defined by the caller,
-> so we could just do a direct call.
-In usb-storage case it is hidden somewhere in the SCSI stack but this
-can probably be changed later on.
+> The IMA hook to measure kernel critical data, namely
+> ima_measure_critical_data(), could be called before a custom IMA policy
+> is loaded. For example, SELinux calls ima_measure_critical_data() to
+> measure its state and policy when they are initialized. This occurs
+> before a custom IMA policy is loaded, and hence IMA hook will not
+> measure the data. A built-in policy is therefore needed to measure
+> critical data provided by callers before a custom IMA policy is loaded.
 
->                                     Basically we should just
-> return false from blk_mq_complete_request_remote after updating
-> the state when called from process context.  But given that IIRC
-> we are not supposed to check what state we are called from
-> we'll need a helper just for updating the state instead and
-> ensure the driver uses the right helper.  Now of course we might
-> have process context callers that still want to bounce to the
-> submitting CPU, but in that case we should go directly to a
-> workqueue or similar.
+^Define a new critical data builtin policy to allow measuring early
+kernel integrity critical data before a custom IMA policy is loaded.
 
-So instead blk_mq_complete_request_local() you want a helper to set the
-state in which the completion function is invoked. Sounds more like an
-argument :)
+Either remove the references to SELinux or move this patch after the
+subsequent patch which measures SELinux critical data.
 
-> Either way doing this properly will probabl involve an audit of all
-> drivers, but I think that is worth it.
+> 
+> Add CRITICAL_DATA to built-in IMA rules if the kernel command line
+> contains "ima_policy=critical_data". Set the IMA template for this rule
+> to "ima-buf" since ima_measure_critical_data() measures a buffer.
+> 
+> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
 
-I'm lost. Should I repost the three patches with a preempt_disable()
-section (as suggested) to not break preemptible callers? And then move
-from there to provide callers from preemtible context an alternative?
+> ---
+>  security/integrity/ima/ima_policy.c | 32 +++++++++++++++++++++++++++++
+>  1 file changed, 32 insertions(+)
+> 
+> diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
+> index ec99e0bb6c6f..dc8fe969d3fe 100644
+> --- a/security/integrity/ima/ima_policy.c
+> +++ b/security/integrity/ima/ima_policy.c
 
-Sebastian
+> @@ -875,6 +884,29 @@ void __init ima_init_policy(void)
+>  			  ARRAY_SIZE(default_appraise_rules),
+>  			  IMA_DEFAULT_POLICY);
+>  
+> +	if (ima_use_critical_data) {
+> +		template = lookup_template_desc("ima-buf");
+> +		if (!template) {
+> +			ret = -EINVAL;
+> +			goto out;
+> +		}
+> +
+> +		ret = template_desc_init_fields(template->fmt,
+> +						&(template->fields),
+> +						&(template->num_fields));
+
+The default IMA template when measuring buffer data is "ima_buf".   Is
+there a reason for allocating and initializing it here and not
+deferring it until process_buffer_measurement()?
+
+thanks,
+
+Mimi
+
+> +		if (ret)
+> +			goto out;
+> +
+> +		critical_data_rules[0].template = template;
+> +		add_rules(critical_data_rules,
+> +			  ARRAY_SIZE(critical_data_rules),
+> +			  IMA_DEFAULT_POLICY);
+> +	}
+> +
+> +out:
+> +	if (ret)
+> +		pr_err("%s failed, result: %d\n", __func__, ret);
+> +
+>  	ima_update_policy_flag();
+>  }
+>  
+
+
