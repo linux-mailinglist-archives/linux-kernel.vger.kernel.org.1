@@ -2,86 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81BBC2A92B6
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 10:29:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB6E42A92BB
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 10:30:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726829AbgKFJ3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 04:29:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53116 "EHLO
+        id S1726541AbgKFJac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 04:30:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726075AbgKFJ3k (ORCPT
+        with ESMTP id S1726190AbgKFJab (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 04:29:40 -0500
-Received: from mail-vk1-xa34.google.com (mail-vk1-xa34.google.com [IPv6:2607:f8b0:4864:20::a34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59773C0613D2
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 01:29:40 -0800 (PST)
-Received: by mail-vk1-xa34.google.com with SMTP id q77so108953vkq.1
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 01:29:40 -0800 (PST)
+        Fri, 6 Nov 2020 04:30:31 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF083C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 01:30:30 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id i7so499232pgh.6
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 01:30:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cj9aU3bU6Mlez1/jNuR19+XJKdPcL+MH8EXhEAlY4Uo=;
-        b=lol22UeLwiMXamApuDJFhU2xmyUymt91OXHzV2LUp33ZXuJpYQgpx6XtX1QJ6WmtCC
-         OZYJnZAuJI/irOUzVyzDgJlNyZ7+w+mSX4A3mORO2OG2i9eJqfgqx8LAU5/d0gfnjsHV
-         iVMnqrg5+zRNArjxud2hqEv5d2S6/ypVev6HY=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=9IjLA/xj+DCaqgqGoF9Azl/MuEmkxVdtKRQX7C0Fd1c=;
+        b=oEMybdqmr95hrZY/hQwyBKi9MAagPUHqbE2DaSTPVO6nJ3xAap7nnQaSAl13MglVkW
+         8dD7Sa0IgcuaELVi3kjGgDYV1GW64m2zF1c5rKbsyHPy9mh8iyUBHWYwxbOK3TI5b1Iq
+         JwAfMNWachoFTgNndJsVtagFpY87gK0TypeP/jVbHmu5IOLxO1Sx0XFsPpCkfG89YCpv
+         D0M2iikm9dks0ltM5Lc2oL4EkAO53DyGZB0lSwKJQs74UlZMg+47hltxFmaEf1IcqIzq
+         1m7WaOdG9avHDRZBeD3DF17VVBg3X+08g7MH7BOFotBoXh7a/lkBOUnBFEYjsI4/IwSs
+         nLBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cj9aU3bU6Mlez1/jNuR19+XJKdPcL+MH8EXhEAlY4Uo=;
-        b=o1U1T0TSOY3g6r8fSi0Izh0yr0t7PhehZ1+cbkWr4JbOynoN6doSS8z1m7Kxh2kFQi
-         a/p9wpOh3OETisfccPyH+YhfBHEDs1h7SuX+HclU84dtek456yH6Qn1N+YnBar+Y9Xtl
-         xKoaUYBO9uNnS4c9CKh5wu7UbNWbZtzfne6tVw8T+sGfV7tM54GvoW7aEXKjuMcGx1Xj
-         BG/fG/5PHcEhyWqhyBqFsRaZPRBK5SBVdzhY3FdKXntPiELdnlvjIKVC7Pb+k0TWqjlA
-         B6G6CFiaYZdNIk+1jV4jBHru6T884s1RgT9NoKYaVM42xSDPhbzMrLG+Mb5DG0iRr8/Z
-         Gn2g==
-X-Gm-Message-State: AOAM532ZcUr7qJyNZvxPRq2vzdk9yuzlJ5GkZSfM6Xmg9wrbgShxuAA5
-        r5oGqnoEL/ZlcHf94Qp/KN1Vx4tIplwD3pv0jfaqMQ==
-X-Google-Smtp-Source: ABdhPJwYMBk6DgsNBPwPBzdMrNTso1k3rWC9JOmOv5gtlW3KF8WbhOME+GBbu7AT/j3IwLPruz/DpS+rTdRepgo7JhY=
-X-Received: by 2002:ac5:c80e:: with SMTP id y14mr426190vkl.3.1604654979446;
- Fri, 06 Nov 2020 01:29:39 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=9IjLA/xj+DCaqgqGoF9Azl/MuEmkxVdtKRQX7C0Fd1c=;
+        b=FOSmwdQ3qN7n/um9jbF+DaM5NrD5Zshbei48iiJf2ZDi33uMeQUL7Sf4b8F0eEE0nv
+         Ih7+PJNhot7ajWEj7RuVXRfYq6pRbeNH4Z/zb9t3YLhYPM1QTa84HL4Ns06fXPU8RkG9
+         9cmrWf9iUR9yKvQz5kc617XzRxgXkaFLIWBkfQv9lWssfCmb/0d8agiHtIFsGZUmx9VH
+         K76Yn/FFWYq9+cPKwz4GX21YACfCCyoXNT3ZFMKj2hXN+MnaP4FP/bKegP1HVDVTDOsk
+         OS//jQmaz/WQeq6zLQx6aYHRGiv4ooBX6NaO7UICUQgz5F3eJKbPzLrfcAPhJZsCtqKk
+         4JEw==
+X-Gm-Message-State: AOAM532/C+PV5PAJZoP/DaWib29Yyh8IBmK93lJJn7bn2mPBXxW1VH0U
+        7WszAylf9aPsW4xU/l9QSg==
+X-Google-Smtp-Source: ABdhPJyyHHQHPk/miYMvK3I7A3pJyIqVqCI4XP4bzwu4ZDR+kR8EHkhl1nQyYgOMuhMtvMvAXaeq2w==
+X-Received: by 2002:a17:90b:4a4e:: with SMTP id lb14mr1495282pjb.23.1604655030124;
+        Fri, 06 Nov 2020 01:30:30 -0800 (PST)
+Received: from Sleakybeast ([103.250.163.155])
+        by smtp.gmail.com with ESMTPSA id t19sm1030428pgv.37.2020.11.06.01.30.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Nov 2020 01:30:29 -0800 (PST)
+Date:   Fri, 6 Nov 2020 15:00:21 +0530
+From:   Siddhant Gupta <siddhantgupta416@gmail.com>
+To:     matthias.bgg@gmail.com
+Cc:     gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        mamtashukla555@gmail.com, himadrispandya@gmail.com
+Subject: [PATCH] Staging: mt7621-pci: Fix alignment warnings
+Message-ID: <20201106093021.GA25237@Sleakybeast>
 MIME-Version: 1.0
-References: <c4cb4b41655bc890b9dbf40bd2c133cbcbef734d.camel@redhat.com>
- <89f0dbf6713ebd44ec519425e3a947e71f7aed55.camel@redhat.com>
- <CAJfpegv4jLewQ4G_GdxraTE8fGHy7-d52gPSi4ZAOp0N4aYJnw@mail.gmail.com> <77529e99ca9c2d228a67dd8d789d83afdcd1ace3.camel@redhat.com>
-In-Reply-To: <77529e99ca9c2d228a67dd8d789d83afdcd1ace3.camel@redhat.com>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Fri, 6 Nov 2020 10:29:28 +0100
-Message-ID: <CAJfpegsuYAW+W7xN3QGdfzEHROdMhVOJS5K=u8JQe-_WaY8VsA@mail.gmail.com>
-Subject: Re: WARN_ON(fuse_insert_writeback(root, wpa)) in tree_insert()
-To:     Qian Cai <cai@redhat.com>
-Cc:     Vivek Goyal <vgoyal@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        virtio-fs-list <virtio-fs@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 2, 2020 at 3:26 PM Qian Cai <cai@redhat.com> wrote:
->
-> On Thu, 2020-10-29 at 16:20 +0100, Miklos Szeredi wrote:
-> > On Thu, Oct 29, 2020 at 4:02 PM Qian Cai <cai@redhat.com> wrote:
-> > > On Wed, 2020-10-07 at 16:08 -0400, Qian Cai wrote:
-> > > > Running some fuzzing by a unprivileged user on virtiofs could trigger the
-> > > > warning below. The warning was introduced not long ago by the commit
-> > > > c146024ec44c ("fuse: fix warning in tree_insert() and clean up writepage
-> > > > insertion").
-> > > >
-> > > > From the logs, the last piece of the fuzzing code is:
-> > > >
-> > > > fgetxattr(fd=426, name=0x7f39a69af000, value=0x7f39a8abf000, size=1)
-> > >
-> > > I can still reproduce it on today's linux-next. Any idea on how to debug it
-> > > further?
-> >
-> > Can you please try the attached patch?
->
-> It has survived the testing over the weekend. There is a issue that virtiofsd
-> hung, but it looks like a separate issue.
+Fix the alignment issue pointed out by checkpatch
 
-Thanks very much for the testing.   Queued up the patch.
+Signed-off-by: Siddhant Gupta <siddhantgupta416@gmail.com>
+---
+ drivers/staging/mt7621-pci/pci-mt7621.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Miklos
+diff --git a/drivers/staging/mt7621-pci/pci-mt7621.c b/drivers/staging/mt7621-pci/pci-mt7621.c
+index f961b353c22e..0e95fb33b4e9 100644
+--- a/drivers/staging/mt7621-pci/pci-mt7621.c
++++ b/drivers/staging/mt7621-pci/pci-mt7621.c
+@@ -278,8 +278,8 @@ static void setup_cm_memory_region(struct mt7621_pcie *pcie)
+ 		write_gcr_reg1_base(mem_resource->start);
+ 		write_gcr_reg1_mask(mask | CM_GCR_REGn_MASK_CMTGT_IOCU0);
+ 		dev_info(dev, "PCI coherence region base: 0x%08llx, mask/settings: 0x%08llx\n",
+-			(unsigned long long)read_gcr_reg1_base(),
+-			(unsigned long long)read_gcr_reg1_mask());
++			 (unsigned long long)read_gcr_reg1_base(),
++			 (unsigned long long)read_gcr_reg1_mask());
+ 	}
+ }
+ 
+-- 
+2.25.1
+
