@@ -2,95 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D306F2A9FB8
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 23:04:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D38512A9FBA
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 23:07:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728823AbgKFWEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 17:04:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36136 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728558AbgKFWEN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 17:04:13 -0500
-Received: from kernel.org (83-245-197-237.elisa-laajakaista.fi [83.245.197.237])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 375B32065D;
-        Fri,  6 Nov 2020 22:04:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604700252;
-        bh=ieDhYU4bSFd1/vVWlPxscTeA4K/tr1v7M3g5bfv6eOo=;
+        id S1728529AbgKFWHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 17:07:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59680 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728131AbgKFWHW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 17:07:22 -0500
+Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42087C0613CF;
+        Fri,  6 Nov 2020 14:07:22 -0800 (PST)
+Received: by fieldses.org (Postfix, from userid 2815)
+        id 283034F3A; Fri,  6 Nov 2020 17:07:21 -0500 (EST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org 283034F3A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
+        s=default; t=1604700441;
+        bh=RqLyV+UCWvbwkSg7aU8JV9KDf8m/ioygVluigPiNn7g=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=I3qy6PVFwmL7t7ItZ7VRZfBLNSepfCPtzAw1UdebRyLjkuKrqI84qS51zrxMieQYb
-         BBdeSxUFMI5MbEIqGOgMvDF5ON3hh2f60/XQDIj9qsa2oc+Inl8lhNltULv7H33Zf5
-         walgx0begp0qp2lSHjRfutm56RG9xohfH44GJgh8=
-Date:   Sat, 7 Nov 2020 00:04:02 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Mel Gorman <mgorman@techsingularity.net>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        andriy.shevchenko@linux.intel.com, asapek@google.com,
-        cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com, kai.huang@intel.com,
-        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
-        luto@kernel.org, nhorman@redhat.com, npmccallum@redhat.com,
-        puiterwijk@redhat.com, rientjes@google.com, tglx@linutronix.de,
-        yaozhangx@google.com, mikko.ylinen@intel.com,
-        Michal Hocko <mhocko@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH v40 10/24] mm: Add 'mprotect' hook to struct
- vm_operations_struct
-Message-ID: <20201106220402.GB55146@kernel.org>
-References: <20201104145430.300542-1-jarkko.sakkinen@linux.intel.com>
- <20201104145430.300542-11-jarkko.sakkinen@linux.intel.com>
- <20201106100409.GD3371@techsingularity.net>
- <20201106165107.GA52595@kernel.org>
- <20201106203725.GK14914@zn.tnic>
+        b=zmTKtz6WpAp+LVf2AWC0gv+c8jBiDGrFhtjCQei25OwQIMEKmZSpBaLwokqu+wPhz
+         +THdt+UmBaO1BJivLPyxLVVJCEb2EnQYC5QdVD6jz+xiCHtorpa6lGqsXMULsvYdhp
+         u0ZqOFSEEUPYmCwaP9GwvyW4K9s3MSOcFnvdHanQ=
+Date:   Fri, 6 Nov 2020 17:07:21 -0500
+From:   "J. Bruce Fields" <bfields@fieldses.org>
+To:     Alex Dewar <alex.dewar90@gmail.com>
+Cc:     Chuck Lever <chuck.lever@oracle.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Artur Molchanov <arturmolchanov@gmail.com>,
+        linux-nfs@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net/sunrpc: Fix return value from proc_do_xprt()
+Message-ID: <20201106220721.GE26028@fieldses.org>
+References: <20201024145240.23245-1-alex.dewar90@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201106203725.GK14914@zn.tnic>
+In-Reply-To: <20201024145240.23245-1-alex.dewar90@gmail.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 06, 2020 at 09:37:25PM +0100, Borislav Petkov wrote:
-> On Fri, Nov 06, 2020 at 06:51:07PM +0200, Jarkko Sakkinen wrote:
-> > Both comments make sense to me. I'll refine this patch on Monday and
-> 
-> And while you're at it, I'd suggest you refine the whole patchset and
-> send a full v41 instead:
-> 
-> - please audit all your Reviewed-by, Acked-by tags as to for what
-> versions of the patches they were given. If you've changed those patches
-> in the meantime, then all those tags are invalid and need to go.
-> 
-> - work in all the change requests
-> 
-> - fix the order of the patches so that each one builds
-> 
-> so that they can be taken cleanly into tip.
-> 
-> Thx.
+Whoops, got 3 independent patches for this and overlooked this one.  See
+https://lore.kernel.org/linux-nfs/20201106205959.GB26028@fieldses.org/T/#t
 
-OK, everything else is clear except change requests part I want to
-check.
+--b.
 
-There has been a change request to update callback that made perfect
-sense to me. Is there something else that I might have missed? Just
-checking.
-
+On Sat, Oct 24, 2020 at 03:52:40PM +0100, Alex Dewar wrote:
+> Commit c09f56b8f68d ("net/sunrpc: Fix return value for sysctl
+> sunrpc.transports") attempted to add error checking for the call to
+> memory_read_from_buffer(), however its return value was assigned to a
+> size_t variable, so any negative values would be lost in the cast. Fix
+> this.
+> 
+> Addresses-Coverity-ID: 1498033: Control flow issues (NO_EFFECT)
+> Fixes: c09f56b8f68d ("net/sunrpc: Fix return value for sysctl sunrpc.transports")
+> Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
+> ---
+>  net/sunrpc/sysctl.c | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+> 
+> diff --git a/net/sunrpc/sysctl.c b/net/sunrpc/sysctl.c
+> index a18b36b5422d..c95a2b84dd95 100644
+> --- a/net/sunrpc/sysctl.c
+> +++ b/net/sunrpc/sysctl.c
+> @@ -62,6 +62,7 @@ rpc_unregister_sysctl(void)
+>  static int proc_do_xprt(struct ctl_table *table, int write,
+>  			void *buffer, size_t *lenp, loff_t *ppos)
+>  {
+> +	ssize_t bytes_read;
+>  	char tmpbuf[256];
+>  	size_t len;
+>  
+> @@ -70,12 +71,14 @@ static int proc_do_xprt(struct ctl_table *table, int write,
+>  		return 0;
+>  	}
+>  	len = svc_print_xprts(tmpbuf, sizeof(tmpbuf));
+> -	*lenp = memory_read_from_buffer(buffer, *lenp, ppos, tmpbuf, len);
+> +	bytes_read = memory_read_from_buffer(buffer, *lenp, ppos, tmpbuf, len);
+>  
+> -	if (*lenp < 0) {
+> +	if (bytes_read < 0) {
+>  		*lenp = 0;
+>  		return -EINVAL;
+>  	}
+> +
+> +	*lenp = bytes_read;
+>  	return 0;
+>  }
+>  
 > -- 
-> Regards/Gruss,
->     Boris.
-> 
-> https://people.kernel.org/tglx/notes-about-netiquette
-
-/Jarkko
+> 2.29.1
