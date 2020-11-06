@@ -2,175 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C65B72A8C4A
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 02:50:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 544832A8C5A
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 02:58:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732746AbgKFBuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 20:50:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38146 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730414AbgKFBuL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 20:50:11 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66FF2C0613CF;
-        Thu,  5 Nov 2020 17:50:11 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id y7so1808127pfq.11;
-        Thu, 05 Nov 2020 17:50:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=2lSEdVchG2GWdKFZi7p0tv0Wshigh+WuXkpFk9lvmNI=;
-        b=RsoN2yMVjWxKHAxDkjzNZvMHY/4kbNrsECBu3cXAcgHSx7LO1kQFIUT5L1nOztE+iJ
-         iEh0GdftXXCcDhNNCF/0hu6rXpZ0CzqZ9iZ932WZaIy4A3ikpetR09xmKBekpemo/19e
-         rCck5Wix75QfhnsYBqO8fXqvjxDCQTxTl3lol11QShAtjh/SoDMgsACMctv+WIMItOOs
-         PfmsVyymX/oH7G5Pwhx8iKEqQF6nafSpi2tQik6YA4uXDfEAkRApLLXEzjnlHroUvsyh
-         QOmoSW5oNqyriI6Ld9H/Q/qI3I0jhaypHCN5Z2ejzpvFwDrKw2aUi+tLWTJwG4ZvH7of
-         mNpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=2lSEdVchG2GWdKFZi7p0tv0Wshigh+WuXkpFk9lvmNI=;
-        b=CT6LcKMGk/JQa8z/7rKXiCqoTsQ+hNyQ/6uOKdYX3nKLm1ZAbyZR0sPFKtebeG/gNc
-         NDvlE85QL9BYVM9Rjkuihu7BO+Bj37sd3Ukb85aoKuEnRby680ZTjKC5QdmWqLdY2/w1
-         x7D7aXcwVxoXUrGppYPs8RVPqn14uthg+tJ5Zq9GU6vtb2c0Wn7Kn1D8mQwYVPTl4Rw6
-         0weZSkkesRTUNR8pVegaK45DJZftUUo82gd4BLdQ6QGhJOkz6leHNpYvH9Pct4mRuHOQ
-         cIsvCHQRXFrQWRzYbarWlecczhR59/Ht1aUxgEkWz4RyrCcEg/RwrVxMQfhQVhR9TRBI
-         IBRQ==
-X-Gm-Message-State: AOAM533EuVraZ3lpbwRsbwXUQqb2RqYNGDUZnhUDFnscbj4T9UhpD6PU
-        feqKmN3CWGlJvpmixVcp4pk=
-X-Google-Smtp-Source: ABdhPJyLEE61iryaA35hAp+cMKdeRfZ4Mn2oyLisIEi9p7wMjL05hpwnfxqpbi5QrmtDcy7vzKicmw==
-X-Received: by 2002:a17:90a:8906:: with SMTP id u6mr5406747pjn.35.1604627410968;
-        Thu, 05 Nov 2020 17:50:10 -0800 (PST)
-Received: from localhost.localdomain ([154.93.3.113])
-        by smtp.gmail.com with ESMTPSA id d68sm4191728pfc.135.2020.11.05.17.50.08
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 05 Nov 2020 17:50:10 -0800 (PST)
-From:   menglong8.dong@gmail.com
-X-Google-Original-From: dong.menglong@zte.com.cn
-To:     kuba@kernel.org
-Cc:     kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org, davem@davemloft.net,
-        ycheng@google.com, ncardwell@google.com, priyarjha@google.com,
-        edumazet@google.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, willemb@google.com,
-        pabeni@redhat.com, Menglong Dong <dong.menglong@zte.com.cn>
-Subject: [PATCH v2 net-next] net: udp: introduce UDP_MIB_MEMERRORS for udp_mem
-Date:   Thu,  5 Nov 2020 20:49:14 -0500
-Message-Id: <1604627354-43207-1-git-send-email-dong.menglong@zte.com.cn>
-X-Mailer: git-send-email 2.7.4
+        id S1732858AbgKFB6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 20:58:07 -0500
+Received: from cmta19.telus.net ([209.171.16.92]:32941 "EHLO cmta19.telus.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730414AbgKFB6H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 20:58:07 -0500
+X-Greylist: delayed 488 seconds by postgrey-1.27 at vger.kernel.org; Thu, 05 Nov 2020 20:58:06 EST
+Received: from dougxps ([173.180.45.3])
+        by cmsmtp with SMTP
+        id aqt0kwPg7dLkEaqt1kZKc4; Thu, 05 Nov 2020 18:49:57 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=telus.net; s=neo;
+        t=1604627397; bh=EQ2VgUbGgV+uFwLbFWhleNcbVstRS/kO5xtYuUuBq24=;
+        h=From:To:Cc:References:In-Reply-To:Subject:Date;
+        b=YK1ZmjXW5mhpM+I0VP6mno26vEh3v016ESNf5CQhoPBNDclhNCxwvPUaA+fGenvNl
+         adS2nDJTZA95HanowQ0AsUG3mTaYDUTKwGO0DSHyF0/sFdiGVr4/RCxxjKxjSmGqO+
+         a1Tp767cLvRZUiKq6NEn20ubsopYSxrhMc+6iQGIwFwurAr4F5f+fs0S0KL9xacm8w
+         2h5u6RGWbW03BQi6PUCZCxNiyi81LYsNV/BDI8svtCS4RFpLb5qtzrAI5VypmyQ62O
+         6z6X/6VGReTjHTG6alMn58ZHA6sjwWaZpXqxAl/atDMq4s+BDvo6kTr6Vd+mVY1UkL
+         +7OpSr5YQn+xw==
+X-Telus-Authed: none
+X-Authority-Analysis: v=2.4 cv=WPm64lgR c=1 sm=1 tr=0 ts=5fa4abc5
+ a=ZeVyObKPoMU90SgYCeSZ1g==:117 a=ZeVyObKPoMU90SgYCeSZ1g==:17
+ a=Pyq9K9CWowscuQLKlpiwfMBGOR0=:19 a=kj9zAlcOel0A:10 a=QyXUC8HyAAAA:8
+ a=gu6fZOg2AAAA:8 a=8THPvSkuJoZwLrQ9cBcA:9 a=CjuIK1q_8ugA:10 a=-FEs8UIgK8oA:10
+ a=NWVoK91CQyQA:10 a=2RSlZUUhi9gRBrsHwhhZ:22
+From:   "Doug Smythies" <dsmythies@telus.net>
+To:     "'Rafael J. Wysocki'" <rjw@rjwysocki.net>,
+        "'Linux PM'" <linux-pm@vger.kernel.org>
+Cc:     "'Rafael J. Wysocki'" <rafael@kernel.org>,
+        "'Viresh Kumar'" <viresh.kumar@linaro.org>,
+        "'Srinivas Pandruvada'" <srinivas.pandruvada@linux.intel.com>,
+        "'Zhang Rui'" <rui.zhang@intel.com>,
+        "'LKML'" <linux-kernel@vger.kernel.org>
+References: <7417968.Ghue05m4RV@kreacher> <2233690.N3OVLkotou@kreacher>
+In-Reply-To: <2233690.N3OVLkotou@kreacher>
+Subject: RE: [PATCH 1/2] cpufreq: Introduce target min and max frequency hints
+Date:   Thu, 5 Nov 2020 17:49:53 -0800
+Message-ID: <001b01d6b3df$21165940$63430bc0$@net>
+MIME-Version: 1.0
+Content-Type: text/plain;
+        charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Office Outlook 12.0
+Content-Language: en-ca
+Thread-Index: AdazoQzOa64DtwxHQV2ivz0yvkdgTgAM4bQw
+X-CMAE-Envelope: MS4xfOnrGS/Thze5mEGyKkwj5SyTIuz7k6xioMBYgNxOS3r1kTiTTBoQHV/3fPgx5sDCTVmwN5AqW+TL2VAoRyjciQd389sWRFRcFPfuXto90COudkUsNIQB
+ vWfHuai3mED8GwYSRWjD0E8wrb15q/bOUnvyb9D+A/3dOOxe1zRdLI7prRMmG4MXEB9GtbqquDdm7B4N7ifyfAeWX7yJxvgwDOj51M4f6DwSCqxcgslXJ5RD
+ PdNvvTWhZSSiZPleL+BQp2s+tSY4eCvDVSaWhdn8sweclJA8mL/dEQxZ31lradvz5aOjac+CSnvqHFHctWcTF14X7rr1iU8dLqdY9W2b8TwioxLiQjlg9DCv
+ q0R5+k50wfsIicLcLqICdWrKMt8YedaItQHEHZFMkzvlWfuhBKI=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Menglong Dong <dong.menglong@zte.com.cn>
+Hi Rafael:
 
-When udp_memory_allocated is at the limit, __udp_enqueue_schedule_skb
-will return a -ENOBUFS, and skb will be dropped in __udp_queue_rcv_skb
-without any counters being done. It's hard to find out what happened
-once this happen.
+Thank you for this patch set.
 
-So we introduce a UDP_MIB_MEMERRORS to do this job. Well, this change
-looks friendly to the existing users, such as netstat:
+I can not get the patch to apply.
+I was trying on top on 5.10-rc2, and have been unable to determine
+what other patches might need to be applied first.
 
-$ netstat -u -s
-Udp:
-    0 packets received
-    639 packets to unknown port received.
-    158689 packet receive errors
-    180022 packets sent
-    RcvbufErrors: 20930
-    MemErrors: 137759
-UdpLite:
-IpExt:
-    InOctets: 257426235
-    OutOctets: 257460598
-    InNoECTPkts: 181177
+On 2020.11.05 10:24 Rafael J. Wysocki wrote:
 
-v2:
-- Fix some alignment problems
+...
 
-Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
----
- include/uapi/linux/snmp.h | 1 +
- net/ipv4/proc.c           | 1 +
- net/ipv4/udp.c            | 3 +++
- net/ipv6/proc.c           | 2 ++
- net/ipv6/udp.c            | 3 +++
- 5 files changed, 10 insertions(+)
+> 
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> ---
+>  drivers/cpufreq/cpufreq.c             |    3 +++
+>  drivers/cpufreq/cpufreq_performance.c |    4 ++++
+>  drivers/cpufreq/cpufreq_powersave.c   |    4 ++++
+>  include/linux/cpufreq.h               |   16 ++++++++++++++++
 
-diff --git a/include/uapi/linux/snmp.h b/include/uapi/linux/snmp.h
-index f84e7bcad6de..26fc60ce9298 100644
---- a/include/uapi/linux/snmp.h
-+++ b/include/uapi/linux/snmp.h
-@@ -159,6 +159,7 @@ enum
- 	UDP_MIB_SNDBUFERRORS,			/* SndbufErrors */
- 	UDP_MIB_CSUMERRORS,			/* InCsumErrors */
- 	UDP_MIB_IGNOREDMULTI,			/* IgnoredMulti */
-+	UDP_MIB_MEMERRORS,			/* MemErrors */
- 	__UDP_MIB_MAX
- };
- 
-diff --git a/net/ipv4/proc.c b/net/ipv4/proc.c
-index 8d5e1695b9aa..63cd370ea29d 100644
---- a/net/ipv4/proc.c
-+++ b/net/ipv4/proc.c
-@@ -167,6 +167,7 @@ static const struct snmp_mib snmp4_udp_list[] = {
- 	SNMP_MIB_ITEM("SndbufErrors", UDP_MIB_SNDBUFERRORS),
- 	SNMP_MIB_ITEM("InCsumErrors", UDP_MIB_CSUMERRORS),
- 	SNMP_MIB_ITEM("IgnoredMulti", UDP_MIB_IGNOREDMULTI),
-+	SNMP_MIB_ITEM("MemErrors", UDP_MIB_MEMERRORS),
- 	SNMP_MIB_SENTINEL
- };
- 
-diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
-index 09f0a23d1a01..aa1bd53dd9f9 100644
---- a/net/ipv4/udp.c
-+++ b/net/ipv4/udp.c
-@@ -2038,6 +2038,9 @@ static int __udp_queue_rcv_skb(struct sock *sk, struct sk_buff *skb)
- 		if (rc == -ENOMEM)
- 			UDP_INC_STATS(sock_net(sk), UDP_MIB_RCVBUFERRORS,
- 					is_udplite);
-+		else
-+			UDP_INC_STATS(sock_net(sk), UDP_MIB_MEMERRORS,
-+				      is_udplite);
- 		UDP_INC_STATS(sock_net(sk), UDP_MIB_INERRORS, is_udplite);
- 		kfree_skb(skb);
- 		trace_udp_fail_queue_rcv_skb(rc, sk);
-diff --git a/net/ipv6/proc.c b/net/ipv6/proc.c
-index bbff3e02e302..d6306aa46bb1 100644
---- a/net/ipv6/proc.c
-+++ b/net/ipv6/proc.c
-@@ -126,6 +126,7 @@ static const struct snmp_mib snmp6_udp6_list[] = {
- 	SNMP_MIB_ITEM("Udp6SndbufErrors", UDP_MIB_SNDBUFERRORS),
- 	SNMP_MIB_ITEM("Udp6InCsumErrors", UDP_MIB_CSUMERRORS),
- 	SNMP_MIB_ITEM("Udp6IgnoredMulti", UDP_MIB_IGNOREDMULTI),
-+	SNMP_MIB_ITEM("Udp6MemErrors", UDP_MIB_MEMERRORS),
- 	SNMP_MIB_SENTINEL
- };
- 
-@@ -137,6 +138,7 @@ static const struct snmp_mib snmp6_udplite6_list[] = {
- 	SNMP_MIB_ITEM("UdpLite6RcvbufErrors", UDP_MIB_RCVBUFERRORS),
- 	SNMP_MIB_ITEM("UdpLite6SndbufErrors", UDP_MIB_SNDBUFERRORS),
- 	SNMP_MIB_ITEM("UdpLite6InCsumErrors", UDP_MIB_CSUMERRORS),
-+	SNMP_MIB_ITEM("UdpLite6MemErrors", UDP_MIB_MEMERRORS),
- 	SNMP_MIB_SENTINEL
- };
- 
-diff --git a/net/ipv6/udp.c b/net/ipv6/udp.c
-index 29d9691359b9..e6158e04e15c 100644
---- a/net/ipv6/udp.c
-+++ b/net/ipv6/udp.c
-@@ -637,6 +637,9 @@ static int __udpv6_queue_rcv_skb(struct sock *sk, struct sk_buff *skb)
- 		if (rc == -ENOMEM)
- 			UDP6_INC_STATS(sock_net(sk),
- 					 UDP_MIB_RCVBUFERRORS, is_udplite);
-+		else
-+			UDP6_INC_STATS(sock_net(sk),
-+				       UDP_MIB_MEMERRORS, is_udplite);
- 		UDP6_INC_STATS(sock_net(sk), UDP_MIB_INERRORS, is_udplite);
- 		kfree_skb(skb);
- 		return -1;
--- 
-2.25.1
+I do not understand why this part says to look for 16
+differences, but I can only find 2.
+
+>  4 files changed, 27 insertions(+)
+> 
+> Index: linux-pm/include/linux/cpufreq.h
+> ===================================================================
+> --- linux-pm.orig/include/linux/cpufreq.h
+> +++ linux-pm/include/linux/cpufreq.h
+> @@ -63,6 +63,8 @@ struct cpufreq_policy {
+> 
+>  	unsigned int		min;    /* in kHz */
+>  	unsigned int		max;    /* in kHz */
+> +	unsigned int		target_min; /* in kHz */
+> +	unsigned int		target_max; /* in kHz */
+>  	unsigned int		cur;    /* in kHz, only needed if cpufreq
+>  					 * governors are used */
+>  	unsigned int		suspend_freq; /* freq to set during suspend */
+> Index: linux-pm/drivers/cpufreq/cpufreq.c
+
+...
+
+Anyway, I edited the patch, deleting the include/linux/cpufreq.h part,
+then it applied, as did patch 2 of 2.
+I edited include/linux/cpufreq.h manually.
+
+Issues with the powersave governor reported in [1] and [2]
+are fixed. Relevant part quoted and updated below:
+
+> In early September Doug wrote:
+>> powersave governor:
+>> acpi-cpufreq: good
+>> intel_cpufreq hwp: bad
+
+Now good, with this patch set.
+
+>> intel_cpufreq no hwp: good
+
+...
+
+> For the powersave governor, this is what we have now:
+> 
+> intel_cpufreq hwp == intel_pstate hwp
+> intel_cpufreq no hwp == acpi-cpufreq == always minimum freq
+> intel_pstate no hwp ~= acpi-cpufreq/ondemand
+
+...
+
+> My expectation was/is:
+> 
+> intel_cpufreq hwp == intel_cpufreq no hwp == acpi-cpufreq == always minimum freq
+
+And this is what we now have, with this patch set.
+
+> intel_pstate no hwp ~= acpi-cpufreq/ondemand
+> intel_pstate hwp == Unique. Say, extremely course version of ondemand.
+
+[1] https://marc.info/?l=linux-pm&m=159769839401767&w=2
+[2] https://marc.info/?l=linux-pm&m=159943780220923&w=2
+
+... Doug
 
 
