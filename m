@@ -2,123 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CE672A909E
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 08:44:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75A0F2A90A0
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 08:45:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726553AbgKFHoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 02:44:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36692 "EHLO
+        id S1726491AbgKFHpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 02:45:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726198AbgKFHoK (ORCPT
+        with ESMTP id S1725848AbgKFHpF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 02:44:10 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 513A5C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 23:44:10 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id h6so312602pgk.4
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 23:44:10 -0800 (PST)
+        Fri, 6 Nov 2020 02:45:05 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09F1CC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 23:45:05 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id 72so542153pfv.7
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 23:45:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=7al+1KQqygBh8yCBrLUsOyumU9ROiq9Kbq3Xdf1DwkI=;
-        b=Ri+pKNwiEc4VOv9Umm81GO4nHRH7HLV5YiyZ1xQkLUsqSMUimOj9rj7rjtFs//oSwZ
-         6EsJPly3lYAoTT5HxSk1I5b1K8mXIYjF8o6MeTnWhlC39CSzjx8lBiKzhbehWp/RnXeo
-         Z4Hp2ReIrx4CkRSzRU3NcrxXRtw5wFiYI4/rGHNo5tX9QfOMwYvdVqM/DtR8EnPqX8CQ
-         oXiK6CaaRWuDbrj5FQ+iOUBBFpNL8/GY/w7xVoXg/nFl7SpXNyqaUU3gMx2EWJGg5FAG
-         Y0N684pi4u72xegcHFxrw0CBwH3+8prRy33JphiUFFE8vylR7EsF7Rsx5KendNfL6gQO
-         i8Uw==
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=K54S4tmdbHgMW+MVK8p9l4H5bicSeAudRQfjdTGyLmc=;
+        b=Tfr4vWWXNyo+W8LEk1g+3587ILfmUu3wbnu/yPBAXpP7i5mJoiIn6WZ6n89yu2Zc3F
+         +QpGeeNJwUae2BH9aDxV7GfuIj2Mq3LkJuhyUh1gceU6Zc9s5N+gVJd+HA0qOqFqthr6
+         Gn8N7u8dMKrFEUOzR/Z5OA0NUXkxFKEBHXrIsMffgTp/haZlZl9NBYbpzQk+E8GR7Z5/
+         c0/xfYc69dXrfWOfxSHLpbnqf+bSUWmirnk6G3zGybE7JsrYKjIZeitxKwDXNUC+eBo/
+         G1M3oWVtS3VWJZ0F8GNHYTZvJSY8JYAv+QDNAVeQYSD/SYTrN2w1ev25G+zjpg9HjxSk
+         nrIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=7al+1KQqygBh8yCBrLUsOyumU9ROiq9Kbq3Xdf1DwkI=;
-        b=IM2bdQusvYePY6GPUCm5NmY5Sl1ommsBvFApNnuhE7a5zyDvasLacMkRkuV2KYGwMp
-         Yezh2VdU+QUyhK6fakK8tLA9sN70NQNToW8DJGP+O3efx6pKy9c+T5u8Twwax/Bw8wMj
-         phJNhZ3SItw3mPqqxs3GQYyJl5H5ktKvLayJwn+UGj8bvSMk9vMpcA6JDpWL3v2AOj5S
-         OBzYNpvyC0IzcnWcj9bHYskEaFjqQE6GoPpPIChUCFjmPMH5RkwTlmmvd0F+EeYhTqi8
-         GYDFLWALUTK9ZcGnwRLOHI9De8ELymdvK/Fs53HMTMje2np7pedbRTGX0h+SjBMVOZe6
-         nTaw==
-X-Gm-Message-State: AOAM533oe3klkSjT3zDv2pK8WmOTyH6rDG11R3UF8CrMO89EoYNR/aWI
-        h3jPDbmTowfU+1fVciSc275Ug+ldrL+wMA==
-X-Google-Smtp-Source: ABdhPJzetVB2Ryqy60ff9qy7r8GiFsYJPhXFNO7OS/cEP4u2veL2hZrIuWB6ZmT8IfQRHQGqzlYr0g==
-X-Received: by 2002:a17:90a:db48:: with SMTP id u8mr1095994pjx.93.1604648649876;
-        Thu, 05 Nov 2020 23:44:09 -0800 (PST)
-Received: from localhost ([122.172.12.172])
-        by smtp.gmail.com with ESMTPSA id m23sm679169pgk.84.2020.11.05.23.44.08
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 05 Nov 2020 23:44:08 -0800 (PST)
-Date:   Fri, 6 Nov 2020 13:14:06 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     zhuguangqing83@gmail.com
-Cc:     amit.kachhap@gmail.com, daniel.lezcano@linaro.org,
-        javi.merino@kernel.org, rui.zhang@intel.com, amitk@kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zhuguangqing <zhuguangqing@xiaomi.com>
-Subject: Re: [PATCH] thermal/drivers/cpufreq_cooling: Update cpufreq_state
- only if state has changed
-Message-ID: <20201106074406.vykfapy7xstmqk4h@vireshk-i7>
-References: <20201105111914.9324-1-zhuguangqing83@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201105111914.9324-1-zhuguangqing83@gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=K54S4tmdbHgMW+MVK8p9l4H5bicSeAudRQfjdTGyLmc=;
+        b=LZDmPW3sFdcEQL+2B9YJJfQ0qndnE9lRxlgax48W9ZJPrHCfAtqw59kTXaspRiy+b+
+         oaYikV1yvkmqwqjLEnx7x+qedfcK5qsTM2b0n/YWDKjinVhsf6z4c+1RPD9Rc0r8lC76
+         /UqX9PNBwyEgpGV87fBysRTUBKgFoU46QCSGFBWCm0+GuXkv302eEfcZJVTpjHoheO4u
+         FrfhtEusuQVqHNdMgcDIRiFxq4n1+R1BqchH1c2k4evLaLVhPbQz8dslahAhUeH1bAaL
+         6bkecZFsB2znddhHpOoas1qavzYd62CJpH2cgCftOaCriJheFDcyYUp91oezwk1aLceG
+         Ve4g==
+X-Gm-Message-State: AOAM532sO6xXwYcstXa4xy5/iGaNUFttqFmZNiaLmjFXRC0YNPxzoWkg
+        jr4ZW3xKEcBtymmrpACI/lPpoA==
+X-Google-Smtp-Source: ABdhPJynR1+zk4zYU4UhoL7YmxIbYRJ1mpvelbP8x/YimozLjQ+nfno7quluYOXj+rrg2uLvyysNFQ==
+X-Received: by 2002:a17:90a:ca91:: with SMTP id y17mr1022137pjt.205.1604648704549;
+        Thu, 05 Nov 2020 23:45:04 -0800 (PST)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id s17sm1088651pjr.56.2020.11.05.23.45.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Nov 2020 23:45:03 -0800 (PST)
+Date:   Thu, 05 Nov 2020 23:45:03 -0800 (PST)
+X-Google-Original-Date: Thu, 05 Nov 2020 23:39:34 PST (-0800)
+Subject:     Re: [PATCH] riscv: uaccess: fix __put_kernel_nofault()
+In-Reply-To: <20201102073052.199638-1-changbin.du@gmail.com>
+CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
+        akpm@linux-foundation.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, changbin.du@gmail.com,
+        Christoph Hellwig <hch@lst.de>
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     changbin.du@gmail.com
+Message-ID: <mhng-21386a65-a083-4346-89a7-0b8ac583b9c4@palmerdabbelt-glaptop1>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05-11-20, 19:19, zhuguangqing83@gmail.com wrote:
-> From: zhuguangqing <zhuguangqing@xiaomi.com>
-
-Maybe fix your name in your email client or git config? It should be
-Zhuguangqing (with first letter in CAPITAL) and maybe add a second
-name also (surname) in case you want/have it.
-
-> If state has not changed successfully and we updated cpufreq_state,
-> next time when the new state is equal to cpufreq_state (not changed
-> successfully last time), we will return directly and miss a
-> freq_qos_update_request() that should have been.
-> 
-> Signed-off-by: zhuguangqing <zhuguangqing@xiaomi.com>
-
-Please find and add below details as well, they are helpful in fixing
-the stable kernels.
-
-Fixes: 5130802ddbb1 ("thermal: cpu_cooling: Switch to QoS requests for freq limits")
-Cc: v5.4+ <stable@vger.kernel.org> # v5.4+
-
+On Sun, 01 Nov 2020 23:30:52 PST (-0800), changbin.du@gmail.com wrote:
+> The copy_from_kernel_nofault() is broken on riscv because the 'dst' and
+> 'src' are mistakenly reversed in __put_kernel_nofault() macro.
+>
+> copy_to_kernel_nofault:
+> ...
+> 0xffffffe0003159b8 <+30>:    sd      a4,0(a1) # a1 aka 'src'
+>
+> Fixes: d464118cdc ("riscv: implement __get_kernel_nofault and __put_user_nofault")
+> Signed-off-by: Changbin Du <changbin.du@gmail.com>
+> Cc: Christoph Hellwig <hch@lst.de>
 > ---
->  drivers/thermal/cpufreq_cooling.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/thermal/cpufreq_cooling.c b/drivers/thermal/cpufreq_cooling.c
-> index cc2959f22f01..00dc26c33899 100644
-> --- a/drivers/thermal/cpufreq_cooling.c
-> +++ b/drivers/thermal/cpufreq_cooling.c
-> @@ -438,13 +438,12 @@ static int cpufreq_set_cur_state(struct thermal_cooling_device *cdev,
->  	if (cpufreq_cdev->cpufreq_state == state)
->  		return 0;
->  
-> -	cpufreq_cdev->cpufreq_state = state;
-> -
->  	frequency = get_state_freq(cpufreq_cdev, state);
->  
->  	ret = freq_qos_update_request(&cpufreq_cdev->qos_req, frequency);
->  
+>  arch/riscv/include/asm/uaccess.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/riscv/include/asm/uaccess.h b/arch/riscv/include/asm/uaccess.h
+> index c47e6b35c551..824b2c9da75b 100644
+> --- a/arch/riscv/include/asm/uaccess.h
+> +++ b/arch/riscv/include/asm/uaccess.h
+> @@ -476,7 +476,7 @@ do {									\
+>  do {									\
+>  	long __kr_err;							\
+>  									\
+> -	__put_user_nocheck(*((type *)(dst)), (type *)(src), __kr_err);	\
+> +	__put_user_nocheck(*((type *)(src)), (type *)(dst), __kr_err);	\
+>  	if (unlikely(__kr_err))						\
+>  		goto err_label;						\
+>  } while (0)
 
-Now that you are going to resend it anyways, drop this blank line as
-well and mention that in the commit log.
-
->  	if (ret > 0) {
-> +		cpufreq_cdev->cpufreq_state = state;
->  		cpus = cpufreq_cdev->policy->cpus;
->  		max_capacity = arch_scale_cpu_capacity(cpumask_first(cpus));
->  		capacity = frequency * max_capacity;
-
-Good catch Zhuguangqing. Thanks.
-
-Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
-
--- 
-viresh
+Thanks, this is on fixes.
