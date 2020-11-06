@@ -2,94 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E09C2A947C
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 11:38:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46A3B2A948F
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 11:39:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727168AbgKFKiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 05:38:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34240 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727140AbgKFKiC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 05:38:02 -0500
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 73ECD20702;
-        Fri,  6 Nov 2020 10:38:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604659082;
-        bh=96sVWS8VO/ONFzQ6FJE2fVYD3WeXWxXGoalF8Bg6h0w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Wyh+J6qlrauKrR/bERnNw4Y+vAInAXAPR/KcIYirYfG3g+VypK3ZSInJI+i2fM8cT
-         qhlM59AfksNVPWlt3cZDeYImQWV8NDsVnFm/YK7XtWNar0toedXmM9YVi1rZok7Alq
-         Gz4XqBMmVMAI4ilfaN8TJfxKsASoHHU6RhepPiVE=
-Date:   Fri, 6 Nov 2020 10:37:56 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Qian Cai <cai@redhat.com>
-Cc:     paulmck@kernel.org, catalin.marinas@arm.com,
-        kernel-team@android.com, Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] arm64/smp: Move rcu_cpu_starting() earlier
-Message-ID: <20201106103755.GA9729@willie-the-truck>
-References: <20201028182614.13655-1-cai@redhat.com>
- <160404559895.1777248.8248643695413627642.b4-ty@kernel.org>
- <20201105222242.GA8842@willie-the-truck>
- <3b4c324abdabd12d7bd5346c18411e667afe6a55.camel@redhat.com>
- <20201105232813.GR3249@paulmck-ThinkPad-P72>
- <ec2de23c04e400266fcf98dfd282da0b173a68c3.camel@redhat.com>
+        id S1726989AbgKFKjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 05:39:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35956 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726702AbgKFKjr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 05:39:47 -0500
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AF74C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 02:39:47 -0800 (PST)
+Received: by mail-lf1-x142.google.com with SMTP id f9so1260313lfq.2
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 02:39:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=J2yvdHsoKp1oMN1psgcnuYwd/2InocpPLSKi5LUXlgY=;
+        b=DOxSvSO6p3ITlvfLOX0xa5YgF9eLZhy9CsZ9nlQ2njxpWX0Y4NsBg5GX0ioXld/N4o
+         8Kxm/vzF3VyILxdu86LKszT670k8+rDcmiDgX1wpjlpjj5ypgOeOqmnyI1+bmOAIA9vV
+         oZQwdprT/YABRmjWzrKMo5rDMjDWbmhRwi7MY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=J2yvdHsoKp1oMN1psgcnuYwd/2InocpPLSKi5LUXlgY=;
+        b=VmhmenI/a1bF2bwrkvzIJfaAXK5LG7JhV0k0aoj73yFotMjJR2ELtJx6wc2OJgCVkL
+         Zx9MJuROsO4RM8NAOA7cCx+aEcaWyb7qjYHJs3KWSRkyoa1SfhUOP5mmOFLhH/RIkn5y
+         oHVKfYUTNSU0xdQLzCNscErYapgmkFBzbfK87p2Vhmg99h7M6572IW57RW3kxSmXbjtd
+         jTG0oMU4zeyx4qHwHzfla4D6orx3VuChydyH2/tvi9A1jS/IbOSSFupov2Y6D5IS5FcP
+         SVgz2LbvsXafzI2LR8ZQLAx472DxGMnlP3VVUpIC9Sl4x96nVDgzyG+9kgSv/IcmkCgy
+         aw6A==
+X-Gm-Message-State: AOAM533nt9GlobFHjqevJsy3ny0U4z+vsEUYT27SFvCdt4cL6DJmBh/I
+        uWIitabuftFH4F4MO6kVVd8s2q7Ck0Tm1TMIPKoNcw==
+X-Google-Smtp-Source: ABdhPJyeP7xRVY/y3shA3XXPN/+BGxlH2GFZDqB4MLTzVW559sj32dKbBNeK1q/sp3XNYonhQ7jgeD3Oyi9A+bHls2g=
+X-Received: by 2002:ac2:562a:: with SMTP id b10mr606392lff.562.1604659185518;
+ Fri, 06 Nov 2020 02:39:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ec2de23c04e400266fcf98dfd282da0b173a68c3.camel@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201105225827.2619773-1-kpsingh@chromium.org>
+ <20201105225827.2619773-9-kpsingh@chromium.org> <20201106021418.w34sar72sbddzwqo@ast-mbp>
+In-Reply-To: <20201106021418.w34sar72sbddzwqo@ast-mbp>
+From:   KP Singh <kpsingh@chromium.org>
+Date:   Fri, 6 Nov 2020 11:39:34 +0100
+Message-ID: <CACYkzJ5yQUywf3bkmh1dmmN3xmK5nED94oHs6cfEGcby=-j-Hg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 8/9] bpf: Add tests for task_local_storage
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Paul Turner <pjt@google.com>,
+        Jann Horn <jannh@google.com>, Hao Luo <haoluo@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 09:15:24PM -0500, Qian Cai wrote:
-> On Thu, 2020-11-05 at 15:28 -0800, Paul E. McKenney wrote:
-> > On Thu, Nov 05, 2020 at 06:02:49PM -0500, Qian Cai wrote:
-> > > On Thu, 2020-11-05 at 22:22 +0000, Will Deacon wrote:
-> > > > Hmm, this patch has caused a regression in the case that we fail to
-> > > > online a CPU because it has incompatible CPU features and so we park it
-> > > > in cpu_die_early(). We now get an endless spew of RCU stalls because the
-> > > > core will never come online, but is being tracked by RCU. So I'm tempted
-> > > > to revert this and live with the lockdep warning while we figure out a
-> > > > proper fix.
-> > > > 
-> > > > What's the correct say to undo rcu_cpu_starting(), given that we cannot
-> > > > invoke the full hotplug machinery here? Is it correct to call
-> > > > rcutree_dying_cpu() on the bad CPU and then rcutree_dead_cpu() from the
-> > > > CPU doing cpu_up(), or should we do something else?
-> > > It looks to me that rcu_report_dead() does the opposite of
-> > > rcu_cpu_starting(),
-> > > so lift rcu_report_dead() out of CONFIG_HOTPLUG_CPU and use it there to
-> > > rewind,
-> > > Paul?
-> > 
-> > Yes, rcu_report_dead() should do the trick.  Presumably the earlier
-> > online-time CPU-hotplug notifiers are also unwound?
-> I don't think that is an issue here. cpu_die_early() set CPU_STUCK_IN_KERNEL,
-> and then __cpu_up() will see a timeout waiting for the AP online and then deal
-> with CPU_STUCK_IN_KERNEL according. Thus, something like this? I don't see
-> anything in rcu_report_dead() depends on CONFIG_HOTPLUG_CPU=y.
+On Fri, Nov 6, 2020 at 3:14 AM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Thu, Nov 05, 2020 at 10:58:26PM +0000, KP Singh wrote:
+> > +
+> > +     ret =3D copy_file_range(fd_in, NULL, fd_out, NULL, stat.st_size, =
+0);
+>
+> centos7 glibc doesn't have it.
+>
+> /prog_tests/test_local_storage.c:59:8: warning: implicit declaration of f=
+unction =E2=80=98copy_file_range=E2=80=99; did you mean =E2=80=98sync_file_=
+range=E2=80=99? [-Wimplicit-function-declaration]
+>    59 |  ret =3D copy_file_range(fd_in, NULL, fd_out, NULL, stat.st_size,=
+ 0);
+>       |        ^~~~~~~~~~~~~~~
+>       |        sync_file_range
+>   BINARY   test_progs
+>   BINARY   test_progs-no_alu32
+> ld: test_local_storage.test.o: in function `copy_rm':
+> test_local_storage.c:59: undefined reference to `copy_file_range'
+>
+> Could you use something else or wrap it similar to pidfd_open ?
 
-Cheers both for suggesting rcu_report_dead().
-
-> diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
-> index 09c96f57818c..10729d2d6084 100644
-> --- a/arch/arm64/kernel/smp.c
-> +++ b/arch/arm64/kernel/smp.c
-> @@ -421,6 +421,8 @@ void cpu_die_early(void)
->  
->  	update_cpu_boot_status(CPU_STUCK_IN_KERNEL);
->  
-> +	rcu_report_dead(cpu);
-
-I think this is in the wrong place, see:
-
-https://lore.kernel.org/r/20201106103602.9849-1-will@kernel.org
-
-which seems to fix the problem for me.
-
-Will
+Sure, I created a wrapper similar to pidfd_open and sent out a v6.
