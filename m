@@ -2,92 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFFB62A9E02
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 20:27:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01AC52A9E06
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 20:30:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728225AbgKFT1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 14:27:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34796 "EHLO
+        id S1728176AbgKFTa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 14:30:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726415AbgKFT1w (ORCPT
+        with ESMTP id S1726415AbgKFTa1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 14:27:52 -0500
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA2DCC0613CF;
-        Fri,  6 Nov 2020 11:27:51 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id q3so2383170edr.12;
-        Fri, 06 Nov 2020 11:27:51 -0800 (PST)
+        Fri, 6 Nov 2020 14:30:27 -0500
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C46BC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 11:30:27 -0800 (PST)
+Received: by mail-qk1-x741.google.com with SMTP id b18so2130965qkc.9
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 11:30:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zudEAR/I5Al2cSyHqgZYcwuZhN0AmEO/U0JSCqNh/mo=;
-        b=pVY4Nv+qY9Q/0jvmAFSvN+UUCDwEskK2v7w5NJIrhElojR2e9T4rQ+3ONP/0KGmps9
-         Z+so8DvHNqBstvblmf7l3hySSDUECnwm0MK6QILFgGa7LAURh3aY/Zhcu/mT9B3khSb+
-         j2ecnMAYl+a8UoOGdCwe4sP09VMsqjHFsgz/azSI5TX6XHyhSJ39aTUA26XKZ6uRU7Je
-         hV6yIlKatroSlO2557RaOdqCurAUFw9TLf0kGjYR161Qep5XhebxwdkhtG04qYEkhIgl
-         Z/pWgJzEJJb8rwdrOBNPwcb751ROluEhHeFDQ9x5WXGZPHFUhSPetui4vHQUNB5zB0UU
-         MKWg==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=vFAruLUORQHUqfhAcqrK3kHFrju7FmZIpz+3LtddQik=;
+        b=iJjd0FsgKSz4UMVJ0yEYuTXP+TTkCpe11X1VygTFEfMhBu4zVCI1R/v6juANR2qB4Q
+         5Bels1w2oZzLmDsNDoThRLoK7kc/zdpwPO4UT6x6EAkceI8g/JOjAG91xGYl7kSFCQ/W
+         ZbgarmDUY3PKv06eSLmj2WHCkLP1NnOHCZkgrx7CXQDuCJ/z7qt+/GjYjmsDayhhFmyK
+         CViF4N4YOhwIP8BSr0EwEqNCdu9hb5mbPEEbp3iUTLeV3XnYywXW188JOM3kSYxEOLV5
+         mfupyKsZCd/zGG/BUy47UXOrZMvD0veRq8OcWLdma8c/DrK5Km76/lwmXa36HDCDsiN4
+         sXwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zudEAR/I5Al2cSyHqgZYcwuZhN0AmEO/U0JSCqNh/mo=;
-        b=qEyjVrAaSxXN9/QMbCwMAOfs6MtLUVC6ZH2ul2rEI630d1g0K3aELSWWCnRu+kRJQP
-         NwE1S45BxxiTmCWN9Khkha6vlvou3C/upXMx6ZZSOPL9raXL7IkgD5u2rkv3mfXW66f5
-         Djt6ZWF7/q8+JnMYnnAjb7C4awglwpgCWVIH5J7qYi0hW9+zjt6NIIfZqu8aMf1kpkns
-         veVFphfP/DMbItIvIUqiNYgdR60v6Qh64OLjd3ZQ+vw2kuJELvtgLS9i5ojAsGCMTFd9
-         UO5PxF+NrZQjxFMalQyxWVj5VA3wwfI0AVVF/DEw45kxCvBjf3x5k01nJzi7TkLXHHxP
-         M1oQ==
-X-Gm-Message-State: AOAM533xFOMr+ce9OHkIMNHYmz5jeagjecOUsJllKGoEICJG/NnMQ3r0
-        4HNDZrRNCk/0hK0KDgrtwqJVlMQLBYfbhA==
-X-Google-Smtp-Source: ABdhPJwMYXKjp47fPDssWdk/4AXjKV/voTNf03nsmqcWvdK4GJO0wvq1oz83zj+dEtUAuoxVo6ImJg==
-X-Received: by 2002:aa7:d858:: with SMTP id f24mr3585997eds.12.1604690869392;
-        Fri, 06 Nov 2020 11:27:49 -0800 (PST)
-Received: from kwango.local (ip-94-112-132-16.net.upcbroadband.cz. [94.112.132.16])
-        by smtp.gmail.com with ESMTPSA id 11sm1559425ejy.19.2020.11.06.11.27.48
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vFAruLUORQHUqfhAcqrK3kHFrju7FmZIpz+3LtddQik=;
+        b=OJlnRXWO8NFcROYorWLyfzylSelDMR6MNpG8ciIQituq/ixheloyuvLdMCwHO1Ks/h
+         5fZk0IYyXzTdHVejmj9NA/xjnQP1IYOAXVI4PBWCFJxVxLdLNKfcfnpBnxMc3w4ppGcp
+         8ZhEFQF5MvyFI1KkI9KjD5qdtoYlZ9JP5UznxGycR3ZMNZQNehwZVBchPdcn4t96NUEe
+         2Bgx+r2EuzphGYxlPaQir0B1sNc9/mgJnMbWd4ooGuublduVG6xVKJS3Heb1yEZwDvIu
+         2CUNrjrBxvdpbOggmv/J1z4oAahGoW/FQCjdkmOvr79Ylf6CoPUe7xZPtb0eYnhDyz/R
+         cicQ==
+X-Gm-Message-State: AOAM530KnpJtEcGWehEITGsKjdTvPVJ1hAWSD7zMPBAPFJkh3giV4vOP
+        cPwpqCK7/k2qO+Am6kL2bsjZjw==
+X-Google-Smtp-Source: ABdhPJze2F/Rq9sRVVe7Xk43RUxz3sel2lY1t652tRL/srA9lFIVY1sT0rqjvYUmBSCT+htfHCsU0Q==
+X-Received: by 2002:a37:e40b:: with SMTP id y11mr3193612qkf.29.1604691026426;
+        Fri, 06 Nov 2020 11:30:26 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id s2sm1115967qtw.44.2020.11.06.11.30.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Nov 2020 11:27:48 -0800 (PST)
-From:   Ilya Dryomov <idryomov@gmail.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Ceph fix for 5.10-rc3
-Date:   Fri,  6 Nov 2020 20:27:50 +0100
-Message-Id: <20201106192750.32141-1-idryomov@gmail.com>
-X-Mailer: git-send-email 2.19.2
+        Fri, 06 Nov 2020 11:30:25 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kb7RI-0011Hr-SE; Fri, 06 Nov 2020 15:30:24 -0400
+Date:   Fri, 6 Nov 2020 15:30:24 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Logan Gunthorpe <logang@deltatee.com>
+Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
+        Stephen Bates <sbates@raithlin.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Ira Weiny <iweiny@intel.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Don Dutile <ddutile@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Subject: Re: [RFC PATCH 14/15] PCI/P2PDMA: Introduce pci_mmap_p2pmem()
+Message-ID: <20201106193024.GW36674@ziepe.ca>
+References: <20201106170036.18713-1-logang@deltatee.com>
+ <20201106170036.18713-15-logang@deltatee.com>
+ <20201106172206.GS36674@ziepe.ca>
+ <b1e8dfce-d583-bed8-d04d-b7265a54c99f@deltatee.com>
+ <20201106174223.GU36674@ziepe.ca>
+ <2c2d2815-165e-2ef9-60d6-3ace7ff3aaa5@deltatee.com>
+ <20201106180922.GV36674@ziepe.ca>
+ <09885400-36f8-bc1d-27f0-a8adcf6104d4@deltatee.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <09885400-36f8-bc1d-27f0-a8adcf6104d4@deltatee.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Fri, Nov 06, 2020 at 11:20:05AM -0700, Logan Gunthorpe wrote:
+> 
+> 
+> On 2020-11-06 11:09 a.m., Jason Gunthorpe wrote:
+> >> Ah, hmm, yes. I guess the pages have to be hooked and returned to the
+> >> genalloc through free_devmap_managed_page(). 
+> > 
+> > That sounds about right, but in this case it doesn't need the VMA
+> > operations.
+> > 
+> >> Seems like it might be doable... but it will complicate things for
+> >> users that don't want to use the genpool (though no such users exist
+> >> upstream).
+> > 
+> > I would like to use this stuff in RDMA pretty much immediately and the
+> > genpool is harmful for those cases, so please don't make decisions
+> > that are tying thing to genpool
+> 
+> I certainly can't make decisions for code that isn't currently
+> upstream.
 
-The following changes since commit 3cea11cd5e3b00d91caf0b4730194039b45c5891:
+The rdma drivers are all upstream, what are you thinking about?
 
-  Linux 5.10-rc2 (2020-11-01 14:43:51 -0800)
+> Ultimately, if you aren't using the genpool you will have to implement
+> your own mmap operation that somehow allocates the pages and your own
+> page_free hook. 
 
-are available in the Git repository at:
+Sure, the mlx5 driver already has a specialized alloctor for it's BAR
+pages.
 
-  https://github.com/ceph/ceph-client.git tags/ceph-for-5.10-rc3
+> I also don't expect this to be going upstream in the near term so don't
+> get too excited about using it.
 
-for you to fetch changes up to 62575e270f661aba64778cbc5f354511cf9abb21:
+I don't know, it is actually not that horrible, the GUP and IOMMU
+related changes are simpler than I expected
 
-  ceph: check session state after bumping session->s_seq (2020-11-04 20:55:49 +0100)
-
-----------------------------------------------------------------
-A fix for a potential stall on umount caused by the MDS dropping
-our REQUEST_CLOSE message.  The code that handled this case was
-inadvertently disabled in 5.9, this patch removes it entirely and
-fixes the problem in a way that is consistent with ceph-fuse.
-
-----------------------------------------------------------------
-Jeff Layton (1):
-      ceph: check session state after bumping session->s_seq
-
- fs/ceph/caps.c       |  2 +-
- fs/ceph/mds_client.c | 50 +++++++++++++++++++++++++++++++++++---------------
- fs/ceph/mds_client.h |  1 +
- fs/ceph/quota.c      |  2 +-
- fs/ceph/snap.c       |  2 +-
- 5 files changed, 39 insertions(+), 18 deletions(-)
+Jason
