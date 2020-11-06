@@ -2,107 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3F422A9906
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 17:04:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C73462A990A
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 17:05:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727118AbgKFQDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 11:03:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59278 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726831AbgKFQDx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 11:03:53 -0500
-Received: from linux-8ccs.fritz.box (p57a236d4.dip0.t-ipconnect.de [87.162.54.212])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B04C2208C7;
-        Fri,  6 Nov 2020 16:03:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604678632;
-        bh=EYK+J+nFdAu5CEbJrfqWZq4PGL/t0JmQeodkAruc60E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UHM7wJvE07Wa3hVRkhdkb/75xQO+HuXaQzce6E9FNDwyZx8Ir43LvS03WIcGblB9g
-         d3AIuBzRmSgG0IzSUhJ6wzw1/3RUJqRw7XbEIr42GbzU0BdgAZlH/J+UP3/sqC5wtf
-         dZeLHsfiaIqhYWLbBMKlhFwnF+4FqwH7VDiXUOso=
-Date:   Fri, 6 Nov 2020 17:03:45 +0100
-From:   Jessica Yu <jeyu@kernel.org>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nick Desaulniers <ndesaulniers@gooogle.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Jelinek <jakub@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Kurtz <djkurtz@chromium.org>,
-        linux-arch@vger.kernel.org, linux-m68k@lists.linux-m68k.org
-Subject: Re: [PATCH 0/8] linker-section array fix and clean ups
-Message-ID: <20201106160344.GA12184@linux-8ccs.fritz.box>
-References: <20201103175711.10731-1-johan@kernel.org>
+        id S1726321AbgKFQFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 11:05:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58814 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725868AbgKFQFQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 11:05:16 -0500
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C90BC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 08:05:16 -0800 (PST)
+Received: by mail-pl1-x642.google.com with SMTP id k7so855330plk.3
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 08:05:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FoXLdGBXdDw+uNhHPXkAApRLi9OkMFj360uNnK0TzyI=;
+        b=jxymNEiBQdKqAHykPjKbWpEhm4u9GCjg7eq5wCGyJLgHLTYslfM/0NPk0SXdfY24QZ
+         cnpnmr2OE9cBW3K8cFRTos0+c1g5aRS87zl4gsPQecUKK3amXqdY+jjM+Q1nEYwMSJor
+         JqheHA4SZJwORlrnrHUIlAjyb4X/ts3GNBBSAubExNR4oNKpQCWRPaFFcwOaBdReFR8P
+         gUb8hdP1kCHx3otLu+Vvein8AqOttA77bCacIArXzOqpFzJYdob1AllyM63YX2IFVQ/O
+         ro4Y1eWnlSN3BjVMzZ8AZPQZZDJWLEIJK/DXrp7l4yon8Mur8vvUBjCCLgLeXL/Y6Neq
+         Qv9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FoXLdGBXdDw+uNhHPXkAApRLi9OkMFj360uNnK0TzyI=;
+        b=q+RjPq8lkjr4B4ttrgJBARLORpzO0+QcW5SVhpIbbsAe9jYLSPAKK03T5iD3t4d3YG
+         yXaS/qKNJiRuyPaVV6AXILtFCEJ1UJCryWEEUpjwYccR6nzqWBz+A5mw9DUqnWp5id72
+         32w1kFEgSYhW/wefV0gPtOZvJbXvIqqGi510RvSGpdFUgrF68GcLmevBtAs199Y7YgBo
+         mYQjS5pZS7YojCu+NvXMWU+iLebsX8eyRbuS0Lt3sFK+077cnGUyiUkXQ5muVjPjdlzq
+         RlGNOrHA2EALIQkYv5zbzPeQbanK+X2SQx2oBA14Q+yu+VgYmQ8IdyvKCkJuEmGV/woB
+         /y5w==
+X-Gm-Message-State: AOAM530TaEal00LaD+xqPknKV1HlrqX0EXz81vLlZW12bXBs4xNxoYYj
+        bpbx5gGXykbRhWO/iBRX277CGdkxTD0h4c2Ucic=
+X-Google-Smtp-Source: ABdhPJz/nrWsBe1yaqnUnN57MUNrXaKdxF0bSsQg2P3Pu351GfUOcDtnIp/ZKl5jKvXBTQu/50DK+x9OZX4FbR9elts=
+X-Received: by 2002:a17:902:6bc8:b029:d6:d9d:f28c with SMTP id
+ m8-20020a1709026bc8b02900d60d9df28cmr2172651plt.17.1604678715972; Fri, 06 Nov
+ 2020 08:05:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20201103175711.10731-1-johan@kernel.org>
-X-OS:   Linux linux-8ccs 4.12.14-lp150.12.61-default x86_64
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201106143551.43908-1-andriy.shevchenko@linux.intel.com> <e461a47754974c0d8d0b61981b77ae80@AcuMS.aculab.com>
+In-Reply-To: <e461a47754974c0d8d0b61981b77ae80@AcuMS.aculab.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 6 Nov 2020 18:06:04 +0200
+Message-ID: <CAHp75VfTFL_7bJ5HyyuATVk32+buD9JoNDhyf1noAfoFGqJ_OQ@mail.gmail.com>
+Subject: Re: [PATCH v1 1/3] vt: keyboard, use GENMAASK()/BIT() macros instead
+ of open coded variants
+To:     David Laight <David.Laight@aculab.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+++ Johan Hovold [03/11/20 18:57 +0100]:
->We rely on the linker to create arrays for a number of things including
->kernel parameters and device-tree-match entries.
+On Fri, Nov 6, 2020 at 5:35 PM David Laight <David.Laight@aculab.com> wrote:
 >
->The stride of these linker-section arrays obviously needs to match the
->expectations of the code accessing them or bad things will happen.
+> From: Andy Shevchenko
+> > Sent: 06 November 2020 14:36
+> >
+> > There are few places when GENMASK() or BIT() macro is suitable and makes code
+> > easier to understand.
+> >
+> ...
+> > -     if ((d & ~0xff) == BRL_UC_ROW) {
+> > -             if ((ch & ~0xff) == BRL_UC_ROW)
+> > +     if ((d & ~GENMASK(7, 0)) == BRL_UC_ROW) {
+> > +             if ((ch & ~GENMASK(7, 0)) == BRL_UC_ROW)
+> >                       return d | ch;
 >
->One thing to watch out for is that gcc is known to increase the
->alignment of larger objects with static extent as an optimisation (on
->x86), but this can be suppressed by using the aligned attribute when
->declaring entries.
->
->We've been relying on this behaviour for 16 years for kernel parameters
->(and other structures) and it indeed hasn't changed since the
->introduction of the aligned attribute in gcc 3.1 (see align_variable()
->in [1]).
->
->Occasionally this gcc optimisation do cause problems which have instead
->been worked around in various creative ways including using indirection
->through an array of pointers. This was originally done for tracepoints
->[2] after a number of failed attempts to create properly aligned arrays,
->and the approach was later reused for module-version attributes [3] and
->earlycon entries.
+> Do you really think that makes it more readable?
 
->[2] https://lore.kernel.org/lkml/20110126222622.GA10794@Krystal/
+Yes. Because this tells explicitly how many bits are used for metadata
+vs. data.
 
-Hi Johan,
-
-So unfortunately, I am not familiar enough with the semantics of gcc's
-aligned attribute. AFAICT from the patch you linked in [2], the
-original purpose of the pointer indirection workaround was to avoid
-relying on (potentially inconsistent) compiler-specific behavior with
-respect to the aligned attribute. The main concern was potential
-up-alignment being done by gcc (or the linker) despite the desired
-alignment being specified. Indeed, the gcc documentation also states
-that the aligned attribute only specifies the *minimum* alignment,
-although there's no guarantee that up-alignment wouldn't occur.
-
-So I guess my question is, is there some implicit guarantee that
-specifying alignment by type via __alignof__ that's supposed to
-prevent gcc from up-aligning? Or are we just assuming that gcc won't
-increase the alignment? The gcc docs don't seem to clarify this
-unfortunately.
-
-Thanks,
-
-Jessica
-
-
-
-
+-- 
+With Best Regards,
+Andy Shevchenko
