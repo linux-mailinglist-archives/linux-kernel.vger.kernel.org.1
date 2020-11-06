@@ -2,119 +2,298 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A8902A9939
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 17:14:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81B312A993D
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 17:15:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727185AbgKFQOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 11:14:18 -0500
-Received: from mail.monom.org ([188.138.9.77]:48096 "EHLO mail.monom.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727020AbgKFQOR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 11:14:17 -0500
-Received: from mail.monom.org (localhost [127.0.0.1])
-        by filter.mynetwork.local (Postfix) with ESMTP id 39DD6500609;
-        Fri,  6 Nov 2020 17:14:14 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.monom.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=5.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=ham autolearn_force=no version=3.4.2
-Received: from localhost (unknown [94.31.100.251])
-        by mail.monom.org (Postfix) with ESMTPSA id DD6EE500596;
-        Fri,  6 Nov 2020 17:14:13 +0100 (CET)
-Date:   Fri, 6 Nov 2020 17:14:13 +0100
-From:   Daniel Wagner <wagi@monom.org>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [ANNOUNCE] v5.10-rc2-rt4
-Message-ID: <20201106161413.7c65uxenamy474uh@beryllium.lan>
-References: <20201103195731.erjkgyzxzzjylhui@linutronix.de>
- <20201104103809.bhl2iorbwv6xowtw@beryllium.lan>
- <20201104104617.ueefmpdou4t3t2ce@linutronix.de>
- <20201104111948.vpykh3ptmysqhmve@beryllium.lan>
- <20201104124746.74jdsig3dffomv3k@beryllium.lan>
- <20201104130930.llx56gtqt532h7c7@linutronix.de>
- <20201104160650.b63zqof74wohgpa2@beryllium.lan>
- <20201106105447.2lasulgjrbqdhnlh@linutronix.de>
+        id S1726808AbgKFQPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 11:15:21 -0500
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:36520 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725868AbgKFQPV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 11:15:21 -0500
+Received: by mail-ot1-f67.google.com with SMTP id 32so1712533otm.3;
+        Fri, 06 Nov 2020 08:15:19 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=B6YSrk+0c+AJwW3qgU6Jh+lEfY+XxZlQQTIhLOcyWxo=;
+        b=DuHVmIM6iLp93uRqnLP7xYM2k7FnxsQZlQO78Qv7YeB+sGIG4aI1QFUw6wEg+/dlUO
+         HA98e3zi+ILW8VCRneEt8wJtvuyiQ077QAxJBRNsR2TczHZ7juktCn19GXM4u0DwckXQ
+         Qj8ADXibhlYMejwktuXjkiYEeXVIAkss5+exdWfWiLKN3VmgQhvU18+4UHPjAWGzWgM2
+         xUTXbc9pBCBdqP2GBNGPuS6oCbWSeHvY99K5sSLrpbot65bC8+hpfyWItXZUcusZ0wf+
+         qACHLX4nrxDDjJKDT1nvpVT1XXLzeOjJmY1r+zfhpHWWg7vQQhrzi4M0UOvzQJgZsLsZ
+         UiPA==
+X-Gm-Message-State: AOAM530uI2Uha7QmPyRubTEM/aWTfapK8pC86DyoWxAlFmPpmXVAKHBy
+        QpG/gYi15OPzq0mY/v3xQw==
+X-Google-Smtp-Source: ABdhPJw5xaJPHanhZ1F9y0LCHHFDvpwMndnpkffIEpq4lPHPQNg8HLJDQWT7Z9LRZljRRMxOqZPcnA==
+X-Received: by 2002:a9d:550a:: with SMTP id l10mr1420812oth.357.1604679319573;
+        Fri, 06 Nov 2020 08:15:19 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id z19sm410303ooi.32.2020.11.06.08.15.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Nov 2020 08:15:18 -0800 (PST)
+Received: (nullmailer pid 3295473 invoked by uid 1000);
+        Fri, 06 Nov 2020 16:15:17 -0000
+Date:   Fri, 6 Nov 2020 10:15:17 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Sowjanya Komatineni <skomatineni@nvidia.com>
+Cc:     thierry.reding@gmail.com, jonathanh@nvidia.com,
+        devicetree@vger.kernel.org, linux-ide@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/4] dt-bindings: ata: tegra: Convert binding
+ documentation to YAML
+Message-ID: <20201106161517.GA3290506@bogus>
+References: <1604628968-1501-1-git-send-email-skomatineni@nvidia.com>
+ <1604628968-1501-2-git-send-email-skomatineni@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201106105447.2lasulgjrbqdhnlh@linutronix.de>
+In-Reply-To: <1604628968-1501-2-git-send-email-skomatineni@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 06, 2020 at 11:54:47AM +0100, Sebastian Andrzej Siewior wrote:
-> > rpi3    signaltest      5.9.0-rc8-rt12
-> >   813   0_signaltest         t0-max-latency      : fail     214.00
-> > rpi3    signaltest      5.9.0-rc8-rt12
-> >   874   0_signaltest         t0-max-latency      : fail     217.00
-> > rpi3    signaltest      5.9.0-rt16
-> >   963   0_signaltest         t0-max-latency      : fail     321.00
+On Thu, Nov 05, 2020 at 06:16:05PM -0800, Sowjanya Komatineni wrote:
+> This patch converts text based dt-binding document to YAML based
+> dt-binding document.
 > 
-> Here, rt 13,14,15 would be interesting so we could narrow down the
-> ~100us.
-> v5.9-rc8-rt14 got new migrate-disable but I wouldn't expect it to cause
-> it. The other changes look also harmless (like the rtmutex redo which
-> should be a 0 change but then it mighe behave differently in regard to
-> workqueue in some corner cases).
-
-rpi3    signaltest      5.9.0-rc8-rt13
-  1196  0_signaltest         t0-max-latency      : fail     207.00
-  1196  0_signaltest         t0-avg-latency      : pass      46.00
-  1196  0_signaltest         t0-min-latency      : pass      22.00
-rpi3    signaltest      5.9.0-rc8-rt14
-  1197  0_signaltest         t0-max-latency      : fail     301.00
-  1197  0_signaltest         t0-avg-latency      : pass      47.00
-  1197  0_signaltest         t0-min-latency      : pass      20.00
-rpi3    signaltest      5.9.0-rt15
-  1198  0_signaltest         t0-max-latency      : fail     323.00
-  1198  0_signaltest         t0-avg-latency      : pass      47.00
-  1198  0_signaltest         t0-min-latency      : pass      21.00
-
-> > rpi3    signaltest      5.9.1-rt19
-> >   1038  0_signaltest         t0-max-latency      : fail     341.00
-> > rpi3    signaltest      5.9.1-rt20
-> >   1079  0_signaltest         t0-max-latency      : fail     318.00
->
-> So I have nothing to explain 20us improvement.
-
-I think 20us is in the range of the standard deviation for this test. So
-I don't think you should be concerned too much about it as long I don't
-have proper statistical numbers.
-
-One thing I also see is that the average was pretty constant at 47us for
-5.9-rt and for 5.10-rt series it's around 55us. So something makes the
-whole operation slightly more expensive.
-
-> > rpi3    signaltest      5.10.0-rc1-rt1
-> >   1118  0_signaltest         t0-max-latency      : fail     415.00
-> > rpi3    signaltest      5.10.0-rc2-rt4
-> >   1163  0_signaltest         t0-max-latency      : fail     340.00
+> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
+> ---
+>  .../devicetree/bindings/ata/nvidia,tegra-ahci.yaml | 152 +++++++++++++++++++++
+>  .../bindings/ata/nvidia,tegra124-ahci.txt          |  44 ------
+>  2 files changed, 152 insertions(+), 44 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/ata/nvidia,tegra-ahci.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/ata/nvidia,tegra124-ahci.txt
 > 
-> -rt2 gained new kmap code.
-> -rt3 received an update of the above
+> diff --git a/Documentation/devicetree/bindings/ata/nvidia,tegra-ahci.yaml b/Documentation/devicetree/bindings/ata/nvidia,tegra-ahci.yaml
+> new file mode 100644
+> index 0000000..ac20f6e
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/ata/nvidia,tegra-ahci.yaml
+> @@ -0,0 +1,152 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/ata/nvidia,tegra-ahci.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Tegra AHCI SATA Controller
+> +
+> +maintainers:
+> +  - Thierry Reding <thierry.reding@gmail.com>
+> +  - Jonathan Hunter <jonathanh@nvidia.com>
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - nvidia,tegra124-ahci
+> +      - nvidia,tegra132-ahci
+> +      - nvidia,tegra210-ahci
+> +
+> +  reg:
+> +    minItems: 2
+> +    maxItems: 3
+> +    items:
+> +      - description: AHCI registers
+> +      - description: SATA configuration and IPFS registers
+> +      - description: SATA AUX registers
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clock-names:
+> +    maxItems: 2
 
-rpi3    signaltest      5.10.0-rc1-rt2
-  1199  0_signaltest         t0-max-latency      : fail     399.00
-  1199  0_signaltest         t0-avg-latency      : pass      55.00
-  1199  0_signaltest         t0-min-latency      : pass      25.00
-rpi3    signaltest      5.10.0-rc2-rt3
-  1200  0_signaltest         t0-max-latency      : fail     420.00
-  1200  0_signaltest         t0-avg-latency      : pass      55.00
-  1200  0_signaltest         t0-min-latency      : pass      25.00
+Don't need maxItems, implied by the size of 'items'.
 
-> But all this is only signal right?
+> +    items:
+> +      - const: sata
+> +      - const: sata-oob
+> +
+> +  clocks:
+> +    maxItems: 2
+> +    description:
+> +      Must contain an entry for each entry in clock-names.
+> +      See ../clocks/clock-bindings.txt for details.
 
-Correct. I've observed this only for signaltest and sigwaittest.
+Drop 'description'. Says nothing specific to this binding.
 
-> Nothing on the cyclictest front?
+> +
+> +  reset-names:
+> +    maxItems: 3
 
-Correct, cyclictest doesn't show any regression.
+Need to define what each reset is.
 
-> If lazy-preempt broke in a way then it should be only noticed by
-> cyclictest. You can however disable lazy-preempt just to be sure.
+> +
+> +  resets:
+> +    maxItems: 3
+> +    description:
+> +      Must contain an entry for each entry in reset-names.
+> +      See ../reset/reset.txt for details.
 
-Sure, will do a full run on Monday.
+Drop 'description'. Says nothing specific to this binding.
+
+> +
+> +  phy-names:
+> +    items:
+> +      - const: sata-0
+> +
+> +  phys:
+> +    maxItems: 1
+> +    description:
+> +      Must contain an entry for each entry in phy-names.
+> +      See ../phy/phy-bindings.txt for details.
+
+Drop 'description'. Says nothing specific to this binding.
+
+> +
+> +  hvdd-supply:
+> +    description: SATA HVDD regulator supply.
+> +
+> +  vddio-supply:
+> +    description: SATA VDDIO regulator supply.
+> +
+> +  avdd-supply:
+> +    description: SATA AVDD regulator supply.
+> +
+> +  target-5v-supply:
+> +    description: SATA 5V power regulator supply.
+> +
+> +  target-12v-supply:
+> +    description: SATA 12V power regulator supply.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - clock-names
+> +  - clocks
+> +  - reset-names
+> +  - resets
+> +
+> +allOf:
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - nvidia,tegra124-ahci
+> +              - nvidia,tegra132-ahci
+> +    then:
+> +      properties:
+> +        reg:
+> +          maxItems: 2
+
+> +        reset-names:
+> +          minItems: 3
+> +          items:
+> +            - const: sata
+> +            - const: sata-oob
+> +            - const: sata-cold
+> +        resets:
+> +          minItems: 3
+
+This doesn't need to be conditional.
+
+> +      required:
+> +        - phys
+> +        - phy-names
+> +        - hvdd-supply
+> +        - vddio-supply
+> +        - avdd-supply
+> +
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - nvidia,tegra210-ahci
+> +    then:
+> +      properties:
+> +        reg:
+> +          minItems: 3
+> +        reset-names:
+> +          minItems: 3
+> +          items:
+> +            - const: sata
+> +            - const: sata-oob
+> +            - const: sata-cold
+> +        resets:
+> +          minItems: 3
+> +
+> +additionalProperties: true
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/tegra210-car.h>
+> +    #include <dt-bindings/reset/tegra210-car.h>
+> +
+> +    sata@70020000 {
+> +            compatible = "nvidia,tegra210-ahci";
+> +            reg = <0x0 0x70027000 0x0 0x00002000>, /* AHCI */
+> +                  <0x0 0x70020000 0x0 0x00007000>, /* SATA */
+> +                  <0x0 0x70001100 0x0 0x00010000>; /* SATA AUX */
+> +            interrupts = <GIC_SPI 23 IRQ_TYPE_LEVEL_HIGH>;
+> +            clocks = <&tegra_car TEGRA210_CLK_SATA>,
+> +                     <&tegra_car TEGRA210_CLK_SATA_OOB>;
+> +            clock-names = "sata", "sata-oob";
+> +            resets = <&tegra_car 124>,
+> +                     <&tegra_car 123>,
+> +                     <&tegra_car 129>;
+> +            reset-names = "sata", "sata-oob", "sata-cold";
+> +    };
+> diff --git a/Documentation/devicetree/bindings/ata/nvidia,tegra124-ahci.txt b/Documentation/devicetree/bindings/ata/nvidia,tegra124-ahci.txt
+> deleted file mode 100644
+> index 12ab2f7..0000000
+> --- a/Documentation/devicetree/bindings/ata/nvidia,tegra124-ahci.txt
+> +++ /dev/null
+> @@ -1,44 +0,0 @@
+> -Tegra SoC SATA AHCI controller
+> -
+> -Required properties :
+> -- compatible : Must be one of:
+> -  - Tegra124 : "nvidia,tegra124-ahci"
+> -  - Tegra132 : "nvidia,tegra132-ahci", "nvidia,tegra124-ahci"
+> -  - Tegra210 : "nvidia,tegra210-ahci"
+> -- reg : Should contain 2 entries:
+> -  - AHCI register set (SATA BAR5)
+> -  - SATA register set
+> -- interrupts : Defines the interrupt used by SATA
+> -- clocks : Must contain an entry for each entry in clock-names.
+> -  See ../clocks/clock-bindings.txt for details.
+> -- clock-names : Must include the following entries:
+> -  - sata
+> -  - sata-oob
+> -- resets : Must contain an entry for each entry in reset-names.
+> -  See ../reset/reset.txt for details.
+> -- reset-names : Must include the following entries:
+> -  - sata
+> -  - sata-oob
+> -  - sata-cold
+> -- phys : Must contain an entry for each entry in phy-names.
+> -  See ../phy/phy-bindings.txt for details.
+> -- phy-names : Must include the following entries:
+> -  - For Tegra124 and Tegra132:
+> -    - sata-phy : XUSB PADCTL SATA PHY
+> -- For Tegra124 and Tegra132:
+> -  - hvdd-supply : Defines the SATA HVDD regulator
+> -  - vddio-supply : Defines the SATA VDDIO regulator
+> -  - avdd-supply : Defines the SATA AVDD regulator
+> -  - target-5v-supply : Defines the SATA 5V power regulator
+> -  - target-12v-supply : Defines the SATA 12V power regulator
+> -
+> -Optional properties:
+> -- reg :
+> -  - AUX register set
+> -- clock-names :
+> -  - cml1 :
+> -    cml1 clock should be defined here if the PHY driver
+> -    doesn't manage them. If it does, they should not be.
+> -- phy-names :
+> -  - For T210:
+> -    - sata-phy
+> -- 
+> 2.7.4
+> 
