@@ -2,105 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D3362A9029
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 08:20:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAE402A902C
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 08:21:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726376AbgKFHUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 02:20:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45220 "EHLO mail.kernel.org"
+        id S1726402AbgKFHVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 02:21:45 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:53596 "EHLO m42-4.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725828AbgKFHUN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 02:20:13 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1725828AbgKFHVp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 02:21:45 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1604647305; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=f1H9b8iwuFP7YB9IDOFM48li6+QEDLP0G4r1bA+fhAo=; b=Hwq0z+FyWzC5r7xnOgvf2y5Q5brFdv7GtOlituqpbQu0BVPaKcCY09iK16TJamk/CfWcvQh2
+ HJkHkjwRi3vV3voaREb0DJrQhC5wOyyuKBRuYEmcWXGk4ELUzbYbFSwEAzVIgtQMUnEFCSR/
+ J5LSAZjI2Bk8w4m68Ef8aWj5+Wk=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 5fa4f98598aeba5841bcd329 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 06 Nov 2020 07:21:41
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 542E8C433CB; Fri,  6 Nov 2020 07:21:41 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 71421208FE;
-        Fri,  6 Nov 2020 07:20:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604647213;
-        bh=oiuaCuXvu3qqgBIhoDXutO+WSl9oQyHg8DPg/SV087A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oskLS4mXxC0RDgG0I5FjO85p80ZgUZ0104BLORszrRsPkyXTFbXfPtFkVV6Q3WogZ
-         n0gnUGzwZkHpBQi4pm56evnqzsFrDrVv8Sl8tRzi4FA8NNGDSmdr0rPofShS6xUaF0
-         KjcSF0SAixPF59HJ+J1K0Y7coyUpqlAw50jmIRs0=
-Date:   Fri, 6 Nov 2020 08:20:59 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Prashant Malani <pmalani@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, heikki.krogerus@linux.intel.com,
-        dzigterman@chromium.org, alevkoy@chromium.org,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>
-Subject: Re: [PATCH 6/6] platform/chrome: cros_ec_typec: Store cable plug type
-Message-ID: <20201106072059.GA2614221@kroah.com>
-References: <20201106012758.525472-1-pmalani@chromium.org>
- <20201106012758.525472-7-pmalani@chromium.org>
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D1B11C433C6;
+        Fri,  6 Nov 2020 07:21:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D1B11C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Rakesh Pillai <pillair@codeaurora.org>
+Cc:     ath10k@lists.infradead.org, kuabhs@chromium.org,
+        briannorris@chromium.org, linux-wireless@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dianders@chromium.org
+Subject: Re: [PATCH v2] ath10k: Fix the parsing error in service available event
+References: <1603904469-598-1-git-send-email-pillair@codeaurora.org>
+Date:   Fri, 06 Nov 2020 09:21:36 +0200
+In-Reply-To: <1603904469-598-1-git-send-email-pillair@codeaurora.org> (Rakesh
+        Pillai's message of "Wed, 28 Oct 2020 22:31:09 +0530")
+Message-ID: <874km3lzlr.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201106012758.525472-7-pmalani@chromium.org>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 05:28:03PM -0800, Prashant Malani wrote:
-> Use the PD VDO Type C cable plug type macro to retrieve and store the
-> cable plug type in the cable descriptor.
-> 
-> Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Prashant Malani <pmalani@chromium.org>
-> ---
->  drivers/platform/chrome/cros_ec_typec.c | 21 ++++++++++++++++++++-
->  1 file changed, 20 insertions(+), 1 deletion(-)
+Rakesh Pillai <pillair@codeaurora.org> writes:
 
-Where are the first 5 patches in this series?
+> The wmi service available event has been
+> extended to contain extra 128 bit for new services
+> to be indicated by firmware.
+>
+> Currently the presence of any optional TLVs in
+> the wmi service available event leads to a parsing
+> error with the below error message:
+> ath10k_snoc 18800000.wifi: failed to parse svc_avail tlv: -71
+>
+> The wmi service available event parsing should
+> not return error for the newly added optional TLV.
+> Fix this parsing for service available event message.
+>
+> Tested-on: WCN3990 hw1.0 SNOC
 
+Firmware version missing.
 
-> 
-> diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
-> index 5e7f0b4ebbec..0a2a8b0f8115 100644
-> --- a/drivers/platform/chrome/cros_ec_typec.c
-> +++ b/drivers/platform/chrome/cros_ec_typec.c
-> @@ -709,6 +709,7 @@ static int cros_typec_handle_sop_prime_disc(struct cros_typec_data *typec, int p
->  		.port = port_num,
->  		.partner_type = TYPEC_PARTNER_SOP_PRIME,
->  	};
-> +	uint32_t cable_plug_type;
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-u32 please, this isn't userspace code :)
-
->  	int ret = 0;
->  
->  	memset(disc, 0, EC_PROTO2_MAX_RESPONSE_SIZE);
-> @@ -722,8 +723,26 @@ static int cros_typec_handle_sop_prime_disc(struct cros_typec_data *typec, int p
->  	/* Parse the PD identity data, even if only 0s were returned. */
->  	cros_typec_parse_pd_identity(&port->c_identity, disc);
->  
-> -	if (disc->identity_count != 0)
-> +	if (disc->identity_count != 0) {
-> +		cable_plug_type = VDO_TYPEC_CABLE_TYPE(port->c_identity.vdo[0]);
-> +		switch (cable_plug_type) {
-> +		case CABLE_ATYPE:
-> +			desc.type = USB_PLUG_TYPE_A;
-> +			break;
-> +		case CABLE_BTYPE:
-> +			desc.type = USB_PLUG_TYPE_B;
-> +			break;
-> +		case CABLE_CTYPE:
-> +			desc.type = USB_PLUG_TYPE_C;
-> +			break;
-> +		case CABLE_CAPTIVE:
-> +			desc.type = USB_PLUG_CAPTIVE;
-> +			break;
-> +		default:
-> +			desc.type = USB_PLUG_NONE;
-> +		}
->  		desc.active = PD_IDH_PTYPE(port->c_identity.id_header) == IDH_PTYPE_ACABLE;
-> +	}
-
-So you save it but what happens with the value?
-
-confused,
-
-greg k-h
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
