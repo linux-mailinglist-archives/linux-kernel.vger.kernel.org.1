@@ -2,81 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C55EC2A9025
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 08:18:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C4942A8FC5
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 08:01:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726343AbgKFHSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 02:18:40 -0500
-Received: from mx2.suse.de ([195.135.220.15]:45598 "EHLO mx2.suse.de"
+        id S1726274AbgKFHBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 02:01:08 -0500
+Received: from helcar.hmeau.com ([216.24.177.18]:35008 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725830AbgKFHSk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 02:18:40 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C69A8AB8F;
-        Fri,  6 Nov 2020 07:18:38 +0000 (UTC)
-Date:   Thu, 5 Nov 2020 22:56:42 -0800
-From:   Davidlohr Bueso <dave@stgolabs.net>
-To:     paulmck@kernel.org
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
-Subject: Re: [PATCH tip/core/rcu 03/28] locktorture: Track time of last
- ->writeunlock()
-Message-ID: <20201106065642.ti7mgrll7mbrndja@linux-p48b.lan>
-References: <20201105234658.GA23142@paulmck-ThinkPad-P72>
- <20201105234719.23307-3-paulmck@kernel.org>
+        id S1725828AbgKFHBH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 02:01:07 -0500
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1kavk8-0007zq-Nj; Fri, 06 Nov 2020 18:01:05 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 06 Nov 2020 18:01:04 +1100
+Date:   Fri, 6 Nov 2020 18:01:04 +1100
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Iuliana Prodan <iuliana.prodan@nxp.com>
+Cc:     Horia Geanta <horia.geanta@nxp.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Silvano Di Ninno <silvano.dininno@nxp.com>,
+        Franck Lenormand <franck.lenormand@nxp.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-imx <linux-imx@nxp.com>,
+        Andrei Botila <andrei.botila@nxp.com>,
+        Dragos Rosioru <dragos.rosioru@nxp.com>
+Subject: Re: [PATCH v2] crypto: caam - enable crypto-engine retry mechanism
+Message-ID: <20201106070104.GB11620@gondor.apana.org.au>
+References: <1603739186-4007-1-git-send-email-iuliana.prodan@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201105234719.23307-3-paulmck@kernel.org>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <1603739186-4007-1-git-send-email-iuliana.prodan@nxp.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 05 Nov 2020, paulmck@kernel.org wrote:
+On Mon, Oct 26, 2020 at 09:06:26PM +0200, Iuliana Prodan wrote:
+> Use the new crypto_engine_alloc_init_and_set() function to
+> initialize crypto-engine and enable retry mechanism.
+> 
+> Set the maximum size for crypto-engine software queue based on
+> Job Ring size (JOBR_DEPTH) and a threshold (reserved for the
+> non-crypto-API requests that are not passed through crypto-engine).
+> 
+> The callback for do_batch_requests is NULL, since CAAM
+> doesn't support linked requests.
+> 
+> Signed-off-by: Iuliana Prodan <iuliana.prodan@nxp.com>
+> ---
+> Changes since v1:
+> - add comment for THRESHOLD define;
+> - update max size for crypto-engine queue.
+> 
+>  drivers/crypto/caam/intern.h | 8 ++++++++
+>  drivers/crypto/caam/jr.c     | 4 +++-
+>  2 files changed, 11 insertions(+), 1 deletion(-)
 
->From: "Paul E. McKenney" <paulmck@kernel.org>
->
->This commit adds a last_lock_release variable that tracks the time of
->the last ->writeunlock() call, which allows easier diagnosing of lock
->hangs when using a kernel debugger.
-
-This makes sense to have.
-
-Acked-by: Davidlohr Bueso <dbueso@suse.de>
-
->
->Cc: Davidlohr Bueso <dave@stgolabs.net>
->Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
->---
-> kernel/locking/locktorture.c | 2 ++
-> 1 file changed, 2 insertions(+)
->
->diff --git a/kernel/locking/locktorture.c b/kernel/locking/locktorture.c
->index 62d215b..316531d 100644
->--- a/kernel/locking/locktorture.c
->+++ b/kernel/locking/locktorture.c
->@@ -60,6 +60,7 @@ static struct task_struct **reader_tasks;
->
-> static bool lock_is_write_held;
-> static bool lock_is_read_held;
->+static unsigned long last_lock_release;
->
-> struct lock_stress_stats {
-> 	long n_lock_fail;
->@@ -632,6 +633,7 @@ static int lock_torture_writer(void *arg)
-> 		lwsp->n_lock_acquired++;
-> 		cxt.cur_ops->write_delay(&rand);
-> 		lock_is_write_held = false;
->+		WRITE_ONCE(last_lock_release, jiffies);
-> 		cxt.cur_ops->writeunlock();
->
-> 		stutter_wait("lock_torture_writer");
->-- 
->2.9.5
->
+Patch applied.  Thanks.
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
