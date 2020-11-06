@@ -2,74 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3808D2A9521
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 12:20:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB0532A9529
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 12:24:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727078AbgKFLUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 06:20:00 -0500
-Received: from mail-ej1-f68.google.com ([209.85.218.68]:41590 "EHLO
-        mail-ej1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726694AbgKFLT7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 06:19:59 -0500
-Received: by mail-ej1-f68.google.com with SMTP id cw8so1382328ejb.8;
-        Fri, 06 Nov 2020 03:19:58 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ziNvoLqJH7trwLeYEvENeRDUAosQ9M0r6jD8htXIwKA=;
-        b=LMDoy+RUXRMGxOrEtMpxqyOvz2vIyjw8COsdIAzFGQLGQKZ8kCqSZY5PoN5tRQprTw
-         7hyuYXSSH6OiqGwOY0CSNX3DBdWEQ89K90/xQ7aVILjgLC2sAtj64WrdmjEfC6Qc03vb
-         VXENDVzBrMoScFprs2skJ4F6qXJ6boB0b5Sh9tSsf2t1KG67Sd1X3OQ/E35yBfW4Bjdg
-         IPatvpsQFoZCx9WcY386l9vK1WnPChwMrYctlD/GyNyvod0p0bmt4BNjSEad7F28TvFL
-         bKhsawYRx6zjTRIaZXrKw2xZ3SWk1BigWOTISTFJbGcjhYDry6G8msw+g9e+Zm1JbKnR
-         1svg==
-X-Gm-Message-State: AOAM531XdIF3s+2PUP0ZN4rd2uSOv7e7LrFbki9rFJuheed2zoD5G59K
-        t3kL8qNbMRacae1UzhcueisFTH082do=
-X-Google-Smtp-Source: ABdhPJxTqgVSSxfMdv+yxhaKXabYkER/oNkypnz9kcxPBcJXK8VlRA1Ga0WAfBseIQd9vPQHtTXdtw==
-X-Received: by 2002:a17:906:2697:: with SMTP id t23mr1587648ejc.292.1604661597674;
-        Fri, 06 Nov 2020 03:19:57 -0800 (PST)
-Received: from ?IPv6:2a0b:e7c0:0:107::49? ([2a0b:e7c0:0:107::49])
-        by smtp.gmail.com with ESMTPSA id q2sm675109ejd.20.2020.11.06.03.19.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Nov 2020 03:19:56 -0800 (PST)
-Subject: Re: [PATCH 13/36] tty: serial: 8250: 8250_port: Staticify functions
- referenced by pointers
-To:     Lee Jones <lee.jones@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, Mike Hudson <Exoray@isys.ca>,
-        linux-serial@vger.kernel.org
-References: <20201104193549.4026187-1-lee.jones@linaro.org>
- <20201104193549.4026187-14-lee.jones@linaro.org>
- <20201106095326.GA2652562@kroah.com> <20201106100552.GA2063125@dell>
- <20201106101646.GB2063125@dell> <20201106103955.GA2784089@kroah.com>
- <20201106104810.GE2063125@dell> <20201106105552.GA2810950@kroah.com>
- <20201106111251.GF2063125@dell>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <aa8356e2-a9b9-f8b9-1d10-62d75399e7d9@kernel.org>
-Date:   Fri, 6 Nov 2020 12:19:55 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.3
+        id S1726924AbgKFLYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 06:24:53 -0500
+Received: from mout.gmx.net ([212.227.15.15]:44167 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726317AbgKFLYw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 06:24:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1604661873;
+        bh=lhohKOIKXj6+coWa/IJX1bitwsLCvLPmJdHjI+nhsnE=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=GJXP6IfKeFDNRJ+XoBldtgS/wBB50nySNORmA3RTL6nS1rVojMCgcAPVidl1rSKjJ
+         NCRMidOI8CuJQVWC8m+VTVHX3chqDVaM2nivtP76qATf4Msc4nkI/cHSC7VIy5+s+1
+         AnwkrzLVAz152j0OeGdv3cFjMBH+Ap5Hti3wdTQE=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from longitude ([37.201.214.162]) by mail.gmx.com (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MvsIv-1kImaF3R1r-00svoh; Fri, 06
+ Nov 2020 12:24:32 +0100
+From:   =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+To:     linux-input@vger.kernel.org
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH 0/3] Support for ELAN eKTF2132 touchscreens
+Date:   Fri,  6 Nov 2020 12:24:09 +0100
+Message-Id: <20201106112412.390724-1-j.neuschaefer@gmx.net>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <20201106111251.GF2063125@dell>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:OmafO1ws4UlwhI8UAMxZtjR30SIUl9Uf9v8vCFwPANj/cHkC1+b
+ e5Fq2UrKNM1RLhVM2Gmc5Z3akcX6e8/r4W2A4KM7pae4R9LJ/Dnn7zO0lAtSN6eAySC3kGT
+ foMuSzwUOFRij6kkGpoQZKf47B8tVRPRRqRmGjy9Z9vn0sUWrzGyc5ND+jxkbKcX39Ns91B
+ +Sgzo/2b3LWvhXUx3Xd6Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:rcf8h5w3onQ=:b9YeVKlIPWbuKNBSGa+plZ
+ Mz6yRbCRDiZx63rgKo/F7ivAgDtdEENdy4Fv3PkpHYEj330yT5NNqDBnZ0s658xumiBHuJfjS
+ 72SxPHBqtgWA68BCOMddndWjnBKPMI9YY6HguUh8aDP6T87jFDyJZIhLq/L29x+tb6OG/ngHF
+ pbg7NLotASkA79F4iIhihMjEHW+hHRzQ/vSIp0UdQRpGViXobh4Fniq8sNsHHn5NdsFOzm+Tl
+ u9GrhF5hZRWWRuebc2dcD6XUOnZp5yA4980ZKLbABejGK6Vx6A6Q5FifKJwD6FQ2q6uaQkRb6
+ OSVM69z03A/NPBhjYCqLS3X7nXMsGu47Mg4WakUa7mBpv0EYLUTwoPw8UrqOR9nLDRwuZHyIo
+ VEARvfeyV1/Fp1hRBQKnf7Rz/bnYJ4owINZ9JV+u/C1m1iLD1c3p58jVfwO/MLdgwaBn0oGqq
+ FSCt13/tcSCEx8dUeJ6vxZ5CT8Cx+YW00yD4nc6RsodxU3ClmgI+mAonXErLeHQGAJH7pVwbA
+ zG8kue48JIfO5Qt+qjRYvf01zO31cZemAq0KnN72MIPP7SWaafZf+kfOAq90QhHNKuEjt/6+D
+ rec91U4AShsy32zm4qq9K5s17Tw9wwIuAaLkNa8LiLf4n8cAPSGPWVu+Am6rgga6KkWP70pkB
+ kbEON/e3WHXwDnGiAKGpyDJ2O05a5tyAv3wvAYCLEvtO89hZzbMR6IwMayXDTMtjzl8jTR/QJ
+ Nq3OZMz6jJnw8lLO6ZrOnhyeiJU8BvwxTemM/2A6MwcyK/XGCa8SWjzsDwPCcLlZiXGcGuVaZ
+ v5syP0HHkNZJciVvRCEfFTm6t9tbZsfa13NS4wuhulSXs2EfyjKoZIbSvH98jJvUxW8Td7F98
+ qbsjmKJ9cK8ICxPH6u1/p90WGwC7ZMxbhfMLHrZS4=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06. 11. 20, 12:12, Lee Jones wrote:
-> I cannot recreate the issue or work out why:
-> 
-> # THE OUTPUT
-> #   *_port.o and *_early.o were both built
-You have to _link_ to see linker errors ;).
+This series adds support for the ELAN eKTF2132 touchscreen controller to
+the existing ektf2127 driver. It is similar to the eKTF2127, but it uses
+a different packet type and format to report touch events.
 
-Like make vmlinux
+My understanding of the packet format is based on the Kobo Arua vendor
+kernel: https://github.com/neuschaefer/linux/blob/vendor/kobo-aura/drivers=
+/input/touchscreen/elan_touch_i2c.c#L237
 
+Jonathan Neusch=C3=A4fer (3):
+  dt-bindings: input: ektf2127: Add elan,ektf2132 compatible string
+  Input: ektf2127 - Add support for eKTF2132 touchscreen
+  ARM: dts: imx50-kobo-aura: Enable eKTF2132 touchscreen
 
--- 
-js
+ .../bindings/input/touchscreen/ektf2127.txt   |  2 +-
+ arch/arm/boot/dts/imx50-kobo-aura.dts         | 16 +++++++++-
+ drivers/input/touchscreen/ektf2127.c          | 32 ++++++++++++++++++-
+ 3 files changed, 47 insertions(+), 3 deletions(-)
+
+=2D-
+2.28.0
+
