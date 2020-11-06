@@ -2,122 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 426932A9593
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 12:43:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 740D82A95B7
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 12:48:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726901AbgKFLnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 06:43:22 -0500
-Received: from foss.arm.com ([217.140.110.172]:36148 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726010AbgKFLnR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 06:43:17 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B9E07147A;
-        Fri,  6 Nov 2020 03:43:16 -0800 (PST)
-Received: from [10.37.12.46] (unknown [10.37.12.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 565C13F719;
-        Fri,  6 Nov 2020 03:43:14 -0800 (PST)
-Subject: Re: [PATCH v8 28/43] arm64: mte: Reset the page tag in page->flags
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Andrey Konovalov <andreyknvl@google.com>
-Cc:     Will Deacon <will.deacon@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <cover.1604531793.git.andreyknvl@google.com>
- <fc9e96c022a147120b67056525362abb43b2a0ce.1604531793.git.andreyknvl@google.com>
- <20201105155859.GA30030@gaia>
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-Message-ID: <01a55e00-0d82-7e62-cc40-c282149dbb08@arm.com>
-Date:   Fri, 6 Nov 2020 11:46:15 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727090AbgKFLsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 06:48:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46628 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726692AbgKFLsL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 06:48:11 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12C51C0613CF;
+        Fri,  6 Nov 2020 03:48:11 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id k9so959086edo.5;
+        Fri, 06 Nov 2020 03:48:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+cA+j1sGPJcErb4HuM5DHU6NQftn7SZ7mkcmrGBBfKQ=;
+        b=QmxL1lFJ66IFitDBaMOYxSPNd1JTKREmbAo4OAJufJzt5D4/Nr18va9o/IO8i+It5j
+         Drfecbh1X+MOyZUfFAv+i+jfuVKmFbJcHpdu3xrAR5mQ9dOP69OYvRMY/OyELJNDoVRi
+         IlOKunE28oYqedsnZR1uX7BugguRYz8+OcHyXIneR/rLTYaE0viHUjvMrbPqvPOYA7fM
+         x2Zb1eZuhCL3itYrz8T2ZW3Hn8da3lewnzkwGjgX46ovseM07goMz84/V0Y2YSYFxtmc
+         6pqTze14rgljgLPpMFkDhJn6lV5lezjeimLnq4lAp0drgIoDVMYNcdypb7EkSK/zBlEp
+         sBPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+cA+j1sGPJcErb4HuM5DHU6NQftn7SZ7mkcmrGBBfKQ=;
+        b=A99FklDCL2XIzgUc+U2uOzsLZfGASmcC8sN7lTZZU08fokAjvbG7E/9EwrBf6HE9aE
+         l3JqahXvH6DN6+RmcekRwoogvN/mZtwlpvDBg/AkYVUrcEeA7G9KpzHkX4qtF/o+2Ic8
+         t3KDnTCrrqDntnlMcD0HqcphZSfoCDnrSYafalZKOy06mxfRuTJfcp34B+RSUg7oHSma
+         7tCjYn5iZcGbM3tqOyyPx8Pg56wJjj6kg6ikxKLv5aI2GozXnWfx7rONpB1TOCu8bqHO
+         boCzNj17GT7bfirO6982lel6NeNLuBA/x0cLBi3+Fd6X6BhFTjj94Kel1omUcJW77bVL
+         1X+A==
+X-Gm-Message-State: AOAM530ok/CrCox9kpP01avrgAByZRepJfmBtYkKCj/c/pZ85Ae3LbOu
+        gUjntAM618zqlb6DG+pbCppvXST1sP4=
+X-Google-Smtp-Source: ABdhPJx1bUWAzpYpM+p3n6y8K2H67wUyqPozJYGi+fMszCHeVhpx8tb/VetBGJ/LvgazVDb1im3KFQ==
+X-Received: by 2002:a50:8c61:: with SMTP id p88mr1611814edp.257.1604663289749;
+        Fri, 06 Nov 2020 03:48:09 -0800 (PST)
+Received: from abel.fritz.box ([2a02:908:1252:fb60:c066:c9fc:f8c2:d50b])
+        by smtp.gmail.com with ESMTPSA id j8sm875933edk.79.2020.11.06.03.48.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Nov 2020 03:48:09 -0800 (PST)
+From:   "=?UTF-8?q?Christian=20K=C3=B6nig?=" 
+        <ckoenig.leichtzumerken@gmail.com>
+X-Google-Original-From: =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>
+To:     akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linaro-mm-sig@lists.linaro.org, dri-devel@lists.freedesktop.org,
+        linux-media@vger.kernel.org
+Subject: cleanup a fix and add the vma_set_file function
+Date:   Fri,  6 Nov 2020 12:48:04 +0100
+Message-Id: <20201106114806.46015-1-christian.koenig@amd.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20201105155859.GA30030@gaia>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Catalin,
+Hi Andrew,
 
-On 11/5/20 3:59 PM, Catalin Marinas wrote:
-> On Thu, Nov 05, 2020 at 12:18:43AM +0100, Andrey Konovalov wrote:
->> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
->> index 8f99c65837fd..06ba6c923ab7 100644
->> --- a/arch/arm64/kernel/mte.c
->> +++ b/arch/arm64/kernel/mte.c
->> @@ -34,6 +34,7 @@ static void mte_sync_page_tags(struct page *page, pte_t *ptep, bool check_swap)
->>  			return;
->>  	}
->>  
->> +	page_kasan_tag_reset(page);
->>  	mte_clear_page_tags(page_address(page));
-> 
-> I think we need an smp_wmb() between setting the flags and clearing the
-> actual tags. If another threads reads page->flags and builds a tagged
-> address out of it (see page_to_virt) there's an address dependency to
-> the actual memory access. However, on the current thread, we don't
-> guarantee that the new page->flags are visible before the tags were
-> updated.
-> 
+can I get you Acked-by to merge this cleanup through the drm-misc-next branch? The affected drivers are mostly from the DRM subsystem.
 
-Indeed, and I will add a comment as well to explain why.
+The fix for the other problem you pointed out in mmap_region() has already shown up in that branch.
 
->>  }
->>  
->> diff --git a/arch/arm64/mm/copypage.c b/arch/arm64/mm/copypage.c
->> index 70a71f38b6a9..348f4627da08 100644
->> --- a/arch/arm64/mm/copypage.c
->> +++ b/arch/arm64/mm/copypage.c
->> @@ -22,6 +22,7 @@ void copy_highpage(struct page *to, struct page *from)
->>  	copy_page(kto, kfrom);
->>  
->>  	if (system_supports_mte() && test_bit(PG_mte_tagged, &from->flags)) {
->> +		page_kasan_tag_reset(to);
->>  		set_bit(PG_mte_tagged, &to->flags);
->>  		mte_copy_page_tags(kto, kfrom);
-> 
-> Nitpick: move page_kasan_tag_reset() just above mte_copy_page_tags() for
-> consistency with the other places where PG_mte_tagged is set before or
-> after the actual tag setting.
-> 
+Thanks in advance,
+Christian.
 
-Fine, I will add it to the next iteration.
 
->>  	}
->> diff --git a/arch/arm64/mm/mteswap.c b/arch/arm64/mm/mteswap.c
->> index c52c1847079c..0e7eccbe598a 100644
->> --- a/arch/arm64/mm/mteswap.c
->> +++ b/arch/arm64/mm/mteswap.c
->> @@ -53,6 +53,7 @@ bool mte_restore_tags(swp_entry_t entry, struct page *page)
->>  	if (!tags)
->>  		return false;
->>  
->> +	page_kasan_tag_reset(page);
->>  	mte_restore_page_tags(page_address(page), tags);
-
-I just realized based on your comment above that we need smp_wmb() here as well.
-I will add it with a comment as well.
-
-> 
-> There is another mte_restore_page_tags() caller in hibernate.c. That one
-> doesn't need page_kasan_tag_reset() since the page->flags would have
-> been already restored but please add a comment in that file why its not
-> needed.
-> 
-
-Yes I will do, I agree on the reasoning, I will report it in the comments.
-
--- 
-Regards,
-Vincenzo
