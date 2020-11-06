@@ -2,170 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F91E2A9043
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 08:26:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 192F72A9045
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 08:26:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726396AbgKFH02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 02:26:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33918 "EHLO
+        id S1726174AbgKFH0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 02:26:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726198AbgKFH01 (ORCPT
+        with ESMTP id S1726419AbgKFH0f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 02:26:27 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9562DC0613D2
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 23:26:27 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id x13so498618pfa.9
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 23:26:27 -0800 (PST)
+        Fri, 6 Nov 2020 02:26:35 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFEC6C0613CF;
+        Thu,  5 Nov 2020 23:26:34 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id u4so261028pgr.9;
+        Thu, 05 Nov 2020 23:26:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=iszUMX9XQ69DFWc+MhNBALOcQvlyTEUUCx/JW2obvyI=;
-        b=jxLgNT0yJKjQKYTwXPRc+ugmIkNpIt9eh6dIyeLxG5yvVFrEmA0kiHx94esGqce6as
-         vq24g9yf/g6LA5Uz4fB3sgd2pcQyuJvHX0Vb1zLc3ubJsQYZl7LxKDSXItEdR7CPHLzT
-         kmIl+jiSp3z2jJyTA2cuqpU7b+nQmeO/LNGho6dhYUY4RBChpI8B5+PCC/PtaTdr5aY+
-         MyUp77prU4csjw5yUVUgyT9bL2+7/ipCYPntK9j6Kzd7Kj3G1yJ+4OGFadSfpKkD61bl
-         8tFAVVy/Uo1q4xcSaxJ0NznSH/VuIETWRk2vGSmYkbve6VcwSfFS96hFdWHteT7WiR6Q
-         OZhA==
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=yX6K1j3rhfrIMCgxyHm+s66STbKqMz13p1Fd9YNZ4jc=;
+        b=gx+7D5fqwVkVg4hdOWhBZ1CCnXS0GGjYAvN1mIlh8evXCAvguMou7a8fR9hT3uvZAI
+         o6UX7pdAt6g8uY8Lwne7lqwdjUFlT0gdH/ziIMcHSH/DgEN3JN537/4ezUFnZN18U1Be
+         bIeHPuM5UJNR+x60/tjR79R2P5hrh9pX6T1oB/Db6WuSMV9TaWoRlvB+mfoZFmh02rDh
+         TLKu0YlF1IxbY3ZlizbDiny+f6ymQNfiHxxNO6oNS032U53eSDJGUrIlzqG7tSPDDNq0
+         OnT+FQXCBctCoH0qkmrU38j6Qo8+a4uD7/0cQKRtyWw4vpiTUMyc8Dtwzk7XyPW6aKef
+         WT7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=iszUMX9XQ69DFWc+MhNBALOcQvlyTEUUCx/JW2obvyI=;
-        b=Z3cQt4i0VZQaSr4bs5AHbikyASvCB0u4YK7ive5upIrZq60t8Qb8reHuYRRuzoTF4I
-         xu80GlP6/PRfFpVZY1lnsO+AkYIVxGAbEIB1B8x86cPtwlis1GGa9XqHIhpl5iZ9d79M
-         KYE0lmMNDQUk4Wn+bSDKbwRiy6usRDgQ2eEqOLLmSnZAYhbVG+nqkM1Ze99T3R93I/yA
-         TrPTw3tupjSdj+d38SHpDHb4wMiROdVK+mwbAldZEoPY8ffLLruGmIy9WwzbMSOhYNZc
-         lY8grLNQS5EUpLj0z8Dek+WKi7pWphk1x7Px90HBjqB7mmWq1dN36nAZW/t2t4BOU0gU
-         WX5w==
-X-Gm-Message-State: AOAM530+BgcfcYMFqvBX8ReAL3lxnIBeggaj+NrU8eafc/BJHWEeYV9L
-        jUBUs60XPAbdGUNKutZVa9G9zQ==
-X-Google-Smtp-Source: ABdhPJzMudjmsnAflVOqQiwenRD/t1+Dsu4JX36nuNDTRL/kpoJsTWHD7jNukonngjvlJSd5GV1NTQ==
-X-Received: by 2002:a17:90a:588d:: with SMTP id j13mr1000147pji.236.1604647587117;
-        Thu, 05 Nov 2020 23:26:27 -0800 (PST)
-Received: from localhost ([122.172.12.172])
-        by smtp.gmail.com with ESMTPSA id z23sm776215pgf.12.2020.11.05.23.26.25
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 05 Nov 2020 23:26:25 -0800 (PST)
-Date:   Fri, 6 Nov 2020 12:56:24 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Rafael Wysocki <rjw@rjwysocki.net>, robdclark@gmail.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] opp: Allocate the OPP table outside of opp_table_lock
-Message-ID: <20201106072624.jfr4qloe47etzj47@vireshk-i7>
-References: <ef43f01ac06976b2aa2b17266d307bb1a4f7e6f9.1604294460.git.viresh.kumar@linaro.org>
- <836b442002d598437e3e6b56d3e07087e5c08afd.1604294460.git.viresh.kumar@linaro.org>
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=yX6K1j3rhfrIMCgxyHm+s66STbKqMz13p1Fd9YNZ4jc=;
+        b=RIDQo2Ib8Y42pFbJQT1gVUfitSwKkgEYS7TjEnqF3LtwT7NiVfY2TlMG4phHFf2b5Y
+         +lPokNPr/gNrCL6Vw2RuFKKbos+iQCN3d5HeaWJKutQ6q23UdsAQc0srxazS4lmyEmCx
+         UtGgCHen3QiNhO+jn+HkbXEE648/OoU+hk7OSTMueu7ty3/7k9Dmxoch0wHK2La3vBDM
+         SAA3ZoA4iLTnRfJxdwR+gICmy1Ic+v+3Z2SA0xWcqV4bpeM3g0wKJP6cflyJwB/RbrN1
+         1pu+sqmXZ242gEwbhgxRPtWO7QMk8ybiPJaB7dBzLuyV0X//3o7Z1hKOsGUq2og/UP1h
+         VVvg==
+X-Gm-Message-State: AOAM530TWl+12p1kOGowQrEW63fqiUPWRfmQGsExbtaXV3GCIrIfsvwA
+        fXXGpUiZdSk/8hdPPd+xMPU=
+X-Google-Smtp-Source: ABdhPJzcWk/a2KAbSZO6t4y1iS6BZK0KvnMWWOBmhNjIn3bi61DPZQl8Qr5XzE0hw+0xXl21rq92nA==
+X-Received: by 2002:aa7:86c9:0:b029:18b:b0c:53e5 with SMTP id h9-20020aa786c90000b029018b0b0c53e5mr816784pfo.57.1604647594467;
+        Thu, 05 Nov 2020 23:26:34 -0800 (PST)
+Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id e23sm1063669pja.25.2020.11.05.23.26.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Nov 2020 23:26:33 -0800 (PST)
+Date:   Thu, 5 Nov 2020 23:26:30 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Lee Jones <lee.jones@linaro.org>, joe@perches.com
+Cc:     linux-kernel@vger.kernel.org, Henrik Rydberg <rydberg@bitmath.org>,
+        Peter Osterlund <petero2@telia.com>,
+        Stefan Gmeiner <riddlebox@freesurf.ch>,
+        "C. Scott Ananian" <cananian@alumni.priceton.edu>,
+        Bruce Kalk <kall@compass.com>,
+        this to <linux-input@vger.kernel.org>
+Subject: Re: [PATCH 10/20] input: mouse: synaptics: Place braces around empty
+ if() body
+Message-ID: <20201106072630.GD1003057@dtor-ws>
+References: <20201104162427.2984742-1-lee.jones@linaro.org>
+ <20201104162427.2984742-11-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <836b442002d598437e3e6b56d3e07087e5c08afd.1604294460.git.viresh.kumar@linaro.org>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201104162427.2984742-11-lee.jones@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02-11-20, 10:51, Viresh Kumar wrote:
-> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
-> +/*
-> + * We need to make sure that the OPP table for a device doesn't get added twice,
-> + * if this routine gets called in parallel with the same device pointer.
-> + *
-> + * The simplest way to enforce that is to perform everything (find existing
-> + * table and if not found, create a new one) under the opp_table_lock, so only
-> + * one creator gets access to the same. But that expands the critical section
-> + * under the lock and may end up causing circular dependencies with frameworks
-> + * like debugfs, interconnect or clock framework as they may be direct or
-> + * indirect users of OPP core.
-> + *
-> + * And for that reason we have to go for a bit tricky implementation here, which
-> + * uses the opp_tables_busy flag to indicate if another creator is in the middle
-> + * of adding an OPP table and others should wait for it to finish.
-> + */
->  static struct opp_table *_opp_get_opp_table(struct device *dev, int index)
->  {
->  	struct opp_table *opp_table;
->  
-> -	/* Hold our table modification lock here */
-> +again:
->  	mutex_lock(&opp_table_lock);
->  
->  	opp_table = _find_opp_table_unlocked(dev);
->  	if (!IS_ERR(opp_table))
->  		goto unlock;
->  
-> +	/*
-> +	 * The opp_tables list or an OPP table's dev_list is getting updated by
-> +	 * another user, wait for it to finish.
-> +	 */
-> +	if (unlikely(opp_tables_busy)) {
-> +		mutex_unlock(&opp_table_lock);
-> +		cpu_relax();
-> +		goto again;
-> +	}
-> +
-> +	opp_tables_busy = true;
->  	opp_table = _managed_opp(dev, index);
-> +
-> +	/* Drop the lock to reduce the size of critical section */
-> +	mutex_unlock(&opp_table_lock);
-> +
->  	if (opp_table) {
->  		if (!_add_opp_dev(dev, opp_table)) {
->  			dev_pm_opp_put_opp_table(opp_table);
->  			opp_table = ERR_PTR(-ENOMEM);
->  		}
-> -		goto unlock;
-> +
-> +		mutex_lock(&opp_table_lock);
-> +	} else {
-> +		opp_table = _allocate_opp_table(dev, index);
-> +
-> +		mutex_lock(&opp_table_lock);
-> +		if (!IS_ERR(opp_table))
-> +			list_add(&opp_table->node, &opp_tables);
->  	}
->  
-> -	opp_table = _allocate_opp_table(dev, index);
-> +	opp_tables_busy = false;
+Hi Lee,
 
-And here is a fix that will be merged with this patch while applying.  It is
-required as _allocate_opp_table() (which calls _find_table_of_opp_np())  isn't
-called with the opp_table_lock anymore.
+On Wed, Nov 04, 2020 at 04:24:17PM +0000, Lee Jones wrote:
+> Fixes the following W=1 kernel build warning(s):
+> 
+>  drivers/input/mouse/synaptics.c: In function ‘synaptics_process_packet’:
+>  drivers/input/mouse/synaptics.c:1110:6: warning: suggest braces around empty body in an ‘if’ statement [-Wempty-body]
+> 
+> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> Cc: Henrik Rydberg <rydberg@bitmath.org>
+> Cc: Peter Osterlund <petero2@telia.com>
+> Cc: Stefan Gmeiner <riddlebox@freesurf.ch>
+> Cc: "C. Scott Ananian" <cananian@alumni.priceton.edu>
+> Cc: Bruce Kalk <kall@compass.com>
+> Cc: this to <linux-input@vger.kernel.org>
+> Cc: linux-input@vger.kernel.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> ---
+>  drivers/input/mouse/synaptics.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/input/mouse/synaptics.c b/drivers/input/mouse/synaptics.c
+> index 82577095e175e..07835939d83b9 100644
+> --- a/drivers/input/mouse/synaptics.c
+> +++ b/drivers/input/mouse/synaptics.c
+> @@ -1106,8 +1106,9 @@ static void synaptics_process_packet(struct psmouse *psmouse)
+>  					num_fingers = hw.w + 2;
+>  				break;
+>  			case 2:
+> -				if (SYN_MODEL_PEN(info->model_id))
+> +				if (SYN_MODEL_PEN(info->model_id)) {
+>  					;   /* Nothing, treat a pen as a single finger */
+> +				}
 
-diff --git a/drivers/opp/of.c b/drivers/opp/of.c
-index c718092757d9..6b7f0066942d 100644
---- a/drivers/opp/of.c
-+++ b/drivers/opp/of.c
-@@ -112,8 +112,6 @@ static struct opp_table *_find_table_of_opp_np(struct device_node *opp_np)
-        struct opp_table *opp_table;
-        struct device_node *opp_table_np;
- 
--       lockdep_assert_held(&opp_table_lock);
--
-        opp_table_np = of_get_parent(opp_np);
-        if (!opp_table_np)
-                goto err;
-@@ -121,12 +119,15 @@ static struct opp_table *_find_table_of_opp_np(struct device_node *opp_np)
-        /* It is safe to put the node now as all we need now is its address */
-        of_node_put(opp_table_np);
- 
-+       mutex_lock(&opp_table_lock);
-        list_for_each_entry(opp_table, &opp_tables, node) {
-                if (opp_table_np == opp_table->np) {
-                        _get_opp_table_kref(opp_table);
-+                       mutex_unlock(&opp_table_lock);
-                        return opp_table;
-                }
-        }
-+       mutex_unlock(&opp_table_lock);
- 
- err:
-        return ERR_PTR(-ENODEV);
+This gives me:
+
+WARNING: braces {} are not necessary for single statement blocks
+
+from checkpatch.
+
+Thanks.
 
 -- 
-viresh
+Dmitry
