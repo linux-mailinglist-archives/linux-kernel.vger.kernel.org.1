@@ -2,62 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 521D72A9532
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 12:25:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41EFB2A9534
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 12:25:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727227AbgKFLZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 06:25:14 -0500
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:41564 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727177AbgKFLZN (ORCPT
+        id S1727241AbgKFLZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 06:25:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43020 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727220AbgKFLZO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 06:25:13 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=3;SR=0;TI=SMTPD_---0UEQbtYd_1604661901;
-Received: from aliy80.localdomain(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UEQbtYd_1604661901)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 06 Nov 2020 19:25:01 +0800
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-To:     akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] mm/filemap: add static for function __add_to_page_cache_locked
-Date:   Fri,  6 Nov 2020 19:24:55 +0800
-Message-Id: <1604661895-5495-1-git-send-email-alex.shi@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Fri, 6 Nov 2020 06:25:14 -0500
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E59D8C0613CF;
+        Fri,  6 Nov 2020 03:25:13 -0800 (PST)
+Received: by mail-pg1-x530.google.com with SMTP id h6so710801pgk.4;
+        Fri, 06 Nov 2020 03:25:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mB5fwGqdf8GYUjQarYKzei/oazwXbZmsmBYQhWu5IT8=;
+        b=rZuJo4P5dTRkmDpxPz8PnDj+07wXqJyAJpSC07VDYGNf/HKgv27KGcyG5lKnbXIIj7
+         jBqQwzzWDPpA5sBlbmXNMZEK94/QLfQ/cikgDeE9LyF847qF2/LvklsCoag+qh0igSo8
+         wY5Shyc7YdY914v+UJmUDQWN45jJagcmhCNTDRX2KsRuF8ursWoPV35QeqZmWPKt2Q39
+         ZxFON3X6xbk135sb1OZFgOSBHXuDsMcZ6Chi6PryJuA62OQzmNOMYJqs5yEIcPpnlWtF
+         xOZqQ1+Cp7YvaBEZ6Tg2vLw2GlwoAaZH9kEM0b7zGMPXxeKDE1WJ0gYE8g8f5Q5Dh7co
+         lGWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mB5fwGqdf8GYUjQarYKzei/oazwXbZmsmBYQhWu5IT8=;
+        b=ihaJ2wTO34GsQpYQuPDLmceebmRzSzPwLFzR3WgqHe8bpCIiqTTk1OIVNLKEOeW65a
+         +AAvNqFG4zoYVI1bA3dtB0O5jA2dyPkulBr+7vti0VNBvn8/wFWbSc9f9ufP/85tELAU
+         b9yo6SF3vhbtxAGjhb4tWi6HwCJmNbsCzZ7RAhjhIGF/sB95UklTAx8dmOBJ20XE285A
+         MF7JFFtoCstM5l2Cjmng9psN5t3XkM159VEXASiLM41usk/sQWuLXsIUVLPonifO4jpZ
+         hQqbJ34qTr2kgPozjzHN69Ol5MabDfYTYuaYDIpQyWr47FnzZfQsgYn33FxNg/nhGmdY
+         h6dQ==
+X-Gm-Message-State: AOAM530Fply1A18vgLCAyzE4wXp3As14SVO9Ym/vsaVHXBoDdmY3wj7+
+        pg5TahxxmN9re/twkk8wtps6TxfCqhhbpHPYjYs=
+X-Google-Smtp-Source: ABdhPJxfbcV6Xwm5MFhA1xoDJ5mzK+Wn6Sk8KEOBJSPYEcpgPNR+DaFHqfS7D+yK0jaB5dCuxBscKy0fdtxVdZ0BLkk=
+X-Received: by 2002:a05:6a00:14c4:b029:18b:92e2:6f3a with SMTP id
+ w4-20020a056a0014c4b029018b92e26f3amr1486192pfu.76.1604661913499; Fri, 06 Nov
+ 2020 03:25:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20201105073434.429307-1-xie.he.0141@gmail.com>
+ <CAK8P3a2bk9ZpoEvmhDpSv8ByyO-LevmF-W4Or_6RPRtV6gTQ1w@mail.gmail.com>
+ <CAJht_EPP_otbU226Ub5mC_OZPXO4h0O2-URkpsrMBFovcdDHWQ@mail.gmail.com>
+ <CAK8P3a2jd3w=k9HC-kFWZYuzAf2D4npkWdrUn6UBj6JzrrVkpQ@mail.gmail.com>
+ <CAJht_EPAqy_+Cfh1TXoNeC_j7JDgPWrG-=mMMmQ3ot2gNZuB8A@mail.gmail.com> <f4b59cfa4f6b4cc89bf2f111974bb86e@AcuMS.aculab.com>
+In-Reply-To: <f4b59cfa4f6b4cc89bf2f111974bb86e@AcuMS.aculab.com>
+From:   Xie He <xie.he.0141@gmail.com>
+Date:   Fri, 6 Nov 2020 03:25:02 -0800
+Message-ID: <CAJht_ENiEi1u-fNuE+3NSBY=3BOWL4cC8ndJAH04f-jBR-CW1w@mail.gmail.com>
+Subject: Re: [PATCH net-next] net: x25_asy: Delete the x25_asy driver
+To:     David Laight <David.Laight@aculab.com>
+Cc:     Arnd Bergmann <arnd@kernel.org>, Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Martin Schiller <ms@dev.tdt.de>,
+        Andrew Hendry <andrew.hendry@gmail.com>,
+        Linux X25 <linux-x25@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Otherwise it cause gcc warning:
-          ^~~~~~~~~~~~~~~
-../mm/filemap.c:830:14: warning: no previous prototype for
-‘__add_to_page_cache_locked’ [-Wmissing-prototypes]
- noinline int __add_to_page_cache_locked(struct page *page,
-              ^~~~~~~~~~~~~~~~~~~~~~~~~~
+On Fri, Nov 6, 2020 at 1:03 AM David Laight <David.Laight@aculab.com> wrote:
+>
+> Hmmm.... LAPB would expect to have an X.25 level 3 and maybe ISO
+> transport (class 0, 2 or 3) sat on top of it.
 
-Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-Cc: Andrew Morton <akpm@linux-foundation.org> 
-Cc: linux-mm@kvack.org 
-Cc: linux-kernel@vger.kernel.org 
----
- mm/filemap.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I actually used AF_PACKET sockets to transport data directly over LAPB
+and it worked.
 
-diff --git a/mm/filemap.c b/mm/filemap.c
-index d90614f501da..249cf489f5df 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -827,7 +827,7 @@ int replace_page_cache_page(struct page *old, struct page *new, gfp_t gfp_mask)
- }
- EXPORT_SYMBOL_GPL(replace_page_cache_page);
- 
--noinline int __add_to_page_cache_locked(struct page *page,
-+static noinline int __add_to_page_cache_locked(struct page *page,
- 					struct address_space *mapping,
- 					pgoff_t offset, gfp_t gfp,
- 					void **shadowp)
--- 
-1.8.3.1
-
+LAPB doesn't need anything from layer 3. It just sees the layer 3
+packets as a sequence of packets, numbers them and reliably transports
+them in order. It doesn't read the internal contents of the packets.
