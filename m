@@ -2,78 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B17342A9BF9
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 19:24:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 253E92A9BFA
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 19:24:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727889AbgKFSYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 13:24:23 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:43451 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727765AbgKFSYW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 13:24:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604687061;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=rpoIMYpAsT/EApk0aLEONLPpU9cBzDM2egfJxA+5bKs=;
-        b=hpiy6ALtLsKrQUY31dHswITvYfqdXONUWoAcWiPU+sUU9gkimf0DpaeWGLaxL9vV+Cc5V+
-        Vvfw9TaQCTgTqyo3MkUhQ7zDVMKkDFA7iwivDQ5J/7SW4EN6QD1uy89QRwUHYXq23GpUrM
-        CHXzrJbWKnr1yIsYX7lQl/hNPq7s5EY=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-290-rgTM4AR_Mc-x3FfPdto4wQ-1; Fri, 06 Nov 2020 13:24:18 -0500
-X-MC-Unique: rgTM4AR_Mc-x3FfPdto4wQ-1
-Received: by mail-qv1-f72.google.com with SMTP id r11so1196043qvn.1
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 10:24:18 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rpoIMYpAsT/EApk0aLEONLPpU9cBzDM2egfJxA+5bKs=;
-        b=RPFtdU3pi2l+4EU8Be/yQUuVBmZrZ/mrBzY85bMGOZybDDWK+3Fh3WsVkAGWUK3whP
-         mQ2ezGL5n7ozsqYL1Db0+jXA8dYHf1EBiuBiuTu9pJIC3AsCY5D6ka/4BJChF4BNKE0E
-         qNerHPHWQ4x3v+ePagnVbZSGEdn+2dvfpuTawlaoLgv5by+OiR5dRn/+UgcsyFOFHevE
-         glQ4Ef6eKnURI53M0QAT9/slegfiss1SA5inKDQbrCR88BJF0JjWluRBBuN8nWC4DS7g
-         QnGQSXseV0eR+DByrVmeUHREh3EO4r+IXLTqTyI8sWWO0igCJXpEufwTbrlVLrNzJ1MW
-         +tLw==
-X-Gm-Message-State: AOAM530sWWvUQ3lJFENpeYfk/+UlO72QnbCu5Ls90jLvKodWrbo0wjPs
-        tO6R699DkLdGJMDZk/eCiYEQqeS6bIn9IhU4Z3kSw9HMjaTHUbxkvOKIcqAdJtDVexjOGc6M0v3
-        HepeiE9KjpIEqQU8chpNL4tvB
-X-Received: by 2002:a05:6214:16d0:: with SMTP id d16mr2908321qvz.38.1604687058537;
-        Fri, 06 Nov 2020 10:24:18 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyjFRhUMcC6O0Xi4g7TUFBihyqqnSUi+JdTEDhbwl2AjXgP+c+ZnxTHtk1yMQni9Ih2fmcbHQ==
-X-Received: by 2002:a05:6214:16d0:: with SMTP id d16mr2908305qvz.38.1604687058366;
-        Fri, 06 Nov 2020 10:24:18 -0800 (PST)
-Received: from xz-x1 (bras-vprn-toroon474qw-lp130-20-174-93-89-196.dsl.bell.ca. [174.93.89.196])
-        by smtp.gmail.com with ESMTPSA id j7sm975327qtj.60.2020.11.06.10.24.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Nov 2020 10:24:17 -0800 (PST)
-Date:   Fri, 6 Nov 2020 13:24:16 -0500
-From:   Peter Xu <peterx@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH] KVM: remove kvm_clear_guest_page
-Message-ID: <20201106182416.GE138364@xz-x1>
-References: <20201106102517.664773-1-pbonzini@redhat.com>
+        id S1727917AbgKFSY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 13:24:29 -0500
+Received: from verein.lst.de ([213.95.11.211]:52626 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727872AbgKFSY3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 13:24:29 -0500
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 9DA7368B02; Fri,  6 Nov 2020 19:24:24 +0100 (CET)
+Date:   Fri, 6 Nov 2020 19:24:24 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Cc:     Ashish Kalra <ashish.kalra@amd.com>, hch@lst.de,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        x86@kernel.org, luto@kernel.org, peterz@infradead.org,
+        dave.hansen@linux-intel.com, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, brijesh.singh@amd.com,
+        Thomas.Lendacky@amd.com, ssg.sos.patches@amd.com
+Subject: Re: [PATCH v3] swiotlb: Adjust SWIOTBL bounce buffer size for SEV
+ guests.
+Message-ID: <20201106182424.GA9330@lst.de>
+References: <20201104220804.21026-1-Ashish.Kalra@amd.com> <20201104221452.GA26079@char.us.oracle.com> <20201104223913.GA25311@ashkalra_ubuntu_server> <20201105174317.GA4294@char.us.oracle.com> <20201105184115.GA25261@ashkalra_ubuntu_server> <20201105190649.GB5366@char.us.oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201106102517.664773-1-pbonzini@redhat.com>
+In-Reply-To: <20201105190649.GB5366@char.us.oracle.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 06, 2020 at 05:25:17AM -0500, Paolo Bonzini wrote:
-> kvm_clear_guest_page is not used anymore after "KVM: X86: Don't track dirty
-> for KVM_SET_[TSS_ADDR|IDENTITY_MAP_ADDR]", except from kvm_clear_guest.
-> We can just inline it in its sole user.
+On Thu, Nov 05, 2020 at 02:06:49PM -0500, Konrad Rzeszutek Wilk wrote:
+> .
+> > > Right, so I am wondering if we can do this better.
+> > > 
+> > > That is you are never going to get any 32-bit devices with SEV right? That
+> > > is there is nothing that bounds you to always use the memory below 4GB?
+> > > 
+> > 
+> > We do support 32-bit PCIe passthrough devices with SEV.
 > 
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> Ewww..  Which devices would this be?
 
-Reviewed-by: Peter Xu <peterx@redhat.com>
-
--- 
-Peter Xu
-
+There is still some new broken shit like that that keeps appearing.
+GPU is pretty famouts for supporting less than 64-bit addressing,
+even if it isn't all the way down to 32-bit.
