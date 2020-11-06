@@ -2,174 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37C462A9E4C
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 20:53:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F06A72A9E4E
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 20:53:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728195AbgKFTw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 14:52:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38672 "EHLO
+        id S1728318AbgKFTxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 14:53:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726415AbgKFTw6 (ORCPT
+        with ESMTP id S1727341AbgKFTxo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 14:52:58 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F755C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 11:52:58 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id r186so1782761pgr.0
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 11:52:58 -0800 (PST)
+        Fri, 6 Nov 2020 14:53:44 -0500
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D05E6C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 11:53:43 -0800 (PST)
+Received: by mail-qt1-x842.google.com with SMTP id r8so1619429qtp.13
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 11:53:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kt96Jr0Z4cVutyykEDDLdrrSlVc/2nRg/Ta01oSTLh8=;
-        b=fqg1gT6ASXGLrvAEDno6jGnjBo6XmlDpsrqtnKNk6h8pbx4i0342qufWryjXS48Lxv
-         Y6k+1uYfb5jvT07lpHKu41v6qopjSiUpW2OXFYP0A1eVXQD1n6oiUzSJAep2LUncmWM6
-         m+vBuwtCiRNhJLkFh27qdK3Y2i66w2otgN4q4tCk+qPmMqiUq6wr3FUg0O5m7eL3QOBl
-         k/Ughq4nqeOzaxG54BZyvM3mpjThoTl9h00YNUYIyoOFDBx5rDwwQ3EShZSwZujCRz1b
-         aD3QzdteOHiAUlJWdqr7G6LZsf6i964OLCLWA8wXb5rzWK6G2l8zWTac6JUe9Leh4Ii6
-         bBLQ==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=sU45ASLE3qTNEeDnzXy0mWmjw/B5hdl1YB3C1dRGzkI=;
+        b=FudZRGzAxEFk9lGKJUSPzsyZKArhHRwyzmRlvf+GFC+ATQPjzcBbVOeDLLB7moiVUf
+         ObxxpnS/zZJpTm82iWz+fyi9jGs/I9YeNae0ROJk7xm4ksGu3vErOwXPC3998pjQlR5p
+         4czYVsKEbRHoddebJV0noju3HQZREanU58l+vhPFj17Ta8rGMwytFISX8XsKNrHR+BX8
+         lRJNDwJeHT2t31rpqbAdGGp0+akczI7HoAc6Ksjc1BT3ksZah6pY+y3OqCayYTmpzL+D
+         Vcc6mEGa7A07b9rAWqQo7QjWrLXkk8WsSTWPLKnX0XjNAe7EuqN+sDQBd5I1lutR9Gx3
+         kmvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kt96Jr0Z4cVutyykEDDLdrrSlVc/2nRg/Ta01oSTLh8=;
-        b=lkqpM3S9J5W075saqS5/ui6dGR35FNOdTUnLtdiHL7rPZP5LSHStY2PAL+wrGg7IuD
-         ol+pGiuwA4+nfUYc36PmiDwCIBGbnNxupqLP8Zy0+ox+DOOfugQ2XAMda4BZ9aeTh+zH
-         lDyKq+eDfm4cb7P+zcBjyoqJblqrWm/4XwYFCRDU6VAtwJH9KURE+vbkr2dH7e2X0svX
-         OjTgTBnvUOTF3MtdbKyM9Yrb+L51vrE796rIgef+guxPHTdLuxgOeEcxOHWOLYkf3t4G
-         XFFKqOzIr9i9TgxQ5CdfReSESE5r0/JhOrHTvTf4U4CRmQ0nEWEbT+9+Q5D6hB1xdfQb
-         fcKg==
-X-Gm-Message-State: AOAM531cxcaLlqRhAPM3IgtPeuJ+fxWLmL/TUKmy8ojss4Ck37LZyi/k
-        CVwZoOMiAZ/n7q/PfkwfJPxKiKar64LPzuPNcUpjxw==
-X-Google-Smtp-Source: ABdhPJxtQ24MSKMaSwDtho+7mrL7igqZ5flwXn9S2ZaacJr5f4SGaulS2LIaXKbD4oQ3c1ck5MjGV/OeeY05vOhNZlo=
-X-Received: by 2002:a17:90a:6b04:: with SMTP id v4mr1206965pjj.101.1604692377390;
- Fri, 06 Nov 2020 11:52:57 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=sU45ASLE3qTNEeDnzXy0mWmjw/B5hdl1YB3C1dRGzkI=;
+        b=tg9NaHvibBlAhC2dqlmJX1KY8A32WNVji1q4ronwQcDHxhDxSPGdXtokbC92mKkR1t
+         s84RTsfnp+kw5pmErp1bBX1sykR/WnuLuN8dUjxpvvLq5XHNpcyNW0nuV/PX454/kRlq
+         5u9H/rFgQp9RXrPPQzqZ/3rkkSRAnZociVIclSSR635O9OiY300aoOk1T7o4AuBcOXva
+         f7UC2rhNGtx0jXA+Xg315nzt0UiwS9ZPRhF6eqy8bX1W376I21Plprpp5tGBH8Nuwcgh
+         Tua+NOSGLBxh1ux+LMluY3q50S92mucdbbn/JeqLwkqnkD1UAOh/VkJvNDm+x4J9dnAR
+         YE8Q==
+X-Gm-Message-State: AOAM532zXhbP+nJ7HcNqRz1RmRLY7PDn0SFnVOAS6oLeqxnaNvr8rpp8
+        8WGVtTo+Qp50QXHdHtwTQd8/zQ==
+X-Google-Smtp-Source: ABdhPJwcMytaU5RLKIBqp2abyuS1iVFiLHOqHqGF/QD5vN1zrtKnu5OM6Laul9BgJOP5lCmGBjWjKA==
+X-Received: by 2002:aed:32c7:: with SMTP id z65mr3146052qtd.266.1604692422443;
+        Fri, 06 Nov 2020 11:53:42 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id r41sm1239041qtj.23.2020.11.06.11.53.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Nov 2020 11:53:41 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kb7np-0011j7-5m; Fri, 06 Nov 2020 15:53:41 -0400
+Date:   Fri, 6 Nov 2020 15:53:41 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Logan Gunthorpe <logang@deltatee.com>
+Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
+        Stephen Bates <sbates@raithlin.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Ira Weiny <iweiny@intel.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Don Dutile <ddutile@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Subject: Re: [RFC PATCH 14/15] PCI/P2PDMA: Introduce pci_mmap_p2pmem()
+Message-ID: <20201106195341.GA244516@ziepe.ca>
+References: <20201106170036.18713-1-logang@deltatee.com>
+ <20201106170036.18713-15-logang@deltatee.com>
+ <20201106172206.GS36674@ziepe.ca>
+ <b1e8dfce-d583-bed8-d04d-b7265a54c99f@deltatee.com>
+ <20201106174223.GU36674@ziepe.ca>
+ <2c2d2815-165e-2ef9-60d6-3ace7ff3aaa5@deltatee.com>
+ <20201106180922.GV36674@ziepe.ca>
+ <09885400-36f8-bc1d-27f0-a8adcf6104d4@deltatee.com>
+ <20201106193024.GW36674@ziepe.ca>
+ <03032637-0826-da76-aec2-121902b1c166@deltatee.com>
 MIME-Version: 1.0
-References: <20201106051436.2384842-1-adrian.ratiu@collabora.com>
- <20201106051436.2384842-3-adrian.ratiu@collabora.com> <20201106101419.GB3811063@ubuntu-m3-large-x86>
- <87wnyyvh56.fsf@collabora.com>
-In-Reply-To: <87wnyyvh56.fsf@collabora.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Fri, 6 Nov 2020 11:52:46 -0800
-Message-ID: <CAKwvOdkodob0M0r_AK_4nG3atLGMyNENMd6qVAHSPa92Zh7UZA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] arm: lib: xor-neon: disable clang vectorization
-To:     Adrian Ratiu <adrian.ratiu@collabora.com>
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Russell King <linux@armlinux.org.uk>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Collabora Kernel ML <kernel@collabora.com>,
-        Ard Biesheuvel <ardb@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <03032637-0826-da76-aec2-121902b1c166@deltatee.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 6, 2020 at 3:50 AM Adrian Ratiu <adrian.ratiu@collabora.com> wrote:
->
-> Hi Nathan,
->
-> On Fri, 06 Nov 2020, Nathan Chancellor <natechancellor@gmail.com>
-> wrote:
-> > + Ard, who wrote this code.
-> >
-> > On Fri, Nov 06, 2020 at 07:14:36AM +0200, Adrian Ratiu wrote:
-> >> Due to a Clang bug [1] neon autoloop vectorization does not
-> >> happen or happens badly with no gains and considering previous
-> >> GCC experiences which generated unoptimized code which was
-> >> worse than the default asm implementation, it is safer to
-> >> default clang builds to the known good generic implementation.
-> >> The kernel currently supports a minimum Clang version of
-> >> v10.0.1, see commit 1f7a44f63e6c ("compiler-clang: add build
-> >> check for clang 10.0.1").   When the bug gets eventually fixed,
-> >> this commit could be reverted or, if the minimum clang version
-> >> bump takes a long time, a warning could be added for users to
-> >> upgrade their compilers like was done for GCC.   [1]
-> >> https://bugs.llvm.org/show_bug.cgi?id=40976  Signed-off-by:
-> >> Adrian Ratiu <adrian.ratiu@collabora.com>
-> >
-> > Thank you for the patch! We are also tracking this here:
-> >
-> > https://github.com/ClangBuiltLinux/linux/issues/496
-> >
-> > It was on my TODO to revist getting the warning eliminated,
-> > which likely would have involved a patch like this as well.
-> >
-> > I am curious if it is worth revisting or dusting off Arnd's
-> > patch in the LLVM bug tracker first. I have not tried it
-> > personally. If that is not a worthwhile option, I am fine with
-> > this for now. It would be nice to try and get a fix pinned down
-> > on the LLVM side at some point but alas, finite amount of
-> > resources and people :(
->
-> I tested Arnd's kernel patch from the LLVM bugtracker [1], but
-> with the Clang v10.0.1 I still get warnings like the following
-> even though the __restrict workaround seems to affect the
-> generated instructions:
->
-> ./include/asm-generic/xor.h:15:2: remark: the cost-model indicates
-> that interleaving is not beneficial [-Rpass-missed=loop-vectorize]
-> ./include/asm-generic/xor.h:11:1: remark: List vectorization was
-> possible but not beneficial with cost 0 >= 0
-> [-Rpass-missed=slp-vectorizer] xor_8regs_2(unsigned long bytes,
-> unsigned long *__restrict p1, unsigned long *__restrict p2)
+On Fri, Nov 06, 2020 at 12:44:59PM -0700, Logan Gunthorpe wrote:
+> 
+> 
+> On 2020-11-06 12:30 p.m., Jason Gunthorpe wrote:
+> >> I certainly can't make decisions for code that isn't currently
+> >> upstream.
+> > 
+> > The rdma drivers are all upstream, what are you thinking about?
+> 
+> Really? I feel like you should know what I mean here...
+> 
+> I mean upstream code that actually uses the APIs that I'd have to
+> introduce. I can't say here's an API feature that no code uses but the
+> already upstream rdma driver might use eventually. It's fairly easy to
+> send patches that make the necessary changes when someone adds a use of
+> those changes inside the rdma code.
 
-If it's just a matter of overruling the cost model
-#pragma clang loop vectorize(enable)
+Sure, but that doesn't mean you have to actively design things to be
+unusable beyond this narrow case. The RDMA drivers are all there, all
+upstream, if this work is accepted then the changes to insert P2P
+pages into their existing mmap flows is a reasonable usecase to
+consider at this point when building core code APIs.
 
-will do the trick.
+You shouldn't add dead code, but at least have a design in mind for
+what it needs to look like and some allowance.
 
-Indeed,
-```
-diff --git a/include/asm-generic/xor.h b/include/asm-generic/xor.h
-index b62a2a56a4d4..8796955498b7 100644
---- a/include/asm-generic/xor.h
-+++ b/include/asm-generic/xor.h
-@@ -12,6 +12,7 @@ xor_8regs_2(unsigned long bytes, unsigned long *p1,
-unsigned long *p2)
- {
-        long lines = bytes / (sizeof (long)) / 8;
+> >> Ultimately, if you aren't using the genpool you will have to implement
+> >> your own mmap operation that somehow allocates the pages and your own
+> >> page_free hook. 
+> > 
+> > Sure, the mlx5 driver already has a specialized alloctor for it's BAR
+> > pages.
+> 
+> So it *might* make sense to carve out a common helper to setup a VMA for
+> P2PDMA to do the vm_flags check and set VM_MIXEDMAP... but besides that,
+> there's no code that would be common to the two cases.
 
-+#pragma clang loop vectorize(enable)
-        do {
-                p1[0] ^= p2[0];
-                p1[1] ^= p2[1];
-@@ -32,6 +33,7 @@ xor_8regs_3(unsigned long bytes, unsigned long *p1,
-unsigned long *p2,
- {
-        long lines = bytes / (sizeof (long)) / 8;
+I think the whole insertion of P2PDMA pages into a VMA should be
+similar to io_remap_pfn() so all the VM flags, pgprot_decrypted and
+other subtle details are all in one place. (also it needs a
+pgprot_decrypted before doing vmf_insert, I just learned that this
+month)
 
-+#pragma clang loop vectorize(enable)
-        do {
-                p1[0] ^= p2[0] ^ p3[0];
-                p1[1] ^= p2[1] ^ p3[1];
-@@ -53,6 +55,7 @@ xor_8regs_4(unsigned long bytes, unsigned long *p1,
-unsigned long *p2,
- {
-        long lines = bytes / (sizeof (long)) / 8;
+> >> I also don't expect this to be going upstream in the near term so don't
+> >> get too excited about using it.
+> > 
+> > I don't know, it is actually not that horrible, the GUP and IOMMU
+> > related changes are simpler than I expected
+> 
+> I think the deal breaker is the SGL hack and the fact that there are
+> important IOMMU implementations that won't have support.
 
-+#pragma clang loop vectorize(enable)
-        do {
-                p1[0] ^= p2[0] ^ p3[0] ^ p4[0];
-                p1[1] ^= p2[1] ^ p3[1] ^ p4[1];
-@@ -75,6 +78,7 @@ xor_8regs_5(unsigned long bytes, unsigned long *p1,
-unsigned long *p2,
- {
-        long lines = bytes / (sizeof (long)) / 8;
+Yes, that is pretty hacky, maybe someone will have a better idea
 
-+#pragma clang loop vectorize(enable)
-        do {
-                p1[0] ^= p2[0] ^ p3[0] ^ p4[0] ^ p5[0];
-                p1[1] ^= p2[1] ^ p3[1] ^ p4[1] ^ p5[1];
-```
-seems to generate the vectorized code.
-
-Why don't we find a way to make those pragma's more toolchain
-portable, rather than open coding them like I have above rather than
-this series?
-
--- 
-Thanks,
-~Nick Desaulniers
+Jason
