@@ -2,79 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6A612A911C
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 09:18:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5310E2A9120
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 09:20:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726561AbgKFISo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 03:18:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42060 "EHLO
+        id S1726587AbgKFIUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 03:20:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725848AbgKFISn (ORCPT
+        with ESMTP id S1726121AbgKFIUT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 03:18:43 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C507C0613CF;
-        Fri,  6 Nov 2020 00:18:43 -0800 (PST)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1604650719;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QGCORwOg18faQgRDXRDoAOZ5EtYvujQ10ImekmNwcQs=;
-        b=yhXy6gcGmWFYE01h4/TKk+zrZMwg42xeYL5EUEXrb/RFZqSPqPEU3d8FmcRj2+pfwXGvFj
-        z8y+me8VUStg/owSsrgKg8p8UcnFt5DyjSWcw9GevRo3g1tS23PSqYYVqrzsGEOZEbqBpd
-        RrlWTfFz/pZA60DTh4d4NGZ6t3P5v8b6cISt3xSTj4/YFU3aBd8QwCAwBQvpSneS5nKp4A
-        bvZCmb6ZS/Rbynvd9f2zQ7RmG6J5Ni2Uf+LN08BM6J0OQ2RZWA3TfcjmQdD1PE+q2QJNcl
-        BNfBbe5e04PD3Eso/jQay04n7Lz/8HzluPHNAVJBQE7samIBwTHasHdvKEq0pA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1604650719;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QGCORwOg18faQgRDXRDoAOZ5EtYvujQ10ImekmNwcQs=;
-        b=U8exzy41HYahMJICgu/66bCwCM/tiCv6nQvZZF+FdfyNJz3NGeeThwe7sRCmcxB07M0B4y
-        jR82KoHtmLvI1EDA==
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        kernel-janitors@vger.kernel.org, linux-safety@lists.elisa.tech,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: Re: [PATCH] printk: remove unneeded dead-store assignment
-In-Reply-To: <20201106034005.18822-1-lukas.bulwahn@gmail.com>
-References: <20201106034005.18822-1-lukas.bulwahn@gmail.com>
-Date:   Fri, 06 Nov 2020 09:24:38 +0106
-Message-ID: <87h7q2j3tt.fsf@jogness.linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain
+        Fri, 6 Nov 2020 03:20:19 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35704C0613CF;
+        Fri,  6 Nov 2020 00:20:19 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id v12so602841pfm.13;
+        Fri, 06 Nov 2020 00:20:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=f2B4u15lC2Ii8tq/d8kCTsZtVNP3WmCeuq2bZvx3ex0=;
+        b=vaPz8WGlio/V0T7a0R81qmZoIkZpylBBNoCVbgjXNYSAAtFYVSfPZW/1aCza+xy3Qq
+         Z3lOeF68roT/EEpuMSAcSFTocyXuW98Cmr1PL+fTK9ZERXdSxu3FORYit5DfDwS2ZxNl
+         dUFd7gs+Mn5q/KaCu+Fw7quVHVCvbgmS4gyp7Lro3Qi6WbjVO2xbHIyoCV39JKwuOG6Y
+         aKQKlFPWTTcm6qmsFfBl9o0N0KK5lOI4S3H0V9hoYF2/CS5MD1GoyqTIAS++C2SFfyBT
+         FWelGYdeNFm8vgQCPf/JCiJKi9Z/WEfF1aPm0nTi4igTxYOtHXDh2BxwCiQF94IBNvYA
+         Hrfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=f2B4u15lC2Ii8tq/d8kCTsZtVNP3WmCeuq2bZvx3ex0=;
+        b=ghBzkn6BIBEQtliH3i83Eow2owZ2IJWi4jiINzvOMerqoIcYoKxrEcDkhygO1x7i4o
+         NHGVJeoejwNQ2BBzEUEuZaxzATAy8VVMACn45cAfzHVdG5m/Geg3jEVAJL/mn0L0Y2fH
+         cb49fJ4V5po/fwcNuAgm/ww43C/TwKnRluTe+NaY4xysx3ZA/FcPekgTWYAutIVXGy7c
+         VSdRh2P8jl4I81gkgKH79Are4tOlAbRtkmyRXK6e4pEhaShYUGG6cSvItZbML90ZLMuh
+         OGlQoEeuXkd9uQb3PxwAHIsIcJMkw0mB+74QjWhbVoYeyZTcbdq4X/sU//8E52c/fHYq
+         ppZQ==
+X-Gm-Message-State: AOAM532yRqLvbfPbvkwnJ71YAKBPkhb+9/ARlabyKjnYDaf713fy3JHF
+        lI9O68ZVbsuMj1AjFJafLY5c//aL66N9
+X-Google-Smtp-Source: ABdhPJwr/2o3Byk4DBdlB7a1P7ZbpNs4X0OJ56qGKs0Oc39AI2TalVwlH8x9OdPAJvUSidUsrhb7pw==
+X-Received: by 2002:a63:3041:: with SMTP id w62mr852183pgw.166.1604650818861;
+        Fri, 06 Nov 2020 00:20:18 -0800 (PST)
+Received: from he-cluster.localdomain (67.216.221.250.16clouds.com. [67.216.221.250])
+        by smtp.gmail.com with ESMTPSA id d7sm896697pgh.17.2020.11.06.00.20.17
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 06 Nov 2020 00:20:18 -0800 (PST)
+From:   xiakaixu1987@gmail.com
+X-Google-Original-From: kaixuxia@tencent.com
+To:     pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de
+Cc:     netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        linux-kernel@vger.kernel.org, Kaixu Xia <kaixuxia@tencent.com>
+Subject: [PATCH] netfilter: Remove unnecessary conversion to bool
+Date:   Fri,  6 Nov 2020 16:20:13 +0800
+Message-Id: <1604650813-1132-1-git-send-email-kaixuxia@tencent.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-06, Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
-> make clang-analyzer on x86_64 defconfig caught my attention with:
->
->   kernel/printk/printk_ringbuffer.c:885:3: warning:
->   Value stored to 'desc' is never read [clang-analyzer-deadcode.DeadStores]
->                 desc = to_desc(desc_ring, head_id);
->                 ^
->
-> Commit b6cf8b3f3312 ("printk: add lockless ringbuffer") introduced
-> desc_reserve() with this unneeded dead-store assignment.
->
-> As discussed with John Ogness privately, this is probably just some minor
-> left-over from previous iterations of the ringbuffer implementation. So,
-> simply remove this unneeded dead assignment to make clang-analyzer happy.
->
-> As compilers will detect this unneeded assignment and optimize this anyway,
-> the resulting object code is identical before and after this change.
->
-> No functional change. No change to object code.
->
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+From: Kaixu Xia <kaixuxia@tencent.com>
 
-Reviewed-by: John Ogness <john.ogness@linutronix.de>
+Here we could use the '!=' expression to fix the following coccicheck
+warning:
+
+./net/netfilter/xt_nfacct.c:30:41-46: WARNING: conversion to bool not needed here
+
+Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
+Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
+---
+ net/netfilter/xt_nfacct.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/net/netfilter/xt_nfacct.c b/net/netfilter/xt_nfacct.c
+index a97c2259bbc8..7c6bf1c16813 100644
+--- a/net/netfilter/xt_nfacct.c
++++ b/net/netfilter/xt_nfacct.c
+@@ -27,7 +27,7 @@ static bool nfacct_mt(const struct sk_buff *skb, struct xt_action_param *par)
+ 
+ 	overquota = nfnl_acct_overquota(xt_net(par), info->nfacct);
+ 
+-	return overquota == NFACCT_UNDERQUOTA ? false : true;
++	return overquota != NFACCT_UNDERQUOTA;
+ }
+ 
+ static int
+-- 
+2.20.0
+
