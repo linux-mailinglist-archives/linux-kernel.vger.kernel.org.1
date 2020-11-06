@@ -2,119 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 029E52A94BF
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 11:53:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54A4C2A94D0
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 11:54:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727059AbgKFKxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 05:53:25 -0500
-Received: from mail-il1-f198.google.com ([209.85.166.198]:33178 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726642AbgKFKxZ (ORCPT
+        id S1727143AbgKFKyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 05:54:51 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:34726 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727038AbgKFKyv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 05:53:25 -0500
-Received: by mail-il1-f198.google.com with SMTP id p17so712758ilj.0
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 02:53:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=DDSyTW0cXmYYVcRPO4w8oETTjvfxbaLefaEF1z3VOqw=;
-        b=UEsOp2T0nv2KGfVKApGfp8etzya74eKXz/j+DmhcJeAtKcs7lt/5uR8mvJ3zNlLDrC
-         k/zhdhM9DwbsIcebpCkVVcfDWqu6mkIdB5+WQ2hjb/MjNQd4WlBSAMGAg77fVLNH6qpM
-         C1fTqFUoRSH0PGohycCcOLAmjBh3KMH4tdus8VBqA7ybJFhQT71q15iSZXR8+lJs6afY
-         iBqpHbbAq1MSsETGNemJrb5XIl8gcXnHLSCdrccr1QXS1reUZQzl8+0HmFZ1WnfzHQY6
-         0L4p7Cxgo8rTdRIFQH/CUh2V9+wI/RJfmpX9LkLqRcMkN0hK+ysWyK1/0GDB47yOv8HF
-         jVCg==
-X-Gm-Message-State: AOAM530O13Bf7Dih7wW3KhRR0mE2mD8VHwZG58Pe9jFqJPykWvxFouOn
-        MYdBd9tY8nVqinWPmT841YONy1UabiRllejztXB8Fi3J/SUz
-X-Google-Smtp-Source: ABdhPJyW6YXkMYU74RkWHcekbpdxFTrNthZb9JCrArTwPLfB6vH6p3Oj1st3EsqwF3G89qvqNXHc4U3zgyZNV9Uh1STyXsK9LMjX
+        Fri, 6 Nov 2020 05:54:51 -0500
+Date:   Fri, 6 Nov 2020 11:54:47 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1604660088;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8qKYotRUY13kT4qJj8yVCDhzL4uOJ2Lx+7X1ta+4W8Q=;
+        b=b+7AJwobaxS1fcwPIb3LoPMbciQ4ZIxLjGFpC3D7n3iCPpge+iBYyRm4DGDP+aJzpZGA8u
+        m5cJrhPDezPOfSR662wyxQJ/gyIeGe6/w4YQtP9AusPN368m7qb5xs63NgRi4ma8pE5HYc
+        qSF8wAZK8LZffxD6o0vbvHKTqgbL4JTnN1QiCGvo7DQLJn21eZjNnbbXjzjLQMCGEWv9QU
+        21Axr4O8wd1qaCuWTwGrkDiJQBukfubzKYX4ri2luJyEjbNruD/1iLtQjgl/LAJX5Kp80m
+        EuMRcdc/gEVDUJ+e7TIBfsoQRcnQ43L3T+r/QYoXIrDAJ5h3FONVm18Bvzskzw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1604660088;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8qKYotRUY13kT4qJj8yVCDhzL4uOJ2Lx+7X1ta+4W8Q=;
+        b=a+pQvHCjOOXy1I5JRj7lDqFJRCw29fS8i/B5sGakjp/C/ApgTOXFHaW1f72nOZiwtyGqHq
+        mxrZdSXqHvhP4RCA==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Daniel Wagner <wagi@monom.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [ANNOUNCE] v5.10-rc2-rt4
+Message-ID: <20201106105447.2lasulgjrbqdhnlh@linutronix.de>
+References: <20201103195731.erjkgyzxzzjylhui@linutronix.de>
+ <20201104103809.bhl2iorbwv6xowtw@beryllium.lan>
+ <20201104104617.ueefmpdou4t3t2ce@linutronix.de>
+ <20201104111948.vpykh3ptmysqhmve@beryllium.lan>
+ <20201104124746.74jdsig3dffomv3k@beryllium.lan>
+ <20201104130930.llx56gtqt532h7c7@linutronix.de>
+ <20201104160650.b63zqof74wohgpa2@beryllium.lan>
 MIME-Version: 1.0
-X-Received: by 2002:a5e:9604:: with SMTP id a4mr973198ioq.61.1604660004200;
- Fri, 06 Nov 2020 02:53:24 -0800 (PST)
-Date:   Fri, 06 Nov 2020 02:53:24 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000892b3905b36e059b@google.com>
-Subject: WARNING: bad unlock balance in ieee80211_unregister_hw
-From:   syzbot <syzbot+a6e9e84a19d90b996a65@syzkaller.appspotmail.com>
-To:     ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        gnault@redhat.com, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201104160650.b63zqof74wohgpa2@beryllium.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 2020-11-04 17:06:50 [+0100], Daniel Wagner wrote:
+> On Wed, Nov 04, 2020 at 02:09:30PM +0100, Sebastian Andrzej Siewior wrote:
+> > Could you figure out if the arm64 thingy started with -rt4 or was
+> > already in rt3?
+>=20
+> I wrote a quick and dirty script to extract the data from my logs to see
+> if the regression might be older then I remembered. I filtered out the
+> obviously wrong configured runs (e.g !RT). It looks like the first
+> recorded outlier is around 5.9.0-rt16. Does this already help or do you
+> want me to bissect it down?
 
-syzbot found the following issue on:
+> rpi3    signaltest      5.9.0-rc8-rt12
+>   813   0_signaltest         t0-max-latency      : fail     214.00
+> rpi3    signaltest      5.9.0-rc8-rt12
+>   874   0_signaltest         t0-max-latency      : fail     217.00
+> rpi3    signaltest      5.9.0-rt16
+>   963   0_signaltest         t0-max-latency      : fail     321.00
 
-HEAD commit:    cb5dc5b0 Merge branch 'bpf: safeguard hashtab locking in N..
-git tree:       bpf-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=13498a0c500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=58a4ca757d776bfe
-dashboard link: https://syzkaller.appspot.com/bug?extid=a6e9e84a19d90b996a65
-compiler:       gcc (GCC) 10.1.0-syz 20200507
+Here, rt 13,14,15 would be interesting so we could narrow down the
+~100us.
+v5.9-rc8-rt14 got new migrate-disable but I wouldn't expect it to cause
+it. The other changes look also harmless (like the rtmutex redo which
+should be a 0 change but then it mighe behave differently in regard to
+workqueue in some corner cases).
 
-Unfortunately, I don't have any reproducer for this issue yet.
+> rpi3    signaltest      5.9.1-rt19
+>   1038  0_signaltest         t0-max-latency      : fail     341.00
+> rpi3    signaltest      5.9.1-rt20
+>   1079  0_signaltest         t0-max-latency      : fail     318.00
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+a6e9e84a19d90b996a65@syzkaller.appspotmail.com
+Looking from my announcement:
+|      - Tiny update to the rtmutex patches (make __read_rt_trylock()
+|        static).
 
-=====================================
-WARNING: bad unlock balance detected!
-5.9.0-syzkaller #0 Not tainted
--------------------------------------
-kworker/u4:3/24893 is trying to release lock ((wq_completion)phy264) at:
-[<ffffffff81476be1>] flush_workqueue+0xe1/0x13e0 kernel/workqueue.c:2780
-but there are no more locks to release!
+this could improve things but not that much.
 
-other info that might help us debug this:
-3 locks held by kworker/u4:3/24893:
- #0: ffff8881407aa938 ((wq_completion)netns){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff8881407aa938 ((wq_completion)netns){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
- #0: ffff8881407aa938 ((wq_completion)netns){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
- #0: ffff8881407aa938 ((wq_completion)netns){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
- #0: ffff8881407aa938 ((wq_completion)netns){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
- #0: ffff8881407aa938 ((wq_completion)netns){+.+.}-{0:0}, at: process_one_work+0x821/0x15a0 kernel/workqueue.c:2243
- #1: ffffc9000218fda8 (net_cleanup_work){+.+.}-{0:0}, at: process_one_work+0x854/0x15a0 kernel/workqueue.c:2247
- #2: ffffffff8c914010 (pernet_ops_rwsem){++++}-{3:3}, at: cleanup_net+0x9b/0xa00 net/core/net_namespace.c:566
+|      - The test_lockup module failed to compile. Reported by Fernando
+|        Lopez-Lezcano.
 
-stack backtrace:
-CPU: 1 PID: 24893 Comm: kworker/u4:3 Not tainted 5.9.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: netns cleanup_net
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:118
- print_unlock_imbalance_bug include/trace/events/lock.h:58 [inline]
- __lock_release kernel/locking/lockdep.c:5126 [inline]
- lock_release.cold+0x34/0x4e kernel/locking/lockdep.c:5462
- flush_workqueue+0x125/0x13e0 kernel/workqueue.c:2784
- drain_workqueue+0x1a5/0x3c0 kernel/workqueue.c:2948
- destroy_workqueue+0x71/0x760 kernel/workqueue.c:4372
- ieee80211_unregister_hw+0x1a2/0x210 net/mac80211/main.c:1388
- mac80211_hwsim_del_radio drivers/net/wireless/mac80211_hwsim.c:3360 [inline]
- hwsim_exit_net+0x56b/0xc90 drivers/net/wireless/mac80211_hwsim.c:4115
- ops_exit_list+0xb0/0x160 net/core/net_namespace.c:187
- cleanup_net+0x4ea/0xa00 net/core/net_namespace.c:604
- process_one_work+0x933/0x15a0 kernel/workqueue.c:2272
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2418
- kthread+0x3af/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-device hsr_slave_1 left promiscuous mode
-batman_adv: batadv0: Removing interface: batadv_slave_0
-batman_adv: batadv0: Interface deactivated: batadv_slave_1
-batman_adv: batadv0: Removing interface: batadv_slave_1
-bridge0: port 2(bridge_slave_1) entered disabled state
-device bridge_slave_0 left promiscuous mode
-bridge0: port 1(bridge_slave_0) entered disabled state
-device veth0_macvtap left promiscuous mode
+unrelated.
 
+|      - The `kcompactd' daemon together with MEMCG could have accessed
+|        per-CPU variables in preemtible context.
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+an additional lock=E2=80=A6
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+|      - The patch for the crash in the block layer (previously reported by
+|        David Runge) has been replaced with another set of patches which
+|        were submitted upstream.
+
+looks also innocent.
+
+So I have nothing to explain 20us improvement.
+
+> rpi3    signaltest      5.10.0-rc1-rt1
+>   1118  0_signaltest         t0-max-latency      : fail     415.00
+> rpi3    signaltest      5.10.0-rc2-rt4
+>   1163  0_signaltest         t0-max-latency      : fail     340.00
+
+-rt2 gained new kmap code.
+-rt3 received an update of the above
+
+This is the only outstanding thing between rt1 and rt4.
+
+But all this is only signal right? Nothing on the cyclictest front? If
+lazy-preempt broke in a way then it should be only noticed by
+cyclictest. You can however disable lazy-preempt just to be sure.
+
+Sebastian
