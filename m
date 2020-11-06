@@ -2,96 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 945C92A99AA
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 17:41:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E6052A99AF
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 17:44:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727182AbgKFQlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 11:41:50 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:7990 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725868AbgKFQlt (ORCPT
+        id S1727038AbgKFQnx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 11:43:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36584 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725868AbgKFQnx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 11:41:49 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fa57ccb0000>; Fri, 06 Nov 2020 08:41:47 -0800
-Received: from [10.2.59.206] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 6 Nov
- 2020 16:41:48 +0000
-Subject: Re: [PATCH v1 1/4] dt-bindings: ata: tegra: Convert binding
- documentation to YAML
-To:     Rob Herring <robh@kernel.org>
-CC:     <thierry.reding@gmail.com>, <linux-kernel@vger.kernel.org>,
-        <robh+dt@kernel.org>, <linux-tegra@vger.kernel.org>,
-        <linux-ide@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <jonathanh@nvidia.com>
-References: <1604628968-1501-1-git-send-email-skomatineni@nvidia.com>
- <1604628968-1501-2-git-send-email-skomatineni@nvidia.com>
- <20201106161122.GB3289870@bogus>
-From:   Sowjanya Komatineni <skomatineni@nvidia.com>
-Message-ID: <f8ba33f1-90fa-a9f0-5834-9de23fc8ad31@nvidia.com>
-Date:   Fri, 6 Nov 2020 08:41:50 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 6 Nov 2020 11:43:53 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE54CC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 08:43:51 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id 72so1825779pfv.7
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 08:43:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ohGyP98uQQKhnB3pJGvLmrdRlMtpjmrRpHdlKsDa8JI=;
+        b=cBVLpopjhvuZcULC1BoMrRoa/qq8goCwuZepVXmet2PTomK/LcORE5FdTGmV/Wu2B+
+         dWCKuVD0LZOHtB2nvIN/jibiaWuYIPt5p5mCkqr3azhxoZwWxaH3kjA+7CfWvGJcC2DI
+         quopXOYu4OBkMgKQf05O3xOEvSsSfiOzN0HVHuNMviMzMm/5R9gsAPj55tujY33FL13H
+         u+fOVdxUbtfVU/lX/4JVhlYtX1331+EpqSLDaxenFQgBFAkwSOYPFktjFtCLNx/qKjPP
+         kzg/VRVgKtJzxUFCEiApIjGfoO2lPrK+TWx72ZkasH9cVcULD7csMyqsGvqn2hsV+7A/
+         iTFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ohGyP98uQQKhnB3pJGvLmrdRlMtpjmrRpHdlKsDa8JI=;
+        b=czf5253YudxmF+VS/rVKDcuGxehVNDnSanh/8/mtoUAR5rNO3ELSzeyhACjv1TDUi/
+         lxule7XAt5vI47qDgSqQw67F4eolkAMsm0fvvJ8mi0KWjkXLZl393LpbZk/dxhFwJjM0
+         awYI4+ZuiRIBdG07R694qBVDkVW0Qwrf+Mz2EF+yfH+QD5HbbqxSc6699QTcONx0YB9S
+         HQiINw9eJcyKK1GB0w0my1/nE6L25zTVIxBRXE3sLvHLwyztZMcAFNme5nmDQPPd325u
+         Ye9xck1waoH8N06+qXChCSa52Me1+zp3lkhB3kN1wzaW+ELY0LS7pWemLJbRUyRQnhM2
+         ftgg==
+X-Gm-Message-State: AOAM530S/PX67CWa7IJAzj8/3TYePv6tnUWR7Mt1du3qWmPqkrhBJfZX
+        ebqLvw/GNg8QFp0xnI1Rl2h0Kg0aj5kioCZzkQuPEg==
+X-Google-Smtp-Source: ABdhPJyLaAnrd+IG224fnDzZZ5YAYD7PCCD1T83OO0MFDfB2bhbeqq8qZzCx71hvpPHp2KQsJtiiQ4jrSkR16OyaidE=
+X-Received: by 2002:a17:90a:4749:: with SMTP id y9mr397490pjg.229.1604681031446;
+ Fri, 06 Nov 2020 08:43:51 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201106161122.GB3289870@bogus>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1604680907; bh=S+ZyGe0n3Ifbv9qmefFgqXitVzM6x/t8Npq9Zf+fzd8=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-         Content-Language:X-Originating-IP:X-ClientProxiedBy;
-        b=kz+Vx78yDBHTVI8MI/vZDnK3y345gMOQCgHKWQX9u3KtbTyf8Q71O1eTw7WbJXSL3
-         rXWaEqM0HS1JwsaZ1HvIPZjxJLgwUFjofv7O/IP807Z/ISSUgjJo98VbpCtnq3/1v0
-         fXqe7GmvLfSDXJNTYIBMshaQk5/RJSPPkZq8hJprjpjud2iTzLtkOzIAcJzdYCg5Co
-         8ZJToesE4Z4ptOnmFoskUVuZyFOzxkFLWDjCxKG/O5L+NZJGQyooKo2GOZJxMe44v3
-         mOtsXGB0HZH3LpzXHoCCgnATvySChhkAvG8aP1Ah0nggY6fml9XtwyJ4l+WVOe6dFB
-         OvOrjaIn+p4vQ==
+References: <20201026145114.59424-1-songmuchun@bytedance.com>
+ <20201026145114.59424-6-songmuchun@bytedance.com> <20201105132337.GA7552@linux>
+ <CAMZfGtXwKJ3uCuNC3mxHQLNJqTcUzj7Gd2-JRuOWEjZ1C7Oh=A@mail.gmail.com> <20201106094643.GA15654@linux>
+In-Reply-To: <20201106094643.GA15654@linux>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Sat, 7 Nov 2020 00:43:12 +0800
+Message-ID: <CAMZfGtWCUD=CjWMPMh2kMmrJRw7TgNtfwr7fLkrigp+T-K_Sww@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v2 05/19] mm/hugetlb: Introduce pgtable
+ allocation/freeing helpers
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Nov 6, 2020 at 5:46 PM Oscar Salvador <osalvador@suse.de> wrote:
+>
+> On Fri, Nov 06, 2020 at 12:08:22AM +0800, Muchun Song wrote:
+> > > I do not think you need this.
+> > > We already have hugepages_supported().
+> >
+> > Maybe some architectures support hugepage, but the vmemmap do not
+> > use the hugepage map. In  this case, we need it. But I am not sure if it
+> > exists in the real world. At least, x86 can reuse hugepages_supported.
+>
+> Yes, but that is the point.
+> IIUC, this patchset will enable HugeTLB vmemmap pages only for x86_64.
+> Then, let us make the patchset specific to that architecture.
+>
+> If at some point this grows more users (powerpc, arm, ...), then we
+> can add the missing code, but for now it makes sense to only include
+> the bits to make this work on x86_64.
+>
+> And also according to this the changelog is a bit "misleading".
+>
+> "On some architectures, the vmemmap areas use huge page mapping.
+> If we want to free the unused vmemmap pages, we have to split
+> the huge pmd firstly. So we should pre-allocate pgtable to split
+> huge pmd."
 
-On 11/6/20 8:11 AM, Rob Herring wrote:
-> On Thu, 05 Nov 2020 18:16:05 -0800, Sowjanya Komatineni wrote:
->> This patch converts text based dt-binding document to YAML based
->> dt-binding document.
->>
->> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
->> ---
->>   .../devicetree/bindings/ata/nvidia,tegra-ahci.yaml | 152 +++++++++++++++++++++
->>   .../bindings/ata/nvidia,tegra124-ahci.txt          |  44 ------
->>   2 files changed, 152 insertions(+), 44 deletions(-)
->>   create mode 100644 Documentation/devicetree/bindings/ata/nvidia,tegra-ahci.yaml
->>   delete mode 100644 Documentation/devicetree/bindings/ata/nvidia,tegra124-ahci.txt
->>
+Thanks for your suggestions. I will rewrite the commit log.
+
 >
-> My bot found errors running 'make dt_binding_check' on your patch:
+> On x86_64, vmemmap is always PMD mapped if the machine has hugepages
+> support and if we have 2MB contiguos pages and PMD aligned.
+> e.g: I have seen cases where after the system has ran for a period
+> of time hotplug operations were mapping the vmemmap representing
+> the hot-added range on page base, because we could not find
+> enough contiguos and aligned memory.
 >
-> yamllint warnings/errors:
+> Something that [1] tries to solve:
 >
-> dtschema/dtc warnings/errors:
-> Error: Documentation/devicetree/bindings/ata/nvidia,tegra-ahci.example.dts:27.31-32 syntax error
-> FATAL ERROR: Unable to parse input tree
-> make[1]: *** [scripts/Makefile.lib:342: Documentation/devicetree/bindings/ata/nvidia,tegra-ahci.example.dt.yaml] Error 1
-> make[1]: *** Waiting for unfinished jobs....
-> make: *** [Makefile:1364: dt_binding_check] Error 2
+> [1] https://patchwork.kernel.org/project/linux-mm/cover/20201022125835.26396-1-osalvador@suse.de/
 >
+> But anyway, my point is that let us make it clear in the changelog that
+> this is aimed for x86_64 at the moment.
+> Saying "on some architures" might make think people that this is not
+> x86_64 specific.
 >
-> See https://patchwork.ozlabs.org/patch/1395390
+> >> > > +     vmemmap_pgtable_init(page);
+> > >
+> > > Maybe just open code this one?
+> >
+> > Sorry. I don't quite understand what it means. Could you explain?
 >
-> The base for the patch is generally the last rc1. Any dependencies
-> should be noted.
+> I meant doing
 >
-> If you already ran 'make dt_binding_check' and didn't see the above
-> error(s), then make sure 'yamllint' is installed and dt-schema is up to
-> date:
+> page_huge_pte(page) = NULL
 >
-> pip3 install dtschema --upgrade
+> But no strong feelings.
 >
-> Please check and re-submit.
-Thanks Rob. Will re-try after installing up-to-date.
+> --
+> Oscar Salvador
+> SUSE L3
+
+
+
+-- 
+Yours,
+Muchun
