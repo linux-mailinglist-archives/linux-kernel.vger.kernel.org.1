@@ -2,93 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7EF92A967A
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 13:54:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB9F72A967B
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 13:54:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727282AbgKFMyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 07:54:06 -0500
-Received: from foss.arm.com ([217.140.110.172]:37720 "EHLO foss.arm.com"
+        id S1727318AbgKFMyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 07:54:10 -0500
+Received: from foss.arm.com ([217.140.110.172]:37730 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726939AbgKFMyG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 07:54:06 -0500
+        id S1726939AbgKFMyI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 07:54:08 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3EA6D1474;
-        Fri,  6 Nov 2020 04:54:05 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C34C91500;
+        Fri,  6 Nov 2020 04:54:07 -0800 (PST)
 Received: from e108754-lin.cambridge.arm.com (unknown [10.1.198.32])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 234D03F718;
-        Fri,  6 Nov 2020 04:54:04 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id A5DC73F718;
+        Fri,  6 Nov 2020 04:54:06 -0800 (PST)
 From:   Ionela Voinescu <ionela.voinescu@arm.com>
 To:     catalin.marinas@arm.com, mark.rutland@arm.com,
         sudeep.holla@arm.com, will@kernel.org
 Cc:     morten.rasmussen@arm.com, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org, ionela.voinescu@arm.com
-Subject: [PATCH v4 0/3] arm64: cppc: add FFH support using AMUs
-Date:   Fri,  6 Nov 2020 12:53:31 +0000
-Message-Id: <20201106125334.21570-1-ionela.voinescu@arm.com>
+Subject: [PATCH v4 1/3] arm64: wrap and generalise counter read functions
+Date:   Fri,  6 Nov 2020 12:53:32 +0000
+Message-Id: <20201106125334.21570-2-ionela.voinescu@arm.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201106125334.21570-1-ionela.voinescu@arm.com>
+References: <20201106125334.21570-1-ionela.voinescu@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi guys,
+In preparation for other uses of Activity Monitors (AMU) cycle counters,
+place counter read functionality in generic functions that can reused:
+read_corecnt() and read_constcnt().
 
-Many thanks for everyone's review.
+As a result, implement update_freq_counters_refs() to replace
+init_cpu_freq_invariance_counters() and both initialise and update
+the per-cpu reference variables.
 
-This series adds support for CPPC's delivered and reference performance
-counters through the FFH methods by using the AMU equivalent core and
-constant cycle counters.
+Signed-off-by: Ionela Voinescu <ionela.voinescu@arm.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+---
+ arch/arm64/include/asm/cpufeature.h |  5 +++++
+ arch/arm64/include/asm/topology.h   |  4 +++-
+ arch/arm64/kernel/cpufeature.c      |  5 +----
+ arch/arm64/kernel/topology.c        | 23 ++++++++++++++---------
+ 4 files changed, 23 insertions(+), 14 deletions(-)
 
-This support is added in patch 3/3, while the first 2 patches generalise
-the existing AMU counter read and validation functionality to be reused
-for this usecase.
-
-The specification that drove this implementation can be found at [1],
-chapter 3.2.
-
-v3 -> v4:
- - v3 can be found at [4]
- - 1/3, 3/3: Modified counter read functions as per Mark's suggestions.
- - This version is based on v5.10-rc2
-
-v2 -> v3:
- - v2 can be found at [3]
- - Sorted out part of the issues flagged by 0day testing in patches 1/3
-   and 3/3.
- - This version is based on v5.10-rc2.
-
-RESEND v2:
- - Rebased and retested on v5.10-rc1.
-
-v1 -> v2:
- - v1 can be found at [2]
- - The previous patch 1/4 was removed and a get_cpu_with_amu_feat()
-   function was introduced instead, in 3/3, as suggested by Catalin.
-   Given that most checks for the presence of AMUs is done at CPU
-   level, followed by other validation, this implementation works
-   better than the one initially introduced in v1/->patch 1/4.
- - Fixed warning reported by 0-day kernel test robot.
- - All build tests and FVP tests at [2] were re-run for this version.
- - This version is based on linux-next/20201001.
-
-[1] https://documentation-service.arm.com/static/5f106ad60daa596235e80081
-[2] https://lore.kernel.org/lkml/20200826130309.28027-1-ionela.voinescu@arm.com/
-[3] https://lore.kernel.org/linux-arm-kernel/20201027163624.20747-1-ionela.voinescu@arm.com/
-[4] https://lore.kernel.org/linux-arm-kernel/20201105122702.13916-1-ionela.voinescu@arm.com/
-
-Thank you,
-Ionela.
-
-Ionela Voinescu (3):
-  arm64: wrap and generalise counter read functions
-  arm64: split counter validation function
-  arm64: implement CPPC FFH support using AMUs
-
- arch/arm64/include/asm/cpufeature.h |   8 ++
- arch/arm64/include/asm/topology.h   |   4 +-
- arch/arm64/kernel/cpufeature.c      |  13 ++-
- arch/arm64/kernel/topology.c        | 129 ++++++++++++++++++++++------
- 4 files changed, 124 insertions(+), 30 deletions(-)
-
+diff --git a/arch/arm64/include/asm/cpufeature.h b/arch/arm64/include/asm/cpufeature.h
+index 97244d4feca9..751bd9d3376b 100644
+--- a/arch/arm64/include/asm/cpufeature.h
++++ b/arch/arm64/include/asm/cpufeature.h
+@@ -765,6 +765,11 @@ static inline bool cpu_has_hw_af(void)
+ #ifdef CONFIG_ARM64_AMU_EXTN
+ /* Check whether the cpu supports the Activity Monitors Unit (AMU) */
+ extern bool cpu_has_amu_feat(int cpu);
++#else
++static inline bool cpu_has_amu_feat(int cpu)
++{
++	return false;
++}
+ #endif
+ 
+ static inline unsigned int get_vmid_bits(u64 mmfr1)
+diff --git a/arch/arm64/include/asm/topology.h b/arch/arm64/include/asm/topology.h
+index 11a465243f66..3b8dca4eb08d 100644
+--- a/arch/arm64/include/asm/topology.h
++++ b/arch/arm64/include/asm/topology.h
+@@ -16,12 +16,14 @@ int pcibus_to_node(struct pci_bus *bus);
+ 
+ #include <linux/arch_topology.h>
+ 
++void update_freq_counters_refs(void);
++void topology_scale_freq_tick(void);
++
+ #ifdef CONFIG_ARM64_AMU_EXTN
+ /*
+  * Replace task scheduler's default counter-based
+  * frequency-invariance scale factor setting.
+  */
+-void topology_scale_freq_tick(void);
+ #define arch_scale_freq_tick topology_scale_freq_tick
+ #endif /* CONFIG_ARM64_AMU_EXTN */
+ 
+diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+index dcc165b3fc04..1142970e985b 100644
+--- a/arch/arm64/kernel/cpufeature.c
++++ b/arch/arm64/kernel/cpufeature.c
+@@ -1526,16 +1526,13 @@ bool cpu_has_amu_feat(int cpu)
+ 	return cpumask_test_cpu(cpu, &amu_cpus);
+ }
+ 
+-/* Initialize the use of AMU counters for frequency invariance */
+-extern void init_cpu_freq_invariance_counters(void);
+-
+ static void cpu_amu_enable(struct arm64_cpu_capabilities const *cap)
+ {
+ 	if (has_cpuid_feature(cap, SCOPE_LOCAL_CPU)) {
+ 		pr_info("detected CPU%d: Activity Monitors Unit (AMU)\n",
+ 			smp_processor_id());
+ 		cpumask_set_cpu(smp_processor_id(), &amu_cpus);
+-		init_cpu_freq_invariance_counters();
++		update_freq_counters_refs();
+ 	}
+ }
+ 
+diff --git a/arch/arm64/kernel/topology.c b/arch/arm64/kernel/topology.c
+index 543c67cae02f..03f4882362ce 100644
+--- a/arch/arm64/kernel/topology.c
++++ b/arch/arm64/kernel/topology.c
+@@ -124,6 +124,12 @@ int __init parse_acpi_topology(void)
+ #endif
+ 
+ #ifdef CONFIG_ARM64_AMU_EXTN
++#define read_corecnt()	read_sysreg_s(SYS_AMEVCNTR0_CORE_EL0)
++#define read_constcnt()	read_sysreg_s(SYS_AMEVCNTR0_CONST_EL0)
++#else
++#define read_corecnt()	(0UL)
++#define read_constcnt()	(0UL)
++#endif
+ 
+ #undef pr_fmt
+ #define pr_fmt(fmt) "AMU: " fmt
+@@ -133,13 +139,10 @@ static DEFINE_PER_CPU(u64, arch_const_cycles_prev);
+ static DEFINE_PER_CPU(u64, arch_core_cycles_prev);
+ static cpumask_var_t amu_fie_cpus;
+ 
+-/* Initialize counter reference per-cpu variables for the current CPU */
+-void init_cpu_freq_invariance_counters(void)
++void update_freq_counters_refs(void)
+ {
+-	this_cpu_write(arch_core_cycles_prev,
+-		       read_sysreg_s(SYS_AMEVCNTR0_CORE_EL0));
+-	this_cpu_write(arch_const_cycles_prev,
+-		       read_sysreg_s(SYS_AMEVCNTR0_CONST_EL0));
++	this_cpu_write(arch_core_cycles_prev, read_corecnt());
++	this_cpu_write(arch_const_cycles_prev, read_constcnt());
+ }
+ 
+ static int validate_cpu_freq_invariance_counters(int cpu)
+@@ -280,11 +283,14 @@ void topology_scale_freq_tick(void)
+ 	if (!cpumask_test_cpu(cpu, amu_fie_cpus))
+ 		return;
+ 
+-	const_cnt = read_sysreg_s(SYS_AMEVCNTR0_CONST_EL0);
+-	core_cnt = read_sysreg_s(SYS_AMEVCNTR0_CORE_EL0);
+ 	prev_const_cnt = this_cpu_read(arch_const_cycles_prev);
+ 	prev_core_cnt = this_cpu_read(arch_core_cycles_prev);
+ 
++	update_freq_counters_refs();
++
++	const_cnt = this_cpu_read(arch_const_cycles_prev);
++	core_cnt = this_cpu_read(arch_core_cycles_prev);
++
+ 	if (unlikely(core_cnt <= prev_core_cnt ||
+ 		     const_cnt <= prev_const_cnt))
+ 		goto store_and_exit;
+@@ -309,4 +315,3 @@ void topology_scale_freq_tick(void)
+ 	this_cpu_write(arch_core_cycles_prev, core_cnt);
+ 	this_cpu_write(arch_const_cycles_prev, const_cnt);
+ }
+-#endif /* CONFIG_ARM64_AMU_EXTN */
 -- 
 2.17.1
 
