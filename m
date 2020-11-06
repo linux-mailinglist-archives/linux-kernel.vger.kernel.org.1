@@ -2,97 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A7C32A9E7B
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 21:13:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A85A52A9E7D
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 21:14:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728422AbgKFUNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 15:13:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41832 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728113AbgKFUNX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 15:13:23 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2914DC0613CF;
-        Fri,  6 Nov 2020 12:13:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=5oicY2GKZKEFQuBu7/i2kWiW5yuI7LeLWBSKiBk081Y=; b=aOx4EJ3siU16FxqTqnb58GqQ1C
-        oE22Z86+qRbyNltQRky48XuAerEqq/HuEEDQ32M12gnvOR9YtSGKETk7+D9wTVgTBSf/tFihP2PVs
-        1UBMHvzL6xYS1BmCyuRIfaLydIz2jQNkV538v8Y6VP9D4KW70us2wTYg1adDjq8/WoTLBSyj+a3FZ
-        gO6MYWE7diXUROsf3csHaczCrSkRL/SfLS2ay82ucI2mJoD2YM5x8Lk0J5bbMMyTRMdv5Xm21a92O
-        aBODnpSkvzNFnAtTERX1jLbpGvXuSXHEWl6HSvslhyuEYW4wBy3u3f8b5umCaBjkhgplEBfCvVgD0
-        SPg4sj/w==;
-Received: from [2601:1c0:6280:3f0::a1cb]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kb86m-0007Xl-Tc; Fri, 06 Nov 2020 20:13:17 +0000
-Subject: Re: [PATCH net] net: marvell: prestera: fix compilation with
- CONFIG_BRIDGE=m
-To:     Vadym Kochan <vadym.kochan@plvision.eu>,
-        Volodymyr Mytnyk <volodymyr.mytnyk@plvision.eu>,
-        Andrii Savka <andrii.savka@plvision.eu>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Oleksandr Mazur <oleksandr.mazur@plvision.eu>,
-        Serhiy Boiko <serhiy.boiko@plvision.eu>,
-        Serhiy Pshyk <serhiy.pshyk@plvision.eu>,
-        Taras Chornyi <taras.chornyi@plvision.eu>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Mickey Rachamim <mickeyr@marvell.com>
-References: <20201106161128.24069-1-vadym.kochan@plvision.eu>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <4d67e1d4-4f5c-a0c1-ce87-42e141215aa1@infradead.org>
-Date:   Fri, 6 Nov 2020 12:13:12 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-MIME-Version: 1.0
-In-Reply-To: <20201106161128.24069-1-vadym.kochan@plvision.eu>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+        id S1728431AbgKFUOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 15:14:16 -0500
+Received: from mail-mw2nam10on2059.outbound.protection.outlook.com ([40.107.94.59]:57320
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728140AbgKFUOQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 15:14:16 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=N8F28ltE4GM1f183HmcODILFxMY3L1cMx3v6S71EYgGlEEWjQb+3FENK6ZUiJez00Eb20iNjd6maQ3enxk3MkV3GdDkqKImmjvWsLQCAY44D4W+LzUhcd93gTHtqI17esqNAh4KBHu6NDNbASoFn+VVdXbNFKaJrFnKbkPP4P6Spk+C7jFl6aCTFla5Fk36rNgIbuIQMlUMvclP6KIc+AjReHDYK2/Sa+JuDGUkTDZb3Ct9mCv9gJGA8A7jxoeIF2QnCi3+04HkhdLahGHrN9J1Hp9NBK8t85888vnhusVA6h4k/hWH86CA1xGln4gxKFxfC/Xz3gMac3QKJEj14Xg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=y7wpvJzV+eSebcPfM7aa5nRa73SffZYSaLD2Oo+TR9s=;
+ b=BniMXgAbe/NW27O+/aG8XyV1jyx7MXB2JVfKInw1j1ozgvLfbmd7pWd9MpagFcT+iQi2rw6DgZDiuh4I+r3GvF80DxtJHzWN628TG/HvQ8S/apEgSTlppwRIzFef+phfGG/ua1SmII4c6GvUzUGwQAtkWAvrZIRvczCPyfme1UV4dlTu75WrcYv4ACyk8QvAenJaJs3RxKDtwVK/BOP134byu2xeoiX0uLteX+XFYBmX8nsaStDBUamuhumT8m3WyCtIYmWsNfSCuQcmSGYxI88R0uVNbP9m6JUTledDud/dSlxJSi5Ib1lmZvjwVAMAZ275FPqrl2uGLxVyWCLv7Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=y7wpvJzV+eSebcPfM7aa5nRa73SffZYSaLD2Oo+TR9s=;
+ b=O3kyNx617GF8j4rQ6AMio6W1vHTSlYeIMozGuZ2SffSl5UqwBL778q0jq2LU70ckRv+5Qwaid4/73K9siM9eKOpf/dXwCxPJe0/Xd87OB15qv5Ml2ms7tqUnBfU3+Kux3Evq3j5VdiCLMNv5XK4gg8KRIhbYhjHhODhDrkEMF8s=
+Authentication-Results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=amd.com;
+Received: from SN1PR12MB2560.namprd12.prod.outlook.com (2603:10b6:802:26::19)
+ by SN6PR12MB4704.namprd12.prod.outlook.com (2603:10b6:805:e8::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21; Fri, 6 Nov
+ 2020 20:14:13 +0000
+Received: from SN1PR12MB2560.namprd12.prod.outlook.com
+ ([fe80::d877:baf6:9425:ece]) by SN1PR12MB2560.namprd12.prod.outlook.com
+ ([fe80::d877:baf6:9425:ece%3]) with mapi id 15.20.3541.022; Fri, 6 Nov 2020
+ 20:14:13 +0000
+Subject: [PATCH] x86/resctrl: Fix AMD L3 QOS CDP enable/disable
+From:   Babu Moger <babu.moger@amd.com>
+To:     bp@alien8.de
+Cc:     fenghua.yu@intel.com, x86@kernel.org, linux-kernel@vger.kernel.org,
+        babu.moger@amd.com, mingo@redhat.com, hpa@zytor.com,
+        tglx@linutronix.de, reinette.chatre@intel.com
+Date:   Fri, 06 Nov 2020 14:14:11 -0600
+Message-ID: <160469365104.21002.2901190946502347327.stgit@bmoger-ubuntu>
+User-Agent: StGit/0.17.1-dirty
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [165.204.77.1]
+X-ClientProxiedBy: DM5PR07CA0110.namprd07.prod.outlook.com
+ (2603:10b6:4:ae::39) To SN1PR12MB2560.namprd12.prod.outlook.com
+ (2603:10b6:802:26::19)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [127.0.1.1] (165.204.77.1) by DM5PR07CA0110.namprd07.prod.outlook.com (2603:10b6:4:ae::39) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend Transport; Fri, 6 Nov 2020 20:14:12 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 1ffa5d98-3174-4b7e-db97-08d88290877d
+X-MS-TrafficTypeDiagnostic: SN6PR12MB4704:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SN6PR12MB4704C0E5D82F4EF10691E96A95ED0@SN6PR12MB4704.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: R4QaI+YfvOWOIAVX/TKeY6rX4NuBjkiZj4NYgAk4IsLG1hqgq8He5iIjQfHsvUeG1W82surI6F+K7tlCNiR6URKq/95LV+FkZVlw0a2lQzbzAua2iYdy10M/QojJD7qVyc9OjCTrUO3Bf1L4gr4YUyNbp9LM74+0OeCEYdulxsIGOy8nuDnLlJKxxCq2YK5pc2yLC1bqdWLYZzw18jx+1t/P6einw6+gxHW+K69BMrvwEYR5lj2Yh/7ox0h1iPVdfJOOSvETuiOcyfNj8ap1wAn4beNsETiy4vrvWzxJNOI+okknj9kQnqJdsKam92i+AaFo7lPXCsBRRqD2AZ84uxPoypQkNMdWOGalIY3mwm6UHnw2biWu43dGIpg05eBaMu9KhHW2+Ix/tK161/BEhg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN1PR12MB2560.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(346002)(376002)(39860400002)(396003)(366004)(136003)(316002)(6486002)(956004)(16576012)(66556008)(66476007)(66946007)(4326008)(103116003)(86362001)(2906002)(44832011)(16526019)(186003)(26005)(83380400001)(52116002)(9686003)(8936002)(33716001)(478600001)(966005)(8676002)(6916009)(5660300002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: AX0Gf+hFyLJvZ0z6endeXRpO8glXwqEQgOYpDr8AWH0syK5qODMQHuinPfdJl+Cudx/hmBLk+65r7ffG46Svi3tu6P/mvtGNaWaTknkxOAikcnAgS0PHusO+N+r9QDQQdkdHmdfO5THCMI//GKmIWGt4usVutwqHnW3ESaYA+c02W6InYyCib7nlYnzW+D4CMnRmPrt8ibeFxrJ1QSZFjWk+tB0+h0d1o5TCMSmyfsgnoY8cQfK8gaBwpwK8jjhNe5Z6gTfVBltN+xpVg/fcRCa1iDiZOEqE8w7kcXcfLig8v4v8Pji9yyCe3aak7B7/hY47ez5YPHC635n3ilPhZ4IX2D6dKTVqauHrcaJ7f1Uf6iwBLQkndYZRtO5eWAbQoee7r7kh5Muf+QOaNXifQCVFOgxxEqv+pXt+G6Rs03sqUNjoRu36LrUa6FtKKMJWcKZt3NpNzNFt+cR/YFjxxb2HkffKWv6LuMkICs5ntCeFafv91cF/vfr2DwRmV49VHevHhX9t9/0Rm8NIkRIAoxpR9uF5tw4Xtah+RjKGV3xyBL4QIrbWwlH203y+N12R0z97y4PGA8YDXz2W9nRcUNplRLsi800uhaclxCKzDPL0bhs81LnrRErwp9OXXwi9pm/rQv607cuP2B3BCvWqiA==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1ffa5d98-3174-4b7e-db97-08d88290877d
+X-MS-Exchange-CrossTenant-AuthSource: SN1PR12MB2560.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Nov 2020 20:14:13.4917
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Gr2CY1ZZNPHDTFrKe2v0JskyUeYHBVO7Fbqbq0QDFv7gu/WIsvht3OupTmPV0xVh
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR12MB4704
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/6/20 8:11 AM, Vadym Kochan wrote:
-> With CONFIG_BRIDGE=m the compilation fails:
-> 
->     ld: drivers/net/ethernet/marvell/prestera/prestera_switchdev.o: in function `prestera_bridge_port_event':
->     prestera_switchdev.c:(.text+0x2ebd): undefined reference to `br_vlan_enabled'
-> 
-> in case the driver is statically enabled.
-> 
-> Fix it by adding 'BRIDGE || BRIDGE=n' dependency.
-> 
-> Fixes: e1189d9a5fbe ("net: marvell: prestera: Add Switchdev driver implementation")
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
+When the AMD QoS feature CDP(code and data prioritization) is enabled
+or disabled, the CDP bit in MSR 0000_0C81 is written on one of the
+cpus in L3 domain(core complex). That is not correct. The CDP bit needs
+to be updated all the logical cpus in the domain.
 
+This was not spelled out clearly in the spec earlier. The specification
+has been updated. The updated specification, "AMD64 Technology Platform
+Quality of Service Extensions Publication # 56375 Revision: 1.02 Issue
+Date: October 2020" is available now. Refer the section: Code and Data
+Prioritization.
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+Fix the issue by adding a new flag arch_needs_update_all in rdt_cache
+data structure.
 
-Thanks.
+The documentation can be obtained at the links below:
+https://developer.amd.com/wp-content/resources/56375.pdf
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=206537
 
-> ---
->  drivers/net/ethernet/marvell/prestera/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/net/ethernet/marvell/prestera/Kconfig b/drivers/net/ethernet/marvell/prestera/Kconfig
-> index b1fcc44f566a..b6f20e2034c6 100644
-> --- a/drivers/net/ethernet/marvell/prestera/Kconfig
-> +++ b/drivers/net/ethernet/marvell/prestera/Kconfig
-> @@ -6,6 +6,7 @@
->  config PRESTERA
->  	tristate "Marvell Prestera Switch ASICs support"
->  	depends on NET_SWITCHDEV && VLAN_8021Q
-> +	depends on BRIDGE || BRIDGE=n
->  	select NET_DEVLINK
->  	help
->  	  This driver supports Marvell Prestera Switch ASICs family.
-> 
+Fixes: 4d05bf71f157 ("x86/resctrl: Introduce AMD QOS feature")
 
+Signed-off-by: Babu Moger <babu.moger@amd.com>
+---
+ arch/x86/kernel/cpu/resctrl/core.c     |    3 +++
+ arch/x86/kernel/cpu/resctrl/internal.h |    3 +++
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c |    9 +++++++--
+ 3 files changed, 13 insertions(+), 2 deletions(-)
 
--- 
-~Randy
+diff --git a/arch/x86/kernel/cpu/resctrl/core.c b/arch/x86/kernel/cpu/resctrl/core.c
+index e5f4ee8f4c3b..142c92a12254 100644
+--- a/arch/x86/kernel/cpu/resctrl/core.c
++++ b/arch/x86/kernel/cpu/resctrl/core.c
+@@ -570,6 +570,8 @@ static void domain_add_cpu(int cpu, struct rdt_resource *r)
+ 
+ 	if (d) {
+ 		cpumask_set_cpu(cpu, &d->cpu_mask);
++		if (r->cache.arch_needs_update_all)
++			rdt_domain_reconfigure_cdp(r);
+ 		return;
+ 	}
+ 
+@@ -943,6 +945,7 @@ static __init void rdt_init_res_defs_amd(void)
+ 		    r->rid == RDT_RESOURCE_L2CODE) {
+ 			r->cache.arch_has_sparse_bitmaps = true;
+ 			r->cache.arch_has_empty_bitmaps = true;
++			r->cache.arch_needs_update_all = true;
+ 		} else if (r->rid == RDT_RESOURCE_MBA) {
+ 			r->msr_base = MSR_IA32_MBA_BW_BASE;
+ 			r->msr_update = mba_wrmsr_amd;
+diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
+index 80fa997fae60..d23262d59a51 100644
+--- a/arch/x86/kernel/cpu/resctrl/internal.h
++++ b/arch/x86/kernel/cpu/resctrl/internal.h
+@@ -360,6 +360,8 @@ struct msr_param {
+  *			executing entities
+  * @arch_has_sparse_bitmaps:	True if a bitmap like f00f is valid.
+  * @arch_has_empty_bitmaps:	True if the '0' bitmap is valid.
++ * @arch_needs_update_all:	True if arch needs to update the cache
++ *				settings on all the cpus in the domain.
+  */
+ struct rdt_cache {
+ 	unsigned int	cbm_len;
+@@ -369,6 +371,7 @@ struct rdt_cache {
+ 	unsigned int	shareable_bits;
+ 	bool		arch_has_sparse_bitmaps;
+ 	bool		arch_has_empty_bitmaps;
++	bool		arch_needs_update_all;
+ };
+ 
+ /**
+diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+index af323e2e3100..a005e90b373a 100644
+--- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
++++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+@@ -1905,8 +1905,13 @@ static int set_cache_qos_cfg(int level, bool enable)
+ 
+ 	r_l = &rdt_resources_all[level];
+ 	list_for_each_entry(d, &r_l->domains, list) {
+-		/* Pick one CPU from each domain instance to update MSR */
+-		cpumask_set_cpu(cpumask_any(&d->cpu_mask), cpu_mask);
++		if (r_l->cache.arch_needs_update_all)
++			/* Pick all the cpus in the domain instance */
++			for_each_cpu(cpu, &d->cpu_mask)
++				cpumask_set_cpu(cpu, cpu_mask);
++		else
++			/* Pick one CPU from each domain instance to update MSR */
++			cpumask_set_cpu(cpumask_any(&d->cpu_mask), cpu_mask);
+ 	}
+ 	cpu = get_cpu();
+ 	/* Update QOS_CFG MSR on this cpu if it's in cpu_mask. */
+
