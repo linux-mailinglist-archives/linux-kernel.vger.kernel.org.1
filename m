@@ -2,71 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5CA32A957E
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 12:33:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05CA52A9584
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 12:34:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727274AbgKFLdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 06:33:40 -0500
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:39911 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726447AbgKFLdj (ORCPT
+        id S1727290AbgKFLeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 06:34:25 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:39670 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726708AbgKFLeX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 06:33:39 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UEQewtU_1604662416;
-Received: from aliy80.localdomain(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UEQewtU_1604662416)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 06 Nov 2020 19:33:36 +0800
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-To:     hannes@cmpxchg.org, akpm@linux-foundation.org
-Cc:     Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] mm/memcg: update page struct member in comments
-Date:   Fri,  6 Nov 2020 19:33:33 +0800
-Message-Id: <1604662413-5734-1-git-send-email-alex.shi@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Fri, 6 Nov 2020 06:34:23 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0A6BXrpT076586;
+        Fri, 6 Nov 2020 05:33:54 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1604662434;
+        bh=DcQpD/+WVWEG8zUZCk/U6AoWPUg3QwRD4/zJ7DpRABA=;
+        h=Subject:To:References:From:Date:In-Reply-To;
+        b=Tcg+Vtw1XcBAGyHpmM5ODdc7C/XQ8UsBEX8CLXtl5BAWv+FJvK15YMV43NEx6kHWp
+         pKXDEyYeRnpJdAKhJUsu0StbhAMrupaRZiIXgn7nzZCpdprUK7cVnzDzxJMZ/dtfbH
+         jHemuLSH2N/fOMHIoo4TqOznKjdawLR5U13eIG4U=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0A6BXrGr058656
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 6 Nov 2020 05:33:53 -0600
+Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 6 Nov
+ 2020 05:33:53 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 6 Nov 2020 05:33:53 -0600
+Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0A6BXoea087317;
+        Fri, 6 Nov 2020 05:33:51 -0600
+Subject: Re: [PATCH] net/ethernet: update ret when ptp_clock is ERROR
+To:     Wang Qing <wangqing@vivo.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Samuel Zou <zou_wei@huawei.com>,
+        Kurt Kanzenbach <kurt@linutronix.de>,
+        Richard Cochran <richardcochran@gmail.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <1604649411-24886-1-git-send-email-wangqing@vivo.com>
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+Message-ID: <fd46310f-0b4e-ac8b-b187-98438ee6bb60@ti.com>
+Date:   Fri, 6 Nov 2020 13:34:04 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <1604649411-24886-1-git-send-email-wangqing@vivo.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The page->mem_cgroup member is replaced by memcg_data, and add a helper
-page_memcg() for it. Need to update comments to avoid confusing.
 
-Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org> 
-Cc: Michal Hocko <mhocko@kernel.org> 
-Cc: Vladimir Davydov <vdavydov.dev@gmail.com> 
-Cc: Andrew Morton <akpm@linux-foundation.org> 
-Cc: cgroups@vger.kernel.org 
-Cc: linux-mm@kvack.org 
-Cc: linux-kernel@vger.kernel.org 
----
- mm/memcontrol.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index b2aa3b73ab82..8a8debea34fc 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -1310,7 +1310,7 @@ int mem_cgroup_scan_tasks(struct mem_cgroup *memcg,
-  * @page: the page
-  * @pgdat: pgdat of the page
-  *
-- * This function relies on page->mem_cgroup being stable - see the
-+ * This function relies on page_memcg(page) being stable - see the
-  * access rules in commit_charge().
-  */
- struct lruvec *mem_cgroup_page_lruvec(struct page *page, struct pglist_data *pgdat)
-@@ -2862,7 +2862,7 @@ static void commit_charge(struct page *page, struct mem_cgroup *memcg)
- {
- 	VM_BUG_ON_PAGE(page_memcg(page), page);
- 	/*
--	 * Any of the following ensures page->mem_cgroup stability:
-+	 * Any of the following ensures page_memcg(page) stability:
- 	 *
- 	 * - the page lock
- 	 * - LRU isolation
+On 06/11/2020 09:56, Wang Qing wrote:
+> We always have to update the value of ret, otherwise the
+>   error value may be the previous one.
+> 
+> Signed-off-by: Wang Qing <wangqing@vivo.com>
+> ---
+>   drivers/net/ethernet/ti/am65-cpts.c | 3 +--
+>   1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/ti/am65-cpts.c b/drivers/net/ethernet/ti/am65-cpts.c
+> index 75056c1..b77ff61
+> --- a/drivers/net/ethernet/ti/am65-cpts.c
+> +++ b/drivers/net/ethernet/ti/am65-cpts.c
+> @@ -1001,8 +1001,7 @@ struct am65_cpts *am65_cpts_create(struct device *dev, void __iomem *regs,
+
+there is
+	cpts->ptp_clock = ptp_clock_register(&cpts->ptp_info, cpts->dev);
+
+
+>   	if (IS_ERR_OR_NULL(cpts->ptp_clock)) {
+
+And ptp_clock_register() can return NULL only if PTP support is disabled.
+In which case, we should not even get here.
+
+So, I'd propose to s/IS_ERR_OR_NULL/IS_ERR above,
+and just assign ret = PTR_ERR(cpts->ptp_clock) here.
+
+>   		dev_err(dev, "Failed to register ptp clk %ld\n",
+>   			PTR_ERR(cpts->ptp_clock));
+> -		if (!cpts->ptp_clock)
+> -			ret = -ENODEV;
+> +		ret = cpts->ptp_clock ? cpts->ptp_clock : (-ENODEV);
+>   		goto refclk_disable;
+>   	}
+>   	cpts->phc_index = ptp_clock_index(cpts->ptp_clock);
+> 
+
 -- 
-1.8.3.1
-
+Best regards,
+grygorii
