@@ -2,86 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41CFC2A9C55
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 19:34:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E90D2A9C59
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 19:34:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727980AbgKFSep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 13:34:45 -0500
-Received: from mail-ej1-f65.google.com ([209.85.218.65]:36319 "EHLO
-        mail-ej1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727946AbgKFSep (ORCPT
+        id S1727993AbgKFSet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 13:34:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54616 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727773AbgKFSep (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 6 Nov 2020 13:34:45 -0500
-Received: by mail-ej1-f65.google.com with SMTP id o21so3274339ejb.3;
-        Fri, 06 Nov 2020 10:34:43 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FkzNqxSfyMo55uSFo/RaS7wC0Mk7oJJx/7MeeIEWsa4=;
-        b=cgXbp65mFJ7LQIY2QqwTlUIIKPaBClXn93XL8w8PfKIQv9ZLYdGhb7MWhST2JHAYCp
-         CJ93tpOqChqrPY4q1OjNam3D3n4UxKVx7NhjmdD1XCSBWtackkmMc+WbzcOrf8uC2U41
-         yL80G4oNyJZbcQt8TtyP6jC5twWKSRqW5QTXwCT0z2rtCv3jt0EbkCn6++Qs7wWxmLl5
-         VU5MO84PCAxGA4Sed2ViEeTiO/os1eBvSpto6w6r6Iy9Qx7Ihivkn7sASJZvd4jlG4we
-         Wb6hPlNM98nvworRkbxnPs07tXvgdXI/2r07SXAJz2x7metFjQvgpLX+TuJyaWo8/KgU
-         8Ycw==
-X-Gm-Message-State: AOAM531UDbQl41lezzpCHQUwSxqyVa7rTPgfBoV6ED9W0mjK3zL176pM
-        xRn79IngmgrLMYy0zfs0M/8=
-X-Google-Smtp-Source: ABdhPJy3Lu/emveh4xDrPGSELPBmtgh1n9Y46JBkYcuVt7osEk6IGboPfP6TMtvtKJf6JLY+T06mUg==
-X-Received: by 2002:a17:906:934d:: with SMTP id p13mr3275824ejw.245.1604687682790;
-        Fri, 06 Nov 2020 10:34:42 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id t3sm1588459edv.59.2020.11.06.10.34.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Nov 2020 10:34:41 -0800 (PST)
-Date:   Fri, 6 Nov 2020 19:34:40 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Mikko Perttunen <cyndis@kapsi.fi>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v7 15/47] dt-bindings: tegra30-actmon: Document OPP and
- interconnect properties
-Message-ID: <20201106183440.GN65086@kozik-lap>
-References: <20201104164923.21238-1-digetx@gmail.com>
- <20201104164923.21238-16-digetx@gmail.com>
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00B46C0613CF;
+        Fri,  6 Nov 2020 10:34:44 -0800 (PST)
+Date:   Fri, 06 Nov 2020 18:34:41 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1604687682;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Puqz4ukAZgIrEq385tfYzwFkVGA1caRrB6N7GK7a8SA=;
+        b=iGBZ0jO1FJPogCHg6dlNHMYsj4vrnLFKws58iDmGI7oa70tHAEjavGrezlcu6csNtZMT3h
+        MiBh4uAtNdyTbXId+ZL1cnI3CRiuqNYn1uRe5YgJ2eLtjnKkuJ6EG+ZPDQyObrFE6K46j9
+        A5PUZfhXcyOGwg6CAu4ciWervtp7WBGDiowNP6Cqo604CAWo4HbDXMUqB7mqCt3cmaAPYn
+        ijqMmX+zfQXVTa3isTvwOhzMP4Kz/0jrPUwXBGxjCFW2RfNm7s46wWPy3aYPIkYhL0e5v6
+        +FORxEYRG/07OP5cGtr20xjZHfFNh65qQxVaCFQJXXD9oWJjio4N/hPQlRL9WQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1604687682;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Puqz4ukAZgIrEq385tfYzwFkVGA1caRrB6N7GK7a8SA=;
+        b=EMxIJk88egWD2d4f+4QgzFkjMWVMsOKZroCg2N0QGZvoKL7sx7koIhYogw2TWsyYKZi01v
+        ZLh36Iirb8cnqdDQ==
+From:   "tip-bot2 for Zhen Lei" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: ras/core] x86/mce: Correct the detection of invalid notifier priorities
+Cc:     Zhen Lei <thunder.leizhen@huawei.com>,
+        Borislav Petkov <bp@suse.de>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20201106141216.2062-2-thunder.leizhen@huawei.com>
+References: <20201106141216.2062-2-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201104164923.21238-16-digetx@gmail.com>
+Message-ID: <160468768153.397.11511315688950606406.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 07:48:51PM +0300, Dmitry Osipenko wrote:
-> Document EMC DFS OPP table and interconnect paths that will be used
-> for scaling of system's memory bandwidth based on memory utilization
-> statistics. Previously ACTMON was supposed to drive EMC clock rate
-> directly, but now it should do it using interconnect framework in order
-> to support shared voltage scaling in addition to the frequency scaling.
-> 
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  .../arm/tegra/nvidia,tegra30-actmon.txt       | 25 +++++++++++++++++++
->  1 file changed, 25 insertions(+)
+The following commit has been merged into the ras/core branch of tip:
 
-Thanks, applied.
+Commit-ID:     15af36596ae305aefc8c502c2d3e8c58221709eb
+Gitweb:        https://git.kernel.org/tip/15af36596ae305aefc8c502c2d3e8c58221709eb
+Author:        Zhen Lei <thunder.leizhen@huawei.com>
+AuthorDate:    Fri, 06 Nov 2020 22:12:16 +08:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Fri, 06 Nov 2020 19:02:48 +01:00
 
-Best regards,
-Krzysztof
+x86/mce: Correct the detection of invalid notifier priorities
 
+Commit
+
+  c9c6d216ed28 ("x86/mce: Rename "first" function as "early"")
+
+changed the enumeration of MCE notifier priorities. Correct the check
+for notifier priorities to cover the new range.
+
+ [ bp: Rewrite commit message, remove superfluous brackets in
+   conditional. ]
+
+Fixes: c9c6d216ed28 ("x86/mce: Rename "first" function as "early"")
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20201106141216.2062-2-thunder.leizhen@huawei.com
+---
+ arch/x86/include/asm/mce.h     | 3 ++-
+ arch/x86/kernel/cpu/mce/core.c | 3 ++-
+ 2 files changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/include/asm/mce.h b/arch/x86/include/asm/mce.h
+index a0f1478..fc25c88 100644
+--- a/arch/x86/include/asm/mce.h
++++ b/arch/x86/include/asm/mce.h
+@@ -177,7 +177,8 @@ enum mce_notifier_prios {
+ 	MCE_PRIO_EXTLOG,
+ 	MCE_PRIO_UC,
+ 	MCE_PRIO_EARLY,
+-	MCE_PRIO_CEC
++	MCE_PRIO_CEC,
++	MCE_PRIO_HIGHEST = MCE_PRIO_CEC
+ };
+ 
+ struct notifier_block;
+diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
+index 888248a..ccac4c2 100644
+--- a/arch/x86/kernel/cpu/mce/core.c
++++ b/arch/x86/kernel/cpu/mce/core.c
+@@ -162,7 +162,8 @@ EXPORT_SYMBOL_GPL(mce_log);
+ 
+ void mce_register_decode_chain(struct notifier_block *nb)
+ {
+-	if (WARN_ON(nb->priority > MCE_PRIO_MCELOG && nb->priority < MCE_PRIO_EDAC))
++	if (WARN_ON(nb->priority < MCE_PRIO_LOWEST ||
++		    nb->priority > MCE_PRIO_HIGHEST))
+ 		return;
+ 
+ 	blocking_notifier_chain_register(&x86_mce_decoder_chain, nb);
