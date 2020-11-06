@@ -2,171 +2,612 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B9FC2AA10A
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 00:26:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A11D2AA116
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 00:28:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728344AbgKFX0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 18:26:15 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:55462 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727264AbgKFX0N (ORCPT
+        id S1728536AbgKFX1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 18:27:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43900 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728096AbgKFX1P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 18:26:13 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A6NJ4wP066494;
-        Fri, 6 Nov 2020 23:25:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
- date : message-id; s=corp-2020-01-29;
- bh=2tRXw/dchPQ13IhlNROOnimve1oFHuJwjVjFCIkQL9s=;
- b=t4xJ7y8D5a6j2f17ZwmtzWXhWCibYCpYKHz5hM4k35Ijao8Zd7CSE5HcNASyWw+7u6kn
- CRWidzhqXwCQE3Qnpzh7DDoysDdeSw2Zt5u67slbp662TgMnTljTU3fy/8P3TEvsibol
- cXtMU6V6lCg0aEu8720TIiAYOy3+TtP8YwLRmeltCdByw0WkIoXHq/pjiksub6RM0OhW
- cTCh6J55RfhxZQUZhh+iuJhg5wp+CyyUpeOq9UlynqwFDxUiy4iyA+k6oYjtaee5JZmS
- 3tpTJc85Q3m5BDiWj6iyXJoZi6tCMr+WPN0a1oP4pJPDc11sV3GsaK6oITu2eal3+RRU lw== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 34hhw33g8u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 06 Nov 2020 23:25:58 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A6NJtOf098828;
-        Fri, 6 Nov 2020 23:25:57 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 34hvs3bg1k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 06 Nov 2020 23:25:57 +0000
-Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0A6NPtas032501;
-        Fri, 6 Nov 2020 23:25:56 GMT
-Received: from ca-dev-arm29.us.oracle.com (/10.129.136.23)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 06 Nov 2020 15:25:55 -0800
-From:   Henry Willard <henry.willard@oracle.com>
-To:     <catalin.marinas@arm.com>, <will@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <qais.yousef@arm.com>
-Subject: [PATCH] arm64: kexec: Use smp_send_stop in machine_shutdown
-Date:   Fri,  6 Nov 2020 15:25:48 -0800
-Message-Id: <1604705148-1831-1-git-send-email-henry.willard@oracle.com>
-X-Mailer: git-send-email 1.8.3.1
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9797 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0 mlxscore=0
- malwarescore=0 mlxlogscore=999 suspectscore=0 spamscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011060156
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9797 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0 mlxscore=0
- suspectscore=0 clxscore=1011 priorityscore=1501 impostorscore=0
- spamscore=0 lowpriorityscore=0 mlxlogscore=999 phishscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011060156
+        Fri, 6 Nov 2020 18:27:15 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EB3AC0613CF;
+        Fri,  6 Nov 2020 15:27:15 -0800 (PST)
+Date:   Fri, 06 Nov 2020 23:27:10 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1604705232;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/aUj8XDpWpqTfB8Bd812NLOF9FuF/6d72EGkdEECQVs=;
+        b=QkxUgau6mAb91bH16bWTqFoJTW4tObRcS632Ay6Zr5GtZ7y2lDsWHD8NGx86iqXG3Eufxz
+        OToqk+uRZ2b1iaHy2qK8J9s/u1uI1fQrP/ahgv3HuN3Xzcsdv1TcPdfolrr1jvdyIC7eUo
+        OZYR23TkHfVnOEJk9GPGMXNLalZr03w/gr9vfox4I2MQCkx+p1yHq01LWtJKLAeQ4dVjH7
+        GeC26ZryjlQXH5VgYpPzJ+o0PCiwyytHlwCJT4V1ji0E2q+phVI+Eb+sE1a1fxA0mo74c0
+        5iRaV8hnk0aF//6zNJGRFSb2qkuaFkQDXo7m9RnQfWWJvyST4nTdhP1iXFmiCQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1604705232;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/aUj8XDpWpqTfB8Bd812NLOF9FuF/6d72EGkdEECQVs=;
+        b=aneQj9C2XiHeu1zdi7gurUG22jSKVwK5EfDVKzv1/N8YyrfSDUZHMcXvMwOwmHu0n9WR5r
+        9fVMxngq368LyoAg==
+From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: core/mm] highmem: High implementation details and document API
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Linus Torvalds <torvalds@linuxfoundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20201103095858.827582066@linutronix.de>
+References: <20201103095858.827582066@linutronix.de>
+MIME-Version: 1.0
+Message-ID: <160470523060.397.4585912177423089262.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-machine_shutdown() is called by kernel_kexec() to shutdown
-the non-boot CPUs prior to starting the new kernel. The
-implementation of machine_shutdown() varies by architecture.
-Many make an interprocessor call, such as smp_send_stop(),
-to stop the non-boot CPUs. On some architectures the CPUs make
-some sort of firmware call to stop the CPU. On some architectures
-without the necessary firmware support to stop the CPU, the CPUs
-go into a disabled loop, which is not suitable for supporting
-kexec. On Arm64 systems that support PSCI, CPUs can be stopped
-with a PSCI CPU_OFF call.
+The following commit has been merged into the core/mm branch of tip:
 
-Arm64 machine_shutdown() uses the CPU hotplug infrastructure via
-smp_shutdown_nonboot_cpus() to stop each CPU. This is relatively
-slow and takes a best case of .02 to .03 seconds per CPU which are
-stopped sequentially. This can take the better part of a second for
-all the CPUs to be stopped depending on how many CPUs are present.
-If for some reason the CPUs are busy at the time of the kexec reboot,
-it can take several seconds to shut them all down. Each CPU shuts
-itself down by calling PSCI CPU_OFF.
+Commit-ID:     13f876ba77ebd5125799bb042201f22cf73df154
+Gitweb:        https://git.kernel.org/tip/13f876ba77ebd5125799bb042201f22cf73df154
+Author:        Thomas Gleixner <tglx@linutronix.de>
+AuthorDate:    Tue, 03 Nov 2020 10:27:34 +01:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Fri, 06 Nov 2020 23:14:59 +01:00
 
-In some applications such as embedded systems, which need a very
-fast reboot (less than a second), this may be too slow.
+highmem: High implementation details and document API
 
-This patch reverts to using smp_send_stop() to signal all
-CPUs to stop immediately. Currently smp_send_stop() causes each cpu
-to call local_cpu_stop(), which goes into a disabled loop. This patch
-modifies local_cpu_stop() to call cpu_die() when kexec_in_progress
-is true, so that the CPU calls PSCI CPU_OFF just as in the case of
-smp_shutdown_nonboot_cpus(). Using smp_send_stop() instead of
-smp_shutdown_nonboot_cpus() reduces the shutdown time for 23 CPUs
-from about .65 seconds on an idle system to less than 5 msecs. On a
-busy system smp_shutdown_nonboot_cpus() may take several seconds,
-while smp_send_stop() needs only the 5 msecs.
+Move the gory details of kmap & al into a private header and only document
+the interfaces which are usable by drivers.
 
-Signed-off-by: Henry Willard <henry.willard@oracle.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: Linus Torvalds <torvalds@linuxfoundation.org>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Link: https://lore.kernel.org/r/20201103095858.827582066@linutronix.de
+
 ---
- arch/arm64/kernel/process.c | 17 ++++++++++++++---
- arch/arm64/kernel/smp.c     |  8 +++++++-
- 2 files changed, 21 insertions(+), 4 deletions(-)
+ include/linux/highmem-internal.h | 174 ++++++++++++++++++++-
+ include/linux/highmem.h          | 266 ++++++++++--------------------
+ mm/highmem.c                     |  11 +-
+ 3 files changed, 274 insertions(+), 177 deletions(-)
+ create mode 100644 include/linux/highmem-internal.h
 
-diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
-index 4784011cecac..2568452a2417 100644
---- a/arch/arm64/kernel/process.c
-+++ b/arch/arm64/kernel/process.c
-@@ -44,6 +44,7 @@
- #include <linux/percpu.h>
- #include <linux/thread_info.h>
- #include <linux/prctl.h>
-+#include <linux/kexec.h>
+diff --git a/include/linux/highmem-internal.h b/include/linux/highmem-internal.h
+new file mode 100644
+index 0000000..6ceed90
+--- /dev/null
++++ b/include/linux/highmem-internal.h
+@@ -0,0 +1,174 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _LINUX_HIGHMEM_INTERNAL_H
++#define _LINUX_HIGHMEM_INTERNAL_H
++
++/*
++ * Outside of CONFIG_HIGHMEM to support X86 32bit iomap_atomic() cruft.
++ */
++#ifdef CONFIG_KMAP_LOCAL
++void *__kmap_local_pfn_prot(unsigned long pfn, pgprot_t prot);
++void *__kmap_local_page_prot(struct page *page, pgprot_t prot);
++void kunmap_local_indexed(void *vaddr);
++#endif
++
++#ifdef CONFIG_HIGHMEM
++#include <asm/highmem.h>
++
++#ifndef ARCH_HAS_KMAP_FLUSH_TLB
++static inline void kmap_flush_tlb(unsigned long addr) { }
++#endif
++
++#ifndef kmap_prot
++#define kmap_prot PAGE_KERNEL
++#endif
++
++void *kmap_high(struct page *page);
++void kunmap_high(struct page *page);
++void __kmap_flush_unused(void);
++struct page *__kmap_to_page(void *addr);
++
++static inline void *kmap(struct page *page)
++{
++	void *addr;
++
++	might_sleep();
++	if (!PageHighMem(page))
++		addr = page_address(page);
++	else
++		addr = kmap_high(page);
++	kmap_flush_tlb((unsigned long)addr);
++	return addr;
++}
++
++static inline void kunmap(struct page *page)
++{
++	might_sleep();
++	if (!PageHighMem(page))
++		return;
++	kunmap_high(page);
++}
++
++static inline struct page *kmap_to_page(void *addr)
++{
++	return __kmap_to_page(addr);
++}
++
++static inline void kmap_flush_unused(void)
++{
++	__kmap_flush_unused();
++}
++
++static inline void *kmap_atomic_prot(struct page *page, pgprot_t prot)
++{
++	preempt_disable();
++	pagefault_disable();
++	return __kmap_local_page_prot(page, prot);
++}
++
++static inline void *kmap_atomic(struct page *page)
++{
++	return kmap_atomic_prot(page, kmap_prot);
++}
++
++static inline void *kmap_atomic_pfn(unsigned long pfn)
++{
++	preempt_disable();
++	pagefault_disable();
++	return __kmap_local_pfn_prot(pfn, kmap_prot);
++}
++
++static inline void __kunmap_atomic(void *addr)
++{
++	kunmap_local_indexed(addr);
++	pagefault_enable();
++	preempt_enable();
++}
++
++unsigned int __nr_free_highpages(void);
++extern atomic_long_t _totalhigh_pages;
++
++static inline unsigned int nr_free_highpages(void)
++{
++	return __nr_free_highpages();
++}
++
++static inline unsigned long totalhigh_pages(void)
++{
++	return (unsigned long)atomic_long_read(&_totalhigh_pages);
++}
++
++static inline void totalhigh_pages_inc(void)
++{
++	atomic_long_inc(&_totalhigh_pages);
++}
++
++static inline void totalhigh_pages_add(long count)
++{
++	atomic_long_add(count, &_totalhigh_pages);
++}
++
++#else /* CONFIG_HIGHMEM */
++
++static inline struct page *kmap_to_page(void *addr)
++{
++	return virt_to_page(addr);
++}
++
++static inline void *kmap(struct page *page)
++{
++	might_sleep();
++	return page_address(page);
++}
++
++static inline void kunmap_high(struct page *page) { }
++static inline void kmap_flush_unused(void) { }
++
++static inline void kunmap(struct page *page)
++{
++#ifdef ARCH_HAS_FLUSH_ON_KUNMAP
++	kunmap_flush_on_unmap(page_address(page));
++#endif
++}
++
++static inline void *kmap_atomic(struct page *page)
++{
++	preempt_disable();
++	pagefault_disable();
++	return page_address(page);
++}
++
++static inline void *kmap_atomic_prot(struct page *page, pgprot_t prot)
++{
++	return kmap_atomic(page);
++}
++
++static inline void *kmap_atomic_pfn(unsigned long pfn)
++{
++	return kmap_atomic(pfn_to_page(pfn));
++}
++
++static inline void __kunmap_atomic(void *addr)
++{
++#ifdef ARCH_HAS_FLUSH_ON_KUNMAP
++	kunmap_flush_on_unmap(addr);
++#endif
++	pagefault_enable();
++	preempt_enable();
++}
++
++static inline unsigned int nr_free_highpages(void) { return 0; }
++static inline unsigned long totalhigh_pages(void) { return 0UL; }
++
++#endif /* CONFIG_HIGHMEM */
++
++/*
++ * Prevent people trying to call kunmap_atomic() as if it were kunmap()
++ * kunmap_atomic() should get the return value of kmap_atomic, not the page.
++ */
++#define kunmap_atomic(__addr)					\
++do {								\
++	BUILD_BUG_ON(__same_type((__addr), struct page *));	\
++	__kunmap_atomic(__addr);				\
++} while (0)
++
++#endif
+diff --git a/include/linux/highmem.h b/include/linux/highmem.h
+index 3180a8f..7d098bd 100644
+--- a/include/linux/highmem.h
++++ b/include/linux/highmem.h
+@@ -11,199 +11,125 @@
  
- #include <asm/alternative.h>
- #include <asm/arch_gicv3.h>
-@@ -142,12 +143,22 @@ void arch_cpu_idle_dead(void)
-  * This must completely disable all secondary CPUs; simply causing those CPUs
-  * to execute e.g. a RAM-based pin loop is not sufficient. This allows the
-  * kexec'd kernel to use any and all RAM as it sees fit, without having to
-- * avoid any code or data used by any SW CPU pin loop. The CPU hotplug
-- * functionality embodied in smpt_shutdown_nonboot_cpus() to achieve this.
-+ * avoid any code or data used by any SW CPU pin loop. The target stop function
-+ * will call cpu_die() if kexec_in_progress is set.
+ #include <asm/cacheflush.h>
+ 
+-#ifndef ARCH_HAS_FLUSH_ANON_PAGE
+-static inline void flush_anon_page(struct vm_area_struct *vma, struct page *page, unsigned long vmaddr)
+-{
+-}
+-#endif
+-
+-#ifndef ARCH_HAS_FLUSH_KERNEL_DCACHE_PAGE
+-static inline void flush_kernel_dcache_page(struct page *page)
+-{
+-}
+-static inline void flush_kernel_vmap_range(void *vaddr, int size)
+-{
+-}
+-static inline void invalidate_kernel_vmap_range(void *vaddr, int size)
+-{
+-}
+-#endif
++#include "highmem-internal.h"
+ 
+-/*
+- * Outside of CONFIG_HIGHMEM to support X86 32bit iomap_atomic() cruft.
++/**
++ * kmap - Map a page for long term usage
++ * @page:	Pointer to the page to be mapped
++ *
++ * Returns: The virtual address of the mapping
++ *
++ * Can only be invoked from preemptible task context because on 32bit
++ * systems with CONFIG_HIGHMEM enabled this function might sleep.
++ *
++ * For systems with CONFIG_HIGHMEM=n and for pages in the low memory area
++ * this returns the virtual address of the direct kernel mapping.
++ *
++ * The returned virtual address is globally visible and valid up to the
++ * point where it is unmapped via kunmap(). The pointer can be handed to
++ * other contexts.
++ *
++ * For highmem pages on 32bit systems this can be slow as the mapping space
++ * is limited and protected by a global lock. In case that there is no
++ * mapping slot available the function blocks until a slot is released via
++ * kunmap().
   */
- void machine_shutdown(void)
+-#ifdef CONFIG_KMAP_LOCAL
+-void *__kmap_local_pfn_prot(unsigned long pfn, pgprot_t prot);
+-void *__kmap_local_page_prot(struct page *page, pgprot_t prot);
+-void kunmap_local_indexed(void *vaddr);
+-#endif
+-
+-#ifdef CONFIG_HIGHMEM
+-#include <asm/highmem.h>
++static inline void *kmap(struct page *page);
+ 
+-#ifndef ARCH_HAS_KMAP_FLUSH_TLB
+-static inline void kmap_flush_tlb(unsigned long addr) { }
+-#endif
+-
+-#ifndef kmap_prot
+-#define kmap_prot PAGE_KERNEL
+-#endif
+-
+-void *kmap_high(struct page *page);
+-static inline void *kmap(struct page *page)
+-{
+-	void *addr;
+-
+-	might_sleep();
+-	if (!PageHighMem(page))
+-		addr = page_address(page);
+-	else
+-		addr = kmap_high(page);
+-	kmap_flush_tlb((unsigned long)addr);
+-	return addr;
+-}
++/**
++ * kunmap - Unmap the virtual address mapped by kmap()
++ * @addr:	Virtual address to be unmapped
++ *
++ * Counterpart to kmap(). A NOOP for CONFIG_HIGHMEM=n and for mappings of
++ * pages in the low memory area.
++ */
++static inline void kunmap(struct page *page);
+ 
+-void kunmap_high(struct page *page);
++/**
++ * kmap_to_page - Get the page for a kmap'ed address
++ * @addr:	The address to look up
++ *
++ * Returns: The page which is mapped to @addr.
++ */
++static inline struct page *kmap_to_page(void *addr);
+ 
+-static inline void kunmap(struct page *page)
+-{
+-	might_sleep();
+-	if (!PageHighMem(page))
+-		return;
+-	kunmap_high(page);
+-}
++/**
++ * kmap_flush_unused - Flush all unused kmap mappings in order to
++ *		       remove stray mappings
++ */
++static inline void kmap_flush_unused(void);
+ 
+-/*
+- * kmap_atomic/kunmap_atomic is significantly faster than kmap/kunmap because
+- * no global lock is needed and because the kmap code must perform a global TLB
+- * invalidation when the kmap pool wraps.
++/**
++ * kmap_atomic - Atomically map a page for temporary usage
++ * @page:	Pointer to the page to be mapped
++ *
++ * Returns: The virtual address of the mapping
++ *
++ * Side effect: On return pagefaults and preemption are disabled.
++ *
++ * Can be invoked from any context.
+  *
+- * However when holding an atomic kmap it is not legal to sleep, so atomic
+- * kmaps are appropriate for short, tight code paths only.
++ * Requires careful handling when nesting multiple mappings because the map
++ * management is stack based. The unmap has to be in the reverse order of
++ * the map operation:
+  *
+- * The use of kmap_atomic/kunmap_atomic is discouraged - kmap/kunmap
+- * gives a more generic (and caching) interface. But kmap_atomic can
+- * be used in IRQ contexts, so in some (very limited) cases we need
+- * it.
++ * addr1 = kmap_atomic(page1);
++ * addr2 = kmap_atomic(page2);
++ * ...
++ * kunmap_atomic(addr2);
++ * kunmap_atomic(addr1);
++ *
++ * Unmapping addr1 before addr2 is invalid and causes malfunction.
++ *
++ * Contrary to kmap() mappings the mapping is only valid in the context of
++ * the caller and cannot be handed to other contexts.
++ *
++ * On CONFIG_HIGHMEM=n kernels and for low memory pages this returns the
++ * virtual address of the direct mapping. Only real highmem pages are
++ * temporarily mapped.
++ *
++ * While it is significantly faster than kmap() it comes with restrictions
++ * about the pointer validity and the side effects of disabling page faults
++ * and preemption. Use it only when absolutely necessary, e.g. from non
++ * preemptible contexts.
+  */
+-static inline void *kmap_atomic_prot(struct page *page, pgprot_t prot)
+-{
+-	preempt_disable();
+-	pagefault_disable();
+-	return __kmap_local_page_prot(page, prot);
+-}
++static inline void *kmap_atomic(struct page *page);
+ 
+-static inline void *kmap_atomic(struct page *page)
+-{
+-	return kmap_atomic_prot(page, kmap_prot);
+-}
+-
+-static inline void *kmap_atomic_pfn(unsigned long pfn)
+-{
+-	preempt_disable();
+-	pagefault_disable();
+-	return __kmap_local_pfn_prot(pfn, kmap_prot);
+-}
+-
+-static inline void __kunmap_atomic(void *addr)
+-{
+-	kunmap_local_indexed(addr);
+-}
+-
+-/* declarations for linux/mm/highmem.c */
+-unsigned int nr_free_highpages(void);
+-extern atomic_long_t _totalhigh_pages;
+-static inline unsigned long totalhigh_pages(void)
+-{
+-	return (unsigned long)atomic_long_read(&_totalhigh_pages);
+-}
+-
+-static inline void totalhigh_pages_inc(void)
+-{
+-	atomic_long_inc(&_totalhigh_pages);
+-}
+-
+-static inline void totalhigh_pages_add(long count)
+-{
+-	atomic_long_add(count, &_totalhigh_pages);
+-}
+-
+-void kmap_flush_unused(void);
+-
+-struct page *kmap_to_page(void *addr);
+-
+-#else /* CONFIG_HIGHMEM */
+-
+-static inline unsigned int nr_free_highpages(void) { return 0; }
+-
+-static inline struct page *kmap_to_page(void *addr)
+-{
+-	return virt_to_page(addr);
+-}
+-
+-static inline unsigned long totalhigh_pages(void) { return 0UL; }
++/**
++ * kunmap_atomic - Unmap the virtual address mapped by kmap_atomic()
++ * @addr:	Virtual address to be unmapped
++ *
++ * Counterpart to kmap_atomic().
++ *
++ * Undoes the side effects of kmap_atomic(), i.e. reenabling pagefaults and
++ * preemption.
++ *
++ * Other than that a NOOP for CONFIG_HIGHMEM=n and for mappings of pages
++ * in the low memory area. For real highmen pages the mapping which was
++ * established with kmap_atomic() is destroyed.
++ */
+ 
+-static inline void *kmap(struct page *page)
+-{
+-	might_sleep();
+-	return page_address(page);
+-}
++/* Highmem related interfaces for management code */
++static inline unsigned int nr_free_highpages(void);
++static inline unsigned long totalhigh_pages(void);
+ 
+-static inline void kunmap_high(struct page *page)
++#ifndef ARCH_HAS_FLUSH_ANON_PAGE
++static inline void flush_anon_page(struct vm_area_struct *vma, struct page *page, unsigned long vmaddr)
  {
--	smp_shutdown_nonboot_cpus(reboot_cpu);
-+	unsigned long timeout;
-+
-+	/*
-+	 * Don't wait forever, but no longer than a second
-+	 */
-+	timeout = USEC_PER_SEC;
-+
-+	smp_send_stop();
-+	while (num_online_cpus() > 1 && timeout--)
-+		udelay(1);
-+	return;
+ }
+-
+-static inline void kunmap(struct page *page)
+-{
+-#ifdef ARCH_HAS_FLUSH_ON_KUNMAP
+-	kunmap_flush_on_unmap(page_address(page));
+ #endif
+-}
+ 
+-static inline void *kmap_atomic(struct page *page)
++#ifndef ARCH_HAS_FLUSH_KERNEL_DCACHE_PAGE
++static inline void flush_kernel_dcache_page(struct page *page)
+ {
+-	preempt_disable();
+-	pagefault_disable();
+-	return page_address(page);
+ }
+-
+-static inline void *kmap_atomic_prot(struct page *page, pgprot_t prot)
++static inline void flush_kernel_vmap_range(void *vaddr, int size)
+ {
+-	return kmap_atomic(page);
+ }
+-
+-static inline void *kmap_atomic_pfn(unsigned long pfn)
++static inline void invalidate_kernel_vmap_range(void *vaddr, int size)
+ {
+-	return kmap_atomic(pfn_to_page(pfn));
+ }
+-
+-static inline void __kunmap_atomic(void *addr)
+-{
+-	/*
+-	 * Mostly nothing to do in the CONFIG_HIGHMEM=n case as kunmap_atomic()
+-	 * handles re-enabling faults and preemption
+-	 */
+-#ifdef ARCH_HAS_FLUSH_ON_KUNMAP
+-	kunmap_flush_on_unmap(addr);
+ #endif
+-}
+-
+-#define kmap_flush_unused()	do {} while(0)
+-
+-
+-#endif /* CONFIG_HIGHMEM */
+-
+-/*
+- * Prevent people trying to call kunmap_atomic() as if it were kunmap()
+- * kunmap_atomic() should get the return value of kmap_atomic, not the page.
+- */
+-#define kunmap_atomic(__addr)					\
+-do {								\
+-	BUILD_BUG_ON(__same_type((__addr), struct page *));	\
+-	__kunmap_atomic(__addr);				\
+-	pagefault_enable();					\
+-	preempt_enable();					\
+-} while (0)
+ 
+ /* when CONFIG_HIGHMEM is not set these will be plain clear/copy_page */
+ #ifndef clear_user_highpage
+diff --git a/mm/highmem.c b/mm/highmem.c
+index 499dfaf..54bd233 100644
+--- a/mm/highmem.c
++++ b/mm/highmem.c
+@@ -104,7 +104,7 @@ static inline wait_queue_head_t *get_pkmap_wait_queue_head(unsigned int color)
+ atomic_long_t _totalhigh_pages __read_mostly;
+ EXPORT_SYMBOL(_totalhigh_pages);
+ 
+-unsigned int nr_free_highpages (void)
++unsigned int __nr_free_highpages (void)
+ {
+ 	struct zone *zone;
+ 	unsigned int pages = 0;
+@@ -141,7 +141,7 @@ pte_t * pkmap_page_table;
+ 		do { spin_unlock(&kmap_lock); (void)(flags); } while (0)
+ #endif
+ 
+-struct page *kmap_to_page(void *vaddr)
++struct page *__kmap_to_page(void *vaddr)
+ {
+ 	unsigned long addr = (unsigned long)vaddr;
+ 
+@@ -152,7 +152,7 @@ struct page *kmap_to_page(void *vaddr)
+ 
+ 	return virt_to_page(addr);
+ }
+-EXPORT_SYMBOL(kmap_to_page);
++EXPORT_SYMBOL(__kmap_to_page);
+ 
+ static void flush_all_zero_pkmaps(void)
+ {
+@@ -194,10 +194,7 @@ static void flush_all_zero_pkmaps(void)
+ 		flush_tlb_kernel_range(PKMAP_ADDR(0), PKMAP_ADDR(LAST_PKMAP));
  }
  
- /*
-diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
-index 09c96f57818c..310cdf327d91 100644
---- a/arch/arm64/kernel/smp.c
-+++ b/arch/arm64/kernel/smp.c
-@@ -373,7 +373,9 @@ void cpu_die(void)
- 	unsigned int cpu = smp_processor_id();
- 	const struct cpu_operations *ops = get_cpu_ops(cpu);
- 
--	idle_task_exit();
-+	/* Skip this if we are about to exit the machine */
-+	if (!kexec_in_progress)
-+		idle_task_exit();
- 
- 	local_daif_mask();
- 
-@@ -847,6 +849,10 @@ static void local_cpu_stop(void)
- 
- 	local_daif_mask();
- 	sdei_mask_local_cpu();
-+
-+	if (kexec_in_progress)
-+		cpu_die();
-+
- 	cpu_park_loop();
- }
- 
--- 
-1.8.3.1
-
+-/**
+- * kmap_flush_unused - flush all unused kmap mappings in order to remove stray mappings
+- */
+-void kmap_flush_unused(void)
++void __kmap_flush_unused(void)
+ {
+ 	lock_kmap();
+ 	flush_all_zero_pkmaps();
