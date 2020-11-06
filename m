@@ -2,149 +2,315 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 577DA2A9417
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 11:23:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25DFA2A9420
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 11:25:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726903AbgKFKXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 05:23:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33426 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725868AbgKFKXo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 05:23:44 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C47BC0613CF;
-        Fri,  6 Nov 2020 02:23:43 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id h2so851874wmm.0;
-        Fri, 06 Nov 2020 02:23:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=mzNiuNqGeFamlvkvbNuJC+7srQmi+KnHfUNnRKxl8XQ=;
-        b=Iu8FzfnHSSbyRw4Xkh4ON1v8jlTRgybmQWaJOIbTX7rUOOXLGIYdD4dvaZIp88OJ4Y
-         aAs0pJIFdX96yHi/i50h9sPJMXQYJkSxDTJR2Caiy5ZEpe8kf/xWH54BPlM/SzQ6LO94
-         qD1Rk1a9QsXdaWaO5Q6eu8+gy4GqrSRB/N2b0FxZ3sMG6YOkv4hz/YrNnevzMXoJ7mp4
-         z1dKo3MhAdXPNk33P1hEtwm1WFpzwpmmp/dfJPh/HVK/9QI+OQRHATiIkZrTieZE9kzu
-         YAL3hTiRy1kbWzZW04Nkv85Ji1YQch663yNJ9uRoh1WXGDQ8k+LEMjlZQnzPZvE0rusm
-         56Ew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=mzNiuNqGeFamlvkvbNuJC+7srQmi+KnHfUNnRKxl8XQ=;
-        b=ftkl52ltV9/Cg7ki4zqkbYDUF3lWWI4jrYi7u6X2sLHngWJNCrLYx/bijR9x1Q8F39
-         dvFKQ4IB3WxlQyvEYRbtJ5bjizFlWP2Ocf1gq9RE2xI2dSWMhrU6Ci91cn2dHI0M6wuK
-         sA7YtuJePX8uBpEczTij5VcJVSTm2l9C6raUs+/T8j6GiiioSgnE7AccUjR9iAgRSug4
-         +OQC5n5HCI50xZxJNGLQau1mn0bqdrNy9LFkU8fbSXEJNbYSjGWewdiVXgK3fgputVFj
-         +Jh3cE2Zhy09DW7Jh/vPRJR2VQObPIH5m7YF1/4uigTsd96nBXMZ+9kvnptGYdYPLQub
-         xp+g==
-X-Gm-Message-State: AOAM533rnlqEX600i6U/dr2VQZ9J9iE5oWMeLl3It8t5Jui5Nu9r+xaw
-        JWeBmgeXmd8wsarTDWMkx/tvtw+4MD1LDA==
-X-Google-Smtp-Source: ABdhPJxXzfKlYpUDKox/cdmpMNPTttMWjBfu7xNSzMPizbrEmkEvbLIdyUSuPmWDt5AlAstsxO33Tg==
-X-Received: by 2002:a1c:7515:: with SMTP id o21mr1724178wmc.5.1604658221759;
-        Fri, 06 Nov 2020 02:23:41 -0800 (PST)
-Received: from felia ([2001:16b8:2d20:9d00:e580:adb5:1ef:950d])
-        by smtp.gmail.com with ESMTPSA id k81sm2067568wma.2.2020.11.06.02.23.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Nov 2020 02:23:41 -0800 (PST)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-X-Google-Original-From: Lukas Bulwahn <lukas@gmail.com>
-Date:   Fri, 6 Nov 2020 11:23:34 +0100 (CET)
-X-X-Sender: lukas@felia
-To:     Nathan Chancellor <natechancellor@gmail.com>
-cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Tom Rix <trix@redhat.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com,
-        kernel-janitors@vger.kernel.org, linux-safety@lists.elisa.tech,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] taskstats: remove unneeded dead assignment
-In-Reply-To: <20201106095004.GA3269193@ubuntu-m3-large-x86>
-Message-ID: <alpine.DEB.2.21.2011061113270.20338@felia>
-References: <20201106062210.27920-1-lukas.bulwahn@gmail.com> <20201106095004.GA3269193@ubuntu-m3-large-x86>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
-MIME-Version: 1.0
+        id S1726902AbgKFKZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 05:25:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58914 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725868AbgKFKZZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 05:25:25 -0500
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0E04920691;
+        Fri,  6 Nov 2020 10:25:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604658322;
+        bh=6YzS8ko75d9YTXXdkNZu4e61owx1w6yTEHh/zi9Ys+8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=qrj0z7G3y/lZrOk2fz41MdO04PyFbYhfjAhrg5AVQLxLizOCNVBjMsgKIy0bUw0Hi
+         hqqcf/Zb0mCmEIW8Ik8Ma2jhwN9eOnseMIUiq5Yvfw2pZ+LVsjQO+7jZiixAowTDoI
+         n4AsCexEDeWZTmwsOwUMKcG4RJmGkrAZ4+EUEE+o=
+Date:   Fri, 6 Nov 2020 19:25:13 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt (VMware) <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>, Guo Ren <guoren@kernel.org>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-csky@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org
+Subject: Re: [PATCH 05/11 v3] kprobes/ftrace: Add recursion protection to
+ the ftrace callback
+Message-Id: <20201106192513.80b330351c0cafd03134b0d1@kernel.org>
+In-Reply-To: <20201106023546.944907560@goodmis.org>
+References: <20201106023235.367190737@goodmis.org>
+        <20201106023546.944907560@goodmis.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 05 Nov 2020 21:32:40 -0500
+Steven Rostedt (VMware) <rostedt@goodmis.org> wrote:
 
-
-On Fri, 6 Nov 2020, Nathan Chancellor wrote:
-
-> On Fri, Nov 06, 2020 at 07:22:10AM +0100, Lukas Bulwahn wrote:
-> > make clang-analyzer on x86_64 defconfig caught my attention with:
-> > 
-> >   kernel/taskstats.c:120:2: warning: Value stored to 'rc' is never read \
-> >   [clang-analyzer-deadcode.DeadStores]
-> >           rc = 0;
-> >           ^
-> > 
-> > Commit d94a041519f3 ("taskstats: free skb, avoid returns in
-> > send_cpu_listeners") made send_cpu_listeners() not return a value and
-> > hence, the rc variable remained only to be used within the loop where
-> > it is always assigned before read and it does not need any other
-> > initialisation.
-> > 
-> > So, simply remove this unneeded dead initializing assignment.
-> > 
-> > As compilers will detect this unneeded assignment and optimize this anyway,
-> > the resulting object code is identical before and after this change.
-> > 
-> > No functional change. No change to object code.
-> > 
-> > Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 > 
-> Question below.
+> If a ftrace callback does not supply its own recursion protection and
+> does not set the RECURSION_SAFE flag in its ftrace_ops, then ftrace will
+> make a helper trampoline to do so before calling the callback instead of
+> just calling the callback directly.
 > 
-> Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+> The default for ftrace_ops is going to change. It will expect that handlers
+> provide their own recursion protection, unless its ftrace_ops states
+> otherwise.
 > 
-> > ---
-> > applies cleanly on current master and next-20201105
-> > 
-> > Balbir, please pick this minor non-urgent clean-up patch.
-> > 
-> >  kernel/taskstats.c | 1 -
-> >  1 file changed, 1 deletion(-)
-> > 
-> > diff --git a/kernel/taskstats.c b/kernel/taskstats.c
-> > index a2802b6ff4bb..bd18a7bf5276 100644
-> > --- a/kernel/taskstats.c
-> > +++ b/kernel/taskstats.c
-> > @@ -117,7 +117,6 @@ static void send_cpu_listeners(struct sk_buff *skb,
-> >  
-> >  	genlmsg_end(skb, reply);
-> >  
-> > -	rc = 0;
-> >  	down_read(&listeners->sem);
-> >  	list_for_each_entry(s, &listeners->list, list) {
+> Link: https://lkml.kernel.org/r/20201028115613.140212174@goodmis.org
 > 
-> Would it be worth moving the scope of rc into the for loop, now that it
-> is only used there? Looks like it used to be used in the main function
-> scope before commit 053c095a82cf ("netlink: make nlmsg_end() and
-> genlmsg_end() void") but if this is removed, it is only used to check
-> the return of genlmsg_unicast within the list_for_each_entry loop. Not
-> sure that buys us anything but I know you have done it in patches
-> before so I thought it was worth considering.
->
 
-I thought about moving it into the local scope, but it is a purely 
-cosmetic matter. Compilers are smart enough to generate the same code no 
-matter where it is defined.
-So, I always look around in the same file to determine if there is some 
-kind of strong preference for very locally scoped variable definition or 
-if they are generally just all defined at the function entry.
+Looks good to me.
 
-Depending on my gut feeling in which style the file has mainly been 
-written, I then go with the one or other option. In this case, I went 
-with just keeping the definition at the function entry.
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
 
-There is really no strong rule, though, that I see serving as good 
-indicator.
+Thank you!
 
-Thanks for your review.
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Masami Hiramatsu <mhiramat@kernel.org>
+> Cc: Guo Ren <guoren@kernel.org>
+> Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
+> Cc: Helge Deller <deller@gmx.de>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+> Cc: Paul Mackerras <paulus@samba.org>
+> Cc: Heiko Carstens <hca@linux.ibm.com>
+> Cc: Vasily Gorbik <gor@linux.ibm.com>
+> Cc: Christian Borntraeger <borntraeger@de.ibm.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: x86@kernel.org
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Cc: "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
+> Cc: Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: linux-csky@vger.kernel.org
+> Cc: linux-parisc@vger.kernel.org
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Cc: linux-s390@vger.kernel.org
+> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> ---
+> 
+> Changes since v2:
+> 
+>  - Move get_kprobe() into preempt disabled sections for various archs
+> 
+> 
+>  arch/csky/kernel/probes/ftrace.c     | 12 ++++++++++--
+>  arch/parisc/kernel/ftrace.c          | 16 +++++++++++++---
+>  arch/powerpc/kernel/kprobes-ftrace.c | 11 ++++++++++-
+>  arch/s390/kernel/ftrace.c            | 16 +++++++++++++---
+>  arch/x86/kernel/kprobes/ftrace.c     | 12 ++++++++++--
+>  5 files changed, 56 insertions(+), 11 deletions(-)
+> 
+> diff --git a/arch/csky/kernel/probes/ftrace.c b/arch/csky/kernel/probes/ftrace.c
+> index 5264763d05be..5eb2604fdf71 100644
+> --- a/arch/csky/kernel/probes/ftrace.c
+> +++ b/arch/csky/kernel/probes/ftrace.c
+> @@ -13,16 +13,21 @@ int arch_check_ftrace_location(struct kprobe *p)
+>  void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+>  			   struct ftrace_ops *ops, struct pt_regs *regs)
+>  {
+> +	int bit;
+>  	bool lr_saver = false;
+>  	struct kprobe *p;
+>  	struct kprobe_ctlblk *kcb;
+>  
+> -	/* Preempt is disabled by ftrace */
+> +	bit = ftrace_test_recursion_trylock();
+> +	if (bit < 0)
+> +		return;
+> +
+> +	preempt_disable_notrace();
+>  	p = get_kprobe((kprobe_opcode_t *)ip);
+>  	if (!p) {
+>  		p = get_kprobe((kprobe_opcode_t *)(ip - MCOUNT_INSN_SIZE));
+>  		if (unlikely(!p) || kprobe_disabled(p))
+> -			return;
+> +			goto out;
+>  		lr_saver = true;
+>  	}
+>  
+> @@ -56,6 +61,9 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+>  		 */
+>  		__this_cpu_write(current_kprobe, NULL);
+>  	}
+> +out:
+> +	preempt_enable_notrace();
+> +	ftrace_test_recursion_unlock(bit);
+>  }
+>  NOKPROBE_SYMBOL(kprobe_ftrace_handler);
+>  
+> diff --git a/arch/parisc/kernel/ftrace.c b/arch/parisc/kernel/ftrace.c
+> index 63e3ecb9da81..13d85042810a 100644
+> --- a/arch/parisc/kernel/ftrace.c
+> +++ b/arch/parisc/kernel/ftrace.c
+> @@ -207,14 +207,21 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+>  			   struct ftrace_ops *ops, struct pt_regs *regs)
+>  {
+>  	struct kprobe_ctlblk *kcb;
+> -	struct kprobe *p = get_kprobe((kprobe_opcode_t *)ip);
+> +	struct kprobe *p;
+> +	int bit;
+>  
+> -	if (unlikely(!p) || kprobe_disabled(p))
+> +	bit = ftrace_test_recursion_trylock();
+> +	if (bit < 0)
+>  		return;
+>  
+> +	preempt_disable_notrace();
+> +	p = get_kprobe((kprobe_opcode_t *)ip);
+> +	if (unlikely(!p) || kprobe_disabled(p))
+> +		goto out;
+> +
+>  	if (kprobe_running()) {
+>  		kprobes_inc_nmissed_count(p);
+> -		return;
+> +		goto out;
+>  	}
+>  
+>  	__this_cpu_write(current_kprobe, p);
+> @@ -235,6 +242,9 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+>  		}
+>  	}
+>  	__this_cpu_write(current_kprobe, NULL);
+> +out:
+> +	preempt_enable_notrace();
+> +	ftrace_test_recursion_unlock(bit);
+>  }
+>  NOKPROBE_SYMBOL(kprobe_ftrace_handler);
+>  
+> diff --git a/arch/powerpc/kernel/kprobes-ftrace.c b/arch/powerpc/kernel/kprobes-ftrace.c
+> index 972cb28174b2..5df8d50c65ae 100644
+> --- a/arch/powerpc/kernel/kprobes-ftrace.c
+> +++ b/arch/powerpc/kernel/kprobes-ftrace.c
+> @@ -18,10 +18,16 @@ void kprobe_ftrace_handler(unsigned long nip, unsigned long parent_nip,
+>  {
+>  	struct kprobe *p;
+>  	struct kprobe_ctlblk *kcb;
+> +	int bit;
+>  
+> +	bit = ftrace_test_recursion_trylock();
+> +	if (bit < 0)
+> +		return;
+> +
+> +	preempt_disable_notrace();
+>  	p = get_kprobe((kprobe_opcode_t *)nip);
+>  	if (unlikely(!p) || kprobe_disabled(p))
+> -		return;
+> +		goto out;
+>  
+>  	kcb = get_kprobe_ctlblk();
+>  	if (kprobe_running()) {
+> @@ -52,6 +58,9 @@ void kprobe_ftrace_handler(unsigned long nip, unsigned long parent_nip,
+>  		 */
+>  		__this_cpu_write(current_kprobe, NULL);
+>  	}
+> +out:
+> +	preempt_enable_notrace();
+> +	ftrace_test_recursion_unlock(bit);
+>  }
+>  NOKPROBE_SYMBOL(kprobe_ftrace_handler);
+>  
+> diff --git a/arch/s390/kernel/ftrace.c b/arch/s390/kernel/ftrace.c
+> index b388e87a08bf..8f31c726537a 100644
+> --- a/arch/s390/kernel/ftrace.c
+> +++ b/arch/s390/kernel/ftrace.c
+> @@ -201,14 +201,21 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+>  		struct ftrace_ops *ops, struct pt_regs *regs)
+>  {
+>  	struct kprobe_ctlblk *kcb;
+> -	struct kprobe *p = get_kprobe((kprobe_opcode_t *)ip);
+> +	struct kprobe *p;
+> +	int bit;
+>  
+> -	if (unlikely(!p) || kprobe_disabled(p))
+> +	bit = ftrace_test_recursion_trylock();
+> +	if (bit < 0)
+>  		return;
+>  
+> +	preempt_disable_notrace();
+> +	p = get_kprobe((kprobe_opcode_t *)ip);
+> +	if (unlikely(!p) || kprobe_disabled(p))
+> +		goto out;
+> +
+>  	if (kprobe_running()) {
+>  		kprobes_inc_nmissed_count(p);
+> -		return;
+> +		goto out;
+>  	}
+>  
+>  	__this_cpu_write(current_kprobe, p);
+> @@ -228,6 +235,9 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+>  		}
+>  	}
+>  	__this_cpu_write(current_kprobe, NULL);
+> +out:
+> +	preempt_enable_notrace();
+> +	ftrace_test_recursion_unlock(bit);
+>  }
+>  NOKPROBE_SYMBOL(kprobe_ftrace_handler);
+>  
+> diff --git a/arch/x86/kernel/kprobes/ftrace.c b/arch/x86/kernel/kprobes/ftrace.c
+> index 681a4b36e9bb..a40a6cdfcca3 100644
+> --- a/arch/x86/kernel/kprobes/ftrace.c
+> +++ b/arch/x86/kernel/kprobes/ftrace.c
+> @@ -18,11 +18,16 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+>  {
+>  	struct kprobe *p;
+>  	struct kprobe_ctlblk *kcb;
+> +	int bit;
+>  
+> -	/* Preempt is disabled by ftrace */
+> +	bit = ftrace_test_recursion_trylock();
+> +	if (bit < 0)
+> +		return;
+> +
+> +	preempt_disable_notrace();
+>  	p = get_kprobe((kprobe_opcode_t *)ip);
+>  	if (unlikely(!p) || kprobe_disabled(p))
+> -		return;
+> +		goto out;
+>  
+>  	kcb = get_kprobe_ctlblk();
+>  	if (kprobe_running()) {
+> @@ -52,6 +57,9 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+>  		 */
+>  		__this_cpu_write(current_kprobe, NULL);
+>  	}
+> +out:
+> +	preempt_enable_notrace();
+> +	ftrace_test_recursion_unlock(bit);
+>  }
+>  NOKPROBE_SYMBOL(kprobe_ftrace_handler);
+>  
+> -- 
+> 2.28.0
+> 
+> 
 
-Lukas
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
