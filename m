@@ -2,116 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36B692A979E
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 15:29:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 395F82A97B3
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 15:33:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727324AbgKFO3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 09:29:25 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:51586 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726708AbgKFO3Z (ORCPT
+        id S1727479AbgKFOcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 09:32:55 -0500
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:34404 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727451AbgKFOcx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 09:29:25 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A6ENesH021034;
-        Fri, 6 Nov 2020 14:29:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to;
- s=corp-2020-01-29; bh=rUuKUtCppy6N7dcPp/iTA5mbc0TMv6fJgcRziHZpC20=;
- b=Dd39j+/xwBKyq/0IMT/7HHrHUm0IxZv6vO6qJfaG8WUqc0NmWgaB8AjwXX+yjD/c/QYC
- 0p+FbiPHjVdS4gpvymVPY1vP+IfLmsvr7l/4aO8JAHLnqIPikqQM7S2/JevA5RI0D79H
- Vc6XhEMMzaSkxw3SNYNTmUAfwkZOwUcyGGVR3V4tn8u8m5AsjJLjcaaa+T1Ap/5B3G5l
- 52elooT9ZkmFeTtln+OgnQ75FYzgVq7iZ/m3gxIuztdTknd9OtSRdj8MQ3zOqQD89Ujh
- soipQ4rK7cKM+cOE/Ga68o3QPGqrCxX1S+p+lwjajTuM40I3SFDwi5HXbNalajsNG4i0 nA== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2130.oracle.com with ESMTP id 34hhb2h5eb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 06 Nov 2020 14:29:16 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A6EOxAE069445;
-        Fri, 6 Nov 2020 14:29:16 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3030.oracle.com with ESMTP id 34jf4e25jm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 06 Nov 2020 14:29:16 +0000
-Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0A6ETE66006981;
-        Fri, 6 Nov 2020 14:29:14 GMT
-Received: from anon-dhcp-152.1015granger.net (/68.61.232.219)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 06 Nov 2020 06:29:14 -0800
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: Re: [PATCH] nfsd/nfs3: remove unused macro nfsd3_fhandleres
-From:   Chuck Lever <chuck.lever@oracle.com>
-In-Reply-To: <1604641257-6159-1-git-send-email-alex.shi@linux.alibaba.com>
-Date:   Fri, 6 Nov 2020 09:29:11 -0500
-Cc:     Bruce Fields <bfields@fieldses.org>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: 7bit
-Message-Id: <94040377-C2A4-47DF-BBA1-16573F69739D@oracle.com>
-References: <1604641257-6159-1-git-send-email-alex.shi@linux.alibaba.com>
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9796 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0 mlxscore=0
- bulkscore=0 malwarescore=0 mlxlogscore=999 phishscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011060104
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9796 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0 suspectscore=0
- clxscore=1011 mlxlogscore=999 impostorscore=0 malwarescore=0
- lowpriorityscore=0 adultscore=0 spamscore=0 priorityscore=1501 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011060104
+        Fri, 6 Nov 2020 09:32:53 -0500
+Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A6EWDku022669;
+        Fri, 6 Nov 2020 15:32:34 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=STMicroelectronics;
+ bh=TqUJuC3My8Iz9+K0q9sV4IpHuACP0Xg9U709fHwKzSI=;
+ b=OY+Lsz1AS7s4dhnwlpkEjjLuTq8ydXIjIn//vhe3UoUwSJXfZeeJTC5S2Vlojd1oBPz1
+ gqbp8CD5Sz6ND68jsN4uAcbOpudlrjC5tcWkcv9+uQTDs14AAa15Flb8DMHPbZEjFMzI
+ IlgLEPMjpEONmM+0SDuJ4LdGKd5Pfib+0C68SpvHPbjzc8Vhlbyko/TjrITfpkwRRKd3
+ fkOyIXR8gmWZ+t4lBT7878Jw00whMajQBunv6t6qGmktRnU6WbPGJ9D4MG6GOH5sPNbu
+ 8WB9xCcoR9EnKXYzIhixweLUcV14clLSA0MvMeWKE8+UJeDD0vGYSvOIuOy6e+ryxWFn Sg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 34h00evvkn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 06 Nov 2020 15:32:34 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id B899F1000BC;
+        Fri,  6 Nov 2020 15:23:55 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag1node3.st.com [10.75.127.3])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id A161D2AD2B9;
+        Fri,  6 Nov 2020 15:23:55 +0100 (CET)
+Received: from localhost (10.75.127.46) by SFHDAG1NODE3.st.com (10.75.127.3)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 6 Nov 2020 15:23:32
+ +0100
+From:   Christophe Roullier <christophe.roullier@st.com>
+To:     <wim@linux-watchdog.org>, <linux@roeck-us.net>,
+        <mcoquelin.stm32@gmail.com>, <alexandre.torgue@st.com>
+CC:     <linux-watchdog@vger.kernel.org>, <christophe.roullier@st.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: [PATCH V2 0/1]  watchdog: stm32_iwdg: don't print an error on probe deferral
+Date:   Fri, 6 Nov 2020 15:23:26 +0100
+Message-ID: <20201106142327.3129-1-christophe.roullier@st.com>
+X-Mailer: git-send-email 2.17.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.46]
+X-ClientProxiedBy: SFHDAG1NODE3.st.com (10.75.127.3) To SFHDAG1NODE3.st.com
+ (10.75.127.3)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-06_06:2020-11-05,2020-11-06 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Do not print an error trace when deferring probe for clock resources.
 
+Version 2: Remark from Guenter and Ahmad
+		use dev_err_probe instead 
 
-> On Nov 6, 2020, at 12:40 AM, Alex Shi <alex.shi@linux.alibaba.com> wrote:
-> 
-> The macro is unused, remove it to tame gcc warning:
-> fs/nfsd/nfs3proc.c:702:0: warning: macro "nfsd3_fhandleres" is not used
-> [-Wunused-macros]
-> 
-> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-> Cc: "J. Bruce Fields" <bfields@fieldses.org> 
-> Cc: Chuck Lever <chuck.lever@oracle.com> 
-> Cc: linux-nfs@vger.kernel.org 
-> Cc: linux-kernel@vger.kernel.org 
-> ---
-> fs/nfsd/nfs3proc.c | 1 -
-> 1 file changed, 1 deletion(-)
-> 
-> diff --git a/fs/nfsd/nfs3proc.c b/fs/nfsd/nfs3proc.c
-> index 781e265921aa..6e79bae0af4d 100644
-> --- a/fs/nfsd/nfs3proc.c
-> +++ b/fs/nfsd/nfs3proc.c
-> @@ -687,7 +687,6 @@
-> #define nfsd3_mkdirargs			nfsd3_createargs
-> #define nfsd3_readdirplusargs		nfsd3_readdirargs
-> #define nfsd3_fhandleargs		nfsd_fhandle
-> -#define nfsd3_fhandleres		nfsd3_attrstat
-> #define nfsd3_attrstatres		nfsd3_attrstat
-> #define nfsd3_wccstatres		nfsd3_attrstat
-> #define nfsd3_createres			nfsd3_diropres
-> -- 
-> 1.8.3.1
+Etienne Carriere (1):
+  watchdog: stm32_iwdg: don't print an error on probe deferral
 
-Applied to cel-next, thanks Alex.
+ drivers/watchdog/stm32_iwdg.c | 13 +++++--------
+ 1 file changed, 5 insertions(+), 8 deletions(-)
 
-The topic branch that collects patches for nfsd-5.11 is here:
-
-http://git.linux-nfs.org/?p=cel/cel-2.6.git;a=shortlog;h=refs/heads/cel-next
-
-
---
-Chuck Lever
-
-
+-- 
+2.17.1
 
