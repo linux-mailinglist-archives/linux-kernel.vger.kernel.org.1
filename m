@@ -2,107 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17CE92A9718
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 14:40:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B7BD2A972E
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 14:43:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727470AbgKFNk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 08:40:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47454 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727438AbgKFNkz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 08:40:55 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 036B620735;
-        Fri,  6 Nov 2020 13:40:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604670054;
-        bh=YwRjRr5lQ3DrZpfxUlBZhH48YgZI3xA4YO4Sg1E415c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=X4qmm7sLeUGaNiAgiy4WPChA/ZU3+M1x3a9Wu04rQnc0fOQy+x24c4KFbTl5jQjZH
-         jLDCXPJRBCUS3kcG6Xv4dp7+ED8YWGb1Crx6Px1WDHHk0INGxdE4xfTy6VJfm3BQmi
-         nnkpgO+znrw8YXgpe+OO//E9kgNlyWPAlQAUNgVI=
-Date:   Fri, 6 Nov 2020 14:41:36 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Pawel Laszczak <pawell@cadence.com>
-Cc:     peter.chen@nxp.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, balbi@kernel.org,
-        colin.king@canonical.com, rogerq@ti.com, kurahul@cadence.com,
-        nsekhar@ti.com
-Subject: Re: [PATCH v2 00/10] Introduced new Cadence USBSSP DRD Driver.
-Message-ID: <20201106134136.GA3316286@kroah.com>
-References: <20201106114300.1245-1-pawell@cadence.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201106114300.1245-1-pawell@cadence.com>
+        id S1727422AbgKFNnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 08:43:22 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:31222 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726708AbgKFNnW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 08:43:22 -0500
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A6DbTfk095718;
+        Fri, 6 Nov 2020 08:43:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=TuBf/6UR73LWJaaVgiNYfCFd4f2OcwVJWUGa7qux3W8=;
+ b=P2aQctbngYEygPUfbBejgF4uBkI+2owNKPFizEnVbWI8yj5I4pVB2QYMGg8Of87AAK+u
+ lnvtyC0dY/Ku9fMTAR2mNH3Z7E+YsQEf1fTNQMz8tmGwqaPwwuT6Y5MR8wYejazz4ae/
+ XiC2ztPd3oE8vf+MgNa0Rk/mxOnn+dfrfp2FiDqoKauc80IhxFAIW2r7M+C20qUq5Vjs
+ hQNiToMNM3z+R/kMw5k8uKC37ADY5MMpvqLdXFdduv5IV+8aP33IjJoFh15UeL1VnMSy
+ L4vjgwI9/sLRb6ROMHv5BRdT4QN8Naxi54eKipZCEJuafmNNNgvj2bFD0txDNT2BM2G1 zg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34m7teu97j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 06 Nov 2020 08:43:15 -0500
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0A6D4svQ096378;
+        Fri, 6 Nov 2020 08:43:14 -0500
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34m7teu93m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 06 Nov 2020 08:43:14 -0500
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0A6Dh9jT015155;
+        Fri, 6 Nov 2020 13:43:09 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma01fra.de.ibm.com with ESMTP id 34jbyttffn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 06 Nov 2020 13:43:08 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0A6Dh6YD6423102
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 6 Nov 2020 13:43:06 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7FE93A4060;
+        Fri,  6 Nov 2020 13:43:06 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B31CAA405C;
+        Fri,  6 Nov 2020 13:43:02 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.77.67])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri,  6 Nov 2020 13:43:02 +0000 (GMT)
+Message-ID: <6d835878af2f11c837633510775742e57a1506eb.camel@linux.ibm.com>
+Subject: Re: [PATCH v5 4/7] IMA: add policy to measure critical data
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Tushar Sugandhi <tusharsu@linux.microsoft.com>,
+        stephen.smalley.work@gmail.com, casey@schaufler-ca.com,
+        agk@redhat.com, snitzer@redhat.com, gmazyland@gmail.com,
+        paul@paul-moore.com
+Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
+        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
+        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dm-devel@redhat.com
+Date:   Fri, 06 Nov 2020 08:43:01 -0500
+In-Reply-To: <20201101222626.6111-5-tusharsu@linux.microsoft.com>
+References: <20201101222626.6111-1-tusharsu@linux.microsoft.com>
+         <20201101222626.6111-5-tusharsu@linux.microsoft.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-06_04:2020-11-05,2020-11-06 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 impostorscore=0
+ clxscore=1015 mlxscore=0 malwarescore=0 mlxlogscore=999 priorityscore=1501
+ suspectscore=0 lowpriorityscore=0 bulkscore=0 spamscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011060092
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 06, 2020 at 12:42:50PM +0100, Pawel Laszczak wrote:
-> This patch introduce new Cadence USBSS DRD driver to linux kernel.
-> 
-> The Cadence USBSS DRD Controller is a highly configurable IP Core which
-> can be instantiated as Dual-Role Device (DRD), Peripheral Only and
-> Host Only (XHCI)configurations.
-> 
-> The current driver has been validated with FPGA burned. We have support
-> for PCIe bus, which is used on FPGA prototyping.
-> 
-> The host side of USBSS-DRD controller is compliance with XHCI
-> specification, so it works with standard XHCI Linux driver.
-> 
-> The device side of USBSS DRD controller is compliant with XHCI.
-> The architecture for device side is almost the same as for host side,
-> and most of the XHCI specification can be used to understand how
-> this controller operates.
-> 
-> This controller and driver support Full Speed, Hight Speed, Supper Speed
-> and Supper Speed Plus USB protocol.
-> 
-> The prefix cdnsp used in driver has chosen by analogy to cdn3 driver.
-> The last letter of this acronym means PLUS. The formal name of controller
-> is USBSSP but it's to generic so I've decided to use CDNSP.
-> 
-> The patch 1: adds support for DRD CDNSP.
-> The patch 2: separates common code that can be reusable by cdnsp driver.
-> The patch 3: moves reusable code to separate module.
-> The patch 4: changes prefixes in reusable code from cdns3 to common cdns.
-> The patch 5: adopts gadget_dev pointer in cdns structure to make possible 
->              use it in both drivers.
-> The patches 6-8: add the main part of driver and has been intentionally
->              split into 3 part. In my opinion such division should not
->              affect understanding and reviewing the driver, and cause that
->              main patch (7/8) is little smaller. Patch 6 introduces main
->              header file for driver, 7 is the main part that implements all
->              functionality of driver and 8 introduces tracepoints.
-> The patch 9: Adds cdns3 prefixes to files related with USBSS driver.
-> the patch 10: Adds USBSSP DRD IP driver entry to MAINTAINERS file.
-> 
-> Changlog from v1:
-> - updated common code to latest cdns3 driver
-> - moved cdnsp driver files to cdns3 as sugested by Peter Chan
-> - removed duplicate code from cdnsp_ep0_set_config function
-> - added cdns3 prefixes to file related with USBSS driver
-> - updated MAINTAINERS file
-> - fixed issue with U1
-> - fixed issue with L1
-> - some less improtant changes sugested by Chunfeng Yun
+Hi Tushar,
 
-After a quick review, I don't see anything wrong with this series, nice
-work.
+On Sun, 2020-11-01 at 14:26 -0800, Tushar Sugandhi wrote:
+> System administrators should be able to choose which kernel subsystems
+> they want to measure the critical data for. To enable that, an IMA policy
+> option to choose specific kernel subsystems is needed. This policy option
+> would constrain the measurement of the critical data to the given kernel
+> subsystems.
 
-It does feel odd you need to split things into a "common" and then 2
-other modules, but I guess it makes sense.  Worst case, over time, you
-merge them back together after everyone just ends up enabling both of
-them :)
-
-Felipe, want me to take these directly, or should they go through your
-tree after you review them?  I never remember with this driver whose it
-goes through.
+Measuring critical data should not be dependent on the source of the
+critical data.   This patch needs to be split up.  The "data sources"
+should be move to it's own separate patch.  This patch should be
+limited to adding the policy code needed for measuring criticial data. 
+Limiting critical data sources should be the last patch in this series.
 
 thanks,
 
-greg k-h
+Mimi
+
+> 
+> Add a new IMA policy option - "data_sources:=" to the IMA func 
+> CRITICAL_DATA to allow measurement of various kernel subsystems. This
+> policy option would enable the system administrators to limit the
+> measurement to the subsystems listed in "data_sources:=", if the 
+> subsystem measures its data by calling ima_measure_critical_data().
+> 
+> Limit the measurement to the subsystems that are specified in the IMA
+> policy - CRITICAL_DATA+"data_sources:=". If "data_sources:=" is not
+> provided with the func CRITICAL_DATA, measure the data from all the
+> supported kernel subsystems.
+> 
+> Signed-off-by: Tushar Sugandhi <tusharsu@linux.microsoft.com>
+
