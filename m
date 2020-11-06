@@ -2,150 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 957D22AA0D1
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 00:18:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88B0F2AA0CA
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 00:17:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728685AbgKFXR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 18:17:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42428 "EHLO
+        id S1728594AbgKFXRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 18:17:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728203AbgKFXR4 (ORCPT
+        with ESMTP id S1727859AbgKFXRQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 18:17:56 -0500
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C08F4C0613CF;
-        Fri,  6 Nov 2020 15:17:54 -0800 (PST)
-Received: by mail-qt1-x844.google.com with SMTP id v11so1632933qtq.12;
-        Fri, 06 Nov 2020 15:17:54 -0800 (PST)
+        Fri, 6 Nov 2020 18:17:16 -0500
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8105FC0613CF;
+        Fri,  6 Nov 2020 15:17:16 -0800 (PST)
+Received: by mail-qk1-x744.google.com with SMTP id i21so2684931qka.12;
+        Fri, 06 Nov 2020 15:17:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ngXMQxuAhgumkyikvz2rZCM+zAxLKnIx7tkSsw/SgKA=;
-        b=UexX2EnJhZuRHIEeAiADPldZoeSIkLaPZt8mWzfAPQj7JXwBp2wEWAiu6pYnGwmXSA
-         2It5A3R22Pv1efGCvdKGau3qVG3DCG4jBGZkjiHTDZ9xF1cweozIRmgtLi25jLMMaeRI
-         2MsH+lFcUWp6gCyOEnDfEwgISddFVfUdNLbjGQg0ByXrZSCdyyQjG1lszNXzAg3PZx8u
-         +PIJgJ1Um0QOApSP4VxN4Yt4moCJ4uV/gv1kbsegVTEJS2yrEjq9ynaxiVmRE9Hc9Yhd
-         TRcCk0k2hMe7hebGjd9VbZ0x5RkN9OnMm6cthhoXEsaUyrLZ/Fbu45wMUTndeVZPPXyl
-         kaig==
+        h=date:from:to:cc:subject:message-id:reply-to:mime-version
+         :content-disposition;
+        bh=gPpSIt1dr7u/yEw1A9ps6+8EjvWvm8VXL/7vqW1e/eQ=;
+        b=YovXZXZe+LBzJA8tLj0CyErgyc9vSnBJ4rNVUCvF1E4U46Dxz6C//JQkpyDD0UCXrI
+         XCy4xlJg2mvUctpNtOG4oYQM19fBFdLhGQB2R36T+VyfahmcHOjhMUhzxrRSntOf4Bws
+         bTPlLwF1j8fVjF74eoO6GJvvRIDwigahvcej4hSQiUWDPzdU24L8yQ/0I3jvQ+qATuW3
+         kHTcvprN9seaDsvPgdy/iSCtI7IRAVAaWpKWKmKhFAcPZe8T2xaG0xw1Eu18qpByB3PO
+         FcjLMw7fhWDTaVvHh1jIwkEDWsAZiKHi+OthzzNyjKXavmlLxJqLnvaZ23Ft68rM6Pol
+         hSCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ngXMQxuAhgumkyikvz2rZCM+zAxLKnIx7tkSsw/SgKA=;
-        b=RLzuBhuMVgvcRj7zjiQsZnohp+eoHURT5lFW+F/y0Lm4T0sSNrd0GpiCy8S5FdElcl
-         G+Gl6ljv2scdu2NDCLJFYI5lccSryuKvfI2sxkVsx4ahzPZULe0/lI4+NGFv+EwO5dkv
-         yAvuOBQqiVt6HyP7/ZkXlhRFLfgYVgH99U5vSb7p+3nOdo7+wA7bUzqkHCcBPVIXO/3W
-         GmgznhTwU5mzBe4OZf4c2kyW78k3oW1AeyEN6lmFRrfMaxryFeU6Wub+L0r5nVe1yxJa
-         E0Eaxot4mCJ5JAlC7vqHUSv7p2Q7HinaE51sXt4Q/oW2VZ5YdsHPBQ6LhNMUQk0WA3i3
-         up6g==
-X-Gm-Message-State: AOAM531c+LSo8X5sWmcZXoQNoJZDbOgyBy3+oAEd1rp9mUpWTBYbZKV6
-        NMPkntCBtJ66qpPwKkGFF7KRW1iSK9E=
-X-Google-Smtp-Source: ABdhPJws5NozzSrlgNetDzJAnOcgLr4wFEq258CTkeG0QZ7xV3qoQSbh9IH+v109SBJ23U66BYJOpg==
-X-Received: by 2002:aed:3ba6:: with SMTP id r35mr3907750qte.269.1604704674064;
-        Fri, 06 Nov 2020 15:17:54 -0800 (PST)
-Received: from soheil4.nyc.corp.google.com ([2620:0:1003:312:a6ae:11ff:fe18:6946])
-        by smtp.gmail.com with ESMTPSA id p136sm1519357qke.25.2020.11.06.15.17.53
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:reply-to
+         :mime-version:content-disposition;
+        bh=gPpSIt1dr7u/yEw1A9ps6+8EjvWvm8VXL/7vqW1e/eQ=;
+        b=BR/Dj8Y570PscfBFwyZXKCLEX5R6K8BA/26JiKGuIYA0FZij/bHO/MyHh/rPnS5F9v
+         +d6joLcpiMGh9uZzm/uO/tAN90Uno2no9rogDn9bguILgRf78AfLcRZNPt5mLEE5BsMP
+         JrxrbDEDWgoZvm15Swn29SQmbBHKu8k6yqctZZvZtXp4B5FIlvPaTJV4OkPrujWRTt16
+         o9l7kMZhwLWjawWyV3lISb2YpQceae+Y4hdGChzMK8GVQPWFcN+IIZ5TJ7qvot1wsBjP
+         v4b9doQezbkz/KpjdGjBniAunEBO9efvnGoLvW0N6TQZZ8OkLUBvvU/Fvb4Ez8mZroH8
+         nHew==
+X-Gm-Message-State: AOAM5326VtK5ZqkTG4fOLdCr9cBJjNLodsgBAQqSSufWoWgoANK1Cy3+
+        r+eXIr/KAVZPDVCF29tY/coULe3oJNc=
+X-Google-Smtp-Source: ABdhPJxTz1+UGKQxPnBHdugu6TmTCawU+wBlpe3xIX2itrnNyYP+nCQQT2G873/6SkodTzK2sjwH9w==
+X-Received: by 2002:a37:6fc5:: with SMTP id k188mr4025151qkc.317.1604704635770;
+        Fri, 06 Nov 2020 15:17:15 -0800 (PST)
+Received: from localhost ([75.183.140.180])
+        by smtp.gmail.com with ESMTPSA id h6sm648589qtm.68.2020.11.06.15.17.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Nov 2020 15:17:53 -0800 (PST)
-From:   Soheil Hassas Yeganeh <soheil.kdev@gmail.com>
-To:     torvalds@linux-foundation.org, viro@zeniv.linux.org.uk,
-        linux-fsdevel@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        dave@stgolabs.net, edumazet@google.com, willemb@google.com,
-        khazhy@google.com, guantaol@google.com,
-        Soheil Hassas Yeganeh <soheil@google.com>
-Subject: [PATCH 8/8] epoll: eliminate unnecessary lock for zero timeout
-Date:   Fri,  6 Nov 2020 18:16:35 -0500
-Message-Id: <20201106231635.3528496-9-soheil.kdev@gmail.com>
-X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
-In-Reply-To: <20201106231635.3528496-1-soheil.kdev@gmail.com>
-References: <20201106231635.3528496-1-soheil.kdev@gmail.com>
+        Fri, 06 Nov 2020 15:17:14 -0800 (PST)
+Date:   Fri, 6 Nov 2020 18:17:10 -0500
+From:   Matt Turner <mattst88@gmail.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Henrik Rydberg <rydberg@bitmath.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Richard Fontana <rfontana@redhat.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] hwmon: applesmc: avoid overlong udelay()
+Message-ID: <20201106231710.GA29287@macbook>
+Reply-To: 20200527135207.1118624-1-arnd@arndb.de
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="GvXjxJ+pjyke8COw"
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Soheil Hassas Yeganeh <soheil@google.com>
 
-We call ep_events_available() under lock when timeout is 0,
-and then call it without locks in the loop for the other cases.
+--GvXjxJ+pjyke8COw
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
 
-Instead, call ep_events_available() without lock for all cases.
-For non-zero timeouts, we will recheck after adding the thread to
-the wait queue. For zero timeout cases, by definition, user is
-opportunistically polling and will have to call epoll_wait again
-in the future.
+On my late 2013 Macbook Pro, I have a couple of scripts that set the
+fans to auto or full-speed:
 
-Note that this lock was kept in c5a282e9635e9 because the whole
-loop was historically under lock.
+fan-hi:
+#!/bin/sh
+sudo sh -c 'echo 1 > /sys/devices/platform/applesmc.768/fan1_manual
+             echo 1 > /sys/devices/platform/applesmc.768/fan2_manual
+             cat /sys/devices/platform/applesmc.768/fan1_max > /sys/devices/platform/applesmc.768/fan1_output
+             cat /sys/devices/platform/applesmc.768/fan2_max > /sys/devices/platform/applesmc.768/fan2_output'
 
-This patch results in a 1% CPU/RPC reduction in RPC benchmarks.
+fan-auto:
+#!/bin/sh
+sudo sh -c 'echo 0 > /sys/devices/platform/applesmc.768/fan1_manual
+             echo 0 > /sys/devices/platform/applesmc.768/fan2_manual'
 
-Suggested-by: Eric Dumazet <edumazet@google.com>
-Signed-off-by: Soheil Hassas Yeganeh <soheil@google.com>
-Reviewed-by: Eric Dumazet <edumazet@google.com>
-Reviewed-by: Willem de Bruijn <willemb@google.com>
-Reviewed-by: Khazhismel Kumykov <khazhy@google.com>
----
- fs/eventpoll.c | 25 ++++++++++++-------------
- 1 file changed, 12 insertions(+), 13 deletions(-)
+Running ./fan-hi and then ./fan-auto on Linux v5.6 works and doesn't
+cause any problems, but after updating to v5.9 I see this in dmesg:
 
-diff --git a/fs/eventpoll.c b/fs/eventpoll.c
-index f4e1be7ada26..1aa23b0be72b 100644
---- a/fs/eventpoll.c
-+++ b/fs/eventpoll.c
-@@ -1830,7 +1830,7 @@ static inline struct timespec64 ep_set_mstimeout(long ms)
- static int ep_poll(struct eventpoll *ep, struct epoll_event __user *events,
- 		   int maxevents, long timeout)
- {
--	int res, eavail = 0, timed_out = 0;
-+	int res, eavail, timed_out = 0;
- 	u64 slack = 0;
- 	wait_queue_entry_t wait;
- 	ktime_t expires, *to = NULL;
-@@ -1846,18 +1846,21 @@ static int ep_poll(struct eventpoll *ep, struct epoll_event __user *events,
- 	} else if (timeout == 0) {
- 		/*
- 		 * Avoid the unnecessary trip to the wait queue loop, if the
--		 * caller specified a non blocking operation. We still need
--		 * lock because we could race and not see an epi being added
--		 * to the ready list while in irq callback. Thus incorrectly
--		 * returning 0 back to userspace.
-+		 * caller specified a non blocking operation.
- 		 */
- 		timed_out = 1;
--
--		write_lock_irq(&ep->lock);
--		eavail = ep_events_available(ep);
--		write_unlock_irq(&ep->lock);
- 	}
- 
-+	/*
-+	 * This call is racy: We may or may not see events that are being added
-+	 * to the ready list under the lock (e.g., in IRQ callbacks). For, cases
-+	 * with a non-zero timeout, this thread will check the ready list under
-+	 * lock and will added to the wait queue.  For, cases with a zero
-+	 * timeout, the user by definition should not care and will have to
-+	 * recheck again.
-+	 */
-+	eavail = ep_events_available(ep);
-+
- 	while (1) {
- 		if (eavail) {
- 			/*
-@@ -1873,10 +1876,6 @@ static int ep_poll(struct eventpoll *ep, struct epoll_event __user *events,
- 		if (timed_out)
- 			return 0;
- 
--		eavail = ep_events_available(ep);
--		if (eavail)
--			continue;
--
- 		eavail = ep_busy_loop(ep, timed_out);
- 		if (eavail)
- 			continue;
--- 
-2.29.1.341.ge80a0c044ae-goog
+[Nov 6 17:24] applesmc: send_byte(0x01, 0x0300) fail: 0x40
+[  +0.000005] applesmc: FS! : write data fail
+[  +0.191777] applesmc: send_byte(0x30, 0x0300) fail: 0x40
+[  +0.000009] applesmc: F0Tg: write data fail
+[  +7.097416] applesmc: send_byte(0x00, 0x0300) fail: 0x40
+[  +0.000006] applesmc: FS! : write data fail
 
+and the fan controls don't work.
+
+Googling turned up this [1] which looks like the same problem. They said
+it began occurring between v5.7 and v5.8, so I looked and found this
+commit.
+
+After reverting commit fff2d0f701e6753591609739f8ab9be1c8e80ebb from
+v5.9, I no longer see the errors in dmesg and the fan controls work
+again.
+
+Any ideas what the problem is?
+
+Thanks,
+Matt
+
+[1] https://stackoverflow.com/questions/63505469/cant-write-data-to-applesmc-error-after-upgrade-to-arch-linux-kernel-5-8-1
+
+--GvXjxJ+pjyke8COw
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iNUEABYKAH0WIQSzlptPDvl9ch5jjr2cglpmBdQLvgUCX6XZdF8UgAAAAAAuAChp
+c3N1ZXItZnByQG5vdGF0aW9ucy5vcGVucGdwLmZpZnRoaG9yc2VtYW4ubmV0QjM5
+NjlCNEYwRUY5N0Q3MjFFNjM4RUJEOUM4MjVBNjYwNUQ0MEJCRQAKCRCcglpmBdQL
+vkTXAPwOlyVrZemN/MxaBAOxSwKtX4/VgdeqF+d7p43HqZ3hiAEAuax5nEL5cMOV
+8YjzQAu/SHiGfHqBBT5A0qMLP03KOwA=
+=WUnV
+-----END PGP SIGNATURE-----
+
+--GvXjxJ+pjyke8COw--
