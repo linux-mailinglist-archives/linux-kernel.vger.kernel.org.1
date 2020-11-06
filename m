@@ -2,85 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F1A22A8F73
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 07:26:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3FD42A8F74
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 07:29:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726276AbgKFG0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 01:26:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52774 "EHLO
+        id S1726072AbgKFG3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 01:29:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725830AbgKFG0U (ORCPT
+        with ESMTP id S1725830AbgKFG3O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 01:26:20 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA3AFC0613CF;
-        Thu,  5 Nov 2020 22:26:19 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CS9Q12Zy2z9sRK;
-        Fri,  6 Nov 2020 17:26:17 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1604643977;
-        bh=8h4shHUMU2Yp8NBxybv83X6J7G0LdA9jJZvFEL1tanM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=HYsNbr+dhni6jacainBswiYGpW8Rm9CleugCltF4XepIBZDo/tFBHLtSG1EHivBk3
-         WMUzYguwVFiQl5ttT4ABMN7YumLQYijDz8k5Yk0EzITWKhiT90sMkP0IkRWIHe58zM
-         Jd6BpawcLVZXVJe9IPAabYhTuEwv4hCJna6+Rj0zhGziBULZl25T6y8Ou6uLj641fU
-         a5cZrGdqIvrhAgdWPj1ig0MxIFG6FTcCv/MqD31T5OEY5TirY7cUaSxpwwdRD7Bcvf
-         3Lv3rJQo1TpPSzj5rF4Fn7fdFr+RguXgfV2NLFpLY5APDpe9anN7cBHSfkct97vkJl
-         ddOrm25qz1CHw==
-Date:   Fri, 6 Nov 2020 17:26:16 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the akpm-current tree
-Message-ID: <20201106172616.4a27b3b3@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/f4E28sS5IoLWgM+V9tk1+bn";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        Fri, 6 Nov 2020 01:29:14 -0500
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFE15C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 22:29:12 -0800 (PST)
+Received: by mail-pl1-x643.google.com with SMTP id u2so195802pls.10
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 22:29:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=ttWMFPMQOjA7u/QHyTF932LbAZwRDjJ4PzdIhk8wiqM=;
+        b=fTxSe/iSrOrAqHqfNjvXvlPO1SxsjeOCCF3JZjmFsTTwAA5+pjlWCuQM3vyRSpFjHL
+         EGYIHANMC/kizflAv/e9zeUHAmbi2APa/oJnFIP29CmKETF4RNdF8/1TPOsWheEIaikg
+         QcPOGf7IGM0drk2uleE289PvXQrmko9JjoSDAC2n3JOnmY8slr5Kg5nuCDyYUwikdwKC
+         P+Kd7x+pJm1NzZLfbnjPowjMUbu2fHbTU/ls4o8c41H2e+yNpcYeLQbaefVaefkOWop4
+         JwRhZ5O1HcsdSK+OoJQWvGuL4j2ZRuV9U8v7D5ImuKh1auy09kmYSF3aK7P6tJyrPg1h
+         YxjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=ttWMFPMQOjA7u/QHyTF932LbAZwRDjJ4PzdIhk8wiqM=;
+        b=HaCBonDhVDHTEllmwZEI7rDhCy7baiZvYN7qXLS+oa0fKpcG8oe1hYl5A/+lVYeZfe
+         PfQnPBXu4ugHv3mP0+6ugfRIclE7vZHswH7p45XinXBjVh0XnJE2oTUam7JytfC2wBgA
+         VVzOamPPzq9yuUm3O5zR9x1IbuNpnrLHluiHvgZuP0fLWg8jF1KBoDrtotgI2MMYyROx
+         E55wOzIqFfK+KWBF/m6Lxq7IsePs+coN55Q5oWuIQ4sGTaMA3/AQB5Nm5VrmEeN0tzFt
+         ZqLqHW9bCYNkj6Xp6XQpRUU/TBfSoyXRU/QqavMdwa7BuDRISiQvlXsRZIeR3E2dwaib
+         NHzQ==
+X-Gm-Message-State: AOAM530eky01zIUnI/HQug2mJiQz83oGRyY4ttdgigWN7uCpRVGC3FOR
+        6R+m8+Xt4QPoBnPBul/rvg==
+X-Google-Smtp-Source: ABdhPJw5/XQf16tPs9Sj1RqtYAUnQuz7ERmwvyrxdpeeL9gPESHETrBc9eXTcSwii7xXd+7xPzxKww==
+X-Received: by 2002:a17:902:8c82:b029:d6:df6e:54ac with SMTP id t2-20020a1709028c82b02900d6df6e54acmr522725plo.29.1604644152462;
+        Thu, 05 Nov 2020 22:29:12 -0800 (PST)
+Received: from he-cluster.localdomain (67.216.221.250.16clouds.com. [67.216.221.250])
+        by smtp.gmail.com with ESMTPSA id s6sm486605pgo.8.2020.11.05.22.29.10
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 05 Nov 2020 22:29:11 -0800 (PST)
+From:   xiakaixu1987@gmail.com
+X-Google-Original-From: kaixuxia@tencent.com
+To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, namhyung@kernel.org, adrian.hunter@intel.com
+Cc:     linux-kernel@vger.kernel.org, Kaixu Xia <kaixuxia@tencent.com>
+Subject: [PATCH] perf intel-bts: Use true,false for bool variable
+Date:   Fri,  6 Nov 2020 14:29:06 +0800
+Message-Id: <1604644146-598-1-git-send-email-kaixuxia@tencent.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/f4E28sS5IoLWgM+V9tk1+bn
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+From: Kaixu Xia <kaixuxia@tencent.com>
 
-Hi all,
+Fix the following coccinelle reports:
 
-After merging the akpm-current tree, today's linux-next build (htmldocs)
-produced this warning:
+./tools/perf/util/intel-bts.c:472:3-13: WARNING: Assignment of 0/1 to bool variable
+./tools/perf/util/intel-bts.c:515:3-13: WARNING: Assignment of 0/1 to bool variable
 
-include/linux/kfence.h:138: warning: Function parameter or member 'addr' no=
-t described in 'kfence_object_start'
+Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
+Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
+---
+ tools/perf/util/intel-bts.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Introduced by patch
+diff --git a/tools/perf/util/intel-bts.c b/tools/perf/util/intel-bts.c
+index af1e78d76228..aa4fad92c79b 100644
+--- a/tools/perf/util/intel-bts.c
++++ b/tools/perf/util/intel-bts.c
+@@ -469,7 +469,7 @@ static int intel_bts_process_queue(struct intel_bts_queue *btsq, u64 *timestamp)
+ 
+ 	if (!buffer) {
+ 		if (!btsq->bts->sampling_mode)
+-			btsq->done = 1;
++			btsq->done = true;
+ 		err = 1;
+ 		goto out_put;
+ 	}
+@@ -512,7 +512,7 @@ static int intel_bts_process_queue(struct intel_bts_queue *btsq, u64 *timestamp)
+ 			*timestamp = btsq->buffer->reference;
+ 	} else {
+ 		if (!btsq->bts->sampling_mode)
+-			btsq->done = 1;
++			btsq->done = true;
+ 	}
+ out_put:
+ 	thread__put(thread);
+-- 
+2.20.0
 
-  mm: add Kernel Electric-Fence infrastructure
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/f4E28sS5IoLWgM+V9tk1+bn
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+k7IgACgkQAVBC80lX
-0GwSjwf+Pz2gmhx4kh0a5dkY2U32WJByJAz7vv5livdncJXkOCN4xL+g9SHp7U9p
-mJT6LIyFrHHq+48a/yCU0WnH9vetZY5x/mzuAQoVg9EbsjpWYorWaj/dr+YPhh3f
-BSmbkA9oDPhfEPEOU2+hLqHs0Huu+EYJGKC/ScPHrwPrGAIdQ8Uih+7z7UsPfAwI
-+Z24mmXXmbNv9jZSZhFnnEM1v95CjgfGqFLna2xLV4fGxPIEDEmduHIxT4DV83RQ
-viOITUv4jtFTAq2iWM3T7SW5ZhRMsBWKHKMjxJrXg5jqcxt/UBHdEigK4soqXbjX
-vxcA/vzvO/XxuQJLbXH5ncyRxlazWw==
-=l7t9
------END PGP SIGNATURE-----
-
---Sig_/f4E28sS5IoLWgM+V9tk1+bn--
