@@ -2,100 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B3FC2A8D89
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 04:33:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06B0C2A8D9B
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 04:39:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725981AbgKFDdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 22:33:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54186 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725616AbgKFDdF (ORCPT
+        id S1725965AbgKFDjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 22:39:16 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:6749 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725616AbgKFDjQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 22:33:05 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE105C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 19:33:03 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id v12so27059pfm.13
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 19:33:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=Dyl+aTlvkkG8uUCOXZSdQCJboMpohOISJ8TcxUwnALo=;
-        b=hrqFGTorrRN2Rmv+VraBptDd1q30z9D6uKUq4YsL64UYjmtklSm9oj33KT1eKVayGr
-         NFkuLHxXlzurrwpXEd3jSye/we4nG99FII+B15j6kPK96kHNEC3sZW8HuQ9BaUeYvrfY
-         jXMsM2Lp8x3UtftEHlNAFMavCD1sIlUGv2Ud5/2X5lq0XmwQWdA/GSpiW5Qz9IKmQM4/
-         h0nD+I2PvglyQnt9gNIqC0FmjUxqcelwWsZeRDYTfi5j3oMikLbbm7T+z3daGAponBuK
-         ZKVFnL3np+dqKTaDY479ZeGMTXdH1IqUUDEWQ0ZEEwyDWo1FbvvT5kYylhirqvQNBbVl
-         oByA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=Dyl+aTlvkkG8uUCOXZSdQCJboMpohOISJ8TcxUwnALo=;
-        b=ouivobHtZoBdMCyGO6bIMP2YrVdWTpksJ7GIlk+cxdBHeeOSxqAEKU9zZCq356Z8ZJ
-         /1hfl/Ugd96YIu7vvBifZ3VcG+p49l1J5U+VVBTuE+i/yzYQiBsfwLWxiSmu565+kVpf
-         sYZbL7WhcIBbJpVZ3VwcQlxcLGDIZTD5kwVD3LR/lCZNj1CJouOZ/y/uS3sSCrfS3nKV
-         CmATwcFXDHpsq6q48eLzYiFGMmY/HmmNE5FoTE7+gv4KlD+W4+btBq73qa/2mBGeKhYV
-         pHbOo/vwtngHHX4K2JqWeagL7U3Ossartqqj3DP9dkZy/EG6t6Pjmx39DoNJin7aHPR4
-         MuSA==
-X-Gm-Message-State: AOAM533oQNUIe3D2u++d49xiXrHQweaQLlhn9ykDHG/Zesoqk2hsinlA
-        x2g55UKBZVw++XA9z3eU6g==
-X-Google-Smtp-Source: ABdhPJzXEWNpHGyf8ud/1PFvDU2vRKSzbpp4pCL+fq55ats6/HNexmXKnmn82/e5SfMFkl7ZtcS4Gg==
-X-Received: by 2002:a62:7e44:0:b029:163:f1c3:3b32 with SMTP id z65-20020a627e440000b0290163f1c33b32mr140174pfc.62.1604633583470;
-        Thu, 05 Nov 2020 19:33:03 -0800 (PST)
-Received: from he-cluster.localdomain (67.216.221.250.16clouds.com. [67.216.221.250])
-        by smtp.gmail.com with ESMTPSA id a10sm110884pjq.17.2020.11.05.19.33.00
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 05 Nov 2020 19:33:01 -0800 (PST)
-From:   xiakaixu1987@gmail.com
-X-Google-Original-From: kaixuxia@tencent.com
-To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, namhyung@kernel.org
-Cc:     linux-kernel@vger.kernel.org, Kaixu Xia <kaixuxia@tencent.com>
-Subject: [PATCH] perf script: Remove unnecessary conversion to bool
-Date:   Fri,  6 Nov 2020 11:32:56 +0800
-Message-Id: <1604633576-32450-1-git-send-email-kaixuxia@tencent.com>
-X-Mailer: git-send-email 1.8.3.1
+        Thu, 5 Nov 2020 22:39:16 -0500
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CS5j81TJFzkgC0;
+        Fri,  6 Nov 2020 11:39:08 +0800 (CST)
+Received: from [10.174.177.149] (10.174.177.149) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 6 Nov 2020 11:39:10 +0800
+Subject: Re: [PATCH v2] PCI: v3: fix missing clk_disable_unprepare() on error
+ in v3_pci_probe
+To:     Rob Herring <robh@kernel.org>
+CC:     Linus Walleij <linus.walleij@linaro.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        PCI <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20201103073338.144465-1-miaoqinglang@huawei.com>
+ <CAL_JsqLy5B+4NVX1DXS9yjgEssLSn2d2Qg8n+YQ9E1G_05=i0A@mail.gmail.com>
+From:   Qinglang Miao <miaoqinglang@huawei.com>
+Message-ID: <bf070b68-ce61-fd58-4072-1cad70da332c@huawei.com>
+Date:   Fri, 6 Nov 2020 11:39:10 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <CAL_JsqLy5B+4NVX1DXS9yjgEssLSn2d2Qg8n+YQ9E1G_05=i0A@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.149]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kaixu Xia <kaixuxia@tencent.com>
 
-Here we could use the '!=' expression to fix the following coccicheck
-warning:
 
-./tools/perf/builtin-script.c:3209:48-53: WARNING: conversion to bool not needed here
-./tools/perf/builtin-script.c:2761:36-41: WARNING: conversion to bool not needed here
+在 2020/11/3 22:16, Rob Herring 写道:
+> On Tue, Nov 3, 2020 at 1:28 AM Qinglang Miao <miaoqinglang@huawei.com> wrote:
+>>
+>> Fix the missing clk_disable_unprepare() before return
+>> from v3_pci_probe() in the error handling case.
+>>
+>> Moving the clock enable later to avoid some fixes.
+>>
+>> Fixes: 6e0832fa432e (" PCI: Collect all native drivers under drivers/pci/controller/")
+> 
+> I don't think this commit caused the problem.
+> 
+>> Suggested-by: Rob Herring <robh@kernel.org>
+>> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+>> ---
+>>   drivers/pci/controller/pci-v3-semi.c | 40 ++++++++++++++++------------
+>>   1 file changed, 23 insertions(+), 17 deletions(-)
+>>
+>> diff --git a/drivers/pci/controller/pci-v3-semi.c b/drivers/pci/controller/pci-v3-semi.c
+>> index 154a53986..90520555b 100644
+>> --- a/drivers/pci/controller/pci-v3-semi.c
+>> +++ b/drivers/pci/controller/pci-v3-semi.c
+>> @@ -725,18 +725,6 @@ static int v3_pci_probe(struct platform_device *pdev)
+>>          host->sysdata = v3;
+>>          v3->dev = dev;
+>>
+>> -       /* Get and enable host clock */
+>> -       clk = devm_clk_get(dev, NULL);
+>> -       if (IS_ERR(clk)) {
+>> -               dev_err(dev, "clock not found\n");
+>> -               return PTR_ERR(clk);
+>> -       }
+>> -       ret = clk_prepare_enable(clk);
+>> -       if (ret) {
+>> -               dev_err(dev, "unable to enable clock\n");
+>> -               return ret;
+>> -       }
+>> -
+>>          regs = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>>          v3->base = devm_ioremap_resource(dev, regs);
+>>          if (IS_ERR(v3->base))
+>> @@ -761,17 +749,31 @@ static int v3_pci_probe(struct platform_device *pdev)
+>>          if (IS_ERR(v3->config_base))
+>>                  return PTR_ERR(v3->config_base);
+>>
+>> +       /* Get and enable host clock */
+>> +       clk = devm_clk_get(dev, NULL);
+>> +       if (IS_ERR(clk)) {
+>> +               dev_err(dev, "clock not found\n");
+>> +               return PTR_ERR(clk);
+>> +       }
+>> +       ret = clk_prepare_enable(clk);
+>> +       if (ret) {
+>> +               dev_err(dev, "unable to enable clock\n");
+>> +               return ret;
+>> +       }
+>> +
+>>          /* Get and request error IRQ resource */
+>>          irq = platform_get_irq(pdev, 0);
+>> -       if (irq < 0)
+>> +       if (irq < 0) {
+>> +               clk_disable_unprepare(clk);
+>>                  return irq;
+>> -
+>> +       }
+>>          ret = devm_request_irq(dev, irq, v3_irq, 0,
+>>                          "PCIv3 error", v3);
+>>          if (ret < 0) {
+>>                  dev_err(dev,
+>>                          "unable to request PCIv3 error IRQ %d (%d)\n",
+>>                          irq, ret);
+>> +               clk_disable_unprepare(clk);
+>>                  return ret;
+>>          }
+>>
+>> @@ -814,13 +816,15 @@ static int v3_pci_probe(struct platform_device *pdev)
+>>                  ret = v3_pci_setup_resource(v3, host, win);
+>>                  if (ret) {
+>>                          dev_err(dev, "error setting up resources\n");
+>> +                       clk_disable_unprepare(clk);
+>>                          return ret;
+>>                  }
+>>          }
+>>          ret = v3_pci_parse_map_dma_ranges(v3, np);
+>> -       if (ret)
+>> +       if (ret) {
+>> +               clk_disable_unprepare(clk);
+>>                  return ret;
+>> -
+>> +       }
+>>          /*
+>>           * Disable PCI to host IO cycles, enable I/O buffers @3.3V,
+>>           * set AD_LOW0 to 1 if one of the LB_MAP registers choose
+>> @@ -862,8 +866,10 @@ static int v3_pci_probe(struct platform_device *pdev)
+>>          /* Special Integrator initialization */
+>>          if (of_device_is_compatible(np, "arm,integrator-ap-pci")) {
+>>                  ret = v3_integrator_init(v3);
+>> -               if (ret)
+>> +               if (ret) {
+>> +                       clk_disable_unprepare(clk);
+> 
+> You should make all these a goto and just have one clk_disable_unprepare() call.
+> 
+> You are still missing error handling after pci_host_probe().
 
-Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
-Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
----
- tools/perf/builtin-script.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+I made a mistake on author name on v3 so resent a v4 on this one.
 
-diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
-index 48588ccf902e..b5a6fd63ca5f 100644
---- a/tools/perf/builtin-script.c
-+++ b/tools/perf/builtin-script.c
-@@ -2758,7 +2758,7 @@ static int parse_output_fields(const struct option *opt __maybe_unused,
- 				break;
- 		}
- 		if (i == imax && strcmp(tok, "flags") == 0) {
--			print_flags = change == REMOVE ? false : true;
-+			print_flags = change != REMOVE;
- 			continue;
- 		}
- 		if (i == imax) {
-@@ -3206,7 +3206,7 @@ static char *get_script_path(const char *script_root, const char *suffix)
- 
- static bool is_top_script(const char *script_path)
- {
--	return ends_with(script_path, "top") == NULL ? false : true;
-+	return ends_with(script_path, "top") != NULL;
- }
- 
- static int has_required_arg(char *script_path)
--- 
-2.20.0
-
+Sorry about that.
+> 
+>>                          return ret;
+>> +               }
+>>          }
+>>
+>>          /* Post-init: enable PCI memory and invalidate (master already on) */
+>> --
+>> 2.23.0
+>>
+> .
+> 
