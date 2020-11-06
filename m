@@ -2,111 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 773E22A9615
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 13:17:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A27752A9619
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 13:19:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727261AbgKFMR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 07:17:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56176 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727216AbgKFMR2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 07:17:28 -0500
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1A44B20715;
-        Fri,  6 Nov 2020 12:17:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604665047;
-        bh=bZKxLN7RY3HhlK+0rxvWdPBgq3Fle0UPqj94HYU3RGU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=1GY4xHL0sRl9FfS2prnzEVLTSNnG1Fmgmn+DetygieeuVuprMQwjik3X3Ru80NdT3
-         5E6f7OTD2CVxNRXkvyvk3UZxWJ2hSmnesQagdM+aTg12kC80rvk9bngqc6L68nQFlC
-         70cc6fJyWsmHpIriPBj1XRz5yfyqu5+Pu+0oIp2E=
-Date:   Fri, 6 Nov 2020 12:17:15 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        David Laight <David.Laight@aculab.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: Re: [RFT PATCH v2 7/8] gpio: exar: switch to using regmap
-Message-ID: <20201106121715.GA49612@sirena.org.uk>
-References: <20201104193051.32236-1-brgl@bgdev.pl>
- <20201104193051.32236-8-brgl@bgdev.pl>
- <20201105174057.GG4856@sirena.org.uk>
- <CAMRc=Mffr4pn+mnuO6WVP9p3JT-G_t8buJBZMBBRFjQDsfLeuw@mail.gmail.com>
+        id S1727181AbgKFMTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 07:19:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51530 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726317AbgKFMTv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 07:19:51 -0500
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C32A9C0613CF;
+        Fri,  6 Nov 2020 04:19:50 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: koike)
+        with ESMTPSA id B4F2D1F468B3
+From:   Helen Koike <helen.koike@collabora.com>
+To:     linux-media@vger.kernel.org
+Cc:     linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        heiko@sntech.de, kernel@collabora.com, hverkuil-cisco@xs4all.nl,
+        dafna.hirschfeld@collabora.com, zhengsq@rock-chips.com,
+        laurent.pinchart@ideasonboard.com, niklas.soderlund@ragnatech.se,
+        mchehab@kernel.org, tfiga@chromium.org, ribalda@google.com
+Subject: [PATCH v3 0/2] destage Rockchip ISP1 driver
+Date:   Fri,  6 Nov 2020 09:19:35 -0300
+Message-Id: <20201106121937.1459948-1-helen.koike@collabora.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="UlVJffcvxoiEqYs2"
-Content-Disposition: inline
-In-Reply-To: <CAMRc=Mffr4pn+mnuO6WVP9p3JT-G_t8buJBZMBBRFjQDsfLeuw@mail.gmail.com>
-X-Cookie: When does later become never?
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
---UlVJffcvxoiEqYs2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Changes in v3:
+- Moved Kconfig entry from M2M to Platform devices
+- Rename description and comment to Parameters and Statistics.
+- Patches squashed:
+dt-bindings: media: rkisp1: move rockchip-isp1 bindings out of staging
+media: MAINTAINERS: rkisp1: add path to dt-bindings
+media: rockchip: rkisp1: destage Rockchip ISP1 driver
+media: MAINTAINERS: Update rkisp1 files with new location
 
-On Fri, Nov 06, 2020 at 12:13:55PM +0100, Bartosz Golaszewski wrote:
-> On Thu, Nov 5, 2020 at 6:41 PM Mark Brown <broonie@kernel.org> wrote:
+Changes in v2:
+- New patch updating MAINTAINERS file
+- No changes in other patches
 
-> > AFAICT (and indeed now I dig around assign_bit() only works on a single
-> > bit and does both shifts which makes the correspondance with that
-> > interface super unclear, we're not mirroring that interface here).  If
-> > you're trying to clone the bitops function it should probably be an
-> > actual clone of the bitops function not something different, that would
-> > be clearer and it'd be easier to understand why someone would want the
-> > API in the first place.  But perhaps I'm missing something here?
+> media-ctl -p
+http://ix.io/2Cso
 
-> It's true that bitops set/clear/assign bit macros work on single bits
-> and take their offsets as arguments. However all regmap helpers
-> operate on masks. Two release cycles back we added two helpers
-> regmap_set_bits() and regmap_clear_bits() which are just wrappers
-> around regmap_update_bits(). The naming was inspired by bitops
-> (because how would one name these operations differently anyway?) but
-> it was supposed to be able to clear/set multiple bits at once - at
-> least this was my use-case in mtk-star-emac driver I was writing at
-> the time and for which I wrote these helpers.
+> media-ctl --print-dot
+http://ix.io/2Csp
 
-Which is fine and not at all unclear since there's no separate value
-argument, the value comes along with the name. =20
+> v4l2-compliance -m0
+http://ix.io/2Csk
 
-> Now the regmap_assign_bits() helper is just an extension to these two
-> which allows users to use one line instead of four. I'm not trying to
-> clone bitops - it's just that I don't have a better idea for the
-> naming.
+> v4l2-compliance -v -d /dev/video0 -s10
+http://ix.io/2Csq
 
-I really don't see the benefit to the helper, it makes sense in the
-context of bitops where the operation does all the shifting and it's
-only a single bit but for regmap where it's dealing with bitmasks as
-well and the naming doesn't make it crystal clear I can only see this
-being confusing to people.  Had the set and clear helpers for regmap
-been done as single bits it'd be a lot easier but that's not the case
-and it'd also be odd to have just this one helper that took a shift
-rather than a bitmask.
+> v4l2-compliance -v -d /dev/video1 -s10
+http://ix.io/2Css
 
---UlVJffcvxoiEqYs2
-Content-Type: application/pgp-signature; name="signature.asc"
+Helen Koike (1):
+  media: rockchip: rkisp1: destage Rockchip ISP1 driver
 
------BEGIN PGP SIGNATURE-----
+Shunqian Zheng (1):
+  media: videodev2.h, v4l2-ioctl: add rkisp1 meta buffer format
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+lPsoACgkQJNaLcl1U
-h9B+RAf/YyKNM+XnHh2JvHiISQaTNYhLlUfYUKDPeMWWQBUJbgGMGrc85OM8pazO
-9MdyCQtmU9N11JcmHWzS+9hbg1sg+8YY5Wvfh6FJSfUqTjGa+MBg9rl0n16US54D
-88kXLCvg6xSf46vewCrD7h2PynyDSQEguK5n0y7qrl/8wa8kT1ftxWwON9fgQho8
-nOz/7AfbIBfibYdq1SjA5DhyuGlidta4Tv1mkd4ouXxZLeHcalP623bZmwmFQ7Yo
-I0Gc11CBg89EkcCofD8At/Q7peLwac8uysTXN9leBHgZyKR6BavrCeuSqlYMd54V
-WuxLfmBxSDPDLQcmfjt6ETauXE7UWQ==
-=78fN
------END PGP SIGNATURE-----
+ .../bindings/media/rockchip-isp1.yaml         |  0
+ .../media/v4l/pixfmt-meta-rkisp1.rst          |  2 +-
+ MAINTAINERS                                   |  5 ++++-
+ drivers/media/platform/Kconfig                | 18 ++++++++++++++++++
+ drivers/media/platform/Makefile               |  1 +
+ .../platform/rockchip}/rkisp1/Makefile        |  0
+ .../rockchip}/rkisp1/rkisp1-capture.c         |  0
+ .../platform/rockchip}/rkisp1/rkisp1-common.c |  0
+ .../platform/rockchip}/rkisp1/rkisp1-common.h |  2 +-
+ .../platform/rockchip}/rkisp1/rkisp1-dev.c    |  0
+ .../platform/rockchip}/rkisp1/rkisp1-isp.c    |  0
+ .../platform/rockchip}/rkisp1/rkisp1-params.c |  0
+ .../platform/rockchip}/rkisp1/rkisp1-regs.h   |  0
+ .../rockchip}/rkisp1/rkisp1-resizer.c         |  0
+ .../platform/rockchip}/rkisp1/rkisp1-stats.c  |  0
+ drivers/media/v4l2-core/v4l2-ioctl.c          |  2 ++
+ drivers/staging/media/Kconfig                 |  2 --
+ drivers/staging/media/Makefile                |  1 -
+ drivers/staging/media/rkisp1/Kconfig          | 19 -------------------
+ drivers/staging/media/rkisp1/TODO             |  6 ------
+ .../uapi/linux}/rkisp1-config.h               |  4 ----
+ include/uapi/linux/videodev2.h                |  4 ++++
+ 22 files changed, 31 insertions(+), 35 deletions(-)
+ rename {drivers/staging/media/rkisp1/Documentation => Documentation}/devicetree/bindings/media/rockchip-isp1.yaml (100%)
+ rename drivers/{staging/media => media/platform/rockchip}/rkisp1/Makefile (100%)
+ rename drivers/{staging/media => media/platform/rockchip}/rkisp1/rkisp1-capture.c (100%)
+ rename drivers/{staging/media => media/platform/rockchip}/rkisp1/rkisp1-common.c (100%)
+ rename drivers/{staging/media => media/platform/rockchip}/rkisp1/rkisp1-common.h (99%)
+ rename drivers/{staging/media => media/platform/rockchip}/rkisp1/rkisp1-dev.c (100%)
+ rename drivers/{staging/media => media/platform/rockchip}/rkisp1/rkisp1-isp.c (100%)
+ rename drivers/{staging/media => media/platform/rockchip}/rkisp1/rkisp1-params.c (100%)
+ rename drivers/{staging/media => media/platform/rockchip}/rkisp1/rkisp1-regs.h (100%)
+ rename drivers/{staging/media => media/platform/rockchip}/rkisp1/rkisp1-resizer.c (100%)
+ rename drivers/{staging/media => media/platform/rockchip}/rkisp1/rkisp1-stats.c (100%)
+ delete mode 100644 drivers/staging/media/rkisp1/Kconfig
+ delete mode 100644 drivers/staging/media/rkisp1/TODO
+ rename {drivers/staging/media/rkisp1/uapi => include/uapi/linux}/rkisp1-config.h (99%)
 
---UlVJffcvxoiEqYs2--
+-- 
+2.29.2
+
