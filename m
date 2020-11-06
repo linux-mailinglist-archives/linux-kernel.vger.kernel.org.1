@@ -2,122 +2,440 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01AC52A9E06
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 20:30:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC4F42A9E0D
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 20:32:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728176AbgKFTa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 14:30:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35194 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726415AbgKFTa1 (ORCPT
+        id S1728231AbgKFTcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 14:32:04 -0500
+Received: from mail-ed1-f67.google.com ([209.85.208.67]:44374 "EHLO
+        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726415AbgKFTcB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 14:30:27 -0500
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C46BC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 11:30:27 -0800 (PST)
-Received: by mail-qk1-x741.google.com with SMTP id b18so2130965qkc.9
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 11:30:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vFAruLUORQHUqfhAcqrK3kHFrju7FmZIpz+3LtddQik=;
-        b=iJjd0FsgKSz4UMVJ0yEYuTXP+TTkCpe11X1VygTFEfMhBu4zVCI1R/v6juANR2qB4Q
-         5Bels1w2oZzLmDsNDoThRLoK7kc/zdpwPO4UT6x6EAkceI8g/JOjAG91xGYl7kSFCQ/W
-         ZbgarmDUY3PKv06eSLmj2WHCkLP1NnOHCZkgrx7CXQDuCJ/z7qt+/GjYjmsDayhhFmyK
-         CViF4N4YOhwIP8BSr0EwEqNCdu9hb5mbPEEbp3iUTLeV3XnYywXW188JOM3kSYxEOLV5
-         mfupyKsZCd/zGG/BUy47UXOrZMvD0veRq8OcWLdma8c/DrK5Km76/lwmXa36HDCDsiN4
-         sXwQ==
+        Fri, 6 Nov 2020 14:32:01 -0500
+Received: by mail-ed1-f67.google.com with SMTP id y15so2248742ede.11;
+        Fri, 06 Nov 2020 11:31:56 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=vFAruLUORQHUqfhAcqrK3kHFrju7FmZIpz+3LtddQik=;
-        b=OJlnRXWO8NFcROYorWLyfzylSelDMR6MNpG8ciIQituq/ixheloyuvLdMCwHO1Ks/h
-         5fZk0IYyXzTdHVejmj9NA/xjnQP1IYOAXVI4PBWCFJxVxLdLNKfcfnpBnxMc3w4ppGcp
-         8ZhEFQF5MvyFI1KkI9KjD5qdtoYlZ9JP5UznxGycR3ZMNZQNehwZVBchPdcn4t96NUEe
-         2Bgx+r2EuzphGYxlPaQir0B1sNc9/mgJnMbWd4ooGuublduVG6xVKJS3Heb1yEZwDvIu
-         2CUNrjrBxvdpbOggmv/J1z4oAahGoW/FQCjdkmOvr79Ylf6CoPUe7xZPtb0eYnhDyz/R
-         cicQ==
-X-Gm-Message-State: AOAM530KnpJtEcGWehEITGsKjdTvPVJ1hAWSD7zMPBAPFJkh3giV4vOP
-        cPwpqCK7/k2qO+Am6kL2bsjZjw==
-X-Google-Smtp-Source: ABdhPJze2F/Rq9sRVVe7Xk43RUxz3sel2lY1t652tRL/srA9lFIVY1sT0rqjvYUmBSCT+htfHCsU0Q==
-X-Received: by 2002:a37:e40b:: with SMTP id y11mr3193612qkf.29.1604691026426;
-        Fri, 06 Nov 2020 11:30:26 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id s2sm1115967qtw.44.2020.11.06.11.30.25
+        bh=n9Dgigx/g9wvTHZDbIhizjSwRVcl0cDzTu9NhjhOCwc=;
+        b=rQSTijVJnXfCpz+NxfCNNrpScJtHXH6PI7/GjFVY9WSUrywLn4VZbd+Lo5mNsOIPkm
+         75YPgrx+1aAtd58Jdj1KjPx0ij0VG7L0IheeNBZ2MUu0viYttFoQqpQoFD6O/WuRqBvG
+         ZInH0dOtyN47BeZ0olTJ31s7unZCDR++Vsfz7ghNryOaube5B23c4cdNC2D7WYcIxZ0X
+         mDOLnBNknF0mhPA1k6lmkETFmqU0ENk0q0GO/9+LLM4jXhs1WwqQdlGitGGV3mJfDqjc
+         Gq788KP00jclvkT/BcfAreA2AGIBItXciGjQxkuhJyeQ7kNYIvnzKKznHCRE2wlDIQEQ
+         cdaQ==
+X-Gm-Message-State: AOAM533oiIGR0JmNz/kMOctOtlPXEeHPMyPp4LZEBdtnJwm3gV8TrxFm
+        fOxk10+Fyvv+0bsjYtiuZ9I=
+X-Google-Smtp-Source: ABdhPJwvoc1yVXZWCijv8WEl2OWF2Y7s5DJrOvSMVhXbIcxo+TUhON0Mtu2PeW32RpJTtJ2PGzM+WQ==
+X-Received: by 2002:aa7:d514:: with SMTP id y20mr3572318edq.384.1604691116198;
+        Fri, 06 Nov 2020 11:31:56 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id sa23sm1579297ejb.80.2020.11.06.11.31.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Nov 2020 11:30:25 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kb7RI-0011Hr-SE; Fri, 06 Nov 2020 15:30:24 -0400
-Date:   Fri, 6 Nov 2020 15:30:24 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Logan Gunthorpe <logang@deltatee.com>
-Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
-        Stephen Bates <sbates@raithlin.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Ira Weiny <iweiny@intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Don Dutile <ddutile@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Subject: Re: [RFC PATCH 14/15] PCI/P2PDMA: Introduce pci_mmap_p2pmem()
-Message-ID: <20201106193024.GW36674@ziepe.ca>
-References: <20201106170036.18713-1-logang@deltatee.com>
- <20201106170036.18713-15-logang@deltatee.com>
- <20201106172206.GS36674@ziepe.ca>
- <b1e8dfce-d583-bed8-d04d-b7265a54c99f@deltatee.com>
- <20201106174223.GU36674@ziepe.ca>
- <2c2d2815-165e-2ef9-60d6-3ace7ff3aaa5@deltatee.com>
- <20201106180922.GV36674@ziepe.ca>
- <09885400-36f8-bc1d-27f0-a8adcf6104d4@deltatee.com>
+        Fri, 06 Nov 2020 11:31:54 -0800 (PST)
+Date:   Fri, 6 Nov 2020 20:31:53 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Adam Ford <aford173@gmail.com>
+Cc:     linux-arm-kernel@lists.infradead.org, aford@beaconembedded.com,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2 2/3] arm64: dts: imx: Add Beacon i.MX8M Nano
+ development kit
+Message-ID: <20201106193153.GB328543@kozik-lap>
+References: <20201106121238.1814427-1-aford173@gmail.com>
+ <20201106121238.1814427-2-aford173@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <09885400-36f8-bc1d-27f0-a8adcf6104d4@deltatee.com>
+In-Reply-To: <20201106121238.1814427-2-aford173@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 06, 2020 at 11:20:05AM -0700, Logan Gunthorpe wrote:
+On Fri, Nov 06, 2020 at 06:12:36AM -0600, Adam Ford wrote:
+> Beacon Embeddedworks is launching a development kit based on the
+> i.MX8M Nano SoC.  The kit consists of a System on Module (SOM)
+> + baseboard.  The SOM has the SoC, eMMC, and Ethernet. The baseboard
+> has an wm8962 audio CODEC, a PDM microphone, and a single USB OTG.
 > 
+> The baseboard is capable of two different, mutually exclusive video
+> outputs, so the common items are in the baseboard file.  When
+> the video becomes available, LVDS output will be added to this kit
+> file, and a second kit file will be added to support HDMI.
 > 
-> On 2020-11-06 11:09 a.m., Jason Gunthorpe wrote:
-> >> Ah, hmm, yes. I guess the pages have to be hooked and returned to the
-> >> genalloc through free_devmap_managed_page(). 
-> > 
-> > That sounds about right, but in this case it doesn't need the VMA
-> > operations.
-> > 
-> >> Seems like it might be doable... but it will complicate things for
-> >> users that don't want to use the genpool (though no such users exist
-> >> upstream).
-> > 
-> > I would like to use this stuff in RDMA pretty much immediately and the
-> > genpool is harmful for those cases, so please don't make decisions
-> > that are tying thing to genpool
+> Signed-off-by: Adam Ford <aford173@gmail.com>
+> ---
+> Based on: https://patchwork.kernel.org/project/linux-arm-kernel/list/?series=374643
 > 
-> I certainly can't make decisions for code that isn't currently
-> upstream.
+> V2:  Fix issues noted from Krzysztof Kozlowski.
+>      Set Bluetooth UART speed
+>      Add supply and reset gpio to FEC
+> 
+>  arch/arm64/boot/dts/freescale/Makefile        |   1 +
+>  .../freescale/imx8mn-beacon-baseboard.dtsi    | 307 +++++++++++++
+>  .../boot/dts/freescale/imx8mn-beacon-kit.dts  |  19 +
+>  .../boot/dts/freescale/imx8mn-beacon-som.dtsi | 433 ++++++++++++++++++
+>  4 files changed, 760 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
+> index 876bf484bbe6..589290bbbbd6 100644
+> --- a/arch/arm64/boot/dts/freescale/Makefile
+> +++ b/arch/arm64/boot/dts/freescale/Makefile
+> @@ -34,6 +34,7 @@ dtb-$(CONFIG_ARCH_MXC) += imx8mm-evk.dtb
+>  dtb-$(CONFIG_ARCH_MXC) += imx8mm-ddr4-evk.dtb
+>  dtb-$(CONFIG_ARCH_MXC) += imx8mm-kontron-n801x-s.dts
+>  dtb-$(CONFIG_ARCH_MXC) += imx8mm-var-som-symphony.dtb
+> +dtb-$(CONFIG_ARCH_MXC) += imx8mn-beacon-kit.dtb
+>  dtb-$(CONFIG_ARCH_MXC) += imx8mn-evk.dtb
+>  dtb-$(CONFIG_ARCH_MXC) += imx8mn-ddr4-evk.dtb
+>  dtb-$(CONFIG_ARCH_MXC) += imx8mn-var-som-symphony.dtb
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mn-beacon-baseboard.dtsi b/arch/arm64/boot/dts/freescale/imx8mn-beacon-baseboard.dtsi
+> new file mode 100644
+> index 000000000000..376ca8ff7213
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/freescale/imx8mn-beacon-baseboard.dtsi
+> @@ -0,0 +1,307 @@
+> +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
+> +/*
+> + * Copyright 2020 Compass Electronics Group, LLC
+> + */
+> +
+> +/ {
+> +	leds {
+> +		compatible = "gpio-leds";
+> +
+> +		led-0 {
+> +			label = "gen_led0";
+> +			gpios = <&pca6416_1 4 GPIO_ACTIVE_HIGH>;
+> +			default-state = "off";
+> +		};
+> +
+> +		led-1 {
+> +			label = "gen_led1";
+> +			gpios = <&pca6416_1 5 GPIO_ACTIVE_HIGH>;
+> +			default-state = "off";
+> +		};
+> +
+> +		led-2 {
+> +			label = "gen_led2";
+> +			gpios = <&pca6416_1 6 GPIO_ACTIVE_HIGH>;
+> +			default-state = "off";
+> +		};
+> +
+> +		led-3 {
+> +			pinctrl-names = "default";
+> +			pinctrl-0 = <&pinctrl_led3>;
+> +			label = "heartbeat";
+> +			gpios = <&gpio4 28 GPIO_ACTIVE_HIGH>;
+> +			linux,default-trigger = "heartbeat";
+> +		};
+> +	};
+> +
+> +	reg_audio: regulator-audio {
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "3v3_aud";
+> +		regulator-min-microvolt = <3300000>;
+> +		regulator-max-microvolt = <3300000>;
+> +		gpio = <&pca6416_1 11 GPIO_ACTIVE_HIGH>;
+> +		enable-active-high;
+> +	};
+> +
+> +	reg_usdhc2_vmmc: regulator-usdhc2 {
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "vsd_3v3";
+> +		regulator-min-microvolt = <3300000>;
+> +		regulator-max-microvolt = <3300000>;
+> +		gpio = <&gpio2 19 GPIO_ACTIVE_HIGH>;
+> +		enable-active-high;
+> +	};
+> +
+> +	reg_usb_otg_vbus: regulator-usb {
+> +		compatible = "regulator-fixed";
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&pinctrl_reg_usb_otg>;
+> +		regulator-name = "usb_otg_vbus";
+> +		regulator-min-microvolt = <5000000>;
+> +		regulator-max-microvolt = <5000000>;
+> +		gpio = <&gpio4 29 GPIO_ACTIVE_HIGH>;
+> +		enable-active-high;
+> +	};
+> +
+> +	sound {
+> +		compatible = "fsl,imx-audio-wm8962";
+> +		model = "wm8962-audio";
+> +		audio-cpu = <&sai3>;
+> +		audio-codec = <&wm8962>;
+> +		audio-routing =
+> +			"Headphone Jack", "HPOUTL",
+> +			"Headphone Jack", "HPOUTR",
+> +			"Ext Spk", "SPKOUTL",
+> +			"Ext Spk", "SPKOUTR",
+> +			"AMIC", "MICBIAS",
+> +			"IN3R", "AMIC";
+> +	};
+> +};
+> +
+> +&ecspi2 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_espi2>;
+> +	cs-gpios = <&gpio5 9 GPIO_ACTIVE_LOW>;
+> +	status = "okay";
+> +
+> +	eeprom@0 {
+> +		compatible = "microchip,at25160bn", "atmel,at25";
+> +		reg = <0>;
+> +		spi-max-frequency = <5000000>;
+> +		spi-cpha;
+> +		spi-cpol;
+> +		pagesize = <32>;
+> +		size = <2048>;
+> +		address-width = <16>;
+> +	};
+> +};
+> +
+> +&i2c4 {
+> +	clock-frequency = <400000>;
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_i2c4>;
+> +	status = "okay";
+> +
+> +	pca6416_0: gpio@20 {
+> +		compatible = "nxp,pcal6416";
+> +		reg = <0x20>;
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&pinctrl_pcal6414>;
+> +		gpio-controller;
+> +		#gpio-cells = <2>;
+> +		interrupt-parent = <&gpio4>;
+> +		interrupts = <27 IRQ_TYPE_LEVEL_LOW>;
+> +	};
+> +
+> +	pca6416_1: gpio@21 {
+> +		compatible = "nxp,pcal6416";
+> +		reg = <0x21>;
+> +		gpio-controller;
+> +		#gpio-cells = <2>;
+> +		interrupt-parent = <&gpio4>;
+> +		interrupts = <27 IRQ_TYPE_LEVEL_LOW>;
+> +	};
+> +
+> +	wm8962: audio-codec@1a {
+> +		compatible = "wlf,wm8962";
+> +		reg = <0x1a>;
+> +		clocks = <&clk IMX8MN_CLK_SAI3_ROOT>;
+> +		clock-names = "xclk";
+> +		DCVDD-supply = <&reg_audio>;
+> +		DBVDD-supply = <&reg_audio>;
+> +		AVDD-supply = <&reg_audio>;
+> +		CPVDD-supply = <&reg_audio>;
+> +		MICVDD-supply = <&reg_audio>;
+> +		PLLVDD-supply = <&reg_audio>;
+> +		SPKVDD1-supply = <&reg_audio>;
+> +		SPKVDD2-supply = <&reg_audio>;
+> +		gpio-cfg = <
+> +			0x0000 /* 0:Default */
+> +			0x0000 /* 1:Default */
+> +			0x0000 /* 2:FN_DMICCLK */
+> +			0x0000 /* 3:Default */
+> +			0x0000 /* 4:FN_DMICCDAT */
+> +			0x0000 /* 5:Default */
+> +		>;
+> +	};
+> +};
+> +
+> +&easrc {
+> +	fsl,asrc-rate  = <48000>;
+> +	status = "okay";
+> +};
+> +
+> +&sai3 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_sai3>;
+> +	assigned-clocks = <&clk IMX8MN_CLK_SAI3>;
+> +	assigned-clock-parents = <&clk IMX8MN_AUDIO_PLL1_OUT>;
+> +	assigned-clock-rates = <24576000>;
+> +	fsl,sai-mclk-direction-output;
+> +	status = "okay";
+> +};
+> +
+> +&snvs_pwrkey {
+> +	status = "okay";
+> +};
+> +
+> +&uart2 { /* console */
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_uart2>;
+> +	status = "okay";
+> +};
+> +
+> +&uart3 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_uart3>;
+> +	assigned-clocks = <&clk IMX8MN_CLK_UART3>;
+> +	assigned-clock-parents = <&clk IMX8MN_SYS_PLL1_80M>;
+> +	status = "okay";
+> +};
+> +
+> +&usbotg1 {
+> +	vbus-supply = <&reg_usb_otg_vbus>;
+> +	disable-over-current;
+> +	dr_mode="otg";
+> +	status = "okay";
+> +};
+> +
+> +&usdhc2 {
+> +	pinctrl-names = "default", "state_100mhz", "state_200mhz";
+> +	pinctrl-0 = <&pinctrl_usdhc2>, <&pinctrl_usdhc2_gpio>;
+> +	pinctrl-1 = <&pinctrl_usdhc2_100mhz>;
+> +	pinctrl-2 = <&pinctrl_usdhc2_200mhz>;
+> +	bus-width = <4>;
+> +	vmmc-supply = <&reg_usdhc2_vmmc>;
+> +	status = "okay";
+> +};
+> +
+> +&iomuxc {
+> +	pinctrl_espi2: espi2grp {
+> +		fsl,pins = <
+> +			MX8MN_IOMUXC_ECSPI2_SCLK_ECSPI2_SCLK		0x82
+> +			MX8MN_IOMUXC_ECSPI2_MOSI_ECSPI2_MOSI		0x82
+> +			MX8MN_IOMUXC_ECSPI2_MISO_ECSPI2_MISO		0x82
+> +			MX8MN_IOMUXC_ECSPI1_SS0_GPIO5_IO9		0x41
+> +		>;
+> +	};
+> +
+> +	pinctrl_i2c2: i2c2grp {
+> +		fsl,pins = <
+> +			MX8MN_IOMUXC_I2C2_SCL_I2C2_SCL		0x400001c3
+> +			MX8MN_IOMUXC_I2C2_SDA_I2C2_SDA		0x400001c3
+> +		>;
+> +	};
+> +
+> +	pinctrl_i2c4: i2c4grp {
+> +		fsl,pins = <
+> +			MX8MN_IOMUXC_I2C4_SCL_I2C4_SCL		0x400001c3
+> +			MX8MN_IOMUXC_I2C4_SDA_I2C4_SDA		0x400001c3
+> +		>;
+> +	};
+> +
+> +	pinctrl_led3: led3grp {
+> +		fsl,pins = <
+> +			MX8MN_IOMUXC_SAI3_RXFS_GPIO4_IO28	0x41
+> +		>;
+> +	};
+> +
+> +	pinctrl_pcal6414: pcal6414-gpiogrp {
+> +		fsl,pins = <
+> +			MX8MN_IOMUXC_SAI2_MCLK_GPIO4_IO27		0x19
+> +		>;
+> +	};
+> +
+> +	pinctrl_reg_usb_otg: reg-otggrp {
+> +		fsl,pins = <
+> +			MX8MN_IOMUXC_SAI3_RXC_GPIO4_IO29     0x19
+> +		>;
+> +	};
+> +
+> +	pinctrl_sai3: sai3grp {
+> +		fsl,pins = <
+> +			MX8MN_IOMUXC_SAI3_TXFS_SAI3_TX_SYNC     0xd6
+> +			MX8MN_IOMUXC_SAI3_TXC_SAI3_TX_BCLK      0xd6
+> +			MX8MN_IOMUXC_SAI3_MCLK_SAI3_MCLK        0xd6
+> +			MX8MN_IOMUXC_SAI3_TXD_SAI3_TX_DATA0     0xd6
+> +			MX8MN_IOMUXC_SAI3_RXD_SAI3_RX_DATA0	0xd6
+> +		>;
+> +	};
+> +
+> +	pinctrl_uart2: uart2grp {
+> +		fsl,pins = <
+> +			MX8MN_IOMUXC_UART2_RXD_UART2_DCE_RX	0x140
+> +			MX8MN_IOMUXC_UART2_TXD_UART2_DCE_TX	0x140
+> +		>;
+> +	};
+> +
+> +	pinctrl_uart3: uart3grp {
+> +		fsl,pins = <
+> +			MX8MN_IOMUXC_ECSPI1_SCLK_UART3_DCE_RX	0x40
+> +			MX8MN_IOMUXC_ECSPI1_MOSI_UART3_DCE_TX	0x40
+> +		>;
+> +	};
+> +
+> +	pinctrl_usdhc2_gpio: usdhc2gpiogrp {
+> +		fsl,pins = <
+> +			MX8MN_IOMUXC_SD2_CD_B_USDHC2_CD_B	0x41
+> +			MX8MN_IOMUXC_SD2_RESET_B_GPIO2_IO19	0x41
+> +		>;
+> +	};
+> +
+> +	pinctrl_usdhc2: usdhc2grp {
+> +		fsl,pins = <
+> +			MX8MN_IOMUXC_SD2_CLK_USDHC2_CLK	0x190
+> +			MX8MN_IOMUXC_SD2_CMD_USDHC2_CMD	0x1d0
+> +			MX8MN_IOMUXC_SD2_DATA0_USDHC2_DATA0	0x1d0
+> +			MX8MN_IOMUXC_SD2_DATA1_USDHC2_DATA1	0x1d0
+> +			MX8MN_IOMUXC_SD2_DATA2_USDHC2_DATA2	0x1d0
+> +			MX8MN_IOMUXC_SD2_DATA3_USDHC2_DATA3	0x1d0
+> +			MX8MN_IOMUXC_GPIO1_IO04_USDHC2_VSELECT	0x1d0
+> +		>;
+> +	};
+> +
+> +	pinctrl_usdhc2_100mhz: usdhc2-100mhzgrp {
+> +		fsl,pins = <
+> +			MX8MN_IOMUXC_SD2_CLK_USDHC2_CLK	0x194
+> +			MX8MN_IOMUXC_SD2_CMD_USDHC2_CMD	0x1d4
+> +			MX8MN_IOMUXC_SD2_DATA0_USDHC2_DATA0	0x1d4
+> +			MX8MN_IOMUXC_SD2_DATA1_USDHC2_DATA1	0x1d4
+> +			MX8MN_IOMUXC_SD2_DATA2_USDHC2_DATA2	0x1d4
+> +			MX8MN_IOMUXC_SD2_DATA3_USDHC2_DATA3	0x1d4
+> +			MX8MN_IOMUXC_GPIO1_IO04_USDHC2_VSELECT	0x1d0
+> +		>;
+> +	};
+> +
+> +	pinctrl_usdhc2_200mhz: usdhc2-200mhzgrp {
+> +		fsl,pins = <
+> +			MX8MN_IOMUXC_SD2_CLK_USDHC2_CLK	0x196
+> +			MX8MN_IOMUXC_SD2_CMD_USDHC2_CMD	0x1d6
+> +			MX8MN_IOMUXC_SD2_DATA0_USDHC2_DATA0	0x1d6
+> +			MX8MN_IOMUXC_SD2_DATA1_USDHC2_DATA1	0x1d6
+> +			MX8MN_IOMUXC_SD2_DATA2_USDHC2_DATA2	0x1d6
+> +			MX8MN_IOMUXC_SD2_DATA3_USDHC2_DATA3	0x1d6
+> +			MX8MN_IOMUXC_GPIO1_IO04_USDHC2_VSELECT	0x1d0
+> +		>;
+> +	};
+> +};
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mn-beacon-kit.dts b/arch/arm64/boot/dts/freescale/imx8mn-beacon-kit.dts
+> new file mode 100644
+> index 000000000000..faa55d888065
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/freescale/imx8mn-beacon-kit.dts
+> @@ -0,0 +1,19 @@
+> +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
+> +/*
+> + * Copyright 2020 Compass Electronics Group, LLC
+> + */
+> +
+> +/dts-v1/;
+> +
+> +#include "imx8mn.dtsi"
+> +#include "imx8mn-beacon-som.dtsi"
+> +#include "imx8mn-beacon-baseboard.dtsi"
+> +
+> +/ {
+> +	model = "Beacon EmbeddedWorks i.MX8M Mini Development Kit";
 
-The rdma drivers are all upstream, what are you thinking about?
+s/Mini/Nano/
 
-> Ultimately, if you aren't using the genpool you will have to implement
-> your own mmap operation that somehow allocates the pages and your own
-> page_free hook. 
+With the change:
 
-Sure, the mlx5 driver already has a specialized alloctor for it's BAR
-pages.
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-> I also don't expect this to be going upstream in the near term so don't
-> get too excited about using it.
+Best regards,
+Krzysztof
 
-I don't know, it is actually not that horrible, the GUP and IOMMU
-related changes are simpler than I expected
-
-Jason
