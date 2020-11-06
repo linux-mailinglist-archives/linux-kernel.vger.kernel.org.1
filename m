@@ -2,68 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65E242A8FF1
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 08:06:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53C922A8FF3
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 08:06:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726536AbgKFHFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 02:05:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58942 "EHLO
+        id S1726556AbgKFHFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 02:05:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726522AbgKFHFh (ORCPT
+        with ESMTP id S1726546AbgKFHFl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 02:05:37 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60849C0613D2
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 23:05:37 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id 72so459464pfv.7
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 23:05:37 -0800 (PST)
+        Fri, 6 Nov 2020 02:05:41 -0500
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3718C0613D2
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 23:05:40 -0800 (PST)
+Received: by mail-pl1-x643.google.com with SMTP id x23so240448plr.6
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 23:05:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=OM4R8kvz7DcEDGoVL/+jwadYBnqD63FlUWgPugvm78I=;
-        b=vJ5Si/G8zW5asLYK4yzoXUH4+0noPeaZCYzJx6PYHk+ao2dzwXa9pytvIQHVFHK5Ne
-         vBEoN04Ch3a1Gg8/qxcpogXvPkWOJK7Xa6Vsrg9HJ2iRgrSkLzwZzJ5HojbFqYCCbXZt
-         aFK8L8fkGrFm88BWuj5hBUoXR/aSe0H1TumxaT3sDKDCMe82hj6cjfywQElRrKHacejx
-         3d9cbL/yM4akOHEJ3TUOn/TniQKyGE5eQiOcAv7hO2OPghXeHc2WFIH3nzHf88MGZwTr
-         AlctnMbWTwX7sMvAQcgDy0+W45oH8VVJyBoXLwuHYQZt1YYKxtFOV2vgpByiR71Aznl4
-         XJ8g==
+        bh=pxVky9l6SjSdLAcTA14Zb0ig0mPHGe9JAZ+xYlz+WWM=;
+        b=mhYxA+hfdYdKmPXf+5Uz0ENmGw87DnvuIRtIBfijjW125XoltnFPxPeJAjShhP1zZF
+         CzHGGfPvrH1yEQCVgAcTfBZmHN3ABIvSHx1IaK5Trurbt0YMJtiPt0HhqXRbpPJ7pVmw
+         Vj9iWoAHCCUyS23qBnzK518EtYvDXqzPRzD0KsDn1kPn9/XpFBg2Fz5UJAuSLVy7lRd7
+         d/ecLj2XoE46q4rsnj3OKtDW2ONjIFyjbc8J9B5IHqJvNzST0o4vuKdObU+KurINcgqS
+         34l1mY33qyM58jFdL+CPsZjlLQggsMs2cbeoy9a1GJsRw8pcgEnwd54lhRdiCdC1/vfa
+         XVbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=OM4R8kvz7DcEDGoVL/+jwadYBnqD63FlUWgPugvm78I=;
-        b=lHVvTN/imAfeQcuUIuGu0MsjYdMDovOKCghQd4PPVRGr8HUxh8VM5YmpM3SQAmpsdt
-         GaR519EjOc1tA5jAVSxc+EHgjo1+ngIOqjRdmU7u2UZGfZc4u9Lecr2vbPdMt6lxxgFC
-         IEWoN9cC+lWWICnzxUyGgns6UuERVPsoKV3SNKzg/8nBO+0mgqARPnzO/4UU5Gw67shQ
-         iPVZywbart90mUi2kcXxjNR4GBhriPRUkiIYDCnsqxvgdtkNUtZp723LdQHXHHNm7Ixd
-         74hhmEivWXgweJB6cHZEjbROS+y0sZr6JESyI2j1fMvno9RG6FQ/kGkVH83FNZriwozd
-         V1uQ==
-X-Gm-Message-State: AOAM532BOu7Jc6Oet/eyeXEldhcz98qnaZnh4RMOnb0QzTFTKfzz47dX
-        X9RSg7mNrL6Kt42TmunSyu4+8w==
-X-Google-Smtp-Source: ABdhPJwE+7aKzU0Jx/bREINzle5y+qOHgpi0m23MkC+FXdDxSl8y9riR1SAMwq1YP0KhdPSWuKLI5Q==
-X-Received: by 2002:a62:1c92:0:b029:15c:aff1:b16f with SMTP id c140-20020a621c920000b029015caff1b16fmr687698pfc.0.1604646336961;
-        Thu, 05 Nov 2020 23:05:36 -0800 (PST)
+        bh=pxVky9l6SjSdLAcTA14Zb0ig0mPHGe9JAZ+xYlz+WWM=;
+        b=Q2xTgJS/F/3hrjFpyOz78uAZQNUDi5RTZLFN56W2G1798xpRBlZJn79Vj/xmcYirzN
+         6daF/UKfHKqJKsuLPknzhWOrDGgN6dK7l+XM6C4jLt9j87GGOjyn9lYg5p6DkdnguA/X
+         8DGFAtK+8MatrSSL+1JlJeybh834SorItlwSzUUYhNQce2VNOenJpOn0EFxUYMjsXtud
+         elUKva8MTVwBaGYYPOvUbDRAvfhBvWyHdouBxGNukT65Hc1mgM3qV+FbNDMoct84BEaV
+         YcIRzMQluBbAIAhmsrZ7M/1zKIz47bEsh5G4I0lKhWKH7UGvilJRKIfWGiX7pypReLBn
+         KUFg==
+X-Gm-Message-State: AOAM532twhOPbIdeeNePtUCzyLBzt5dDJuU0a/Rt3onIRkNzXz5txdmw
+        PGLFvMEe62GAAfyc4kcJhiww0w==
+X-Google-Smtp-Source: ABdhPJzB5pJKmoygsJHbeXL3UzkTiA/e90EaTRfyPTER4FtLh1D97O8MORlGdkGm/5rhbsYmfMB2iQ==
+X-Received: by 2002:a17:902:6ac1:b029:d6:c43e:a42d with SMTP id i1-20020a1709026ac1b02900d6c43ea42dmr719733plt.21.1604646340242;
+        Thu, 05 Nov 2020 23:05:40 -0800 (PST)
 Received: from localhost ([122.172.12.172])
-        by smtp.gmail.com with ESMTPSA id z11sm819019pfk.52.2020.11.05.23.05.36
+        by smtp.gmail.com with ESMTPSA id z17sm551372pga.85.2020.11.05.23.05.39
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 05 Nov 2020 23:05:36 -0800 (PST)
+        Thu, 05 Nov 2020 23:05:39 -0800 (PST)
 From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Rob Herring <robh@kernel.org>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        Steven Price <steven.price@arm.com>,
-        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
+To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
 Cc:     Viresh Kumar <viresh.kumar@linaro.org>, linux-pm@vger.kernel.org,
         Vincent Guittot <vincent.guittot@linaro.org>,
         Rafael Wysocki <rjw@rjwysocki.net>,
         Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
-        digetx@gmail.com, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 6/7] drm/panfrost: dev_pm_opp_put_*() accepts NULL argument
-Date:   Fri,  6 Nov 2020 12:33:26 +0530
-Message-Id: <43be6d118201f9feb70fb030390fddce0852ab0b.1604646059.git.viresh.kumar@linaro.org>
+        digetx@gmail.com, linux-media@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 7/7] media: venus: dev_pm_opp_put_*() accepts NULL argument
+Date:   Fri,  6 Nov 2020 12:33:27 +0530
+Message-Id: <1b1c2086f01a27f7da6e6512dd47d47d153f626d.1604646059.git.viresh.kumar@linaro.org>
 X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
 In-Reply-To: <cover.1604646059.git.viresh.kumar@linaro.org>
 References: <cover.1604646059.git.viresh.kumar@linaro.org>
@@ -78,26 +75,23 @@ there is no need for us to carry the extra check. Drop them.
 
 Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 ---
- drivers/gpu/drm/panfrost/panfrost_devfreq.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/media/platform/qcom/venus/pm_helpers.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/panfrost/panfrost_devfreq.c b/drivers/gpu/drm/panfrost/panfrost_devfreq.c
-index 8ab025d0035f..97b5abc7c188 100644
---- a/drivers/gpu/drm/panfrost/panfrost_devfreq.c
-+++ b/drivers/gpu/drm/panfrost/panfrost_devfreq.c
-@@ -170,10 +170,8 @@ void panfrost_devfreq_fini(struct panfrost_device *pfdev)
- 		pfdevfreq->opp_of_table_added = false;
- 	}
+diff --git a/drivers/media/platform/qcom/venus/pm_helpers.c b/drivers/media/platform/qcom/venus/pm_helpers.c
+index 57877eacecf0..e1e9130288ad 100644
+--- a/drivers/media/platform/qcom/venus/pm_helpers.c
++++ b/drivers/media/platform/qcom/venus/pm_helpers.c
+@@ -898,8 +898,7 @@ static void core_put_v4(struct device *dev)
  
--	if (pfdevfreq->regulators_opp_table) {
--		dev_pm_opp_put_regulators(pfdevfreq->regulators_opp_table);
--		pfdevfreq->regulators_opp_table = NULL;
--	}
-+	dev_pm_opp_put_regulators(pfdevfreq->regulators_opp_table);
-+	pfdevfreq->regulators_opp_table = NULL;
+ 	if (core->has_opp_table)
+ 		dev_pm_opp_of_remove_table(dev);
+-	if (core->opp_table)
+-		dev_pm_opp_put_clkname(core->opp_table);
++	dev_pm_opp_put_clkname(core->opp_table);
+ 
  }
  
- void panfrost_devfreq_resume(struct panfrost_device *pfdev)
 -- 
 2.25.0.rc1.19.g042ed3e048af
 
