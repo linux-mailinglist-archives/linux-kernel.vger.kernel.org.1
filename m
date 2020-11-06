@@ -2,90 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D885F2A9A6A
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 18:08:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14E592A9A70
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 18:09:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727423AbgKFRGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 12:06:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40192 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726176AbgKFRGw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 12:06:52 -0500
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07C7EC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 09:06:52 -0800 (PST)
-Received: by mail-lf1-x141.google.com with SMTP id e27so2917559lfn.7
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 09:06:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=z+wkKOwiWpe65c5EV0/t3vyS3gipzTDhZscZVxwUYsE=;
-        b=M1VljRGtQzSdhDQ/6dKm40aZK0QO9CT0xCHM4TsLr1y7gSvKLw6/NYU+C7nnrbONPa
-         8gpWpwcD56a7TvT2ScPuAdL/JB46/gMpPOI3ARJGnPsMO4p/NjtJcwELNd8r8q4tUTGl
-         C3qGRN6nk3ILkUW5J2kAdQcnmvINT5f4pMFmu0oJLVY/iUEDVzSRKI8tpsu9UXzT72yl
-         9yXioQBbf0aAFXr3fHUqhwTfZWthnRtZvoPcTL+pou6b5BrEmHC70uxSIyz/BFSGlDWj
-         StY1IcLyhqhI1z6sFC/uS4xwQgWC0v0JcshNYHdeT4ib2YTmmU1X1IpRDKEUgKQFtqYy
-         1vAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=z+wkKOwiWpe65c5EV0/t3vyS3gipzTDhZscZVxwUYsE=;
-        b=b+bBM06QHWbEdPvNgVFsOnOOEsPk1bdaPe5LOVqrwMCEP6uXvK1Azq8Q8xkA5DJ/A8
-         52LG9+KzvMypdV6BZKd81AnKIvhJRUtuBqjVjNLe5tVxsFYDhYHpoQWEtqkH/RzYVZ18
-         fhn2e8dL+Ch1aEzZE8FZ2wWUU/rTOlh1LQg/CXoxEplacm2LZBY8jwSnf7kS0uWy0mdQ
-         37x6abGoCvyN04qDMzdN7lA0ZBoe32gT1vFu0S9oNl6o4L5KVNxoG9T87+v7sSJRR77e
-         Irczbu5OMYOmQSKre/Z8Tucu8nfr5acX6pJ9BShB83mzfhIqdKalwY9WjeIWX/xoykRH
-         KGig==
-X-Gm-Message-State: AOAM533GnSXqvee+bYJELdncJyvD+aN1p4aFOLYJ5ulLIOztPzzI33Sn
-        xkYOtERfwwo7XMmek8szIlSI2pZM/fZpeTSqhB4=
-X-Google-Smtp-Source: ABdhPJx9URgWWWWgxjCKCifXXciwYseznmSfWHWqkHvIJDjvQV8BDbeuttNIgFcxMfU+dtemB3hsIwMCZzHEUgiztZk=
-X-Received: by 2002:ac2:55b2:: with SMTP id y18mr1257042lfg.419.1604682410056;
- Fri, 06 Nov 2020 09:06:50 -0800 (PST)
+        id S1727037AbgKFRJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 12:09:36 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:51778 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726139AbgKFRJg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 12:09:36 -0500
+Received: from zn.tnic (p200300ec2f0d1f00ad832f6a7d59b60b.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:1f00:ad83:2f6a:7d59:b60b])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7D23F1EC026E;
+        Fri,  6 Nov 2020 18:09:34 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1604682574;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=FzGOHxgdFFeHelsaYOqNWJeYXANMgxE7EbJYo4EdMas=;
+        b=Jr00Am4jjEYCfvPjeuttXSa9t8ii+WUvKkBarHZ3oGbFn484LXogzBd/RIK7s+dCsZ6dij
+        8LE1ZMvj/dCTH170wk/IuYwOTuKvltfls4p7vPrrePSLzqzzfO4QwmrZs3aKMrhD0Qrf9z
+        pq1/XNFGhI3+ry7Z2mxKsi+4zaXKn1I=
+Date:   Fri, 6 Nov 2020 18:09:20 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Haitao Huang <haitao.huang@linux.intel.com>,
+        Chunyang Hui <sanqian.hcy@antfin.com>,
+        Jordan Hand <jorhand@linux.microsoft.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Seth Moore <sethmo@google.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Suresh Siddha <suresh.b.siddha@intel.com>,
+        andriy.shevchenko@linux.intel.com, asapek@google.com,
+        cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com, kai.huang@intel.com,
+        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
+        luto@kernel.org, nhorman@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com,
+        mikko.ylinen@intel.com
+Subject: Re: [PATCH v40 11/24] x86/sgx: Add SGX misc driver interface
+Message-ID: <20201106170920.GF14914@zn.tnic>
+References: <20201104145430.300542-1-jarkko.sakkinen@linux.intel.com>
+ <20201104145430.300542-12-jarkko.sakkinen@linux.intel.com>
+ <20201105011043.GA700495@kernel.org>
+ <20201105011615.GA701257@kernel.org>
+ <20201105160559.GD25636@zn.tnic>
+ <20201105175745.GA15463@kernel.org>
+ <20201105181047.GH25636@zn.tnic>
+ <20201106160742.GA46523@kernel.org>
 MIME-Version: 1.0
-Received: by 2002:a2e:144c:0:0:0:0:0 with HTTP; Fri, 6 Nov 2020 09:06:49 -0800 (PST)
-Reply-To: canilamalak1@gmail.com
-From:   CANILA MALAK <petitdollar.pd@gmail.com>
-Date:   Fri, 6 Nov 2020 09:06:49 -0800
-Message-ID: <CANH60jwtRj7+3WHBMYyWHU0JRzg1YZj0KcADEOzWiKwMt=69Nw@mail.gmail.com>
-Subject: My name is Mrs CANILA K MALAK from France,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201106160742.GA46523@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-My name is Mrs CANILA K MALAK from France,
+On Fri, Nov 06, 2020 at 06:07:42PM +0200, Jarkko Sakkinen wrote:
+> On Thu, Nov 05, 2020 at 07:10:47PM +0100, Borislav Petkov wrote:
+> > On Thu, Nov 05, 2020 at 07:57:45PM +0200, Jarkko Sakkinen wrote:
+> > > I'll rather send a full patch set if required.
+> > 
+> > Why if the changes all belong to this patch and why should I take a
+> > patch which clearly needs improving?
+> > 
+> > Just send the fixed version of this and I can take it now.
+> > 
+> > Thx.
+> 
+> Here's an update patch. I kept the name as sgx_encl_find() so and output
+> argument instead of return value, so that the change is localized. I
+> think this is good enough, i.e. the semantically obsolete stuff has been
+> wiped off.
 
-I know that this message might come to you as surprise because we
-don't know each other nor have we ever met before but accept it with
-an open and positive mind. I have a Very important request that made
-me to contact you; I was diagnosed with ovarian cancer disease which
-doctors have confirmed and announced to me that i have just few days
-to leave, Now that I=E2=80=99m ending the race like this, without any famil=
-y
-members and no child, I just came across your email contact from my
-personal search.
+Thanks.
 
-I=E2=80=99m a business woman from France dealing with gold exportation here=
- in
-Republic of Burkina Faso. I have decided to hand over the sum of ($4.5
-Million Dollar) in my account to you for the help of orphanage
-homes/the needy once in your location to fulfill my wish on earth. But
-before handing over my data=E2=80=99s to you, kindly assure me that you wil=
-l
-take only 50% of the money and share the rest to orphanage homes/the
-needy once in your country, Return to enable me forward to you the
-bank contact details now that I have access to Internet in the
-hospital to enable you contact the bank, always check your e-mail
-always remember me for doing good.
-Please don't forget to reply me in my Private
-E-mail:(canilamalak1@gmail.com)
+> Tested-by: Jethro Beekman <jethro@fortanix.com>
+> Tested-by: Haitao Huang <haitao.huang@linux.intel.com>
+> Tested-by: Chunyang Hui <sanqian.hcy@antfin.com>
+> Tested-by: Jordan Hand <jorhand@linux.microsoft.com>
+> Tested-by: Nathaniel McCallum <npmccallum@redhat.com>
+> Tested-by: Seth Moore <sethmo@google.com>
+> Tested-by: Darren Kenny <darren.kenny@oracle.com>
 
-Your early response will be appreciated.
+Btw, you do know that when you change the patch, those tested-by's don't
+hold true anymore, right?
 
-Yours Faithfully,
-Mrs CANILA K MALAK
+The Reviewed-by's too, actually.
+
+I'll zap them.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
