@@ -2,85 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1596A2A9374
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 10:53:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 264312A936C
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 10:52:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727027AbgKFJxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 04:53:46 -0500
-Received: from esa6.microchip.iphmx.com ([216.71.154.253]:33261 "EHLO
-        esa6.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726751AbgKFJxm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 04:53:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1604656422; x=1636192422;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=bL4b2G1z+hSvb2mT1f4bDkWQQS5bBvnQanE7rK0peHM=;
-  b=z+UuI1CqZyW5SsHTfRgdPuzbSpgmn1CHx6+hCY0dl/A0dyMqwnMy2ZFs
-   g0wmrR5bPQKacE/1xmNCoyFXS1KrYlAtJ3tIttjJzIjzrZ1lm4CiYS4pZ
-   ZRGxbOV507u4I10ilezyivGfaludA+j250nRYU229807FrOYsd7F+29q1
-   lFD2h3aIOH3IHWM+wX+OU/Y+1aENDMMjP6k5S5j5lNVB7+CVkR84og2JN
-   vPMhtgKn38wOvaQNaK6bCqkdQeFhdzh1ekm1k4BSjPU2ZKq1oryuK7veD
-   6EudvNaEeuT1ii8jQlUkYqIxzWkH+PaPBYKRZpnclDO/7k+L+cPVdalwi
-   A==;
-IronPort-SDR: NElkqgOsk5izQdVzLddqnChz4FwMDUmahFwpQRONnSP8Hu3nD6/b20hPn2oK6o/N+4KfYrIPLg
- R1jmmqn+y9H7QRbIREfJfNtqvtR0P31ZxCjf2Ap1oMrtEjdZlvRdSFZokzdFVomNYh7icqohsp
- bjy6WLQynyzsLcOdw4b846ZtlEtXCYps5E7bf6e/g5Uq94VvmzqqRaiDAGgPOvRF2a8BM/TM/o
- FphzL3JyN+1BkY/n5RLW33QRe1AegK6MjgJ+v46A+jr03eCekJmIY72n4QxNP0M/p1rklG6Nsq
- 9zk=
-X-IronPort-AV: E=Sophos;i="5.77,456,1596524400"; 
-   d="scan'208";a="32681471"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 06 Nov 2020 02:53:41 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 6 Nov 2020 02:53:41 -0700
-Received: from m18063-ThinkPad-T460p.microchip.com (10.10.115.15) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Fri, 6 Nov 2020 02:53:37 -0700
-From:   Claudiu Beznea <claudiu.beznea@microchip.com>
-To:     <lgirdwood@gmail.com>, <broonie@kernel.org>,
-        <s.hauer@pengutronix.de>, <ttynkkynen@nvidia.com>,
-        <linus.walleij@linaro.org>, <axel.lin@ingics.com>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>
-Subject: [PATCH 6/6] regulator: mcp16502: remove void documentation of struct mcp16502
-Date:   Fri, 6 Nov 2020 11:53:04 +0200
-Message-ID: <1604656384-827-7-git-send-email-claudiu.beznea@microchip.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1604656384-827-1-git-send-email-claudiu.beznea@microchip.com>
-References: <1604656384-827-1-git-send-email-claudiu.beznea@microchip.com>
+        id S1726739AbgKFJwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 04:52:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35650 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726165AbgKFJwk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 04:52:40 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1308D20A8B;
+        Fri,  6 Nov 2020 09:52:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604656359;
+        bh=gzACgnfSkG0LSUDd58iI/0YMXdWp4kOzDXiq7luegZ0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gK9qnRsybkfWNB/IsD2Qnr+tsybVobAY+dujYZU52qtS5swjh1Cqf6R12ez/mmE8x
+         12uJaecK4GXKpUpejcB4vNMmX5JDtMcxfWDHHTAJCdxhx81u/FeIs69jwu+vez9+EJ
+         suhiQPQjfqulCbRv+vua5dS5vL8dRqCxm3XMxFow=
+Date:   Fri, 6 Nov 2020 10:53:26 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>,
+        Mike Hudson <Exoray@isys.ca>, linux-serial@vger.kernel.org
+Subject: Re: [PATCH 13/36] tty: serial: 8250: 8250_port: Staticify functions
+ referenced by pointers
+Message-ID: <20201106095326.GA2652562@kroah.com>
+References: <20201104193549.4026187-1-lee.jones@linaro.org>
+ <20201104193549.4026187-14-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201104193549.4026187-14-lee.jones@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-struct mcp16502 has no members called rdev or rmap. Remove the
-documentation.
+On Wed, Nov 04, 2020 at 07:35:26PM +0000, Lee Jones wrote:
+> Fixes the following W=1 kernel build warning(s):
+> 
+>  drivers/tty/serial/8250/8250_port.c:349:14: warning: no previous prototype for ‘au_serial_in’ [-Wmissing-prototypes]
+>  drivers/tty/serial/8250/8250_port.c:359:6: warning: no previous prototype for ‘au_serial_out’ [-Wmissing-prototypes]
+> 
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Jiri Slaby <jirislaby@kernel.org>
+> Cc: Mike Hudson <Exoray@isys.ca>
+> Cc: linux-serial@vger.kernel.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> ---
+>  drivers/tty/serial/8250/8250_port.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 
-Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
----
- drivers/regulator/mcp16502.c | 2 --
- 1 file changed, 2 deletions(-)
+And now I get build errors of:
+	ld: drivers/tty/serial/8250/8250_early.o: in function `early_au_setup':
+	8250_early.c:(.init.text+0x7): undefined reference to `au_serial_in'
+	ld: 8250_early.c:(.init.text+0xf): undefined reference to `au_serial_out'
+	make: *** [Makefile:1164: vmlinux] Error 1
 
-diff --git a/drivers/regulator/mcp16502.c b/drivers/regulator/mcp16502.c
-index 0cd4f5936e94..7a46641da60e 100644
---- a/drivers/regulator/mcp16502.c
-+++ b/drivers/regulator/mcp16502.c
-@@ -135,8 +135,6 @@ enum {
- 
- /*
-  * struct mcp16502 - PMIC representation
-- * @rdev: the regulators belonging to this chip
-- * @rmap: regmap to be used for I2C communication
-  * @lpm: LPM GPIO descriptor
-  */
- struct mcp16502 {
--- 
-2.7.4
+Always test-build your patches, perhaps W=1 was wrong here...
 
+thanks,
+
+greg k-h
