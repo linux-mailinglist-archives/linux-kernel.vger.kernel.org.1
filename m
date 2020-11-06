@@ -2,97 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1529E2A9322
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 10:47:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FB752A933E
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 10:47:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726923AbgKFJrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 04:47:06 -0500
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:39820 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726891AbgKFJrC (ORCPT
+        id S1727035AbgKFJrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 04:47:43 -0500
+Received: from esa5.microchip.iphmx.com ([216.71.150.166]:41964 "EHLO
+        esa5.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726201AbgKFJrl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 04:47:02 -0500
-Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A69gDXw017313;
-        Fri, 6 Nov 2020 10:46:40 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=STMicroelectronics;
- bh=mCMhngS0zvQHmaCCNAZOy0n27MjAIHp6acoc6hJ/Vzs=;
- b=0g9xba0yoTV1ZqZ/lbVcG/8+E0dIcQ37O232zz5zi2Uc+DH7YdhdcFhj57LERL/O3GTq
- 4rnp34HlmxIZ8HKP7U9ogIEMuZBxNyLCz8Ob50qFmmOikl1lhDAnR5YC8dyyVGss9O+G
- iwHzBGO4ik/NsegiASYhimp25FqnqWZUDLJJIBbF6x7EdGbRlBGCi0Ak7nh+qTTisZgc
- PPrVOUt9wI7tRVmgaUkgXZ3MQPJdruUZLpEHz2EC13hkwzww3EttdbJTkDXvnMSFNTnm
- iLzRtW+eURUE5rY5wUY3hg/DmN67vR7+A3zViGuQPc0mjW9ht9qykipq/zyb4YJ9F/I2 yA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 34h00eudhj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 06 Nov 2020 10:46:40 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 2DE4110002A;
-        Fri,  6 Nov 2020 10:46:39 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag1node3.st.com [10.75.127.3])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 1E1FD2365FC;
-        Fri,  6 Nov 2020 10:46:39 +0100 (CET)
-Received: from localhost (10.75.127.44) by SFHDAG1NODE3.st.com (10.75.127.3)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 6 Nov 2020 10:46:38
- +0100
-From:   Christophe Roullier <christophe.roullier@st.com>
-To:     <wim@linux-watchdog.org>, <linux@roeck-us.net>,
-        <mcoquelin.stm32@gmail.com>, <alexandre.torgue@st.com>
-CC:     <linux-watchdog@vger.kernel.org>, <christophe.roullier@st.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
+        Fri, 6 Nov 2020 04:47:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1604656061; x=1636192061;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version;
+  bh=gVkb/HduIodWBWgTTPTKx7ktzM9BdW4BzHHiUogCOBA=;
+  b=Uz+8L77fbyWG1zF37NTN9r88bPQbwtg+dEbzpVsfrw0+/mLOQBJ1tLsW
+   qruwgU2f7280TKzIaveGSF6aNnqnwzBfc3WdJBSTka2wnrOjEaJ5UULlA
+   x4R7+OaNHxLZItwKD7JOMmKUrsOvKuOKd1R4wYn6dpH7iMhg9F1+IJtA1
+   MWlTqygjbJdORJaGNfbOZywZrCFZJSqwIHsTIJarRjMd/vT/dHeIoWqLZ
+   ZzAPmAqlmdG2C5vwQ5c/pUTjwmBsBinjZ+zf/uPVxyh0YntD6XOyIsMC1
+   abLeR+efeL/8sesnzTMeDmue9rHhqxPy730/Me7UeDIMY/agsOM9+I/eh
+   A==;
+IronPort-SDR: OQcD0hW+21HJs/1YPlhfQ/Y9q39o4GUKUs0pJc/rTlJFVKhR11ljxT+STUs5htGDdX5vQ9PrLM
+ b2zOcasvxxZ3hNdjuJzK1XppvS06r/MrHr/qf5MInMGyN1pF4SDqwPzoa2QSKSnFSxgFeJowWB
+ Oqa69g30eUbHvyH8Gdih0HQXMZ2uVzo6mt9IvI+0r/0824Mbs+5gtMZ15zdYEnF7Ncno2pfXjw
+ MexRpPsw26ygSTJqsW8ds5s2guz9KCvUFmier6OyYq51vWNIiTJ8ry3/i5Znj39dSBDAm934/Q
+ +Vo=
+X-IronPort-AV: E=Sophos;i="5.77,456,1596524400"; 
+   d="scan'208";a="97428461"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 06 Nov 2020 02:47:40 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Fri, 6 Nov 2020 02:47:38 -0700
+Received: from m18063-ThinkPad-T460p.microchip.com (10.10.115.15) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Fri, 6 Nov 2020 02:47:33 -0700
+From:   Claudiu Beznea <claudiu.beznea@microchip.com>
+To:     <mturquette@baylibre.com>, <sboyd@kernel.org>,
+        <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
+        <ludovic.desroches@microchip.com>, <robh+dt@kernel.org>
+CC:     <eugen.hristev@microchip.com>, <linux-clk@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
-        Etienne Carriere <etienne.carriere@st.com>
-Subject: [PATCH  1/1] watchdog: stm32_iwdg: don't print an error on probe deferral
-Date:   Fri, 6 Nov 2020 10:46:27 +0100
-Message-ID: <20201106094627.21132-1-christophe.roullier@st.com>
-X-Mailer: git-send-email 2.17.1
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>
+Subject: [PATCH v4 11/11] clk: at91: sama7g5: register cpu clock
+Date:   Fri, 6 Nov 2020 11:46:28 +0200
+Message-ID: <1604655988-353-12-git-send-email-claudiu.beznea@microchip.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1604655988-353-1-git-send-email-claudiu.beznea@microchip.com>
+References: <1604655988-353-1-git-send-email-claudiu.beznea@microchip.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.75.127.44]
-X-ClientProxiedBy: SFHDAG1NODE1.st.com (10.75.127.1) To SFHDAG1NODE3.st.com
- (10.75.127.3)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-06_03:2020-11-05,2020-11-06 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Etienne Carriere <etienne.carriere@st.com>
+Register CPU clock as being the master clock prescaler. This would
+be used by DVFS. The block schema of SAMA7G5's PMC contains also a divider
+between master clock prescaler and CPU (PMC_CPU_RATIO.RATIO) but the
+frequencies supported by SAMA7G5 could be directly received from
+CPUPLL + master clock prescaler and the extra divider would do no work in
+case it would be enabled.
 
-Do not print an error trace when deferring probe for clock resources.
-
-Signed-off-by: Etienne Carriere <etienne.carriere@st.com>
-Signed-off-by: Christophe Roullier <christophe.roullier@st.com>
+Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 ---
- drivers/watchdog/stm32_iwdg.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/clk/at91/sama7g5.c       | 13 ++++++-------
+ include/dt-bindings/clock/at91.h |  1 +
+ 2 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/watchdog/stm32_iwdg.c b/drivers/watchdog/stm32_iwdg.c
-index 25188d6bbe15..1b71c205cee0 100644
---- a/drivers/watchdog/stm32_iwdg.c
-+++ b/drivers/watchdog/stm32_iwdg.c
-@@ -163,7 +163,8 @@ static int stm32_iwdg_clk_init(struct platform_device *pdev,
+diff --git a/drivers/clk/at91/sama7g5.c b/drivers/clk/at91/sama7g5.c
+index be32d9b88d89..40fceb7595d4 100644
+--- a/drivers/clk/at91/sama7g5.c
++++ b/drivers/clk/at91/sama7g5.c
+@@ -885,7 +885,7 @@ static void __init sama7g5_pmc_setup(struct device_node *np)
+ 	if (IS_ERR(regmap))
+ 		return;
  
- 	wdt->clk_lsi = devm_clk_get(dev, "lsi");
- 	if (IS_ERR(wdt->clk_lsi)) {
--		dev_err(dev, "Unable to get lsi clock\n");
-+		if (PTR_ERR(wdt->clk_lsi) != -EPROBE_DEFER)
-+			dev_err(dev, "Unable to get lsi clock\n");
- 		return PTR_ERR(wdt->clk_lsi);
+-	sama7g5_pmc = pmc_data_allocate(PMC_ETHPLL + 1,
++	sama7g5_pmc = pmc_data_allocate(PMC_CPU + 1,
+ 					nck(sama7g5_systemck),
+ 					nck(sama7g5_periphck),
+ 					nck(sama7g5_gck), 8);
+@@ -962,18 +962,17 @@ static void __init sama7g5_pmc_setup(struct device_node *np)
+ 		}
  	}
  
-@@ -171,7 +172,8 @@ static int stm32_iwdg_clk_init(struct platform_device *pdev,
- 	if (wdt->data->has_pclk) {
- 		wdt->clk_pclk = devm_clk_get(dev, "pclk");
- 		if (IS_ERR(wdt->clk_pclk)) {
--			dev_err(dev, "Unable to get pclk clock\n");
-+			if (PTR_ERR(wdt->clk_pclk) != -EPROBE_DEFER)
-+				dev_err(dev, "Unable to get pclk clock\n");
- 			return PTR_ERR(wdt->clk_pclk);
- 		}
+-	parent_names[0] = md_slck_name;
+-	parent_names[1] = "mainck";
+-	parent_names[2] = "cpupll_divpmcck";
+-	parent_names[3] = "syspll_divpmcck";
+-	hw = at91_clk_register_master_pres(regmap, "mck0_pres", 4, parent_names,
++	parent_names[0] = "cpupll_divpmcck";
++	hw = at91_clk_register_master_pres(regmap, "cpuck", 1, parent_names,
+ 					   &mck0_layout, &mck0_characteristics,
+ 					   &pmc_mck0_lock,
+ 					   CLK_SET_RATE_PARENT, 0);
+ 	if (IS_ERR(hw))
+ 		goto err_free;
  
+-	hw = at91_clk_register_master_div(regmap, "mck0_div", "mck0_pres",
++	sama7g5_pmc->chws[PMC_CPU] = hw;
++
++	hw = at91_clk_register_master_div(regmap, "mck0", "cpuck",
+ 					  &mck0_layout, &mck0_characteristics,
+ 					  &pmc_mck0_lock, 0);
+ 	if (IS_ERR(hw))
+diff --git a/include/dt-bindings/clock/at91.h b/include/dt-bindings/clock/at91.h
+index fab313f62e8f..98e1b2ab6403 100644
+--- a/include/dt-bindings/clock/at91.h
++++ b/include/dt-bindings/clock/at91.h
+@@ -34,6 +34,7 @@
+ #define PMC_AUDIOPMCPLL		(PMC_MAIN + 6)
+ #define PMC_AUDIOIOPLL		(PMC_MAIN + 7)
+ #define PMC_ETHPLL		(PMC_MAIN + 8)
++#define PMC_CPU			(PMC_MAIN + 9)
+ 
+ #ifndef AT91_PMC_MOSCS
+ #define AT91_PMC_MOSCS		0		/* MOSCS Flag */
 -- 
-2.17.1
+2.7.4
 
