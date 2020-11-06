@@ -2,191 +2,295 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93D2E2A9EDF
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 22:11:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78A1E2A9EE1
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 22:12:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727773AbgKFVLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 16:11:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726415AbgKFVLZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 16:11:25 -0500
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A78CC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 13:11:25 -0800 (PST)
-Received: by mail-pl1-x642.google.com with SMTP id k7so1241393plk.3
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 13:11:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=F0kEsyePvZb/ixvKbdfJYbJv6DMQdOFKWsB0jb+3vOc=;
-        b=F6mV+Dzh+0Nr3Pnthw46g2OvOHmAbDhqlYP2bW7y4GdkiuaWCZ4HoCmg1jvMXMSO+K
-         FFccXcqS1UJiQ6QELBYiS7gF7si9H2p1atRawQt5JVsm0pF/MXax7mVhbSwcysFo6YXd
-         8UdLsBoxNKUyv+3WexooaARKM5vJtXBND/yQsA5CnZhpsRV132IrRW8YXLVvFtBokhag
-         XK8AOtg//YaJPxXnIjXfBjiiCpzCGNNyoTnWbHHFtdOt/0YR2fv7NqVTCKgTozNo3dOK
-         4JviX99BuS5Zze06RsajgVqaGLEuJUjnDGBF7hZmKOcDPFzmMr1/ymJx53/Zb8jt0fNH
-         Amjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=F0kEsyePvZb/ixvKbdfJYbJv6DMQdOFKWsB0jb+3vOc=;
-        b=Vn0aWcUtgg72i2EV4oi6D8JW/fBNNq7IJrERtuVK/gFwawaYVu/ufZzrJlZzCnXes2
-         b6xq68xpfkzeEzj4OqXQfJvgkPo3xvZVLnqlGBFJnvYWmMRyO83dXhWKuvkE+KzEACUm
-         0WETDul+AlgwPPH+g198jdwrqYaw4zjZTGwTlHEjoPmK1ZOiqe1cqVuriBbS7Vn5GGYC
-         Wk0v994qmeMaQ1gjl80UUrAZpH28Vk/Sl+GpeVUJbeZije7iO05XsVWudHUX2kxeQdzo
-         cQ/BWmxm5AzHj7Er4Ok2ExOHdzP75wF1f0n6jzLs/sB+Zckmoa+La9F93SUSSn6p3DIw
-         FMkA==
-X-Gm-Message-State: AOAM533LrPclb/HSeSP+9Z0DhzquB7dNE30plKo66U6ErujrKXzMjfY3
-        pG8uxDgWKPofNHZzTY1VdkZ7Os0AF16b+w==
-X-Google-Smtp-Source: ABdhPJwU08ajc6kH+SsN41YCTFuNnYMVDQZ2rZStdgM3BRWrZSmhk5qaZTgGfvOSQsmSvpLmgQyYig==
-X-Received: by 2002:a17:902:7c8c:b029:d4:e5b2:fba4 with SMTP id y12-20020a1709027c8cb02900d4e5b2fba4mr3147111pll.82.1604697084413;
-        Fri, 06 Nov 2020 13:11:24 -0800 (PST)
-Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id ha21sm2208679pjb.2.2020.11.06.13.11.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Nov 2020 13:11:23 -0800 (PST)
-Date:   Fri, 6 Nov 2020 14:11:21 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, mike.leach@linaro.org,
-        coresight@lists.linaro.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 20/26] coresight: etm4x: Handle ETM architecture
- version
-Message-ID: <20201106211121.GD3299843@xps15>
-References: <20201028220945.3826358-1-suzuki.poulose@arm.com>
- <20201028220945.3826358-22-suzuki.poulose@arm.com>
+        id S1727912AbgKFVMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 16:12:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46916 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726415AbgKFVMu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 16:12:50 -0500
+Received: from google.com (unknown [104.132.1.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1479A2087E;
+        Fri,  6 Nov 2020 21:12:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604697169;
+        bh=xOQO8Xn+8JnGusybk09mOv6uJkyJO8QsDZoUNutCuio=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FSWNAqvi+hW4YB9SnsKfAqdjo1m/b6a0zLY2mVWQuI3CjZndHKmPXZ68aDthlIvPI
+         7aV4v+jvlCoJt3tnmHsSWraVjOQdo4SVYdOoSwn6FjyQLEguR0ziw0nikXzaF/aB7Y
+         b7Ag/c/DNPpbKc+JtD2sFrascNpgPXzYCZBHuQEQ=
+Date:   Fri, 6 Nov 2020 13:12:47 -0800
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Chao Yu <yuchao0@huawei.com>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [f2fs-dev] [PATCH] f2fs: compress: support chksum
+Message-ID: <20201106211247.GA1474936@google.com>
+References: <20201102122333.76667-1-yuchao0@huawei.com>
+ <20201102163123.GD529594@google.com>
+ <756e482c-b638-1c09-3868-ae45d33ed2c2@huawei.com>
+ <6b5bce0e-c967-b9cf-3544-a8e65595059c@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201028220945.3826358-22-suzuki.poulose@arm.com>
+In-Reply-To: <6b5bce0e-c967-b9cf-3544-a8e65595059c@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 10:09:39PM +0000, Suzuki K Poulose wrote:
-> We are about to rely on TRCDEVARCH for detecting the ETM
-> and its architecture version, falling back to TRCIDR1 if
-> the former is not implemented (in older broken implementations).
+On 11/03, Chao Yu wrote:
+> On 2020/11/3 10:02, Chao Yu wrote:
+> > On 2020/11/3 0:31, Jaegeuk Kim wrote:
+> > > On 11/02, Chao Yu wrote:
+> > > > This patch supports to store chksum value with compressed
+> > > > data, and verify the integrality of compressed data while
+> > > > reading the data.
+> > > > 
+> > > > The feature can be enabled through specifying mount option
+> > > > 'compress_chksum'.
+> > > > 
+> > > > Signed-off-by: Chao Yu <yuchao0@huawei.com>
+> > > > ---
+> > > >    Documentation/filesystems/f2fs.rst |  1 +
+> > > >    fs/f2fs/compress.c                 | 20 ++++++++++++++++++++
+> > > >    fs/f2fs/f2fs.h                     | 13 ++++++++++++-
+> > > >    fs/f2fs/inode.c                    |  3 +++
+> > > >    fs/f2fs/super.c                    |  9 +++++++++
+> > > >    include/linux/f2fs_fs.h            |  2 +-
+> > > >    6 files changed, 46 insertions(+), 2 deletions(-)
+> > > > 
+> > > > diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
+> > > > index b8ee761c9922..985ae7d35066 100644
+> > > > --- a/Documentation/filesystems/f2fs.rst
+> > > > +++ b/Documentation/filesystems/f2fs.rst
+> > > > @@ -260,6 +260,7 @@ compress_extension=%s	 Support adding specified extension, so that f2fs can enab
+> > > >    			 For other files, we can still enable compression via ioctl.
+> > > >    			 Note that, there is one reserved special extension '*', it
+> > > >    			 can be set to enable compression for all files.
+> > > > +compress_chksum		 Support verifying chksum of raw data in compressed cluster.
+> > > >    inlinecrypt		 When possible, encrypt/decrypt the contents of encrypted
+> > > >    			 files using the blk-crypto framework rather than
+> > > >    			 filesystem-layer encryption. This allows the use of
+> > > > diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+> > > > index 14262e0f1cd6..a4e0d2c745b6 100644
+> > > > --- a/fs/f2fs/compress.c
+> > > > +++ b/fs/f2fs/compress.c
+> > > > @@ -602,6 +602,7 @@ static int f2fs_compress_pages(struct compress_ctx *cc)
+> > > >    				f2fs_cops[fi->i_compress_algorithm];
+> > > >    	unsigned int max_len, new_nr_cpages;
+> > > >    	struct page **new_cpages;
+> > > > +	u32 chksum = 0;
+> > > >    	int i, ret;
+> > > >    	trace_f2fs_compress_pages_start(cc->inode, cc->cluster_idx,
+> > > > @@ -655,6 +656,11 @@ static int f2fs_compress_pages(struct compress_ctx *cc)
+> > > >    	cc->cbuf->clen = cpu_to_le32(cc->clen);
+> > > > +	if (fi->i_compress_flag & 1 << COMPRESS_CHKSUM)
+> > > > +		chksum = f2fs_crc32(F2FS_I_SB(cc->inode),
+> > > > +					cc->cbuf->cdata, cc->clen);
+> > > > +	cc->cbuf->chksum = cpu_to_le32(chksum);
+> > > > +
+> > > >    	for (i = 0; i < COMPRESS_DATA_RESERVED_SIZE; i++)
+> > > >    		cc->cbuf->reserved[i] = cpu_to_le32(0);
+> > > > @@ -721,6 +727,7 @@ void f2fs_decompress_pages(struct bio *bio, struct page *page, bool verity)
+> > > >    			(struct decompress_io_ctx *)page_private(page);
+> > > >    	struct f2fs_sb_info *sbi = F2FS_I_SB(dic->inode);
+> > > >    	struct f2fs_inode_info *fi= F2FS_I(dic->inode);
+> > > > +	struct f2fs_sb_info *sbi = F2FS_I_SB(dic->inode);
+> > > >    	const struct f2fs_compress_ops *cops =
+> > > >    			f2fs_cops[fi->i_compress_algorithm];
+> > > >    	int ret;
+> > > > @@ -790,6 +797,19 @@ void f2fs_decompress_pages(struct bio *bio, struct page *page, bool verity)
+> > > >    	ret = cops->decompress_pages(dic);
+> > > > +	if (!ret && fi->i_compress_flag & 1 << COMPRESS_CHKSUM) {
+> > > > +		u32 provided = le32_to_cpu(dic->cbuf->chksum);
+> > > > +		u32 calculated = f2fs_crc32(sbi, dic->cbuf->cdata, dic->clen);
+> > > > +
+> > > > +		if (provided != calculated) {
+> > > > +			printk_ratelimited(
+> > > > +				"%sF2FS-fs (%s): checksum invalid, nid = %lu, %x vs %x",
+> > > > +				KERN_INFO, sbi->sb->s_id, dic->inode->i_ino,
+> > > > +				provided, calculated);
+> > > > +			ret = -EFSCORRUPTED;
+> > > 
+> > > Do we need to change fsck.f2fs to recover this?
 > 
-> Also, we use the architecture version information to do
-> make some decisions. Streamline the architecture version
-> handling by adding helpers.
+> However, we don't know which one is correct, compressed data or chksum value?
+> if compressed data was corrupted, repairing chksum value doesn't help.
 > 
-> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> ---
->  .../coresight/coresight-etm4x-core.c          |  2 +-
->  drivers/hwtracing/coresight/coresight-etm4x.h | 60 ++++++++++++++++++-
->  2 files changed, 58 insertions(+), 4 deletions(-)
+> Or how about adding chksum values for both raw data and compressed data.
 > 
-> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> index 308674ab746c..4ef47a2946a4 100644
-> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> @@ -842,7 +842,7 @@ static void etm4_init_arch_data(void *info)
->  	 * Otherwise for values 0x1 and above the number is N + 1 as per v4.2.
->  	 */
->  	drvdata->nr_resource = BMVAL(etmidr4, 16, 19);
-> -	if ((drvdata->arch < ETM4X_ARCH_4V3) || (drvdata->nr_resource > 0))
-> +	if ((drvdata->arch < ETM_ARCH_V4_3) || (drvdata->nr_resource > 0))
->  		drvdata->nr_resource += 1;
->  	/*
->  	 * NUMSSCC, bits[23:20] the number of single-shot
-> diff --git a/drivers/hwtracing/coresight/coresight-etm4x.h b/drivers/hwtracing/coresight/coresight-etm4x.h
-> index f1251ddf1984..fe7107282e54 100644
-> --- a/drivers/hwtracing/coresight/coresight-etm4x.h
-> +++ b/drivers/hwtracing/coresight/coresight-etm4x.h
-> @@ -459,7 +459,6 @@
->  #define ETM_MAX_RES_SEL			32
->  #define ETM_MAX_SS_CMP			8
->  
-> -#define ETM_ARCH_V4			0x40
->  #define ETMv4_SYNC_MASK			0x1F
->  #define ETM_CYC_THRESHOLD_MASK		0xFFF
->  #define ETM_CYC_THRESHOLD_DEFAULT       0x100
-> @@ -581,8 +580,63 @@
->  #define TRCVICTLR_EXLEVEL_S_MASK	(ETM_EXLEVEL_S_MASK << TRCVICTLR_EXLEVEL_S_SHIFT)
->  #define TRCVICTLR_EXLEVEL_NS_MASK	(ETM_EXLEVEL_NS_MASK << TRCVICTLR_EXLEVEL_NS_SHIFT)
->  
-> +#define ETM_TRCIDR1_ARCH_MAJOR_SHIFT	8
-> +#define ETM_TRCIDR1_ARCH_MAJOR_MASK	(0xfU << ETM_TRCIDR1_ARCH_MAJOR_SHIFT)
-> +#define ETM_TRCIDR1_ARCH_MAJOR(x)	\
-> +	(((x) & ETM_TRCIDR1_ARCH_MAJOR_MASK) >> ETM_TRCIDR1_ARCH_MAJOR_SHIFT)
-> +#define ETM_TRCIDR1_ARCH_MINOR_SHIFT	4
-> +#define ETM_TRCIDR1_ARCH_MINOR_MASK	(0xfU << ETM_TRCIDR1_ARCH_MINOR_SHIFT)
-> +#define ETM_TRCIDR1_ARCH_MINOR(x)	\
-> +	(((x) & ETM_TRCIDR1_ARCH_MINOR_MASK) >> ETM_TRCIDR1_ARCH_MINOR_SHIFT)
-> +#define ETM_TRCIDR1_ARCH_SHIFT		ETM_TRCIDR1_ARCH_MINOR_SHIFT
-> +#define ETM_TRCIDR1_ARCH_MASK		\
-> +	(ETM_TRCIDR1_ARCH_MAJOR_MASK | ETM_TRCIDR1_ARCH_MINOR_MASK)
-> +
-> +#define ETM_TRCIDR1_ARCH_ETMv4		0x4
-> +
-> +/*
-> + * Driver representation of the ETM architecture.
-> + * The version of an ETM component can be detected from
-> + *
-> + * TRCDEVARCH	- CoreSight architected register
-> + *                - Bits[15:12] - Major version
-> + *                - Bits[19:16] - Minor version
-> + * TRCIDR1	- ETM architected register
-> + *                - Bits[12:8] - Major version
-
-This should be [11:8], bit 12 is part of RES1.
-
-> + *                - Bits[7:4]  - Minor version
-> + * We must rely on TRCDEVARCH for the version information,
-> + * however we don't want to break the support for potential
-> + * old implementations which might not implement it. Thus
-> + * we fall back to TRCIDR1 if TRCDEVARCH is not implemented
-> + * for memory mapped components.
-> + * Now to make certain decisions easier based on the version
-> + * we use an internal representation of the version in the
-> + * driver, as follows :
-> + *
-> + * ETM_ARCH_VERSION[7:0], where :
-> + *      Bits[7:4] - Major version
-> + *      Bits[3:0] - Minro version
-> + */
-> +#define ETM_ARCH_VERSION(major, minor)		\
-> +	((((major) & 0xfU) << 4) | (((minor) & 0xfU)))
-> +#define ETM_ARCH_MAJOR_VERSION(arch)	(((arch) >> 4) & 0xfU)
-> +#define ETM_ARCH_MINOR_VERSION(arch)	((arch) & 0xfU)
-
-There are a few unused defines brought in by this patch.  I trust they will be
-used in subsequent patches.
-
-> +
-> +#define ETM_ARCH_V4	ETM_ARCH_VERSION(4, 0)
->  /* Interpretation of resource numbers change at ETM v4.3 architecture */
-> -#define ETM4X_ARCH_4V3	0x43
-> +#define ETM_ARCH_V4_3	ETM_ARCH_VERSION(4, 3)
-> +
-> +static inline u8 etm_devarch_to_arch(u32 devarch)
-> +{
-> +	return ETM_ARCH_VERSION(ETM_DEVARCH_ARCHID_ARCH_VER(devarch),
-> +				ETM_DEVARCH_REVISION(devarch));
-> +}
-> +
-> +static inline u8 etm_trcidr_to_arch(u32 trcidr1)
-> +{
-> +	return ETM_ARCH_VERSION(ETM_TRCIDR1_ARCH_MAJOR(trcidr1),
-> +				ETM_TRCIDR1_ARCH_MINOR(trcidr1));
-> +}
->  
->  /**
->   * struct etmv4_config - configuration information related to an ETMv4
-> @@ -744,7 +798,7 @@ struct etmv4_save_state {
->   * @spinlock:   Only one at a time pls.
->   * @mode:	This tracer's mode, i.e sysFS, Perf or disabled.
->   * @cpu:        The cpu this component is affined to.
-> - * @arch:       ETM version number.
-> + * @arch:       ETM architecture version.
->   * @nr_pe:	The number of processing entity available for tracing.
->   * @nr_pe_cmp:	The number of processing entity comparator inputs that are
->   *		available for tracing.
-> -- 
-> 2.24.1
+> #define COMPRESS_DATA_RESERVED_SIZE	3
+> struct compress_data {
+> 	__le32 clen;			/* compressed data size */
+> +	__le32 raw_chksum;		/* raw data chksum */
+> +	__le32 compress_chksum;		/* compressed data chksum */
+> 	__le32 reserved[COMPRESS_DATA_RESERVED_SIZE];	/* reserved */
+> 	u8 cdata[];			/* compressed data */
+> };
 > 
+> 	raw_chksum	compress_chksum
+> 	match		match			-> data is verified, pass
+> 	not match	match			-> repair raw_chksum
+> 	matcth		not match		-> repair compress_chksum
+
+I think only compress_chksum would be enough. BTW, can we give WARN_ON and
+marking a FSCK flag without returning EFSCORRUPTED, since we don't really
+know who was corrupted. If data was corrupted, we should be able to see app
+corruption. In that case, we can check the kernel log. If checksum was simply
+corrupted, next fsck will fix the checksum. So, in general, I hope to keep
+the data as is and raise a flag by the checksum.
+
+> 	not match	not match		-> corrupted, can not repair
+> 
+> Thanks,
+> 
+> > 
+> > Yes, prepared to update inode layout in fsck.f2fs w/ kernel side change. >
+> > Thanks,
+> > 
+> > > 
+> > > > +		}
+> > > > +	}
+> > > > +
+> > > >    out_vunmap_cbuf:
+> > > >    	vm_unmap_ram(dic->cbuf, dic->nr_cpages);
+> > > >    out_vunmap_rbuf:
+> > > > diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> > > > index 99bcf4b44a9c..2ae254ab7b7d 100644
+> > > > --- a/fs/f2fs/f2fs.h
+> > > > +++ b/fs/f2fs/f2fs.h
+> > > > @@ -147,7 +147,8 @@ struct f2fs_mount_info {
+> > > >    	/* For compression */
+> > > >    	unsigned char compress_algorithm;	/* algorithm type */
+> > > > -	unsigned compress_log_size;		/* cluster log size */
+> > > > +	unsigned char compress_log_size;	/* cluster log size */
+> > > > +	bool compress_chksum;			/* compressed data chksum */
+> > > >    	unsigned char compress_ext_cnt;		/* extension count */
+> > > >    	unsigned char extensions[COMPRESS_EXT_NUM][F2FS_EXTENSION_LEN];	/* extensions */
+> > > >    };
+> > > > @@ -731,6 +732,7 @@ struct f2fs_inode_info {
+> > > >    	atomic_t i_compr_blocks;		/* # of compressed blocks */
+> > > >    	unsigned char i_compress_algorithm;	/* algorithm type */
+> > > >    	unsigned char i_log_cluster_size;	/* log of cluster size */
+> > > > +	unsigned short i_compress_flag;		/* compress flag */
+> > > >    	unsigned int i_cluster_size;		/* cluster size */
+> > > >    };
+> > > > @@ -1270,9 +1272,15 @@ enum compress_algorithm_type {
+> > > >    	COMPRESS_MAX,
+> > > >    };
+> > > > +enum compress_flag {
+> > > > +	COMPRESS_CHKSUM,
+> > > > +	COMPRESS_MAX_FLAG,
+> > > > +};
+> > > > +
+> > > >    #define COMPRESS_DATA_RESERVED_SIZE		5
+> > > >    struct compress_data {
+> > > >    	__le32 clen;			/* compressed data size */
+> > > > +	__le32 chksum;			/* compressed data chksum */
+> > > >    	__le32 reserved[COMPRESS_DATA_RESERVED_SIZE];	/* reserved */
+> > > >    	u8 cdata[];			/* compressed data */
+> > > >    };
+> > > > @@ -3882,6 +3890,9 @@ static inline void set_compress_context(struct inode *inode)
+> > > >    			F2FS_OPTION(sbi).compress_algorithm;
+> > > >    	F2FS_I(inode)->i_log_cluster_size =
+> > > >    			F2FS_OPTION(sbi).compress_log_size;
+> > > > +	F2FS_I(inode)->i_compress_flag =
+> > > > +			F2FS_OPTION(sbi).compress_chksum ?
+> > > > +				1 << COMPRESS_CHKSUM : 0;
+> > > >    	F2FS_I(inode)->i_cluster_size =
+> > > >    			1 << F2FS_I(inode)->i_log_cluster_size;
+> > > >    	F2FS_I(inode)->i_flags |= F2FS_COMPR_FL;
+> > > > diff --git a/fs/f2fs/inode.c b/fs/f2fs/inode.c
+> > > > index 657db2fb6739..de8f7fc89efa 100644
+> > > > --- a/fs/f2fs/inode.c
+> > > > +++ b/fs/f2fs/inode.c
+> > > > @@ -456,6 +456,7 @@ static int do_read_inode(struct inode *inode)
+> > > >    					le64_to_cpu(ri->i_compr_blocks));
+> > > >    			fi->i_compress_algorithm = ri->i_compress_algorithm;
+> > > >    			fi->i_log_cluster_size = ri->i_log_cluster_size;
+> > > > +			fi->i_compress_flag = ri->i_compress_flag;
+> > > >    			fi->i_cluster_size = 1 << fi->i_log_cluster_size;
+> > > >    			set_inode_flag(inode, FI_COMPRESSED_FILE);
+> > > >    		}
+> > > > @@ -634,6 +635,8 @@ void f2fs_update_inode(struct inode *inode, struct page *node_page)
+> > > >    					&F2FS_I(inode)->i_compr_blocks));
+> > > >    			ri->i_compress_algorithm =
+> > > >    				F2FS_I(inode)->i_compress_algorithm;
+> > > > +			ri->i_compress_flag =
+> > > > +				cpu_to_le16(F2FS_I(inode)->i_compress_flag);
+> > > >    			ri->i_log_cluster_size =
+> > > >    				F2FS_I(inode)->i_log_cluster_size;
+> > > >    		}
+> > > > diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+> > > > index 00eff2f51807..f8de4d83a5be 100644
+> > > > --- a/fs/f2fs/super.c
+> > > > +++ b/fs/f2fs/super.c
+> > > > @@ -146,6 +146,7 @@ enum {
+> > > >    	Opt_compress_algorithm,
+> > > >    	Opt_compress_log_size,
+> > > >    	Opt_compress_extension,
+> > > > +	Opt_compress_chksum,
+> > > >    	Opt_atgc,
+> > > >    	Opt_err,
+> > > >    };
+> > > > @@ -214,6 +215,7 @@ static match_table_t f2fs_tokens = {
+> > > >    	{Opt_compress_algorithm, "compress_algorithm=%s"},
+> > > >    	{Opt_compress_log_size, "compress_log_size=%u"},
+> > > >    	{Opt_compress_extension, "compress_extension=%s"},
+> > > > +	{Opt_compress_chksum, "compress_chksum"},
+> > > >    	{Opt_atgc, "atgc"},
+> > > >    	{Opt_err, NULL},
+> > > >    };
+> > > > @@ -934,10 +936,14 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
+> > > >    			F2FS_OPTION(sbi).compress_ext_cnt++;
+> > > >    			kfree(name);
+> > > >    			break;
+> > > > +		case Opt_compress_chksum:
+> > > > +			F2FS_OPTION(sbi).compress_chksum = true;
+> > > > +			break;
+> > > >    #else
+> > > >    		case Opt_compress_algorithm:
+> > > >    		case Opt_compress_log_size:
+> > > >    		case Opt_compress_extension:
+> > > > +		case Opt_compress_chksum:
+> > > >    			f2fs_info(sbi, "compression options not supported");
+> > > >    			break;
+> > > >    #endif
+> > > > @@ -1523,6 +1529,9 @@ static inline void f2fs_show_compress_options(struct seq_file *seq,
+> > > >    		seq_printf(seq, ",compress_extension=%s",
+> > > >    			F2FS_OPTION(sbi).extensions[i]);
+> > > >    	}
+> > > > +
+> > > > +	if (F2FS_OPTION(sbi).compress_chksum)
+> > > > +		seq_puts(seq, ",compress_chksum");
+> > > >    }
+> > > >    static int f2fs_show_options(struct seq_file *seq, struct dentry *root)
+> > > > diff --git a/include/linux/f2fs_fs.h b/include/linux/f2fs_fs.h
+> > > > index a5dbb57a687f..7dc2a06cf19a 100644
+> > > > --- a/include/linux/f2fs_fs.h
+> > > > +++ b/include/linux/f2fs_fs.h
+> > > > @@ -273,7 +273,7 @@ struct f2fs_inode {
+> > > >    			__le64 i_compr_blocks;	/* # of compressed blocks */
+> > > >    			__u8 i_compress_algorithm;	/* compress algorithm */
+> > > >    			__u8 i_log_cluster_size;	/* log of cluster size */
+> > > > -			__le16 i_padding;		/* padding */
+> > > > +			__le16 i_compress_flag;		/* compress flag */
+> > > >    			__le32 i_extra_end[0];	/* for attribute size calculation */
+> > > >    		} __packed;
+> > > >    		__le32 i_addr[DEF_ADDRS_PER_INODE];	/* Pointers to data blocks */
+> > > > -- 
+> > > > 2.26.2
+> > > .
+> > > 
+> > 
+> > 
+> > _______________________________________________
+> > Linux-f2fs-devel mailing list
+> > Linux-f2fs-devel@lists.sourceforge.net
+> > https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+> > .
+> > 
