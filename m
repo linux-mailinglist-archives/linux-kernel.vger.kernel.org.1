@@ -2,195 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6B642A9363
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 10:51:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AE212A9369
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 10:51:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726459AbgKFJvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 04:51:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56488 "EHLO
+        id S1726868AbgKFJvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 04:51:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726139AbgKFJvG (ORCPT
+        with ESMTP id S1726165AbgKFJvt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 04:51:06 -0500
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E1CBC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 01:51:06 -0800 (PST)
-Received: by mail-lj1-x242.google.com with SMTP id y16so748771ljk.1
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 01:51:06 -0800 (PST)
+        Fri, 6 Nov 2020 04:51:49 -0500
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ADDCC0613CF;
+        Fri,  6 Nov 2020 01:51:49 -0800 (PST)
+Received: by mail-il1-x141.google.com with SMTP id q1so557486ilt.6;
+        Fri, 06 Nov 2020 01:51:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0UwxZE4fayPRnvQxDAbTZKD+y1CSxe7+6Z1whH6kMNE=;
-        b=MP+8Ww1jr5M0U/EN/842njJFwNLARYITc9Xon6uZ8dA1TKARpQyaLBumduDVl7/uzZ
-         x6Scf/u1gF/A0Pt66DGyYin/JtmFO+qNsp8f0eY0kuGGW3tiQSDYS89wjfMv/UR3P6Zi
-         iZOE8y4Ba3dCMdte+VAqnUJPFA8nTaiV5dDFx11asKO/BxmZZoB6nhU5q7XKfeg9oVow
-         4ZV/m6ddzTMXLeYVUcl4+2Psbk3kdLFanOAxO7elc12Nigojmv8iW5zyW1Ulkk1+okKA
-         fLy5JzvQl6OMWH3Fd0nKE3Z4Ziv3WWK6SJn0zgDG2trFi2Z9feVWjuli7xkq4mLY571Z
-         /5SQ==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=mc9+iPglmE3qdIFo4WRNtRliEo4jSzg+7hnP+M7PZTA=;
+        b=ExjoaigZHr1iLek2ntbaZ9zo9ZO327KqtbfjA9/R1+56ie74Ywo3Yw7OYI8gHfUNE3
+         h5TYu5HhbkJAFAjHaM3PRneI16uRXn1mCqacMPs6A5oS0ImgQ7Oeb3+gkyuYLDbognRF
+         WczLwrRArtAODg7+J8DKcsKo9u+0XKkHEtEwEhhhpayGAfdFefE/mN+ORsFCJt2AkxK0
+         BQOgi9+vfjxpAoYUMxTcXHTa1fipjPr/jXl4bG4y6FtpYWvBqqcVOiC88kUVleRO4dGl
+         KD6oZrrXxnTrdiBkwzsQH93IdCA4ROqqHgGPwzI+c0mgLfFiou7lUQsZ2V5Lj/5X+d/E
+         G5Iw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0UwxZE4fayPRnvQxDAbTZKD+y1CSxe7+6Z1whH6kMNE=;
-        b=IQAiGTBRNCOUZuls7d14DxMKFGOQtiv4AlxXThPlclI/xnrTIB+rRReKLuQtnT53mx
-         hVdhnhjLk+3b4SlkAqrkS48JEAWLOPC83P4SbGEp+pZ8Ip/Qa8lm7scbuTGYTjnXIAS0
-         Q2CqhRir7RQKkVIyUYK8eWsiv9mw1J3jrCO2f4hEhowhrSviRsFLa6Bl3R/KEQzZmyv4
-         qSSfM4Un6YpaD62+7ZGcCh+VVtYBP3TAHiPrxnTbHpis97Fk3EH/I0pGo8CdsekA2koF
-         6nL7P210iWdM9kwAyXbZhdcHJ4UbWY2tUVsquHHxCN3eSfj/zxl1eR67+d9gjrY6HhNv
-         esQw==
-X-Gm-Message-State: AOAM532HAdFwwJlwl4jWdgUUJfUtguk/BU/zqpxOPUPianduWmGXlUde
-        6bm+5yGCvj3FmRZc+/bMrXieiuqxxF3/cCFIlpCeuA==
-X-Google-Smtp-Source: ABdhPJxeQK2BYHJcOBYczjSxnwq3O+zvrpPSmHdio7wYUwV3iXXdNLvCmTC8KQhbsAbGmaRxdy9qN6r1KN3q0sLiqU0=
-X-Received: by 2002:a05:651c:1205:: with SMTP id i5mr479722lja.283.1604656264669;
- Fri, 06 Nov 2020 01:51:04 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mc9+iPglmE3qdIFo4WRNtRliEo4jSzg+7hnP+M7PZTA=;
+        b=BgGFMLIqBoWSXDY9y7qcfqmRvwTxXzOHkWleFIQdJZGJ+XPbVUyRcHvVIKid4Vt6c6
+         bwHl1Sw6MiSVgJZwX5qXJLUvAD/457QN5D9CEdsLVgofcwKv6/6GU5L5UT0EDNNpoVcg
+         2JSoeaWcKoebJyW/8kiTutl/yX9+7rZO8AQoOmc3VYzv5QqFU0kxBxSPlf81u1s/MO1o
+         RBXLl0Nete5xKIf7UD3E9bOa+AW4DlRajxd8kOj/JBuWeIvIJjv277huDOmKF2cwCZSh
+         h6EWlKZkVmETe6/4SsgepVm5ccnjG1lihIVjgpPn0m9PfAS7/uZILSM574L6BOWEPBSV
+         GFbQ==
+X-Gm-Message-State: AOAM532+9DEcgSvzDWmI8TkKMOJ3E4z68adNtDtyCv+atCFVxbS+0WJQ
+        AHG98BP8J405zMatebsX2of7U52uTjM=
+X-Google-Smtp-Source: ABdhPJyD9utqj/Aul5/LelRYf7I0nxuWizINITvfinG5j/d04iFDD8pBVqDZE7QMv02cwp43jCR6Zg==
+X-Received: by 2002:a92:ba14:: with SMTP id o20mr781162ili.76.1604656309005;
+        Fri, 06 Nov 2020 01:51:49 -0800 (PST)
+Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
+        by smtp.gmail.com with ESMTPSA id m10sm697502ilg.77.2020.11.06.01.51.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Nov 2020 01:51:48 -0800 (PST)
+Date:   Fri, 6 Nov 2020 02:51:46 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org,
+        Tom Rix <trix@redhat.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com,
+        kernel-janitors@vger.kernel.org, linux-safety@lists.elisa.tech,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] clk: remove unneeded dead-store initialization
+Message-ID: <20201106095146.GA3269500@ubuntu-m3-large-x86>
+References: <20201106094820.30167-1-lukas.bulwahn@gmail.com>
 MIME-Version: 1.0
-References: <20201105120410.18305-1-srinivas.kandagatla@linaro.org> <20201105120410.18305-2-srinivas.kandagatla@linaro.org>
-In-Reply-To: <20201105120410.18305-2-srinivas.kandagatla@linaro.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 6 Nov 2020 10:50:53 +0100
-Message-ID: <CACRpkda91ncAVGj8_qcEyKPnRQdJjXMMCQ4ZJ1t7bVfcCZF=CA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] pinctrl: qcom: Add sm8250 lpass lpi pinctrl driver
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, Andy Gross <agross@kernel.org>,
-        MSM <linux-arm-msm@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201106094820.30167-1-lukas.bulwahn@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Srinivas,
+On Fri, Nov 06, 2020 at 10:48:20AM +0100, Lukas Bulwahn wrote:
+> make clang-analyzer on x86_64 defconfig caught my attention with:
+> 
+>   drivers/clk/clk.c:423:19:
+>   warning: Value stored to 'parent' during its initialization is never read
+>   [clang-analyzer-deadcode.DeadStores]
+>           struct clk_core *parent = ERR_PTR(-ENOENT);
+>                            ^
+> 
+> Commit fc0c209c147f ("clk: Allow parents to be specified without string
+> names") introduced clk_core_fill_parent_index() with this unneeded
+> dead-store initialization.
+> 
+> So, simply remove this unneeded dead-store initialization to make
+> clang-analyzer happy.
+> 
+> As compilers will detect this unneeded assignment and optimize this anyway,
+> the resulting object code is identical before and after this change.
+> 
+> No functional change. No change to object code.
+> 
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 
-thanks for your patch!
+Indeed, parent is always assigned a new value before that one is read.
 
-On Thu, Nov 5, 2020 at 1:04 PM Srinivas Kandagatla
-<srinivas.kandagatla@linaro.org> wrote:
+Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
 
-> Add initial pinctrl driver to support pin configuration for
-> LPASS (Low Power Audio SubSystem) LPI (Low Power Island) pinctrl
-> on SM8250.
->
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-
-So this is in essence a completely new pin controller that shares
-nothing with the previous Qcom SoC pin control hardware?
-
-I'd still like Bjorn to review it of course, but if you are going to
-maintain this driver an entry to the MAINTAINERS file would
-be nice.
-
-I'd like some more talk in the commit message about how this
-driver is engineered so I point those things out below.
-
-> +config PINCTRL_LPASS_LPI
-> +       tristate "Qualcomm Technologies Inc LPASS LPI pin controller driver"
-> +       depends on GPIOLIB && OF
-
-These days you can actually just
-select GPIOLIB
-but no big deal.
-
-> +#include <linux/bitops.h>
-> +#include <linux/clk.h>
-> +#include <linux/gpio.h>
-
-Do not use this legacy header for new GPIO drivers.
-#include <linux/gpio/driver.h>
-should work.
-
-> +#define LPI_GPIO_REG_VAL_CTL             0x00
-> +#define LPI_GPIO_REG_DIR_CTL             0x04
-> +#define LPI_SLEW_REG_VAL_CTL             0x00
-> +#define LPI_SLEW_RATE_MAX                0x03
-> +#define LPI_SLEW_BITS_SIZE               0x02
-> +#define LPI_GPIO_REG_PULL_SHIFT                0x0
-> +#define LPI_GPIO_REG_PULL_MASK         GENMASK(1, 0)
-> +#define LPI_GPIO_REG_FUNCTION_SHIFT    0x2
-> +#define LPI_GPIO_REG_FUNCTION_MASK     GENMASK(5, 2)
-> +#define LPI_GPIO_REG_OUT_STRENGTH_SHIFT        0x6
-> +#define LPI_GPIO_REG_OUT_STRENGTH_MASK GENMASK(8, 6)
-> +#define LPI_GPIO_REG_OE_SHIFT          0x9
-> +#define LPI_GPIO_REG_OE_MASK           BIT(9)
-> +#define LPI_GPIO_REG_DIR_SHIFT         0x1
-> +#define LPI_GPIO_REG_DIR_MASK          0x2
-> +#define LPI_GPIO_BIAS_DISABLE          0x0
-> +#define LPI_GPIO_PULL_DOWN             0x1
-> +#define LPI_GPIO_KEEPER                        0x2
-> +#define LPI_GPIO_PULL_UP               0x3
-
-So the way I understand it, the GPIO lines have one register each and then the
-functionality of each line is handled by different bits in that register, like
-output is driven in bit 9.
-
-This would be nice to have mentioned in the commit message.
-
-> +static const unsigned int gpio0_pins[] = { 0 };
-> +static const unsigned int gpio1_pins[] = { 1 };
-> +static const unsigned int gpio2_pins[] = { 2 };
-> +static const unsigned int gpio3_pins[] = { 3 };
-> +static const unsigned int gpio4_pins[] = { 4 };
-> +static const unsigned int gpio5_pins[] = { 5 };
-> +static const unsigned int gpio6_pins[] = { 6 };
-> +static const unsigned int gpio7_pins[] = { 7 };
-> +static const unsigned int gpio8_pins[] = { 8 };
-> +static const unsigned int gpio9_pins[] = { 9 };
-> +static const unsigned int gpio10_pins[] = { 10 };
-> +static const unsigned int gpio11_pins[] = { 11 };
-> +static const unsigned int gpio12_pins[] = { 12 };
-> +static const unsigned int gpio13_pins[] = { 13 };
-> +static const char * const swr_tx_clk_groups[] = { "gpio0" };
-> +static const char * const swr_tx_data1_groups[] = { "gpio1" };
-> +static const char * const swr_tx_data2_groups[] = { "gpio2" };
-> +static const char * const swr_rx_clk_groups[] = { "gpio3" };
-> +static const char * const swr_rx_data1_groups[] = { "gpio4" };
-> +static const char * const swr_tx_data3_groups[] = { "gpio5" };
-> +static const char * const dmic1_clk_groups[] = { "gpio6" };
-> +static const char * const dmic1_data_groups[] = { "gpio7" };
-> +static const char * const dmic2_clk_groups[] = { "gpio8" };
-> +static const char * const dmic2_data_groups[] = { "gpio9" };
-> +static const char * const i2s2_clk_groups[] = { "gpio10" };
-> +static const char * const i2s2_ws_groups[] = { "gpio11" };
-> +static const char * const dmic3_clk_groups[] = { "gpio12" };
-> +static const char * const dmic3_data_groups[] = { "gpio13" };
-> +static const char * const qua_mi2s_sclk_groups[] = { "gpio0" };
-> +static const char * const qua_mi2s_ws_groups[] = { "gpio1" };
-> +static const char * const qua_mi2s_data0_groups[] = { "gpio2" };
-> +static const char * const qua_mi2s_data1_groups[] = { "gpio3" };
-> +static const char * const qua_mi2s_data2_groups[] = { "gpio4" };
-> +static const char * const swr_rx_data2_groups[] = { "gpio5" };
-> +static const char * const i2s1_clk_groups[] = { "gpio6" };
-> +static const char * const i2s1_ws_groups[] = { "gpio7" };
-> +static const char * const i2s1_data0_groups[] = { "gpio8" };
-> +static const char * const i2s1_data1_groups[] = { "gpio9" };
-> +static const char * const wsa_swr_clk_groups[] = { "gpio10" };
-> +static const char * const wsa_swr_data_groups[] = { "gpio11" };
-> +static const char * const i2s2_data0_groups[] = { "gpio12" };
-> +static const char * const i2s2_data1_groups[] = { "gpio13" };
-
-The driver appears to follow other qualcomm pin controllers in using
-the "one group is one pin" approach. This is idiomatic and should be
-mentioned in the commit message.
-
-> +static int sm8250_slew_reg_offsets[] = {
-> +               0x0, 0x2, 0x4, 0x8, 0xa,
-> +               0xc, 0x0, 0x0, 0x0, 0x0,
-> +               0x10, 0x12, 0x0, 0x0,
-> +};
-
-Maybe it is obvious to everyone what this array is about, but why so
-many zeroes? I think it warrants a comment in the code if that
-means for example that some pins do not support slew rate setting.
-
-Overall this is a nice and self-contained driver that uses the abstractions
-the right way and very straight-forward, so I think we can merge it
-soon.
-
-(Look into Andy's comments as well.)
-
-Yours,
-Linus Walleij
+> ---
+> applies cleanly on current master and next-20201106
+> 
+> Stephen, Michael, please pick this minor non-urgent clean-up patch.
+> 
+>  drivers/clk/clk.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
+> index f83dac54ed85..ba35bf35bcd3 100644
+> --- a/drivers/clk/clk.c
+> +++ b/drivers/clk/clk.c
+> @@ -420,7 +420,7 @@ static struct clk_core *clk_core_get(struct clk_core *core, u8 p_index)
+>  static void clk_core_fill_parent_index(struct clk_core *core, u8 index)
+>  {
+>  	struct clk_parent_map *entry = &core->parents[index];
+> -	struct clk_core *parent = ERR_PTR(-ENOENT);
+> +	struct clk_core *parent;
+>  
+>  	if (entry->hw) {
+>  		parent = entry->hw->core;
+> -- 
+> 2.17.1
+> 
