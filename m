@@ -2,121 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 623702A9937
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 17:14:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A8902A9939
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 17:14:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726841AbgKFQOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 11:14:06 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:41267 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725875AbgKFQOF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 11:14:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604679244;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EFW0/AjI5D48SWseHJMzco2NAKnAG+greLgwTvNixSU=;
-        b=LM2PfXz6a1Gyu0otTn8kLN94ErjZ0cAbyxdF8DxITs4ou5gX5F2YtPZbdLES0TQGb6teZV
-        7ZgJH6qaViva2rYhXeXovI6qPpJHEsVZxEsAWhof30ezRgELUpiS19fwPj3kzNrTuaxMxp
-        D5KAgHdHBV0jniL6EvRyC8GF+KyGcuM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-590-P6_JqA-JOW-edsjyXRGGtA-1; Fri, 06 Nov 2020 11:14:00 -0500
-X-MC-Unique: P6_JqA-JOW-edsjyXRGGtA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6CD13E06A1;
-        Fri,  6 Nov 2020 16:13:58 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.25])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 986331002C18;
-        Fri,  6 Nov 2020 16:13:55 +0000 (UTC)
-Date:   Fri, 6 Nov 2020 17:13:52 +0100
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     davem@davemloft.net, Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net/xdp: remove unused macro REG_STATE_NEW
-Message-ID: <20201106171352.5c51342d@carbon>
-In-Reply-To: <1604641431-6295-1-git-send-email-alex.shi@linux.alibaba.com>
-References: <1604641431-6295-1-git-send-email-alex.shi@linux.alibaba.com>
-Organization: Red Hat Inc.
+        id S1727185AbgKFQOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 11:14:18 -0500
+Received: from mail.monom.org ([188.138.9.77]:48096 "EHLO mail.monom.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727020AbgKFQOR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 11:14:17 -0500
+Received: from mail.monom.org (localhost [127.0.0.1])
+        by filter.mynetwork.local (Postfix) with ESMTP id 39DD6500609;
+        Fri,  6 Nov 2020 17:14:14 +0100 (CET)
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.monom.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.5 required=5.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=ham autolearn_force=no version=3.4.2
+Received: from localhost (unknown [94.31.100.251])
+        by mail.monom.org (Postfix) with ESMTPSA id DD6EE500596;
+        Fri,  6 Nov 2020 17:14:13 +0100 (CET)
+Date:   Fri, 6 Nov 2020 17:14:13 +0100
+From:   Daniel Wagner <wagi@monom.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [ANNOUNCE] v5.10-rc2-rt4
+Message-ID: <20201106161413.7c65uxenamy474uh@beryllium.lan>
+References: <20201103195731.erjkgyzxzzjylhui@linutronix.de>
+ <20201104103809.bhl2iorbwv6xowtw@beryllium.lan>
+ <20201104104617.ueefmpdou4t3t2ce@linutronix.de>
+ <20201104111948.vpykh3ptmysqhmve@beryllium.lan>
+ <20201104124746.74jdsig3dffomv3k@beryllium.lan>
+ <20201104130930.llx56gtqt532h7c7@linutronix.de>
+ <20201104160650.b63zqof74wohgpa2@beryllium.lan>
+ <20201106105447.2lasulgjrbqdhnlh@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201106105447.2lasulgjrbqdhnlh@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri,  6 Nov 2020 13:43:51 +0800
-Alex Shi <alex.shi@linux.alibaba.com> wrote:
-
-> To tame gcc warning on it:
-> net/core/xdp.c:20:0: warning: macro "REG_STATE_NEW" is not used
-> [-Wunused-macros]
-
-Hmm... REG_STATE_NEW is zero, so it is implicitly set via memset zero.
-But it is true that it is technically not directly used or referenced.
-
-It is mentioned in a comment, so please send V2 with this additional change:
-
-$ git diff
-diff --git a/net/core/xdp.c b/net/core/xdp.c
-index 48aba933a5a8..6e1430971ac2 100644
---- a/net/core/xdp.c
-+++ b/net/core/xdp.c
-@@ -175,7 +175,7 @@ int xdp_rxq_info_reg(struct xdp_rxq_info *xdp_rxq,
-                return -ENODEV;
-        }
- 
--       /* State either UNREGISTERED or NEW */
-+       /* State either UNREGISTERED or zero */
-        xdp_rxq_info_init(xdp_rxq);
-        xdp_rxq->dev = dev;
-        xdp_rxq->queue_index = queue_index;
-
-
-> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-> Cc: "David S. Miller" <davem@davemloft.net> 
-> Cc: Jakub Kicinski <kuba@kernel.org> 
-> Cc: Alexei Starovoitov <ast@kernel.org> 
-> Cc: Daniel Borkmann <daniel@iogearbox.net> 
-> Cc: Jesper Dangaard Brouer <hawk@kernel.org> 
-> Cc: John Fastabend <john.fastabend@gmail.com> 
-> Cc: netdev@vger.kernel.org 
-> Cc: bpf@vger.kernel.org 
-> Cc: linux-kernel@vger.kernel.org 
-> ---
->  net/core/xdp.c | 1 -
->  1 file changed, 1 deletion(-)
+On Fri, Nov 06, 2020 at 11:54:47AM +0100, Sebastian Andrzej Siewior wrote:
+> > rpi3    signaltest      5.9.0-rc8-rt12
+> >   813   0_signaltest         t0-max-latency      : fail     214.00
+> > rpi3    signaltest      5.9.0-rc8-rt12
+> >   874   0_signaltest         t0-max-latency      : fail     217.00
+> > rpi3    signaltest      5.9.0-rt16
+> >   963   0_signaltest         t0-max-latency      : fail     321.00
 > 
-> diff --git a/net/core/xdp.c b/net/core/xdp.c
-> index 48aba933a5a8..3d88aab19c89 100644
-> --- a/net/core/xdp.c
-> +++ b/net/core/xdp.c
-> @@ -19,7 +19,6 @@
->  #include <trace/events/xdp.h>
->  #include <net/xdp_sock_drv.h>
->  
-> -#define REG_STATE_NEW		0x0
->  #define REG_STATE_REGISTERED	0x1
->  #define REG_STATE_UNREGISTERED	0x2
->  #define REG_STATE_UNUSED	0x3
+> Here, rt 13,14,15 would be interesting so we could narrow down the
+> ~100us.
+> v5.9-rc8-rt14 got new migrate-disable but I wouldn't expect it to cause
+> it. The other changes look also harmless (like the rtmutex redo which
+> should be a 0 change but then it mighe behave differently in regard to
+> workqueue in some corner cases).
 
+rpi3    signaltest      5.9.0-rc8-rt13
+  1196  0_signaltest         t0-max-latency      : fail     207.00
+  1196  0_signaltest         t0-avg-latency      : pass      46.00
+  1196  0_signaltest         t0-min-latency      : pass      22.00
+rpi3    signaltest      5.9.0-rc8-rt14
+  1197  0_signaltest         t0-max-latency      : fail     301.00
+  1197  0_signaltest         t0-avg-latency      : pass      47.00
+  1197  0_signaltest         t0-min-latency      : pass      20.00
+rpi3    signaltest      5.9.0-rt15
+  1198  0_signaltest         t0-max-latency      : fail     323.00
+  1198  0_signaltest         t0-avg-latency      : pass      47.00
+  1198  0_signaltest         t0-min-latency      : pass      21.00
 
+> > rpi3    signaltest      5.9.1-rt19
+> >   1038  0_signaltest         t0-max-latency      : fail     341.00
+> > rpi3    signaltest      5.9.1-rt20
+> >   1079  0_signaltest         t0-max-latency      : fail     318.00
+>
+> So I have nothing to explain 20us improvement.
 
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+I think 20us is in the range of the standard deviation for this test. So
+I don't think you should be concerned too much about it as long I don't
+have proper statistical numbers.
 
+One thing I also see is that the average was pretty constant at 47us for
+5.9-rt and for 5.10-rt series it's around 55us. So something makes the
+whole operation slightly more expensive.
+
+> > rpi3    signaltest      5.10.0-rc1-rt1
+> >   1118  0_signaltest         t0-max-latency      : fail     415.00
+> > rpi3    signaltest      5.10.0-rc2-rt4
+> >   1163  0_signaltest         t0-max-latency      : fail     340.00
+> 
+> -rt2 gained new kmap code.
+> -rt3 received an update of the above
+
+rpi3    signaltest      5.10.0-rc1-rt2
+  1199  0_signaltest         t0-max-latency      : fail     399.00
+  1199  0_signaltest         t0-avg-latency      : pass      55.00
+  1199  0_signaltest         t0-min-latency      : pass      25.00
+rpi3    signaltest      5.10.0-rc2-rt3
+  1200  0_signaltest         t0-max-latency      : fail     420.00
+  1200  0_signaltest         t0-avg-latency      : pass      55.00
+  1200  0_signaltest         t0-min-latency      : pass      25.00
+
+> But all this is only signal right?
+
+Correct. I've observed this only for signaltest and sigwaittest.
+
+> Nothing on the cyclictest front?
+
+Correct, cyclictest doesn't show any regression.
+
+> If lazy-preempt broke in a way then it should be only noticed by
+> cyclictest. You can however disable lazy-preempt just to be sure.
+
+Sure, will do a full run on Monday.
