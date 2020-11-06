@@ -2,137 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91F862A9EA9
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 21:41:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C19DE2A9EAF
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 21:46:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728499AbgKFUlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 15:41:49 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55275 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727129AbgKFUlt (ORCPT
+        id S1728486AbgKFUq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 15:46:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47006 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727559AbgKFUqy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 15:41:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604695307;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LX5gdTm6EDzi00pjEtiFhtYuinFfaUY5Wq0ZilW4doE=;
-        b=RT9LzrvzSPiq9KDgfMbqBAxSSBLs5oTDU/6Oahmrjr3liwdI8eYwWETeHkzDQY8xa9AhhU
-        /aKElfkS3ilMvOKoer7U5fQlHLhHzXc+J37EV1HW68CtfWW7N5MR7RsbnnI2Gv9ANboeZF
-        WimeucT2LwGYi7qMa5Oz3HjfAja8M88=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-133-f3i3Bcf9PK2FKNMjgLE_TQ-1; Fri, 06 Nov 2020 15:41:43 -0500
-X-MC-Unique: f3i3Bcf9PK2FKNMjgLE_TQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6D15F802B74;
-        Fri,  6 Nov 2020 20:41:41 +0000 (UTC)
-Received: from [10.36.112.11] (ovpn-112-11.ams2.redhat.com [10.36.112.11])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id EDAA46EF6D;
-        Fri,  6 Nov 2020 20:41:38 +0000 (UTC)
-Subject: Re: Regression: QCA6390 fails with "mm/page_alloc: place pages to
- tail in __free_pages_core()"
-To:     Pavel Procopiuc <pavel.procopiuc@gmail.com>
-Cc:     Vlastimil Babka <vbabka@suse.cz>,
-        Kalle Valo <kvalo@codeaurora.org>, ath11k@lists.infradead.org,
-        linux-mm@kvack.org, akpm@linux-foundation.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org
-References: <225718f1-c4b0-8683-427a-059148a39350@gmail.com>
- <C3FD015A-8E51-4752-AD76-6ABE4583E268@redhat.com>
- <15e33a0a-9a76-0966-125a-5941e2cdfb09@gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <31f66d70-95eb-12dd-1d01-0830d118f55a@redhat.com>
-Date:   Fri, 6 Nov 2020 21:41:37 +0100
+        Fri, 6 Nov 2020 15:46:54 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58ED6C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 12:46:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=MUfJwre5E6JfpSssfgPC5njfPaSBNYvDAExnUw65edk=; b=jlRzl2tqeKGVbPzs9KiVS7n+DU
+        kUldjBGXOUUw4JFPwbxpJWzLzxyOtenrJsrMVpCXcql/RlicXfF4/Bm44Lu8BKi7Iwrzqmy7GJpcb
+        blg8vfi50BAL26mJAV7D74lqycEXP0UqSNWBazefc3WIwF4TyfkAIJqZfO71RcjnkVOpONPpFVjrv
+        gejTvpk5lcf6HiVRXcBwzSWNmIAhYCRueDokoVms5hHOhMSv4TRy6iBO7qG2n2Xy03kZGF2G5j2gy
+        XskOqKrOoUqhVDca2k+tvG+7XGzmqgHpNxBHjQW6fEBkKS9YsSKcczQN+wQHpR5qbXelqowHvwSFW
+        zNwKgwmg==;
+Received: from [2601:1c0:6280:3f0::a1cb]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kb8dF-0001AO-Ob; Fri, 06 Nov 2020 20:46:50 +0000
+Subject: Re: [PATCH] mm: introduce oom_kill_disable sysctl knob
+To:     Minchan Kim <minchan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+        Michal Hocko <mhocko@suse.com>
+References: <20201106203238.1375577-1-minchan@kernel.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <57a31f2e-bb08-7303-e5fc-fe00e832cee6@infradead.org>
+Date:   Fri, 6 Nov 2020 12:46:47 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <15e33a0a-9a76-0966-125a-5941e2cdfb09@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20201106203238.1375577-1-minchan@kernel.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06.11.20 18:32, Pavel Procopiuc wrote:
-> Op 05.11.2020 om 21:23 schreef David Hildenbrand:
->>> So just to make sure I understand you correctly, you'd like to see if the problem with ath11k driver on my hardware persists when I boot pristine 5.10-rc2 kernel (without reverting commit 7fef431be9c9ac255838a9578331567b9dba4477) and with page_alloc.shuffle=1, right?
->>>
->>
->> Right, but as lists are randomized then it might take a couple of tries to reproduce. I‘ll have a look at the driver code / failing path on Monday, when back to work.
-> 
-> I have done 5 boots of pristine 5.10-rc2 with page_alloc.shuffle=1. Out of those: 1st, 2nd, 4th and 5th resulted in
-> working ath11k driver, logs were the same as with the commit 7fef431be9c9ac255838a9578331567b9dba4477 reverted. The 3rd
-> one failed, but in a different way, I just had no output from the driver after initialization lines:
-> 
-> Nov 06 18:19:41 razor kernel: Linux version 5.10.0-rc2 (root@razor) (gcc (Gentoo 9.3.0-r1 p3) 9.3.0, GNU ld (Gentoo 2.34
-> p6) 2.34.0) #8 SMP Fri Nov 6 18:14:36 CET 2020
-> Nov 06 18:19:41 razor kernel: pci 0000:05:00.0: [17cb:1101] type 00 class 0x028000
-> Nov 06 18:19:41 razor kernel: pci 0000:05:00.0: reg 0x10: [mem 0xd2100000-0xd21fffff 64bit]
-> Nov 06 18:19:41 razor kernel: pci 0000:05:00.0: PME# supported from D0 D3hot D3cold
-> Nov 06 18:19:41 razor kernel: pci 0000:05:00.0: 4.000 Gb/s available PCIe bandwidth, limited by 5.0 GT/s PCIe x1 link at
-> 0000:00:1c.1 (capable of 7.876 Gb/s with 8.0 GT/s PCIe x1 link)
-> Nov 06 18:19:41 razor kernel: pci 0000:05:00.0: Adding to iommu group 21
-> Nov 06 18:19:42 razor kernel: ath11k_pci 0000:05:00.0: WARNING: ath11k PCI support is experimental!
-> Nov 06 18:19:42 razor kernel: ath11k_pci 0000:05:00.0: BAR 0: assigned [mem 0xd2100000-0xd21fffff 64bit]
-> Nov 06 18:19:42 razor kernel: ath11k_pci 0000:05:00.0: enabling device (0000 -> 0002)
-> Nov 06 18:19:42 razor kernel: mhi 0000:05:00.0: Requested to power ON
-> Nov 06 18:19:42 razor kernel: mhi 0000:05:00.0: Power on setup success
-> 
-> I had this before and usually it was fixed after rebooting into Windows and back. This time I just went and rebooted
-> into Linux again and driver was working on that boot (4th).
+Hi,
 
-I'm sorry, but "WARNING: ath11k PCI support is experimental!" and such 
-occasional issues don't give me the best feeling that everything is 
-operating as it should :)
+Fix a few typos:
 
+On 11/6/20 12:32 PM, Minchan Kim wrote:
+> ---
+>  Documentation/admin-guide/sysctl/vm.rst | 14 ++++++++++++++
+>  include/linux/mm.h                      |  2 ++
+>  include/linux/oom.h                     |  1 +
+>  kernel/sysctl.c                         |  9 +++++++++
+>  mm/oom_kill.c                           | 24 ++++++++++++++++++++++++
+>  5 files changed, 50 insertions(+)
 > 
-> After that I removed page_alloc.shuffle=1 and did 2 additional boots, both of them resulted in a non-working driver with
-> the error messages about not being able to talk to firmware like I had before on the clean 5.10-rc2:
-> 
-> Nov 06 18:24:07 razor kernel: Linux version 5.10.0-rc2 (root@razor) (gcc (Gentoo 9.3.0-r1 p3) 9.3.0, GNU ld (Gentoo 2.34
-> p6) 2.34.0) #9 SMP Fri Nov 6 18:22:43 CET 2020
-> Nov 06 18:24:07 razor kernel: pci 0000:05:00.0: [17cb:1101] type 00 class 0x028000
-> Nov 06 18:24:07 razor kernel: pci 0000:05:00.0: reg 0x10: [mem 0xd2100000-0xd21fffff 64bit]
-> Nov 06 18:24:07 razor kernel: pci 0000:05:00.0: PME# supported from D0 D3hot D3cold
-> Nov 06 18:24:07 razor kernel: pci 0000:05:00.0: 4.000 Gb/s available PCIe bandwidth, limited by 5.0 GT/s PCIe x1 link at
-> 0000:00:1c.1 (capable of 7.876 Gb/s with 8.0 GT/s PCIe x1 link)
-> Nov 06 18:24:07 razor kernel: pci 0000:05:00.0: Adding to iommu group 21
-> Nov 06 18:24:08 razor kernel: ath11k_pci 0000:05:00.0: WARNING: ath11k PCI support is experimental!
-> Nov 06 18:24:08 razor kernel: ath11k_pci 0000:05:00.0: BAR 0: assigned [mem 0xd2100000-0xd21fffff 64bit]
-> Nov 06 18:24:08 razor kernel: ath11k_pci 0000:05:00.0: enabling device (0000 -> 0002)
-> Nov 06 18:24:08 razor kernel: mhi 0000:05:00.0: Requested to power ON
-> Nov 06 18:24:08 razor kernel: mhi 0000:05:00.0: Power on setup success
-> Nov 06 18:24:08 razor kernel: ath11k_pci 0000:05:00.0: Respond mem req failed, result: 1, err: 0
-> Nov 06 18:24:08 razor kernel: ath11k_pci 0000:05:00.0: qmi failed to respond fw mem req:-22
-> Nov 06 18:24:13 razor kernel: ath11k_pci 0000:05:00.0: qmi failed memory request, err = -110
-> Nov 06 18:24:13 razor kernel: ath11k_pci 0000:05:00.0: qmi failed to respond fw mem req:-110
-> Nov 06 18:25:39 razor kernel: mhi 0000:05:00.0: Device failed to exit MHI Reset state
-> 
+> diff --git a/Documentation/admin-guide/sysctl/vm.rst b/Documentation/admin-guide/sysctl/vm.rst
+> index f455fa00c00f..49dcedfaf0c0 100644
+> --- a/Documentation/admin-guide/sysctl/vm.rst
+> +++ b/Documentation/admin-guide/sysctl/vm.rst
+> @@ -694,6 +694,20 @@ is used in oom_kill_allocating_task.
+>  
+>  The default value is 0.
+>  
+> +oom_kill_disable
+> +================
+> +
+> +This disables or enables OOM killing in out-of-memory situations.
+> +
+> +If this is set to one, the OOM killer is disabled so OOM kill never
+> +hapens in out-of-memory situation. It could cause system dangerous
 
-Okay, that means that you should be able to reproduce 
-pre-7fef431be9c9ac255838a9578331567b9dba4477 with page_alloc.shuffle=1 
-as well ... it just might take a lot of tries to get a problematic page.
+   happens                            It could cause a dangerous system
 
-I could also imagine that loading the driver deferred, after quite some 
-system/mm activity could result in the same issue.
+> +state due to memory allocation failure so user should be careful to
 
-Looks like something either cannot handle a specific address we received 
-via dma_alloc_coherent(), or something is reading out of bounds, and the 
-content after our allocated page doesn't have the expected value anymore 
-(e.g., used to be zero, now no longer zero).
+                                                            careful when
+> +use it.
 
-What puzzles me is that "err: 0". That should have been properly set by 
-HW, no?
+   using it.
+
+> +
+> +If this is set to zero, the OOM killer is enabled so OOM kill happens
+> +in out-of-memory situations.
+> +
+> +The default value is 0.
+>  
+>  overcommit_kbytes
+>  =================
+
+> diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+> index 8b84661a6410..0f48cdeeb1e7 100644
+> --- a/mm/oom_kill.c
+> +++ b/mm/oom_kill.c
+
+>  #ifdef CONFIG_NUMA
+>  /**
+>   * oom_cpuset_eligible() - check task eligiblity for kill
+
+                                         eligibility
+
+but that's not in your patch, so don't bother with it. :)
+
 
 -- 
-Thanks,
-
-David / dhildenb
+~Randy
 
