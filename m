@@ -2,113 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 274752A9B31
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 18:50:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E691C2A9B3A
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 18:52:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727346AbgKFRut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 12:50:49 -0500
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:62702 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726408AbgKFRus (ORCPT
+        id S1727662AbgKFRvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 12:51:41 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:3612 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726010AbgKFRvk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 12:50:48 -0500
-Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A6HmTgh004037;
-        Fri, 6 Nov 2020 18:50:35 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=STMicroelectronics;
- bh=eMPMn91cCHyM/mIF1zD+SFO1I52TNwQPU0lvOZDdToE=;
- b=0O4Jge/UIjwArzKM0JVlUhlUH2fxXAeEsWZ/yltz9MTsSYTFpAAsLtrDg5WdoAaQMkru
- OkOK7UK0R3L+9OB6aiNpgOJos37Wn0LlneVS3Acz3XA1pRVfLxnzPOHsSZCK1in3fkcw
- qaBmoSUorZLH8wyf974OfunbogdJ/BzF5uq45ziSn9U/0blx1S3KGzCrE8K+xkqcMMlj
- 6YKylkhBXg9ycxHSdsWiWvQBtPN4c8aK69cxW+7mTPr5MSqBF7ehIk59p+Xc5IdqO29p
- 0yTiYR3SFpJhRFkqcuv2eQtEUxcCcAGb1JrKjGihNHLsHOADmwMANFBpe7bs/w2ZaoeI eA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 34h00ewstr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 06 Nov 2020 18:50:35 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 7865D100034;
-        Fri,  6 Nov 2020 18:50:34 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag1node3.st.com [10.75.127.3])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 67B612150EE;
-        Fri,  6 Nov 2020 18:50:34 +0100 (CET)
-Received: from localhost (10.75.127.44) by SFHDAG1NODE3.st.com (10.75.127.3)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 6 Nov 2020 18:50:33
- +0100
-From:   Fabrice Gasnier <fabrice.gasnier@st.com>
-To:     <jic23@kernel.org>
-CC:     <mchehab+huawei@kernel.org>, <gregkh@linuxfoundation.org>,
-        <linux-doc@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <alexandre.torgue@st.com>,
-        <fabrice.gasnier@st.com>, <olivier.moysan@st.com>,
-        <linux-iio@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>
-Subject: [PATCH] docs: ABI: testing: iio: stm32: remove re-introduced unsupported ABI
-Date:   Fri, 6 Nov 2020 18:50:16 +0100
-Message-ID: <1604685016-2434-1-git-send-email-fabrice.gasnier@st.com>
-X-Mailer: git-send-email 2.7.4
+        Fri, 6 Nov 2020 12:51:40 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fa58d2f0000>; Fri, 06 Nov 2020 09:51:43 -0800
+Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 6 Nov
+ 2020 17:51:37 +0000
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.173)
+ by HQMAIL101.nvidia.com (172.20.187.10) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Fri, 6 Nov 2020 17:51:37 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gDIrYVgm+MI5AhY6JoZ/CjXaSW5z1rp6bx1ieH0iRvO52D0b8E0LsmuvN4RX6Ia0rbTaNxsnfJudfsYieErKHuLsTAmf/g0FGAs/1tAIHoo0DsthdLkaP7ARb/glC3T3OXqMLQXqEdIj2/RzZyPz4WuaCJCJujphWcY9suScOPtLdF3qEoTpgA8M/qn2I1/XQEBWrx/Jn0qdc+GV08uMdOSePtqNr4ntDExsBf8mkDCp3yXcq/HYXdQRFilwHFdFlos+hxIGOWp2XU6K5bm9cCcHSjzOFFs8V95M0viy/fGntQwyDF4KDIhQ2TGRpSChEfiSLzagixV/Fkfiv2JFbQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8DSePUoQ6vl4qfuoUwGYHLoD0BveDxxjeobSHmvrAAY=;
+ b=Zeb53IRgPsYILnrkU5QkyEeAJ08R80xcc4idFDTBgv1P32YVlsApD9qzFHHWHFAdBEZIVJHQ+1e7UlTm5el9AHxKCIVDje+FgJOSprM8wgMe6VccpqL+yVaUorEEmU5m8ZZpHrwcnUAIV37I8XVTS7JLCLFEYwt9Wal4N/cDNfsnzqtWJW5NbNqZqpffzfDC2hCbPS164TQ4iSYbAWbJzgq+TeF4oj2ruyWVru7ghkZBHtviTMPjdErArbOSkTCAoo5kxnC4imkOo7SDzWKre4tIzVOV9YZO+yyM0QrHzL7oLou9ZYbSyNvKYV2s9W2ZUBT1AxtoJiNyU+qnkHlHQA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM5PR12MB1145.namprd12.prod.outlook.com (2603:10b6:3:77::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18; Fri, 6 Nov
+ 2020 17:51:33 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3499.032; Fri, 6 Nov 2020
+ 17:51:33 +0000
+Date:   Fri, 6 Nov 2020 13:51:31 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     "Raj, Ashok" <ashok.raj@intel.com>
+CC:     "Tian, Kevin" <kevin.tian@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        "vkoul@kernel.org" <vkoul@kernel.org>,
+        "Dey, Megha" <megha.dey@intel.com>,
+        "maz@kernel.org" <maz@kernel.org>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>, "Lu, Baolu" <baolu.lu@intel.com>,
+        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        "jing.lin@intel.com" <jing.lin@intel.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "netanelg@mellanox.com" <netanelg@mellanox.com>,
+        "shahafs@mellanox.com" <shahafs@mellanox.com>,
+        "yan.y.zhao@linux.intel.com" <yan.y.zhao@linux.intel.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "Ortiz, Samuel" <samuel.ortiz@intel.com>,
+        "Hossain, Mona" <mona.hossain@intel.com>,
+        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
+Subject: Re: [PATCH v4 06/17] PCI: add SIOV and IMS capability detection
+Message-ID: <20201106175131.GW2620339@nvidia.com>
+References: <20201102132158.GA3352700@nvidia.com>
+ <MWHPR11MB1645675ED03E23674A705DF68C110@MWHPR11MB1645.namprd11.prod.outlook.com>
+ <20201103124351.GM2620339@nvidia.com>
+ <MWHPR11MB164544C9CFCC3F162C1C6FC18CEF0@MWHPR11MB1645.namprd11.prod.outlook.com>
+ <20201104124017.GW2620339@nvidia.com>
+ <MWHPR11MB1645862A8F7CF7FB8DD011778CEF0@MWHPR11MB1645.namprd11.prod.outlook.com>
+ <20201104135415.GX2620339@nvidia.com>
+ <MWHPR11MB1645524BDEDF8899914F32AE8CED0@MWHPR11MB1645.namprd11.prod.outlook.com>
+ <20201106131415.GT2620339@nvidia.com> <20201106164850.GA85879@otc-nc-03>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20201106164850.GA85879@otc-nc-03>
+X-ClientProxiedBy: BL0PR05CA0021.namprd05.prod.outlook.com
+ (2603:10b6:208:91::31) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.44]
-X-ClientProxiedBy: SFHDAG6NODE2.st.com (10.75.127.17) To SFHDAG1NODE3.st.com
- (10.75.127.3)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-06_06:2020-11-05,2020-11-06 signatures=0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by BL0PR05CA0021.namprd05.prod.outlook.com (2603:10b6:208:91::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.10 via Frontend Transport; Fri, 6 Nov 2020 17:51:33 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kb5tb-000zdx-Vk; Fri, 06 Nov 2020 13:51:32 -0400
+X-LD-Processed: 43083d15-7273-40c1-b7db-39efd9ccc17a,ExtAddr
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1604685103; bh=8DSePUoQ6vl4qfuoUwGYHLoD0BveDxxjeobSHmvrAAY=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType:X-LD-Processed;
+        b=qjaWebqqfQ87Xcu9Gsl7Z8tT1Mk/2+WDlzwkefsGy0vRjJh5BsXW5elfSz6TMyVC+
+         TN0Vg+YB3W6avTOX+ONRFKqMJQtw6hhrNsH4ietTaGR9ph3j7UeY1erMrLgRpWZusw
+         P5SHq+5n2z/GONY3KgZZQgqyLOv8O7QNrCVIhAQF6SDacC0BtSrVccbI/2Q/P+EPf4
+         yJ3bBFlGAgoUgwCTeQZwywB4fgvWTFyIdIdr6T67zmvV403n0brsv7AcJt4iwezHsv
+         xTuXMsmMfiSOTBn8LdNTbzSZiCF07ieuPDig7v6YbgX9ynFGMC7kI5y/yo00C8gOxv
+         4PfjKf0RxG40Q==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove unsupported ABI that has been re-introduced due to a rebase hunk.
-This ABI has been moved in the past in commit b299d00420e2
-("IIO: stm32: Remove quadrature related functions from trigger driver")
+On Fri, Nov 06, 2020 at 08:48:50AM -0800, Raj, Ashok wrote:
+> > The IMS flag belongs in the platform not in the devices.
+> 
+> This support is mostly a SW thing right? we don't need to muck with
+> platform/ACPI for that matter. 
 
-This also fixes a couple of warnings seen with:
-./scripts/get_abi.pl validate 2>&1|grep iio
+Something needs to tell the guest OS platform what to do, so you need
+a place to put it.
 
-Fixes: 34433332841d ("docs: ABI: testing: make the files compatible with ReST output")
+Putting it in a per-device PCI cap is horrible and hacky from an
+architectural perspective.
 
-Signed-off-by: Fabrice Gasnier <fabrice.gasnier@st.com>
----
- .../ABI/testing/sysfs-bus-iio-timer-stm32          | 24 ----------------------
- 1 file changed, 24 deletions(-)
+> I missed why ACPI tables should carry such information. If kernel doesn't
+> want to support those devices its within kernel control. Which means kernel
+> will only use the available MSIx interfaces. This is legacy support.
 
-diff --git a/Documentation/ABI/testing/sysfs-bus-iio-timer-stm32 b/Documentation/ABI/testing/sysfs-bus-iio-timer-stm32
-index a10a4de..c4a4497 100644
---- a/Documentation/ABI/testing/sysfs-bus-iio-timer-stm32
-+++ b/Documentation/ABI/testing/sysfs-bus-iio-timer-stm32
-@@ -109,30 +109,6 @@ Description:
- 		When counting down the counter start from preset value
- 		and fire event when reach 0.
+The platform flag tells the guest that it can (or can't) support IMS
+*at all*
+
+Primarily a guest would be blocked because the VMM provides no way for
+the guest to create addr/data pairs.
+
+Has nothing to do with individual devices.
+
  
--What:		/sys/bus/iio/devices/iio:deviceX/in_count_quadrature_mode_available
--KernelVersion:	4.12
--Contact:	benjamin.gaignard@st.com
--Description:
--		Reading returns the list possible quadrature modes.
--
--What:		/sys/bus/iio/devices/iio:deviceX/in_count0_quadrature_mode
--KernelVersion:	4.12
--Contact:	benjamin.gaignard@st.com
--Description:
--		Configure the device counter quadrature modes:
--
--		channel_A:
--			Encoder A input servers as the count input and B as
--			the UP/DOWN direction control input.
--
--		channel_B:
--			Encoder B input serves as the count input and A as
--			the UP/DOWN direction control input.
--
--		quadrature:
--			Encoder A and B inputs are mixed to get direction
--			and count with a scale of 0.25.
--
- What:		/sys/bus/iio/devices/iio:deviceX/in_count_enable_mode_available
- KernelVersion:	4.12
- Contact:	benjamin.gaignard@st.com
--- 
-2.7.4
+> > The OS logic would be
+> >  - If no IMS information found then use IMS (Bare metal)
+> >  - If the IMS disable flag is found then
+> >    - If (future) hypercall available and the OS knows how to use it
+> >      then use IMS
+> >    - If no hypercall found, or no OS knowledge, fail IMS
+> > 
+> > Our devices can use IMS even in a pure no-emulation
+> 
+> This is true for IMS as well. But probably not implemented in the kernel as
+> such. From a HW point of view (take idxd for instance) the facility is
+> available to native OS as well. The early RFC supported this for native.
 
+I can't follow what you are trying to say here.
+
+Dave said the IMS cap was to indicate that the VMM supported emulation
+of IMS so that the VMM can do the MSI addr/data translation as part of
+the emulation.
+
+I'm saying emulation will be too horrible for our devices that don't
+require *any* emulation.
+
+It is a bad architecture. The platform needs to handle this globally
+for all devices, not special hacky emulations things custom made for
+every device out there.
+
+> Native devices can have both MSIx and IMS capability. But as I
+> understand this isn't how we have partitioned things in SW today. We
+> left IMS only for mdev's. And I agree this would be very useful.
+
+That split is just some decision idxd did, we are thinking about doing
+other things in our devices.
+
+Jason
