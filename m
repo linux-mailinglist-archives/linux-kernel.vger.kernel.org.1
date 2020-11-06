@@ -2,78 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D93892A9613
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 13:17:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 773E22A9615
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 13:17:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727206AbgKFMRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 07:17:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51130 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726317AbgKFMRP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 07:17:15 -0500
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17071C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 04:17:15 -0800 (PST)
-Received: by mail-yb1-xb43.google.com with SMTP id f140so965528ybg.3
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 04:17:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xqfIsNEjsKrt4kdC4DaJrSPlEefpbQse4P7YaoOqW9M=;
-        b=VD1HSg9DAnRhD9QqAuEuTpZvuBtVS/xj8qIkD7u90LXglk/3ZO6dXB+gc4z6yKT84B
-         2lpiZV0hPFJITr/onj13/iFZST36UVUVdXN5Bnczu9b0p/7q/bNggbwOUUCrmr4F8xPa
-         2FVNWYAkdMTqd4VvRRGdn5alnIop2fNXWzWGd8lH5i5Fy9UN5GO+1IT8l3gAUx1rCyh3
-         ISTjsWooHiLDAz3cUgQVe8ikDdNT35K/az6b5e9pulPxLq1xgwoMcVhuxQysQ2T27Bf8
-         U3AP3++lwTxmzCPynkEDOyf6DoY1h7pLZfqml7CO1tW618qsZcTH6VDJiht39hXzoZZ9
-         GTtA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xqfIsNEjsKrt4kdC4DaJrSPlEefpbQse4P7YaoOqW9M=;
-        b=LIED0hgH2JyXQ77c19vBBfn1tamn891INNLFeqaE8Nl9fIfHNd9OCAWL6odS5Sd4SW
-         7poaifyVk7PRsRnnfqbtFBEnIpjKgvxYYDv0HRXUOfXzQOu/0WAtsl05bVY9awQbofm8
-         gD8aN71UbgzmvpTGi2YsKsKmqsOpskr+RHZobgK++c054R8ZDzWwBKGLU1GZ9hIgLFNm
-         RNFyJ2k9SW+bJ8WtTirLwHEWK0WHAtPnWIogtGjU7x+dAHHqqvWLUaYRqusgW77ARKPI
-         8jVzxcxqXy6FVT1mGYpb43/nTJTVdGLBAwdT8l87FKCafZ53LmL0VHbeHYyd2SDIaqGe
-         gMKQ==
-X-Gm-Message-State: AOAM530ihx1BFgGgq9hjt1a3t5Y9QwLSO1liu9Dtb3LH92FHxzKeKenM
-        6fpD69f9bz2LbEejQsrfYktxoK80K4yvzb4nMaQ=
-X-Google-Smtp-Source: ABdhPJyBK9j3lnI8h+gfuOxKbNBl9vtHgce0kiD37XYmQsTAV2IGyxIAReaOYLzCkEdCztv7Gmz4XNep+DEA0skcnGU=
-X-Received: by 2002:a25:4102:: with SMTP id o2mr2227672yba.115.1604665034446;
- Fri, 06 Nov 2020 04:17:14 -0800 (PST)
+        id S1727261AbgKFMR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 07:17:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56176 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727216AbgKFMR2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 07:17:28 -0500
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1A44B20715;
+        Fri,  6 Nov 2020 12:17:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604665047;
+        bh=bZKxLN7RY3HhlK+0rxvWdPBgq3Fle0UPqj94HYU3RGU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=1GY4xHL0sRl9FfS2prnzEVLTSNnG1Fmgmn+DetygieeuVuprMQwjik3X3Ru80NdT3
+         5E6f7OTD2CVxNRXkvyvk3UZxWJ2hSmnesQagdM+aTg12kC80rvk9bngqc6L68nQFlC
+         70cc6fJyWsmHpIriPBj1XRz5yfyqu5+Pu+0oIp2E=
+Date:   Fri, 6 Nov 2020 12:17:15 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        David Laight <David.Laight@aculab.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: Re: [RFT PATCH v2 7/8] gpio: exar: switch to using regmap
+Message-ID: <20201106121715.GA49612@sirena.org.uk>
+References: <20201104193051.32236-1-brgl@bgdev.pl>
+ <20201104193051.32236-8-brgl@bgdev.pl>
+ <20201105174057.GG4856@sirena.org.uk>
+ <CAMRc=Mffr4pn+mnuO6WVP9p3JT-G_t8buJBZMBBRFjQDsfLeuw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201103095828.515831-1-poeschel@lemonage.de> <CANiq72mDG8YJLcpKuE+noUQY5B9K6Cc71ado_dyLFVVf_xzKwA@mail.gmail.com>
- <20201106101135.xesjdqg2z3hgpqnv@lem-wkst-02.lemonage>
-In-Reply-To: <20201106101135.xesjdqg2z3hgpqnv@lem-wkst-02.lemonage>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Fri, 6 Nov 2020 13:17:03 +0100
-Message-ID: <CANiq72niN_gB7Nq_+Vnf9CrBhFZF0_cew-kdj=rAURJ0DWJxnQ@mail.gmail.com>
-Subject: Re: [PATCH v6 00/25] Make charlcd device independent
-To:     Lars Poeschel <poeschel@lemonage.de>,
-        Randy Dunlap <rdunlap@infradead.org>
-Cc:     Willy Tarreau <willy@haproxy.com>,
-        Ksenija Stanojevic <ksenija.stanojevic@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="UlVJffcvxoiEqYs2"
+Content-Disposition: inline
+In-Reply-To: <CAMRc=Mffr4pn+mnuO6WVP9p3JT-G_t8buJBZMBBRFjQDsfLeuw@mail.gmail.com>
+X-Cookie: When does later become never?
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 6, 2020 at 11:11 AM Lars Poeschel <poeschel@lemonage.de> wrote:
->
-> I got an email [1] with a report about a build failure in
-> hd44780_common. The fix is simple but I don't know the process from here
-> on. Should I post a v7 of the whole patchset or only a follow-up patch
-> for the fix ?
 
-Either would work (I can rebase it on my side). However, in order to
-give credit to Randy, if the fix is integrated into a previous patch,
-then I am not sure where we would put the Reported-by.
+--UlVJffcvxoiEqYs2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Randy, what people usually do for your reports on -next (or what do you prefer)?
+On Fri, Nov 06, 2020 at 12:13:55PM +0100, Bartosz Golaszewski wrote:
+> On Thu, Nov 5, 2020 at 6:41 PM Mark Brown <broonie@kernel.org> wrote:
 
-Cheers,
-Miguel
+> > AFAICT (and indeed now I dig around assign_bit() only works on a single
+> > bit and does both shifts which makes the correspondance with that
+> > interface super unclear, we're not mirroring that interface here).  If
+> > you're trying to clone the bitops function it should probably be an
+> > actual clone of the bitops function not something different, that would
+> > be clearer and it'd be easier to understand why someone would want the
+> > API in the first place.  But perhaps I'm missing something here?
+
+> It's true that bitops set/clear/assign bit macros work on single bits
+> and take their offsets as arguments. However all regmap helpers
+> operate on masks. Two release cycles back we added two helpers
+> regmap_set_bits() and regmap_clear_bits() which are just wrappers
+> around regmap_update_bits(). The naming was inspired by bitops
+> (because how would one name these operations differently anyway?) but
+> it was supposed to be able to clear/set multiple bits at once - at
+> least this was my use-case in mtk-star-emac driver I was writing at
+> the time and for which I wrote these helpers.
+
+Which is fine and not at all unclear since there's no separate value
+argument, the value comes along with the name. =20
+
+> Now the regmap_assign_bits() helper is just an extension to these two
+> which allows users to use one line instead of four. I'm not trying to
+> clone bitops - it's just that I don't have a better idea for the
+> naming.
+
+I really don't see the benefit to the helper, it makes sense in the
+context of bitops where the operation does all the shifting and it's
+only a single bit but for regmap where it's dealing with bitmasks as
+well and the naming doesn't make it crystal clear I can only see this
+being confusing to people.  Had the set and clear helpers for regmap
+been done as single bits it'd be a lot easier but that's not the case
+and it'd also be odd to have just this one helper that took a shift
+rather than a bitmask.
+
+--UlVJffcvxoiEqYs2
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+lPsoACgkQJNaLcl1U
+h9B+RAf/YyKNM+XnHh2JvHiISQaTNYhLlUfYUKDPeMWWQBUJbgGMGrc85OM8pazO
+9MdyCQtmU9N11JcmHWzS+9hbg1sg+8YY5Wvfh6FJSfUqTjGa+MBg9rl0n16US54D
+88kXLCvg6xSf46vewCrD7h2PynyDSQEguK5n0y7qrl/8wa8kT1ftxWwON9fgQho8
+nOz/7AfbIBfibYdq1SjA5DhyuGlidta4Tv1mkd4ouXxZLeHcalP623bZmwmFQ7Yo
+I0Gc11CBg89EkcCofD8At/Q7peLwac8uysTXN9leBHgZyKR6BavrCeuSqlYMd54V
+WuxLfmBxSDPDLQcmfjt6ETauXE7UWQ==
+=78fN
+-----END PGP SIGNATURE-----
+
+--UlVJffcvxoiEqYs2--
