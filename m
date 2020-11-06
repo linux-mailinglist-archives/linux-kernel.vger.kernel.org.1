@@ -2,277 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 640C32A8C1E
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 02:30:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCE732A8C23
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 02:36:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732991AbgKFBaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 20:30:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56300 "EHLO mail.kernel.org"
+        id S1731899AbgKFBgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 20:36:16 -0500
+Received: from mout.gmx.net ([212.227.15.15]:46015 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730906AbgKFBaC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 20:30:02 -0500
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 64C5220759;
-        Fri,  6 Nov 2020 01:30:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604626200;
-        bh=gs8qOEwsBWJGmCYvdyusXp44ywe5fFGnAZd3qd8VLhM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=iy0bhVs5gw2K9oLD3ucU885Otg3swHp1QazSqdiT378SvZTh5ykRwv1osGzVMEA9n
-         ODg58roOSQtK/p0t6PwmPh4XqxH9UOhRU5fpUjCYlkzSM4dwEwF9Y7iJISXZdAAWwP
-         3Qf08OvlTClSRpraSwTgrh7+q9+gfhUCObq/NHkA=
-Date:   Thu, 5 Nov 2020 17:29:59 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     <min.li.xe@renesas.com>
-Cc:     <richardcochran@gmail.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 net-next 1/3] ptp: idt82p33: add adjphase support
-Message-ID: <20201105172959.4d6467b2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <1604535735-19180-1-git-send-email-min.li.xe@renesas.com>
-References: <1604535735-19180-1-git-send-email-min.li.xe@renesas.com>
+        id S1730246AbgKFBgP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 20:36:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1604626566;
+        bh=1VYn4LRQLmLDYGQ9PCTWZEHah9Il9YgyQ6VlLlMv9dg=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=C4m9Kuy+Hs0DWMb/PNCYtFtHTveeulk/NbTgY0Y1yXliEp+kaPKWAiWhUya5vKNfG
+         HIqbYG4sHRFi500jNXkoO/TxuLg14NYEbrqDMwWkrGo70fwFKB8CBSz/zbPL8DYI3B
+         0RbxLosdLDZbjWdsT52M8CapTFy1r2lCHL1hNg48=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([188.174.240.195]) by mail.gmx.com (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1Mwfai-1kQLCp4Bv0-00y6Nh; Fri, 06
+ Nov 2020 02:36:06 +0100
+Message-ID: <b3b0ab83b3f82d03e213494654c53b32d610282f.camel@gmx.de>
+Subject: Re: v5.8+ powersave governor breakage?
+From:   Mike Galbraith <efault@gmx.de>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linux PM <linux-pm@vger.kernel.org>
+Date:   Fri, 06 Nov 2020 02:36:05 +0100
+In-Reply-To: <2454708.LCoKzY5ALV@kreacher>
+References: <580d12716f6363d7404805fd4bc50e2d5ab459b0.camel@gmx.de>
+         <2948497.iyA2Nh11HS@kreacher>
+         <76661fbdbd31368c0a06cd58296f5ec12817e33c.camel@gmx.de>
+         <2454708.LCoKzY5ALV@kreacher>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:imsqUelnGyTysy2GzvyZURlA+VYsEfiR1F7XxI3it1gwjz1gh/8
+ e/vVV0xoV1vqUKnoipNnEr4r9VoQeWhFNvWLdmMG6/GVtMXFse8+MjzU740UwLUwY5Birvf
+ EcuX9cxu3UfHFyvNT+dWeuHC0cNqXVBNsIggpYyAx1d+rrVqWLClLfIC+chVVmO9VwRLFjR
+ T9WA049YQ/UXV46uFbu3A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:wvXDe0cf3NA=:ho1bEPEqPN4r3GhQTaRRTz
+ 0VFwZL/hTlwuQc0sO6fvMocPNDKf46XlYJJAnNYk6CpQ0sXXVC00SKMCDT5QQWq4qQd/j5OnI
+ J00tGkuznKkFObSLecHJWDsJLXwjN50i+kp6mdbtlBEzYGQ5s7pnp8/rylzeqqPKs4bXVh5TH
+ MsoXX+H6lNyIUF5wJS2vo+SZj1mljs5rqWNFaivJt7ngxvVmMETaUKejpH0TrR5ZQwY9jDqiR
+ C7ogXEGzJaQM7ejL0v5QpPxoKBejkbMbjjCwjtd7QekjwzQ4qwpctAjQ9fz9BqhPaY1GCz706
+ 0AtNop2rHAKeW/13jL7mFJ1N7NFgU7H6s1Vva3tZKz0wSntUE8Am+LeJo4QGdKMFP5qNsgzCv
+ dZjlV6a7vasO+lpj4TMrsc2lqQJwbfQ8lafvKaTgaUhbYvrcPNT3/hzazJgv9WtN+iAtf75Ng
+ MxAqnUVLWv1Rdw7K4VULi7wpXsNt8nv+y9QagYn6vhguNVVog7cFobJi7T8mm/vE055elQ5IZ
+ ZEeOUpfF2Pj19SuSyLF4W+8mROf+CHMnwvbvtJ4UeNicrUCH0pNGOV0Xr+R4He4dV8sy3+29m
+ vp2wB/12NbsjcIf9kc+Mq7QXnckdBtKQijMNw1+P6kOHdtLiqEINPCHLumoIaDUToep++9xNV
+ 7GgxgmAYeYY+fGeVmPTTuTk8VZfPxDr8bH5Hd1PWUarJChn0X/EPsbNA1ry3ZrYZhCaiGP3wo
+ 8FMfKUmqMZI0ZLdr6D7Y1o4gT4dYJ99QgqWmSV2+3ouh2s46/1PaOYtA6cyUiKnvKERn8PByw
+ uf8CqOjHHdeNNAnJv5erJqxUDCH5vbLJ1KBpecuHfa5FLsuVrRkIeoZAz2E8iXc2An/TZAaPX
+ erf1K5eVWJIltYxomVZw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 4 Nov 2020 19:22:13 -0500 min.li.xe@renesas.com wrote:
-> From: Min Li <min.li.xe@renesas.com>
-> 
-> Add idt82p33_adjphase() to support PHC write phase mode.
-> 
-> Changes since v1:
-> -Fix broken build
-> 
-> Changes since v2:
-> -Fix trailing space
-> 
-> Signed-off-by: Min Li <min.li.xe@renesas.com>
-> 
+On Thu, 2020-11-05 at 19:02 +0100, Rafael J. Wysocki wrote:
+> On Thursday, November 5, 2020 4:08:30 PM CET Mike Galbraith wrote:
+> > On Thu, 2020-11-05 at 15:31 +0100, Rafael J. Wysocki wrote:
+> > > On Monday, November 2, 2020 7:18:41 AM CET Mike Galbraith wrote:
+> > >
+> > > > Desktop box did, it gained a working ondemand, while its previousl=
+y
+> > > > working powersave went broke.
+> > >
+> > > Most likely that's because it was handled by intel_pstate in the "ac=
+tive" mode
+> > > previously, while it is now handled by it in the "passive" mode...
+> >
+> > Perhaps the user interface should then nak switching to powersave as i=
+t
+> > used to nak switching to ondemand?
+>
+> It cannot do that if the powersave governor is configured in.
+>
+> [Essentially, the problem is that the "powersave" thing advertised by
+> intel_pstate in the "active" mode is not really the powersave governor,
+> but that is a mistake made in the past and cannot be undone.  Sorry abou=
+t
+> that.]
 
-Please drop the empty line between tags.
+Hohum.  A little unfortunate, but it probably only affects a few aging
+boxen like mine, and I now know better that to ever again do that.
 
-> Acked-by: Richard Cochran <richardcochran@gmail.com>
-
-> diff --git a/drivers/ptp/ptp_idt82p33.c b/drivers/ptp/ptp_idt82p33.c
-> index 179f6c4..d52fa67 100644
-> --- a/drivers/ptp/ptp_idt82p33.c
-> +++ b/drivers/ptp/ptp_idt82p33.c
-> @@ -21,6 +21,7 @@ MODULE_DESCRIPTION("Driver for IDT 82p33xxx clock devices");
->  MODULE_AUTHOR("IDT support-1588 <IDT-support-1588@lm.renesas.com>");
->  MODULE_VERSION("1.0");
->  MODULE_LICENSE("GPL");
-> +MODULE_FIRMWARE(FW_FILENAME);
->  
->  /* Module Parameters */
->  static u32 sync_tod_timeout = SYNC_TOD_TIMEOUT_SEC;
-> @@ -129,8 +130,9 @@ static int idt82p33_page_offset(struct idt82p33 *idt82p33, unsigned char val)
->  static int idt82p33_rdwr(struct idt82p33 *idt82p33, unsigned int regaddr,
->  			 unsigned char *buf, unsigned int count, bool write)
->  {
-> -	u8 offset, page;
->  	int err;
-> +	u8 page;
-> +	u8 offset;
-
-Please don't make unrelated changes in your patches.
-
->  	page = _PAGE(regaddr);
->  	offset = _OFFSET(regaddr);
-> @@ -145,13 +147,13 @@ static int idt82p33_rdwr(struct idt82p33 *idt82p33, unsigned int regaddr,
->  }
->  
->  static int idt82p33_read(struct idt82p33 *idt82p33, unsigned int regaddr,
-> -			unsigned char *buf, unsigned int count)
-> +			 unsigned char *buf, unsigned int count)
-
-Unrelated change.
-
->  {
->  	return idt82p33_rdwr(idt82p33, regaddr, buf, count, false);
->  }
->  
->  static int idt82p33_write(struct idt82p33 *idt82p33, unsigned int regaddr,
-> -			unsigned char *buf, unsigned int count)
-> +			  unsigned char *buf, unsigned int count)
-
-Unrelated change.
-
->  {
->  	return idt82p33_rdwr(idt82p33, regaddr, buf, count, true);
->  }
-
-> @@ -541,20 +543,13 @@ static int idt82p33_sync_tod(struct idt82p33_channel *channel, bool enable)
->  	if (err)
->  		return err;
->  
-> -	channel->sync_tod_on = enable;
-> -
-> -	if (enable && sync_tod_timeout) {
-> -		mod_delayed_work(system_wq, &channel->sync_tod_work,
-> -				 sync_tod_timeout * HZ);
-> -	}
-> -
->  	return 0;
-
-You can simplify 
-
-	err = idt82...
-	if (err)
-		return err;
-
-	return 0;
-
-to:
-
-	return idt82p33_write(idt82p33, channel->dpll_sync_cnfg,
-	                      &sync_cnfg, sizeof(sync_cnfg));
-
->  }
-
-> -static int idt82p33_pps_enable(struct idt82p33_channel *channel, bool enable)
-> +static int idt82p33_output_enable(struct idt82p33_channel *channel,
-> +				  bool enable, unsigned int outn)
->  {
->  	struct idt82p33 *idt82p33 = channel->idt82p33;
-> -	u8 mask, outn, val;
->  	int err;
-> +	u8 val;
-> +
-> +	err = idt82p33_read(idt82p33, OUT_MUX_CNFG(outn), &val, sizeof(val));
-> +
-
-unnecessary empty line
-
-> +	if (err)
-> +		return err;
-> +
-> +	if (enable)
-> +		val &= ~SQUELCH_ENABLE;
-> +	else
-> +		val |= SQUELCH_ENABLE;
-> +
-> +	return idt82p33_write(idt82p33, OUT_MUX_CNFG(outn), &val, sizeof(val));
-> +}
-> +
-> +static int idt82p33_output_mask_enable(struct idt82p33_channel *channel,
-> +				       bool enable)
-> +{
-> +	u16 mask;
-> +	int err;
-> +	u8 outn;
->  
->  	mask = channel->output_mask;
->  	outn = 0;
->  
->  	while (mask) {
-> -		if (mask & 0x1) {
-> -			err = idt82p33_read(idt82p33, OUT_MUX_CNFG(outn),
-> -					    &val, sizeof(val));
-> -			if (err)
-> -				return err;
->  
-
-unnecessary empty line
-
-> -			if (enable)
-> -				val &= ~SQUELCH_ENABLE;
-> -			else
-> -				val |= SQUELCH_ENABLE;
-> +		if (mask & 0x1) {
->  
-
-unnecessary empty line
-
-> -			err = idt82p33_write(idt82p33, OUT_MUX_CNFG(outn),
-> -					     &val, sizeof(val));
-> +			err = idt82p33_output_enable(channel, enable, outn);
->  
-
-unnecessary empty line
-
->  			if (err)
->  				return err;
->  		}
-> +
->  		mask >>= 0x1;
->  		outn++;
->  	}
-
-> @@ -659,14 +680,16 @@ static int idt82p33_enable(struct ptp_clock_info *ptp,
->  
->  	if (rq->type == PTP_CLK_REQ_PEROUT) {
->  		if (!on)
-> -			err = idt82p33_pps_enable(channel, false);
-> +			err = idt82p33_perout_enable(channel, false,
-> +						     &rq->perout);
->  
-
-unnecessary empty line
-
->  		/* Only accept a 1-PPS aligned to the second. */
->  		else if (rq->perout.start.nsec || rq->perout.period.sec != 1 ||
->  		    rq->perout.period.nsec) {
->  			err = -ERANGE;
->  		} else
-> -			err = idt82p33_pps_enable(channel, true);
-> +			err = idt82p33_perout_enable(channel, true,
-> +						     &rq->perout);
->  	}
->  
->  	mutex_unlock(&idt82p33->reg_lock);
-> @@ -674,6 +697,49 @@ static int idt82p33_enable(struct ptp_clock_info *ptp,
->  	return err;
->  }
->  
-> +static int idt82p33_adjwritephase(struct ptp_clock_info *ptp, s32 offsetNs)
-> +{
-> +	struct idt82p33_channel *channel =
-> +		container_of(ptp, struct idt82p33_channel, caps);
-> +	struct idt82p33 *idt82p33 = channel->idt82p33;
-> +	s64 offsetInFs;
-> +	s64 offsetRegVal;
-
-please don't use cammelCase, I think checkpatch tries to warn about
-this.
-
-Also please try to order the variable declaration lines longest to
-shortest (where possible, the channel declaration here should stay
-first).
-
-> +	u8 val[4] = {0};
-> +	int err;
-
-> @@ -839,19 +930,22 @@ static int idt82p33_enable_channel(struct idt82p33 *idt82p33, u32 index)
->  
->  static int idt82p33_load_firmware(struct idt82p33 *idt82p33)
->  {
-> +	char fname[128] = FW_FILENAME;
-
-This variable seems unnecessary.
-
->  	const struct firmware *fw;
->  	struct idt82p33_fwrc *rec;
->  	u8 loaddr, page, val;
->  	int err;
->  	s32 len;
->  
-> -	dev_dbg(&idt82p33->client->dev,
-> -		"requesting firmware '%s'\n", FW_FILENAME);
-> +	dev_dbg(&idt82p33->client->dev, "requesting firmware '%s'\n", fname);
->  
-> -	err = request_firmware(&fw, FW_FILENAME, &idt82p33->client->dev);
-> +	err = request_firmware(&fw, fname, &idt82p33->client->dev);
->  
-> -	if (err)
-> +	if (err) {
-> +		dev_err(&idt82p33->client->dev,
-> +			"Failed in %s with err %d!\n", __func__, err);
->  		return err;
-> +	}
->  
->  	dev_dbg(&idt82p33->client->dev, "firmware size %zu bytes\n", fw->size);
->  
