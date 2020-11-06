@@ -2,116 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E1CA2A9B48
+	by mail.lfdr.de (Postfix) with ESMTP id DCE532A9B49
 	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 18:54:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727831AbgKFRyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 12:54:23 -0500
-Received: from mga11.intel.com ([192.55.52.93]:9750 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727386AbgKFRyW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 12:54:22 -0500
-IronPort-SDR: tzqSPL3z3NbY9y5u1FMMswbhK+NFLaufCfVMksK+O8PDxMyvCxEksVDUOBG+Xy5kNYEkz2j3VW
- jZvL6hL0Tn9Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9797"; a="166067378"
-X-IronPort-AV: E=Sophos;i="5.77,457,1596524400"; 
-   d="scan'208";a="166067378"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2020 09:54:21 -0800
-IronPort-SDR: aElJFXq+yKY7KgEB9/MqrP6hi4lHrPJri3b381KeIB7BQHcqTo4QdTNWKtitO+Ey1GjJrxdFWH
- pICzZwLf+cow==
-X-IronPort-AV: E=Sophos;i="5.77,457,1596524400"; 
-   d="scan'208";a="539927603"
-Received: from mburzach-mobl2.amr.corp.intel.com (HELO [10.251.1.178]) ([10.251.1.178])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2020 09:54:19 -0800
-Subject: Re: [PATCH v40 10/24] mm: Add 'mprotect' hook to struct
- vm_operations_struct
-To:     "Dr. Greg" <greg@enjellic.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
-        cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        haitao.huang@intel.com, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
-        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com,
-        mikko.ylinen@intel.com
-References: <20201104145430.300542-1-jarkko.sakkinen@linux.intel.com>
- <20201104145430.300542-11-jarkko.sakkinen@linux.intel.com>
- <20201106174359.GA24109@wind.enjellic.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <e70c9e92-0bd4-59a4-21b1-bccf8621c6bb@intel.com>
-Date:   Fri, 6 Nov 2020 09:54:19 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727853AbgKFRya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 12:54:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48318 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727650AbgKFRya (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 12:54:30 -0500
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5B8EC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 09:54:29 -0800 (PST)
+Received: by mail-qv1-xf42.google.com with SMTP id y11so431063qvu.10
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 09:54:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=o+oYtulVtt4EMGqh61wHdK2Zyyic+H6Jv31LtpmqP64=;
+        b=aVsjWKGr4EF2MMPKJizXm9+dd3n+eO+c8Z+SQrROa1AzuHkcE4kCTYOHYDBrsGo7/i
+         2Hjs8oJaoTViA6U4vK9uXZgS76byC0ihKclLFGLqJdgASjsB3/lpoOKd5AdLh6uoVaos
+         kg+uwyUDd5H9oCn/0yVpCtlbaHugt7pMukN7k=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=o+oYtulVtt4EMGqh61wHdK2Zyyic+H6Jv31LtpmqP64=;
+        b=CyUkzTax3FX8Ol9BG5KFDQPzSAULGsGQAt9oCOaQXD6hfvlVnhT8mYQbbwNN28QJ6E
+         Io/3UF7GA3qHaNGS91dG23AHfqmUZYjLwPzQC5nqlquBbkWFXnRKelvAqJN1cFJ6bNPM
+         bxL1hDu4XvsADzNIN1KjKUEOy5lp5t8ZXFYyXJjGIbo2BnQ0ISe/xVev2fOIC48ureJ5
+         2mqzqD+9MrVk5mEqIdGHlGW93ZiQXXE8vBtXeILChV4cFdQtGurVPtTGTCS59XCrXJrD
+         7pwFgEZJkSaohZ50ivXlydmlvaFghvu9i4lAvt/vB8hkPbl+ZNFVcil5DVCsEmRgDKsf
+         Zq3Q==
+X-Gm-Message-State: AOAM5314yGZpC3GUoSwNsKmWEB42C6AiXIL/j3n9iJWeKYEmv2veqa5c
+        wh5GFQxaOgSINOUKU4pOa+dX+Q==
+X-Google-Smtp-Source: ABdhPJyWsZ1KbFyPk3yEzzFEia0WagMqu7J5YN5rWwu8Pye14MohrZESnuNz+OK48FikHh86n1i20A==
+X-Received: by 2002:ad4:468b:: with SMTP id bq11mr1908716qvb.8.1604685269034;
+        Fri, 06 Nov 2020 09:54:29 -0800 (PST)
+Received: from localhost ([2620:15c:6:411:cad3:ffff:feb3:bd59])
+        by smtp.gmail.com with ESMTPSA id d184sm1009560qkf.136.2020.11.06.09.54.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Nov 2020 09:54:28 -0800 (PST)
+Date:   Fri, 6 Nov 2020 12:54:27 -0500
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     "Li, Aubrey" <aubrey.li@linux.intel.com>
+Cc:     "Ning, Hongyu" <hongyu.ning@linux.intel.com>,
+        Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, mingo@kernel.org,
+        torvalds@linux-foundation.org, fweisbec@gmail.com,
+        keescook@chromium.org, kerrnel@google.com,
+        Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
+        benbjiang@tencent.com,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
+        chris.hyser@oracle.com, Tim Chen <tim.c.chen@intel.com>
+Subject: Re: [PATCH v8 -tip 00/26] Core scheduling
+Message-ID: <20201106175427.GB2845264@google.com>
+References: <20201020014336.2076526-1-joel@joelfernandes.org>
+ <f7fc588b-12cf-95a8-6142-e4d112fb1689@linux.intel.com>
+ <bf2ee997-1f53-0eef-40ad-1e98274da587@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20201106174359.GA24109@wind.enjellic.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bf2ee997-1f53-0eef-40ad-1e98274da587@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/6/20 9:43 AM, Dr. Greg wrote:
-> In light of this, given the decision by the driver authors to not
-> fully equip the driver with EDMM support, the mprotect protection
-> requirements are straight forward and minimalistic.  All that is
-> needed is a binary valued variable, set on the command-line, that
-> either allows or denies anonymous code execution by an enclave,
-> ie. access to page protection changes after initialization.
+On Fri, Nov 06, 2020 at 10:58:58AM +0800, Li, Aubrey wrote:
 
-To that, I say NAK.  We need more flexibility than a boot-time-fixed,
-system-wide switch.
+> > 
+> > 	-- workload D, new added syscall workload, performance drop in cs_on:
+> > 	+----------------------+------+-------------------------------+
+> > 	|                      | **   | will-it-scale  * 192          |
+> > 	|                      |      | (pipe based context_switch)   |
+> > 	+======================+======+===============================+
+> > 	| cgroup               | **   | cg_will-it-scale              |
+> > 	+----------------------+------+-------------------------------+
+> > 	| record_item          | **   | threads_avg                   |
+> > 	+----------------------+------+-------------------------------+
+> > 	| coresched_normalized | **   | 0.2                           |
+> > 	+----------------------+------+-------------------------------+
+> > 	| default_normalized   | **   | 1                             |
+> > 	+----------------------+------+-------------------------------+
+> > 	| smtoff_normalized    | **   | 0.89                          |
+> > 	+----------------------+------+-------------------------------+
+> 
+> will-it-scale may be a very extreme case. The story here is,
+> - On one sibling reader/writer gets blocked and tries to schedule another reader/writer in.
+> - The other sibling tries to wake up reader/writer.
+> 
+> Both CPUs are acquiring rq->__lock,
+> 
+> So when coresched off, they are two different locks, lock stat(1 second delta) below:
+> 
+> class name    con-bounces    contentions   waittime-min   waittime-max waittime-total   waittime-avg    acq-bounces   acquisitions   holdtime-min   holdtime-max holdtime-total   holdtime-avg
+> &rq->__lock:          210            210           0.10           3.04         180.87           0.86            797       79165021           0.03          20.69    60650198.34           0.77
+> 
+> But when coresched on, they are actually one same lock, lock stat(1 second delta) below:
+> 
+> class name    con-bounces    contentions   waittime-min   waittime-max waittime-total   waittime-avg    acq-bounces   acquisitions   holdtime-min   holdtime-max holdtime-total   holdtime-avg
+> &rq->__lock:      6479459        6484857           0.05         216.46    60829776.85           9.38        8346319       15399739           0.03          95.56    81119515.38           5.27
+> 
+> This nature of core scheduling may degrade the performance of similar workloads with frequent context switching.
+
+When core sched is off, is SMT off as well? From the above table, it seems to
+be. So even for core sched off, there will be a single lock per physical CPU
+core (assuming SMT is also off) right? Or did I miss something?
+
+thanks,
+
+ - Joel
+
