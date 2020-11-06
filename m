@@ -2,96 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9CA72A960D
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 13:14:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD6822A9610
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 13:16:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727267AbgKFMOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 07:14:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50682 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726939AbgKFMOS (ORCPT
+        id S1727240AbgKFMQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 07:16:43 -0500
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:40494 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726317AbgKFMQn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 07:14:18 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C120C0613CF;
-        Fri,  6 Nov 2020 04:14:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=wdArR4SHu2gVwVCDPOZrqVGBGWB7EWn5STqcT4bB33k=; b=aOkaNP8WZH4t1Wns/ePyMSfp5O
-        155hPzRmP47qJCbmYtSQvXMqvRjT43bFMlTyiCKhIu25g6ZNZ61hhu6RRcePjR7HRtHf5BFqScCgY
-        wC+CrZOl8xhJ4LGMfj06PRCHNvouk1xIyuoh3rz6S+eX5f0+wk35xlfsDHIy/LfRSMBWjfRRuc/4I
-        i6rwfhMnKN2PiMR1hTVfOLsV6KoSUcNNtzkuFGcwClnRC2me+NCB+UTOGSDB69/JZx7yrzuz5tcDj
-        xLebLHADq8qaWnlZH36ddbmZtSfNSfE3A3e1Pg45fmRxj7uHMzvkM5vL0iPCODUeUjxCApzedsJJl
-        A38knfLg==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kb0d5-0006Re-7j; Fri, 06 Nov 2020 12:14:07 +0000
-Date:   Fri, 6 Nov 2020 12:14:07 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Ralph Campbell <rcampbell@nvidia.com>
-Cc:     linux-mm@kvack.org, nouveau@lists.freedesktop.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jerome Glisse <jglisse@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Bharata B Rao <bharata@linux.ibm.com>,
-        Zi Yan <ziy@nvidia.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Ben Skeggs <bskeggs@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v3 1/6] mm/thp: add prep_transhuge_device_private_page()
-Message-ID: <20201106121407.GQ17076@casper.infradead.org>
-References: <20201106005147.20113-1-rcampbell@nvidia.com>
- <20201106005147.20113-2-rcampbell@nvidia.com>
+        Fri, 6 Nov 2020 07:16:43 -0500
+Received: by mail-ot1-f66.google.com with SMTP id 79so1027071otc.7;
+        Fri, 06 Nov 2020 04:16:42 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+xDAzLUg1c4ATFWXTeoRwJCCaKgy8LRS6wAzG60O47w=;
+        b=ZxT85t7P/JQRL4PmUhadUdBofRxWfA7uLrA2PoxAHpGWsv7avbzBUV155cqrOStLDR
+         KBGrII4v8l8cN3K/XMGZtdvq3GbgiYgkGzjDmA09yHVgzPNwfEosoeojzYawQE8VUsvn
+         v9hIhnzUc6j7LXdXl3+tns38ZpOi9UUmjkV1J2g38VStCxRixhjRkGYSAmprfAFGymVT
+         eJLMFj7Y0Jhgi4Xc2c7DYe3BxVnAzISiK8JKoqTQkO58WTvpL+ipSN2uu7WuzhmB9hdG
+         jfPE3agpycp3LxOXWkcOxMysBlXjHfKr9JAW1V3am26yNgZ8NDPAThF44IAEDNy6xTby
+         El1w==
+X-Gm-Message-State: AOAM533MLDaHt6XIdsPMW0rM5aExal6VtqAWLTJ1YtFdZTZ32uNHhF8P
+        POHm32trDJ9Z5aPhtAxUvL+DpoVIh4GpfqT/cgI=
+X-Google-Smtp-Source: ABdhPJwsCD7JJXjqS83wKh2AZm22ZIVZUyx+6LkKKzYyucmo+SZ5UmKV2U6I9aLbPMfL4719sAv0kSWGYWR5vCEm8/o=
+X-Received: by 2002:a05:6830:210a:: with SMTP id i10mr914074otc.145.1604665002287;
+ Fri, 06 Nov 2020 04:16:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201106005147.20113-2-rcampbell@nvidia.com>
+References: <1602873815-1677-1-git-send-email-tdas@codeaurora.org>
+ <1602873815-1677-5-git-send-email-tdas@codeaurora.org> <160454346831.3965362.1176963402805166784@swboyd.mtv.corp.google.com>
+In-Reply-To: <160454346831.3965362.1176963402805166784@swboyd.mtv.corp.google.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 6 Nov 2020 13:16:31 +0100
+Message-ID: <CAMuHMdXL9ZdLQGtgZM3nqcQoBrUnjGaS5Hg3cB7zrW8WFGyOjg@mail.gmail.com>
+Subject: Re: [PATCH v3 4/4] clk: qcom: camcc: Add camera clock controller
+ driver for SC7180
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Taniya Das <tdas@codeaurora.org>,
+        David Brown <david.brown@linaro.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "open list:ARM/QUALCOMM SUPPORT" <linux-soc@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Rob Herring <robh@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 04:51:42PM -0800, Ralph Campbell wrote:
-> Add a helper function to allow device drivers to create device private
-> transparent huge pages. This is intended to help support device private
-> THP migrations.
+On Thu, Nov 5, 2020 at 5:52 AM Stephen Boyd <sboyd@kernel.org> wrote:
+> Quoting Taniya Das (2020-10-16 11:43:35)
+> > Add support for the camera clock controller found on SC7180 based devices.
+> > This would allow camera drivers to probe and control their clocks.
+> >
+> > Signed-off-by: Taniya Das <tdas@codeaurora.org>
+> > ---
+>
+> Applied to clk-next with some minor fixups.
 
-I think you'd be better off with these calling conventions:
+On Fri, Nov 6, 2020 at 8:43 AM <noreply@ellerman.id.au> wrote:
+> FAILED linux-next/m68k-allmodconfig/m68k-gcc8 Fri Nov 06, 18:35
+>
+> http://kisskb.ellerman.id.au/kisskb/buildresult/14393224/
+>
+> Commit:   Add linux-next specific files for 20201106
+>           c34f157421f6905e6b4a79a312e9175dce2bc607
+> Compiler: m68k-linux-gcc (GCC) 8.1.0 / GNU ld (GNU Binutils) 2.30
+>
+> Possible errors
+> ---------------
+>
+> drivers/clk/qcom/camcc-sc7180.c:1672:8: error: implicit declaration of function 'pm_clk_runtime_resume'; did you mean 'pm_runtime_resume'? [-Werror=implicit-function-declaration]
+> drivers/clk/qcom/camcc-sc7180.c:1681:3: error: implicit declaration of function 'pm_clk_runtime_suspend'; did you mean 'pm_runtime_suspend'? [-Werror=implicit-function-declaration]
+> cc1: some warnings being treated as errors
+> make[4]: *** [scripts/Makefile.build:283: drivers/clk/qcom/camcc-sc7180.o] Error 1
+> make[3]: *** [scripts/Makefile.build:500: drivers/clk/qcom] Error 2
 
--void prep_transhuge_page(struct page *page)
-+struct page *thp_prep(struct page *page)
- {
-+       if (!page || compound_order(page) == 0)
-+               return page;
-        /*
--        * we use page->mapping and page->indexlru in second tail page
-+        * we use page->mapping and page->index in second tail page
-         * as list_head: assuming THP order >= 2
-         */
-+       BUG_ON(compound_order(page) == 1);
- 
-        INIT_LIST_HEAD(page_deferred_list(page));
-        set_compound_page_dtor(page, TRANSHUGE_PAGE_DTOR);
-+
-+       return page;
- }
+The pm_clk_runtime_*() functions are only available if CONFIG_PM=y.
+No dummies are provided for the CONFIG_PM=n case yet.
 
-It simplifies the users.
+Gr{oetje,eeting}s,
 
-> +void prep_transhuge_device_private_page(struct page *page)
-> +{
-> +	prep_compound_page(page, HPAGE_PMD_ORDER);
-> +	prep_transhuge_page(page);
-> +	/* Only the head page has a reference to the pgmap. */
-> +	percpu_ref_put_many(page->pgmap->ref, HPAGE_PMD_NR - 1);
-> +}
-> +EXPORT_SYMBOL_GPL(prep_transhuge_device_private_page);
+                        Geert
 
-Something else that may interest you from my patch series is support
-for page sizes other than PMD_SIZE.  I don't know what page sizes your
-hardware supports.  There's no support for page sizes other than PMD
-for anonymous memory, so this might not be too useful for you yet.
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
