@@ -2,146 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A18D52A9700
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 14:28:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8DBA2A96FC
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 14:26:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727424AbgKFN2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 08:28:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34384 "EHLO
+        id S1727466AbgKFN0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 08:26:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727334AbgKFN2M (ORCPT
+        with ESMTP id S1727214AbgKFN0p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 08:28:12 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA439C0613D2
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 05:28:11 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id b8so1344032wrn.0
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 05:28:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=5+nth0sbjRZ6eUfyh8C52hytfXcUZCQJlAKdHn6wg4s=;
-        b=eUfPnmmICG8ihptUro5uAdo9H04lDEmTYdNtX4usagRpkionWEPB1kgQrriBynVmvh
-         d9mXjhCO/VXZFgrvC9NM8wz1cJgYyEKCEE0HDuaJASuF0TVdgKF7m7ehtkrZsJ1ztpJt
-         GtcL0Q4dAeqty8ClDuwNpuUIXk0u49h31PQkpuseMgdFKiMzvCUxwh68CMZsy9SGyON5
-         zMkXufG6SJg9h1WkQFWzorlkoxZkw+S4hfsCSu0yzKSgkPdH2m0WmdmwFZAjnWzd1eIn
-         LFInAvNp8TJudNc6Q+e1+xM5eyjIXb7wmm3US2JGzdiPRi5NzJum/0JUJAHftIPIuKlW
-         /qCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=5+nth0sbjRZ6eUfyh8C52hytfXcUZCQJlAKdHn6wg4s=;
-        b=tOV+3roGUw+Ud96umEUuqdsl7jUlWdYQqWfrBSdIsuWxCGPdb3j0SOQSGT62so6QF4
-         T6c6f5e7dUgw/MUcM0Pt002BL9qqZi3qNBlU42FtL09/VPqMPabKC/o7AfKHS3c4LOom
-         D6vfu9okoyJz+RUY9BnR8+tB1USBugunExSrFxeTyFip7vuDayooG8GselUfdSrtjCO8
-         9SyLSonaRj6v0GeWd0bXv2UvAX+R4qPzynlVpWgkpftCebA1NdxxG54W710Cj0XZyD5s
-         /q/m7B62B7nHM2f26MsPRRmjczZ+Jd7GmP0DjwfZLIwP6jIuWsbgCEXeBf0yaJ70G2ik
-         jRvA==
-X-Gm-Message-State: AOAM530X+Vi9Pp5pDPDqHfube/2DRh4xtQOlyXIdDXTyvUd+QILzBVoI
-        7cQD6hEAHcV8hUEAv27n1nzvIQ==
-X-Google-Smtp-Source: ABdhPJzyr8IURFNi1JY3F+AdU3mMk9mStWbM24vd3HnbzWWLI4WhHVhbRvxOiBfpGJAbkLabg4iKvg==
-X-Received: by 2002:adf:e64e:: with SMTP id b14mr2713896wrn.68.1604669290377;
-        Fri, 06 Nov 2020 05:28:10 -0800 (PST)
-Received: from dell ([91.110.221.242])
-        by smtp.gmail.com with ESMTPSA id m14sm2118670wro.43.2020.11.06.05.28.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Nov 2020 05:28:09 -0800 (PST)
-Date:   Fri, 6 Nov 2020 13:28:07 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Kalle Valo <kvalo@codeaurora.org>
-Cc:     linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org
-Subject: Re: [PATCH 00/41] [Set 4] Rid W=1 warnings in Wireless
-Message-ID: <20201106132807.GH2063125@dell>
-References: <20201102112410.1049272-1-lee.jones@linaro.org>
- <87mtzzpxx9.fsf@codeaurora.org>
+        Fri, 6 Nov 2020 08:26:45 -0500
+Received: from proxima.lasnet.de (proxima.lasnet.de [IPv6:2a01:4f8:121:31eb:3::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 332F8C0613CF;
+        Fri,  6 Nov 2020 05:26:45 -0800 (PST)
+Received: from localhost.localdomain (p200300e9d7281e0351f2854eb5bb2248.dip0.t-ipconnect.de [IPv6:2003:e9:d728:1e03:51f2:854e:b5bb:2248])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: stefan@datenfreihafen.org)
+        by proxima.lasnet.de (Postfix) with ESMTPSA id DA093C24DF;
+        Fri,  6 Nov 2020 14:26:38 +0100 (CET)
+Subject: Re: [PATCH] net/ieee802154: remove unused macros to tame gcc
+To:     Alex Shi <alex.shi@linux.alibaba.com>, alex.aring@gmail.com
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-wpan@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1604650237-22192-1-git-send-email-alex.shi@linux.alibaba.com>
+From:   Stefan Schmidt <stefan@datenfreihafen.org>
+Message-ID: <b3d4a7bd-bccd-6eb0-f2b8-23f8ced67aab@datenfreihafen.org>
+Date:   Fri, 6 Nov 2020 15:25:39 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87mtzzpxx9.fsf@codeaurora.org>
+In-Reply-To: <1604650237-22192-1-git-send-email-alex.shi@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 02 Nov 2020, Kalle Valo wrote:
+Hello.
 
-> Lee Jones <lee.jones@linaro.org> writes:
+On 06.11.20 09:10, Alex Shi wrote:
+> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+> Cc: Alexander Aring <alex.aring@gmail.com>
+> Cc: Stefan Schmidt <stefan@datenfreihafen.org>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: linux-wpan@vger.kernel.org
+> Cc: netdev@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> ---
+>   net/ieee802154/nl802154.c | 4 ----
+>   1 file changed, 4 deletions(-)
 > 
-> >  [Last batch!]
-> >
-> > This set is part of a larger effort attempting to clean-up W=1
-> > kernel builds, which are currently overwhelmingly riddled with
-> > niggly little warnings.
-> >
-> > Lee Jones (41):
-> >   wil6210: wmi: Correct misnamed function parameter 'ptr_'
-> >   rsi_91x_usb: Fix some basic kernel-doc issues
-> >   rtl8192cu: mac: Fix some missing/ill-documented function parameters
-> >   rsi_91x_usb_ops: Source file headers are not good candidates for
-> >     kernel-doc
-> >   rtl8192cu: trx: Demote clear abuse of kernel-doc format
-> >   brcmfmac: bcmsdh: Fix description for function parameter 'pktlist'
-> >   brcmfmac: pcie: Provide description for missing function parameter
-> >     'devinfo'
-> >   iwlwifi: mvm: rs: Demote non-conformant function documentation headers
-> >   wl1251: cmd: Rename 'len' to 'buf_len' in the documentation
-> >   ath9k: ar9330_1p1_initvals: Remove unused const variable
-> >     'ar9331_common_tx_gain_offset1_1'
-> >   ath9k: ar9340_initvals: Remove unused const variable
-> >     'ar9340Modes_ub124_tx_gain_table_1p0'
-> >   ath9k: ar9485_initvals: Remove unused const variable
-> >     'ar9485_fast_clock_1_1_baseband_postamble'
-> >   ath9k: ar9003_2p2_initvals: Remove unused const variables
-> >   prism54: isl_ioctl: Fix one function header and demote another
-> >   iwlwifi: iwl-eeprom-read: Demote one nonconformant function header
-> >   iwlwifi: iwl-eeprom-parse: Fix 'struct iwl_eeprom_enhanced_txpwr's
-> >     header
-> >   intersil: hostap_hw: Prevent incompatible function type cast
-> >   brcm80211: fweh: Add missing description for 'gfp'
-> >   ath: regd: Provide description for ath_reg_apply_ir_flags's 'reg'
-> >     param
-> >   ath9k: ar5008_phy: Demote half completed function headers
-> >   ath: dfs_pattern_detector: Fix some function kernel-doc headers
-> >   ath: dfs_pri_detector: Demote zero/half completed kernel-doc headers
-> >   iwlwifi: iwl-phy-db: Add missing struct member description for 'trans'
-> >   wl3501_cs: Fix misspelling and provide missing documentation
-> >   rtlwifi: halbtc8723b2ant: Remove a bunch of set but unused variables
-> >   rtlwifi: phy: Remove set but unused variable 'bbvalue'
-> >   rtlwifi: halbtc8821a1ant: Remove set but unused variable
-> >     'wifi_rssi_state'
-> >   rtl8723be: phy: Remove set but unused variable 'lc_cal'
-> >   rtl8188ee: phy: Remove set but unused variable 'reg_ea4'
-> >   rtlwifi: halbtc8821a2ant: Remove a bunch of unused variables
-> >   mwifiex: pcie: Remove a couple of unchecked 'ret's
-> >   rtl8723be: trx: Remove set but unused variable 'cck_highpwr'
-> >   rtlwifi: rtl8821ae: phy: Remove a couple of unused variables
-> >   rtl8821ae: phy: Place braces around empty if() body
-> >   wlcore: spi: Demote a non-compliant function header, fix another
-> >   rtw8822b: Return type is not const
-> >   iwlwifi: fw: dbg: Fix misspelling of 'reg_data' in function header
-> >   realtek: rtw8822c: Remove unused variable 'corr_val'
-> >   ath9k: dynack: Demote non-compliant function header
-> >   iwlwifi: fw: acpi: Demote non-conformant function headers
-> >   realtek: rtw88: pci: Add prototypes for .probe, .remove and .shutdown
+> diff --git a/net/ieee802154/nl802154.c b/net/ieee802154/nl802154.c
+> index 7c5a1aa5adb4..1cebdcedc48c 100644
+> --- a/net/ieee802154/nl802154.c
+> +++ b/net/ieee802154/nl802154.c
+> @@ -2098,11 +2098,7 @@ static int nl802154_del_llsec_seclevel(struct sk_buff *skb,
+>   #define NL802154_FLAG_NEED_NETDEV	0x02
+>   #define NL802154_FLAG_NEED_RTNL		0x04
+>   #define NL802154_FLAG_CHECK_NETDEV_UP	0x08
+> -#define NL802154_FLAG_NEED_NETDEV_UP	(NL802154_FLAG_NEED_NETDEV |\
+> -					 NL802154_FLAG_CHECK_NETDEV_UP)
+>   #define NL802154_FLAG_NEED_WPAN_DEV	0x10
+> -#define NL802154_FLAG_NEED_WPAN_DEV_UP	(NL802154_FLAG_NEED_WPAN_DEV |\
+> -					 NL802154_FLAG_CHECK_NETDEV_UP)
+>   
+>   static int nl802154_pre_doit(const struct genl_ops *ops, struct sk_buff *skb,
+>   			     struct genl_info *info)
 > 
-> The cover letter was not CCed to linux-wireless, adding that. But the
-> patches itself look ok, I see all 41 of them in pathwork:
-> 
-> https://patchwork.kernel.org/project/linux-wireless/list/?series=375401&order=date
 
-What's the plan for these Kalle?
 
-Are you able to take the ones that do not require a respin?  It would
-certainly safe a great deal of mailing list churn if I only
-re-submitted the ones that required refactoring.
+This patch has been applied to the wpan tree and will be
+part of the next pull request to net. Thanks!
 
-Of course if you require me to re-submit all of them, then I will do so.
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+regards
+Stefan Schmidt
