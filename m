@@ -2,298 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81B312A993D
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 17:15:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 697EC2A993F
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 17:16:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726808AbgKFQPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 11:15:21 -0500
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:36520 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725868AbgKFQPV (ORCPT
+        id S1726983AbgKFQPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 11:15:42 -0500
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:42515 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725868AbgKFQPm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 11:15:21 -0500
-Received: by mail-ot1-f67.google.com with SMTP id 32so1712533otm.3;
-        Fri, 06 Nov 2020 08:15:19 -0800 (PST)
+        Fri, 6 Nov 2020 11:15:42 -0500
+Received: by mail-oi1-f195.google.com with SMTP id w145so1836025oie.9;
+        Fri, 06 Nov 2020 08:15:41 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=B6YSrk+0c+AJwW3qgU6Jh+lEfY+XxZlQQTIhLOcyWxo=;
-        b=DuHVmIM6iLp93uRqnLP7xYM2k7FnxsQZlQO78Qv7YeB+sGIG4aI1QFUw6wEg+/dlUO
-         HA98e3zi+ILW8VCRneEt8wJtvuyiQ077QAxJBRNsR2TczHZ7juktCn19GXM4u0DwckXQ
-         Qj8ADXibhlYMejwktuXjkiYEeXVIAkss5+exdWfWiLKN3VmgQhvU18+4UHPjAWGzWgM2
-         xUTXbc9pBCBdqP2GBNGPuS6oCbWSeHvY99K5sSLrpbot65bC8+hpfyWItXZUcusZ0wf+
-         qACHLX4nrxDDjJKDT1nvpVT1XXLzeOjJmY1r+zfhpHWWg7vQQhrzi4M0UOvzQJgZsLsZ
-         UiPA==
-X-Gm-Message-State: AOAM530uI2Uha7QmPyRubTEM/aWTfapK8pC86DyoWxAlFmPpmXVAKHBy
-        QpG/gYi15OPzq0mY/v3xQw==
-X-Google-Smtp-Source: ABdhPJw5xaJPHanhZ1F9y0LCHHFDvpwMndnpkffIEpq4lPHPQNg8HLJDQWT7Z9LRZljRRMxOqZPcnA==
-X-Received: by 2002:a9d:550a:: with SMTP id l10mr1420812oth.357.1604679319573;
-        Fri, 06 Nov 2020 08:15:19 -0800 (PST)
+        bh=JKTC9t6U56PdRSRllEeWLwbdLXcSPIAe13lQUZ7E930=;
+        b=h0l/rECBx07Qu9q3Ucm2HMr4e6uC3PsP23sbW+kXJT8H2gh1R9TiDBPb5xJ5f+E012
+         XLarOFE3UQYA31ec7l6ABq88iI3VHn675ILRz5rbn0wtfABAPTn6CTDeWcxnnbmBic1u
+         wtu0i3QMRP8cAFju0JR41hKfGdQBkc0Ox/fdM5TqRuIfmTqtctevVYl6ySfy75fp50+M
+         Qz7hCSsLSYsx9jf66BmDvrqo0MTHaUcWoRR8JhMCvtfGUUM5TBKh/Cfc27u0gHW3M3Oj
+         0wvklJ8fGpbzZbjzXDSOC7J+FrCkmFD0bMFMOPcplHPU2KvhdE5/NbCVasln5qBxgLoA
+         XiJQ==
+X-Gm-Message-State: AOAM5335Zgd+Ws+t2QzHjlqFAhBuun+VhTQkji/IsnihPyyCxYJL7l6F
+        Rdta4ZhULoIlwWuY7tOlMg==
+X-Google-Smtp-Source: ABdhPJyrNJ22bUa+bEB3u2wV8J2lLCG70ySvIv54k7b/vpLloNjlu10MYF+8PMmPZQweX552ICB7lg==
+X-Received: by 2002:aca:4454:: with SMTP id r81mr1481777oia.43.1604679341288;
+        Fri, 06 Nov 2020 08:15:41 -0800 (PST)
 Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id z19sm410303ooi.32.2020.11.06.08.15.18
+        by smtp.gmail.com with ESMTPSA id u16sm402311ooj.8.2020.11.06.08.15.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Nov 2020 08:15:18 -0800 (PST)
-Received: (nullmailer pid 3295473 invoked by uid 1000);
-        Fri, 06 Nov 2020 16:15:17 -0000
-Date:   Fri, 6 Nov 2020 10:15:17 -0600
+        Fri, 06 Nov 2020 08:15:40 -0800 (PST)
+Received: (nullmailer pid 3296044 invoked by uid 1000);
+        Fri, 06 Nov 2020 16:15:39 -0000
+Date:   Fri, 6 Nov 2020 10:15:39 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Sowjanya Komatineni <skomatineni@nvidia.com>
-Cc:     thierry.reding@gmail.com, jonathanh@nvidia.com,
-        devicetree@vger.kernel.org, linux-ide@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/4] dt-bindings: ata: tegra: Convert binding
- documentation to YAML
-Message-ID: <20201106161517.GA3290506@bogus>
-References: <1604628968-1501-1-git-send-email-skomatineni@nvidia.com>
- <1604628968-1501-2-git-send-email-skomatineni@nvidia.com>
+To:     Samuel Holland <samuel@sholland.org>
+Cc:     linux-arm-kernel@lists.infradead.org, Chen-Yu Tsai <wens@csie.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        devicetree@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        phone-devel@vger.kernel.org,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH 1/7] ASoC: dt-bindings: sun8i-codec: Increase
+ #sound-dai-cells
+Message-ID: <20201106161539.GA3295779@bogus>
+References: <20201106041513.38481-1-samuel@sholland.org>
+ <20201106041513.38481-2-samuel@sholland.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1604628968-1501-2-git-send-email-skomatineni@nvidia.com>
+In-Reply-To: <20201106041513.38481-2-samuel@sholland.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 06:16:05PM -0800, Sowjanya Komatineni wrote:
-> This patch converts text based dt-binding document to YAML based
-> dt-binding document.
+On Thu, 05 Nov 2020 22:15:07 -0600, Samuel Holland wrote:
+> Increase sound-dai-cells to 1 to allow using the DAIs in the codec
+> corresponding to AIF2 and AIF3.
 > 
-> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
+> The generic ASoC OF code supports a #sound-dai-cells value of 0 or 1
+> with no impact to the driver, so this is a backward-compatible change.
+> 
+> Signed-off-by: Samuel Holland <samuel@sholland.org>
 > ---
->  .../devicetree/bindings/ata/nvidia,tegra-ahci.yaml | 152 +++++++++++++++++++++
->  .../bindings/ata/nvidia,tegra124-ahci.txt          |  44 ------
->  2 files changed, 152 insertions(+), 44 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/ata/nvidia,tegra-ahci.yaml
->  delete mode 100644 Documentation/devicetree/bindings/ata/nvidia,tegra124-ahci.txt
+>  .../devicetree/bindings/sound/allwinner,sun8i-a33-codec.yaml    | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/ata/nvidia,tegra-ahci.yaml b/Documentation/devicetree/bindings/ata/nvidia,tegra-ahci.yaml
-> new file mode 100644
-> index 0000000..ac20f6e
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/ata/nvidia,tegra-ahci.yaml
-> @@ -0,0 +1,152 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/ata/nvidia,tegra-ahci.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Tegra AHCI SATA Controller
-> +
-> +maintainers:
-> +  - Thierry Reding <thierry.reding@gmail.com>
-> +  - Jonathan Hunter <jonathanh@nvidia.com>
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - nvidia,tegra124-ahci
-> +      - nvidia,tegra132-ahci
-> +      - nvidia,tegra210-ahci
-> +
-> +  reg:
-> +    minItems: 2
-> +    maxItems: 3
-> +    items:
-> +      - description: AHCI registers
-> +      - description: SATA configuration and IPFS registers
-> +      - description: SATA AUX registers
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  clock-names:
-> +    maxItems: 2
 
-Don't need maxItems, implied by the size of 'items'.
 
-> +    items:
-> +      - const: sata
-> +      - const: sata-oob
-> +
-> +  clocks:
-> +    maxItems: 2
-> +    description:
-> +      Must contain an entry for each entry in clock-names.
-> +      See ../clocks/clock-bindings.txt for details.
+My bot found errors running 'make dt_binding_check' on your patch:
 
-Drop 'description'. Says nothing specific to this binding.
+yamllint warnings/errors:
 
-> +
-> +  reset-names:
-> +    maxItems: 3
+dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/allwinner,sun8i-a33-codec.example.dt.yaml: audio-codec@1c22e00: #sound-dai-cells:0:0: 1 was expected
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/allwinner,sun8i-a33-codec.yaml
 
-Need to define what each reset is.
 
-> +
-> +  resets:
-> +    maxItems: 3
-> +    description:
-> +      Must contain an entry for each entry in reset-names.
-> +      See ../reset/reset.txt for details.
+See https://patchwork.ozlabs.org/patch/1395481
 
-Drop 'description'. Says nothing specific to this binding.
+The base for the patch is generally the last rc1. Any dependencies
+should be noted.
 
-> +
-> +  phy-names:
-> +    items:
-> +      - const: sata-0
-> +
-> +  phys:
-> +    maxItems: 1
-> +    description:
-> +      Must contain an entry for each entry in phy-names.
-> +      See ../phy/phy-bindings.txt for details.
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
 
-Drop 'description'. Says nothing specific to this binding.
+pip3 install dtschema --upgrade
 
-> +
-> +  hvdd-supply:
-> +    description: SATA HVDD regulator supply.
-> +
-> +  vddio-supply:
-> +    description: SATA VDDIO regulator supply.
-> +
-> +  avdd-supply:
-> +    description: SATA AVDD regulator supply.
-> +
-> +  target-5v-supply:
-> +    description: SATA 5V power regulator supply.
-> +
-> +  target-12v-supply:
-> +    description: SATA 12V power regulator supply.
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - clock-names
-> +  - clocks
-> +  - reset-names
-> +  - resets
-> +
-> +allOf:
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            enum:
-> +              - nvidia,tegra124-ahci
-> +              - nvidia,tegra132-ahci
-> +    then:
-> +      properties:
-> +        reg:
-> +          maxItems: 2
+Please check and re-submit.
 
-> +        reset-names:
-> +          minItems: 3
-> +          items:
-> +            - const: sata
-> +            - const: sata-oob
-> +            - const: sata-cold
-> +        resets:
-> +          minItems: 3
-
-This doesn't need to be conditional.
-
-> +      required:
-> +        - phys
-> +        - phy-names
-> +        - hvdd-supply
-> +        - vddio-supply
-> +        - avdd-supply
-> +
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            enum:
-> +              - nvidia,tegra210-ahci
-> +    then:
-> +      properties:
-> +        reg:
-> +          minItems: 3
-> +        reset-names:
-> +          minItems: 3
-> +          items:
-> +            - const: sata
-> +            - const: sata-oob
-> +            - const: sata-cold
-> +        resets:
-> +          minItems: 3
-> +
-> +additionalProperties: true
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/tegra210-car.h>
-> +    #include <dt-bindings/reset/tegra210-car.h>
-> +
-> +    sata@70020000 {
-> +            compatible = "nvidia,tegra210-ahci";
-> +            reg = <0x0 0x70027000 0x0 0x00002000>, /* AHCI */
-> +                  <0x0 0x70020000 0x0 0x00007000>, /* SATA */
-> +                  <0x0 0x70001100 0x0 0x00010000>; /* SATA AUX */
-> +            interrupts = <GIC_SPI 23 IRQ_TYPE_LEVEL_HIGH>;
-> +            clocks = <&tegra_car TEGRA210_CLK_SATA>,
-> +                     <&tegra_car TEGRA210_CLK_SATA_OOB>;
-> +            clock-names = "sata", "sata-oob";
-> +            resets = <&tegra_car 124>,
-> +                     <&tegra_car 123>,
-> +                     <&tegra_car 129>;
-> +            reset-names = "sata", "sata-oob", "sata-cold";
-> +    };
-> diff --git a/Documentation/devicetree/bindings/ata/nvidia,tegra124-ahci.txt b/Documentation/devicetree/bindings/ata/nvidia,tegra124-ahci.txt
-> deleted file mode 100644
-> index 12ab2f7..0000000
-> --- a/Documentation/devicetree/bindings/ata/nvidia,tegra124-ahci.txt
-> +++ /dev/null
-> @@ -1,44 +0,0 @@
-> -Tegra SoC SATA AHCI controller
-> -
-> -Required properties :
-> -- compatible : Must be one of:
-> -  - Tegra124 : "nvidia,tegra124-ahci"
-> -  - Tegra132 : "nvidia,tegra132-ahci", "nvidia,tegra124-ahci"
-> -  - Tegra210 : "nvidia,tegra210-ahci"
-> -- reg : Should contain 2 entries:
-> -  - AHCI register set (SATA BAR5)
-> -  - SATA register set
-> -- interrupts : Defines the interrupt used by SATA
-> -- clocks : Must contain an entry for each entry in clock-names.
-> -  See ../clocks/clock-bindings.txt for details.
-> -- clock-names : Must include the following entries:
-> -  - sata
-> -  - sata-oob
-> -- resets : Must contain an entry for each entry in reset-names.
-> -  See ../reset/reset.txt for details.
-> -- reset-names : Must include the following entries:
-> -  - sata
-> -  - sata-oob
-> -  - sata-cold
-> -- phys : Must contain an entry for each entry in phy-names.
-> -  See ../phy/phy-bindings.txt for details.
-> -- phy-names : Must include the following entries:
-> -  - For Tegra124 and Tegra132:
-> -    - sata-phy : XUSB PADCTL SATA PHY
-> -- For Tegra124 and Tegra132:
-> -  - hvdd-supply : Defines the SATA HVDD regulator
-> -  - vddio-supply : Defines the SATA VDDIO regulator
-> -  - avdd-supply : Defines the SATA AVDD regulator
-> -  - target-5v-supply : Defines the SATA 5V power regulator
-> -  - target-12v-supply : Defines the SATA 12V power regulator
-> -
-> -Optional properties:
-> -- reg :
-> -  - AUX register set
-> -- clock-names :
-> -  - cml1 :
-> -    cml1 clock should be defined here if the PHY driver
-> -    doesn't manage them. If it does, they should not be.
-> -- phy-names :
-> -  - For T210:
-> -    - sata-phy
-> -- 
-> 2.7.4
-> 
