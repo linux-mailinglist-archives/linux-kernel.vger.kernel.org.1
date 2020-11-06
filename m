@@ -2,130 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92E762A97B4
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 15:33:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A4B62A97B7
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 15:35:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727451AbgKFOdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 09:33:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44514 "EHLO
+        id S1727166AbgKFOfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 09:35:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726565AbgKFOdL (ORCPT
+        with ESMTP id S1726694AbgKFOfI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 09:33:11 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA3F6C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 06:33:10 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id p8so739723wrx.5
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 06:33:10 -0800 (PST)
+        Fri, 6 Nov 2020 09:35:08 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB77AC0613D2
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 06:35:06 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id a65so1542467wme.1
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 06:35:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=DyXfDDWSKwU8s+VIA5hQfPeuUhLrKjIyJ35kol6OQUw=;
-        b=lehKZzcTDVaoI0brWupnB6wN/qt2ttOEp1rS+RgjR1ypgpVb6yQSS0va6bulWe9XS7
-         49dYfYmOtXqSXUoC6m1qZQXzzOH2LXgk7vvKkpDtIq8GWgAlJTxsGPe5+7Q4H4zJhgT2
-         6U9lKG92h/MhuszreEY+6XBYNoAivhPmsyv+5MCbKi4oVH7Uvfm8gjYiWYaGptUy6RIg
-         UrEg4dFKmYf7AfsEe/q81H2ef+eELFpkInuUwY1IfSj1p4CwkjRLSKYYrle4xyyYvOOQ
-         zvROXxZTgAuWXRyqLo+hvKDIj/OBe0oXWwx63uQRTCKBxKi6jkx7Wc0wFVezM0ZYGVuu
-         a3nw==
+        bh=tOCh5yJFjZpYm41GVEBbdLweCAfd0jNEzcgUGYl00Dc=;
+        b=Y8+KZn7zbFrfa3E7v7qfWM5TZtc1WCYEmGJLeH7On8PXxsKMtKtTf2/aDECqJiyb2Q
+         sMPS7oW0mNc3e3uzwItbuUMNlFPfbBz9sBHY6jQQYecmjRiD3uN57NTAE/LoGete6221
+         wWL4cZcWCN4pHHpU6CDt04JCyV0nt6326swkDcO2DGM0Dqk1/XHBNa3a5tS3VVtXC9vQ
+         bRHLhm6nvq+kn+fK5yW1hRLLIynJ8quveHgBnX6FZleKjEPnmbrOvdZ1ZAMFnOYx+L0e
+         ECEp95jOXeUalK4I2kg3v2v7yAuuSH21jmIQQJTEpwwB9/A9GC0G8+O9vPA+dhHmBagh
+         N6+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:content-transfer-encoding
          :in-reply-to;
-        bh=DyXfDDWSKwU8s+VIA5hQfPeuUhLrKjIyJ35kol6OQUw=;
-        b=XFPEslPjmiF+YAW/diZBdHD5adLY8OUZeDxvXEjHtSCDzzAjiCzaWXhmA5q5F2pVT6
-         9RmE/+ZO3twgwkPRhwrrnJAN0OU0oHv2QCFH9gx7351Lm/6OtggqymKXMIJGLxctAEjs
-         Yinnxq8h1toZomslnfcpeTUEz1mSezD2wIgXHXam7Ud25XiBQ54C74uzBqjpyPVgaFL+
-         ROcTwmaTxw9w5lvxD/fyCqNz5nRY2r+R/N22Jq+2AepDD92nuV28Ru6UmUwbuu2GjESt
-         Gqnc6cRI4WIvkehUBaCGsepgF3zAk65TVybayHF0im0/+9Jqldcb7CisdM2Wb/J+Q+AW
-         MTVQ==
-X-Gm-Message-State: AOAM532mgD07cD9TBb9vzFncey51FonFPTXZ6MYI8h8kVIJdaUuqUeHN
-        YaAidBSI+s8/7CYz6ZK/kLjrVw==
-X-Google-Smtp-Source: ABdhPJwAEZ/j1smm7cvrpAIEJEB1BLq1MOwT4y7JoEF3M4exGNSO232kghjhVfLgpyA8EzWic1p5gQ==
-X-Received: by 2002:adf:fdc7:: with SMTP id i7mr3253347wrs.198.1604673189626;
-        Fri, 06 Nov 2020 06:33:09 -0800 (PST)
+        bh=tOCh5yJFjZpYm41GVEBbdLweCAfd0jNEzcgUGYl00Dc=;
+        b=lTNXCwT06w1nqA7CFId7gic34oh9JyadczegtuValIDOfimrGqyrqZX7Rfk6J4wQK7
+         u1jRK32Sotgl44Q6s9x8AurO4+SjzuhcVthpedKHuOvlFvw7hq4Fb7DJQLpdsgpn5233
+         80r0wkMtqRoEjAz/pedqAfsyDjszHN+vMOU48pxgqaSc1ISyD1u2SX0hTeFBbFMKxhXd
+         Rs8WKaEu+F8lFjaytk4SgirQFTNsBb7O7hvscXuvMOYwJwajqbCfzDfOgFInsfUh5e90
+         lYKP691FTyfz0L4ErrE+IFzzij3GbBj85ebQpQRtf0Dz0Yc+suKTo0LBFqNNs1STxzNt
+         qlFw==
+X-Gm-Message-State: AOAM531/zSoKiLQoWXjP3RbbWSk/GOoaBy/bh/J3rGhEkj4dLzJxxKQT
+        8+f6RfhEwNO2aYADCq7WqO50EHqDhR+JX/FM
+X-Google-Smtp-Source: ABdhPJwVsPBv9pqhXt9J0w3mzHUSYxiEvz2mW/ynhm37kZgxuW9YuHCYtH7V7K4k0hyPUxOiaXFgsg==
+X-Received: by 2002:a1c:b487:: with SMTP id d129mr2957244wmf.38.1604673305292;
+        Fri, 06 Nov 2020 06:35:05 -0800 (PST)
 Received: from dell ([91.110.221.242])
-        by smtp.gmail.com with ESMTPSA id y10sm2348316wru.94.2020.11.06.06.33.08
+        by smtp.gmail.com with ESMTPSA id r10sm2611848wmg.16.2020.11.06.06.35.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Nov 2020 06:33:08 -0800 (PST)
-Date:   Fri, 6 Nov 2020 14:33:07 +0000
+        Fri, 06 Nov 2020 06:35:04 -0800 (PST)
+Date:   Fri, 6 Nov 2020 14:35:02 +0000
 From:   Lee Jones <lee.jones@linaro.org>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     vigneshr@ti.com, richard@nod.at, linux-kernel@vger.kernel.org,
-        linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 00/23] Rid W=1 warnings in MTD
-Message-ID: <20201106143307.GK2063125@dell>
-References: <20201102115406.1074327-1-lee.jones@linaro.org>
- <20201106133247.GI2063125@dell>
- <20201106144420.13c18b97@xps13>
+To:     Kalle Valo <kvalo@codeaurora.org>
+Cc:     linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org
+Subject: Re: [PATCH 00/41] [Set 4] Rid W=1 warnings in Wireless
+Message-ID: <20201106143502.GL2063125@dell>
+References: <20201102112410.1049272-1-lee.jones@linaro.org>
+ <87mtzzpxx9.fsf@codeaurora.org>
+ <20201106132807.GH2063125@dell>
+ <87y2jefw14.fsf@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201106144420.13c18b97@xps13>
+In-Reply-To: <87y2jefw14.fsf@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 06 Nov 2020, Miquel Raynal wrote:
+On Fri, 06 Nov 2020, Kalle Valo wrote:
 
-> Hi Lee,
+> Lee Jones <lee.jones@linaro.org> writes:
 > 
-> Lee Jones <lee.jones@linaro.org> wrote on Fri, 6 Nov 2020 13:32:47
-> +0000:
+> > On Mon, 02 Nov 2020, Kalle Valo wrote:
+> >
+> >> Lee Jones <lee.jones@linaro.org> writes:
+> >> 
+> >> >  [Last batch!]
+> >> >
+> >> > This set is part of a larger effort attempting to clean-up W=1
+> >> > kernel builds, which are currently overwhelmingly riddled with
+> >> > niggly little warnings.
+> >> >
+> >> > Lee Jones (41):
+> >> >   wil6210: wmi: Correct misnamed function parameter 'ptr_'
+> >> >   rsi_91x_usb: Fix some basic kernel-doc issues
+> >> >   rtl8192cu: mac: Fix some missing/ill-documented function parameters
+> >> >   rsi_91x_usb_ops: Source file headers are not good candidates for
+> >> >     kernel-doc
+> >> >   rtl8192cu: trx: Demote clear abuse of kernel-doc format
+> >> >   brcmfmac: bcmsdh: Fix description for function parameter 'pktlist'
+> >> >   brcmfmac: pcie: Provide description for missing function parameter
+> >> >     'devinfo'
+> >> >   iwlwifi: mvm: rs: Demote non-conformant function documentation headers
+> >> >   wl1251: cmd: Rename 'len' to 'buf_len' in the documentation
+> >> >   ath9k: ar9330_1p1_initvals: Remove unused const variable
+> >> >     'ar9331_common_tx_gain_offset1_1'
+> >> >   ath9k: ar9340_initvals: Remove unused const variable
+> >> >     'ar9340Modes_ub124_tx_gain_table_1p0'
+> >> >   ath9k: ar9485_initvals: Remove unused const variable
+> >> >     'ar9485_fast_clock_1_1_baseband_postamble'
+> >> >   ath9k: ar9003_2p2_initvals: Remove unused const variables
+> >> >   prism54: isl_ioctl: Fix one function header and demote another
+> >> >   iwlwifi: iwl-eeprom-read: Demote one nonconformant function header
+> >> >   iwlwifi: iwl-eeprom-parse: Fix 'struct iwl_eeprom_enhanced_txpwr's
+> >> >     header
+> >> >   intersil: hostap_hw: Prevent incompatible function type cast
+> >> >   brcm80211: fweh: Add missing description for 'gfp'
+> >> >   ath: regd: Provide description for ath_reg_apply_ir_flags's 'reg'
+> >> >     param
+> >> >   ath9k: ar5008_phy: Demote half completed function headers
+> >> >   ath: dfs_pattern_detector: Fix some function kernel-doc headers
+> >> >   ath: dfs_pri_detector: Demote zero/half completed kernel-doc headers
+> >> >   iwlwifi: iwl-phy-db: Add missing struct member description for 'trans'
+> >> >   wl3501_cs: Fix misspelling and provide missing documentation
+> >> >   rtlwifi: halbtc8723b2ant: Remove a bunch of set but unused variables
+> >> >   rtlwifi: phy: Remove set but unused variable 'bbvalue'
+> >> >   rtlwifi: halbtc8821a1ant: Remove set but unused variable
+> >> >     'wifi_rssi_state'
+> >> >   rtl8723be: phy: Remove set but unused variable 'lc_cal'
+> >> >   rtl8188ee: phy: Remove set but unused variable 'reg_ea4'
+> >> >   rtlwifi: halbtc8821a2ant: Remove a bunch of unused variables
+> >> >   mwifiex: pcie: Remove a couple of unchecked 'ret's
+> >> >   rtl8723be: trx: Remove set but unused variable 'cck_highpwr'
+> >> >   rtlwifi: rtl8821ae: phy: Remove a couple of unused variables
+> >> >   rtl8821ae: phy: Place braces around empty if() body
+> >> >   wlcore: spi: Demote a non-compliant function header, fix another
+> >> >   rtw8822b: Return type is not const
+> >> >   iwlwifi: fw: dbg: Fix misspelling of 'reg_data' in function header
+> >> >   realtek: rtw8822c: Remove unused variable 'corr_val'
+> >> >   ath9k: dynack: Demote non-compliant function header
+> >> >   iwlwifi: fw: acpi: Demote non-conformant function headers
+> >> >   realtek: rtw88: pci: Add prototypes for .probe, .remove and .shutdown
+> >> 
+> >> The cover letter was not CCed to linux-wireless, adding that. But the
+> >> patches itself look ok, I see all 41 of them in pathwork:
+> >> 
+> >> https://patchwork.kernel.org/project/linux-wireless/list/?series=375401&order=date
+> >
+> > What's the plan for these Kalle?
+> >
+> > Are you able to take the ones that do not require a respin?
 > 
-> > > This set is part of a larger effort attempting to clean-up W=1
-> > > kernel builds, which are currently overwhelmingly riddled with
-> > > niggly little warnings.
-> > > 
-> > > Lee Jones (23):
-> > >   mtd: mtdpart: Fix misdocumented function parameter 'mtd'
-> > >   mtd: devices: phram: File headers are not good candidates for
-> > >     kernel-doc
-> > >   mtd: nand: onenand: onenand_base: Fix expected kernel-doc formatting
-> > >   mtd: devices: docg3: Fix kernel-doc 'bad line' and 'excessive doc'
-> > >     issues
-> > >   mtd: mtdcore: Fix misspelled function parameter 'section'
-> > >   mtd: nand: onenand: onenand_bbt: Fix expected kernel-doc formatting
-> > >   mtd: spi-nor: controllers: hisi-sfc: Demote non-conformant kernel-doc
-> > >   mtd: ubi: build: Document 'ubi_num' in struct mtd_dev_param
-> > >   mtd: nand: spi: toshiba: Demote non-conformant kernel-doc header
-> > >   mtd: ubi: kapi: Correct documentation for 'ubi_leb_read_sg's 'sgl'
-> > >     parameter
-> > >   mtd: ubi: eba: Fix a couple of misdocumentation issues
-> > >   mtd: ubi: wl: Fix a couple of kernel-doc issues
-> > >   mtd: nand: raw: brcmnand: brcmnand: Demote non-conformant kernel-doc
-> > >     headers
-> > >   mtd: ubi: gluebi: Fix misnamed function parameter documentation
-> > >   mtd: nand: raw: diskonchip: Marking unused variables as
-> > >     __always_unused
-> > >   mtd: nand: raw: cafe_nand: Remove superfluous param doc and add
-> > >     another
-> > >   mtd: nand: raw: s3c2410: Add documentation for 2 missing struct
-> > >     members
-> > >   mtd: nand: raw: omap_elm: Finish half populated function header,
-> > >     demote empty ones
-> > >   mtd: nand: raw: omap2: Fix a bunch of kernel-doc misdemeanours
-> > >   mtd: nand: raw: sunxi_nand: Document 'sunxi_nfc's 'caps' member
-> > >   mtd: nand: raw: arasan-nand-controller: Document 'anfc_op's 'buf'
-> > >     member
-> > >   mtd: nand: onenand: onenand_base: Fix some kernel-doc misdemeanours
-> > >   mtd: devices: powernv_flash: Add function names to headers and fix
-> > >     'dev'  
-> > 
-> > May I ask; what is the plan for these patches please?
-> > 
-> > Do you plan on taking the ones that do not require re-work, rather
-> > than fixing up and re-submitting the whole set.  It would certainly
-> > save a lot of mailing list churn if that were the case.
-> > 
-> > Either way, let me know and I will abide by your decision.
-> > 
-> 
-> I would prefer receiving a v2 with all the patches if you don't mind.
+> Been busy and I have 200+ patches to dive through. I (or my patchwork
+> script) will always let you know if I drop any patches.
 
-No problem.  Just so long as I know.
+Okay, so plan to pluck from that set.
+
+That is ideal.  Thanks for responding.
 
 -- 
 Lee Jones [李琼斯]
