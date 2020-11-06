@@ -2,148 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07E532A9087
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 08:40:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBE2B2A9089
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 08:40:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726487AbgKFHkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 02:40:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36048 "EHLO
+        id S1726504AbgKFHkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 02:40:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725830AbgKFHkN (ORCPT
+        with ESMTP id S1726248AbgKFHkY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 02:40:13 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D70EC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 23:40:13 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id b8so268979wrn.0
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 23:40:13 -0800 (PST)
+        Fri, 6 Nov 2020 02:40:24 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95C01C0613D2
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 23:40:24 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id c18so404605wme.2
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 23:40:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=FBCTJlC6IgyFxCdhJWM7lRLLPX+oBdWzGjC12/FTDB0=;
-        b=pP0Aad/y+VvQMppvdJTxmqkGA4n7WEkLPyt0/SQqsohWMZ0WCGFRVCVmubPTCNXu0i
-         5KNjN8/SSrCK8qBoc1YJIGSd+hKEK6wVFBW+XP+rVqlJ5PQDO3VGYGEE14Dq+VmLb8IX
-         RyVc0DaKILVBsdfK3BftUj2y6HAmcyB5pSXulB7gxP202bNkGcLU33VBDUTTDcMCfGFY
-         0yiP2IcVCo+9spH4njz0g/Eg34mgcg76IxFAkbjwrtcJWF9o2stQ95KvJ7bWDY1xDe+4
-         7raWX71MTb9znWi2191NtF5tnkDxDYtyDBXD3L27pOvWNLR1g95rDF57YCSbEpzpxktU
-         m6KA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=H/jQSiN2tGpCWcggCP9FyM2wQIVjYqAJtGxJOUgHLEY=;
+        b=F7PEVrKf0rmG4ZgcbfXfewpMxLW9AzkfZdAGllK3MEI6yhABDPOknypwCvViiKILZE
+         Q5ElUziTMlO1kg5hRu/mTMqPflOy1ywcdRlQcJ6M9Wsg39buUWwGtiHd/WG5b7S/jkGS
+         KkbfC77NXkleedZvZGl1u5nekFTz0mclOavxh1HOIWRcxTtvH2JA0cbv0mGTZSDwSSA8
+         LyOh9k0qhgs0uk8QWnJ30Xd2BVZU3BtWs9UX5JyB1jyUft6H6zbbzHhXfrjWwud2+HtA
+         /CsfFKawMCyBA8NoivKUGa8rNX7YpuTSn8m9utrXXG5Me6xR/HF82v9HnGe+1MP+4i3M
+         NWcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=FBCTJlC6IgyFxCdhJWM7lRLLPX+oBdWzGjC12/FTDB0=;
-        b=qYPraqx0hV7DR/RtPNhxCtVL30+QfYVkBuVDYmdEhQBdzqy+XyKL5kutr9xnVkBabm
-         hpmd7SAj3HU4JhGu7T8LVnnE+I4ZURJi7G4doiAEFkZNIhzGG3+T3QmeN8pQG5WpkbWP
-         JnsEzD+5YQGJ/ZZMrY/VLJG1+AV6wq6Uy4krYwbrqz83saoxaOpjAWEMyEVG+UfbziT1
-         /tjFoZcl4Oer4qR3++mA8mkV2wO3Kcq86PK6uGdAAwRiXB5YqeSKVq87lIl7mUUqDI1Y
-         M4KOXrz0ugkzPacgr5IeE1lpRmVRchKdINES4YshtWPkof3qWN2WDebxwNl17D5nPP9/
-         kRgA==
-X-Gm-Message-State: AOAM533ZvwI1Qx2tyHma3FV6/40yzJtJHxgl98Fh34ZI/IdFQQBmSBhi
-        iokrfAgkoVyIc71nrVqIQ6U=
-X-Google-Smtp-Source: ABdhPJxA7N7QLsOuq5CNYGAsnhTp/0gYkEQ50Az1rX2NwdZ2BSd2VBcyl2AEiH8Wu9NFtEaAddlinA==
-X-Received: by 2002:adf:face:: with SMTP id a14mr1144899wrs.6.1604648411971;
-        Thu, 05 Nov 2020 23:40:11 -0800 (PST)
-Received: from ziggy.stardust ([213.195.112.112])
-        by smtp.gmail.com with ESMTPSA id v6sm863384wrb.53.2020.11.05.23.40.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Nov 2020 23:40:11 -0800 (PST)
-Subject: Re: [PATCH] mfd: syscon: Add
- syscon_regmap_lookup_by_phandle_optional() function.
-To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Collabora Kernel ML <kernel@collabora.com>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Arnd Bergmann <arnd@arndb.de>, Lee Jones <lee.jones@linaro.org>
-References: <20201027211154.3371691-1-enric.balletbo@collabora.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <d6e29e8b-9d5e-455b-24dc-7ec016c9b6b2@gmail.com>
-Date:   Fri, 6 Nov 2020 08:40:09 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=H/jQSiN2tGpCWcggCP9FyM2wQIVjYqAJtGxJOUgHLEY=;
+        b=UP+HAIRn1euJXReISIRxPb9DRag9CQFdnMl+68cHgfN+8BvQUBeVhdZKsIWyRUOE4w
+         YLEnDLubH2OItRnjaLffZpH0OT/WvE9MiNKEHldkvpah6KHervbWv62tuloTzPWK/yjZ
+         neKuPnSry/15aOMpHFxMcACTyQ6aWpwhp/WW31S+eA/6MamMou72caAm1WWYzSmAJIje
+         +mPxOaJTCMmSd4ObK3I2FroKMv/60dc6XSH7GwQhgY+Bx/vpv6L76oUs2dOzz+34rWd8
+         BfuNsTwIHTDo+bNqaQma8ZbbrOUPI8AN+c41w0/PMVNiAbjaWye8MMgg1UKCqMtTPIIZ
+         L7jA==
+X-Gm-Message-State: AOAM530gJsArwCE3S/tqBsJJKYGj1WMGIL1n0m/mnCQ/w+kmw0ONiVaG
+        LrR7414+Fm9acKt3C3PUKCWXZA==
+X-Google-Smtp-Source: ABdhPJxFK6IJdXXPNiq9kY9ys2Eug4k/Ug5hzS0gXVUQavIqwq02s49Lrze0b3JXpQxIHPBq/GhiJw==
+X-Received: by 2002:a1c:a982:: with SMTP id s124mr973561wme.65.1604648423307;
+        Thu, 05 Nov 2020 23:40:23 -0800 (PST)
+Received: from dell ([91.110.221.242])
+        by smtp.gmail.com with ESMTPSA id a12sm746580wrr.31.2020.11.05.23.40.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Nov 2020 23:40:22 -0800 (PST)
+Date:   Fri, 6 Nov 2020 07:40:20 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     joe@perches.com, linux-kernel@vger.kernel.org,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        Peter Osterlund <petero2@telia.com>,
+        Stefan Gmeiner <riddlebox@freesurf.ch>,
+        "C. Scott Ananian" <cananian@alumni.priceton.edu>,
+        Bruce Kalk <kall@compass.com>,
+        this to <linux-input@vger.kernel.org>
+Subject: Re: [PATCH 10/20] input: mouse: synaptics: Place braces around empty
+ if() body
+Message-ID: <20201106074020.GT4488@dell>
+References: <20201104162427.2984742-1-lee.jones@linaro.org>
+ <20201104162427.2984742-11-lee.jones@linaro.org>
+ <20201106072630.GD1003057@dtor-ws>
 MIME-Version: 1.0
-In-Reply-To: <20201027211154.3371691-1-enric.balletbo@collabora.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201106072630.GD1003057@dtor-ws>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 05 Nov 2020, Dmitry Torokhov wrote:
 
+> Hi Lee,
+> 
+> On Wed, Nov 04, 2020 at 04:24:17PM +0000, Lee Jones wrote:
+> > Fixes the following W=1 kernel build warning(s):
+> > 
+> >  drivers/input/mouse/synaptics.c: In function ‘synaptics_process_packet’:
+> >  drivers/input/mouse/synaptics.c:1110:6: warning: suggest braces around empty body in an ‘if’ statement [-Wempty-body]
+> > 
+> > Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> > Cc: Henrik Rydberg <rydberg@bitmath.org>
+> > Cc: Peter Osterlund <petero2@telia.com>
+> > Cc: Stefan Gmeiner <riddlebox@freesurf.ch>
+> > Cc: "C. Scott Ananian" <cananian@alumni.priceton.edu>
+> > Cc: Bruce Kalk <kall@compass.com>
+> > Cc: this to <linux-input@vger.kernel.org>
+> > Cc: linux-input@vger.kernel.org
+> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> > ---
+> >  drivers/input/mouse/synaptics.c | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/input/mouse/synaptics.c b/drivers/input/mouse/synaptics.c
+> > index 82577095e175e..07835939d83b9 100644
+> > --- a/drivers/input/mouse/synaptics.c
+> > +++ b/drivers/input/mouse/synaptics.c
+> > @@ -1106,8 +1106,9 @@ static void synaptics_process_packet(struct psmouse *psmouse)
+> >  					num_fingers = hw.w + 2;
+> >  				break;
+> >  			case 2:
+> > -				if (SYN_MODEL_PEN(info->model_id))
+> > +				if (SYN_MODEL_PEN(info->model_id)) {
+> >  					;   /* Nothing, treat a pen as a single finger */
+> > +				}
+> 
+> This gives me:
+> 
+> WARNING: braces {} are not necessary for single statement blocks
+> 
+> from checkpatch.
 
-On 27/10/2020 22:11, Enric Balletbo i Serra wrote:
-> This adds syscon_regmap_lookup_by_phandle_optional() function to get an
-> optional regmap.
-> 
-> It behaves the same as syscon_regmap_lookup_by_phandle() except where
-> there is no regmap phandle. In this case, instead of returning -ENODEV,
-> the function returns NULL. This makes error checking simpler when the
-> regmap phandle is optional.
-> 
-> Suggested-by: Nicolas Boichat <drinkcat@chromium.org>
-> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Yes, because checkpatch just sees it as a normal single statement,
+rather than an empty one.  It complains about macros that can be
+compiled out too, which is even more dangerous.
 
-Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
+GCC wins this one though, as it *knows* it's an empty statement.
 
-> ---
-> 
->   drivers/mfd/syscon.c       | 13 +++++++++++++
->   include/linux/mfd/syscon.h | 11 +++++++++++
->   2 files changed, 24 insertions(+)
-> 
-> diff --git a/drivers/mfd/syscon.c b/drivers/mfd/syscon.c
-> index ca465794ea9c..60c5c2b194cc 100644
-> --- a/drivers/mfd/syscon.c
-> +++ b/drivers/mfd/syscon.c
-> @@ -255,6 +255,19 @@ struct regmap *syscon_regmap_lookup_by_phandle_args(struct device_node *np,
->   }
->   EXPORT_SYMBOL_GPL(syscon_regmap_lookup_by_phandle_args);
->   
-> +struct regmap *syscon_regmap_lookup_by_phandle_optional(struct device_node *np,
-> +					const char *property)
-> +{
-> +	struct regmap *regmap;
-> +
-> +	regmap = syscon_regmap_lookup_by_phandle(np, property);
-> +	if (IS_ERR(regmap) && PTR_ERR(regmap) == -ENODEV)
-> +		return NULL;
-> +
-> +	return regmap;
-> +}
-> +EXPORT_SYMBOL_GPL(syscon_regmap_lookup_by_phandle_optional);
-> +
->   static int syscon_probe(struct platform_device *pdev)
->   {
->   	struct device *dev = &pdev->dev;
-> diff --git a/include/linux/mfd/syscon.h b/include/linux/mfd/syscon.h
-> index 7f20e9b502a5..a1fe8aedced2 100644
-> --- a/include/linux/mfd/syscon.h
-> +++ b/include/linux/mfd/syscon.h
-> @@ -28,6 +28,9 @@ extern struct regmap *syscon_regmap_lookup_by_phandle_args(
->   					const char *property,
->   					int arg_count,
->   					unsigned int *out_args);
-> +extern struct regmap *syscon_regmap_lookup_by_phandle_optional(
-> +					struct device_node *np,
-> +					const char *property);
->   #else
->   static inline struct regmap *device_node_to_regmap(struct device_node *np)
->   {
-> @@ -59,6 +62,14 @@ static inline struct regmap *syscon_regmap_lookup_by_phandle_args(
->   {
->   	return ERR_PTR(-ENOTSUPP);
->   }
-> +
-> +static inline struct regmap *syscon_regmap_lookup_by_phandle_optional(
-> +					struct device_node *np,
-> +					const char *property)
-> +{
-> +	return ERR_PTR(-ENOTSUPP);
-> +}
-> +
->   #endif
->   
->   #endif /* __LINUX_MFD_SYSCON_H__ */
-> 
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
