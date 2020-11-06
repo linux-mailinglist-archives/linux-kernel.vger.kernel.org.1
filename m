@@ -2,134 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40A072A9285
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 10:27:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0A522A928B
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 10:27:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726157AbgKFJ1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 04:27:07 -0500
-Received: from esa4.microchip.iphmx.com ([68.232.154.123]:28207 "EHLO
-        esa4.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725868AbgKFJ1G (ORCPT
+        id S1726573AbgKFJ1q convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 6 Nov 2020 04:27:46 -0500
+Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.80]:24311 "EHLO
+        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725868AbgKFJ1p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 04:27:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1604654825; x=1636190825;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=nK5gvBSWQsXq04DVc5MktE2+AhU4XQkf0tgEdb+ePfA=;
-  b=maFFQLaJVfaiyI2DTjhMazKdtaJjHPQiYJMBtbzlyvT1bSZb2bRcLSPf
-   5KEWE0mM5uBK3DbVI3Fh5aWstBmxDRbHCO7k2eRNgG7S7m/XFWTYjygqM
-   bAoU2H8vyNJpg49IzQAcLhAiFBa9H0Xh/zobRVwSaBC9frcYqEO4Grz9k
-   AxOroAsn/ttbkgIEmyOu+zLrSbYyUS8HiKb9sxknVhm4IqaEBniVHCQB+
-   GjtZZeLgxik7Gh/h0GLiehGwHcexWchj/s/uxsxwCRsZ878XjWSKg60CM
-   RZTttrsUwtzwaNK+1n4aiu51ZiaxCAZKzwpaoyt4upNAbPoL2UdjMgD9K
-   g==;
-IronPort-SDR: EMMYq2lo8UEeeWqrQ9pzg0dF3KUXgPSKMC6DslfhsVfX0dTkW88H6vxyH7ZP0zcSiHql2Kwzvf
- 3HTR5Ofr8n/t9cb9MXTS387GWvXqSHZ6T/3qoj+WwT2P6+MTt7/InovgWKr7Qq/0fda2/swseW
- tW5xXjhe2oG9Sddpu0XOq8E9EeEFSeE35N6mUxVpzgxihlw8E4SxcKYrmEk8TFsM2iWcwFbXl9
- 5z1zvb+eAkbJcLq2SgzJXRc23JLvTkki3idTR6L3VV/t7S4m7JZBJ+3C+vXvBAEd71Ca/pC4nw
- CGg=
-X-IronPort-AV: E=Sophos;i="5.77,456,1596524400"; 
-   d="scan'208";a="92723596"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 06 Nov 2020 02:27:04 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 6 Nov 2020 02:27:04 -0700
-Received: from [10.171.246.114] (10.10.115.15) by chn-vm-ex01.mchp-main.com
- (10.10.85.143) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Fri, 6 Nov 2020 02:27:00 -0700
-Subject: Re: [RESEND PATCH] net: macb: fix NULL dereference due to no
- pcs_config method
-To:     Parshuram Thombare <pthombar@cadence.com>, <kuba@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <netdev@vger.kernel.org>
-CC:     <Claudiu.Beznea@microchip.com>, <Santiago.Esteban@microchip.com>,
-        <andrew@lunn.ch>, <davem@davemloft.net>,
-        <linux-kernel@vger.kernel.org>, <linux@armlinux.org.uk>,
-        <harini.katakam@xilinx.com>, <michal.simek@xilinx.com>
-References: <1604599113-2488-1-git-send-email-pthombar@cadence.com>
-From:   Nicolas Ferre <nicolas.ferre@microchip.com>
-Organization: microchip
-Message-ID: <22c6b5ff-d19e-2af8-d601-341a2101d6ef@microchip.com>
-Date:   Fri, 6 Nov 2020 10:26:59 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <1604599113-2488-1-git-send-email-pthombar@cadence.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Fri, 6 Nov 2020 04:27:45 -0500
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj5Qpw97WFDlSYXA4JMOs="
+X-RZG-CLASS-ID: mo00
+Received: from imac.fritz.box
+        by smtp.strato.de (RZmta 47.3.3 DYNA|AUTH)
+        with ESMTPSA id d04888wA69RR0PU
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+        Fri, 6 Nov 2020 10:27:27 +0100 (CET)
+Subject: Re: [Letux-kernel] [REGRESSION] opp: Allow dev_pm_opp_get_opp_table() to return -EPROBE_DEFER
+Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
+Content-Type: text/plain; charset=us-ascii
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+In-Reply-To: <20201106085810.ubo3cikbg33x76lt@vireshk-i7>
+Date:   Fri, 6 Nov 2020 10:27:26 +0100
+Cc:     Andreas Kemnade <andreas@kemnade.info>, vireshk@kernel.org,
+        nm@ti.com, ulf.hansson@linaro.org, stephan@gerhold.net,
+        khilman@kernel.org, sboyd@kernel.org, linux-pm@vger.kernel.org,
+        rjw@rjwysocki.net, linux-kernel@vger.kernel.org,
+        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Discussions about the Letux Kernel 
+        <letux-kernel@openphoenux.org>
+Content-Transfer-Encoding: 8BIT
+Message-Id: <1600E1F6-2819-4858-9843-B29264F4C2E6@goldelico.com>
+References: <20201106001018.02200778@aktux> <20201106041441.uuz5vrtqeyn6ijdv@vireshk-i7> <8728D936-6583-407F-96CF-92AE95AAECDF@goldelico.com> <20201106085810.ubo3cikbg33x76lt@vireshk-i7>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+X-Mailer: Apple Mail (2.3124)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/11/2020 at 18:58, Parshuram Thombare wrote:
-> This patch fixes NULL pointer dereference due to NULL pcs_config
-> in pcs_ops.
-> 
-> Reported-by: Nicolas Ferre <Nicolas.Ferre@microchip.com>
-> Link: https://lore.kernel.org/netdev/2db854c7-9ffb-328a-f346-f68982723d29@microchip.com/
-> Signed-off-by: Parshuram Thombare <pthombar@cadence.com>
+Hi,
 
-Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+> Am 06.11.2020 um 09:58 schrieb Viresh Kumar <viresh.kumar@linaro.org>:
+> 
+> On 06-11-20, 09:44, H. Nikolaus Schaller wrote:
+>> 
+>>> Am 06.11.2020 um 05:14 schrieb Viresh Kumar <viresh.kumar@linaro.org>:
+>>> 
+>>> On 06-11-20, 00:10, Andreas Kemnade wrote:
+>>>> Hi,
+>>>> 
+>>>> On the GTA04 (DM3730, devicetree omap3-gta04*) I get my console flooded
+>>>> up with the following:
+>>>> [   24.517211] cpu cpu0: multiple regulators are not supported
+>>>> [   24.523040] cpufreq: __target_index: Failed to change cpu frequency: -22
+>>>> [   24.537231] ------------[ cut here ]------------
+>>>> [   24.542083] WARNING: CPU: 0 PID: 5 at drivers/opp/core.c:678 dev_pm_opp_set_rate+0x23c/0x494
+>>>> [   24.551086] Modules linked in: usb_f_ecm g_ether usb_f_rndis u_ether libcomposite configfs phy_twl4030_usb omap2430 musb_hdrc overlay
+>>>> [   24.563842] CPU: 0 PID: 5 Comm: kworker/0:0 Tainted: G        W         5.9.0-rc1-00008-g629238068eb9 #14
+>>>> [   24.573852] Hardware name: Generic OMAP36xx (Flattened Device Tree)
+>>>> [   24.580413] Workqueue: events dbs_work_handler
+>>>> [   24.585083] [<c010e6b4>] (unwind_backtrace) from [<c010a194>] (show_stack+0x10/0x14)
+>>>> [   24.593200] [<c010a194>] (show_stack) from [<c0464ad0>] (dump_stack+0x8c/0xac)
+>>>> [   24.600769] [<c0464ad0>] (dump_stack) from [<c01276a8>] (__warn+0xcc/0xe4)
+>>>> [   24.608001] [<c01276a8>] (__warn) from [<c0127a3c>] (warn_slowpath_fmt+0x74/0xa0)
+>>>> [   24.615844] [<c0127a3c>] (warn_slowpath_fmt) from [<c06364ac>] (dev_pm_opp_set_rate+0x23c/0x494)
+>>>> [   24.625061] [<c06364ac>] (dev_pm_opp_set_rate) from [<c063ec08>] (set_target+0x2c/0x4c)
+>>>> [   24.633453] [<c063ec08>] (set_target) from [<c063a950>] (__cpufreq_driver_target+0x190/0x22c)
+>>>> [   24.642395] [<c063a950>] (__cpufreq_driver_target) from [<c063d4e0>] (od_dbs_update+0xcc/0x158)
+>>>> [   24.651489] [<c063d4e0>] (od_dbs_update) from [<c063e090>] (dbs_work_handler+0x2c/0x54)
+>>>> [   24.659881] [<c063e090>] (dbs_work_handler) from [<c013f71c>] (process_one_work+0x210/0x358)
+>>>> [   24.668731] [<c013f71c>] (process_one_work) from [<c0140014>] (worker_thread+0x22c/0x2d0)
+>>>> [   24.677307] [<c0140014>] (worker_thread) from [<c0144eac>] (kthread+0x140/0x14c)
+>>>> [   24.685058] [<c0144eac>] (kthread) from [<c0100148>] (ret_from_fork+0x14/0x2c)
+>>>> [   24.692626] Exception stack(0xde4b7fb0 to 0xde4b7ff8)
+>>>> [   24.697906] 7fa0:                                     00000000 00000000 00000000 00000000
+>>>> [   24.706481] 7fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+>>>> [   24.715057] 7fe0: 00000000 00000000 00000000 00000000 00000013 00000000
+>>>> [   24.722198] ---[ end trace 038b3f231fae6f81 ]---
+>>>> 
+>>>> endlessly after the $subject commit. Any hints?
+>>> 
+>>> The fix for this has been in linux-next for a couple of days and it
+>>> made it to linus/master yesterday.
+>>> 
+>>> 47efcbcb340ic opp: Fix early exit from dev_pm_opp_register_set_opp_helper()
+> 
+> I think I may have accidentally pasted the wrong commit here. This is
+> the one which must have fixed it for you.
+> 
+> commit 1f6620f87006 ("opp: Don't always remove static OPPs in _of_add_opp_table_v1()")
 
-Thanks Parshuram, best regards,
-   Nicolas
+Well, I did a cross-check and git revert 47efcbcb340 made the problem come back.
+Maybe both patches are good and the first one hides the missing second one.
 
-> ---
->   drivers/net/ethernet/cadence/macb_main.c | 17 +++++++++++++++--
->   1 file changed, 15 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/cadence/macb_main.c b/drivers/net/ethernet/cadence/macb_main.c
-> index b7bc160..130a5af 100644
-> --- a/drivers/net/ethernet/cadence/macb_main.c
-> +++ b/drivers/net/ethernet/cadence/macb_main.c
-> @@ -633,6 +633,15 @@ static void macb_pcs_an_restart(struct phylink_pcs *pcs)
->          /* Not supported */
->   }
-> 
-> +static int macb_pcs_config(struct phylink_pcs *pcs,
-> +                          unsigned int mode,
-> +                          phy_interface_t interface,
-> +                          const unsigned long *advertising,
-> +                          bool permit_pause_to_mac)
-> +{
-> +       return 0;
-> +}
-> +
->   static const struct phylink_pcs_ops macb_phylink_usx_pcs_ops = {
->          .pcs_get_state = macb_usx_pcs_get_state,
->          .pcs_config = macb_usx_pcs_config,
-> @@ -642,6 +651,7 @@ static const struct phylink_pcs_ops macb_phylink_usx_pcs_ops = {
->   static const struct phylink_pcs_ops macb_phylink_pcs_ops = {
->          .pcs_get_state = macb_pcs_get_state,
->          .pcs_an_restart = macb_pcs_an_restart,
-> +       .pcs_config = macb_pcs_config,
->   };
-> 
->   static void macb_mac_config(struct phylink_config *config, unsigned int mode,
-> @@ -776,10 +786,13 @@ static int macb_mac_prepare(struct phylink_config *config, unsigned int mode,
-> 
->          if (interface == PHY_INTERFACE_MODE_10GBASER)
->                  bp->phylink_pcs.ops = &macb_phylink_usx_pcs_ops;
-> -       else
-> +       else if (interface == PHY_INTERFACE_MODE_SGMII)
->                  bp->phylink_pcs.ops = &macb_phylink_pcs_ops;
-> +       else
-> +               bp->phylink_pcs.ops = NULL;
-> 
-> -       phylink_set_pcs(bp->phylink, &bp->phylink_pcs);
-> +       if (bp->phylink_pcs.ops)
-> +               phylink_set_pcs(bp->phylink, &bp->phylink_pcs);
-> 
->          return 0;
->   }
-> --
-> 2.7.4
-> 
+What I haven't checked is if all opps are available now. I just looked for the omap to boot.
 
+> 
+> 
+>> Seems to fix our problems on gta04 (OMAP3).
+>> Otherwise we would have found that v5.10-rc3 magically solves it :)
+> 
+> I assume you just ran linus's/master, otherwise the patch I shared
+> earlier won't have fixed the issue :)
 
--- 
-Nicolas Ferre
+Yes, we just test with v5.10-rc2 and wait for -rc3 to come in some days.
+
+> 
+>> Interestingly it did not affect OMAP5.
+> 
+> Based on the DT I saw for omap5, it does use OPPv1 and so it shouldn't
+> have worked as well. It may be worth checking why it didn't get
+> affected earlier.
+> 
+> You can see the populated OPPs for a platform with this:
+> 
+> ls /sys/kernel/debug/opp/cpu*/*
+> 
+> You shall see some difference with and without this patch. Or it may
+> be the case that you are adding dynamic OPPs with dev_pm_opp_add() and
+> so even after removing the static ones, it worked (though I wasn't
+> able to find that in the code).
+
+Ah, now as you tell this I remember that the last test on omap5 did not
+have any cpufreq info output. Although it did boot to login:.
+
+So I did not see a common reason in these quite different symptoms.
+
+I am sure that with -rc3 omap3 & omap5 will be ok again and I'll take a
+special look at it when testing other things.
+
+BR and thanks,
+Nikolaus
+
