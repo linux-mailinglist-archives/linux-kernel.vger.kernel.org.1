@@ -2,89 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E83862A8F08
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 06:52:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B3EF2A8F05
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 06:48:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726150AbgKFFwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 00:52:30 -0500
-Received: from mxout70.expurgate.net ([194.37.255.70]:57785 "EHLO
-        mxout70.expurgate.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725440AbgKFFw3 (ORCPT
+        id S1726116AbgKFFsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 00:48:37 -0500
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:35235 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725830AbgKFFsh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 00:52:29 -0500
-X-Greylist: delayed 506 seconds by postgrey-1.27 at vger.kernel.org; Fri, 06 Nov 2020 00:52:29 EST
-Received: from [127.0.0.1] (helo=localhost)
-        by relay.expurgate.net with smtp (Exim 4.90)
-        (envelope-from <ms@dev.tdt.de>)
-        id 1kauXU-0006e1-VJ; Fri, 06 Nov 2020 06:43:57 +0100
-Received: from [195.243.126.94] (helo=securemail.tdt.de)
-        by relay.expurgate.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.90)
-        (envelope-from <ms@dev.tdt.de>)
-        id 1kauXT-0002S9-Jk; Fri, 06 Nov 2020 06:43:55 +0100
-Received: from securemail.tdt.de (localhost [127.0.0.1])
-        by securemail.tdt.de (Postfix) with ESMTP id E92E924004B;
-        Fri,  6 Nov 2020 06:43:54 +0100 (CET)
-Received: from mail.dev.tdt.de (unknown [10.2.4.42])
-        by securemail.tdt.de (Postfix) with ESMTP id 4FFCF240049;
-        Fri,  6 Nov 2020 06:43:54 +0100 (CET)
-Received: from mail.dev.tdt.de (localhost [IPv6:::1])
-        by mail.dev.tdt.de (Postfix) with ESMTP id D87F120049;
-        Fri,  6 Nov 2020 06:43:53 +0100 (CET)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 06 Nov 2020 06:43:53 +0100
-From:   Martin Schiller <ms@dev.tdt.de>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Xie He <xie.he.0141@gmail.com>, Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Andrew Hendry <andrew.hendry@gmail.com>,
-        linux-x25@vger.kernel.org
-Subject: Re: [PATCH net-next] net: x25_asy: Delete the x25_asy driver
-Organization: TDT AG
-In-Reply-To: <CAK8P3a2bk9ZpoEvmhDpSv8ByyO-LevmF-W4Or_6RPRtV6gTQ1w@mail.gmail.com>
-References: <20201105073434.429307-1-xie.he.0141@gmail.com>
- <CAK8P3a2bk9ZpoEvmhDpSv8ByyO-LevmF-W4Or_6RPRtV6gTQ1w@mail.gmail.com>
-Message-ID: <927918413d7c2e515e61d751b2424886@dev.tdt.de>
-X-Sender: ms@dev.tdt.de
-User-Agent: Roundcube Webmail/1.3.15
-X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.2
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dev.tdt.de
-X-purgate-ID: 151534::1604641436-000013A4-FE3D097D/0/0
-X-purgate-type: clean
-X-purgate: clean
+        Fri, 6 Nov 2020 00:48:37 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=3;SR=0;TI=SMTPD_---0UEOSihB_1604641714;
+Received: from aliy80.localdomain(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UEOSihB_1604641714)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 06 Nov 2020 13:48:34 +0800
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+To:     konishi.ryusuke@gmail.com
+Cc:     linux-nilfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] fs/nilfs2: remove some unused macros to tame gcc
+Date:   Fri,  6 Nov 2020 13:48:33 +0800
+Message-Id: <1604641713-6484-1-git-send-email-alex.shi@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-05 16:06, Arnd Bergmann wrote:
-> ...
-> Adding Martin Schiller and Andrew Hendry, plus the linux-x25 mailing
-> list to Cc. When I last looked at the wan drivers, I think I concluded
-> that this should still be kept around, but I do not remember why.
-> OTOH if it was broken for a long time, that is a clear indication that
-> it was in fact unused.
+There some macros are unused and cause gcc warning. Remove them.
 
-As Xie has already mentioned, the linux-x25 mailing list unfortunately
-is broken for a long time. Maybe David could have a look at this.
+fs/nilfs2/segment.c:137:0: warning: macro "nilfs_cnt32_gt" is not used
+[-Wunused-macros]
+fs/nilfs2/segment.c:144:0: warning: macro "nilfs_cnt32_le" is not used
+[-Wunused-macros]
+fs/nilfs2/segment.c:143:0: warning: macro "nilfs_cnt32_lt" is not used
+[-Wunused-macros]
 
-I still use the X.25 subsystem together with the hdlc-x25 driver and as
-I wrote some time ago this will continue for some time.
+Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+Cc: Ryusuke Konishi <konishi.ryusuke@gmail.com> 
+Cc: linux-nilfs@vger.kernel.org 
+Cc: linux-kernel@vger.kernel.org 
+---
+ fs/nilfs2/segment.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-I'm also still contributing patches for it (even if only drop by drop).
+diff --git a/fs/nilfs2/segment.c b/fs/nilfs2/segment.c
+index e3726aca28ed..cd4da9535aed 100644
+--- a/fs/nilfs2/segment.c
++++ b/fs/nilfs2/segment.c
+@@ -134,14 +134,9 @@ struct nilfs_sc_operations {
+ static void nilfs_segctor_do_immediate_flush(struct nilfs_sc_info *);
+ static void nilfs_dispose_list(struct the_nilfs *, struct list_head *, int);
+ 
+-#define nilfs_cnt32_gt(a, b)   \
+-	(typecheck(__u32, a) && typecheck(__u32, b) && \
+-	 ((__s32)(b) - (__s32)(a) < 0))
+ #define nilfs_cnt32_ge(a, b)   \
+ 	(typecheck(__u32, a) && typecheck(__u32, b) && \
+ 	 ((__s32)(a) - (__s32)(b) >= 0))
+-#define nilfs_cnt32_lt(a, b)  nilfs_cnt32_gt(b, a)
+-#define nilfs_cnt32_le(a, b)  nilfs_cnt32_ge(b, a)
+ 
+ static int nilfs_prepare_segment_lock(struct super_block *sb,
+ 				      struct nilfs_transaction_info *ti)
+-- 
+1.8.3.1
 
-But I have never used the x25_asy driver.
-
-> ...
-> 
-> Hopefully Martin or Andrew can provide a definite Ack or Nack on this.
-> 
-
-ACK from my side, even if I'm a bit sorry about the work of Xie.
-
-Acked-by: Martin Schiller <ms@dev.tdt.de>
