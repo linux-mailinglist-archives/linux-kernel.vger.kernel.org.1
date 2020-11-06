@@ -2,170 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F29282A8C09
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 02:24:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1B292A8C0E
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 02:25:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732415AbgKFBXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 20:23:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34022 "EHLO
+        id S1732706AbgKFBZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 20:25:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730246AbgKFBXm (ORCPT
+        with ESMTP id S1730906AbgKFBZ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 20:23:42 -0500
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CA87C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 17:23:42 -0800 (PST)
-Received: by mail-qk1-x744.google.com with SMTP id i21so3160622qka.12
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 17:23:42 -0800 (PST)
+        Thu, 5 Nov 2020 20:25:28 -0500
+Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 855BDC0613D3
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 17:25:26 -0800 (PST)
+Received: by mail-yb1-xb41.google.com with SMTP id f6so3087865ybr.0
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 17:25:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=taXWeBFo+wT7XX0MW36Hk3wvn7TPVywWpoJuQSvy99I=;
-        b=nDwz7EkgrT3jew23FyqHF9A+4h1Cn341I1GrF5LCXFR0vf1G5izXMHK0l++cTzt6nO
-         t47HnSI6Fyw3xCy58cFKWO3NHPmUXZZUmi2gBRQ99obAIuvC3zxiFZnKH+KKgqudETPY
-         FkCZRQOzPfRg1BNHeTBHEYklE1eZoZcNWAwcIPkH7kNeCJJ46F/EGMtKpofppW08k2Bh
-         uPo7Fs2fDYa3Vtd6rTtytIMm1mleWns7TJyjlpOdOuRioV8/LRWsYoobGGuQTqV5vNGf
-         a+EC+2LOwDneYIXeSnizRv8qHmW0Vrw1Rsb51uLvwb5ISHBe5sbH4JpXcGs4MjO7SUZS
-         Ce0g==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lzV9usbcyvrZBezSzuliRNMORjroXFiHCPOIQMppm20=;
+        b=mFp6wXmb3dx9Iz2MBUFPuVyhUmTP9lVcgCQyveXhQC419PlTNsEI22yTsPSMZG3kax
+         nCA+1dWmdyC3cWpzU49fyRrvZeCLfP1DG4UmaQghxfel1tj/ATOuawBGgVV7u7rd3IXM
+         B3nOHiSCZ0UVphZueGqjVfoII+u+8CgPeywRQoPZiN90fLMexZ4OTiIWWVcJZpGuww0b
+         5i1H1jHOQRmOezoZJCcZrJFBPQxgzXBPiRWAD7uMqyCVSeIAy0hKx54ImBx5TMTl5tM1
+         ODvAV2PnmUPZgqwW3qnqbwsT2wQij3uP3CiH3p3nXpvFTtKUXi+vJi/c3j/+B8DEr9kj
+         uBQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=taXWeBFo+wT7XX0MW36Hk3wvn7TPVywWpoJuQSvy99I=;
-        b=HKtGDILtdPfjcYY+qXsTMqPT39/Dmz3vLzAMadzJS369zVlNejIMZDrZ5Y7rM7a5HV
-         f2kWLssyZRB53smaIM5PLT/nYydqI68iD4eiL9I8z5gTMFKbVl7Y03A5zCYwr/S5LLHU
-         zgLR3IZa11d7MNthU+LGp7pAnYeIY4IGfmEVnUghY6YXpXJ50JPVlhEM9KE0NQMy1Wj4
-         i1aHWVLkJor47LjWst7ggZLwJvDmgw3ingym89enB7+8JKNNuSs8deqIDH0BkUWq9+Jc
-         mHZ8fuNkygum6QvnUAS3FAfptuNpj5cNkIY/sYBOObljkop5X7KO80H6POx9GAnL7+Zh
-         1SrQ==
-X-Gm-Message-State: AOAM530nOuMmfn1hABLNyI206bRVaLjQzpRU9LttQU0EQqzbblsuVy40
-        S2CzfZTqlZ5SxxqJsPtwsv0=
-X-Google-Smtp-Source: ABdhPJwAW8FhnDE4V3RWPkL4nQ+6OuSliTaHElW4eouWDejC1kSGEwRKd+hccEishZCOvjJetvDf4A==
-X-Received: by 2002:a37:a308:: with SMTP id m8mr5050191qke.126.1604625821246;
-        Thu, 05 Nov 2020 17:23:41 -0800 (PST)
-Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
-        by smtp.gmail.com with ESMTPSA id 64sm2051768qtc.92.2020.11.05.17.23.39
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 05 Nov 2020 17:23:40 -0800 (PST)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 1E1D327C0054;
-        Thu,  5 Nov 2020 20:23:39 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Thu, 05 Nov 2020 20:23:39 -0500
-X-ME-Sender: <xms:mqWkX5V4B4vtXh9DligBtEkbjfYxntdfcTdJVA3QjlEjqvmtQBOCAQ>
-    <xme:mqWkX5lR1o-RVGZaUd4V9Nva0bbD_3Q-qEvFjqiYmEgfkTiZal9ohUwNhYpIHhOlu
-    F8EkJ2HH-nLemOUAQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddtkedgfeehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvuffkfhggtggujgesthdtre
-    dttddtvdenucfhrhhomhepuehoqhhunhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehg
-    mhgrihhlrdgtohhmqeenucggtffrrghtthgvrhhnpedvleeigedugfegveejhfejveeuve
-    eiteejieekvdfgjeefudehfefhgfegvdegjeenucfkphepudeijedrvddvtddrvddruddv
-    ieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsoh
-    hquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdeigedq
-    udejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfihigmh
-    gvrdhnrghmvg
-X-ME-Proxy: <xmx:mqWkX1aM_KmQrfn0F8bGHHmJqfY2h-GdnLYP5PdNfitJfIVZv74x3A>
-    <xmx:mqWkX8VwyH6qN_nPzBJ2-AsjH1Oh-IjwK77bLgVA8X10kdgVuPmTZw>
-    <xmx:mqWkXznGiBiJowNaxzmrAWvgP3B9_uykjyjpZFa80biycbL6IqUKuA>
-    <xmx:m6WkX1423zDQd6I3QB1QO_tEkZGBWNvb5bsXVxM4Ub7KSA8MlbXcdyA1xhU>
-Received: from localhost (unknown [167.220.2.126])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 2426F32801F2;
-        Thu,  5 Nov 2020 20:23:38 -0500 (EST)
-Date:   Fri, 6 Nov 2020 09:23:35 +0800
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     paulmck@kernel.org
-Cc:     linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        kernel-team@fb.com, mingo@kernel.org, elver@google.com,
-        andreyknvl@google.com, glider@google.com, dvyukov@google.com,
-        cai@lca.pw
-Subject: Re: [PATCH kcsan 3/3] kcsan: Fix encoding masks and regain address
- bit
-Message-ID: <20201106012335.GA3025@boqun-archlinux>
-References: <20201105220302.GA15733@paulmck-ThinkPad-P72>
- <20201105220324.15808-3-paulmck@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lzV9usbcyvrZBezSzuliRNMORjroXFiHCPOIQMppm20=;
+        b=fusSvwxx523J/CrfLv5sQv294vf/R8uz0Mb/umECa4u5OA3uyHQFUrKOU7S+04vR0/
+         iuZEwdwL3CIcNWSAVFMIljCcLqrQpL4GySKYDYvfgrFdYhOrWVrDD5YV0TdI/TJP0khT
+         VLQTeLsoeotNpmUyaQ+CJ4IGVsWQdjP0p75Q6ih/zydIYUYPE6gqg2H4pHj6JsWXNcD1
+         HGMr5912iCIrXyTF7DWwosVEkxgFzEO3ZZzc3qAC1JI9oYWtvZ4qgNpE4nA++kWWtNLf
+         4y5w4AS35ONVZKwKXkWjE/nzbxEI0/YQiXl2S2FVYdkS/SQe5qo3uVWZFTIy83O7J6Jh
+         2Vpg==
+X-Gm-Message-State: AOAM530x5wEOy69UdSCDikRgFju9V2/ZAFcye1zY2+ZYiYmua1dGBgtk
+        WVjxxxewtxo/Hg9yqy3tbj7PXYjxzbjsk+jqVKfoXQ==
+X-Google-Smtp-Source: ABdhPJyYHml/89uqvPtNmXYMF2Pm87o8/A6MHGqILFDdIGr3l1sb+4jGsYPEXHB+yaFTcNWWksQrzvjmCxCbmsk95lA=
+X-Received: by 2002:a25:9c02:: with SMTP id c2mr7063033ybo.228.1604625925368;
+ Thu, 05 Nov 2020 17:25:25 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201105220324.15808-3-paulmck@kernel.org>
+References: <20201104232356.4038506-1-saravanak@google.com>
+ <20201104232356.4038506-16-saravanak@google.com> <20201105094228.GE3439341@kroah.com>
+ <CAGETcx-0TPte6g3Cf5F3WJwdW-9yUptLDj3AcEdvWN0YJ2H4qg@mail.gmail.com>
+In-Reply-To: <CAGETcx-0TPte6g3Cf5F3WJwdW-9yUptLDj3AcEdvWN0YJ2H4qg@mail.gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Thu, 5 Nov 2020 17:24:49 -0800
+Message-ID: <CAGETcx-AcCk2c4Jq9HGfxUcCdnpWb5d_ubNd=r6KciHCFUdAVw@mail.gmail.com>
+Subject: Re: [PATCH v1 15/18] of: property: Update implementation of
+ add_links() to create fwnode links
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Android Kernel Team <kernel-team@android.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marco,
+On Thu, Nov 5, 2020 at 3:25 PM Saravana Kannan <saravanak@google.com> wrote:
+>
+> On Thu, Nov 5, 2020 at 1:41 AM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Wed, Nov 04, 2020 at 03:23:52PM -0800, Saravana Kannan wrote:
+> > > The semantics of add_links() has changed from creating device link
+> > > between devices to creating fwnode links between fwnodes. So, update the
+> > > implementation of add_links() to match the new semantics.
+> > >
+> > > Signed-off-by: Saravana Kannan <saravanak@google.com>
+> > > ---
+> > >  drivers/of/property.c | 150 ++++++++++++------------------------------
+> > >  1 file changed, 41 insertions(+), 109 deletions(-)
+> > >
+> > > diff --git a/drivers/of/property.c b/drivers/of/property.c
+> > > index 408a7b5f06a9..86303803f1b3 100644
+> > > --- a/drivers/of/property.c
+> > > +++ b/drivers/of/property.c
+> > > @@ -1038,33 +1038,9 @@ static bool of_is_ancestor_of(struct device_node *test_ancestor,
+> > >  }
+> > >
+> > >  /**
+> > > - * of_get_next_parent_dev - Add device link to supplier from supplier phandle
+> > > - * @np: device tree node
+> > > - *
+> > > - * Given a device tree node (@np), this function finds its closest ancestor
+> > > - * device tree node that has a corresponding struct device.
+> > > - *
+> > > - * The caller of this function is expected to call put_device() on the returned
+> > > - * device when they are done.
+> > > - */
+> > > -static struct device *of_get_next_parent_dev(struct device_node *np)
+> > > -{
+> > > -     struct device *dev = NULL;
+> > > -
+> > > -     of_node_get(np);
+> > > -     do {
+> > > -             np = of_get_next_parent(np);
+> > > -             if (np)
+> > > -                     dev = get_dev_from_fwnode(&np->fwnode);
+> > > -     } while (np && !dev);
+> > > -     of_node_put(np);
+> > > -     return dev;
+> > > -}
+> > > -
+> > > -/**
+> > > - * of_link_to_phandle - Add device link to supplier from supplier phandle
+> > > - * @dev: consumer device
+> > > - * @sup_np: phandle to supplier device tree node
+> > > + * of_link_to_phandle - Add fwnode link to supplier from supplier phandle
+> > > + * @con_np: consumer device tree node
+> > > + * @sup_np: supplier device tree node
+> > >   *
+> > >   * Given a phandle to a supplier device tree node (@sup_np), this function
+> > >   * finds the device that owns the supplier device tree node and creates a
+> > > @@ -1074,16 +1050,14 @@ static struct device *of_get_next_parent_dev(struct device_node *np)
+> > >   * cases, it returns an error.
+> > >   *
+> > >   * Returns:
+> > > - * - 0 if link successfully created to supplier
+> > > - * - -EAGAIN if linking to the supplier should be reattempted
+> > > + * - 0 if fwnode link successfully created to supplier
+> > >   * - -EINVAL if the supplier link is invalid and should not be created
+> > > - * - -ENODEV if there is no device that corresponds to the supplier phandle
+> > > + * - -ENODEV if struct device will never be create for supplier
+> > >   */
+> > > -static int of_link_to_phandle(struct device *dev, struct device_node *sup_np,
+> > > -                           u32 dl_flags)
+> > > +static int of_link_to_phandle(struct device_node *con_np,
+> > > +                           struct device_node *sup_np)
+> > >  {
+> > > -     struct device *sup_dev, *sup_par_dev;
+> > > -     int ret = 0;
+> > > +     struct device *sup_dev;
+> > >       struct device_node *tmp_np = sup_np;
+> > >
+> > >       of_node_get(sup_np);
+> > > @@ -1106,7 +1080,8 @@ static int of_link_to_phandle(struct device *dev, struct device_node *sup_np,
+> > >       }
+> > >
+> > >       if (!sup_np) {
+> > > -             dev_dbg(dev, "Not linking to %pOFP - No device\n", tmp_np);
+> > > +             pr_debug("Not linking %pOFP to %pOFP - No device\n",
+> > > +                      con_np, tmp_np);
+> >
+> > Who is calling this function without a valid dev pointer?
+>
+> Sorry, I plan to delete the "dev" parameter as it's not really used
+> anywhere. I'm trying to do that without causing build time errors and
+> making the series into digestible small patches.
 
-On Thu, Nov 05, 2020 at 02:03:24PM -0800, paulmck@kernel.org wrote:
-> From: Marco Elver <elver@google.com>
-> 
-> The watchpoint encoding masks for size and address were off-by-one bit
-> each, with the size mask using 1 unnecessary bit and the address mask
-> missing 1 bit. However, due to the way the size is shifted into the
-> encoded watchpoint, we were effectively wasting and never using the
-> extra bit.
-> 
-> For example, on x86 with PAGE_SIZE==4K, we have 1 bit for the is-write
-> bit, 14 bits for the size bits, and then 49 bits left for the address.
-> Prior to this fix we would end up with this usage:
-> 
-> 	[ write<1> | size<14> | wasted<1> | address<48> ]
-> 
-> Fix it by subtracting 1 bit from the GENMASK() end and start ranges of
-> size and address respectively. The added static_assert()s verify that
-> the masks are as expected. With the fixed version, we get the expected
-> usage:
-> 
-> 	[ write<1> | size<14> |             address<49> ]
-> 
-> Functionally no change is expected, since that extra address bit is
-> insignificant for enabled architectures.
-> 
-> Signed-off-by: Marco Elver <elver@google.com>
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> ---
->  kernel/kcsan/encoding.h | 14 ++++++--------
->  1 file changed, 6 insertions(+), 8 deletions(-)
-> 
-> diff --git a/kernel/kcsan/encoding.h b/kernel/kcsan/encoding.h
-> index 4f73db6..b50bda9 100644
-> --- a/kernel/kcsan/encoding.h
-> +++ b/kernel/kcsan/encoding.h
-> @@ -37,14 +37,12 @@
->   */
->  #define WATCHPOINT_ADDR_BITS (BITS_PER_LONG-1 - WATCHPOINT_SIZE_BITS)
->  
-> -/*
-> - * Masks to set/retrieve the encoded data.
-> - */
-> -#define WATCHPOINT_WRITE_MASK BIT(BITS_PER_LONG-1)
-> -#define WATCHPOINT_SIZE_MASK                                                   \
-> -	GENMASK(BITS_PER_LONG-2, BITS_PER_LONG-2 - WATCHPOINT_SIZE_BITS)
-> -#define WATCHPOINT_ADDR_MASK                                                   \
-> -	GENMASK(BITS_PER_LONG-3 - WATCHPOINT_SIZE_BITS, 0)
-> +/* Bitmasks for the encoded watchpoint access information. */
-> +#define WATCHPOINT_WRITE_MASK	BIT(BITS_PER_LONG-1)
-> +#define WATCHPOINT_SIZE_MASK	GENMASK(BITS_PER_LONG-2, BITS_PER_LONG-1 - WATCHPOINT_SIZE_BITS)
-> +#define WATCHPOINT_ADDR_MASK	GENMASK(BITS_PER_LONG-2 - WATCHPOINT_SIZE_BITS, 0)
-> +static_assert(WATCHPOINT_ADDR_MASK == (1UL << WATCHPOINT_ADDR_BITS) - 1);
+*facepalm* for my earlier response. You'll notice that I've already
+deleted the "dev" input param to this function. That's why I can't use
+it here :)
 
-Nit:
-
-Since you use the static_assert(), why not define WATCHPOINT_ADDR_MASK
-as:
-
-#define WATCHPOINT_ADDR_MASK (BIT(WATCHPOINT_SIZE_BITS) - 1)
-
-Besides, WATCHPOINT_SIZE_MASK can also be defined as:
-
-#define WATCHPOINT_SIZE_MASK GENMASK(BITS_PER_LONG - 2, WATCHPOINT_SIZE_BITS)
-
-Regards,
-Boqun
-
-> +static_assert((WATCHPOINT_WRITE_MASK ^ WATCHPOINT_SIZE_MASK ^ WATCHPOINT_ADDR_MASK) == ~0UL);
->  
->  static inline bool check_encodable(unsigned long addr, size_t size)
->  {
-> -- 
-> 2.9.5
-> 
+-Saravana
