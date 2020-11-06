@@ -2,84 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 774E92A91DB
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 09:57:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AF272A91DC
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 09:57:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726342AbgKFI5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 03:57:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725830AbgKFI5j (ORCPT
+        id S1726518AbgKFI5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 03:57:44 -0500
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:39850 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725830AbgKFI5n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 03:57:39 -0500
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09639C0613D2
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 00:57:38 -0800 (PST)
-Received: by mail-lf1-x144.google.com with SMTP id 74so855494lfo.5
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 00:57:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rDbRRGn34zXTBJ75beQCb48hBrXPldiexvEsZ0HXAgw=;
-        b=vPAj/NPMq+kZPDTqhNOlXhs13YOHtQWsU/BGtoxbD//dfTm6r07YObI4TBsQA36J8D
-         vWGT2aFa2VLD69eizZmhrXhmsOiedzgIYcJPRSjN0ylCXly3pSBuofkVg21AoGTwthvu
-         F1igEwb4uHkJf70qaHHLSpBCrsfpHj/xd/7wDUw+bsCj7X+RIXp8TP9zvABnyBn9sGQ/
-         g99Zb2pkOEqa7tTsSC1Ep3yaegCxOI89uVZ1wrbA+ZBlKlpIshnOpZvkRArZQWgTZCJi
-         T0wt8j3DU2C1DUZQzVdB34f30qubk/SPdguieuUx36aU+tz6Wa7R1ccvXzOls35MGDv4
-         x1nw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rDbRRGn34zXTBJ75beQCb48hBrXPldiexvEsZ0HXAgw=;
-        b=rbgFd+Ygi2V6IkewsVhsFgdXNsYsHIvjNX5vfpzsqpI8OEK/FhohRRL6HupYOPadpM
-         PxC+p8rY9abNVC/PpIOjaRRg4xhKZZMGplJw/4it5lDOVfjeyJphsfhkZm9usnLSzuJH
-         00+VDG3nyRZ74EHK8BWD8TO0ub76IhE64rlBP18w5myzgs0UgVKM0CYqfGL3MsIt0Lds
-         Vrwsud5WMvkJnZ98Q3nGMYjpW9ct9Z9jWMlGUeeBz1B/Clq1jyXNGdetFqOjcq6iieW0
-         z7cI2hNc1GNjaBC6uWmGswLOBQOqpmDKttxac4FgH3Xxmi1txZgbkX3FDURlTbmHweTt
-         STAg==
-X-Gm-Message-State: AOAM531XYo3RUE334+vmBXW/kKQp3DgEcM4zqBdQuc4kRdeb5LY8LYJp
-        0BhjtDC9jHLZg1J43vetNX2ZKZxungBPRjtf12I0u2TaR6I8yw==
-X-Google-Smtp-Source: ABdhPJyiBvhbwjuNJtxtQFv0OEV20PHDsdlVuc7QPzzJby5XvH2n9z2dVzk2KL3kyldL3uqTaJSzoDbAIoAoMmJp8K0=
-X-Received: by 2002:ac2:50c1:: with SMTP id h1mr451651lfm.333.1604653056413;
- Fri, 06 Nov 2020 00:57:36 -0800 (PST)
+        Fri, 6 Nov 2020 03:57:43 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R441e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UEPEj-X_1604653060;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UEPEj-X_1604653060)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 06 Nov 2020 16:57:40 +0800
+Subject: Re: [PATCH] net/dsa: remove unused macros to tame gcc warning
+To:     Joe Perches <joe@perches.com>, andrew@lunn.ch
+Cc:     Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1604641050-6004-1-git-send-email-alex.shi@linux.alibaba.com>
+ <71dc38c1646980840fb83d82fc588501af72e05f.camel@perches.com>
+ <8e0fac45-9107-cdfe-de9e-ccf3abd416a4@linux.alibaba.com>
+ <1662b333dd72369af4c1173035d43590fbc45292.camel@perches.com>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <28a5c53a-a576-7884-85ae-2adba39f2b8f@linux.alibaba.com>
+Date:   Fri, 6 Nov 2020 16:57:29 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <20201030154519.1245983-1-arnd@kernel.org> <20201030154919.1246645-1-arnd@kernel.org>
-In-Reply-To: <20201030154919.1246645-1-arnd@kernel.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 6 Nov 2020 09:57:25 +0100
-Message-ID: <CACRpkdYxJPdy4UY929V5oAXkwx_wxsszxk+iz_C+es5VBVGFbA@mail.gmail.com>
-Subject: Re: [PATCH 1/9] mm/maccess: fix unaligned copy_{from,to}_kernel_nofault
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Christoph Hellwig <hch@lst.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1662b333dd72369af4c1173035d43590fbc45292.camel@perches.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 4:49 PM Arnd Bergmann <arnd@kernel.org> wrote:
 
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> On machines such as ARMv5 that trap unaligned accesses, these
-> two functions can be slow when each access needs to be emulated,
-> or they might not work at all.
->
-> Change them so that each loop is only used when both the src
-> and dst pointers are naturally aligned.
->
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+在 2020/11/6 下午4:52, Joe Perches 写道:
+> On Fri, 2020-11-06 at 16:28 +0800, Alex Shi wrote:
+>>
+>> 在 2020/11/6 下午2:36, Joe Perches 写道:
+>>> On Fri, 2020-11-06 at 13:37 +0800, Alex Shi wrote:
+>>>> There are some macros unused, they causes much gcc warnings. Let's
+>>>> remove them to tame gcc.
+>>>
+>>> I believe these to be essentially poor warnings.
+>>>
+>>> Aren't these warnings generated only when adding  W=2 to the make
+>>> command line?
+>>>
+>>> Perhaps it's better to move the warning to level 3
+>>> ---
+>>> diff --git a/scripts/Makefile.extrawarn b/scripts/Makefile.extrawarn
+>>> index 95e4cdb94fe9..5c3c220ddb32 100644
+>>> --- a/scripts/Makefile.extrawarn
+>>> +++ b/scripts/Makefile.extrawarn
+>>> @@ -68,7 +68,6 @@ KBUILD_CFLAGS += $(call cc-option, -Wlogical-op)
+>>>  KBUILD_CFLAGS += -Wmissing-field-initializers
+>>>  KBUILD_CFLAGS += -Wtype-limits
+>>>  KBUILD_CFLAGS += $(call cc-option, -Wmaybe-uninitialized)
+>>> -KBUILD_CFLAGS += $(call cc-option, -Wunused-macros)
+>>
+>> This changed too much, and impact others. May not good. :)
+> 
+> Can you clarify what you mean?
+> 
 
-Yours,
-Linus Walleij
+Uh, change in this file will impact all kernels not only for net/dsa.
+If you want to keep these unused macros, maybe better to put them into comments?
+
+Thanks!
+Alex
