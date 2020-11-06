@@ -2,113 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E66EC2A98F5
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 17:00:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8344A2A9901
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 17:03:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727543AbgKFQAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 11:00:15 -0500
-Received: from outbound-smtp14.blacknight.com ([46.22.139.231]:39781 "EHLO
-        outbound-smtp14.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726422AbgKFQAP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 11:00:15 -0500
-Received: from mail.blacknight.com (pemlinmail04.blacknight.ie [81.17.254.17])
-        by outbound-smtp14.blacknight.com (Postfix) with ESMTPS id ADC921C356D
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 16:00:12 +0000 (GMT)
-Received: (qmail 13329 invoked from network); 6 Nov 2020 16:00:12 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 6 Nov 2020 16:00:12 -0000
-Date:   Fri, 6 Nov 2020 16:00:10 +0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Phil Auld <pauld@redhat.com>, Peter Puhov <peter.puhov@linaro.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Robert Foley <robert.foley@linaro.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Jirka Hladky <jhladky@redhat.com>
-Subject: Re: [PATCH v1] sched/fair: update_pick_idlest() Select group with
- lowest group_util when idle_cpus are equal
-Message-ID: <20201106160010.GF3371@techsingularity.net>
-References: <20200714125941.4174-1-peter.puhov@linaro.org>
- <20201102105043.GB3371@techsingularity.net>
- <CAKfTPtB7q8DMQaC=gU+XH92XKcSiuTSBjtMuiRFS67af0gzc6g@mail.gmail.com>
- <20201102144418.GB154641@lorien.usersys.redhat.com>
- <20201104094205.GI3306@suse.de>
- <20201106120303.GE3371@techsingularity.net>
- <CAKfTPtDbyrcZtzPPsdQFOxOkreg-ejn=ABGOGqYjdVpeFPEzPw@mail.gmail.com>
+        id S1726751AbgKFQDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 11:03:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59122 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726034AbgKFQDm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 11:03:42 -0500
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 66C2A22247;
+        Fri,  6 Nov 2020 16:03:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604678621;
+        bh=k8bryvFui+YoGklp94RFUzRsPMzTAL7+JGvq9QXQg+s=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=hi/uyH5WXU66Rm2JLXwlxWHG0n5p4kipBD9wlwWxVHzvp+063vHGOKEpCMH1LUxHw
+         e6nFQ2VQhcxRGFOrda2acrUwOn11TDLqOXP/if7jmiZILokM3y6FesB5nFRHKsUSI2
+         +FGZE3vX2mkQrh666F9acUBGbYRDuZ6R+741q6o4=
+Received: by mail-lf1-f52.google.com with SMTP id u18so2621488lfd.9;
+        Fri, 06 Nov 2020 08:03:41 -0800 (PST)
+X-Gm-Message-State: AOAM531F51fbjo4t1JrT+K1Nt5DabMDJhuLwd8VpJse63Xpd+mmBpf93
+        r2SdBlWm0WqzrLfFHnqPZK0Sn0YBSkhVvQv1HaM=
+X-Google-Smtp-Source: ABdhPJy4L9sWNTrKjB39Lz4S8huMYtJ2miYTZnmYiCjhMmzPfT6Q8pHTbOo2LrWBLVMhDMAFLR/BADUAut2KfwSjmLs=
+X-Received: by 2002:a19:c354:: with SMTP id t81mr562644lff.283.1604678619488;
+ Fri, 06 Nov 2020 08:03:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <CAKfTPtDbyrcZtzPPsdQFOxOkreg-ejn=ABGOGqYjdVpeFPEzPw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201106151411.321743-1-maxime@cerno.tech>
+In-Reply-To: <20201106151411.321743-1-maxime@cerno.tech>
+From:   Chen-Yu Tsai <wens@kernel.org>
+Date:   Sat, 7 Nov 2020 00:03:28 +0800
+X-Gmail-Original-Message-ID: <CAGb2v66N1BF+ReqMwJOUPESvJOwm7w7exuc3T52GULxJHJqKzg@mail.gmail.com>
+Message-ID: <CAGb2v66N1BF+ReqMwJOUPESvJOwm7w7exuc3T52GULxJHJqKzg@mail.gmail.com>
+Subject: Re: [PATCH 0/7] sunxi: Remove the calls to dma_direct_set_offset
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Christoph Hellwig <hch@lst.de>, devel@driverdev.osuosl.org,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Yong Deng <yong.deng@magewell.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 06, 2020 at 02:33:56PM +0100, Vincent Guittot wrote:
-> On Fri, 6 Nov 2020 at 13:03, Mel Gorman <mgorman@techsingularity.net> wrote:
-> >
-> > On Wed, Nov 04, 2020 at 09:42:05AM +0000, Mel Gorman wrote:
-> > > While it's possible that some other factor masked the impact of the patch,
-> > > the fact it's neutral for two workloads in 5.10-rc2 is suspicious as it
-> > > indicates that if the patch was implemented against 5.10-rc2, it would
-> > > likely not have been merged. I've queued the tests on the remaining
-> > > machines to see if something more conclusive falls out.
-> > >
-> >
-> > It's not as conclusive as I would like. fork_test generally benefits
-> > across the board but I do not put much weight in that.
-> >
-> > Otherwise, it's workload and machine-specific.
-> >
-> > schbench: (wakeup latency sensitive), all machines benefitted from the
-> >         revert at the low utilisation except one 2-socket haswell machine
-> >         which showed higher variability when the machine was fully
-> >         utilised.
-> 
-> There is a pending patch to should improve this bench:
-> https://lore.kernel.org/patchwork/patch/1330614/
-> 
+Hi,
 
-Ok, I've slotted this one in with a bunch of other stuff I wanted to run
-over the weekend. That particular patch was on my radar anyway. It just
-got bumped up the schedule a little bit.
+On Fri, Nov 6, 2020 at 11:15 PM Maxime Ripard <maxime@cerno.tech> wrote:
+>
+> Hi,
+>
+> Here's an attempt to removing the dma_direct_set_offset calls we have in
+> numerous drivers and move all those quirks into a global notifier as suggested
+> by Robin.
+>
+> Let me know what you think,
+> Maxime
+>
+> Maxime Ripard (7):
+>   drm/sun4i: backend: Fix probe failure with multiple backends
+>   soc: sunxi: Deal with the MBUS DMA offsets in a central place
+>   drm/sun4i: backend: Remove the MBUS quirks
+>   media: sun4i: Remove the MBUS quirks
+>   media: sun6i: Remove the MBUS quirks
+>   media: cedrus: Remove the MBUS quirks
+>   media: sun8i-di: Remove the call to of_dma_configure
 
-> > hackbench: Neutral except for the same 2-socket Haswell machine which
-> >         took an 8% performance penalty of 8% for smaller number of groups
-> >         and 4% for higher number of groups.
-> >
-> > pipetest: Mostly neutral except for the *same* machine showing an 18%
-> >         performance gain by reverting.
-> >
-> > kernbench: Shows small gains at low job counts across the board -- 0.84%
-> >         lowest gain up to 5.93% depending on the machine
-> >
-> > gitsource: low utilisation execution of the git test suite. This was
-> >         mostly a win for the revert. For the list of machines tested it was
-> >
-> >          14.48% gain (2 socket but SNC enabled to 4 NUMA nodes)
-> >         neutral      (2 socket broadwell)
-> >         36.37% gain  (1 socket skylake machine)
-> >          3.18% gain  (2 socket broadwell)
-> >          4.4%        (2 socket EPYC 2)
-> >          1.85% gain  (2 socket EPYC 1)
-> >
-> > While it was clear-cut for 5.9, it's less clear-cut for 5.10-rc2 although
-> > the gitsource shows some severe differences depending on the machine that
-> > is worth being extremely cautious about. I would still prefer a revert
-> > but I'm also extremely biased and I know there are other patches in the
-> 
-> This one from Julia can also impact
-> 
+Whole series looks good to me.
 
-Which one? I'm guessing "[PATCH v2] sched/fair: check for idle core"
+Reviewed-by: Chen-Yu Tsai <wens@csie.org>
 
--- 
-Mel Gorman
-SUSE Labs
+Now the question remaining is how do we merge this series so that
+the notifier gets merged before all the code dealing with the MBUS
+quirk gets removed.
+
+
+>  drivers/gpu/drm/sun4i/sun4i_backend.c         |  13 --
+>  .../platform/sunxi/sun4i-csi/sun4i_csi.c      |  27 ----
+>  .../platform/sunxi/sun6i-csi/sun6i_csi.c      |  17 ---
+>  .../media/platform/sunxi/sun8i-di/sun8i-di.c  |   4 -
+>  drivers/soc/sunxi/Kconfig                     |   8 ++
+>  drivers/soc/sunxi/Makefile                    |   1 +
+>  drivers/soc/sunxi/sunxi_mbus.c                | 132 ++++++++++++++++++
+>  drivers/staging/media/sunxi/cedrus/cedrus.c   |   1 -
+>  drivers/staging/media/sunxi/cedrus/cedrus.h   |   3 -
+>  .../staging/media/sunxi/cedrus/cedrus_hw.c    |  18 ---
+>  10 files changed, 141 insertions(+), 83 deletions(-)
+>  create mode 100644 drivers/soc/sunxi/sunxi_mbus.c
+>
+> --
+> 2.28.0
+>
+>
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
