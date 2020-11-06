@@ -2,141 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBBFF2A964B
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 13:40:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A52CB2A9640
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 13:38:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727392AbgKFMk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 07:40:27 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:6752 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727346AbgKFMkS (ORCPT
+        id S1727231AbgKFMiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 07:38:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726939AbgKFMiV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 07:40:18 -0500
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CSKjJ4qQmzkfbv;
-        Fri,  6 Nov 2020 20:40:04 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.58) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 6 Nov 2020 20:40:01 +0800
-From:   John Garry <john.garry@huawei.com>
-To:     <acme@kernel.org>, <will@kernel.org>, <mark.rutland@arm.com>,
-        <jolsa@redhat.com>, <irogers@google.com>, <leo.yan@linaro.org>,
-        <peterz@infradead.org>, <mingo@redhat.com>,
-        <alexander.shishkin@linux.intel.com>, <namhyung@kernel.org>,
-        <mathieu.poirier@linaro.org>
-CC:     <linuxarm@huawei.com>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <qiangqing.zhang@nxp.com>,
-        <zhangshaokun@hisilicon.com>, <linux-imx@nxp.com>,
-        <kjain@linux.ibm.com>, John Garry <john.garry@huawei.com>
-Subject: [PATCH RFC v5 13/13] perf vendor events: Add JSON metrics for imx8mm DDR Perf
-Date:   Fri, 6 Nov 2020 20:35:53 +0800
-Message-ID: <1604666153-4187-14-git-send-email-john.garry@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1604666153-4187-1-git-send-email-john.garry@huawei.com>
-References: <1604666153-4187-1-git-send-email-john.garry@huawei.com>
+        Fri, 6 Nov 2020 07:38:21 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56DA4C0613CF;
+        Fri,  6 Nov 2020 04:38:21 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id p8so366664wrx.5;
+        Fri, 06 Nov 2020 04:38:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=oJeBlvI7pAnkAsw70khux5ZoE/B4WwO2O42ItTpncKs=;
+        b=WAJEZpwwyivZPgyV6gkLhK0Y/cm6bIad7kY58MOOTMAbjJoZKo0iDiFWuKcjli0joP
+         gc+bfTLQPAg9SP87socW83t/aUHOoTR5RkwijNPW16vWWKOF6rzrZiJYpQvdwZ+wsgGu
+         D7rOJMI/NojscP1nzw2xfqEZ81UmtOQSOGOfRKz5Y6gTgtZqESPFkj3QG5PhGjv5d6Cn
+         uKNrf3voJrN3tlytYswcULxhhRXwFCkKmGS2/UZwTyRjZrUyzQz8RqawV8qq70IoNrqd
+         F6bbtQl8r+roONbnTq6cfe03thF20gW839OV3v7rCEGQDuBGD8D9ci+v5VSxgZnPoSVn
+         XUbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=oJeBlvI7pAnkAsw70khux5ZoE/B4WwO2O42ItTpncKs=;
+        b=GdLUE+dD9qvhoenjwCcNTz04gYLJO5RQUNyxm2u4ExHQvlUoCi437QeecI+xriSzL1
+         z5+2Dd1zMZmw/2WdF4FZeZlvQ8Yt5z8bGU4dcg2U7yc1EOKi188o+UnFBsi6Bec6xTSG
+         0L2o7DITft9n3U+Xkek0nB8BXXSWeaJT+QfOGaqtPh0XiCLCzhn+GxOK1oK5MBXD8Lf9
+         7eXbJYZi3NQRZuPS2LHU+ZnRdEwznE2FiDqk2lqYwCp6vrV+FoP0I5Dy5EcHox88E5L5
+         qWEFhX0TruvzVtH5unAJF47kpUAiRHaOevuwa8S66wprF8tVwULxv5opmWqsdWuuGHy+
+         Nxlw==
+X-Gm-Message-State: AOAM531W3BBfVl/jg2YWuTF1wKBgz3Uso2pXfM9Plr2lMG55XXZ0hTKU
+        onOUGZD5O8XlP+vpMcZMeEI=
+X-Google-Smtp-Source: ABdhPJzlriX3iwt1mvdV4n7Fm1xf5GeKZnsqhivtwgEd646SLG0R7IIo49K7n1ZP2ZMZwzI9QXBiww==
+X-Received: by 2002:adf:dc4b:: with SMTP id m11mr2375463wrj.328.1604666300066;
+        Fri, 06 Nov 2020 04:38:20 -0800 (PST)
+Received: from felia ([2001:16b8:2d20:9d00:e580:adb5:1ef:950d])
+        by smtp.gmail.com with ESMTPSA id j9sm1924110wrr.49.2020.11.06.04.38.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Nov 2020 04:38:19 -0800 (PST)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+X-Google-Original-From: Lukas Bulwahn <lukas@gmail.com>
+Date:   Fri, 6 Nov 2020 13:38:18 +0100 (CET)
+X-X-Sender: lukas@felia
+To:     Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
+cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Tom Rix <trix@redhat.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com,
+        kernel-janitors@vger.kernel.org, linux-safety@lists.elisa.tech,
+        linux-kernel@vger.kernel.org
+Subject: Re: [linux-safety] [PATCH] taskstats: remove unneeded dead
+ assignment
+In-Reply-To: <aea9d12d-88ee-f262-4328-03993521668f@codethink.co.uk>
+Message-ID: <alpine.DEB.2.21.2011061331250.20338@felia>
+References: <20201106062210.27920-1-lukas.bulwahn@gmail.com> <6ab2415b-0642-16ee-4be0-c909e07e7565@codethink.co.uk> <alpine.DEB.2.21.2011061126130.20338@felia> <aea9d12d-88ee-f262-4328-03993521668f@codethink.co.uk>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.58]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
 
-Add JSON metrics for imx8mm DDR Perf.
 
-Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-Signed-off-by: John Garry <john.garry@huawei.com>
----
- .../arch/arm64/freescale/imx8mm/sys/ddrc.json | 39 +++++++++++++++++++
- .../arm64/freescale/imx8mm/sys/metrics.json   | 18 +++++++++
- tools/perf/pmu-events/jevents.c               |  1 +
- 3 files changed, 58 insertions(+)
- create mode 100644 tools/perf/pmu-events/arch/arm64/freescale/imx8mm/sys/ddrc.json
- create mode 100644 tools/perf/pmu-events/arch/arm64/freescale/imx8mm/sys/metrics.json
+On Fri, 6 Nov 2020, Sudip Mukherjee wrote:
 
-diff --git a/tools/perf/pmu-events/arch/arm64/freescale/imx8mm/sys/ddrc.json b/tools/perf/pmu-events/arch/arm64/freescale/imx8mm/sys/ddrc.json
-new file mode 100644
-index 000000000000..3b1cd708f568
---- /dev/null
-+++ b/tools/perf/pmu-events/arch/arm64/freescale/imx8mm/sys/ddrc.json
-@@ -0,0 +1,39 @@
-+[
-+   {
-+           "BriefDescription": "ddr cycles event",
-+           "EventCode": "0x00",
-+           "EventName": "imx8mm_ddr.cycles",
-+           "Unit": "imx8_ddr",
-+           "Compat": "i.MX8MM"
-+   },
-+   {
-+           "BriefDescription": "ddr read-cycles event",
-+           "EventCode": "0x2a",
-+           "EventName": "imx8mm_ddr.read_cycles",
-+           "Unit": "imx8_ddr",
-+           "Compat": "i.MX8MM"
-+   },
-+   {
-+           "BriefDescription": "ddr write-cycles event",
-+           "EventCode": "0x2b",
-+           "EventName": "imx8mm_ddr.write_cycles",
-+           "Unit": "imx8_ddr",
-+           "Compat": "i.MX8MM"
-+   },
-+   {
-+           "BriefDescription": "ddr read event",
-+           "EventCode": "0x35",
-+           "EventName": "imx8mm_ddr.read",
-+           "Unit": "imx8_ddr",
-+           "Compat": "i.MX8MM"
-+   },
-+   {
-+           "BriefDescription": "ddr write event",
-+           "EventCode": "0x38",
-+           "EventName": "imx8mm_ddr.write",
-+           "Unit": "imx8_ddr",
-+           "Compat": "i.MX8MM"
-+   }
-+]
-+
-+
-diff --git a/tools/perf/pmu-events/arch/arm64/freescale/imx8mm/sys/metrics.json b/tools/perf/pmu-events/arch/arm64/freescale/imx8mm/sys/metrics.json
-new file mode 100644
-index 000000000000..8e553b67cae6
---- /dev/null
-+++ b/tools/perf/pmu-events/arch/arm64/freescale/imx8mm/sys/metrics.json
-@@ -0,0 +1,18 @@
-+[
-+   {
-+	    "BriefDescription": "bytes all masters read from ddr based on read-cycles event",
-+	    "MetricName": "imx8mm_ddr_read.all",
-+	    "MetricExpr": "imx8mm_ddr.read_cycles * 4 * 4",
-+	    "ScaleUnit": "9.765625e-4KB",
-+	    "Unit": "imx8_ddr",
-+	    "Compat": "i.MX8MM"
-+    },
-+   {
-+	    "BriefDescription": "bytes all masters write to ddr based on write-cycles event",
-+	    "MetricName": "imx8mm_ddr_write.all",
-+	    "MetricExpr": "imx8mm_ddr.write_cycles * 4 * 4",
-+	    "ScaleUnit": "9.765625e-4KB",
-+	    "Unit": "imx8_ddr",
-+	    "Compat": "i.MX8MM"
-+    }
-+]
-diff --git a/tools/perf/pmu-events/jevents.c b/tools/perf/pmu-events/jevents.c
-index 46e5253b0862..89add92de45c 100644
---- a/tools/perf/pmu-events/jevents.c
-+++ b/tools/perf/pmu-events/jevents.c
-@@ -282,6 +282,7 @@ static struct map {
- 	{ "hisi_sccl,hha", "hisi_sccl,hha" },
- 	{ "hisi_sccl,l3c", "hisi_sccl,l3c" },
- 	/* it's not realistic to keep adding these, we need something more scalable ... */
-+	{ "imx8_ddr", "imx8_ddr" },
- 	{ "smmuv3_pmcg", "smmuv3_pmcg" },
- 	{ "L3PMC", "amd_l3" },
- 	{ "DFPMC", "amd_df" },
--- 
-2.26.2
+> Hi Lukas,
+> 
+> On 06/11/2020 10:31, Lukas Bulwahn wrote:
+> > 
+> > 
+> > On Fri, 6 Nov 2020, Sudip Mukherjee wrote:
+> > 
+> >> Hi Lukas,
+> >>
+> 
+> <snip>
+> 
+> > 
+> > I did not try but I bet (a beverage of your choice) that the object code
+> > remains the same also for your suggested patch. Try to disprove my claim 
+> > and possibly earn yourself a beverage when we meet...
+> 
+> Lets decide which beverage.. ;-)
+> 
+> Using gcc-7.2.0 for MIPS:
+> 
+> original:- ab81d3305d578c2568fbc73aad2f9e61  kernel/taskstats.o
+> After your change:- ab81d3305d578c2568fbc73aad2f9e61  kernel/taskstats.o
+> After my change:- 0acae2c8d72abd3e15bf805fccdca711  kernel/taskstats.o
+> 
+>
 
+Interesting, can you share the diff of the objdump before and after?
+
+I bet it found now a different assignment from variables to registers or 
+so; with the beverage at hand, we can then discuss if that is effectively 
+still the same object code or not.
+
+Thanks for confirming that my patch here really remains the same compared 
+to before, even on MIPS :) I only checked x86-64...
+
+Lukas 
+
+> 
+> -- 
+> Regards
+> Sudip
+> 
+> 
+> -=-=-=-=-=-=-=-=-=-=-=-
+> Links: You receive all messages sent to this group.
+> View/Reply Online (#148): https://lists.elisa.tech/g/linux-safety/message/148
+> Mute This Topic: https://lists.elisa.tech/mt/78069241/1714638
+> Group Owner: linux-safety+owner@lists.elisa.tech
+> Unsubscribe: https://lists.elisa.tech/g/linux-safety/unsub [lukas.bulwahn@gmail.com]
+> -=-=-=-=-=-=-=-=-=-=-=-
+> 
+> 
+> 
