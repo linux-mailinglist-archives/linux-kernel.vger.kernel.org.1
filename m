@@ -2,92 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1391B2A8C69
+	by mail.lfdr.de (Postfix) with ESMTP id 879042A8C6A
 	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 03:03:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732776AbgKFCDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 21:03:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40186 "EHLO
+        id S1732855AbgKFCDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 21:03:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731060AbgKFCDA (ORCPT
+        with ESMTP id S1730862AbgKFCDP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 21:03:00 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A929C0613D2
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 18:02:59 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id e21so2715980pgr.11
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 18:02:59 -0800 (PST)
+        Thu, 5 Nov 2020 21:03:15 -0500
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88DE3C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 18:03:15 -0800 (PST)
+Received: by mail-pl1-x642.google.com with SMTP id x23so1697693plr.6
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 18:03:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=MfUR8zFkzj3kr4PPBmXznA83GIqjmqrQi8dR4mnY5LM=;
-        b=OifMrK+xYjA8lLgOUadiWJP+wSmcvuyLPJy8oZM5a4NU04wONUPxxyyTv0muleVrpf
-         pKcbl7OS+5OBXTUQ5QZuvqqwhB/dix35NP+i273CjetfCHbFbdiq5r7cx47LwHz75s4M
-         3sxaBTtvg0MYq/ttNf3mI9L6qr+lst9TdEAJ1rChG5EmJSI89BoqB0XyvQ8/N5KfYrJe
-         r4feXgllxVNASUUFjmRMjgT8j6IZKT9eSEesWG/x9A8z3F2FdVj9PvwaBR33Vh1YVeFN
-         0CDTmgTxUZpq5+dmcr69uz2gR3O5V1UDu39p3T9twUe7FUxW3DlZ1evqVwSvx15ZAws4
-         ShMw==
+        bh=6NC+atGFUi6vwoiZDzmkoV4QuOQM+7BMTlJs1Zix+bM=;
+        b=l+Zn2nV99/s9Th+oltoendtP8fTizY/wyD54At5Udp35+b884QsDPb6A7MFFKpIKXM
+         0MSJ39mwug8jE2TiF85S7NncBa+cYOsUaldmBewRk79cJrnvf9kYub6Gvq7NAdsslXYc
+         vcAesC2AKobbm0761ugyjcn1afkffS7Vkp1YE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=MfUR8zFkzj3kr4PPBmXznA83GIqjmqrQi8dR4mnY5LM=;
-        b=YiAESvsDpTgO0qlYj1KrB2NtsfFM/fD0UxrhMFyoi2V0f/5YUI1c4uQi4+UcGHzisA
-         c9yEbkrofl+5JD1Jldq4YqYNd4Hajupl4wsS8CTanUPXlVGYhyJqyIddxTjB5zP8duWn
-         LZmqQpDfe0feWldLnw9lhYKpRmXDBYrhxW1bygli2s3w7uwVJRzJpUDP/fJV5ECyH+Kr
-         hZGOfj4FItRQJ8lL7iUHcXsjjPdupa688UHuCvZqmZ6fYi53gI0sfORJz78JGOS6I0kR
-         NmJq6SWAGar0JsAsXcDOpQ5KOb2Bqd/kuTEBF9Y7C7ipC+0XccwAk+n3ZflB2E3OaYe3
-         UGvQ==
-X-Gm-Message-State: AOAM531oH09nkGGyR0gwWC5LV6VWz+lXsvhm9aCWCWrT5Pb/JuGYf9Ie
-        2KB0CfGok5HHMIXk7gvdio+pPQ==
-X-Google-Smtp-Source: ABdhPJxYtyDZKGpxHAIXw60/WyXXonc+jGAUmrNQl1hZQ7jn6G63WSJpYGmmn54EdIUI/L3TW85EsA==
-X-Received: by 2002:a17:90a:d104:: with SMTP id l4mr5261081pju.194.1604628178688;
-        Thu, 05 Nov 2020 18:02:58 -0800 (PST)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id i10sm3467604pjz.44.2020.11.05.18.02.57
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6NC+atGFUi6vwoiZDzmkoV4QuOQM+7BMTlJs1Zix+bM=;
+        b=ZlABm+8J6kVl453w3wp0UGWx9GMkhZEV7J/n2fIHOf5xPUA9ssRocjY3atCa8Ipfif
+         aSV3Ta22MvBx17IcRVScwAXwh7H0TuTRXdm1b8rzJcnDAvyQeQXQuTumNJ9tiYqlJzUx
+         7ONcxgrE/SGPhKhgPY3AS2hw/uOXkRmXcMfOxFWoftAgVsNDBPQCKYSPbBhdzaKykFWT
+         ZnAdEEQn751Ix4ocQSAFGND70HH2HJvIbKId6j0DXw4/JzcLHuYBHRFqlqVfKS4vYGcj
+         5mrr0feU7Zb85LkIFKO5YzWx7UBh8q2BaUTihtkQEOAEZsIEQ8rYki4toALzisD6uOGp
+         OCkg==
+X-Gm-Message-State: AOAM531iPZqkwufNacHA0Ro5qugZ55nAO215HCVSXW4luRmTnSxNsc6d
+        QNKAWL65WEMyWCUtT4W4Ac7h1lyX2NlEdw==
+X-Google-Smtp-Source: ABdhPJwPyUn6k+ZaWf+GfIkrTKKJYQyguBRecWUyWcozdxPQqQCvPpQAR4/3mnj+mEUvesZU4yY2kA==
+X-Received: by 2002:a17:902:8e8b:b029:d2:4276:1df0 with SMTP id bg11-20020a1709028e8bb02900d242761df0mr4769865plb.62.1604628194797;
+        Thu, 05 Nov 2020 18:03:14 -0800 (PST)
+Received: from pmalani2.mtv.corp.google.com ([2620:15c:202:201:a28c:fdff:fef0:49dd])
+        by smtp.gmail.com with ESMTPSA id p11sm3777579pgb.67.2020.11.05.18.03.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 18:02:58 -0800 (PST)
-Date:   Thu, 05 Nov 2020 18:02:58 -0800 (PST)
-X-Google-Original-Date: Thu, 05 Nov 2020 18:02:56 PST (-0800)
-Subject:     Re: [RFC PATCH] irqchip/sifive-plic: Fix getting wrong chip_data when interrupt is hierarchy
-In-Reply-To: <87y2jl81ft.fsf@nanos.tec.linutronix.de>
-CC:     Marc Zyngier <maz@kernel.org>, jason@lakedaemon.net,
-        geert+renesas@glider.be, greentime.hu@sifive.com,
-        linux-kernel@vger.kernel.org, Atish Patra <Atish.Patra@wdc.com>,
-        linux-riscv@lists.infradead.org,
-        Paul Walmsley <paul.walmsley@sifive.com>, anup@brainfault.org,
-        uli+renesas@fpond.eu, linux-renesas-soc@vger.kernel.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     tglx@linutronix.de
-Message-ID: <mhng-8b35a163-6996-484c-a9e9-09662614f1b1@palmerdabbelt-glaptop1>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
+        Thu, 05 Nov 2020 18:03:14 -0800 (PST)
+From:   Prashant Malani <pmalani@chromium.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Prashant Malani <pmalani@chromium.org>,
+        Keith Short <keithshort@chromium.org>,
+        Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>
+Subject: [PATCH] platform/chrome: cros_ec_typec: Tolerate unrecognized mux flags
+Date:   Thu,  5 Nov 2020 18:03:05 -0800
+Message-Id: <20201106020305.767202-1-pmalani@chromium.org>
+X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 01 Nov 2020 08:52:06 PST (-0800), tglx@linutronix.de wrote:
-> On Sun, Nov 01 2020 at 12:10, Marc Zyngier wrote:
->
->> On Thu, 29 Oct 2020 10:37:38 +0800, Greentime Hu wrote:
->>> This oops is caused by a wrong chip_data and it is because plic_irq_unmask
->>> uses irq_get_chip_data(irq_data->irq) to get the chip_data. However it may
->>> get another irq_data with the same irq_data->irq if it is hierarchy.
->>>
->>> In this case, it will get irq_data of sifive_gpio_irqchip instead of
->>> plic_chip so that it will get a wrong chip_data and then the wrong lmask
->>> of it to cause this oops.
->>>
->>> [...]
->>
->> Applied to irq/irqchip-next, thanks!
->
-> That should go into urgent, the offending commit is in Linus tree already
+On occasion, the Chrome Embedded Controller (EC) can send a mux
+configuration which doesn't map to a particular data mode. For instance,
+dedicated Type C chargers, when connected, may cause only
+USB_PD_MUX_POLARITY_INVERTED to be set. This is a valid flag combination
+and should not lead to a driver abort.
 
-I agree.  I'm assuming that's for Marc, but LMK if you guys want me to take it.
+Modify the mux configuration handling to not return an error when an
+unrecognized mux flag combination is encountered. Concordantly, make the
+ensuing print a debug level print so as to not pollute the kernel logs.
 
-Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
+Cc: Keith Short <keithshort@chromium.org>
+Signed-off-by: Prashant Malani <pmalani@chromium.org>
+---
+ drivers/platform/chrome/cros_ec_typec.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-Thanks!
+diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
+index ce031a10eb1b..5b8db02ab84a 100644
+--- a/drivers/platform/chrome/cros_ec_typec.c
++++ b/drivers/platform/chrome/cros_ec_typec.c
+@@ -537,10 +537,9 @@ static int cros_typec_configure_mux(struct cros_typec_data *typec, int port_num,
+ 		port->state.mode = TYPEC_STATE_USB;
+ 		ret = typec_mux_set(port->mux, &port->state);
+ 	} else {
+-		dev_info(typec->dev,
+-			 "Unsupported mode requested, mux flags: %x\n",
+-			 mux_flags);
+-		ret = -ENOTSUPP;
++		dev_dbg(typec->dev,
++			"Unrecognized mode requested, mux flags: %x\n",
++			mux_flags);
+ 	}
+ 
+ 	return ret;
+-- 
+2.29.1.341.ge80a0c044ae-goog
+
