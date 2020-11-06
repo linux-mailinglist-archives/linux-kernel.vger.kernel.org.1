@@ -2,107 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7899D2A9E7A
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 21:12:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A7C32A9E7B
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 21:13:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728382AbgKFUMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 15:12:51 -0500
-Received: from mail-ej1-f66.google.com ([209.85.218.66]:33427 "EHLO
-        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728140AbgKFUMv (ORCPT
+        id S1728422AbgKFUNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 15:13:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41832 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728113AbgKFUNX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 15:12:51 -0500
-Received: by mail-ej1-f66.google.com with SMTP id 7so3640781ejm.0;
-        Fri, 06 Nov 2020 12:12:48 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=HknRaMwrIYdX/xZyUFtQWWgJWZ4ozlSDotxSubUVQAQ=;
-        b=EhoHFzQmsDzZ1sWdFl6K6ugFVxJ5UlNi5ManfXN8J8XWJVGFo92AmXVD5U5QHcn1yB
-         +rDMBqN7MZ5m2vmKHYLCE/EEg0GWvjolK09M/HyavJWJmAArJS6EvvY5Siztu8X8kwp6
-         cgdW1dbtpAdSU55YTSnC23z666vCAYEwpYplNf2flPaCLuWj8nQY6tfZ98k759Up45mc
-         EvmTWKHko/0jjlXtYrY+Zp2NdYtH6OV+xlzXGhm+uQjHrYvkp+LlM7B5ze31ilG44IHj
-         sISFY4O3MGMxsIQetVP523N3yAEKh00qmcAh9NO5kEeF9Ssxh0EOYXMARUSRmKpLzsah
-         U/Vw==
-X-Gm-Message-State: AOAM5315cXbT80zKqcdOpxQAlOI6NsWucF+CGCn1NLDCqhOMbG13UjOL
-        zQLIaWDAATnHDgcu0cv0Adg=
-X-Google-Smtp-Source: ABdhPJyj+uHAR2eNBXDfygxkkR9riwjzCC6yUZZJXdcS5GkftYD/lz+U7/i5fO6GeHV3R9fbGIKbVw==
-X-Received: by 2002:a17:906:3fc1:: with SMTP id k1mr3604375ejj.287.1604693567656;
-        Fri, 06 Nov 2020 12:12:47 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id c4sm1661734ejx.9.2020.11.06.12.12.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Nov 2020 12:12:46 -0800 (PST)
-Date:   Fri, 6 Nov 2020 21:12:45 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Jonathan Bakker <xc-racer2@live.ca>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 4.19 107/191] ARM: dts: s5pv210: move PMU node out of
- clock controller
-Message-ID: <20201106201245.GA332560@kozik-lap>
-References: <20201103203232.656475008@linuxfoundation.org>
- <20201103203243.594174920@linuxfoundation.org>
- <20201105114648.GB9009@duo.ucw.cz>
- <CAJKOXPeexYuH1_9HZUGn4Q80QBtKmqCKiEd=hNd46VKTM4kGgA@mail.gmail.com>
- <20201105195508.GB19957@duo.ucw.cz>
+        Fri, 6 Nov 2020 15:13:23 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2914DC0613CF;
+        Fri,  6 Nov 2020 12:13:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=5oicY2GKZKEFQuBu7/i2kWiW5yuI7LeLWBSKiBk081Y=; b=aOx4EJ3siU16FxqTqnb58GqQ1C
+        oE22Z86+qRbyNltQRky48XuAerEqq/HuEEDQ32M12gnvOR9YtSGKETk7+D9wTVgTBSf/tFihP2PVs
+        1UBMHvzL6xYS1BmCyuRIfaLydIz2jQNkV538v8Y6VP9D4KW70us2wTYg1adDjq8/WoTLBSyj+a3FZ
+        gO6MYWE7diXUROsf3csHaczCrSkRL/SfLS2ay82ucI2mJoD2YM5x8Lk0J5bbMMyTRMdv5Xm21a92O
+        aBODnpSkvzNFnAtTERX1jLbpGvXuSXHEWl6HSvslhyuEYW4wBy3u3f8b5umCaBjkhgplEBfCvVgD0
+        SPg4sj/w==;
+Received: from [2601:1c0:6280:3f0::a1cb]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kb86m-0007Xl-Tc; Fri, 06 Nov 2020 20:13:17 +0000
+Subject: Re: [PATCH net] net: marvell: prestera: fix compilation with
+ CONFIG_BRIDGE=m
+To:     Vadym Kochan <vadym.kochan@plvision.eu>,
+        Volodymyr Mytnyk <volodymyr.mytnyk@plvision.eu>,
+        Andrii Savka <andrii.savka@plvision.eu>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Oleksandr Mazur <oleksandr.mazur@plvision.eu>,
+        Serhiy Boiko <serhiy.boiko@plvision.eu>,
+        Serhiy Pshyk <serhiy.pshyk@plvision.eu>,
+        Taras Chornyi <taras.chornyi@plvision.eu>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Mickey Rachamim <mickeyr@marvell.com>
+References: <20201106161128.24069-1-vadym.kochan@plvision.eu>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <4d67e1d4-4f5c-a0c1-ce87-42e141215aa1@infradead.org>
+Date:   Fri, 6 Nov 2020 12:13:12 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
+In-Reply-To: <20201106161128.24069-1-vadym.kochan@plvision.eu>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201105195508.GB19957@duo.ucw.cz>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 08:55:08PM +0100, Pavel Machek wrote:
-> Hi!
+On 11/6/20 8:11 AM, Vadym Kochan wrote:
+> With CONFIG_BRIDGE=m the compilation fails:
 > 
-> > > > The Power Management Unit (PMU) is a separate device which has little
-> > > > common with clock controller.  Moving it to one level up (from clock
-> > > > controller child to SoC) allows to remove fake simple-bus compatible and
-> > > > dtbs_check warnings like:
-> > > >
-> > > >   clock-controller@e0100000: $nodename:0:
-> > > >     'clock-controller@e0100000' does not match '^([a-z][a-z0-9\\-]+-bus|bus|soc|axi|ahb|apb)(@[0-9a-f]+)?$'
-> > >
-> > > > +++ b/arch/arm/boot/dts/s5pv210.dtsi
-> > > > @@ -98,19 +98,16 @@
-> > > >               };
-> > > >
-> > > >               clocks: clock-controller@e0100000 {
-> > > > -                     compatible = "samsung,s5pv210-clock", "simple-bus";
-> > > > +                     compatible = "samsung,s5pv210-clock";
-> > > >                       reg = <0xe0100000 0x10000>;
-> > > ...
-> > > > +             pmu_syscon: syscon@e0108000 {
-> > > > +                     compatible = "samsung-s5pv210-pmu", "syscon";
-> > > > +                     reg = <0xe0108000 0x8000>;
-> > > >               };
-> > >
-> > > Should clock-controller@e0100000's reg be shortened to 0x8000 so that
-> > > the ranges do not overlap?
-> > >
-> > > Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
-> > 
-> > I don't think this commit should be backported to stable. It is simple
-> > dtbs_check - checking whether Devicetree source matches device tree
-> > schema. Neither the schema nor the warning existed in v4.19. I think
-> > dtbs_check fixes should not be backported, unless a real issue is
-> > pointed out.
+>     ld: drivers/net/ethernet/marvell/prestera/prestera_switchdev.o: in function `prestera_bridge_port_event':
+>     prestera_switchdev.c:(.text+0x2ebd): undefined reference to `br_vlan_enabled'
 > 
-> I agree with you about the backporting. Hopefully Greg drops the
-> commit.
+> in case the driver is statically enabled.
 > 
-> But the other issue is: should mainline be fixed so that ranges do not overlap?
+> Fix it by adding 'BRIDGE || BRIDGE=n' dependency.
+> 
+> Fixes: e1189d9a5fbe ("net: marvell: prestera: Add Switchdev driver implementation")
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
 
-Yes, it should be. This should fail on mapping resources...
 
-I'll take a look, thanks for the report.
+Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
 
-Best regards,
-Krzysztof
+Thanks.
 
+> ---
+>  drivers/net/ethernet/marvell/prestera/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/net/ethernet/marvell/prestera/Kconfig b/drivers/net/ethernet/marvell/prestera/Kconfig
+> index b1fcc44f566a..b6f20e2034c6 100644
+> --- a/drivers/net/ethernet/marvell/prestera/Kconfig
+> +++ b/drivers/net/ethernet/marvell/prestera/Kconfig
+> @@ -6,6 +6,7 @@
+>  config PRESTERA
+>  	tristate "Marvell Prestera Switch ASICs support"
+>  	depends on NET_SWITCHDEV && VLAN_8021Q
+> +	depends on BRIDGE || BRIDGE=n
+>  	select NET_DEVLINK
+>  	help
+>  	  This driver supports Marvell Prestera Switch ASICs family.
+> 
+
+
+-- 
+~Randy
