@@ -2,50 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDEBC2A9EEF
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 22:14:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B76D62A9EF1
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 22:14:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728306AbgKFVNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 16:13:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47224 "EHLO mail.kernel.org"
+        id S1728434AbgKFVNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 16:13:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47210 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728109AbgKFVNZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728123AbgKFVNZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 6 Nov 2020 16:13:25 -0500
-Subject: Re: [GIT PULL] s390 updates for 5.10-rc3
+Subject: Re: [GIT PULL] arm64 fixes for -rc3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604697204;
-        bh=yjZCcXU+gF3xZI2QXztx75k1wQMlSlbBuCY9IovNVeg=;
+        s=default; t=1604697205;
+        bh=jgaFfYq43om07pQjtDb95Dj0rUxwyfl+Kdvg30u2Es4=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=lfNJCBASrXWmtKGY7a3OZilCviYgW3MFjJaGCgZRhOuSdJB9Yk3Phj44khWdBnNOK
-         MnwNMzv28UdFaSuO4nS/1GKr12RtLiyqkSTd50VmgZojLhv+qY0gM734UPE64Etnge
-         Q1uLzJ41jR7LsFMLS0pgHyytx/HGuEDZkuAI4RJE=
+        b=ud5y0hk+T33JTeMydp3iOKI9IApRXtAECX0cCyyEgG3sLwhovPgdQJCUXa5Ob7H43
+         tcD59JuSgHHpyV+mITLNjFkxU2vQDiMIaLK06Za19LA8pktmrZSdN0HXInt+I0IHu0
+         /o+bmfaV81tPDI2a/hNGWmgyGw86KTGdgl08aGp8=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201105201202.GA7024@osiris>
-References: <20201105201202.GA7024@osiris>
+In-Reply-To: <20201106132035.GA10755@willie-the-truck>
+References: <20201106132035.GA10755@willie-the-truck>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201105201202.GA7024@osiris>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.10-3
-X-PR-Tracked-Commit-Id: 0b2ca2c7d0c9e2731d01b6c862375d44a7e13923
+X-PR-Tracked-Message-Id: <20201106132035.GA10755@willie-the-truck>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git tags/arm64-fixes
+X-PR-Tracked-Commit-Id: 108aa503657ee2fe8aa071dc620d96372c252ecd
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: ee51814888278677cb4384814bbe3c95f6270b50
-Message-Id: <160469720448.14190.17044617785049314310.pr-tracker-bot@kernel.org>
-Date:   Fri, 06 Nov 2020 21:13:24 +0000
-To:     Heiko Carstens <hca@linux.ibm.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+X-PR-Merge-Commit-Id: 30f3f68e27d14a237acc339975e18670e58927ca
+Message-Id: <160469720504.14190.6975734530676551749.pr-tracker-bot@kernel.org>
+Date:   Fri, 06 Nov 2020 21:13:25 +0000
+To:     Will Deacon <will@kernel.org>
+Cc:     torvalds@linux-foundation.org, catalin.marinas@arm.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-team@android.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 5 Nov 2020 21:12:02 +0100:
+The pull request you sent on Fri, 6 Nov 2020 13:20:35 +0000:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.10-3
+> git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git tags/arm64-fixes
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/ee51814888278677cb4384814bbe3c95f6270b50
+https://git.kernel.org/torvalds/c/30f3f68e27d14a237acc339975e18670e58927ca
 
 Thank you!
 
