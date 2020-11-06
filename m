@@ -2,79 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09AD42A99BF
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 17:44:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65B222A99C2
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 17:45:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727535AbgKFQoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 11:44:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36724 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727293AbgKFQom (ORCPT
+        id S1727170AbgKFQpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 11:45:38 -0500
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:44418 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726702AbgKFQph (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 11:44:42 -0500
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB378C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 08:44:40 -0800 (PST)
-Received: by mail-lf1-x141.google.com with SMTP id v144so2792206lfa.13
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 08:44:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NFLzWInf7oW7bjGKiJqYb2/P1LPe/HLqYvjRIRLjv10=;
-        b=RQjhXcPHc5TehIv2m28NXMCfMB8WOK9adl90A+M0wwX8PK6WMj5fVagX1y4Z5YeMsM
-         /1FU5uFqyQmCBuHK0ikHPWvQrVgo1mHtafkOOO5k5CY7cpfLKoxGtKeLHpLb3lY/jJ9C
-         RVOaNkFwUQJ/bhi8vvvNok/I/RDEDELO9MiyB2iPiBqfmvEnqBk71I2SRpv+Ban9L2fR
-         bEjBtwl9BqqVM/kjUvFv7pNt0oKoD9siqOKBcd2O2cqn16cAH4ZoN6taKDYEzbOWoX10
-         VtwXLYKrJU5/wPL353TmCD01vVcEl8/usm8BwvYiDbimiB+SodnlttN7tGoOfFR0PgPv
-         XXdw==
+        Fri, 6 Nov 2020 11:45:37 -0500
+Received: by mail-lj1-f193.google.com with SMTP id s9so291654ljo.11;
+        Fri, 06 Nov 2020 08:45:36 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NFLzWInf7oW7bjGKiJqYb2/P1LPe/HLqYvjRIRLjv10=;
-        b=A+AXnF7xtHPJN23k0WR4gzLX8WdfQWNVF1aSKzaN+uHLj/3ruR7hZ21RK/sUUREZ7w
-         D0lbjuEaJHx56XI9fnzNx0TSW2ZC0fZoowfrtuZtRY8Xg1B6RCkJysHZW8YUezxth1D5
-         kHDBvA62ai4Ka9jSPXUzyhKR04E8XrPfXZBMjJnOJiypS+S4T1TPKWC2J5bTzJXYzwFc
-         joiyr8davM+AeT5PVlyEpzvu9N5f0nWetW8pYBfRjJYWJYFOHlv3NuxFXmxhExpYSfSm
-         6tvSXjfxdIQ2uMcibe9C757URTeVjJsnTRDY823GLp2tT2DEr03WKUaPNyPmI3rY1vhM
-         /nLQ==
-X-Gm-Message-State: AOAM533LRDKowwRLiorMpO3MUSCDnPeY7w5/kxg9g/H55T9an5OUGFrR
-        V9IgV71L6ZCuE6S1L0J0lYHJeX1NPSVn8M0XMOTJbQ==
-X-Google-Smtp-Source: ABdhPJzvx9kTQoQU7TzDmsNIEOUAUb40PiYa+6L+oqi+65en5PqDp5J1/BrC6Jd5BAxdLnXTv9yV3MQUHbUbnOhOGX8=
-X-Received: by 2002:a05:6512:2154:: with SMTP id s20mr1146709lfr.54.1604681078897;
- Fri, 06 Nov 2020 08:44:38 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8NXRtqHffFnsMIzZ6TAmIGSVk+62VdYhbYjy8LdH8vo=;
+        b=n2cTT9i01R04gKL3QHa7HdqS4U6EpjXRAvScLIXPWblsVwdsJ9CX9si6d7f05wvrIZ
+         SGo7yYo8+sUtIVFWXE5yXzynjoH9NdxloW5qXd7GgIfCW/anCD7xSjcI57PvIjbrJEOU
+         jWQMumhd0SPObtuZxWmc/29l4zvoaHVyAgx/+c1XIuShK6R2KYYQP/9t3rQgIlcWin42
+         VQeYqaeRILkDkwpNuu5Gb4yw+mcJSFXFr01Cn2NyfjOhqFGJyt6XzWVhHzKXIcq2xa8p
+         vtWApqnEIxPT1eT09KZVR4CQrLsS2R8Y8Eq+zJopXr5xVnKF+QOUD+h5fbAil/DBGMOf
+         SVUw==
+X-Gm-Message-State: AOAM533OnczpSBd7i6/7eFpI8y63PKxWLAhj7zqcW8eH779u+kaJLrqR
+        fG4eTgiTnw1XdRcDx2nkzGE=
+X-Google-Smtp-Source: ABdhPJzQDc4igKg3ddTAUZAeM/D96jrzN/OvKFYB6yCypvurl1JtTkTAMCaE+gtMQy6S8MKMYrvbbA==
+X-Received: by 2002:a2e:5705:: with SMTP id l5mr1006042ljb.93.1604681135209;
+        Fri, 06 Nov 2020 08:45:35 -0800 (PST)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id q14sm220476lfb.281.2020.11.06.08.45.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Nov 2020 08:45:34 -0800 (PST)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1kb4rp-0000Ae-NT; Fri, 06 Nov 2020 17:45:38 +0100
+Date:   Fri, 6 Nov 2020 17:45:37 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Jessica Yu <jeyu@kernel.org>
+Cc:     Johan Hovold <johan@kernel.org>, linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Nick Desaulniers <ndesaulniers@gooogle.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Jelinek <jakub@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Kurtz <djkurtz@chromium.org>,
+        linux-arch@vger.kernel.org, linux-m68k@lists.linux-m68k.org
+Subject: Re: [PATCH 0/8] linker-section array fix and clean ups
+Message-ID: <20201106164537.GD4085@localhost>
+References: <20201103175711.10731-1-johan@kernel.org>
+ <20201106160344.GA12184@linux-8ccs.fritz.box>
 MIME-Version: 1.0
-References: <20201104142516.GA106571@rlk>
-In-Reply-To: <20201104142516.GA106571@rlk>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Fri, 6 Nov 2020 08:44:26 -0800
-Message-ID: <CALvZod7-FnQNqH-REJtrSuo+xfVMyv0os83-MvXS=ciGKZGA4g@mail.gmail.com>
-Subject: Re: [PATCH] mm/memcontrol:rewrite mem_cgroup_page_lruvec()
-To:     Hui Su <sh_def@163.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Chris Down <chris@chrisdown.name>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201106160344.GA12184@linux-8ccs.fritz.box>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 4, 2020 at 6:26 AM Hui Su <sh_def@163.com> wrote:
->
-> mem_cgroup_page_lruvec() in memcontrol.c and
-> mem_cgroup_lruvec() in memcontrol.h is very similar
-> except for the param(page and memcg) which also can be
-> convert to each other.
->
-> So rewrite mem_cgroup_page_lruvec() with mem_cgroup_lruvec().
->
-> Signed-off-by: Hui Su <sh_def@163.com>
+On Fri, Nov 06, 2020 at 05:03:45PM +0100, Jessica Yu wrote:
+> +++ Johan Hovold [03/11/20 18:57 +0100]:
+> >We rely on the linker to create arrays for a number of things including
+> >kernel parameters and device-tree-match entries.
+> >
+> >The stride of these linker-section arrays obviously needs to match the
+> >expectations of the code accessing them or bad things will happen.
+> >
+> >One thing to watch out for is that gcc is known to increase the
+> >alignment of larger objects with static extent as an optimisation (on
+> >x86), but this can be suppressed by using the aligned attribute when
+> >declaring entries.
+> >
+> >We've been relying on this behaviour for 16 years for kernel parameters
+> >(and other structures) and it indeed hasn't changed since the
+> >introduction of the aligned attribute in gcc 3.1 (see align_variable()
+> >in [1]).
+> >
+> >Occasionally this gcc optimisation do cause problems which have instead
+> >been worked around in various creative ways including using indirection
+> >through an array of pointers. This was originally done for tracepoints
+> >[2] after a number of failed attempts to create properly aligned arrays,
+> >and the approach was later reused for module-version attributes [3] and
+> >earlycon entries.
+> 
+> >[2] https://lore.kernel.org/lkml/20110126222622.GA10794@Krystal/
 
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
+> So unfortunately, I am not familiar enough with the semantics of gcc's
+> aligned attribute. AFAICT from the patch you linked in [2], the
+> original purpose of the pointer indirection workaround was to avoid
+> relying on (potentially inconsistent) compiler-specific behavior with
+> respect to the aligned attribute. The main concern was potential
+> up-alignment being done by gcc (or the linker) despite the desired
+> alignment being specified. Indeed, the gcc documentation also states
+> that the aligned attribute only specifies the *minimum* alignment,
+> although there's no guarantee that up-alignment wouldn't occur.
+>
+> So I guess my question is, is there some implicit guarantee that
+> specifying alignment by type via __alignof__ that's supposed to
+> prevent gcc from up-aligning? Or are we just assuming that gcc won't
+> increase the alignment? The gcc docs don't seem to clarify this
+> unfortunately.
+
+It's simply specifying alignment when declaring the variable that
+prevents this optimisation. The relevant code is in the function
+align_variable() in [1] where DATA_ALIGNMENT() is never called in case
+an alignment has been specified (!DECL_USER_ALIGN(decl)).
+
+There's no mention in the documentation of this that I'm aware of, but
+this is the way the aligned attribute has worked since its introduction
+judging from the commit history.
+
+As mentioned above, we've been relying on this for kernel parameters and
+other structures since 2003-2004 so if it ever were to change we'd find
+out soon enough.
+
+It's about to be used for scheduler classes as well. [2]
+
+Johan
+
+[1] https://github.com/gcc-mirror/gcc/blob/master/gcc/varasm.c
+[2] https://lore.kernel.org/r/160396870486.397.377616182428528939.tip-bot2@tip-bot2
