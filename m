@@ -2,56 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B0642A9E13
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 20:33:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD5A42A9E21
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 20:35:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728263AbgKFTdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 14:33:55 -0500
-Received: from foss.arm.com ([217.140.110.172]:43978 "EHLO foss.arm.com"
+        id S1728244AbgKFTfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 14:35:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39786 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728140AbgKFTdy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 14:33:54 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D42FD1509;
-        Fri,  6 Nov 2020 11:33:53 -0800 (PST)
-Received: from [172.16.1.113] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 070BB3F802;
-        Fri,  6 Nov 2020 11:33:51 -0800 (PST)
-Subject: Re: [RFC PATCH 0/4] EDAC/ghes: Add EDAC device for recording the CPU
- error count
-To:     Shiju Jose <shiju.jose@huawei.com>
-Cc:     linux-edac@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bp@alien8.de, tony.luck@intel.com,
-        rjw@rjwysocki.net, lenb@kernel.org, rrichter@marvell.com,
-        linuxarm@huawei.com, jonathan.cameron@huawei.com
-References: <20201105174233.1146-1-shiju.jose@huawei.com>
-From:   James Morse <james.morse@arm.com>
-Message-ID: <87b00978-8d5d-1917-b801-e6a36f704fb3@arm.com>
-Date:   Fri, 6 Nov 2020 19:33:46 +0000
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1727912AbgKFTfu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 14:35:50 -0500
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AC3A72151B;
+        Fri,  6 Nov 2020 19:35:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604691349;
+        bh=gAAMGunkKSJbUJ0jDwiyrsTYQWulMREXYV/jPPdlyhY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=D0Xu+rYt9C6Tc+VTC54qKBXq6GLWh08vIeOMccUgOtpRZ/tFEbHtStgv0seBSFBHX
+         vHdysUc93O3IVC2DvU28chVdccfrFLheZ6x9cKOxmpHr61t2KFftVtOled9hAF6WKP
+         e80nYfp/j0cpijlRtF9bvm0slegS0fhMdzotFDPA=
+Date:   Fri, 6 Nov 2020 19:35:37 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Parav Pandit <parav@nvidia.com>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        "Ertman, David M" <david.m.ertman@intel.com>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        Takashi Iwai <tiwai@suse.de>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Netdev <netdev@vger.kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Fred Oh <fred.oh@linux.intel.com>,
+        Parav Pandit <parav@mellanox.com>,
+        "Saleem, Shiraz" <shiraz.saleem@intel.com>,
+        "Patil, Kiran" <kiran.patil@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Leon Romanovsky <leonro@nvidia.com>
+Subject: Re: [PATCH v3 01/10] Add auxiliary bus support
+Message-ID: <20201106193537.GH49612@sirena.org.uk>
+References: <20201023003338.1285642-1-david.m.ertman@intel.com>
+ <20201023003338.1285642-2-david.m.ertman@intel.com>
+ <CAPcyv4i9s=CsO5VJOhPnS77K=bD0LTQ8TUAbhLd+0OmyU8YQ3g@mail.gmail.com>
+ <DM6PR11MB284191BAA817540E52E4E2C4DDEE0@DM6PR11MB2841.namprd11.prod.outlook.com>
+ <BY5PR12MB43228923300FDE8B087DC4E9DCEE0@BY5PR12MB4322.namprd12.prod.outlook.com>
+ <CAPcyv4h1LH+ojRGqvh_R6mfuBbsibGa8DNMG5M1sN5G1BgwiHw@mail.gmail.com>
+ <BY5PR12MB43222D59CCCFCF368C357098DCEE0@BY5PR12MB4322.namprd12.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <20201105174233.1146-1-shiju.jose@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="WRT3RXLOp/bBMgTI"
+Content-Disposition: inline
+In-Reply-To: <BY5PR12MB43222D59CCCFCF368C357098DCEE0@BY5PR12MB4322.namprd12.prod.outlook.com>
+X-Cookie: When does later become never?
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Shiju,
 
-On 05/11/2020 17:42, Shiju Jose wrote:
-> For the firmware-first error handling on ARM64 hardware platforms,
-> CPU cache corrected error count is not recorded.
-> Create an CPU EDAC device and device blocks for the CPU caches
-> for this purpose. The EDAC device blocks  are created based on the
-> CPU caches information represented in the ACPI PPTT.
+--WRT3RXLOp/bBMgTI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Using the PPTT won't work on x86 systems. Can we use the core-code's common data to learn
-about caches: struct cpu_cacheinfo and struct cacheinfo ?
+On Thu, Nov 05, 2020 at 08:37:14PM +0000, Parav Pandit wrote:
 
+> > > This example describes the mlx5 PCI subfunction use case.
+> > > I didn't follow your question about 'explicit example'.
+> > > What part is missing to identify it as explicit example?
 
-Thanks,
+> > Specifically listing "mlx5" so if someone reading this document thinks to
+> > themselves "hey mlx5 sounds like my use case" they can go grep for that.
 
-James
+> Ah, I see.
+> "mlx5" is not listed explicitly, because it is not included in this patchset.
+> In various previous discussions in this thread, mlx5 subfunction use case is described that justifies the existence of the bus.
+> I will be happy to update this documentation once mlx5 subfunction will be part of kernel so that grep actually shows valid output.
+> (waiting to post them as it uses auxiliary bus :-)).
+
+For ease of review if there's a new version it might be as well to just
+reference it anyway, hopefully the mlx5 code will be merged fairly
+quickly once the bus itself is merged.  It's probably easier all round
+than adding the reference later, it seems more likely that mlx5 will get
+merged than that it'll fall by the wayside.
+
+--WRT3RXLOp/bBMgTI
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+lpYgACgkQJNaLcl1U
+h9BucQf/eNw6ctPFmmRQVuSB2n3HuUQKEXfBdp/GJzm2Ao34q3WIZJ5mANQN+PsD
+1RdlG+KooBtZmSD8LTDhdMB7I75TNfJOZBV6uGJFOSZ1FPmnYGE8sipgOyMlg94b
+6tlWmBBWuueK4uA3etjOa8QTVxysmK+x1JkvBLPFk5t43D3zxOvUhdmdYZbEt3z7
+U5amclwnzVW5uwMFacm4zhGSVnffO9rD3HCqieFDgAtPfl/QDuBntmA5lbmpTU0R
+CiwdqKpuhH2/AX0QHsiFJh6bgxPhEilHcZk7ZZGftB/J+Sc5dxIhXxRTql4R0u0n
+zkdYy/19+i8RI7ppfSbIPOr91XQsDg==
+=vai3
+-----END PGP SIGNATURE-----
+
+--WRT3RXLOp/bBMgTI--
