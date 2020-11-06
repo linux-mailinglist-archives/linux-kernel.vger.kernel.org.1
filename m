@@ -2,85 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F41052A9C63
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 19:37:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBA802A9C6C
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 19:37:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727928AbgKFShB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 13:37:01 -0500
-Received: from mail-ej1-f68.google.com ([209.85.218.68]:41755 "EHLO
-        mail-ej1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726415AbgKFShA (ORCPT
+        id S1727995AbgKFShr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 13:37:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55080 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727069AbgKFShq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 13:37:00 -0500
-Received: by mail-ej1-f68.google.com with SMTP id cw8so3273775ejb.8;
-        Fri, 06 Nov 2020 10:36:57 -0800 (PST)
+        Fri, 6 Nov 2020 13:37:46 -0500
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F46AC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 10:37:46 -0800 (PST)
+Received: by mail-ot1-x341.google.com with SMTP id n15so2123932otl.8
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 10:37:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3x8lkL/vF3DeMoPUyqu8hGji+Bqntj3O00ZDR1pSoh8=;
+        b=VuCd+77RNfI0hWDR2kG9l/qjtgPXcb8KpunD74WGmWoVW0/r65kNFz4QDHzaXhI3yb
+         LGhkeJAgJT8WUx4Vg532YPdWRe7+5IpVXBlvYohFn+XwHZEsT0lLml+fdr6hVXJLXTRU
+         b2/ioDdlSvibYc2ggcjP5NIY1lQwVs4ZTpx9YAw0UAArapXqkRBSt7Tdq8OzaNlo0uCy
+         ZPqbf8Iz3bOdU7Q3NfXphQIBsZJ97JkdelZs9GZ0JrbQmExwK8sRhghJnsXNvX8nzFdt
+         SBb4LYPYB6SYjwQ2kg542mO/1x7fsDWm8bd6/MYtQGSSk5lMy960clq5z2VnR5HCt1EJ
+         MTHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=eVuXfSi6dXqHZAsAebY9YsjeYiR6CGt+Ck/Jel1E2RI=;
-        b=olA3x9zl4NIeZ9QaPHO5HsDC45s3G/CtXwVjKbENtbNODYmLtXan+xgC9aIE6cKnQy
-         2WEV4QRJ1iOBJQb0pNqEjllX6gPS2eyjG3Y7j7RXKouyHLDN/2TTMYh780ePNkU8rceY
-         WXhzgxaXhquS2/pF/MpdHWVxml0S6dQnAXzSftOI+qEoZgzvQ9aG7zBGe1+DD8b+ZFvg
-         DPkWJjgMYMS7jFyF5gn8QzUvUmrRhZ1u587cajy2d5c2pQbn8TNguSD7rOO6nvzOy+gK
-         h13WlOAumv/1k/JalaqlaM9OOB8lB/GwI9TVGXAjnqBrCmBHLs7CuGqq3vcZIGLCst3F
-         PJ6A==
-X-Gm-Message-State: AOAM532GftMutatHSf3EZiB/511cfndvYPjW6vqQ+d7QI9En+pDSiNTR
-        2PUFAL9x5T8fqgFy/BOlI/0=
-X-Google-Smtp-Source: ABdhPJwPUrSMVeCYqxnUBZgYyr2K6ZYpoE0trApTbuOdsRiIJ/AyInjfwpXVjmsroGkQgNNQawtfIQ==
-X-Received: by 2002:a17:906:d8b0:: with SMTP id qc16mr3331993ejb.268.1604687817174;
-        Fri, 06 Nov 2020 10:36:57 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id z13sm1488997ejp.30.2020.11.06.10.36.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Nov 2020 10:36:55 -0800 (PST)
-Date:   Fri, 6 Nov 2020 19:36:54 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Mikko Perttunen <cyndis@kapsi.fi>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v7 14/47] dt-bindings: memory: tegra124: emc: Document
- OPP table and voltage regulator
-Message-ID: <20201106183654.GP65086@kozik-lap>
-References: <20201104164923.21238-1-digetx@gmail.com>
- <20201104164923.21238-15-digetx@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3x8lkL/vF3DeMoPUyqu8hGji+Bqntj3O00ZDR1pSoh8=;
+        b=SbryCRea2oOh5tm9FygT52Aw+iwYMp9fV9KzzPvkzwmXtnAwlaDDf5cvApHP5ishJN
+         tJ8KhjiT5KZcnHKfkvDU7b2RNEfSWcn2fCdQOHQ2AS71b8JConRj9mdnaTzmHzoFqx+s
+         ULtnAj7SLcy98qpZ8TX9xYcedwfuKiusfNR9Xzxi74sgBY8pt0QDYzuDCM+ROUNllqZt
+         a0aXJY5KSkJ1hOl845b38KqpvVrG6BYriSBRJf9zKeqiWpIlMlXlGB63jJ+oXLb/aST3
+         iBJj6/GfzN1PB4xReca502TGDUDq5pUIu/HcjCcMQeso52tUYzUhemoHHuguPjOMpRjX
+         G1Jw==
+X-Gm-Message-State: AOAM533gfrn/7TohBe5Epc+FOsJBEItFFAtYSm9FU4S2PNrKU//BkceZ
+        blJuna9dvvdr5FDjEucZpK/U8jlUJ10t1boCm8z3oA==
+X-Google-Smtp-Source: ABdhPJxkC9aWUWZPl7ZvvP579HKk4Zam6Q8tQyPSRMBu3yFJ0dlRugCsCtjDptsvn5pFUSicllmPJ91315N/2DnrAcU=
+X-Received: by 2002:a9d:649:: with SMTP id 67mr2055700otn.233.1604687865602;
+ Fri, 06 Nov 2020 10:37:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201104164923.21238-15-digetx@gmail.com>
+References: <20201106182657.30492-1-98.arpi@gmail.com>
+In-Reply-To: <20201106182657.30492-1-98.arpi@gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Fri, 6 Nov 2020 19:37:34 +0100
+Message-ID: <CANpmjNNNpuxtMnfsFz4i+699XdyzKZc=dS_G_UavLvZSZgJsnw@mail.gmail.com>
+Subject: Re: [PATCH v5 1/2] kunit: Support for Parameterized Testing
+To:     Arpitha Raghunandan <98.arpi@gmail.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        skhan@linuxfoundation.org, Iurii Zaikin <yzaikin@google.com>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-ext4@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 07:48:50PM +0300, Dmitry Osipenko wrote:
-> Document new OPP table and voltage regulator properties which are needed
-> for supporting dynamic voltage-frequency scaling of the memory controller.
-> Some boards may have a fixed core voltage regulator, hence it's optional
-> because frequency scaling still may be desired.
-> 
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+On Fri, 6 Nov 2020 at 19:28, Arpitha Raghunandan <98.arpi@gmail.com> wrote:
+> Implementation of support for parameterized testing in KUnit.
+> This approach requires the creation of a test case using the
+> KUNIT_CASE_PARAM macro that accepts a generator function as input.
+> This generator function should return the next parameter given the
+> previous parameter in parameterized tests. It also provides
+> a macro to generate common-case generators.
+>
+> Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
+> Co-developed-by: Marco Elver <elver@google.com>
+> Signed-off-by: Marco Elver <elver@google.com>
 > ---
->  .../memory-controllers/nvidia,tegra124-emc.yaml      | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
+[...]
+>  include/kunit/test.h | 36 ++++++++++++++++++++++++++++++++++
+>  lib/kunit/test.c     | 46 +++++++++++++++++++++++++++++++-------------
+>  2 files changed, 69 insertions(+), 13 deletions(-)
 
-Thanks, applied.
+I think this is ready. Thank you for your patience, and addressing my
+comments! I'm obviously fine with v5, but I think my Ack or Review
+won't count much because of Co-developed. :-)
 
-Best regards,
-Krzysztof
+Others: Please take another look.
 
+Thanks,
+-- Marco
