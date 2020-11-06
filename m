@@ -2,226 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77DBF2A9409
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 11:21:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1638B2A9402
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 11:21:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727043AbgKFKVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 05:21:23 -0500
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:48640 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726646AbgKFKVV (ORCPT
+        id S1726858AbgKFKVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 05:21:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33028 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726646AbgKFKVK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 05:21:21 -0500
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A6AFlJs020556;
-        Fri, 6 Nov 2020 05:21:03 -0500
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-        by mx0a-00128a01.pphosted.com with ESMTP id 34h1s5d0ss-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 06 Nov 2020 05:21:02 -0500
-Received: from ASHBMBX9.ad.analog.com (ashbmbx9.ad.analog.com [10.64.17.10])
-        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 0A6AL1BW006342
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Fri, 6 Nov 2020 05:21:01 -0500
-Received: from ASHBCASHYB4.ad.analog.com (10.64.17.132) by
- ASHBMBX9.ad.analog.com (10.64.17.10) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Fri, 6 Nov 2020 05:21:00 -0500
-Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by
- ASHBCASHYB4.ad.analog.com (10.64.17.132) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Fri, 6 Nov 2020 05:21:00 -0500
-Received: from zeus.spd.analog.com (10.66.68.11) by ASHBMBX8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Fri, 6 Nov 2020 05:21:00 -0500
-Received: from saturn.ad.analog.com ([10.48.65.107])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 0A6AKucs016519;
-        Fri, 6 Nov 2020 05:20:57 -0500
-From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
-To:     <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <lars@metafoo.de>, <bogdan.togorean@analog.com>,
-        <robh+dt@kernel.org>, <broonie@kernel.org>, <lgirdwood@gmail.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: [PATCH] dt-bindings: adau1977: convert text binding to yaml format
-Date:   Fri, 6 Nov 2020 12:20:52 +0200
-Message-ID: <20201106102052.32582-1-alexandru.ardelean@analog.com>
-X-Mailer: git-send-email 2.27.0
+        Fri, 6 Nov 2020 05:21:10 -0500
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06CB1C0613CF;
+        Fri,  6 Nov 2020 02:21:10 -0800 (PST)
+Received: by mail-qk1-x743.google.com with SMTP id r7so584297qkf.3;
+        Fri, 06 Nov 2020 02:21:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=UXqRBQbHsD6Rb/zBf/i8QK+56/Xf9uE8Ats9BY4Fm3o=;
+        b=XPwNVPUCYHjjSo2Tvaxwb5x5k/TJj8hZbWGjTnQwFpFIUpdLY2o8Jpk96X94YiPBpZ
+         msAKLNKEP0U2MRnAg1FPq3klo6pG4o6w8wGK7kxUQASAYdomXPPI5bF+hR+Rg3W5jqpn
+         Vg6ZRmaiTmh28hbSkieVzALqKsyUcy/AfdfV1BFpgCi2YqmbyY7nYDGZDsIOvqCXnXsb
+         l0+v31qH2OH+CAjmkxWuGkrr2ta2SOtUvnPRkzD7nGVhSMGqHMvDJZUGOf5ujMwozkUx
+         sPTw2INqwdeafuYxrEdDUGgzkOK17Jua8BYi+Xfsun2zLpTbra2COCPfEb6ZCT3eaW9b
+         XyCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=UXqRBQbHsD6Rb/zBf/i8QK+56/Xf9uE8Ats9BY4Fm3o=;
+        b=pDKnQX4pWRZFekyCTBi995iwc69134lF2gnGoKK/5z/ieA45K/kw9xg4dxAZ+lZiMP
+         MvXrpb+UOkV6tDFRU7VU2s/jT+dAvYBDSJpzNaIP1xMN6H57c85P8Hm/fMA7hpcVEGwN
+         tKbZm4y/kmH9i0dqx95fBqZPU2MewvABATyyTH95b614tQNVFBcGIBGe18pGx8VHq7ov
+         jwI4afnDnKdJM8pi5WMukh+9nhkUW0xjI3xbfg7p2mu6+hrzEGBjs4lgcuHE2FBEna7f
+         4WYQ/iDzmfvg/msGaX2csImeIibR4E6tHHPcwxEnYTxEE2FTHabgQGe9bhxbpVODNgLX
+         IgKQ==
+X-Gm-Message-State: AOAM531//jrMn+R9ke8uKS9X55srAvQuDja2mzVgHa4seEnE2JGoCctL
+        BrszNaj+ZKxq946zBVeO3rM=
+X-Google-Smtp-Source: ABdhPJw5MppbbUgb3kUr4w/nA0ZljgruhSVMT0SxwI/DEO2YPPQw2Zu1OJkSzp2DGTs1y2mO/sqJpA==
+X-Received: by 2002:a37:6b07:: with SMTP id g7mr770883qkc.265.1604658069161;
+        Fri, 06 Nov 2020 02:21:09 -0800 (PST)
+Received: from localhost.localdomain ([2001:1284:f016:78d6:ae13:4668:2f4c:ca7a])
+        by smtp.gmail.com with ESMTPSA id n7sm264150qtp.93.2020.11.06.02.21.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Nov 2020 02:21:08 -0800 (PST)
+Received: by localhost.localdomain (Postfix, from userid 1000)
+        id 4C688C1B80; Fri,  6 Nov 2020 07:21:06 -0300 (-03)
+Date:   Fri, 6 Nov 2020 07:21:06 -0300
+From:   Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+To:     Petr Malat <oss@malat.biz>
+Cc:     linux-sctp@vger.kernel.org, Vlad Yasevich <vyasevich@gmail.com>,
+        Neil Horman <nhorman@tuxdriver.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] sctp: Fix sending when PMTU is less than
+ SCTP_DEFAULT_MINSEGMENT
+Message-ID: <20201106102106.GB3556@localhost.localdomain>
+References: <20201105103946.18771-1-oss@malat.biz>
+ <20201106084634.GA3556@localhost.localdomain>
+ <20201106094824.GA7570@bordel.klfree.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-06_03:2020-11-05,2020-11-06 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- priorityscore=1501 mlxlogscore=999 clxscore=1011 bulkscore=0 spamscore=0
- adultscore=0 suspectscore=0 phishscore=0 impostorscore=0
- lowpriorityscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2011060073
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201106094824.GA7570@bordel.klfree.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This change converts the old device-tree binding for ADAU1977 from text
-format to the new yaml format.
+On Fri, Nov 06, 2020 at 10:48:24AM +0100, Petr Malat wrote:
+> On Fri, Nov 06, 2020 at 05:46:34AM -0300, Marcelo Ricardo Leitner wrote:
+> > On Thu, Nov 05, 2020 at 11:39:47AM +0100, Petr Malat wrote:
+> > > Function sctp_dst_mtu() never returns lower MTU than
+> > > SCTP_TRUNC4(SCTP_DEFAULT_MINSEGMENT) even when the actual MTU is less,
+> > > in which case we rely on the IP fragmentation and must enable it.
+> > 
+> > This should be being handled at sctp_packet_will_fit():
+> 
+> sctp_packet_will_fit() does something a little bit different, it
+> allows fragmentation, if the packet must be longer than the pathmtu
+> set in SCTP structures, which is never less than 512 (see
+> sctp_dst_mtu()) even when the actual mtu is less than 512.
+> 
+> One can test it by setting mtu of an interface to e.g. 300,
+> and sending a longer packet (e.g. 400B):
+> >           psize = packet->size;
+> >           if (packet->transport->asoc)
+> >                   pmtu = packet->transport->asoc->pathmtu;
+> >           else
+> >                   pmtu = packet->transport->pathmtu;
+> here the returned pmtu will be 512
 
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
----
- .../bindings/sound/adi,adau1977.txt           | 61 ---------------
- .../bindings/sound/adi,adau1977.yaml          | 77 +++++++++++++++++++
- 2 files changed, 77 insertions(+), 61 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/sound/adi,adau1977.txt
- create mode 100644 Documentation/devicetree/bindings/sound/adi,adau1977.yaml
+Thing is, your patch is using the same vars to check for it:
++       pmtu = tp->asoc ? tp->asoc->pathmtu : tp->pathmtu;
 
-diff --git a/Documentation/devicetree/bindings/sound/adi,adau1977.txt b/Documentation/devicetree/bindings/sound/adi,adau1977.txt
-deleted file mode 100644
-index 37f8aad01203..000000000000
---- a/Documentation/devicetree/bindings/sound/adi,adau1977.txt
-+++ /dev/null
-@@ -1,61 +0,0 @@
--Analog Devices ADAU1977/ADAU1978/ADAU1979
--
--Datasheets:
--https://www.analog.com/media/en/technical-documentation/data-sheets/ADAU1977.pdf
--https://www.analog.com/media/en/technical-documentation/data-sheets/ADAU1978.pdf
--https://www.analog.com/media/en/technical-documentation/data-sheets/ADAU1979.pdf
--
--This driver supports both the I2C and SPI bus.
--
--Required properties:
-- - compatible: Should contain one of the following:
--               "adi,adau1977"
--               "adi,adau1978"
--               "adi,adau1979"
--
-- - AVDD-supply: analog power supply for the device, please consult
--                Documentation/devicetree/bindings/regulator/regulator.txt
--
--Optional properties:
-- - reset-gpios: the reset pin for the chip, for more details consult
--                Documentation/devicetree/bindings/gpio/gpio.txt
--
-- - DVDD-supply: supply voltage for the digital core, please consult
--                Documentation/devicetree/bindings/regulator/regulator.txt
--
--- adi,micbias: configures the voltage setting for the MICBIAS pin.
--		Select 0/1/2/3/4/5/6/7/8 to specify MICBIAS voltage
--		5V/5.5V/6V/6.5V/7V/7.5V/8V/8.5V/9V
--		If not specified the default value will be "7" meaning 8.5 Volts.
--		This property is only valid for the ADAU1977
--
--For required properties on SPI, please consult
--Documentation/devicetree/bindings/spi/spi-bus.txt
--
--Required properties on I2C:
--
-- - reg:         The i2c address. Value depends on the state of ADDR0
--                and ADDR1, as wired in hardware.
--
--Examples:
--
--	adau1977_spi: adau1977@0 {
--		compatible = "adi,adau1977";
--		spi-max-frequency = <600000>;
--
--		AVDD-supply = <&regulator>;
--		DVDD-supply = <&regulator_digital>;
--
--		adi,micbias = <3>;
--		reset-gpios = <&gpio 10 GPIO_ACTIVE_LOW>;
--	};
--
--	adau1977_i2c: adau1977@11 {
--		compatible = "adi,adau1977";
--		reg = <0x11>;
--
--		AVDD-supply = <&regulator>;
--		DVDD-supply = <&regulator_digital>;
--
--		reset-gpios = <&gpio 10 GPIO_ACTIVE_LOW>;
--	};
-diff --git a/Documentation/devicetree/bindings/sound/adi,adau1977.yaml b/Documentation/devicetree/bindings/sound/adi,adau1977.yaml
-new file mode 100644
-index 000000000000..bc097b6b066e
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/adi,adau1977.yaml
-@@ -0,0 +1,77 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/adi,adau1977.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Analog Devices ADAU1977/ADAU1978/ADAU1979 Quad ADC with Diagnostics
-+
-+maintainers:
-+  - Lars-Peter Clausen <lars@metafoo.de>
-+  - Bogdan Togorean <bogdan.togorean@analog.com>
-+
-+description: |
-+  Analog Devices ADAU1977 and similar quad ADC with Diagnostics
-+  https://www.analog.com/media/en/technical-documentation/data-sheets/ADAU1977.pdf
-+  https://www.analog.com/media/en/technical-documentation/data-sheets/ADAU1978.pdf
-+  https://www.analog.com/media/en/technical-documentation/data-sheets/ADAU1979.pdf
-+
-+properties:
-+  compatible:
-+    enum:
-+      - adi,adau1977
-+      - adi,adau1978
-+      - adi,adau1979
-+
-+  reg:
-+    maxItems: 1
-+
-+  "#sound-dai-cells":
-+    const: 0
-+
-+  reset-gpios:
-+    maxItems: 1
-+
-+  AVDD-supply:
-+    description: Analog power support for the device.
-+
-+  DVDD-supply:
-+    description: Supply voltage for digital core.
-+
-+  adi,micbias:
-+    description: |
-+      Configures the voltage setting for the MICBIAS pin.
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    enum: [0, 1, 2, 3, 4, 5, 6, 7, 8]
-+    default: 7
-+
-+required:
-+  - reg
-+  - compatible
-+  - AVDD-supply
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    adau1977_spi: adau1977@0 {
-+        compatible = "adi,adau1977";
-+        reg = <0>;
-+        spi-max-frequency = <600000>;
-+
-+        AVDD-supply = <&regulator>;
-+        DVDD-supply = <&regulator_digital>;
-+
-+        adi,micbias = <3>;
-+        reset-gpios = <&gpio 10 GPIO_ACTIVE_LOW>;
-+    };
-+  - |
-+    adau1977_i2c: adau1977@11 {
-+        compatible = "adi,adau1977";
-+        reg = <0x11>;
-+
-+        AVDD-supply = <&regulator>;
-+        DVDD-supply = <&regulator_digital>;
-+
-+        reset-gpios = <&gpio 10 GPIO_ACTIVE_LOW>;
-+    };
--- 
-2.27.0
+> 
+> > 
+> >           /* Decide if we need to fragment or resubmit later. */
+> >           if (psize + chunk_len > pmtu) {
+> This branch will not be taken as the packet length is less then 512
 
+Right, ok. While then your patch will catch it because pmtu will be
+SCTP_DEFAULT_MINSEGMENT, as it is checking with '<='.
+
+> 
+> >            }
+> > 
+> And the whole function will return SCTP_XMIT_OK without setting
+> ipfragok.
+> 
+> I think the idea of never going bellow 512 in sctp_dst_mtu() is to
+> reduce overhead of SCTP headers, which is fine, but when we do that,
+> we must be sure to allow the IP fragmentation, which is currently
+> missing.
+
+Hmm. ip frag is probably just worse than higher header/payload
+overhead.
+
+> 
+> The other option would be to keep track of the real MTU in pathmtu
+> and perform max(512, pathmtu) in sctp_packet_will_fit() function.
+
+I need to check where this 512 came from. I don't recall it from top
+of my head and it's from before git history. Maybe we should just drop
+this limit, if it's artificial. IPV4_MIN_MTU is 68.
+
+> 
+> Not sure when exactly this got broken, but using MTU less than 512
+> used to work in 4.9.
+
+Uhh, that's a bit old already. If you could narrow it down, that would
+be nice.
+
+  Marcelo
