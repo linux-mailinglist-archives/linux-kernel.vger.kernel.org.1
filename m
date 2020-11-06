@@ -2,108 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD5A42A9E21
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 20:35:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAE202A9E26
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 20:37:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728244AbgKFTfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 14:35:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39786 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727912AbgKFTfu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 14:35:50 -0500
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AC3A72151B;
-        Fri,  6 Nov 2020 19:35:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604691349;
-        bh=gAAMGunkKSJbUJ0jDwiyrsTYQWulMREXYV/jPPdlyhY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=D0Xu+rYt9C6Tc+VTC54qKBXq6GLWh08vIeOMccUgOtpRZ/tFEbHtStgv0seBSFBHX
-         vHdysUc93O3IVC2DvU28chVdccfrFLheZ6x9cKOxmpHr61t2KFftVtOled9hAF6WKP
-         e80nYfp/j0cpijlRtF9bvm0slegS0fhMdzotFDPA=
-Date:   Fri, 6 Nov 2020 19:35:37 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Parav Pandit <parav@nvidia.com>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        "Ertman, David M" <david.m.ertman@intel.com>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        Takashi Iwai <tiwai@suse.de>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Netdev <netdev@vger.kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Fred Oh <fred.oh@linux.intel.com>,
-        Parav Pandit <parav@mellanox.com>,
-        "Saleem, Shiraz" <shiraz.saleem@intel.com>,
-        "Patil, Kiran" <kiran.patil@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Leon Romanovsky <leonro@nvidia.com>
-Subject: Re: [PATCH v3 01/10] Add auxiliary bus support
-Message-ID: <20201106193537.GH49612@sirena.org.uk>
-References: <20201023003338.1285642-1-david.m.ertman@intel.com>
- <20201023003338.1285642-2-david.m.ertman@intel.com>
- <CAPcyv4i9s=CsO5VJOhPnS77K=bD0LTQ8TUAbhLd+0OmyU8YQ3g@mail.gmail.com>
- <DM6PR11MB284191BAA817540E52E4E2C4DDEE0@DM6PR11MB2841.namprd11.prod.outlook.com>
- <BY5PR12MB43228923300FDE8B087DC4E9DCEE0@BY5PR12MB4322.namprd12.prod.outlook.com>
- <CAPcyv4h1LH+ojRGqvh_R6mfuBbsibGa8DNMG5M1sN5G1BgwiHw@mail.gmail.com>
- <BY5PR12MB43222D59CCCFCF368C357098DCEE0@BY5PR12MB4322.namprd12.prod.outlook.com>
+        id S1728246AbgKFThj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 14:37:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36308 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728140AbgKFThj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 14:37:39 -0500
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2EBBC0613D3
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 11:37:38 -0800 (PST)
+Received: by mail-oi1-x243.google.com with SMTP id t143so2490279oif.10
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 11:37:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mP1FNfhSXY5n5cuTFQ/M/4yPG4XlmpEFYtLq6GDkKUE=;
+        b=gNu7ut0U3clqE69rnhvzIiZ3OwEi3TwtXhAk+ORMHzmp+mUaN//pGv8x5n81jS/WTF
+         X1xpRtZ3V4YUrpu+d9nEjd7tGDf2u+THCYyaAScnvt8xQv5fEqMTZpp6Reg1IaPKU55Q
+         DEYqXfOdwV6Om8D0YqSAPniZro7lAkm3CZHvTBOxaI/r07dGtacIrkrEgo6HCC2suUys
+         lKGsbKn9AZS9oKXN3my1JG+d4UBUwtR6AKHGfw2zsLhIvATpl261KCKxXeuGxoplafZe
+         X/JeWyHmYkeDTbWba2gWJdGDABaBSI+pw6MHNDshMDjf2Mj5ez6674PBCXhdwjOtnBeZ
+         DL/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mP1FNfhSXY5n5cuTFQ/M/4yPG4XlmpEFYtLq6GDkKUE=;
+        b=eivdhagbwvtZ0+4Z+WiU1OVi2KVf+EKxQcx4oTg0UDsRHqoBTLwV5/77Ol+AjaI5+f
+         I5Rrc0xpNMWOIWzIY9JekCfcj7fpn9sB6wy9zcKuaLw5NF9EsDNPcsUY4hvaJ8jXc5DD
+         GphBH7BYTuhCzDmoVS0VXFuA+ykdTgC7rXtBuax4zhw08SIE0499L8Qq+wYNRlIayI2P
+         t/5Pa9ZyFFbRywE8OynCENXbAutIrmL/eA4E/B8pSsLeE8D2f4/i9gU4hZ/FoYlKx+Fu
+         SR3AvEpY4U3BLQSOvxKD9C4bAD2+7uTKk1ENNVyK+HEwksuDYkjw5qmh5V+TbspB+Z5A
+         /7DA==
+X-Gm-Message-State: AOAM532iR29iRg8+RH8i/XVbBGC/XlcnsH4Z7d48Nay1v07FckuSFT0S
+        g5sDFhS7l2/qhlXx42/MFp348vG5Yhna47qqqTBBxg==
+X-Google-Smtp-Source: ABdhPJydJRE9oDMRNEsREh7ZPKeGFWX+yL0ZSvAAmgnD57EBdmSwWm2xusshWTHj2B1LZFSsf7tK4a9GHtNmM+nIYUQ=
+X-Received: by 2002:a54:4812:: with SMTP id j18mr2150352oij.70.1604691458091;
+ Fri, 06 Nov 2020 11:37:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="WRT3RXLOp/bBMgTI"
-Content-Disposition: inline
-In-Reply-To: <BY5PR12MB43222D59CCCFCF368C357098DCEE0@BY5PR12MB4322.namprd12.prod.outlook.com>
-X-Cookie: When does later become never?
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201106192154.51514-1-98.arpi@gmail.com>
+In-Reply-To: <20201106192154.51514-1-98.arpi@gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Fri, 6 Nov 2020 20:37:26 +0100
+Message-ID: <CANpmjNNj=ub1TLEOxtjajVsm0Fw9fJnFAZOhiYewiBzVFgFVew@mail.gmail.com>
+Subject: Re: [PATCH v6 1/2] kunit: Support for Parameterized Testing
+To:     Arpitha Raghunandan <98.arpi@gmail.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        skhan@linuxfoundation.org, Iurii Zaikin <yzaikin@google.com>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-ext4@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 6 Nov 2020 at 20:22, Arpitha Raghunandan <98.arpi@gmail.com> wrote:
+> Implementation of support for parameterized testing in KUnit.
+> This approach requires the creation of a test case using the
+> KUNIT_CASE_PARAM macro that accepts a generator function as input.
+> This generator function should return the next parameter given the
+> previous parameter in parameterized tests. It also provides
+> a macro to generate common-case generators.
+>
+> Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
+> Co-developed-by: Marco Elver <elver@google.com>
+> Signed-off-by: Marco Elver <elver@google.com>
+> ---
+[...]
+>
+>  include/kunit/test.h | 36 ++++++++++++++++++++++++++++++++++
+>  lib/kunit/test.c     | 46 +++++++++++++++++++++++++++++++-------------
+>  2 files changed, 69 insertions(+), 13 deletions(-)
 
---WRT3RXLOp/bBMgTI
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Looks good, thank you!
 
-On Thu, Nov 05, 2020 at 08:37:14PM +0000, Parav Pandit wrote:
+Others: Please take another look.
 
-> > > This example describes the mlx5 PCI subfunction use case.
-> > > I didn't follow your question about 'explicit example'.
-> > > What part is missing to identify it as explicit example?
-
-> > Specifically listing "mlx5" so if someone reading this document thinks to
-> > themselves "hey mlx5 sounds like my use case" they can go grep for that.
-
-> Ah, I see.
-> "mlx5" is not listed explicitly, because it is not included in this patchset.
-> In various previous discussions in this thread, mlx5 subfunction use case is described that justifies the existence of the bus.
-> I will be happy to update this documentation once mlx5 subfunction will be part of kernel so that grep actually shows valid output.
-> (waiting to post them as it uses auxiliary bus :-)).
-
-For ease of review if there's a new version it might be as well to just
-reference it anyway, hopefully the mlx5 code will be merged fairly
-quickly once the bus itself is merged.  It's probably easier all round
-than adding the reference later, it seems more likely that mlx5 will get
-merged than that it'll fall by the wayside.
-
---WRT3RXLOp/bBMgTI
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+lpYgACgkQJNaLcl1U
-h9BucQf/eNw6ctPFmmRQVuSB2n3HuUQKEXfBdp/GJzm2Ao34q3WIZJ5mANQN+PsD
-1RdlG+KooBtZmSD8LTDhdMB7I75TNfJOZBV6uGJFOSZ1FPmnYGE8sipgOyMlg94b
-6tlWmBBWuueK4uA3etjOa8QTVxysmK+x1JkvBLPFk5t43D3zxOvUhdmdYZbEt3z7
-U5amclwnzVW5uwMFacm4zhGSVnffO9rD3HCqieFDgAtPfl/QDuBntmA5lbmpTU0R
-CiwdqKpuhH2/AX0QHsiFJh6bgxPhEilHcZk7ZZGftB/J+Sc5dxIhXxRTql4R0u0n
-zkdYy/19+i8RI7ppfSbIPOr91XQsDg==
-=vai3
------END PGP SIGNATURE-----
-
---WRT3RXLOp/bBMgTI--
+Thanks,
+-- Marco
