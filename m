@@ -2,95 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 456B42A97FC
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 15:59:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CF342A9804
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 16:02:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727496AbgKFO7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 09:59:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48584 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726694AbgKFO73 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 09:59:29 -0500
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A89C1C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 06:59:27 -0800 (PST)
-Received: by mail-qv1-xf41.google.com with SMTP id d1so549636qvl.6
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 06:59:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mRkSU/5vHT/IEZQvr5gZLhftMTatdc/swDYJz0CwbE8=;
-        b=jQZsJJ9xSf5mSgSPrA0f8RWdADoPxIUsWhWrYCCtBoek351fk2mZgm1tZyj+d2AyF1
-         JW2bvSMlpTjbbsCL/R53eg77FnIBfYQJubAId5NIq1FVtIQfDCmGzpvzcxRhdtwn0lUa
-         kWyhFEr8le9Cy3coZMOQpWbBzYn6p9zRejmVpz6+oPSoub4GhONJS5LdEHjpwxFv1vdM
-         Ww/1oA+ImlaLkp69LonTbFCwm1FKGshzXQ4v3ARRja36FN/lWO8iryweHiQsXIGrcRmh
-         lknPDJYsqRfNx2KqLheKY8Y71w9wJNdQQ7b7I2A/Vi9nc0rNWT4UybKlooi1Z/2mc07k
-         dWEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mRkSU/5vHT/IEZQvr5gZLhftMTatdc/swDYJz0CwbE8=;
-        b=pSXW6wfOyeZt89ApoNxe+C140ys6oRAgspJ/e7L6UA43DWZcukUaEQ4sE36e3zyAHa
-         uTu2ORDB1IqWIYDfOni84YDdRYw2vWWtyz2r4tmzMeVoSEnkz7OCG5dkmGICRRvM/C3R
-         3flVlXvKCoB1LB1CMl0oLg+GNqSrHEZzI8zsIBG3PzjIoKpiip/svFxzWU//cG5PhfmS
-         jZIsEbPQFzAGNImQXBG8sYsIL+ywtz1VMGW0KgrUDxe9kZghsGB91i8tNVss+IVfpaXZ
-         edpYdKvF0MmCTM1nYEeEUQEKTFtT6PTisOhT7AWmuNXvuqAMC90sTWoCrwPkEH23OC44
-         LddA==
-X-Gm-Message-State: AOAM533mu5c3ePivsQxM+Tyw/iT5ApwKxa4RP+mmxABD8zfuRbMIoRaG
-        +V5racvg2nZRWCS64XD5NaA=
-X-Google-Smtp-Source: ABdhPJx3nmPKPdNUBaeU5q/r/ErzLGZ5/SkaV/YV/a/Qh0Ga7Xxlzf+SPCb93T7MX+NuDmzxPs1AYQ==
-X-Received: by 2002:a05:6214:841:: with SMTP id dg1mr2016186qvb.18.1604674766923;
-        Fri, 06 Nov 2020 06:59:26 -0800 (PST)
-Received: from poirot.caas.local ([2605:a000:160c:8556:38d4:503f:b7a:d871])
-        by smtp.gmail.com with ESMTPSA id m15sm662872qtc.90.2020.11.06.06.59.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Nov 2020 06:59:26 -0800 (PST)
-From:   Kyle Russell <bkylerussell@gmail.com>
-To:     broonie@kernel.org
-Cc:     lkundrak@v3.sk, Kyle Russell <bkylerussell@gmail.com>,
-        Daniel Mack <daniel@zonque.org>,
-        Haojian Zhuang <haojian.zhuang@gmail.com>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: mmp-sspa: clear transmit phase bit for non-stereo formats
-Date:   Fri,  6 Nov 2020 09:59:05 -0500
-Message-Id: <20201106145905.365903-1-bkylerussell@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S1727478AbgKFPCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 10:02:53 -0500
+Received: from m12-12.163.com ([220.181.12.12]:49583 "EHLO m12-12.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727055AbgKFPCw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 10:02:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=Wb/h3
+        BkhDXtHxQwGiLnU9PYyWzHSeCJp4JZdvPWa4Qs=; b=LxoGur1eK0erFAxYPdPgF
+        a2bWPwEUvdv0GIz1TsEsypKvyDRQHa8p93KCl6EBYQM9hSLFf05HhImfflS+XNp6
+        9+aVzSLOd8hvOuADT+rD/HtqGHOjKlar5dSqZa91qWkFriCni8U/fcKWEnodPGgu
+        jKGMbw/6U5n7Cm9wYVveRg=
+Received: from localhost (unknown [110.251.190.92])
+        by smtp8 (Coremail) with SMTP id DMCowACX8feVZKVfrt9sAA--.18912S2;
+        Fri, 06 Nov 2020 22:58:29 +0800 (CST)
+Date:   Fri, 6 Nov 2020 22:58:35 +0800
+From:   Tao Zhou <t1zhou@163.com>
+To:     Xuewen Yan <xuewen.yan94@gmail.com>
+Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, linux-kernel@vger.kernel.org,
+        xuewen.yan@unisoc.com, xuewyan@foxmail.com, t1zhou@163.com
+Subject: Re: [PATCH v3] sched: revise the initial value of the util_avg.
+Message-ID: <20201106145835.GA25870@geo.homenetwork>
+References: <1604632923-4243-1-git-send-email-xuewen.yan@unisoc.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1604632923-4243-1-git-send-email-xuewen.yan@unisoc.com>
+X-CM-TRANSID: DMCowACX8feVZKVfrt9sAA--.18912S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxGrWUJrykAr1xXw48ArWUArb_yoWrWrWkpr
+        43WFW7Jw4DKw17Way8Zr48uFyUtwn8t34agF18AryfAFyrCryjqrnYqa93Z342vrWUK34x
+        Ar4F9342gFyjgr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jfOzxUUUUU=
+X-Originating-IP: [110.251.190.92]
+X-CM-SenderInfo: vwr2x0rx6rljoofrz/1tbiXRbUllWBkz9gdQAAsk
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The transmit phase register value is never cleared during hw params.
-So once hw params sets this bit to handle a two channel format, it
-remains configured for dual-phase, which is not desirable for mono
-playback.
+On Fri, Nov 06, 2020 at 11:22:03AM +0800, Xuewen Yan wrote:
 
-Signed-off-by: Kyle Russell <bkylerussell@gmail.com>
----
- sound/soc/pxa/mmp-sspa.c | 1 +
- 1 file changed, 1 insertion(+)
+> According to the original code logic:
+> 		cfs_rq->avg.util_avg
+> sa->util_avg  = -------------------- * se->load.weight
+> 		cfs_rq->avg.load_avg
+> but for fair_sched_class in 64bits platform:
+> se->load.weight = 1024 * sched_prio_to_weight[prio];
+> 	cfs_rq->avg.util_avg
+> so the  -------------------- must be extremely small, the
+> 	cfs_rq->avg.load_avg
+> judgment condition "sa->util_avg < cap" could be established.
+> It's not fair for those tasks who has smaller nice value.
+> 
+> Signed-off-by: Xuewen Yan <xuewen.yan@unisoc.com>
+> ---
+> changes since V2:
+> 
+> *kernel/sched/fair.c | 6 +++++-
+> * 1 file changed, 5 insertions(+), 1 deletion(-)
+> *
+> *diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> *index 290f9e3..079760b 100644
+> *--- a/kernel/sched/fair.c
+> *+++ b/kernel/sched/fair.c
+> *@@ -794,7 +794,11 @@ void post_init_entity_util_avg(struct task_struct *p)
+> *
+> *        if (cap > 0) {
+> *                if (cfs_rq->avg.util_avg != 0) {
+> *-                       sa->util_avg  = cfs_rq->avg.util_avg * se->load.weight;
+> *+                       if (p->sched_class == &fair_sched_class)
+> *+                               sa->util_avg  = cfs_rq->avg.util_avg * se_weight(se);
+> *+                       else
+> *+                               sa->util_avg  = cfs_rq->avg.util_avg * se->load.weight;
+> *+
+> *                        sa->util_avg /= (cfs_rq->avg.load_avg + 1);
+> *
+> *                        if (sa->util_avg > cap)
+> *
+> ---
+> comment from Vincent Guittot <vincent.guittot@linaro.org>:
+> >
+> > According to the original code logic:
+> >                 cfs_rq->avg.util_avg
+> > sa->util_avg  = -------------------- * se->load.weight
+> >                 cfs_rq->avg.load_avg
+> 
+> this should have been scale_load_down(se->load.weight) from the beginning
+> 
+> > but for fair_sched_class:
+> > se->load.weight = 1024 * sched_prio_to_weight[prio];
+> 
+> This is only true for 64bits platform otherwise scale_load and
+> scale_load_down are nop
+> 
+> >         cfs_rq->avg.util_avg
+> > so the  -------------------- must be extremely small, the
+> >         cfs_rq->avg.load_avg
+> > judgment condition "sa->util_avg < cap" could be established.
+> > It's not fair for those tasks who has smaller nice value.
+> >
+> > Signed-off-by: Xuewen Yan <xuewen.yan@unisoc.com>
+> > ---
+> >  kernel/sched/fair.c | 6 +++++-
+> >  1 file changed, 5 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > index 290f9e3..079760b 100644
+> > --- a/kernel/sched/fair.c
+> > +++ b/kernel/sched/fair.c
+> > @@ -794,7 +794,11 @@ void post_init_entity_util_avg(struct task_struct *p)
+> >
+> >         if (cap > 0) {
+> >                 if (cfs_rq->avg.util_avg != 0) {
+> 
+> We should now use cpu_util() instead of cfs_rq->avg.util_avg which
+> takes into account other classes
+> 
+> > -                       sa->util_avg  = cfs_rq->avg.util_avg * se->load.weight;
+> > +                       if (p->sched_class == &fair_sched_class)
+> > +                               sa->util_avg  = cfs_rq->avg.util_avg * se_weight(se);
+> > +                       else
+> > +                               sa->util_avg  = cfs_rq->avg.util_avg * se->load.weight;
+> 
+> Why this else keeps using se->load.weight ?
+> 
+> Either we uses sa->util_avg  = cfs_rq->avg.util_avg * se_weight(se);
+> for all classes
+> 
+> Or we want a different init value for other classes. But in this case
+> se->load.weight is meaningless and we should simply set them to 0
+> although we could probably compute a value based on bandwidth for
+> deadline class.
+> 
+> ---
+>  kernel/sched/fair.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 290f9e3..c6186cc 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -794,7 +794,7 @@ void post_init_entity_util_avg(struct task_struct *p)
+>  
+>  	if (cap > 0) {
+>  		if (cfs_rq->avg.util_avg != 0) {
+> -			sa->util_avg  = cfs_rq->avg.util_avg * se->load.weight;
+> +			sa->util_avg  = cfs_rq->avg.util_avg * se_weight(se);
 
-diff --git a/sound/soc/pxa/mmp-sspa.c b/sound/soc/pxa/mmp-sspa.c
-index 4255851c71c1..52d4d8ace1c3 100644
---- a/sound/soc/pxa/mmp-sspa.c
-+++ b/sound/soc/pxa/mmp-sspa.c
-@@ -239,6 +239,7 @@ static int mmp_sspa_hw_params(struct snd_pcm_substream *substream,
- 		return -EINVAL;
- 	}
- 
-+	sspa_ctrl &= ~SSPA_CTL_XPH;
- 	if (dev->of_node || params_channels(params) == 2)
- 		sspa_ctrl |= SSPA_CTL_XPH;
- 
--- 
-2.25.1
+Please refer to this MessageID: 20161208012722.GA4128@geo in lkml web site
+if you want. Just a notice and no matter here. My head do not work now.
+I can't remember more things that time..
+
+>  			sa->util_avg /= (cfs_rq->avg.load_avg + 1);
+>  
+>  			if (sa->util_avg > cap)
+> -- 
+> 1.9.1
+> 
 
