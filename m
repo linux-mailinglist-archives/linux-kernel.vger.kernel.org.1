@@ -2,79 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5E6A2A9734
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 14:44:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EF442A9736
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 14:44:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727482AbgKFNoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 08:44:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726708AbgKFNoS (ORCPT
+        id S1727534AbgKFNoZ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 6 Nov 2020 08:44:25 -0500
+Received: from relay9-d.mail.gandi.net ([217.70.183.199]:51497 "EHLO
+        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727417AbgKFNoZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 08:44:18 -0500
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02EA7C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 05:44:18 -0800 (PST)
-Received: by mail-lf1-x141.google.com with SMTP id f9so2006237lfq.2
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 05:44:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wI0GK83QWCQ6vsZdrqG3V91Iy+WDOOvk22jyx24kjEs=;
-        b=vMu5Ja7Cwh5pkYnlZwYu3DUXqEgu0S6PWP1gVg9/NM8I2i78iHgFVDYUUy3D4fkvyi
-         NSEHeHNe4ptH50Jv2U7T0elNvzPri6+Cg5WK/nkvDE54WSyi4ocd11H8f8tAFWbTscVW
-         rvzX1FIT7dot89fLnFf1/dwzFvYYOCzMQqJ9WPq1hPq353dv8HGC+qlJ5tCPKDAuQTM6
-         g/iF4D3mFGSTASbTGJK2xMasE+HNybaFg3Yo5hP2RYhVZPL1i9YB4o1x/xvWVkS/Fsty
-         A0O6QFFfoa7/cZJEJNohRQfG+ES0UbL6vmdOyEAPvHK7uRAHgC7peo8OLfx+J03mjs7o
-         I6Mw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wI0GK83QWCQ6vsZdrqG3V91Iy+WDOOvk22jyx24kjEs=;
-        b=VJkwrghjcrQO70lhESe5iO1/DcS/E1wom5M6thpymBcUuGs7LHJ4jhjOdrp1ig1yW0
-         nzeJbeg9voG7G++vvGkrLSSe3s3Ox0dNarSk5A5UPwNQwHB1XIG7+GdizIOesHLekqyo
-         9CTFe7FAzERoM7AZB9b59Ymhbza7aYxx0qQ3conFDNYLwgSFZ/ZAIl0TWpfHaozDT8rl
-         2iWb8CEGHuDikKdKlfIY5T+tkDEO/iq2xoTWvZ1WiXs2Hp5aU0vR5SV33Zm/BSqUW0bv
-         OEKQ3PRz8583ssnfCFwsdXrC6BF5KNTUxrW8pv10NtagNM/iybTRDfqv/DO7+JB4dOIY
-         9vUw==
-X-Gm-Message-State: AOAM5316klz1dqHmudgzeL+/BimHXk45XM6/Rs+UjTmu8qJHS6D5zSKV
-        nymS9Dq7PcGduDVc7pQoP/uZH6E4Hii2sMna8a2YnT790CPwIQ==
-X-Google-Smtp-Source: ABdhPJygixdWhUfcyDNsGa2oGSEuadBYn2t4MmXNTxc7g+f0e+S6NHgZXcaPQGNq5wbaXC2ktaBv9Udb+dgkIYzb2Ic=
-X-Received: by 2002:a19:7b06:: with SMTP id w6mr1003402lfc.260.1604670256510;
- Fri, 06 Nov 2020 05:44:16 -0800 (PST)
+        Fri, 6 Nov 2020 08:44:25 -0500
+X-Originating-IP: 91.224.148.103
+Received: from xps13 (unknown [91.224.148.103])
+        (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 3FF1DFF803;
+        Fri,  6 Nov 2020 13:44:22 +0000 (UTC)
+Date:   Fri, 6 Nov 2020 14:44:20 +0100
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     vigneshr@ti.com, richard@nod.at, linux-kernel@vger.kernel.org,
+        linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 00/23] Rid W=1 warnings in MTD
+Message-ID: <20201106144420.13c18b97@xps13>
+In-Reply-To: <20201106133247.GI2063125@dell>
+References: <20201102115406.1074327-1-lee.jones@linaro.org>
+        <20201106133247.GI2063125@dell>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20201101090104.5088-1-paul@crapouillou.net> <20201101090104.5088-2-paul@crapouillou.net>
-In-Reply-To: <20201101090104.5088-2-paul@crapouillou.net>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 6 Nov 2020 14:44:05 +0100
-Message-ID: <CACRpkdaZKxGBXXAXUd-gho4bnCRN+9HhX6OEsUG982xSDQgRFw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] pinctrl: ingenic: Get rid of repetitive data
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Zhou Yanjie <zhouyanjie@wanyeetech.com>, od@zcrc.me,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 1, 2020 at 10:01 AM Paul Cercueil <paul@crapouillou.net> wrote:
+Hi Lee,
 
-> Abuse the pin function pointer to store the pin function value directly,
-> when all the pins of a group have the same function value. Now when the
-> pointer value is <= 3 (unsigned), the pointer value is used as the pin
-> function; otherwise it is used as a regular pointer.
->
-> This drastically reduces the number of pin function tables needed, and
-> drops .data usage by about 2 KiB. Additionally, the few pin function
-> tables that are still around now contain u8 instead of int, since the
-> largest number that will be stored is 3.
->
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+Lee Jones <lee.jones@linaro.org> wrote on Fri, 6 Nov 2020 13:32:47
++0000:
 
-Both patches applied.
+> > This set is part of a larger effort attempting to clean-up W=1
+> > kernel builds, which are currently overwhelmingly riddled with
+> > niggly little warnings.
+> > 
+> > Lee Jones (23):
+> >   mtd: mtdpart: Fix misdocumented function parameter 'mtd'
+> >   mtd: devices: phram: File headers are not good candidates for
+> >     kernel-doc
+> >   mtd: nand: onenand: onenand_base: Fix expected kernel-doc formatting
+> >   mtd: devices: docg3: Fix kernel-doc 'bad line' and 'excessive doc'
+> >     issues
+> >   mtd: mtdcore: Fix misspelled function parameter 'section'
+> >   mtd: nand: onenand: onenand_bbt: Fix expected kernel-doc formatting
+> >   mtd: spi-nor: controllers: hisi-sfc: Demote non-conformant kernel-doc
+> >   mtd: ubi: build: Document 'ubi_num' in struct mtd_dev_param
+> >   mtd: nand: spi: toshiba: Demote non-conformant kernel-doc header
+> >   mtd: ubi: kapi: Correct documentation for 'ubi_leb_read_sg's 'sgl'
+> >     parameter
+> >   mtd: ubi: eba: Fix a couple of misdocumentation issues
+> >   mtd: ubi: wl: Fix a couple of kernel-doc issues
+> >   mtd: nand: raw: brcmnand: brcmnand: Demote non-conformant kernel-doc
+> >     headers
+> >   mtd: ubi: gluebi: Fix misnamed function parameter documentation
+> >   mtd: nand: raw: diskonchip: Marking unused variables as
+> >     __always_unused
+> >   mtd: nand: raw: cafe_nand: Remove superfluous param doc and add
+> >     another
+> >   mtd: nand: raw: s3c2410: Add documentation for 2 missing struct
+> >     members
+> >   mtd: nand: raw: omap_elm: Finish half populated function header,
+> >     demote empty ones
+> >   mtd: nand: raw: omap2: Fix a bunch of kernel-doc misdemeanours
+> >   mtd: nand: raw: sunxi_nand: Document 'sunxi_nfc's 'caps' member
+> >   mtd: nand: raw: arasan-nand-controller: Document 'anfc_op's 'buf'
+> >     member
+> >   mtd: nand: onenand: onenand_base: Fix some kernel-doc misdemeanours
+> >   mtd: devices: powernv_flash: Add function names to headers and fix
+> >     'dev'  
+> 
+> May I ask; what is the plan for these patches please?
+> 
+> Do you plan on taking the ones that do not require re-work, rather
+> than fixing up and re-submitting the whole set.  It would certainly
+> save a lot of mailing list churn if that were the case.
+> 
+> Either way, let me know and I will abide by your decision.
+> 
 
-Yours,
-Linus Walleij
+I would prefer receiving a v2 with all the patches if you don't mind.
+
+Thanks,
+Miquèl
