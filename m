@@ -2,125 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E93542A9B44
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 18:54:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3F3F2A9B46
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 18:54:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727779AbgKFRxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 12:53:46 -0500
-Received: from shelob.surriel.com ([96.67.55.147]:35504 "EHLO
-        shelob.surriel.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727356AbgKFRxp (ORCPT
+        id S1727819AbgKFRxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 12:53:55 -0500
+Received: from ale.deltatee.com ([204.191.154.188]:58960 "EHLO
+        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727647AbgKFRxz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 12:53:45 -0500
-Received: from imladris.surriel.com ([96.67.55.152])
-        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <riel@shelob.surriel.com>)
-        id 1kb5va-0001y7-U8; Fri, 06 Nov 2020 12:53:34 -0500
-Message-ID: <0f50046d0195d857bf7dc5a61db0a59795c3e06b.camel@surriel.com>
-Subject: Re: [PATCH 2/2] mm,thp,shm: limit gfp mask to no more than specified
-From:   Rik van Riel <riel@surriel.com>
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     hughd@google.com, xuyu@linux.alibaba.com,
-        akpm@linux-foundation.org, mgorman@suse.de, aarcange@redhat.com,
-        willy@infradead.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, linux-mm@kvack.org, vbabka@suse.cz,
-        mhocko@suse.com
-Date:   Fri, 06 Nov 2020 12:53:33 -0500
-In-Reply-To: <20201106030511.396-1-hdanton@sina.com>
-References: <20201105191508.1961686-1-riel@surriel.com>
-         <20201106030511.396-1-hdanton@sina.com>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-F/6ayGlYGx6A27zYSP72"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+        Fri, 6 Nov 2020 12:53:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=deltatee.com; s=20200525; h=Subject:Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Sender:
+        Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+        :Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=oqvtFGaVjszB5PFtWzeKmwJF6MYA6lw1F4gIUPtEKvE=; b=oUbweNGxfS2FaKore4Y7MKiNQ4
+        fg7zh2TgR0y03Add5nUBDQD4stjB1NKFFrVlgpzQC5fznCUfIGpE/akffcd0NrmPkS/77o3bGqNOw
+        Ei1cBrxMlXYTIEwe8u8J3/T0r8arqe8w4l390vQ3orocVyTIzf6z7CZrtej7nyQkhxp3EiA2y+pCs
+        ec5qyhMR/l/1TdiqL43zWSiILj0SMtpz8z8LbEIROwb7rpQwVQgIR2tT0Q6FH1Y0AE1K2D+k180Ro
+        sQw0YqkiFV6aAHs9Txi/B9Y7KeLuEZiAfw0VfHJZlQOxTnS2f2YIkOWlG9kr2vD0uu72FDyO+wSXj
+        C94axUyQ==;
+Received: from s01060023bee90a7d.cg.shawcable.net ([24.64.145.4] helo=[192.168.0.10])
+        by ale.deltatee.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <logang@deltatee.com>)
+        id 1kb5vm-0003Mq-D0; Fri, 06 Nov 2020 10:53:47 -0700
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
+        Stephen Bates <sbates@raithlin.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Ira Weiny <iweiny@intel.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Don Dutile <ddutile@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+References: <20201106170036.18713-1-logang@deltatee.com>
+ <20201106170036.18713-15-logang@deltatee.com>
+ <20201106172206.GS36674@ziepe.ca>
+ <b1e8dfce-d583-bed8-d04d-b7265a54c99f@deltatee.com>
+ <20201106174223.GU36674@ziepe.ca>
+From:   Logan Gunthorpe <logang@deltatee.com>
+Message-ID: <2c2d2815-165e-2ef9-60d6-3ace7ff3aaa5@deltatee.com>
+Date:   Fri, 6 Nov 2020 10:53:45 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Sender: riel@shelob.surriel.com
+In-Reply-To: <20201106174223.GU36674@ziepe.ca>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 24.64.145.4
+X-SA-Exim-Rcpt-To: daniel.vetter@ffwll.ch, willy@infradead.org, ddutile@redhat.com, jhubbard@nvidia.com, iweiny@intel.com, christian.koenig@amd.com, dan.j.williams@intel.com, hch@lst.de, sbates@raithlin.com, iommu@lists.linux-foundation.org, linux-mm@kvack.org, linux-pci@vger.kernel.org, linux-block@vger.kernel.org, linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, jgg@ziepe.ca
+X-SA-Exim-Mail-From: logang@deltatee.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-8.7 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        GREYLIST_ISWHITE,MYRULES_FREE,NICE_REPLY_A autolearn=ham
+        autolearn_force=no version=3.4.2
+Subject: Re: [RFC PATCH 14/15] PCI/P2PDMA: Introduce pci_mmap_p2pmem()
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---=-F/6ayGlYGx6A27zYSP72
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2020-11-06 at 11:05 +0800, Hillf Danton wrote:
-> On Thu,  5 Nov 2020 14:15:08 -0500
-> > Matthew Wilcox pointed out that the i915 driver opportunistically
-> > allocates tmpfs memory, but will happily reclaim some of its
-> > pool if no memory is available.
-> >=20
-> > Make sure the gfp mask used to opportunistically allocate a THP
-> > is always at least as restrictive as the original gfp mask.
-> >=20
-> > Signed-off-by: Rik van Riel <riel@surriel.com>
-> > Suggested-by: Matthew Wilcox <willy@infradead.org>
-> > ---
-> >  mm/shmem.c | 21 +++++++++++++++++++++
-> >  1 file changed, 21 insertions(+)
-> >=20
-> > diff --git a/mm/shmem.c b/mm/shmem.c
-> > index 6c3cb192a88d..ee3cea10c2a4 100644
-> > --- a/mm/shmem.c
-> > +++ b/mm/shmem.c
-> > @@ -1531,6 +1531,26 @@ static struct page *shmem_swapin(swp_entry_t
-> > swap, gfp_t gfp,
-> >  	return page;
-> >  }
-> > =20
-> > +/*
-> > + * Make sure huge_gfp is always more limited than limit_gfp.
-> > + * Some of the flags set permissions, while others set
-> > limitations.
-> > + */
-> > +static gfp_t limit_gfp_mask(gfp_t huge_gfp, gfp_t limit_gfp)
-> > +{
-> > +	gfp_t allowflags =3D __GFP_IO | __GFP_FS | __GFP_RECLAIM;
-> > +	gfp_t denyflags =3D __GFP_NOWARN | __GFP_NORETRY;
-> > +	gfp_t result =3D huge_gfp & ~allowflags;
-> > +
-> > +	/*
-> > +	 * Minimize the result gfp by taking the union with the deny
-> > flags,
-> > +	 * and the intersection of the allow flags.
-> > +	 */
-> > +	result |=3D (limit_gfp & denyflags);
->=20
-> Currently NORETRY is always set regardless of i915 and if it's
-> determined in 1/2 then the i915 thing can be done like
->=20
-> 	return huge_gfp | (limit_gfp & __GFP_RECLAIM);
+On 2020-11-06 10:42 a.m., Jason Gunthorpe wrote:
+> On Fri, Nov 06, 2020 at 10:28:00AM -0700, Logan Gunthorpe wrote:
+>>
+>>
+>> On 2020-11-06 10:22 a.m., Jason Gunthorpe wrote:
+>>> On Fri, Nov 06, 2020 at 10:00:35AM -0700, Logan Gunthorpe wrote:
+>>>> Introduce pci_mmap_p2pmem() which is a helper to allocate and mmap
+>>>> a hunk of p2pmem into userspace.
+>>>>
+>>>> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+>>>>  drivers/pci/p2pdma.c       | 104 +++++++++++++++++++++++++++++++++++++
+>>>>  include/linux/pci-p2pdma.h |   6 +++
+>>>>  2 files changed, 110 insertions(+)
+>>>>
+>>>> diff --git a/drivers/pci/p2pdma.c b/drivers/pci/p2pdma.c
+>>>> index 9961e779f430..8eab53ac59ae 100644
+>>>> +++ b/drivers/pci/p2pdma.c
+>>>> @@ -16,6 +16,7 @@
+>>>>  #include <linux/genalloc.h>
+>>>>  #include <linux/memremap.h>
+>>>>  #include <linux/percpu-refcount.h>
+>>>> +#include <linux/pfn_t.h>
+>>>>  #include <linux/random.h>
+>>>>  #include <linux/seq_buf.h>
+>>>>  #include <linux/xarray.h>
+>>>> @@ -1055,3 +1056,106 @@ ssize_t pci_p2pdma_enable_show(char *page, struct pci_dev *p2p_dev,
+>>>>  	return sprintf(page, "%s\n", pci_name(p2p_dev));
+>>>>  }
+>>>>  EXPORT_SYMBOL_GPL(pci_p2pdma_enable_show);
+>>>> +
+>>>> +struct pci_p2pdma_map {
+>>>> +	struct kref ref;
+>>>> +	struct pci_dev *pdev;
+>>>> +	void *kaddr;
+>>>> +	size_t len;
+>>>> +};
+>>>
+>>> Why have this at all? Nothing uses it and no vm_operations ops are
+>>> implemented?
+>>
+>> It's necessary to free the allocated p2pmem when the mapping is torn down.
+> 
+> That's suspicious.. Once in a VMA the lifetime of the page must be
+> controlled by the page refcount, it can't be put back into the genpool
+> just because the vma was destroed.
 
-No, if __GFP_KSWAPD_RECLAIM or __GFP_DIRECT_RECLAIM are
-not set in either huge_gfp or limit_gfp, we want to ensure
-the resulting gfp does not have it set, either.
+Ah, hmm, yes. I guess the pages have to be hooked and returned to the
+genalloc through free_devmap_managed_page(). Seems like it might be
+doable... but it will complicate things for users that don't want to use
+the genpool (though no such users exist upstream).
 
-Your suggested change
-would result in __GFP_KSWAPD_RECLAIM
-or __GFP_DIRECT_RECLAIM getting set if it was set in either
-of the input gfp variables, which is probably not the desired
-behavior.
-
-
---=20
-All Rights Reversed.
-
---=-F/6ayGlYGx6A27zYSP72
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEKR73pCCtJ5Xj3yADznnekoTE3oMFAl+ljZ0ACgkQznnekoTE
-3oOSCgf+JjD5NVfyruktXHepTt3ldZco3DpqfgNwKKgJEPErbxqbu78pJrYMsKgW
-mRqzSfsEAxG6pvXZmm9lFbWS3MLou1UTyccSiehxdw9k9qvYW5lxsmniQz2/tjur
-9PcQk4Ekp/+Ujdd/7vXBPcJ9KX3WzzCl5X10Y1h2Xlt2U24cw2Zjl2QLrfttH0IQ
-pvH50zCO7K02ug4dV/zIjW4lcOj1PVBnopEoJmS55UNjEW1JODi3T0XpUPRrSDWp
-uHhpImeuSHO/MgqUl2rY/c0ofJM9tZ3uZVFGUU6/796LMs1yHdX6vsWlPnVQuq4M
-FpM+4SAEaK62lT8GHDVqP3gFFa/Oyw==
-=GlII
------END PGP SIGNATURE-----
-
---=-F/6ayGlYGx6A27zYSP72--
+Logan
 
