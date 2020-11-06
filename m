@@ -2,122 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 057DC2A98DA
+	by mail.lfdr.de (Postfix) with ESMTP id 71DC42A98DB
 	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 16:55:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727621AbgKFPzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 10:55:08 -0500
-Received: from mga09.intel.com ([134.134.136.24]:36159 "EHLO mga09.intel.com"
+        id S1727646AbgKFPzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 10:55:21 -0500
+Received: from nat-hk.nvidia.com ([203.18.50.4]:64095 "EHLO nat-hk.nvidia.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726422AbgKFPzH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 10:55:07 -0500
-IronPort-SDR: sDHMnabFTUBUAX7OU01wNA/Cwn38IrUzPLVdQMhuNU5CrDAfXr0VTPWoJ2yZlmSQclEw3BSlrl
- Ak5VsP1IbYHQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9797"; a="169708692"
-X-IronPort-AV: E=Sophos;i="5.77,456,1596524400"; 
-   d="scan'208";a="169708692"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2020 07:55:05 -0800
-IronPort-SDR: tDj4OyVIr9tk9Jtb24z9upN02k6+2l9N5E3bn+CjQVK86EYvuJOEAKrf0fz4kpJP9s3z3c/+mg
- yEaWMJRkQYcw==
-X-IronPort-AV: E=Sophos;i="5.77,456,1596524400"; 
-   d="scan'208";a="472104901"
-Received: from rseth-mobl2.amr.corp.intel.com (HELO intel.com) ([10.252.131.79])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2020 07:55:04 -0800
-Date:   Fri, 6 Nov 2020 07:55:03 -0800
-From:   Ben Widawsky <ben.widawsky@intel.com>
-To:     "Huang, Ying" <ying.huang@intel.com>
-Cc:     Mel Gorman <mgorman@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
+        id S1726422AbgKFPzU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 10:55:20 -0500
+Received: from HKMAIL104.nvidia.com (Not Verified[10.18.92.9]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fa571e60000>; Fri, 06 Nov 2020 23:55:18 +0800
+Received: from HKMAIL104.nvidia.com (10.18.16.13) by HKMAIL104.nvidia.com
+ (10.18.16.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 6 Nov
+ 2020 15:55:18 +0000
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (104.47.36.55) by
+ HKMAIL104.nvidia.com (10.18.16.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Fri, 6 Nov 2020 15:55:18 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BIEW976rkpTWNPk9JLrNzpI2hHTiZzUgbBNhTad+FTHSfuJFyFGkX5kNTLYgjFHxx2zzIdJAjUpF6YnqxlPZkYypOlfl2OFVTTh4JirGps1aRNux9/qvFDJV+c7Nt4it39rz1gN1zVmB2YJGNEK0QcISqjhNvFl09t8aUnCQPUbeN0NGxTnAVXb2dIXkbRgtXO7TPCsWMAAiFSlD8K0zqTRaXCI2AoitNIFx4tjBv3MhfxEsVtEoKuagd+5Hqhn5kZPqq28T6dAMR4kCbweSNqy4ToeJSFnASv35n75UJ2sMDbbDuFADLIqg3lKl9ik8TmXAkHzzgXTjfHkcNBALxg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=16KnzsKUgcK5HQc6CkO77EkFqJ9Cf4jaoof4yrWubRc=;
+ b=lrSzO/YWJvVCz02ZDE+hAg43ySv4EmD9ZAfPHkhdqmYyRnbwp5n8cNTbpqgevZDVU2gunb2qslsz55slea9Ti9QfOa8R1biI/nRnsW23w4o815xISwLxfZ4ABjmMvk7gudxIH+vB5y5gjqQMKqL7GRPzeagptx6Kk+4/KnZ++yofgTJ3ADDcCUerAC56sg2I2yDRNaJDSSYk2MLKFEJ8j5StML6RDnMhVTITpGQvw+JPzrbdpIp60uNbUPTBEaZQzKtEaqjDtKOaZsrQbiA1Zic5gLpfMTYt4281C4cjmGutcyeq0XC1n61pl45znxgMs/sTYYoinl+IvkbS9cpqsg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB4617.namprd12.prod.outlook.com (2603:10b6:5:35::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18; Fri, 6 Nov
+ 2020 15:55:15 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3499.032; Fri, 6 Nov 2020
+ 15:55:15 +0000
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     <linux-kernel@vger.kernel.org>, Peter Xu <peterx@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+CC:     "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        Andrea Arcangeli <aarcange@redhat.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Ingo Molnar <mingo@redhat.com>, Rik van Riel <riel@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        David Rientjes <rientjes@google.com>
-Subject: Re: [PATCH -V2 2/2] autonuma: Migrate on fault among multiple bound
- nodes
-Message-ID: <20201106155503.nkwuxr5mkneggzl7@intel.com>
-Mail-Followup-To: "Huang, Ying" <ying.huang@intel.com>,
-        Mel Gorman <mgorman@suse.de>, Peter Zijlstra <peterz@infradead.org>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ingo Molnar <mingo@redhat.com>, Rik van Riel <riel@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Andi Kleen <ak@linux.intel.com>, Michal Hocko <mhocko@suse.com>,
-        David Rientjes <rientjes@google.com>
-References: <20201028023411.15045-1-ying.huang@intel.com>
- <20201028023411.15045-3-ying.huang@intel.com>
- <20201102111717.GB3306@suse.de>
- <87eel9wumd.fsf@yhuang-dev.intel.com>
- <20201105112523.GQ3306@suse.de>
- <87v9ejosec.fsf@yhuang-dev.intel.com>
+        Christoph Hellwig <hch@lst.de>,
+        Hugh Dickins <hughd@google.com>, Jan Kara <jack@suse.cz>,
+        Jann Horn <jannh@google.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Linux-MM <linux-mm@kvack.org>, Michal Hocko <mhocko@suse.com>,
+        Oleg Nesterov <oleg@redhat.com>
+Subject: [PATCH v3 1/2] mm: reorganize internal_get_user_pages_fast()
+Date:   Fri, 6 Nov 2020 11:55:13 -0400
+Message-ID: <1-v3-7358966cab09+14e9-gup_fork_jgg@nvidia.com>
+In-Reply-To: <0-v3-7358966cab09+14e9-gup_fork_jgg@nvidia.com>
+References: 
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-ClientProxiedBy: BL0PR02CA0066.namprd02.prod.outlook.com
+ (2603:10b6:207:3d::43) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87v9ejosec.fsf@yhuang-dev.intel.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by BL0PR02CA0066.namprd02.prod.outlook.com (2603:10b6:207:3d::43) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend Transport; Fri, 6 Nov 2020 15:55:15 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kb454-000vSn-D5; Fri, 06 Nov 2020 11:55:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1604678118; bh=8vfCpzh0Dz7yx0tdFAZh1nokwVWioFMWryE1oM5j7GE=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:From:To:
+         CC:Subject:Date:Message-ID:In-Reply-To:References:
+         Content-Transfer-Encoding:Content-Type:X-ClientProxiedBy:
+         MIME-Version:X-MS-Exchange-MessageSentRepresentingType;
+        b=GXCMy2d6m9yqASEG8l8OO68EpxmBMeqEIIiWxHCCDem8xAL+ZrT3EGcexIXhgCzzx
+         hkNbom3OPKODknzk/vMS8iz/mkgbN7pJAKYsv6GfQO3MoK7NOw7bYKH1nEj93vGt+/
+         q6YqekredhS1r+oCVY0qveB8mqGZQEnTxWeU+pvpmi1PBuoHLCeUqOz+B7mWJovy9N
+         t1KEV8LnN6QiUY54eFwnWTiO3oxBt6uLJcD3RlesQOM7dUt+q10waA6Eb8suZ9zATG
+         RyVJQ05Dpcpy15j8OBNazH65TCiQToAD5NYdH0RLzmz7sInM/3XgNqu3WhNhEuBv6/
+         EjoMk2BMVs11Q==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20-11-06 15:28:59, Huang, Ying wrote:
-> Mel Gorman <mgorman@suse.de> writes:
-> 
-> > On Wed, Nov 04, 2020 at 01:36:58PM +0800, Huang, Ying wrote:
-> >> But from another point of view, I suggest to remove the constraints of
-> >> MPOL_F_MOF in the future.  If the overhead of AutoNUMA isn't acceptable,
-> >> why not just disable AutoNUMA globally via sysctl knob?
-> >> 
-> >
-> > Because it's a double edged sword. NUMA Balancing can make a workload
-> > faster while still incurring more overhead than it should -- particularly
-> > when threads are involved rescanning the same or unrelated regions.
-> > Global disabling only really should happen when an application is running
-> > that is the only application on the machine and has full NUMA awareness.
-> 
-> Got it.  So NUMA Balancing may in generally benefit some workloads but
-> hurt some other workloads on one machine.  So we need a method to
-> enable/disable NUMA Balancing for one workload.  Previously, this is
-> done via the explicit NUMA policy.  If some explicit NUMA policy is
-> specified, NUMA Balancing is disabled for the memory region or the
-> thread.  And this can be reverted again for a memory region via
-> MPOL_MF_LAZY.  It appears that we lacks MPOL_MF_LAZY for the thread yet.
-> 
-> >> > It might still end up being better but I was not aware of a
-> >> > *realistic* workload that binds to multiple nodes
-> >> > deliberately. Generally I expect if an application is binding, it's
-> >> > binding to one local node.
-> >> 
-> >> Yes.  It's not popular configuration for now.  But for the memory
-> >> tiering system with both DRAM and PMEM, the DRAM and PMEM in one socket
-> >> will become 2 NUMA nodes.  To avoid too much cross-socket memory
-> >> accessing, but take advantage of both the DRAM and PMEM, the workload
-> >> can be bound to 2 NUMA nodes (DRAM and PMEM).
-> >> 
-> >
-> > Ok, that may lead to unpredictable performance as it'll have variable
-> > performance with limited control of the "important" applications that
-> > should use DRAM over PMEM. That's a long road but the step is not
-> > incompatible with the long-term goal.
-> 
-> Yes.  Ben Widawsky is working on a patchset to make it possible to
-> prefer the remote DRAM instead of the local PMEM as follows,
-> 
-> https://lore.kernel.org/linux-mm/20200630212517.308045-1-ben.widawsky@intel.com/
-> 
-> Best Regards,
-> Huang, Ying
-> 
+The next patch in this series makes the lockless flow a little more
+complex, so move the entire block into a new function and remove a level
+of indention. Tidy a bit of cruft:
 
-Rebased version was posted here:
-https://lore.kernel.org/linux-mm/20201030190238.306764-1-ben.widawsky@intel.com/
+ - addr is always the same as start, so use start
 
-Thanks.
-Ben
+ - Use the modern check_add_overflow() for computing end =3D start + len
+
+ - nr_pinned/pages << PAGE_SHIFT needs the LHS to be unsigned long to
+   avoid shift overflow, make the variables unsigned long to avoid coding
+   casts in both places. nr_pinned was missing its cast
+
+ - The handling of ret and nr_pinned can be streamlined a bit
+
+No functional change.
+
+Reviewed-by: Jan Kara <jack@suse.cz>
+Reviewed-by: John Hubbard <jhubbard@nvidia.com>
+Reviewed-by: Peter Xu <peterx@redhat.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+---
+ mm/gup.c | 99 ++++++++++++++++++++++++++++++--------------------------
+ 1 file changed, 54 insertions(+), 45 deletions(-)
+
+diff --git a/mm/gup.c b/mm/gup.c
+index 98eb8e6d2609c3..c7e24301860abb 100644
+--- a/mm/gup.c
++++ b/mm/gup.c
+@@ -2677,13 +2677,43 @@ static int __gup_longterm_unlocked(unsigned long st=
+art, int nr_pages,
+ 	return ret;
+ }
+=20
+-static int internal_get_user_pages_fast(unsigned long start, int nr_pages,
++static unsigned long lockless_pages_from_mm(unsigned long start,
++					    unsigned long end,
++					    unsigned int gup_flags,
++					    struct page **pages)
++{
++	unsigned long flags;
++	int nr_pinned =3D 0;
++
++	if (!IS_ENABLED(CONFIG_HAVE_FAST_GUP) ||
++	    !gup_fast_permitted(start, end))
++		return 0;
++
++	/*
++	 * Disable interrupts. The nested form is used, in order to allow full,
++	 * general purpose use of this routine.
++	 *
++	 * With interrupts disabled, we block page table pages from being freed
++	 * from under us. See struct mmu_table_batch comments in
++	 * include/asm-generic/tlb.h for more details.
++	 *
++	 * We do not adopt an rcu_read_lock() here as we also want to block IPIs
++	 * that come from THPs splitting.
++	 */
++	local_irq_save(flags);
++	gup_pgd_range(start, end, gup_flags, pages, &nr_pinned);
++	local_irq_restore(flags);
++	return nr_pinned;
++}
++
++static int internal_get_user_pages_fast(unsigned long start,
++					unsigned long nr_pages,
+ 					unsigned int gup_flags,
+ 					struct page **pages)
+ {
+-	unsigned long addr, len, end;
+-	unsigned long flags;
+-	int nr_pinned =3D 0, ret =3D 0;
++	unsigned long len, end;
++	unsigned long nr_pinned;
++	int ret;
+=20
+ 	if (WARN_ON_ONCE(gup_flags & ~(FOLL_WRITE | FOLL_LONGTERM |
+ 				       FOLL_FORCE | FOLL_PIN | FOLL_GET |
+@@ -2697,54 +2727,33 @@ static int internal_get_user_pages_fast(unsigned lo=
+ng start, int nr_pages,
+ 		might_lock_read(&current->mm->mmap_lock);
+=20
+ 	start =3D untagged_addr(start) & PAGE_MASK;
+-	addr =3D start;
+-	len =3D (unsigned long) nr_pages << PAGE_SHIFT;
+-	end =3D start + len;
+-
+-	if (end <=3D start)
++	len =3D nr_pages << PAGE_SHIFT;
++	if (check_add_overflow(start, len, &end))
+ 		return 0;
+ 	if (unlikely(!access_ok((void __user *)start, len)))
+ 		return -EFAULT;
+=20
+-	/*
+-	 * Disable interrupts. The nested form is used, in order to allow
+-	 * full, general purpose use of this routine.
+-	 *
+-	 * With interrupts disabled, we block page table pages from being
+-	 * freed from under us. See struct mmu_table_batch comments in
+-	 * include/asm-generic/tlb.h for more details.
+-	 *
+-	 * We do not adopt an rcu_read_lock(.) here as we also want to
+-	 * block IPIs that come from THPs splitting.
+-	 */
+-	if (IS_ENABLED(CONFIG_HAVE_FAST_GUP) && gup_fast_permitted(start, end)) {
+-		unsigned long fast_flags =3D gup_flags;
+-
+-		local_irq_save(flags);
+-		gup_pgd_range(addr, end, fast_flags, pages, &nr_pinned);
+-		local_irq_restore(flags);
+-		ret =3D nr_pinned;
+-	}
+-
+-	if (nr_pinned < nr_pages && !(gup_flags & FOLL_FAST_ONLY)) {
+-		/* Try to get the remaining pages with get_user_pages */
+-		start +=3D nr_pinned << PAGE_SHIFT;
+-		pages +=3D nr_pinned;
++	nr_pinned =3D lockless_pages_from_mm(start, end, gup_flags, pages);
++	if (nr_pinned =3D=3D nr_pages || gup_flags & FOLL_FAST_ONLY)
++		return nr_pinned;
+=20
+-		ret =3D __gup_longterm_unlocked(start, nr_pages - nr_pinned,
+-					      gup_flags, pages);
+-
+-		/* Have to be a bit careful with return values */
+-		if (nr_pinned > 0) {
+-			if (ret < 0)
+-				ret =3D nr_pinned;
+-			else
+-				ret +=3D nr_pinned;
+-		}
++	/* Slow path: try to get the remaining pages with get_user_pages */
++	start +=3D nr_pinned << PAGE_SHIFT;
++	pages +=3D nr_pinned;
++	ret =3D __gup_longterm_unlocked(start, nr_pages - nr_pinned, gup_flags,
++				      pages);
++	if (ret < 0) {
++		/*
++		 * The caller has to unpin the pages we already pinned so
++		 * returning -errno is not an option
++		 */
++		if (nr_pinned)
++			return nr_pinned;
++		return ret;
+ 	}
+-
+-	return ret;
++	return ret + nr_pinned;
+ }
++
+ /**
+  * get_user_pages_fast_only() - pin user pages in memory
+  * @start:      starting user address
+--=20
+2.29.2
+
