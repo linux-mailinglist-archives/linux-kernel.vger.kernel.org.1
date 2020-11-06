@@ -2,120 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A1632A9D94
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 20:09:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BBC42A9D99
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 20:10:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728145AbgKFTJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 14:09:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60224 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727985AbgKFTJy (ORCPT
+        id S1728163AbgKFTKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 14:10:40 -0500
+Received: from mail-ed1-f66.google.com ([209.85.208.66]:43659 "EHLO
+        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727591AbgKFTKj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 14:09:54 -0500
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D7ACC0613D2
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 11:09:54 -0800 (PST)
-Received: by mail-yb1-xb41.google.com with SMTP id s8so2032248yba.13
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 11:09:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WMdG6BPnDo6XPbXbEsnKscK3WeJAWiKsTI6QrLTod9A=;
-        b=X/TJWDXBEYcOALQLiBtbYBjoIu64gTaNXTHO7zCrQCIDudKDcTCd2+5xoK+NqjLKdM
-         8JqudzVLhv+fcwFrS6yxooI09utAw/AudCW+nTXYRkHDB37AKrUrCgKv7sJTRvXeQfS0
-         mQXOVyjsgcrG6WCZlXI+dN1z1LhOMJRlgQhgC9CaWv0TAKmaPt8fAUXbLFjhVMgsokiO
-         D7uqZYRxOZJm1CQTbkTarrdzMk/O3gZSJyhaf9sgFcLUP2+RomLHaF8Drr2mL2FW6wcG
-         fCW2y5H+8IywC+kUWkxreYy0E1IPH+noc4ld+7Nc8F28xeGSOdSJIhV6Zso8l/VYvTjI
-         VgHQ==
+        Fri, 6 Nov 2020 14:10:39 -0500
+Received: by mail-ed1-f66.google.com with SMTP id b9so2344608edu.10;
+        Fri, 06 Nov 2020 11:10:37 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WMdG6BPnDo6XPbXbEsnKscK3WeJAWiKsTI6QrLTod9A=;
-        b=CwW/UESxqFaUqjkZMdODMimOgdoDkHHRsonWNIoowf2DfR292CW6nRRNooiPoafVmi
-         i31IJEy3TTFV2Ld2HV0MySRegHZ9Xc1ZAU3vpH2yeS3+zt4OTzs4fymkzq+cDZRXaBXS
-         JvHcqo+YfkkLVa+ZipjuUF/F5TfFbdELtpqo3dsf1jJzfA6APR94SUF3J1aKnRBjPeKL
-         Gd3Pspj+5rNg7fg/cIvdrttEqESy3AlzLcgBgW6612lZ2Asa0OcSD9va+8UUAwbgE2No
-         Bc6SvsuMTB24f0JdBHshWXPeI64H7CiHhYbobXFXDMH5xMPAkkD5Pl12HYqrL9nMq/s4
-         73Jg==
-X-Gm-Message-State: AOAM531sF3UkUvm7TLnZ+5JFKNRmcdpMZCoNhrqnBSo1U39vDi9VDD50
-        YaD1OfZiUAuKkn0aypHsq0QfCdvTUHZ4I00XTsf/dw==
-X-Google-Smtp-Source: ABdhPJxJSQvV81Unc1Qwmu0t208rjWZkc4or0DrYtyo+3EQJic6kQjUU6srTIJGB46Pi1EVeIBLp8sz5EoAD5Cp9Gec=
-X-Received: by 2002:a25:f817:: with SMTP id u23mr5025809ybd.466.1604689793394;
- Fri, 06 Nov 2020 11:09:53 -0800 (PST)
-MIME-Version: 1.0
-References: <20201106150747.31273-1-broonie@kernel.org>
-In-Reply-To: <20201106150747.31273-1-broonie@kernel.org>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Fri, 6 Nov 2020 11:09:17 -0800
-Message-ID: <CAGETcx-abGAgYrHM0jm6hVkrJ5KvfhK6gCZ4Y6RY0msPJDCuQg@mail.gmail.com>
-Subject: Re: [PATCH RFC] driver core: Ensure DT devices always have fwnode set
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Daniel Mentz <danielmentz@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gqirjaMt4D6SKqcnUi2BGgbSRPE0IdYDv6GFpHhWUvI=;
+        b=ZTmLWhtjHVByjrjV5XKVrq7O76F8KvzF1RQimo5acS98QM66Y1e+PvhRKyIGVEAS24
+         p4hsIqK2zw+l3AhF/NUX+br1XPhyk9zu+dP61Lbtq4XbghKj5BpJsZveGaG9GBxfK9ie
+         RxfoZbNV34pMU8/cKU+D6uxMRaxDqG5JW86c+JpkzXVD6nmFP8AzGVQoubqo3EWtLBCj
+         puKPK5e3u8q0N78FX4FBuYDZ3qAXQ1Vent2sOjFHjbWA3Rgbu+9E3bbVF60TPE4rfHez
+         kmnphrpF20eg3D0B911NbXud5d9jw9/IY9sGSDotP8rbo7F9oOywUOC0LGza9n+gZ3gU
+         XbFQ==
+X-Gm-Message-State: AOAM533cAwZ9WQOh4oRPNBYz/0AE+iOIYBFuPevLxGMDK9YTKtemuqq9
+        3JGlPEUwDoM1loMkd0x0mRQ=
+X-Google-Smtp-Source: ABdhPJxxua5gAL0oui3IMgo8hZd9sh5JMCTalWVuc/s/2mSaFDEPMiMOSp49pEiaN9sG5rNOJidI+Q==
+X-Received: by 2002:a05:6402:22c6:: with SMTP id dm6mr3612186edb.139.1604689837124;
+        Fri, 06 Nov 2020 11:10:37 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id l12sm1666653edt.46.2020.11.06.11.10.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Nov 2020 11:10:35 -0800 (PST)
+Date:   Fri, 6 Nov 2020 20:10:33 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Mikko Perttunen <cyndis@kapsi.fi>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v7 35/47] memory: tegra20: Support interconnect framework
+Message-ID: <20201106191033.GA65086@kozik-lap>
+References: <20201104164923.21238-1-digetx@gmail.com>
+ <20201104164923.21238-36-digetx@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201104164923.21238-36-digetx@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Rob and Frank
-
-On Fri, Nov 6, 2020 at 7:09 AM Mark Brown <broonie@kernel.org> wrote:
->
-> Currently the fwnode API and things that rely on it like fw_devlink will
-> not reliably work for devices created from DT since each subsystem that
-> creates devices must individually set dev->fwnode in addition to setting
-> dev->of_node, currently a number of subsystems don't do so. Ensure that
-> this can't get missed by setting fwnode from of_node if it's not
-> previously been set by the subsystem.
->
-> Reported-by: Saravana Kannan <saravanak@google.com>
-> Signed-off-by: Mark Brown <broonie@kernel.org>
+On Wed, Nov 04, 2020 at 07:49:11PM +0300, Dmitry Osipenko wrote:
+> Now Internal and External Memory Controllers are memory interconnection
+> providers. This allows us to use interconnect API for tuning of memory
+> configuration. EMC driver now supports OPPs and DVFS.
+> 
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 > ---
->
-> *Very* minimally tested.
->
->  drivers/base/core.c | 4 ++++
->  1 file changed, 4 insertions(+)
->
-> diff --git a/drivers/base/core.c b/drivers/base/core.c
-> index d661ada1518f..658626bafd76 100644
-> --- a/drivers/base/core.c
-> +++ b/drivers/base/core.c
-> @@ -2864,6 +2864,10 @@ int device_add(struct device *dev)
->         if (parent && (dev_to_node(dev) == NUMA_NO_NODE))
->                 set_dev_node(dev, dev_to_node(parent));
->
-> +       /* ensure that fwnode is set up */
-> +       if (IS_ENABLED(CONFIG_OF) && dev->of_node && !dev->fwnode)
-> +               dev->fwnode = of_fwnode_handle(dev->of_node);
-> +
+>  drivers/memory/tegra/Kconfig       |   3 +-
+>  drivers/memory/tegra/tegra20-emc.c | 310 ++++++++++++++++++++++++++++-
+>  drivers/memory/tegra/tegra20.c     |  77 +++++++
+>  3 files changed, 386 insertions(+), 4 deletions(-)
 
-I don't think we should add more CONFIG_OF specific code in drivers/base/
+Thanks, applied.
 
-If you want to do this in "one common place", then I think the way to
-do this is have include/linux/of.h provide something like:
-void of_set_device_of_node(dev, of_node)
-{
-    dev->of_node = of_node;
-    dev->fw_node = &of_node->fwnode;
-   /* bunch of other housekeeping like setting OF_POPULATED and doing
-proper of_node_get() */
-   // Passing NULL for of_node could undo all the above for dev->of_node.
-}
+Best regards,
+Krzysztof
 
-And all the subsystems that create their own device from an of_node
-should use of_set_device_of_node() to set the device's of_node. That
-way, all this is done in a consistent manner across subsystems and
-avoid all of the of_get/put() and OF_POPULATED set/clear strewn all
-over the subsystems.
-
-For example a bunch of subsystems don't do of_get()/of_put() correctly
-when they det a device's of_node (I sent patches as I found them).
-
--Saravana
