@@ -2,174 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1B292A8C0E
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 02:25:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7B8D2A8C11
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 02:28:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732706AbgKFBZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 20:25:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34292 "EHLO
+        id S1732680AbgKFB2R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 20:28:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730906AbgKFBZ2 (ORCPT
+        with ESMTP id S1731111AbgKFB2P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 20:25:28 -0500
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 855BDC0613D3
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 17:25:26 -0800 (PST)
-Received: by mail-yb1-xb41.google.com with SMTP id f6so3087865ybr.0
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 17:25:26 -0800 (PST)
+        Thu, 5 Nov 2020 20:28:15 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 599E8C0613D2
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 17:28:15 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id e7so2800764pfn.12
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 17:28:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lzV9usbcyvrZBezSzuliRNMORjroXFiHCPOIQMppm20=;
-        b=mFp6wXmb3dx9Iz2MBUFPuVyhUmTP9lVcgCQyveXhQC419PlTNsEI22yTsPSMZG3kax
-         nCA+1dWmdyC3cWpzU49fyRrvZeCLfP1DG4UmaQghxfel1tj/ATOuawBGgVV7u7rd3IXM
-         B3nOHiSCZ0UVphZueGqjVfoII+u+8CgPeywRQoPZiN90fLMexZ4OTiIWWVcJZpGuww0b
-         5i1H1jHOQRmOezoZJCcZrJFBPQxgzXBPiRWAD7uMqyCVSeIAy0hKx54ImBx5TMTl5tM1
-         ODvAV2PnmUPZgqwW3qnqbwsT2wQij3uP3CiH3p3nXpvFTtKUXi+vJi/c3j/+B8DEr9kj
-         uBQg==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VvTyEH/5OPHkuR2uQBZQ7iKaDkYMP3ddbHbrnIA3UKs=;
+        b=kexnuPe3sGqmGRossbXOUjkF7rcCGE7Rm/bT3CPgCE9rmTCIpnkXmw6izKxcBrU4VC
+         4CyXFd0ajo1teg24dRKCnchR+gJG27gqnwv0ld35PV57gErZl/w0GF3s1nKSCEhOIsPg
+         9vX1+HbL5fHlIFG5S3AHjEcErmlzekput1gjo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lzV9usbcyvrZBezSzuliRNMORjroXFiHCPOIQMppm20=;
-        b=fusSvwxx523J/CrfLv5sQv294vf/R8uz0Mb/umECa4u5OA3uyHQFUrKOU7S+04vR0/
-         iuZEwdwL3CIcNWSAVFMIljCcLqrQpL4GySKYDYvfgrFdYhOrWVrDD5YV0TdI/TJP0khT
-         VLQTeLsoeotNpmUyaQ+CJ4IGVsWQdjP0p75Q6ih/zydIYUYPE6gqg2H4pHj6JsWXNcD1
-         HGMr5912iCIrXyTF7DWwosVEkxgFzEO3ZZzc3qAC1JI9oYWtvZ4qgNpE4nA++kWWtNLf
-         4y5w4AS35ONVZKwKXkWjE/nzbxEI0/YQiXl2S2FVYdkS/SQe5qo3uVWZFTIy83O7J6Jh
-         2Vpg==
-X-Gm-Message-State: AOAM530x5wEOy69UdSCDikRgFju9V2/ZAFcye1zY2+ZYiYmua1dGBgtk
-        WVjxxxewtxo/Hg9yqy3tbj7PXYjxzbjsk+jqVKfoXQ==
-X-Google-Smtp-Source: ABdhPJyYHml/89uqvPtNmXYMF2Pm87o8/A6MHGqILFDdIGr3l1sb+4jGsYPEXHB+yaFTcNWWksQrzvjmCxCbmsk95lA=
-X-Received: by 2002:a25:9c02:: with SMTP id c2mr7063033ybo.228.1604625925368;
- Thu, 05 Nov 2020 17:25:25 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VvTyEH/5OPHkuR2uQBZQ7iKaDkYMP3ddbHbrnIA3UKs=;
+        b=VFKMMHnvNNegbDccgxrKbMRngguWSPJIAB5uHs6P9yoKLw0F/BGOkVr3Udzs3EATQo
+         IVEH61Vb56TE6kz0S0hwsqXgx30fqZNHWuKxK38fdEb9dxAB7E6LLP5sKYhjxPj77Uan
+         vQWNea4NqL7JE1OYwgpo/HGEp/paAFoPArymr4xiI1D4bPzPc8tlGSTHJmbosEjUsQZm
+         z13LGWHl4Lq4MEOY5BKTHdFhvLbEPj86/3qaR2ZoaIVdELRxpcb+aJFtHF5k+3w2xC14
+         4JxCL85L6Y2iUwOOkvXpyDfB1J8yIdC2U9sAn2DAaPqRA0IpfX1yj7ms5Clq8n9Lmv67
+         Y9qQ==
+X-Gm-Message-State: AOAM530rRurnMgzSO+l69lMonK3bcbERdbiPMQVWhRmqNlVAJ4G2vDFl
+        ojsj9Tu+Li4U7hKYOnlfzYkim0Hzn+11LQ==
+X-Google-Smtp-Source: ABdhPJwpENg1xxH+jg6K0ihpMdjRM2t/OxkSOaVsYmQBHgSl3+yRx2+PTlWixQRUz5ScplL1e5EZdQ==
+X-Received: by 2002:a62:1603:0:b029:160:98fc:ad23 with SMTP id 3-20020a6216030000b029016098fcad23mr5180310pfw.47.1604626094618;
+        Thu, 05 Nov 2020 17:28:14 -0800 (PST)
+Received: from pmalani2.mtv.corp.google.com ([2620:15c:202:201:a28c:fdff:fef0:49dd])
+        by smtp.gmail.com with ESMTPSA id e2sm3567887pgd.27.2020.11.05.17.28.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Nov 2020 17:28:14 -0800 (PST)
+From:   Prashant Malani <pmalani@chromium.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     heikki.krogerus@linux.intel.com, dzigterman@chromium.org,
+        alevkoy@chromium.org, Prashant Malani <pmalani@chromium.org>,
+        Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Guenter Roeck <groeck@chromium.org>,
+        linux-usb@vger.kernel.org (open list:USB SUBSYSTEM)
+Subject: [PATCH 0/6] platform/chrome: cros_ec_typec: Add cable registration
+Date:   Thu,  5 Nov 2020 17:27:51 -0800
+Message-Id: <20201106012758.525472-1-pmalani@chromium.org>
+X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
 MIME-Version: 1.0
-References: <20201104232356.4038506-1-saravanak@google.com>
- <20201104232356.4038506-16-saravanak@google.com> <20201105094228.GE3439341@kroah.com>
- <CAGETcx-0TPte6g3Cf5F3WJwdW-9yUptLDj3AcEdvWN0YJ2H4qg@mail.gmail.com>
-In-Reply-To: <CAGETcx-0TPte6g3Cf5F3WJwdW-9yUptLDj3AcEdvWN0YJ2H4qg@mail.gmail.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Thu, 5 Nov 2020 17:24:49 -0800
-Message-ID: <CAGETcx-AcCk2c4Jq9HGfxUcCdnpWb5d_ubNd=r6KciHCFUdAVw@mail.gmail.com>
-Subject: Re: [PATCH v1 15/18] of: property: Update implementation of
- add_links() to create fwnode links
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 5, 2020 at 3:25 PM Saravana Kannan <saravanak@google.com> wrote:
->
-> On Thu, Nov 5, 2020 at 1:41 AM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Wed, Nov 04, 2020 at 03:23:52PM -0800, Saravana Kannan wrote:
-> > > The semantics of add_links() has changed from creating device link
-> > > between devices to creating fwnode links between fwnodes. So, update the
-> > > implementation of add_links() to match the new semantics.
-> > >
-> > > Signed-off-by: Saravana Kannan <saravanak@google.com>
-> > > ---
-> > >  drivers/of/property.c | 150 ++++++++++++------------------------------
-> > >  1 file changed, 41 insertions(+), 109 deletions(-)
-> > >
-> > > diff --git a/drivers/of/property.c b/drivers/of/property.c
-> > > index 408a7b5f06a9..86303803f1b3 100644
-> > > --- a/drivers/of/property.c
-> > > +++ b/drivers/of/property.c
-> > > @@ -1038,33 +1038,9 @@ static bool of_is_ancestor_of(struct device_node *test_ancestor,
-> > >  }
-> > >
-> > >  /**
-> > > - * of_get_next_parent_dev - Add device link to supplier from supplier phandle
-> > > - * @np: device tree node
-> > > - *
-> > > - * Given a device tree node (@np), this function finds its closest ancestor
-> > > - * device tree node that has a corresponding struct device.
-> > > - *
-> > > - * The caller of this function is expected to call put_device() on the returned
-> > > - * device when they are done.
-> > > - */
-> > > -static struct device *of_get_next_parent_dev(struct device_node *np)
-> > > -{
-> > > -     struct device *dev = NULL;
-> > > -
-> > > -     of_node_get(np);
-> > > -     do {
-> > > -             np = of_get_next_parent(np);
-> > > -             if (np)
-> > > -                     dev = get_dev_from_fwnode(&np->fwnode);
-> > > -     } while (np && !dev);
-> > > -     of_node_put(np);
-> > > -     return dev;
-> > > -}
-> > > -
-> > > -/**
-> > > - * of_link_to_phandle - Add device link to supplier from supplier phandle
-> > > - * @dev: consumer device
-> > > - * @sup_np: phandle to supplier device tree node
-> > > + * of_link_to_phandle - Add fwnode link to supplier from supplier phandle
-> > > + * @con_np: consumer device tree node
-> > > + * @sup_np: supplier device tree node
-> > >   *
-> > >   * Given a phandle to a supplier device tree node (@sup_np), this function
-> > >   * finds the device that owns the supplier device tree node and creates a
-> > > @@ -1074,16 +1050,14 @@ static struct device *of_get_next_parent_dev(struct device_node *np)
-> > >   * cases, it returns an error.
-> > >   *
-> > >   * Returns:
-> > > - * - 0 if link successfully created to supplier
-> > > - * - -EAGAIN if linking to the supplier should be reattempted
-> > > + * - 0 if fwnode link successfully created to supplier
-> > >   * - -EINVAL if the supplier link is invalid and should not be created
-> > > - * - -ENODEV if there is no device that corresponds to the supplier phandle
-> > > + * - -ENODEV if struct device will never be create for supplier
-> > >   */
-> > > -static int of_link_to_phandle(struct device *dev, struct device_node *sup_np,
-> > > -                           u32 dl_flags)
-> > > +static int of_link_to_phandle(struct device_node *con_np,
-> > > +                           struct device_node *sup_np)
-> > >  {
-> > > -     struct device *sup_dev, *sup_par_dev;
-> > > -     int ret = 0;
-> > > +     struct device *sup_dev;
-> > >       struct device_node *tmp_np = sup_np;
-> > >
-> > >       of_node_get(sup_np);
-> > > @@ -1106,7 +1080,8 @@ static int of_link_to_phandle(struct device *dev, struct device_node *sup_np,
-> > >       }
-> > >
-> > >       if (!sup_np) {
-> > > -             dev_dbg(dev, "Not linking to %pOFP - No device\n", tmp_np);
-> > > +             pr_debug("Not linking %pOFP to %pOFP - No device\n",
-> > > +                      con_np, tmp_np);
-> >
-> > Who is calling this function without a valid dev pointer?
->
-> Sorry, I plan to delete the "dev" parameter as it's not really used
-> anywhere. I'm trying to do that without causing build time errors and
-> making the series into digestible small patches.
+The following series adds Type C cable registration to the cros-ec-typec
+driver. The first few patches perform a few minor re-organizations to
+prepare for the cable registration patch.
 
-*facepalm* for my earlier response. You'll notice that I've already
-deleted the "dev" input param to this function. That's why I can't use
-it here :)
+The last couple of CLs update the USB PD VDO header file to add a
+captive cable connector for the Type C cable plug field, and then use
+the added macro to add the corresponding field of the Type C cable
+descriptor in the cros-ec-typec driver.
 
--Saravana
+Prashant Malani (6):
+  platform/chrome: cros_ec_typec: Make disc_done flag partner-only
+  platform/chrome: cros_ec_typec: Factor out PD identity parsing
+  platform/chrome: cros_ec_typec: Rename discovery struct
+  platform/chrome: cros_ec_typec: Register cable
+  usb: pd: Add captive Type C cable type
+  platform/chrome: cros_ec_typec: Store cable plug type
+
+ drivers/platform/chrome/cros_ec_typec.c | 148 +++++++++++++++++++-----
+ include/linux/usb/pd_vdo.h              |   4 +-
+ 2 files changed, 123 insertions(+), 29 deletions(-)
+
+-- 
+2.29.1.341.ge80a0c044ae-goog
+
