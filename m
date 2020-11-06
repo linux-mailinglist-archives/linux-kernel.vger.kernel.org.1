@@ -2,92 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 350EB2A97FB
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 15:58:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 456B42A97FC
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 15:59:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727481AbgKFO6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 09:58:12 -0500
-Received: from www.zeus03.de ([194.117.254.33]:59336 "EHLO mail.zeus03.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727053AbgKFO6L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 09:58:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=k1; bh=rIlFBi6yQnQ5x71L0A6kGZu9SsMg
-        rqDGIbSBph6wKUw=; b=1/UZQldLV75Jshdkut7sXXN9mZ+V4KKiMdzB9NckK+ZO
-        972JCes6FlyVoQZy0u9vBh4b1inTdXvhXhBFIEM+5yF/7vuihk9RD6AXurRohSTR
-        xGhtFQdQ7Ft8mL5giVE3ry9Ks00zg7RcMZoMLeQZHvnADNM5PEWen7jgvy/BP4U=
-Received: (qmail 983837 invoked from network); 6 Nov 2020 15:58:09 +0100
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 6 Nov 2020 15:58:09 +0100
-X-UD-Smtp-Session: l3s3148p1@r7DVcHGz9KIgAwDPXxn+AAvEwmht7CYV
-Date:   Fri, 6 Nov 2020 15:58:09 +0100
-From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Khalil Blaiech <kblaiech@mellanox.com>,
-        Vadim Pasternak <vadimp@mellanox.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] i2c: mlxbf: I2C_MLXBF should depend on MELLANOX_PLATFORM
-Message-ID: <20201106145809.GH1059@kunai>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Khalil Blaiech <kblaiech@mellanox.com>,
-        Vadim Pasternak <vadimp@mellanox.com>, linux-i2c@vger.kernel.org,
+        id S1727496AbgKFO7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 09:59:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48584 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726694AbgKFO73 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 09:59:29 -0500
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A89C1C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 06:59:27 -0800 (PST)
+Received: by mail-qv1-xf41.google.com with SMTP id d1so549636qvl.6
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 06:59:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mRkSU/5vHT/IEZQvr5gZLhftMTatdc/swDYJz0CwbE8=;
+        b=jQZsJJ9xSf5mSgSPrA0f8RWdADoPxIUsWhWrYCCtBoek351fk2mZgm1tZyj+d2AyF1
+         JW2bvSMlpTjbbsCL/R53eg77FnIBfYQJubAId5NIq1FVtIQfDCmGzpvzcxRhdtwn0lUa
+         kWyhFEr8le9Cy3coZMOQpWbBzYn6p9zRejmVpz6+oPSoub4GhONJS5LdEHjpwxFv1vdM
+         Ww/1oA+ImlaLkp69LonTbFCwm1FKGshzXQ4v3ARRja36FN/lWO8iryweHiQsXIGrcRmh
+         lknPDJYsqRfNx2KqLheKY8Y71w9wJNdQQ7b7I2A/Vi9nc0rNWT4UybKlooi1Z/2mc07k
+         dWEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mRkSU/5vHT/IEZQvr5gZLhftMTatdc/swDYJz0CwbE8=;
+        b=pSXW6wfOyeZt89ApoNxe+C140ys6oRAgspJ/e7L6UA43DWZcukUaEQ4sE36e3zyAHa
+         uTu2ORDB1IqWIYDfOni84YDdRYw2vWWtyz2r4tmzMeVoSEnkz7OCG5dkmGICRRvM/C3R
+         3flVlXvKCoB1LB1CMl0oLg+GNqSrHEZzI8zsIBG3PzjIoKpiip/svFxzWU//cG5PhfmS
+         jZIsEbPQFzAGNImQXBG8sYsIL+ywtz1VMGW0KgrUDxe9kZghsGB91i8tNVss+IVfpaXZ
+         edpYdKvF0MmCTM1nYEeEUQEKTFtT6PTisOhT7AWmuNXvuqAMC90sTWoCrwPkEH23OC44
+         LddA==
+X-Gm-Message-State: AOAM533mu5c3ePivsQxM+Tyw/iT5ApwKxa4RP+mmxABD8zfuRbMIoRaG
+        +V5racvg2nZRWCS64XD5NaA=
+X-Google-Smtp-Source: ABdhPJx3nmPKPdNUBaeU5q/r/ErzLGZ5/SkaV/YV/a/Qh0Ga7Xxlzf+SPCb93T7MX+NuDmzxPs1AYQ==
+X-Received: by 2002:a05:6214:841:: with SMTP id dg1mr2016186qvb.18.1604674766923;
+        Fri, 06 Nov 2020 06:59:26 -0800 (PST)
+Received: from poirot.caas.local ([2605:a000:160c:8556:38d4:503f:b7a:d871])
+        by smtp.gmail.com with ESMTPSA id m15sm662872qtc.90.2020.11.06.06.59.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Nov 2020 06:59:26 -0800 (PST)
+From:   Kyle Russell <bkylerussell@gmail.com>
+To:     broonie@kernel.org
+Cc:     lkundrak@v3.sk, Kyle Russell <bkylerussell@gmail.com>,
+        Daniel Mack <daniel@zonque.org>,
+        Haojian Zhuang <haojian.zhuang@gmail.com>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
         linux-kernel@vger.kernel.org
-References: <20201005124949.26810-1-geert+renesas@glider.be>
- <20201010111942.GF4669@ninjato>
+Subject: [PATCH] ASoC: mmp-sspa: clear transmit phase bit for non-stereo formats
+Date:   Fri,  6 Nov 2020 09:59:05 -0500
+Message-Id: <20201106145905.365903-1-bkylerussell@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="X+8siUETKMkW99st"
-Content-Disposition: inline
-In-Reply-To: <20201010111942.GF4669@ninjato>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The transmit phase register value is never cleared during hw params.
+So once hw params sets this bit to handle a two channel format, it
+remains configured for dual-phase, which is not desirable for mono
+playback.
 
---X+8siUETKMkW99st
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Kyle Russell <bkylerussell@gmail.com>
+---
+ sound/soc/pxa/mmp-sspa.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-On Sat, Oct 10, 2020 at 01:19:42PM +0200, Wolfram Sang wrote:
-> On Mon, Oct 05, 2020 at 02:49:49PM +0200, Geert Uytterhoeven wrote:
-> > The Mellanox BlueField I2C controller is only present on Mellanox
-> > BlueField SoCs.  Hence add a dependency on MELLANOX_PLATFORM, to prevent
-> > asking the user about this driver when configuring a kernel without
-> > Mellanox platform support.
-> >=20
-> > Fixes: b5b5b32081cd206b ("i2c: mlxbf: I2C SMBus driver for Mellanox Blu=
-eField SoC")
-> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
->=20
-> Usually, I wait for maintainer acks before I apply driver patches. I
-> make an exception here to have it sorted out before the merge window.
->=20
-> Applied to for-next, thanks!
+diff --git a/sound/soc/pxa/mmp-sspa.c b/sound/soc/pxa/mmp-sspa.c
+index 4255851c71c1..52d4d8ace1c3 100644
+--- a/sound/soc/pxa/mmp-sspa.c
++++ b/sound/soc/pxa/mmp-sspa.c
+@@ -239,6 +239,7 @@ static int mmp_sspa_hw_params(struct snd_pcm_substream *substream,
+ 		return -EINVAL;
+ 	}
+ 
++	sspa_ctrl &= ~SSPA_CTL_XPH;
+ 	if (dev->of_node || params_channels(params) == 2)
+ 		sspa_ctrl |= SSPA_CTL_XPH;
+ 
+-- 
+2.25.1
 
-Strange, this one got missing, too. Applied again to for-current!
-
-
-
---X+8siUETKMkW99st
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl+lZH0ACgkQFA3kzBSg
-KbZQFQ//U78D/a8V5TSU+xw9L+JFl4WSOoenVEIHpfBLwxq9SRcHujqfkGDrZWxO
-KLLfqRmKkRyHuln/yA5tUgjS3+3E75YiLqVwBhA4Y7HAeH7ttWX5jONIXHeMG1oY
-GGUkpkBmu6nKf33/155u42rGfgmJMgMxR7yvGlZc2doi6JrWFA94OYyhn6OIzKuA
-bEy68eNVdDt9BphXxiFkx9SNt9fEyjmdGb8CkQJgu75vArwZMqp3pXBGyUcrUI+8
-Uv7ZODzXt3VE1PBYHGRMBsDOJEznR8FoX3UZGsFji86rvNatM9ogX+WwbP7A4Tvm
-AEnOx05lxWXvBXx1ISbWJ1Ot4KWakD1CHAY7E7m3DmU1MNK/MhyzbgMDJPP+GuTe
-Q8KNmQPkFQ+X7NclyRDa4KU/5i3joJrPnBvK5bWvCaS7iSalyCT75zDEs9Ndi9pl
-nt+whFh/ERyff7vWZuPJknRv4IW0Ptze1nG1kI4787FdwR8hdZ27hrd5XIrlv0YJ
-WqkqNLTAK+JFODn14B1XBzOy1AUWs4/cZDyGgKSbsJUSRBEN02nNmxp9qmAhebp8
-d3CMea3GlOdaRYzvx9j6vGTNKFvTW4tk9XQGPGiqTltcD1OD4mggNU60au1IdUdm
-363XH+3SZSIJ11/RopvrwN06Pk6jsTDcwyihpAkdFvDDNYBYs2M=
-=vPV9
------END PGP SIGNATURE-----
-
---X+8siUETKMkW99st--
