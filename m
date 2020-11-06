@@ -2,66 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80B5D2A90D2
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 08:57:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AE252A90D5
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 08:57:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726545AbgKFH5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 02:57:00 -0500
-Received: from m176115.mail.qiye.163.com ([59.111.176.115]:34733 "EHLO
-        m176115.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725830AbgKFH5A (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 02:57:00 -0500
-X-Greylist: delayed 384 seconds by postgrey-1.27 at vger.kernel.org; Fri, 06 Nov 2020 02:56:59 EST
-Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.231])
-        by m176115.mail.qiye.163.com (Hmail) with ESMTPA id 2488966734C;
-        Fri,  6 Nov 2020 15:56:56 +0800 (CST)
-From:   Wang Qing <wangqing@vivo.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Samuel Zou <zou_wei@huawei.com>,
-        Kurt Kanzenbach <kurt@linutronix.de>,
-        Wang Qing <wangqing@vivo.com>,
-        Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] net/ethernet: update ret when ptp_clock is ERROR
-Date:   Fri,  6 Nov 2020 15:56:45 +0800
-Message-Id: <1604649411-24886-1-git-send-email-wangqing@vivo.com>
-X-Mailer: git-send-email 2.7.4
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZHhlIQxgaHxhPQ0hDVkpNS09NT0JPSk1MSExVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS09ISVVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MBg6NRw*GD8oPx0wNCpMSj5R
-        TyhPChhVSlVKTUtPTU9CT0pMSkpDVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
-        SU5KVUxPVUlISllXWQgBWUFKQk1CNwY+
-X-HM-Tid: 0a759c8ef7869373kuws2488966734c
+        id S1726579AbgKFH5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 02:57:08 -0500
+Received: from verein.lst.de ([213.95.11.211]:50458 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726563AbgKFH5H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 02:57:07 -0500
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id B130A68B05; Fri,  6 Nov 2020 08:57:05 +0100 (CET)
+Date:   Fri, 6 Nov 2020 08:57:05 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Ralph Campbell <rcampbell@nvidia.com>
+Cc:     linux-mm@kvack.org, nouveau@lists.freedesktop.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jerome Glisse <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Bharata B Rao <bharata@linux.ibm.com>,
+        Zi Yan <ziy@nvidia.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Ben Skeggs <bskeggs@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v3 2/6] mm/migrate: move migrate_vma_collect_skip()
+Message-ID: <20201106075705.GC31341@lst.de>
+References: <20201106005147.20113-1-rcampbell@nvidia.com> <20201106005147.20113-3-rcampbell@nvidia.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201106005147.20113-3-rcampbell@nvidia.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We always have to update the value of ret, otherwise the
- error value may be the previous one.
+Looks good:
 
-Signed-off-by: Wang Qing <wangqing@vivo.com>
----
- drivers/net/ethernet/ti/am65-cpts.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/drivers/net/ethernet/ti/am65-cpts.c b/drivers/net/ethernet/ti/am65-cpts.c
-index 75056c1..b77ff61
---- a/drivers/net/ethernet/ti/am65-cpts.c
-+++ b/drivers/net/ethernet/ti/am65-cpts.c
-@@ -1001,8 +1001,7 @@ struct am65_cpts *am65_cpts_create(struct device *dev, void __iomem *regs,
- 	if (IS_ERR_OR_NULL(cpts->ptp_clock)) {
- 		dev_err(dev, "Failed to register ptp clk %ld\n",
- 			PTR_ERR(cpts->ptp_clock));
--		if (!cpts->ptp_clock)
--			ret = -ENODEV;
-+		ret = cpts->ptp_clock ? cpts->ptp_clock : (-ENODEV);
- 		goto refclk_disable;
- 	}
- 	cpts->phc_index = ptp_clock_index(cpts->ptp_clock);
--- 
-2.7.4
-
+Reviewed-by: Christoph Hellwig <hch@lst.de>
