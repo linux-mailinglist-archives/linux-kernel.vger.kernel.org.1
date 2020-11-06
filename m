@@ -2,93 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD0382A9E77
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 21:12:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7899D2A9E7A
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 21:12:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728369AbgKFUMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 15:12:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41636 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728140AbgKFUMI (ORCPT
+        id S1728382AbgKFUMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 15:12:51 -0500
+Received: from mail-ej1-f66.google.com ([209.85.218.66]:33427 "EHLO
+        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728140AbgKFUMv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 15:12:08 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA247C0613CF;
-        Fri,  6 Nov 2020 12:12:07 -0800 (PST)
-Received: from zn.tnic (p200300ec2f0d1f00ae349cded07ea856.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:1f00:ae34:9cde:d07e:a856])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1DADB1EC03EA;
-        Fri,  6 Nov 2020 21:12:05 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1604693525;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=nivkbud4Ws0glVwQzcGYxzOIpSJvIUSDSUkgxQshkZQ=;
-        b=q4cnN6/XnuW16HM830uqd/1EXtVj5KZxz0UAu1ijjxUXxHxpBzso3/haJtlgtokwANoXHX
-        pym6v36wYcMXA2ZL9ACUSEXR/knW2Iekh7tVtKKd6rpTOUHHPnP+fX9Qrp8vOxe2LSvWEx
-        ObNovL8p2TBm2rLcybNSJZLds65w6ac=
-Date:   Fri, 6 Nov 2020 21:11:52 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>, Borislav Petkov <bp@suse.de>
-Subject: Re: [PATCH v14 02/26] x86/cpufeatures: Add CET CPU feature flags for
- Control-flow Enforcement Technology (CET)
-Message-ID: <20201106201152.GJ14914@zn.tnic>
-References: <20201012153850.26996-1-yu-cheng.yu@intel.com>
- <20201012153850.26996-3-yu-cheng.yu@intel.com>
- <20201106184953.GI14914@zn.tnic>
- <94e82db0-381b-a140-ab74-f23b7c35949e@intel.com>
+        Fri, 6 Nov 2020 15:12:51 -0500
+Received: by mail-ej1-f66.google.com with SMTP id 7so3640781ejm.0;
+        Fri, 06 Nov 2020 12:12:48 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HknRaMwrIYdX/xZyUFtQWWgJWZ4ozlSDotxSubUVQAQ=;
+        b=EhoHFzQmsDzZ1sWdFl6K6ugFVxJ5UlNi5ManfXN8J8XWJVGFo92AmXVD5U5QHcn1yB
+         +rDMBqN7MZ5m2vmKHYLCE/EEg0GWvjolK09M/HyavJWJmAArJS6EvvY5Siztu8X8kwp6
+         cgdW1dbtpAdSU55YTSnC23z666vCAYEwpYplNf2flPaCLuWj8nQY6tfZ98k759Up45mc
+         EvmTWKHko/0jjlXtYrY+Zp2NdYtH6OV+xlzXGhm+uQjHrYvkp+LlM7B5ze31ilG44IHj
+         sISFY4O3MGMxsIQetVP523N3yAEKh00qmcAh9NO5kEeF9Ssxh0EOYXMARUSRmKpLzsah
+         U/Vw==
+X-Gm-Message-State: AOAM5315cXbT80zKqcdOpxQAlOI6NsWucF+CGCn1NLDCqhOMbG13UjOL
+        zQLIaWDAATnHDgcu0cv0Adg=
+X-Google-Smtp-Source: ABdhPJyj+uHAR2eNBXDfygxkkR9riwjzCC6yUZZJXdcS5GkftYD/lz+U7/i5fO6GeHV3R9fbGIKbVw==
+X-Received: by 2002:a17:906:3fc1:: with SMTP id k1mr3604375ejj.287.1604693567656;
+        Fri, 06 Nov 2020 12:12:47 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id c4sm1661734ejx.9.2020.11.06.12.12.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Nov 2020 12:12:46 -0800 (PST)
+Date:   Fri, 6 Nov 2020 21:12:45 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Jonathan Bakker <xc-racer2@live.ca>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 4.19 107/191] ARM: dts: s5pv210: move PMU node out of
+ clock controller
+Message-ID: <20201106201245.GA332560@kozik-lap>
+References: <20201103203232.656475008@linuxfoundation.org>
+ <20201103203243.594174920@linuxfoundation.org>
+ <20201105114648.GB9009@duo.ucw.cz>
+ <CAJKOXPeexYuH1_9HZUGn4Q80QBtKmqCKiEd=hNd46VKTM4kGgA@mail.gmail.com>
+ <20201105195508.GB19957@duo.ucw.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <94e82db0-381b-a140-ab74-f23b7c35949e@intel.com>
+In-Reply-To: <20201105195508.GB19957@duo.ucw.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 06, 2020 at 11:48:26AM -0800, Yu, Yu-cheng wrote:
-> I will drop it.  It has been re-based many times, and probably I
-> accidentally introduced something else?
+On Thu, Nov 05, 2020 at 08:55:08PM +0100, Pavel Machek wrote:
+> Hi!
+> 
+> > > > The Power Management Unit (PMU) is a separate device which has little
+> > > > common with clock controller.  Moving it to one level up (from clock
+> > > > controller child to SoC) allows to remove fake simple-bus compatible and
+> > > > dtbs_check warnings like:
+> > > >
+> > > >   clock-controller@e0100000: $nodename:0:
+> > > >     'clock-controller@e0100000' does not match '^([a-z][a-z0-9\\-]+-bus|bus|soc|axi|ahb|apb)(@[0-9a-f]+)?$'
+> > >
+> > > > +++ b/arch/arm/boot/dts/s5pv210.dtsi
+> > > > @@ -98,19 +98,16 @@
+> > > >               };
+> > > >
+> > > >               clocks: clock-controller@e0100000 {
+> > > > -                     compatible = "samsung,s5pv210-clock", "simple-bus";
+> > > > +                     compatible = "samsung,s5pv210-clock";
+> > > >                       reg = <0xe0100000 0x10000>;
+> > > ...
+> > > > +             pmu_syscon: syscon@e0108000 {
+> > > > +                     compatible = "samsung-s5pv210-pmu", "syscon";
+> > > > +                     reg = <0xe0108000 0x8000>;
+> > > >               };
+> > >
+> > > Should clock-controller@e0100000's reg be shortened to 0x8000 so that
+> > > the ranges do not overlap?
+> > >
+> > > Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
+> > 
+> > I don't think this commit should be backported to stable. It is simple
+> > dtbs_check - checking whether Devicetree source matches device tree
+> > schema. Neither the schema nor the warning existed in v4.19. I think
+> > dtbs_check fixes should not be backported, unless a real issue is
+> > pointed out.
+> 
+> I agree with you about the backporting. Hopefully Greg drops the
+> commit.
+> 
+> But the other issue is: should mainline be fixed so that ranges do not overlap?
 
-Yah, I think I added my tag to this version:
+Yes, it should be. This should fail on mapping resources...
 
-https://lkml.kernel.org/lkml/20181119214809.6086-3-yu-cheng.yu@intel.com/
+I'll take a look, thanks for the report.
 
-Do you need to refresh on when tags get dropped?
+Best regards,
+Krzysztof
 
-See here: Documentation/process/submitting-patches.rst
-
-You should verify the rest of the patchset too - tags are not
-sticked to a patch forever.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
