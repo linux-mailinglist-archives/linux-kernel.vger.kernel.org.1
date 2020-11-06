@@ -2,239 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71DC42A98DB
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 16:55:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13D4B2A98DC
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 16:56:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727646AbgKFPzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 10:55:21 -0500
-Received: from nat-hk.nvidia.com ([203.18.50.4]:64095 "EHLO nat-hk.nvidia.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726422AbgKFPzU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 10:55:20 -0500
-Received: from HKMAIL104.nvidia.com (Not Verified[10.18.92.9]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fa571e60000>; Fri, 06 Nov 2020 23:55:18 +0800
-Received: from HKMAIL104.nvidia.com (10.18.16.13) by HKMAIL104.nvidia.com
- (10.18.16.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 6 Nov
- 2020 15:55:18 +0000
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (104.47.36.55) by
- HKMAIL104.nvidia.com (10.18.16.13) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Fri, 6 Nov 2020 15:55:18 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BIEW976rkpTWNPk9JLrNzpI2hHTiZzUgbBNhTad+FTHSfuJFyFGkX5kNTLYgjFHxx2zzIdJAjUpF6YnqxlPZkYypOlfl2OFVTTh4JirGps1aRNux9/qvFDJV+c7Nt4it39rz1gN1zVmB2YJGNEK0QcISqjhNvFl09t8aUnCQPUbeN0NGxTnAVXb2dIXkbRgtXO7TPCsWMAAiFSlD8K0zqTRaXCI2AoitNIFx4tjBv3MhfxEsVtEoKuagd+5Hqhn5kZPqq28T6dAMR4kCbweSNqy4ToeJSFnASv35n75UJ2sMDbbDuFADLIqg3lKl9ik8TmXAkHzzgXTjfHkcNBALxg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=16KnzsKUgcK5HQc6CkO77EkFqJ9Cf4jaoof4yrWubRc=;
- b=lrSzO/YWJvVCz02ZDE+hAg43ySv4EmD9ZAfPHkhdqmYyRnbwp5n8cNTbpqgevZDVU2gunb2qslsz55slea9Ti9QfOa8R1biI/nRnsW23w4o815xISwLxfZ4ABjmMvk7gudxIH+vB5y5gjqQMKqL7GRPzeagptx6Kk+4/KnZ++yofgTJ3ADDcCUerAC56sg2I2yDRNaJDSSYk2MLKFEJ8j5StML6RDnMhVTITpGQvw+JPzrbdpIp60uNbUPTBEaZQzKtEaqjDtKOaZsrQbiA1Zic5gLpfMTYt4281C4cjmGutcyeq0XC1n61pl45znxgMs/sTYYoinl+IvkbS9cpqsg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4617.namprd12.prod.outlook.com (2603:10b6:5:35::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18; Fri, 6 Nov
- 2020 15:55:15 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3499.032; Fri, 6 Nov 2020
- 15:55:15 +0000
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     <linux-kernel@vger.kernel.org>, Peter Xu <peterx@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-CC:     "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Hugh Dickins <hughd@google.com>, Jan Kara <jack@suse.cz>,
-        Jann Horn <jannh@google.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Linux-MM <linux-mm@kvack.org>, Michal Hocko <mhocko@suse.com>,
-        Oleg Nesterov <oleg@redhat.com>
-Subject: [PATCH v3 1/2] mm: reorganize internal_get_user_pages_fast()
-Date:   Fri, 6 Nov 2020 11:55:13 -0400
-Message-ID: <1-v3-7358966cab09+14e9-gup_fork_jgg@nvidia.com>
-In-Reply-To: <0-v3-7358966cab09+14e9-gup_fork_jgg@nvidia.com>
-References: 
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-X-ClientProxiedBy: BL0PR02CA0066.namprd02.prod.outlook.com
- (2603:10b6:207:3d::43) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by BL0PR02CA0066.namprd02.prod.outlook.com (2603:10b6:207:3d::43) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend Transport; Fri, 6 Nov 2020 15:55:15 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kb454-000vSn-D5; Fri, 06 Nov 2020 11:55:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1604678118; bh=8vfCpzh0Dz7yx0tdFAZh1nokwVWioFMWryE1oM5j7GE=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:From:To:
-         CC:Subject:Date:Message-ID:In-Reply-To:References:
-         Content-Transfer-Encoding:Content-Type:X-ClientProxiedBy:
-         MIME-Version:X-MS-Exchange-MessageSentRepresentingType;
-        b=GXCMy2d6m9yqASEG8l8OO68EpxmBMeqEIIiWxHCCDem8xAL+ZrT3EGcexIXhgCzzx
-         hkNbom3OPKODknzk/vMS8iz/mkgbN7pJAKYsv6GfQO3MoK7NOw7bYKH1nEj93vGt+/
-         q6YqekredhS1r+oCVY0qveB8mqGZQEnTxWeU+pvpmi1PBuoHLCeUqOz+B7mWJovy9N
-         t1KEV8LnN6QiUY54eFwnWTiO3oxBt6uLJcD3RlesQOM7dUt+q10waA6Eb8suZ9zATG
-         RyVJQ05Dpcpy15j8OBNazH65TCiQToAD5NYdH0RLzmz7sInM/3XgNqu3WhNhEuBv6/
-         EjoMk2BMVs11Q==
+        id S1727656AbgKFP4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 10:56:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727229AbgKFP4d (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 10:56:33 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7280C0613D2
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 07:56:32 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id s68so157240ybs.9
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 07:56:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=+GYjYf+cbRBNlCgQvT5sit1+MsRwjhaXZtoVVSsYoNQ=;
+        b=nN7OaNw4BTD6wrtBLCim+7os5XDvv8TwYI42eAZ+TWRheEDke3e0f2HeF4kG3sMC9G
+         YNmlMiQG8XXbw9LENkUtoYaDCgKsu1SPBAcpLZrv81DQph3UidWu0GHn+uLaB3f8VsXT
+         upPDsOx1Eq0b4iGYjyFt+I3f2hwTMAm7qA862MMSHCsP24gsr18vZRXhMFGPntPU8N0P
+         tnhFhIp0dJe9rMOGpsA1NJPwaULqyUbrlwtV5X/tHbcSeXodJ1lUdUHjofRBedXb4cJd
+         Lns0lQ2H7b74lN3P+Eem6C6kZbbZLlb0nvP93KL7HiBeLYvNbeEDhol80F4OziVwxLZB
+         6Ohg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=+GYjYf+cbRBNlCgQvT5sit1+MsRwjhaXZtoVVSsYoNQ=;
+        b=ZS6pBo0xXrRAf62qtgo2pL0pNHw9QXQt9o7se/ErSkZAqptFW/iy5Z/a/HLilnlK/k
+         V4RukQJtwNRbFqw+3Odxvrkn41ZOFdNfpwNFmX0hsWEw8WiiXF65vCfDTFysZDY4EUPh
+         lbyD8moitmLoe6G5LYL/aKPzM4qUK2DQXgVasbqI+MIe6XjVIRc2gBHAspqcrAzGaW3a
+         whGEEPhF1icXlhLjKrBGdy3u3IIku/kCIfMP5B768/r5yvNJgpE/ERoyCKbvqMlFMByQ
+         UTVR8sVgcQTWaw3Iy32Iml3CcAzGZ51kZDBFXncRht0UWoBE9bwOCxZsX35v4SquccYI
+         c8kQ==
+X-Gm-Message-State: AOAM5304yTo8gOIdsdl7uWlwV/rdjCDz238LjvI3p19vp2MNUI3qeRUz
+        aHpTPfXvesnSxnWSduXibUi1MXC15FGdKZhOMw==
+X-Google-Smtp-Source: ABdhPJw9CdnG+IOpgahDn+lKgUr1Y4FYAenUZgj5NCcAVsPIiGRDMC1H6fLbq09USO/ftxMRrQGg9BEI0/MbtbvoAQ==
+Sender: "lokeshgidra via sendgmr" <lokeshgidra@lg.mtv.corp.google.com>
+X-Received: from lg.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:29dd])
+ (user=lokeshgidra job=sendgmr) by 2002:a5b:a87:: with SMTP id
+ h7mr3604444ybq.484.1604678191823; Fri, 06 Nov 2020 07:56:31 -0800 (PST)
+Date:   Fri,  6 Nov 2020 07:56:22 -0800
+Message-Id: <20201106155626.3395468-1-lokeshgidra@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
+Subject: [PATCH v12 0/4] SELinux support for anonymous inodes and UFFD
+From:   Lokesh Gidra <lokeshgidra@google.com>
+To:     Andrea Arcangeli <aarcange@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        James Morris <jmorris@namei.org>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Eric Biggers <ebiggers@kernel.org>
+Cc:     "Serge E. Hallyn" <serge@hallyn.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Daniel Colascione <dancol@dancol.org>,
+        Kees Cook <keescook@chromium.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        KP Singh <kpsingh@google.com>,
+        David Howells <dhowells@redhat.com>,
+        Thomas Cedeno <thomascedeno@google.com>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Matthew Garrett <matthewgarrett@google.com>,
+        Aaron Goidel <acgoide@tycho.nsa.gov>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Adrian Reber <areber@redhat.com>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        kaleshsingh@google.com, calin@google.com, surenb@google.com,
+        nnk@google.com, jeffv@google.com, kernel-team@android.com,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        hch@infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The next patch in this series makes the lockless flow a little more
-complex, so move the entire block into a new function and remove a level
-of indention. Tidy a bit of cruft:
+Userfaultfd in unprivileged contexts could be potentially very
+useful. We'd like to harden userfaultfd to make such unprivileged use
+less risky. This patch series allows SELinux to manage userfaultfd
+file descriptors and in the future, other kinds of
+anonymous-inode-based file descriptor.  SELinux policy authors can
+apply policy types to anonymous inodes by providing name-based
+transition rules keyed off the anonymous inode internal name (
+"[userfaultfd]" in the case of userfaultfd(2) file descriptors) and
+applying policy to the new SIDs thus produced.
 
- - addr is always the same as start, so use start
+With SELinux managed userfaultfd, an admin can control creation and
+movement of the file descriptors. In particular, handling of
+a userfaultfd descriptor by a different process is essentially a
+ptrace access into the process, without any of the corresponding
+security_ptrace_access_check() checks. For privacy, the admin may
+want to deny such accesses, which is possible with SELinux support.
 
- - Use the modern check_add_overflow() for computing end =3D start + len
+Inside the kernel, a new anon_inode interface, anon_inode_getfd_secure,
+allows callers to opt into this SELinux management. In this new "secure"
+mode, anon_inodes create new ephemeral inodes for anonymous file objects
+instead of reusing the normal anon_inodes singleton dummy inode. A new
+LSM hook gives security modules an opportunity to configure and veto
+these ephemeral inodes.
 
- - nr_pinned/pages << PAGE_SHIFT needs the LHS to be unsigned long to
-   avoid shift overflow, make the variables unsigned long to avoid coding
-   casts in both places. nr_pinned was missing its cast
+This patch series is one of two fork of [1] and is an
+alternative to [2].
 
- - The handling of ret and nr_pinned can be streamlined a bit
+The primary difference between the two patch series is that this
+partch series creates a unique inode for each "secure" anonymous
+inode, while the other patch series ([2]) continues using the
+singleton dummy anonymous inode and adds a way to attach SELinux
+security information directly to file objects.
 
-No functional change.
+I prefer the approach in this patch series because 1) it's a smaller
+patch than [2], and 2) it produces a more regular security
+architecture: in this patch series, secure anonymous inodes aren't
+S_PRIVATE and they maintain the SELinux property that the label for a
+file is in its inode. We do need an additional inode per anonymous
+file, but per-struct-file inode creation doesn't seem to be a problem
+for pipes and sockets.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
-Reviewed-by: John Hubbard <jhubbard@nvidia.com>
-Reviewed-by: Peter Xu <peterx@redhat.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
----
- mm/gup.c | 99 ++++++++++++++++++++++++++++++--------------------------
- 1 file changed, 54 insertions(+), 45 deletions(-)
+The previous version of this feature ([1]) created a new SELinux
+security class for userfaultfd file descriptors. This version adopts
+the generic transition-based approach of [2].
 
-diff --git a/mm/gup.c b/mm/gup.c
-index 98eb8e6d2609c3..c7e24301860abb 100644
---- a/mm/gup.c
-+++ b/mm/gup.c
-@@ -2677,13 +2677,43 @@ static int __gup_longterm_unlocked(unsigned long st=
-art, int nr_pages,
- 	return ret;
- }
-=20
--static int internal_get_user_pages_fast(unsigned long start, int nr_pages,
-+static unsigned long lockless_pages_from_mm(unsigned long start,
-+					    unsigned long end,
-+					    unsigned int gup_flags,
-+					    struct page **pages)
-+{
-+	unsigned long flags;
-+	int nr_pinned =3D 0;
-+
-+	if (!IS_ENABLED(CONFIG_HAVE_FAST_GUP) ||
-+	    !gup_fast_permitted(start, end))
-+		return 0;
-+
-+	/*
-+	 * Disable interrupts. The nested form is used, in order to allow full,
-+	 * general purpose use of this routine.
-+	 *
-+	 * With interrupts disabled, we block page table pages from being freed
-+	 * from under us. See struct mmu_table_batch comments in
-+	 * include/asm-generic/tlb.h for more details.
-+	 *
-+	 * We do not adopt an rcu_read_lock() here as we also want to block IPIs
-+	 * that come from THPs splitting.
-+	 */
-+	local_irq_save(flags);
-+	gup_pgd_range(start, end, gup_flags, pages, &nr_pinned);
-+	local_irq_restore(flags);
-+	return nr_pinned;
-+}
-+
-+static int internal_get_user_pages_fast(unsigned long start,
-+					unsigned long nr_pages,
- 					unsigned int gup_flags,
- 					struct page **pages)
- {
--	unsigned long addr, len, end;
--	unsigned long flags;
--	int nr_pinned =3D 0, ret =3D 0;
-+	unsigned long len, end;
-+	unsigned long nr_pinned;
-+	int ret;
-=20
- 	if (WARN_ON_ONCE(gup_flags & ~(FOLL_WRITE | FOLL_LONGTERM |
- 				       FOLL_FORCE | FOLL_PIN | FOLL_GET |
-@@ -2697,54 +2727,33 @@ static int internal_get_user_pages_fast(unsigned lo=
-ng start, int nr_pages,
- 		might_lock_read(&current->mm->mmap_lock);
-=20
- 	start =3D untagged_addr(start) & PAGE_MASK;
--	addr =3D start;
--	len =3D (unsigned long) nr_pages << PAGE_SHIFT;
--	end =3D start + len;
--
--	if (end <=3D start)
-+	len =3D nr_pages << PAGE_SHIFT;
-+	if (check_add_overflow(start, len, &end))
- 		return 0;
- 	if (unlikely(!access_ok((void __user *)start, len)))
- 		return -EFAULT;
-=20
--	/*
--	 * Disable interrupts. The nested form is used, in order to allow
--	 * full, general purpose use of this routine.
--	 *
--	 * With interrupts disabled, we block page table pages from being
--	 * freed from under us. See struct mmu_table_batch comments in
--	 * include/asm-generic/tlb.h for more details.
--	 *
--	 * We do not adopt an rcu_read_lock(.) here as we also want to
--	 * block IPIs that come from THPs splitting.
--	 */
--	if (IS_ENABLED(CONFIG_HAVE_FAST_GUP) && gup_fast_permitted(start, end)) {
--		unsigned long fast_flags =3D gup_flags;
--
--		local_irq_save(flags);
--		gup_pgd_range(addr, end, fast_flags, pages, &nr_pinned);
--		local_irq_restore(flags);
--		ret =3D nr_pinned;
--	}
--
--	if (nr_pinned < nr_pages && !(gup_flags & FOLL_FAST_ONLY)) {
--		/* Try to get the remaining pages with get_user_pages */
--		start +=3D nr_pinned << PAGE_SHIFT;
--		pages +=3D nr_pinned;
-+	nr_pinned =3D lockless_pages_from_mm(start, end, gup_flags, pages);
-+	if (nr_pinned =3D=3D nr_pages || gup_flags & FOLL_FAST_ONLY)
-+		return nr_pinned;
-=20
--		ret =3D __gup_longterm_unlocked(start, nr_pages - nr_pinned,
--					      gup_flags, pages);
--
--		/* Have to be a bit careful with return values */
--		if (nr_pinned > 0) {
--			if (ret < 0)
--				ret =3D nr_pinned;
--			else
--				ret +=3D nr_pinned;
--		}
-+	/* Slow path: try to get the remaining pages with get_user_pages */
-+	start +=3D nr_pinned << PAGE_SHIFT;
-+	pages +=3D nr_pinned;
-+	ret =3D __gup_longterm_unlocked(start, nr_pages - nr_pinned, gup_flags,
-+				      pages);
-+	if (ret < 0) {
-+		/*
-+		 * The caller has to unpin the pages we already pinned so
-+		 * returning -errno is not an option
-+		 */
-+		if (nr_pinned)
-+			return nr_pinned;
-+		return ret;
- 	}
--
--	return ret;
-+	return ret + nr_pinned;
- }
-+
- /**
-  * get_user_pages_fast_only() - pin user pages in memory
-  * @start:      starting user address
---=20
-2.29.2
+This patch series also differs from [2] in that it doesn't affect all
+anonymous inodes right away --- instead requiring anon_inodes callers
+to opt in --- but this difference isn't one of basic approach. The
+important question to resolve is whether we should be creating new
+inodes or enhancing per-file data.
+
+Changes from the first version of the patch:
+
+  - Removed some error checks
+  - Defined a new anon_inode SELinux class to resolve the
+    ambiguity in [3]
+  - Inherit sclass as well as descriptor from context inode
+
+Changes from the second version of the patch:
+
+  - Fixed example policy in the commit message to reflect the use of
+    the new anon_inode class.
+
+Changes from the third version of the patch:
+
+  - Dropped the fops parameter to the LSM hook
+  - Documented hook parameters
+  - Fixed incorrect class used for SELinux transition
+  - Removed stray UFFD changed early in the series
+  - Removed a redundant ERR_PTR(PTR_ERR())
+
+Changes from the fourth version of the patch:
+
+  - Removed an unused parameter from an internal function
+  - Fixed function documentation
+
+Changes from the fifth version of the patch:
+
+  - Fixed function documentation in fs/anon_inodes.c and
+    include/linux/lsm_hooks.h
+  - Used anon_inode_getfd_secure() in userfaultfd() syscall and removed
+    owner from userfaultfd_ctx.
+
+Changes from the sixth version of the patch:
+
+  - Removed definition of anon_inode_getfile_secure() as there are no
+    callers.
+  - Simplified function description of anon_inode_getfd_secure().
+  - Elaborated more on the purpose of 'context_inode' in commit message.
+
+Changes from the seventh version of the patch:
+
+  - Fixed error handling in _anon_inode_getfile().
+  - Fixed minor comment and indentation related issues.
+
+Changes from the eighth version of the patch:
+
+  - Replaced selinux_state.initialized with selinux_state.initialized
+
+Changes from the ninth version of the patch:
+
+  - Fixed function names in fs/anon_inodes.c
+  - Fixed comment of anon_inode_getfd_secure()
+  - Fixed name of the patch wherein userfaultfd code uses
+    anon_inode_getfd_secure()
+
+Changes from the tenth version of the patch:
+
+  - Split first patch into VFS and LSM specific patches
+  - Fixed comments in fs/anon_inodes.c
+  - Fixed comment of alloc_anon_inode()
+
+Changes from the eleventh version of the patch:
+
+  - Removed comment of alloc_anon_inode() for consistency with the code
+  - Fixed explanation of LSM hook in the commit message
+
+[1] https://lore.kernel.org/lkml/20200211225547.235083-1-dancol@google.com/
+[2] https://lore.kernel.org/linux-fsdevel/20200213194157.5877-1-sds@tycho.nsa.gov/
+[3] https://lore.kernel.org/lkml/23f725ca-5b5a-5938-fcc8-5bbbfc9ba9bc@tycho.nsa.gov/
+
+Daniel Colascione (3):
+  fs: add LSM-supporting anon-inode interface
+  selinux: teach SELinux about anonymous inodes
+  userfaultfd: use secure anon inodes for userfaultfd
+
+Lokesh Gidra (1):
+  security: add inode_init_security_anon() LSM hook
+
+ fs/anon_inodes.c                    | 150 ++++++++++++++++++++--------
+ fs/libfs.c                          |   5 -
+ fs/userfaultfd.c                    |  19 ++--
+ include/linux/anon_inodes.h         |   5 +
+ include/linux/lsm_hook_defs.h       |   2 +
+ include/linux/lsm_hooks.h           |   9 ++
+ include/linux/security.h            |  10 ++
+ security/security.c                 |   8 ++
+ security/selinux/hooks.c            |  53 ++++++++++
+ security/selinux/include/classmap.h |   2 +
+ 10 files changed, 209 insertions(+), 54 deletions(-)
+
+-- 
+2.29.1.341.ge80a0c044ae-goog
 
