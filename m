@@ -2,133 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 050352A909C
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 08:43:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AE682A9098
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 08:43:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726547AbgKFHnx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 02:43:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36642 "EHLO
+        id S1726430AbgKFHn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 02:43:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726507AbgKFHnv (ORCPT
+        with ESMTP id S1725848AbgKFHn1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 02:43:51 -0500
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F415C0613D4
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 23:43:51 -0800 (PST)
-Received: by mail-yb1-xb42.google.com with SMTP id g15so364955ybq.6
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 23:43:51 -0800 (PST)
+        Fri, 6 Nov 2020 02:43:27 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 346D6C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 23:43:27 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id n18so262873wrs.5
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 23:43:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=N8D4dOtEO5MSbMPQgbZVh96Yr52JhSt0gBh/mkTHwTk=;
-        b=WMh5UrBwhjwlDr/PIgBwYmiM0/NmKaeT7rK+uQ83kgyA8HFql6+lU/cH31BfmlPlPh
-         vAbL5MfwyJuEQ1hqm8JklkkzDbV6iC9q1jf97OGpKBsJqWVY21tnFw9xZnNeyPTPkWl3
-         J11pKXcY3tkvhHDUJf+4IVGnhUlZkFiq64rj2WJ4xwuK5UzL3lTeTG8+j6alyTvalh00
-         5Q7pD6mWtl4cwuQMBlYiXMHjEpOmsJtrV3+9voocQUGuVF2yLH0T46duv0xHSFR8mozi
-         FXgeYrrvZVMpO+bgL6mgGuyzHxUIqGZUqC7GiPlUGq+i8+IJzbwX+zy8o4LblLQnwuTF
-         1t8A==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=WJgh+HBEsu1L1fjOdFQAJ5Y/gWjpi18ppr+5ULtL5qQ=;
+        b=wRDfZ8rBweH6dZ5gW8C9cmrOxkAd2nBXFXxmFIdONmPF89lhHUhKrhTu3ada4fz+q/
+         fckGDjsSMIJoJssQ7RTW3mhwSDrviDIeCMKuBCu2IwbDD/KW/3xs6ghyECza8Jmv4tIM
+         lm/FLIn76J4Ie742EwKk51fWMP5gmc6tU8FR+rN9Es6s+5Cet/6i3G+YtRi7B9t7l0BZ
+         uIJwoSascDCM1zFXXc6T10nWceHAH04y8C5h7HJvVt+DPKyGvdRsDxjMSdUy3lSiZvXz
+         c098BK105g5fxqaJXxP9jGlpXOv1mOxif4FBMmTaHwyYaosQ+AXYjZqnKRk/RE4FJ+OZ
+         xxuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=N8D4dOtEO5MSbMPQgbZVh96Yr52JhSt0gBh/mkTHwTk=;
-        b=VBccHI7XfD1qgGspRbaIShHBwcPXf9hbbAAcrnF6MZmhgnMLpxLmYs7TOrZUSnYS5/
-         MWqFRLRAtUAwodtDzwdFym0dWtBJdXA+WVR8NGWvOVU2/EN5z90UqYgEh2UpfWeaXDyX
-         382LbSNWcjAng0g5dsgekZz5xBFrfYHocQvdxbjfecn/n/f1xLwcEoJE0VtIRE6NSgzy
-         gEUs5YfU4K7jdfbGqJ9MLvQgrNW+xZHTFWp54Wo1AyM+WomLXdEzgmNYllH6oZQvPssX
-         0RW6SBQEF6fWVDSb1huuCszlKC6tkvkCyy5CnMJmLv0swaebAdC/HsoVL/zY/nxO2Vzu
-         NovA==
-X-Gm-Message-State: AOAM532W6mgS9PMA5Utuowi1NXAanxgbeKzDmUkO1G2cJ9tQzSwYdAGk
-        wuetDFGATr+nxvS09uk2ShRXhHaOZcNCeaoNRCpLXw==
-X-Google-Smtp-Source: ABdhPJwxCHB2el/67vNsvKOGjOS/pfNJW+HaA9YvqAeTMeFI9WzuFNdYNDMSK2TEnsRVbX087TjDwhXbRnbTYkvu9tU=
-X-Received: by 2002:a25:9c02:: with SMTP id c2mr1045324ybo.228.1604648630629;
- Thu, 05 Nov 2020 23:43:50 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=WJgh+HBEsu1L1fjOdFQAJ5Y/gWjpi18ppr+5ULtL5qQ=;
+        b=NEhNb5MYWaJubItzvN9KmDD99sM4qfsEANuO3O2mkboB+LWaydqqVNQRmJemP6gk3t
+         MrAP08YhOcW44i5apAGOcFzph/nh7RfFbI71ZUguUjHbKxGzZMHEEGmaEKESB6r+ANf8
+         d+irWDubY87HfyG+jzghf5zirSbeGshnHoa/3kDkCJ18+W183NlQBFZZBitkmuD6ldX+
+         BqmUrUzPulG94lpTLAeQBekpVGz9s14d27+3kMh2DLJ+8IQzM4FHqcpX2mzy8l2NDP5X
+         eQ5u7VlY3ew/rwdpIfegE1Hkq4FK/0egeGAhhPhMFQaG/SLTli4sIjhgGPziFOAFvvXQ
+         Xx6A==
+X-Gm-Message-State: AOAM533NPFwn7GiZBvJf/XZiLXehhE0Hq0b0Sm53pNq15XDqEkPhNXhR
+        upx28y9/bm4gpxPKJ9XywpQvdM2UezYQroEB
+X-Google-Smtp-Source: ABdhPJyXDJSa31dfpTNuFZUt+9VFZTh4F6QW6PeZfl2cF/azUnMMw+f3Q1NUdj1PDZSSXIJ4Am3fqw==
+X-Received: by 2002:adf:e486:: with SMTP id i6mr1090487wrm.397.1604648605819;
+        Thu, 05 Nov 2020 23:43:25 -0800 (PST)
+Received: from dell ([91.110.221.242])
+        by smtp.gmail.com with ESMTPSA id u195sm975234wmu.18.2020.11.05.23.43.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Nov 2020 23:43:25 -0800 (PST)
+Date:   Fri, 6 Nov 2020 07:43:23 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        Thierry Reding <thierry.reding@gmail.com>
+Subject: Re: [PATCH 16/19] gpu: drm: panel: panel-ilitek-ili9322: Demote
+ non-conformant kernel-doc header
+Message-ID: <20201106074323.GV4488@dell>
+References: <20201105144517.1826692-1-lee.jones@linaro.org>
+ <20201105144517.1826692-17-lee.jones@linaro.org>
+ <20201105211742.GD216923@ravnborg.org>
 MIME-Version: 1.0
-References: <20201104232356.4038506-1-saravanak@google.com>
- <20201104232356.4038506-18-saravanak@google.com> <20201105094350.GG3439341@kroah.com>
- <CAGETcx--D_KCpvK3b9NAQbMgWxzYT6MGEav1h2M8V7f=wK5L6A@mail.gmail.com> <20201106072410.GC2614221@kroah.com>
-In-Reply-To: <20201106072410.GC2614221@kroah.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Thu, 5 Nov 2020 23:43:14 -0800
-Message-ID: <CAGETcx85S1MeZTPTs+0c+ZGVziaiU9WvSJSo8sM2xeo8MDPRgw@mail.gmail.com>
-Subject: Re: [PATCH v1 17/18] driver core: Add helper functions to convert
- fwnode links to device links
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201105211742.GD216923@ravnborg.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 5, 2020 at 11:23 PM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Thu, Nov 05, 2020 at 03:32:05PM -0800, Saravana Kannan wrote:
-> > On Thu, Nov 5, 2020 at 1:43 AM Greg Kroah-Hartman
-> > <gregkh@linuxfoundation.org> wrote:
-> > >
-> > > On Wed, Nov 04, 2020 at 03:23:54PM -0800, Saravana Kannan wrote:
-> > > > Add helper functions __fw_devlink_link_to_consumers() and
-> > > > __fw_devlink_link_to_suppliers() that convert fwnode links to device
-> > > > links.
-> > > >
-> > > > __fw_devlink_link_to_consumers() is for creating:
-> > > > - Device links between a newly added device and all its consumer devices
-> > > >   that have been added to driver core.
-> > > > - Proxy SYNC_STATE_ONLY device links between the newly added device and
-> > > >   the parent devices of all its consumers that have not been added to
-> > > >   driver core yet.
-> > > >
-> > > > __fw_devlink_link_to_suppliers() is for creating:
-> > > > - Device links between a newly added device and all its supplier devices
-> > > > - Proxy SYNC_STATE_ONLY device links between the newly added device and
-> > > >   all the supplier devices of its child device nodes.
-> > > >
-> > > > Signed-off-by: Saravana Kannan <saravanak@google.com>
-> > >
-> > > Did you just add build warnings with these static functions that no one
-> > > calls?
-> >
-> > The next patch in this series uses it. I'm just splitting it up into a
-> > separate patch so that it's digestible and I can provide more details
-> > in the commit text.
->
-> But you can not add build warnings, you know this :)
+On Thu, 05 Nov 2020, Sam Ravnborg wrote:
 
-I know I can't break the build because that'll screw git bisect. But I
-thought warning that's fixed later in the series might be okay if it
-helps readability. I know now :)
->
-> > Couple of options:
-> > 1. Drop the static in this patch and add it back when it's used in patch 18/18.
-> > 2. Drop the commit text and squash this with 18/18 if you think the
-> > function documentation is clear enough and it won't make patch 18/18
-> > too hard to review.
->
-> It is hard to review new functions when you do not see them being used,
-> otherwise you have to flip back and forth between patches, which is
-> difficult.
->
-> Add the functions, and use them, in the same patch.  Otherwise we have
-> no idea _HOW_ you are using them, or even if you end up using them at
-> all.
+> Hi Lee.
+> 
+> On Thu, Nov 05, 2020 at 02:45:14PM +0000, Lee Jones wrote:
+> > Fixes the following W=1 kernel build warning(s):
+> > 
+> >  drivers/gpu/drm/panel/panel-ilitek-ili9322.c:177: warning: Enum value 'ILI9322_INPUT_SRGB_THROUGH' not described in enum 'ili9322_input'
+> >  drivers/gpu/drm/panel/panel-ilitek-ili9322.c:177: warning: Enum value 'ILI9322_INPUT_SRGB_ALIGNED' not described in enum 'ili9322_input'
+> >  drivers/gpu/drm/panel/panel-ilitek-ili9322.c:177: warning: Enum value 'ILI9322_INPUT_SRGB_DUMMY_320X240' not described in enum 'ili9322_input'
+> >  drivers/gpu/drm/panel/panel-ilitek-ili9322.c:177: warning: Enum value 'ILI9322_INPUT_SRGB_DUMMY_360X240' not described in enum 'ili9322_input'
+> >  drivers/gpu/drm/panel/panel-ilitek-ili9322.c:177: warning: Enum value 'ILI9322_INPUT_DISABLED_1' not described in enum 'ili9322_input'
+> >  drivers/gpu/drm/panel/panel-ilitek-ili9322.c:177: warning: Enum value 'ILI9322_INPUT_PRGB_THROUGH' not described in enum 'ili9322_input'
+> >  drivers/gpu/drm/panel/panel-ilitek-ili9322.c:177: warning: Enum value 'ILI9322_INPUT_PRGB_ALIGNED' not described in enum 'ili9322_input'
+> >  drivers/gpu/drm/panel/panel-ilitek-ili9322.c:177: warning: Enum value 'ILI9322_INPUT_YUV_640X320_YCBCR' not described in enum 'ili9322_input'
+> >  drivers/gpu/drm/panel/panel-ilitek-ili9322.c:177: warning: Enum value 'ILI9322_INPUT_YUV_720X360_YCBCR' not described in enum 'ili9322_input'
+> >  drivers/gpu/drm/panel/panel-ilitek-ili9322.c:177: warning: Enum value 'ILI9322_INPUT_DISABLED_2' not described in enum 'ili9322_input'
+> >  drivers/gpu/drm/panel/panel-ilitek-ili9322.c:177: warning: Enum value 'ILI9322_INPUT_ITU_R_BT656_720X360_YCBCR' not described in enum 'ili9322_input'
+> >  drivers/gpu/drm/panel/panel-ilitek-ili9322.c:177: warning: Enum value 'ILI9322_INPUT_ITU_R_BT656_640X320_YCBCR' not described in enum 'ili9322_input'
+> >  drivers/gpu/drm/panel/panel-ilitek-ili9322.c:177: warning: Enum value 'ILI9322_INPUT_UNKNOWN' not described in enum 'ili9322_input'
+> > 
+> > Cc: Thierry Reding <thierry.reding@gmail.com>
+> > Cc: Sam Ravnborg <sam@ravnborg.org>
+> > Cc: David Airlie <airlied@linux.ie>
+> > Cc: Daniel Vetter <daniel@ffwll.ch>
+> > Cc: Linus Walleij <linus.walleij@linaro.org>
+> > Cc: dri-devel@lists.freedesktop.org
+> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> 
+> Applied to drm-misc-next.
 
-Sounds good. I'll squash them.
+Thanks for all these Sam.
 
--Saravana
+Any idea what happens to the other patches?
+
+Do they go in via a different Maintainer?
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
