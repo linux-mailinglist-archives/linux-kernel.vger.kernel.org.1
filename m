@@ -2,104 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDD542A94EA
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 11:56:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CFD42A94EF
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 12:00:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727289AbgKFK4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 05:56:49 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60984 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727132AbgKFK4s (ORCPT
+        id S1727025AbgKFLAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 06:00:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39128 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726317AbgKFLAM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 05:56:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604660207;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Pjlo5JUIOTDUV4ZXiqwdy+qZTg/eMHp+BKLRgYqZ8mE=;
-        b=U3GU0V0NwdQ/JylTHNF7veTVZhpTa4AM/AGGT8Q7/D7/50qb7EmpYSXzvKt8IMqV/0poID
-        5R1I8w4Apnz7eg2p1qmm3hJTSFn5eGO9ykLtstj18CP9sugG/+17mETH+UcnIP0ZnAk3IX
-        uJraK0157FOstSZIwEAeT89qr9m4wxE=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-5-2U9ENbIHMFm6E1xKo69BGQ-1; Fri, 06 Nov 2020 05:56:45 -0500
-X-MC-Unique: 2U9ENbIHMFm6E1xKo69BGQ-1
-Received: by mail-wr1-f70.google.com with SMTP id q15so336310wrw.8
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 02:56:45 -0800 (PST)
+        Fri, 6 Nov 2020 06:00:12 -0500
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 877CFC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 03:00:12 -0800 (PST)
+Received: by mail-qk1-x741.google.com with SMTP id z6so648943qkz.4
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 03:00:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=5scwP+FH/3TvdU9cRBPIGfL9OLQBWnAyRxebsQvYQJw=;
+        b=K3GEevu5XTiJFobdS3WdtKWhU/wb279WC0tnyvUS0zrqS+1hRZU39kLzr6Rs2Rs4Ct
+         RnA0QI/duInuNOTC8svzJEUEgB+Zy/BsCor7akvZoBtUE5sACyi9u5NFoHdi30UnIM7q
+         zaZ0izVo/c09fKHF4D/7D6TWLdSZ3YT99RFC5TF0OVrbzY8mNmAYKhmnbDOc9Wm+JITd
+         TKUC8zR9IakSoFyRx8uXTFhEOT4hyPv7p7IbpwDVvLZ0O31a4BDmyGxXLApCEI0fA4Tc
+         cRkT8DhvvKS6XCVkl15e2vE37m6na9YhMXtGgvYchipGxSTryUijvuK32I7bIg1y26g5
+         EUIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Pjlo5JUIOTDUV4ZXiqwdy+qZTg/eMHp+BKLRgYqZ8mE=;
-        b=DXuquwoCkZ1WSWE5m2a1q1mwXtKkuPGdmLYwU51Kj+IXS0dmUv9NWXPSd44KdbVFB1
-         sVP8MSWusRP4Rj7FUIne+rLVqH1QMAZp0QxeWLO6b340azzaWaT6jj84Igp/Ksp3UmUz
-         4YEmenB5svBrk5PEGZdoffqsvwddheeFyfJib5OcV9Ju9JdILM797swTFv6DSC8IbXYE
-         Jxaod8Q+3WB+HpUEcMCLKqc7f6aJyPE0hut/AOidTOROGnqmslePoBLoZdMA583lRJ8y
-         8EnfONoU2u6TQK4Ilgw2jNo56JYTUjvY6p1sB/+cbXktC6W6y1eDSYD4ChRAWr3fJft4
-         O65g==
-X-Gm-Message-State: AOAM533GDOQxH3mZkqBq0fOqr0xdoya+VC2bXqOQP+c9NPOyTw+Dynsa
-        G0g0bVScFdLQcHzfduLYPAnffmwV3D0bDyI7qAzn3SetShCfZXTqMhyD75qpwZPRWetna0cCa4N
-        VQmooesS0NkhPo8cw+o7AndmH
-X-Received: by 2002:adf:e8d0:: with SMTP id k16mr1971725wrn.362.1604660203951;
-        Fri, 06 Nov 2020 02:56:43 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxLhEYbJDRRuZZgGWT3qR8WnLrV1z/VwRATvbIzR/qs/MGtS5CJWD0uCE9tv38R2N1EHXwZLw==
-X-Received: by 2002:adf:e8d0:: with SMTP id k16mr1971707wrn.362.1604660203733;
-        Fri, 06 Nov 2020 02:56:43 -0800 (PST)
-Received: from [192.168.10.118] ([93.56.170.5])
-        by smtp.gmail.com with ESMTPSA id b8sm1655312wmj.9.2020.11.06.02.56.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Nov 2020 02:56:42 -0800 (PST)
-Subject: Re: [PATCH v13 05/14] KVM: X86: Implement ring-based dirty memory
- tracking
-To:     Peter Xu <peterx@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        Andrew Jones <drjones@redhat.com>,
-        Lei Cao <lei.cao@stratus.com>
-References: <20201001012044.5151-1-peterx@redhat.com>
- <20201001012222.5767-1-peterx@redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <a03b7cf0-8847-2a60-ea2b-b83f5d82939a@redhat.com>
-Date:   Fri, 6 Nov 2020 11:56:41 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=5scwP+FH/3TvdU9cRBPIGfL9OLQBWnAyRxebsQvYQJw=;
+        b=fgs+E4ch13USGLIB74g/dVICNUlOFB4X8kGR1OZWfLKa6QjUl1wWUe1cYMLiN+c6yw
+         hp66nlgKL/bS3LXNSOaMIYxtLyP5WK/BQzyyDv6Z1lfmoA/peewHC2/vZrUG2e6nxYw7
+         UKk10t1PMI7A4x7Takd/vjCbDXIztYem5uDKy9X+vCV4Qclk3GUnP1s76i2suH8KvWmv
+         mWNDoJ173iA5f1yH4U2L2JP6Af3uhgY8m/IT41tujlJ1h18aRKpcAbYgnY9+3qbt4wey
+         stglPd+Y+kj066x7f6TClqpCVYOcyo/i/68apb2pPrGsnDhq5dy4adJpgoFIVeRdm94g
+         swLw==
+X-Gm-Message-State: AOAM531cAg8farHBSFXsZy/QrkfF/h/6ZwzRtMm4XuC9cQYtS4+O0ewo
+        AyYaEgCD0F9CjIb4R7z4xxSsW/3Kz+jTaIHxHJBZyA==
+X-Google-Smtp-Source: ABdhPJxmBJPFRCR+nFRfwqYH/BeX2Cb8nVliVSyYYIlw2cTORTY+RQImlwv64qv/wrg8lt7wtPkrBioMM43NnhfAjSI=
+X-Received: by 2002:a05:620a:697:: with SMTP id f23mr831545qkh.374.1604660411776;
+ Fri, 06 Nov 2020 03:00:11 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201001012222.5767-1-peterx@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <802c8865b70c3bdf70e44d37f14e7767b6495e88.1604631371.git.greentime.hu@sifive.com>
+ <CAHp75VdHuZc43Oe8vp-Xtb2+vsEoV2FY-W_dAifuh4Un0BveSA@mail.gmail.com>
+In-Reply-To: <CAHp75VdHuZc43Oe8vp-Xtb2+vsEoV2FY-W_dAifuh4Un0BveSA@mail.gmail.com>
+From:   Greentime Hu <greentime.hu@sifive.com>
+Date:   Fri, 6 Nov 2020 19:00:00 +0800
+Message-ID: <CAHCEehKfnUtuzoHQ=XSAzm5n0JqUHmYmjMCyLo2uRvYXc=GwYA@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/1] gpio: sifive: To get gpio irq offset from device
+ tree data
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Yash Shah <yash.shah@sifive.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Just very few changes:
+Andy Shevchenko <andy.shevchenko@gmail.com> =E6=96=BC 2020=E5=B9=B411=E6=9C=
+=886=E6=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8B=E5=8D=885:25=E5=AF=AB=E9=81=93=
+=EF=BC=9A
+>
+> On Fri, Nov 6, 2020 at 4:59 AM Greentime Hu <greentime.hu@sifive.com> wro=
+te:
+> >
+> > We can get hwirq number of the gpio by its irq_data->hwirq so that we d=
+on't
+> > need to add more macros for different platforms. This patch is tested i=
+n
+> > SiFive Unleashed board and SiFive Unmatched board.
+>
+> ...
+>
+> > +       struct sifive_gpio *chip =3D gpiochip_get_data(gc);
+> > +       struct irq_data *d =3D irq_get_irq_data(chip->irq_number[child]=
+);
+>
+> > +       *parent =3D d->hwirq;
+>
+> There is an API to get hwirq.
+>
+> ...
+>
+> > +       for (i =3D 0; i < ngpio; i++)
+> > +               chip->irq_number[i] =3D irq_of_parse_and_map(node, i);
+>
+> Can't you use platform_get_irq_optional()?
+>
 
-On 01/10/20 03:22, Peter Xu wrote:
-> @@ -6373,3 +6386,107 @@ ranges that KVM should reject access to.
->   In combination with KVM_CAP_X86_USER_SPACE_MSR, this allows user space to
->   trap and emulate MSRs that are outside of the scope of KVM as well as
->   limit the attack surface on KVM's MSR emulation code.
-> +
-> +8.28 KVM_CAP_DIRTY_LOG_RING
-> +---------------------------
+Thank you for reviewing.
+I would change it like this.
 
-Here I made a few edits, but nothing major.  Throughout the patch I 
-replaced "collected" with "harvested" since the documentation was using 
-it already and it's a bit more unique ("collect" reminds me too much of 
-garbage collection and perhaps could be confused with the kernel's 
-operation for the reset ioctl).
+diff --git a/drivers/gpio/gpio-sifive.c b/drivers/gpio/gpio-sifive.c
+index e8cd8741dbae..bfb915bf5d78 100644
+--- a/drivers/gpio/gpio-sifive.c
++++ b/drivers/gpio/gpio-sifive.c
+@@ -145,7 +145,7 @@ static int
+sifive_gpio_child_to_parent_hwirq(struct gpio_chip *gc,
+ {
+        struct sifive_gpio *chip =3D gpiochip_get_data(gc);
+        struct irq_data *d =3D irq_get_irq_data(chip->irq_number[child]);
+-       *parent =3D d->hwirq;
++       *parent =3D irqd_to_hwirq(d);
+        *parent_type =3D IRQ_TYPE_NONE;
+        return 0;
+ }
+@@ -202,7 +202,7 @@ static int sifive_gpio_probe(struct platform_device *pd=
+ev)
+        }
 
-> +#ifdef CONFIG_X86
-> +		return KVM_DIRTY_RING_MAX_ENTRIES * sizeof(struct kvm_dirty_gfn);
-> +#else
-> +		return 0;
-> +#endif
+        for (i =3D 0; i < ngpio; i++)
+-               chip->irq_number[i] =3D irq_of_parse_and_map(node, i);
++               chip->irq_number[i] =3D platform_get_irq(pdev, i);
 
-And this can be "#if KVM_DIRTY_LOG_PAGE_OFFSET > 0" instead.
-
-Paolo
-
+        ret =3D bgpio_init(&chip->gc, dev, 4,
+                         chip->base + SIFIVE_GPIO_INPUT_VAL,
