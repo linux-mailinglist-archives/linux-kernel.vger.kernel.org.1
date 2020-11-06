@@ -2,97 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E74062AA05F
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 23:29:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 843BB2AA067
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 23:31:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728906AbgKFW0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 17:26:36 -0500
-Received: from asavdk3.altibox.net ([109.247.116.14]:43772 "EHLO
-        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728482AbgKFW0f (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 17:26:35 -0500
-Received: from ravnborg.org (unknown [188.228.123.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk3.altibox.net (Postfix) with ESMTPS id 89B9520068;
-        Fri,  6 Nov 2020 23:26:31 +0100 (CET)
-Date:   Fri, 6 Nov 2020 23:26:30 +0100
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     David Airlie <airlied@linux.ie>, dri-devel@lists.freedesktop.org,
-        Huang Rui <ray.huang@amd.com>, Rob Clark <rob@ti.com>,
-        Gareth Hughes <gareth@valinux.com>,
-        amd-gfx@lists.freedesktop.org, Rob Clark <rob.clark@linaro.org>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Keith Whitwell <keith@tungstengraphics.com>,
-        Andy Gross <andy.gross@ti.com>, linux-media@vger.kernel.org,
-        Leo Li <sunpeng.li@amd.com>, linaro-mm-sig@lists.linaro.org,
-        by <jhartmann@precisioninsight.com>,
-        Jeff Hartmann <jhartmann@valinux.com>,
-        linux-kernel@vger.kernel.org, Faith <faith@valinux.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Christian Koenig <christian.koenig@amd.com>
-Subject: Re: [PATCH 00/19] [Set 2] Rid W=1 warnings from GPU
-Message-ID: <20201106222630.GD826715@ravnborg.org>
-References: <20201106214949.2042120-1-lee.jones@linaro.org>
+        id S1728836AbgKFWbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 17:31:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46708 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728408AbgKFWbG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 17:31:06 -0500
+Content-Type: text/plain; charset="utf-8"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604701865;
+        bh=PXQT/mWdXbYLTaalbXZTZAB7jwHLCayGJhBt8t+6fyQ=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=zph+35NwYS46cLDH2ckHrLeMurB74TDakdXNArIaSKdqFtNwNFyCYuyWSmxfxeG6T
+         4vyFVnElgC70e8RXLInGYKf8A4r2pxL4dRJV0ZSQs3lpxvIMsLIOmclCO36vjLvq0+
+         HeCbKJ1jnOteX8ueDHPpdq2eqSTz3ODEDSB/GqM4=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201106214949.2042120-1-lee.jones@linaro.org>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=VbvZwmh9 c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=jxsCkVyRRZrjTV7aRhQA:9 a=CjuIK1q_8ugA:10
+Content-Transfer-Encoding: 8bit
+Subject: Re: [GIT PULL] Networking
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <160470186554.20539.16918199477800443932.git-patchwork-notify@kernel.org>
+Date:   Fri, 06 Nov 2020 22:31:05 +0000
+References: <20201105192508.1699334-1-kuba@kernel.org>
+In-Reply-To: <20201105192508.1699334-1-kuba@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     torvalds@linux-foundation.org, davem@davemloft.net,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lee and DRM folks.
+Hello:
 
-On Fri, Nov 06, 2020 at 09:49:30PM +0000, Lee Jones wrote:
-> This set is part of a larger effort attempting to clean-up W=1
-> kernel builds, which are currently overwhelmingly riddled with
-> niggly little warnings.
+This pull request was applied to netdev/net.git (refs/heads/master):
+
+On Thu,  5 Nov 2020 11:25:08 -0800 you wrote:
+> The following changes since commit 07e0887302450a62f51dba72df6afb5fabb23d1c:
 > 
-> There are 5000 warnings to work through.  It will take a couple more
-> sets.  Although, ("drm/amd/display/dc/basics/fixpt31_32: Move
-> variables to where they're used") does take care of 2000 of them!
+>   Merge tag 'fallthrough-fixes-clang-5.10-rc2' of git://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux (2020-10-29 13:02:52 -0700)
 > 
-> Lee Jones (19):
->   drm/ttm/ttm_range_manager: Demote non-conformant kernel-doc header
->   drm/r128/ati_pcigart: Source file headers are not good candidates for
->     kernel-doc
-Applied
+> are available in the Git repository at:
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-5.10-rc3
+> 
+> [...]
 
->   drm/selftests/test-drm_dp_mst_helper: Move
->     'sideband_msg_req_encode_decode' onto the heap
->   drm/mga/mga_dma: Demote kernel-doc abusers to standard comment blocks
->   drm/mga/mga_state: Remove unused variable 'buf_priv'
-Applied x2
+Here is the summary with links:
+  - [GIT,PULL] Networking
+    https://git.kernel.org/netdev/net/c/41f165302414
 
->   drm/radeon/atom: Move prototype into shared location
->   drm/radeon/radeon_kms: Include header containing our own prototypes
->   drm/omapdrm/omap_gem: Fix misnamed and missing parameter descriptions
->   drm/omapdrm/omap_dmm_tiler: Demote abusive use of kernel-doc format
->   drm/radeon/radeon: Move prototype into shared header
->   drm/radeon/radeon_drv: Source file headers are not good candidates for
->     kernel-doc
->   drm/amd/display/dc/basics/fixpt31_32: Move variables to where they're
->     used
->   drm/radeon/radeon_drv: Move prototypes to a shared headerfile
->   drm/amd/amdgpu/amdgpu_device: Provide documentation for 'reg_addr'
->     params
->   drm/radeon: Move prototypes to shared header
->   drm/amd/amdgpu/amdgpu_kms: Remove 'struct drm_amdgpu_info_device
->     dev_info' from the stack
->   drm/radeon/radeon_kms: Fix misnaming of 'radeon_info_ioctl's dev param
->   drm/radeon/atombios_crtc: Remove description of non-existent function
->     param 'encoder'
->   drm/v3d/v3d_drv: Remove unused static variable 'v3d_v3d_pm_ops'
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-I have applied the three patches that has no obvious maintainer as indicated
-above. I assume the respective maintaines to pick radeon, omapdrm, ttm,
-amd, v3d and selftest patches.
 
-	Sam
