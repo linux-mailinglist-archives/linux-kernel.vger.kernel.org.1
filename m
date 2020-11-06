@@ -2,58 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F16F52A97C8
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 15:39:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C5EC2A97CA
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 15:39:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727307AbgKFOi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 09:38:57 -0500
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:58309 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726565AbgKFOi5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 09:38:57 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0UERVqRn_1604673515;
-Received: from aliy80.localdomain(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UERVqRn_1604673515)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 06 Nov 2020 22:38:36 +0800
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     David Howells <dhowells@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] certs/blacklist: fix kernel doc interface issue
-Date:   Fri,  6 Nov 2020 22:38:33 +0800
-Message-Id: <1604673513-29088-1-git-send-email-alex.shi@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-To:     unlisted-recipients:; (no To-header on input)
+        id S1727459AbgKFOjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 09:39:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34078 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726565AbgKFOjA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 09:39:00 -0500
+Received: from gaia (unknown [2.26.170.190])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8FDFC208B3;
+        Fri,  6 Nov 2020 14:38:57 +0000 (UTC)
+Date:   Fri, 6 Nov 2020 14:38:55 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Sudarshan Rajagopalan <sudaraja@codeaurora.org>
+Cc:     Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Gavin Shan <gshan@redhat.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Logan Gunthorpe <logang@deltatee.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Steven Price <steven.price@arm.com>
+Subject: Re: [PATCH v4] arm64/mm: add fallback option to allocate virtually
+ contiguous memory
+Message-ID: <20201106143854.GH29329@gaia>
+References: <cover.1602722808.git.sudaraja@codeaurora.org>
+ <d6c06f2ef39bbe6c715b2f6db76eb16155fdcee6.1602722808.git.sudaraja@codeaurora.org>
+ <4ca1e695f81b368a5487bdaa9b421a95@codeaurora.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4ca1e695f81b368a5487bdaa9b421a95@codeaurora.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-certs/blacklist.c:84: warning: Function parameter or member 'hash' not
-described in 'mark_hash_blacklisted'
+On Wed, Nov 04, 2020 at 04:03:36PM -0800, Sudarshan Rajagopalan wrote:
+> Did you have a chance to review this patch? It is reviewed by others and
+> haven't seen any Nacks. This patch will be useful to have so that memory
+> hotremove doesn't fail when such PMD_SIZE pages aren't available.. which is
+> usually the case in low RAM devices.
 
-Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-Cc: David Howells <dhowells@redhat.com> 
-Cc: David Woodhouse <dwmw2@infradead.org> 
-Cc: keyrings@vger.kernel.org 
-Cc: linux-kernel@vger.kernel.org 
----
- certs/blacklist.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Can you please post it again please with Will's ack? You posted a v4
+which I think had the same message-id as v3. Mutt flagged it as
+duplicate and I deleted it. Just to be sure (I'll queue it when we get
+to -rc3).
 
-diff --git a/certs/blacklist.c b/certs/blacklist.c
-index 6514f9ebc943..02f1016ce6e8 100644
---- a/certs/blacklist.c
-+++ b/certs/blacklist.c
-@@ -78,7 +78,7 @@ static void blacklist_describe(const struct key *key, struct seq_file *m)
- 
- /**
-  * mark_hash_blacklisted - Add a hash to the system blacklist
-- * @hash - The hash as a hex string with a type prefix (eg. "tbs:23aa429783")
-+ * @hash: - The hash as a hex string with a type prefix (eg. "tbs:23aa429783")
-  */
- int mark_hash_blacklisted(const char *hash)
- {
+Thanks.
+
 -- 
-1.8.3.1
-
+Catalin
