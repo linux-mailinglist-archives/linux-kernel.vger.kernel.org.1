@@ -2,266 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0C492A9DD3
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 20:17:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA37A2A9DDD
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 20:22:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728186AbgKFTRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 14:17:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33240 "EHLO
+        id S1728001AbgKFTW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 14:22:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728001AbgKFTRx (ORCPT
+        with ESMTP id S1726880AbgKFTW1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 14:17:53 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5163CC0613D2
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 11:17:53 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id o129so2264262pfb.1
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 11:17:53 -0800 (PST)
+        Fri, 6 Nov 2020 14:22:27 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FA3DC0613CF;
+        Fri,  6 Nov 2020 11:22:27 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id z3so2261103pfz.6;
+        Fri, 06 Nov 2020 11:22:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=sVlHfuRK5vdpFjt7Cilz/nXKfFAc7m+Jhr0T6bgwILk=;
-        b=aEcal1ISZyp19jge5tTordUcnoRIfguD/lSY8C4b59mH+85aS7xPsIAwua5rK7GDW3
-         8E4OwzRlQjUpIZRUY27qBVgPWvbQpfLboZrOJK/xLcwFj64WvUP01l/1Enkiqdf9z6QW
-         vy3nYqJLpVwEJnBD4nEpqERz7tIdtZ5XqYZww=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/cuc87vZiys7JeBtspoIzRDGED4jze7tT06Jv70EykY=;
+        b=a0hzyDKpynz0hqk/g7JVf4RY6iI5eOaBnGlQunHjN7L/R/Hcg8Hjz6yYKrz+G7XJzP
+         K+oRaR2HdS5v6OGnWi+pHFOw8sE6u3jLdpN7X031R1LftB6F8KW2hNq7SYmdx85xKrdz
+         CWEziy4CHam/Oi2oEFKm+H57oMj+2VsIrXuUOulIp/knrSLp+UBMRYHZFiOr6tKhF7Ap
+         R0YJFZ6pO/3GYEHg4i3egvEMex6ooyzNsY9IGEwdelyK7aS8Zft+Valswhen5poyclp5
+         Swyx/uBDKFjIu4+HDzNA1K0WQIxuCLdRPIErzNgnE+BlmeIPiYsiVY5U4ONicYS2WJSN
+         IO4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=sVlHfuRK5vdpFjt7Cilz/nXKfFAc7m+Jhr0T6bgwILk=;
-        b=kE12I2KMkdCgy+X1td0sybvMTQehYJ1/cByd6SSFcG3WAqZjZ/u0c8RFlkjxrcspLC
-         fr7+AcuFuDeTCc7fqHvZWjmIpqQzbiuJT3+7WnFp945ZLSqrEaEJqtcIqM6mH9RUk9z7
-         bU+l7bTrw0qb9q7jDwrEZ3fqRGcw0X2nTl1VrY0lH14kyDi6abtWQf++4f/LSFhmXb2j
-         lU1FiFUjZuzy99nGTsOiaSUpFHCSiVpugoDJ4RF2JLlflPN0YbnRiE3gy0GY1U4oOuhe
-         4IMY+1h2jQTgFa8Zc03Ftk9QdqTPBSvysmCpUao/k8Ij5dek6C47KyrCevn8s5cJjYFb
-         uqyQ==
-X-Gm-Message-State: AOAM5311ckTGom4i2N9+uAjyQPMNodLDm4HOtTBxY3evgaXb4AsLqwDu
-        OsdkcDs48XvVz/DPiHgZAHrQcw==
-X-Google-Smtp-Source: ABdhPJyzbcHhSbYDvyZDY3U9jPJ5MNABEP4GIw3YZ/BZKUm2DinlbRt/fazoNveCP4Mi0sFXh39mwQ==
-X-Received: by 2002:aa7:9d81:0:b029:18b:4489:1e59 with SMTP id f1-20020aa79d810000b029018b44891e59mr3343227pfq.62.1604690272738;
-        Fri, 06 Nov 2020 11:17:52 -0800 (PST)
-Received: from stbsrv-and-01.and.broadcom.net ([192.19.231.250])
-        by smtp.gmail.com with ESMTPSA id m3sm3302207pjv.52.2020.11.06.11.17.50
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/cuc87vZiys7JeBtspoIzRDGED4jze7tT06Jv70EykY=;
+        b=lbA+yxTkYu/Y7NshSMEfA25ZuCLa9S6fAJ3XEtWi5YDoja1dWPj4emytHP5q41bU+O
+         2xIuIyOW+rRh9KPPdAWZ8OmoowWkA9gKrDTP57lBWaD+HtGwur9BN8HIH7Yc5pTaEwTv
+         K3iYcXXet0BFUoe9g6tacfVAN+jb/Y8ohlHaNWzOjuU9YtgViOPIPFUaggl/7UwdMPsL
+         W28Q5fjsg8p8GnDg7Jci6tHc9lE+ry6pDhgMC8SMy8ToKLXI4LzwgdUfIUJhKJVSLyPe
+         RmYMpM0hO7BId314S04P/2GZr3iB4eGqatG1Gt1S4HOH4qouhiiaDz47IrTd4uR5Mq8m
+         eWSw==
+X-Gm-Message-State: AOAM530JEtAZMow18Xe0MS8NDeXt2cdCSNNocsR0+77nnFwcaEYrY+bz
+        m6nslMWr6B7egEXHa95Dxe4=
+X-Google-Smtp-Source: ABdhPJxCLYtG8iat2UskvXZfIqxxYvrW+9bCL0kdB25hSlztgM+qjfgaoC16ZOLOiQCXQ0hkpqpeCA==
+X-Received: by 2002:a17:90a:ce8c:: with SMTP id g12mr1069163pju.181.1604690546539;
+        Fri, 06 Nov 2020 11:22:26 -0800 (PST)
+Received: from arpitha-Inspiron-7570.lan ([106.51.243.217])
+        by smtp.gmail.com with ESMTPSA id y5sm3284886pfc.165.2020.11.06.11.22.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Nov 2020 11:17:52 -0800 (PST)
-From:   Jim Quinlan <james.quinlan@broadcom.com>
-To:     Philipp Zabel <p.zabel@pengutronix.de>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com
-Cc:     Jim Quinlan <jquinlan@broadcom.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-ide@vger.kernel.org (open list:LIBATA SUBSYSTEM (Serial and
-        Parallel ATA drivers)), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2 2/2] ata: ahci_brcm: Fix use of BCM7216 reset controller
-Date:   Fri,  6 Nov 2020 14:17:43 -0500
-Message-Id: <20201106191743.40457-3-james.quinlan@broadcom.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201106191743.40457-1-james.quinlan@broadcom.com>
-References: <20201106191743.40457-1-james.quinlan@broadcom.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000b3912205b3751118"
+        Fri, 06 Nov 2020 11:22:25 -0800 (PST)
+From:   Arpitha Raghunandan <98.arpi@gmail.com>
+To:     brendanhiggins@google.com, skhan@linuxfoundation.org,
+        elver@google.com, yzaikin@google.com, tytso@mit.edu,
+        adilger.kernel@dilger.ca
+Cc:     Arpitha Raghunandan <98.arpi@gmail.com>,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-ext4@vger.kernel.org
+Subject: [PATCH v6 1/2] kunit: Support for Parameterized Testing
+Date:   Sat,  7 Nov 2020 00:51:54 +0530
+Message-Id: <20201106192154.51514-1-98.arpi@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000b3912205b3751118
+Implementation of support for parameterized testing in KUnit.
+This approach requires the creation of a test case using the
+KUNIT_CASE_PARAM macro that accepts a generator function as input.
+This generator function should return the next parameter given the
+previous parameter in parameterized tests. It also provides
+a macro to generate common-case generators.
 
-From: Jim Quinlan <jquinlan@broadcom.com>
-
-This driver may use one of two resets controllers.  Keep them in separate
-variables to keep things simple.  The reset controller "rescal" is shared
-between the AHCI driver and the PCIe driver for the BrcmSTB 7216 chip.  Use
-devm_reset_control_get_optional_shared() to handle this sharing.
-
-Fixes: 272ecd60a636 ("ata: ahci_brcm: BCM7216 reset is self de-asserting")
-Fixes: c345ec6a50e9 ("ata: ahci_brcm: Support BCM7216 reset controller name")
-Signed-off-by: Jim Quinlan <jquinlan@broadcom.com>
+Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
+Co-developed-by: Marco Elver <elver@google.com>
+Signed-off-by: Marco Elver <elver@google.com>
 ---
- drivers/ata/ahci_brcm.c | 46 ++++++++++++++++++++---------------------
- 1 file changed, 23 insertions(+), 23 deletions(-)
+Changes v5->v6:
+- Fix alignment to maintain consistency
+Changes v4->v5:
+- Update kernel-doc comments.
+- Use const void* for generator return and prev value types.
+- Add kernel-doc comment for KUNIT_ARRAY_PARAM.
+- Rework parameterized test case execution strategy: each parameter is executed
+  as if it was its own test case, with its own test initialization and cleanup
+  (init and exit are called, etc.). However, we cannot add new test cases per TAP
+  protocol once we have already started execution. Instead, log the result of
+  each parameter run as a diagnostic comment.
+Changes v3->v4:
+- Rename kunit variables
+- Rename generator function helper macro
+- Add documentation for generator approach
+- Display test case name in case of failure along with param index
+Changes v2->v3:
+- Modifictaion of generator macro and method
+Changes v1->v2:
+- Use of a generator method to access test case parameters
 
-diff --git a/drivers/ata/ahci_brcm.c b/drivers/ata/ahci_brcm.c
-index 49f7acbfcf01..58eae075d790 100644
---- a/drivers/ata/ahci_brcm.c
-+++ b/drivers/ata/ahci_brcm.c
-@@ -86,7 +86,8 @@ struct brcm_ahci_priv {
- 	u32 port_mask;
- 	u32 quirks;
- 	enum brcm_ahci_version version;
--	struct reset_control *rcdev;
-+	struct reset_control *rcdev_rescal;
-+	struct reset_control *rcdev_ahci;
- };
+ include/kunit/test.h | 36 ++++++++++++++++++++++++++++++++++
+ lib/kunit/test.c     | 46 +++++++++++++++++++++++++++++++-------------
+ 2 files changed, 69 insertions(+), 13 deletions(-)
+
+diff --git a/include/kunit/test.h b/include/kunit/test.h
+index db1b0ae666c4..16616d3974f9 100644
+--- a/include/kunit/test.h
++++ b/include/kunit/test.h
+@@ -107,6 +107,7 @@ struct kunit;
+  *
+  * @run_case: the function representing the actual test case.
+  * @name:     the name of the test case.
++ * @generate_params: the generator function for parameterized tests.
+  *
+  * A test case is a function with the signature,
+  * ``void (*)(struct kunit *)``
+@@ -141,6 +142,7 @@ struct kunit;
+ struct kunit_case {
+ 	void (*run_case)(struct kunit *test);
+ 	const char *name;
++	const void* (*generate_params)(const void *prev);
  
- static inline u32 brcm_sata_readreg(void __iomem *addr)
-@@ -352,8 +353,8 @@ static int brcm_ahci_suspend(struct device *dev)
- 	else
- 		ret = 0;
+ 	/* private: internal use only. */
+ 	bool success;
+@@ -163,6 +165,22 @@ static inline char *kunit_status_to_string(bool status)
+  */
+ #define KUNIT_CASE(test_name) { .run_case = test_name, .name = #test_name }
  
--	if (priv->version != BRCM_SATA_BCM7216)
--		reset_control_assert(priv->rcdev);
-+	reset_control_assert(priv->rcdev_ahci);
-+	reset_control_assert(priv->rcdev_rescal);
++/**
++ * KUNIT_CASE_PARAM - A helper for creation a parameterized &struct kunit_case
++ *
++ * @test_name: a reference to a test case function.
++ * @gen_params: a reference to a parameter generator function.
++ *
++ * The generator function ``const void* gen_params(const void *prev)`` is used
++ * to lazily generate a series of arbitrarily typed values that fit into a
++ * void*. The argument @prev is the previously returned value, which should be
++ * used to derive the next value; @prev is set to NULL on the initial generator
++ * call.  When no more values are available, the generator must return NULL.
++ */
++#define KUNIT_CASE_PARAM(test_name, gen_params)			\
++		{ .run_case = test_name, .name = #test_name,	\
++		  .generate_params = gen_params }
++
+ /**
+  * struct kunit_suite - describes a related collection of &struct kunit_case
+  *
+@@ -208,6 +226,10 @@ struct kunit {
+ 	const char *name; /* Read only after initialization! */
+ 	char *log; /* Points at case log after initialization */
+ 	struct kunit_try_catch try_catch;
++	/* param_value is the current parameter value for a test case. */
++	const void *param_value;
++	/* param_index stores the index of the parameter in parameterized tests. */
++	int param_index;
+ 	/*
+ 	 * success starts as true, and may only be set to false during a
+ 	 * test case; thus, it is safe to update this across multiple
+@@ -1742,4 +1764,18 @@ do {									       \
+ 						fmt,			       \
+ 						##__VA_ARGS__)
  
- 	return ret;
- }
-@@ -365,10 +366,10 @@ static int __maybe_unused brcm_ahci_resume(struct device *dev)
- 	struct brcm_ahci_priv *priv = hpriv->plat_data;
- 	int ret = 0;
- 
--	if (priv->version == BRCM_SATA_BCM7216)
--		ret = reset_control_reset(priv->rcdev);
--	else
--		ret = reset_control_deassert(priv->rcdev);
-+	ret = reset_control_deassert(priv->rcdev_ahci);
-+	if (ret)
-+		return ret;
-+	ret = reset_control_deassert(priv->rcdev_rescal);
- 	if (ret)
- 		return ret;
- 
-@@ -428,7 +429,6 @@ static int brcm_ahci_probe(struct platform_device *pdev)
- {
- 	const struct of_device_id *of_id;
- 	struct device *dev = &pdev->dev;
--	const char *reset_name = NULL;
- 	struct brcm_ahci_priv *priv;
- 	struct ahci_host_priv *hpriv;
- 	struct resource *res;
-@@ -450,15 +450,15 @@ static int brcm_ahci_probe(struct platform_device *pdev)
- 	if (IS_ERR(priv->top_ctrl))
- 		return PTR_ERR(priv->top_ctrl);
- 
--	/* Reset is optional depending on platform and named differently */
--	if (priv->version == BRCM_SATA_BCM7216)
--		reset_name = "rescal";
--	else
--		reset_name = "ahci";
--
--	priv->rcdev = devm_reset_control_get_optional(&pdev->dev, reset_name);
--	if (IS_ERR(priv->rcdev))
--		return PTR_ERR(priv->rcdev);
-+	if (priv->version == BRCM_SATA_BCM7216) {
-+		priv->rcdev_rescal = devm_reset_control_get_optional_shared(
-+			&pdev->dev, "rescal");
-+		if (IS_ERR(priv->rcdev_rescal))
-+			return PTR_ERR(priv->rcdev_rescal);
++/**
++ * KUNIT_ARRAY_PARAM() - Define test parameter generator from an array.
++ * @name:  prefix for the test parameter generator function.
++ * @array: array of test parameters.
++ *
++ * Define function @name_gen_params which uses @array to generate parameters.
++ */
++#define KUNIT_ARRAY_PARAM(name, array)								\
++	static const void *name##_gen_params(const void *prev)					\
++	{											\
++		typeof((array)[0]) * __next = prev ? ((typeof(__next)) prev) + 1 : (array);	\
++		return __next - (array) < ARRAY_SIZE((array)) ? __next : NULL;			\
 +	}
-+	priv->rcdev_ahci = devm_reset_control_get_optional(&pdev->dev, "ahci");
-+	if (IS_ERR(priv->rcdev_ahci))
-+		return PTR_ERR(priv->rcdev_ahci);
++
+ #endif /* _KUNIT_TEST_H */
+diff --git a/lib/kunit/test.c b/lib/kunit/test.c
+index 750704abe89a..329fee9e0634 100644
+--- a/lib/kunit/test.c
++++ b/lib/kunit/test.c
+@@ -325,29 +325,25 @@ static void kunit_catch_run_case(void *data)
+  * occur in a test case and reports them as failures.
+  */
+ static void kunit_run_case_catch_errors(struct kunit_suite *suite,
+-					struct kunit_case *test_case)
++					struct kunit_case *test_case,
++					struct kunit *test)
+ {
+ 	struct kunit_try_catch_context context;
+ 	struct kunit_try_catch *try_catch;
+-	struct kunit test;
  
- 	hpriv = ahci_platform_get_resources(pdev, 0);
- 	if (IS_ERR(hpriv))
-@@ -479,10 +479,10 @@ static int brcm_ahci_probe(struct platform_device *pdev)
- 		break;
- 	}
+-	kunit_init_test(&test, test_case->name, test_case->log);
+-	try_catch = &test.try_catch;
++	kunit_init_test(test, test_case->name, test_case->log);
++	try_catch = &test->try_catch;
  
--	if (priv->version == BRCM_SATA_BCM7216)
--		ret = reset_control_reset(priv->rcdev);
--	else
--		ret = reset_control_deassert(priv->rcdev);
-+	ret = reset_control_deassert(priv->rcdev_rescal);
-+	if (ret)
-+		return ret;
-+	ret = reset_control_deassert(priv->rcdev_ahci);
- 	if (ret)
- 		return ret;
+ 	kunit_try_catch_init(try_catch,
+-			     &test,
++			     test,
+ 			     kunit_try_run_case,
+ 			     kunit_catch_run_case);
+-	context.test = &test;
++	context.test = test;
+ 	context.suite = suite;
+ 	context.test_case = test_case;
+ 	kunit_try_catch_run(try_catch, &context);
  
-@@ -527,8 +527,8 @@ static int brcm_ahci_probe(struct platform_device *pdev)
- out_disable_clks:
- 	ahci_platform_disable_clks(hpriv);
- out_reset:
--	if (priv->version != BRCM_SATA_BCM7216)
--		reset_control_assert(priv->rcdev);
-+	reset_control_assert(priv->rcdev_ahci);
-+	reset_control_assert(priv->rcdev_rescal);
- 	return ret;
+-	test_case->success = test.success;
+-
+-	kunit_print_ok_not_ok(&test, true, test_case->success,
+-			      kunit_test_case_num(suite, test_case),
+-			      test_case->name);
++	test_case->success = test->success;
  }
+ 
+ int kunit_run_tests(struct kunit_suite *suite)
+@@ -356,8 +352,32 @@ int kunit_run_tests(struct kunit_suite *suite)
+ 
+ 	kunit_print_subtest_start(suite);
+ 
+-	kunit_suite_for_each_test_case(suite, test_case)
+-		kunit_run_case_catch_errors(suite, test_case);
++	kunit_suite_for_each_test_case(suite, test_case) {
++		struct kunit test = { .param_value = NULL, .param_index = 0 };
++		bool test_success = true;
++
++		if (test_case->generate_params)
++			test.param_value = test_case->generate_params(NULL);
++
++		do {
++			kunit_run_case_catch_errors(suite, test_case, &test);
++			test_success &= test_case->success;
++
++			if (test_case->generate_params) {
++				kunit_log(KERN_INFO, &test,
++					  KUNIT_SUBTEST_INDENT
++					  "# %s: param-%d %s",
++					  test_case->name, test.param_index,
++					  kunit_status_to_string(test.success));
++				test.param_value = test_case->generate_params(test.param_value);
++				test.param_index++;
++			}
++		} while (test.param_value);
++
++		kunit_print_ok_not_ok(&test, true, test_success,
++				      kunit_test_case_num(suite, test_case),
++				      test_case->name);
++	}
+ 
+ 	kunit_print_subtest_end(suite);
  
 -- 
-2.17.1
+2.25.1
 
-
---000000000000b3912205b3751118
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-mOxPm7sNHsn0TVdPryi9+T2d8fVC/kUmuEdTYP/Hdu4W4b4T9BcW57fInYrmaJ+uotS6X59rAgMB
-AAGjggHRMIIBzTAOBgNVHQ8BAf8EBAMCBaAwgZ4GCCsGAQUFBwEBBIGRMIGOME0GCCsGAQUFBzAC
-hkFodHRwOi8vc2VjdXJlLmdsb2JhbHNpZ24uY29tL2NhY2VydC9nc3BlcnNvbmFsc2lnbjJzaGEy
-ZzNvY3NwLmNydDA9BggrBgEFBQcwAYYxaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL2dzcGVy
-c29uYWxzaWduMnNoYTJnMzBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYm
-aHR0cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBEBgNVHR8E
-PTA7MDmgN6A1hjNodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzcGVyc29uYWxzaWduMnNoYTJn
-My5jcmwwJQYDVR0RBB4wHIEaamFtZXMucXVpbmxhbkBicm9hZGNvbS5jb20wEwYDVR0lBAwwCgYI
-KwYBBQUHAwQwHwYDVR0jBBgwFoAUaXKCYjFnlUSFd5GAxAQ2SZ17C2EwHQYDVR0OBBYEFNYm4GDl
-4WOt3laB3gNKFfYyaM8bMA0GCSqGSIb3DQEBCwUAA4IBAQBD+XYEgpG/OqeRgXAgDF8sa+lQ/00T
-wCP/3nBzwZPblTyThtDE/iaL/YZ5rdwqXwdCnSFh9cMhd/bnA+Eqw89clgTixvz9MdL9Vuo8LACI
-VpHO+sxZ2Cu3bO5lpK+UVCyr21y1zumOICsOuu4MJA5mtkpzBXQiA7b/ogjGxG+5iNjt9FAMX4JP
-V6GuAMmRknrzeTlxPy40UhUcRKk6Nm8mxl3Jh4KB68z7NFVpIx8G5w5I7S5ar1mLGNRjtFZ0RE4O
-lcCwKVGUXRaZMgQGrIhxGVelVgrcBh2vjpndlv733VI2VKE/TvV5MxMGU18RnogYSm66AEFA/Zb+
-5ztz1AtIMYICbzCCAmsCAQEwbTBdMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBu
-di1zYTEzMDEGA1UEAxMqR2xvYmFsU2lnbiBQZXJzb25hbFNpZ24gMiBDQSAtIFNIQTI1NiAtIEcz
-AgwTv2xmtR4KOmK4QvMwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEINOn0id6p6xZ
-qVtn4qlaUBkjSCYjgE7pZbN2IL+k1h+rMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIwMTEwNjE5MTc1M1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
-YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBfLVxFzl0FiOT2vPCqwq36SyMz9Juf
-SvrqYmLGAqCoDYqQYFJQNwFQ7fGchoccTxnKibOt0+pRk70WUM/UUo5ykKUcF7X7IIfrzTXehxMp
-DBB2EdvGVANpqwL+3HHpa4Ov+P1667iDZcooLcOZ70Ng0ZuslRyQ0cGqkf7ZSV/P4UQ9gKGV1MAu
-4jhdKZ5f05E1NxLZsy3kPzFaUIby/K14aajyHJ5wf2C3ltXnXpRgIl+k0ouodAYi9OTfnvfNtlRv
-MQ+eRTEdTsx46v3z1hQGYeOR04xBaUIHOVvFfd8D0hmv3KxCo0k/HgoS7Dgk7JkItEfgDtXL0gGY
-5FbEeAlK
---000000000000b3912205b3751118--
