@@ -2,161 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B2332A908C
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 08:40:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCFBB2A9095
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 08:42:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726531AbgKFHkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 02:40:36 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:37025 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726248AbgKFHkg (ORCPT
+        id S1726544AbgKFHl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 02:41:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36326 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726497AbgKFHl6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 02:40:36 -0500
-Received: from mail-wr1-f70.google.com ([209.85.221.70])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <andrea.righi@canonical.com>)
-        id 1kawML-0001wJ-A1
-        for linux-kernel@vger.kernel.org; Fri, 06 Nov 2020 07:40:33 +0000
-Received: by mail-wr1-f70.google.com with SMTP id v5so160734wrr.0
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 23:40:33 -0800 (PST)
+        Fri, 6 Nov 2020 02:41:58 -0500
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B08EC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 23:41:57 -0800 (PST)
+Received: by mail-yb1-xb42.google.com with SMTP id m188so372204ybf.2
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 23:41:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QTZ+mR0yw2trxDGTFS+bvNciA6tk8BOqQlBiDGPQfJM=;
+        b=S1l2xLdTqVq2ltEN2mrPy3XdtMyi05nRUV5f/FmPa9D60PlmPmlug2a8DGs5JByXUf
+         U4hY1zdOfcNxVHh2+WK8ypBioWUs4WtfPRtJ4Fw4FqOB/D7VeyAcxDoGrxpa97MjEurH
+         /D4RIRcbKxYD2wNBiDo4zRIVZDEjDYXKQC1gQTK/rvEArNqSbWlQNToz4GJotdfnyTat
+         4cWO/AcbXt8WJnt6F3Lu0s9yTyAMSIhvE1kMd4e3XbJcHUDTCHs8XULGSR7/TrbdADhC
+         etr6br84kAkspmfqxlaF+5lFEhY3+pizLVdDIxHFAJ4I/DLa0GSn+bXgJiU7/lUFIK6K
+         mB2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Jrhr5yRQnyadQWkzdbR4ykR1Uwe+WNfv5BZIIbHimF4=;
-        b=Td7Zvifu7ELBkQrRgm/hLnB7WCVKUwcD8plocRbLVF693ZlVrA9mo6gK1PpmrMse+3
-         clGkyPt89GCsqj7Qx0HAQCdqMQ1DBlLllC2tycyh8GtCwsU8AylN+gUfOH1My2CwzAyZ
-         r4w7HFLpPU7hNVWq6b9BNLilYshbmwhBQgZ4e0o7vuUVyX/+prF508g8usu7xJij/+/s
-         NOrbWWKsGazIRfOTnKSffOm5P4XeWb4yMpNT2wYyBC8mTlWJi84ijRiCBjfa60Hd4124
-         KzfwzgZ5wEK2gwS8p7tHguqCnE7i/Rx3imBE8unQnBgQ0X9QcDokszHKiZkk65pp7K/q
-         OH5A==
-X-Gm-Message-State: AOAM531Znf7JEPL/sKJt5+MdTY14zGNRnVr3dvkhoYvT/ac6Qfr9Xd7N
-        +lCXOygvl4u3niVrqUj04jlZadMGH7O6JmNchNQ0QIlZwPehzagDZQXp67akdT57vu20am+Qf1i
-        dId1ExeQk5uT8OkslZqb0BH/svu2r4k+1BaXMdIJKRw==
-X-Received: by 2002:a05:6000:1249:: with SMTP id j9mr1108931wrx.218.1604648432778;
-        Thu, 05 Nov 2020 23:40:32 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwGoDem6P6wG417cQBINFKFKBadNGOUjnkpzIHC7/oG7bKqccFFvM+0Ov/7tkrXLPp+0mnm+w==
-X-Received: by 2002:a05:6000:1249:: with SMTP id j9mr1108911wrx.218.1604648432496;
-        Thu, 05 Nov 2020 23:40:32 -0800 (PST)
-Received: from localhost (host-87-3-180-232.retail.telecomitalia.it. [87.3.180.232])
-        by smtp.gmail.com with ESMTPSA id n14sm750005wrt.8.2020.11.05.23.40.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 23:40:31 -0800 (PST)
-Date:   Fri, 6 Nov 2020 08:40:30 +0100
-From:   Andrea Righi <andrea.righi@canonical.com>
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Boqun Feng <boqun.feng@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: lockdep: possible irq lock inversion dependency detected
- (trig->leddev_list_lock)
-Message-ID: <20201106074030.GG1041241@xps-13-7390>
-References: <20201101092614.GB3989@xps-13-7390>
- <20201031101740.GA1875@boqun-laptop.fareast.corp.microsoft.com>
- <20201102073328.GA9930@xps-13-7390>
- <20201102085658.GA5506@amd>
- <20201102090927.GC9930@xps-13-7390>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QTZ+mR0yw2trxDGTFS+bvNciA6tk8BOqQlBiDGPQfJM=;
+        b=dHCps+Z2SrzS+mcfQoFWCb7ohl/GGA1Za2EXPYCMHK/N2HPQ7GzB7U4gVKcNVLzYc2
+         2uqUxIsgTw0i+dk53v2db8L/qzlr4pKI1SGCbmqlmzoQXpnVeyAydI/pzCru3kYIBQ76
+         0dk5cu6WhEKbUYier5k9O/n09/TvaetlWuh3rOOnhkSqPz6s9nQ7rqu3CbDP9dIw9jbx
+         i2AQlwt9rsYclEd9cOBVlQ2NrN/FyOWXpXekuXprfEmD9Ab1KAxZAdeMYzfmIh6b3jCs
+         ZzTc/1dhAxEocpWSjQDev2WhrAwnvfCaBR3dwAeLAl/g8RFJgzLUY7DKmtdeTOhx70Ch
+         B+Cw==
+X-Gm-Message-State: AOAM533A/BTkAJTDxDShSWYnMqz/INXJx7yfbaHLaBXp5lWj7KbyIppJ
+        xe0w2WbCfEeHJgbxvKRO7MkLQlwbsxKtYxRmupURYA==
+X-Google-Smtp-Source: ABdhPJwfrNAgvjm+h63iu1XRZnC29WoULOmr0mLAgXrY9MYEO6CcpB9pgsa2cDzepk0gfm2cOoTlaGnAT5Xyo+bmdOo=
+X-Received: by 2002:a25:1c86:: with SMTP id c128mr1143314ybc.96.1604648516320;
+ Thu, 05 Nov 2020 23:41:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201102090927.GC9930@xps-13-7390>
+References: <20201104232356.4038506-1-saravanak@google.com>
+ <20201104232356.4038506-16-saravanak@google.com> <20201105094228.GE3439341@kroah.com>
+ <CAGETcx-0TPte6g3Cf5F3WJwdW-9yUptLDj3AcEdvWN0YJ2H4qg@mail.gmail.com> <20201106072247.GB2614221@kroah.com>
+In-Reply-To: <20201106072247.GB2614221@kroah.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Thu, 5 Nov 2020 23:41:20 -0800
+Message-ID: <CAGETcx_tQboQPWuoj9hi38-1n=mAQihCi2b475z2r_9s_rXhNg@mail.gmail.com>
+Subject: Re: [PATCH v1 15/18] of: property: Update implementation of
+ add_links() to create fwnode links
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Android Kernel Team <kernel-team@android.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 02, 2020 at 10:09:28AM +0100, Andrea Righi wrote:
-> On Mon, Nov 02, 2020 at 09:56:58AM +0100, Pavel Machek wrote:
-> > Hi!
-> > 
-> > > > > I'm getting the following lockdep splat (see below).
-> > > > > 
-> > > > > Apparently this warning starts to be reported after applying:
-> > > > > 
-> > > > >  e918188611f0 ("locking: More accurate annotations for read_lock()")
-> > > > > 
-> > > > > It looks like a false positive to me, but it made me think a bit and
-> > > > > IIUC there can be still a potential deadlock, even if the deadlock
-> > > > > scenario is a bit different than what lockdep is showing.
-> > > > > 
-> > > > > In the assumption that read-locks are recursive only in_interrupt()
-> > > > > context (as stated in e918188611f0), the following scenario can still
-> > > > > happen:
-> > > > > 
-> > > > >  CPU0                                     CPU1
-> > > > >  ----                                     ----
-> > > > >  read_lock(&trig->leddev_list_lock);
-> > > > >                                           write_lock(&trig->leddev_list_lock);
-> > > > >  <soft-irq>
-> > > > >  kbd_bh()
-> > > > >    -> read_lock(&trig->leddev_list_lock);
-> > > > > 
-> > > > >  *** DEADLOCK ***
-> > > > > 
-> > > > > The write-lock is waiting on CPU1 and the second read_lock() on CPU0
-> > > > > would be blocked by the write-lock *waiter* on CPU1 => deadlock.
-> > > > > 
-> > > > 
-> > > > No, this is not a deadlock, as a write-lock waiter only blocks
-> > > > *non-recursive* readers, so since the read_lock() in kbd_bh() is called
-> > > > in soft-irq (which in_interrupt() returns true), so it's a recursive
-> > > > reader and won't get blocked by the write-lock waiter.
-> > > 
-> > > That's right, I was missing that in_interrupt() returns true also from
-> > > soft-irq context.
-> > > 
-> > > > > In that case we could prevent this deadlock condition using a workqueue
-> > > > > to call kbd_propagate_led_state() instead of calling it directly from
-> > > > > kbd_bh() (even if lockdep would still report the false positive).
-> > > > > 
-> > > > 
-> > > > The deadlock senario reported by the following splat is:
-> > > > 
-> > > > 	
-> > > > 	CPU 0:				CPU 1:					CPU 2:
-> > > > 	-----				-----					-----
-> > > > 	led_trigger_event():
-> > > > 	  read_lock(&trig->leddev_list_lock);
-> > > > 					<work queue processing>
-> > > > 	  				ata_hsm_qs_complete():
-> > > > 					  spin_lock_irqsave(&host->lock);
-> > > > 					  					write_lock(&trig->leddev_list_lock);
-> > > > 					  ata_port_freeze():
-> > > > 					    ata_do_link_abort():
-> > > > 					      ata_qc_complete():
-> > > > 					        ledtrig_disk_activity():
-> > > > 						  led_trigger_blink_oneshot():
-> > > > 						    read_lock(&trig->leddev_list_lock);
-> > > > 						    // ^ not in in_interrupt() context, so could get blocked by CPU 2
-> > > > 	<interrupt>
-> > > > 	  ata_bmdma_interrupt():
-> > > > 	    spin_lock_irqsave(&host->lock);
-> > > > 	  
-> > > > , where CPU 0 is blocked by CPU 1 because of the spin_lock_irqsave() in
-> > > > ata_bmdma_interrupt() and CPU 1 is blocked by CPU 2 because of the
-> > > > read_lock() in led_trigger_blink_oneshot() and CPU 2 is blocked by CPU 0
-> > > > because of an arbitrary writer on &trig->leddev_list_lock.
-> > > > 
-> > > > So I don't think it's false positive, but I might miss something
-> > > > obvious, because I don't know what the code here actually does ;-)
-> > > 
-> > > With the CPU2 part it all makes sense now and lockdep was right. :)
-> > > 
-> > > At this point I think we could just schedule a separate work to do the
-> > > led trigger and avoid calling it with host->lock held and that should
-> > > prevent the deadlock. I'll send a patch to do that.
-> > 
-> > Let's... not do that, unless we have no choice.
-> > 
-> > Would it help if leddev_list_lock used _irqsave() locking?
-> 
-> Using read_lock_irqsave/irqrestore() in led_trigger_event() would be
-> enough to prevent the deadlock. If it's an acceptable solution I can
-> send a patch (already tested it and lockdep doesn't complain :)).
+On Thu, Nov 5, 2020 at 11:22 PM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Thu, Nov 05, 2020 at 03:25:56PM -0800, Saravana Kannan wrote:
+> > On Thu, Nov 5, 2020 at 1:41 AM Greg Kroah-Hartman
+> > <gregkh@linuxfoundation.org> wrote:
+> > >
+> > > On Wed, Nov 04, 2020 at 03:23:52PM -0800, Saravana Kannan wrote:
+> > > > The semantics of add_links() has changed from creating device link
+> > > > between devices to creating fwnode links between fwnodes. So, update the
+> > > > implementation of add_links() to match the new semantics.
+> > > >
+> > > > Signed-off-by: Saravana Kannan <saravanak@google.com>
+> > > > ---
+> > > >  drivers/of/property.c | 150 ++++++++++++------------------------------
+> > > >  1 file changed, 41 insertions(+), 109 deletions(-)
+> > > >
+> > > > diff --git a/drivers/of/property.c b/drivers/of/property.c
+> > > > index 408a7b5f06a9..86303803f1b3 100644
+> > > > --- a/drivers/of/property.c
+> > > > +++ b/drivers/of/property.c
+> > > > @@ -1038,33 +1038,9 @@ static bool of_is_ancestor_of(struct device_node *test_ancestor,
+> > > >  }
+> > > >
+> > > >  /**
+> > > > - * of_get_next_parent_dev - Add device link to supplier from supplier phandle
+> > > > - * @np: device tree node
+> > > > - *
+> > > > - * Given a device tree node (@np), this function finds its closest ancestor
+> > > > - * device tree node that has a corresponding struct device.
+> > > > - *
+> > > > - * The caller of this function is expected to call put_device() on the returned
+> > > > - * device when they are done.
+> > > > - */
+> > > > -static struct device *of_get_next_parent_dev(struct device_node *np)
+> > > > -{
+> > > > -     struct device *dev = NULL;
+> > > > -
+> > > > -     of_node_get(np);
+> > > > -     do {
+> > > > -             np = of_get_next_parent(np);
+> > > > -             if (np)
+> > > > -                     dev = get_dev_from_fwnode(&np->fwnode);
+> > > > -     } while (np && !dev);
+> > > > -     of_node_put(np);
+> > > > -     return dev;
+> > > > -}
+> > > > -
+> > > > -/**
+> > > > - * of_link_to_phandle - Add device link to supplier from supplier phandle
+> > > > - * @dev: consumer device
+> > > > - * @sup_np: phandle to supplier device tree node
+> > > > + * of_link_to_phandle - Add fwnode link to supplier from supplier phandle
+> > > > + * @con_np: consumer device tree node
+> > > > + * @sup_np: supplier device tree node
+> > > >   *
+> > > >   * Given a phandle to a supplier device tree node (@sup_np), this function
+> > > >   * finds the device that owns the supplier device tree node and creates a
+> > > > @@ -1074,16 +1050,14 @@ static struct device *of_get_next_parent_dev(struct device_node *np)
+> > > >   * cases, it returns an error.
+> > > >   *
+> > > >   * Returns:
+> > > > - * - 0 if link successfully created to supplier
+> > > > - * - -EAGAIN if linking to the supplier should be reattempted
+> > > > + * - 0 if fwnode link successfully created to supplier
+> > > >   * - -EINVAL if the supplier link is invalid and should not be created
+> > > > - * - -ENODEV if there is no device that corresponds to the supplier phandle
+> > > > + * - -ENODEV if struct device will never be create for supplier
+> > > >   */
+> > > > -static int of_link_to_phandle(struct device *dev, struct device_node *sup_np,
+> > > > -                           u32 dl_flags)
+> > > > +static int of_link_to_phandle(struct device_node *con_np,
+> > > > +                           struct device_node *sup_np)
+> > > >  {
+> > > > -     struct device *sup_dev, *sup_par_dev;
+> > > > -     int ret = 0;
+> > > > +     struct device *sup_dev;
+> > > >       struct device_node *tmp_np = sup_np;
+> > > >
+> > > >       of_node_get(sup_np);
+> > > > @@ -1106,7 +1080,8 @@ static int of_link_to_phandle(struct device *dev, struct device_node *sup_np,
+> > > >       }
+> > > >
+> > > >       if (!sup_np) {
+> > > > -             dev_dbg(dev, "Not linking to %pOFP - No device\n", tmp_np);
+> > > > +             pr_debug("Not linking %pOFP to %pOFP - No device\n",
+> > > > +                      con_np, tmp_np);
+> > >
+> > > Who is calling this function without a valid dev pointer?
+> >
+> > Sorry, I plan to delete the "dev" parameter as it's not really used
+> > anywhere. I'm trying to do that without causing build time errors and
+> > making the series into digestible small patches.
+> >
+> > I can do the deletion of the parameter as a Patch 19/19. Will that work?
+>
+> That's fine, but why get rid of dev?  The driver core works on these
+> things, and we want errors/messages/warnings to spit out what device is
+> causing those issues.  It is fine to drag around a struct device pointer
+> just for messages, that's to be expected, and is good.
 
-Any comment on
-https://lore.kernel.org/lkml/20201102104152.GG9930@xps-13-7390/?
+In general I agree. If the fwnode being parsed is related to the dev,
+it's nice to have the dev name in the logs.
 
-Thanks,
--Andrea
+But in this instance I feel it's analogous to printing the PID that's
+parsing the fwnode -- kinda irrelevant. The device in question can
+appear very random and it'll just cause more confusion than be of help
+if it shows up in the logs.
+
+For example it can be something like:
+<gpio device name>: linking <wifi fwnode> to <iommu fwnode>
+
+If the device was actually that of the wifi fwnode of the iommu
+fwnode, I agree it'll be useful to carry around the dev even if it's
+just for logs.
+
+Hope that makes sense.
+
+> > > And the only way it can be NULL is if fwnode is NULL, and as you control
+> > > the callers to it, how can that be the case?
+> >
+> > fwnode represents a generic firmware node. The to_of_node() returns
+> > NULL if fwnode is not a DT node. So con_np can be NULL if that
+> > happens. That's why we need a NULL check here.  With the current code,
+> > that can never happen, bit I think it doesn't hurt to check in case
+> > there's a buggy caller. I don't have a strong opinion - so I can do it
+> > whichever way.
+>
+> If it can't happen, no need to check for it :)
+
+I don't have a strong opinion, so I can delete it if you insist.
+
+-Saravana
