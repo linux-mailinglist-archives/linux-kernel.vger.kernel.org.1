@@ -2,108 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D1F22A8D64
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 04:12:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A1A72A8D69
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 04:14:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725983AbgKFDMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 22:12:23 -0500
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:47340 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725972AbgKFDMV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 22:12:21 -0500
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by kvm5.telegraphics.com.au (Postfix) with ESMTP id D3BE7232E6;
-        Thu,  5 Nov 2020 22:12:18 -0500 (EST)
-Date:   Fri, 6 Nov 2020 14:12:08 +1100 (AEDT)
-From:   Finn Thain <fthain@telegraphics.com.au>
-To:     Greg Ungerer <gerg@linux-m68k.org>
-cc:     Arnd Bergmann <arnd@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Philip Blundell <philb@gnu.org>,
-        Joshua Thompson <funaho@jurai.org>,
-        Sam Creasey <sammy@sammy.net>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-ia64@vger.kernel.org,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [RFC 13/13] m68k: mac: convert to generic clockevent
-In-Reply-To: <580c3542-92cc-7e33-a43d-bf6a68134a46@linux-m68k.org>
-Message-ID: <alpine.LNX.2.23.453.2011061352370.6@nippy.intranet>
-References: <20201008154651.1901126-1-arnd@arndb.de> <20201008154651.1901126-14-arnd@arndb.de> <alpine.LNX.2.23.453.2010091900150.12@nippy.intranet> <CAK8P3a3rM7gJjdTtcKzr6yi15n6xs-yhEpmSOf3QHfahQwxqkw@mail.gmail.com> <alpine.LNX.2.23.453.2010150937430.16@nippy.intranet>
- <CAK8P3a3i6cum_9xGgsbxjXXvbRsP8Po5qLZ0Agb3c4gZTKC9GQ@mail.gmail.com> <alpine.LNX.2.23.453.2010241025410.6@nippy.intranet> <580c3542-92cc-7e33-a43d-bf6a68134a46@linux-m68k.org>
+        id S1726056AbgKFDOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 22:14:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47842 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725616AbgKFDON (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 22:14:13 -0500
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5A53320782;
+        Fri,  6 Nov 2020 03:14:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604632452;
+        bh=4s9wN5sYltzm93qPjOjO1EkZ8dZJ1hOwxY3nUD9iXrQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ZqxhykIrGN/Uv5G0nzk9KKZlQwO/YD6SIfDIWF0udm129DiQ1FJpr5YCWH28kRnLH
+         e8FzRR3UMmCTdMaYy8yo47V/Y/3FWX/79ulSH8HeglP2HgAmpBgshzcoudnjWN4t69
+         hF7y0O9r/c+xQvQK55Y/6eGUALxXHjDt7od8Ugnk=
+Received: by mail-lf1-f49.google.com with SMTP id s30so5367790lfc.4;
+        Thu, 05 Nov 2020 19:14:12 -0800 (PST)
+X-Gm-Message-State: AOAM531SkRIclnbEfKlqbgoVpjirFhlFVXB2UnHZ4huHDjsSP3fz3p6X
+        Pvvh6iRBt9e3j1VpX2OBaeQ8L2cmQqkSdRrga5M=
+X-Google-Smtp-Source: ABdhPJyB8jL8hXKt5P8rAti/jfGy0ODqbgbIZSXDMAFijBZrz71IYS19Y2iMkmFexPlwEortnyV0Av/K9E3AidjbXLw=
+X-Received: by 2002:a19:4b45:: with SMTP id y66mr23234lfa.482.1604632450558;
+ Thu, 05 Nov 2020 19:14:10 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20201022012128.GA2103465@dragonet>
+In-Reply-To: <20201022012128.GA2103465@dragonet>
+From:   Song Liu <song@kernel.org>
+Date:   Thu, 5 Nov 2020 19:13:59 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW5+Lq7_kMF_FvJA5adZL80UM7perFR3LxEmueLguJ=Lpw@mail.gmail.com>
+Message-ID: <CAPhsuW5+Lq7_kMF_FvJA5adZL80UM7perFR3LxEmueLguJ=Lpw@mail.gmail.com>
+Subject: Re: [PATCH] md: fix a warning caused by a race between concurrent md_ioctl()s
+To:     "Dae R. Jeong" <dae.r.jeong@kaist.ac.kr>
+Cc:     linux-raid <linux-raid@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>, yjkwon@kaist.ac.kr
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 30 Oct 2020, Greg Ungerer wrote:
+On Wed, Oct 21, 2020 at 6:21 PM Dae R. Jeong <dae.r.jeong@kaist.ac.kr> wrote:
+>
+> Syzkaller reports a warning as belows.
+> WARNING: CPU: 0 PID: 9647 at drivers/md/md.c:7169
+> ...
+> Call Trace:
+> ...
+> RIP: 0010:md_ioctl+0x4017/0x5980 drivers/md/md.c:7169
+> RSP: 0018:ffff888096027950 EFLAGS: 00010293
+> RAX: ffff88809322c380 RBX: 0000000000000932 RCX: ffffffff84e266f2
+> RDX: 0000000000000000 RSI: ffffffff84e299f7 RDI: 0000000000000007
+> RBP: ffff888096027bc0 R08: ffff88809322c380 R09: ffffed101341a482
+> R10: ffff888096027940 R11: ffff88809a0d240f R12: 0000000000000932
+> R13: ffff8880a2c14100 R14: ffff88809a0d2268 R15: ffff88809a0d2408
+>  __blkdev_driver_ioctl block/ioctl.c:304 [inline]
+>  blkdev_ioctl+0xece/0x1c10 block/ioctl.c:606
+>  block_ioctl+0xee/0x130 fs/block_dev.c:1930
+>  vfs_ioctl fs/ioctl.c:46 [inline]
+>  file_ioctl fs/ioctl.c:509 [inline]
+>  do_vfs_ioctl+0xd5f/0x1380 fs/ioctl.c:696
+>  ksys_ioctl+0xab/0xd0 fs/ioctl.c:713
+>  __do_sys_ioctl fs/ioctl.c:720 [inline]
+>  __se_sys_ioctl fs/ioctl.c:718 [inline]
+>  __x64_sys_ioctl+0x73/0xb0 fs/ioctl.c:718
+>  do_syscall_64+0xfd/0x680 arch/x86/entry/common.c:301
+>  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+>
+> This is caused by a race between two concurrenct md_ioctl()s closing
+> the array.
+> CPU1 (md_ioctl())                   CPU2 (md_ioctl())
+> ------                              ------
+> set_bit(MD_CLOSING, &mddev->flags);
+> did_set_md_closing = true;
+>                                     WARN_ON_ONCE(test_bit(MD_CLOSING,
+>                                             &mddev->flags));
+> if(did_set_md_closing)
+>     clear_bit(MD_CLOSING, &mddev->flags);
+>
+> Fix the warning by returning immediately if the MD_CLOSING bit is set
+> in &mddev->flags which indicates that the array is being closed.
+>
+> Fixes: 065e519e71b2 ("md: MD_CLOSING needs to be cleared after called md_set_readonly or do_md_stop")
+> Reported-by: syzbot+1e46a0864c1a6e9bd3d8@syzkaller.appspotmail.com
+> Signed-off-by: Dae R. Jeong <dae.r.jeong@kaist.ac.kr>
 
-> > 
-> > > ...
-> > > > The other 11 platforms in that category also have 'synthetic' 
-> > > > clocksources derived from a timer reload interrupt. In 3 cases, 
-> > > > the clocksource read method does not (or can not) check for a 
-> > > > pending counter reload interrupt. For these also, I see no 
-> > > > practical alternative to the approach you've taken in your RFC 
-> > > > patch:
-> > > > 
-> > > > arch/m68k/68000/timers.c
-> > > > arch/m68k/atari/time.c
-> > > > arch/m68k/coldfire/timers.c
-> > > 
-> > > Agreed. It's possible there is a way, but I don't see one either.
-> > > 
-> > 
-> > For arch/m68k/68000/timers.c, I suppose we may be able to check for 
-> > the TMR1 bit in the Interrupt Status Register at 0xFFFFF30C or the 
-> > COMP bit in the Timer Status Register at 0xFFFFF60A. But testing that 
-> > patch could be difficult.
-> > 
-> > I expect that equivalent flags are available in Coldfire registers, 
-> > making it possible to improve upon mcftmr_read_clk() and 
-> > m68328_read_clk() if need be -- that is, if it turns out that the 
-> > clocksource interrupt was subject to higher priority IRQs that would 
-> > slow down the clocksource or defeat its monotonicity.
-> > 
-> > The other difficulty is a lack of hardware timers. There's only one 
-> > timer on MC68EZ328. On Atari, for now only Timer C is available though 
-> > Michael has said that it would be possible to free up Timer D. Some 
-> > Coldfire chips have only 2 timers and the second timer seems to be 
-> > allocated to profiling.
-> 
-> FWIW, I would have no problem with ditching the profiling clock, and 
-> using both on ColdFire platforms that have this. I doubt anyone has used 
-> that profiling setup in a _very_ long time.
-> 
+Applied to md-next. Thanks!
 
-If we ditched the Coldfire profiling clock, it would be possible to 
-dedicate one hardware timer to the clocksource device and the other to the 
-(oneshot) clockevent device.
 
-That's a win if it means that the clocksource can use the full counter 
-width (making timer interrupts less frequent and timer interrupt latency 
-less problematic) and run at higher frequency (making the clocksource more 
-precise).
-
-Also, note that hrtimers won't work with a periodic clockevent device (as 
-in Arnd's RFC patch). If you want hrtimers, I think you'll need both 
-hardware timers or else re-implement the existing synthetic clocksource 
-using the same oneshot timer driving a new oneshot clockevent device.
-
-Please note that the lack of a spare hardware timer is a separate issue to 
-the failure of mcftmr_read_clk() and m68328_read_clk() to check the timer 
-reload interrupt flag (which may make those clocksources needlessly 
-susceptible to issues caused by timer interrupt latency...).
+> ---
+>  drivers/md/md.c | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/md/md.c b/drivers/md/md.c
+> index 98bac4f304ae..643f7f5be49b 100644
+> --- a/drivers/md/md.c
+> +++ b/drivers/md/md.c
+> @@ -7590,8 +7590,11 @@ static int md_ioctl(struct block_device *bdev, fmode_t mode,
+>                         err = -EBUSY;
+>                         goto out;
+>                 }
+> -               WARN_ON_ONCE(test_bit(MD_CLOSING, &mddev->flags));
+> -               set_bit(MD_CLOSING, &mddev->flags);
+> +               if (test_and_set_bit(MD_CLOSING, &mddev->flags)) {
+> +                       mutex_unlock(&mddev->open_mutex);
+> +                       err = -EBUSY;
+> +                       goto out;
+> +               }
+>                 did_set_md_closing = true;
+>                 mutex_unlock(&mddev->open_mutex);
+>                 sync_blockdev(bdev);
+> --
+> 2.25.1
+>
+>
+>
