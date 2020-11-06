@@ -2,96 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F2372A9788
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 15:21:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2C392A9796
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 15:27:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727416AbgKFOU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 09:20:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42584 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726010AbgKFOU6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 09:20:58 -0500
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D5D6C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 06:20:56 -0800 (PST)
-Received: by mail-ed1-x542.google.com with SMTP id a15so1456383edy.1
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 06:20:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XvGhP5pLsf0B0u2tuGH3UbcyyuOyAH/WnGeMUTp7xNw=;
-        b=A5bYF8XZhmmzbd3kw/XPVAZwdDIzVf5dHAPaW+k1HHXVHxlZAmC7I8DEpPVvS0hSLB
-         S5WNXGDGWUu3m0XWFUSksDqA+5BThBp0Yr1/rU8OXHKYO3tJ/mOC7Z7NSAfa2NIzG5HO
-         9ac9tYUoaQvOlSFFQaYWjJnUc7mSJZEURAEyvtEFGuLZ6zELs22Eu2l+YU3N7lVrZRzE
-         0zkkzxDre7ShKg6+Vi/K6xujbxG4jWDNlTtEi0YCu+RoGWfQDDN++4WPdrXMpdsWAT8h
-         AtPIgFygGFT+TaLg1txvuyH8RC6t6dECkMiuOPXDyY80VIdYtovRY2o6h4oFR8QPsPed
-         xp2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XvGhP5pLsf0B0u2tuGH3UbcyyuOyAH/WnGeMUTp7xNw=;
-        b=f9fRMBPdRb6DMmeqfZEXdAIzfEVbGoWLvN2476Wn6j2MfDxtYCNhM0ie+0MpiQhSDi
-         GB8Tx7VgaboCkfIZfCrVfYeA50jA2/5WIETDJw7D8N51L5Y/fCqJ2V5IcEE5SkWV6wto
-         NAELWgwdmnmEjhdBe0M+OXXXeNEhFyQl4uz/Py9V4stsaYO16p/NLkDnHnDchq+Xp5vb
-         /n33Fcpk+Mu/jKveF26HCUyql/FO9WMWrxx00jL5TbqJK8qgHXVmyetZEicWlDEtLezg
-         SA/FupEnr6dahIC/y3YGQsZl0jf5lSbV9EE6DDxx9PJi1OuIt1MGXLJdHYLX+euoXRym
-         QkUw==
-X-Gm-Message-State: AOAM5326M+FKI+zR0TUVOEg1Drnno5fOjdWo5Ngt2nTboZuVnmC2OLCm
-        eBXghqPaVW6Uv6cSAUlXqhv2MDmjNSwHkDWJ3ae2dKjuT4w=
-X-Google-Smtp-Source: ABdhPJyLAuO4e9Xu8isMl9ymdQ7AI+ydtOG1AwlidXvhIBrkX9CnRqhd3kfJL4eIm3v1nON8i4JlLMbpTvPHazNZM1k=
-X-Received: by 2002:a50:e442:: with SMTP id e2mr2312104edm.186.1604672455336;
- Fri, 06 Nov 2020 06:20:55 -0800 (PST)
+        id S1727211AbgKFO1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 09:27:43 -0500
+Received: from mx2.suse.de ([195.135.220.15]:46544 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726010AbgKFO1m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 09:27:42 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1604672860;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fneYivF7KPk5Vezwqp16bHvlG7pQia60PP+ozhIKNOI=;
+        b=hOSy8tf6Xv9bxsLj3BRpsgcu/m8tXPh77G9b08Scucev/08pfZ/oZN7WOboqt1Phltz0oY
+        EY+Z7IhgTgZK8/cheL0CPQ+pGMcTvUW7Ysp6ShK8LBZpwqpEn7fzXD6giDnRBpzEP5qAeT
+        BwsA/u4RxQJT0sh1JOGSdIWHppyWK2U=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id CBFB7ABCC;
+        Fri,  6 Nov 2020 14:27:39 +0000 (UTC)
+Date:   Fri, 6 Nov 2020 15:27:38 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Jonathan Corbet <corbet@lwn.net>, Guo Ren <guoren@kernel.org>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Kees Cook <keescook@chromium.org>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-doc@vger.kernel.org, linux-csky@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, live-patching@vger.kernel.org
+Subject: Re: [PATCH 11/11 v3] ftrace: Add recording of functions that caused
+ recursion
+Message-ID: <20201106142738.GX20201@alley>
+References: <20201106023235.367190737@goodmis.org>
+ <20201106023548.102375687@goodmis.org>
+ <20201106131317.GW20201@alley>
+ <20201106084131.7dfc3a30@gandalf.local.home>
 MIME-Version: 1.0
-References: <20201104152455.40627-1-quarium@gmail.com>
-In-Reply-To: <20201104152455.40627-1-quarium@gmail.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Fri, 6 Nov 2020 15:20:44 +0100
-Message-ID: <CAMpxmJVFBRwzzyLxi1DQ2ScrggfETFy-5g2bN0Avo9DK5V+GFA@mail.gmail.com>
-Subject: Re: [PATCH 0/3] gpio: pcie-idio-24: Fix IRQ handling
-To:     Arnaud de Turckheim <quarium@gmail.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        William Breathitt Gray <vilhelm.gray@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201106084131.7dfc3a30@gandalf.local.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 4, 2020 at 4:25 PM Arnaud de Turckheim <quarium@gmail.com> wrote:
->
-> This patch set fixes the irq_mask/irq_unmask functions and enables the
-> PLX PEX8311 local interrupts.
->
-> With the current version of the driver, gpiomon (from libgpiod) or a
-> poll(2) on the sysfs value are not working. According to
-> /proc/interrupts, there is no interruption triggered.
-> The main issue is that the local interrupts are not forwarded by the
-> PEX8311 to the PCI.
->
-> There is also two bugs:
->     - The IRQ mask is not correctly updated when unmasking an
->       interruption.
->     - The COS Enable Register value is not correctly updated when
->       masking/unmasking an interruption.
->
-> It seems this problems exist since the initial commit.
->
-> Arnaud de Turckheim (3):
->   gpio: pcie-idio-24: Fix irq mask when masking
->   gpio: pcie-idio-24: Fix IRQ Enable Register value
->   gpio: pcie-idio-24: Enable PEX8311 interrupts
->
->  drivers/gpio/gpio-pcie-idio-24.c | 62 ++++++++++++++++++++++++++++----
->  1 file changed, 56 insertions(+), 6 deletions(-)
->
-> --
-> 2.25.1
->
+On Fri 2020-11-06 08:41:31, Steven Rostedt wrote:
+> On Fri, 6 Nov 2020 14:13:17 +0100
+> Petr Mladek <pmladek@suse.com> wrote:
+> 
+> > JFYI, the code reading and writing the cache looks good to me.
+> > 
+> > It is still possible that some entries might stay unused (filled
+> > with zeroes) but it should be hard to hit in practice. It
+> > is good enough from my POV.
+> 
+> You mean the part that was commented?
 
-Series queued for fixes, thanks!
+Yeah, it is the comment problem when nr_records is pushed forward.
 
-Bartosz
+> > 
+> > I do not give Reviewed-by tag just because I somehow do not have power
+> > to review the entire patch carefully enough at the moment.
+> 
+> No problem. Thanks for looking at it.
+> 
+> I'm adding a link to this thread, so if someone wants proof you helped out
+> on this code, you can have them follow the links ;-)
+> 
+> Anyway, even if I push this to linux-next where I stop rebasing code
+> (because of test coverage), I do rebase for adding tags. So if you ever get
+> around at looking at this code, I can add that tag later (before the next
+> merge window), or if you find something, I could fix it with a new patch and
+> give you a Reported-by.
+
+Good to know.
+
+Best Regards,
+Petr
