@@ -2,154 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A85DD2A90F8
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 09:06:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 764B82A9101
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 09:10:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726619AbgKFIGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 03:06:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40134 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726248AbgKFIGO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 03:06:14 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85971C0613D2
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 00:06:12 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id x13so341771pgp.7
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 00:06:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=qS7CqIL0iWOp7yrf0mdTJOAu8D0DMWNDCm6U/2JWWds=;
-        b=PMhWbCpgW+tpRHJYe2IsNeYxmYLvxCH0reHZ6KmT8CVfzMsHn2a57NE8DGqMgodYsH
-         15j3SPFfJYGE/gLepC3xZxR7mygSjQ0gxIegjqQShiWH8pKcXgvNd3bC0alnn4uEjrL0
-         SBSVg60mzYSlfpHUypl9n6J1QG+8NyQCGzTjwjXEogzD6Bux9jNzLBPTzFC5Zt5w8K1C
-         +8EBtxB6RJBJ0X6EC5sVAp5Nr3DRXspJYOET9yrpsEtc74GnAx7cT0SRWjGZ5GSBNIt3
-         d/am9TiqLYv3L0qgsfE+UtZUHi4esVxgp2YxtFKa0BpPeA5tmR/8jY2l4p2aYQuuO4oF
-         f8Sg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=qS7CqIL0iWOp7yrf0mdTJOAu8D0DMWNDCm6U/2JWWds=;
-        b=mcdlePasEfqIhTilA1wMNu0ClyYNhoKCOrJfdalB8AY+dAuLDy3dZUBFj5pq36CS0J
-         VzPBdcB79TF81UifBNIaE8RdBDJWebz0/lr+n4E4lDf0fQBVkhhPC3izeF0nxrW8gi3G
-         f694pCwLHSzTU8453O/JMpSW7PDReoiZhtnvZuHot/+uHcODo1DJrCNDeBj8QQ7JjQaK
-         YsSghHEMKqEpysPEtVcpz3H3tB3S6UNUcsvpbQXIZ8Uunz3BH9pMilqMFekguw8TnEUH
-         dqnPgYd4ly20BZkycUexJgcWReLFwlAOjIw7ZhM7XEjhPlHPbklPmyIALrJJuieQ4xsc
-         22PQ==
-X-Gm-Message-State: AOAM530l1rR7h9REyODavS3XceDFtWA7YPc9NMq6qX0GQ5rntB1dDItL
-        o8zyg3wOlGv4SX7Xo6UcZvBXWIq8SADa
-X-Google-Smtp-Source: ABdhPJyjW7oZl7LsL5U6Zw7jwCpqFPldt1WQC3L/aFckMH28fzN7T2z0KZ2dO2ofuwkJ11dTAAz4fA==
-X-Received: by 2002:a17:90b:2342:: with SMTP id ms2mr1239856pjb.136.1604649971992;
-        Fri, 06 Nov 2020 00:06:11 -0800 (PST)
-Received: from work ([103.59.133.81])
-        by smtp.gmail.com with ESMTPSA id hz18sm1149606pjb.13.2020.11.06.00.06.09
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 06 Nov 2020 00:06:11 -0800 (PST)
-Date:   Fri, 6 Nov 2020 13:36:05 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Hemant Kumar <hemantk@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jhugo@codeaurora.org, bbhatt@codeaurora.org,
-        loic.poulain@linaro.org
-Subject: Re: [PATCH v1 2/2] bus: mhi: core: Check for device supported event
- rings and channels
-Message-ID: <20201106080605.GI3473@work>
-References: <1603504843-38557-1-git-send-email-hemantk@codeaurora.org>
- <1603504843-38557-3-git-send-email-hemantk@codeaurora.org>
+        id S1726492AbgKFIK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 03:10:29 -0500
+Received: from mx2.suse.de ([195.135.220.15]:60842 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725830AbgKFIK3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 03:10:29 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1604650227;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=cnKqsKK811Yuykke9FVYpJ7LXK+WwGHKEzsvdLhzzr0=;
+        b=JExK9dBxhnGDZWRQA3bTSMWQPKnF9h/Hh60uLB8P8hvxhXBvaphsQH+GNbxiUND8WSImde
+        NoWc324vFEdE6NgN9LrqRMdmFnXSB4Q+z66uIs/5hZHmjx2R1EAL0+9u3K/w1ieSraMzLk
+        WgjyL3cUKkDUCseQ1hk4AEhgFQUuinU=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 6088AAB8F;
+        Fri,  6 Nov 2020 08:10:27 +0000 (UTC)
+Date:   Fri, 6 Nov 2020 09:10:26 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Feng Tang <feng.tang@intel.com>
+Cc:     Vlastimil Babka <vbabka@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@suse.de>, dave.hansen@intel.com,
+        ying.huang@intel.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 0/2] mm: fix OOMs for binding workloads to movable
+ zone only node
+Message-ID: <20201106081026.GB7247@dhcp22.suse.cz>
+References: <20201104085343.GA18718@dhcp22.suse.cz>
+ <20201105014028.GA86777@shbuild999.sh.intel.com>
+ <20201105120818.GC21348@dhcp22.suse.cz>
+ <4029c079-b1f3-f290-26b6-a819c52f5200@suse.cz>
+ <20201105125828.GG21348@dhcp22.suse.cz>
+ <20201105130710.GB16525@shbuild999.sh.intel.com>
+ <20201105131245.GH21348@dhcp22.suse.cz>
+ <20201105134305.GA16424@shbuild999.sh.intel.com>
+ <20201105161612.GM21348@dhcp22.suse.cz>
+ <20201106070656.GA129085@shbuild999.sh.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1603504843-38557-3-git-send-email-hemantk@codeaurora.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201106070656.GA129085@shbuild999.sh.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 07:00:43PM -0700, Hemant Kumar wrote:
-> It is possible that the device does not support the number of event
-> rings and channels that the controller would like to use. Read the
-> MHICFG to determine device-side support and if the controller requests
-> more than the device supports, bailout without configuring device MMIO
-> registers.
+On Fri 06-11-20 15:06:56, Feng Tang wrote:
+> On Thu, Nov 05, 2020 at 05:16:12PM +0100, Michal Hocko wrote:
+> > On Thu 05-11-20 21:43:05, Feng Tang wrote:
+> > > On Thu, Nov 05, 2020 at 02:12:45PM +0100, Michal Hocko wrote:
+> > > > On Thu 05-11-20 21:07:10, Feng Tang wrote:
+> > > > [...]
+> > > > > My debug traces shows it is, and its gfp_mask is 'GFP_KERNEL'
+> > > > 
+> > > > Can you provide the full information please? Which node has been
+> > > > requested. Which cpuset the calling process run in and which node has
+> > > > the allocation succeeded from? A bare dump_stack without any further
+> > > > context is not really helpful.
+> > > 
+> > > I don't have the same platform as the original report, so I simulated
+> > > one similar setup (with fakenuma and movablecore), which has 2 memory
+> > > nodes: node 0 has DMA0/DMA32/Movable zones, while node 1 has only
+> > > Movable zone. With it, I can got the same error and same oom callstack
+> > > as the original report (as in the cover-letter).
+> > > 
+> > > The test command is:
+> > > 	# docker run -it --rm --cpuset-mems 1 ubuntu:latest bash -c "grep Mems_allowed /proc/self/status"
+> > > 
+> > > To debug I only added some trace in the __alloc_pages_nodemask(), and
+> > > for the callstack which get the page successfully:
+> > > 
+> > > 	[  567.510903] Call Trace:
+> > > 	[  567.510909]  dump_stack+0x74/0x9a
+> > > 	[  567.510910]  __alloc_pages_nodemask.cold+0x22/0xe5
+> > > 	[  567.510913]  alloc_pages_current+0x87/0xe0
+> > > 	[  567.510914]  __vmalloc_node_range+0x14c/0x240
+> > > 	[  567.510918]  module_alloc+0x82/0xe0
+> > > 	[  567.510921]  bpf_jit_alloc_exec+0xe/0x10
+> > > 	[  567.510922]  bpf_jit_binary_alloc+0x7a/0x120
+> > > 	[  567.510925]  bpf_int_jit_compile+0x145/0x424
+> > > 	[  567.510926]  bpf_prog_select_runtime+0xac/0x130
+> > 
+> > As already said this doesn't really tell much without the additional
+> > information.
+> > 
+> > > The incomming parameter nodemask is NULL, and the function will first try the
+> > > cpuset nodemask (1 here), and the zoneidx is only granted 2, which makes the
+> > > 'ac's preferred zone to be NULL. so it goes into __alloc_pages_slowpath(),
+> > > which will first set the nodemask to 'NULL', and this time it got a preferred
+> > > zone: zone DMA32 from node 0, following get_page_from_freelist will allocate
+> > > one page from that zone. 
+> > 
+> > I do not follow. Both hot and slow paths of the allocator set
+> > ALLOC_CPUSET or emulate it by mems_allowed when cpusets are nebaled
+> > IIRC. This is later enforced in get_page_from_free_list. There are some
+> > exceptions when the allocating process can run away from its cpusets -
+> > e.g. IRQs, OOM victims and few other cases but definitely not a random
+> > allocation. There might be some subtle details that have changed or I
+> > might have forgot but 
 > 
-> Signed-off-by: Hemant Kumar <hemantk@codeaurora.org>
-> ---
->  drivers/bus/mhi/core/init.c     | 31 +++++++++++++++++++++++++++++++
->  drivers/bus/mhi/core/internal.h |  4 ++++
->  2 files changed, 35 insertions(+)
+> yes, I was confused too. IIUC, the key check inside get_page_from_freelist()
+> is 
 > 
-> diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
-> index 70fd6af..35a6b1d 100644
-> --- a/drivers/bus/mhi/core/init.c
-> +++ b/drivers/bus/mhi/core/init.c
-> @@ -488,6 +488,37 @@ int mhi_init_mmio(struct mhi_controller *mhi_cntrl)
->  		{ 0, 0, 0 }
->  	};
->  
-> +	/* range check b/w host and device supported ev rings and channels */
-> +	ret = mhi_read_reg(mhi_cntrl, base, MHICFG, &val);
-> +	if (ret) {
-> +		dev_err(dev, "Unable to read MHICFG register\n");
-> +		return -EIO;
-> +	}
-> +
-> +	if (MHICFG_NHWER(val) < mhi_cntrl->hw_ev_rings) {
-> +		dev_err(dev, "#HWEV ring: host requires %d dev supports %d\n",
-> +			mhi_cntrl->hw_ev_rings, MHICFG_NHWER(val));
-
-Can you please improve this error message? Something like, "Host
-requires %d hw event rings but dev supports only %d".
-
-Do this for below errors as well. With that,
-
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-
-Thanks,
-Mani
-
-> +		return -EIO;
-> +	}
-> +
-> +	if (MHICFG_NER(val) < mhi_cntrl->total_ev_rings) {
-> +		dev_err(dev, "#EV ring: host requires %d dev supports %d\n",
-> +			mhi_cntrl->total_ev_rings, MHICFG_NER(val));
-> +		return -EIO;
-> +	}
-> +
-> +	if (MHICFG_NHWCH(val) < mhi_cntrl->hw_chan) {
-> +		dev_err(dev, "#HWCH: host requires %d dev supports %d\n",
-> +			mhi_cntrl->hw_chan, MHICFG_NHWCH(val));
-> +		return -EIO;
-> +	}
-> +
-> +	if (MHICFG_NCH(val) < mhi_cntrl->max_chan) {
-> +		dev_err(dev, "#CH: host requires %d dev supports %d\n",
-> +			mhi_cntrl->max_chan, MHICFG_NCH(val));
-> +		return -EIO;
-> +	}
-> +
->  	dev_dbg(dev, "Initializing MHI registers\n");
->  
->  	/* Read channel db offset */
-> diff --git a/drivers/bus/mhi/core/internal.h b/drivers/bus/mhi/core/internal.h
-> index 3d8e480..9cbfa71 100644
-> --- a/drivers/bus/mhi/core/internal.h
-> +++ b/drivers/bus/mhi/core/internal.h
-> @@ -28,6 +28,10 @@ extern struct bus_type mhi_bus_type;
->  #define MHICFG_NHWCH_SHIFT (8)
->  #define MHICFG_NCH_MASK (0xFF)
->  #define MHICFG_NCH_SHIFT (0)
-> +#define MHICFG_NHWER(n) (((n) & MHICFG_NHWER_MASK) >> MHICFG_NHWER_SHIFT)
-> +#define MHICFG_NER(n) (((n) & MHICFG_NER_MASK) >> MHICFG_NER_SHIFT)
-> +#define MHICFG_NHWCH(n) (((n) & MHICFG_NHWCH_MASK) >> MHICFG_NHWCH_SHIFT)
-> +#define MHICFG_NCH(n) (((n) & MHICFG_NCH_MASK) >> MHICFG_NCH_SHIFT)
->  
->  #define CHDBOFF (0x18)
->  #define CHDBOFF_CHDBOFF_MASK (0xFFFFFFFF)
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
+> 	if (cpusets_enabled() &&
+> 		(alloc_flags & ALLOC_CPUSET) &&
+> 		!__cpuset_zone_allowed(zone, gfp_mask))
 > 
+> In our case (kernel page got allocated), the first 2 conditions are true,
+> and for __cpuset_zone_allowed(), the possible place to return true is
+> checking parent cpuset's nodemask
+> 
+> 	cs = nearest_hardwall_ancestor(task_cs(current));
+> 	allowed = node_isset(node, cs->mems_allowed);
+> 
+> This will override the ALLOC_CPUSET check.
+
+Yes and this is ok because that is defined hierarchical semantic of the
+cpusets which applies to any !hardwalled allocation. Cpusets are quite
+non intuitive. Re-reading the previous discussion I have realized that
+me trying to not go into those details might have mislead you. Let me
+try again and clarify that now.
+
+I was talking in context of the patch you are proposing and that is a
+clear violation of the cpuset isolation. Especially for hardwalled
+setups because it allows to spill over to other nodes which shouldn't be
+possible except for few exceptions which shouldn't generate a lot of
+allocations (e.g. oom victim exiting, IRQ context).
+
+What I was not talking about, and should have been more clear about, is
+that without hardwall resp. exclusive nodes the isolation is best effort
+only for most kernel allocation requests (or more specifically those
+without __GFP_HARDWALL). Your patch doesn't distinguish between those
+and any non movable allocations and effectively allowed to runaway even
+for hardwalled allocations which are not movable. Those can be controlled
+by userspace very easily.
+
+I hope this clarifies it a bit more and sorry if I mislead you.
+-- 
+Michal Hocko
+SUSE Labs
