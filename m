@@ -2,139 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 014542A9811
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 16:10:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9A192A9814
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 16:10:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727475AbgKFPKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 10:10:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50240 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726422AbgKFPKO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 10:10:14 -0500
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58695C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 07:10:12 -0800 (PST)
-Received: by mail-lf1-x141.google.com with SMTP id z21so1081529lfe.12
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 07:10:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=J875vJy4G6JRz4RHdTS0OV7v0tPgG3iBUds7VS16zmE=;
-        b=CfjTEv+JuiJbqP3tNIDaqkmsOq4d/P2UJ3l2SP5rP3+619BmCSAfpFZjxtSyqXgGyo
-         JA516SjkbzjGilEMWaHbWskuDT9po/r+gpxXj4h6rmOJnU43+qEgP3j4Uufzu3OIdQlO
-         e1zfOBsXkNVdYo+Ke4+mmkpASCd+AJqpNWLes3+lqYvRqm8K7grgwgpSV21Q/JrEBo+m
-         2oiZFZE4uAk06S2nINjhrDlceGJVuOxzd9LNKS4RlIBqBHV+/dXY2QceY4U3DZ6Uk5xr
-         LHsentyuwZxHQ7cAiqMIW3ZVLco6qr3Qe0hcu5t7VH3jrckoysHcDsJLe6AoZk10pz6E
-         +/4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=J875vJy4G6JRz4RHdTS0OV7v0tPgG3iBUds7VS16zmE=;
-        b=XsT4Ao3ibRhXl6HIGdYW6FhTlGLyNhYAN/UAyeg75e9bv8B9kdZ00uxPsfRWAQRM0g
-         MZTNucucTC41/T2PBvmqWtImcPyg6vN+qvB4bKwzgAUdySo/SwxtWFOLlrw4JkUeF0zV
-         WN7AoycAqdz+r0doL49oIta0J4R8JNH70mlNoIq9NCXl5wQoKFypHvu3XESugbZINCGh
-         +MHrBqsidlI9d9/z+uc0SyQOhOnqn2iQcH3DIerTnjXpJEAYK48IuTaaYcMMIBlV4fNS
-         aBdo46jwzbGwAWVRW3J2utQMRaZEmYwbkE3lPpQtgi3+E1v6WwQbq+Fda9pnpDxQcicD
-         D5mg==
-X-Gm-Message-State: AOAM530raD6Uv0B14zSPuoDw6rsKLiOSByYiFQh8vSVnWakU2yr+coSz
-        Cs5hizwZnrz/EktSambJ+aHZe3E39QuQkK1LbXahow==
-X-Google-Smtp-Source: ABdhPJyaeOu53rdnZPr4ni399H9U3vOZ12MXF2gx2gxY/O2mk7BoRTDLUdbJDE26YRcI8seTjqgYhARUGTByNKp95ZQ=
-X-Received: by 2002:a19:8741:: with SMTP id j62mr1018286lfd.449.1604675410452;
- Fri, 06 Nov 2020 07:10:10 -0800 (PST)
-MIME-Version: 1.0
-References: <20201104231928.1494083-1-shakeelb@google.com> <alpine.LSU.2.11.2011051751130.4455@eggly.anvils>
-In-Reply-To: <alpine.LSU.2.11.2011051751130.4455@eggly.anvils>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Fri, 6 Nov 2020 07:09:58 -0800
-Message-ID: <CALvZod6cd8FipvBu-M7cT+tXSSnDmAsikeqgbsGh81fFMdu-Og@mail.gmail.com>
-Subject: Re: [PATCH] mm/rmap: always do TTU_IGNORE_ACCESS
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Jerome Glisse <jglisse@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@suse.com>, Linux MM <linux-mm@kvack.org>,
+        id S1727531AbgKFPK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 10:10:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45414 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727499AbgKFPKZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 10:10:25 -0500
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8ADB322227;
+        Fri,  6 Nov 2020 15:10:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604675425;
+        bh=qThnILg5nCb2Hmeq+KRlqMIjinhD+Gy6r+f/5IjtZiw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pfKvbldlEjCUrMNJLyz6fMKmY16F90mXAb0rAyB1oXKnd22Z8cE41SI1B7o4oPWX7
+         VWYOnlKUOLf3h+uRmL3y3+Hs9/Mc8PVRIOq1h6MbC+CoI7jO8PpPhzb/SGglWGdToj
+         2oZ8sjwhQv2fFDzzIAgc9xlPTk+/6o7lPCylfiJs=
+Date:   Fri, 6 Nov 2020 15:10:11 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Cheng-Jui.Wang@mediatek.com,
+        Android Kernel Team <kernel-team@android.com>,
         LKML <linux-kernel@vger.kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Daniel Mentz <danielmentz@google.com>,
+        linux-spi@vger.kernel.org
+Subject: Re: [PATCH v1 2/2] spi: Populate fwnode in of_register_spi_device()
+Message-ID: <20201106151011.GE49612@sirena.org.uk>
+References: <20201104205431.3795207-1-saravanak@google.com>
+ <20201104205431.3795207-2-saravanak@google.com>
+ <20201105171201.GF4856@sirena.org.uk>
+ <CAGETcx9_En10j0DwktXtPDrx=Aqdr2iWEuHmYB-=SnfODTmMfg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="wTWi5aaYRw9ix9vO"
+Content-Disposition: inline
+In-Reply-To: <CAGETcx9_En10j0DwktXtPDrx=Aqdr2iWEuHmYB-=SnfODTmMfg@mail.gmail.com>
+X-Cookie: It's the thought, if any, that counts!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 5, 2020 at 7:00 PM Hugh Dickins <hughd@google.com> wrote:
->
-> I don't know why this was addressed to me in particular (easy to imagine
-> I've made a mod at some time that bears on this, but I haven't found it);
-> but have spent longer considering the patch than I should have done -
-> apologies to everyone else I should be replying to.
->
 
-I really appreciate your insights and historical anecdotes. I always
-learn something new.
+--wTWi5aaYRw9ix9vO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> On Wed, 4 Nov 2020, Shakeel Butt wrote:
->
-> > Since the commit 369ea8242c0f ("mm/rmap: update to new mmu_notifier
-> > semantic v2"), the code to check the secondary MMU's page table access
-> > bit is broken for !(TTU_IGNORE_ACCESS) because the page is unmapped from
-> > the secondary MMU's page table before the check. More specifically for
-> > those secondary MMUs which unmap the memory in
-> > mmu_notifier_invalidate_range_start() like kvm.
->
-> Well, "broken" seems a bit unfair to 369ea8242c0f. It put a warning
-> mmu_notifier_invalidate_range_start() at the beginning, and matching
-> mmu_notifier_invalidate_range_end() at the end of try_to_unmap_one();
-> with its mmu_notifier_invalidate_range() exactly where the
-> mmu_notifier_invalidate_page() was before (I think the story gets
-> more complicated later).  Yes, if notifiee takes invalidate_range_start()
-> as signal to invalidate all their own range, then that will sometimes
-> cause them unnecessary invalidations.
->
-> Not just for !TTU_IGNORE_ACCESS: there's also the !TTU_IGNORE_MLOCK
-> case meeting a VM_LOCKED vma and setting PageMlocked where that had
-> been missed earlier (and page_check_references() has intentionally but
-> confusingly marked this case as PAGEREF_RECLAIM, not to reclaim the page,
-> but to reach the try_to_unmap_one() which will recognize and fix it up -
-> historically easier to do there than in page_referenced_one()).
->
-> But I think mmu_notifier is a diversion from what needs thinking about.
->
-> >
-> > However memory reclaim is the only user of !(TTU_IGNORE_ACCESS) or the
-> > absence of TTU_IGNORE_ACCESS and it explicitly performs the page table
-> > access check before trying to unmap the page. So, at worst the reclaim
-> > will miss accesses in a very short window if we remove page table access
-> > check in unmapping code.
->
-> I agree with you and Johannes that the short race window when the page
-> might be re-referenced is no issue at all: the functional issue is the
-> one in your next paragraph.  If that's agreed by memcg guys, great,
-> then this patch is a nice observation and a welcome cleanup.
->
-> >
-> > There is an unintented consequence of !(TTU_IGNORE_ACCESS) for the memcg
-> > reclaim. From memcg reclaim the page_referenced() only account the
-> > accesses from the processes which are in the same memcg of the target
-> > page but the unmapping code is considering accesses from all the
-> > processes, so, decreasing the effectiveness of memcg reclaim.
->
-> Are you sure it was unintended?
->
-> Since the dawn of memcg reclaim, it has been the case that a recent
-> reference in a "foreign" vma has rescued that page from being reclaimed:
-> now you propose to change that.  I expect some workflows will benefit
-> and others be disadvantaged.  I have no objection myself to the change,
-> but I do think it needs to be better highlighted here, and explicitly
-> agreed by those more familiar with memcg reclaim.
+On Thu, Nov 05, 2020 at 11:26:44AM -0800, Saravana Kannan wrote:
+> On Thu, Nov 5, 2020 at 9:12 AM Mark Brown <broonie@kernel.org> wrote:
 
-The reason I said unintended was due to bed7161a519a2 ("Memory
-controller: make page_referenced() cgroup aware"). From the commit
-message it seems like the intention was to not be influenced by
-foreign accesses during memcg reclaim but it missed to make
-try_to_unmap_one() memcg aware.
+> > >       of_node_get(nc);
+> > >       spi->dev.of_node = nc;
+> > > +     spi->dev.fwnode = of_fwnode_handle(nc);
 
-I agree with you that this is a behavior change and we have explicitly
-agree to not let memcg reclaim be influenced by foreign accesses.
+> > Why is this a manual step in an individual subsystem rather than
+> > something done in the driver core
+
+> It can't be done in driver core because "fwnode" is the abstraction
+> driver core uses. It shouldn't care or know if the firmware is DT,
+> ACPI or something else -- that's the whole point of fwnode.
+
+Clearly it *can* be done in the driver core, the question is do we want
+to.  The abstraction thing feels weaker at init than use after init,
+"init from X" is a common enough pattern.  If it's done by the driver
+core there would be no possibility of anything that creates devices
+getting things wrong here, and the driver core already has a bunch of
+integration with both DT and ACPI so it seems like a weird boundary to
+have.
+
+> > and wouldn't that just be a case of
+> > checking to see if there is a fwnode already set and only initializing
+> > if not anyway?
+
+> Honestly, we should be deleting device.of_node and always use
+> device.fwnode. But that's a long way away (lots of clean up). The
+> "common" place to do this is where a struct device is created from a
+> firmware (device_node, acpi_device, etc). I don't see a "common place"
+> for when a device is created out of a device_node, so I think this
+> patch is a reasonable middle ground.
+
+That is obviously a much bigger job that's going to require going
+through subsystems (and their drivers) properly to eliminate references
+to of_node, I'm not clear how doing this little bit per subsystem rather
+than in the core helps or hinders going through and doing that.  I don't
+think you'll ever have a single place where a device is constructed, and
+I'm not sure that that is even desirable, since there are per subsystem
+things that need doing.
+
+I'd be totally happy with eliminating all references to of_node from the
+subsystem but for this it seems more sensible to do it in the driver
+core and cover everything rather than running around everything that
+creates a device from DT individually and having stuff fall through the
+cracks - it's been a year since the equivalent change was made in I2C
+for example, we've had new buses merged in that time never mind SPI not
+being covered.
+
+BTW I'm also missing patch 1 and the cover letter for this series, not
+sure what's going on there?
+
+--wTWi5aaYRw9ix9vO
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+lZ1IACgkQJNaLcl1U
+h9DyUgf9GVIIEgVFeiFwfpBxRp9KUtKikyJJ4G/Plgv+Bogc094JDTo+SIaMoQbG
+cmwe2/ku3ir8I4FL8ud8W572cFMJbzHdG+giRDMDzb69A+mmfwUiW8D48ZhVX4ks
+LGqvriy1bH0BKfzAvoduiZTjGxeIEeZ7/k2i1r4oq9X35GLl3o4po4045SW8uWVQ
+XQ9Gdy0PgMcUEcdwDnWlaRzXmUUMmYRpVdhliGYiAoQJ754UPh2Vl9dCj3nhw1vI
+uI0s2QMjWdYju1fJtjkStB8b8mZkSWyoeoMJSZhi+d8Ie3bEi7u5QPc+F4f9Ln59
+IJVRNPipUqgtxuadJaa6Ak57PilcXA==
+=zoTL
+-----END PGP SIGNATURE-----
+
+--wTWi5aaYRw9ix9vO--
