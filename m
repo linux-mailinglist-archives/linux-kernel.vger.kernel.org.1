@@ -2,118 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A345B2A9B02
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 18:41:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4126A2A9B04
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 18:41:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727499AbgKFRlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 12:41:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46252 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726075AbgKFRlM (ORCPT
+        id S1727635AbgKFRl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 12:41:27 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:46340 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726075AbgKFRl1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 12:41:12 -0500
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33281C0613CF;
-        Fri,  6 Nov 2020 09:41:12 -0800 (PST)
-Received: by mail-ot1-x341.google.com with SMTP id i18so1985109ots.0;
-        Fri, 06 Nov 2020 09:41:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=uLhEdPzLKPN9y0Y1FvDCW1msQK/rmAeoz0yPSS7CP/s=;
-        b=jqRks1dh3gjGCUabb2ufNQxlNGI8bjL4On2wkLX9Ph8+OqEoK6yCVqP3PSAQrxYePZ
-         OvlbZdByOacc3+0thZjFFoJm5sywILYb9ecoghyIdSRyo4SksjTqKEKwrv0eMEvFrDOH
-         8OeowFAovGAqDBPuc4PLswmyAHnzXKiTZzXvGce0fwYP1UM5Yl3dBudxTkPFCVe1S/7J
-         HAOzPav18RCtb6VZLoE0ko9LqVCeZKOK/Wi1L+TMXcb9bf/CF+M8dfnVO41tpnENV2ly
-         MAYEG4gwCPHWmHxXyrhyEG6xUqX8bAIUtALTw5Z+uyC7qKHjxcabmD2CZVoimVwI0eQf
-         yZCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=uLhEdPzLKPN9y0Y1FvDCW1msQK/rmAeoz0yPSS7CP/s=;
-        b=EqNe9g6StmY1jZTLC3jxERX7ROPRbwN5Oy4gd8JRfGVBgUJgAqj3EPjdndKKUCdpi/
-         PjKOItYSBztuF/skVQq34puIVS3mKwJZQ4MWxmAeQ9J/H06YtLowRKcGhJ3DAp+zx3mL
-         FGL2E0EvxnWZFIZMUx7iblYbaOBrRql4kFNaWQcURFob729Fs8XPA6VXgcv9+yTS6Lza
-         hasgVTDkV0pz4dNVUxHT822I3qre/8weR7HnA0MIQ/eQxtXtJuTlR4cKKqVlQxP3QFYQ
-         Q1VltveFTRbOxCOXfYbh7rn4tmOFU5JvYGDVpn4SiREpcpYbPsQDtr//bbjUPwYcul5F
-         0SDg==
-X-Gm-Message-State: AOAM531sXP4uKjk9z8QVlb9yauwZHq5DhiYfDe8Gool8q8R8pYP6Fl6B
-        Fejou1PlsLFCdMsjtMQUpf8zZb0RPGo=
-X-Google-Smtp-Source: ABdhPJxSjaZ0nuVUyMqzhEbLb4XE4zzKDOr9zqrn8ee4fvTdWOQ00WwQQvU2vC4TLwd24DGXXkbhCQ==
-X-Received: by 2002:a9d:720e:: with SMTP id u14mr1893659otj.65.1604684471589;
-        Fri, 06 Nov 2020 09:41:11 -0800 (PST)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id e3sm464230ooq.0.2020.11.06.09.41.10
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 06 Nov 2020 09:41:10 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Fri, 6 Nov 2020 09:41:09 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Christophe Roullier <christophe.roullier@st.com>
-Cc:     wim@linux-watchdog.org, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@st.com, linux-watchdog@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org,
-        Etienne Carriere <etienne.carriere@st.com>
-Subject: Re: [PATCH V2 1/1] watchdog: stm32_iwdg: don't print an error on
- probe deferral
-Message-ID: <20201106174109.GF14837@roeck-us.net>
-References: <20201106142327.3129-1-christophe.roullier@st.com>
- <20201106142327.3129-2-christophe.roullier@st.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201106142327.3129-2-christophe.roullier@st.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        Fri, 6 Nov 2020 12:41:27 -0500
+Received: by linux.microsoft.com (Postfix, from userid 1046)
+        id 226BF20BE4A6; Fri,  6 Nov 2020 09:41:26 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 226BF20BE4A6
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1604684486;
+        bh=/E8p26BZs+ElXJp0kzG7i/GtDQpHpgqTRJRJOBKzc7c=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=bcYquINMUl7AEexnx6z825WlUruPKZPoDg6YR5G5OiuWryDDlOi3zdvH5XVoy/t7g
+         7yDwQxPun5EDf9OFv7INJ+kgnKh7aByCLuPGd7D2b6BsroV0beZRzydMIVDSXSmHbh
+         kyx8Fe7Yi1eI+e4e5LBmwYyoIEcEylyxVIzTgbPw=
+From:   Dhananjay Phadke <dphadke@linux.microsoft.com>
+To:     rayagonda.kokatanur@broadcom.com
+Cc:     andriy.shevchenko@linux.intel.com,
+        bcm-kernel-feedback-list@broadcom.com, brendanhiggins@google.com,
+        dphadke@linux.microsoft.com, f.fainelli@gmail.com,
+        linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org, lori.hikichi@broadcom.com,
+        ray.jui@broadcom.com, rjui@broadcom.com, sbranden@broadcom.com,
+        wsa@kernel.org
+Subject: Re: [PATCH v3 5/6] i2c: iproc: handle master read request
+Date:   Fri,  6 Nov 2020 09:41:26 -0800
+Message-Id: <1604684486-16272-1-git-send-email-dphadke@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <CAHO=5PGAMvRAyrBF3_ubbgciqHV3hAbmt4B7Rb3hdibMbgs6ZQ@mail.gmail.com>
+References: <CAHO=5PGAMvRAyrBF3_ubbgciqHV3hAbmt4B7Rb3hdibMbgs6ZQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 06, 2020 at 03:23:27PM +0100, Christophe Roullier wrote:
-> From: Etienne Carriere <etienne.carriere@st.com>
-> 
-> Do not print an error trace when deferring probe for clock resources.
-> 
-> Signed-off-by: Etienne Carriere <etienne.carriere@st.com>
-> Signed-off-by: Christophe Roullier <christophe.roullier@st.com>
+On Thu, 5 Nov 2020 15:13:04 +0530, Rayagonda Kokatanur wrote:
+>> So the suggestion was to set HW threshold for rx fifo interrupt, not
+>> really a SW property. By setting it in DT, makes it easier to
+>> customize for target system, module param needs or ioctl makes it
+>> dependent on userpsace to configure it.
+>>
+>> The need for tasklet seems to arise from the fact that many bytes are
+>> left in the fifo. If there's a common problem here, such tasklet would be
+>> needed in i2c subsys rather than controller specific tweak, akin to
+>> how networking uses NAPI or adding block transactions to the interface?
+>>
+>> For master write-read event, it seems both IS_S_RD_EVENT_SHIFT and
+>> IS_S_RX_EVENT_SHIFT are detected, which implies that core is late to
+>> drain rx fifo i.e. write is complete and the read has started on the bus?
+>
+>Yes it's true that for master write-read events both
+>IS_S_RD_EVENT_SHIFT and IS_S_RX_EVENT_SHIFT  are coming together.
+>So before the slave starts transmitting data to the master, it should
+>first read all data from rx-fifo i.e. complete master write and then
+>process master read.
+>
+>To minimise interrupt overhead, we are batching 64bytes.
+>To keep isr running for less time, we are using a tasklet.
+>Again to keep the tasklet not running for more than 20u, we have set
+>max of 10 bytes data read from rx-fifo per tasklet run.
+>
+>If we start processing everything in isr and using rx threshold
+>interrupt, then isr will run for a longer time and this may hog the
+>system.
+>For example, to process 10 bytes it takes 20us, to process 30 bytes it
+>takes 60us and so on.
+>So is it okay to run isr for so long ?
+>
+>Keeping all this in mind we thought a tasklet would be a good option
+>and kept max of 10 bytes read per tasklet.
+>
+>Please let me know if you still feel we should not use a tasklet and
+>don't batch 64 bytes.
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Deferring to tasklet is OK, could use a kernel thread (i.e. threaded_irq)
+as i2c rate is quite low.
 
-> ---
->  drivers/watchdog/stm32_iwdg.c | 13 +++++--------
->  1 file changed, 5 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/watchdog/stm32_iwdg.c b/drivers/watchdog/stm32_iwdg.c
-> index 25188d6bbe15..a3436c296c97 100644
-> --- a/drivers/watchdog/stm32_iwdg.c
-> +++ b/drivers/watchdog/stm32_iwdg.c
-> @@ -162,18 +162,15 @@ static int stm32_iwdg_clk_init(struct platform_device *pdev,
->  	u32 ret;
->  
->  	wdt->clk_lsi = devm_clk_get(dev, "lsi");
-> -	if (IS_ERR(wdt->clk_lsi)) {
-> -		dev_err(dev, "Unable to get lsi clock\n");
-> -		return PTR_ERR(wdt->clk_lsi);
-> -	}
-> +	if (IS_ERR(wdt->clk_lsi))
-> +		return dev_err_probe(dev, PTR_ERR(wdt->clk_lsi), "Unable to get lsi clock\n");
->  
->  	/* optional peripheral clock */
->  	if (wdt->data->has_pclk) {
->  		wdt->clk_pclk = devm_clk_get(dev, "pclk");
-> -		if (IS_ERR(wdt->clk_pclk)) {
-> -			dev_err(dev, "Unable to get pclk clock\n");
-> -			return PTR_ERR(wdt->clk_pclk);
-> -		}
-> +		if (IS_ERR(wdt->clk_pclk))
-> +			return dev_err_probe(dev, PTR_ERR(wdt->clk_pclk),
-> +					     "Unable to get pclk clock\n");
->  
->  		ret = clk_prepare_enable(wdt->clk_pclk);
->  		if (ret) {
-> -- 
-> 2.17.1
-> 
+But do enable rx_threshold and read out early. This will avoid fifo full
+or master write-read situation where lot of bytes must be drained from rx
+fifo before serving tx fifo (avoid tx underrun).
+
+Best would have been setting up DMA into mem (some controllers seem capable).
+In absence of that, it's a trade off: if rx intr threshold is low,
+there will be more interrupts, but less time spent in each. Default could
+still be 64B or no-thresh (allow override in dtb).
+
+Few other comments -
+
+>+		/* schedule tasklet to read data later */
+>+		tasklet_schedule(&iproc_i2c->slave_rx_tasklet);
+>+
+>+		/* clear only IS_S_RX_EVENT_SHIFT interrupt */
+>+		iproc_i2c_wr_reg(iproc_i2c, IS_OFFSET,
+>+				 BIT(IS_S_RX_EVENT_SHIFT));
+>+	}
+
+Why clearing one rx interrupt bit here after scheduling tasklet? Should all that
+be done by tasklet? Also should just return after scheduling tasklet?
+
+Thanks,
+Dhananjay
