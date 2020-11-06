@@ -2,137 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12CAF2A9BAF
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 19:16:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CEC802A9BB4
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 19:17:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727838AbgKFSQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 13:16:50 -0500
-Received: from mga02.intel.com ([134.134.136.20]:18093 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726320AbgKFSQu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 13:16:50 -0500
-IronPort-SDR: 0ERUQrx9svYpW7cxDnlGOyBPDgqwabT/Mxpx2119LGxuxRSsDfiMHHcGaPDVn5UNWECalwSQRR
- /B0psuxu4nCA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9797"; a="156581882"
-X-IronPort-AV: E=Sophos;i="5.77,457,1596524400"; 
-   d="scan'208";a="156581882"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2020 10:16:49 -0800
-IronPort-SDR: Ka0NRVjMOuYPOBeUcJOa8OIqahm5plMd42C7NVz8KqlA/ZUcuqINGfCTJyq5K5JLNcCLYM2dr9
- XzMj1I1VDiQg==
-X-IronPort-AV: E=Sophos;i="5.77,457,1596524400"; 
-   d="scan'208";a="472149838"
-Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.221.127]) ([10.212.221.127])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2020 10:16:48 -0800
-Subject: Re: [PATCH v14 01/26] Documentation/x86: Add CET description
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>
-References: <20201012153850.26996-1-yu-cheng.yu@intel.com>
- <20201012153850.26996-2-yu-cheng.yu@intel.com>
- <20201106173410.GG14914@zn.tnic>
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Message-ID: <ebaff261-f8ad-d184-edd5-8efbd675deeb@intel.com>
-Date:   Fri, 6 Nov 2020 10:16:47 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S1727864AbgKFSRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 13:17:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51880 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727183AbgKFSRQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 13:17:16 -0500
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30411C0613CF;
+        Fri,  6 Nov 2020 10:17:16 -0800 (PST)
+Received: by mail-qv1-xf41.google.com with SMTP id g13so871402qvu.1;
+        Fri, 06 Nov 2020 10:17:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=xpxktmvHGo+CaqevD+BoyqDDeQDal/1mY0CZMqQlRYQ=;
+        b=IQAyatVaE/uhtZdFF21kT1+BmaaKOzsyQ+RInMQqxRz7Xmr4DURZTI7pvPKVcn44z4
+         9IsQpUHzTSbORLNbOX7vmGYUtLzmhzvhTiInx771aeJk78orN39uVoqdurieqtPFeIwM
+         0I9CUDd2l8QqVqvIhKpDB2xHoEkmV8mn7JlYBH4jxLm0ksPgssQqqPK7hU2tofg3gnP0
+         euPRReHNbZejDZMhMirdxj4CTkVpQ5abGmV0mjFI9VW4/2K5wZ4SkrtG3M5TJXK8pQpT
+         gBIEo3lwgcVLkAKTIiYNWpzdRGzV5+zctC1XcsKLtMliUmqjnRtF+ciH9tb67GQvpUYm
+         USaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=xpxktmvHGo+CaqevD+BoyqDDeQDal/1mY0CZMqQlRYQ=;
+        b=X7hgTy4/b2dGgEZ+Nv9+7kYIsDIBYqFlnVviTtxErf5L9TMiljnxy6JbZwzwhGhKba
+         a8S1sTP1yxDXRSgPHwIKczfJioD9tRMwSpSij6qmnbY7wMxEN3sqfH+PosjdOK2CUpE6
+         nddv7pTrxBkGfx67LKp9Z8FGtK0sTgYHrvDs8gQim57B2Dtvw5UHX6k3JBy2GTmCu134
+         r1wcSrDeqbwW0R9eES9g7LVmbTo+K4f1cUY+9tty/+ZRHt9v4QO25Bzq2pBQVSTxYnW7
+         mCge4s3iBqKNG72ap2ybS4GO8cX8xl725P50wrtci+SE3kHsc3qx3tZITZh4hH1Zf7s7
+         U2xw==
+X-Gm-Message-State: AOAM531Cctl0sBaTUvkj2vDm8KPsZMX+RYPJxXT8xDL1n6n244TtKing
+        NaFtM+wgfFZAMeeIM+QuT+8=
+X-Google-Smtp-Source: ABdhPJzzLjrmp5elXPE46DAm1ZvY6K4jJYerNwXzLzaDa3Vf8oKjY7bMuaGnrAkmUW8kQc0Lose/Zw==
+X-Received: by 2002:ad4:4a74:: with SMTP id cn20mr2672816qvb.61.1604686635391;
+        Fri, 06 Nov 2020 10:17:15 -0800 (PST)
+Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
+        by smtp.gmail.com with ESMTPSA id k3sm985419qtj.84.2020.11.06.10.17.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Nov 2020 10:17:14 -0800 (PST)
+Date:   Fri, 6 Nov 2020 11:17:13 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+        linux-pm@vger.kernel.org,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org,
+        Taniya Das <tdas@codeaurora.org>, linux-next@vger.kernel.org
+Subject: Re: [PATCH -next] clk: pm_clock: provide stubs for
+ pm_clk_runtime_suspend/_resume
+Message-ID: <20201106181713.GA3970874@ubuntu-m3-large-x86>
+References: <20201106180544.5681-1-rdunlap@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20201106173410.GG14914@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201106180544.5681-1-rdunlap@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/6/2020 9:34 AM, Borislav Petkov wrote:
-> On Mon, Oct 12, 2020 at 08:38:25AM -0700, Yu-cheng Yu wrote:
->> +[1] Overview
->> +============
->> +
->> +Control-flow Enforcement Technology (CET) is an Intel processor feature
->> +that provides protection against return/jump-oriented programming (ROP)
->> +attacks.  It can be set up to protect both applications and the kernel.
->> +Only user-mode protection is implemented in the 64-bit kernel, including
->> +support for running legacy 32-bit applications.
->> +
->> +CET introduces Shadow Stack and Indirect Branch Tracking.  Shadow stack is
->> +a secondary stack allocated from memory and cannot be directly modified by
->> +applications.  When executing a CALL, the processor pushes the return
-> 				       ^
-> 				    . .. instruction ...
+On Fri, Nov 06, 2020 at 10:05:44AM -0800, Randy Dunlap wrote:
+> Add stubs for pm_clk_runtime_suspend() and pm_clk_runtime_resume()
+> to fix build errors when CONFIG_PM and CONFIG_PM_CLK are not enabled.
 > 
-
-I will update it.
-
-[...]
-
->> +
->> +[2] Application Enabling
->> +========================
->> +
->> +An application's CET capability is marked in its ELF header and can be
->> +verified from the following command output, in the NT_GNU_PROPERTY_TYPE_0
->> +field:
->> +
->> +    readelf -n <application>
+> Fixes these build errors:
 > 
-> Can be verified how? What does it say for a CET-enabled executable? Put
-> it here in the doc pls.
+> ../drivers/clk/qcom/camcc-sc7180.c: In function ‘cam_cc_sc7180_probe’:
+> ../drivers/clk/qcom/camcc-sc7180.c:1672:8: error: implicit declaration of function ‘pm_clk_runtime_resume’; did you mean ‘pm_runtime_resume’? [-Werror=implicit-function-declaration]
+>   ret = pm_clk_runtime_resume(&pdev->dev);
+>         ^~~~~~~~~~~~~~~~~~~~~
+> ../drivers/clk/qcom/camcc-sc7180.c:1681:3: error: implicit declaration of function ‘pm_clk_runtime_suspend’; did you mean ‘pm_runtime_suspend’? [-Werror=implicit-function-declaration]
+>    pm_clk_runtime_suspend(&pdev->dev);
+>    ^~~~~~~~~~~~~~~~~~~~~~
 > 
+> Fixes: 15d09e830bbc ("clk: qcom: camcc: Add camera clock controller driver for SC7180")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+> Cc: Len Brown <len.brown@intel.com>
+> Cc: Pavel Machek <pavel@ucw.cz>
+> Cc: linux-pm@vger.kernel.org
+> Cc: Michael Turquette <mturquette@baylibre.com>
+> Cc: Stephen Boyd <sboyd@kernel.org>
+> Cc: linux-clk@vger.kernel.org
+> Cc: Taniya Das <tdas@codeaurora.org>
+> Cc: linux-next@vger.kernel.org
 
-readelf -n <application> | grep SHSTK
-	properties: x86 feature: IBT, SHSTK
+This fixes the same build failure that I saw with s390 all{mod,yes}config.
 
-I will add this.
+Build-tested-by: Nathan Chancellor <natechancellor@gmail.com>
+Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
 
-[...]
-
->> +[3] Backward Compatibility
->> +==========================
->> +
->> +GLIBC provides a few tunables for backward compatibility.
->> +
->> +GLIBC_TUNABLES=glibc.tune.hwcaps=-SHSTK,-IBT
->> +    Turn off SHSTK/IBT for the current shell.
+> ---
+>  include/linux/pm_clock.h |    9 +++++++++
+>  1 file changed, 9 insertions(+)
 > 
-> For the current shell? How?
-> 
-> You mean, you execute the kernel shell with that variable set? So you
-> set this variable in any executable's env which links with glibc in
-> order to disable CET?
-> 
-> In any case, this needs clarification.
-> 
-
-In the current shell, if GLIBC_TUNABLES variable is set as such, 
-applications started will have CET features disabled.  I can put more 
-details here, or maybe a reference to the GLIBC man pages.
-
-Thanks,
-Yu-cheng
+> --- linux-next-20201106.orig/include/linux/pm_clock.h
+> +++ linux-next-20201106/include/linux/pm_clock.h
+> @@ -83,6 +83,15 @@ static inline void pm_clk_remove(struct
+>  static inline void pm_clk_remove_clk(struct device *dev, struct clk *clk)
+>  {
+>  }
+> +
+> +static inline int pm_clk_runtime_suspend(struct device *dev)
+> +{
+> +	return 0;
+> +}
+> +static inline int pm_clk_runtime_resume(struct device *dev)
+> +{
+> +	return 0;
+> +}
+>  #endif
+>  
+>  #ifdef CONFIG_HAVE_CLK
