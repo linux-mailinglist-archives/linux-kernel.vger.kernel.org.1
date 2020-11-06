@@ -2,124 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D85042A9E52
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 20:59:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B05472A9E58
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 21:02:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728224AbgKFT7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 14:59:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46666 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727341AbgKFT7N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 14:59:13 -0500
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AD9CF2072E;
-        Fri,  6 Nov 2020 19:59:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604692752;
-        bh=9mX9TvEO8rw24AB+IUBS/bq7dIXKxdoLl+nP5eU+nZI=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=foJOOv/3lMxXk+DmEKgp2fKE3zd4I3NEK/ih6koyTwEV67pj70ZDYPh0uhQ+3V8Fj
-         ajX67ekBjmRI0TUhBgU5ZNUIjIZjUpxE1XRDVwxudXShVaoSWouATMBCSmu7gUfLt0
-         KSKcZOxtrZWRr1vjy32pG2nIO8pL7Ory+LkVzwHU=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 4DE36352131F; Fri,  6 Nov 2020 11:59:12 -0800 (PST)
-Date:   Fri, 6 Nov 2020 11:59:12 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, parri.andrea@gmail.com,
-        will@kernel.org, peterz@infradead.org, boqun.feng@gmail.com,
-        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
-        luc.maranget@inria.fr, akiyks@gmail.com
-Subject: Re: [PATCH memory-model 5/8] tools/memory-model: Add a glossary of
- LKMM terms
-Message-ID: <20201106195912.GA3249@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201105215953.GA15309@paulmck-ThinkPad-P72>
- <20201105220017.15410-5-paulmck@kernel.org>
- <20201106165930.GC47039@rowland.harvard.edu>
- <20201106180445.GX3249@paulmck-ThinkPad-P72>
- <20201106192351.GA53131@rowland.harvard.edu>
+        id S1728321AbgKFUCY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 15:02:24 -0500
+Received: from mailrelay2-2.pub.mailoutpod1-cph3.one.com ([46.30.212.1]:31362
+        "EHLO mailrelay2-2.pub.mailoutpod1-cph3.one.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727341AbgKFUCY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 15:02:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bitmath.org; s=20191106;
+        h=content-transfer-encoding:content-type:in-reply-to:mime-version:date:
+         message-id:references:cc:to:from:subject:from;
+        bh=pGS+hRIpgZjBebzJuXnWRieKofFe11yfaznBGKJtRhk=;
+        b=GwwduhURhWi2rqn7PJ9NkknQ1j90kPiJ7LyZSBrgZKeEpZYHap0S2aBsKT72hnOMVbPjG9VcKsHiJ
+         F+yQReD5OHqxYgT9F8D3/u1RoNTrqIZcC2W7TISuJxZeIbNrnv0l6ULiaG5P2TKgablASlEK2W7vMV
+         eyMJ/bwl0jnMIJC6/qdMIr8QqVxbaxTCbCnlGV0thA8Q2MAW9eh30ZIMf5eIiJHfEgNMvY3XnGhGEF
+         ZH0XECqdCcsO3iQzM/37mpLNeeeHSaz7ZPuu9gaGrSFIE3YhtJggq5XoOT5OFo+fPLTp4eZnYLOSnT
+         kvoVTjrSl3iw1wPRSSz+2oxAvDurvXA==
+X-HalOne-Cookie: b7aca7b6cdc0a30bc058387c825741d339e1fc31
+X-HalOne-ID: f9d6d3b5-206a-11eb-84b8-d0431ea8a290
+Received: from [192.168.19.13] (h-155-4-128-97.na.cust.bahnhof.se [155.4.128.97])
+        by mailrelay2.pub.mailoutpod1-cph3.one.com (Halon) with ESMTPSA
+        id f9d6d3b5-206a-11eb-84b8-d0431ea8a290;
+        Fri, 06 Nov 2020 20:02:19 +0000 (UTC)
+Subject: Re: [PATCH] applesmc: Re-work SMC comms v2
+From:   Henrik Rydberg <rydberg@bitmath.org>
+To:     Brad Campbell <brad@fnarfbargle.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-hwmon@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        hns@goldelico.com, Guenter Roeck <linux@roeck-us.net>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        Jean Delvare <jdelvare@suse.com>
+References: <20200930105442.3f642f6c@aktux>
+ <20200930164446.GB219887@roeck-us.net>
+ <CAK8P3a2CbhJT+B-F+cnX+uiJep9oiLM28n045-ATaVaU41u2hw@mail.gmail.com>
+ <20201002002251.28462e64@aktux>
+ <7543ef85-727d-96c3-947e-5b18e9e6c44d@roeck-us.net>
+ <20201006090226.4275c824@kemnade.info>
+ <db042e9b-be41-11b1-7059-3881b1da5c8b@fnarfbargle.com>
+ <68467f1b-cea1-47ea-a4d4-8319214b072a@fnarfbargle.com>
+ <20201104142057.62493c12@aktux>
+ <2436afef-99c6-c352-936d-567bf553388c@fnarfbargle.com>
+ <7a085650-2399-08c0-3c4d-6cd1fa28a365@roeck-us.net>
+ <fc36d066-c432-e7d2-312f-a0a592446fe2@fnarfbargle.com>
+ <10027199-5d31-93e7-9bd8-7baaebff8b71@roeck-us.net>
+ <70331f82-35a1-50bd-685d-0b06061dd213@fnarfbargle.com>
+ <3c72ccc3-4de1-b5d0-423d-7b8c80991254@fnarfbargle.com>
+ <6d071547-10ee-ca92-ec8b-4b5069d04501@bitmath.org>
+ <8e117844-d62a-bcb1-398d-c59cc0d4b878@fnarfbargle.com>
+ <e5a856b1-fb1a-db5d-0fde-c86d0bcca1df@bitmath.org>
+ <aa60f673-427a-1a47-7593-54d1404c3c92@bitmath.org>
+Message-ID: <9109d059-d9cb-7464-edba-3f42aa78ce92@bitmath.org>
+Date:   Fri, 6 Nov 2020 21:02:32 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201106192351.GA53131@rowland.harvard.edu>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <aa60f673-427a-1a47-7593-54d1404c3c92@bitmath.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 06, 2020 at 02:23:51PM -0500, Alan Stern wrote:
-> On Fri, Nov 06, 2020 at 10:04:46AM -0800, Paul E. McKenney wrote:
-> > On Fri, Nov 06, 2020 at 11:59:30AM -0500, Alan Stern wrote:
-> > > > +	 See also "Control Dependency".
-> > > 
-> > > There should also be an entry for "Data Dependency", linked from here
-> > > and from Control Dependency.
-> > > 
-> > > > +Marked Access:  An access to a variable that uses an special function or
-> > > > +	macro such as "r1 = READ_ONCE()" or "smp_store_release(&a, 1)".
-> > > 
-> > > How about "r1 = READ_ONCE(x)"?
-> > 
-> > Good catches!  I am planning to squash the commit below into the
-> > original.  Does that cover it?
-> 
-> No, because you didn't add a glossary entry for "Data Dependency" and 
-> there's no link from "Control Dependency" to "Data Dependency".
+> So as it stands, it does not work at all. I will continue to check 
+> another machine, and see if I can get something working.
 
-Sigh.  I was thinking "entry in the list", and didn't even thing to
-check for an entry in the glossary as a whole.  With the patch below
-(on top of the one sent earlier), are we good?
+On the MacBookAir3,1 the situation is somewhat better.
 
-							Thanx, Paul
+The first three tree positions result in zero failures and 10 reads per 
+second. The fourth yields zero failues and 11 reads per second, within 
+the margin of similarity.
 
-------------------------------------------------------------------------
+So, the patch appears to have no apparent effect on the 3,1 series.
 
-commit 5a49c32551e83d30e304d6c3fbb660737ba2654e
-Author: Paul E. McKenney <paulmck@kernel.org>
-Date:   Fri Nov 6 11:57:25 2020 -0800
+Now onto fixing the 1,1 behavior.
 
-    fixup! tools/memory-model: Add a glossary of LKMM terms
-    
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Henrik
 
-diff --git a/tools/memory-model/Documentation/glossary.txt b/tools/memory-model/Documentation/glossary.txt
-index 471bf13..b2da636 100644
---- a/tools/memory-model/Documentation/glossary.txt
-+++ b/tools/memory-model/Documentation/glossary.txt
-@@ -64,7 +64,7 @@ Control Dependency:  When a later store's execution depends on a test
- 	 fragile, and can be easily destroyed by optimizing compilers.
- 	 Please see control-dependencies.txt for more information.
- 
--	 See also "Address Dependency".
-+	 See also "Address Dependency" and "Data Dependency".
- 
- Cycle:	Memory-barrier pairing is restricted to a pair of CPUs, as the
- 	name suggests.	And in a great many cases, a pair of CPUs is all
-@@ -85,6 +85,23 @@ Cycle:	Memory-barrier pairing is restricted to a pair of CPUs, as the
- 
- 	See also "Pairing".
- 
-+Data Dependency:  When the data written by a later store is computed based
-+	on the value returned by an earlier load, a "data dependency"
-+	extends from that load to that later store.  For example:
-+
-+	 1 r1 = READ_ONCE(x);
-+	 2 WRITE_ONCE(y, r1 + 1);
-+
-+	In this case, the data dependency extends from the READ_ONCE()
-+	on line 1 to the WRITE_ONCE() on line 2.  Data dependencies are
-+	fragile and can be easily destroyed by optimizing compilers.
-+	Because optimizing compilers put a great deal of effort into
-+	working out what values integer variables might have, this is
-+	especially true in cases where the dependency is carried through
-+	an integer.
-+
-+	See also "Address Dependency" and "Control Dependency".
-+
- From-Reads (fr):  When one CPU's store to a given variable happened
- 	too late to affect the value returned by another CPU's
- 	load from that same variable, there is said to be a from-reads
