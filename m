@@ -2,160 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 172F92A9B11
+	by mail.lfdr.de (Postfix) with ESMTP id AC6082A9B12
 	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 18:45:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727610AbgKFRow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 12:44:52 -0500
-Received: from wind.enjellic.com ([76.10.64.91]:59792 "EHLO wind.enjellic.com"
+        id S1727781AbgKFRpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 12:45:00 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:11065 "EHLO m42-4.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726034AbgKFRow (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 12:44:52 -0500
-Received: from wind.enjellic.com (localhost [127.0.0.1])
-        by wind.enjellic.com (8.15.2/8.15.2) with ESMTP id 0A6Hi0HP024602;
-        Fri, 6 Nov 2020 11:44:00 -0600
-Received: (from greg@localhost)
-        by wind.enjellic.com (8.15.2/8.15.2/Submit) id 0A6HhxkZ024601;
-        Fri, 6 Nov 2020 11:43:59 -0600
-Date:   Fri, 6 Nov 2020 11:43:59 -0600
-From:   "Dr. Greg" <greg@enjellic.com>
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
-        cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com, kai.huang@intel.com,
-        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
-        luto@kernel.org, nhorman@redhat.com, npmccallum@redhat.com,
-        puiterwijk@redhat.com, rientjes@google.com, tglx@linutronix.de,
-        yaozhangx@google.com, mikko.ylinen@intel.com
-Subject: Re: [PATCH v40 10/24] mm: Add 'mprotect' hook to struct vm_operations_struct
-Message-ID: <20201106174359.GA24109@wind.enjellic.com>
-Reply-To: "Dr. Greg" <greg@enjellic.com>
-References: <20201104145430.300542-1-jarkko.sakkinen@linux.intel.com> <20201104145430.300542-11-jarkko.sakkinen@linux.intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201104145430.300542-11-jarkko.sakkinen@linux.intel.com>
-User-Agent: Mutt/1.4i
-X-Greylist: Sender passed SPF test, not delayed by milter-greylist-4.2.3 (wind.enjellic.com [127.0.0.1]); Fri, 06 Nov 2020 11:44:00 -0600 (CST)
+        id S1727641AbgKFRo7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 12:44:59 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1604684699; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=MR92eDzIAHHi0FSAiHSlFfFZzPNP3QFKJ2FdgfeC0xQ=; b=Mfewy4JvD/o2mvUX24jwT8xb/emNqr2eCMQxL0IaDOlMSlszPXKafzsfFo1A9uEP8O2JI4yH
+ 6QBYsp+GOIFMKVRZnl9cNoBfvMvsEllD2H0sqvvYhVq2wf4RkiQ9BIgwByY8FoJTYDAnNF/H
+ 4TvQ/Zo5M3EBqsivGG4HU1godtc=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 5fa58b9a18b2aa4b1fb8e590 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 06 Nov 2020 17:44:58
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 5E6B7C433FE; Fri,  6 Nov 2020 17:44:58 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E17EDC433FE;
+        Fri,  6 Nov 2020 17:44:56 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E17EDC433FE
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bbhatt@codeaurora.org
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
+        Bhaumik Bhatt <bbhatt@codeaurora.org>
+Subject: [PATCH v2 0/6] Minor bug fixes and clean-up for MHI host driver
+Date:   Fri,  6 Nov 2020 09:44:44 -0800
+Message-Id: <1604684690-31065-1-git-send-email-bbhatt@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 04:54:16PM +0200, Jarkko Sakkinen wrote:
+This patch series serves to clean up the MHI host driver by removing an
+unnecessary counter and an unused function. It also renames a function to make
+it clearly worded. There is currently no user of this exported function which
+makes it is safe to do so now.
 
-Good morning, I hope the week has gone well for everyone.
+Bug fixes include adding a missing EXPORT_SYMBOL_GPL to a function, and adding
+a return value check to bail out of RDDM download in kernel panic path.
 
-> From: Sean Christopherson <sean.j.christopherson@intel.com>
-> 
-> Background
-> ==========
-> 
-> 1. SGX enclave pages are populated with data by copying from normal memory
->    via ioctl() (SGX_IOC_ENCLAVE_ADD_PAGES), which will be added later in
->    this series.
-> 2. It is desirable to be able to restrict those normal memory data sources.
->    For instance, to ensure that the source data is executable before
->    copying data to an executable enclave page.
-> 3. Enclave page permissions are dynamic (just like normal permissions) and
->    can be adjusted at runtime with mprotect().
+An outlier among the group exports the mhi_get_exec_env() API for use by
+controller drivers, in case they need to determine behavior on the basis of the
+current execution environment.
 
-Only relevant on SGX2 hardware, see discussion below.
+This set of patches was tested on arm64.
 
-> This creates a problem because the original data source may have
-> long since vanished at the time when enclave page permissions are
-> established (mmap() or mprotect()).
->
-> The solution (elsewhere in this series) is to force enclaves
+v2:
+-Removed the declaration for mhi_get_exec_env() from internal.h
+-Improved on the error log message in RDDM download exit case due to unknown EE
 
-I don't believe that enclaves should be plural in this context.
+Bhaumik Bhatt (6):
+  bus: mhi: core: Remove unnecessary counter from mhi_firmware_copy()
+  bus: mhi: core: Add missing EXPORT_SYMBOL for mhi_get_mhi_state()
+  bus: mhi: core: Expose mhi_get_exec_env() API for controllers
+  bus: mhi: core: Remove unused mhi_fw_load_worker() declaration
+  bus: mhi: core: Rename RDDM download function to use proper words
+  bus: mhi: core: Skip RDDM download for unknown execution environment
 
-> creators to declare their paging permission *intent* up front to the
-> ioctl().  This intent can me immediately compared to the source
+ drivers/bus/mhi/core/boot.c     | 15 +++++++++------
+ drivers/bus/mhi/core/internal.h |  2 --
+ drivers/bus/mhi/core/main.c     |  2 ++
+ include/linux/mhi.h             | 12 +++++++++---
+ 4 files changed, 20 insertions(+), 11 deletions(-)
 
-The 'me' should be 'be' in the above line.
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
-> data???s mapping and rejected if necessary.
->
-> The ???intent??? is also stashed off for later comparison with
-> enclave PTEs. This ensures that any future mmap()/mprotect()
-> operations performed by the enclave creator or done on behalf of the
-> enclave can be compared with the earlier declared permissions.
-
-Just some further clarifications that should, arguably, be included in
-the kernel documentation given their security implications.
-
-The 900 pound primate in the room, that no one is acknowledging, is
-that this technology was designed to not allow the operating system to
-have any control over what it is doing.  In the mindset of kernel
-developers, the operating system is the absolute authority on
-security, so we find ourselves in a situation where the kernel needs
-to try and work around this fact so any solutions will be imperfect at
-best.
-
-As I've noted before, this is actually a primary objective of enclave
-authors, since one of the desires for 'Confidential Computing' is to
-hide things like proprietary algorithms from the platform owners.  I
-think the driver needs to acknowledge this fact and equip platform
-owners with the simplest and most effective security solutions that
-are available.
-
-The only reason that mprotect protections are needed in this driver
-are to close a security loophole on SGX2 hardware, ie. hardware that
-supports the ENCLU[EMODPE] instruction.  This instruction allows an
-enclave to modify page permissions that are encoded in the Enclave
-Page Cache Metadata (EPCM) at initialization time.  In all likelihood,
-this is going to be the only relevant hardware that this driver runs
-on.
-
-On SGX2 hardware, enclave based code can conspire with its untrusted
-runtime to allow executable regions to have write permissions.  This
-would allow the enclave to load and execute whatever code that it
-pleases and that the operating system would have no visibility into
-whatsoever.
-
-The non-SGX2 platforms don't need mprotect protections since even if
-they were to modify at the OS level their page permissions, any
-attempts to access a page with modified permissions would be trapped
-by the EPCM protections that are unmodifiable after the enclave has
-been initialized.
-
-In light of this, given the decision by the driver authors to not
-fully equip the driver with EDMM support, the mprotect protection
-requirements are straight forward and minimalistic.  All that is
-needed is a binary valued variable, set on the command-line, that
-either allows or denies anonymous code execution by an enclave,
-ie. access to page protection changes after initialization.
-
-The enclave page mapping callback is elegant but has little use if the
-objective of all this is to allow the driver to enforce SGX1 semantics
-on a platform that has SGX2 instruction support.  Save the elegant
-solution until a reasoned arguement can be made as to what anyone
-would actually be able to do with the per page permissions checks,
-even on an EDMM capable driver.
-
-I could go into detail on that issue as well but I hesitate to be an
-insufferable bore.
-
-I hope all of this is helpful.
-
-Have a good weekend.
-
-Dr. Greg
-
-As always,
-Dr. Greg Wettstein, Ph.D, Worker      Autonomously self-defensive
-Enjellic Systems Development, LLC     IOT platforms and edge devices.
-4206 N. 19th Ave.
-Fargo, ND  58102
-PH: 701-281-1686                      EMAIL: greg@enjellic.com
-------------------------------------------------------------------------------
-"In the future, company names will be a 32-character hex string."
-                                -- Bruce Schneier
