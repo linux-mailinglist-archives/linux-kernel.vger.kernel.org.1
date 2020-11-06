@@ -2,99 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BA992A8D36
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 03:55:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC1FD2A8D37
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 03:56:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725976AbgKFCzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 21:55:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44318 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725902AbgKFCzL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 21:55:11 -0500
-Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 45F382078E;
-        Fri,  6 Nov 2020 02:55:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604631310;
-        bh=GCRu5Nj6jlFu7EoC6UyDydSyAjZGCvEP1u13Yu2YJkU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ngBOoevtyMiaZoS5dLNMl5K6SHrIs+qW8jE+nVSG26e8PE1P2kMQhNldJVD/Nog8u
-         RislWWMtlbuzn0I/jE9+/1QMnhK1mYjuv1BBuCWURKFjJJFkw7v5qaUVYs5u0nS3ZL
-         ftVlSp2BZVAQlKp12wu4US0Z9DJWG89A4riVByoI=
-Received: by mail-lj1-f173.google.com with SMTP id 2so3748520ljj.13;
-        Thu, 05 Nov 2020 18:55:10 -0800 (PST)
-X-Gm-Message-State: AOAM531VXy7UXKn11apAA3or1FHTewnLNN2UTaWt52256PqtUJCptw8B
-        0ifW8G8RiMBvuwYX6L9tJ4l2XIZbCLMfLOAVaO8=
-X-Google-Smtp-Source: ABdhPJzfbFpuBLZhmEP5T24pYyEQWLJ9bVNG3rcuQ7VBcP+PYmdLj4SV5oT0cm306fdrgA6+20tTRV7rJ7SrePKYJRk=
-X-Received: by 2002:a2e:8816:: with SMTP id x22mr1812466ljh.377.1604631308478;
- Thu, 05 Nov 2020 18:55:08 -0800 (PST)
-MIME-Version: 1.0
-References: <1602918377-23573-2-git-send-email-guoren@kernel.org> <mhng-c3f5e2b4-0467-42f6-9f5b-e66ade70eef2@palmerdabbelt-glaptop1>
-In-Reply-To: <mhng-c3f5e2b4-0467-42f6-9f5b-e66ade70eef2@palmerdabbelt-glaptop1>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Fri, 6 Nov 2020 10:54:57 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTRw57smCihUB7fWf32WgRwJBV86-xT6pxHstLSrCG119w@mail.gmail.com>
-Message-ID: <CAJF2gTRw57smCihUB7fWf32WgRwJBV86-xT6pxHstLSrCG119w@mail.gmail.com>
-Subject: Re: [PATCH v4 1/9] RISC-V: Implement ptrace regs and stack API
-To:     Palmer Dabbelt <palmerdabbelt@google.com>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Alan Kao <alankao@andestech.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Anup Patel <anup@brainfault.org>, linux-csky@vger.kernel.org,
-        Greentime Hu <greentime.hu@sifive.com>,
-        Zong Li <zong.li@sifive.com>,
-        =?UTF-8?Q?Patrick_St=C3=A4hlin?= <me@packi.ch>,
-        Guo Ren <guoren@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S1725909AbgKFC4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 21:56:18 -0500
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:60911 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725815AbgKFC4R (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 21:56:17 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R371e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0UENt9Vb_1604631373;
+Received: from aliy80.localdomain(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UENt9Vb_1604631373)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 06 Nov 2020 10:56:14 +0800
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     Nick Terrell <terrelln@fb.com>, Kees Cook <keescook@chromium.org>,
+        Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH] lib/zstd: remove unused macro tame compiler
+Date:   Fri,  6 Nov 2020 10:56:08 +0800
+Message-Id: <1604631368-77927-1-git-send-email-alex.shi@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 6, 2020 at 9:03 AM Palmer Dabbelt <palmerdabbelt@google.com> wr=
-ote:
->
-> On Sat, 17 Oct 2020 00:06:09 PDT (-0700), guoren@kernel.org wrote:
-> > From: Patrick St=C3=A4hlin <me@packi.ch>
-> >
-> > Needed for kprobes support. Copied and adapted from arm64 code.
-> >
-> > Guo Ren fixup pt_regs type for linux-5.8-rc1.
-> >
-> > Signed-off-by: Patrick St=C3=A4hlin <me@packi.ch>
-> > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> > Reviewed-by: Pekka Enberg <penberg@kernel.org>
-> > Reviewed-by: Zong Li <zong.li@sifive.com>
-> > Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
-> > ---
-> >  arch/riscv/Kconfig              |  1 +
-> >  arch/riscv/include/asm/ptrace.h | 29 ++++++++++++
-> >  arch/riscv/kernel/ptrace.c      | 99 +++++++++++++++++++++++++++++++++=
-++++++++
-> >  3 files changed, 129 insertions(+)
-> >
-> > diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> > index b7821ac..e6424d8b 100644
-> > --- a/arch/riscv/Kconfig
-> > +++ b/arch/riscv/Kconfig
-> > @@ -87,6 +87,7 @@ config RISCV
-> >       select SPARSE_IRQ
-> >       select SYSCTL_EXCEPTION_TRACE
-> >       select THREAD_INFO_IN_TASK
-> > +     select HAVE_REGS_AND_STACK_ACCESS_API
->
-> We alphabetize these now -- I'd usually just fix it, but there's a
-> Signed-off-by issue later in the patch set.
-ok, I'll fix it and rebase 5.10-rc2.
+There are some of unused macros cause compiler warning, let's remove them.
 
+lib/zstd/fse_compress.c:82:0: warning: macro "FSE_FUNCTION_NAME" is not used [-Wunused-macros]
+lib/zstd/fse_decompress.c:90:0: warning: macro "FSE_FUNCTION_NAME" is not used [-Wunused-macros]
+lib/zstd/fse_compress.c:82:0: warning: macro "FSE_FUNCTION_NAME" is not used [-Wunused-macros]
+lib/zstd/fse_decompress.c:90:0: warning: macro "FSE_FUNCTION_NAME" is not used [-Wunused-macros]
+lib/zstd/fse_compress.c:83:0: warning: macro "FSE_TYPE_NAME" is not used [-Wunused-macros]
+lib/zstd/fse_decompress.c:91:0: warning: macro "FSE_TYPE_NAME" is not used [-Wunused-macros]
+lib/zstd/fse_compress.c:83:0: warning: macro "FSE_TYPE_NAME" is not used [-Wunused-macros]
+lib/zstd/fse_decompress.c:91:0: warning: macro "FSE_TYPE_NAME" is not used [-Wunused-macros]
+lib/zstd/fse_compress.c:81:0: warning: macro "FSE_CAT" is not used [-Wunused-macros]
+lib/zstd/fse_decompress.c:89:0: warning: macro "FSE_CAT" is not used [-Wunused-macros]
+lib/zstd/fse_compress.c:81:0: warning: macro "FSE_CAT" is not used [-Wunused-macros]
+lib/zstd/fse_decompress.c:89:0: warning: macro "FSE_CAT" is not used [-Wunused-macros]
 
---=20
-Best Regards
- Guo Ren
+Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+Cc: Nick Terrell <terrelln@fb.com> 
+Cc: Kees Cook <keescook@chromium.org> 
+Cc: Ingo Molnar <mingo@kernel.org> 
+Cc: linux-kernel@vger.kernel.org 
+---
+ lib/zstd/fse_compress.c   | 5 -----
+ lib/zstd/fse_decompress.c | 5 -----
+ 2 files changed, 10 deletions(-)
 
-ML: https://lore.kernel.org/linux-csky/
+diff --git a/lib/zstd/fse_compress.c b/lib/zstd/fse_compress.c
+index ef3d1741d532..20367cd2eaa0 100644
+--- a/lib/zstd/fse_compress.c
++++ b/lib/zstd/fse_compress.c
+@@ -77,11 +77,6 @@
+ #error "FSE_FUNCTION_TYPE must be defined"
+ #endif
+ 
+-/* Function names */
+-#define FSE_CAT(X, Y) X##Y
+-#define FSE_FUNCTION_NAME(X, Y) FSE_CAT(X, Y)
+-#define FSE_TYPE_NAME(X, Y) FSE_CAT(X, Y)
+-
+ /* Function templates */
+ 
+ /* FSE_buildCTable_wksp() :
+diff --git a/lib/zstd/fse_decompress.c b/lib/zstd/fse_decompress.c
+index 0b353530fb3f..86fff64db563 100644
+--- a/lib/zstd/fse_decompress.c
++++ b/lib/zstd/fse_decompress.c
+@@ -78,11 +78,6 @@
+ #error "FSE_FUNCTION_TYPE must be defined"
+ #endif
+ 
+-/* Function names */
+-#define FSE_CAT(X, Y) X##Y
+-#define FSE_FUNCTION_NAME(X, Y) FSE_CAT(X, Y)
+-#define FSE_TYPE_NAME(X, Y) FSE_CAT(X, Y)
+-
+ /* Function templates */
+ 
+ size_t FSE_buildDTable_wksp(FSE_DTable *dt, const short *normalizedCounter, unsigned maxSymbolValue, unsigned tableLog, void *workspace, size_t workspaceSize)
+-- 
+1.8.3.1
+
