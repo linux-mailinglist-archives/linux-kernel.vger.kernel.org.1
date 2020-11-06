@@ -2,122 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2385D2A9D56
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 20:05:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 766682A9D6C
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 20:06:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728284AbgKFTFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 14:05:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59548 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728100AbgKFTFg (ORCPT
+        id S1728340AbgKFTGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 14:06:03 -0500
+Received: from mail-ed1-f66.google.com ([209.85.208.66]:33165 "EHLO
+        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728286AbgKFTFw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 14:05:36 -0500
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79065C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 11:05:36 -0800 (PST)
-Received: by mail-oi1-x242.google.com with SMTP id z26so2416564oid.1
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 11:05:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=R698vTS3sP7K10LIp+T/pBAzJll3NJN4xvHU3P1DGwg=;
-        b=VaEnLf46w5vIExY59a+G9WTSqIbWqj+eUMwZksdIYvwFgg9NYmW6tFJMVSO7nUQ4tD
-         ezz/DeLkXzjkhfXUHKcSGlFbUyh42hxCne6/lYXZejfEeetFS3kISHyyD1FgWP5c4qFa
-         M9IOzy15cbcppijEQghWGg7j94ijBny6yqeVwvc4HsYgoB6kJ0I+W6Pmtxd6WaPrPufA
-         HAmkD9D05NWgQR8UQF6VFzQJkA+/LUIRLx6LPpIkN1mPEKR3unfNWZMF0D5s2hHk0za8
-         kI0RIMFIKvratitfXOYU32CibW45aA2MR1uWhaBI8UujKK2eJRIVz+yMbHVQs5UDyUsN
-         kEBA==
+        Fri, 6 Nov 2020 14:05:52 -0500
+Received: by mail-ed1-f66.google.com with SMTP id v4so2350378edi.0;
+        Fri, 06 Nov 2020 11:05:50 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=R698vTS3sP7K10LIp+T/pBAzJll3NJN4xvHU3P1DGwg=;
-        b=VqtA8AfPncU9aUnDvxS9nwq4QRNwkSeYDkg1lFkeUDSt2FnaMH8Zs4f9K45KOR9Ks9
-         1R49BUVdAtEaOhuD08FYKT5E8FtvSxa6RQk0ldeO0JF5xbHdbH2UPjilNsog1nLpFovy
-         w+yJdcoVR/++ibKFGNImQ69a3P59ykTwuqLwhgYB4UxzIhnqhZfSfxQxeoujUcVFVhHw
-         E0kWVk54jTHSwDlluV9rkhPDT6ij8IttfpfrBXtlYGFEjsXQ95DQSzycyl+Slr6cR957
-         t/gt8VWUTwUrPqB/uiv2Hw6rltNYuMezZTk6AtyXkhtgMMnIjG0oZPIP8azEGtieGtA7
-         1lSw==
-X-Gm-Message-State: AOAM530kv0DKr0gl/RYCT71G+AgsNiPq9TglDdcjoxcG2H7lRNn491CJ
-        45Ox84Z9jlEX48QC2Xcnr8JqGY4HVKM9iHOXX4vQ4g==
-X-Google-Smtp-Source: ABdhPJyZWFBrGNICpuwwmJZU0LRFQXm5D2oVyMpcLMzRrOflbicLpntjl2xTCu1rs052y24YptuLj5Ko4AXCh6MZ9Ok=
-X-Received: by 2002:aca:6206:: with SMTP id w6mr2060911oib.121.1604689535633;
- Fri, 06 Nov 2020 11:05:35 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7MXPmT1NGSQgsd3xirj8ip4/fNyUlJygAvFJgBo8pUw=;
+        b=P13LfQxii9kBBQjfenTsnIGYQ5vhGCNAiijBrmMWlJMe6ee5gl4poKQ31vvcNdH588
+         TeDRXcSuVZjFEBbBruhfeuXPIryB1VJabU5PUUxXz39cJN+CVhlFU0rf1bbiQlnRbL1f
+         zCu3bOOQ6iYv6FIUYj9w9v0Hao+w9xfTWhQf2kpeZ2mL3DDIqp8AiDa9wG+QtpOgLmGJ
+         ktXbpFSe4goOjC2fle4rcR+ExF8/1WzH2YBTGV876/8M7TqzE6qtgEf5SsRd2R+LJWeV
+         zwbptCfMJxPPCFqSsP/PUecKNg7rjGU3vej7ocjgt9TtJO/LowpxUJUXnFKGBWtbADFp
+         D9jg==
+X-Gm-Message-State: AOAM532UAZuMXXRYFi3dyvpuEXuFpH1jtOF4wU6Jsp6CBE0/gMntRDLP
+        S4HODoxOmygNAgLIKfCqSQk=
+X-Google-Smtp-Source: ABdhPJz69R2gdRFIosU2NLTVPnddKtDP+M+uLghaYEtmdn2y8rrTOtAPAwVEj93zlI+Mhji4/oFSTQ==
+X-Received: by 2002:aa7:da81:: with SMTP id q1mr3541263eds.14.1604689549687;
+        Fri, 06 Nov 2020 11:05:49 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id h23sm1542924ejf.120.2020.11.06.11.05.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Nov 2020 11:05:48 -0800 (PST)
+Date:   Fri, 6 Nov 2020 20:05:46 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Mikko Perttunen <cyndis@kapsi.fi>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v7 31/47] memory: tegra: Add missing latency allowness
+ entry for Page Table Cache
+Message-ID: <20201106190546.GW65086@kozik-lap>
+References: <20201104164923.21238-1-digetx@gmail.com>
+ <20201104164923.21238-32-digetx@gmail.com>
 MIME-Version: 1.0
-References: <20201106182657.30492-1-98.arpi@gmail.com> <CANpmjNPsACW1mZmkWiCSeXfvAGaxAS5sHtYMu0-DfE7ec2pFMA@mail.gmail.com>
- <11549107-7247-03a7-2469-f5aa793a0d19@gmail.com>
-In-Reply-To: <11549107-7247-03a7-2469-f5aa793a0d19@gmail.com>
-From:   Marco Elver <elver@google.com>
-Date:   Fri, 6 Nov 2020 20:05:23 +0100
-Message-ID: <CANpmjNM-Wj0fReinwTxBC3GD7p-8qKHeao1cMYMerFd5bO1fqA@mail.gmail.com>
-Subject: Re: [PATCH v5 1/2] kunit: Support for Parameterized Testing
-To:     Arpitha Raghunandan <98.arpi@gmail.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        skhan@linuxfoundation.org, Iurii Zaikin <yzaikin@google.com>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-ext4@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201104164923.21238-32-digetx@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 6 Nov 2020 at 20:00, Arpitha Raghunandan <98.arpi@gmail.com> wrote:
->
-> On 07/11/20 12:15 am, Marco Elver wrote:
-> > On Fri, 6 Nov 2020 at 19:28, Arpitha Raghunandan <98.arpi@gmail.com> wrote:
-> >>
-> >> Implementation of support for parameterized testing in KUnit.
-> >> This approach requires the creation of a test case using the
-> >> KUNIT_CASE_PARAM macro that accepts a generator function as input.
-> >> This generator function should return the next parameter given the
-> >> previous parameter in parameterized tests. It also provides
-> >> a macro to generate common-case generators.
-> >>
-> >> Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
-> >> Co-developed-by: Marco Elver <elver@google.com>
-> >> Signed-off-by: Marco Elver <elver@google.com>
-> > [...]
-> >> -       kunit_suite_for_each_test_case(suite, test_case)
-> >> -               kunit_run_case_catch_errors(suite, test_case);
-> >> +       kunit_suite_for_each_test_case(suite, test_case) {
-> >> +               struct kunit test = { .param_value = NULL, .param_index = 0 };
-> >> +               bool test_success = true;
-> >> +
-> >> +               if (test_case->generate_params)
-> >> +                       test.param_value = test_case->generate_params(NULL);
-> >> +
-> >> +               do {
-> >> +                       kunit_run_case_catch_errors(suite, test_case, &test);
-> >> +                       test_success &= test_case->success;
-> >> +
-> >> +                       if (test_case->generate_params) {
-> >> +                               kunit_log(KERN_INFO, &test,
-> >> +                                       KUNIT_SUBTEST_INDENT
-> >> +                                       "# %s: param-%d %s",
-> >> +                                       test_case->name, test.param_index,
-> >> +                                       kunit_status_to_string(test.success));
-> >
-> > Sorry, I still found something. The patch I sent had this aligned with
-> > the '(', whereas when I apply this patch it no longer is aligned. Why?
-> >
-> > I see the rest of the file also aligns arguments with opening '(', so
-> > I think your change is inconsistent.
-> >
->
-> Ah those lines had spaces instead of tab and I think I messed up the alignment
-> fixing that. I will send another version fixing this.
-> Thanks!
+On Wed, Nov 04, 2020 at 07:49:07PM +0300, Dmitry Osipenko wrote:
+> Add missing PTC memory client latency allowness entry to the Tegra MC
+> drivers.
+> 
+> This prevents erroneous clearing of MC_INTSTATUS 0x0 register during
+> of the LA programming in tegra_mc_setup_latency_allowance() due to the
+> missing entry. Note that this patch doesn't fix any known problems.
+> 
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  drivers/memory/tegra/tegra114.c | 6 ++++++
+>  drivers/memory/tegra/tegra124.c | 6 ++++++
+>  drivers/memory/tegra/tegra30.c  | 6 ++++++
+>  3 files changed, 18 insertions(+)
 
-It was tabs then <8 spaces to align. checkpatch.pl certainly is happy with that.
+Thanks, applied.
 
-> > Thanks,
-> > -- Marco
-> >
->
+Best regards,
+Krzysztof
+
