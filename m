@@ -2,392 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB8A52A96CF
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 14:16:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 922D52A96D6
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 14:17:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727397AbgKFNQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 08:16:00 -0500
-Received: from mga14.intel.com ([192.55.52.115]:52011 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726939AbgKFNP7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 08:15:59 -0500
-IronPort-SDR: rbOZSStalYGwPgOvD+LQ8bdBTxNYHuWeUDiGqT12PVamFKMxD2qPwXtJAdIqPhPludq3JrrM4U
- hA7w9dUIzrzA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9796"; a="168761310"
-X-IronPort-AV: E=Sophos;i="5.77,456,1596524400"; 
-   d="scan'208";a="168761310"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2020 05:15:59 -0800
-IronPort-SDR: pu6ROkbqm/t8nKOy6CiBbAQwIBp4LL5gwC2CQf0uCK8FWehgVk11tgpkRFsNYGIMBC1KJoQIyy
- CFJEpQtRQysw==
-X-IronPort-AV: E=Sophos;i="5.77,456,1596524400"; 
-   d="scan'208";a="539836798"
-Received: from gliakhov-mobl2.ger.corp.intel.com (HELO ubuntu) ([10.252.35.112])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2020 05:15:57 -0800
-Date:   Fri, 6 Nov 2020 14:15:46 +0100
-From:   Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     ohad@wizery.com, bjorn.andersson@linaro.org,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 8/8] rpmsg: Turn name service into a stand alone driver
-Message-ID: <20201106131545.GA10889@ubuntu>
-References: <20201105225028.3058818-1-mathieu.poirier@linaro.org>
- <20201105225028.3058818-9-mathieu.poirier@linaro.org>
+        id S1727429AbgKFNRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 08:17:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60912 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726939AbgKFNRR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 08:17:17 -0500
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38995C0613CF;
+        Fri,  6 Nov 2020 05:17:17 -0800 (PST)
+Received: by mail-lf1-x143.google.com with SMTP id 126so1860678lfi.8;
+        Fri, 06 Nov 2020 05:17:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=PfeixKrzsL46qhVQbUUdb6DbSd1S0EMYRuybLQNU1/k=;
+        b=lg3hkZm7P25mT76/EiBZKMX9rM35SHKXFtDDMNMyuybG7pZ9GLdujDnb/snXEdZuOE
+         O1XEA9ClNNtaX5qSYh7ncrwbbztO4OLS1Tz0Whoh0CkglFXZtqLJZrGYf4qMX7xbO4N9
+         kP0OrdkSIWnmeqH9Syo0ZE91d0lbC13DJUCcVloa24tNriQ9PbAU1usA16wtQm2RaqeB
+         Q2Vze3+ENHkimZDRFaupbyfMF9A5/sjGDv24PaYkJkspH0+kyNRFWbP7C5sXzxYJK38b
+         RAOCNA6IR6HuCs4WSAyuab6Hb0IKVlIorOLMIzPq7sTruYyAKH9DW8JL59OaCl/toWXN
+         62hQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=PfeixKrzsL46qhVQbUUdb6DbSd1S0EMYRuybLQNU1/k=;
+        b=Gk/3BEhWYHBYyuhetlW0n6fa7sO3UjNYkLB8/jGxYIMRBDVYIl2lB8BFPATBcXYqjQ
+         rcYm3AOICNrl8l3a44FQpD5R+DQiyHZzm+GrGk2Y6cGPb5G/ZNeTLHnqcfhgiKyx540g
+         2gNDJNRKbY82p/2iAZF6qJuq+SYpDIl5Q9AwhDnijGZpFfPG1lIgi6vnW/IfxjTboicl
+         0vCIXmXv2KAc2fkJM2L2T1czJhakuD0qVYaTzUxaS/A8W9WEzk6or596+T6Rj/+lN/8N
+         sevwbl4iU7x3n7Z98GM4jlkIHHsJDGoLXbfKpGH4qs7a7Zl/ZbITTE94w/faLEjXJkm9
+         HDyQ==
+X-Gm-Message-State: AOAM532D+EkPoYt8CEFxbN9QSbEGmnevZvz5MikjsbwhPH9O3CdslMR7
+        wT4Mu6ANtXLKWLRgQXtkBeIPCOGFiBY=
+X-Google-Smtp-Source: ABdhPJzECHN6OMSqEGY9TM6AG4zUXHGmlFcCs46h2OzcdpdI3/ezCJG0veXmwpdjSihGTDog0yaTzA==
+X-Received: by 2002:a19:f518:: with SMTP id j24mr830455lfb.307.1604668635552;
+        Fri, 06 Nov 2020 05:17:15 -0800 (PST)
+Received: from [192.168.2.145] (109-252-192-83.dynamic.spd-mgts.ru. [109.252.192.83])
+        by smtp.googlemail.com with ESMTPSA id 9sm159077lfy.251.2020.11.06.05.17.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 06 Nov 2020 05:17:14 -0800 (PST)
+Subject: Re: [PATCH v1 17/30] mmc: sdhci-tegra: Support OPP and core voltage
+ scaling
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Peter Chen <Peter.Chen@nxp.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        driver-dev <devel@driverdev.osuosl.org>,
+        linux-pwm@vger.kernel.org,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>, linux-usb@vger.kernel.org,
+        "open list:SECURE DIGITAL HO..." <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-tegra@vger.kernel.org, linux-media@vger.kernel.org
+References: <20201104234427.26477-1-digetx@gmail.com>
+ <20201104234427.26477-18-digetx@gmail.com>
+ <CAOh2x==sy1w7_oEV8=toC6uQnSN44wyOixbP_X0BrMsnm1AUFg@mail.gmail.com>
+ <6fa54ce6-d5ae-d04f-7c77-b62c148d92b7@gmail.com>
+ <20201106061513.uyys7njcqcdlah67@vireshk-i7>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <a6926456-8bce-a438-bfaa-be334208f004@gmail.com>
+Date:   Fri, 6 Nov 2020 16:17:13 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201105225028.3058818-9-mathieu.poirier@linaro.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201106061513.uyys7njcqcdlah67@vireshk-i7>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mathieu, Arnaud,
-
-On Thu, Nov 05, 2020 at 03:50:28PM -0700, Mathieu Poirier wrote:
-> From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+06.11.2020 09:15, Viresh Kumar пишет:
+> Setting regulators for count as 0 doesn't sound good to me.
 > 
-> Make the RPMSG name service announcement a stand alone driver so that it
-> can be reused by other subsystems.  It is also the first step in making the
-> functionatlity transport independent, i.e that is not tied to virtIO.
+> But, I understand that you don't want to have that if (have_regulator)
+> check, and it is a fair request. What I will instead do is, allow all
+> dev_pm_opp_put*() API to start accepting a NULL pointer for the OPP
+> table and fail silently. And so you won't be required to have this
+> unwanted check. But you will be required to save the pointer returned
+> back by dev_pm_opp_set_regulators(), which is the right thing to do
+> anyways.
 
-Sorry, I just realised that my testing was incomplete. I haven't tested 
-automatic module loading and indeed it doesn't work. If rpmsg_ns is loaded 
-it probes and it's working, but if it isn't loaded and instead the rpmsg 
-bus driver is probed (e.g. virtio_rpmsg_bus), calling 
-rpmsg_ns_register_device() to create a new rpmsg_ns device doesn't cause 
-rpmsg_ns to be loaded.
-
-Thanks
-Guennadi
-
-> Co-developed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-> ---
->  drivers/rpmsg/Kconfig            |   8 +++
->  drivers/rpmsg/Makefile           |   1 +
->  drivers/rpmsg/rpmsg_ns.c         | 108 +++++++++++++++++++++++++++++++
->  drivers/rpmsg/virtio_rpmsg_bus.c |  86 ++++++------------------
->  include/linux/rpmsg/ns.h         |  18 ++++++
->  5 files changed, 154 insertions(+), 67 deletions(-)
->  create mode 100644 drivers/rpmsg/rpmsg_ns.c
-> 
-> diff --git a/drivers/rpmsg/Kconfig b/drivers/rpmsg/Kconfig
-> index f96716893c2a..c3fc75e6514b 100644
-> --- a/drivers/rpmsg/Kconfig
-> +++ b/drivers/rpmsg/Kconfig
-> @@ -15,6 +15,14 @@ config RPMSG_CHAR
->  	  in /dev. They make it possible for user-space programs to send and
->  	  receive rpmsg packets.
->  
-> +config RPMSG_NS
-> +	tristate "RPMSG name service announcement"
-> +	depends on RPMSG
-> +	help
-> +	  Say Y here to enable the support of the name service announcement
-> +	  channel that probes the associated RPMsg device on remote endpoint
-> +	  service announcement.
-> +
->  config RPMSG_MTK_SCP
->  	tristate "MediaTek SCP"
->  	depends on MTK_SCP
-> diff --git a/drivers/rpmsg/Makefile b/drivers/rpmsg/Makefile
-> index ffe932ef6050..8d452656f0ee 100644
-> --- a/drivers/rpmsg/Makefile
-> +++ b/drivers/rpmsg/Makefile
-> @@ -1,6 +1,7 @@
->  # SPDX-License-Identifier: GPL-2.0
->  obj-$(CONFIG_RPMSG)		+= rpmsg_core.o
->  obj-$(CONFIG_RPMSG_CHAR)	+= rpmsg_char.o
-> +obj-$(CONFIG_RPMSG_NS)		+= rpmsg_ns.o
->  obj-$(CONFIG_RPMSG_MTK_SCP)	+= mtk_rpmsg.o
->  qcom_glink-objs			:= qcom_glink_native.o qcom_glink_ssr.o
->  obj-$(CONFIG_RPMSG_QCOM_GLINK) += qcom_glink.o
-> diff --git a/drivers/rpmsg/rpmsg_ns.c b/drivers/rpmsg/rpmsg_ns.c
-> new file mode 100644
-> index 000000000000..5bda7cb44618
-> --- /dev/null
-> +++ b/drivers/rpmsg/rpmsg_ns.c
-> @@ -0,0 +1,108 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (C) STMicroelectronics 2020 - All Rights Reserved
-> + */
-> +#include <linux/device.h>
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/slab.h>
-> +#include <linux/rpmsg.h>
-> +#include <linux/rpmsg/ns.h>
-> +
-> +#include "rpmsg_internal.h"
-> +
-> +/* invoked when a name service announcement arrives */
-> +static int rpmsg_ns_cb(struct rpmsg_device *rpdev, void *data, int len,
-> +		       void *priv, u32 src)
-> +{
-> +	struct rpmsg_ns_msg *msg = data;
-> +	struct rpmsg_device *newch;
-> +	struct rpmsg_channel_info chinfo;
-> +	struct device *dev = rpdev->dev.parent;
-> +	int ret;
-> +
-> +#if defined(CONFIG_DYNAMIC_DEBUG)
-> +	dynamic_hex_dump("NS announcement: ", DUMP_PREFIX_NONE, 16, 1,
-> +			 data, len, true);
-> +#endif
-> +
-> +	if (len != sizeof(*msg)) {
-> +		dev_err(dev, "malformed ns msg (%d)\n", len);
-> +		return -EINVAL;
-> +	}
-> +
-> +	/* don't trust the remote processor for null terminating the name */
-> +	msg->name[RPMSG_NAME_SIZE - 1] = '\0';
-> +
-> +	strncpy(chinfo.name, msg->name, sizeof(chinfo.name));
-> +	chinfo.src = RPMSG_ADDR_ANY;
-> +	chinfo.dst = rpmsg32_to_cpu(rpdev, msg->addr);
-> +
-> +	dev_info(dev, "%sing channel %s addr 0x%x\n",
-> +		 rpmsg32_to_cpu(rpdev, msg->flags) & RPMSG_NS_DESTROY ?
-> +		 "destroy" : "creat", msg->name, chinfo.dst);
-> +
-> +	if (rpmsg32_to_cpu(rpdev, msg->flags) & RPMSG_NS_DESTROY) {
-> +		ret = rpmsg_release_channel(rpdev, &chinfo);
-> +		if (ret)
-> +			dev_err(dev, "rpmsg_destroy_channel failed: %d\n", ret);
-> +	} else {
-> +		newch = rpmsg_create_channel(rpdev, &chinfo);
-> +		if (!newch)
-> +			dev_err(dev, "rpmsg_create_channel failed\n");
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int rpmsg_ns_probe(struct rpmsg_device *rpdev)
-> +{
-> +	struct rpmsg_endpoint *ns_ept;
-> +	struct rpmsg_channel_info ns_chinfo = {
-> +		.src = RPMSG_NS_ADDR,
-> +		.dst = RPMSG_NS_ADDR,
-> +		.name = "name_service",
-> +	};
-> +
-> +	/*
-> +	 * Create the NS announcement service endpoint associated to the RPMsg
-> +	 * device. The endpoint will be automatically destroyed when the RPMsg
-> +	 * device will be deleted.
-> +	 */
-> +	ns_ept = rpmsg_create_ept(rpdev, rpmsg_ns_cb, NULL, ns_chinfo);
-> +	if (!ns_ept) {
-> +		dev_err(&rpdev->dev, "failed to create the ns ept\n");
-> +		return -ENOMEM;
-> +	}
-> +	rpdev->ept = ns_ept;
-> +
-> +	return 0;
-> +}
-> +
-> +static struct rpmsg_driver rpmsg_ns_driver = {
-> +	.drv.name = "rpmsg_ns",
-> +	.probe = rpmsg_ns_probe,
-> +};
-> +
-> +static int rpmsg_ns_init(void)
-> +{
-> +	int ret;
-> +
-> +	ret = register_rpmsg_driver(&rpmsg_ns_driver);
-> +	if (ret < 0)
-> +		pr_err("%s: Failed to register rpmsg driver\n", __func__);
-> +
-> +	return ret;
-> +}
-> +postcore_initcall(rpmsg_ns_init);
-> +
-> +static void rpmsg_ns_exit(void)
-> +{
-> +	unregister_rpmsg_driver(&rpmsg_ns_driver);
-> +}
-> +module_exit(rpmsg_ns_exit);
-> +
-> +MODULE_DESCRIPTION("Name service announcement rpmsg Driver");
-> +MODULE_AUTHOR("Arnaud Pouliquen <arnaud.pouliquen@st.com>");
-> +MODULE_ALIAS("rpmsg_ns");
-> +MODULE_LICENSE("GPL v2");
-> diff --git a/drivers/rpmsg/virtio_rpmsg_bus.c b/drivers/rpmsg/virtio_rpmsg_bus.c
-> index 6ec299f7f790..338f16c6563d 100644
-> --- a/drivers/rpmsg/virtio_rpmsg_bus.c
-> +++ b/drivers/rpmsg/virtio_rpmsg_bus.c
-> @@ -49,7 +49,6 @@
->   * @endpoints_lock: lock of the endpoints set
->   * @sendq:	wait queue of sending contexts waiting for a tx buffers
->   * @sleepers:	number of senders that are waiting for a tx buffer
-> - * @ns_ept:	the bus's name service endpoint
->   *
->   * This structure stores the rpmsg state of a given virtio remote processor
->   * device (there might be several virtio proc devices for each physical
-> @@ -68,7 +67,6 @@ struct virtproc_info {
->  	struct mutex endpoints_lock;
->  	wait_queue_head_t sendq;
->  	atomic_t sleepers;
-> -	struct rpmsg_endpoint *ns_ept;
->  };
->  
->  /* The feature bitmap for virtio rpmsg */
-> @@ -815,69 +813,14 @@ static void rpmsg_xmit_done(struct virtqueue *svq)
->  	wake_up_interruptible(&vrp->sendq);
->  }
->  
-> -/* invoked when a name service announcement arrives */
-> -static int rpmsg_ns_cb(struct rpmsg_device *rpdev, void *data, int len,
-> -		       void *priv, u32 src)
-> -{
-> -	struct rpmsg_ns_msg *msg = data;
-> -	struct rpmsg_device *newch;
-> -	struct rpmsg_channel_info chinfo;
-> -	struct virtproc_info *vrp = priv;
-> -	struct device *dev = &vrp->vdev->dev;
-> -	bool little_endian = virtio_is_little_endian(vrp->vdev);
-> -	int ret;
-> -
-> -#if defined(CONFIG_DYNAMIC_DEBUG)
-> -	dynamic_hex_dump("NS announcement: ", DUMP_PREFIX_NONE, 16, 1,
-> -			 data, len, true);
-> -#endif
-> -
-> -	if (len != sizeof(*msg)) {
-> -		dev_err(dev, "malformed ns msg (%d)\n", len);
-> -		return -EINVAL;
-> -	}
-> -
-> -	/*
-> -	 * the name service ept does _not_ belong to a real rpmsg channel,
-> -	 * and is handled by the rpmsg bus itself.
-> -	 * for sanity reasons, make sure a valid rpdev has _not_ sneaked
-> -	 * in somehow.
-> -	 */
-> -	if (rpdev) {
-> -		dev_err(dev, "anomaly: ns ept has an rpdev handle\n");
-> -		return -EINVAL;
-> -	}
-> -
-> -	/* don't trust the remote processor for null terminating the name */
-> -	msg->name[RPMSG_NAME_SIZE - 1] = '\0';
-> -
-> -	strncpy(chinfo.name, msg->name, sizeof(chinfo.name));
-> -	chinfo.src = RPMSG_ADDR_ANY;
-> -	chinfo.dst = __rpmsg32_to_cpu(little_endian, msg->addr);
-> -
-> -	dev_info(dev, "%sing channel %s addr 0x%x\n",
-> -		 __rpmsg32_to_cpu(little_endian, msg->flags) & RPMSG_NS_DESTROY ?
-> -		 "destroy" : "creat", msg->name, chinfo.dst);
-> -
-> -	if (__rpmsg32_to_cpu(little_endian, msg->flags) & RPMSG_NS_DESTROY) {
-> -		ret = rpmsg_unregister_device(&vrp->vdev->dev, &chinfo);
-> -		if (ret)
-> -			dev_err(dev, "rpmsg_destroy_channel failed: %d\n", ret);
-> -	} else {
-> -		newch = __rpmsg_create_channel(vrp, &chinfo);
-> -		if (!newch)
-> -			dev_err(dev, "rpmsg_create_channel failed\n");
-> -	}
-> -
-> -	return 0;
-> -}
-> -
->  static int rpmsg_probe(struct virtio_device *vdev)
->  {
->  	vq_callback_t *vq_cbs[] = { rpmsg_recv_done, rpmsg_xmit_done };
->  	static const char * const names[] = { "input", "output" };
->  	struct virtqueue *vqs[2];
->  	struct virtproc_info *vrp;
-> +	struct virtio_rpmsg_channel *vch;
-> +	struct rpmsg_device *rpdev_ns;
->  	void *bufs_va;
->  	int err = 0, i;
->  	size_t total_buf_space;
-> @@ -953,14 +896,26 @@ static int rpmsg_probe(struct virtio_device *vdev)
->  
->  	/* if supported by the remote processor, enable the name service */
->  	if (virtio_has_feature(vdev, VIRTIO_RPMSG_F_NS)) {
-> -		/* a dedicated endpoint handles the name service msgs */
-> -		vrp->ns_ept = __rpmsg_create_ept(vrp, NULL, rpmsg_ns_cb,
-> -						vrp, RPMSG_NS_ADDR);
-> -		if (!vrp->ns_ept) {
-> -			dev_err(&vdev->dev, "failed to create the ns ept\n");
-> +		vch = kzalloc(sizeof(*vch), GFP_KERNEL);
-> +		if (!vch) {
->  			err = -ENOMEM;
->  			goto free_coherent;
->  		}
-> +
-> +		/* Link the channel to our vrp */
-> +		vch->vrp = vrp;
-> +
-> +		/* Assign public information to the rpmsg_device */
-> +		rpdev_ns = &vch->rpdev;
-> +		rpdev_ns->ops = &virtio_rpmsg_ops;
-> +		rpdev_ns->little_endian = virtio_is_little_endian(vrp->vdev);
-> +
-> +		rpdev_ns->dev.parent = &vrp->vdev->dev;
-> +		rpdev_ns->dev.release = virtio_rpmsg_release_device;
-> +
-> +		err = rpmsg_ns_register_device(rpdev_ns);
-> +		if (err)
-> +			goto free_coherent;
->  	}
->  
->  	/*
-> @@ -1013,9 +968,6 @@ static void rpmsg_remove(struct virtio_device *vdev)
->  	if (ret)
->  		dev_warn(&vdev->dev, "can't remove rpmsg device: %d\n", ret);
->  
-> -	if (vrp->ns_ept)
-> -		__rpmsg_destroy_ept(vrp, vrp->ns_ept);
-> -
->  	idr_destroy(&vrp->endpoints);
->  
->  	vdev->config->del_vqs(vrp->vdev);
-> diff --git a/include/linux/rpmsg/ns.h b/include/linux/rpmsg/ns.h
-> index 73ecc91dc26f..e267dd5f909b 100644
-> --- a/include/linux/rpmsg/ns.h
-> +++ b/include/linux/rpmsg/ns.h
-> @@ -4,6 +4,7 @@
->  #define _LINUX_RPMSG_NS_H
->  
->  #include <linux/mod_devicetable.h>
-> +#include <linux/rpmsg.h>
->  #include <linux/rpmsg/byteorder.h>
->  #include <linux/types.h>
->  
-> @@ -39,4 +40,21 @@ enum rpmsg_ns_flags {
->  /* Address 53 is reserved for advertising remote services */
->  #define RPMSG_NS_ADDR			(53)
->  
-> +/**
-> + * rpmsg_ns_register_device() - register name service device based on rpdev
-> + * @rpdev: prepared rpdev to be used for creating endpoints
-> + *
-> + * This function wraps rpmsg_register_device() preparing the rpdev for use as
-> + * basis for the rpmsg name service device.
-> + */
-> +static inline int rpmsg_ns_register_device(struct rpmsg_device *rpdev)
-> +{
-> +	strcpy(rpdev->id.name, "rpmsg_ns");
-> +	rpdev->driver_override = "rpmsg_ns";
-> +	rpdev->src = RPMSG_NS_ADDR;
-> +	rpdev->dst = RPMSG_NS_ADDR;
-> +
-> +	return rpmsg_register_device(rpdev);
-> +}
-> +
->  #endif
-> -- 
-> 2.25.1
-> 
+Perhaps even a better variant could be to add a devm versions of the OPP
+API functions, then drivers won't need to care about storing the
+opp_table pointer if it's unused by drivers.
