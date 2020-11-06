@@ -2,147 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2C112A9BA0
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 19:09:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF9BF2A9BAA
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 19:15:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727716AbgKFSJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 13:09:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50652 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727155AbgKFSJZ (ORCPT
+        id S1727708AbgKFSPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 13:15:40 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:50775 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726999AbgKFSPj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 13:09:25 -0500
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5ACCC0613D2
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 10:09:24 -0800 (PST)
-Received: by mail-qt1-x844.google.com with SMTP id f93so1379257qtb.10
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 10:09:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=CCWfhKT3ktx1Y0knQS9srJLCrgOnb432wETBQgR0zwo=;
-        b=doAkeCGcQXpt2NzsJI+H159GAe+srNA7dZtr0H49NbeeYIJ6GpjmajNyfUIkqGpHMu
-         ai3RLcEwPTV7f+TSNYl8TdB/e+py8oelQrW1t6LEF2AEbuiaX5ntMNXRo7pafHLNk+qa
-         QhEYT0XqNOBcmdvsGARdcKLcZQ4vNiK+T3d409rehkmevDX2QeiKRii6c+D/qZ2Nh+pO
-         0RwVihcCuFTu9WDbPH7A43DVXJyHPo6JqohdwYb1U85pWLDQ4z5qm6uqw+vSAoLvW1sa
-         C6p622tFNp353sQHEku1KoOlamuSPHJwR2D09akhY5jCIZjnxUknFMxm2of3ziLK0Hx4
-         K6RA==
+        Fri, 6 Nov 2020 13:15:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604686539;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=njXTiXf5+NVxfZwZ7si6Kzqa4dEa5pfbQK7/u8nZLAA=;
+        b=iPd6S2DAhT/JkvVpS72qklS5fxP733ypgd7lMAHEojZz7RedJyOK955O6wVqo4Jbwi9WSC
+        OceoykFo3imYqjafS6mgbnEYoMFoDD0BRRcU65fBTWr5ynzaifwsjdD1tmcWxzRCQdpz5s
+        MN+4KJqB7cl5CfbV06/Jmo2i7yC2tY0=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-534-Wmxk_r2tMP-7MPdb-WEX8g-1; Fri, 06 Nov 2020 13:15:35 -0500
+X-MC-Unique: Wmxk_r2tMP-7MPdb-WEX8g-1
+Received: by mail-wr1-f71.google.com with SMTP id h8so761446wrt.9
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 10:15:35 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CCWfhKT3ktx1Y0knQS9srJLCrgOnb432wETBQgR0zwo=;
-        b=ZkyY49/A6BfG18IgdPaVgMcDNdBRwjUPK5Jp45K7YX9W63C+SR1mpnwifcRAGfeT0e
-         7WaDtA74hPOt15AbwlE/hg89EraXyGM9wjeUUgk3XIJ71+rUkEX7p/1BGAOiW+cBoX2t
-         PdOFcbMnrVkl0I4f7b7LFIojEEGE7AUKMLYYXdV5ExCFqJPz/4fu/rcDv9qsuFPciO6k
-         N4Jqh5khGs4C66tBihr5l6c0/GzAAAGdIqjsseFFzA8G1ErKYBOXD8I/CXk5yeMg4B0P
-         l4U0yxllPANKPPBj9rYQ33OOBw50o701Ue49MiLyjwgH4Hbd8bKSqilCW9nEl2zgt7ef
-         F4+A==
-X-Gm-Message-State: AOAM530KtaElKgg0x4O81UyreHa9ChSGEtfkb2gW2iaFl1oruOyHJZyy
-        2KvCw2hCmxAzHu+qAMFpmP18eA==
-X-Google-Smtp-Source: ABdhPJyipccSrv690eVVWi+5CEwYt+UFgZ0+2fbz5cV2OhIw8jYbnu+mxTrmBl1wmL06RVvlGefxSA==
-X-Received: by 2002:aed:33c4:: with SMTP id v62mr2703105qtd.19.1604686163988;
-        Fri, 06 Nov 2020 10:09:23 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id n81sm1082262qke.99.2020.11.06.10.09.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Nov 2020 10:09:23 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kb6As-000ztT-IG; Fri, 06 Nov 2020 14:09:22 -0400
-Date:   Fri, 6 Nov 2020 14:09:22 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Logan Gunthorpe <logang@deltatee.com>
-Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
-        Stephen Bates <sbates@raithlin.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Ira Weiny <iweiny@intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Don Dutile <ddutile@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Subject: Re: [RFC PATCH 14/15] PCI/P2PDMA: Introduce pci_mmap_p2pmem()
-Message-ID: <20201106180922.GV36674@ziepe.ca>
-References: <20201106170036.18713-1-logang@deltatee.com>
- <20201106170036.18713-15-logang@deltatee.com>
- <20201106172206.GS36674@ziepe.ca>
- <b1e8dfce-d583-bed8-d04d-b7265a54c99f@deltatee.com>
- <20201106174223.GU36674@ziepe.ca>
- <2c2d2815-165e-2ef9-60d6-3ace7ff3aaa5@deltatee.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=njXTiXf5+NVxfZwZ7si6Kzqa4dEa5pfbQK7/u8nZLAA=;
+        b=FDYM6VMXTnyarfcC4VvyOu5iX8SP2tt9hRYmMwPVcQ1TmMn52omAmq1VknyAlkV9NW
+         AEcOV4TEgwSkCbZccp4HUqAoTPMe+tEzh92pBtasaF8ZNS1Rhk+Ma4ITWBduBdygy44t
+         xYFCUymFdEtIw9rgF7ov+c1O3hMHyi2z7jspvZcY6wHOfs3VSntxEAeIVjzLDOn54dOd
+         Ho5ncKGRW6HGH6Fg55vF8zO6mWVhnSoSARqKemlH8EvJK/osDW8IWkv+ikex9YYolu+R
+         hxEyAiyPUfbDUrkALkQIEzIcA3KTkepPKtO9TABmQ/hGnxbKq+TQovJoVng66dwoaXK7
+         7AZQ==
+X-Gm-Message-State: AOAM531lh8v1ARdgWRqqp8XccitxpoW6fnxcNA+BKgnLXhVGq+SYvscP
+        J458ZRXioPCEE8hXhIEijY2LmXAduBsX8MpCQdSrsrxjpuB2H6guzi+L0tOCFKpegxrxHypIE47
+        thZlSW3bVRYdGPNsK/OTmgGQM
+X-Received: by 2002:a1c:b746:: with SMTP id h67mr839102wmf.43.1604686534021;
+        Fri, 06 Nov 2020 10:15:34 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJydW3XZS8v51uQtbtqv7TiJ/HZfs4GAgZWRHDAbg152wQgVp/+3LEpV6UAhQtYmHyBErzbFGQ==
+X-Received: by 2002:a1c:b746:: with SMTP id h67mr839087wmf.43.1604686533852;
+        Fri, 06 Nov 2020 10:15:33 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id c8sm3300512wrv.26.2020.11.06.10.15.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 06 Nov 2020 10:15:33 -0800 (PST)
+Subject: Re: [PATCH v13 13/14] KVM: selftests: Let dirty_log_test async for
+ dirty ring test
+To:     Peter Xu <peterx@redhat.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        Andrew Jones <drjones@redhat.com>
+References: <20201001012044.5151-1-peterx@redhat.com>
+ <20201001012239.6159-1-peterx@redhat.com>
+ <6d5eb99e-e068-e5a6-522f-07ef9c33127f@redhat.com>
+ <20201106180610.GC138364@xz-x1>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <dc32ce97-cbd2-07da-b8ca-30ea67c2d4e3@redhat.com>
+Date:   Fri, 6 Nov 2020 19:15:31 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2c2d2815-165e-2ef9-60d6-3ace7ff3aaa5@deltatee.com>
+In-Reply-To: <20201106180610.GC138364@xz-x1>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 06, 2020 at 10:53:45AM -0700, Logan Gunthorpe wrote:
+On 06/11/20 19:06, Peter Xu wrote:
+>> +	pthread_sigmask(0, NULL, sigset);
+> Not extremely important, but still better with SIG_BLOCK imho, since it seems
+> not all archs defined SIG_BLOCK as zero.
 > 
-> 
-> On 2020-11-06 10:42 a.m., Jason Gunthorpe wrote:
-> > On Fri, Nov 06, 2020 at 10:28:00AM -0700, Logan Gunthorpe wrote:
-> >>
-> >>
-> >> On 2020-11-06 10:22 a.m., Jason Gunthorpe wrote:
-> >>> On Fri, Nov 06, 2020 at 10:00:35AM -0700, Logan Gunthorpe wrote:
-> >>>> Introduce pci_mmap_p2pmem() which is a helper to allocate and mmap
-> >>>> a hunk of p2pmem into userspace.
-> >>>>
-> >>>> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
-> >>>>  drivers/pci/p2pdma.c       | 104 +++++++++++++++++++++++++++++++++++++
-> >>>>  include/linux/pci-p2pdma.h |   6 +++
-> >>>>  2 files changed, 110 insertions(+)
-> >>>>
-> >>>> diff --git a/drivers/pci/p2pdma.c b/drivers/pci/p2pdma.c
-> >>>> index 9961e779f430..8eab53ac59ae 100644
-> >>>> +++ b/drivers/pci/p2pdma.c
-> >>>> @@ -16,6 +16,7 @@
-> >>>>  #include <linux/genalloc.h>
-> >>>>  #include <linux/memremap.h>
-> >>>>  #include <linux/percpu-refcount.h>
-> >>>> +#include <linux/pfn_t.h>
-> >>>>  #include <linux/random.h>
-> >>>>  #include <linux/seq_buf.h>
-> >>>>  #include <linux/xarray.h>
-> >>>> @@ -1055,3 +1056,106 @@ ssize_t pci_p2pdma_enable_show(char *page, struct pci_dev *p2p_dev,
-> >>>>  	return sprintf(page, "%s\n", pci_name(p2p_dev));
-> >>>>  }
-> >>>>  EXPORT_SYMBOL_GPL(pci_p2pdma_enable_show);
-> >>>> +
-> >>>> +struct pci_p2pdma_map {
-> >>>> +	struct kref ref;
-> >>>> +	struct pci_dev *pdev;
-> >>>> +	void *kaddr;
-> >>>> +	size_t len;
-> >>>> +};
-> >>>
-> >>> Why have this at all? Nothing uses it and no vm_operations ops are
-> >>> implemented?
-> >>
-> >> It's necessary to free the allocated p2pmem when the mapping is torn down.
-> > 
-> > That's suspicious.. Once in a VMA the lifetime of the page must be
-> > controlled by the page refcount, it can't be put back into the genpool
-> > just because the vma was destroed.
-> 
-> Ah, hmm, yes. I guess the pages have to be hooked and returned to the
-> genalloc through free_devmap_managed_page(). 
 
-That sounds about right, but in this case it doesn't need the VMA
-operations.
+If the second argument is NULL, the first is unused.
 
-> Seems like it might be doable... but it will complicate things for
-> users that don't want to use the genpool (though no such users exist
-> upstream).
+Paolo
 
-I would like to use this stuff in RDMA pretty much immediately and the
-genpool is harmful for those cases, so please don't make decisions
-that are tying thing to genpool
-
-Jason
