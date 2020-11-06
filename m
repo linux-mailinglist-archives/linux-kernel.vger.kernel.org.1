@@ -2,115 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 541122A968C
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 13:58:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 982D22A9692
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 13:58:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727371AbgKFM6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 07:58:32 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:35266 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726939AbgKFM6b (ORCPT
+        id S1727415AbgKFM6q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 07:58:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57748 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727386AbgKFM6m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 07:58:31 -0500
-From:   Kurt Kanzenbach <kurt@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1604667508;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=shG7AJpj82cx0oUcROwbU9VWQmTdciDrS6ngB9yxIsI=;
-        b=XT8ck3tdgI8gpazP3uo9gZ3YlqtdHmdo+MHdiKukS1mBakVCU1hSQkmwy7SWadArJSVIPI
-        +IsVliIg1BTkXIUCBY6fsctAv2AHc91I+tScG0CwKi12MxqQmKxkrIYk+3iQPZPYZPtIQq
-        NzKnQ/lHnW5iMU0qwC83y1qRwkoPz+0KxeTMKoA7CsiypTkueTL1YD16tkRYfrsdVrF1oR
-        EGO520h3I1JW5GhC/A9Yw4Osig43uVqrpaX105PlgOPKHVciocqHxDV4ZZ40eZU5Oa0kLP
-        hqy8BN6a41+/ApkdXLes2EXIwFXZGbZHEiZ/nd77wqskP6D2JhFfgQdFVeX/+A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1604667508;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=shG7AJpj82cx0oUcROwbU9VWQmTdciDrS6ngB9yxIsI=;
-        b=l1jx89VfA8343zcD85kbWd3IMbrAPDVCx+SenZX7zqcDAWEdOEYgfwru8Pl46clgdLkGfE
-        kIJK+0WdY0yfNRAQ==
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>
-Cc:     Wang Qing <wangqing@vivo.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Samuel Zou <zou_wei@huawei.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Networking <netdev@vger.kernel.org>,
-        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] net/ethernet: update ret when ptp_clock is ERROR
-In-Reply-To: <CAK8P3a0Dce3dYER0oJ+2FcV8UbJqCaAv7zSS6JZBdb6ewfnE7g@mail.gmail.com>
-References: <1604649411-24886-1-git-send-email-wangqing@vivo.com> <fd46310f-0b4e-ac8b-b187-98438ee6bb60@ti.com> <CAK8P3a0Dce3dYER0oJ+2FcV8UbJqCaAv7zSS6JZBdb6ewfnE7g@mail.gmail.com>
-Date:   Fri, 06 Nov 2020 13:58:18 +0100
-Message-ID: <87pn4qmyl1.fsf@kurt>
+        Fri, 6 Nov 2020 07:58:42 -0500
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92DCCC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 04:58:42 -0800 (PST)
+Received: by mail-qt1-x844.google.com with SMTP id h12so644127qtu.1
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 04:58:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=LDmpY5Q3jeo13aLjq8mpu4vGc1arJjADg5EChwDGndg=;
+        b=SpM7chHfdZV7h7CKnja31DtYMLYzvOBfAlRtmJ/n/nmTfwC0/x656sMJMRCmtcchj/
+         ZyUoXciqxn2yvqmwaFJGHZpzSVxZGn6Ze+JMY7srqI9JIuOIozv+IXpP8Z+LAF7g6ch/
+         geDIF/iCN2g4ZH9VZGIJGVBqjOuzBGBXOfBZNRG4f137xGwffeFnYlpuanA0eFi1/Rzl
+         pE4g37GMMac8kgjZ4ctH1Noi6iDIudZDIDNiFDVJFDqddViW7d1FfR7i1JICWyRJ9Ug1
+         S57hfmUNM5E/OZ/BlY/n0jaRZ1v6nFt9MTt+r5sEgovuILshM1zaV3phLFg35dveDz2Q
+         NHAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LDmpY5Q3jeo13aLjq8mpu4vGc1arJjADg5EChwDGndg=;
+        b=TyvTfbLMvDbuPtEh1pCXLF7AfhnEERbi9DY4FkYJTYl8hjEbKwvzelupa7B+TKj0fN
+         QP0O4dLykUsylPu5/OSkRlY6tk80cHRc7oXpOrQxQjU7Bi/OOD3ceG99wkj2tpbVju9U
+         ZnxGJ8y9Phov0hTBxyYUyW9iY1MNcn1kHfgIpMVu/GaNnfqcbYh4gTjKOVyGA+EDQXK/
+         TzYZnNFhSJ3L12cxW2u3UeYUV6BtBSgZhs/JjR2TWB7LOHuRfxUgFWWc6ssfEPtolh45
+         23W8Dgc35/17HC4rnEQdyISIXi5HBp6RGSI0jhLWRVf38c2/uox7HhjexwaUnGcuCNxT
+         9glw==
+X-Gm-Message-State: AOAM531Ralu65NYSon5z2g6CIjDqfINobJu9Hlir10OdHgDVyXQAfiU5
+        o2zQcZmnwev7GX91m2Le+hliOg==
+X-Google-Smtp-Source: ABdhPJw+rwYTMNOCDOtELAS3ZURAM14wn0+raNRbu4MJsphc7No8hlqtgP1VZD/3115+BJAOILEwww==
+X-Received: by 2002:ac8:74c:: with SMTP id k12mr1292900qth.32.1604667521864;
+        Fri, 06 Nov 2020 04:58:41 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id o63sm432040qkd.96.2020.11.06.04.58.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Nov 2020 04:58:41 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kb1KC-000leP-L9; Fri, 06 Nov 2020 08:58:40 -0400
+Date:   Fri, 6 Nov 2020 08:58:40 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     John Hubbard <jhubbard@nvidia.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        J??r??me Glisse <jglisse@redhat.com>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        Jan Kara <jack@suse.cz>, Pawel Osciak <pawel@osciak.com>,
+        KVM list <kvm@vger.kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+Subject: Re: [PATCH v5 05/15] mm/frame-vector: Use FOLL_LONGTERM
+Message-ID: <20201106125840.GP36674@ziepe.ca>
+References: <20201104162125.GA13007@infradead.org>
+ <CAKMK7uH=0+3FSR4LxP7bJUB4BsCcnCzfK2=D+2Am9QNmfZEmfw@mail.gmail.com>
+ <20201104163758.GA17425@infradead.org>
+ <20201104164119.GA18218@infradead.org>
+ <20201104181708.GU36674@ziepe.ca>
+ <d3497583-2338-596e-c764-8c571b7d22cf@nvidia.com>
+ <20201105092524.GQ401619@phenom.ffwll.local>
+ <20201105124950.GZ36674@ziepe.ca>
+ <7ae3486d-095e-cf4e-6b0f-339d99709996@nvidia.com>
+ <CAKMK7uGRw=xXE+D=JJsNeRav9+hdO4tcDSvDbAuWfc3T4VkoJw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha512; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKMK7uGRw=xXE+D=JJsNeRav9+hdO4tcDSvDbAuWfc3T4VkoJw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
+On Fri, Nov 06, 2020 at 11:01:57AM +0100, Daniel Vetter wrote:
 
-On Fri Nov 06 2020, Arnd Bergmann wrote:
-> On Fri, Nov 6, 2020 at 12:35 PM Grygorii Strashko
-> <grygorii.strashko@ti.com> wrote:
->> On 06/11/2020 09:56, Wang Qing wrote:
->
->> > +++ b/drivers/net/ethernet/ti/am65-cpts.c
->> > @@ -1001,8 +1001,7 @@ struct am65_cpts *am65_cpts_create(struct device *dev, void __iomem *regs,
->>
->> there is
->>         cpts->ptp_clock = ptp_clock_register(&cpts->ptp_info, cpts->dev);
->>
->>
->> >       if (IS_ERR_OR_NULL(cpts->ptp_clock)) {
->>
->> And ptp_clock_register() can return NULL only if PTP support is disabled.
->> In which case, we should not even get here.
->>
->> So, I'd propose to s/IS_ERR_OR_NULL/IS_ERR above,
->> and just assign ret = PTR_ERR(cpts->ptp_clock) here.
->
-> Right, using IS_ERR_OR_NULL() is almost ever a mistake, either
-> from misunderstanding the interface, or from a badly designed
-> interface that needs to be changed.
+> gpu drivers also tend to use vmf_insert_pfn* directly, so we can do
+> on-demand paging and move buffers around. From what I glanced for
+> lowest level we to the pte_mkspecial correctly (I think I convinced
+> myself that vm_insert_pfn does that), but for pud/pmd levels it seems
+> just yolo.
+> 
+> remap_pfn_range seems to indeed split down to pte level always.
 
-The NULL case should be handled differently and it is documented:
+Thats what it looked like to me too.
+ 
+> >  From my reading, yes. See ioremap_try_huge_pmd().
+> 
+> The ioremap here shouldn't matter, since this is for kernel-internal
+> mappings. So that's all fine I think.
 
-/**
- * ptp_clock_register() - register a PTP hardware clock driver
-[...]
- * Returns a valid pointer on success or PTR_ERR on failure.  If PHC
- * support is missing at the configuration level, this function
- * returns NULL, and drivers are expected to gracefully handle that
- * case separately.
- */
+Right, sorry to be unclear, we are talking about io_remap_pfn_range()
+which is for userspace mappings in VMAs
 
-Thanks,
-Kurt
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCgAdFiEEooWgvezyxHPhdEojeSpbgcuY8KYFAl+lSGoACgkQeSpbgcuY
-8KZp9BAAqQMVJ3ieO7c2694yqOwaG7+VL38Jv7x6L1Tjr1AFq1pnroPnS1oP+EPj
-ESSOG5Zrdtya/+E3k8a+hbHpbrljlvkLlCv6SSZwRQuxSzuoeY+EDtqCTnYLXJqT
-XtVwWWHRNWvFQivXSfbvfFAcP+TsL/1EMgehZgAcRD8LnmyCJgXeSaUY/NkHTIer
-kIu0KPsfkFYFsTWdHcgzGh1n7PRZx9SLZTetJH4xqUd2YDE7WzFcrvBVrYutCGg/
-Bu+aLOodUK1z0JJTIzAIl/Ug9O//10d1uiVdLF209wgUuDcIzN3HT6LNzZNfcPCE
-IobDVvg09w+MayGx2wg1FROhsGLLmjbCtGc+wf+MySeTCXOlACvfVSsw7ULoKgCh
-bE0CnOTg+5c0iYYMtavM6PwabO3XJTUTFfxYTtJpQ9GNDipjJZMqxfqXCUO4HuNQ
-33fSBfmI54VWRb88ATVAYyLzosJzpNgYR5lbiw8A/zbBtynHQoCh9jpQXink78Y/
-3xLxtDvWQQuSmRnPLrbcPc+T2Er3RVKNd9ZxeNGZbgu8OQmm75Zk01PNRL18tKwn
-KO3EtDSyHFVJEmIa338qY+6x4GTuCa0L152og7kX4u8gECbK1WBOTS0pPeDbRcrq
-cAVAy2/xPt5aG2/ygJpfHdNvMP740uix9g4lDxMNBpCNsEy/yr8=
-=Dvwr
------END PGP SIGNATURE-----
---=-=-=--
+Jason
