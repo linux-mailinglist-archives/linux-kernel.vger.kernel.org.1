@@ -2,146 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F34B22A8C77
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 03:11:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EEF52A8C7B
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 03:14:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726143AbgKFCLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 21:11:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41524 "EHLO
+        id S1726570AbgKFCOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 21:14:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726126AbgKFCLa (ORCPT
+        with ESMTP id S1726276AbgKFCOW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 21:11:30 -0500
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F58DC0613D2
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 18:11:30 -0800 (PST)
-Received: by mail-qt1-x849.google.com with SMTP id l67so2169326qte.6
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 18:11:30 -0800 (PST)
+        Thu, 5 Nov 2020 21:14:22 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC164C0613CF;
+        Thu,  5 Nov 2020 18:14:22 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id e21so2736289pgr.11;
+        Thu, 05 Nov 2020 18:14:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=T1ssYQnlZfXYg4a9CrE5sQuW0tqmDafqmdVBZ8OGyYk=;
-        b=TcY9DZhY0raayijWagcNzm4ZuafclgG6HVA/Sz1qQnQJQOIfbQHvvL7RNmX+9P4UtB
-         oU5bGzkYPf4vBagfhZ2H/5dyyrnXt2KXH8nnnG2AAxOAKVFlIPmODwO7U/oeJDRH6+p2
-         2hsqKwA3RN+85OY3avD3vLPbAHTg8vq3LucXtnw688M7egI3PZ/CkuxKILVTw58owe1l
-         MSo5HTPx4dp7XvFGzTLI2u4EM2xDdWyBkvnLzI1lar1APXh0aZ2ah+upKTkO85OeywV3
-         g1Medy/bw7NowmvGMbavBgzcDTJ7aBszMcbHGS8Ho/CWoztR11RpNPqQ+yW6AJJvdKBO
-         8mYw==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=zA7qEoSUaqfTegr+OwR1i9UncfOv0l2weHhHNCQqJPU=;
+        b=h5P4tt2GZbmmi+hPInl9zPqprfmM8XHHWghKUtmj3IDnPHf6KcCzv8B3mQY12RNKzj
+         d3IXCeqcC25QCj+p4UEnl0bsLedW0Es23PkdlfxLKHUrL+uu1tWvJuj4zMdybuA/3Juo
+         3/AApiusZFkwikfVWRjCU5a0JQZUIsydfdWUy0KxvuqtUZJEScC4spKieZojifyDqutv
+         BoEVbN7qRlvUc6BqjUQ2KDLBLKLkIPBNLI5sMKe6emY0yz2yVoyTonJcLVIoW9soCLaA
+         Sx/1vXAFo46jsFfvkgA9HjGgejcPQmyJubDOO0w6YARAdWsOJo6vS3J5KDFxK3KM2JnC
+         0emw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=T1ssYQnlZfXYg4a9CrE5sQuW0tqmDafqmdVBZ8OGyYk=;
-        b=WWQmCaPcnBgyGDkdsk+4K3ZrD5aTUGPngrnuhTPXmWOtUNA/ME8E1bfrupEM4dMFE0
-         sV+KDXGBmdSPqW5s6usvaWhmS3I4m7LY6MwkTItlCXdGEaIcUz+4PvT8gz1TH7+PO9t8
-         fFDXVFmEhCNxPDypy0IvSy8lohRolp1PXjs8DH6TnpQgFpJsCfj6CbYtyx8G8CHCl58z
-         tKBXSGa9ca2vwIktG8vtwPsw/5peFXV4cJoNimnAN/Kq2vBf3BrLVPBU2XvsGRw7DSNL
-         sRwxBVgzanSNo9EMqNAWFLERrTAhKDdPeQw/b+lj5Nj167moS/jO7uxG4Qhp99HCWqta
-         DTnA==
-X-Gm-Message-State: AOAM533UE4mWiL+PV1lGMU9aiEirwdI9swuyGYSN+MC7A95UxK0UCISr
-        Y4wdDeR5U2YT5lWJhuAEC81aIgED3KBT
-X-Google-Smtp-Source: ABdhPJxOvwIwaEbk6c5IHG3124uPZYpsU4BroVZh94M50Q/ggQeD+jmPu/TwzfSqVPCNKiKIMes8VimzH0Y+
-Sender: "amistry via sendgmr" <amistry@nandos.syd.corp.google.com>
-X-Received: from nandos.syd.corp.google.com ([2401:fa00:9:14:725a:fff:fe46:72ab])
- (user=amistry job=sendgmr) by 2002:a0c:8e4f:: with SMTP id
- w15mr665237qvb.42.1604628689164; Thu, 05 Nov 2020 18:11:29 -0800 (PST)
-Date:   Fri,  6 Nov 2020 13:10:43 +1100
-Message-Id: <20201106131015.v2.1.I7782b0cedb705384a634cfd8898eb7523562da99@changeid>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
-Subject: [PATCH v2] proc: Provide details on indirect branch speculation
-From:   Anand K Mistry <amistry@google.com>
-To:     linux-fsdevel@vger.kernel.org
-Cc:     asteinhauser@google.com, sfr@canb.auug.org.au, rppt@kernel.org,
-        joelaf@google.com, tglx@linutronix.de,
-        Anand K Mistry <amistry@google.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Alexey Gladkov <gladkov.alexey@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=zA7qEoSUaqfTegr+OwR1i9UncfOv0l2weHhHNCQqJPU=;
+        b=LpYGRzi0hSb+C6Cl8E2cdLQQCG29uuQHA+m88K7R8Q69JFiQi6BLShwCaisY9O1K5V
+         B7nSt3GrrCv5sNeFQdNQwTInB6kGcTPEi2pCJ76wbdgarLBp5GsE22a1OU8bmJpOtFTI
+         VQKt3B6kRh9nhLLVqmW2zdcFZkXGgsxBS/1XxEe3JBsJKql20QRiEkwtMs/RkTMNWjkM
+         rAqN+uVpc3uywzRD1ETEQBxysl7T0kiXFIkbEPcvfM5lWCvQRiYDR0Rt7SuepVw5X7yb
+         PZmLMH4EFOiKqzxmggilPx6itS1ZsNi5ZA8ecTmLq5F9LPCj6keo0wwO1F7fqH96+Q/k
+         SWrg==
+X-Gm-Message-State: AOAM533VHjvPzogA8c/RXlIzLwo7wRN0l+p5y4/wt3WK7GpLJZxPpa5T
+        9kK7pnkwn3trMLswKLStDQg=
+X-Google-Smtp-Source: ABdhPJx4tvrrPK3BMGi6Q5Is4DgVF/FgnhBISqy0Nx8P3gAmD1HYtqzINepIesVVmljQqgSZJErnwQ==
+X-Received: by 2002:aa7:9d81:0:b029:18b:4489:1e59 with SMTP id f1-20020aa79d810000b029018b44891e59mr5291458pfq.62.1604628862164;
+        Thu, 05 Nov 2020 18:14:22 -0800 (PST)
+Received: from ast-mbp ([2620:10d:c090:400::5:b55b])
+        by smtp.gmail.com with ESMTPSA id c67sm1557882pfa.91.2020.11.05.18.14.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Nov 2020 18:14:20 -0800 (PST)
+Date:   Thu, 5 Nov 2020 18:14:18 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     KP Singh <kpsingh@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Paul Turner <pjt@google.com>,
+        Jann Horn <jannh@google.com>, Hao Luo <haoluo@google.com>
+Subject: Re: [PATCH bpf-next v5 8/9] bpf: Add tests for task_local_storage
+Message-ID: <20201106021418.w34sar72sbddzwqo@ast-mbp>
+References: <20201105225827.2619773-1-kpsingh@chromium.org>
+ <20201105225827.2619773-9-kpsingh@chromium.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201105225827.2619773-9-kpsingh@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Similar to speculation store bypass, show information about the indirect
-branch speculation mode of a task in /proc/$pid/status.
+On Thu, Nov 05, 2020 at 10:58:26PM +0000, KP Singh wrote:
+> +
+> +	ret = copy_file_range(fd_in, NULL, fd_out, NULL, stat.st_size, 0);
 
-Signed-off-by: Anand K Mistry <amistry@google.com>
----
+centos7 glibc doesn't have it.
 
-Changes in v2:
-- Remove underscores from field name to workaround documentation issue
+/prog_tests/test_local_storage.c:59:8: warning: implicit declaration of function ‘copy_file_range’; did you mean ‘sync_file_range’? [-Wimplicit-function-declaration]
+   59 |  ret = copy_file_range(fd_in, NULL, fd_out, NULL, stat.st_size, 0);
+      |        ^~~~~~~~~~~~~~~
+      |        sync_file_range
+  BINARY   test_progs
+  BINARY   test_progs-no_alu32
+ld: test_local_storage.test.o: in function `copy_rm':
+test_local_storage.c:59: undefined reference to `copy_file_range'
 
- Documentation/filesystems/proc.rst |  2 ++
- fs/proc/array.c                    | 28 ++++++++++++++++++++++++++++
- 2 files changed, 30 insertions(+)
-
-diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
-index 533c79e8d2cd..531edaf07924 100644
---- a/Documentation/filesystems/proc.rst
-+++ b/Documentation/filesystems/proc.rst
-@@ -210,6 +210,7 @@ read the file /proc/PID/status::
-   NoNewPrivs:     0
-   Seccomp:        0
-   Speculation_Store_Bypass:       thread vulnerable
-+  SpeculationIndirectBranch:      conditional enabled
-   voluntary_ctxt_switches:        0
-   nonvoluntary_ctxt_switches:     1
- 
-@@ -292,6 +293,7 @@ It's slow but very precise.
-  NoNewPrivs                  no_new_privs, like prctl(PR_GET_NO_NEW_PRIV, ...)
-  Seccomp                     seccomp mode, like prctl(PR_GET_SECCOMP, ...)
-  Speculation_Store_Bypass    speculative store bypass mitigation status
-+ SpeculationIndirectBranch   indirect branch speculation mode
-  Cpus_allowed                mask of CPUs on which this process may run
-  Cpus_allowed_list           Same as previous, but in "list format"
-  Mems_allowed                mask of memory nodes allowed to this process
-diff --git a/fs/proc/array.c b/fs/proc/array.c
-index 65ec2029fa80..014c1859554d 100644
---- a/fs/proc/array.c
-+++ b/fs/proc/array.c
-@@ -368,6 +368,34 @@ static inline void task_seccomp(struct seq_file *m, struct task_struct *p)
- 		seq_puts(m, "vulnerable");
- 		break;
- 	}
-+
-+	seq_puts(m, "\nSpeculationIndirectBranch:\t");
-+	switch (arch_prctl_spec_ctrl_get(p, PR_SPEC_INDIRECT_BRANCH)) {
-+	case -EINVAL:
-+		seq_puts(m, "unsupported");
-+		break;
-+	case PR_SPEC_NOT_AFFECTED:
-+		seq_puts(m, "not affected");
-+		break;
-+	case PR_SPEC_PRCTL | PR_SPEC_FORCE_DISABLE:
-+		seq_puts(m, "conditional force disabled");
-+		break;
-+	case PR_SPEC_PRCTL | PR_SPEC_DISABLE:
-+		seq_puts(m, "conditional disabled");
-+		break;
-+	case PR_SPEC_PRCTL | PR_SPEC_ENABLE:
-+		seq_puts(m, "conditional enabled");
-+		break;
-+	case PR_SPEC_ENABLE:
-+		seq_puts(m, "always enabled");
-+		break;
-+	case PR_SPEC_DISABLE:
-+		seq_puts(m, "always disabled");
-+		break;
-+	default:
-+		seq_puts(m, "unknown");
-+		break;
-+	}
- 	seq_putc(m, '\n');
- }
- 
--- 
-2.29.1.341.ge80a0c044ae-goog
-
+Could you use something else or wrap it similar to pidfd_open ?
