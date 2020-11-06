@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E8482A9F80
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 22:50:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCB7B2A9F7B
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 22:50:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728867AbgKFVuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 16:50:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56956 "EHLO
+        id S1728850AbgKFVug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 16:50:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728765AbgKFVuL (ORCPT
+        with ESMTP id S1728783AbgKFVuN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 16:50:11 -0500
+        Fri, 6 Nov 2020 16:50:13 -0500
 Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECE27C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 13:50:10 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id p1so2767268wrf.12
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 13:50:10 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BC14C0613D2
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 13:50:12 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id b8so2801670wrn.0
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 13:50:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=SjA8v4JLA0wt0cf7/uKVTogVLZnV31tTyBrzOli6fTM=;
-        b=Oia3Jh4+Z4jZyw1RDFWjabOewBGewQgIFa2hSMdeANo/YNjwRKSyyHR/LmjPTFtqt1
-         s1PWVzmYK/yiFcYzVOiScC7s9flKEXDvrwkM8+oFQquVQSrvMGl3gMbuKiDFQZsoSMb0
-         rVNafzN6YaSO41UutCfcOGF7aLMiRl5tBPvTD3hz392MP3sMQmLcsT4BykIuFqirx8xj
-         L0xAzBNZGRx/MvGtnG1EMg+6rETJR5G94Dl9+sR3bxebp6rscL2fgQ57Y0TR5TU2S0dL
-         hBmeBZSxQW/agwFMc4PH6qo9+jx7lpTW+LKLienKAzuco0zomsAXcRe7G/4pzTNyydrt
-         sa0Q==
+        bh=/vzXOfe3LQJ1tPjw4mGTlBd2Hha/B9WB2NE4h+LPHsM=;
+        b=CTrg6Tx6WbaAEcip1oP69BTNYGApk3DcwyCdUIuDQ2NDdnRBvWJ1vAX/ZU360Uj2H3
+         z2RJwZ1+S16zy979ZmaON1OE5ShHP9tn4UZpPgSmyA/uBIfj1vjmH+jWAjbfh3kcAI+N
+         vT9asDh4Mu/wxBCF1XvL2esu1JYbTTLz+JNFFGMzs0UJu4zl3JLxby5TvA9gZghh1n8E
+         xgYZIZKANmxc4y1D04xef/nQe3Mc/WsFTjsItHINOS2+gcjAGg4rCIRkTLtMqCjztxQv
+         AImujyKOROsE+WUyTvErplm6dKHsfOgyEv5JJ1hSVPExxmbbHfSR6B+4fSicdViUancm
+         iJig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=SjA8v4JLA0wt0cf7/uKVTogVLZnV31tTyBrzOli6fTM=;
-        b=MwVbtnw8iiawdg2Mbe41tmBHuZNC65/7Cv4Vp3rVHBdeLoMgtZQQiWQCb8I1C/dBEq
-         /5VR9tSXs6Wh/6ocqhU2y1DhY/bRWFRNqGzl29p6x55SyUzMimBRQo2X8m69r88Vfo26
-         E3CFewZ7T3V9t6PYywwp/JUAVOwMcbM6P+srynMteSQIdxx4bgjzQeImu8b/tlSIImxj
-         lgheTZgTcwHD9WvqLeXtI3vWPmOnjgrTXDzdWWT94qY3UeaflrA+r06E6l+NE1FnHtEd
-         +Cr1aBxjuNFMj8xek0YbXZKQzsDuPnPkL+ARYPbKQEVlWOUrg7lNHBSr9xwFdhgAKwQ9
-         lRhQ==
-X-Gm-Message-State: AOAM532tGDDATgAi0jthPKSH+upbDCewMCoHKPSRCCaUo3Yz6w4eNbet
-        vMVQEXahqtgeYCgXRwuikFVn4w==
-X-Google-Smtp-Source: ABdhPJz+gy7qopMT/b5AA8BVa5aWxWSV04A6Br6J+M2a8ma5BFJoYvg7Jj40fv8t9h+032uRRuXJ8g==
-X-Received: by 2002:adf:c14c:: with SMTP id w12mr5035604wre.40.1604699409717;
-        Fri, 06 Nov 2020 13:50:09 -0800 (PST)
+        bh=/vzXOfe3LQJ1tPjw4mGTlBd2Hha/B9WB2NE4h+LPHsM=;
+        b=TNHR8pufsym/Bs1ySntmPl+UJ/pZlNYiPtNhVLxkJFA87O+bgjPMiw/INhGcG871OO
+         xvE60Xzz7PGrLQTIqHheXsi3BIz0AzeIu92z2+H/XhI4zi3VIIbyqAqfhwwtOktvj2H1
+         o9aerAm/78GI/HzmTamUV5UkrH65UV9UjBVBCMAZgN8KqGKwsGTj6J/2Uh0kOyIHmfS0
+         ct7hSqmrMNdV9eviLuRSqLs+uukjYRTFQ2Qm+9kiMaI7mocbtpRA8caNSXyVwzgij8jn
+         depcTQI4UuHX1nkNYDVHYF06ubWsxiUrw7rpTmQNR0VRfKxHZKx9MSVHQ1bOvyX/A8qT
+         RDwQ==
+X-Gm-Message-State: AOAM533HXxxulxqDNnMhRlVVEPpQX0VX5XMIEtshbHh060l8CE1QK4Pg
+        DH/t9o2beZ/ShH8zdZyIjXloMg==
+X-Google-Smtp-Source: ABdhPJxQroqDiuh4YZmo0CrJXSKpglFCwdy1Ztrmqj30qO0MXpAppEYJtzGiZ8+5YyyQWuEL8dUjvA==
+X-Received: by 2002:adf:e551:: with SMTP id z17mr4904423wrm.374.1604699411021;
+        Fri, 06 Nov 2020 13:50:11 -0800 (PST)
 Received: from dell.default ([91.110.221.236])
-        by smtp.gmail.com with ESMTPSA id t199sm3981084wmt.46.2020.11.06.13.50.08
+        by smtp.gmail.com with ESMTPSA id t199sm3981084wmt.46.2020.11.06.13.50.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Nov 2020 13:50:09 -0800 (PST)
+        Fri, 06 Nov 2020 13:50:10 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -55,11 +55,12 @@ Cc:     linux-kernel@vger.kernel.org,
         =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
-        Gareth Hughes <gareth@valinux.com>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH 13/19] drm/radeon/radeon_drv: Move prototypes to a shared headerfile
-Date:   Fri,  6 Nov 2020 21:49:43 +0000
-Message-Id: <20201106214949.2042120-14-lee.jones@linaro.org>
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
+Subject: [PATCH 14/19] drm/amd/amdgpu/amdgpu_device: Provide documentation for 'reg_addr' params
+Date:   Fri,  6 Nov 2020 21:49:44 +0000
+Message-Id: <20201106214949.2042120-15-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201106214949.2042120-1-lee.jones@linaro.org>
 References: <20201106214949.2042120-1-lee.jones@linaro.org>
@@ -72,67 +73,43 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- 62 | void radeon_driver_unload_kms(struct drm_device *dev)
- | ^~~~~~~~~~~~~~~~~~~~~~~~
- drivers/gpu/drm/radeon/radeon_kms.c:105:5: warning: no previous prototype for ‘radeon_driver_load_kms’ [-Wmissing-prototypes]
- 105 | int radeon_driver_load_kms(struct drm_device *dev, unsigned long flags)
- | ^~~~~~~~~~~~~~~~~~~~~~
- drivers/gpu/drm/radeon/radeon_kms.c:619:6: warning: no previous prototype for ‘radeon_driver_lastclose_kms’ [-Wmissing-prototypes]
- 619 | void radeon_driver_lastclose_kms(struct drm_device *dev)
- | ^~~~~~~~~~~~~~~~~~~~~~~~~~~
- drivers/gpu/drm/radeon/radeon_kms.c:634:5: warning: no previous prototype for ‘radeon_driver_open_kms’ [-Wmissing-prototypes]
- 634 | int radeon_driver_open_kms(struct drm_device *dev, struct drm_file *file_priv)
- | ^~~~~~~~~~~~~~~~~~~~~~
- drivers/gpu/drm/radeon/radeon_kms.c:705:6: warning: no previous prototype for ‘radeon_driver_postclose_kms’ [-Wmissing-prototypes]
- 705 | void radeon_driver_postclose_kms(struct drm_device *dev,
- | ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+ drivers/gpu/drm/amd/amdgpu/amdgpu_device.c:594: warning: Function parameter or member 'reg_addr' not described in 'amdgpu_device_indirect_rreg'
+ drivers/gpu/drm/amd/amdgpu/amdgpu_device.c:624: warning: Function parameter or member 'reg_addr' not described in 'amdgpu_device_indirect_rreg64'
 
 Cc: Alex Deucher <alexander.deucher@amd.com>
 Cc: "Christian König" <christian.koenig@amd.com>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Gareth Hughes <gareth@valinux.com>
+Cc: Sumit Semwal <sumit.semwal@linaro.org>
 Cc: amd-gfx@lists.freedesktop.org
 Cc: dri-devel@lists.freedesktop.org
+Cc: linux-media@vger.kernel.org
+Cc: linaro-mm-sig@lists.linaro.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/radeon/radeon_drv.c | 6 ------
- drivers/gpu/drm/radeon/radeon_drv.h | 7 +++++++
- 2 files changed, 7 insertions(+), 6 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_device.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/gpu/drm/radeon/radeon_drv.c b/drivers/gpu/drm/radeon/radeon_drv.c
-index bb7b33e535f81..e0d664e9e2feb 100644
---- a/drivers/gpu/drm/radeon/radeon_drv.c
-+++ b/drivers/gpu/drm/radeon/radeon_drv.c
-@@ -112,12 +112,6 @@
- #define KMS_DRIVER_MAJOR	2
- #define KMS_DRIVER_MINOR	50
- #define KMS_DRIVER_PATCHLEVEL	0
--int radeon_driver_load_kms(struct drm_device *dev, unsigned long flags);
--void radeon_driver_unload_kms(struct drm_device *dev);
--void radeon_driver_lastclose_kms(struct drm_device *dev);
--int radeon_driver_open_kms(struct drm_device *dev, struct drm_file *file_priv);
--void radeon_driver_postclose_kms(struct drm_device *dev,
--				 struct drm_file *file_priv);
- int radeon_suspend_kms(struct drm_device *dev, bool suspend,
- 		       bool fbcon, bool freeze);
- int radeon_resume_kms(struct drm_device *dev, bool resume, bool fbcon);
-diff --git a/drivers/gpu/drm/radeon/radeon_drv.h b/drivers/gpu/drm/radeon/radeon_drv.h
-index 173deb4634146..ac7970919c4d3 100644
---- a/drivers/gpu/drm/radeon/radeon_drv.h
-+++ b/drivers/gpu/drm/radeon/radeon_drv.h
-@@ -118,4 +118,11 @@
- long radeon_drm_ioctl(struct file *filp,
- 		      unsigned int cmd, unsigned long arg);
- 
-+int radeon_driver_load_kms(struct drm_device *dev, unsigned long flags);
-+void radeon_driver_unload_kms(struct drm_device *dev);
-+void radeon_driver_lastclose_kms(struct drm_device *dev);
-+int radeon_driver_open_kms(struct drm_device *dev, struct drm_file *file_priv);
-+void radeon_driver_postclose_kms(struct drm_device *dev,
-+				 struct drm_file *file_priv);
-+
- #endif				/* __RADEON_DRV_H__ */
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+index 300fcade4a2b1..63374d12e00fe 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+@@ -585,6 +585,7 @@ void amdgpu_mm_wdoorbell64(struct amdgpu_device *adev, u32 index, u64 v)
+  * @adev: amdgpu_device pointer
+  * @pcie_index: mmio register offset
+  * @pcie_data: mmio register offset
++ * @reg_addr: indirect register address to read from
+  *
+  * Returns the value of indirect register @reg_addr
+  */
+@@ -615,6 +616,7 @@ u32 amdgpu_device_indirect_rreg(struct amdgpu_device *adev,
+  * @adev: amdgpu_device pointer
+  * @pcie_index: mmio register offset
+  * @pcie_data: mmio register offset
++ * @reg_addr: indirect register address to read from
+  *
+  * Returns the value of indirect register @reg_addr
+  */
 -- 
 2.25.1
 
