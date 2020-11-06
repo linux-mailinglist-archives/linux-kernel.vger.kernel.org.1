@@ -2,115 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3FF42A9E44
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 20:45:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 558E92A9E48
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 20:48:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728228AbgKFTpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 14:45:15 -0500
-Received: from ale.deltatee.com ([204.191.154.188]:60078 "EHLO
-        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727129AbgKFTpP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 14:45:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=deltatee.com; s=20200525; h=Subject:Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Sender:
-        Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-        :Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=I/yMO/i0p9WTzMk8iTmPgQ7A1/uXaOZLwkcSaYry190=; b=EF51HxtZyF7eBA20tXsTF2DGDE
-        IbfHm083EMnHxXpJYgIYTsp6r+mp9XWQb/XLgGWhtegx4w0IF1oPg6Iu83aOkKiOvCrjcBL1l6ogP
-        F7p5WOzIjCQK9YLV8T/kmBmp579Gggn/M7dDLneVeKYVzdNnAWORs/zk7Cpponp8SJ0c/sAPS8uFI
-        TdwpSPfkB9Yzi6zrO+pbtX5bsuoiEjd662srFEbfjGuxKPYx//X+W4l4VIpaOuVbk+3CZ+nG4mm4/
-        C62E/EDifK+3yt9mSInjQU4Klaw8r/WG0lHCbRHdZaOWog4xjJbhQXiRfVcbPEdFxo8Ld7uiMWlFr
-        NGN7kz6Q==;
-Received: from s01060023bee90a7d.cg.shawcable.net ([24.64.145.4] helo=[192.168.0.10])
-        by ale.deltatee.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <logang@deltatee.com>)
-        id 1kb7fV-00055w-HL; Fri, 06 Nov 2020 12:45:06 -0700
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
-        Stephen Bates <sbates@raithlin.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Ira Weiny <iweiny@intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Don Dutile <ddutile@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-References: <20201106170036.18713-1-logang@deltatee.com>
- <20201106170036.18713-15-logang@deltatee.com>
- <20201106172206.GS36674@ziepe.ca>
- <b1e8dfce-d583-bed8-d04d-b7265a54c99f@deltatee.com>
- <20201106174223.GU36674@ziepe.ca>
- <2c2d2815-165e-2ef9-60d6-3ace7ff3aaa5@deltatee.com>
- <20201106180922.GV36674@ziepe.ca>
- <09885400-36f8-bc1d-27f0-a8adcf6104d4@deltatee.com>
- <20201106193024.GW36674@ziepe.ca>
-From:   Logan Gunthorpe <logang@deltatee.com>
-Message-ID: <03032637-0826-da76-aec2-121902b1c166@deltatee.com>
-Date:   Fri, 6 Nov 2020 12:44:59 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1728242AbgKFTs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 14:48:29 -0500
+Received: from mga12.intel.com ([192.55.52.136]:40742 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727129AbgKFTs3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 14:48:29 -0500
+IronPort-SDR: YkNyJTzaYPE4fSSR2WvKBG+k+KPF5TEh78pAeb60ocRRZ96rTnTtmRLNpmP2fZR6eG3HwDvA3u
+ NiA7XaCLqLzg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9797"; a="148873272"
+X-IronPort-AV: E=Sophos;i="5.77,457,1596524400"; 
+   d="scan'208";a="148873272"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2020 11:48:28 -0800
+IronPort-SDR: XWY1DSzfUHCDzW3P1xd2NX+4BKRs485qsAY5cE1o0IwtUqu34NsGNsziKs71hNgBCw0cL1p+oT
+ TPFe28PRTE8w==
+X-IronPort-AV: E=Sophos;i="5.77,457,1596524400"; 
+   d="scan'208";a="472182452"
+Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.221.127]) ([10.212.221.127])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2020 11:48:27 -0800
+Subject: Re: [PATCH v14 02/26] x86/cpufeatures: Add CET CPU feature flags for
+ Control-flow Enforcement Technology (CET)
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>, Borislav Petkov <bp@suse.de>
+References: <20201012153850.26996-1-yu-cheng.yu@intel.com>
+ <20201012153850.26996-3-yu-cheng.yu@intel.com>
+ <20201106184953.GI14914@zn.tnic>
+From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Message-ID: <94e82db0-381b-a140-ab74-f23b7c35949e@intel.com>
+Date:   Fri, 6 Nov 2020 11:48:26 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-In-Reply-To: <20201106193024.GW36674@ziepe.ca>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20201106184953.GI14914@zn.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 24.64.145.4
-X-SA-Exim-Rcpt-To: daniel.vetter@ffwll.ch, willy@infradead.org, ddutile@redhat.com, jhubbard@nvidia.com, iweiny@intel.com, christian.koenig@amd.com, dan.j.williams@intel.com, hch@lst.de, sbates@raithlin.com, iommu@lists.linux-foundation.org, linux-mm@kvack.org, linux-pci@vger.kernel.org, linux-block@vger.kernel.org, linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, jgg@ziepe.ca
-X-SA-Exim-Mail-From: logang@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        GREYLIST_ISWHITE,MYRULES_FREE,NICE_REPLY_A autolearn=ham
-        autolearn_force=no version=3.4.2
-Subject: Re: [RFC PATCH 14/15] PCI/P2PDMA: Introduce pci_mmap_p2pmem()
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2020-11-06 12:30 p.m., Jason Gunthorpe wrote:
->> I certainly can't make decisions for code that isn't currently
->> upstream.
+On 11/6/2020 10:49 AM, Borislav Petkov wrote:
+> On Mon, Oct 12, 2020 at 08:38:26AM -0700, Yu-cheng Yu wrote:
+>> Add CPU feature flags for Control-flow Enforcement Technology (CET).
+>>
+>> CPUID.(EAX=7,ECX=0):ECX[bit 7] Shadow stack
+>> CPUID.(EAX=7,ECX=0):EDX[bit 20] Indirect Branch Tracking
+>>
+>> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
+>> Reviewed-by: Borislav Petkov <bp@suse.de>
 > 
-> The rdma drivers are all upstream, what are you thinking about?
+> This is not the patch I reviewed, why do you keep my Reviewed-by tag?
 
-Really? I feel like you should know what I mean here...
+I will drop it.  It has been re-based many times, and probably I 
+accidentally introduced something else?
 
-I mean upstream code that actually uses the APIs that I'd have to
-introduce. I can't say here's an API feature that no code uses but the
-already upstream rdma driver might use eventually. It's fairly easy to
-send patches that make the necessary changes when someone adds a use of
-those changes inside the rdma code.
-
->> Ultimately, if you aren't using the genpool you will have to implement
->> your own mmap operation that somehow allocates the pages and your own
->> page_free hook. 
 > 
-> Sure, the mlx5 driver already has a specialized alloctor for it's BAR
-> pages.
-
-So it *might* make sense to carve out a common helper to setup a VMA for
-P2PDMA to do the vm_flags check and set VM_MIXEDMAP... but besides that,
-there's no code that would be common to the two cases.
-
->> I also don't expect this to be going upstream in the near term so don't
->> get too excited about using it.
+>> Reviewed-by: Kees Cook <keescook@chromium.org>
+>> ---
+>>   arch/x86/include/asm/cpufeatures.h       | 2 ++
+>>   arch/x86/kernel/cpu/cpuid-deps.c         | 2 ++
+>>   tools/arch/x86/include/asm/cpufeatures.h | 2 ++
+>>   3 files changed, 6 insertions(+)
+>>
+>> diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
+>> index 2901d5df4366..c794e18e8a14 100644
+>> --- a/arch/x86/include/asm/cpufeatures.h
+>> +++ b/arch/x86/include/asm/cpufeatures.h
+>> @@ -341,6 +341,7 @@
+>>   #define X86_FEATURE_OSPKE		(16*32+ 4) /* OS Protection Keys Enable */
+>>   #define X86_FEATURE_WAITPKG		(16*32+ 5) /* UMONITOR/UMWAIT/TPAUSE Instructions */
+>>   #define X86_FEATURE_AVX512_VBMI2	(16*32+ 6) /* Additional AVX512 Vector Bit Manipulation Instructions */
+>> +#define X86_FEATURE_SHSTK		(16*32+ 7) /* Shadow Stack */
+>>   #define X86_FEATURE_GFNI		(16*32+ 8) /* Galois Field New Instructions */
+>>   #define X86_FEATURE_VAES		(16*32+ 9) /* Vector AES */
+>>   #define X86_FEATURE_VPCLMULQDQ		(16*32+10) /* Carry-Less Multiplication Double Quadword */
+>> @@ -370,6 +371,7 @@
+>>   #define X86_FEATURE_SERIALIZE		(18*32+14) /* SERIALIZE instruction */
+>>   #define X86_FEATURE_PCONFIG		(18*32+18) /* Intel PCONFIG */
+>>   #define X86_FEATURE_ARCH_LBR		(18*32+19) /* Intel ARCH LBR */
+>> +#define X86_FEATURE_IBT			(18*32+20) /* Indirect Branch Tracking */
+>>   #define X86_FEATURE_SPEC_CTRL		(18*32+26) /* "" Speculation Control (IBRS + IBPB) */
+>>   #define X86_FEATURE_INTEL_STIBP		(18*32+27) /* "" Single Thread Indirect Branch Predictors */
+>>   #define X86_FEATURE_FLUSH_L1D		(18*32+28) /* Flush L1D cache */
+>> diff --git a/arch/x86/kernel/cpu/cpuid-deps.c b/arch/x86/kernel/cpu/cpuid-deps.c
+>> index 3cbe24ca80ab..fec83cc74b9e 100644
+>> --- a/arch/x86/kernel/cpu/cpuid-deps.c
+>> +++ b/arch/x86/kernel/cpu/cpuid-deps.c
+>> @@ -69,6 +69,8 @@ static const struct cpuid_dep cpuid_deps[] = {
+>>   	{ X86_FEATURE_CQM_MBM_TOTAL,		X86_FEATURE_CQM_LLC   },
+>>   	{ X86_FEATURE_CQM_MBM_LOCAL,		X86_FEATURE_CQM_LLC   },
+>>   	{ X86_FEATURE_AVX512_BF16,		X86_FEATURE_AVX512VL  },
+>> +	{ X86_FEATURE_SHSTK,			X86_FEATURE_XSAVES    },
+>> +	{ X86_FEATURE_IBT,			X86_FEATURE_XSAVES    },
+>>   	{}
+>>   };
+>>   
+>> diff --git a/tools/arch/x86/include/asm/cpufeatures.h b/tools/arch/x86/include/asm/cpufeatures.h
+>> index 2901d5df4366..c794e18e8a14 100644
+>> --- a/tools/arch/x86/include/asm/cpufeatures.h
+>> +++ b/tools/arch/x86/include/asm/cpufeatures.h
+>> @@ -341,6 +341,7 @@
+>>   #define X86_FEATURE_OSPKE		(16*32+ 4) /* OS Protection Keys Enable */
+>>   #define X86_FEATURE_WAITPKG		(16*32+ 5) /* UMONITOR/UMWAIT/TPAUSE Instructions */
+>>   #define X86_FEATURE_AVX512_VBMI2	(16*32+ 6) /* Additional AVX512 Vector Bit Manipulation Instructions */
+>> +#define X86_FEATURE_SHSTK		(16*32+ 7) /* Shadow Stack */
+>>   #define X86_FEATURE_GFNI		(16*32+ 8) /* Galois Field New Instructions */
+>>   #define X86_FEATURE_VAES		(16*32+ 9) /* Vector AES */
+>>   #define X86_FEATURE_VPCLMULQDQ		(16*32+10) /* Carry-Less Multiplication Double Quadword */
+>> @@ -370,6 +371,7 @@
+>>   #define X86_FEATURE_SERIALIZE		(18*32+14) /* SERIALIZE instruction */
+>>   #define X86_FEATURE_PCONFIG		(18*32+18) /* Intel PCONFIG */
+>>   #define X86_FEATURE_ARCH_LBR		(18*32+19) /* Intel ARCH LBR */
+>> +#define X86_FEATURE_IBT			(18*32+20) /* Indirect Branch Tracking */
+>>   #define X86_FEATURE_SPEC_CTRL		(18*32+26) /* "" Speculation Control (IBRS + IBPB) */
+>>   #define X86_FEATURE_INTEL_STIBP		(18*32+27) /* "" Single Thread Indirect Branch Predictors */
+>>   #define X86_FEATURE_FLUSH_L1D		(18*32+28) /* Flush L1D cache */
 > 
-> I don't know, it is actually not that horrible, the GUP and IOMMU
-> related changes are simpler than I expected
+> We don't sync the respective change in tools/ - Arnaldo doe
+Got it.  I will remove this.
 
-I think the deal breaker is the SGL hack and the fact that there are
-important IOMMU implementations that won't have support.
-
-Logan
-
+Yu-cheng
