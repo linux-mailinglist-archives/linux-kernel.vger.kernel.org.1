@@ -2,108 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB2652A9337
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 10:47:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5653A2A9343
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 10:48:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726998AbgKFJri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 04:47:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55916 "EHLO
+        id S1726970AbgKFJsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 04:48:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726931AbgKFJrh (ORCPT
+        with ESMTP id S1725868AbgKFJsE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 04:47:37 -0500
-Received: from mail-vk1-xa41.google.com (mail-vk1-xa41.google.com [IPv6:2607:f8b0:4864:20::a41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A125C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 01:47:36 -0800 (PST)
-Received: by mail-vk1-xa41.google.com with SMTP id d191so108882vka.13
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 01:47:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=23W4y+M6abuLudmZYHb5EuUWkPwY6lV1mseRyEhWEi8=;
-        b=mCza6PKGULKR3KSLVi71jaHeGa6jbvf6eXzzXIBvNZeyIvCsGCa0s69whdIqeCnP5h
-         mBXASZSIMWro685Lrr3eqyNcGTqYWXcWrkmSjeghCw/RZcqBPaXJs2pxzzmkC37gHMRK
-         3JrHTfZywnCyf11o6Inei30zBTKv+nQNQGq04ubzXiaWxwoQfGdqG00g1CqlJGsB/BCy
-         SF+PPXvk4D69igY9N+Jk/R+pI2iIYDoA5XrYnZBYwQnr9ejxhUSjMb4vvY7rT7KHcnbY
-         27llEWNDyIS8qOTbGquBtsENdCDqQCx6NlIdaaRmBu5bYBGDhw2TSMH51pVRSps4IBkw
-         RIYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=23W4y+M6abuLudmZYHb5EuUWkPwY6lV1mseRyEhWEi8=;
-        b=J7vAzdc1/qoffwKM4vTKmuDI4aZmIjHkjz8eEQ0VgPIxjQyRRbO0zprtOO3xhVvoZ3
-         r4AT0h2zGpLjct3yLU1Vt6eP51LV2Yv3ZEUIW+MpA9paN/akxr+oUH9COVoRwTZgnlHi
-         dtIUPXHTgLgpW9ogCFHSWkblnLkNXCxAZGWwOSKHmY/8/X0rffO5ItocoqfqcUXC/kUv
-         2k5k4c93D5UwL27wDVLnyU8C16/STUMnjt3nyNux5JsTa5J3rt9KVdoyCYTI/nlkx6W8
-         ZVfOLBSI5b+uDDgLYoN6Vs5u7YtIV+GwDcAzmv2A2eAq729hpBIWeywMox7B0TR159Kq
-         yI6A==
-X-Gm-Message-State: AOAM530DkjeXTmYZd9/jhOcl5eR0n+5MWGyJ8j0mjxPe2o4Tq9GE1jNr
-        2+IeM18iJgaKFf0cCz2RBoAjLEumkscjwmMo5QhDOQ==
-X-Google-Smtp-Source: ABdhPJyXTD4HNdZV3wzzfqQ8t69K2mMISGmdEjWNlqIkWraZz4pfH1N3k25yw1yNuJKt+bmqGH3xyqLHf33qIXEIte0=
-X-Received: by 2002:a1f:9682:: with SMTP id y124mr465715vkd.6.1604656055569;
- Fri, 06 Nov 2020 01:47:35 -0800 (PST)
+        Fri, 6 Nov 2020 04:48:04 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77D24C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 01:48:04 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <a.fatoum@pengutronix.de>)
+        id 1kayLi-00080s-1R; Fri, 06 Nov 2020 10:48:02 +0100
+Subject: Re: [Linux-stm32] [PATCH 1/1] watchdog: stm32_iwdg: don't print an
+ error on probe deferral
+To:     Christophe Roullier <christophe.roullier@st.com>,
+        wim@linux-watchdog.org, linux@roeck-us.net,
+        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com
+Cc:     Etienne Carriere <etienne.carriere@st.com>,
+        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+References: <20201106094627.21132-1-christophe.roullier@st.com>
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+Message-ID: <ed817cfc-a338-0e41-b4d5-56da42677d26@pengutronix.de>
+Date:   Fri, 6 Nov 2020 10:47:59 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-References: <20201106073358.8379-1-patrice.chotard@st.com>
-In-Reply-To: <20201106073358.8379-1-patrice.chotard@st.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 6 Nov 2020 10:46:58 +0100
-Message-ID: <CAPDyKFq94tpotN9P=pgBx+=deYQWzAYfFQWO3ejPOqAMN3PN=Q@mail.gmail.com>
-Subject: Re: [PATCH v1 0/4] PM: Add dev_wakeup_path() helper
-To:     Patrice CHOTARD <patrice.chotard@st.com>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        Erwan Le Ray <erwan.leray@st.com>,
-        Alexandre TORGUE <alexandre.torgue@st.com>,
-        Fabrice Gasnier <fabrice.gasnier@st.com>,
-        Pierre-Yves MORDRET <pierre-yves.mordret@st.com>,
-        amelie.delaunay@st.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201106094627.21132-1-christophe.roullier@st.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 6 Nov 2020 at 08:34, <patrice.chotard@st.com> wrote:
->
-> From: Patrice Chotard <patrice.chotard@st.com>
->
-> Add dev_wakeup_path() helper to avoid to spread
-> dev->power.wakeup_path test in drivers.
->
-> Cc: amelie.delaunay@st.com,
->     erwan_leray@st.com,
->     fabrice.gasnier@st.com,
->     alexandre.torgue@st.com,
->     alain.volmat@st.com,
->     pierre-yves.mordret@st.com
->
-> *** BLURB HERE ***
+Hello Christophe,
 
-:-)
+On 11/6/20 10:46 AM, Christophe Roullier wrote:
+> From: Etienne Carriere <etienne.carriere@st.com>
+> 
+> Do not print an error trace when deferring probe for clock resources.
+> 
+> Signed-off-by: Etienne Carriere <etienne.carriere@st.com>
+> Signed-off-by: Christophe Roullier <christophe.roullier@st.com>
+> ---
+>  drivers/watchdog/stm32_iwdg.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/watchdog/stm32_iwdg.c b/drivers/watchdog/stm32_iwdg.c
+> index 25188d6bbe15..1b71c205cee0 100644
+> --- a/drivers/watchdog/stm32_iwdg.c
+> +++ b/drivers/watchdog/stm32_iwdg.c
+> @@ -163,7 +163,8 @@ static int stm32_iwdg_clk_init(struct platform_device *pdev,
+>  
+>  	wdt->clk_lsi = devm_clk_get(dev, "lsi");
+>  	if (IS_ERR(wdt->clk_lsi)) {
+> -		dev_err(dev, "Unable to get lsi clock\n");
+> +		if (PTR_ERR(wdt->clk_lsi) != -EPROBE_DEFER)
+> +			dev_err(dev, "Unable to get lsi clock\n");
 
->
-> Patrice Chotard (4):
->   PM / wakeup: Add dev_wakeup_path() helper
->   PM: domains: Make usage of device_wakeup_path() helper
->   PM: core: Make usage of device_wakeup_path() helper
->   i2c: stm32f7: Make usage of dev_wakeup_path() helper
->
->  drivers/base/power/domain.c      |  4 ++--
->  drivers/base/power/main.c        |  4 ++--
->  drivers/i2c/busses/i2c-stm32f7.c |  4 ++--
->  include/linux/pm_wakeup.h        | 10 ++++++++++
->  4 files changed, 16 insertions(+), 6 deletions(-)
->
-> --
-> 2.17.1
->
+Can you use dev_err_probe instead?
 
-For the series:
+Cheers,
+Ahmad
 
-Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
+>  		return PTR_ERR(wdt->clk_lsi);
+>  	}
+>  
+> @@ -171,7 +172,8 @@ static int stm32_iwdg_clk_init(struct platform_device *pdev,
+>  	if (wdt->data->has_pclk) {
+>  		wdt->clk_pclk = devm_clk_get(dev, "pclk");
+>  		if (IS_ERR(wdt->clk_pclk)) {
+> -			dev_err(dev, "Unable to get pclk clock\n");
+> +			if (PTR_ERR(wdt->clk_pclk) != -EPROBE_DEFER)
+> +				dev_err(dev, "Unable to get pclk clock\n");
+>  			return PTR_ERR(wdt->clk_pclk);
+>  		}
+>  
+> 
 
-Kind regards
-Uffe
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
