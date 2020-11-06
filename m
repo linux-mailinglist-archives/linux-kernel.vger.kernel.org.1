@@ -2,90 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D08BE2A8D20
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 03:48:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF8282A8D27
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 03:51:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725929AbgKFCsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 21:48:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47328 "EHLO
+        id S1725933AbgKFCvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 21:51:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725815AbgKFCsm (ORCPT
+        with ESMTP id S1725616AbgKFCvP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 21:48:42 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACF8DC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 18:48:42 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id w4so2788751pgg.13
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 18:48:42 -0800 (PST)
+        Thu, 5 Nov 2020 21:51:15 -0500
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85321C0613CF;
+        Thu,  5 Nov 2020 18:51:15 -0800 (PST)
+Received: by mail-qt1-x841.google.com with SMTP id i7so2730965qti.6;
+        Thu, 05 Nov 2020 18:51:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=F2AiGZp1uqHXPouYXcihh3F/4x1p3xsqrhRr5wZQbtE=;
-        b=oql2ad5QP+xoxzrHLCaslsMAsIKZTe4gZMbVwQt1j0IgKK5Y14ZrDA9lrFh2xVowiv
-         lTz9dPM2ggERDcIA8M5Mbzj7fxyoGNubE4nEjuDUCEz3D+vSdLe8UO61jQgF2ni7Fxgp
-         smRhJIT24wM0de6iH4qdTG9kTPQ2k+BUTbo+snntV0rCX3wEPuEFX+VA8Z9lXF6p9T5K
-         HpaqB+f6sVfD7rvwSOgHVJmG+zKQ2LEniu6VWXZ9wRd8hEItFjpeEMbq8iB9t41C38pu
-         x+y031ilRtpyJEYIxLw8MFuU5Hs8FhNscmtKQNchIUBOhTHtoCPH+zhTKCmVGQuHezCF
-         WQlw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WTOpuxQqUTD7Fs5ED8d6WE6HwICjQ/RXvxFgPZw8ydY=;
+        b=p/JG8EDrUjsel8y++UnIKylNNB7pdtkG84acG4fowir5XwgMGq/dJP/aJWrh0XctbL
+         ad+bYvmnzOOpMPsliLfFb9w0yxcfyKBiZd9sJOrOuniq56S3j5a3y5sYVEnZ5FO7/Q36
+         omn87/g+QkVSEEycolY5jlF6rcNa9thuBFYqBKPPlFXQ/E8nDDqgvvRU97nxZ+1guG7p
+         9OetQ7bZNAYVtwv9mHGIHzurr02g9ja+Hw36FbwjvLxyTERVcFRIsiw0a6ueba3flpt8
+         nAy9mWVR0o7N/d2XsbQVm9ncI/AmWajjppaC7uve7TaNqJSCsYc2VTGEyLRrTKSjACH9
+         z0Kg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=F2AiGZp1uqHXPouYXcihh3F/4x1p3xsqrhRr5wZQbtE=;
-        b=Srz8DZU2RJkTNm9Zu+1aASBOAufQBoNEHrtHdVQK7TkVfNt70g79+b5Gd6yYu8PHkV
-         nwZKH75PFMcmt6WfRLl5LmwGHmGO3LIlTB4xA/s1MyFalM2pOfSGOXSQgEtmFpSOIBC2
-         gklaTHxhrCIt/kqJxCyabU0Pmr3XvioTLj9u8lRNLRt563GRAtR3p6MNzAm1ceJd328Y
-         ufYxSwU9Ne4yCsQzo3SHF9uPOahqtm6ONV/HYhPHtYoWieilNsO0K8gnVmlFNCzdrmZK
-         ArnLlti+3R0vsoRRdaxmZZ9miqUSWngydMSdcmi6d/pmXDJqPdJKY7fhuzTMSlzCGMd2
-         YVvQ==
-X-Gm-Message-State: AOAM533qJlyvLFdC6OolfB1dHZBP7zlariIruTq+VjGH+HfUQRFeL5zg
-        iucBTC2rJal0HsKSvTXKraBhJw==
-X-Google-Smtp-Source: ABdhPJzb0ySUx7p49GpcZ24AE8UZ1ipz0Iieo4vNLFeBSbJKQ4/gC/qW4L6VKOJXD4zqh3IDcV2gZA==
-X-Received: by 2002:a17:90a:de5:: with SMTP id 92mr39433pjv.179.1604630922178;
-        Thu, 05 Nov 2020 18:48:42 -0800 (PST)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id n72sm4374603pfd.202.2020.11.05.18.48.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 18:48:41 -0800 (PST)
-Date:   Thu, 05 Nov 2020 18:48:41 -0800 (PST)
-X-Google-Original-Date: Thu, 05 Nov 2020 18:24:54 PST (-0800)
-Subject:     Re: [PATCH] arm64: Fix a broken copyright header in gen_vdso_offsets.sh
-In-Reply-To: <20201020113207.GB16084@willie-the-truck>
-CC:     Will Deacon <willdeacon@google.com>, catalin.marinas@arm.com,
-        nickhu@andestech.com, green.hu@gmail.com, deanbo422@gmail.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel-team@android.com
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     will@kernel.org
-Message-ID: <mhng-0fb8c6a4-9c20-4cdb-87c6-8b27950c1b45@palmerdabbelt-glaptop1>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WTOpuxQqUTD7Fs5ED8d6WE6HwICjQ/RXvxFgPZw8ydY=;
+        b=UPHtsBv9Iv9ZQw6uvQ9KVtKyftLfWNc7QXUgpStfcWDFxU9O1ZvCq/FtNjnEQRw+Er
+         JGR0oWJRNZypuXFh0E5octqFSWUMtT6eyiX4TD+ytmlJJ0+gCRpZzftg80x46LV/9J5u
+         Mf7lMkILZPOY1zJ+8Xxrj329dLeEEiyMZmWjZ+s1KZgnaLela13UMr8OG4mcDFEZCs4s
+         KP2F2utQwAr759qhtT5EeXqtUuPBpeBntK8ffCcrREIvMt4RPwgQYaxSie99VZXB+ych
+         YngzgTgDi63cgAIJN8HxGTfbdhWhRIUAxQ4VT1VWrSMUR0x08iJMwgHk7/JcLW5j79eL
+         ubkA==
+X-Gm-Message-State: AOAM533xeGYPRYK4dqILY0+YPY621R0m2c/XsxgrUkc7og1CWAQ4ZD34
+        ej0KHbkLX+vXYRZ5eMpbFr3N7JVHaz6dlwiazvo=
+X-Google-Smtp-Source: ABdhPJzmaVLfpBM4DF4coroQarUHDYYbWmF3o5VQGr7jzQ39SDG3tzILiBVeORimIM8T60VCYrXH/xjW6RHzzC5xsMs=
+X-Received: by 2002:ac8:71c3:: with SMTP id i3mr340558qtp.204.1604631074809;
+ Thu, 05 Nov 2020 18:51:14 -0800 (PST)
+MIME-Version: 1.0
+References: <1604281947-26874-1-git-send-email-shengjiu.wang@nxp.com>
+ <1604281947-26874-2-git-send-email-shengjiu.wang@nxp.com> <20201105013539.GA16459@Asurada-Nvidia>
+In-Reply-To: <20201105013539.GA16459@Asurada-Nvidia>
+From:   Shengjiu Wang <shengjiu.wang@gmail.com>
+Date:   Fri, 6 Nov 2020 10:51:03 +0800
+Message-ID: <CAA+D8ANrkgXR+8JGp4fPLvkKJ05EqQyShWTO+xWpPOycPT9Tyw@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] ASoC: fsl_aud2htx: Add aud2htx module driver
+To:     Nicolin Chen <nicoleotsuka@gmail.com>
+Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, alsa-devel@alsa-project.org,
+        Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linuxppc-dev@lists.ozlabs.org, Takashi Iwai <tiwai@suse.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Fabio Estevam <festevam@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 20 Oct 2020 04:32:08 PDT (-0700), will@kernel.org wrote:
-> On Fri, Oct 16, 2020 at 05:26:37PM -0700, Palmer Dabbelt wrote:
->> From: Palmer Dabbelt <palmerdabbelt@google.com>
->>
->> I was going to copy this but I didn't want to chase around the build
->> system stuff so I did it a different way.
+On Thu, Nov 5, 2020 at 9:48 AM Nicolin Chen <nicoleotsuka@gmail.com> wrote:
 >
-> How did you end up doing it? I remember trying to parse the ELF object at
-> one time of day and not getting very far.
+> On Mon, Nov 02, 2020 at 09:52:27AM +0800, Shengjiu Wang wrote:
+> > The AUD2HTX is a digital module that provides a bridge between
+> > the Audio Subsystem and the HDMI RTX Subsystem. This module
+> > includes intermediate storage to queue SDMA transactions prior
+> > to being synchronized and passed to the HDMI RTX Subsystem over
+> > the Audio Link.
+> >
+> > The AUD2HTX contains a DMA request routed to the SDMA module.
+> > This DMA request is controlled based on the watermark level in
+> > the 32-entry sample buffer.
+> >
+> > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+>
+> Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+>
+> Despite some small comments inline.
+>
+> > +static int fsl_aud2htx_dai_probe(struct snd_soc_dai *cpu_dai)
+> > +{
+> > +     struct fsl_aud2htx *aud2htx = dev_get_drvdata(cpu_dai->dev);
+> > +
+> > +     /* DMA request when number of entries < WTMK_LOW */
+> > +     regmap_update_bits(aud2htx->regmap, AUD2HTX_CTRL_EXT,
+> > +                        AUD2HTX_CTRE_DT_MASK, 0);
+> > +
+> > +     /* Disable interrupts*/
+> > +     regmap_update_bits(aud2htx->regmap, AUD2HTX_IRQ_MASK,
+> > +                        AUD2HTX_WM_HIGH_IRQ_MASK |
+> > +                        AUD2HTX_WM_LOW_IRQ_MASK |
+> > +                        AUD2HTX_OVF_MASK,
+> > +                        AUD2HTX_WM_HIGH_IRQ_MASK |
+> > +                        AUD2HTX_WM_LOW_IRQ_MASK |
+> > +                        AUD2HTX_OVF_MASK);
+> > +
+> > +     /* Configure watermark */
+> > +     regmap_update_bits(aud2htx->regmap, AUD2HTX_CTRL_EXT,
+> > +                        AUD2HTX_CTRE_WL_MASK,
+> > +                        AUD2HTX_WTMK_LOW << AUD2HTX_CTRE_WL_SHIFT);
+> > +     regmap_update_bits(aud2htx->regmap, AUD2HTX_CTRL_EXT,
+> > +                        AUD2HTX_CTRE_WH_MASK,
+> > +                        AUD2HTX_WTMK_HIGH << AUD2HTX_CTRE_WH_SHIFT);
+>
+> If there isn't a hard requirement from hardware, feels better to
+> combine all the writes to AUD2HTX_CTRL_EXT into one single MMIO.
 
-Mine really isn't any cleaner: I use nm and sed to produce an assembler file
-full of absolute symbols, which I compile to produce the object.  That way I
-don't need a header file, which means I don't need to mess around with build
-ordering or change any of the other code (which was already using symbols).
+ok, will update it.
 
-I don't really like this whole thing we do where we just assume that symbols
-with a small offset from absolute address zero.  We're sort of depending on
-that for undefined weak symbols, but that's only for actually zero not almost
-zero.  Given that, I figured it'd be easier to just do it this way rather than
-trying to mess with build stuff.
+>
+> > +static irqreturn_t fsl_aud2htx_isr(int irq, void *dev_id)
+> > +{
+> > +     return IRQ_HANDLED;
+>
+> Empty isr? Perhaps can drop the request_irq() at all?
 
-I probably wouldn't bother changing unless there's something actively bad about
-that build stuff (I didn't really look).
+I'd like to keep this for future enhancement, what do you think?
+
+>
+> > +static int fsl_aud2htx_probe(struct platform_device *pdev)
+> > +{
+> > +     struct fsl_aud2htx *aud2htx;
+> > +     struct resource *res;
+> > +     void __iomem *regs;
+> > +     int ret, irq;
+> > +
+> > +     aud2htx = devm_kzalloc(&pdev->dev, sizeof(*aud2htx), GFP_KERNEL);
+> > +     if (!aud2htx)
+> > +             return -ENOMEM;
+> > +
+> > +     aud2htx->pdev = pdev;
+> > +
+> > +     res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> > +     regs = devm_ioremap_resource(&pdev->dev, res);
+> > +     if (IS_ERR(regs)) {
+> > +             dev_err(&pdev->dev, "failed ioremap\n");
+> > +             return PTR_ERR(regs);
+> > +     }
+> > +
+> > +     aud2htx->regmap = devm_regmap_init_mmio(&pdev->dev, regs,
+> > +                                             &fsl_aud2htx_regmap_config);
+> > +     if (IS_ERR(aud2htx->regmap)) {
+> > +             dev_err(&pdev->dev, "failed to init regmap");
+> > +             return PTR_ERR(aud2htx->regmap);
+> > +     }
+> > +
+> > +     irq = platform_get_irq(pdev, 0);
+> > +     if (irq < 0) {
+> > +             dev_err(&pdev->dev, "no irq for node %s\n",
+> > +                     dev_name(&pdev->dev));
+>
+> dev_err() already prints dev_name, so not necessary to print again.
+
+ok, will update it
+
+best regards
+wang shengjiu
