@@ -2,96 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04D862A96BD
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 14:13:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B652A2A96C7
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 14:14:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727362AbgKFNNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 08:13:21 -0500
-Received: from mx2.suse.de ([195.135.220.15]:57040 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727169AbgKFNNV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 08:13:21 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1604668398;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/qFlNeW+fj9kPag6iPvAKbxfuQxHVIdXyO+NAnfQv1k=;
-        b=M+tR/rKxslTPuT6FfxTzbpuuxYbiZZG3CnqFYk93k8am/VLmSymRvyUiwOy4Hr5waPoLce
-        uQiZvPathsmCgazo7IfORam7PuE22q5xJHq/iNivwhCmxch4+MaufWlLk/oXEAcDNCMlcc
-        x3wJTN1WOECehMoqwdLrqgU3bZ/wBxo=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 6BB69AB8F;
-        Fri,  6 Nov 2020 13:13:18 +0000 (UTC)
-Date:   Fri, 6 Nov 2020 14:13:17 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Jonathan Corbet <corbet@lwn.net>, Guo Ren <guoren@kernel.org>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Kees Cook <keescook@chromium.org>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        linux-doc@vger.kernel.org, linux-csky@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-s390@vger.kernel.org, live-patching@vger.kernel.org
-Subject: Re: [PATCH 11/11 v3] ftrace: Add recording of functions that caused
- recursion
-Message-ID: <20201106131317.GW20201@alley>
-References: <20201106023235.367190737@goodmis.org>
- <20201106023548.102375687@goodmis.org>
+        id S1727426AbgKFNO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 08:14:29 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:45327 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727408AbgKFNO0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 08:14:26 -0500
+Received: from mail-qt1-f198.google.com ([209.85.160.198])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <gpiccoli@canonical.com>)
+        id 1kb1ZP-00036V-8N
+        for linux-kernel@vger.kernel.org; Fri, 06 Nov 2020 13:14:23 +0000
+Received: by mail-qt1-f198.google.com with SMTP id o16so424122qtr.14
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 05:14:23 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=HPVFLNtJgEG3/T/AiPiJFJb96JDnXIr/3D3z64Va+Eo=;
+        b=c1zrDh5e0coBwyCQE0ueAyazQCjpTrfkjC5uo+7hqxRzc9zf2KlRpBFz0+wOxgNsg3
+         5WT58krRICsR1Kw6xbQq0pGfGxBJNIXv2/gFpqvWZPdhVjRf6Ph6ybN3NzVmHgBB00zZ
+         GDXsGUs2KXFb4Vls84N/NBj8J+idp6W9w3gxv1nMwQ4ijB6eDKeD5TnRj4GV/3rgvVri
+         LlM8UP8YameziN8sSIEsFymQsmlEoobF/0Cr4LopTn1yHqqzirjgNGJFn8nCjuco4Wpy
+         62wacyTzDco5xKuKn7nLoUnqumk3BqihglMl4bi9LxeSVIUEgeldd392AMpP5Mi3hj5O
+         i40Q==
+X-Gm-Message-State: AOAM533pYywe10mZL+ADG2/6MBOPFBNUPAjfaB2aFR4edDUYRDsRSsD+
+        0bSVU6U8FHdekOhwiqz8K4astj+DXPRa62L0hVcpaBENUp1PtgmhEOX0vDKMPlWb/UNUMvu7Rzn
+        zVDfx9mp/MUwjR4hieFrqTlEwFttcZ507dKQ5lxEhWQ==
+X-Received: by 2002:a05:6214:951:: with SMTP id dn17mr1587404qvb.9.1604668462333;
+        Fri, 06 Nov 2020 05:14:22 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxy3Z788RTdCGVaT5GG1jrF5xWEHnB7xPO6wPDKnHz31b3XsWEStppEzm/eVMQmS55qoB9IYw==
+X-Received: by 2002:a05:6214:951:: with SMTP id dn17mr1587386qvb.9.1604668461987;
+        Fri, 06 Nov 2020 05:14:21 -0800 (PST)
+Received: from [192.168.1.75] ([177.215.78.178])
+        by smtp.gmail.com with ESMTPSA id o8sm485618qtm.9.2020.11.06.05.14.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 06 Nov 2020 05:14:21 -0800 (PST)
+Subject: Re: [PATCH 1/3] x86/quirks: Scan all busses for early PCI quirks
+To:     Bjorn Helgaas <helgaas@kernel.org>, tglx@linutronix.de
+Cc:     linux-pci@vger.kernel.org, kexec@lists.infradead.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org, bhelgaas@google.com,
+        dyoung@redhat.com, bhe@redhat.com, vgoyal@redhat.com,
+        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, andi@firstfloor.org,
+        lukas@wunner.de, okaya@kernel.org, kernelfans@gmail.com,
+        ddstreet@canonical.com, gavin.guo@canonical.com,
+        jay.vosburgh@canonical.com, kernel@gpiccoli.net,
+        shan.gavin@linux.alibaba.com
+References: <20181018183721.27467-1-gpiccoli@canonical.com>
+ <20181018221538.GN5906@bhelgaas-glaptop.roam.corp.google.com>
+ <d4e10c8d-aa39-7577-fbc8-0430ac44ba54@canonical.com>
+ <20181023170343.GA4587@bhelgaas-glaptop.roam.corp.google.com>
+From:   "Guilherme G. Piccoli" <gpiccoli@canonical.com>
+Autocrypt: addr=gpiccoli@canonical.com; prefer-encrypt=mutual; keydata=
+ xsBNBFpVBxcBCADPNKmu2iNKLepiv8+Ssx7+fVR8lrL7cvakMNFPXsXk+f0Bgq9NazNKWJIn
+ Qxpa1iEWTZcLS8ikjatHMECJJqWlt2YcjU5MGbH1mZh+bT3RxrJRhxONz5e5YILyNp7jX+Vh
+ 30rhj3J0vdrlIhPS8/bAt5tvTb3ceWEic9mWZMsosPavsKVcLIO6iZFlzXVu2WJ9cov8eQM/
+ irIgzvmFEcRyiQ4K+XUhuA0ccGwgvoJv4/GWVPJFHfMX9+dat0Ev8HQEbN/mko/bUS4Wprdv
+ 7HR5tP9efSLucnsVzay0O6niZ61e5c97oUa9bdqHyApkCnGgKCpg7OZqLMM9Y3EcdMIJABEB
+ AAHNLUd1aWxoZXJtZSBHLiBQaWNjb2xpIDxncGljY29saUBjYW5vbmljYWwuY29tPsLAdwQT
+ AQgAIQUCWmClvQIbAwULCQgHAgYVCAkKCwIEFgIDAQIeAQIXgAAKCRDOR5EF9K/7Gza3B/9d
+ 5yczvEwvlh6ksYq+juyuElLvNwMFuyMPsvMfP38UslU8S3lf+ETukN1S8XVdeq9yscwtsRW/
+ 4YoUwHinJGRovqy8gFlm3SAtjfdqysgJqUJwBmOtcsHkmvFXJmPPGVoH9rMCUr9s6VDPox8f
+ q2W5M7XE9YpsfchS/0fMn+DenhQpV3W6pbLtuDvH/81GKrhxO8whSEkByZbbc+mqRhUSTdN3
+ iMpRL0sULKPVYbVMbQEAnfJJ1LDkPqlTikAgt3peP7AaSpGs1e3pFzSEEW1VD2jIUmmDku0D
+ LmTHRl4t9KpbU/H2/OPZkrm7809QovJGRAxjLLPcYOAP7DUeltvezsBNBFpVBxcBCADbxD6J
+ aNw/KgiSsbx5Sv8nNqO1ObTjhDR1wJw+02Bar9DGuFvx5/qs3ArSZkl8qX0X9Vhptk8rYnkn
+ pfcrtPBYLoux8zmrGPA5vRgK2ItvSc0WN31YR/6nqnMfeC4CumFa/yLl26uzHJa5RYYQ47jg
+ kZPehpc7IqEQ5IKy6cCKjgAkuvM1rDP1kWQ9noVhTUFr2SYVTT/WBHqUWorjhu57/OREo+Tl
+ nxI1KrnmW0DbF52tYoHLt85dK10HQrV35OEFXuz0QPSNrYJT0CZHpUprkUxrupDgkM+2F5LI
+ bIcaIQ4uDMWRyHpDbczQtmTke0x41AeIND3GUc+PQ4hWGp9XABEBAAHCwF8EGAEIAAkFAlpV
+ BxcCGwwACgkQzkeRBfSv+xv1wwgAj39/45O3eHN5pK0XMyiRF4ihH9p1+8JVfBoSQw7AJ6oU
+ 1Hoa+sZnlag/l2GTjC8dfEGNoZd3aRxqfkTrpu2TcfT6jIAsxGjnu+fUCoRNZzmjvRziw3T8
+ egSPz+GbNXrTXB8g/nc9mqHPPprOiVHDSK8aGoBqkQAPZDjUtRwVx112wtaQwArT2+bDbb/Y
+ Yh6gTrYoRYHo6FuQl5YsHop/fmTahpTx11IMjuh6IJQ+lvdpdfYJ6hmAZ9kiVszDF6pGFVkY
+ kHWtnE2Aa5qkxnA2HoFpqFifNWn5TyvJFpyqwVhVI8XYtXyVHub/WbXLWQwSJA4OHmqU8gDl
+ X18zwLgdiQ==
+Message-ID: <684cf38f-3977-4ec2-c4a6-7c4c31f9851a@canonical.com>
+Date:   Fri, 6 Nov 2020 10:14:14 -0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201106023548.102375687@goodmis.org>
+In-Reply-To: <20181023170343.GA4587@bhelgaas-glaptop.roam.corp.google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 2020-11-05 21:32:46, Steven Rostedt wrote:
-> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+On 23/10/2018 14:03, Bjorn Helgaas wrote:
+> On Mon, Oct 22, 2018 at 05:35:06PM -0300, Guilherme G. Piccoli wrote:
+>> On 18/10/2018 19:15, Bjorn Helgaas wrote:
+>>> On Thu, Oct 18, 2018 at 03:37:19PM -0300, Guilherme G. Piccoli wrote:
+>>> [...] 
+>> I understand your point, but I think this is inherently an architecture
+>> problem. No matter what solution we decide for, it'll need to be applied
+>> in early boot time, like before the PCI layer gets initialized.
 > 
-> This adds CONFIG_FTRACE_RECORD_RECURSION that will record to a file
-> "recursed_functions" all the functions that caused recursion while a
-> callback to the function tracer was running.
+> This is the part I want to know more about.  Apparently there's some
+> event X between early_quirks() and the PCI device enumeration, and we
+> must disable MSIs before X:
 > 
-> Changes since v2:
+>   setup_arch()
+>       early_quirks()                     # arch/x86/kernel/early-quirks.c
+>       early_pci_clear_msi()
+>   ...
+>   X
+>   ...
+>   pci_scan_root_bus_bridge()
+>     ...
+>     DECLARE_PCI_FIXUP_EARLY              # drivers/pci/quirks.c
 > 
->  - Use trace_recursion flags in current for protecting recursion of recursion recording
->  - Make the recursion logic a little cleaner
->  - Export GPL the recursion recording
+> I want to know specifically what X is.  If we don't know what X is and
+> all we know is "we have to disable MSIs earlier than PCI init", then
+> we're likely to break things again in the future by changing the order
+> of disabling MSIs and whatever X is.
+> 
+> Bjorn
+> 
 
-JFYI, the code reading and writing the cache looks good to me.
+Hi Bjorn (and all CCed), I'm sorry to necro-bump a thread >2 years
+later, but recent discussions led to a better understanding of this 'X'
+point, thanks to Thomas!
 
-It is still possible that some entries might stay unused (filled
-with zeroes) but it should be hard to hit in practice. It
-is good enough from my POV.
+For those that deleted this thread from their email clients, it's
+available in [0] - the summary is that we faced an IRQ storm really
+early in boot, due to a bogus PCIe device MSI behavior, when booting a
+kdump kernel. This led the machine to get stuck in the boot and we
+couldn't kdump. The solution hereby proposed is to clear MSI interrupts
+early in x86, if a parameter is provided. I don't have the reproducer
+anymore and it was pretty hard to reproduce in virtual environments.
 
-I do not give Reviewed-by tag just because I somehow do not have power
-to review the entire patch carefully enough at the moment.
+So, about the 'X' Bjorn, in another recent thread about IRQ storms [1],
+Thomas clarified that and after a brief discussion, it seems there's no
+better way to prevent the MSI storm other than clearing the MSI
+capability early in boot. As discussed both here and in thread [1], this
+is indeed a per-architecture issue (powerpc is not subject to that, due
+to a better FW reset mechanism), so I think we still could benefit in
+having this idea implemented upstream, at least in x86 (we could expand
+to other architectures if desired, in the future).
 
-Best Regards,
-Petr
+As a "test" data point, this was implemented in Ubuntu (same 3 patches
+present in this series) for ~2 years and we haven't received bug reports
+- I'm saying that because I understand your concerns about expanding the
+early PCI quirks scope.
+
+Let me know your thoughts. I'd suggest all to read thread [1], which
+addresses a similar issue but in a different "moment" of the system boot
+and provides some more insight on why the early MSI clearing seems to
+make sense.
+
+Thanks,
+
+
+Guilherme
+
+
+[0]
+https://lore.kernel.org/linux-pci/20181018183721.27467-1-gpiccoli@canonical.com
+
+[1] https://lore.kernel.org/lkml/87y2js3ghv.fsf@nanos.tec.linutronix.de
