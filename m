@@ -2,97 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8619B2A94B9
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 11:51:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F00292A94BE
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 11:52:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727123AbgKFKve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 05:51:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36910 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726832AbgKFKvd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 05:51:33 -0500
-Received: from localhost (otava-0257.koleje.cuni.cz [78.128.181.4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8F19420724;
-        Fri,  6 Nov 2020 10:51:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604659893;
-        bh=VRH0OOsTmug4IluCYlUGvOuQXo2JVTTtYzsTQcMKftI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=DR5GjgYnxgYfNUy4hxBJ+GkFu3TNlmpO0aaYPkTbPYlxY0rr4ihwrVMNDTN2Ds1lO
-         zjmit0mzO3nbNkk60AsmHKvxMhMqtY8XeVPwSkNIvGUwHsgdzGJviJ1Y0rhDaJqAXQ
-         KSHS80Rm+ob1CkN8BWqPmpBGJJSb7/AosGPxF6DQ=
-Date:   Fri, 6 Nov 2020 11:51:18 +0100
-From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
-To:     Pali =?UTF-8?B?Um9ow6Fy?= <pali@kernel.org>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Gregory CLEMENT <gregory.clement@bootlin.com>,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Terry Zhou <bjzhou@marvell.com>,
-        Konstantin Porotchkin <kostap@marvell.com>
-Subject: Re: [PATCH] clk: mvebu: a3700: fix the XTAL MODE pin to MPP1_9
-Message-ID: <20201106115118.43eab492@kernel.org>
-In-Reply-To: <20201106100039.11385-1-pali@kernel.org>
-References: <20201106100039.11385-1-pali@kernel.org>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1726988AbgKFKwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 05:52:53 -0500
+Received: from out4-smtp.messagingengine.com ([66.111.4.28]:43015 "EHLO
+        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726642AbgKFKwx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 05:52:53 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 97AA15C0070;
+        Fri,  6 Nov 2020 05:52:52 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Fri, 06 Nov 2020 05:52:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=N9XuQ3DBW3GUsaF7SYTnC8EtrNu
+        XcbHAT/ogm3d+XRk=; b=ccmPfSnO0zjKFCrvqwxNYMS/2TRa/FwDO6Ty/Bns65p
+        4s6xnrutCF+jsg2/AYf/DAtKL5Bh8h4a0hlRggq8xALoTJ9/pFahWLTKWiUGt54Z
+        h4/1VC8xy+qvYou9z3y7pGyfT+uY/tNkw/3rKYZJhfYpBAk7w+i66LekYtm7SXfI
+        v1VFt0IqdTVMbgYtYQqNj5lBJ1p9sbRlQuh3HhmpGqQROFsXj4GgAae1RywOGDg9
+        KZbqDkgVdoRqFCGsm+yZaSn18/82tErfb/RT5SyAnAennsE8CbgVdWyGWCNUmrDq
+        gg8+MdTCAXT7rm1RIlPByoOQ1CMH6VkapzkwKbGakww==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=N9XuQ3
+        DBW3GUsaF7SYTnC8EtrNuXcbHAT/ogm3d+XRk=; b=fz3sODXSrPFyTamNXseYQn
+        ovOrUlMOOlINULPdklxqB8JhLLIzDlw+zXGn2KRyNQ2IRjSOGHoYHAwrTTqG8rU8
+        PisyN/W6O6QyoCCtsl7Fe7v05aaVoqrPVyLqWuI3V5Qse9c3fr8nagpdMp81zl5I
+        pKioTD5LHVWHG6K2gjB8uFv8x9TYuyfJ4UrLiJGofMg9Wo0DmI82yqqLG1MzzdHU
+        ZxTN90SRk9V6Rhj5ejd8TihDbgJWVABM8+9PVrpHbvV/RJXN0wP4ls7lgc8lY6Ox
+        W9SARrG0kNyzKUvvBMITAv6rKcJN/XppcSyhaZAoR92IgwkGbIpwgksFVswgwwcg
+        ==
+X-ME-Sender: <xms:AyulX_U3c_k4aZVZ_5FXi7aXHoOhp7onEwpuh-fqi9braMdeRJXTJQ>
+    <xme:AyulX3kNJw5lqZK_zJwLGOeMIO6DpxmVZ54vYJh0Tm7Yaskoe5kN9TyYxn1rWcrPA
+    qYoYIMep-eu5guznnQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddtledgvddvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:AyulX7bKp23WSuHCHFhvlaxxssRA9vttrIHLLNGeL6USanlPwthlKg>
+    <xmx:AyulX6U_PGkWC5q6gD2IyBJZQ3BcALsOEkPGYWQwxQ5EQDxYrRHgCg>
+    <xmx:AyulX5kbNe5ZO7TdHvRk8ndW95dQWxvN2npd_yRnTSQIM1DJhkc5HA>
+    <xmx:BCulX_hvSNFcWPNue8tl7OBIJwaUD54JIXXOTJ1CkZ5S5bKFBQiqKQ>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id C463432801F2;
+        Fri,  6 Nov 2020 05:52:50 -0500 (EST)
+Date:   Fri, 6 Nov 2020 11:52:49 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Eric Anholt <eric@anholt.net>
+Cc:     Deepak R Varma <mh12gx2825@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] drm/vc4: replace idr_init() by idr_init_base()
+Message-ID: <20201106105249.zvyd36shfec24lzn@gilmour.lan>
+References: <20201105202135.GA145111@localhost>
+ <CADaigPXM8NAZFAydXwcZt7ie_aK1aO8C=jqssA375sCMgU_gHw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="wpowarwxfffuey44"
+Content-Disposition: inline
+In-Reply-To: <CADaigPXM8NAZFAydXwcZt7ie_aK1aO8C=jqssA375sCMgU_gHw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Also, this is how A3720 WTMI code and ATF determines XTAL clock rate.
-No reason for kernel to do it differently.
 
-Reviewed-by: Marek Beh=C3=BAn <kabel@kernel.org>
+--wpowarwxfffuey44
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Fri,  6 Nov 2020 11:00:39 +0100
-Pali Roh=C3=A1r <pali@kernel.org> wrote:
+On Thu, Nov 05, 2020 at 01:24:14PM -0800, Eric Anholt wrote:
+> On Thu, Nov 5, 2020 at 12:21 PM Deepak R Varma <mh12gx2825@gmail.com> wro=
+te:
+> >
+> > idr_init() uses base 0 which is an invalid identifier for this driver.
+> > The idr_alloc for this driver uses VC4_PERFMONID_MIN as start value for
+> > ID range and it is #defined to 1. The new function idr_init_base allows
+> > IDR to set the ID lookup from base 1. This avoids all lookups that
+> > otherwise starts from 0 since 0 is always unused / available.
+> >
+> > References: commit 6ce711f27500 ("idr: Make 1-based IDRs more efficient=
+")
+> >
+> > Signed-off-by: Deepak R Varma <mh12gx2825@gmail.com>
+> > ---
+> > Changes since v1:
+> >    - Change suggested by Eric Anholt
+> >      1. Use VC4_PERFMONID_MIN instead of magic number 1
+> >
+> >  drivers/gpu/drm/vc4/vc4_perfmon.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/gpu/drm/vc4/vc4_perfmon.c b/drivers/gpu/drm/vc4/vc=
+4_perfmon.c
+> > index f4aa75efd16b..18abc06335c1 100644
+> > --- a/drivers/gpu/drm/vc4/vc4_perfmon.c
+> > +++ b/drivers/gpu/drm/vc4/vc4_perfmon.c
+> > @@ -77,7 +77,7 @@ struct vc4_perfmon *vc4_perfmon_find(struct vc4_file =
+*vc4file, int id)
+> >  void vc4_perfmon_open_file(struct vc4_file *vc4file)
+> >  {
+> >         mutex_init(&vc4file->perfmon.lock);
+> > -       idr_init(&vc4file->perfmon.idr);
+> > +       idr_init_base(&vc4file->perfmon.idr, VC4_PERFMONID_MIN);
+> >  }
+> >
+> >  static int vc4_perfmon_idr_del(int id, void *elem, void *data)
+> > --
+> > 2.25.1
+>=20
+> Reviewed-by: Eric Anholt <eric@anholt.net>
+>=20
+> hopefully Maxime can apply it.
 
-> From: Terry Zhou <bjzhou@marvell.com>
->=20
-> There is an error in the current code that the XTAL MODE
-> pin was set to NB MPP1_31 which should be NB MPP1_9.
-> The latch register of NB MPP1_9 has different offset of 0x8.
->=20
-> Signed-off-by: Terry Zhou <bjzhou@marvell.com>
-> [pali: Fix pin name in commit message]
-> Signed-off-by: Pali Roh=C3=A1r <pali@kernel.org>
-> Fixes: 7ea8250406a6 ("clk: mvebu: Add the xtal clock for Armada 3700 SoC")
-> Cc: stable@vger.kernel.org
->=20
-> ---
-> This patch is present in Marvell SDK and also in Marvell's kernel fork:
-> https://github.com/MarvellEmbeddedProcessors/linux-marvell/commit/80d4cec=
-4cef8282e5ac3aaf98ce3e68fb299a134
->=20
-> Konstantin Porotchkin wrote on Github that Gregory Clement was notified
-> about this patch, but as this patch is still not in mainline kernel I'm
-> sending it again for review.
->=20
-> In original commit message (only in commit message, not code) was
-> specified MPP9 pin on South Bridge, but correct is North Bridge.
-> ---
->  drivers/clk/mvebu/armada-37xx-xtal.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/clk/mvebu/armada-37xx-xtal.c b/drivers/clk/mvebu/arm=
-ada-37xx-xtal.c
-> index e9e306d4e9af..41271351cf1f 100644
-> --- a/drivers/clk/mvebu/armada-37xx-xtal.c
-> +++ b/drivers/clk/mvebu/armada-37xx-xtal.c
-> @@ -13,8 +13,8 @@
->  #include <linux/platform_device.h>
->  #include <linux/regmap.h>
-> =20
-> -#define NB_GPIO1_LATCH	0xC
-> -#define XTAL_MODE	    BIT(31)
-> +#define NB_GPIO1_LATCH	0x8
-> +#define XTAL_MODE	    BIT(9)
-> =20
->  static int armada_3700_xtal_clock_probe(struct platform_device *pdev)
->  {
+Applied, thanks!
+Maxime
 
+--wpowarwxfffuey44
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX6UrAQAKCRDj7w1vZxhR
+xUhsAQCxvwWAyRE6P1mtYodyBj0Urt6AjZf76xX/ejfIhiQPSgD/ZC5FY38xgVXy
+gO16XKmOsRetlk1j6qah2BzWKkbNDQw=
+=kXl7
+-----END PGP SIGNATURE-----
+
+--wpowarwxfffuey44--
