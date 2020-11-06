@@ -2,194 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E5772A8F13
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 06:54:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D63942A8F0C
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 06:54:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726298AbgKFFyj convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 6 Nov 2020 00:54:39 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:10488 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726126AbgKFFyi (ORCPT
+        id S1726230AbgKFFyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 00:54:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47820 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725828AbgKFFyM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 00:54:38 -0500
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A65e7sc005581
-        for <linux-kernel@vger.kernel.org>; Thu, 5 Nov 2020 21:54:37 -0800
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 34mw5bgrwp-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 21:54:37 -0800
-Received: from intmgw001.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 5 Nov 2020 21:54:36 -0800
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id C2A1B2EC8EFE; Thu,  5 Nov 2020 21:51:40 -0800 (PST)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <kernel-team@fb.com>, <linux-kernel@vger.kernel.org>,
-        <rafael@kernel.org>, <jeyu@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH bpf-next 5/5] tools/bpftool: add support for in-kernel and named BTF in `btf show`
-Date:   Thu, 5 Nov 2020 21:51:10 -0800
-Message-ID: <20201106055111.3972047-6-andrii@kernel.org>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20201106055111.3972047-1-andrii@kernel.org>
-References: <20201106055111.3972047-1-andrii@kernel.org>
+        Fri, 6 Nov 2020 00:54:12 -0500
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A861C0613CF;
+        Thu,  5 Nov 2020 21:54:12 -0800 (PST)
+Received: by mail-il1-x142.google.com with SMTP id q1so97354ilt.6;
+        Thu, 05 Nov 2020 21:54:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uDN6j31v9Jw+Jc4wz8SuOy1OBlhE5DLRx4P5BkScGeE=;
+        b=kMN/+i4HxRqtssG7OQTxjs1myQXLPHDEPjPnStBTSnwjWSQavWnT4k2phbKKAAXRus
+         eL71cJlZ/4ELQuSLrfV7RX//SyaV8szYeHpvZR39CHXRzjeiS69nEe7yvcpuC7OU2/+G
+         Q5OGYmMebO7j3zJNiGIE9gAxCxxitvOBynOFWTyQoJG7UAe9r63UU1n0cW9uQKwBM+GB
+         +33JFClYjQ0Mib9ngtF9qOu6jnbNZBr+wmFHko8WHy0JmtZM4TxQsel4OVU4XK0BB0QO
+         xn+h980fOCADb6utcR6DSfR6yl2o2hxqAZgKR8LF3gViQGWu97sHpxeQVCCxPHQyjhJJ
+         JvrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uDN6j31v9Jw+Jc4wz8SuOy1OBlhE5DLRx4P5BkScGeE=;
+        b=rnrBYteohM+K9V6xcbsIO5I2gMV7gb1XkxYHagM39ApFHv72G2/XSfmGYjTu+77jZs
+         e0p9l2jHRDzTKboUHdwGB1OMO3NHZlRPuPuw+nNyGeoHfLyaUl5TJ+GqLg/NnI1iNPjx
+         VImTWRpCCc8r7d5R9NKRGxfRjnKHMwyB8thgkoIx4AlHZdfPDatgtVbqfp/UMUPb/BWf
+         oWZ9qmN78/tSQ+FDy9i9JTLFBuFJSceSV8vtxtmQnl9Q8V3rnOJ4mjiX7OpGrR0Ano2L
+         at6KN/d7SoYHx/iXDMQq80Y2efLQIR+/WyghHX0gyL5qbSnXnLYUtuqxpK871VYcpUWU
+         CGcw==
+X-Gm-Message-State: AOAM533z8uhd579C1x9JUVOjKU44qBt9HQhi5yM4WNsJMS3QicEcQgR3
+        76vKx+1DnicGRoBHydPb1lAHZvm9Ynd6Q52YdA==
+X-Google-Smtp-Source: ABdhPJxoffljQaoi5UHKFkfBQXr6qCHtKuULm5vwnKk4L1fMENgXNj/slM9oecIgJp9jBR14r1eC+OdRcwzwtnKGdbk=
+X-Received: by 2002:a92:d68a:: with SMTP id p10mr310494iln.34.1604642050883;
+ Thu, 05 Nov 2020 21:54:10 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-06_01:2020-11-05,2020-11-06 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- bulkscore=0 spamscore=0 impostorscore=0 lowpriorityscore=0 phishscore=0
- suspectscore=9 adultscore=0 mlxlogscore=999 clxscore=1015 mlxscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011060039
-X-FB-Internal: deliver
+References: <1603346163-21645-1-git-send-email-kernelfans@gmail.com>
+ <871rhq7j1h.fsf@nanos.tec.linutronix.de> <CAFgQCTvFwvvtPE0Eow4cebCEe5OD5OhgAQarckpbFc38Bphaag@mail.gmail.com>
+ <CAHD1Q_x99XW1zDr5HpVR27F_ksHLkaxc2W83e-N6F_xLYKyGbQ@mail.gmail.com>
+ <87y2js3ghv.fsf@nanos.tec.linutronix.de> <CAFgQCTtnKB+p5uhRu3JpmBvHbQ8Vhv0TrKek9_3CWbtbcyM1Kw@mail.gmail.com>
+ <87tuueftou.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <87tuueftou.fsf@nanos.tec.linutronix.de>
+From:   Pingfan Liu <kernelfans@gmail.com>
+Date:   Fri, 6 Nov 2020 13:53:59 +0800
+Message-ID: <CAFgQCTsbW3sBGgUj+8LJagpf_AMNPrB+PDvcZ+pLgeoFtNWv=w@mail.gmail.com>
+Subject: Re: [PATCH 0/3] warn and suppress irqflood
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Guilherme Piccoli <gpiccoli@canonical.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Petr Mladek <pmladek@suse.com>, Marc Zyngier <maz@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        afzal mohammed <afzal.mohd.ma@gmail.com>,
+        Lina Iyer <ilina@codeaurora.org>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Maulik Shah <mkshah@codeaurora.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Oliver Neukum <oneukum@suse.com>, linux-doc@vger.kernel.org,
+        Kexec Mailing List <kexec@lists.infradead.org>,
+        Bjorn Helgaas <helgaas@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Display vmlinux BTF name and kernel module names when listing available BTFs
-on the system.
+On Wed, Oct 28, 2020 at 7:58 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+>
+[...]
+> ---
+>  include/linux/irqdesc.h |    4 ++
+>  kernel/irq/manage.c     |    3 +
+>  kernel/irq/spurious.c   |   74 +++++++++++++++++++++++++++++++++++-------------
+>  3 files changed, 61 insertions(+), 20 deletions(-)
+>
+> --- a/include/linux/irqdesc.h
+> +++ b/include/linux/irqdesc.h
+> @@ -30,6 +30,8 @@ struct pt_regs;
+>   * @tot_count:         stats field for non-percpu irqs
+>   * @irq_count:         stats field to detect stalled irqs
+>   * @last_unhandled:    aging timer for unhandled count
+> + * @storm_count:       Counter for irq storm detection
+> + * @storm_checked:     Timestamp for irq storm detection
+>   * @irqs_unhandled:    stats field for spurious unhandled interrupts
+>   * @threads_handled:   stats field for deferred spurious detection of threaded handlers
+>   * @threads_handled_last: comparator field for deferred spurious detection of theraded handlers
+> @@ -65,6 +67,8 @@ struct irq_desc {
+>         unsigned int            tot_count;
+>         unsigned int            irq_count;      /* For detecting broken IRQs */
+>         unsigned long           last_unhandled; /* Aging timer for unhandled count */
+> +       unsigned long           storm_count;
+> +       unsigned long           storm_checked;
+>         unsigned int            irqs_unhandled;
+>         atomic_t                threads_handled;
+>         int                     threads_handled_last;
+> --- a/kernel/irq/manage.c
+> +++ b/kernel/irq/manage.c
+> @@ -1581,6 +1581,9 @@ static int
+>         if (!shared) {
+>                 init_waitqueue_head(&desc->wait_for_threads);
+>
+> +               /* Take a timestamp for interrupt storm detection */
+> +               desc->storm_checked = jiffies;
+> +
+>                 /* Setup the type (level, edge polarity) if configured: */
+>                 if (new->flags & IRQF_TRIGGER_MASK) {
+>                         ret = __irq_set_trigger(desc,
+> --- a/kernel/irq/spurious.c
+> +++ b/kernel/irq/spurious.c
+> @@ -21,6 +21,7 @@ static void poll_spurious_irqs(struct ti
+>  static DEFINE_TIMER(poll_spurious_irq_timer, poll_spurious_irqs);
+>  static int irq_poll_cpu;
+>  static atomic_t irq_poll_active;
+> +static unsigned long irqstorm_limit __ro_after_init;
+>
+>  /*
+>   * We wait here for a poller to finish.
+> @@ -189,18 +190,21 @@ static inline int bad_action_ret(irqretu
+>   * (The other 100-of-100,000 interrupts may have been a correctly
+>   *  functioning device sharing an IRQ with the failing one)
+>   */
+> -static void __report_bad_irq(struct irq_desc *desc, irqreturn_t action_ret)
+> +static void __report_bad_irq(struct irq_desc *desc, irqreturn_t action_ret,
+> +                            bool storm)
+>  {
+>         unsigned int irq = irq_desc_get_irq(desc);
+>         struct irqaction *action;
+>         unsigned long flags;
+>
+> -       if (bad_action_ret(action_ret)) {
+> -               printk(KERN_ERR "irq event %d: bogus return value %x\n",
+> -                               irq, action_ret);
+> -       } else {
+> -               printk(KERN_ERR "irq %d: nobody cared (try booting with "
+> +       if (!storm) {
+> +               if (bad_action_ret(action_ret)) {
+> +                       pr_err("irq event %d: bogus return value %x\n",
+> +                              irq, action_ret);
+> +               } else {
+> +                       pr_err("irq %d: nobody cared (try booting with "
+>                                 "the \"irqpoll\" option)\n", irq);
+> +               }
+>         }
+>         dump_stack();
+>         printk(KERN_ERR "handlers:\n");
+> @@ -228,7 +232,7 @@ static void report_bad_irq(struct irq_de
+>
+>         if (count > 0) {
+>                 count--;
+> -               __report_bad_irq(desc, action_ret);
+> +               __report_bad_irq(desc, action_ret, false);
+>         }
+>  }
+>
+> @@ -267,6 +271,33 @@ try_misrouted_irq(unsigned int irq, stru
+>         return action && (action->flags & IRQF_IRQPOLL);
+>  }
+>
+> +static void disable_stuck_irq(struct irq_desc *desc, irqreturn_t action_ret,
+> +                             const char *reason, bool storm)
+> +{
+> +       __report_bad_irq(desc, action_ret, storm);
+> +       pr_emerg("Disabling %s IRQ #%d\n", reason, irq_desc_get_irq(desc));
+> +       desc->istate |= IRQS_SPURIOUS_DISABLED;
+> +       desc->depth++;
+> +       irq_disable(desc);
+> +}
+> +
+> +/* Interrupt storm detector for runaway interrupts (handled or not). */
+> +static bool irqstorm_detected(struct irq_desc *desc)
+> +{
+> +       unsigned long now = jiffies;
+> +
+> +       if (++desc->storm_count < irqstorm_limit) {
+> +               if (time_after(now, desc->storm_checked + HZ)) {
+> +                       desc->storm_count = 0;
+> +                       desc->storm_checked = now;
+> +               }
+> +               return false;
+> +       }
+> +
+> +       disable_stuck_irq(desc, IRQ_NONE, "runaway", true);
+> +       return true;
+> +}
+> +
+>  #define SPURIOUS_DEFERRED      0x80000000
+>
+>  void note_interrupt(struct irq_desc *desc, irqreturn_t action_ret)
+> @@ -403,24 +434,16 @@ void note_interrupt(struct irq_desc *des
+>                         desc->irqs_unhandled -= ok;
+>         }
+>
+> +       if (unlikely(irqstorm_limit && irqstorm_detected(desc)))
+> +               return;
+> +
+>         desc->irq_count++;
+>         if (likely(desc->irq_count < 100000))
+>                 return;
+>
+>         desc->irq_count = 0;
+>         if (unlikely(desc->irqs_unhandled > 99900)) {
+> -               /*
+> -                * The interrupt is stuck
+> -                */
+> -               __report_bad_irq(desc, action_ret);
+> -               /*
+> -                * Now kill the IRQ
+> -                */
+> -               printk(KERN_EMERG "Disabling IRQ #%d\n", irq);
+> -               desc->istate |= IRQS_SPURIOUS_DISABLED;
+> -               desc->depth++;
+> -               irq_disable(desc);
+> -
+> +               disable_stuck_irq(desc, action_ret, "unhandled", false);
+>                 mod_timer(&poll_spurious_irq_timer,
+>                           jiffies + POLL_SPURIOUS_IRQ_INTERVAL);
+>         }
+> @@ -462,5 +485,16 @@ static int __init irqpoll_setup(char *st
+>                                 "performance\n");
+>         return 1;
+>  }
+> -
+>  __setup("irqpoll", irqpoll_setup);
+> +
+> +static int __init irqstorm_setup(char *arg)
+> +{
+> +       int res = kstrtoul(arg, 0, &irqstorm_limit);
+> +
+> +       if (!res) {
+> +               pr_info("Interrupt storm detector enabled. Limit=%lu / s\n",
+> +                       irqstorm_limit);
+> +       }
+> +       return !!res;
+> +}
+> +__setup("irqstorm_limit", irqstorm_setup);
+It should be
+__setup("irqstorm_limit=", irqstorm_setup);
 
-In human-readable output mode, module BTFs are reported with "name
-[module-name]", while vmlinux BTF will be reported as "name [vmlinux]".
-Square brackets are added by bpftool and follow kernel convention when
-displaying modules in human-readable text outputs.
+And I have tested this patch on the P9 machine, where I set the limit
+to 70000. It works for kdump kernel.
 
-[vmuser@archvm bpf]$ sudo ../../../bpf/bpftool/bpftool btf s
-1: name [vmlinux]  size 4082281B
-6: size 2365B  prog_ids 8,6  map_ids 3
-7: name [button]  size 46895B
-8: name [pcspkr]  size 42328B
-9: name [serio_raw]  size 39375B
-10: name [floppy]  size 57185B
-11: name [i2c_core]  size 76186B
-12: name [crc32c_intel]  size 16036B
-13: name [i2c_piix4]  size 50497B
-14: name [irqbypass]  size 14124B
-15: name [kvm]  size 197985B
-16: name [kvm_intel]  size 123564B
-17: name [cryptd]  size 42466B
-18: name [crypto_simd]  size 17187B
-19: name [glue_helper]  size 39205B
-20: name [aesni_intel]  size 41034B
-25: size 36150B
-        pids bpftool(2519)
-
-In JSON mode, two fields (boolean "kernel" and string "name") are reported for
-each BTF object. vmlinux BTF is reported with name "vmlinux" (kernel itself
-returns and empty name for vmlinux BTF).
-
-[vmuser@archvm bpf]$ sudo ../../../bpf/bpftool/bpftool btf s -jp
-[{
-        "id": 1,
-        "size": 4082281,
-        "prog_ids": [],
-        "map_ids": [],
-        "kernel": true,
-        "name": "vmlinux"
-    },{
-        "id": 6,
-        "size": 2365,
-        "prog_ids": [8,6
-        ],
-        "map_ids": [3
-        ],
-        "kernel": false
-    },{
-        "id": 7,
-        "size": 46895,
-        "prog_ids": [],
-        "map_ids": [],
-        "kernel": true,
-        "name": "button"
-    },{
-
-...
-
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/bpf/bpftool/btf.c | 28 +++++++++++++++++++++++++++-
- 1 file changed, 27 insertions(+), 1 deletion(-)
-
-diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
-index c96b56e8e3a4..ed5e97157241 100644
---- a/tools/bpf/bpftool/btf.c
-+++ b/tools/bpf/bpftool/btf.c
-@@ -742,9 +742,14 @@ show_btf_plain(struct bpf_btf_info *info, int fd,
- 	       struct btf_attach_table *btf_map_table)
- {
- 	struct btf_attach_point *obj;
-+	const char *name = u64_to_ptr(info->name);
- 	int n;
- 
- 	printf("%u: ", info->id);
-+	if (info->kernel_btf)
-+		printf("name [%s]  ", name);
-+	else if (name && name[0])
-+		printf("name %s  ", name);
- 	printf("size %uB", info->btf_size);
- 
- 	n = 0;
-@@ -771,6 +776,7 @@ show_btf_json(struct bpf_btf_info *info, int fd,
- 	      struct btf_attach_table *btf_map_table)
- {
- 	struct btf_attach_point *obj;
-+	const char *name = u64_to_ptr(info->name);
- 
- 	jsonw_start_object(json_wtr);	/* btf object */
- 	jsonw_uint_field(json_wtr, "id", info->id);
-@@ -796,6 +802,11 @@ show_btf_json(struct bpf_btf_info *info, int fd,
- 
- 	emit_obj_refs_json(&refs_table, info->id, json_wtr); /* pids */
- 
-+	jsonw_bool_field(json_wtr, "kernel", info->kernel_btf);
-+
-+	if (name && name[0])
-+		jsonw_string_field(json_wtr, "name", name);
-+
- 	jsonw_end_object(json_wtr);	/* btf object */
- }
- 
-@@ -803,15 +814,30 @@ static int
- show_btf(int fd, struct btf_attach_table *btf_prog_table,
- 	 struct btf_attach_table *btf_map_table)
- {
--	struct bpf_btf_info info = {};
-+	struct bpf_btf_info info;
- 	__u32 len = sizeof(info);
-+	char name[64];
- 	int err;
- 
-+	memset(&info, 0, sizeof(info));
- 	err = bpf_obj_get_info_by_fd(fd, &info, &len);
- 	if (err) {
- 		p_err("can't get BTF object info: %s", strerror(errno));
- 		return -1;
- 	}
-+	/* if kernel support emitting BTF object name, pass name pointer */
-+	if (info.name_len) {
-+		memset(&info, 0, sizeof(info));
-+		info.name_len = sizeof(name);
-+		info.name = ptr_to_u64(name);
-+		len = sizeof(info);
-+
-+		err = bpf_obj_get_info_by_fd(fd, &info, &len);
-+		if (err) {
-+			p_err("can't get BTF object info: %s", strerror(errno));
-+			return -1;
-+		}
-+	}
- 
- 	if (json_output)
- 		show_btf_json(&info, fd, btf_prog_table, btf_map_table);
--- 
-2.24.1
-
+Thanks,
+Pingfan
