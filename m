@@ -2,92 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C9592A9DFF
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 20:26:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73AF02A9DF8
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 20:25:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728221AbgKFT0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 14:26:32 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:37388 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728167AbgKFT0c (ORCPT
+        id S1728121AbgKFTZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 14:25:50 -0500
+Received: from mail-ej1-f66.google.com ([209.85.218.66]:40600 "EHLO
+        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727356AbgKFTZu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 14:26:32 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A6JDaPt041942;
-        Fri, 6 Nov 2020 19:26:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=v8aUxlzhOmPPnjHBTuKWh9NcWoNY4jT3BjUF/BStqrA=;
- b=Dl9SFax0z/C9Urha1XxIsRDM1wQtZiLG0tmmxzIl+Z9/Jm0QD98A7uKqjHlGUe0xr4Go
- IPgRtPvoI+ieaCn12yCouXOWLoog+x1p0exk4E+F78AhdsP3SN5+lWZm8VA0+cYiCJRS
- /jA8iN/rq6FOOPoiZyajwFPFMd+xH9V/x1UH2xadYs62/x+hhW/JnjpvPsjLMGafEOmG
- gACrZvO4QOq0YeXu/Nlri0iby8oBzTudkskTOS7OI8zpbXLwbtptmbhv0E3srA4/VpPA
- lx8MU+8BOQt30WO7kxw1UDAzsnRt+I4a/yiXb0R7Fj16pnts0RFrZaLkQmFEEVtAfS/U jw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 34hhvctkvq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 06 Nov 2020 19:26:24 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A6JEqa8042516;
-        Fri, 6 Nov 2020 19:24:23 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 34hw0kqkm0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 06 Nov 2020 19:24:23 +0000
-Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0A6JOMax006726;
-        Fri, 6 Nov 2020 19:24:22 GMT
-Received: from mwanda (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 06 Nov 2020 11:24:21 -0800
-Date:   Fri, 6 Nov 2020 22:24:15 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Miguel Ojeda Sandonis <miguel.ojeda.sandonis@gmail.com>,
-        Lars Poeschel <poeschel@lemonage.de>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH] auxdisplay: fix use after free in lcd2s_i2c_remove()
-Message-ID: <20201106192415.GA2696904@mwanda>
+        Fri, 6 Nov 2020 14:25:50 -0500
+Received: by mail-ej1-f66.google.com with SMTP id oq3so3446450ejb.7;
+        Fri, 06 Nov 2020 11:25:48 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=MkMvO/fVRYJ0hwCb4YApCHFWfZiXPjKI+TWhUu7OZR8=;
+        b=L3Jxp66LRDhQDLGOuqu/TPP61U+MU7zfbUjmADkeDRcs2z313NkVidnw5VroBVt7th
+         +KzrnOs1UYNox2JnNId8/yfwNb+M6+vDdU4VOdQdShzE084UMdcRAtHDHqlL3+GLN6g0
+         sgckaCNKiOTVF2Do41z05jcIsbDpTmRh0etUfkjiNg/XS8hfh619ZWEqvUFUbbAW7pkz
+         R0R8yWmd32vEx69PhMldvmY1qIozGnBo8OKhvgM/9dytd7gJ6X0W2wE/VSmFx9ZrJSvk
+         gcObIdR8fxN8kfmB+LHo4zkGFuqKSxrC7RTUHdmQ++V0L7ta8Vpru8AKViAL1tFaGsAV
+         cYmA==
+X-Gm-Message-State: AOAM530hBnKW3LYMI/CedRcOjRY5QxpXhlcXRBIneDuWuNppE7FRsqXi
+        xZyaEi1YvRKnv5p8n1pIWeI=
+X-Google-Smtp-Source: ABdhPJx4RaCkZ86rfx8Y1o2dN7HaNlaMQle4aKgb+itcSlgSCADS4Avz1UbnGkpB6HVi7vVOYuXVcw==
+X-Received: by 2002:a17:906:748b:: with SMTP id e11mr3412873ejl.513.1604690748007;
+        Fri, 06 Nov 2020 11:25:48 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id j4sm1620376ejs.8.2020.11.06.11.25.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Nov 2020 11:25:46 -0800 (PST)
+Date:   Fri, 6 Nov 2020 20:25:45 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Adam Ford <aford173@gmail.com>
+Cc:     linux-arm-kernel@lists.infradead.org, aford@beaconembedded.com,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2 1/3] dt-bindings: arm: fsl: Add
+ beacon,imx8mn-beacon-kit
+Message-ID: <20201106192545.GA328543@kozik-lap>
+References: <20201106121238.1814427-1-aford173@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9797 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 mlxlogscore=999
- phishscore=0 bulkscore=0 spamscore=0 malwarescore=0 mlxscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011060135
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9797 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=2
- impostorscore=0 malwarescore=0 priorityscore=1501 mlxlogscore=999
- bulkscore=0 phishscore=0 adultscore=0 mlxscore=0 lowpriorityscore=0
- clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011060135
+In-Reply-To: <20201106121238.1814427-1-aford173@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The kfree() needs to be moved down a line to prevent a use after free.
+On Fri, Nov 06, 2020 at 06:12:35AM -0600, Adam Ford wrote:
+> Add beacon,imx8mn-beacon-kit to list of compatible options.
+> 
+> Signed-off-by: Adam Ford <aford173@gmail.com>
+> ---
+> V2:  New to series
+> 
+>  Documentation/devicetree/bindings/arm/fsl.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
+> index 85fb24da4a02..808e001aa81a 100644
+> --- a/Documentation/devicetree/bindings/arm/fsl.yaml
+> +++ b/Documentation/devicetree/bindings/arm/fsl.yaml
+> @@ -659,6 +659,7 @@ properties:
+>          items:
+>            - enum:
+>                - beacon,imx8mm-beacon-kit  # i.MX8MM Beacon Development Kit
+> +              - beacon,imx8mn-beacon-kit  # i.MX8MM Beacon Development Kit
 
-Fixes: 8c9108d014c5 ("auxdisplay: add a driver for lcd2s character display")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
- drivers/auxdisplay/lcd2s.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi Adam,
 
-diff --git a/drivers/auxdisplay/lcd2s.c b/drivers/auxdisplay/lcd2s.c
-index cfa5f86deeef..3eb7f04db6cb 100644
---- a/drivers/auxdisplay/lcd2s.c
-+++ b/drivers/auxdisplay/lcd2s.c
-@@ -348,8 +348,8 @@ static int lcd2s_i2c_remove(struct i2c_client *i2c)
- {
- 	struct lcd2s_data *lcd2s = i2c_get_clientdata(i2c);
- 
--	kfree(lcd2s->charlcd);
- 	charlcd_unregister(lcd2s->charlcd);
-+	kfree(lcd2s->charlcd);
- 	return 0;
- }
- 
--- 
-2.28.0
+Wrong place. You need to add it under "i.MX8MN based Boards"
 
+Comment has a typo - MM.
+
+Best regards,
+Krzysztof
