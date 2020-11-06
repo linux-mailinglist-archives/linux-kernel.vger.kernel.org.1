@@ -2,74 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D83512A980F
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 16:09:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47C672A981A
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 16:11:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727263AbgKFPJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 10:09:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45236 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726422AbgKFPJh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 10:09:37 -0500
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 590DF22227;
-        Fri,  6 Nov 2020 15:09:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604675376;
-        bh=s/FYo72I6lt9+QYesQbFcIAoPzgpDRs/37yRXdQqM5k=;
-        h=From:To:Cc:Subject:Date:From;
-        b=niY8WqBV/LQP5/Zv6YXKlYmfDYoKB+adBBoqmX19s/VeJv9+OlmHmVH7t43qQIkq0
-         cZ47uoBSseKF7a6ZT9EF/MbPgsOYZ15XgLFVz1zcxlxrtwuJ9uXjcjIqnMYkMYJ3yh
-         zIEr1PwU2DX7lEktrKS9ejhSXnyyvXq0O8CjSY3c=
-From:   Mark Brown <broonie@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>
-Cc:     Daniel Mentz <danielmentz@google.com>,
-        Saravana Kannan <saravanak@google.com>,
-        linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
-Subject: [PATCH RFC] driver core: Ensure DT devices always have fwnode set
-Date:   Fri,  6 Nov 2020 15:07:47 +0000
-Message-Id: <20201106150747.31273-1-broonie@kernel.org>
-X-Mailer: git-send-email 2.20.1
+        id S1727584AbgKFPLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 10:11:18 -0500
+Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:48938 "EHLO
+        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726422AbgKFPLR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 10:11:17 -0500
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id 2C11A82227;
+        Fri,  6 Nov 2020 18:11:15 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paragon-software.com; s=mail; t=1604675475;
+        bh=5kf8LB/BnmLRZlhR/PjfyLiNkCNTBmA5cycs21FGq5E=;
+        h=From:To:CC:Subject:Date;
+        b=SSMse6pcylmJXAmRyGX0qyNCyXm6tp0P71lBVmnlrs20+L6v/1M43CKq6qJs4O5a9
+         sD8kB/nG7DYyIrOyCuLF8s6UFYnyNccmilqkzeeuiFZaRv1mmRr7DFBH7yEziB8ltK
+         c/1yj5KREvO1umovhRT2LER0J4r/6w86kuEEFAE4=
+Received: from fsd-lkpg.ufsd.paragon-software.com (172.30.114.105) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Fri, 6 Nov 2020 18:11:14 +0300
+From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+To:     <linux-fsdevel@vger.kernel.org>
+CC:     <viro@zeniv.linux.org.uk>, <linux-kernel@vger.kernel.org>,
+        <pali@kernel.org>, <dsterba@suse.cz>, <aaptel@suse.com>,
+        <willy@infradead.org>, <rdunlap@infradead.org>, <joe@perches.com>,
+        <mark@harmstone.com>, <nborisov@suse.com>,
+        <linux-ntfs-dev@lists.sourceforge.net>, <anton@tuxera.com>,
+        <dan.carpenter@oracle.com>, <hch@lst.de>, <ebiggers@kernel.org>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Subject: [PATCH v12 00/10] NTFS read-write driver GPL implementation by Paragon Software
+Date:   Fri, 6 Nov 2020 18:08:59 +0300
+Message-ID: <20201106150909.1779040-1-almaz.alexandrovich@paragon-software.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [172.30.114.105]
+X-ClientProxiedBy: vdlg-exch-02.paragon-software.com (172.30.1.105) To
+ vdlg-exch-02.paragon-software.com (172.30.1.105)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently the fwnode API and things that rely on it like fw_devlink will
-not reliably work for devices created from DT since each subsystem that
-creates devices must individually set dev->fwnode in addition to setting
-dev->of_node, currently a number of subsystems don't do so. Ensure that
-this can't get missed by setting fwnode from of_node if it's not
-previously been set by the subsystem.
+This patch adds NTFS Read-Write driver to fs/ntfs3.
 
-Reported-by: Saravana Kannan <saravanak@google.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
+Having decades of expertise in commercial file systems development and huge
+test coverage, we at Paragon Software GmbH want to make our contribution to
+the Open Source Community by providing implementation of NTFS Read-Write
+driver for the Linux Kernel.
 
-*Very* minimally tested.
+This is fully functional NTFS Read-Write driver. Current version works with
+NTFS(including v3.1) and normal/compressed/sparse files and supports journal replaying.
 
- drivers/base/core.c | 4 ++++
- 1 file changed, 4 insertions(+)
+We plan to support this version after the codebase once merged, and add new
+features and fix bugs. For example, full journaling support over JBD will be
+added in later updates.
 
-diff --git a/drivers/base/core.c b/drivers/base/core.c
-index d661ada1518f..658626bafd76 100644
---- a/drivers/base/core.c
-+++ b/drivers/base/core.c
-@@ -2864,6 +2864,10 @@ int device_add(struct device *dev)
- 	if (parent && (dev_to_node(dev) == NUMA_NO_NODE))
- 		set_dev_node(dev, dev_to_node(parent));
- 
-+	/* ensure that fwnode is set up */
-+	if (IS_ENABLED(CONFIG_OF) && dev->of_node && !dev->fwnode)
-+		dev->fwnode = of_fwnode_handle(dev->of_node);
-+
- 	/* first, register with generic layer. */
- 	/* we require the name to be set before, and pass NULL */
- 	error = kobject_add(&dev->kobj, dev->kobj.parent, NULL);
+v2:
+ - patch splitted to chunks (file-wise)
+ - build issues fixed
+ - sparse and checkpatch.pl errors fixed
+ - NULL pointer dereference on mkfs.ntfs-formatted volume mount fixed
+ - cosmetics + code cleanup
+
+v3:
+ - added acl, noatime, no_acs_rules, prealloc mount options
+ - added fiemap support
+ - fixed encodings support
+ - removed typedefs
+ - adapted Kernel-way logging mechanisms
+ - fixed typos and corner-case issues
+
+v4:
+ - atomic_open() refactored
+ - code style updated
+ - bugfixes
+
+v5:
+- nls/nls_alt mount options added
+- Unicode conversion fixes
+- Improved very fragmented files operations
+- logging cosmetics
+
+v6:
+- Security Descriptors processing changed
+  added system.ntfs_security xattr to set
+  SD
+- atomic_open() optimized
+- cosmetics
+
+v7:
+- Security Descriptors validity checks added (by Mark Harmstone)
+- atomic_open() fixed for the compressed file creation with directio
+  case
+- remount support
+- temporarily removed readahead usage
+- cosmetics
+
+v8:
+- Compressed files operations fixed
+
+v9:
+- Further cosmetics applied as suggested
+by Joe Perches
+
+v10:
+- operations with compressed/sparse files on very fragmented volumes improved
+- reduced memory consumption for above cases
+
+v11:
+- further compressed files optimizations: reads/writes are now skipping bufferization
+- journal wipe to the initial state optimized (bufferization is also skipped)
+- optimized run storage (re-packing cluster metainformation)
+- fixes based on Matthew Wilcox feedback to the v10
+- compressed/sparse/normal could be set for empty files with 'system.ntfs_attrib' xattr
+
+v12:
+- nls_alt mount option removed after discussion with Pali Rohar
+- fixed ni_repack()
+- fixed resident files transition to non-resident when size increasing
+
+Konstantin Komarov (10):
+  fs/ntfs3: Add headers and misc files
+  fs/ntfs3: Add initialization of super block
+  fs/ntfs3: Add bitmap
+  fs/ntfs3: Add file operations and implementation
+  fs/ntfs3: Add attrib operations
+  fs/ntfs3: Add compression
+  fs/ntfs3: Add NTFS journal
+  fs/ntfs3: Add Kconfig, Makefile and doc
+  fs/ntfs3: Add NTFS3 in fs/Kconfig and fs/Makefile
+  fs/ntfs3: Add MAINTAINERS
+
+ Documentation/filesystems/ntfs3.rst |  112 +
+ MAINTAINERS                         |    7 +
+ fs/Kconfig                          |    1 +
+ fs/Makefile                         |    1 +
+ fs/ntfs3/Kconfig                    |   23 +
+ fs/ntfs3/Makefile                   |   11 +
+ fs/ntfs3/attrib.c                   | 1395 +++++++
+ fs/ntfs3/attrlist.c                 |  463 +++
+ fs/ntfs3/bitfunc.c                  |  135 +
+ fs/ntfs3/bitmap.c                   | 1504 ++++++++
+ fs/ntfs3/debug.h                    |   61 +
+ fs/ntfs3/dir.c                      |  568 +++
+ fs/ntfs3/file.c                     | 1146 ++++++
+ fs/ntfs3/frecord.c                  | 2697 ++++++++++++++
+ fs/ntfs3/fslog.c                    | 5221 +++++++++++++++++++++++++++
+ fs/ntfs3/fsntfs.c                   | 2565 +++++++++++++
+ fs/ntfs3/index.c                    | 2665 ++++++++++++++
+ fs/ntfs3/inode.c                    | 2115 +++++++++++
+ fs/ntfs3/lznt.c                     |  452 +++
+ fs/ntfs3/namei.c                    |  576 +++
+ fs/ntfs3/ntfs.h                     | 1262 +++++++
+ fs/ntfs3/ntfs_fs.h                  |  989 +++++
+ fs/ntfs3/record.c                   |  613 ++++
+ fs/ntfs3/run.c                      | 1192 ++++++
+ fs/ntfs3/super.c                    | 1467 ++++++++
+ fs/ntfs3/upcase.c                   |   77 +
+ fs/ntfs3/xattr.c                    | 1073 ++++++
+ 27 files changed, 28391 insertions(+)
+ create mode 100644 Documentation/filesystems/ntfs3.rst
+ create mode 100644 fs/ntfs3/Kconfig
+ create mode 100644 fs/ntfs3/Makefile
+ create mode 100644 fs/ntfs3/attrib.c
+ create mode 100644 fs/ntfs3/attrlist.c
+ create mode 100644 fs/ntfs3/bitfunc.c
+ create mode 100644 fs/ntfs3/bitmap.c
+ create mode 100644 fs/ntfs3/debug.h
+ create mode 100644 fs/ntfs3/dir.c
+ create mode 100644 fs/ntfs3/file.c
+ create mode 100644 fs/ntfs3/frecord.c
+ create mode 100644 fs/ntfs3/fslog.c
+ create mode 100644 fs/ntfs3/fsntfs.c
+ create mode 100644 fs/ntfs3/index.c
+ create mode 100644 fs/ntfs3/inode.c
+ create mode 100644 fs/ntfs3/lznt.c
+ create mode 100644 fs/ntfs3/namei.c
+ create mode 100644 fs/ntfs3/ntfs.h
+ create mode 100644 fs/ntfs3/ntfs_fs.h
+ create mode 100644 fs/ntfs3/record.c
+ create mode 100644 fs/ntfs3/run.c
+ create mode 100644 fs/ntfs3/super.c
+ create mode 100644 fs/ntfs3/upcase.c
+ create mode 100644 fs/ntfs3/xattr.c
+
 -- 
-2.20.1
+2.25.4
 
