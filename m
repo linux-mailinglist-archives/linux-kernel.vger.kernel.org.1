@@ -2,61 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 603A52A8CF4
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 03:30:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 740592A8D10
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 03:37:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726136AbgKFCaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 21:30:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39920 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725842AbgKFCaF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 21:30:05 -0500
-Content-Type: text/plain; charset="utf-8"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604629804;
-        bh=bMss37PW0DjL+F105uZIF8AohlK/nn3hxT9D8pRtYjo=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=HF9SZSMRYFDXCCfWp4kFzC7kgKN7n4J4865wsEXrebCmd3z4e9I6kpScuGMzL+1le
-         vWVu/dmyhSusMEx4uaMIJyS80AZbQN8v4ihUv/gK2gtiwBNNxCmjnrMYleEiw8dQvm
-         wdl/0LAcABARrHfF6WVMgaDcrIrWF4GWRV2mc358=
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf] tools/bpftool: fix attaching flow dissector
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <160462980468.24579.17001075213935602324.git-patchwork-notify@kernel.org>
-Date:   Fri, 06 Nov 2020 02:30:04 +0000
-References: <20201105115230.296657-1-lmb@cloudflare.com>
-In-Reply-To: <20201105115230.296657-1-lmb@cloudflare.com>
-To:     Lorenz Bauer <lmb@cloudflare.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, kernel-team@cloudflare.com,
-        jbenc@redhat.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+        id S1726041AbgKFChL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 21:37:11 -0500
+Received: from m176115.mail.qiye.163.com ([59.111.176.115]:53284 "EHLO
+        m176115.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725839AbgKFChK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 21:37:10 -0500
+X-Greylist: delayed 339 seconds by postgrey-1.27 at vger.kernel.org; Thu, 05 Nov 2020 21:37:09 EST
+Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.231])
+        by m176115.mail.qiye.163.com (Hmail) with ESMTPA id 2AC8D666B20;
+        Fri,  6 Nov 2020 10:31:27 +0800 (CST)
+From:   Wang Qing <wangqing@vivo.com>
+To:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     Wang Qing <wangqing@vivo.com>
+Subject: [PATCH] drm: Use IS_ERR() instead of null pointer check
+Date:   Fri,  6 Nov 2020 10:31:19 +0800
+Message-Id: <1604629881-557-1-git-send-email-wangqing@vivo.com>
+X-Mailer: git-send-email 2.7.4
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZGk9CHkNOH01NTExPVkpNS09NSUJDQ0xCQkxVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKQ1VLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MTY6FRw6KT8qQh0BSyweAxgT
+        FkkaCiFVSlVKTUtPTUlCQ0NDT0pMVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
+        SU5KVUxPVUlISllXWQgBWUFJSk1MNwY+
+X-HM-Tid: 0a759b64fb769373kuws2ac8d666b20
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+a6xx_gmu_get_mmio() never return null in case of error, but ERR_PTR(),
+so we should use IS_ERR() instead of null pointer check
 
-This patch was applied to bpf/bpf.git (refs/heads/master):
+Signed-off-by: Wang Qing <wangqing@vivo.com>
+---
+ drivers/gpu/drm/msm/adreno/a6xx_gmu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On Thu,  5 Nov 2020 11:52:30 +0000 you wrote:
-> My earlier patch to reject non-zero arguments to flow dissector attach
-> broke attaching via bpftool. Instead of 0 it uses -1 for target_fd.
-> Fix this by passing a zero argument when attaching the flow dissector.
-> 
-> Fixes: 1b514239e859 ("bpf: flow_dissector: Check value of unused flags to BPF_PROG_ATTACH")
-> Reported-by: Jiri Benc <jbenc@redhat.com>
-> Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
-> 
-> [...]
-
-Here is the summary with links:
-  - [bpf] tools/bpftool: fix attaching flow dissector
-    https://git.kernel.org/bpf/bpf/c/f9b7ff0d7f7a
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+index 491fee4..8c81a89
+--- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
++++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+@@ -492,7 +492,7 @@ static void a6xx_gmu_rpmh_init(struct a6xx_gmu *gmu)
+ 	void __iomem *seqptr = a6xx_gmu_get_mmio(pdev, "gmu_pdc_seq");
+ 	uint32_t pdc_address_offset;
+ 
+-	if (!pdcptr || !seqptr)
++	if (IS_ERR(pdcptr) || IS_ERR(seqptr))
+ 		goto err;
+ 
+ 	if (adreno_is_a618(adreno_gpu) || adreno_is_a640(adreno_gpu))
+-- 
+2.7.4
 
