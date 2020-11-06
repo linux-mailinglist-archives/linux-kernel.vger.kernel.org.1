@@ -2,104 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05CA52A9584
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 12:34:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18BD02A9587
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 12:36:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727290AbgKFLeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 06:34:25 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:39670 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726708AbgKFLeX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 06:34:23 -0500
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0A6BXrpT076586;
-        Fri, 6 Nov 2020 05:33:54 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1604662434;
-        bh=DcQpD/+WVWEG8zUZCk/U6AoWPUg3QwRD4/zJ7DpRABA=;
-        h=Subject:To:References:From:Date:In-Reply-To;
-        b=Tcg+Vtw1XcBAGyHpmM5ODdc7C/XQ8UsBEX8CLXtl5BAWv+FJvK15YMV43NEx6kHWp
-         pKXDEyYeRnpJdAKhJUsu0StbhAMrupaRZiIXgn7nzZCpdprUK7cVnzDzxJMZ/dtfbH
-         jHemuLSH2N/fOMHIoo4TqOznKjdawLR5U13eIG4U=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0A6BXrGr058656
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 6 Nov 2020 05:33:53 -0600
-Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 6 Nov
- 2020 05:33:53 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 6 Nov 2020 05:33:53 -0600
-Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0A6BXoea087317;
-        Fri, 6 Nov 2020 05:33:51 -0600
-Subject: Re: [PATCH] net/ethernet: update ret when ptp_clock is ERROR
-To:     Wang Qing <wangqing@vivo.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Samuel Zou <zou_wei@huawei.com>,
-        Kurt Kanzenbach <kurt@linutronix.de>,
-        Richard Cochran <richardcochran@gmail.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <1604649411-24886-1-git-send-email-wangqing@vivo.com>
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-Message-ID: <fd46310f-0b4e-ac8b-b187-98438ee6bb60@ti.com>
-Date:   Fri, 6 Nov 2020 13:34:04 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <1604649411-24886-1-git-send-email-wangqing@vivo.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+        id S1727138AbgKFLgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 06:36:05 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:61325 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726832AbgKFLgF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 06:36:05 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4CSJHQ14ZXz9v02Y;
+        Fri,  6 Nov 2020 12:36:02 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id xMZ8hgyE-FPn; Fri,  6 Nov 2020 12:36:02 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4CSJHP6PJMz9v02X;
+        Fri,  6 Nov 2020 12:36:01 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 163F68B8AD;
+        Fri,  6 Nov 2020 12:36:03 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id k4g4ptjRNDVs; Fri,  6 Nov 2020 12:36:03 +0100 (CET)
+Received: from po17688vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id B8FE48B75F;
+        Fri,  6 Nov 2020 12:36:02 +0100 (CET)
+Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 73AAF66857; Fri,  6 Nov 2020 11:36:02 +0000 (UTC)
+Message-Id: <fe28c9c37c43f2647c0590cc1b3c9d593f60bd86.1604662224.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH] powerpc/64s: Remove RFI
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, npiggin@gmail.com
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Fri,  6 Nov 2020 11:36:02 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Last use of RFI on PPC64 was removed by
+commit b8e90cb7bc04 ("powerpc/64: Convert the syscall exit path to
+use RFI_TO_USER/KERNEL").
 
+Remove the macro.
 
-On 06/11/2020 09:56, Wang Qing wrote:
-> We always have to update the value of ret, otherwise the
->   error value may be the previous one.
-> 
-> Signed-off-by: Wang Qing <wangqing@vivo.com>
-> ---
->   drivers/net/ethernet/ti/am65-cpts.c | 3 +--
->   1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/ti/am65-cpts.c b/drivers/net/ethernet/ti/am65-cpts.c
-> index 75056c1..b77ff61
-> --- a/drivers/net/ethernet/ti/am65-cpts.c
-> +++ b/drivers/net/ethernet/ti/am65-cpts.c
-> @@ -1001,8 +1001,7 @@ struct am65_cpts *am65_cpts_create(struct device *dev, void __iomem *regs,
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/include/asm/ppc_asm.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-there is
-	cpts->ptp_clock = ptp_clock_register(&cpts->ptp_info, cpts->dev);
-
-
->   	if (IS_ERR_OR_NULL(cpts->ptp_clock)) {
-
-And ptp_clock_register() can return NULL only if PTP support is disabled.
-In which case, we should not even get here.
-
-So, I'd propose to s/IS_ERR_OR_NULL/IS_ERR above,
-and just assign ret = PTR_ERR(cpts->ptp_clock) here.
-
->   		dev_err(dev, "Failed to register ptp clk %ld\n",
->   			PTR_ERR(cpts->ptp_clock));
-> -		if (!cpts->ptp_clock)
-> -			ret = -ENODEV;
-> +		ret = cpts->ptp_clock ? cpts->ptp_clock : (-ENODEV);
->   		goto refclk_disable;
->   	}
->   	cpts->phc_index = ptp_clock_index(cpts->ptp_clock);
-> 
-
+diff --git a/arch/powerpc/include/asm/ppc_asm.h b/arch/powerpc/include/asm/ppc_asm.h
+index 511786f0e40d..bedf3eb52ebc 100644
+--- a/arch/powerpc/include/asm/ppc_asm.h
++++ b/arch/powerpc/include/asm/ppc_asm.h
+@@ -495,7 +495,6 @@ END_FTR_SECTION_NESTED(CPU_FTR_CELL_TB_BUG, CPU_FTR_CELL_TB_BUG, 96)
+ #endif
+ 
+ #ifdef CONFIG_PPC_BOOK3S_64
+-#define RFI		rfid
+ #define MTMSRD(r)	mtmsrd	r
+ #define MTMSR_EERI(reg)	mtmsrd	reg,1
+ #else
 -- 
-Best regards,
-grygorii
+2.25.0
+
