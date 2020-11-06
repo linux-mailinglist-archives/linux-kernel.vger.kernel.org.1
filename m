@@ -2,88 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05B602A98A4
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 16:39:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89E6C2A98A6
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 16:40:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727556AbgKFPjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 10:39:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54824 "EHLO
+        id S1727599AbgKFPka (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 10:40:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726812AbgKFPjv (ORCPT
+        with ESMTP id S1726812AbgKFPk3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 10:39:51 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44ADAC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 07:39:51 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id 33so1766542wrl.7
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 07:39:51 -0800 (PST)
+        Fri, 6 Nov 2020 10:40:29 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E880AC0613CF;
+        Fri,  6 Nov 2020 07:40:28 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id o23so2509654ejn.11;
+        Fri, 06 Nov 2020 07:40:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=dHttO5/yXe+zE/4cXNc13Yjy23cOxk1sqyCBSDVq+3g=;
-        b=uK62e2DxF8OgnyqYBVt7Q+L5l5lGR6ORzq2pC+Y4KGtNo8H27Y6pbH+6yicg/pTbcs
-         NHgpPLNWOYWASU3CRTMP9ijnYPneoIsc84KlGNiSJu2Jg4pByEHkDAHu+xykYuqVNbFx
-         K6NT5suBaa+NMGTQtlC0kqh/DPzDdt5XInQy3cV15MOJnzP30fhWrH+NmGf/+JA64UuE
-         Os3hZREqEb6mNPr+7cowh5PJQLsN4Zap7FbykQlYEYFScHlthQcYZ2k4KVj0+J2btogk
-         1CrfpYb+kOJFk4reXOKd5ryhLTNPuR0/uHjMkmbueS0cNCPt7BMVNodEv6FT0wYZOpuy
-         dLJw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=bKIJ50PdgwgAwP/V0//eIhaUmG6dnst+EUp5L+hwnTA=;
+        b=SeeVVyYdNacRU44UQ1B3hEASTXd8FfRWywCm17l9zMe+Or/BqJi3dnzHPZAlZt0OZK
+         2nhuJpOd79difwmfPRDzfH6m0Bgv6AGEyhWnpBia95Er0EgoH6I1Hs+qGnnlqb0FXSN0
+         g3e938GrK9h1Zd31YsCCOgs9dhUv1p0CsBecH3sF9scBBxCrRG5ywmFwRIy3taXw7q34
+         m5CVYOoz01tNmjsdOaud49k440IuVMx15dwSWIjcSTT0ujP8YPyDByZpNSirJZnwhZ32
+         GVaqBpyxyUSiEZqZHKgd5JY5U0L6gTCBmKQG5+2YpXKptOt4G3XtAcp0wtbsYUtyQVVT
+         2SJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=dHttO5/yXe+zE/4cXNc13Yjy23cOxk1sqyCBSDVq+3g=;
-        b=IeIi7AhLtfWjzEMwatjvk/lOnT8DfMFzpzMmznTt/91J99mrt0C/XRNccfwNzwDj2H
-         R+oCkVl++8sg/09XuETeauqgnCVbO08zdtJaS+kKnQsReQiZAaF2EfGKm98Pr5izWo12
-         Y8X3nyIhCMa6ZLMnoURLLho76wmwX/8uN33OAum7qvQertbGP8dUCu50ZHWThikfoypO
-         3OnBZXLo/jFHTGp4jN3QNRnXjCDumGxuuLeqz0Qjc4w+dCSYHIIt+qE3Egs3Vtfuc+Fk
-         luU8XreIGIUaFtGPBt/OkSiEQtxK0Mr7Rl4lVrBlefjXWC3UUB7swrRLn9zRudGe7WhD
-         TCXw==
-X-Gm-Message-State: AOAM533rsVB0Ks9p94SUNpFQPOw+VDd2gqp1Pp1mVPrKgR3XN5Evm6bt
-        0CZvkxOdMy8RHi7M63N+/y0=
-X-Google-Smtp-Source: ABdhPJxk+8+5r5VPDtQML9neWLWfMJgNT/HWaTQAhXXcppGzmOId7Hli2cTUXAjz1Mq6pcPeITOSpw==
-X-Received: by 2002:adf:8bcc:: with SMTP id w12mr3616870wra.157.1604677189926;
-        Fri, 06 Nov 2020 07:39:49 -0800 (PST)
-Received: from localhost.localdomain (host-92-5-241-147.as43234.net. [92.5.241.147])
-        by smtp.gmail.com with ESMTPSA id v189sm3095576wmg.14.2020.11.06.07.39.49
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 06 Nov 2020 07:39:49 -0800 (PST)
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH] driver core: export device_is_bound() to fix build failure
-Date:   Fri,  6 Nov 2020 15:37:44 +0000
-Message-Id: <20201106153744.22661-1-sudipm.mukherjee@gmail.com>
-X-Mailer: git-send-email 2.11.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bKIJ50PdgwgAwP/V0//eIhaUmG6dnst+EUp5L+hwnTA=;
+        b=bwBF9PXnds9ry5BudGZqAwxQO7RHz2wnRzzWFrNN6ZcPeqiWkeSmGCgjHBoLIdIvzn
+         CcG7v8j02f2vj4dV98UiYcaFKprLl9Yd8EYJuvJtSo13P6Fzm3bt8tGWr16kJFFZi3wo
+         ichgfk+Qs+WIB5M8pgnxwnhp7HEE0KDIl2zZ03PSHcXAH1d+a4NJVQXfDZuEWi+2fqgS
+         OvcnRl8XDNjWJDwVmKSc/HH4lpYNiMcN7iY2bGrWGhLSL/VUWOEKtTUa6xm4ounmfB9R
+         MTIH/PMnUyC05E+l7yEV9LTwows38KRFiFv+ym2M6smI84I0n6U1duGN9AjsJRVA2EOn
+         eC+g==
+X-Gm-Message-State: AOAM530YVw1vGDqLkJyf8AE8htGcsF2MJ6FX3gUAj36BvbTxDTeUqIF3
+        CqDjfzUP52v9hJSsoYrIXWo=
+X-Google-Smtp-Source: ABdhPJwGSjY7RtlCT8WKIcdPooMW1LiwS7Fm5EaWsga2Xl8WFPo5pIMB6myzWgsMEkPOxyOTb41pqA==
+X-Received: by 2002:a17:906:c8d8:: with SMTP id gc24mr2705955ejb.417.1604677227257;
+        Fri, 06 Nov 2020 07:40:27 -0800 (PST)
+Received: from skbuf ([188.25.2.177])
+        by smtp.gmail.com with ESMTPSA id r21sm1206458edp.92.2020.11.06.07.40.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Nov 2020 07:40:26 -0800 (PST)
+Date:   Fri, 6 Nov 2020 17:40:25 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
+Cc:     davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, vinicius.gomes@intel.com,
+        jhs@mojatatu.com, xiyou.wangcong@gmail.com, jiri@resnulli.us,
+        kuba@kernel.org, Jose.Abreu@synopsys.com,
+        allan.nielsen@microchip.com, joergen.andreasen@microchip.com,
+        UNGLinuxDriver@microchip.com, po.liu@nxp.com,
+        claudiu.manoil@nxp.com, alexandru.marginean@nxp.com,
+        vladimir.oltean@nxp.com, leoyang.li@nxp.com, mingkai.hu@nxp.com
+Subject: Re: [RFC, net-next 2/3] net: dsa: felix: add preempt queues set
+ support for vsc9959
+Message-ID: <20201106154025.qx6am5ybknjuwzsn@skbuf>
+References: <20201020040458.39794-1-xiaoliang.yang_1@nxp.com>
+ <20201020040458.39794-3-xiaoliang.yang_1@nxp.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201020040458.39794-3-xiaoliang.yang_1@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When CONFIG_MXC_CLK_SCU is configured as 'm' the build fails as it
-is unable to find device_is_bound(). The error being:
-ERROR: modpost: "device_is_bound" [drivers/clk/imx/clk-imx-scu.ko]
-	undefined!
+On Tue, Oct 20, 2020 at 12:04:57PM +0800, Xiaoliang Yang wrote:
+> +static int vsc9959_port_get_preempt(struct ocelot *ocelot, int port,
+> +				    struct ethtool_fp *fpcmd)
+> +{
+> +	struct ocelot_port *ocelot_port = ocelot->ports[port];
+> +	u32 val;
+> +
+> +	val = ocelot_port_readl(ocelot_port, DEV_MM_VERIF_CONFIG);
+> +	val &= DEV_MM_CONFIG_VERIF_CONFIG_PRM_VERIFY_DIS;
+> +	fpcmd->enabled = (val ? 0 : 1);
+> +
+> +	val = ocelot_read(ocelot, QSYS_PREEMPTION_CFG);
 
-Export the symbol so that the module finds it.
+You have a bug here. This should be:
 
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
----
+	val = ocelot_read_rix(ocelot, QSYS_PREEMPTION_CFG, port);
 
- drivers/base/dd.c | 1 +
- 1 file changed, 1 insertion(+)
+otherwise you're always retrieving the frame preemption configuration of
+port 0, regardless of the port passed as argument.
 
-diff --git a/drivers/base/dd.c b/drivers/base/dd.c
-index 148e81969e04..a796a57e5efb 100644
---- a/drivers/base/dd.c
-+++ b/drivers/base/dd.c
-@@ -353,6 +353,7 @@ bool device_is_bound(struct device *dev)
- {
- 	return dev->p && klist_node_attached(&dev->p->knode_driver);
- }
-+EXPORT_SYMBOL(device_is_bound);
- 
- static void driver_bound(struct device *dev)
- {
--- 
-2.11.0
-
+> +	fpcmd->min_frag_size_mult = QSYS_PREEMPTION_CFG_MM_ADD_FRAG_SIZE_X(val);
+> +
+> +	return 0;
+> +}
