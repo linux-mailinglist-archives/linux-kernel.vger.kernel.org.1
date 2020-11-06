@@ -2,86 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6318D2A9A1B
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 18:00:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED2892A9A1E
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 18:00:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727665AbgKFQ7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 11:59:51 -0500
-Received: from netrider.rowland.org ([192.131.102.5]:38749 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1725868AbgKFQ7v (ORCPT
+        id S1727158AbgKFRAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 12:00:53 -0500
+Received: from ale.deltatee.com ([204.191.154.188]:57604 "EHLO
+        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725868AbgKFRAx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 11:59:51 -0500
-Received: (qmail 47392 invoked by uid 1000); 6 Nov 2020 11:59:30 -0500
-Date:   Fri, 6 Nov 2020 11:59:30 -0500
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     paulmck@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, parri.andrea@gmail.com,
-        will@kernel.org, peterz@infradead.org, boqun.feng@gmail.com,
-        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
-        luc.maranget@inria.fr, akiyks@gmail.com
-Subject: Re: [PATCH memory-model 5/8] tools/memory-model: Add a glossary of
- LKMM terms
-Message-ID: <20201106165930.GC47039@rowland.harvard.edu>
-References: <20201105215953.GA15309@paulmck-ThinkPad-P72>
- <20201105220017.15410-5-paulmck@kernel.org>
+        Fri, 6 Nov 2020 12:00:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=deltatee.com; s=20200525; h=Subject:Content-Transfer-Encoding:MIME-Version:
+        References:In-Reply-To:Message-Id:Date:Cc:To:From:Sender:Reply-To:
+        Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=zgGEpEC881xygcChLUzP5MM+TPIgCL+RooeJy/MEFvk=; b=soNcve2wKJLNlkdIcwhFKrP00x
+        UXFJJhudsSkX2SoBn5CzMojAj0uyR2/WZqlCmQ/roDA/tjn6xVSzQu+640oHm0jxA9uJO+KPDZB2G
+        Oq2rKjg3PcmQ6QJuv02gmSnlDR6+W0FJ6I7CDF1vKR8DUcOpumtVWqKYU3Q/xYP3DNgg/KR7V8uUp
+        Sjtqu2gdb19JzmLSGzPhptvO846Ick13R0oTl58IwEn9Oipv/GhF9Np9hw63jsKDkQlT4dpJYLiPQ
+        3KZ01uvW3ys592KHNx+H/xFfQw/zHmxKjSRmJL0sZrzTcbmwZJDE7aGagChRGvl6uO9r0hehlSsVR
+        mhF6EdYw==;
+Received: from cgy1-donard.priv.deltatee.com ([172.16.1.31])
+        by ale.deltatee.com with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <gunthorp@deltatee.com>)
+        id 1kb56Z-0002Pa-5l; Fri, 06 Nov 2020 10:00:52 -0700
+Received: from gunthorp by cgy1-donard.priv.deltatee.com with local (Exim 4.92)
+        (envelope-from <gunthorp@deltatee.com>)
+        id 1kb56U-0004sz-Hw; Fri, 06 Nov 2020 10:00:46 -0700
+From:   Logan Gunthorpe <logang@deltatee.com>
+To:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-mm@kvack.org, iommu@lists.linux-foundation.org
+Cc:     Stephen Bates <sbates@raithlin.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Ira Weiny <iweiny@intel.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Don Dutile <ddutile@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Logan Gunthorpe <logang@deltatee.com>
+Date:   Fri,  6 Nov 2020 10:00:25 -0700
+Message-Id: <20201106170036.18713-5-logang@deltatee.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20201106170036.18713-1-logang@deltatee.com>
+References: <20201106170036.18713-1-logang@deltatee.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201105220017.15410-5-paulmck@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 172.16.1.31
+X-SA-Exim-Rcpt-To: linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, linux-block@vger.kernel.org, linux-pci@vger.kernel.org, linux-mm@kvack.org, iommu@lists.linux-foundation.org, sbates@raithlin.com, hch@lst.de, jgg@ziepe.ca, christian.koenig@amd.com, dan.j.williams@intel.com, iweiny@intel.com, jhubbard@nvidia.com, ddutile@redhat.com, willy@infradead.org, daniel.vetter@ffwll.ch, logang@deltatee.com
+X-SA-Exim-Mail-From: gunthorp@deltatee.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-8.7 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        GREYLIST_ISWHITE,MYRULES_NO_TEXT autolearn=ham autolearn_force=no
+        version=3.4.2
+Subject: [RFC PATCH 04/15] lib/scatterlist: Add flag for indicating P2PDMA segments in an SGL
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 02:00:14PM -0800, paulmck@kernel.org wrote:
-> From: "Paul E. McKenney" <paulmck@kernel.org>
-> 
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> ---
->  tools/memory-model/Documentation/glossary.txt | 155 ++++++++++++++++++++++++++
->  1 file changed, 155 insertions(+)
->  create mode 100644 tools/memory-model/Documentation/glossary.txt
-> 
-> diff --git a/tools/memory-model/Documentation/glossary.txt b/tools/memory-model/Documentation/glossary.txt
-> new file mode 100644
-> index 0000000..036fa28
-> --- /dev/null
-> +++ b/tools/memory-model/Documentation/glossary.txt
-> @@ -0,0 +1,155 @@
-> +This document contains brief definitions of LKMM-related terms.  Like most
-> +glossaries, it is not intended to be read front to back (except perhaps
-> +as a way of confirming a diagnosis of OCD), but rather to be searched
-> +for specific terms.
-> +
-> +
-> +Address Dependency:  When the address of a later memory access is computed
-> +	based on the value returned by an earlier load, an "address
-> +	dependency" extends from that load extending to the later access.
-> +	Address dependencies are quite common in RCU read-side critical
-> +	sections:
-> +
-> +	 1 rcu_read_lock();
-> +	 2 p = rcu_dereference(gp);
-> +	 3 do_something(p->a);
-> +	 4 rcu_read_unlock();
-> +
-> +	 In this case, because the address of "p->a" on line 3 is computed
-> +	 from the value returned by the rcu_dereference() on line 2, the
-> +	 address dependency extends from that rcu_dereference() to that
-> +	 "p->a".  In rare cases, optimizing compilers can destroy address
-> +	 dependencies.	Please see Documentation/RCU/rcu_dereference.txt
-> +	 for more information.
-> +
-> +	 See also "Control Dependency".
+We make use of the top bit of the dma_length to indicate a P2PDMA
+segment. Code that uses this will need to use sg_dma_p2pdma_len() to
+get the length and ensure no lengths exceed 2GB.
 
-There should also be an entry for "Data Dependency", linked from here
-and from Control Dependency.
+An sg_dma_is_p2pdma() helper is included to check if a particular
+segment is p2pdma().
 
-> +Marked Access:  An access to a variable that uses an special function or
-> +	macro such as "r1 = READ_ONCE()" or "smp_store_release(&a, 1)".
+Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+---
+ include/linux/scatterlist.h | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-How about "r1 = READ_ONCE(x)"?
+diff --git a/include/linux/scatterlist.h b/include/linux/scatterlist.h
+index 36c47e7e66a2..e738159d56f9 100644
+--- a/include/linux/scatterlist.h
++++ b/include/linux/scatterlist.h
+@@ -39,6 +39,10 @@ struct scatterlist {
+ #define sg_dma_len(sg)		((sg)->length)
+ #endif
+ 
++#define SG_P2PDMA_FLAG	(1U << 31)
++#define sg_dma_p2pdma_len(sg)	(sg_dma_len(sg) & ~SG_P2PDMA_FLAG)
++#define sg_dma_is_p2pdma(sg)	(sg_dma_len(sg) & SG_P2PDMA_FLAG)
++
+ struct sg_table {
+ 	struct scatterlist *sgl;	/* the list */
+ 	unsigned int nents;		/* number of mapped entries */
+-- 
+2.20.1
 
-Alan
