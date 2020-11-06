@@ -2,152 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80D002A8F65
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 07:19:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A30562A8F69
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 07:22:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726221AbgKFGTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 01:19:45 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:33730 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725828AbgKFGTo (ORCPT
+        id S1726200AbgKFGWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 01:22:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52154 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725830AbgKFGWV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 01:19:44 -0500
-X-UUID: 737f5f261f4d49c8aeffe1954e138da0-20201106
-X-UUID: 737f5f261f4d49c8aeffe1954e138da0-20201106
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
-        (envelope-from <shane.chien@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 724153232; Fri, 06 Nov 2020 14:19:36 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 6 Nov 2020 14:19:33 +0800
-Received: from mtkswgap22.mediatek.inc (172.21.77.33) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 6 Nov 2020 14:19:33 +0800
-From:   Shane Chien <shane.chien@mediatek.com>
-To:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <wsd_upstream@mediatek.com>, <jiaxin.yu@mediatek.com>,
-        <chipeng.chang@mediatek.com>, <shane.chien@mediatek.com>
-Subject: [PATCH] ASoC: Fix vaud18 power leakage of mt6359
-Date:   Fri, 6 Nov 2020 14:18:37 +0800
-Message-ID: <1604643517-3527-1-git-send-email-shane.chien@mediatek.com>
-X-Mailer: git-send-email 1.7.9.5
-MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: DB50972989C26800FA4953F469746C73711B7D89010A16A1E136A054A6640E852000:8
-X-MTK:  N
+        Fri, 6 Nov 2020 01:22:21 -0500
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DBEFC0613CF;
+        Thu,  5 Nov 2020 22:22:21 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id v5so268376wmh.1;
+        Thu, 05 Nov 2020 22:22:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=s5ZmG5HziDA6IddsEwKpYTRZvML0z6aMnCT2nnV/iGw=;
+        b=eXFlA98XsP9bNmMIrUbtLEH8DNqvq47SPuGmJHCzfmWSp1fR1x2j++BW+WQOKtNHpy
+         +n08HtlcerjUblGu7gVJIEAE8snqfmrKwkHUBhVmckyOAifi9wl/MLGB+j8fZnAhKgft
+         AGf/TnfJECJbQhkZd5NaLUOE+dB2HmNcP1cXmptgfCEcvh2ESOWwr8viqYLL3qrflwQ4
+         ej9EnxUhE9BBa/UQrjg+TYA/zGHhHUF5z3raVSr5MypFVjkjv0/u1pitZf2oUcQxMax5
+         RehF139mRg36hUXiXbPwOZYby58Feh1Zu8IX5dkdNtsMdC9/SYNEfYpNKEiRcDbBCiqK
+         Sc3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=s5ZmG5HziDA6IddsEwKpYTRZvML0z6aMnCT2nnV/iGw=;
+        b=Do7G5p0HT/LiprlUywutKIToOdokDz71Gs1SVzkJSeaFbfeTB9SbhDRyiRC96EB9+9
+         Hh7Ch3fD7si1hrfI/Ksjtef1JHxF93igmRk1nevNE7wb48njwRwZilhBrGntIINjkthu
+         RPwuryWlB7u1POEZ/559RMXG3dz7BFNmU2gouQ2SsCxYtSfv537M12sNKh2Zuxf2A/x9
+         8aCNsX4fp1YlqtjvR3shrOcxFharShsY/+8ucrm1G/6lmxneE8Iiyu7GCMn34eI6ror7
+         uuzfRB2vKXjznjJYQK8aLCVlFbS976QUsbAFm9rt/y73qeJRkLVSErwyKVhDrqjIknrI
+         PgyQ==
+X-Gm-Message-State: AOAM532t0lkV+b2IwUsx7P+pN2zKJfFrFGTY+1E7VBK/T5k9IwwUZHDQ
+        W3+hzYgUKkK6A83xpMYpLQQ=
+X-Google-Smtp-Source: ABdhPJw1kNpLxAin7EGLXZO9jr3KRSf4YMHdtk5JEmho3ZDLTxUMoNc/quG7fq3c5nak5We4cIg9ig==
+X-Received: by 2002:a1c:a503:: with SMTP id o3mr613462wme.21.1604643739995;
+        Thu, 05 Nov 2020 22:22:19 -0800 (PST)
+Received: from felia.fritz.box ([2001:16b8:2d20:9d00:b87b:b644:61a3:6870])
+        by smtp.gmail.com with ESMTPSA id h81sm612401wmf.44.2020.11.05.22.22.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Nov 2020 22:22:19 -0800 (PST)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Balbir Singh <bsingharora@gmail.com>
+Cc:     Tom Rix <trix@redhat.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com,
+        kernel-janitors@vger.kernel.org, linux-safety@lists.elisa.tech,
+        linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] taskstats: remove unneeded dead assignment
+Date:   Fri,  6 Nov 2020 07:22:10 +0100
+Message-Id: <20201106062210.27920-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Shane.Chien" <shane.chien@mediatek.com>
+make clang-analyzer on x86_64 defconfig caught my attention with:
 
-vaud18 is power of mt6359 audio path. It
-should only enable when audio is used,
-instead of in boot up stage.
-Once mt6359 audio path is enabled or disabled,
-vaud18 is controlled by using regulator in
-supply widget "LDO_VAUD18". Due to vaud18 is
-controlled by regulator instead of regmap,
-the macro MT6359_LDO_VAUD18_CON0 is no used and
-remove from mt6359.h.
+  kernel/taskstats.c:120:2: warning: Value stored to 'rc' is never read \
+  [clang-analyzer-deadcode.DeadStores]
+          rc = 0;
+          ^
 
-Signed-off-by: Shane.Chien <shane.chien@mediatek.com>
+Commit d94a041519f3 ("taskstats: free skb, avoid returns in
+send_cpu_listeners") made send_cpu_listeners() not return a value and
+hence, the rc variable remained only to be used within the loop where
+it is always assigned before read and it does not need any other
+initialisation.
+
+So, simply remove this unneeded dead initializing assignment.
+
+As compilers will detect this unneeded assignment and optimize this anyway,
+the resulting object code is identical before and after this change.
+
+No functional change. No change to object code.
+
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 ---
- sound/soc/codecs/mt6359.c | 38 +++++++++++++++++++++++++++++---------
- sound/soc/codecs/mt6359.h |  6 ------
- 2 files changed, 29 insertions(+), 15 deletions(-)
+applies cleanly on current master and next-20201105
 
-diff --git a/sound/soc/codecs/mt6359.c b/sound/soc/codecs/mt6359.c
-index d20c59a..52dabdc 100644
---- a/sound/soc/codecs/mt6359.c
-+++ b/sound/soc/codecs/mt6359.c
-@@ -724,6 +724,32 @@ static SOC_VALUE_ENUM_SINGLE_DECL(pga_3_mux_map_enum,
- static const struct snd_kcontrol_new pga_3_mux_control =
- 	SOC_DAPM_ENUM("PGA 3 Select", pga_3_mux_map_enum);
+Balbir, please pick this minor non-urgent clean-up patch.
+
+ kernel/taskstats.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/kernel/taskstats.c b/kernel/taskstats.c
+index a2802b6ff4bb..bd18a7bf5276 100644
+--- a/kernel/taskstats.c
++++ b/kernel/taskstats.c
+@@ -117,7 +117,6 @@ static void send_cpu_listeners(struct sk_buff *skb,
  
-+static int mt_vaud18_event(struct snd_soc_dapm_widget *w,
-+			   struct snd_kcontrol *kcontrol,
-+			   int event)
-+{
-+	struct snd_soc_component *cmpnt = snd_soc_dapm_to_component(w->dapm);
-+	struct mt6359_priv *priv = snd_soc_component_get_drvdata(cmpnt);
-+	int ret = 0;
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		ret = regulator_enable(priv->avdd_reg);
-+		if (ret)
-+			dev_err(priv->dev, "regulator_enable err: %d\n", ret);
-+		break;
-+	case SND_SOC_DAPM_POST_PMD:
-+		ret = regulator_disable(priv->avdd_reg);
-+		if (ret)
-+			dev_err(priv->dev, "regulator_disable err: %d\n", ret);
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	return ret;
-+}
-+
- static int mt_sgen_event(struct snd_soc_dapm_widget *w,
- 			 struct snd_kcontrol *kcontrol,
- 			 int event)
-@@ -1944,8 +1970,9 @@ static int mt_ncp_event(struct snd_soc_dapm_widget *w,
- 			      MT6359_DCXO_CW12,
- 			      RG_XO_AUDIO_EN_M_SFT, 0, NULL, 0),
- 	SND_SOC_DAPM_SUPPLY_S("LDO_VAUD18", SUPPLY_SEQ_LDO_VAUD18,
--			      MT6359_LDO_VAUD18_CON0,
--			      RG_LDO_VAUD18_EN_SFT, 0, NULL, 0),
-+			      SND_SOC_NOPM, 0, 0,
-+			      mt_vaud18_event,
-+			      SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
- 	SND_SOC_DAPM_SUPPLY_S("AUDGLB", SUPPLY_SEQ_AUD_GLB,
- 			      MT6359_AUDDEC_ANA_CON13,
- 			      RG_AUDGLB_PWRDN_VA32_SFT, 1, NULL, 0),
-@@ -2814,13 +2841,6 @@ static int mt6359_platform_driver_probe(struct platform_device *pdev)
- 		return PTR_ERR(priv->avdd_reg);
- 	}
+ 	genlmsg_end(skb, reply);
  
--	ret = regulator_enable(priv->avdd_reg);
--	if (ret) {
--		dev_err(&pdev->dev, "%s(), failed to enable regulator!\n",
--			__func__);
--		return ret;
--	}
--
- 	ret = mt6359_parse_dt(priv);
- 	if (ret) {
- 		dev_warn(&pdev->dev, "%s() failed to parse dts\n", __func__);
-diff --git a/sound/soc/codecs/mt6359.h b/sound/soc/codecs/mt6359.h
-index af6f07f..1dfb29a 100644
---- a/sound/soc/codecs/mt6359.h
-+++ b/sound/soc/codecs/mt6359.h
-@@ -135,11 +135,6 @@
- /* MT6359_DCXO_CW12 */
- #define RG_XO_AUDIO_EN_M_SFT				13
- 
--/* LDO_VAUD18_CON0 */
--#define RG_LDO_VAUD18_EN_SFT				0
--#define RG_LDO_VAUD18_EN_MASK				0x1
--#define RG_LDO_VAUD18_EN_MASK_SFT			(0x1 << 0)
--
- /* AUD_TOP_CKPDN_CON0 */
- #define RG_VOW13M_CK_PDN_SFT				13
- #define RG_VOW13M_CK_PDN_MASK				0x1
-@@ -2132,7 +2127,6 @@
- 
- #define MT6359_DCXO_CW11				0x7a6
- #define MT6359_DCXO_CW12				0x7a8
--#define MT6359_LDO_VAUD18_CON0				0x1c98
- 
- #define MT6359_GPIO_MODE0				0xcc
- #define MT6359_GPIO_MODE0_SET				0xce
+-	rc = 0;
+ 	down_read(&listeners->sem);
+ 	list_for_each_entry(s, &listeners->list, list) {
+ 		skb_next = NULL;
 -- 
-1.9.1
+2.17.1
 
