@@ -2,203 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B468B2A8F28
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 07:06:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D627C2A8F29
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 07:09:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726142AbgKFGGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 01:06:07 -0500
-Received: from perceval.ideasonboard.com ([213.167.242.64]:33982 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725828AbgKFGGG (ORCPT
+        id S1726125AbgKFGJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 01:09:38 -0500
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:36094 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725828AbgKFGJi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 01:06:06 -0500
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id F0208B16;
-        Fri,  6 Nov 2020 07:06:03 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1604642764;
-        bh=IjbstpbyXQqNG/MhYVC7kceEAc/hrmAH8zKyIe4wb8o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MYWqXt7r4PfRmo7jN6NP9ybdfpIXxU8czqc1hI0DS2GAqI27ED3vrFhFSb2o1aFl6
-         6VK0o32VGwwulgBPKSveLmw4yq09Gtbvlq6C6K0QynJm3BhpiAkYZ6lXSy0oPvpcLD
-         6BeX/DHeGsAeAcwGY19TQwPAki26DJ9wk9OaCNfk=
-Date:   Fri, 6 Nov 2020 08:06:02 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Ricardo Ribalda <ribalda@chromium.org>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/7] media: uvcvideo: Move guid to entity
-Message-ID: <20201106060602.GA6926@pendragon.ideasonboard.com>
-References: <20201104180734.286789-1-ribalda@chromium.org>
- <20201104180734.286789-3-ribalda@chromium.org>
+        Fri, 6 Nov 2020 01:09:38 -0500
+X-UUID: c5ec763de45c4015a2d18432429dafbe-20201106
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=nEoLX1/+6duNwH8WrVAfgyNUeWNqni/qD+IGm5v49yw=;
+        b=sa85xI0F3yJptMrG7cZA4jLfPJ89ToDm/cpSvVOd7gRmDK0HwHf7yVYxYdlHyoAzTWJTVAgcWd/nY8azNEiAts1NVH0Uxf92J24hlXLMN37KApImHhnNma4GAA1KTVEEy31TB/e+HTjCvmT4hJYv9mQrjU9J6eMSjFNTcDnWkN8=;
+X-UUID: c5ec763de45c4015a2d18432429dafbe-20201106
+Received: from mtkcas32.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1538193157; Fri, 06 Nov 2020 14:09:28 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ MTKMBS31N1.mediatek.inc (172.27.4.69) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 6 Nov 2020 14:09:25 +0800
+Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 6 Nov 2020 14:09:24 +0800
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>
+CC:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Colin Ian King <colin.king@canonical.com>,
+        Ondrej Jirman <megous@megous.com>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Icenowy Zheng <icenowy@aosc.io>,
+        Remi Pommarel <repk@triplefau.lt>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Yue Wang <yue.wang@amlogic.com>,
+        Hanjie Lin <hanjie.lin@amlogic.com>,
+        Joe Perches <joe@perches.com>,
+        Bharat Gooty <bharat.gooty@broadcom.com>,
+        Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>,
+        Peter Chen <peter.chen@nxp.com>, Roger Quadros <rogerq@ti.com>,
+        Jyri Sarha <jsarha@ti.com>,
+        Sanket Parmar <sparmar@cadence.com>,
+        Anil Varughese <aniljoy@cadence.com>, Li Jun <jun.li@nxp.com>,
+        Ma Feng <mafeng.ma@huawei.com>,
+        Wei Yongjun <weiyongjun1@huawei.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-amlogic@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>
+Subject: [PATCH v2 01/17] phy: allwinner: convert to devm_platform_ioremap_resource(_byname)
+Date:   Fri, 6 Nov 2020 14:08:34 +0800
+Message-ID: <1604642930-29019-1-git-send-email-chunfeng.yun@mediatek.com>
+X-Mailer: git-send-email 1.8.1.1.dirty
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201104180734.286789-3-ribalda@chromium.org>
+Content-Type: text/plain
+X-TM-SNTS-SMTP: 3C3951C449F6D73153743392941B122F987841F75BC64504B988C2BC4C288B302000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ricardo,
+VXNlIGRldm1fcGxhdGZvcm1faW9yZW1hcF9yZXNvdXJjZShfYnluYW1lKSB0byBzaW1wbGlmeSBj
+b2RlDQoNClNpZ25lZC1vZmYtYnk6IENodW5mZW5nIFl1biA8Y2h1bmZlbmcueXVuQG1lZGlhdGVr
+LmNvbT4NCi0tLQ0KdjI6IG5vIGNoYW5nZXMNCi0tLQ0KIGRyaXZlcnMvcGh5L2FsbHdpbm5lci9w
+aHktc3VuNGktdXNiLmMgICAgICAgfCA4ICsrLS0tLS0tDQogZHJpdmVycy9waHkvYWxsd2lubmVy
+L3BoeS1zdW41MGktdXNiMy5jICAgICB8IDQgKy0tLQ0KIGRyaXZlcnMvcGh5L2FsbHdpbm5lci9w
+aHktc3VuNmktbWlwaS1kcGh5LmMgfCA0ICstLS0NCiBkcml2ZXJzL3BoeS9hbGx3aW5uZXIvcGh5
+LXN1bjlpLXVzYi5jICAgICAgIHwgNCArLS0tDQogNCBmaWxlcyBjaGFuZ2VkLCA1IGluc2VydGlv
+bnMoKyksIDE1IGRlbGV0aW9ucygtKQ0KDQpkaWZmIC0tZ2l0IGEvZHJpdmVycy9waHkvYWxsd2lu
+bmVyL3BoeS1zdW40aS11c2IuYyBiL2RyaXZlcnMvcGh5L2FsbHdpbm5lci9waHktc3VuNGktdXNi
+LmMNCmluZGV4IDY1MWQ1ZTJhMjVjZS4uNDA2ZDU5NDNmOGE4IDEwMDY0NA0KLS0tIGEvZHJpdmVy
+cy9waHkvYWxsd2lubmVyL3BoeS1zdW40aS11c2IuYw0KKysrIGIvZHJpdmVycy9waHkvYWxsd2lu
+bmVyL3BoeS1zdW40aS11c2IuYw0KQEAgLTY4Niw3ICs2ODYsNiBAQCBzdGF0aWMgaW50IHN1bjRp
+X3VzYl9waHlfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikNCiAJc3RydWN0IGRl
+dmljZSAqZGV2ID0gJnBkZXYtPmRldjsNCiAJc3RydWN0IGRldmljZV9ub2RlICpucCA9IGRldi0+
+b2Zfbm9kZTsNCiAJc3RydWN0IHBoeV9wcm92aWRlciAqcGh5X3Byb3ZpZGVyOw0KLQlzdHJ1Y3Qg
+cmVzb3VyY2UgKnJlczsNCiAJaW50IGksIHJldDsNCiANCiAJZGF0YSA9IGRldm1fa3phbGxvYyhk
+ZXYsIHNpemVvZigqZGF0YSksIEdGUF9LRVJORUwpOw0KQEAgLTcwMCw4ICs2OTksNyBAQCBzdGF0
+aWMgaW50IHN1bjRpX3VzYl9waHlfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikN
+CiAJaWYgKCFkYXRhLT5jZmcpDQogCQlyZXR1cm4gLUVJTlZBTDsNCiANCi0JcmVzID0gcGxhdGZv
+cm1fZ2V0X3Jlc291cmNlX2J5bmFtZShwZGV2LCBJT1JFU09VUkNFX01FTSwgInBoeV9jdHJsIik7
+DQotCWRhdGEtPmJhc2UgPSBkZXZtX2lvcmVtYXBfcmVzb3VyY2UoZGV2LCByZXMpOw0KKwlkYXRh
+LT5iYXNlID0gZGV2bV9wbGF0Zm9ybV9pb3JlbWFwX3Jlc291cmNlX2J5bmFtZShwZGV2LCAicGh5
+X2N0cmwiKTsNCiAJaWYgKElTX0VSUihkYXRhLT5iYXNlKSkNCiAJCXJldHVybiBQVFJfRVJSKGRh
+dGEtPmJhc2UpOw0KIA0KQEAgLTc5Niw5ICs3OTQsNyBAQCBzdGF0aWMgaW50IHN1bjRpX3VzYl9w
+aHlfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikNCiANCiAJCWlmIChpIHx8IGRh
+dGEtPmNmZy0+cGh5MF9kdWFsX3JvdXRlKSB7IC8qIE5vIHBtdSBmb3IgbXVzYiAqLw0KIAkJCXNu
+cHJpbnRmKG5hbWUsIHNpemVvZihuYW1lKSwgInBtdSVkIiwgaSk7DQotCQkJcmVzID0gcGxhdGZv
+cm1fZ2V0X3Jlc291cmNlX2J5bmFtZShwZGV2LA0KLQkJCQkJCQlJT1JFU09VUkNFX01FTSwgbmFt
+ZSk7DQotCQkJcGh5LT5wbXUgPSBkZXZtX2lvcmVtYXBfcmVzb3VyY2UoZGV2LCByZXMpOw0KKwkJ
+CXBoeS0+cG11ID0gZGV2bV9wbGF0Zm9ybV9pb3JlbWFwX3Jlc291cmNlX2J5bmFtZShwZGV2LCBu
+YW1lKTsNCiAJCQlpZiAoSVNfRVJSKHBoeS0+cG11KSkNCiAJCQkJcmV0dXJuIFBUUl9FUlIocGh5
+LT5wbXUpOw0KIAkJfQ0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvcGh5L2FsbHdpbm5lci9waHktc3Vu
+NTBpLXVzYjMuYyBiL2RyaXZlcnMvcGh5L2FsbHdpbm5lci9waHktc3VuNTBpLXVzYjMuYw0KaW5k
+ZXggYjFjMDRmNzFhMzFkLi44NDA1NWI3MjAwMTYgMTAwNjQ0DQotLS0gYS9kcml2ZXJzL3BoeS9h
+bGx3aW5uZXIvcGh5LXN1bjUwaS11c2IzLmMNCisrKyBiL2RyaXZlcnMvcGh5L2FsbHdpbm5lci9w
+aHktc3VuNTBpLXVzYjMuYw0KQEAgLTEzNCw3ICsxMzQsNiBAQCBzdGF0aWMgaW50IHN1bjUwaV91
+c2IzX3BoeV9wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQ0KIAlzdHJ1Y3Qgc3Vu
+NTBpX3VzYjNfcGh5ICpwaHk7DQogCXN0cnVjdCBkZXZpY2UgKmRldiA9ICZwZGV2LT5kZXY7DQog
+CXN0cnVjdCBwaHlfcHJvdmlkZXIgKnBoeV9wcm92aWRlcjsNCi0Jc3RydWN0IHJlc291cmNlICpy
+ZXM7DQogDQogCXBoeSA9IGRldm1fa3phbGxvYyhkZXYsIHNpemVvZigqcGh5KSwgR0ZQX0tFUk5F
+TCk7DQogCWlmICghcGh5KQ0KQEAgLTE1Myw4ICsxNTIsNyBAQCBzdGF0aWMgaW50IHN1bjUwaV91
+c2IzX3BoeV9wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQ0KIAkJcmV0dXJuIFBU
+Ul9FUlIocGh5LT5yZXNldCk7DQogCX0NCiANCi0JcmVzID0gcGxhdGZvcm1fZ2V0X3Jlc291cmNl
+KHBkZXYsIElPUkVTT1VSQ0VfTUVNLCAwKTsNCi0JcGh5LT5yZWdzID0gZGV2bV9pb3JlbWFwX3Jl
+c291cmNlKGRldiwgcmVzKTsNCisJcGh5LT5yZWdzID0gZGV2bV9wbGF0Zm9ybV9pb3JlbWFwX3Jl
+c291cmNlKHBkZXYsIDApOw0KIAlpZiAoSVNfRVJSKHBoeS0+cmVncykpDQogCQlyZXR1cm4gUFRS
+X0VSUihwaHktPnJlZ3MpOw0KIA0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvcGh5L2FsbHdpbm5lci9w
+aHktc3VuNmktbWlwaS1kcGh5LmMgYi9kcml2ZXJzL3BoeS9hbGx3aW5uZXIvcGh5LXN1bjZpLW1p
+cGktZHBoeS5jDQppbmRleCAxZmE3NjFiYTZjYmIuLmYwYmM4N2Q2NTRkNCAxMDA2NDQNCi0tLSBh
+L2RyaXZlcnMvcGh5L2FsbHdpbm5lci9waHktc3VuNmktbWlwaS1kcGh5LmMNCisrKyBiL2RyaXZl
+cnMvcGh5L2FsbHdpbm5lci9waHktc3VuNmktbWlwaS1kcGh5LmMNCkBAIC0yNTMsMTUgKzI1Mywx
+MyBAQCBzdGF0aWMgaW50IHN1bjZpX2RwaHlfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAq
+cGRldikNCiB7DQogCXN0cnVjdCBwaHlfcHJvdmlkZXIgKnBoeV9wcm92aWRlcjsNCiAJc3RydWN0
+IHN1bjZpX2RwaHkgKmRwaHk7DQotCXN0cnVjdCByZXNvdXJjZSAqcmVzOw0KIAl2b2lkIF9faW9t
+ZW0gKnJlZ3M7DQogDQogCWRwaHkgPSBkZXZtX2t6YWxsb2MoJnBkZXYtPmRldiwgc2l6ZW9mKCpk
+cGh5KSwgR0ZQX0tFUk5FTCk7DQogCWlmICghZHBoeSkNCiAJCXJldHVybiAtRU5PTUVNOw0KIA0K
+LQlyZXMgPSBwbGF0Zm9ybV9nZXRfcmVzb3VyY2UocGRldiwgSU9SRVNPVVJDRV9NRU0sIDApOw0K
+LQlyZWdzID0gZGV2bV9pb3JlbWFwX3Jlc291cmNlKCZwZGV2LT5kZXYsIHJlcyk7DQorCXJlZ3Mg
+PSBkZXZtX3BsYXRmb3JtX2lvcmVtYXBfcmVzb3VyY2UocGRldiwgMCk7DQogCWlmIChJU19FUlIo
+cmVncykpIHsNCiAJCWRldl9lcnIoJnBkZXYtPmRldiwgIkNvdWxkbid0IG1hcCB0aGUgRFBIWSBl
+bmNvZGVyIHJlZ2lzdGVyc1xuIik7DQogCQlyZXR1cm4gUFRSX0VSUihyZWdzKTsNCmRpZmYgLS1n
+aXQgYS9kcml2ZXJzL3BoeS9hbGx3aW5uZXIvcGh5LXN1bjlpLXVzYi5jIGIvZHJpdmVycy9waHkv
+YWxsd2lubmVyL3BoeS1zdW45aS11c2IuYw0KaW5kZXggZmM2Nzg0ZGQ3ZmEwLi4yZjllNjBjMTg4
+YjggMTAwNjQ0DQotLS0gYS9kcml2ZXJzL3BoeS9hbGx3aW5uZXIvcGh5LXN1bjlpLXVzYi5jDQor
+KysgYi9kcml2ZXJzL3BoeS9hbGx3aW5uZXIvcGh5LXN1bjlpLXVzYi5jDQpAQCAtMTE3LDcgKzEx
+Nyw2IEBAIHN0YXRpYyBpbnQgc3VuOWlfdXNiX3BoeV9wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2
+aWNlICpwZGV2KQ0KIAlzdHJ1Y3QgZGV2aWNlICpkZXYgPSAmcGRldi0+ZGV2Ow0KIAlzdHJ1Y3Qg
+ZGV2aWNlX25vZGUgKm5wID0gZGV2LT5vZl9ub2RlOw0KIAlzdHJ1Y3QgcGh5X3Byb3ZpZGVyICpw
+aHlfcHJvdmlkZXI7DQotCXN0cnVjdCByZXNvdXJjZSAqcmVzOw0KIA0KIAlwaHkgPSBkZXZtX2t6
+YWxsb2MoZGV2LCBzaXplb2YoKnBoeSksIEdGUF9LRVJORUwpOw0KIAlpZiAoIXBoeSkNCkBAIC0x
+NTYsOCArMTU1LDcgQEAgc3RhdGljIGludCBzdW45aV91c2JfcGh5X3Byb2JlKHN0cnVjdCBwbGF0
+Zm9ybV9kZXZpY2UgKnBkZXYpDQogCQl9DQogCX0NCiANCi0JcmVzID0gcGxhdGZvcm1fZ2V0X3Jl
+c291cmNlKHBkZXYsIElPUkVTT1VSQ0VfTUVNLCAwKTsNCi0JcGh5LT5wbXUgPSBkZXZtX2lvcmVt
+YXBfcmVzb3VyY2UoZGV2LCByZXMpOw0KKwlwaHktPnBtdSA9IGRldm1fcGxhdGZvcm1faW9yZW1h
+cF9yZXNvdXJjZShwZGV2LCAwKTsNCiAJaWYgKElTX0VSUihwaHktPnBtdSkpDQogCQlyZXR1cm4g
+UFRSX0VSUihwaHktPnBtdSk7DQogDQotLSANCjIuMTguMA0K
 
-Thank you for the patch.
-
-On Wed, Nov 04, 2020 at 07:07:29PM +0100, Ricardo Ribalda wrote:
-> Instead of having multiple copies of the entity guid on the code, move
-> it to the entity structure.
-> 
-> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> ---
->  drivers/media/usb/uvc/uvc_ctrl.c   | 30 ++++--------------------------
->  drivers/media/usb/uvc/uvc_driver.c | 21 +++++++++++++++++++--
->  drivers/media/usb/uvc/uvcvideo.h   |  2 +-
->  3 files changed, 24 insertions(+), 29 deletions(-)
-> 
-> diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
-> index f479d8971dfb..0e480b75e724 100644
-> --- a/drivers/media/usb/uvc/uvc_ctrl.c
-> +++ b/drivers/media/usb/uvc/uvc_ctrl.c
-> @@ -826,31 +826,10 @@ static void uvc_set_le_value(struct uvc_control_mapping *mapping,
->   * Terminal and unit management
->   */
->  
-> -static const u8 uvc_processing_guid[16] = UVC_GUID_UVC_PROCESSING;
-> -static const u8 uvc_camera_guid[16] = UVC_GUID_UVC_CAMERA;
-> -static const u8 uvc_media_transport_input_guid[16] =
-> -	UVC_GUID_UVC_MEDIA_TRANSPORT_INPUT;
-> -
->  static int uvc_entity_match_guid(const struct uvc_entity *entity,
-> -	const u8 guid[16])
-> +				 const u8 guid[16])
->  {
-> -	switch (UVC_ENTITY_TYPE(entity)) {
-> -	case UVC_ITT_CAMERA:
-> -		return memcmp(uvc_camera_guid, guid, 16) == 0;
-> -
-> -	case UVC_ITT_MEDIA_TRANSPORT_INPUT:
-> -		return memcmp(uvc_media_transport_input_guid, guid, 16) == 0;
-> -
-> -	case UVC_VC_PROCESSING_UNIT:
-> -		return memcmp(uvc_processing_guid, guid, 16) == 0;
-> -
-> -	case UVC_VC_EXTENSION_UNIT:
-> -		return memcmp(entity->extension.guidExtensionCode,
-> -			      guid, 16) == 0;
-> -
-> -	default:
-> -		return 0;
-> -	}
-> +	return memcmp(entity->guid, guid, sizeof(entity->guid)) == 0;
->  }
->  
->  /* ------------------------------------------------------------------------
-> @@ -1776,8 +1755,7 @@ static int uvc_ctrl_fill_xu_info(struct uvc_device *dev,
->  	if (data == NULL)
->  		return -ENOMEM;
->  
-> -	memcpy(info->entity, ctrl->entity->extension.guidExtensionCode,
-> -	       sizeof(info->entity));
-> +	memcpy(info->entity, ctrl->entity->guid, sizeof(info->entity));
->  	info->index = ctrl->index;
->  	info->selector = ctrl->index + 1;
->  
-> @@ -1883,7 +1861,7 @@ int uvc_xu_ctrl_query(struct uvc_video_chain *chain,
->  
->  	if (!found) {
->  		uvc_trace(UVC_TRACE_CONTROL, "Control %pUl/%u not found.\n",
-> -			entity->extension.guidExtensionCode, xqry->selector);
-> +			entity->guid, xqry->selector);
->  		return -ENOENT;
->  	}
->  
-> diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
-> index 9fc0b600eab1..77fea26faa9a 100644
-> --- a/drivers/media/usb/uvc/uvc_driver.c
-> +++ b/drivers/media/usb/uvc/uvc_driver.c
-> @@ -1019,6 +1019,11 @@ static int uvc_parse_streaming(struct uvc_device *dev,
->  	return ret;
->  }
->  
-> +static const u8 uvc_camera_guid[16] = UVC_GUID_UVC_CAMERA;
-> +static const u8 uvc_media_transport_input_guid[16] =
-> +	UVC_GUID_UVC_MEDIA_TRANSPORT_INPUT;
-> +static const u8 uvc_processing_guid[16] = UVC_GUID_UVC_PROCESSING;
-> +
->  static struct uvc_entity *uvc_alloc_entity(u16 type, u8 id,
->  		unsigned int num_pads, unsigned int extra_size)
->  {
-> @@ -1038,6 +1043,18 @@ static struct uvc_entity *uvc_alloc_entity(u16 type, u8 id,
->  	entity->id = id;
->  	entity->type = type;
->  
-> +	switch (type) {
-> +	case UVC_ITT_CAMERA:
-> +		memcpy(entity->guid, uvc_camera_guid, 16);
-> +		break;
-> +	case UVC_ITT_MEDIA_TRANSPORT_INPUT:
-> +		memcpy(entity->guid, uvc_media_transport_input_guid, 16);
-> +		break;
-> +	case UVC_VC_PROCESSING_UNIT:
-> +		memcpy(entity->guid, uvc_processing_guid, 16);
-> +		break;
-> +	}
-
-Given that the GUID is set in uvc_parse_vendor_control() and
-uvc_parse_standard_control() for extension units, I'm wondering if it
-would make sense to move it there for the other entity types too. Up to
-you. Otherwise, I'd add the following comment above the switch:
-
-	/*
-	 * Set the GUID for standard entity types. For extension units, the GUID
-	 * is initialized by the caller.
-	 */
-
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
-> +
->  	entity->num_links = 0;
->  	entity->num_pads = num_pads;
->  	entity->pads = ((void *)(entity + 1)) + extra_size;
-> @@ -1109,7 +1126,7 @@ static int uvc_parse_vendor_control(struct uvc_device *dev,
->  		if (unit == NULL)
->  			return -ENOMEM;
->  
-> -		memcpy(unit->extension.guidExtensionCode, &buffer[4], 16);
-> +		memcpy(unit->guid, &buffer[4], 16);
->  		unit->extension.bNumControls = buffer[20];
->  		memcpy(unit->baSourceID, &buffer[22], p);
->  		unit->extension.bControlSize = buffer[22+p];
-> @@ -1368,7 +1385,7 @@ static int uvc_parse_standard_control(struct uvc_device *dev,
->  		if (unit == NULL)
->  			return -ENOMEM;
->  
-> -		memcpy(unit->extension.guidExtensionCode, &buffer[4], 16);
-> +		memcpy(unit->guid, &buffer[4], 16);
->  		unit->extension.bNumControls = buffer[20];
->  		memcpy(unit->baSourceID, &buffer[22], p);
->  		unit->extension.bControlSize = buffer[22+p];
-> diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
-> index a3dfacf069c4..df7bf2d104a3 100644
-> --- a/drivers/media/usb/uvc/uvcvideo.h
-> +++ b/drivers/media/usb/uvc/uvcvideo.h
-> @@ -304,6 +304,7 @@ struct uvc_entity {
->  	u8 id;
->  	u16 type;
->  	char name[64];
-> +	u8 guid[16];
->  
->  	/* Media controller-related fields. */
->  	struct video_device *vdev;
-> @@ -342,7 +343,6 @@ struct uvc_entity {
->  		} selector;
->  
->  		struct {
-> -			u8  guidExtensionCode[16];
->  			u8  bNumControls;
->  			u8  bControlSize;
->  			u8  *bmControls;
-
--- 
-Regards,
-
-Laurent Pinchart
