@@ -2,138 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB1212A9E91
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 21:29:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FF152A9E94
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 21:31:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728417AbgKFU3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 15:29:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44314 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728140AbgKFU3d (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 15:29:33 -0500
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEF92C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 12:29:33 -0800 (PST)
-Received: by mail-qt1-x849.google.com with SMTP id 7so1718698qtw.23
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 12:29:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=ULc2QwdCH5im+pfEGHCAJt9dFDUjORAmMg0iMDdD/ZE=;
-        b=qxK63C85+mLWqUM6fF6ufmuq09cUwYZSbRvdqXOVlKWkYTVHLWgKHZPW23Sgbbpsut
-         J/dtITSGF8n2ylyWL2J9oazEIkmB5z36lETuij7i6T4x90ka4hoRiMp+aJSiHe5hR7Qm
-         cYwBLWMnyNt7WRI+pi7pWUPKuW5krdqFEjpBcH9aLwC3eZv4Mlwd+483rDk01xUiWOPA
-         YOboDY+r4fchGJs6SogwqO9pRRdrR/wihlrcAt3wzN7FILrUxhYUpL5uDNEEDCicu449
-         vkBz2bGesJpH1iphht0MRywvktZwKa/xSxTJh38piWQ4q5tWgTV+bb+bGUip3QSEVU9v
-         vFgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=ULc2QwdCH5im+pfEGHCAJt9dFDUjORAmMg0iMDdD/ZE=;
-        b=uZBrZu4LjL04CjW3lEuNyvV6ymbxV83K4STSO/tMGwfDsUlRl2TyVIDoVuEZtpzteV
-         9cPhtvKfJgOl124HNRTHY9CrZ555ykDjrftFzzNru2H1ddKGSPQN/BtQyvMACLJ2s82I
-         0UayecIoVM5R6umiU5ANdVND5DCuJOOUQuHVL9ZQ9/RfuF3J5I5Gq6aY3ARysqWC6p2R
-         N97dENjtaImV5qXH3g4qyjpCBN7U6SsGkiNATVIRJXf2+ynGMrXbafIE8Mb9N4uzFXD5
-         xBKTjDQ29E9TgFsPGuvVLscIo6rDCJQjALQao/FHYhhwFOVMZaNff+wTClPRrvWWlVr6
-         67wg==
-X-Gm-Message-State: AOAM531nAz3o8hm1GkkxI2u9EBlzSxnsHJgBqgwcWaAll/NM58rG5PTS
-        JEr5sXuD91vR+U+xIjy/vAPWy0vGG717bw==
-X-Google-Smtp-Source: ABdhPJzRtuBmM7hT4n/AykR+FlOUggYbVMe/LDkuyotS0xBuSPRCU2hzDublBhwIcsnZ8iR6EFpEw7C4KtLO4Q==
-Sender: "shakeelb via sendgmr" <shakeelb@shakeelb.svl.corp.google.com>
-X-Received: from shakeelb.svl.corp.google.com ([2620:15c:2cd:202:a28c:fdff:fee8:36f0])
- (user=shakeelb job=sendgmr) by 2002:ac8:6e8b:: with SMTP id
- c11mr3303614qtv.2.1604694572860; Fri, 06 Nov 2020 12:29:32 -0800 (PST)
-Date:   Fri,  6 Nov 2020 12:29:23 -0800
-Message-Id: <20201106202923.2087414-1-shakeelb@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
-Subject: [PATCH] mm, kvm: account kvm_vcpu_mmap to kmemcg
-From:   Shakeel Butt <shakeelb@google.com>
-To:     Roman Gushchin <guro@fb.com>, Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Paolo Bonzini <pbonzini@redhat.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Shakeel Butt <shakeelb@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1728404AbgKFUbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 15:31:50 -0500
+Received: from mga02.intel.com ([134.134.136.20]:28719 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728343AbgKFUbu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 15:31:50 -0500
+IronPort-SDR: CrL1qW8QXV5OYjXf+OT3cQ10CkNnUgdD0FnMpy19vP3JRrlLM9P/exKqwn+IB3/VpUXocybT7p
+ UfU73kWyIYBQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9797"; a="156598889"
+X-IronPort-AV: E=Sophos;i="5.77,457,1596524400"; 
+   d="scan'208";a="156598889"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2020 12:31:49 -0800
+IronPort-SDR: /JA9U5PSw7i9DRVQWtgfeKWF9CEinqTxMQFDQDLt/eU3JnhtwYfpFZcdPDlOa56UoknaQ/9esC
+ ODJH/rcloQZg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,457,1596524400"; 
+   d="scan'208";a="306958458"
+Received: from otcwcpicx6.sc.intel.com ([172.25.55.29])
+  by fmsmga008.fm.intel.com with ESMTP; 06 Nov 2020 12:31:49 -0800
+Date:   Fri, 6 Nov 2020 20:31:49 +0000
+From:   Fenghua Yu <fenghua.yu@intel.com>
+To:     Xiaoyao Li <xiaoyao.li@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Christopherson Sean J <sean.j.christopherson@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Ravi V Shankar <ravi.v.shankar@intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>, x86 <x86@kernel.org>
+Subject: Re: [PATCH RFC v3 2/4] x86/bus_lock: Handle warn and fatal in #DB
+ for bus lock
+Message-ID: <20201106203149.GA4097366@otcwcpicx6.sc.intel.com>
+References: <20201031002714.3649728-1-fenghua.yu@intel.com>
+ <20201031002714.3649728-3-fenghua.yu@intel.com>
+ <21d0415c-9af4-db18-8e65-410f6ab5ec68@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <21d0415c-9af4-db18-8e65-410f6ab5ec68@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A VCPU of a VM can allocate couple of pages which can be mmap'ed by the
-user space application. At the moment this memory is not charged to the
-memcg of the VMM. On a large machine running large number of VMs or
-small number of VMs having large number of VCPUs, this unaccounted
-memory can be very significant. So, charge this memory to the memcg of
-the VMM. Please note that lifetime of these allocations corresponds to
-the lifetime of the VMM.
+Hi, Xiaoyao,
 
-Signed-off-by: Shakeel Butt <shakeelb@google.com>
----
+On Tue, Nov 03, 2020 at 08:15:27PM +0800, Xiaoyao Li wrote:
+> On 10/31/2020 8:27 AM, Fenghua Yu wrote:
+> > diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
+> > index 3c70fb34028b..1c3442000972 100644
+> > --- a/arch/x86/kernel/traps.c
+> > +++ b/arch/x86/kernel/traps.c
+> > @@ -953,6 +953,13 @@ static __always_inline void exc_debug_user(struct pt_regs *regs,
+> >   		goto out_irq;
+> >   	}
+> > +	/*
+> > +	 * Handle bus lock. #DB for bus lock can only be triggered from
+> > +	 * userspace.
+> > +	 */
+> > +	if (!(dr6 & DR_BUS_LOCK))
+> 
+> it should be
+> 
+> 	if (dr6 & DR_BUS_LOCK)
+> 
+> since you keep DR6.[bit 11] reserved in this version. bit 11 of
+> debug_read_clear_dr6() being set to 1 means bus lock detected.
 
-This patch has dependency on Roman's patch series "mm: allow mapping
-accounted kernel pages to userspace".
+You are right. Will fix it in the next version.
 
- arch/s390/kvm/kvm-s390.c  | 2 +-
- arch/x86/kvm/x86.c        | 2 +-
- virt/kvm/coalesced_mmio.c | 2 +-
- virt/kvm/kvm_main.c       | 2 +-
- 4 files changed, 4 insertions(+), 4 deletions(-)
+Thank you very much!
 
-diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
-index 6b74b92c1a58..8364c5ee91a5 100644
---- a/arch/s390/kvm/kvm-s390.c
-+++ b/arch/s390/kvm/kvm-s390.c
-@@ -3243,7 +3243,7 @@ int kvm_arch_vcpu_create(struct kvm_vcpu *vcpu)
- 	int rc;
- 
- 	BUILD_BUG_ON(sizeof(struct sie_page) != 4096);
--	sie_page = (struct sie_page *) get_zeroed_page(GFP_KERNEL);
-+	sie_page = (struct sie_page *) get_zeroed_page(GFP_KERNEL_ACCOUNT);
- 	if (!sie_page)
- 		return -ENOMEM;
- 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 397f599b20e5..d37acf3ce17f 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -9829,7 +9829,7 @@ int kvm_arch_vcpu_create(struct kvm_vcpu *vcpu)
- 
- 	r = -ENOMEM;
- 
--	page = alloc_page(GFP_KERNEL | __GFP_ZERO);
-+	page = alloc_page(GFP_KERNEL_ACCOUNT | __GFP_ZERO);
- 	if (!page)
- 		goto fail_free_lapic;
- 	vcpu->arch.pio_data = page_address(page);
-diff --git a/virt/kvm/coalesced_mmio.c b/virt/kvm/coalesced_mmio.c
-index e2c197fd4f9d..62bd908ecd58 100644
---- a/virt/kvm/coalesced_mmio.c
-+++ b/virt/kvm/coalesced_mmio.c
-@@ -111,7 +111,7 @@ int kvm_coalesced_mmio_init(struct kvm *kvm)
- {
- 	struct page *page;
- 
--	page = alloc_page(GFP_KERNEL | __GFP_ZERO);
-+	page = alloc_page(GFP_KERNEL_ACCOUNT | __GFP_ZERO);
- 	if (!page)
- 		return -ENOMEM;
- 
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 2541a17ff1c4..f69357a29688 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -3116,7 +3116,7 @@ static int kvm_vm_ioctl_create_vcpu(struct kvm *kvm, u32 id)
- 	}
- 
- 	BUILD_BUG_ON(sizeof(struct kvm_run) > PAGE_SIZE);
--	page = alloc_page(GFP_KERNEL | __GFP_ZERO);
-+	page = alloc_page(GFP_KERNEL_ACCOUNT | __GFP_ZERO);
- 	if (!page) {
- 		r = -ENOMEM;
- 		goto vcpu_free;
--- 
-2.29.1.341.ge80a0c044ae-goog
-
+-Fenghua
