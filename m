@@ -2,170 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80DD62A96E9
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 14:21:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 260042A96F4
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 14:24:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727468AbgKFNU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 08:20:58 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:59558 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727410AbgKFNU6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 08:20:58 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4CSLcQ3lSGz9v15t;
-        Fri,  6 Nov 2020 14:20:54 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id 5gvZkFtVHQcI; Fri,  6 Nov 2020 14:20:54 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4CSLcQ2zYkz9v15c;
-        Fri,  6 Nov 2020 14:20:54 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 9DCD48B8BF;
-        Fri,  6 Nov 2020 14:20:55 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id eTPlQqlIsTlD; Fri,  6 Nov 2020 14:20:55 +0100 (CET)
-Received: from po17688vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 3FB808B8BD;
-        Fri,  6 Nov 2020 14:20:55 +0100 (CET)
-Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id F010F66868; Fri,  6 Nov 2020 13:20:54 +0000 (UTC)
-Message-Id: <16a571bb32eb6e8cd44bda484c8d81cd8a25e6d7.1604668827.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH] powerpc/mm: Refactor the floor/ceiling check in hugetlb range
- freeing functions
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Fri,  6 Nov 2020 13:20:54 +0000 (UTC)
+        id S1727439AbgKFNYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 08:24:36 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:12354 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727287AbgKFNYf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 08:24:35 -0500
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A6D3KAc045401;
+        Fri, 6 Nov 2020 08:24:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=pHx2leChPrzAo4WC2IenghVznIUYtgXXGfVyOhtlw/U=;
+ b=PhsbIFYfRhRbCifMPlvp61ET8lMmQMqn26XRNQyyRN67kOkrOSj78oknde0VDPW7vMAR
+ NWP/WG7uI+cPXkS9QMtMUnjZ4jLYvIerlmNGmN/C7fPB1YL5ak0MW8nem9671aFo/8hJ
+ Orm/UcJo7phBFjVMn0ATnldfVuqxMcZ9rx+rDMqlW7tXOxTV5++eJF2+zKx6bgRnpTEM
+ DTTgzcbcRmYEZE7u7Kajod6apwv1svfVM3q5V8pWm29JVVP68Gg2JWn/9v0qrftr2XgO
+ AsfqaSnPfMhDtrk9PHBxA3FmTgX08xOPWqS2D8FWRmgOHUpa5H8b03EbQm5dNz8NWCgJ PA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 34n3qr7m4p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 06 Nov 2020 08:24:28 -0500
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0A6DFnwV106475;
+        Fri, 6 Nov 2020 08:24:27 -0500
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 34n3qr7m3m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 06 Nov 2020 08:24:27 -0500
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0A6DLxKn004773;
+        Fri, 6 Nov 2020 13:24:25 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma03ams.nl.ibm.com with ESMTP id 34hm6hdskk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 06 Nov 2020 13:24:25 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0A6DONFB64553234
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 6 Nov 2020 13:24:23 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 36A63AE056;
+        Fri,  6 Nov 2020 13:24:23 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C6192AE051;
+        Fri,  6 Nov 2020 13:24:19 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.77.67])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri,  6 Nov 2020 13:24:19 +0000 (GMT)
+Message-ID: <1f83ec246cb6356c340b379ab00e43f0b5bba0ae.camel@linux.ibm.com>
+Subject: Re: [PATCH v5 3/7] IMA: add hook to measure critical data
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Tushar Sugandhi <tusharsu@linux.microsoft.com>,
+        stephen.smalley.work@gmail.com, casey@schaufler-ca.com,
+        agk@redhat.com, snitzer@redhat.com, gmazyland@gmail.com,
+        paul@paul-moore.com
+Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
+        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
+        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dm-devel@redhat.com
+Date:   Fri, 06 Nov 2020 08:24:18 -0500
+In-Reply-To: <20201101222626.6111-4-tusharsu@linux.microsoft.com>
+References: <20201101222626.6111-1-tusharsu@linux.microsoft.com>
+         <20201101222626.6111-4-tusharsu@linux.microsoft.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-06_04:2020-11-05,2020-11-06 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
+ lowpriorityscore=0 priorityscore=1501 spamscore=0 suspectscore=0
+ impostorscore=0 adultscore=0 phishscore=0 malwarescore=0 clxscore=1015
+ mlxscore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011060090
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All hugetlb range freeing functions have a verification like the following,
-which only differs by the mask used, depending on the page table level.
+Hi Tushar,
 
-	start &= MASK;
-	if (start < floor)
-		return;
-	if (ceiling) {
-		ceiling &= MASK;
-		if (! ceiling)
-			return;
-		}
-	if (end - 1 > ceiling - 1)
-		return;
+On Sun, 2020-11-01 at 14:26 -0800, Tushar Sugandhi wrote:
+> Currently, IMA does not provide a generic function for kernel subsystems
+> to measure their critical data. Examples of critical data in this context
+> could be kernel in-memory r/o structures, hash of the memory structures,
+> or data that represents a linux kernel subsystem state change. The 
+> critical data, if accidentally or maliciously altered, can compromise
+> the integrity of the system.
 
-Refactor that into a helper function which takes the mask as
-an argument, returning true when [start;end[ is not fully
-contained inside [floor;ceiling[
+Start out with what IMA does do (e.g. measures files and more recently
+buffer data).  Afterwards continue with kernel integrity critical data
+should also be measured.  Please include a definition of kernel
+integrity critical data here, as well as in the cover letter.
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/mm/hugetlbpage.c | 56 ++++++++++++-----------------------
- 1 file changed, 19 insertions(+), 37 deletions(-)
+> 
+> A generic function provided by IMA to measure critical data would enable
+> various subsystems with easier and faster on-boarding to use IMA
+> infrastructure and would also avoid code duplication.
 
-diff --git a/arch/powerpc/mm/hugetlbpage.c b/arch/powerpc/mm/hugetlbpage.c
-index 36c3800769fb..f8d8a4988e15 100644
---- a/arch/powerpc/mm/hugetlbpage.c
-+++ b/arch/powerpc/mm/hugetlbpage.c
-@@ -294,6 +294,21 @@ static void hugepd_free(struct mmu_gather *tlb, void *hugepte)
- static inline void hugepd_free(struct mmu_gather *tlb, void *hugepte) {}
- #endif
- 
-+/* Return true when the entry to be freed maps more than the area being freed */
-+static bool range_is_outside_limits(unsigned long start, unsigned long end,
-+				    unsigned long floor, unsigned long ceiling,
-+				    unsigned long mask)
-+{
-+	if ((start & mask) < floor)
-+		return true;
-+	if (ceiling) {
-+		ceiling &= mask;
-+		if (!ceiling)
-+			return true;
-+	}
-+	return end - 1 > ceiling - 1;
-+}
-+
- static void free_hugepd_range(struct mmu_gather *tlb, hugepd_t *hpdp, int pdshift,
- 			      unsigned long start, unsigned long end,
- 			      unsigned long floor, unsigned long ceiling)
-@@ -309,15 +324,7 @@ static void free_hugepd_range(struct mmu_gather *tlb, hugepd_t *hpdp, int pdshif
- 	if (shift > pdshift)
- 		num_hugepd = 1 << (shift - pdshift);
- 
--	start &= pdmask;
--	if (start < floor)
--		return;
--	if (ceiling) {
--		ceiling &= pdmask;
--		if (! ceiling)
--			return;
--	}
--	if (end - 1 > ceiling - 1)
-+	if (range_is_outside_limits(start, end, floor, ceiling, pdmask))
- 		return;
- 
- 	for (i = 0; i < num_hugepd; i++, hpdp++)
-@@ -334,18 +341,9 @@ static void hugetlb_free_pte_range(struct mmu_gather *tlb, pmd_t *pmd,
- 				   unsigned long addr, unsigned long end,
- 				   unsigned long floor, unsigned long ceiling)
- {
--	unsigned long start = addr;
- 	pgtable_t token = pmd_pgtable(*pmd);
- 
--	start &= PMD_MASK;
--	if (start < floor)
--		return;
--	if (ceiling) {
--		ceiling &= PMD_MASK;
--		if (!ceiling)
--			return;
--	}
--	if (end - 1 > ceiling - 1)
-+	if (range_is_outside_limits(addr, end, floor, ceiling, PMD_MASK))
- 		return;
- 
- 	pmd_clear(pmd);
-@@ -395,15 +393,7 @@ static void hugetlb_free_pmd_range(struct mmu_gather *tlb, pud_t *pud,
- 				  addr, next, floor, ceiling);
- 	} while (addr = next, addr != end);
- 
--	start &= PUD_MASK;
--	if (start < floor)
--		return;
--	if (ceiling) {
--		ceiling &= PUD_MASK;
--		if (!ceiling)
--			return;
--	}
--	if (end - 1 > ceiling - 1)
-+	if (range_is_outside_limits(start, end, floor, ceiling, PUD_MASK))
- 		return;
- 
- 	pmd = pmd_offset(pud, start);
-@@ -446,15 +436,7 @@ static void hugetlb_free_pud_range(struct mmu_gather *tlb, p4d_t *p4d,
- 		}
- 	} while (addr = next, addr != end);
- 
--	start &= PGDIR_MASK;
--	if (start < floor)
--		return;
--	if (ceiling) {
--		ceiling &= PGDIR_MASK;
--		if (!ceiling)
--			return;
--	}
--	if (end - 1 > ceiling - 1)
-+	if (range_is_outside_limits(start, end, floor, ceiling, PGDIR_MASK))
- 		return;
- 
- 	pud = pud_offset(p4d, start);
--- 
-2.25.0
+By definition LSM and IMA hooks are generic with callers in appropriate
+places in the kernel.   This paragraph is redundant.
+
+> 
+> Add a new IMA func CRITICAL_DATA and a corresponding IMA hook
+> ima_measure_critical_data() to support measuring critical data for 
+> various kernel subsystems. 
+
+Instead of using the word "add", it would be more appropriate to use
+the word "define".   Define a new IMA hook named
+ima_measure_critical_data to measure kernel integrity critical data.  
+Please also update the Subject line as well.  "ima: define an IMA hook
+to measure kernel integrity critical data".
+
+> 
+> Signed-off-by: Tushar Sugandhi <tusharsu@linux.microsoft.com>
+> ---
+> 
+> diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
+> index 4485d87c0aa5..6e1b11dcba53 100644
+> --- a/security/integrity/ima/ima_main.c
+> +++ b/security/integrity/ima/ima_main.c
+> @@ -921,6 +921,44 @@ void ima_kexec_cmdline(int kernel_fd, const void *buf, int size)
+>  	fdput(f);
+>  }
+>  
+> +/**
+> + * ima_measure_critical_data - measure kernel subsystem data
+> + * critical to integrity of the kernel
+
+Please change this to "measure kernel integrity critical data".
+
+> + * @event_data_source: name of the data source being measured;
+> + * typically it should be the name of the kernel subsystem that is sending
+> + * the data for measurement
+
+Including "data_source" here isn't quite right.  "data source" should
+only be added in the first patch which uses it, not here.   When adding
+it please shorten the field description to "kernel data source".   The
+longer explanation can be included in the longer function description.
+
+> + * @event_name: name of an event from the kernel subsystem that is sending
+> + * the data for measurement
+
+As this is being passed to process_buffer_measurement(), this should be
+the same or similar to the existing definition.
+
+> + * @buf: pointer to buffer containing data to measure
+> + * @buf_len: length of buffer(in bytes)
+> + * @measure_buf_hash: if set to true - will measure hash of the buf,
+> + *                    instead of buf
+
+ kernel doc requires a single line.  In this case, please shorten the
+argument definition to "measure buffer data or buffer data hash".   The
+details can be included in the longer function description.
+
+> + *
+> + * A given kernel subsystem (event_data_source) may send
+> + * data (buf) to be measured when the data or the subsystem state changes.
+> + * The state/data change can be described by event_name.
+> + * Examples of critical data (buf) could be kernel in-memory r/o structures,
+> + * hash of the memory structures, or data that represents subsystem
+> + * state change.
+> + * measure_buf_hash can be used to save space, if the data being measured
+> + * is too large.
+> + * The data (buf) can only be measured, not appraised.
+> + */
+
+Please remove this longer function description, replacing it something
+more appropriate.  The subsequent patch that introduces the "data
+source" parameter would expand the description.
+
+thanks,
+
+Mimi
+
+> +void ima_measure_critical_data(const char *event_data_source,
+> +			       const char *event_name,
+> +			       const void *buf, int buf_len,
+> +			       bool measure_buf_hash)
+> +{
+> +	if (!event_name || !event_data_source || !buf || !buf_len) {
+> +		pr_err("Invalid arguments passed to %s().\n", __func__);
+> +		return;
+> +	}
+> +
+> +	process_buffer_measurement(NULL, buf, buf_len, event_name,
+> +				   CRITICAL_DATA, 0, event_data_source,
+> +				   measure_buf_hash);
+> +}
+> +
+>  static int __init init_ima(void)
+>  {
+>  	int error;
 
