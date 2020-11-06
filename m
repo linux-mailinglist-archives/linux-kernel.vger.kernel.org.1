@@ -2,102 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24F902A941F
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 11:25:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73BA22A9435
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 11:26:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726945AbgKFKZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 05:25:26 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33118 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726831AbgKFKZZ (ORCPT
+        id S1727133AbgKFK0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 05:26:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727105AbgKFK0F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 05:25:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604658324;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=rzIGS6pP6lZWtk6SQ8xr2MVcGhW0ibnx4UquLJftED4=;
-        b=VSZbBYUBuQinlppbMy5K+664LCZwnmArxmoxG//XQBtGGARWEG1jAnRBj++UF+cXhl58im
-        i8jNa1uHzp6nN3dxiYV82l+4sQYmGRu1tIrOirmnDCwLFZ7ljuNwCdbMwhwp7esarEtmDk
-        6R2cPZcVwsgtM0uuj2AHrnMnvuQIHLU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-7-x8h7qqNrOmm7t1TuMTU4mg-1; Fri, 06 Nov 2020 05:25:22 -0500
-X-MC-Unique: x8h7qqNrOmm7t1TuMTU4mg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 45DA01868416;
-        Fri,  6 Nov 2020 10:25:21 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 024B519C4F;
-        Fri,  6 Nov 2020 10:25:17 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     peterx@redhat.com
-Subject: [PATCH] KVM: remove kvm_clear_guest_page
-Date:   Fri,  6 Nov 2020 05:25:17 -0500
-Message-Id: <20201106102517.664773-1-pbonzini@redhat.com>
+        Fri, 6 Nov 2020 05:26:05 -0500
+Received: from mail-vk1-xa42.google.com (mail-vk1-xa42.google.com [IPv6:2607:f8b0:4864:20::a42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68987C0613D3
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 02:26:04 -0800 (PST)
+Received: by mail-vk1-xa42.google.com with SMTP id w123so135200vka.4
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 02:26:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HSC97YNOlN2kUh5wdqOB/lybRqmpts3XhUMXVzBRpuU=;
+        b=WVh1sV7yTyGnxFKwH/kCFJLI0h+xKJLCEKlfhXMjzg8UywCK08uPFzALrz6uq9v7rg
+         x+XpUNuSHdsZJCwYaK4K1KknKsNCC05506QxKcbMSr6MfzBOOjqvzzdOGZWg9fTZKPK0
+         hBkFJs3I6pjmGsbpA1/V5mShpiM1BPXboGdbn//dpAMyFEWLt2WkYa6ErIHd0X+UGA1e
+         pGPA/JhWGaCiamS3+eVyGQUuVYA38sq3AYFWm0gyO5qxzhD/jzFAhBhmuOW5SiLEmWI0
+         vXmP8C/EAzW9gR8Y6mJx/r+GKeuTiIdQkWKKpAVFiXt0igDVfmI0iRBZlozAcFQPJT4d
+         2gNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HSC97YNOlN2kUh5wdqOB/lybRqmpts3XhUMXVzBRpuU=;
+        b=MffPxB3cvBukgBuGtk6Jyqp+tgSclfDcd9pkiE/hXU+Qk413dvaMLnNF/WGX7Tj5LQ
+         X4pOqTfngL1Kx6a6dcPH+AwADODGmmor+93Esg9Dds0v2WqnLa+4RXIpRle3jwE9vqIj
+         xZRSo09vKD7LGNLaTy8XpAmKbHtfJHbsD7OtiIf/VD9Re6SD+WaKUB9TYwoglFHrRoTx
+         ML/2dVAmB612JOiubZX7WAf2IN2nKZ3ZQgYYySeWh4a0Hv0oQOzjPV/ZxWxa39ht/Dks
+         h8l9KtkOtO3GT9xDRrynY/0CpW1iMvbAFygnMUxtphCVofmiLt4Y/X/2B8JpOTUKh2rW
+         axvQ==
+X-Gm-Message-State: AOAM532OUMy1/dhLMVgfZiQPq/3EvdtD6Tvk4xg4AcfPan3cQGUPMYrJ
+        Av6oy08mXI4LTHbsOqXpcwTgR8S+uuvvdeB0tWYudKN6lno=
+X-Google-Smtp-Source: ABdhPJxdd1JSJRrUFF8pCsDcmoIO/ZpQ8q6imT4S/76iQuVwhK6KvpfjyD+DN9xfVBgmD7tDT/UUnyaOS/+J6hvUGd4=
+X-Received: by 2002:a05:6122:10eb:: with SMTP id m11mr518387vko.8.1604658363558;
+ Fri, 06 Nov 2020 02:26:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <684ff01900180c0a40ec307dacc673b24eab593b.1604643714.git.viresh.kumar@linaro.org>
+ <1012a98950355bd5a52424668050a17c3430cbe0.1604643714.git.viresh.kumar@linaro.org>
+In-Reply-To: <1012a98950355bd5a52424668050a17c3430cbe0.1604643714.git.viresh.kumar@linaro.org>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Fri, 6 Nov 2020 11:25:27 +0100
+Message-ID: <CAPDyKFrTJbTrSMW30wN5Kbk4=yDAMF37HR2+9MKybkyDW0f8hQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] opp: Don't create an OPP table from dev_pm_opp_get_opp_table()
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kvm_clear_guest_page is not used anymore after "KVM: X86: Don't track dirty
-for KVM_SET_[TSS_ADDR|IDENTITY_MAP_ADDR]", except from kvm_clear_guest.
-We can just inline it in its sole user.
+On Fri, 6 Nov 2020 at 07:25, Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> It has been found that some users (like cpufreq-dt and others on LKML)
+> have abused the helper dev_pm_opp_get_opp_table() to create the OPP
+> table instead of just finding it, which is the wrong thing to do. This
+> routine was meant for OPP core's internal working and exposed the whole
+> functionality by mistake.
+>
+> Change the scope of dev_pm_opp_get_opp_table() to only finding the
+> table. The internal helpers _opp_get_opp_table*() are thus renamed to
+> _add_opp_table*(), dev_pm_opp_get_opp_table_indexed() is removed (as we
+> don't need the index field for finding the OPP table) and so the only
+> user, genpd, is updated.
+>
+> Note that the prototype of _add_opp_table() was already left in opp.h by
+> mistake when it was removed earlier and so we weren't required to add it
+> now.
+>
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- include/linux/kvm_host.h |  1 -
- virt/kvm/kvm_main.c      | 11 ++---------
- 2 files changed, 2 insertions(+), 10 deletions(-)
+Acked-by: Ulf Hansson <ulf.hansson@linaro.org>
 
-diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-index 7f2e2a09ebbd..66a4324f329d 100644
---- a/include/linux/kvm_host.h
-+++ b/include/linux/kvm_host.h
-@@ -792,7 +792,6 @@ int kvm_gfn_to_hva_cache_init(struct kvm *kvm, struct gfn_to_hva_cache *ghc,
- 			offset_in_page(__gpa), v);			\
- })
- 
--int kvm_clear_guest_page(struct kvm *kvm, gfn_t gfn, int offset, int len);
- int kvm_clear_guest(struct kvm *kvm, gpa_t gpa, unsigned long len);
- struct kvm_memory_slot *gfn_to_memslot(struct kvm *kvm, gfn_t gfn);
- bool kvm_is_visible_gfn(struct kvm *kvm, gfn_t gfn);
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 2541a17ff1c4..1c7514579861 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -2616,23 +2616,16 @@ int kvm_read_guest_cached(struct kvm *kvm, struct gfn_to_hva_cache *ghc,
- }
- EXPORT_SYMBOL_GPL(kvm_read_guest_cached);
- 
--int kvm_clear_guest_page(struct kvm *kvm, gfn_t gfn, int offset, int len)
--{
--	const void *zero_page = (const void *) __va(page_to_phys(ZERO_PAGE(0)));
--
--	return kvm_write_guest_page(kvm, gfn, zero_page, offset, len);
--}
--EXPORT_SYMBOL_GPL(kvm_clear_guest_page);
--
- int kvm_clear_guest(struct kvm *kvm, gpa_t gpa, unsigned long len)
- {
-+	const void *zero_page = (const void *) __va(page_to_phys(ZERO_PAGE(0)));
- 	gfn_t gfn = gpa >> PAGE_SHIFT;
- 	int seg;
- 	int offset = offset_in_page(gpa);
- 	int ret;
- 
- 	while ((seg = next_segment(len, offset)) != 0) {
--		ret = kvm_clear_guest_page(kvm, gfn, offset, seg);
-+		ret = kvm_write_guest_page(kvm, gfn, zero_page, offset, len);
- 		if (ret < 0)
- 			return ret;
- 		offset = 0;
--- 
-2.26.2
+Kind regards
+Uffe
 
+> ---
+>  drivers/base/power/domain.c |  2 +-
+>  drivers/opp/core.c          | 27 +++++++++++++--------------
+>  drivers/opp/of.c            |  4 ++--
+>  drivers/opp/opp.h           |  1 +
+>  include/linux/pm_opp.h      |  1 -
+>  5 files changed, 17 insertions(+), 18 deletions(-)
+>
+> diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
+> index 743268996336..92b750b865d5 100644
+> --- a/drivers/base/power/domain.c
+> +++ b/drivers/base/power/domain.c
+> @@ -2249,7 +2249,7 @@ int of_genpd_add_provider_onecell(struct device_node *np,
+>                          * Save table for faster processing while setting
+>                          * performance state.
+>                          */
+> -                       genpd->opp_table = dev_pm_opp_get_opp_table_indexed(&genpd->dev, i);
+> +                       genpd->opp_table = dev_pm_opp_get_opp_table(&genpd->dev);
+>                         WARN_ON(IS_ERR(genpd->opp_table));
+>                 }
+>
+> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+> index 9915e8487f0b..b24f685823ae 100644
+> --- a/drivers/opp/core.c
+> +++ b/drivers/opp/core.c
+> @@ -1138,7 +1138,7 @@ void _get_opp_table_kref(struct opp_table *opp_table)
+>   * uses the opp_tables_busy flag to indicate if another creator is in the middle
+>   * of adding an OPP table and others should wait for it to finish.
+>   */
+> -static struct opp_table *_opp_get_opp_table(struct device *dev, int index)
+> +struct opp_table *_add_opp_table_indexed(struct device *dev, int index)
+>  {
+>         struct opp_table *opp_table;
+>
+> @@ -1188,17 +1188,16 @@ static struct opp_table *_opp_get_opp_table(struct device *dev, int index)
+>         return opp_table;
+>  }
+>
+> -struct opp_table *dev_pm_opp_get_opp_table(struct device *dev)
+> +struct opp_table *_add_opp_table(struct device *dev)
+>  {
+> -       return _opp_get_opp_table(dev, 0);
+> +       return _add_opp_table_indexed(dev, 0);
+>  }
+> -EXPORT_SYMBOL_GPL(dev_pm_opp_get_opp_table);
+>
+> -struct opp_table *dev_pm_opp_get_opp_table_indexed(struct device *dev,
+> -                                                  int index)
+> +struct opp_table *dev_pm_opp_get_opp_table(struct device *dev)
+>  {
+> -       return _opp_get_opp_table(dev, index);
+> +       return _find_opp_table(dev);
+>  }
+> +EXPORT_SYMBOL_GPL(dev_pm_opp_get_opp_table);
+>
+>  static void _opp_table_kref_release(struct kref *kref)
+>  {
+> @@ -1627,7 +1626,7 @@ struct opp_table *dev_pm_opp_set_supported_hw(struct device *dev,
+>  {
+>         struct opp_table *opp_table;
+>
+> -       opp_table = dev_pm_opp_get_opp_table(dev);
+> +       opp_table = _add_opp_table(dev);
+>         if (IS_ERR(opp_table))
+>                 return opp_table;
+>
+> @@ -1686,7 +1685,7 @@ struct opp_table *dev_pm_opp_set_prop_name(struct device *dev, const char *name)
+>  {
+>         struct opp_table *opp_table;
+>
+> -       opp_table = dev_pm_opp_get_opp_table(dev);
+> +       opp_table = _add_opp_table(dev);
+>         if (IS_ERR(opp_table))
+>                 return opp_table;
+>
+> @@ -1779,7 +1778,7 @@ struct opp_table *dev_pm_opp_set_regulators(struct device *dev,
+>         struct regulator *reg;
+>         int ret, i;
+>
+> -       opp_table = dev_pm_opp_get_opp_table(dev);
+> +       opp_table = _add_opp_table(dev);
+>         if (IS_ERR(opp_table))
+>                 return opp_table;
+>
+> @@ -1887,7 +1886,7 @@ struct opp_table *dev_pm_opp_set_clkname(struct device *dev, const char *name)
+>         struct opp_table *opp_table;
+>         int ret;
+>
+> -       opp_table = dev_pm_opp_get_opp_table(dev);
+> +       opp_table = _add_opp_table(dev);
+>         if (IS_ERR(opp_table))
+>                 return opp_table;
+>
+> @@ -1955,7 +1954,7 @@ struct opp_table *dev_pm_opp_register_set_opp_helper(struct device *dev,
+>         if (!set_opp)
+>                 return ERR_PTR(-EINVAL);
+>
+> -       opp_table = dev_pm_opp_get_opp_table(dev);
+> +       opp_table = _add_opp_table(dev);
+>         if (IS_ERR(opp_table))
+>                 return opp_table;
+>
+> @@ -2039,7 +2038,7 @@ struct opp_table *dev_pm_opp_attach_genpd(struct device *dev,
+>         int index = 0, ret = -EINVAL;
+>         const char **name = names;
+>
+> -       opp_table = dev_pm_opp_get_opp_table(dev);
+> +       opp_table = _add_opp_table(dev);
+>         if (IS_ERR(opp_table))
+>                 return opp_table;
+>
+> @@ -2204,7 +2203,7 @@ int dev_pm_opp_add(struct device *dev, unsigned long freq, unsigned long u_volt)
+>         struct opp_table *opp_table;
+>         int ret;
+>
+> -       opp_table = dev_pm_opp_get_opp_table(dev);
+> +       opp_table = _add_opp_table(dev);
+>         if (IS_ERR(opp_table))
+>                 return PTR_ERR(opp_table);
+>
+> diff --git a/drivers/opp/of.c b/drivers/opp/of.c
+> index 9faeb83e4b32..c718092757d9 100644
+> --- a/drivers/opp/of.c
+> +++ b/drivers/opp/of.c
+> @@ -974,7 +974,7 @@ int dev_pm_opp_of_add_table(struct device *dev)
+>         struct opp_table *opp_table;
+>         int ret;
+>
+> -       opp_table = dev_pm_opp_get_opp_table_indexed(dev, 0);
+> +       opp_table = _add_opp_table_indexed(dev, 0);
+>         if (IS_ERR(opp_table))
+>                 return PTR_ERR(opp_table);
+>
+> @@ -1029,7 +1029,7 @@ int dev_pm_opp_of_add_table_indexed(struct device *dev, int index)
+>                         index = 0;
+>         }
+>
+> -       opp_table = dev_pm_opp_get_opp_table_indexed(dev, index);
+> +       opp_table = _add_opp_table_indexed(dev, index);
+>         if (IS_ERR(opp_table))
+>                 return PTR_ERR(opp_table);
+>
+> diff --git a/drivers/opp/opp.h b/drivers/opp/opp.h
+> index ebd930e0b3ca..4ced7ffa8158 100644
+> --- a/drivers/opp/opp.h
+> +++ b/drivers/opp/opp.h
+> @@ -224,6 +224,7 @@ int _opp_add(struct device *dev, struct dev_pm_opp *new_opp, struct opp_table *o
+>  int _opp_add_v1(struct opp_table *opp_table, struct device *dev, unsigned long freq, long u_volt, bool dynamic);
+>  void _dev_pm_opp_cpumask_remove_table(const struct cpumask *cpumask, int last_cpu);
+>  struct opp_table *_add_opp_table(struct device *dev);
+> +struct opp_table *_add_opp_table_indexed(struct device *dev, int index);
+>  void _put_opp_list_kref(struct opp_table *opp_table);
+>
+>  #ifdef CONFIG_OF
+> diff --git a/include/linux/pm_opp.h b/include/linux/pm_opp.h
+> index dbb484524f82..1435c054016a 100644
+> --- a/include/linux/pm_opp.h
+> +++ b/include/linux/pm_opp.h
+> @@ -90,7 +90,6 @@ struct dev_pm_set_opp_data {
+>  #if defined(CONFIG_PM_OPP)
+>
+>  struct opp_table *dev_pm_opp_get_opp_table(struct device *dev);
+> -struct opp_table *dev_pm_opp_get_opp_table_indexed(struct device *dev, int index);
+>  void dev_pm_opp_put_opp_table(struct opp_table *opp_table);
+>
+>  unsigned long dev_pm_opp_get_voltage(struct dev_pm_opp *opp);
+> --
+> 2.25.0.rc1.19.g042ed3e048af
+>
