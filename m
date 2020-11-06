@@ -2,75 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D8C92A8D1B
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 03:45:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADAB12A8D1F
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 03:46:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725920AbgKFCpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 21:45:25 -0500
-Received: from m176115.mail.qiye.163.com ([59.111.176.115]:53155 "EHLO
-        m176115.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725828AbgKFCpZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 21:45:25 -0500
-Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.231])
-        by m176115.mail.qiye.163.com (Hmail) with ESMTPA id 3826B6668AC;
-        Fri,  6 Nov 2020 10:45:21 +0800 (CST)
-From:   Wang Qing <wangqing@vivo.com>
-To:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        Wang Qing <wangqing@vivo.com>, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] drm: Use IS_ERR() instead of IS_ERR_OR_NULL()
-Date:   Fri,  6 Nov 2020 10:45:12 +0800
-Message-Id: <1604630714-6163-1-git-send-email-wangqing@vivo.com>
-X-Mailer: git-send-email 2.7.4
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZH09NSEhCGU4aSh5OVkpNS09NSEtMSUpMQk5VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hKQ1VLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Pxg6OTo4Nz8sSh0qPElDETQc
-        NTMKCTZVSlVKTUtPTUhLTElJSU9IVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
-        SU5KVUxPVUlISllXWQgBWUFJTUtJNwY+
-X-HM-Tid: 0a759b71b4889373kuws3826b6668ac
+        id S1725922AbgKFCq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 21:46:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43180 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725616AbgKFCq4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Nov 2020 21:46:56 -0500
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 31A0F20782;
+        Fri,  6 Nov 2020 02:46:54 +0000 (UTC)
+Date:   Thu, 5 Nov 2020 21:46:52 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Subject: Re: linux-next: manual merge of the tip tree with Linus' tree
+Message-ID: <20201105214652.4105c050@oasis.local.home>
+In-Reply-To: <20201106133902.2ec6a1e9@canb.auug.org.au>
+References: <20201106133902.2ec6a1e9@canb.auug.org.au>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-dev_pm_opp_find_freq_exact never return null but ERR_PTR(),so we
-should use IS_ERR() to clarify and avoid compilation warnings.
+On Fri, 6 Nov 2020 13:39:02 +1100
+Stephen Rothwell <sfr@canb.auug.org.au> wrote:
 
-Signed-off-by: Wang Qing <wangqing@vivo.com>
----
- drivers/gpu/drm/msm/adreno/a6xx_gmu.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> I fixed it up (the latter removed the code updated by the former, so I
+> just used the latter) and can carry the fix as necessary. This is now
+> fixed as far as linux-next is concerned, but any non trivial conflicts
+> should be mentioned to your upstream maintainer when your tree is
+> submitted for merging.  You may also want to consider cooperating with
+> the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
 
-diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-index 8c81a89..6247397 100755
---- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-+++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-@@ -851,7 +851,7 @@ static void a6xx_gmu_set_initial_freq(struct msm_gpu *gpu, struct a6xx_gmu *gmu)
- 	unsigned long gpu_freq = gmu->gpu_freqs[gmu->current_perf_index];
- 
- 	gpu_opp = dev_pm_opp_find_freq_exact(&gpu->pdev->dev, gpu_freq, true);
--	if (IS_ERR_OR_NULL(gpu_opp))
-+	if (IS_ERR(gpu_opp))
- 		return;
- 
- 	gmu->freq = 0; /* so a6xx_gmu_set_freq() doesn't exit early */
-@@ -865,7 +865,7 @@ static void a6xx_gmu_set_initial_bw(struct msm_gpu *gpu, struct a6xx_gmu *gmu)
- 	unsigned long gpu_freq = gmu->gpu_freqs[gmu->current_perf_index];
- 
- 	gpu_opp = dev_pm_opp_find_freq_exact(&gpu->pdev->dev, gpu_freq, true);
--	if (IS_ERR_OR_NULL(gpu_opp))
-+	if (IS_ERR(gpu_opp))
- 		return;
- 
- 	dev_pm_opp_set_bw(&gpu->pdev->dev, gpu_opp);
--- 
-2.7.4
+Thanks Stephen,
 
+Yeah, updates caused errors that needed to be fixed, which we knew were
+just a work around till the next merge window. Which is why that commit
+had in the comments: "Nested is a workaround that will soon not be
+needed." ;-)
+
+-- Steve
