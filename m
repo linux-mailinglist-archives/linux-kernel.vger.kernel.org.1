@@ -2,153 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 558E92A9E48
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 20:48:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37C462A9E4C
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 20:53:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728242AbgKFTs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 14:48:29 -0500
-Received: from mga12.intel.com ([192.55.52.136]:40742 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727129AbgKFTs3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 14:48:29 -0500
-IronPort-SDR: YkNyJTzaYPE4fSSR2WvKBG+k+KPF5TEh78pAeb60ocRRZ96rTnTtmRLNpmP2fZR6eG3HwDvA3u
- NiA7XaCLqLzg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9797"; a="148873272"
-X-IronPort-AV: E=Sophos;i="5.77,457,1596524400"; 
-   d="scan'208";a="148873272"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2020 11:48:28 -0800
-IronPort-SDR: XWY1DSzfUHCDzW3P1xd2NX+4BKRs485qsAY5cE1o0IwtUqu34NsGNsziKs71hNgBCw0cL1p+oT
- TPFe28PRTE8w==
-X-IronPort-AV: E=Sophos;i="5.77,457,1596524400"; 
-   d="scan'208";a="472182452"
-Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.221.127]) ([10.212.221.127])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2020 11:48:27 -0800
-Subject: Re: [PATCH v14 02/26] x86/cpufeatures: Add CET CPU feature flags for
- Control-flow Enforcement Technology (CET)
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>, Borislav Petkov <bp@suse.de>
-References: <20201012153850.26996-1-yu-cheng.yu@intel.com>
- <20201012153850.26996-3-yu-cheng.yu@intel.com>
- <20201106184953.GI14914@zn.tnic>
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Message-ID: <94e82db0-381b-a140-ab74-f23b7c35949e@intel.com>
-Date:   Fri, 6 Nov 2020 11:48:26 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S1728195AbgKFTw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 14:52:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38672 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726415AbgKFTw6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 14:52:58 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F755C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 11:52:58 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id r186so1782761pgr.0
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 11:52:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kt96Jr0Z4cVutyykEDDLdrrSlVc/2nRg/Ta01oSTLh8=;
+        b=fqg1gT6ASXGLrvAEDno6jGnjBo6XmlDpsrqtnKNk6h8pbx4i0342qufWryjXS48Lxv
+         Y6k+1uYfb5jvT07lpHKu41v6qopjSiUpW2OXFYP0A1eVXQD1n6oiUzSJAep2LUncmWM6
+         m+vBuwtCiRNhJLkFh27qdK3Y2i66w2otgN4q4tCk+qPmMqiUq6wr3FUg0O5m7eL3QOBl
+         k/Ughq4nqeOzaxG54BZyvM3mpjThoTl9h00YNUYIyoOFDBx5rDwwQ3EShZSwZujCRz1b
+         aD3QzdteOHiAUlJWdqr7G6LZsf6i964OLCLWA8wXb5rzWK6G2l8zWTac6JUe9Leh4Ii6
+         bBLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kt96Jr0Z4cVutyykEDDLdrrSlVc/2nRg/Ta01oSTLh8=;
+        b=lkqpM3S9J5W075saqS5/ui6dGR35FNOdTUnLtdiHL7rPZP5LSHStY2PAL+wrGg7IuD
+         ol+pGiuwA4+nfUYc36PmiDwCIBGbnNxupqLP8Zy0+ox+DOOfugQ2XAMda4BZ9aeTh+zH
+         lDyKq+eDfm4cb7P+zcBjyoqJblqrWm/4XwYFCRDU6VAtwJH9KURE+vbkr2dH7e2X0svX
+         OjTgTBnvUOTF3MtdbKyM9Yrb+L51vrE796rIgef+guxPHTdLuxgOeEcxOHWOLYkf3t4G
+         XFFKqOzIr9i9TgxQ5CdfReSESE5r0/JhOrHTvTf4U4CRmQ0nEWEbT+9+Q5D6hB1xdfQb
+         fcKg==
+X-Gm-Message-State: AOAM531cxcaLlqRhAPM3IgtPeuJ+fxWLmL/TUKmy8ojss4Ck37LZyi/k
+        CVwZoOMiAZ/n7q/PfkwfJPxKiKar64LPzuPNcUpjxw==
+X-Google-Smtp-Source: ABdhPJxtQ24MSKMaSwDtho+7mrL7igqZ5flwXn9S2ZaacJr5f4SGaulS2LIaXKbD4oQ3c1ck5MjGV/OeeY05vOhNZlo=
+X-Received: by 2002:a17:90a:6b04:: with SMTP id v4mr1206965pjj.101.1604692377390;
+ Fri, 06 Nov 2020 11:52:57 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201106184953.GI14914@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201106051436.2384842-1-adrian.ratiu@collabora.com>
+ <20201106051436.2384842-3-adrian.ratiu@collabora.com> <20201106101419.GB3811063@ubuntu-m3-large-x86>
+ <87wnyyvh56.fsf@collabora.com>
+In-Reply-To: <87wnyyvh56.fsf@collabora.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Fri, 6 Nov 2020 11:52:46 -0800
+Message-ID: <CAKwvOdkodob0M0r_AK_4nG3atLGMyNENMd6qVAHSPa92Zh7UZA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] arm: lib: xor-neon: disable clang vectorization
+To:     Adrian Ratiu <adrian.ratiu@collabora.com>
+Cc:     Nathan Chancellor <natechancellor@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Russell King <linux@armlinux.org.uk>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Collabora Kernel ML <kernel@collabora.com>,
+        Ard Biesheuvel <ardb@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/6/2020 10:49 AM, Borislav Petkov wrote:
-> On Mon, Oct 12, 2020 at 08:38:26AM -0700, Yu-cheng Yu wrote:
->> Add CPU feature flags for Control-flow Enforcement Technology (CET).
->>
->> CPUID.(EAX=7,ECX=0):ECX[bit 7] Shadow stack
->> CPUID.(EAX=7,ECX=0):EDX[bit 20] Indirect Branch Tracking
->>
->> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
->> Reviewed-by: Borislav Petkov <bp@suse.de>
-> 
-> This is not the patch I reviewed, why do you keep my Reviewed-by tag?
+On Fri, Nov 6, 2020 at 3:50 AM Adrian Ratiu <adrian.ratiu@collabora.com> wrote:
+>
+> Hi Nathan,
+>
+> On Fri, 06 Nov 2020, Nathan Chancellor <natechancellor@gmail.com>
+> wrote:
+> > + Ard, who wrote this code.
+> >
+> > On Fri, Nov 06, 2020 at 07:14:36AM +0200, Adrian Ratiu wrote:
+> >> Due to a Clang bug [1] neon autoloop vectorization does not
+> >> happen or happens badly with no gains and considering previous
+> >> GCC experiences which generated unoptimized code which was
+> >> worse than the default asm implementation, it is safer to
+> >> default clang builds to the known good generic implementation.
+> >> The kernel currently supports a minimum Clang version of
+> >> v10.0.1, see commit 1f7a44f63e6c ("compiler-clang: add build
+> >> check for clang 10.0.1").   When the bug gets eventually fixed,
+> >> this commit could be reverted or, if the minimum clang version
+> >> bump takes a long time, a warning could be added for users to
+> >> upgrade their compilers like was done for GCC.   [1]
+> >> https://bugs.llvm.org/show_bug.cgi?id=40976  Signed-off-by:
+> >> Adrian Ratiu <adrian.ratiu@collabora.com>
+> >
+> > Thank you for the patch! We are also tracking this here:
+> >
+> > https://github.com/ClangBuiltLinux/linux/issues/496
+> >
+> > It was on my TODO to revist getting the warning eliminated,
+> > which likely would have involved a patch like this as well.
+> >
+> > I am curious if it is worth revisting or dusting off Arnd's
+> > patch in the LLVM bug tracker first. I have not tried it
+> > personally. If that is not a worthwhile option, I am fine with
+> > this for now. It would be nice to try and get a fix pinned down
+> > on the LLVM side at some point but alas, finite amount of
+> > resources and people :(
+>
+> I tested Arnd's kernel patch from the LLVM bugtracker [1], but
+> with the Clang v10.0.1 I still get warnings like the following
+> even though the __restrict workaround seems to affect the
+> generated instructions:
+>
+> ./include/asm-generic/xor.h:15:2: remark: the cost-model indicates
+> that interleaving is not beneficial [-Rpass-missed=loop-vectorize]
+> ./include/asm-generic/xor.h:11:1: remark: List vectorization was
+> possible but not beneficial with cost 0 >= 0
+> [-Rpass-missed=slp-vectorizer] xor_8regs_2(unsigned long bytes,
+> unsigned long *__restrict p1, unsigned long *__restrict p2)
 
-I will drop it.  It has been re-based many times, and probably I 
-accidentally introduced something else?
+If it's just a matter of overruling the cost model
+#pragma clang loop vectorize(enable)
 
-> 
->> Reviewed-by: Kees Cook <keescook@chromium.org>
->> ---
->>   arch/x86/include/asm/cpufeatures.h       | 2 ++
->>   arch/x86/kernel/cpu/cpuid-deps.c         | 2 ++
->>   tools/arch/x86/include/asm/cpufeatures.h | 2 ++
->>   3 files changed, 6 insertions(+)
->>
->> diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
->> index 2901d5df4366..c794e18e8a14 100644
->> --- a/arch/x86/include/asm/cpufeatures.h
->> +++ b/arch/x86/include/asm/cpufeatures.h
->> @@ -341,6 +341,7 @@
->>   #define X86_FEATURE_OSPKE		(16*32+ 4) /* OS Protection Keys Enable */
->>   #define X86_FEATURE_WAITPKG		(16*32+ 5) /* UMONITOR/UMWAIT/TPAUSE Instructions */
->>   #define X86_FEATURE_AVX512_VBMI2	(16*32+ 6) /* Additional AVX512 Vector Bit Manipulation Instructions */
->> +#define X86_FEATURE_SHSTK		(16*32+ 7) /* Shadow Stack */
->>   #define X86_FEATURE_GFNI		(16*32+ 8) /* Galois Field New Instructions */
->>   #define X86_FEATURE_VAES		(16*32+ 9) /* Vector AES */
->>   #define X86_FEATURE_VPCLMULQDQ		(16*32+10) /* Carry-Less Multiplication Double Quadword */
->> @@ -370,6 +371,7 @@
->>   #define X86_FEATURE_SERIALIZE		(18*32+14) /* SERIALIZE instruction */
->>   #define X86_FEATURE_PCONFIG		(18*32+18) /* Intel PCONFIG */
->>   #define X86_FEATURE_ARCH_LBR		(18*32+19) /* Intel ARCH LBR */
->> +#define X86_FEATURE_IBT			(18*32+20) /* Indirect Branch Tracking */
->>   #define X86_FEATURE_SPEC_CTRL		(18*32+26) /* "" Speculation Control (IBRS + IBPB) */
->>   #define X86_FEATURE_INTEL_STIBP		(18*32+27) /* "" Single Thread Indirect Branch Predictors */
->>   #define X86_FEATURE_FLUSH_L1D		(18*32+28) /* Flush L1D cache */
->> diff --git a/arch/x86/kernel/cpu/cpuid-deps.c b/arch/x86/kernel/cpu/cpuid-deps.c
->> index 3cbe24ca80ab..fec83cc74b9e 100644
->> --- a/arch/x86/kernel/cpu/cpuid-deps.c
->> +++ b/arch/x86/kernel/cpu/cpuid-deps.c
->> @@ -69,6 +69,8 @@ static const struct cpuid_dep cpuid_deps[] = {
->>   	{ X86_FEATURE_CQM_MBM_TOTAL,		X86_FEATURE_CQM_LLC   },
->>   	{ X86_FEATURE_CQM_MBM_LOCAL,		X86_FEATURE_CQM_LLC   },
->>   	{ X86_FEATURE_AVX512_BF16,		X86_FEATURE_AVX512VL  },
->> +	{ X86_FEATURE_SHSTK,			X86_FEATURE_XSAVES    },
->> +	{ X86_FEATURE_IBT,			X86_FEATURE_XSAVES    },
->>   	{}
->>   };
->>   
->> diff --git a/tools/arch/x86/include/asm/cpufeatures.h b/tools/arch/x86/include/asm/cpufeatures.h
->> index 2901d5df4366..c794e18e8a14 100644
->> --- a/tools/arch/x86/include/asm/cpufeatures.h
->> +++ b/tools/arch/x86/include/asm/cpufeatures.h
->> @@ -341,6 +341,7 @@
->>   #define X86_FEATURE_OSPKE		(16*32+ 4) /* OS Protection Keys Enable */
->>   #define X86_FEATURE_WAITPKG		(16*32+ 5) /* UMONITOR/UMWAIT/TPAUSE Instructions */
->>   #define X86_FEATURE_AVX512_VBMI2	(16*32+ 6) /* Additional AVX512 Vector Bit Manipulation Instructions */
->> +#define X86_FEATURE_SHSTK		(16*32+ 7) /* Shadow Stack */
->>   #define X86_FEATURE_GFNI		(16*32+ 8) /* Galois Field New Instructions */
->>   #define X86_FEATURE_VAES		(16*32+ 9) /* Vector AES */
->>   #define X86_FEATURE_VPCLMULQDQ		(16*32+10) /* Carry-Less Multiplication Double Quadword */
->> @@ -370,6 +371,7 @@
->>   #define X86_FEATURE_SERIALIZE		(18*32+14) /* SERIALIZE instruction */
->>   #define X86_FEATURE_PCONFIG		(18*32+18) /* Intel PCONFIG */
->>   #define X86_FEATURE_ARCH_LBR		(18*32+19) /* Intel ARCH LBR */
->> +#define X86_FEATURE_IBT			(18*32+20) /* Indirect Branch Tracking */
->>   #define X86_FEATURE_SPEC_CTRL		(18*32+26) /* "" Speculation Control (IBRS + IBPB) */
->>   #define X86_FEATURE_INTEL_STIBP		(18*32+27) /* "" Single Thread Indirect Branch Predictors */
->>   #define X86_FEATURE_FLUSH_L1D		(18*32+28) /* Flush L1D cache */
-> 
-> We don't sync the respective change in tools/ - Arnaldo doe
-Got it.  I will remove this.
+will do the trick.
 
-Yu-cheng
+Indeed,
+```
+diff --git a/include/asm-generic/xor.h b/include/asm-generic/xor.h
+index b62a2a56a4d4..8796955498b7 100644
+--- a/include/asm-generic/xor.h
++++ b/include/asm-generic/xor.h
+@@ -12,6 +12,7 @@ xor_8regs_2(unsigned long bytes, unsigned long *p1,
+unsigned long *p2)
+ {
+        long lines = bytes / (sizeof (long)) / 8;
+
++#pragma clang loop vectorize(enable)
+        do {
+                p1[0] ^= p2[0];
+                p1[1] ^= p2[1];
+@@ -32,6 +33,7 @@ xor_8regs_3(unsigned long bytes, unsigned long *p1,
+unsigned long *p2,
+ {
+        long lines = bytes / (sizeof (long)) / 8;
+
++#pragma clang loop vectorize(enable)
+        do {
+                p1[0] ^= p2[0] ^ p3[0];
+                p1[1] ^= p2[1] ^ p3[1];
+@@ -53,6 +55,7 @@ xor_8regs_4(unsigned long bytes, unsigned long *p1,
+unsigned long *p2,
+ {
+        long lines = bytes / (sizeof (long)) / 8;
+
++#pragma clang loop vectorize(enable)
+        do {
+                p1[0] ^= p2[0] ^ p3[0] ^ p4[0];
+                p1[1] ^= p2[1] ^ p3[1] ^ p4[1];
+@@ -75,6 +78,7 @@ xor_8regs_5(unsigned long bytes, unsigned long *p1,
+unsigned long *p2,
+ {
+        long lines = bytes / (sizeof (long)) / 8;
+
++#pragma clang loop vectorize(enable)
+        do {
+                p1[0] ^= p2[0] ^ p3[0] ^ p4[0] ^ p5[0];
+                p1[1] ^= p2[1] ^ p3[1] ^ p4[1] ^ p5[1];
+```
+seems to generate the vectorized code.
+
+Why don't we find a way to make those pragma's more toolchain
+portable, rather than open coding them like I have above rather than
+this series?
+
+-- 
+Thanks,
+~Nick Desaulniers
