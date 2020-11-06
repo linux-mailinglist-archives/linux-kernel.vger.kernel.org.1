@@ -2,252 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A58612A9575
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 12:32:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85E4A2A957C
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 12:33:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727080AbgKFLc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 06:32:27 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:60414 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726565AbgKFLcW (ORCPT
+        id S1727248AbgKFLdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 06:33:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44318 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726694AbgKFLdV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 06:32:22 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0A6BWCra060273;
-        Fri, 6 Nov 2020 05:32:12 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1604662332;
-        bh=0hZftWxeH3TzvYEWUo/ySNOeak8LFO/Ww1fttHmrXmE=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=lQh4Qr9kkuR702DjqT+Zg9Y3YScafuVj1fJvpNcf7hbsCsn5rRMMhYzqGcIiiTzfZ
-         ToHU4N1TlHn7KupOiLT5DuhDBhnuGcudISQXblAzTJRIO9HlTk8LqBFXRRvzqS9a/9
-         T4OWV+AdZoecpGatVbs9lDRrIkEhWZStCxfmOGnA=
-Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0A6BWCU6005976
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 6 Nov 2020 05:32:12 -0600
-Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 6 Nov
- 2020 05:32:11 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 6 Nov 2020 05:32:11 -0600
-Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0A6BW8Y7047332;
-        Fri, 6 Nov 2020 05:32:09 -0600
-Subject: Re: [PATCH 2/4] arm64: dts: ti: k3-j721e*: Cleanup disabled nodes at
- SoC dtsi level
-To:     Nishanth Menon <nm@ti.com>
-CC:     Roger Quadros <rogerq@ti.com>, Keerthy <j-keerthy@ti.com>,
-        Jyri Sarha <jsarha@ti.com>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Tony Lindgren <tony@atomide.com>,
-        Tero Kristo <t-kristo@ti.com>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20201104224356.18040-1-nm@ti.com>
- <20201104224356.18040-3-nm@ti.com>
- <d9324b76-5587-b583-97da-5cb52f294c31@ti.com>
- <20201105140806.326ubfppb4guexpi@cultural>
-From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
-Message-ID: <37b4b284-0da5-c602-82a2-2b672f89891f@ti.com>
-Date:   Fri, 6 Nov 2020 13:32:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Fri, 6 Nov 2020 06:33:21 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64559C0613CF;
+        Fri,  6 Nov 2020 03:33:21 -0800 (PST)
+Date:   Fri, 06 Nov 2020 11:33:18 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1604662399;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QlEqeO7COPc8YVrB7/iHncGzMAau6M6QIoK5iyoUq20=;
+        b=PsTc1oLBTB0on8KZOjj9qUMSggWexV7gFZtkhQ2PM+YzuXN5neoywEi59MbBQ/T5ITGvyp
+        QRMSf/BII4/PFVjOEucMFgixTBDqmL0r0Vwm660vk+/CWp+PLp46spFmdkiRnPfK5nCIPL
+        CNwLajWT6+PvceSoW3hqd5a42BQmjXPsiCZbp8crVrgPE+dSGeNSxoJ9cC3sfKT6wCrMKL
+        zmCnFCCGE5t6PPiCCqSOqTxjRH4iSNKHxvpEGYViHe2L7Fb2qalhql+AhEdKN9kBcY1Kg+
+        WVzeid2fUIyIYspcELrBGeQbxsXNNeGLTIqMsbXDdSk+wWKAPP4RXORJYF1T4A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1604662399;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QlEqeO7COPc8YVrB7/iHncGzMAau6M6QIoK5iyoUq20=;
+        b=iAnjAnz1qLAKf3zcVCFqSZJMfhkhyNZyVWQeOwOolUOD7jVMhLqJ3XQXWdaPInoMsQENDG
+        4fstqidDhmsVWLCQ==
+From:   "tip-bot2 for Anand K Mistry" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/speculation: Allow IBPB to be conditionally
+ enabled on CPUs with always-on STIBP
+Cc:     Anand K Mistry <amistry@google.com>, Borislav Petkov <bp@suse.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20201105163246.v2.1.Ifd7243cd3e2c2206a893ad0a5b9a4f19549e22c6@changeid>
+References: <20201105163246.v2.1.Ifd7243cd3e2c2206a893ad0a5b9a4f19549e22c6@changeid>
 MIME-Version: 1.0
-In-Reply-To: <20201105140806.326ubfppb4guexpi@cultural>
+Message-ID: <160466239867.397.14457746329220725421.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Nishanth,
+The following commit has been merged into the x86/urgent branch of tip:
 
-On 05/11/2020 16.08, Nishanth Menon wrote:
-> On 09:32-20201105, Peter Ujfalusi wrote:
->> Nishanth,
->>
->> On 05/11/2020 0.43, Nishanth Menon wrote:
->>> The device tree standard sets the default node behavior when status
->>> property as enabled.
->>
->> It should be:
->> When the status property is not present under a node, the "okay' value
->> is assumed.
-> 
-> Thanks.. will update.
-> 
->>
->> Note: the device tree specification does not document default value as
->> such, see v0.3 (2.3.4, page 14).
->> Yes, the "okay" is used in case the status property is missing (by Linux
->> at least).
-> 
-> Maybe the spec update needs a formal release? Kumar's patch is merged:
-> https://github.com/devicetree-org/devicetree-specification/pull/33
-> 
-> on that exact same section, which you can see
-> https://github.com/devicetree-org/devicetree-specification/blob/master/source/chapter2-devicetree-basics.rst
+Commit-ID:     1978b3a53a74e3230cd46932b149c6e62e832e9a
+Gitweb:        https://git.kernel.org/tip/1978b3a53a74e3230cd46932b149c6e62e832e9a
+Author:        Anand K Mistry <amistry@google.com>
+AuthorDate:    Thu, 05 Nov 2020 16:33:04 +11:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Thu, 05 Nov 2020 21:43:34 +01:00
 
-I stand correct, I only checked the released version.
+x86/speculation: Allow IBPB to be conditionally enabled on CPUs with always-on STIBP
 
-> Brings it to sync to:
-> https://elinux.org/Device_Tree_Linux#status_property
-> 
->>
->>> There are many reasons for doing the same, number
->>> of strings in device tree,
->>
->> with expense of loc and readability.
-> 
-> The "readability" part is subjective a bit.. enabled and disabled both
-> have verbosity problem lets see how we can optimize as new boards come
-> in.
+On AMD CPUs which have the feature X86_FEATURE_AMD_STIBP_ALWAYS_ON,
+STIBP is set to on and
 
-I agree.
+  spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT_PREFERRED
 
-> 
->>
->>> default power management functionality etc
->>
->> Right, so how does that helps with devices present in the SoC, but no
->> node at all? First thing which comes to mind is AASRC, we don't have
->> Linux driver for it (and no DT binding document), but that does not mean
->> that it is not present. How PM would take that into account?
-> 
-> I think we are mixing topics here -> I was stating the motivation why
-> devicetree chose such as default.
+At the same time, IBPB can be set to conditional.
 
-I don't question the fact that 'okay' is the default status if it is not
-explicitly present. There is no better default than that.
+However, this leads to the case where it's impossible to turn on IBPB
+for a process because in the PR_SPEC_DISABLE case in ib_prctl_set() the
 
-> Do we have a suggestion to improve
-> the description in the commit?
+  spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT_PREFERRED
 
-A bit later on that.
+condition leads to a return before the task flag is set. Similarly,
+ib_prctl_get() will return PR_SPEC_DISABLE even though IBPB is set to
+conditional.
 
->>
->>> are few of the reasons.
->>>
->>> In general, after a few rounds of discussions [1] there are few
->>> options one could take when dealing with SoC dtsi and board dts
->>>
->>> a. SoC dtsi provide nodes as a super-set default (aka enabled) state and
->>>    to prevent messy board files, when more boards are added per SoC, we
->>>    optimize and disable commonly un-used nodes in board-common.dtsi
->>> b. SoC dtsi disables all hardware dependent nodes by default and board
->>>    dts files enable nodes based on a need basis.
->>> c. Subjectively pick and choose which nodes we will disable by default
->>>    in SoC dtsi and over the years we can optimize things and change
->>>    default state depending on the need.
->>
->> For the record: c was not really an option. There were no subjectivity,
->> the reason was pragmatic.
-> 
-> 
-> (c) some examples where we did pick that option (fixes):
-> https://lore.kernel.org/linux-arm-kernel/20201104224356.18040-4-nm@ti.com/
-> https://lore.kernel.org/linux-arm-kernel/20201104224356.18040-5-nm@ti.com/
+More generally, the following cases are possible:
 
-this is different, these patches just removing the "status = 'okay';"
-lines where they are not needed and can be omitted to save few lines and
-it does help on readablity.
+1. STIBP = conditional && IBPB = on for spectre_v2_user=seccomp,ibpb
+2. STIBP = on && IBPB = conditional for AMD CPUs with
+   X86_FEATURE_AMD_STIBP_ALWAYS_ON
 
->> The reason why we kept McASP nodes (and dss) disabled in the soc dtsi
->> file is that they are not operation in the form they present in there.
->> They _need_ additional properties to be operational and those properties
->> can only be added in the board dts file.
-> 
-> I dont think we are changing anything in the output dtb files,
+The first case functions correctly today, but only because
+spectre_v2_user_ibpb isn't updated to reflect the IBPB mode.
 
-Correct, the resulted dtb is identical. If the developer for upcoming
-boards did check the schematics vs TRM vs dtsi and spot the things that
-is not configured.
-dtb check will complain when it is starting to check against the
-documentation, but McASP is not yet converted to yaml and to be honest I
-don't want to convert the current binding to be the binding. When it was
-done it just moved pdata variables to DT and that was wrong.
-This is off-topic a bit.
+At a high level, this change does one thing. If either STIBP or IBPB
+is set to conditional, allow the prctl to change the task flag.
+Also, reflect that capability when querying the state. This isn't
+perfect since it doesn't take into account if only STIBP or IBPB is
+unconditionally on. But it allows the conditional feature to work as
+expected, without affecting the unconditional one.
 
-> we are
-> just leaving the defaults as dt defaults and set the disable state in
-> board dts OR common board dtsi.
+ [ bp: Massage commit message and comment; space out statements for
+   better readability. ]
 
-Yes, we leave the non working/configured node 'okay' in dtsi and expect
-that the board file author will know which node must be disabled because
-it is incomplete.
+Fixes: 21998a351512 ("x86/speculation: Avoid force-disabling IBPB based on STIBP and enhanced IBRS.")
+Signed-off-by: Anand K Mistry <amistry@google.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Acked-by: Thomas Gleixner <tglx@linutronix.de>
+Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
+Link: https://lkml.kernel.org/r/20201105163246.v2.1.Ifd7243cd3e2c2206a893ad0a5b9a4f19549e22c6@changeid
+---
+ arch/x86/kernel/cpu/bugs.c | 51 +++++++++++++++++++++++--------------
+ 1 file changed, 33 insertions(+), 18 deletions(-)
 
->> This is not remotely a subjective view, this is the opposite of
->> subjectivity.
-> 
-> the usage of McASP was'nt meant as (c).. it is (b). is there a better way
-> to describe this in a generic manner?
-
-I had my saying on that ever since I have been taking care of audio on
-TI SoCs ;)
-
-I used similar analogy in a private thread around this, but imho it fits
-the case neatly:
-car == McASP
-
-you don't put an 'okay' (as is ready, operational) stamp on the car in
-the middle of the production line when the engine is not even installed.
-
->> As for things not owned by the OS we have the "reserved" status.
-> Which is correct usage. I think your point with wkup_uart should be set as
-> reserved? I might have missed doing that - am I correct?
-> 
-> [...]
->>>  
->>> -	status = "okay";
->>> +&mcasp11 {
->>> +	status = "disabled";
->>>  };
->>
->> Looks much better in this way.
->> ?
->>
->> I always wondered what is _not_ used by the board...
->> But it is not really about that, we need to disable these nodes as they
->> are incomplete in dtsi, they are not operational...
-> 
-> Alright - what do we suggest we do?
-
-Not sure, I'm 'whatever' after [1] makes it to mainline or next.
-
-> Tony, Rob - I need some guidance here.
-
-I'm fine whatever way we take, but I think it is up to you to make the
-call as the maintainer of the TI dts files... ;)
-
->>
->>>  &serdes0 {
-> 	[...]
->>>  
->>>  	watchdog0: watchdog@2200000 {
->>>
->>
->> There is no such a tag, but:
->> whatever-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> 
-> OK - I have no idea how B4 or patchworks pick that one as :D
-
-If we take this road, than I'm okay with it, but I'm going to take
-silent protest (not sending acked-by or revired-by).
-That should not stop you doing what you believe is best for the future!
-
-fwiw, McASP will have sane handling for the variations of 'okay':
-[1]
-https://lore.kernel.org/alsa-devel/20201106072551.689-1-peter.ujfalusi@ti.com/
-
-- Péter
-
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
+index d3f0db4..581fb72 100644
+--- a/arch/x86/kernel/cpu/bugs.c
++++ b/arch/x86/kernel/cpu/bugs.c
+@@ -1254,6 +1254,14 @@ static int ssb_prctl_set(struct task_struct *task, unsigned long ctrl)
+ 	return 0;
+ }
+ 
++static bool is_spec_ib_user_controlled(void)
++{
++	return spectre_v2_user_ibpb == SPECTRE_V2_USER_PRCTL ||
++		spectre_v2_user_ibpb == SPECTRE_V2_USER_SECCOMP ||
++		spectre_v2_user_stibp == SPECTRE_V2_USER_PRCTL ||
++		spectre_v2_user_stibp == SPECTRE_V2_USER_SECCOMP;
++}
++
+ static int ib_prctl_set(struct task_struct *task, unsigned long ctrl)
+ {
+ 	switch (ctrl) {
+@@ -1261,16 +1269,26 @@ static int ib_prctl_set(struct task_struct *task, unsigned long ctrl)
+ 		if (spectre_v2_user_ibpb == SPECTRE_V2_USER_NONE &&
+ 		    spectre_v2_user_stibp == SPECTRE_V2_USER_NONE)
+ 			return 0;
++
+ 		/*
+-		 * Indirect branch speculation is always disabled in strict
+-		 * mode. It can neither be enabled if it was force-disabled
+-		 * by a  previous prctl call.
++		 * With strict mode for both IBPB and STIBP, the instruction
++		 * code paths avoid checking this task flag and instead,
++		 * unconditionally run the instruction. However, STIBP and IBPB
++		 * are independent and either can be set to conditionally
++		 * enabled regardless of the mode of the other.
++		 *
++		 * If either is set to conditional, allow the task flag to be
++		 * updated, unless it was force-disabled by a previous prctl
++		 * call. Currently, this is possible on an AMD CPU which has the
++		 * feature X86_FEATURE_AMD_STIBP_ALWAYS_ON. In this case, if the
++		 * kernel is booted with 'spectre_v2_user=seccomp', then
++		 * spectre_v2_user_ibpb == SPECTRE_V2_USER_SECCOMP and
++		 * spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT_PREFERRED.
+ 		 */
+-		if (spectre_v2_user_ibpb == SPECTRE_V2_USER_STRICT ||
+-		    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT ||
+-		    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT_PREFERRED ||
++		if (!is_spec_ib_user_controlled() ||
+ 		    task_spec_ib_force_disable(task))
+ 			return -EPERM;
++
+ 		task_clear_spec_ib_disable(task);
+ 		task_update_spec_tif(task);
+ 		break;
+@@ -1283,10 +1301,10 @@ static int ib_prctl_set(struct task_struct *task, unsigned long ctrl)
+ 		if (spectre_v2_user_ibpb == SPECTRE_V2_USER_NONE &&
+ 		    spectre_v2_user_stibp == SPECTRE_V2_USER_NONE)
+ 			return -EPERM;
+-		if (spectre_v2_user_ibpb == SPECTRE_V2_USER_STRICT ||
+-		    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT ||
+-		    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT_PREFERRED)
++
++		if (!is_spec_ib_user_controlled())
+ 			return 0;
++
+ 		task_set_spec_ib_disable(task);
+ 		if (ctrl == PR_SPEC_FORCE_DISABLE)
+ 			task_set_spec_ib_force_disable(task);
+@@ -1351,20 +1369,17 @@ static int ib_prctl_get(struct task_struct *task)
+ 	if (spectre_v2_user_ibpb == SPECTRE_V2_USER_NONE &&
+ 	    spectre_v2_user_stibp == SPECTRE_V2_USER_NONE)
+ 		return PR_SPEC_ENABLE;
+-	else if (spectre_v2_user_ibpb == SPECTRE_V2_USER_STRICT ||
+-	    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT ||
+-	    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT_PREFERRED)
+-		return PR_SPEC_DISABLE;
+-	else if (spectre_v2_user_ibpb == SPECTRE_V2_USER_PRCTL ||
+-	    spectre_v2_user_ibpb == SPECTRE_V2_USER_SECCOMP ||
+-	    spectre_v2_user_stibp == SPECTRE_V2_USER_PRCTL ||
+-	    spectre_v2_user_stibp == SPECTRE_V2_USER_SECCOMP) {
++	else if (is_spec_ib_user_controlled()) {
+ 		if (task_spec_ib_force_disable(task))
+ 			return PR_SPEC_PRCTL | PR_SPEC_FORCE_DISABLE;
+ 		if (task_spec_ib_disable(task))
+ 			return PR_SPEC_PRCTL | PR_SPEC_DISABLE;
+ 		return PR_SPEC_PRCTL | PR_SPEC_ENABLE;
+-	} else
++	} else if (spectre_v2_user_ibpb == SPECTRE_V2_USER_STRICT ||
++	    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT ||
++	    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT_PREFERRED)
++		return PR_SPEC_DISABLE;
++	else
+ 		return PR_SPEC_NOT_AFFECTED;
+ }
+ 
