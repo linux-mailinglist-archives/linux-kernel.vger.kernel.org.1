@@ -2,263 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73BA22A9435
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 11:26:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53E9F2A9452
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 11:28:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727133AbgKFK0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 05:26:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33810 "EHLO
+        id S1727030AbgKFK2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 05:28:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727105AbgKFK0F (ORCPT
+        with ESMTP id S1726757AbgKFK2L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 05:26:05 -0500
-Received: from mail-vk1-xa42.google.com (mail-vk1-xa42.google.com [IPv6:2607:f8b0:4864:20::a42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68987C0613D3
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 02:26:04 -0800 (PST)
-Received: by mail-vk1-xa42.google.com with SMTP id w123so135200vka.4
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 02:26:04 -0800 (PST)
+        Fri, 6 Nov 2020 05:28:11 -0500
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A985C0613D4
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 02:28:11 -0800 (PST)
+Received: by mail-oi1-x243.google.com with SMTP id t143so840799oif.10
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 02:28:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=ffwll.ch; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=HSC97YNOlN2kUh5wdqOB/lybRqmpts3XhUMXVzBRpuU=;
-        b=WVh1sV7yTyGnxFKwH/kCFJLI0h+xKJLCEKlfhXMjzg8UywCK08uPFzALrz6uq9v7rg
-         x+XpUNuSHdsZJCwYaK4K1KknKsNCC05506QxKcbMSr6MfzBOOjqvzzdOGZWg9fTZKPK0
-         hBkFJs3I6pjmGsbpA1/V5mShpiM1BPXboGdbn//dpAMyFEWLt2WkYa6ErIHd0X+UGA1e
-         pGPA/JhWGaCiamS3+eVyGQUuVYA38sq3AYFWm0gyO5qxzhD/jzFAhBhmuOW5SiLEmWI0
-         vXmP8C/EAzW9gR8Y6mJx/r+GKeuTiIdQkWKKpAVFiXt0igDVfmI0iRBZlozAcFQPJT4d
-         2gNg==
+        bh=GZSvjJXJ5NeS3xeVpOYrkTBUqUJmeylcGC99/vSxMgE=;
+        b=bzj83Mf9zM2hSbE8EWsBjDPrQihAyugYzXs6/XtzMk42mlteKogf38yikrIVtP0YIp
+         1PpqGJ83G8CMqUOSy0c+3J2x07vzzrc1y+f0AiA/gsD366OU8Q4TqDzYqRuPe+cWSz/V
+         V9A5M3N3kUQY2mHkFVy5IQrEsMOk51+osCoGc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=HSC97YNOlN2kUh5wdqOB/lybRqmpts3XhUMXVzBRpuU=;
-        b=MffPxB3cvBukgBuGtk6Jyqp+tgSclfDcd9pkiE/hXU+Qk413dvaMLnNF/WGX7Tj5LQ
-         X4pOqTfngL1Kx6a6dcPH+AwADODGmmor+93Esg9Dds0v2WqnLa+4RXIpRle3jwE9vqIj
-         xZRSo09vKD7LGNLaTy8XpAmKbHtfJHbsD7OtiIf/VD9Re6SD+WaKUB9TYwoglFHrRoTx
-         ML/2dVAmB612JOiubZX7WAf2IN2nKZ3ZQgYYySeWh4a0Hv0oQOzjPV/ZxWxa39ht/Dks
-         h8l9KtkOtO3GT9xDRrynY/0CpW1iMvbAFygnMUxtphCVofmiLt4Y/X/2B8JpOTUKh2rW
-         axvQ==
-X-Gm-Message-State: AOAM532OUMy1/dhLMVgfZiQPq/3EvdtD6Tvk4xg4AcfPan3cQGUPMYrJ
-        Av6oy08mXI4LTHbsOqXpcwTgR8S+uuvvdeB0tWYudKN6lno=
-X-Google-Smtp-Source: ABdhPJxdd1JSJRrUFF8pCsDcmoIO/ZpQ8q6imT4S/76iQuVwhK6KvpfjyD+DN9xfVBgmD7tDT/UUnyaOS/+J6hvUGd4=
-X-Received: by 2002:a05:6122:10eb:: with SMTP id m11mr518387vko.8.1604658363558;
- Fri, 06 Nov 2020 02:26:03 -0800 (PST)
+        bh=GZSvjJXJ5NeS3xeVpOYrkTBUqUJmeylcGC99/vSxMgE=;
+        b=R2ooh+As8lZtlWVvecVPAloxRv2NO5oc2FUD8oJuEmko2nDgy9H4yCH5PAIR8pQFJZ
+         3g6Sjlxkv8JdZVQiWG3trG3gln/wUhTNdMTx7aWBeQVT4PHtAVtvWj81mSmGZw5Pu/uq
+         Yo0ymvI0V1iPbSHNwU4Vc9LzsD0Z29hfBEjFgyvKpqnlLVIvAfzcDkFZwbF8qSTdPInv
+         EHfLefs33nAX2nkzKzEvP233nomh3vjLVFS8hqpL/Cp4yIx1fXpqhUFmZEsY9C3F+73E
+         v5T/QgTgJL4W7M/96rquPFHvV1iluzaemu68x+mvaqCf/GO8sDUU5rIU0SRcqL4Yy+U7
+         Qssg==
+X-Gm-Message-State: AOAM532A+opeCbFeao01rGUARuEmUU1wF831CkABy7EMBXetqMRs38eX
+        gWJOxpH8EWnBDZEMTtpm1yktIgOTH5mpz46+znN52Q==
+X-Google-Smtp-Source: ABdhPJxaH0jX6R8wLLVMSL6X5ZRgt3aYM2nGlRnlOOpo51kJ5ZLuq1XuS09rdAP7rLsL8i/ky1hkd4FCo7S1HBbLmlY=
+X-Received: by 2002:aca:b141:: with SMTP id a62mr626467oif.101.1604658490602;
+ Fri, 06 Nov 2020 02:28:10 -0800 (PST)
 MIME-Version: 1.0
-References: <684ff01900180c0a40ec307dacc673b24eab593b.1604643714.git.viresh.kumar@linaro.org>
- <1012a98950355bd5a52424668050a17c3430cbe0.1604643714.git.viresh.kumar@linaro.org>
-In-Reply-To: <1012a98950355bd5a52424668050a17c3430cbe0.1604643714.git.viresh.kumar@linaro.org>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 6 Nov 2020 11:25:27 +0100
-Message-ID: <CAPDyKFrTJbTrSMW30wN5Kbk4=yDAMF37HR2+9MKybkyDW0f8hQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] opp: Don't create an OPP table from dev_pm_opp_get_opp_table()
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <CAKMK7uEw701AWXNJbRNM8Z+FkyUB5FbWegmSzyWPy9cG4W7OLA@mail.gmail.com>
+ <20201104140023.GQ36674@ziepe.ca> <CAKMK7uH69hsFjYUkjg1aTh5f=q_3eswMSS5feFs6+ovz586+0A@mail.gmail.com>
+ <20201104162125.GA13007@infradead.org> <CAKMK7uH=0+3FSR4LxP7bJUB4BsCcnCzfK2=D+2Am9QNmfZEmfw@mail.gmail.com>
+ <20201104163758.GA17425@infradead.org> <20201104164119.GA18218@infradead.org>
+ <20201104181708.GU36674@ziepe.ca> <d3497583-2338-596e-c764-8c571b7d22cf@nvidia.com>
+ <20201105092524.GQ401619@phenom.ffwll.local> <20201105124950.GZ36674@ziepe.ca>
+ <7ae3486d-095e-cf4e-6b0f-339d99709996@nvidia.com> <CAKMK7uGRw=xXE+D=JJsNeRav9+hdO4tcDSvDbAuWfc3T4VkoJw@mail.gmail.com>
+In-Reply-To: <CAKMK7uGRw=xXE+D=JJsNeRav9+hdO4tcDSvDbAuWfc3T4VkoJw@mail.gmail.com>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Fri, 6 Nov 2020 11:27:59 +0100
+Message-ID: <CAKMK7uFb2uhfRCwe1y5Kafd-WWqE_F3_FfpHR9f8-X-aHhgjOQ@mail.gmail.com>
+Subject: Re: [PATCH v5 05/15] mm/frame-vector: Use FOLL_LONGTERM
+To:     John Hubbard <jhubbard@nvidia.com>,
+        Thomas Hellstrom <thomas.hellstrom@intel.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Christoph Hellwig <hch@infradead.org>,
+        "J??r??me Glisse" <jglisse@redhat.com>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        Jan Kara <jack@suse.cz>, Pawel Osciak <pawel@osciak.com>,
+        KVM list <kvm@vger.kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 6 Nov 2020 at 07:25, Viresh Kumar <viresh.kumar@linaro.org> wrote:
+On Fri, Nov 6, 2020 at 11:01 AM Daniel Vetter <daniel@ffwll.ch> wrote:
 >
-> It has been found that some users (like cpufreq-dt and others on LKML)
-> have abused the helper dev_pm_opp_get_opp_table() to create the OPP
-> table instead of just finding it, which is the wrong thing to do. This
-> routine was meant for OPP core's internal working and exposed the whole
-> functionality by mistake.
+> On Fri, Nov 6, 2020 at 5:08 AM John Hubbard <jhubbard@nvidia.com> wrote:
+> >
+> > On 11/5/20 4:49 AM, Jason Gunthorpe wrote:
+> > > On Thu, Nov 05, 2020 at 10:25:24AM +0100, Daniel Vetter wrote:
+> > >>> /*
+> > >>>   * If we can't determine whether or not a pte is special, then fail immediately
+> > >>>   * for ptes. Note, we can still pin HugeTLB and THP as these are guaranteed not
+> > >>>   * to be special.
+> > >>>   *
+> > >>>   * For a futex to be placed on a THP tail page, get_futex_key requires a
+> > >>>   * get_user_pages_fast_only implementation that can pin pages. Thus it's still
+> > >>>   * useful to have gup_huge_pmd even if we can't operate on ptes.
+> > >>>   */
+> > >>
+> > >> We support hugepage faults in gpu drivers since recently, and I'm not
+> > >> seeing a pud_mkhugespecial anywhere. So not sure this works, but probably
+> > >> just me missing something again.
+> > >
+> > > It means ioremap can't create an IO page PUD, it has to be broken up.
+> > >
+> > > Does ioremap even create anything larger than PTEs?
 >
-> Change the scope of dev_pm_opp_get_opp_table() to only finding the
-> table. The internal helpers _opp_get_opp_table*() are thus renamed to
-> _add_opp_table*(), dev_pm_opp_get_opp_table_indexed() is removed (as we
-> don't need the index field for finding the OPP table) and so the only
-> user, genpd, is updated.
->
-> Note that the prototype of _add_opp_table() was already left in opp.h by
-> mistake when it was removed earlier and so we weren't required to add it
-> now.
->
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> gpu drivers also tend to use vmf_insert_pfn* directly, so we can do
+> on-demand paging and move buffers around. From what I glanced for
+> lowest level we to the pte_mkspecial correctly (I think I convinced
+> myself that vm_insert_pfn does that), but for pud/pmd levels it seems
+> just yolo.
 
-Acked-by: Ulf Hansson <ulf.hansson@linaro.org>
+So I dug around a bit more and ttm sets PFN_DEV | PFN_MAP to get past
+the various pft_t_devmap checks (see e.g. vmf_insert_pfn_pmd_prot()).
+x86-64 has ARCH_HAS_PTE_DEVMAP, and gup.c seems to handle these
+specially, but frankly I got totally lost in what this does.
 
-Kind regards
-Uffe
+The comment above the pfn_t_devmap check makes me wonder whether doing
+this is correct or not.
 
-> ---
->  drivers/base/power/domain.c |  2 +-
->  drivers/opp/core.c          | 27 +++++++++++++--------------
->  drivers/opp/of.c            |  4 ++--
->  drivers/opp/opp.h           |  1 +
->  include/linux/pm_opp.h      |  1 -
->  5 files changed, 17 insertions(+), 18 deletions(-)
+Also adding Thomas Hellstrom, who implemented the huge map support in ttm.
+-Daniel
+
+> remap_pfn_range seems to indeed split down to pte level always.
 >
-> diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
-> index 743268996336..92b750b865d5 100644
-> --- a/drivers/base/power/domain.c
-> +++ b/drivers/base/power/domain.c
-> @@ -2249,7 +2249,7 @@ int of_genpd_add_provider_onecell(struct device_node *np,
->                          * Save table for faster processing while setting
->                          * performance state.
->                          */
-> -                       genpd->opp_table = dev_pm_opp_get_opp_table_indexed(&genpd->dev, i);
-> +                       genpd->opp_table = dev_pm_opp_get_opp_table(&genpd->dev);
->                         WARN_ON(IS_ERR(genpd->opp_table));
->                 }
+> >  From my reading, yes. See ioremap_try_huge_pmd().
 >
-> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
-> index 9915e8487f0b..b24f685823ae 100644
-> --- a/drivers/opp/core.c
-> +++ b/drivers/opp/core.c
-> @@ -1138,7 +1138,7 @@ void _get_opp_table_kref(struct opp_table *opp_table)
->   * uses the opp_tables_busy flag to indicate if another creator is in the middle
->   * of adding an OPP table and others should wait for it to finish.
->   */
-> -static struct opp_table *_opp_get_opp_table(struct device *dev, int index)
-> +struct opp_table *_add_opp_table_indexed(struct device *dev, int index)
->  {
->         struct opp_table *opp_table;
->
-> @@ -1188,17 +1188,16 @@ static struct opp_table *_opp_get_opp_table(struct device *dev, int index)
->         return opp_table;
->  }
->
-> -struct opp_table *dev_pm_opp_get_opp_table(struct device *dev)
-> +struct opp_table *_add_opp_table(struct device *dev)
->  {
-> -       return _opp_get_opp_table(dev, 0);
-> +       return _add_opp_table_indexed(dev, 0);
->  }
-> -EXPORT_SYMBOL_GPL(dev_pm_opp_get_opp_table);
->
-> -struct opp_table *dev_pm_opp_get_opp_table_indexed(struct device *dev,
-> -                                                  int index)
-> +struct opp_table *dev_pm_opp_get_opp_table(struct device *dev)
->  {
-> -       return _opp_get_opp_table(dev, index);
-> +       return _find_opp_table(dev);
->  }
-> +EXPORT_SYMBOL_GPL(dev_pm_opp_get_opp_table);
->
->  static void _opp_table_kref_release(struct kref *kref)
->  {
-> @@ -1627,7 +1626,7 @@ struct opp_table *dev_pm_opp_set_supported_hw(struct device *dev,
->  {
->         struct opp_table *opp_table;
->
-> -       opp_table = dev_pm_opp_get_opp_table(dev);
-> +       opp_table = _add_opp_table(dev);
->         if (IS_ERR(opp_table))
->                 return opp_table;
->
-> @@ -1686,7 +1685,7 @@ struct opp_table *dev_pm_opp_set_prop_name(struct device *dev, const char *name)
->  {
->         struct opp_table *opp_table;
->
-> -       opp_table = dev_pm_opp_get_opp_table(dev);
-> +       opp_table = _add_opp_table(dev);
->         if (IS_ERR(opp_table))
->                 return opp_table;
->
-> @@ -1779,7 +1778,7 @@ struct opp_table *dev_pm_opp_set_regulators(struct device *dev,
->         struct regulator *reg;
->         int ret, i;
->
-> -       opp_table = dev_pm_opp_get_opp_table(dev);
-> +       opp_table = _add_opp_table(dev);
->         if (IS_ERR(opp_table))
->                 return opp_table;
->
-> @@ -1887,7 +1886,7 @@ struct opp_table *dev_pm_opp_set_clkname(struct device *dev, const char *name)
->         struct opp_table *opp_table;
->         int ret;
->
-> -       opp_table = dev_pm_opp_get_opp_table(dev);
-> +       opp_table = _add_opp_table(dev);
->         if (IS_ERR(opp_table))
->                 return opp_table;
->
-> @@ -1955,7 +1954,7 @@ struct opp_table *dev_pm_opp_register_set_opp_helper(struct device *dev,
->         if (!set_opp)
->                 return ERR_PTR(-EINVAL);
->
-> -       opp_table = dev_pm_opp_get_opp_table(dev);
-> +       opp_table = _add_opp_table(dev);
->         if (IS_ERR(opp_table))
->                 return opp_table;
->
-> @@ -2039,7 +2038,7 @@ struct opp_table *dev_pm_opp_attach_genpd(struct device *dev,
->         int index = 0, ret = -EINVAL;
->         const char **name = names;
->
-> -       opp_table = dev_pm_opp_get_opp_table(dev);
-> +       opp_table = _add_opp_table(dev);
->         if (IS_ERR(opp_table))
->                 return opp_table;
->
-> @@ -2204,7 +2203,7 @@ int dev_pm_opp_add(struct device *dev, unsigned long freq, unsigned long u_volt)
->         struct opp_table *opp_table;
->         int ret;
->
-> -       opp_table = dev_pm_opp_get_opp_table(dev);
-> +       opp_table = _add_opp_table(dev);
->         if (IS_ERR(opp_table))
->                 return PTR_ERR(opp_table);
->
-> diff --git a/drivers/opp/of.c b/drivers/opp/of.c
-> index 9faeb83e4b32..c718092757d9 100644
-> --- a/drivers/opp/of.c
-> +++ b/drivers/opp/of.c
-> @@ -974,7 +974,7 @@ int dev_pm_opp_of_add_table(struct device *dev)
->         struct opp_table *opp_table;
->         int ret;
->
-> -       opp_table = dev_pm_opp_get_opp_table_indexed(dev, 0);
-> +       opp_table = _add_opp_table_indexed(dev, 0);
->         if (IS_ERR(opp_table))
->                 return PTR_ERR(opp_table);
->
-> @@ -1029,7 +1029,7 @@ int dev_pm_opp_of_add_table_indexed(struct device *dev, int index)
->                         index = 0;
->         }
->
-> -       opp_table = dev_pm_opp_get_opp_table_indexed(dev, index);
-> +       opp_table = _add_opp_table_indexed(dev, index);
->         if (IS_ERR(opp_table))
->                 return PTR_ERR(opp_table);
->
-> diff --git a/drivers/opp/opp.h b/drivers/opp/opp.h
-> index ebd930e0b3ca..4ced7ffa8158 100644
-> --- a/drivers/opp/opp.h
-> +++ b/drivers/opp/opp.h
-> @@ -224,6 +224,7 @@ int _opp_add(struct device *dev, struct dev_pm_opp *new_opp, struct opp_table *o
->  int _opp_add_v1(struct opp_table *opp_table, struct device *dev, unsigned long freq, long u_volt, bool dynamic);
->  void _dev_pm_opp_cpumask_remove_table(const struct cpumask *cpumask, int last_cpu);
->  struct opp_table *_add_opp_table(struct device *dev);
-> +struct opp_table *_add_opp_table_indexed(struct device *dev, int index);
->  void _put_opp_list_kref(struct opp_table *opp_table);
->
->  #ifdef CONFIG_OF
-> diff --git a/include/linux/pm_opp.h b/include/linux/pm_opp.h
-> index dbb484524f82..1435c054016a 100644
-> --- a/include/linux/pm_opp.h
-> +++ b/include/linux/pm_opp.h
-> @@ -90,7 +90,6 @@ struct dev_pm_set_opp_data {
->  #if defined(CONFIG_PM_OPP)
->
->  struct opp_table *dev_pm_opp_get_opp_table(struct device *dev);
-> -struct opp_table *dev_pm_opp_get_opp_table_indexed(struct device *dev, int index);
->  void dev_pm_opp_put_opp_table(struct opp_table *opp_table);
->
->  unsigned long dev_pm_opp_get_voltage(struct dev_pm_opp *opp);
+> The ioremap here shouldn't matter, since this is for kernel-internal
+> mappings. So that's all fine I think.
+> -Daniel
 > --
-> 2.25.0.rc1.19.g042ed3e048af
->
+> Daniel Vetter
+> Software Engineer, Intel Corporation
+> http://blog.ffwll.ch
+
+
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
