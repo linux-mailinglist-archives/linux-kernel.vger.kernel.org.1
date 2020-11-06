@@ -2,95 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B863C2A9B90
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 19:05:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D00882A9B94
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 19:06:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727815AbgKFSFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 13:05:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50078 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726034AbgKFSFx (ORCPT
+        id S1727845AbgKFSGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 13:06:18 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:54004 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726999AbgKFSGR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 13:05:53 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F3D2C0613CF;
-        Fri,  6 Nov 2020 10:05:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=90zuK8BdS44z3twp9I9Jyw0x30yb82cvNVQYVDPC/9U=; b=AK0B6vve+vs4QnOQAcsmJ7A5X4
-        PxVnO2q4QT3W4RoD/Yixod2UovCJoRby6Q3OKPC7JYJYz9pzDGO00cYzkvv/v62jORtekHV+wIm8O
-        6x8wY/SRhAw3D3d/FcLdULGt74TkHAhTS9rSFSm2+HrR0QPK4EZA+33gDMuYFJ+YAMPRWzq2+28LZ
-        /7S6L9YvyXzF7rUXjao6vW5BD6ckhvo9IQItoDo0lMgfjvSIjLm56eyWdHZOO816HpoUNAp3VGORd
-        WaLQxPJ1VN74XOv2iiHT1BhLvJjjz0eosg7CZzyQcRX2b2rgodW0Dtv8aKwTYkzrx9C+myj9Cglfv
-        nkLUuA4g==;
-Received: from [2601:1c0:6280:3f0::a1cb] (helo=smtpauth.infradead.org)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kb67S-0003oB-8v; Fri, 06 Nov 2020 18:05:50 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        linux-pm@vger.kernel.org,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org,
-        Taniya Das <tdas@codeaurora.org>, linux-next@vger.kernel.org
-Subject: [PATCH -next] clk: pm_clock: provide stubs for pm_clk_runtime_suspend/_resume
-Date:   Fri,  6 Nov 2020 10:05:44 -0800
-Message-Id: <20201106180544.5681-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        Fri, 6 Nov 2020 13:06:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604685975;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=I0pHHCkh8h1ZrxEhKDliX3OCq4ruCPd3+x0l3KQUgGU=;
+        b=IZLVqyHbA3Q2R3YcnMWZpt9vZwXP6g4X2YsFJLClWB+djQmZc+C4M6tXcDNhgxu/J4f8+t
+        3+x5lPtVdh+rjNXYSqp943I/EdAzykLAyYOORzM8az2jxLp9qbvgW+ty9ESRdh3uS0+yAW
+        YJjxv/M8drpum3Bor+2CN7Q6/HyK6bc=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-296-8LYSHNbXMGiGNsOSdJrkqQ-1; Fri, 06 Nov 2020 13:06:14 -0500
+X-MC-Unique: 8LYSHNbXMGiGNsOSdJrkqQ-1
+Received: by mail-qk1-f197.google.com with SMTP id z28so1277102qkj.4
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 10:06:14 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=I0pHHCkh8h1ZrxEhKDliX3OCq4ruCPd3+x0l3KQUgGU=;
+        b=EcC0N8zRleyTt6bqgN5NaOjs8E3ROKP2kyqadHWhsPbIy6oh2glAzRHF5xHpRcTc6q
+         Fd35v+GWwPowwhw4K70Y/SUMjLXAWr61ix2vHdBUfCCs8NVMZqAj7N0QjXKNRgI9YGPY
+         PpdS5Xxtn3LXmwvNZb012XrC5+jJlohv7Z6UdtC4AI8G/AMKeDOIkLQo17Fiuyf3hSbj
+         hDTfbrj5ibVUoM70bnoxxKh303RbBjdRKR3wuxguPDUeTyCgbkUCQ1HIO/TOg33qh5Zg
+         3xggvx4/iPiR+hCzVVF1pW27++KJQ84QBmQFxKgDlLgjKAgdQVNULv4a+M8d6G0jeVfg
+         gq6g==
+X-Gm-Message-State: AOAM532ry5Dquwv7BQ9JNEmUdFRizlLa0/1WwLB9qpiVNh+/AErab984
+        t1keTIYxdgaM43odAEAM3bHlPlGJq+vPT2/XIUoYfxDP6va7rNFD+CW0fTr20Fd3gRWfDXOCZ8t
+        MTpDkN1RJVYerxr5rfMeeml0P
+X-Received: by 2002:ac8:8c7:: with SMTP id y7mr2650788qth.278.1604685973240;
+        Fri, 06 Nov 2020 10:06:13 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyWT3/EkzB1mX6LhVONygniIZnUOQZ1LF3NKmOlnmVvJ9+64XP0m9y9W4ZrQ8JA4RXLNIG+BQ==
+X-Received: by 2002:ac8:8c7:: with SMTP id y7mr2650770qth.278.1604685972976;
+        Fri, 06 Nov 2020 10:06:12 -0800 (PST)
+Received: from xz-x1 (bras-vprn-toroon474qw-lp130-20-174-93-89-196.dsl.bell.ca. [174.93.89.196])
+        by smtp.gmail.com with ESMTPSA id g11sm1011865qkl.30.2020.11.06.10.06.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Nov 2020 10:06:12 -0800 (PST)
+Date:   Fri, 6 Nov 2020 13:06:10 -0500
+From:   Peter Xu <peterx@redhat.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        Andrew Jones <drjones@redhat.com>
+Subject: Re: [PATCH v13 13/14] KVM: selftests: Let dirty_log_test async for
+ dirty ring test
+Message-ID: <20201106180610.GC138364@xz-x1>
+References: <20201001012044.5151-1-peterx@redhat.com>
+ <20201001012239.6159-1-peterx@redhat.com>
+ <6d5eb99e-e068-e5a6-522f-07ef9c33127f@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <6d5eb99e-e068-e5a6-522f-07ef9c33127f@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add stubs for pm_clk_runtime_suspend() and pm_clk_runtime_resume()
-to fix build errors when CONFIG_PM and CONFIG_PM_CLK are not enabled.
+On Fri, Nov 06, 2020 at 12:27:54PM +0100, Paolo Bonzini wrote:
+> On 01/10/20 03:22, Peter Xu wrote:
+> > +
+> > +static void vcpu_sig_handler(int sig)
+> > +{
+> > +	TEST_ASSERT(sig == SIG_IPI, "unknown signal: %d", sig);
+> > +}
+> > +
+> 
+> Unless you also use run->immediate_exit in vcpu_kick, this is racy.  The
+> alternative is to _not_ set up a signal handler and instead block the
+> signal.  KVM_SET_SIGNAL_MASK unblocks the signal inside the VM and on -EINTR
+> sigwait accepts the signal (removes it from the set of pending signal).
 
-Fixes these build errors:
+Thanks for picking up the series!
 
-../drivers/clk/qcom/camcc-sc7180.c: In function ‘cam_cc_sc7180_probe’:
-../drivers/clk/qcom/camcc-sc7180.c:1672:8: error: implicit declaration of function ‘pm_clk_runtime_resume’; did you mean ‘pm_runtime_resume’? [-Werror=implicit-function-declaration]
-  ret = pm_clk_runtime_resume(&pdev->dev);
-        ^~~~~~~~~~~~~~~~~~~~~
-../drivers/clk/qcom/camcc-sc7180.c:1681:3: error: implicit declaration of function ‘pm_clk_runtime_suspend’; did you mean ‘pm_runtime_suspend’? [-Werror=implicit-function-declaration]
-   pm_clk_runtime_suspend(&pdev->dev);
-   ^~~~~~~~~~~~~~~~~~~~~~
+I think you're right.  One trivial comment below:
 
-Fixes: 15d09e830bbc ("clk: qcom: camcc: Add camera clock controller driver for SC7180")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc: Len Brown <len.brown@intel.com>
-Cc: Pavel Machek <pavel@ucw.cz>
-Cc: linux-pm@vger.kernel.org
-Cc: Michael Turquette <mturquette@baylibre.com>
-Cc: Stephen Boyd <sboyd@kernel.org>
-Cc: linux-clk@vger.kernel.org
-Cc: Taniya Das <tdas@codeaurora.org>
-Cc: linux-next@vger.kernel.org
----
- include/linux/pm_clock.h |    9 +++++++++
- 1 file changed, 9 insertions(+)
+> 
+> This is a bit more complicated, but I think it's a good idea to do it this
+> way for documentation purposes.  Here is the patch:
+> 
+> diff --git a/tools/testing/selftests/kvm/dirty_log_test.c
+> b/tools/testing/selftests/kvm/dirty_log_test.c
+> index 4b404dfdc2f9..9a5b876b74af 100644
+> --- a/tools/testing/selftests/kvm/dirty_log_test.c
+> +++ b/tools/testing/selftests/kvm/dirty_log_test.c
+> @@ -172,11 +172,6 @@ static pthread_t vcpu_thread;
+>  /* Only way to pass this to the signal handler */
+>  static struct kvm_vm *current_vm;
+> 
+> -static void vcpu_sig_handler(int sig)
+> -{
+> -	TEST_ASSERT(sig == SIG_IPI, "unknown signal: %d", sig);
+> -}
+> -
+>  static void vcpu_kick(void)
+>  {
+>  	pthread_kill(vcpu_thread, SIG_IPI);
+> @@ -484,13 +479,26 @@ static void *vcpu_worker(void *data)
+>  	struct kvm_vm *vm = data;
+>  	uint64_t *guest_array;
+>  	uint64_t pages_count = 0;
+> -	struct sigaction sigact;
+> +	struct kvm_signal_mask *sigmask = alloca(offsetof(struct kvm_signal_mask,
+> sigset)
+> +						 + sizeof(sigset_t));
+> +	sigset_t *sigset = (sigset_t *) &sigmask->sigset;
+> 
+>  	current_vm = vm;
+>  	vcpu_fd = vcpu_get_fd(vm, VCPU_ID);
+> -	memset(&sigact, 0, sizeof(sigact));
+> -	sigact.sa_handler = vcpu_sig_handler;
+> -	sigaction(SIG_IPI, &sigact, NULL);
+> +
+> +	/*
+> +	 * SIG_IPI is unblocked atomically while in KVM_RUN.  It causes the
+> +	 * ioctl to return with -EINTR, but it is still pending and we need
+> +	 * to accept it with the sigwait.
+> +	 */
+> +	sigmask->len = 8;
+> +	pthread_sigmask(0, NULL, sigset);
 
---- linux-next-20201106.orig/include/linux/pm_clock.h
-+++ linux-next-20201106/include/linux/pm_clock.h
-@@ -83,6 +83,15 @@ static inline void pm_clk_remove(struct
- static inline void pm_clk_remove_clk(struct device *dev, struct clk *clk)
- {
- }
-+
-+static inline int pm_clk_runtime_suspend(struct device *dev)
-+{
-+	return 0;
-+}
-+static inline int pm_clk_runtime_resume(struct device *dev)
-+{
-+	return 0;
-+}
- #endif
- 
- #ifdef CONFIG_HAVE_CLK
+Not extremely important, but still better with SIG_BLOCK imho, since it seems
+not all archs defined SIG_BLOCK as zero.
+
+> +	vcpu_ioctl(vm, VCPU_ID, KVM_SET_SIGNAL_MASK, sigmask);
+> +	sigaddset(sigset, SIG_IPI);
+> +	pthread_sigmask(SIG_BLOCK, sigset, NULL);
+> +
+> +	sigemptyset(sigset);
+> +	sigaddset(sigset, SIG_IPI);
+> 
+>  	guest_array = addr_gva2hva(vm, (vm_vaddr_t)random_array);
+> 
+> @@ -500,6 +508,11 @@ static void *vcpu_worker(void *data)
+>  		pages_count += TEST_PAGES_PER_LOOP;
+>  		/* Let the guest dirty the random pages */
+>  		ret = ioctl(vcpu_fd, KVM_RUN, NULL);
+> +		if (ret == -EINTR) {
+> +			int sig = -1;
+> +			sigwait(sigset, &sig);
+> +			assert(sig == SIG_IPI);
+> +		}
+>  		log_mode_after_vcpu_run(vm, ret, errno);
+>  	}
+> 
+
+-- 
+Peter Xu
+
