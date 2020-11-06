@@ -2,120 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 688A22A9216
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 10:05:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2F3A2A921A
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 10:06:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726543AbgKFJFp convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 6 Nov 2020 04:05:45 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:59210 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725848AbgKFJFo (ORCPT
+        id S1726290AbgKFJGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 04:06:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725848AbgKFJGk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 04:05:44 -0500
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 2CDA51F4679D;
-        Fri,  6 Nov 2020 09:05:42 +0000 (GMT)
-Date:   Fri, 6 Nov 2020 10:05:39 +0100
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>
-Cc:     =?UTF-8?B?Q8OpZHJpYw==?= Le Goater <clg@kaod.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "joel@jms.id.au" <joel@jms.id.au>,
-        "andrew@aj.id.au" <andrew@aj.id.au>,
-        "bbrezillon@kernel.org" <bbrezillon@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
-        BMC-SW <BMC-SW@aspeedtech.com>
-Subject: Re: [v3 4/4] spi: aspeed: Add ASPEED FMC/SPI memory controller
- driver
-Message-ID: <20201106100539.62fc5249@collabora.com>
-In-Reply-To: <HK0PR06MB2786DAC99A56EA302EE969CAB2ED0@HK0PR06MB2786.apcprd06.prod.outlook.com>
-References: <20201105120331.9853-1-chin-ting_kuo@aspeedtech.com>
-        <20201105120331.9853-5-chin-ting_kuo@aspeedtech.com>
-        <fd8fa472-53bb-c992-3dc2-5a984a439c07@kaod.org>
-        <20201105161132.37eb3265@collabora.com>
-        <HK0PR06MB2786DAC99A56EA302EE969CAB2ED0@HK0PR06MB2786.apcprd06.prod.outlook.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Fri, 6 Nov 2020 04:06:40 -0500
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77674C0613CF;
+        Fri,  6 Nov 2020 01:06:40 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: gtucker)
+        with ESMTPSA id 7CFBB1F467A1
+From:   Guillaume Tucker <guillaume.tucker@collabora.com>
+To:     Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Heiko Stuebner <heiko@sntech.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com,
+        Guillaume Tucker <guillaume.tucker@collabora.com>
+Subject: [PATCH v2] rtc: hym8563: enable wakeup when applicable
+Date:   Fri,  6 Nov 2020 09:06:31 +0000
+Message-Id: <1ea023e2ba50a4dab6e39be93d7de3146af71a60.1604653374.git.guillaume.tucker@collabora.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 6 Nov 2020 08:58:23 +0000
-Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com> wrote:
+Enable wakeup in the hym8563 driver if the IRQ was successfully
+requested or if wakeup-source is set in the devicetree.
 
-> Hi Boris,
-> 
-> Thanks for your quick reply.
-> 
-> > -----Original Message-----
-> > From: Boris Brezillon <boris.brezillon@collabora.com>
-> > Sent: Thursday, November 5, 2020 11:12 PM
-> > To: Cédric Le Goater <clg@kaod.org>; robh+dt@kernel.org
-> > Cc: Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>; broonie@kernel.org;
-> > joel@jms.id.au; andrew@aj.id.au; bbrezillon@kernel.org;
-> > devicetree@vger.kernel.org; linux-kernel@vger.kernel.org;
-> > linux-aspeed@lists.ozlabs.org; linux-spi@vger.kernel.org; BMC-SW
-> > <BMC-SW@aspeedtech.com>
-> > Subject: Re: [v3 4/4] spi: aspeed: Add ASPEED FMC/SPI memory controller
-> > driver
-> > 
-> > Hi,
-> > 
-> > On Thu, 5 Nov 2020 15:09:11 +0100
-> > Cédric Le Goater <clg@kaod.org> wrote:
-> >   
-> > > Hello Chin-Ting,
-> > >
-> > > Thanks for this driver. It's much cleaner than the previous and we
-> > > should try adding support for the AST2500 SoC also. I guess we can
-> > > keep the old driver for the AST2400 which has a different register layout.
-> > >
-> > > On the patchset, I think we should split this patch in three :
-> > >
-> > >  - basic support
-> > >  - AHB window calculation depending on the flash size
-> > >  - read training support  
-> > 
-> > I didn't look closely at the implementation, but if the read training tries to read
-> > a section of the NOR, I'd recommend exposing that feature through spi-mem
-> > and letting the SPI-NOR framework trigger the training instead of doing that at
-> > dirmap creation time (remember that spi-mem is also used for SPI NANDs
-> > which use the dirmap API too, and this training is unlikely to work there).
-> > 
-> > The SPI-NOR framework could pass a read op template and a reference pattern
-> > such that all the spi-mem driver has to do is execute the template op and
-> > compare the output to the reference buffer.
-> >   
-> 
-> I agree it. Before, I were not able to find a suitable location to implement read training feature.
-> I think that I can add a SPI timing training function in "spi_controller_mem_ops" struct and
-> call it by a wrapper function called at the bottom of spi_nor_probe() in spi-nor.c.
-> Maybe, SPI-NOR framework does not need to pass reference buffer since calibration
-> method depends on each SoC itself and buffer size may be variant.
-> The detail calibration method may be implemented in each SoC SPI driver.
+As per the description of device_init_wakeup(), it should be enabled
+for "devices that everyone expects to be wakeup sources".  One would
+expect this to be the case with a real-time clock.
 
-That's a real problem IMO. What makes this pattern SoC specific? I can
-see why the location in flash could be *board* specific, but the
-pattern should be pretty common, right? As for the spi-mem operation to
-be executed, it's definitely memory specific (I can imagine some flash
-vendors providing a specific command returning a fixed pattern that's
-not actually stored on a visible portion of the flash).
+Tested on rk3288-rock2-square, which has an IRQ configured for the
+RTC.  As a result, wakeup was enabled during driver initialisation.
 
-> 
-> Besides, I am thinking about the possibility for adding a "spi_mem_post_init" function in
-> spi-mem framework sine for some SoCs, SPI controller needs to adjust some settings
-> after getting SPI flash information.
+Fixes: dcaf03849352 ("rtc: add hym8563 rtc-driver")
+Reported-by: kernelci.org bot <bot@kernelci.org>
+Signed-off-by: Guillaume Tucker <guillaume.tucker@collabora.com>
+---
 
-I don't think that's a good idea. The spi-mem interface should stay
-memory-type agnostic and doing that means we somehow pass NOR specific
-info. What is it that you need exactly, and why?
+Notes:
+    v2: enable wakeup if irq or wakeup-source
+
+ drivers/rtc/rtc-hym8563.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/rtc/rtc-hym8563.c b/drivers/rtc/rtc-hym8563.c
+index 0fb79c4afb46..24e0095be058 100644
+--- a/drivers/rtc/rtc-hym8563.c
++++ b/drivers/rtc/rtc-hym8563.c
+@@ -527,8 +527,6 @@ static int hym8563_probe(struct i2c_client *client,
+ 	hym8563->client = client;
+ 	i2c_set_clientdata(client, hym8563);
+ 
+-	device_set_wakeup_capable(&client->dev, true);
+-
+ 	ret = hym8563_init_device(client);
+ 	if (ret) {
+ 		dev_err(&client->dev, "could not init device, %d\n", ret);
+@@ -547,6 +545,11 @@ static int hym8563_probe(struct i2c_client *client,
+ 		}
+ 	}
+ 
++	if (client->irq > 0 ||
++	    device_property_read_bool(&client->dev, "wakeup-source")) {
++		device_init_wakeup(&client->dev, true);
++	}
++
+ 	/* check state of calendar information */
+ 	ret = i2c_smbus_read_byte_data(client, HYM8563_SEC);
+ 	if (ret < 0)
+-- 
+2.20.1
+
