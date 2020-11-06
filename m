@@ -2,125 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BC112A91AB
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 09:44:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BCA72A91AE
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 09:44:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726583AbgKFIoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 03:44:25 -0500
-Received: from mo4-p01-ob.smtp.rzone.de ([81.169.146.167]:19902 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725830AbgKFIoY (ORCPT
+        id S1726628AbgKFIon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 03:44:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46066 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725830AbgKFIom (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 03:44:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1604652262;
-        s=strato-dkim-0002; d=goldelico.com;
-        h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:
-        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
-        bh=GaSWc8H4r1q4iknf5vzTIjcuGvaQMXSv5oarX7EEY6o=;
-        b=JUcvzTY5HdlxPdCh4fBJsjqKn8vARtiNYf/2MYl+G3Tm0Lr7E1USqupa4zrXaA/8Lo
-        NNfIqVK5nPKlpQaYL2QaDQILsotG5DALLpXUVlqREEUbV33WWvVta6KCEN6oEuJPiEiG
-        9CpyG69J/D+UP4bgu5am/dmlHQ71o2U1MgLo4P7bbzCi4IlaMG+Kucl/Wf+Q6i9ZmBSx
-        3K3d6Tysf7JNjtoadeAMf/ruvdRcUxtvADwqOQCTXudf7mTiIWHdpsLQY2e2N15ylSK7
-        fXAIU8jqmdKCEHqj4lKPvNGjZBIjVq0k+kYPLGwdws0OlUviT6obVE9igjKjC/f0HrUL
-        ix4Q==
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj5Qpw97WFDlSYXA4JMOs="
-X-RZG-CLASS-ID: mo00
-Received: from imac.fritz.box
-        by smtp.strato.de (RZmta 47.3.3 DYNA|AUTH)
-        with ESMTPSA id d04888wA68i609v
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-        (Client did not present a certificate);
-        Fri, 6 Nov 2020 09:44:06 +0100 (CET)
-Subject: Re: [Letux-kernel] [REGRESSION] opp: Allow dev_pm_opp_get_opp_table() to return -EPROBE_DEFER
-Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
-Content-Type: text/plain; charset=us-ascii
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <20201106041441.uuz5vrtqeyn6ijdv@vireshk-i7>
-Date:   Fri, 6 Nov 2020 09:44:05 +0100
-Cc:     nm@ti.com, ulf.hansson@linaro.org, stephan@gerhold.net,
-        khilman@kernel.org, sboyd@kernel.org, linux-pm@vger.kernel.org,
-        rjw@rjwysocki.net, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Discussions about the Letux Kernel 
-        <letux-kernel@openphoenux.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <8728D936-6583-407F-96CF-92AE95AAECDF@goldelico.com>
-References: <20201106001018.02200778@aktux> <20201106041441.uuz5vrtqeyn6ijdv@vireshk-i7>
-To:     Andreas Kemnade <andreas@kemnade.info>, vireshk@kernel.org
-X-Mailer: Apple Mail (2.3124)
+        Fri, 6 Nov 2020 03:44:42 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B3F1C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 00:44:42 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <a.fatoum@pengutronix.de>)
+        id 1kaxML-0007ok-Qg; Fri, 06 Nov 2020 09:44:37 +0100
+Subject: Re: [PATCH 03/19] gpu: drm: imx: ipuv3-plane: Mark 'crtc_state' as
+ __always_unused
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Fabio Estevam <festevam@gmail.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>
+References: <20201105144517.1826692-1-lee.jones@linaro.org>
+ <20201105144517.1826692-4-lee.jones@linaro.org>
+ <15a4a184-74c2-e630-193a-cdea61545a03@pengutronix.de>
+ <20201106074151.GU4488@dell>
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+Message-ID: <5056c156-9f6c-8e0d-54e8-5317fdd46c12@pengutronix.de>
+Date:   Fri, 6 Nov 2020 09:44:35 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
+MIME-Version: 1.0
+In-Reply-To: <20201106074151.GU4488@dell>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 11/6/20 8:41 AM, Lee Jones wrote:
+> On Thu, 05 Nov 2020, Ahmad Fatoum wrote:
+> 
+>> Hello Lee,
+>>
+>> On 11/5/20 3:45 PM, Lee Jones wrote:
+>>> In the macro for_each_oldnew_crtc_in_state() 'crtc_state' is provided
+>>> as a container for state->crtcs[i].new_state, but is not utilised in
+>>> this use-case.  We cannot simply delete the variable, so here we tell
+>>> the compiler that we're intentionally discarding the read value.
+>>
+>> for_each_oldnew_crtc_in_state already (void) casts the drm_crtc and the old
+>> drm_crtc_state to silence unused-but-set-variable warning. Should we maybe
+>> (void) cast the new crtc_state as well?
+> 
+> From what I saw, it only void casts the ones which aren't assigned.
 
-> Am 06.11.2020 um 05:14 schrieb Viresh Kumar <viresh.kumar@linaro.org>:
->=20
-> On 06-11-20, 00:10, Andreas Kemnade wrote:
->> Hi,
->>=20
->> On the GTA04 (DM3730, devicetree omap3-gta04*) I get my console =
-flooded
->> up with the following:
->> [   24.517211] cpu cpu0: multiple regulators are not supported
->> [   24.523040] cpufreq: __target_index: Failed to change cpu =
-frequency: -22
->> [   24.537231] ------------[ cut here ]------------
->> [   24.542083] WARNING: CPU: 0 PID: 5 at drivers/opp/core.c:678 =
-dev_pm_opp_set_rate+0x23c/0x494
->> [   24.551086] Modules linked in: usb_f_ecm g_ether usb_f_rndis =
-u_ether libcomposite configfs phy_twl4030_usb omap2430 musb_hdrc overlay
->> [   24.563842] CPU: 0 PID: 5 Comm: kworker/0:0 Tainted: G        W    =
-     5.9.0-rc1-00008-g629238068eb9 #14
->> [   24.573852] Hardware name: Generic OMAP36xx (Flattened Device =
-Tree)
->> [   24.580413] Workqueue: events dbs_work_handler
->> [   24.585083] [<c010e6b4>] (unwind_backtrace) from [<c010a194>] =
-(show_stack+0x10/0x14)
->> [   24.593200] [<c010a194>] (show_stack) from [<c0464ad0>] =
-(dump_stack+0x8c/0xac)
->> [   24.600769] [<c0464ad0>] (dump_stack) from [<c01276a8>] =
-(__warn+0xcc/0xe4)
->> [   24.608001] [<c01276a8>] (__warn) from [<c0127a3c>] =
-(warn_slowpath_fmt+0x74/0xa0)
->> [   24.615844] [<c0127a3c>] (warn_slowpath_fmt) from [<c06364ac>] =
-(dev_pm_opp_set_rate+0x23c/0x494)
->> [   24.625061] [<c06364ac>] (dev_pm_opp_set_rate) from [<c063ec08>] =
-(set_target+0x2c/0x4c)
->> [   24.633453] [<c063ec08>] (set_target) from [<c063a950>] =
-(__cpufreq_driver_target+0x190/0x22c)
->> [   24.642395] [<c063a950>] (__cpufreq_driver_target) from =
-[<c063d4e0>] (od_dbs_update+0xcc/0x158)
->> [   24.651489] [<c063d4e0>] (od_dbs_update) from [<c063e090>] =
-(dbs_work_handler+0x2c/0x54)
->> [   24.659881] [<c063e090>] (dbs_work_handler) from [<c013f71c>] =
-(process_one_work+0x210/0x358)
->> [   24.668731] [<c013f71c>] (process_one_work) from [<c0140014>] =
-(worker_thread+0x22c/0x2d0)
->> [   24.677307] [<c0140014>] (worker_thread) from [<c0144eac>] =
-(kthread+0x140/0x14c)
->> [   24.685058] [<c0144eac>] (kthread) from [<c0100148>] =
-(ret_from_fork+0x14/0x2c)
->> [   24.692626] Exception stack(0xde4b7fb0 to 0xde4b7ff8)
->> [   24.697906] 7fa0:                                     00000000 =
-00000000 00000000 00000000
->> [   24.706481] 7fc0: 00000000 00000000 00000000 00000000 00000000 =
-00000000 00000000 00000000
->> [   24.715057] 7fe0: 00000000 00000000 00000000 00000000 00000013 =
-00000000
->> [   24.722198] ---[ end trace 038b3f231fae6f81 ]---
->>=20
->> endlessly after the $subject commit. Any hints?
->=20
-> The fix for this has been in linux-next for a couple of days and it
-> made it to linus/master yesterday.
->=20
-> 47efcbcb340c opp: Fix early exit from =
-dev_pm_opp_register_set_opp_helper()
+How do you mean? I wonder if
 
-Seems to fix our problems on gta04 (OMAP3).
-Otherwise we would have found that v5.10-rc3 magically solves it :)
-Interestingly it did not affect OMAP5.
+ #define for_each_oldnew_crtc_in_state(__state, crtc, old_crtc_state, new_crtc_state, __i) \
+        for ((__i) = 0;                                                 \
+             (__i) < (__state)->dev->mode_config.num_crtc;              \
+             (__i)++)                                                   \
+                for_each_if ((__state)->crtcs[__i].ptr &&               \
+                             ((crtc) = (__state)->crtcs[__i].ptr,       \
+                              (void)(crtc) /* Only to avoid unused-but-set-variable warning */, \
+                             (old_crtc_state) = (__state)->crtcs[__i].old_state, \
+                             (void)(old_crtc_state) /* Only to avoid unused-but-set-variable warning */, \
+-                            (new_crtc_state) = (__state)->crtcs[__i].new_state, 1))
++                            (new_crtc_state) = (__state)->crtcs[__i].new_state, \
++                            (void)(new_crtc_state), 1))
 
-BR and thanks,
-Nikolaus Schaller
+wouldn't be better.
 
+> 
+>>> Fixes the following W=1 kernel build warning(s):
+>>>
+>>>  drivers/gpu/drm/imx/ipuv3-plane.c: In function ‘ipu_planes_assign_pre’:
+>>>  drivers/gpu/drm/imx/ipuv3-plane.c:746:42: warning: variable ‘crtc_state’ set but not used [-Wunused-but-set-variable]
+>>>
+>>> Cc: Philipp Zabel <p.zabel@pengutronix.de>
+>>> Cc: David Airlie <airlied@linux.ie>
+>>> Cc: Daniel Vetter <daniel@ffwll.ch>
+>>> Cc: Shawn Guo <shawnguo@kernel.org>
+>>> Cc: Sascha Hauer <s.hauer@pengutronix.de>
+>>> Cc: Pengutronix Kernel Team <kernel@pengutronix.de>
+>>> Cc: Fabio Estevam <festevam@gmail.com>
+>>> Cc: NXP Linux Team <linux-imx@nxp.com>
+>>> Cc: dri-devel@lists.freedesktop.org
+>>> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+>>> ---
+>>>  drivers/gpu/drm/imx/ipuv3-plane.c | 2 +-
+>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/gpu/drm/imx/ipuv3-plane.c b/drivers/gpu/drm/imx/ipuv3-plane.c
+>>> index 8a4235d9d9f1e..acc0a3ce4992f 100644
+>>> --- a/drivers/gpu/drm/imx/ipuv3-plane.c
+>>> +++ b/drivers/gpu/drm/imx/ipuv3-plane.c
+>>> @@ -743,7 +743,7 @@ bool ipu_plane_atomic_update_pending(struct drm_plane *plane)
+>>>  int ipu_planes_assign_pre(struct drm_device *dev,
+>>>  			  struct drm_atomic_state *state)
+>>>  {
+>>> -	struct drm_crtc_state *old_crtc_state, *crtc_state;
+>>> +	struct drm_crtc_state *old_crtc_state, __always_unused *crtc_state;
+>>>  	struct drm_plane_state *plane_state;
+>>>  	struct ipu_plane_state *ipu_state;
+>>>  	struct ipu_plane *ipu_plane;
+>>>
+>>
+> 
+
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
