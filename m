@@ -2,102 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9F1F2A9051
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 08:29:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55AFB2A9057
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 08:30:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726466AbgKFH3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 02:29:04 -0500
-Received: from mga18.intel.com ([134.134.136.126]:30669 "EHLO mga18.intel.com"
+        id S1726481AbgKFHaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 02:30:21 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:35876 "EHLO m42-4.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725830AbgKFH3E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 02:29:04 -0500
-IronPort-SDR: QUl+KxmImdBiN9AZAriuCLrFgp60TwRXhDaXI1PuHYzIf9skOEoVEvA4TgoLmg3hLsZs/8Df9l
- BiBUbgL0BAQA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9796"; a="157292853"
-X-IronPort-AV: E=Sophos;i="5.77,455,1596524400"; 
-   d="scan'208";a="157292853"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2020 23:29:03 -0800
-IronPort-SDR: 7V1IJ6pjk8oQLtLEcGW9OjlhbuwWfMdcaCDbIGN/97HD6vuY+I3SKCm+h2OvjHDbOkruujbqKH
- s65cIa9Mlwkg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,455,1596524400"; 
-   d="scan'208";a="354616998"
-Received: from yhuang-dev.sh.intel.com (HELO yhuang-dev) ([10.239.159.65])
-  by fmsmga004.fm.intel.com with ESMTP; 05 Nov 2020 23:29:00 -0800
-From:   "Huang\, Ying" <ying.huang@intel.com>
-To:     Mel Gorman <mgorman@suse.de>
-Cc:     Peter Zijlstra <peterz@infradead.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ingo Molnar <mingo@redhat.com>, Rik van Riel <riel@redhat.com>,
-        "Johannes Weiner" <hannes@cmpxchg.org>,
-        "Matthew Wilcox \(Oracle\)" <willy@infradead.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        David Rientjes <rientjes@google.com>, ben.widawsky@intel.com
-Subject: Re: [PATCH -V2 2/2] autonuma: Migrate on fault among multiple bound nodes
-References: <20201028023411.15045-1-ying.huang@intel.com>
-        <20201028023411.15045-3-ying.huang@intel.com>
-        <20201102111717.GB3306@suse.de> <87eel9wumd.fsf@yhuang-dev.intel.com>
-        <20201105112523.GQ3306@suse.de>
-Date:   Fri, 06 Nov 2020 15:28:59 +0800
-In-Reply-To: <20201105112523.GQ3306@suse.de> (Mel Gorman's message of "Thu, 5
-        Nov 2020 11:25:23 +0000")
-Message-ID: <87v9ejosec.fsf@yhuang-dev.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
+        id S1726248AbgKFHaV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 02:30:21 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1604647820; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=ZGXXuu6qBXSfftqrulNTywUK6S0YxZhWGm7WSxymbYY=; b=PrRyGjv9u5W2dZJ1M9ZCR+cXU+issLjhzeemv9ATPNDSQ/f1c/QzGZ0nu0tE2VFcmMN3Clvl
+ PXmkdWv0zZsH/D5lXEUnlk3e/2/TvhTHzWnp0VPkBJSZhOORDLeLqmbryvHCr2MQ5+Vu82Ev
+ irlKZTQzI5rZDoT1rTWgcMjs/l0=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 5fa4fb812e911a5cba9f7d85 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 06 Nov 2020 07:30:09
+ GMT
+Sender: akhilpo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 8FF87C433C9; Fri,  6 Nov 2020 07:30:09 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.1.9] (unknown [117.210.190.231])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: akhilpo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8529EC433C8;
+        Fri,  6 Nov 2020 07:30:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8529EC433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akhilpo@codeaurora.org
+Subject: Re: [Freedreno] [PATCH v5 3/3] dt-bindings: drm/msm/gpu: Add cooling
+ device support
+To:     Rob Clark <robdclark@gmail.com>, Rob Herring <robh@kernel.org>
+Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        dri-devel@freedesktop.org,
+        freedreno <freedreno@lists.freedesktop.org>
+References: <1604054832-3114-1-git-send-email-akhilpo@codeaurora.org>
+ <1604054832-3114-3-git-send-email-akhilpo@codeaurora.org>
+ <20201104200300.GA4036650@bogus>
+ <CAF6AEGvj34MbnRS+A432AhOwMuL2BtTXJ+AD+zQ9w0_meV_-gw@mail.gmail.com>
+From:   Akhil P Oommen <akhilpo@codeaurora.org>
+Message-ID: <8c28fe20-fbcf-5076-fad8-107073df63a5@codeaurora.org>
+Date:   Fri, 6 Nov 2020 13:00:01 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+In-Reply-To: <CAF6AEGvj34MbnRS+A432AhOwMuL2BtTXJ+AD+zQ9w0_meV_-gw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mel Gorman <mgorman@suse.de> writes:
+On 11/5/2020 2:28 AM, Rob Clark wrote:
+> On Wed, Nov 4, 2020 at 12:03 PM Rob Herring <robh@kernel.org> wrote:
+>>
+>> On Fri, 30 Oct 2020 16:17:12 +0530, Akhil P Oommen wrote:
+>>> Add cooling device support to gpu. A cooling device is bound to a
+>>> thermal zone to allow thermal mitigation.
+>>>
+>>> Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
+>>> Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+>>> ---
+>>>   Documentation/devicetree/bindings/display/msm/gpu.txt | 7 +++++++
+>>>   1 file changed, 7 insertions(+)
+>>>
+>>
+>>
+>> Please add Acked-by/Reviewed-by tags when posting new versions. However,
+>> there's no need to repost patches *only* to add the tags. The upstream
+>> maintainer will do that for acks received on the version they apply.
+>>
+>> If a tag was not added on purpose, please state why and what changed.
+>>
+> 
+> 
+> Thanks Rob
+> 
+> I've copied over your ack from the previous version.. but yes, it
+> definitely makes my life easier when patch senders do this for me ;-)
+> 
+> BR,
+> -R
+> 
+Robh, you Acked v4 after I shared v5 patches!!
 
-> On Wed, Nov 04, 2020 at 01:36:58PM +0800, Huang, Ying wrote:
->> But from another point of view, I suggest to remove the constraints of
->> MPOL_F_MOF in the future.  If the overhead of AutoNUMA isn't acceptable,
->> why not just disable AutoNUMA globally via sysctl knob?
->> 
->
-> Because it's a double edged sword. NUMA Balancing can make a workload
-> faster while still incurring more overhead than it should -- particularly
-> when threads are involved rescanning the same or unrelated regions.
-> Global disabling only really should happen when an application is running
-> that is the only application on the machine and has full NUMA awareness.
-
-Got it.  So NUMA Balancing may in generally benefit some workloads but
-hurt some other workloads on one machine.  So we need a method to
-enable/disable NUMA Balancing for one workload.  Previously, this is
-done via the explicit NUMA policy.  If some explicit NUMA policy is
-specified, NUMA Balancing is disabled for the memory region or the
-thread.  And this can be reverted again for a memory region via
-MPOL_MF_LAZY.  It appears that we lacks MPOL_MF_LAZY for the thread yet.
-
->> > It might still end up being better but I was not aware of a
->> > *realistic* workload that binds to multiple nodes
->> > deliberately. Generally I expect if an application is binding, it's
->> > binding to one local node.
->> 
->> Yes.  It's not popular configuration for now.  But for the memory
->> tiering system with both DRAM and PMEM, the DRAM and PMEM in one socket
->> will become 2 NUMA nodes.  To avoid too much cross-socket memory
->> accessing, but take advantage of both the DRAM and PMEM, the workload
->> can be bound to 2 NUMA nodes (DRAM and PMEM).
->> 
->
-> Ok, that may lead to unpredictable performance as it'll have variable
-> performance with limited control of the "important" applications that
-> should use DRAM over PMEM. That's a long road but the step is not
-> incompatible with the long-term goal.
-
-Yes.  Ben Widawsky is working on a patchset to make it possible to
-prefer the remote DRAM instead of the local PMEM as follows,
-
-https://lore.kernel.org/linux-mm/20200630212517.308045-1-ben.widawsky@intel.com/
-
-Best Regards,
-Huang, Ying
+-Akhil.
