@@ -2,84 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BBC42A9D99
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 20:10:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 101362A9D9D
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 20:11:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728163AbgKFTKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 14:10:40 -0500
-Received: from mail-ed1-f66.google.com ([209.85.208.66]:43659 "EHLO
-        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727591AbgKFTKj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 14:10:39 -0500
-Received: by mail-ed1-f66.google.com with SMTP id b9so2344608edu.10;
-        Fri, 06 Nov 2020 11:10:37 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gqirjaMt4D6SKqcnUi2BGgbSRPE0IdYDv6GFpHhWUvI=;
-        b=ZTmLWhtjHVByjrjV5XKVrq7O76F8KvzF1RQimo5acS98QM66Y1e+PvhRKyIGVEAS24
-         p4hsIqK2zw+l3AhF/NUX+br1XPhyk9zu+dP61Lbtq4XbghKj5BpJsZveGaG9GBxfK9ie
-         RxfoZbNV34pMU8/cKU+D6uxMRaxDqG5JW86c+JpkzXVD6nmFP8AzGVQoubqo3EWtLBCj
-         puKPK5e3u8q0N78FX4FBuYDZ3qAXQ1Vent2sOjFHjbWA3Rgbu+9E3bbVF60TPE4rfHez
-         kmnphrpF20eg3D0B911NbXud5d9jw9/IY9sGSDotP8rbo7F9oOywUOC0LGza9n+gZ3gU
-         XbFQ==
-X-Gm-Message-State: AOAM533cAwZ9WQOh4oRPNBYz/0AE+iOIYBFuPevLxGMDK9YTKtemuqq9
-        3JGlPEUwDoM1loMkd0x0mRQ=
-X-Google-Smtp-Source: ABdhPJxxua5gAL0oui3IMgo8hZd9sh5JMCTalWVuc/s/2mSaFDEPMiMOSp49pEiaN9sG5rNOJidI+Q==
-X-Received: by 2002:a05:6402:22c6:: with SMTP id dm6mr3612186edb.139.1604689837124;
-        Fri, 06 Nov 2020 11:10:37 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id l12sm1666653edt.46.2020.11.06.11.10.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Nov 2020 11:10:35 -0800 (PST)
-Date:   Fri, 6 Nov 2020 20:10:33 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Mikko Perttunen <cyndis@kapsi.fi>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v7 35/47] memory: tegra20: Support interconnect framework
-Message-ID: <20201106191033.GA65086@kozik-lap>
-References: <20201104164923.21238-1-digetx@gmail.com>
- <20201104164923.21238-36-digetx@gmail.com>
+        id S1728105AbgKFTLt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 14:11:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57424 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727257AbgKFTLt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 14:11:49 -0500
+Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1D6BE20882;
+        Fri,  6 Nov 2020 19:11:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604689908;
+        bh=e9go00OPM1UzmcwI9P1HigeeZ+n07Z6Qs6e/rNp0WL4=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=Ql+d1620nolPyv30ofEW4z95xWVHKap8Ay9fFXMHQ/G/GCznnJUbAExvq2JYVhZ8+
+         OUJmy80KnbcOBsR4kxKimQ4HJEwXPVMGtA3Zpq35PVFyKgXH/7zbHPzsDgWLjJFxe4
+         qlAa8ueRVGaYIL5XzcqBXLOX56KIQnjLwGEm8YRk=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id AECDF352097B; Fri,  6 Nov 2020 11:11:47 -0800 (PST)
+Date:   Fri, 6 Nov 2020 11:11:47 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, parri.andrea@gmail.com,
+        will@kernel.org, peterz@infradead.org, boqun.feng@gmail.com,
+        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
+        luc.maranget@inria.fr, akiyks@gmail.com
+Subject: Re: [PATCH memory-model 3/8] tools/memory-model: Document categories
+ of ordering primitives
+Message-ID: <20201106191147.GY3249@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20201105215953.GA15309@paulmck-ThinkPad-P72>
+ <20201105220017.15410-3-paulmck@kernel.org>
+ <20201106165654.GB47039@rowland.harvard.edu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201104164923.21238-36-digetx@gmail.com>
+In-Reply-To: <20201106165654.GB47039@rowland.harvard.edu>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 07:49:11PM +0300, Dmitry Osipenko wrote:
-> Now Internal and External Memory Controllers are memory interconnection
-> providers. This allows us to use interconnect API for tuning of memory
-> configuration. EMC driver now supports OPPs and DVFS.
+On Fri, Nov 06, 2020 at 11:56:54AM -0500, Alan Stern wrote:
+> On Thu, Nov 05, 2020 at 02:00:12PM -0800, paulmck@kernel.org wrote:
+> > From: "Paul E. McKenney" <paulmck@kernel.org>
+> > 
+> > The Linux kernel has a number of categories of ordering primitives, which
+> > are recorded in the LKMM implementation and hinted at by cheatsheet.txt.
+> > But there is no overview of these categories, and such an overview
+> > is needed in order to understand multithreaded LKMM litmus tests.
+> > This commit therefore adds an ordering.txt as well as extracting a
+> > control-dependencies.txt from memory-barriers.txt.  It also updates the
+> > README file.
+> > 
+> > [ paulmck:  Apply Akira Yokosawa file-placement feedback. ]
+> > [ paulmck:  Apply Alan Stern feedback. ]
+> > [ paulmck:  Apply self-review feedback. ]
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > ---
+> > diff --git a/tools/memory-model/Documentation/README b/tools/memory-model/Documentation/README
+> > index 2d9539f..a50ea81 100644
+> > --- a/tools/memory-model/Documentation/README
+> > +++ b/tools/memory-model/Documentation/README
 > 
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  drivers/memory/tegra/Kconfig       |   3 +-
->  drivers/memory/tegra/tegra20-emc.c | 310 ++++++++++++++++++++++++++++-
->  drivers/memory/tegra/tegra20.c     |  77 +++++++
->  3 files changed, 386 insertions(+), 4 deletions(-)
+> > @@ -41,13 +50,21 @@ README
+> >  cheatsheet.txt
+> >  	Quick-reference guide to the Linux-kernel memory model.
+> >  
+> > +control-dependencies.txt
+> > +	Guide to preventing compiler optimizations from destroying
+> > +	your control dependencies.
+> > +
+> >  explanation.txt
+> > -	Detailed description of the memory model.
+> > +	Detailed description of the memory model in detail.
+> 
+> A redundantly redundant change.
 
-Thanks, applied.
+I will revert the reversion of the removal of the added detail "in
+detail".  ;-)
 
-Best regards,
-Krzysztof
+Good catch, thank you!
 
+						Thanx, Paul
