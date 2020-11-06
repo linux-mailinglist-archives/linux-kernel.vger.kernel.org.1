@@ -2,88 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 119032A94F1
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 12:00:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BC322A94F3
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 12:01:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727092AbgKFLAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 06:00:50 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:45583 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726317AbgKFLAu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 06:00:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604660448;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZtZT7itrVpNRfBlr3Cazy0HWs7zXJS+GGQb2VbmhUxk=;
-        b=Uj+6QUxNBm0P0iXvq7onhHJrK8+OfAG/0pFmW20p+x/CI63ArQ+Gde/FZe/pkQMA66MqDY
-        MH/AusmohfLYvG4Hm9Qx74GF8pzt7ikcIIlF6rXbeOUolB1oRgq1rrE34vPwsXFS0H94k8
-        YwrtoSugQcFfGftH8oW/Qr/5KmW+kmY=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-414-V632puqaPOOAtjHWuSLJLg-1; Fri, 06 Nov 2020 06:00:47 -0500
-X-MC-Unique: V632puqaPOOAtjHWuSLJLg-1
-Received: by mail-wm1-f71.google.com with SMTP id l16so294088wmh.1
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 03:00:47 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ZtZT7itrVpNRfBlr3Cazy0HWs7zXJS+GGQb2VbmhUxk=;
-        b=bwP4mTRjiz4sLIAUruUGPcsLRUgesvbSF+w+l8fRkObbLFEAIRGXxOykvqQMUwnfPX
-         kuRbCkxMBhLQdm+XfY9OSKwmcH3YvKa/h7qp97CCPpSGyvAHqz25ScZDSAv0nOTmiwIT
-         xP6IJo4/3ttXtIy/ak24lnxcJ9WgiPwp9K8sd3sPI0wp7NU3ZeqNjJyPcBSCIal/8yBS
-         Sd/6xj3itEIbpcmEOvLD4mDJaXB0LcP7kz6nPQfA4hmyWiHvrtjsDdZOs2qQQlviIzPz
-         0B3HNgy1OCDauIHeTWR3XeY20HT5GxKlSr/vNK75vNlwx1BcG1H2YBn11HALjnxsQOjg
-         qoVg==
-X-Gm-Message-State: AOAM533myAKAPFOeCBgJ+kmXtCm62iff5f4FcwyYCk7s2R6D1CGbDpa0
-        99wfNqJfI77yU0eSswiFqzPC9Vk1Kjwskeo1/RXzdnXerMGXTBH43OwR41rElXRzNyhPZptP1QE
-        pvmLhAmH37YMmNZKHHcsH6j7U
-X-Received: by 2002:a1c:b041:: with SMTP id z62mr1861616wme.183.1604660443119;
-        Fri, 06 Nov 2020 03:00:43 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJy998yT/dbdVsyfPvdRyx12Gso3/GpsD6DmKxXxQdpz/rRJ9mO5IMFzBixjrV3UiX4aJV0qjg==
-X-Received: by 2002:a1c:b041:: with SMTP id z62mr1861590wme.183.1604660442885;
-        Fri, 06 Nov 2020 03:00:42 -0800 (PST)
-Received: from [192.168.10.118] ([93.56.170.5])
-        by smtp.gmail.com with ESMTPSA id l3sm1969557wmf.0.2020.11.06.03.00.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Nov 2020 03:00:42 -0800 (PST)
-Subject: Re: [PATCH v13 06/14] KVM: Make dirty ring exclusive to dirty bitmap
- log
-To:     Peter Xu <peterx@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        Andrew Jones <drjones@redhat.com>
-References: <20201001012044.5151-1-peterx@redhat.com>
- <20201001012224.5818-1-peterx@redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <26c461bc-b2e3-bc23-fff6-0377b09d325a@redhat.com>
-Date:   Fri, 6 Nov 2020 12:00:41 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        id S1727120AbgKFLBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 06:01:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41302 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726422AbgKFLBH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 06:01:07 -0500
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id ADB6B2072E;
+        Fri,  6 Nov 2020 11:01:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604660466;
+        bh=kKi/yiZAgnA1BiE1B40I9aILlNyDfD2Wha97DV0eknY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=wTFe3827Eu3ZBo4ZNABSY8HHdpmJYvv5mWU+t88Tj2tNC46Xr/ieMD6CYl8HaEY1V
+         ctctl0b23cXnyt/MI+DMadJnnK9utHFutln0rtxg2RNuLXQpWxKE/Tqhpd4+eNY4y2
+         wSyZJd0tD+0+nS+0YCFK1EebR/LHw0SHzm96ni0U=
+Date:   Fri, 6 Nov 2020 11:00:53 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [GIT PULL] SPI fixes for v5.10-rc2
+Message-ID: <20201106110053.GA5532@sirena.org.uk>
+References: <20201105164607.AD20021734@mail.kernel.org>
+ <20201106101815.GA1403068@ubuntu-m3-large-x86>
 MIME-Version: 1.0
-In-Reply-To: <20201001012224.5818-1-peterx@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="k1lZvvs/B4yU6o8G"
+Content-Disposition: inline
+In-Reply-To: <20201106101815.GA1403068@ubuntu-m3-large-x86>
+X-Cookie: Allow 6 to 8 weeks for delivery.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/10/20 03:22, Peter Xu wrote:
->   
-> +	/* Dirty ring tracking is exclusive to dirty log tracking */
-> +	if (kvm->dirty_ring_size)
-> +		return -EINVAL;
-> +
 
-ENXIO is slightly more appropriate (especially for debugging, as EINVAL 
-suggests that the arguments were wrong and not some external state).
+--k1lZvvs/B4yU6o8G
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Paolo
+On Fri, Nov 06, 2020 at 03:18:15AM -0700, Nathan Chancellor wrote:
+> On Thu, Nov 05, 2020 at 04:45:46PM +0000, Mark Brown wrote:
 
+> > Martin Hundeb=F8ll (1):
+> >       spi: bcm2835: fix gpio cs level inversion
+
+> Why did this go in with two outstanding reports?
+
+> It looks like there is a fix for it now:
+
+> https://lore.kernel.org/linux-spi/20201105090615.620315-1-martin@geanix.c=
+om/
+
+> Although I guess it is going to require a resend...
+
+Erk, sorry - I remembered the issue being fixed but got confused and
+thought that it was an incremental patch on top of something applied
+rather than something that got fixed in a patch revision (got it
+confused with another issue I think).  The incremental fix is queued
+now, I should send it out later today.
+
+--k1lZvvs/B4yU6o8G
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+lLOQACgkQJNaLcl1U
+h9C16Qf8DO4L2yXoumesDVQVM3WZobrBRz/AXEiIaBFptIwKotpR30ESrdpzGXMp
+4m3j9NL5/cNqTAVZCGXkBf/w20ZFaubfgIf2eAAiES6pn1j5UkluaiWvzGg4Jkgf
+ZENe9XH80r8pZDkSUnMaItELUjb1GqTUlHFi09KkZFpThh4YWSsDxFopS+w41OBm
+bjTjcvWImEBvL5a+/r14Kdw3L2x+xbaVtaKP4cf4XS2DasiLuaIodQe7ICRV4RVi
+tnZJANpORa1b7RDLLLwSkZ1kGd7WzaJsxcO4gAcJ+SAQi+FqEEzis7JXwYNPzTiT
+BehLp3FwLwjWFl9NPNpPTMHmKFKfPw==
+=cbOM
+-----END PGP SIGNATURE-----
+
+--k1lZvvs/B4yU6o8G--
