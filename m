@@ -2,186 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF9572A98EB
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 16:57:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E66EC2A98F5
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 17:00:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727754AbgKFP4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 10:56:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57502 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727759AbgKFP4v (ORCPT
+        id S1727543AbgKFQAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 11:00:15 -0500
+Received: from outbound-smtp14.blacknight.com ([46.22.139.231]:39781 "EHLO
+        outbound-smtp14.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726422AbgKFQAP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 10:56:51 -0500
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE746C0613D4
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 07:56:51 -0800 (PST)
-Received: by mail-pf1-x449.google.com with SMTP id g14so1536752pfb.8
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 07:56:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=WDkvhhk+gB3QxGd+Be5zd3cestt1bSfFZfMdeZMOFkc=;
-        b=RsQT+l1Cceiubd2ysLWUV8h2As7XbKgBn+u4sFmyjyhXGIMVBe6DeRx88flcGo8KR5
-         sl4O41xriDhKiN7umZyVgbPP7suEytMVsyPLWoRrN+8dPEx5fGUYYAauV7AcPfwFeILG
-         YfpSyiF/Xb4+rnv8rl3bb8jdRbPq2PTUklekvsdHWSGtsz506hPYmFjiO7wOILQjhLWf
-         pruQuuRngXqqcx2P4k/jVpbn414Xqvkp0FEof2WvYhJioCjk82tStmDHF/kgs65P9Kpq
-         aYf0/rfT57riU5y656ZoKcC9PuV/Mttvwyzwlp1vQzkrxpQaFbp4xYQkbtW5gWN1zL5S
-         mwjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=WDkvhhk+gB3QxGd+Be5zd3cestt1bSfFZfMdeZMOFkc=;
-        b=O3Skf3jNGiE0IbbfYz+IgClE/m/UMb713pU5aJcX8jbuKqqkctzPeAcm80i2Noj863
-         WNTwf+vtHlXGEbRV64OPalrymtEsXekeDm4XXWAGbZXkAJmtPLgYlXq+cBF9d2s1BkXD
-         aqblLZgux3sAdsuqda/4v6EDi6Qltj5LviHAeh3gRl2aYUjfbfuFQjzH4aENf3JjAkvN
-         vpNtFqxgTzAsn1QAoMJcT7SCqgqCafSLT1AwIDwxQVZ42P1JGYBaxpyOooISlFDAm7Z+
-         V+Y4pWV/V7e58bX0mr9pTBQtgQzUn3iwBOecJ+TMyJ9ihG3jkgXP5Q8vE0JtsJf8vCKu
-         ezLg==
-X-Gm-Message-State: AOAM531jDXLjJAzo3aYUARV5njUWt3pQoJp0n7gnD8x2DXRLFzoEiROl
-        rKZVxEDvHfzYOtZR0Su8ZLM5/sIAIeccFmWS3Q==
-X-Google-Smtp-Source: ABdhPJyr6d4kWf9xCCa5Q5B2Li129pMxIihfl7MrB7NAAAhzq/yphrSlonTBTACs7Hm/3feKqNqDhVnqI0/i8x7rGQ==
-Sender: "lokeshgidra via sendgmr" <lokeshgidra@lg.mtv.corp.google.com>
-X-Received: from lg.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:29dd])
- (user=lokeshgidra job=sendgmr) by 2002:a17:902:ee85:b029:d6:c43e:2321 with
- SMTP id a5-20020a170902ee85b02900d6c43e2321mr2200868pld.29.1604678211192;
- Fri, 06 Nov 2020 07:56:51 -0800 (PST)
-Date:   Fri,  6 Nov 2020 07:56:26 -0800
-In-Reply-To: <20201106155626.3395468-1-lokeshgidra@google.com>
-Message-Id: <20201106155626.3395468-5-lokeshgidra@google.com>
-Mime-Version: 1.0
-References: <20201106155626.3395468-1-lokeshgidra@google.com>
-X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
-Subject: [PATCH v12 4/4] userfaultfd: use secure anon inodes for userfaultfd
-From:   Lokesh Gidra <lokeshgidra@google.com>
-To:     Andrea Arcangeli <aarcange@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        James Morris <jmorris@namei.org>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Eric Biggers <ebiggers@kernel.org>
-Cc:     "Serge E. Hallyn" <serge@hallyn.com>,
-        Paul Moore <paul@paul-moore.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        Daniel Colascione <dancol@dancol.org>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        KP Singh <kpsingh@google.com>,
-        David Howells <dhowells@redhat.com>,
-        Thomas Cedeno <thomascedeno@google.com>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Matthew Garrett <matthewgarrett@google.com>,
-        Aaron Goidel <acgoide@tycho.nsa.gov>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Adrian Reber <areber@redhat.com>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-        kaleshsingh@google.com, calin@google.com, surenb@google.com,
-        nnk@google.com, jeffv@google.com, kernel-team@android.com,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        hch@infradead.org, Daniel Colascione <dancol@google.com>,
-        Eric Biggers <ebiggers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Fri, 6 Nov 2020 11:00:15 -0500
+Received: from mail.blacknight.com (pemlinmail04.blacknight.ie [81.17.254.17])
+        by outbound-smtp14.blacknight.com (Postfix) with ESMTPS id ADC921C356D
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 16:00:12 +0000 (GMT)
+Received: (qmail 13329 invoked from network); 6 Nov 2020 16:00:12 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 6 Nov 2020 16:00:12 -0000
+Date:   Fri, 6 Nov 2020 16:00:10 +0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Phil Auld <pauld@redhat.com>, Peter Puhov <peter.puhov@linaro.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Robert Foley <robert.foley@linaro.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Jirka Hladky <jhladky@redhat.com>
+Subject: Re: [PATCH v1] sched/fair: update_pick_idlest() Select group with
+ lowest group_util when idle_cpus are equal
+Message-ID: <20201106160010.GF3371@techsingularity.net>
+References: <20200714125941.4174-1-peter.puhov@linaro.org>
+ <20201102105043.GB3371@techsingularity.net>
+ <CAKfTPtB7q8DMQaC=gU+XH92XKcSiuTSBjtMuiRFS67af0gzc6g@mail.gmail.com>
+ <20201102144418.GB154641@lorien.usersys.redhat.com>
+ <20201104094205.GI3306@suse.de>
+ <20201106120303.GE3371@techsingularity.net>
+ <CAKfTPtDbyrcZtzPPsdQFOxOkreg-ejn=ABGOGqYjdVpeFPEzPw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <CAKfTPtDbyrcZtzPPsdQFOxOkreg-ejn=ABGOGqYjdVpeFPEzPw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Colascione <dancol@google.com>
+On Fri, Nov 06, 2020 at 02:33:56PM +0100, Vincent Guittot wrote:
+> On Fri, 6 Nov 2020 at 13:03, Mel Gorman <mgorman@techsingularity.net> wrote:
+> >
+> > On Wed, Nov 04, 2020 at 09:42:05AM +0000, Mel Gorman wrote:
+> > > While it's possible that some other factor masked the impact of the patch,
+> > > the fact it's neutral for two workloads in 5.10-rc2 is suspicious as it
+> > > indicates that if the patch was implemented against 5.10-rc2, it would
+> > > likely not have been merged. I've queued the tests on the remaining
+> > > machines to see if something more conclusive falls out.
+> > >
+> >
+> > It's not as conclusive as I would like. fork_test generally benefits
+> > across the board but I do not put much weight in that.
+> >
+> > Otherwise, it's workload and machine-specific.
+> >
+> > schbench: (wakeup latency sensitive), all machines benefitted from the
+> >         revert at the low utilisation except one 2-socket haswell machine
+> >         which showed higher variability when the machine was fully
+> >         utilised.
+> 
+> There is a pending patch to should improve this bench:
+> https://lore.kernel.org/patchwork/patch/1330614/
+> 
 
-This change gives userfaultfd file descriptors a real security
-context, allowing policy to act on them.
+Ok, I've slotted this one in with a bunch of other stuff I wanted to run
+over the weekend. That particular patch was on my radar anyway. It just
+got bumped up the schedule a little bit.
 
-Signed-off-by: Daniel Colascione <dancol@google.com>
+> > hackbench: Neutral except for the same 2-socket Haswell machine which
+> >         took an 8% performance penalty of 8% for smaller number of groups
+> >         and 4% for higher number of groups.
+> >
+> > pipetest: Mostly neutral except for the *same* machine showing an 18%
+> >         performance gain by reverting.
+> >
+> > kernbench: Shows small gains at low job counts across the board -- 0.84%
+> >         lowest gain up to 5.93% depending on the machine
+> >
+> > gitsource: low utilisation execution of the git test suite. This was
+> >         mostly a win for the revert. For the list of machines tested it was
+> >
+> >          14.48% gain (2 socket but SNC enabled to 4 NUMA nodes)
+> >         neutral      (2 socket broadwell)
+> >         36.37% gain  (1 socket skylake machine)
+> >          3.18% gain  (2 socket broadwell)
+> >          4.4%        (2 socket EPYC 2)
+> >          1.85% gain  (2 socket EPYC 1)
+> >
+> > While it was clear-cut for 5.9, it's less clear-cut for 5.10-rc2 although
+> > the gitsource shows some severe differences depending on the machine that
+> > is worth being extremely cautious about. I would still prefer a revert
+> > but I'm also extremely biased and I know there are other patches in the
+> 
+> This one from Julia can also impact
+> 
 
-[Remove owner inode from userfaultfd_ctx]
-[Use anon_inode_getfd_secure() instead of anon_inode_getfile_secure()
- in userfaultfd syscall]
-[Use inode of file in userfaultfd_read() in resolve_userfault_fork()]
+Which one? I'm guessing "[PATCH v2] sched/fair: check for idle core"
 
-Signed-off-by: Lokesh Gidra <lokeshgidra@google.com>
-Reviewed-by: Eric Biggers <ebiggers@google.com>
----
- fs/userfaultfd.c | 19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
-
-diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
-index 000b457ad087..dd78daf06de6 100644
---- a/fs/userfaultfd.c
-+++ b/fs/userfaultfd.c
-@@ -972,14 +972,14 @@ static __poll_t userfaultfd_poll(struct file *file, poll_table *wait)
- 
- static const struct file_operations userfaultfd_fops;
- 
--static int resolve_userfault_fork(struct userfaultfd_ctx *ctx,
--				  struct userfaultfd_ctx *new,
-+static int resolve_userfault_fork(struct userfaultfd_ctx *new,
-+				  struct inode *inode,
- 				  struct uffd_msg *msg)
- {
- 	int fd;
- 
--	fd = anon_inode_getfd("[userfaultfd]", &userfaultfd_fops, new,
--			      O_RDWR | (new->flags & UFFD_SHARED_FCNTL_FLAGS));
-+	fd = anon_inode_getfd_secure("[userfaultfd]", &userfaultfd_fops, new,
-+			O_RDWR | (new->flags & UFFD_SHARED_FCNTL_FLAGS), inode);
- 	if (fd < 0)
- 		return fd;
- 
-@@ -989,7 +989,7 @@ static int resolve_userfault_fork(struct userfaultfd_ctx *ctx,
- }
- 
- static ssize_t userfaultfd_ctx_read(struct userfaultfd_ctx *ctx, int no_wait,
--				    struct uffd_msg *msg)
-+				    struct uffd_msg *msg, struct inode *inode)
- {
- 	ssize_t ret;
- 	DECLARE_WAITQUEUE(wait, current);
-@@ -1100,7 +1100,7 @@ static ssize_t userfaultfd_ctx_read(struct userfaultfd_ctx *ctx, int no_wait,
- 	spin_unlock_irq(&ctx->fd_wqh.lock);
- 
- 	if (!ret && msg->event == UFFD_EVENT_FORK) {
--		ret = resolve_userfault_fork(ctx, fork_nctx, msg);
-+		ret = resolve_userfault_fork(fork_nctx, inode, msg);
- 		spin_lock_irq(&ctx->event_wqh.lock);
- 		if (!list_empty(&fork_event)) {
- 			/*
-@@ -1160,6 +1160,7 @@ static ssize_t userfaultfd_read(struct file *file, char __user *buf,
- 	ssize_t _ret, ret = 0;
- 	struct uffd_msg msg;
- 	int no_wait = file->f_flags & O_NONBLOCK;
-+	struct inode *inode = file_inode(file);
- 
- 	if (ctx->state == UFFD_STATE_WAIT_API)
- 		return -EINVAL;
-@@ -1167,7 +1168,7 @@ static ssize_t userfaultfd_read(struct file *file, char __user *buf,
- 	for (;;) {
- 		if (count < sizeof(msg))
- 			return ret ? ret : -EINVAL;
--		_ret = userfaultfd_ctx_read(ctx, no_wait, &msg);
-+		_ret = userfaultfd_ctx_read(ctx, no_wait, &msg, inode);
- 		if (_ret < 0)
- 			return ret ? ret : _ret;
- 		if (copy_to_user((__u64 __user *) buf, &msg, sizeof(msg)))
-@@ -1985,8 +1986,8 @@ SYSCALL_DEFINE1(userfaultfd, int, flags)
- 	/* prevent the mm struct to be freed */
- 	mmgrab(ctx->mm);
- 
--	fd = anon_inode_getfd("[userfaultfd]", &userfaultfd_fops, ctx,
--			      O_RDWR | (flags & UFFD_SHARED_FCNTL_FLAGS));
-+	fd = anon_inode_getfd_secure("[userfaultfd]", &userfaultfd_fops, ctx,
-+			O_RDWR | (flags & UFFD_SHARED_FCNTL_FLAGS), NULL);
- 	if (fd < 0) {
- 		mmdrop(ctx->mm);
- 		kmem_cache_free(userfaultfd_ctx_cachep, ctx);
 -- 
-2.29.1.341.ge80a0c044ae-goog
-
+Mel Gorman
+SUSE Labs
