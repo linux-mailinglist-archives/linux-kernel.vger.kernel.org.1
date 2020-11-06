@@ -2,74 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89C9E2A8F3C
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 07:12:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 506542A8F3E
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 07:14:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726469AbgKFGLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 01:11:11 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:55789 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726451AbgKFGLK (ORCPT
+        id S1726156AbgKFGOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 01:14:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50952 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725828AbgKFGOl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 01:11:10 -0500
-X-UUID: 856dcf3837364771b9c5b9b1a159b9c2-20201106
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=p5DSa8Nnu7wbNc1hwM5sOPH42DGFe7+JpMveJyzKtq4=;
-        b=kWF5PMzh+jNvqReBydVOg+VSfsydUpB0kv2dkmVMLYJ/DxiWcl9CpwQ8A1uKGVeWREMw76Gf5h1SWvZJ/RncPU/40J9P/cZduzsic6wMBsLr/S8kpZS0Q2uEFAg3OaQkvpCnhjIwYU54q+GuXhXEZM/1ALS1DaG+hK4Choyh8oE=;
-X-UUID: 856dcf3837364771b9c5b9b1a159b9c2-20201106
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
-        (envelope-from <stanley.chu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 874927008; Fri, 06 Nov 2020 14:11:00 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 6 Nov 2020 14:10:58 +0800
-Received: from [172.21.77.33] (172.21.77.33) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 6 Nov 2020 14:10:58 +0800
-Message-ID: <1604643059.13152.19.camel@mtkswgap22>
-Subject: Re: [PATCH v1 0/6] scsi: ufs: Add some proprietary features in
- MediaTek UFS platforms
-From:   Stanley Chu <stanley.chu@mediatek.com>
-To:     <linux-scsi@vger.kernel.org>
-CC:     <martin.petersen@oracle.com>, <avri.altman@wdc.com>,
-        <alim.akhtar@samsung.com>, <jejb@linux.ibm.com>,
-        <matthias.bgg@gmail.com>, <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <kuohong.wang@mediatek.com>,
-        <peter.wang@mediatek.com>, <chun-hung.wu@mediatek.com>,
-        <andy.teng@mediatek.com>, <chaotian.jing@mediatek.com>,
-        <cc.chou@mediatek.com>, <jiajie.hao@mediatek.com>,
-        <alice.chao@mediatek.com>
-Date:   Fri, 6 Nov 2020 14:10:59 +0800
-In-Reply-To: <20201029115750.24391-1-stanley.chu@mediatek.com>
-References: <20201029115750.24391-1-stanley.chu@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        Fri, 6 Nov 2020 01:14:41 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 294C0C0613CF;
+        Thu,  5 Nov 2020 22:14:40 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id t6so180356plq.11;
+        Thu, 05 Nov 2020 22:14:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZlXKKq4DGEFjUy+nOWMktAH/V5heZC0/6ILxLCieIBI=;
+        b=uzq0KYojkUs4t+Q4y3YBqX0rQNXV7pH3WlTA04d9xfT2HzTtRS3Ey60ivElLdbiQ6C
+         zFVX81uumdUT5FV4Zja3UM60O36+C4AYkDG9oUsJKhIOf7gEmd434azZmqvFrOjlZg4t
+         UPBURLWtRU0ibF94bPAoRqrwQ4fKKP46UwIGQ/DND6ZD2NmUYAgOY8Y7FxC2mmjPnHFV
+         qMtxbD4JZ0jT563EdP6MPHQ0wU3XON48XbuLpy0CQPufsvMGSUpvOsGZn2qDAgVwPAaI
+         AFCfj9D21WFd9CS5UDuTQ3IgCDOlQ1pTCoc9Um/ZEV22ml05J6IGPqssKSUR9n8JSZI2
+         0PEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZlXKKq4DGEFjUy+nOWMktAH/V5heZC0/6ILxLCieIBI=;
+        b=BWkv/s0wFbxEA/QfL6gQcLHswQSeYeTAtFZkQR0IJz/LuvPbfjk3pGhl5TwLb5DFOt
+         brktebsc10iquIU206K7riN5ZlYbx4rkmMzpfcEE1M5fIyHEGSXyBdY4+WRFMpvZn7gW
+         Vn6oQzoeLM0IS0ILUMWmlFdkHUzGJ18HnC6DI5Zf3SuscVl0h/Bz8KAo0eIymDctvcPc
+         xgUVKy1qp6TiB1D7SbJ3DW70Qqe7K229GggKd9pmOaOIqWHw615M0lJ2O6yE9CQyGcl3
+         z17WmqVx9k6KzZfHgpayhGaBIVzRilY1cEXzBYPXp9tHtbQuu5fg5CRDu7qqbnqF+M1L
+         9NfA==
+X-Gm-Message-State: AOAM533UMpZvmEEVsLVlMUGFZf5ks7SE8iqSUbbMmooB+JvbO7UJbaQR
+        GxqE5xAlw28jAaHZCbZZExYvqvGR+sGTnQ==
+X-Google-Smtp-Source: ABdhPJyroxk5j3uozX4q/49k3ilXtr3HfELI1nHsLBO+uoSc7N38F15qJ9kCIb5kPorMtxomgTZJxQ==
+X-Received: by 2002:a17:902:8a97:b029:d4:d3f4:d209 with SMTP id p23-20020a1709028a97b02900d4d3f4d209mr500321plo.35.1604643279370;
+        Thu, 05 Nov 2020 22:14:39 -0800 (PST)
+Received: from localhost (114-34-18-97.HINET-IP.hinet.net. [114.34.18.97])
+        by smtp.gmail.com with ESMTPSA id y5sm620227pfc.165.2020.11.05.22.14.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Nov 2020 22:14:38 -0800 (PST)
+From:   Ajye Huang <ajye.huang@gmail.com>
+X-Google-Original-From: Ajye Huang <ajye_huang@compal.corp-partner.google.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Mark Brown <broonie@kernel.org>,
+        Rohit kumar <rohitkr@codeaurora.org>,
+        Banajit Goswami <bgoswami@codeaurora.org>,
+        Patrick Lai <plai@codeaurora.org>,
+        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
+        srinivas.kandagatla@linaro.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, robh@kernel.org,
+        Jaroslav Kysela <perex@perex.cz>, cychiang@chromium.org,
+        tzungbi@chromium.org, dianders@chromium.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        alsa-devel@alsa-project.org,
+        Ajye Huang <ajye_huang@compal.corp-partner.google.com>
+Subject: [PATCH v6 0/2] Modify documentation and machine driver for SC7180 sound card
+Date:   Fri,  6 Nov 2020 14:14:31 +0800
+Message-Id: <20201106061433.1483129-1-ajye_huang@compal.corp-partner.google.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgTWFydGluLCBBdnJpLA0KDQpPbiBUaHUsIDIwMjAtMTAtMjkgYXQgMTk6NTcgKzA4MDAsIFN0
-YW5sZXkgQ2h1IHdyb3RlOg0KPiBIaSwNCj4gDQo+IFRoaXMgcGF0Y2ggc2VyaWVzIHByb3ZpZGVz
-IHNvbWUgZmVhdHVyZXMgYW5kIGZpeGVzIGluIE1lZGlhVGVrIFVGUyBwbGF0Zm9ybXMsDQoNClNv
-cnJ5IGZvciB0aGUgZ2VudGxlIHBpbmcuIEp1c3QgcGxlYXNlIGNvbnNpZGVyIHRoaXMgcGF0Y2gg
-c2VyaWVzIGZvcg0KbWVyZ2luZyB0byBrZXJuZWwgdmVyc2lvbiA1LjExLg0KDQpUaGFua3MsDQpT
-dGFubGV5IENodS4NCg0KPiANCj4gMS4gU3VwcG9ydCBWQTA5IHJlZ3VsYXRvciBvcGVyYXRpb25z
-DQo+IDIuIFN1cHBvcnQgb3B0aW9uIHRvIGRpc2FibGUgYXV0by1oaWJlcm44DQo+IDMuIFN1cHBv
-cnQgSFMtRzQNCj4gNC4gRGVjb3VwbGUgZmVhdHVyZXMgZnJvbSBwbGF0Zm9ybSBiaW5kaW5ncw0K
-PiA1LiBNaXNjIGZpeGVzDQo+IA0KPiBTdGFubGV5IENodSAoNik6DQo+ICAgc2NzaTogdWZzLW1l
-ZGlhdGVrOiBBc3NpZ24gYXJndW1lbnRzIHdpdGggY29ycmVjdCB0eXBlDQo+ICAgc2NzaTogdWZz
-LW1lZGlhdGVrOiBTdXBwb3J0IFZBMDkgcmVndWxhdG9yIG9wZXJhdGlvbnMNCj4gICBzY3NpOiB1
-ZnMtbWVkaWF0ZWs6IERlY291cGxlIGZlYXR1cmVzIGZyb20gcGxhdGZvcm0gYmluZGluZ3MNCj4g
-ICBzY3NpOiB1ZnMtbWVkaWF0ZWs6IFN1cHBvcnQgb3B0aW9uIHRvIGRpc2FibGUgYXV0by1oaWJl
-cm44DQo+ICAgc2NzaTogdWZzOiBBZGQgZW51bXMgZm9yIFVuaVBybyB2ZXJzaW9uIGhpZ2hlciB0
-aGFuIDEuNg0KPiAgIHNjc2k6IHVmcy1tZWRpYXRlazogQWRkIEhTLUc0IHN1cHBvcnQNCj4gDQo+
-ICBkcml2ZXJzL3Njc2kvdWZzL3Vmcy1tZWRpYXRlay5jIHwgMjE4ICsrKysrKysrKysrKysrKysr
-KysrKysrLS0tLS0tLS0tDQo+ICBkcml2ZXJzL3Njc2kvdWZzL3Vmcy1tZWRpYXRlay5oIHwgIDIy
-ICsrLS0NCj4gIGRyaXZlcnMvc2NzaS91ZnMvdW5pcHJvLmggICAgICAgfCAgIDYgKy0NCj4gIDMg
-ZmlsZXMgY2hhbmdlZCwgMTc5IGluc2VydGlvbnMoKyksIDY3IGRlbGV0aW9ucygtKQ0KPiANCg0K
+Note:
+- The patch is made by the collaboration of
+ Ajye Huang <ajye_huang@compal.corp-partner.google.com>
+ Cheng-Yi Chiang <cychiang@chromium.org>
+
+v6:
+- Documentation: Addressed suggestions from Rob Herring.
+  - Define "maxItems: 1" in dmic-gpios property.
+  - Only keep one example and add dmic-gpios property in.
+v5:
+- Machine driver:
+  - Fix a format string warning (Reported-by: kernel test robot <lkp@intel.com>).
+    detailed info at https://lore.kernel.org/patchwork/patch/1331087/
+
+v4:
+- Machine driver: Addressed suggestions from Tzung-Bi.
+  - Remove redundant judgments in dmic_set() and dmic_get().
+  - Remove 1 level indent of judgment of IS_ERR(data->dmic_sel).
+
+v3:
+- Machine driver: Addressed suggestions from Tzung-Bi.
+  - Move variables "dmic_switch" and "dmic_sel" into struct sc7180_snd_data.
+  - Remove redundant judgments in dmic_set().
+
+v2:
+- Documentation: Modify the dimc-gpios property description and examples.
+- Machine driver: 
+  - Remove "qcom,sc7180-sndcard-rt5682-m98357-2mic" compatible
+  - See gpio property and use anadditional control.
+
+Thanks for the review!
+
+Ajye Huang (2):
+  ASoC: google: dt-bindings: modify machine bindings for two MICs case
+  ASoC: qcom: sc7180: Modify machine driver for 2mic
+
+ .../bindings/sound/google,sc7180-trogdor.yaml |  8 ++-
+ sound/soc/qcom/sc7180.c                       | 61 +++++++++++++++++++
+ 2 files changed, 68 insertions(+), 1 deletion(-)
+
+-- 
+2.25.1
 
