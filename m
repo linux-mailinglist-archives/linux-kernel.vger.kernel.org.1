@@ -2,78 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF2DC2A9F05
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 22:26:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD3C92A9F08
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 22:27:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728071AbgKFV0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 16:26:53 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:12456 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725868AbgKFV0x (ORCPT
+        id S1728168AbgKFV1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 16:27:02 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:37868 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728097AbgKFV1C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 16:26:53 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fa5bf9a0000>; Fri, 06 Nov 2020 13:26:50 -0800
-Received: from rcampbell-dev.nvidia.com (172.20.13.39) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 6 Nov
- 2020 21:26:50 +0000
-Subject: Re: [PATCH v3 3/6] mm: support THP migration to device private memory
-To:     Christoph Hellwig <hch@lst.de>
-CC:     <linux-mm@kvack.org>, <nouveau@lists.freedesktop.org>,
-        <linux-kselftest@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "Jerome Glisse" <jglisse@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        "Alistair Popple" <apopple@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Bharata B Rao <bharata@linux.ibm.com>,
-        Zi Yan <ziy@nvidia.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Ben Skeggs <bskeggs@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        "Andrew Morton" <akpm@linux-foundation.org>
-References: <20201106005147.20113-1-rcampbell@nvidia.com>
- <20201106005147.20113-4-rcampbell@nvidia.com> <20201106080322.GE31341@lst.de>
-From:   Ralph Campbell <rcampbell@nvidia.com>
-X-Nvconfidentiality: public
-Message-ID: <a7b8b90c-09b7-2009-0784-908b61f61ef2@nvidia.com>
-Date:   Fri, 6 Nov 2020 13:26:50 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        Fri, 6 Nov 2020 16:27:02 -0500
+Date:   Fri, 06 Nov 2020 21:26:58 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1604698019;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xnF5r2YVoE5RqX+1EhxgQ4tQC24nY4l/MsoVxZZQNW4=;
+        b=d3EpEFLRty+29Mm86DLmcIZxeGVeMPNcCgCVHDGQMMzpcwBsO/iJWYmURBjRFXOpCy53Wm
+        zJCo3XnzvYAh1qTMuhSzGemWk3U9zZGkQxC+Z5Vddp5LwNDFTWLS8oMkm2qzYLnKjVF4Qf
+        xZ4cuBe5ADhg4ABlOYGHRXI6muR7Ru2YgiKFSzABoYVsyciWnegCTmagcc3ICegrb9cDg2
+        fYz/uPyfE1uOlCgow0WZVrBX43RS7vTRQfXIf/exc/4nptpAZkGppSyx/Gr8p2q9xVj2Dg
+        R5oAnLUC0fmkJtWzLoc8hSAYXaicYlL+/Jw6EVJlz4BeY4g+5WZNm0v6G2TsKw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1604698019;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xnF5r2YVoE5RqX+1EhxgQ4tQC24nY4l/MsoVxZZQNW4=;
+        b=xlhCpHwhk7YU4ZlPAPbxxBsMwFsoqdKwT9IT9OWHWrcNqcmIBnJyNg5zbPfhqv7nYqmOva
+        /jx8qgE2+feiWdAQ==
+From:   "tip-bot2 for Mike Galbraith" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: locking/urgent] futex: Handle transient "ownerless" rtmutex
+ state correctly
+Cc:     Gratian Crisan <gratian.crisan@ni.com>,
+        Mike Galbraith <efault@gmx.de>,
+        Thomas Gleixner <tglx@linutronix.de>, stable@vger.kernel.org,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <87a6w6x7bb.fsf@ni.com>
+References: <87a6w6x7bb.fsf@ni.com>
 MIME-Version: 1.0
-In-Reply-To: <20201106080322.GE31341@lst.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
+Message-ID: <160469801844.397.7418241151599681987.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1604698011; bh=sJlHFFmh1FwR1Swhc5FD4UAS7VszQVSWU413enTyHH4=;
-        h=Subject:To:CC:References:From:X-Nvconfidentiality:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=D+Hb3S3IoeXUGY43+BDjeVkVQHFWtOWYZpKP/V1fcty+B82xJWfBYCbrNIRLcwd1N
-         xHNxqb4t8k2I+/J1kKnnLsF5xZkxtH+JOsq7sBETw85okpdAVkV2cTPaH+3yzHWUQV
-         0W2jqDyoUzaJGiP3EhfAPrA37NzlSLU284MbBQY8hK+AY5l7waP/BrPCk4U5cwfu4Q
-         wclHRUc9XPKRGZCTe+xikUB3QYpdfkmjsK9FPg9F2qGpeePz9bHplQ7R35oDaNt1jg
-         VQHbvDCCv9xArzhsLxgy1hTgi/8qcKTrJiwn4j7znBMrdvlFc6JKsA4ta7lEI7Yu/q
-         ldJ63eePyEAMQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following commit has been merged into the locking/urgent branch of tip:
 
-On 11/6/20 12:03 AM, Christoph Hellwig wrote:
-> I hate the extra pin count magic here.  IMHO we really need to finish
-> off the series to get rid of the extra references on the ZONE_DEVICE
-> pages first.
+Commit-ID:     63c1b4db662a0967dd7839a2fbaa5300e553901d
+Gitweb:        https://git.kernel.org/tip/63c1b4db662a0967dd7839a2fbaa5300e553901d
+Author:        Mike Galbraith <efault@gmx.de>
+AuthorDate:    Wed, 04 Nov 2020 16:12:44 +01:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Fri, 06 Nov 2020 22:24:58 +01:00
 
-First, thanks for the review comments.
+futex: Handle transient "ownerless" rtmutex state correctly
 
-I don't like the extra refcount either, that is why I tried to fix that up
-before resending this series. However, you didn't like me just fixing the
-refcount only for device private pages and I don't know the dax/pmem code
-and peer-to-peer PCIe uses of ZONE_DEVICE pages well enough to say how
-long it will take me to fix all the use cases.
-So I wanted to make progress on the THP migration code in the mean time.
+Gratian managed to trigger the BUG_ON(!newowner) in fixup_pi_state_owner().
+This is one possible chain of events leading to this:
 
+Task Prio       Operation
+T1   120	lock(F)
+T2   120	lock(F)   -> blocks (top waiter)
+T3   50 (RT)	lock(F)   -> boosts T1 and blocks (new top waiter)
+XX   		timeout/  -> wakes T2
+		signal
+T1   50		unlock(F) -> wakes T3 (rtmutex->owner == NULL, waiter bit is set)
+T2   120	cleanup   -> try_to_take_mutex() fails because T3 is the top waiter
+     			     and the lower priority T2 cannot steal the lock.
+     			  -> fixup_pi_state_owner() sees newowner == NULL -> BUG_ON()
+
+The comment states that this is invalid and rt_mutex_real_owner() must
+return a non NULL owner when the trylock failed, but in case of a queued
+and woken up waiter rt_mutex_real_owner() == NULL is a valid transient
+state. The higher priority waiter has simply not yet managed to take over
+the rtmutex.
+
+The BUG_ON() is therefore wrong and this is just another retry condition in
+fixup_pi_state_owner().
+
+Drop the locks, so that T3 can make progress, and then try the fixup again.
+
+Gratian provided a great analysis, traces and a reproducer. The analysis is
+to the point, but it confused the hell out of that tglx dude who had to
+page in all the futex horrors again. Condensed version is above. 
+
+[ tglx: Wrote comment and changelog ]
+
+Fixes: c1e2f0eaf015 ("futex: Avoid violating the 10th rule of futex")
+Reported-by: Gratian Crisan <gratian.crisan@ni.com>
+Signed-off-by: Mike Galbraith <efault@gmx.de>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/87a6w6x7bb.fsf@ni.com
+Link: https://lore.kernel.org/r/87sg9pkvf7.fsf@nanos.tec.linutronix.de
+
+---
+ kernel/futex.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/futex.c b/kernel/futex.c
+index f8614ef..7406914 100644
+--- a/kernel/futex.c
++++ b/kernel/futex.c
+@@ -2380,10 +2380,22 @@ retry:
+ 		}
+ 
+ 		/*
+-		 * Since we just failed the trylock; there must be an owner.
++		 * The trylock just failed, so either there is an owner or
++		 * there is a higher priority waiter than this one.
+ 		 */
+ 		newowner = rt_mutex_owner(&pi_state->pi_mutex);
+-		BUG_ON(!newowner);
++		/*
++		 * If the higher priority waiter has not yet taken over the
++		 * rtmutex then newowner is NULL. We can't return here with
++		 * that state because it's inconsistent vs. the user space
++		 * state. So drop the locks and try again. It's a valid
++		 * situation and not any different from the other retry
++		 * conditions.
++		 */
++		if (unlikely(!newowner)) {
++			ret = -EAGAIN;
++			goto handle_err;
++		}
+ 	} else {
+ 		WARN_ON_ONCE(argowner != current);
+ 		if (oldowner == current) {
