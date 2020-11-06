@@ -2,87 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BC322A94F3
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 12:01:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 459D22A94F6
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Nov 2020 12:01:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727120AbgKFLBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 06:01:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41302 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726422AbgKFLBH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 06:01:07 -0500
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ADB6B2072E;
-        Fri,  6 Nov 2020 11:01:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604660466;
-        bh=kKi/yiZAgnA1BiE1B40I9aILlNyDfD2Wha97DV0eknY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=wTFe3827Eu3ZBo4ZNABSY8HHdpmJYvv5mWU+t88Tj2tNC46Xr/ieMD6CYl8HaEY1V
-         ctctl0b23cXnyt/MI+DMadJnnK9utHFutln0rtxg2RNuLXQpWxKE/Tqhpd4+eNY4y2
-         wSyZJd0tD+0+nS+0YCFK1EebR/LHw0SHzm96ni0U=
-Date:   Fri, 6 Nov 2020 11:00:53 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [GIT PULL] SPI fixes for v5.10-rc2
-Message-ID: <20201106110053.GA5532@sirena.org.uk>
-References: <20201105164607.AD20021734@mail.kernel.org>
- <20201106101815.GA1403068@ubuntu-m3-large-x86>
+        id S1727139AbgKFLBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 06:01:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39388 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726422AbgKFLBt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 06:01:49 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FD38C0613CF;
+        Fri,  6 Nov 2020 03:01:49 -0800 (PST)
+Date:   Fri, 06 Nov 2020 11:01:45 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1604660507;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=l+Lr4luvqX5AY0oKUf3vEzGcztSHnX4u0eLOHWhgpkw=;
+        b=zwfm3igvkySGAOyiB4zH/fTFSdev8dHh2d5EgU7kq5XXNptYX6qlk+aIqiOOW4BkXfrYFp
+        sTm8eRUmXCac8HWFa5F43Ga+WqpAP9s0Kb1VsgaN2N4EpUE0dzpu0Yke64QnAKmJDm53zL
+        drAq1p2zyN5gdUVgAuzacr2jN2a2SRH1G0Gp4mAk4E0SOyhwudA0HngqUVrOpkrg9Dw0oC
+        6LvdppRlcFwUj9rwhtFZta/RJPVpBWqPHgxe3TCc9ue//kwIAkeugK8k/Wv5U4r836Ij3s
+        2YlTMjwLSyGKv400RFf0oZmvBK4wKpTJhalwNYjFGnL7caBDbpo8T+yYvPXMmA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1604660507;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=l+Lr4luvqX5AY0oKUf3vEzGcztSHnX4u0eLOHWhgpkw=;
+        b=6X3twlw3vfhVXIQ/ZXk2cuUaNOrGKd73j7WZ4/ox8s1SKNEaeMsEemCFA2+kIbFMsC6yyG
+        qLhxSh2/dyajqhDA==
+From:   "tip-bot2 for Kaixu Xia" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: ras/core] x86/mce: Assign boolean values to a bool variable
+Cc:     Tosk Robot <tencent_os_robot@tencent.com>,
+        Kaixu Xia <kaixuxia@tencent.com>, Borislav Petkov <bp@suse.de>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <1604654363-1463-1-git-send-email-kaixuxia@tencent.com>
+References: <1604654363-1463-1-git-send-email-kaixuxia@tencent.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="k1lZvvs/B4yU6o8G"
-Content-Disposition: inline
-In-Reply-To: <20201106101815.GA1403068@ubuntu-m3-large-x86>
-X-Cookie: Allow 6 to 8 weeks for delivery.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Message-ID: <160466050594.397.9879783882609753138.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following commit has been merged into the ras/core branch of tip:
 
---k1lZvvs/B4yU6o8G
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Commit-ID:     77080929d56d87a57093869a15d2785b8b2d8cd5
+Gitweb:        https://git.kernel.org/tip/77080929d56d87a57093869a15d2785b8b2d8cd5
+Author:        Kaixu Xia <kaixuxia@tencent.com>
+AuthorDate:    Fri, 06 Nov 2020 17:19:23 +08:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Fri, 06 Nov 2020 11:51:04 +01:00
 
-On Fri, Nov 06, 2020 at 03:18:15AM -0700, Nathan Chancellor wrote:
-> On Thu, Nov 05, 2020 at 04:45:46PM +0000, Mark Brown wrote:
+x86/mce: Assign boolean values to a bool variable
 
-> > Martin Hundeb=F8ll (1):
-> >       spi: bcm2835: fix gpio cs level inversion
+Fix the following coccinelle warnings:
 
-> Why did this go in with two outstanding reports?
+  ./arch/x86/kernel/cpu/mce/core.c:1765:3-20: WARNING: Assignment of 0/1 to bool variable
+  ./arch/x86/kernel/cpu/mce/core.c:1584:2-9: WARNING: Assignment of 0/1 to bool variable
 
-> It looks like there is a fix for it now:
+ [ bp: Massage commit message. ]
 
-> https://lore.kernel.org/linux-spi/20201105090615.620315-1-martin@geanix.c=
-om/
+Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
+Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/1604654363-1463-1-git-send-email-kaixuxia@tencent.com
+---
+ arch/x86/kernel/cpu/mce/core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> Although I guess it is going to require a resend...
-
-Erk, sorry - I remembered the issue being fixed but got confused and
-thought that it was an incremental patch on top of something applied
-rather than something that got fixed in a patch revision (got it
-confused with another issue I think).  The incremental fix is queued
-now, I should send it out later today.
-
---k1lZvvs/B4yU6o8G
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+lLOQACgkQJNaLcl1U
-h9C16Qf8DO4L2yXoumesDVQVM3WZobrBRz/AXEiIaBFptIwKotpR30ESrdpzGXMp
-4m3j9NL5/cNqTAVZCGXkBf/w20ZFaubfgIf2eAAiES6pn1j5UkluaiWvzGg4Jkgf
-ZENe9XH80r8pZDkSUnMaItELUjb1GqTUlHFi09KkZFpThh4YWSsDxFopS+w41OBm
-bjTjcvWImEBvL5a+/r14Kdw3L2x+xbaVtaKP4cf4XS2DasiLuaIodQe7ICRV4RVi
-tnZJANpORa1b7RDLLLwSkZ1kGd7WzaJsxcO4gAcJ+SAQi+FqEEzis7JXwYNPzTiT
-BehLp3FwLwjWFl9NPNpPTMHmKFKfPw==
-=cbOM
------END PGP SIGNATURE-----
-
---k1lZvvs/B4yU6o8G--
+diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
+index 51bf910..888248a 100644
+--- a/arch/x86/kernel/cpu/mce/core.c
++++ b/arch/x86/kernel/cpu/mce/core.c
+@@ -1581,7 +1581,7 @@ static void __mcheck_cpu_mce_banks_init(void)
+ 		 * __mcheck_cpu_init_clear_banks() does the final bank setup.
+ 		 */
+ 		b->ctl = -1ULL;
+-		b->init = 1;
++		b->init = true;
+ 	}
+ }
+ 
+@@ -1762,7 +1762,7 @@ static int __mcheck_cpu_apply_quirks(struct cpuinfo_x86 *c)
+ 		 */
+ 
+ 		if (c->x86 == 6 && c->x86_model < 0x1A && this_cpu_read(mce_num_banks) > 0)
+-			mce_banks[0].init = 0;
++			mce_banks[0].init = false;
+ 
+ 		/*
+ 		 * All newer Intel systems support MCE broadcasting. Enable
