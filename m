@@ -2,122 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FC782AA475
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 11:45:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EECD2AA477
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 11:46:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727518AbgKGKpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 05:45:05 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:18366 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726034AbgKGKpE (ORCPT
+        id S1727841AbgKGKqU convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 7 Nov 2020 05:46:20 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:60104 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726075AbgKGKqT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 05:45:04 -0500
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A7AWfRd075183;
-        Sat, 7 Nov 2020 05:45:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=ASSvCDmGzoqF2PFS56D4BqHaEHoPz8ILlYUcwC2XJ+I=;
- b=Oym/QW+Ay382l11ERN6PepGslFgxbFgwD6cMCAJ4UJSqmcyBKyoTvu183FNl4swvxiAC
- fBL8t9FBCjrpTVvU06ceFpSwqaZgg5ZbIgwq9dygF3K67QNcE3VNTDolQMb0Jl2Iw90x
- Dt1km7b6W2b3lAUHimSXnxRtpazqVU6L3gUTQhnotboGd4NMVb3XxqNrgwgspB0sckMp
- z9i3ikwtthVkP8MtJKEctRb/N0a0fngA8RW0fnj6jrF5Z5pdfQKeNfoaUmcySws5Jjef
- mHKyIQSCFqhJ5MAEPcD4B+WwgcHtBcPzzPWbti0+7kIqoGyNxkt+cTAebcslutmIqFHw iA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34nrm71svv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 07 Nov 2020 05:45:00 -0500
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0A7Ah43r105309;
-        Sat, 7 Nov 2020 05:45:00 -0500
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34nrm71sv8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 07 Nov 2020 05:44:59 -0500
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0A7Ai5Gh006941;
-        Sat, 7 Nov 2020 10:44:57 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma04ams.nl.ibm.com with ESMTP id 34nk78888b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 07 Nov 2020 10:44:57 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0A7Aitva7537382
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 7 Nov 2020 10:44:55 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 672424C040;
-        Sat,  7 Nov 2020 10:44:55 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7CF0F4C046;
-        Sat,  7 Nov 2020 10:44:54 +0000 (GMT)
-Received: from linux.ibm.com (unknown [9.145.53.17])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Sat,  7 Nov 2020 10:44:54 +0000 (GMT)
-Date:   Sat, 7 Nov 2020 12:44:52 +0200
-From:   Mike Rapoport <rppt@linux.ibm.com>
-To:     Wang Qing <wangqing@vivo.com>
-Cc:     Shuah Khan <shuah@kernel.org>, Peter Xu <peterx@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Joe Perches <joe@perches.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] tool: selftests: fix spelling typo of 'writting'
-Message-ID: <20201107104452.GF301789@linux.ibm.com>
-References: <1604740776-27082-1-git-send-email-wangqing@vivo.com>
+        Sat, 7 Nov 2020 05:46:19 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-140-msBd2F_bM0aXdiLYBHdEZA-1; Sat, 07 Nov 2020 10:46:15 +0000
+X-MC-Unique: msBd2F_bM0aXdiLYBHdEZA-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Sat, 7 Nov 2020 10:46:14 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Sat, 7 Nov 2020 10:46:14 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Joe Perches' <joe@perches.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        "xiakaixu1987@gmail.com" <xiakaixu1987@gmail.com>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Kaixu Xia <kaixuxia@tencent.com>
+Subject: RE: [PATCH] libbpf: Remove unnecessary conversion to bool
+Thread-Topic: [PATCH] libbpf: Remove unnecessary conversion to bool
+Thread-Index: AQHWtIbeQirvCJY95ES7G/VMIbfcM6m8e+Tg
+Date:   Sat, 7 Nov 2020 10:46:14 +0000
+Message-ID: <72757066568b4b64b89572e04d783137@AcuMS.aculab.com>
+References: <1604646759-785-1-git-send-email-kaixuxia@tencent.com>
+         <CAEf4BzZQ6=-h3g1duXFwDLr92z7nE6ajv8Rz_Zv=qx=-F3sRVA@mail.gmail.com>
+ <d1cefb17a0a915fdabe7a80d14895ff3d85970c1.camel@perches.com>
+In-Reply-To: <d1cefb17a0a915fdabe7a80d14895ff3d85970c1.camel@perches.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1604740776-27082-1-git-send-email-wangqing@vivo.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-07_04:2020-11-05,2020-11-07 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_spam_definite policy=outbound score=100 clxscore=1011
- lowpriorityscore=0 suspectscore=0 phishscore=0 bulkscore=0 malwarescore=0
- priorityscore=1501 mlxscore=100 mlxlogscore=-1000 adultscore=0
- spamscore=100 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2011070067
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 07, 2020 at 05:19:35PM +0800, Wang Qing wrote:
-> writting -> writing
+From: Joe Perches
+> Sent: 06 November 2020 21:50
 > 
-> Signed-off-by: Wang Qing <wangqing@vivo.com>
-
-Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
-
-> ---
->  tools/testing/selftests/vm/userfaultfd.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> On Fri, 2020-11-06 at 13:32 -0800, Andrii Nakryiko wrote:
+> > On Thu, Nov 5, 2020 at 11:12 PM <xiakaixu1987@gmail.com> wrote:
+> > > Fix following warning from coccinelle:
+> > > ./tools/lib/bpf/libbpf.c:1478:43-48: WARNING: conversion to bool not needed here
+> []
+> > > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> []
+> > > @@ -1475,7 +1475,7 @@ static int set_kcfg_value_tri(struct extern_desc *ext, void *ext_val,
+> > >                                 ext->name, value);
+> > >                         return -EINVAL;
+> > >                 }
+> > > -               *(bool *)ext_val = value == 'y' ? true : false;
+> > > +               *(bool *)ext_val = value == 'y';
+> >
+> > I actually did this intentionally. x = y == z; pattern looked too
+> > obscure to my taste, tbh.
 > 
-> diff --git a/tools/testing/selftests/vm/userfaultfd.c b/tools/testing/selftests/vm/userfaultfd.c
-> index 9b0912a..9132fae7
-> --- a/tools/testing/selftests/vm/userfaultfd.c
-> +++ b/tools/testing/selftests/vm/userfaultfd.c
-> @@ -894,7 +894,7 @@ static int faulting_process(int signal_test)
->  				count_verify[nr]);
->  	        }
->  		/*
-> -		 * Trigger write protection if there is by writting
-> +		 * Trigger write protection if there is by writing
->  		 * the same value back.
->  		 */
->  		*area_count(area_dst, nr) = count;
-> @@ -922,7 +922,7 @@ static int faulting_process(int signal_test)
->  				count_verify[nr]); exit(1);
->  		}
->  		/*
-> -		 * Trigger write protection if there is by writting
-> +		 * Trigger write protection if there is by writing
->  		 * the same value back.
->  		 */
->  		*area_count(area_dst, nr) = count;
-> -- 
-> 2.7.4
+> It's certainly a question of taste and obviously there is nothing
+> wrong with yours.
 > 
+> Maybe adding parentheses makes the below look less obscure to you?
+> 
+> 	x = (y == z);
 
--- 
-Sincerely yours,
-Mike.
+That just leads to people thinking conditionals need to be in parentheses
+and then getting the priorities for ?: all wrong as in:
+	x = a + (b == c) ? d : e;
+
+It would (probably) be better to make 'ext_val' be a union type
+(probably a 'pointer to a union' rather than a union of pointers)
+so that all the casts go away.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
