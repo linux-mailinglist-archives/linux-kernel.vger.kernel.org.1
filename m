@@ -2,110 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 993882AA65D
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 16:39:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC74F2AA667
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 16:45:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728144AbgKGPj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 10:39:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52408 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726144AbgKGPj0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 10:39:26 -0500
-Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45474C0613CF;
-        Sat,  7 Nov 2020 07:39:26 -0800 (PST)
-Received: by fieldses.org (Postfix, from userid 2815)
-        id 626651C25; Sat,  7 Nov 2020 10:39:24 -0500 (EST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org 626651C25
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
-        s=default; t=1604763564;
-        bh=OiHzKhgk2PHE2aqJryJ2eHQ/6HtBN1HOJxiFjEz+G58=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OE6vvBgMUKsWV4o3GwYIaw+zzlbayVgcaz8/V1JxixZ+R8at8OKDpAjvs2bd29PQe
-         yv+TwtVVLHKk6XDMnjTClLZNARa+gsff1QV7OEi0Q6ubLUSz8S73q42gFxqsPv82+b
-         6WfhvmKolD6wBBTtiYU1/zwk5+WGkAOgaLQCCWTw=
-Date:   Sat, 7 Nov 2020 10:39:24 -0500
-From:   "J. Bruce Fields" <bfields@fieldses.org>
-To:     Alex Dewar <alex.dewar90@gmail.com>
-Cc:     Chuck Lever <chuck.lever@oracle.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Artur Molchanov <arturmolchanov@gmail.com>,
-        linux-nfs@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net/sunrpc: Fix return value from proc_do_xprt()
-Message-ID: <20201107153924.GA16447@fieldses.org>
-References: <20201024145240.23245-1-alex.dewar90@gmail.com>
- <20201106220721.GE26028@fieldses.org>
- <20201107134940.c2hmfpcx743bqc5o@medion>
+        id S1728090AbgKGPpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 10:45:55 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:61729 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726261AbgKGPpz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Nov 2020 10:45:55 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1604763955; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=GQpQ+kIAOw0EPN1x4HcqCBk3Y+l49wmbwv6R4j76CKk=; b=lAAlTcAK8p8lkFkdhhi6sJpHh89dQF5OxKOYP3XNC8k0cpUh7gpVybaD3EsIeHUkgbgetEvA
+ dOY90OZK0IgOYGL+z27wZ8MC6F80Msj4rBnkbM8xX3DPpUWib9FsA+i0bqahdJ9zJqs7/LhH
+ Um7QEWirN+2b4KxPG79+paOpgAw=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 5fa6c13082aad55dcb4c4dfc (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 07 Nov 2020 15:45:52
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C24E5C433CB; Sat,  7 Nov 2020 15:45:52 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from tynnyri.adurom.net (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 23D03C433C6;
+        Sat,  7 Nov 2020 15:45:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 23D03C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Coiby Xu <coiby.xu@gmail.com>
+Cc:     Michael Buesch <m@bues.ch>,
+        linux-wireless@vger.kernel.org (open list:SONICS SILICON BACKPLANE
+        DRIVER (SSB)), linux-kernel@vger.kernel.org (open list)
+Subject: Re: [PATCH] Drivers: ssb: remove unnecessary CONFIG_PM_SLEEP
+References: <20201029075430.228760-1-coiby.xu@gmail.com>
+Date:   Sat, 07 Nov 2020 17:45:47 +0200
+In-Reply-To: <20201029075430.228760-1-coiby.xu@gmail.com> (Coiby Xu's message
+        of "Thu, 29 Oct 2020 15:54:30 +0800")
+Message-ID: <87361l6uhg.fsf@tynnyri.adurom.net>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201107134940.c2hmfpcx743bqc5o@medion>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 07, 2020 at 01:49:40PM +0000, Alex Dewar wrote:
-> On Fri, Nov 06, 2020 at 05:07:21PM -0500, J. Bruce Fields wrote:
-> > Whoops, got 3 independent patches for this and overlooked this one.  See
-> > https://lore.kernel.org/linux-nfs/20201106205959.GB26028@fieldses.org/T/#t
-> > 
-> > --b.
-> 
-> That looks like a cleaner fix. Thanks for looking anyhow and sorry for
-> the noise!
+Coiby Xu <coiby.xu@gmail.com> writes:
 
-Not noise, all these efforts are appreciated.---b.
+> SET_SYSTEM_SLEEP_PM_OPS has already took good care of CONFIG_PM_CONFIG.
+>
+> Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
+> ---
+>  drivers/ssb/pcihost_wrapper.c | 5 -----
+>  1 file changed, 5 deletions(-)
+>
+> diff --git a/drivers/ssb/pcihost_wrapper.c b/drivers/ssb/pcihost_wrapper.c
+> index 410215c16920..6510f57469a0 100644
+> --- a/drivers/ssb/pcihost_wrapper.c
+> +++ b/drivers/ssb/pcihost_wrapper.c
+> @@ -18,7 +18,6 @@
+>  #include <linux/ssb/ssb.h>
+>  
+>  
+> -#ifdef CONFIG_PM_SLEEP
+>  static int ssb_pcihost_suspend(struct device *d)
+>  {
+>  	struct pci_dev *dev = to_pci_dev(d);
+> @@ -62,8 +61,6 @@ static const struct dev_pm_ops ssb_pcihost_pm_ops = {
+>  	SET_SYSTEM_SLEEP_PM_OPS(ssb_pcihost_suspend, ssb_pcihost_resume)
+>  };
+>  
+> -#endif /* CONFIG_PM_SLEEP */
+> -
+>  static int ssb_pcihost_probe(struct pci_dev *dev,
+>  			     const struct pci_device_id *id)
+>  {
+> @@ -125,9 +122,7 @@ int ssb_pcihost_register(struct pci_driver *driver)
+>  {
+>  	driver->probe = ssb_pcihost_probe;
+>  	driver->remove = ssb_pcihost_remove;
+> -#ifdef CONFIG_PM_SLEEP
+>  	driver->driver.pm = &ssb_pcihost_pm_ops;
+> -#endif
+>  
+>  	return pci_register_driver(driver);
+>  }
 
-> 
-> > 
-> > On Sat, Oct 24, 2020 at 03:52:40PM +0100, Alex Dewar wrote:
-> > > Commit c09f56b8f68d ("net/sunrpc: Fix return value for sysctl
-> > > sunrpc.transports") attempted to add error checking for the call to
-> > > memory_read_from_buffer(), however its return value was assigned to a
-> > > size_t variable, so any negative values would be lost in the cast. Fix
-> > > this.
-> > > 
-> > > Addresses-Coverity-ID: 1498033: Control flow issues (NO_EFFECT)
-> > > Fixes: c09f56b8f68d ("net/sunrpc: Fix return value for sysctl sunrpc.transports")
-> > > Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
-> > > ---
-> > >  net/sunrpc/sysctl.c | 7 +++++--
-> > >  1 file changed, 5 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/net/sunrpc/sysctl.c b/net/sunrpc/sysctl.c
-> > > index a18b36b5422d..c95a2b84dd95 100644
-> > > --- a/net/sunrpc/sysctl.c
-> > > +++ b/net/sunrpc/sysctl.c
-> > > @@ -62,6 +62,7 @@ rpc_unregister_sysctl(void)
-> > >  static int proc_do_xprt(struct ctl_table *table, int write,
-> > >  			void *buffer, size_t *lenp, loff_t *ppos)
-> > >  {
-> > > +	ssize_t bytes_read;
-> > >  	char tmpbuf[256];
-> > >  	size_t len;
-> > >  
-> > > @@ -70,12 +71,14 @@ static int proc_do_xprt(struct ctl_table *table, int write,
-> > >  		return 0;
-> > >  	}
-> > >  	len = svc_print_xprts(tmpbuf, sizeof(tmpbuf));
-> > > -	*lenp = memory_read_from_buffer(buffer, *lenp, ppos, tmpbuf, len);
-> > > +	bytes_read = memory_read_from_buffer(buffer, *lenp, ppos, tmpbuf, len);
-> > >  
-> > > -	if (*lenp < 0) {
-> > > +	if (bytes_read < 0) {
-> > >  		*lenp = 0;
-> > >  		return -EINVAL;
-> > >  	}
-> > > +
-> > > +	*lenp = bytes_read;
-> > >  	return 0;
-> > >  }
-> > >  
-> > > -- 
-> > > 2.29.1
+I'm not convinced that this is correct. How have you confirmed that
+there are no compiler or sparse warnings?
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
