@@ -2,55 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3F1E2AA795
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 20:17:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 666A82AA798
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 20:17:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728635AbgKGTRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 14:17:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45128 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725836AbgKGTRS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 14:17:18 -0500
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0DCD920723;
-        Sat,  7 Nov 2020 19:17:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604776638;
-        bh=jtShwRiJRIdfLPFLIlWUHGSUJ2qGrhTvw/AWZ3oxKWg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=WxoB6KaRqI9gf63qpB0NfoicETTHT69S5l111kZ3/Sga4U7segEiM11attcNIwEmR
-         YUTh5oEA8ZNgN3GlP45wA/boIQyYxNwQS1j6W6wGfmZVNNYZoXs1fwqQZMcZHCvLUf
-         kH9M8HtO3gH3cPourTlnDNydc1ZMK8ZaxCxCVPrM=
-Date:   Sat, 7 Nov 2020 11:17:17 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
-Cc:     <davem@davemloft.net>, <netdev@vger.kernel.org>,
-        <michal.simek@xilinx.com>, <mchehab+samsung@kernel.org>,
-        <gregkh@linuxfoundation.org>, <nicolas.ferre@microchip.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <git@xilinx.com>
-Subject: Re: [PATCH net-next 0/2] net: axienet: Dynamically enable MDIO
- interface
-Message-ID: <20201107111717.59b399e7@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <1604402770-78045-1-git-send-email-radhey.shyam.pandey@xilinx.com>
-References: <1604402770-78045-1-git-send-email-radhey.shyam.pandey@xilinx.com>
+        id S1728653AbgKGTRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 14:17:54 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:5730 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725836AbgKGTRx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Nov 2020 14:17:53 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fa6f2e50000>; Sat, 07 Nov 2020 11:17:57 -0800
+Received: from [10.2.62.222] (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sat, 7 Nov
+ 2020 19:17:52 +0000
+Subject: Re: [PATCH 1/2] tomoyo: Convert get_user_pages*() to
+ pin_user_pages*()
+From:   John Hubbard <jhubbard@nvidia.com>
+To:     Souptick Joarder <jrdr.linux@gmail.com>, <takedakn@nttdata.co.jp>,
+        <penguin-kernel@I-love.SAKURA.ne.jp>, <jmorris@namei.org>,
+        <serge@hallyn.com>
+CC:     <linux-security-module@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>
+References: <1604737451-19082-1-git-send-email-jrdr.linux@gmail.com>
+ <e5401549-8c31-2c6d-58dd-864232de17af@nvidia.com>
+Message-ID: <e6859981-bc3c-9513-99e5-a99849786156@nvidia.com>
+Date:   Sat, 7 Nov 2020 11:17:52 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <e5401549-8c31-2c6d-58dd-864232de17af@nvidia.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1604776677; bh=yfhdGpRJZc3CvodI5i1IHo+KRBmzHgvXgzVSoUCFcYw=;
+        h=Subject:From:To:CC:References:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=nedmNtDmoYJfgU992ShmtCC57esM3aLP4lFDsq2VsnRlkgg0vOHucUb25U9gXt0Ui
+         bb46/ufveki0qfrIbDUrdScf5MsqEn/41KZDkL8VMlaTQYixjrZvxgt1S2YBf3lLvh
+         rPqMwfsyGVuVIK5pTa1yry0dJhEqS4MtlTMG2pLS2ZvMvSOkqlMZhSkP0SdnA0jAe6
+         P2w7IfbrVikCQpNZmVXjazWbJnkzn9y9wrIhJ6EPe+PIa+Rec/wtXsQRKp0Vfre2Kr
+         hbZsXxzeQETQO4DlWHK1dqVwxwM1l7RGyJ/wtLkBRkz1twUZCzdfsIOZOPCrU8A4GB
+         jk38FeRVwJ65g==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 3 Nov 2020 16:56:08 +0530 Radhey Shyam Pandey wrote:
-> This patchset dynamically enable MDIO interface. The background for this
-> change is coming from Cadence GEM controller(macb) in which MDC is active 
-> only during MDIO read or write operations while the PHY registers are
-> read or written. It is implemented as an IP feature. 
+On 11/7/20 1:04 AM, John Hubbard wrote:
+> On 11/7/20 12:24 AM, Souptick Joarder wrote:
+>> In 2019, we introduced pin_user_pages*() and now we are converting
+>> get_user_pages*() to the new API as appropriate. [1] & [2] could
+>> be referred for more information. This is case 5 as per document [1].
 > 
-> For axiethernet as dynamic MDC enable/disable is not supported in hw
-> we are implementing it in sw. This change doesn't affect any existing
-> functionality.
+> It turns out that Case 5 can be implemented via a better pattern, as long
+> as we're just dealing with a page at a time, briefly:
+> 
+> lock_page()
+> write to page's data
+> unlock_page()
+> 
+> ...which neatly synchronizes with writeback and other fs activities.
 
-Applied, thank you!
+Ahem, I left out a key step: set_page_dirty()!
+
+lock_page()
+write to page's data
+set_page_dirty()
+unlock_page()
+
+
+thanks,
+-- 
+John Hubbard
+NVIDIA
