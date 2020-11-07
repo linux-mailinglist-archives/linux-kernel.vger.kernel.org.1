@@ -2,192 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C5332AA456
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 11:06:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BFEC2AA464
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 11:19:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728164AbgKGKGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 05:06:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57792 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728091AbgKGKGm (ORCPT
+        id S1728184AbgKGKSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 05:18:51 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:40740 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727954AbgKGKSu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 05:06:42 -0500
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC759C0613D3
-        for <linux-kernel@vger.kernel.org>; Sat,  7 Nov 2020 02:06:40 -0800 (PST)
-Received: by mail-oi1-x244.google.com with SMTP id o25so3456057oie.5
-        for <linux-kernel@vger.kernel.org>; Sat, 07 Nov 2020 02:06:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TErsauc9tpAzI6S5cYpbCRvl4twcQzw2HKSJ2d2Z+Qg=;
-        b=cFZKFASwAfugNcZhz/FuAFmwgIJgslvWVTlXGObXW4GVaiNx5l+4SITTnhwIes3oiJ
-         reYnqBcoLt6G3wNTxTLRdKwgOg7Ns7cE5FqN5L4rV7tMFTjEp2540lKCJlUvc52aoVKR
-         0YjZ0+zMCT0aW++pNadjtwASHdwbGcnxya4d7uBY6bTaj1NGc6B9kOGdHCcbOMUKZvXf
-         bJd1gYeIAayqwjDTVfshWKIZxHJX7MEwCH3td/atGMHmO6tHjcBdloKYwzPy6HyHIlWy
-         +nIGIc8yTT0VDKRsKtvKA7fit+ZKdqNJdSHlD/fEWKCd9D7kRQN5jIMqPlF0YA+MdZGz
-         t+Ug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TErsauc9tpAzI6S5cYpbCRvl4twcQzw2HKSJ2d2Z+Qg=;
-        b=cLVuwsxkmCjdkxvps36QBvj0mh5AjGH/x2AYC2re5hUaJ7QmBRnGj7fRaECpIU9v7b
-         iPvqKzvQgUYlD5NQPyAtbFic0wF9qDDXU2nS+zO5dhm0ARCPRCC+YQnjOOvV3G8oivw9
-         h6xx1DVPECykr4ozGPVzYl6h2a2YMILVPgrPhN7UW4C9Sf/ti10H26C3a+OpF7iHRSFJ
-         r6v5AhbgoU8y1/+raTjOdHTt2s9FBFYMeuIfjClwFf9cy1FEgt9BEMvz4vP8MGE97x6G
-         ZFiukw9gSvsMWCqD04DeRO/hwZjspM8JArtn6gUswlB3M+Gmr8Rd/miLZv1vccDE/QgO
-         dnvw==
-X-Gm-Message-State: AOAM530SdqZ5RZhS6gXasONHQI8rKpEjUnbEOCpf9ndPdSeXSkTqCKz5
-        NqQuTBv9zGOZqlhGPGHU0tTMn77yE0RkMZe5zBw66Q==
-X-Google-Smtp-Source: ABdhPJxb+xfOZ9jVhfWoVlbABCI67vL5rewh1ARjZCLWNyu463apeEQlWxjA1SZroi07HqVGkXthuRthzuku33QQCxw=
-X-Received: by 2002:aca:6206:: with SMTP id w6mr3818129oib.121.1604743599913;
- Sat, 07 Nov 2020 02:06:39 -0800 (PST)
+        Sat, 7 Nov 2020 05:18:50 -0500
+Date:   Sat, 07 Nov 2020 10:18:44 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1604744325;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=aM3mMb3JEXRddb6ORKdNZf15rslUi3un5l0eAbwVtPg=;
+        b=ztX4AQnK+Ya/bkEw/vJKU4M+SzPdAspJ6G4oEsxpoGD/Uzvq5tThhViyrIz2/ILY2F0h3p
+        5zTfJ+vKKJdW2kzugocLTn//CMR8qm+s2BgQI+qCiOIwjwPkQcBkOZhgdLogTpfV5o4DHe
+        uMvEJhtz3S6gitmUWFdh0E8z9JdZtPRMbkgWumvt0bBO7I6euHh7/CcQgP5A7goY0zdmGp
+        5IZvnuwt4GNXgonrXKBGEM+sl9mfSEUofeBBMEWNLJzwYmLVgAWZPyGd66fj/PiKvQQ3Bz
+        fpfX+EzhEr3ZXyWvIIEwFOn2LTlIiK42Dbj8wRg1wZx3UlArSJxN7glelm0ydg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1604744325;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=aM3mMb3JEXRddb6ORKdNZf15rslUi3un5l0eAbwVtPg=;
+        b=78bw4X4IJcJpF36B0ehZxX9mRqooS6yEgUFyQwZHZyG9F3uYCE/wJ6mFDPF9BGeAXOa/52
+        34lfWOT3JPNNG2DQ==
+From:   "tip-bot2 for Mike Travis" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/platform/uv: Recognize UV5 hubless system identifier
+Cc:     Mike Travis <mike.travis@hpe.com>,
+        Thomas Gleixner <tglx@linutronix.de>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20201105222741.157029-4-mike.travis@hpe.com>
+References: <20201105222741.157029-4-mike.travis@hpe.com>
 MIME-Version: 1.0
-References: <20201106192154.51514-1-98.arpi@gmail.com> <CABVgOSkQ6+y7OGw2494cJa2b60EkSjncLNAgc9cJDbS=X9J3WA@mail.gmail.com>
-In-Reply-To: <CABVgOSkQ6+y7OGw2494cJa2b60EkSjncLNAgc9cJDbS=X9J3WA@mail.gmail.com>
-From:   Marco Elver <elver@google.com>
-Date:   Sat, 7 Nov 2020 11:06:28 +0100
-Message-ID: <CANpmjNNp2RUCE_ypp2R4MznikTYRYeCDuF7VMp+Hbh=55KWa3A@mail.gmail.com>
-Subject: Re: [PATCH v6 1/2] kunit: Support for Parameterized Testing
-To:     David Gow <davidgow@google.com>
-Cc:     Arpitha Raghunandan <98.arpi@gmail.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-ext4@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <160474432446.397.1647047519236540865.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 7 Nov 2020 at 05:58, David Gow <davidgow@google.com> wrote:
-> On Sat, Nov 7, 2020 at 3:22 AM Arpitha Raghunandan <98.arpi@gmail.com> wrote:
-> >
-> > Implementation of support for parameterized testing in KUnit.
-> > This approach requires the creation of a test case using the
-> > KUNIT_CASE_PARAM macro that accepts a generator function as input.
-> > This generator function should return the next parameter given the
-> > previous parameter in parameterized tests. It also provides
-> > a macro to generate common-case generators.
-> >
-> > Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
-> > Co-developed-by: Marco Elver <elver@google.com>
-> > Signed-off-by: Marco Elver <elver@google.com>
-> > ---
->
-> This looks good to me! A couple of minor thoughts about the output
-> format below, but I'm quite happy to have this as-is regardless.
->
-> Reviewed-by: David Gow <davidgow@google.com>
->
-> Cheers,
-> -- David
->
-> > Changes v5->v6:
-> > - Fix alignment to maintain consistency
-> > Changes v4->v5:
-> > - Update kernel-doc comments.
-> > - Use const void* for generator return and prev value types.
-> > - Add kernel-doc comment for KUNIT_ARRAY_PARAM.
-> > - Rework parameterized test case execution strategy: each parameter is executed
-> >   as if it was its own test case, with its own test initialization and cleanup
-> >   (init and exit are called, etc.). However, we cannot add new test cases per TAP
-> >   protocol once we have already started execution. Instead, log the result of
-> >   each parameter run as a diagnostic comment.
-> > Changes v3->v4:
-> > - Rename kunit variables
-> > - Rename generator function helper macro
-> > - Add documentation for generator approach
-> > - Display test case name in case of failure along with param index
-> > Changes v2->v3:
-> > - Modifictaion of generator macro and method
-> > Changes v1->v2:
-> > - Use of a generator method to access test case parameters
-> >
-> >  include/kunit/test.h | 36 ++++++++++++++++++++++++++++++++++
-> >  lib/kunit/test.c     | 46 +++++++++++++++++++++++++++++++-------------
-> >  2 files changed, 69 insertions(+), 13 deletions(-)
-> >
-> > diff --git a/include/kunit/test.h b/include/kunit/test.h
-> > index db1b0ae666c4..16616d3974f9 100644
-> > --- a/include/kunit/test.h
-> > +++ b/include/kunit/test.h
-> > @@ -107,6 +107,7 @@ struct kunit;
-[...]
-> > -       kunit_suite_for_each_test_case(suite, test_case)
-> > -               kunit_run_case_catch_errors(suite, test_case);
-> > +       kunit_suite_for_each_test_case(suite, test_case) {
-> > +               struct kunit test = { .param_value = NULL, .param_index = 0 };
-> > +               bool test_success = true;
-> > +
-> > +               if (test_case->generate_params)
-> > +                       test.param_value = test_case->generate_params(NULL);
-> > +
-> > +               do {
-> > +                       kunit_run_case_catch_errors(suite, test_case, &test);
-> > +                       test_success &= test_case->success;
-> > +
-> > +                       if (test_case->generate_params) {
-> > +                               kunit_log(KERN_INFO, &test,
-> > +                                         KUNIT_SUBTEST_INDENT
-> > +                                         "# %s: param-%d %s",
->
-> Would it make sense to have this imitate the TAP format a bit more?
-> So, have "# [ok|not ok] - [name]" as the format? [name] could be
-> something like "[test_case->name]:param-[index]" or similar.
-> If we keep it commented out and don't indent it further, it won't
-> formally be a nested test (though if we wanted to support those later,
-> it'd be easy to add), but I think it would be nicer to be consistent
-> here.
+The following commit has been merged into the x86/urgent branch of tip:
 
-The previous attempt [1] at something similar failed because it seems
-we'd need to teach kunit-tool new tricks [2], too.
-[1] https://lkml.kernel.org/r/20201105195503.GA2399621@elver.google.com
-[2] https://lkml.kernel.org/r/20201106123433.GA3563235@elver.google.com
+Commit-ID:     801284f9737883a2b2639bd494455a72c82fdedf
+Gitweb:        https://git.kernel.org/tip/801284f9737883a2b2639bd494455a72c82fdedf
+Author:        Mike Travis <mike.travis@hpe.com>
+AuthorDate:    Thu, 05 Nov 2020 16:27:41 -06:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Sat, 07 Nov 2020 11:17:39 +01:00
 
-So if we go with a different format, we might need a patch before this
-one to make kunit-tool compatible with that type of diagnostic.
+x86/platform/uv: Recognize UV5 hubless system identifier
 
-Currently I think we have the following proposals for a format:
+Testing shows a problem in that UV5 hubless systems were not being
+recognized.  Add them to the list of OEM IDs checked.
 
-1. The current "# [test_case->name]: param-[index] [ok|not ok]" --
-this works well, because no changes to kunit-tool are required, and it
-also picks up the diagnostic context for the case and displays that on
-test failure.
+Fixes: 6c7794423a998 ("Add UV5 direct references")
+Signed-off-by: Mike Travis <mike.travis@hpe.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/20201105222741.157029-4-mike.travis@hpe.com
 
-2. Your proposed "# [ok|not ok] - [test_case->name]:param-[index]".
-As-is, this needs a patch for kunit-tool as well. I just checked, and
-if we change it to "# [ok|not ok] - [test_case->name]: param-[index]"
-(note the space after ':') it works without changing kunit-tool. ;-)
 
-3. Something like "# [ok|not ok] param-[index] - [test_case->name]",
-which I had played with earlier but kunit-tool is definitely not yet
-happy with.
+---
+ arch/x86/kernel/apic/x2apic_uv_x.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
-So my current preference is (2) with the extra space (no change to
-kunit-tool required). WDYT?
-
-> My other suggestion -- albeit one outside the scope of this initial
-> version -- would be to allow the "param-%d" name to be overridden
-> somehow by a test. For example, the ext4 inode test has names for all
-> its test cases: it'd be nice to be able to display those instead (even
-> if they're not formatted as identifiers as-is).
-
-Right, I was thinking about this, but it'd need a way to optionally
-pass another function that converts const void* params to readable
-strings. But as you say, we should do that as a follow-up patch later
-because it might require a few more iterations.
-
-[...]
-
-Thanks,
--- Marco
+diff --git a/arch/x86/kernel/apic/x2apic_uv_x.c b/arch/x86/kernel/apic/x2apic_uv_x.c
+index 0f848d6..3115caa 100644
+--- a/arch/x86/kernel/apic/x2apic_uv_x.c
++++ b/arch/x86/kernel/apic/x2apic_uv_x.c
+@@ -389,13 +389,20 @@ static int __init uv_set_system_type(char *_oem_id, char *_oem_table_id)
+ 			/* (Not hubless), not a UV */
+ 			return 0;
+ 
++		/* Is UV hubless system */
++		uv_hubless_system = 0x01;
++
++		/* UV5 Hubless */
++		if (strncmp(uv_archtype, "NSGI5", 5) == 0)
++			uv_hubless_system |= 0x20;
++
+ 		/* UV4 Hubless: CH */
+-		if (strncmp(uv_archtype, "NSGI4", 5) == 0)
+-			uv_hubless_system = 0x11;
++		else if (strncmp(uv_archtype, "NSGI4", 5) == 0)
++			uv_hubless_system |= 0x10;
+ 
+ 		/* UV3 Hubless: UV300/MC990X w/o hub */
+ 		else
+-			uv_hubless_system = 0x9;
++			uv_hubless_system |= 0x8;
+ 
+ 		/* Copy APIC type */
+ 		uv_stringify(sizeof(oem_table_id), oem_table_id, _oem_table_id);
