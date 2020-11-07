@@ -2,115 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70D942AA1C8
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 01:27:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2CE72AA1D1
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 01:32:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728198AbgKGA1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 19:27:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53188 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728110AbgKGA1C (ORCPT
+        id S1728339AbgKGAc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 19:32:28 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:38882 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726447AbgKGAc1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 19:27:02 -0500
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE0CBC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 16:27:01 -0800 (PST)
-Received: by mail-qk1-x744.google.com with SMTP id n132so1715576qke.1
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 16:27:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/cM0TFFZMZvrqgwNzLi/AHEjw0DLgiyqxlp3I+i6tBs=;
-        b=D+OZ+DTluHuXiaVE1BMYD9EUtjhOiM8Qgv90tZijxaNs0234reo+o5joNaWMREpUi8
-         vEz2CG6OY7s+9VxRo7OmDET6hiGTRqNFr97vadAXIU6InctkrVJDgIfkoSb3iKZB5jwj
-         U7HWvBqaa6jmTRGEFSQm6XBblX5ADdhF3v4N0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/cM0TFFZMZvrqgwNzLi/AHEjw0DLgiyqxlp3I+i6tBs=;
-        b=Jn5Nh4z4oKZyqTmbGCofxHBelSu085g5ZjpkDiUqyi5Eiy7w66jkUFLhsIst6suMLS
-         EoZDdz3VGLnOMPuhUjTeD2eW7rMMyggo6tlcGtQck/JR5E6C2oaEJJfoRz1+p1yvSsd6
-         Yc1MGCa6JSAnXqu5f1I95ge9JQYr85jIZa0+CC0/a9B8zHyVndWBrdIjkfZlnQ9NNRMp
-         099KbgUhQgV2yYsKA519I+HEwmxLUWtMBvGyYgJrorga2HC/dVN7n0dd/RrFnRmPxO1Q
-         LgGkIdM2GEjRrG1Dg9khalPWwbMW7gT48yHgjlArGaNFPLYvabE5f9oOTiexJuP1ilQR
-         PipQ==
-X-Gm-Message-State: AOAM532T3paQfZ+c5IXZbKcjlWKKWGV1FJwR0BRjFANoNfObfll+LMO1
-        o0tj+Zam4C1ngSzOR+t3UDx+rw==
-X-Google-Smtp-Source: ABdhPJwFjgoRxwCPZiE2+6jzxcDWWbrPUP3UF7MANy5LvJc1/s0UZA5aW4E3nwNWQe9/qMxe2lC62A==
-X-Received: by 2002:a37:4e8e:: with SMTP id c136mr3972194qkb.421.1604708821114;
-        Fri, 06 Nov 2020 16:27:01 -0800 (PST)
-Received: from localhost ([2620:15c:6:411:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id s23sm1655779qks.94.2020.11.06.16.27.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Nov 2020 16:27:00 -0800 (PST)
-Date:   Fri, 6 Nov 2020 19:27:00 -0500
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Marco Elver <elver@google.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>, fweisbec@gmail.com,
-        neeraj.iitr10@gmail.com
-Subject: Re: [PATCH v9 5/7] rcu/segcblist: Remove useless rcupdate.h include
-Message-ID: <20201107002700.GB3144506@google.com>
-References: <20201103142603.1302207-1-joel@joelfernandes.org>
- <20201103142603.1302207-6-joel@joelfernandes.org>
- <20201105034823.GK3249@paulmck-ThinkPad-P72>
- <20201105142810.GA16800@paulmck-ThinkPad-P72>
+        Fri, 6 Nov 2020 19:32:27 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1604709144;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4ezhNTBs+WBApggKiVHp4hAcpNfoQYkvzB7tR6XhKr0=;
+        b=rkqby1zPNsirxlaigafN6XGyM5UA1C7B0lNj6MWG0awGOfCBXMSQPqMGqwSjC69vDDidWc
+        4kK3bTXLz+dAuX/XMmrbhSrLq54Fap68dtU+XkdInV4B4OK5cGLjtwkubryZsquSe82gre
+        dk3MEZvSedIOIRza0QgFZmAydK2hnkaq/slKTjPC0dNHGkvuqN8qWgu7RoRG7RNRYaH+Uf
+        Q88DcsKu0m//Jg+F9cBKkdqmEkHRcS6YijwX9F07fg5MqPOE5Ey6yqRjYC1XEBgP2+7kTp
+        9buZsC6d3F/aDSyQrE1zbDASgmv6TcRaGwj4si7Igr1XqPnWsxHGNpMWAUsrNQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1604709144;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4ezhNTBs+WBApggKiVHp4hAcpNfoQYkvzB7tR6XhKr0=;
+        b=ZHpWJfa1YPflTYTKk64pbTfgPs37n5w9mN3c+7UIcuqNnpvtOD3Rnzc9+TNOc4biyZp6tK
+        FyIpzTXGEg1r/DCg==
+To:     "Tian\, Kevin" <kevin.tian@intel.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     "Jiang\, Dave" <dave.jiang@intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        "vkoul\@kernel.org" <vkoul@kernel.org>,
+        "Dey\, Megha" <megha.dey@intel.com>,
+        "maz\@kernel.org" <maz@kernel.org>,
+        "bhelgaas\@google.com" <bhelgaas@google.com>,
+        "alex.williamson\@redhat.com" <alex.williamson@redhat.com>,
+        "Pan\, Jacob jun" <jacob.jun.pan@intel.com>,
+        "Raj\, Ashok" <ashok.raj@intel.com>,
+        "Liu\, Yi L" <yi.l.liu@intel.com>,
+        "Lu\, Baolu" <baolu.lu@intel.com>,
+        "Kumar\, Sanjay K" <sanjay.k.kumar@intel.com>,
+        "Luck\, Tony" <tony.luck@intel.com>,
+        "jing.lin\@intel.com" <jing.lin@intel.com>,
+        "Williams\, Dan J" <dan.j.williams@intel.com>,
+        "kwankhede\@nvidia.com" <kwankhede@nvidia.com>,
+        "eric.auger\@redhat.com" <eric.auger@redhat.com>,
+        "parav\@mellanox.com" <parav@mellanox.com>,
+        "rafael\@kernel.org" <rafael@kernel.org>,
+        "netanelg\@mellanox.com" <netanelg@mellanox.com>,
+        "shahafs\@mellanox.com" <shahafs@mellanox.com>,
+        "yan.y.zhao\@linux.intel.com" <yan.y.zhao@linux.intel.com>,
+        "pbonzini\@redhat.com" <pbonzini@redhat.com>,
+        "Ortiz\, Samuel" <samuel.ortiz@intel.com>,
+        "Hossain\, Mona" <mona.hossain@intel.com>,
+        "dmaengine\@vger.kernel.org" <dmaengine@vger.kernel.org>,
+        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pci\@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "kvm\@vger.kernel.org" <kvm@vger.kernel.org>
+Subject: RE: [PATCH v4 06/17] PCI: add SIOV and IMS capability detection
+In-Reply-To: <MWHPR11MB1645524BDEDF8899914F32AE8CED0@MWHPR11MB1645.namprd11.prod.outlook.com>
+References: <20201030195159.GA589138@bjorn-Precision-5520> <71da5f66-e929-bab1-a1c6-a9ac9627a141@intel.com> <20201030224534.GN2620339@nvidia.com> <ec52cedf-3a99-5ca1-ffbb-d8f8c4f62395@intel.com> <20201102132158.GA3352700@nvidia.com> <MWHPR11MB1645675ED03E23674A705DF68C110@MWHPR11MB1645.namprd11.prod.outlook.com> <20201103124351.GM2620339@nvidia.com> <MWHPR11MB164544C9CFCC3F162C1C6FC18CEF0@MWHPR11MB1645.namprd11.prod.outlook.com> <20201104124017.GW2620339@nvidia.com> <MWHPR11MB1645862A8F7CF7FB8DD011778CEF0@MWHPR11MB1645.namprd11.prod.outlook.com> <20201104135415.GX2620339@nvidia.com> <MWHPR11MB1645524BDEDF8899914F32AE8CED0@MWHPR11MB1645.namprd11.prod.outlook.com>
+Date:   Sat, 07 Nov 2020 01:32:23 +0100
+Message-ID: <871rh6knvs.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201105142810.GA16800@paulmck-ThinkPad-P72>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 06:28:10AM -0800, Paul E. McKenney wrote:
-> On Wed, Nov 04, 2020 at 07:48:23PM -0800, Paul E. McKenney wrote:
-> > On Tue, Nov 03, 2020 at 09:26:01AM -0500, Joel Fernandes (Google) wrote:
-> > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > 
-> > This one looks fine, but depends on the earlier "rcu/segcblist: Add
-> > counters to segcblist datastructure" patch, which also changes the list
-> > of #include directives for this file.  It manages to avoid conflicting
-> > with "rcu/trace: Add tracing for how segcb list changes", despite this
-> > one also changing the #include directives.
-> > 
-> > I am testing it just out of curiosity, but it might make more sense
-> > to fold this one into "rcu/segcblist: Add counters to segcblist
-> > datastructure".
-> 
-> And it does pass light rcutorture.  ;-)
+On Fri, Nov 06 2020 at 09:48, Kevin Tian wrote:
+>> From: Jason Gunthorpe <jgg@nvidia.com>
+>> On Wed, Nov 04, 2020 at 01:34:08PM +0000, Tian, Kevin wrote:
+>> The interrupt controller is responsible to create an addr/data pair
+>> for an interrupt message. It sets the message format and ensures it
+>> routes to the proper CPU interrupt handler. Everything about the
+>> addr/data pair is owned by the platform interrupt controller.
+>> 
+>> Devices do not create interrupts. They only trigger the addr/data pair
+>> the platform gives them.
+>
+> I guess that we may just view it from different angles. On x86 platform,
+> a MSI/IMS capable device directly composes interrupt messages, with 
+> addr/data pair filled by OS. If there is no IOMMU remapping enabled in 
+> the middle, the message just hits the CPU. Your description possibly
+> is from software side, e.g. describing the hierarchical IRQ domain
+> concept?
 
-Cool, I squashed it into 2/7 and updated my tree.
+No. The device composes nothing. If the interrupt is raised in the
+device then the MSI block sends the message which was composed by the OS
+and stored in the device's message store. For PCI/MSI that's the MSI or
+MSIX table and for IMS that's either on device memory (as IDXD uses) or
+some completely different location which Jason described.
 
-thanks,
+This has absolutely nothing to do with the X86 platform. MSI is a
+architecture independent mechanism: Send whatever the OS put into the
+storage to raise an interrupt in the CPU. The device does neither know
+whether that message is going to be intercepted by an interrupt
+remapping unit or not.
 
- - Joel
+Stop claiming that any of this has anything to do with x86. It has
+absolutely nothing to do with x86 and looking at MSI from an x86
+perspective instead of looking at it from the architecture agnostic
+technical reality of MSI is the reason why we have this discussion at
+all.
 
-> 							Thanx, Paul
-> 
-> > > ---
-> > >  kernel/rcu/rcu_segcblist.c | 1 -
-> > >  1 file changed, 1 deletion(-)
-> > > 
-> > > diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
-> > > index 2a03949d0b82..e9e72d72f7a6 100644
-> > > --- a/kernel/rcu/rcu_segcblist.c
-> > > +++ b/kernel/rcu/rcu_segcblist.c
-> > > @@ -10,7 +10,6 @@
-> > >  #include <linux/cpu.h>
-> > >  #include <linux/interrupt.h>
-> > >  #include <linux/kernel.h>
-> > > -#include <linux/rcupdate.h>
-> > >  #include <linux/types.h>
-> > >  
-> > >  #include "rcu_segcblist.h"
-> > > -- 
-> > > 2.29.1.341.ge80a0c044ae-goog
-> > > 
+We had a similar discussion vs. the way how IMS interrupts have to be
+dealt with in terms of irq domains. Can you finally stop looking at
+everything as a big x86/intel/platform lump and understand that things
+are very well structured and seperated both at the hardware and at the
+software level? 
+
+> Do you mind providing the link? There were lots of discussions between
+> you and Thomas. I failed to locate the exact mail when searching above
+> keywords. 
+
+In this thread: 20200821002424.119492231@linutronix.de and you were on
+Cc
+
+Thanks,
+
+        tglx
+
+
