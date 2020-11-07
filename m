@@ -2,113 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80B922AA473
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 11:43:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FC782AA475
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 11:45:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727817AbgKGKm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 05:42:56 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7154 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727605AbgKGKm4 (ORCPT
+        id S1727518AbgKGKpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 05:45:05 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:18366 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726034AbgKGKpE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 05:42:56 -0500
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CSv3V3ZGsz15SKt;
-        Sat,  7 Nov 2020 18:42:46 +0800 (CST)
-Received: from huawei.com (10.175.112.208) by DGGEMS414-HUB.china.huawei.com
- (10.3.19.214) with Microsoft SMTP Server id 14.3.487.0; Sat, 7 Nov 2020
- 18:42:42 +0800
-From:   Xu Qiang <xuqiang36@huawei.com>
-To:     <tglx@linutronix.de>, <jason@lakedaemon.net>, <maz@kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <rui.xiang@huawei.com>
-Subject: [PATCH -next] irq-chip/gic-v3-its: Fixed an issue where the ITS executes the residual commands in the queue again when the ITS wakes up from sleep mode.
-Date:   Sat, 7 Nov 2020 10:42:26 +0000
-Message-ID: <20201107104226.14282-1-xuqiang36@huawei.com>
-X-Mailer: git-send-email 2.25.0
+        Sat, 7 Nov 2020 05:45:04 -0500
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A7AWfRd075183;
+        Sat, 7 Nov 2020 05:45:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=ASSvCDmGzoqF2PFS56D4BqHaEHoPz8ILlYUcwC2XJ+I=;
+ b=Oym/QW+Ay382l11ERN6PepGslFgxbFgwD6cMCAJ4UJSqmcyBKyoTvu183FNl4swvxiAC
+ fBL8t9FBCjrpTVvU06ceFpSwqaZgg5ZbIgwq9dygF3K67QNcE3VNTDolQMb0Jl2Iw90x
+ Dt1km7b6W2b3lAUHimSXnxRtpazqVU6L3gUTQhnotboGd4NMVb3XxqNrgwgspB0sckMp
+ z9i3ikwtthVkP8MtJKEctRb/N0a0fngA8RW0fnj6jrF5Z5pdfQKeNfoaUmcySws5Jjef
+ mHKyIQSCFqhJ5MAEPcD4B+WwgcHtBcPzzPWbti0+7kIqoGyNxkt+cTAebcslutmIqFHw iA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34nrm71svv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 07 Nov 2020 05:45:00 -0500
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0A7Ah43r105309;
+        Sat, 7 Nov 2020 05:45:00 -0500
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34nrm71sv8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 07 Nov 2020 05:44:59 -0500
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0A7Ai5Gh006941;
+        Sat, 7 Nov 2020 10:44:57 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma04ams.nl.ibm.com with ESMTP id 34nk78888b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 07 Nov 2020 10:44:57 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0A7Aitva7537382
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 7 Nov 2020 10:44:55 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 672424C040;
+        Sat,  7 Nov 2020 10:44:55 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7CF0F4C046;
+        Sat,  7 Nov 2020 10:44:54 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.145.53.17])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Sat,  7 Nov 2020 10:44:54 +0000 (GMT)
+Date:   Sat, 7 Nov 2020 12:44:52 +0200
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     Wang Qing <wangqing@vivo.com>
+Cc:     Shuah Khan <shuah@kernel.org>, Peter Xu <peterx@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Joe Perches <joe@perches.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] tool: selftests: fix spelling typo of 'writting'
+Message-ID: <20201107104452.GF301789@linux.ibm.com>
+References: <1604740776-27082-1-git-send-email-wangqing@vivo.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.112.208]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1604740776-27082-1-git-send-email-wangqing@vivo.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-07_04:2020-11-05,2020-11-07 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_spam_definite policy=outbound score=100 clxscore=1011
+ lowpriorityscore=0 suspectscore=0 phishscore=0 bulkscore=0 malwarescore=0
+ priorityscore=1501 mlxscore=100 mlxlogscore=-1000 adultscore=0
+ spamscore=100 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2011070067
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On my platform, ITS_FLAGS_SAVE_SUSPEND_STATE is not set,thus do nothing
-in its suspend and resuse function.On the other hand,firmware stores
-GITS_CTRL,GITS_CBASER,GITS_CWRITER and GITS_BASER<n> in the suspend,
-and restores these registers in the resume. As a result, the ITS executes
-the residual commands in the queue.
+On Sat, Nov 07, 2020 at 05:19:35PM +0800, Wang Qing wrote:
+> writting -> writing
+> 
+> Signed-off-by: Wang Qing <wangqing@vivo.com>
 
-Memory corruption may occur in the following scenarios:
+Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
 
-The kernel sends three commands in the following sequence:
-1.mapd(deviceA, ITT_addr1, valid:1)
-2.mapti(deviceA):ITS write ITT_addr1 memory;
-3.mapd(deviceA, ITT_addr1, valid:0) and kfree(ITT_addr1);
-4.mapd(deviceA, ITT_addr2, valid:1);
-5.mapti(deviceA):ITS write ITT_addr2 memory;
+> ---
+>  tools/testing/selftests/vm/userfaultfd.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/vm/userfaultfd.c b/tools/testing/selftests/vm/userfaultfd.c
+> index 9b0912a..9132fae7
+> --- a/tools/testing/selftests/vm/userfaultfd.c
+> +++ b/tools/testing/selftests/vm/userfaultfd.c
+> @@ -894,7 +894,7 @@ static int faulting_process(int signal_test)
+>  				count_verify[nr]);
+>  	        }
+>  		/*
+> -		 * Trigger write protection if there is by writting
+> +		 * Trigger write protection if there is by writing
+>  		 * the same value back.
+>  		 */
+>  		*area_count(area_dst, nr) = count;
+> @@ -922,7 +922,7 @@ static int faulting_process(int signal_test)
+>  				count_verify[nr]); exit(1);
+>  		}
+>  		/*
+> -		 * Trigger write protection if there is by writting
+> +		 * Trigger write protection if there is by writing
+>  		 * the same value back.
+>  		 */
+>  		*area_count(area_dst, nr) = count;
+> -- 
+> 2.7.4
+> 
 
-To solve this problem,dropping the checks for ITS_FLAGS_SAVE_SUSPEND_STATE.
-
-Signed-off-by: Xu Qiang <xuqiang36@huawei.com>
----
- drivers/irqchip/irq-gic-v3-its.c | 13 -------------
- 1 file changed, 13 deletions(-)
-
-diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
-index 0fec31931e11..06f2c1c252b9 100644
---- a/drivers/irqchip/irq-gic-v3-its.c
-+++ b/drivers/irqchip/irq-gic-v3-its.c
-@@ -42,7 +42,6 @@
- #define ITS_FLAGS_CMDQ_NEEDS_FLUSHING		(1ULL << 0)
- #define ITS_FLAGS_WORKAROUND_CAVIUM_22375	(1ULL << 1)
- #define ITS_FLAGS_WORKAROUND_CAVIUM_23144	(1ULL << 2)
--#define ITS_FLAGS_SAVE_SUSPEND_STATE		(1ULL << 3)
- 
- #define RDIST_FLAGS_PROPBASE_NEEDS_FLUSHING	(1 << 0)
- #define RDIST_FLAGS_RD_TABLES_PREALLOCATED	(1 << 1)
-@@ -4741,9 +4740,6 @@ static int its_save_disable(void)
- 	list_for_each_entry(its, &its_nodes, entry) {
- 		void __iomem *base;
- 
--		if (!(its->flags & ITS_FLAGS_SAVE_SUSPEND_STATE))
--			continue;
--
- 		base = its->base;
- 		its->ctlr_save = readl_relaxed(base + GITS_CTLR);
- 		err = its_force_quiescent(base);
-@@ -4762,9 +4758,6 @@ static int its_save_disable(void)
- 		list_for_each_entry_continue_reverse(its, &its_nodes, entry) {
- 			void __iomem *base;
- 
--			if (!(its->flags & ITS_FLAGS_SAVE_SUSPEND_STATE))
--				continue;
--
- 			base = its->base;
- 			writel_relaxed(its->ctlr_save, base + GITS_CTLR);
- 		}
-@@ -4784,9 +4777,6 @@ static void its_restore_enable(void)
- 		void __iomem *base;
- 		int i;
- 
--		if (!(its->flags & ITS_FLAGS_SAVE_SUSPEND_STATE))
--			continue;
--
- 		base = its->base;
- 
- 		/*
-@@ -5074,9 +5064,6 @@ static int __init its_probe_one(struct resource *res,
- 		ctlr |= GITS_CTLR_ImDe;
- 	writel_relaxed(ctlr, its->base + GITS_CTLR);
- 
--	if (GITS_TYPER_HCC(typer))
--		its->flags |= ITS_FLAGS_SAVE_SUSPEND_STATE;
--
- 	err = its_init_domain(handle, its);
- 	if (err)
- 		goto out_free_tables;
 -- 
-2.25.0
-
+Sincerely yours,
+Mike.
