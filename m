@@ -2,92 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CACC22AA205
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 02:30:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E4DC2AA20E
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 02:42:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728407AbgKGBaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 20:30:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47326 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727129AbgKGBaQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 20:30:16 -0500
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1E9F320720;
-        Sat,  7 Nov 2020 01:30:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604712615;
-        bh=5ja+hHDhLaw834klWxEIsEobJjKzEYlU1fK3r77mU5g=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=jZrN5F7/+Zu3GmPA5iLrAhldT/HnmmgsyZF2eKJZ9aZUKndfgBlXBzDVBKRlKB20J
-         gnoQgoeBoM9JlKv5BRD526px7a20WshtiPv/94Md18VkK2B5uF32W2PcQAXlnjhxJP
-         wyfF6u9yfTq52lPBu14DkQlLqPNi719Z1w4wjAJ4=
-Date:   Fri, 6 Nov 2020 17:30:14 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Hui Su <sh_def@163.com>
-Cc:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
-        shakeelb@google.com, guro@fb.com, laoar.shao@gmail.com,
-        chris@chrisdown.name, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH] mm/memcontrol:rewrite mem_cgroup_page_lruvec()
-Message-Id: <20201106173014.e13b5fe5edec41d1f7fdf072@linux-foundation.org>
-In-Reply-To: <20201104142516.GA106571@rlk>
-References: <20201104142516.GA106571@rlk>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1728391AbgKGBmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 20:42:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36610 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727368AbgKGBmm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 20:42:42 -0500
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63752C0613D2
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 17:42:42 -0800 (PST)
+Received: by mail-ej1-x644.google.com with SMTP id s25so4461173ejy.6
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 17:42:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AAhKBkCmEXM9Yi0i53SdXI+qBrNsxTbz7k8CU/bDcxE=;
+        b=Q5f2DNkIqXGoWxDYREtewdyEbZUybPhjCmtZWiOs07KT59R+F8HvZmDkmeiHpMIHZ7
+         q0TC1JEW66CpLHwoFY5rkjCg1Zfgx+gz2vWz+4vAHmprlCjrjguRm2rAAcmyavS+Dc6a
+         1hxpnTl0eFa/qeKJgQydyBmSXTnfC9S+GI8YrUVtEpiiavNEEgHiPzS1M3VOXANrRMQX
+         3ch02mlhVpzhVIb4A1C32dAt0fG2PF9mXxHaEcijBAkHvV0L/IhEnOVuHwYpkKB9id82
+         kQhyZveB+JXyoLJYMcRvhgmwKFLdQ4jpdDKervjjCZcjqGzUSC4NRyaXBW3oia07bw/Y
+         jYJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AAhKBkCmEXM9Yi0i53SdXI+qBrNsxTbz7k8CU/bDcxE=;
+        b=FTJujt5GiwX27bp1GpoPGeR82Pi6eaW6ba0XKGQELiyXq0gDIljrMigSXdwUoOuxZG
+         FKA30xrekwINEcdkVSYaame0IYdtNc++ZPEwSqJesVBU5SnaqZTtjWTM9B/tzfnlm9Kn
+         RgjhOZfHvOV7R4wm337MztdDqw1mxGuYOAOmFQmusx8NZFPuTk+H6gZr0l4DJnt4gHiV
+         7L+hyLvEl0Pg4EWQayLF4uOfeTIYsc8FsBb29akAz66SxWiifm2QRtar7Ftpdh/V6Hfq
+         lvFBV1AqVaIS9xQn7+mSCqwDWChBhscaEG1epUFZk7z5Opfd1tDdE+k6uxCqR4CT9bEq
+         MjiQ==
+X-Gm-Message-State: AOAM530+lC+qHs32Bpon7F/bZmwn8SOrxZ0t/H23UydJH4JNiLc00seX
+        VB8EhneafYFBk+ur41dua7N/n6h58mMmoUjhUtJBSg==
+X-Google-Smtp-Source: ABdhPJzEd/8ZnfumsYWdUvKYbtgyhZ6rEI5Gf3Kp1ROzCvGK7kQhLkgAhO25jWgDP1kq1OpwiV+3HUJrMEWDbkDVxaQ=
+X-Received: by 2002:a17:906:70cf:: with SMTP id g15mr4788410ejk.323.1604713360965;
+ Fri, 06 Nov 2020 17:42:40 -0800 (PST)
+MIME-Version: 1.0
+References: <20201103124351.GM2620339@nvidia.com> <MWHPR11MB164544C9CFCC3F162C1C6FC18CEF0@MWHPR11MB1645.namprd11.prod.outlook.com>
+ <20201104124017.GW2620339@nvidia.com> <MWHPR11MB1645862A8F7CF7FB8DD011778CEF0@MWHPR11MB1645.namprd11.prod.outlook.com>
+ <20201104135415.GX2620339@nvidia.com> <MWHPR11MB1645524BDEDF8899914F32AE8CED0@MWHPR11MB1645.namprd11.prod.outlook.com>
+ <20201106131415.GT2620339@nvidia.com> <20201106164850.GA85879@otc-nc-03>
+ <20201106175131.GW2620339@nvidia.com> <CAPcyv4iYHA1acfo=+fTk+U_TrLbSWJjA6v4oeTXgVYDTrnCoGw@mail.gmail.com>
+ <20201107001207.GA2620339@nvidia.com>
+In-Reply-To: <20201107001207.GA2620339@nvidia.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Fri, 6 Nov 2020 17:42:29 -0800
+Message-ID: <CAPcyv4hEYLVn_RmYjvfCaEtnvqrBAd0V9KgHmjQuBLy4GEw+_A@mail.gmail.com>
+Subject: Re: [PATCH v4 06/17] PCI: add SIOV and IMS capability detection
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     "Raj, Ashok" <ashok.raj@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        "vkoul@kernel.org" <vkoul@kernel.org>,
+        "Dey, Megha" <megha.dey@intel.com>,
+        "maz@kernel.org" <maz@kernel.org>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>, "Lu, Baolu" <baolu.lu@intel.com>,
+        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        "jing.lin@intel.com" <jing.lin@intel.com>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "netanelg@mellanox.com" <netanelg@mellanox.com>,
+        "shahafs@mellanox.com" <shahafs@mellanox.com>,
+        "yan.y.zhao@linux.intel.com" <yan.y.zhao@linux.intel.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "Ortiz, Samuel" <samuel.ortiz@intel.com>,
+        "Hossain, Mona" <mona.hossain@intel.com>,
+        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 4 Nov 2020 22:25:16 +0800 Hui Su <sh_def@163.com> wrote:
+On Fri, Nov 6, 2020 at 4:12 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
+>
+> On Fri, Nov 06, 2020 at 03:47:00PM -0800, Dan Williams wrote:
+[..]
+> The only sane way to implement this generically is for the VMM to
+> provide a hypercall to obtain a real *working* addr/data pair(s) and
+> then have the platform hand those out from
+> pci_subdevice_msi_create_irq_domain().
 
-> mem_cgroup_page_lruvec() in memcontrol.c and
-> mem_cgroup_lruvec() in memcontrol.h is very similar
-> except for the param(page and memcg) which also can be
-> convert to each other.
-> 
-> So rewrite mem_cgroup_page_lruvec() with mem_cgroup_lruvec().
-
-Alex Shi's "mm/memcg: warning on !memcg after readahead page charged"
-(https://lkml.kernel.org/r/1604283436-18880-3-git-send-email-alex.shi@linux.alibaba.com)
-changes mem_cgroup_page_lruvec() thusly:
-
---- a/mm/memcontrol.c~mm-memcg-warning-on-memcg-after-readahead-page-charged
-+++ a/mm/memcontrol.c
-@@ -1325,10 +1325,7 @@ struct lruvec *mem_cgroup_page_lruvec(st
- 	}
- 
- 	memcg = page_memcg(page);
--	/*
--	 * Swapcache readahead pages are added to the LRU - and
--	 * possibly migrated - before they are charged.
--	 */
-+	VM_WARN_ON_ONCE_PAGE(!memcg, page);
- 	if (!memcg)
- 		memcg = root_mem_cgroup;
- 
-So the patch didn't apply.
-
-That's easily fixed, but it does make one wonder whether this:
-
-> -struct lruvec *mem_cgroup_page_lruvec(struct page *, struct pglist_data *);
-> +/**
-> + * mem_cgroup_page_lruvec - return lruvec for isolating/putting an LRU page
-> + * @page: the page
-> + * @pgdat: pgdat of the page
-> + *
-> + * This function relies on page->mem_cgroup being stable.
-> + */
-> +static inline struct lruvec *mem_cgroup_page_lruvec(struct page *page,
-> +						struct pglist_data *pgdat)
-> +{
-> +	struct mem_cgroup *memcg = page->mem_cgroup;
-> +
-> +	return mem_cgroup_lruvec(memcg, pgdat);
-> +}
-
-Should be using page_memcg()?
-
+Yeah, that seems a logical attach point for this magic. Appreciate you
+taking the time to lay it out.
