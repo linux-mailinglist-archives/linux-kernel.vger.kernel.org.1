@@ -2,112 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F0C02AA4A2
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 12:27:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFDFC2AA4A8
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 12:30:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727647AbgKGL0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 06:26:55 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:28754 "EHLO pegase1.c-s.fr"
+        id S1727901AbgKGLad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 06:30:33 -0500
+Received: from z5.mailgun.us ([104.130.96.5]:47600 "EHLO z5.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726832AbgKGL0y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 06:26:54 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4CSw2L4kCPz9txhF;
-        Sat,  7 Nov 2020 12:26:50 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id Qmf8VUomACSP; Sat,  7 Nov 2020 12:26:50 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4CSw2L3pCVz9txQD;
-        Sat,  7 Nov 2020 12:26:50 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id CA2308B776;
-        Sat,  7 Nov 2020 12:26:51 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id IUi8-SgwCRJS; Sat,  7 Nov 2020 12:26:51 +0100 (CET)
-Received: from po17688vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 92B988B75B;
-        Sat,  7 Nov 2020 12:26:51 +0100 (CET)
-Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 516AA6686C; Sat,  7 Nov 2020 11:26:51 +0000 (UTC)
-Message-Id: <e8c055458b080707f1bc1a98ff8bea79d0cec445.1604748361.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH] panic: don't dump stack twice on warn
-To:     akpm@linux-foundation.org, aik@ozlabs.ru
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-mm@kvack.org
-Date:   Sat,  7 Nov 2020 11:26:51 +0000 (UTC)
+        id S1727264AbgKGLac (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Nov 2020 06:30:32 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1604748631; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=s5w8P52coHT1ckZPA5STiTXPDWdV+uMsoiOmwcLwmkU=;
+ b=EmpBnFMFUdp8C3wPJ4ZF12dl/UtxgU2iCZUQffKTW5pgePF+8BwMczzd2iwYawcxG+odoxGq
+ LuW7819JPZN+IlTCWNdViF355d4hpAjAlTStNEAB/oQ1WLNDoPnBXoRkldNqSUrLVoJkwxC6
+ JQfttFKZCkiHTEO9vlkMqzZ+g3s=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 5fa685519d6b206d944a6f7a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 07 Nov 2020 11:30:25
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C8327C433C8; Sat,  7 Nov 2020 11:30:25 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A4FBDC433C6;
+        Sat,  7 Nov 2020 11:30:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A4FBDC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH][next] ray_cs: Use fallthrough pseudo-keyword
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20201008220422.GA6926@embeddedor>
+References: <20201008220422.GA6926@embeddedor>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20201107113025.C8327C433C8@smtp.codeaurora.org>
+Date:   Sat,  7 Nov 2020 11:30:25 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Before commit 3f388f28639f ("panic: dump registers on panic_on_warn"),
-__warn() was calling show_regs() when regs was not NULL, and
-show_stack() otherwise.
+"Gustavo A. R. Silva" <gustavoars@kernel.org> wrote:
 
-After that commit, show_stack() is called regardless of whether
-show_regs() has been called or not, leading to duplicated Call Trace:
+> In order to enable -Wimplicit-fallthrough for Clang[1], replace the
+> existing /* fall through */ comments with the new pseudo-keyword
+> macro fallthrough[2].
+> 
+> [1] https://git.kernel.org/linus/e2079e93f562c7f7a030eb7642017ee5eabaaa10
+> [2] https://www.kernel.org/doc/html/v5.7/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
+> 
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-[    7.112617] ------------[ cut here ]------------
-[    7.117041] WARNING: CPU: 0 PID: 1 at arch/powerpc/mm/nohash/8xx.c:186 mmu_mark_initmem_nx+0x24/0x94
-[    7.126021] CPU: 0 PID: 1 Comm: swapper Not tainted 5.10.0-rc2-s3k-dev-01375-gf46ec0d3ecbd-dirty #4092
-[    7.135202] NIP:  c00128b4 LR: c0010228 CTR: 00000000
-[    7.140205] REGS: c9023e40 TRAP: 0700   Not tainted  (5.10.0-rc2-s3k-dev-01375-gf46ec0d3ecbd-dirty)
-[    7.149131] MSR:  00029032 <EE,ME,IR,DR,RI>  CR: 24000424  XER: 00000000
-[    7.155760]
-[    7.155760] GPR00: c0010228 c9023ef8 c2100000 0074c000 ffffffff 00000000 c2151000 c07b3880
-[    7.155760] GPR08: ff000900 0074c000 c8000000 c33b53a8 24000822 00000000 c0003a20 00000000
-[    7.155760] GPR16: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-[    7.155760] GPR24: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00800000
-[    7.191092] NIP [c00128b4] mmu_mark_initmem_nx+0x24/0x94
-[    7.196333] LR [c0010228] free_initmem+0x20/0x58
-[    7.200855] Call Trace:
-[    7.203319] [c9023f18] [c0010228] free_initmem+0x20/0x58
-[    7.208564] [c9023f28] [c0003a3c] kernel_init+0x1c/0x114
-[    7.213813] [c9023f38] [c000f184] ret_from_kernel_thread+0x14/0x1c
-[    7.219869] Instruction dump:
-[    7.222805] 7d291850 7d234b78 4e800020 9421ffe0 7c0802a6 bfc10018 3fe0c060 3bff0000
-[    7.230462] 3fff4080 3bffffff 90010024 57ff0010 <0fe00000> 392001cd 7c3e0b78 953e0008
-[    7.238327] CPU: 0 PID: 1 Comm: swapper Not tainted 5.10.0-rc2-s3k-dev-01375-gf46ec0d3ecbd-dirty #4092
-[    7.247500] Call Trace:
-[    7.249977] [c9023dc0] [c001e070] __warn+0x8c/0xd8 (unreliable)
-[    7.255815] [c9023de0] [c05e0e5c] report_bug+0x11c/0x154
-[    7.261085] [c9023e10] [c0009ea4] program_check_exception+0x1dc/0x6e0
-[    7.267430] [c9023e30] [c000f43c] ret_from_except_full+0x0/0x4
-[    7.273238] --- interrupt: 700 at mmu_mark_initmem_nx+0x24/0x94
-[    7.273238]     LR = free_initmem+0x20/0x58
-[    7.283155] [c9023ef8] [00000000] 0x0 (unreliable)
-[    7.287913] [c9023f18] [c0010228] free_initmem+0x20/0x58
-[    7.293160] [c9023f28] [c0003a3c] kernel_init+0x1c/0x114
-[    7.298410] [c9023f38] [c000f184] ret_from_kernel_thread+0x14/0x1c
-[    7.304479] ---[ end trace 31702cd2a9570752 ]---
+Patch applied to wireless-drivers-next.git, thanks.
 
-Only call show_stack() when regs is NULL.
+256ff2ef6c14 ray_cs: Use fallthrough pseudo-keyword
 
-Fixes: 3f388f28639f ("panic: dump registers on panic_on_warn")
-Cc: Alexey Kardashevskiy <aik@ozlabs.ru>
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- kernel/panic.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/panic.c b/kernel/panic.c
-index 396142ee43fd..332736a72a58 100644
---- a/kernel/panic.c
-+++ b/kernel/panic.c
-@@ -605,7 +605,8 @@ void __warn(const char *file, int line, void *caller, unsigned taint,
- 		panic("panic_on_warn set ...\n");
- 	}
- 
--	dump_stack();
-+	if (!regs)
-+		dump_stack();
- 
- 	print_irqtrace_events(current);
- 
 -- 
-2.25.0
+https://patchwork.kernel.org/project/linux-wireless/patch/20201008220422.GA6926@embeddedor/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
