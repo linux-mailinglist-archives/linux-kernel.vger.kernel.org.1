@@ -2,123 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14F8F2AA45A
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 11:08:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C5332AA456
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 11:06:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728376AbgKGKIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 05:08:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57988 "EHLO
+        id S1728164AbgKGKGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 05:06:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727954AbgKGKH7 (ORCPT
+        with ESMTP id S1728091AbgKGKGm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 05:07:59 -0500
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDF01C0613CF;
-        Sat,  7 Nov 2020 02:07:59 -0800 (PST)
-Received: by mail-pj1-x1044.google.com with SMTP id g21so677885pjv.2;
-        Sat, 07 Nov 2020 02:07:59 -0800 (PST)
+        Sat, 7 Nov 2020 05:06:42 -0500
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC759C0613D3
+        for <linux-kernel@vger.kernel.org>; Sat,  7 Nov 2020 02:06:40 -0800 (PST)
+Received: by mail-oi1-x244.google.com with SMTP id o25so3456057oie.5
+        for <linux-kernel@vger.kernel.org>; Sat, 07 Nov 2020 02:06:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=nmFU5sed5ZyqmQs5C3BIA0ekbw6XYoQtkasRnTVWhAc=;
-        b=nKd1/BotcNl4LgAUt5dzbxSSovCcNp9oJ9Bwg9GepNPCpV3st+P/K318NHiI9oURBh
-         OCgSQsohQzyOC8e/yeY/IpkyqpOIAU8s/8mlaj0qcDEBtUiLzpYdioV41tHLQS9e0ME7
-         IREwHP7yMMmRM+ebSKI39doYpOwUXX5cDH+UyS/yNnnJRVq4Ix4k2b2TZLYq/3UQMx5H
-         dtWaixk+3UtK8p3ifQTSYo/ktKtv5tHgG+VQPpQ/d0YOcziE7enrXb/NkyIQkpBdPkpu
-         WO4OA12x44tffbCGkDnv6mMyMb9cqQw6DyqhRJwrcKJkPgYkWY9djgZUKDDYlb1p+MYf
-         8zhQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TErsauc9tpAzI6S5cYpbCRvl4twcQzw2HKSJ2d2Z+Qg=;
+        b=cFZKFASwAfugNcZhz/FuAFmwgIJgslvWVTlXGObXW4GVaiNx5l+4SITTnhwIes3oiJ
+         reYnqBcoLt6G3wNTxTLRdKwgOg7Ns7cE5FqN5L4rV7tMFTjEp2540lKCJlUvc52aoVKR
+         0YjZ0+zMCT0aW++pNadjtwASHdwbGcnxya4d7uBY6bTaj1NGc6B9kOGdHCcbOMUKZvXf
+         bJd1gYeIAayqwjDTVfshWKIZxHJX7MEwCH3td/atGMHmO6tHjcBdloKYwzPy6HyHIlWy
+         +nIGIc8yTT0VDKRsKtvKA7fit+ZKdqNJdSHlD/fEWKCd9D7kRQN5jIMqPlF0YA+MdZGz
+         t+Ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nmFU5sed5ZyqmQs5C3BIA0ekbw6XYoQtkasRnTVWhAc=;
-        b=awD7hy274Rx2GQ2gNSHcKDiHFCaeDiLQhB0FIrsB77n41zmnPeCUoY9eYifMD6WwIT
-         80raj5TWy/w1v5Yv0gMLDG4NsfiflW4HMu7myd5Dl3xLbkzK/HMlXzqA8fcYLCmnCt3e
-         QpeVAUpVUTLjFqMwt5EA2FCKZ5HfaQFJlZidG3nZ72NQc2+u2Mzz3Q265CSk8RXDPI8w
-         k70wfWRXSX9uH0tGjka6C8xxVQQ5tnh+lkdI5Lx3wJCq2ycsxYe0Ea1GpwAlxm6hrgFs
-         +O8tRbiVDWILrC8h0yPf0PRQidRrLDEl6uFk4Hcoh0IuGhUJMyzMfMNrQc/QjO/OWIPA
-         N29g==
-X-Gm-Message-State: AOAM531DbaNNS/IPkUxMAvMRve9Dcaps9GW3VdUTy47UR1lr+jUKtsxB
-        alj7vyNSltI/wdy8JlkOirQ=
-X-Google-Smtp-Source: ABdhPJyMuIWjxP7RQ0FbSXLlnNlqyFv7zFZUZcrrBPSFG1WOpvmrPvwwIfQUTo5IrCiiQL/Rpm9gog==
-X-Received: by 2002:a17:90a:8802:: with SMTP id s2mr3635761pjn.149.1604743679303;
-        Sat, 07 Nov 2020 02:07:59 -0800 (PST)
-Received: from gmail.com ([223.179.149.110])
-        by smtp.gmail.com with ESMTPSA id h3sm4837559pfo.170.2020.11.07.02.07.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 07 Nov 2020 02:07:58 -0800 (PST)
-Date:   Sat, 7 Nov 2020 15:35:31 +0530
-From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
-To:     Artur Paszkiewicz <artur.paszkiewicz@intel.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     Intel SCU Linux support <intel-linux-scu@intel.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] scsi: isci: Don't use PCI helper functions
-Message-ID: <20201107100531.GA149641@gmail.com>
-References: <20201107100420.149521-1-vaibhavgupta40@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TErsauc9tpAzI6S5cYpbCRvl4twcQzw2HKSJ2d2Z+Qg=;
+        b=cLVuwsxkmCjdkxvps36QBvj0mh5AjGH/x2AYC2re5hUaJ7QmBRnGj7fRaECpIU9v7b
+         iPvqKzvQgUYlD5NQPyAtbFic0wF9qDDXU2nS+zO5dhm0ARCPRCC+YQnjOOvV3G8oivw9
+         h6xx1DVPECykr4ozGPVzYl6h2a2YMILVPgrPhN7UW4C9Sf/ti10H26C3a+OpF7iHRSFJ
+         r6v5AhbgoU8y1/+raTjOdHTt2s9FBFYMeuIfjClwFf9cy1FEgt9BEMvz4vP8MGE97x6G
+         ZFiukw9gSvsMWCqD04DeRO/hwZjspM8JArtn6gUswlB3M+Gmr8Rd/miLZv1vccDE/QgO
+         dnvw==
+X-Gm-Message-State: AOAM530SdqZ5RZhS6gXasONHQI8rKpEjUnbEOCpf9ndPdSeXSkTqCKz5
+        NqQuTBv9zGOZqlhGPGHU0tTMn77yE0RkMZe5zBw66Q==
+X-Google-Smtp-Source: ABdhPJxb+xfOZ9jVhfWoVlbABCI67vL5rewh1ARjZCLWNyu463apeEQlWxjA1SZroi07HqVGkXthuRthzuku33QQCxw=
+X-Received: by 2002:aca:6206:: with SMTP id w6mr3818129oib.121.1604743599913;
+ Sat, 07 Nov 2020 02:06:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201107100420.149521-1-vaibhavgupta40@gmail.com>
+References: <20201106192154.51514-1-98.arpi@gmail.com> <CABVgOSkQ6+y7OGw2494cJa2b60EkSjncLNAgc9cJDbS=X9J3WA@mail.gmail.com>
+In-Reply-To: <CABVgOSkQ6+y7OGw2494cJa2b60EkSjncLNAgc9cJDbS=X9J3WA@mail.gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Sat, 7 Nov 2020 11:06:28 +0100
+Message-ID: <CANpmjNNp2RUCE_ypp2R4MznikTYRYeCDuF7VMp+Hbh=55KWa3A@mail.gmail.com>
+Subject: Re: [PATCH v6 1/2] kunit: Support for Parameterized Testing
+To:     David Gow <davidgow@google.com>
+Cc:     Arpitha Raghunandan <98.arpi@gmail.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-ext4@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 07, 2020 at 03:34:19PM +0530, Vaibhav Gupta wrote:
-> PCI helper functions such as pci_enable/disable_device(),
-> pci_save/restore_state(), pci_set_power_state(), etc. were used by the
-> legacy framework to perform standard operations related to PCI PM.
-> 
-> This driver is using the generic framework and thus calls for those
-> functions should be dropped as those tasks are now performed by the PCI
-> core.
-> 
-> Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
-> ---
->  drivers/scsi/isci/init.c | 18 +-----------------
->  1 file changed, 1 insertion(+), 17 deletions(-)
-> 
-> diff --git a/drivers/scsi/isci/init.c b/drivers/scsi/isci/init.c
-> index 93bc9019667f..c452849e7bb4 100644
-> --- a/drivers/scsi/isci/init.c
-> +++ b/drivers/scsi/isci/init.c
-> @@ -715,10 +715,6 @@ static int isci_suspend(struct device *dev)
->  		isci_host_deinit(ihost);
->  	}
->  
-> -	pci_save_state(pdev);
-> -	pci_disable_device(pdev);
-> -	pci_set_power_state(pdev, PCI_D3hot);
-> -
->  	return 0;
->  }
->  
-> @@ -726,19 +722,7 @@ static int isci_resume(struct device *dev)
->  {
->  	struct pci_dev *pdev = to_pci_dev(dev);
->  	struct isci_host *ihost;
-> -	int rc, i;
-> -
-> -	pci_set_power_state(pdev, PCI_D0);
-> -	pci_restore_state(pdev);
-> -
-> -	rc = pcim_enable_device(pdev);
-> -	if (rc) {
-> -		dev_err(&pdev->dev,
-> -			"enabling device failure after resume(%d)\n", rc);
-> -		return rc;
-> -	}
-> -
-> -	pci_set_master(pdev);
-> +	int i;
->  
->  	for_each_isci_host(i, ihost, pdev) {
->  		sas_prep_resume_ha(&ihost->sas_ha);
-> -- 
-> 2.28.0
-> 
-The patch is compile-tested only.
+On Sat, 7 Nov 2020 at 05:58, David Gow <davidgow@google.com> wrote:
+> On Sat, Nov 7, 2020 at 3:22 AM Arpitha Raghunandan <98.arpi@gmail.com> wrote:
+> >
+> > Implementation of support for parameterized testing in KUnit.
+> > This approach requires the creation of a test case using the
+> > KUNIT_CASE_PARAM macro that accepts a generator function as input.
+> > This generator function should return the next parameter given the
+> > previous parameter in parameterized tests. It also provides
+> > a macro to generate common-case generators.
+> >
+> > Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
+> > Co-developed-by: Marco Elver <elver@google.com>
+> > Signed-off-by: Marco Elver <elver@google.com>
+> > ---
+>
+> This looks good to me! A couple of minor thoughts about the output
+> format below, but I'm quite happy to have this as-is regardless.
+>
+> Reviewed-by: David Gow <davidgow@google.com>
+>
+> Cheers,
+> -- David
+>
+> > Changes v5->v6:
+> > - Fix alignment to maintain consistency
+> > Changes v4->v5:
+> > - Update kernel-doc comments.
+> > - Use const void* for generator return and prev value types.
+> > - Add kernel-doc comment for KUNIT_ARRAY_PARAM.
+> > - Rework parameterized test case execution strategy: each parameter is executed
+> >   as if it was its own test case, with its own test initialization and cleanup
+> >   (init and exit are called, etc.). However, we cannot add new test cases per TAP
+> >   protocol once we have already started execution. Instead, log the result of
+> >   each parameter run as a diagnostic comment.
+> > Changes v3->v4:
+> > - Rename kunit variables
+> > - Rename generator function helper macro
+> > - Add documentation for generator approach
+> > - Display test case name in case of failure along with param index
+> > Changes v2->v3:
+> > - Modifictaion of generator macro and method
+> > Changes v1->v2:
+> > - Use of a generator method to access test case parameters
+> >
+> >  include/kunit/test.h | 36 ++++++++++++++++++++++++++++++++++
+> >  lib/kunit/test.c     | 46 +++++++++++++++++++++++++++++++-------------
+> >  2 files changed, 69 insertions(+), 13 deletions(-)
+> >
+> > diff --git a/include/kunit/test.h b/include/kunit/test.h
+> > index db1b0ae666c4..16616d3974f9 100644
+> > --- a/include/kunit/test.h
+> > +++ b/include/kunit/test.h
+> > @@ -107,6 +107,7 @@ struct kunit;
+[...]
+> > -       kunit_suite_for_each_test_case(suite, test_case)
+> > -               kunit_run_case_catch_errors(suite, test_case);
+> > +       kunit_suite_for_each_test_case(suite, test_case) {
+> > +               struct kunit test = { .param_value = NULL, .param_index = 0 };
+> > +               bool test_success = true;
+> > +
+> > +               if (test_case->generate_params)
+> > +                       test.param_value = test_case->generate_params(NULL);
+> > +
+> > +               do {
+> > +                       kunit_run_case_catch_errors(suite, test_case, &test);
+> > +                       test_success &= test_case->success;
+> > +
+> > +                       if (test_case->generate_params) {
+> > +                               kunit_log(KERN_INFO, &test,
+> > +                                         KUNIT_SUBTEST_INDENT
+> > +                                         "# %s: param-%d %s",
+>
+> Would it make sense to have this imitate the TAP format a bit more?
+> So, have "# [ok|not ok] - [name]" as the format? [name] could be
+> something like "[test_case->name]:param-[index]" or similar.
+> If we keep it commented out and don't indent it further, it won't
+> formally be a nested test (though if we wanted to support those later,
+> it'd be easy to add), but I think it would be nicer to be consistent
+> here.
 
---Vaibhav
+The previous attempt [1] at something similar failed because it seems
+we'd need to teach kunit-tool new tricks [2], too.
+[1] https://lkml.kernel.org/r/20201105195503.GA2399621@elver.google.com
+[2] https://lkml.kernel.org/r/20201106123433.GA3563235@elver.google.com
+
+So if we go with a different format, we might need a patch before this
+one to make kunit-tool compatible with that type of diagnostic.
+
+Currently I think we have the following proposals for a format:
+
+1. The current "# [test_case->name]: param-[index] [ok|not ok]" --
+this works well, because no changes to kunit-tool are required, and it
+also picks up the diagnostic context for the case and displays that on
+test failure.
+
+2. Your proposed "# [ok|not ok] - [test_case->name]:param-[index]".
+As-is, this needs a patch for kunit-tool as well. I just checked, and
+if we change it to "# [ok|not ok] - [test_case->name]: param-[index]"
+(note the space after ':') it works without changing kunit-tool. ;-)
+
+3. Something like "# [ok|not ok] param-[index] - [test_case->name]",
+which I had played with earlier but kunit-tool is definitely not yet
+happy with.
+
+So my current preference is (2) with the extra space (no change to
+kunit-tool required). WDYT?
+
+> My other suggestion -- albeit one outside the scope of this initial
+> version -- would be to allow the "param-%d" name to be overridden
+> somehow by a test. For example, the ext4 inode test has names for all
+> its test cases: it'd be nice to be able to display those instead (even
+> if they're not formatted as identifiers as-is).
+
+Right, I was thinking about this, but it'd need a way to optionally
+pass another function that converts const void* params to readable
+strings. But as you say, we should do that as a follow-up patch later
+because it might require a few more iterations.
+
+[...]
+
+Thanks,
+-- Marco
