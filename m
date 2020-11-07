@@ -2,101 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95C202AA3D9
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 09:24:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C7A22AA3D2
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 09:22:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728354AbgKGIYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 03:24:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41890 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728153AbgKGIYk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 03:24:40 -0500
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D10EC0613CF;
-        Sat,  7 Nov 2020 00:24:40 -0800 (PST)
-Received: by mail-pl1-x641.google.com with SMTP id f21so2072546plr.5;
-        Sat, 07 Nov 2020 00:24:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1Bb5uWc74fawDMZfeCSpyHhLS7HqeMoYkfZSH2OoOj4=;
-        b=V7uIudelQ4Zt0bkBfqPU3O0QuZUecvP+x7OOxZ1qrLwfWP+tCH4KoTk2fU6RynBH2t
-         7G2XXnVsOiRLNNOuFuDnA9tzNnYuUjKLdeyrhFBMK981nYYDfzLgzHqQ0e5DOZYXxGDW
-         2xo8J00Kz/UwBXXvrUcH5kcsQZrP6IxjXHJMXp0Khn68kdVmfOVs4Du/e/yBqSTX+mYR
-         MAK0oymu8HHyRjvHlwJTUPJKl72t1hZ7LC5B68wKfKTT+168wbGX5yun5sqoCucmnAMi
-         EZLHC8r16E6Vp8JYVHxs7AVHm5fS/luhjoElpCEKgInBeoNbUstsSdHHBWgICTGA0Ygm
-         MkPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1Bb5uWc74fawDMZfeCSpyHhLS7HqeMoYkfZSH2OoOj4=;
-        b=bv7Xk6DzBRjrkwI2bWzMTGs/KFAJyBPUAX5q0Gv1ePi5HZ4SwtcND1I6wSJXQEAdSY
-         ravFFhFbjPCQuUpIf5F/AOXf4QawAStUVVB9F+gBGgM5wlxJrefl2ndXdgzh6dPprlN8
-         uAoQX7RfSBerkFVNkTXP7c4LwV4ssxu5BQ1RzdRcscc+4+hfP8ae203adDjlqRQm9lom
-         OABA7HBDFUJ2706QYb/WlJ6t9Y2uWu+TCN0Xv29z6VdVRLVd8W6sJiT31Mor/c+K2jRJ
-         CGXe0dkKNHbX5A1P0/9eyqtPvRjz9Kv6WiRGAy/Zm9qgJoQu/NqtuQOCPbVzttrNrBZX
-         vxEA==
-X-Gm-Message-State: AOAM532eAV8mPpB2MzQrzF6qW4UHggUn3klBPPlDLVQvkH+XVN0mQqSc
-        YUyFXuIg5Hl8lPVFo5171o8=
-X-Google-Smtp-Source: ABdhPJx0d669hhtwHw24saahA7jiUTLKxRA8+MATUW5fT3FdIkG9XEVhB6Imb9XCMDNFb7o/dR9PVg==
-X-Received: by 2002:a17:90a:9dcb:: with SMTP id x11mr3354550pjv.132.1604737480069;
-        Sat, 07 Nov 2020 00:24:40 -0800 (PST)
-Received: from varodek.localdomain ([223.179.149.110])
-        by smtp.gmail.com with ESMTPSA id r12sm4577967pfh.213.2020.11.07.00.24.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 07 Nov 2020 00:24:39 -0800 (PST)
-From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
-To:     Ajay Gupta <ajayg@nvidia.com>
-Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>
-Subject: [PATCH v1] i2c: nvidia-gpu: drop empty stub for runtime pm
-Date:   Sat,  7 Nov 2020 13:51:51 +0530
-Message-Id: <20201107082151.58239-1-vaibhavgupta40@gmail.com>
-X-Mailer: git-send-email 2.28.0
+        id S1728296AbgKGIWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 03:22:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46732 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727833AbgKGIWK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Nov 2020 03:22:10 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9DC50208E4;
+        Sat,  7 Nov 2020 08:22:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604737330;
+        bh=CkbprsLnaQeBBm6DUnL6INt3t6GokDjSX4nOC4dcFLA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WNID+V9NRHfr44zwSVrr+mO/v5e+giuAfKqMgQ/LtJSX3R/HDPlgV6lqW8xG5Hbe2
+         28fVsWz4pfUvCdHpSVFM7cbEzEkPFOnjwsv/biK2xEIzpdK4mpMrmOyYoPc1yUmi2v
+         3hq9EAcqvxDhv2Pw+IcNpc5iR2589AlzUhvL6gl8=
+Date:   Sat, 7 Nov 2020 09:22:06 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     syzbot <syzbot+92340f7b2b4789907fdb@syzkaller.appspotmail.com>,
+        andreyknvl@google.com, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, rafael@kernel.org,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: WARNING in input_register_device
+Message-ID: <20201107082206.GA19079@kroah.com>
+References: <000000000000872b5405b36f8e31@google.com>
+ <20201106140336.GA3319902@kroah.com>
+ <20201106170314.GA845@sol.localdomain>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201106170314.GA845@sol.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After the commit c5eb1190074c ("PCI / PM: Allow runtime PM without callback
-functions") we no more need empty stubs for runtime-pm to work.
+On Fri, Nov 06, 2020 at 09:03:14AM -0800, Eric Biggers wrote:
+> On Fri, Nov 06, 2020 at 03:03:36PM +0100, Greg KH wrote:
+> > On Fri, Nov 06, 2020 at 04:43:17AM -0800, syzbot wrote:
+> > > Hello,
+> > > 
+> > > syzbot found the following issue on:
+> > > 
+> > > HEAD commit:    9e39aef3 usb: misc: brcmstb-usb-pinmap: Make sync_all_pins..
+> > > git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
+> > > console output: https://syzkaller.appspot.com/x/log.txt?x=145ffa8a500000
+> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=a05f5efbb00b1465
+> > > dashboard link: https://syzkaller.appspot.com/bug?extid=92340f7b2b4789907fdb
+> > > compiler:       gcc (GCC) 10.1.0-syz 20200507
+> > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=172ae7a8500000
+> > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13b24746500000
+> > > 
+> > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > > Reported-by: syzbot+92340f7b2b4789907fdb@syzkaller.appspotmail.com
+> > > 
+> > > microsoft 0003:045E:07DA.0001: unknown main item tag 0x0
+> > > HID 045e:07da: Invalid code 65791 type 1
+> > > ------------[ cut here ]------------
+> > > init_uevent_argv: buffer size too small
+> > > WARNING: CPU: 0 PID: 5 at lib/kobject_uevent.c:259 init_uevent_argv lib/kobject_uevent.c:259 [inline]
+> > > WARNING: CPU: 0 PID: 5 at lib/kobject_uevent.c:259 kobject_uevent_env+0x1640/0x1680 lib/kobject_uevent.c:608
+> > 
+> > You gave it a device with a buffer that was "too small", and it rejected
+> > it.
+> > 
+> > Which, aside from the huge warning message, is to be expected, so I
+> > don't think this is really a bug here.
+> > 
+> 
+> The purpose of WARN is for reporting recoverable kernel bugs.  So a reachable
+> WARN is a bug.  Either it is reporting one, or the bug is that the use of WARN
+> is wrong.
 
-The driver has no device specific task(s) for .suspend() . The stub was
-placed just for runtime-pm, which can be dropped now.
+In the past, as you know, we have thought that hardware issues like this
+are a "recoverable bug but someone better do something about it".  Now
+that we can fake hardware devices so easily, it's probably better to
+just knock this down to a dev_warn() and keep on moving.
 
-Reported-by: Bjorn Helgaas <bhelgaas@google.com>
-Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
----
- drivers/i2c/busses/i2c-nvidia-gpu.c | 10 +---------
- 1 file changed, 1 insertion(+), 9 deletions(-)
+If I get a chance, I'll write up a patch today, but anyone else should
+feel free to also do it.
 
-diff --git a/drivers/i2c/busses/i2c-nvidia-gpu.c b/drivers/i2c/busses/i2c-nvidia-gpu.c
-index f9a69b109e5c..6b20601ffb13 100644
---- a/drivers/i2c/busses/i2c-nvidia-gpu.c
-+++ b/drivers/i2c/busses/i2c-nvidia-gpu.c
-@@ -353,15 +353,7 @@ static void gpu_i2c_remove(struct pci_dev *pdev)
- 	pci_free_irq_vectors(pdev);
- }
- 
--/*
-- * We need gpu_i2c_suspend() even if it is stub, for runtime pm to work
-- * correctly. Without it, lspci shows runtime pm status as "D0" for the card.
-- * Documentation/power/pci.rst also insists for driver to provide this.
-- */
--static __maybe_unused int gpu_i2c_suspend(struct device *dev)
--{
--	return 0;
--}
-+#define gpu_i2c_suspend NULL
- 
- static __maybe_unused int gpu_i2c_resume(struct device *dev)
- {
--- 
-2.28.0
+thanks,
 
+greg k-h
