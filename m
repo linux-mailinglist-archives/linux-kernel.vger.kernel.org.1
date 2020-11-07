@@ -2,73 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DA732AA454
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 11:03:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF0322AA458
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 11:07:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728054AbgKGKDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 05:03:23 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:59546 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727890AbgKGKDW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 05:03:22 -0500
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx79PgcKZfrT0IAA--.19813S2;
-        Sat, 07 Nov 2020 18:03:13 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>
-Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: [PATCH] dma-pool: no need to check return value of debugfs_create functions
-Date:   Sat,  7 Nov 2020 18:03:12 +0800
-Message-Id: <1604743392-21601-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9Dx79PgcKZfrT0IAA--.19813S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrtryfZr17Ar1DGFWrur13XFb_yoWfWrb_K3
-        4Iq348KwsI9a42qayxCrWfXFZ2g398KF4093Z3XrW5Kan8GFZ8Jr4xZ395Wrnxu34ktFWY
-        9a4DJFZrJr1fujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb48FF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Jr0_
-        Gr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVWxJr
-        0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r4D
-        MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr
-        0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0E
-        wIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJV
-        W8JwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1l
-        IxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUjhL0UUUUU
-        U==
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S1728360AbgKGKHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 05:07:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57852 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727955AbgKGKHF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Nov 2020 05:07:05 -0500
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93F9CC0613CF;
+        Sat,  7 Nov 2020 02:07:05 -0800 (PST)
+Received: by mail-pj1-x1042.google.com with SMTP id f12so675249pjp.4;
+        Sat, 07 Nov 2020 02:07:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2nngrMqY6iiNibM4oEPro2US0D5hhIIlMBxKix2qS2w=;
+        b=gZRIvOi0dyQvf8miWJW4zOCoxmpyapYFc7h4bxsfvlKWbCYJ1yxH1B/p0BgxETdA7m
+         gfhL1Z/DUglTaq8VPPSI3VYXTEGbmu+habRoZDZ6rvfsgI+qMUOuRw6Bnlr2EBOwD8wE
+         0F+lqVuNyGu63YR0VP1tf3LYmXcSZENuP68WDCZK4sn4HDAnZbq7X8+17rkprhND92hu
+         FnqO5ZdHRk4JDCr8foesU8UUA+j/JHijdo856ZWRgd9kdgKz0LAZnqs2DjXcgy6sn9qo
+         zwauR81uAddS8Z/Io5/Ww3KRqXCkXlIWVUtA+3LkVRGOEXGSF9lq/2qAGesNTn2UhoP0
+         1EUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2nngrMqY6iiNibM4oEPro2US0D5hhIIlMBxKix2qS2w=;
+        b=D+ebLb0XC0YsqRQzcRXFeIu+KJcNa2FGtMOGQQBL6bUwStzYMNN+8bYbTD/GTSqF2A
+         VPtVb3hmwz9BxT/O5nLGC/kVTm+oIn/jljnvYH82tVf0cCD5AUMyW4lOnAoagr5TdsIY
+         1Ajvs25nduAlE08/jjUcvOZcPswOK5ygkGttSooyCfr0vHX1Bil84VW+nJ/rlycn3phl
+         Fc8RtxWp2ARqJELDDPMe/N9H6qLAWD2L9Ah8pmjsRkupOggezm9F7sFm3VglqdgZuT7b
+         sJOEUvPRRz+8Pf9RKrp3HPKm0nEnDawzFFqwykTnHdOtg6jZF58MVCSkmVtG0PoKma+M
+         JkeA==
+X-Gm-Message-State: AOAM530c97f+ivnKYs15QXJV4CtydSejg03Y1VCHG4DkB6oyT0/33NdG
+        MXKhtEeicWLe+AS6Wol2pZs=
+X-Google-Smtp-Source: ABdhPJz5hXWks237/ce0lNPlv4Qx5Mw1Av0tgs9uuwprW13RplxSVj3H/XziAlJEcPXtUw1biAA8Gg==
+X-Received: by 2002:a17:90a:6392:: with SMTP id f18mr3699380pjj.143.1604743625096;
+        Sat, 07 Nov 2020 02:07:05 -0800 (PST)
+Received: from varodek.localdomain ([223.179.149.110])
+        by smtp.gmail.com with ESMTPSA id h16sm5163140pjz.10.2020.11.07.02.07.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 07 Nov 2020 02:07:04 -0800 (PST)
+From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
+To:     Artur Paszkiewicz <artur.paszkiewicz@intel.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
+        Intel SCU Linux support <intel-linux-scu@intel.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v1] scsi: isci: Don't use PCI helper functions
+Date:   Sat,  7 Nov 2020 15:34:19 +0530
+Message-Id: <20201107100420.149521-1-vaibhavgupta40@gmail.com>
+X-Mailer: git-send-email 2.28.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When calling debugfs functions, there is no need to ever check the
-return value.  The function can work or not, but the code logic should
-never do something different based on this.
+PCI helper functions such as pci_enable/disable_device(),
+pci_save/restore_state(), pci_set_power_state(), etc. were used by the
+legacy framework to perform standard operations related to PCI PM.
 
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+This driver is using the generic framework and thus calls for those
+functions should be dropped as those tasks are now performed by the PCI
+core.
+
+Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
 ---
- kernel/dma/pool.c | 3 ---
- 1 file changed, 3 deletions(-)
+ drivers/scsi/isci/init.c | 18 +-----------------
+ 1 file changed, 1 insertion(+), 17 deletions(-)
 
-diff --git a/kernel/dma/pool.c b/kernel/dma/pool.c
-index d4637f7..5f84e6c 100644
---- a/kernel/dma/pool.c
-+++ b/kernel/dma/pool.c
-@@ -38,9 +38,6 @@ static void __init dma_atomic_pool_debugfs_init(void)
- 	struct dentry *root;
+diff --git a/drivers/scsi/isci/init.c b/drivers/scsi/isci/init.c
+index 93bc9019667f..c452849e7bb4 100644
+--- a/drivers/scsi/isci/init.c
++++ b/drivers/scsi/isci/init.c
+@@ -715,10 +715,6 @@ static int isci_suspend(struct device *dev)
+ 		isci_host_deinit(ihost);
+ 	}
  
- 	root = debugfs_create_dir("dma_pools", NULL);
--	if (IS_ERR_OR_NULL(root))
--		return;
+-	pci_save_state(pdev);
+-	pci_disable_device(pdev);
+-	pci_set_power_state(pdev, PCI_D3hot);
 -
- 	debugfs_create_ulong("pool_size_dma", 0400, root, &pool_size_dma);
- 	debugfs_create_ulong("pool_size_dma32", 0400, root, &pool_size_dma32);
- 	debugfs_create_ulong("pool_size_kernel", 0400, root, &pool_size_kernel);
+ 	return 0;
+ }
+ 
+@@ -726,19 +722,7 @@ static int isci_resume(struct device *dev)
+ {
+ 	struct pci_dev *pdev = to_pci_dev(dev);
+ 	struct isci_host *ihost;
+-	int rc, i;
+-
+-	pci_set_power_state(pdev, PCI_D0);
+-	pci_restore_state(pdev);
+-
+-	rc = pcim_enable_device(pdev);
+-	if (rc) {
+-		dev_err(&pdev->dev,
+-			"enabling device failure after resume(%d)\n", rc);
+-		return rc;
+-	}
+-
+-	pci_set_master(pdev);
++	int i;
+ 
+ 	for_each_isci_host(i, ihost, pdev) {
+ 		sas_prep_resume_ha(&ihost->sas_ha);
 -- 
-2.1.0
+2.28.0
 
