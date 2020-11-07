@@ -2,176 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC6422AA1F8
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 02:17:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC1662AA201
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 02:28:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728446AbgKGBR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 20:17:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726880AbgKGBR2 (ORCPT
+        id S1728374AbgKGB2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 20:28:05 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:52126 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727129AbgKGB2F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 20:17:28 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65498C0613CF;
-        Fri,  6 Nov 2020 17:17:28 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id 33so3084139wrl.7;
-        Fri, 06 Nov 2020 17:17:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:references:from:autocrypt:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=5MYpUKwDwx4KPKOUEurAt6pQF/9di1n9Uzo4SUu5TYo=;
-        b=hE81he98WRjj9Xt7Zrbueyf8QyBD44XS9MmFt5hX2mKsiL19yWyr/WLIe8h8zaJVJ+
-         shl26K1/S5t8iOaC99DCB6Tl6icdO3B7cuyB7KzrCsn5+RICb45kSm07mJuCf+FOPZ+z
-         he0qCABBp48j86EHgTgwgxaqJjZJJnm4HzR+cGTWtfdTrlG8w5HgbF0yjYN3xNabTGtH
-         fJWO6YjIJwP7002Wrw+4q1oJcFUSBjf/1dbs3gzitMavq1Y747n+K7BAK668uMzozfBd
-         Tz3WV5x07uh1Xbo/LVmaCATP3ENNqWk27+4YAXa7fOSfflC12auFJgNlrmMgZqpvUQpU
-         IjhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:references:from:autocrypt:subject:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=5MYpUKwDwx4KPKOUEurAt6pQF/9di1n9Uzo4SUu5TYo=;
-        b=j0Pej09vhbByrMSS08jyy0mL8K2auLfM6EGiP63mm5VlfHxjh4ulco2S467vAVGlxF
-         SSANgI1IAuJ7lEOTEBU9firx5ePIulPDwMFOubm2AQmAM5UySwU6f0put0XPyrPzLua9
-         2Iv5gF+hOXMBKjuyqsRK7bDXvCQgKfBenZVkha9h5h+xkb2NBECi/DQquTUmvBgnOn+D
-         ubogk5xssRmV4hdDzTm6eSJh5IkEE7oP5RjcFxgpAFsOdu/Kg6YsMxknI6IlnRH2mM6I
-         fWClXsydj71jivPeerDxWPG/QSy9uMv8ygZAEuL/EzdhVWrPqz2vwKbsDzz+FCylmUFN
-         K48g==
-X-Gm-Message-State: AOAM531qjPjKONXO5AP6t1EQ9bukVHYitLVzuhtxIy1p5nXFpMUPI6pu
-        B8HRUleGuYYj6ddMBSAYq1ksPIm96KGJsQ==
-X-Google-Smtp-Source: ABdhPJypIeUhdbopDn4L/cZqGuJOI7b/ySGRUyehGt45XvuDN7byvlUfElfLTTeswt38QSsatUTv5A==
-X-Received: by 2002:adf:ea8f:: with SMTP id s15mr3229175wrm.179.1604711846817;
-        Fri, 06 Nov 2020 17:17:26 -0800 (PST)
-Received: from [192.168.1.139] (host109-152-100-228.range109-152.btcentralplus.com. [109.152.100.228])
-        by smtp.gmail.com with ESMTPSA id k18sm4537168wrx.96.2020.11.06.17.17.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Nov 2020 17:17:25 -0800 (PST)
-To:     David Laight <David.Laight@ACULAB.COM>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-References: <0dc67994b6b2478caa3d96a9e24d2bfb@AcuMS.aculab.com>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
- 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 bA==
-Subject: Re: [PATCH 4/9 next] fs/io_uring Don't use the return value from
- import_iovec().
-Message-ID: <f95120c1-6f17-24a8-0cf4-666417a5c6c5@gmail.com>
-Date:   Sat, 7 Nov 2020 01:14:24 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
-MIME-Version: 1.0
-In-Reply-To: <0dc67994b6b2478caa3d96a9e24d2bfb@AcuMS.aculab.com>
-Content-Type: text/plain; charset=utf-8
+        Fri, 6 Nov 2020 20:28:05 -0500
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A71OpJp013186;
+        Fri, 6 Nov 2020 17:27:47 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=L6n60Z8KNtShaBheCby6fZXpeFCLJadFXQiTXK2pf/U=;
+ b=oZFBxljRNFSs6UKBxf+hvkqqsnVBj+QjoZSDQLwoC8kmzjqz7wLxnNw58C3wGcb/nmZU
+ LXxs2pbSQM0e0R5r8bfY54lD0VID8n0JTamqK4UB/FM3gMx8Z26oEKamo2vx/d7qkAtX
+ 7nhHBqHRZoY0IGqAz38Oo69NWRz+xiTmpC4= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 34mr9bfeh3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 06 Nov 2020 17:27:47 -0800
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.175) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Fri, 6 Nov 2020 17:27:45 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=i6Cb7MAQbeuRWR3FSiWBEdpAeuSEqWAdhZNU3ZkliUruNv7x3lrpZCavNDkwXpl5tfcyrELJsB1amgQSPv++uxeaH3AtXW+Ksucg6g9N39IH4qq1RK76JZQ7QpNuvwqkK/DhA81/y08VlA3bhcU4UFQL2u9l0ve54FgSTnrOqFp+J/G9HxDC0zn7LrOpOAPI9huLx3+TbUabZ7kLoVQt8dgXUA86+kl8pQybY9eWryaxrYi9IeDqFFYcxBZPvM7XD972qKlFbWd/4N36wsDHC1NX8/otynGfjjQTlkgG1KeXrbIVJR3XPURlq7WTDCdvOPQAJugesFZkSP46VuyRkg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=L6n60Z8KNtShaBheCby6fZXpeFCLJadFXQiTXK2pf/U=;
+ b=gPwwtr1cTRQy2CLEqJSHyC0a0Nao7Yaad3Gn43ICEBWzZO7Sn1k0UfHODR+JfEax/YfQQ8DKF4bYJAUlHGwLrAXdtAOsExG06gCl2b2I7Mrk2EelPeviyoLNhoXjZBCbuUk+aLJMe24KLgxCodtzrOurYXiVNm3OQBgAvryM1QoNswN93FOkbFv4eNFrma7hnw6GxRUOMQ9Pt5j3fhLD4g1jJKMJu0JYHAeAYTrfzLIr8BgwpORj/3BTGwn9SmOYYkrVZfK/G1j9tuE0HjHUUDLiVHaBs+yWGPlWleA6ZW6hfPEJoM0Yb0VL0TlrZJ/FivGRhO0RRRUv44RHci5dRQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=L6n60Z8KNtShaBheCby6fZXpeFCLJadFXQiTXK2pf/U=;
+ b=DGWYodJDwiZUhnqOiecHm7dPAg4CSD8E3C8BjKLf7avZ6HBOZmrsGvNZu4ihhq/J4FnmFjuDptY3ZptIaneOWvuu8OQUZ645CPiTEbb5ojj1l7wfbpCRtdpA9MDWQosvAEva/OzMj+hZXb6fLhRK+3ENGNnu/bY0z2d1M5VbaJs=
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
+ by BY5PR15MB3713.namprd15.prod.outlook.com (2603:10b6:a03:1f8::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18; Sat, 7 Nov
+ 2020 01:27:41 +0000
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::7d77:205b:bbc4:4c70]) by BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::7d77:205b:bbc4:4c70%6]) with mapi id 15.20.3499.030; Sat, 7 Nov 2020
+ 01:27:41 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     Andrii Nakryiko <andrii@kernel.org>
+CC:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        "Alexei Starovoitov" <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <Kernel-team@fb.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "jeyu@kernel.org" <jeyu@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH v2 bpf-next 1/5] bpf: add in-kernel split BTF support
+Thread-Topic: [PATCH v2 bpf-next 1/5] bpf: add in-kernel split BTF support
+Thread-Index: AQHWtJFbvugjqI1ENU6MqzyHA3nlY6m74ToA
+Date:   Sat, 7 Nov 2020 01:27:41 +0000
+Message-ID: <712CED9D-91E3-4CF1-AAFC-3E970582D06D@fb.com>
+References: <20201106230228.2202-1-andrii@kernel.org>
+ <20201106230228.2202-2-andrii@kernel.org>
+In-Reply-To: <20201106230228.2202-2-andrii@kernel.org>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3608.120.23.2.4)
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=fb.com;
+x-originating-ip: [2620:10d:c090:400::5:ca49]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 81fff83d-165c-4457-4f8c-08d882bc5222
+x-ms-traffictypediagnostic: BY5PR15MB3713:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BY5PR15MB3713032D8B1B05777DF636F0B3EC0@BY5PR15MB3713.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: r8TzrZpuu5pCQJsJ0mZ7yObDPcPuVydsPFlC1gm0iq5SJpS3Hzh/ETWVo2ZQZzJQwHGJiN8h63xT436dU7ou2F5qsjozEun+SzMp77seDc7Ve8n4SOdpr5wvh56i80B+QcQEcH/Fl1O+wycRbYeIuOx7KVgSuyrQnMFn2AKW/niMLxcenVZP4uKJzamiqwMumLA9uQMh7a6uLj8YeNgPj5ceQ2SMJ/cnI6PbfIQUPBWM5YlrrthJP8mN0r80vuBfMP8ZJM8yXmrw5eAyTJQPlOV+A4Miqo7r6I2fYOOtuIQEG4AQCK3MjSW+zZrQtzlr+/hfGhS5Tfx6siV2a9ZwcQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(396003)(136003)(366004)(39860400002)(376002)(6486002)(66946007)(66446008)(33656002)(66476007)(6512007)(5660300002)(6916009)(53546011)(2906002)(36756003)(91956017)(76116006)(4326008)(64756008)(186003)(8676002)(66556008)(6506007)(83380400001)(86362001)(8936002)(316002)(2616005)(71200400001)(54906003)(478600001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: MeKq0Ji0tv+fN0J6BaUddl5B95FVm0irPZTQ9HBerFsmiykxSbbdKt+bvAwLBmcOSvM/Zh3zx9aK7/Kcq3eMB4fKbCHzl771IgpxdEtSok9dvHmGIwg3g7K5u56XTIiIALbTBhK55k0qaYcHZYvMGPONxPuJAmT5rZeFDfRbCYgoSgT4aMKUNkcqoLksGVl+v8lKFq0SRfUtbGfu+33oEdqtafBCkAe2I6IE+Qd4km3VzOJG2Bqt0cuCf9Fa5lWv5YDuI0YibUZZi8CItRkIt9W361Cqiyhc1Jpij0WSrE8+sugODmpSK5z5EWQXFE4GXw6e5kle4GF5XPqweQvBbLVfWfpYP9dLEWNMeXn53hf+C0opdjArYzRDMocQdVu0BcunXOLkTSpvuX45ddsRHUPvt3svgBHGcTtSwLGXclXwbPNJGL8NRjjtjJHxp+GVo8rj2Sv4t8fRFfngypGxwwyGtO+fjfua13xXjYNqc+Ef5fJ33S8ndnjDDtosubX9sAd/af2UxK4l6yftzbdLNI5BEfrzGOQWXMOfJQkr4rq+9HmP8RFG8/TSGHOtQjZ9GMz1lN7dfo6t9QhPFUSxLI/t0aWmmN1BGXyS0UvhYN7oaCYpakamKHHcWQzocJrjoCDDAqFl1k4ODHu+CwZ3S8eDeq39Z/qkLDFKz2Lv5u9fLQZlmjCg7VMKvbF3kMi3
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <5F8835E5381BF94D99BC38F893165B70@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB2999.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 81fff83d-165c-4457-4f8c-08d882bc5222
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Nov 2020 01:27:41.4968
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: pXRhJaf2BvBeYLNAUdRyjQuWQrtM4U1DxCtLYRp/TPxR0z4bPv7oRmLoWPZhrxZMk5z1l7dx6ndVJ5x1lVdpFA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR15MB3713
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-06_06:2020-11-05,2020-11-06 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ phishscore=0 clxscore=1011 lowpriorityscore=0 mlxlogscore=999
+ suspectscore=0 mlxscore=0 priorityscore=1501 impostorscore=0 bulkscore=0
+ adultscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011070006
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/09/2020 15:55, David Laight wrote:
-> 
-> This is the only code that relies on import_iovec() returning
-> iter.count on success.
-> This allows a better interface to import_iovec().
 
-Seems this got nowhere. I'll pick it and send with some other
-patches to Jens.
 
-> Signed-off-by: David Laight <david.laight@aculab.com>
-> ---
->  fs/io_uring.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/io_uring.c b/fs/io_uring.c
-> index 3790c7fe9fee..0df43882e4b3 100644
-> --- a/fs/io_uring.c
-> +++ b/fs/io_uring.c
-> @@ -2824,7 +2824,7 @@ static ssize_t __io_import_iovec(int rw, struct io_kiocb *req,
->  
->  		ret = import_single_range(rw, buf, sqe_len, *iovec, iter);
->  		*iovec = NULL;
-> -		return ret < 0 ? ret : sqe_len;
-> +		return ret;
->  	}
->  
->  	if (req->flags & REQ_F_BUFFER_SELECT) {
-> @@ -2853,7 +2853,7 @@ static ssize_t io_import_iovec(int rw, struct io_kiocb *req,
->  	if (!req->io)
->  		return __io_import_iovec(rw, req, iovec, iter, needs_lock);
->  	*iovec = NULL;
-> -	return iov_iter_count(&req->io->rw.iter);
-> +	return 0;
->  }
->  
->  static inline loff_t *io_kiocb_ppos(struct kiocb *kiocb)
-> @@ -3123,7 +3123,7 @@ static int io_read(struct io_kiocb *req, bool force_nonblock,
->  	if (ret < 0)
->  		return ret;
->  	iov_count = iov_iter_count(iter);
-> -	io_size = ret;
-> +	io_size = iov_count;
->  	req->result = io_size;
->  	ret = 0;
->  
-> @@ -3246,7 +3246,7 @@ static int io_write(struct io_kiocb *req, bool force_nonblock,
->  	if (ret < 0)
->  		return ret;
->  	iov_count = iov_iter_count(iter);
-> -	io_size = ret;
-> +	io_size = iov_count;
->  	req->result = io_size;
->  
->  	/* Ensure we clear previously set non-block flag */
-> 
+> On Nov 6, 2020, at 3:02 PM, Andrii Nakryiko <andrii@kernel.org> wrote:
+>=20
+> Adjust in-kernel BTF implementation to support a split BTF mode of operat=
+ion.
+> Changes are mostly mirroring libbpf split BTF changes, with the exception=
+ of
+> start_id being 0 for in-kernel implementation due to simpler read-only mo=
+de.
+>=20
+> Otherwise, for split BTF logic, most of the logic of jumping to base BTF,
+> where necessary, is encapsulated in few helper functions. Type numbering =
+and
+> string offset in a split BTF are logically continuing where base BTF ends=
+, so
+> most of the high-level logic is kept without changes.
+>=20
+> Type verification and size resolution is only doing an added resolution o=
+f new
+> split BTF types and relies on already cached size and type resolution res=
+ults
+> in the base BTF.
+>=20
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 
--- 
-Pavel Begunkov
+[...]
+
+>=20
+> @@ -600,8 +618,15 @@ static const struct btf_kind_operations *btf_type_op=
+s(const struct btf_type *t)
+>=20
+> static bool btf_name_offset_valid(const struct btf *btf, u32 offset)
+> {
+> -	return BTF_STR_OFFSET_VALID(offset) &&
+> -		offset < btf->hdr.str_len;
+> +	if (!BTF_STR_OFFSET_VALID(offset))
+> +		return false;
+> +again:
+> +	if (offset < btf->start_str_off) {
+> +		btf =3D btf->base_btf;
+> +		goto again;
+
+Can we do a while loop instead of "goto again;"?
+
+> +	}
+> +	offset -=3D btf->start_str_off;
+> +	return offset < btf->hdr.str_len;
+> }
+>=20
+> static bool __btf_name_char_ok(char c, bool first, bool dot_ok)
+> @@ -615,10 +640,25 @@ static bool __btf_name_char_ok(char c, bool first, =
+bool dot_ok)
+> 	return true;
+> }
+>=20
+> +static const char *btf_str_by_offset(const struct btf *btf, u32 offset)
+> +{
+> +again:
+> +	if (offset < btf->start_str_off) {
+> +		btf =3D btf->base_btf;
+> +		goto again;
+> +	}
+
+Maybe add a btf_find_base_btf(btf, offset) helper for this logic?
+
+> +
+> +	offset -=3D btf->start_str_off;
+> +	if (offset < btf->hdr.str_len)
+> +		return &btf->strings[offset];
+> +
+> +	return NULL;
+> +}
+> +
+
+[...]
+
+> }
+>=20
+> const char *btf_name_by_offset(const struct btf *btf, u32 offset)
+> {
+> -	if (offset < btf->hdr.str_len)
+> -		return &btf->strings[offset];
+> -
+> -	return NULL;
+> +	return btf_str_by_offset(btf, offset);
+> }
+
+IIUC, btf_str_by_offset() and btf_name_by_offset() are identical. Can we
+just keep btf_name_by_offset()?
+
+>=20
+> const struct btf_type *btf_type_by_id(const struct btf *btf, u32 type_id)
+> {
+> -	if (type_id > btf->nr_types)
+> -		return NULL;
+> +again:
+> +	if (type_id < btf->start_id) {
+> +		btf =3D btf->base_btf;
+> +		goto again;
+> +	}
+
+ditto, goto again..
+
+[...]
+
+
