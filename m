@@ -2,117 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 398152AA77B
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 19:57:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19F232AA78C
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 20:08:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728596AbgKGS5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 13:57:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54746 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725836AbgKGS5O (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 13:57:14 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CC2AC0613CF;
-        Sat,  7 Nov 2020 10:57:14 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id z24so3628868pgk.3;
-        Sat, 07 Nov 2020 10:57:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=afHTW824kBEGWvvhUfZ3PFiZzmUwUob7a4RTUq6L29M=;
-        b=o7ScU2Xor+ZuZiG+hPCasydHyXeqbZkNHK3eIs5iVsazHLeSlwETo1FzIG4JhtDPfu
-         8duzNH3Gvwd+jeqOSOUv8CjLncS0AQ0XShWCAEpqlNonfo9kDYvLrYqqYT+qSiDM7wX9
-         YZiM3TBqJ7ssVrcBtc7ccbhDYYOvXythStyjRYjxqdWbvg6vpIp4ijSGwUhxUNdAQpU/
-         1ssIxh08PjgKPlPKBa7GJT6mtRWkrWNjdXNtauOgBZaW1RukvGhCa9yVPyj51/PRG8Hl
-         Azc0iBK+GRcFrXAN54ENbhsqUUVjp8fQosN0i4gUcaP8JKulxEd3AXwJ07QlarWJKXt8
-         MBuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=afHTW824kBEGWvvhUfZ3PFiZzmUwUob7a4RTUq6L29M=;
-        b=MBvh0kqxoTzpV+0MoLJDuIkZ2+gnUOpFhhL8tQfFuTh6T1FA02jZHt2dv2tgPdeFJk
-         CrEeRhCq0NLw6QU+uPphh7gpuZIIKeakoS/QVTMZEENKVEfzMRU922lLG2TpBNLkdM9g
-         6iRFE1CtBU6GkQGtGjcG4vgR0JYNbP0cOCFj3JBIylp9Wvj3y003SKanUmWOKFBUaPjy
-         UVuUXuTwX6qMbr7BpdHtOSvVUlSlZNA8Hm0Yz8xEMK4x45TLl3q/GNGtSK6Dmdnkj0VT
-         QjRpLugKoH+86GYb1iHLR+ppxuR24wA3hKUSVFapO83Ol7GgCxRn7ANuV8Yje4EDaUXv
-         JuSg==
-X-Gm-Message-State: AOAM530G86BZxgSIvqw7UbhcU54kc+A2c+iFIrz6zqSSxfcsVYfHSEjb
-        EyjEIzMzpJIpj+sBL/FBBX4=
-X-Google-Smtp-Source: ABdhPJw2amXadmyF/5X65byZ9X2cW/hVkSb20cYEJFED8+QmCEouNiXV3miVxY+8b3LExk2iYfmWMQ==
-X-Received: by 2002:a65:6201:: with SMTP id d1mr6502774pgv.156.1604775432941;
-        Sat, 07 Nov 2020 10:57:12 -0800 (PST)
-Received: from localhost.localdomain ([45.118.167.194])
-        by smtp.googlemail.com with ESMTPSA id q12sm6738025pfc.84.2020.11.07.10.57.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 07 Nov 2020 10:57:12 -0800 (PST)
-From:   Anmol Karn <anmol.karan123@gmail.com>
-To:     ralf@linux-mips.org, davem@davemloft.net, kuba@kernel.org
-Cc:     saeed@kernel.org, gregkh@linuxfoundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hams@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzkaller-bugs@googlegroups.com, anmol.karan123@gmail.com,
-        syzbot+a1c743815982d9496393@syzkaller.appspotmail.com
-Subject: [Linux-kernel-mentees] [PATCH v2] net: rose: Fix Null pointer dereference in rose_send_frame()
-Date:   Sun,  8 Nov 2020 00:26:54 +0530
-Message-Id: <20201107185654.4339-1-anmol.karan123@gmail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201105155600.9711-1-anmol.karan123@gmail.com>
-References: <20201105155600.9711-1-anmol.karan123@gmail.com>
+        id S1728489AbgKGTIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 14:08:43 -0500
+Received: from mout.gmx.net ([212.227.17.21]:53951 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725836AbgKGTIn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Nov 2020 14:08:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1604776118;
+        bh=jE5f7dstvHEPWrAikYGEZvkwxqFhebukYhL5FN0e4P4=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=icWvyPr7lRWuATS4qVREJMC4BoUlXx5RMZAC7Fz0J6klumUGSPAZVe68/5fdnyP3e
+         z4zwMezo1WJEJRob+FxV7fuSTI5qaURgyIMHpfhpMZJU4XCdIwlyOOxoBHCpAGe9Zi
+         B7aHYbWb4jqMg13MnLVbGfPxom1sl8ErAgr0to1w=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from longitude ([37.201.214.162]) by mail.gmx.com (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MCKFu-1kS5uG1Lec-009LzP; Sat, 07
+ Nov 2020 20:08:38 +0100
+From:   =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+To:     linux-doc@vger.kernel.org
+Cc:     =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org
+Subject: [PATCH] docs: mtd: spi-nor: Fix formatting of text vs. diagrams
+Date:   Sat,  7 Nov 2020 19:39:01 +0100
+Message-Id: <20201107183902.1182809-1-j.neuschaefer@gmx.net>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:osP9Os5JpTV2/9plSo7aStfBxw5Zfbcnv4TAnrPFogBjBiLbmTq
+ eAgIQyvhWGwpH6EE5QTS/yegz9wdLIE9q9mimaF5Nbn/Xkp/f1gvdy8b7D4I1El9QrV/FKI
+ ufENyTWdxVF7EBAmwzGpw7QIYwD67AuHiMZnnF0NtfH+gIOdaO3gQe9J6r2Wfks5hO4r0K0
+ qbyKS8NVgqAsejrgGj9Qw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:+pAb+2ZeI3I=:ak5UwrOJvCabne+6EXnMM3
+ 0x9dCrPva9LC547UGMUz8SHbAfajs3AdFNDPQnBtBNxhzCH1D1ZS2IMVAEux06E8jvrp0kXwt
+ C9RTH1bHyom5ld8Ku71zZfRjBm2kxcNG9grqHaAknepJ6GFHuknszPrHoP0NOLxjIiTcG8xkC
+ jbdNXjVi/edhsnJBJk4FuGq8+Cj1QE2wvjp+CkONG+AkrgeqX+EtwT0frgveDHfGmbvwDdC41
+ smodw10ydhRcCNH7K+YFc55nTQtXDN7qu7Skq0FMxc4t7/RwboOvtaoGdSaFfNmoBUgFdUCVs
+ ZdWF9772LNroW3zGfV5ALk6iHnOcq0gIV9iOKrNFwmifRPBRO8oR2XzRkSi6CWGjiqNSjD9Fo
+ eoyNQ3efcbuMIfTRq6chU5YdH8jxMfjhYjFqhgN143Q5upr+EGcRgzsHeDhMm7YaV5ORak6JG
+ 6hLLUcNcLpcjvF5ZgaPElQzBBp25WllOqTf5hgxwafl/BnO8NiE+NkvGTbwdy0J8ryHYZgANW
+ bpeGAKepgwJasez9M7cbD6fk7AOcAN8euHU/LAcynRHvCbHxaFnOHlxrEiqipJIfxbTsV3Uhm
+ n06G9G9qXZ2agSjCI5kM9CEtWV0R5plGXkq3uXBTckU6dan+wiwJQBnbCfx8CZhQW4dpCAcEp
+ VwddmOVO6uhswICAddEf6EvwltuQE0HYSUzQB+my+6GaNXtI8VB4yC/eycXCeJUsds0Mn8cAy
+ 7XgaE8LjK/ErtDAum9b6Unhrlt7OvSkJFHmLXB3YLEQq6DPiDkStDfCs6EZoLAG3/Wrun/qR/
+ NDqEVUfBL0Nfn/NsV4wZq9hl9JFIyi0r43A6aBG2ih/QCxmpeg6JoDlAzRn8zblRoiTQ9bRgf
+ 0dMa0S+STI0sLX1ORpFPDEx27hnakdJ/mCQglA3jo=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-rose_send_frame() dereferences `neigh->dev` when called from
-rose_transmit_clear_request(), and the first occurrence of the
-`neigh` is in rose_loopback_timer() as `rose_loopback_neigh`,
-and it is initialized in rose_add_loopback_neigh() as NULL.
-i.e when `rose_loopback_neigh` used in rose_loopback_timer()
-its `->dev` was still NULL and rose_loopback_timer() was calling
-rose_rx_call_request() without checking for NULL.
+Corrently, all diagrams below "Before this framework, the layer is like"
+and the text in between are rendered as one monospace text block.
+Instead, each individual diagram should be a monospace text block.
 
-- net/rose/rose_link.c
-This bug seems to get triggered in this line:
+Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
+=2D--
+ Documentation/driver-api/mtd/spi-nor.rst | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-rose_call = (ax25_address *)neigh->dev->dev_addr;
+diff --git a/Documentation/driver-api/mtd/spi-nor.rst b/Documentation/driv=
+er-api/mtd/spi-nor.rst
+index 1f0437676762b..4a3adca417fdb 100644
+=2D-- a/Documentation/driver-api/mtd/spi-nor.rst
++++ b/Documentation/driver-api/mtd/spi-nor.rst
+@@ -34,7 +34,8 @@ Before this framework, the layer is like::
+          ------------------------
+ 	        SPI NOR chip
 
-Fix it by adding NULL checking for `rose_loopback_neigh->dev`
-in rose_loopback_timer().
+-   After this framework, the layer is like:
++After this framework, the layer is like::
++
+                    MTD
+          ------------------------
+               SPI NOR framework
+@@ -45,7 +46,8 @@ Before this framework, the layer is like::
+          ------------------------
+ 	       SPI NOR chip
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Reported-by: syzbot+a1c743815982d9496393@syzkaller.appspotmail.com
-Tested-by: syzbot+a1c743815982d9496393@syzkaller.appspotmail.com
-Link: https://syzkaller.appspot.com/bug?id=9d2a7ca8c7f2e4b682c97578dfa3f236258300b3
-Signed-off-by: Anmol Karn <anmol.karan123@gmail.com>
----
-Changes in v3:
-        - Corrected checkpatch warnings and errors (Suggested-by: Saeed Mahameed <saeed@kernel.org>)
-	- Added "Fixes:" tag (Suggested-by: Saeed Mahameed <saeed@kernel.org>)
-Changes in v2:
-	- Added NULL check in rose_loopback_timer() (Suggested-by: Greg KH <gregkh@linuxfoundation.org>)
-
- net/rose/rose_loopback.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/net/rose/rose_loopback.c b/net/rose/rose_loopback.c
-index 7b094275ea8b..2c51756ed7bf 100644
---- a/net/rose/rose_loopback.c
-+++ b/net/rose/rose_loopback.c
-@@ -96,7 +96,8 @@ static void rose_loopback_timer(struct timer_list *unused)
- 		}
-
- 		if (frametype == ROSE_CALL_REQUEST) {
--			if ((dev = rose_dev_get(dest)) != NULL) {
-+			dev = rose_dev_get(dest);
-+			if (rose_loopback_neigh->dev && dev) {
- 				if (rose_rx_call_request(skb, dev, rose_loopback_neigh, lci_o) == 0)
- 					kfree_skb(skb);
- 			} else {
--
-2.29.2
+-  With the SPI NOR controller driver (Freescale QuadSPI), it looks like:
++With the SPI NOR controller driver (Freescale QuadSPI), it looks like::
++
+                    MTD
+          ------------------------
+               SPI NOR framework
+=2D-
+2.28.0
 
