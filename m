@@ -2,86 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2427F2AA5F8
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 15:29:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A922D2AA5FC
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 15:31:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728149AbgKGO3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 09:29:25 -0500
-Received: from asavdk4.altibox.net ([109.247.116.15]:48000 "EHLO
-        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725880AbgKGO3X (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 09:29:23 -0500
-Received: from ravnborg.org (unknown [188.228.123.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk4.altibox.net (Postfix) with ESMTPS id C9B9F80533;
-        Sat,  7 Nov 2020 15:29:20 +0100 (CET)
-Date:   Sat, 7 Nov 2020 15:29:19 +0100
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
-Subject: Re: [PATCH 17/19] drm/radeon/radeon_kms: Fix misnaming of
- 'radeon_info_ioctl's dev param
-Message-ID: <20201107142919.GB1014611@ravnborg.org>
-References: <20201106214949.2042120-1-lee.jones@linaro.org>
- <20201106214949.2042120-18-lee.jones@linaro.org>
+        id S1728188AbgKGObz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 09:31:55 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:42279 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726132AbgKGOby (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Nov 2020 09:31:54 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4CT07q4nCKz9tygW;
+        Sat,  7 Nov 2020 15:31:51 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id DsY-2jS-mUj0; Sat,  7 Nov 2020 15:31:51 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4CT07q3VJ6z9tygV;
+        Sat,  7 Nov 2020 15:31:51 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id DE1078B778;
+        Sat,  7 Nov 2020 15:31:52 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id i14aiMwmoye9; Sat,  7 Nov 2020 15:31:52 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 7F0A98B75B;
+        Sat,  7 Nov 2020 15:31:52 +0100 (CET)
+Subject: Re: [PATCH] powerpc/64s: Remove RFI
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, npiggin@gmail.com
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <fe28c9c37c43f2647c0590cc1b3c9d593f60bd86.1604662224.git.christophe.leroy@csgroup.eu>
+Message-ID: <d4da61ab-0f9d-ba20-f17f-20aa45646a97@csgroup.eu>
+Date:   Sat, 7 Nov 2020 15:31:43 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+In-Reply-To: <fe28c9c37c43f2647c0590cc1b3c9d593f60bd86.1604662224.git.christophe.leroy@csgroup.eu>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201106214949.2042120-18-lee.jones@linaro.org>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=VafZwmh9 c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=8nJEP1OIZ-IA:10 a=zd2uoN0lAAAA:8 a=e5mUnYsNAAAA:8 a=KKAkSRfTAAAA:8
-        a=uA_2fY5nDuqb4cbkMl8A:9 a=wPNLvfGTeEIA:10 a=Vxmtnl_E_bksehYqCbjh:22
-        a=cvBusfyB2V15izCimMoJ:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lee,
 
-On Fri, Nov 06, 2020 at 09:49:47PM +0000, Lee Jones wrote:
-> Fixes the following W=1 kernel build warning(s):
+
+Le 06/11/2020 à 12:36, Christophe Leroy a écrit :
+> Last use of RFI on PPC64 was removed by
+> commit b8e90cb7bc04 ("powerpc/64: Convert the syscall exit path to
+> use RFI_TO_USER/KERNEL").
 > 
->  drivers/gpu/drm/radeon/radeon_kms.c:226: warning: Function parameter or member 'dev' not described in 'radeon_info_ioctl'
->  drivers/gpu/drm/radeon/radeon_kms.c:226: warning: Excess function parameter 'rdev' description in 'radeon_info_ioctl'
+> Remove the macro.
+
+Forget this crazy patch. I missed two RFI in head_64.S ....
+
+Christophe
+
 > 
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K�nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 > ---
->  drivers/gpu/drm/radeon/radeon_kms.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>   arch/powerpc/include/asm/ppc_asm.h | 1 -
+>   1 file changed, 1 deletion(-)
 > 
-> diff --git a/drivers/gpu/drm/radeon/radeon_kms.c b/drivers/gpu/drm/radeon/radeon_kms.c
-> index 0d8fbabffcead..21c206795c364 100644
-> --- a/drivers/gpu/drm/radeon/radeon_kms.c
-> +++ b/drivers/gpu/drm/radeon/radeon_kms.c
-> @@ -213,7 +213,7 @@ static void radeon_set_filp_rights(struct drm_device *dev,
->  /**
->   * radeon_info_ioctl - answer a device specific request.
->   *
-> - * @rdev: radeon device pointer
-> + * @dev: radeon device pointer
->   * @data: request object
->   * @filp: drm filp
->   *
-
-Delete all the kernel-doc annotation as we do not pull this file into
-the kernel-doc anyway.
-
-Keep the /* Answer a device specific request */ part.
-
-At least thats what I see as the best way to deal with it.
-
-	Sam
+> diff --git a/arch/powerpc/include/asm/ppc_asm.h b/arch/powerpc/include/asm/ppc_asm.h
+> index 511786f0e40d..bedf3eb52ebc 100644
+> --- a/arch/powerpc/include/asm/ppc_asm.h
+> +++ b/arch/powerpc/include/asm/ppc_asm.h
+> @@ -495,7 +495,6 @@ END_FTR_SECTION_NESTED(CPU_FTR_CELL_TB_BUG, CPU_FTR_CELL_TB_BUG, 96)
+>   #endif
+>   
+>   #ifdef CONFIG_PPC_BOOK3S_64
+> -#define RFI		rfid
+>   #define MTMSRD(r)	mtmsrd	r
+>   #define MTMSR_EERI(reg)	mtmsrd	reg,1
+>   #else
+> 
