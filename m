@@ -2,54 +2,302 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C19152AA7E3
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 21:20:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F00CD2AA7E4
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 21:21:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728682AbgKGUUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 15:20:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52498 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725836AbgKGUUf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 15:20:35 -0500
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 22CF420885;
-        Sat,  7 Nov 2020 20:20:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604780435;
-        bh=vOyP3KUR834aETkN9bxWCDTxVQzO1OujYPpYSapMXF0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=sBo8msQcUxlRETRwa92h33b0ovMq172zDMenfb7GM6+kLhOwnoJ9C8IQK9Idp3bBp
-         PKL+2/xtNrlq1oZ8ovI5KlQWeMq5ceQzjK/CCBxiHRl/mB6hOCZMMHMHnByYoTbkcG
-         HtzQDSkHJaLT42zHBPR9VBwt3EHQ92vVC2mAQJ24=
-Date:   Sat, 7 Nov 2020 12:20:34 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     menglong8.dong@gmail.com
-Cc:     davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dingtianhong@huawei.com,
-        Menglong Dong <dong.menglong@zte.com.cn>
-Subject: Re: [PATCH v2] net: macvlan: remove redundant initialization in
- macvlan_dev_netpoll_setup
-Message-ID: <20201107122034.55d527a7@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <1604541244-3241-1-git-send-email-dong.menglong@zte.com.cn>
-References: <1604541244-3241-1-git-send-email-dong.menglong@zte.com.cn>
+        id S1728696AbgKGUVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 15:21:01 -0500
+Received: from mxout03.lancloud.ru ([89.108.73.187]:46126 "EHLO
+        mxout03.lancloud.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725836AbgKGUVA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Nov 2020 15:21:00 -0500
+Received: from LanCloud
+DKIM-Filter: OpenDKIM Filter v2.11.0 mxout03.lancloud.ru AE5172092EA2
+Received: from LanCloud
+Received: from LanCloud
+Received: from LanCloud
+From:   Sergey Shtylyov <s.shtylyov@omprussia.ru>
+Subject: [PATCH v2] module: fix comment style
+To:     Jessica Yu <jeyu@kernel.org>, <linux-kernel@vger.kernel.org>
+Organization: Open Mobile Platform, LLC
+Message-ID: <7cabd5fd-e413-9b71-004e-56c9c329de23@omprussia.ru>
+Date:   Sat, 7 Nov 2020 23:20:52 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [213.87.144.8]
+X-ClientProxiedBy: LFEXT01.lancloud.ru (fd00:f066::141) To
+ LFEX1908.lancloud.ru (fd00:f066::208)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed,  4 Nov 2020 20:54:04 -0500 menglong8.dong@gmail.com wrote:
-> From: Menglong Dong <dong.menglong@zte.com.cn>
-> 
-> The initialization for err with 0 seems useless, as it is soon updated
-> with -ENOMEM. So, we can remove it.
-> 
-> Changes since v1:
-> -Keep -ENOMEM still.
-> 
-> Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
+Many comments in this module do not comply with the preferred multi-line
+comment style as reported by 'scripts/checkpatch.pl':
 
-Applied.
+WARNING: Block comments use * on subsequent lines
+WARNING: Block comments use a trailing */ on a separate line
+
+Fix those comments, along with (unreported for some reason?) the starts
+of the multi-line comments not being /* on their own line... 
+
+Signed-off-by: Sergey Shtylyov <s.shtylyov@omprussia.ru>
+
+---
+This patch is against the 'modules-next' branch of Jessica Yu's 'linux.git'
+repo plus my 2 patches posted this week.
+I'm not sure such patches are welcome, please let me know if they're not...
+
+Changes in version 2:
+- fixed up the comment before find_symbol().
+
+ kernel/module.c |  117 +++++++++++++++++++++++++++++++++++---------------------
+ 1 file changed, 74 insertions(+), 43 deletions(-)
+
+Index: linux/kernel/module.c
+===================================================================
+--- linux.orig/kernel/module.c
++++ linux/kernel/module.c
+@@ -1,9 +1,8 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+-   Copyright (C) 2002 Richard Henderson
+-   Copyright (C) 2001 Rusty Russell, 2002, 2010 Rusty Russell IBM.
+-
+-*/
++ * Copyright (C) 2002 Richard Henderson
++ * Copyright (C) 2001 Rusty Russell, 2002, 2010 Rusty Russell IBM.
++ */
+ 
+ #define INCLUDE_VERMAGIC
+ 
+@@ -86,7 +85,8 @@
+  * 1) List of modules (also safely readable with preempt_disable),
+  * 2) module_use links,
+  * 3) module_addr_min/module_addr_max.
+- * (delete and add uses RCU list operations). */
++ * (delete and add uses RCU list operations).
++ */
+ DEFINE_MUTEX(module_mutex);
+ EXPORT_SYMBOL_GPL(module_mutex);
+ static LIST_HEAD(modules);
+@@ -586,8 +586,10 @@ static bool find_exported_symbol_in_sect
+ 	return false;
+ }
+ 
+-/* Find an exported symbol and return it, along with, (optional) crc and
+- * (optional) module which owns it.  Needs preempt disabled or module_mutex. */
++/*
++ * Find an exported symbol and return it, along with, (optional) crc and
++ * (optional) module which owns it.  Needs preempt disabled or module_mutex.
++ */
+ static const struct kernel_symbol *find_symbol(const char *name,
+ 					struct module **owner,
+ 					const s32 **crc,
+@@ -1644,8 +1646,10 @@ static void remove_sect_attrs(struct mod
+ 	if (mod->sect_attrs) {
+ 		sysfs_remove_group(&mod->mkobj.kobj,
+ 				   &mod->sect_attrs->grp);
+-		/* We are positive that no one is using any sect attrs
+-		 * at this point.  Deallocate immediately. */
++		/*
++		 * We are positive that no one is using any sect attrs
++		 * at this point.  Deallocate immediately.
++		 */
+ 		free_sect_attrs(mod->sect_attrs);
+ 		mod->sect_attrs = NULL;
+ 	}
+@@ -2216,8 +2220,10 @@ static void free_module(struct module *m
+ 
+ 	mod_sysfs_teardown(mod);
+ 
+-	/* We leave it in list to prevent duplicate loads, but make sure
+-	 * that noone uses it while it's being deconstructed. */
++	/*
++	 * We leave it in list to prevent duplicate loads, but make sure
++	 * that noone uses it while it's being deconstructed.
++	 */
+ 	mutex_lock(&module_mutex);
+ 	mod->state = MODULE_STATE_UNFORMED;
+ 	mutex_unlock(&module_mutex);
+@@ -2334,8 +2340,10 @@ static int simplify_symbols(struct modul
+ 			if (!strncmp(name, "__gnu_lto", 9))
+ 				break;
+ 
+-			/* We compiled with -fno-common.  These are not
+-			   supposed to happen.  */
++			/*
++			 * We compiled with -fno-common.  These are not
++			 * supposed to happen.
++			 */
+ 			pr_debug("Common symbol: %s\n", name);
+ 			pr_warn("%s: please compile with -fno-common\n",
+ 			       mod->name);
+@@ -2438,16 +2446,20 @@ static long get_offset(struct module *mo
+ 	return ret;
+ }
+ 
+-/* Lay out the SHF_ALLOC sections in a way not dissimilar to how ld
+-   might -- code, read-only data, read-write data, small data.  Tally
+-   sizes, and place the offsets into sh_entsize fields: high bit means it
+-   belongs in init. */
++/*
++ * Lay out the SHF_ALLOC sections in a way not dissimilar to how ld
++ * might -- code, read-only data, read-write data, small data.  Tally
++ * sizes, and place the offsets into sh_entsize fields: high bit means it
++ * belongs in init.
++ */
+ static void layout_sections(struct module *mod, struct load_info *info)
+ {
+ 	static unsigned long const masks[][2] = {
+-		/* NOTE: all executable code must be the first section
++		/*
++		 * NOTE: all executable code must be the first section
+ 		 * in this array; otherwise modify the text_size
+-		 * finder in the two loops below */
++		 * finder in the two loops below
++		 */
+ 		{ SHF_EXECINSTR | SHF_ALLOC, ARCH_SHF_SMALL },
+ 		{ SHF_ALLOC, SHF_WRITE | ARCH_SHF_SMALL },
+ 		{ SHF_RO_AFTER_INIT | SHF_ALLOC, ARCH_SHF_SMALL },
+@@ -3062,8 +3074,10 @@ static int rewrite_section_headers(struc
+ 			return -ENOEXEC;
+ 		}
+ 
+-		/* Mark all sections sh_addr with their address in the
+-		   temporary image. */
++		/*
++		 * Mark all sections sh_addr with their address in the
++		 * temporary image.
++		 */
+ 		shdr->sh_addr = (size_t)info->hdr + shdr->sh_offset;
+ 
+ #ifndef CONFIG_MODULE_UNLOAD
+@@ -3494,9 +3508,11 @@ static struct module *layout_and_allocat
+ 	if (ndx)
+ 		info->sechdrs[ndx].sh_flags |= SHF_RO_AFTER_INIT;
+ 
+-	/* Determine total sizes, and put offsets in sh_entsize.  For now
+-	   this is done generically; there doesn't appear to be any
+-	   special cases for the architectures. */
++	/*
++	 * Determine total sizes, and put offsets in sh_entsize.  For now
++	 * this is done generically; there doesn't appear to be any
++	 * special cases for the architectures.
++	 */
+ 	layout_sections(info->mod, info);
+ 	layout_symtab(info->mod, info);
+ 
+@@ -3780,8 +3796,10 @@ static int complete_formation(struct mod
+ 	module_enable_nx(mod);
+ 	module_enable_x(mod);
+ 
+-	/* Mark state as coming so strong_try_module_get() ignores us,
+-	 * but kallsyms etc. can see us. */
++	/*
++	 * Mark state as coming so strong_try_module_get() ignores us,
++	 * but kallsyms etc. can see us.
++	 */
+ 	mod->state = MODULE_STATE_COMING;
+ 	mutex_unlock(&module_mutex);
+ 
+@@ -3828,8 +3846,10 @@ static int unknown_module_param_cb(char
+ 	return 0;
+ }
+ 
+-/* Allocate and load the module: note that size of section 0 is always
+-   zero, and we rely on this for optional sections. */
++/*
++ * Allocate and load the module: note that size of section 0 is always
++ * zero, and we rely on this for optional sections.
++ */
+ static int load_module(struct load_info *info, const char __user *uargs,
+ 		       int flags)
+ {
+@@ -3903,8 +3923,10 @@ static int load_module(struct load_info
+ 
+ 	init_param_lock(mod);
+ 
+-	/* Now we've got everything in the final locations, we can
+-	 * find optional sections. */
++	/*
++	 * Now we've got everything in the final locations, we can
++	 * find optional sections.
++	 */
+ 	err = find_module_sections(mod, info);
+ 	if (err)
+ 		goto free_unload;
+@@ -4118,8 +4140,10 @@ static const char *find_kallsyms_symbol(
+ 
+ 	bestval = kallsyms_symbol_value(&kallsyms->symtab[best]);
+ 
+-	/* Scan for closest preceding symbol, and next symbol. (ELF
+-	   starts real symbols at 1). */
++	/*
++	 * Scan for closest preceding symbol, and next symbol. (ELF
++	 * starts real symbols at 1).
++	 */
+ 	for (i = 1; i < kallsyms->num_symtab; i++) {
+ 		const Elf_Sym *sym = &kallsyms->symtab[i];
+ 		unsigned long thisval = kallsyms_symbol_value(sym);
+@@ -4127,8 +4151,10 @@ static const char *find_kallsyms_symbol(
+ 		if (sym->st_shndx == SHN_UNDEF)
+ 			continue;
+ 
+-		/* We ignore unnamed symbols: they're uninformative
+-		 * and inserted at a whim. */
++		/*
++		 * We ignore unnamed symbols: they're uninformative
++		 * and inserted at a whim.
++		 */
+ 		if (*kallsyms_symbol_name(kallsyms, i) == '\0'
+ 		    || is_arm_mapping_symbol(kallsyms_symbol_name(kallsyms, i)))
+ 			continue;
+@@ -4158,8 +4184,10 @@ void * __weak dereference_module_functio
+ 	return ptr;
+ }
+ 
+-/* For kallsyms to ask for address resolution.  NULL means not found.  Careful
+- * not to lock to avoid deadlock on oopses, simply disable preemption. */
++/*
++ * For kallsyms to ask for address resolution.  NULL means not found.  Careful
++ * not to lock to avoid deadlock on oopses, simply disable preemption.
++ */
+ const char *module_address_lookup(unsigned long addr,
+ 			    unsigned long *size,
+ 			    unsigned long *offset,
+@@ -4417,11 +4445,12 @@ static int m_show(struct seq_file *m, vo
+ 	return 0;
+ }
+ 
+-/* Format: modulename size refcount deps address
+-
+-   Where refcount is a number or -, and deps is a comma-separated list
+-   of depends or -.
+-*/
++/*
++ * Format: modulename size refcount deps address
++ *
++ * Where refcount is a number or -, and deps is a comma-separated list
++ * of depends or -.
++ */
+ static const struct seq_operations modules_op = {
+ 	.start	= m_start,
+ 	.next	= m_next,
+@@ -4593,8 +4622,10 @@ void print_modules(void)
+ }
+ 
+ #ifdef CONFIG_MODVERSIONS
+-/* Generate the signature for all relevant module structures here.
+- * If these change, we don't want to try to parse the module. */
++/*
++ * Generate the signature for all relevant module structures here.
++ * If these change, we don't want to try to parse the module.
++ */
+ void module_layout(struct module *mod,
+ 		   struct modversion_info *ver,
+ 		   struct kernel_param *kp,
