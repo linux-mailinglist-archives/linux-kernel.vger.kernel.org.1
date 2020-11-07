@@ -2,95 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1372B2AA311
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 08:42:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EC692AA314
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 08:45:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727931AbgKGHmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 02:42:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40416 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725985AbgKGHmf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 02:42:35 -0500
-Received: from saruman (88-113-213-94.elisa-laajakaista.fi [88.113.213.94])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 59D7520704;
-        Sat,  7 Nov 2020 07:42:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604734954;
-        bh=/Nx6GNYibA0Lp1RdYl6hW7mxOH1UmCuCU069gcP3gs4=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=yJWvWc/gNpkadD/OBa6LLOUQYL6IcWGLhyGAubhPqCRQpETfryX1TqTXPwCaLL4I2
-         bNvFriX3YULOj+h/2cDmF2FEACQZnIMgUwwJ7Z03QCmkwtxTZyeTqCuYeHP2/92A8+
-         gXfhw+qaC6jJ+Mcdj2KbxBgSIiLimY4U8GaGM/mU=
-From:   Felipe Balbi <balbi@kernel.org>
-To:     Lindsey Stanpoor <lindsey.stanpoor@gmail.com>,
-        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org
-Cc:     gregkh@linuxfoundation.org, robh+dt@kernel.org, heiko@sntech.de,
-        cnemo@tutanota.com
-Subject: Re: [PATCH v4 1/4] dt-bindings: usb: add rk3328 dwc3 docs
-In-Reply-To: <CAEr9=gsH2UhjMO_55FKmGKS0DYrT_-XKf0iwCKCNc93epbiXNw@mail.gmail.com>
-References: <20200902181234.13955-1-lindsey.stanpoor@gmail.com>
- <CAEr9=gsH2UhjMO_55FKmGKS0DYrT_-XKf0iwCKCNc93epbiXNw@mail.gmail.com>
-Date:   Sat, 07 Nov 2020 09:42:26 +0200
-Message-ID: <87ft5ly5nh.fsf@kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+        id S1727940AbgKGHpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 02:45:54 -0500
+Received: from m176115.mail.qiye.163.com ([59.111.176.115]:24315 "EHLO
+        m176115.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725985AbgKGHpy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Nov 2020 02:45:54 -0500
+Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.231])
+        by m176115.mail.qiye.163.com (Hmail) with ESMTPA id B1DC16662F7;
+        Sat,  7 Nov 2020 15:45:49 +0800 (CST)
+From:   Wang Qing <wangqing@vivo.com>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Wang Qing <wangqing@vivo.com>
+Subject: [PATCH v3 bpf] trace: bpf: Fix passing zero to PTR_ERR()
+Date:   Sat,  7 Nov 2020 15:45:44 +0800
+Message-Id: <1604735144-686-1-git-send-email-wangqing@vivo.com>
+X-Mailer: git-send-email 2.7.4
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZGR8eGBkZT05IGEgaVkpNS09MSE5KTktJQkpVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKQ1VLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Nzo6Vjo6HD8YHRwTNTkSCyJK
+        TQowCUJVSlVKTUtPTEhOSk5LTUJIVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
+        SU5KVUxPVUlISllXWQgBWUFJS05PNwY+
+X-HM-Tid: 0a75a1ab28649373kuwsb1dc16662f7
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+There is a bug when passing zero to PTR_ERR() and return.
+Fix smatch err.
 
+Signed-off-by: Wang Qing <wangqing@vivo.com>
+---
+ kernel/trace/bpf_trace.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Hi,
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index 4517c8b..5113fd4
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -1198,7 +1198,7 @@ static int bpf_btf_printf_prepare(struct btf_ptr *ptr, u32 btf_ptr_size,
+ 	*btf = bpf_get_btf_vmlinux();
+ 
+ 	if (IS_ERR_OR_NULL(*btf))
+-		return PTR_ERR(*btf);
++		return IS_ERR(*btf) ? PTR_ERR(*btf) : -EINVAL;
+ 
+ 	if (ptr->type_id > 0)
+ 		*btf_id = ptr->type_id;
+-- 
+2.7.4
 
-Lindsey Stanpoor <lindsey.stanpoor@gmail.com> writes:
-> On Wed, Sep 2, 2020 at 11:12 AM <lindsey.stanpoor@gmail.com> wrote:
->>
->> From: Cameron Nemo <cnemo@tutanota.com>
->>
->> Document compatible for dwc3 on the Rockchip rk3328 platform.
->
-> Hi all,
->
-> Wanted to give this patch submission a gentle ping.
->
-> Rob Herring acked the documentation changes, but I have not heard
-> anything
-> from the USB or Rockchip maintainers. This patchset would facilitate USB3
-> support for Rockchip rk3328 devices like the Pine Rock64.
->
-> If there is anything I can do to help move this along, please let me know.
-
-Sorry, it had fallen through the cracks. It's now in my testing/next.
-
-=2D-=20
-balbi
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQJFBAEBCAAvFiEElLzh7wn96CXwjh2IzL64meEamQYFAl+mT+MRHGJhbGJpQGtl
-cm5lbC5vcmcACgkQzL64meEamQaRDw/+N2up7hCZG55bDPN8oLRW452ZCzSwXD70
-l5s+0/0dgPw6mwsSoOH1Xd/tPdtLS5gAgnNCYZzBiiCgFBgeaHKwQQ6vweSKLRRG
-BYWVAQuU2dnEZN2lCq29/CilnywKd8Rx05V1UDtoHcVPmioMi3Z8F957s5ggAo+w
-6GgrjcI2h42zsm13oqOgBAU92gik5toDEzVjW999/oGOdH+aZFLd5k3GC+nTVlmf
-AOwYDiRAHHHcIWfbKOz2ZtpkP31b++y4OcNUzZPgIIp+WO5kNm+BiSjuC60kAAuL
-kyC1WOg1uOXRP6IYQp3l90tO8VV3ZHshxxeLssbQ70TMggZacCCl/pg5qR0I8/Gr
-G6SM1bpCIhlw9LwTF0rstbvtFUVVWEWQvfmpKaQMlFvi3bcDPbv5Q/94pYvwKemK
-ieD+dK0K9ZvNAQe3+CqPqH14tIbNKZ8E/u/CFp+kItL6pUf+iVfd7urFbn+Ye8A3
-EU1C3iJEKNiwoDGPWJUB13DlqgyJyn0AC8twRhB1dvqW2B2+GqU7tTfKzYvFDJx4
-MAVBSVKmdTUUT6idPFYbo9BvK84tz9EkBcOqYXEKvEL0LgKgbfD6rOKUxcC3p+GV
-BKUkhMVmTFGGcRYsYZNytla0ioWJ+Q880PA5pQ1WBoXyHhpw4EC11tjQoEgQLcDs
-FcTTx6Jz0S8=
-=ZUy6
------END PGP SIGNATURE-----
---=-=-=--
