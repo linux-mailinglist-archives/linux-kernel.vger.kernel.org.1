@@ -2,82 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C70E32AA5F2
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 15:27:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2427F2AA5F8
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 15:29:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728130AbgKGO06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 09:26:58 -0500
-Received: from asavdk4.altibox.net ([109.247.116.15]:47818 "EHLO
+        id S1728149AbgKGO3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 09:29:25 -0500
+Received: from asavdk4.altibox.net ([109.247.116.15]:48000 "EHLO
         asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725880AbgKGO04 (ORCPT
+        with ESMTP id S1725880AbgKGO3X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 09:26:56 -0500
+        Sat, 7 Nov 2020 09:29:23 -0500
 Received: from ravnborg.org (unknown [188.228.123.71])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by asavdk4.altibox.net (Postfix) with ESMTPS id E00BD80532;
-        Sat,  7 Nov 2020 15:26:52 +0100 (CET)
-Date:   Sat, 7 Nov 2020 15:26:51 +0100
+        by asavdk4.altibox.net (Postfix) with ESMTPS id C9B9F80533;
+        Sat,  7 Nov 2020 15:29:20 +0100 (CET)
+Date:   Sat, 7 Nov 2020 15:29:19 +0100
 From:   Sam Ravnborg <sam@ravnborg.org>
 To:     Lee Jones <lee.jones@linaro.org>
 Cc:     David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        linaro-mm-sig@lists.linaro.org, dri-devel@lists.freedesktop.org,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
         Alex Deucher <alexander.deucher@amd.com>,
-        linux-media@vger.kernel.org
-Subject: Re: [PATCH 10/19] drm/radeon/radeon: Move prototype into shared
- header
-Message-ID: <20201107142651.GA1014611@ravnborg.org>
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+Subject: Re: [PATCH 17/19] drm/radeon/radeon_kms: Fix misnaming of
+ 'radeon_info_ioctl's dev param
+Message-ID: <20201107142919.GB1014611@ravnborg.org>
 References: <20201106214949.2042120-1-lee.jones@linaro.org>
- <20201106214949.2042120-11-lee.jones@linaro.org>
+ <20201106214949.2042120-18-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201106214949.2042120-11-lee.jones@linaro.org>
+In-Reply-To: <20201106214949.2042120-18-lee.jones@linaro.org>
 X-CMAE-Score: 0
 X-CMAE-Analysis: v=2.3 cv=VafZwmh9 c=1 sm=1 tr=0
         a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=IkcTkHD0fZMA:10 a=zd2uoN0lAAAA:8 a=KKAkSRfTAAAA:8 a=e5mUnYsNAAAA:8
-        a=VwQbUJbxAAAA:8 a=ikXVT_u04ppS6bpDQeoA:9 a=QEXdDO2ut3YA:10
-        a=cvBusfyB2V15izCimMoJ:22 a=Vxmtnl_E_bksehYqCbjh:22
-        a=AjGcO6oz07-iQ99wixmX:22
+        a=8nJEP1OIZ-IA:10 a=zd2uoN0lAAAA:8 a=e5mUnYsNAAAA:8 a=KKAkSRfTAAAA:8
+        a=uA_2fY5nDuqb4cbkMl8A:9 a=wPNLvfGTeEIA:10 a=Vxmtnl_E_bksehYqCbjh:22
+        a=cvBusfyB2V15izCimMoJ:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi Lee,
 
-On Fri, Nov 06, 2020 at 09:49:40PM +0000, Lee Jones wrote:
-> Unfortunately, a suitable one didn't already exist.
-> 
+On Fri, Nov 06, 2020 at 09:49:47PM +0000, Lee Jones wrote:
 > Fixes the following W=1 kernel build warning(s):
 > 
->  drivers/gpu/drm/radeon/radeon_device.c:637:6: warning: no previous prototype for ‘radeon_device_is_virtual’ [-Wmissing-prototypes]
->  637 | bool radeon_device_is_virtual(void)
->  | ^~~~~~~~~~~~~~~~~~~~~~~~
+>  drivers/gpu/drm/radeon/radeon_kms.c:226: warning: Function parameter or member 'dev' not described in 'radeon_info_ioctl'
+>  drivers/gpu/drm/radeon/radeon_kms.c:226: warning: Excess function parameter 'rdev' description in 'radeon_info_ioctl'
 > 
 > Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian König" <christian.koenig@amd.com>
+> Cc: "Christian K�nig" <christian.koenig@amd.com>
 > Cc: David Airlie <airlied@linux.ie>
 > Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Sumit Semwal <sumit.semwal@linaro.org>
 > Cc: amd-gfx@lists.freedesktop.org
 > Cc: dri-devel@lists.freedesktop.org
-> Cc: linux-media@vger.kernel.org
-> Cc: linaro-mm-sig@lists.linaro.org
 > Signed-off-by: Lee Jones <lee.jones@linaro.org>
 > ---
->  drivers/gpu/drm/radeon/radeon_device.c |  1 +
->  drivers/gpu/drm/radeon/radeon_device.h | 32 ++++++++++++++++++++++++++
->  drivers/gpu/drm/radeon/radeon_drv.c    |  3 +--
->  3 files changed, 34 insertions(+), 2 deletions(-)
->  create mode 100644 drivers/gpu/drm/radeon/radeon_device.h
+>  drivers/gpu/drm/radeon/radeon_kms.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/radeon/radeon_kms.c b/drivers/gpu/drm/radeon/radeon_kms.c
+> index 0d8fbabffcead..21c206795c364 100644
+> --- a/drivers/gpu/drm/radeon/radeon_kms.c
+> +++ b/drivers/gpu/drm/radeon/radeon_kms.c
+> @@ -213,7 +213,7 @@ static void radeon_set_filp_rights(struct drm_device *dev,
+>  /**
+>   * radeon_info_ioctl - answer a device specific request.
+>   *
+> - * @rdev: radeon device pointer
+> + * @dev: radeon device pointer
+>   * @data: request object
+>   * @filp: drm filp
+>   *
 
-Other public functions in radeon_device.c have their prototype in
-radeon.h - for example radeon_is_px()
+Delete all the kernel-doc annotation as we do not pull this file into
+the kernel-doc anyway.
 
-Add radeon_device_is_virtual() there so we avoiid this new header.
+Keep the /* Answer a device specific request */ part.
+
+At least thats what I see as the best way to deal with it.
 
 	Sam
