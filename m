@@ -2,160 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABB632AA21B
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 02:56:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B00132AA21E
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 02:59:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728414AbgKGBzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 20:55:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38626 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727394AbgKGBzs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 20:55:48 -0500
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F63BC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 17:55:47 -0800 (PST)
-Received: by mail-yb1-xb43.google.com with SMTP id i193so2799150yba.1
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 17:55:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BodUzW5TzpyzsBiFy8KpmO7wElq7rUm1y3ABj5c0SYA=;
-        b=EDhW5CjubF0Ktxu+JsZ4S9NNEvSLxwqD411cSGTGVMfp5xxigCXYNRd0j/miF1aUuh
-         KaegTnMMaHF9qeQalGiGs8dEMpOOF7txYCayaRyC/nUcZ3FRKx5SSU8zahDlS8wo0NVj
-         wtS1/n/zcyGoHlRlqylFyQVyKfL+9mGMHO5abk/UuU0vTvqKg84s7s1qD3bTcU7NnWfY
-         TJC6KNfSxDGajHnKaT9ZNHH/ThuTUeEksMlv4mCrOcw78qvPPR8nYZ0CE7D9V9VETxg8
-         Lg4DYj2nVdYq52uw9V34kz5B5LjgYR8jaeAKU1+P/4ht5iYHdKFLXqQMBLuquhBEAZdB
-         IPZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BodUzW5TzpyzsBiFy8KpmO7wElq7rUm1y3ABj5c0SYA=;
-        b=YmRtRvn5/KveeGjfyoe6p++yYyLKeuzxyuJXk4fm6hISO+Nh/LDeZ7ConShH+e19a8
-         9NTx3KKVRpnE8SCYobdUIprPPoSUjWKfr9GdAE5dTzak12Xxc/8yXEFKUr0YTyAB6Hlu
-         r/p5sgM+9ywsY2aPp9SV+2O0nfex8mGFJPaxg+DL2BynGyEFiP2vS+yEKXeFLDLpRWkM
-         9Y13CyVyBrat3laiEyLguZNMwb8/cijJwHcUAGsCn8ZsX62GwnoMLwtRud15YHgfMMz7
-         3QXibat/VYIp7DPWXgV3fu/Tbv7RHWj7zomHBYk372ICXFvpWX3y5HTys7N2OaQLisrW
-         165A==
-X-Gm-Message-State: AOAM531Bp5aaXEV0vSGbrt8XxEtF0OOe8yVCSjOuigDC/llBajjRoi8F
-        nmQ99HYsBK0JsBcBVQxirYy08P2vRJ5vlimEwAof+g==
-X-Google-Smtp-Source: ABdhPJzcmDjZodIwyd9SBcD0pS/PLbAxzeGtQbzDHKAfI07XIDkn7ah83D0Whfs9G8PeAXxUg1sPzTqHl3xj4A4Uvlo=
-X-Received: by 2002:a25:9c02:: with SMTP id c2mr6297800ybo.228.1604714146256;
- Fri, 06 Nov 2020 17:55:46 -0800 (PST)
-MIME-Version: 1.0
-References: <20201106150747.31273-1-broonie@kernel.org> <CAGETcx-abGAgYrHM0jm6hVkrJ5KvfhK6gCZ4Y6RY0msPJDCuQg@mail.gmail.com>
- <20201106192300.GG49612@sirena.org.uk>
-In-Reply-To: <20201106192300.GG49612@sirena.org.uk>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Fri, 6 Nov 2020 17:55:10 -0800
-Message-ID: <CAGETcx_hoDS1jHxfvrQv_+oMQw6E=AAiPANED+Ob6+a9mohW_A@mail.gmail.com>
-Subject: Re: [PATCH RFC] driver core: Ensure DT devices always have fwnode set
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Daniel Mentz <danielmentz@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1728386AbgKGB7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 20:59:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49218 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727368AbgKGB7h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 20:59:37 -0500
+Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C134620728;
+        Sat,  7 Nov 2020 01:59:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604714374;
+        bh=hjJdees09QwhFJXkhd/LQI1Mn641FEuA/5prkGwY71M=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=D8u/Atf1yRzb2uxVYQ/AZQn28SKhJ9I0V95GyqHIBDS8gl35ZKt6WDelVOAAV3LlM
+         0bqGg1JDWTUTAag0pDOuLggPjwcGsPxdnfEX6/9tYOpqiemlSv9lc85fJ1H5YrY/Hl
+         RrRmr/JBdDIcgXWQ8U5ppV0izv2rrBgcSzZAvfjA=
+Date:   Fri, 6 Nov 2020 17:59:33 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Minchan Kim <minchan@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm <linux-mm@kvack.org>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Harish Sriram <harish@linux.ibm.com>, stable@vger.kernel.org
+Subject: Re: [PATCH] Revert
+ "mm/vunmap: add cond_resched() in vunmap_pmd_range"
+Message-Id: <20201106175933.90e4c8851010c9ce4dd732b6@linux-foundation.org>
+In-Reply-To: <20201105170249.387069-1-minchan@kernel.org>
+References: <20201105170249.387069-1-minchan@kernel.org>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 6, 2020 at 11:23 AM Mark Brown <broonie@kernel.org> wrote:
+On Thu,  5 Nov 2020 09:02:49 -0800 Minchan Kim <minchan@kernel.org> wrote:
+
+> This reverts commit e47110e90584a22e9980510b00d0dfad3a83354e.
+> 
+> While I was doing zram testing, I found sometimes decompression failed
+> since the compression buffer was corrupted. With investigation,
+> I found below commit calls cond_resched unconditionally so it could
+> make a problem in atomic context if the task is reschedule.
+> 
+> Revert the original commit for now.
+> 
+> [   55.109012] BUG: sleeping function called from invalid context at mm/vmalloc.c:108
+> [   55.110774] in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 946, name: memhog
+> [   55.111973] 3 locks held by memhog/946:
+> [   55.112807]  #0: ffff9d01d4b193e8 (&mm->mmap_lock#2){++++}-{4:4}, at: __mm_populate+0x103/0x160
+> [   55.114151]  #1: ffffffffa3d53de0 (fs_reclaim){+.+.}-{0:0}, at: __alloc_pages_slowpath.constprop.0+0xa98/0x1160
+> [   55.115848]  #2: ffff9d01d56b8110 (&zspage->lock){.+.+}-{3:3}, at: zs_map_object+0x8e/0x1f0
+> [   55.118947] CPU: 0 PID: 946 Comm: memhog Not tainted 5.9.3-00011-gc5bfc0287345-dirty #316
+> [   55.121265] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1 04/01/2014
+> [   55.122540] Call Trace:
+> [   55.122974]  dump_stack+0x8b/0xb8
+> [   55.123588]  ___might_sleep.cold+0xb6/0xc6
+> [   55.124328]  unmap_kernel_range_noflush+0x2eb/0x350
+> [   55.125198]  unmap_kernel_range+0x14/0x30
+> [   55.125920]  zs_unmap_object+0xd5/0xe0
+> [   55.126604]  zram_bvec_rw.isra.0+0x38c/0x8e0
+> [   55.127462]  zram_rw_page+0x90/0x101
+> [   55.128199]  bdev_write_page+0x92/0xe0
+> [   55.128957]  ? swap_slot_free_notify+0xb0/0xb0
+> [   55.129841]  __swap_writepage+0x94/0x4a0
+> [   55.130636]  ? do_raw_spin_unlock+0x4b/0xa0
+> [   55.131462]  ? _raw_spin_unlock+0x1f/0x30
+> [   55.132261]  ? page_swapcount+0x6c/0x90
+> [   55.133038]  pageout+0xe3/0x3a0
+> [   55.133702]  shrink_page_list+0xb94/0xd60
+> [   55.134626]  shrink_inactive_list+0x158/0x460
 >
-> On Fri, Nov 06, 2020 at 11:09:17AM -0800, Saravana Kannan wrote:
+> ...
 >
-> > If you want to do this in "one common place", then I think the way to
-> > do this is have include/linux/of.h provide something like:
->
-> > void of_set_device_of_node(dev, of_node)
-> > {
-> >     dev->of_node = of_node;
-> >     dev->fw_node = &of_node->fwnode;
-> >    /* bunch of other housekeeping like setting OF_POPULATED and doing
-> > proper of_node_get() */
-> >    // Passing NULL for of_node could undo all the above for dev->of_node.
-> > }
->
-> That also sounds good, particularly if we have a coccinelle spatch
+> --- a/mm/vmalloc.c
+> +++ b/mm/vmalloc.c
+> @@ -102,8 +102,6 @@ static void vunmap_pmd_range(pud_t *pud, unsigned long addr, unsigned long end,
+>  		if (pmd_none_or_clear_bad(pmd))
+>  			continue;
+>  		vunmap_pte_range(pmd, addr, next, mask);
+> -
+> -		cond_resched();
+>  	} while (pmd++, addr = next, addr != end);
+>  }
 
-I've never used coccinelle. But I can fix 5-10 easily findable ones
-like i2c, platform, spi, slimbus, spmi, etc.
+If this is triggering a warning then why isn't the might_sleep() in
+remove_vm_area() also triggering?
 
-> or
-> some other mechanism that enforced the usage of the function where
-> appropriate, my main concern is making sure that we do something which
-> ensures that the boilerplate stuff is handled.
+Sigh.  I also cannot remember why these vfree() functions have to be so
+awkward.  The mutex_trylock(&vmap_purge_lock) isn't permitted in
+interrupt context because mutex_trylock() is stupid, but what was the
+issue with non-interrupt atomic code?
 
-Rob/Frank,
 
-I spent an hour or more looking at this and there are many ways of
-doing this. Wanted to know how much you wanted to do inside these
-boilerplate functions.
-
-This is the minimum we should do in these helper functions.
-
-+/**
-+ * of_unset_dev_of_node - Unset a device's of_node
-+ * @dev - device to unset the of_node for
-+ *
-+ * Use this when you delete a device on which you had called
-+ * of_set_dev_of_node() before.
-+ */
-+static inline void of_unset_dev_of_node(struct device *dev)
-+{
-+       struct device_node *node = dev->of_node
-+
-+       if (!node)
-+               return;
-+
-+       dev->fwnode = NULL;
-+       dev->of_node = NULL;
-+       of_node_put(node);
-+}
-+
-+/**
-+ * of_set_dev_of_node - Set a device's of_node
-+ * @dev - device to set the of_node for
-+ * @node - the device_node that the device was constructed from
-+ *
-+ * Use this when you create a new device from a device_node. It takes care some
-+ * of the housekeeping work that's necessary when you set a device's of_node.
-+ *
-+ * Use of_unset_dev_of_node() before you delete the device.
-+ *
-+ * Returns an error if the device already has its of_node set.
-+ */
-+static inline int of_set_dev_of_node(struct device *dev, struct
-device_node *node)
-+{
-+       if (!node)
-+               return 0;
-+
-+       if (WARN_ON(dev->of_node))
-+               return -EBUSY;
-+
-+       of_node_get(node);
-+       dev->of_node = node;
-+       dev->fwnode = of_fwnode_handle(node);
-+
-+       return 0;
-+}
-
-But I also had another version that set/cleared OF_POPULATED. But that
-meant of_device_alloc() will allocate the device before checking if
-the node has already been populated (because I'd delete the check
-that's already there and use the one rolled into these helper
-functions). I think that inefficiency is okay because I don't think
-"trying to populate an already populated node" would be a common
-occurrence. But I wasn't sure how you'd feel about it.
-
-Any preferences? Thoughts?
-
-Additional context:
-https://lore.kernel.org/lkml/20201104205431.3795207-2-saravanak@google.com/
-
--Saravana
