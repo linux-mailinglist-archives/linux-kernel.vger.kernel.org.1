@@ -2,105 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF5A32AA68E
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 17:05:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 770752AA691
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 17:06:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728463AbgKGQFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 11:05:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56366 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726043AbgKGQFB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 11:05:01 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B5D2C0613CF;
-        Sat,  7 Nov 2020 08:05:01 -0800 (PST)
-Received: from zn.tnic (p200300ec2f1d1200a8d68c48616d8b01.dip0.t-ipconnect.de [IPv6:2003:ec:2f1d:1200:a8d6:8c48:616d:8b01])
+        id S1728466AbgKGQGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 11:06:13 -0500
+Received: from z5.mailgun.us ([104.130.96.5]:51236 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728226AbgKGQGL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Nov 2020 11:06:11 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1604765171; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=pa8KKHokUEvnLhOrdNZJbRmbV871dib3AkUNk5xWExw=;
+ b=fNBYC+FIkXIksnJyxAkbhJMq7QYIsAd1y3RsP/xTv91wAr98hJTmo5bo2Jd6mf7T37Jp6W0y
+ HX4iAHdrI+cJY73qNCi/o6pOYApLrft5zMEO0FRWpVmrWeSy5D9VP/H0wNxGJM1WM/zmqr1O
+ QXtI/stN/hfLjIykuee9nBq/RoI=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 5fa6c5ea1d3980f7d6c528a1 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 07 Nov 2020 16:06:02
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 3168DC433C6; Sat,  7 Nov 2020 16:06:02 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 5B6F01EC037C;
-        Sat,  7 Nov 2020 17:04:58 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1604765098;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=zLbfiPQNQiOyDmepaw5b3U2bW/GQvt26RzIOuic4GiY=;
-        b=aP1qGClNGHCYfuaVb+dAi9EonLeN7s9gM2FBe7Jk7u/dCEih/uWbr8hGZchRaXYdmpwmEF
-        lfSqrLNe1SXyMebPhrgmXH8DZT3dM6dLBHg2yJfihAw2QbvFdyv6dMCZRYa9kCebGxEeE4
-        QIpqi6z+NrGkIAOOWiqJ5buwi0NWsko=
-Date:   Sat, 7 Nov 2020 17:04:44 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     x86-ml <x86@kernel.org>
-Cc:     linux-tip-commits@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Will Deacon <will.deacon@arm.com>, x86@kernel.org
-Subject: Re: [tip: perf/kprobes] locking/atomics: Regenerate the
- atomics-check SHA1's
-Message-ID: <20201107160444.GB30275@zn.tnic>
-References: <160476203869.11244.7869849163897430965.tip-bot2@tip-bot2>
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 18B9BC433C8;
+        Sat,  7 Nov 2020 16:05:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 18B9BC433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <160476203869.11244.7869849163897430965.tip-bot2@tip-bot2>
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH 09/41] wl1251: cmd: Rename 'len' to 'buf_len' in the
+ documentation
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20201102112410.1049272-10-lee.jones@linaro.org>
+References: <20201102112410.1049272-10-lee.jones@linaro.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20201107160602.3168DC433C6@smtp.codeaurora.org>
+Date:   Sat,  7 Nov 2020 16:06:02 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 07, 2020 at 03:13:58PM -0000, tip-bot2 for Ingo Molnar wrote:
-> The following commit has been merged into the perf/kprobes branch of tip:
-> 
-> Commit-ID:     a70a04b3844f59c29573a8581d5c263225060dd6
-> Gitweb:        https://git.kernel.org/tip/a70a04b3844f59c29573a8581d5c263225060dd6
-> Author:        Ingo Molnar <mingo@kernel.org>
-> AuthorDate:    Sat, 07 Nov 2020 12:54:49 +01:00
-> Committer:     Ingo Molnar <mingo@kernel.org>
-> CommitterDate: Sat, 07 Nov 2020 13:20:41 +01:00
-> 
-> locking/atomics: Regenerate the atomics-check SHA1's
-> 
-> The include/asm-generic/atomic-instrumented.h checksum got out
-> of sync, so regenerate it. (No change to actual code.)
-> 
-> Also make scripts/atomic/gen-atomics.sh executable, to make
-> it easier to use.
-> 
-> The auto-generated atomic header signatures are now fine:
-> 
->   thule:~/tip> scripts/atomic/check-atomics.sh
->   thule:~/tip>
-> 
-> Signed-off-by: Ingo Molnar <mingo@kernel.org>
-> Cc: linux-kernel@vger.kernel.org
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Linus Torvalds <torvalds@linux-foundation.org>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Paul E. McKenney <paulmck@kernel.org>
-> Cc: Will Deacon <will.deacon@arm.com>
-> Signed-off-by: Ingo Molnar <mingo@kernel.org>
-> ---
->  include/asm-generic/atomic-instrumented.h | 2 +-
->  scripts/atomic/gen-atomics.sh             | 0
->  2 files changed, 1 insertion(+), 1 deletion(-)
->  mode change 100644 => 100755 scripts/atomic/gen-atomics.sh
-		^^^^^^^^^^^^^^^
+Lee Jones <lee.jones@linaro.org> wrote:
 
-That looks like it snuck in but it shouldn't have...
+> Fixes the following W=1 kernel build warning(s):
+> 
+>  drivers/net/wireless/ti/wl1251/cmd.c:70: warning: Function parameter or member 'buf_len' not described in 'wl1251_cmd_test'
+>  drivers/net/wireless/ti/wl1251/cmd.c:70: warning: Excess function parameter 'len' description in 'wl1251_cmd_test'
+> 
+> Cc: Kalle Valo <kvalo@codeaurora.org>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: linux-wireless@vger.kernel.org
+> Cc: netdev@vger.kernel.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-> diff --git a/scripts/atomic/gen-atomics.sh b/scripts/atomic/gen-atomics.sh
-> old mode 100644
-> new mode 100755
+5 patches applied to wireless-drivers-next.git, thanks.
 
-... here too.
+641291eca88c wl1251: cmd: Rename 'len' to 'buf_len' in the documentation
+9afcf3223675 prism54: isl_ioctl: Fix one function header and demote another
+8b8a6f8c3b50 wl3501_cs: Fix misspelling and provide missing documentation
+5e43d496cd8e mwifiex: pcie: Remove a couple of unchecked 'ret's
+136ab258d984 wlcore: spi: Demote a non-compliant function header, fix another
 
 -- 
-Regards/Gruss,
-    Boris.
+https://patchwork.kernel.org/project/linux-wireless/patch/20201102112410.1049272-10-lee.jones@linaro.org/
 
-https://people.kernel.org/tglx/notes-about-netiquette
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
