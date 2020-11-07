@@ -2,123 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 053ED2AA4DE
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 12:58:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 400DC2AA4E6
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 13:10:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728079AbgKGL6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 06:58:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46676 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728026AbgKGL6c (ORCPT
+        id S1727892AbgKGMKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 07:10:09 -0500
+Received: from mail-io1-f70.google.com ([209.85.166.70]:49528 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727264AbgKGMKH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 06:58:32 -0500
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C25B5C0613D3;
-        Sat,  7 Nov 2020 03:58:31 -0800 (PST)
-Received: by mail-il1-x144.google.com with SMTP id k1so3609989ilc.10;
-        Sat, 07 Nov 2020 03:58:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=xjiQRc4dZgVzVnqr6XKAtaGiVZ1gvizScIbzJui/+es=;
-        b=aEql86p8CeEIEPOHUCzzL1D+6CacnMegJ81GBbPM/qV1GEcakmF+ai2ucMDLnxIeao
-         u1qj1kexFdyzJMdqHCnzfCGraF9BfvPHVJJvgphoWeWyFhrXThWdyiJKxDn8LHwIEG7u
-         fnKjrwEyMeqVKxLTh1pMUP+/XWR3fy8830HfmT8/JJ1XY9AHEpEijtPNYhBxw5a2LCI+
-         EGZ3C7edtTqaFGOcSz54LijI1Z9vVE7NSWh2FO2KWq1xbqdYkZk/1E6vEFY3+HFRBi0D
-         nWAPFfS4D2q7PZhCFps1vjx4mugbZ0bVqJE7scnN4uR1y+2yBRVejnNRXgWKa7YrFVRb
-         MFRg==
+        Sat, 7 Nov 2020 07:10:07 -0500
+Received: by mail-io1-f70.google.com with SMTP id c4so2969845ioi.16
+        for <linux-kernel@vger.kernel.org>; Sat, 07 Nov 2020 04:10:06 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=xjiQRc4dZgVzVnqr6XKAtaGiVZ1gvizScIbzJui/+es=;
-        b=sDxaFk0btcOox04k4MrI4DwkoLaLl7FCsVmXbgZDk8H3Qd0kBydCHLgg5jWIMoZ9rP
-         189nWhmROt3NUOwFpDi0Wex5NwXGFM80ylTKLyfbDI0xagL0Ao2K6xP3zfN+8nsIg5Jm
-         EurSPJAVFa9CL4q3hDRwFBmpYsEu7o5Mj1J04/+BN7CnSnSVkZoblhta7AA3hEa9eyND
-         CWOCEIlzSxIbeioNWDjc49CtFlxJN54GYYBUJ73qrX62e+OlnvQMlQqI6iMGqH7BVB0o
-         eQz5fH40br5hZ5mAJKVluUpjzHTmCCHYab4sP/xxpc67AfYb2YM8iNvqRSVKxci4giyu
-         jxJA==
-X-Gm-Message-State: AOAM530TM+DHTJ31ba+LlV8ncR3IFEJgfCCkhi003SaqTNq93SZliQ1/
-        jGaXZydUCM5qYIkGRPeHTOs=
-X-Google-Smtp-Source: ABdhPJwp6O1YDvTgwJYpfITqWPzDw49xZVX3grMCXDY4GIu2Tp6IoaHnCs2i3sSk6ptIgp55LblEqA==
-X-Received: by 2002:a05:6e02:cf:: with SMTP id r15mr4346498ilq.181.1604750310826;
-        Sat, 07 Nov 2020 03:58:30 -0800 (PST)
-Received: from aford-IdeaCentre-A730.lan ([2601:448:8400:9e8:5d9e:32b:1062:f8cd])
-        by smtp.gmail.com with ESMTPSA id n1sm2920671ile.86.2020.11.07.03.58.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 07 Nov 2020 03:58:30 -0800 (PST)
-From:   Adam Ford <aford173@gmail.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH V4 5/5] arm64: dts: imx8mn: Add node for SPDIF
-Date:   Sat,  7 Nov 2020 05:58:08 -0600
-Message-Id: <20201107115809.1866131-5-aford173@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201107115809.1866131-1-aford173@gmail.com>
-References: <20201107115809.1866131-1-aford173@gmail.com>
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=bEPCOFw5S5rBelNwysXtchmzidY5p8w+fdQ9rPQh+s4=;
+        b=aS8bM1WEAopLrqnnrc/qsJlKgffpjUw6pdSjHN241nxuHBbY99tLTETFWXC74mVaUf
+         kRcpj327CKpYiRyIhnz8CWOrC+7jRwuDmazBCKOp0FlRMHcRFqhxEbBnoxkfHIoql/Wx
+         AX6KH2vn7VQmpbEC1bRhb4HE61hnzgORg8eTAGW7SUMuuHiptljPt90IMZCl2ynEnmmk
+         WVI5hnwz0/qC+vcKsoD/08y70Da8m0afOjs0963sq79txT0SjPKL1BCD6sp3IQ+JjpH0
+         ZA8Om1pHYXZXFsJeF+Gsvsb8fW7uoYw9rK9+8ZB2Oyv00NJuLu8gadz2RqkAmMnRL99t
+         Sdlw==
+X-Gm-Message-State: AOAM533320HqWinJvbUqCgfYkSNg1ieLiLyhihOxKAgXlxeERFqE5Fhg
+        tulURgwp0CH9v4TpVM4LrskXADK+VnD3Fho0vScarJ9XYVpa
+X-Google-Smtp-Source: ABdhPJy/fr/95Krh7za4yiITJhgfJeU+W90NQEYDsQN2T1cH8wGjrelyVfzoWNnPmSrQoa+mWN3xe4S+Mr6tLRiC6Ft6svXkCXrw
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:11a4:: with SMTP id 4mr359864ilj.141.1604751006170;
+ Sat, 07 Nov 2020 04:10:06 -0800 (PST)
+Date:   Sat, 07 Nov 2020 04:10:06 -0800
+In-Reply-To: <000000000000d03eea0571adfe83@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ad052105b383350a@google.com>
+Subject: Re: possible deadlock in mnt_want_write
+From:   syzbot <syzbot+ae82084b07d0297e566b@syzkaller.appspotmail.com>
+To:     amir73il@gmail.com, ast@kernel.org, dvyukov@google.com,
+        linux-fsdevel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-unionfs@vger.kernel.org,
+        miklos@szeredi.hu, mszeredi@redhat.com, rgoldwyn@suse.de,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk,
+        zohar@linux.ibm.com, zohar@linux.vnet.ibm.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The i.MX8M Nano can support SPDIF which is compatible to the
-IP used on the i.MX35.
+syzbot suspects this issue was fixed by commit:
 
-Add the node.
+commit 146d62e5a5867fbf84490d82455718bfb10fe824
+Author: Amir Goldstein <amir73il@gmail.com>
+Date:   Thu Apr 18 14:42:08 2019 +0000
 
-Signed-off-by: Adam Ford <aford173@gmail.com>
----
-V4:  No Change
-V3:  No Change
-V2:  No Change
+    ovl: detect overlapping layers
 
- arch/arm64/boot/dts/freescale/imx8mn.dtsi | 24 +++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11e40184500000
+start commit:   6d906f99 Merge tag 'arm64-fixes' of git://git.kernel.org/p..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=856fc6d0fbbeede9
+dashboard link: https://syzkaller.appspot.com/bug?extid=ae82084b07d0297e566b
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=111767b7200000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1611ab2d200000
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mn.dtsi b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-index aa3f1eb391bd..ee1790230490 100644
---- a/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-@@ -337,6 +337,30 @@ micfil: audio-controller@30080000 {
- 					status = "disabled";
- 				};
- 
-+				spdif1: spdif@30090000 {
-+					compatible = "fsl,imx35-spdif";
-+					reg = <0x30090000 0x10000>;
-+					interrupts = <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>;
-+					clocks = <&clk IMX8MN_CLK_AUDIO_AHB>, /* core */
-+						 <&clk IMX8MN_CLK_24M>, /* rxtx0 */
-+						 <&clk IMX8MN_CLK_SPDIF1>, /* rxtx1 */
-+						 <&clk IMX8MN_CLK_DUMMY>, /* rxtx2 */
-+						 <&clk IMX8MN_CLK_DUMMY>, /* rxtx3 */
-+						 <&clk IMX8MN_CLK_DUMMY>, /* rxtx4 */
-+						 <&clk IMX8MN_CLK_AUDIO_AHB>, /* rxtx5 */
-+						 <&clk IMX8MN_CLK_DUMMY>, /* rxtx6 */
-+						 <&clk IMX8MN_CLK_DUMMY>, /* rxtx7 */
-+						 <&clk IMX8MN_CLK_DUMMY>; /* spba */
-+					clock-names = "core", "rxtx0",
-+						      "rxtx1", "rxtx2",
-+						      "rxtx3", "rxtx4",
-+						      "rxtx5", "rxtx6",
-+						      "rxtx7", "spba";
-+					dmas = <&sdma2 28 18 0>, <&sdma2 29 18 0>;
-+					dma-names = "rx", "tx";
-+					status = "disabled";
-+				};
-+
- 				sai7: sai@300b0000 {
- 					compatible = "fsl,imx8mm-sai", "fsl,imx8mq-sai";
- 					reg = <0x300b0000 0x10000>;
--- 
-2.25.1
+If the result looks correct, please mark the issue as fixed by replying with:
 
+#syz fix: ovl: detect overlapping layers
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
