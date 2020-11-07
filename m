@@ -2,102 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 862A12AA56E
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 14:34:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 792612AA57C
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 14:39:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728078AbgKGNek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 08:34:40 -0500
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:56002 "EHLO
-        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727084AbgKGNei (ORCPT
+        id S1728098AbgKGNjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 08:39:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33966 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727084AbgKGNjl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 08:34:38 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R521e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UEWYIIT_1604756073;
-Received: from IT-FVFX43SYHV2H.lan(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UEWYIIT_1604756073)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Sat, 07 Nov 2020 21:34:33 +0800
-Subject: Re: [PATCH] mm/memcg: update page struct member in comments
-To:     Roman Gushchin <guro@fb.com>
-Cc:     hannes@cmpxchg.org, akpm@linux-foundation.org,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <1604662413-5734-1-git-send-email-alex.shi@linux.alibaba.com>
- <20201106205140.GA2285866@carbon.dhcp.thefacebook.com>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <1491c150-1cc0-6062-08ea-9c891548a3bc@linux.alibaba.com>
-Date:   Sat, 7 Nov 2020 21:34:15 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
+        Sat, 7 Nov 2020 08:39:41 -0500
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5AE0C0613CF;
+        Sat,  7 Nov 2020 05:39:40 -0800 (PST)
+Received: by mail-lj1-x231.google.com with SMTP id y16so4609144ljk.1;
+        Sat, 07 Nov 2020 05:39:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=c5vk1HU4LMO05/HvLhuFLID0YfaxsQiSjHZGb3JZL+k=;
+        b=pp3Nijb3qelAlJYoXTJYgO4SDTsvHQB1JVzF89P6cF7PNLT/RAQs2CvY4zJ2L+s657
+         Rncm1TbS0AhZp5RWhK17AA9nfGkJuPjqOuiTzG5SUXR0X/CBwILioM5AcJwIQfNT3oNi
+         6l3Iz82nm4lT7T+93ohGSnSSQK2e0WzReQZ6oDBR1YsM0b2OGWCkPUBtqGJXh4R/zsbe
+         KIFr52Gn7obgs+qgg1HXxFe3Q+6Ig0nlw89gQ2rUe1ccXEJ9GVn4GcREF7Z1huS2l5MB
+         wGPvhOufbRsForGk7jLelkIHSAe/hKG7VFQ3BOthkkFnmdb6qq1eWE5eUd9JYdKtVV+w
+         mESg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=c5vk1HU4LMO05/HvLhuFLID0YfaxsQiSjHZGb3JZL+k=;
+        b=aT+9E0ex+1rgp4p+UufwbYMQ5EHxD0GLtqyhf2/eooOm5yECywHKRf4NUCBZj/4DQO
+         INwxfEmvivFDx9uFOLy6EPpJ0XA7fPyuaT+x0Uqeahy9co7Mkx0Lc9SB9sIyok6c1iCN
+         ll9HW47ZxQrSqJVj5j+DKXebntosDVHpM4OMqnCmYmqxpF90q4l+rZ6aJj4CwgXTASNo
+         VOjh3fBZ70EmdAhpcOn3x+tRGW4EGptbyxn8bqxbjQXmBbwmKALrX03I2oSAfvWngIz7
+         TeIdPMqDT52U/WZXyl02o0a5RST48dm1YpAFyRhZXT3rswbf0mooYVZXS8aeOzvrtbCa
+         7SUQ==
+X-Gm-Message-State: AOAM531RI9Ki1QqIEE9mQYuRanFJkgGo1VuHcuMUv8ryN9ND++kYeI+F
+        mYzLh8Do5aLFSUvgGN/No1c=
+X-Google-Smtp-Source: ABdhPJykwd8X4etetyGtEH9KC2jai7rgshQmz5xZq3TNNHZcMixp/o1ZAsTHgBT0IRpaPnjMLSR6FQ==
+X-Received: by 2002:a2e:9ac4:: with SMTP id p4mr2412087ljj.247.1604756379480;
+        Sat, 07 Nov 2020 05:39:39 -0800 (PST)
+Received: from localhost.localdomain ([2a02:a315:5445:5300:d646:fcbb:9c5e:1da1])
+        by smtp.googlemail.com with ESMTPSA id y27sm524189ljm.74.2020.11.07.05.39.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 07 Nov 2020 05:39:38 -0800 (PST)
+From:   =?UTF-8?q?Pawe=C5=82=20Chmiel?= <pawel.mikolaj.chmiel@gmail.com>
+To:     kgene@kernel.org, krzk@kernel.org, alim.akhtar@samsung.com
+Cc:     robh+dt@kernel.org, a.kesavan@samsung.com,
+        naveenkrishna.ch@gmail.com, thomas.ab@samsung.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Pawe=C5=82=20Chmiel?= <pawel.mikolaj.chmiel@gmail.com>
+Subject: [PATCH v2 1/2] arm64: dts: exynos: Include common syscon restart/poweroff for Exynos7
+Date:   Sat,  7 Nov 2020 14:39:25 +0100
+Message-Id: <20201107133926.37187-1-pawel.mikolaj.chmiel@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <20201106205140.GA2285866@carbon.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=gbk
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Exynos7 uses the same syscon reboot and poweroff nodes as other Exynos
+SoCs, so instead of duplicating code we can just include common dtsi
+file, which already contains definitions of them. After this change,
+poweroff node will be also available, previously this dts file did
+contain only reboot node.
 
-
-‘⁄ 2020/11/7 …œŒÁ4:51, Roman Gushchin –¥µ¿:
-> There are "page and memcg binding" and "page's memcg" used in similar cases,
-> I think it's more obvious than "page_memcg(page) being stable".
-> 
-> Maybe it helps to address Ira's comment.
-> 
-> Anyway, please feel free to add:
-> Acked-by: Roman Gushchin <guro@fb.com>
-> 
-> Thanks!
-
-Thanks a lot! Roman.
-here is the updated patch with your suggestion and ack.
-
-
-From 0db2bd8f3833ec5e58c6978f771b05e4902e5156 Mon Sep 17 00:00:00 2001
-From: Alex Shi <alex.shi@linux.alibaba.com>
-Date: Fri, 6 Nov 2020 19:33:33 +0800
-Subject: [PATCH v2] mm/memcg: update page struct member in comments
-
-The page->mem_cgroup member is replaced by memcg_data, and add a helper
-page_memcg() for it. Need to update comments to avoid confusing.
-
-Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-Acked-by: Roman Gushchin <guro@fb.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Michal Hocko <mhocko@kernel.org>
-Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: cgroups@vger.kernel.org
-Cc: linux-mm@kvack.org
-Cc: linux-kernel@vger.kernel.org
+Fixes: fb026cb65247 ("arm64: dts: Add reboot node for exynos7")
+Fixes: b9024cbc937d ("arm64: dts: Add initial device tree support for exynos7")
+Signed-off-by: Pawe≈Ç Chmiel <pawel.mikolaj.chmiel@gmail.com>
 ---
- mm/memcontrol.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Changes from v1:
+  - Split into two separate patches.
+  - Include existing exynos-syscon-restart.dtsi to avoid code
+    duplication.
+---
+ arch/arm64/boot/dts/exynos/exynos7.dtsi | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 7657f16cf992..b6560ab1adc4 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -1330,7 +1330,7 @@ void lruvec_memcg_debug(struct lruvec *lruvec, struct page *page)
-  * @page: the page
-  * @pgdat: pgdat of the page
-  *
-- * This function relies on page->mem_cgroup being stable - see the
-+ * This function relies on page's memcg being stable - see the
-  * access rules in commit_charge().
-  */
- struct lruvec *mem_cgroup_page_lruvec(struct page *page, struct pglist_data *pgdat)
-@@ -2942,7 +2942,7 @@ static void commit_charge(struct page *page, struct mem_cgroup *memcg)
- {
- 	VM_BUG_ON_PAGE(page_memcg(page), page);
- 	/*
--	 * Any of the following ensures page->mem_cgroup stability:
-+	 * Any of the following ensures page's memcg stability:
- 	 *
- 	 * - the page lock
- 	 * - LRU isolation
+diff --git a/arch/arm64/boot/dts/exynos/exynos7.dtsi b/arch/arm64/boot/dts/exynos/exynos7.dtsi
+index 7a2cba4220d9..723f5d5fcf00 100644
+--- a/arch/arm64/boot/dts/exynos/exynos7.dtsi
++++ b/arch/arm64/boot/dts/exynos/exynos7.dtsi
+@@ -624,13 +624,6 @@ hsi2c_11: hsi2c@136a0000 {
+ 		pmu_system_controller: system-controller@105c0000 {
+ 			compatible = "samsung,exynos7-pmu", "syscon";
+ 			reg = <0x105c0000 0x5000>;
+-
+-			reboot: syscon-reboot {
+-				compatible = "syscon-reboot";
+-				regmap = <&pmu_system_controller>;
+-				offset = <0x0400>;
+-				mask = <0x1>;
+-			};
+ 		};
+ 
+ 		rtc: rtc@10590000 {
+@@ -818,3 +811,5 @@ atlas_thermal: cluster0-thermal {
+ };
+ 
+ #include "exynos7-pinctrl.dtsi"
++#include "arm/exynos-syscon-restart.dtsi"
++
 -- 
-1.8.3.1
+2.27.0
 
