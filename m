@@ -2,130 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 754222AA620
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 16:13:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 056D22AA621
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 16:14:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726151AbgKGPNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 10:13:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48460 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726021AbgKGPNt (ORCPT
+        id S1727863AbgKGPN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 10:13:57 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:41824 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726257AbgKGPN4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 10:13:49 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A93DC0613CF
-        for <linux-kernel@vger.kernel.org>; Sat,  7 Nov 2020 07:13:48 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id a65so4003970wme.1
-        for <linux-kernel@vger.kernel.org>; Sat, 07 Nov 2020 07:13:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Fe6CFZHB4eN2243CFprUL/n+G4vxgYInJJ6wj8YKWBk=;
-        b=yxte38245MaYCKkeFpeoucGOLM90V4xE3nz3Cnj3+Pam0t1F1fbMS9wC9MundIMK2H
-         UPpv/s3qUlbyQ01axD3II1Z2BuBIDINgXKwK2bhp+vaisZiHk8VTRAbqY8tzzKxgEU9M
-         E3GiuyMz1aPvkPSGfy0Rw0HBumWxid8ptFtJOzcgegABv758cPFg4Fi2/SarChNNob1s
-         E2C//PdsYp1Sok8XurQ1QdtUexRfPcjHbcN37l8HpHhDpfsyGgWi5n0VtIOA0z+mpBhk
-         yTJVLKMMUL/ibfnKoPsTUVZ+PiKhaeuOMpHLv2gghWo190HmeMHu687awnTuITzS+hTM
-         Fouw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Fe6CFZHB4eN2243CFprUL/n+G4vxgYInJJ6wj8YKWBk=;
-        b=BeioXKHoBuQXe+8aOzu2Zr7YdjPD1tG2GL4+7NWgCQxVqf8YnQBWm4QeHL1oGqTdQM
-         tKNksZUoQL9EF5ub6Ko0zBXaiPW8ykgniM1o5GHf7D+yrPhA3J0EJsrxocFUFk8VgkH5
-         zzk2CXiv0HYzbPFMt1jr8iLpMWzBoIYoqA7TEH0KRw6jIbuLQ1k2hC15y6Eyaigjicnf
-         7cfB2jnDLQTf5SQdx2CAUpZ5YpxrGEo2yqTmFlAWarZ9sSaAjFJT3v8IH8EnemuNw0V4
-         NJGThddHZXQutRzXgwDvEAWAHppEfDVX43pmM2D633JE60nLfbPTEIbcgULSCusNjr6C
-         ZtXg==
-X-Gm-Message-State: AOAM533XNEByZZbaPzcD+PqLNphZLBvDHwrbQD2yhr9w2LCP1k1y17TW
-        bxwICUdDprxj5hES9L/r7g2CepRwX3TX5GOs
-X-Google-Smtp-Source: ABdhPJy6Ii661kV3KJTNGTIaBkDIcEjLcbtut88fwfWuPoGhumpi22jfpd/9QuNPLMHXcJ8vc855nQ==
-X-Received: by 2002:a1c:f417:: with SMTP id z23mr4969499wma.57.1604762026726;
-        Sat, 07 Nov 2020 07:13:46 -0800 (PST)
-Received: from dell ([91.110.221.236])
-        by smtp.gmail.com with ESMTPSA id l16sm6447087wrr.83.2020.11.07.07.13.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 07 Nov 2020 07:13:46 -0800 (PST)
-Date:   Sat, 7 Nov 2020 15:13:42 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Sam Ravnborg <sam@ravnborg.org>
-Cc:     David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
-Subject: Re: [PATCH 17/19] drm/radeon/radeon_kms: Fix misnaming of
- 'radeon_info_ioctl's dev param
-Message-ID: <20201107151342.GQ2063125@dell>
-References: <20201106214949.2042120-1-lee.jones@linaro.org>
- <20201106214949.2042120-18-lee.jones@linaro.org>
- <20201107142919.GB1014611@ravnborg.org>
+        Sat, 7 Nov 2020 10:13:56 -0500
+Date:   Sat, 07 Nov 2020 15:13:53 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1604762034;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GUBL1Q9ewccVzUNHLTlQuQpuEgsgoh0nVisziH9kOE0=;
+        b=FPwQNs++SXrAQAJuBYJslUy5qu+w+18rTgxU5fmLw2S5akHD2fRjSDaKCxRPphzZyelu+E
+        AOnc1aWhqK1e/0ue6d7zgTx+ZYjG2tH3iurTLz3oTUS9LmZg/Z4VZt5hofM/Qn8UHOuJxV
+        Fzxyrz8D6YZLGKGXYlYMTF4N1zDV5wjlYIWYumi8moCPVCe0yZpIGZoXlRgPtiw0lTD+fA
+        GSMGx3E2aGjCma7yqYUZoo8RdHuGmBNdieaRceW8djsXbZPMtWTUluKElN+reD7l/SVbM4
+        f1SFTBEDuUOzyRQbSQNzFMGGS6iA0ez0rQphPJwTjq1ZdHQfnTIqPnMSACn6AA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1604762034;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GUBL1Q9ewccVzUNHLTlQuQpuEgsgoh0nVisziH9kOE0=;
+        b=a1gNwgMYDePW1KQU5CzLdjW5mEnN7sZLOpTkveQV11M99A/NwIS0Lpt8gr0Dx65LXanu1e
+        qjuPAOS8kBLQ90AQ==
+From:   "tip-bot2 for Andy Shevchenko" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: irq/core] regmap: irq: Convert to use irq_domain_create_legacy()
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Mark Brown <broonie@kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, maz@kernel.org
+In-Reply-To: <20201030165919.86234-6-andriy.shevchenko@linux.intel.com>
+References: <20201030165919.86234-6-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201107142919.GB1014611@ravnborg.org>
+Message-ID: <160476203345.11244.1783557205584650453.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 07 Nov 2020, Sam Ravnborg wrote:
+The following commit has been merged into the irq/core branch of tip:
 
-> Hi Lee,
-> 
-> On Fri, Nov 06, 2020 at 09:49:47PM +0000, Lee Jones wrote:
-> > Fixes the following W=1 kernel build warning(s):
-> > 
-> >  drivers/gpu/drm/radeon/radeon_kms.c:226: warning: Function parameter or member 'dev' not described in 'radeon_info_ioctl'
-> >  drivers/gpu/drm/radeon/radeon_kms.c:226: warning: Excess function parameter 'rdev' description in 'radeon_info_ioctl'
-> > 
-> > Cc: Alex Deucher <alexander.deucher@amd.com>
-> > Cc: "Christian König" <christian.koenig@amd.com>
-> > Cc: David Airlie <airlied@linux.ie>
-> > Cc: Daniel Vetter <daniel@ffwll.ch>
-> > Cc: amd-gfx@lists.freedesktop.org
-> > Cc: dri-devel@lists.freedesktop.org
-> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > ---
-> >  drivers/gpu/drm/radeon/radeon_kms.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/gpu/drm/radeon/radeon_kms.c b/drivers/gpu/drm/radeon/radeon_kms.c
-> > index 0d8fbabffcead..21c206795c364 100644
-> > --- a/drivers/gpu/drm/radeon/radeon_kms.c
-> > +++ b/drivers/gpu/drm/radeon/radeon_kms.c
-> > @@ -213,7 +213,7 @@ static void radeon_set_filp_rights(struct drm_device *dev,
-> >  /**
-> >   * radeon_info_ioctl - answer a device specific request.
-> >   *
-> > - * @rdev: radeon device pointer
-> > + * @dev: radeon device pointer
-> >   * @data: request object
-> >   * @filp: drm filp
-> >   *
-> 
-> Delete all the kernel-doc annotation as we do not pull this file into
-> the kernel-doc anyway.
-> 
-> Keep the /* Answer a device specific request */ part.
-> 
-> At least thats what I see as the best way to deal with it.
+Commit-ID:     d315c627a18249930750fe4eb2b21f3fe9b32ea4
+Gitweb:        https://git.kernel.org/tip/d315c627a18249930750fe4eb2b21f3fe9b32ea4
+Author:        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+AuthorDate:    Fri, 30 Oct 2020 18:59:19 +02:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Sat, 07 Nov 2020 11:33:46 +01:00
 
-Demoting all headers, even if they are conformant, it not the way to
-go.  Some contributors/maintainers prefer to keep the kernel-doc
-(pretty colours, automated checking [a la, this patch!] and the-like)
-formatting, even if they are not directly referenced from
-/Documentation.
+regmap: irq: Convert to use irq_domain_create_legacy()
 
-For now, so long as the build is happy, I am happy.
+irq_domain_create_legacy() takes a fwnode as parameter contrary to
+irq_domain_add_legacy() which requires a OF node.
 
-If you wish to make the build unhappy about this, you should take up
-the argument to encompass `scripts/find-unused-docs.sh` into it.
+Switch the regmap irq domain creation to use that new function so it is not
+longer limited to OF based usage.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Acked-by: Mark Brown <broonie@kernel.org>
+Link: https://lore.kernel.org/r/20201030165919.86234-6-andriy.shevchenko@linux.intel.com
+
+---
+ drivers/base/regmap/regmap-irq.c | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/base/regmap/regmap-irq.c b/drivers/base/regmap/regmap-irq.c
+index ad5c2de..19db764 100644
+--- a/drivers/base/regmap/regmap-irq.c
++++ b/drivers/base/regmap/regmap-irq.c
+@@ -803,13 +803,12 @@ int regmap_add_irq_chip_fwnode(struct fwnode_handle *fwnode,
+ 	}
+ 
+ 	if (irq_base)
+-		d->domain = irq_domain_add_legacy(to_of_node(fwnode),
+-						  chip->num_irqs, irq_base,
+-						  0, &regmap_domain_ops, d);
++		d->domain = irq_domain_create_legacy(fwnode, chip->num_irqs,
++						     irq_base, 0,
++						     &regmap_domain_ops, d);
+ 	else
+-		d->domain = irq_domain_add_linear(to_of_node(fwnode),
+-						  chip->num_irqs,
+-						  &regmap_domain_ops, d);
++		d->domain = irq_domain_create_linear(fwnode, chip->num_irqs,
++						     &regmap_domain_ops, d);
+ 	if (!d->domain) {
+ 		dev_err(map->dev, "Failed to create IRQ domain\n");
+ 		ret = -ENOMEM;
