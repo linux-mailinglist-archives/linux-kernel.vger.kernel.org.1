@@ -2,116 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01E102AA631
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 16:14:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63B372AA633
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 16:22:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728381AbgKGPOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 10:14:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48606 "EHLO
+        id S1726275AbgKGPWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 10:22:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726275AbgKGPOn (ORCPT
+        with ESMTP id S1726060AbgKGPWM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 10:14:43 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93EABC0613D2
-        for <linux-kernel@vger.kernel.org>; Sat,  7 Nov 2020 07:14:43 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id h2so4190308wmm.0
-        for <linux-kernel@vger.kernel.org>; Sat, 07 Nov 2020 07:14:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=5Yfpcznfq7zUC+nbLYSd5qw9mgk2f1+fj8pB/pC5wlY=;
-        b=OdxcA/HWczLQ90m1mnY48hp3qEOBvLprtrlUSRDiLVQPdiPIaKMmmXp/mQLsSd0sKK
-         mOVPeIQ4LT8aH8g8HdwQItMt4AUvV+6siH4x51zO91HFX3HysYW0LmzGthb1pFGr1brY
-         awUYslxY/OgiFK5LReEhL6axPFWgesZxAV/DiqUILXxjBnEFRXHVt6Ld1BXWtb5hbgsX
-         n3zFf+NsdBb6KHxE4JwYCdTIq/jUj9tkLIGmV4gXqhxKBsMSwK/ZS4LiB49MYVSaVfOn
-         wpxVIz322u55aL2OIiCtrOZXNlM2ABvBav6YcdbDPHvYqcAcVJDR5Lh770fj0JQs3wvD
-         NwHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=5Yfpcznfq7zUC+nbLYSd5qw9mgk2f1+fj8pB/pC5wlY=;
-        b=YIQDsAFTNvJtTsRXh/wUV2rykUrxGBtLIDfRaaROI6bgtlDsJxhNGq3yPSHAUOteuP
-         mB5bDqq3aj0rlY3Jgvvn3Dg//M3dPkn1Q6bgTYHrtKjTYvKldYxLC/14RO/IkH8PcJJs
-         tGeOs85dPBwEmbjhKfb9QZHOlJRmOC2Z45ZO7JWnoIDj/f1TctGS9VWD0FprhNgx9B0Q
-         ovMfDF7jSPsQ46jd/yploD+xPZJFXZljmObHhegntqp68bt7RRH3BnTNkr7GtRZ1vzN8
-         CNZb4jfdb3nFx04qcoTUFXjRjwPa37sWP8NWGYTB5kcMsjV3IQTE5+E7IyRmMnYtSyFl
-         g79w==
-X-Gm-Message-State: AOAM532kaxJ7b/1ENnr1/xYUE6nnlNjLE2verMqEike7zI1p9rot295o
-        r0NWHssGy2YukHRGfe3veDBgxg==
-X-Google-Smtp-Source: ABdhPJxPCaNJ0MahQ/W3b9fSaGgk7MqXhKrOOHN2l3VTEbRE4u5vnj39pfkLusOtw7OARbYyPzCG8A==
-X-Received: by 2002:a7b:c848:: with SMTP id c8mr2974808wml.86.1604762082229;
-        Sat, 07 Nov 2020 07:14:42 -0800 (PST)
-Received: from dell ([91.110.221.236])
-        by smtp.gmail.com with ESMTPSA id f20sm6370386wmc.26.2020.11.07.07.14.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 07 Nov 2020 07:14:41 -0800 (PST)
-Date:   Sat, 7 Nov 2020 15:14:24 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Sam Ravnborg <sam@ravnborg.org>
-Cc:     David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        linaro-mm-sig@lists.linaro.org, dri-devel@lists.freedesktop.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        linux-media@vger.kernel.org
-Subject: Re: [PATCH 10/19] drm/radeon/radeon: Move prototype into shared
- header
-Message-ID: <20201107151424.GR2063125@dell>
-References: <20201106214949.2042120-1-lee.jones@linaro.org>
- <20201106214949.2042120-11-lee.jones@linaro.org>
- <20201107142651.GA1014611@ravnborg.org>
+        Sat, 7 Nov 2020 10:22:12 -0500
+Received: from mail.kmu-office.ch (mail.kmu-office.ch [IPv6:2a02:418:6a02::a2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FF9FC0613CF
+        for <linux-kernel@vger.kernel.org>; Sat,  7 Nov 2020 07:22:12 -0800 (PST)
+Received: from allenwind.lan (unknown [IPv6:2a02:169:3df5::979])
+        by mail.kmu-office.ch (Postfix) with ESMTPSA id CA9895C1FF5;
+        Sat,  7 Nov 2020 16:22:07 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=agner.ch; s=dkim;
+        t=1604762527;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:
+         content-transfer-encoding:content-transfer-encoding:in-reply-to:
+         references; bh=90S2HQuQxNPuGlnJbbsFbCfJWrpfhbx3HtSCJ9DUcsk=;
+        b=J8u/fVKnCRmBm6g2eyDZ4IoD9jRbuQ1cSOo/4+y4oF6CdQMDQYyIyz66O/E9TBZ201dbrI
+        hx/qlEbsd0km1/uwjn8EcDEpfbav4vOIjRO8ela1kwgC3KEPMtyPhQ4bYFViPbv9uxJHjR
+        EJ5/yYwgpVm2E4dWlT3/zMihAeSgfvk=
+From:   Stefan Agner <stefan@agner.ch>
+To:     minchan@kernel.org, ngupta@vflare.org,
+        sergey.senozhatsky.work@gmail.com
+Cc:     akpm@linux-foundation.org, sjenning@linux.vnet.ibm.com,
+        gregkh@linuxfoundation.org, arnd@arndb.de, stefan@agner.ch,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] mm/zsmalloc: include sparsemem.h for MAX_PHYSMEM_BITS
+Date:   Sat,  7 Nov 2020 16:22:06 +0100
+Message-Id: <bdfa44bf1c570b05d6c70898e2bbb0acf234ecdf.1604762181.git.stefan@agner.ch>
+X-Mailer: git-send-email 2.29.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201107142651.GA1014611@ravnborg.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 07 Nov 2020, Sam Ravnborg wrote:
+Most architectures define MAX_PHYSMEM_BITS in asm/sparsemem.h and don't
+include it in asm/pgtable.h. Include asm/sparsemem.h directly to get
+the MAX_PHYSMEM_BITS define on all architectures.
 
-> Hi Lee,
-> 
-> On Fri, Nov 06, 2020 at 09:49:40PM +0000, Lee Jones wrote:
-> > Unfortunately, a suitable one didn't already exist.
-> > 
-> > Fixes the following W=1 kernel build warning(s):
-> > 
-> >  drivers/gpu/drm/radeon/radeon_device.c:637:6: warning: no previous prototype for ‘radeon_device_is_virtual’ [-Wmissing-prototypes]
-> >  637 | bool radeon_device_is_virtual(void)
-> >  | ^~~~~~~~~~~~~~~~~~~~~~~~
-> > 
-> > Cc: Alex Deucher <alexander.deucher@amd.com>
-> > Cc: "Christian König" <christian.koenig@amd.com>
-> > Cc: David Airlie <airlied@linux.ie>
-> > Cc: Daniel Vetter <daniel@ffwll.ch>
-> > Cc: Sumit Semwal <sumit.semwal@linaro.org>
-> > Cc: amd-gfx@lists.freedesktop.org
-> > Cc: dri-devel@lists.freedesktop.org
-> > Cc: linux-media@vger.kernel.org
-> > Cc: linaro-mm-sig@lists.linaro.org
-> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > ---
-> >  drivers/gpu/drm/radeon/radeon_device.c |  1 +
-> >  drivers/gpu/drm/radeon/radeon_device.h | 32 ++++++++++++++++++++++++++
-> >  drivers/gpu/drm/radeon/radeon_drv.c    |  3 +--
-> >  3 files changed, 34 insertions(+), 2 deletions(-)
-> >  create mode 100644 drivers/gpu/drm/radeon/radeon_device.h
-> 
-> Other public functions in radeon_device.c have their prototype in
-> radeon.h - for example radeon_is_px()
-> 
-> Add radeon_device_is_virtual() there so we avoiid this new header.
+This fixes a crash when accessing zram on 32-bit ARM platform with LPAE and
+more than 4GB of memory:
+  Unable to handle kernel NULL pointer dereference at virtual address 00000000
+  pgd = a27bd01c
+  [00000000] *pgd=236a0003, *pmd=1ffa64003
+  Internal error: Oops: 207 [#1] SMP ARM
+  Modules linked in: mdio_bcm_unimac(+) brcmfmac cfg80211 brcmutil raspberrypi_hwmon hci_uart crc32_arm_ce bcm2711_thermal phy_generic genet
+  CPU: 0 PID: 123 Comm: mkfs.ext4 Not tainted 5.9.6 #1
+  Hardware name: BCM2711
+  PC is at zs_map_object+0x94/0x338
+  LR is at zram_bvec_rw.constprop.0+0x330/0xa64
+  pc : [<c0602b38>]    lr : [<c0bda6a0>]    psr: 60000013
+  sp : e376bbe0  ip : 00000000  fp : c1e2921c
+  r10: 00000002  r9 : c1dda730  r8 : 00000000
+  r7 : e8ff7a00  r6 : 00000000  r5 : 02f9ffa0  r4 : e3710000
+  r3 : 000fdffe  r2 : c1e0ce80  r1 : ebf979a0  r0 : 00000000
+  Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment user
+  Control: 30c5383d  Table: 235c2a80  DAC: fffffffd
+  Process mkfs.ext4 (pid: 123, stack limit = 0x495a22e6)
+  Stack: (0xe376bbe0 to 0xe376c000)
+  ...
+  [<c0602b38>] (zs_map_object) from [<c0bda6a0>] (zram_bvec_rw.constprop.0+0x330/0xa64)
+  [<c0bda6a0>] (zram_bvec_rw.constprop.0) from [<c0bdaf78>] (zram_submit_bio+0x1a4/0x40c)
+  [<c0bdaf78>] (zram_submit_bio) from [<c085806c>] (submit_bio_noacct+0xd0/0x3c8)
+  [<c085806c>] (submit_bio_noacct) from [<c08583b0>] (submit_bio+0x4c/0x190)
+  [<c08583b0>] (submit_bio) from [<c06496b4>] (submit_bh_wbc+0x188/0x1b8)
+  [<c06496b4>] (submit_bh_wbc) from [<c064ce98>] (__block_write_full_page+0x340/0x5e4)
+  [<c064ce98>] (__block_write_full_page) from [<c064d3ec>] (block_write_full_page+0x128/0x170)
+  [<c064d3ec>] (block_write_full_page) from [<c0591ae8>] (__writepage+0x14/0x68)
+  [<c0591ae8>] (__writepage) from [<c0593efc>] (write_cache_pages+0x1bc/0x494)
+  [<c0593efc>] (write_cache_pages) from [<c059422c>] (generic_writepages+0x58/0x8c)
+  [<c059422c>] (generic_writepages) from [<c0594c24>] (do_writepages+0x48/0xec)
+  [<c0594c24>] (do_writepages) from [<c0589330>] (__filemap_fdatawrite_range+0xf0/0x128)
+  [<c0589330>] (__filemap_fdatawrite_range) from [<c05894bc>] (file_write_and_wait_range+0x48/0x98)
+  [<c05894bc>] (file_write_and_wait_range) from [<c064f3f8>] (blkdev_fsync+0x1c/0x44)
+  [<c064f3f8>] (blkdev_fsync) from [<c064408c>] (do_fsync+0x3c/0x70)
+  [<c064408c>] (do_fsync) from [<c0400374>] (__sys_trace_return+0x0/0x2c)
+  Exception stack(0xe376bfa8 to 0xe376bff0)
+  bfa0:                   0003d2e0 b6f7b6f0 00000003 00046e40 00001000 00000000
+  bfc0: 0003d2e0 b6f7b6f0 00000000 00000076 00000000 00000000 befcbb20 befcbb28
+  bfe0: b6f4e060 befcbad8 b6f23e0c b6dc4a80
+  Code: e5927000 e0050391 e0871005 e5918018 (e5983000)
 
-I'm happy to do that, if it's deemed better.
+Fixes: 61989a80fb3a ("staging: zsmalloc: zsmalloc memory allocation library")
+Signed-off-by: Stefan Agner <stefan@agner.ch>
+---
+ mm/zsmalloc.c | 1 +
+ 1 file changed, 1 insertion(+)
 
+diff --git a/mm/zsmalloc.c b/mm/zsmalloc.c
+index c36fdff9a371..260bd48aacd0 100644
+--- a/mm/zsmalloc.c
++++ b/mm/zsmalloc.c
+@@ -40,6 +40,7 @@
+ #include <linux/string.h>
+ #include <linux/slab.h>
+ #include <linux/pgtable.h>
++#include <asm/sparsemem.h>
+ #include <asm/tlbflush.h>
+ #include <linux/cpumask.h>
+ #include <linux/cpu.h>
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.29.1
+
