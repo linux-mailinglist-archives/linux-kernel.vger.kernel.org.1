@@ -2,105 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F6752AA42F
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 10:15:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 548BA2AA432
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 10:16:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727977AbgKGJPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 04:15:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33878 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727810AbgKGJPe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 04:15:34 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 845C120B1F;
-        Sat,  7 Nov 2020 09:15:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604740533;
-        bh=z3piLd5RkcamTnBERZJX23dRz9m32jf+XtAO/19HsP4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZkTZVB5W57cf+pMQQBp+mWvNSUr0zqz4HDaNaccbyo0axy9QGgvZVX4fEXfRh45yO
-         m+daxTjmhX9HjSHI2eRmv9I6DMHoVdBaTexYS0RECz260aZQIQGCVKdPTPIiKskpSE
-         leuAzNrdFALGRnc2Oz4cFhRMOMr2E53z2y55x7gA=
-Date:   Sat, 7 Nov 2020 10:15:29 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Casey Schaufler <casey@schaufler-ca.com>
-Cc:     casey.schaufler@intel.com, jmorris@namei.org,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-        linux-audit@redhat.com, keescook@chromium.org,
-        john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp,
-        paul@paul-moore.com, sds@tycho.nsa.gov,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org
-Subject: Re: [PATCH v22 12/23] LSM: Specify which LSM to display
-Message-ID: <20201107091529.GA23328@kroah.com>
-References: <20201104234114.11346-1-casey@schaufler-ca.com>
- <20201104234114.11346-13-casey@schaufler-ca.com>
- <20201105092245.GB3439341@kroah.com>
- <31027d8e-50bc-70be-b4f2-a96a84de2bae@schaufler-ca.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <31027d8e-50bc-70be-b4f2-a96a84de2bae@schaufler-ca.com>
+        id S1728268AbgKGJQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 04:16:01 -0500
+Received: from m176115.mail.qiye.163.com ([59.111.176.115]:47665 "EHLO
+        m176115.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727810AbgKGJQA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Nov 2020 04:16:00 -0500
+Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.231])
+        by m176115.mail.qiye.163.com (Hmail) with ESMTPA id 6FA21665BD8;
+        Sat,  7 Nov 2020 17:15:57 +0800 (CST)
+From:   Wang Qing <wangqing@vivo.com>
+To:     Russell King <linux@armlinux.org.uk>,
+        Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Marc Zyngier <maz@kernel.org>,
+        Wang Qing <wangqing@vivo.com>,
+        Tian Tao <tiantao6@hisilicon.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] arm: mm: remove duplicate include
+Date:   Sat,  7 Nov 2020 17:15:50 +0800
+Message-Id: <1604740552-25539-1-git-send-email-wangqing@vivo.com>
+X-Mailer: git-send-email 2.7.4
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZTxlDTktCS0MeHR4fVkpNS09MT0tOTkxCTElVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKQ1VLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Nxg6EAw5ED8YHRxJD0IqNSNJ
+        OhoaCUtVSlVKTUtPTE9LTk5DSExCVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
+        SU5KVUxPVUlISllXWQgBWUFKTUNJNwY+
+X-HM-Tid: 0a75a1fdac209373kuws6fa21665bd8
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 06, 2020 at 04:20:43PM -0800, Casey Schaufler wrote:
-> On 11/5/2020 1:22 AM, Greg KH wrote:
-> > On Wed, Nov 04, 2020 at 03:41:03PM -0800, Casey Schaufler wrote:
-> >> Create a new entry "display" in the procfs attr directory for
-> >> controlling which LSM security information is displayed for a
-> >> process. A process can only read or write its own display value.
-> >>
-> >> The name of an active LSM that supplies hooks for
-> >> human readable data may be written to "display" to set the
-> >> value. The name of the LSM currently in use can be read from
-> >> "display". At this point there can only be one LSM capable
-> >> of display active. A helper function lsm_task_display() is
-> >> provided to get the display slot for a task_struct.
-> >>
-> >> Setting the "display" requires that all security modules using
-> >> setprocattr hooks allow the action. Each security module is
-> >> responsible for defining its policy.
-> >>
-> >> AppArmor hook provided by John Johansen <john.johansen@canonical.com>
-> >> SELinux hook provided by Stephen Smalley <sds@tycho.nsa.gov>
-> >>
-> >> Reviewed-by: Kees Cook <keescook@chromium.org>
-> >> Acked-by: Stephen Smalley <sds@tycho.nsa.gov>
-> >> Acked-by: Paul Moore <paul@paul-moore.com>
-> >> Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
-> >> Cc: linux-api@vger.kernel.org
-> >> ---
-> >>  fs/proc/base.c                       |   1 +
-> >>  include/linux/lsm_hooks.h            |  17 +++
-> >>  security/apparmor/include/apparmor.h |   3 +-
-> >>  security/apparmor/lsm.c              |  32 +++++
-> >>  security/security.c                  | 169 ++++++++++++++++++++++++---
-> >>  security/selinux/hooks.c             |  11 ++
-> >>  security/selinux/include/classmap.h  |   2 +-
-> >>  security/smack/smack_lsm.c           |   7 ++
-> >>  8 files changed, 223 insertions(+), 19 deletions(-)
-> >>
-> >> diff --git a/fs/proc/base.c b/fs/proc/base.c
-> >> index 0f707003dda5..7432f24f0132 100644
-> >> --- a/fs/proc/base.c
-> >> +++ b/fs/proc/base.c
-> >> @@ -2806,6 +2806,7 @@ static const struct pid_entry attr_dir_stuff[] = {
-> >>  	ATTR(NULL, "fscreate",		0666),
-> >>  	ATTR(NULL, "keycreate",		0666),
-> >>  	ATTR(NULL, "sockcreate",	0666),
-> >> +	ATTR(NULL, "display",		0666),
-> > That's a vague name, any chance it can be more descriptive?
-> 
-> Sure. How about lsm_display, or display_lsm? I wouldn't say that
-> any of the files in /proc/*/attr have especially descriptive names,
-> but that's hardly an excuse.
+Remove duplicate header which is included twice.
 
-I still don't understand what "display" means in this context.  Perhaps
-documentation will help clear it up?
+Signed-off-by: Wang Qing <wangqing@vivo.com>
+---
+ arch/arm/mm/mmu.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-thanks,
+diff --git a/arch/arm/mm/mmu.c b/arch/arm/mm/mmu.c
+index ab69250..4963e1c
+--- a/arch/arm/mm/mmu.c
++++ b/arch/arm/mm/mmu.c
+@@ -33,7 +33,6 @@
+ #include <asm/mach/arch.h>
+ #include <asm/mach/map.h>
+ #include <asm/mach/pci.h>
+-#include <asm/fixmap.h>
+ 
+ #include "fault.h"
+ #include "mm.h"
+-- 
+2.7.4
 
-greg k-h
