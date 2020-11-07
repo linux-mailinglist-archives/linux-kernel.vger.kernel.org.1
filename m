@@ -2,206 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97DA42AA6C6
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 18:01:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24AE52AA6CC
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 18:06:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728502AbgKGRBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 12:01:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728479AbgKGRBV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 12:01:21 -0500
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9BCDC0613D2;
-        Sat,  7 Nov 2020 09:01:19 -0800 (PST)
-Received: by mail-ej1-x644.google.com with SMTP id o23so6321858ejn.11;
-        Sat, 07 Nov 2020 09:01:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=Zq1Ou0jMvIjoZ2w0wOmMCC/GKFzl+UGGCZWv6JD39N4=;
-        b=Gzm0iFj0EB4BO95L4Ks/rc61eoroyvAr7tN49rVECqj1v7qRRd+w2q3F1TtfcsE5+i
-         XaLL+iD++Y5O7zBEdQTgnqK0ReL+7HI8gvbaQO7oRthD32lPNtAcJnJCljhHLHPinxKo
-         l8WxxE66HE6aQyUDbbx5i3iKiEX6FhixjiBW0dk7eXDd1wKtHr9gS2tNTxHknWYfcY3T
-         0UUJxMlxFc8hIYLFnXFNMTwgA7fSeaLu0JYOgNsZp1g6t8oTowCFYEJ+KYR2cogHN2Kt
-         W6KW3ipftVulNSHs39UoiTx0zCmIHIydwsJoc1IgbWcP4OGzut8JAFJ3tdbZ8IGwGKYy
-         6W1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=Zq1Ou0jMvIjoZ2w0wOmMCC/GKFzl+UGGCZWv6JD39N4=;
-        b=NbvUOO2SmcfNlespORd8f0OwLn7sENHhdAmBCDRIy0VGAH25sbu2U3X2IAHsuMwJNW
-         +H5jJEL8eZ49TvBItwNM0bS0k9+gJ4kxouFaWOuWgb1f0SJFF/GHlWtpovhF9uW1YspL
-         vtynlJthNQAyURdZxwCh0FlS8rTxIq6wt8YpE8QD4FMnCUQsF09/JxkO8g4GlaTNUL5C
-         IxpldB/oGumgBPJmYJb2ByWrYVQ7lqpLD7VdfMJiQ/TZK436jEqQ00XMZKhCp+5Az6NT
-         KXlXL6BYIfBP6+9k1pDRFxqJkVh7hrMH+zGH2nLztgwx+m9wkIzIZ8F1S/T+V8+H5L+8
-         kWfw==
-X-Gm-Message-State: AOAM532GsGpVftC4nzC9lcLrT5D0x6FlJJE91Qztj+alEIpztn8ck14/
-        KjzlWtbISY5dh/HPXJTX8JAHM0uFQF6guA==
-X-Google-Smtp-Source: ABdhPJy4JdaWQPpM6V8tQo4sHCMhIpf87AT6eKdwGjbetI6Rw6KidtH7UeEFpuc0Fyv4/Nn7C4ZIxQ==
-X-Received: by 2002:a17:906:840e:: with SMTP id n14mr7246795ejx.147.1604768478455;
-        Sat, 07 Nov 2020 09:01:18 -0800 (PST)
-Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id t22sm3729700edq.64.2020.11.07.09.01.17
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 07 Nov 2020 09:01:18 -0800 (PST)
-From:   Johan Jonker <jbx6244@gmail.com>
-To:     heiko@sntech.de
-Cc:     robh+dt@kernel.org, lee.jones@linaro.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1 5/5] arm64: dts: rockchip: add QoS register compatibles for px30
-Date:   Sat,  7 Nov 2020 18:01:03 +0100
-Message-Id: <20201107170103.25608-5-jbx6244@gmail.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20201107170103.25608-1-jbx6244@gmail.com>
-References: <20201107170103.25608-1-jbx6244@gmail.com>
+        id S1728258AbgKGRGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 12:06:08 -0500
+Received: from mout.gmx.net ([212.227.15.15]:50213 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726021AbgKGRGI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Nov 2020 12:06:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1604768751;
+        bh=Gu0WHITa0criXSqANy2S1d1UtRU7iAxv438rr4aOewU=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=QlA7eViqDE4BJp/uod6GWfIibxEw0X/Af7089XXhdesg7jGPSv+HBEvcFNLzHwBPv
+         5w3feqSzysWuSq4rNX4InKiEcpXV0MGjn++U8O5YW/9AAwnoKnW3JqNvMjnypQwG+x
+         xkHGUfZG1B8ZLjRLoU95zCZ7Gy+gVS7Nc/Xv/0I0=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([188.174.243.132]) by mail.gmx.com (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MfHEP-1k8QEf49RD-00grVP; Sat, 07
+ Nov 2020 18:05:51 +0100
+Message-ID: <c35f88c5eb00c69fa74bbc7225316307a5eb38d8.camel@gmx.de>
+Subject: Re: [tip: locking/urgent] futex: Handle transient "ownerless"
+ rtmutex state correctly
+From:   Mike Galbraith <efault@gmx.de>
+To:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org
+Cc:     Gratian Crisan <gratian.crisan@ni.com>,
+        Thomas Gleixner <tglx@linutronix.de>, stable@vger.kernel.org,
+        x86 <x86@kernel.org>
+Date:   Sat, 07 Nov 2020 18:05:50 +0100
+In-Reply-To: <160469801844.397.7418241151599681987.tip-bot2@tip-bot2>
+References: <87a6w6x7bb.fsf@ni.com>
+         <160469801844.397.7418241151599681987.tip-bot2@tip-bot2>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.34.4 
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:ZiuJpoFJYDSR3qK2/20rrBaJA+nWuFyZ+EthNZWpgv9Uw3F0lUt
+ ai/drL6/+w8HYHW8pGHpcR9RfEVPIn7VWZuiNqplOsou85AQdwmP65ymQD706F0jbUPzr50
+ U9VW2InHnT80E8OdDSnluA+eQ++jg5ohyPBt8lGugZTl8auy7WelopmOyqGPjTryXdlccyq
+ ghE2l9/0R5ZP3rcjuYDyA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Kx50ttsafBs=:/6qke+AmwAAMFP7RyqRuTZ
+ jubrDnTO3UXJYxzwEmX+vqlc5LQaiyRbPkAXdu46+rbUnPJ9ACpgBDoXocinlxyMmMK9IBlF+
+ hrjpcyxz0XGA4qKu7t/fxnaE75tvNLY0dxMSGbAmAOwPcCtvBNKaGnrriQZxZ6wqO036DsLSu
+ cUYABAV9hZSMsxnSPtRLEfK9ViMJeVz9GclQGF4TapNxaPT2aEfdHVsb7EqQ7mWyWX7KOKmgG
+ FLXPoh2mZliusRg/fG1UOPSei7owE6ZmBZHiFg6K7EgYKvLZVC4ncWGiyPadusgCMv7CVjXEi
+ bkSz/3kBE0d/v9uWPDV1vN/wH8CuDopb9yd62IIMoB+MC88e6phlKH6v+da0mkokVK8SPhvnu
+ Z+BkmTIkGiWx5ckZmVIuSUzUoNDbkf8O0+FAcUn/eEJI1pNTXsNagz6Ma8C/BAWFRJ4DoC8yL
+ HZLMrm6+U+tcAH5Q4lB0sEPhJNO/5tDaJk5Z+98nxVUxBssQfjkc8UJEEaQwxCOIp6s7ElqCx
+ cY34TJS5yzuIDwew/l649PI2R5pvOYPerHN6idoaD60R3oujCbTCAROP41uT2m7YqvbpAyKco
+ 3WOeQRdxLJiiF+ln/WtzQ51JLDLvyZPhaD2gJMp3PaWdXvJ6V9fQEwl+IOc/2YwbX3AGfLlDg
+ odJuNe5sVaoVy90E4djg90lJTjmwO1+5UiR32RscbXmAUUDzWHMTU7UadxmsMBxggRJ/UHFgi
+ X2/izC2UmBzYUx8OoUZXhbOofrwgaW7E72uIyqqBthqZE3Bc2T1PMvplielFGfFkc077fYXX5
+ ulmIiB0Lx8VwVAbjEwFCViFt+/LZoB8tv+AQThP48QWrTwMkzY20u3Boa/4nG+IfyDg4ZxWQn
+ cDqKJ3RaaCSfTZT6HbYQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With the conversion of syscon.yaml minItems for compatibles
-was set to 2. Current Rockchip dtsi files only use "syscon" for
-QoS registers. Add Rockchip QoS compatibles for px30
-to reduce notifications produced with:
+On Fri, 2020-11-06 at 21:26 +0000, tip-bot2 for Mike Galbraith wrote:
+>
+> ---
+>  kernel/futex.c | 16 ++++++++++++++--
+>  1 file changed, 14 insertions(+), 2 deletions(-)
+>
+> diff --git a/kernel/futex.c b/kernel/futex.c
+> index f8614ef..7406914 100644
+> --- a/kernel/futex.c
+> +++ b/kernel/futex.c
+> @@ -2380,10 +2380,22 @@ retry:
+>  		}
+>
+>  		/*
+> -		 * Since we just failed the trylock; there must be an owner.
+> +		 * The trylock just failed, so either there is an owner or
+> +		 * there is a higher priority waiter than this one.
+>  		 */
+>  		newowner =3D rt_mutex_owner(&pi_state->pi_mutex);
+> -		BUG_ON(!newowner);
+> +		/*
+> +		 * If the higher priority waiter has not yet taken over the
+> +		 * rtmutex then newowner is NULL. We can't return here with
+> +		 * that state because it's inconsistent vs. the user space
+> +		 * state. So drop the locks and try again. It's a valid
+> +		 * situation and not any different from the other retry
+> +		 * conditions.
+> +		 */
+> +		if (unlikely(!newowner)) {
+> +			ret =3D -EAGAIN;
+                        ^^^
 
-make ARCH=arm64 dtbs_check
-DT_SCHEMA_FILES=Documentation/devicetree/bindings/mfd/syscon.yaml
+My box just discovered an unnoticed typo.  That 'ret' should read 'err'
+so we goto retry, else fbomb_v2 proggy will trigger gripeage.
 
-Signed-off-by: Johan Jonker <jbx6244@gmail.com>
----
- arch/arm64/boot/dts/rockchip/px30.dtsi | 40 +++++++++++++++++-----------------
- 1 file changed, 20 insertions(+), 20 deletions(-)
+[   44.089233] fuse: init (API version 7.32)
+[   78.485163] ------------[ cut here ]------------
+[   78.485171] WARNING: CPU: 1 PID: 4557 at kernel/futex.c:2482 fixup_pi_s=
+tate_owner.isra.17+0x125/0x350
+[   78.485171] ------------[ cut here ]------------
+[   78.485174] WARNING: CPU: 2 PID: 4559 at kernel/futex.c:1486 do_futex+0=
+x920/0xaf0
+<snip>
 
-diff --git a/arch/arm64/boot/dts/rockchip/px30.dtsi b/arch/arm64/boot/dts/rockchip/px30.dtsi
-index 2695ea8cd..7317bca2e 100644
---- a/arch/arm64/boot/dts/rockchip/px30.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/px30.dtsi
-@@ -1107,102 +1107,102 @@
- 	};
- 
- 	qos_gmac: qos@ff518000 {
--		compatible = "syscon";
-+		compatible = "rockchip,px30-qos","syscon";
- 		reg = <0x0 0xff518000 0x0 0x20>;
- 	};
- 
- 	qos_gpu: qos@ff520000 {
--		compatible = "syscon";
-+		compatible = "rockchip,px30-qos","syscon";
- 		reg = <0x0 0xff520000 0x0 0x20>;
- 	};
- 
- 	qos_sdmmc: qos@ff52c000 {
--		compatible = "syscon";
-+		compatible = "rockchip,px30-qos","syscon";
- 		reg = <0x0 0xff52c000 0x0 0x20>;
- 	};
- 
- 	qos_emmc: qos@ff538000 {
--		compatible = "syscon";
-+		compatible = "rockchip,px30-qos","syscon";
- 		reg = <0x0 0xff538000 0x0 0x20>;
- 	};
- 
- 	qos_nand: qos@ff538080 {
--		compatible = "syscon";
-+		compatible = "rockchip,px30-qos","syscon";
- 		reg = <0x0 0xff538080 0x0 0x20>;
- 	};
- 
- 	qos_sdio: qos@ff538100 {
--		compatible = "syscon";
-+		compatible = "rockchip,px30-qos","syscon";
- 		reg = <0x0 0xff538100 0x0 0x20>;
- 	};
- 
- 	qos_sfc: qos@ff538180 {
--		compatible = "syscon";
-+		compatible = "rockchip,px30-qos","syscon";
- 		reg = <0x0 0xff538180 0x0 0x20>;
- 	};
- 
- 	qos_usb_host: qos@ff540000 {
--		compatible = "syscon";
-+		compatible = "rockchip,px30-qos","syscon";
- 		reg = <0x0 0xff540000 0x0 0x20>;
- 	};
- 
- 	qos_usb_otg: qos@ff540080 {
--		compatible = "syscon";
-+		compatible = "rockchip,px30-qos","syscon";
- 		reg = <0x0 0xff540080 0x0 0x20>;
- 	};
- 
- 	qos_isp_128: qos@ff548000 {
--		compatible = "syscon";
-+		compatible = "rockchip,px30-qos","syscon";
- 		reg = <0x0 0xff548000 0x0 0x20>;
- 	};
- 
- 	qos_isp_rd: qos@ff548080 {
--		compatible = "syscon";
-+		compatible = "rockchip,px30-qos","syscon";
- 		reg = <0x0 0xff548080 0x0 0x20>;
- 	};
- 
- 	qos_isp_wr: qos@ff548100 {
--		compatible = "syscon";
-+		compatible = "rockchip,px30-qos","syscon";
- 		reg = <0x0 0xff548100 0x0 0x20>;
- 	};
- 
- 	qos_isp_m1: qos@ff548180 {
--		compatible = "syscon";
-+		compatible = "rockchip,px30-qos","syscon";
- 		reg = <0x0 0xff548180 0x0 0x20>;
- 	};
- 
- 	qos_vip: qos@ff548200 {
--		compatible = "syscon";
-+		compatible = "rockchip,px30-qos","syscon";
- 		reg = <0x0 0xff548200 0x0 0x20>;
- 	};
- 
- 	qos_rga_rd: qos@ff550000 {
--		compatible = "syscon";
-+		compatible = "rockchip,px30-qos","syscon";
- 		reg = <0x0 0xff550000 0x0 0x20>;
- 	};
- 
- 	qos_rga_wr: qos@ff550080 {
--		compatible = "syscon";
-+		compatible = "rockchip,px30-qos","syscon";
- 		reg = <0x0 0xff550080 0x0 0x20>;
- 	};
- 
- 	qos_vop_m0: qos@ff550100 {
--		compatible = "syscon";
-+		compatible = "rockchip,px30-qos","syscon";
- 		reg = <0x0 0xff550100 0x0 0x20>;
- 	};
- 
- 	qos_vop_m1: qos@ff550180 {
--		compatible = "syscon";
-+		compatible = "rockchip,px30-qos","syscon";
- 		reg = <0x0 0xff550180 0x0 0x20>;
- 	};
- 
- 	qos_vpu: qos@ff558000 {
--		compatible = "syscon";
-+		compatible = "rockchip,px30-qos","syscon";
- 		reg = <0x0 0xff558000 0x0 0x20>;
- 	};
- 
- 	qos_vpu_r128: qos@ff558080 {
--		compatible = "syscon";
-+		compatible = "rockchip,px30-qos","syscon";
- 		reg = <0x0 0xff558080 0x0 0x20>;
- 	};
- 
--- 
-2.11.0
+	-Mike
 
