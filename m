@@ -2,89 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A3E62AA613
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 16:07:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B313C2AA617
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 16:07:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726286AbgKGPHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 10:07:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47422 "EHLO
+        id S1727854AbgKGPHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 10:07:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726021AbgKGPHG (ORCPT
+        with ESMTP id S1727084AbgKGPHQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 10:07:06 -0500
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B57E0C0613CF;
-        Sat,  7 Nov 2020 07:07:06 -0800 (PST)
-Received: by mail-pl1-x642.google.com with SMTP id j5so2360197plk.7;
-        Sat, 07 Nov 2020 07:07:06 -0800 (PST)
+        Sat, 7 Nov 2020 10:07:16 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99785C0613D2
+        for <linux-kernel@vger.kernel.org>; Sat,  7 Nov 2020 07:07:14 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id h2so4179076wmm.0
+        for <linux-kernel@vger.kernel.org>; Sat, 07 Nov 2020 07:07:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=LmB4DYOplEdxdVAp4i/Cv8GxfNmTwSJWFjvTe1z2P1Y=;
-        b=I9BygavihvgZRQ25TNZ7bjf1rdXSNWIAnLgtArrdkI6nuWKCWp3yCf0kjKSSkRfrNP
-         ouojl3FWa4hTwGSkYKnH/yBo9amHMYwYiTjnhrOiTIa07T11jOCNIxLj/6jKCWdUuIOg
-         DbhFsNwAkK8283PTCDebc+xA3R3vUc7Re33z1ustGIj2zXW84WhbCl+uoWJ6Wee717w3
-         bITLE5FuP/8lB6uB3T7LuVKaGv4ISyDDOdnDcxX4W/jlkdThke9DvyPXtG7WD1q4/X/q
-         BJCqCnekjpv9LeF9IbkHKWToShk8BrrXCgktMDkmHvrnW2ftrGokv0Hd3Sr6ZlMVaR0b
-         nWcQ==
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=cLF2BfyjeGN3iJU0oaMXvVmMSlcoqcilafci6j43Wek=;
+        b=kE7Db+rEae6rIGK79T5xPZMkKFt7dhWg6i6zCjBEOlowiXCxsWYabKqNJIuqPVMmNS
+         S22XTL3krgeVZp0pS8ktxH73T77De0zH/VFSPs9Wj8JR5Td2QD9dWFdX+4r8g0l3ekqT
+         +DTstkYEfC3S4n+y6nKlvo2zDAAoFkhGYsgZguoR5lDO+DkOO4o0STctIAQvcm4pqQM3
+         ts6N4mZQhhvqtLUpRIKnlgLTQ1ptiZFVAQjJaV2gAnaUs6IvlunTi0trqFVsK+lEYvmT
+         QQhRNfzOEjvOHkNkzpeI3PrYREQCc961cK8mW1PvdDRDpfUTKC2mJ5gwtNV5UbqN2wNC
+         4vew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=LmB4DYOplEdxdVAp4i/Cv8GxfNmTwSJWFjvTe1z2P1Y=;
-        b=UKaxfWyUn/Jzsi3azXpUAZ9OoWvxdKnFTLPXfII/zX2VLR+no5mVxJmfO/4nWXPNIf
-         80uzGMyIb/BkQa+beEeCHIfo2K8bvtg4MVnPIqBgHdkHNHWC4m+Jt0yP2TT4sbAelifU
-         pJU83PABAus1tkhnw3TmBJTTDuICcu3ykgGw8lEN5b0boPf0f5E0vtuGEHdlBTZD4T3a
-         ZQwDW8Ddw81ETZCpZI3ZHh0adkZ4GhxSZzEYJbrDHaJ3z72MFCOL1vNzO0yvjQEDcK+1
-         qCeo8n8Hi4y38hG7rpV4sTx3Q+e5p3cxCxn8Nf3s0v2q/JCQDpm+B6gxdrXNYeQez74X
-         w0LQ==
-X-Gm-Message-State: AOAM530shSiwSURigAe0KCwwbwv5hkOg2aaNDfKHTJJdJSBh8KJ9W1HL
-        vJ5E+9alxOm9OxwmuyVaDDlxvq9KRAo=
-X-Google-Smtp-Source: ABdhPJxqqowq4HfM+LqJHk04+FxPE01f32lq7uO1vSTh9wihIW4oEZwq5Pmf1TlkHGt3jck8fkzzGw==
-X-Received: by 2002:a17:90a:af82:: with SMTP id w2mr4653201pjq.77.1604761626122;
-        Sat, 07 Nov 2020 07:07:06 -0800 (PST)
-Received: from hoboy.vegasvil.org (c-73-241-114-122.hsd1.ca.comcast.net. [73.241.114.122])
-        by smtp.gmail.com with ESMTPSA id v23sm5782190pjh.46.2020.11.07.07.07.04
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=cLF2BfyjeGN3iJU0oaMXvVmMSlcoqcilafci6j43Wek=;
+        b=Pn9vDkWoqF21fBkbDdznRX6JxDKCtucH9H9i2kqqrgCx3hjGeVbdV7uoDQ1u4Jq6c1
+         AQ+zww1Wb23ttI/f56UxTNcX3TC8PaRS2pWVafUw9IA7L+RBByhpfuDkXxe2MMbGYG02
+         tBEJha9IF0xU10r/eZLeBJv6IId1qzZjriJa24VqWsgRVV0XnFtdgRUN24vEZh3VwFsn
+         JAsJOHiw8ZiJGpmIfMAWgV7GTIoTwfRRCoEn2D9SIaVWvsCXq8UdZhB4YfVqcJTiYVtU
+         hylY00o3k8ver6u8PumOt2cAQm5PObz1URyTPa/UaHfjs5B85bmS2W8iSZuHvUfJoLhl
+         VAng==
+X-Gm-Message-State: AOAM532maaufbTjpeZAZJtsoxTXvz7ixMsjC7omAe5NqL0jARjYzT9ut
+        HoIa98t7jbeHOtegAd/nPuYxuQ==
+X-Google-Smtp-Source: ABdhPJzPDVIEXN1qjx3/ckNqpMTNKAJvwwwbRtp4FCrcpbVSCbKW0szdkj957LjvR3zUEjIX+h4gKA==
+X-Received: by 2002:a1c:3b87:: with SMTP id i129mr5425025wma.134.1604761633150;
+        Sat, 07 Nov 2020 07:07:13 -0800 (PST)
+Received: from dell ([91.110.221.236])
+        by smtp.gmail.com with ESMTPSA id v189sm7243406wmg.14.2020.11.07.07.07.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 07 Nov 2020 07:07:05 -0800 (PST)
-Date:   Sat, 7 Nov 2020 07:07:02 -0800
-From:   Richard Cochran <richardcochran@gmail.com>
-To:     Grygorii Strashko <grygorii.strashko@ti.com>
-Cc:     Wang Qing <wangqing@vivo.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Samuel Zou <zou_wei@huawei.com>,
-        Kurt Kanzenbach <kurt@linutronix.de>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net/ethernet: update ret when ptp_clock is ERROR
-Message-ID: <20201107150702.GC9653@hoboy.vegasvil.org>
-References: <1604649411-24886-1-git-send-email-wangqing@vivo.com>
- <fd46310f-0b4e-ac8b-b187-98438ee6bb60@ti.com>
+        Sat, 07 Nov 2020 07:07:12 -0800 (PST)
+Date:   Sat, 7 Nov 2020 15:07:10 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Alex Deucher <alexander.deucher@amd.com>,
+        amd-gfx@lists.freedesktop.org, Andy Gross <andy.gross@ti.com>,
+        by <jhartmann@precisioninsight.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel@lists.freedesktop.org, Eric Anholt <eric@anholt.net>,
+        Faith <faith@valinux.com>, Gareth Hughes <gareth@valinux.com>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Huang Rui <ray.huang@amd.com>,
+        Jeff Hartmann <jhartmann@valinux.com>,
+        Keith Whitwell <keith@tungstengraphics.com>,
+        Leo Li <sunpeng.li@amd.com>, linaro-mm-sig@lists.linaro.org,
+        linux-media@vger.kernel.org,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Rob Clark <rob.clark@linaro.org>, Rob Clark <rob@ti.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>
+Subject: Re: [PATCH 00/19] [Set 2] Rid W=1 warnings from GPU
+Message-ID: <20201107150710.GP2063125@dell>
+References: <20201106214949.2042120-1-lee.jones@linaro.org>
+ <9d4be6a4-4f39-b908-4086-2b6adb695465@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <fd46310f-0b4e-ac8b-b187-98438ee6bb60@ti.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <9d4be6a4-4f39-b908-4086-2b6adb695465@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 06, 2020 at 01:34:04PM +0200, Grygorii Strashko wrote:
-> And ptp_clock_register() can return NULL only if PTP support is disabled.
+On Sat, 07 Nov 2020, Christian König wrote:
 
-Not true in general ...
+> Well that's quite a patch set.
+> 
+> First of all can you separate this a bit more by driver? I'm assuming we
+> maintainers are supposed to pick that up and apply it.
 
-> In which case, we should not even get here.
+I'm not sure what would achieve?  It's not a pull-request.
 
-only because the Kconfig uses "depends on" instead of "implies"
-PTP_1588_CLOCK.
+Either way, patches should be applied individually.
 
-> So, I'd propose to s/IS_ERR_OR_NULL/IS_ERR above,
-> and just assign ret = PTR_ERR(cpts->ptp_clock) here.
+> radeon and amdgpu can stick together since that is mostly Alex and me, but
+> I'm not sure if we want to do some of the suggested changes to radeon.
 
-No, please no -- don't make another bad example for people to
-copy/paste.
+That's fine.  Just review, providing your reasons as to why they are
+not suitable and we'll work through the issues together, patch by
+patch.
 
-Thanks,
-Richard
+> Going to pick up the single TTM change for upstreaming.
+
+Thanks.
+
+> Am 06.11.20 um 22:49 schrieb Lee Jones:
+> > This set is part of a larger effort attempting to clean-up W=1
+> > kernel builds, which are currently overwhelmingly riddled with
+> > niggly little warnings.
+> > 
+> > There are 5000 warnings to work through.  It will take a couple more
+> > sets.  Although, ("drm/amd/display/dc/basics/fixpt31_32: Move
+> > variables to where they're used") does take care of 2000 of them!
+> > 
+> > Lee Jones (19):
+> >    drm/ttm/ttm_range_manager: Demote non-conformant kernel-doc header
+> >    drm/r128/ati_pcigart: Source file headers are not good candidates for
+> >      kernel-doc
+> >    drm/selftests/test-drm_dp_mst_helper: Move
+> >      'sideband_msg_req_encode_decode' onto the heap
+> >    drm/mga/mga_dma: Demote kernel-doc abusers to standard comment blocks
+> >    drm/mga/mga_state: Remove unused variable 'buf_priv'
+> >    drm/radeon/atom: Move prototype into shared location
+> >    drm/radeon/radeon_kms: Include header containing our own prototypes
+> >    drm/omapdrm/omap_gem: Fix misnamed and missing parameter descriptions
+> >    drm/omapdrm/omap_dmm_tiler: Demote abusive use of kernel-doc format
+> >    drm/radeon/radeon: Move prototype into shared header
+> >    drm/radeon/radeon_drv: Source file headers are not good candidates for
+> >      kernel-doc
+> >    drm/amd/display/dc/basics/fixpt31_32: Move variables to where they're
+> >      used
+> >    drm/radeon/radeon_drv: Move prototypes to a shared headerfile
+> >    drm/amd/amdgpu/amdgpu_device: Provide documentation for 'reg_addr'
+> >      params
+> >    drm/radeon: Move prototypes to shared header
+> >    drm/amd/amdgpu/amdgpu_kms: Remove 'struct drm_amdgpu_info_device
+> >      dev_info' from the stack
+> >    drm/radeon/radeon_kms: Fix misnaming of 'radeon_info_ioctl's dev param
+> >    drm/radeon/atombios_crtc: Remove description of non-existent function
+> >      param 'encoder'
+> >    drm/v3d/v3d_drv: Remove unused static variable 'v3d_v3d_pm_ops'
+> > 
+> >   drivers/gpu/drm/amd/amdgpu/amdgpu_device.c    |   2 +
+> >   drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c       | 104 +++++++++---------
+> >   .../drm/amd/display/dc/basics/fixpt31_32.c    |   5 +
+> >   .../gpu/drm/amd/display/include/fixed31_32.h  |   6 -
+> >   drivers/gpu/drm/mga/mga_dma.c                 |  10 +-
+> >   drivers/gpu/drm/mga/mga_state.c               |   2 -
+> >   drivers/gpu/drm/omapdrm/omap_dmm_tiler.c      |   6 +-
+> >   drivers/gpu/drm/omapdrm/omap_gem.c            |   3 +-
+> >   drivers/gpu/drm/r128/ati_pcigart.c            |   2 +-
+> >   drivers/gpu/drm/radeon/atom.h                 |   6 +
+> >   drivers/gpu/drm/radeon/atombios_crtc.c        |   1 -
+> >   drivers/gpu/drm/radeon/atombios_encoders.c    |   4 -
+> >   drivers/gpu/drm/radeon/radeon.h               |   6 +
+> >   drivers/gpu/drm/radeon/radeon_device.c        |   1 +
+> >   drivers/gpu/drm/radeon/radeon_device.h        |  32 ++++++
+> >   drivers/gpu/drm/radeon/radeon_display.c       |   4 -
+> >   drivers/gpu/drm/radeon/radeon_drv.c           |  11 +-
+> >   drivers/gpu/drm/radeon/radeon_drv.h           |   7 ++
+> >   drivers/gpu/drm/radeon/radeon_kms.c           |   3 +-
+> >   .../drm/selftests/test-drm_dp_mst_helper.c    |  11 +-
+> >   drivers/gpu/drm/ttm/ttm_range_manager.c       |   2 +-
+> >   drivers/gpu/drm/v3d/v3d_drv.c                 |  36 ------
+> >   22 files changed, 138 insertions(+), 126 deletions(-)
+> >   create mode 100644 drivers/gpu/drm/radeon/radeon_device.h
+> > 
+> > Cc: Alex Deucher <alexander.deucher@amd.com>
+> > Cc: amd-gfx@lists.freedesktop.org
+> > Cc: Andy Gross <andy.gross@ti.com>
+> > Cc: by <jhartmann@precisioninsight.com>
+> > Cc: Christian Koenig <christian.koenig@amd.com>
+> > Cc: "Christian König" <christian.koenig@amd.com>
+> > Cc: Daniel Vetter <daniel@ffwll.ch>
+> > Cc: David Airlie <airlied@linux.ie>
+> > Cc: dri-devel@lists.freedesktop.org
+> > Cc: Eric Anholt <eric@anholt.net>
+> > Cc: Faith <faith@valinux.com>
+> > Cc: Gareth Hughes <gareth@valinux.com>
+> > Cc: Harry Wentland <harry.wentland@amd.com>
+> > Cc: Huang Rui <ray.huang@amd.com>
+> > Cc: Jeff Hartmann <jhartmann@valinux.com>
+> > Cc: Keith Whitwell <keith@tungstengraphics.com>
+> > Cc: Leo Li <sunpeng.li@amd.com>
+> > Cc: linaro-mm-sig@lists.linaro.org
+> > Cc: linux-media@vger.kernel.org
+> > Cc: Philipp Zabel <p.zabel@pengutronix.de>
+> > Cc: Rob Clark <rob.clark@linaro.org>
+> > Cc: Rob Clark <rob@ti.com>
+> > Cc: Sumit Semwal <sumit.semwal@linaro.org>
+> > Cc: Tomi Valkeinen <tomi.valkeinen@ti.com>
+> 
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
