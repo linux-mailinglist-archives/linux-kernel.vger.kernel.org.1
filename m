@@ -2,52 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E2972AA74E
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 18:52:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E1972AA757
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 18:58:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728515AbgKGRw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 12:52:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35006 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726614AbgKGRwZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 12:52:25 -0500
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D209320885;
-        Sat,  7 Nov 2020 17:52:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604771545;
-        bh=Ek8fLm8CsziGOioX30LOA4auYUYzdOZZY0eTuGPWcfc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=KwKf/2R51UpXegvQjPlFVDOl0p2hMluq1qw8FEBAPjkE4vlxnixWahOmH7RYJYENy
-         9p9ZoMxIyXD92MbzXsbRnvANVMD/qkVK+D/15NIX2N3YiDsvv/eYZwsLzAkeQNV77h
-         fHoEuI4De4klH1TaELuhV1rFgG52aJHQgokj6k08=
-Date:   Sat, 7 Nov 2020 09:52:24 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] netfilter: conntrack: fix -Wformat
-Message-ID: <20201107095224.63c27a1b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201107075550.2244055-1-ndesaulniers@google.com>
-References: <20201107075550.2244055-1-ndesaulniers@google.com>
+        id S1728548AbgKGR6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 12:58:16 -0500
+Received: from mx0b-002e3701.pphosted.com ([148.163.143.35]:15900 "EHLO
+        mx0b-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726021AbgKGR6P (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Nov 2020 12:58:15 -0500
+Received: from pps.filterd (m0134424.ppops.net [127.0.0.1])
+        by mx0b-002e3701.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A7HpUIT030820;
+        Sat, 7 Nov 2020 17:57:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=date : from : to : cc :
+ subject : message-id : reply-to : references : content-type : in-reply-to
+ : mime-version; s=pps0720;
+ bh=19AOhJSg8287gbPV9wDB4l5dczCLNW+uqRNvFL42X6U=;
+ b=bigOhbIaNPut4w8m9qKIQWF7/d+s3mOe5gd3a+QTMpO9bczduiadQLGoik5NmVu61jT9
+ Hvrv/wsJoD8DNgSzPdP7IWBJjzibeZzQF7bw5Y8kS0jmlXCPMyC+dMaZk54aXtfTfLr2
+ B0KNJDg5R+W6M1nQ3Omo8Gj+BApLmqfP17OaiHRkXrKNvyS0MDbYeelwsM4lBqZFYfS3
+ QBwUaJ1sJuP1hbyQ4KRvT4t2viCotSyHmUm3uXHGsbyWWzk79UJtBOvebZ6zkaJwa7Fl
+ x7TWo7W4xL0X4yo0lQF8Z9chviFzJNWY68XJ8P9Jibk5ids/kDaAMk25O49fkH+tCjKc TQ== 
+Received: from g2t2354.austin.hpe.com (g2t2354.austin.hpe.com [15.233.44.27])
+        by mx0b-002e3701.pphosted.com with ESMTP id 34nmm4awuf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 07 Nov 2020 17:57:57 +0000
+Received: from g2t2360.austin.hpecorp.net (g2t2360.austin.hpecorp.net [16.196.225.135])
+        by g2t2354.austin.hpe.com (Postfix) with ESMTP id 2F66081;
+        Sat,  7 Nov 2020 17:57:56 +0000 (UTC)
+Received: from rfwz62 (rfwz62.americas.hpqcorp.net [10.33.237.8])
+        by g2t2360.austin.hpecorp.net (Postfix) with ESMTP id 513553A;
+        Sat,  7 Nov 2020 17:57:54 +0000 (UTC)
+Date:   Sat, 7 Nov 2020 10:57:54 -0700
+From:   rwright@hpe.com
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
+        rodrigo.vivi@intel.com, airlied@linux.ie, daniel@ffwll.ch,
+        sumit.semwal@linaro.org, christian.koenig@amd.com,
+        wambui.karugax@gmail.com, chris@chris-wilson.co.uk,
+        matthew.auld@intel.com, akeem.g.abodunrin@intel.com,
+        prathap.kumar.valsan@intel.com, mika.kuoppala@linux.intel.com,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH v3 0/3] Reduce context clear batch size to avoid gpu hang
+Message-ID: <20201107175754.GA13311@rfwz62>
+Reply-To: rwright@hpe.com
+References: <20201101174132.10513-1-rwright@hpe.com>
+ <8cdf0dd0-2a2f-bae9-71ea-89a88fdb14a5@redhat.com>
+ <20201102195710.GA12790@rfwz62>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201102195710.GA12790@rfwz62>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-HPE-SCL: -1
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-07_09:2020-11-05,2020-11-07 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ bulkscore=0 adultscore=0 phishscore=0 mlxlogscore=690 spamscore=0
+ clxscore=1015 priorityscore=1501 suspectscore=0 impostorscore=0 mlxscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011070129
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri,  6 Nov 2020 23:55:50 -0800 Nick Desaulniers wrote:
-> -			   ntohs(tuple->src.u.icmp.id));
-> +			   (__be16)ntohs(tuple->src.u.icmp.id));
+On Mon, Nov 02, 2020 at 12:57:10PM -0700, rwright@hpe.com wrote:
+> On Mon, Nov 02, 2020 at 10:48:54AM +0100, Hans de Goede wrote:
+> > Hi,
+> > 
+> ...
+> That said, if the i915 maintainers respond in favor of the simpler
+> unconditional reduction of the batch size, I will be glad to
+> propose a much simpler version of my patch.
+> ...
 
-Joe has a point, besides __be16 clearly is not the right type here,
-the result of ntohs is in host order.
+I received a suggestion from Mika Kuoppala to test 
+https://patchwork.freedesktop.org/patch/399174/?series=83531&rev=1 as a
+solution for the GPU hang I observed, and the test was successful.
+I recommend this patch as a better approch than my own, as it 
+addresses more general cases without introducing a new quirk.
+
+--
+Randy Wright            Usmail: Hewlett Packard Enterprise
+Email: rwright@hpe.com          Servers Linux Enablement
+Phone: (970) 898-0998           3404 E. Harmony Rd, Mailstop 36
+                                Fort Collins, CO 80528-9599 
