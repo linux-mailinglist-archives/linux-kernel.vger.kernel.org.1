@@ -2,276 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 632E02AA4D0
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 12:53:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 329BA2AA4D7
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 12:58:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728029AbgKGLxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 06:53:38 -0500
-Received: from out28-98.mail.aliyun.com ([115.124.28.98]:41503 "EHLO
-        out28-98.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727298AbgKGLxf (ORCPT
+        id S1727860AbgKGL6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 06:58:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46652 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727084AbgKGL6Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 06:53:35 -0500
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.08033154|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.13833-0.00180808-0.859862;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047192;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=18;RT=18;SR=0;TI=SMTPD_---.ItnO01s_1604749999;
-Received: from localhost.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.ItnO01s_1604749999)
-          by smtp.aliyun-inc.com(10.147.41.231);
-          Sat, 07 Nov 2020 19:53:28 +0800
-From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
-        <zhouyanjie@wanyeetech.com>
-To:     tsbogend@alpha.franken.de, paul@crapouillou.net, robh+dt@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org, nixiaoming@huawei.com,
-        paulburton@kernel.org, krzk@kernel.org, hns@goldelico.com,
-        ak@linux.intel.com, ebiederm@xmission.com,
-        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
-        rick.tyliu@ingenic.com, yanfei.li@ingenic.com,
-        sernia.zhou@foxmail.com, zhenwenjin@gmail.com
-Subject: [PATCH 2/2] MIPS: Ingenic: Refresh defconfig for Ingenic SoCs based boards.
-Date:   Sat,  7 Nov 2020 19:52:51 +0800
-Message-Id: <20201107115251.86182-3-zhouyanjie@wanyeetech.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20201107115251.86182-1-zhouyanjie@wanyeetech.com>
-References: <20201107115251.86182-1-zhouyanjie@wanyeetech.com>
+        Sat, 7 Nov 2020 06:58:24 -0500
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD763C0613CF;
+        Sat,  7 Nov 2020 03:58:24 -0800 (PST)
+Received: by mail-io1-xd43.google.com with SMTP id r12so4526477iot.4;
+        Sat, 07 Nov 2020 03:58:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ehsrxR24+X4JoUL+5hOYvsNW1kB3ZSkbOufEBKUIwWI=;
+        b=BHau8K4MVxYAcQx+Y3gp3RB9Rk5XAkXDCsNLK83oi81nJMoqpfbF8IYukTa6hqmxlG
+         YWwTQOG6I9eEbLWO9VcklKA3ZjTTXoyOuUPHIY9P8M2fWG8cNc8v65zop37Tzrl6ku5n
+         lDIYJVoCcoWVvRWjtnZTPRzUpjUOODY1ATdf4CkfvtGmoh0iphDnLKq76ObZvkjzVkNz
+         1fCJWL6GLp/r0HVrgDg+9JCG2uPqAvtAngY+OBJn6W3PppoagtrHtR/vJ2koMFoS96Q+
+         MxP/eck9nE3sllJEmAnxvzVXtSMj/QwfLU3nibkWYwHh+4S6EzffOwmWTXw/3qN58hcv
+         ks9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ehsrxR24+X4JoUL+5hOYvsNW1kB3ZSkbOufEBKUIwWI=;
+        b=Pgb0eroOv8rxb1SNto5rDEaTo5zf2b/637FBmZQpA/F/RyMyF6cWZ8FN58mLVRiZ/+
+         G98EIcGOhK5+1qgkXei4Rn/CDLJIgCI1heovXX97IPinXrG0BDKXzn0NCth5kAyIqFkg
+         CvoI9WM/9ziYGAOzM5YXqR1EOpqVNoPmX4cm4L03awt7S5GKUVHo4nxv+6QudngmGsKB
+         i6usdokIhlYw5v8hYTAq0640mZjGbrArYN7ZxMWKaXKeAKqRY/HOxaYkJbhM3cMleFGA
+         3xIv3GTs24N3M+ZphoNGUD1dxzSeoeWhk+eSSDjvHJ5lHf3ZqJw9bCI2DUP3mcEexHqr
+         MDQw==
+X-Gm-Message-State: AOAM533pVUdY11gR10sBGrw4VMdaopgu9FFVT2D+j4g6WVR/tSjKpK3K
+        HrfqnryTb7aAxI4DIOdrdNWOTOsuwgIpnA==
+X-Google-Smtp-Source: ABdhPJySzuzJOFRFKMjqyXbR+UMBlxlHyoLrWZ60ji+vw9p8Wniju1cm7vLGtN6zZ8EEOD4uEUV5WQ==
+X-Received: by 2002:a05:6602:5da:: with SMTP id w26mr4549025iox.207.1604750303852;
+        Sat, 07 Nov 2020 03:58:23 -0800 (PST)
+Received: from aford-IdeaCentre-A730.lan ([2601:448:8400:9e8:5d9e:32b:1062:f8cd])
+        by smtp.gmail.com with ESMTPSA id n1sm2920671ile.86.2020.11.07.03.58.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 07 Nov 2020 03:58:23 -0800 (PST)
+From:   Adam Ford <aford173@gmail.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH V4 1/5] dt-bindings: soc: imx: Add binding doc for spba bus
+Date:   Sat,  7 Nov 2020 05:58:04 -0600
+Message-Id: <20201107115809.1866131-1-aford173@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-1.Refresh defconfig of CI20 to support OTG and RNG.
-2.Refresh defconfig of CU1000-Neo to support OTG/RNG/OST/SC16IS752.
-3.Refresh defconfig of CU1830-Neo to support OTG/DTRNG/OST/SC16IS752.
+Add binding doc for fsl,spba-bus.
 
-Tested-by: 周正 (Zhou Zheng) <sernia.zhou@foxmail.com>
-Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+Signed-off-by: Adam Ford <aford173@gmail.com>
 ---
- arch/mips/configs/ci20_defconfig       | 14 ++++++++++++--
- arch/mips/configs/cu1000-neo_defconfig | 28 +++++++++++++++++++++++-----
- arch/mips/configs/cu1830-neo_defconfig | 32 +++++++++++++++++++++++++-------
- 3 files changed, 60 insertions(+), 14 deletions(-)
+V4:  Correct errors in YAML
+V3:  New to series
 
-diff --git a/arch/mips/configs/ci20_defconfig b/arch/mips/configs/ci20_defconfig
-index 052c5ad0f2b1..80fbe57d68d4 100644
---- a/arch/mips/configs/ci20_defconfig
-+++ b/arch/mips/configs/ci20_defconfig
-@@ -49,6 +49,8 @@ CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_JZ4780=y
- CONFIG_MTD_UBI=y
- CONFIG_MTD_UBI_FASTMAP=y
-+CONFIG_SCSI=y
-+CONFIG_BLK_DEV_SD=y
- CONFIG_NETDEVICES=y
- # CONFIG_NET_VENDOR_ARC is not set
- # CONFIG_NET_VENDOR_BROADCOM is not set
-@@ -77,7 +79,6 @@ CONFIG_SERIAL_8250_NR_UARTS=5
- CONFIG_SERIAL_8250_RUNTIME_UARTS=5
- CONFIG_SERIAL_8250_INGENIC=y
- CONFIG_SERIAL_OF_PLATFORM=y
--# CONFIG_HW_RANDOM is not set
- CONFIG_I2C=y
- CONFIG_I2C_JZ4780=y
- CONFIG_SPI=y
-@@ -99,7 +100,12 @@ CONFIG_IR_GPIO_TX=m
- CONFIG_MEDIA_SUPPORT=m
- # CONFIG_VGA_CONSOLE is not set
- # CONFIG_HID is not set
--# CONFIG_USB_SUPPORT is not set
-+CONFIG_USB=y
-+CONFIG_USB_STORAGE=y
-+CONFIG_USB_DWC2=y
-+CONFIG_USB_SERIAL=y
-+CONFIG_USB_SERIAL_CH341=y
-+CONFIG_USB_GADGET=y
- CONFIG_MMC=y
- CONFIG_MMC_JZ4740=y
- CONFIG_NEW_LEDS=y
-@@ -131,8 +137,12 @@ CONFIG_MEMORY=y
- CONFIG_JZ4780_NEMC=y
- CONFIG_PWM=y
- CONFIG_PWM_JZ4740=m
-+CONFIG_JZ4770_PHY=y
- CONFIG_EXT4_FS=y
- # CONFIG_DNOTIFY is not set
-+CONFIG_AUTOFS_FS=y
-+CONFIG_VFAT_FS=y
-+CONFIG_FAT_DEFAULT_UTF8=y
- CONFIG_PROC_KCORE=y
- # CONFIG_PROC_PAGE_MONITOR is not set
- CONFIG_TMPFS=y
-diff --git a/arch/mips/configs/cu1000-neo_defconfig b/arch/mips/configs/cu1000-neo_defconfig
-index 55d0690a3ffe..9d75f5b77d5d 100644
---- a/arch/mips/configs/cu1000-neo_defconfig
-+++ b/arch/mips/configs/cu1000-neo_defconfig
-@@ -25,6 +25,7 @@ CONFIG_HIGHMEM=y
- CONFIG_HZ_100=y
- # CONFIG_SECCOMP is not set
- # CONFIG_SUSPEND is not set
-+CONFIG_MODULES=y
- # CONFIG_CORE_DUMP_DEFAULT_ELF_HEADERS is not set
- # CONFIG_COMPACTION is not set
- CONFIG_CMA=y
-@@ -32,15 +33,17 @@ CONFIG_NET=y
- CONFIG_PACKET=y
- CONFIG_UNIX=y
- CONFIG_INET=y
--CONFIG_CFG80211=y
-+CONFIG_CFG80211=m
- CONFIG_UEVENT_HELPER=y
- CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
- CONFIG_DEVTMPFS=y
- # CONFIG_ALLOW_DEV_COREDUMP is not set
-+CONFIG_SCSI=y
-+CONFIG_BLK_DEV_SD=y
- CONFIG_NETDEVICES=y
- CONFIG_STMMAC_ETH=y
- CONFIG_SMSC_PHY=y
--CONFIG_BRCMFMAC=y
-+CONFIG_BRCMFMAC=m
- # CONFIG_INPUT_KEYBOARD is not set
- # CONFIG_INPUT_MOUSE is not set
- # CONFIG_SERIO is not set
-@@ -52,16 +55,25 @@ CONFIG_SERIAL_8250_NR_UARTS=3
- CONFIG_SERIAL_8250_RUNTIME_UARTS=3
- CONFIG_SERIAL_8250_INGENIC=y
- CONFIG_SERIAL_OF_PLATFORM=y
--# CONFIG_HW_RANDOM is not set
-+CONFIG_SERIAL_SC16IS7XX=y
-+# CONFIG_SERIAL_SC16IS7XX_I2C is not set
-+CONFIG_SERIAL_SC16IS7XX_SPI=y
- CONFIG_I2C=y
- CONFIG_I2C_JZ4780=y
-+CONFIG_SPI=y
-+CONFIG_SPI_GPIO=y
- CONFIG_GPIO_SYSFS=y
--CONFIG_SENSORS_ADS7828=y
-+CONFIG_SENSORS_ADS7828=m
- CONFIG_WATCHDOG=y
- CONFIG_JZ4740_WDT=y
- # CONFIG_VGA_CONSOLE is not set
- # CONFIG_HID is not set
--# CONFIG_USB_SUPPORT is not set
-+CONFIG_USB=y
-+CONFIG_USB_STORAGE=y
-+CONFIG_USB_DWC2=y
-+CONFIG_USB_SERIAL=y
-+CONFIG_USB_SERIAL_CH341=y
-+CONFIG_USB_GADGET=y
- CONFIG_MMC=y
- CONFIG_MMC_JZ4740=y
- CONFIG_NEW_LEDS=y
-@@ -72,16 +84,22 @@ CONFIG_RTC_CLASS=y
- CONFIG_RTC_DRV_JZ4740=y
- CONFIG_DMADEVICES=y
- CONFIG_DMA_JZ4780=y
-+# CONFIG_INGENIC_TIMER is not set
-+CONFIG_INGENIC_SYSOST=y
- # CONFIG_IOMMU_SUPPORT is not set
-+CONFIG_JZ4770_PHY=y
- CONFIG_EXT4_FS=y
- # CONFIG_DNOTIFY is not set
- CONFIG_AUTOFS_FS=y
-+CONFIG_VFAT_FS=y
-+CONFIG_FAT_DEFAULT_UTF8=y
- CONFIG_PROC_KCORE=y
- # CONFIG_PROC_PAGE_MONITOR is not set
- CONFIG_TMPFS=y
- CONFIG_CONFIGFS_FS=y
- CONFIG_NFS_FS=y
- CONFIG_NLS=y
-+CONFIG_NLS_CODEPAGE_437=y
- CONFIG_NLS_CODEPAGE_936=y
- CONFIG_NLS_CODEPAGE_950=y
- CONFIG_NLS_ASCII=y
-diff --git a/arch/mips/configs/cu1830-neo_defconfig b/arch/mips/configs/cu1830-neo_defconfig
-index e7064851a47a..29decd0003c6 100644
---- a/arch/mips/configs/cu1830-neo_defconfig
-+++ b/arch/mips/configs/cu1830-neo_defconfig
-@@ -25,6 +25,7 @@ CONFIG_HIGHMEM=y
- CONFIG_HZ_100=y
- # CONFIG_SECCOMP is not set
- # CONFIG_SUSPEND is not set
-+CONFIG_MODULES=y
- # CONFIG_CORE_DUMP_DEFAULT_ELF_HEADERS is not set
- # CONFIG_COMPACTION is not set
- CONFIG_CMA=y
-@@ -32,18 +33,20 @@ CONFIG_NET=y
- CONFIG_PACKET=y
- CONFIG_UNIX=y
- CONFIG_INET=y
--CONFIG_CFG80211=y
-+CONFIG_CFG80211=m
- CONFIG_UEVENT_HELPER=y
- CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
- CONFIG_DEVTMPFS=y
- # CONFIG_ALLOW_DEV_COREDUMP is not set
-+CONFIG_SCSI=y
-+CONFIG_BLK_DEV_SD=y
- CONFIG_MD=y
--CONFIG_BLK_DEV_MD=y
--CONFIG_BLK_DEV_DM=y
-+CONFIG_BLK_DEV_MD=m
-+CONFIG_BLK_DEV_DM=m
- CONFIG_NETDEVICES=y
- CONFIG_STMMAC_ETH=y
- CONFIG_ICPLUS_PHY=y
--CONFIG_BRCMFMAC=y
-+CONFIG_BRCMFMAC=m
- # CONFIG_INPUT_KEYBOARD is not set
- # CONFIG_INPUT_MOUSE is not set
- # CONFIG_SERIO is not set
-@@ -55,16 +58,25 @@ CONFIG_SERIAL_8250_NR_UARTS=2
- CONFIG_SERIAL_8250_RUNTIME_UARTS=2
- CONFIG_SERIAL_8250_INGENIC=y
- CONFIG_SERIAL_OF_PLATFORM=y
--# CONFIG_HW_RANDOM is not set
-+CONFIG_SERIAL_SC16IS7XX=y
-+# CONFIG_SERIAL_SC16IS7XX_I2C is not set
-+CONFIG_SERIAL_SC16IS7XX_SPI=y
- CONFIG_I2C=y
- CONFIG_I2C_JZ4780=y
-+CONFIG_SPI=y
-+CONFIG_SPI_GPIO=y
- CONFIG_GPIO_SYSFS=y
--CONFIG_SENSORS_ADS7828=y
-+CONFIG_SENSORS_ADS7828=m
- CONFIG_WATCHDOG=y
- CONFIG_JZ4740_WDT=y
- # CONFIG_VGA_CONSOLE is not set
- # CONFIG_HID is not set
--# CONFIG_USB_SUPPORT is not set
-+CONFIG_USB=y
-+CONFIG_USB_STORAGE=y
-+CONFIG_USB_DWC2=y
-+CONFIG_USB_SERIAL=y
-+CONFIG_USB_SERIAL_CH341=y
-+CONFIG_USB_GADGET=y
- CONFIG_MMC=y
- CONFIG_MMC_JZ4740=y
- CONFIG_NEW_LEDS=y
-@@ -75,16 +87,22 @@ CONFIG_RTC_CLASS=y
- CONFIG_RTC_DRV_JZ4740=y
- CONFIG_DMADEVICES=y
- CONFIG_DMA_JZ4780=y
-+# CONFIG_INGENIC_TIMER is not set
-+CONFIG_INGENIC_SYSOST=y
- # CONFIG_IOMMU_SUPPORT is not set
-+CONFIG_JZ4770_PHY=y
- CONFIG_EXT4_FS=y
- # CONFIG_DNOTIFY is not set
- CONFIG_AUTOFS_FS=y
-+CONFIG_VFAT_FS=y
-+CONFIG_FAT_DEFAULT_UTF8=y
- CONFIG_PROC_KCORE=y
- # CONFIG_PROC_PAGE_MONITOR is not set
- CONFIG_TMPFS=y
- CONFIG_CONFIGFS_FS=y
- CONFIG_NFS_FS=y
- CONFIG_NLS=y
-+CONFIG_NLS_CODEPAGE_437=y
- CONFIG_NLS_CODEPAGE_936=y
- CONFIG_NLS_CODEPAGE_950=y
- CONFIG_NLS_ASCII=y
+ .../devicetree/bindings/bus/fsl,spba-bus.yaml | 66 +++++++++++++++++++
+ 1 file changed, 66 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/bus/fsl,spba-bus.yaml b/Documentation/devicetree/bindings/bus/fsl,spba-bus.yaml
+new file mode 100644
+index 000000000000..d1037acd2734
+--- /dev/null
++++ b/Documentation/devicetree/bindings/bus/fsl,spba-bus.yaml
+@@ -0,0 +1,66 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/bus/simple-pm-bus.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Shared Peripherals Bus Interface
++
++maintainers:
++  - Shawn Guo <shawnguo@kernel.org>
++
++description: |
++  A simple bus enabling access to shared peripherals.
++
++  The "spba-bus" follows the "simple-bus" set of properties, as
++  specified in the Devicetree Specification.  It is an extension of
++  "simple-bus" because the SDMA controller uses this compatible flag to
++  determine which peripherals are available to it and the range over which
++  the SDMA can access.  There are no special clocks for the bus, because
++  the SDMA controller itself has its interrupt, and clock assignments.
++
++select:
++  properties:
++    compatible:
++      contains:
++        const: fsl,spba-bus
++  required:
++    - compatible
++
++properties:
++  $nodename:
++    pattern: "^bus(@[0-9a-f]+)?$"
++
++  compatible:
++    contains:
++      const: fsl,spba-bus
++  items:
++    - const: fsl,spba-bus
++    - const: simple-bus
++
++  '#address-cells':
++    enum: [ 1, 2 ]
++
++  '#size-cells':
++    enum: [ 1, 2 ]
++
++  ranges: true
++
++required:
++  - compatible
++  - '#address-cells'
++  - '#size-cells'
++  - ranges
++
++additionalProperties: true
++
++type: object
++
++examples:
++  - |
++    bus {
++        compatible = "fsl,spba-bus", "simple-bus";
++        #address-cells = <1>;
++        #size-cells = <1>;
++        ranges;
++    };
 -- 
-2.11.0
+2.25.1
 
