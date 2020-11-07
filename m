@@ -2,98 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE0982AA6BA
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 17:52:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7417D2AA6BC
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 17:54:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728292AbgKGQwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 11:52:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35392 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726021AbgKGQwG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 11:52:06 -0500
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9662C0613CF;
-        Sat,  7 Nov 2020 08:52:06 -0800 (PST)
-Received: by mail-pl1-x642.google.com with SMTP id k7so2442954plk.3;
-        Sat, 07 Nov 2020 08:52:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=wTHmZEswhZJSCKalkYaLwBa7H7/+qP0erahSehZXX2g=;
-        b=W46BC3gMxIb24Z6kaaPXJLWYVl3ytwoXppeARNqlROC/ppgejtlwFdERGwzVfB/UFE
-         H0RsRo8n/QmbJw1GpbabvufoBDOJjgV/SYrKUIR1ddCK3AvpWQQfEURORdBhKz3wsb/C
-         DUsMEhuHuR4950ybbmWqDZ6eK3VPx5ORGVOQUFQoMXOJ+9wHfuSt7Cd4g/mjWIOGvXo7
-         ni37iVbzw5G25ZE8MGeTyS0hSPwz5j+QijM4wvLvGo+NjDtUV8H7aD9+62CfUYbWCf58
-         CVcg7jGA8XqJwKSdZnqmRbjg5THW6JxeZVyszL6RPeh48VS1MkcVOWCPYS//ruR7SGpH
-         k20A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=wTHmZEswhZJSCKalkYaLwBa7H7/+qP0erahSehZXX2g=;
-        b=iv4tWHRsHQVgy4RQ8FF3WanBxFiLf8GELKGUBBesn6hleNY/KWL/UwbX0aRY4wE1Dk
-         YViL2Vc4GHkVc6JUPVCT9TZWhBzH0yTl3IgzAmOBzud7kMY4ev5ZFGj33/zFNYgTBywu
-         VJcJ8i8HPxMlYFbA5/sW3BtH12w21Re0tJH0XCOFJvOepTQMVxwCoJFBYdifTy0HRvFY
-         wniPMIHOeWT/qsoLoK6cIFjJYmtvngL24Z5VKgwsX7G0NhRjV0/9XLJm1NM/sWbGL36E
-         Y6oPPrza1hSWQnVz6XYZzuQ4HoOZfJ6sbIJJGvJZbPBXLK6iXnjGBBfJgnI7BJ5Y2+j4
-         41Sw==
-X-Gm-Message-State: AOAM531enlHioSbCMsYtcMEtLxX4LQgM8aMOG8Y3ZUExBjlz6V8dIH+V
-        taAQw7LIjHBQAZGMW3npAbQqZDJ5WANQ
-X-Google-Smtp-Source: ABdhPJzVEutsRkevmiZEjdDb4pVKyF9HS/CHgWNQTX1h9tU9ep8PNEip0wYEOxVjJTWpzmy/if03SA==
-X-Received: by 2002:a17:902:7681:b029:d6:42d5:6af3 with SMTP id m1-20020a1709027681b02900d642d56af3mr6087674pll.12.1604767926283;
-        Sat, 07 Nov 2020 08:52:06 -0800 (PST)
-Received: from he-cluster.localdomain (67.216.221.250.16clouds.com. [67.216.221.250])
-        by smtp.gmail.com with ESMTPSA id e7sm5642192pgj.19.2020.11.07.08.52.04
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 07 Nov 2020 08:52:05 -0800 (PST)
-From:   xiakaixu1987@gmail.com
-X-Google-Original-From: kaixuxia@tencent.com
-To:     jejb@linux.ibm.com, martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kaixu Xia <kaixuxia@tencent.com>
-Subject: [PATCH] scsi: bnx2fc: fix comparison to bool warning
-Date:   Sun,  8 Nov 2020 00:52:00 +0800
-Message-Id: <1604767920-8361-1-git-send-email-kaixuxia@tencent.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S1728316AbgKGQyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 11:54:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43900 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726021AbgKGQyf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Nov 2020 11:54:35 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 73B27208FE;
+        Sat,  7 Nov 2020 16:54:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604768074;
+        bh=9bUJAFtKjhDN45p4T+UQtUzX1qvHFX2a8IQPUCLjMXg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=iDKqtwlBRFyo3WWC/7pbXL36pzUaE5NQFLRgC/Rpg0ARPeta4Q6yOCXs3j5N03Aa3
+         NDPey1IOfMWImyrH3T2nqQUg3PSOeiBAeDJO5FHwvRET+bg+nzFKehMJ5DqCxRjEl3
+         vKbU10Ay2pBjB6uC3UnXrAyZm8Auiqzmn9v5F/AY=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kbRU0-008VU3-Et; Sat, 07 Nov 2020 16:54:32 +0000
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Sat, 07 Nov 2020 16:54:32 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Xu Qiang <xuqiang36@huawei.com>
+Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org,
+        rui.xiang@huawei.com
+Subject: Re: [PATCH -next] irq-chip/gic-v3-its: Fixed an issue where the ITS
+ executes the residual commands in the queue again when the ITS wakes up from
+ sleep mode.
+In-Reply-To: <20201107104226.14282-1-xuqiang36@huawei.com>
+References: <20201107104226.14282-1-xuqiang36@huawei.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <b278ce4baea0cf79403f793721d16a8b@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: xuqiang36@huawei.com, tglx@linutronix.de, linux-kernel@vger.kernel.org, rui.xiang@huawei.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kaixu Xia <kaixuxia@tencent.com>
+[dropping Jason, whose email address has been bouncing for weeks now]
 
-Fix the following coccicheck warning:
+On 2020-11-07 10:42, Xu Qiang wrote:
+> On my platform, ITS_FLAGS_SAVE_SUSPEND_STATE is not set,thus do nothing
 
-./drivers/scsi/bnx2fc/bnx2fc_fcoe.c:2089:5-23: WARNING: Comparison to bool
-./drivers/scsi/bnx2fc/bnx2fc_fcoe.c:2187:5-23: WARNING: Comparison to bool
+Which platform?
 
-Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
-Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
----
- drivers/scsi/bnx2fc/bnx2fc_fcoe.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> in its suspend and resuse function.On the other hand,firmware stores
+> GITS_CTRL,GITS_CBASER,GITS_CWRITER and GITS_BASER<n> in the suspend,
+> and restores these registers in the resume. As a result, the ITS 
+> executes
+> the residual commands in the queue.
 
-diff --git a/drivers/scsi/bnx2fc/bnx2fc_fcoe.c b/drivers/scsi/bnx2fc/bnx2fc_fcoe.c
-index 6890bbe04a8c..b612f5ea647e 100644
---- a/drivers/scsi/bnx2fc/bnx2fc_fcoe.c
-+++ b/drivers/scsi/bnx2fc/bnx2fc_fcoe.c
-@@ -2086,7 +2086,7 @@ static int __bnx2fc_disable(struct fcoe_ctlr *ctlr)
- {
- 	struct bnx2fc_interface *interface = fcoe_ctlr_priv(ctlr);
- 
--	if (interface->enabled == true) {
-+	if (interface->enabled) {
- 		if (!ctlr->lp) {
- 			pr_err(PFX "__bnx2fc_disable: lport not found\n");
- 			return -ENODEV;
-@@ -2184,7 +2184,7 @@ static int __bnx2fc_enable(struct fcoe_ctlr *ctlr)
- 	struct cnic_fc_npiv_tbl *npiv_tbl;
- 	struct fc_lport *lport;
- 
--	if (interface->enabled == false) {
-+	if (!interface->enabled) {
- 		if (!ctlr->lp) {
- 			pr_err(PFX "__bnx2fc_enable: lport not found\n");
- 			return -ENODEV;
+Which firmware are you using? I just had a look at the trusted firmware 
+source
+code, and while it definitely does something that *looks* like what you 
+are
+describing, it doesn't re-enable the ITS on resume.
+
+So what are you running?
+
+> 
+> Memory corruption may occur in the following scenarios:
+> 
+> The kernel sends three commands in the following sequence:
+> 1.mapd(deviceA, ITT_addr1, valid:1)
+> 2.mapti(deviceA):ITS write ITT_addr1 memory;
+> 3.mapd(deviceA, ITT_addr1, valid:0) and kfree(ITT_addr1);
+
+The ITS doesn't 'kfree' stuff.
+
+> 4.mapd(deviceA, ITT_addr2, valid:1);
+> 5.mapti(deviceA):ITS write ITT_addr2 memory;
+
+I don't think this example is relevant. The core of the problem is that
+the ITS gets re-enabled by your firmware. What are the affected systems?
+
+> 
+> To solve this problem,dropping the checks for 
+> ITS_FLAGS_SAVE_SUSPEND_STATE.
+> 
+> Signed-off-by: Xu Qiang <xuqiang36@huawei.com>
+> ---
+>  drivers/irqchip/irq-gic-v3-its.c | 13 -------------
+>  1 file changed, 13 deletions(-)
+> 
+> diff --git a/drivers/irqchip/irq-gic-v3-its.c 
+> b/drivers/irqchip/irq-gic-v3-its.c
+> index 0fec31931e11..06f2c1c252b9 100644
+> --- a/drivers/irqchip/irq-gic-v3-its.c
+> +++ b/drivers/irqchip/irq-gic-v3-its.c
+> @@ -42,7 +42,6 @@
+>  #define ITS_FLAGS_CMDQ_NEEDS_FLUSHING		(1ULL << 0)
+>  #define ITS_FLAGS_WORKAROUND_CAVIUM_22375	(1ULL << 1)
+>  #define ITS_FLAGS_WORKAROUND_CAVIUM_23144	(1ULL << 2)
+> -#define ITS_FLAGS_SAVE_SUSPEND_STATE		(1ULL << 3)
+> 
+>  #define RDIST_FLAGS_PROPBASE_NEEDS_FLUSHING	(1 << 0)
+>  #define RDIST_FLAGS_RD_TABLES_PREALLOCATED	(1 << 1)
+> @@ -4741,9 +4740,6 @@ static int its_save_disable(void)
+>  	list_for_each_entry(its, &its_nodes, entry) {
+>  		void __iomem *base;
+> 
+> -		if (!(its->flags & ITS_FLAGS_SAVE_SUSPEND_STATE))
+> -			continue;
+> -
+>  		base = its->base;
+>  		its->ctlr_save = readl_relaxed(base + GITS_CTLR);
+>  		err = its_force_quiescent(base);
+> @@ -4762,9 +4758,6 @@ static int its_save_disable(void)
+>  		list_for_each_entry_continue_reverse(its, &its_nodes, entry) {
+>  			void __iomem *base;
+> 
+> -			if (!(its->flags & ITS_FLAGS_SAVE_SUSPEND_STATE))
+> -				continue;
+> -
+>  			base = its->base;
+>  			writel_relaxed(its->ctlr_save, base + GITS_CTLR);
+>  		}
+> @@ -4784,9 +4777,6 @@ static void its_restore_enable(void)
+>  		void __iomem *base;
+>  		int i;
+> 
+> -		if (!(its->flags & ITS_FLAGS_SAVE_SUSPEND_STATE))
+> -			continue;
+> -
+>  		base = its->base;
+> 
+>  		/*
+> @@ -5074,9 +5064,6 @@ static int __init its_probe_one(struct resource 
+> *res,
+>  		ctlr |= GITS_CTLR_ImDe;
+>  	writel_relaxed(ctlr, its->base + GITS_CTLR);
+> 
+> -	if (GITS_TYPER_HCC(typer))
+> -		its->flags |= ITS_FLAGS_SAVE_SUSPEND_STATE;
+> -
+>  	err = its_init_domain(handle, its);
+>  	if (err)
+>  		goto out_free_tables;
+
+I'm OK with the patch itself, but I don't want to paper over broken 
+firmware.
+I'll get TF-A fixed one way or another, but I want to be sure yours is 
+too.
+If firmware does its job correctly, we shouldn't have to do all of this.
+
+         M.
 -- 
-2.20.0
-
+Jazz is not dead. It just smells funny...
