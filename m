@@ -2,52 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 991B62AA82F
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 23:08:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C22CF2AA834
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 23:09:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728759AbgKGWIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 17:08:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50252 "EHLO mail.kernel.org"
+        id S1728809AbgKGWJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 17:09:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50444 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725838AbgKGWIa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 17:08:30 -0500
-Subject: Re: [GIT PULL] io_uring fixes for 5.10-rc
+        id S1725838AbgKGWJy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Nov 2020 17:09:54 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D258220702;
+        Sat,  7 Nov 2020 22:09:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604786910;
-        bh=QgSIKOs3OqQKbZAG0GjVizhhzreMnrNH9gxKVrB15So=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=IJEE1EEfnppQMrT8OUV22seHxjn9bCrOn335HsefDn+x0ouOKJ/X10GoKlQYlOFAl
-         0/goFwnI+OmtmKaHV50iG1wWuJtLC/ZDucMgcQ4UTAISfK4C18fgaTDJ9rvSAOfGJj
-         I8ZYTMG2RNh3zYQtoBnCBInRE7BfIyOsEebGoFs8=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <adf29460-8af3-b326-a372-2627a9097929@kernel.dk>
-References: <adf29460-8af3-b326-a372-2627a9097929@kernel.dk>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <adf29460-8af3-b326-a372-2627a9097929@kernel.dk>
-X-PR-Tracked-Remote: git://git.kernel.dk/linux-block.git tags/io_uring-5.10-2020-11-07
-X-PR-Tracked-Commit-Id: 9a472ef7a3690ac0b77ebfb04c88fa795de2adea
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: e9c02d68cc26b28a9a12ebd1aeaed673ad0e73e2
-Message-Id: <160478691054.18289.7107173394799017456.pr-tracker-bot@kernel.org>
-Date:   Sat, 07 Nov 2020 22:08:30 +0000
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        io-uring <io-uring@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+        s=default; t=1604786994;
+        bh=P69/MVPtSLlqmmiXEPZLWJik5SF3YokFWmFRfoizsnM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=jzwKECuA+biP5vP9ftywRYFSBX+85OieEZlUzsQMEYcAmbfmAO7VFFT0E6Er9GGil
+         fcXzZmkoxlYZA1dhDz71jqWfTZq4bAbZ70mOeqRCfNWxNSMEQezMQHUjZctvLIq7FE
+         qunHfw2O2psUVeH19+7qDT95io7aCKC9ryNEFWqM=
+Date:   Sat, 7 Nov 2020 14:09:53 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Yu Kuai <yukuai3@huawei.com>
+Cc:     <madalin.bucur@nxp.com>, <davem@davemloft.net>,
+        <florinel.iordache@nxp.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>
+Subject: Re: [PATCH V3] fsl/fman: add missing put_devcie() call in
+ fman_port_probe()
+Message-ID: <20201107140953.1f04c04e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201107090925.1494578-1-yukuai3@huawei.com>
+References: <20201103112323.1077040-1-yukuai3@huawei.com>
+        <20201107090925.1494578-1-yukuai3@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 7 Nov 2020 13:13:57 -0700:
+On Sat, 7 Nov 2020 17:09:25 +0800 Yu Kuai wrote:
+> if of_find_device_by_node() succeed, fman_port_probe() doesn't have a
+> corresponding put_device(). Thus add jump target to fix the exception
+> handling for this function implementation.
+> 
+> Fixes: 0572054617f3 ("fsl/fman: fix dereference null return value")
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 
-> git://git.kernel.dk/linux-block.git tags/io_uring-5.10-2020-11-07
+> @@ -1792,20 +1792,20 @@ static int fman_port_probe(struct platform_device *of_dev)
+>  	if (!fm_node) {
+>  		dev_err(port->dev, "%s: of_get_parent() failed\n", __func__);
+>  		err = -ENODEV;
+> -		goto return_err;
+> +		goto free_port;
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/e9c02d68cc26b28a9a12ebd1aeaed673ad0e73e2
+And now you no longer put port_node if jumping from here...
 
-Thank you!
+Also does the reference to put_device() not have to be released when
+this function succeeds?
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+>  	}
+
+> @@ -1896,7 +1895,9 @@ static int fman_port_probe(struct platform_device *of_dev)
+>  
+>  	return 0;
+>  
+> -return_err:
+> +put_device:
+> +	put_device(&fm_pdev->dev);
+> +put_node:
+>  	of_node_put(port_node);
+>  free_port:
+>  	kfree(port);
+
