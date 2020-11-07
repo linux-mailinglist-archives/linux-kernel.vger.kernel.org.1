@@ -2,124 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEFF92AA1E3
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 01:48:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08C512AA1E8
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 01:54:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728352AbgKGAsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 19:48:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42968 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725868AbgKGAsQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 19:48:16 -0500
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7C928206D5;
-        Sat,  7 Nov 2020 00:48:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604710095;
-        bh=d7xWJLSjJ7RLOIXvdq/UTR+dudKnOid7xsqEvkWOWLQ=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=HDoG9YKUhLpeKHRqqOhjSWipW6DZHmu/BqF1lo89S+3ZCK0Lz9WotB9pMTRd1eTvo
-         gQyn6U1fYzHYOIy8R0MD5sljb+yskaaGzia2qCAWjn9UqASOQI4A6708ecTU5+r4fZ
-         OFReChrjIlHEjyD9UYe9jAlfMymz85GUNsXyXjek=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 1905B35225DD; Fri,  6 Nov 2020 16:48:15 -0800 (PST)
-Date:   Fri, 6 Nov 2020 16:48:15 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Marco Elver <elver@google.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>, fweisbec@gmail.com,
-        neeraj.iitr10@gmail.com
-Subject: Re: [PATCH v9 2/7] rcu/segcblist: Add counters to segcblist
- datastructure
-Message-ID: <20201107004815.GD3249@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201103142603.1302207-1-joel@joelfernandes.org>
- <20201103142603.1302207-3-joel@joelfernandes.org>
- <20201104170133.GI3249@paulmck-ThinkPad-P72>
- <20201107000157.GB1397669@google.com>
- <20201107001847.GD1397669@google.com>
+        id S1727257AbgKGAxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 19:53:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57290 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727129AbgKGAxq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 19:53:46 -0500
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B66DC0613D2
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 16:53:46 -0800 (PST)
+Received: by mail-io1-xd42.google.com with SMTP id k21so3325295ioa.9
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 16:53:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=atishpatra.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=htvs7lR/1BI8D0Mzc+TXEsKixscjGZpRTsGr1YNtxI4=;
+        b=Gm+gGA0zABCYmnzgAZbqB8LmrvQ24MZCZCeuofocA24Z9DinusB4T1r6s3QuIsHnq/
+         BDgTerVHPvQuevB4yFhOhYW29XoCPLIvMjMF66TkV6n1x1WAtyJgsMXb/N5zpnI9faJa
+         FIOqUay2ys7nfNVAmyM7TMxQWX7Rcmmu7ZLY4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=htvs7lR/1BI8D0Mzc+TXEsKixscjGZpRTsGr1YNtxI4=;
+        b=RxuSZJD3UFLwa1KvesHyz3EbWezHxMXVc/u6PdtkOJZTIw+3pnN9vj119DYrEakRkK
+         rx/F9UDLTutppScm6KjINEmLfwtiW9ra5EUUJ+Pmy7BSz5cXwGc1GBp8eIqpZKGvb8m6
+         fm91u6uW1VSAhOy+NvmnBM+GjGzqe3kU96f1uQnO0nto4nyauP9iikLSec3fG2xO4mRy
+         afA5+QxZaBPrlIYFEsvRecz6rCbafwO9+G07PxCryqBsfLOSJfL8CXjsvxHzn4wW50Ch
+         AjGM4U/q4rWMHTCe4Ac5lig0rNMOwqbKy/1gFdPiXePFqLO5e5/Q1z11Ko5YyXXp32+P
+         zNoA==
+X-Gm-Message-State: AOAM531dZ83F/VLNWXNI+4p1aVkjxRzBh3iXEK3MGQTr5cLE9DwZT1a8
+        5+qyOpSHDHFMkXMjKnaGMDPBm1Scgou4J6JES2zj
+X-Google-Smtp-Source: ABdhPJyTo+S+mQWAmRQ8EDSKdeh04ebDM4c/nGCflyQ+HMbV7hMgiFw6U1U5Deqk5cCMRheBFpX7520CFYInwaVMtLw=
+X-Received: by 2002:a5d:9842:: with SMTP id p2mr3570190ios.113.1604710425638;
+ Fri, 06 Nov 2020 16:53:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201107001847.GD1397669@google.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20201006001752.248564-1-atish.patra@wdc.com> <20201006001752.248564-3-atish.patra@wdc.com>
+ <20201106171403.GK29329@gaia> <CAOnJCUJo795yX_7am0hdB_JFio3_ZBRHioHNcydhqEouCUynUg@mail.gmail.com>
+ <20201106190847.GA23792@gaia>
+In-Reply-To: <20201106190847.GA23792@gaia>
+From:   Atish Patra <atishp@atishpatra.org>
+Date:   Fri, 6 Nov 2020 16:53:33 -0800
+Message-ID: <CAOnJCUJ-vi=1w8HzsPP-adcV58jZC4NM-mvHD09QVkd9iJrwOA@mail.gmail.com>
+Subject: Re: [PATCH v4 2/5] arm64, numa: Change the numa init functions name
+ to be generic
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Atish Patra <atish.patra@wdc.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Zong Li <zong.li@sifive.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Will Deacon <will@kernel.org>, linux-arch@vger.kernel.org,
+        Lorenzo Pieralisi <Lorenzo.Pieralisi@arm.com>,
+        Jia He <justin.he@arm.com>, Anup Patel <anup@brainfault.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Steven Price <steven.price@arm.com>,
+        Greentime Hu <greentime.hu@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 06, 2020 at 07:18:47PM -0500, Joel Fernandes wrote:
-> On Fri, Nov 06, 2020 at 07:01:57PM -0500, Joel Fernandes wrote:
-> > On Wed, Nov 04, 2020 at 09:01:33AM -0800, Paul E. McKenney wrote:
-> > 
-> > > A casual reader might be forgiven for being confused by the combination
-> > > of "Return" in the above comment and the "void" function type below.
-> > > So shouldn't this comment be something like "Add the specified number
-> > > of callbacks to the specified segment..."?
-> > 
-> > You are right, sorry and will fix it.
-> > 
-> > > > @@ -330,11 +342,16 @@ void rcu_segcblist_extract_pend_cbs(struct rcu_segcblist *rsclp,
-> > > >  
-> > > >  	if (!rcu_segcblist_pend_cbs(rsclp))
-> > > >  		return; /* Nothing to do. */
-> > > > +	rclp->len = rcu_segcblist_get_seglen(rsclp, RCU_WAIT_TAIL) +
-> > > > +		    rcu_segcblist_get_seglen(rsclp, RCU_NEXT_READY_TAIL) +
-> > > > +		    rcu_segcblist_get_seglen(rsclp, RCU_NEXT_TAIL);
-> > > 
-> > > This should be a "for" loop.  Yes, the number and names of the segments
-> > > hasn't changed for a good long time, but nothing like code as above to
-> > > inspire Murphy to more mischief.  :-/
-> > > 
-> > > Actually, why not put the summation in the existing "for" loop below?
-> > > That would save a line of code in addition to providing less inspiration
-> > > for Mr. Murphy.
-> > 
-> > I can do that. Actually Frederic suggested the same thing but I was reluctant
-> > as I felt it did not give much LOC benefit. Will revisit it.
-> 
-> It reduces 1 line of code :) I changed it to the below, will update the patch:
+On Fri, Nov 6, 2020 at 11:08 AM Catalin Marinas <catalin.marinas@arm.com> wrote:
+>
+> On Fri, Nov 06, 2020 at 09:33:14AM -0800, Atish Patra wrote:
+> > On Fri, Nov 6, 2020 at 9:14 AM Catalin Marinas <catalin.marinas@arm.com> wrote:
+> > > On Mon, Oct 05, 2020 at 05:17:49PM -0700, Atish Patra wrote:
+> > > > diff --git a/arch/arm64/kernel/acpi_numa.c b/arch/arm64/kernel/acpi_numa.c
+> > > > index 7ff800045434..96502ff92af5 100644
+> > > > --- a/arch/arm64/kernel/acpi_numa.c
+> > > > +++ b/arch/arm64/kernel/acpi_numa.c
+> > > > @@ -117,16 +117,3 @@ void __init acpi_numa_gicc_affinity_init(struct acpi_srat_gicc_affinity *pa)
+> > > >
+> > > >       node_set(node, numa_nodes_parsed);
+> > > >  }
+> > > > -
+> > > > -int __init arm64_acpi_numa_init(void)
+> > > > -{
+> > > > -     int ret;
+> > > > -
+> > > > -     ret = acpi_numa_init();
+> > > > -     if (ret) {
+> > > > -             pr_info("Failed to initialise from firmware\n");
+> > > > -             return ret;
+> > > > -     }
+> > > > -
+> > > > -     return srat_disabled() ? -EINVAL : 0;
+> > > > -}
+> > >
+> > > I think it's better if arm64_acpi_numa_init() and arm64_numa_init()
+> > > remained in the arm64 code. It's not really much code to be shared.
+> >
+> > RISC-V will probably support ACPI one day. The idea is to not to do
+> > exercise again in future.
+> > Moreover, there will be arch_numa_init which will be used by RISC-V
+> > and there will be arm64_numa_init
+> > used by arm64. However, if you feel strongly about it, I am happy to
+> > move back those two functions to arm64.
+>
+> I don't have a strong view on this, only if there's a risk at some point
+> of the implementations diverging (e.g. quirks). We can revisit it if
+> that happens.
+>
 
-Thank you!  And yes, I am much more concerned about the constraints on
-Mr. Murphy than on the lines of code.  ;-)
+Sure. I seriously hope we don't have to deal with arch specific quirks
+in future.
 
-							Thanx, Paul
+> It may be worth swapping patches 1 and 2 so that you don't have an
+> arm64_* function in the core code after the first patch (more of a
+> nitpick). Either way, feel free to add my ack on both patches:
+>
 
-> ---8<-----------------------
-> 
-> diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
-> index 9b43d686b1f3..bff9b2253e50 100644
-> --- a/kernel/rcu/rcu_segcblist.c
-> +++ b/kernel/rcu/rcu_segcblist.c
-> @@ -101,7 +101,7 @@ static void rcu_segcblist_set_seglen(struct rcu_segcblist *rsclp, int seg, long
->  	WRITE_ONCE(rsclp->seglen[seg], v);
->  }
->  
-> -/* Return number of callbacks in a segment of the segmented callback list. */
-> +/* Increase the numeric length of a segment by a specified amount. */
->  static void rcu_segcblist_add_seglen(struct rcu_segcblist *rsclp, int seg, long v)
->  {
->  	WRITE_ONCE(rsclp->seglen[seg], rsclp->seglen[seg] + v);
-> @@ -406,13 +406,12 @@ void rcu_segcblist_extract_pend_cbs(struct rcu_segcblist *rsclp,
->  
->  	if (!rcu_segcblist_pend_cbs(rsclp))
->  		return; /* Nothing to do. */
-> -	rclp->len = rcu_segcblist_get_seglen(rsclp, RCU_WAIT_TAIL) +
-> -		    rcu_segcblist_get_seglen(rsclp, RCU_NEXT_READY_TAIL) +
-> -		    rcu_segcblist_get_seglen(rsclp, RCU_NEXT_TAIL);
-> +	rclp->len = 0;
->  	*rclp->tail = *rsclp->tails[RCU_DONE_TAIL];
->  	rclp->tail = rsclp->tails[RCU_NEXT_TAIL];
->  	WRITE_ONCE(*rsclp->tails[RCU_DONE_TAIL], NULL);
->  	for (i = RCU_DONE_TAIL + 1; i < RCU_CBLIST_NSEGS; i++) {
-> +		rclp->len += rcu_segcblist_get_seglen(rsclp, i);
->  		WRITE_ONCE(rsclp->tails[i], rsclp->tails[RCU_DONE_TAIL]);
->  		rcu_segcblist_set_seglen(rsclp, i, 0);
->  	}
+Sure. I will swap 1 & 2 and resend the series.
+
+> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+
+Thanks.
+
+-- 
+Regards,
+Atish
