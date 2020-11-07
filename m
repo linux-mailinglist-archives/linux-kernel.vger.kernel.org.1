@@ -2,62 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48D112AA73B
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 18:34:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 028E82AA73F
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 18:36:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728250AbgKGReN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 12:34:13 -0500
-Received: from asavdk4.altibox.net ([109.247.116.15]:58098 "EHLO
-        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726364AbgKGReN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 12:34:13 -0500
-Received: from ravnborg.org (unknown [188.228.123.71])
+        id S1728483AbgKGRgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 12:36:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34062 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726364AbgKGRgt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Nov 2020 12:36:49 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.4])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by asavdk4.altibox.net (Postfix) with ESMTPS id 37A3980530;
-        Sat,  7 Nov 2020 18:34:08 +0100 (CET)
-Date:   Sat, 7 Nov 2020 18:34:06 +0100
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
-Cc:     Lee Jones <lee.jones@linaro.org>, David Airlie <airlied@linux.ie>,
-        dri-devel@lists.freedesktop.org, Huang Rui <ray.huang@amd.com>,
-        Rob Clark <rob@ti.com>, Gareth Hughes <gareth@valinux.com>,
-        amd-gfx@lists.freedesktop.org, Rob Clark <rob.clark@linaro.org>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Keith Whitwell <keith@tungstengraphics.com>,
-        Andy Gross <andy.gross@ti.com>, linux-media@vger.kernel.org,
-        Leo Li <sunpeng.li@amd.com>, linaro-mm-sig@lists.linaro.org,
-        by <jhartmann@precisioninsight.com>,
-        Jeff Hartmann <jhartmann@valinux.com>,
-        linux-kernel@vger.kernel.org, Faith <faith@valinux.com>,
-        Alex Deucher <alexander.deucher@amd.com>
-Subject: Re: [PATCH 00/19] [Set 2] Rid W=1 warnings from GPU
-Message-ID: <20201107173406.GA1030984@ravnborg.org>
-References: <20201106214949.2042120-1-lee.jones@linaro.org>
- <9d4be6a4-4f39-b908-4086-2b6adb695465@amd.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 8362F20878;
+        Sat,  7 Nov 2020 17:36:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604770609;
+        bh=874pholEmXT2touwGXcTDWWif65SywS94Aw8a8cb5u4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=V5ORt+wnKnfRW+jbwFFDoYHYnC2m8Q8q2HJrJ0g/jkl1H1RDDGKAF8mU6MMLJa0xk
+         9MYIFtVLQHACJzw4DtTQmlrlCocjFuLb0tHUyXKWz+r70U3y7+yTDYzsHiZ16dhEiP
+         n0R1msx+B+grW/KAJ8BADfEttC4Ku6o2FdT6c6RM=
+Date:   Sat, 7 Nov 2020 09:36:47 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Richard Cochran <richardcochran@gmail.com>
+Cc:     Wang Qing <wangqing@vivo.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Kurt Kanzenbach <kurt@linutronix.de>,
+        Samuel Zou <zou_wei@huawei.com>,
+        Murali Karicheri <m-karicheri2@ti.com>,
+        Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [V2] [PATCH] net/ethernet: update ret when ptp_clock is ERROR
+Message-ID: <20201107093647.3a143f67@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201107145816.GB9653@hoboy.vegasvil.org>
+References: <1604720323-3586-1-git-send-email-wangqing@vivo.com>
+        <20201107145816.GB9653@hoboy.vegasvil.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9d4be6a4-4f39-b908-4086-2b6adb695465@amd.com>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=VafZwmh9 c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=7gkXJVJtAAAA:8 a=mBk19mKJqlyWPAr97ekA:9
-        a=CjuIK1q_8ugA:10 a=E9Po1WZjFZOl8hwRPBS3:22
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christian.
+On Sat, 7 Nov 2020 06:58:16 -0800 Richard Cochran wrote:
+> On Sat, Nov 07, 2020 at 11:38:38AM +0800, Wang Qing wrote:
+> > We always have to update the value of ret, otherwise the error value
+> >  may be the previous one. And ptp_clock_register() never return NULL
+> >  when PTP_1588_CLOCK enable, so we use IS_ERR here.
+> > 
+> > Signed-off-by: Wang Qing <wangqing@vivo.com>
 
-> I'm not sure if we want to do some of the suggested changes to radeon.
+Wang Qing please send a v3. Please add an appropriate Fixes tag, since
+this is a fix, and put [PATCH net] in the subject instead of just
+[PATCH] to clarify that you expect the patch to be applied to the
+net tree.
 
-All patches for radeon looks good to me except "drm/radeon/radeon: Move
-prototype into shared header".
+> > diff --git a/drivers/net/ethernet/ti/am65-cpts.c b/drivers/net/ethernet/ti/am65-cpts.c
+> > index 75056c1..ec8e56d
+> > --- a/drivers/net/ethernet/ti/am65-cpts.c
+> > +++ b/drivers/net/ethernet/ti/am65-cpts.c
+> > @@ -998,11 +998,10 @@ struct am65_cpts *am65_cpts_create(struct device *dev, void __iomem *regs,
+> >  	am65_cpts_settime(cpts, ktime_to_ns(ktime_get_real()));
+> >  
+> >  	cpts->ptp_clock = ptp_clock_register(&cpts->ptp_info, cpts->dev);
+> > -	if (IS_ERR_OR_NULL(cpts->ptp_clock)) {  
+> 
+> This test was correct.
+> 
+> > +	if (IS_ERR(cpts->ptp_clock)) {  
+> 
+> This one is wrong.
 
-Acked-by: Sam Ravnborg <sam@ravnborg.org>
-from me to have them applied (except the shared header one).
-I can reply to the individual patches if you like.
+Please fix this as Richard requests.
 
-	Sam
+> >  		dev_err(dev, "Failed to register ptp clk %ld\n",
+> >  			PTR_ERR(cpts->ptp_clock));
+> > -		if (!cpts->ptp_clock)
+> > -			ret = -ENODEV;
+> > +		ret = PTR_ERR(cpts->ptp_clock);
+
+But keep this part as is, because your code from v1 looks like it
+wouldn't even build.
+
+Thank you!
+
+> >  		goto refclk_disable;
+> >  	}
+> >  	cpts->phc_index = ptp_clock_index(cpts->ptp_clock);
+> > -- 
+> > 2.7.4
+> >   
+
