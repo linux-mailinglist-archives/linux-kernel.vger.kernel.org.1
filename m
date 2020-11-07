@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E5072AA5A0
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 15:00:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6C7B2AA5A2
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 15:00:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728203AbgKGOAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 09:00:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37190 "EHLO
+        id S1728235AbgKGOAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 09:00:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728130AbgKGOAh (ORCPT
+        with ESMTP id S1728130AbgKGOAk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 09:00:37 -0500
+        Sat, 7 Nov 2020 09:00:40 -0500
 Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7C09C0613D2;
-        Sat,  7 Nov 2020 06:00:36 -0800 (PST)
-Received: by mail-il1-x143.google.com with SMTP id l12so1244900ilo.1;
-        Sat, 07 Nov 2020 06:00:36 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4D79C0613CF;
+        Sat,  7 Nov 2020 06:00:38 -0800 (PST)
+Received: by mail-il1-x143.google.com with SMTP id k1so3951146ilc.10;
+        Sat, 07 Nov 2020 06:00:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=0WAVnoMsBB9YRuYSr4SnXW/7hpiCwE0r98+QVKAkmBc=;
-        b=cU7XyrnXFaHjm9ODpQ4wtYren6CgmKVT6316mnrdcEfJ/C3dxifQXroKXfb6IESSXa
-         6TDJj1xN7VUClNC+jyX/cOjThrCOqqkWMyU8c9x0v4XLxAlFJ+HEeaUwWsTb16YteHVH
-         eJ8H8lg7zBbM5kXkH9bhikVMwlyRgFf4cxdtbSmgm3HaYC4uU+ertdaN72JP4r4eIWzn
-         HYhjPfTQirdrnPENXN19G+F3yUvw6kbW4C3bHXXqV60wxjHhaDbufjOoNfDDOJDLojl3
-         YJ+xvShugsCGvXiuVxr7bGbIikbxOHNNEcAtMZKxyFlUYwTylu1Wf+lCTUCD11QHbw4z
-         7iNA==
+        bh=1njg3utV2p9bKgyMsTbOyoewTBP9kZE4ktjwTOypoMs=;
+        b=HCCsnnm5jsPnDtM8EZrqh1x63Pj0F7mAgqtsSZz5LaNsKwmEQkP/07oj5yjd/aZC2U
+         ezmEep9qXcrHJ21hTrEMNbUu/Br7XRQPdh8aM+q4HcWT6HTczvaA1s6XSP08UVbRMqRW
+         MfP5JirqfkRQZeKpEAeK6N3kgEUHA8s/kilEHJJkasWnTeSuVP4Ghv+vsFEz3E8GSj+Z
+         ZSL4DcJYoupmE7LVEEdk6MEpXifXVYIjzEQsLd49IinQmUcv2MGcKOe8OMF0ZzhEiPKe
+         sEYADnCV74lrWKhX2vPh6hMO4njJqnKLiHwynKkreBkA8DS9j66MnB9nCiFcDaRkUJfV
+         MoAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=0WAVnoMsBB9YRuYSr4SnXW/7hpiCwE0r98+QVKAkmBc=;
-        b=q75AEvd/QvMMPEL9VQP1kXQk66VXgmrkZNClRpv13dplmsugwV2T+gVwNt7MZ+7gSm
-         y8tWizNCVQB3eUih+2NMEUEvkFMT9R6C6UwfdoYpZYHr5IIbKzk5USGe8bjuxFbmUXR1
-         hfpKK/Lof9ggGeM96/sKyzJH23XZiu9c5P5/sa6kegCUSuWQRZ1jUoGeJP4GbaCdUeTc
-         jRWhAih26cj/2I2aR+Ekjnhk8APMmbvCX+5vbe2oMhf8LH4qhvem+hcGtXQFPKxYx0S0
-         Ad0cgTWav7X15XveewLntozE+UTK4fU2hiByB5EqTLKQ090oX7r7HDMcKbmhbKIkJkoZ
-         x1tg==
-X-Gm-Message-State: AOAM532UIcDLjGyfyYgOqregy3ZDtm60exn/gET3xsy4SODT3o2V6VPj
-        foXhvkGas+8xzeQIDCVj0eA=
-X-Google-Smtp-Source: ABdhPJz8TR79wmz4s+2uO7EVgsblEs4390ase1CflJvE+j8mkypawnHGRNHDyeAPKgclhXc/IhR2Uw==
-X-Received: by 2002:a92:85c5:: with SMTP id f188mr4797570ilh.173.1604757636173;
-        Sat, 07 Nov 2020 06:00:36 -0800 (PST)
+        bh=1njg3utV2p9bKgyMsTbOyoewTBP9kZE4ktjwTOypoMs=;
+        b=FXK2t0nPmVQtdsMR3CajdWkKsfCn3nw2xly23VLx6h3V4USvn/f0qaA3kuWIC5fmA9
+         AVn2FzkNpElun80+bBMxW4ENfnnX6JEcEhhd63bTSPvAZ0Sp4T5FWrE94rhICyvJQ/PS
+         rbpagDWgnuEeu12UDy885Cp5q5kZThDxjkYYy8/uRpJ05aFiQAqrOgPdThFAGPxQMBOZ
+         fIHJ0PKAx1HjrPrFgFz/d8mkhlxk0dD2QOH1Lg4/IJxaBC4Gvmg7Z26Ib85bKx7NGPSd
+         rUr83mc/pKM8mZMy9Vh6Iv48Scwj1IfMkekFfh4VoLa4l3pp1ozFxwX688hq9RHCHxAK
+         +ZMw==
+X-Gm-Message-State: AOAM532Ka49fTzlhPBE5/OyOQAdeNPVFjqsHoijADUhnNBbyXcUPAre9
+        0mMD7zNMCICN7w1SuVAbuOM=
+X-Google-Smtp-Source: ABdhPJxEBa5IIb1Nl3e/dQrAG6mf6nNEuWRyGHjqoRAEOE9Cz6XTHJtNWCNt8Ty5Dx0F7G/hX8isog==
+X-Received: by 2002:a92:6706:: with SMTP id b6mr4950593ilc.42.1604757638029;
+        Sat, 07 Nov 2020 06:00:38 -0800 (PST)
 Received: from aford-IdeaCentre-A730.lan ([2601:448:8400:9e8:5d9e:32b:1062:f8cd])
-        by smtp.gmail.com with ESMTPSA id g5sm3030257ilq.33.2020.11.07.06.00.35
+        by smtp.gmail.com with ESMTPSA id g5sm3030257ilq.33.2020.11.07.06.00.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 07 Nov 2020 06:00:35 -0800 (PST)
+        Sat, 07 Nov 2020 06:00:37 -0800 (PST)
 From:   Adam Ford <aford173@gmail.com>
 To:     linux-arm-kernel@lists.infradead.org
 Cc:     aford@beaconembedded.com, krzk@kernel.org,
@@ -60,9 +60,9 @@ Cc:     aford@beaconembedded.com, krzk@kernel.org,
         NXP Linux Team <linux-imx@nxp.com>,
         Andrey Smirnov <andrew.smirnov@gmail.com>,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH V2 3/5] arm64: dts: imx8mn: add GPC node and power domains
-Date:   Sat,  7 Nov 2020 08:00:23 -0600
-Message-Id: <20201107140026.1974312-3-aford173@gmail.com>
+Subject: [PATCH V2 4/5] arm64: dts: imx8mn: Add power-domain reference in USB controller
+Date:   Sat,  7 Nov 2020 08:00:24 -0600
+Message-Id: <20201107140026.1974312-4-aford173@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201107140026.1974312-1-aford173@gmail.com>
 References: <20201107140026.1974312-1-aford173@gmail.com>
@@ -72,74 +72,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds the DT nodes to describe the power domains available on the
-i.MX8MN. There are more power domains, but the displaymix and mipi
-power domains need a separate clock block controller which not yet
-available, so this limits it to the HSIO, OTG and GPU domains.
+The USB OTG controller cannot be used until the power-domain is enabled
+unless it was started in the bootloader.
+
+Adding the power-domain reference to the OTG node allows the OTG
+controller to operate.
 
 Signed-off-by: Adam Ford <aford173@gmail.com>
 ---
-V2:  Fix missing includes
-     Remove interrupt controller flag
-     Remove domains which interact with blk-ctl
+V2:  No change
 
- arch/arm64/boot/dts/freescale/imx8mn.dtsi | 36 +++++++++++++++++++++++
- 1 file changed, 36 insertions(+)
+ arch/arm64/boot/dts/freescale/imx8mn.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/arch/arm64/boot/dts/freescale/imx8mn.dtsi b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-index ee1790230490..c37dee13057a 100644
+index c37dee13057a..5e4b6934de40 100644
 --- a/arch/arm64/boot/dts/freescale/imx8mn.dtsi
 +++ b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-@@ -4,6 +4,8 @@
-  */
- 
- #include <dt-bindings/clock/imx8mn-clock.h>
-+#include <dt-bindings/power/imx8mn-power.h>
-+#include <dt-bindings/reset/imx8mq-reset.h>
- #include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/input/input.h>
- #include <dt-bindings/interrupt-controller/arm-gic.h>
-@@ -598,6 +600,40 @@ src: reset-controller@30390000 {
- 				interrupts = <GIC_SPI 89 IRQ_TYPE_LEVEL_HIGH>;
- 				#reset-cells = <1>;
+@@ -968,6 +968,7 @@ usbotg1: usb@32e40000 {
+ 				assigned-clock-parents = <&clk IMX8MN_SYS_PLL2_500M>;
+ 				fsl,usbphy = <&usbphynop1>;
+ 				fsl,usbmisc = <&usbmisc1 0>;
++				power-domains = <&pgc_otg1>;
+ 				status = "disabled";
  			};
-+
-+			gpc: gpc@303a0000 {
-+				compatible = "fsl,imx8mn-gpc";
-+				reg = <0x303a0000 0x10000>;
-+				interrupt-parent = <&gic>;
-+				interrupts = <GIC_SPI 87 IRQ_TYPE_LEVEL_HIGH>;
-+
-+				pgc {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+
-+					pgc_hsiomix: power-domain@0 {
-+						#power-domain-cells = <0>;
-+						reg = <IMX8MN_POWER_DOMAIN_HSIOMIX>;
-+						clocks = <&clk IMX8MN_CLK_USB_BUS>;
-+					};
-+
-+					pgc_otg1: power-domain@1 {
-+						#power-domain-cells = <0>;
-+						reg = <IMX8MN_POWER_DOMAIN_OTG1>;
-+						power-domains = <&pgc_hsiomix>;
-+					};
-+
-+					pgc_gpumix: power-domain@2 {
-+						#power-domain-cells = <0>;
-+						reg = <IMX8MN_POWER_DOMAIN_GPUMIX>;
-+						clocks = <&clk IMX8MN_CLK_GPU_CORE_ROOT>,
-+							 <&clk IMX8MN_CLK_GPU_SHADER_DIV>,
-+							 <&clk IMX8MN_CLK_GPU_BUS_ROOT>,
-+							 <&clk IMX8MN_CLK_GPU_AHB>;
-+						resets = <&src IMX8MQ_RESET_GPU_RESET>;
-+					};
-+				};
-+			};
- 		};
  
- 		aips2: bus@30400000 {
 -- 
 2.25.1
 
