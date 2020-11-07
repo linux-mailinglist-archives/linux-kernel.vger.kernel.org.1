@@ -2,90 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 302962AA3D7
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 09:24:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A26FD2AA3DB
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 09:28:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728334AbgKGIYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 03:24:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41856 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728153AbgKGIY3 (ORCPT
+        id S1728042AbgKGI2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 03:28:09 -0500
+Received: from m176115.mail.qiye.163.com ([59.111.176.115]:24863 "EHLO
+        m176115.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727786AbgKGI2I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 03:24:29 -0500
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20CAAC0613CF;
-        Sat,  7 Nov 2020 00:24:28 -0800 (PST)
-Received: by mail-pl1-x641.google.com with SMTP id z1so2061295plo.12;
-        Sat, 07 Nov 2020 00:24:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=Tu3kWxeosmXDoauuhkoszDn3Cj2sxvN5RrGeZRd8L+k=;
-        b=NPl2FG84jc7LQKTk3T2sSekJ3+VWN5yxNn/fCzyGjS9rC68sfFm3m69KCbI5sMDxzg
-         DXcldUFS2ixyJKqkPFeappVmrxu1xSAPps5qDApeYVqYz6hytnKr2e73WGvNISXTRh9t
-         Rgey/lLpfHlwL5NCSXaxX3jVkF884LFJn+iu/WdgIdE56QXy7o3qScew8N0H5C1bj+vK
-         HftZXyvvEK9L33DgF/xSkVFvn4JAXogYWBXX0IOahGRYN941XELseHZlQaKPcK94HdNa
-         A3wGZZPcq3bxsC+C0ARKJBgZZ1zw8QBFbDL/ZIGz9+BU57nhvmRQ6ji8OBvtEDZIaPls
-         yRPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=Tu3kWxeosmXDoauuhkoszDn3Cj2sxvN5RrGeZRd8L+k=;
-        b=QqG/qaC3OOallQrng7e9+iDj+TPlrWMrEE+ISG0WvpiY82tBRhz/KwowMwbZp2rdhd
-         5kyT4diem7AxZ9d+qkoTfgYuRahRZbBlGj6fxVo7hVXXwfcJVO95ex4gHfd9DyOkIUDX
-         gwA8KBJQJQFbS6BDUJNNMR6MXqiLzG4GthGzbpVRjkELN0COE9dt2Kmsdc/4uWZhZibI
-         5QUQk03TI1wPZL6MF75NNNklROOqdUj/afQfawq/TtsryhvwXAjwtb/UdCkiLHyRaUWJ
-         oaKFofCTrUzpIMNfAe0tFpnCqo5ypUETKgwaSdINsAON4r4nUaNTZWFQryaaF/BamMDr
-         clvA==
-X-Gm-Message-State: AOAM530fUEuKLopw0Zs+4X1soFldnM9IRWLiAJd0c1BvmCqQlSgtRj4z
-        A9hAdc6NuFP+/76QXzNf1w4=
-X-Google-Smtp-Source: ABdhPJyRwRusAKGvDTfhHb0s28hfonRW/6Xs+ConXh5fstgWxMb67p5amzVejehyEZwDLoVDf7W9wQ==
-X-Received: by 2002:a17:902:23:b029:d5:b88a:c782 with SMTP id 32-20020a1709020023b02900d5b88ac782mr4746076pla.5.1604737467694;
-        Sat, 07 Nov 2020 00:24:27 -0800 (PST)
-Received: from jordon-HP-15-Notebook-PC.domain.name ([122.182.253.68])
-        by smtp.gmail.com with ESMTPSA id 128sm4705273pfd.110.2020.11.07.00.24.25
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 07 Nov 2020 00:24:27 -0800 (PST)
-From:   Souptick Joarder <jrdr.linux@gmail.com>
-To:     takedakn@nttdata.co.jp, penguin-kernel@I-love.SAKURA.ne.jp,
-        jmorris@namei.org, serge@hallyn.com
-Cc:     linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Souptick Joarder <jrdr.linux@gmail.com>,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: [PATCH 2/2] tomoyo: Fixed typo in documentation
-Date:   Sat,  7 Nov 2020 13:54:11 +0530
-Message-Id: <1604737451-19082-2-git-send-email-jrdr.linux@gmail.com>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1604737451-19082-1-git-send-email-jrdr.linux@gmail.com>
-References: <1604737451-19082-1-git-send-email-jrdr.linux@gmail.com>
+        Sat, 7 Nov 2020 03:28:08 -0500
+Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.231])
+        by m176115.mail.qiye.163.com (Hmail) with ESMTPA id 55E7E665F0E;
+        Sat,  7 Nov 2020 16:28:05 +0800 (CST)
+From:   Wang Qing <wangqing@vivo.com>
+To:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Wang Qing <wangqing@vivo.com>
+Subject: [PATCH] sched: remove duplicate include unnecessary
+Date:   Sat,  7 Nov 2020 16:28:00 +0800
+Message-Id: <1604737680-17887-1-git-send-email-wangqing@vivo.com>
+X-Mailer: git-send-email 2.7.4
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZT0sYTxhDSx5JS09OVkpNS09MSExNQ05DT0lVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKQ1VLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NjI6Sww5Tj8jQhw8Hx8tKRxC
+        EUkwCwhVSlVKTUtPTEhMTUNNSUpOVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
+        SU5KVUxPVUlISllXWQgBWUFKTExKNwY+
+X-HM-Tid: 0a75a1d1d8d19373kuws55e7e665f0e
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixed typo s/Poiner/Pointer
+Remove duplicate header include which is unnecessary.
 
-Fixes: 5b636857fee6 ("TOMOYO: Allow using argv[]/envp[] of execve() as conditions.")
-Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
-Cc: John Hubbard <jhubbard@nvidia.com>
+Signed-off-by: Wang Qing <wangqing@vivo.com>
 ---
- security/tomoyo/domain.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/sched/sched.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/security/tomoyo/domain.c b/security/tomoyo/domain.c
-index bd748be..7b2babe 100644
---- a/security/tomoyo/domain.c
-+++ b/security/tomoyo/domain.c
-@@ -891,7 +891,7 @@ int tomoyo_find_next_domain(struct linux_binprm *bprm)
-  *
-  * @bprm: Pointer to "struct linux_binprm".
-  * @pos:  Location to dump.
-- * @dump: Poiner to "struct tomoyo_page_dump".
-+ * @dump: Pointer to "struct tomoyo_page_dump".
-  *
-  * Returns true on success, false otherwise.
-  */
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index df80bfc..dd91a8b
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -351,7 +351,6 @@ extern bool dl_cpu_busy(unsigned int cpu);
+ #ifdef CONFIG_CGROUP_SCHED
+ 
+ #include <linux/cgroup.h>
+-#include <linux/psi.h>
+ 
+ struct cfs_rq;
+ struct rt_rq;
 -- 
-1.9.1
+2.7.4
 
