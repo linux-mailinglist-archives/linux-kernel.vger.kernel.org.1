@@ -2,255 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 419D02AA3DE
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 09:29:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76E4E2AA3E3
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 09:34:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728150AbgKGI3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 03:29:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47772 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727786AbgKGI3h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 03:29:37 -0500
-Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C9F6420872
-        for <linux-kernel@vger.kernel.org>; Sat,  7 Nov 2020 08:29:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604737775;
-        bh=08/8FnudzZB2viUYeDFRJIxKOEcx5hbcNz5IGgSUx94=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=cjuQiHKGHl6TT0P7e6MtM2VxmYOIwgRGqA6h9hjsAvo2+8RX4L4VHnubAGyltmLyw
-         JhB4BzlFs+n+yNs3dzE6by7V8mEHT5TYnJwiTg1uixhQ+uQBFjylIpZ79jnz3Dvj8m
-         F0LsZhBIPKW80R77Khig0BSNjksgei4pASp6zRfQ=
-Received: by mail-ot1-f49.google.com with SMTP id y22so3582547oti.10
-        for <linux-kernel@vger.kernel.org>; Sat, 07 Nov 2020 00:29:35 -0800 (PST)
-X-Gm-Message-State: AOAM533elk75iXg8kOJDWHtUFozmIhQDJ99EUjPWtH9KaIeFBK2f69QO
-        6TOFyo6FjIak3GV8UF07C+1L9DqZ9+Dyj+4m/iI=
-X-Google-Smtp-Source: ABdhPJyqr9Fpeqyn0o1hv9967BwHx82BnlkxUxlQKLFEp1mw/JjJyUdVQKUTr7PUsTbemnfI1QT59NSTvjrh623yVMk=
-X-Received: by 2002:a05:6830:4028:: with SMTP id i8mr3492132ots.90.1604737775170;
- Sat, 07 Nov 2020 00:29:35 -0800 (PST)
-MIME-Version: 1.0
-References: <20200409232728.231527-1-caij2003@gmail.com> <20201107001056.225807-1-jiancai@google.com>
-In-Reply-To: <20201107001056.225807-1-jiancai@google.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Sat, 7 Nov 2020 09:29:23 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXG+qb267Hig6zoO=y6_BVsKsqHikvbJ83YsBD8SBaZ1xw@mail.gmail.com>
-Message-ID: <CAMj1kXG+qb267Hig6zoO=y6_BVsKsqHikvbJ83YsBD8SBaZ1xw@mail.gmail.com>
-Subject: Re: [PATCH v2] Make iwmmxt.S support Clang's integrated assembler
-To:     Jian Cai <jiancai@google.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Manoj Gupta <manojgupta@google.com>,
-        Luis Lozano <llozano@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Russell King <linux@armlinux.org.uk>,
+        id S1728165AbgKGIen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 03:34:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727901AbgKGIem (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Nov 2020 03:34:42 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45DA3C0613CF
+        for <linux-kernel@vger.kernel.org>; Sat,  7 Nov 2020 00:34:42 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id x197so4535805ybg.18
+        for <linux-kernel@vger.kernel.org>; Sat, 07 Nov 2020 00:34:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=Z1peopUQ0CXJcnmm3Y1iXQw/XLE0Jshqm+lf7SqAfcA=;
+        b=ljoBwQSYeuvhSAm05Tb8i9IjvzUi2f9jfINj73VmVc0oHO1K+tLPdjZfs/7fHxJ4Zg
+         M4r7Y7HSH212OENIhVPZXNEZdCOhGxYuNm3F3hktzk1t64hSVnYEq72r1jbUYXQCigQZ
+         FSHlH5bRWBwmHB7mM4WOK4FqSdiPP/l4x2SL+sGyMFNPuIEuuu1KtFpMoelEt96svhee
+         q3OqD9B2RwumGf0HzoIJSID4KWqU8RZxG+Wb2TJ40/vyVlG4G3sNo/7FGU/wMlOWbvcA
+         mQZk/looCHFKwfFM81fXiCVvxXSjBE8Dl82hNtH2o/Pk5QLkmWAmblmJYYM5HJgNJBfg
+         4faw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=Z1peopUQ0CXJcnmm3Y1iXQw/XLE0Jshqm+lf7SqAfcA=;
+        b=YV9rZwkdkBByuZn2GTzd+vdyRbCjQZjJ/pmWZqLNtJ4RwVuJJ+7Pof0THA6GdOIKkX
+         Kr5dN0QIEK8lVrwIHOVaNAaNmCAwDv1doMqYC0CjphBllwCLg2fKb5ueV+ld2rtaHRr4
+         TuVwwj06wq9cnA3bkrRt66FYqIoPoJI2MEy2Y+oXpsmvdb/nQukJNDbc6UjusMRxw+SL
+         yvD281387b6MF0iOBo3LnH/Fg/ff1jFhKkVnd6Vm4tM7uyOW0oD/3EeoyDLAjmZlpem6
+         8u32iKVSKX3uRBKkPlRUwrCVaGxRtpP6+DKowtdfbQW+3KHgRWJO5vEECfE3mRl2Euz3
+         T5JQ==
+X-Gm-Message-State: AOAM530tssZu4x7+Va37ZkwbjbPGp0hcS+A7nJCUcqy2PY2M3gEJn+X2
+        de9d2DObtm1Y12ujeD38zQkFh/kvTFh/PbtC2Lo=
+X-Google-Smtp-Source: ABdhPJzjQVKzDOUD8t863oyfAR/B79KgYVM6UYlPHGButDCCQosno5E9YKHuoNnqgIbwcIAXjWrI2nd0GbIGErKO4xE=
+Sender: "ndesaulniers via sendgmr" 
+        <ndesaulniers@ndesaulniers1.mtv.corp.google.com>
+X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:4d25])
+ (user=ndesaulniers job=sendgmr) by 2002:a25:ca8e:: with SMTP id
+ a136mr7465151ybg.101.1604738081544; Sat, 07 Nov 2020 00:34:41 -0800 (PST)
+Date:   Sat,  7 Nov 2020 00:34:31 -0800
+Message-Id: <20201107083432.3175710-1-ndesaulniers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.222.g5d2a92d10f8-goog
+Subject: [PATCH] ACPI: GED: fix -Wformat
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
         Nathan Chancellor <natechancellor@gmail.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 7 Nov 2020 at 01:11, Jian Cai <jiancai@google.com> wrote:
->
-> This patch replaces 6 IWMMXT instructions Clang's integrated assembler
-> does not support in iwmmxt.S using macros, while making sure GNU
-> assembler still emit the same instructions. This should be easier than
-> providing full IWMMXT support in Clang.
->
-> "Intel Wireless MMX Technology - Developer Guide - August, 2002" should
-> be referenced for the encoding schemes of these extensions.
->
-> Link: https://github.com/ClangBuiltLinux/linux/issues/975
->
-> Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
-> Suggested-by: Ard Biesheuvel <ardb@kernel.org>
-> Signed-off-by: Jian Cai <jiancai@google.com>
+Clang is more aggressive about -Wformat warnings when the format flag
+specifies a type smaller than the parameter. It turns out that gsi is an
+int. Fixes:
 
-Please make sure you test this carefully on BE32, as the instruction
-byte order used by .inst is LE IIRC
+drivers/acpi/evged.c:105:48: warning: format specifies type 'unsigned
+char' but the argument has type 'unsigned int' [-Wformat]
+trigger == ACPI_EDGE_SENSITIVE ? 'E' : 'L', gsi);
+                                            ^~~
 
-> ---
->  arch/arm/kernel/iwmmxt.S | 89 ++++++++++++++++++++--------------------
->  arch/arm/kernel/iwmmxt.h | 47 +++++++++++++++++++++
->  2 files changed, 92 insertions(+), 44 deletions(-)
->  create mode 100644 arch/arm/kernel/iwmmxt.h
->
-> diff --git a/arch/arm/kernel/iwmmxt.S b/arch/arm/kernel/iwmmxt.S
-> index 0dcae787b004..d2b4ac06e4ed 100644
-> --- a/arch/arm/kernel/iwmmxt.S
-> +++ b/arch/arm/kernel/iwmmxt.S
-> @@ -16,6 +16,7 @@
->  #include <asm/thread_info.h>
->  #include <asm/asm-offsets.h>
->  #include <asm/assembler.h>
-> +#include "iwmmxt.h"
->
->  #if defined(CONFIG_CPU_PJ4) || defined(CONFIG_CPU_PJ4B)
->  #define PJ4(code...)           code
-> @@ -113,33 +114,33 @@ concan_save:
->
->  concan_dump:
->
-> -       wstrw   wCSSF, [r1, #MMX_WCSSF]
-> -       wstrw   wCASF, [r1, #MMX_WCASF]
-> -       wstrw   wCGR0, [r1, #MMX_WCGR0]
-> -       wstrw   wCGR1, [r1, #MMX_WCGR1]
-> -       wstrw   wCGR2, [r1, #MMX_WCGR2]
-> -       wstrw   wCGR3, [r1, #MMX_WCGR3]
-> +       wstrw   wCSSF, r1, MMX_WCSSF
-> +       wstrw   wCASF, r1, MMX_WCASF
-> +       wstrw   wCGR0, r1, MMX_WCGR0
-> +       wstrw   wCGR1, r1, MMX_WCGR1
-> +       wstrw   wCGR2, r1, MMX_WCGR2
-> +       wstrw   wCGR3, r1, MMX_WCGR3
->
->  1:     @ MUP? wRn
->         tst     r2, #0x2
->         beq     2f
->
-> -       wstrd   wR0,  [r1, #MMX_WR0]
-> -       wstrd   wR1,  [r1, #MMX_WR1]
-> -       wstrd   wR2,  [r1, #MMX_WR2]
-> -       wstrd   wR3,  [r1, #MMX_WR3]
-> -       wstrd   wR4,  [r1, #MMX_WR4]
-> -       wstrd   wR5,  [r1, #MMX_WR5]
-> -       wstrd   wR6,  [r1, #MMX_WR6]
-> -       wstrd   wR7,  [r1, #MMX_WR7]
-> -       wstrd   wR8,  [r1, #MMX_WR8]
-> -       wstrd   wR9,  [r1, #MMX_WR9]
-> -       wstrd   wR10, [r1, #MMX_WR10]
-> -       wstrd   wR11, [r1, #MMX_WR11]
-> -       wstrd   wR12, [r1, #MMX_WR12]
-> -       wstrd   wR13, [r1, #MMX_WR13]
-> -       wstrd   wR14, [r1, #MMX_WR14]
-> -       wstrd   wR15, [r1, #MMX_WR15]
-> +       wstrd   wR0,  r1, MMX_WR0
-> +       wstrd   wR1,  r1, MMX_WR1
-> +       wstrd   wR2,  r1, MMX_WR2
-> +       wstrd   wR3,  r1, MMX_WR3
-> +       wstrd   wR4,  r1, MMX_WR4
-> +       wstrd   wR5,  r1, MMX_WR5
-> +       wstrd   wR6,  r1, MMX_WR6
-> +       wstrd   wR7,  r1, MMX_WR7
-> +       wstrd   wR8,  r1, MMX_WR8
-> +       wstrd   wR9,  r1, MMX_WR9
-> +       wstrd   wR10, r1, MMX_WR10
-> +       wstrd   wR11, r1, MMX_WR11
-> +       wstrd   wR12, r1, MMX_WR12
-> +       wstrd   wR13, r1, MMX_WR13
-> +       wstrd   wR14, r1, MMX_WR14
-> +       wstrd   wR15, r1, MMX_WR15
->
->  2:     teq     r0, #0                          @ anything to load?
->         reteq   lr                              @ if not, return
-> @@ -147,30 +148,30 @@ concan_dump:
->  concan_load:
->
->         @ Load wRn
-> -       wldrd   wR0,  [r0, #MMX_WR0]
-> -       wldrd   wR1,  [r0, #MMX_WR1]
-> -       wldrd   wR2,  [r0, #MMX_WR2]
-> -       wldrd   wR3,  [r0, #MMX_WR3]
-> -       wldrd   wR4,  [r0, #MMX_WR4]
-> -       wldrd   wR5,  [r0, #MMX_WR5]
-> -       wldrd   wR6,  [r0, #MMX_WR6]
-> -       wldrd   wR7,  [r0, #MMX_WR7]
-> -       wldrd   wR8,  [r0, #MMX_WR8]
-> -       wldrd   wR9,  [r0, #MMX_WR9]
-> -       wldrd   wR10, [r0, #MMX_WR10]
-> -       wldrd   wR11, [r0, #MMX_WR11]
-> -       wldrd   wR12, [r0, #MMX_WR12]
-> -       wldrd   wR13, [r0, #MMX_WR13]
-> -       wldrd   wR14, [r0, #MMX_WR14]
-> -       wldrd   wR15, [r0, #MMX_WR15]
-> +       wldrd   wR0,  r0, MMX_WR0
-> +       wldrd   wR1,  r0, MMX_WR1
-> +       wldrd   wR2,  r0, MMX_WR2
-> +       wldrd   wR3,  r0, MMX_WR3
-> +       wldrd   wR4,  r0, MMX_WR4
-> +       wldrd   wR5,  r0, MMX_WR5
-> +       wldrd   wR6,  r0, MMX_WR6
-> +       wldrd   wR7,  r0, MMX_WR7
-> +       wldrd   wR8,  r0, MMX_WR8
-> +       wldrd   wR9,  r0, MMX_WR9
-> +       wldrd   wR10, r0, MMX_WR10
-> +       wldrd   wR11, r0, MMX_WR11
-> +       wldrd   wR12, r0, MMX_WR12
-> +       wldrd   wR13, r0, MMX_WR13
-> +       wldrd   wR14, r0, MMX_WR14
-> +       wldrd   wR15, r0, MMX_WR15
->
->         @ Load wCx
-> -       wldrw   wCSSF, [r0, #MMX_WCSSF]
-> -       wldrw   wCASF, [r0, #MMX_WCASF]
-> -       wldrw   wCGR0, [r0, #MMX_WCGR0]
-> -       wldrw   wCGR1, [r0, #MMX_WCGR1]
-> -       wldrw   wCGR2, [r0, #MMX_WCGR2]
-> -       wldrw   wCGR3, [r0, #MMX_WCGR3]
-> +       wldrw   wCSSF, r0, MMX_WCSSF
-> +       wldrw   wCASF, r0, MMX_WCASF
-> +       wldrw   wCGR0, r0, MMX_WCGR0
-> +       wldrw   wCGR1, r0, MMX_WCGR1
-> +       wldrw   wCGR2, r0, MMX_WCGR2
-> +       wldrw   wCGR3, r0, MMX_WCGR3
->
->         @ clear CUP/MUP (only if r1 != 0)
->         teq     r1, #0
-> diff --git a/arch/arm/kernel/iwmmxt.h b/arch/arm/kernel/iwmmxt.h
-> new file mode 100644
-> index 000000000000..fb627286f5bb
-> --- /dev/null
-> +++ b/arch/arm/kernel/iwmmxt.h
-> @@ -0,0 +1,47 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +
-> +#ifndef __IWMMXT_H__
-> +#define __IWMMXT_H__
-> +
-> +.irp b, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
-> +.set .LwR\b, \b
-> +.set .Lr\b, \b
-> +.endr
-> +
-> +.set .LwCSSF, 0x2
-> +.set .LwCASF, 0x3
-> +.set .LwCGR0, 0x8
-> +.set .LwCGR1, 0x9
-> +.set .LwCGR2, 0xa
-> +.set .LwCGR3, 0xb
-> +
-> +.macro wldrd, reg:req, base:req, offset:req
-> +.inst 0xedd00100 | (.L\reg << 12) | (.L\base << 16) | (\offset >> 2)
-> +.endm
-> +
-> +.macro wldrw, reg:req, base:req, offset:req
-> +.inst 0xfd900100 | (.L\reg << 12) | (.L\base << 16) | (\offset >> 2)
-> +.endm
-> +
-> +.macro wstrd, reg:req, base:req, offset:req
-> +.inst 0xedc00100 | (.L\reg << 12) | (.L\base << 16) | (\offset >> 2)
-> +.endm
-> +
-> +.macro wstrw, reg:req, base:req, offset:req
-> +.inst 0xfd800100 | (.L\reg << 12) | (.L\base << 16) | (\offset >> 2)
-> +.endm
-> +
-> +#ifdef __clang__
-> +
-> +#define wCon c1
-> +
-> +.macro tmrc, dest:req, control:req
-> +mrc p1, 0, \dest, \control, c0, 0
-> +.endm
-> +
-> +.macro tmcr, control:req, src:req
-> +mcr p1, 0, \src, \control, c0, 0
-> +.endm
-> +#endif
-> +
-> +#endif
-> --
-> 2.29.1.341.ge80a0c044ae-goog
->
+Link: https://github.com/ClangBuiltLinux/linux/issues/378
+Fixes: commit ea6f3af4c5e6 ("ACPI: GED: add support for _Exx / _Lxx handler methods")
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+---
+ drivers/acpi/evged.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/acpi/evged.c b/drivers/acpi/evged.c
+index b1a7f8d6965e..fe6b6792c8bb 100644
+--- a/drivers/acpi/evged.c
++++ b/drivers/acpi/evged.c
+@@ -101,7 +101,7 @@ static acpi_status acpi_ged_request_interrupt(struct acpi_resource *ares,
+ 
+ 	switch (gsi) {
+ 	case 0 ... 255:
+-		sprintf(ev_name, "_%c%02hhX",
++		sprintf(ev_name, "_%c%02X",
+ 			trigger == ACPI_EDGE_SENSITIVE ? 'E' : 'L', gsi);
+ 
+ 		if (ACPI_SUCCESS(acpi_get_handle(handle, ev_name, &evt_handle)))
+-- 
+2.29.2.222.g5d2a92d10f8-goog
+
