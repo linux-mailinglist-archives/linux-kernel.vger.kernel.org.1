@@ -2,70 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB0C92AA487
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 12:09:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64F202AA495
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 12:18:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727471AbgKGLJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 06:09:29 -0500
-Received: from asavdk3.altibox.net ([109.247.116.14]:36522 "EHLO
-        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726242AbgKGLJ3 (ORCPT
+        id S1727605AbgKGLSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 06:18:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40462 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726242AbgKGLR7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 06:09:29 -0500
-Received: from ravnborg.org (unknown [188.228.123.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk3.altibox.net (Postfix) with ESMTPS id 22CB620023;
-        Sat,  7 Nov 2020 12:09:27 +0100 (CET)
-Date:   Sat, 7 Nov 2020 12:09:25 +0100
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Jonas Karlman <jonas@kwiboo.se>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Sean Paul <seanpaul@chromium.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
-Subject: Re: [PATCH v3 0/4] drm/bridge: ti-sn65dsi86: Support EDID reading
-Message-ID: <20201107110925.GB912360@ravnborg.org>
-References: <20201102181144.3469197-1-swboyd@chromium.org>
+        Sat, 7 Nov 2020 06:17:59 -0500
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79944C0613CF;
+        Sat,  7 Nov 2020 03:17:59 -0800 (PST)
+Received: by mail-yb1-xb42.google.com with SMTP id s8so3526190yba.13;
+        Sat, 07 Nov 2020 03:17:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=q8+HDEmfW+d3xmHdo94Vs4y4ugoydLAecNNDeHtLySM=;
+        b=c+RRktz0VjDD4KACbOdWgkcHSP9XBNLVNEwNEeoLHTqV0KPHvGNRHEgvUn65ClWANq
+         nv/I0KgJkqx6j7fl25vOwI6y1kvhVEcCNtePmYATD51Tk4NzB1UEte6IjuAdlwdsB53k
+         8OIdxCxvMD0MLqESSA5pfmaX2A39ZavkL0Y3Jn6jiVrCyLFpAbJrW3e7g5UwyIYfBmFZ
+         UR+6jQq28m6+5Iz8aWx+/ncHIBrz7PGZ1FYiKTKQIW0pJhOisrttisPe4vzPLhOy1pkX
+         sHBP388hpsqniafAyXSZ3JIW1oPgA5/Fa2YtkTruYJEX+moUNCzIryqKUxx0mgM27OLf
+         z3yA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=q8+HDEmfW+d3xmHdo94Vs4y4ugoydLAecNNDeHtLySM=;
+        b=ZiNNUihQ+qwy3KmDlIY+PFe0Dg+3Y4OfU6fGH8GRNDLAjwd36Uvnw1/X2xSrqEgFva
+         7yjEkhSEwA/k8TDyUxe/DU1HrEb+UnPC1a1aCcQkkfXJj9tEH07vj4qY9B6+Swbp/eqB
+         Nt0F1RwFCMZrp3Bs0m76tYAna4RnDOwQWqW3fqkVq9LarlnMttAG1G5VDvLRfA6qLOu0
+         YHelSLCTDNIKV2PSTzqAfHBBnxLPWNm6tLsR0p9LMKEW9zRdbjq84ShSriHJaN8b9uAs
+         1Zx4/3FxwTGsarIKguAzz/n84xRy//I+I3+oxF+xOBQIwj6FQ04S4gaKdWFylReA+4Wg
+         PuAA==
+X-Gm-Message-State: AOAM531BeHA1DEnUyU/VEz/3ZFzYR4JahxLlT3N+Gcdlo77dU+WnlEkN
+        5/BOuBD5Bbk+gZUPmGsLHceaWL+dVpgyvmXXbSY=
+X-Google-Smtp-Source: ABdhPJyz2DCKQfmWAO3ofj481SrtXqoNApOQmhgcPMO67AOG4mtxicGNnuyjCpj758bzgmZfRRku5IqIDtjydtj2z0U=
+X-Received: by 2002:a25:61c5:: with SMTP id v188mr2774947ybb.422.1604747878765;
+ Sat, 07 Nov 2020 03:17:58 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201102181144.3469197-1-swboyd@chromium.org>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=VbvZwmh9 c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=c6rWFHShf1NgvZlil7gA:9 a=CjuIK1q_8ugA:10
+References: <20201107070744.1133811-1-ndesaulniers@google.com>
+In-Reply-To: <20201107070744.1133811-1-ndesaulniers@google.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Sat, 7 Nov 2020 12:17:47 +0100
+Message-ID: <CANiq72nR89xB_J3YVu8zC2MOTzVCDb26r+KofkNLWhYG=in6Uw@mail.gmail.com>
+Subject: Re: [PATCH] Kbuild: enable -Wfallthrough for clang
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Joe Perches <joe@perches.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen
+On Sat, Nov 7, 2020 at 8:08 AM Nick Desaulniers <ndesaulniers@google.com> wrote:
+>
+> Partial revert of commit e2079e93f562 ("kbuild: Do not enable
+> -Wimplicit-fallthrough for clang for now")
 
-On Mon, Nov 02, 2020 at 10:11:40AM -0800, Stephen Boyd wrote:
-> This patch series cleans up the DDC code a little bit so that
-> it is more efficient time wise and supports grabbing the EDID
-> of the eDP panel over the aux channel. I timed this on a board
-> I have on my desk and it takes about 20ms to grab the EDID out
-> of the panel and make sure it is valid.
-> 
-> The first two patches seem less controversial so I stuck them at
-> the beginning. The third patch does the EDID reading and caches
-> it so we don't have to keep grabbing it over and over again. And
-> finally the last patch updates the reply field so that short
-> reads and nacks over the channel are reflected properly instead of
-> treating them as some sort of error that can't be discerned.
-> 
-> Stephen Boyd (4):
->   drm/bridge: ti-sn65dsi86: Combine register accesses in
->     ti_sn_aux_transfer()
->   drm/bridge: ti-sn65dsi86: Make polling a busy loop
->   drm/bridge: ti-sn65dsi86: Read EDID blob over DDC
->   drm/bridge: ti-sn65dsi86: Update reply on aux failures
+Wait, it says partial revert because it is one, but doing it this way
+does not enable the option back for GCC (and Clang).
 
-All applied to drm-misc-next, thanks,
+Shouldn't it be a full revert?
 
-	Sam
+Cheers,
+Miguel
