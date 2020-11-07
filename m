@@ -2,112 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 723402AA466
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 11:19:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 457842AA468
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 11:22:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728194AbgKGKSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 05:18:55 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:40744 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727955AbgKGKSv (ORCPT
+        id S1727984AbgKGKWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 05:22:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60188 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727817AbgKGKWQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 05:18:51 -0500
-Date:   Sat, 07 Nov 2020 10:18:45 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1604744326;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BfpOKFPHnxu+UuxH1OShMP6HvIVxuAuxNfzN3n9l++c=;
-        b=N0N+SAKZdpb5bhlGGZF+bWUa5eTY1N7qhLLKmaH/+CdAaFFbByCYo0LS7oEY8E/c8eX0GE
-        umXHt2GeKboBaGhXUKixQiYlkLA7w5mZ2iSt5AADvSdk15JLG742qHsntcTbYKkIDT5FW0
-        Y3MUUREiAiMqrbOxf1fIAkwRIjVQiRYWoWBT/f/mpXxTa7sZRRjTs74E6XxlQP4FEIOqP1
-        cPywr4w297xcqWCombCbwQE/Qh49Kwwzq2jgyIbocP8ED7OPG/x0jJxdgRfco0yRUnMwaR
-        uZ4wqc+Aj9wWHA2IwHnmdkk6G7S8MkQ/3RE02v0+XVL1KiYFZ40SlK0OyU0tyA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1604744326;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BfpOKFPHnxu+UuxH1OShMP6HvIVxuAuxNfzN3n9l++c=;
-        b=fzmPhdcrxweCLy6ZP/40uT5mx4dynQffhIWomK9L/+uW6loEtUHuvlDiNyVClNO3tRsTr+
-        Ykbe4R8b0z9br0Bg==
-From:   "tip-bot2 for Mike Travis" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/platform/uv: Fix missing OEM_TABLE_ID
-Cc:     Mike Travis <mike.travis@hpe.com>,
-        Thomas Gleixner <tglx@linutronix.de>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20201105222741.157029-2-mike.travis@hpe.com>
-References: <20201105222741.157029-2-mike.travis@hpe.com>
+        Sat, 7 Nov 2020 05:22:16 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4D43C0613CF
+        for <linux-kernel@vger.kernel.org>; Sat,  7 Nov 2020 02:22:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=xKuw8zhvtdu4k0q3nrygkrJRwLjOFB13/MQ9ZczbDd4=; b=gyCEgepe3kjI9lo/a/W+lcA1W
+        SmIG8GD7itnwyFoTN3tCbUScOMqJj3cJXBT+Qvy/V7kwCeXZ548QX2VI2ZzDkT153oPKn+qobKsVX
+        sw/iz4QFapBWqu0uZUE1BScP9qIapnkVpHEtRZxmDqvedW2xnvHe47BFo/HsqJxn2eJvISsOFWv7i
+        4XbdYjGQL9gw6gk+WCJuz1Qm9u2+J77q66qo3/ZR8SQbc0S9Vuih5PWS/QMYfIVclGLm5p5FnY8NN
+        5SSO+rDfvuaIoTq7VUsqRaU3C6eCIzkRNajdn3Z2vbbWf9T4TwbltcKeqa1wfypF+BtkU5M3JWv71
+        2929RA0YQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:56150)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1kbLMD-0006Zo-9x; Sat, 07 Nov 2020 10:22:05 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1kbLMB-0006k4-Vd; Sat, 07 Nov 2020 10:22:04 +0000
+Date:   Sat, 7 Nov 2020 10:22:03 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Adrian Ratiu <adrian.ratiu@collabora.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
+        kernel@collabora.com
+Subject: Re: [PATCH 2/2] arm: lib: xor-neon: disable clang vectorization
+Message-ID: <20201107102203.GV1551@shell.armlinux.org.uk>
+References: <20201106051436.2384842-1-adrian.ratiu@collabora.com>
+ <20201106051436.2384842-3-adrian.ratiu@collabora.com>
 MIME-Version: 1.0
-Message-ID: <160474432572.397.11629900432820445475.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201106051436.2384842-3-adrian.ratiu@collabora.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+On Fri, Nov 06, 2020 at 07:14:36AM +0200, Adrian Ratiu wrote:
+> diff --git a/arch/arm/lib/xor-neon.c b/arch/arm/lib/xor-neon.c
+> index e1e76186ec23..84c91c48dfa2 100644
+> --- a/arch/arm/lib/xor-neon.c
+> +++ b/arch/arm/lib/xor-neon.c
+> @@ -18,6 +18,10 @@ MODULE_LICENSE("GPL");
+>   * Pull in the reference implementations while instructing GCC (through
+>   * -ftree-vectorize) to attempt to exploit implicit parallelism and emit
+>   * NEON instructions.
+> +
 
-Commit-ID:     1aec69ae56be28b5fd3c9daead5f3840c30153c8
-Gitweb:        https://git.kernel.org/tip/1aec69ae56be28b5fd3c9daead5f3840c30153c8
-Author:        Mike Travis <mike.travis@hpe.com>
-AuthorDate:    Thu, 05 Nov 2020 16:27:39 -06:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Sat, 07 Nov 2020 11:17:39 +01:00
+Please tidy this up before submission; we normally continue the "*" for
+blank lines in comment blocks. Thanks.
 
-x86/platform/uv: Fix missing OEM_TABLE_ID
+> + * On Clang the loop vectorizer is enabled by default, but due to a bug
+> + * (https://bugs.llvm.org/show_bug.cgi?id=40976) vectorization is broke
+> + * so xor-neon is disabled in favor of the default reg implementations.
+>   */
+>  #ifdef CONFIG_CC_IS_GCC
+>  #pragma GCC optimize "tree-vectorize"
+> -- 
+> 2.29.0
+> 
+> 
 
-Testing shows a problem in that the OEM_TABLE_ID was missing for
-hubless systems.  This is used to determine the APIC type (legacy or
-extended).  Add the OEM_TABLE_ID to the early hubless processing.
-
-Fixes: 1e61f5a95f191 ("Add and decode Arch Type in UVsystab")
-Signed-off-by: Mike Travis <mike.travis@hpe.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20201105222741.157029-2-mike.travis@hpe.com
----
- arch/x86/kernel/apic/x2apic_uv_x.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/kernel/apic/x2apic_uv_x.c b/arch/x86/kernel/apic/x2apic_uv_x.c
-index 714233c..a579479 100644
---- a/arch/x86/kernel/apic/x2apic_uv_x.c
-+++ b/arch/x86/kernel/apic/x2apic_uv_x.c
-@@ -366,7 +366,7 @@ static int __init early_get_arch_type(void)
- 	return ret;
- }
- 
--static int __init uv_set_system_type(char *_oem_id)
-+static int __init uv_set_system_type(char *_oem_id, char *_oem_table_id)
- {
- 	/* Save OEM_ID passed from ACPI MADT */
- 	uv_stringify(sizeof(oem_id), oem_id, _oem_id);
-@@ -394,6 +394,9 @@ static int __init uv_set_system_type(char *_oem_id)
- 		else
- 			uv_hubless_system = 0x9;
- 
-+		/* Copy APIC type */
-+		uv_stringify(sizeof(oem_table_id), oem_table_id, _oem_table_id);
-+
- 		pr_info("UV: OEM IDs %s/%s, SystemType %d, HUBLESS ID %x\n",
- 			oem_id, oem_table_id, uv_system_type, uv_hubless_system);
- 		return 0;
-@@ -456,7 +459,7 @@ static int __init uv_acpi_madt_oem_check(char *_oem_id, char *_oem_table_id)
- 	uv_cpu_info->p_uv_hub_info = &uv_hub_info_node0;
- 
- 	/* If not UV, return. */
--	if (likely(uv_set_system_type(_oem_id) == 0))
-+	if (uv_set_system_type(_oem_id, _oem_table_id) == 0)
- 		return 0;
- 
- 	/* Save and Decode OEM Table ID */
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
