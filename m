@@ -2,51 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBE9E2AA7C4
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 20:43:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE43B2AA7CD
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 20:56:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727218AbgKGTn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 14:43:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47834 "EHLO mail.kernel.org"
+        id S1728652AbgKGT4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 14:56:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49226 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725836AbgKGTn3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 14:43:29 -0500
-Subject: Re: [GIT PULL] RISC-V Fixes for 5.10-rc3
+        id S1725846AbgKGT4y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Nov 2020 14:56:54 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2339C2087E;
+        Sat,  7 Nov 2020 19:56:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604778209;
-        bh=RBvFnZEJ5sR/qnXqblElAitROl9YLY1Y8CJ/7Uax/Qo=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=j4Na6VMSKFQPq6olMjiZntb/zVJaO4er9KYyiMa2Psj0k1HMK5FCYpxAWRYpCsCwK
-         0DfJl2rDXmXlWMiF5KesFXVdt3rSEpPiWvVkFGXu7NKwV6+A0heGpFXh08Ao/btSnC
-         HUcpVXJpmuoqtSJrnBrDrZvIas/o7dHRK7rAF28U=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <mhng-3492671f-a069-445d-a6d8-89363714a1fb@palmerdabbelt-glaptop1>
-References: <mhng-3492671f-a069-445d-a6d8-89363714a1fb@palmerdabbelt-glaptop1>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <mhng-3492671f-a069-445d-a6d8-89363714a1fb@palmerdabbelt-glaptop1>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.10-rc3
-X-PR-Tracked-Commit-Id: c2c81bb2f69138f902e1a58d3bef6ad97fb8a92c
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 4b1d362db99d9233406cb7cfe35fc698ef92be25
-Message-Id: <160477820907.15421.11445199450215268776.pr-tracker-bot@kernel.org>
-Date:   Sat, 07 Nov 2020 19:43:29 +0000
-To:     Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+        s=default; t=1604779014;
+        bh=z7w/1zP2PGEHbjxmk1O7wLhR+daWudmfSP+OyQ7OqLE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Vl+W3Jc9j8vXFSoonIzci+jfBFz2TOZAsaPxSTL7+CldE598Nc291X0DUQDnaBg9g
+         SJDugf6lojqTlG47dPiRRSTGcFvNavBYZsDnTEsIENusCYuHfcTyNZlMLgT3F39kOr
+         R0HX+X3AMWhyYzJqREtOZSLZ6ObDEMUXyGIrrZxs=
+Date:   Sat, 7 Nov 2020 11:56:53 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     xiakaixu1987@gmail.com
+Cc:     vishal@chelsio.com, davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Kaixu Xia <kaixuxia@tencent.com>
+Subject: Re: [PATCH] cxgb4: Fix the -Wmisleading-indentation warning
+Message-ID: <20201107115653.7c405fdd@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <1604467444-23043-1-git-send-email-kaixuxia@tencent.com>
+References: <1604467444-23043-1-git-send-email-kaixuxia@tencent.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 06 Nov 2020 23:41:08 -0800 (PST):
+On Wed,  4 Nov 2020 13:24:04 +0800 xiakaixu1987@gmail.com wrote:
+> From: Kaixu Xia <kaixuxia@tencent.com>
+> 
+> Fix the gcc warning:
+> 
+> drivers/net/ethernet/chelsio/cxgb4/cxgb4_debugfs.c:2673:9: warning: this 'for' clause does not guard... [-Wmisleading-indentation]
+>  2673 |         for (i = 0; i < n; ++i) \
+> 
+> Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
+> Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.10-rc3
-
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/4b1d362db99d9233406cb7cfe35fc698ef92be25
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Applied, thanks!
