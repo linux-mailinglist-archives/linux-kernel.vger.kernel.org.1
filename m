@@ -2,141 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08C512AA1E8
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 01:54:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFA922AA1F2
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 02:11:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727257AbgKGAxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 19:53:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57290 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727129AbgKGAxq (ORCPT
+        id S1728330AbgKGBLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 20:11:37 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:44278 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727129AbgKGBLh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 19:53:46 -0500
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B66DC0613D2
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 16:53:46 -0800 (PST)
-Received: by mail-io1-xd42.google.com with SMTP id k21so3325295ioa.9
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 16:53:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atishpatra.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=htvs7lR/1BI8D0Mzc+TXEsKixscjGZpRTsGr1YNtxI4=;
-        b=Gm+gGA0zABCYmnzgAZbqB8LmrvQ24MZCZCeuofocA24Z9DinusB4T1r6s3QuIsHnq/
-         BDgTerVHPvQuevB4yFhOhYW29XoCPLIvMjMF66TkV6n1x1WAtyJgsMXb/N5zpnI9faJa
-         FIOqUay2ys7nfNVAmyM7TMxQWX7Rcmmu7ZLY4=
+        Fri, 6 Nov 2020 20:11:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604711495;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=s03eFWh3bvVnssKugy+SfcexCfSnOxFiFxui5ZZE6JM=;
+        b=XfHq78UhDTNUxRIsl5jxQpLA2qCc+EnXFCBG/6d68L60YKNck7n7RnwdkJIiBi3iWJ4VRd
+        0iXRK7kOiSx2tO3S4NWh9Z09FGIvvgPdhhXwGih+xgf/sHD/Enb7jWGEPBAReFTliVOBl5
+        R6zaJglokwQ8SgW+J4jSAfJ6j9zIiXY=
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
+ [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-510-i3C91GNlPYGQWAgT_8IDJw-1; Fri, 06 Nov 2020 20:11:32 -0500
+X-MC-Unique: i3C91GNlPYGQWAgT_8IDJw-1
+Received: by mail-qt1-f199.google.com with SMTP id i14so2081643qtq.18
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 17:11:32 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=htvs7lR/1BI8D0Mzc+TXEsKixscjGZpRTsGr1YNtxI4=;
-        b=RxuSZJD3UFLwa1KvesHyz3EbWezHxMXVc/u6PdtkOJZTIw+3pnN9vj119DYrEakRkK
-         rx/F9UDLTutppScm6KjINEmLfwtiW9ra5EUUJ+Pmy7BSz5cXwGc1GBp8eIqpZKGvb8m6
-         fm91u6uW1VSAhOy+NvmnBM+GjGzqe3kU96f1uQnO0nto4nyauP9iikLSec3fG2xO4mRy
-         afA5+QxZaBPrlIYFEsvRecz6rCbafwO9+G07PxCryqBsfLOSJfL8CXjsvxHzn4wW50Ch
-         AjGM4U/q4rWMHTCe4Ac5lig0rNMOwqbKy/1gFdPiXePFqLO5e5/Q1z11Ko5YyXXp32+P
-         zNoA==
-X-Gm-Message-State: AOAM531dZ83F/VLNWXNI+4p1aVkjxRzBh3iXEK3MGQTr5cLE9DwZT1a8
-        5+qyOpSHDHFMkXMjKnaGMDPBm1Scgou4J6JES2zj
-X-Google-Smtp-Source: ABdhPJyTo+S+mQWAmRQ8EDSKdeh04ebDM4c/nGCflyQ+HMbV7hMgiFw6U1U5Deqk5cCMRheBFpX7520CFYInwaVMtLw=
-X-Received: by 2002:a5d:9842:: with SMTP id p2mr3570190ios.113.1604710425638;
- Fri, 06 Nov 2020 16:53:45 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=s03eFWh3bvVnssKugy+SfcexCfSnOxFiFxui5ZZE6JM=;
+        b=PkoCm4/XQZMM3yKFdlnfTzU+wFUh02r0vOOfZCxdZB737xNBNR7lldSmUwxum44WCh
+         zphB+aKsdxR4VsRFUUJktzJlOThj7PJH/dZfs7FhoqEadxbfS5zx2Km2XodO7jGemVXa
+         QC6z0QIQFKcC3kJEwv+cFUbHrZwWw/L/yp7qWDf2SJaAUQn4XyDfI96auy/y+gpolpEg
+         zZIU/ENUM2G0tzKnzSL2N/hLDRgsKDOVhoT+cEGdOiM+sgL9XxonOJfwrnk40rvCbf+Z
+         oedx8y0Ms0q9r5onk7d8XUsb/Fmog+Yt0JkWRl143FdMfCUiyhK2z6c0vjYfwB91gJAE
+         ttSA==
+X-Gm-Message-State: AOAM532IqWZ86e4cAkMkFls3dtr4qQIR2JHTvuyp0cpqFJuTurtKUH/K
+        w6sHCHEyylQGNocUPx0KBOoulHRpkdXoM6HDanQAL+ivHJjFoCE2FdabUVM8WzEyqOOtflIK6OZ
+        iLuxhgfGYI3kL8LnoJvVfN3vQ
+X-Received: by 2002:ac8:51cd:: with SMTP id d13mr270203qtn.148.1604711491826;
+        Fri, 06 Nov 2020 17:11:31 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxp4oEucNKi98qPC7sJzn96P9bBblqisJwW0aucCPpUta95o5nBu9m7hEOogL969VFDL1oc3Q==
+X-Received: by 2002:ac8:51cd:: with SMTP id d13mr270180qtn.148.1604711491516;
+        Fri, 06 Nov 2020 17:11:31 -0800 (PST)
+Received: from localhost.localdomain (c-98-239-145-235.hsd1.wv.comcast.net. [98.239.145.235])
+        by smtp.gmail.com with ESMTPSA id q6sm1758584qtq.53.2020.11.06.17.11.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Nov 2020 17:11:30 -0800 (PST)
+From:   Brian Masney <bmasney@redhat.com>
+To:     boris.ostrovsky@oracle.com, jgross@suse.com, sstabellini@kernel.org
+Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, xen-devel@lists.xenproject.org,
+        linux-kernel@vger.kernel.org, dustymabe@redhat.com
+Subject: [PATCH v2] x86/xen: don't unbind uninitialized lock_kicker_irq
+Date:   Fri,  6 Nov 2020 20:11:19 -0500
+Message-Id: <20201107011119.631442-1-bmasney@redhat.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20201006001752.248564-1-atish.patra@wdc.com> <20201006001752.248564-3-atish.patra@wdc.com>
- <20201106171403.GK29329@gaia> <CAOnJCUJo795yX_7am0hdB_JFio3_ZBRHioHNcydhqEouCUynUg@mail.gmail.com>
- <20201106190847.GA23792@gaia>
-In-Reply-To: <20201106190847.GA23792@gaia>
-From:   Atish Patra <atishp@atishpatra.org>
-Date:   Fri, 6 Nov 2020 16:53:33 -0800
-Message-ID: <CAOnJCUJ-vi=1w8HzsPP-adcV58jZC4NM-mvHD09QVkd9iJrwOA@mail.gmail.com>
-Subject: Re: [PATCH v4 2/5] arm64, numa: Change the numa init functions name
- to be generic
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Atish Patra <atish.patra@wdc.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Zong Li <zong.li@sifive.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Will Deacon <will@kernel.org>, linux-arch@vger.kernel.org,
-        Lorenzo Pieralisi <Lorenzo.Pieralisi@arm.com>,
-        Jia He <justin.he@arm.com>, Anup Patel <anup@brainfault.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Steven Price <steven.price@arm.com>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 6, 2020 at 11:08 AM Catalin Marinas <catalin.marinas@arm.com> wrote:
->
-> On Fri, Nov 06, 2020 at 09:33:14AM -0800, Atish Patra wrote:
-> > On Fri, Nov 6, 2020 at 9:14 AM Catalin Marinas <catalin.marinas@arm.com> wrote:
-> > > On Mon, Oct 05, 2020 at 05:17:49PM -0700, Atish Patra wrote:
-> > > > diff --git a/arch/arm64/kernel/acpi_numa.c b/arch/arm64/kernel/acpi_numa.c
-> > > > index 7ff800045434..96502ff92af5 100644
-> > > > --- a/arch/arm64/kernel/acpi_numa.c
-> > > > +++ b/arch/arm64/kernel/acpi_numa.c
-> > > > @@ -117,16 +117,3 @@ void __init acpi_numa_gicc_affinity_init(struct acpi_srat_gicc_affinity *pa)
-> > > >
-> > > >       node_set(node, numa_nodes_parsed);
-> > > >  }
-> > > > -
-> > > > -int __init arm64_acpi_numa_init(void)
-> > > > -{
-> > > > -     int ret;
-> > > > -
-> > > > -     ret = acpi_numa_init();
-> > > > -     if (ret) {
-> > > > -             pr_info("Failed to initialise from firmware\n");
-> > > > -             return ret;
-> > > > -     }
-> > > > -
-> > > > -     return srat_disabled() ? -EINVAL : 0;
-> > > > -}
-> > >
-> > > I think it's better if arm64_acpi_numa_init() and arm64_numa_init()
-> > > remained in the arm64 code. It's not really much code to be shared.
-> >
-> > RISC-V will probably support ACPI one day. The idea is to not to do
-> > exercise again in future.
-> > Moreover, there will be arch_numa_init which will be used by RISC-V
-> > and there will be arm64_numa_init
-> > used by arm64. However, if you feel strongly about it, I am happy to
-> > move back those two functions to arm64.
->
-> I don't have a strong view on this, only if there's a risk at some point
-> of the implementations diverging (e.g. quirks). We can revisit it if
-> that happens.
->
+When booting a hyperthreaded system with the kernel parameter
+'mitigations=auto,nosmt', the following warning occurs:
 
-Sure. I seriously hope we don't have to deal with arch specific quirks
-in future.
+    WARNING: CPU: 0 PID: 1 at drivers/xen/events/events_base.c:1112 unbind_from_irqhandler+0x4e/0x60
+    ...
+    Hardware name: Xen HVM domU, BIOS 4.2.amazon 08/24/2006
+    ...
+    Call Trace:
+     xen_uninit_lock_cpu+0x28/0x62
+     xen_hvm_cpu_die+0x21/0x30
+     takedown_cpu+0x9c/0xe0
+     ? trace_suspend_resume+0x60/0x60
+     cpuhp_invoke_callback+0x9a/0x530
+     _cpu_up+0x11a/0x130
+     cpu_up+0x7e/0xc0
+     bringup_nonboot_cpus+0x48/0x50
+     smp_init+0x26/0x79
+     kernel_init_freeable+0xea/0x229
+     ? rest_init+0xaa/0xaa
+     kernel_init+0xa/0x106
+     ret_from_fork+0x35/0x40
 
-> It may be worth swapping patches 1 and 2 so that you don't have an
-> arm64_* function in the core code after the first patch (more of a
-> nitpick). Either way, feel free to add my ack on both patches:
->
+The secondary CPUs are not activated with the nosmt mitigations and only
+the primary thread on each CPU core is used. In this situation,
+xen_hvm_smp_prepare_cpus(), and more importantly xen_init_lock_cpu(), is
+not called, so the lock_kicker_irq is not initialized for the secondary
+CPUs. Let's fix this by exiting early in xen_uninit_lock_cpu() if the
+irq is not set to avoid the warning from above for each secondary CPU.
 
-Sure. I will swap 1 & 2 and resend the series.
+Signed-off-by: Brian Masney <bmasney@redhat.com>
+---
+Changes since v1:
+- Remove duplicate per_cpu() call and pass in irq variable.
+- Changed subject from 'x86/xen: fix warning when running with nosmt
+  mitigations'
+- Shorten code comment
 
-> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+ arch/x86/xen/spinlock.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
-Thanks.
-
+diff --git a/arch/x86/xen/spinlock.c b/arch/x86/xen/spinlock.c
+index 799f4eba0a62..043c73dfd2c9 100644
+--- a/arch/x86/xen/spinlock.c
++++ b/arch/x86/xen/spinlock.c
+@@ -93,10 +93,20 @@ void xen_init_lock_cpu(int cpu)
+ 
+ void xen_uninit_lock_cpu(int cpu)
+ {
++	int irq;
++
+ 	if (!xen_pvspin)
+ 		return;
+ 
+-	unbind_from_irqhandler(per_cpu(lock_kicker_irq, cpu), NULL);
++	/*
++	 * When booting the kernel with 'mitigations=auto,nosmt', the secondary
++	 * CPUs are not activated, and lock_kicker_irq is not initialized.
++	 */
++	irq = per_cpu(lock_kicker_irq, cpu);
++	if (irq == -1)
++		return;
++
++	unbind_from_irqhandler(irq, NULL);
+ 	per_cpu(lock_kicker_irq, cpu) = -1;
+ 	kfree(per_cpu(irq_name, cpu));
+ 	per_cpu(irq_name, cpu) = NULL;
 -- 
-Regards,
-Atish
+2.26.2
+
