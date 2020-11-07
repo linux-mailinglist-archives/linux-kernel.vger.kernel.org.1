@@ -2,78 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A43912AA249
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 04:19:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D104C2AA24F
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 04:26:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727561AbgKGDTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 22:19:22 -0500
-Received: from m176115.mail.qiye.163.com ([59.111.176.115]:32596 "EHLO
-        m176115.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727298AbgKGDTV (ORCPT
+        id S1728227AbgKGDZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 22:25:43 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:38360 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727298AbgKGDZm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 22:19:21 -0500
-Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.231])
-        by m176115.mail.qiye.163.com (Hmail) with ESMTPA id 3BA786661BF;
-        Sat,  7 Nov 2020 11:19:16 +0800 (CST)
-From:   Wang Qing <wangqing@vivo.com>
-To:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc:     Wang Qing <wangqing@vivo.com>
-Subject: [V2] drm: msm: adreno: use IS_ERR() instead of null pointer check
-Date:   Sat,  7 Nov 2020 11:19:09 +0800
-Message-Id: <1604719151-28491-1-git-send-email-wangqing@vivo.com>
-X-Mailer: git-send-email 2.7.4
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZSR8YSx4YSEsZTB4YVkpNS09MSkJKTk1MTExVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hKQ1VLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MBA6Iyo4Nz8aARwhGg5WD1E#
-        NCpPC0NVSlVKTUtPTEpCSk5MSUpIVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
-        SU5KVUxPVUlISllXWQgBWUFJT0xONwY+
-X-HM-Tid: 0a75a0b71db99373kuws3ba786661bf
+        Fri, 6 Nov 2020 22:25:42 -0500
+Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 0A73PP8L003828
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 6 Nov 2020 22:25:26 -0500
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 5C2CD420107; Fri,  6 Nov 2020 22:25:25 -0500 (EST)
+Date:   Fri, 6 Nov 2020 22:25:25 -0500
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Chao Yu <yuchao0@huawei.com>
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MAINTAINERS: add missing file in ext4 entry
+Message-ID: <20201107032525.GA2499342@mit.edu>
+References: <20201030022435.1136-1-yuchao0@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201030022435.1136-1-yuchao0@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-a6xx_gmu_get_mmio() never return null in case of error, but ERR_PTR(), so 
-we should use IS_ERR() instead of null pointer check and IS_ERR_OR_NULL().
+On Fri, Oct 30, 2020 at 10:24:35AM +0800, Chao Yu wrote:
+> include/trace/events/ext4.h belongs to ext4 module, add the file path into
+> ext4 entry in MAINTAINERS.
+> 
+> Signed-off-by: Chao Yu <yuchao0@huawei.com>
 
-Signed-off-by: Wang Qing <wangqing@vivo.com>
----
- drivers/gpu/drm/msm/adreno/a6xx_gmu.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Thanks, applied.
 
-diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-index 491fee4..82420f7
---- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-+++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-@@ -492,7 +492,7 @@ static void a6xx_gmu_rpmh_init(struct a6xx_gmu *gmu)
- 	void __iomem *seqptr = a6xx_gmu_get_mmio(pdev, "gmu_pdc_seq");
- 	uint32_t pdc_address_offset;
- 
--	if (!pdcptr || !seqptr)
-+	if (IS_ERR(pdcptr) || IS_ERR(seqptr))
- 		goto err;
- 
- 	if (adreno_is_a618(adreno_gpu) || adreno_is_a640(adreno_gpu))
-@@ -580,9 +580,9 @@ static void a6xx_gmu_rpmh_init(struct a6xx_gmu *gmu)
- 	wmb();
- 
- err:
--	if (!IS_ERR_OR_NULL(pdcptr))
-+	if (!IS_ERR(pdcptr))
- 		iounmap(pdcptr);
--	if (!IS_ERR_OR_NULL(seqptr))
-+	if (!IS_ERR(seqptr))
- 		iounmap(seqptr);
- }
- 
--- 
-2.7.4
-
+					- Ted
