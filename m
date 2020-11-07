@@ -2,77 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E93092AA847
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 23:33:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 344002AA84F
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 23:50:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727010AbgKGWdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 17:33:13 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:41118 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725838AbgKGWdN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 17:33:13 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1kbWlZ-005qOv-8H; Sat, 07 Nov 2020 23:33:01 +0100
-Date:   Sat, 7 Nov 2020 23:33:01 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Joe Perches <joe@perches.com>
-Cc:     Alex Shi <alex.shi@linux.alibaba.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net/dsa: remove unused macros to tame gcc warning
-Message-ID: <20201107223301.GY933237@lunn.ch>
-References: <1604641050-6004-1-git-send-email-alex.shi@linux.alibaba.com>
- <20201106141820.GP933237@lunn.ch>
- <24690741-cc10-eec1-33c6-7960c8b7fac6@gmail.com>
- <b3274bdb-5680-0c24-9800-8c025bfa119a@linux.alibaba.com>
- <6ed68a7898c5505d3106223b7ad47950a0c79dc3.camel@perches.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <6ed68a7898c5505d3106223b7ad47950a0c79dc3.camel@perches.com>
+        id S1726261AbgKGWtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 17:49:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725838AbgKGWtd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Nov 2020 17:49:33 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED591C0613CF
+        for <linux-kernel@vger.kernel.org>; Sat,  7 Nov 2020 14:49:32 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id c17so4949118wrc.11
+        for <linux-kernel@vger.kernel.org>; Sat, 07 Nov 2020 14:49:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=3Z6M7mlid8X1YnF+DHbpm6fmI55KTptuGsUGWswoIgA=;
+        b=LGdrMJoJvLwCehIzLeZjfy29pIKCUUE/x/H9M0drcmRCDktbwyD/bSF7nPKn7Ona6c
+         GUEm/CytF00+Tl71+IiPBTEhWNvEgxRAkA2tqpI2cXGJ/v+FKGwxC6BdchfwSwZVnb3L
+         ub72CwBmD8pngc/E4KfYtDf0alJWxvUUetlfJ8p2a9iBSfYd4DlFgEU2sE2EeB5/l19A
+         R3td08ud91NaaKZ0oOfcMw+P+L/p47RYmLrrHYrrDd+q1PhclNZOQEwjuMCivUIRQnR2
+         KCs6Z2ZPqZAbONWEosEQWCARBocueI9PYg1r4i47fzComqCp31fjYWwOC59aXAHz8sWZ
+         mZJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=3Z6M7mlid8X1YnF+DHbpm6fmI55KTptuGsUGWswoIgA=;
+        b=EeVbheM6pUQRxIN7FNAJaVKlbvHA1Un0nNddCICnUXXRNlkDMmKQk2PiWFYHLYKlW7
+         eJh4tQ15Tukb8a5XiwnGrzC9y8Z4vE8Td5bUWECSJCa+3Nc3ChpaLYmCU5BIE++O1uqz
+         k8494GUC/NaCQ5Mm8VoHc7/RO4AU6A53Ch1NBNXxsd5t23j5ps+Qo1YpEUJydKdjxTwe
+         GSM6q8+9hsmw27Eoewc3+R0A1O03XOlnHmkJ6AB5qS8gU8RM3HWWisBe3RCFc8n1jzHF
+         odLAgLIlIkJ+SFvECam9wPo7xPN6eKm/MZYu/yPs7RKVibbLpwUsosjn34wtO+YaAcw8
+         Xk5Q==
+X-Gm-Message-State: AOAM533sF6i7HPabdA2FJIpT9PdRBJPwKSMRxRY2fVPs7AngjnLuJuEt
+        CSQQAq+2brVlIkIrfYAw62Ga34iENGEqkw==
+X-Google-Smtp-Source: ABdhPJy1DQw/cWQFmKV2wf+BDIgO2KUEsDM6c5blPKa5goFv4dCjYjNWtE42f92Ra4hR00p5qOv2og==
+X-Received: by 2002:adf:8382:: with SMTP id 2mr9882140wre.227.1604789371578;
+        Sat, 07 Nov 2020 14:49:31 -0800 (PST)
+Received: from localhost.localdomain (host-92-5-241-147.as43234.net. [92.5.241.147])
+        by smtp.gmail.com with ESMTPSA id e3sm8001875wrn.32.2020.11.07.14.49.30
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 07 Nov 2020 14:49:30 -0800 (PST)
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Shawn Guo <shawnguo@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH RESEND] driver core: export device_is_bound() to fix build failure
+Date:   Sat,  7 Nov 2020 22:47:27 +0000
+Message-Id: <20201107224727.11015-1-sudipm.mukherjee@gmail.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 07, 2020 at 09:39:42AM -0800, Joe Perches wrote:
-> On Sat, 2020-11-07 at 20:54 +0800, Alex Shi wrote:
-> > 在 2020/11/7 上午12:39, Florian Fainelli 写道:
-> > > > It is good to remember that there are multiple readers of source
-> > > > files. There is the compiler which generates code from it, and there
-> > > > is the human trying to understand what is going on, what the hardware
-> > > > can do, how we could maybe extend the code in the future to make use
-> > > > of bits are currently don't, etc.
-> > > > 
-> > > > The compiler has no use of these macros, at the moment. But i as a
-> > > > human do. It is valuable documentation, given that there is no open
-> > > > datasheet for this hardware.
-> > > > 
-> > > > I would say these warnings are bogus, and the code should be left
-> > > > alone.
-> > > Agreed, these definitions are intended to document what the hardware
-> > > does. These warnings are getting too far.
-> > 
-> > Thanks for all comments! I agree these info are much meaningful.
-> > Is there other way to tame the gcc warning? like put them into a .h file
-> > or covered by comments?
-> 
-> Does _any_ version of gcc have this warning on by default?
-> 
-> I still think my proposal of moving the warning from W=2 to W=3
-> quite reasonable.
-> 
-> Another possibility is to turn the warning off altogether.
+When CONFIG_MXC_CLK_SCU is configured as 'm' the build fails as it
+is unable to find device_is_bound(). The error being:
+ERROR: modpost: "device_is_bound" [drivers/clk/imx/clk-imx-scu.ko]
+	undefined!
 
-Lets tern the question around first. How many real bugs have you found
-with this warning? Places where the #define should of been used, but
-was not? Then we can get an idea of the value of this warning. My
-guess would be, its value is ~ 0 for the kernel. If so, we should just
-turn it off.
+Export the symbol so that the module finds it.
 
-     Andrew
+Fixes: 77d8f3068c63 ("clk: imx: scu: add two cells binding support")
+Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+---
+
+resending with the Fixes: tag.
+
+ drivers/base/dd.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/base/dd.c b/drivers/base/dd.c
+index 148e81969e04..a796a57e5efb 100644
+--- a/drivers/base/dd.c
++++ b/drivers/base/dd.c
+@@ -353,6 +353,7 @@ bool device_is_bound(struct device *dev)
+ {
+ 	return dev->p && klist_node_attached(&dev->p->knode_driver);
+ }
++EXPORT_SYMBOL(device_is_bound);
+ 
+ static void driver_bound(struct device *dev)
+ {
+-- 
+2.11.0
+
