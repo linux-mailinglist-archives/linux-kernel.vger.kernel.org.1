@@ -2,87 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 457842AA468
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 11:22:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB67C2AA46C
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 11:33:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727984AbgKGKWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 05:22:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60188 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727817AbgKGKWQ (ORCPT
+        id S1727937AbgKGKdO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 05:33:14 -0500
+Received: from smtprelay0176.hostedemail.com ([216.40.44.176]:57330 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727801AbgKGKdN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 05:22:16 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4D43C0613CF
-        for <linux-kernel@vger.kernel.org>; Sat,  7 Nov 2020 02:22:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=xKuw8zhvtdu4k0q3nrygkrJRwLjOFB13/MQ9ZczbDd4=; b=gyCEgepe3kjI9lo/a/W+lcA1W
-        SmIG8GD7itnwyFoTN3tCbUScOMqJj3cJXBT+Qvy/V7kwCeXZ548QX2VI2ZzDkT153oPKn+qobKsVX
-        sw/iz4QFapBWqu0uZUE1BScP9qIapnkVpHEtRZxmDqvedW2xnvHe47BFo/HsqJxn2eJvISsOFWv7i
-        4XbdYjGQL9gw6gk+WCJuz1Qm9u2+J77q66qo3/ZR8SQbc0S9Vuih5PWS/QMYfIVclGLm5p5FnY8NN
-        5SSO+rDfvuaIoTq7VUsqRaU3C6eCIzkRNajdn3Z2vbbWf9T4TwbltcKeqa1wfypF+BtkU5M3JWv71
-        2929RA0YQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:56150)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1kbLMD-0006Zo-9x; Sat, 07 Nov 2020 10:22:05 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1kbLMB-0006k4-Vd; Sat, 07 Nov 2020 10:22:04 +0000
-Date:   Sat, 7 Nov 2020 10:22:03 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Adrian Ratiu <adrian.ratiu@collabora.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
+        Sat, 7 Nov 2020 05:33:13 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 66342100E7B43;
+        Sat,  7 Nov 2020 10:33:12 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:967:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2525:2565:2682:2685:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3868:3871:3872:3873:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:5007:7557:8957:8985:9025:10004:10400:10848:11026:11232:11658:11914:12043:12048:12294:12296:12297:12438:12555:12740:12895:13069:13095:13161:13229:13311:13357:13439:13894:14181:14659:14721:14777:21080:21433:21451:21627:21811:21939:30012:30054:30080:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: tooth45_310a6a7272da
+X-Filterd-Recvd-Size: 2830
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf05.hostedemail.com (Postfix) with ESMTPA;
+        Sat,  7 Nov 2020 10:33:10 +0000 (UTC)
+Message-ID: <4910042649a4f3ab22fac93191b8c1fa0a2e17c3.camel@perches.com>
+Subject: Re: [PATCH] netfilter: conntrack: fix -Wformat
+From:   Joe Perches <joe@perches.com>
+To:     Nick Desaulniers <ndesaulniers@google.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
         Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
-        kernel@collabora.com
-Subject: Re: [PATCH 2/2] arm: lib: xor-neon: disable clang vectorization
-Message-ID: <20201107102203.GV1551@shell.armlinux.org.uk>
-References: <20201106051436.2384842-1-adrian.ratiu@collabora.com>
- <20201106051436.2384842-3-adrian.ratiu@collabora.com>
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+In-Reply-To: <20201107075550.2244055-1-ndesaulniers@google.com>
+References: <20201107075550.2244055-1-ndesaulniers@google.com>
+Content-Type: text/plain; charset="ISO-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201106051436.2384842-3-adrian.ratiu@collabora.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Date:   Sat, 07 Nov 2020 02:32:20 -0800
+User-Agent: Evolution 3.38.1-1 
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 06, 2020 at 07:14:36AM +0200, Adrian Ratiu wrote:
-> diff --git a/arch/arm/lib/xor-neon.c b/arch/arm/lib/xor-neon.c
-> index e1e76186ec23..84c91c48dfa2 100644
-> --- a/arch/arm/lib/xor-neon.c
-> +++ b/arch/arm/lib/xor-neon.c
-> @@ -18,6 +18,10 @@ MODULE_LICENSE("GPL");
->   * Pull in the reference implementations while instructing GCC (through
->   * -ftree-vectorize) to attempt to exploit implicit parallelism and emit
->   * NEON instructions.
-> +
-
-Please tidy this up before submission; we normally continue the "*" for
-blank lines in comment blocks. Thanks.
-
-> + * On Clang the loop vectorizer is enabled by default, but due to a bug
-> + * (https://bugs.llvm.org/show_bug.cgi?id=40976) vectorization is broke
-> + * so xor-neon is disabled in favor of the default reg implementations.
->   */
->  #ifdef CONFIG_CC_IS_GCC
->  #pragma GCC optimize "tree-vectorize"
-> -- 
-> 2.29.0
+On Fri, 2020-11-06 at 23:55 -0800, Nick Desaulniers wrote:
+> Clang is more aggressive about -Wformat warnings when the format flag
+> specifies a type smaller than the parameter. Fixes 8 instances of:
 > 
-> 
+> warning: format specifies type 'unsigned short' but the argument has
+> type 'int' [-Wformat]
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Likely clang's -Wformat message is still bogus.
+Wasn't that going to be fixed?
+
+Integer promotions are already done on these types to int anyway.
+Didn't we have this discussion last year?
+
+https://lore.kernel.org/lkml/CAKwvOd=mqzj2pAZEUsW-M_62xn4pijpCJmP=B1h_-wEb0NeZsA@mail.gmail.com/
+https://lore.kernel.org/lkml/CAHk-=wgoxnmsj8GEVFJSvTwdnWm8wVJthefNk2n6+4TC=20e0Q@mail.gmail.com/
+https://lore.kernel.org/lkml/a68114afb134b8633905f5a25ae7c4e6799ce8f1.camel@perches.com/
+
+Look at commit cbacb5ab0aa0 ("docs: printk-formats: Stop encouraging use
+of unnecessary %h[xudi] and %hh[xudi]")
+
+The "h" and "hh" things should never be used. The only reason for them
+being used if if you have an "int", but you want to print it out as a
+"char" (and honestly, that is a really bad reason, you'd be better off
+just using a proper cast to make the code more obvious).
+
+So if what you have a "char" (or unsigned char) you should always just
+print it out as an "int", knowing that the compiler already did the
+proper type conversion.
+
+> diff --git a/net/netfilter/nf_conntrack_standalone.c b/net/netfilter/nf_conntrack_standalone.c
+[]
+> @@ -50,38 +50,38 @@ print_tuple(struct seq_file *s, const struct nf_conntrack_tuple *tuple,
+>  
+> 
+>  	switch (l4proto->l4proto) {
+>  	case IPPROTO_ICMP:
+> -		seq_printf(s, "type=%u code=%u id=%u ",
+> +		seq_printf(s, "type=%u code=%u id=%hu ",
+
+etc...
+
+
