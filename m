@@ -2,112 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1A4C2AA61C
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 16:10:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 754222AA620
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 16:13:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726301AbgKGPKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 10:10:09 -0500
-Received: from wind.enjellic.com ([76.10.64.91]:59880 "EHLO wind.enjellic.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726053AbgKGPKI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 10:10:08 -0500
-Received: from wind.enjellic.com (localhost [127.0.0.1])
-        by wind.enjellic.com (8.15.2/8.15.2) with ESMTP id 0A7F9XsO029629;
-        Sat, 7 Nov 2020 09:09:33 -0600
-Received: (from greg@localhost)
-        by wind.enjellic.com (8.15.2/8.15.2/Submit) id 0A7F9UVw029628;
-        Sat, 7 Nov 2020 09:09:30 -0600
-Date:   Sat, 7 Nov 2020 09:09:30 -0600
-From:   "Dr. Greg" <greg@enjellic.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
-        cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        haitao.huang@intel.com, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
-        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com,
-        mikko.ylinen@intel.com
-Subject: Re: [PATCH v40 10/24] mm: Add 'mprotect' hook to struct vm_operations_struct
-Message-ID: <20201107150930.GA29530@wind.enjellic.com>
-Reply-To: "Dr. Greg" <greg@enjellic.com>
-References: <20201104145430.300542-1-jarkko.sakkinen@linux.intel.com> <20201104145430.300542-11-jarkko.sakkinen@linux.intel.com> <20201106174359.GA24109@wind.enjellic.com> <e70c9e92-0bd4-59a4-21b1-bccf8621c6bb@intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        id S1726151AbgKGPNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 10:13:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48460 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726021AbgKGPNt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Nov 2020 10:13:49 -0500
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A93DC0613CF
+        for <linux-kernel@vger.kernel.org>; Sat,  7 Nov 2020 07:13:48 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id a65so4003970wme.1
+        for <linux-kernel@vger.kernel.org>; Sat, 07 Nov 2020 07:13:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Fe6CFZHB4eN2243CFprUL/n+G4vxgYInJJ6wj8YKWBk=;
+        b=yxte38245MaYCKkeFpeoucGOLM90V4xE3nz3Cnj3+Pam0t1F1fbMS9wC9MundIMK2H
+         UPpv/s3qUlbyQ01axD3II1Z2BuBIDINgXKwK2bhp+vaisZiHk8VTRAbqY8tzzKxgEU9M
+         E3GiuyMz1aPvkPSGfy0Rw0HBumWxid8ptFtJOzcgegABv758cPFg4Fi2/SarChNNob1s
+         E2C//PdsYp1Sok8XurQ1QdtUexRfPcjHbcN37l8HpHhDpfsyGgWi5n0VtIOA0z+mpBhk
+         yTJVLKMMUL/ibfnKoPsTUVZ+PiKhaeuOMpHLv2gghWo190HmeMHu687awnTuITzS+hTM
+         Fouw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Fe6CFZHB4eN2243CFprUL/n+G4vxgYInJJ6wj8YKWBk=;
+        b=BeioXKHoBuQXe+8aOzu2Zr7YdjPD1tG2GL4+7NWgCQxVqf8YnQBWm4QeHL1oGqTdQM
+         tKNksZUoQL9EF5ub6Ko0zBXaiPW8ykgniM1o5GHf7D+yrPhA3J0EJsrxocFUFk8VgkH5
+         zzk2CXiv0HYzbPFMt1jr8iLpMWzBoIYoqA7TEH0KRw6jIbuLQ1k2hC15y6Eyaigjicnf
+         7cfB2jnDLQTf5SQdx2CAUpZ5YpxrGEo2yqTmFlAWarZ9sSaAjFJT3v8IH8EnemuNw0V4
+         NJGThddHZXQutRzXgwDvEAWAHppEfDVX43pmM2D633JE60nLfbPTEIbcgULSCusNjr6C
+         ZtXg==
+X-Gm-Message-State: AOAM533XNEByZZbaPzcD+PqLNphZLBvDHwrbQD2yhr9w2LCP1k1y17TW
+        bxwICUdDprxj5hES9L/r7g2CepRwX3TX5GOs
+X-Google-Smtp-Source: ABdhPJy6Ii661kV3KJTNGTIaBkDIcEjLcbtut88fwfWuPoGhumpi22jfpd/9QuNPLMHXcJ8vc855nQ==
+X-Received: by 2002:a1c:f417:: with SMTP id z23mr4969499wma.57.1604762026726;
+        Sat, 07 Nov 2020 07:13:46 -0800 (PST)
+Received: from dell ([91.110.221.236])
+        by smtp.gmail.com with ESMTPSA id l16sm6447087wrr.83.2020.11.07.07.13.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 07 Nov 2020 07:13:46 -0800 (PST)
+Date:   Sat, 7 Nov 2020 15:13:42 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+Subject: Re: [PATCH 17/19] drm/radeon/radeon_kms: Fix misnaming of
+ 'radeon_info_ioctl's dev param
+Message-ID: <20201107151342.GQ2063125@dell>
+References: <20201106214949.2042120-1-lee.jones@linaro.org>
+ <20201106214949.2042120-18-lee.jones@linaro.org>
+ <20201107142919.GB1014611@ravnborg.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <e70c9e92-0bd4-59a4-21b1-bccf8621c6bb@intel.com>
-User-Agent: Mutt/1.4i
-X-Greylist: Sender passed SPF test, not delayed by milter-greylist-4.2.3 (wind.enjellic.com [127.0.0.1]); Sat, 07 Nov 2020 09:09:33 -0600 (CST)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201107142919.GB1014611@ravnborg.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 06, 2020 at 09:54:19AM -0800, Dave Hansen wrote:
+On Sat, 07 Nov 2020, Sam Ravnborg wrote:
 
-Good morning, I hope the weekend is going well for everyone, beautiful
-weather out here in West-Cental Minnesota.
+> Hi Lee,
+> 
+> On Fri, Nov 06, 2020 at 09:49:47PM +0000, Lee Jones wrote:
+> > Fixes the following W=1 kernel build warning(s):
+> > 
+> >  drivers/gpu/drm/radeon/radeon_kms.c:226: warning: Function parameter or member 'dev' not described in 'radeon_info_ioctl'
+> >  drivers/gpu/drm/radeon/radeon_kms.c:226: warning: Excess function parameter 'rdev' description in 'radeon_info_ioctl'
+> > 
+> > Cc: Alex Deucher <alexander.deucher@amd.com>
+> > Cc: "Christian König" <christian.koenig@amd.com>
+> > Cc: David Airlie <airlied@linux.ie>
+> > Cc: Daniel Vetter <daniel@ffwll.ch>
+> > Cc: amd-gfx@lists.freedesktop.org
+> > Cc: dri-devel@lists.freedesktop.org
+> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> > ---
+> >  drivers/gpu/drm/radeon/radeon_kms.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/gpu/drm/radeon/radeon_kms.c b/drivers/gpu/drm/radeon/radeon_kms.c
+> > index 0d8fbabffcead..21c206795c364 100644
+> > --- a/drivers/gpu/drm/radeon/radeon_kms.c
+> > +++ b/drivers/gpu/drm/radeon/radeon_kms.c
+> > @@ -213,7 +213,7 @@ static void radeon_set_filp_rights(struct drm_device *dev,
+> >  /**
+> >   * radeon_info_ioctl - answer a device specific request.
+> >   *
+> > - * @rdev: radeon device pointer
+> > + * @dev: radeon device pointer
+> >   * @data: request object
+> >   * @filp: drm filp
+> >   *
+> 
+> Delete all the kernel-doc annotation as we do not pull this file into
+> the kernel-doc anyway.
+> 
+> Keep the /* Answer a device specific request */ part.
+> 
+> At least thats what I see as the best way to deal with it.
 
-> On 11/6/20 9:43 AM, Dr. Greg wrote:
-> > In light of this, given the decision by the driver authors to not
-> > fully equip the driver with EDMM support, the mprotect protection
-> > requirements are straight forward and minimalistic.  All that is
-> > needed is a binary valued variable, set on the command-line, that
-> > either allows or denies anonymous code execution by an enclave,
-> > ie. access to page protection changes after initialization.
+Demoting all headers, even if they are conformant, it not the way to
+go.  Some contributors/maintainers prefer to keep the kernel-doc
+(pretty colours, automated checking [a la, this patch!] and the-like)
+formatting, even if they are not directly referenced from
+/Documentation.
 
-> To that, I say NAK.  We need more flexibility than a boot-time-fixed,
-> system-wide switch.
+For now, so long as the build is happy, I am happy.
 
-To be clear, I wasn't referring to a global yes/no option in the code
-that implements the mprotect callout method in the
-vm_operations_struct.  I was referring to the implementation of the
-hook in the SGX driver code.
+If you wish to make the build unhappy about this, you should take up
+the argument to encompass `scripts/find-unused-docs.sh` into it.
 
-In all of these discussions there hasn't been a refutation of my point
-that the only reason this hook is needed is to stop the potential for
-anonymous code execution on SGX2 capable hardware.  So we will assume,
-that while unspoken, this is the rationale for the hook.
-
-If you are NAK'ing a global enable/disable in the driver code, I think
-there needs to be a discussion of why the driver, in its current
-state, needs anything other then a yes/no decision on mprotect after
-enclave initialization is complete.
-
-At this point in time the driver has no intention of supporting EDMM,
-so the simple belt-and-suspenders approach is to deny mprotect on
-enclave virtual memory after initialization.  Absent mprotect, the
-hardware is perfectly capable of enforcing page permissions that are
-only consistent with the initial mapping of the enclave.
-
-If and when EDMM is implemented there might be a rationale for per
-page mprotect interrogation.  I won't waste people's time here but I
-believe a cogent arguement can be made that there is little utility,
-even under EDMM, of making per page permission decisions rather then a
-'yes/no' decision by the platform owner as to whether or not they want
-to allow anonymous code execution.
-
-Hopefully all of this is a useful clarification.
-
-Have a good weekend.
-
-Dr. Greg
-
-As always,
-Dr. Greg Wettstein, Ph.D, Worker      Autonomously self-defensive
-Enjellic Systems Development, LLC     IOT platforms and edge devices.
-4206 N. 19th Ave.
-Fargo, ND  58102
-PH: 701-281-1686                      EMAIL: greg@enjellic.com
-------------------------------------------------------------------------------
-"If you ever teach a yodeling class, probably the hardest thing is to
- keep the students from just trying to yodel right off. You see, we build
- to that."
-                                -- Jack Handey
-                                   Deep Thoughts
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
