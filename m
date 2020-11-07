@@ -2,145 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C94D22AA4A0
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 12:23:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F0C02AA4A2
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 12:27:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727935AbgKGLXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 06:23:38 -0500
-Received: from z5.mailgun.us ([104.130.96.5]:39856 "EHLO z5.mailgun.us"
+        id S1727647AbgKGL0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 06:26:55 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:28754 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726832AbgKGLXh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 06:23:37 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1604748216; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=zS6LvfRtNdiUkeSXeykO/m6acIjMHUD9ACoUZ1OClsU=; b=DU8TSiReszkfEJeff5XNbTvC0YHCWuwFz07EJE1W6QhcKy/f7fTlsPQHKO1bpvaSahUGpBps
- 2pP9XS78Y4QO4/vkFYMFbgaMENm9zDeBvihKE0s+EkKGzctp2x1tCHUq+rICwGLuxd5eB7lp
- bFZL33KbEvGzJdNEoUAdckNJtQs=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 5fa683b861a7f890a693db04 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 07 Nov 2020 11:23:36
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D53BAC433F0; Sat,  7 Nov 2020 11:23:35 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2A814C433C6;
-        Sat,  7 Nov 2020 11:23:32 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2A814C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Alex Dewar <alex.dewar90@gmail.com>
-Cc:     netdev@vger.kernel.org, Carl Huang <cjhuang@codeaurora.org>,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        ath11k@lists.infradead.org, Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [PATCH 2/2] ath11k: Handle errors if peer creation fails
-References: <20201004100218.311653-1-alex.dewar90@gmail.com>
-        <87blhfbysb.fsf@codeaurora.org>
-        <20201006081321.e2tf5xrdhnk4j3nq@medion>
-Date:   Sat, 07 Nov 2020 13:23:30 +0200
-In-Reply-To: <20201006081321.e2tf5xrdhnk4j3nq@medion> (Alex Dewar's message of
-        "Tue, 6 Oct 2020 09:13:21 +0100")
-Message-ID: <87pn4pfm19.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain
+        id S1726832AbgKGL0y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Nov 2020 06:26:54 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4CSw2L4kCPz9txhF;
+        Sat,  7 Nov 2020 12:26:50 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id Qmf8VUomACSP; Sat,  7 Nov 2020 12:26:50 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4CSw2L3pCVz9txQD;
+        Sat,  7 Nov 2020 12:26:50 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id CA2308B776;
+        Sat,  7 Nov 2020 12:26:51 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id IUi8-SgwCRJS; Sat,  7 Nov 2020 12:26:51 +0100 (CET)
+Received: from po17688vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 92B988B75B;
+        Sat,  7 Nov 2020 12:26:51 +0100 (CET)
+Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 516AA6686C; Sat,  7 Nov 2020 11:26:51 +0000 (UTC)
+Message-Id: <e8c055458b080707f1bc1a98ff8bea79d0cec445.1604748361.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH] panic: don't dump stack twice on warn
+To:     akpm@linux-foundation.org, aik@ozlabs.ru
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-mm@kvack.org
+Date:   Sat,  7 Nov 2020 11:26:51 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alex Dewar <alex.dewar90@gmail.com> writes:
+Before commit 3f388f28639f ("panic: dump registers on panic_on_warn"),
+__warn() was calling show_regs() when regs was not NULL, and
+show_stack() otherwise.
 
-> On Tue, Oct 06, 2020 at 10:26:28AM +0300, Kalle Valo wrote:
->> Alex Dewar <alex.dewar90@gmail.com> writes:
->> 
->> > ath11k_peer_create() is called without its return value being checked,
->> > meaning errors will be unhandled. Add missing check and, as the mutex is
->> > unconditionally unlocked on leaving this function, simplify the exit
->> > path.
->> >
->> > Addresses-Coverity-ID: 1497531 ("Code maintainability issues")
->> > Fixes: 701e48a43e15 ("ath11k: add packet log support for QCA6390")
->> > Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
->> > ---
->> >  drivers/net/wireless/ath/ath11k/mac.c | 21 +++++++++------------
->> >  1 file changed, 9 insertions(+), 12 deletions(-)
->> >
->> > diff --git a/drivers/net/wireless/ath/ath11k/mac.c b/drivers/net/wireless/ath/ath11k/mac.c
->> > index 7f8dd47d2333..58db1b57b941 100644
->> > --- a/drivers/net/wireless/ath/ath11k/mac.c
->> > +++ b/drivers/net/wireless/ath/ath11k/mac.c
->> > @@ -5211,7 +5211,7 @@ ath11k_mac_op_assign_vif_chanctx(struct ieee80211_hw *hw,
->> >  	struct ath11k *ar = hw->priv;
->> >  	struct ath11k_base *ab = ar->ab;
->> >  	struct ath11k_vif *arvif = (void *)vif->drv_priv;
->> > -	int ret;
->> > +	int ret = 0;
->> 
->> I prefer not to initialise the ret variable.
->> 
->> >  	arvif->is_started = true;
->> >  
->> >  	/* TODO: Setup ps and cts/rts protection */
->> >  
->> > -	mutex_unlock(&ar->conf_mutex);
->> > -
->> > -	return 0;
->> > -
->> > -err:
->> > +unlock:
->> >  	mutex_unlock(&ar->conf_mutex);
->> >  
->> >  	return ret;
->> 
->> So in the pending branch I changed this to:
->> 
->> 	ret = 0;
->> 
->> out:
->> 	mutex_unlock(&ar->conf_mutex);
->> 
->> 	return ret;
->> 
->> Please check.
->
-> I'm afraid you've introduced a bug ;). The body of the first if-statement
-> in the function doesn't set ret because no error has occurred. So now
-> it'll jump to the label and the function will return ret uninitialized.
+After that commit, show_stack() is called regardless of whether
+show_regs() has been called or not, leading to duplicated Call Trace:
 
-Ouch, so I did. Good catch! I would have hoped that GCC warns about that
-but it didn't.
+[    7.112617] ------------[ cut here ]------------
+[    7.117041] WARNING: CPU: 0 PID: 1 at arch/powerpc/mm/nohash/8xx.c:186 mmu_mark_initmem_nx+0x24/0x94
+[    7.126021] CPU: 0 PID: 1 Comm: swapper Not tainted 5.10.0-rc2-s3k-dev-01375-gf46ec0d3ecbd-dirty #4092
+[    7.135202] NIP:  c00128b4 LR: c0010228 CTR: 00000000
+[    7.140205] REGS: c9023e40 TRAP: 0700   Not tainted  (5.10.0-rc2-s3k-dev-01375-gf46ec0d3ecbd-dirty)
+[    7.149131] MSR:  00029032 <EE,ME,IR,DR,RI>  CR: 24000424  XER: 00000000
+[    7.155760]
+[    7.155760] GPR00: c0010228 c9023ef8 c2100000 0074c000 ffffffff 00000000 c2151000 c07b3880
+[    7.155760] GPR08: ff000900 0074c000 c8000000 c33b53a8 24000822 00000000 c0003a20 00000000
+[    7.155760] GPR16: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+[    7.155760] GPR24: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00800000
+[    7.191092] NIP [c00128b4] mmu_mark_initmem_nx+0x24/0x94
+[    7.196333] LR [c0010228] free_initmem+0x20/0x58
+[    7.200855] Call Trace:
+[    7.203319] [c9023f18] [c0010228] free_initmem+0x20/0x58
+[    7.208564] [c9023f28] [c0003a3c] kernel_init+0x1c/0x114
+[    7.213813] [c9023f38] [c000f184] ret_from_kernel_thread+0x14/0x1c
+[    7.219869] Instruction dump:
+[    7.222805] 7d291850 7d234b78 4e800020 9421ffe0 7c0802a6 bfc10018 3fe0c060 3bff0000
+[    7.230462] 3fff4080 3bffffff 90010024 57ff0010 <0fe00000> 392001cd 7c3e0b78 953e0008
+[    7.238327] CPU: 0 PID: 1 Comm: swapper Not tainted 5.10.0-rc2-s3k-dev-01375-gf46ec0d3ecbd-dirty #4092
+[    7.247500] Call Trace:
+[    7.249977] [c9023dc0] [c001e070] __warn+0x8c/0xd8 (unreliable)
+[    7.255815] [c9023de0] [c05e0e5c] report_bug+0x11c/0x154
+[    7.261085] [c9023e10] [c0009ea4] program_check_exception+0x1dc/0x6e0
+[    7.267430] [c9023e30] [c000f43c] ret_from_except_full+0x0/0x4
+[    7.273238] --- interrupt: 700 at mmu_mark_initmem_nx+0x24/0x94
+[    7.273238]     LR = free_initmem+0x20/0x58
+[    7.283155] [c9023ef8] [00000000] 0x0 (unreliable)
+[    7.287913] [c9023f18] [c0010228] free_initmem+0x20/0x58
+[    7.293160] [c9023f28] [c0003a3c] kernel_init+0x1c/0x114
+[    7.298410] [c9023f38] [c000f184] ret_from_kernel_thread+0x14/0x1c
+[    7.304479] ---[ end trace 31702cd2a9570752 ]---
 
-I fixed the bug and added also a warning messages if peer_create()
-fails:
+Only call show_stack() when regs is NULL.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=e3e7b8072fa6bb0928b9066cf76e19e6bd2ec663
+Fixes: 3f388f28639f ("panic: dump registers on panic_on_warn")
+Cc: Alexey Kardashevskiy <aik@ozlabs.ru>
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ kernel/panic.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Does this look better now? :)
-
-> With the gcc extension, ret will be initialised to zero anyway, so we're
-> not saving anything by explicitly assigning to ret later in the
-> function.
-
-I prefer not to initialise ret in the beginning of the function and I
-try to maintain that style in ath11k. I think it's more readable that
-the error value is assigned just before the goto.
-
+diff --git a/kernel/panic.c b/kernel/panic.c
+index 396142ee43fd..332736a72a58 100644
+--- a/kernel/panic.c
++++ b/kernel/panic.c
+@@ -605,7 +605,8 @@ void __warn(const char *file, int line, void *caller, unsigned taint,
+ 		panic("panic_on_warn set ...\n");
+ 	}
+ 
+-	dump_stack();
++	if (!regs)
++		dump_stack();
+ 
+ 	print_irqtrace_events(current);
+ 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+2.25.0
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
