@@ -2,164 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7417D2AA6BC
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 17:54:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05D902AA6C1
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 18:01:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728316AbgKGQyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 11:54:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43900 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726021AbgKGQyf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 11:54:35 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 73B27208FE;
-        Sat,  7 Nov 2020 16:54:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604768074;
-        bh=9bUJAFtKjhDN45p4T+UQtUzX1qvHFX2a8IQPUCLjMXg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=iDKqtwlBRFyo3WWC/7pbXL36pzUaE5NQFLRgC/Rpg0ARPeta4Q6yOCXs3j5N03Aa3
-         NDPey1IOfMWImyrH3T2nqQUg3PSOeiBAeDJO5FHwvRET+bg+nzFKehMJ5DqCxRjEl3
-         vKbU10Ay2pBjB6uC3UnXrAyZm8Auiqzmn9v5F/AY=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kbRU0-008VU3-Et; Sat, 07 Nov 2020 16:54:32 +0000
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Sat, 07 Nov 2020 16:54:32 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Xu Qiang <xuqiang36@huawei.com>
-Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org,
-        rui.xiang@huawei.com
-Subject: Re: [PATCH -next] irq-chip/gic-v3-its: Fixed an issue where the ITS
- executes the residual commands in the queue again when the ITS wakes up from
- sleep mode.
-In-Reply-To: <20201107104226.14282-1-xuqiang36@huawei.com>
-References: <20201107104226.14282-1-xuqiang36@huawei.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <b278ce4baea0cf79403f793721d16a8b@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: xuqiang36@huawei.com, tglx@linutronix.de, linux-kernel@vger.kernel.org, rui.xiang@huawei.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+        id S1728226AbgKGRBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 12:01:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36794 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726021AbgKGRBP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Nov 2020 12:01:15 -0500
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A97E7C0613CF;
+        Sat,  7 Nov 2020 09:01:15 -0800 (PST)
+Received: by mail-ej1-x641.google.com with SMTP id s25so6339516ejy.6;
+        Sat, 07 Nov 2020 09:01:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=iYx7Zu5YxaAUOh2wUpaIISnZwmtTFG2J3DAA0bojnps=;
+        b=U6ov5KOO2oi2Nbht9hCtXqab7Nl5JNHRBuG2cGOcEmZehAEFGMxDJPKid9uRJra3Hu
+         wXveMDyHCGG4IlCFMoKbDof6WKIsjNzhYUmtqozgiHAS9rl/MF2WVmX5Q8O+BTQXQA95
+         xjytFKJKXoJwLuVZ72bN7HAW7mcY/roG2oov0WHgSfWuBGU2bM9KEN1RExG3LLM0d315
+         LX2lq1Neg+ttDjRv7ODqXnwEjKijlMTILjVlAXGfbN7jO3uVi/wjlBzpXh27qGvoaPNl
+         Qq37y+Rc9AVAUGdH1VmhvQIF3sB6doxnncX1LVdWHRrJ/CvHwABvGwQ4orrRXxWY3cun
+         QLCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=iYx7Zu5YxaAUOh2wUpaIISnZwmtTFG2J3DAA0bojnps=;
+        b=dYvvUVdVDF9OXuAv8RYw/CDJnR19I73oCDVAViZ1B+nnqvz+mSBSvQ2H8T4ancNX9i
+         drag92fcgXdu7VlXaXsZz3/nmQ2X8o4L/gtQutjm3ftpUjoMHKF26vnNn4U5pZF/mhuw
+         wvAx5LWK+Flw2oL7hBjNQofi7Dc2c0uAdRhyv2KoZQlbtaFbnx9iFKMUdcQh88B5vXYu
+         6ILaZ9E/XJhpHBTxw5Wk9K8WyueiJH2x0RwJtt6kzf7UVl8TJsKSt/KM/F5skyZueU+3
+         aT3qV7yKzjV5UerruAqaVsBGCXpd5Pn0MgmwqGE6tWlK9+MSoarGz5LTySs562V+xLH7
+         EHhQ==
+X-Gm-Message-State: AOAM533nTerIGqcaKKk4r5pRZ0EQZAGNUjzSbfgSCZc9weHXRKQeM7m5
+        TQ55dWod2HhoQh2ayVmZs9I=
+X-Google-Smtp-Source: ABdhPJz7mUoi1CzwS6zfSfBUvQiJhIoTCcqt4t0soJXcWdAdtGuxARn9QJ+kqdJCcMLoEqPNwRU+XA==
+X-Received: by 2002:a17:906:512:: with SMTP id j18mr7744965eja.370.1604768474402;
+        Sat, 07 Nov 2020 09:01:14 -0800 (PST)
+Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id t22sm3729700edq.64.2020.11.07.09.01.13
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 07 Nov 2020 09:01:13 -0800 (PST)
+From:   Johan Jonker <jbx6244@gmail.com>
+To:     heiko@sntech.de
+Cc:     robh+dt@kernel.org, lee.jones@linaro.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v1 1/5] dt-binding: mfd: syscon: add Rockchip QoS register compatibles
+Date:   Sat,  7 Nov 2020 18:00:59 +0100
+Message-Id: <20201107170103.25608-1-jbx6244@gmail.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[dropping Jason, whose email address has been bouncing for weeks now]
+With the conversion of syscon.yaml minItems for compatibles
+was set to 2. Current Rockchip dtsi files only use "syscon" for
+QoS registers. Add Rockchip QoS compatibles to reduce notifications
+produced with:
 
-On 2020-11-07 10:42, Xu Qiang wrote:
-> On my platform, ITS_FLAGS_SAVE_SUSPEND_STATE is not set,thus do nothing
+make ARCH=arm dtbs_check
+DT_SCHEMA_FILES=Documentation/devicetree/bindings/mfd/syscon.yaml
 
-Which platform?
+make ARCH=arm64 dtbs_check
+DT_SCHEMA_FILES=Documentation/devicetree/bindings/mfd/syscon.yaml
 
-> in its suspend and resuse function.On the other hand,firmware stores
-> GITS_CTRL,GITS_CBASER,GITS_CWRITER and GITS_BASER<n> in the suspend,
-> and restores these registers in the resume. As a result, the ITS 
-> executes
-> the residual commands in the queue.
+Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+---
+ Documentation/devicetree/bindings/mfd/syscon.yaml | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Which firmware are you using? I just had a look at the trusted firmware 
-source
-code, and while it definitely does something that *looks* like what you 
-are
-describing, it doesn't re-enable the ITS on resume.
-
-So what are you running?
-
-> 
-> Memory corruption may occur in the following scenarios:
-> 
-> The kernel sends three commands in the following sequence:
-> 1.mapd(deviceA, ITT_addr1, valid:1)
-> 2.mapti(deviceA):ITS write ITT_addr1 memory;
-> 3.mapd(deviceA, ITT_addr1, valid:0) and kfree(ITT_addr1);
-
-The ITS doesn't 'kfree' stuff.
-
-> 4.mapd(deviceA, ITT_addr2, valid:1);
-> 5.mapti(deviceA):ITS write ITT_addr2 memory;
-
-I don't think this example is relevant. The core of the problem is that
-the ITS gets re-enabled by your firmware. What are the affected systems?
-
-> 
-> To solve this problem,dropping the checks for 
-> ITS_FLAGS_SAVE_SUSPEND_STATE.
-> 
-> Signed-off-by: Xu Qiang <xuqiang36@huawei.com>
-> ---
->  drivers/irqchip/irq-gic-v3-its.c | 13 -------------
->  1 file changed, 13 deletions(-)
-> 
-> diff --git a/drivers/irqchip/irq-gic-v3-its.c 
-> b/drivers/irqchip/irq-gic-v3-its.c
-> index 0fec31931e11..06f2c1c252b9 100644
-> --- a/drivers/irqchip/irq-gic-v3-its.c
-> +++ b/drivers/irqchip/irq-gic-v3-its.c
-> @@ -42,7 +42,6 @@
->  #define ITS_FLAGS_CMDQ_NEEDS_FLUSHING		(1ULL << 0)
->  #define ITS_FLAGS_WORKAROUND_CAVIUM_22375	(1ULL << 1)
->  #define ITS_FLAGS_WORKAROUND_CAVIUM_23144	(1ULL << 2)
-> -#define ITS_FLAGS_SAVE_SUSPEND_STATE		(1ULL << 3)
-> 
->  #define RDIST_FLAGS_PROPBASE_NEEDS_FLUSHING	(1 << 0)
->  #define RDIST_FLAGS_RD_TABLES_PREALLOCATED	(1 << 1)
-> @@ -4741,9 +4740,6 @@ static int its_save_disable(void)
->  	list_for_each_entry(its, &its_nodes, entry) {
->  		void __iomem *base;
-> 
-> -		if (!(its->flags & ITS_FLAGS_SAVE_SUSPEND_STATE))
-> -			continue;
-> -
->  		base = its->base;
->  		its->ctlr_save = readl_relaxed(base + GITS_CTLR);
->  		err = its_force_quiescent(base);
-> @@ -4762,9 +4758,6 @@ static int its_save_disable(void)
->  		list_for_each_entry_continue_reverse(its, &its_nodes, entry) {
->  			void __iomem *base;
-> 
-> -			if (!(its->flags & ITS_FLAGS_SAVE_SUSPEND_STATE))
-> -				continue;
-> -
->  			base = its->base;
->  			writel_relaxed(its->ctlr_save, base + GITS_CTLR);
->  		}
-> @@ -4784,9 +4777,6 @@ static void its_restore_enable(void)
->  		void __iomem *base;
->  		int i;
-> 
-> -		if (!(its->flags & ITS_FLAGS_SAVE_SUSPEND_STATE))
-> -			continue;
-> -
->  		base = its->base;
-> 
->  		/*
-> @@ -5074,9 +5064,6 @@ static int __init its_probe_one(struct resource 
-> *res,
->  		ctlr |= GITS_CTLR_ImDe;
->  	writel_relaxed(ctlr, its->base + GITS_CTLR);
-> 
-> -	if (GITS_TYPER_HCC(typer))
-> -		its->flags |= ITS_FLAGS_SAVE_SUSPEND_STATE;
-> -
->  	err = its_init_domain(handle, its);
->  	if (err)
->  		goto out_free_tables;
-
-I'm OK with the patch itself, but I don't want to paper over broken 
-firmware.
-I'll get TF-A fixed one way or another, but I want to be sure yours is 
-too.
-If firmware does its job correctly, we shouldn't have to do all of this.
-
-         M.
+diff --git a/Documentation/devicetree/bindings/mfd/syscon.yaml b/Documentation/devicetree/bindings/mfd/syscon.yaml
+index 8f4764a9e..f14ae6da0 100644
+--- a/Documentation/devicetree/bindings/mfd/syscon.yaml
++++ b/Documentation/devicetree/bindings/mfd/syscon.yaml
+@@ -44,6 +44,10 @@ properties:
+               - hisilicon,peri-subctrl
+               - microchip,sparx5-cpu-syscon
+               - mstar,msc313-pmsleep
++              - rockchip,px30-qos
++              - rockchip,rk3066-qos
++              - rockchip,rk3288-qos
++              - rockchip,rk3399-qos
+               - samsung,exynos3-sysreg
+               - samsung,exynos4-sysreg
+               - samsung,exynos5-sysreg
 -- 
-Jazz is not dead. It just smells funny...
+2.11.0
+
