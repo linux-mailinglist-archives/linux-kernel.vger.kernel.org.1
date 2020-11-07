@@ -2,98 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 919572AA2BB
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 07:26:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E1732AA2D7
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 07:35:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727800AbgKGG0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 01:26:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51942 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727738AbgKGG03 (ORCPT
+        id S1728025AbgKGGeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 01:34:11 -0500
+Received: from mail-m1271.qiye.163.com ([115.236.127.1]:26002 "EHLO
+        mail-m1271.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727799AbgKGGeL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 01:26:29 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6095C0613CF;
-        Fri,  6 Nov 2020 22:26:29 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id c20so3739767pfr.8;
-        Fri, 06 Nov 2020 22:26:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=C4lftI3jjKtV0YPJpfDM7T7PI8bPMBY4WAPtMXGKPTQ=;
-        b=pbhFpHUj/V75ectClm9ghdNvCryoMyQfDPSQmx+Y4A6ihEx5NR8AqX2nA6s9RG4o2K
-         7pues3/1m0otmnSw7QNHyfkThYO1Z94iv7W6BAMDm1YP7W3lBY+X1Z5fIeRgeK8MxU+2
-         Dcba8hvxPTw+9b0LmYgvqQI+vOBSTaqvcY0nE8Es7TyNGHkxyTSxHGdJUGzCmyW8LqoC
-         QDj9HszIZX6u8kAnMcXdA8UrFlTtdtAuZCiQ2G747WMQEp3Qk8EmpMWerDu7bX9KkX58
-         tE3Ocqok2YnmPkbtIyYqE6hBblfmOPun0tLQQecxytmnzOYNCvehX2D5d9Np7gF5iZqX
-         1C6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=C4lftI3jjKtV0YPJpfDM7T7PI8bPMBY4WAPtMXGKPTQ=;
-        b=dYQ088BfM+gsTdEts+cUq1aBep9pB6wTEPOPsuygpstdcLDpqR+S7gf0by1znDa8PJ
-         3tRl6f0pSgMqka2cy+Js3Uv203lVMpWufQrSIhyV6v+WT5QCrr5oKw5PEM1PxfCNMUQj
-         xzpJHY68/vUFPaQvL867xvBqF8PXPwo0VV5j4i67ZeIIqnegstND5hHUE2MEuxAgSsGO
-         qMM4BH0NZv4If5w7PpgCZU+1zIpaMtFELfhszlPZ4zZgQcIjvegQ046DDWHmXg/KPsxM
-         8CybqmrLvjJC3l6ZcqTEfnD8HR7GNpZ5nOBsa13DbHaIhCm9UCR1SYu3sTbsFrXX10kZ
-         SI/Q==
-X-Gm-Message-State: AOAM5312RiGQeWmsUhqhei+h/RmtBfHr1nEH23GPGKoteRYTf7bPuWe9
-        lIWs7VSI5ffmfMalAi3goCifko+FMf4OAb4=
-X-Google-Smtp-Source: ABdhPJzsrhuSEE///ScJ3QwAorHPL91XbpaZNC9/mvUmP+XANlnyfOzlq6TsFfm4ijBHYFyvfc5SwQ==
-X-Received: by 2002:aa7:80c9:0:b029:164:4ca1:fff with SMTP id a9-20020aa780c90000b02901644ca10fffmr5103575pfn.11.1604730389045;
-        Fri, 06 Nov 2020 22:26:29 -0800 (PST)
-Received: from he-cluster.localdomain (67.216.221.250.16clouds.com. [67.216.221.250])
-        by smtp.gmail.com with ESMTPSA id y124sm4039019pfy.28.2020.11.06.22.26.27
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 06 Nov 2020 22:26:28 -0800 (PST)
-From:   xiakaixu1987@gmail.com
-X-Google-Original-From: kaixuxia@tencent.com
-To:     paulus@ozlabs.org
-Cc:     kvm-ppc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, Kaixu Xia <kaixuxia@tencent.com>
-Subject: [PATCH] KVM: PPC: Book3S: Assign boolean values to a bool variable
-Date:   Sat,  7 Nov 2020 14:26:22 +0800
-Message-Id: <1604730382-5810-1-git-send-email-kaixuxia@tencent.com>
-X-Mailer: git-send-email 1.8.3.1
+        Sat, 7 Nov 2020 01:34:11 -0500
+X-Greylist: delayed 479 seconds by postgrey-1.27 at vger.kernel.org; Sat, 07 Nov 2020 01:34:06 EST
+Received: from localhost.localdomain (unknown [113.89.246.237])
+        by mail-m1271.qiye.163.com (Hmail) with ESMTPA id 988F5582122;
+        Sat,  7 Nov 2020 14:26:05 +0800 (CST)
+From:   Ding Hui <dinghui@sangfor.com.cn>
+To:     jejb@linux.ibm.com, martin.petersen@oracle.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        timmyzeng@163.com, Ding Hui <dinghui@sangfor.com.cn>,
+        stable <stable@vger.kernel.org>
+Subject: [PATCH] scsi: ses: Fix crash caused by kfree an invalid pointer
+Date:   Sat,  7 Nov 2020 14:25:12 +0800
+Message-Id: <20201107062512.31288-1-dinghui@sangfor.com.cn>
+X-Mailer: git-send-email 2.17.1
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZQhgZHUtJTRpDSkxDVkpNS09MSEtITU5CSUtVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKQ1VLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6ODY6MSo*Hj8sARwQGCEwLgs9
+        NRcaFEpVSlVKTUtPTEhLSE1NSUxNVTMWGhIXVR8SFRwTDhI7CBoVHB0UCVUYFBZVGBVFWVdZEgtZ
+        QVlKSkhVQ0JVSU9NVUlITFlXWQgBWUFPS0pPNwY+
+X-HM-Tid: 0a75a162277098b6kuuu988f5582122
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kaixu Xia <kaixuxia@tencent.com>
+We can get a crash when disconnecting the iSCSI session,
+the call trace like this:
 
-Fix the following coccinelle warnings:
+  [ffff00002a00fb70] kfree at ffff00000830e224
+  [ffff00002a00fba0] ses_intf_remove at ffff000001f200e4
+  [ffff00002a00fbd0] device_del at ffff0000086b6a98
+  [ffff00002a00fc50] device_unregister at ffff0000086b6d58
+  [ffff00002a00fc70] __scsi_remove_device at ffff00000870608c
+  [ffff00002a00fca0] scsi_remove_device at ffff000008706134
+  [ffff00002a00fcc0] __scsi_remove_target at ffff0000087062e4
+  [ffff00002a00fd10] scsi_remove_target at ffff0000087064c0
+  [ffff00002a00fd70] __iscsi_unbind_session at ffff000001c872c4
+  [ffff00002a00fdb0] process_one_work at ffff00000810f35c
+  [ffff00002a00fe00] worker_thread at ffff00000810f648
+  [ffff00002a00fe70] kthread at ffff000008116e98
 
-./arch/powerpc/kvm/book3s_xics.c:476:3-15: WARNING: Assignment of 0/1 to bool variable
-./arch/powerpc/kvm/book3s_xics.c:504:3-15: WARNING: Assignment of 0/1 to bool variable
+In ses_intf_add, components count can be 0, and kcalloc 0 size scomp,
+but not saved at edev->component[i].scratch
 
-Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
-Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
+In this situation, edev->component[0].scratch is an invalid pointer,
+when kfree it in ses_intf_remove_enclosure, a crash like above would happen
+The call trace also could be other random cases when kfree cannot detect
+the invalid pointer
+
+We should not use edev->component[] array when we get components count is 0
+We also need check index when use edev->component[] array in
+ses_enclosure_data_process
+
+Tested-by: Zeng Zhicong <timmyzeng@163.com>
+Cc: stable <stable@vger.kernel.org> # 2.6.25+
+Signed-off-by: Ding Hui <dinghui@sangfor.com.cn>
 ---
- arch/powerpc/kvm/book3s_xics.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/scsi/ses.c | 18 ++++++++++--------
+ 1 file changed, 10 insertions(+), 8 deletions(-)
 
-diff --git a/arch/powerpc/kvm/book3s_xics.c b/arch/powerpc/kvm/book3s_xics.c
-index 5fee5a11550d..303e3cb096db 100644
---- a/arch/powerpc/kvm/book3s_xics.c
-+++ b/arch/powerpc/kvm/book3s_xics.c
-@@ -473,7 +473,7 @@ static void icp_deliver_irq(struct kvmppc_xics *xics, struct kvmppc_icp *icp,
- 			arch_spin_unlock(&ics->lock);
- 			local_irq_restore(flags);
- 			new_irq = reject;
--			check_resend = 0;
-+			check_resend = false;
- 			goto again;
- 		}
- 	} else {
-@@ -501,7 +501,7 @@ static void icp_deliver_irq(struct kvmppc_xics *xics, struct kvmppc_icp *icp,
- 			state->resend = 0;
- 			arch_spin_unlock(&ics->lock);
- 			local_irq_restore(flags);
--			check_resend = 0;
-+			check_resend = false;
- 			goto again;
- 		}
+diff --git a/drivers/scsi/ses.c b/drivers/scsi/ses.c
+index c2afba2a5414..f5ef0a91f0eb 100644
+--- a/drivers/scsi/ses.c
++++ b/drivers/scsi/ses.c
+@@ -477,9 +477,6 @@ static int ses_enclosure_find_by_addr(struct enclosure_device *edev,
+ 	int i;
+ 	struct ses_component *scomp;
+ 
+-	if (!edev->component[0].scratch)
+-		return 0;
+-
+ 	for (i = 0; i < edev->components; i++) {
+ 		scomp = edev->component[i].scratch;
+ 		if (scomp->addr != efd->addr)
+@@ -565,8 +562,10 @@ static void ses_enclosure_data_process(struct enclosure_device *edev,
+ 						components++,
+ 						type_ptr[0],
+ 						name);
+-				else
++				else if (components < edev->components)
+ 					ecomp = &edev->component[components++];
++				else
++					ecomp = ERR_PTR(-EINVAL);
+ 
+ 				if (!IS_ERR(ecomp)) {
+ 					if (addl_desc_ptr)
+@@ -731,9 +730,11 @@ static int ses_intf_add(struct device *cdev,
+ 		buf = NULL;
  	}
+ page2_not_supported:
+-	scomp = kcalloc(components, sizeof(struct ses_component), GFP_KERNEL);
+-	if (!scomp)
+-		goto err_free;
++	if (components > 0) {
++		scomp = kcalloc(components, sizeof(struct ses_component), GFP_KERNEL);
++		if (!scomp)
++			goto err_free;
++	}
+ 
+ 	edev = enclosure_register(cdev->parent, dev_name(&sdev->sdev_gendev),
+ 				  components, &ses_enclosure_callbacks);
+@@ -813,7 +814,8 @@ static void ses_intf_remove_enclosure(struct scsi_device *sdev)
+ 	kfree(ses_dev->page2);
+ 	kfree(ses_dev);
+ 
+-	kfree(edev->component[0].scratch);
++	if (edev->components > 0)
++		kfree(edev->component[0].scratch);
+ 
+ 	put_device(&edev->edev);
+ 	enclosure_unregister(edev);
 -- 
-2.20.0
+2.17.1
 
