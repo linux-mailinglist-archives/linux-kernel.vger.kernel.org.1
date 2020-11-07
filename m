@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E00462AA59E
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 15:00:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E5072AA5A0
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 15:00:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728126AbgKGOAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 09:00:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37176 "EHLO
+        id S1728203AbgKGOAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 09:00:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725880AbgKGOAd (ORCPT
+        with ESMTP id S1728130AbgKGOAh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 09:00:33 -0500
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5641AC0613CF;
-        Sat,  7 Nov 2020 06:00:33 -0800 (PST)
-Received: by mail-io1-xd44.google.com with SMTP id j12so4958382iow.0;
-        Sat, 07 Nov 2020 06:00:33 -0800 (PST)
+        Sat, 7 Nov 2020 09:00:37 -0500
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7C09C0613D2;
+        Sat,  7 Nov 2020 06:00:36 -0800 (PST)
+Received: by mail-il1-x143.google.com with SMTP id l12so1244900ilo.1;
+        Sat, 07 Nov 2020 06:00:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mZ0zZauDPYcHJm61ikQGB8Z52hdKv7iVnqdM1PesCOA=;
-        b=dFG7ZwhQgPVQN9ohIm1pVpuizYMFO0XW/xHjHgu5bbU8P09nzoUUL6U+0fSANQrmAg
-         iwy/SMGHXEbhDFRO9JeosIBDTz3L/BEa888UPBDBJpk6hwlPn4Hy2bbjoegJ0NEX8ZxA
-         h9qn+EeHP/P29qFlMHSmgptexNAXHK8FDLcMbwDo7HZ4aGkUdpEDThuX72dCDtcoxrUU
-         xZUX7sKwFyxV6b1B41kjOcCBnA6U1IpuAxTy+JXGHsQ9XVqj9dP3GnpuV3T3IRzH8EWg
-         mNll6XBLQgsxafydv2+3VNkUAtt4rxoW2HIGZ/ExX5xm5kPe+UDkJp6LZ8XzWRB5F7EJ
-         L9mQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=0WAVnoMsBB9YRuYSr4SnXW/7hpiCwE0r98+QVKAkmBc=;
+        b=cU7XyrnXFaHjm9ODpQ4wtYren6CgmKVT6316mnrdcEfJ/C3dxifQXroKXfb6IESSXa
+         6TDJj1xN7VUClNC+jyX/cOjThrCOqqkWMyU8c9x0v4XLxAlFJ+HEeaUwWsTb16YteHVH
+         eJ8H8lg7zBbM5kXkH9bhikVMwlyRgFf4cxdtbSmgm3HaYC4uU+ertdaN72JP4r4eIWzn
+         HYhjPfTQirdrnPENXN19G+F3yUvw6kbW4C3bHXXqV60wxjHhaDbufjOoNfDDOJDLojl3
+         YJ+xvShugsCGvXiuVxr7bGbIikbxOHNNEcAtMZKxyFlUYwTylu1Wf+lCTUCD11QHbw4z
+         7iNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mZ0zZauDPYcHJm61ikQGB8Z52hdKv7iVnqdM1PesCOA=;
-        b=aW4zcIRFB1serMHQJO06j4OgRvUfpdy4WAHqiYmhas45WTSg6QCe5RufFy9l9cNIAy
-         CuyH4KLrIeuah9Id6/n69hI0r0FaBCmTdzWtjf0EdyG5JdmU3u5KJhxaLF9IlzkvsTdG
-         MzvgzYDfhzKUQ9ru6BkouNs+9/TeQybfuudoA+CnYmKw+jiVT5pCSyQmSg77z99YnXfr
-         icewZ9txsgkcsFSJpqwneavXZMihE8lS7qGBPVTK6AfTcSJl2IOxB4b3XeDIuhAVsOTK
-         Y5W+4KfjOoDdskwaAUUzNzDT2m0e7p45bSc3uO6SzBZaFx2aaWWlApQNZV747YsoNip+
-         JJtw==
-X-Gm-Message-State: AOAM530VJgBlsw1pcG+447RlvG9ro4CcVCPPlHCs6MHKGQJW8hX4yZLS
-        ITwOhEr1+wA8LdIzBy7FSqKyMLuK3AxVdA==
-X-Google-Smtp-Source: ABdhPJxgWCcJKr9Dr/VXJkuFZcAnbq+I/xboyOJEr7AVueBO+2AF6aYSlvB+KvD1NjuGZIYHsTgckQ==
-X-Received: by 2002:a02:76d7:: with SMTP id z206mr5326447jab.77.1604757632484;
-        Sat, 07 Nov 2020 06:00:32 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=0WAVnoMsBB9YRuYSr4SnXW/7hpiCwE0r98+QVKAkmBc=;
+        b=q75AEvd/QvMMPEL9VQP1kXQk66VXgmrkZNClRpv13dplmsugwV2T+gVwNt7MZ+7gSm
+         y8tWizNCVQB3eUih+2NMEUEvkFMT9R6C6UwfdoYpZYHr5IIbKzk5USGe8bjuxFbmUXR1
+         hfpKK/Lof9ggGeM96/sKyzJH23XZiu9c5P5/sa6kegCUSuWQRZ1jUoGeJP4GbaCdUeTc
+         jRWhAih26cj/2I2aR+Ekjnhk8APMmbvCX+5vbe2oMhf8LH4qhvem+hcGtXQFPKxYx0S0
+         Ad0cgTWav7X15XveewLntozE+UTK4fU2hiByB5EqTLKQ090oX7r7HDMcKbmhbKIkJkoZ
+         x1tg==
+X-Gm-Message-State: AOAM532UIcDLjGyfyYgOqregy3ZDtm60exn/gET3xsy4SODT3o2V6VPj
+        foXhvkGas+8xzeQIDCVj0eA=
+X-Google-Smtp-Source: ABdhPJz8TR79wmz4s+2uO7EVgsblEs4390ase1CflJvE+j8mkypawnHGRNHDyeAPKgclhXc/IhR2Uw==
+X-Received: by 2002:a92:85c5:: with SMTP id f188mr4797570ilh.173.1604757636173;
+        Sat, 07 Nov 2020 06:00:36 -0800 (PST)
 Received: from aford-IdeaCentre-A730.lan ([2601:448:8400:9e8:5d9e:32b:1062:f8cd])
-        by smtp.gmail.com with ESMTPSA id g5sm3030257ilq.33.2020.11.07.06.00.31
+        by smtp.gmail.com with ESMTPSA id g5sm3030257ilq.33.2020.11.07.06.00.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 07 Nov 2020 06:00:31 -0800 (PST)
+        Sat, 07 Nov 2020 06:00:35 -0800 (PST)
 From:   Adam Ford <aford173@gmail.com>
 To:     linux-arm-kernel@lists.infradead.org
 Cc:     aford@beaconembedded.com, krzk@kernel.org,
-        Adam Ford <aford173@gmail.com>, Rob Herring <robh@kernel.org>,
+        Adam Ford <aford173@gmail.com>,
         Rob Herring <robh+dt@kernel.org>,
         Shawn Guo <shawnguo@kernel.org>,
         Sascha Hauer <s.hauer@pengutronix.de>,
@@ -60,66 +60,86 @@ Cc:     aford@beaconembedded.com, krzk@kernel.org,
         NXP Linux Team <linux-imx@nxp.com>,
         Andrey Smirnov <andrew.smirnov@gmail.com>,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH V2 1/5] dt-bindings: add defines for i.MX8MN power domains
-Date:   Sat,  7 Nov 2020 08:00:21 -0600
-Message-Id: <20201107140026.1974312-1-aford173@gmail.com>
+Subject: [PATCH V2 3/5] arm64: dts: imx8mn: add GPC node and power domains
+Date:   Sat,  7 Nov 2020 08:00:23 -0600
+Message-Id: <20201107140026.1974312-3-aford173@gmail.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201107140026.1974312-1-aford173@gmail.com>
+References: <20201107140026.1974312-1-aford173@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The i.MX8M Nano has a similar power domain controller to that of the
-mini, but it isn't fully compatible, so it needs a separate binding
-and power domain tables.
-
-Add the bindings and tables.
+This adds the DT nodes to describe the power domains available on the
+i.MX8MN. There are more power domains, but the displaymix and mipi
+power domains need a separate clock block controller which not yet
+available, so this limits it to the HSIO, OTG and GPU domains.
 
 Signed-off-by: Adam Ford <aford173@gmail.com>
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
-Acked-by: Rob Herring <robh@kernel.org>
 ---
+V2:  Fix missing includes
+     Remove interrupt controller flag
+     Remove domains which interact with blk-ctl
 
-V2:  No change
+ arch/arm64/boot/dts/freescale/imx8mn.dtsi | 36 +++++++++++++++++++++++
+ 1 file changed, 36 insertions(+)
 
- .../devicetree/bindings/power/fsl,imx-gpcv2.yaml  |  1 +
- include/dt-bindings/power/imx8mn-power.h          | 15 +++++++++++++++
- 2 files changed, 16 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/power/fsl,imx-gpcv2.yaml b/Documentation/devicetree/bindings/power/fsl,imx-gpcv2.yaml
-index d3539569d45f..a87c44c15ace 100644
---- a/Documentation/devicetree/bindings/power/fsl,imx-gpcv2.yaml
-+++ b/Documentation/devicetree/bindings/power/fsl,imx-gpcv2.yaml
-@@ -25,6 +25,7 @@ properties:
-   compatible:
-     enum:
-       - fsl,imx7d-gpc
-+      - fsl,imx8mn-gpc
-       - fsl,imx8mq-gpc
-       - fsl,imx8mm-gpc
+diff --git a/arch/arm64/boot/dts/freescale/imx8mn.dtsi b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
+index ee1790230490..c37dee13057a 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mn.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
+@@ -4,6 +4,8 @@
+  */
  
-diff --git a/include/dt-bindings/power/imx8mn-power.h b/include/dt-bindings/power/imx8mn-power.h
-new file mode 100644
-index 000000000000..102ee85a9b62
---- /dev/null
-+++ b/include/dt-bindings/power/imx8mn-power.h
-@@ -0,0 +1,15 @@
-+/* SPDX-License-Identifier: (GPL-2.0 OR MIT) */
-+/*
-+ *  Copyright (C) 2020 Compass Electronics Group, LLC
-+ */
+ #include <dt-bindings/clock/imx8mn-clock.h>
++#include <dt-bindings/power/imx8mn-power.h>
++#include <dt-bindings/reset/imx8mq-reset.h>
+ #include <dt-bindings/gpio/gpio.h>
+ #include <dt-bindings/input/input.h>
+ #include <dt-bindings/interrupt-controller/arm-gic.h>
+@@ -598,6 +600,40 @@ src: reset-controller@30390000 {
+ 				interrupts = <GIC_SPI 89 IRQ_TYPE_LEVEL_HIGH>;
+ 				#reset-cells = <1>;
+ 			};
 +
-+#ifndef __DT_BINDINGS_IMX8MN_POWER_H__
-+#define __DT_BINDINGS_IMX8MN_POWER_H__
++			gpc: gpc@303a0000 {
++				compatible = "fsl,imx8mn-gpc";
++				reg = <0x303a0000 0x10000>;
++				interrupt-parent = <&gic>;
++				interrupts = <GIC_SPI 87 IRQ_TYPE_LEVEL_HIGH>;
 +
-+#define IMX8MN_POWER_DOMAIN_HSIOMIX	0
-+#define IMX8MN_POWER_DOMAIN_OTG1	1
-+#define IMX8MN_POWER_DOMAIN_GPUMIX	2
-+#define IMX8MN_POWER_DOMAIN_DISPMIX	3
-+#define IMX8MN_POWER_DOMAIN_MIPI	4
++				pgc {
++					#address-cells = <1>;
++					#size-cells = <0>;
 +
-+#endif
++					pgc_hsiomix: power-domain@0 {
++						#power-domain-cells = <0>;
++						reg = <IMX8MN_POWER_DOMAIN_HSIOMIX>;
++						clocks = <&clk IMX8MN_CLK_USB_BUS>;
++					};
++
++					pgc_otg1: power-domain@1 {
++						#power-domain-cells = <0>;
++						reg = <IMX8MN_POWER_DOMAIN_OTG1>;
++						power-domains = <&pgc_hsiomix>;
++					};
++
++					pgc_gpumix: power-domain@2 {
++						#power-domain-cells = <0>;
++						reg = <IMX8MN_POWER_DOMAIN_GPUMIX>;
++						clocks = <&clk IMX8MN_CLK_GPU_CORE_ROOT>,
++							 <&clk IMX8MN_CLK_GPU_SHADER_DIV>,
++							 <&clk IMX8MN_CLK_GPU_BUS_ROOT>,
++							 <&clk IMX8MN_CLK_GPU_AHB>;
++						resets = <&src IMX8MQ_RESET_GPU_RESET>;
++					};
++				};
++			};
+ 		};
+ 
+ 		aips2: bus@30400000 {
 -- 
 2.25.1
 
