@@ -2,108 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24AE52AA6CC
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 18:06:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5FD52AA6D7
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 18:16:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728258AbgKGRGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 12:06:08 -0500
-Received: from mout.gmx.net ([212.227.15.15]:50213 "EHLO mout.gmx.net"
+        id S1727550AbgKGRQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 12:16:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726021AbgKGRGI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 12:06:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1604768751;
-        bh=Gu0WHITa0criXSqANy2S1d1UtRU7iAxv438rr4aOewU=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=QlA7eViqDE4BJp/uod6GWfIibxEw0X/Af7089XXhdesg7jGPSv+HBEvcFNLzHwBPv
-         5w3feqSzysWuSq4rNX4InKiEcpXV0MGjn++U8O5YW/9AAwnoKnW3JqNvMjnypQwG+x
-         xkHGUfZG1B8ZLjRLoU95zCZ7Gy+gVS7Nc/Xv/0I0=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([188.174.243.132]) by mail.gmx.com (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MfHEP-1k8QEf49RD-00grVP; Sat, 07
- Nov 2020 18:05:51 +0100
-Message-ID: <c35f88c5eb00c69fa74bbc7225316307a5eb38d8.camel@gmx.de>
-Subject: Re: [tip: locking/urgent] futex: Handle transient "ownerless"
- rtmutex state correctly
-From:   Mike Galbraith <efault@gmx.de>
-To:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org
-Cc:     Gratian Crisan <gratian.crisan@ni.com>,
-        Thomas Gleixner <tglx@linutronix.de>, stable@vger.kernel.org,
-        x86 <x86@kernel.org>
-Date:   Sat, 07 Nov 2020 18:05:50 +0100
-In-Reply-To: <160469801844.397.7418241151599681987.tip-bot2@tip-bot2>
-References: <87a6w6x7bb.fsf@ni.com>
-         <160469801844.397.7418241151599681987.tip-bot2@tip-bot2>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.34.4 
+        id S1726284AbgKGRQh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Nov 2020 12:16:37 -0500
+Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DA66920878;
+        Sat,  7 Nov 2020 17:16:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604769397;
+        bh=VMqMnbjzVosHlpvEbYLFq0+HfLfBtdYGJjT4bgAoHwE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=2ui2PMqzN7ca8Nvf247liiW9Wo9Ev9y9RKgduhAAE7ePQEy/9u/ZCaeqZo1TEG3Hn
+         2ppqn5AxFu2mu8oB0jzJIzyI68sr3m6vuJSfiRrdBbDURRJ9A8biG/YMQZU7a72gAF
+         tudE7+nsHEas5RborIZ10LGVZLpKlJu3BblKxiRA=
+Date:   Sat, 7 Nov 2020 09:16:35 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Chao Yu <chao@kernel.org>
+Cc:     Chao Yu <yuchao0@huawei.com>, jaegeuk@kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [f2fs-dev] [PATCH v4 2/2] f2fs: fix compat F2FS_IOC_{MOVE,
+ GARBAGE_COLLECT}_RANGE
+Message-ID: <20201107171635.GA841@sol.localdomain>
+References: <20201106065331.76236-1-yuchao0@huawei.com>
+ <20201106180324.GA78548@sol.localdomain>
+ <a7e78b61-021a-444d-eb36-68ce7aae133e@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:ZiuJpoFJYDSR3qK2/20rrBaJA+nWuFyZ+EthNZWpgv9Uw3F0lUt
- ai/drL6/+w8HYHW8pGHpcR9RfEVPIn7VWZuiNqplOsou85AQdwmP65ymQD706F0jbUPzr50
- U9VW2InHnT80E8OdDSnluA+eQ++jg5ohyPBt8lGugZTl8auy7WelopmOyqGPjTryXdlccyq
- ghE2l9/0R5ZP3rcjuYDyA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Kx50ttsafBs=:/6qke+AmwAAMFP7RyqRuTZ
- jubrDnTO3UXJYxzwEmX+vqlc5LQaiyRbPkAXdu46+rbUnPJ9ACpgBDoXocinlxyMmMK9IBlF+
- hrjpcyxz0XGA4qKu7t/fxnaE75tvNLY0dxMSGbAmAOwPcCtvBNKaGnrriQZxZ6wqO036DsLSu
- cUYABAV9hZSMsxnSPtRLEfK9ViMJeVz9GclQGF4TapNxaPT2aEfdHVsb7EqQ7mWyWX7KOKmgG
- FLXPoh2mZliusRg/fG1UOPSei7owE6ZmBZHiFg6K7EgYKvLZVC4ncWGiyPadusgCMv7CVjXEi
- bkSz/3kBE0d/v9uWPDV1vN/wH8CuDopb9yd62IIMoB+MC88e6phlKH6v+da0mkokVK8SPhvnu
- Z+BkmTIkGiWx5ckZmVIuSUzUoNDbkf8O0+FAcUn/eEJI1pNTXsNagz6Ma8C/BAWFRJ4DoC8yL
- HZLMrm6+U+tcAH5Q4lB0sEPhJNO/5tDaJk5Z+98nxVUxBssQfjkc8UJEEaQwxCOIp6s7ElqCx
- cY34TJS5yzuIDwew/l649PI2R5pvOYPerHN6idoaD60R3oujCbTCAROP41uT2m7YqvbpAyKco
- 3WOeQRdxLJiiF+ln/WtzQ51JLDLvyZPhaD2gJMp3PaWdXvJ6V9fQEwl+IOc/2YwbX3AGfLlDg
- odJuNe5sVaoVy90E4djg90lJTjmwO1+5UiR32RscbXmAUUDzWHMTU7UadxmsMBxggRJ/UHFgi
- X2/izC2UmBzYUx8OoUZXhbOofrwgaW7E72uIyqqBthqZE3Bc2T1PMvplielFGfFkc077fYXX5
- ulmIiB0Lx8VwVAbjEwFCViFt+/LZoB8tv+AQThP48QWrTwMkzY20u3Boa/4nG+IfyDg4ZxWQn
- cDqKJ3RaaCSfTZT6HbYQ==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a7e78b61-021a-444d-eb36-68ce7aae133e@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-11-06 at 21:26 +0000, tip-bot2 for Mike Galbraith wrote:
->
-> ---
->  kernel/futex.c | 16 ++++++++++++++--
->  1 file changed, 14 insertions(+), 2 deletions(-)
->
-> diff --git a/kernel/futex.c b/kernel/futex.c
-> index f8614ef..7406914 100644
-> --- a/kernel/futex.c
-> +++ b/kernel/futex.c
-> @@ -2380,10 +2380,22 @@ retry:
->  		}
->
->  		/*
-> -		 * Since we just failed the trylock; there must be an owner.
-> +		 * The trylock just failed, so either there is an owner or
-> +		 * there is a higher priority waiter than this one.
->  		 */
->  		newowner =3D rt_mutex_owner(&pi_state->pi_mutex);
-> -		BUG_ON(!newowner);
-> +		/*
-> +		 * If the higher priority waiter has not yet taken over the
-> +		 * rtmutex then newowner is NULL. We can't return here with
-> +		 * that state because it's inconsistent vs. the user space
-> +		 * state. So drop the locks and try again. It's a valid
-> +		 * situation and not any different from the other retry
-> +		 * conditions.
-> +		 */
-> +		if (unlikely(!newowner)) {
-> +			ret =3D -EAGAIN;
-                        ^^^
+On Sat, Nov 07, 2020 at 05:25:23PM +0800, Chao Yu wrote:
+> On 2020/11/7 2:03, Eric Biggers wrote:
+> > On Fri, Nov 06, 2020 at 02:53:31PM +0800, Chao Yu wrote:
+> > > +#if defined(__KERNEL__)
+> > > +struct compat_f2fs_gc_range {
+> > > +	u32 sync;
+> > > +	compat_u64 start;
+> > > +	compat_u64 len;
+> > > +};
+> > 
+> > There's no need to use '#if defined(__KERNEL__)' in kernel source files.
+> > 
+> > Likewise for compat_f2fs_move_range.
+> 
+> Correct.
+> 
+> > 
+> > > +static int f2fs_compat_ioc_gc_range(struct file *file, unsigned long arg)
+> > > +{
+> > > +	struct f2fs_sb_info *sbi = F2FS_I_SB(file_inode(file));
+> > > +	struct compat_f2fs_gc_range __user *urange;
+> > > +	struct f2fs_gc_range range;
+> > > +	int err;
+> > > +
+> > > +	if (unlikely(f2fs_cp_error(sbi)))
+> > > +		return -EIO;
+> > > +	if (!f2fs_is_checkpoint_ready(sbi))
+> > > +		return -ENOSPC;
+> > 
+> > I still don't understand why this checkpoint-related stuff is getting added
+> > here, and only to the compat versions of the ioctls.  It wasn't in the original
+> > version.  If they are needed then they should be added to __f2fs_ioc_gc_range()
+> > and __f2fs_ioc_move_range() (preferably by a separate patch) so that they are
+> 
+> If so, cp-related stuff will be checked redundantly in both f2fs_ioctl() and
+> __f2fs_ioc_xxx() function for native GC_RANGE and MOVE_RANGE ioctls, it's
+> not needed.
+> 
 
-My box just discovered an unnoticed typo.  That 'ret' should read 'err'
-so we goto retry, else fbomb_v2 proggy will trigger gripeage.
+Oh I see, the cp-related checks are at the beginning of f2fs_ioctl() too.
 
-[   44.089233] fuse: init (API version 7.32)
-[   78.485163] ------------[ cut here ]------------
-[   78.485171] WARNING: CPU: 1 PID: 4557 at kernel/futex.c:2482 fixup_pi_s=
-tate_owner.isra.17+0x125/0x350
-[   78.485171] ------------[ cut here ]------------
-[   78.485174] WARNING: CPU: 2 PID: 4559 at kernel/futex.c:1486 do_futex+0=
-x920/0xaf0
-<snip>
+In that case a much better approach would be to add __f2fs_ioctl() which is
+called by f2fs_ioctl() and f2fs_compat_ioctl(), and have f2fs_ioctl() and
+f2fs_compat_ioctl() do the cp-related checks but not __f2fs_ioctl().
 
-	-Mike
+I feel that's still not entirely correct, because ENOTTY should take precedence
+over EIO or ENOSPC from the cp-related stuff.  But at least it would be
+consistent between the native and compat ioctls, and the cp-related checks
+wouldn't have to be duplicated in random ioctls...
 
+- Eric
