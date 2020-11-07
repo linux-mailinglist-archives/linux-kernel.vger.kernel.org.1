@@ -2,88 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A25E2AA2E6
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 07:54:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FE9D2AA2F7
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 08:07:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727847AbgKGGyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 01:54:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56170 "EHLO
+        id S1727859AbgKGHHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 02:07:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727782AbgKGGyF (ORCPT
+        with ESMTP id S1727242AbgKGHHw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 01:54:05 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 653A7C0613CF;
-        Fri,  6 Nov 2020 22:54:05 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id u4so2898571pgr.9;
-        Fri, 06 Nov 2020 22:54:05 -0800 (PST)
+        Sat, 7 Nov 2020 02:07:52 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C226C0613D2
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 23:07:52 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id a12so4404292ybc.20
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 23:07:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=+Z83KD4tlH2fFEQRMhMQtKb03AHYu/UAnjkkUKzI9xQ=;
-        b=to6uwmpt+2RfMmgfmq41N6qLqwxPO4len0HT4ZqZbrk4Y5+2wC/TnKTiZhiQzcjGAd
-         VSJFH2No/Jx99fzs9FQ9qI75EZVhEugafWgSLQi68WmGcbHaO0D6Yy66nuEnNzTP81/p
-         3ofFHwKGuVkQ9bp16borptwEc7ivi4avTfoKH5UzBVcoygeqve6XtWfLxU6ntPIGlTy5
-         YI2BPoiSYHI5GgLUQcL0WDHjrl2VqHBlJeD8LnFoHzVQQ+nImmfL2Mjdl+6d1HUJMDJ9
-         LYdqswo52coqPEUGHiflwDgNiq2wGQX7Vv78yvzZi9SQT3mtjvfc5fwt6at5x9h8mcud
-         mDjQ==
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=e8lDdvwN5A87X4mrssc2W/DXV9FoYTcd68DGfAz+9v0=;
+        b=bcfIQYMO8gIHYjQiAsvYf1bZfaq0+9ip4/Ek2+b3g0BSos4DIXggr8J3ChCxELXTLM
+         a9/Ucs0rdqkKIlhXp3df983iwKmjVK6cvbD2mhNTFqatMd3SVltSJUG4yWs2Fr4pwAnF
+         3DHn+Yw3R6HEV3ysoJRbSxBsWV4ETmJ/0NrZlBb3g2iUrOli/8Mt4AySXmlK1l5AXDug
+         tHQB37pZAdRZ4VDeDrmgkJh6gFypB+whj87Mn/VtrhS0TJSFc62zG8devokggwYT/f7S
+         7y/Zb1WEF/wlmM1RuYw1RahMkVRd9CrKMn2buACvxMgx135dOtfLVjl6+32ReyYzL+H5
+         Xqzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=+Z83KD4tlH2fFEQRMhMQtKb03AHYu/UAnjkkUKzI9xQ=;
-        b=rrX87qkWMvyE7iGfFmRpfoIX8E0HGa/HPsv/LxYXB9h3SrSpyMYcJ3p4qkXJF0ryI9
-         mGQlQ5c1y+2ORGFm+OpbK67Pbo0NLs6uJrVxgest2Nmbu2z6Dn+4PFFbgsZuMUQSZg/X
-         4n5RV2gkstK614Cq+DrMj5OHZqbvPCUlaT8bdsVNMpwkW3P8QvF0emPwxUV8cFSzCGUK
-         B7Fig6XxjqrwlIKCOZohMIEQ2TvY9gCGWL+tsBWXlgdSS/MIha5dAh2GU8ZDIxohYepy
-         bQg4JBba7Pl0dTCOK6YfsAmrtFRVcl8mhMIKSv58b7BTksghGvQNFbJ0lkLXLs9vWX0f
-         c+Zg==
-X-Gm-Message-State: AOAM532XaeV1DBuVOmTjrB17WdL7M/zehr4OeEHqegHX0v6Ypph169N1
-        5d9VydNElB+lvJEFrgrnxA==
-X-Google-Smtp-Source: ABdhPJwy2zvosEa7WnewbXyKOT4GqcR44MXF929jCV5KI0YI2vbLMpbagjHNF+1ly7QWIRTrmK56yg==
-X-Received: by 2002:a62:790f:0:b029:18a:ae57:353f with SMTP id u15-20020a62790f0000b029018aae57353fmr5087076pfc.78.1604732045012;
-        Fri, 06 Nov 2020 22:54:05 -0800 (PST)
-Received: from he-cluster.localdomain (67.216.221.250.16clouds.com. [67.216.221.250])
-        by smtp.gmail.com with ESMTPSA id j20sm3849419pgh.15.2020.11.06.22.54.03
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 06 Nov 2020 22:54:04 -0800 (PST)
-From:   xiakaixu1987@gmail.com
-X-Google-Original-From: kaixuxia@tencent.com
-To:     tariqt@nvidia.com, tariqt@mellanox.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kaixu Xia <kaixuxia@tencent.com>
-Subject: [PATCH] net/mlx4: Assign boolean values to a bool variable
-Date:   Sat,  7 Nov 2020 14:53:58 +0800
-Message-Id: <1604732038-6057-1-git-send-email-kaixuxia@tencent.com>
-X-Mailer: git-send-email 1.8.3.1
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=e8lDdvwN5A87X4mrssc2W/DXV9FoYTcd68DGfAz+9v0=;
+        b=B78hXj/BaC5mYaujzYdLpKYnWzKw7u50k7rjYyi//3gAoELHGgyNpF+iTRD3igKSTn
+         10icbC3WIsdi8+R2e4LQ/V2m1MGXaAPEFkgyncofIJ02ehyJ4FOPMa00Z7mseicjR+TC
+         t1DOcatuoSbX4Yf/Cesbmsjl7CE5u+ioFEMHh0VIDLxgK70OfDi48kgk63D9TxQ0yos6
+         7zPWAkgpBD+aqWXYI7fE6O8qomee9bznlHGT4xbpbTaiyX3j2stQ8GnZA78237nqiLad
+         0hZuHyVMg3M6kREQRXIP6/cmCIN49sm2/0geqrRbBa1u5nzWMOGHhPohXLm5dripDi9Z
+         sFgg==
+X-Gm-Message-State: AOAM532cNP0t+vYEA0d4Hu9XrXhS5pEy+iHm9SKwCCQ2oWlhip5tC1Kd
+        9SXDFjuAOzAuCPqQr+Wrp8ZBiaPXHKIeartm8fU=
+X-Google-Smtp-Source: ABdhPJxnSGmUOMuQ97nd2XP1wiS6S13KviX5/SsKpMB4PCMTEEmCcoGW4lP7SQXMgxkPNwIokaCwxzXiuU5evs8U7tY=
+Sender: "ndesaulniers via sendgmr" 
+        <ndesaulniers@ndesaulniers1.mtv.corp.google.com>
+X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:4d25])
+ (user=ndesaulniers job=sendgmr) by 2002:a5b:a87:: with SMTP id
+ h7mr7458808ybq.484.1604732871723; Fri, 06 Nov 2020 23:07:51 -0800 (PST)
+Date:   Fri,  6 Nov 2020 23:07:44 -0800
+Message-Id: <20201107070744.1133811-1-ndesaulniers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.222.g5d2a92d10f8-goog
+Subject: [PATCH] Kbuild: enable -Wfallthrough for clang
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Joe Perches <joe@perches.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kaixu Xia <kaixuxia@tencent.com>
+Partial revert of commit e2079e93f562 ("kbuild: Do not enable
+-Wimplicit-fallthrough for clang for now")
 
-Fix the following coccinelle warnings:
+This has been fixed up over time thanks to the addition of "fallthrough"
+pseudo-keyword in
+commit 294f69e662d1 ("compiler_attributes.h: Add 'fallthrough' pseudo
+keyword for switch/case use")
 
-./drivers/net/ethernet/mellanox/mlx4/en_rx.c:687:1-17: WARNING: Assignment of 0/1 to bool variable
-
-Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
-Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
+Link: https://github.com/ClangBuiltLinux/linux/issues/236
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
 ---
- drivers/net/ethernet/mellanox/mlx4/en_rx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Makefile | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx4/en_rx.c b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
-index 502d1b97855c..b0f79a5151cf 100644
---- a/drivers/net/ethernet/mellanox/mlx4/en_rx.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
-@@ -684,7 +684,7 @@ int mlx4_en_process_rx_cq(struct net_device *dev, struct mlx4_en_cq *cq, int bud
- 	xdp_prog = rcu_dereference(ring->xdp_prog);
- 	xdp.rxq = &ring->xdp_rxq;
- 	xdp.frame_sz = priv->frag_info[0].frag_stride;
--	doorbell_pending = 0;
-+	doorbell_pending = false;
+diff --git a/Makefile b/Makefile
+index f353886dbf44..c1c61c276f60 100644
+--- a/Makefile
++++ b/Makefile
+@@ -777,11 +777,6 @@ else
+ # These warnings generated too much noise in a regular build.
+ # Use make W=1 to enable them (see scripts/Makefile.extrawarn)
+ KBUILD_CFLAGS += -Wno-unused-but-set-variable
+-
+-# Warn about unmarked fall-throughs in switch statement.
+-# Disabled for clang while comment to attribute conversion happens and
+-# https://github.com/ClangBuiltLinux/linux/issues/636 is discussed.
+-KBUILD_CFLAGS += $(call cc-option,-Wimplicit-fallthrough,)
+ endif
  
- 	/* We assume a 1:1 mapping between CQEs and Rx descriptors, so Rx
- 	 * descriptor offset can be deduced from the CQE index instead of
+ KBUILD_CFLAGS += $(call cc-disable-warning, unused-const-variable)
 -- 
-2.20.0
+2.29.2.222.g5d2a92d10f8-goog
 
