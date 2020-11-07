@@ -2,109 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2130E2AA7D4
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 21:05:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E49C12AA7D9
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 21:14:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728546AbgKGUE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 15:04:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36988 "EHLO
+        id S1728532AbgKGUOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 15:14:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725836AbgKGUE5 (ORCPT
+        with ESMTP id S1725836AbgKGUOA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 15:04:57 -0500
-Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F049BC0613CF;
-        Sat,  7 Nov 2020 12:04:56 -0800 (PST)
-Received: by mail-qv1-xf33.google.com with SMTP id 63so2174192qva.7;
-        Sat, 07 Nov 2020 12:04:56 -0800 (PST)
+        Sat, 7 Nov 2020 15:14:00 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDCC3C0613D2
+        for <linux-kernel@vger.kernel.org>; Sat,  7 Nov 2020 12:14:00 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id r9so1129834pjl.5
+        for <linux-kernel@vger.kernel.org>; Sat, 07 Nov 2020 12:14:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=XvwA6HbetlDd2q4evkVumAAvjXgzZ2Oomp3oDp6nYXE=;
-        b=o+BuRSb9DC0brGuYQ8AF1l0qYc5896UgBSNjCRUN6h1K1VrsliopG29NetWSDJ8S9l
-         LlKJBoYsQS6XHXIsCpIKqRxp//ta3xnPcC9Dl++sqoS318s8oeoAvo+jxxsrwGR3/BLg
-         TFXT2Rfmfckr7f5W9tvQs/t9XAGsOfvlb0fYRWHt//+CxlXyPH408nBDdoGrMszPrYeD
-         IysuCSb6rkjoxy6s8Pw/fuT6IkpNlhAwdn5R796KbKvghzZWkarlQ4upZhCQ3+Ge4LoG
-         4q1ne1axg90PN/CpPr+C0WNGYuvvZVQJKXsIe/shESa0D28bIXZYOF02ZfABxxUZHsEN
-         KY1Q==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=4wyecbVF2pa13FIUlcfG85ZA4c+nRhh836nKpeRzuO8=;
+        b=tw1ZFWpqiQGFv2HqMVnkP0KAC0WP9ElFcNjZPVMwSERtDEAUND1Dfoqc8MijZnzv+M
+         1MAgSXPVZ0QKEVZ/0zOzGjMXAq89ccVVRc5NJtfwhTY9cBevLgD0fEZ0sbxgJn9hEzqv
+         WLHGzWDNxn4rlenG+fyDHOLo5b26RYN/pDF0YYMqkuEbD7l9bZ2O8Lla2jO4qXOYAJay
+         FpQRGo7UdjT5yJidlicaZXEAiv14cSdAwtkpOr9H86KMp3OpbC1Xb2fsA07LOLkAe6xy
+         k1UNLHb2/dBUebVytujjxVvTmxOUMefcMYWGKjPRjPEj8P/r2ytLsga9FkUxTP8sKk71
+         0rIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=XvwA6HbetlDd2q4evkVumAAvjXgzZ2Oomp3oDp6nYXE=;
-        b=eMjD3PX0kv/OQTUqA5Li69gABEHgcPHnp+n//bjQJI7Pw25iJQrSw5hLfEgvvIDEWP
-         Oow7vv1dY85oTL8gspqpvRy/vi94/0nYUHyNMCjd0LHr+Iv6BlKTqXeMMQm/z1K17xFS
-         eLYtsvqeThEDMrpntE9wzwrKaSbiron0oQrkz5rhI/rh9hjnNFrR84kESNJWHq47Uzli
-         0vl4VK6ROUKDqpc5XnkqVT+j6YX2DaoIPMYiavEVGUzwQSzGXrz70vyPfM8tGoE0yZGM
-         GMBMUKUoAFb/5n2T+EdIze0ROu5OMVG05rMiugONk1hJXRkkkaRzhobPmtENNfg714vN
-         zIzA==
-X-Gm-Message-State: AOAM532pKpjMPUg+c8KqbyXfWZlaRZtbkbbbqDik4u9dtuaijGf3VFsU
-        liCFF1FL4+Vjpy4clu+UEeE=
-X-Google-Smtp-Source: ABdhPJwJ1/ek4sB5yeokoXnAzPsOzuRUpUF7L1rpw5rcxV9dxY5JIG2JXza/UTObEg+RV7NsPrdd+g==
-X-Received: by 2002:a05:6214:c2:: with SMTP id f2mr7474799qvs.2.1604779495967;
-        Sat, 07 Nov 2020 12:04:55 -0800 (PST)
-Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
-        by smtp.gmail.com with ESMTPSA id e14sm2951675qtw.22.2020.11.07.12.04.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 07 Nov 2020 12:04:55 -0800 (PST)
-Date:   Sat, 7 Nov 2020 13:04:53 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Valdis =?utf-8?Q?Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        linux-next@vger.kernel.org
-Subject: Re: next-20201105 - build issue with KASAN on ARM
-Message-ID: <20201107200453.GA92349@ubuntu-m3-large-x86>
-References: <7021.1604774000@turing-police>
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=4wyecbVF2pa13FIUlcfG85ZA4c+nRhh836nKpeRzuO8=;
+        b=UwAFlq1tu/j9ooxDkPSHF77vd8SfZoWy4LgQtuQS4yrAILCU23rswKzozWjVEcSpms
+         CvOa5zhXYZJSaGMBcLDTd9dRt3RJIbIWw850qK0HDbnWO2nzXJGguj7O+dtyBddM8QMH
+         nk4yVJG6xxJAyn1H2ktTAJYPvAc2SfvbaO3HAPzg9jR7z+Gzzq2+tg+wYvzjVwQ/1Lli
+         T+Ur2kjDSMRzYCKSqBFNeiaR/y9VZtRacvOx5PdNaVpAnoTeVrwXkHwN9KNgzJwtmLda
+         3sZ+LU18lBLsWBTCq16rK3o1VnasKyyiy4+XKyFuoVy/UTroyushnWQLXAfp8Vvq0EdX
+         46EA==
+X-Gm-Message-State: AOAM532XOqgJ9JF/q6hJ6CkpSX31geLZ5LqCCSOJ/73EVc1yg4y4zC9j
+        kgNJJiDFg9y6r732L2kzxzg3IfiFWS2RRA==
+X-Google-Smtp-Source: ABdhPJxyb0PGTiw4FXFppV6OpTw0mdRr0GT7lMRkOKzc/Oz5N2dF1OlAfD9UJttBPxr7zuL3sjSoBg==
+X-Received: by 2002:a17:902:728f:b029:d6:fcbe:99c5 with SMTP id d15-20020a170902728fb02900d6fcbe99c5mr6587248pll.20.1604780039846;
+        Sat, 07 Nov 2020 12:13:59 -0800 (PST)
+Received: from [192.168.1.134] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id a123sm6501390pfd.218.2020.11.07.12.13.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 07 Nov 2020 12:13:59 -0800 (PST)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     io-uring <io-uring@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Subject: [GIT PULL] io_uring fixes for 5.10-rc
+Message-ID: <adf29460-8af3-b326-a372-2627a9097929@kernel.dk>
+Date:   Sat, 7 Nov 2020 13:13:57 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7021.1604774000@turing-police>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Valdis,
+Hi Linus,
 
-On Sat, Nov 07, 2020 at 01:33:20PM -0500, Valdis Klētnieks wrote:
-> commit d6d51a96c7d63b7450860a3037f2d62388286a52
-> Author: Linus Walleij <linus.walleij@linaro.org>
-> Date:   Sun Oct 25 23:52:08 2020 +0100
-> 
->     ARM: 9014/2: Replace string mem* functions for KASan
-> 
-> I'm trying to figure out why this has 3 Tested-By: tags but blows up for fairly obvious
-> reasons on ARM.....
+A set of fixes for io_uring that should go into this release:
 
-Because it builds fine if you check out Russell's branch. This build
-error only happens because of a treewide change in -mm that was applied
-after the ARM merge:
+- SQPOLL cancelation fixes
 
-https://lore.kernel.org/linux-arm-kernel/20201106094434.GA3268933@ubuntu-m3-large-x86/
+- Two fixes for the io_identity COW
 
-https://lore.kernel.org/linux-arm-kernel/20201106180929.GD2959494@ubuntu-m3-large-x86/
+- Cancelation overflow fix (Pavel)
 
-Stephen could apply that diff as a fixup for the -mm patch when he
-builds -next or I can send it as a formal patch for him to apply.
+- Drain request cancelation fix (Pavel)
 
->   CC      arch/arm/boot/compressed/string.o
-> arch/arm/boot/compressed/string.c:24:1: error: attribute 'alias' argument not a string
->  void *__memcpy(void *__dest, __const void *__src, size_t __n) __alias(memcpy);
->  ^~~~
-> arch/arm/boot/compressed/string.c:25:1: error: attribute 'alias' argument not a string
->  void *__memmove(void *__dest, __const void *__src, size_t count) __alias(memmove);
->  ^~~~
-> arch/arm/boot/compressed/string.c:26:1: error: attribute 'alias' argument not a string
->  void *__memset(void *s, int c, size_t count) __alias(memset);
->  ^~~~
-> make[2]: *** [scripts/Makefile.build:283: arch/arm/boot/compressed/string.o] Error 1
-> make[1]: *** [arch/arm/boot/Makefile:64: arch/arm/boot/compressed/vmlinux] Error 2
-> 
+- Link timeout race fix (Pavel)
 
-Cheers,
-Nathan
+Please pull!
+
+
+The following changes since commit 3cea11cd5e3b00d91caf0b4730194039b45c5891:
+
+  Linux 5.10-rc2 (2020-11-01 14:43:51 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.dk/linux-block.git tags/io_uring-5.10-2020-11-07
+
+for you to fetch changes up to 9a472ef7a3690ac0b77ebfb04c88fa795de2adea:
+
+  io_uring: fix link lookup racing with link timeout (2020-11-05 15:36:40 -0700)
+
+----------------------------------------------------------------
+io_uring-5.10-2020-11-07
+
+----------------------------------------------------------------
+Jens Axboe (5):
+      io-wq: cancel request if it's asking for files and we don't have them
+      io_uring: properly handle SQPOLL request cancelations
+      io_uring: ensure consistent view of original task ->mm from SQPOLL
+      io_uring: drop req/tctx io_identity separately
+      io_uring: use correct pointer for io_uring_show_cred()
+
+Pavel Begunkov (3):
+      io_uring: fix overflowed cancel w/ linked ->files
+      io_uring: don't forget to task-cancel drained reqs
+      io_uring: fix link lookup racing with link timeout
+
+ fs/io-wq.c               |   4 ++
+ fs/io_uring.c            | 183 +++++++++++++++++++++++++++++++++++------------
+ include/linux/io_uring.h |   3 +-
+ 3 files changed, 142 insertions(+), 48 deletions(-)
+
+-- 
+Jens Axboe
+
