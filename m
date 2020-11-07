@@ -2,263 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C39B52AA1A9
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 01:11:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FBA52AA1AA
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 01:12:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727626AbgKGALD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 19:11:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50702 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726987AbgKGALD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 19:11:03 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 377DDC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 16:11:03 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id i184so1054200ybg.7
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 16:11:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:cc;
-        bh=O4plfZhOm2PQ9/g1Q0it71FaybRhA0glqyeHSYfkzIQ=;
-        b=TMsiT5Ay1V3dbf+nFkbbcDLN1xapnKgpZ344psPH1ixrSUzAmJCRVw0WgfgYoC7caw
-         krLP9bU1zMwgEG2YrsLCGCMToBIbhLsR6LJw+JM4I2fhBOdxbFRwCjGuyamYFZuy8jlh
-         yqimFzPyiVY1OnDjq3isval31Mt4NuJVIEdD6DcZqMCntMRQYsY+RXS9wBDTPQblWB0e
-         pK5MauLz1aSoqy/1j6bJHShTPR7ZUfPsVuI/H1LOktZvnafH2NBpU+twmohQqqJ3xS7n
-         idOdHl2wVWVOv0hXkFss1/tVWXQSzAdQZ/0hzea5+tOq1kLf3fldXc/+shSvDC/sFr0K
-         Uyew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:cc;
-        bh=O4plfZhOm2PQ9/g1Q0it71FaybRhA0glqyeHSYfkzIQ=;
-        b=cQUfoeaBlVzd1pRB+HK6TB5yYk4moucjksev1s46GltoLZ0LlltYy09qRR+V/SmUrR
-         QbfsaoHtDuaHByocB2cg4yV6q4+b6K9MJPR3kCoOxL34pT6mu36IQ+jKxZJ+PS8NV//B
-         c6U/ZAWBNwgCOKFSO48thmsfN1tMXoqXetmoMSUfGpxysAtPg+6PUcaKgJ7iqHeon9bM
-         FxfdajJW4DMkNLjN6FyOC5WycF2lzHMz0g8DbCpWbAMIi7UxbzGnpQOr4LmGpPPJnxHD
-         jb88TKVJEyvfZdOsAjlMgDK7k0VCzHwO/fhad7+zmnhAibowYoxiY4F5P/2JFuZ96Ob8
-         3LQA==
-X-Gm-Message-State: AOAM530o0aOSGpLfqqIp6GyV4o8zLMwJc5OD6un6ENaSo0DNhoeT8d6c
-        tIcTUGjtLDmc/nRvYO9ebThJlrELT7W0
-X-Google-Smtp-Source: ABdhPJzTi6zme0srE5l3z9hQP083UDg0ykTg549x56pJYEeOYDD+AbqY7f2YUtpifBhf+she1+MqtfwM0kEg
-Sender: "jiancai via sendgmr" <jiancai@jiancai.svl.corp.google.com>
-X-Received: from jiancai.svl.corp.google.com ([2620:15c:2ce:0:f693:9fff:fef4:238b])
- (user=jiancai job=sendgmr) by 2002:a25:e6d0:: with SMTP id
- d199mr7019427ybh.398.1604707862263; Fri, 06 Nov 2020 16:11:02 -0800 (PST)
-Date:   Fri,  6 Nov 2020 16:10:53 -0800
-In-Reply-To: <20200409232728.231527-1-caij2003@gmail.com>
-Message-Id: <20201107001056.225807-1-jiancai@google.com>
-Mime-Version: 1.0
-References: <20200409232728.231527-1-caij2003@gmail.com>
-X-Mailer: git-send-email 2.29.2.222.g5d2a92d10f8-goog
-Subject: [PATCH v2] Make iwmmxt.S support Clang's integrated assembler
-From:   Jian Cai <jiancai@google.com>
-Cc:     ndesaulniers@google.com, manojgupta@google.com, llozano@google.com,
-        clang-built-linux@googlegroups.com, Jian Cai <jiancai@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-To:     unlisted-recipients:; (no To-header on input)
+        id S1728138AbgKGAMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 19:12:18 -0500
+Received: from nat-hk.nvidia.com ([203.18.50.4]:37416 "EHLO nat-hk.nvidia.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727985AbgKGAMS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 19:12:18 -0500
+Received: from HKMAIL102.nvidia.com (Not Verified[10.18.92.100]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fa5e65f0000>; Sat, 07 Nov 2020 08:12:15 +0800
+Received: from HKMAIL102.nvidia.com (10.18.16.11) by HKMAIL102.nvidia.com
+ (10.18.16.11) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sat, 7 Nov
+ 2020 00:12:12 +0000
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.46) by
+ HKMAIL102.nvidia.com (10.18.16.11) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Sat, 7 Nov 2020 00:12:11 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VcFvPgZ7c+J5sj1gZPe0Lau9hjnP8bLtpScFOfKcY7IMYn4kQ7/TI1lJzdCiyT252+B6VC/qUMm/ndtudcKJ3RLUDsXFseoS4PMypC2XufTDTSDDZSI67fi4kQ+DlD9TYN+HGb7u612o8ZKVW9APeyxl1HmZ/NovgenDSCzlYyIjHy2HrWK7WjZz1SOZ6UHPdRunoQV0yoFYULZLs6HdAe0Rbaz+2v2OjvUkKUgBQEFURrx5Ver/qwNyZaH8D4xSbufk0mkaGML3YF0BiG1KCJYy9GuWCfBN7Kmz+H6W0Uvlc/c+OSNgRzsfkQVWMMo9Ewy86E84gmFBwyHiNMsnSg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XXQ+SpzZb5V9OPfmuK/bv7yxrxOa8qNbfruPqSYHmg0=;
+ b=G1veKVlMNLYcAxNZf8tddinStGZPD2r3014wnIOemsUPB7XyNTm1tJDT1x8qc21PUKSXYulQ+U6dgtFlKYzmU0Pnw7FQOrcdNmdwwC24MjlD5SqbY5TWnmRQjb4AtweFofe+AQVQ5CUSEtZldk0eKHy4xzX+hhAV+jQ6eEEk83WGlZQLvdNAuFHCjW7CLTTjvmjrgn7cUb7NbjnpBUOm4YDQHdRULl33cj5e1czcQiPOdx5ZP9rTMt62Ysf0NyepZCZilug+sJPZ+8ZekAuQOYn8NcfDph/GXb7vjNnckEW2vrc7XMXnEfu8tBFDQWSwt2LSE6O3H+YVrrSH1/sz+g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB3113.namprd12.prod.outlook.com (2603:10b6:5:11b::28) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18; Sat, 7 Nov
+ 2020 00:12:09 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3499.032; Sat, 7 Nov 2020
+ 00:12:09 +0000
+Date:   Fri, 6 Nov 2020 20:12:07 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Dan Williams <dan.j.williams@intel.com>
+CC:     "Raj, Ashok" <ashok.raj@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        "vkoul@kernel.org" <vkoul@kernel.org>,
+        "Dey, Megha" <megha.dey@intel.com>,
+        "maz@kernel.org" <maz@kernel.org>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>, "Lu, Baolu" <baolu.lu@intel.com>,
+        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        "jing.lin@intel.com" <jing.lin@intel.com>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "netanelg@mellanox.com" <netanelg@mellanox.com>,
+        "shahafs@mellanox.com" <shahafs@mellanox.com>,
+        "yan.y.zhao@linux.intel.com" <yan.y.zhao@linux.intel.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "Ortiz, Samuel" <samuel.ortiz@intel.com>,
+        "Hossain, Mona" <mona.hossain@intel.com>,
+        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
+Subject: Re: [PATCH v4 06/17] PCI: add SIOV and IMS capability detection
+Message-ID: <20201107001207.GA2620339@nvidia.com>
+References: <20201103124351.GM2620339@nvidia.com>
+ <MWHPR11MB164544C9CFCC3F162C1C6FC18CEF0@MWHPR11MB1645.namprd11.prod.outlook.com>
+ <20201104124017.GW2620339@nvidia.com>
+ <MWHPR11MB1645862A8F7CF7FB8DD011778CEF0@MWHPR11MB1645.namprd11.prod.outlook.com>
+ <20201104135415.GX2620339@nvidia.com>
+ <MWHPR11MB1645524BDEDF8899914F32AE8CED0@MWHPR11MB1645.namprd11.prod.outlook.com>
+ <20201106131415.GT2620339@nvidia.com> <20201106164850.GA85879@otc-nc-03>
+ <20201106175131.GW2620339@nvidia.com>
+ <CAPcyv4iYHA1acfo=+fTk+U_TrLbSWJjA6v4oeTXgVYDTrnCoGw@mail.gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <CAPcyv4iYHA1acfo=+fTk+U_TrLbSWJjA6v4oeTXgVYDTrnCoGw@mail.gmail.com>
+X-ClientProxiedBy: BL0PR0102CA0047.prod.exchangelabs.com
+ (2603:10b6:208:25::24) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by BL0PR0102CA0047.prod.exchangelabs.com (2603:10b6:208:25::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21 via Frontend Transport; Sat, 7 Nov 2020 00:12:08 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kbBpv-0015PA-Er; Fri, 06 Nov 2020 20:12:07 -0400
+X-LD-Processed: 43083d15-7273-40c1-b7db-39efd9ccc17a,ExtAddr
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1604707935; bh=XXQ+SpzZb5V9OPfmuK/bv7yxrxOa8qNbfruPqSYHmg0=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType:X-LD-Processed;
+        b=CpqhAGJA2g38X5aPDdi/KS8mlUkN26wUrolTmHrgKpGhmP6fydDojmM9CMJ2SQDhw
+         +/VFSqvFzBbkzgceR8EyoWVhsDxjHqROGxXTWbK/tgxzfQmIbr17IrxqRSTZf4z+Es
+         jdXoVboyITmxvpSsnQ6j3kezIOuiFSxPTt5Y6+TfKFIaiaIRpBEtqvd7Am6nkQzz8B
+         4Fd4I6NShOrL4mghpp7YcR2S3xWTxnyo0XmMfVHzaTfNZbKV++FkZV/R5PMUFvft94
+         8lHOP8qmuv+XfWBbAz2NFwzU9LPjJWVqwd0QHjiS7QwLVHYHXhzmdAWPNiwmVpCRoX
+         gggIXWqtU1zPA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch replaces 6 IWMMXT instructions Clang's integrated assembler
-does not support in iwmmxt.S using macros, while making sure GNU
-assembler still emit the same instructions. This should be easier than
-providing full IWMMXT support in Clang.
+On Fri, Nov 06, 2020 at 03:47:00PM -0800, Dan Williams wrote:
 
-"Intel Wireless MMX Technology - Developer Guide - August, 2002" should
-be referenced for the encoding schemes of these extensions.
+> Also feel free to straighten me out (Jason or Ashok) if I've botched
+> the understanding of this.
 
-Link: https://github.com/ClangBuiltLinux/linux/issues/975
+It is pretty simple when you get down to it.
 
-Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
-Suggested-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: Jian Cai <jiancai@google.com>
----
- arch/arm/kernel/iwmmxt.S | 89 ++++++++++++++++++++--------------------
- arch/arm/kernel/iwmmxt.h | 47 +++++++++++++++++++++
- 2 files changed, 92 insertions(+), 44 deletions(-)
- create mode 100644 arch/arm/kernel/iwmmxt.h
+We have a new kernel API that Thomas added:
 
-diff --git a/arch/arm/kernel/iwmmxt.S b/arch/arm/kernel/iwmmxt.S
-index 0dcae787b004..d2b4ac06e4ed 100644
---- a/arch/arm/kernel/iwmmxt.S
-+++ b/arch/arm/kernel/iwmmxt.S
-@@ -16,6 +16,7 @@
- #include <asm/thread_info.h>
- #include <asm/asm-offsets.h>
- #include <asm/assembler.h>
-+#include "iwmmxt.h"
- 
- #if defined(CONFIG_CPU_PJ4) || defined(CONFIG_CPU_PJ4B)
- #define PJ4(code...)		code
-@@ -113,33 +114,33 @@ concan_save:
- 
- concan_dump:
- 
--	wstrw	wCSSF, [r1, #MMX_WCSSF]
--	wstrw	wCASF, [r1, #MMX_WCASF]
--	wstrw	wCGR0, [r1, #MMX_WCGR0]
--	wstrw	wCGR1, [r1, #MMX_WCGR1]
--	wstrw	wCGR2, [r1, #MMX_WCGR2]
--	wstrw	wCGR3, [r1, #MMX_WCGR3]
-+	wstrw	wCSSF, r1, MMX_WCSSF
-+	wstrw	wCASF, r1, MMX_WCASF
-+	wstrw	wCGR0, r1, MMX_WCGR0
-+	wstrw	wCGR1, r1, MMX_WCGR1
-+	wstrw	wCGR2, r1, MMX_WCGR2
-+	wstrw	wCGR3, r1, MMX_WCGR3
- 
- 1:	@ MUP? wRn
- 	tst	r2, #0x2
- 	beq	2f
- 
--	wstrd	wR0,  [r1, #MMX_WR0]
--	wstrd	wR1,  [r1, #MMX_WR1]
--	wstrd	wR2,  [r1, #MMX_WR2]
--	wstrd	wR3,  [r1, #MMX_WR3]
--	wstrd	wR4,  [r1, #MMX_WR4]
--	wstrd	wR5,  [r1, #MMX_WR5]
--	wstrd	wR6,  [r1, #MMX_WR6]
--	wstrd	wR7,  [r1, #MMX_WR7]
--	wstrd	wR8,  [r1, #MMX_WR8]
--	wstrd	wR9,  [r1, #MMX_WR9]
--	wstrd	wR10, [r1, #MMX_WR10]
--	wstrd	wR11, [r1, #MMX_WR11]
--	wstrd	wR12, [r1, #MMX_WR12]
--	wstrd	wR13, [r1, #MMX_WR13]
--	wstrd	wR14, [r1, #MMX_WR14]
--	wstrd	wR15, [r1, #MMX_WR15]
-+	wstrd	wR0,  r1, MMX_WR0
-+	wstrd	wR1,  r1, MMX_WR1
-+	wstrd	wR2,  r1, MMX_WR2
-+	wstrd	wR3,  r1, MMX_WR3
-+	wstrd	wR4,  r1, MMX_WR4
-+	wstrd	wR5,  r1, MMX_WR5
-+	wstrd	wR6,  r1, MMX_WR6
-+	wstrd	wR7,  r1, MMX_WR7
-+	wstrd	wR8,  r1, MMX_WR8
-+	wstrd	wR9,  r1, MMX_WR9
-+	wstrd	wR10, r1, MMX_WR10
-+	wstrd	wR11, r1, MMX_WR11
-+	wstrd	wR12, r1, MMX_WR12
-+	wstrd	wR13, r1, MMX_WR13
-+	wstrd	wR14, r1, MMX_WR14
-+	wstrd	wR15, r1, MMX_WR15
- 
- 2:	teq	r0, #0				@ anything to load?
- 	reteq	lr				@ if not, return
-@@ -147,30 +148,30 @@ concan_dump:
- concan_load:
- 
- 	@ Load wRn
--	wldrd	wR0,  [r0, #MMX_WR0]
--	wldrd	wR1,  [r0, #MMX_WR1]
--	wldrd	wR2,  [r0, #MMX_WR2]
--	wldrd	wR3,  [r0, #MMX_WR3]
--	wldrd	wR4,  [r0, #MMX_WR4]
--	wldrd	wR5,  [r0, #MMX_WR5]
--	wldrd	wR6,  [r0, #MMX_WR6]
--	wldrd	wR7,  [r0, #MMX_WR7]
--	wldrd	wR8,  [r0, #MMX_WR8]
--	wldrd	wR9,  [r0, #MMX_WR9]
--	wldrd	wR10, [r0, #MMX_WR10]
--	wldrd	wR11, [r0, #MMX_WR11]
--	wldrd	wR12, [r0, #MMX_WR12]
--	wldrd	wR13, [r0, #MMX_WR13]
--	wldrd	wR14, [r0, #MMX_WR14]
--	wldrd	wR15, [r0, #MMX_WR15]
-+	wldrd	wR0,  r0, MMX_WR0
-+	wldrd	wR1,  r0, MMX_WR1
-+	wldrd	wR2,  r0, MMX_WR2
-+	wldrd	wR3,  r0, MMX_WR3
-+	wldrd	wR4,  r0, MMX_WR4
-+	wldrd	wR5,  r0, MMX_WR5
-+	wldrd	wR6,  r0, MMX_WR6
-+	wldrd	wR7,  r0, MMX_WR7
-+	wldrd	wR8,  r0, MMX_WR8
-+	wldrd	wR9,  r0, MMX_WR9
-+	wldrd	wR10, r0, MMX_WR10
-+	wldrd	wR11, r0, MMX_WR11
-+	wldrd	wR12, r0, MMX_WR12
-+	wldrd	wR13, r0, MMX_WR13
-+	wldrd	wR14, r0, MMX_WR14
-+	wldrd	wR15, r0, MMX_WR15
- 
- 	@ Load wCx
--	wldrw	wCSSF, [r0, #MMX_WCSSF]
--	wldrw	wCASF, [r0, #MMX_WCASF]
--	wldrw	wCGR0, [r0, #MMX_WCGR0]
--	wldrw	wCGR1, [r0, #MMX_WCGR1]
--	wldrw	wCGR2, [r0, #MMX_WCGR2]
--	wldrw	wCGR3, [r0, #MMX_WCGR3]
-+	wldrw	wCSSF, r0, MMX_WCSSF
-+	wldrw	wCASF, r0, MMX_WCASF
-+	wldrw	wCGR0, r0, MMX_WCGR0
-+	wldrw	wCGR1, r0, MMX_WCGR1
-+	wldrw	wCGR2, r0, MMX_WCGR2
-+	wldrw	wCGR3, r0, MMX_WCGR3
- 
- 	@ clear CUP/MUP (only if r1 != 0)
- 	teq	r1, #0
-diff --git a/arch/arm/kernel/iwmmxt.h b/arch/arm/kernel/iwmmxt.h
-new file mode 100644
-index 000000000000..fb627286f5bb
---- /dev/null
-+++ b/arch/arm/kernel/iwmmxt.h
-@@ -0,0 +1,47 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+
-+#ifndef __IWMMXT_H__
-+#define __IWMMXT_H__
-+
-+.irp b, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
-+.set .LwR\b, \b
-+.set .Lr\b, \b
-+.endr
-+
-+.set .LwCSSF, 0x2
-+.set .LwCASF, 0x3
-+.set .LwCGR0, 0x8
-+.set .LwCGR1, 0x9
-+.set .LwCGR2, 0xa
-+.set .LwCGR3, 0xb
-+
-+.macro wldrd, reg:req, base:req, offset:req
-+.inst 0xedd00100 | (.L\reg << 12) | (.L\base << 16) | (\offset >> 2)
-+.endm
-+
-+.macro wldrw, reg:req, base:req, offset:req
-+.inst 0xfd900100 | (.L\reg << 12) | (.L\base << 16) | (\offset >> 2)
-+.endm
-+
-+.macro wstrd, reg:req, base:req, offset:req
-+.inst 0xedc00100 | (.L\reg << 12) | (.L\base << 16) | (\offset >> 2)
-+.endm
-+
-+.macro wstrw, reg:req, base:req, offset:req
-+.inst 0xfd800100 | (.L\reg << 12) | (.L\base << 16) | (\offset >> 2)
-+.endm
-+
-+#ifdef __clang__
-+
-+#define wCon c1
-+
-+.macro tmrc, dest:req, control:req
-+mrc p1, 0, \dest, \control, c0, 0
-+.endm
-+
-+.macro tmcr, control:req, src:req
-+mcr p1, 0, \src, \control, c0, 0
-+.endm
-+#endif
-+
-+#endif
--- 
-2.29.1.341.ge80a0c044ae-goog
+  pci_subdevice_msi_create_irq_domain()
 
+This creates an IRQ domain that hands out addr/data pairs that
+trigger interrupts.
+
+On bare metal the addr/data pairs from the IRQ domain are programmed
+into the HW in some HW specific way by the device driver that calls
+the above function.
+
+On (kvm) virtualization the addr/data pair the IRQ domain hands out
+doesn't work. It is some fake thing.
+
+To make this work on normal MSI/MSI-X the VMM implements emulation of
+the standard MSI/MSI-X programming and swaps the fake addr/data pair
+for a real one obtained from the hypervisor IRQ domain.
+
+To "deal" with this issue the SIOV spec suggests to add a per-device
+PCI Capability that says "IMS works". Which means either:
+ - This is bare metal, so of course it works
+ - The VMM is trapping and emulating whatever the device specific IMS
+   programming is.
+
+The idea being that a VMM can never advertise the IMS cap flag to the
+guest unles the VMM provides a device specific driver that does device
+specific emulation to capture the addr/data pair. Remeber IMS doesn't
+say how to program the addr/data pair! Every device is unique!
+
+On something like IDXD this emulation is not so hard, on something
+like mlx5 this is completely unworkable. Further we never do
+emulation on our devices, they always pass native hardware through,
+even for SIOV-like cases.
+
+In the end pci_subdevice_msi_create_irq_domain() is a platform
+function. Either it should work completely on every device with no
+device-specific emulation required in the VMM, or it should not work
+at all and return -EOPNOTSUPP.
+
+The only sane way to implement this generically is for the VMM to
+provide a hypercall to obtain a real *working* addr/data pair(s) and
+then have the platform hand those out from
+pci_subdevice_msi_create_irq_domain(). 
+
+All IMS device drivers will work correctly. No VMM device emulation is
+ever needed to translate addr/data pairs.
+
+Earlier in this thread Kevin said hyper-v is already working this way,
+even for MSI/MSI-X. To me this says it is fundamentally a KVM platform
+problem and it should not be solved by PCI capability flags.
+
+Jason
