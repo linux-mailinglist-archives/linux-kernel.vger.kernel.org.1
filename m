@@ -2,89 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 883852AA697
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 17:11:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 662E02AA69B
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 17:13:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728440AbgKGQL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 11:11:57 -0500
-Received: from z5.mailgun.us ([104.130.96.5]:16277 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727753AbgKGQL5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 11:11:57 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1604765516; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=OiUi61POoWnoACbu2zWZyygL5frcvmmsLX8TsIW3z6Q=;
- b=aoTWbnhz2g0ZvrOnnzYUFZl9A59b7t5AXz77PugPczjt4qBc3cZfmuoFhC/KKGtqfcqr83/H
- JYkEOhfoKMaFI3qbQ780gH0Xw2PAWfesbhnRVsdr8ZTx8ENZIVOMHb8bYxPXhxDI/KNUNK2b
- 5RplFsi2u/WBsEF85rml2dWiwCM=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 5fa6c73f60d94756524dda62 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 07 Nov 2020 16:11:43
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 242F2C433C8; Sat,  7 Nov 2020 16:11:43 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 88C72C433C6;
-        Sat,  7 Nov 2020 16:11:40 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 88C72C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [38/41] rtw88: rtw8822c: Remove unused variable 'corr_val'
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20201102112410.1049272-39-lee.jones@linaro.org>
-References: <20201102112410.1049272-39-lee.jones@linaro.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Yan-Hsuan Chuang <yhchuang@realtek.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20201107161143.242F2C433C8@smtp.codeaurora.org>
-Date:   Sat,  7 Nov 2020 16:11:43 +0000 (UTC)
+        id S1728277AbgKGQNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 11:13:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57682 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726284AbgKGQNh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Nov 2020 11:13:37 -0500
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 082D4C0613CF
+        for <linux-kernel@vger.kernel.org>; Sat,  7 Nov 2020 08:13:37 -0800 (PST)
+Received: by mail-pl1-x643.google.com with SMTP id b12so2410756plr.4
+        for <linux-kernel@vger.kernel.org>; Sat, 07 Nov 2020 08:13:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=P5jbgj6ga3DTAIYJLP70354dsAkH43LDVwNjCSc3Lu8=;
+        b=JVzsJXqnRxVNXvlRmJMFPFOahQlHR9Afqzwd04hKgojEWJKuB/n5dsHk1UEFWKgw+A
+         1cMq+UmuQG8L1UnMR5Ca1nQE2WrbFNV0ktIpKjRy/sX+iMIK5bct30X0xU5mwIvTAjBf
+         ODs8HE3iHHGqcDqudeBT40ITTnu59wtKgS766jR1c/WWsRn5eLaz9Xb0+KiCbub+OWHm
+         MCD5qKz/smkYJctz7zvPJtbqJ3jDeeN9Qt05JRHXeXpN09qsmZFQ34JRg+73CpmO1tvd
+         +H0yS7/AaD2uEqyuTXecxpgsUSoAFmz0vsseQ0ztbHREOWuBUzFbxR9wn/FKeKGlfbCj
+         I1KQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=P5jbgj6ga3DTAIYJLP70354dsAkH43LDVwNjCSc3Lu8=;
+        b=Viw0DNVJT5Z5W4lYf6qsjCpLITKWigNsUm85D3hS4FSWgdPWq7DOGTXcdH4EVWcire
+         /YHWLGoY+H/z2DyJ1264vFinvbyKL1so/dYfv614aRvNcfIecL8H14WNWMUsquIHW01G
+         1tKSS9JfontiT8n5o8YQLpCWqdXe6TTtzPtVHiFA3dguudAhFsH+jvzioUWkavBlUmut
+         9Nze/N1Z3nGZ2yjCPKww5K2pF3csTzIlf1L42Ouz/7j02Zgt4aJALY8gWUfOq8W+kIBW
+         LVDEMn/QXuvGJ/+eaaxSNHP5Xbrzh/QnNpthRN5k5DOvDFbwKN+eWOqrrf+wxyNTrbwa
+         Amvw==
+X-Gm-Message-State: AOAM530L+YpkoqEbmlB9VLQGMiiu496FDhm9Bu292/nMOvi/GPkJyaEW
+        /UYYztDrRMG1CK9/rOqlOA==
+X-Google-Smtp-Source: ABdhPJzo8ABN6u+mCozytwwHLIrUDVpJSNi7I1by0dKWmCdbnYZnYUpcGIzn9/b4+GA5dQotttfeUQ==
+X-Received: by 2002:a17:902:8504:b029:d6:7552:19ab with SMTP id bj4-20020a1709028504b02900d6755219abmr6032101plb.83.1604765616580;
+        Sat, 07 Nov 2020 08:13:36 -0800 (PST)
+Received: from he-cluster.localdomain (67.216.221.250.16clouds.com. [67.216.221.250])
+        by smtp.gmail.com with ESMTPSA id l62sm5623296pga.63.2020.11.07.08.13.35
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 07 Nov 2020 08:13:35 -0800 (PST)
+From:   xiakaixu1987@gmail.com
+X-Google-Original-From: kaixuxia@tencent.com
+To:     perex@perex.cz, tiwai@suse.com
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Kaixu Xia <kaixuxia@tencent.com>
+Subject: [PATCH] ALSA: firewire: fix comparison to bool warning
+Date:   Sun,  8 Nov 2020 00:13:31 +0800
+Message-Id: <1604765611-8209-1-git-send-email-kaixuxia@tencent.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lee Jones <lee.jones@linaro.org> wrote:
+From: Kaixu Xia <kaixuxia@tencent.com>
 
-> Fixes the following W=1 kernel build warning(s):
-> 
->  drivers/net/wireless/realtek/rtw88/rtw8822c.c: In function ‘rtw8822c_dpk_dc_corr_check’:
->  drivers/net/wireless/realtek/rtw88/rtw8822c.c:2445:5: warning: variable ‘corr_val’ set but not used [-Wunused-but-set-variable]
-> 
-> Cc: Yan-Hsuan Chuang <yhchuang@realtek.com>
-> Cc: Kalle Valo <kvalo@codeaurora.org>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: linux-wireless@vger.kernel.org
-> Cc: netdev@vger.kernel.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Fix the following coccicheck warning:
 
-Patch applied to wireless-drivers-next.git, thanks.
+./sound/firewire/amdtp-stream.h:273:6-19: WARNING: Comparison to bool
 
-dff07dda8eb5 rtw88: rtw8822c: Remove unused variable 'corr_val'
+Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
+Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
+---
+ sound/firewire/amdtp-stream.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/sound/firewire/amdtp-stream.h b/sound/firewire/amdtp-stream.h
+index 2ceb57d1d58e..a3daa1f2c1c4 100644
+--- a/sound/firewire/amdtp-stream.h
++++ b/sound/firewire/amdtp-stream.h
+@@ -270,7 +270,7 @@ static inline bool amdtp_stream_wait_callback(struct amdtp_stream *s,
+ 					      unsigned int timeout)
+ {
+ 	return wait_event_timeout(s->callback_wait,
+-				  s->callbacked == true,
++				  s->callbacked,
+ 				  msecs_to_jiffies(timeout)) > 0;
+ }
+ 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20201102112410.1049272-39-lee.jones@linaro.org/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+2.20.0
 
