@@ -2,94 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19F232AA78C
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 20:08:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 195D72AA77F
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 20:02:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728489AbgKGTIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 14:08:43 -0500
-Received: from mout.gmx.net ([212.227.17.21]:53951 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725836AbgKGTIn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 14:08:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1604776118;
-        bh=jE5f7dstvHEPWrAikYGEZvkwxqFhebukYhL5FN0e4P4=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=icWvyPr7lRWuATS4qVREJMC4BoUlXx5RMZAC7Fz0J6klumUGSPAZVe68/5fdnyP3e
-         z4zwMezo1WJEJRob+FxV7fuSTI5qaURgyIMHpfhpMZJU4XCdIwlyOOxoBHCpAGe9Zi
-         B7aHYbWb4jqMg13MnLVbGfPxom1sl8ErAgr0to1w=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from longitude ([37.201.214.162]) by mail.gmx.com (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MCKFu-1kS5uG1Lec-009LzP; Sat, 07
- Nov 2020 20:08:38 +0100
-From:   =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To:     linux-doc@vger.kernel.org
-Cc:     =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org
-Subject: [PATCH] docs: mtd: spi-nor: Fix formatting of text vs. diagrams
-Date:   Sat,  7 Nov 2020 19:39:01 +0100
-Message-Id: <20201107183902.1182809-1-j.neuschaefer@gmx.net>
-X-Mailer: git-send-email 2.28.0
+        id S1728591AbgKGTCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 14:02:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55544 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725836AbgKGTCZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Nov 2020 14:02:25 -0500
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E38AC0613CF;
+        Sat,  7 Nov 2020 11:02:24 -0800 (PST)
+Received: by mail-lf1-x141.google.com with SMTP id f11so324430lfs.3;
+        Sat, 07 Nov 2020 11:02:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=soRNlc/K6cVluQ0+VaeOOXxw2r7plkvcC+reHxKQUx4=;
+        b=bsKVuUwXgaCLddOnkSoCSlZQdNoGIm5R9XzwGw4xELX/hCS4M3IHaDAXT1Kq5gfTmq
+         yI5wo4MevNnQkkFUgvSP57zaP48d6vpbrCpenDjCDuGcNvjbECT7yhwXKJeCzUC+y1rY
+         SWHHMolvi1R2mpcQ2vqDR5VaLnpnbkDObMWz59mhHEaw/aoxBC++LT99MNWNgrgKLDbI
+         u62GipruMVYvivCT7vMRsTGV7OjcKYlAUM5MRsCaFvXgIevCl1h8rueTe0/fv61rXK1l
+         ygXSXvdIvKJdo/WE4kcXbP/XeRTCUFLrmysh3G5endpMgEI9IHIaJ0bPQM4SOFa0nSID
+         Aryg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=soRNlc/K6cVluQ0+VaeOOXxw2r7plkvcC+reHxKQUx4=;
+        b=ffgYBk1ykHnsjXrI/DejixE4Wq7Esdt3qbf0AMRT5XcsqTSaIbvy93dqneARWmEBhN
+         W7w440uAzM2VdqtvcQbjAcDlWoKj9sNRib1AnJaLIlgmNQpBesRyBHw5o0ZvRil8vkfw
+         0VajG2xO//0GWnDEyJ4bGxE2hJn7JH6ckA7WlrsgD2H0kN92HWOee6lZKviRM5+QbbXl
+         oGpDBgjlGSHAYYE8rRWPU8w0mylD5GuyTkuPfwrvJhuFBCsLccj2KJV2EN75fH5+373j
+         b8K1U5yWRw7jCCh1fY5tfo2VKY5JgG9/rQ+mXQkJCfvQpXKORheNS0ZK5C5DA8iLs7rK
+         ECfw==
+X-Gm-Message-State: AOAM5307zwrZysWq4YSu5yzPHGw6HXQrP1/126NMRWP2maaPOgi1zTIC
+        XisCKPhfoScGzoglo4V9YHfMO1KPjVSWVMF5+pc=
+X-Google-Smtp-Source: ABdhPJxEngv1+mdvrUYfkQFjIIpERTeGA4ZgOah7n1WIRgvZ3iWHY3CR104/Xc6//Qc330otjPMDGbU3nnX5PAlPqSk=
+X-Received: by 2002:ac2:48b7:: with SMTP id u23mr3212679lfg.327.1604775742934;
+ Sat, 07 Nov 2020 11:02:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:osP9Os5JpTV2/9plSo7aStfBxw5Zfbcnv4TAnrPFogBjBiLbmTq
- eAgIQyvhWGwpH6EE5QTS/yegz9wdLIE9q9mimaF5Nbn/Xkp/f1gvdy8b7D4I1El9QrV/FKI
- ufENyTWdxVF7EBAmwzGpw7QIYwD67AuHiMZnnF0NtfH+gIOdaO3gQe9J6r2Wfks5hO4r0K0
- qbyKS8NVgqAsejrgGj9Qw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:+pAb+2ZeI3I=:ak5UwrOJvCabne+6EXnMM3
- 0x9dCrPva9LC547UGMUz8SHbAfajs3AdFNDPQnBtBNxhzCH1D1ZS2IMVAEux06E8jvrp0kXwt
- C9RTH1bHyom5ld8Ku71zZfRjBm2kxcNG9grqHaAknepJ6GFHuknszPrHoP0NOLxjIiTcG8xkC
- jbdNXjVi/edhsnJBJk4FuGq8+Cj1QE2wvjp+CkONG+AkrgeqX+EtwT0frgveDHfGmbvwDdC41
- smodw10ydhRcCNH7K+YFc55nTQtXDN7qu7Skq0FMxc4t7/RwboOvtaoGdSaFfNmoBUgFdUCVs
- ZdWF9772LNroW3zGfV5ALk6iHnOcq0gIV9iOKrNFwmifRPBRO8oR2XzRkSi6CWGjiqNSjD9Fo
- eoyNQ3efcbuMIfTRq6chU5YdH8jxMfjhYjFqhgN143Q5upr+EGcRgzsHeDhMm7YaV5ORak6JG
- 6hLLUcNcLpcjvF5ZgaPElQzBBp25WllOqTf5hgxwafl/BnO8NiE+NkvGTbwdy0J8ryHYZgANW
- bpeGAKepgwJasez9M7cbD6fk7AOcAN8euHU/LAcynRHvCbHxaFnOHlxrEiqipJIfxbTsV3Uhm
- n06G9G9qXZ2agSjCI5kM9CEtWV0R5plGXkq3uXBTckU6dan+wiwJQBnbCfx8CZhQW4dpCAcEp
- VwddmOVO6uhswICAddEf6EvwltuQE0HYSUzQB+my+6GaNXtI8VB4yC/eycXCeJUsds0Mn8cAy
- 7XgaE8LjK/ErtDAum9b6Unhrlt7OvSkJFHmLXB3YLEQq6DPiDkStDfCs6EZoLAG3/Wrun/qR/
- NDqEVUfBL0Nfn/NsV4wZq9hl9JFIyi0r43A6aBG2ih/QCxmpeg6JoDlAzRn8zblRoiTQ9bRgf
- 0dMa0S+STI0sLX1ORpFPDEx27hnakdJ/mCQglA3jo=
+References: <20201105155600.9711-1-anmol.karan123@gmail.com> <20201107185654.4339-1-anmol.karan123@gmail.com>
+In-Reply-To: <20201107185654.4339-1-anmol.karan123@gmail.com>
+From:   Anmol karn <anmol.karan123@gmail.com>
+Date:   Sun, 8 Nov 2020 00:32:11 +0530
+Message-ID: <CAC+yH-ZCcL=D-ExzXSedRWL2Jq5DY-1tRqP82MjhnBpuKbtONA@mail.gmail.com>
+Subject: Re: [Linux-kernel-mentees] [PATCH v2] net: rose: Fix Null pointer
+ dereference in rose_send_frame()
+To:     ralf@linux-mips.org, "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Saeed Mahameed <saeed@kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        netdev <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-hams@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzkaller-bugs@googlegroups.com,
+        syzbot <syzbot+a1c743815982d9496393@syzkaller.appspotmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Corrently, all diagrams below "Before this framework, the layer is like"
-and the text in between are rendered as one monospace text block.
-Instead, each individual diagram should be a monospace text block.
+Hello,
 
-Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
-=2D--
- Documentation/driver-api/mtd/spi-nor.rst | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+Sorry for this wrong subject(It should be v3 instead of v2),
+please ignore this patch.
 
-diff --git a/Documentation/driver-api/mtd/spi-nor.rst b/Documentation/driv=
-er-api/mtd/spi-nor.rst
-index 1f0437676762b..4a3adca417fdb 100644
-=2D-- a/Documentation/driver-api/mtd/spi-nor.rst
-+++ b/Documentation/driver-api/mtd/spi-nor.rst
-@@ -34,7 +34,8 @@ Before this framework, the layer is like::
-          ------------------------
- 	        SPI NOR chip
+I will send a new one with the corrected subject.
 
--   After this framework, the layer is like:
-+After this framework, the layer is like::
-+
-                    MTD
-          ------------------------
-               SPI NOR framework
-@@ -45,7 +46,8 @@ Before this framework, the layer is like::
-          ------------------------
- 	       SPI NOR chip
+Thanks,
+Anmol
 
--  With the SPI NOR controller driver (Freescale QuadSPI), it looks like:
-+With the SPI NOR controller driver (Freescale QuadSPI), it looks like::
-+
-                    MTD
-          ------------------------
-               SPI NOR framework
-=2D-
-2.28.0
-
+On Sun, Nov 8, 2020 at 12:27 AM Anmol Karn <anmol.karan123@gmail.com> wrote:
+>
+> rose_send_frame() dereferences `neigh->dev` when called from
+> rose_transmit_clear_request(), and the first occurrence of the
+> `neigh` is in rose_loopback_timer() as `rose_loopback_neigh`,
+> and it is initialized in rose_add_loopback_neigh() as NULL.
+> i.e when `rose_loopback_neigh` used in rose_loopback_timer()
+> its `->dev` was still NULL and rose_loopback_timer() was calling
+> rose_rx_call_request() without checking for NULL.
+>
+> - net/rose/rose_link.c
+> This bug seems to get triggered in this line:
+>
+> rose_call = (ax25_address *)neigh->dev->dev_addr;
+>
+> Fix it by adding NULL checking for `rose_loopback_neigh->dev`
+> in rose_loopback_timer().
+>
+> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+> Reported-by: syzbot+a1c743815982d9496393@syzkaller.appspotmail.com
+> Tested-by: syzbot+a1c743815982d9496393@syzkaller.appspotmail.com
+> Link: https://syzkaller.appspot.com/bug?id=9d2a7ca8c7f2e4b682c97578dfa3f236258300b3
+> Signed-off-by: Anmol Karn <anmol.karan123@gmail.com>
+> ---
+> Changes in v3:
+>         - Corrected checkpatch warnings and errors (Suggested-by: Saeed Mahameed <saeed@kernel.org>)
+>         - Added "Fixes:" tag (Suggested-by: Saeed Mahameed <saeed@kernel.org>)
+> Changes in v2:
+>         - Added NULL check in rose_loopback_timer() (Suggested-by: Greg KH <gregkh@linuxfoundation.org>)
+>
+>  net/rose/rose_loopback.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/net/rose/rose_loopback.c b/net/rose/rose_loopback.c
+> index 7b094275ea8b..2c51756ed7bf 100644
+> --- a/net/rose/rose_loopback.c
+> +++ b/net/rose/rose_loopback.c
+> @@ -96,7 +96,8 @@ static void rose_loopback_timer(struct timer_list *unused)
+>                 }
+>
+>                 if (frametype == ROSE_CALL_REQUEST) {
+> -                       if ((dev = rose_dev_get(dest)) != NULL) {
+> +                       dev = rose_dev_get(dest);
+> +                       if (rose_loopback_neigh->dev && dev) {
+>                                 if (rose_rx_call_request(skb, dev, rose_loopback_neigh, lci_o) == 0)
+>                                         kfree_skb(skb);
+>                         } else {
+> -
+> 2.29.2
+>
