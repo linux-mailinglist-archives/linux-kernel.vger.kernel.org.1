@@ -2,88 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6970F2AA63F
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 16:30:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76A252AA652
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 16:33:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727954AbgKGPaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 10:30:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50986 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726043AbgKGPaT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 10:30:19 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2EF9C0613CF;
-        Sat,  7 Nov 2020 07:30:18 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id x23so2369470plr.6;
-        Sat, 07 Nov 2020 07:30:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=9NXH+Ms7XkWHFZBe4Cvg39ykSyyKv7UXBKIHhl19iEo=;
-        b=FRmLSBi0+GDidM3ZaJpQ6FPDJhqM5IibBL6livR2q8y9+Z93auYFYRTnKx/QhHPfon
-         qHV6T3V7FEnXf8oWwYAbMWSa7NWdA1yyhfVKSQm6oL9CaUSy6NMgBcYV0JLs0P86ZqAi
-         7Gr29uUJ5+bgs1ze8gDKv9iiIcQqRXWPf3lmloWObxrA7BeOhC/vz7cOqxuTZlORcdZh
-         d3QTUgmC7GUsL6oe+W7ki1PkIk6RxJdSWObwx5bEK93U7IZHWxErN4FretyTbyvsGfQh
-         AzD6kv5cEGbXvbdda1k/wbNGAyOHgPjje3EW9a8MaiUQGpuiSmsGXGmQmhoclnb0siRv
-         kCrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=9NXH+Ms7XkWHFZBe4Cvg39ykSyyKv7UXBKIHhl19iEo=;
-        b=CRRb4bZmPRPdt6qVa99RB4LF6EsuV6IXN+U2KKPqKE8+oqH4TKxal4wMAOQi7yXQbv
-         Boo0vJ28Rdg0CKQTh4ZIzdK3g6YYNPEsNXOojp7KMNSWZOWZn2gWwFzf+fwQp6NdIkyV
-         jPzEamMoseo/2Ntc0s27v4vtLqMOS8tWHQSV47IEJa8jAGknJxPHt32JZTVq/+OH2a5x
-         4kGpRWWIid82/qgBSGSf/jS/2uh+DIFxi/ygKG4WTHsyfiMxK5XQNFj2EZ44JJPcbQYp
-         LCc7IO8dYClKoPfn52YP2ku0L+h+qxWH38PkL9ouE9D5c7N+o89yBqj1+4qzojxUgJIW
-         ISmg==
-X-Gm-Message-State: AOAM530+7fLws6EXSfVkFaFmF659dv+qvQiUEKWSu2SlAjRTpwrgoKOQ
-        wYJE/7Sk72z+ECyoN65bRmo5AIv5KeRA
-X-Google-Smtp-Source: ABdhPJwq37eTVs9NlA7M/eF5J2yHMnTVyNXkWu4QuZzoIdgh08llFivFr7vyvR7F8xQqcMDHCHU5ng==
-X-Received: by 2002:a17:902:56e:b029:d5:d861:6b17 with SMTP id 101-20020a170902056eb02900d5d8616b17mr5810449plf.17.1604763018332;
-        Sat, 07 Nov 2020 07:30:18 -0800 (PST)
-Received: from he-cluster.localdomain (67.216.221.250.16clouds.com. [67.216.221.250])
-        by smtp.gmail.com with ESMTPSA id w70sm4816913pfc.11.2020.11.07.07.30.16
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 07 Nov 2020 07:30:17 -0800 (PST)
-From:   xiakaixu1987@gmail.com
-X-Google-Original-From: kaixuxia@tencent.com
-To:     adobriyan@gmail.com
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kaixu Xia <kaixuxia@tencent.com>
-Subject: [PATCH] proc: fix comparison to bool warning
-Date:   Sat,  7 Nov 2020 23:30:11 +0800
-Message-Id: <1604763011-7972-1-git-send-email-kaixuxia@tencent.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S1728459AbgKGPdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 10:33:45 -0500
+Received: from smtp.uniroma2.it ([160.80.6.22]:51959 "EHLO smtp.uniroma2.it"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726043AbgKGPdQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Nov 2020 10:33:16 -0500
+Received: from localhost.localdomain ([160.80.103.126])
+        by smtp-2015.uniroma2.it (8.14.4/8.14.4/Debian-8) with ESMTP id 0A7FW8qb010493
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Sat, 7 Nov 2020 16:32:09 +0100
+From:   Andrea Mayer <andrea.mayer@uniroma2.it>
+To:     "David S. Miller" <davem@davemloft.net>,
+        David Ahern <dsahern@kernel.org>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Shrijeet Mukherjee <shrijeet@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Cc:     Stefano Salsano <stefano.salsano@uniroma2.it>,
+        Paolo Lungaroni <paolo.lungaroni@cnit.it>,
+        Ahmed Abdelsalam <ahabdels.dev@gmail.com>,
+        Andrea Mayer <andrea.mayer@uniroma2.it>
+Subject: [net-next,v2,0/5] seg6: add support for SRv6 End.DT4 behavior
+Date:   Sat,  7 Nov 2020 16:31:34 +0100
+Message-Id: <20201107153139.3552-1-andrea.mayer@uniroma2.it>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: clamav-milter 0.100.0 at smtp-2015
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kaixu Xia <kaixuxia@tencent.com>
+This patchset provides support for the SRv6 End.DT4 behavior.
 
-Fix the following coccicheck warning:
+The SRv6 End.DT4 is used to implement multi-tenant IPv4 L3 VPN. It
+decapsulates the received packets and performs IPv4 routing lookup in the
+routing table of the tenant. The SRv6 End.DT4 Linux implementation
+leverages a VRF device. The SRv6 End.DT4 is defined in the SRv6 Network
+Programming [1].
 
-./fs/proc/generic.c:370:5-31: WARNING: Comparison to bool
+- Patch 1/5 is needed to solve a pre-existing issue with tunneled packets
+  when a sniffer is attached;
 
-Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
-Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
----
- fs/proc/generic.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+- Patch 2/5 improves the management of the seg6local attributes used by the
+  SRv6 behaviors;
 
-diff --git a/fs/proc/generic.c b/fs/proc/generic.c
-index 2f9fa179194d..4533eb826af7 100644
---- a/fs/proc/generic.c
-+++ b/fs/proc/generic.c
-@@ -367,7 +367,7 @@ struct proc_dir_entry *proc_register(struct proc_dir_entry *dir,
- 
- 	write_lock(&proc_subdir_lock);
- 	dp->parent = dir;
--	if (pde_subdir_insert(dir, dp) == false) {
-+	if (!pde_subdir_insert(dir, dp)) {
- 		WARN(1, "proc_dir_entry '%s/%s' already registered\n",
- 		     dir->name, dp->name);
- 		write_unlock(&proc_subdir_lock);
+- Patch 3/5 introduces two callbacks used for customizing the
+  creation/destruction of a SRv6 behavior;
+
+- Patch 4/5 is the core patch that adds support for the SRv6 End.DT4
+  behavior;
+
+- Patch 5/5 adds the selftest for SRv6 End.DT4 behavior.
+
+I would like to thank David Ahern for his support during the development of
+this patch set.
+
+Comments, suggestions and improvements are very welcome!
+
+Thanks,
+Andrea Mayer
+
+v2
+ no changes made: resubmitted after false build report.
+
+v1
+ improve comments;
+
+ add new patch 2/5 titled: seg6: improve management of behavior attributes
+
+ seg6: add support for the SRv6 End.DT4 behavior
+  - remove the inline keyword in the definition of fib6_config_get_net().
+
+ selftests: add selftest for the SRv6 End.DT4 behavior
+  - add check for the vrf sysctl
+
+[1] https://tools.ietf.org/html/draft-ietf-spring-srv6-network-programming
+
+Andrea Mayer (5):
+  vrf: add mac header for tunneled packets when sniffer is attached
+  seg6: improve management of behavior attributes
+  seg6: add callbacks for customizing the creation/destruction of a
+    behavior
+  seg6: add support for the SRv6 End.DT4 behavior
+  selftests: add selftest for the SRv6 End.DT4 behavior
+
+ drivers/net/vrf.c                             |  78 ++-
+ net/ipv6/seg6_local.c                         | 370 ++++++++++++-
+ .../selftests/net/srv6_end_dt4_l3vpn_test.sh  | 494 ++++++++++++++++++
+ 3 files changed, 927 insertions(+), 15 deletions(-)
+ create mode 100755 tools/testing/selftests/net/srv6_end_dt4_l3vpn_test.sh
+
 -- 
-2.20.0
+2.20.1
 
