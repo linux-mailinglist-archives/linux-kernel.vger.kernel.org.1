@@ -2,99 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDF2C2AA7A6
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 20:35:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF41E2AA7C2
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 20:43:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728658AbgKGTf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 14:35:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46720 "EHLO mail.kernel.org"
+        id S1728622AbgKGTna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 14:43:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47850 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725836AbgKGTf2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 14:35:28 -0500
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CA8D620723;
-        Sat,  7 Nov 2020 19:35:27 +0000 (UTC)
+        id S1725911AbgKGTn3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Nov 2020 14:43:29 -0500
+Subject: Re: [PULL REQUEST] i2c for 5.10
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604777728;
-        bh=AjR96+yaBayijL7Wx5/CF+M4oB4bNnVhjNMokSzY7Uk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=BrPhYw+rrMLsFZlKDu2tGpqYgtcQjR7sz+Macvy6nbmXUqefoxI4ztwUCMELNqBMH
-         i6hSl2n2KID7nAY0xngZfvLkMO5dpnWzUab61en/NwoK+2RYL+WlIUQDFtyc8FEZ8r
-         JE6onVK4n3YxpYzp/ck2X6YCHRzGZgNcH8S8KWss=
-Date:   Sat, 7 Nov 2020 11:35:27 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
-Cc:     <davem@davemloft.net>, <michal.simek@xilinx.com>,
-        <netdev@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <git@xilinx.com>,
-        Shravya Kumbham <shravya.kumbham@xilinx.com>
-Subject: Re: [PATCH net-next] net: emaclite: Add error handling for
- of_address_ and phy read functions
-Message-ID: <20201107113527.18232c34@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <1604410265-30246-1-git-send-email-radhey.shyam.pandey@xilinx.com>
-References: <1604410265-30246-1-git-send-email-radhey.shyam.pandey@xilinx.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        s=default; t=1604778209;
+        bh=zLYtVnikH5b9crqAo7/4ml3X98q3Db58Guk/S6xDoHM=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=1fNBTcH1B3IkB3f4cNEES38DU7VnS+NSd1TSy7WU0yEXQiZm30JUkDWC1F/7ElEoD
+         sHwEx+S7LmKraeV9A6M26Ya++AZHBkjTU/bVTZ332lxcieQjz/QOzoRk4mkHzF9fLT
+         XT2vXwtRalGmEYtTJl6psfccYLkkzsBksTOpUDBQ=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20201107183957.GA1095@kunai>
+References: <20201107183957.GA1095@kunai>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20201107183957.GA1095@kunai>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-current
+X-PR-Tracked-Commit-Id: 3b5f7f10ff6e6b66f553e12cc50d9bb751ce60ad
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: af6e7de0c7d1338c3e4224c764fbcb7e28064df9
+Message-Id: <160477820925.15421.17359959485250252739.pr-tracker-bot@kernel.org>
+Date:   Sat, 07 Nov 2020 19:43:29 +0000
+To:     Wolfram Sang <wsa@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peter Rosin <peda@axentia.se>,
+        Bartosz Golaszewski <brgl@bgdev.pl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 3 Nov 2020 19:01:05 +0530 Radhey Shyam Pandey wrote:
-> From: Shravya Kumbham <shravya.kumbham@xilinx.com>
-> 
-> Add ret variable, conditions to check the return value and it's error
-> path for of_address_to_resource() and phy_read() functions.
-> 
-> Addresses-Coverity: Event check_return value.
-> Signed-off-by: Shravya Kumbham <shravya.kumbham@xilinx.com>
-> Signed-off-by: Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
+The pull request you sent on Sat, 7 Nov 2020 19:39:57 +0100:
 
-Any reason not to apply this to net as a fix?
+> git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-current
 
-> diff --git a/drivers/net/ethernet/xilinx/xilinx_emaclite.c b/drivers/net/ethernet/xilinx/xilinx_emaclite.c
-> index 0c26f5b..fc5ccd1 100644
-> --- a/drivers/net/ethernet/xilinx/xilinx_emaclite.c
-> +++ b/drivers/net/ethernet/xilinx/xilinx_emaclite.c
-> @@ -820,7 +820,7 @@ static int xemaclite_mdio_write(struct mii_bus *bus, int phy_id, int reg,
->  static int xemaclite_mdio_setup(struct net_local *lp, struct device *dev)
->  {
->  	struct mii_bus *bus;
-> -	int rc;
-> +	int rc, ret;
->  	struct resource res;
->  	struct device_node *np = of_get_parent(lp->phy_node);
->  	struct device_node *npp;
-> @@ -834,7 +834,13 @@ static int xemaclite_mdio_setup(struct net_local *lp, struct device *dev)
->  	}
->  	npp = of_get_parent(np);
->  
-> -	of_address_to_resource(npp, 0, &res);
-> +	ret = of_address_to_resource(npp, 0, &res);
-> +	if (ret) {
-> +		dev_err(dev, "%s resource error!\n",
-> +			dev->of_node->full_name);
-> +		of_node_put(lp->phy_node);
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/af6e7de0c7d1338c3e4224c764fbcb7e28064df9
 
-I'm always confused by the of_* refcounting. Why do you need to put
-phy_node here, and nowhere else in this function?
+Thank you!
 
-> +		return ret;
-> +	}
-
->  		/* Restart auto negotiation */
->  		bmcr = phy_read(lp->phy_dev, MII_BMCR);
-> +		if (bmcr < 0) {
-> +			dev_err(&lp->ndev->dev, "phy_read failed\n");
-> +			phy_disconnect(lp->phy_dev);
-> +			lp->phy_dev = NULL;
-> +
-> +			return bmcr;
-> +		}
->  		bmcr |= (BMCR_ANENABLE | BMCR_ANRESTART);
->  		phy_write(lp->phy_dev, MII_BMCR, bmcr);
-
-Does it really make much sense to validate the return value of
-phy_read() but not check any errors from phy_write()s?
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
