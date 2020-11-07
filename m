@@ -2,62 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 262A32AA225
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 03:10:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EA072AA232
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 03:33:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728615AbgKGCHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 21:07:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49888 "EHLO mail.kernel.org"
+        id S1728270AbgKGC0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 21:26:52 -0500
+Received: from inva020.nxp.com ([92.121.34.13]:56280 "EHLO inva020.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728466AbgKGCHa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 21:07:30 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 45BE120853;
-        Sat,  7 Nov 2020 02:07:30 +0000 (UTC)
-Received: from rostedt by gandalf.local.home with local (Exim 4.94)
-        (envelope-from <rostedt@goodmis.org>)
-        id 1kbDdY-007lxP-OF; Fri, 06 Nov 2020 21:07:28 -0500
-Message-ID: <20201107020728.592479947@goodmis.org>
-User-Agent: quilt/0.66
-Date:   Fri, 06 Nov 2020 21:06:42 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-kernel@vger.kernel.org,
-        linux-rt-users <linux-rt-users@vger.kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        John Kacur <jkacur@redhat.com>, Daniel Wagner <wagi@monom.org>,
-        Tom Zanussi <zanussi@kernel.org>,
-        "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
-Subject: [PATCH RT 6/6] Linux 5.4.74-rt42-rc1
-References: <20201107020636.598338441@goodmis.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+        id S1726447AbgKGC0w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Nov 2020 21:26:52 -0500
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id E59671A12E9;
+        Sat,  7 Nov 2020 03:26:50 +0100 (CET)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id D9ED21A1078;
+        Sat,  7 Nov 2020 03:26:46 +0100 (CET)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 07DF6402AB;
+        Sat,  7 Nov 2020 03:26:40 +0100 (CET)
+From:   Shengjiu Wang <shengjiu.wang@nxp.com>
+To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+        festevam@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, alsa-devel@alsa-project.org
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: fsl_aud2htx: Remove dev_err() usage after platform_get_irq()
+Date:   Sat,  7 Nov 2020 10:20:43 +0800
+Message-Id: <1604715643-29507-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-5.4.74-rt42-rc1 stable review patch.
-If anyone has any objections, please let me know.
+platform_get_irq() would print error message internally, so dev_err()
+after platform_get_irq() is not needed
 
-------------------
-
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 ---
- localversion-rt | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/fsl/fsl_aud2htx.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/localversion-rt b/localversion-rt
-index 629e0b4384b8..31c892a05e4d 100644
---- a/localversion-rt
-+++ b/localversion-rt
-@@ -1 +1 @@
---rt41
-+-rt42-rc1
+diff --git a/sound/soc/fsl/fsl_aud2htx.c b/sound/soc/fsl/fsl_aud2htx.c
+index 124aeb70f24e..4091ccc7c3e9 100644
+--- a/sound/soc/fsl/fsl_aud2htx.c
++++ b/sound/soc/fsl/fsl_aud2htx.c
+@@ -211,11 +211,8 @@ static int fsl_aud2htx_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	irq = platform_get_irq(pdev, 0);
+-	if (irq < 0) {
+-		dev_err(&pdev->dev, "no irq for node %s\n",
+-			dev_name(&pdev->dev));
++	if (irq < 0)
+ 		return irq;
+-	}
+ 
+ 	ret = devm_request_irq(&pdev->dev, irq, fsl_aud2htx_isr, 0,
+ 			       dev_name(&pdev->dev), aud2htx);
 -- 
-2.28.0
-
+2.27.0
 
