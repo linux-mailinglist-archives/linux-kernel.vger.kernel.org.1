@@ -2,54 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90D3F2AA19F
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 01:02:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E38A2AA1A4
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 01:05:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727916AbgKGACA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Nov 2020 19:02:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49302 "EHLO
+        id S1728151AbgKGAFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Nov 2020 19:05:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726987AbgKGAB7 (ORCPT
+        with ESMTP id S1728075AbgKGAFf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Nov 2020 19:01:59 -0500
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD608C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 16:01:59 -0800 (PST)
-Received: by mail-qt1-x835.google.com with SMTP id p12so2069543qtp.7
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 16:01:59 -0800 (PST)
+        Fri, 6 Nov 2020 19:05:35 -0500
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F618C0613D2
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 16:05:35 -0800 (PST)
+Received: by mail-qt1-x842.google.com with SMTP id n63so2080754qte.4
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 16:05:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=tJuHBWXfVUR2VpGW8qin4d4nr05UwHVX+y7b+Ih2Tds=;
-        b=cWXvIhuXNGMUbEcOzb3Ek3iN8txwxYvHEyXPe0ycvxQPLcnGBnUAbQyJ92Olc+FlK4
-         EAmZGFUdyO/gxcnN+n2X3DIjGGg5uC6yskbU1NZc5DvZqRONbZVDfmqqIXhFw00qTtDJ
-         O26ri4xpFSysyc9hYq+7nN61leLr1kr/rgNsU=
+        bh=JorTLQYfJmqKUvOKFo8KKJVtVEGA/9Yc7a4QfxtP1Lo=;
+        b=o+89ZlxTW1nJ5BQd7qa2XH1DGDfxbEDia6wyJzH083Qv2aSev2juVUV88JQp5hkd5I
+         EJilrpTPdgGPgJ+ByU5CNt7P78xCKqnEWstoF0y7W0eGRELTdxNHvxVm1fPpNR9Ux2k+
+         2E9oUQTZwIxifM1LVM0C0nyUfsrucm9L9m1jo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=tJuHBWXfVUR2VpGW8qin4d4nr05UwHVX+y7b+Ih2Tds=;
-        b=KZ+wOHzahuBcBTH7bYGYX5fKdEzRorkqK1ju81NqiaP4jmKOMIBMJkc4OL0dGg+dpi
-         11GVLs4ZR6UWHaSnBXabv1TyGz1fTFB7gSNfCoPiaOLDYG8V58ZqKVPJSaIdp30YOj+/
-         KoZCU9gKnEo88mpVb4E17JKmGP+ywoKI50jvFIbHgF3VHXqiL/pvIvuOUOEKuU3pkePd
-         6jz5RQTHJ3pMXV+qcCDVjzvQnvJiWjbWGCUHV2Wg5NxZrj70uN3aUIaYO/xIPP9oz2Rm
-         jrqd5n+8G+koRkOGf+xze1W7DAypRTMrMAAvvatk9pDyEWRGtJ/SUGlweukNT3C8EaaX
-         +O4w==
-X-Gm-Message-State: AOAM531gbxUsUO8KkPnglzktplReglJXrie0ZB8oV+GTpNsHqgrtMZYr
-        MrecgefHUVU2S35p9BxIM5F0CQUxOwrpVA==
-X-Google-Smtp-Source: ABdhPJwV4i6f7fIDCGwz93tCrdcND6g474ZLekR9RM2pa2tNZJFEoBFpFftUGeesIDfAgVW40KEU1Q==
-X-Received: by 2002:ac8:41ce:: with SMTP id o14mr3904718qtm.294.1604707318819;
-        Fri, 06 Nov 2020 16:01:58 -0800 (PST)
+        bh=JorTLQYfJmqKUvOKFo8KKJVtVEGA/9Yc7a4QfxtP1Lo=;
+        b=dFLEkgzI3ZEDnFxo5teosVJRQsd2JpFOTOTIPohLqdoRu5tNtFGxIbyZbuKrH7A/KE
+         wcfSYU0wOjIihraAyNzJQ5HM8D2Zlv3qgh/itY+zSOc1/cK8Eb8B4B7YtzbI0Hhoxpok
+         y/9j0s+b4Kyn1E5zcOdxPYM+smaHeBoJ2HhbEleWiOa+UyJUQlxuaz6fA6zJGkneVXpe
+         4Y96Hkr+QP2cf80GbX5HhOsOUfU2pXz5Bz7RMWE1B2zqIrgE6PXMLMWlZ8awoP/ZWYo5
+         APydDgIsXBkSsG3kMhjq7x8pu5budF/2Ch9zbUAwxpiwnqJacAiBqEDb2cx/XNAu7Yrx
+         BvLA==
+X-Gm-Message-State: AOAM530uCUPKEd4ljXMvGyNohR0prxf7GWrTpsWd0PfoVQT1WiwT0wMa
+        6HkrcqLGvaGzPA+tBdGhT/huxw==
+X-Google-Smtp-Source: ABdhPJxPCQLg9SA4ml8yJIvefMevgu24JnPmsyw88DCcDEU7GoWFoQkcYXpNISvIb0uW4UfPpYx1iw==
+X-Received: by 2002:aed:22bc:: with SMTP id p57mr4087920qtc.242.1604707534667;
+        Fri, 06 Nov 2020 16:05:34 -0800 (PST)
 Received: from localhost ([2620:15c:6:411:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id v14sm1599204qkb.15.2020.11.06.16.01.57
+        by smtp.gmail.com with ESMTPSA id d48sm1682236qta.26.2020.11.06.16.05.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Nov 2020 16:01:58 -0800 (PST)
-Date:   Fri, 6 Nov 2020 19:01:57 -0500
+        Fri, 06 Nov 2020 16:05:33 -0800 (PST)
+Date:   Fri, 6 Nov 2020 19:05:33 -0500
 From:   Joel Fernandes <joel@joelfernandes.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Frederic Weisbecker <frederic@kernel.org>,
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
         Josh Triplett <josh@joshtriplett.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Marco Elver <elver@google.com>,
@@ -57,69 +58,78 @@ Cc:     linux-kernel@vger.kernel.org,
         rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
         "Uladzislau Rezki (Sony)" <urezki@gmail.com>, fweisbec@gmail.com,
         neeraj.iitr10@gmail.com
-Subject: Re: [PATCH v9 2/7] rcu/segcblist: Add counters to segcblist
- datastructure
-Message-ID: <20201107000157.GB1397669@google.com>
+Subject: Re: [PATCH v9 4/7] rcu/trace: Add tracing for how segcb list changes
+Message-ID: <20201107000533.GC1397669@google.com>
 References: <20201103142603.1302207-1-joel@joelfernandes.org>
- <20201103142603.1302207-3-joel@joelfernandes.org>
- <20201104170133.GI3249@paulmck-ThinkPad-P72>
+ <20201103142603.1302207-5-joel@joelfernandes.org>
+ <20201103151731.GB432431@lothringen>
+ <20201104140807.GG3249@paulmck-ThinkPad-P72>
+ <20201104143314.GC467220@lothringen>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201104170133.GI3249@paulmck-ThinkPad-P72>
+In-Reply-To: <20201104143314.GC467220@lothringen>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 09:01:33AM -0800, Paul E. McKenney wrote:
-
-> A casual reader might be forgiven for being confused by the combination
-> of "Return" in the above comment and the "void" function type below.
-> So shouldn't this comment be something like "Add the specified number
-> of callbacks to the specified segment..."?
-
-You are right, sorry and will fix it.
-
-> > @@ -330,11 +342,16 @@ void rcu_segcblist_extract_pend_cbs(struct rcu_segcblist *rsclp,
-> >  
-> >  	if (!rcu_segcblist_pend_cbs(rsclp))
-> >  		return; /* Nothing to do. */
-> > +	rclp->len = rcu_segcblist_get_seglen(rsclp, RCU_WAIT_TAIL) +
-> > +		    rcu_segcblist_get_seglen(rsclp, RCU_NEXT_READY_TAIL) +
-> > +		    rcu_segcblist_get_seglen(rsclp, RCU_NEXT_TAIL);
+On Wed, Nov 04, 2020 at 03:33:14PM +0100, Frederic Weisbecker wrote:
+> On Wed, Nov 04, 2020 at 06:08:07AM -0800, Paul E. McKenney wrote:
+> > On Tue, Nov 03, 2020 at 04:17:31PM +0100, Frederic Weisbecker wrote:
+> > > On Tue, Nov 03, 2020 at 09:26:00AM -0500, Joel Fernandes (Google) wrote:
+> > > > +/*
+> > > > + * Return how many CBs each segment along with their gp_seq values.
+> > > > + *
+> > > > + * This function is O(N) where N is the number of segments. Only used from
+> > > > + * tracing code which is usually disabled in production.
+> > > > + */
+> > > > +#ifdef CONFIG_RCU_TRACE
+> > > > +static void rcu_segcblist_countseq(struct rcu_segcblist *rsclp,
+> > > > +			 int cbcount[RCU_CBLIST_NSEGS],
+> > > > +			 unsigned long gpseq[RCU_CBLIST_NSEGS])
+> > > > +{
+> > > > +	int i;
+> > > > +
+> > > > +	for (i = 0; i < RCU_CBLIST_NSEGS; i++) {
+> > > > +		cbcount[i] = rcu_segcblist_get_seglen(rsclp, i);
+> > > > +		gpseq[i] = rsclp->gp_seq[i];
+> > > > +	}
+> > > > +}
+> > > > +
+> > > > +void __trace_rcu_segcb_stats(struct rcu_segcblist *rsclp, const char *context)
+> > > > +{
+> > > > +	int cbs[RCU_CBLIST_NSEGS];
+> > > > +	unsigned long gps[RCU_CBLIST_NSEGS];
+> > > > +
+> > > > +	if (!trace_rcu_segcb_stats_enabled())
+> > > > +		return;
+> > > 
+> > > Yes, very good!
+> > > 
+> > > Paul just told me that RCU_TRACE can be used in production so that confirms that we
+> > > wanted to avoid this loop of 8 iterations when tracing is disabled.
+> > 
+> > RCU's "don't try this in production" Kconfig option is PROVE_RCU.
+> > 
+> > I would be looking for checks that the sum of the segment lengths
+> > match the overall ->len or checks that all of the segment lengths
+> > are zero when ->cblist is empty to be guarded by something like
+> > IS_ENABLED(CONFIG_PROVE_RCU).  Of course, checks of this sort need to
+> > be confined to those portions of rcu_do_batch() that are excluding other
+> > accesses to ->cblist.
 > 
-> This should be a "for" loop.  Yes, the number and names of the segments
-> hasn't changed for a good long time, but nothing like code as above to
-> inspire Murphy to more mischief.  :-/
+> Right.
 > 
-> Actually, why not put the summation in the existing "for" loop below?
-> That would save a line of code in addition to providing less inspiration
-> for Mr. Murphy.
-
-I can do that. Actually Frederic suggested the same thing but I was reluctant
-as I felt it did not give much LOC benefit. Will revisit it.
-
+> > 
+> > But if rcu_segcblist_countseq() is invoked only when a specific trace
+> > event is enabled, it should be OK to have it guarded only by RCU_TRACE.
 > 
-> >  	*rclp->tail = *rsclp->tails[RCU_DONE_TAIL];
-> >  	rclp->tail = rsclp->tails[RCU_NEXT_TAIL];
-> >  	WRITE_ONCE(*rsclp->tails[RCU_DONE_TAIL], NULL);
-> > -	for (i = RCU_DONE_TAIL + 1; i < RCU_CBLIST_NSEGS; i++)
-> > +	for (i = RCU_DONE_TAIL + 1; i < RCU_CBLIST_NSEGS; i++) {
-> >  		WRITE_ONCE(rsclp->tails[i], rsclp->tails[RCU_DONE_TAIL]);
-> > +		rcu_segcblist_set_seglen(rsclp, i, 0);
-> > +	}
-> >  }
-> >  
-> >  /*
-> > @@ -345,7 +362,6 @@ void rcu_segcblist_insert_count(struct rcu_segcblist *rsclp,
-> >  				struct rcu_cblist *rclp)
-> >  {
-> >  	rcu_segcblist_add_len(rsclp, rclp->len);
-> > -	rclp->len = 0;
-> 
-> You audited the callers, correct?
+> Indeed, so I think we are good.
 
-Yep.
+Thanks, so the only changes are to patches 2/7 and 4/7 which I will work on.
+1/7 was already taken by Paul. For 7/7, it sounds like I did not understand
+Paul's reworks on the comments and we're still discussing it; but some
+comments are better than none, so I am Ok with Pauls version of it.
 
 thanks,
 
