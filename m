@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 826242AA51E
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 13:55:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 716112AA543
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 14:08:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728110AbgKGMzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 07:55:15 -0500
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:58216 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727084AbgKGMzP (ORCPT
+        id S1727975AbgKGNIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 08:08:35 -0500
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:35278 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727084AbgKGNIe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 07:55:15 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R941e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UEWYE.-_1604753711;
-Received: from IT-FVFX43SYHV2H.lan(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UEWYE.-_1604753711)
+        Sat, 7 Nov 2020 08:08:34 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0UEW6ava_1604754510;
+Received: from IT-FVFX43SYHV2H.lan(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UEW6ava_1604754510)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Sat, 07 Nov 2020 20:55:11 +0800
-Subject: Re: [PATCH] net/dsa: remove unused macros to tame gcc warning
-To:     Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>
-Cc:     Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+          Sat, 07 Nov 2020 21:08:31 +0800
+Subject: Re: [PATCH] net/xdp: remove unused macro REG_STATE_NEW
+To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
+Cc:     davem@davemloft.net, Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <1604641050-6004-1-git-send-email-alex.shi@linux.alibaba.com>
- <20201106141820.GP933237@lunn.ch>
- <24690741-cc10-eec1-33c6-7960c8b7fac6@gmail.com>
+References: <1604641431-6295-1-git-send-email-alex.shi@linux.alibaba.com>
+ <20201106171352.5c51342d@carbon>
 From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <b3274bdb-5680-0c24-9800-8c025bfa119a@linux.alibaba.com>
-Date:   Sat, 7 Nov 2020 20:54:53 +0800
+Message-ID: <3d39a08d-2e50-efeb-214f-0c7c2d1605d7@linux.alibaba.com>
+Date:   Sat, 7 Nov 2020 21:08:12 +0800
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
  Gecko/20100101 Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <24690741-cc10-eec1-33c6-7960c8b7fac6@gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20201106171352.5c51342d@carbon>
+Content-Type: text/plain; charset=gbk
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -42,28 +42,52 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-åœ¨ 2020/11/7 ä¸Šåˆ12:39, Florian Fainelli å†™é“:
->> Hi Alex
->>
->> It is good to remember that there are multiple readers of source
->> files. There is the compiler which generates code from it, and there
->> is the human trying to understand what is going on, what the hardware
->> can do, how we could maybe extend the code in the future to make use
->> of bits are currently don't, etc.
->>
->> The compiler has no use of these macros, at the moment. But i as a
->> human do. It is valuable documentation, given that there is no open
->> datasheet for this hardware.
->>
->> I would say these warnings are bogus, and the code should be left
->> alone.
-> Agreed, these definitions are intended to document what the hardware
-> does. These warnings are getting too far.
-> -- 
+ÔÚ 2020/11/7 ÉÏÎç12:13, Jesper Dangaard Brouer Ð´µÀ:
+> Hmm... REG_STATE_NEW is zero, so it is implicitly set via memset zero.
+> But it is true that it is technically not directly used or referenced.
+> 
+> It is mentioned in a comment, so please send V2 with this additional change:
 
-Thanks for all comments! I agree these info are much meaningful.
-Is there other way to tame the gcc warning? like put them into a .h file
-or covered by comments?
+Hi Jesper,
 
-Thanks
-Alex
+Thanks a lot for comments. here is the v2:
+
+From 2908d25bf2e1c90ad71a83ba056743f45da283e8 Mon Sep 17 00:00:00 2001
+From: Alex Shi <alex.shi@linux.alibaba.com>
+Date: Fri, 6 Nov 2020 13:41:58 +0800
+Subject: [PATCH v2] net/xdp: remove unused macro REG_STATE_NEW
+
+To tame gcc warning on it:
+net/core/xdp.c:20:0: warning: macro "REG_STATE_NEW" is not used
+[-Wunused-macros]
+And change related comments as Jesper Dangaard Brouer suggested.
+
+Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+---
+ net/core/xdp.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/net/core/xdp.c b/net/core/xdp.c
+index 48aba933a5a8..0df5ee5682d9 100644
+--- a/net/core/xdp.c
++++ b/net/core/xdp.c
+@@ -19,7 +19,6 @@
+ #include <trace/events/xdp.h>
+ #include <net/xdp_sock_drv.h>
+ 
+-#define REG_STATE_NEW		0x0
+ #define REG_STATE_REGISTERED	0x1
+ #define REG_STATE_UNREGISTERED	0x2
+ #define REG_STATE_UNUSED	0x3
+@@ -175,7 +174,7 @@ int xdp_rxq_info_reg(struct xdp_rxq_info *xdp_rxq,
+ 		return -ENODEV;
+ 	}
+ 
+-	/* State either UNREGISTERED or NEW */
++	/* State either UNREGISTERED or zero */
+ 	xdp_rxq_info_init(xdp_rxq);
+ 	xdp_rxq->dev = dev;
+ 	xdp_rxq->queue_index = queue_index;
+-- 
+1.8.3.1
+
