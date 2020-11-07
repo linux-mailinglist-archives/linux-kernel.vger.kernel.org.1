@@ -2,165 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76FB62AA75B
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 19:07:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F1E82AA75D
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 19:09:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728424AbgKGSHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 13:07:55 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:47912 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726333AbgKGSHz (ORCPT
+        id S1728559AbgKGSJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 13:09:36 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:2626 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726333AbgKGSJg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 13:07:55 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: aratiu)
-        with ESMTPSA id 803CB1F45390
-From:   Adrian Ratiu <adrian.ratiu@collabora.com>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Russell King <linux@armlinux.org.uk>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Collabora Kernel ML <kernel@collabora.com>,
-        Ard Biesheuvel <ardb@kernel.org>
-Subject: Re: [PATCH 2/2] arm: lib: xor-neon: disable clang vectorization
-In-Reply-To: <CAKwvOdkodob0M0r_AK_4nG3atLGMyNENMd6qVAHSPa92Zh7UZA@mail.gmail.com>
-References: <20201106051436.2384842-1-adrian.ratiu@collabora.com>
- <20201106051436.2384842-3-adrian.ratiu@collabora.com>
- <20201106101419.GB3811063@ubuntu-m3-large-x86>
- <87wnyyvh56.fsf@collabora.com>
- <CAKwvOdkodob0M0r_AK_4nG3atLGMyNENMd6qVAHSPa92Zh7UZA@mail.gmail.com>
-Date:   Sat, 07 Nov 2020 20:07:47 +0200
-Message-ID: <87tuu1ujkc.fsf@collabora.com>
+        Sat, 7 Nov 2020 13:09:36 -0500
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 0A7I8rif008493;
+        Sat, 7 Nov 2020 10:08:53 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : references
+ : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=TwqZxM++hfBd73X1KRRlxvntiJFNd3xpmL+Pi1QahRk=;
+ b=V4eBkDLveg2EcTOb+S6i12LakWRt1CayP/HQzyl3NanGZALChmMU1d2XDlegAtQ/oTTd
+ l7rM7V0gQUx3BKFnTEQc1vM6XiYNNaBCigqCjqlz1VbUT8c9mgn3gVwW0ELMSQ58D2fA
+ +c6BmdgD/JiHxYz+U/l3hWMMRDmNnBzpWmM= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0001303.ppops.net with ESMTP id 34nr4phcj3-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Sat, 07 Nov 2020 10:08:53 -0800
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Sat, 7 Nov 2020 10:08:48 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=H7PM8jk/oaVdAVZg7zdeRiCcCoX0oourRaITPZV//05IIlHr0bz9Ft+Q1JLh20aZEBeAyhDZ+AUVingSdR4Vls+lkaO+CzIN+sb7rOB83xmTT2ahVAnHJbYSDgqZeY0k6CgWDwrqa/41JFXUizEY+/RlpXYrhVPOegkW8EXViT8EGeGqTTqp0kCZRuQ2l3gfpeU7LhJQIkzHqOlmbkhHgubDDG9N0Nk6gSPt3lxCSOmFaKW9u4dyStBSlJz87jKdVj1L3kgow+2cOP2ZvNdax40hTFeq7T7tiHJ1MLOmMntWy86GCN6apuaNOEj0nkFMKCMGyraDyb4fVseNOyMAjA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TwqZxM++hfBd73X1KRRlxvntiJFNd3xpmL+Pi1QahRk=;
+ b=iWdMqjBXlLsp4tMcvrEjynW/TWcz7tcoS1sgSrxi0cWQzWnD4kuMjJWk08Yqea32e3vR33yVsqevz+HivxYd6acpGObhRFcCz1TP5jvVftI3kDM8pwowBPtcyFQP2c6NxJ/AxsHjbWfhP/EryKkk+qzQpZhGMmeCb0GT4fbUM2vzXCC4FOd3uyBkrDUOE//aLM3BpfhgpUzKBJXcFO4QfvdaMjo4CZs4gkyYu8ADMI98uAyrg2EPPnHf1vZTMfI6nQgcuzlTIlzHl7/qfONe8T5/fCOqUY++HAWOKT5FiyYFhmpgpC238SDKO1XIaEFlrsT4ijdXVN44YwA3bMkxBw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TwqZxM++hfBd73X1KRRlxvntiJFNd3xpmL+Pi1QahRk=;
+ b=Cdsh4AnHNwTRFK6OdqrqVRO2SkwcXGOUhcwCSI85MlQV8syu3UPObYnwZ2bV1ZOtXXSgM+cWE4LbUw8txMLM2T2+kcW1tsGqsArjEAGJ7SYSaEtqwF7loYflm/dlYbxYf1EM9B7jylP+pQ0wC/JTedow94EBawqbDSWi9t//8As=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
+ by SJ0PR15MB4204.namprd15.prod.outlook.com (2603:10b6:a03:2c8::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.29; Sat, 7 Nov
+ 2020 18:08:47 +0000
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::8887:dd68:f497:ea42]) by BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::8887:dd68:f497:ea42%3]) with mapi id 15.20.3541.021; Sat, 7 Nov 2020
+ 18:08:47 +0000
+Subject: Re: [PATCH v3 bpf] trace: bpf: Fix passing zero to PTR_ERR()
+To:     Wang Qing <wangqing@vivo.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <1604735144-686-1-git-send-email-wangqing@vivo.com>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <60774a8b-32a5-354d-88d5-cf86be19d51c@fb.com>
+Date:   Sat, 7 Nov 2020 10:08:43 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.1
+In-Reply-To: <1604735144-686-1-git-send-email-wangqing@vivo.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [2620:10d:c090:400::5:4dfc]
+X-ClientProxiedBy: MWHPR1201CA0006.namprd12.prod.outlook.com
+ (2603:10b6:301:4a::16) To BYAPR15MB4088.namprd15.prod.outlook.com
+ (2603:10b6:a02:c3::18)
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:21e1::10a6] (2620:10d:c090:400::5:4dfc) by MWHPR1201CA0006.namprd12.prod.outlook.com (2603:10b6:301:4a::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.19 via Frontend Transport; Sat, 7 Nov 2020 18:08:45 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b15d04e4-f661-4b43-bcfa-08d883482bbc
+X-MS-TrafficTypeDiagnostic: SJ0PR15MB4204:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SJ0PR15MB4204F90B1F604551CF70A6F1D3EC0@SJ0PR15MB4204.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:361;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: pst24rQbt6gwKx0CIg4r0hyl8T5RhPvZQX0oDmRcWHGa3YKbcr3EYRKqJxRQELRSbiUVFMluTJhdLdGMBGdMBsUH+FezAT4ou3n6OVIy3lecaocqYZ4BoQizRJHlNJUMXsBp3WwIYLGO5D7qXho0iVuUvqzihRE+IaHm2z85Yp0xWtHyN5U1HqviZUTNq3AsXyxhbivsuQmeQ3HcUhtKezVtIqItfkR2vCMHr6Er4ZWgjf2zzt3EHCS0H/D80wQdrz/FXzdBUeT2tV/WQGd805jSJ4zvK7qT2ShRbdVxIGNPXE0WfBCM/nnD3oi+wSLkPooHE4m1T1WTyNh9MP4B8xkNk3AAOg7moYKbmDk7wRKhehnucj4SCGp/PPcN7fYgdSDteTHvazw96oihejPpsg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(346002)(376002)(136003)(396003)(39860400002)(6486002)(2616005)(478600001)(53546011)(16526019)(66556008)(66476007)(66946007)(36756003)(5660300002)(86362001)(8676002)(110136005)(186003)(7416002)(8936002)(2906002)(52116002)(31696002)(316002)(558084003)(31686004)(921003)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: X4ZIKEZtNGZxJbbIugG/joPhEo0h8xbNzJ8emWVxOdDw3j9Y5vVk9eCWT/Fw150q0xPmia0Uyx7CqiatK2FE9N+rUkRkRWbJpXw9xsdLCk/AXVUnFZGKtDhBDC2+KRiYaDN24xS/BgqR2Cln5g2NIwK7NoyLLGBFh8lYmYodCqXs7anPkDspUogsf0nIovLriwxtUqttl5DTgFjkMI+hAhK+1idGjpZUTOGJrTSeWkItjetlAs80wGWJFX61EYSvboMjYNKiLR8OGwJ/5JqzI6KAG5W57lMCEZIihAJSOYepUjNAeTEmxhr+rJbQbOE0k9F+fdPsNsmtqx89OLo4TUqc9vCR6j1gezUXxFriPGVORG7bQrTrNGpWranr/Pby8e5nm9huhiTaRXRz/hm9jQs7f6Id3BF1V04TPUCiruOgIzMrJSXtAI8mt1pyqspLnoGUWr/XcXxR8ZB2pe8DcTpCDAlzFUdirhJYHxNOsUG/ZjEJiTQveY+J6L3ycUwWrZHl5OixTQPfhAN2wyK/KqGxNZpx1scQZkMLqufYY7q9BCiA0pdTGuEQwu92XeJ1yP2SOC5/Pgl6CLqUM3m76jXYBDJqxFVmh/yJ6zNhLEH2sw4YDHkPry2THF/V6rvmVv18AUvF/sUuI9GbtqUgRbaEvladiXkMXkNREgEGqE+e540wpibqx0PFG9bPStzu
+X-MS-Exchange-CrossTenant-Network-Message-Id: b15d04e4-f661-4b43-bcfa-08d883482bbc
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Nov 2020 18:08:47.3125
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: nPEGkhQkZA2XBzXjZXujws8KzFeLjTcrX/ZuNXz+FLH8CheTDrbfBlbhAEj+87bF
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR15MB4204
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-07_09:2020-11-05,2020-11-07 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ malwarescore=0 mlxlogscore=889 spamscore=0 suspectscore=0 mlxscore=0
+ bulkscore=0 phishscore=0 clxscore=1015 impostorscore=0 adultscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011070132
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 06 Nov 2020, Nick Desaulniers <ndesaulniers@google.com> 
-wrote:
-> On Fri, Nov 6, 2020 at 3:50 AM Adrian Ratiu 
-> <adrian.ratiu@collabora.com> wrote: 
->> 
->> Hi Nathan, 
->> 
->> On Fri, 06 Nov 2020, Nathan Chancellor 
->> <natechancellor@gmail.com> wrote: 
->> > + Ard, who wrote this code. 
->> > 
->> > On Fri, Nov 06, 2020 at 07:14:36AM +0200, Adrian Ratiu wrote: 
->> >> Due to a Clang bug [1] neon autoloop vectorization does not 
->> >> happen or happens badly with no gains and considering 
->> >> previous GCC experiences which generated unoptimized code 
->> >> which was worse than the default asm implementation, it is 
->> >> safer to default clang builds to the known good generic 
->> >> implementation.  The kernel currently supports a minimum 
->> >> Clang version of v10.0.1, see commit 1f7a44f63e6c 
->> >> ("compiler-clang: add build check for clang 10.0.1").   When 
->> >> the bug gets eventually fixed, this commit could be reverted 
->> >> or, if the minimum clang version bump takes a long time, a 
->> >> warning could be added for users to upgrade their compilers 
->> >> like was done for GCC.   [1] 
->> >> https://bugs.llvm.org/show_bug.cgi?id=40976  Signed-off-by: 
->> >> Adrian Ratiu <adrian.ratiu@collabora.com> 
->> > 
->> > Thank you for the patch! We are also tracking this here: 
->> > 
->> > https://github.com/ClangBuiltLinux/linux/issues/496 
->> > 
->> > It was on my TODO to revist getting the warning eliminated, 
->> > which likely would have involved a patch like this as well. 
->> > 
->> > I am curious if it is worth revisting or dusting off Arnd's 
->> > patch in the LLVM bug tracker first. I have not tried it 
->> > personally. If that is not a worthwhile option, I am fine 
->> > with this for now. It would be nice to try and get a fix 
->> > pinned down on the LLVM side at some point but alas, finite 
->> > amount of resources and people :( 
->> 
->> I tested Arnd's kernel patch from the LLVM bugtracker [1], but 
->> with the Clang v10.0.1 I still get warnings like the following 
->> even though the __restrict workaround seems to affect the 
->> generated instructions: 
->> 
->> ./include/asm-generic/xor.h:15:2: remark: the cost-model 
->> indicates that interleaving is not beneficial 
->> [-Rpass-missed=loop-vectorize] 
->> ./include/asm-generic/xor.h:11:1: remark: List vectorization 
->> was possible but not beneficial with cost 0 >= 0 
->> [-Rpass-missed=slp-vectorizer] xor_8regs_2(unsigned long bytes, 
->> unsigned long *__restrict p1, unsigned long *__restrict p2) 
-> 
-> If it's just a matter of overruling the cost model #pragma clang 
-> loop vectorize(enable) 
-> 
-> will do the trick. 
-> 
-> Indeed, ``` diff --git a/include/asm-generic/xor.h 
-> b/include/asm-generic/xor.h index b62a2a56a4d4..8796955498b7 
-> 100644 --- a/include/asm-generic/xor.h +++ 
-> b/include/asm-generic/xor.h @@ -12,6 +12,7 @@ 
-> xor_8regs_2(unsigned long bytes, unsigned long *p1, unsigned 
-> long *p2) 
->  { 
->         long lines = bytes / (sizeof (long)) / 8; 
-> 
-> +#pragma clang loop vectorize(enable) 
->         do { 
->                 p1[0] ^= p2[0]; p1[1] ^= p2[1]; 
-> @@ -32,6 +33,7 @@ xor_8regs_3(unsigned long bytes, unsigned long 
-> *p1, unsigned long *p2, 
->  { 
->         long lines = bytes / (sizeof (long)) / 8; 
-> 
-> +#pragma clang loop vectorize(enable) 
->         do { 
->                 p1[0] ^= p2[0] ^ p3[0]; p1[1] ^= p2[1] ^ p3[1]; 
-> @@ -53,6 +55,7 @@ xor_8regs_4(unsigned long bytes, unsigned long 
-> *p1, unsigned long *p2, 
->  { 
->         long lines = bytes / (sizeof (long)) / 8; 
-> 
-> +#pragma clang loop vectorize(enable) 
->         do { 
->                 p1[0] ^= p2[0] ^ p3[0] ^ p4[0]; p1[1] ^= p2[1] ^ 
->                 p3[1] ^ p4[1]; 
-> @@ -75,6 +78,7 @@ xor_8regs_5(unsigned long bytes, unsigned long 
-> *p1, unsigned long *p2, 
->  { 
->         long lines = bytes / (sizeof (long)) / 8; 
-> 
-> +#pragma clang loop vectorize(enable) 
->         do { 
->                 p1[0] ^= p2[0] ^ p3[0] ^ p4[0] ^ p5[0]; p1[1] ^= 
->                 p2[1] ^ p3[1] ^ p4[1] ^ p5[1]; 
-> ``` seems to generate the vectorized code. 
-> 
-> Why don't we find a way to make those pragma's more toolchain 
-> portable, rather than open coding them like I have above rather 
-> than this series?
 
-Hi Nick,
 
-Thank you very much for the suggestion.
+On 11/6/20 11:45 PM, Wang Qing wrote:
+> There is a bug when passing zero to PTR_ERR() and return.
+> Fix smatch err.
+> 
+> Signed-off-by: Wang Qing <wangqing@vivo.com>
 
-I agree. If a toolchain portable way can be found to realiably 
-trigger the optimization, I will gladly replace this patch. :)
-
-Will work on it starting Monday then report back my findings or, 
-if I can get it to work in a satisfying manner, send a v2 series 
-directly.
-
-The first patch is still needed because it's more of a general 
-cleanup as Nathan correctly observed.
-
-Regards,
-Adrian
-
->
-> -- 
-> Thanks,
-> ~Nick Desaulniers
+Acked-by: Yonghong Song <yhs@fb.com>
