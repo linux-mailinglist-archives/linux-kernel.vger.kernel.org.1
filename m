@@ -2,116 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BD932AA419
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 10:04:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9386D2AA424
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 10:07:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728295AbgKGJEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 04:04:52 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:10055 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727973AbgKGJEv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 04:04:51 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fa663360000>; Sat, 07 Nov 2020 01:04:54 -0800
-Received: from [10.2.49.167] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sat, 7 Nov
- 2020 09:04:50 +0000
-Subject: Re: [PATCH 1/2] tomoyo: Convert get_user_pages*() to
- pin_user_pages*()
-To:     Souptick Joarder <jrdr.linux@gmail.com>, <takedakn@nttdata.co.jp>,
-        <penguin-kernel@I-love.SAKURA.ne.jp>, <jmorris@namei.org>,
-        <serge@hallyn.com>
-CC:     <linux-security-module@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Jan Kara <jack@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>
-References: <1604737451-19082-1-git-send-email-jrdr.linux@gmail.com>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <e5401549-8c31-2c6d-58dd-864232de17af@nvidia.com>
-Date:   Sat, 7 Nov 2020 01:04:50 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-MIME-Version: 1.0
-In-Reply-To: <1604737451-19082-1-git-send-email-jrdr.linux@gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1604739894; bh=f8+saql79WUV7L5gLMVpGfAw9HSYkhJovfzxVrV8yD8=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=eF1vq7rKYFI6buH8AXG3THsWAlBxpIRNEgZZfdzdzkm25+SlgZznBSPScwXxE5WcI
-         3/73IpS6+6ThBd9E0JS0yc2FXMmwix3VqQQiUDYpfswJ999hGH44JNUSTAm28s5nkL
-         4cIDZd/enhtOxmdu3OEkH1FmqLEAAkh2NSmE4U3JuT4i1IK7FGdUMhTRqjLYBXss4h
-         kKYIrrOYYoOKywMK60+E4mtDMvajf9KVgj17BWusydioS7HqU6+iLiZZyQF6NSAqZO
-         B8rixL5iEPNfX6U2Rhn20SY8Qn1wIg/FEXi4fIOpIQjBebbI6MX3+HfHQoKc5XCNpC
-         pn67CI8azA/vA==
+        id S1728406AbgKGJHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 04:07:45 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:30510 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727977AbgKGJHo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Nov 2020 04:07:44 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4CSrxm2xC5z9v6vC;
+        Sat,  7 Nov 2020 10:07:40 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id SBU23wXPkMUB; Sat,  7 Nov 2020 10:07:40 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4CSrxm1HNrz9v6vB;
+        Sat,  7 Nov 2020 10:07:40 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 4A6128B776;
+        Sat,  7 Nov 2020 10:07:41 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id k0GTKzkPiJkJ; Sat,  7 Nov 2020 10:07:41 +0100 (CET)
+Received: from po17688vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id EDE1D8B75B;
+        Sat,  7 Nov 2020 10:07:40 +0100 (CET)
+Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id AFC2B66868; Sat,  7 Nov 2020 09:07:40 +0000 (UTC)
+Message-Id: <9e225a856a8b22e0e77587ee22ab7a2f5bca8753.1604740029.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH] powerpc/32s: Use relocation offset when setting early hash
+ table
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, erhard_f@mailbox.org,
+        schwab@linux-m68k.org
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Sat,  7 Nov 2020 09:07:40 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/7/20 12:24 AM, Souptick Joarder wrote:
-> In 2019, we introduced pin_user_pages*() and now we are converting
-> get_user_pages*() to the new API as appropriate. [1] & [2] could
-> be referred for more information. This is case 5 as per document [1].
+When calling early_hash_table(), the kernel hasn't been yet
+relocated to its linking address, so data must be addressed
+with relocation offset.
 
-It turns out that Case 5 can be implemented via a better pattern, as long
-as we're just dealing with a page at a time, briefly:
+Add relocation offset to write into Hash in early_hash_table().
 
-lock_page()
-write to page's data
-unlock_page()
+Reported-by: Erhard Furtner <erhard_f@mailbox.org>
+Reported-by: Andreas Schwab <schwab@linux-m68k.org>
+Fixes: 69a1593abdbc ("powerpc/32s: Setup the early hash table at all time.")
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/kernel/head_book3s_32.S | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-...which neatly synchronizes with writeback and other fs activities.
-
-I was going to track down the Case 5's and do that [1].
-
-+CC Jan and Matthew, to keep us on the straight and narrow, just in case
-I'm misunderstanding something.
-
-[1] https://lore.kernel.org/r/e78fb7af-627b-ce80-275e-51f97f1f3168@nvidia.com
-
-thanks,
+diff --git a/arch/powerpc/kernel/head_book3s_32.S b/arch/powerpc/kernel/head_book3s_32.S
+index 5eb9eedac920..8aa7eb11754e 100644
+--- a/arch/powerpc/kernel/head_book3s_32.S
++++ b/arch/powerpc/kernel/head_book3s_32.S
+@@ -156,6 +156,7 @@ __after_mmu_off:
+ 	bl	initial_bats
+ 	bl	load_segment_registers
+ BEGIN_MMU_FTR_SECTION
++	bl	reloc_offset
+ 	bl	early_hash_table
+ END_MMU_FTR_SECTION_IFSET(MMU_FTR_HPTE_TABLE)
+ #if defined(CONFIG_BOOTX_TEXT)
+@@ -932,7 +933,7 @@ early_hash_table:
+ 	ori	r6, r6, 3	/* 256kB table */
+ 	mtspr	SPRN_SDR1, r6
+ 	lis	r6, early_hash@h
+-	lis	r3, Hash@ha
++	addis	r3, r3, Hash@ha
+ 	stw	r6, Hash@l(r3)
+ 	blr
+ 
 -- 
-John Hubbard
-NVIDIA
+2.25.0
 
-> 
-> [1] Documentation/core-api/pin_user_pages.rst
-> 
-> [2] "Explicit pinning of user-space pages":
->          https://lwn.net/Articles/807108/
-> 
-> Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
-> Cc: John Hubbard <jhubbard@nvidia.com>
-> ---
->   security/tomoyo/domain.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/security/tomoyo/domain.c b/security/tomoyo/domain.c
-> index dc4ecc0..bd748be 100644
-> --- a/security/tomoyo/domain.c
-> +++ b/security/tomoyo/domain.c
-> @@ -914,7 +914,7 @@ bool tomoyo_dump_page(struct linux_binprm *bprm, unsigned long pos,
->   	 * (represented by bprm).  'current' is the process doing
->   	 * the execve().
->   	 */
-> -	if (get_user_pages_remote(bprm->mm, pos, 1,
-> +	if (pin_user_pages_remote(bprm->mm, pos, 1,
->   				FOLL_FORCE, &page, NULL, NULL) <= 0)
->   		return false;
->   #else
-> @@ -936,7 +936,7 @@ bool tomoyo_dump_page(struct linux_binprm *bprm, unsigned long pos,
->   	}
->   	/* Same with put_arg_page(page) in fs/exec.c */
->   #ifdef CONFIG_MMU
-> -	put_page(page);
-> +	unpin_user_page(page);
->   #endif
->   	return true;
->   }
-> 
