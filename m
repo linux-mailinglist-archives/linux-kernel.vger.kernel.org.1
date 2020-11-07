@@ -2,217 +2,362 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 766D42AA768
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 19:25:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A7032AA76B
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 19:31:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728575AbgKGSZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 13:25:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49738 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726021AbgKGSZB (ORCPT
+        id S1728556AbgKGSbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 13:31:12 -0500
+Received: from mailrelay4-2.pub.mailoutpod1-cph3.one.com ([46.30.212.3]:31750
+        "EHLO mailrelay4-2.pub.mailoutpod1-cph3.one.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725836AbgKGSbM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 13:25:01 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A616C0613CF
-        for <linux-kernel@vger.kernel.org>; Sat,  7 Nov 2020 10:24:59 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id 62so3559677pgg.12
-        for <linux-kernel@vger.kernel.org>; Sat, 07 Nov 2020 10:24:59 -0800 (PST)
+        Sat, 7 Nov 2020 13:31:12 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1lokD+YzDVwjuv0S1fnZ4jfJcWH5xG6o3ThkmNzSSQQ=;
-        b=DB+DGtflH5xVPAkB8hFQUJSEmztJuWcM7rVOfIVMgEJ4GVsPTiAD1P3EW4wpJ25rZH
-         IzGPl5yiNDufSGQ1TZXdo8maZnmDfasl0nDWC/rQScGdnWOXThQTJW+qTaq4sD7MCGx4
-         Kw4I6GlvRrTkVbGvQDNKs6NeiRteDLUiGhsjd4Db22O3NMsUWOQ2KLlAJcEgFtmIqS/o
-         HpmHQ2lF2lpwLby/nJPaOmN90Wqnp9t7VuJSpCCVeSR0FOW8j6cAVn8miWqphiHE9g2D
-         LxWd39VI84RBjq+rea1CMS/CagADK2KHVnQ4zqfwpmXJmVWsPfUdX2QsCR8seEv8uiCU
-         Nf5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1lokD+YzDVwjuv0S1fnZ4jfJcWH5xG6o3ThkmNzSSQQ=;
-        b=q+f0ZChVtKScRFlw3OQKNTKPgNqj4K+ak9mTEGaszRPEqF0fkLPkag71bJXB60Z5SW
-         f418AXMiMRB67ZTGaQ3qfIRjLPNUzWLLE5W0t2aUe6Z8uZ6m7OhpYsUa1RlFWcg4wrvQ
-         6qhmgFBH8YEXgs1cRcWZw7XwDo5JkV+3cHiolxNBegRXR6xwMCGToF38AqqJaXsr9hyH
-         Toz3mElwzlvM/3v6MHt/TX4MTpyi8k+sztBne88xqtLCzcs+DUDQPLFtRaeTCUChadEF
-         ILjhdnrAuQxL1YB/o3GLE6V2gCOY//OrGopxM8aAVOz0fqFqLFdAbgJB+jsPHkRyxfOP
-         ufvg==
-X-Gm-Message-State: AOAM532oMHCoX4ccaSd4A+AyhDnF/1/uJp9q+aGdN30WjTPkvWROyEJX
-        8ODmwis9OEqlvU+1XJPqVf4=
-X-Google-Smtp-Source: ABdhPJy1//f9Ngb6dO9Na8YgeoQYVDJ045nDAa22iIvTMsm0dNZpjLLTIfv+lEBKUbT8T28CCMdCJA==
-X-Received: by 2002:a63:190e:: with SMTP id z14mr6427922pgl.272.1604773498722;
-        Sat, 07 Nov 2020 10:24:58 -0800 (PST)
-Received: from ubuntu (1-171-247-95.dynamic-ip.hinet.net. [1.171.247.95])
-        by smtp.gmail.com with ESMTPSA id j25sm6208643pfa.199.2020.11.07.10.24.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 07 Nov 2020 10:24:57 -0800 (PST)
-Date:   Sun, 8 Nov 2020 02:24:47 +0800
-From:   Yun Hsiang <hsiang023167@gmail.com>
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc:     Qais Yousef <qais.yousef@arm.com>, peterz@infradead.org,
-        linux-kernel@vger.kernel.org, patrick.bellasi@matbug.net,
-        kernel test robot <lkp@intel.com>,
-        Juri Lelli <juri.lelli@redhat.com>
-Subject: Re: [PATCH v5 1/1] sched/uclamp: add SCHED_FLAG_UTIL_CLAMP_RESET
- flag to reset uclamp
-Message-ID: <20201107182447.GA1056076@ubuntu>
-References: <20201103023756.1012088-1-hsiang023167@gmail.com>
- <20201103134644.rafsqisz7fxopo5n@e107158-lin.cambridge.arm.com>
- <20201103134808.27xi27xodj6dvlt2@e107158-lin.cambridge.arm.com>
- <e4889208-ff6d-e087-6aeb-26ad98d426fc@arm.com>
+        d=bitmath.org; s=20191106;
+        h=content-transfer-encoding:content-type:in-reply-to:mime-version:date:
+         message-id:references:cc:to:from:subject:from;
+        bh=p3PbTb+Cq5DBv6T/N0pHjzdGEMwCxu84V9BqU/mJRgQ=;
+        b=bx+f1G+HZ4Ae74L/MITHrYiF143QVKEe/GlBzWYTtmOcG2DkLld3/LADDtnZIO65qTu5iYCNRTPPX
+         MbRnwFMfKBArH8ZOVaKEfafD24HPYAHhx7bgu/HgMVR1jnMxJhWeUuy5UcQzp//hTYChB0W9uN/8DV
+         bqaa7WlGQkVgJwzbgnWlGlQC65UVz4CYw4bnuftsrmco1/EpMt0LuziOTYhJjFJ+VJXG7oYH+SS13w
+         o0znhy0UxvMTQIhW4fw19I73uX+G6cklz9Ff04wrPk51tkmMBtnw0ARHvqNS3VHjGvrA0jNQyEWNmq
+         0pU50TjzdRNNk0dbVfElHUaX/RnPoMA==
+X-HalOne-Cookie: f80572ca68637df08d6fef21497c3d34cbfcdfb5
+X-HalOne-ID: 63bd4e96-2127-11eb-bb7e-d0431ea8bb10
+Received: from [192.168.19.13] (h-155-4-128-97.na.cust.bahnhof.se [155.4.128.97])
+        by mailrelay4.pub.mailoutpod1-cph3.one.com (Halon) with ESMTPSA
+        id 63bd4e96-2127-11eb-bb7e-d0431ea8bb10;
+        Sat, 07 Nov 2020 18:31:02 +0000 (UTC)
+Subject: Re: [PATCH] applesmc: Re-work SMC comms v2
+From:   Henrik Rydberg <rydberg@bitmath.org>
+To:     Brad Campbell <brad@fnarfbargle.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-hwmon@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        hns@goldelico.com, Guenter Roeck <linux@roeck-us.net>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        Jean Delvare <jdelvare@suse.com>
+References: <20200930105442.3f642f6c@aktux>
+ <CAK8P3a2CbhJT+B-F+cnX+uiJep9oiLM28n045-ATaVaU41u2hw@mail.gmail.com>
+ <20201002002251.28462e64@aktux>
+ <7543ef85-727d-96c3-947e-5b18e9e6c44d@roeck-us.net>
+ <20201006090226.4275c824@kemnade.info>
+ <db042e9b-be41-11b1-7059-3881b1da5c8b@fnarfbargle.com>
+ <68467f1b-cea1-47ea-a4d4-8319214b072a@fnarfbargle.com>
+ <20201104142057.62493c12@aktux>
+ <2436afef-99c6-c352-936d-567bf553388c@fnarfbargle.com>
+ <7a085650-2399-08c0-3c4d-6cd1fa28a365@roeck-us.net>
+ <fc36d066-c432-e7d2-312f-a0a592446fe2@fnarfbargle.com>
+ <10027199-5d31-93e7-9bd8-7baaebff8b71@roeck-us.net>
+ <70331f82-35a1-50bd-685d-0b06061dd213@fnarfbargle.com>
+ <3c72ccc3-4de1-b5d0-423d-7b8c80991254@fnarfbargle.com>
+ <6d071547-10ee-ca92-ec8b-4b5069d04501@bitmath.org>
+ <8e117844-d62a-bcb1-398d-c59cc0d4b878@fnarfbargle.com>
+ <e5a856b1-fb1a-db5d-0fde-c86d0bcca1df@bitmath.org>
+ <aa60f673-427a-1a47-7593-54d1404c3c92@bitmath.org>
+ <9109d059-d9cb-7464-edba-3f42aa78ce92@bitmath.org>
+Message-ID: <5310c0ab-0f80-1f9e-8807-066223edae13@bitmath.org>
+Date:   Sat, 7 Nov 2020 19:31:15 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e4889208-ff6d-e087-6aeb-26ad98d426fc@arm.com>
+In-Reply-To: <9109d059-d9cb-7464-edba-3f42aa78ce92@bitmath.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 10:45:09AM +0100, Dietmar Eggemann wrote:
-> On 03/11/2020 14:48, Qais Yousef wrote:
-> > Oops, +Juri for real this time.
-> > 
-> > On 11/03/20 13:46, Qais Yousef wrote:
-> >> Hi Yun
-> >>
-> >> +Juri (A question for you below)
-> >>
-> >> On 11/03/20 10:37, Yun Hsiang wrote:
+On 2020-11-06 21:02, Henrik Rydberg wrote:
+>> So as it stands, it does not work at all. I will continue to check 
+>> another machine, and see if I can get something working.
 > 
-> [...]
+> On the MacBookAir3,1 the situation is somewhat better.
 > 
-> >>>  include/uapi/linux/sched.h |  7 +++--
-> >>>  kernel/sched/core.c        | 59 ++++++++++++++++++++++++++++----------
-> >>>  2 files changed, 49 insertions(+), 17 deletions(-)
-> >>>
-> >>> diff --git a/include/uapi/linux/sched.h b/include/uapi/linux/sched.h
-> >>> index 3bac0a8ceab2..6c823ddb1a1e 100644
-> >>> --- a/include/uapi/linux/sched.h
-> >>> +++ b/include/uapi/linux/sched.h
-> >>> @@ -132,17 +132,20 @@ struct clone_args {
-> >>>  #define SCHED_FLAG_KEEP_PARAMS		0x10
-> >>>  #define SCHED_FLAG_UTIL_CLAMP_MIN	0x20
-> >>>  #define SCHED_FLAG_UTIL_CLAMP_MAX	0x40
-> >>> +#define SCHED_FLAG_UTIL_CLAMP_RESET	0x80
-> >>
-> >> The new flag needs documentation about how it should be used. It has a none
-> >> obvious policy that we can't expect users to just get it.
+> The first three tree positions result in zero failures and 10 reads per 
+> second. The fourth yields zero failues and 11 reads per second, within 
+> the margin of similarity.
 > 
-> See (1) further below.
+> So, the patch appears to have no apparent effect on the 3,1 series.
 > 
-> >>>  #define SCHED_FLAG_KEEP_ALL	(SCHED_FLAG_KEEP_POLICY | \
-> >>>  				 SCHED_FLAG_KEEP_PARAMS)
-> >>>  
-> >>>  #define SCHED_FLAG_UTIL_CLAMP	(SCHED_FLAG_UTIL_CLAMP_MIN | \
-> >>> -				 SCHED_FLAG_UTIL_CLAMP_MAX)
-> >>> +				 SCHED_FLAG_UTIL_CLAMP_MAX | \
-> >>> +				 SCHED_FLAG_UTIL_CLAMP_RESET)
-> >>
-> >> Either do this..
-> >>
-> >>>  
-> >>>  #define SCHED_FLAG_ALL	(SCHED_FLAG_RESET_ON_FORK	| \
-> >>>  			 SCHED_FLAG_RECLAIM		| \
-> >>>  			 SCHED_FLAG_DL_OVERRUN		| \
-> >>>  			 SCHED_FLAG_KEEP_ALL		| \
-> >>> -			 SCHED_FLAG_UTIL_CLAMP)
-> >>> +			 SCHED_FLAG_UTIL_CLAMP		| \
-> >>> +			 SCHED_FLAG_UTIL_CLAMP_RESET)
-> >>
-> >> Or this.
-> >>
-> >> I checked glibc and it seems they don't use the sched.h from linux and more
-> >> surprisingly they don't seem to have a wrapper for sched_setattr(). bionic libc
-> >> from Android does take sched.h from linux, but didn't find any user. So we
-> >> might be okay with modifying these here.
-> 
-> Schould be package linux-libc-dev. Debian 10 (buster-backports)
-> 5.8.10-1~bpo10+1 contains the uclamp bits as well.
-> 
-> /usr/include/linux/sched/types.h
-> /usr/include/linux/sched.h
-> 
-> /usr/include/linux/sched.h contains SCHED_FLAG_UTIL_CLAMP and
-> SCHED_FLAG_ALL.
-> 
-> But there is no glibc wrapper for sched_[sg]etattr so syscall wrapping
-> is still needed.
-> 
-> >> I still would like us to document better what we expect from these defines.
-> >> Are they for internal kernel use or really for user space? If the former we
-> >> should take them out of here. If the latter, then adding the RESET is dangerous
-> >> as it'll cause an observable change in behavior; that is if an application was
-> >> using SCHED_FLAG_ALL or SCHED_FLAG_UTIL_CLAMP to update the UTIL_MIN/MAX of
-> >> a task, existing binaries will find out now that instead of modifying the value
-> >> they're actually resetting them.
-> 
-> I doubt that any application uses SCHED_FLAG_ALL so far since it already
-> mixes e.g. DL and UCLAMP stuff. AFAIK the only tools supporting uclamp
-> so far is rt-app and uclampset, which both use their own files for DL
-> and uclamp definition.
-> 
+> Now onto fixing the 1,1 behavior.
 
-I think SCHED_FLAG_ALL is for internal kernel use. So is it better to
-make it within an #ifdef __KERNEL__ #endif block as Patrick said?
+Hi again,
 
-> [..]
-> 
-> >> Add the policy part of the commit message as a documentation to this function
-> >> please.
-> >>
-> >> ie:
-> >>
-> >> 	/*
-> >> 	 * The policy is
-> >> 	 * _CLAMP_RESET                           => reset both min and max
-> >> 	 * _CLAMP_RESET | _CLAMP_MIN              => reset min value
-> >> 	 * _CLAMP_RESET | _CLAMP_MAX              => reset max value
-> >> 	 * _CLAMP_RESET | _CLAMP_MIN | _CLAMP_MAX => reset both min and max
-> >> 	 */
-> >>
-> 
-> (1) Related to documentation, wouldn't it be better to document in
-> include/uapi/linux/sched.h, i.e. where the flags are defined, so it gets
-> exported via linux-libc-dev?
-> Like it's done for struct sched_attr members in
-> include/uapi/linux/sched/types.h.
-> 
+This patch, v3, works for me, on both MBA1,1 and MBA3,1. Both machines 
+yields 25 reads per second.
 
-Ok, I'll put the comment for_CLAMP_MIN/_CLAMP_MAX/CLAMP_RESET in
-include/uapi/linux/sched.h.
+It turns out that the origin code has a case that was not carried over 
+to the v2 patch; the command byte needs to be resent upon the wrong 
+status code. I added that back. Also, there seems to be a basic response 
+time that needs to be respected, so I added back a small fixed delay 
+after each write operation. I also took the liberty to reduce the number 
+of status reads, and clean up error handling. Checkpatch is happy with 
+this version.
 
-> [...]
-> 
-> >>> -	if (likely(!(attr->sched_flags & SCHED_FLAG_UTIL_CLAMP)))
-> >>> +	if (likely(!(attr->sched_flags && SCHED_FLAG_UTIL_CLAMP)) ||
-> >>> +		attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_RESET)
-> >>>  		return;
-> 
-> Another multi line statement so the 'return' could go with braces.
-> 
-> >>>  
-> >>> -	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MIN) {
-> >>> +	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MIN)
-> >>>  		uclamp_se_set(&p->uclamp_req[UCLAMP_MIN],
-> >>> -			      attr->sched_util_min, true);
-> >>> -	}
-> >>> +				attr->sched_util_min, true);
-> >>>  
-> >>> -	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MAX) {
-> >>> +	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MAX)
-> >>>  		uclamp_se_set(&p->uclamp_req[UCLAMP_MAX],
-> >>> -			      attr->sched_util_max, true);
-> >>> -	}
-> >>> +				attr->sched_util_max, true);
-> >>
-> >> These two hunks seem unrelated too. Multi line statement should still have
-> >> braces AFAIK. Why change it?
+The code obviously needs to be retested on the other machines, but the 
+logic still follows what you wrote, Brad, and I have also checked it 
+against the VirtualSMC code. It appears to make sense, so hopefully 
+there wont be additional issues.
 
-Sorry for the wrong coding style, I'll fix it. And I'll split the
-modifications to different patches if I want to do some cleanup.
+Thanks,
+Henrik
 
-> +1
-> 
-> [...]
+ From be4a32620b2b611472af3e35f9b50004e678efd5 Mon Sep 17 00:00:00 2001
+From: Brad Campbell <brad@fnarfbargle.com>
+Date: Thu, 5 Nov 2020 18:26:24 +1100
+Subject: [PATCH] applesmc: Re-work SMC comms v3
+
+Commit fff2d0f701e6 ("hwmon: (applesmc) avoid overlong udelay()")
+introduced an issue whereby communication with the SMC became
+unreliable with write errors like:
+
+[  120.378614] applesmc: send_byte(0x00, 0x0300) fail: 0x40
+[  120.378621] applesmc: LKSB: write data fail
+[  120.512782] applesmc: send_byte(0x00, 0x0300) fail: 0x40
+[  120.512787] applesmc: LKSB: write data fail
+
+The original code appeared to be timing sensitive and was not reliable with
+the timing changes in the aforementioned commit.
+
+This patch re-factors the SMC communication to remove the timing
+dependencies and restore function with the changes previously committed.
+
+v2 : Address logic and coding style
+v3 : Modifications for MacBookAir1,1
+
+Reported-by: Andreas Kemnade <andreas@kemnade.info>
+Fixes: fff2d0f701e6 ("hwmon: (applesmc) avoid overlong udelay()")
+Signed-off-by: Brad Campbell <brad@fnarfbargle.com>
+Signed-off-by: Henrik Rydberg <rydberg@bitmath.org>
+---
+  drivers/hwmon/applesmc.c | 132 +++++++++++++++++++++------------------
+  1 file changed, 70 insertions(+), 62 deletions(-)
+
+diff --git a/drivers/hwmon/applesmc.c b/drivers/hwmon/applesmc.c
+index a18887990f4a..08289827da1e 100644
+--- a/drivers/hwmon/applesmc.c
++++ b/drivers/hwmon/applesmc.c
+@@ -42,6 +42,11 @@
+
+  #define APPLESMC_MAX_DATA_LENGTH 32
+
++/* Apple SMC status bits */
++#define SMC_STATUS_AWAITING_DATA  BIT(0) /* SMC has data waiting */
++#define SMC_STATUS_IB_CLOSED      BIT(1) /* Will ignore any input */
++#define SMC_STATUS_BUSY           BIT(2) /* Command in progress */
++
+  /* wait up to 128 ms for a status change. */
+  #define APPLESMC_MIN_WAIT	0x0010
+  #define APPLESMC_RETRY_WAIT	0x0100
+@@ -151,65 +156,76 @@ static unsigned int key_at_index;
+  static struct workqueue_struct *applesmc_led_wq;
+
+  /*
+- * wait_read - Wait for a byte to appear on SMC port. Callers must
+- * hold applesmc_lock.
++ * Wait for specific status bits with a mask on the SMC
++ * Used before and after writes, and before reads
+   */
+-static int wait_read(void)
++
++static int wait_status(u8 val, u8 mask)
+  {
+  	unsigned long end = jiffies + (APPLESMC_MAX_WAIT * HZ) / USEC_PER_SEC;
+  	u8 status;
+  	int us;
+
+  	for (us = APPLESMC_MIN_WAIT; us < APPLESMC_MAX_WAIT; us <<= 1) {
+-		usleep_range(us, us * 16);
+  		status = inb(APPLESMC_CMD_PORT);
+-		/* read: wait for smc to settle */
+-		if (status & 0x01)
++		if ((status & mask) == val)
+  			return 0;
+  		/* timeout: give up */
+  		if (time_after(jiffies, end))
+  			break;
++		usleep_range(us, us * 16);
+  	}
+
+-	pr_warn("wait_read() fail: 0x%02x\n", status);
++	if (debug)
++		pr_warn("%s fail: 0x%02x 0x%02x 0x%02x\n", __func__, val, mask, status);
+  	return -EIO;
+  }
+
+  /*
+- * send_byte - Write to SMC port, retrying when necessary. Callers
++ * send_byte_data - Write to SMC data port. Callers
+   * must hold applesmc_lock.
++ * Parameter skip must be true on the last write of any
++ * command or it'll time out.
+   */
+-static int send_byte(u8 cmd, u16 port)
++
++static int send_byte_data(u8 cmd, u16 port, bool skip)
++{
++	outb(cmd, port);
++	udelay(APPLESMC_MIN_WAIT);
++	return wait_status(SMC_STATUS_BUSY, SMC_STATUS_BUSY | 
+SMC_STATUS_IB_CLOSED);
++}
++
++/*
++ * send_command - Write a command to the SMC. Callers must hold 
+applesmc_lock.
++ * If SMC is in undefined state, any new command write resets the state 
+machine.
++ */
++
++static int send_command(u8 cmd)
+  {
++	int ret;
++	int i;
+  	u8 status;
+-	int us;
+-	unsigned long end = jiffies + (APPLESMC_MAX_WAIT * HZ) / USEC_PER_SEC;
+
+-	outb(cmd, port);
+-	for (us = APPLESMC_MIN_WAIT; us < APPLESMC_MAX_WAIT; us <<= 1) {
+-		usleep_range(us, us * 16);
++	ret = wait_status(0, SMC_STATUS_IB_CLOSED);
++	if (ret)
++		return ret;
++
++	for (i = 0; i < 16; i++) {
++		outb(cmd, APPLESMC_CMD_PORT);
++		udelay(APPLESMC_MIN_WAIT);
++		ret = wait_status(0, SMC_STATUS_IB_CLOSED);
++		if (ret)
++			return ret;
+  		status = inb(APPLESMC_CMD_PORT);
+-		/* write: wait for smc to settle */
+-		if (status & 0x02)
+-			continue;
+-		/* ready: cmd accepted, return */
+-		if (status & 0x04)
++		if (status & SMC_STATUS_BUSY)
+  			return 0;
+-		/* timeout: give up */
+-		if (time_after(jiffies, end))
+-			break;
+-		/* busy: long wait and resend */
+-		udelay(APPLESMC_RETRY_WAIT);
+-		outb(cmd, port);
++		usleep_range(APPLESMC_RETRY_WAIT, APPLESMC_RETRY_WAIT * 16);
+  	}
+
+-	pr_warn("send_byte(0x%02x, 0x%04x) fail: 0x%02x\n", cmd, port, status);
+-	return -EIO;
+-}
++	if (debug)
++		pr_warn("%s fail: 0x%02x\n", __func__, status);
+
+-static int send_command(u8 cmd)
+-{
+-	return send_byte(cmd, APPLESMC_CMD_PORT);
++	return -EIO;
+  }
+
+  static int send_argument(const char *key)
+@@ -217,32 +233,28 @@ static int send_argument(const char *key)
+  	int i;
+
+  	for (i = 0; i < 4; i++)
+-		if (send_byte(key[i], APPLESMC_DATA_PORT))
++		if (send_byte_data(key[i], APPLESMC_DATA_PORT, false))
+  			return -EIO;
+  	return 0;
+  }
+
++static int send_length(u8 len, bool skip)
++{
++	return send_byte_data(len, APPLESMC_DATA_PORT, skip);
++}
++
+  static int read_smc(u8 cmd, const char *key, u8 *buffer, u8 len)
+  {
+  	u8 status, data = 0;
+  	int i;
+
+-	if (send_command(cmd) || send_argument(key)) {
+-		pr_warn("%.4s: read arg fail\n", key);
+-		return -EIO;
+-	}
+-
+-	/* This has no effect on newer (2012) SMCs */
+-	if (send_byte(len, APPLESMC_DATA_PORT)) {
+-		pr_warn("%.4s: read len fail\n", key);
+-		return -EIO;
+-	}
++	if (send_command(cmd) || send_argument(key) || send_length(len, 1))
++		goto err;
+
+  	for (i = 0; i < len; i++) {
+-		if (wait_read()) {
+-			pr_warn("%.4s: read data[%d] fail\n", key, i);
+-			return -EIO;
+-		}
++		if (wait_status(SMC_STATUS_AWAITING_DATA,
++						SMC_STATUS_AWAITING_DATA | SMC_STATUS_IB_CLOSED))
++			goto err;
+  		buffer[i] = inb(APPLESMC_DATA_PORT);
+  	}
+
+@@ -250,7 +262,7 @@ static int read_smc(u8 cmd, const char *key, u8 
+*buffer, u8 len)
+  	for (i = 0; i < 16; i++) {
+  		udelay(APPLESMC_MIN_WAIT);
+  		status = inb(APPLESMC_CMD_PORT);
+-		if (!(status & 0x01))
++		if (!(status & SMC_STATUS_AWAITING_DATA))
+  			break;
+  		data = inb(APPLESMC_DATA_PORT);
+  	}
+@@ -258,30 +270,26 @@ static int read_smc(u8 cmd, const char *key, u8 
+*buffer, u8 len)
+  		pr_warn("flushed %d bytes, last value is: %d\n", i, data);
+
+  	return 0;
++err:
++	pr_warn("read cmd fail: %x %.4s %d\n", cmd, key, len);
++	return -EIO;
+  }
+
+  static int write_smc(u8 cmd, const char *key, const u8 *buffer, u8 len)
+  {
+  	int i;
+
+-	if (send_command(cmd) || send_argument(key)) {
+-		pr_warn("%s: write arg fail\n", key);
+-		return -EIO;
+-	}
++	if (send_command(cmd) || send_argument(key) || send_length(len, 0))
++		goto err;
+
+-	if (send_byte(len, APPLESMC_DATA_PORT)) {
+-		pr_warn("%.4s: write len fail\n", key);
+-		return -EIO;
+-	}
+-
+-	for (i = 0; i < len; i++) {
+-		if (send_byte(buffer[i], APPLESMC_DATA_PORT)) {
+-			pr_warn("%s: write data fail\n", key);
+-			return -EIO;
+-		}
+-	}
++	for (i = 0; i < len; i++)
++		if (send_byte_data(buffer[i], APPLESMC_DATA_PORT, i == len - 1))
++			goto err;
+
+  	return 0;
++err:
++	pr_warn("write cmd fail: %x %.4s %d\n", cmd, key, len);
++	return -EIO;
+  }
+
+  static int read_register_count(unsigned int *count)
+-- 
+2.29.2
+
