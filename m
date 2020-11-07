@@ -2,79 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 306992AA5C4
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 15:09:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8EF52AA5C7
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 15:10:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728158AbgKGOJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 09:09:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57894 "EHLO mail.kernel.org"
+        id S1728192AbgKGOKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 09:10:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58028 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725880AbgKGOJH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 09:09:07 -0500
+        id S1727298AbgKGOKK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Nov 2020 09:10:10 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B1D20206ED;
-        Sat,  7 Nov 2020 14:09:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 85415206ED;
+        Sat,  7 Nov 2020 14:10:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604758145;
-        bh=AUgdj6qEYGv+IS22xMj9tBmorA9YrVTkTbR5qGCgL7w=;
+        s=default; t=1604758210;
+        bh=/cmrteONQ5VrT8WyKBVaKDbW134CqlhPulNPF5/0dso=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eDkkfQkcwyt9QE7MW2OwvKeDamswGdj01mvYcfwUm441YfYyIRedM3ldVfLT7IMBl
-         ciuyBks10dmVvMXMMCtS2gP8oklY2D5thp3jMrEAIf5rtxI6Xcs9o9soa1/b7u2rBA
-         Xi+EJvN0a4PUa437e1lzqKMpsJCHkKTWhpI7ZYpg=
-Date:   Sat, 7 Nov 2020 15:09:01 +0100
+        b=C1vtH8OWUTlC3Kc+wD5ydbY9tuS/mLXRzaK0ijA+9rdpImqoNperxV1ln7AxHgNfP
+         ySBtRhE5h9p4G47cSlqW5XFjFU4+UlKLBqrrRSQwNkeAccXv+4YrvjPlIC7DCdnfVc
+         xGV+KxNKyNq4RJOZI73ztEWJKCLj0TD2tlqgVwqo=
+Date:   Sat, 7 Nov 2020 15:10:06 +0100
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
-        daniel@iogearbox.net, kernel-team@fb.com,
-        linux-kernel@vger.kernel.org, rafael@kernel.org, jeyu@kernel.org,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: Re: [PATCH v2 bpf-next 4/5] bpf: load and verify kernel module BTFs
-Message-ID: <20201107140901.GA28983@kroah.com>
-References: <20201106230228.2202-1-andrii@kernel.org>
- <20201106230228.2202-5-andrii@kernel.org>
+To:     Vineet Gupta <Vineet.Gupta1@synopsys.com>
+Cc:     "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "linux-snps-arc@lists.infradead.org" 
+        <linux-snps-arc@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Waldemar Brodkorb <wbx@uclibc-ng.org>
+Subject: Re: [PATCH] Revert "ARC: entry: fix potential EFA clobber when
+ TIF_SYSCALL_TRACE"
+Message-ID: <20201107141006.GB28983@kroah.com>
+References: <20201020021957.1260521-1-vgupta@synopsys.com>
+ <9cec26bd-6839-b90d-9bda-44936457e883@synopsys.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201106230228.2202-5-andrii@kernel.org>
+In-Reply-To: <9cec26bd-6839-b90d-9bda-44936457e883@synopsys.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 06, 2020 at 03:02:27PM -0800, Andrii Nakryiko wrote:
-> Add kernel module listener that will load/validate and unload module BTF.
-> Module BTFs gets ID generated for them, which makes it possible to iterate
-> them with existing BTF iteration API. They are given their respective module's
-> names, which will get reported through GET_OBJ_INFO API. They are also marked
-> as in-kernel BTFs for tooling to distinguish them from user-provided BTFs.
+On Fri, Nov 06, 2020 at 08:27:44PM +0000, Vineet Gupta wrote:
+> Hi Stable Team,
 > 
-> Also, similarly to vmlinux BTF, kernel module BTFs are exposed through
-> sysfs as /sys/kernel/btf/<module-name>. This is convenient for user-space
-> tools to inspect module BTF contents and dump their types with existing tools:
+> On 10/19/20 7:19 PM, Vineet Gupta wrote:
+> > This reverts commit 00fdec98d9881bf5173af09aebd353ab3b9ac729.
+> > (but only from 5.2 and prior kernels)
+> > 
+> > The original commit was a preventive fix based on code-review and was
+> > auto-picked for stable back-port (for better or worse).
+> > It was OK for v5.3+ kernels, but turned up needing an implicit change
+> > 68e5c6f073bcf70 "(ARC: entry: EV_Trap expects r10 (vs. r9) to have
+> >  exception cause)" merged in v5.3 which itself was not backported.
+> > So to summarize the stable backport of this patch for v5.2 and prior
+> > kernels is busted and it won't boot.
+> > 
+> > The obvious solution is backport 68e5c6f073bcf70 but that is a pain as
+> > it doesn't revert cleanly and each of affected kernels (so far v4.19,
+> > v4.14, v4.9, v4.4) needs a slightly different massaged varaint.
+> > So the easier fix is to simply revert the backport from 5.2 and prior.
+> > The issue was not a big deal as it would cause strace to sporadically
+> > not work correctly.
+> > 
+> > Waldemar Brodkorb first reported this when running ARC uClibc regressions
+> > on latest stable kernels (with offending backport). Once he bisected it,
+> > the analysis was trivial, so thx to him for this.
+> > 
+> > Reported-by: Waldemar Brodkorb <wbx@uclibc-ng.org>
+> > Bisected-by: Waldemar Brodkorb <wbx@uclibc-ng.org>
+> > Cc: stable <stable@vger.kernel.org> # 5.2 and prior
+> > Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
 > 
-> [vmuser@archvm bpf]$ ls -la /sys/kernel/btf
-> total 0
-> drwxr-xr-x  2 root root       0 Nov  4 19:46 .
-> drwxr-xr-x 13 root root       0 Nov  4 19:46 ..
+> Can this revert be please applied to 4.19 and older kernels for the next cycle.
 > 
-> ...
-> 
-> -r--r--r--  1 root root     888 Nov  4 19:46 irqbypass
-> -r--r--r--  1 root root  100225 Nov  4 19:46 kvm
-> -r--r--r--  1 root root   35401 Nov  4 19:46 kvm_intel
-> -r--r--r--  1 root root     120 Nov  4 19:46 pcspkr
-> -r--r--r--  1 root root     399 Nov  4 19:46 serio_raw
-> -r--r--r--  1 root root 4094095 Nov  4 19:46 vmlinux
-> 
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> ---
->  Documentation/ABI/testing/sysfs-kernel-btf |   8 +
->  include/linux/bpf.h                        |   2 +
->  include/linux/module.h                     |   4 +
->  kernel/bpf/btf.c                           | 194 +++++++++++++++++++++
->  kernel/bpf/sysfs_btf.c                     |   2 +-
->  kernel/module.c                            |  32 ++++
->  6 files changed, 241 insertions(+), 1 deletion(-)
+> Or is there is a procedural issue given this revert is not in mainline. I've
+> described the issue in detail above so if there's a better/desirable way of
+> reverting it from backports, please let me know.
 
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+THis is fine, sorry, it's just in a backlog of lots of stable patches...
+
+We will get to it soon.
+
+thanks,
+
+greg k-h
