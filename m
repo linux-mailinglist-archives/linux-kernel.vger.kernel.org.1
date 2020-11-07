@@ -2,110 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C9C02AA608
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 15:48:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3912D2AA60D
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 15:56:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728215AbgKGOsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 09:48:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44596 "EHLO
+        id S1727813AbgKGO4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 09:56:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727837AbgKGOsb (ORCPT
+        with ESMTP id S1726021AbgKGO4u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 09:48:31 -0500
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41511C0613CF;
-        Sat,  7 Nov 2020 06:48:31 -0800 (PST)
-Received: by mail-io1-xd43.google.com with SMTP id s24so5086460ioj.13;
-        Sat, 07 Nov 2020 06:48:31 -0800 (PST)
+        Sat, 7 Nov 2020 09:56:50 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25166C0613CF;
+        Sat,  7 Nov 2020 06:56:50 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id c20so4271620pfr.8;
+        Sat, 07 Nov 2020 06:56:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=mP3gJ5lTnK5UZP2K6I08cK9nCarVRdZx+jxqMPg3oHk=;
-        b=AUeg2/u1YyqUy73HNL3HLVBW4mlSf+phDxaBDz8AkRD7skqcE1OcmXYyjm43waXkWD
-         2ds+dSonjx7Dhje63NvRplzxhHrnk9kFvYNZuM4EkA1mGaL9uJLmDlvy+XWna7eucTkj
-         9lUvyNYbZETAeg55IWzihbKrplhV+r7G79uM+nLL7ZsnWMPNL0oHTEpF+T2hU1zr59Dr
-         LRpkyWBQedN/PFum7eyA7VL0LEGTQK2Ii6Uq7NUYsphuQ8L8BvN3umgZ7mnP2TN3EeSL
-         cgQUXXLqGb96rqtbhV7BpmSRF3g4eirQFxhTz4ZErsX6JnpdzBZh4NunEjjfI+CwTtHz
-         Joaw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=OAig6VAxVJWLlM9kU+eo4+P+aWW3ULQ0FM1RxfarM9M=;
+        b=CQnZBPYi36lb0zaqTveQEl6aXebyRDAIJNlLG8C+i9z5OJXcDbYzE66OA5u8grgRWY
+         y4zghRJHjrDBmxyrEitK4dIbAF9UZhChahWNLIa08Xcb34mIa7SmntjD60NOZcZdRoyn
+         voBas3u3lMQEOuryON53LvcfQsUEOb33pK5hrvWbOA2rHze8zudkGIlt1Fc/RyvkUOh8
+         h+DStyUukLDve+LyoZlnrr/dTAVPJe5WB9iddJNj4Bkw5i1Etr79OW/eTURHEyQol12i
+         ybgZfX7o2AB7aaS7qLOY9S3Hkrl3W99oFbqP1aFTn8GGH4i0eJbJnVDBsfzhVYUn6HMj
+         5xrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=mP3gJ5lTnK5UZP2K6I08cK9nCarVRdZx+jxqMPg3oHk=;
-        b=fW7nQ28y2kJRS6FJHJJzL/FLJb0n1oIGuWqs0ozgXyWzD6cGx3SnqOslHCJJvd4QD8
-         3z1lrkGTPGElrCBgGHyK0/nVzDOeTgfhgraqSYdKPxWN9U9UDOLjMV7LaA9MKMqGhlhu
-         Qf7vFoXlSnZ88wf2f7l/uITr7hqqZwkGkCfpsQ7fLCrhMNY9ZaCOblqVcrbvNTuCAZRA
-         19/bK6Sh1efpi8Ybz8AvZXdqQcsr4q+/sI5Pk6GIAz571QpzehLexk7CShpcY85vfebb
-         rQD/4T+oTn1LX15AHq7wsxDkUG//o+hNSgqD9xO/e7UNxKA4S4xbLm1Ucvx8pBp5f3cs
-         S1dA==
-X-Gm-Message-State: AOAM530tbOa/DCKaSxGOAFN6bk/TOeEZBOUl9Lmacvhqag1i8dQA5CRW
-        cyLIKRqzVgJX+jvyr2zRe6w=
-X-Google-Smtp-Source: ABdhPJycI0bAZ9BC+zEAyRh1oOUOFuHJto28gP0HZpdS45Mh3hM4vkGptTRykHvoNksIyA8OQohIXA==
-X-Received: by 2002:a5e:dc48:: with SMTP id s8mr2950247iop.198.1604760510533;
-        Sat, 07 Nov 2020 06:48:30 -0800 (PST)
-Received: from aford-IdeaCentre-A730.lan ([2601:448:8400:9e8:5d9e:32b:1062:f8cd])
-        by smtp.gmail.com with ESMTPSA id t2sm2737892iob.5.2020.11.07.06.48.28
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=OAig6VAxVJWLlM9kU+eo4+P+aWW3ULQ0FM1RxfarM9M=;
+        b=Je0Einv2w3ZtVuenNMeLa0HVPqv9MpketS+RhJV6StsN6kyap68BRomN8746Kr4d+y
+         zvjm5+9kczkDjR8wtclhTnq1rxrhdseapzUSK6MqU/jJy2e8mnYuhaDPNsroU5lCFP6g
+         f+oa9J1yb3oyVhNPwYAW37g8ggLAOZK9SJ1joiYwu5o2bEeASsrpOiXknrY65XiYJ11f
+         JX25B9iuh7WulPbEAHj6ajr7RdPTQVcM0eNGTh/seBFk9of1kxFvF353D99zXDDnUUY1
+         H9un/N6dJyA4YNNXWYCJrN7+bb5KjB5jdyMUFPPqEo28fY96YaFtys9MfrrZbqxs8MAh
+         oFNA==
+X-Gm-Message-State: AOAM530fz9HShuP+vmwaR1nWVbi8uKhgTnZtnkYU6R0zlCE8O1H7A5R2
+        yTs7UoXYLCgROI6HhVUVNEHlooLvOto=
+X-Google-Smtp-Source: ABdhPJzHVNhsx2ltWm1JiUclfjnuT/COISRTG2bm+R8byiw9EgmM+5ZKTWikBRbc9iTxDbySwLiDPg==
+X-Received: by 2002:a62:1455:0:b029:18b:83a2:768b with SMTP id 82-20020a6214550000b029018b83a2768bmr6516559pfu.3.1604761009403;
+        Sat, 07 Nov 2020 06:56:49 -0800 (PST)
+Received: from hoboy.vegasvil.org (c-73-241-114-122.hsd1.ca.comcast.net. [73.241.114.122])
+        by smtp.gmail.com with ESMTPSA id i6sm5702909pjt.49.2020.11.07.06.56.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 07 Nov 2020 06:48:29 -0800 (PST)
-From:   Adam Ford <aford173@gmail.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     aford@beaconembedded.com, krzk@kernel.org,
-        Adam Ford <aford173@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH V4 3/3] arm64: defconfig: Enable WM8962
-Date:   Sat,  7 Nov 2020 08:48:10 -0600
-Message-Id: <20201107144811.1977108-3-aford173@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201107144811.1977108-1-aford173@gmail.com>
-References: <20201107144811.1977108-1-aford173@gmail.com>
+        Sat, 07 Nov 2020 06:56:48 -0800 (PST)
+Date:   Sat, 7 Nov 2020 06:56:46 -0800
+From:   Richard Cochran <richardcochran@gmail.com>
+To:     Wang Qing <wangqing@vivo.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] pcp_clock: return EOPNOTSUPP if !CONFIG_PTP_1588_CLOCK
+Message-ID: <20201107145646.GA9653@hoboy.vegasvil.org>
+References: <1604719703-31930-1-git-send-email-wangqing@vivo.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1604719703-31930-1-git-send-email-wangqing@vivo.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Beacon EmbeddedWorks development kits supporting i.MX8M Mini
-and Nano have an WM8962 audio CODEC installed.  Add modules for both
-CONFIG_SND_SOC_WM8962 and CONFIG_SND_SOC_FSL_ASOC_CARD to enable them.
+On Sat, Nov 07, 2020 at 11:28:23AM +0800, Wang Qing wrote:
+> pcp_clock_register() is checked with IS_ERR(), and will crash if !PTP,
+> change return value to ERR_PTR(-EOPNOTSUPP) for the !CONFIG_PTP_1588_CLOCK
+>  and so question resolved.
 
-Signed-off-by: Adam Ford <aford173@gmail.com>
----
-V4:  No Change
-V3:  No Change
-V2:  New to series
+NAK.
 
- arch/arm64/configs/defconfig | 2 ++
- 1 file changed, 2 insertions(+)
+Drivers must use the documented interface.
 
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index 821b21a56ad7..00357f5c6fa5 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -701,6 +701,7 @@ CONFIG_SND_SOC_FSL_EASRC=m
- CONFIG_SND_IMX_SOC=m
- CONFIG_SND_SOC_IMX_SPDIF=m
- CONFIG_SND_SOC_IMX_AUDMIX=m
-+CONFIG_SND_SOC_FSL_ASOC_CARD=m
- CONFIG_SND_MESON_AXG_SOUND_CARD=m
- CONFIG_SND_MESON_GX_SOUND_CARD=m
- CONFIG_SND_SOC_QCOM=m
-@@ -728,6 +729,7 @@ CONFIG_SND_SOC_SIMPLE_AMPLIFIER=m
- CONFIG_SND_SOC_TAS571X=m
- CONFIG_SND_SOC_WCD934X=m
- CONFIG_SND_SOC_WM8904=m
-+CONFIG_SND_SOC_WM8962=m
- CONFIG_SND_SOC_WSA881X=m
- CONFIG_SND_SIMPLE_CARD=m
- CONFIG_SND_AUDIO_GRAPH_CARD=m
--- 
-2.25.1
-
+Thanks,
+Richard
